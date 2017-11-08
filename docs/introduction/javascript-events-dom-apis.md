@@ -4,6 +4,17 @@ type: introduction
 layout: docs
 parent_section: introduction
 order: 6
+examples:
+  - title: A-Frame School &mdash; Getting Entities
+    src: https://glitch.com/edit/#!/aframe-school-js?path=solution.html
+  - title: A-Frame School &mdash; Modifying Entities
+    src: https://glitch.com/edit/#!/aframe-school-js?path=solution2.html
+  - title: A-Frame School &mdash; Creating Entities
+    src: https://glitch.com/edit/#!/aframe-school-js?path=solution3.html
+  - title: A-Frame School &mdash; Handling Events
+    src: https://glitch.com/edit/#!/aframe-school-js?path=solution4.html
+  - title: Animated Lights
+    src: https://glitch.com/edit/#!/aframe-animated-lights?path=index.html
 ---
 
 [geometry]: ../components/geometry.md
@@ -19,10 +30,7 @@ JavaScript and [DOM] APIs as we mostly would in ordinary web development.
 <small class="image-caption"><i>Image by Ruben Mueller from [The VR Jump][vrjump].</i></small>
 
 [entity]: ../core/entity.md
-
-Every element in the scene, even elements such as `<a-box>` or `<a-sky>`, are
-entities (represented as `<a-entity>`). A-Frame modifies the HTML element
-prototype to add some extra behavior for certain DOM APIs to tailor them to
+Every element in the scene, even elements such as `<a-box>` or `<a-sky>`, are entities (represented as `<a-entity>`). A-Frame modifies the HTML element prototype to add some extra behavior for certain DOM APIs to tailor them to
 A-Frame. See the [Entity API documentation][entity] for reference on most of
 the APIs discussed below.
 
@@ -32,12 +40,12 @@ the APIs discussed below.
 
 [A-Frame components]: ../core/component.md
 
-Before we go over the different ways to use JavaScript and DOM APIs, we
-recommend encapsulating your JavaScript code within [A-Frame components].
-Components modularize code, make logic and behavior visible from HTML, and
-ensure that code is executed at the correct time (e.g., after the scene and entities have
-attached and initialized). As the most basic example, to register a
-`console.log` component:
+**Important:** Before we go over the different ways to use JavaScript and DOM
+APIs, we prescribe encapsulating your JavaScript code within [A-Frame
+components].  Components modularize code, make logic and behavior visible from
+HTML, and ensure that code is executed at the correct time (e.g., after the
+scene and entities have attached and initialized). As the most basic example,
+to register a `console.log` component *before* `<a-scene>`:
 
 ```js
 AFRAME.registerComponent('log', {
@@ -50,7 +58,7 @@ AFRAME.registerComponent('log', {
 });
 ```
 
-Then to use the component from HTML:
+And *after* the registration, use the component from HTML:
 
 ```html
 <a-scene log="Hello, Scene!">
@@ -61,6 +69,13 @@ Then to use the component from HTML:
 Components encapsulate all of our code to be reusable, declarative, and
 shareable. Though if we're just poking around at runtime, we can use our
 browser's Developer Tools Console to run JavaScript on our scene.
+
+[contentscripts]: ../core/scene.md#running-content-scripts-on-the-scene
+
+Do **not** try to put A-Frame-related JavaScript in a raw `<script>` tag after
+`<a-scene>` as we would with traditional 2D scripting. If we do, we'd have to
+take special measures to make sure code runs at the right time (see [Running
+Content Scripts on the Scene][contentscripts]).
 
 ## Getting Entities by Querying and Traversing
 
@@ -397,3 +412,15 @@ function collisionHandler (event) {
 entityEl.addEventListener('physicscollided', collisionHandler);
 entityEl.removeEventListener('physicscollided', collisionHandler);
 ```
+
+## Caveats
+
+[faq]: ./faq.md#why-is-the-html-not-updating-when-i-check-the-browser-inspector
+[mutation-observer]: https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver
+[attr-selectors]: https://developer.mozilla.org/en-US/docs/Web/CSS/Attribute_selectors
+
+A-Frame entities and primitives are implemented in a way that
+[favours performance][faq] such that some HTML APIs may not work as expected.
+For instance, [attribute selectors involving values][attr-selectors] won't work
+and a [mutation observer][mutation-observer] won't trigger changes when a entity's
+component is altered.

@@ -100,7 +100,7 @@ module.exports.System = registerSystem('camera', {
     cameraEls = sceneEl.querySelectorAll('[camera]');
     for (i = 0; i < cameraEls.length; i++) {
       cameraEl = cameraEls[i];
-      if (newCameraEl === cameraEl) { continue; }
+      if (!cameraEl.isEntity || newCameraEl === cameraEl) { continue; }
       cameraEl.setAttribute('camera', 'active', false);
       cameraEl.pause();
     }

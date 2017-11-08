@@ -68,7 +68,7 @@ If you catch a typo or error in the documentation, we'd greatly appreciate a
 pull request.
 
 1. Go to the bottom of the documentation page on `aframe.io` you wish to update.
-2. Click the button to suggest edits on GitHub.
+2. Click *Edit Page* GitHub button.
 3. Edit the documentation through GitHub's text editor.
 4. Prepend the commit message with `[docs]`.
 5. We will merge the pull request and cherry-pick it onto documentation
@@ -76,6 +76,21 @@ branches for older versions if necessary.
 
 You can also do `npm run docs` within the A-Frame project to start a local live
 server for watching and serving documentation.
+
+## Add Glitch Examples to Documentation
+
+We like to have simple and interesting [Glitch](https://glitch.com/~aframe)
+examples listed on relevant documentation pages. Glitch lets people remix/fork
+examples and code right in the browser with live updates. If you have a Glitch
+that might be useful in the documentation, request to add it!
+
+1. Have a Glitch example ready. [Remix the base A-Frame Glitch](https://glitch.com/~aframe) to maintain consistency and formatting. Follow [best practices](https://aframe.io/docs/master/introduction/best-practices.html).
+2. Go to the bottom of the documentation page on `aframe.io` you wish to update.
+3. Click *Edit Page* GitHub button.
+4. Add Glitch examples to the `examples` piece in the header, with `title` and `src`. [See example](https://github.com/aframevr/aframe/commit/1472ab23b957e6345c7fc242242f505927463122).
+
+If a Glitch example needs to be updated for whatever reason, we can remix the
+Glitch and update the `src` URL.
 
 # Help Your Fellow A-Framers
 

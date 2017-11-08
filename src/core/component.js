@@ -156,15 +156,16 @@ Component.prototype = {
     if (value === undefined) { return; }
 
     // Merge new data with previous `attrValue` if updating and not clobbering.
-    if (!isSinglePropSchema && !clobber && this.attrValue) {
-      for (property in this.attrValue) {
-        if (!(property in attrValue)) {
-          attrValue[property] = this.attrValue[property];
-        }
+    if (!isSinglePropSchema && !clobber) {
+      this.attrValue = this.attrValue ? cloneData(this.attrValue) : {};
+      for (property in attrValue) {
+        this.attrValue[property] = attrValue[property];
       }
+      return;
     }
 
-    this.attrValue = extendProperties({}, attrValue, isSinglePropSchema);
+    // If single-prop schema or clobber.
+    this.attrValue = attrValue;
   },
 
   /**
@@ -217,6 +218,7 @@ Component.prototype = {
   updateProperties: function (attrValue, clobber) {
     var el = this.el;
     var isSinglePropSchema;
+    var key;
     var skipTypeChecking;
     var oldData = this.oldData;
 
@@ -228,9 +230,25 @@ Component.prototype = {
     }
 
     isSinglePropSchema = isSingleProp(this.schema);
+
     // Disable type checking if the passed attribute is an object and has not changed.
     skipTypeChecking = attrValue !== null && typeof this.previousAttrValue === 'object' &&
                        attrValue === this.previousAttrValue;
+    if (skipTypeChecking) {
+      for (key in this.attrValue) {
+        if (!(key in attrValue)) {
+          skipTypeChecking = false;
+          break;
+        }
+      }
+      for (key in attrValue) {
+        if (!(key in this.attrValue)) {
+          skipTypeChecking = false;
+          break;
+        }
+      }
+    }
+
     // Cache previously passed attribute to decide if we skip type checking.
     this.previousAttrValue = attrValue;
 
@@ -325,7 +343,7 @@ Component.prototype = {
    * @return {object} The component data
    */
   buildData: function (newData, clobber, silent, skipTypeChecking) {
-    var componentDefined = newData !== undefined && newData !== null;
+    var componentDefined;
     var data;
     var defaultValue;
     var keys;
@@ -337,23 +355,29 @@ Component.prototype = {
     var mixinEls = this.el.mixinEls;
     var previousData;
 
+    // Whether component has a defined value. For arrays, treat empty as not defined.
+    componentDefined = newData && newData.constructor === Array
+      ? newData.length
+      : newData !== undefined && newData !== null;
+
     // 1. Default values (lowest precendence).
     if (isSinglePropSchema) {
-      // Clone default value if object so components don't share object.
-      data = typeof schema.default === 'object' ? utils.clone(schema.default) : schema.default;
+      // Clone default value if plain object so components don't share the same object
+      // that might be modified by the user.
+      data = isObjectOrArray(schema.default) ? utils.clone(schema.default) : schema.default;
     } else {
       // Preserve previously set properties if clobber not enabled.
       previousData = !clobber && this.attrValue;
-      // Clone default value if object so components don't share object
-      data = typeof previousData === 'object' ? utils.clone(previousData) : {};
+      // Clone previous data to prevent sharing references with attrValue that might be
+      // modified by the user.
+      data = typeof previousData === 'object' ? cloneData(previousData) : {};
 
       // Apply defaults.
       for (i = 0, keys = Object.keys(schema), keysLength = keys.length; i < keysLength; i++) {
         defaultValue = schema[keys[i]].default;
         if (data[keys[i]] !== undefined) { continue; }
-        data[keys[i]] = defaultValue && defaultValue.constructor === Object
-          ? utils.clone(defaultValue)
-          : defaultValue;
+        // Clone default value if object so components don't share object
+        data[keys[i]] = isObjectOrArray(defaultValue) ? utils.clone(defaultValue) : defaultValue;
       }
     }
 
@@ -469,6 +493,24 @@ module.exports.registerComponent = function (name, definition) {
 };
 
 /**
+* Clone component data.
+* Clone only the properties that are plain objects while keeping a reference for the rest.
+*
+* @param data - Component data to clone.
+* @returns Cloned data.
+*/
+function cloneData (data) {
+  var clone = {};
+  var parsedProperty;
+  var key;
+  for (key in data) {
+    parsedProperty = data[key];
+    clone[key] = isObjectOrArray(parsedProperty) ? utils.clone(parsedProperty) : parsedProperty;
+  }
+  return clone;
+}
+
+/**
 * Object extending with checking for single-property schema.
 *
 * @param dest - Destination object or value.
@@ -524,4 +566,8 @@ function wrapPlay (playMethod) {
     if (!hasBehavior(this)) { return; }
     sceneEl.addBehavior(this);
   };
+}
+
+function isObjectOrArray (value) {
+  return value && (value.constructor === Object || value.constructor === Array);
 }

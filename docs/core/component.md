@@ -5,6 +5,7 @@ layout: docs
 parent_section: core
 order: 3
 source_code: src/core/component.js
+examples: []
 ---
 
 [ecs]: ../introduction/entity-component-system.md
@@ -146,8 +147,8 @@ types:
 | boolean         | Parses string to boolean (i.e., `"false"` to false, everything else truthy).                                                                                                                                                                                                                                                                                     | false                    |
 | color           | Currently doesn't do any parsing. Primarily used by the A-Frame Inspector to present a color picker. Also, it is required to use color type for color animations to work.                                                                                                                                                                                                                                                            | #FFF                     |
 | int             | Calls `parseInt` (e.g., `"124.5"` to `124`).                                                                                                                                                                                                                                                                                                                     | 0                        |
-| map             | Same parsing as the `asset` property type. Will possibly be used bt the A-Frame Inspector to present texture assets.                                                                                                                                                                                                                                             | ''                       |
-| model           | Same parsing as the `asset` property type. Will possibly be used bt the A-Frame Inspector to present model assets.                                                                                                                                                                                                                                               | ''                       |
+| map             | Same parsing as the `asset` property type. Will possibly be used by the A-Frame Inspector to present texture assets.                                                                                                                                                                                                                                             | ''                       |
+| model           | Same parsing as the `asset` property type. Will possibly be used by the A-Frame Inspector to present model assets.                                                                                                                                                                                                                                               | ''                       |
 | number          | Calls `parseFloat` (e.g., `"124.5"` to `124.5'`).                                                                                                                                                                                                                                                                                                                  | 0                        |
 | selector        | Calls `querySelector` (e.g., `"#box"` to `<a-entity id="box">`).                                                                                                                                                                                                                                                                                                  | null                     |
 | selectorAll     | Calls `querySelectorAll` and converts `NodeList` to `Array` (e.g., `".boxes"` to [<a-entity class="boxes", ...]),                                                                                                                                                                                                                                                | null                     |
@@ -507,9 +508,10 @@ AFRAME.registerComponent('c', {});
 
 [sound]: ../components/sound.md
 
-`multiple` allows for a component to have multiple instances. By default, since
-`multiple` is set to `false`, a component could have one instance. For
-example, an entity could only have one geometry component.
+The `multiple` flag allows for a component to have multiple instances of itself
+on an entity. Since `multiple` is set to `false` by default, an entity could
+only have a single instance of a component. For example, an entity could only
+have one geometry component.
 
 But if a component has `multiple` set to `true`, then the component can have
 multiple instances:

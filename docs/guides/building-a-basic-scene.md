@@ -7,7 +7,13 @@ parent_section: docs
 order: 1
 section_order: 2
 nav_expand_sections: true
-
+image:
+  src: https://user-images.githubusercontent.com/674727/29746371-b7906dcc-8a8c-11e7-8ef4-3f7e4d224ce7.jpg
+examples:
+  - title: Basic Guide with Environment
+    src: https://glitch.com/edit/#!/aframe-basic-guide-with-environment?path=index.html
+  - title: Basic Guide with Custom Environment
+    src: https://glitch.com/edit/#!/aframe-basic-guide?path=index.html
 ---
 
 [primitives]: ../primitives/
@@ -20,12 +26,12 @@ understanding of HTML. We will learn how to:
 
 - Add 3D entities (i.e., objects) with [primitives][primitives]
 - Transform to transform entities in 3D space with position, rotation, scale
+- Add an environment
 - Add textures
 - Add basic interactivity using animations and events
-- Modify the environment by tweaking lighting and adding a background
 - Add text
 
-[Remix the Basic Guide example on Glitch](https://glitch.com/~aframe-basic-guide).
+[Remix the Basic Guide example on Glitch](https://glitch.com/~aframe-basic-guide-with-environment).
 
 <!--toc-->
 
@@ -36,7 +42,7 @@ We start out with a minimal HTML structure:
 ```html
 <html>
   <head>
-    <script src="https://aframe.io/releases/0.6.1/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/0.7.1/aframe.min.js"></script>
   </head>
   <body>
     <a-scene>
@@ -209,20 +215,36 @@ connected (e.g., Oculus Rift, HTC Vive), we can experience the scene in
 immersive VR. If room-scale is available, we can physically *walk* around the
 scene!
 
-## Adding a Background to the Scene
+## Adding an Environment
 
-[sky]: ../primitives/a-sky.md
+[@feiss]: https://github.com/feiss/
+[environment]: https://github.com/feiss/aframe-environment-component/
 
-With a single line of HTML, we can add an immersive background with
-[`<a-sky>`][sky] that completely surrounds the scene. `<a-sky>`, which is a
-material applied to the inside of a sphere, can be a flat color, a 360&deg;
-image, or a 360&deg; video. For example, a dark gray background would be:
+A-Frame allows developers to create and share reusable components for others to
+easily use. [@feiss]'s [environment component][environment] procedurally
+generates a variety of entire environments for us with a single line of HTML.
+The environment component is a great and easy way to visually bootstrap our VR
+application, providing over a dozen environments with numerous parameters:
+
+First, include the environment component using a script tag after A-Frame:
+
+```html
+<head>
+  <script src="https://aframe.io/releases/0.7.1/aframe.min.js"></script>
+  <script src="https://unpkg.com/aframe-environment-component/dist/aframe-environment-component.min.js"></script>
+</head>
+```
+
+Then within the scene, add an entity with the environment component attached.
+We can specify a preset (e.g., `forest`) with along many other parameters
+(e.g., 200 trees):
 
 ```html
 <a-scene>
   <a-box color="red" position="0 2 -5" rotation="0 45 45" scale="2 2 2"></a-box>
 
-  <a-sky color="#222"></a-sky>
+  <!-- Out of the box environment! -->
+  <a-entity environment="preset: forest; numDressing: 500"></a-entity>
 </a-scene>
 ```
 
@@ -285,10 +307,30 @@ To use the asset management system for an image texture:
 </a-scene>
 ```
 
-### Adding a Background Image
+## Creating a Custom Environment (Optional)
 
-Going back to our `<a-sky>`, we can use an image texture to get a 360&deg;
-background image by using `src` instead of `color`:
+Previously we had the environment component generate the environment. Though
+it's good to know a bit on creating a basic environment for learning purposes.
+
+### Adding a Background to the Scene
+
+[sky]: ../primitives/a-sky.md
+
+We can add a background with [`<a-sky>`][sky] that surrounds the scene.
+`<a-sky>`, which is a material applied to the inside of a large sphere, can be
+a flat color, a 360&deg; image, or a 360&deg; video. For example, a dark gray
+background would be:
+
+```html
+<a-scene>
+  <a-box color="red" position="0 2 -5" rotation="0 45 45" scale="2 2 2"></a-box>
+
+  <a-sky color="#222"></a-sky>
+</a-scene>
+```
+
+Or we can use an image texture to get a 360&deg; background image by using
+`src` instead of `color`:
 
 ```html
 <a-scene>
@@ -304,7 +346,7 @@ background image by using `src` instead of `color`:
 </a-scene>
 ```
 
-## Adding a Ground
+### Adding a Ground
 
 [aplane]: ../primitives/a-plane.md
 
@@ -347,7 +389,7 @@ repeat in the Y direction (commonly referred to as U and V for textures).
   repeat="10 10"></a-plane>
 ```
 
-## Tweaking Lighting
+### Tweaking Lighting
 
 [light]: ../primitives/a-light.md
 
@@ -601,15 +643,15 @@ the sound in our scene using `position`.
 </a-scene>
 ```
 
-### Adding Text
+## Adding Text
 
 [text]: ../components/text.md
 [three-bmfont-text]: https://github.com/Jam3/three-bmfont-text
 
 A-Frame comes with a [text component][text]. There are several ways to render
 text, each with their advantages and disadvantages, A-Frame comes with an SDF
-text implementation using [`three-bmfont-text`] that is relatively sharp and
-performant.
+text implementation using [`three-bmfont-text`][three-bmfont-text] that is
+relatively sharp and performant.
 
 For this guide, let's use the primitive form of the text component, `<a-text>`:
 
@@ -633,6 +675,6 @@ Other ways to do text include:
 
 And that's the basic example!
 
-[Remix the example on Glitch](https://glitch.com/~aframe-basic-guide).
+[Remix the example on Glitch](https://glitch.com/~aframe-basic-guide-with-environment).
 
-[View the example on Glitch](https://aframe-basic-guide.glitch.me).
+[View the example on Glitch](https://aframe-basic-guide-with-environment.glitch.me).

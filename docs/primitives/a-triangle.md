@@ -18,7 +18,7 @@ component with the type set to `triangle`.
   </a-assets>
 
   <!-- Basic triangle. -->
-  <a-triangle color="#CCC"></a-triangle>
+  <a-triangle color="#CCC" vertex-c="1 -1 0"></a-triangle>
 
   <!-- Textured triangle parallel to ground. -->
   <a-triangle src="#platform" rotation="-90 0 0"></a-triangle>
@@ -51,9 +51,9 @@ component with the type set to `triangle`.
 | roughness                        | material.roughness                     | 0.5           |
 | spherical-env-map                | material.sphericalEnvMap               | None          |
 | src                              | material.src                           | None          |
-| vertexA                          | geometry.vertexA                       |    0  0.5 0   |
-| vertexB                          | geometry.vertexB                       | -0.5 -0.5 0   |
-| vertexC                          | geometry.vertexC                       |  0.5 -0.5 0   |
+| vertex-a                         | geometry.vertexA                       | 0  0.5 0   |
+| vertex-b                         | geometry.vertexB                       | -0.5 -0.5 0   |
+| vertex-c                         | geometry.vertexC                       |  0.5 -0.5 0   |
 | width                            | material.width                         | 512           |
 | wireframe                        | material.wireframe                     | false         |
 | wireframe-linewidth              | material.wireframeLinewidth            | 2             |

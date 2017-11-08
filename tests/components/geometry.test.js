@@ -59,51 +59,6 @@ suite('geometry', function () {
     });
   });
 
-  suite('merge geometries', function () {
-    setup(function (done) {
-      var self = this;
-      var targetEl = this.targetEl = helpers.entityFactory();
-      targetEl.setAttribute('geometry', 'buffer: false; primitive: box;');
-      targetEl.addEventListener('loaded', function () {
-        var sourceEl = self.sourceEl = document.createElement('a-entity');
-        targetEl.sceneEl.appendChild(sourceEl);
-        sourceEl.addEventListener('loaded', function () {
-          done();
-        });
-      });
-    });
-
-    test('merges geometries', function () {
-      var sourceEl = this.sourceEl;
-      var targetEl = this.targetEl;
-      var sceneEl = sourceEl.sceneEl;
-      var targetGeometry = targetEl.getObject3D('mesh').geometry;
-      targetEl.id = 'mergeTarget';
-      sourceEl.id = 'mergeSource';
-      assert.ok(sceneEl.querySelector('#mergeSource'));
-      assert.equal(targetGeometry.vertices.length, 8);
-      sourceEl.setAttribute('geometry', 'buffer: false; skipCache: true; primitive: box; mergeTo: #mergeTarget');
-      assert.equal(sceneEl.querySelector('#mergeSource'), null);
-      assert.equal(targetGeometry.vertices.length, 16);
-    });
-
-    test('it does not merge geometries if the target is not a valid entity', function () {
-      var sourceEl = this.sourceEl;
-      // The target is not an entity.
-      var sceneEl = sourceEl.sceneEl;
-      var targetEl = document.createElement('a');
-      sceneEl.appendChild(targetEl);
-      targetEl.id = 'mergeTarget';
-      sourceEl.id = 'mergeSource';
-      assert.ok(sceneEl.querySelector('#mergeSource'));
-      assert.ok(sceneEl.querySelector('#mergeTarget'));
-      sourceEl.setAttribute('geometry', 'buffer: false; skipCache: true; primitive: box; mergeTo: #mergeTarget');
-      assert.notEqual(sceneEl.querySelector('#mergeSource'), null);
-      assert.ok(sceneEl.querySelector('#mergeTarget'));
-      assert.equal(sourceEl.getObject3D('mesh').geometry.vertices.length, 8);
-    });
-  });
-
   suite('remove', function () {
     test('removes geometry', function () {
       var mesh = this.el.getObject3D('mesh');

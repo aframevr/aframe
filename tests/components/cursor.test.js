@@ -93,7 +93,7 @@ suite('cursor', function () {
       once(el, 'mousedown', function () {
         done();
       });
-      component.onCursorDown();
+      component.onCursorDown({});
     });
 
     test('emits mousedown event on intersectedEl', function (done) {
@@ -102,14 +102,14 @@ suite('cursor', function () {
       once(intersectedEl, 'mousedown', function () {
         done();
       });
-      component.onCursorDown();
+      component.onCursorDown({});
     });
 
     test('sets cursorDownEl', function () {
       component.intersection = intersection;
       component.intersectedEl = intersectedEl;
       assert.notOk(component.cursorDownEl);
-      component.onCursorDown();
+      component.onCursorDown({});
       assert.equal(component.cursorDownEl, intersectedEl);
     });
   });
@@ -299,13 +299,13 @@ suite('cursor', function () {
 
   suite('onIntersectionCleared', function () {
     test('does not do anything if not intersecting', function () {
-      el.emit('raycaster-intersection-cleared', {el: intersectedEl});
+      el.emit('raycaster-intersection-cleared', {clearedEls: [intersectedEl]});
     });
 
     test('does not do anything if only the cursor is intersecting', function () {
       component.intersection = intersection;
       component.intersectedEl = intersectedEl;
-      el.emit('raycaster-intersection-cleared', {els: [el]});
+      el.emit('raycaster-intersection-cleared', {clearedEls: [el]});
       assert.ok(component.intersection);
       assert.ok(component.intersectedEl);
     });
@@ -313,7 +313,7 @@ suite('cursor', function () {
     test('unsets intersectedEl', function () {
       component.intersection = intersection;
       component.intersectedEl = intersectedEl;
-      el.emit('raycaster-intersection-cleared', {el: intersectedEl});
+      el.emit('raycaster-intersection-cleared', {clearedEls: [intersectedEl]});
       assert.notOk(component.intersection);
       assert.notOk(component.intersectedEl);
     });
@@ -322,7 +322,7 @@ suite('cursor', function () {
       component.intersection = intersection;
       component.intersectedEl = intersectedEl;
       intersectedEl.addState('cursor-hovered');
-      el.emit('raycaster-intersection-cleared', {el: intersectedEl});
+      el.emit('raycaster-intersection-cleared', {clearedEls: [intersectedEl]});
       assert.notOk(intersectedEl.is('cursor-hovered'));
     });
 
@@ -333,7 +333,7 @@ suite('cursor', function () {
         assert.equal(evt.detail.intersectedEl, intersectedEl);
         done();
       });
-      el.emit('raycaster-intersection-cleared', {el: intersectedEl});
+      el.emit('raycaster-intersection-cleared', {clearedEls: [intersectedEl]});
     });
 
     test('emits mouseleave event on intersectedEl', function (done) {
@@ -343,7 +343,7 @@ suite('cursor', function () {
         assert.equal(evt.detail.cursorEl, el);
         done();
       });
-      el.emit('raycaster-intersection-cleared', {el: intersectedEl});
+      el.emit('raycaster-intersection-cleared', {clearedEls: [intersectedEl]});
     });
 
     test('removes cursor-hovering and cursor-fusing states on cursor', function () {
@@ -351,67 +351,7 @@ suite('cursor', function () {
       component.intersectedEl = intersectedEl;
       el.addState('cursor-fusing');
       el.addState('cursor-hovering');
-      el.emit('raycaster-intersection-cleared', {el: intersectedEl});
-      assert.notOk(el.is('cursor-fusing'));
-      assert.notOk(el.is('cursor-hovering'));
-    });
-  });
-
-  suite('onIntersectionCleared', function () {
-    test('does not do anything if not intersecting', function () {
-      el.emit('raycaster-intersection-cleared', {el: intersectedEl});
-    });
-
-    test('does not do anything if only the cursor is intersecting', function () {
-      component.intersection = intersection;
-      component.intersectedEl = intersectedEl;
-      el.emit('raycaster-intersection-cleared', {els: [el]});
-      assert.ok(component.intersection);
-      assert.ok(component.intersectedEl);
-    });
-
-    test('unsets intersectedEl', function () {
-      component.intersection = intersection;
-      component.intersectedEl = intersectedEl;
-      el.emit('raycaster-intersection-cleared', {el: intersectedEl});
-      assert.notOk(component.intersection);
-      assert.notOk(component.intersectedEl);
-    });
-
-    test('removes cursor-hovered state on intersectedEl', function () {
-      component.intersection = intersection;
-      component.intersectedEl = intersectedEl;
-      intersectedEl.addState('cursor-hovered');
-      el.emit('raycaster-intersection-cleared', {el: intersectedEl});
-      assert.notOk(intersectedEl.is('cursor-hovered'));
-    });
-
-    test('emits mouseleave event on el', function (done) {
-      component.intersection = intersection;
-      component.intersectedEl = intersectedEl;
-      once(el, 'mouseleave', function (evt) {
-        assert.equal(evt.detail.intersectedEl, intersectedEl);
-        done();
-      });
-      el.emit('raycaster-intersection-cleared', {el: intersectedEl});
-    });
-
-    test('emits mouseleave event on intersectedEl', function (done) {
-      component.intersection = intersection;
-      component.intersectedEl = intersectedEl;
-      once(intersectedEl, 'mouseleave', function (evt) {
-        assert.equal(evt.detail.cursorEl, el);
-        done();
-      });
-      el.emit('raycaster-intersection-cleared', {el: intersectedEl});
-    });
-
-    test('removes cursor-hovering and cursor-fusing states on cursor', function () {
-      component.intersection = intersection;
-      component.intersectedEl = intersectedEl;
-      el.addState('cursor-fusing');
-      el.addState('cursor-hovering');
-      el.emit('raycaster-intersection-cleared', {el: intersectedEl});
+      el.emit('raycaster-intersection-cleared', {clearedEls: [intersectedEl]});
       assert.notOk(el.is('cursor-fusing'));
       assert.notOk(el.is('cursor-hovering'));
     });
@@ -423,12 +363,72 @@ suite('cursor', function () {
       event.clientX = 5;
       event.clientY = 5;
       el.setAttribute('cursor', 'rayOrigin', 'mouse');
-      window.dispatchEvent(event);
+      el.sceneEl.canvas.dispatchEvent(event);
       process.nextTick(function () {
         var raycaster = el.getAttribute('raycaster');
         assert.notEqual(raycaster.direction.x, 0);
         done();
       });
+    });
+
+    test('update raycaster based on touch coordinates', function (done) {
+      var event = new CustomEvent('touchstart');
+      event.touches = {item: function () { return {clientX: 5, clientY: 5}; }};
+      el.setAttribute('cursor', 'rayOrigin', 'mouse');
+      el.sceneEl.canvas.dispatchEvent(event);
+      process.nextTick(function () {
+        var raycaster = el.getAttribute('raycaster');
+        assert.notEqual(raycaster.direction.x, 0);
+        done();
+      });
+    });
+
+    test('casts ray at current touch location', function (done) {
+      var event = new CustomEvent('touchstart');
+      var target = el.sceneEl.appendChild(document.createElement('a-entity'));
+      var mouseDownSpy = this.sinon.spy();
+      el.addEventListener('mousedown', mouseDownSpy);
+      el.setAttribute('cursor', 'rayOrigin', 'mouse');
+      target.setAttribute('geometry', '');
+      target.setAttribute('position', '0 0 -5');
+      target.addEventListener('loaded', function () {
+        target.object3D.updateMatrixWorld();
+        el.components.raycaster.refreshObjects();
+        el.components.raycaster.tick();
+        assert.strictEqual(component.intersectedEl, target);
+        event.touches = {item: function () { return {clientX: 5, clientY: 5}; }};
+        el.sceneEl.canvas.dispatchEvent(event);
+        assert.isFalse(mouseDownSpy.calledWithMatch({detail: {intersectedEl: target}}));
+        done();
+      });
+    });
+  });
+
+  suite('canvas events', function () {
+    test('cursor responds to mouse events on canvas', function () {
+      // Cannot spy on onCursorDown/Up directly due to binding.
+      var cursorEmitSpy = this.sinon.spy(component, 'twoWayEmit');
+      var downEvt = new CustomEvent('mousedown');
+      var upEvt = new CustomEvent('mouseup');
+      assert.isFalse(cursorEmitSpy.calledWith('mousedown'));
+      el.sceneEl.canvas.dispatchEvent(downEvt);
+      assert.isTrue(cursorEmitSpy.calledWith('mousedown'));
+      assert.isFalse(cursorEmitSpy.calledWith('mouseup'));
+      el.sceneEl.canvas.dispatchEvent(upEvt);
+      assert.isTrue(cursorEmitSpy.calledWith('mouseup'));
+    });
+
+    test('cursor responds to touch events on canvas', function () {
+      // Cannot spy on onCursorDown/Up directly due to binding.
+      var cursorEmitSpy = this.sinon.spy(component, 'twoWayEmit');
+      var downEvt = new CustomEvent('touchstart');
+      var upEvt = new CustomEvent('touchend');
+      assert.isFalse(cursorEmitSpy.calledWith('mousedown'));
+      el.sceneEl.canvas.dispatchEvent(downEvt);
+      assert.isTrue(cursorEmitSpy.calledWith('mousedown'));
+      assert.isFalse(cursorEmitSpy.calledWith('mouseup'));
+      el.sceneEl.canvas.dispatchEvent(upEvt);
+      assert.isTrue(cursorEmitSpy.calledWith('mouseup'));
     });
   });
 });

@@ -1,6 +1,7 @@
 var bind = require('../utils/bind');
 var registerComponent = require('../core/component').registerComponent;
-var controllerUtils = require('../utils/tracked-controls');
+var trackedControlsUtils = require('../utils/tracked-controls');
+var onButtonEvent = trackedControlsUtils.onButtonEvent;
 
 var TOUCH_CONTROLLER_MODEL_BASE_URL = 'https://cdn.aframe.io/controllers/oculus/oculus-touch-controller-';
 var TOUCH_CONTROLLER_MODEL_OBJ_URL_L = TOUCH_CONTROLLER_MODEL_BASE_URL + 'left.obj';
@@ -13,42 +14,40 @@ var GAMEPAD_ID_PREFIX = 'Oculus Touch';
 var PIVOT_OFFSET = {x: 0, y: -0.015, z: 0.04};
 
 /**
- * Oculus Touch Controls Component
- * Interfaces with Oculus Touch controllers and maps Gamepad events to
- * common controller buttons: trackpad, trigger, grip, menu and system
- * It loads a controller model and highlights the pressed buttons
+ * Oculus Touch controls.
+ * Interface with Oculus Touch controllers and map Gamepad events to
+ * controller buttons: thumbstick, trigger, grip, xbutton, ybutton, surface
+ * Load a controller model and highlight the pressed buttons.
  */
 module.exports.Component = registerComponent('oculus-touch-controls', {
   schema: {
     hand: {default: 'left'},
-    buttonColor: {type: 'color', default: '#999'},          // Off-white.
+    buttonColor: {type: 'color', default: '#999'},  // Off-white.
     buttonTouchColor: {type: 'color', default: '#8AB'},
-    buttonHighlightColor: {type: 'color', default: '#2DF'}, // Light blue.
+    buttonHighlightColor: {type: 'color', default: '#2DF'},  // Light blue.
     model: {default: true},
-    rotationOffset: {default: 0} // no default offset; -999 is sentinel value to auto-determine based on hand
+    rotationOffset: {default: 0}
   },
 
-  // buttonId
-  // 0 - thumbstick (which has separate axismove / thumbstickmoved events)
-  // 1 - trigger (with analog value, which goes up to 1)
-  // 2 - grip (with analog value, which goes up to 1)
-  // 3 - X (left) or A (right)
-  // 4 - Y (left) or B (right)
-  // 5 - surface (touch only)
+  /**
+   * Button IDs:
+   * 0 - thumbstick (which has separate axismove / thumbstickmoved events)
+   * 1 - trigger (with analog value, which goes up to 1)
+   * 2 - grip (with analog value, which goes up to 1)
+   * 3 - X (left) or A (right)
+   * 4 - Y (left) or B (right)
+   * 5 - surface (touch only)
+   */
   mapping: {
     left: {
-      axes: {'thumbstick': [0, 1]},
+      axes: {thumbstick: [0, 1]},
       buttons: ['thumbstick', 'trigger', 'grip', 'xbutton', 'ybutton', 'surface']
     },
     right: {
-      axes: {'thumbstick': [0, 1]},
+      axes: {thumbstick: [0, 1]},
       buttons: ['thumbstick', 'trigger', 'grip', 'abutton', 'bbutton', 'surface']
     }
   },
-
-  // Use these labels for detail on axis events such as thumbstickmoved.
-  // e.g. for thumbstickmoved detail, the first axis returned is labeled x, and the second is labeled y.
-  axisLabels: ['x', 'y', 'z', 'w'],
 
   bindMethods: function () {
     this.onModelLoaded = bind(this.onModelLoaded, this);
@@ -60,17 +59,18 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   init: function () {
     var self = this;
     this.onButtonChanged = bind(this.onButtonChanged, this);
-    this.onButtonDown = function (evt) { self.onButtonEvent(evt.detail.id, 'down'); };
-    this.onButtonUp = function (evt) { self.onButtonEvent(evt.detail.id, 'up'); };
-    this.onButtonTouchStart = function (evt) { self.onButtonEvent(evt.detail.id, 'touchstart'); };
-    this.onButtonTouchEnd = function (evt) { self.onButtonEvent(evt.detail.id, 'touchend'); };
+    this.onButtonDown = function (evt) { onButtonEvent(evt.detail.id, 'down', self, self.data.hand); };
+    this.onButtonUp = function (evt) { onButtonEvent(evt.detail.id, 'up', self, self.data.hand); };
+    this.onButtonTouchStart = function (evt) { onButtonEvent(evt.detail.id, 'touchstart', self, self.data.hand); };
+    this.onButtonTouchEnd = function (evt) { onButtonEvent(evt.detail.id, 'touchend', self, self.data.hand); };
     this.controllerPresent = false;
     this.lastControllerCheck = 0;
     this.previousButtonValues = {};
     this.bindMethods();
 
-    this.emitIfAxesChanged = controllerUtils.emitIfAxesChanged;   // Allow mock.
-    this.checkControllerPresentAndSetup = controllerUtils.checkControllerPresentAndSetup;  // Allow mock.
+    // Allow mock.
+    this.emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
+    this.checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
   },
 
   addEventListeners: function () {
@@ -106,15 +106,11 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   play: function () {
     this.checkIfControllerPresent();
     this.addControllersUpdateListener();
-    // Note that due to gamepadconnected event propagation issues, we don't rely on events.
-    window.addEventListener('gamepaddisconnected', this.checkIfControllerPresent, false);
   },
 
   pause: function () {
     this.removeEventListeners();
     this.removeControllersUpdateListener();
-    // Note that due to gamepadconnected event propagation issues, we don't rely on events.
-    window.removeEventListener('gamepaddisconnected', this.checkIfControllerPresent, false);
   },
 
   updateControllerModel: function () {
@@ -197,32 +193,13 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     controllerObject3D.position = PIVOT_OFFSET;
   },
 
-  onButtonEvent: function (id, evtName) {
-    var buttonName = this.mapping[this.data.hand].buttons[id];
-    var i;
-    if (Array.isArray(buttonName)) {
-      for (i = 0; i < buttonName.length; i++) {
-        this.el.emit(buttonName[i] + evtName);
-      }
-    } else {
-      this.el.emit(buttonName + evtName);
-    }
-    this.updateModel(buttonName, evtName);
-  },
-
   onAxisMoved: function (evt) {
     this.emitIfAxesChanged(this, this.mapping[this.data.hand].axes, evt);
   },
 
   updateModel: function (buttonName, evtName) {
-    var i;
-    if (Array.isArray(buttonName)) {
-      for (i = 0; i < buttonName.length; i++) {
-        this.updateButtonModel(buttonName[i], evtName);
-      }
-    } else {
-      this.updateButtonModel(buttonName, evtName);
-    }
+    if (!this.data.model) { return; }
+    this.updateButtonModel(buttonName, evtName);
   },
 
   updateButtonModel: function (buttonName, state) {

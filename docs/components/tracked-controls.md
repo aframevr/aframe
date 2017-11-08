@@ -4,18 +4,20 @@ type: components
 layout: docs
 parent_section: components
 source_code: src/components/tracked-controls.js
+examples: []
 ---
 
 [handcontrols]: ./hand-controls.md
 [oculustouchcontrols]: ./oculus-touch-controls.md
 [vivecontrols]: ./vive-controls.md
 [daydreamcontrols]: ./daydream-controls.md
+[windowsmotioncontrols]: ./windows-motion-controls.md
 
 The tracked-controls component interfaces with tracked controllers.
 tracked-controls uses the Gamepad API to handle tracked controllers, and is
 abstracted by the [hand-controls component][handcontrols] as well as the
-[vive-controls][vivecontrols], [oculus-touch-controls][oculustouchcontrols], and
-[daydream-controls][daydreamcontrols]
+[vive-controls][vivecontrols], [oculus-touch-controls][oculustouchcontrols],
+[windows-motion-controls][windowsmotioncontrols], and [daydream-controls][daydreamcontrols]
 components. This component elects the appropriate controller, applies pose to
 the entity, observes buttons state and emits appropriate events.  For non-6DOF controllers
 such as [daydream-controls][daydreamcontrols], a primitive arm model is used to emulate
@@ -45,14 +47,14 @@ so using idPrefix for Vive / OpenVR controllers is recommended.
 
 ## Events
 
-| Event Name     | Description                                |
-|----------------|--------------------------------------------|
-| axismove       | Axis changed.                              |
-| buttonchanged  | Any touch or press of a button fires this. |
-| buttondown     | Button pressed.                            |
-| buttonup       | Button released.                           |
-| touchstart     | Touch sensitive button touched.            |
-| touchend       | Touch sensitive button released.           |
+| Event Name    | Description                                                                                                                                                                       |
+|---------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| axismove      | Axis changed (e.g., for thumbstick, touchpad). Contains `axis` and `axesChanged` in the event detail. `axis` is an array of values from `-1.0` (left, down) to `1.0` (right, up). |
+| buttonchanged | Any touch or press of a button fires this.                                                                                                                                        |
+| buttondown    | Button pressed.                                                                                                                                                                   |
+| buttonup      | Button released.                                                                                                                                                                  |
+| touchstart    | Touch sensitive button touched.                                                                                                                                                   |
+| touchend      | Touch sensitive button released.                                                                                                                                                  |
 
 ### More Resources
 

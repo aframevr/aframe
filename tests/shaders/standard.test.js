@@ -7,6 +7,7 @@ var VIDEO = 'base/tests/assets/test.mp4';
 suite('standard material', function () {
   setup(function (done) {
     var el = this.el = entityFactory();
+    el.setAttribute('geometry', '');
     el.setAttribute('material', {shader: 'standard'});
     if (el.hasLoaded) { done(); }
     el.addEventListener('loaded', function () {

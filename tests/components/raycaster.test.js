@@ -67,6 +67,7 @@ suite('raycaster', function () {
       el2.setAttribute('geometry', 'primitive: box');
       el2.addEventListener('loaded', function () {
         el.setAttribute('raycaster', 'objects', '.clickable');
+        component.tick();
         assert.equal(component.objects.length, 1);
         assert.equal(component.objects[0], el2.object3D.children[0]);
         assert.equal(el2, el2.object3D.children[0].el);
@@ -115,32 +116,62 @@ suite('raycaster', function () {
 
     test('refresh objects when new entities are added to the scene', function (done) {
       var newEl = document.createElement('a-entity');
+      component.tick();
       var numObjects = component.objects.length;
       newEl.setAttribute('geometry', 'primitive: box');
       newEl.addEventListener('loaded', function () {
-        setTimeout(() => {
-          assert.equal(component.objects.length, numObjects + 1);
-          done();
-        });
+        component.tick();
+        assert.equal(component.objects.length, numObjects + 1);
+        done();
       });
       sceneEl.appendChild(newEl);
     });
 
     test('refresh objects when new entities are removed from the scene', function (done) {
       var newEl = document.createElement('a-entity');
+      component.tick();
       var numObjects = component.objects.length;
       newEl.setAttribute('geometry', 'primitive: box');
       sceneEl.addEventListener('child-detached', function doAssert () {
-        setTimeout(() => {
-          assert.equal(component.objects.length, numObjects);
-          sceneEl.removeEventListener('child-detached', doAssert);
-          done();
-        });
+        component.tick();
+        assert.equal(component.objects.length, numObjects);
+        sceneEl.removeEventListener('child-detached', doAssert);
+        done();
       });
       newEl.addEventListener('loaded', function () {
         sceneEl.removeChild(newEl);
       });
       sceneEl.appendChild(newEl);
+    });
+
+    test('refresh objects when entities are modified', function (done) {
+      el.setAttribute('raycaster', {objects: '[ray-target]'});
+      var newEl = document.createElement('a-entity');
+      newEl.setAttribute('geometry', 'primitive: box');
+      newEl.addEventListener('loaded', function doAssert () {
+        component.tick();
+        assert.equal(component.objects.length, 0);
+        newEl.setAttribute('ray-target', '');
+        setTimeout(function () {
+          component.tick();
+          assert.equal(component.objects.length, 1);
+          sceneEl.removeEventListener('child-attached', doAssert);
+          done();
+        }, 0);
+      });
+      sceneEl.appendChild(newEl);
+    });
+
+    test('refresh objects when setObject3D() or removeObject3D() is called', function () {
+      el.setAttribute('raycaster', {objects: '[ray-target]'});
+      component.tick();
+      assert.equal(component.dirty, false);
+      sceneEl.emit('object3dset');
+      assert.equal(component.dirty, true);
+      component.tick();
+      assert.equal(component.dirty, false);
+      sceneEl.emit('object3dremove');
+      assert.equal(component.dirty, true);
     });
   });
 
@@ -201,7 +232,7 @@ suite('raycaster', function () {
         // Point raycaster somewhere else.
         raycasterEl.setAttribute('rotation', '90 0 0');
         raycasterEl.addEventListener('raycaster-intersection-cleared', function (evt) {
-          assert.equal(evt.detail.el, targetEl);
+          assert.notEqual(component.clearedIntersectedEls.indexOf(targetEl), -1);
           done();
         });
         component.tick();
@@ -404,12 +435,65 @@ suite('raycaster', function () {
         component.tick();
         line = el.getAttribute('line');
         assert.equal(new THREE.Vector3().copy(line.start).sub(line.end).length(), 24.5);
-
         box.parentNode.removeChild(box);
         setTimeout(() => {
           component.tick();
           line = el.getAttribute('line');
           assert.equal(new THREE.Vector3().copy(line.start).sub(line.end).length(), 1000);
+          done();
+        });
+      });
+    });
+
+    test('truncates line length with two raycasters', function (done) {
+      var box;
+      var rayEl2;
+      var line;
+      var lineArray;
+      var lineStart = new THREE.Vector3();
+      var lineEnd = new THREE.Vector3();
+
+      el.setAttribute('raycaster', {direction: '0 0 -1', origin: '0 0 0', objects: '#target'});
+      lineArray = el.components.line.geometry.attributes.position.array;
+
+      rayEl2 = document.createElement('a-entity');
+      rayEl2.setAttribute('raycaster', {
+        direction: '0 -1 -1',
+        origin: '0 0 0',
+        showLine: true,
+        objects: '#target'
+      });
+      sceneEl.appendChild(rayEl2);
+
+      line = el.getAttribute('line');
+      assert.equal(new THREE.Vector3().copy(line.start).sub(line.end).length(), 1000);
+      lineEnd.fromArray(lineArray, 3);
+      assert.equal(lineStart.fromArray(lineArray).sub(lineEnd).length(), 1000);
+
+      box = document.createElement('a-entity');
+      box.id = 'target';
+      box.setAttribute('geometry', {primitive: 'box', width: 1, height: 1, depth: 1});
+      box.setAttribute('position', '0 0 -25');
+      sceneEl.appendChild(box);
+
+      box.addEventListener('loaded', function () {
+        el.sceneEl.object3D.updateMatrixWorld();
+        component.refreshObjects();
+        component.tick();
+        rayEl2.components.raycaster.tick();
+        rayEl2.components.raycaster.tick();
+        // ensure component and geometry are unaffected by other raycaster
+        line = el.getAttribute('line');
+        assert.equal(new THREE.Vector3().copy(line.start).sub(line.end).length(), 24.5);
+        lineEnd.fromArray(lineArray, 3);
+        assert.equal(lineStart.fromArray(lineArray).sub(lineEnd).length(), 24.5);
+        box.parentNode.removeChild(box);
+        setTimeout(() => {
+          component.tick();
+          line = el.getAttribute('line');
+          assert.equal(new THREE.Vector3().copy(line.start).sub(line.end).length(), 1000);
+          lineEnd.fromArray(lineArray, 3);
+          assert.equal(lineStart.fromArray(lineArray).sub(lineEnd).length(), 1000);
           done();
         });
       });

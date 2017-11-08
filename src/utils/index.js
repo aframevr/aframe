@@ -4,6 +4,7 @@ var debug = require('./debug');
 var deepAssign = require('deep-assign');
 var device = require('./device');
 var objectAssign = require('object-assign');
+var objectPool = require('./object-pool');
 
 var warn = debug('utils:warn');
 
@@ -14,6 +15,7 @@ module.exports.device = device;
 module.exports.entity = require('./entity');
 module.exports.forceCanvasResizeSafariMobile = require('./forceCanvasResizeSafariMobile');
 module.exports.material = require('./material');
+module.exports.objectPool = objectPool;
 module.exports.styleParser = require('./styleParser');
 module.exports.trackedControls = require('./tracked-controls');
 
@@ -143,40 +145,62 @@ module.exports.clone = function (obj) {
  * @param {object} b - Second object.
  * @returns {boolean} Whether two objects are deeply equal.
  */
-function deepEqual (a, b) {
-  var i;
-  var keysA;
-  var keysB;
-  var valA;
-  var valB;
+var deepEqual = (function () {
+  var arrayPool = objectPool.createPool(function () { return []; });
 
-  // If not objects or arrays, compare as values.
-  if (a === undefined || b === undefined || a === null || b === null ||
-      !(a && b && (a.constructor === Object && b.constructor === Object) ||
-                  (a.constructor === Array && b.constructor === Array))) {
-    return a === b;
-  }
+  return function (a, b) {
+    var key;
+    var keysA;
+    var keysB;
+    var i;
+    var valA;
+    var valB;
 
-  // Different number of keys, not equal.
-  keysA = Object.keys(a);
-  keysB = Object.keys(b);
-  if (keysA.length !== keysB.length) { return false; }
+    // If not objects or arrays, compare as values.
+    if (a === undefined || b === undefined || a === null || b === null ||
+        !(a && b && (a.constructor === Object && b.constructor === Object) ||
+                    (a.constructor === Array && b.constructor === Array))) {
+      return a === b;
+    }
 
-  // Return `false` at the first sign of inequality.
-  for (i = 0; i < keysA.length; ++i) {
-    valA = a[keysA[i]];
-    valB = b[keysA[i]];
-    // Check nested array and object.
-    if ((typeof valA === 'object' || typeof valB === 'object') ||
-        (Array.isArray(valA) && Array.isArray(valB))) {
-      if (valA === valB) { continue; }
-      if (!deepEqual(valA, valB)) { return false; }
-    } else if (valA !== valB) {
+    // Different number of keys, not equal.
+    keysA = arrayPool.use();
+    keysB = arrayPool.use();
+    keysA.length = 0;
+    keysB.length = 0;
+    for (key in a) { keysA.push(key); }
+    for (key in b) { keysB.push(key); }
+    if (keysA.length !== keysB.length) {
+      arrayPool.recycle(keysA);
+      arrayPool.recycle(keysB);
       return false;
     }
-  }
-  return true;
-}
+
+    // Return `false` at the first sign of inequality.
+    for (i = 0; i < keysA.length; ++i) {
+      valA = a[keysA[i]];
+      valB = b[keysA[i]];
+      // Check nested array and object.
+      if ((typeof valA === 'object' || typeof valB === 'object') ||
+          (Array.isArray(valA) && Array.isArray(valB))) {
+        if (valA === valB) { continue; }
+        if (!deepEqual(valA, valB)) {
+          arrayPool.recycle(keysA);
+          arrayPool.recycle(keysB);
+          return false;
+        }
+      } else if (valA !== valB) {
+        arrayPool.recycle(keysA);
+        arrayPool.recycle(keysB);
+        return false;
+      }
+    }
+
+    arrayPool.recycle(keysA);
+    arrayPool.recycle(keysB);
+    return true;
+  };
+})();
 module.exports.deepEqual = deepEqual;
 
 /**

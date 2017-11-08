@@ -19,6 +19,7 @@ suite('laser-controls', function () {
       assert.ok(el.components['gearvr-controls']);
       assert.ok(el.components['oculus-touch-controls']);
       assert.ok(el.components['vive-controls']);
+      assert.ok(el.components['windows-motion-controls']);
     });
 
     test('does not inject cursor yet', function () {

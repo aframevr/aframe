@@ -17,8 +17,9 @@ The debug component enables component-to-DOM serialization.
 ## Component-to-DOM Serialization
 
 By default, for performance reasons, A-Frame does not update the DOM with
-component data. If we open the browser's DOM inspector, we will see only the
-component names (and not the values) are visible.
+component data. This also means mutation observers will not fire. If we open
+the browser's DOM inspector, we will see only the component names (and not the
+values) are visible.
 
 ```html
 <a-entity geometry material position rotation></a-entity>

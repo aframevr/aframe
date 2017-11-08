@@ -34,13 +34,6 @@ suite('geometry system', function () {
       assert.notOk(system.cache[hash]);
     });
 
-    test('does not hash on cache if mergeTo is defined', function () {
-      var data = {primitive: 'box', mergeTo: {}};
-      var system = this.system;
-      system.getOrCreateGeometry(data);
-      assert.equal(Object.keys(system.cache).length, 0);
-    });
-
     test('caches identical geometries', function () {
       var data = {primitive: 'box', width: 5};
       var geometry1;

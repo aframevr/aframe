@@ -24,8 +24,10 @@ var TestComponent = {
 };
 
 suite('a-entity', function () {
+  var el;
+
   setup(function (done) {
-    var el = this.el = entityFactory();
+    el = this.el = entityFactory();
     var onLoaded = function () {
       done();
       el.removeEventListener('loaded', onLoaded);
@@ -464,22 +466,18 @@ suite('a-entity', function () {
         el = evt.detail.el;
         el.addEventListener('loaded', evt => {
           var geometry;
+          var setObj;
 
-          assert.shallowDeepEqual(el.components.geometry.attrValue, {width: 5});
-          assert.shallowDeepEqual(el.components.geometry.previousAttrValue, {});
+          assert.shallowDeepEqual(el.components.geometry.attrValue, {primitive: 'box', width: 5});
 
           // First setAttribute.
-          el.setAttribute('geometry', {depth: 10, height: 20});
+          setObj = {depth: 10, height: 20};
+          el.setAttribute('geometry', setObj);
           geometry = el.getAttribute('geometry');
           assert.equal(geometry.depth, 10);
           assert.equal(geometry.height, 20);
           assert.equal(geometry.width, 5, 'First setAttribute');
-          assert.shallowDeepEqual(el.components.geometry.attrValue, {
-            depth: 10,
-            height: 20,
-            width: 5
-          });
-          assert.shallowDeepEqual(el.components.geometry.previousAttrValue, {width: 5});
+          assert.equal(el.components.geometry.previousAttrValue, setObj);
 
           // Second setAttribute.
           el.setAttribute('geometry', {depth: 20, height: 10});
@@ -858,25 +856,6 @@ suite('a-entity', function () {
     });
   });
 
-  suite('getOrCreateObject3D', function () {
-    test('creates an object3D if the type does not exist', function () {
-      var el = this.el;
-      el.getOrCreateObject3D('mesh', THREE.Object3D);
-      assert.ok(el.getObject3D('mesh'));
-      assert.equal(el.getObject3D('mesh').constructor, THREE.Object3D);
-    });
-
-    test('returns existing object3D if it exists', function () {
-      var el = this.el;
-      var Constructor = function () {};
-      var dummy = {};
-      el.object3DMap['dummy'] = dummy;
-      el.getOrCreateObject3D('dummy', Constructor);
-      assert.ok(el.getObject3D('dummy'));
-      assert.equal(el.getObject3D('dummy'), dummy);
-    });
-  });
-
   suite('getAttribute', function () {
     test('returns full component data', function () {
       var componentData;
@@ -1249,6 +1228,29 @@ suite('a-entity', function () {
     });
   });
 
+  suite('updateComponents', function () {
+    setup(function (done) {
+      this.child = this.el.appendChild(document.createElement('a-entity'));
+      this.child.addEventListener('loaded', function () {
+        done();
+      });
+    });
+    test('nested calls do not leak components to children', function () {
+      registerComponent('test', {
+        init: function () {
+          var children = this.el.getChildEntities();
+          if (children.length) {
+            children[0].setAttribute('mixin', 'addGeometry');
+          }
+        }
+      });
+      mixinFactory('addTest', {test: ''});
+      mixinFactory('addGeometry', {geometry: 'shape: sphere'});
+      this.el.setAttribute('mixin', 'addTest');
+      assert.notOk(this.child.components['test']);
+    });
+  });
+
   suite('applyMixin', function () {
     test('combines mixin and element components with a dynamic schema', function () {
       var el = this.el;
@@ -1411,6 +1413,34 @@ suite('a-entity component lifecycle management', function () {
     el.setAttribute('test', attrValue);
     componentData = el.getAttribute('test');
     assert.ok(componentData.a === '3');
+  });
+
+  test('parses if mix of unparsed data and reused object from setAttribute', function (done) {
+    var componentData;
+    var el;
+    var parentEl = this.el;
+    var updateObj = {b: 5};
+
+    AFRAME.registerComponent('setter', {
+      init: function () {
+        setTimeout(() => {
+          this.el.setAttribute('test', updateObj);
+          updateObj.b = 10;
+          this.el.setAttribute('test', updateObj);
+        });
+      }
+    });
+
+    parentEl.innerHTML = '<a-entity setter test="a: 3">';
+
+    setTimeout(() => {
+      el = parentEl.children[0];
+      componentData = el.getAttribute('test');
+      assert.strictEqual(componentData.a, 3);
+      assert.strictEqual(componentData.b, 10);
+      delete AFRAME.components.setter;
+      done();
+    }, 50);
   });
 
   test('calls remove on removeAttribute', function () {

@@ -4,6 +4,7 @@ type: components
 layout: docs
 parent_section: components
 source_code: src/components/visible.js
+examples: []
 ---
 
 The visible component determines whether to render an entity.

@@ -4,6 +4,7 @@ type: components
 layout: docs
 parent_section: components
 source_code: src/components/raycaster.js
+examples: []
 ---
 
 [3ray]: https://threejs.org/docs/#api/core/Raycaster
@@ -49,18 +50,19 @@ AFRAME.registerComponent('collider-check', {
 
 ## Properties
 
-| Property  | Description                                                                                                                                           | Default Value |
-| --------  | -----------                                                                                                                                           | ------------- |
-| direction | Vector3 coordinate of which direction the ray should point from relative to the entity's origin.                                                      | 0, 0, 0       |
-| far       | Maximum distance under which resulting entities are returned. Cannot be lower then `near`.                                                            | Infinity      |
-| interval  | Number of milliseconds to wait in between each intersection test. Lower number is better for faster updates. Higher number is better for performance. | 100           |
-| near      | Minimum distance over which resuilting entities are returned. Cannot be lower than 0.                                                                 | 0             |
-| objects   | Query selector to pick which objects to test for intersection. If not specified, all entities will be tested.                                         | null          |
-| origin    | Vector3 coordinate of where the ray should originate from relative to the entity's origin.                                                            | 0, 0, 0       |
-| recursive | Checks all children of objects if set. Else only checks intersections with root objects.                                                              | true          |
-| showLine  | Whether or not to display the raycaster visually with the [line component][line].                                                                                         | false          |
-| useWorldCoordinates  | Whether the raycaster origin and direction properties are specified in world coordinates.
-                                                                                          | false          |
+| Property            | Description                                                                                                                                                        | Default Value |
+| --------            | -----------                                                                                                                                                        | ------------- |
+| autoRefresh         | Whether to automatically refresh raycaster's list of objects to test for intersection using mutation observers to detect added or removed entities and components. | true          |
+| direction           | Vector3 coordinate of which direction the ray should point from relative to the entity's origin.                                                                   | 0, 0, 0       |
+| enabled             | Whether raycaster is actively checking for intersections.                                                                                                          | true          |
+| far                 | Maximum distance under which resulting entities are returned. Cannot be lower then `near`.                                                                         | Infinity      |
+| interval            | Number of milliseconds to wait in between each intersection test. Lower number is better for faster updates. Higher number is better for performance.              | 100           |
+| near                | Minimum distance over which resuilting entities are returned. Cannot be lower than 0.                                                                              | 0             |
+| objects             | Query selector to pick which objects to test for intersection. If not specified, all entities will be tested.                                                      | null          |
+| origin              | Vector3 coordinate of where the ray should originate from relative to the entity's origin.                                                                         | 0, 0, 0       |
+| recursive           | Checks all children of objects if set. Else only checks intersections with root objects.                                                                           | true          |
+| showLine            | Whether or not to display the raycaster visually with the [line component][line].                                                                                  | false         |
+| useWorldCoordinates | Whether the raycaster origin and direction properties are specified in world coordinates.                                                                          | false         |
 
 ## Events
 
@@ -71,7 +73,7 @@ The raycaster component is useful because of the events it emits on entities. It
 | raycaster-intersected          | Emitted on the intersected entity. Entity is intersecting with a raycaster. Event detail will contain `el`, the raycasting entity, and `intersection`, an object containing detailed data about the intersection.            |
 | raycaster-intersected-cleared  | Emitted on the intersected entity. Entity is no longer intersecting with a raycaster. Event detail will contain `el`, the raycasting entity.  |
 | raycaster-intersection         | Emitted on the raycasting entity. Raycaster is intersecting with one or more entities. Event detail will contain `els`, an array with the intersected entities, and `intersections`, an array of objects containing detailed data about the intersections. |
-| raycaster-intersection-cleared | Emitted on the raycasting entity. Raycaster is no longer intersecting with an entity. Event detail will contain `el`, the formerly intersected entity.  |
+| raycaster-intersection-cleared | Emitted on the raycasting entity. Raycaster is no longer intersecting with one or more entities. Event detail will contain `clearedEls`, an array with the formerly intersected entities.  |
 
 ## Members
 
@@ -105,14 +107,18 @@ selector value:
 <a-entity class="not-clickable" geometry="primitive: sphere" position="-1 0 0"></a-entity>
 ```
 
-## Refreshing the Target Entities of the Raycaster
+## Manually Refreshing the Target Entities of the Raycaster
 
 The raycaster component keeps a local array of objects and entities that the
 raycaster tests against for intersection. This array defaults to every 3D
 object in the three.js Scene. If the `objects` property is specified, then
 building this array requires running query selectors and additional filtering.
-A-Frame tries not to run this process too often (via the `.refreshObjects()`
-method) to save on performance.
+
+By default with `autoRefresh` set to `true`, the raycaster component will
+automatically refresh this list when it detects entities or components are
+added and removed. While it is more friendly to auto-refresh, more advanced
+developers may want to disable `autoRefresh` and control when the raycaster
+is refreshed for performance.
 
 To manually refresh the list of objects that the raycaster component tests
 against, call the `.refreshObjects()` method:

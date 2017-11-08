@@ -1,10 +1,9 @@
 /* global AFRAME, assert, CustomEvent, process, sinon, setup, suite, teardown, test */
-var AEntity = require('core/a-entity');
-var ANode = require('core/a-node');
 var AScene = require('core/scene/a-scene').AScene;
 var components = require('core/component').components;
 var scenes = require('core/scene/scenes');
 var shouldAntiAlias = require('core/scene/a-scene').shouldAntiAlias;
+var setupCanvas = require('core/scene/a-scene').setupCanvas;
 var systems = require('core/system').systems;
 
 var helpers = require('../../helpers');
@@ -57,6 +56,21 @@ suite('a-scene (without renderer)', function () {
       sceneEl.init();
       assert.equal(sceneEl.isPlaying, false);
       assert.equal(sceneEl.hasLoaded, false);
+    });
+  });
+
+  suite('vrdisplaydisconnect', function () {
+    test('tells A-Frame about entering VR when the headset is disconnected', function (done) {
+      var event;
+      var sceneEl = this.el;
+      var exitVRStub = this.sinon.stub(sceneEl, 'exitVR');
+      sceneEl.effect = {requestPresent: function () { return Promise.resolve(); }};
+      event = new CustomEvent('vrdisplaydisconnect');
+      window.dispatchEvent(event);
+      process.nextTick(function () {
+        assert.ok(exitVRStub.calledWith(true));
+        done();
+      });
     });
   });
 
@@ -350,21 +364,145 @@ suite('a-scene (without renderer)', function () {
     });
   });
 
-  suite('reload', function () {
-    test('reload scene innerHTML to original value', function () {
-      var sceneEl = this.el;
-      sceneEl.innerHTML = 'NEW';
-      sceneEl.reload();
-      assert.equal(sceneEl.innerHTML, '');
+  suite('resize', function () {
+    var sceneEl;
+    var setSizeSpy;
+
+    setup(function () {
+      sceneEl = this.el;
+      AScene.prototype.resize.restore();
+      sceneEl.camera = { updateProjectionMatrix: function () {} };
+      sceneEl.canvas = document.createElement('canvas');
+      sceneEl.renderer = { setSize: function () {} };
+
+      setSizeSpy = this.sinon.spy(sceneEl.renderer, 'setSize');
     });
 
-    test('reloads the scene and pauses', function () {
+    test('resize renderer when not in vr mode', function () {
+      sceneEl.resize();
+
+      assert.ok(setSizeSpy.called);
+    });
+
+    test('resize renderer when in vr mode in fullscreen presentation (desktop, no headset)', function () {
+      sceneEl.effect = {
+        isPresenting: false
+      };
+      sceneEl.addState('vr-mode');
+
+      sceneEl.resize();
+
+      assert.ok(setSizeSpy.called);
+    });
+
+    test('does not resize renderer when in vr mode on mobile', function () {
+      sceneEl.isMobile = true;
+      sceneEl.addState('vr-mode');
+
+      sceneEl.resize();
+
+      assert.notOk(setSizeSpy.called);
+    });
+
+    test('does not resize renderer when in vr mode and presenting in a headset', function () {
+      sceneEl.effect = {
+        isPresenting: true
+      };
+      sceneEl.addState('vr-mode');
+
+      sceneEl.resize();
+
+      assert.notOk(setSizeSpy.called);
+    });
+  });
+
+  suite('pointerRestricted', function () {
+    setup(function () {
       var sceneEl = this.el;
-      this.sinon.spy(AEntity.prototype, 'pause');
-      this.sinon.spy(ANode.prototype, 'load');
-      sceneEl.reload(true);
-      sinon.assert.called(AEntity.prototype.pause);
-      sinon.assert.called(ANode.prototype.load);
+
+      // Stub canvas.
+      sceneEl.canvas = document.createElement('canvas');
+    });
+
+    test('requests pointerlock when restricted', function (done) {
+      var sceneEl = this.el;
+      var event;
+      var requestPointerLockSpy;
+
+      requestPointerLockSpy = this.sinon.spy(sceneEl.canvas, 'requestPointerLock');
+      event = new CustomEvent('vrdisplaypointerrestricted');
+      window.dispatchEvent(event);
+
+      process.nextTick(function () {
+        assert.ok(requestPointerLockSpy.called);
+        done();
+      });
+    });
+
+    test('exits pointerlock when unrestricted', function (done) {
+      var sceneEl = this.el;
+      var event;
+      var exitPointerLockSpy;
+
+      exitPointerLockSpy = this.sinon.spy(document, 'exitPointerLock');
+
+      event = new CustomEvent('vrdisplaypointerunrestricted');
+
+      this.sinon.stub(sceneEl, 'getPointerLockElement', function () {
+        return sceneEl.canvas;
+      });
+      window.dispatchEvent(event);
+
+      process.nextTick(function () {
+        assert.ok(exitPointerLockSpy.called);
+        done();
+      });
+    });
+
+    test('does not exit pointerlock when unrestricted on different locked element', function (done) {
+      var sceneEl = this.el;
+      var event;
+      var exitPointerLockSpy;
+
+      exitPointerLockSpy = this.sinon.spy(document, 'exitPointerLock');
+
+      event = new CustomEvent('vrdisplaypointerunrestricted');
+
+      this.sinon.stub(sceneEl, 'getPointerLockElement', function () {
+        // Mock that pointerlock is taken by the page itself,
+        // independently of the a-scene handler for vrdisplaypointerrestricted event
+        return document.createElement('canvas');
+      });
+      window.dispatchEvent(event);
+
+      process.nextTick(function () {
+        assert.notOk(exitPointerLockSpy.called);
+        done();
+      });
+    });
+
+    test('update existing pointerlock target when restricted', function (done) {
+      var sceneEl = this.el;
+      var event;
+      var exitPointerLockSpy;
+      var requestPointerLockSpy;
+
+      exitPointerLockSpy = this.sinon.spy(document, 'exitPointerLock');
+      requestPointerLockSpy = this.sinon.spy(sceneEl.canvas, 'requestPointerLock');
+      event = new CustomEvent('vrdisplaypointerrestricted');
+
+      this.sinon.stub(sceneEl, 'getPointerLockElement', function () {
+        // Mock that pointerlock is taken by the page itself,
+        // independently of the a-scene handler for vrdisplaypointerrestricted event
+        return document.createElement('canvas');
+      });
+      window.dispatchEvent(event);
+
+      process.nextTick(function () {
+        assert.ok(exitPointerLockSpy.called);
+        assert.ok(requestPointerLockSpy.called);
+        done();
+      });
     });
   });
 
@@ -572,6 +710,16 @@ suite('scenes', function () {
       });
     });
     document.body.appendChild(sceneEl);
+  });
+});
+
+suite('setupCanvas', function () {
+  test('adds canvas to a-scene element', function () {
+    var el = this.sceneEl = document.createElement('a-scene');
+    el.canvas = undefined;
+    assert.notOk(el.canvas);
+    setupCanvas(el);
+    assert.ok(el.canvas);
   });
 });
 

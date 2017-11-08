@@ -4,6 +4,7 @@ type: introduction
 layout: docs
 parent_section: introduction
 order: 8.75
+examples: []
 ---
 
 [3loaders]: https://github.com/mrdoob/three.js/tree/dev/examples/js/loaders
@@ -67,10 +68,12 @@ Models](./hosting-and-publishing.md#hosting-models).
 
 ## Troubleshooting
 
+[hostingmodels]: ./hosting-and-publishing.md#hosting-models
+
 Before anything else, check your console for errors. Common issues related to
-CORS can be solved by properly [hosting your models](./hosting-and-publishing.md#hosting-models),
-and the console will also tell you if your model needs additional files that
-are missing.
+CORS can be solved by properly [hosting your models][hostingmodels] and the
+console will also tell you if your model needs additional files that are
+missing.
 
 ### I Don't See My Model
 

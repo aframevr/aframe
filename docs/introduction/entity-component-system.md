@@ -3,6 +3,11 @@ title: Entity-Component-System
 type: introduction
 layout: docs
 order: 5
+examples:
+  - title: Community Components in Action
+    src: https://glitch.com/edit/#!/aframe-registry?path=index.html
+  - title: Animated Lights
+    src: https://glitch.com/edit/#!/aframe-animated-lights?path=index.html
 ---
 
 [ecs]: https://wikipedia.org/wiki/Entity_component_system
@@ -203,7 +208,7 @@ is just like in normal web development.
 selectors which allows us to query for an entity or entities that have or don't
 have certain HTML attributes. This means we can ask for entities that have or
 don't have a certain set of components.
-`document.querySelector('[enemy]:not([alive]')`.
+`document.querySelector('[enemy]:not([alive])')`.
 5. **Declarativeness**: Lastly, the DOM provides HTML. A-Frame bridges between
 ECS and HTML making an already clean pattern declarative, readable, and
 copy-and-pasteable.
@@ -337,15 +342,6 @@ Most A-Frame components are published on npm as well as GitHub. We can use
 quality, popularity, and maintenance. This is a great place to look for a more
 complete list of components.
 
-#### `awesome-aframe` Repository
-
-[awesome]: https://github.com/aframevr/awesome-aframe#components
-
-The [`awesome-aframe` repository][awesome] is a list of awesome things
-regarding the A-Frame ecosystem. Within that list is a section for components.
-Note the component list is not heavily curated and doesn't contain any images.
-Each entry will contain a name, link, and short description.
-
 #### *A Week of A-Frame*
 
 [blog]: https://aframe.io/blog/
@@ -367,7 +363,6 @@ to look at include:
 
 - [A-Painter](https://github.com/aframevr/a-painter/)
 - [A-Blast](https://github.com/aframevr/a-blast/)
-- [Architect](https://github.com/aframevr/architect/)
 
 ### Using a Community Component
 
@@ -434,7 +429,7 @@ Now we can include it into our HTML:
 ```html
 <html>
   <head>
-    <script src="https://aframe.io/releases/0.6.1/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/0.7.1/aframe.min.js"></script>
     <script src="https://unpkg.com/aframe-particle-system-component@1.0.9/dist/aframe-particle-system-component.min.js"></script>
   </head>
   <body>
@@ -455,7 +450,7 @@ Now we can include it into our HTML:
 ```html
 <html>
   <head>
-    <script src="https://aframe.io/releases/0.6.1/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/0.7.1/aframe.min.js"></script>
     <script src="https://unpkg.com/aframe-particle-system-component@1.0.9/dist/aframe-particle-system-component.min.js"></script>
   </head>
   <body>
@@ -479,7 +474,7 @@ Glitch][glitch].
 ```html
 <html>
   <head>
-    <script src="https://aframe.io/releases/0.6.1/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/0.7.1/aframe.min.js"></script>
     <script src="https://unpkg.com/aframe-animation-component@3.2.1/dist/aframe-animation-component.min.js"></script>
     <script src="https://unpkg.com/aframe-particle-system-component@1.0.x/dist/aframe-particle-system-component.min.js"></script>
     <script src="https://unpkg.com/aframe-extras.ocean@%5E3.5.x/dist/aframe-extras.ocean.min.js"></script>

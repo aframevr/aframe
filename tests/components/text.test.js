@@ -61,6 +61,17 @@ suite('text', function () {
       el.setAttribute('text', {font: 'mozillavr'});
     });
 
+    test('updates value with number', function (done) {
+      var updateSpy = this.sinon.spy(component, 'updateGeometry');
+      el.addEventListener('textfontset', evt => {
+        el.setAttribute('text', {value: 10, font: 'mozillavr'});
+        assert.equal(updateSpy.getCalls()[0].args[1].value, '');
+        assert.equal(updateSpy.getCalls()[1].args[1].value, '10');
+        done();
+      });
+      el.setAttribute('text', {font: 'mozillavr'});
+    });
+
     test('updates geometry with value', function (done) {
       // There are two paths by which geometry update can happen:
       // 1. As after-effect of font change.
@@ -113,6 +124,16 @@ suite('text', function () {
       el.setAttribute('text', 'shader', 'standard');
       el.setAttribute('text', 'shader', 'sdf');
       assert.equal(updateMaterialSpy.getCalls().length, 2);
+    });
+
+    test('caches texture', function (done) {
+      var el2 = document.createElement('a-entity');
+      el2.setAttribute('text', '');
+      el.appendChild(el2);
+      setTimeout(() => {
+        assert.equal(el.components.text.texture, el2.components.text.texture);
+        done();
+      });
     });
   });
 

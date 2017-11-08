@@ -6,6 +6,18 @@ parent_section: docs
 section_title: Components
 section_order: 4
 source_code: src/components/geometry.js
+examples:
+ - title: Creating Shapes
+   src: https://glitch.com/edit/#!/ex-2-geometry?path=index.html:1:0
+ - title: Texture on Shapes
+   src: https://glitch.com/edit/#!/ex-2a-texture-on-shape?path=index.html:1:0
+ - title: Shape as Entity
+   src: https://glitch.com/edit/#!/ex-2b-shape-as-entity?path=index.html:1:0
+ - title: Animating Shapes
+   src:https://glitch.com/edit/#!/ex-2c-animating-shapes?path=index.html:1:0
+ - title: Animating Shapes with Components
+   src: https://glitch.com/edit/#!/ex-2d-animating-shapes-with-components?path=index.html:1:0
+
 ---
 
 The geometry component provides a basic shape for an entity. The `primitive`
@@ -22,27 +34,8 @@ Every geometry type will have these properties:
 | Property  | Description                                                                                                                          | Default Value |
 |-----------|--------------------------------------------------------------------------------------------------------------------------------------|---------------|
 | buffer    | Transform geometry into a BufferGeometry to reduce memory usage at the cost of being harder to manipulate.                           | true          |
-| mergeTo   | A selector to an entity to merge the entity's geometry to.                                                                           | None          |
 | primitive | Name of a geometry (e.g., one of the geometries listed below). Determines the geometry type and what other properties are available. | box           |
 | skipCache | Disable retrieving the shared geometry object from the cache.                                                                        | false         |
-
-### `mergeTo`
-
-Merging geometries reduces the number of draw calls, greatly improving
-performance under certain circumstances. Merged geometries will inherit the
-material of the target geometry. Thus, it's useful when we have entities that
-share the same material.
-
-Once merged, we can no longer manipulate the individual geometry independently.
-
-For geometry merging to be able to work, we will have to turn off `buffer` and
-turn on `skipCache`.
-
-```html
-<a-entity id="target" geometry="primitive: box; buffer: false; skipCache: true" material="color: red"></a-entity>
-<a-entity geometry="primitive: box; buffer: false; skipCache: true; mergeTo: #target"
-          material="color: red" position="1 2 3"></a-entity>
-```
 
 ## Built-in Geometries
 
@@ -130,7 +123,7 @@ need a double-sided material to render properly:
 <a-entity geometry="primitive: cylinder; openEnded: true" material="side: double"></a-entity>
 ```
 
-We can create a cured surfaces by specifying the arc via `thetaLength` such
+We can create a curved surfaces by specifying the arc via `thetaLength` such
 that the cylinder doesn't curve all the way around, making the cylinder
 open-ended, and then making the material double-sided:
 
@@ -200,7 +193,7 @@ the `material` component.
 ### `ring`
 
 The ring geometry creates a flat ring, like a [CD][cd]. Because the ring is
-flat, A-Frame will only render a single face of the ring we specify `side:
+flat, A-Frame will only render a single face of the ring unless we specify `side:
 double` the `material` component.
 
 ```html
@@ -373,4 +366,4 @@ We can then use that custom geometry in HTML:
 [cd]: https://en.wikipedia.org/wiki/Compact_disc
 [component-schema]: ../core/component.md#schema
 [prisms-wiki]: https://en.wikipedia.org/wiki/Prism_%28geometry%29
-[three-geometry]: http://threejs.org/docs/#Reference/Core/Geometry
+[three-geometry]: https://threejs.org/docs/#api/core/Geometry

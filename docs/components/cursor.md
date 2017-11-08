@@ -4,6 +4,7 @@ type: components
 layout: docs
 parent_section: components
 source_code: src/components/cursor.js
+examples: []
 ---
 
 [a-cursor]: ../primitives/a-cursor.md
@@ -22,13 +23,14 @@ The cursor component listens to events and keeps state on what's being hovered
 and pressed in order to provide `mousedown`, `mouseup`, `mouseenter`,
 `mouseleave`, and `click` events. We use the name `mouse` to mimic
 traditional web development for now. Under the hood, the cursor component uses
-the `raycaster-intersected` and `raycaster-intersection-cleared` events,
+the `raycaster-intersection` and `raycaster-intersection-cleared` events,
 capturing the closest visible intersected entity.
 
-By default, the cursor is configured to be used in a gaze-based mode.
-Specifying the `downEvents` and `upEvents` properties allows the cursor to work
-with controllers.  The [laser-controls component][laser-controls] automatically
-configures those.
+By default, the cursor is configured to be used in a gaze-based mode and will
+register user input via mouse or touch. Specifying the `downEvents` and
+`upEvents` properties allows the cursor to work with controllers. For example,
+the [laser-controls component][laser-controls] automatically configures these
+properties to work with most controllers..
 
 [geometry]: ./geometry.md
 [line]: ./line.md
@@ -100,6 +102,18 @@ component, [the raycaster component][raycaster].
 | mouseleave    | Emitted on both cursor and intersected entity (if any) when cursor no longer intersects with previously intersected entity. |
 | mouseup       | Emitted on both cursor and intersected entity (if any) on mouseup on the canvas element.                                    |
 
+### Intersection Data
+
+Relevant events will contain in the event detail `intersection`, which will
+contain `{distance, point, face, faceIndex, indices, object}` about specific
+data about the intersection:
+
+```js
+this.el.addEventListener('click', function (evt) {
+  console.log(evt.detail.intersection.point);
+});
+```
+
 ## States
 
 The cursor will add states to the cursor entity on certain events:
@@ -152,18 +166,18 @@ intersects the entity, it will emit an event, and the animation system will
 pick up event with the `begin` attribute:
 
 ```html
-<a-entity cursor="fuse: true; fuseTimeout: 500"
-          position="0 0 -1"
+<a-entity cursor="fuse: true;"
+          position="0 0 -3"
           geometry="primitive: ring"
           material="color: black; shader: flat">
-  <a-animation begin="click" easing="ease-in" attribute="scale"
-               fill="backwards" from="0.1 0.1 0.1" to="1 1 1"></a-animation>
-  <a-animation begin="cursor-fusing" easing="ease-in" attribute="scale"
+  <a-animation begin="click" easing="ease-in" attribute="scale" dur="150"
+               fill="forwards" from="0.1 0.1 0.1" to="1 1 1"></a-animation>
+  <a-animation begin="cursor-fusing" easing="ease-in" attribute="scale" dur="1500"
                fill="backwards" from="1 1 1" to="0.1 0.1 0.1"></a-animation>
 </a-entity>
 ```
 
-[cursor-codepen]: http://codepen.io/anon/pen/dpmpJP
+[cursor-codepen]: https://codepen.io/Absulit/pen/WEKjqm
 
 To play with an example of a cursor with visual feedback, check out the [Cursor
 with Visual Feedback example on CodePen][cursor-codepen].

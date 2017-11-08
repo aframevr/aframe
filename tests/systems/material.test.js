@@ -21,6 +21,7 @@ suite('material system', function () {
       var el = this.el;
       var material;
       var system;
+      el.setAttribute('geometry', '');
       el.setAttribute('material', '');
       system = el.components.material.system;
       material = el.getObject3D('mesh').material;
@@ -32,6 +33,7 @@ suite('material system', function () {
       var oldMaterial;
       var newMaterial;
       var system;
+      el.setAttribute('geometry', '');
       el.setAttribute('material', 'shader: flat');
       oldMaterial = el.getObject3D('mesh').material;
       el.setAttribute('material', 'shader: standard');
@@ -180,6 +182,24 @@ suite('material system', function () {
         var data = {src: VIDEO1};
 
         videoEl.setAttribute('src', VIDEO1);
+        system.loadVideo(videoEl, data, function (texture) {
+          var hash = Object.keys(system.textureCache)[0];
+          assert.equal(texture.image, videoEl);
+          system.textureCache[hash].then(function (result) {
+            assert.equal(texture, result.texture);
+            assert.equal(texture.image, result.videoEl);
+            done();
+          });
+        });
+      });
+
+      test('loads image given a <video> element with <source>', function (done) {
+        var videoEl = document.createElement('video');
+        var system = this.system;
+        var data = {};
+
+        videoEl.insertAdjacentHTML('beforeend',
+          '<source src="' + VIDEO1 + '"></source>');
         system.loadVideo(videoEl, data, function (texture) {
           var hash = Object.keys(system.textureCache)[0];
           assert.equal(texture.image, videoEl);

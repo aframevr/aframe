@@ -196,7 +196,6 @@ crop, and preview a GIF before exporting. Or capture straight to GIF using
 
 ### Sharing Media
 
-[awesome]: https://github.com/aframevr/awesome-aframe/
 [blog]: https://aframe.io/blog/
 [reddit-webvr]: https://www.reddit.com/r/webvr
 [slack-webvr]: https://webvr-slack.herokuapp.com/
@@ -209,7 +208,6 @@ include:
 - [Twitter](https://twitter.com) - Mention `@aframevr` or include the `#webvr`
   hashtag.
 - [`#projects` channel on Slack](http://aframevr.slackarchive.io/projects/)
-- [`awesome-aframe` GitHub repository][awesome].
 - [WebVR Slack channel][slack-webvr].
 - [/r/WebVR subreddit][reddit-webvr].
 - Write a case study and tell us to feature on the [A-Frame Blog][blog].

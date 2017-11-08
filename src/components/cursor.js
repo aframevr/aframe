@@ -19,6 +19,11 @@ var STATES = {
   HOVERED: 'cursor-hovered'
 };
 
+var CANVAS_EVENTS = {
+  DOWN: ['mousedown', 'touchstart'],
+  UP: ['mouseup', 'touchend']
+};
+
 /**
  * Cursor component. Applies the raycaster component specifically for starting the raycaster
  * from the camera and pointing from camera's facing direction, and then only returning the
@@ -92,16 +97,21 @@ module.exports.Component = registerComponent('cursor', {
     var el = this.el;
     var self = this;
 
+    function addCanvasListeners () {
+      canvas = el.sceneEl.canvas;
+      CANVAS_EVENTS.DOWN.forEach(function (downEvent) {
+        canvas.addEventListener(downEvent, self.onCursorDown);
+      });
+      CANVAS_EVENTS.UP.forEach(function (upEvent) {
+        canvas.addEventListener(upEvent, self.onCursorUp);
+      });
+    }
+
     canvas = el.sceneEl.canvas;
     if (canvas) {
-      canvas.addEventListener('mousedown', this.onCursorDown);
-      canvas.addEventListener('mouseup', this.onCursorUp);
+      addCanvasListeners();
     } else {
-      el.sceneEl.addEventListener('render-target-loaded', function () {
-        canvas = el.sceneEl.canvas;
-        canvas.addEventListener('mousedown', self.onCursorDown);
-        canvas.addEventListener('mouseup', self.onCursorUp);
-      });
+      el.sceneEl.addEventListener('render-target-loaded', addCanvasListeners);
     }
 
     data.downEvents.forEach(function (downEvent) {
@@ -124,8 +134,12 @@ module.exports.Component = registerComponent('cursor', {
 
     canvas = el.sceneEl.canvas;
     if (canvas) {
-      canvas.removeEventListener('mousedown', this.onCursorDown);
-      canvas.removeEventListener('mouseup', this.onCursorUp);
+      CANVAS_EVENTS.DOWN.forEach(function (downEvent) {
+        canvas.removeEventListener(downEvent, self.onCursorDown);
+      });
+      CANVAS_EVENTS.UP.forEach(function (upEvent) {
+        canvas.removeEventListener(upEvent, self.onCursorUp);
+      });
     }
 
     data.downEvents.forEach(function (downEvent) {
@@ -136,43 +150,60 @@ module.exports.Component = registerComponent('cursor', {
     });
     el.removeEventListener('raycaster-intersection', this.onIntersection);
     el.removeEventListener('raycaster-intersection-cleared', this.onIntersectionCleared);
-    window.removeEventListener('mousemove', this.onMouseMove);
-    window.removeEventListener('resize', this.updateCanvasBounds);
+    canvas.removeEventListener('mousemove', this.onMouseMove);
+    canvas.removeEventListener('touchstart', this.onMouseMove);
+    canvas.removeEventListener('touchmove', this.onMouseMove);
+    canvas.removeEventListener('resize', this.updateCanvasBounds);
   },
 
   updateMouseEventListeners: function () {
+    var canvas;
     var el = this.el;
-    window.removeEventListener('mousemove', this.onMouseMove);
+
+    canvas = el.sceneEl.canvas;
+    canvas.removeEventListener('mousemove', this.onMouseMove);
+    canvas.removeEventListener('touchmove', this.onMouseMove);
     el.setAttribute('raycaster', 'useWorldCoordinates', false);
     if (this.data.rayOrigin !== 'mouse') { return; }
-    window.addEventListener('mousemove', this.onMouseMove, false);
+    canvas.addEventListener('mousemove', this.onMouseMove, false);
+    canvas.addEventListener('touchmove', this.onMouseMove, false);
     el.setAttribute('raycaster', 'useWorldCoordinates', true);
     this.updateCanvasBounds();
   },
 
   onMouseMove: (function () {
+    var direction = new THREE.Vector3();
     var mouse = new THREE.Vector2();
     var origin = new THREE.Vector3();
-    var direction = new THREE.Vector3();
-    var rayCasterConfig = {
-      origin: origin,
-      direction: direction
-    };
+    var rayCasterConfig = {origin: origin, direction: direction};
+
     return function (evt) {
+      var bounds = this.canvasBounds;
       var camera = this.el.sceneEl.camera;
+      var left;
+      var point;
+      var top;
+
       camera.parent.updateMatrixWorld();
       camera.updateMatrixWorld();
 
       // Calculate mouse position based on the canvas element
-      var bounds = this.canvasBounds;
-      var left = evt.clientX - bounds.left;
-      var top = evt.clientY - bounds.top;
+      if (evt.type === 'touchmove' || evt.type === 'touchstart') {
+        // Track the first touch for simplicity.
+        point = evt.touches.item(0);
+      } else {
+        point = evt;
+      }
+
+      left = point.clientX - bounds.left;
+      top = point.clientY - bounds.top;
       mouse.x = (left / bounds.width) * 2 - 1;
       mouse.y = -(top / bounds.height) * 2 + 1;
 
       origin.setFromMatrixPosition(camera.matrixWorld);
       direction.set(mouse.x, mouse.y, 0.5).unproject(camera).sub(origin).normalize();
       this.el.setAttribute('raycaster', rayCasterConfig);
+      if (evt.type === 'touchmove') { evt.preventDefault(); }
     };
   })(),
 
@@ -180,8 +211,15 @@ module.exports.Component = registerComponent('cursor', {
    * Trigger mousedown and keep track of the mousedowned entity.
    */
   onCursorDown: function (evt) {
+    // Raycast again for touch.
+    if (this.data.rayOrigin === 'mouse') {
+      this.onMouseMove(evt);
+      this.el.components.raycaster.checkIntersections();
+    }
+
     this.twoWayEmit(EVENTS.MOUSEDOWN);
     this.cursorDownEl = this.intersectedEl;
+    if (evt.type === 'touchstart') { evt.preventDefault(); }
   },
 
   /**
@@ -205,6 +243,7 @@ module.exports.Component = registerComponent('cursor', {
     }
 
     this.cursorDownEl = null;
+    if (evt.type === 'touchend') { evt.preventDefault(); }
   },
 
   /**
@@ -258,16 +297,12 @@ module.exports.Component = registerComponent('cursor', {
    * Handle intersection cleared.
    */
   onIntersectionCleared: function (evt) {
-    var cursorEl = this.el;
-    var intersectedEl = evt.detail.el;
+    var clearedEls = evt.detail.clearedEls;
 
-    // Ignore the cursor.
-    if (cursorEl === intersectedEl) { return; }
-
-    // Ignore if the event didn't occur on the current intersection.
-    if (intersectedEl !== this.intersectedEl) { return; }
-
-    this.clearCurrentIntersection();
+    // Check if the current intersection has ended
+    if (clearedEls.indexOf(this.intersectedEl) !== -1) {
+      this.clearCurrentIntersection();
+    }
   },
 
   clearCurrentIntersection: function () {

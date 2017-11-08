@@ -58,8 +58,8 @@ files are properly served. Options of local servers include:
 
 - Downloading the [Mongoose](https://www.cesanta.com/products/binary) application
   and opening it from the same directory as your HTML file.
-- Running `python -m SimpleHTTPServer` in a terminal in the same directory as your
-  HTML file.
+- Running `python -m SimpleHTTPServer` (or `python -m http.server` for Python 3)
+  in a terminal in the same directory as your HTML file.
 - Running `npm install -g live-server && live-server` in a terminal in the same
   directory as your HTML file.
 
@@ -92,14 +92,14 @@ CDN build:
 
 ```html
 <head>
-  <script src="https://aframe.io/releases/0.6.1/aframe.min.js"></script>
+  <script src="https://aframe.io/releases/0.7.1/aframe.min.js"></script>
 </head>
 ```
 
 If we want to serve it ourselves, we can download the JS build:
 
-<a id="builds-prod" class="btn btn-download" href="https://aframe.io/releases/0.6.1/aframe.min.js" download>Production Version <span>0.6.1</span></a> <em class="install-note">Minified</em>
-<a id="builds-dev" class="btn btn-download" href="https://aframe.io/releases/0.6.1/aframe.js" download>Development Version <span>0.6.1</span></a> <em class="install-note">Uncompressed with Source Maps</em>
+<a id="builds-prod" class="btn btn-download" href="https://aframe.io/releases/0.7.1/aframe.min.js" download>Production Version <span>0.7.1</span></a> <em class="install-note">Minified</em>
+<a id="builds-dev" class="btn btn-download" href="https://aframe.io/releases/0.7.1/aframe.js" download>Development Version <span>0.7.1</span></a> <em class="install-note">Uncompressed with Source Maps</em>
 
 ### Install from npm
 

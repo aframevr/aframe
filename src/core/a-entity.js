@@ -5,7 +5,6 @@ var THREE = require('../lib/three');
 var utils = require('../utils/');
 
 var AEntity;
-var bind = utils.bind;
 var debug = utils.debug('core:a-entity:debug');
 var warn = utils.debug('core:a-entity:warn');
 
@@ -37,6 +36,7 @@ var proto = Object.create(ANode.prototype, {
       this.components = {};
       // To avoid double initializations and infinite loops.
       this.initializingComponents = {};
+      this.componentsToUpdate = {};
       this.isEntity = true;
       this.isPlaying = false;
       this.object3D = new THREE.Group();
@@ -131,62 +131,6 @@ var proto = Object.create(ANode.prototype, {
     }
   },
 
-  /**
-   * Add new mixin for each mixin with state suffix.
-   */
-  mapStateMixins: {
-    value: function (state, op) {
-      var mixins;
-      var mixinIds;
-      var i;
-
-      mixins = this.getAttribute('mixin');
-
-      if (!mixins) { return; }
-      mixinIds = mixins.split(' ');
-      for (i = 0; i < mixinIds.length; i++) {
-        op(mixinIds[i] + '-' + state);
-      }
-      this.updateComponents();
-    }
-  },
-
-  /**
-   * Handle update of mixin states (e.g., `box-hovered` where `box` is the mixin ID and
-   * `hovered` is the entity state.
-   */
-  updateStateMixins: {
-    value: function (newMixins, oldMixins) {
-      var diff;
-      var newMixinIds;
-      var oldMixinIds;
-      var i;
-      var j;
-      var stateMixinEls;
-
-      newMixinIds = newMixins.split(' ');
-      oldMixinIds = (oldMixins || '') ? oldMixins.split(' ') : [];
-
-      // List of mixins that might have been removed on update.
-      diff = oldMixinIds.filter(function (i) { return newMixinIds.indexOf(i) < 0; });
-
-      // Remove removed mixins.
-      for (i = 0; i < diff.length; i++) {
-        stateMixinEls = document.querySelectorAll('[id^=' + diff[i] + '-]');
-        for (j = 0; j < stateMixinEls.length; j++) {
-          this.unregisterMixin(stateMixinEls[j].id);
-        }
-      }
-
-      // Add new mixins.
-      for (i = 0; i < this.states.length; i++) {
-        for (j = 0; j < newMixinIds.length; j++) {
-          this.registerMixin(newMixinIds[j] + '-' + this.states[i]);
-        }
-      }
-    }
-  },
-
   getObject3D: {
     value: function (type) {
       return this.object3DMap[type];
@@ -260,6 +204,8 @@ var proto = Object.create(ANode.prototype, {
         object3D = new Constructor();
         this.setObject3D(type, object3D);
       }
+      warn('`getOrCreateObject3D` has been deprecated. Use `setObject3D()` ' +
+           'and `object3dset` event instead.');
       return object3D;
     }
   },
@@ -478,55 +424,52 @@ var proto = Object.create(ANode.prototype, {
    *   from other sources (e.g., implemented by primitives).
    */
   updateComponents: {
-    value: (function () {
-      var componentsToUpdate = {};
+    value: function () {
+      var data;
+      var extraComponents;
+      var i;
+      var name;
+      var componentsToUpdate = this.componentsToUpdate;
 
-      return function () {
-        var data;
-        var extraComponents;
-        var i;
-        var name;
+      if (!this.hasLoaded) { return; }
 
-        if (!this.hasLoaded) { return; }
-
-        // Gather mixin-defined components.
-        for (i = 0; i < this.mixinEls.length; i++) {
-          for (name in this.mixinEls[i].componentCache) {
-            if (isComponent(name)) { componentsToUpdate[name] = true; }
-          }
-        }
-
-        // Gather from extra initial component data if defined (e.g., primitives).
-        if (this.getExtraComponents) {
-          extraComponents = this.getExtraComponents();
-          for (name in extraComponents) {
-            if (isComponent(name)) { componentsToUpdate[name] = true; }
-          }
-        }
-
-        // Gather entity-defined components.
-        for (i = 0; i < this.attributes.length; ++i) {
-          name = this.attributes[i].name;
+      // Gather mixin-defined components.
+      for (i = 0; i < this.mixinEls.length; i++) {
+        for (name in this.mixinEls[i].componentCache) {
           if (isComponent(name)) { componentsToUpdate[name] = true; }
         }
+      }
 
-        // Initialze or update default components first.
-        for (name in this.defaultComponents) {
-          data = mergeComponentData(this.getDOMAttribute(name),
-                                    extraComponents && extraComponents[name]);
-          this.updateComponent(name, data);
-          delete componentsToUpdate[name];
+      // Gather from extra initial component data if defined (e.g., primitives).
+      if (this.getExtraComponents) {
+        extraComponents = this.getExtraComponents();
+        for (name in extraComponents) {
+          if (isComponent(name)) { componentsToUpdate[name] = true; }
         }
+      }
 
-        // Initialize or update rest of components.
-        for (name in componentsToUpdate) {
-          data = mergeComponentData(this.getDOMAttribute(name),
-                                    extraComponents && extraComponents[name]);
-          this.updateComponent(name, data);
-          delete componentsToUpdate[name];
-        }
-      };
-    })(),
+      // Gather entity-defined components.
+      for (i = 0; i < this.attributes.length; ++i) {
+        name = this.attributes[i].name;
+        if (isComponent(name)) { componentsToUpdate[name] = true; }
+      }
+
+      // Initialze or update default components first.
+      for (name in this.defaultComponents) {
+        data = mergeComponentData(this.getDOMAttribute(name),
+                                  extraComponents && extraComponents[name]);
+        this.updateComponent(name, data);
+        delete componentsToUpdate[name];
+      }
+
+      // Initialize or update rest of components.
+      for (name in componentsToUpdate) {
+        data = mergeComponentData(this.getDOMAttribute(name),
+                                  extraComponents && extraComponents[name]);
+        this.updateComponent(name, data);
+        delete componentsToUpdate[name];
+      }
+    },
     writable: window.debug
   },
 
@@ -668,7 +611,6 @@ var proto = Object.create(ANode.prototype, {
     value: function (newMixins, oldMixins) {
       oldMixins = oldMixins || this.getAttribute('mixin');
       this.updateMixins(newMixins, oldMixins);
-      this.updateStateMixins(newMixins, oldMixins);
       this.updateComponents();
     }
   },
@@ -823,8 +765,7 @@ var proto = Object.create(ANode.prototype, {
     value: function (state) {
       if (this.is(state)) { return; }
       this.states.push(state);
-      this.mapStateMixins(state, bind(this.registerMixin, this));
-      this.emit('stateadded', {state: state});
+      this.emit('stateadded', state);
     }
   },
 
@@ -833,8 +774,7 @@ var proto = Object.create(ANode.prototype, {
       var stateIndex = this.states.indexOf(state);
       if (stateIndex === -1) { return; }
       this.states.splice(stateIndex, 1);
-      this.mapStateMixins(state, bind(this.unregisterMixin, this));
-      this.emit('stateremoved', {state: state});
+      this.emit('stateremoved', state);
     }
   },
 

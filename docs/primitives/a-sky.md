@@ -4,6 +4,11 @@ type: primitives
 layout: docs
 parent_section: primitives
 source_code: src/extras/primitives/primitives/a-sky.js
+examples:
+  - title: Adding a Sky
+    src: https://glitch.com/edit/#!/aframe-adding-a-sky?path=index.html
+  - title: Changing the Sky
+    src: https://glitch.com/edit/#!/aframe-changing-the-sky?path=index.html
 ---
 
 The sky primitive adds a background color or 360&deg; image to a scene.  A sky

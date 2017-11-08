@@ -30,8 +30,8 @@ Some best practices for the framework:
 [stats]: ../components/stats.md
 
 Performance is critical in VR. A high framerate must be maintained in order for
-people to feel comfortable and as if they were in another place. Here are some
-ways to help improve performance of an A-Frame scene:
+people to feel comfortable. Here are some ways to help improve performance of
+an A-Frame scene:
 
 - Use [recommended hardware specifications][hardware].
 - Use the **[stats component][stats]** to keep an eye on various metrics (FPS,
@@ -56,6 +56,78 @@ ways to help improve performance of an A-Frame scene:
   `AFRAME.utils.throttleTick` to limit the number of times the `tick` handler
   is run if appropriate.
 
+### GPU Texture Preloading
+
+Until non-blocking texture uploads to the GPU are available, try to draw all
+materials and textures up front. When materials and textures are drawn for the
+first time, the browser will hang and block while uploading to the GPU. Note
+that three.js's renderer does not upload textures to the GPU if objects are
+non-visible. To prevent frame drops during the experience, create and draw all
+materials and textures when the scene starts. Draw them somewhere within the camera
+frustum (viewport) then hide them as needed. We will try to come with a
+convenient API in A-Frame to do this automatically.
+
+[360]: https://aframe-360-gallery.glitch.me
+
+For example, this is apparent in the [360&deg; image gallery][360]. If we look at
+the browser performance tools, there will be frame drops when switching to a
+new image for the first time, but smooth transitions when switching back to
+images for the second time.
+
+Reuse materials and textures as much as possible, aiming for a small number
+of unique materials. Texture atlases provide one efficient way to reuse
+materials while giving the impression of more variety. Simpler three.js
+materials such as MeshLambertMaterial or MeshBasicMaterial perform better and
+are often sufficient for low-poly scenes. In particular, pre-baked lighting on
+an unlit (Basic) material can significantly improve performance. A-Frame's
+default PBR-based (Standard) material is more physically realistic, but also
+more expensive and often unnecessary in simple scenes.
+
+#### Tools
+
+[webglinsights]: https://chrome.google.com/webstore/detail/webgl-insight/djdcbmfacaaocoomokenoalbomllhnko?hl=en-US
+
+There are browser add-ons available to look into what's being sent to the GPU:
+
+- [WebGL Insights extension for Chrome][webglinsights]
+
+### JavaScript
+
+[firefox-alloc]: https://developer.mozilla.org/en-US/docs/Tools/Performance/Allocations
+[chrome-alloc]: https://developers.google.com/web/tools/chrome-devtools/memory-problems/#spot_frequent_garbage_collections
+
+Avoid creating garbage and instantiating new JavaScript objects, arrays,
+strings, and functions as much as possible. In the 2D web, it is not as big of
+a deal to create a lot of JavaScript objects since there is a lot of idle time
+for the garbage collector to run. For VR, garbage collection may cause dropped
+frames. Learn more about detecting allocations and garbage collection in
+[Firefox][firefox-alloc] and [Chrome][chrome-alloc] performance tools.
+
+Try to avoid patterns such as `Object.keys(obj).forEach(function () { });`,
+which create new arrays, functions, and callbacks versus using `for (key in
+obj)`. Or for array iteration, avoid `.forEach` and use a simple `for` loop
+instead. Avoid unnecessary copying of objects, using methods like
+`utils.extend(target, source)` instead of `utils.clone` or `.slice`.
+
+If emitting an event, try to reuse the same object for event details:
+
+```js
+AFRAME.registerComponent('foo', {
+  init: function () {
+    this.someData = [];
+    this.evtDetail = {someData: this.someData};
+  },
+
+  tick: function (time) {
+    this.someData.push(time);
+    this.el.emit('bar', this.evtDetail);
+  }
+});
+```
+
+All of the suggestions above are _especially_ important in `tick()` handlers,
+where they will be running on every frame.
+
 ### `tick` Handlers
 
 In component tick handlers, be frugal on creating new objects. Try to reuse
@@ -78,8 +150,8 @@ AFRAME.registerComponent('foo', {
     return function () {
       helperVector.copy(this.el.object3D.position);
       helperQuaternion.copy(this.el.object3D.quaternion);
-    })();
-  }
+    };
+  })()
 });
 ```
 

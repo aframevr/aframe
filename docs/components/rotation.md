@@ -4,11 +4,12 @@ type: components
 layout: docs
 parent_section: components
 source_code: src/components/rotation.js
+examples: []
 ---
 
-The rotation component defines the orientation of an entity. It takes the roll
-(`x`), pitch (`y`), and yaw (`z`) as three space-delimited numbers indicating
-degrees of rotation.
+The rotation component defines the orientation of an entity. It takes the pitch
+(`x`), yaw (`y`), and roll (`z`) as three space-delimited numbers indicating
+degrees of rotation. 
 
 All entities inherently have the rotation component.
 
@@ -26,9 +27,9 @@ rotation.
 
 | Axis | Description                       | Default Value
 |------|-----------------------------------|---------------|
-| x    | Roll, rotation about the X-axis.  | 0             |
-| y    | Pitch, rotation about the Y-axis. | 0             |
-| z    | Yaw, rotation about the Z-axis.   | 0             |
+| x    | Pitch, rotation about the X-axis. | 0             |
+| y    | Yaw, rotation about the Y-axis.   | 0             |
+| z    | Roll, rotation about the Z-axis.  | 0             |
 
 ## Relative Rotation
 
@@ -37,8 +38,8 @@ Consider this scene:
 
 ```html
 <a-entity id="parent" rotation="0 45 0">
-  <a-entity id="child-1"></a-entity>
-  <a-entity id="child-2" rotation="15 45 30"></a-entity>
+  <a-entity id="child1"></a-entity>
+  <a-entity id="child2" rotation="15 45 30"></a-entity>
 </a-entity>
 ```
 

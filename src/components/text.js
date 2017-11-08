@@ -1,6 +1,5 @@
 var createTextGeometry = require('three-bmfont-text');
 var loadBMFont = require('load-bmfont');
-var path = require('path');
 
 var registerComponent = require('../core/component').registerComponent;
 var coreShader = require('../core/shader');
@@ -35,6 +34,7 @@ module.exports.FONTS = FONTS;
 
 var cache = new PromiseCache();
 var fontWidthFactors = {};
+var textures = {};
 
 /**
  * SDF-based text component.
@@ -49,6 +49,8 @@ module.exports.Component = registerComponent('text', {
   schema: {
     align: {type: 'string', default: 'left', oneOf: ['left', 'right', 'center']},
     alphaTest: {default: 0.5},
+    depthTest: {default: true},
+    depthWrite: {default: true},
     // `anchor` defaults to center to match geometries.
     anchor: {default: 'center', oneOf: ['left', 'right', 'center', 'align']},
     baseline: {default: 'center', oneOf: ['top', 'center', 'bottom']},
@@ -81,11 +83,7 @@ module.exports.Component = registerComponent('text', {
   },
 
   init: function () {
-    this.texture = new THREE.Texture();
-    this.texture.anisotropy = MAX_ANISOTROPY;
-
     this.geometry = createTextGeometry();
-
     this.createOrUpdateMaterial();
     this.mesh = new THREE.Mesh(this.geometry, this.material);
     this.el.setObject3D(this.attrName, this.mesh);
@@ -94,6 +92,15 @@ module.exports.Component = registerComponent('text', {
   update: function (oldData) {
     var data = coerceData(this.data);
     var font = this.currentFont;
+    var fontImage = this.getFontImageSrc();
+
+    if (textures[fontImage]) {
+      this.texture = textures[fontImage];
+    } else {
+      // Create texture per font.
+      this.texture = textures[fontImage] = new THREE.Texture();
+      this.texture.anisotropy = MAX_ANISOTROPY;
+    }
 
     // Update material.
     this.createOrUpdateMaterial();
@@ -216,15 +223,17 @@ module.exports.Component = registerComponent('text', {
       self.updateLayout(coercedData);
 
       // Look up font image URL to use, and perform cached load.
-      fontImgSrc = data.fontImage || fontSrc.replace(/(\.fnt)|(\.json)/, '.png') ||
-                   path.dirname(data.font) + '/' + font.pages[0];
+      fontImgSrc = self.getFontImageSrc();
       cache.get(fontImgSrc, function () {
         return loadTexture(fontImgSrc);
       }).then(function (image) {
         // Make mesh visible and apply font image as texture.
+        var texture = self.texture;
+        texture.image = image;
+        texture.needsUpdate = true;
+        textures[fontImgSrc] = texture;
+        self.texture = texture;
         self.mesh.visible = true;
-        self.texture.image = image;
-        self.texture.needsUpdate = true;
         el.emit('textfontset', {font: data.font, fontObj: font});
       }).catch(function (err) {
         error(err);
@@ -234,6 +243,11 @@ module.exports.Component = registerComponent('text', {
       error(err);
       throw err;
     });
+  },
+
+  getFontImageSrc: function () {
+    var fontSrc = this.lookupFont(this.data.font || DEFAULT_FONT) || this.data.font;
+    return this.data.fontImage || fontSrc.replace(/(\.fnt)|(\.json)/, '.png');
   },
 
   /**
@@ -322,7 +336,7 @@ module.exports.Component = registerComponent('text', {
     geometry.update(utils.extend({}, data, {
       font: font,
       width: computeWidth(data.wrapPixels, data.wrapCount, font.widthFactor),
-      text: data.value.replace(/\\n/g, '\n').replace(/\\t/g, '\t'),
+      text: data.value.toString().replace(/\\n/g, '\n').replace(/\\t/g, '\t'),
       lineHeight: data.lineHeight || font.common.lineHeight
     }));
   }
@@ -420,6 +434,8 @@ function createShader (el, shaderName, data) {
  */
 function updateBaseMaterial (material, data) {
   material.side = data.side;
+  material.depthTest = data.depthTest;
+  material.depthWrite = data.depthWrite;
 }
 
 /**

@@ -1,4 +1,4 @@
-/* global assert, process, setup, suite, test */
+/* global assert, process, setup, suite, test, sinon */
 var entityFactory = require('../helpers').entityFactory;
 
 suite('camera system', function () {
@@ -50,6 +50,59 @@ suite('camera system', function () {
       var el = this.el;
       el.setAttribute('camera', '');
       assert.equal(el.sceneEl.camera, el.components.camera.camera);
+    });
+
+    test('does not get affected by mixins', function (done) {
+      var sceneEl = this.el.sceneEl;
+      var assetsEl = document.querySelector('a-assets');
+      var cameraEl = document.createElement('a-entity');
+      var mixin = document.createElement('a-mixin');
+      var cameraSystem = sceneEl.systems.camera;
+      sinon.spy(cameraSystem, 'setActiveCamera');
+
+      cameraEl.setAttribute('camera', '');
+      mixin.setAttribute('camera', '');
+
+      assetsEl.appendChild(mixin);
+      mixin.addEventListener('loaded', function () {
+        assert.ok(cameraSystem.setActiveCamera.notCalled);
+        sceneEl.appendChild(cameraEl);
+        cameraEl.addEventListener('loaded', function () {
+          assert.ok(cameraEl.getAttribute('camera').active);
+          assert.ok(cameraSystem.setActiveCamera.calledOnce);
+          assert.equal(cameraSystem.activeCameraEl, cameraEl);
+          cameraSystem.setActiveCamera.reset();
+          done();
+        });
+      });
+    });
+
+    test('does not switch active camera to a mixin', function (done) {
+      var sceneEl = this.el.sceneEl;
+      var assetsEl = document.querySelector('a-assets');
+      var cameraEl = document.createElement('a-entity');
+      var mixin = document.createElement('a-mixin');
+      var cameraSystem = sceneEl.systems.camera;
+      sinon.spy(cameraSystem, 'setActiveCamera');
+
+      cameraEl.setAttribute('camera', '');
+      mixin.setAttribute('camera', '');
+
+      sceneEl.appendChild(cameraEl);
+      cameraEl.addEventListener('loaded', function () {
+        assert.ok(cameraEl.getAttribute('camera').active);
+        assert.ok(cameraSystem.setActiveCamera.calledOnce);
+        assert.equal(cameraSystem.activeCameraEl, cameraEl);
+
+        assetsEl.appendChild(mixin);
+        mixin.addEventListener('loaded', function () {
+          assert.ok(cameraEl.getAttribute('camera').active);
+          assert.ok(cameraSystem.setActiveCamera.calledOnce);
+          assert.equal(cameraSystem.activeCameraEl, cameraEl);
+          cameraSystem.setActiveCamera.reset();
+          done();
+        });
+      });
     });
 
     test('switches active camera', function (done) {

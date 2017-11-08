@@ -4,6 +4,7 @@ type: components
 layout: docs
 parent_section: components
 source_code: src/components/collada-model.js
+examples: []
 ---
 
 The collada-model component loads a 3D model using a [COLLADA][wiki-collada] (.DAE) file.

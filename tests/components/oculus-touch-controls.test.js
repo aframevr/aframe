@@ -1,4 +1,4 @@
-/* global assert, process, setup, suite, test, Event */
+/* global assert, process, setup, suite, test */
 var entityFactory = require('../helpers').entityFactory;
 
 suite('oculus-touch-controls', function () {
@@ -147,28 +147,6 @@ suite('oculus-touch-controls', function () {
       });
       // Emit buttonchanged.
       el.emit('buttonchanged', {id: 1, state: {value: 0.5, pressed: true, touched: true}});
-    });
-  });
-
-  suite('gamepaddisconnected', function () {
-    /**
-     * In FF Nightly, only one gamepadconnected/disconnected event is fired,
-     * which makes it difficult to handle in individual controller entities.
-     * We no longer remove the controllersupdate listener as a result.
-     */
-    test('checks if present on gamepaddisconnected event', function () {
-      var checkIfControllerPresentSpy = this.sinon.spy(component, 'checkIfControllerPresent');
-      // Because checkIfControllerPresent may be used in bound form, bind and reinstall.
-      component.checkIfControllerPresent = component.checkIfControllerPresent.bind(component);
-      component.pause();
-      component.play();
-      // Mock isControllerPresent to return false.
-      // Reset everGotGamepadEvent so we don't think we've looked before.
-      delete component.everGotGamepadEvent;
-      // Fire emulated gamepaddisconnected event.
-      window.dispatchEvent(new Event('gamepaddisconnected'));
-
-      assert.ok(checkIfControllerPresentSpy.called);
     });
   });
 });

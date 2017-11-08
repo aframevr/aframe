@@ -11,9 +11,10 @@ suite('material', function () {
   setup(function (done) {
     el = entityFactory();
     this.sinon = sinon.sandbox.create();
+    el.setAttribute('geometry', '');
     el.setAttribute('material', 'shader: flat');
     if (el.hasLoaded) { done(); }
-    el.addEventListener('loaded', function () {
+    el.addEventListener('loaded', function (evt) {
       done();
     });
   });
@@ -196,6 +197,7 @@ suite('material', function () {
   suite('side', function () {
     test('can be set with initial material', function (done) {
       var el = entityFactory();
+      el.setAttribute('geometry', '');
       el.setAttribute('material', 'side: double');
       el.addEventListener('loaded', function () {
         assert.ok(el.getObject3D('mesh').material.side, THREE.DoubleSide);

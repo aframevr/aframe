@@ -91,6 +91,12 @@ Or if a component exposes an API, we can call its methods:
 document.querySelector('a-entity[sound]').components.sound.pause();
 ```
 
+### `hasLoaded`
+
+Whether the entity has attached and initialized all of its components. Though
+the best way to ensure code is run after the entity is ready is to place code
+within a component.
+
 ### `isPlaying`
 
 Whether the entity is active and playing. If we pause the entity , then
@@ -130,8 +136,8 @@ attached, `object3DMap` might look like:
 }
 ```
 
-We can manage an entity's set of `THREE.Object3D`s by using `getOrCreateObject3D`,
-`setObject3D`, and `removeObject3D`.
+We can manage an entity's set of `THREE.Object3D`s by using `setObject3D` and
+`removeObject3D`.
 
 ### `sceneEl`
 
@@ -261,24 +267,8 @@ entity.getDOMAttribute('position');
 AFRAME.registerComponent('example-mesh', {
   init: function () {
     var el = this.el;
-    el.getOrCreateObject3D('mesh', THREE.Mesh);
+    el.setObject3D('mesh', new THREE.Mesh());
     el.getObject3D('mesh');  // Returns THREE.Mesh that was just created.
-  }
-});
-```
-
-### `getOrCreateObject3D (type, Constructor)`
-
-If the entity does not have a `THREE.Object3D` registered under `type`,
-`getOrCreateObject3D` will register an instantiated `THREE.Object3D` using the
-passed `Constructor`. If the entity does have an `THREE.Object3D` registered
-under `type`, `getOrCreateObject3D` will act as `getObject3D`:
-
-```js
-AFRAME.registerComponent('example-geometry', {
-  update: function () {
-    var mesh = this.el.getOrCreateObject3D('mesh', THREE.Mesh);
-    mesh.geometry = new THREE.Geometry();
   }
 });
 ```
@@ -382,7 +372,8 @@ entity.setAttribute('light', {
 
 `setObject3D` will register the passed `obj`, a `THREE.Object3D`, as `type`
 under the entity's `object3DMap`. A-Frame adds `obj` as a child of the entity's
-root `object3D`.
+root `object3D`. An entity will emit the `object3dset` event with `type` event
+detail when `setObject3D` is called.
 
 ```js
 AFRAME.registerComponent('example-orthogonal-camera', {
@@ -460,7 +451,7 @@ entity.is('selected');  // >> false
 | child-attached   | A child entity was attached to the entity.                                                                                       |
 | child-detached   | A child entity was detached from the entity.                                                                                     |
 | componentchanged | One of the entity's components was modified.                                                                                     |
-| componentinit    | One of the entity's components was initialized.                                                                                  |
+| componentinitialized | One of the entity's components was initialized.                                                                                  |
 | componentremoved | One of the entity's components was removed.                                                                                      |
 | loaded           | The entity has attached and initialized its components.                                                                          |
 | object3dset      | `THREE.Object3D` was set on entity using `setObject3D(name)`. Event detail will contain `name` used to set on the `object3DMap`. |
@@ -479,8 +470,6 @@ Below is what the event detail contains for each event:
 | child-attached       | el        | Reference to the attached child element.           |
 | componentchanged     | name      | Name of component that had its data modified.      |
 |                      | id        | ID of component that had its data modified.        |
-|                      | newData   | Component's new data, after it was modified.       |
-|                      | oldData   | Component's previous data, before it was modified. |
 | componentinitialized | name      | Name of component that was initialized.            |
 |                      | id        | ID of component that had its data modified.        |
 |                      | data      | Component data.                                    |
@@ -497,7 +486,7 @@ We can use the `componentchanged` event to listen for changes to the entity:
 ```js
 entity.addEventListener('componentchanged', function (evt) {
   if (evt.detail.name === 'position') {
-    console.log('Entity has moved from', evt.detail.oldData, 'to', evt.detail.newData, '!');
+    console.log('Entity has moved to', evt.target.getAttribute('position'), '!');
   }
 });
 ```
