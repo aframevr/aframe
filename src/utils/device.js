@@ -45,6 +45,9 @@ var isMobile = (function () {
     if (isIOS() || isTablet() || isR7()) {
       _isMobile = true;
     }
+    if (isGearVR()) {
+      _isMobile = false;
+    }
   })(window.navigator.userAgent || window.navigator.vendor || window.opera);
 
   return function () { return _isMobile; };
