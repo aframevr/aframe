@@ -123,6 +123,10 @@ Component.prototype = {
   parse: function (value, silent) {
     var schema = this.schema;
     if (isSingleProp(schema)) { return parseProperty(value, schema); }
+
+    // Multi-property component with custom parser.
+    if (schema.parse) { return schema.parse(value); }
+
     return parseProperties(styleParser.parse(value), schema, true, this.name, silent);
   },
 
@@ -139,6 +143,10 @@ Component.prototype = {
     var schema = this.schema;
     if (typeof data === 'string') { return data; }
     if (isSingleProp(schema)) { return stringifyProperty(data, schema); }
+
+    // Multi-property component with custom stringifier.
+    if (schema.stringify) { return schema.stringify(data); }
+
     data = stringifyProperties(data, schema);
     return styleParser.stringify(data);
   },
@@ -189,6 +197,9 @@ Component.prototype = {
        */
       if (typeof parsedValue === 'string') { parsedValue = value; }
     } else {
+      // Multi-property component with custom parser.
+      if (this.schema.parse) { return this.schema.parse(value); }
+
       // Parse using the style parser to avoid double parsing of individual properties.
       parsedValue = styleParser.parse(value);
     }
