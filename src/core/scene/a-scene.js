@@ -472,7 +472,7 @@ module.exports.AScene = registerElement('a-scene', {
           // Notify renderer of size change.
           self.renderer.setSize(size.width, size.height, false);
         };
-        if (self.isIOS) {
+        if (this.isIOS && !embedded) {
           // On iOS devices (at least as of iOS 11.1.1), particularly in Chrome
           // or home-screen-icon Safari, when the orientation is changed the
           // canvas size returned by getCanvasSize() is incorrect during the
