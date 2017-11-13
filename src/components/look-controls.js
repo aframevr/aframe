@@ -18,6 +18,8 @@ module.exports.Component = registerComponent('look-controls', {
     enabled: {default: true},
     touchEnabled: {default: true},
     hmdEnabled: {default: true},
+    mobileHmdAlways: {default: true},
+    mobileFixedPitch: {default: true},
     reverseMouseDrag: {default: false},
     standing: {default: true}
   },
@@ -181,7 +183,7 @@ module.exports.Component = registerComponent('look-controls', {
     hmdQuaternion = hmdQuaternion.copy(this.dolly.quaternion);
     hmdEuler.setFromQuaternion(hmdQuaternion, 'YXZ');
 
-    if (sceneEl.isMobile) {
+    if (sceneEl.isMobile && this.data.mobileHmdAlways) {
       // On mobile, do camera rotation with touch events and sensors.
       rotation.x = radToDeg(hmdEuler.x) + radToDeg(pitchObject.rotation.x);
       rotation.y = radToDeg(hmdEuler.y) + radToDeg(yawObject.rotation.y);
@@ -327,13 +329,20 @@ module.exports.Component = registerComponent('look-controls', {
   onTouchMove: function (evt) {
     var canvas = this.el.sceneEl.canvas;
     var deltaY;
+    var deltaX;
+    var pitchObject = this.pitchObject;
     var yawObject = this.yawObject;
 
     if (!this.touchStarted || !this.data.touchEnabled) { return; }
 
     deltaY = 2 * Math.PI * (evt.touches[0].pageX - this.touchStart.x) / canvas.clientWidth;
 
-    // Limit touch orientaion to to yaw (y axis).
+    // Optionally limit touch orientaion to yaw (y axis).
+    if (!this.data.mobileFixedPitch) {
+      deltaX = 2 * Math.PI * (evt.touches[0].pageY - this.touchStart.y) / canvas.clientHeight;
+      pitchObject.rotation.x -= deltaX * 0.5;
+      pitchObject.rotation.x = Math.max(-PI_2, Math.min(PI_2, pitchObject.rotation.x));
+    }
     yawObject.rotation.y -= deltaY * 0.5;
     this.touchStart = {
       x: evt.touches[0].pageX,

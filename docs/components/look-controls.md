@@ -30,6 +30,8 @@ component](camera.md).
 | hmdEnabled       | Whether to use VR headset pose in VR mode.                       | true          |
 | reverseMouseDrag | Whether to reverse mouse drag.                                   | false         |
 | standing         | Whether standing mode is enabled (passed to `THREE.VRControls`). | true          |
+| mobileHmdAlways  | Always rotate the entity based on mobile device movement.        | true          |
+| mobileFixedPitch | Prevent pitch (vertical) movement based on mobile touch events.  | true          |
 | touchEnabled     | Whether to use touch controls in magic window mode.              | true          |
 
 ## Customizing look-controls
