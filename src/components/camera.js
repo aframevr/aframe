@@ -158,8 +158,8 @@ module.exports.Component = registerComponent('camera', {
     if (this.savedPose || !hasPositionalTracking) { return; }
 
     this.savedPose = {
-      position: el.getAttribute('position'),
-      rotation: el.getAttribute('rotation')
+      position: utils.clone(el.getAttribute('position')),
+      rotation: utils.clone(el.getAttribute('rotation'))
     };
   },
 

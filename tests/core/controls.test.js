@@ -1,4 +1,4 @@
-/* global Event, assert, process, setup, suite, test */
+/* global AFRAME, Event, assert, process, setup, suite, test */
 var helpers = require('../helpers');
 var THREE = require('lib/three');
 
@@ -22,7 +22,7 @@ suite('position controls on camera with WASD controls (integration unit test)', 
     var keydownEvent;
     var position;
 
-    position = el.getAttribute('position');
+    position = AFRAME.utils.clone(el.getAttribute('position'));
     keydownEvent = new Event('keydown');
     keydownEvent.code = 'KeyW';
     window.dispatchEvent(keydownEvent);
@@ -44,7 +44,7 @@ suite('position controls on camera with WASD controls (integration unit test)', 
     var keydownEvent;
     var position;
 
-    position = el.getAttribute('position');
+    position = AFRAME.utils.clone(el.getAttribute('position'));
     keydownEvent = new Event('keydown');
     keydownEvent.code = 'KeyA';
     window.dispatchEvent(keydownEvent);
@@ -66,7 +66,7 @@ suite('position controls on camera with WASD controls (integration unit test)', 
     var keydownEvent;
     var position;
 
-    position = el.getAttribute('position');
+    position = AFRAME.utils.clone(el.getAttribute('position'));
     keydownEvent = new Event('keydown');
     keydownEvent.code = 'KeyS';
     window.dispatchEvent(keydownEvent);
@@ -88,7 +88,7 @@ suite('position controls on camera with WASD controls (integration unit test)', 
     var keydownEvent;
     var position;
 
-    position = el.getAttribute('position');
+    position = AFRAME.utils.clone(el.getAttribute('position'));
     keydownEvent = new Event('keydown');
     keydownEvent.code = 'KeyD';
     window.dispatchEvent(keydownEvent);
@@ -111,7 +111,7 @@ suite('position controls on camera with WASD controls (integration unit test)', 
     var position;
 
     el.setAttribute('rotation', '0 90 0');
-    position = el.getAttribute('position');
+    position = AFRAME.utils.clone(el.getAttribute('position'));
     keydownEvent = new Event('keydown');
     keydownEvent.code = 'KeyW';
     window.dispatchEvent(keydownEvent);
