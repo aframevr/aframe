@@ -457,6 +457,7 @@ module.exports.AScene = registerElement('a-scene', {
         var embedded = this.getAttribute('embedded') && !this.is('vr-mode');
         var size;
         var isEffectPresenting = this.effect && this.effect.isPresenting;
+        var self = this;
         // Do not update renderer, if a camera or a canvas have not been injected.
         // In VR mode, VREffect handles canvas resize based on the dimensions returned by
         // the getEyeParameters function of the WebVR API. These dimensions are independent of
@@ -464,11 +465,25 @@ module.exports.AScene = registerElement('a-scene', {
         // except when in fullscreen mode.
         if (!camera || !canvas || (this.is('vr-mode') && (this.isMobile || isEffectPresenting))) { return; }
         // Update camera.
-        size = getCanvasSize(canvas, embedded);
-        camera.aspect = size.width / size.height;
-        camera.updateProjectionMatrix();
-        // Notify renderer of size change.
-        this.renderer.setSize(size.width, size.height, false);
+        var setSize = function() {
+          size = getCanvasSize(canvas, embedded);
+          camera.aspect = size.width / size.height;
+          camera.updateProjectionMatrix();
+          // Notify renderer of size change.
+          self.renderer.setSize(size.width, size.height, false);
+        };
+        if (self.isIOS) {
+          // On iOS devices (at least as of iOS 11.1.1), particularly in Chrome
+          // or home-screen-icon Safari, when the orientation is changed the
+          // canvas size returned by getCanvasSize() is incorrect during the
+          // transition. Delay resizing for 100ms to allow the transition to
+          // finish.
+          setTimeout(setSize, 100);
+        }
+        else {
+          // Most devices can update the size right away.
+          setSize();
+        }
       },
       writable: window.debug
     },
