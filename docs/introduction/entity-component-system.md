@@ -129,7 +129,7 @@ components have multiple properties that are represented by a syntax similar to
 (`:`) separating property names from property values, and a semicolon (`;`)
 separating different property declarations:
 
-`<a-entity ${componentName}="${propertyName1}: ${propertyValue1}; ${propertyName2:}: ${propertyValue2}">`
+`<a-entity ${componentName}="${propertyName1}: ${propertyValue1}; ${propertyName2}: ${propertyValue2}">`
 
 [geometry]: ../components/geometry.md
 [material]: ../components/material.md
