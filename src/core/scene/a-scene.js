@@ -465,7 +465,7 @@ module.exports.AScene = registerElement('a-scene', {
         // except when in fullscreen mode.
         if (!camera || !canvas || (this.is('vr-mode') && (this.isMobile || isEffectPresenting))) { return; }
         // Update camera.
-        var setSize = function() {
+        var setSize = function () {
           size = getCanvasSize(canvas, embedded);
           camera.aspect = size.width / size.height;
           camera.updateProjectionMatrix();
@@ -479,8 +479,7 @@ module.exports.AScene = registerElement('a-scene', {
           // transition. Delay resizing for 100ms to allow the transition to
           // finish.
           setTimeout(setSize, 100);
-        }
-        else {
+        } else {
           // Most devices can update the size right away.
           setSize();
         }
