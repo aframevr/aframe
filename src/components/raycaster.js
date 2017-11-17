@@ -6,8 +6,6 @@ var utils = require('../utils/');
 
 var warn = utils.debug('components:raycaster:warn');
 
-var dummyVec = new THREE.Vector3();
-
 // Defines selectors that should be 'safe' for the MutationObserver used to
 // refresh the whitelist. Matches classnames, IDs, and presence of attributes.
 // Selectors for the value of an attribute, like [position=0 2 0], cannot be
@@ -262,7 +260,6 @@ module.exports.Component = registerComponent('raycaster', {
    */
   updateOriginDirection: (function () {
     var direction = new THREE.Vector3();
-    var quaternion = new THREE.Quaternion();
     var originVec3 = new THREE.Vector3();
 
     // Closure to make quaternion/vector3 objects private.
@@ -277,7 +274,7 @@ module.exports.Component = registerComponent('raycaster', {
 
       // Grab the position and rotation.
       el.object3D.updateMatrixWorld();
-      el.object3D.matrixWorld.decompose(originVec3, quaternion, dummyVec);
+      el.object3D.getWorldPosition(originVec3);
 
       // If non-zero origin, translate the origin into world space.
       if (data.origin.x !== 0 || data.origin.y !== 0 || data.origin.z !== 0) {
@@ -287,7 +284,7 @@ module.exports.Component = registerComponent('raycaster', {
       // three.js raycaster direction is relative to 0, 0, 0 NOT the origin / offset we
       // provide. Apply the offset to the direction, then rotation from the object,
       // and normalize.
-      direction.copy(data.direction).add(data.origin).applyQuaternion(quaternion).normalize();
+      direction.copy(data.direction).transformDirection(el.object3D.matrixWorld).normalize();
 
       // Apply offset and direction, in world coordinates.
       this.raycaster.set(originVec3, direction);
@@ -310,9 +307,12 @@ module.exports.Component = registerComponent('raycaster', {
   drawLine: function (length) {
     var data = this.data;
     var el = this.el;
-    // We switch each time the vector so the line update is triggered
-    // and to avoid unnecessary vector clone.
-    var endVec3 = this.lineData.end === this.lineEndVec3 ? this.otherLineEndVec3 : this.lineEndVec3;
+    var endVec3;
+
+    // Switch each time vector so line update triggered and to avoid unnecessary vector clone.
+    endVec3 = this.lineData.end === this.lineEndVec3
+      ? this.otherLineEndVec3
+      : this.lineEndVec3;
 
     // Treat Infinity as 1000m for the line.
     if (length === undefined) {
