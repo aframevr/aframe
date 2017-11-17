@@ -75927,21 +75927,22 @@ module.exports.AScene = registerElement('a-scene', {
     /**
      * Add ticks and tocks.
      *
-     * @param {object} behavior - Generally a component. Must implement a .update() method
-     *   to be called on every tick.
+     * @param {object} behavior - A component.
      */
     addBehavior: {
       value: function (behavior) {
-        var self = this;
+        var behaviorArr;
         var behaviors = this.behaviors;
+        var behaviorType;
+
         // Check if behavior has tick and/or tock and add the behavior to the appropriate list.
-        Object.keys(behaviors).forEach(function (behaviorType) {
-          if (!behavior[behaviorType]) { return; }
-          var behaviorArr = self.behaviors[behaviorType];
+        for (behaviorType in behaviors) {
+          if (!behavior[behaviorType]) { continue; }
+          behaviorArr = this.behaviors[behaviorType];
           if (behaviorArr.indexOf(behavior) === -1) {
             behaviorArr.push(behavior);
           }
-        });
+        }
       }
     },
 
@@ -76166,21 +76167,22 @@ module.exports.AScene = registerElement('a-scene', {
     },
 
     /**
-     * @param {object} behavior - Generally a component. Has registered itself to behaviors.
+     * @param {object} behavior - A component.
      */
     removeBehavior: {
       value: function (behavior) {
-        var self = this;
+        var behaviorArr;
+        var behaviorType;
         var behaviors = this.behaviors;
+        var index;
+
         // Check if behavior has tick and/or tock and remove the behavior from the appropriate array.
-        Object.keys(behaviors).forEach(function (behaviorType) {
-          if (!behavior[behaviorType]) { return; }
-          var behaviorArr = self.behaviors[behaviorType];
-          var index = behaviorArr.indexOf(behavior);
-          if (index !== -1) {
-            behaviorArr.splice(index, 1);
-          }
-        });
+        for (behaviorType in behaviors) {
+          if (!behavior[behaviorType]) { continue; }
+          behaviorArr = this.behaviors[behaviorType];
+          index = behaviorArr.indexOf(behavior);
+          if (index !== -1) { behaviorArr.splice(index, 1); }
+        }
       }
     },
 
@@ -78170,7 +78172,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.7.0 (Date 2017-11-17, Commit #b9f37c7)');
+console.log('A-Frame Version: 0.7.0 (Date 2017-11-17, Commit #148b4a4)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
