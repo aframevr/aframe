@@ -29,6 +29,8 @@ Read the [cursor component documentation](../components/cursor.md) for detailed 
 
 | Attribute    | Component Mapping  | Default Value |
 |--------------|--------------------|---------------|
+| far          | raycaster.far      | 1000          |
 | fuse         | cursor.fuse        | false         |
 | fuse-timeout | cursor.fuseTimeout | 1500          |
-| max-distance | cursor.maxDistance | 1000          |
+| interval     | raycaster.interval | 100           |
+| objects      | raycaster.objects  | 100           |
