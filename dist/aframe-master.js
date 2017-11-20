@@ -67949,6 +67949,7 @@ module.exports.Component = registerComponent('link', {
   init: function () {
     this.navigate = this.navigate.bind(this);
     this.previousQuaternion = undefined;
+    this.quaternionClone = new THREE.Quaternion();
     // Store hidden elements during peek mode so we can show them again later.
     this.hiddenEls = [];
     this.initVisualAspect();
@@ -68117,10 +68118,12 @@ module.exports.Component = registerComponent('link', {
       cameraWorldPosition.setFromMatrixPosition(camera.matrixWorld);
       distance = elWorldPosition.distanceTo(cameraWorldPosition);
 
-      // Store original orientation to be restored when the portal stops facing the camera.
-      this.previousQuaternion = this.previousQuaternion || quaternion.clone();
-
       if (distance > 20) {
+        // Store original orientation to be restored when the portal stops facing the camera.
+        if (!this.previousQuaternion) {
+          this.quaternionClone.copy(quaternion);
+          this.previousQuaternion = this.quaternionClone;
+        }
         // If the portal is far away from the user, face portal to camera.
         object3D.lookAt(cameraWorldPosition);
       } else {
@@ -78163,7 +78166,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.7.0 (Date 2017-11-19, Commit #cd58a74)');
+console.log('A-Frame Version: 0.7.0 (Date 2017-11-20, Commit #8de8d91)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
