@@ -87,7 +87,7 @@ Inspector, and play with all the possible values to see the effects instantly!
 | tabSize       | Tab size in spaces.                                                                                                                                   | 4                                 |
 | transparent   | Whether text is transparent.                                                                                                                          | true                              |
 | **value**     | The actual content of the text. Line breaks and tabs are supported with `\n` and `\t`.                                                                | ''                                |
-| whitespace    | How whitespace should be handled (i.e., normal, pre, nowrap). [Read more about whitespace][whitespace].                                               | normal                            |
+| whiteSpace    | How whitespace should be handled (i.e., normal, pre, nowrap). [Read more about whitespace][whitespace].                                               | normal                            |
 | width         | Width in meters.                                                                                                                                      | *derived from geometry if exists* |
 | wrapCount     | Number of characters before wrapping text (more or less).                                                                                             | 40                                |
 | wrapPixels    | Number of pixels before wrapping text.                                                                                                                | *derived from wrapCount*          |
