@@ -255,16 +255,18 @@ module.exports.Component = registerComponent('raycaster', {
       }
 
       // Update line length.
-      if (data.showLine) {
-        if (intersections.length) {
-          if (intersections[0].object.el === el && intersections[1]) {
-            lineLength = intersections[1].distance;
-          } else {
-            lineLength = intersections[0].distance;
+      setTimeout(() => {
+        if (this.data.showLine) {
+          if (intersections.length) {
+            if (intersections[0].object.el === el && intersections[1]) {
+              lineLength = intersections[1].distance;
+            } else {
+              lineLength = intersections[0].distance;
+            }
           }
+          this.drawLine(lineLength);
         }
-        this.drawLine(lineLength);
-      }
+      });
     };
   })(),
 
