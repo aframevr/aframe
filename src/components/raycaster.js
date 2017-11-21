@@ -86,10 +86,11 @@ module.exports.Component = registerComponent('raycaster', {
     // Draw line.
     if (data.showLine &&
         (data.far !== oldData.far || data.origin !== oldData.origin ||
-         data.direction !== oldData.direction || data.showLine !== oldData.showLine)) {
+         data.direction !== oldData.direction || !oldData.showLine)) {
       this.unitLineEndVec3.copy(data.origin).add(data.direction).normalize();
       this.drawLine();
     }
+
     if (!data.showLine && oldData.showLine) {
       el.removeAttribute('line');
     }
