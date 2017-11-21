@@ -61,6 +61,9 @@ module.exports.Component = registerComponent('cursor', {
       self.canvasBounds = self.el.sceneEl.canvas.getBoundingClientRect();
     }, 200);
 
+    this.eventDetail = {};
+    this.intersectedEventDetail = {cursorEl: this.el};
+
     // Bind methods.
     this.onCursorDown = bind(this.onCursorDown, this);
     this.onCursorUp = bind(this.onCursorUp, this);
@@ -235,7 +238,8 @@ module.exports.Component = registerComponent('cursor', {
     // If intersected entity has changed since the cursorDown, still emit mouseUp on the
     // previously cursorUp entity.
     if (this.cursorDownEl && this.cursorDownEl !== this.intersectedEl) {
-      this.cursorDownEl.emit(EVENTS.MOUSEUP, {cursorEl: this.el, intersection: null});
+      this.intersectedEventDetail.intersection = null;
+      this.cursorDownEl.emit(EVENTS.MOUSEUP, this.intersectedEventDetail);
     }
 
     if (!this.data.fuse && this.intersectedEl && this.cursorDownEl === this.intersectedEl) {
@@ -329,8 +333,14 @@ module.exports.Component = registerComponent('cursor', {
     var el = this.el;
     var intersectedEl = this.intersectedEl;
     var intersection = this.intersection;
-    el.emit(evtName, {intersectedEl: intersectedEl, intersection: intersection});
+
+    this.eventDetail.intersectedEl = intersectedEl;
+    this.eventDetail.intersection = intersection;
+    el.emit(evtName, this.eventDetail);
+
     if (!intersectedEl) { return; }
-    intersectedEl.emit(evtName, {cursorEl: el, intersection: intersection});
+
+    this.intersectedEventDetail.intersection = intersection;
+    intersectedEl.emit(evtName, this.intersectedEventDetail);
   }
 });
