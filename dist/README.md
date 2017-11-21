@@ -8,7 +8,7 @@ script below from the [rawgit CDN](https://rawgit.com/):
 ```html
 <html>
   <head>
-    <script src="https://rawgit.com/aframevr/aframe/4dfa94f/dist/aframe-master.min.js"></script>
+    <script src="https://rawgit.com/aframevr/aframe/c9817f2/dist/aframe-master.min.js"></script>
   </head>
   <body>
     <a-scene>
