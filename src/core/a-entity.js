@@ -43,6 +43,7 @@ var proto = Object.create(ANode.prototype, {
       this.object3D.el = this;
       this.object3DMap = {};
       this.parentEl = null;
+      this.rotationObj = {};
       this.states = [];
     }
   },
@@ -720,7 +721,11 @@ var proto = Object.create(ANode.prototype, {
   getAttribute: {
     value: function (attr) {
       // If component, return component data.
-      var component = this.components[attr];
+      var component;
+      if (attr === 'position') { return this.object3D.position; }
+      if (attr === 'rotation') { return getRotation(this); }
+      if (attr === 'scale') { return this.object3D.scale; }
+      component = this.components[attr];
       if (component) { return component.data; }
       return window.HTMLElement.prototype.getAttribute.call(this, attr);
     },
@@ -849,6 +854,16 @@ function isComponent (componentName) {
   }
   if (!COMPONENTS[componentName]) { return false; }
   return true;
+}
+
+function getRotation (entityEl) {
+  var radToDeg = THREE.Math.radToDeg;
+  var rotation = entityEl.object3D.rotation;
+  var rotationObj = entityEl.rotationObj;
+  rotationObj.x = radToDeg(rotation.x);
+  rotationObj.y = radToDeg(rotation.y);
+  rotationObj.z = radToDeg(rotation.z);
+  return rotationObj;
 }
 
 AEntity = registerElement('a-entity', {prototype: proto});
