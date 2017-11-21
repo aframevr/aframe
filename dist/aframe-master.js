@@ -66180,7 +66180,7 @@ module.exports.Component = registerComponent('camera', {
     if (this.savedPose || !hasPositionalTracking) { return; }
 
     this.savedPose = {
-      position: el.getAttribute('position'),
+      position: el.getAttribute('position').clone(),
       rotation: el.getAttribute('rotation')
     };
   },
@@ -73511,6 +73511,7 @@ var proto = Object.create(ANode.prototype, {
       this.object3D.el = this;
       this.object3DMap = {};
       this.parentEl = null;
+      this.rotationObj = {};
       this.states = [];
     }
   },
@@ -74188,7 +74189,11 @@ var proto = Object.create(ANode.prototype, {
   getAttribute: {
     value: function (attr) {
       // If component, return component data.
-      var component = this.components[attr];
+      var component;
+      if (attr === 'position') { return this.object3D.position; }
+      if (attr === 'rotation') { return getRotation(this); }
+      if (attr === 'scale') { return this.object3D.scale; }
+      component = this.components[attr];
       if (component) { return component.data; }
       return window.HTMLElement.prototype.getAttribute.call(this, attr);
     },
@@ -74317,6 +74322,16 @@ function isComponent (componentName) {
   }
   if (!COMPONENTS[componentName]) { return false; }
   return true;
+}
+
+function getRotation (entityEl) {
+  var radToDeg = THREE.Math.radToDeg;
+  var rotation = entityEl.object3D.rotation;
+  var rotationObj = entityEl.rotationObj;
+  rotationObj.x = radToDeg(rotation.x);
+  rotationObj.y = radToDeg(rotation.y);
+  rotationObj.z = radToDeg(rotation.z);
+  return rotationObj;
 }
 
 AEntity = registerElement('a-entity', {prototype: proto});
@@ -78166,7 +78181,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.7.0 (Date 2017-11-20, Commit #8de8d91)');
+console.log('A-Frame Version: 0.7.0 (Date 2017-11-21, Commit #52d7f1f)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
