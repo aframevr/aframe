@@ -184,6 +184,7 @@ suite('raycaster', function () {
       el.setAttribute('position', '0 0 1');
       el.setAttribute('raycaster', {near: 0.1, far: 10});
 
+      targetEl.setAttribute('id', 'target');
       targetEl.setAttribute('geometry', 'primitive: box');
       targetEl.setAttribute('position', '0 0 -1');
       targetEl.addEventListener('loaded', function () {
@@ -217,6 +218,35 @@ suite('raycaster', function () {
       component.tick();
     });
 
+    test('does not re-emit raycaster-intersection if no new intersections', function (done) {
+      var count = 0;
+      var raycasterEl = el;
+      raycasterEl.addEventListener('raycaster-intersection', function () {
+        count++;
+      });
+      component.tick();
+      component.tick();
+      setTimeout(() => {
+        assert.equal(count, 1);
+        done();
+      });
+    });
+
+    test('does not re-emit raycaster-intersected if previously intersecting', function (done) {
+      var count = 0;
+      targetEl.addEventListener('raycaster-intersected', function (evt) {
+        count++;
+      });
+      component.tick();
+      component.tick();
+      component.tick();
+      setTimeout(() => {
+        // 2 because the raycaster hits the box in two points.
+        assert.equal(count, 2);
+        done();
+      });
+    });
+
     test('emits event on intersected entity with details', function (done) {
       var raycasterEl = el;
       targetEl.addEventListener('raycaster-intersected', function (evt) {
@@ -244,7 +274,7 @@ suite('raycaster', function () {
       var raycasterEl = el;
       targetEl.addEventListener('raycaster-intersected', function () {
         // Point raycaster somewhere else.
-        raycasterEl.setAttribute('rotation', '90 0 0');
+        raycasterEl.setAttribute('rotation', '-90 0 0');
         targetEl.addEventListener('raycaster-intersected-cleared', function (evt) {
           assert.equal(evt.detail.el, raycasterEl);
           done();
