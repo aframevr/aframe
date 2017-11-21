@@ -347,10 +347,10 @@ suite('a-entity', function () {
     test('can update component data', function () {
       var el = this.el;
       el.setAttribute('position', '10 20 30');
-      assert.deepEqual(el.getAttribute('position'), {x: 10, y: 20, z: 30});
+      assert.shallowDeepEqual(el.getAttribute('position'), {x: 10, y: 20, z: 30});
 
       el.setAttribute('position', {x: 30, y: 20, z: 10});
-      assert.deepEqual(el.getAttribute('position'), {x: 30, y: 20, z: 10});
+      assert.shallowDeepEqual(el.getAttribute('position'), {x: 30, y: 20, z: 10});
     });
 
     test('can partially update multiple properties of a component', function () {
@@ -392,7 +392,7 @@ suite('a-entity', function () {
     test('can partially update vec3', function () {
       var el = this.el;
       el.setAttribute('position', {y: 20});
-      assert.deepEqual(el.getAttribute('position'), {x: 0, y: 20, z: 0});
+      assert.shallowDeepEqual(el.getAttribute('position'), {x: 0, y: 20, z: 0});
     });
 
     test('can update component property with asymmetrical property type', function () {
@@ -897,6 +897,53 @@ suite('a-entity', function () {
       data = el.getAttribute('geometry');
       assert.ok(el.components.geometry.data === data);
     });
+
+    test('returns position previously set with setAttribute', function () {
+      var el = this.el;
+      el.setAttribute('position', {x: 1, y: 2, z: 3});
+      assert.shallowDeepEqual(el.getAttribute('position'), {x: 1, y: 2, z: 3});
+    });
+
+    test('returns position set by modifying the object3D position', function () {
+      var el = this.el;
+      el.object3D.position.set(1, 2, 3);
+      assert.shallowDeepEqual(el.getAttribute('position'), {x: 1, y: 2, z: 3});
+    });
+
+    test('returns rotation previously set with setAttribute', function () {
+      var el = this.el;
+      el.setAttribute('rotation', {x: 10, y: 45, z: 50});
+      assert.shallowDeepEqual(el.getAttribute('rotation'), {x: 10, y: 45, z: 50});
+    });
+
+    test('returns rotation previously set by modifying the object3D rotation', function () {
+      var el = this.el;
+      el.object3D.rotation.set(Math.PI, Math.PI / 2, Math.PI / 4);
+      assert.shallowDeepEqual(el.getAttribute('rotation'), {x: 180, y: 90, z: 45});
+    });
+
+    test('returns rotation previously set by modifying the object3D quaternion', function () {
+      var el = this.el;
+      var quaternion = new THREE.Quaternion();
+      var euler = new THREE.Euler();
+      euler.order = 'YXZ';
+      euler.set(Math.PI / 2, Math.PI, 0);
+      quaternion.setFromEuler(euler);
+      el.object3D.quaternion.copy(quaternion);
+      assert.shallowDeepEqual(el.getAttribute('rotation'), {x: 90, y: 180, z: 0});
+    });
+
+    test('returns scale previously set with setAttribute', function () {
+      var el = this.el;
+      el.setAttribute('scale', {x: 1, y: 2, z: 3});
+      assert.shallowDeepEqual(el.getAttribute('scale'), {x: 1, y: 2, z: 3});
+    });
+
+    test('returns scale set by modifying the object3D scale', function () {
+      var el = this.el;
+      el.object3D.scale.set(1, 2, 3);
+      assert.shallowDeepEqual(el.getAttribute('scale'), {x: 1, y: 2, z: 3});
+    });
   });
 
   suite('removeAttribute', function () {
@@ -1312,12 +1359,12 @@ suite('a-entity', function () {
       var el = this.el;
       mixinFactory('material', {material: 'shader: flat'});
       mixinFactory('position', {position: '1 2 3'});
-      mixinFactory('rotation', {rotation: '10 20 30'});
+      mixinFactory('rotation', {rotation: '10 20 45'});
       el.setAttribute('mixin', '  material\t\nposition \t  rotation\n  ');
       el.setAttribute('material', 'color: red');
       assert.shallowDeepEqual(el.getAttribute('material'), {shader: 'flat', color: 'red'});
       assert.shallowDeepEqual(el.getAttribute('position'), {x: 1, y: 2, z: 3});
-      assert.shallowDeepEqual(el.getAttribute('rotation'), {x: 10, y: 20, z: 30});
+      assert.shallowDeepEqual(el.getAttribute('rotation'), {x: 10, y: 20, z: 45});
       assert.equal(el.mixinEls.length, 3);
     });
 
