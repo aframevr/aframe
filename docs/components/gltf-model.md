@@ -97,7 +97,7 @@ rendering.
 
 ## Using animations
 
-If you want to use the animations from your glTF model, you can use the [animation-mixer](https://github.com/donmccurdy/aframe-extras/tree/master/src/loaders#animation) component from [aframe-extras](https://github.com/donmccurdy/aframe-extras). By default the first animation is played in a loop. 
+If you want to use the animations from your glTF model, you can use the [animation-mixer](https://github.com/donmccurdy/aframe-extras/tree/master/src/loaders#animation) component from [aframe-extras](https://github.com/donmccurdy/aframe-extras). By default all animations are played in a loop. 
 
 ```html
 <a-entity gltf-model="#monster" animation-mixer></a-entity>
