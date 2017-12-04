@@ -188,6 +188,7 @@ module.exports.Component = registerComponent('raycaster', {
       var newIntersections = this.newIntersections;
       var prevIntersectedEls = this.prevIntersectedEls;
       var rawIntersections;
+      var self = this;
 
       if (!this.data.enabled) { return; }
 
@@ -255,8 +256,8 @@ module.exports.Component = registerComponent('raycaster', {
       }
 
       // Update line length.
-      setTimeout(() => {
-        if (this.data.showLine) {
+      setTimeout(function () {
+        if (self.data.showLine) {
           if (intersections.length) {
             if (intersections[0].object.el === el && intersections[1]) {
               lineLength = intersections[1].distance;
@@ -264,7 +265,7 @@ module.exports.Component = registerComponent('raycaster', {
               lineLength = intersections[0].distance;
             }
           }
-          this.drawLine(lineLength);
+          self.drawLine(lineLength);
         }
       });
     };
