@@ -396,6 +396,12 @@ AFRAME.registerComponent('tracked-controls', {
 });
 ```
 
+### `.tock (time, timeDelta)`
+
+Identical to the tick method but invoked after the scene has rendered. 
+
+The `tock` handler is used to run logic that needs access to the drawn scene before it's pushed into the headset like postprocessing effects.
+
 ### `.pause ()`
 
 `.pause ()` is called when the entity or scene pauses. The entity can call a
