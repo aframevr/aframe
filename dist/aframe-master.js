@@ -70854,6 +70854,8 @@ module.exports.Component = registerComponent('text', {
     wrapCount: {type: 'number', default: 40},
     // `wrapPixels` will wrap using bmfont pixel units (e.g., dejavu's is 32 pixels).
     wrapPixels: {type: 'number'},
+    // `xOffset` to add padding.
+    xOffset: {type: 'number', default: 0},
     // `yOffset` to adjust generated fonts from tools that may have incorrect metrics.
     yOffset: {type: 'number', default: 0},
     // `zOffset` will provide a small z offset to avoid z-fighting.
@@ -71091,7 +71093,7 @@ module.exports.Component = registerComponent('text', {
     }
 
     // Position and scale mesh to apply layout.
-    mesh.position.x = x * textScale;
+    mesh.position.x = x * textScale + data.xOffset;
     mesh.position.y = y * textScale;
     // Place text slightly in front to avoid Z-fighting.
     mesh.position.z = data.zOffset;
@@ -78208,7 +78210,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.7.0 (Date 2017-12-04, Commit #9687531)');
+console.log('A-Frame Version: 0.7.0 (Date 2017-12-06, Commit #01f6bcf)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
