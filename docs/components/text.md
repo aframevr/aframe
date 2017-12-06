@@ -184,6 +184,14 @@ To change the size of the text, we can:
 
 Text can be wrapped by specifying width in A-Frame units.
 
+In case we need to do custom layout or need to know the bounds of the text, the
+output length of the text can be pre-calculated dynamically with something
+like:
+
+```
+totalWidth = data.value.length * (data.width / data.wrapCount)
+```
+
 ### Auto-Scaling
 
 The text component introduces special behavior when using alongside the
