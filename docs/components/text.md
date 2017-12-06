@@ -91,6 +91,7 @@ Inspector, and play with all the possible values to see the effects instantly!
 | width         | Width in meters.                                                                                                                                      | *derived from geometry if exists* |
 | wrapCount     | Number of characters before wrapping text (more or less).                                                                                             | 40                                |
 | wrapPixels    | Number of pixels before wrapping text.                                                                                                                | *derived from wrapCount*          |
+| xOffset       | X-offset to apply to add padding.                                                                                                                     | 0                                 |
 | zOffset       | Z-offset to apply to avoid Z-fighting if using with a geometry as a background.                                                                       | 0.001                             |
 
 [threetextusage]: https://github.com/Jam3/three-bmfont-text#usage
