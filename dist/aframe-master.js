@@ -78210,7 +78210,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.7.0 (Date 2017-12-06, Commit #01f6bcf)');
+console.log('A-Frame Version: 0.7.0 (Date 2017-12-07, Commit #ef5a398)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -80275,27 +80275,47 @@ module.exports.deepEqual = deepEqual;
  *   Difference object where set of keys note which values were not equal, and values are
  *   `b`'s values.
  */
-module.exports.diff = function (a, b) {
-  var diff = {};
-  var keys = Object.keys(a);
-  if (!b) { return diff; }
-  Object.keys(b).forEach(function collectKeys (bKey) {
-    if (keys.indexOf(bKey) === -1) {
-      keys.push(bKey);
+module.exports.diff = (function () {
+  var keys = [];
+
+  return function (a, b, targetObject) {
+    var aVal;
+    var bVal;
+    var bKey;
+    var diff;
+    var key;
+    var i;
+    var isComparingObjects;
+
+    diff = targetObject || {};
+
+    // Collect A keys.
+    keys.length = 0;
+    for (key in a) { keys.push(key); }
+
+    if (!b) { return diff; }
+
+    // Collect B keys.
+    for (bKey in b) {
+      if (keys.indexOf(bKey) === -1) {
+        keys.push(bKey);
+      }
     }
-  });
-  keys.forEach(function doDiff (key) {
-    var aVal = a[key];
-    var bVal = b[key];
-    var isComparingObjects = aVal && bVal &&
-                             aVal.constructor === Object && bVal.constructor === Object;
-    if ((isComparingObjects && !deepEqual(aVal, bVal)) ||
-        (!isComparingObjects && aVal !== bVal)) {
-      diff[key] = bVal;
+
+    for (i = 0; i < keys.length; i++) {
+      key = keys[i];
+      aVal = a[key];
+      bVal = b[key];
+      isComparingObjects = aVal && bVal &&
+                          aVal.constructor === Object && bVal.constructor === Object;
+      if ((isComparingObjects && !deepEqual(aVal, bVal)) ||
+          (!isComparingObjects && aVal !== bVal)) {
+        diff[key] = bVal;
+      }
     }
-  });
-  return diff;
-};
+    return diff;
+  };
+})();
 
 /**
  * Returns whether we should capture this keyboard event for keyboard shortcuts.
