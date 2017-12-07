@@ -215,14 +215,14 @@ module.exports.Component = registerComponent('cursor', {
    */
   onCursorDown: function (evt) {
     // Raycast again for touch.
-    if (this.data.rayOrigin === 'mouse') {
+    if (this.data.rayOrigin === 'mouse' && evt.type === 'touchstart') {
       this.onMouseMove(evt);
       this.el.components.raycaster.checkIntersections();
+      evt.preventDefault();
     }
 
     this.twoWayEmit(EVENTS.MOUSEDOWN);
     this.cursorDownEl = this.intersectedEl;
-    if (evt.type === 'touchstart') { evt.preventDefault(); }
   },
 
   /**
