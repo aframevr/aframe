@@ -15,7 +15,7 @@ examples: []
 This section will go over the concepts of A-Frame's primitive elements and
 their relation to the entity-component framework. If you're looking for a guide
 on using HTML and primitives, [check out the *Building a Basic Scene*
-guide](../guides/index.md).
+guide](../guides/building-a-basic-scene.md).
 
 <!--toc-->
 
