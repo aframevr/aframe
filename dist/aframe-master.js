@@ -66455,14 +66455,14 @@ module.exports.Component = registerComponent('cursor', {
    */
   onCursorDown: function (evt) {
     // Raycast again for touch.
-    if (this.data.rayOrigin === 'mouse') {
+    if (this.data.rayOrigin === 'mouse' && evt.type === 'touchstart') {
       this.onMouseMove(evt);
       this.el.components.raycaster.checkIntersections();
+      evt.preventDefault();
     }
 
     this.twoWayEmit(EVENTS.MOUSEDOWN);
     this.cursorDownEl = this.intersectedEl;
-    if (evt.type === 'touchstart') { evt.preventDefault(); }
   },
 
   /**
@@ -78210,7 +78210,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.7.0 (Date 2017-12-07, Commit #ef5a398)');
+console.log('A-Frame Version: 0.7.0 (Date 2017-12-07, Commit #21cc891)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
