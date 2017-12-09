@@ -981,7 +981,7 @@ suite('a-entity', function () {
       assert.ok('position' in el.components);
     });
 
-    test('does not remove mixed-in component', function () {
+    test('can remove mixed-in component', function () {
       var el = this.el;
       var mixinId = 'geometry';
       mixinFactory(mixinId, {geometry: 'primitive: box'});
@@ -989,9 +989,9 @@ suite('a-entity', function () {
       el.setAttribute('geometry', 'primitive: sphere');
       assert.ok('geometry' in el.components);
       el.removeAttribute('geometry');
-      assert.notEqual(el.getAttribute('geometry'), null);
+      assert.equal(el.getAttribute('geometry'), null);
       // Geometry still exists since it is mixed in.
-      assert.ok('geometry' in el.components);
+      assert.notOk('geometry' in el.components);
     });
 
     test('resets a component property', function () {
