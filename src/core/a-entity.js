@@ -388,12 +388,10 @@ var proto = Object.create(ANode.prototype, {
     value: function (name) {
       var component;
       var isDefault;
-      var isMixedIn;
 
       // Don't remove default or mixed-in components.
       isDefault = name in this.defaultComponents;
-      isMixedIn = isComponentMixedIn(name, this.mixinEls);
-      if (isDefault || isMixedIn) { return; }
+      if (isDefault) { return; }
 
       component = this.components[name];
       if (!component) { return; }
@@ -517,7 +515,7 @@ var proto = Object.create(ANode.prototype, {
 
       // Remove component.
       if (component && propertyName === undefined) {
-        this.setEntityAttribute(attr, undefined, null);
+        this.removeComponent(attr);
         // Do not remove the component from the DOM if default component.
         if (this.components[attr]) { return; }
       }
