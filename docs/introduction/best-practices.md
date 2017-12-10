@@ -28,6 +28,7 @@ Some best practices for the framework:
 [hardware]: ./vr-headsets-and-webvr-browsers.md
 [merge]: ../components/geometry.md#mergeto
 [stats]: ../components/stats.md
+[background]: ../components/background.md
 
 Performance is critical in VR. A high framerate must be maintained in order for
 people to feel comfortable. Here are some ways to help improve performance of
@@ -55,6 +56,7 @@ an A-Frame scene:
   handlers to hook into the global render loop. Use utilities such as
   `AFRAME.utils.throttleTick` to limit the number of times the `tick` handler
   is run if appropriate.
+- Use the **[background component][background]** instead of `a-sky` to define a solid color as the scene background. This prevents the creation of unnecessary geometry.
 
 ### GPU Texture Preloading
 

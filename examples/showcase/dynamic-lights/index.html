@@ -42,7 +42,7 @@
     </script>
   </head>
   <body>
-    <a-scene>
+    <a-scene background="color: #111">
       <a-assets>
         <a-mixin id="light"
                  geometry="primitive: sphere; radius: 1.5"
@@ -56,9 +56,6 @@
 
       <!-- Use entity-generator component to generate 120 entities with the torusKnot mixin. -->
       <a-entity entity-generator="mixin: torusKnot; num: 120"></a-entity>
-
-      <!-- Skysphere. -->
-      <a-sky color="#111"></a-sky>
 
       <!-- Lights. -->
       <a-entity animation="property: rotation; to: 0 0 360; dur: 4000; easing: linear; loop: true">

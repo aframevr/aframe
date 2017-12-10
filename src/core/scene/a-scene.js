@@ -39,6 +39,7 @@ module.exports.AScene = registerElement('a-scene', {
   prototype: Object.create(AEntity.prototype, {
     defaultComponents: {
       value: {
+        'background': '',
         'inspector': '',
         'keyboard-shortcuts': '',
         'screenshot': '',

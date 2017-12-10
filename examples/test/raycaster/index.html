@@ -10,7 +10,7 @@
     <script src="components/raycaster-helper.js"></script>
   </head>
   <body>
-    <a-scene>
+    <a-scene background="color: #ECECEC">
       <a-assets>
         <a-mixin id="box" geometry="primitive: box; depth: 0.1, height: 0.3; width: 0.1"
                           material="color: #DDD; opacity: 0.4; shader: flat"
@@ -80,8 +80,6 @@
         <a-animation attribute="position" dur="16000" easing="linear" repeat="indefinite"
                      to="0 0 0"></a-animation>
       </a-entity>
-
-      <a-sky color="#ECECEC" radius="50"></a-sky>
     </a-scene>
   </body>
 </html>

@@ -7,7 +7,7 @@
     <script src="../../../dist/aframe-master.js"></script>
   </head>
   <body>
-    <a-scene>
+    <a-scene background="color: #fff">
       <a-assets>
         <img id="mozvr" src="../../assets/img/mozvr.png">
         <img id="shadow2" src="../../assets/img/radial-shadow-2.png">
@@ -26,7 +26,6 @@
                      rotation="0 -130 0" scale="0.8 0.8 0.8"></a-curvedimage>
 
       <a-image position="0 -5 0" src="#shadow2" rotation="-90 0 0" scale="6 6 6"></a-image>
-      <a-sky color="#fff"></a-sky>
       <a-entity position="0 0 1.5">
         <a-camera></a-camera>
       </a-entity>

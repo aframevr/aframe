@@ -7,7 +7,7 @@
     <script src="../../../dist/aframe-master.js"></script>
   </head>
   <body>
-    <a-scene stats>
+    <a-scene background="color: #FAFAFA" stats>
       <a-assets>
         <a-asset-item id="crate-obj" src="../../assets/models/crate/crate.obj"></a-asset-item>
         <a-asset-item id="crate-mtl" src="../../assets/models/crate/crate.mtl"></a-asset-item>
@@ -26,8 +26,6 @@
         <a-entity obj-model="obj: #crate-obj; mtl: #crate-mtl" position="5 0 5"></a-entity>
         <a-entity obj-model="obj: #crate-obj; mtl: #crate-mtl" position="5 2 5"></a-entity>
         <a-text value="OBJ" color="#000000" position="4.75 -2 6" scale="1.5 1.5 1.5"></a-text>
-
-        <a-sky color="#FAFAFA"></a-sky>
       </a-entity>
 
     </a-scene>

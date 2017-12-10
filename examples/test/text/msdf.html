@@ -5,7 +5,7 @@
     <script src="../../../dist/aframe-master.js"></script>
   </head>
   <body>
-    <a-scene>
+    <a-scene background="color: #3CF">
       <a-assets>
         <a-mixin id="text"
           text="align: center; width: 6;
@@ -54,8 +54,6 @@
         <a-text mixin="text" font="kelsonsans" position="3 3 0" wrap-count="80"></a-text>
         <a-entity mixin="marker" position="3 3 -0.1"></a-entity>
       </a-entity>
-
-      <a-sky color="#3CF"></a-sky>
     </a-scene>
   </body>
 </html>

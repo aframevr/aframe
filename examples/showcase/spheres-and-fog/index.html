@@ -7,7 +7,7 @@
     <script src="../../../dist/aframe-master.js"></script>
   </head>
   <body>
-    <a-scene fog="type: linear; color: #AAB; far: 30; near: 0">
+    <a-scene background="color: #AAB" fog="type: linear; color: #AAB; far: 30; near: 0">
       <a-assets>
         <img id="highlight1" src="../../assets/img/radial-highlight.png">
         <img id="shadow3" src="../../assets/img/radial-shadow-3.png">
@@ -139,9 +139,6 @@
                    opacity="0.6"></a-image>
         </a-entity>
       </a-entity>
-
-      <!-- Background -->
-      <a-sky color="#AAB"></a-sky>
     </a-scene>
   </body>
 </html>
