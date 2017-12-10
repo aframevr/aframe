@@ -73885,12 +73885,10 @@ var proto = Object.create(ANode.prototype, {
     value: function (name) {
       var component;
       var isDefault;
-      var isMixedIn;
 
       // Don't remove default or mixed-in components.
       isDefault = name in this.defaultComponents;
-      isMixedIn = isComponentMixedIn(name, this.mixinEls);
-      if (isDefault || isMixedIn) { return; }
+      if (isDefault) { return; }
 
       component = this.components[name];
       if (!component) { return; }
@@ -74014,7 +74012,7 @@ var proto = Object.create(ANode.prototype, {
 
       // Remove component.
       if (component && propertyName === undefined) {
-        this.setEntityAttribute(attr, undefined, null);
+        this.removeComponent(attr);
         // Do not remove the component from the DOM if default component.
         if (this.components[attr]) { return; }
       }
@@ -78210,7 +78208,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.7.0 (Date 2017-12-07, Commit #21cc891)');
+console.log('A-Frame Version: 0.7.0 (Date 2017-12-10, Commit #121acba)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
