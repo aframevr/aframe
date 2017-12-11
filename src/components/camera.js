@@ -11,6 +11,7 @@ module.exports.Component = registerComponent('camera', {
     far: {default: 10000},
     fov: {default: 80, min: 0},
     near: {default: 0.005, min: 0},
+    spectator: {default: false},
     zoom: {default: 1, min: 0}
   },
 
@@ -31,10 +32,8 @@ module.exports.Component = registerComponent('camera', {
    * Update three.js camera.
    */
   update: function (oldData) {
-    var el = this.el;
     var data = this.data;
     var camera = this.camera;
-    var system = this.system;
 
     // Update properties.
     camera.aspect = data.aspect || (window.innerWidth / window.innerHeight);
@@ -44,8 +43,16 @@ module.exports.Component = registerComponent('camera', {
     camera.zoom = data.zoom;
     camera.updateProjectionMatrix();
 
+    this.updateActiveCamera(oldData);
+    this.updateSpectatorCamera(oldData);
+  },
+
+  updateActiveCamera: function (oldData) {
+    var data = this.data;
+    var el = this.el;
+    var system = this.system;
     // Active property did not change.
-    if (oldData && oldData.active === data.active) { return; }
+    if (oldData && oldData.active === data.active || data.spectator) { return; }
 
     // If `active` property changes, or first update, handle active camera with system.
     if (data.active && system.activeCameraEl !== el) {
@@ -54,6 +61,23 @@ module.exports.Component = registerComponent('camera', {
     } else if (!data.active && system.activeCameraEl === el) {
       // Camera disabled. Set camera to another camera.
       system.disableActiveCamera();
+    }
+  },
+
+  updateSpectatorCamera: function (oldData) {
+    var data = this.data;
+    var el = this.el;
+    var system = this.system;
+    // spectator property did not change.
+    if (oldData && oldData.spectator === data.spectator) { return; }
+
+    // If `spectator` property changes, or first update, handle spectator camera with system.
+    if (data.spectator && system.spectatorCameraEl !== el) {
+      // Camera enabled. Set camera to this camera.
+      system.setSpectatorCamera(el);
+    } else if (!data.spectator && system.spectatorCameraEl === el) {
+      // Camera disabled. Set camera to another camera.
+      system.disableSpectatorCamera();
     }
   },
 
