@@ -944,6 +944,22 @@ suite('a-entity', function () {
       el.object3D.scale.set(1, 2, 3);
       assert.shallowDeepEqual(el.getAttribute('scale'), {x: 1, y: 2, z: 3});
     });
+
+    test('returns visible previously set with setAttribute', function () {
+      var el = this.el;
+      el.setAttribute('visible', false);
+      assert.equal(el.getAttribute('visible'), false);
+      el.setAttribute('visible', true);
+      assert.equal(el.getAttribute('visible'), true);
+    });
+
+    test('returns visible set by modifying the object3D visible', function () {
+      var el = this.el;
+      el.object3D.visible = false;
+      assert.equal(el.getAttribute('visible'), false);
+      el.object3D.visible = true;
+      assert.equal(el.getAttribute('visible'), true);
+    });
   });
 
   suite('removeAttribute', function () {

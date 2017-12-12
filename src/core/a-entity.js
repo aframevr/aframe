@@ -723,6 +723,7 @@ var proto = Object.create(ANode.prototype, {
       if (attr === 'position') { return this.object3D.position; }
       if (attr === 'rotation') { return getRotation(this); }
       if (attr === 'scale') { return this.object3D.scale; }
+      if (attr === 'visible') { return this.object3D.visible; }
       component = this.components[attr];
       if (component) { return component.data; }
       return window.HTMLElement.prototype.getAttribute.call(this, attr);
