@@ -7,7 +7,7 @@
     <script src="../../../dist/aframe-master.js"></script>
   </head>
   <body>
-    <a-scene shadow="shadowMapType: basic" stats>
+    <a-scene background="color: #111" shadow="shadowMapType: basic" stats>
       <a-assets>
         <a-mixin id="wall"
                  geometry="primitive: box; height: 30; width: 30; depth: 2"
@@ -68,8 +68,6 @@
                 position="-2 0 -4"></a-entity>
       <a-entity geometry="primitive: cylinder" material="color: #EF2D5E; metalness: 0" shadow
                 position="2 0 -4"></a-entity>
-
-      <a-sky color="#111"></a-sky>
     </a-scene>
   </body>
 </html>

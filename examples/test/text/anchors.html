@@ -5,7 +5,7 @@
     <script src="../../../dist/aframe-master.js"></script>
   </head>
   <body>
-    <a-scene auto-enter-vr="display:all">
+    <a-scene background="color: #222" auto-enter-vr="display:all">
       <a-assets>
         <a-mixin
           id="marker"
@@ -78,7 +78,6 @@
               value: a-plane align:center (anchor:align) DejaVu width 8 1234567890123456789012345678901234567890">
       </a-entity>
 
-      <a-sky color="#222"></a-sky>
       <a-entity position="0.0 3.8 1.5">
         <a-entity camera look-controls wasd-controls></a-entity>
       </a-entity>

@@ -7,13 +7,12 @@
     <script src="../../../dist/aframe-master.js"></script>
   </head>
   <body>
-    <a-scene>
+    <a-scene background="color: #ECECEC">
       <a-assets>
         <a-asset-item id="tree" src="../../assets/models/tree2/tree2.dae"></a-asset-item>
       </a-assets>
 
       <a-collada-model src="#tree" rotation="0 45 0"></a-model>
-      <a-sky color="#ECECEC"></a-sky>
       <a-entity position="0 0 4">
         <a-camera></a-camera>
       </a-entity>

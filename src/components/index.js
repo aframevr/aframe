@@ -27,6 +27,7 @@ require('./vive-controls');
 require('./wasd-controls');
 require('./windows-motion-controls');
 
+require('./scene/background');
 require('./scene/debug');
 require('./scene/embedded');
 require('./scene/inspector');

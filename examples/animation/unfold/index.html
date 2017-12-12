@@ -7,7 +7,7 @@
     <script src="../../../dist/aframe-master.js"></script>
   </head>
   <body>
-    <a-scene>
+    <a-scene background="color: #ECECEC">
       <a-assets>
         <a-mixin id="board" geometry="depth: .05; height: 1; width: 6" material="shader: flat"
                  pivot="0 0.5 0" position="0 -1 0"></a-mixin>
@@ -44,7 +44,6 @@
       </a-entity>
 
       <a-image position="0 -1 0" src="#shadow" rotation="-90 0 0" scale="6 6 6"></a-image>
-      <a-sky color="#ECECEC"></a-sky>
       <a-light type="directional" color="#fff" intensity="0.2" position="-1 2 1"></a-light>
       <a-light type="ambient" color="#fff"></a-light>
     </a-scene>
