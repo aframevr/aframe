@@ -242,7 +242,8 @@ module.exports.AScene = registerElement('a-scene', {
           vrManager.setDevice(vrDisplay);
           vrManager.enabled = true;
           vrManager.setPoseTarget(this.camera.el.object3D);
-          return vrDisplay.requestPresent([{source: this.canvas}]).then(enterVRSuccess, enterVRFailure);
+          return vrDisplay.requestPresent([{source: this.canvas}])
+                          .then(enterVRSuccess, enterVRFailure);
         }
         enterVRSuccess();
         return Promise.resolve();
