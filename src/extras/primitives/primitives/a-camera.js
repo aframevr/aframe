@@ -18,7 +18,7 @@ registerPrimitive('a-camera', {
     near: 'camera.near',
     'wasd-controls-enabled': 'wasd-controls.enabled',
     'reverse-mouse-drag': 'look-controls.reverseMouseDrag',
-    'user-height': 'camera.userHeight',
+    'user-height': 'look-controls.userHeight',
     zoom: 'camera.zoom'
   }
 });

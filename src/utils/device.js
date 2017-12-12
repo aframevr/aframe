@@ -1,31 +1,28 @@
-var THREE = require('../lib/three');
-var dolly = new THREE.Object3D();
-var controls = new THREE.VRControls(dolly);
+var vrDisplay;
+var polyfilledVRDisplay;
+var POLYFILL_VRDISPLAY_ID = 'Cardboard VRDisplay (webvr-polyfill)';
+
+if (navigator.getVRDisplays) {
+  navigator.getVRDisplays().then(function (displays) {
+    vrDisplay = displays.length && displays[0];
+    polyfilledVRDisplay = vrDisplay.displayName === POLYFILL_VRDISPLAY_ID;
+  });
+}
+
+function getVRDisplay () { return vrDisplay; }
+module.exports.getVRDisplay = getVRDisplay;
 
 /**
- * Determine if a headset is connected by checking if the orientation is available.
+ * Determine if a headset is connected by checking if a vrDisplay is available.
  */
-function checkHeadsetConnected () {
-  var orientation;
-  var vrDisplay = controls.getVRDisplay();
-
-  // If `isConnected` is available, just use that.
-  if (vrDisplay && 'isConnected' in vrDisplay) { return vrDisplay.isConnected; }
-
-  controls.update();
-  orientation = dolly.quaternion;
-  if (orientation._x !== 0 || orientation._y !== 0 || orientation._z !== 0) {
-    return true;
-  }
-  return false;
-}
+function checkHeadsetConnected () { return !!getVRDisplay(); }
 module.exports.checkHeadsetConnected = checkHeadsetConnected;
 
 /**
  * Check for positional tracking.
  */
 function checkHasPositionalTracking () {
-  var vrDisplay = controls.getVRDisplay();
+  var vrDisplay = getVRDisplay();
   if (isMobile() || isGearVR()) { return false; }
   return vrDisplay && vrDisplay.capabilities.hasPosition;
 }
@@ -106,3 +103,26 @@ module.exports.isBrowserEnvironment = !!(!process || process.browser);
  * Check if running in node on the server.
  */
 module.exports.isNodeEnvironment = !module.exports.isBrowserEnvironment;
+
+/**
+ * Update an Object3D pose if a polyfilled vrDisplay is present.
+ */
+module.exports.PolyfillControls = function PolyfillControls (object) {
+  var frameData;
+  if (window.VRFrameData) { frameData = new window.VRFrameData(); }
+  this.update = function () {
+    var pose;
+    if (!vrDisplay || !polyfilledVRDisplay) { return; }
+    vrDisplay.getFrameData(frameData);
+    pose = frameData.pose;
+    if (pose.orientation !== null) {
+      object.quaternion.fromArray(pose.orientation);
+    }
+    if (pose.position !== null) {
+      object.position.fromArray(pose.position);
+    } else {
+      object.position.set(0, 0, 0);
+    }
+  };
+};
+

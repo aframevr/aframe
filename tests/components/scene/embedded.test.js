@@ -8,12 +8,7 @@ suite('embedded', function () {
   setup(function (done) {
     this.entityEl = entityFactory();
     var el = this.el = this.entityEl.parentNode;
-    var resolvePromise = function () { return Promise.resolve(); };
     el.setAttribute('embedded', '');
-    el.effect = {
-      requestPresent: resolvePromise,
-      exitPresent: resolvePromise
-    };
     el.addEventListener('loaded', function () { done(); });
   });
 
