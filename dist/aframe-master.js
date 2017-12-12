@@ -75256,7 +75256,8 @@ module.exports.AScene = registerElement('a-scene', {
           vrManager.setDevice(vrDisplay);
           vrManager.enabled = true;
           vrManager.setPoseTarget(this.camera.el.object3D);
-          return vrDisplay.requestPresent([{source: this.canvas}]).then(enterVRSuccess, enterVRFailure);
+          return vrDisplay.requestPresent([{source: this.canvas}])
+                          .then(enterVRSuccess, enterVRFailure);
         }
         enterVRSuccess();
         return Promise.resolve();
@@ -77434,7 +77435,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.7.0 (Date 2017-12-12, Commit #fd843a1)');
+console.log('A-Frame Version: 0.7.0 (Date 2017-12-12, Commit #1c3db47)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
