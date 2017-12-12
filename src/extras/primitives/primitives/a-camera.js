@@ -3,10 +3,10 @@ var registerPrimitive = require('../primitives').registerPrimitive;
 
 registerPrimitive('a-camera', {
   defaultComponents: {
-    camera: {
+    'camera': {},
+    'look-controls': {
       userHeight: DEFAULT_CAMERA_HEIGHT
     },
-    'look-controls': {},
     'wasd-controls': {}
   },
 
