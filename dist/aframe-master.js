@@ -67636,7 +67636,7 @@ module.exports.Component = registerComponent('look-controls', {
     var sceneEl = this.el.sceneEl;
     var rotation = this.rotation;
 
-    // In VR mode THREE is in charge of updating the camera rotation.
+    // In VR mode, THREE is in charge of updating the camera rotation.
     if (sceneEl.is('vr-mode') && sceneEl.checkHeadsetConnected()) { return; }
 
     // Calculate polyfilled HMD quaternion.
@@ -67661,7 +67661,7 @@ module.exports.Component = registerComponent('look-controls', {
     var previousHMDPosition = this.previousHMDPosition;
     var sceneEl = this.el.sceneEl;
 
-    if (!sceneEl.is('vr-mode')) { return; }
+    if (!sceneEl.is('vr-mode') || !sceneEl.checkHeadsetConnected()) { return; }
 
     // Calculate change in position.
     currentHMDPosition = this.calculateHMDPosition();
@@ -77436,7 +77436,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.7.0 (Date 2017-12-13, Commit #601db9a)');
+console.log('A-Frame Version: 0.7.0 (Date 2017-12-13, Commit #79975d6)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
