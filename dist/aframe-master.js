@@ -73455,6 +73455,7 @@ var proto = Object.create(ANode.prototype, {
       if (attr === 'position') { return this.object3D.position; }
       if (attr === 'rotation') { return getRotation(this); }
       if (attr === 'scale') { return this.object3D.scale; }
+      if (attr === 'visible') { return this.object3D.visible; }
       component = this.components[attr];
       if (component) { return component.data; }
       return window.HTMLElement.prototype.getAttribute.call(this, attr);
@@ -77435,7 +77436,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.7.0 (Date 2017-12-13, Commit #19d9734)');
+console.log('A-Frame Version: 0.7.0 (Date 2017-12-13, Commit #601db9a)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
