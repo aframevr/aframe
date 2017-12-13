@@ -68476,7 +68476,7 @@ module.exports.Component = registerComponent('raycaster', {
     direction: {type: 'vec3', default: {x: 0, y: 0, z: -1}},
     enabled: {default: true},
     far: {default: 1000},
-    interval: {default: 100},
+    interval: {default: 0},
     near: {default: 0},
     objects: {default: ''},
     origin: {type: 'vec3'},
@@ -77432,7 +77432,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.7.0 (Date 2017-12-13, Commit #ff24dbd)');
+console.log('A-Frame Version: 0.7.0 (Date 2017-12-13, Commit #80f818b)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
