@@ -76697,10 +76697,10 @@ var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 
 registerPrimitive('a-camera', {
   defaultComponents: {
-    camera: {
+    'camera': {},
+    'look-controls': {
       userHeight: DEFAULT_CAMERA_HEIGHT
     },
-    'look-controls': {},
     'wasd-controls': {}
   },
 
@@ -77435,7 +77435,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.7.0 (Date 2017-12-12, Commit #1c3db47)');
+console.log('A-Frame Version: 0.7.0 (Date 2017-12-13, Commit #19d9734)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
