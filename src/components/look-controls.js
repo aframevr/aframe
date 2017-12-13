@@ -168,7 +168,7 @@ module.exports.Component = registerComponent('look-controls', {
     var sceneEl = this.el.sceneEl;
     var rotation = this.rotation;
 
-    // In VR mode THREE is in charge of updating the camera rotation.
+    // In VR mode, THREE is in charge of updating the camera rotation.
     if (sceneEl.is('vr-mode') && sceneEl.checkHeadsetConnected()) { return; }
 
     // Calculate polyfilled HMD quaternion.
@@ -193,7 +193,7 @@ module.exports.Component = registerComponent('look-controls', {
     var previousHMDPosition = this.previousHMDPosition;
     var sceneEl = this.el.sceneEl;
 
-    if (!sceneEl.is('vr-mode')) { return; }
+    if (!sceneEl.is('vr-mode') || !sceneEl.checkHeadsetConnected()) { return; }
 
     // Calculate change in position.
     currentHMDPosition = this.calculateHMDPosition();
