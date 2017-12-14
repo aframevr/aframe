@@ -68486,11 +68486,10 @@ module.exports.Component = registerComponent('raycaster', {
   },
 
   init: function () {
-    // Calculate unit vector for line direction. Can be multiplied via scalar to performantly
-    // adjust line length.
     this.clearedIntersectedEls = [];
     this.unitLineEndVec3 = new THREE.Vector3();
     this.intersectedEls = [];
+    this.intersections = [];
     this.newIntersectedEls = [];
     this.newIntersections = [];
     this.objects = [];
@@ -68525,6 +68524,8 @@ module.exports.Component = registerComponent('raycaster', {
     if (data.showLine &&
         (data.far !== oldData.far || data.origin !== oldData.origin ||
          data.direction !== oldData.direction || !oldData.showLine)) {
+      // Calculate unit vector for line direction. Can be multiplied via scalar to performantly
+      // adjust line length.
       this.unitLineEndVec3.copy(data.origin).add(data.direction).normalize();
       this.drawLine();
     }
@@ -68611,103 +68612,100 @@ module.exports.Component = registerComponent('raycaster', {
   /**
    * Raycast for intersections and emit events for current and cleared inersections.
    */
-  checkIntersections: (function () {
-    var intersections = [];
+  checkIntersections: function () {
+    var clearedIntersectedEls = this.clearedIntersectedEls;
+    var el = this.el;
+    var data = this.data;
+    var i;
+    var intersectedEls = this.intersectedEls;
+    var intersection;
+    var intersections = this.intersections;
+    var lineLength;
+    var newIntersectedEls = this.newIntersectedEls;
+    var newIntersections = this.newIntersections;
+    var prevIntersectedEls = this.prevIntersectedEls;
+    var rawIntersections;
+    var self = this;
 
-    return function () {
-      var clearedIntersectedEls = this.clearedIntersectedEls;
-      var el = this.el;
-      var data = this.data;
-      var i;
-      var intersectedEls = this.intersectedEls;
-      var intersection;
-      var lineLength;
-      var newIntersectedEls = this.newIntersectedEls;
-      var newIntersections = this.newIntersections;
-      var prevIntersectedEls = this.prevIntersectedEls;
-      var rawIntersections;
-      var self = this;
+    if (!this.data.enabled) { return; }
 
-      if (!this.data.enabled) { return; }
+    // Refresh the object whitelist if needed.
+    if (this.dirty) { this.refreshObjects(); }
 
-      // Refresh the object whitelist if needed.
-      if (this.dirty) { this.refreshObjects(); }
+    // Store old previously intersected entities.
+    copyArray(this.prevIntersectedEls, this.intersectedEls);
 
-      // Store old previously intersected entities.
-      copyArray(this.prevIntersectedEls, this.intersectedEls);
+    // Raycast.
+    this.updateOriginDirection();
+    rawIntersections = this.raycaster.intersectObjects(this.objects, data.recursive);
 
-      // Raycast.
-      this.updateOriginDirection();
-      rawIntersections = this.raycaster.intersectObjects(this.objects, data.recursive);
-
-      // Only keep intersections against objects that have a reference to an entity.
-      intersections.length = 0;
-      intersectedEls.length = 0;
-      for (i = 0; i < rawIntersections.length; i++) {
-        intersection = rawIntersections[i];
-        // Don't intersect with own line.
-        if (data.showLine && intersection.object === el.getObject3D('line')) {
-          continue;
-        }
-        if (intersection.object.el) {
-          intersections.push(intersection);
-          intersectedEls.push(intersection.object.el);
-        }
+    // Only keep intersections against objects that have a reference to an entity.
+    intersections.length = 0;
+    intersectedEls.length = 0;
+    for (i = 0; i < rawIntersections.length; i++) {
+      intersection = rawIntersections[i];
+      // Don't intersect with own line.
+      if (data.showLine && intersection.object === el.getObject3D('line')) {
+        continue;
       }
-
-      // Get newly intersected entities.
-      newIntersections.length = 0;
-      newIntersectedEls.length = 0;
-      for (i = 0; i < intersections.length; i++) {
-        if (prevIntersectedEls.indexOf(intersections[i].object.el) === -1) {
-          newIntersections.push(intersections[i]);
-          newIntersectedEls.push(intersections[i].object.el);
-        }
+      if (intersection.object.el) {
+        intersections.push(intersection);
+        intersectedEls.push(intersection.object.el);
       }
+    }
 
-      // Emit intersection cleared on both entities per formerly intersected entity.
-      clearedIntersectedEls.length = 0;
-      for (i = 0; i < prevIntersectedEls.length; i++) {
-        if (intersectedEls.indexOf(prevIntersectedEls[i]) !== -1) { continue; }
-        prevIntersectedEls[i].emit('raycaster-intersected-cleared',
-                                   this.intersectedClearedDetail);
-        clearedIntersectedEls.push(prevIntersectedEls[i]);
+    // Get newly intersected entities.
+    newIntersections.length = 0;
+    newIntersectedEls.length = 0;
+    for (i = 0; i < intersections.length; i++) {
+      if (prevIntersectedEls.indexOf(intersections[i].object.el) === -1) {
+        newIntersections.push(intersections[i]);
+        newIntersectedEls.push(intersections[i].object.el);
       }
-      if (clearedIntersectedEls.length) {
-        el.emit('raycaster-intersection-cleared', this.intersectionClearedDetail);
-      }
+    }
 
-      // Emit intersected on intersected entity per intersected entity.
-      for (i = 0; i < newIntersectedEls.length; i++) {
-        newIntersectedEls[i].emit('raycaster-intersected', {
-          el: el,
-          intersection: newIntersections[i]
-        });
-      }
+    // Emit intersection cleared on both entities per formerly intersected entity.
+    clearedIntersectedEls.length = 0;
+    for (i = 0; i < prevIntersectedEls.length; i++) {
+      if (intersectedEls.indexOf(prevIntersectedEls[i]) !== -1) { continue; }
+      prevIntersectedEls[i].emit('raycaster-intersected-cleared',
+                                 this.intersectedClearedDetail);
+      clearedIntersectedEls.push(prevIntersectedEls[i]);
+    }
+    if (clearedIntersectedEls.length) {
+      el.emit('raycaster-intersection-cleared', this.intersectionClearedDetail);
+    }
 
-      // Emit all intersections at once on raycasting entity.
-      if (newIntersections.length) {
-        el.emit('raycaster-intersection', {
-          els: newIntersectedEls,
-          intersections: newIntersections
-        });
-      }
-
-      // Update line length.
-      setTimeout(function () {
-        if (self.data.showLine) {
-          if (intersections.length) {
-            if (intersections[0].object.el === el && intersections[1]) {
-              lineLength = intersections[1].distance;
-            } else {
-              lineLength = intersections[0].distance;
-            }
-          }
-          self.drawLine(lineLength);
-        }
+    // Emit intersected on intersected entity per intersected entity.
+    for (i = 0; i < newIntersectedEls.length; i++) {
+      newIntersectedEls[i].emit('raycaster-intersected', {
+        el: el,
+        intersection: newIntersections[i]
       });
-    };
-  })(),
+    }
+
+    // Emit all intersections at once on raycasting entity.
+    if (newIntersections.length) {
+      el.emit('raycaster-intersection', {
+        els: newIntersectedEls,
+        intersections: newIntersections
+      });
+    }
+
+    // Update line length.
+    setTimeout(function () {
+      if (self.data.showLine) {
+        if (intersections.length) {
+          if (intersections[0].object.el === el && intersections[1]) {
+            lineLength = intersections[1].distance;
+          } else {
+            lineLength = intersections[0].distance;
+          }
+        }
+        self.drawLine(lineLength);
+      }
+    });
+  },
 
   /**
    * Update origin and direction of raycaster using entity transforms and supplied origin or
@@ -77432,7 +77430,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.7.0 (Date 2017-12-13, Commit #80f818b)');
+console.log('A-Frame Version: 0.7.0 (Date 2017-12-14, Commit #e382969)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
