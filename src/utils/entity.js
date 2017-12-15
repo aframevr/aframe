@@ -11,6 +11,7 @@
  */
 var propertyPathCache = {};
 function getComponentPropertyPath (str, delimiter) {
+  delimiter = delimiter || '.';
   if (!propertyPathCache[delimiter]) { propertyPathCache[delimiter] = {}; }
   propertyPathCache[delimiter][str] = str.split(delimiter);
   return propertyPathCache[delimiter][str];
