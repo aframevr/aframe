@@ -77430,7 +77430,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.7.0 (Date 2017-12-15, Commit #16540ab)');
+console.log('A-Frame Version: 0.7.0 (Date 2017-12-15, Commit #707a8cf)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -79279,13 +79279,11 @@ module.exports.getComponentProperty = function (el, name, delimiter) {
  * delimiter.
  */
 module.exports.setComponentProperty = function (el, name, value, delimiter) {
-  var data = {};
   var splitName;
   delimiter = delimiter || '.';
   if (name.indexOf(delimiter) !== -1) {
     splitName = getComponentPropertyPath(name, delimiter);
-    data[splitName[1]] = value;
-    el.setAttribute(splitName[0], data);
+    el.setAttribute(splitName[0], splitName[1], value);
     return;
   }
   el.setAttribute(name, value);
