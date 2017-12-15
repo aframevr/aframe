@@ -24,12 +24,16 @@ suite('utils.entity', function () {
       var el = this.el;
       el.setAttribute('material', {color: 'red'});
       assert.equal(getComponentProperty(el, 'material.color'), 'red');
+      assert.equal(entity.propertyPathCache['.']['material.color'][0], 'material');
+      assert.equal(entity.propertyPathCache['.']['material.color'][1], 'color');
     });
 
     test('can get custom-delimited attribute', function () {
       var el = this.el;
       el.setAttribute('material', {color: 'red'});
       assert.equal(getComponentProperty(el, 'material|color', '|'), 'red');
+      assert.equal(entity.propertyPathCache['|']['material|color'][0], 'material');
+      assert.equal(entity.propertyPathCache['|']['material|color'][1], 'color');
     });
   });
 
