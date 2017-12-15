@@ -67,7 +67,7 @@ is not just a 3D scene graph or a markup language; the core is a powerful
 entity-component framework that provides a declarative, extensible, and
 composable structure to [three.js].
 
-A-Frame supports most VR headsets such as Vive, Rift, Daydream, GearVR,
+A-Frame supports most VR headsets such as Vive, Rift, Windows Mixed Reality, Daydream, GearVR,
 Cardboard, and can even be used for augmented reality. Although A-Frame
 supports the whole spectrum, A-Frame aims to define fully immersive
 interactive VR experiences that go beyond basic 360&deg; content, making
@@ -105,7 +105,7 @@ copy-and-paste. Being based on top of HTML, A-Frame is accessible to everyone:
 web developers, VR enthusiasts, artists, designers, educators, makers, kids.
 
 :globe_with_meridians: **Cross-Platform VR**: Build VR applications for Vive,
-Rift, Daydream, GearVR, and Cardboard with support for all respective
+Rift, Windows Mixed Reality, Daydream, GearVR, and Cardboard with support for all respective
 controllers. Don't have a headset or controllers? No problem! A-Frame still
 works on standard desktop and smartphones.
 
@@ -166,7 +166,7 @@ discovery.
 
 :runner: **Components**: Hit the ground running with A-Frame's core components
 such as geometries, materials, lights, animations, models, raycasters, shadows,
-positional audio, text, and Vive / Touch / Daydream / GearVR / Cardboard
+positional audio, text, and Vive / Touch / Windows Motion / Daydream / GearVR / Cardboard
 controls. Get even further with community components such as [particle systems],
 [physics], [multiuser], [oceans], [mountains], [speech recognition], [motion capture],
 [teleportation], [super hands], and [augmented reality].
