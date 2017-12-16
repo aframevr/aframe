@@ -89,15 +89,21 @@ module.exports = registerElement('a-mixin', {
      */
     updateEntities: {
       value: function () {
+        var componentName;
+        var entities;
+        var entity;
+        var i;
+
         if (!this.sceneEl) { return; }
-        var entities = this.sceneEl.querySelectorAll('[mixin~=' + this.id + ']');
-        for (var i = 0; i < entities.length; i++) {
-          var entity = entities[i];
+
+        entities = this.sceneEl.querySelectorAll('[mixin~=' + this.id + ']');
+        for (i = 0; i < entities.length; i++) {
+          entity = entities[i];
           if (!entity.hasLoaded) { continue; }
           entity.registerMixin(this.id);
-          Object.keys(this.componentCache).forEach(function updateComponent (componentName) {
+          for (componentName in this.componentCache) {
             entity.updateComponent(componentName);
-          });
+          }
         }
       }
     }
