@@ -102,6 +102,7 @@ module.exports.Component = registerComponent('cursor', {
 
     function addCanvasListeners () {
       canvas = el.sceneEl.canvas;
+      if (data.downEvents.length || data.upEvents.length) { return; }
       CANVAS_EVENTS.DOWN.forEach(function (downEvent) {
         canvas.addEventListener(downEvent, self.onCursorDown);
       });
@@ -136,7 +137,7 @@ module.exports.Component = registerComponent('cursor', {
     var self = this;
 
     canvas = el.sceneEl.canvas;
-    if (canvas) {
+    if (canvas && !data.downEvents.length && !data.upEvents.length) {
       CANVAS_EVENTS.DOWN.forEach(function (downEvent) {
         canvas.removeEventListener(downEvent, self.onCursorDown);
       });
