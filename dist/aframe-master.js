@@ -77431,7 +77431,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.7.0 (Date 2017-12-16, Commit #91619fa)');
+console.log('A-Frame Version: 0.7.0 (Date 2017-12-16, Commit #b63d60b)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -79256,7 +79256,11 @@ var propertyPathCache = {};
 function getComponentPropertyPath (str, delimiter) {
   delimiter = delimiter || '.';
   if (!propertyPathCache[delimiter]) { propertyPathCache[delimiter] = {}; }
-  propertyPathCache[delimiter][str] = str.split(delimiter);
+  if (str.indexOf(delimiter) !== -1) {
+    propertyPathCache[delimiter][str] = str.split(delimiter);
+  } else {
+    propertyPathCache[delimiter][str] = str;
+  }
   return propertyPathCache[delimiter][str];
 }
 module.exports.getComponentPropertyPath = getComponentPropertyPath;
@@ -79271,6 +79275,9 @@ module.exports.getComponentProperty = function (el, name, delimiter) {
   delimiter = delimiter || '.';
   if (name.indexOf(delimiter) !== -1) {
     splitName = getComponentPropertyPath(name, delimiter);
+    if (splitName.constructor === String) {
+      return el.getAttribute(splitName);
+    }
     return el.getAttribute(splitName[0])[splitName[1]];
   }
   return el.getAttribute(name);
@@ -79285,7 +79292,11 @@ module.exports.setComponentProperty = function (el, name, value, delimiter) {
   delimiter = delimiter || '.';
   if (name.indexOf(delimiter) !== -1) {
     splitName = getComponentPropertyPath(name, delimiter);
-    el.setAttribute(splitName[0], splitName[1], value);
+    if (splitName.constructor === String) {
+      el.setAttribute(splitName, value);
+    } else {
+      el.setAttribute(splitName[0], splitName[1], value);
+    }
     return;
   }
   el.setAttribute(name, value);
