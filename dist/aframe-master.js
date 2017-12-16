@@ -65508,6 +65508,7 @@ module.exports.Component = registerComponent('cursor', {
 
     function addCanvasListeners () {
       canvas = el.sceneEl.canvas;
+      if (data.downEvents.length || data.upEvents.length) { return; }
       CANVAS_EVENTS.DOWN.forEach(function (downEvent) {
         canvas.addEventListener(downEvent, self.onCursorDown);
       });
@@ -65542,7 +65543,7 @@ module.exports.Component = registerComponent('cursor', {
     var self = this;
 
     canvas = el.sceneEl.canvas;
-    if (canvas) {
+    if (canvas && !data.downEvents.length && !data.upEvents.length) {
       CANVAS_EVENTS.DOWN.forEach(function (downEvent) {
         canvas.removeEventListener(downEvent, self.onCursorDown);
       });
@@ -77430,7 +77431,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.7.0 (Date 2017-12-16, Commit #33b2aa4)');
+console.log('A-Frame Version: 0.7.0 (Date 2017-12-16, Commit #91619fa)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
