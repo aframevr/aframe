@@ -61,6 +61,7 @@ var registerShader = require('./core/shader').registerShader;
 var registerSystem = require('./core/system').registerSystem;
 var shaders = require('./core/shader').shaders;
 var systems = require('./core/system').systems;
+
 // Exports THREE to window so three.js can be used without alteration.
 var THREE = window.THREE = require('./lib/three');
 var TWEEN = window.TWEEN = require('@tweenjs/tween.js');
@@ -100,6 +101,8 @@ module.exports = window.AFRAME = {
   registerPrimitive: registerPrimitive,
   registerShader: registerShader,
   registerSystem: registerSystem,
+  registerInputMappings: require('./systems/input-mapping').registerInputMappings,
+  currentMapping: 'default',
   primitives: {
     getMeshMixin: require('./extras/primitives/getMeshMixin'),
     primitives: require('./extras/primitives/primitives').primitives
