@@ -74389,12 +74389,14 @@ Component.prototype = {
     // Cache previously passed attribute to decide if we skip type checking.
     this.previousAttrValue = attrValue;
 
+    // Cache current attrValue for future updates. Updates `this.attrValue`.
     attrValue = this.parseAttrValueForCache(attrValue);
-    if (this.updateSchema) { this.updateSchema(this.buildData(attrValue, false, true)); }
-    this.data = this.buildData(attrValue, clobber, false, skipTypeChecking);
-
-    // Cache current attrValue for future updates.
     this.updateCachedAttrValue(attrValue, clobber);
+
+    if (this.updateSchema) {
+      this.updateSchema(this.buildData(this.attrValue, false, true));
+    }
+    this.data = this.buildData(this.attrValue, clobber, false, skipTypeChecking);
 
     if (!this.initialized) {
       // Component is being already initialized.
@@ -77442,7 +77444,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.7.0 (Date 2017-12-17, Commit #6cc2617)');
+console.log('A-Frame Version: 0.7.0 (Date 2017-12-17, Commit #34f24ed)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
