@@ -252,12 +252,14 @@ Component.prototype = {
     // Cache previously passed attribute to decide if we skip type checking.
     this.previousAttrValue = attrValue;
 
+    // Cache current attrValue for future updates. Updates `this.attrValue`.
     attrValue = this.parseAttrValueForCache(attrValue);
-    if (this.updateSchema) { this.updateSchema(this.buildData(attrValue, false, true)); }
-    this.data = this.buildData(attrValue, clobber, false, skipTypeChecking);
-
-    // Cache current attrValue for future updates.
     this.updateCachedAttrValue(attrValue, clobber);
+
+    if (this.updateSchema) {
+      this.updateSchema(this.buildData(this.attrValue, false, true));
+    }
+    this.data = this.buildData(this.attrValue, clobber, false, skipTypeChecking);
 
     if (!this.initialized) {
       // Component is being already initialized.

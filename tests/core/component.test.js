@@ -222,6 +222,34 @@ suite('Component', function () {
       assert.equal(data[0], 'a');
       assert.notEqual(data, array);
     });
+
+    test('does not override set data with mixin', function (done) {
+      var el;
+      var mixinEl;
+
+      el = helpers.entityFactory();
+
+      registerComponent('dummy', {
+        schema: {
+          color: {default: 'blue'},
+          size: {default: 5}
+        }
+      });
+
+      mixinEl = document.createElement('a-mixin');
+      mixinEl.setAttribute('id', 'mixindummy');
+      mixinEl.setAttribute('dummy', 'size: 1');
+
+      el.addEventListener('loaded', () => {
+        el.sceneEl.appendChild(mixinEl);
+        el.setAttribute('mixin', 'mixindummy');
+        el.setAttribute('dummy', 'size', 20);
+        el.setAttribute('dummy', 'color', 'red');
+        assert.equal(el.getAttribute('dummy').color, 'red');
+        assert.equal(el.getAttribute('dummy').size, 20);
+        done();
+      });
+    });
   });
 
   suite('updateProperties', function () {
@@ -406,7 +434,7 @@ suite('Component', function () {
       assert.equal(el.components.dummy.data, el.components.dummy.schema.default);
     });
 
-    test('a plain object schema default is cloned into data', function () {
+    test('clones plain object schema default into data', function () {
       registerComponent('dummy', {
         schema: {type: 'vec3', default: {x: 1, y: 1, z: 1}}
       });
@@ -418,7 +446,11 @@ suite('Component', function () {
       assert.deepEqual(el.components.dummy.data, {x: 1, y: 1, z: 1});
     });
 
-    test('do not clone properties from attrValue into data that are not plain objects', function () {
+    test('does not clone properties from attrValue into data that are not plain objects', function () {
+      var attrValue;
+      var data;
+      var el;
+
       registerComponent('dummy', {
         schema: {
           color: {default: 'blue'},
@@ -426,13 +458,13 @@ suite('Component', function () {
           el: {type: 'selector', default: 'body'}
         }
       });
-      var el = document.createElement('a-entity');
+      el = document.createElement('a-entity');
       el.hasLoaded = true;
       el.setAttribute('dummy', '');
       assert.notOk(el.components.dummy.attrValue.el);
-      // The direction property will be preserved
-      // across updateProperties calls but cloned
-      // into a different object
+
+      // Direction property preserved across updateProperties calls but cloned into a different
+      // object.
       el.components.dummy.updateProperties({
         color: 'green',
         direction: {x: 1, y: 1, z: 1},
@@ -442,16 +474,16 @@ suite('Component', function () {
         color: 'red',
         el: document.head
       });
-      var data = el.getAttribute('dummy');
-      var attrValue = el.components.dummy.attrValue;
+      data = el.getAttribute('dummy');
+      attrValue = el.components.dummy.attrValue;
       assert.notEqual(data, attrValue);
       assert.equal(data.color, attrValue.color);
       // HTMLElement not cloned in attrValue, reference is shared instead.
       assert.equal(data.el, attrValue.el);
       assert.equal(data.el.constructor, HTMLHeadElement);
-      assert.notEqual(data.direction, attrValue.direction);
       assert.deepEqual(data.direction, {x: 1, y: 1, z: 1});
       assert.deepEqual(attrValue.direction, {x: 1, y: 1, z: 1});
+
       el.components.dummy.updateProperties({
         color: 'red',
         direction: {x: 1, y: 1, z: 1}
