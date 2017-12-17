@@ -104,7 +104,18 @@ module.exports.AScene = registerElement('a-scene', {
 
         resize = bind(this.resize, this);
         window.addEventListener('load', resize);
-        window.addEventListener('resize', resize);
+        window.addEventListener('resize', function () {
+          // Workaround for a Webkit bug (https://bugs.webkit.org/show_bug.cgi?id=170595)
+          // where the window does not contain the correct viewport size
+          // after an orientation change. The window size is correct if the operation
+          // is postponed a few milliseconds.
+          // self.resize can be called directly once the bug above is fixed.
+          if (this.isIOS) {
+            setTimeout(resize, 100);
+          } else {
+            resize();
+          }
+        });
         this.play();
 
         // Add to scene index.
