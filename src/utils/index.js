@@ -1,4 +1,5 @@
-/* global CustomEvent, location */
+/* global location */
+
 /* Centralized place to reference utilities since utils is exposed to the user. */
 var debug = require('./debug');
 var deepAssign = require('deep-assign');
@@ -104,22 +105,6 @@ module.exports.debounce = function (func, wait, immediate) {
     timeout = setTimeout(later, wait);
     if (callNow) func.apply(context, args);
   };
-};
-
-/**
- * Fires a custom DOM event.
- *
- * @param {Element} el Element on which to fire the event.
- * @param {String} name Name of the event.
- * @param {Object=} [data={bubbles: true, {detail: <el>}}]
- *   Data to pass as `customEventInit` to the event.
- */
-module.exports.fireEvent = function (el, name, data) {
-  data = data || {};
-  data.detail = data.detail || {};
-  data.detail.target = data.detail.target || el;
-  var evt = new CustomEvent(name, data);
-  el.dispatchEvent(evt);
 };
 
 /**

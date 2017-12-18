@@ -160,7 +160,6 @@ suite('vive-controls', function () {
       controlsSystem.controllers = component.controllersWhenPresent;
       component.checkIfControllerPresent();
       el.addEventListener('triggerdown', function (evt) {
-        assert.ok(evt.detail);
         done();
       });
       el.emit('buttondown', {id: 1});
@@ -170,7 +169,6 @@ suite('vive-controls', function () {
       controlsSystem.controllers = component.controllersWhenPresent;
       component.checkIfControllerPresent();
       el.addEventListener('triggerup', function (evt) {
-        assert.ok(evt.detail);
         done();
       });
       el.emit('buttonup', {id: 1});
