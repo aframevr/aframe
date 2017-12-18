@@ -1,4 +1,4 @@
-/* global MutationObserver */
+/* global CustomEvent, MutationObserver */
 var registerElement = require('./a-register-element').registerElement;
 var isNode = require('./a-register-element').isNode;
 var utils = require('../utils/');
@@ -35,7 +35,7 @@ module.exports = registerElement('a-node', {
         }
 
         this.hasLoaded = false;
-        this.emit('nodeready', {}, false);
+        this.emit('nodeready', undefined, false);
 
         mixins = this.getAttribute('mixin');
         if (mixins) { this.updateMixins(mixins); }
@@ -219,35 +219,21 @@ module.exports = registerElement('a-node', {
      * @param {object} [extraData] - Extra data to pass to the event, if any.
      */
     emit: {
-      value: function (name, detail, bubbles, extraData) {
-        var data;
-        var self = this;
-        if (bubbles === undefined) { bubbles = true; }
-        data = {bubbles: !!bubbles, detail: detail};
-        if (extraData) { utils.extend(data, extraData); }
-        return utils.fireEvent(self, name, data);
-      },
-      writable: window.debug
-    },
+      value: (function () {
+        var data = {};
 
-    /**
-     * Return a closure that emits a DOM event.
-     *
-     * @param {String} name
-     *   Name of event (use a space-delimited string for multiple events).
-     * @param {Object} detail
-     *   Custom data (optional) to pass as `detail` if the event is to
-     *   be a `CustomEvent`.
-     * @param {Boolean} bubbles
-     *   Whether the event should be bubble.
-     */
-    emitter: {
-      value: function (name, detail, bubbles) {
-        var self = this;
-        return function () {
-          self.emit(name, detail, bubbles);
+        return function (name, detail, bubbles, extraData) {
+          if (bubbles === undefined) { bubbles = true; }
+          data.bubbles = !!bubbles;
+          data.detail = detail;
+
+          // If extra data is present, we need to create a new object.
+          if (extraData) { data = utils.extend({}, extraData, data); }
+
+          this.dispatchEvent(new CustomEvent(name, data));
         };
-      }
+      })(),
+      writable: window.debug
     }
   })
 });

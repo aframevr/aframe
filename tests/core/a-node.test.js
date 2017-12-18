@@ -18,10 +18,24 @@ suite('a-node', function () {
       var el = this.el;
       el.addEventListener('hadouken', function (event) {
         assert.equal(event.detail.power, 10);
-        assert.equal(event.detail.target, el);
+        assert.equal(event.target, el);
         done();
       });
       el.emit('hadouken', {power: 10});
+    });
+
+    test('does not leak detail between events', function (done) {
+      var el = this.el;
+      el.addEventListener('foo', function (evt) {
+        setTimeout(() => {
+          assert.equal(evt.detail.foo, 10);
+          assert.notOk('bar' in evt.detail);
+          done();
+        });
+      });
+
+      el.emit('foo', {foo: 10});
+      el.emit('bar', {bar: 20});
     });
 
     test('can emit event with extraData', function (done) {
@@ -29,7 +43,7 @@ suite('a-node', function () {
       el.addEventListener('hadouken', function (event) {
         assert.equal(event.cancelable, true);
         assert.equal(event.detail.power, 10);
-        assert.equal(event.detail.target, el);
+        assert.equal(event.target, el);
         done();
       });
       el.emit('hadouken', {power: 10}, true, {cancelable: true});
