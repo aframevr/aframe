@@ -73703,7 +73703,7 @@ module.exports = registerElement('a-mixin', {
 });
 
 },{"./a-node":124,"./a-register-element":125,"./component":126}],124:[function(_dereq_,module,exports){
-/* global MutationObserver */
+/* global CustomEvent, MutationObserver */
 var registerElement = _dereq_('./a-register-element').registerElement;
 var isNode = _dereq_('./a-register-element').isNode;
 var utils = _dereq_('../utils/');
@@ -73740,7 +73740,7 @@ module.exports = registerElement('a-node', {
         }
 
         this.hasLoaded = false;
-        this.emit('nodeready', {}, false);
+        this.emit('nodeready', undefined, false);
 
         mixins = this.getAttribute('mixin');
         if (mixins) { this.updateMixins(mixins); }
@@ -73924,35 +73924,21 @@ module.exports = registerElement('a-node', {
      * @param {object} [extraData] - Extra data to pass to the event, if any.
      */
     emit: {
-      value: function (name, detail, bubbles, extraData) {
-        var data;
-        var self = this;
-        if (bubbles === undefined) { bubbles = true; }
-        data = {bubbles: !!bubbles, detail: detail};
-        if (extraData) { utils.extend(data, extraData); }
-        return utils.fireEvent(self, name, data);
-      },
-      writable: window.debug
-    },
+      value: (function () {
+        var data = {};
 
-    /**
-     * Return a closure that emits a DOM event.
-     *
-     * @param {String} name
-     *   Name of event (use a space-delimited string for multiple events).
-     * @param {Object} detail
-     *   Custom data (optional) to pass as `detail` if the event is to
-     *   be a `CustomEvent`.
-     * @param {Boolean} bubbles
-     *   Whether the event should be bubble.
-     */
-    emitter: {
-      value: function (name, detail, bubbles) {
-        var self = this;
-        return function () {
-          self.emit(name, detail, bubbles);
+        return function (name, detail, bubbles, extraData) {
+          if (bubbles === undefined) { bubbles = true; }
+          data.bubbles = !!bubbles;
+          data.detail = detail;
+
+          // If extra data is present, we need to create a new object.
+          if (extraData) { data = utils.extend({}, extraData, data); }
+
+          this.dispatchEvent(new CustomEvent(name, data));
         };
-      }
+      })(),
+      writable: window.debug
     }
   })
 });
@@ -77444,7 +77430,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.7.0 (Date 2017-12-17, Commit #34f24ed)');
+console.log('A-Frame Version: 0.7.0 (Date 2017-12-18, Commit #19643e7)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -79332,7 +79318,8 @@ module.exports = function forceCanvasResizeSafariMobile (canvasEl) {
 };
 
 },{}],196:[function(_dereq_,module,exports){
-/* global CustomEvent, location */
+/* global location */
+
 /* Centralized place to reference utilities since utils is exposed to the user. */
 var debug = _dereq_('./debug');
 var deepAssign = _dereq_('deep-assign');
@@ -79438,22 +79425,6 @@ module.exports.debounce = function (func, wait, immediate) {
     timeout = setTimeout(later, wait);
     if (callNow) func.apply(context, args);
   };
-};
-
-/**
- * Fires a custom DOM event.
- *
- * @param {Element} el Element on which to fire the event.
- * @param {String} name Name of the event.
- * @param {Object=} [data={bubbles: true, {detail: <el>}}]
- *   Data to pass as `customEventInit` to the event.
- */
-module.exports.fireEvent = function (el, name, data) {
-  data = data || {};
-  data.detail = data.detail || {};
-  data.detail.target = data.detail.target || el;
-  var evt = new CustomEvent(name, data);
-  el.dispatchEvent(evt);
 };
 
 /**
