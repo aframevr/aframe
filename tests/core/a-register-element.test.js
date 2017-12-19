@@ -65,6 +65,20 @@ suite('a-register-element', function () {
       });
       document.body.appendChild(document.createElement('a-test-entity-2'));
     });
+
+    test('names functions correctly', function (done) {
+      registerElement('a-test-entity-3', {
+        prototype: Object.create(AEntity.prototype, {
+          attachedCallback: {
+            value: function () {
+              assert.equal(this.attachedCallback.displayName, 'attachedCallback');
+              done();
+            }
+          }
+        })
+      });
+      document.body.appendChild(document.createElement('a-test-entity-3'));
+    });
   });
 
   suite('wrapMethods', function () {
