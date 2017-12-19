@@ -46,7 +46,8 @@ var FRAGMENT_SHADER = [
 module.exports.Component = registerComponent('screenshot', {
   schema: {
     width: {default: 4096},
-    height: {default: 2048}
+    height: {default: 2048},
+    camera: {type: 'selector'}
   },
 
   init: function () {
@@ -147,7 +148,7 @@ module.exports.Component = registerComponent('screenshot', {
       // Quad is only used in equirectangular mode. Hide it in this case.
       this.quad.visible = false;
       // Use scene camera.
-      camera = el.camera;
+      camera = (this.data.camera && this.data.camera.components.camera.camera) || el.camera;
       size = {width: this.data.width, height: this.data.height};
     } else {
       // Use ortho camera.
