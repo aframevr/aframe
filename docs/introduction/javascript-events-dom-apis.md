@@ -298,7 +298,7 @@ string.
 
 ```js
 entityEl.setAttribute('position', {x: 1, y: 2, z: -3});
-// Or entityEl.setAttribute('position', '1 2 -3');
+// Read on to see why `entityEl.object3D.position.set(1, 2, -3)` is preferred though.
 ```
 
 #### Updating Single Property of Multi-Property Component
@@ -327,6 +327,37 @@ intensity but leave the type the same:
 entityEl.setAttribute('light', {color: '#ACC', intensity: 0.75});
 // <a-entity light="type: directional; color: #ACC; intensity: 0.75"></a-entity>
 ```
+
+#### Updating `position`, `rotation`, `scale`, and `visible`.
+
+Position, rotation, scale, and visible can be updated via `.setAttribute()`.
+For better performance, memory, and access to mathematical utilities, we
+recommend modifying `position`, `rotation`, `scale`, and `visible` directly at
+the three.js level:
+
+```js
+// Examples for position.
+entityEl.object3D.position.set(1, 2, 3);
+entityEl.object3D.position.x += 5;
+entityEl.object3D.position.multiplyScalar(5);
+
+// Examples for rotation.
+entityEl.object3D.rotation.y = THREE.Math.degToRad(45);
+entityEl.object3D.rotation.divideScalar(2);
+
+// Examples for scale.
+entityEl.object3D.scale.set(2, 2, 2);
+entityEl.object3D.scale.z += 1.5;
+
+// Examples for visible.
+entityEl.object3D.visible = false;
+entityEl.object3D.visible = true;
+```
+
+This lets us skip over the `.setAttribute` overhead and instead do simple
+setting of properties for components that are most commonly updated. Updates at
+the three.js level will still be reflected when doing for example
+`entityEl.getAttribute('position');`.
 
 #### Replacing Properties of a Multi-Property Component
 

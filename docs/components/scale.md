@@ -51,3 +51,38 @@ or invert, the sphere in the Z-direction.
 
 Similar to the rotation and position components, scales are applied in the
 local coordinate system and multiply in nested entities.
+
+## Updating Scale
+
+[update]: ../introduction/javascript-events-dom-apis.md#updating-a-component-with-setattribute
+[vector]: https://threejs.org/docs/index.html#api/math/Vector3
+
+For performance and ergonomics, we recommend updating scale directly via the
+three.js `Object3D.scale` Vector3 versus [via `.setAttribute`][update].
+
+This method is easier because we have access to all the [Vector3
+utilities][vector], and faster by skipping `.setAttribute` overhead and not
+needing to create an object to set rotation:
+
+```js
+// With three.js
+el.object3D.scale.set(1, 2, 3);
+
+// With .setAttribute (less recommended).
+el.setAttribute('scale', {x: 1, y: 2, z: 3});
+```
+
+Also easier to do incremental updates:
+
+```js
+// With three.js
+el.object3D.scale.x += 1;
+
+// With .setAttribute (less recommended).
+var scale = el.getAttribute('scale');
+scale.x += 1;
+el.setAttribute('scale', scale);
+```
+
+Updates at the three.js level will still be reflected when doing
+`entityEl.getAttribute('scale');`.
