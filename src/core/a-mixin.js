@@ -104,7 +104,7 @@ module.exports = registerElement('a-mixin', {
         entities = this.sceneEl.querySelectorAll('[mixin~=' + this.id + ']');
         for (i = 0; i < entities.length; i++) {
           entity = entities[i];
-          if (!entity.hasLoaded) { continue; }
+          if (!entity.hasLoaded || entity.isMixin) { continue; }
           entity.mixinUpdate(this.id);
         }
       }

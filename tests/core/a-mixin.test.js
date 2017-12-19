@@ -51,7 +51,7 @@ suite('a-mixin', function () {
   });
 
   suite('mixin composition', function () {
-    test('allows mixin to define mixin post-attach', () => {
+    test('allows mixin to define mixin post-attach', done => {
       var mixinEl1;
       var mixinEl2;
 
@@ -61,20 +61,25 @@ suite('a-mixin', function () {
       mixinEl1.setAttribute('id', 'foo');
       assetsEl.appendChild(mixinEl1);
 
-      mixinEl2 = document.createElement('a-mixin');
-      mixinEl2.setAttribute('id', 'bar');
-      mixinEl2.setAttribute('mixin', 'foo');
-      mixinEl2.setAttribute('geometry', 'primitive: sphere');
-      assetsEl.appendChild(mixinEl2);
+      setTimeout(() => {
+        mixinEl2 = document.createElement('a-mixin');
+        mixinEl2.setAttribute('id', 'bar');
+        mixinEl2.setAttribute('mixin', 'foo');
+        mixinEl2.setAttribute('geometry', 'primitive: sphere');
+        assetsEl.appendChild(mixinEl2);
 
-      assert.equal(el.mixinEls.length, 2);
-      assert.equal(el.getAttribute('mixin'), 'foo bar');
-      assert.ok(el.mixinEls.indexOf(mixinEl1) !== -1);
-      assert.ok(el.mixinEls.indexOf(mixinEl2) !== -1);
-      assert.equal(el.getAttribute('geometry').primitive, 'sphere');
+        setTimeout(() => {
+          assert.equal(el.mixinEls.length, 2);
+          assert.equal(el.getAttribute('mixin'), 'foo bar');
+          assert.ok(el.mixinEls.indexOf(mixinEl1) !== -1);
+          assert.ok(el.mixinEls.indexOf(mixinEl2) !== -1);
+          assert.equal(el.getAttribute('geometry').primitive, 'sphere');
+          done();
+        });
+      });
     });
 
-    test('allows mixin to define mixin pre-attach', () => {
+    test('allows mixin to define mixin pre-attach', done => {
       var mixinEl1;
       var mixinEl2;
 
@@ -82,22 +87,29 @@ suite('a-mixin', function () {
       mixinEl1.setAttribute('id', 'foo');
       assetsEl.appendChild(mixinEl1);
 
-      mixinEl2 = document.createElement('a-mixin');
-      mixinEl2.setAttribute('id', 'bar');
-      mixinEl2.setAttribute('mixin', 'foo');
-      mixinEl2.setAttribute('geometry', 'primitive: sphere');
-      assetsEl.appendChild(mixinEl2);
+      setTimeout(() => {
+        mixinEl2 = document.createElement('a-mixin');
+        mixinEl2.setAttribute('id', 'bar');
+        mixinEl2.setAttribute('mixin', 'foo');
+        mixinEl2.setAttribute('geometry', 'primitive: sphere');
+        assetsEl.appendChild(mixinEl2);
 
-      el.setAttribute('mixin', 'bar');
+        setTimeout(() => {
+          el.setAttribute('mixin', 'bar');
 
-      assert.equal(el.mixinEls.length, 2);
-      assert.equal(el.getAttribute('mixin'), 'foo bar');
-      assert.ok(el.mixinEls.indexOf(mixinEl1) !== -1);
-      assert.ok(el.mixinEls.indexOf(mixinEl2) !== -1);
-      assert.equal(el.getAttribute('geometry').primitive, 'sphere');
+          setTimeout(() => {
+            assert.equal(el.mixinEls.length, 2);
+            assert.equal(el.getAttribute('mixin'), 'foo bar');
+            assert.ok(el.mixinEls.indexOf(mixinEl1) !== -1);
+            assert.ok(el.mixinEls.indexOf(mixinEl2) !== -1);
+            assert.equal(el.getAttribute('geometry').primitive, 'sphere');
+            done();
+          });
+        });
+      });
     });
 
-    test('compositing mixin components override composited mixin components', () => {
+    test('compositing mixin components override composited mixin components', done => {
       var mixinEl1;
       var mixinEl2;
 
@@ -109,21 +121,26 @@ suite('a-mixin', function () {
       mixinEl1.setAttribute('material', 'color: blue');
       assetsEl.appendChild(mixinEl1);
 
-      mixinEl2 = document.createElement('a-mixin');
-      mixinEl2.setAttribute('id', 'bar');
-      mixinEl2.setAttribute('mixin', 'foo');
-      mixinEl2.setAttribute('geometry', 'primitive: sphere');
-      assetsEl.appendChild(mixinEl2);
+      setTimeout(() => {
+        mixinEl2 = document.createElement('a-mixin');
+        mixinEl2.setAttribute('id', 'bar');
+        mixinEl2.setAttribute('mixin', 'foo');
+        mixinEl2.setAttribute('geometry', 'primitive: sphere');
+        assetsEl.appendChild(mixinEl2);
 
-      assert.equal(el.mixinEls.length, 2);
-      assert.ok(el.mixinEls.indexOf(mixinEl1) !== -1);
-      assert.ok(el.mixinEls.indexOf(mixinEl2) !== -1);
+        setTimeout(() => {
+          assert.equal(el.mixinEls.length, 2);
+          assert.ok(el.mixinEls.indexOf(mixinEl1) !== -1);
+          assert.ok(el.mixinEls.indexOf(mixinEl2) !== -1);
 
-      assert.equal(el.getAttribute('geometry').primitive, 'sphere');
-      assert.equal(el.getAttribute('material').color, 'blue');
+          assert.equal(el.getAttribute('geometry').primitive, 'sphere');
+          assert.equal(el.getAttribute('material').color, 'blue');
+          done();
+        });
+      });
     });
 
-    test('composites multiple levels of nested mixins', () => {
+    test('composites multiple levels of nested mixins', done => {
       var mixinEl1;
       var mixinEl2;
       var mixinEl3;
@@ -135,31 +152,44 @@ suite('a-mixin', function () {
       mixinEl1.setAttribute('mixin', 'bar');
       assetsEl.appendChild(mixinEl1);
 
-      mixinEl2 = document.createElement('a-mixin');
-      mixinEl2.setAttribute('id', 'bar');
-      mixinEl2.setAttribute('mixin', 'qaz qux');
-      assetsEl.appendChild(mixinEl2);
+      setTimeout(() => {
+        mixinEl2 = document.createElement('a-mixin');
+        mixinEl2.setAttribute('id', 'bar');
+        mixinEl2.setAttribute('mixin', 'qaz qux');
+        assetsEl.appendChild(mixinEl2);
 
-      mixinEl3 = document.createElement('a-mixin');
-      mixinEl3.setAttribute('id', 'qaz');
-      assetsEl.appendChild(mixinEl3);
+        setTimeout(() => {
+          mixinEl3 = document.createElement('a-mixin');
+          mixinEl3.setAttribute('id', 'qaz');
+          assetsEl.appendChild(mixinEl3);
 
-      mixinEl4 = document.createElement('a-mixin');
-      mixinEl4.setAttribute('id', 'qux');
-      assetsEl.appendChild(mixinEl4);
+          setTimeout(() => {
+            mixinEl4 = document.createElement('a-mixin');
+            mixinEl4.setAttribute('id', 'qux');
+            assetsEl.appendChild(mixinEl4);
 
-      mixinEl5 = document.createElement('a-mixin');
-      mixinEl5.setAttribute('id', 'baz');
-      assetsEl.appendChild(mixinEl5);
+            setTimeout(() => {
+              mixinEl5 = document.createElement('a-mixin');
+              mixinEl5.setAttribute('id', 'baz');
+              assetsEl.appendChild(mixinEl5);
 
-      el.setAttribute('mixin', 'baz foo');
+              setTimeout(() => {
+                el.setAttribute('mixin', 'baz foo');
 
-      assert.equal(el.getAttribute('mixin'), 'baz qaz qux bar foo');
-      assert.equal(el.mixinEls[0], mixinEl5);
-      assert.equal(el.mixinEls[1], mixinEl3);
-      assert.equal(el.mixinEls[2], mixinEl4);
-      assert.equal(el.mixinEls[3], mixinEl2);
-      assert.equal(el.mixinEls[4], mixinEl1);
+                setTimeout(() => {
+                  assert.equal(el.getAttribute('mixin'), 'baz qaz qux bar foo');
+                  assert.equal(el.mixinEls[0], mixinEl5);
+                  assert.equal(el.mixinEls[1], mixinEl3);
+                  assert.equal(el.mixinEls[2], mixinEl4);
+                  assert.equal(el.mixinEls[3], mixinEl2);
+                  assert.equal(el.mixinEls[4], mixinEl1);
+                  done();
+                });
+              });
+            });
+          });
+        });
+      });
     });
   });
 });
