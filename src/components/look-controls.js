@@ -29,15 +29,12 @@ module.exports.Component = registerComponent('look-controls', {
     this.previousHMDPosition = new THREE.Vector3();
     this.hmdQuaternion = new THREE.Quaternion();
     this.hmdEuler = new THREE.Euler();
-    this.position = new THREE.Vector3();
-    // To save / restore camera pose
-    this.savedRotation = new THREE.Vector3();
-    this.savedPosition = new THREE.Vector3();
     this.polyfillObject = new THREE.Object3D();
     this.polyfillControls = new PolyfillControls(this.polyfillObject);
-    this.rotation = {};
     this.deltaRotation = {};
-    this.savedPose = null;
+    // To save / restore camera pose
+    this.hasSavedPose = false;
+    this.savedPose = {euler: new THREE.Euler(), position: new THREE.Vector3()};
     this.setupMouseControls();
     this.bindMethods();
 
@@ -166,7 +163,6 @@ module.exports.Component = registerComponent('look-controls', {
     var pitchObject = this.pitchObject;
     var yawObject = this.yawObject;
     var sceneEl = this.el.sceneEl;
-    var rotation = this.rotation;
 
     // In VR mode, THREE is in charge of updating the camera rotation.
     if (sceneEl.is('vr-mode') && sceneEl.checkHeadsetConnected()) { return; }
@@ -174,12 +170,11 @@ module.exports.Component = registerComponent('look-controls', {
     // Calculate polyfilled HMD quaternion.
     this.polyfillControls.update();
     hmdEuler.setFromQuaternion(this.polyfillObject.quaternion, 'YXZ');
-    // On mobile, do camera rotation with touch events and sensors.
-    rotation.x = radToDeg(hmdEuler.x) + radToDeg(pitchObject.rotation.x);
-    rotation.y = radToDeg(hmdEuler.y) + radToDeg(yawObject.rotation.y);
-    rotation.z = 0;
 
-    this.el.setAttribute('rotation', rotation);
+    // On mobile, do camera rotation with touch events and sensors.
+    this.el.object3D.rotation.set(hmdEuler.x + pitchObject.rotation.x,
+                                  hmdEuler.y + yawObject.rotation.y,
+                                  0);
   },
 
   /**
@@ -188,8 +183,6 @@ module.exports.Component = registerComponent('look-controls', {
   updatePosition: function () {
     var el = this.el;
     var currentHMDPosition;
-    var currentPosition;
-    var position = this.position;
     var previousHMDPosition = this.previousHMDPosition;
     var sceneEl = this.el.sceneEl;
 
@@ -197,10 +190,8 @@ module.exports.Component = registerComponent('look-controls', {
 
     // Calculate change in position.
     currentHMDPosition = this.calculateHMDPosition();
-    currentPosition = el.getAttribute('position');
 
-    position.copy(currentPosition).sub(previousHMDPosition).add(currentHMDPosition);
-    el.setAttribute('position', position);
+    el.object3D.sub(previousHMDPosition).add(currentHMDPosition);
     previousHMDPosition.copy(currentHMDPosition);
   },
 
@@ -366,16 +357,9 @@ module.exports.Component = registerComponent('look-controls', {
    */
   addHeightOffset: function (oldOffset) {
     var el = this.el;
-    var currentPosition;
     var userHeightOffset = this.data.userHeight;
-
     oldOffset = oldOffset || 0;
-    currentPosition = el.getAttribute('position') || {x: 0, y: 0, z: 0};
-    el.setAttribute('position', {
-      x: currentPosition.x,
-      y: currentPosition.y - oldOffset + userHeightOffset,
-      z: currentPosition.z
-    });
+    el.object3D.position.y += -1 * oldOffset + userHeightOffset;
   },
 
   /**
@@ -383,7 +367,6 @@ module.exports.Component = registerComponent('look-controls', {
    * position.
    */
   removeHeightOffset: function () {
-    var currentPosition;
     var el = this.el;
     var hasPositionalTracking;
     var userHeightOffset = this.data.userHeight;
@@ -397,12 +380,7 @@ module.exports.Component = registerComponent('look-controls', {
 
     if (!userHeightOffset || !hasPositionalTracking) { return; }
 
-    currentPosition = el.getAttribute('position') || {x: 0, y: 0, z: 0};
-    el.setAttribute('position', {
-      x: currentPosition.x,
-      y: currentPosition.y - userHeightOffset,
-      z: currentPosition.z
-    });
+    el.object3D.position.y -= userHeightOffset;
   },
 
   /**
@@ -410,15 +388,15 @@ module.exports.Component = registerComponent('look-controls', {
    */
   saveCameraPose: function () {
     var el = this.el;
-    var position = el.getAttribute('position');
-    var rotation = el.getAttribute('rotation');
-    var hasPositionalTracking = this.hasPositionalTracking !== undefined ? this.hasPositionalTracking : checkHasPositionalTracking();
+    var hasPositionalTracking = this.hasPositionalTracking !== undefined
+      ? this.hasPositionalTracking
+      : checkHasPositionalTracking();
 
-    if (this.savedPose || !hasPositionalTracking) { return; }
-    this.savedPose = {
-      position: this.savedPosition.copy(position),
-      rotation: this.savedRotation.copy(rotation)
-    };
+    if (this.hasSavedPose || !hasPositionalTracking) { return; }
+
+    this.savedPose.position.copy(el.object3D.position);
+    this.savedPose.euler.copy(el.object3D.rotation);
+    this.hasSavedPose = true;
   },
 
   /**
@@ -426,14 +404,15 @@ module.exports.Component = registerComponent('look-controls', {
    */
   restoreCameraPose: function () {
     var el = this.el;
-    var savedPose = this.savedPose;
-    var hasPositionalTracking = this.hasPositionalTracking !== undefined ? this.hasPositionalTracking : checkHasPositionalTracking();
+    var hasPositionalTracking = this.hasPositionalTracking !== undefined
+      ? this.hasPositionalTracking
+      : checkHasPositionalTracking();
 
-    if (!savedPose || !hasPositionalTracking) { return; }
+    if (!this.hasSavedPose || !hasPositionalTracking) { return; }
 
     // Reset camera orientation.
-    el.setAttribute('position', savedPose.position);
-    el.setAttribute('rotation', savedPose.rotation);
-    this.savedPose = null;
+    el.object3D.rotation.copy(this.savedPose.euler);
+    el.object3D.position.copy(this.savedPose.position);
+    this.hasSavedPose = false;
   }
 });
