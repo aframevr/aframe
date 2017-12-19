@@ -58,6 +58,14 @@ module.exports.registerElement = function (tagName, obj) {
     newObj = {prototype: Object.create(proto, newObj)};
   }
 
+  // Give all functions their proper name.
+  for (const propName of Object.getOwnPropertyNames(newObj.prototype)) {
+    const propVal = newObj.prototype[propName];
+    if (propVal && typeof propVal === 'function') {
+      propVal.displayName = propName;
+    }
+  }
+
   return document.registerElement(tagName, newObj);
 };
 
