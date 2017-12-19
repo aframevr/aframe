@@ -65903,7 +65903,7 @@ module.exports={
     "present": "0.0.6",
     "promise-polyfill": "^3.1.0",
     "style-attr": "^1.0.2",
-    "three": "^0.89.0",
+    "three": "0.89.0",
     "three-bmfont-text": "^2.1.0",
     "webvr-polyfill": "^0.9.40"
   },
@@ -78127,7 +78127,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.7.0 (Date 2017-12-19, Commit #f5ef24b)');
+console.log('A-Frame Version: 0.7.0 (Date 2017-12-19, Commit #177cfac)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
