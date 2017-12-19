@@ -66,7 +66,7 @@ suite('a-register-element', function () {
       document.body.appendChild(document.createElement('a-test-entity-2'));
     });
 
-    test.only('Names functions correctly', function (done) {
+    test('names functions correctly', function (done) {
       registerElement('a-test-entity-3', {
         prototype: Object.create(AEntity.prototype, {
           attachedCallback: {
