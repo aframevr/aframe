@@ -175,8 +175,6 @@ suite('text', function () {
 
     test('updates material side', function () {
       var value;
-      value = el.getObject3D('text').material.side;
-      assert.equal(value, THREE.FrontSide);
       el.setAttribute('text', 'side', 'double');
       value = el.getObject3D('text').material.side;
       assert.equal(value, THREE.DoubleSide);
