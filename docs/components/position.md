@@ -48,11 +48,13 @@ position would be `2 3 4`.
 
 ## Updating Position
 
+[object3d]: https://threejs.org/docs/#api/core/Object3D
 [update]: ../introduction/javascript-events-dom-apis.md#updating-a-component-with-setattribute
 [vector]: https://threejs.org/docs/index.html#api/math/Vector3
 
 For performance and ergonomics, we recommend updating position directly via the
-three.js `Object3D.position` Vector3 versus [via `.setAttribute`][update].
+three.js [Object3D][object3d] `.position` [Vector3][vector] versus [via
+`.setAttribute`][update].
 
 This method is easier because we have access to all the [Vector3
 utilities][vector], and faster by skipping `.setAttribute` overhead and not
@@ -66,17 +68,17 @@ el.object3D.position.set(1, 2, 3);
 el.setAttribute('position', {x: 1, y: 2, z: 3});
 ```
 
-Also easier to do incremental updates:
+We can also do incremental updates (which is just modifying a number) and use
+[Vector3][vector] utilities:
 
 ```js
-// With three.js
 el.object3D.position.x += 1;
-
-// With .setAttribute (less recommended).
-var position = el.getAttribute('position');
-position.x += 1;
-el.setAttribute('position', position);
+el.object3D.position.multiplyScalar(2);
+el.object3D.position.sub(someOtherVector);
 ```
 
-Updates at the three.js level will still be reflected when doing
-`entityEl.getAttribute('position');`.
+### Getting Position
+
+To reflect updates done at the three.js level, A-Frame returns the actual
+`Object3D.position` vector object when doing `.getAttribute('position')`.  Note
+modifying the return value will modify the entity itself.

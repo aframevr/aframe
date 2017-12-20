@@ -52,12 +52,13 @@ rotation would be `15 45 30`.
 
 ## Updating Rotation
 
+[object3d]: https://threejs.org/docs/#api/core/Object3D
 [euler]: https://threejs.org/docs/index.html#api/math/Euler
 [update]: ../introduction/javascript-events-dom-apis.md#updating-a-component-with-setattribute
 
 For performance and ergonomics, we recommend updating rotation directly via the
-three.js `Object3D.rotation` Euler (in radians) versus [via
-`.setAttribute`][update].
+three.js [Object3D][object3d] `.rotation` [Euler][euler] (in radians) versus
+[via `.setAttribute`][update].
 
 This method is easier because we have access to all the [Euler
 utilities][euler], and faster by skipping `.setAttribute` overhead and not
@@ -70,22 +71,15 @@ el.object3D.rotation.set(
   THREE.Math.degToRad(30),
   THREE.Math.degToRad(90)
 );
+el.object3D.rotation.x += Math.PI;
 
 // With .setAttribute (less recommended).
 el.setAttribute('rotation', {x: 15, y: 30, z: 90});
 ```
 
-Also easier to do incremental updates:
+### Getting Rotation
 
-```js
-// With three.js
-el.object3D.rotation.x += Math.PI;
-
-// With .setAttribute (less recommended).
-var rotation = el.getAttribute('rotation');
-rotation.x += 180;
-el.setAttribute('rotation', rotation);
-```
-
-Updates at the three.js level will still be reflected when doing
-`entityEl.getAttribute('rotation');`.
+Updates at the three.js level will still be reflected in A-Frame when doing
+`entityEl.getAttribute('rotation');`. When calling `.getAttribute('rotation')`,
+A-Frame will convert from radians and degrees and return a normal JavaScript
+object with x/y/z properties.
