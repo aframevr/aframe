@@ -3,8 +3,9 @@ var registerElement = require('./a-register-element').registerElement;
 var isNode = require('./a-register-element').isNode;
 var utils = require('../utils/');
 
-var bind = utils.bind;
 var warn = utils.debug('core:a-node:warn');
+
+var MIXIN_OBSERVER_CONFIG = {attributes: true};
 
 /**
  * Base class for A-Frame that manages loading of objects.
@@ -16,6 +17,7 @@ module.exports = registerElement('a-node', {
   prototype: Object.create(window.HTMLElement.prototype, {
     createdCallback: {
       value: function () {
+        this.computedMixinStr = '';
         this.hasLoaded = false;
         this.isNode = true;
         this.mixinEls = [];
@@ -37,15 +39,25 @@ module.exports = registerElement('a-node', {
         this.hasLoaded = false;
         this.emit('nodeready', undefined, false);
 
-        mixins = this.getAttribute('mixin');
-        if (mixins) { this.updateMixins(mixins); }
+        if (!this.isMixin) {
+          mixins = this.getAttribute('mixin');
+          if (mixins) { this.updateMixins(mixins); }
+        }
       },
       writable: window.debug
     },
 
+    /**
+     * Handle mixin.
+     */
     attributeChangedCallback: {
       value: function (attr, oldVal, newVal) {
-        if (attr === 'mixin') { this.updateMixins(newVal, oldVal); }
+        // Ignore if `<a-node>` code is just updating computed mixin in the DOM.
+        if (newVal === this.computedMixinStr) { return; }
+
+        if (attr === 'mixin' && !this.isMixin) {
+          this.updateMixins(newVal, oldVal);
+        }
       }
     },
 
@@ -128,32 +140,76 @@ module.exports = registerElement('a-node', {
     },
 
     /**
-     * Remove old mixins and mixin listeners.
-     * Add new mixins and mixin listeners.
+     * Unregister old mixins and listeners.
+     * Register new mixins and listeners.
+     * Registering means to update `this.mixinEls` with listeners.
      */
     updateMixins: {
-      value: function (newMixins, oldMixins) {
-        var newMixinIds = newMixins ? newMixins.trim().split(/\s+/) : [];
-        var oldMixinIds = oldMixins ? oldMixins.trim().split(/\s+/) : [];
+      value: (function () {
+        var newMixinIdArray = [];
+        var oldMixinIdArray = [];
 
-        // Unregister old mixins.
-        oldMixinIds.filter(function (i) {
-          return newMixinIds.indexOf(i) < 0;
-        }).forEach(bind(this.unregisterMixin, this));
+        return function (newMixins, oldMixins) {
+          var i;
+          var newMixinIds;
+          var oldMixinIds;
 
-        // Register new mixins.
-        this.mixinEls = [];
-        newMixinIds.forEach(bind(this.registerMixin, this));
-      }
+          newMixinIdArray.length = 0;
+          oldMixinIdArray.length = 0;
+          newMixinIds = newMixins ? utils.split(newMixins.trim(), /\s+/) : newMixinIdArray;
+          oldMixinIds = oldMixins ? utils.split(oldMixins.trim(), /\s+/) : oldMixinIdArray;
+
+          // Unregister old mixins.
+          for (i = 0; i < oldMixinIds.length; i++) {
+            if (newMixinIds.indexOf(oldMixinIds[i]) === -1) {
+              this.unregisterMixin(oldMixinIds[i]);
+            }
+          }
+
+          // Register new mixins.
+          this.computedMixinStr = '';
+          this.mixinEls.length = 0;
+          for (i = 0; i < newMixinIds.length; i++) {
+            this.registerMixin(document.getElementById(newMixinIds[i]));
+          }
+
+          // Update DOM. Keep track of `computedMixinStr` to not recurse back here after
+          // update.
+          if (this.computedMixinStr) {
+            this.computedMixinStr = this.computedMixinStr.trim();
+            window.HTMLElement.prototype.setAttribute.call(this, 'mixin',
+                                                           this.computedMixinStr);
+          }
+        };
+      })()
     },
 
+    /**
+     * From mixin ID, add mixin element to `mixinEls`.
+     *
+     * @param {Element} mixinEl
+     */
     registerMixin: {
-      value: function (mixinId) {
-        if (!this.sceneEl) { return; }
-        var mixinEl = this.sceneEl.querySelector('a-mixin#' + mixinId);
+      value: function (mixinEl) {
+        var compositedMixinIds;
+        var i;
+        var mixin;
+
         if (!mixinEl) { return; }
-        this.attachMixinListener(mixinEl);
+
+        // Register composited mixins (if mixin has mixins).
+        mixin = mixinEl.getAttribute('mixin');
+        if (mixin) {
+          compositedMixinIds = utils.split(mixin.trim(), /\s+/);
+          for (i = 0; i < compositedMixinIds.length; i++) {
+            this.registerMixin(document.getElementById(compositedMixinIds[i]));
+          }
+        }
+
+        // Register mixin.
+        this.computedMixinStr = this.computedMixinStr + ' ' + mixinEl.id;
         this.mixinEls.push(mixinEl);
+        this.attachMixinListener(mixinEl);
       }
     },
 
@@ -166,9 +222,9 @@ module.exports = registerElement('a-node', {
 
     unregisterMixin: {
       value: function (mixinId) {
+        var i;
         var mixinEls = this.mixinEls;
         var mixinEl;
-        var i;
         for (i = 0; i < mixinEls.length; ++i) {
           mixinEl = mixinEls[i];
           if (mixinId === mixinEl.id) {
@@ -189,19 +245,27 @@ module.exports = registerElement('a-node', {
       }
     },
 
+    /**
+     * Add mutation observer from entity to mixin.
+     */
     attachMixinListener: {
       value: function (mixinEl) {
+        var currentObserver;
+        var mixinId;
+        var observer;
         var self = this;
-        var mixinId = mixinEl.id;
-        var currentObserver = this.mixinObservers[mixinId];
+
         if (!mixinEl) { return; }
+
+        mixinId = mixinEl.id;
+        currentObserver = this.mixinObservers[mixinId];
         if (currentObserver) { return; }
-        var observer = new MutationObserver(function (mutations) {
-          var attr = mutations[0].attributeName;
-          self.handleMixinUpdate(attr);
+
+        // Add observer.
+        observer = new MutationObserver(function (mutations) {
+          self.handleMixinUpdate(mutations[0].attributeName);
         });
-        var config = { attributes: true };
-        observer.observe(mixinEl, config);
+        observer.observe(mixinEl, MIXIN_OBSERVER_CONFIG);
         this.mixinObservers[mixinId] = observer;
       }
     },
