@@ -75824,7 +75824,6 @@ module.exports.AScene = registerElement('a-scene', {
   prototype: Object.create(AEntity.prototype, {
     defaultComponents: {
       value: {
-        'background': '',
         'inspector': '',
         'keyboard-shortcuts': '',
         'screenshot': '',
@@ -78219,7 +78218,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.7.0 (Date 2017-12-21, Commit #514de55)');
+console.log('A-Frame Version: 0.7.0 (Date 2017-12-21, Commit #664eaa2)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
