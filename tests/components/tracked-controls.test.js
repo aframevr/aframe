@@ -14,6 +14,9 @@ suite('tracked-controls', function () {
     el.setAttribute('position', '');
     el.setAttribute('tracked-controls', '');
     el.addEventListener('loaded', function () {
+      el.parentNode.renderer.vr.getStandingMatrix = function () {
+        return new THREE.Matrix4();
+      };
       component = el.components['tracked-controls'];
       system = component.system;
       controller = {
@@ -97,65 +100,35 @@ suite('tracked-controls', function () {
       controller.pose.position = [0, 0, 0];
       el.setAttribute('position', '0 0 0');
       component.tick();
-      assertVec3(component.previousControllerPosition, [0, 0, 0]);
       assertVec3(el.getAttribute('position'), [0, 0, 0]);
     });
 
     test('applies position from gamepad pose', function () {
       controller.pose.position = [1, 2, 3];
+      el.sceneEl.systems['tracked-controls'].vrDisplay = true;
       component.tick();
       assertVec3(el.getAttribute('position'), [1, 2, 3]);
     });
 
     test('handles unchanged Gamepad position', function () {
       controller.pose.position = [4, 5, -6];
+      el.sceneEl.systems['tracked-controls'].vrDisplay = true;
       component.tick();
       el.setAttribute('position', '-1 2 -3');
       component.tick();
-      assertVec3(component.previousControllerPosition, [4, 5, -6]);
-      // A-Frame position + (Gamepad position - previous Gamepad position).
-      // [-1, 2, -3] + ([4, 5, -6] - [4, 5, -6]).
-      assertVec3(el.getAttribute('position'), [-1, 2, -3]);
+      assertVec3(el.getAttribute('position'), [4, 5, -6]);
     });
 
     test('applies new Gamepad position to manually positioned entity', function () {
       controller.pose.position = [1, 2, 3];
+      el.sceneEl.systems['tracked-controls'].vrDisplay = true;
       component.tick();
-      assertVec3(component.previousControllerPosition, [1, 2, 3]);
       assertVec3(el.getAttribute('position'), [1, 2, 3]);
 
       el.setAttribute('position', '10 10 10');
       controller.pose.position = [2, 4, 6];
       component.tick();
-      assertVec3(component.previousControllerPosition, [2, 4, 6]);
-
-      // A-Frame position + (Gamepad position - previous Gamepad position).
-      // [10, 10, 10] + ([2, 4, 6] - [1, 2, 3]).
-      assertVec3(el.getAttribute('position'), [11, 12, 13]);
-    });
-
-    test('adds camera userHeight if no stageParameters (e.g., 3DOF)', function () {
-      system.vrDisplay = {stageParameters: null};
-      el.sceneEl.camera.el.setAttribute('camera', 'userHeight', 2.5);
-      component.tick();
-      component.updatePose();
-      assert.equal(el.getAttribute('position').y, 2.5);
-      system.vrDisplay = undefined;
-    });
-
-    test('applies sittingToStandingTransform', function () {
-      var mockDisplay = Object.assign({}, system.vrDisplay);
-      system.vrDisplay = {
-        stageParameters: {
-          sittingToStandingTransform: [1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4, 5, 6, 7, 8]
-        }
-      };
-      component.tick();
-      component.updatePose();
-      assert.notEqual(el.getAttribute('position').x, 0);
-      assert.notEqual(el.getAttribute('position').y, 0);
-      assert.notEqual(el.getAttribute('position').z, 0);
-      system.vrDisplay = mockDisplay;
+      assertVec3(el.getAttribute('position'), [2, 4, 6]);
     });
   });
 
@@ -169,12 +142,14 @@ suite('tracked-controls', function () {
 
     test('applies rotation from Gamepad pose', function () {
       controller.pose.orientation = toQuaternion(PI, PI / 2, PI / 3);
+      el.sceneEl.systems['tracked-controls'].vrDisplay = true;
       component.tick();
       assertQuaternion(el.object3D.quaternion, controller.pose.orientation);
     });
 
     test('applies rotation absolutely', function () {
       controller.pose.orientation = toQuaternion(PI, PI / 2, PI / 3);
+      el.sceneEl.systems['tracked-controls'].vrDisplay = true;
       el.setAttribute('rotation', '180 90 60');
       component.tick();
       assertQuaternion(el.object3D.quaternion, controller.pose.orientation);
@@ -186,16 +161,10 @@ suite('tracked-controls', function () {
 
     test('handles unchanged Gamepad rotation', function () {
       controller.pose.orientation = toQuaternion(PI, PI / 2, PI / 3);
+      el.sceneEl.systems['tracked-controls'].vrDisplay = true;
       component.tick();
       component.tick();
       assertQuaternion(el.object3D.quaternion, controller.pose.orientation);
-    });
-
-    test('applies rotation Z-offset', function () {
-      assertVec3(el.getAttribute('rotation'), [0, 0, 0]);
-      el.setAttribute('tracked-controls', 'rotationOffset', 10);
-      component.tick();
-      assertVec3(el.getAttribute('rotation'), [0, 0, 10]);
     });
   });
 
@@ -204,8 +173,7 @@ suite('tracked-controls', function () {
       const emitSpy = this.sinon.spy(el, 'emit');
       component.tick();
       assert.notOk(component.handleAxes());
-      sinon.assert.calledOnce(emitSpy);
-      assert.equal(emitSpy.getCalls()[0].args[0], 'componentchanged');
+      sinon.assert.notCalled(emitSpy);
     });
 
     test('emits axismove on first touch', function () {
@@ -214,9 +182,9 @@ suite('tracked-controls', function () {
       assert.deepEqual(component.axis, [0, 0, 0]);
       component.tick();
       assert.deepEqual(component.axis, [0.5, 0.5, 0.5]);
-      assert.equal(emitSpy.getCalls()[1].args[0], 'axismove');
-      assert.deepEqual(emitSpy.getCalls()[1].args[1].axis, [0.5, 0.5, 0.5]);
-      assert.deepEqual(emitSpy.getCalls()[1].args[1].changed, [true, true, true]);
+      assert.equal(emitSpy.getCalls()[0].args[0], 'axismove');
+      assert.deepEqual(emitSpy.getCalls()[0].args[1].axis, [0.5, 0.5, 0.5]);
+      assert.deepEqual(emitSpy.getCalls()[0].args[1].changed, [true, true, true]);
     });
 
     test('emits axismove if axis changed', function () {
@@ -252,8 +220,7 @@ suite('tracked-controls', function () {
     test('does not emit if button not pressed', function () {
       const emitSpy = this.sinon.spy(el, 'emit');
       component.tick();
-      sinon.assert.calledOnce(emitSpy);
-      assert.equal(emitSpy.getCalls()[0].args[0], 'componentchanged');
+      sinon.assert.notCalled(emitSpy);
     });
 
     test('emits buttonchanged if button pressed', function () {
@@ -291,8 +258,7 @@ suite('tracked-controls', function () {
     test('does not emit anything if button not pressed', function () {
       const emitSpy = this.sinon.spy(el, 'emit');
       component.tick();
-      sinon.assert.calledOnce(emitSpy);
-      assert.equal(emitSpy.getCalls()[0].args[0], 'componentchanged');
+      sinon.assert.notCalled(emitSpy);
       assert.notOk(component.handlePress(0, {pressed: false, touched: false, value: 0}));
     });
 
@@ -354,8 +320,7 @@ suite('tracked-controls', function () {
     test('does not do anything if button not touched', function () {
       const emitSpy = this.sinon.spy(el, 'emit');
       component.tick();
-      sinon.assert.calledOnce(emitSpy);
-      assert.equal(emitSpy.getCalls()[0].args[0], 'componentchanged');
+      sinon.assert.notCalled(emitSpy);
       assert.notOk(component.handleTouch(0, {pressed: false, touched: false, value: 0}));
     });
 

@@ -15,6 +15,7 @@ suite('daydream-controls', function () {
         buttons: [{value: 0, pressed: false, touched: false}],
         pose: {orientation: [1, 0, 0, 0], position: null}
       }];
+      el.parentEl.renderer.vr.getStandingMatrix = function () {};
       done();
     });
   });

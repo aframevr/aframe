@@ -433,7 +433,6 @@ suite('position controls on camera with VRControls (integration unit test)', fun
 
     sceneEl.addState('vr-mode');
     cameraEl.components['look-controls'].hasPositionalTracking = true;
-    cameraEl.components['look-controls'].removeHeightOffset();
     this.position = [-1, 2, 3];
     el.sceneEl.render();
     var position = cameraEl.getAttribute('position');

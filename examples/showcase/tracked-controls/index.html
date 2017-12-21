@@ -27,10 +27,6 @@
                  material="color: #EF2D5E;"></a-mixin>
       </a-assets>
 
-      <!-- Hands -->
-      <a-entity hand-controls="left" aabb-collider="objects: .cube;" grab></a-entity>
-      <a-entity hand-controls="right" aabb-collider="objects: .cube;" grab></a-entity>
-
       <!-- A-Frame cubes -->
       <a-entity position="0 0 -0.5">
         <a-entity class="cube" mixin="cube" position="0.30 1.65 0"></a-entity>
@@ -62,8 +58,10 @@
          <a-entity light="type: point; color: #f4f4f4; intensity: 0.6; distance: 0" position="-8 10 -18"></a-entity>
          <a-entity light="type: ambient; color: #f4f4f4; intensity: 0.4;" position="-8 10 -18"></a-entity>
       </a-entity>
-      <a-camera></a-camera>
-
+      <!-- Hands -->
+      <a-entity hand-controls="left" aabb-collider="objects: .cube;" grab></a-entity>
+      <a-entity hand-controls="right" aabb-collider="objects: .cube;" grab></a-entity>
+      <a-entity position="0 1.6 2" camera look-controls wasd-controls></a-entity>
     </a-scene>
   </body>
 </html>
