@@ -311,16 +311,22 @@ var proto = Object.create(ANode.prototype, {
   initComponent: {
     value: function (attrName, data, isDependency) {
       var component;
-      var componentInfo = attrName.split(MULTIPLE_COMPONENT_DELIMITER);
-      var componentId = componentInfo[1];
-      var componentName = componentInfo[0];
-      var isComponentDefined = checkComponentDefined(this, attrName) || data !== undefined;
+      var componentId;
+      var componentInfo;
+      var componentName;
+      var isComponentDefined;
+
+      componentInfo = utils.split(attrName, MULTIPLE_COMPONENT_DELIMITER);
+      componentId = componentInfo[1];
+      componentName = componentInfo[0];
 
       // Not a registered component.
       if (!COMPONENTS[componentName]) { return; }
 
       // Component is not a dependency and is undefined.
       // If a component is a dependency, then it is okay to have no data.
+      isComponentDefined = checkComponentDefined(this, attrName) ||
+                           data !== undefined;
       if (!isComponentDefined && !isDependency) { return; }
 
       // Component already initialized.
@@ -850,7 +856,7 @@ function mergeComponentData (attrValue, extraData) {
 
 function isComponent (componentName) {
   if (componentName.indexOf(MULTIPLE_COMPONENT_DELIMITER) !== -1) {
-    componentName = componentName.split(MULTIPLE_COMPONENT_DELIMITER)[0];
+    componentName = utils.split(componentName, MULTIPLE_COMPONENT_DELIMITER)[0];
   }
   if (!COMPONENTS[componentName]) { return false; }
   return true;
