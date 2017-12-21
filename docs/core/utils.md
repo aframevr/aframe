@@ -17,10 +17,13 @@ Module for handling vec3 and vec4 types.
 
 ### `.isCoordinates (value)`
 
-Tests whether a string is a vec3.
+Tests whether a string is a vec3 or vec4.
 
 ```js
 AFRAME.utils.coordinates.isCoordinates('1 2 3')
+// >> true
+
+AFRAME.utils.coordinates.isCoordinates('1 2 3 4')
 // >> true
 ```
 
@@ -35,11 +38,14 @@ AFRAME.utils.coordinates.parse('1 2 -3')
 
 ### `.stringify (data)`
 
-Stringifies an `{x, y, z}` vec3 object to an "x y z" string.
+Stringifies an `{x, y, z}` vec3 object to an "x y z" string.Or Stringifies an `{x, y, z, w}` vec4 object to an "x y z w" string.
 
 ```js
 AFRAME.utils.coordinates.stringify({x: 1, y: 2, z: -3})
 // >> "1 2 -3"
+
+AFRAME.utils.coordinates.stringify({x: 1, y: 2, z: -3, w:4})
+// >> "1 2 -3 4"
 ```
 
 ## `AFRAME.utils.entity`
