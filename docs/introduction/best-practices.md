@@ -56,7 +56,12 @@ an A-Frame scene:
   handlers to hook into the global render loop. Use utilities such as
   `AFRAME.utils.throttleTick` to limit the number of times the `tick` handler
   is run if appropriate.
-- Use the **[background component][background]** instead of `a-sky` to define a solid color as the scene background. This prevents the creation of unnecessary geometry.
+- Use the **[background component][background]** instead of `a-sky` to define a
+  solid color as the scene background. This prevents the creation of
+  unnecessary geometry.
+- Update `position`, `rotation`, `scale`, and `visible` using at the three.js
+  level (`el.object3D.position`, `el.object3D.position`, `el.object3D.scale`,
+  `el.object3D.visible`) to avoid overhead on `.setAttribute`.
 
 ### GPU Texture Preloading
 

@@ -19,6 +19,7 @@ examples:
 
 [geometry]: ../components/geometry.md
 [DOM]: https://developer.mozilla.org/docs/Web/API/Document_Object_Model/Introduction
+[object3d]: https://threejs.org/docs/#api/core/Object3D
 
 Since A-Frame is just HTML, we can control the scene and its entities using
 JavaScript and [DOM] APIs as we mostly would in ordinary web development.
@@ -183,6 +184,41 @@ for (var i = 0; i < els.length; i++) {
 }
 ```
 
+## Retrieving Component Data with `.getAttribute()`
+
+We can get the data of components of an entity via `.getAttribute`. A-Frame
+augments `.getAttribute` to return values rather than strings (e.g., returning
+objects in most cases since components usually consist of multiple properties,
+or returning an actual boolean for like `.getAttribute('visible')`.  Often,
+`.getAttribute` will return the internal data object of the component so do not
+modify the object directly:
+
+```js
+// <a-entity geometry="primitive: sphere; radius: 2"></a-entity>
+el.getAttribute('geometry');
+// >> {"primitive": "sphere", "radius: 2", ...}
+```
+
+### Retrieving `position` and `scale`
+
+[vector3]: https://threejs.org/docs/#api/math/Vector3
+[updatepos]: #updating-position-rotation-scale-visible
+
+Doing `el.getAttribute('position')` or `el.getAttribute('scale')` will return
+the three.js [Object3D][object3d] position and scale properties which are
+[Vector3][vector3]s. Keep in mind that modifying these objects will modify the
+actual entity data.
+
+This is because A-Frame allows us to [modify position, rotation, scale,
+visible][updatepos] at the three.js level, and in order for `.getAttribute` to
+return the correct data, A-Frame returns the acutal three.js Object3D objects.
+
+This is not true for the `.getAttribute('rotation')` because A-Frame, for
+better or worse, uses degrees instead of radians. In such case, a normal
+JavaScript object with x/y/z properties is returned. The Object3D Euler can be
+retrieved via `el.object3D.rotation` if we need to work at a lower level with
+radians.
+
 ## Modifying the A-Frame Scene Graph
 
 With JavaScript and DOM APIs, we can dynamically add and remove entities as we
@@ -298,7 +334,7 @@ string.
 
 ```js
 entityEl.setAttribute('position', {x: 1, y: 2, z: -3});
-// Or entityEl.setAttribute('position', '1 2 -3');
+// Read on to see why `entityEl.object3D.position.set(1, 2, -3)` is preferred though.
 ```
 
 #### Updating Single Property of Multi-Property Component
@@ -327,6 +363,37 @@ intensity but leave the type the same:
 entityEl.setAttribute('light', {color: '#ACC', intensity: 0.75});
 // <a-entity light="type: directional; color: #ACC; intensity: 0.75"></a-entity>
 ```
+
+#### Updating `position`, `rotation`, `scale`, and `visible`.
+
+As a special case, for better performance, memory, and access to utilities, we
+recommend modifying `position`, `rotation`, `scale`, and `visible` directly at
+the three.js level via the entity's [Object3D][object3d] rather than via
+`.setAttribute`:
+
+```js
+// Examples for position.
+entityEl.object3D.position.set(1, 2, 3);
+entityEl.object3D.position.x += 5;
+entityEl.object3D.position.multiplyScalar(5);
+
+// Examples for rotation.
+entityEl.object3D.rotation.y = THREE.Math.degToRad(45);
+entityEl.object3D.rotation.divideScalar(2);
+
+// Examples for scale.
+entityEl.object3D.scale.set(2, 2, 2);
+entityEl.object3D.scale.z += 1.5;
+
+// Examples for visible.
+entityEl.object3D.visible = false;
+entityEl.object3D.visible = true;
+```
+
+This lets us skip over the `.setAttribute` overhead and instead do simple
+setting of properties for components that are most commonly updated. Updates at
+the three.js level will still be reflected when doing for example
+`entityEl.getAttribute('position');`.
 
 #### Replacing Properties of a Multi-Property Component
 

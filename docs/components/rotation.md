@@ -7,9 +7,9 @@ source_code: src/components/rotation.js
 examples: []
 ---
 
-The rotation component defines the orientation of an entity. It takes the pitch
-(`x`), yaw (`y`), and roll (`z`) as three space-delimited numbers indicating
-degrees of rotation. 
+The rotation component defines the orientation of an entity in degrees. It
+takes the pitch (`x`), yaw (`y`), and roll (`z`) as three space-delimited
+numbers indicating degrees of rotation.
 
 All entities inherently have the rotation component.
 
@@ -49,3 +49,37 @@ entity. In the local parent's space, `#child1`'s rotation would be `0 0 0`.
 The world-space rotation of `#child2` would be `15 90 30`, by combining the
 rotation with the parent entity. In the parent's local space, `#child2`'s
 rotation would be `15 45 30`.
+
+## Updating Rotation
+
+[object3d]: https://threejs.org/docs/#api/core/Object3D
+[euler]: https://threejs.org/docs/index.html#api/math/Euler
+[update]: ../introduction/javascript-events-dom-apis.md#updating-a-component-with-setattribute
+
+For performance and ergonomics, we recommend updating rotation directly via the
+three.js [Object3D][object3d] `.rotation` [Euler][euler] (in radians) versus
+[via `.setAttribute`][update].
+
+This method is easier because we have access to all the [Euler
+utilities][euler], and faster by skipping `.setAttribute` overhead and not
+needing to create an object to set rotation:
+
+```js
+// With three.js
+el.object3D.rotation.set(
+  THREE.Math.degToRad(15),
+  THREE.Math.degToRad(30),
+  THREE.Math.degToRad(90)
+);
+el.object3D.rotation.x += Math.PI;
+
+// With .setAttribute (less recommended).
+el.setAttribute('rotation', {x: 15, y: 30, z: 90});
+```
+
+### Getting Rotation
+
+Updates at the three.js level will still be reflected in A-Frame when doing
+`entityEl.getAttribute('rotation');`. When calling `.getAttribute('rotation')`,
+A-Frame will convert from radians and degrees and return a normal JavaScript
+object with x/y/z properties.
