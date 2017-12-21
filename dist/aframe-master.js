@@ -73343,7 +73343,7 @@ function extractDomain (url) {
   var domain = url.indexOf('://') > -1 ? url.split('/')[2] : url.split('/')[0];
 
   // Find and remove port number.
-  return domain.split(':')[0];
+  return domain.substring(0, domain.indexOf(':'));
 }
 
 /**
@@ -73731,16 +73731,22 @@ var proto = Object.create(ANode.prototype, {
   initComponent: {
     value: function (attrName, data, isDependency) {
       var component;
-      var componentInfo = attrName.split(MULTIPLE_COMPONENT_DELIMITER);
-      var componentId = componentInfo[1];
-      var componentName = componentInfo[0];
-      var isComponentDefined = checkComponentDefined(this, attrName) || data !== undefined;
+      var componentId;
+      var componentInfo;
+      var componentName;
+      var isComponentDefined;
+
+      componentInfo = utils.split(attrName, MULTIPLE_COMPONENT_DELIMITER);
+      componentId = componentInfo[1];
+      componentName = componentInfo[0];
 
       // Not a registered component.
       if (!COMPONENTS[componentName]) { return; }
 
       // Component is not a dependency and is undefined.
       // If a component is a dependency, then it is okay to have no data.
+      isComponentDefined = checkComponentDefined(this, attrName) ||
+                           data !== undefined;
       if (!isComponentDefined && !isDependency) { return; }
 
       // Component already initialized.
@@ -74270,7 +74276,7 @@ function mergeComponentData (attrValue, extraData) {
 
 function isComponent (componentName) {
   if (componentName.indexOf(MULTIPLE_COMPONENT_DELIMITER) !== -1) {
-    componentName = componentName.split(MULTIPLE_COMPONENT_DELIMITER)[0];
+    componentName = utils.split(componentName, MULTIPLE_COMPONENT_DELIMITER)[0];
   }
   if (!COMPONENTS[componentName]) { return false; }
   return true;
@@ -78204,7 +78210,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.7.0 (Date 2017-12-20, Commit #c080751)');
+console.log('A-Frame Version: 0.7.0 (Date 2017-12-21, Commit #ffe54d2)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
