@@ -69557,9 +69557,18 @@ module.exports.Component = registerComponent('scale', {
 var register = _dereq_('../../core/component').registerComponent;
 
 module.exports.Component = register('background', {
-  schema: {color: {type: 'color', default: 'black'}},
+  schema: {
+    color: {type: 'color', default: 'black'},
+    transparent: {default: false}
+  },
   update: function () {
-    this.el.object3D.background = new THREE.Color(this.data.color);
+    var data = this.data;
+    var object3D = this.el.object3D;
+    if (data.transparent) {
+      object3D.background = null;
+      return;
+    }
+    object3D.background = new THREE.Color(data.color);
   }
 });
 
@@ -78210,7 +78219,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.7.0 (Date 2017-12-21, Commit #ffe54d2)');
+console.log('A-Frame Version: 0.7.0 (Date 2017-12-21, Commit #514de55)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
