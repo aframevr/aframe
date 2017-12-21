@@ -24,4 +24,6 @@ Given the fog distribution type, different properties will apply.
 | Property | Description                                                                          | Default Value |
 |----------|--------------------------------------------------------------------------------------|---------------|
 | color    | Color of the scene background. | black          |
+| transparent    | Background is transparent. The color property is ignored. | false          |
+
 
