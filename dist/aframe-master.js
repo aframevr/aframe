@@ -76072,7 +76072,7 @@ module.exports.AScene = registerElement('a-scene', {
           }
         }
       },
-      writable: window.debug
+      writable: true
     },
      /**
      * Call `exitPresent` if WebVR or WebVR polyfill.
@@ -76125,7 +76125,7 @@ module.exports.AScene = registerElement('a-scene', {
           }
         }
       },
-      writable: window.debug
+      writable: true
     },
 
     pointerRestricted: {
@@ -76266,7 +76266,7 @@ module.exports.AScene = registerElement('a-scene', {
         // Notify renderer of size change.
         this.renderer.setSize(size.width, size.height, false);
       },
-      writable: window.debug
+      writable: true
     },
 
     setupRenderer: {
@@ -78218,7 +78218,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.7.0 (Date 2017-12-21, Commit #664eaa2)');
+console.log('A-Frame Version: 0.7.0 (Date 2017-12-22, Commit #1ca6130)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
