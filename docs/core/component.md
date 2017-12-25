@@ -244,12 +244,12 @@ the data to modify the entity. The handlers will usually interact with the
 
 Within the methods, we have access to the component prototype via `this`:
 
-| Property        | Description                                                                                                                                   |
-|-----------------|-----------------------------------------------------------------------------------------------------------------------------------------------|
-| this.data       | Parsed component properties computed from the schema default values, mixins, and the entity's attributes.                                     |
-| this.el         | Reference to the [entity][entity] as an HTML element.                                                                                         |
-| this.el.sceneEl | Reference to the [scene][scene] as an HTML element.                                                                                           |
-| this.id         | If the component can have [multiple instances][multiple], the ID of the individual instance of the component (e.g., `foo` from `sound__foo`). |
+| Property        | Description                                                                                                                                                                                                                                         |
+|-----------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| this.data       | Parsed component properties computed from the schema default values, mixins, and the entity's attributes. <br/>__Note:__ The data property should be considered readonly. If a component wants to update its own data, it should use *setAttribute*.|
+| this.el         | Reference to the [entity][entity] as an HTML element.                                                                                                                                                                                               |
+| this.el.sceneEl | Reference to the [scene][scene] as an HTML element.                                                                                                                                                                                                 |
+| this.id         | If the component can have [multiple instances][multiple], the ID of the individual instance of the component (e.g., `foo` from `sound__foo`).                                                                                                       |
 
 ### `.init ()`
 
