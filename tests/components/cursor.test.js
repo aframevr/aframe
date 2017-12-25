@@ -355,6 +355,21 @@ suite('cursor', function () {
       assert.notOk(el.is('cursor-fusing'));
       assert.notOk(el.is('cursor-hovering'));
     });
+
+    test('sets another interesected element if any', function () {
+      var dummyEl = document.createElement('a-entity');
+      var dummyIntersection = {object: {el: dummyEl}};
+      component.intersection = intersection;
+      component.intersectedEl = intersectedEl;
+      el.addState('cursor-fusing');
+      el.addState('cursor-hovering');
+      el.components.raycaster.intersections = [dummyIntersection];
+      el.emit('raycaster-intersection-cleared', {clearedEls: [intersectedEl]});
+      assert.notOk(el.is('cursor-fusing'));
+      assert.ok(el.is('cursor-hovering'));
+      assert.equal(dummyEl, el.components.cursor.intersectedEl);
+      assert.equal(dummyIntersection, el.components.cursor.intersection);
+    });
   });
 
   suite('onMouseMove', function () {
