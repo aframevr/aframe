@@ -148,11 +148,13 @@ module.exports.Component = registerComponent('raycaster', {
    */
   refreshObjects: function () {
     var data = this.data;
+    var els;
+
     // If objects not defined, intersect with everything.
-    var els = data.objects
+    els = data.objects
       ? this.el.sceneEl.querySelectorAll(data.objects)
       : this.el.sceneEl.children;
-    this.objects = flattenChildrenShallow(els);
+    this.objects = this.flattenChildrenShallow(els);
     this.dirty = false;
   },
 
@@ -339,40 +341,44 @@ module.exports.Component = registerComponent('raycaster', {
     this.lineData.start = data.origin;
     this.lineData.end = endVec3.copy(this.unitLineEndVec3).multiplyScalar(length);
     el.setAttribute('line', this.lineData);
-  }
+  },
+
+  /**
+   * Return children of each element's object3D group. Children are flattened
+   * by one level, removing the THREE.Group wrapper, so that non-recursive
+   * raycasting remains useful.
+   *
+   * @param  {Array<Element>} els
+   * @return {Array<THREE.Object3D>}
+   */
+  flattenChildrenShallow: (function () {
+    var groups = [];
+
+    return function (els) {
+      var children;
+      var i;
+      var objects = this.objects;
+
+      // Push meshes onto list of objects to intersect.
+      groups.length = 0;
+      for (i = 0; i < els.length; i++) {
+        if (els[i].object3D) {
+          groups.push(els[i].object3D);
+        }
+      }
+
+      // Each entity's root is a THREE.Group. Return the group's chilrden.
+      objects.length = 0;
+      for (i = 0; i < groups.length; i++) {
+        children = groups[i].children;
+        if (children && children.length) {
+          objects.push.apply(objects, children);
+        }
+      }
+      return objects;
+    };
+  })()
 });
-
-/**
- * Returns children of each element's object3D group. Children are flattened
- * by one level, removing the THREE.Group wrapper, so that non-recursive
- * raycasting remains useful.
- *
- * @param  {Array<Element>} els
- * @return {Array<THREE.Object3D>}
- */
-function flattenChildrenShallow (els) {
-  var groups = [];
-  var objects = [];
-  var children;
-  var i;
-
-  // Push meshes onto list of objects to intersect.
-  for (i = 0; i < els.length; i++) {
-    if (els[i].object3D) {
-      groups.push(els[i].object3D);
-    }
-  }
-
-  // Each entity's root is a THREE.Group. Return the group's chilrden.
-  for (i = 0; i < groups.length; i++) {
-    children = groups[i].children;
-    if (children && children.length) {
-      objects.push.apply(objects, children);
-    }
-  }
-
-  return objects;
-}
 
 /**
  * Copy contents of one array to another without allocating new array.
