@@ -66349,9 +66349,7 @@ module.exports.Component = registerComponent('cursor', {
    * Handle intersection.
    */
   onIntersection: function (evt) {
-    var self = this;
     var cursorEl = this.el;
-    var data = this.data;
     var index;
     var intersectedEl;
     var intersection;
@@ -66373,6 +66371,24 @@ module.exports.Component = registerComponent('cursor', {
     // Unset current intersection.
     if (this.intersectedEl) { this.clearCurrentIntersection(); }
 
+    this.setIntersection(intersectedEl, intersection);
+  },
+
+  /**
+   * Handle intersection cleared.
+   */
+  onIntersectionCleared: function (evt) {
+    var clearedEls = evt.detail.clearedEls;
+
+    // Check if the current intersection has ended
+    if (clearedEls.indexOf(this.intersectedEl) === -1) { return; }
+    this.clearCurrentIntersection();
+  },
+
+  setIntersection: function (intersectedEl, intersection) {
+    var cursorEl = this.el;
+    var data = this.data;
+    var self = this;
     // Set new intersection.
     this.intersection = intersection;
     this.intersectedEl = intersectedEl;
@@ -66380,7 +66396,7 @@ module.exports.Component = registerComponent('cursor', {
     // Hovering.
     cursorEl.addState(STATES.HOVERING);
     intersectedEl.addState(STATES.HOVERED);
-    self.twoWayEmit(EVENTS.MOUSEENTER);
+    this.twoWayEmit(EVENTS.MOUSEENTER);
 
     // Begin fuse if necessary.
     if (data.fuseTimeout === 0 || !data.fuse) { return; }
@@ -66392,20 +66408,11 @@ module.exports.Component = registerComponent('cursor', {
     }, data.fuseTimeout);
   },
 
-  /**
-   * Handle intersection cleared.
-   */
-  onIntersectionCleared: function (evt) {
-    var clearedEls = evt.detail.clearedEls;
-
-    // Check if the current intersection has ended
-    if (clearedEls.indexOf(this.intersectedEl) !== -1) {
-      this.clearCurrentIntersection();
-    }
-  },
-
   clearCurrentIntersection: function () {
     var cursorEl = this.el;
+    var index;
+    var intersection;
+    var intersections;
 
     // No longer hovering (or fusing).
     this.intersectedEl.removeState(STATES.HOVERED);
@@ -66419,6 +66426,15 @@ module.exports.Component = registerComponent('cursor', {
 
     // Clear fuseTimeout.
     clearTimeout(this.fuseTimeout);
+
+    // Set intersection to another raycasted element if any.
+    intersections = this.el.components.raycaster.intersections;
+    if (intersections.length === 0) { return; }
+    // exclude the cursor.
+    index = intersections[0].object.el === cursorEl ? 1 : 0;
+    intersection = intersections[index];
+    if (!intersection) { return; }
+    this.setIntersection(intersection.object.el, intersection);
   },
 
   /**
@@ -78224,7 +78240,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.7.0 (Date 2017-12-25, Commit #cfe3566)');
+console.log('A-Frame Version: 0.7.0 (Date 2017-12-26, Commit #a3698de)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
