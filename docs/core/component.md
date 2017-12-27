@@ -12,7 +12,7 @@ examples: []
 [entity]: ./entity.md
 [multiple]: #multiple
 [three]: http://threejs.org/
-[setAttribute]: ../introduction/javascript-events-dom-apis.md#updating-a-component-with-setattribute-
+[setAttribute]: ../introduction/javascript-events-dom-apis.md#updating-a-component-with-setattribute
 
 In the [entity-component-system pattern][ecs], a component is a reusable and
 modular chunk of data that we plug into an entity to add appearance, behavior,
