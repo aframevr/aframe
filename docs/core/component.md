@@ -12,6 +12,7 @@ examples: []
 [entity]: ./entity.md
 [multiple]: #multiple
 [three]: http://threejs.org/
+[setAttribute]: ../introduction/javascript-events-dom-apis.md#updating-a-component-with-setattribute-
 
 In the [entity-component-system pattern][ecs], a component is a reusable and
 modular chunk of data that we plug into an entity to add appearance, behavior,
@@ -246,7 +247,7 @@ Within the methods, we have access to the component prototype via `this`:
 
 | Property        | Description                                                                                                                                                                                                                                         |
 |-----------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| this.data       | Parsed component properties computed from the schema default values, mixins, and the entity's attributes. <br/>__Note:__ The data property should be considered readonly. If a component wants to update its own data, it should use *setAttribute*.|
+| this.data       | Parsed component properties computed from the schema default values, mixins, and the entity's attributes. <br/>__Important:__ Do not modify the data attribute directly. It is updated internally by A-Frame. To modify a component, use [setAttribute][setAttribute].|
 | this.el         | Reference to the [entity][entity] as an HTML element.                                                                                                                                                                                               |
 | this.el.sceneEl | Reference to the [scene][scene] as an HTML element.                                                                                                                                                                                                 |
 | this.id         | If the component can have [multiple instances][multiple], the ID of the individual instance of the component (e.g., `foo` from `sound__foo`).                                                                                                       |
