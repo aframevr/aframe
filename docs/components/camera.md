@@ -27,6 +27,8 @@ A camera situated at the average height of human eye level (1.6 meters).
 | far        | Camera frustum far clipping plane.                                                                                                                                                                                                                                                  | 10000         |
 | fov        | Field of view (in degrees).                                                                                                                                                                                                                                                         | 80            |
 | near       | Camera frustum near clipping plane.                                                                                                                                                                                                                                                 | 0.005         |
+| spectator   | Whether the camera is used to render a third-person view of the scene on the 2D display while in VR mode.
+                                                                                                                                                                                                                | false            |
 | zoom       | Zoom factor of the camera.                                                                                                                                                                                                                                                          | 1             |
 
 ## Default Camera
