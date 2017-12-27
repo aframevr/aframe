@@ -66002,6 +66002,7 @@ module.exports.Component = registerComponent('camera', {
     far: {default: 10000},
     fov: {default: 80, min: 0},
     near: {default: 0.005, min: 0},
+    spectator: {default: false},
     zoom: {default: 1, min: 0}
   },
 
@@ -66022,10 +66023,8 @@ module.exports.Component = registerComponent('camera', {
    * Update three.js camera.
    */
   update: function (oldData) {
-    var el = this.el;
     var data = this.data;
     var camera = this.camera;
-    var system = this.system;
 
     // Update properties.
     camera.aspect = data.aspect || (window.innerWidth / window.innerHeight);
@@ -66035,8 +66034,16 @@ module.exports.Component = registerComponent('camera', {
     camera.zoom = data.zoom;
     camera.updateProjectionMatrix();
 
+    this.updateActiveCamera(oldData);
+    this.updateSpectatorCamera(oldData);
+  },
+
+  updateActiveCamera: function (oldData) {
+    var data = this.data;
+    var el = this.el;
+    var system = this.system;
     // Active property did not change.
-    if (oldData && oldData.active === data.active) { return; }
+    if (oldData && oldData.active === data.active || data.spectator) { return; }
 
     // If `active` property changes, or first update, handle active camera with system.
     if (data.active && system.activeCameraEl !== el) {
@@ -66045,6 +66052,23 @@ module.exports.Component = registerComponent('camera', {
     } else if (!data.active && system.activeCameraEl === el) {
       // Camera disabled. Set camera to another camera.
       system.disableActiveCamera();
+    }
+  },
+
+  updateSpectatorCamera: function (oldData) {
+    var data = this.data;
+    var el = this.el;
+    var system = this.system;
+    // spectator property did not change.
+    if (oldData && oldData.spectator === data.spectator) { return; }
+
+    // If `spectator` property changes, or first update, handle spectator camera with system.
+    if (data.spectator && system.spectatorCameraEl !== el) {
+      // Camera enabled. Set camera to this camera.
+      system.setSpectatorCamera(el);
+    } else if (!data.spectator && system.spectatorCameraEl === el) {
+      // Camera disabled. Set camera to another camera.
+      system.disableSpectatorCamera();
     }
   },
 
@@ -78240,7 +78264,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.7.0 (Date 2017-12-26, Commit #a3698de)');
+console.log('A-Frame Version: 0.7.0 (Date 2017-12-27, Commit #ee1e41e)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -78860,8 +78884,8 @@ module.exports.System = registerSystem('camera', {
     var sceneEl = this.sceneEl;
     var defaultCameraEl;
 
-    // Camera already defined.
-    if (sceneEl.camera) {
+    // Camera already defined or the one defined it is an spectator one.
+    if (sceneEl.camera && !sceneEl.camera.el.getAttribute('camera').spectator) {
       sceneEl.emit('camera-ready', {cameraEl: sceneEl.camera.el});
       return;
     }
@@ -78933,11 +78957,58 @@ module.exports.System = registerSystem('camera', {
     cameraEls = sceneEl.querySelectorAll('[camera]');
     for (i = 0; i < cameraEls.length; i++) {
       cameraEl = cameraEls[i];
-      if (!cameraEl.isEntity || newCameraEl === cameraEl) { continue; }
+      if (!cameraEl.isEntity ||
+          newCameraEl === cameraEl ||
+          cameraEl.getAttribute('camera').spectator) { continue; }
       cameraEl.setAttribute('camera', 'active', false);
       cameraEl.pause();
     }
     sceneEl.emit('camera-set-active', {cameraEl: newCameraEl});
+  },
+
+  /**
+   * Set spectator camera to render the scene on a 2D display.
+   *
+   * @param {Element} newCameraEl - Entity with camera component.
+   */
+  setSpectatorCamera: function (newCameraEl) {
+    var newCamera;
+    var previousCamera = this.spectatorCameraEl;
+    var sceneEl = this.sceneEl;
+    var spectatorCameraEl;
+
+    // Same camera.
+    newCamera = newCameraEl.getObject3D('camera');
+    if (!newCamera || newCameraEl === this.spectatorCameraEl) { return; }
+
+    // Disable current camera
+    if (previousCamera) {
+      previousCamera.setAttribute('camera', 'spectator', false);
+    }
+
+    spectatorCameraEl = this.spectatorCameraEl = newCameraEl;
+    spectatorCameraEl.setAttribute('camera', 'active', false);
+    spectatorCameraEl.play();
+
+    sceneEl.emit('camera-set-spectator', {cameraEl: newCameraEl});
+  },
+
+  /**
+   * Disables current spectator camera.
+   */
+  disableSpectatorCamera: function () {
+    this.spectatorCameraEl = undefined;
+  },
+
+  tock: function () {
+    var spectatorCamera;
+    var sceneEl = this.sceneEl;
+    var isVREnabled = sceneEl.renderer.vr.enabled;
+    if (!this.spectatorCameraEl || sceneEl.isMobile) { return; }
+    spectatorCamera = this.spectatorCameraEl.components.camera.camera;
+    sceneEl.renderer.vr.enabled = false;
+    sceneEl.renderer.render(sceneEl.object3D, spectatorCamera);
+    sceneEl.renderer.vr.enabled = isVREnabled;
   }
 });
 
