@@ -65935,7 +65935,7 @@ module.exports={
     "karma-mocha-reporter": "^2.1.0",
     "karma-sinon-chai": "1.2.4",
     "lolex": "^1.5.1",
-    "markserv": "0.0.20",
+    "markserv": "github:sukima/markserv#feature/fix-broken-websoketio-link",
     "minifyify": "^7.3.3",
     "mocha": "^3.0.2",
     "mozilla-download": "^1.1.1",
@@ -78264,7 +78264,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.7.0 (Date 2017-12-27, Commit #4b58b67)');
+console.log('A-Frame Version: 0.7.0 (Date 2017-12-27, Commit #ce910c9)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
