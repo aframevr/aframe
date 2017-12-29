@@ -244,7 +244,7 @@ We can specify a preset (e.g., `forest`) with along many other parameters
   <a-box color="red" position="0 2 -5" rotation="0 45 45" scale="2 2 2"></a-box>
 
   <!-- Out of the box environment! -->
-  <a-entity environment="preset: forest; numDressing: 500"></a-entity>
+  <a-entity environment="preset: forest; dressingAmount: 500"></a-entity>
 </a-scene>
 ```
 
