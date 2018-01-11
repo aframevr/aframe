@@ -10,10 +10,10 @@
     <img src="https://codecov.io/gh/aframevr/aframe/branch/master/graph/badge.svg" alt="Coverage Status">
   </a>
   <a href="https://npmjs.org/package/aframe">
-    <img src="http://img.shields.io/npm/dt/aframe.svg?style=flat-square" alt="Downloads">
+    <img src="https://img.shields.io/npm/dt/aframe.svg?style=flat-square" alt="Downloads">
   </a>
   <a href="https://npmjs.org/package/aframe">
-    <img src="http://img.shields.io/npm/v/aframe.svg?style=flat-square" alt="Version">
+    <img src="https://img.shields.io/npm/v/aframe.svg?style=flat-square" alt="Version">
   </a>
   <a href="https://npmjs.com/package/aframe">
     <img src="https://img.shields.io/npm/l/aframe.svg?style=flat-square" alt="License"></a>
@@ -110,7 +110,7 @@ multiuser, oceans, mountains, speech recognition, or teleportation!
 Build VR scenes in the browser with just a few lines of HTML! To start playing
 and publishing now, remix the starter example on Glitch:
 
-[![Remix](https://cloud.githubusercontent.com/assets/674727/24572421/688f7fc0-162d-11e7-8a35-b02bc050c043.jpg)](http://glitch.com/~aframe)
+[![Remix](https://cloud.githubusercontent.com/assets/674727/24572421/688f7fc0-162d-11e7-8a35-b02bc050c043.jpg)](https://glitch.com/~aframe)
 
 ```html
 <html>
@@ -134,7 +134,7 @@ architecture](https://aframe.io/docs/0.7.1/core/), we can drop in community
 components from the ecosystem (e.g., ocean, physics) and plug them into our
 objects straight from HTML:
 
-[![Remix](https://cloud.githubusercontent.com/assets/674727/24572421/688f7fc0-162d-11e7-8a35-b02bc050c043.jpg)](http://glitch.com/~aframe-registry)
+[![Remix](https://cloud.githubusercontent.com/assets/674727/24572421/688f7fc0-162d-11e7-8a35-b02bc050c043.jpg)](https://glitch.com/~aframe-registry)
 
 ```html
 <html>
@@ -210,7 +210,7 @@ npm run dist
 
 ## Questions
 
-For questions and support, [ask on StackOverflow](http://stackoverflow.com/questions/ask/?tags=aframe).
+For questions and support, [ask on StackOverflow](https://stackoverflow.com/questions/ask/?tags=aframe).
 
 ## Stay in Touch
 
