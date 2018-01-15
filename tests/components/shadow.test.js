@@ -37,6 +37,7 @@ suite('shadow component', function () {
 
     test('sets needsUpdate on materials', function () {
       el.object3D.add(mesh);
+      mesh.material.needsUpdate = false;
       component.update();
       assert.ok(mesh.material.needsUpdate);
     });
