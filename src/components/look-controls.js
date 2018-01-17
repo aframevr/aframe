@@ -21,6 +21,7 @@ module.exports.Component = registerComponent('look-controls', {
     enabled: {default: true},
     touchEnabled: {default: true},
     hmdEnabled: {default: true},
+    pointerLockEnabled: {default: true},
     reverseMouseDrag: {default: false},
     userHeight: {default: 1.6}
   },
@@ -38,6 +39,7 @@ module.exports.Component = registerComponent('look-controls', {
     this.rotation = {};
     this.deltaRotation = {};
     this.savedPose = null;
+    this.pointerLocked = false;
     this.setupMouseControls();
     this.bindMethods();
 
@@ -60,6 +62,12 @@ module.exports.Component = registerComponent('look-controls', {
     if (oldData && !data.hmdEnabled && !oldData.hmdEnabled) {
       this.pitchObject.rotation.set(0, 0, 0);
       this.yawObject.rotation.set(0, 0, 0);
+    }
+
+    if (oldData && !data.pointerLockEnabled !== oldData.pointerLockEnabled) {
+      this.removeEventListeners();
+      this.addEventListeners();
+      if (this.pointerLocked) { document.exitPointerLock(); }
     }
   },
 
@@ -91,6 +99,8 @@ module.exports.Component = registerComponent('look-controls', {
     this.onTouchEnd = bind(this.onTouchEnd, this);
     this.onEnterVR = bind(this.onEnterVR, this);
     this.onExitVR = bind(this.onExitVR, this);
+    this.onPointerLockChange = bind(this.onPointerLockChange, this);
+    this.onPointerLockError = bind(this.onPointerLockError, this);
   },
 
  /**
@@ -130,6 +140,13 @@ module.exports.Component = registerComponent('look-controls', {
     // sceneEl events.
     sceneEl.addEventListener('enter-vr', this.onEnterVR);
     sceneEl.addEventListener('exit-vr', this.onExitVR);
+
+    // Pointer Lock events.
+    if (this.data.pointerLockEnabled) {
+      document.addEventListener('pointerlockchange', this.onPointerLockChange, false);
+      document.addEventListener('mozpointerlockchange', this.onPointerLockChange, false);
+      document.addEventListener('pointerlockerror', this.onPointerLockError, false);
+    }
   },
 
   /**
@@ -143,18 +160,22 @@ module.exports.Component = registerComponent('look-controls', {
 
     // Mouse events.
     canvasEl.removeEventListener('mousedown', this.onMouseDown);
-    canvasEl.removeEventListener('mousemove', this.onMouseMove);
-    canvasEl.removeEventListener('mouseup', this.onMouseUp);
-    canvasEl.removeEventListener('mouseout', this.onMouseUp);
+    window.removeEventListener('mousemove', this.onMouseMove);
+    window.removeEventListener('mouseup', this.onMouseUp);
 
     // Touch events.
     canvasEl.removeEventListener('touchstart', this.onTouchStart);
-    canvasEl.removeEventListener('touchmove', this.onTouchMove);
-    canvasEl.removeEventListener('touchend', this.onTouchEnd);
+    window.removeEventListener('touchmove', this.onTouchMove);
+    window.removeEventListener('touchend', this.onTouchEnd);
 
     // sceneEl events.
     sceneEl.removeEventListener('enter-vr', this.onEnterVR);
     sceneEl.removeEventListener('exit-vr', this.onExitVR);
+
+    // Pointer Lock events.
+    document.removeEventListener('pointerlockchange', this.onPointerLockChange, false);
+    document.removeEventListener('mozpointerlockchange', this.onPointerLockChange, false);
+    document.removeEventListener('pointerlockerror', this.onPointerLockError, false);
   },
 
   /**
@@ -242,7 +263,7 @@ module.exports.Component = registerComponent('look-controls', {
     var movementY;
 
     // Not dragging or not enabled.
-    if (!this.mouseDown || !this.data.enabled) { return; }
+    if (!this.data.enabled || (!this.mouseDown && !this.pointerLocked)) { return; }
 
      // Calculate delta.
     movementX = event.movementX || event.mozMovementX;
@@ -266,9 +287,21 @@ module.exports.Component = registerComponent('look-controls', {
     if (!this.data.enabled) { return; }
     // Handle only primary button.
     if (evt.button !== 0) { return; }
+
+    var sceneEl = this.el.sceneEl;
+    var canvasEl = sceneEl && sceneEl.canvas;
+
     this.mouseDown = true;
     this.previousMouseEvent = evt;
     document.body.classList.add(GRABBING_CLASS);
+
+    if (this.data.pointerLockEnabled && !this.pointerLocked) {
+      if (canvasEl.requestPointerLock) {
+        canvasEl.requestPointerLock();
+      } else if (canvasEl.mozRequestPointerLock) {
+        canvasEl.mozRequestPointerLock();
+      }
+    }
   },
 
   /**
@@ -332,6 +365,20 @@ module.exports.Component = registerComponent('look-controls', {
   onExitVR: function () {
     this.restoreCameraPose();
     this.previousHMDPosition.set(0, 0, 0);
+  },
+
+  /**
+   * Update Pointer Lock state.
+   */
+  onPointerLockChange: function () {
+    this.pointerLocked = !!(document.pointerLockElement || document.mozPointerLockElement);
+  },
+
+  /**
+   * Recover from Pointer Lock error.
+   */
+  onPointerLockError: function () {
+    this.pointerLocked = false;
   },
 
   /**
