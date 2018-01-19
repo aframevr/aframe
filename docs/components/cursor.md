@@ -4,7 +4,9 @@ type: components
 layout: docs
 parent_section: components
 source_code: src/components/cursor.js
-examples: []
+examples:
+  - title: Mouse Click Example
+    src: https://glitch.com/edit/#!/a-frame-mouse-click-example
 ---
 
 [a-cursor]: ../primitives/a-cursor.md
