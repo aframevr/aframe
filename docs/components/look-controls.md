@@ -10,7 +10,7 @@ examples: []
 The look-controls component:
 
 - Rotates the entity when we rotate a VR head-mounted display (HMD).
-- Rotates the entity when we click-drag mouse.
+- Rotates the entity when we move the mouse.
 - Rotates the entity when we touch-drag the touchscreen.
 
 ## Example
@@ -24,13 +24,16 @@ component](camera.md).
 
 ## Properties
 
-| Property         | Description                                                      | Default Value |
-|------------------|------------------------------------------------------------------|---------------|
-| enabled          | Whether look controls are enabled.                               | true          |
-| hmdEnabled       | Whether to use VR headset pose in VR mode.                       | true          |
-| reverseMouseDrag | Whether to reverse mouse drag.                                   | false         |
-| touchEnabled     | Whether to use touch controls in magic window mode.              | true          |
-| userHeight | Height offset to add to the camera when *not* in VR mode so the camera is not on ground level. The default camera that A-Frame injects or the `<a-camera>` primitive sets this to 1.6 meters. But note the default camera component alone (`<a-entity camera>`) defaults this to 0. | 0             |
+[pointer-lock-api]: https://developer.mozilla.org/docs/Web/API/Pointer_Lock_API
+
+| Property           | Description                                                      | Default Value |
+|--------------------|------------------------------------------------------------------|---------------|
+| enabled            | Whether look controls are enabled.                               | true          |
+| hmdEnabled         | Whether to use VR headset pose in VR mode.                       | true          |
+| reverseMouseDrag   | Whether to reverse mouse drag.                                   | false         |
+| touchEnabled       | Whether to use touch controls in magic window mode.              | true          |
+| pointerLockEnabled | Whether to hide the cursor using the [Pointer Lock API][pointer-lock-api]. | true |
+| userHeight         | Height offset to add to the camera when *not* in VR mode so the camera is not on ground level. The default camera that A-Frame injects or the `<a-camera>` primitive sets this to 1.6 meters. But note the default camera component alone (`<a-entity camera>`) defaults this to 0. | 0 |
 
 ## Customizing look-controls
 
