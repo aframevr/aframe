@@ -60,6 +60,42 @@ suite('look-controls', function () {
       });
       window.dispatchEvent(new Event('mouseup'));
     });
+
+    test('requests pointer lock on mousedown', function (done) {
+      var canvasEl = this.sceneEl.canvas;
+
+      var requestPointerLock = this.sinon.spy(canvasEl, 'requestPointerLock');
+
+      process.nextTick(function () {
+        assert.ok(requestPointerLock.called);
+        document.body.classList.remove(GRABBING_CLASS);
+        done();
+      });
+
+      var event = new Event('mousedown');
+      event.button = 0;
+      canvasEl.dispatchEvent(event);
+    });
+
+    test('does not request pointer lock when option is disabled', function (done) {
+      var sceneEl = this.sceneEl;
+      var canvasEl = sceneEl.canvas;
+      var cameraEl = sceneEl.camera.el;
+
+      var requestPointerLock = this.sinon.spy(canvasEl, 'requestPointerLock');
+
+      cameraEl.setAttribute('look-controls', {pointerLockEnabled: false});
+
+      process.nextTick(function () {
+        assert.notOk(requestPointerLock.called);
+        document.body.classList.remove(GRABBING_CLASS);
+        done();
+      });
+
+      var event = new Event('mousedown');
+      event.button = 0;
+      canvasEl.dispatchEvent(event);
+    });
   });
 
   suite('saveCameraPose', function () {
