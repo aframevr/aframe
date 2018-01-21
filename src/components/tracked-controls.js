@@ -45,8 +45,6 @@ module.exports.Component = registerComponent('tracked-controls', {
     this.controllerPosition = new THREE.Vector3();
     this.controllerQuaternion = new THREE.Quaternion();
     this.deltaControllerPosition = new THREE.Vector3();
-    this.position = new THREE.Vector3();
-    this.rotation = {};
     this.standingMatrix = new THREE.Matrix4();
 
     this.previousControllerPosition = new THREE.Vector3();
@@ -151,7 +149,6 @@ module.exports.Component = registerComponent('tracked-controls', {
     var controller = this.controller;
     var controllerEuler = this.controllerEuler;
     var controllerPosition = this.controllerPosition;
-    var elPosition;
     var previousControllerPosition = this.previousControllerPosition;
     var dolly = this.dolly;
     var el = this.el;
@@ -198,15 +195,11 @@ module.exports.Component = registerComponent('tracked-controls', {
     controllerPosition.setFromMatrixPosition(dolly.matrix);
 
     // Apply rotation.
-    this.rotation.x = THREE.Math.radToDeg(controllerEuler.x);
-    this.rotation.y = THREE.Math.radToDeg(controllerEuler.y);
-    this.rotation.z = THREE.Math.radToDeg(controllerEuler.z) + this.data.rotationOffset;
-    el.setAttribute('rotation', this.rotation);
+    el.object3D.rotation.copy(controllerEuler);
+    el.object3D.rotation.z += THREE.Math.degToRad(this.data.rotationOffset);
 
     // Apply position.
-    elPosition = el.getAttribute('position');
-    this.position.copy(elPosition).sub(previousControllerPosition).add(controllerPosition);
-    el.setAttribute('position', this.position);
+    el.object3D.position.sub(previousControllerPosition).add(controllerPosition);
     previousControllerPosition.copy(controllerPosition);
   },
 
