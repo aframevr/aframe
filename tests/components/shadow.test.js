@@ -35,11 +35,24 @@ suite('shadow component', function () {
       assert.notOk(mesh.receiveShadow);
     });
 
-    test('sets needsUpdate on materials', function () {
+    test('sets needsUpdate on material', function () {
       el.object3D.add(mesh);
       mesh.material.needsUpdate = false;
       component.update();
       assert.ok(mesh.material.needsUpdate);
+    });
+
+    test('sets needsUpdate on material array', function () {
+      var mesh2 = new THREE.Mesh(
+        new THREE.Sphere(2),
+        [new THREE.MeshBasicMaterial({color: 0xffff00}),
+          new THREE.MeshBasicMaterial({color: 0xffff00})]
+      );
+      el.object3D.add(mesh2);
+      mesh2.material[0].needsUpdate = false;
+      mesh2.material[1].needsUpdate = false;
+      component.update();
+      assert.ok(mesh2.material[0].needsUpdate && mesh2.material[1].needsUpdate);
     });
 
     test('refreshes after setObject3D', function () {
