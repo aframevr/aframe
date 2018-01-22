@@ -6,6 +6,7 @@ suite('shadow component', function () {
   var component;
   var el;
   var mesh;
+  var meshWithMaterialArray;
 
   setup(function (done) {
     el = entityFactory();
@@ -18,6 +19,11 @@ suite('shadow component', function () {
     mesh = new THREE.Mesh(
       new THREE.Sphere(2),
       new THREE.MeshBasicMaterial({color: 0xffff00})
+    );
+    meshWithMaterialArray = new THREE.Mesh(
+      new THREE.Sphere(2),
+      [new THREE.MeshBasicMaterial({color: 0xffff00}),
+        new THREE.MeshBasicMaterial({color: 0xffff00})]
     );
   });
 
@@ -43,16 +49,12 @@ suite('shadow component', function () {
     });
 
     test('sets needsUpdate on material array', function () {
-      var mesh2 = new THREE.Mesh(
-        new THREE.Sphere(2),
-        [new THREE.MeshBasicMaterial({color: 0xffff00}),
-          new THREE.MeshBasicMaterial({color: 0xffff00})]
-      );
-      el.object3D.add(mesh2);
-      mesh2.material[0].needsUpdate = false;
-      mesh2.material[1].needsUpdate = false;
+      el.object3D.add(meshWithMaterialArray);
+      meshWithMaterialArray.material[0].needsUpdate = false;
+      meshWithMaterialArray.material[1].needsUpdate = false;
       component.update();
-      assert.ok(mesh2.material[0].needsUpdate && mesh2.material[1].needsUpdate);
+      assert.ok(meshWithMaterialArray.material[0].needsUpdate &&
+        meshWithMaterialArray.material[1].needsUpdate);
     });
 
     test('refreshes after setObject3D', function () {
