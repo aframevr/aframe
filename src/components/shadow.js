@@ -42,7 +42,7 @@ module.exports.Component = registerComponent('shadow', {
 
       // If scene has already rendered, materials must be updated.
       if (sceneEl.hasLoaded && node.material) {
-        var materials = node.material.materials || [node.material];
+        var materials = Array.isArray(node.material) ? node.material : [node.material];
         for (var i = 0; i < materials.length; i++) {
           materials[i].needsUpdate = true;
         }
