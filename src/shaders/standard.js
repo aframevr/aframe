@@ -28,7 +28,11 @@ module.exports.Shader = registerShader('standard', {
 
     fog: {default: true},
     height: {default: 256},
+
     metalness: {default: 0.0, min: 0.0, max: 1.0},
+    metalnessMap: {type: 'map'},
+    metalnessTextureOffset: {type: 'vec2'},
+    metalnessTextureRepeat: {type: 'vec2', default: {x: 1, y: 1}},
 
     normalMap: {type: 'map'},
     normalScale: {type: 'vec2', default: {x: 1, y: 1}},
@@ -37,7 +41,12 @@ module.exports.Shader = registerShader('standard', {
 
     offset: {type: 'vec2', default: {x: 0, y: 0}},
     repeat: {type: 'vec2', default: {x: 1, y: 1}},
+
     roughness: {default: 0.5, min: 0.0, max: 1.0},
+    roughnessMap: {type: 'map'},
+    roughnessTextureOffset: {type: 'vec2'},
+    roughnessTextureRepeat: {type: 'vec2', default: {x: 1, y: 1}},
+
     sphericalEnvMap: {type: 'map'},
     src: {type: 'map'},
     width: {default: 512},
@@ -55,6 +64,8 @@ module.exports.Shader = registerShader('standard', {
     if (data.normalMap) { utils.material.updateDistortionMap('normal', this, data); }
     if (data.displacementMap) { utils.material.updateDistortionMap('displacement', this, data); }
     if (data.ambientOcclusionMap) { utils.material.updateDistortionMap('ambientOcclusion', this, data); }
+    if (data.metalnessMap) { utils.material.updateDistortionMap('metalness', this, data); }
+    if (data.roughnessMap) { utils.material.updateDistortionMap('roughness', this, data); }
     this.updateEnvMap(data);
   },
 
@@ -64,6 +75,8 @@ module.exports.Shader = registerShader('standard', {
     if (data.normalMap) { utils.material.updateDistortionMap('normal', this, data); }
     if (data.displacementMap) { utils.material.updateDistortionMap('displacement', this, data); }
     if (data.ambientOcclusionMap) { utils.material.updateDistortionMap('ambientOcclusion', this, data); }
+    if (data.metalnessMap) { utils.material.updateDistortionMap('metalness', this, data); }
+    if (data.roughnessMap) { utils.material.updateDistortionMap('roughness', this, data); }
     this.updateEnvMap(data);
   },
 
