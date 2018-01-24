@@ -67,8 +67,11 @@ module.exports.Component = registerComponent('pool', {
 
   /**
    * Used to request one of the available entities of the pool
+   * @param backToFront pass falsy if objects retrieved from the pool will generally be placed *nearer* the camera than
+   * older objects, such as bullets from the player's gun.  Pass truthy if they'll be *farther*, such as clouds the
+   * player is flying through.  @See https://aframe.io/docs/0.7.0/components/material.html#transparency-issues
    */
-  requestEntity: function () {
+  requestEntity: function (backToFront) {
     var el;
     if (this.availableEls.length === 0) {
       if (this.data.dynamic === false) {
@@ -80,7 +83,11 @@ module.exports.Component = registerComponent('pool', {
       }
       this.createEntity();
     }
-    el = this.availableEls.shift();
+    if (backToFront) {
+      el = this.availableEls.pop();
+    } else {
+      el = this.availableEls.shift();
+    }
     this.usedEls.push(el);
     el.setAttribute('visible', true);
     return el;
