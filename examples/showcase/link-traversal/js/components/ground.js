@@ -15,7 +15,7 @@ AFRAME.registerComponent('ground', {
           value.geometry.computeFaceNormals();
           value.geometry.computeVertexNormals();
           value.receiveShadow = true;
-          value.material.shading = THREE.FlatShading;
+          value.material.flatShading = THREE.FlatShading;
         }
       });
       self.el.setObject3D('ground', obj);

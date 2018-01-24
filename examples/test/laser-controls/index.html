@@ -49,6 +49,8 @@
     </script>
 
     <a-scene background="color: #212" antialias="true">
+       
+      <a-entity position="0 3.2 0" camera look-controls wasd-controls></a-entity>
       <a-entity id="leftHand" laser-controls="hand: left" raycaster="objects: [mixin='box']"></a-entity>
       <a-entity id="rightHand" laser-controls="hand: right" raycaster="objects: [mixin='box']" line="color: #118A7E"></a-entity>
 

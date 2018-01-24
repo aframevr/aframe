@@ -7,17 +7,8 @@ suite('look-controls', function () {
   setup(function (done) {
     var el = this.sceneEl = document.createElement('a-scene');
     document.body.appendChild(el);
-    el.addEventListener('loaded', function () {
+    el.addEventListener('camera-ready', function () {
       done();
-    });
-  });
-
-  suite('update', function () {
-    test('can update userHeight', function () {
-      var cameraEl = this.sceneEl.camera.el;
-      assert.shallowDeepEqual(cameraEl.getAttribute('position'), {x: 0, y: 1.6, z: 0});
-      cameraEl.setAttribute('look-controls', 'userHeight', 2.5);
-      assert.shallowDeepEqual(cameraEl.getAttribute('position'), {x: 0, y: 2.5, z: 0});
     });
   });
 
@@ -118,33 +109,6 @@ suite('look-controls', function () {
       lookControlsComponent.hasPositionalTracking = false;
       sceneEl.emit('enter-vr');
       assert.notOk(lookControlsComponent.savedPose);
-    });
-  });
-
-  suite('addHeightOffset', function () {
-    test('adds userHeight offset', function () {
-      var cameraEl = this.sceneEl.camera.el;
-      assert.shallowDeepEqual(cameraEl.getAttribute('position'), {x: 0, y: 1.6, z: 0});
-    });
-  });
-
-  suite('removeCameraPose (enter VR)', function () {
-    test('removes the default offset w/ positional tracking', function () {
-      var sceneEl = this.sceneEl;
-      var cameraEl = sceneEl.camera.el;
-      cameraEl.components['look-controls'].hasPositionalTracking = true;
-      assert.shallowDeepEqual(cameraEl.getAttribute('position'), {x: 0, y: 1.6, z: 0});
-      sceneEl.emit('enter-vr');
-      assert.shallowDeepEqual(cameraEl.getAttribute('position'), {x: 0, y: 0, z: 0});
-    });
-
-    test('does not remove the default offset w/o positional tracking', function () {
-      var sceneEl = this.sceneEl;
-      var cameraEl = sceneEl.camera.el;
-      cameraEl.components['look-controls'].hasPositionalTracking = false;
-      assert.shallowDeepEqual(cameraEl.getAttribute('position'), {x: 0, y: 1.6, z: 0});
-      sceneEl.emit('enter-vr');
-      assert.shallowDeepEqual(cameraEl.getAttribute('position'), {x: 0, y: 1.6, z: 0});
     });
   });
 

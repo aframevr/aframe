@@ -22,8 +22,7 @@ module.exports.Component = registerComponent('look-controls', {
     touchEnabled: {default: true},
     hmdEnabled: {default: true},
     pointerLockEnabled: {default: true},
-    reverseMouseDrag: {default: false},
-    userHeight: {default: 1.6}
+    reverseMouseDrag: {default: false}
   },
 
   init: function () {
@@ -50,9 +49,6 @@ module.exports.Component = registerComponent('look-controls', {
   update: function (oldData) {
     var data = this.data;
 
-    // Update height offset.
-    this.addHeightOffset(oldData.userHeight);
-
     // Disable grab cursor classes if no longer enabled.
     if (data.enabled !== oldData.enabled) {
       this.updateGrabCursor(data.enabled);
@@ -74,7 +70,6 @@ module.exports.Component = registerComponent('look-controls', {
   tick: function (t) {
     var data = this.data;
     if (!data.enabled) { return; }
-    this.updatePosition();
     this.updateOrientation();
   },
 
@@ -204,52 +199,6 @@ module.exports.Component = registerComponent('look-controls', {
   },
 
   /**
-   * Handle positional tracking.
-   */
-  updatePosition: function () {
-    var el = this.el;
-    var currentHMDPosition;
-    var currentPosition;
-    var position = this.position;
-    var previousHMDPosition = this.previousHMDPosition;
-    var sceneEl = this.el.sceneEl;
-
-    if (!sceneEl.is('vr-mode') || !sceneEl.checkHeadsetConnected()) { return; }
-
-    // Calculate change in position.
-    currentHMDPosition = this.calculateHMDPosition();
-    currentPosition = el.getAttribute('position');
-
-    position.copy(currentPosition).sub(previousHMDPosition).add(currentHMDPosition);
-    el.setAttribute('position', position);
-    previousHMDPosition.copy(currentHMDPosition);
-  },
-
-  calculateHMDPosition: (function () {
-    var position = new THREE.Vector3();
-    return function () {
-      var object3D = this.el.object3D;
-      object3D.updateMatrix();
-      position.setFromMatrixPosition(object3D.matrix);
-      return position;
-    };
-  })(),
-
-  /**
-   * Calculate delta rotation for mouse-drag and touch-drag.
-   */
-  calculateDeltaRotation: function () {
-    var currentRotationX = radToDeg(this.pitchObject.rotation.x);
-    var currentRotationY = radToDeg(this.yawObject.rotation.y);
-    this.deltaRotation.x = currentRotationX - (this.previousRotationX || 0);
-    this.deltaRotation.y = currentRotationY - (this.previousRotationY || 0);
-    // Store current rotation for next tick.
-    this.previousRotationX = currentRotationX;
-    this.previousRotationY = currentRotationY;
-    return this.deltaRotation;
-  },
-
-  /**
    * Translate mouse drag into rotation.
    *
    * Dragging up and down rotates the camera around the X-axis (yaw).
@@ -356,7 +305,6 @@ module.exports.Component = registerComponent('look-controls', {
    */
   onEnterVR: function () {
     this.saveCameraPose();
-    this.removeHeightOffset();
   },
 
   /**
@@ -404,52 +352,6 @@ module.exports.Component = registerComponent('look-controls', {
       return;
     }
     disableGrabCursor();
-  },
-
-  /**
-   * Offsets the position of the camera to set a human scale perspective
-   * This offset is not necessary when using a headset because the SDK
-   * will return the real user's head height and position.
-   */
-  addHeightOffset: function (oldOffset) {
-    var el = this.el;
-    var currentPosition;
-    var userHeightOffset = this.data.userHeight;
-
-    oldOffset = oldOffset || 0;
-    currentPosition = el.getAttribute('position') || {x: 0, y: 0, z: 0};
-    el.setAttribute('position', {
-      x: currentPosition.x,
-      y: currentPosition.y - oldOffset + userHeightOffset,
-      z: currentPosition.z
-    });
-  },
-
-  /**
-   * Remove the height offset (called when entering VR) since WebVR API gives absolute
-   * position.
-   */
-  removeHeightOffset: function () {
-    var currentPosition;
-    var el = this.el;
-    var hasPositionalTracking;
-    var userHeightOffset = this.data.userHeight;
-
-    // Remove the offset if there is positional tracking when entering VR.
-    // Necessary for fullscreen mode with no headset.
-    // Checking this.hasPositionalTracking to make the value injectable for unit tests.
-    hasPositionalTracking = this.hasPositionalTracking !== undefined
-      ? this.hasPositionalTracking
-      : checkHasPositionalTracking();
-
-    if (!userHeightOffset || !hasPositionalTracking) { return; }
-
-    currentPosition = el.getAttribute('position') || {x: 0, y: 0, z: 0};
-    el.setAttribute('position', {
-      x: currentPosition.x,
-      y: currentPosition.y - userHeightOffset,
-      z: currentPosition.z
-    });
   },
 
   /**

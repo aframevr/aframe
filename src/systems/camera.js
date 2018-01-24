@@ -26,6 +26,7 @@ module.exports.System = registerSystem('camera', {
   setupDefaultCamera: function () {
     var sceneEl = this.sceneEl;
     var defaultCameraEl;
+    var cameraRigEl;
 
     // Camera already defined or the one defined it is an spectator one.
     if (sceneEl.camera && !sceneEl.camera.el.getAttribute('camera').spectator) {
@@ -33,15 +34,23 @@ module.exports.System = registerSystem('camera', {
       return;
     }
 
+    // Set up camera rig.
+    cameraRigEl = document.createElement('a-entity');
+    cameraRigEl.setAttribute('position', {
+      x: 0,
+      y: constants.DEFAULT_CAMERA_HEIGHT,
+      z: 0
+    });
+
     // Set up default camera.
     defaultCameraEl = document.createElement('a-entity');
-    defaultCameraEl.setAttribute('position', '0 0 0');
-    defaultCameraEl.setAttribute(DEFAULT_CAMERA_ATTR, '');
     defaultCameraEl.setAttribute('camera', {active: true});
     defaultCameraEl.setAttribute('wasd-controls', '');
-    defaultCameraEl.setAttribute('look-controls', {userHeight: constants.DEFAULT_CAMERA_HEIGHT});
+    defaultCameraEl.setAttribute('look-controls', '');
     defaultCameraEl.setAttribute(constants.AFRAME_INJECTED, '');
-    sceneEl.appendChild(defaultCameraEl);
+    cameraRigEl.setAttribute(DEFAULT_CAMERA_ATTR, '');
+    cameraRigEl.appendChild(defaultCameraEl);
+    sceneEl.appendChild(cameraRigEl);
     sceneEl.addEventListener('enter-vr', this.removeDefaultOffset);
     sceneEl.addEventListener('exit-vr', this.addDefaultOffset);
     sceneEl.emit('camera-ready', {cameraEl: defaultCameraEl});

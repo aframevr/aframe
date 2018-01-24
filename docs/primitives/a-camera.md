@@ -9,11 +9,6 @@ source_code: src/extras/primitives/primitives/a-camera.js
 The camera primitive determines what the user sees. We can change the viewport
 by modifying the camera entity's position and rotation.
 
-[userheight]: ../components/camera.md#vr-behavior
-
-Note that by default, the camera origin will be at `0 1.6 0` in desktop mode
-and `0 0 0` in VR mode. Read about the [`camera.userHeight` property][userheight].
-
 ## Example
 
 ```html
@@ -31,7 +26,6 @@ and `0 0 0` in VR mode. Read about the [`camera.userHeight` property][userheight
 | fov                   | camera.fov                     | 80            |
 | look-controls-enabled | look-controls.enabled          | true          |
 | near                  | camera.near                    | 0.5           |
-| user-height           | camera.userHeight              | 1.6           |
 | reverse-mouse-drag    | look-controls.reverseMouseDrag | false         |
 | wasd-controls-enabled | wasd-controls.enabled          | true          |
 

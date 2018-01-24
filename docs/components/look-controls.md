@@ -26,14 +26,13 @@ component](camera.md).
 
 [pointer-lock-api]: https://developer.mozilla.org/docs/Web/API/Pointer_Lock_API
 
-| Property           | Description                                                      | Default Value |
-|--------------------|------------------------------------------------------------------|---------------|
-| enabled            | Whether look controls are enabled.                               | true          |
-| hmdEnabled         | Whether to use VR headset pose in VR mode.                       | true          |
-| reverseMouseDrag   | Whether to reverse mouse drag.                                   | false         |
-| touchEnabled       | Whether to use touch controls in magic window mode.              | true          |
+| Property         | Description                                                      | Default Value |
+|------------------|------------------------------------------------------------------|---------------|
+| enabled          | Whether look controls are enabled.                               | true          |
+| hmdEnabled       | Whether to use VR headset pose in VR mode.                       | true          |
+| reverseMouseDrag | Whether to reverse mouse drag.                                   | false         |
+| touchEnabled     | Whether to use touch controls in magic window mode.              | true          |
 | pointerLockEnabled | Whether to hide the cursor using the [Pointer Lock API][pointer-lock-api]. | true |
-| userHeight         | Height offset to add to the camera when *not* in VR mode so the camera is not on ground level. The default camera that A-Frame injects or the `<a-camera>` primitive sets this to 1.6 meters. But note the default camera component alone (`<a-entity camera>`) defaults this to 0. | 0 |
 
 ## Customizing look-controls
 
@@ -52,8 +51,7 @@ be left maintaining a wide array of flags.
 
 The component lives within a Browserify/Webpack context so you'll need to
 replace the `require` statements with A-Frame globals (e.g.,
-`AFRAME.registerComponent`, `window.THREE`,
-`AFRAME.constants.DEFAULT_CAMERA_HEIGHT`), and get rid of the `module.exports`.
+`AFRAME.registerComponent`, `window.THREE`), and get rid of the `module.exports`.
 
 ## Caveats
 

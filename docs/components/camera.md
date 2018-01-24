@@ -16,7 +16,7 @@ to move and rotate the camera.
 A camera situated at the average height of human eye level (1.6 meters).
 
 ```html
-<a-entity camera="userHeight: 1.6" look-controls></a-entity>
+  <a-entity position="0 1.6 0" camera look-controls></a-entity>
 ```
 
 ## Properties
@@ -36,21 +36,13 @@ A camera situated at the average height of human eye level (1.6 meters).
 If a camera is not specified, A-Frame will inject a default camera:
 
 ```html
-<a-entity camera="active: true; userHeight: 1.6" look-controls wasd-controls position="0 0 0" data-aframe-default-camera></a-entity>
+<a-entity camera="active: true" look-controls wasd-controls position="0 0 0" data-aframe-default-camera></a-entity>
 ```
 
 If a camera is specified (e.g., our own `<a-camera>` or `<a-entity camera>`),
 then the default camera will not be added.
 
 ## VR Behavior
-
-When not in VR mode, `userHeight` translates the camera up to approximate
-average height of human eye level. The injected camera has this set to 1.6
-(meters). When entering VR, this height offset is *removed* such that we used
-absolute position returned from the VR headset. The offset is convenient for
-experiences that work both in and out of VR, as well as making experiences look
-decent from a desktop screen as opposed to clipping the ground if the headset
-was resting on the ground.
 
 When exiting VR, the camera will restore its rotation to its rotation *before*
 it entered VR. This is so when we exit VR, the rotation of the camera is back

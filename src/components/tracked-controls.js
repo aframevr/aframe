@@ -1,7 +1,7 @@
 var registerComponent = require('../core/component').registerComponent;
 var controllerUtils = require('../utils/tracked-controls');
-var THREE = require('../lib/three');
 var DEFAULT_CAMERA_HEIGHT = require('../constants').DEFAULT_CAMERA_HEIGHT;
+var THREE = require('../lib/three');
 
 var DEFAULT_HANDEDNESS = require('../constants').DEFAULT_HANDEDNESS;
 // Vector from eyes to elbow (divided by user height).
@@ -38,19 +38,14 @@ module.exports.Component = registerComponent('tracked-controls', {
     this.targetControllerNumber = this.data.controller;
 
     this.axisMoveEventDetail = {axis: this.axis, changed: this.changedAxes};
-
-    this.dolly = new THREE.Object3D();
-    this.controllerEuler = new THREE.Euler();
-    this.controllerEuler.order = 'YXZ';
-    this.controllerPosition = new THREE.Vector3();
-    this.controllerQuaternion = new THREE.Quaternion();
     this.deltaControllerPosition = new THREE.Vector3();
-    this.position = new THREE.Vector3();
-    this.rotation = {};
-    this.standingMatrix = new THREE.Matrix4();
+    this.controllerQuaternion = new THREE.Quaternion();
+    this.controllerEuler = new THREE.Euler();
 
-    this.previousControllerPosition = new THREE.Vector3();
     this.updateGamepad();
+
+    // The matrix is manipulate directly in the updatePose method.
+    this.el.object3D.matrixAutoUpdate = false;
   },
 
   tick: function (time, delta) {
@@ -99,7 +94,6 @@ module.exports.Component = registerComponent('tracked-controls', {
     var controllerQuaternion = this.controllerQuaternion;
     var deltaControllerPosition = this.deltaControllerPosition;
     var hand;
-    var headCamera;
     var headEl;
     var headObject3D;
     var pose;
@@ -107,8 +101,7 @@ module.exports.Component = registerComponent('tracked-controls', {
 
     headEl = this.getHeadElement();
     headObject3D = headEl.object3D;
-    headCamera = headEl.components.camera;
-    userHeight = (headCamera ? headCamera.data.userHeight : 0) || this.defaultUserHeight();
+    userHeight = this.defaultUserHeight();
 
     pose = controller.pose;
     hand = (controller ? controller.hand : undefined) || DEFAULT_HANDEDNESS;
@@ -149,65 +142,35 @@ module.exports.Component = registerComponent('tracked-controls', {
    */
   updatePose: function () {
     var controller = this.controller;
-    var controllerEuler = this.controllerEuler;
-    var controllerPosition = this.controllerPosition;
-    var elPosition;
-    var previousControllerPosition = this.previousControllerPosition;
-    var dolly = this.dolly;
-    var el = this.el;
+    var object3D = this.el.object3D;
     var pose;
-    var standingMatrix = this.standingMatrix;
     var vrDisplay = this.system.vrDisplay;
-    var headEl = this.getHeadElement();
-    var headCamera = headEl.components.camera;
-    var userHeight = (headCamera ? headCamera.data.userHeight : 0) || this.defaultUserHeight();
+    var standingMatrix;
 
     if (!controller) { return; }
 
     // Compose pose from Gamepad.
     pose = controller.pose;
-    if (pose.orientation !== null) {
-      dolly.quaternion.fromArray(pose.orientation);
-    }
 
-    // controller position or arm model
     if (pose.position !== null) {
-      dolly.position.fromArray(pose.position);
+      object3D.position.fromArray(pose.position);
     } else {
       // Controller not 6DOF, apply arm model.
-      if (this.data.armModel) { this.applyArmModel(dolly.position); }
+      if (this.data.armModel) { this.applyArmModel(object3D.position); }
+    }
+
+    if (pose.orientation !== null) {
+      object3D.quaternion.fromArray(pose.orientation);
     }
 
     // Apply transforms, if 6DOF and in VR.
-    if (pose.position != null && vrDisplay) {
-      if (vrDisplay.stageParameters) {
-        standingMatrix.fromArray(vrDisplay.stageParameters.sittingToStandingTransform);
-        dolly.matrix.compose(dolly.position, dolly.quaternion, dolly.scale);
-        dolly.matrix.multiplyMatrices(standingMatrix, dolly.matrix);
-      } else {
-        // Apply default camera height
-        dolly.position.y += userHeight;
-        dolly.matrix.compose(dolly.position, dolly.quaternion, dolly.scale);
-      }
-    } else {
-      dolly.matrix.compose(dolly.position, dolly.quaternion, dolly.scale);
+    if (vrDisplay) {
+      standingMatrix = this.el.sceneEl.renderer.vr.getStandingMatrix();
+      object3D.matrixAutoUpdate = false;
+      object3D.matrix.compose(object3D.position, object3D.quaternion, object3D.scale);
+      object3D.matrix.multiplyMatrices(standingMatrix, object3D.matrix);
+      object3D.matrixWorldNeedsUpdate = true;
     }
-
-    // Decompose.
-    controllerEuler.setFromRotationMatrix(dolly.matrix);
-    controllerPosition.setFromMatrixPosition(dolly.matrix);
-
-    // Apply rotation.
-    this.rotation.x = THREE.Math.radToDeg(controllerEuler.x);
-    this.rotation.y = THREE.Math.radToDeg(controllerEuler.y);
-    this.rotation.z = THREE.Math.radToDeg(controllerEuler.z) + this.data.rotationOffset;
-    el.setAttribute('rotation', this.rotation);
-
-    // Apply position.
-    elPosition = el.getAttribute('position');
-    this.position.copy(elPosition).sub(previousControllerPosition).add(controllerPosition);
-    el.setAttribute('position', this.position);
-    previousControllerPosition.copy(controllerPosition);
   },
 
   /**
