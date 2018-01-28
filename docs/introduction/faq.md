@@ -197,6 +197,10 @@ For sounds, check out:
 - [Freesound.org](http://www.freesound.org/)
 - [Annual GDC Game Audio Bundles by Sonniss](http://www.sonniss.com/gameaudiogdc2016/)
 
+## Can I render Vimeo videos as a texture?
+
+Yes. [Vimeo has an A-Frame plugin](https://github.com/vimeo/vimeo-webvr-demo), but rendering is limited to just videos from your personal Vimeo account.
+
 ## Can I render YouTube videos as a texture?
 
 [proxy]: https://github.com/cvan/webvr360
