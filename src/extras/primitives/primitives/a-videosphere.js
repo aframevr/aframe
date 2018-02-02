@@ -13,6 +13,7 @@ registerPrimitive('a-videosphere', utils.extendDeep({}, getMeshMixin(), {
     material: {
       color: '#FFF',
       shader: 'flat',
+      side: 'back',
       npot: true
     },
     scale: '-1 1 1'
