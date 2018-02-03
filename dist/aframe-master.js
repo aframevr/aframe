@@ -72044,10 +72044,10 @@ module.exports.Component = registerComponent('windows-motion-controls', {
     var self = this;
     var el = this.el;
     this.onButtonChanged = bind(this.onButtonChanged, this);
-    this.onButtonDown = function (evt) { onButtonEvent(evt, 'down', self); };
-    this.onButtonUp = function (evt) { onButtonEvent(evt, 'up', self); };
-    this.onButtonTouchStart = function (evt) { onButtonEvent(evt, 'touchstart', self); };
-    this.onButtonTouchEnd = function (evt) { onButtonEvent(evt, 'touchend', self); };
+    this.onButtonDown = function (evt) { onButtonEvent(evt.detail.id, 'down', self); };
+    this.onButtonUp = function (evt) { onButtonEvent(evt.detail.id, 'up', self); };
+    this.onButtonTouchStart = function (evt) { onButtonEvent(evt.detail.id, 'touchstart', self); };
+    this.onButtonTouchEnd = function (evt) { onButtonEvent(evt.detail.id, 'touchend', self); };
     this.onControllerConnected = function () { self.setModelVisibility(true); };
     this.onControllerDisconnected = function () { self.setModelVisibility(false); };
     this.controllerPresent = false;
@@ -78190,7 +78190,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.7.0 (Date 2018-02-02, Commit #660463e)');
+console.log('A-Frame Version: 0.7.0 (Date 2018-02-03, Commit #c81d853)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
