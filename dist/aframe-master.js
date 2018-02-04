@@ -68234,7 +68234,7 @@ module.exports.Component = registerComponent('look-controls', {
     enabled: {default: true},
     touchEnabled: {default: true},
     hmdEnabled: {default: true},
-    pointerLockEnabled: {default: true},
+    pointerLockEnabled: {default: false},
     reverseMouseDrag: {default: false}
   },
 
@@ -78190,7 +78190,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.7.0 (Date 2018-02-03, Commit #c81d853)');
+console.log('A-Frame Version: 0.7.0 (Date 2018-02-04, Commit #334cd7e)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
