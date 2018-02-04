@@ -21,7 +21,7 @@ module.exports.Component = registerComponent('look-controls', {
     enabled: {default: true},
     touchEnabled: {default: true},
     hmdEnabled: {default: true},
-    pointerLockEnabled: {default: true},
+    pointerLockEnabled: {default: false},
     reverseMouseDrag: {default: false}
   },
 
