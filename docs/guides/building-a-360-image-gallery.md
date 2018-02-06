@@ -173,21 +173,6 @@ need to know the component's npm package name and the path:
 </html>
 ```
 
-[angle]: https://www.npmjs.com/package/angle
-
-Community components are curated to [the A-Frame Registry][registry].  If a
-component is on the Registry, there is a way to include it without having to
-know which version of the component is compatible with your A-Frame version and
-without having to know the path. [angle][angle] is a command-line tool for
-A-Frame that has a command to install components straight to our HTML files.
-
-```sh
-npm install -g angle
-angle install layout
-angle install template
-angle install event-set
-```
-
 ### Template Component
 
 Currently, we have one link. We want to create three of them, one for each of
