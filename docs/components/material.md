@@ -335,7 +335,7 @@ the elements in markup. We can often run into scenarios where foreground
 entities occlude background entities. This creates confusion and unwanted
 visual defects.
 
-To work around this issue, try changing the order of the entities in the HTML.
+To work around this issue, try changing the order of the entities in the HTML. In case of png images, sometimes this issue can be solved by setting attribute `alpha-test`, for example, `alpha-test="0.5"`. You should play around with its value to see the one that solves the issue.
 
 ## Register a Custom Shader Material
 
