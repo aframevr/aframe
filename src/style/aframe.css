@@ -47,7 +47,7 @@
   cursor: -webkit-grabbing;
 }
 
-// Class is removed when doing <a-scene embedded>.
+/* Class is removed when doing <a-scene embedded>. */
 a-scene.fullscreen .a-canvas {
   width: 100% !important;
   height: 100% !important;
