@@ -61,6 +61,8 @@ module.exports.Component = registerComponent('text', {
     letterSpacing: {type: 'number', default: 0},
     // `lineHeight` defaults to font's `lineHeight` value.
     lineHeight: {type: 'number'},
+    // `negate` must be true for fonts generated with older versions of msdfgen (white background).
+    negate: {type: 'boolean', default: true},
     opacity: {type: 'number', default: 1.0},
     shader: {default: 'sdf', oneOf: shaders},
     side: {default: 'front', oneOf: ['front', 'back', 'double']},
@@ -160,7 +162,8 @@ module.exports.Component = registerComponent('text', {
       map: this.texture,
       opacity: data.opacity,
       side: parseSide(data.side),
-      transparent: data.transparent
+      transparent: data.transparent,
+      negate: data.negate
     };
 
     // Shader has not changed, do an update.

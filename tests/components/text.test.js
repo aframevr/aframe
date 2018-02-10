@@ -179,6 +179,13 @@ suite('text', function () {
       value = el.getObject3D('text').material.side;
       assert.equal(value, THREE.DoubleSide);
     });
+
+    test('updates material negate', function () {
+      var value;
+      el.setAttribute('text', 'negate', false);
+      value = el.getObject3D('text').material.uniforms.negate.value;
+      assert.equal(value, 0.0);
+    });
   });
 
   suite('updateFont', function () {
