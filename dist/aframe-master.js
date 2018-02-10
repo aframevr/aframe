@@ -70782,6 +70782,8 @@ module.exports.Component = registerComponent('text', {
     letterSpacing: {type: 'number', default: 0},
     // `lineHeight` defaults to font's `lineHeight` value.
     lineHeight: {type: 'number'},
+    // `negate` must be true for fonts generated with older versions of msdfgen (white background).
+    negate: {type: 'boolean', default: true},
     opacity: {type: 'number', default: 1.0},
     shader: {default: 'sdf', oneOf: shaders},
     side: {default: 'front', oneOf: ['front', 'back', 'double']},
@@ -70881,7 +70883,8 @@ module.exports.Component = registerComponent('text', {
       map: this.texture,
       opacity: data.opacity,
       side: parseSide(data.side),
-      transparent: data.transparent
+      transparent: data.transparent,
+      negate: data.negate
     };
 
     // Shader has not changed, do an update.
@@ -78190,7 +78193,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.7.0 (Date 2018-02-09, Commit #97af439)');
+console.log('A-Frame Version: 0.7.0 (Date 2018-02-10, Commit #5f4179d)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -78434,6 +78437,7 @@ module.exports.Shader = registerShader('msdf', {
     alphaTest: {type: 'number', is: 'uniform', default: 0.5},
     color: {type: 'color', is: 'uniform', default: 'white'},
     map: {type: 'map', is: 'uniform'},
+    negate: {type: 'boolean', is: 'uniform', default: true},
     opacity: {type: 'number', is: 'uniform', default: 1.0}
   },
 
@@ -78467,13 +78471,17 @@ module.exports.Shader = registerShader('msdf', {
     'uniform vec3 color;',
     'uniform float opacity;',
     'uniform float alphaTest;',
+    'uniform bool negate;',
     'varying vec2 vUV;',
 
     'float median(float r, float g, float b) {',
     '  return max(min(r, g), min(max(r, g), b));',
     '}',
     'void main() {',
-    '  vec3 sample = 1.0 - texture2D(map, vUV).rgb;',
+    '  vec3 sample = texture2D(map, vUV).rgb;',
+    '  if (negate) {',
+    '    sample = 1.0 - sample;',
+    '  }',
     '  float sigDist = median(sample.r, sample.g, sample.b) - 0.5;',
     '  float alpha = clamp(sigDist/fwidth(sigDist) + 0.5, 0.0, 1.0);',
     '  float dscale = 0.353505;',
