@@ -156,10 +156,9 @@ bitmap font packing tool. [See this guide for generating SDF fonts][sdffonts].
 
 [msdfgen]: https://github.com/Chlumsky/msdfgen
 [msdf-bmfont]: https://github.com/Jam3/msdf-bmfont
+[msdf-bmfont-web]: http://msdf-bmfont.donmccurdy.com/
 
-We can also generate MSDF fonts using [msdfgen] or [msdf-bmfont], although
-these tools may be less mature. msdf-bmfont provides a friendlier wrapper
-around that tool to generate MSDF font files from scalable TTF fonts
+We can also generate MSDF fonts using [a web-based MSDF tool][msdf-bmfont-web], or on the commandline with [msdfgen] or [msdf-bmfont]. Tools for MSDF fonts may be less mature than the SDF alternatives.
 
 Below is an example comparing a font generated with Hiero, Arial Black, with
 the SDF font, DejaVu:
