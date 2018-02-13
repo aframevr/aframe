@@ -140,7 +140,7 @@ denotes the `Object3D`s purpose.
 For example, to set a point light from within a component:
 
 ```js
-AFRAME.registerComponent('pointlight', {
+AFRAME.registerComponent('light', {
   init: function () {
     this.el.setObject3D('light', new THREE.PointLight());
   }
