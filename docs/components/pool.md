@@ -29,6 +29,7 @@ sceneEl.components.pool__enemy.returnEntity(el);
 
 | Property | Description                                                                           | Default Value |
 |----------|---------------------------------------------------------------------------------------|---------------|
+| container | Selector to store pooled entities. Defaults to the scene. | '' |
 | dynamic  | Grow the pool automatically if more entities are requested after reaching the `size`. | false         |
 | mixin    | Mixin required to initialize the entities of the pool.                                | ''            |
 | size     | Number of preallocated entities in the pool.                                          | 0             |
