@@ -55,7 +55,6 @@ a-scene.fullscreen .a-canvas {
   left: 0 !important;
   right: 0 !important;
   bottom: 0 !important;
-  z-index: 999999 !important;
   position: fixed !important;
 }
 
