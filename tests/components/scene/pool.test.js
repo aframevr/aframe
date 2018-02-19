@@ -7,6 +7,7 @@ suite('pool', function () {
     var sceneEl = this.sceneEl = el.parentNode;
     sceneEl.setAttribute('pool', 'mixin: test; size: 1');
     helpers.mixinFactory('test', {material: 'color: red'}, sceneEl);
+    if (sceneEl.hasLoaded) { done(); return; }
     sceneEl.addEventListener('loaded', function () { done(); });
   });
 
@@ -16,6 +17,26 @@ suite('pool', function () {
     assert.equal(poolComponent.availableEls.length, 1);
     assert.equal(poolComponent.usedEls.length, 0);
     assert.equal(sceneEl.querySelectorAll('[material]').length, 1);
+  });
+
+  test('can specify container', function (done) {
+    var container;
+    var sceneEl = this.sceneEl;
+    var poolComponent = sceneEl.components.pool;
+
+    container = document.createElement('a-entity');
+    container.setAttribute('id', 'foo');
+    sceneEl.appendChild(container);
+
+    setTimeout(() => {
+      sceneEl.setAttribute('pool__foo', 'mixin: test; size: 1; container: #foo');
+      setTimeout(() => {
+        assert.equal(poolComponent.availableEls.length, 1);
+        assert.equal(poolComponent.usedEls.length, 0);
+        assert.equal(container.querySelectorAll('[material]').length, 1);
+        done();
+      });
+    });
   });
 
   suite('requestEntity', function () {
