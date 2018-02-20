@@ -27,7 +27,8 @@ module.exports.Component = registerComponent('wasd-controls', {
     fly: {default: false},
     wsAxis: {default: 'z', oneOf: ['x', 'y', 'z']},
     wsEnabled: {default: true},
-    wsInverted: {default: false}
+    wsInverted: {default: false},
+    cameraRig: {type: 'selector'}
   },
 
   init: function () {
@@ -44,6 +45,7 @@ module.exports.Component = registerComponent('wasd-controls', {
     this.onKeyUp = bind(this.onKeyUp, this);
     this.onVisibilityChange = bind(this.onVisibilityChange, this);
     this.attachVisibilityEventListeners();
+    this.getOrientationElement();
   },
 
   tick: function (time, delta) {
@@ -84,6 +86,30 @@ module.exports.Component = registerComponent('wasd-controls', {
   pause: function () {
     this.keys = {};
     this.removeKeyEventListeners();
+  },
+
+  getOrientationElement () {
+    // If a camera rig was defined explicitly use it
+    if (this.data.cameraRig) {
+      this.orientationEl = this.data.cameraRig;
+      return;
+    }
+
+    // If there is a camera on this element use it
+    if (this.el.getAttribute('camera')) {
+      this.orientationEl = this.el;
+      return;
+    }
+
+    // If we still haven't found a camera, search through this elements children
+    var childCamera = this.el.querySelector('[camera]');
+    if (childCamera) {
+      this.orientationEl = childCamera;
+      return;
+    }
+
+    // No cameras found, just use this element
+    this.orientationEl = this.el;
   },
 
   updateVelocity: function (delta) {
@@ -139,7 +165,7 @@ module.exports.Component = registerComponent('wasd-controls', {
     var rotationEuler = new THREE.Euler(0, 0, 0, 'YXZ');
 
     return function (delta) {
-      var rotation = this.el.getAttribute('rotation');
+      var rotation = this.orientationEl.getAttribute('rotation'); // this.el.getAttribute('rotation');
       var velocity = this.velocity;
       var xRotation;
 
