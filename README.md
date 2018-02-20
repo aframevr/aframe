@@ -91,12 +91,6 @@ at home with A-Frame.
 with a workflow similar to a browser's developer tools and interface similar to
 Unity. Open up any A-Frame scene and hit `<ctrl> + <alt> + i`.
 
-:package: **Registry**: Reuse powerful components that other A-Frame developers
-have created and shared. The [A-Frame
-Registry](https://aframe.io/aframe-registry) collects and curates components
-similar to the Unity Asset Store. Stand on the shoulders of giants and plug in
-components right from HTML.
-
 :runner: **Features**: Hit the ground running with A-Frame's built-in
 components such as geometries, materials, lights, animations, models,
 raycasters, shadows, positional audio, Vive / Touch / Cardboard controls. Get
