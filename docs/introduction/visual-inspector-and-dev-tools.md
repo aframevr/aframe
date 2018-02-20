@@ -16,31 +16,12 @@ experience:
   and see the visual effect of tweaking entities. The VR analog to the
   browser's DOM inspector. Can be opened on any A-Frame scene with `<ctrl> +
   <alt> + i`.
+- Keyboard shortcuts.
 - [**Motion Capture**][motioncapture] - A tool to record and replay headset and
   controller pose and events. Hit record, move around inside the VR headset,
   interact with objects with the controller. Then replay that recording back on
   any computer for rapid development and testing. Reduce the amount of time going
   in and out of the headset.
-
-[reduxdevtools]: https://github.com/zalmoxisus/redux-devtools-extension
-[reactdevtools]: https://github.com/facebook/react-devtools
-[hotloading]: https://github.com/gaearon/react-hot-loader
-[React]: https://github.com/facebook/react
-[Preact]: https://preactjs.com/
-[Redux]: http://reduxjs.org/
-
-We'll later also skim across some of the useful developer tools when using
-A-Frame with [React], [Preact], and/or [Redux]:
-
-- [**React DevTools**][reactdevtools] - If using React or Preact with A-Frame,
-  we can use React DevTools to inspect React component props, state, and tree.
-- [**Hot Loading**][hotloading] - If using React or Preact with A-Frame, we can
-  use hot module replacement (HMR) to tweak React Components in real-time. All
-  application state and internal A-Frame entity data will be preserved, letting
-  us see changes in real-time even in the headset.
-- [**Redux DevTools**][reduxdevtools] - If Redux is integrated with A-Frame, we can
-  use Redux DevTools to inspect the application state and all of its changes. Or
-  do actions such as time travel by committing and rewinding state.
 
 We'll go over GUI tools built on top of A-Frame that can be used without code.
 And touch on other tools that can ease development across multiple machines.
@@ -129,6 +110,25 @@ it back to source code.
 #### Shortcuts
 
 We can press **`h`** key to see a list of all the shortcuts available.
+
+## Mouse and Keyboard Shortcuts
+
+[debugcursor](https://www.npmjs.com/package/aframe-debug-cursor-component)
+
+Using `<a-entity cursor="rayOrigin: mouse"></a-entity>`, we can hover and click
+entities using the mouse. These provide `mouseenter`, `mouseleave`, and `click`
+events that are compatible with using the cursor on a controller (such as via
+`<a-laser-controls>`). There is a [debug-cursor component](debugcursor) to log
+cursor events.
+
+It is useful to develop keyboard shortcut bindings to test actions within
+the application using `document.addEventListener('keydown', function (evt) { //
+... });`.
+
+[debugcontrol]: https://gist.github.com/ngokevin/803e68351f70139da51fda48d3b484e3
+
+There is [also a component that lets you control a controller in 6DoF using
+keyboard][debugcontrol].
 
 ## Motion Capture
 
@@ -258,32 +258,24 @@ People have built tools on top of A-Frame to abstract away code via an
 interface or application, making content creation even easier. These act as
 more complete editors rather than developer tools.
 
-### [WebVR Studio](http://webvrstudio.com/)
+### [Ottifox](http://ottifox.com/)
 
-*"The new design app for virtual reality. Whether you want to prototype VR
-interactions, or create fully immersive experiences, WebVR Studio helps you get
-there.  Design impressive VR scenes for phone and desktop browsers."*
+*"Ottifox is a powerful design and prototyping solution that makes it easy to
+create interactive VR scenes that run in the browser."*
 
-![WebVR Studio](https://cloud.githubusercontent.com/assets/674727/25638463/5cc90a3e-2f3d-11e7-987e-d8d299773f67.jpg)
+![Ottifox](https://cloud.githubusercontent.com/assets/674727/25638463/5cc90a3e-2f3d-11e7-987e-d8d299773f67.jpg)
 
-### [IdeaSpaceVR](https://www.ideaspacevr.org/)
+### [Hologram](http://hologram.cool/)
 
-*"Manage your virtual reality spaces and assets like you would manage blog
-posts. Run it on your own server. All you need is PHP and a database (eg.
-MySQL, MariaDB)."*
+*"All-in-one WebVR creation."*
 
-![IdeaSpaceVR](https://cloud.githubusercontent.com/assets/674727/26017126/ed464306-371c-11e7-9554-2848b2773d71.jpg)
+![Holgoram](https://user-images.githubusercontent.com/674727/36452389-24416be0-1649-11e8-8d7d-4a3a69097650.png)
 
 ### [Fader](https://fader.vragments.com/)
 
 *"Create your own VR story now. Fader allows you to create and publish VR
 stories.  Add multiple layers of information to your 360 spheres, design scenes
 and tell your story.  Easy, fast and web based!"*
-
-*"Fader is designed and developed by Vragments, a Berlin based Virtual Reality
-startup. Vragments is a team of technologists and journalists who are dedicated
-to bring new ways of storytelling to content producers by providing an
-easy-to-use VR tool.*"
 
 ![Fader](https://cloud.githubusercontent.com/assets/674727/25638761/53535724-2f3e-11e7-90f2-5efb3a58c549.jpg)
 

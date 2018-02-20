@@ -12,15 +12,15 @@ order: 11
 [mixins]: ../core/mixins.md
 [template]: https://github.com/ngokevin/kframe/tree/master/components/template/
 
-Some best practices for the framework:
+The core structure of A-Frame is [entity-component (ECS)][ecs]. Place and
+structure application code within purely A-Frame components for reusability,
+modularity, composability, decoupling, encapsulation, declarativeness, and
+testability. It's okay to start out at first using content scripts
+(`<script>`), but look to move towards components.
 
-- The core structure of A-Frame is [entity-component (ECS)][ecs]. Place and
-  structure application code within purely A-Frame components for reusability,
-  modularity, composability, decoupling, encapsulation, declarativeness, and
-  testability. It's okay to start out at first using content scripts
-  (`<script>`), but look to move towards components.
-- [Mixins][mixins] and [templating][template] are useful to reuse and reduce
-  repeated HTML.
+## WebVR
+
+[See WebVR Guidelines](https://www.supermedium.com/blog/webvr-guidelines).
 
 ## Performance
 

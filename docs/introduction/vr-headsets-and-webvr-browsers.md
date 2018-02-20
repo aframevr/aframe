@@ -132,6 +132,7 @@ A-Frame supports VR for any browser that implements the [WebVR
 specification][w3c]:
 
 - [Firefox 55+ for Windows](https://www.mozilla.org/en-US/firefox/desktop/)
+- [Supermedium](https://www.supermedium.com)
 - [Experimental builds of Chromium](https://webvr.info/get-chrome/)
 - Chrome for Android (Daydream)
 - Oculus Browser (GearVR)

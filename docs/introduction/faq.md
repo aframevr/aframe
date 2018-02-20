@@ -292,7 +292,7 @@ including:
 
 [deviceplatform]: ./vr-headsets-and-webvr-browsers.md
 
-Most of them. Read *[VR Headsets and WebVE Browsers][deviceplatform]* for more
+Most of them. Read *[VR Headsets and WebVR Browsers][deviceplatform]* for more
 information.
 
 ## How can I improve performance?
