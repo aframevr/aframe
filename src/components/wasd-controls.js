@@ -28,7 +28,7 @@ module.exports.Component = registerComponent('wasd-controls', {
     wsAxis: {default: 'z', oneOf: ['x', 'y', 'z']},
     wsEnabled: {default: true},
     wsInverted: {default: false},
-    cameraRig: {type: 'selector'}
+    orientationEl: {type: 'selector'}
   },
 
   init: function () {
@@ -89,13 +89,13 @@ module.exports.Component = registerComponent('wasd-controls', {
   },
 
   getOrientationElement () {
-    // If a camera rig was defined explicitly use it
-    if (this.data.cameraRig) {
-      this.orientationEl = this.data.cameraRig;
+    // If a orientation element was defined explicitly use it
+    if (this.data.orientationEl) {
+      this.orientationEl = this.data.orientationEl;
       return;
     }
 
-    // If there is a camera on this element use it
+    // If there is a camera on this element assume its the orientation element
     if (this.el.getAttribute('camera')) {
       this.orientationEl = this.el;
       return;
