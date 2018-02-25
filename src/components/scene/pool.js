@@ -59,7 +59,8 @@ module.exports.Component = registerComponent('pool', {
     el = document.createElement('a-entity');
     el.play = this.wrapPlay(el.play);
     el.setAttribute('mixin', this.data.mixin);
-    el.setAttribute('visible', false);
+    el.object3D.visible = false;
+    el.pause();
     this.container.appendChild(el);
     this.availableEls.push(el);
   },
@@ -93,7 +94,7 @@ module.exports.Component = registerComponent('pool', {
     }
     el = this.availableEls.shift();
     this.usedEls.push(el);
-    el.setAttribute('visible', true);
+    el.object3D.visible = true;
     return el;
   },
 
@@ -108,7 +109,7 @@ module.exports.Component = registerComponent('pool', {
     }
     this.usedEls.splice(index, 1);
     this.availableEls.push(el);
-    el.setAttribute('visible', false);
+    el.object3D.visible = false;
     el.pause();
     return el;
   }
