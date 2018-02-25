@@ -275,7 +275,11 @@ module.exports.Component = registerComponent('cursor', {
     }
 
     // Unset current intersection.
-    if (this.intersectedEl) { this.clearCurrentIntersection(); }
+    if (this.intersectedEl) {
+      this.clearCurrentIntersection();
+      // Already intersecting.
+      if (this.intersectedEl === intersectedEl) { return; }
+    }
 
     this.setIntersection(intersectedEl, intersection);
   },
