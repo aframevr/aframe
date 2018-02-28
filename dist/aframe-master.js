@@ -71630,25 +71630,30 @@ module.exports.Component = registerComponent('tracked-controls', {
     // Compose pose from Gamepad.
     pose = controller.pose;
 
-    if (pose.position !== null) {
+    if (pose.position) {
       object3D.position.fromArray(pose.position);
     } else {
       // Controller not 6DOF, apply arm model.
       if (this.data.armModel) { this.applyArmModel(object3D.position); }
     }
 
-    if (pose.orientation !== null) {
+    if (pose.orientation) {
       object3D.quaternion.fromArray(pose.orientation);
     }
 
     // Apply transforms, if 6DOF and in VR.
-    if (vrDisplay) {
+    if (vrDisplay && pose.position) {
       standingMatrix = this.el.sceneEl.renderer.vr.getStandingMatrix();
       object3D.matrixAutoUpdate = false;
       object3D.matrix.compose(object3D.position, object3D.quaternion, object3D.scale);
       object3D.matrix.multiplyMatrices(standingMatrix, object3D.matrix);
-      object3D.matrixWorldNeedsUpdate = true;
+      object3D.matrix.decompose(object3D.position, object3D.quaternion, object3D.scale);
     }
+
+    object3D.rotateZ(this.data.rotationOffset * THREE.Math.DEG2RAD);
+
+    object3D.updateMatrix();
+    object3D.matrixWorldNeedsUpdate = true;
   },
 
   /**
@@ -78463,7 +78468,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.7.0 (Date 2018-02-28, Commit #96cfa5e)');
+console.log('A-Frame Version: 0.7.0 (Date 2018-02-28, Commit #38c73a1)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
