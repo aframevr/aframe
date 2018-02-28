@@ -169,8 +169,13 @@ module.exports.Component = registerComponent('tracked-controls', {
       object3D.matrixAutoUpdate = false;
       object3D.matrix.compose(object3D.position, object3D.quaternion, object3D.scale);
       object3D.matrix.multiplyMatrices(standingMatrix, object3D.matrix);
-      object3D.matrixWorldNeedsUpdate = true;
+      object3D.matrix.decompose(object3D.position, object3D.quaternion, object3D.scale);
     }
+
+    object3D.rotateZ(this.data.rotationOffset * THREE.Math.DEG2RAD);
+
+    object3D.updateMatrix();
+    object3D.matrixWorldNeedsUpdate = true;
   },
 
   /**
