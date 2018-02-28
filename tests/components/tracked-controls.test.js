@@ -140,6 +140,15 @@ suite('tracked-controls', function () {
       component.tick();
       assertVec3(el.getAttribute('position'), [2, 2.5, 0]);
     });
+
+    test('does not apply standing matrix transform for 3DoF', function () {
+      standingMatrix.makeTranslation(1, 0.5, -3);
+      controller.pose.position = null;
+      el.sceneEl.systems['tracked-controls'].vrDisplay = true;
+      component.tick();
+      // assert position after default camera position and arm model are applied
+      assertVec3CloseTo(el.getAttribute('position'), [0.28, 1.12, -0.32], 0.01);
+    });
   });
 
   suite('updatePose (rotation)', function () {
@@ -419,10 +428,18 @@ function assertMatrix4 (matrixA, matrixB) {
   assert.ok(matrixA.equals(matrixB), `\n${matrixA.elements}\n${matrixB.elements}`);
 }
 
+function assertVec3CloseTo (vec3, arr, delta) {
+  var debugOutput = `${[vec3.x, vec3.y, vec3.z]} is not close to ${arr}`;
+  assert.closeTo(vec3.x, arr[0], delta, debugOutput);
+  assert.closeTo(vec3.y, arr[1], delta, debugOutput);
+  assert.closeTo(vec3.z, arr[2], delta, debugOutput);
+}
+
 function assertVec3 (vec3, arr) {
-  assert.equal(vec3.x, arr[0]);
-  assert.equal(vec3.y, arr[1]);
-  assert.equal(vec3.z, arr[2]);
+  var debugOutput = `${[vec3.x, vec3.y, vec3.z]} does not equal ${arr}`;
+  assert.equal(vec3.x, arr[0], debugOutput);
+  assert.equal(vec3.y, arr[1], debugOutput);
+  assert.equal(vec3.z, arr[2], debugOutput);
 }
 
 function assertQuaternion (quaternion, arr) {
