@@ -8,14 +8,16 @@ suite('tracked-controls', function () {
   var controller;
   var el;
   var system;
+  var standingMatrix = new THREE.Matrix4();
 
   setup(function (done) {
+    standingMatrix.identity();
     el = entityFactory();
     el.setAttribute('position', '');
     el.setAttribute('tracked-controls', '');
     el.addEventListener('loaded', function () {
       el.parentNode.renderer.vr.getStandingMatrix = function () {
-        return new THREE.Matrix4();
+        return standingMatrix;
       };
       component = el.components['tracked-controls'];
       system = component.system;
@@ -130,6 +132,14 @@ suite('tracked-controls', function () {
       component.tick();
       assertVec3(el.getAttribute('position'), [2, 4, 6]);
     });
+
+    test('applies standing matrix transform', function () {
+      standingMatrix.makeTranslation(1, 0.5, -3);
+      controller.pose.position = [1, 2, 3];
+      el.sceneEl.systems['tracked-controls'].vrDisplay = true;
+      component.tick();
+      assertVec3(el.getAttribute('position'), [2, 2.5, 0]);
+    });
   });
 
   suite('updatePose (rotation)', function () {
@@ -165,6 +175,13 @@ suite('tracked-controls', function () {
       component.tick();
       component.tick();
       assertQuaternion(el.object3D.quaternion, controller.pose.orientation);
+    });
+
+    test('applies rotation Z-offset', function () {
+      el.setAttribute('tracked-controls', 'rotationOffset', 10);
+      component.tick();
+      assertVec3(el.getAttribute('rotation'), [0, 0, 10]);
+      assertMatrix4(el.object3D.matrix, new THREE.Matrix4().makeRotationZ(10 * THREE.Math.DEG2RAD));
     });
   });
 
@@ -397,6 +414,10 @@ suite('tracked-controls', function () {
     });
   });
 });
+
+function assertMatrix4 (matrixA, matrixB) {
+  assert.ok(matrixA.equals(matrixB), `\n${matrixA.elements}\n${matrixB.elements}`);
+}
 
 function assertVec3 (vec3, arr) {
   assert.equal(vec3.x, arr[0]);
