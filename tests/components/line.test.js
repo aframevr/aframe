@@ -69,6 +69,17 @@ suite('line', function () {
       assert.equal(positionArray[5], 9);
     });
 
+    test('set end but no start position', function () {
+      var end = {x: 4, y: 5, z: 6};
+      el.setAttribute('line', {end: end});
+      end.z = 9;
+      var updateSpy = this.sinon.spy(el.components.line, 'update');
+      el.setAttribute('line', {end: end});
+      var endPoint = el.getAttribute('line').end;
+      assert.equal(endPoint.z, 9);
+      assert.ok(updateSpy.called);
+    });
+
     test('modify color', function () {
       el.setAttribute('line', {color: '#f9a'});
 

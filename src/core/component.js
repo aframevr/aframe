@@ -522,7 +522,16 @@ function cloneData (data) {
 */
 function extendProperties (dest, source, isSinglePropSchema) {
   if (isSinglePropSchema && (source === null || typeof source !== 'object')) { return source; }
-  return utils.extend(dest, source);
+  var copy = utils.extend(dest, source);
+  var keys = Object.keys(copy);
+  var key;
+  var i;
+  for (i = 0; i < keys.length; i++) {
+    key = keys[i];
+    if (!copy[key] || copy[key].constructor !== Object) { continue; }
+    copy[key] = utils.clone(copy[key]);
+  }
+  return copy;
 }
 
 /**
