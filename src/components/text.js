@@ -85,6 +85,7 @@ module.exports.Component = registerComponent('text', {
   },
 
   init: function () {
+    this.shaderData = {};
     this.geometry = createTextGeometry();
     this.createOrUpdateMaterial();
     this.mesh = new THREE.Mesh(this.geometry, this.material);
@@ -144,7 +145,7 @@ module.exports.Component = registerComponent('text', {
     var hasChangedShader;
     var material = this.material;
     var NewShader;
-    var shaderData;
+    var shaderData = this.shaderData;
     var shaderName;
 
     // Infer shader if using a stock font (or from `-msdf` filename convention).
@@ -156,15 +157,14 @@ module.exports.Component = registerComponent('text', {
     }
 
     hasChangedShader = (this.shaderObject && this.shaderObject.name) !== shaderName;
-    shaderData = {
-      alphaTest: data.alphaTest,
-      color: data.color,
-      map: this.texture,
-      opacity: data.opacity,
-      side: parseSide(data.side),
-      transparent: data.transparent,
-      negate: data.negate
-    };
+
+    shaderData.alphaTest = data.alphaTest;
+    shaderData.color = data.color;
+    shaderData.map = this.texture;
+    shaderData.opacity = data.opacity;
+    shaderData.side = parseSide(data.side);
+    shaderData.transparent = data.transparent;
+    shaderData.negate = data.negate;
 
     // Shader has not changed, do an update.
     if (!hasChangedShader) {
@@ -172,7 +172,7 @@ module.exports.Component = registerComponent('text', {
       this.shaderObject.update(shaderData);
       // Apparently, was not set on `init` nor `update`.
       material.transparent = shaderData.transparent;
-      updateBaseMaterial(material, shaderData);
+      material.side = shaderData.side;
       return;
     }
 
@@ -182,7 +182,7 @@ module.exports.Component = registerComponent('text', {
     this.shaderObject = NewShader.shader;
 
     // Set new shader material.
-    updateBaseMaterial(this.material, shaderData);
+    this.material.side = shaderData.side;
     if (this.mesh) { this.mesh.material = this.material; }
   },
 
@@ -434,13 +434,6 @@ function createShader (el, shaderName, data) {
     material: shader,
     shader: shaderObject
   };
-}
-
-/**
- * @todo Add more supported material properties (e.g., `visible`).
- */
-function updateBaseMaterial (material, data) {
-  material.side = data.side;
 }
 
 /**

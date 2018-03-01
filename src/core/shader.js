@@ -62,16 +62,19 @@ Shader.prototype = {
   },
 
   initVariables: function (data, type) {
-    var variables = {};
+    var key;
     var schema = this.schema;
-    Object.keys(schema).forEach(function processSchema (key) {
-      if (schema[key].is !== type) { return; }
-      var varType = propertyToThreeMapping[schema[key].type];
+    var variables = {};
+    var varType;
+
+    for (key in schema) {
+      if (schema[key].is !== type) { continue; }
+      varType = propertyToThreeMapping[schema[key].type];
       variables[key] = {
         type: varType,
         value: undefined  // Let updateVariables handle setting these.
       };
-    });
+    }
     return variables;
   },
 
@@ -87,33 +90,32 @@ Shader.prototype = {
   },
 
   updateVariables: function (data, type) {
-    var self = this;
-    var variables = type === 'uniform' ? this.uniforms : this.attributes;
+    var key;
+    var materialKey;
     var schema = this.schema;
-    Object.keys(data).forEach(function processData (key) {
-      var materialKey;
-      if (!schema[key] || schema[key].is !== type) { return; }
+    var variables;
+
+    variables = type === 'uniform' ? this.uniforms : this.attributes;
+    for (key in data) {
+      if (!schema[key] || schema[key].is !== type) { continue; }
 
       if (schema[key].type === 'map') {
         // If data unchanged, get out early.
-        if (!variables[key] || variables[key].value === data[key]) { return; }
+        if (!variables[key] || variables[key].value === data[key]) { continue; }
 
         // Special handling is needed for textures.
         materialKey = '_texture_' + key;
 
         // We can't actually set the variable correctly until we've loaded the texture.
-        self.el.addEventListener('materialtextureloaded', function () {
-          variables[key].value = self.material[materialKey];
-          variables[key].needsUpdate = true;
-        });
+        this.setMapOnTextureLoad(variables, key, materialKey);
 
         // Kick off the texture update now that handler is added.
-        utils.material.updateMapMaterialFromData(materialKey, key, self, data);
-        return;
+        utils.material.updateMapMaterialFromData(materialKey, key, this, data);
+        continue;
       }
-      variables[key].value = self.parseValue(schema[key].type, data[key]);
+      variables[key].value = this.parseValue(schema[key].type, data[key]);
       variables[key].needsUpdate = true;
-    });
+    }
   },
 
   parseValue: function (type, value) {
@@ -139,6 +141,14 @@ Shader.prototype = {
         return value;
       }
     }
+  },
+
+  setMapOnTextureLoad: function (variables, key, materialKey) {
+    var self = this;
+    this.el.addEventListener('materialtextureloaded', function () {
+      variables[key].value = self.material[materialKey];
+      variables[key].needsUpdate = true;
+    });
   }
 };
 
