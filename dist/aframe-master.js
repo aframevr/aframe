@@ -77929,7 +77929,6 @@ registerPrimitive('a-sky', utils.extendDeep({}, getMeshMixin(), {
     material: {
       color: '#FFF',
       shader: 'flat',
-      side: 'back',
       npot: true
     },
     scale: '-1 1 1'
@@ -78000,7 +77999,6 @@ registerPrimitive('a-videosphere', utils.extendDeep({}, getMeshMixin(), {
     material: {
       color: '#FFF',
       shader: 'flat',
-      side: 'back',
       npot: true
     },
     scale: '-1 1 1'
@@ -78468,7 +78466,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.7.0 (Date 2018-02-28, Commit #38c73a1)');
+console.log('A-Frame Version: 0.7.0 (Date 2018-03-01, Commit #e45ff72)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
