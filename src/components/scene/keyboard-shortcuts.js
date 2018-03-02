@@ -11,7 +11,7 @@ module.exports.Component = registerComponent('keyboard-shortcuts', {
     var self = this;
     var scene = this.el;
 
-    this.listener = window.addEventListener('keyup', function (event) {
+    this.listener = function (event) {
       if (!shouldCaptureKeyEvent(event)) { return; }
       if (self.enterVREnabled && event.keyCode === 70) {  // f.
         scene.enterVR();
@@ -19,7 +19,7 @@ module.exports.Component = registerComponent('keyboard-shortcuts', {
       if (self.enterVREnabled && event.keyCode === 27) {  // escape.
         scene.exitVR();
       }
-    }, false);
+    };
   },
 
   update: function (oldData) {
@@ -27,7 +27,11 @@ module.exports.Component = registerComponent('keyboard-shortcuts', {
     this.enterVREnabled = data.enterVR;
   },
 
-  remove: function () {
+  play: function () {
+    window.addEventListener('keyup', this.listener, false);
+  },
+
+  pause: function () {
     window.removeEventListener('keyup', this.listener);
   }
 });
