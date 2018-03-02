@@ -71076,6 +71076,7 @@ module.exports.Component = registerComponent('text', {
   },
 
   init: function () {
+    this.shaderData = {};
     this.geometry = createTextGeometry();
     this.createOrUpdateMaterial();
     this.mesh = new THREE.Mesh(this.geometry, this.material);
@@ -71135,7 +71136,7 @@ module.exports.Component = registerComponent('text', {
     var hasChangedShader;
     var material = this.material;
     var NewShader;
-    var shaderData;
+    var shaderData = this.shaderData;
     var shaderName;
 
     // Infer shader if using a stock font (or from `-msdf` filename convention).
@@ -71147,15 +71148,14 @@ module.exports.Component = registerComponent('text', {
     }
 
     hasChangedShader = (this.shaderObject && this.shaderObject.name) !== shaderName;
-    shaderData = {
-      alphaTest: data.alphaTest,
-      color: data.color,
-      map: this.texture,
-      opacity: data.opacity,
-      side: parseSide(data.side),
-      transparent: data.transparent,
-      negate: data.negate
-    };
+
+    shaderData.alphaTest = data.alphaTest;
+    shaderData.color = data.color;
+    shaderData.map = this.texture;
+    shaderData.opacity = data.opacity;
+    shaderData.side = parseSide(data.side);
+    shaderData.transparent = data.transparent;
+    shaderData.negate = data.negate;
 
     // Shader has not changed, do an update.
     if (!hasChangedShader) {
@@ -71163,7 +71163,7 @@ module.exports.Component = registerComponent('text', {
       this.shaderObject.update(shaderData);
       // Apparently, was not set on `init` nor `update`.
       material.transparent = shaderData.transparent;
-      updateBaseMaterial(material, shaderData);
+      material.side = shaderData.side;
       return;
     }
 
@@ -71173,7 +71173,7 @@ module.exports.Component = registerComponent('text', {
     this.shaderObject = NewShader.shader;
 
     // Set new shader material.
-    updateBaseMaterial(this.material, shaderData);
+    this.material.side = shaderData.side;
     if (this.mesh) { this.mesh.material = this.material; }
   },
 
@@ -71425,13 +71425,6 @@ function createShader (el, shaderName, data) {
     material: shader,
     shader: shaderObject
   };
-}
-
-/**
- * @todo Add more supported material properties (e.g., `visible`).
- */
-function updateBaseMaterial (material, data) {
-  material.side = data.side;
 }
 
 /**
@@ -77159,16 +77152,19 @@ Shader.prototype = {
   },
 
   initVariables: function (data, type) {
-    var variables = {};
+    var key;
     var schema = this.schema;
-    Object.keys(schema).forEach(function processSchema (key) {
-      if (schema[key].is !== type) { return; }
-      var varType = propertyToThreeMapping[schema[key].type];
+    var variables = {};
+    var varType;
+
+    for (key in schema) {
+      if (schema[key].is !== type) { continue; }
+      varType = propertyToThreeMapping[schema[key].type];
       variables[key] = {
         type: varType,
         value: undefined  // Let updateVariables handle setting these.
       };
-    });
+    }
     return variables;
   },
 
@@ -77184,33 +77180,32 @@ Shader.prototype = {
   },
 
   updateVariables: function (data, type) {
-    var self = this;
-    var variables = type === 'uniform' ? this.uniforms : this.attributes;
+    var key;
+    var materialKey;
     var schema = this.schema;
-    Object.keys(data).forEach(function processData (key) {
-      var materialKey;
-      if (!schema[key] || schema[key].is !== type) { return; }
+    var variables;
+
+    variables = type === 'uniform' ? this.uniforms : this.attributes;
+    for (key in data) {
+      if (!schema[key] || schema[key].is !== type) { continue; }
 
       if (schema[key].type === 'map') {
         // If data unchanged, get out early.
-        if (!variables[key] || variables[key].value === data[key]) { return; }
+        if (!variables[key] || variables[key].value === data[key]) { continue; }
 
         // Special handling is needed for textures.
         materialKey = '_texture_' + key;
 
         // We can't actually set the variable correctly until we've loaded the texture.
-        self.el.addEventListener('materialtextureloaded', function () {
-          variables[key].value = self.material[materialKey];
-          variables[key].needsUpdate = true;
-        });
+        this.setMapOnTextureLoad(variables, key, materialKey);
 
         // Kick off the texture update now that handler is added.
-        utils.material.updateMapMaterialFromData(materialKey, key, self, data);
-        return;
+        utils.material.updateMapMaterialFromData(materialKey, key, this, data);
+        continue;
       }
-      variables[key].value = self.parseValue(schema[key].type, data[key]);
+      variables[key].value = this.parseValue(schema[key].type, data[key]);
       variables[key].needsUpdate = true;
-    });
+    }
   },
 
   parseValue: function (type, value) {
@@ -77236,6 +77231,14 @@ Shader.prototype = {
         return value;
       }
     }
+  },
+
+  setMapOnTextureLoad: function (variables, key, materialKey) {
+    var self = this;
+    this.el.addEventListener('materialtextureloaded', function () {
+      variables[key].value = self.material[materialKey];
+      variables[key].needsUpdate = true;
+    });
   }
 };
 
@@ -78466,7 +78469,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.7.0 (Date 2018-03-01, Commit #e45ff72)');
+console.log('A-Frame Version: 0.7.0 (Date 2018-03-02, Commit #b048ed4)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
