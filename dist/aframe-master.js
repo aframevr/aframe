@@ -70051,7 +70051,6 @@ module.exports.Component = registerComponent('inspector', {
 }).call(this,_dereq_('_process'))
 
 },{"../../../package":75,"../../constants":116,"../../core/component":125,"../../utils/bind":189,"_process":32}],102:[function(_dereq_,module,exports){
-var bind = _dereq_('../../utils/bind');
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var shouldCaptureKeyEvent = _dereq_('../../utils/').shouldCaptureKeyEvent;
 
@@ -70062,7 +70061,7 @@ module.exports.Component = registerComponent('keyboard-shortcuts', {
   },
 
   init: function () {
-    this.onKeyup = bind(this.onKeyup, this);
+    this.onKeyup = this.onKeyup.bind(this);
   },
 
   update: function (oldData) {
@@ -70090,7 +70089,7 @@ module.exports.Component = registerComponent('keyboard-shortcuts', {
   }
 });
 
-},{"../../core/component":125,"../../utils/":195,"../../utils/bind":189}],103:[function(_dereq_,module,exports){
+},{"../../core/component":125,"../../utils/":195}],103:[function(_dereq_,module,exports){
 var debug = _dereq_('../../utils/debug');
 var registerComponent = _dereq_('../../core/component').registerComponent;
 
@@ -78474,7 +78473,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.7.0 (Date 2018-03-03, Commit #fdce81a)');
+console.log('A-Frame Version: 0.7.0 (Date 2018-03-03, Commit #a9bb9ea)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
