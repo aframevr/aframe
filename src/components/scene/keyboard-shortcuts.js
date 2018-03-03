@@ -1,4 +1,3 @@
-var bind = require('../../utils/bind');
 var registerComponent = require('../../core/component').registerComponent;
 var shouldCaptureKeyEvent = require('../../utils/').shouldCaptureKeyEvent;
 
@@ -9,7 +8,7 @@ module.exports.Component = registerComponent('keyboard-shortcuts', {
   },
 
   init: function () {
-    this.onKeyup = bind(this.onKeyup, this);
+    this.onKeyup = this.onKeyup.bind(this);
   },
 
   update: function (oldData) {
