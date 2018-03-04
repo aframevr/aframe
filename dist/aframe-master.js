@@ -75683,7 +75683,16 @@ function cloneData (data) {
 */
 function extendProperties (dest, source, isSinglePropSchema) {
   if (isSinglePropSchema && (source === null || typeof source !== 'object')) { return source; }
-  return utils.extend(dest, source);
+  var copy = utils.extend(dest, source);
+  var keys = Object.keys(copy);
+  var key;
+  var i;
+  for (i = 0; i < keys.length; i++) {
+    key = keys[i];
+    if (!copy[key] || copy[key].constructor !== Object) { continue; }
+    copy[key] = utils.clone(copy[key]);
+  }
+  return copy;
 }
 
 /**
@@ -78473,7 +78482,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.7.0 (Date 2018-03-03, Commit #a9bb9ea)');
+console.log('A-Frame Version: 0.7.0 (Date 2018-03-04, Commit #511ddda)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
