@@ -54,7 +54,7 @@ entity. We pull it in front of the camera by placing it on the negative Z axis.
 When the cursor clicks on the box, we can listen to the click event.
 
 ```html
-<a-entity camera>
+<a-entity camera look-controls>
   <a-entity cursor="fuse: true; fuseTimeout: 500"
             position="0 0 -1"
             geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03"
