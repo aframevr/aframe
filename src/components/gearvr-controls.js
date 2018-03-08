@@ -9,7 +9,7 @@ var GEARVR_CONTROLLER_MODEL_BASE_URL = 'https://cdn.aframe.io/controllers/samsun
 var GEARVR_CONTROLLER_MODEL_OBJ_URL = GEARVR_CONTROLLER_MODEL_BASE_URL + 'gear_vr_controller.obj';
 var GEARVR_CONTROLLER_MODEL_OBJ_MTL = GEARVR_CONTROLLER_MODEL_BASE_URL + 'gear_vr_controller.mtl';
 
-var GAMEPAD_ID_PREFIX = 'Gear VR';
+var GAMEPAD_ID_PREFIX = 'Gear VR|GearVR|Oculus Go';
 
 /**
  * Gear VR controls.
