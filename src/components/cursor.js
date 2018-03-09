@@ -59,7 +59,7 @@ module.exports.Component = registerComponent('cursor', {
     // Debounce.
     this.updateCanvasBounds = utils.debounce(function updateCanvasBounds () {
       self.canvasBounds = self.el.sceneEl.canvas.getBoundingClientRect();
-    }, 200);
+    }, 1000);
 
     this.eventDetail = {};
     this.intersectedEventDetail = {cursorEl: this.el};
@@ -285,7 +285,6 @@ module.exports.Component = registerComponent('cursor', {
    */
   onIntersectionCleared: function (evt) {
     var clearedEls = evt.detail.clearedEls;
-
     // Check if the current intersection has ended
     if (clearedEls.indexOf(this.intersectedEl) === -1) { return; }
     this.clearCurrentIntersection();
@@ -320,9 +319,6 @@ module.exports.Component = registerComponent('cursor', {
 
   clearCurrentIntersection: function () {
     var cursorEl = this.el;
-    var index;
-    var intersection;
-    var intersections;
 
     // Nothing to be cleared.
     if (!this.intersectedEl) { return; }
@@ -339,15 +335,6 @@ module.exports.Component = registerComponent('cursor', {
 
     // Clear fuseTimeout.
     clearTimeout(this.fuseTimeout);
-
-    // Set intersection to another raycasted element if any.
-    intersections = this.el.components.raycaster.intersections;
-    if (intersections.length === 0) { return; }
-    // exclude the cursor.
-    index = intersections[0].object.el === cursorEl ? 1 : 0;
-    intersection = intersections[index];
-    if (!intersection) { return; }
-    this.setIntersection(intersection.object.el, intersection);
   },
 
   /**

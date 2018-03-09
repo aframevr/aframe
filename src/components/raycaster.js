@@ -68,6 +68,7 @@ module.exports.Component = registerComponent('raycaster', {
 
     this.intersectedClearedDetail = {el: this.el};
     this.intersectionClearedDetail = {clearedEls: this.clearedIntersectedEls};
+    this.intersectionDetail = {};
   },
 
   /**
@@ -250,10 +251,9 @@ module.exports.Component = registerComponent('raycaster', {
 
     // Emit all intersections at once on raycasting entity.
     if (newIntersections.length) {
-      el.emit('raycaster-intersection', {
-        els: newIntersectedEls,
-        intersections: newIntersections
-      });
+      this.intersectionDetail.els = newIntersectedEls;
+      this.intersectionDetail.intersections = newIntersections;
+      el.emit('raycaster-intersection', this.intersectionDetail);
     }
 
     // Update line length.
