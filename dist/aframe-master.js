@@ -66715,6 +66715,9 @@ module.exports.Component = registerComponent('cursor', {
   },
 
   clearCurrentIntersection: function () {
+    var index;
+    var intersection;
+    var intersections;
     var cursorEl = this.el;
 
     // Nothing to be cleared.
@@ -66732,6 +66735,15 @@ module.exports.Component = registerComponent('cursor', {
 
     // Clear fuseTimeout.
     clearTimeout(this.fuseTimeout);
+
+    // Set intersection to another raycasted element if any.
+    intersections = this.el.components.raycaster.intersections;
+    if (intersections.length === 0) { return; }
+    // Exclude the cursor.
+    index = intersections[0].object.el === cursorEl ? 1 : 0;
+    intersection = intersections[index];
+    if (!intersection) { return; }
+    this.setIntersection(intersection.object.el, intersection);
   },
 
   /**
@@ -78479,7 +78491,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.0 (Date 2018-03-09, Commit #c4f2425)');
+console.log('A-Frame Version: 0.8.0 (Date 2018-03-09, Commit #b1c8a3d)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
