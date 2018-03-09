@@ -489,7 +489,7 @@ module.exports.AScene = registerElement('a-scene', {
         var renderer;
         renderer = this.renderer = new THREE.WebGLRenderer({
           canvas: this.canvas,
-          antialias: shouldAntiAlias(this),
+          antialias: getRendererProperty(this, 'antialias'),
           alpha: true
         });
         renderer.setPixelRatio(window.devicePixelRatio);
@@ -675,22 +675,38 @@ function exitFullscreen () {
   }
 }
 
+var RENDERER_PROPERTY_ATTRIBUTES = {
+  antialias: 'antialias',
+  gammaOutput: 'gamma-output',
+  sortObjects: 'sort-objects',
+  physicallyCorrectLights: 'physically-correct-lights'
+};
+
 /**
- * Determines if renderer anti-aliasing should be enabled.
- * Enabled by default if has native WebVR or is desktop.
+ * Determines state of various renderer properties.
+ * This could be done by a component, but it's important
+ * to know the values when the renderer is created, so
+ * that materials don't need to be recompiled.
  *
- * @returns {bool}
+ * @return {bool}
  */
-function shouldAntiAlias (sceneEl) {
-  // Explicitly set.
-  if (sceneEl.getAttribute('antialias') !== null) {
-    return sceneEl.getAttribute('antialias') === 'true';
+function getRendererProperty (sceneEl, property) {
+  var defaultProperties = {
+    antialias: !sceneEl.isMobile, // Default not AA for mobile.
+    gammaOutput: false,
+    sortObjects: false,
+    physicallyCorrectLights: false
+  };
+
+  var attrName = RENDERER_PROPERTY_ATTRIBUTES[property];
+
+  if (sceneEl.getAttribute(attrName) !== null) {
+    return sceneEl.getAttribute(attrName) === 'true';
   }
 
-  // Default not AA for mobile.
-  return !sceneEl.isMobile;
+  return defaultProperties[attrName];
 }
-module.exports.shouldAntiAlias = shouldAntiAlias;  // For testing.
+module.exports.getRendererProperty = getRendererProperty;
 
 function setupCanvas (sceneEl) {
   var canvasEl;
