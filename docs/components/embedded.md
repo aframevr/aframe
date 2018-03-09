@@ -34,7 +34,7 @@ a-scene {
 
 An example of an embedded scene:
 
-<script src="https://aframe.io/releases/0.7.1/aframe.min.js"></script>
+<script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
 
 <style>
   #myEmbeddedScene {

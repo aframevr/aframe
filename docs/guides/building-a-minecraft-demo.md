@@ -26,7 +26,7 @@ mobile and desktop.
 We'll start off with this skeleton HTML:
 
 ```html
-<script src="https://aframe.io/releases/0.7.1/aframe.min.js"></script>
+<script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
 
 <body>
   <a-scene>
@@ -49,7 +49,7 @@ our assets, and create a thin cylinder entity pointing to that texture:
 <p data-height="265" data-theme-id="dark" data-slug-hash="MpbXXe" data-default-tab="html,result" data-user="mozvr" data-embed-version="2" data-pen-title="Minecraft VR Demo (Part 1)" data-preview="true" data-editable="true" class="codepen">See the Pen <a href="http://codepen.io/mozvr/pen/MpbXXe/">Minecraft VR Demo (Part 1)</a> by mozvr (<a href="http://codepen.io/mozvr">@mozvr</a>) on <a href="http://codepen.io">CodePen</a>.</p>
 
 ```html
-<script src="https://aframe.io/releases/0.7.1/aframe.min.js"></script>
+<script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
 
 <a-scene>
   <a-cylinder id="ground" src="https://cdn.aframe.io/a-painter/images/floor.jpg" radius="32" height="0.1"></a-cylinder>
@@ -58,7 +58,7 @@ our assets, and create a thin cylinder entity pointing to that texture:
 
 ### Preloading Assets
 
-[assets]: https://aframe.io/docs/0.7.0/core/asset-management-system.html
+[assets]: https://aframe.io/docs/0.8.0/core/asset-management-system.html
 
 Specifying a URL via the `src` attribute will load the texture at runtime.
 Since network requests can negatively impact render performance, we can
@@ -76,7 +76,7 @@ Let's move our ground texture to `<a-assets>` to be preloaded using an
 <p data-height="265" data-theme-id="dark" data-slug-hash="LWbrBQ" data-default-tab="html,result" data-user="mozvr" data-embed-version="2" data-pen-title="Minecraft VR Demo (Part 2: Preloading Texture)" data-preview="true" data-editable="true" class="codepen">See the Pen <a href="http://codepen.io/mozvr/pen/LWbrBQ/">Minecraft VR Demo (Part 2: Preloading Texture)</a> by mozvr (<a href="http://codepen.io/mozvr">@mozvr</a>) on <a href="http://codepen.io">CodePen</a>.</p>
 
 ```html
-<script src="https://aframe.io/releases/0.7.1/aframe.min.js"></script>
+<script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
 
 <a-scene>
   <a-assets>
@@ -89,7 +89,7 @@ Let's move our ground texture to `<a-assets>` to be preloaded using an
 
 ## Adding a Background
 
-[a-sky]: https://aframe.io/docs/0.7.0/primitives/a-sky.html
+[a-sky]: https://aframe.io/docs/0.8.0/primitives/a-sky.html
 [flickr]: https://www.flickr.com/groups/equirectangular/
 
 [gradient]: https://github.com/zcanter/aframe-gradient-sky
@@ -112,7 +112,7 @@ to match the ground:
 <p data-height="265" data-theme-id="dark" data-slug-hash="PpbaBL" data-default-tab="html,result" data-user="mozvr" data-embed-version="2" data-pen-title="Minecraft VR Demo (Part 3: Adding a Background)" data-preview="true" data-editable="true" class="codepen">See the Pen <a href="http://codepen.io/mozvr/pen/PpbaBL/">Minecraft VR Demo (Part 3: Adding a Background)</a> by mozvr (<a href="http://codepen.io/mozvr">@mozvr</a>) on <a href="http://codepen.io">CodePen</a>.</p>
 
 ```html
-<script src="https://aframe.io/releases/0.7.1/aframe.min.js"></script>
+<script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
 
 <a-scene>
   <a-assets>
@@ -140,15 +140,15 @@ from scratch.
 
 ### Entity-Component Pattern
 
-[entity]: https://aframe.io/docs/0.7.0/core/entity.html
+[entity]: https://aframe.io/docs/0.8.0/core/entity.html
 
 Every single object in an A-Frame scene is [`<a-entity>`][entity], which by itself
 doesn't do anything, like an empty `<div>`. We plug in components (**not to be
 confused with Web or React Components**) to that entity to provide with
 appearance, behavior , and logic.
 
-[geometry]: https://aframe.io/docs/0.7.0/components/geometry.html
-[material]: https://aframe.io/docs/0.7.0/components/material.html
+[geometry]: https://aframe.io/docs/0.8.0/components/geometry.html
+[material]: https://aframe.io/docs/0.8.0/components/material.html
 
 For a box, we attach and configure A-Frame's basic [geometry] and [material]
 components. Components are represented as HTML attributes, and component
@@ -190,7 +190,7 @@ AFRAME.registerComponent('random-color', {
 });
 ```
 
-[js]: https://aframe.io/docs/0.7.0/guides/using-javascript-and-dom-apis.html
+[js]: https://aframe.io/docs/0.8.0/guides/using-javascript-and-dom-apis.html
 
 For the random color component, we want to set a random color on the entity
 that this component is attached to. Components have a reference to the entity
@@ -237,7 +237,7 @@ and include it before the scene:
 <p data-height="265" data-theme-id="dark" data-slug-hash="ryWKqy" data-default-tab="html,result" data-user="mozvr" data-embed-version="2" data-pen-title="Minecraft VR Demo (Part 4: Random Color Component)" data-preview="true" data-editable="true" class="codepen">See the Pen <a href="http://codepen.io/mozvr/pen/ryWKqy/">Minecraft VR Demo (Part 4: Random Color Component)</a> by mozvr (<a href="http://codepen.io/mozvr">@mozvr</a>) on <a href="http://codepen.io">CodePen</a>.</p>
 
 ```html
-<script src="https://aframe.io/releases/0.7.1/aframe.min.js"></script>
+<script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
 <script src="components/random-color.js"></script>
 
 <a-scene>
@@ -300,7 +300,7 @@ to describe all the voxels in our scene.
 
 ### Mixins
 
-[mixin]: https://aframe.io/docs/0.7.0/core/mixins.html
+[mixin]: https://aframe.io/docs/0.8.0/core/mixins.html
 
 We can create [a mixin][mixin] to define a reusable bundle of components.
 Instead of `<a-entity>`, which adds an object to the scene, we'll describe it
@@ -309,7 +309,7 @@ using `<a-mixin>` which can be reused to create voxels like a prefab:
 <p data-height="265" data-theme-id="dark" data-slug-hash="OpbEaY" data-default-tab="html,result" data-user="mozvr" data-embed-version="2" data-pen-title="Minecraft VR Demo (Part 5: Mixins)" data-preview="true" data-editable="true" class="codepen">See the Pen <a href="http://codepen.io/mozvr/pen/OpbEaY/">Minecraft VR Demo (Part 5: Mixins)</a> by mozvr (<a href="http://codepen.io/mozvr">@mozvr</a>) on <a href="http://codepen.io">CodePen</a>.</p>
 
 ```html
-<script src="https://aframe.io/releases/0.7.1/aframe.min.js"></script>
+<script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
 <script src="components/random-color.js"></script>
 <script src="components/snap.js"></script>
 
@@ -392,7 +392,7 @@ add the component via a `<script>` tag and just set the `teleport-controls`
 component on the controller on the entity:
 
 ```html
-<script src="https://aframe.io/releases/0.7.1/aframe.min.js"></script>
+<script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
 <script src="https://unpkg.com/aframe-teleport-controls@0.2.x/dist/aframe-teleport-controls.min.js"></script>
 
 <!-- ... -->
@@ -432,7 +432,7 @@ attaches the clicking laser to VR tracked controllers.  Like the
 `controller-cursor` component. This time to the right hand:
 
 ```html
-<script src="https://aframe.io/releases/0.7.1/aframe.min.js"></script>
+<script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
 <script src="https://unpkg.com/aframe-teleport-controls@0.2.x/dist/aframe-teleport-controls.min.js"></script>
 <script src="https://unpkg.com/aframe-controller-cursor-component@0.2.x/dist/aframe-controller-cursor-component.min.js"></script>
 

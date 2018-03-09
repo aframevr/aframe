@@ -353,7 +353,7 @@ Let's walk through an [example CodePen][example] with step-by-step commentary.
 As always, we need to include the A-Frame script.
 
 ```js
-<script src="https://aframe.io/releases/0.7.0/aframe.min.js"></script>
+<script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
 ```
 
 Next, we define any components and shaders we need after the A-Frame

@@ -45,8 +45,8 @@
 <a href="https://aframe.io/a-saturday-night/">
   <img alt="A-Saturday-Night" target="_blank" src="https://cloud.githubusercontent.com/assets/674727/24531477/44272daa-156e-11e7-8ef9-d750ed430f3a.gif" height="190" width="32%">
 </a>
-<a href="https://ngokevin.github.io/kframe/scenes/aincraft/">
-  <img alt="Aincraft" target="_blank" src="https://cloud.githubusercontent.com/assets/674727/24531777/25b8ff5e-1570-11e7-896c-3446d1419eb8.gif" height="190" width="32%">
+<a href="https://supermedium.com">
+  <img alt="Supermedium" target="_blank" src="https://user-images.githubusercontent.com/674727/37196407-7d080baa-232b-11e8-8f7d-61d62e69364c.png" height="190" width="32%">
 </a>
 <a href="https://github.com/googlecreativelab/webvr-musicalforest">
   <img alt="Musical Forest by @googlecreativelab" target="_blank" src="https://cloud.githubusercontent.com/assets/674727/25109861/b8e9ec48-2394-11e7-8f2d-ea1cd9df69c8.gif" height="190" width="32%">
@@ -109,7 +109,7 @@ and publishing now, remix the starter example on Glitch:
 ```html
 <html>
   <head>
-    <script src="https://aframe.io/releases/0.7.1/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
   </head>
   <body>
     <a-scene>
@@ -124,7 +124,7 @@ and publishing now, remix the starter example on Glitch:
 ```
 
 With A-Frame's [entity-component
-architecture](https://aframe.io/docs/0.7.1/core/), we can drop in community
+architecture](https://aframe.io/docs/0.8.0/core/), we can drop in community
 components from the ecosystem (e.g., ocean, physics) and plug them into our
 objects straight from HTML:
 
@@ -133,7 +133,7 @@ objects straight from HTML:
 ```html
 <html>
   <head>
-    <script src="https://aframe.io/releases/0.7.1/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
     <script src="https://unpkg.com/aframe-animation-component@3.2.1/dist/aframe-animation-component.min.js"></script>
     <script src="https://unpkg.com/aframe-particle-system-component@1.0.x/dist/aframe-particle-system-component.min.js"></script>
     <script src="https://unpkg.com/aframe-extras.ocean@%5E3.5.x/dist/aframe-extras.ocean.min.js"></script>
@@ -165,11 +165,11 @@ objects straight from HTML:
 
 ### Builds
 
-To use the latest stable build of A-Frame, include [`aframe.min.js`](https://aframe.io/releases/0.7.1/aframe.min.js):
+To use the latest stable build of A-Frame, include [`aframe.min.js`](https://aframe.io/releases/0.8.0/aframe.min.js):
 
 ```js
 <head>
-  <script src="https://aframe.io/releases/0.7.1/aframe.min.js"></script>
+  <script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
 </head>
 ```
 

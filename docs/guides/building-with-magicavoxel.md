@@ -139,7 +139,7 @@ rotated by `-90 0 0` to display properly:
 ```html
 <html>
   <head>
-    <script src="https://aframe.io/releases/0.7.1/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
     <script src="https://rawgit.com/donmccurdy/aframe-extras/v2.1.1/dist/aframe-extras.loaders.min.js"></script>
   </head>
   <body>
@@ -166,7 +166,7 @@ To render a `.OBJ` in A-Frame with HTML:
 ```html
 <html>
   <head>
-    <script src="https://aframe.io/releases/0.7.1/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
     <script src="https://rawgit.com/donmccurdy/aframe-extras/v2.1.1/dist/aframe-extras.loaders.min.js"></script>
   </head>
   <body>

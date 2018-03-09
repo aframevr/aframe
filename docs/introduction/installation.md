@@ -92,14 +92,14 @@ CDN build:
 
 ```html
 <head>
-  <script src="https://aframe.io/releases/0.7.1/aframe.min.js"></script>
+  <script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
 </head>
 ```
 
 If we want to serve it ourselves, we can download the JS build:
 
-<a id="builds-prod" class="btn btn-download" href="https://aframe.io/releases/0.7.1/aframe.min.js" download>Production Version <span>0.7.1</span></a> <em class="install-note">Minified</em>
-<a id="builds-dev" class="btn btn-download" href="https://aframe.io/releases/0.7.1/aframe.js" download>Development Version <span>0.7.1</span></a> <em class="install-note">Uncompressed with Source Maps</em>
+<a id="builds-prod" class="btn btn-download" href="https://aframe.io/releases/0.8.0/aframe.min.js" download>Production Version <span>0.8.0</span></a> <em class="install-note">Minified</em>
+<a id="builds-dev" class="btn btn-download" href="https://aframe.io/releases/0.8.0/aframe.js" download>Development Version <span>0.8.0</span></a> <em class="install-note">Uncompressed with Source Maps</em>
 
 ### Install from npm
 
