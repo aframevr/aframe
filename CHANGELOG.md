@@ -1,3 +1,7 @@
+## 0.8.0 (March 9, 2017)
+
+*Changelog and migration guide in progress!*
+
 ## 0.7.1 (Oct 18, 2017)
 
 This release contains the same functionality as 0.7.0. This is a version bump
