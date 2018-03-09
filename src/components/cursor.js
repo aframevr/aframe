@@ -318,6 +318,9 @@ module.exports.Component = registerComponent('cursor', {
   },
 
   clearCurrentIntersection: function () {
+    var index;
+    var intersection;
+    var intersections;
     var cursorEl = this.el;
 
     // Nothing to be cleared.
@@ -335,6 +338,15 @@ module.exports.Component = registerComponent('cursor', {
 
     // Clear fuseTimeout.
     clearTimeout(this.fuseTimeout);
+
+    // Set intersection to another raycasted element if any.
+    intersections = this.el.components.raycaster.intersections;
+    if (intersections.length === 0) { return; }
+    // Exclude the cursor.
+    index = intersections[0].object.el === cursorEl ? 1 : 0;
+    intersection = intersections[index];
+    if (!intersection) { return; }
+    this.setIntersection(intersection.object.el, intersection);
   },
 
   /**
