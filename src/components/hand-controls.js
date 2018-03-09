@@ -319,7 +319,7 @@ module.exports.Component = registerComponent('hand-controls', {
     // Grab clip action.
     toAction = mesh.mixer.clipAction(gesture);
     toAction.clampWhenFinished = true;
-    toAction.loop = THREE.PingPong;
+    toAction.loop = THREE.LoopRepeat;
     toAction.repetitions = 0;
     toAction.timeScale = reverse ? -1 : 1;
     toAction.weight = 1;
