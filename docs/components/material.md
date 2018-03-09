@@ -335,7 +335,12 @@ the elements in markup. We can often run into scenarios where foreground
 entities occlude background entities. This creates confusion and unwanted
 visual defects.
 
-To work around this issue, try changing the order of the entities in the HTML. In case of png images, sometimes this issue can be solved by setting attribute `alpha-test`, for example, `alpha-test="0.5"`. You should play around with its value to see the one that solves the issue.
+To work around this issue, try changing the order of the entities in the HTML.
+
+When using PNG images as cutouts or masks (where part of the image should be
+fully transparent, and the rest fully opaque), try setting `transparent: false`
+and like `alphaTest: 0.5` to solve transparency issues. Play around with the alpha
+test value.
 
 ## Register a Custom Shader Material
 
