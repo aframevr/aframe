@@ -67556,7 +67556,7 @@ module.exports.Component = registerComponent('hand-controls', {
     // Grab clip action.
     toAction = mesh.mixer.clipAction(gesture);
     toAction.clampWhenFinished = true;
-    toAction.loop = THREE.PingPong;
+    toAction.loop = THREE.LoopRepeat;
     toAction.repetitions = 0;
     toAction.timeScale = reverse ? -1 : 1;
     toAction.weight = 1;
@@ -78479,7 +78479,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.7.0 (Date 2018-03-09, Commit #f764adc)');
+console.log('A-Frame Version: 0.7.0 (Date 2018-03-09, Commit #28bc85d)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
