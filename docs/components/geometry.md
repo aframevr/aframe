@@ -47,11 +47,14 @@ The box geometry defines boxes (i.e., any quadilateral, not just cubes).
 <a-entity geometry="primitive: box; width: 1; height: 1; depth: 1"></a-entity>
 ```
 
-| Property | Description                                    | Default Value |
-|----------|------------------------------------------------|---------------|
-| width    | Width (in meters) of the sides on the X axis.  | 1             |
-| height   | Height (in meters) of the sides on the Y axis. | 1             |
-| depth    | Depth (in meters) of the sides on the Z axis.  | 1             |
+| Property       | Description                                    | Default Value |
+|----------------|------------------------------------------------|---------------|
+| width          | Width (in meters) of the sides on the X axis.  | 1             |
+| height         | Height (in meters) of the sides on the Y axis. | 1             |
+| depth          | Depth (in meters) of the sides on the Z axis.  | 1             |
+| segmentsDepth  | Number of segmented faces on the z-axis        | 1             |
+| segmentsHeight | Number of segmented faces on the y-axis        | 1             |
+| segmentsWidth  | Number of segmented faces on the x-axis        | 1             |
 
 ### `circle`
 
@@ -185,10 +188,12 @@ the `material` component.
 <a-entity geometry="primitive: plane; height: 10; width: 10" material="side: double"></a-entity>
 ```
 
-| Property | Description              | Default Value |
-|----------|--------------------------|---------------|
-| width    | Width along the X axis.  | 1             |
-| height   | Height along the Y axis. | 1             |
+| Property       | Description                             | Default Value |
+|----------------|-----------------------------------------|---------------|
+| width          | Width along the X axis.                 | 1             |
+| height         | Height along the Y axis.                | 1             |
+| segmentsHeight | Number of segmented faces on the y-axis | 1             |
+| segmentsWidth  | Number of segmented faces on the x-axis | 1             |
 
 ### `ring`
 
