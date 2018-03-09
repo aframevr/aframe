@@ -345,20 +345,16 @@ module.exports.Component = registerComponent('text', {
   }
 });
 
-/**
- * Due to using negative scale, we return the opposite side specified.
- * https://github.com/mrdoob/three.js/pull/12787/
- */
 function parseSide (side) {
   switch (side) {
     case 'back': {
-      return THREE.FrontSide;
+      return THREE.BackSide;
     }
     case 'double': {
       return THREE.DoubleSide;
     }
     default: {
-      return THREE.BackSide;
+      return THREE.FrontSide;
     }
   }
 }
