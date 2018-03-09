@@ -2,7 +2,7 @@
 var AScene = require('core/scene/a-scene').AScene;
 var components = require('core/component').components;
 var scenes = require('core/scene/scenes');
-var shouldAntiAlias = require('core/scene/a-scene').shouldAntiAlias;
+var getRendererProperty = require('core/scene/a-scene').getRendererProperty;
 var setupCanvas = require('core/scene/a-scene').setupCanvas;
 var systems = require('core/system').systems;
 
@@ -736,7 +736,7 @@ suite('setupCanvas', function () {
   });
 });
 
-suite('shouldAntiAlias', function () {
+suite('getRendererProperty', function () {
   var sceneEl;
 
   setup(function () {
@@ -745,20 +745,20 @@ suite('shouldAntiAlias', function () {
 
   test('is true if set to true', function () {
     sceneEl.setAttribute('antialias', 'true');
-    assert.ok(shouldAntiAlias(sceneEl));
+    assert.ok(getRendererProperty(sceneEl, 'antialias'));
   });
 
   test('is false if set to false', function () {
     sceneEl.setAttribute('antialias', 'false');
-    assert.notOk(shouldAntiAlias(sceneEl));
+    assert.notOk(getRendererProperty(sceneEl, 'antialias'));
   });
 
   test('is true on desktop by default', function () {
-    assert.ok(shouldAntiAlias(sceneEl));
+    assert.ok(getRendererProperty(sceneEl, 'antialias'));
   });
 
   test('is false on mobile with no native webvr by default', function () {
     sceneEl.isMobile = true;
-    assert.notOk(shouldAntiAlias(sceneEl));
+    assert.notOk(getRendererProperty(sceneEl, 'antialias'));
   });
 });
