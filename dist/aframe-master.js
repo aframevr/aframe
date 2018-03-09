@@ -71353,16 +71353,20 @@ module.exports.Component = registerComponent('text', {
   }
 });
 
+/**
+ * Due to using negative scale, we return the opposite side specified.
+ * https://github.com/mrdoob/three.js/pull/12787/
+ */
 function parseSide (side) {
   switch (side) {
     case 'back': {
-      return THREE.BackSide;
+      return THREE.FrontSide;
     }
     case 'double': {
       return THREE.DoubleSide;
     }
     default: {
-      return THREE.FrontSide;
+      return THREE.BackSide;
     }
   }
 }
@@ -78488,7 +78492,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.7.0 (Date 2018-03-09, Commit #08b89f6)');
+console.log('A-Frame Version: 0.7.0 (Date 2018-03-09, Commit #1022e8d)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
