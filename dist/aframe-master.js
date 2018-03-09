@@ -66956,7 +66956,7 @@ var GEARVR_CONTROLLER_MODEL_BASE_URL = 'https://cdn.aframe.io/controllers/samsun
 var GEARVR_CONTROLLER_MODEL_OBJ_URL = GEARVR_CONTROLLER_MODEL_BASE_URL + 'gear_vr_controller.obj';
 var GEARVR_CONTROLLER_MODEL_OBJ_MTL = GEARVR_CONTROLLER_MODEL_BASE_URL + 'gear_vr_controller.mtl';
 
-var GAMEPAD_ID_PREFIX = 'Gear VR';
+var GAMEPAD_ID_PREFIX = 'Gear VR|GearVR|Oculus Go';
 
 /**
  * Gear VR controls.
@@ -78492,7 +78492,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.7.0 (Date 2018-03-09, Commit #1022e8d)');
+console.log('A-Frame Version: 0.7.0 (Date 2018-03-09, Commit #e399875)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -81332,10 +81332,20 @@ function findMatchingController (controllers, filterIdExact, filterIdPrefix, fil
   var i;
   var matchingControllerOccurence = 0;
   var targetControllerMatch = filterControllerIndex || 0;
-
+  var filterIdPrefixes;
+  if (filterIdPrefix && filterIdPrefix.indexOf('|') >= 0) {
+    filterIdPrefixes = filterIdPrefix.split('|');
+  }
   for (i = 0; i < controllers.length; i++) {
     controller = controllers[i];
     // Determine if the controller ID matches our criteria
+    if (filterIdPrefixes) {
+      var matches = false;
+      for (var prefix in filterIdPrefixes) {
+        if (prefix && controller.id.indexOf(prefix) === -1) { matches = true; }
+      }
+      if (!matches) { continue; }
+    } else
     if (filterIdPrefix && controller.id.indexOf(filterIdPrefix) === -1) { continue; }
     if (!filterIdPrefix && controller.id !== filterIdExact) { continue; }
 
