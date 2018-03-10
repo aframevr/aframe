@@ -14,7 +14,7 @@ examples:
  - title: Shape as Entity
    src: https://glitch.com/edit/#!/ex-2b-shape-as-entity?path=index.html:1:0
  - title: Animating Shapes
-   src:https://glitch.com/edit/#!/ex-2c-animating-shapes?path=index.html:1:0
+   src: https://glitch.com/edit/#!/ex-2c-animating-shapes?path=index.html:1:0
  - title: Animating Shapes with Components
    src: https://glitch.com/edit/#!/ex-2d-animating-shapes-with-components?path=index.html:1:0
 
