@@ -68696,10 +68696,11 @@ module.exports.Component = registerComponent('look-controls', {
     // Not dragging or not enabled.
     if (!this.data.enabled || (!this.mouseDown && !this.pointerLocked)) { return; }
 
-     // Calculate delta.
-    movementX = event.movementX || event.mozMovementX;
-    movementY = event.movementY || event.mozMovementY;
-    if (movementX === undefined || movementY === undefined) {
+    // Calculate delta.
+    if (this.pointerLocked) {
+      movementX = event.movementX || event.mozMovementX || 0;
+      movementY = event.movementY || event.mozMovementY || 0;
+    } else {
       movementX = event.screenX - previousMouseEvent.screenX;
       movementY = event.screenY - previousMouseEvent.screenY;
     }
@@ -77767,6 +77768,7 @@ registerPrimitive('a-camera', {
     fov: 'camera.fov',
     'look-controls-enabled': 'look-controls.enabled',
     near: 'camera.near',
+    'pointer-lock-enabled': 'look-controls.pointerLockEnabled',
     'wasd-controls-enabled': 'wasd-controls.enabled',
     'reverse-mouse-drag': 'look-controls.reverseMouseDrag',
     zoom: 'camera.zoom'
@@ -78492,7 +78494,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.0 (Date 2018-03-10, Commit #ef810c2)');
+console.log('A-Frame Version: 0.8.0 (Date 2018-03-11, Commit #7e4b844)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
