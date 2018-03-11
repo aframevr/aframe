@@ -50,10 +50,16 @@ module.exports.AScene = registerElement('a-scene', {
         this.isMobile = isMobile;
         this.isScene = true;
         this.object3D = new THREE.Scene();
+        this.vrCamera = null;
+        var self = this;
+        this.object3D.onAfterRender = function (renderer, scene, camera) {
+          self.vrCamera = camera;
+          if (self.isPlaying) { self.tock(self.time, self.delta); }
+        };
         this.render = bind(this.render, this);
         this.systems = {};
         this.systemNames = [];
-        this.time = 0;
+        this.time = this.delta = 0;
         this.init();
       }
     },
@@ -614,16 +620,14 @@ module.exports.AScene = registerElement('a-scene', {
      */
     render: {
       value: function () {
-        var delta = this.clock.getDelta() * 1000;
+        this.delta = this.clock.getDelta() * 1000;
         var renderer = this.renderer;
         this.time = this.clock.elapsedTime * 1000;
 
-        if (this.isPlaying) { this.tick(this.time, delta); }
+        if (this.isPlaying) { this.tick(this.time, this.delta); }
 
         renderer.animate(this.render);
         renderer.render(this.object3D, this.camera, this.renderTarget);
-
-        if (this.isPlaying) { this.tock(this.time, delta); }
       },
       writable: true
     }
