@@ -214,10 +214,11 @@ module.exports.Component = registerComponent('look-controls', {
     // Not dragging or not enabled.
     if (!this.data.enabled || (!this.mouseDown && !this.pointerLocked)) { return; }
 
-     // Calculate delta.
-    movementX = event.movementX || event.mozMovementX;
-    movementY = event.movementY || event.mozMovementY;
-    if (movementX === undefined || movementY === undefined) {
+    // Calculate delta.
+    if (this.pointerLocked) {
+      movementX = event.movementX || event.mozMovementX || 0;
+      movementY = event.movementY || event.mozMovementY || 0;
+    } else {
       movementX = event.screenX - previousMouseEvent.screenX;
       movementY = event.screenY - previousMouseEvent.screenY;
     }
