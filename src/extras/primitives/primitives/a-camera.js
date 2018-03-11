@@ -13,6 +13,7 @@ registerPrimitive('a-camera', {
     fov: 'camera.fov',
     'look-controls-enabled': 'look-controls.enabled',
     near: 'camera.near',
+    'pointer-lock-enabled': 'look-controls.pointerLockEnabled',
     'wasd-controls-enabled': 'wasd-controls.enabled',
     'reverse-mouse-drag': 'look-controls.reverseMouseDrag',
     zoom: 'camera.zoom'
