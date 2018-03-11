@@ -22,15 +22,6 @@ var MULTIPLE_COMPONENT_DELIMITER = '__';
  * @member {boolean} isPlaying - false if dynamic behavior of the entity is paused.
  */
 var proto = Object.create(ANode.prototype, {
-  defaultComponents: {
-    value: {
-      position: '',
-      rotation: '',
-      scale: '',
-      visible: ''
-    }
-  },
-
   createdCallback: {
     value: function () {
       this.components = {};
@@ -393,11 +384,6 @@ var proto = Object.create(ANode.prototype, {
   removeComponent: {
     value: function (name) {
       var component;
-      var isDefault;
-
-      // Don't remove default or mixed-in components.
-      isDefault = name in this.defaultComponents;
-      if (isDefault) { return; }
 
       component = this.components[name];
       if (!component) { return; }
@@ -459,14 +445,6 @@ var proto = Object.create(ANode.prototype, {
         if (isComponent(name)) { componentsToUpdate[name] = true; }
       }
 
-      // Initialze or update default components first.
-      for (name in this.defaultComponents) {
-        data = mergeComponentData(this.getDOMAttribute(name),
-                                  extraComponents && extraComponents[name]);
-        this.updateComponent(name, data);
-        delete componentsToUpdate[name];
-      }
-
       // Initialize or update rest of components.
       for (name in componentsToUpdate) {
         data = mergeComponentData(this.getDOMAttribute(name),
@@ -490,10 +468,9 @@ var proto = Object.create(ANode.prototype, {
   updateComponent: {
     value: function (attr, attrValue, clobber) {
       var component = this.components[attr];
-      var isDefault = attr in this.defaultComponents;
       if (component) {
         // Remove component.
-        if (attrValue === null && !isDefault) {
+        if (attrValue === null && !checkComponentDefined(this, attr)) {
           this.removeComponent(attr);
           return;
         }
@@ -522,8 +499,6 @@ var proto = Object.create(ANode.prototype, {
       // Remove component.
       if (component && propertyName === undefined) {
         this.removeComponent(attr);
-        // Do not remove the component from the DOM if default component.
-        if (this.components[attr]) { return; }
       }
 
       // Reset component property value.
@@ -693,7 +668,6 @@ var proto = Object.create(ANode.prototype, {
   flushToDOM: {
     value: function (recursive) {
       var components = this.components;
-      var defaultComponents = this.defaultComponents;
       var child;
       var children = this.children;
       var i;
@@ -701,7 +675,7 @@ var proto = Object.create(ANode.prototype, {
 
       // Flush entity's components to DOM.
       for (key in components) {
-        components[key].flushToDOM(key in defaultComponents);
+        components[key].flushToDOM();
       }
 
       // Recurse.
@@ -736,20 +710,6 @@ var proto = Object.create(ANode.prototype, {
       return window.HTMLElement.prototype.getAttribute.call(this, attr);
     },
     writable: window.debug
-  },
-
-  /**
-   * `getAttribute` used to be `getDOMAttribute` and `getComputedAttribute` used to be
-   * what `getAttribute` is now. Now legacy code.
-   *
-   * @param {string} attr
-   * @returns {object|string} Object if component, else string.
-   */
-  getComputedAttribute: {
-    value: function (attr) {
-      warn('`getComputedAttribute` is deprecated. Use `getAttribute` instead.');
-      return this.getAttribute(attr);
-    }
   },
 
   /**
@@ -809,9 +769,6 @@ var proto = Object.create(ANode.prototype, {
  * @returns {boolean}
  */
 function checkComponentDefined (el, name) {
-  // Check if default components contain the component.
-  if (el.defaultComponents[name] !== undefined) { return true; }
-
   // Check if element contains the component.
   if (el.components[name] && el.components[name].attrValue) { return true; }
 

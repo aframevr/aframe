@@ -35,15 +35,6 @@ var warn = utils.debug('core:a-scene:warn');
  */
 module.exports.AScene = registerElement('a-scene', {
   prototype: Object.create(AEntity.prototype, {
-    defaultComponents: {
-      value: {
-        'inspector': '',
-        'keyboard-shortcuts': '',
-        'screenshot': '',
-        'vr-mode-ui': ''
-      }
-    },
-
     createdCallback: {
       value: function () {
         this.isIOS = isIOS;
@@ -75,6 +66,12 @@ module.exports.AScene = registerElement('a-scene', {
         this.resize();
         this.addFullScreenStyles();
         initPostMessageAPI(this);
+
+        // Default components.
+        this.setAttribute('inspector', '');
+        this.setAttribute('keyboard-shortcuts', '');
+        this.setAttribute('screenshot', '');
+        this.setAttribute('vr-mode-ui', '');
       },
       writable: true
     },

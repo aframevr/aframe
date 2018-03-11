@@ -544,20 +544,6 @@ suite('a-entity', function () {
       });
       el.appendChild(childEl);
     });
-
-    test('flushes default component values', function (done) {
-      var parentEl = this.el;
-      var el = document.createElement('a-entity');
-      el.addEventListener('loaded', function () {
-        el.flushToDOM();
-        assert.equal(HTMLElement.prototype.getAttribute.call(el, 'position'), '0 0 0');
-        assert.equal(HTMLElement.prototype.getAttribute.call(el, 'rotation'), '0 0 0');
-        assert.equal(HTMLElement.prototype.getAttribute.call(el, 'scale'), '1 1 1');
-        assert.equal(HTMLElement.prototype.getAttribute.call(el, 'visible'), 'true');
-        done();
-      });
-      parentEl.appendChild(el);
-    });
   });
 
   suite('detachedCallback', function () {
@@ -717,18 +703,6 @@ suite('a-entity', function () {
       assert.shallowDeepEqual(el.getDOMAttribute('material'), {});
     });
 
-    test('returns null for a default component if it is not set', function () {
-      var el = this.el;
-      assert.shallowDeepEqual(el.getDOMAttribute('position'), null);
-    });
-
-    test('returns parsed data if default component is set', function () {
-      var el = this.el;
-      var position = {x: 5, y: 6, z: 6};
-      el.setAttribute('position', position);
-      assert.shallowDeepEqual(el.getDOMAttribute('position'), position);
-    });
-
     test('returns partial component data', function () {
       var componentData;
       var el = this.el;
@@ -867,13 +841,6 @@ suite('a-entity', function () {
       assert.ok('height' in componentData);
     });
 
-    test('returns default value on a default component not set', function () {
-      var el = this.el;
-      var defaultPosition = {x: 0, y: 0, z: 0};
-      var elPosition = el.getAttribute('position');
-      assert.shallowDeepEqual(elPosition, defaultPosition);
-    });
-
     test('returns full data of a multiple component', function () {
       var componentData;
       var el = this.el;
@@ -926,11 +893,13 @@ suite('a-entity', function () {
       var el = this.el;
       var quaternion = new THREE.Quaternion();
       var euler = new THREE.Euler();
+      var rotation;
       euler.order = 'YXZ';
       euler.set(Math.PI / 2, Math.PI, 0);
       quaternion.setFromEuler(euler);
       el.object3D.quaternion.copy(quaternion);
-      assert.shallowDeepEqual(el.getAttribute('rotation'), {x: 90, y: 180, z: 0});
+      rotation = el.getAttribute('rotation');
+      assert.equal(Math.round(rotation.x), 90);
     });
 
     test('returns scale previously set with setAttribute', function () {
@@ -987,14 +956,6 @@ suite('a-entity', function () {
       el.removeAttribute('sound__test');
       assert.equal(el.getAttribute('sound__test'), null);
       assert.notOk(el.components.sound__test);
-    });
-
-    test('does not remove default component', function () {
-      var el = this.el;
-      assert.ok('position' in el.components);
-      el.removeAttribute('position');
-      assert.equal(el.getDOMAttribute('position'), null);
-      assert.ok('position' in el.components);
     });
 
     test('can remove mixed-in component', function () {
@@ -1282,10 +1243,11 @@ suite('a-entity', function () {
       assert.equal(el.getAttribute('material').color, 'blue');
     });
 
-    test('remove a component', function () {
+    test('removes a component', function () {
       var el = this.el;
       el.components.material = new components.material.Component(el, {color: 'red'});
       assert.equal(el.getAttribute('material').color, 'red');
+      el.components.material.attrValue = null;
       el.updateComponent('material', null);
       assert.equal(el.components.material, undefined);
     });
@@ -1378,10 +1340,10 @@ suite('a-entity', function () {
       mixinFactory('rotation', {rotation: '10 20 45'});
       el.setAttribute('mixin', '  material\t\nposition \t  rotation\n  ');
       el.setAttribute('material', 'color: red');
+      assert.equal(el.mixinEls.length, 3);
       assert.shallowDeepEqual(el.getAttribute('material'), {shader: 'flat', color: 'red'});
       assert.shallowDeepEqual(el.getAttribute('position'), {x: 1, y: 2, z: 3});
       assert.shallowDeepEqual(el.getAttribute('rotation'), {x: 10, y: 20, z: 45});
-      assert.equal(el.mixinEls.length, 3);
     });
 
     test('clear mixin', function () {
