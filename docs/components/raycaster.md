@@ -75,6 +75,23 @@ The raycaster component is useful because of the events it emits on entities. It
 | raycaster-intersection         | Emitted on the raycasting entity. Raycaster is intersecting with one or more entities. Event detail will contain `els`, an array with the intersected entities, and `intersections`, an array of objects containing detailed data about the intersections. |
 | raycaster-intersection-cleared | Emitted on the raycasting entity. Raycaster is no longer intersecting with one or more entities. Event detail will contain `clearedEls`, an array with the formerly intersected entities.  |
 
+### Intersection Object
+
+[3ray]: https://threejs.org/docs/#api/core/Raycaster
+
+The event detail contains intersection objects. They are returned straight from
+[three.js `Raycaster.intersectObjects.`][3ray]:
+
+| Property  | Description                                                 |
+|-----------|-------------------------------------------------------------|
+| distance  | distance between the origin of the ray and the intersection |
+| point     | point of intersection, in world coordinates                 |
+| face      | intersected face                                            |
+| faceIndex | index of the intersected face                               |
+| indices   | indices of vertices comprising the intersected face         |
+| object    | the intersected object                                      |
+| uv        | U,V coordinates at point of intersection                    |
+
 ## Members
 
 | Member         | Description                                                                                                      |
