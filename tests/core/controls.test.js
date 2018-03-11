@@ -228,14 +228,14 @@ suite('rotation controls on camera with mouse drag (integration unit test)', fun
     var el = this.el;
     var self = this;
     var mousedownEvent = new Event('mousedown');
+    mousedownEvent.screenX = 1000;
+    mousedownEvent.screenY = 1000;
     mousedownEvent.button = 0;
     el.sceneEl.canvas.dispatchEvent(mousedownEvent);
     process.nextTick(function afterMousedown () {
       var mouseMoveEvent = new Event('mousemove');
-      mouseMoveEvent.movementX = 1000;
-      mouseMoveEvent.movementY = 0.1;
-      mouseMoveEvent.screenX = 1000;
-      mouseMoveEvent.screenY = 1000;
+      mouseMoveEvent.screenX = 1500;
+      mouseMoveEvent.screenY = 1000.1;
       window.dispatchEvent(mouseMoveEvent);
       process.nextTick(function afterMousemove () {
         var cameraEl = self.cameraEl;
@@ -253,17 +253,75 @@ suite('rotation controls on camera with mouse drag (integration unit test)', fun
     var el = this.el;
     var self = this;
     var mousedownEvent = new Event('mousedown');
+    mousedownEvent.screenX = 1000;
+    mousedownEvent.screenY = 1000;
     mousedownEvent.button = 0;
     el.sceneEl.canvas.dispatchEvent(mousedownEvent);
     process.nextTick(function afterMousedown () {
       var mouseMoveEvent = new Event('mousemove');
-      mouseMoveEvent.movementX = 0.1;
-      mouseMoveEvent.movementY = 1000;
-      mouseMoveEvent.screenX = 1000;
-      mouseMoveEvent.screenY = 1000;
+      mouseMoveEvent.screenX = 1000.1;
+      mouseMoveEvent.screenY = 1500;
       window.dispatchEvent(mouseMoveEvent);
       process.nextTick(function afterMousemove () {
         var cameraEl = self.cameraEl;
+        var rotation;
+        cameraEl.components['look-controls'].updateOrientation();
+        rotation = cameraEl.getAttribute('rotation');
+        assert.equal(Math.floor(Math.abs(rotation.y)), 0);
+        assert.notEqual(Math.floor(Math.abs(rotation.x)), 0);
+        done();
+      });
+    });
+  });
+
+  test('rotates camera on moving pointerlocked mouse along X', function (done) {
+    var el = this.el;
+    var self = this;
+    var cameraEl = self.cameraEl;
+    var mousedownEvent = new Event('mousedown');
+    mousedownEvent.screenX = 1000;
+    mousedownEvent.screenY = 1000;
+    mousedownEvent.button = 0;
+    el.sceneEl.canvas.dispatchEvent(mousedownEvent);
+    process.nextTick(function afterMousedown () {
+      cameraEl.components['look-controls'].pointerLocked = true;
+      var mouseMoveEvent = new Event('mousemove');
+      mouseMoveEvent.movementX = 1000;
+      mouseMoveEvent.movementY = 0.1;
+      // screen coordinates should be ignored with pointer lock
+      mouseMoveEvent.screenX = 9000;
+      mouseMoveEvent.screenY = 9000;
+      window.dispatchEvent(mouseMoveEvent);
+      process.nextTick(function afterMousemove () {
+        var rotation;
+        cameraEl.components['look-controls'].updateOrientation();
+        rotation = cameraEl.getAttribute('rotation');
+        assert.equal(Math.floor(Math.abs(rotation.x)), 0);
+        assert.notEqual(Math.floor(Math.abs(rotation.y)), 0);
+        done();
+      });
+    });
+  });
+
+  test('rotates camera on moving pointerlocked mouse along Y', function (done) {
+    var el = this.el;
+    var self = this;
+    var cameraEl = self.cameraEl;
+    var mousedownEvent = new Event('mousedown');
+    mousedownEvent.screenX = 1000;
+    mousedownEvent.screenY = 1000;
+    mousedownEvent.button = 0;
+    el.sceneEl.canvas.dispatchEvent(mousedownEvent);
+    process.nextTick(function afterMousedown () {
+      cameraEl.components['look-controls'].pointerLocked = true;
+      var mouseMoveEvent = new Event('mousemove');
+      mouseMoveEvent.movementX = 0.1;
+      mouseMoveEvent.movementY = 1000;
+      // screen coordinates should be ignored with pointer lock
+      mouseMoveEvent.screenX = 9000;
+      mouseMoveEvent.screenY = 9000;
+      window.dispatchEvent(mouseMoveEvent);
+      process.nextTick(function afterMousemove () {
         var rotation;
         cameraEl.components['look-controls'].updateOrientation();
         rotation = cameraEl.getAttribute('rotation');
@@ -279,14 +337,14 @@ suite('rotation controls on camera with mouse drag (integration unit test)', fun
     var self = this;
     this.cameraEl.setAttribute('rotation', '45 45 0');
     var mousedownEvent = new Event('mousedown');
+    mousedownEvent.screenX = 1000;
+    mousedownEvent.screenY = 1000;
     mousedownEvent.button = 0;
     el.sceneEl.canvas.dispatchEvent(mousedownEvent);
     process.nextTick(function afterMousedown () {
       var mouseMoveEvent = new Event('mousemove');
-      mouseMoveEvent.movementX = -1000;
-      mouseMoveEvent.movementY = -1000;
-      mouseMoveEvent.screenX = 1000;
-      mouseMoveEvent.screenY = 1000;
+      mouseMoveEvent.screenX = 0;
+      mouseMoveEvent.screenY = 0;
       window.dispatchEvent(mouseMoveEvent);
       process.nextTick(function afterMousemove () {
         var cameraEl = self.cameraEl;
