@@ -288,18 +288,6 @@ suite('Component', function () {
       });
     });
 
-    test('emits componentchanged for value', function (done) {
-      el.addEventListener('componentchanged', function (evt) {
-        if (evt.detail.name !== 'visible') { return; }
-        assert.equal(el.getAttribute('visible'), false);
-        assert.equal(evt.detail.name, 'visible');
-        done();
-      });
-      setTimeout(() => {
-        el.setAttribute('visible', false);
-      });
-    });
-
     test('does not emit componentchanged for multi-prop if not changed', function (done) {
       el.addEventListener('componentinitialized', function (evt) {
         if (evt.detail.name !== 'material') { return; }

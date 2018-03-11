@@ -85,7 +85,7 @@ module.exports.Component = registerComponent('vr-mode-ui', {
 
   remove: function () {
     [this.enterVREl, this.orientationModalEl].forEach(function (uiElement) {
-      if (uiElement) {
+      if (uiElement && uiElement.parentNode) {
         uiElement.parentNode.removeChild(uiElement);
       }
     });
