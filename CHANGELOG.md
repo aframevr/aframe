@@ -10,7 +10,7 @@ Performance improvements.
 - Raycaster intersection and cleared events now emitted once per event, not on every frame. (#3126)
 - Remove VREffect / VRControls for three.js WebGLRenderer API. VR camera pose is managed by three.js. (#3152, #3327)
 - Removed geometry.mergeTo. (#3191)
-- Removed State mixins (#3171)
+- Removed state mixins. addState and removeState event detail modified to be the state name, not object. (#3171)
 - Removed Scene.reload() (#2239)
 
 ### Deprecations
