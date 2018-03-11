@@ -110,7 +110,7 @@ suite('look-controls', function () {
       var lookControlsComponent = cameraEl.components['look-controls'];
       lookControlsComponent.hasPositionalTracking = false;
       sceneEl.emit('enter-vr');
-      assert.notOk(lookControlsComponent.savedPose);
+      assert.notOk(lookControlsComponent.hasSavedPose);
     });
   });
 
