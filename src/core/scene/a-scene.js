@@ -50,10 +50,11 @@ module.exports.AScene = registerElement('a-scene', {
         this.isMobile = isMobile;
         this.isScene = true;
         this.object3D = new THREE.Scene();
-        this.vrCamera = null;
+        this.renderCamera = null;
         var self = this;
         this.object3D.onAfterRender = function (renderer, scene, camera) {
-          self.vrCamera = camera;
+          // THREE may swap the camera used for the rendering if in VR, so expose it
+          self.renderCamera = camera;
           if (self.isPlaying) { self.tock(self.time, self.delta); }
         };
         this.render = bind(this.render, this);
