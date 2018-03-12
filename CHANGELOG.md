@@ -6,7 +6,7 @@ Performance improvements.
 
 - Updated to three.js r90.
 - Ability to update three.js Object3D position, rotation, scale, and visible directly while being in sync with A-Frame. (#3245)
-- Bubble `object3dset` and `object3dremove` events no longer bubble. (#3220)
+- ~~Bubble `object3dset` and `object3dremove` events no longer bubble. (#3220)~~
 - Raycaster intersection and cleared events now emitted once per event, not on every frame. (#3126)
 - Remove VREffect / VRControls for three.js WebGLRenderer API. VR camera pose is managed by three.js. (#3152, #3327)
 - Removed geometry.mergeTo. (#3191)
