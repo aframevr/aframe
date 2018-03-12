@@ -30,8 +30,6 @@
   <a href="https://aframevr-slack.herokuapp.com">Slack</a>
   &mdash;
   <a href="https://aframe.io/blog/">Blog</a>
-  &mdash;
-  <a href="https://github.com/aframevr/awesome-aframe">awesome-aframe</a>
 </div>
 
 ## Examples
@@ -46,7 +44,7 @@
   <img alt="A-Saturday-Night" target="_blank" src="https://cloud.githubusercontent.com/assets/674727/24531477/44272daa-156e-11e7-8ef9-d750ed430f3a.gif" height="190" width="32%">
 </a>
 <a href="https://supermedium.com">
-  <img alt="Supermedium" target="_blank" src="https://user-images.githubusercontent.com/674727/37196407-7d080baa-232b-11e8-8f7d-61d62e69364c.png" height="190" width="32%">
+  <img alt="Supermedium" target="_blank" src="https://user-images.githubusercontent.com/674727/37294616-7212cd20-25d3-11e8-9e7f-c0c61074f1e0.png" height="190" width="32%">
 </a>
 <a href="https://github.com/googlecreativelab/webvr-musicalforest">
   <img alt="Musical Forest by @googlecreativelab" target="_blank" src="https://cloud.githubusercontent.com/assets/674727/25109861/b8e9ec48-2394-11e7-8f2d-ea1cd9df69c8.gif" height="190" width="32%">
@@ -55,7 +53,7 @@
   <img alt="360 Image Gallery" target="_blank" src="https://cloud.githubusercontent.com/assets/674727/24572552/72f81bec-162e-11e7-9851-037d0280abdb.gif" height="190" width="32%">
 </a>
 
-*Find more examples on [the homepage](https://aframe.io), [A Week of A-Frame](https://aframe.io/blog/), and [`awesome-aframe`](https://github.com/aframevr/awesome-aframe/).*
+*Find more examples on [the homepage](https://aframe.io), [A Week of A-Frame](https://aframe.io/blog/), and [WebVR Directory](https://webvr.directory).*
 
 ## Features
 
@@ -67,25 +65,20 @@ Vive, and Rift just by dropping in `<a-scene>`.
 A-Frame can be used from HTML, A-Frame is accessible to everyone: web
 developers, VR enthusiasts, educators, artists, makers, kids.
 
+:electric_plug: **Entity-Component Architecture**: A-Frame is a powerful
+framework on top of three.js, providing a declarative, composable, reusable
+entity-component structure for three.js. While A-Frame can be used from HTML,
+developers have unlimited access to JavaScript, DOM APIs, three.js, WebVR, and
+WebGL.
+
+rzap: **Performance**: A-Frame is a thin framework on top of three.js.
+Although A-Frame uses the DOM, A-Frame does not touch the browser layout
+engine. Performance is a top priority, being battle-tested on highly
+interactive WebVR experiences.
+
 :globe_with_meridians: **Cross-Platform**: Build VR applications for Vive,
 Rift, Daydream, GearVR, and Cardboard. Don't have a headset or controllers? No
 problem! A-Frame still works on standard desktop and smartphones.
-
-:electric_plug: **Entity-Component Architecture**: A-Frame is a powerful framework,
-providing a declarative, composable, reusable entity-component structure for
-three.js. While A-Frame can be used from HTML, developers have unlimited access
-to JavaScript, DOM APIs, three.js, WebVR, and WebGL.
-
-:zap: **Performance**: A-Frame is optimized from the ground up for WebVR. While
-A-Frame uses HTML, Custom Elements don't touch the browser layout engine. All
-3D object updates are all done in memory with little overhead under a single
-global `requestAnimationFrame` call.
-
-&#128296; **Tool Agnostic**: A-Frame works with normal JavaScript DOM APIs and
-therefore with all libraries such as
-[React](https://github.com/aframevr/aframe-react/), Vue.js, jQuery, or d3.js.
-Web developers don't have to jump ship to yet another framework, feeling right
-at home with A-Frame.
 
 :mag: **Visual Inspector**: A-Frame provides a built-in visual 3D inspector
 with a workflow similar to a browser's developer tools and interface similar to
@@ -93,9 +86,9 @@ Unity. Open up any A-Frame scene and hit `<ctrl> + <alt> + i`.
 
 :runner: **Features**: Hit the ground running with A-Frame's built-in
 components such as geometries, materials, lights, animations, models,
-raycasters, shadows, positional audio, Vive / Touch / Cardboard controls. Get
-even further with community components such as particle systems, physics,
-multiuser, oceans, mountains, speech recognition, or teleportation!
+raycasters, shadows, positional audio, tracked controllers. Get even further
+with community components such as particle systems, physics, multiuser, oceans,
+mountains, speech recognition, or teleportation!
 
 ## Usage
 
