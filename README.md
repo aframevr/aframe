@@ -71,7 +71,7 @@ entity-component structure for three.js. While A-Frame can be used from HTML,
 developers have unlimited access to JavaScript, DOM APIs, three.js, WebVR, and
 WebGL.
 
-rzap: **Performance**: A-Frame is a thin framework on top of three.js.
+:zap: **Performance**: A-Frame is a thin framework on top of three.js.
 Although A-Frame uses the DOM, A-Frame does not touch the browser layout
 engine. Performance is a top priority, being battle-tested on highly
 interactive WebVR experiences.
