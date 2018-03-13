@@ -16,8 +16,6 @@ var SHADOW_MAP_TYPE_MAP = {
 module.exports.System = registerSystem('shadow', {
   schema: {
     autoUpdate: {default: true},
-    renderReverseSided: {default: true},
-    renderSingleSided: {default: true},
     type: {default: 'pcf', oneOf: ['basic', 'pcf', 'pcfsoft']}
   },
 
@@ -30,8 +28,6 @@ module.exports.System = registerSystem('shadow', {
     if (!sceneEl.renderer) { return; }  // For tests.
 
     sceneEl.renderer.shadowMap.type = SHADOW_MAP_TYPE_MAP[data.type];
-    sceneEl.renderer.shadowMap.renderReverseSided = data.renderReverseSided;
-    sceneEl.renderer.shadowMap.renderSingleSided = data.renderSingleSided;
     sceneEl.renderer.shadowMap.autoUpdate = data.autoUpdate;
     this.setShadowMapEnabled(this.shadowMapEnabled);
   },

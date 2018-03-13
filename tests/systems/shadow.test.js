@@ -32,7 +32,6 @@ suite('shadow system', function () {
 
       setTimeout(() => {
         assert.equal(renderer.shadowMap.type, THREE.BasicShadowMap);
-        assert.ok(renderer.shadowMap.renderReverseSided);
         assert.notOk(renderer.shadowMap.autoUpdate);
         done();
       });

@@ -7,7 +7,7 @@
     <script src="../../../dist/aframe-master.js"></script>
   </head>
   <body>
-    <a-scene background="color: #111" shadow="shadowMapType: basic" stats>
+    <a-scene background="color: #111" shadow="type: basic" stats>
       <a-assets>
         <a-mixin id="wall"
                  geometry="primitive: box; height: 30; width: 30; depth: 2"
@@ -22,8 +22,7 @@
         <a-entity geometry="primitive: sphere; radius: 0.15"
                   material="color: #FAFAFA; shader: flat"
                   light="castShadow: true; color: #FAFAFA; intensity: 0.5; shadowBias: 0.01
-                         shadowCameraNear: 1; shadowCameraBias: 0.01;
-                         type: point; shadowMapWidth: 1024; shadowMapHeight: 1024"
+                         shadowCameraNear: 1; type: point; shadowMapWidth: 1024; shadowMapHeight: 1024"
                   position="0 -1 1">
           <a-animation attribute="scale" to="2 2 2" dur="3000" direction="alternate"
                        repeat="indefinite"></a-animation>
@@ -36,8 +35,7 @@
           <a-entity geometry="primitive: sphere; radius: 0.25"
                     material="color: #EF2D5E; shader: flat"
                     light="castShadow: true; color: #EF2D5E; intensity: 1; shadowBias: 0.01
-                           shadowCameraNear: 1; shadowCameraBias: 0.01;
-                           type: point; shadowMapWidth: 1024; shadowMapHeight: 1024"
+                           shadowCameraNear: 1; type: point; shadowMapWidth: 1024; shadowMapHeight: 1024"
                     position="0 5 5"></a-entity>
           <a-animation attribute="rotation" to="0 360 360" dur="5000" easing="linear"
                        repeat="indefinite"></a-animation>
@@ -45,7 +43,7 @@
 
         <!-- Torus. -->
         <a-entity geometry="primitive: torusKnot; radius: 4; radiusTubular: 0.1;
-                            segmentsRadial: 150; segmentsTubular: 20; p: 17; q: 4; side: back"
+                            segmentsRadial: 150; segmentsTubular: 20; p: 17; q: 4;"
                   material="color: #EF2D5E; metalness: 0.75"
                   shadow="cast: true; receive: true"
                   position="0 -1 2">
