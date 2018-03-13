@@ -248,6 +248,10 @@ module.exports.AScene = registerElement('a-scene', {
         if (this.is('vr-mode')) { return Promise.resolve('Already in VR.'); }
         // Enter VR via WebVR API.
         if (!fromExternal && (this.checkHeadsetConnected() || this.isMobile)) {
+          if (!this.camera) {
+            // Attempted to enter VR before the camera was initialized. Aborting silently.
+            return Promise.resolve();
+          }
           vrDisplay = utils.device.getVRDisplay();
           vrManager.setDevice(vrDisplay);
           vrManager.enabled = true;
