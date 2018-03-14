@@ -11,12 +11,25 @@ The camera component defines from which perspective the user views the scene.
 The camera is commonly paired with controls components that allow input devices
 to move and rotate the camera.
 
-## Example
+## Examples
 
 A camera situated at the average height of human eye level (1.6 meters).
+When used with controls that receive rotation or position (e.g. from a
+VR device) this position will be overridden.
 
 ```html
   <a-entity position="0 1.6 0" camera look-controls></a-entity>
+```
+
+When moving or rotating the camera relative to the scene, use a camera rig
+around the camera. By doing so, the camera's height offset can be updated
+by roomscale devices, while still allowing the tracked area to be
+moved independently around the scene.
+
+```html
+  <a-entity id="#rig" position="25 10 0">
+    <a-entity id="camera" position="0 1.6 0" camera look-controls></a-entity>
+  </a-entity>
 ```
 
 ## Properties
