@@ -57,6 +57,7 @@ module.exports.Component = registerComponent('raycaster', {
     this.objects = [];
     this.prevCheckTime = undefined;
     this.prevIntersectedEls = [];
+    this.rawIntersections = [];
     this.raycaster = new THREE.Raycaster();
     this.updateOriginDirection();
     this.setDirty = this.setDirty.bind(this);
@@ -189,7 +190,7 @@ module.exports.Component = registerComponent('raycaster', {
     var newIntersectedEls = this.newIntersectedEls;
     var newIntersections = this.newIntersections;
     var prevIntersectedEls = this.prevIntersectedEls;
-    var rawIntersections;
+    var rawIntersections = this.rawIntersections;
     var self = this;
 
     if (!this.data.enabled) { return; }
@@ -202,7 +203,8 @@ module.exports.Component = registerComponent('raycaster', {
 
     // Raycast.
     this.updateOriginDirection();
-    rawIntersections = this.raycaster.intersectObjects(this.objects, data.recursive);
+    rawIntersections.length = 0;
+    this.raycaster.intersectObjects(this.objects, data.recursive, rawIntersections);
 
     // Only keep intersections against objects that have a reference to an entity.
     intersections.length = 0;
