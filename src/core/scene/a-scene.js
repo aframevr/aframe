@@ -248,14 +248,20 @@ module.exports.AScene = registerElement('a-scene', {
         if (this.is('vr-mode')) { return Promise.resolve('Already in VR.'); }
         // Enter VR via WebVR API.
         if (!fromExternal && (this.checkHeadsetConnected() || this.isMobile)) {
-          if (!this.camera) {
-            // Attempted to enter VR before the camera was initialized. Aborting silently.
-            return Promise.resolve();
-          }
           vrDisplay = utils.device.getVRDisplay();
           vrManager.setDevice(vrDisplay);
           vrManager.enabled = true;
-          vrManager.setPoseTarget(this.camera.el.object3D);
+
+          if (this.camera) {
+            vrManager.setPoseTarget(this.camera.el.object3D);
+          }
+          // If the camera was not available, we skip setPoseTarget.
+          // We expect it to be set as a result of the camera-set-active event at a later point
+          // (usually shortly after entering VR).
+          this.addEventListener('camera-set-active', function () {
+            vrManager.setPoseTarget(self.camera.el.object3D);
+          });
+
           return vrDisplay.requestPresent([{source: this.canvas}])
                           .then(enterVRSuccess, enterVRFailure);
         }
