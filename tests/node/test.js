@@ -9,11 +9,15 @@ suite('node acceptance tests', function () {
   setup(function () {
     let _window = global.window = jsdom.jsdom().defaultView;
     global.navigator = _window.navigator;
+    global.document = _window.document;
+    global.screen = {};
   });
 
   teardown(function () {
     delete global.window;
     delete global.navigator;
+    delete global.document;
+    delete global.screen;
   });
 
   test('can run in node', function () {
