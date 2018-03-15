@@ -65364,7 +65364,6 @@ var PolyfillControls = _dereq_('../utils').device.PolyfillControls;
 // To avoid recalculation at every mouse movement tick
 var GRABBING_CLASS = 'a-grabbing';
 var PI_2 = Math.PI / 2;
-var radToDeg = THREE.Math.radToDeg;
 
 var checkHasPositionalTracking = utils.device.checkHasPositionalTracking;
 
@@ -65376,10 +65375,10 @@ module.exports.Component = registerComponent('look-controls', {
 
   schema: {
     enabled: {default: true},
-    touchEnabled: {default: true},
     hmdEnabled: {default: true},
     pointerLockEnabled: {default: false},
-    reverseMouseDrag: {default: false}
+    reverseMouseDrag: {default: false},
+    touchEnabled: {default: true}
   },
 
   init: function () {
@@ -65398,6 +65397,11 @@ module.exports.Component = registerComponent('look-controls', {
     this.pointerLocked = false;
     this.setupMouseControls();
     this.bindMethods();
+
+    this.savedPose = {
+      position: new THREE.Vector3(),
+      rotation: new THREE.Euler()
+    };
 
     // Call enter VR handler if the scene has entered VR before the event listeners attached.
     if (this.el.sceneEl.is('vr-mode')) { this.onEnterVR(); }
@@ -65535,11 +65539,11 @@ module.exports.Component = registerComponent('look-controls', {
    * Mouse-drag only enabled if HMD is not active.
    */
   updateOrientation: function () {
+    var el = this.el;
     var hmdEuler = this.hmdEuler;
     var pitchObject = this.pitchObject;
     var yawObject = this.yawObject;
     var sceneEl = this.el.sceneEl;
-    var rotation = this.rotation;
 
     // In VR mode, THREE is in charge of updating the camera rotation.
     if (sceneEl.is('vr-mode') && sceneEl.checkHeadsetConnected()) { return; }
@@ -65547,12 +65551,11 @@ module.exports.Component = registerComponent('look-controls', {
     // Calculate polyfilled HMD quaternion.
     this.polyfillControls.update();
     hmdEuler.setFromQuaternion(this.polyfillObject.quaternion, 'YXZ');
-    // On mobile, do camera rotation with touch events and sensors.
-    rotation.x = radToDeg(hmdEuler.x) + radToDeg(pitchObject.rotation.x);
-    rotation.y = radToDeg(hmdEuler.y) + radToDeg(yawObject.rotation.y);
-    rotation.z = 0;
 
-    this.el.setAttribute('rotation', rotation);
+    // On mobile, do camera rotation with touch events and sensors.
+    el.object3D.rotation.x = hmdEuler.x + pitchObject.rotation.x;
+    el.object3D.rotation.y = hmdEuler.y + yawObject.rotation.y;
+    el.object3D.rotation.z = 0;
   },
 
   /**
@@ -65717,15 +65720,15 @@ module.exports.Component = registerComponent('look-controls', {
    */
   saveCameraPose: function () {
     var el = this.el;
-    var position = el.getAttribute('position');
-    var rotation = el.getAttribute('rotation');
-    var hasPositionalTracking = this.hasPositionalTracking !== undefined ? this.hasPositionalTracking : checkHasPositionalTracking();
+    var hasPositionalTracking = this.hasPositionalTracking !== undefined
+      ? this.hasPositionalTracking
+      : checkHasPositionalTracking();
 
-    if (this.savedPose || !hasPositionalTracking) { return; }
-    this.savedPose = {
-      position: this.savedPosition.copy(position),
-      rotation: this.savedRotation.copy(rotation)
-    };
+    if (this.hasSavedPose || !hasPositionalTracking) { return; }
+
+    this.savedPose.position.copy(el.object3D.position);
+    this.savedPose.rotation.copy(el.object3D.rotation);
+    this.hasSavedPose = true;
   },
 
   /**
@@ -65734,14 +65737,16 @@ module.exports.Component = registerComponent('look-controls', {
   restoreCameraPose: function () {
     var el = this.el;
     var savedPose = this.savedPose;
-    var hasPositionalTracking = this.hasPositionalTracking !== undefined ? this.hasPositionalTracking : checkHasPositionalTracking();
+    var hasPositionalTracking = this.hasPositionalTracking !== undefined
+      ? this.hasPositionalTracking
+      : checkHasPositionalTracking();
 
-    if (!savedPose || !hasPositionalTracking) { return; }
+    if (!this.hasSavedPose || !hasPositionalTracking) { return; }
 
     // Reset camera orientation.
-    el.setAttribute('position', savedPose.position);
-    el.setAttribute('rotation', savedPose.rotation);
-    this.savedPose = null;
+    el.object3D.position.copy(savedPose.position);
+    el.object3D.rotation.copy(savedPose.rotation);
+    this.hasSavedPose = false;
   }
 });
 
@@ -75369,7 +75374,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.1 (Date 2018-03-15, Commit #0de9e9c)');
+console.log('A-Frame Version: 0.8.1 (Date 2018-03-15, Commit #717be9c)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
