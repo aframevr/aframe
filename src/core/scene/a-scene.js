@@ -251,17 +251,6 @@ module.exports.AScene = registerElement('a-scene', {
           vrDisplay = utils.device.getVRDisplay();
           vrManager.setDevice(vrDisplay);
           vrManager.enabled = true;
-
-          if (this.camera) {
-            vrManager.setPoseTarget(this.camera.el.object3D);
-          }
-          // If the camera was not available, we skip setPoseTarget.
-          // We expect it to be set as a result of the camera-set-active event at a later point
-          // (usually shortly after entering VR).
-          this.addEventListener('camera-set-active', function () {
-            vrManager.setPoseTarget(self.camera.el.object3D);
-          });
-
           return vrDisplay.requestPresent([{source: this.canvas}])
                           .then(enterVRSuccess, enterVRFailure);
         }
@@ -494,6 +483,7 @@ module.exports.AScene = registerElement('a-scene', {
 
     setupRenderer: {
       value: function () {
+        var self = this;
         var renderer;
         renderer = this.renderer = new THREE.WebGLRenderer({
           canvas: this.canvas,
@@ -502,6 +492,11 @@ module.exports.AScene = registerElement('a-scene', {
         });
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.sortObjects = false;
+        // We expect camera-set-active to be triggered at least once in the life of an a-frame app. Usually soon after
+        // it is initialized.
+        this.addEventListener('camera-set-active', function () {
+          renderer.vr.setPoseTarget(self.camera.el.object3D);
+        });
       },
       writable: window.debug
     },
