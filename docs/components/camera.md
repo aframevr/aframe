@@ -48,7 +48,7 @@ moved independently around the scene.
 If a camera is not specified, A-Frame will inject a default camera:
 
 ```html
-<a-entity camera="active: true" look-controls wasd-controls position="0 0 0" data-aframe-default-camera></a-entity>
+<a-entity camera="active: true" look-controls wasd-controls position="0 1.6 0" data-aframe-default-camera></a-entity>
 ```
 
 If a camera is specified (e.g., our own `<a-camera>` or `<a-entity camera>`),
