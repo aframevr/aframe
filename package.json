@@ -43,7 +43,7 @@
     "style-attr": "^1.0.2",
     "three": "github:supermedium/three.js#r90fixPoseAndRaycaster",
     "three-bmfont-text": "^2.1.0",
-    "webvr-polyfill": "^0.10.3"
+    "webvr-polyfill": "^0.10.4"
   },
   "devDependencies": {
     "browserify": "^13.1.0",
