@@ -73188,7 +73188,6 @@ module.exports.AScene = registerElement('a-scene', {
           vrDisplay = utils.device.getVRDisplay();
           vrManager.setDevice(vrDisplay);
           vrManager.enabled = true;
-          vrManager.setPoseTarget(this.camera.el.object3D);
           return vrDisplay.requestPresent([{source: this.canvas}])
                           .then(enterVRSuccess, enterVRFailure);
         }
@@ -73421,6 +73420,7 @@ module.exports.AScene = registerElement('a-scene', {
 
     setupRenderer: {
       value: function () {
+        var self = this;
         var renderer;
         renderer = this.renderer = new THREE.WebGLRenderer({
           canvas: this.canvas,
@@ -73429,6 +73429,11 @@ module.exports.AScene = registerElement('a-scene', {
         });
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.sortObjects = false;
+        // We expect camera-set-active to be triggered at least once in the life of an a-frame app. Usually soon after
+        // it is initialized.
+        this.addEventListener('camera-set-active', function () {
+          renderer.vr.setPoseTarget(self.camera.el.object3D);
+        });
       },
       writable: window.debug
     },
@@ -75374,7 +75379,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.1 (Date 2018-03-15, Commit #717be9c)');
+console.log('A-Frame Version: 0.8.1 (Date 2018-03-16, Commit #e163071)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
