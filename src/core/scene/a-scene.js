@@ -50,12 +50,10 @@ module.exports.AScene = registerElement('a-scene', {
         this.isMobile = isMobile;
         this.isScene = true;
         this.object3D = new THREE.Scene();
-        this.renderUsedCamera = null;
         var self = this;
         this.object3D.onAfterRender = function (renderer, scene, camera) {
-          // THREE may swap the camera used for the rendering if in VR, so expose it
-          self.renderUsedCamera = camera;
-          if (self.isPlaying) { self.tock(self.time, self.delta); }
+          // THREE may swap the camera used for the rendering if in VR, so we pass it to tock
+          if (self.isPlaying) { self.tock(self.time, self.delta, camera); }
         };
         this.render = bind(this.render, this);
         this.systems = {};
@@ -594,20 +592,20 @@ module.exports.AScene = registerElement('a-scene', {
      * needing to render.
      */
     tock: {
-      value: function (time, timeDelta) {
+      value: function (time, timeDelta, camera) {
         var i;
         var systems = this.systems;
 
         // Components.
         for (i = 0; i < this.behaviors.tock.length; i++) {
           if (!this.behaviors.tock[i].el.isPlaying) { continue; }
-          this.behaviors.tock[i].tock(time, timeDelta);
+          this.behaviors.tock[i].tock(time, timeDelta, camera);
         }
 
         // Systems.
         for (i = 0; i < this.systemNames.length; i++) {
           if (!systems[this.systemNames[i]].tock) { continue; }
-          systems[this.systemNames[i]].tock(time, timeDelta);
+          systems[this.systemNames[i]].tock(time, timeDelta, camera);
         }
       }
     },
