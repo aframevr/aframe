@@ -27,8 +27,7 @@ A camera situated at the average height of human eye level (1.6 meters).
 | far        | Camera frustum far clipping plane.                                                                                                                                                                                                                                                  | 10000         |
 | fov        | Field of view (in degrees).                                                                                                                                                                                                                                                         | 80            |
 | near       | Camera frustum near clipping plane.                                                                                                                                                                                                                                                 | 0.005         |
-| spectator   | Whether the camera is used to render a third-person view of the scene on the 2D display while in VR mode.
-                                                                                                                                                                                                                | false            |
+| spectator  | Whether the camera is used to render a third-person view of the scene on the 2D display while in VR mode.                                                                                                                                                           | false         |
 | zoom       | Zoom factor of the camera.                                                                                                                                                                                                                                                          | 1             |
 
 ## Default Camera
@@ -36,7 +35,7 @@ A camera situated at the average height of human eye level (1.6 meters).
 If a camera is not specified, A-Frame will inject a default camera:
 
 ```html
-<a-entity camera="active: true" look-controls wasd-controls position="0 0 0" data-aframe-default-camera></a-entity>
+<a-entity camera="active: true" look-controls wasd-controls position="0 1.6 0" data-aframe-default-camera></a-entity>
 ```
 
 If a camera is specified (e.g., our own `<a-camera>` or `<a-entity camera>`),
