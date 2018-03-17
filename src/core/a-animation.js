@@ -301,14 +301,14 @@ module.exports.AAnimation = registerElement('a-animation', {
 
     onStateAdded: {
       value: function (evt) {
-        if (evt.detail.state === this.data.begin) { this.start(); }
+        if (evt.detail === this.data.begin) { this.start(); }
       },
       writable: true
     },
 
     onStateRemoved: {
       value: function (evt) {
-        if (evt.detail.state === this.data.begin) { this.stop(); }
+        if (evt.detail === this.data.begin) { this.stop(); }
       },
       writable: true
     },
