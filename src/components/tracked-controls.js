@@ -51,7 +51,9 @@ module.exports.Component = registerComponent('tracked-controls', {
   tick: function (time, delta) {
     var mesh = this.el.getObject3D('mesh');
     // Update mesh animations.
-    if (mesh && mesh.update) { mesh.update(delta / 1000); }
+    if (mesh && mesh.update) {
+      mesh.update(delta / 1000);
+    }
     this.updateGamepad();
     this.updatePose();
     this.updateButtons();
@@ -87,6 +89,12 @@ module.exports.Component = registerComponent('tracked-controls', {
     this.controller = controller;
   },
 
+  /**
+   * Applies an artificial arm model to simulate elbow to wrist positioning
+   * based on the orientation of the controller.
+   *
+   * @param {object} controllerPosition - Existing vector to update with controller position.
+   */
   applyArmModel: function (controllerPosition) {
     // Use controllerPosition and deltaControllerPosition to avoid creating variables.
     var controller = this.controller;
@@ -156,7 +164,9 @@ module.exports.Component = registerComponent('tracked-controls', {
       object3D.position.fromArray(pose.position);
     } else {
       // Controller not 6DOF, apply arm model.
-      if (this.data.armModel) { this.applyArmModel(object3D.position); }
+      if (this.data.armModel) {
+        this.applyArmModel(object3D.position);
+      }
     }
 
     if (pose.orientation) {
@@ -210,8 +220,8 @@ module.exports.Component = registerComponent('tracked-controls', {
    * @returns {boolean} Whether button has changed in any way.
    */
   handleButton: function (id, buttonState) {
-    var changed = this.handlePress(id, buttonState) ||
-                  this.handleTouch(id, buttonState) ||
+    var changed = this.handlePress(id, buttonState) |
+                  this.handleTouch(id, buttonState) |
                   this.handleValue(id, buttonState);
     if (!changed) { return false; }
     this.el.emit('buttonchanged', {id: id, state: buttonState});
