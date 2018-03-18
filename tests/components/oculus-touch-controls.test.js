@@ -1,4 +1,4 @@
-/* global assert, process, setup, suite, test */
+/* global assert, process, setup, sinon, suite, test */
 var entityFactory = require('../helpers').entityFactory;
 
 suite('oculus-touch-controls', function () {
@@ -19,41 +19,41 @@ suite('oculus-touch-controls', function () {
 
   suite('checkIfControllerPresent', function () {
     test('removes event listeners if controllers not present', function () {
-      var addEventListenersSpy = this.sinon.spy(component, 'addEventListeners');
-      var injectTrackedControlsSpy = this.sinon.spy(component, 'injectTrackedControls');
-      var removeEventListenersSpy = this.sinon.spy(component, 'removeEventListeners');
+      var addEventListenersSpy = sinon.spy(component, 'addEventListeners');
+      var injectTrackedControlsSpy = sinon.spy(component, 'injectTrackedControls');
+      var removeEventListenersSpy = sinon.spy(component, 'removeEventListeners');
 
       // Mock has not been checked previously.
       delete component.controllerPresent;
 
       component.checkIfControllerPresent();
 
-      this.sinon.assert.notCalled(injectTrackedControlsSpy);
-      this.sinon.assert.notCalled(addEventListenersSpy);
-      this.sinon.assert.calledOnce(removeEventListenersSpy);
+      sinon.assert.notCalled(injectTrackedControlsSpy);
+      sinon.assert.notCalled(addEventListenersSpy);
+      sinon.assert.calledOnce(removeEventListenersSpy);
       assert.strictEqual(component.controllerPresent, false);
     });
 
     test('does not call removeEventListeners multiple times', function () {
-      var addEventListenersSpy = this.sinon.spy(component, 'addEventListeners');
-      var injectTrackedControlsSpy = this.sinon.spy(component, 'injectTrackedControls');
-      var removeEventListenersSpy = this.sinon.spy(component, 'removeEventListeners');
+      var addEventListenersSpy = sinon.spy(component, 'addEventListeners');
+      var injectTrackedControlsSpy = sinon.spy(component, 'injectTrackedControls');
+      var removeEventListenersSpy = sinon.spy(component, 'removeEventListeners');
 
       // Mock that it's been checked previously.
       component.controllerPresent = false;
 
       component.checkIfControllerPresent();
 
-      this.sinon.assert.notCalled(injectTrackedControlsSpy);
-      this.sinon.assert.notCalled(addEventListenersSpy);
-      this.sinon.assert.notCalled(removeEventListenersSpy);
+      sinon.assert.notCalled(injectTrackedControlsSpy);
+      sinon.assert.notCalled(addEventListenersSpy);
+      sinon.assert.notCalled(removeEventListenersSpy);
       assert.strictEqual(component.controllerPresent, false);
     });
 
     test('attach events if controller is newly present', function () {
-      var addEventListenersSpy = this.sinon.spy(component, 'addEventListeners');
-      var injectTrackedControlsSpy = this.sinon.spy(component, 'injectTrackedControls');
-      var removeEventListenersSpy = this.sinon.spy(component, 'removeEventListeners');
+      var addEventListenersSpy = sinon.spy(component, 'addEventListeners');
+      var injectTrackedControlsSpy = sinon.spy(component, 'injectTrackedControls');
+      var removeEventListenersSpy = sinon.spy(component, 'removeEventListeners');
 
       // Mock isControllerPresent to return true.
       el.sceneEl.systems['tracked-controls'].controllers = component.controllersWhenPresent;
@@ -63,16 +63,16 @@ suite('oculus-touch-controls', function () {
 
       component.checkIfControllerPresent();
 
-      this.sinon.assert.calledOnce(injectTrackedControlsSpy);
-      this.sinon.assert.calledOnce(addEventListenersSpy);
-      this.sinon.assert.notCalled(removeEventListenersSpy);
+      sinon.assert.calledOnce(injectTrackedControlsSpy);
+      sinon.assert.calledOnce(addEventListenersSpy);
+      sinon.assert.notCalled(removeEventListenersSpy);
       assert.strictEqual(component.controllerPresent, true);
     });
 
     test('does not add/remove event listeners if presence does not change', function () {
-      var addEventListenersSpy = this.sinon.spy(component, 'addEventListeners');
-      var injectTrackedControlsSpy = this.sinon.spy(component, 'injectTrackedControls');
-      var removeEventListenersSpy = this.sinon.spy(component, 'removeEventListeners');
+      var addEventListenersSpy = sinon.spy(component, 'addEventListeners');
+      var injectTrackedControlsSpy = sinon.spy(component, 'injectTrackedControls');
+      var removeEventListenersSpy = sinon.spy(component, 'removeEventListeners');
 
       // Mock isControllerPresent to return true.
       el.sceneEl.systems['tracked-controls'].controllers = component.controllersWhenPresent;
@@ -83,15 +83,15 @@ suite('oculus-touch-controls', function () {
 
       component.checkIfControllerPresent();
 
-      this.sinon.assert.notCalled(injectTrackedControlsSpy);
-      this.sinon.assert.notCalled(addEventListenersSpy);
-      this.sinon.assert.notCalled(removeEventListenersSpy);
+      sinon.assert.notCalled(injectTrackedControlsSpy);
+      sinon.assert.notCalled(addEventListenersSpy);
+      sinon.assert.notCalled(removeEventListenersSpy);
       assert.strictEqual(component.controllerPresent, true);
     });
 
     test('removes event listeners if controller disappears', function () {
-      var addEventListenersSpy = this.sinon.spy(component, 'addEventListeners');
-      var injectTrackedControlsSpy = this.sinon.spy(component, 'injectTrackedControls');
+      var addEventListenersSpy = sinon.spy(component, 'addEventListeners');
+      var injectTrackedControlsSpy = sinon.spy(component, 'injectTrackedControls');
 
       // Mock that it's was currently present.
       component.controllerEventsActive = true;
@@ -99,8 +99,8 @@ suite('oculus-touch-controls', function () {
 
       component.checkIfControllerPresent();
 
-      this.sinon.assert.notCalled(injectTrackedControlsSpy);
-      this.sinon.assert.notCalled(addEventListenersSpy);
+      sinon.assert.notCalled(injectTrackedControlsSpy);
+      sinon.assert.notCalled(addEventListenersSpy);
       assert.strictEqual(component.controllerPresent, false);
     });
   });

@@ -88,8 +88,8 @@ suite('tracked-controls', function () {
 
   suite('tick', function () {
     test('updates pose and buttons even if mesh is not defined', function () {
-      var updateButtonsSpy = this.sinon.spy(component, 'updateButtons');
-      var updatePoseSpy = this.sinon.spy(component, 'updatePose');
+      var updateButtonsSpy = sinon.spy(component, 'updateButtons');
+      var updatePoseSpy = sinon.spy(component, 'updatePose');
       assert.notOk(el.getObject3D('mesh'));
       component.tick();
       sinon.assert.calledOnce(updatePoseSpy);
@@ -195,14 +195,14 @@ suite('tracked-controls', function () {
 
   suite('handleAxes', function () {
     test('does not emit on initial state', function () {
-      const emitSpy = this.sinon.spy(el, 'emit');
+      const emitSpy = sinon.spy(el, 'emit');
       component.tick();
       assert.notOk(component.handleAxes());
       sinon.assert.notCalled(emitSpy);
     });
 
     test('emits axismove on first touch', function () {
-      const emitSpy = this.sinon.spy(el, 'emit');
+      const emitSpy = sinon.spy(el, 'emit');
       controller.axes = [0.5, 0.5, 0.5];
       assert.deepEqual(component.axis, [0, 0, 0]);
       component.tick();
@@ -217,7 +217,7 @@ suite('tracked-controls', function () {
       component.tick();
       assert.deepEqual(component.axis, [0.5, 0.5, 0.5]);
 
-      const emitSpy = this.sinon.spy(el, 'emit');
+      const emitSpy = sinon.spy(el, 'emit');
       controller.axes = [1, 1, 1];
       component.tick();
       const emitCall = emitSpy.getCalls()[0];
@@ -231,7 +231,7 @@ suite('tracked-controls', function () {
       component.tick();
       assert.deepEqual(component.axis, [0.5, 0.5, 0.5]);
 
-      const emitSpy = this.sinon.spy(el, 'emit');
+      const emitSpy = sinon.spy(el, 'emit');
       controller.axes = [1, 0.5, 0.5];
       component.tick();
       const emitCall = emitSpy.getCalls()[0];
@@ -243,13 +243,13 @@ suite('tracked-controls', function () {
 
   suite('handleButton', function () {
     test('does not emit if button not pressed', function () {
-      const emitSpy = this.sinon.spy(el, 'emit');
+      const emitSpy = sinon.spy(el, 'emit');
       component.tick();
       sinon.assert.notCalled(emitSpy);
     });
 
     test('emits buttonchanged if button pressed', function () {
-      const emitSpy = this.sinon.spy(el, 'emit');
+      const emitSpy = sinon.spy(el, 'emit');
       controller.buttons[0].pressed = true;
       component.tick();
 
@@ -261,7 +261,7 @@ suite('tracked-controls', function () {
     });
 
     test('emits buttonchanged if button touched', function () {
-      const emitSpy = this.sinon.spy(el, 'emit');
+      const emitSpy = sinon.spy(el, 'emit');
       controller.buttons[0].touched = true;
       component.tick();
 
@@ -273,7 +273,7 @@ suite('tracked-controls', function () {
     });
 
     test('emits buttonchanged if value changed', function () {
-      const emitSpy = this.sinon.spy(el, 'emit');
+      const emitSpy = sinon.spy(el, 'emit');
       controller.buttons[0].value = 0.5;
       component.tick();
 
@@ -285,7 +285,7 @@ suite('tracked-controls', function () {
     });
 
     test('emits independent streams for buttondown, touchstart and buttonchanged', function () {
-      const emitSpy = this.sinon.spy(el, 'emit');
+      const emitSpy = sinon.spy(el, 'emit');
       controller.buttons[0].pressed = true;
       controller.buttons[0].touched = true;
       component.tick();
@@ -310,7 +310,7 @@ suite('tracked-controls', function () {
     });
 
     test('emits independent streams for buttonup, touchend and buttonchanged', function () {
-      const emitSpy = this.sinon.spy(el, 'emit');
+      const emitSpy = sinon.spy(el, 'emit');
       component.buttonStates[0] = {pressed: true, touched: true, value: 1};
       controller.buttons[0].pressed = false;
       controller.buttons[0].touched = false;
@@ -335,7 +335,7 @@ suite('tracked-controls', function () {
 
     test('emits correct event stream for spaced out interaction.', function () {
       // First round, verify we only see a touchstart and buttonchanged
-      let emitSpy = this.sinon.spy(el, 'emit');
+      let emitSpy = sinon.spy(el, 'emit');
       controller.buttons[0].touched = true;
       component.tick();
 
@@ -343,7 +343,7 @@ suite('tracked-controls', function () {
       emitSpy.restore();
 
       // Second round, verify we only see a buttondown and buttonchanged since pressed state isn't changing.
-      emitSpy = this.sinon.spy(el, 'emit');
+      emitSpy = sinon.spy(el, 'emit');
       controller.buttons[0].pressed = true;
       component.tick();
 
@@ -351,7 +351,7 @@ suite('tracked-controls', function () {
       emitSpy.restore();
 
       // Third round, verify we only see a buttonup and button changed when we release the button.
-      emitSpy = this.sinon.spy(el, 'emit');
+      emitSpy = sinon.spy(el, 'emit');
       controller.buttons[0].pressed = false;
       component.tick();
 
@@ -359,7 +359,7 @@ suite('tracked-controls', function () {
       emitSpy.restore();
 
       // Fourth round, verify we only see a touchend and button changed when we lift our touch.
-      emitSpy = this.sinon.spy(el, 'emit');
+      emitSpy = sinon.spy(el, 'emit');
       controller.buttons[0].touched = false;
       component.tick();
 
@@ -369,7 +369,7 @@ suite('tracked-controls', function () {
 
     test('emits correct event states on a fast click', function () {
       // First round, verify we see all activation events
-      let emitSpy = this.sinon.spy(el, 'emit');
+      let emitSpy = sinon.spy(el, 'emit');
       controller.buttons[0].pressed = true;
       controller.buttons[0].touched = true;
       controller.buttons[0].value = 1;
@@ -379,7 +379,7 @@ suite('tracked-controls', function () {
       emitSpy.restore();
 
       // Second round, verify we see all deactivation events
-      emitSpy = this.sinon.spy(el, 'emit');
+      emitSpy = sinon.spy(el, 'emit');
       controller.buttons[0].pressed = false;
       controller.buttons[0].touched = false;
       controller.buttons[0].value = 0;
@@ -389,7 +389,7 @@ suite('tracked-controls', function () {
       emitSpy.restore();
 
       // Finally verify there are no events backed up because of bad carryover state.
-      emitSpy = this.sinon.spy(el, 'emit');
+      emitSpy = sinon.spy(el, 'emit');
       component.tick();
       sinon.assert.notCalled(emitSpy);
     });
@@ -397,14 +397,14 @@ suite('tracked-controls', function () {
 
   suite('handlePress', function () {
     test('does not emit anything if button not pressed', function () {
-      const emitSpy = this.sinon.spy(el, 'emit');
+      const emitSpy = sinon.spy(el, 'emit');
       component.tick();
       sinon.assert.notCalled(emitSpy);
       assert.notOk(component.handlePress(0, {pressed: false, touched: false, value: 0}));
     });
 
     test('emits buttondown if button pressed', function () {
-      const emitSpy = this.sinon.spy(el, 'emit');
+      const emitSpy = sinon.spy(el, 'emit');
       controller.buttons[0].pressed = true;
       component.tick();
 
@@ -416,7 +416,7 @@ suite('tracked-controls', function () {
     });
 
     test('emits buttonup if button released', function () {
-      const emitSpy = this.sinon.spy(el, 'emit');
+      const emitSpy = sinon.spy(el, 'emit');
       component.buttonStates[1] = {pressed: true, touched: false, value: 1};
       controller.buttons[1].pressed = false;
       controller.buttons[1].value = 0;
@@ -430,7 +430,7 @@ suite('tracked-controls', function () {
     });
 
     test('does not emit buttonup if button pressed', function () {
-      const emitSpy = this.sinon.spy(el, 'emit');
+      const emitSpy = sinon.spy(el, 'emit');
       controller.buttons[0].pressed = true;
       component.tick();
       const emitUpCalls = emitSpy.getCalls().filter(
@@ -439,7 +439,7 @@ suite('tracked-controls', function () {
     });
 
     test('does not emit buttondown if button released', function () {
-      const emitSpy = this.sinon.spy(el, 'emit');
+      const emitSpy = sinon.spy(el, 'emit');
       component.buttonStates[1] = {pressed: true, touched: false, value: 1};
       controller.buttons[1].pressed = false;
       controller.buttons[1].value = 0;
@@ -453,14 +453,14 @@ suite('tracked-controls', function () {
 
   suite('handleTouch', function () {
     test('does not do anything if button not touched', function () {
-      const emitSpy = this.sinon.spy(el, 'emit');
+      const emitSpy = sinon.spy(el, 'emit');
       component.tick();
       sinon.assert.notCalled(emitSpy);
       assert.notOk(component.handleTouch(0, {pressed: false, touched: false, value: 0}));
     });
 
     test('emits touchstart if button touched', function () {
-      const emitSpy = this.sinon.spy(el, 'emit');
+      const emitSpy = sinon.spy(el, 'emit');
       controller.buttons[0].touched = true;
       component.tick();
 
@@ -472,7 +472,7 @@ suite('tracked-controls', function () {
     });
 
     test('emits touchend if button no longer touched', function () {
-      const emitSpy = this.sinon.spy(el, 'emit');
+      const emitSpy = sinon.spy(el, 'emit');
       component.buttonStates[1] = {pressed: false, touched: true, value: 1};
       controller.buttons[1].touched = false;
       controller.buttons[1].value = 0;
@@ -508,14 +508,14 @@ suite('tracked-controls', function () {
     });
 
     test('if armModel false, do not apply', function () {
-      var applyArmModelSpy = this.sinon.spy(component, 'applyArmModel');
+      var applyArmModelSpy = sinon.spy(component, 'applyArmModel');
       component.data.armModel = false;
       component.tick();
       sinon.assert.notCalled(applyArmModelSpy);
     });
 
     test('if armModel true, apply', function () {
-      var applyArmModelSpy = this.sinon.spy(component, 'applyArmModel');
+      var applyArmModelSpy = sinon.spy(component, 'applyArmModel');
       component.data.armModel = true;
       component.tick();
       sinon.assert.calledOnce(applyArmModelSpy);
