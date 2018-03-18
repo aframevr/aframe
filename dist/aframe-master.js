@@ -70029,14 +70029,14 @@ module.exports.AAnimation = registerElement('a-animation', {
 
     onStateAdded: {
       value: function (evt) {
-        if (evt.detail.state === this.data.begin) { this.start(); }
+        if (evt.detail === this.data.begin) { this.start(); }
       },
       writable: true
     },
 
     onStateRemoved: {
       value: function (evt) {
-        if (evt.detail.state === this.data.begin) { this.stop(); }
+        if (evt.detail === this.data.begin) { this.stop(); }
       },
       writable: true
     },
@@ -75389,7 +75389,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.1 (Date 2018-03-17, Commit #ccb15a0)');
+console.log('A-Frame Version: 0.8.1 (Date 2018-03-18, Commit #d9bbc00)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
