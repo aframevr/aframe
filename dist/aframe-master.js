@@ -68467,6 +68467,12 @@ module.exports.Component = registerComponent('tracked-controls', {
     this.controller = controller;
   },
 
+  /**
+   * Applies an artificial arm model to simulate elbow to wrist positioning
+   * based on the orientation of the controller.
+   *
+   * @param {object} controllerPosition - Existing vector to update with controller position.
+   */
   applyArmModel: function (controllerPosition) {
     // Use controllerPosition and deltaControllerPosition to avoid creating variables.
     var controller = this.controller;
@@ -68590,8 +68596,8 @@ module.exports.Component = registerComponent('tracked-controls', {
    * @returns {boolean} Whether button has changed in any way.
    */
   handleButton: function (id, buttonState) {
-    var changed = this.handlePress(id, buttonState) ||
-                  this.handleTouch(id, buttonState) ||
+    var changed = this.handlePress(id, buttonState) |
+                  this.handleTouch(id, buttonState) |
                   this.handleValue(id, buttonState);
     if (!changed) { return false; }
     this.el.emit('buttonchanged', {id: id, state: buttonState});
@@ -75389,7 +75395,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.1 (Date 2018-03-18, Commit #d9bbc00)');
+console.log('A-Frame Version: 0.8.1 (Date 2018-03-19, Commit #56e86d6)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
