@@ -2,7 +2,6 @@
 var AScene = require('core/scene/a-scene').AScene;
 var components = require('core/component').components;
 var scenes = require('core/scene/scenes');
-var getRendererProperty = require('core/scene/a-scene').getRendererProperty;
 var setupCanvas = require('core/scene/a-scene').setupCanvas;
 var systems = require('core/system').systems;
 
@@ -733,32 +732,5 @@ suite('setupCanvas', function () {
     assert.notOk(el.canvas);
     setupCanvas(el);
     assert.ok(el.canvas);
-  });
-});
-
-suite('getRendererProperty', function () {
-  var sceneEl;
-
-  setup(function () {
-    sceneEl = document.createElement('a-scene');
-  });
-
-  test('is true if set to true', function () {
-    sceneEl.setAttribute('antialias', 'true');
-    assert.ok(getRendererProperty(sceneEl, 'antialias'));
-  });
-
-  test('is false if set to false', function () {
-    sceneEl.setAttribute('antialias', 'false');
-    assert.notOk(getRendererProperty(sceneEl, 'antialias'));
-  });
-
-  test('is true on desktop by default', function () {
-    assert.ok(getRendererProperty(sceneEl, 'antialias'));
-  });
-
-  test('is false on mobile with no native webvr by default', function () {
-    sceneEl.isMobile = true;
-    assert.notOk(getRendererProperty(sceneEl, 'antialias'));
   });
 });

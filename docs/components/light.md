@@ -237,4 +237,4 @@ system on the `<a-scene>` root element.
 
 | Property           | Description                                                                                                   | Default Value |
 |--------------------|---------------------------------------------------------------------------------------------------------------|---------------|
-| type               | Defines shadow map type (`basic`, `pcf`, `pcfsoft`) with varying appearance and perforance characteristics.   | `pcf`         |
+| type               | Defines shadow map type (`basic`, `pcf`, `pcfsoft`) with varying appearance and performance characteristics.   | `pcf`         |
