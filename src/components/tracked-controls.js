@@ -164,9 +164,7 @@ module.exports.Component = registerComponent('tracked-controls', {
       object3D.position.fromArray(pose.position);
     } else {
       // Controller not 6DOF, apply arm model.
-      if (this.data.armModel) {
-        this.applyArmModel(object3D.position);
-      }
+      if (this.data.armModel) { this.applyArmModel(object3D.position); }
     }
 
     if (pose.orientation) {
