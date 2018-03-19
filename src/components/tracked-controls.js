@@ -51,9 +51,7 @@ module.exports.Component = registerComponent('tracked-controls', {
   tick: function (time, delta) {
     var mesh = this.el.getObject3D('mesh');
     // Update mesh animations.
-    if (mesh && mesh.update) {
-      mesh.update(delta / 1000);
-    }
+    if (mesh && mesh.update) { mesh.update(delta / 1000); }
     this.updateGamepad();
     this.updatePose();
     this.updateButtons();
