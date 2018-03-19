@@ -487,11 +487,19 @@ module.exports.AScene = registerElement('a-scene', {
       value: function () {
         var self = this;
         var renderer;
-        renderer = this.renderer = new THREE.WebGLRenderer({
+        var rendererConfig = {
           canvas: this.canvas,
-          antialias: getRendererProperty(this, 'antialias'),
+          antialias: !isMobile,
           alpha: true
-        });
+        };
+        if (this.hasAttribute('renderer')) {
+          var rendererAttrString = this.getAttribute('renderer');
+          var rendererAttr = utils.styleParser.parse(rendererAttrString);
+          if (rendererAttr.antialias) {
+            utils.extend(rendererConfig, {antialias: rendererAttr.antialias === 'true'});
+          }
+        }
+        renderer = this.renderer = new THREE.WebGLRenderer(rendererConfig);
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.sortObjects = false;
         // We expect camera-set-active to be triggered at least once in the life of an a-frame app. Usually soon after
@@ -674,39 +682,6 @@ function exitFullscreen () {
     document.webkitExitFullscreen();
   }
 }
-
-var RENDERER_PROPERTY_ATTRIBUTES = {
-  antialias: 'antialias',
-  gammaOutput: 'gamma-output',
-  sortObjects: 'sort-objects',
-  physicallyCorrectLights: 'physically-correct-lights'
-};
-
-/**
- * Determines state of various renderer properties.
- * This could be done by a component, but it's important
- * to know the values when the renderer is created, so
- * that materials don't need to be recompiled.
- *
- * @return {bool}
- */
-function getRendererProperty (sceneEl, property) {
-  var defaultProperties = {
-    antialias: !sceneEl.isMobile, // Default not AA for mobile.
-    gammaOutput: false,
-    sortObjects: false,
-    physicallyCorrectLights: false
-  };
-
-  var attrName = RENDERER_PROPERTY_ATTRIBUTES[property];
-
-  if (sceneEl.getAttribute(attrName) !== null) {
-    return sceneEl.getAttribute(attrName) === 'true';
-  }
-
-  return defaultProperties[attrName];
-}
-module.exports.getRendererProperty = getRendererProperty;
 
 function setupCanvas (sceneEl) {
   var canvasEl;
