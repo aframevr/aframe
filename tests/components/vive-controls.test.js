@@ -142,36 +142,40 @@ suite('vive-controls', function () {
   });
 
   suite('buttonchanged', function () {
-    test('emits triggerchanged on buttonchanged', function (done) {
-      controlsSystem.controllers = component.controllersWhenPresent;
-      component.checkIfControllerPresent();
-
-      // Install event handler listening for triggerchanged.
-      el.addEventListener('triggerchanged', function (evt) {
-        assert.ok(evt.detail);
-        done();
+    // Generate 3 tests for each button. Verify that it fires up/down/changed for all remapped buttons.
+    [ { button: 'trackpad', id: 0 },
+      { button: 'trigger', id: 1 },
+      { button: 'grip', id: 2 },
+      { button: 'menu', id: 3 },
+      { button: 'system', id: 4 }
+    ].forEach(function (buttonDescription) {
+      test('emits ' + buttonDescription.button + 'changed on buttonchanged', function (done) {
+        controlsSystem.controllers = component.controllersWhenPresent;
+        component.checkIfControllerPresent();
+        el.addEventListener(buttonDescription.button + 'changed', function (evt) {
+          assert.ok(evt.detail);
+          done();
+        });
+        el.emit('buttonchanged', {id: buttonDescription.id, state: {value: 0.5, pressed: true, touched: true}});
       });
 
-      // Emit buttonchanged.
-      el.emit('buttonchanged', {id: 1, state: {value: 0.5, pressed: true, touched: true}});
-    });
-
-    test('emits triggerdown on buttonchanged', function (done) {
-      controlsSystem.controllers = component.controllersWhenPresent;
-      component.checkIfControllerPresent();
-      el.addEventListener('triggerdown', function (evt) {
-        done();
+      test('emits ' + buttonDescription.button + 'down on buttondown', function (done) {
+        controlsSystem.controllers = component.controllersWhenPresent;
+        component.checkIfControllerPresent();
+        el.addEventListener(buttonDescription.button + 'down', function (evt) {
+          done();
+        });
+        el.emit('buttondown', {id: buttonDescription.id});
       });
-      el.emit('buttondown', {id: 1});
-    });
 
-    test('emits triggerup on buttonchanged', function (done) {
-      controlsSystem.controllers = component.controllersWhenPresent;
-      component.checkIfControllerPresent();
-      el.addEventListener('triggerup', function (evt) {
-        done();
+      test('emits ' + buttonDescription.button + 'up on buttonup', function (done) {
+        controlsSystem.controllers = component.controllersWhenPresent;
+        component.checkIfControllerPresent();
+        el.addEventListener(buttonDescription.button + 'up', function (evt) {
+          done();
+        });
+        el.emit('buttonup', {id: buttonDescription.id});
       });
-      el.emit('buttonup', {id: 1});
     });
   });
 
