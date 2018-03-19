@@ -126,14 +126,14 @@ suite('daydream-controls', function () {
       component.checkIfControllerPresent();
 
       // Install event handler listening for thumbstickmoved.
-      this.el.addEventListener('trackpadmoved', function (evt) {
+      el.addEventListener('trackpadmoved', function (evt) {
         assert.equal(evt.detail.x, 0.1);
         assert.equal(evt.detail.y, 0.2);
         done();
       });
 
       // Emit axismove.
-      this.el.emit('axismove', {axis: [0.1, 0.2], changed: [true, false]});
+      el.emit('axismove', {axis: [0.1, 0.2], changed: [true, false]});
     });
 
     test('does not emit trackpadmove on axismove with no changes', function (done) {
@@ -145,12 +145,12 @@ suite('daydream-controls', function () {
       component.checkIfControllerPresent();
 
       // Purposely fail.
-      this.el.addEventListener('trackpadmoved', function (evt) {
+      el.addEventListener('trackpadmoved', function (evt) {
         assert.fail('trackpadmoved should not fire if axes have not changed.');
       });
 
       // Emit axismove.
-      this.el.emit('axismove', {axis: [0.1, 0.2], changed: [false, false]});
+      el.emit('axismove', {axis: [0.1, 0.2], changed: [false, false]});
 
       setTimeout(() => { done(); });
     });
@@ -168,13 +168,13 @@ suite('daydream-controls', function () {
       const eventState = {value: 0.5, pressed: true, touched: true};
 
       // Install event handler listening for triggerchanged.
-      this.el.addEventListener('trackpadchanged', function (evt) {
+      el.addEventListener('trackpadchanged', function (evt) {
         assert.deepEqual(evt.detail, eventState);
         done();
       });
 
       // Emit buttonchanged for the trackpad button.
-      this.el.emit('buttonchanged', {id: 0, state: eventState});
+      el.emit('buttonchanged', {id: 0, state: eventState});
     });
 
     test('emits menuchanged on buttonchanged for button 1', function (done) {
@@ -188,13 +188,13 @@ suite('daydream-controls', function () {
       const eventState = {value: 0.5, pressed: true, touched: true};
 
       // Install event handler listening for triggerchanged.
-      this.el.addEventListener('menuchanged', function (evt) {
+      el.addEventListener('menuchanged', function (evt) {
         assert.deepEqual(evt.detail, eventState);
         done();
       });
 
       // Emit buttonchanged for the menu button.
-      this.el.emit('buttonchanged', {id: 1, state: eventState});
+      el.emit('buttonchanged', {id: 1, state: eventState});
     });
 
     test('emits systemanged on buttonchanged for button 2', function (done) {
@@ -208,13 +208,13 @@ suite('daydream-controls', function () {
       const eventState = {value: 0.5, pressed: true, touched: true};
 
       // Install event handler listening for triggerchanged.
-      this.el.addEventListener('systemchanged', function (evt) {
+      el.addEventListener('systemchanged', function (evt) {
         assert.deepEqual(evt.detail, eventState);
         done();
       });
 
       // Emit buttonchanged for the system button.
-      this.el.emit('buttonchanged', {id: 2, state: eventState});
+      el.emit('buttonchanged', {id: 2, state: eventState});
     });
   });
 
