@@ -6,9 +6,6 @@ var warn = debug('components:renderer:warn');
 
 /**
  * Determines state of various renderer properties.
- * This could be done by a component, but it's important
- * to know the values when the renderer is created, so
- * that materials don't need to be recompiled.
  */
 module.exports.Component = register('renderer', {
   schema: {
@@ -24,6 +21,10 @@ module.exports.Component = register('renderer', {
 
     if (!el.isScene) {
       warn('Fog component can only be applied to <a-scene>');
+    }
+
+    if (el.hasAttribute('antialias')) {
+      warn('Component `antialias` is deprecated. Use `renderer="antialias: true"` instead.');
     }
 
     // Default not AA for mobile.
