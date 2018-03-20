@@ -161,42 +161,57 @@ suite('gearvr-controls', function () {
   });
 
   suite('buttonchanged', function () {
-    test('if we get buttonchanged for button 0, emit trackpadchanged', function (done) {
-      var el = this.el;
-      var component = el.components['gearvr-controls'];
+    [ { button: 'trackpad', id: 0 },
+      { button: 'trigger', id: 1 }
+    ].forEach(function (buttonDescription) {
+      test('if we get buttonchanged for button ' + buttonDescription.id + ', emit ' + buttonDescription.button + 'changed', function (done) {
+        var el = this.el;
+        var component = el.components['gearvr-controls'];
 
-      el.sceneEl.systems['tracked-controls'].controllers = component.controllersWhenPresent;
+        el.sceneEl.systems['tracked-controls'].controllers = component.controllersWhenPresent;
 
-      component.checkIfControllerPresent();
+        component.checkIfControllerPresent();
 
-      // Configure the expected event state and use it to fire the event.
-      const eventState = {value: 0.5, pressed: true, touched: true};
+        // Configure the expected event state and use it to fire the event.
+        const eventState = {value: 0.5, pressed: true, touched: true};
 
-      el.addEventListener('trackpadchanged', function (evt) {
-        assert.deepEqual(evt.detail, eventState);
-        done();
+        el.addEventListener(buttonDescription.button + 'changed', function (evt) {
+          assert.deepEqual(evt.detail, eventState);
+          done();
+        });
+
+        el.emit('buttonchanged', {id: buttonDescription.id, state: eventState});
       });
 
-      el.emit('buttonchanged', {id: 0, state: eventState});
-    });
+      test('if we get buttondown for button ' + buttonDescription.id + ', emit ' + buttonDescription.button + 'down', function (done) {
+        var el = this.el;
+        var component = el.components['gearvr-controls'];
 
-    test('if we get buttonchanged for button 1, emit triggerchanged', function (done) {
-      var el = this.el;
-      var component = el.components['gearvr-controls'];
+        el.sceneEl.systems['tracked-controls'].controllers = component.controllersWhenPresent;
 
-      el.sceneEl.systems['tracked-controls'].controllers = component.controllersWhenPresent;
+        component.checkIfControllerPresent();
 
-      component.checkIfControllerPresent();
+        el.addEventListener(buttonDescription.button + 'down', function (evt) {
+          done();
+        });
 
-      // Configure the expected event state and use it to fire the event.
-      const eventState = {value: 0.5, pressed: true, touched: true};
-
-      el.addEventListener('triggerchanged', function (evt) {
-        assert.deepEqual(evt.detail, eventState);
-        done();
+        el.emit('buttondown', {id: buttonDescription.id});
       });
 
-      el.emit('buttonchanged', {id: 1, state: eventState});
+      test('if we get buttonup for button ' + buttonDescription.id + ', emit ' + buttonDescription.button + 'up', function (done) {
+        var el = this.el;
+        var component = el.components['gearvr-controls'];
+
+        el.sceneEl.systems['tracked-controls'].controllers = component.controllersWhenPresent;
+
+        component.checkIfControllerPresent();
+
+        el.addEventListener(buttonDescription.button + 'up', function (evt) {
+          done();
+        });
+
+        el.emit('buttonup', {id: buttonDescription.id});
+      });
     });
   });
 
