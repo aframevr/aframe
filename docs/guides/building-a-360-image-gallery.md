@@ -34,7 +34,7 @@ This is the starting point for our scene:
 ```html
 <a-scene>
   <a-assets>
-    <audio id="click-sound" src="audio/click.ogg"></audio>
+    <audio id="click-sound" src="https://cdn.aframe.io/360-image-gallery-boilerplate/audio/click.ogg"></audio>
 
     <!-- Images. -->
     <img id="city" src="https://cdn.aframe.io/360-image-gallery-boilerplate/img/city.jpg">
