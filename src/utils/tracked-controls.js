@@ -97,12 +97,16 @@ function findMatchingController (controllers, filterIdExact, filterIdPrefix, fil
     // Determine if the controller ID matches our criteria
     if (filterIdPrefixes) {
       var matches = false;
-      for (var prefix in filterIdPrefixes) {
-        if (prefix && controller.id.indexOf(prefix) === -1) { matches = true; }
+      for (var j = 0; j < filterIdPrefixes.length; j++) {
+        var prefix = filterIdPrefixes[j];
+        if (prefix && !controller.id.indexOf(prefix)) {
+          matches = true;
+          break;
+        }
       }
       if (!matches) { continue; }
     } else
-    if (filterIdPrefix && controller.id.indexOf(filterIdPrefix) === -1) { continue; }
+    if (filterIdPrefix && controller.id.indexOf(filterIdPrefix)) { continue; }
     if (!filterIdPrefix && controller.id !== filterIdExact) { continue; }
 
     // If the hand filter and controller handedness are defined we compare them.
