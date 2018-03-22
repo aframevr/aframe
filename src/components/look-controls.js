@@ -208,12 +208,12 @@ module.exports.Component = registerComponent('look-controls', {
    * Dragging left and right rotates the camera around the Y-axis (pitch).
    */
   onMouseMove: function (event) {
-    var pitchObject = this.pitchObject;
-    var yawObject = this.yawObject;
-    var previousMouseEvent = this.previousMouseEvent;
-    var direction = this.data.reverseMouseDrag ? 1 : -1;
+    var direction;
     var movementX;
     var movementY;
+    var pitchObject = this.pitchObject;
+    var previousMouseEvent = this.previousMouseEvent;
+    var yawObject = this.yawObject;
 
     // Not dragging or not enabled.
     if (!this.data.enabled || (!this.mouseDown && !this.pointerLocked)) { return; }
@@ -229,6 +229,7 @@ module.exports.Component = registerComponent('look-controls', {
     this.previousMouseEvent = event;
 
     // Calculate rotation.
+    direction = this.data.reverseMouseDrag ? 1 : -1;
     yawObject.rotation.y += movementX * 0.002 * direction;
     pitchObject.rotation.x += movementY * 0.002 * direction;
     pitchObject.rotation.x = Math.max(-PI_2, Math.min(PI_2, pitchObject.rotation.x));
