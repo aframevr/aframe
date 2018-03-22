@@ -211,6 +211,7 @@ module.exports.Component = registerComponent('look-controls', {
     var pitchObject = this.pitchObject;
     var yawObject = this.yawObject;
     var previousMouseEvent = this.previousMouseEvent;
+    var direction = this.data.reverseMouseDrag ? 1 : -1;
     var movementX;
     var movementY;
 
@@ -228,8 +229,8 @@ module.exports.Component = registerComponent('look-controls', {
     this.previousMouseEvent = event;
 
     // Calculate rotation.
-    yawObject.rotation.y -= movementX * 0.002;
-    pitchObject.rotation.x -= movementY * 0.002;
+    yawObject.rotation.y += movementX * 0.002 * direction;
+    pitchObject.rotation.x += movementY * 0.002 * direction;
     pitchObject.rotation.x = Math.max(-PI_2, Math.min(PI_2, pitchObject.rotation.x));
   },
 
