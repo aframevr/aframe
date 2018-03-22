@@ -92,6 +92,7 @@ Component.prototype = {
    *
    * @param {number} time - Scene tick time.
    * @param {number} timeDelta - Difference in current render time and previous render time.
+   * @param {object} camera - Camera used to render the last frame.
    */
   tock: undefined,
 

@@ -397,7 +397,7 @@ AFRAME.registerComponent('tracked-controls', {
 });
 ```
 
-### `.tock (time, timeDelta)`
+### `.tock (time, timeDelta, camera)`
 
 Identical to the tick method but invoked after the scene has rendered. 
 
