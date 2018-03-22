@@ -274,16 +274,16 @@ module.exports.Component = registerComponent('raycaster', {
   },
 
   /**
-   * Returns the most recent intersection details for a given entity, if any.
-   * @param  {AEntity} el
+   * Return the most recent intersection details for a given entity, if any.
+   * @param {AEntity} el
    * @return {Object}
    */
   getIntersection: function (el) {
-    for (var i = 0; i < this.intersections.length; i++) {
-      var intersection = this.intersections[i];
-      if (intersection.object.el === el) {
-        return intersection;
-      }
+    var i;
+    var intersection;
+    for (i = 0; i < this.intersections.length; i++) {
+      intersection = this.intersections[i];
+      if (intersection.object.el === el) { return intersection; }
     }
     return null;
   },

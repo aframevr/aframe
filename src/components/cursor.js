@@ -253,6 +253,7 @@ module.exports.Component = registerComponent('cursor', {
    * Handle intersection.
    */
   onIntersection: function (evt) {
+    var currentIntersection;
     var cursorEl = this.el;
     var index;
     var intersectedEl;
@@ -271,7 +272,7 @@ module.exports.Component = registerComponent('cursor', {
 
     // Ignore events further away than active intersection.
     if (this.intersectedEl) {
-      var currentIntersection = this.el.components.raycaster.getIntersection(this.intersectedEl);
+      currentIntersection = this.el.components.raycaster.getIntersection(this.intersectedEl);
       if (currentIntersection.distance <= intersection.distance) { return; }
     }
 
@@ -355,8 +356,9 @@ module.exports.Component = registerComponent('cursor', {
   twoWayEmit: function (evtName) {
     var el = this.el;
     var intersectedEl = this.intersectedEl;
-    var intersection = this.el.components.raycaster.getIntersection(intersectedEl);
+    var intersection;
 
+    intersection = this.el.components.raycaster.getIntersection(intersectedEl);
     this.eventDetail.intersectedEl = intersectedEl;
     this.eventDetail.intersection = intersection;
     el.emit(evtName, this.eventDetail);
