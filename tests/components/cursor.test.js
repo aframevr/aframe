@@ -8,6 +8,7 @@ suite('cursor', function () {
   var el;
   var intersection;
   var intersectedEl;
+  var prevIntersection;
   var prevIntersectedEl;
 
   setup(function (done) {
@@ -15,6 +16,7 @@ suite('cursor', function () {
     el = document.createElement('a-entity');
     intersection = {distance: 10.5};
     intersectedEl = document.createElement('a-entity');
+    prevIntersection = {distance: 12.5};
     prevIntersectedEl = document.createElement('a-entity');
     cameraEl.setAttribute('camera', 'active: true');
     el.setAttribute('cursor', '');
@@ -213,9 +215,20 @@ suite('cursor', function () {
       });
     });
 
-    test('updates existing intersections for intersected entities', function (done, fail) {
+    test('updates intersected entity when nearer intersection occurs', function (done, fail) {
       var intersection1 = {distance: 10.5};
-      var intersection2 = {distance: 12.0};
+      var intersection2 = {distance: 9.0};
+      var intersection3 = {distance: 12.0};
+      var nearerIntersectedEl = document.createElement('a-entity');
+      var furtherIntersectedEl = document.createElement('a-entity');
+
+      this.sinon.stub(el.components.raycaster, 'getIntersection', function (el) {
+        switch (el) {
+          case intersectedEl: return intersection1;
+          case nearerIntersectedEl: return intersection2;
+          case furtherIntersectedEl: return intersection3;
+        }
+      });
 
       intersectedEl.addEventListener('mouseenter', function onMouseenter (evt) {
         assert.shallowDeepEqual(evt.detail.intersection, intersection1);
@@ -226,11 +239,16 @@ suite('cursor', function () {
 
         el.emit('raycaster-intersection', {
           intersections: [intersection2],
-          els: [intersectedEl]
+          els: [nearerIntersectedEl]
+        });
+
+        el.emit('raycaster-intersection', {
+          intersections: [intersection3],
+          els: [furtherIntersectedEl]
         });
 
         process.nextTick(function () {
-          assert.shallowDeepEqual(el.components.cursor.intersection, intersection2);
+          assert.equal(el.components.cursor.intersectedEl, nearerIntersectedEl);
           done();
         });
       });
@@ -246,8 +264,11 @@ suite('cursor', function () {
       once(prevIntersectedEl, 'mouseleave', function (evt) {
         done();
       });
+      this.sinon.stub(el.components.raycaster, 'getIntersection', function (el) {
+        return el === intersectedEl ? intersection : prevIntersection;
+      });
       el.emit('raycaster-intersection', {
-        intersections: [intersection],
+        intersections: [prevIntersection],
         els: [prevIntersectedEl]
       });
       el.emit('raycaster-intersection', {
@@ -303,23 +324,18 @@ suite('cursor', function () {
     });
 
     test('does not do anything if only the cursor is intersecting', function () {
-      component.intersection = intersection;
       component.intersectedEl = intersectedEl;
       el.emit('raycaster-intersection-cleared', {clearedEls: [el]});
-      assert.ok(component.intersection);
       assert.ok(component.intersectedEl);
     });
 
     test('unsets intersectedEl', function () {
-      component.intersection = intersection;
       component.intersectedEl = intersectedEl;
       el.emit('raycaster-intersection-cleared', {clearedEls: [intersectedEl]});
-      assert.notOk(component.intersection);
       assert.notOk(component.intersectedEl);
     });
 
     test('removes cursor-hovered state on intersectedEl', function () {
-      component.intersection = intersection;
       component.intersectedEl = intersectedEl;
       intersectedEl.addState('cursor-hovered');
       el.emit('raycaster-intersection-cleared', {clearedEls: [intersectedEl]});
@@ -327,7 +343,6 @@ suite('cursor', function () {
     });
 
     test('emits mouseleave event on el', function (done) {
-      component.intersection = intersection;
       component.intersectedEl = intersectedEl;
       once(el, 'mouseleave', function (evt) {
         assert.equal(evt.detail.intersectedEl, intersectedEl);
@@ -337,7 +352,6 @@ suite('cursor', function () {
     });
 
     test('emits mouseleave event on intersectedEl', function (done) {
-      component.intersection = intersection;
       component.intersectedEl = intersectedEl;
       once(intersectedEl, 'mouseleave', function (evt) {
         assert.equal(evt.detail.cursorEl, el);
@@ -347,7 +361,6 @@ suite('cursor', function () {
     });
 
     test('removes cursor-hovering and cursor-fusing states on cursor', function () {
-      component.intersection = intersection;
       component.intersectedEl = intersectedEl;
       el.addState('cursor-fusing');
       el.addState('cursor-hovering');
@@ -356,10 +369,9 @@ suite('cursor', function () {
       assert.notOk(el.is('cursor-hovering'));
     });
 
-    test('sets another interesected element if any', function () {
+    test('sets another intersected element if any', function () {
       var dummyEl = document.createElement('a-entity');
       var dummyIntersection = {object: {el: dummyEl}};
-      component.intersection = intersection;
       component.intersectedEl = intersectedEl;
       el.addState('cursor-fusing');
       el.addState('cursor-hovering');
@@ -368,7 +380,6 @@ suite('cursor', function () {
       assert.notOk(el.is('cursor-fusing'));
       assert.ok(el.is('cursor-hovering'));
       assert.equal(dummyEl, el.components.cursor.intersectedEl);
-      assert.equal(dummyIntersection, el.components.cursor.intersection);
     });
   });
 

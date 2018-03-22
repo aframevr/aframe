@@ -52,7 +52,6 @@ module.exports.Component = registerComponent('cursor', {
 
     this.fuseTimeout = undefined;
     this.cursorDownEl = null;
-    this.intersection = null;
     this.intersectedEl = null;
     this.canvasBounds = document.body.getBoundingClientRect();
 
@@ -189,7 +188,6 @@ module.exports.Component = registerComponent('cursor', {
       var top;
 
       camera.parent.updateMatrixWorld();
-      camera.updateMatrixWorld();
 
       // Calculate mouse position based on the canvas element
       if (evt.type === 'touchmove' || evt.type === 'touchstart') {
@@ -255,6 +253,7 @@ module.exports.Component = registerComponent('cursor', {
    * Handle intersection.
    */
   onIntersection: function (evt) {
+    var currentIntersection;
     var cursorEl = this.el;
     var index;
     var intersectedEl;
@@ -269,13 +268,16 @@ module.exports.Component = registerComponent('cursor', {
     if (!intersectedEl) { return; }
 
     // Already intersecting this entity.
-    if (this.intersectedEl === intersectedEl) {
-      this.intersection = intersection;
-      return;
+    if (this.intersectedEl === intersectedEl) { return; }
+
+    // Ignore events further away than active intersection.
+    if (this.intersectedEl) {
+      currentIntersection = this.el.components.raycaster.getIntersection(this.intersectedEl);
+      if (currentIntersection.distance <= intersection.distance) { return; }
     }
 
     // Unset current intersection.
-    this.clearCurrentIntersection();
+    this.clearCurrentIntersection(true);
 
     this.setIntersection(intersectedEl, intersection);
   },
@@ -299,7 +301,6 @@ module.exports.Component = registerComponent('cursor', {
     if (this.intersectedEl === intersectedEl) { return; }
 
     // Set new intersection.
-    this.intersection = intersection;
     this.intersectedEl = intersectedEl;
 
     // Hovering.
@@ -317,7 +318,7 @@ module.exports.Component = registerComponent('cursor', {
     }, data.fuseTimeout);
   },
 
-  clearCurrentIntersection: function () {
+  clearCurrentIntersection: function (ignoreRemaining) {
     var index;
     var intersection;
     var intersections;
@@ -333,13 +334,13 @@ module.exports.Component = registerComponent('cursor', {
     this.twoWayEmit(EVENTS.MOUSELEAVE);
 
     // Unset intersected entity (after emitting the event).
-    this.intersection = null;
     this.intersectedEl = null;
 
     // Clear fuseTimeout.
     clearTimeout(this.fuseTimeout);
 
     // Set intersection to another raycasted element if any.
+    if (ignoreRemaining === true) { return; }
     intersections = this.el.components.raycaster.intersections;
     if (intersections.length === 0) { return; }
     // Exclude the cursor.
@@ -355,8 +356,9 @@ module.exports.Component = registerComponent('cursor', {
   twoWayEmit: function (evtName) {
     var el = this.el;
     var intersectedEl = this.intersectedEl;
-    var intersection = this.intersection;
+    var intersection;
 
+    intersection = this.el.components.raycaster.getIntersection(intersectedEl);
     this.eventDetail.intersectedEl = intersectedEl;
     this.eventDetail.intersection = intersection;
     el.emit(evtName, this.eventDetail);
