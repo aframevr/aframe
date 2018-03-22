@@ -72164,6 +72164,7 @@ Component.prototype = {
    *
    * @param {number} time - Scene tick time.
    * @param {number} timeDelta - Difference in current render time and previous render time.
+   * @param {object} camera - Camera used to render the last frame.
    */
   tock: undefined,
 
@@ -75398,7 +75399,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.1 (Date 2018-03-22, Commit #063dd8c)');
+console.log('A-Frame Version: 0.8.1 (Date 2018-03-22, Commit #7af0106)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
