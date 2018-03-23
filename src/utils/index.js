@@ -17,6 +17,7 @@ module.exports.entity = require('./entity');
 module.exports.forceCanvasResizeSafariMobile = require('./forceCanvasResizeSafariMobile');
 module.exports.material = require('./material');
 module.exports.objectPool = objectPool;
+module.exports.split = require('./split').split;
 module.exports.styleParser = require('./styleParser');
 module.exports.trackedControls = require('./tracked-controls');
 
@@ -322,19 +323,3 @@ module.exports.findAllScenes = function (el) {
 
 // Must be at bottom to avoid circular dependency.
 module.exports.srcLoader = require('./src-loader');
-
-/**
- * String split with cached result.
- */
-module.exports.split = (function () {
-  var splitCache = {};
-
-  return function (str, delimiter) {
-    if (!(delimiter in splitCache)) { splitCache[delimiter] = {}; }
-
-    if (str in splitCache[delimiter]) { return splitCache[delimiter][str]; }
-
-    splitCache[delimiter][str] = str.split(delimiter);
-    return splitCache[delimiter][str];
-  };
-})();
