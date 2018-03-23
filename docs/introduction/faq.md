@@ -317,6 +317,10 @@ and pull requests:
 
 The [roadmap is on GitHub][roadmap]!
 
+## Where did the name A-Frame come from?
+
+It comes from a concise way to prefix custom elements and a simple way to use primitives of a framework (Cf [Twitter clarification](https://twitter.com/joshcarpenter/status/960555753588383749)).
+
 ## Do I call it "A-Frame" or "aframe" or "aframevr" or "aFrame"?
 
 A-Frame!
