@@ -63830,7 +63830,7 @@ module.exports.Component = registerComponent('daydream-controls', {
   }
 });
 
-},{"../core/component":101,"../utils/bind":165,"../utils/tracked-controls":176}],56:[function(_dereq_,module,exports){
+},{"../core/component":101,"../utils/bind":165,"../utils/tracked-controls":177}],56:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var bind = _dereq_('../utils/bind');
 var trackedControlsUtils = _dereq_('../utils/tracked-controls');
@@ -64008,7 +64008,7 @@ module.exports.Component = registerComponent('gearvr-controls', {
   }
 });
 
-},{"../core/component":101,"../utils/bind":165,"../utils/tracked-controls":176}],57:[function(_dereq_,module,exports){
+},{"../core/component":101,"../utils/bind":165,"../utils/tracked-controls":177}],57:[function(_dereq_,module,exports){
 var geometries = _dereq_('../core/geometry').geometries;
 var geometryNames = _dereq_('../core/geometry').geometryNames;
 var registerComponent = _dereq_('../core/component').registerComponent;
@@ -66280,7 +66280,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   }
 });
 
-},{"../core/component":101,"../utils/bind":165,"../utils/tracked-controls":176}],69:[function(_dereq_,module,exports){
+},{"../core/component":101,"../utils/bind":165,"../utils/tracked-controls":177}],69:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 
 module.exports.Component = registerComponent('position', {
@@ -67470,7 +67470,7 @@ function createStats (scene) {
   });
 }
 
-},{"../../../vendor/rStats":178,"../../../vendor/rStats.extras":177,"../../core/component":101,"../../lib/rStatsAframe":148,"../../utils":171}],82:[function(_dereq_,module,exports){
+},{"../../../vendor/rStats":179,"../../../vendor/rStats.extras":178,"../../core/component":101,"../../lib/rStatsAframe":148,"../../utils":171}],82:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var constants = _dereq_('../../constants/');
 var utils = _dereq_('../../utils/');
@@ -68711,7 +68711,7 @@ module.exports.Component = registerComponent('tracked-controls', {
   }
 });
 
-},{"../constants":92,"../core/component":101,"../lib/three":149,"../utils/tracked-controls":176}],87:[function(_dereq_,module,exports){
+},{"../constants":92,"../core/component":101,"../lib/three":149,"../utils/tracked-controls":177}],87:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 
 /**
@@ -68954,7 +68954,7 @@ module.exports.Component = registerComponent('vive-controls', {
   }
 });
 
-},{"../core/component":101,"../utils/":171,"../utils/tracked-controls":176}],89:[function(_dereq_,module,exports){
+},{"../core/component":101,"../utils/":171,"../utils/tracked-controls":177}],89:[function(_dereq_,module,exports){
 var KEYCODE_TO_CODE = _dereq_('../constants').keyboardevent.KEYCODE_TO_CODE;
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
@@ -69622,7 +69622,7 @@ module.exports.Component = registerComponent('windows-motion-controls', {
   }
 });
 
-},{"../constants":92,"../core/component":101,"../utils/":171,"../utils/bind":165,"../utils/tracked-controls":176}],91:[function(_dereq_,module,exports){
+},{"../constants":92,"../core/component":101,"../utils/":171,"../utils/bind":165,"../utils/tracked-controls":177}],91:[function(_dereq_,module,exports){
 /**
  * Animation configuration options for TWEEN.js animations.
  * Used by `<a-animation>`.
@@ -73835,7 +73835,7 @@ module.exports = function initWakelock (scene) {
   scene.addEventListener('exit-vr', function () { wakelock.release(); });
 };
 
-},{"../../../vendor/wakelock/wakelock":180}],109:[function(_dereq_,module,exports){
+},{"../../../vendor/wakelock/wakelock":181}],109:[function(_dereq_,module,exports){
 var utils = _dereq_('../utils/');
 var PropertyTypes = _dereq_('./propertyTypes');
 
@@ -75418,7 +75418,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.1 (Date 2018-03-23, Commit #45e271f)');
+console.log('A-Frame Version: 0.8.1 (Date 2018-03-23, Commit #f69494d)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -77387,6 +77387,7 @@ module.exports.entity = _dereq_('./entity');
 module.exports.forceCanvasResizeSafariMobile = _dereq_('./forceCanvasResizeSafariMobile');
 module.exports.material = _dereq_('./material');
 module.exports.objectPool = objectPool;
+module.exports.split = _dereq_('./split').split;
 module.exports.styleParser = _dereq_('./styleParser');
 module.exports.trackedControls = _dereq_('./tracked-controls');
 
@@ -77693,23 +77694,7 @@ module.exports.findAllScenes = function (el) {
 // Must be at bottom to avoid circular dependency.
 module.exports.srcLoader = _dereq_('./src-loader');
 
-/**
- * String split with cached result.
- */
-module.exports.split = (function () {
-  var splitCache = {};
-
-  return function (str, delimiter) {
-    if (!(delimiter in splitCache)) { splitCache[delimiter] = {}; }
-
-    if (str in splitCache[delimiter]) { return splitCache[delimiter][str]; }
-
-    splitCache[delimiter][str] = str.split(delimiter);
-    return splitCache[delimiter][str];
-  };
-})();
-
-},{"./bind":165,"./coordinates":166,"./debug":167,"./device":168,"./entity":169,"./forceCanvasResizeSafariMobile":170,"./material":172,"./object-pool":173,"./src-loader":174,"./styleParser":175,"./tracked-controls":176,"deep-assign":10,"object-assign":25}],172:[function(_dereq_,module,exports){
+},{"./bind":165,"./coordinates":166,"./debug":167,"./device":168,"./entity":169,"./forceCanvasResizeSafariMobile":170,"./material":172,"./object-pool":173,"./split":174,"./src-loader":175,"./styleParser":176,"./tracked-controls":177,"deep-assign":10,"object-assign":25}],172:[function(_dereq_,module,exports){
 var THREE = _dereq_('../lib/three');
 
 var HLS_MIMETYPES = ['application/x-mpegurl', 'application/vnd.apple.mpegurl'];
@@ -77945,6 +77930,23 @@ function clearObject (obj) {
 module.exports.clearObject = clearObject;
 
 },{}],174:[function(_dereq_,module,exports){
+/**
+ * String split with cached result.
+ */
+module.exports.split = (function () {
+  var splitCache = {};
+
+  return function (str, delimiter) {
+    if (!(delimiter in splitCache)) { splitCache[delimiter] = {}; }
+
+    if (str in splitCache[delimiter]) { return splitCache[delimiter][str]; }
+
+    splitCache[delimiter][str] = str.split(delimiter);
+    return splitCache[delimiter][str];
+  };
+})();
+
+},{}],175:[function(_dereq_,module,exports){
 /* global Image, XMLHttpRequest */
 var debug = _dereq_('./debug');
 
@@ -78103,7 +78105,7 @@ module.exports = {
   validateCubemapSrc: validateCubemapSrc
 };
 
-},{"./debug":167}],175:[function(_dereq_,module,exports){
+},{"./debug":167}],176:[function(_dereq_,module,exports){
 /* Utils for parsing style-like strings (e.g., "primitive: box; width: 5; height: 4.5"). */
 var styleParser = _dereq_('style-attr');
 
@@ -78163,10 +78165,12 @@ function transformKeysToCamelCase (obj) {
 }
 module.exports.transformKeysToCamelCase = transformKeysToCamelCase;
 
-},{"style-attr":35}],176:[function(_dereq_,module,exports){
+},{"style-attr":35}],177:[function(_dereq_,module,exports){
+var split = _dereq_('./split').split;
+
 var DEFAULT_HANDEDNESS = _dereq_('../constants').DEFAULT_HANDEDNESS;
 var AXIS_LABELS = ['x', 'y', 'z', 'w'];
-var NUM_HANDS = 2; // Number of hands in a pair. Should always be 2.
+var NUM_HANDS = 2;  // Number of hands in a pair. Should always be 2.
 
 /**
  * Called on controller component `.play` handlers.
@@ -78226,65 +78230,85 @@ function isControllerPresent (component, idPrefix, queryObject) {
   gamepads = trackedControlsSystem.controllers;
   if (!gamepads.length) { return false; }
 
-  return !!findMatchingController(gamepads, null, idPrefix, queryObject.hand, filterControllerIndex);
+  return !!findMatchingController(gamepads, null, idPrefix, queryObject.hand,
+                                  filterControllerIndex);
 }
 
 module.exports.isControllerPresent = isControllerPresent;
 
 /**
- * Walk through the given controllers to find any where the device ID equals filterIdExact, or startWith filterIdPrefix.
+ * Walk through the given controllers to find any where the device ID equals
+ * filterIdExact, or startWith filterIdPrefix.
  * A controller where this considered true is considered a 'match'.
  *
  * For each matching controller:
  *   If filterHand is set, and the controller:
  *     is handed, we further verify that controller.hand equals filterHand.
- *     is unhanded (controller.hand is ''), we skip until we have found a number of matching controllers that equals filterControllerIndex
- *   If filterHand is not set, we skip until we have found the nth matching controller, where n equals filterControllerIndex
+ *     is unhanded (controller.hand is ''), we skip until we have found a
+ *     number of matching controllers that equals filterControllerIndex
+ *   If filterHand is not set, we skip until we have found the nth matching
+ *   controller, where n equals filterControllerIndex
  *
- * The method should be called with one of: [filterIdExact, filterIdPrefix] AND one or both of: [filterHand, filterControllerIndex]
+ * The method should be called with one of: [filterIdExact, filterIdPrefix] AND
+ * one or both of: [filterHand, filterControllerIndex]
  *
  * @param {object} controllers - Array of gamepads to search
  * @param {string} filterIdExact - If set, used to find controllers with id === this value
  * @param {string} filterIdPrefix - If set, used to find controllers with id startsWith this value
  * @param {object} filterHand - If set, further filters controllers with matching 'hand' property
- * @param {object} filterControllerIndex - Find the nth matching controller, where n equals filterControllerIndex. defaults to 0.
+ * @param {object} filterControllerIndex - Find the nth matching controller,
+ * where n equals filterControllerIndex. defaults to 0.
  */
-function findMatchingController (controllers, filterIdExact, filterIdPrefix, filterHand, filterControllerIndex) {
+function findMatchingController (controllers, filterIdExact, filterIdPrefix, filterHand,
+                                 filterControllerIndex) {
   var controller;
-  var i;
-  var matchingControllerOccurence = 0;
-  var targetControllerMatch = filterControllerIndex || 0;
   var filterIdPrefixes;
+  var i;
+  var j;
+  var matches;
+  var matchingControllerOccurence = 0;
+  var prefix;
+  var targetControllerMatch = filterControllerIndex || 0;
+
+  // Check whether multiple prefixes.
   if (filterIdPrefix && filterIdPrefix.indexOf('|') >= 0) {
-    filterIdPrefixes = filterIdPrefix.split('|');
+    filterIdPrefixes = split(filterIdPrefix, '|');
   }
+
   for (i = 0; i < controllers.length; i++) {
     controller = controllers[i];
-    // Determine if the controller ID matches our criteria
+
+    // Determine if the controller ID matches our criteria.
     if (filterIdPrefixes) {
-      var matches = false;
-      for (var prefix in filterIdPrefixes) {
-        if (prefix && controller.id.indexOf(prefix) === -1) { matches = true; }
+      matches = false;
+      for (j = 0; j < filterIdPrefixes.length; j++) {
+        prefix = filterIdPrefixes[j];
+        if (prefix && controller.id.startsWith(prefix)) {
+          matches = true;
+          break;
+        }
       }
       if (!matches) { continue; }
-    } else
-    if (filterIdPrefix && controller.id.indexOf(filterIdPrefix) === -1) { continue; }
+    } else if (filterIdPrefix && controller.id.indexOf(filterIdPrefix)) {
+      continue;
+    }
+
     if (!filterIdPrefix && controller.id !== filterIdExact) { continue; }
 
     // If the hand filter and controller handedness are defined we compare them.
     if (filterHand && controller.hand && filterHand !== controller.hand) { continue; }
 
-    // If we have detected an unhanded controller and the component was asking for a particular hand,
-    // we need to treat the controllers in the array as pairs of controllers. This effectively means that we
-    // need to skip NUM_HANDS matches for each controller number, instead of 1.
+    // If we have detected an unhanded controller and the component was asking
+    // for a particular hand, we need to treat the controllers in the array as
+    // pairs of controllers. This effectively means that we need to skip
+    // NUM_HANDS matches for each controller number, instead of 1.
     if (filterHand && !controller.hand) {
       targetControllerMatch = NUM_HANDS * filterControllerIndex + ((filterHand === DEFAULT_HANDEDNESS) ? 0 : 1);
     }
 
-    // We are looking for the nth occurence of a matching controller (n equals targetControllerMatch).
-    if (matchingControllerOccurence === targetControllerMatch) {
-      return controller;
-    }
+    // We are looking for the nth occurence of a matching controller
+    // (n equals targetControllerMatch).
+    if (matchingControllerOccurence === targetControllerMatch) { return controller; }
     ++matchingControllerOccurence;
   }
   return undefined;
@@ -78301,15 +78325,13 @@ module.exports.findMatchingController = findMatchingController;
  */
 module.exports.emitIfAxesChanged = function (component, axesMapping, evt) {
   var axes;
-  var buttonTypes;
+  var buttonType;
   var changed;
   var detail;
-  var i;
   var j;
 
-  buttonTypes = Object.keys(axesMapping);
-  for (i = 0; i < buttonTypes.length; i++) {
-    axes = axesMapping[buttonTypes[i]];
+  for (buttonType in axesMapping) {
+    axes = axesMapping[buttonType];
 
     changed = false;
     for (j = 0; j < axes.length; j++) {
@@ -78323,7 +78345,7 @@ module.exports.emitIfAxesChanged = function (component, axesMapping, evt) {
     for (j = 0; j < axes.length; j++) {
       detail[AXIS_LABELS[j]] = evt.detail.axis[axes[j]];
     }
-    component.el.emit(buttonTypes[i] + 'moved', detail);
+    component.el.emit(buttonType + 'moved', detail);
   }
 };
 
@@ -78344,7 +78366,7 @@ module.exports.onButtonEvent = function (id, evtName, component, hand) {
   }
 };
 
-},{"../constants":92}],177:[function(_dereq_,module,exports){
+},{"../constants":92,"./split":174}],178:[function(_dereq_,module,exports){
 window.glStats = function () {
 
     var _rS = null;
@@ -78609,7 +78631,7 @@ if (typeof module === 'object') {
   };
 }
 
-},{}],178:[function(_dereq_,module,exports){
+},{}],179:[function(_dereq_,module,exports){
 // performance.now() polyfill from https://gist.github.com/paulirish/5438650
 'use strict';
 
@@ -79064,7 +79086,7 @@ if (typeof module === 'object') {
   module.exports = window.rStats;
 }
 
-},{}],179:[function(_dereq_,module,exports){
+},{}],180:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -79126,7 +79148,7 @@ Util.isLandscapeMode = function() {
 
 module.exports = Util;
 
-},{}],180:[function(_dereq_,module,exports){
+},{}],181:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -79202,6 +79224,6 @@ function getWakeLock() {
 
 module.exports = getWakeLock();
 
-},{"./util.js":179}]},{},[147])(147)
+},{"./util.js":180}]},{},[147])(147)
 });
 //# sourceMappingURL=aframe-master.js.map
