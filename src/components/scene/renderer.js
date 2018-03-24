@@ -40,16 +40,16 @@ module.exports.Component = register('renderer', {
       warn('Property "antialias" cannot be changed after scene initialization');
     }
 
-    if (!prevData || data.sortObjects !== prevData.sortObjects) {
+    if (data.sortObjects !== prevData.sortObjects) {
       renderer.sortObjects = data.sortObjects;
     }
 
-    if (!prevData || data.gammaOutput !== prevData.gammaOutput) {
+    if (data.gammaOutput !== prevData.gammaOutput) {
       renderer.gammaOutput = data.gammaOutput;
       needsShaderUpdate = true;
     }
 
-    if (!prevData || data.physicallyCorrectLights !== prevData.physicallyCorrectLights) {
+    if (data.physicallyCorrectLights !== prevData.physicallyCorrectLights) {
       renderer.physicallyCorrectLights = data.physicallyCorrectLights;
       needsShaderUpdate = true;
     }
