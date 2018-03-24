@@ -33,6 +33,9 @@ The `renderer` component configures a scene's
 When enabled, smooths jagged edges on curved lines and diagonals at moderate performance cost.
 By default, antialiasing is disabled on mobile devices.
 
+> **NOTE:** Once the scene is initialized, `antialias` may no longer be
+> changed.
+
 ### gammaOutput
 
 Typically, textures are converted to linear colorspace in the renderer for lighting calculations.
