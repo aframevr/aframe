@@ -71937,12 +71937,12 @@ module.exports.registerElement = function (tagName, obj) {
   }
 
   // Give all functions their proper name.
-  for (var propName of Object.getOwnPropertyNames(newObj.prototype)) {
+  Object.getOwnPropertyNames(newObj.prototype).forEach(function (propName) {
     var propVal = newObj.prototype[propName];
     if (typeof propVal === 'function') {
       propVal.displayName = propName;
     }
-  }
+  });
 
   return document.registerElement(tagName, newObj);
 };
@@ -75387,7 +75387,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.1 (Date 2018-03-24, Commit #0ba6c34)');
+console.log('A-Frame Version: 0.8.1 (Date 2018-03-24, Commit #17298cd)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
