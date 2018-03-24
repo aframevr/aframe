@@ -113,7 +113,7 @@ These properties are available on top of the base material properties.
 | height                        | Height of video (in pixels), if defining a video texture.                                                                                       | 360           |
 | envMap                        | Environment cubemap texture for reflections. Can be a selector to <a-cubemap> or a comma-separated list of URLs.                                | None          |
 | fog                           | Whether or not material is affected by [fog][fog].                                                                                              | true          |
-| metalness                     | How metallic the material is from `0` to `1`.                                                                                                   | 0.5           |
+| metalness                     | How metallic the material is from `0` to `1`.                                                                                                   | 0             |
 | normalMap                     | Normal map. Used to add the illusion of complex detail. Can either be a selector to an `<img>`, or an inline URL.                               | None          |
 | normalScale                   | Scale of the effect of the normal map in the X and Y directions.                                                                                | 1 1           |
 | normalTextureRepeat           | How many times the normal texture repeats in the X and Y direction.                                                                             | 1 1           |
