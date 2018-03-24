@@ -5,6 +5,10 @@ var warn = debug('components:renderer:warn');
 
 /**
  * Determines state of various renderer properties.
+ *
+ * NOTE: Because the `renderer` component is not added to the scene
+ * automatically, changing default values here has no effect unless
+ * the same changes are included in `a-scene.js`.
  */
 module.exports.Component = register('renderer', {
   schema: {
@@ -13,6 +17,7 @@ module.exports.Component = register('renderer', {
     physicallyCorrectLights: {default: false},
     sortObjects: {default: false}
   },
+
   init: function () {
     var el = this.el;
 
@@ -23,40 +28,15 @@ module.exports.Component = register('renderer', {
     if (el.hasAttribute('antialias')) {
       warn('Component `antialias` is deprecated. Use `renderer="antialias: true"` instead.');
     }
-
-    // NOTE: `renderer.antialias` is applied in a-scene.js, as it's too late
-    // to change it when this component initializes.
-
-    this.updateRenderer();
   },
+
   update: function (prevData) {
-    if (!Object.keys(prevData).length) { return; }
-
-    var sceneEl = this.el;
-    var needsShaderUpdate = this.updateRenderer(prevData);
-
-    if (!needsShaderUpdate) { return; }
-
-    warn('Modifying renderer properties at runtime requires shader update and may drop frames.');
-
-    sceneEl.object3D.traverse(function (node) {
-      if (!node.isMesh) { return; }
-      if (Array.isArray(node.material)) {
-        node.material.forEach(function (material) {
-          material.needsUpdate = true;
-        });
-      } else {
-        node.material.needsUpdate = true;
-      }
-    });
-  },
-  updateRenderer: function (prevData) {
     var data = this.data;
     var sceneEl = this.el;
     var renderer = sceneEl.renderer;
     var needsShaderUpdate = false;
 
-    if (prevData && data.antialias !== prevData.antialias) {
+    if (sceneEl.time > 0 && data.antialias !== prevData.antialias) {
       warn('Property "antialias" cannot be changed after scene initialization');
     }
 
@@ -74,6 +54,19 @@ module.exports.Component = register('renderer', {
       needsShaderUpdate = true;
     }
 
-    return needsShaderUpdate;
+    if (!needsShaderUpdate || sceneEl.time === 0) { return; }
+
+    warn('Modifying renderer properties at runtime requires shader update and may drop frames.');
+
+    sceneEl.object3D.traverse(function (node) {
+      if (!node.isMesh) { return; }
+      if (Array.isArray(node.material)) {
+        node.material.forEach(function (material) {
+          material.needsUpdate = true;
+        });
+      } else {
+        node.material.needsUpdate = true;
+      }
+    });
   }
 });
