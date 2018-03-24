@@ -66290,6 +66290,11 @@ module.exports.Component = registerComponent('position', {
     var object3D = this.el.object3D;
     var data = this.data;
     object3D.position.set(data.x, data.y, data.z);
+  },
+
+  remove: function () {
+    // Pretty much for mixins.
+    this.el.object3D.position.set(0, 0, 0);
   }
 });
 
@@ -66719,6 +66724,11 @@ module.exports.Component = registerComponent('rotation', {
     var object3D = this.el.object3D;
     object3D.rotation.set(degToRad(data.x), degToRad(data.y), degToRad(data.z));
     object3D.rotation.order = 'YXZ';
+  },
+
+  remove: function () {
+    // Pretty much for mixins.
+    this.el.object3D.rotation.set(0, 0, 0);
   }
 });
 
@@ -66741,6 +66751,11 @@ module.exports.Component = registerComponent('scale', {
     var y = data.y === 0 ? zeroScale : data.y;
     var z = data.z === 0 ? zeroScale : data.z;
     object3D.scale.set(x, y, z);
+  },
+
+  remove: function () {
+    // Pretty much for mixins.
+    this.el.object3D.scale.set(1, 1, 1);
   }
 });
 
@@ -67558,7 +67573,7 @@ module.exports.Component = registerComponent('vr-mode-ui', {
 
   remove: function () {
     [this.enterVREl, this.orientationModalEl].forEach(function (uiElement) {
-      if (uiElement) {
+      if (uiElement && uiElement.parentNode) {
         uiElement.parentNode.removeChild(uiElement);
       }
     });
@@ -70630,15 +70645,6 @@ var MULTIPLE_COMPONENT_DELIMITER = '__';
  * @member {boolean} isPlaying - false if dynamic behavior of the entity is paused.
  */
 var proto = Object.create(ANode.prototype, {
-  defaultComponents: {
-    value: {
-      position: '',
-      rotation: '',
-      scale: '',
-      visible: ''
-    }
-  },
-
   createdCallback: {
     value: function () {
       this.components = {};
@@ -71001,11 +71007,6 @@ var proto = Object.create(ANode.prototype, {
   removeComponent: {
     value: function (name) {
       var component;
-      var isDefault;
-
-      // Don't remove default or mixed-in components.
-      isDefault = name in this.defaultComponents;
-      if (isDefault) { return; }
 
       component = this.components[name];
       if (!component) { return; }
@@ -71067,14 +71068,6 @@ var proto = Object.create(ANode.prototype, {
         if (isComponent(name)) { componentsToUpdate[name] = true; }
       }
 
-      // Initialze or update default components first.
-      for (name in this.defaultComponents) {
-        data = mergeComponentData(this.getDOMAttribute(name),
-                                  extraComponents && extraComponents[name]);
-        this.updateComponent(name, data);
-        delete componentsToUpdate[name];
-      }
-
       // Initialize or update rest of components.
       for (name in componentsToUpdate) {
         data = mergeComponentData(this.getDOMAttribute(name),
@@ -71098,10 +71091,9 @@ var proto = Object.create(ANode.prototype, {
   updateComponent: {
     value: function (attr, attrValue, clobber) {
       var component = this.components[attr];
-      var isDefault = attr in this.defaultComponents;
       if (component) {
         // Remove component.
-        if (attrValue === null && !isDefault) {
+        if (attrValue === null && !checkComponentDefined(this, attr)) {
           this.removeComponent(attr);
           return;
         }
@@ -71130,8 +71122,6 @@ var proto = Object.create(ANode.prototype, {
       // Remove component.
       if (component && propertyName === undefined) {
         this.removeComponent(attr);
-        // Do not remove the component from the DOM if default component.
-        if (this.components[attr]) { return; }
       }
 
       // Reset component property value.
@@ -71301,7 +71291,6 @@ var proto = Object.create(ANode.prototype, {
   flushToDOM: {
     value: function (recursive) {
       var components = this.components;
-      var defaultComponents = this.defaultComponents;
       var child;
       var children = this.children;
       var i;
@@ -71309,7 +71298,7 @@ var proto = Object.create(ANode.prototype, {
 
       // Flush entity's components to DOM.
       for (key in components) {
-        components[key].flushToDOM(key in defaultComponents);
+        components[key].flushToDOM();
       }
 
       // Recurse.
@@ -71344,20 +71333,6 @@ var proto = Object.create(ANode.prototype, {
       return window.HTMLElement.prototype.getAttribute.call(this, attr);
     },
     writable: window.debug
-  },
-
-  /**
-   * `getAttribute` used to be `getDOMAttribute` and `getComputedAttribute` used to be
-   * what `getAttribute` is now. Now legacy code.
-   *
-   * @param {string} attr
-   * @returns {object|string} Object if component, else string.
-   */
-  getComputedAttribute: {
-    value: function (attr) {
-      warn('`getComputedAttribute` is deprecated. Use `getAttribute` instead.');
-      return this.getAttribute(attr);
-    }
   },
 
   /**
@@ -71417,9 +71392,6 @@ var proto = Object.create(ANode.prototype, {
  * @returns {boolean}
  */
 function checkComponentDefined (el, name) {
-  // Check if default components contain the component.
-  if (el.defaultComponents[name] !== undefined) { return true; }
-
   // Check if element contains the component.
   if (el.components[name] && el.components[name].attrValue) { return true; }
 
@@ -73008,15 +72980,6 @@ var warn = utils.debug('core:a-scene:warn');
  */
 module.exports.AScene = registerElement('a-scene', {
   prototype: Object.create(AEntity.prototype, {
-    defaultComponents: {
-      value: {
-        'inspector': '',
-        'keyboard-shortcuts': '',
-        'screenshot': '',
-        'vr-mode-ui': ''
-      }
-    },
-
     createdCallback: {
       value: function () {
         this.isIOS = isIOS;
@@ -73048,6 +73011,12 @@ module.exports.AScene = registerElement('a-scene', {
         this.resize();
         this.addFullScreenStyles();
         initPostMessageAPI(this);
+
+        // Default components.
+        this.setAttribute('inspector', '');
+        this.setAttribute('keyboard-shortcuts', '');
+        this.setAttribute('screenshot', '');
+        this.setAttribute('vr-mode-ui', '');
       },
       writable: true
     },
@@ -75418,7 +75387,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.1 (Date 2018-03-23, Commit #f69494d)');
+console.log('A-Frame Version: 0.8.1 (Date 2018-03-24, Commit #0ba6c34)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
