@@ -19,7 +19,7 @@ The look-controls component is usually used alongside the [camera
 component](camera.md).
 
 ```html
-<a-entity camera look-controls></a-entity>
+<a-entity camera look-controls position="0 1.6 0"></a-entity>
 ```
 
 ## Properties

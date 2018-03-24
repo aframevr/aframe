@@ -31,12 +31,22 @@ by modifying the camera entity's position and rotation.
 
 ## Manually Positioning the Camera
 
-To position the camera, set the position on a wrapper `<a-entity>`. Don't set
-the position directly on the camera primitive because controls will quickly
-override the set position:
+A camera is situated by default at the average height of human eye level (1.6
+meters). When used with controls that receive rotation or position (e.g. from a
+VR device) this position will be overridden.
 
 ```html
-<a-entity position="0 0 5">
-  <a-camera></a-camera>
+<!-- Place camera at ground level (will be overridden by VR devices) -->
+<a-camera position="0 0 0"></a-camera>
+```
+
+When moving or rotating the camera relative to the scene, use a camera rig.
+By doing so, the camera's height offset can be updated by roomscale devices,
+while still allowing the tracked area to be moved independently around the
+scene.
+
+```html
+<a-entity id="#rig" position="25 10 0">
+  <a-camera id="camera"></a-camera>
 </a-entity>
 ```

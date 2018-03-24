@@ -4,7 +4,8 @@ registerPrimitive('a-camera', {
   defaultComponents: {
     'camera': {},
     'look-controls': {},
-    'wasd-controls': {}
+    'wasd-controls': {},
+    'position': {y: 1.6}
   },
 
   mappings: {
