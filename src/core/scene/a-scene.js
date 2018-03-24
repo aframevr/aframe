@@ -487,15 +487,17 @@ module.exports.AScene = registerElement('a-scene', {
       value: function () {
         var self = this;
         var renderer;
+        var rendererAttr;
+        var rendererAttrString;
         var rendererConfig = {
           canvas: this.canvas,
           antialias: !isMobile,
           alpha: true
         };
         if (this.hasAttribute('renderer')) {
-          var rendererAttrString = this.getAttribute('renderer');
-          var rendererAttr = utils.styleParser.parse(rendererAttrString);
-          if (rendererAttr.antialias) {
+          rendererAttrString = this.getAttribute('renderer');
+          rendererAttr = utils.styleParser.parse(rendererAttrString);
+          if (rendererAttr.antialias && rendererAttr.antialias !== 'auto') {
             utils.extend(rendererConfig, {antialias: rendererAttr.antialias === 'true'});
           }
         }
