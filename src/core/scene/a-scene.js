@@ -494,11 +494,14 @@ module.exports.AScene = registerElement('a-scene', {
           antialias: !isMobile,
           alpha: true
         };
+        if (this.hasAttribute('antialias')) {
+          rendererConfig.antialias = this.getAttribute('antialias') === 'true';
+        }
         if (this.hasAttribute('renderer')) {
           rendererAttrString = this.getAttribute('renderer');
           rendererAttr = utils.styleParser.parse(rendererAttrString);
           if (rendererAttr.antialias && rendererAttr.antialias !== 'auto') {
-            utils.extend(rendererConfig, {antialias: rendererAttr.antialias === 'true'});
+            rendererConfig.antialias = rendererAttr.antialias === 'true';
           }
         }
         renderer = this.renderer = new THREE.WebGLRenderer(rendererConfig);
