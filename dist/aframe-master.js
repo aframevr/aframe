@@ -74725,7 +74725,8 @@ registerPrimitive('a-camera', {
   defaultComponents: {
     'camera': {},
     'look-controls': {},
-    'wasd-controls': {}
+    'wasd-controls': {},
+    'position': {y: 1.6}
   },
 
   mappings: {
@@ -75458,7 +75459,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.1 (Date 2018-03-25, Commit #bb16c01)');
+console.log('A-Frame Version: 0.8.1 (Date 2018-03-25, Commit #a66ae52)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
