@@ -211,7 +211,7 @@ actual entity data.
 
 This is because A-Frame allows us to [modify position, rotation, scale,
 visible][updatepos] at the three.js level, and in order for `.getAttribute` to
-return the correct data, A-Frame returns the acutal three.js Object3D objects.
+return the correct data, A-Frame returns the actual three.js Object3D objects.
 
 This is not true for the `.getAttribute('rotation')` because A-Frame, for
 better or worse, uses degrees instead of radians. In such case, a normal
