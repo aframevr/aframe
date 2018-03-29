@@ -1,6 +1,6 @@
 <h1 align="center">A-Frame</h1>
 
-<p align="center"><a href="https://aframe.io" target="_blank"><img width="480" alt="A-Frame" src="https://cloud.githubusercontent.com/assets/674727/21375108/2c10b308-c6e0-11e6-945e-2394beb9a8ed.png"></a></p>
+<p align="center"><a href="https://aframe.io" target="_blank"><img width="480" alt="A-Frame" src="https://user-images.githubusercontent.com/674727/32120889-230ef110-bb0f-11e7-908c-76e39aa43149.jpg"></a></p>
 
 <p align="center"><b>A web framework for building virtual reality experiences.</b></p>
 
@@ -10,10 +10,10 @@
     <img src="https://codecov.io/gh/aframevr/aframe/branch/master/graph/badge.svg" alt="Coverage Status">
   </a>
   <a href="https://npmjs.org/package/aframe">
-    <img src="http://img.shields.io/npm/dt/aframe.svg?style=flat-square" alt="Downloads">
+    <img src="https://img.shields.io/npm/dt/aframe.svg?style=flat-square" alt="Downloads">
   </a>
   <a href="https://npmjs.org/package/aframe">
-    <img src="http://img.shields.io/npm/v/aframe.svg?style=flat-square" alt="Version">
+    <img src="https://img.shields.io/npm/v/aframe.svg?style=flat-square" alt="Version">
   </a>
   <a href="https://npmjs.com/package/aframe">
     <img src="https://img.shields.io/npm/l/aframe.svg?style=flat-square" alt="License"></a>
@@ -45,8 +45,8 @@
 <a href="https://aframe.io/a-saturday-night/">
   <img alt="A-Saturday-Night" target="_blank" src="https://cloud.githubusercontent.com/assets/674727/24531477/44272daa-156e-11e7-8ef9-d750ed430f3a.gif" height="190" width="32%">
 </a>
-<a href="https://ngokevin.github.io/kframe/scenes/aincraft/">
-  <img alt="Aincraft" target="_blank" src="https://cloud.githubusercontent.com/assets/674727/24531777/25b8ff5e-1570-11e7-896c-3446d1419eb8.gif" height="190" width="32%">
+<a href="https://supermedium.com">
+  <img alt="Supermedium" target="_blank" src="https://user-images.githubusercontent.com/674727/37196407-7d080baa-232b-11e8-8f7d-61d62e69364c.png" height="190" width="32%">
 </a>
 <a href="https://github.com/googlecreativelab/webvr-musicalforest">
   <img alt="Musical Forest by @googlecreativelab" target="_blank" src="https://cloud.githubusercontent.com/assets/674727/25109861/b8e9ec48-2394-11e7-8f2d-ea1cd9df69c8.gif" height="190" width="32%">
@@ -91,12 +91,6 @@ at home with A-Frame.
 with a workflow similar to a browser's developer tools and interface similar to
 Unity. Open up any A-Frame scene and hit `<ctrl> + <alt> + i`.
 
-:package: **Registry**: Reuse powerful components that other A-Frame developers
-have created and shared. The [A-Frame
-Registry](https://aframe.io/aframe-registry) collects and curates components
-similar to the Unity Asset Store. Stand on the shoulders of giants and plug in
-components right from HTML.
-
 :runner: **Features**: Hit the ground running with A-Frame's built-in
 components such as geometries, materials, lights, animations, models,
 raycasters, shadows, positional audio, Vive / Touch / Cardboard controls. Get
@@ -110,12 +104,12 @@ multiuser, oceans, mountains, speech recognition, or teleportation!
 Build VR scenes in the browser with just a few lines of HTML! To start playing
 and publishing now, remix the starter example on Glitch:
 
-[![Remix](https://cloud.githubusercontent.com/assets/674727/24572421/688f7fc0-162d-11e7-8a35-b02bc050c043.jpg)](http://glitch.com/~aframe)
+[![Remix](https://cloud.githubusercontent.com/assets/674727/24572421/688f7fc0-162d-11e7-8a35-b02bc050c043.jpg)](https://glitch.com/~aframe)
 
 ```html
 <html>
   <head>
-    <script src="https://aframe.io/releases/0.7.0/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
   </head>
   <body>
     <a-scene>
@@ -130,16 +124,16 @@ and publishing now, remix the starter example on Glitch:
 ```
 
 With A-Frame's [entity-component
-architecture](https://aframe.io/docs/0.7.0/core/), we can drop in community
+architecture](https://aframe.io/docs/0.8.0/core/), we can drop in community
 components from the ecosystem (e.g., ocean, physics) and plug them into our
 objects straight from HTML:
 
-[![Remix](https://cloud.githubusercontent.com/assets/674727/24572421/688f7fc0-162d-11e7-8a35-b02bc050c043.jpg)](http://glitch.com/~aframe-registry)
+[![Remix](https://cloud.githubusercontent.com/assets/674727/24572421/688f7fc0-162d-11e7-8a35-b02bc050c043.jpg)](https://glitch.com/~aframe-registry)
 
 ```html
 <html>
   <head>
-    <script src="https://aframe.io/releases/0.7.0/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
     <script src="https://unpkg.com/aframe-animation-component@3.2.1/dist/aframe-animation-component.min.js"></script>
     <script src="https://unpkg.com/aframe-particle-system-component@1.0.x/dist/aframe-particle-system-component.min.js"></script>
     <script src="https://unpkg.com/aframe-extras.ocean@%5E3.5.x/dist/aframe-extras.ocean.min.js"></script>
@@ -171,11 +165,11 @@ objects straight from HTML:
 
 ### Builds
 
-To use the latest stable build of A-Frame, include [`aframe.min.js`](https://aframe.io/releases/0.7.0/aframe.min.js):
+To use the latest stable build of A-Frame, include [`aframe.min.js`](https://aframe.io/releases/0.8.0/aframe.min.js):
 
 ```js
 <head>
-  <script src="https://aframe.io/releases/0.7.0/aframe.min.js"></script>
+  <script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
 </head>
 ```
 
@@ -210,7 +204,7 @@ npm run dist
 
 ## Questions
 
-For questions and support, [ask on StackOverflow](http://stackoverflow.com/questions/ask/?tags=aframe).
+For questions and support, [ask on StackOverflow](https://stackoverflow.com/questions/ask/?tags=aframe).
 
 ## Stay in Touch
 

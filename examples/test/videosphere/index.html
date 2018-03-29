@@ -1,23 +1,16 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <!-- Origin Trial Token, feature = WebVR (For Chrome M59+), origin = https://aframe.io, expires = 2017-07-28 -->
+  <meta http-equiv="origin-trial" data-feature="WebVR (For Chrome M59+)" data-expires="2017-07-28" content="ArFv1ZeTwzkhjNE00uAE+XtiQB41fwqG/TqlFMLrepd9sforQSvQE/tgfIbUMYNuNre4QR1k4/z8xp2mV3dbhwwAAABeeyJvcmlnaW4iOiJodHRwczovL2FmcmFtZS5pbzo0NDMiLCJmZWF0dXJlIjoiV2ViVlIxLjEiLCJleHBpcnkiOjE1MDEyMTcwMDIsImlzU3ViZG9tYWluIjp0cnVlfQ==">
     <meta charset="utf-8">
     <title>Videosphere</title>
     <meta name="description" content="Videosphere - A-Frame">
-    <script src="../../../dist/aframe-master.js"></script>
+    <script src="../../../dist/aframe-master.min.js"></script>
   </head>
   <body>
     <a-scene stats>
-      <a-assets>
-        <video id="lego" preload="true"
-               src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/t-197/walking_the_dog_360_video_short.webm"
-               width="360" height="360" autoplay loop="true"
-               crossOrigin="anonymous"></video>
-      </a-assets>
-
-      <a-entity material="shader: flat; src: #lego" geometry="primitive: sphere; radius: 100"
-                scale="-1 1 1">
-      </a-entity>
+      <a-videosphere src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/t-197/walking_the_dog_360_video_short.webm"></a-videosphere>
     </a-scene>
   </body>
 </html>

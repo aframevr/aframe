@@ -1,11 +1,13 @@
 <html>
   <head>
+    <!-- Origin Trial Token, feature = WebVR (For Chrome M59+), origin = https://aframe.io, expires = 2017-07-28 -->
+  <meta http-equiv="origin-trial" data-feature="WebVR (For Chrome M59+)" data-expires="2017-07-28" content="ArFv1ZeTwzkhjNE00uAE+XtiQB41fwqG/TqlFMLrepd9sforQSvQE/tgfIbUMYNuNre4QR1k4/z8xp2mV3dbhwwAAABeeyJvcmlnaW4iOiJodHRwczovL2FmcmFtZS5pbzo0NDMiLCJmZWF0dXJlIjoiV2ViVlIxLjEiLCJleHBpcnkiOjE1MDEyMTcwMDIsImlzU3ViZG9tYWluIjp0cnVlfQ==">
     <title>Text Scenarios</title>
     <meta name="description" content="Text Scenarios - A-Frame">
-    <script src="../../../dist/aframe-master.js"></script>
+    <script src="../../../dist/aframe-master.min.js"></script>
   </head>
   <body>
-    <a-scene>
+    <a-scene background="color: #3cf">
       <a-assets>
         <a-mixin
           id="marker"
@@ -89,8 +91,6 @@
         <a-entity mixin="marker" position="0.25 0 0"></a-entity>
         <a-entity mixin="marker" position="0.5 0 0"></a-entity>
       </a-plane>
-
-      <a-sky color="#3cf"></a-sky>
     </a-scene>
   </body>
 </html>

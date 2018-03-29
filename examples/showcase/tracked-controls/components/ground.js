@@ -14,7 +14,7 @@ AFRAME.registerComponent('ground', {
     objectLoader.load(MODEL_URL, function (obj) {
       obj.children.forEach(function (value) {
         value.receiveShadow = true;
-        value.material.shading = THREE.FlatShading;
+        value.material.flatShading = THREE.FlatShading;
       });
       object3D.add(obj);
     });

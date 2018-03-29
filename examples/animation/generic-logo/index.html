@@ -1,20 +1,22 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <!-- Origin Trial Token, feature = WebVR (For Chrome M59+), origin = https://aframe.io, expires = 2017-07-28 -->
+  <meta http-equiv="origin-trial" data-feature="WebVR (For Chrome M59+)" data-expires="2017-07-28" content="ArFv1ZeTwzkhjNE00uAE+XtiQB41fwqG/TqlFMLrepd9sforQSvQE/tgfIbUMYNuNre4QR1k4/z8xp2mV3dbhwwAAABeeyJvcmlnaW4iOiJodHRwczovL2FmcmFtZS5pbzo0NDMiLCJmZWF0dXJlIjoiV2ViVlIxLjEiLCJleHBpcnkiOjE1MDEyMTcwMDIsImlzU3ViZG9tYWluIjp0cnVlfQ==">
     <meta charset="utf-8">
     <title>Animations: Generic Logo</title>
     <meta name="description" content="Animations: Generic Logo - A-Frame">
-    <script src="../../../dist/aframe-master.js"></script>
+    <script src="../../../dist/aframe-master.min.js"></script>
   </head>
   <body>
-    <a-scene>
+    <a-scene background="color: #ECECEC">
       <a-assets>
         <a-mixin id="frame-edge" geometry="primitive: box; depth: 10; height: 0.1; width: 0.1"
                                  material="color: #404040"></a-mixin>
       </a-assets>
 
       <a-entity>
-        <a-camera fov="80" near="0.1" wasd-controls-enabled="false" user-height="0"></a-camera>
+        <a-camera fov="80" near="0.1" wasd-controls-enabled="false"></a-camera>
       </a-entity>
 
       <!-- A generic logo made of animated elements -->
@@ -82,7 +84,6 @@
         </a-image>
       </a-entity>
 
-      <a-sky color="#ECECEC"></a-sky>
       <a-light type="directional" color="#fff" intensity="0.2" position="-1 2 1"></a-light>
       <a-light type="ambient" color="#fff"></a-light>
     </a-scene>
