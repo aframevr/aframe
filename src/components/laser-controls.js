@@ -76,7 +76,7 @@ registerComponent('laser-controls', {
 
     'oculus-touch-controls': {
       cursor: {downEvents: ['triggerdown'], upEvents: ['triggerup']},
-      raycaster: {origin: {x: 0.001, y: 0, z: 0.065}, direction: {x: 0, y: -0.8, z: -1}}
+      raycaster: {origin: {x: 0, y: 0, z: 0}}
     },
 
     'vive-controls': {
