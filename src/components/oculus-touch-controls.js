@@ -2,6 +2,7 @@ var bind = require('../utils/bind');
 var registerComponent = require('../core/component').registerComponent;
 var trackedControlsUtils = require('../utils/tracked-controls');
 var onButtonEvent = trackedControlsUtils.onButtonEvent;
+var THREE = require('../lib/three');
 
 var TOUCH_CONTROLLER_MODEL_BASE_URL = 'https://cdn.aframe.io/controllers/oculus/oculus-touch-controller-';
 var TOUCH_CONTROLLER_MODEL_OBJ_URL_L = TOUCH_CONTROLLER_MODEL_BASE_URL + 'left.obj';
@@ -11,7 +12,7 @@ var TOUCH_CONTROLLER_MODEL_OBJ_MTL_R = TOUCH_CONTROLLER_MODEL_BASE_URL + 'right.
 
 var GAMEPAD_ID_PREFIX = 'Oculus Touch';
 
-var PIVOT_OFFSET = {x: 0, y: -0.015, z: 0.04};
+var PIVOT_OFFSET = {x: 0, y: 0, z: 0};
 
 /**
  * Oculus Touch controls.
@@ -191,6 +192,18 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
 
     // Offset pivot point
     controllerObject3D.position = PIVOT_OFFSET;
+
+    // Fix issue #2965 for default Touch model, rotate it 45 degrees.
+    // But if it isn't the default Touch model, don't.
+    controllerObject3D.traverse(function (o3d) {
+      if (o3d instanceof THREE.Mesh) {
+        if (o3d.name.startsWith('body_oculus-touch-controller-')) {
+          o3d.parent.rotateX(45 * Math.PI / 180);
+          o3d.parent.translateY(0.02);
+          o3d.parent.translateZ(-0.03);
+        }
+      }
+    });
   },
 
   onAxisMoved: function (evt) {
