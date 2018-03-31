@@ -198,7 +198,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     controllerObject3D.traverse(function (o3d) {
       if (o3d instanceof THREE.Mesh) {
         if (o3d.name.startsWith('body_oculus-touch-controller-')) {
-          o3d.parent.rotateX(45 * Math.PI / 180);
+          o3d.parent.rotateX(45 * THREE.Math.DEG2RAD);
           o3d.parent.translateY(0.02);
           o3d.parent.translateZ(-0.03);
         }
