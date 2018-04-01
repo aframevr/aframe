@@ -25,9 +25,10 @@ module.exports.Component = register('renderer', {
       warn('Renderer component can only be applied to <a-scene>');
     }
 
-    if (el.hasAttribute('antialias')) {
-      warn('Component `antialias` is deprecated. Use `renderer="antialias: true"` instead.');
-    }
+    // TODO: Uncomment these lines and deprecate 'antialias' for v0.9.0.
+    // if (el.hasAttribute('antialias')) {
+    //   warn('Component `antialias` is deprecated. Use `renderer="antialias: true"` instead.');
+    // }
   },
 
   update: function (prevData) {
