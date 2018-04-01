@@ -76,7 +76,7 @@ module.exports.Component = registerComponent('sound', {
         // Remove this key from cache, otherwise we can't play it again
         THREE.Cache.remove(data.src);
         if (self.data.autoplay || self.mustPlay) { self.playSound(); }
-        self.el.emit('sound-loaded', {component: self});
+        self.el.emit('sound-loaded', {component: self, id: self.evtDetail.id, name: self.evtDetail.name});
       });
     }
   },
@@ -156,7 +156,7 @@ module.exports.Component = registerComponent('sound', {
     this.pool.children.forEach(function (sound) {
       sound.onEnded = function () {
         sound.isPlaying = false;
-        el.emit('sound-ended', {index: i, component: self});
+        el.emit('sound-ended', {index: i, component: self, sound: sound, id: self.evtDetail.id, name: self.evtDetail.name});
       };
     });
   },
