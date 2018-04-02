@@ -52,10 +52,10 @@ component is positional and is thus affected by the
 
 ## Events
 
-| Event Name   | Description                            |
-|--------------|----------------------------------------|
-| sound-loaded | Triggered when sound file is loaded.   |
-| sound-ended  | Triggered when sound finishes playing. |
+| Event Name   | Description                                                                                             |
+|--------------|---------------------------------------------------------------------------------------------------------|
+| sound-loaded | Triggered when sound file is loaded. Event detail will contain the sound's `name` and `id`.             |
+| sound-ended  | Triggered when sound finishes playing.  Event detail will contain the sound's `name`, `id` and `index`. |
 
 ## Playing on an Event
 
