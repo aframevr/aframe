@@ -1260,6 +1260,7 @@ suite('a-entity', function () {
         done();
       });
     });
+
     test('nested calls do not leak components to children', function () {
       registerComponent('test', {
         init: function () {
@@ -1273,6 +1274,19 @@ suite('a-entity', function () {
       mixinFactory('addGeometry', {geometry: 'shape: sphere'});
       this.el.setAttribute('mixin', 'addTest');
       assert.notOk(this.child.components['test']);
+    });
+
+    test('initializes object3d components first', function (done) {
+      registerComponent('test', {
+        init: function () {
+          var object3D = this.el.object3D;
+          assert.equal(object3D.position.y, 5);
+          assert.equal(object3D.visible, false);
+          done();
+        }
+      });
+
+      this.el.innerHTML = '<a-entity class="test" test position="0 5 0" visible="false"></a-entity';
     });
   });
 

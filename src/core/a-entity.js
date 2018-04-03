@@ -9,6 +9,7 @@ var debug = utils.debug('core:a-entity:debug');
 var warn = utils.debug('core:a-entity:warn');
 
 var MULTIPLE_COMPONENT_DELIMITER = '__';
+var OBJECT3D_COMPONENTS = ['position', 'rotation', 'scale', 'visible'];
 
 /**
  * Entity is a container object that components are plugged into to comprise everything in
@@ -442,7 +443,15 @@ var proto = Object.create(ANode.prototype, {
       // Gather entity-defined components.
       for (i = 0; i < this.attributes.length; ++i) {
         name = this.attributes[i].name;
+        if (OBJECT3D_COMPONENTS.indexOf(name) !== -1) { continue; }
         if (isComponent(name)) { componentsToUpdate[name] = true; }
+      }
+
+      // object3D components first (position, rotation, scale, visible).
+      for (i = 0; i < OBJECT3D_COMPONENTS.length; i++) {
+        name = OBJECT3D_COMPONENTS[i];
+        if (!this.hasAttribute(name)) { continue; }
+        this.updateComponent(name, this.getDOMAttribute(name));
       }
 
       // Initialize or update rest of components.
