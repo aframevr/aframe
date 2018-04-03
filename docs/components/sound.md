@@ -55,7 +55,7 @@ component is positional and is thus affected by the
 | Event Name   | Description                                                                                             |
 |--------------|---------------------------------------------------------------------------------------------------------|
 | sound-loaded | Triggered when sound file is loaded. Event detail will contain the sound's `name` and `id`.             |
-| sound-ended  | Triggered when sound finishes playing.  Event detail will contain the sound's `name`, `id` and `index`. |
+| sound-ended  | Triggered when sound finishes playing.  Event detail will contain the sound's `name` and `id`. |
 
 ## Playing on an Event
 
