@@ -24,7 +24,7 @@ registerPropertyType('string', '', defaultParse, defaultStringify);
 registerPropertyType('time', 0, intParse);
 registerPropertyType('vec2', {x: 0, y: 0}, vecParse, coordinates.stringify);
 registerPropertyType('vec3', {x: 0, y: 0, z: 0}, vecParse, coordinates.stringify);
-registerPropertyType('vec4', {x: 0, y: 0, z: 0, w: 0}, vecParse, coordinates.stringify);
+registerPropertyType('vec4', {x: 0, y: 0, z: 0, w: 1}, vecParse, coordinates.stringify);
 
 /**
  * Register a parser for re-use such that when someone uses `type` in the schema,
