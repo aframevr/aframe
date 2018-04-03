@@ -2,6 +2,7 @@ var bind = require('../utils/bind');
 var registerComponent = require('../core/component').registerComponent;
 var trackedControlsUtils = require('../utils/tracked-controls');
 var onButtonEvent = trackedControlsUtils.onButtonEvent;
+var THREE = require('../lib/three');
 
 var TOUCH_CONTROLLER_MODEL_BASE_URL = 'https://cdn.aframe.io/controllers/oculus/oculus-touch-controller-';
 var TOUCH_CONTROLLER_MODEL_OBJ_URL_L = TOUCH_CONTROLLER_MODEL_BASE_URL + 'left.obj';
@@ -10,8 +11,6 @@ var TOUCH_CONTROLLER_MODEL_OBJ_URL_R = TOUCH_CONTROLLER_MODEL_BASE_URL + 'right.
 var TOUCH_CONTROLLER_MODEL_OBJ_MTL_R = TOUCH_CONTROLLER_MODEL_BASE_URL + 'right.mtl';
 
 var GAMEPAD_ID_PREFIX = 'Oculus Touch';
-
-var PIVOT_OFFSET = {x: 0, y: -0.015, z: 0.04};
 
 /**
  * Oculus Touch controls.
@@ -189,8 +188,16 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     buttonMeshes.ybutton = controllerObject3D.getObjectByName('buttonY_oculus-touch-controller-left.001');
     buttonMeshes.bbutton = controllerObject3D.getObjectByName('buttonB_oculus-touch-controller-right.003');
 
-    // Offset pivot point
-    controllerObject3D.position = PIVOT_OFFSET;
+    // For default Touch model, rotate it 45 degrees to match reality.
+    controllerObject3D.traverse(function (object3d) {
+      if (object3d instanceof THREE.Mesh) {
+        if (object3d.name.startsWith('body_oculus-touch-controller-')) {
+          object3d.parent.rotateX(45 * THREE.Math.DEG2RAD);
+          object3d.parent.translateY(0.02);
+          object3d.parent.translateZ(-0.03);
+        }
+      }
+    });
   },
 
   onAxisMoved: function (evt) {

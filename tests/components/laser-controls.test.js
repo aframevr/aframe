@@ -43,8 +43,8 @@ suite('laser-controls', function () {
       el.emit('controllerconnected', {name: 'oculus-touch-controls'});
       setTimeout(() => {
         var raycaster = el.getAttribute('raycaster');
-        assert.notEqual(raycaster.origin.z, 0);
-        assert.notEqual(raycaster.direction.y, 0);
+        assert.equal(raycaster.origin.z, 0);
+        assert.equal(raycaster.direction.y, 0);
         done();
       });
     });
