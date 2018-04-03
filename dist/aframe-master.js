@@ -69867,6 +69867,9 @@ var EASING_FUNCTIONS = animationConstants.easingFunctions;
 var FILLS = animationConstants.fills;
 var REPEATS = animationConstants.repeats;
 var isCoordinates = coordinates.isCoordinates;
+var warn = utils.debug('core:a-animation:warn');
+
+var hasLoggedDeprecation = false;
 
 /**
  * Animation element that applies Tween animation to parent element (entity).
@@ -69891,6 +69894,12 @@ module.exports.AAnimation = registerElement('a-animation', {
         this.isRunning = false;
         this.partialSetAttribute = function () { /* no-op */ };
         this.tween = null;
+
+        if (!hasLoggedDeprecation) {
+          warn('<a-animation> has been deprecated and will be replaced by the animation ' +
+               'component: https://www.npmjs.com/package/aframe-animation-component');
+          hasLoggedDeprecation = true;
+        }
       }
     },
 
@@ -75477,7 +75486,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.1 (Date 2018-04-03, Commit #37c8517)');
+console.log('A-Frame Version: 0.8.1 (Date 2018-04-03, Commit #3820c9b)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
