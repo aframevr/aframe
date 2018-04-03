@@ -70707,6 +70707,7 @@ var debug = utils.debug('core:a-entity:debug');
 var warn = utils.debug('core:a-entity:warn');
 
 var MULTIPLE_COMPONENT_DELIMITER = '__';
+var OBJECT3D_COMPONENTS = ['position', 'rotation', 'scale', 'visible'];
 
 /**
  * Entity is a container object that components are plugged into to comprise everything in
@@ -71140,7 +71141,15 @@ var proto = Object.create(ANode.prototype, {
       // Gather entity-defined components.
       for (i = 0; i < this.attributes.length; ++i) {
         name = this.attributes[i].name;
+        if (OBJECT3D_COMPONENTS.indexOf(name) !== -1) { continue; }
         if (isComponent(name)) { componentsToUpdate[name] = true; }
+      }
+
+      // object3D components first (position, rotation, scale, visible).
+      for (i = 0; i < OBJECT3D_COMPONENTS.length; i++) {
+        name = OBJECT3D_COMPONENTS[i];
+        if (!this.hasAttribute(name)) { continue; }
+        this.updateComponent(name, this.getDOMAttribute(name));
       }
 
       // Initialize or update rest of components.
@@ -75459,7 +75468,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.1 (Date 2018-04-03, Commit #221a780)');
+console.log('A-Frame Version: 0.8.1 (Date 2018-04-03, Commit #5b03b7a)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
