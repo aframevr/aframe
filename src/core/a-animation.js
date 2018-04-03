@@ -15,6 +15,9 @@ var EASING_FUNCTIONS = animationConstants.easingFunctions;
 var FILLS = animationConstants.fills;
 var REPEATS = animationConstants.repeats;
 var isCoordinates = coordinates.isCoordinates;
+var warn = utils.debug('core:a-animation:warn');
+
+var hasLoggedDeprecation = false;
 
 /**
  * Animation element that applies Tween animation to parent element (entity).
@@ -39,6 +42,12 @@ module.exports.AAnimation = registerElement('a-animation', {
         this.isRunning = false;
         this.partialSetAttribute = function () { /* no-op */ };
         this.tween = null;
+
+        if (!hasLoggedDeprecation) {
+          warn('<a-animation> has been deprecated and will be replaced by the animation ' +
+               'component: https://www.npmjs.com/package/aframe-animation-component');
+          hasLoggedDeprecation = true;
+        }
       }
     },
 
