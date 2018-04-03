@@ -67175,9 +67175,10 @@ module.exports.Component = register('renderer', {
       warn('Renderer component can only be applied to <a-scene>');
     }
 
-    if (el.hasAttribute('antialias')) {
-      warn('Component `antialias` is deprecated. Use `renderer="antialias: true"` instead.');
-    }
+    // TODO: Uncomment these lines and deprecate 'antialias' for v0.9.0.
+    // if (el.hasAttribute('antialias')) {
+    //   warn('Component `antialias` is deprecated. Use `renderer="antialias: true"` instead.');
+    // }
   },
 
   update: function (prevData) {
@@ -75469,7 +75470,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.1 (Date 2018-04-03, Commit #4c60ea3)');
+console.log('A-Frame Version: 0.8.1 (Date 2018-04-03, Commit #ff57f2d)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
