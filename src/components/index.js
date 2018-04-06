@@ -13,6 +13,7 @@ require('./link');
 require('./look-controls');
 require('./material');
 require('./obj-model');
+require('./oculus-go-controls');
 require('./oculus-touch-controls');
 require('./position');
 require('./raycaster');

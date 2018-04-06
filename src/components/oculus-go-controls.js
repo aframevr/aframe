@@ -5,31 +5,27 @@ var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresent
 var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
 var onButtonEvent = trackedControlsUtils.onButtonEvent;
 
-var GEARVR_CONTROLLER_MODEL_BASE_URL = 'https://cdn.aframe.io/controllers/samsung/';
-var GEARVR_CONTROLLER_MODEL_OBJ_URL = GEARVR_CONTROLLER_MODEL_BASE_URL + 'gear_vr_controller.obj';
-var GEARVR_CONTROLLER_MODEL_OBJ_MTL = GEARVR_CONTROLLER_MODEL_BASE_URL + 'gear_vr_controller.mtl';
+// Temporarily share the controller with the Gear VR
+var gearVRControls = require('../components/gearvr-controls');
+var GO_CONTROLLER_MODEL_OBJ_URL = gearVRControls.MODEL_OBJ_URL;
+var GO_CONTROLLER_MODEL_OBJ_MTL = gearVRControls.MODEL_OBJ_MTL;
 
-var GAMEPAD_ID_PREFIX = 'Gear VR';
+var GAMEPAD_ID_PREFIX = 'Oculus Go';
 
 /**
- * Gear VR controls.
- * Interface with Gear VR controller and map Gamepad events to
+ * Oculus Go controls.
+ * Interface with Oculus Go controller and map Gamepad events to
  * controller buttons: trackpad, trigger
  * Load a controller model and highlight the pressed buttons.
  */
-module.exports.Component = registerComponent('gearvr-controls', {
-  // Expose the model and material so they can be used temporarily by the Oculus Go controls.
-  MODEL_OBJ_URL: GEARVR_CONTROLLER_MODEL_OBJ_URL,
-
-  MODEL_OBJ_MTL: GEARVR_CONTROLLER_MODEL_OBJ_MTL,
-
+module.exports.Component = registerComponent('oculus-go-controls', {
   schema: {
     hand: {default: ''},  // This informs the degenerate arm model.
     buttonColor: {type: 'color', default: '#000000'},
     buttonTouchedColor: {type: 'color', default: '#777777'},
     buttonHighlightColor: {type: 'color', default: '#FFFFFF'},
     model: {default: true},
-    orientationOffset: {type: 'vec3'},
+    rotationOffset: {default: 0},
     armModel: {default: true}
   },
 
@@ -114,12 +110,12 @@ module.exports.Component = registerComponent('gearvr-controls', {
     el.setAttribute('tracked-controls', {
       armModel: data.armModel,
       idPrefix: GAMEPAD_ID_PREFIX,
-      orientationOffset: data.orientationOffset
+      rotationOffset: data.rotationOffset
     });
     if (!this.data.model) { return; }
     this.el.setAttribute('obj-model', {
-      obj: GEARVR_CONTROLLER_MODEL_OBJ_URL,
-      mtl: GEARVR_CONTROLLER_MODEL_OBJ_MTL
+      obj: GO_CONTROLLER_MODEL_OBJ_URL,
+      mtl: GO_CONTROLLER_MODEL_OBJ_MTL
     });
   },
 

@@ -1,5 +1,3 @@
-var split = require('./split').split;
-
 var DEFAULT_HANDEDNESS = require('../constants').DEFAULT_HANDEDNESS;
 var AXIS_LABELS = ['x', 'y', 'z', 'w'];
 var NUM_HANDS = 2;  // Number of hands in a pair. Should always be 2.
@@ -70,7 +68,7 @@ module.exports.isControllerPresent = isControllerPresent;
 
 /**
  * Walk through the given controllers to find any where the device ID equals
- * filterIdExact, or startWith filterIdPrefix.
+ * filterIdExact, or startsWith filterIdPrefix.
  * A controller where this considered true is considered a 'match'.
  *
  * For each matching controller:
@@ -94,34 +92,15 @@ module.exports.isControllerPresent = isControllerPresent;
 function findMatchingController (controllers, filterIdExact, filterIdPrefix, filterHand,
                                  filterControllerIndex) {
   var controller;
-  var filterIdPrefixes;
   var i;
-  var j;
-  var matches;
   var matchingControllerOccurence = 0;
-  var prefix;
   var targetControllerMatch = filterControllerIndex || 0;
-
-  // Check whether multiple prefixes.
-  if (filterIdPrefix && filterIdPrefix.indexOf('|') >= 0) {
-    filterIdPrefixes = split(filterIdPrefix, '|');
-  }
 
   for (i = 0; i < controllers.length; i++) {
     controller = controllers[i];
 
     // Determine if the controller ID matches our criteria.
-    if (filterIdPrefixes) {
-      matches = false;
-      for (j = 0; j < filterIdPrefixes.length; j++) {
-        prefix = filterIdPrefixes[j];
-        if (prefix && controller.id.startsWith(prefix)) {
-          matches = true;
-          break;
-        }
-      }
-      if (!matches) { continue; }
-    } else if (filterIdPrefix && controller.id.indexOf(filterIdPrefix)) {
+    if (filterIdPrefix && !controller.id.startsWith(filterIdPrefix)) {
       continue;
     }
 

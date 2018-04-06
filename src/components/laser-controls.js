@@ -15,6 +15,7 @@ registerComponent('laser-controls', {
     // Set all controller models.
     el.setAttribute('daydream-controls', {hand: data.hand});
     el.setAttribute('gearvr-controls', {hand: data.hand});
+    el.setAttribute('oculus-go-controls', {hand: data.hand});
     el.setAttribute('oculus-touch-controls', {hand: data.hand});
     el.setAttribute('vive-controls', {hand: data.hand});
     el.setAttribute('windows-motion-controls', {hand: data.hand});
@@ -71,6 +72,11 @@ registerComponent('laser-controls', {
 
     'gearvr-controls': {
       cursor: {downEvents: ['trackpaddown', 'triggerdown'], upEvents: ['trackpadup', 'triggerup']},
+      raycaster: {origin: {x: 0, y: 0.0005, z: 0}}
+    },
+
+    'oculus-go-controls': {
+      cursor: {downEvents: ['trackpaddown'], upEvents: ['trackpadup']},
       raycaster: {origin: {x: 0, y: 0.0005, z: 0}}
     },
 

@@ -17,6 +17,7 @@ suite('laser-controls', function () {
     test('injects controllers', function () {
       assert.ok(el.components['daydream-controls']);
       assert.ok(el.components['gearvr-controls']);
+      assert.ok(el.components['oculus-go-controls']);
       assert.ok(el.components['oculus-touch-controls']);
       assert.ok(el.components['vive-controls']);
       assert.ok(el.components['windows-motion-controls']);
