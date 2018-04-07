@@ -67715,6 +67715,7 @@ function createEnterVRButton (onClick) {
   wrapper.appendChild(vrButton);
   vrButton.addEventListener('click', function (evt) {
     onClick();
+    evt.stopPropagation();
   });
   return wrapper;
 }
@@ -75486,7 +75487,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.1 (Date 2018-04-03, Commit #3820c9b)');
+console.log('A-Frame Version: 0.8.1 (Date 2018-04-07, Commit #99c94da)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
