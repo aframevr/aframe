@@ -144,6 +144,7 @@ function createEnterVRButton (onClick) {
   wrapper.appendChild(vrButton);
   vrButton.addEventListener('click', function (evt) {
     onClick();
+    evt.stopPropagation();
   });
   return wrapper;
 }
