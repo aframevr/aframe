@@ -187,13 +187,27 @@ module.exports.Component = registerComponent('look-controls', {
     var pitchObject = this.pitchObject;
     var yawObject = this.yawObject;
     var sceneEl = this.el.sceneEl;
+    var q = this.hmdQuaternion;
 
     // In VR mode, THREE is in charge of updating the camera rotation.
     if (sceneEl.is('vr-mode') && sceneEl.checkHeadsetConnected()) { return; }
 
     // Calculate polyfilled HMD quaternion.
     this.polyfillControls.update();
-    hmdEuler.setFromQuaternion(this.polyfillObject.quaternion, 'YXZ');
+
+    // If rotation component exists, get its values and apply them.
+    var rotationComponent = el.components.rotation;
+    if (rotationComponent) {
+      hmdEuler.set(
+        THREE.Math.DEG2RAD * rotationComponent.data.x,
+        THREE.Math.DEG2RAD * rotationComponent.data.y,
+        THREE.Math.DEG2RAD * rotationComponent.data.z, 'YXZ');
+      q.setFromEuler(hmdEuler);
+      q.multiply(this.polyfillObject.quaternion);
+      hmdEuler.setFromQuaternion(q, 'YXZ');
+    } else {
+      hmdEuler.setFromQuaternion(this.polyfillObject.quaternion, 'YXZ');
+    }
 
     // On mobile, do camera rotation with touch events and sensors.
     el.object3D.rotation.x = hmdEuler.x + pitchObject.rotation.x;
