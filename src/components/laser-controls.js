@@ -70,7 +70,7 @@ registerComponent('laser-controls', {
     },
 
     'gearvr-controls': {
-      cursor: {downEvents: ['triggerdown'], upEvents: ['triggerup']},
+      cursor: {downEvents: ['trackpaddown', 'triggerdown'], upEvents: ['trackpadup', 'triggerup']},
       raycaster: {origin: {x: 0, y: 0.0005, z: 0}}
     },
 
