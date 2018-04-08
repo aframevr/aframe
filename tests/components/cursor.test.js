@@ -52,7 +52,7 @@ suite('cursor', function () {
     });
 
     test('removes fuse state', function (done) {
-      el.setAttribute('cursor', 'fuse', true);
+      el.setAttribute('cursor', {fuse: true});
       el.emit('raycaster-intersection', {
         intersections: [intersection],
         els: [intersectedEl]
