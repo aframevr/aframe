@@ -227,7 +227,7 @@ we want to take our recording on the go, here's how to replay a recording
 
 1. Put the recording file somewhere accessible to the web page (i.e., in the project directory or online)
 2. Add `avatar-replayer` component to the scene (i.e., `<a-scene avatar-replayer>`)
-3. Append `?avatar-recording=path/to/recording.json` to the URL *or* set `<a-scene avatar-replayer="src: path/to/recording.json>`
+3. Append `?avatar-recording=path/to/recording.json` to the URL *or* set `<a-scene avatar-replayer="src: path/to/recording.json">`
 
 Then replay the recording on any device from anywhere without a headset to our
 heart's content. Get in the headset, record some clicks, and then from a
