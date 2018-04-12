@@ -24,7 +24,8 @@ module.exports.Component = registerComponent('vive-controls', {
     buttonColor: {type: 'color', default: '#FAFAFA'},  // Off-white.
     buttonHighlightColor: {type: 'color', default: '#22D1EE'},  // Light blue.
     model: {default: true},
-    rotationOffset: {default: 0}
+    rotationOffset: {default: 0},
+    orientationOffset: {type: 'vec3'}
   },
 
   /**
@@ -121,7 +122,8 @@ module.exports.Component = registerComponent('vive-controls', {
       idPrefix: GAMEPAD_ID_PREFIX,
       // Hand IDs: 0 = right, 1 = left, 2 = anything else.
       controller: data.hand === 'right' ? 0 : data.hand === 'left' ? 1 : 2,
-      rotationOffset: data.rotationOffset
+      rotationOffset: data.rotationOffset,
+      orientationOffset: data.orientationOffset
     });
 
     // Load model.

@@ -30,6 +30,7 @@ buttons (trigger, grip, menu, system) and trackpad.
 | hand                 | The hand that will be tracked (i.e., right, left). | left                 |
 | model                | Whether the Vive controller model is loaded.       | true                 |
 | rotationOffset       | Offset to apply to model rotation.                 | 0                    |
+| orientationOffset    | Offset to apply to model orientation.              | x: 0, y: 0, z: 0     |
 
 ## Events
 

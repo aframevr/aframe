@@ -26,6 +26,7 @@ module.exports.Component = registerComponent('tracked-controls', {
     hand: {type: 'string', default: ''},
     idPrefix: {type: 'string', default: ''},
     rotationOffset: {default: 0},
+    orientationOffset: {type: 'vec3'},
     // Arm model parameters when not 6DoF.
     armModel: {default: true},
     headElement: {type: 'selector'}
@@ -148,6 +149,7 @@ module.exports.Component = registerComponent('tracked-controls', {
    */
   updatePose: function () {
     var controller = this.controller;
+    var data = this.data;
     var object3D = this.el.object3D;
     var pose;
     var vrDisplay = this.system.vrDisplay;
@@ -162,7 +164,7 @@ module.exports.Component = registerComponent('tracked-controls', {
       object3D.position.fromArray(pose.position);
     } else {
       // Controller not 6DOF, apply arm model.
-      if (this.data.armModel) { this.applyArmModel(object3D.position); }
+      if (data.armModel) { this.applyArmModel(object3D.position); }
     }
 
     if (pose.orientation) {
@@ -178,7 +180,13 @@ module.exports.Component = registerComponent('tracked-controls', {
       object3D.matrix.decompose(object3D.position, object3D.quaternion, object3D.scale);
     }
 
-    object3D.rotateZ(this.data.rotationOffset * THREE.Math.DEG2RAD);
+    if (data.rotationOffset !== 0) {
+      object3D.rotateZ(data.rotationOffset * THREE.Math.DEG2RAD);
+    } else {
+      object3D.rotateX(this.data.orientationOffset.x * THREE.Math.DEG2RAD);
+      object3D.rotateY(this.data.orientationOffset.y * THREE.Math.DEG2RAD);
+      object3D.rotateZ(this.data.orientationOffset.z * THREE.Math.DEG2RAD);
+    }
 
     object3D.updateMatrix();
     object3D.matrixWorldNeedsUpdate = true;

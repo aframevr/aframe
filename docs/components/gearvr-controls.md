@@ -27,15 +27,16 @@ and/or pressed buttons (trackpad, trigger).
 
 ## Value
 
-| Property             | Description                                        | Default |
-|----------------------|----------------------------------------------------|---------|
-| armModel             | Whether the arm model is used for positional data. | true    |
-| buttonColor          | Button colors when not pressed.                    | #000000 |
-| buttonTouchedColor   | Button colors when touched.                        | #777777 |
-| buttonHighlightColor | Button colors when pressed and active.             | #FFFFFF |
-| hand                 | The hand that will be tracked (e.g., right, left). |         |
-| model                | Whether the Gear controller model is loaded.       | true    |
-| rotationOffset       | Offset to apply to model rotation.                 | 0       |
+| Property             | Description                                        | Default              |
+|----------------------|----------------------------------------------------|----------------------|
+| armModel             | Whether the arm model is used for positional data. | true                 |
+| buttonColor          | Button colors when not pressed.                    | #000000              |
+| buttonTouchedColor   | Button colors when touched.                        | #777777              |
+| buttonHighlightColor | Button colors when pressed and active.             | #FFFFFF              |
+| hand                 | The hand that will be tracked (e.g., right, left). |                      |
+| model                | Whether the Gear controller model is loaded.       | true                 |
+| rotationOffset       | Offset to apply to model rotation.                 | 0                    |
+| orientationOffset    | Offset to apply to model orientation.              | x: 0, y: 0, z: 0     |
 
 ## Events
 

@@ -25,6 +25,7 @@ module.exports.Component = registerComponent('gearvr-controls', {
     buttonHighlightColor: {type: 'color', default: '#FFFFFF'},
     model: {default: true},
     rotationOffset: {default: 0},
+    orientationOffset: {type: 'vec3'},
     armModel: {default: true}
   },
 
@@ -109,7 +110,8 @@ module.exports.Component = registerComponent('gearvr-controls', {
     el.setAttribute('tracked-controls', {
       armModel: data.armModel,
       idPrefix: GAMEPAD_ID_PREFIX,
-      rotationOffset: data.rotationOffset
+      rotationOffset: data.rotationOffset,
+      orientationOffset: data.orientationOffset
     });
     if (!this.data.model) { return; }
     this.el.setAttribute('obj-model', {
