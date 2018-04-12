@@ -40,11 +40,11 @@ suite('laser-controls', function () {
     });
 
     test('configures raycaster for oculus-touch-controls', function (done) {
-      el.emit('controllerconnected', {name: 'oculus-touch-controls'});
+      el.emit('controllerconnected', {name: 'gearvr-controls'});
       setTimeout(() => {
         var raycaster = el.getAttribute('raycaster');
-        assert.equal(raycaster.origin.z, 0);
-        assert.equal(raycaster.direction.y, 0);
+        assert.equal(raycaster.origin.x, 0);
+        assert.equal(raycaster.origin.y, 0.0005);
         done();
       });
     });

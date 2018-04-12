@@ -36,15 +36,17 @@ It can occassionally take a few seconds before the controller can be used.
 
 ## Value
 
-| Property             | Description                                        | Default |
-|----------------------|----------------------------------------------------|---------|
-| armModel             | Whether the arm model is used for positional data. | true    |
-| buttonColor          | Button colors when not pressed.                    | #000000 |
-| buttonTouchedColor   | Button colors when touched.                        | #777777 |
-| buttonHighlightColor | Button colors when pressed and active.             | #FFFFFF |
-| hand                 | Set hand that will be tracked (i.e., right, left). |         |
-| model                | Whether the Daydream controller model is loaded.   | true    |
-| rotationOffset       | Offset to apply to model rotation.                 | 0       |
+| Property             | Description                                        | Default              |
+|----------------------|----------------------------------------------------|----------------------|
+| armModel             | Whether the arm model is used for positional data. | true                 |
+| buttonColor          | Button colors when not pressed.                    | #000000              |
+| buttonTouchedColor   | Button colors when touched.                        | #777777              |
+| buttonHighlightColor | Button colors when pressed and active.             | #FFFFFF              |
+| hand                 | Set hand that will be tracked (i.e., right, left). |                      |
+| model                | Whether the Daydream controller model is loaded.   | true                 |
+| rotationOffset       | Offset to apply to model rotation.                 | 0                    |
+| orientationOffset    | Offset to apply to model orientation.              | x: 0, y: 0, z: 0     |
+
 
 ## Events
 
