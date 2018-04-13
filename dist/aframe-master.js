@@ -63679,7 +63679,7 @@ module.exports.Component = registerComponent('daydream-controls', {
     buttonTouchedColor: {type: 'color', default: '#777777'},
     buttonHighlightColor: {type: 'color', default: '#FFFFFF'},
     model: {default: true},
-    rotationOffset: {default: 0},
+    orientationOffset: {type: 'vec3'},
     armModel: {default: true}
   },
 
@@ -63763,7 +63763,7 @@ module.exports.Component = registerComponent('daydream-controls', {
       armModel: data.armModel,
       hand: data.hand,
       idPrefix: GAMEPAD_ID_PREFIX,
-      rotationOffset: data.rotationOffset
+      orientationOffset: data.orientationOffset
     });
     if (!this.data.model) { return; }
     this.el.setAttribute('obj-model', {
@@ -63857,7 +63857,7 @@ module.exports.Component = registerComponent('gearvr-controls', {
     buttonTouchedColor: {type: 'color', default: '#777777'},
     buttonHighlightColor: {type: 'color', default: '#FFFFFF'},
     model: {default: true},
-    rotationOffset: {default: 0},
+    orientationOffset: {type: 'vec3'},
     armModel: {default: true}
   },
 
@@ -63942,7 +63942,7 @@ module.exports.Component = registerComponent('gearvr-controls', {
     el.setAttribute('tracked-controls', {
       armModel: data.armModel,
       idPrefix: GAMEPAD_ID_PREFIX,
-      rotationOffset: data.rotationOffset
+      orientationOffset: data.orientationOffset
     });
     if (!this.data.model) { return; }
     this.el.setAttribute('obj-model', {
@@ -64306,7 +64306,7 @@ module.exports.Component = registerComponent('hand-controls', {
     controlConfiguration = {
       hand: hand,
       model: false,
-      rotationOffset: hand === 'left' ? 90 : -90
+      orientationOffset: {x: 0, y: 0, z: hand === 'left' ? 90 : -90}
     };
 
     // Set model.
@@ -66070,8 +66070,8 @@ module.exports.Component = registerComponent('obj-model', {
 var bind = _dereq_('../utils/bind');
 var registerComponent = _dereq_('../core/component').registerComponent;
 var trackedControlsUtils = _dereq_('../utils/tracked-controls');
-var onButtonEvent = trackedControlsUtils.onButtonEvent;
 var THREE = _dereq_('../lib/three');
+var onButtonEvent = trackedControlsUtils.onButtonEvent;
 
 var TOUCH_CONTROLLER_MODEL_BASE_URL = 'https://cdn.aframe.io/controllers/oculus/oculus-touch-controller-';
 var TOUCH_CONTROLLER_MODEL_OBJ_URL_L = TOUCH_CONTROLLER_MODEL_BASE_URL + 'left.obj';
@@ -66080,6 +66080,12 @@ var TOUCH_CONTROLLER_MODEL_OBJ_URL_R = TOUCH_CONTROLLER_MODEL_BASE_URL + 'right.
 var TOUCH_CONTROLLER_MODEL_OBJ_MTL_R = TOUCH_CONTROLLER_MODEL_BASE_URL + 'right.mtl';
 
 var GAMEPAD_ID_PREFIX = 'Oculus Touch';
+
+var DEFAULT_MODEL_PIVOT_OFFSET = new THREE.Vector3(0, 0, -0.053);
+var RAY_ORIGIN = {
+  left: {origin: {x: 0.008, y: -0.008, z: 0}, direction: {x: 0, y: -0.8, z: -1}},
+  right: {origin: {x: -0.008, y: -0.008, z: 0}, direction: {x: 0, y: -0.8, z: -1}}
+};
 
 /**
  * Oculus Touch controls.
@@ -66094,7 +66100,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     buttonTouchColor: {type: 'color', default: '#8AB'},
     buttonHighlightColor: {type: 'color', default: '#2DF'},  // Light blue.
     model: {default: true},
-    rotationOffset: {default: 0}
+    orientationOffset: {type: 'vec3', default: {x: 43, y: 0, z: 0}}
   },
 
   /**
@@ -66196,11 +66202,10 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
 
   injectTrackedControls: function () {
     var data = this.data;
-    var offset = data.hand === 'right' ? -90 : 90;
     this.el.setAttribute('tracked-controls', {
       id: data.hand === 'right' ? 'Oculus Touch (Right)' : 'Oculus Touch (Left)',
       controller: 0,
-      rotationOffset: data.rotationOffset !== -999 ? data.rotationOffset : offset
+      orientationOffset: data.orientationOffset
     });
     this.updateControllerModel();
   },
@@ -66257,15 +66262,13 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     buttonMeshes.ybutton = controllerObject3D.getObjectByName('buttonY_oculus-touch-controller-left.001');
     buttonMeshes.bbutton = controllerObject3D.getObjectByName('buttonB_oculus-touch-controller-right.003');
 
-    // For default Touch model, rotate it 45 degrees to match reality.
-    controllerObject3D.traverse(function (object3d) {
-      if (object3d instanceof THREE.Mesh) {
-        if (object3d.name.startsWith('body_oculus-touch-controller-')) {
-          object3d.parent.rotateX(45 * THREE.Math.DEG2RAD);
-          object3d.parent.translateY(0.02);
-          object3d.parent.translateZ(-0.03);
-        }
-      }
+    // Offset pivot point
+    controllerObject3D.position.copy(DEFAULT_MODEL_PIVOT_OFFSET);
+
+    this.el.emit('controllermodelready', {
+      name: 'oculus-touch-controls',
+      model: this.data.model,
+      rayOrigin: RAY_ORIGIN[this.data.hand]
     });
   },
 
@@ -68524,7 +68527,7 @@ module.exports.Component = registerComponent('tracked-controls', {
     id: {type: 'string', default: ''},
     hand: {type: 'string', default: ''},
     idPrefix: {type: 'string', default: ''},
-    rotationOffset: {default: 0},
+    orientationOffset: {type: 'vec3'},
     // Arm model parameters when not 6DoF.
     armModel: {default: true},
     headElement: {type: 'selector'}
@@ -68647,6 +68650,7 @@ module.exports.Component = registerComponent('tracked-controls', {
    */
   updatePose: function () {
     var controller = this.controller;
+    var data = this.data;
     var object3D = this.el.object3D;
     var pose;
     var vrDisplay = this.system.vrDisplay;
@@ -68661,7 +68665,7 @@ module.exports.Component = registerComponent('tracked-controls', {
       object3D.position.fromArray(pose.position);
     } else {
       // Controller not 6DOF, apply arm model.
-      if (this.data.armModel) { this.applyArmModel(object3D.position); }
+      if (data.armModel) { this.applyArmModel(object3D.position); }
     }
 
     if (pose.orientation) {
@@ -68677,7 +68681,9 @@ module.exports.Component = registerComponent('tracked-controls', {
       object3D.matrix.decompose(object3D.position, object3D.quaternion, object3D.scale);
     }
 
-    object3D.rotateZ(this.data.rotationOffset * THREE.Math.DEG2RAD);
+    object3D.rotateX(this.data.orientationOffset.x * THREE.Math.DEG2RAD);
+    object3D.rotateY(this.data.orientationOffset.y * THREE.Math.DEG2RAD);
+    object3D.rotateZ(this.data.orientationOffset.z * THREE.Math.DEG2RAD);
 
     object3D.updateMatrix();
     object3D.matrixWorldNeedsUpdate = true;
@@ -68852,7 +68858,7 @@ module.exports.Component = registerComponent('vive-controls', {
     buttonColor: {type: 'color', default: '#FAFAFA'},  // Off-white.
     buttonHighlightColor: {type: 'color', default: '#22D1EE'},  // Light blue.
     model: {default: true},
-    rotationOffset: {default: 0}
+    orientationOffset: {type: 'vec3'}
   },
 
   /**
@@ -68949,7 +68955,7 @@ module.exports.Component = registerComponent('vive-controls', {
       idPrefix: GAMEPAD_ID_PREFIX,
       // Hand IDs: 0 = right, 1 = left, 2 = anything else.
       controller: data.hand === 'right' ? 0 : data.hand === 'left' ? 1 : 2,
-      rotationOffset: data.rotationOffset
+      orientationOffset: data.orientationOffset
     });
 
     // Load model.
@@ -75487,7 +75493,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.1 (Date 2018-04-10, Commit #87d3d23)');
+console.log('A-Frame Version: 0.8.1 (Date 2018-04-13, Commit #6926163)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
