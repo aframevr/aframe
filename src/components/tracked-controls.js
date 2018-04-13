@@ -25,7 +25,6 @@ module.exports.Component = registerComponent('tracked-controls', {
     id: {type: 'string', default: ''},
     hand: {type: 'string', default: ''},
     idPrefix: {type: 'string', default: ''},
-    rotationOffset: {default: 0},
     orientationOffset: {type: 'vec3'},
     // Arm model parameters when not 6DoF.
     armModel: {default: true},
@@ -180,13 +179,9 @@ module.exports.Component = registerComponent('tracked-controls', {
       object3D.matrix.decompose(object3D.position, object3D.quaternion, object3D.scale);
     }
 
-    if (data.rotationOffset !== 0) {
-      object3D.rotateZ(data.rotationOffset * THREE.Math.DEG2RAD);
-    } else {
-      object3D.rotateX(this.data.orientationOffset.x * THREE.Math.DEG2RAD);
-      object3D.rotateY(this.data.orientationOffset.y * THREE.Math.DEG2RAD);
-      object3D.rotateZ(this.data.orientationOffset.z * THREE.Math.DEG2RAD);
-    }
+    object3D.rotateX(this.data.orientationOffset.x * THREE.Math.DEG2RAD);
+    object3D.rotateY(this.data.orientationOffset.y * THREE.Math.DEG2RAD);
+    object3D.rotateZ(this.data.orientationOffset.z * THREE.Math.DEG2RAD);
 
     object3D.updateMatrix();
     object3D.matrixWorldNeedsUpdate = true;

@@ -185,11 +185,14 @@ suite('tracked-controls', function () {
       assertQuaternion(el.object3D.quaternion, controller.pose.orientation);
     });
 
-    test('applies rotation Z-offset', function () {
-      el.setAttribute('tracked-controls', 'rotationOffset', 10);
+    test('applies orientation offset', function () {
+      el.setAttribute('tracked-controls', 'orientationOffset', {x: 3, y: 4, z: 5});
       component.tick();
-      assertVec3(el.getAttribute('rotation'), [0, 0, 10]);
-      assertMatrix4(el.object3D.matrix, new THREE.Matrix4().makeRotationZ(10 * THREE.Math.DEG2RAD));
+      var rotation = el.getAttribute('rotation');
+      rotation.x = Math.round(rotation.x);
+      rotation.y = Math.round(rotation.y);
+      rotation.z = Math.round(rotation.z);
+      assertVec3(rotation, [3, 4, 5]);
     });
   });
 
@@ -526,10 +529,6 @@ suite('tracked-controls', function () {
     });
   });
 });
-
-function assertMatrix4 (matrixA, matrixB) {
-  assert.ok(matrixA.equals(matrixB), `\n${matrixA.elements}\n${matrixB.elements}`);
-}
 
 function assertVec3CloseTo (vec3, arr, delta) {
   var debugOutput = `${[vec3.x, vec3.y, vec3.z]} is not close to ${arr}`;
