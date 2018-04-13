@@ -461,10 +461,11 @@ AFRAME.registerComponent('custom-controls', {
   },
 
   update: function () {
+    var hand = this.data.hand;
     var controlConfiguration = {
-      hand: this.data.hand,
+      hand: hand,
       model: false,
-      rotationOffset: hand === 'left' ? 90 : -90
+      orientationOffset: {x: 0, y: 0, z: hand === 'left' ? 90 : -90}
     };
 
     // Build on top of controller components.

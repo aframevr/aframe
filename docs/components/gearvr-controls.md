@@ -35,7 +35,6 @@ and/or pressed buttons (trackpad, trigger).
 | buttonHighlightColor | Button colors when pressed and active.             | #FFFFFF              |
 | hand                 | The hand that will be tracked (e.g., right, left). |                      |
 | model                | Whether the Gear controller model is loaded.       | true                 |
-| rotationOffset       | Offset to apply to model rotation.                 | 0                    |
 | orientationOffset    | Offset to apply to model orientation.              | x: 0, y: 0, z: 0     |
 
 ## Events

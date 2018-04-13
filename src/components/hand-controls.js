@@ -170,7 +170,7 @@ module.exports.Component = registerComponent('hand-controls', {
     controlConfiguration = {
       hand: hand,
       model: false,
-      rotationOffset: hand === 'left' ? 90 : -90
+      orientationOffset: {x: 0, y: 0, z: hand === 'left' ? 90 : -90}
     };
 
     // Set model.
