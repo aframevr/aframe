@@ -4,34 +4,34 @@ Bug fixes after 0.8.0 release.
 
 ### Bug Fixes
 
-Place touch model to match real physical position of the controller. Apply correctly the pivot offset for Oculus Touch Controls. (#3537)
-Remove unused rotationOffset attribute in favor of orientationOffset. (#3537)
-Use both touchpad and trigger events in laser-controls to fire click events on GearVR. (#3530) (fix #3519)
+- Place touch model to match real physical position of the controller. Apply correctly the pivot offset for Oculus Touch Controls. (#3537)
+- Remove unused rotationOffset attribute in favor of orientationOffset. (#3537)
+- Use both touchpad and trigger events in laser-controls to fire click events on GearVR. (#3530) (fix #3519)
 4879f0601 Fix reverse mouse drag for look-controls. (#3482) (fix #3459)
-Use most recent intersection from raycaster when entity is intersected. (#3475) (fix #3467, #3485, #3445)
-Fix minification issues due to ES6 features. Use forEach instead of for...of (#3495) (fix #3449)
-Stop click event from propagation in vr-mode-ui. Prevent taps on the screen to propagate to the scene on Cardboard v2. (#3527)
-Init position/rotation/scale first if defined on the entity (#3517) (fix #3516)
-Change default value of vec4 component property type to match THREE.Vector4 default value.
-Deprecate antialias component in favor of renderer component. (#3424)
-Fix post processing. Use scene.onAfterRender() for tock. (#3468)
-Fix ignored controller events if several button preses happen on same tick. (#3472)
-Fix animations triggered by state change. (#3470) (fix #3436)
-Delay setting pose target for VRManager until camera is ready to prevent vrdisplayactivate trigger vr mode prematurely. (#3448)
-Fix video sphere not rendering due to missing back material flag. (fix #3444)
-Fixes pointerlock mode camera movement jank. (#3434)
+- Use most recent intersection from raycaster when entity is intersected. (#3475) (fix #3467, #3485, #3445)
+- Fix minification issues due to ES6 features. Use forEach instead of for...of (#3495) (fix #3449)
+- Stop click event from propagation in vr-mode-ui. Prevent taps on the screen to propagate to the scene on Cardboard v2. (#3527)
+- Init position/rotation/scale first if defined on the entity (#3517) (fix #3516)
+- Change default value of vec4 component property type to match THREE.Vector4 default value.
+- Deprecate antialias component in favor of renderer component. (#3424)
+- Fix post processing. Use scene.onAfterRender() for tock. (#3468)
+- Fix ignored controller events if several button preses happen on same tick. (#3472)
+- Fix animations triggered by state change. (#3470) (fix #3436)
+- Delay setting pose target for VRManager until camera is ready to prevent vrdisplayactivate trigger vr mode prematurely. (#3448)
+- Fix video sphere not rendering due to missing back material flag. (fix #3444)
+- Fixes pointerlock mode camera movement jank. (#3434)
 
 ### Performance 
 
-Remove default components to 4 component initializations per entity. (#3490)
-Save one array initialization per tick and raycaster. (#3438) (fix #3437)
-Use Object3D directly to save/restore pose in look-controls skipping radToDeg. (#3439)
+- Remove default components to 4 component initializations per entity. (#3490)
+- Save one array initialization per tick and raycaster. (#3438) (fix #3437)
+- Use Object3D directly to save/restore pose in look-controls skipping radToDeg. (#3439)
 
 ### Enhancements
 
-Add component to a-scene to configure renderer. (#3424) (fix #666)
-Add component reference to sound-loaded and sound-ended (#3514) (fix #3505)
-Improve testing coverage for controllers (#3474)
+- Add component to a-scene to configure renderer. (#3424) (fix #666)
+- Add component reference to sound-loaded and sound-ended (#3514) (fix #3505)
+- Improve testing coverage for controllers (#3474)
 
 ## 0.8.0 (March 9, 2018)
 
