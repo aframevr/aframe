@@ -102,7 +102,7 @@ and publishing now, remix the starter example on Glitch:
 ```html
 <html>
   <head>
-    <script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/0.8.2/aframe.min.js"></script>
   </head>
   <body>
     <a-scene>
