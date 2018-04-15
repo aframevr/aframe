@@ -1,4 +1,4 @@
-## 0.8.2 (April 14, 2018)
+## 0.8.2 (April 15, 2018)
 
 Bug fixes after 0.8.0 release.
 
