@@ -30,7 +30,8 @@ module.exports.Component = registerComponent('material', {
     side: {default: 'front', oneOf: ['front', 'back', 'double']},
     transparent: {default: false},
     vertexColors: {type: 'string', default: 'none', oneOf: ['face', 'vertex']},
-    visible: {default: true}
+    visible: {default: true},
+    blending: {default: 'normal', oneOf: ['none', 'normal', 'additive', 'subtractive', 'multiply']}
   },
 
   init: function () {
@@ -121,6 +122,7 @@ module.exports.Component = registerComponent('material', {
     material.transparent = data.transparent !== false || data.opacity < 1.0;
     material.vertexColors = parseVertexColors(data.vertexColors);
     material.visible = data.visible;
+    material.blending = parseBlending(data.blending);
 
     // Check if material needs update.
     if (Object.keys(oldData).length &&
@@ -210,6 +212,33 @@ function parseVertexColors (coloring) {
     }
     default: {
       return THREE.NoColors;
+    }
+  }
+}
+
+/**
+ * Return a three.js constant determining blending
+ *
+ * @param {string} [blending=normal]
+ * - `none`, additive`, `subtractive`,`multiply` or `normal`.
+ * @returns {number}
+ */
+function parseBlending (blending) {
+  switch (blending) {
+    case 'none': {
+      return THREE.NoBlending;
+    }
+    case 'additive': {
+      return THREE.AdditiveBlending;
+    }
+    case 'subtractive': {
+      return THREE.SubtractiveBlending;
+    }
+    case 'multiply': {
+      return THREE.MultiplyBlending;
+    }
+    default: {
+      return THREE.NormalBlending;
     }
   }
 }
