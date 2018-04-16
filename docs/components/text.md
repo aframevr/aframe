@@ -102,7 +102,7 @@ The implementation is based on [mattdesl's three-bmfont-text][three-bmfont-text]
 ## Events
 
 | Event Name  | Description                                  |
-|--- --- --- -|--- --- --- --- --- --- --- --- --- --- --- --|
+|-------------|----------------------------------------------|
 | textfontset | Emitted when the font source has been loaded |
 
 ## Fonts
