@@ -39,7 +39,7 @@ module.exports.updateMapMaterialFromData = function (materialName, dataName, sha
     // Load texture for the new material src.
     // (And check if we should still use it once available in callback.)
     el.sceneEl.systems.material.loadTexture(src,
-      {src: src, repeat: data.repeat, offset: data.offset, npot: data.npot},
+      {src: src, repeat: data.repeat, offset: data.offset, npot: data.npot, encoding: data.encoding},
       checkSetMap);
   }
 

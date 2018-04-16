@@ -30,7 +30,8 @@ module.exports.Component = registerComponent('material', {
     side: {default: 'front', oneOf: ['front', 'back', 'double']},
     transparent: {default: false},
     vertexColors: {type: 'string', default: 'none', oneOf: ['face', 'vertex']},
-    visible: {default: true}
+    visible: {default: true},
+    encoding: {type: 'string', oneOf: ['sRGB', 'Linear']}
   },
 
   init: function () {

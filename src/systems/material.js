@@ -346,6 +346,16 @@ function setTextureProperties (texture, data) {
   if (offset.x !== 0 || offset.y !== 0) {
     texture.offset.set(offset.x, offset.y);
   }
+
+  if( data.encoding) {
+    let newEncoding = THREE[ data.encoding] || THREE[ data.encoding + "Encoding"];
+    if(newEncoding === undefined) {
+      error("Unrecognized encoding: " +  data.encoding);
+    }
+    else {
+      texture.encoding = newEncoding;
+    }
+  }
 }
 
 /**
