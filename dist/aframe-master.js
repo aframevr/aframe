@@ -66074,17 +66074,17 @@ var THREE = _dereq_('../lib/three');
 var onButtonEvent = trackedControlsUtils.onButtonEvent;
 
 var TOUCH_CONTROLLER_MODEL_BASE_URL = 'https://cdn.aframe.io/controllers/oculus/oculus-touch-controller-';
-var TOUCH_CONTROLLER_MODEL_OBJ_URL_L = TOUCH_CONTROLLER_MODEL_BASE_URL + 'left.obj';
-var TOUCH_CONTROLLER_MODEL_OBJ_MTL_L = TOUCH_CONTROLLER_MODEL_BASE_URL + 'left.mtl';
-var TOUCH_CONTROLLER_MODEL_OBJ_URL_R = TOUCH_CONTROLLER_MODEL_BASE_URL + 'right.obj';
-var TOUCH_CONTROLLER_MODEL_OBJ_MTL_R = TOUCH_CONTROLLER_MODEL_BASE_URL + 'right.mtl';
+var TOUCH_CONTROLLER_MODEL_URL = {
+  left: TOUCH_CONTROLLER_MODEL_BASE_URL + 'left.gltf',
+  right: TOUCH_CONTROLLER_MODEL_BASE_URL + 'right.gltf'
+};
 
 var GAMEPAD_ID_PREFIX = 'Oculus Touch';
 
 var DEFAULT_MODEL_PIVOT_OFFSET = new THREE.Vector3(0, 0, -0.053);
 var RAY_ORIGIN = {
-  left: {origin: {x: 0.008, y: -0.008, z: 0}, direction: {x: 0, y: -0.8, z: -1}},
-  right: {origin: {x: -0.008, y: -0.008, z: 0}, direction: {x: 0, y: -0.8, z: -1}}
+  left: {origin: {x: 0.008, y: -0.004, z: 0}, direction: {x: 0, y: -0.8, z: -1}},
+  right: {origin: {x: -0.008, y: -0.004, z: 0}, direction: {x: 0, y: -0.8, z: -1}}
 };
 
 /**
@@ -66187,17 +66187,10 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     this.removeControllersUpdateListener();
   },
 
-  updateControllerModel: function () {
-    var objUrl, mtlUrl;
-    if (!this.data.model) { return; }
-    if (this.data.hand === 'right') {
-      objUrl = 'url(' + TOUCH_CONTROLLER_MODEL_OBJ_URL_R + ')';
-      mtlUrl = 'url(' + TOUCH_CONTROLLER_MODEL_OBJ_MTL_R + ')';
-    } else {
-      objUrl = 'url(' + TOUCH_CONTROLLER_MODEL_OBJ_URL_L + ')';
-      mtlUrl = 'url(' + TOUCH_CONTROLLER_MODEL_OBJ_MTL_L + ')';
-    }
-    this.el.setAttribute('obj-model', {obj: objUrl, mtl: mtlUrl});
+  loadModel: function () {
+    var data = this.data;
+    if (!data.model) { return; }
+    this.el.setAttribute('gltf-model', 'url(' + TOUCH_CONTROLLER_MODEL_URL[data.hand] + ')');
   },
 
   injectTrackedControls: function () {
@@ -66207,7 +66200,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
       controller: 0,
       orientationOffset: data.orientationOffset
     });
-    this.updateControllerModel();
+    this.loadModel();
   },
 
   addControllersUpdateListener: function () {
@@ -75493,7 +75486,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.2 (Date 2018-04-15, Commit #b20527f)');
+console.log('A-Frame Version: 0.8.2 (Date 2018-04-16, Commit #7b1ae1d)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
