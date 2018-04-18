@@ -6,7 +6,15 @@
 - **Performance:** maintain high framerate with low latency
 - **Ecosystem:** enable discovery and distribution of reusable components
 
-## 0.8.0 (est. Feb 2018, updated Feb 2018)
+## 0.9.0 (est. May 2018, updated Apr 2018)
 
-- Replace VREffect / VRControls with new three.js WebVR API
-- Performance improvements
+The roadmap has recently and largely defined through battle-testing A-Frame by
+the Supermedium team to build the browser, content, and tools. We will release
+open source mini-games for examples to follow, continue to push reusable
+components we create, guides, etc.
+
+- three.js upgrades
+- Animation component (https://www.npmjs.com/package/aframe-animation-component)
+- Inspector improvements (fixes, plug-ins, removal of unused features)
+- Toolchain improvements (support model animations)
+- Continued performance improvements (https://github.com/aframevr/aframe/pull/2951)
