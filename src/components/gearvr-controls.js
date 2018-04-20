@@ -18,11 +18,6 @@ var GAMEPAD_ID_PREFIX = 'Gear VR';
  * Load a controller model and highlight the pressed buttons.
  */
 module.exports.Component = registerComponent('gearvr-controls', {
-  // Expose the model and material so they can be used temporarily by the Oculus Go controls.
-  MODEL_OBJ_URL: GEARVR_CONTROLLER_MODEL_OBJ_URL,
-
-  MODEL_OBJ_MTL: GEARVR_CONTROLLER_MODEL_OBJ_MTL,
-
   schema: {
     hand: {default: ''},  // This informs the degenerate arm model.
     buttonColor: {type: 'color', default: '#000000'},

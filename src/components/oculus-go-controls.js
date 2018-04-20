@@ -5,12 +5,9 @@ var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresent
 var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
 var onButtonEvent = trackedControlsUtils.onButtonEvent;
 
-// Temporarily share the controller with the Gear VR
-var gearVRControls = require('../components/gearvr-controls');
-var GO_CONTROLLER_MODEL_OBJ_URL = gearVRControls.MODEL_OBJ_URL;
-var GO_CONTROLLER_MODEL_OBJ_MTL = gearVRControls.MODEL_OBJ_MTL;
-
 var GAMEPAD_ID_PREFIX = 'Oculus Go';
+
+var OCULUS_GO_CONTROLLER_MODEL_URL = 'https://cdn.aframe.io/controllers/oculus/go/oculus-go-controller.gltf';
 
 /**
  * Oculus Go controls.
@@ -21,8 +18,8 @@ var GAMEPAD_ID_PREFIX = 'Oculus Go';
 module.exports.Component = registerComponent('oculus-go-controls', {
   schema: {
     hand: {default: ''},  // This informs the degenerate arm model.
-    buttonColor: {type: 'color', default: '#000000'},
-    buttonTouchedColor: {type: 'color', default: '#777777'},
+    buttonColor: {type: 'color', default: '#727272'},
+    buttonTouchedColor: {type: 'color', default: '#BBBBBB'},
     buttonHighlightColor: {type: 'color', default: '#FFFFFF'},
     model: {default: true},
     rotationOffset: {default: 0},
@@ -113,10 +110,7 @@ module.exports.Component = registerComponent('oculus-go-controls', {
       rotationOffset: data.rotationOffset
     });
     if (!this.data.model) { return; }
-    this.el.setAttribute('obj-model', {
-      obj: GO_CONTROLLER_MODEL_OBJ_URL,
-      mtl: GO_CONTROLLER_MODEL_OBJ_MTL
-    });
+    this.el.setAttribute('gltf-model', OCULUS_GO_CONTROLLER_MODEL_URL);
   },
 
   addControllersUpdateListener: function () {
@@ -131,15 +125,23 @@ module.exports.Component = registerComponent('oculus-go-controls', {
     this.checkIfControllerPresent();
   },
 
-  // No need for onButtonChanged, since Gear VR controller has no analog buttons.
+  // No need for onButtonChanged, since Oculus Go controller has no analog buttons.
 
   onModelLoaded: function (evt) {
     var controllerObject3D = evt.detail.model;
     var buttonMeshes;
     if (!this.data.model) { return; }
     buttonMeshes = this.buttonMeshes = {};
-    buttonMeshes.trigger = controllerObject3D.children[2];
-    buttonMeshes.trackpad = controllerObject3D.children[1];
+    buttonMeshes.trigger = controllerObject3D.children[0].children[1].children[4];
+    buttonMeshes.trackpad = controllerObject3D.children[0].children[1].children[1];
+
+    // we need to set trigger and trackpad material separately so that we can edit them independently
+    for (const buttonName in buttonMeshes) {
+      buttonMeshes[buttonName].material = buttonMeshes[buttonName].material.clone();
+      buttonMeshes[buttonName].material.color = this.data.buttonColor;
+      buttonMeshes[buttonName].material.map = null;
+      buttonMeshes[buttonName].material.needsUpdate = true;
+    }
   },
 
   onButtonChanged: function (evt) {
