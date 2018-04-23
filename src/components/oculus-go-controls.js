@@ -18,9 +18,9 @@ var OCULUS_GO_CONTROLLER_MODEL_URL = 'https://cdn.aframe.io/controllers/oculus/g
 module.exports.Component = registerComponent('oculus-go-controls', {
   schema: {
     hand: {default: ''},  // This informs the degenerate arm model.
-    buttonColor: {type: 'color', default: '#727272'},
+    buttonColor: {type: 'color', default: '#FFFFFF'},
     buttonTouchedColor: {type: 'color', default: '#BBBBBB'},
-    buttonHighlightColor: {type: 'color', default: '#FFFFFF'},
+    buttonHighlightColor: {type: 'color', default: '#7A7A7A'},
     model: {default: true},
     rotationOffset: {default: 0},
     armModel: {default: true}
@@ -130,18 +130,11 @@ module.exports.Component = registerComponent('oculus-go-controls', {
   onModelLoaded: function (evt) {
     var controllerObject3D = evt.detail.model;
     var buttonMeshes;
+
     if (!this.data.model) { return; }
     buttonMeshes = this.buttonMeshes = {};
-    buttonMeshes.trigger = controllerObject3D.children[0].children[1].children[4];
-    buttonMeshes.trackpad = controllerObject3D.children[0].children[1].children[1];
-
-    // we need to set trigger and trackpad material separately so that we can edit them independently
-    for (const buttonName in buttonMeshes) {
-      buttonMeshes[buttonName].material = buttonMeshes[buttonName].material.clone();
-      buttonMeshes[buttonName].material.color = this.data.buttonColor;
-      buttonMeshes[buttonName].material.map = null;
-      buttonMeshes[buttonName].material.needsUpdate = true;
-    }
+    buttonMeshes.trigger = controllerObject3D.getObjectByName('oculus_go_button_trigger');
+    buttonMeshes.trackpad = controllerObject3D.getObjectByName('oculus_go_touchpad');
   },
 
   onButtonChanged: function (evt) {
