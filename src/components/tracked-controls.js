@@ -43,9 +43,6 @@ module.exports.Component = registerComponent('tracked-controls', {
     this.controllerEuler = new THREE.Euler();
 
     this.updateGamepad();
-
-    // The matrix is manipulate directly in the updatePose method.
-    this.el.object3D.matrixAutoUpdate = false;
   },
 
   tick: function (time, delta) {
