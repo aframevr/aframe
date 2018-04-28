@@ -327,7 +327,7 @@ module.exports.AScene = registerElement('a-scene', {
           // Exiting VR in embedded mode, no longer need fullscreen styles.
           if (self.hasAttribute('embedded')) { self.removeFullScreenStyles(); }
           self.resize();
-          if (self.isIOS) { utils.forceCanvasResizeSafariMobile(this.canvas); }
+          if (self.isIOS) { utils.forceCanvasResizeSafariMobile(self.canvas); }
           self.emit('exit-vr', {target: self});
         }
 
