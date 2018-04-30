@@ -199,7 +199,7 @@ AFRAME.registerComponent('link-controls', {
         el.addEventListener('trackpadtouchend', this.stopPeeking);
         break;
       default:
-        console.warn('Uknown controller ' + this.controller + '. Cannot attach link event listeners.');
+        console.warn('Unknown controller ' + this.controller + '. Cannot attach link event listeners.');
     }
   },
 
@@ -225,7 +225,7 @@ AFRAME.registerComponent('link-controls', {
         el.removeEventListener('trackpadtouchend', this.stopPeeking);
         break;
       default:
-        console.warn('Uknown controller ' + this.controller + '. Cannot remove link event listeners.');
+        console.warn('Unknown controller ' + this.controller + '. Cannot remove link event listeners.');
     }
   },
 
