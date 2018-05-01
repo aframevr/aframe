@@ -11,8 +11,7 @@ var warn = debug('components:sound:warn');
 module.exports.Component = registerComponent('sound', {
   schema: {
     autoplay: {default: false},
-    distanceModel: {default: 'inverse',
-      oneOf: ['linear', 'inverse', 'exponential']},
+    distanceModel: {default: 'inverse', oneOf: ['linear', 'inverse', 'exponential']},
     loop: {default: false},
     maxDistance: {default: 10000},
     on: {default: ''},
@@ -62,6 +61,7 @@ module.exports.Component = registerComponent('sound', {
     if (data.on !== oldData.on) {
       this.updateEventListener(oldData.on);
     }
+
     // All sound values set. Load in `src`.
     if (srcChanged) {
       var self = this;

@@ -56,14 +56,15 @@ suite('sound', function () {
       }
     });
 
-    test('can change volume', function () {
+    test.skip('can change volume', function () {
+      var audioPool;
       var el = this.el;
-      el.setAttribute('sound', 'volume', 0.75);
+      var i;
 
-      var audioPool = el.getObject3D(el.components.sound.attrName);
-      for (var i = 0; i < audioPool.children.length; i++) {
-        var audio = audioPool.children[i];
-        assert.equal(audio.getVolume(), 0.75);
+      el.setAttribute('sound', 'volume', 0.75);
+      audioPool = el.getObject3D(el.components.sound.attrName);
+      for (i = 0; i < audioPool.children.length; i++) {
+        assert.equal(audioPool.children[i].getVolume(), 0.75);
       }
     });
   });
