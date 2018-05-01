@@ -68695,8 +68695,7 @@ var warn = debug('components:sound:warn');
 module.exports.Component = registerComponent('sound', {
   schema: {
     autoplay: {default: false},
-    distanceModel: {default: 'inverse',
-      oneOf: ['linear', 'inverse', 'exponential']},
+    distanceModel: {default: 'inverse', oneOf: ['linear', 'inverse', 'exponential']},
     loop: {default: false},
     maxDistance: {default: 10000},
     on: {default: ''},
@@ -68746,6 +68745,7 @@ module.exports.Component = registerComponent('sound', {
     if (data.on !== oldData.on) {
       this.updateEventListener(oldData.on);
     }
+
     // All sound values set. Load in `src`.
     if (srcChanged) {
       var self = this;
@@ -76373,7 +76373,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.2 (Date 2018-04-28, Commit #7fc43be)');
+console.log('A-Frame Version: 0.8.2 (Date 2018-05-01, Commit #62fd5f6)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
