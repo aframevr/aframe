@@ -69425,9 +69425,6 @@ module.exports.Component = registerComponent('tracked-controls', {
     this.controllerEuler = new THREE.Euler();
 
     this.updateGamepad();
-
-    // The matrix is manipulate directly in the updatePose method.
-    this.el.object3D.matrixAutoUpdate = false;
   },
 
   tick: function (time, delta) {
@@ -76373,7 +76370,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.2 (Date 2018-05-01, Commit #62fd5f6)');
+console.log('A-Frame Version: 0.8.2 (Date 2018-05-02, Commit #643fdc5)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
