@@ -60,7 +60,7 @@ an A-Frame scene:
   solid color as the scene background. This prevents the creation of
   unnecessary geometry.
 - Update `position`, `rotation`, `scale`, and `visible` using at the three.js
-  level (`el.object3D.position`, `el.object3D.position`, `el.object3D.scale`,
+  level (`el.object3D.position`, `el.object3D.rotation`, `el.object3D.scale`,
   `el.object3D.visible`) to avoid overhead on `.setAttribute`.
 
 ### GPU Texture Preloading
