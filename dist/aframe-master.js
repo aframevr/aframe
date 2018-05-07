@@ -71841,7 +71841,7 @@ var proto = Object.create(ANode.prototype, {
       var parentEl = this.parentEl;
       this.parentEl.remove(this);
       this.attachedToParent = false;
-      this.parentEl = this.parentNode = null;
+      this.parentEl = null;
       parentEl.emit('child-detached', {el: this});
     }
   },
@@ -76370,7 +76370,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.2 (Date 2018-05-02, Commit #643fdc5)');
+console.log('A-Frame Version: 0.8.2 (Date 2018-05-07, Commit #050cbaf)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
