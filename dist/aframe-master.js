@@ -65372,7 +65372,8 @@ module.exports.Component = registerComponent('light', {
     shadowCameraLeft: {default: -5, if: {castShadow: true}},
     shadowCameraVisible: {default: false, if: {castShadow: true}},
     shadowMapHeight: {default: 512, if: {castShadow: true}},
-    shadowMapWidth: {default: 512, if: {castShadow: true}}
+    shadowMapWidth: {default: 512, if: {castShadow: true}},
+    shadowRadius: {default: 1, if: {castShadow: true}}
   },
 
   /**
@@ -65446,6 +65447,7 @@ module.exports.Component = registerComponent('light', {
           case 'shadowCameraVisible':
           case 'shadowMapHeight':
           case 'shadowMapWidth':
+          case 'shadowRadius':
             if (!shadowsLoaded) {
               self.updateShadow();
               shadowsLoaded = true;
@@ -65512,6 +65514,7 @@ module.exports.Component = registerComponent('light', {
 
     // Shadow appearance.
     light.shadow.bias = data.shadowBias;
+    light.shadow.radius = data.shadowRadius;
     light.shadow.mapSize.height = data.shadowMapHeight;
     light.shadow.mapSize.width = data.shadowMapWidth;
 
@@ -76370,7 +76373,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.2 (Date 2018-05-07, Commit #050cbaf)');
+console.log('A-Frame Version: 0.8.2 (Date 2018-05-09, Commit #21b3802)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
