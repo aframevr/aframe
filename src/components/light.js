@@ -34,7 +34,8 @@ module.exports.Component = registerComponent('light', {
     shadowCameraLeft: {default: -5, if: {castShadow: true}},
     shadowCameraVisible: {default: false, if: {castShadow: true}},
     shadowMapHeight: {default: 512, if: {castShadow: true}},
-    shadowMapWidth: {default: 512, if: {castShadow: true}}
+    shadowMapWidth: {default: 512, if: {castShadow: true}},
+    shadowRadius: {default: 1, if: {castShadow: true}}
   },
 
   /**
@@ -108,6 +109,7 @@ module.exports.Component = registerComponent('light', {
           case 'shadowCameraVisible':
           case 'shadowMapHeight':
           case 'shadowMapWidth':
+          case 'shadowRadius':
             if (!shadowsLoaded) {
               self.updateShadow();
               shadowsLoaded = true;
@@ -174,6 +176,7 @@ module.exports.Component = registerComponent('light', {
 
     // Shadow appearance.
     light.shadow.bias = data.shadowBias;
+    light.shadow.radius = data.shadowRadius;
     light.shadow.mapSize.height = data.shadowMapHeight;
     light.shadow.mapSize.width = data.shadowMapWidth;
 
