@@ -58,6 +58,15 @@ suite('light', function () {
       assert.ok(el.getObject3D('light').castShadow);
       assert.equal(el.getObject3D('light').shadow.bias, 0.25);
     });
+
+    test('can set shadow radius', function () {
+      var el = this.el;
+      el.setAttribute('light', {
+        castShadow: true,
+        shadowRadius: 2
+      });
+      assert.equal(el.getObject3D('light').shadow.radius, 2);
+    });
   });
 
   suite('getLight', function () {
