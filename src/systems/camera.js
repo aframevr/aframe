@@ -1,4 +1,3 @@
-var bind = require('../utils/bind');
 var constants = require('../constants/');
 var registerSystem = require('../core/system').registerSystem;
 
@@ -12,10 +11,18 @@ var DEFAULT_CAMERA_ATTR = 'data-aframe-default-camera';
 module.exports.System = registerSystem('camera', {
   init: function () {
     this.activeCameraEl = null;
+    this.bindMethods();
     // Wait for all entities to fully load before checking for existence of camera.
     // Since entities wait for <a-assets> to load, any cameras attaching to the scene
     // will do so asynchronously.
-    this.sceneEl.addEventListener('loaded', bind(this.setupDefaultCamera, this));
+    this.sceneEl.addEventListener('loaded', this.setupDefaultCamera);
+  },
+
+  bindMethods: function () {
+    this.setupDefaultCamera = this.setupDefaultCamera.bind(this);
+    this.wrapRender = this.wrapRender.bind(this);
+    this.unwrapRender = this.unwrapRender.bind(this);
+    this.render = this.render.bind(this);
   },
 
   /**
@@ -131,6 +138,10 @@ module.exports.System = registerSystem('camera', {
     }
 
     spectatorCameraEl = this.spectatorCameraEl = newCameraEl;
+
+    sceneEl.addEventListener('enter-vr', this.wrapRender);
+    sceneEl.addEventListener('exit-vr', this.unwrapRender);
+
     spectatorCameraEl.setAttribute('camera', 'active', false);
     spectatorCameraEl.play();
 
@@ -144,14 +155,31 @@ module.exports.System = registerSystem('camera', {
     this.spectatorCameraEl = undefined;
   },
 
-  tock: function () {
+  /**
+   * Wrap the render method of the renderer to render
+   * the spectator camera after vrDisplay.submitFrame.
+   */
+  wrapRender: function () {
+    if (!this.spectatorCameraEl) { return; }
+    this.originalRender = this.sceneEl.renderer.render;
+    this.sceneEl.renderer.render = this.render;
+  },
+
+  unwrapRender: function () {
+    if (!this.originalRender) { return; }
+    this.sceneEl.renderer.render = this.originalRender;
+    this.originalRender = undefined;
+  },
+
+  render: function (scene, camera, renderTarget) {
     var spectatorCamera;
     var sceneEl = this.sceneEl;
     var isVREnabled = sceneEl.renderer.vr.enabled;
-    if (!this.spectatorCameraEl || sceneEl.isMobile) { return; }
+    this.originalRender.call(sceneEl.renderer, scene, camera, renderTarget);
+    if (!this.spectatorCameraEl || sceneEl.isMobile || !isVREnabled) { return; }
     spectatorCamera = this.spectatorCameraEl.components.camera.camera;
     sceneEl.renderer.vr.enabled = false;
-    sceneEl.renderer.render(sceneEl.object3D, spectatorCamera);
+    this.originalRender.call(sceneEl.renderer, scene, spectatorCamera);
     sceneEl.renderer.vr.enabled = isVREnabled;
   }
 });
