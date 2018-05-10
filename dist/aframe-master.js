@@ -76373,7 +76373,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.2 (Date 2018-05-10, Commit #5f9418f)');
+console.log('A-Frame Version: 0.8.2 (Date 2018-05-10, Commit #e4e40b0)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -77036,8 +77036,6 @@ module.exports.System = registerSystem('camera', {
       z: 0
     });
     sceneEl.appendChild(defaultCameraEl);
-    sceneEl.addEventListener('enter-vr', this.removeDefaultOffset);
-    sceneEl.addEventListener('exit-vr', this.addDefaultOffset);
     sceneEl.emit('camera-ready', {cameraEl: defaultCameraEl});
   },
 
