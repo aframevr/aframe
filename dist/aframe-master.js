@@ -76373,7 +76373,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.2 (Date 2018-05-09, Commit #21b3802)');
+console.log('A-Frame Version: 0.8.2 (Date 2018-05-10, Commit #5f9418f)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -76982,7 +76982,6 @@ var css = ".a-html{bottom:0;left:0;position:fixed;right:0;top:0}.a-body{height:1
 },{"browserify-css":5}],159:[function(_dereq_,module,exports){
 var css = ".rs-base{background-color:#333;color:#fafafa;border-radius:0;font:10px monospace;left:5px;line-height:1em;opacity:.85;overflow:hidden;padding:10px;position:fixed;top:5px;width:300px;z-index:10000}.rs-base div.hidden{display:none}.rs-base h1{color:#fff;cursor:pointer;font-size:1.4em;font-weight:300;margin:0 0 5px;padding:0}.rs-group{display:-webkit-box;display:-webkit-flex;display:flex;-webkit-flex-direction:column-reverse;flex-direction:column-reverse;margin-bottom:5px}.rs-group:last-child{margin-bottom:0}.rs-counter-base{align-items:center;display:-webkit-box;display:-webkit-flex;display:flex;height:10px;-webkit-justify-content:space-between;justify-content:space-between;margin:2px 0}.rs-counter-base.alarm{color:#b70000;text-shadow:0 0 0 #b70000,0 0 1px #fff,0 0 1px #fff,0 0 2px #fff,0 0 2px #fff,0 0 3px #fff,0 0 3px #fff,0 0 4px #fff,0 0 4px #fff}.rs-counter-id{font-weight:300;-webkit-box-ordinal-group:0;-webkit-order:0;order:0;width:54px}.rs-counter-value{font-weight:300;-webkit-box-ordinal-group:1;-webkit-order:1;order:1;text-align:right;width:35px}.rs-canvas{-webkit-box-ordinal-group:2;-webkit-order:2;order:2}@media (min-width:480px){.rs-base{left:20px;top:20px}}"; (_dereq_("browserify-css").createStyle(css, { "href": "src/style/rStats.css"})); module.exports = css;
 },{"browserify-css":5}],160:[function(_dereq_,module,exports){
-var bind = _dereq_('../utils/bind');
 var constants = _dereq_('../constants/');
 var registerSystem = _dereq_('../core/system').registerSystem;
 
@@ -76996,10 +76995,18 @@ var DEFAULT_CAMERA_ATTR = 'data-aframe-default-camera';
 module.exports.System = registerSystem('camera', {
   init: function () {
     this.activeCameraEl = null;
+    this.bindMethods();
     // Wait for all entities to fully load before checking for existence of camera.
     // Since entities wait for <a-assets> to load, any cameras attaching to the scene
     // will do so asynchronously.
-    this.sceneEl.addEventListener('loaded', bind(this.setupDefaultCamera, this));
+    this.sceneEl.addEventListener('loaded', this.setupDefaultCamera);
+  },
+
+  bindMethods: function () {
+    this.setupDefaultCamera = this.setupDefaultCamera.bind(this);
+    this.wrapRender = this.wrapRender.bind(this);
+    this.unwrapRender = this.unwrapRender.bind(this);
+    this.render = this.render.bind(this);
   },
 
   /**
@@ -77115,6 +77122,10 @@ module.exports.System = registerSystem('camera', {
     }
 
     spectatorCameraEl = this.spectatorCameraEl = newCameraEl;
+
+    sceneEl.addEventListener('enter-vr', this.wrapRender);
+    sceneEl.addEventListener('exit-vr', this.unwrapRender);
+
     spectatorCameraEl.setAttribute('camera', 'active', false);
     spectatorCameraEl.play();
 
@@ -77128,14 +77139,31 @@ module.exports.System = registerSystem('camera', {
     this.spectatorCameraEl = undefined;
   },
 
-  tock: function () {
+  /**
+   * Wrap the render method of the renderer to render
+   * the spectator camera after vrDisplay.submitFrame.
+   */
+  wrapRender: function () {
+    if (!this.spectatorCameraEl) { return; }
+    this.originalRender = this.sceneEl.renderer.render;
+    this.sceneEl.renderer.render = this.render;
+  },
+
+  unwrapRender: function () {
+    if (!this.originalRender) { return; }
+    this.sceneEl.renderer.render = this.originalRender;
+    this.originalRender = undefined;
+  },
+
+  render: function (scene, camera, renderTarget) {
     var spectatorCamera;
     var sceneEl = this.sceneEl;
     var isVREnabled = sceneEl.renderer.vr.enabled;
-    if (!this.spectatorCameraEl || sceneEl.isMobile) { return; }
+    this.originalRender.call(sceneEl.renderer, scene, camera, renderTarget);
+    if (!this.spectatorCameraEl || sceneEl.isMobile || !isVREnabled) { return; }
     spectatorCamera = this.spectatorCameraEl.components.camera.camera;
     sceneEl.renderer.vr.enabled = false;
-    sceneEl.renderer.render(sceneEl.object3D, spectatorCamera);
+    this.originalRender.call(sceneEl.renderer, scene, spectatorCamera);
     sceneEl.renderer.vr.enabled = isVREnabled;
   }
 });
@@ -77156,7 +77184,7 @@ function removeDefaultCamera (sceneEl) {
   sceneEl.removeChild(defaultCamera);
 }
 
-},{"../constants/":94,"../core/system":113,"../utils/bind":167}],161:[function(_dereq_,module,exports){
+},{"../constants/":94,"../core/system":113}],161:[function(_dereq_,module,exports){
 var geometries = _dereq_('../core/geometry').geometries;
 var registerSystem = _dereq_('../core/system').registerSystem;
 var THREE = _dereq_('../lib/three');
