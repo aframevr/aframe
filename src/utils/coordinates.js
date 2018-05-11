@@ -34,7 +34,8 @@ function parse (value, defaultVec) {
     return typeof defaultVec === 'object' ? extend({}, defaultVec) : defaultVec;
   }
 
-  coordinate = value.trim().replace(/\s+/g, ' ').split(' ');
+  coordinate = value.trim().split(/\s+/g);
+
   vec = {};
   vec.x = coordinate[0] || defaultVec && defaultVec.x;
   vec.y = coordinate[1] || defaultVec && defaultVec.y;
