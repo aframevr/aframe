@@ -5,7 +5,7 @@ var extend = require('object-assign');
 var warn = debug('utils:coordinates:warn');
 
 // Order of coordinates parsed by coordinates.parse.
-var coordinateKeys = ['x', 'y', 'z', 'w'];
+var COORDINATE_KEYS = ['x', 'y', 'z', 'w'];
 
 // Coordinate string regex. Handles negative, positive, and decimals.
 var regex = /^\s*((-?\d*\.{0,1}\d+(e-?\d+)?)\s+){2,3}(-?\d*\.{0,1}\d+(e-?\d+)?)\s*$/;
@@ -42,17 +42,15 @@ function parse (value, defaultVec) {
   coordinate = value.trim().split(/\s+/g);
 
   vec = {};
-  for (var i = 0; i < coordinateKeys.length; i++) {
-    var key = coordinateKeys[i];
-    if (coordinate.length > i) {
+  COORDINATE_KEYS.forEach(function (key, i) {
+    if (coordinate[i] !== undefined) {
       vec[key] = parseFloat(coordinate[i], 10);
     } else {
       var defaultVal = defaultVec && defaultVec[key];
-      if (defaultVal !== undefined) {
-        vec[key] = parseIfString(defaultVal);
-      }
+      if (defaultVal === undefined) { return; }
+      vec[key] = parseIfString(defaultVal);
     }
-  }
+  });
   return vec;
 }
 module.exports.parse = parse;
