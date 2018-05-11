@@ -42,7 +42,7 @@ function parse (value, defaultVec) {
   coordinate = value.trim().split(/\s+/g);
 
   vec = {};
-  for (var i = 0; i < 4; i++) {
+  for (var i = 0; i < coordinateKeys.length; i++) {
     var key = coordinateKeys[i];
     if (coordinate.length > i) {
       vec[key] = parseFloat(coordinate[i], 10);
