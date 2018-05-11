@@ -43,7 +43,7 @@ function parse (value, defaultVec) {
 
   vec = {};
   COORDINATE_KEYS.forEach(function (key, i) {
-    if (coordinate[i] !== undefined) {
+    if (coordinate[i]) {
       vec[key] = parseFloat(coordinate[i], 10);
     } else {
       var defaultVal = defaultVec && defaultVec[key];
