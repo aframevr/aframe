@@ -100,6 +100,8 @@ model or `.mtl` file.
 2. Search for the name of your texture (e.g., `texture.jpg`)
 3. Fix the path to the texture by making it relative instead of absolute
 
+If this didn't work, you should check your MTL file and you might notice it is trying to use TGA or some other sort of textures that aren't plain images. In this case, you need to include additional three.js loaders. However it might be easier to try converting all the TGAs to just use images like PNGs using a converter, and replace all instances of 'tga' with 'png'.
+
 ### My Model Isn't Animating
 
 [aframe-extras]: https://github.com/donmccurdy/aframe-extras
