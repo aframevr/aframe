@@ -47,6 +47,8 @@ module.exports.Component = registerComponent('raycaster', {
     useWorldCoordinates: {default: false}
   },
 
+  multiple: true,
+
   init: function () {
     this.clearedIntersectedEls = [];
     this.unitLineEndVec3 = new THREE.Vector3();
