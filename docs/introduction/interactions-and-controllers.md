@@ -75,7 +75,7 @@ clicking directly on the entity using a raycaster.
 We'll first go over gaze-based interactions. Gaze-based interactions rely on
 rotating our heads and looking at objects to interact with them. This type of
 interaction is for headsets without a controller. Even with a rotation-only
-controller (Daydream, GearVR), the interaction is still similar. Since A-Frame
+controller (Daydream, GearVR, Oculus Go), the interaction is still similar. Since A-Frame
 provides mouse-drag controls by default, gaze-based can sort of be used on
 desktop to preview the interaction by dragging the camera rotation.
 
@@ -262,7 +262,7 @@ interact with objects with their hands.
 
 A-Frame provides components for controllers across the spectrum as supported by
 their respective WebVR browsers through the [Gamepad Web API][gamepad]. There
-are components for Vive, Oculus Touch, Daydream, and GearVR controllers.
+are components for Vive, Oculus Touch, Daydream, GearVR and Oculus Go controllers.
 
 To inspect the Gamepad object for poking around or to get the Gamepad ID, we
 can call `navigator.getGamepads()` in the browser console. This will return a
@@ -313,7 +313,7 @@ component by:
 The controller components following are only activated if they detect the
 controller is found and seen as connected in the Gamepad API.
 
-### Adding 3DoF Controllers (daydream-controls, gearvr-controls)
+### Adding 3DoF Controllers (daydream-controls, gearvr-controls, oculus-go-controls)
 
 [dof]: http://www.roadtovr.com/introduction-positional-tracking-degrees-freedom-dof/
 
@@ -325,7 +325,7 @@ degrees of freedom for VR][dof].
 
 The 3DoF controller components provide rotational tracking, a default model
 matching the real-life hardware, and events to abstract the button mappings.
-The controllers for Google Daydream and Samsung GearVR have 3DoF, and both
+The controllers for Google Daydream, Samsung GearVR and Oculus Go have 3DoF, and both
 support only one controller for one hand.
 
 [daydreamcomponent]: ../components/daydream-controls.md
@@ -346,6 +346,16 @@ Internet on a smartphone with GearVR:
 
 ```html
 <a-entity gearvr-controls></a-entity>
+```
+
+[oculusgocomponent]: ../components/oculus-go-controls.md
+
+To add a controller for Oculus Go, use the [oculus-go-controls
+component][oculusgocomponent]. Then try it out on Oculus Browser or Samsung
+Internet on an Oculus Go standalone headset:
+
+```html
+<a-entity oculus-go-controls></a-entity>
 ```
 
 ### Adding 6DoF Controllers (vive-controls, oculus-touch-controls)
