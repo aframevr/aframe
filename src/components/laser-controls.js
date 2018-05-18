@@ -76,7 +76,7 @@ registerComponent('laser-controls', {
     },
 
     'oculus-go-controls': {
-      cursor: {downEvents: ['trackpaddown'], upEvents: ['trackpadup']},
+      cursor: {downEvents: ['trackpaddown', 'triggerdown'], upEvents: ['trackpadup', 'triggerup']},
       raycaster: {origin: {x: 0, y: 0.0005, z: 0}}
     },
 
