@@ -65315,7 +65315,7 @@ registerComponent('laser-controls', {
     },
 
     'oculus-go-controls': {
-      cursor: {downEvents: ['trackpaddown'], upEvents: ['trackpadup']},
+      cursor: {downEvents: ['trackpaddown', 'triggerdown'], upEvents: ['trackpadup', 'triggerup']},
       raycaster: {origin: {x: 0, y: 0.0005, z: 0}}
     },
 
@@ -76373,7 +76373,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.2 (Date 2018-05-12, Commit #111887f)');
+console.log('A-Frame Version: 0.8.2 (Date 2018-05-18, Commit #1c3925d)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
