@@ -421,6 +421,7 @@ suite('tracked-controls', function () {
     test('emits buttonup if button released', function () {
       const emitSpy = sinon.spy(el, 'emit');
       component.buttonStates[1] = {pressed: true, touched: false, value: 1};
+      component.buttonEventDetails[1] = {id: 1, state: component.buttonStates[1]};
       controller.buttons[1].pressed = false;
       controller.buttons[1].value = 0;
       component.tick();
@@ -477,6 +478,7 @@ suite('tracked-controls', function () {
     test('emits touchend if button no longer touched', function () {
       const emitSpy = sinon.spy(el, 'emit');
       component.buttonStates[1] = {pressed: false, touched: true, value: 1};
+      component.buttonEventDetails[1] = {id: 1, state: component.buttonStates[1]};
       controller.buttons[1].touched = false;
       controller.buttons[1].value = 0;
       component.tick();
