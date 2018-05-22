@@ -261,8 +261,9 @@ suite('raycaster', function () {
       raycasterEl.addEventListener('raycaster-intersection', function () {
         // Point raycaster somewhere else.
         raycasterEl.setAttribute('rotation', '90 0 0');
-        raycasterEl.addEventListener('raycaster-intersection-cleared', function (evt) {
+        raycasterEl.addEventListener('raycaster-intersection-cleared', function cb (evt) {
           assert.notEqual(component.clearedIntersectedEls.indexOf(targetEl), -1);
+          raycasterEl.removeEventListener('raycaster-intersection-cleared', cb);
           done();
         });
         component.tick();
@@ -280,6 +281,31 @@ suite('raycaster', function () {
           done();
         });
         component.tick();
+      });
+      component.tick();
+    });
+
+    test('clears intersections when disabled', function (done) {
+      targetEl.addEventListener('raycaster-intersected', function () {
+        targetEl.addEventListener('raycaster-intersected-cleared', function () {
+          done();
+        });
+        assert.equal(component.intersectedEls.length, 2);
+        assert.equal(component.clearedIntersectedEls.length, 0);
+        el.setAttribute('raycaster', 'enabled', false);
+        assert.equal(component.intersectedEls.length, 0);
+        assert.equal(component.intersections.length, 0);
+        assert.equal(component.clearedIntersectedEls.length, 2);
+      });
+      component.tick();
+    });
+
+    test('emits intersectioncleared when disabled', function (done) {
+      targetEl.addEventListener('raycaster-intersected', function () {
+        el.addEventListener('raycaster-intersection-cleared', function () {
+          done();
+        });
+        el.setAttribute('raycaster', 'enabled', false);
       });
       component.tick();
     });
