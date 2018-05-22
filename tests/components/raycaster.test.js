@@ -194,7 +194,10 @@ suite('raycaster', function () {
     });
 
     test('can catch basic intersection', function (done) {
-      targetEl.addEventListener('raycaster-intersected', function () { done(); });
+      targetEl.addEventListener('raycaster-intersected', function (evt) {
+        assert.ok(evt.detail.getIntersection(targetEl));
+        done();
+      });
       component.tick();
     });
 
