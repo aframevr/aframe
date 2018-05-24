@@ -29,6 +29,9 @@
   },
   "repository": "aframevr/aframe",
   "license": "MIT",
+  "files": [
+    "dist/*",
+  ],
   "dependencies": {
     "@tweenjs/tween.js": "^16.8.0",
     "browserify-css": "^0.8.2",
