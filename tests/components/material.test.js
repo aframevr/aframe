@@ -80,6 +80,19 @@ suite('material', function () {
       });
     });
 
+    test('can load canvas texture', function (done) {
+      var canvas = document.createElement('canvas');
+      canvas.setAttribute('id', 'canvas');
+      el.sceneEl.appendChild(canvas);
+      el.addEventListener('materialtextureloaded', function (evt) {
+        assert.equal(el.components.material.material.map.image, canvas);
+        done();
+      });
+      setTimeout(() => {
+        el.setAttribute('material', {src: '#canvas'});
+      });
+    });
+
     test('removes texture when src attribute removed', function (done) {
       var imageUrl = 'base/tests/assets/test.png';
       el.setAttribute('material', '');
