@@ -63733,7 +63733,8 @@ module.exports={
   "repository": "aframevr/aframe",
   "license": "MIT",
   "files": [
-    "dist/*"
+    "dist/*",
+    "docs/**/*"
   ],
   "dependencies": {
     "@tweenjs/tween.js": "^16.8.0",
@@ -76422,7 +76423,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.2 (Date 2018-05-30, Commit #4e900ff)');
+console.log('A-Frame Version: 0.8.2 (Date 2018-05-30, Commit #a46dfcb)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
