@@ -76419,7 +76419,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.2 (Date 2018-05-23, Commit #e9c199e)');
+console.log('A-Frame Version: 0.8.2 (Date 2018-05-30, Commit #84b84d7)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -77565,10 +77565,10 @@ module.exports.System = registerSystem('material', {
    * @param {function} cb - Callback to pass texture to.
    */
   loadCanvas: function (src, data, cb) {
-    // Hack readyState and HAVE_CURRENT_DATA on canvas to work with THREE.VideoTexture
-    src.readyState = 2;
-    src.HAVE_CURRENT_DATA = 2;
-    this.loadVideo(src, data, cb);
+    var texture;
+    texture = new THREE.CanvasTexture(src);
+    setTextureProperties(texture, data);
+    cb(texture);
   },
 
     /**
