@@ -30,7 +30,8 @@
   "repository": "aframevr/aframe",
   "license": "MIT",
   "files": [
-    "dist/*"
+    "dist/*",
+    "docs/**/*"
   ],
   "dependencies": {
     "@tweenjs/tween.js": "^16.8.0",
