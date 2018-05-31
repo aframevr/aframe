@@ -68503,7 +68503,8 @@ module.exports.Component = registerComponent('vr-mode-ui', {
   dependencies: ['canvas'],
 
   schema: {
-    enabled: {default: true}
+    enabled: {default: true},
+    enterVRButton: {default: ''}
   },
 
   init: function () {
@@ -68554,16 +68555,23 @@ module.exports.Component = registerComponent('vr-mode-ui', {
   },
 
   update: function () {
+    var data = this.data;
     var sceneEl = this.el;
 
-    if (!this.data.enabled || this.insideLoader || utils.getUrlParameter('ui') === 'false') {
+    if (!data.enabled || this.insideLoader || utils.getUrlParameter('ui') === 'false') {
       return this.remove();
     }
     if (this.enterVREl || this.orientationModalEl) { return; }
 
     // Add UI if enabled and not already present.
-    this.enterVREl = createEnterVRButton(this.onEnterVRButtonClick);
-    sceneEl.appendChild(this.enterVREl);
+    if (data.enterVRButton) {
+      // Custom button.
+      this.enterVREl = document.querySelector(data.enterVRButton);
+      this.enterVREl.addEventListener('click', this.onEnterVRButtonClick);
+    } else {
+      this.enterVREl = createEnterVRButton(this.onEnterVRButtonClick);
+      sceneEl.appendChild(this.enterVREl);
+    }
 
     this.orientationModalEl = createOrientationModal(this.onModalClick);
     sceneEl.appendChild(this.orientationModalEl);
@@ -68625,7 +68633,9 @@ function createEnterVRButton (onClick) {
   wrapper.setAttribute(constants.AFRAME_INJECTED, '');
   vrButton = document.createElement('button');
   vrButton.className = ENTER_VR_BTN_CLASS;
-  vrButton.setAttribute('title', 'Enter VR mode with a headset or fullscreen mode on a desktop. Visit https://webvr.rocks or https://webvr.info for more information.');
+  vrButton.setAttribute('title',
+    'Enter VR mode with a headset or fullscreen mode on a desktop. ' +
+    'Visit https://webvr.rocks or https://webvr.info for more information.');
   vrButton.setAttribute(constants.AFRAME_INJECTED, '');
 
   // Insert elements.
@@ -76423,7 +76433,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.2 (Date 2018-05-30, Commit #a46dfcb)');
+console.log('A-Frame Version: 0.8.2 (Date 2018-05-31, Commit #9db4268)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
