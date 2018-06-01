@@ -1,4 +1,4 @@
-/* global AFRAME, assert, CustomEvent, process, sinon, setup, suite, teardown, test */
+/* global AFRAME, assert, CustomEvent, process, sinon, setup, suite, teardown, test, THREE */
 var AScene = require('core/scene/a-scene').AScene;
 var components = require('core/component').components;
 var scenes = require('core/scene/scenes');
@@ -36,34 +36,45 @@ suite('a-scene (without renderer)', function () {
   });
 
   suite('createdCallback', function () {
+    var sceneEl;
+    setup(function () {
+      sceneEl = document.createElement('a-scene');
+    });
     test('initializes scene object', function () {
-      assert.equal(this.el.object3D.type, 'Scene');
+      assert.equal(sceneEl.object3D.type, 'Scene');
     });
 
     test('does not initialize systems', function () {
-      var sceneEl = document.createElement('a-scene');
       assert.notOk(Object.keys(sceneEl.systems).length);
+    });
+
+    test('does not initialize renderer', function () {
+      sceneEl = document.createElement('a-scene');
+      // Mock renderer.
+      assert.ok(sceneEl.renderer);
+      // Mock renderer is not a real WebGLRenderer.
+      assert.notOk(sceneEl.renderer instanceof THREE.WebGLRenderer);
     });
   });
 
   suite('attachedCallback', function () {
-    test('initializes systems', function (done) {
-      var self = this;
-      self.el.addEventListener('loaded', function () {
-        assert.ok(Object.keys(self.el.systems).length);
+    test('initializes scene', function (done) {
+      var sceneEl = this.el;
+      sceneEl.addEventListener('loaded', function () {
+        assert.ok(Object.keys(sceneEl.systems).length);
+        assert.ok(Object.keys(sceneEl.systems).length);
+        assert.ok(this.behaviors.tick);
+        assert.ok(this.behaviors.tock);
+        assert.equal(sceneEl.isPlaying, true);
+        assert.equal(sceneEl.hasLoaded, true);
+        assert.equal(sceneEl.renderTarget, null);
+        // Default components.
+        assert.ok(sceneEl.hasAttribute('inspector'));
+        assert.ok(sceneEl.hasAttribute('keyboard-shortcuts'));
+        assert.ok(sceneEl.hasAttribute('screenshot'));
+        assert.ok(sceneEl.hasAttribute('vr-mode-ui'));
         done();
       });
-    });
-  });
-
-  suite('init', function () {
-    test('initializes scene object', function () {
-      var sceneEl = this.el;
-      sceneEl.isPlaying = false;
-      sceneEl.hasLoaded = true;
-      sceneEl.init();
-      assert.equal(sceneEl.isPlaying, false);
-      assert.equal(sceneEl.hasLoaded, false);
     });
   });
 
@@ -594,12 +605,6 @@ helpers.getSkipCISuite()('a-scene (with renderer)', function () {
     document.body.appendChild(el);
     el.addEventListener('renderstart', function () {
       done();
-    });
-  });
-
-  suite('attachedCallback', function () {
-    test('sets up renderer', function () {
-      assert.ok(this.el.renderer);
     });
   });
 
