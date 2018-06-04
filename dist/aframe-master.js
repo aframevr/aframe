@@ -75038,30 +75038,19 @@ module.exports.AScene = registerElement('a-scene', {
         this.systems = {};
         this.systemNames = [];
         this.time = this.delta = 0;
-        this.init();
-      }
-    },
 
-    init: {
-      value: function () {
         this.behaviors = {tick: [], tock: []};
         this.hasLoaded = false;
         this.isPlaying = false;
         this.originalHTML = this.innerHTML;
         this.renderTarget = null;
-        setupCanvas(this);
-        this.setupRenderer();
-        this.resize();
-        this.addFullScreenStyles();
-        initPostMessageAPI(this);
 
         // Default components.
         this.setAttribute('inspector', '');
         this.setAttribute('keyboard-shortcuts', '');
         this.setAttribute('screenshot', '');
         this.setAttribute('vr-mode-ui', '');
-      },
-      writable: true
+      }
     },
 
     addFullScreenStyles: {
@@ -75086,6 +75075,13 @@ module.exports.AScene = registerElement('a-scene', {
       value: function () {
         var resize;
         var self = this;
+
+        // Renderer initialization
+        setupCanvas(this);
+        this.setupRenderer();
+        this.resize();
+        this.addFullScreenStyles();
+        initPostMessageAPI(this);
 
         initMetaTags(this);
         initWakelock(this);
@@ -77427,7 +77423,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.2 (Date 2018-06-01, Commit #614cce8)');
+console.log('A-Frame Version: 0.8.2 (Date 2018-06-04, Commit #87faa2d)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
