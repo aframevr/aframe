@@ -636,7 +636,7 @@ module.exports.AScene = registerElement('a-scene', {
 
         if (this.isPlaying) { this.tick(this.time, this.delta); }
 
-        renderer.animate(this.render);
+        renderer.setAnimationLoop(this.render);
         renderer.render(this.object3D, this.camera, this.renderTarget);
       },
       writable: true

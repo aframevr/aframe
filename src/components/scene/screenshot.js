@@ -154,13 +154,13 @@ module.exports.Component = registerComponent('screenshot', {
       // Use ortho camera.
       camera = this.camera;
       // Copy position and rotation of scene camera into the ortho one.
-      camera.position.copy(el.camera.getWorldPosition());
-      camera.rotation.copy(el.camera.getWorldRotation());
+      el.camera.getWorldPosition(camera.position);
+      el.camera.getWorldRotation(camera.rotation);
       // Create cube camera and copy position from scene camera.
       cubeCamera = new THREE.CubeCamera(el.camera.near, el.camera.far,
                                         Math.min(this.cubeMapSize, 2048));
-      cubeCamera.position.copy(el.camera.getWorldPosition());
-      cubeCamera.rotation.copy(el.camera.getWorldRotation());
+      el.camera.getWorldPosition(cubeCamera.position);
+      el.camera.getWorldRotation(cubeCamera.rotation);
       // Render scene with cube camera.
       cubeCamera.updateCubeMap(el.renderer, el.object3D);
       this.quad.material.uniforms.map.value = cubeCamera.renderTarget.texture;

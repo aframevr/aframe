@@ -26,7 +26,7 @@ registerGeometry('triangle', {
     triangle.a.set(data.vertexA.x, data.vertexA.y, data.vertexA.z);
     triangle.b.set(data.vertexB.x, data.vertexB.y, data.vertexB.z);
     triangle.c.set(data.vertexC.x, data.vertexC.y, data.vertexC.z);
-    normal = triangle.normal();
+    normal = triangle.getNormal(new THREE.Vector3());
 
     // Rotate the 3D triangle to be parallel to XY plane.
     quaternion.setFromUnitVectors(normal, rotateVector);
