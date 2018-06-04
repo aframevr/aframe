@@ -69297,13 +69297,13 @@ module.exports.Component = registerComponent('screenshot', {
       // Use ortho camera.
       camera = this.camera;
       // Copy position and rotation of scene camera into the ortho one.
-      camera.position.copy(el.camera.getWorldPosition());
-      camera.rotation.copy(el.camera.getWorldRotation());
+      el.camera.getWorldPosition(camera.position);
+      el.camera.getWorldRotation(camera.rotation);
       // Create cube camera and copy position from scene camera.
       cubeCamera = new THREE.CubeCamera(el.camera.near, el.camera.far,
                                         Math.min(this.cubeMapSize, 2048));
-      cubeCamera.position.copy(el.camera.getWorldPosition());
-      cubeCamera.rotation.copy(el.camera.getWorldRotation());
+      el.camera.getWorldPosition(cubeCamera.position);
+      el.camera.getWorldRotation(cubeCamera.rotation);
       // Render scene with cube camera.
       cubeCamera.updateCubeMap(el.renderer, el.object3D);
       this.quad.material.uniforms.map.value = cubeCamera.renderTarget.texture;
@@ -75624,7 +75624,7 @@ module.exports.AScene = registerElement('a-scene', {
 
         if (this.isPlaying) { this.tick(this.time, this.delta); }
 
-        renderer.animate(this.render);
+        renderer.setAnimationLoop(this.render);
         renderer.render(this.object3D, this.camera, this.renderTarget);
       },
       writable: true
@@ -77314,7 +77314,7 @@ registerGeometry('triangle', {
     triangle.a.set(data.vertexA.x, data.vertexA.y, data.vertexA.z);
     triangle.b.set(data.vertexB.x, data.vertexB.y, data.vertexB.z);
     triangle.c.set(data.vertexC.x, data.vertexC.y, data.vertexC.z);
-    normal = triangle.normal();
+    normal = triangle.getNormal(new THREE.Vector3());
 
     // Rotate the 3D triangle to be parallel to XY plane.
     quaternion.setFromUnitVectors(normal, rotateVector);
@@ -77423,7 +77423,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.2 (Date 2018-06-04, Commit #9f2cb8e)');
+console.log('A-Frame Version: 0.8.2 (Date 2018-06-04, Commit #b00fb87)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
