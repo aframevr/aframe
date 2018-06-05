@@ -180,15 +180,6 @@ suite('a-scene (without renderer)', function () {
       });
     });
 
-    test('does not call requestPresent if flag passed', function (done) {
-      var sceneEl = this.el;
-      this.sinon.stub(sceneEl, 'checkHeadsetConnected').returns(true);
-      sceneEl.enterVR(true).then(function () {
-        assert.notOk(sceneEl.renderer.vr.enabled);
-        done();
-      });
-    });
-
     test('adds VR mode state', function (done) {
       var sceneEl = this.el;
       sceneEl.enterVR().then(function () {
@@ -281,16 +272,6 @@ suite('a-scene (without renderer)', function () {
       sceneEl.isMobile = false;
       this.sinon.stub(sceneEl, 'checkHeadsetConnected').returns(false);
       sceneEl.exitVR().then(function () {
-        assert.ok(sceneEl.renderer.vr.enabled);
-        done();
-      });
-    });
-
-    test('does not call exitPresent if flag passed', function (done) {
-      var sceneEl = this.el;
-      sceneEl.renderer.vr.enabled = true;
-      this.sinon.stub(sceneEl, 'checkHeadsetConnected').returns(true);
-      sceneEl.exitVR(true).then(function () {
         assert.ok(sceneEl.renderer.vr.enabled);
         done();
       });

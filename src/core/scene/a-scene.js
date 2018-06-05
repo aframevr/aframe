@@ -233,24 +233,24 @@ module.exports.AScene = registerElement('a-scene', {
      * Call `requestFullscreen` on desktop.
      * Handle events, states, fullscreen styles.
      *
-     * @param {bool} fromExternal - Whether exiting VR due to an external event (e.g.,
-     *   manually calling requestPresent via WebVR API directly).
      * @returns {Promise}
      */
     enterVR: {
-      value: function (fromExternal) {
+      value: function () {
         var self = this;
         var vrDisplay;
         var vrManager = self.renderer.vr;
         // Don't enter VR if already in VR.
         if (this.is('vr-mode')) { return Promise.resolve('Already in VR.'); }
         // Enter VR via WebVR API.
-        if (!fromExternal && (this.checkHeadsetConnected() || this.isMobile)) {
+        if (this.checkHeadsetConnected() || this.isMobile) {
           vrDisplay = utils.device.getVRDisplay();
           vrManager.setDevice(vrDisplay);
           vrManager.enabled = true;
-          return vrDisplay.requestPresent([{source: this.canvas}])
-                          .then(enterVRSuccess, enterVRFailure);
+          if (!vrDisplay.isPresenting) {
+            return vrDisplay.requestPresent([{source: this.canvas}])
+                            .then(enterVRSuccess, enterVRFailure);
+          }
         }
         enterVRSuccess();
         return Promise.resolve();
@@ -288,12 +288,10 @@ module.exports.AScene = registerElement('a-scene', {
      * Call `exitPresent` if WebVR or WebVR polyfill.
      * Handle events, states, fullscreen styles.
      *
-     * @param {bool} fromExternal - Whether exiting VR due to an external event (e.g.,
-     *   Oculus Browser GearVR back button).
      * @returns {Promise}
      */
     exitVR: {
-      value: function (fromExternal) {
+      value: function () {
         var self = this;
         var vrDisplay;
 
@@ -301,12 +299,13 @@ module.exports.AScene = registerElement('a-scene', {
         if (!this.is('vr-mode')) { return Promise.resolve('Not in VR.'); }
 
         exitFullscreen();
-
         // Handle exiting VR if not yet already and in a headset or polyfill.
-        if (!fromExternal && (this.checkHeadsetConnected() || this.isMobile)) {
+        if (this.checkHeadsetConnected() || this.isMobile) {
           this.renderer.vr.enabled = false;
           vrDisplay = utils.device.getVRDisplay();
-          return vrDisplay.exitPresent().then(exitVRSuccess, exitVRFailure);
+          if (vrDisplay.isPresenting) {
+            return vrDisplay.exitPresent().then(exitVRSuccess, exitVRFailure);
+          }
         }
 
         // Handle exiting VR in all other cases (2D fullscreen, external exit VR event).
@@ -373,11 +372,11 @@ module.exports.AScene = registerElement('a-scene', {
         var display = evt.display || evt.detail.display;
         // Entering VR.
         if (display.isPresenting) {
-          this.enterVR(true);
+          this.enterVR();
           return;
         }
         // Exiting VR.
-        this.exitVR(true);
+        this.exitVR();
       }
     },
 
