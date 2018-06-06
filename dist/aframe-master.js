@@ -77423,7 +77423,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.2 (Date 2018-06-04, Commit #b00fb87)');
+console.log('A-Frame Version: 0.8.2 (Date 2018-06-06, Commit #68fa375)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -79194,13 +79194,10 @@ module.exports = debug;
 },{"_process":32,"debug":8,"object-assign":25}],170:[function(_dereq_,module,exports){
 (function (process){
 var vrDisplay;
-var polyfilledVRDisplay;
-var POLYFILL_VRDISPLAY_ID = 'Cardboard VRDisplay';
 
 if (navigator.getVRDisplays) {
   navigator.getVRDisplays().then(function (displays) {
     vrDisplay = displays.length && displays[0];
-    polyfilledVRDisplay = vrDisplay.displayName === POLYFILL_VRDISPLAY_ID;
   });
 }
 
@@ -79304,10 +79301,11 @@ module.exports.isNodeEnvironment = !module.exports.isBrowserEnvironment;
  */
 module.exports.PolyfillControls = function PolyfillControls (object) {
   var frameData;
+  var vrDisplay = window.webvrpolyfill.getPolyfillDisplays()[0];
   if (window.VRFrameData) { frameData = new window.VRFrameData(); }
   this.update = function () {
     var pose;
-    if (!vrDisplay || !polyfilledVRDisplay) { return; }
+    if (!vrDisplay) { return; }
     vrDisplay.getFrameData(frameData);
     pose = frameData.pose;
     if (pose.orientation !== null) {
