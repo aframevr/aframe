@@ -258,6 +258,12 @@ People have built tools on top of A-Frame to abstract away code via an
 interface or application, making content creation even easier. These act as
 more complete editors rather than developer tools.
 
+### [Supercraft](https://supermedium.com/supercraft)
+
+Build VR Sites with Your Hands, all in VR, and publish to Web.
+
+<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/ONhhKHjSO-4?rel=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+
 ### [Ottifox](http://ottifox.com/)
 
 *"Ottifox is a powerful design and prototyping solution that makes it easy to
