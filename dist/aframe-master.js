@@ -68268,6 +68268,8 @@ module.exports.Component = registerComponent('raycaster', {
     this.otherLineEndVec3 = new THREE.Vector3();
     this.lineData = {end: this.lineEndVec3};
 
+    this.getIntersection = this.getIntersection.bind(this);
+    this.intersectedDetail = {el: this.el, getIntersection: this.getIntersection};
     this.intersectedClearedDetail = {el: this.el};
     this.intersectionClearedDetail = {clearedEls: this.clearedIntersectedEls};
     this.intersectionDetail = {};
@@ -68447,10 +68449,7 @@ module.exports.Component = registerComponent('raycaster', {
 
     // Emit intersected on intersected entity per intersected entity.
     for (i = 0; i < newIntersectedEls.length; i++) {
-      newIntersectedEls[i].emit(EVENTS.INTERSECT, {
-        el: el,
-        intersection: newIntersections[i]
-      });
+      newIntersectedEls[i].emit(EVENTS.INTERSECT, this.intersectedDetail);
     }
 
     // Emit all intersections at once on raycasting entity.
@@ -77423,7 +77422,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.2 (Date 2018-06-06, Commit #68fa375)');
+console.log('A-Frame Version: 0.8.2 (Date 2018-06-07, Commit #a87e3b8)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
