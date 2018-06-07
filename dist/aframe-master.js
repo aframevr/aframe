@@ -67253,7 +67253,6 @@ module.exports.Component = registerComponent('look-controls', {
     // On mobile, do camera rotation with touch events and sensors.
     el.object3D.rotation.x = hmdEuler.x + pitchObject.rotation.x;
     el.object3D.rotation.y = hmdEuler.y + yawObject.rotation.y;
-    el.object3D.rotation.z = 0;
   },
 
   /**
@@ -77422,7 +77421,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.2 (Date 2018-06-07, Commit #a87e3b8)');
+console.log('A-Frame Version: 0.8.2 (Date 2018-06-07, Commit #175da2a)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
