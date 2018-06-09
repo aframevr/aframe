@@ -72506,7 +72506,11 @@ function mediaElementLoaded (el) {
       if (secondsBuffered >= el.duration) {
         // Set in cache because we won't be needing to call three.js loader if we have.
         // a loaded media element.
-        THREE.Cache.files[el.getAttribute('src')] = el;
+        // Store video elements only. three.js loader is used for audio elements.
+        // See assetParse too.
+        if (el.tagName === 'VIDEO') {
+          THREE.Cache.files[el.getAttribute('src')] = el;
+        }
         resolve();
       }
     }
@@ -77421,7 +77425,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.2 (Date 2018-06-07, Commit #175da2a)');
+console.log('A-Frame Version: 0.8.2 (Date 2018-06-09, Commit #1b26884)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
