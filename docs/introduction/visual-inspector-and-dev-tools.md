@@ -285,12 +285,6 @@ and tell your story.  Easy, fast and web based!"*
 
 ![Fader](https://cloud.githubusercontent.com/assets/674727/25638761/53535724-2f3e-11e7-90f2-5efb3a58c549.jpg)
 
-### [HatchXR](https://hatchxr.com/)
-
-*"A VR/AR App Development Platform"*
-
-![HatchXR](https://user-images.githubusercontent.com/3099626/40959007-f1d92b08-68b8-11e8-9f87-a411fd972a7d.png)
-
 ## Cross-Machine Development
 
 With VR development, it is common to develop across multiple machines. For
