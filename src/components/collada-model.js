@@ -7,7 +7,6 @@ module.exports.Component = registerComponent('collada-model', {
   init: function () {
     this.model = null;
     this.loader = new THREE.ColladaLoader();
-    this.loader.options.convertUpAxis = true;
   },
 
   update: function () {
