@@ -64929,7 +64929,6 @@ module.exports.Component = registerComponent('collada-model', {
   init: function () {
     this.model = null;
     this.loader = new THREE.ColladaLoader();
-    this.loader.options.convertUpAxis = true;
   },
 
   update: function () {
@@ -77425,7 +77424,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.2 (Date 2018-06-09, Commit #1b26884)');
+console.log('A-Frame Version: 0.8.2 (Date 2018-06-12, Commit #01f2a5d)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
