@@ -470,7 +470,7 @@ module.exports.AScene = registerElement('a-scene', {
         // except when in fullscreen mode.
         if (!camera || !canvas || (this.is('vr-mode') && (this.isMobile || isVRPresenting))) { return; }
         // Update camera.
-        size = getCanvasSize(canvas, embedded);
+        size = getCanvasSize(canvas, embedded, this.getAttribute('max-size'));
         camera.aspect = size.width / size.height;
         camera.updateProjectionMatrix();
         // Notify renderer of size change.
@@ -652,17 +652,47 @@ module.exports.AScene = registerElement('a-scene', {
  * @param {object} canvasEl - the canvas element
  * @param {boolean} embedded - Is the scene embedded?
  */
-function getCanvasSize (canvasEl, embedded) {
+function getCanvasSize (canvasEl, embedded, max) {
   if (embedded) {
     return {
       height: canvasEl.parentElement.offsetHeight,
       width: canvasEl.parentElement.offsetWidth
     };
   }
+
+  var size = getMaxSize(max);
+
   return {
-    height: window.innerHeight,
-    width: window.innerWidth
+    height: size.height,
+    width: size.width
   };
+}
+
+function getMaxSize (max) {
+  var size = {
+    width: window.innerWidth,
+    height: window.innerHeight
+  };
+
+  if (max == null) return size;
+  max = parseInt(max);
+
+  if (size.width * window.devicePixelRatio < max ||
+    size.height * window.devicePixelRatio < max) {
+    return size;
+  }
+
+  var aspectRatio = size.width / size.height;
+
+  if (aspectRatio > 1) {
+    size.width = max;
+    size.height = max / aspectRatio;
+  } else if (aspectRatio < 1) {
+    size.height = max;
+    size.width = max * aspectRatio;
+  }
+
+  return size;
 }
 
 function requestFullscreen (canvas) {
