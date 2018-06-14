@@ -470,7 +470,7 @@ module.exports.AScene = registerElement('a-scene', {
         // except when in fullscreen mode.
         if (!camera || !canvas || (this.is('vr-mode') && (this.isMobile || isVRPresenting))) { return; }
         // Update camera.
-        size = getCanvasSize(canvas, embedded, this.getAttribute('max-size'));
+        size = getCanvasSize(canvas, embedded, this.maxSize);
         camera.aspect = size.width / size.height;
         camera.updateProjectionMatrix();
         // Notify renderer of size change.
@@ -496,10 +496,17 @@ module.exports.AScene = registerElement('a-scene', {
         if (this.hasAttribute('renderer')) {
           rendererAttrString = this.getAttribute('renderer');
           rendererAttr = utils.styleParser.parse(rendererAttrString);
+
           if (rendererAttr.antialias && rendererAttr.antialias !== 'auto') {
             rendererConfig.antialias = rendererAttr.antialias === 'true';
           }
         }
+
+        this.maxSize = {
+          width: rendererAttr.maxCanvasWidth ? parseInt(rendererAttr.maxCanvasWidth) : -1,
+          height: rendererAttr.maxCanvasHeight ? parseInt(rendererAttr.maxCanvasHeight) : -1
+        };
+
         renderer = this.renderer = new THREE.WebGLRenderer(rendererConfig);
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.sortObjects = false;
@@ -674,22 +681,23 @@ function getMaxSize (max) {
     height: window.innerHeight
   };
 
-  if (max == null) return size;
-  max = parseInt(max);
+  if (max.width === -1 && max.height === -1) return size;
 
-  if (size.width * window.devicePixelRatio < max ||
-    size.height * window.devicePixelRatio < max) {
+  if (size.width * window.devicePixelRatio < max.width &&
+    size.height * window.devicePixelRatio < max.height) {
     return size;
   }
 
   var aspectRatio = size.width / size.height;
 
-  if (aspectRatio > 1) {
-    size.width = max;
-    size.height = max / aspectRatio;
-  } else if (aspectRatio < 1) {
-    size.height = max;
-    size.width = max * aspectRatio;
+  if (size.width > max.width && max.width !== -1) {
+    size.width = max.width;
+    size.height = max.width / aspectRatio;
+  }
+
+  if (size.height > max.height && max.height !== -1) {
+    size.height = max.height;
+    size.width = max.height * aspectRatio;
   }
 
   return size;
