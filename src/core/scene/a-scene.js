@@ -500,12 +500,12 @@ module.exports.AScene = registerElement('a-scene', {
           if (rendererAttr.antialias && rendererAttr.antialias !== 'auto') {
             rendererConfig.antialias = rendererAttr.antialias === 'true';
           }
-        }
 
-        this.maxSize = {
-          width: rendererAttr.maxCanvasWidth ? parseInt(rendererAttr.maxCanvasWidth) : -1,
-          height: rendererAttr.maxCanvasHeight ? parseInt(rendererAttr.maxCanvasHeight) : -1
-        };
+          this.maxSize = {
+            width: rendererAttr.maxCanvasWidth ? parseInt(rendererAttr.maxCanvasWidth) : -1,
+            height: rendererAttr.maxCanvasHeight ? parseInt(rendererAttr.maxCanvasHeight) : -1
+          };
+        }
 
         renderer = this.renderer = new THREE.WebGLRenderer(rendererConfig);
         renderer.setPixelRatio(window.devicePixelRatio);
@@ -681,7 +681,7 @@ function getMaxSize (max, isVR) {
     height: window.innerHeight
   };
 
-  if (isVR || (max.width === -1 && max.height === -1)) return size;
+  if (!max || isVR || (max.width === -1 && max.height === -1)) return size;
 
   if (size.width * window.devicePixelRatio < max.width &&
     size.height * window.devicePixelRatio < max.height) {
