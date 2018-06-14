@@ -30,6 +30,7 @@ require('./windows-motion-controls');
 
 require('./scene/background');
 require('./scene/debug');
+require('./scene/effects');
 require('./scene/embedded');
 require('./scene/inspector');
 require('./scene/fog');

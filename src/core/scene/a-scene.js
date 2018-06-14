@@ -630,14 +630,20 @@ module.exports.AScene = registerElement('a-scene', {
      */
     render: {
       value: function () {
-        this.delta = this.clock.getDelta() * 1000;
+        var effectComposer = this.effectComposer;
         var renderer = this.renderer;
+
+        this.delta = this.clock.getDelta() * 1000;
         this.time = this.clock.elapsedTime * 1000;
 
         if (this.isPlaying) { this.tick(this.time, this.delta); }
 
         renderer.setAnimationLoop(this.render);
-        renderer.render(this.object3D, this.camera, this.renderTarget);
+        if (effectComposer) {
+          effectComposer.render();
+        } else {
+          renderer.render(this.object3D, this.camera, this.renderTarget);
+        }
       },
       writable: true
     }
