@@ -68511,8 +68511,7 @@ module.exports.Component = registerComponent('raycaster', {
         return;
       }
 
-      // Grab the position and rotation.
-      el.object3D.updateMatrixWorld();
+      // Grab the position and rotation. (As a side effect, this updates el.object3D.matrixWorld.)
       el.object3D.getWorldPosition(originVec3);
 
       // If non-zero origin, translate the origin into world space.
@@ -77424,7 +77423,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.2 (Date 2018-06-12, Commit #01f2a5d)');
+console.log('A-Frame Version: 0.8.2 (Date 2018-06-16, Commit #12872cc)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
