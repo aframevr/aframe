@@ -189,13 +189,13 @@ and send it to us! Now we're unblocked from developing.
 and want to show it to someone. Take a recording and send it to them to debug.
 No need to give bug reproduction steps, it's all in the recording!
 
-[machinima]: https://github.com/wmurphyrd/aframe-machinima-testing/
-[William Murphy]: https://twitter.com/datatitian
-
 7. **Automated unit testing**: We can use recordings with unit testing
 frameworks such as Karma and Mocha to replay the recording and make assertions.
 For example, touch an box and check that it changes color. See [A-Frame
 Machinima Testing][machinima] by [William Murphy] for an example.
+
+[machinima]: https://github.com/wmurphyrd/aframe-machinima-testing/
+[William Murphy]: https://twitter.com/datatitian
 
 ### How to Record
 
