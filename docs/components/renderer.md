@@ -29,7 +29,8 @@ The `renderer` component configures a scene's
 | gammaOutput             | Whether to pre-multiply gamma on textures and colors before rendering.          | false         |
 | sortObjects             | Whether to sort objects before rendering.                                       | false         |
 | physicallyCorrectLights | Whether to use physically-correct light attenuation.                            | false         |
-| maxCanvasWidth          | Maximum canvas width. Does not limit canvas width if set to -1.                 | -1            |
+| maxCanvasWidth          | Maximum canvas width. Uses the size multiplied by device pixel
+                            ratio. Does not limit canvas width if set to -1.                                | -1            |
 | maxCanvasHeight         | Maximum canvas height. Does not limit canvas height if set to -1.               | -1            |
 
 
@@ -66,8 +67,3 @@ be adjusted when making this change. Performance is not significantly affected i
 
 > **NOTE:** When glTF models contain lights, use the physically-correct lighting mode to match
 > the results in the original modeling tool.
-
-### maxCanvasWidth / maxCanvasHeight
-
-Useful to prevent frame drops on high-density screens. Uses the size multiplied by device pixel 
-ratio. Canvas is still scaled up as usual, maintaining aspect ratio.

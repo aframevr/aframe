@@ -470,7 +470,7 @@ module.exports.AScene = registerElement('a-scene', {
         // except when in fullscreen mode.
         if (!camera || !canvas || (this.is('vr-mode') && (this.isMobile || isVRPresenting))) { return; }
         // Update camera.
-        size = getCanvasSize(canvas, embedded, this.maxSize, this.is('vr-mode'));
+        size = getCanvasSize(canvas, embedded, this.maxCanvasSize, this.is('vr-mode'));
         camera.aspect = size.width / size.height;
         camera.updateProjectionMatrix();
         // Notify renderer of size change.
@@ -501,7 +501,7 @@ module.exports.AScene = registerElement('a-scene', {
             rendererConfig.antialias = rendererAttr.antialias === 'true';
           }
 
-          this.maxSize = {
+          this.maxCanvasSize = {
             width: rendererAttr.maxCanvasWidth ? parseInt(rendererAttr.maxCanvasWidth) : -1,
             height: rendererAttr.maxCanvasHeight ? parseInt(rendererAttr.maxCanvasHeight) : -1
           };
@@ -658,6 +658,8 @@ module.exports.AScene = registerElement('a-scene', {
  *
  * @param {object} canvasEl - the canvas element
  * @param {boolean} embedded - Is the scene embedded?
+ * @param {object} max - Max size parameters
+ * @param {boolean} isVR - If in VR
  */
 function getCanvasSize (canvasEl, embedded, max, isVR) {
   if (embedded) {
@@ -667,28 +669,40 @@ function getCanvasSize (canvasEl, embedded, max, isVR) {
     };
   }
 
-  var size = getMaxSize(max, isVR);
+  var maxSize = getMaxSize(max, isVR);
 
   return {
-    height: size.height,
-    width: size.width
+    height: maxSize.height,
+    width: maxSize.width
   };
 }
 
+/**
+ * Return the canvas size. It will be the window size
+ * unless that size is greater than the maximum size.
+ * The constrained size will be returned in that case,
+ * maintaining aspect ratio
+ *
+ * @param {object} max - Max size parameters
+ * @param {boolean} isVR - If in VR
+ */
 function getMaxSize (max, isVR) {
+  var aspectRatio;
   var size = {
     width: window.innerWidth,
     height: window.innerHeight
   };
 
-  if (!max || isVR || (max.width === -1 && max.height === -1)) return size;
+  if (!max || isVR || (max.width === -1 && max.height === -1)) {
+    return size;
+  }
 
   if (size.width * window.devicePixelRatio < max.width &&
     size.height * window.devicePixelRatio < max.height) {
     return size;
   }
 
-  var aspectRatio = size.width / size.height;
+  aspectRatio = size.width / size.height;
 
   if (size.width > max.width && max.width !== -1) {
     size.width = max.width;
