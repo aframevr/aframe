@@ -50,14 +50,33 @@ suite('raycaster', function () {
 
       el3.addEventListener('loaded', function () {
         component.refreshObjects();
-        // Check that the child is the raycaster target, not the THREE.Group.
+        // Check that groups are not the raycast targets.
         for (i = 0; i < component.objects.length; i++) {
-          assert.equal(component.objects[i], sceneEl.object3D.children[i].children[0]);
+          assert.notEqual(component.objects[i], sceneEl.object3D.children[i].object3D);
         }
         done();
       });
       sceneEl.appendChild(el2);
       sceneEl.appendChild(el3);
+    });
+
+    test('does not include non-object3DMap children in objects', function (done) {
+      var dummyObject3D;
+      var el2 = document.createElement('a-entity');
+
+      // Add geometry to test raycast and wait for them to be loaded.
+      el2.setAttribute('geometry', 'primitive: box');
+
+      dummyObject3D = new THREE.Object3D();
+      el2.object3D.add(dummyObject3D);
+
+      el2.addEventListener('loaded', function () {
+        component.refreshObjects();
+        assert.equal(component.objects.indexOf(dummyObject3D), -1);
+        assert.notEqual(component.objects.indexOf(el2.getObject3D('mesh')), -1);
+        done();
+      });
+      sceneEl.appendChild(el2);
     });
 
     test('can whitelist objects to intersect', function (done) {
