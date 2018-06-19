@@ -13,8 +13,8 @@ var warn = debug('components:renderer:warn');
 module.exports.Component = register('renderer', {
   schema: {
     antialias: {default: 'auto', oneOf: ['true', 'false', 'auto']},
-    maxCanvasWidth: {default: -1},
-    maxCanvasHeight: {default: -1},
+    maxCanvasWidth: {default: 1920},
+    maxCanvasHeight: {default: 1920},
     gammaOutput: {default: false},
     physicallyCorrectLights: {default: false},
     sortObjects: {default: false}

@@ -493,6 +493,12 @@ module.exports.AScene = registerElement('a-scene', {
         if (this.hasAttribute('antialias')) {
           rendererConfig.antialias = this.getAttribute('antialias') === 'true';
         }
+
+        this.maxCanvasSize = {
+          width: 1920,
+          height: 1920
+        };
+
         if (this.hasAttribute('renderer')) {
           rendererAttrString = this.getAttribute('renderer');
           rendererAttr = utils.styleParser.parse(rendererAttrString);
@@ -502,8 +508,8 @@ module.exports.AScene = registerElement('a-scene', {
           }
 
           this.maxCanvasSize = {
-            width: rendererAttr.maxCanvasWidth ? parseInt(rendererAttr.maxCanvasWidth) : -1,
-            height: rendererAttr.maxCanvasHeight ? parseInt(rendererAttr.maxCanvasHeight) : -1
+            width: rendererAttr.maxCanvasWidth ? parseInt(rendererAttr.maxCanvasWidth) : this.maxCanvasSize.width,
+            height: rendererAttr.maxCanvasHeight ? parseInt(rendererAttr.maxCanvasHeight) : this.maxCanvasSize.height
           };
         }
 

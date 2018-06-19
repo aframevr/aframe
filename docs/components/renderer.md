@@ -29,8 +29,8 @@ The `renderer` component configures a scene's
 | gammaOutput             | Whether to pre-multiply gamma on textures and colors before rendering.          | false         |
 | sortObjects             | Whether to sort objects before rendering.                                       | false         |
 | physicallyCorrectLights | Whether to use physically-correct light attenuation.                            | false         |
-| maxCanvasWidth          | Maximum canvas width. Uses the size multiplied by device pixel ratio. Does not limit canvas width if set to -1.                                | -1            |
-| maxCanvasHeight         | Maximum canvas height. Behaves the same as maxCanvasWidth.              | -1            |
+| maxCanvasWidth          | Maximum canvas width. Uses the size multiplied by device pixel ratio. Does not limit canvas width if set to -1.                                | 1920            |
+| maxCanvasHeight         | Maximum canvas height. Behaves the same as maxCanvasWidth.              | 1920            |
 
 
 ### antialias
