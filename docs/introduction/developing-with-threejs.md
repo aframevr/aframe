@@ -125,7 +125,7 @@ But we can access them through the entity's `.getObject3D(name)` method:
 
 ```js
 entityEl.getObject3D('mesh');  // THREE.Mesh
-entityEl.getObject3D('light');  // THREE.Mesh
+entityEl.getObject3D('light');  // THREE.Light
 ```
 
 Now let's see how these three.js objects were set in the first place.
