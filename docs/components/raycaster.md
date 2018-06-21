@@ -97,7 +97,7 @@ The event detail contains intersection objects. They are returned straight from
 | Member         | Description                                                                                                      |
 |----------------|------------------------------------------------------------------------------------------------------------------|
 | intersectedEls | Entities currently intersecting the raycaster.                                                                   |
-| objects        | three.js objects to test for intersections. Will be `scene.children` if not `objects` property is not specified. |
+| objects        | three.js objects to test for intersections. Will be `scene.children` if `objects` property is not specified. |
 | raycaster      | three.js raycaster object.                                                                                       |
 
 ## Methods
