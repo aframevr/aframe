@@ -112,7 +112,7 @@ sky).
 ### Point
 
 Point lights, unlike directional lights, are omni-directional and affect
-materials depending on their position and distance. Point likes are like light
+materials depending on their position and distance. Point lights are like light
 bulb. The closer the light bulb gets to an object, the greater the object is
 lit.
 
