@@ -433,7 +433,7 @@ shader as a multi-line string:
 
 And using our shader from the `material` component:
 
-```
+```html
 <!-- A box using our shader, not fully opaque and blue. -->
 <a-box material="shader: my-custom; color: blue; opacity: 0.7; transparent: true" position="0 0 -2"></a-box>
 ```
@@ -623,7 +623,7 @@ AFRAME.registerComponent('myoffset-updater', {
 
 We then apply the component to the entity with the custom shader:
 
-```
+```html
 <a-scene>
   <a-sphere material="shader:displacement-offset"
             myoffset-updater
