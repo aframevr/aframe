@@ -187,4 +187,6 @@ someone will get right to you!
 5. When you build something, share your project online and we'll feature it on
 [*A Week of A-Frame*](https://aframe.io/blog/)!
 
+6. Check out the demos from the A-Frame NYC Meetup group on their [workshop archive](https://roland-dubois.github.io/aframe-meetup-nyc/)
+
 Have fun!
