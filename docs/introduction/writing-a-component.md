@@ -174,7 +174,7 @@ name/value pairs separated by `:` and properties separated by `;`):
 ### Handling Property Updates
 
 So far, we've been using just the `.init()` handler which is called only once
-at the beginning of the component lifeycle with only its initial properties.
+at the beginning of the component lifecycle with only its initial properties.
 But components often have their properties updated dynamically. We can use the
 `.update()` handler to handle property updates.
 
@@ -766,6 +766,6 @@ npm install -g angle && angle initcomponent
 `initcomponent` will ask for some information like the component name to get
 the template set up. Write some code, examples, and documentation, and [send a
 pull request][pr] to the [A-Frame Registry][registry] to get it featured! Follow the
-[Registry guidelnes][guidelines], we'll do a quick code review, and then the
+[Registry guidelines][guidelines], we'll do a quick code review, and then the
 community will be able to use your component, and hopefully send some helpful
 pull requests back if needed!
