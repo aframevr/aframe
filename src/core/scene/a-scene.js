@@ -711,13 +711,13 @@ function getMaxSize (maxSize, isVR) {
   aspectRatio = size.width / size.height;
 
   if ((size.width * pixelRatio) > maxSize.width && maxSize.width !== -1) {
-    size.width = maxSize.width / pixelRatio;
-    size.height = parseInt(maxSize.width / aspectRatio / pixelRatio);
+    size.width = Math.round(maxSize.width / pixelRatio);
+    size.height = Math.round(maxSize.width / aspectRatio / pixelRatio);
   }
 
   if ((size.height * pixelRatio) > maxSize.height && maxSize.height !== -1) {
-    size.height = maxSize.height / pixelRatio;
-    size.width = parseInt(maxSize.height * aspectRatio / pixelRatio);
+    size.height = Math.round(maxSize.height / pixelRatio);
+    size.width = Math.round(maxSize.height * aspectRatio / pixelRatio);
   }
 
   return size;
