@@ -75617,8 +75617,9 @@ module.exports.AScene = registerElement('a-scene', {
      */
     render: {
       value: function () {
-        this.delta = this.clock.getDelta() * 1000;
         var renderer = this.renderer;
+
+        this.delta = this.clock.getDelta() * 1000;
         this.time = this.clock.elapsedTime * 1000;
 
         if (this.isPlaying) { this.tick(this.time, this.delta); }
@@ -77422,7 +77423,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.2 (Date 2018-06-19, Commit #48e8be7)');
+console.log('A-Frame Version: 0.8.2 (Date 2018-06-26, Commit #4a44a80)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
