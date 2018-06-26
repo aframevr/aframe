@@ -583,7 +583,7 @@ AFRAME.registerComponent('box', {
 
     // Material-related properties changed. Update the material.
     if (data.color !== oldData.color) {
-      el.getObject3D('mesh').material.color = data.color;
+      el.getObject3D('mesh').material.color = new THREE.Color(data.color);
     }
   }
 });
