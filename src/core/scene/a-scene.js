@@ -696,27 +696,28 @@ function getCanvasSize (canvasEl, embedded, maxSize, isVR) {
 function getMaxSize (maxSize, isVR) {
   var aspectRatio;
   var size;
+  var pixelRatio = window.devicePixelRatio;
 
   size = {height: window.innerHeight, width: window.innerWidth};
   if (!maxSize || isVR || (maxSize.width === -1 && maxSize.height === -1)) {
     return size;
   }
 
-  if (size.width * window.devicePixelRatio < maxSize.width &&
-    size.height * window.devicePixelRatio < maxSize.height) {
+  if (size.width * pixelRatio < maxSize.width &&
+    size.height * pixelRatio < maxSize.height) {
     return size;
   }
 
   aspectRatio = size.width / size.height;
 
-  if (size.width > maxSize.width && maxSize.width !== -1) {
-    size.width = maxSize.width;
-    size.height = maxSize.width / aspectRatio;
+  if ((size.width * pixelRatio) > maxSize.width && maxSize.width !== -1) {
+    size.width = maxSize.width / pixelRatio;
+    size.height = parseInt(maxSize.width / aspectRatio / pixelRatio);
   }
 
-  if (size.height > maxSize.height && maxSize.height !== -1) {
-    size.height = maxSize.height;
-    size.width = maxSize.height * aspectRatio;
+  if ((size.height * pixelRatio) > maxSize.height && maxSize.height !== -1) {
+    size.height = maxSize.height / pixelRatio;
+    size.width = parseInt(maxSize.height * aspectRatio / pixelRatio);
   }
 
   return size;
