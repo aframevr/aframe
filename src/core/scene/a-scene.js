@@ -629,8 +629,9 @@ module.exports.AScene = registerElement('a-scene', {
      */
     render: {
       value: function () {
-        this.delta = this.clock.getDelta() * 1000;
         var renderer = this.renderer;
+
+        this.delta = this.clock.getDelta() * 1000;
         this.time = this.clock.elapsedTime * 1000;
 
         if (this.isPlaying) { this.tick(this.time, this.delta); }
