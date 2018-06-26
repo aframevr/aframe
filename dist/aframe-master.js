@@ -73620,6 +73620,7 @@ var isNode = _dereq_('./a-register-element').isNode;
 var utils = _dereq_('../utils/');
 
 var warn = utils.debug('core:a-node:warn');
+var error = utils.debug('core:a-node:error');
 
 var MIXIN_OBSERVER_CONFIG = {attributes: true};
 
@@ -73744,6 +73745,8 @@ module.exports = registerElement('a-node', {
           self.hasLoaded = true;
           if (cb) { cb(); }
           self.emit('loaded', undefined, false);
+        }).catch(function (err) {
+          error('Failure loading node: ', err);
         });
       },
       writable: true
@@ -77423,7 +77426,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.2 (Date 2018-06-26, Commit #4a44a80)');
+console.log('A-Frame Version: 0.8.2 (Date 2018-06-26, Commit #06dbf3d)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
