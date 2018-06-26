@@ -4,6 +4,7 @@ var isNode = require('./a-register-element').isNode;
 var utils = require('../utils/');
 
 var warn = utils.debug('core:a-node:warn');
+var error = utils.debug('core:a-node:error');
 
 var MIXIN_OBSERVER_CONFIG = {attributes: true};
 
@@ -128,6 +129,8 @@ module.exports = registerElement('a-node', {
           self.hasLoaded = true;
           if (cb) { cb(); }
           self.emit('loaded', undefined, false);
+        }).catch(function (err) {
+          error('Failure loading node: ', err);
         });
       },
       writable: true
