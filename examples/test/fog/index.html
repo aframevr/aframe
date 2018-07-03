@@ -7,14 +7,10 @@
     <script src="../../../dist/aframe-master.js"></script>
   </head>
   <body>
-    <a-scene fog="type: linear; color: #AAB; far: 150; near: 0" stats>
+    <a-scene fog="type: linear; color: #AAB; far: 150; near: 0">
       <a-assets>
-        <a-mixin id="move" attribute="position" direction="alternate" dur="4096"
-                           fill="forwards" easing="linear" repeat="indefinite"></a-mixin>
-        <a-mixin id="box" geometry="primitive: torusKnot; p: 3; q: 11; radiusTubular: .5;
-                                    radius: 10" material="color: #2F3C4F"></a-mixin>
-        <a-mixin id="spin" attribute="rotation" dur="4096" to="-360 0 0"
-                           easing="linear" repeat="indefinite"></a-mixin>
+        <a-mixin id="box" geometry="primitive: torusKnot; p: 3; q: 11; radiusTubular: .5; radius: 10" material="color: #2F3C4F"></a-mixin>
+        <a-mixin id="move" animation="property: position; dir: alternate; dur: 4096; easing: linear; loop: true"></a-mixin>
         <img id="louvre" src="louvre.jpg">
       </a-assets>
 
@@ -28,24 +24,11 @@
                 material="shader: flat; src: #louvre"
                 position="0 1.8 0" scale="1 1 -1" rotation="0 90 0"></a-entity>
 
-      <a-entity mixin="box" position="-30 0 0">
-        <a-animation mixin="move" to="-100 0 0"></a-animation>
-        <a-animation mixin="spin"></a-animation>
-      </a-entity>
-
-      <a-entity mixin="box" position="30 0 0">
-        <a-animation mixin="move" to="100 0 0"></a-animation>
-        <a-animation mixin="spin"></a-animation>
-      </a-entity>
-
-      <a-entity mixin="box" position="0 0 -30">
-        <a-animation mixin="move" to="0 0 -100"></a-animation>
-        <a-animation mixin="spin"></a-animation>
-      </a-entity>
-
-      <a-entity mixin="box" position="0 0 30">
-        <a-animation mixin="move" to="0 0 100"></a-animation>
-        <a-animation mixin="spin"></a-animation>
+      <a-entity animation__spin="property: rotation; dur: 4096; to: -360 0 0; easing: linear; loop: true">
+        <a-entity mixin="box move" position="-30 0 0" animation="to: -100 0 0"></a-entity>
+        <a-entity mixin="box move" position="30 0 0" animation="to: 100 0 0"></a-entity>
+        <a-entity mixin="box move" position="0 0 -30" animation="to: 0 0 -100"></a-entity>
+        <a-entity mixin="box move" position="0 0 30" animation="to: 0 0 100"></a-entity>
       </a-entity>
     </a-scene>
   </body>

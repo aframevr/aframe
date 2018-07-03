@@ -2,12 +2,12 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Geometries</title>
-    <meta name="description" content="Geometries - A-Frame">
+    <title>Geometry Gallery</title>
+    <meta name="description" content="Geometry Gallery - A-Frame">
     <script src="../../../dist/aframe-master.js"></script>
   </head>
   <body>
-    <a-scene stats>
+    <a-scene background="color: #112" stats>
       <a-assets>
         <!-- Geometry mixins. -->
         <a-mixin id="box"
@@ -50,12 +50,9 @@
         <a-mixin id="object-on-column" position="0 1.2 0"></a-mixin>
 
         <!-- Animation mixins. -->
-        <a-mixin id="yoyo" direction="alternate" fill="forwards"
-                           repeat="indefinite"></a-mixin>
-        <a-mixin id="spin" attribute="rotation" to="0 360 0"
-                 repeat="indefinite" easing="linear" dur="10000"></a-mixin>
-        <a-mixin id="spin-x" mixin="spin" attribute="rotation" to="360 0 0"
-                 repeat="indefinite" easing="linear" dur="10000"></a-mixin>
+        <a-mixin id="yoyo" animation__yoyo="dir: alternate; loop: true"></a-mixin>
+        <a-mixin id="spin" animation__spin="property: object3D.rotation.y; to: 360; loop: true; easing: linear; dur: 10000"></a-mixin>
+        <a-mixin id="spinX" mixin="spin" animation__spin="property: object3D.rotation.x"></a-mixin>
 
         <a-mixin id="color" material="color: #FFFFC3"></a-mixin>
         <a-mixin id="doubleside" material="side: double"></a-mixin>
@@ -64,16 +61,11 @@
         <img id="floor" src="marble.jpg">
       </a-assets>
 
+      <a-camera position="0 1.6 4"></a-camera>
+
       <!-- Lights. -->
       <a-entity light="type: ambient; color: #444"></a-entity>
-      <a-entity light="type: directional; color: #EEE"
-                position="0 1 1">
-      </a-entity>
-
-      <!-- Skysphere. -->
-      <a-entity geometry="primitive: sphere; radius: 80"
-                material="color: #112; shader: flat" scale="1 1 -1">
-      </a-entity>
+      <a-entity light="type: directional; color: #EEE" position="0 1 1"></a-entity>
 
       <!-- Floor. -->
       <a-entity geometry="primitive: cylinder; height: .2; radius: 12;"
@@ -92,16 +84,9 @@
       <a-entity position="-2.5 0 1">
         <a-entity mixin="column">
           <a-entity mixin="column-light"></a-entity>
-          <a-entity mixin="object-on-column color box">
-            <a-animation mixin="spin" to="360 360 0"></a-animation>
-          </a-entity>
-          <a-entity mixin="object-on-column color box" position=".18 1.2 .1">
-            <a-animation mixin="spin" to="360 360 0"></a-animation>
-          </a-entity>
-          <a-entity mixin="object-on-column color box"
-                    position="-.18 1.2 -.2">
-            <a-animation mixin="spin" to="360 360 0"></a-animation>
-          </a-entity>
+          <a-entity mixin="object-on-column color box spin" animation__spin="to: 360 360 0"></a-entity>
+          <a-entity mixin="object-on-column color box spin" position=".18 1.2 .1" animation__spin="to: 360 360 0"></a-entity>
+          <a-entity mixin="object-on-column color box spin" position="-.18 1.2 -.2" animation__spin="to: 360 360 0"></a-entity>
         </a-entity>
         <a-entity mixin="column-bottom"></a-entity>
       </a-entity>
@@ -110,12 +95,8 @@
       <a-entity position="-2.5 0 -2">
         <a-entity mixin="column">
           <a-entity mixin="column-light"></a-entity>
-          <a-entity mixin="object-on-column color doubleside circle">
-            <a-animation mixin="spin"></a-animation>
-          </a-entity>
-          <a-entity mixin="object-on-column color doubleside circle">
-            <a-animation mixin="spin-x"></a-animation>
-          </a-entity>
+          <a-entity mixin="object-on-column color doubleside circle spin"></a-entity>
+          <a-entity mixin="object-on-column color doubleside circle spin"></a-entity>
         </a-entity>
         <a-entity mixin="column-bottom"></a-entity>
       </a-entity>
@@ -124,9 +105,7 @@
       <a-entity position="-2.5 0 -5">
         <a-entity mixin="column">
           <a-entity mixin="column-light"></a-entity>
-          <a-entity mixin="object-on-column color cylinder">
-            <a-animation mixin="spin-x"></a-animation>
-          </a-entity>
+          <a-entity mixin="object-on-column color cylinder spinX"></a-entity>
         </a-entity>
         <a-entity mixin="column-bottom"></a-entity>
       </a-entity>
@@ -135,12 +114,8 @@
       <a-entity position="2.5 0 1">
         <a-entity mixin="column">
           <a-entity mixin="column-light"></a-entity>
-          <a-entity mixin="object-on-column color doubleside ring">
-            <a-animation mixin="spin" dur="6000"></a-animation>
-          </a-entity>
-          <a-entity mixin="object-on-column color doubleside ring">
-            <a-animation mixin="spin" to="360 0 0" dur="6000"></a-animation>
-          </a-entity>
+          <a-entity mixin="object-on-column color doubleside ring spin" animation__spin="dur: 6000"></a-entity>
+          <a-entity mixin="object-on-column color doubleside ring spinX"></a-entity>
         </a-entity>
         <a-entity mixin="column-bottom"></a-entity>
       </a-entity>
@@ -149,19 +124,13 @@
       <a-entity position="2.5 0 -2">
         <a-entity mixin="column">
           <a-entity mixin="column-light"></a-entity>
-          <a-entity mixin="object-on-column color sphere"
-                    position="-.2 1.2 0">
-            <a-animation mixin="yoyo" attribute="position" from="-.2 1 0"
-                         to="-.2 1.8 0"></a-animation>
-          </a-entity>
-          <a-entity mixin="object-on-column color sphere">
-            <a-animation mixin="yoyo" attribute="position" from="0 1.8 0"
-                         to="0 1 0" ></a-animation>
-          </a-entity>
-          <a-entity mixin="object-on-column color sphere" position=".2 1 0">
-            <a-animation mixin="yoyo" attribute="position" from=".2 1 0"
-                         to=".2 1.8 0"></a-animation>
-          </a-entity>
+          <a-entity mixin="object-on-column color sphere yoyo"
+                    animation__yoyo="property: position; from: -0.2 1 0; to: -0.2 1.8 0"
+                    position="-.2 1.2 0"></a-entity>
+          <a-entity mixin="object-on-column color sphere yoyo"
+                    animation__yoyo="property: position; from: 0 1.8 0; to: 0 1 0"></a-entity>
+          <a-entity mixin="object-on-column color sphere yoyo" position=".2 1 0"
+                    animation__yoyo="property: position; to: 0.2 1.8 0"></a-entity>
         </a-entity>
         <a-entity mixin="column-bottom"></a-entity>
       </a-entity>
@@ -170,9 +139,7 @@
       <a-entity position="2.5 0 -5">
         <a-entity mixin="column">
           <a-entity mixin="column-light"></a-entity>
-          <a-entity mixin="object-on-column color torus">
-            <a-animation mixin="spin"></a-animation>
-          </a-entity>
+          <a-entity mixin="object-on-column color torus spin"></a-entity>
         </a-entity>
         <a-entity mixin="column-bottom"></a-entity>
       </a-entity>
@@ -181,9 +148,7 @@
       <a-entity position="2.5 0 -8">
         <a-entity mixin="column">
           <a-entity mixin="column-light"></a-entity>
-          <a-entity mixin="object-on-column color torus-knot">
-            <a-animation mixin="spin"></a-animation>
-          </a-entity>
+          <a-entity mixin="object-on-column color torus-knot spin"></a-entity>
         </a-entity>
         <a-entity mixin="column-bottom"></a-entity>
       </a-entity>

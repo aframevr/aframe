@@ -39,16 +39,11 @@
     </script>
 
     <a-scene stats>
-      <a-entity id="sky" geometry="primitive: sphere; radius: 100;"
-                material="shader: sky; side: back" sun-position-setter>
-        <a-entity id="orbit">
-          <a-animation attribute="rotation" from="0 0 0" to="0 360 0" dur="5000"
-                       repeat="indefinite" easing="linear"></a-animation>
-        </a-entity>
+      <a-entity id="sky" geometry="primitive: sphere; radius: 100" material="shader: sky; side: back" sun-position-setter>
+        <a-entity id="orbit" animation="property: rotation; to: 0 360 0; dur: 5000; loop: true; easing: linear"></a-entity>
       </a-entity>
 
-      <a-entity geometry="primitive: sphere; radius: 3"
-                material="shader: noise" position="0 0 -10" rotation="45 45 0">
+      <a-entity geometry="primitive: sphere; radius: 3" material="shader: noise" position="0 0 -10" rotation="45 45 0">
       </a-entity>
     </a-scene>
   </body>

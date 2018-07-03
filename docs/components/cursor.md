@@ -87,7 +87,7 @@ AFRAME.registerComponent('cursor-listener', {
 | downEvents  | Array of additional events on the entity to *listen* to for triggering `mousedown` (e.g., `triggerdown` for vive-controls).  | []                               |
 | fuse        | Whether cursor is fuse-based.                                                                                              | false on desktop, true on mobile |
 | fuseTimeout | How long to wait (in milliseconds) before triggering a fuse-based click event.                                             | 1500                             |
-| rayOrigin     | Where the intersection ray is cast from (i.e.,entity or mouse) | entity
+| rayOrigin     | Where the intersection ray is cast from (i.e.,entity or mouse). `rayOrigin: mouse` is extremely useful for VR development on a mouse and keyboard. | entity
 | upEvents    | Array of additional events on the entity to *listen* to for triggering `mouseup` (e.g., `trackpadup` for daydream-controls). | []                               |
 
 To further customize the cursor component, we configure the cursor's dependency
@@ -160,23 +160,21 @@ interactions is that it requires the user to turn their head a lot.
 
 ## Adding Visual Feedback
 
-[animation]: ../core/animations.md
+[animation]: ./animation.md
 
 To add visual feedback to the cursor to show when the cursor is clicking or
-fusing, we can use the [animation system][animation].  When the cursor
+fusing, we can use the [animation component][animation].  When the cursor
 intersects the entity, it will emit an event, and the animation system will
 pick up event with the `begin` attribute:
 
 ```html
-<a-entity cursor="fuse: true;"
-          position="0 0 -3"
-          geometry="primitive: ring"
-          material="color: black; shader: flat">
-  <a-animation begin="click" easing="ease-in" attribute="scale" dur="150"
-               fill="forwards" from="0.1 0.1 0.1" to="1 1 1"></a-animation>
-  <a-animation begin="fusing" easing="ease-in" attribute="scale" dur="1500"
-               fill="backwards" from="1 1 1" to="0.1 0.1 0.1"></a-animation>
-</a-entity>
+<a-entity
+  animation__click="property: scale; startEvents: click; easing: easeInCubic; dur: 150; from: 0.1 0.1 0.1; to: 1 1 1"
+  animation__fusing="property: scale; startEvents: fusing; easing: easeInCubic; dur: 1500; from: 1 1 1; to: 0.1 0.1 0.1"
+  cursor="fuse: true;"
+  material="color: black; shader: flat"
+  position="0 0 -3"
+  geometry="primitive: ring"></a-entity>
 ```
 
 [cursor-codepen]: https://codepen.io/Absulit/pen/WEKjqm

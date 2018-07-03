@@ -9,11 +9,8 @@
   <body>
     <a-scene>
       <a-assets>
-        <a-mixin id="cylinder"
-                 geometry="primitive: cylinder; height: 2; openEnded: true; radius: 2"
-                 material="side: double">
-        <a-mixin id="scale" attribute="scale" from="1 1.125 1" to="1 0 1"
-                 dur="2000"></a-mixin>
+        <a-mixin id="cylinder" geometry="primitive: cylinder; height: 2; openEnded: true; radius: 2" material="side: double">
+        <a-mixin id="scaleAnimation" animation="property: object3D.scale.y; from: 1.125; to: 0.0001; dur: 2000"></a-mixin>
         <img id="background" src="../../assets/img/gray-gradient.jpg">
       </a-assets>
 
@@ -24,43 +21,25 @@
       <!-- 1 -->
       <!-- Animate cylinder scales on the Y-axis. -->
       <a-entity position="-5 0 0">
-        <a-cylinder mixin="cylinder" position="0 2 0" color="#4CC3D9">
-          <a-animation mixin="scale"></a-animation>
-        </a-cylinder>
-
-        <a-cylinder mixin="cylinder" position="0 -2 0" color="#7BC8A4">
-          <a-animation mixin="scale"></a-animation>
-        </a-cylinder>
-
+        <a-cylinder mixin="cylinder scaleAnimation" position="0 2 0" color="#4CC3D9"></a-cylinder>
+        <a-cylinder mixin="cylinder scaleAnimation" position="0 -2 0" color="#7BC8A4"></a-cylinder>
       </a-entity>
 
       <!-- 2 -->
       <!-- Animate cylinder scales on the Y-axis. -->
       <!-- Move cylinder pivots to top and bottom edges using pivot and position. -->
       <a-entity>
-        <a-cylinder mixin="cylinder" position="0 1 0" pivot="0 1 0" color="#4CC3D9">
-          <a-animation mixin="scale"></a-animation>
-        </a-cylinder>
-
-        <a-cylinder mixin="cylinder" position="0 -1 0" pivot="0 -1 0" color="#7BC8A4">
-          <a-animation mixin="scale"></a-animation>
-        </a-cylinder>
+        <a-cylinder mixin="cylinder scaleAnimation" position="0 1 0" pivot="0 1 0" color="#4CC3D9"></a-cylinder>
+        <a-cylinder mixin="cylinder scaleAnimation" position="0 -1 0" pivot="0 -1 0" color="#7BC8A4"></a-cylinder>
       </a-entity>
 
       <!-- 3 -->
       <!-- Animate the cylinder scales on the Y-axis -->
       <!-- Move cylinder pivots to top and bottom edges using pivot and position. -->
       <!-- Animate the parent entity scale on the Y-axis. -->
-      <a-entity position="5 0 0">
-        <a-animation mixin="scale" from="1 0 1" to="1 1 1"></a-animation>
-
-        <a-cylinder mixin="cylinder" position="0 2 0" pivot="0 -1 0" color="#4CC3D9">
-          <a-animation mixin="scale"></a-animation>
-        </a-cylinder>
-
-        <a-cylinder mixin="cylinder" position="0 -2 0" pivot="0 1 0" color="#7BC8A4">
-          <a-animation mixin="scale"></a-animation>
-        </a-cylinder>
+      <a-entity position="5 0 0" mixin="scaleAnimation" animation="from: 0.0001; to: 1">
+        <a-cylinder mixin="cylinder scaleAnimation" position="0 2 0" pivot="0 -1 0" color="#4CC3D9"></a-cylinder>
+        <a-cylinder mixin="cylinder scaleAnimation" position="0 -2 0" pivot="0 1 0" color="#7BC8A4"></a-cylinder>
       </a-entity>
 
       <a-sky src="#background"></a-sky>

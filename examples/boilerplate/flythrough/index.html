@@ -8,9 +8,7 @@
   </head>
   <body>
     <a-scene background="color: #ECECEC">
-      <a-entity>
-        <a-animation attribute="position" from="0 0 -10" to="0 0 10" dur="10000"
-                     easing="linear"></a-animation>
+      <a-entity animation="property: position; from: 0 0 -10; to: 0 0 10; dur: 10000; easing: linear">
         <a-entity>
           <a-camera wasd-controls-enabled="false"></a-camera>
         </a-entity>

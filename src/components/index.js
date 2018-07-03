@@ -1,3 +1,4 @@
+require('./animation');
 require('./camera');
 require('./collada-model');
 require('./cursor');
