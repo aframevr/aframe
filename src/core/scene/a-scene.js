@@ -442,7 +442,8 @@ module.exports.AScene = registerElement('a-scene', {
         var behaviors = this.behaviors;
         var index;
 
-        // Check if behavior has tick and/or tock and remove the behavior from the appropriate array.
+        // Check if behavior has tick and/or tock and remove the behavior from the appropriate
+        // array.
         for (behaviorType in behaviors) {
           if (!behavior[behaviorType]) { continue; }
           behaviorArr = this.behaviors[behaviorType];
@@ -456,22 +457,29 @@ module.exports.AScene = registerElement('a-scene', {
       value: function () {
         var camera = this.camera;
         var canvas = this.canvas;
-        var embedded = this.getAttribute('embedded') && !this.is('vr-mode');
+        var embedded;
+        var isVRPresenting;
         var size;
         var vrDevice;
-        var isVRPresenting;
+
         vrDevice = this.renderer.vr.getDevice();
         isVRPresenting = this.renderer.vr.enabled && vrDevice && vrDevice.isPresenting;
+
         // Do not update renderer, if a camera or a canvas have not been injected.
         // In VR mode, three handles canvas resize based on the dimensions returned by
         // the getEyeParameters function of the WebVR API. These dimensions are independent of
-        // the window size, therefore should not be overwritten with the window's width and height,
-        // except when in fullscreen mode.
-        if (!camera || !canvas || (this.is('vr-mode') && (this.isMobile || isVRPresenting))) { return; }
+        // the window size, therefore should not be overwritten with the window's width and
+        // height, // except when in fullscreen mode.
+        if (!camera || !canvas || (this.is('vr-mode') && (this.isMobile || isVRPresenting))) {
+          return;
+        }
+
         // Update camera.
-        size = getCanvasSize(canvas, embedded);
+        embedded = this.getAttribute('embedded') && !this.is('vr-mode');
+        size = getCanvasSize(canvas, embedded, this.maxCanvasSize, this.is('vr-mode'));
         camera.aspect = size.width / size.height;
         camera.updateProjectionMatrix();
+
         // Notify renderer of size change.
         this.renderer.setSize(size.width, size.height, false);
       },
@@ -484,21 +492,33 @@ module.exports.AScene = registerElement('a-scene', {
         var renderer;
         var rendererAttr;
         var rendererAttrString;
-        var rendererConfig = {
-          canvas: this.canvas,
-          antialias: !isMobile,
-          alpha: true
-        };
+        var rendererConfig;
+
+        rendererConfig = {alpha: true, antialias: !isMobile, canvas: this.canvas};
         if (this.hasAttribute('antialias')) {
           rendererConfig.antialias = this.getAttribute('antialias') === 'true';
         }
+
+        this.maxCanvasSize = {height: 1920, width: 1920};
+
         if (this.hasAttribute('renderer')) {
           rendererAttrString = this.getAttribute('renderer');
           rendererAttr = utils.styleParser.parse(rendererAttrString);
+
           if (rendererAttr.antialias && rendererAttr.antialias !== 'auto') {
             rendererConfig.antialias = rendererAttr.antialias === 'true';
           }
+
+          this.maxCanvasSize = {
+            width: rendererAttr.maxCanvasWidth
+              ? parseInt(rendererAttr.maxCanvasWidth)
+              : this.maxCanvasSize.width,
+            height: rendererAttr.maxCanvasHeight
+              ? parseInt(rendererAttr.maxCanvasHeight)
+              : this.maxCanvasSize.height
+          };
         }
+
         renderer = this.renderer = new THREE.WebGLRenderer(rendererConfig);
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.sortObjects = false;
@@ -645,24 +665,62 @@ module.exports.AScene = registerElement('a-scene', {
 });
 
 /**
- * Return the canvas size where the scene will be rendered
- * It will be always the window size except when the scene
- * is embedded. The parent size will be returned in that case
+ * Return the canvas size where the scene will be rendered.
+ * Will be always the window size except when the scene is embedded.
+ * The parent size (less than max size) will be returned in that case.
  *
  * @param {object} canvasEl - the canvas element
  * @param {boolean} embedded - Is the scene embedded?
+ * @param {object} max - Max size parameters
+ * @param {boolean} isVR - If in VR
  */
-function getCanvasSize (canvasEl, embedded) {
+function getCanvasSize (canvasEl, embedded, maxSize, isVR) {
   if (embedded) {
     return {
       height: canvasEl.parentElement.offsetHeight,
       width: canvasEl.parentElement.offsetWidth
     };
   }
-  return {
-    height: window.innerHeight,
-    width: window.innerWidth
-  };
+  return getMaxSize(maxSize, isVR);
+}
+
+/**
+ * Return the canvas size. Will be the window size unless that size is greater than the
+ * maximum size (1920x1920 by default).  The constrained size will be returned in that case,
+ * maintaining aspect ratio
+ *
+ * @param {object} maxSize - Max size parameters (width and height).
+ * @param {boolean} isVR - If in VR.
+ * @returns {object} Width and height.
+ */
+function getMaxSize (maxSize, isVR) {
+  var aspectRatio;
+  var size;
+  var pixelRatio = window.devicePixelRatio;
+
+  size = {height: window.innerHeight, width: window.innerWidth};
+  if (!maxSize || isVR || (maxSize.width === -1 && maxSize.height === -1)) {
+    return size;
+  }
+
+  if (size.width * pixelRatio < maxSize.width &&
+    size.height * pixelRatio < maxSize.height) {
+    return size;
+  }
+
+  aspectRatio = size.width / size.height;
+
+  if ((size.width * pixelRatio) > maxSize.width && maxSize.width !== -1) {
+    size.width = Math.round(maxSize.width / pixelRatio);
+    size.height = Math.round(maxSize.width / aspectRatio / pixelRatio);
+  }
+
+  if ((size.height * pixelRatio) > maxSize.height && maxSize.height !== -1) {
+    size.height = Math.round(maxSize.height / pixelRatio);
+    size.width = Math.round(maxSize.height * aspectRatio / pixelRatio);
+  }
+
+  return size;
 }
 
 function requestFullscreen (canvas) {
