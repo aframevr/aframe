@@ -7,7 +7,7 @@ suite('look-controls', function () {
   setup(function (done) {
     var el = this.sceneEl = document.createElement('a-scene');
     document.body.appendChild(el);
-    el.addEventListener('camera-ready', function () {
+    el.addEventListener('cameraready', function () {
       done();
     });
   });

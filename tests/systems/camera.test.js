@@ -2,7 +2,7 @@
 var constants = require('constants/');
 var entityFactory = require('../helpers').entityFactory;
 
-suite.only('camera system', function () {
+suite('camera system', function () {
   var sceneEl;
 
   setup(function (done) {

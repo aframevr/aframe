@@ -4,20 +4,21 @@ var THREE = require('index').THREE;
 
 suite('sound', function () {
   setup(function (done) {
-    THREE.Cache.files = {};
     var el = this.el = entityFactory();
-    el.setAttribute('sound', {
-      autoplay: true,
-      src: 'url(mysoundfile.mp3)',
-      loop: true,
-      distanceModel: 'exponential',
-      maxDistance: 20000,
-      refDistance: 2,
-      rolloffFactor: 4,
-      poolSize: 3
-    });
-    el.addEventListener('loaded', function () {
-      done();
+    THREE.Cache.files = {};
+    setTimeout(() => {
+      el.sceneEl.addEventListener('loaded', function () { done(); });
+
+      el.setAttribute('sound', {
+        autoplay: true,
+        src: 'url(mysoundfile.mp3)',
+        loop: true,
+        distanceModel: 'exponential',
+        maxDistance: 20000,
+        refDistance: 2,
+        rolloffFactor: 4,
+        poolSize: 3
+      });
     });
   });
 

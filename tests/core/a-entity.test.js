@@ -28,11 +28,9 @@ suite('a-entity', function () {
 
   setup(function (done) {
     el = this.el = entityFactory();
-    var onLoaded = function () {
-      done();
-      el.removeEventListener('loaded', onLoaded);
-    };
-    el.addEventListener('loaded', onLoaded);
+    setTimeout(() => {
+      el.sceneEl.addEventListener('loaded', () => { done(); });
+    });
   });
 
   teardown(function () {
@@ -1382,8 +1380,8 @@ suite('a-entity component lifecycle management', function () {
     var el = this.el = entityFactory();
     components.test = undefined;
     this.TestComponent = registerComponent('test', TestComponent);
-    el.addEventListener('loaded', function () {
-      done();
+    setTimeout(() => {
+      el.sceneEl.addEventListener('loaded', function () { done(); });
     });
   });
 
@@ -1517,17 +1515,14 @@ suite('a-entity component lifecycle management', function () {
     sinon.assert.called(TestComponent.play);
   });
 
-  test('removes tick from scene behaviors on entity pause', function (done) {
+  test('removes tick from scene behaviors on entity pause', function () {
     var el = this.el;
     var testComponentInstance;
-    el.sceneEl.addEventListener('loaded', function () {
-      el.setAttribute('test', '');
-      testComponentInstance = el.components.test;
-      assert.notEqual(el.sceneEl.behaviors.tick.indexOf(testComponentInstance), -1);
-      el.pause();
-      assert.equal(el.sceneEl.behaviors.tick.indexOf(testComponentInstance), -1);
-      done();
-    });
+    el.setAttribute('test', '');
+    testComponentInstance = el.components.test;
+    assert.notEqual(el.sceneEl.behaviors.tick.indexOf(testComponentInstance), -1);
+    el.pause();
+    assert.equal(el.sceneEl.behaviors.tick.indexOf(testComponentInstance), -1);
   });
 
   test('adds tick to scene behaviors on entity play', function () {
@@ -1543,17 +1538,14 @@ suite('a-entity component lifecycle management', function () {
     });
   });
 
-  test('removes tock from scene behaviors on entity pause', function (done) {
+  test('removes tock from scene behaviors on entity pause', function () {
     var el = this.el;
     var testComponentInstance;
-    el.sceneEl.addEventListener('loaded', function () {
-      el.setAttribute('test', '');
-      testComponentInstance = el.components.test;
-      assert.notEqual(el.sceneEl.behaviors.tock.indexOf(testComponentInstance), -1);
-      el.pause();
-      assert.equal(el.sceneEl.behaviors.tock.indexOf(testComponentInstance), -1);
-      done();
-    });
+    el.setAttribute('test', '');
+    testComponentInstance = el.components.test;
+    assert.notEqual(el.sceneEl.behaviors.tock.indexOf(testComponentInstance), -1);
+    el.pause();
+    assert.equal(el.sceneEl.behaviors.tock.indexOf(testComponentInstance), -1);
   });
 
   test('adds tock to scene behaviors on entity play', function () {
