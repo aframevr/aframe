@@ -37,6 +37,7 @@ setup(function () {
       enabled: false
     },
     getContext: function () { return undefined; },
+    setSize: function () {},
     shadowMap: {}
   };
 });

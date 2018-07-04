@@ -85,19 +85,32 @@ module.exports.AScene = registerElement('a-scene', {
 
     attachedCallback: {
       value: function () {
-        var resize;
         var self = this;
 
         // Renderer initialization
         setupCanvas(this);
         this.setupRenderer();
+
         this.resize();
         this.addFullScreenStyles();
         initPostMessageAPI(this);
 
         initMetaTags(this);
         initWakelock(this);
+
+        // Camera set up by camera system.
+        this.addEventListener('cameraready', function () {
+          self.attachedCallbackPostCamera();
+        });
+
         this.initSystems();
+      }
+    },
+
+    attachedCallbackPostCamera: {
+      value: function () {
+        var resize;
+        var self = this;
 
         resize = bind(this.resize, this);
         window.addEventListener('load', resize);
@@ -522,8 +535,6 @@ module.exports.AScene = registerElement('a-scene', {
         renderer = this.renderer = new THREE.WebGLRenderer(rendererConfig);
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.sortObjects = false;
-        // We expect camera-set-active to be triggered at least once in the life of an a-frame app. Usually soon after
-        // it is initialized.
         this.addEventListener('camera-set-active', function () {
           renderer.vr.setPoseTarget(self.camera.el.object3D);
         });
