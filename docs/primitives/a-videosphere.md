@@ -30,6 +30,8 @@ Videospheres are a large sphere with the video texture mapped to the inside.
 
 ## Methods 
 
+More indepth knowledge on the methods to alter video material can be seen over [here](../components/material.html#video-textures)
+
 ```javascript
 // to set specific time of video
 document.querySelector("#antarctica").components.material.data.src.currentTime = 0 // start of video
