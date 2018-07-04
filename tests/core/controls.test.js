@@ -216,10 +216,10 @@ suite('rotation controls on camera with mouse drag (integration unit test)', fun
   setup(function (done) {
     var el = this.el = helpers.entityFactory();
     var self = this;
-    el.addEventListener('loaded', function () {
-      el.sceneEl.addEventListener('cameraready', function () {
-        var cameraEl = self.cameraEl = el.sceneEl.querySelector('[camera]');  // Default camera.
-        cameraEl.addEventListener('loaded', function () { done(); });
+    setTimeout(() => {
+      el.sceneEl.addEventListener('loaded', function () {
+        self.cameraEl = el.sceneEl.camera.el;
+        done();
       });
     });
   });
@@ -388,10 +388,10 @@ suite('rotation controls on camera with touch drag (integration unit test)', fun
   setup(function (done) {
     var el = this.el = helpers.entityFactory();
     var self = this;
-    el.addEventListener('loaded', function () {
-      el.sceneEl.addEventListener('cameraready', function () {
-        var cameraEl = self.cameraEl = el.sceneEl.querySelector('[camera]');  // Default camera.
-        cameraEl.addEventListener('loaded', function () { done(); });
+    setTimeout(() => {
+      el.sceneEl.addEventListener('loaded', () => {
+        self.cameraEl = el.sceneEl.camera.el;
+        done();
       });
     });
   });

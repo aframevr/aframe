@@ -448,7 +448,9 @@ suite('cursor', function () {
       // Cannot spy on onCursorDown/Up directly due to binding.
       var cursorEmitSpy = this.sinon.spy(component, 'twoWayEmit');
       var downEvt = new CustomEvent('touchstart');
+      downEvt.touches = [];
       var upEvt = new CustomEvent('touchend');
+      upEvt.touches = [];
       assert.isFalse(cursorEmitSpy.calledWith('mousedown'));
       el.sceneEl.canvas.dispatchEvent(downEvt);
       assert.isTrue(cursorEmitSpy.calledWith('mousedown'));

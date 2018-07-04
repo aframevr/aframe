@@ -215,13 +215,13 @@ suite('sound', function () {
         audioEl.setAttribute('id', 'testogg');
         assetsEl.appendChild(audioEl);
         sceneEl.appendChild(assetsEl);
-        process.nextTick(function () {
+        setTimeout(function () {
           var el = document.createElement('a-entity');
-          el.setAttribute('sound', 'src', '#testogg');
           el.addEventListener('sound-loaded', function () {
             assert.ok(this.components.sound.loaded);
             done();
           });
+          el.setAttribute('sound', 'src', '#testogg');
           sceneEl.appendChild(el);
         });
       });
