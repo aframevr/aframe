@@ -39,7 +39,7 @@ The image primitive shows an image on a flat plane.
 | shader          | material.shader         | flat          |
 | side            | material.side           | front         |
 | src             | material.src            | None          |
-| transparent     | material.transparent    | false         |
+| transparent     | material.transparent    | true          |
 | width           | geometry.width          | 1             |
 
 ## Fine-Tuning
