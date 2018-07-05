@@ -167,7 +167,15 @@ module.exports.AScene = registerElement('a-scene', {
      */
     initSystems: {
       value: function () {
-        Object.keys(systems).forEach(bind(this.initSystem, this));
+        var name;
+
+        // Initialize camera system first.
+        this.initSystem('camera');
+
+        for (name in systems) {
+          if (name === 'camera') { continue; }
+          this.initSystem(name);
+        }
       }
     },
 

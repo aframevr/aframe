@@ -59,7 +59,13 @@ module.exports.System = registerSystem('camera', {
       });
 
       // Load camera and wait for camera to initialize.
-      cameraEls[i].load();
+      if (cameraEls[i].isNode) {
+        cameraEls[i].load();
+      } else {
+        cameraEls[i].addEventListener('nodeready', function () {
+          this.load();
+        });
+      }
     }
   },
 
