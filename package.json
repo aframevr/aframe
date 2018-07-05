@@ -25,6 +25,7 @@
     "test:docs": "node scripts/docsLint.js",
     "test:firefox": "npm test -- --browsers Firefox",
     "test:chrome": "npm test -- --browsers Chrome",
+    "test:nobrowser": "NO_BROWSER=true npm test",
     "test:node": "mocha --ui tdd tests/node"
   },
   "repository": "aframevr/aframe",
