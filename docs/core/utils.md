@@ -154,6 +154,10 @@ Checks if a VR headset is connected by looking for orientation data. Returns a `
 
 Checks if device is Gear VR. Returns a `boolean`.
 
+### `AFRAME.utils.device.isOculusGo ()`
+
+Checks if device is Oculus Go. Returns a `boolean`.
+
 ### `AFRAME.utils.device.isMobile ()`
 
 Checks if device is a smartphone. Returns a `boolean`.
