@@ -77981,7 +77981,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.2 (Date 2018-07-05, Commit #9123399)');
+console.log('A-Frame Version: 0.8.2 (Date 2018-07-05, Commit #dfbf210)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -79817,6 +79817,14 @@ function isGearVR () {
   return /SamsungBrowser.+Mobile VR/i.test(window.navigator.userAgent);
 }
 module.exports.isGearVR = isGearVR;
+
+/**
+ *  Detect Oculus Go device
+ */
+function isOculusGo () {
+  return /Pacific Build.+OculusBrowser.+SamsungBrowser.+Mobile VR/i.test(window.navigator.userAgent);
+}
+module.exports.isOculusGo = isOculusGo;
 
 function isR7 () {
   return /R7 Build/.test(window.navigator.userAgent);
