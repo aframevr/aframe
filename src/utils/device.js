@@ -68,7 +68,7 @@ module.exports.isGearVR = isGearVR;
 /**
  *  Detect Oculus Go device
  */
-function isOculusGo() {
+function isOculusGo () {
   return /Pacific Build.+OculusBrowser.+SamsungBrowser.+Mobile VR/i.test(window.navigator.userAgent);
 }
 module.exports.isOculusGo = isOculusGo;
