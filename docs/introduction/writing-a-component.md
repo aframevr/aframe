@@ -731,13 +731,11 @@ components to see how they're built and what use cases they provide for. Here
 are a few places to look:
 
 [registry]: https://aframe.io/registry/
-[awesomecomponents]: https://github.com/aframevr/awesome-aframe#components
 [corecomponents]: https://github.com/aframevr/aframe/tree/master/src/components
 [paintercomponents]: https://github.com/aframevr/a-painter/tree/master/src/components
 
 - [A-Frame Registry][registry] - Curated community components.
 - [A-Frame core components][corecomponents] - Source code of A-Frame's standard components.
-- [awesome-aframe components][awesomecomponents] - Giant list of community components.
 - [A-Painter components][paintercomponents] - Application-specific components for A-Painter.
 
 ## Publishing a Component
