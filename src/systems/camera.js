@@ -11,34 +11,96 @@ var DEFAULT_CAMERA_ATTR = 'data-aframe-default-camera';
 module.exports.System = registerSystem('camera', {
   init: function () {
     this.activeCameraEl = null;
-    this.bindMethods();
-    // Wait for all entities to fully load before checking for existence of camera.
-    // Since entities wait for <a-assets> to load, any cameras attaching to the scene
-    // will do so asynchronously.
-    this.sceneEl.addEventListener('loaded', this.setupDefaultCamera);
-  },
 
-  bindMethods: function () {
-    this.setupDefaultCamera = this.setupDefaultCamera.bind(this);
-    this.wrapRender = this.wrapRender.bind(this);
-    this.unwrapRender = this.unwrapRender.bind(this);
     this.render = this.render.bind(this);
+    this.unwrapRender = this.unwrapRender.bind(this);
+    this.wrapRender = this.wrapRender.bind(this);
+
+    this.initialCameraFound = false;
+    this.numUserCameras = 0;
+    this.numUserCamerasChecked = 0;
+    this.setupInitialCamera();
   },
 
   /**
-   * Create a default camera if user has not added one during the initial scene traversal.
+   * Setup initial camera, either searching for camera or
+   * creating a default camera if user has not added one during the initial scene traversal.
+   * We want sceneEl.camera to be ready, set, and initialized before the rest of the scene
+   * loads.
    *
    * Default camera offset height is at average eye level (~1.6m).
    */
-  setupDefaultCamera: function () {
+  setupInitialCamera: function () {
+    var cameraEls;
+    var i;
     var sceneEl = this.sceneEl;
-    var defaultCameraEl;
+    var self = this;
 
     // Camera already defined or the one defined it is an spectator one.
     if (sceneEl.camera && !sceneEl.camera.el.getAttribute('camera').spectator) {
-      sceneEl.emit('camera-ready', {cameraEl: sceneEl.camera.el});
+      sceneEl.emit('cameraready', {cameraEl: sceneEl.camera.el});
       return;
     }
+
+    // Search for initial user-defined camera.
+    cameraEls = sceneEl.querySelectorAll('a-camera, [camera]');
+
+    // No user cameras, create default one.
+    if (!cameraEls.length) {
+      this.createDefaultCamera();
+      return;
+    }
+
+    this.numUserCameras = cameraEls.length;
+    for (i = 0; i < cameraEls.length; i++) {
+      cameraEls[i].addEventListener('object3dset', function (evt) {
+        if (evt.detail.type !== 'camera') { return; }
+        self.checkUserCamera(this);
+      });
+
+      // Load camera and wait for camera to initialize.
+      if (cameraEls[i].isNode) {
+        cameraEls[i].load();
+      } else {
+        cameraEls[i].addEventListener('nodeready', function () {
+          this.load();
+        });
+      }
+    }
+  },
+
+  /**
+   * Check if a user-defined camera entity is appropriate to be initial camera.
+   * (active + non-spectator).
+   *
+   * Keep track of the number of cameras we checked and whether we found one.
+   */
+  checkUserCamera: function (cameraEl) {
+    var cameraData;
+    var sceneEl = this.el.sceneEl;
+    this.numUserCamerasChecked++;
+
+    // Already found one.
+    if (this.initialCameraFound) { return; }
+
+    // Check if camera is appropriate for being the initial camera.
+    cameraData = cameraEl.getAttribute('camera');
+    if (!cameraData.active || cameraData.spectator) {
+      // No user cameras eligible, create default camera.
+      if (this.numUserCamerasChecked === this.numUserCameras) {
+        this.createDefaultCamera();
+      }
+      return;
+    }
+
+    this.initialCameraFound = true;
+    sceneEl.camera = cameraEl.getObject3D('camera');
+    sceneEl.emit('cameraready', {cameraEl: cameraEl});
+  },
+
+  createDefaultCamera: function () {
+    var defaultCameraEl;
+    var sceneEl = this.sceneEl;
 
     // Set up default camera.
     defaultCameraEl = document.createElement('a-entity');
@@ -46,13 +108,16 @@ module.exports.System = registerSystem('camera', {
     defaultCameraEl.setAttribute('wasd-controls', '');
     defaultCameraEl.setAttribute('look-controls', '');
     defaultCameraEl.setAttribute(constants.AFRAME_INJECTED, '');
-    defaultCameraEl.setAttribute('position', {
-      x: 0,
-      y: constants.DEFAULT_CAMERA_HEIGHT,
-      z: 0
+    defaultCameraEl.object3D.position.set(0, constants.DEFAULT_CAMERA_HEIGHT, 0);
+
+    defaultCameraEl.addEventListener('object3dset', function (evt) {
+      if (evt.detail.type !== 'camera') { return; }
+      sceneEl.camera = evt.detail.object;
+      sceneEl.emit('cameraready', {cameraEl: defaultCameraEl});
     });
+
     sceneEl.appendChild(defaultCameraEl);
-    sceneEl.emit('camera-ready', {cameraEl: defaultCameraEl});
+    defaultCameraEl.load();
   },
 
   /**
@@ -62,8 +127,10 @@ module.exports.System = registerSystem('camera', {
    * the new camera.
    */
   disableActiveCamera: function () {
-    var cameraEls = this.sceneEl.querySelectorAll('[camera]');
-    var newActiveCameraEl = cameraEls[cameraEls.length - 1];
+    var cameraEls;
+    var newActiveCameraEl;
+    cameraEls = this.sceneEl.querySelectorAll('[camera]');
+    newActiveCameraEl = cameraEls[cameraEls.length - 1];
     newActiveCameraEl.setAttribute('camera', 'active', true);
   },
 
@@ -170,9 +237,11 @@ module.exports.System = registerSystem('camera', {
   },
 
   render: function (scene, camera, renderTarget) {
-    var spectatorCamera;
+    var isVREnabled;
     var sceneEl = this.sceneEl;
-    var isVREnabled = sceneEl.renderer.vr.enabled;
+    var spectatorCamera;
+
+    isVREnabled = sceneEl.renderer.vr.enabled;
     this.originalRender.call(sceneEl.renderer, scene, camera, renderTarget);
     if (!this.spectatorCameraEl || sceneEl.isMobile || !isVREnabled) { return; }
     spectatorCamera = this.spectatorCameraEl.components.camera.camera;

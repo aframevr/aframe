@@ -85,19 +85,32 @@ module.exports.AScene = registerElement('a-scene', {
 
     attachedCallback: {
       value: function () {
-        var resize;
         var self = this;
 
         // Renderer initialization
         setupCanvas(this);
         this.setupRenderer();
+
         this.resize();
         this.addFullScreenStyles();
         initPostMessageAPI(this);
 
         initMetaTags(this);
         initWakelock(this);
+
+        // Camera set up by camera system.
+        this.addEventListener('cameraready', function () {
+          self.attachedCallbackPostCamera();
+        });
+
         this.initSystems();
+      }
+    },
+
+    attachedCallbackPostCamera: {
+      value: function () {
+        var resize;
+        var self = this;
 
         resize = bind(this.resize, this);
         window.addEventListener('load', resize);
@@ -154,7 +167,15 @@ module.exports.AScene = registerElement('a-scene', {
      */
     initSystems: {
       value: function () {
-        Object.keys(systems).forEach(bind(this.initSystem, this));
+        var name;
+
+        // Initialize camera system first.
+        this.initSystem('camera');
+
+        for (name in systems) {
+          if (name === 'camera') { continue; }
+          this.initSystem(name);
+        }
       }
     },
 
@@ -522,10 +543,9 @@ module.exports.AScene = registerElement('a-scene', {
         renderer = this.renderer = new THREE.WebGLRenderer(rendererConfig);
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.sortObjects = false;
-        // We expect camera-set-active to be triggered at least once in the life of an a-frame app. Usually soon after
-        // it is initialized.
+        renderer.vr.setPoseTarget(this.camera);
         this.addEventListener('camera-set-active', function () {
-          renderer.vr.setPoseTarget(self.camera.el.object3D);
+          renderer.vr.setPoseTarget(self.camera);
         });
       },
       writable: window.debug
@@ -538,6 +558,8 @@ module.exports.AScene = registerElement('a-scene', {
     play: {
       value: function () {
         var self = this;
+        var sceneEl = this;
+
         if (this.renderStarted) {
           AEntity.prototype.play.call(this);
           return;
@@ -546,28 +568,17 @@ module.exports.AScene = registerElement('a-scene', {
         this.addEventListener('loaded', function () {
           AEntity.prototype.play.call(this);  // .play() *before* render.
 
-          // Wait for camera if necessary before rendering.
-          if (this.camera) {
-            startRender(this);
-            return;
-          }
-          this.addEventListener('camera-set-active', function () { startRender(this); });
+          if (sceneEl.renderStarted) { return; }
 
-          function startRender (sceneEl) {
-            if (sceneEl.renderStarted) { return; }
+          sceneEl.resize();
 
-            sceneEl.resize();
-
-            // Kick off render loop.
-            if (sceneEl.renderer) {
-              if (window.performance) {
-                window.performance.mark('render-started');
-              }
-              sceneEl.clock = new THREE.Clock();
-              sceneEl.render();
-              sceneEl.renderStarted = true;
-              sceneEl.emit('renderstart');
-            }
+          // Kick off render loop.
+          if (sceneEl.renderer) {
+            if (window.performance) { window.performance.mark('render-started'); }
+            sceneEl.clock = new THREE.Clock();
+            sceneEl.render();
+            sceneEl.renderStarted = true;
+            sceneEl.emit('renderstart');
           }
         });
 

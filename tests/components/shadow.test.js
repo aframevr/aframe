@@ -10,21 +10,22 @@ suite('shadow component', function () {
 
   setup(function (done) {
     el = entityFactory();
-    el.addEventListener('componentinitialized', function (evt) {
-      if (evt.detail.name !== 'shadow') { return; }
-      component = el.components.shadow;
-      done();
+    setTimeout(() => {
+      el.sceneEl.addEventListener('loaded', function (evt) {
+        component = el.components.shadow;
+        done();
+      });
+      el.setAttribute('shadow', {});
+      mesh = new THREE.Mesh(
+        new THREE.Sphere(2),
+        new THREE.MeshBasicMaterial({color: 0xffff00})
+      );
+      meshWithMaterialArray = new THREE.Mesh(
+        new THREE.Sphere(2),
+        [new THREE.MeshBasicMaterial({color: 0xffff00}),
+          new THREE.MeshBasicMaterial({color: 0xffff00})]
+      );
     });
-    el.setAttribute('shadow', {});
-    mesh = new THREE.Mesh(
-      new THREE.Sphere(2),
-      new THREE.MeshBasicMaterial({color: 0xffff00})
-    );
-    meshWithMaterialArray = new THREE.Mesh(
-      new THREE.Sphere(2),
-      [new THREE.MeshBasicMaterial({color: 0xffff00}),
-        new THREE.MeshBasicMaterial({color: 0xffff00})]
-    );
   });
 
   suite('update', function () {

@@ -4,20 +4,21 @@ var THREE = require('index').THREE;
 
 suite('sound', function () {
   setup(function (done) {
-    THREE.Cache.files = {};
     var el = this.el = entityFactory();
-    el.setAttribute('sound', {
-      autoplay: true,
-      src: 'url(mysoundfile.mp3)',
-      loop: true,
-      distanceModel: 'exponential',
-      maxDistance: 20000,
-      refDistance: 2,
-      rolloffFactor: 4,
-      poolSize: 3
-    });
-    el.addEventListener('loaded', function () {
-      done();
+    THREE.Cache.files = {};
+    setTimeout(() => {
+      el.sceneEl.addEventListener('loaded', function () { done(); });
+
+      el.setAttribute('sound', {
+        autoplay: true,
+        src: 'url(mysoundfile.mp3)',
+        loop: true,
+        distanceModel: 'exponential',
+        maxDistance: 20000,
+        refDistance: 2,
+        rolloffFactor: 4,
+        poolSize: 3
+      });
     });
   });
 
@@ -214,13 +215,13 @@ suite('sound', function () {
         audioEl.setAttribute('id', 'testogg');
         assetsEl.appendChild(audioEl);
         sceneEl.appendChild(assetsEl);
-        process.nextTick(function () {
+        setTimeout(function () {
           var el = document.createElement('a-entity');
-          el.setAttribute('sound', 'src', '#testogg');
           el.addEventListener('sound-loaded', function () {
             assert.ok(this.components.sound.loaded);
             done();
           });
+          el.setAttribute('sound', 'src', '#testogg');
           sceneEl.appendChild(el);
         });
       });

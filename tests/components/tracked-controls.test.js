@@ -13,29 +13,31 @@ suite('tracked-controls', function () {
   setup(function (done) {
     standingMatrix.identity();
     el = entityFactory();
-    el.setAttribute('position', '');
-    el.setAttribute('tracked-controls', '');
-    el.addEventListener('loaded', function () {
-      el.parentNode.renderer.vr.getStandingMatrix = function () {
-        return standingMatrix;
-      };
-      component = el.components['tracked-controls'];
-      system = component.system;
-      controller = {
-        id: 'OpenVR Gamepad',
-        pose: {
-          position: [0, 0, 0],
-          orientation: [0, 0, 0, 1]
-        },
-        buttons: [
-          {pressed: false, touched: false, value: 0},
-          {pressed: false, touched: false, value: 0}
-        ],
-        axes: [0, 0, 0]
-      };
-      system.controllers = [controller];
-      el.setAttribute('tracked-controls', 'id', 'OpenVR Gamepad');
-      done();
+    setTimeout(() => {
+      el.setAttribute('position', '');
+      el.setAttribute('tracked-controls', '');
+      el.sceneEl.addEventListener('loaded', function () {
+        el.parentNode.renderer.vr.getStandingMatrix = function () {
+          return standingMatrix;
+        };
+        component = el.components['tracked-controls'];
+        system = component.system;
+        controller = {
+          id: 'OpenVR Gamepad',
+          pose: {
+            position: [0, 0, 0],
+            orientation: [0, 0, 0, 1]
+          },
+          buttons: [
+            {pressed: false, touched: false, value: 0},
+            {pressed: false, touched: false, value: 0}
+          ],
+          axes: [0, 0, 0]
+        };
+        system.controllers = [controller];
+        el.setAttribute('tracked-controls', 'id', 'OpenVR Gamepad');
+        done();
+      });
     });
   });
 
@@ -147,7 +149,7 @@ suite('tracked-controls', function () {
       el.sceneEl.systems['tracked-controls'].vrDisplay = true;
       component.tick();
       // assert position after default camera position and arm model are applied
-      assertVec3CloseTo(el.getAttribute('position'), [0.28, 1.12, -0.32], 0.01);
+      assertVec3CloseTo(el.getAttribute('position'), [0.28, -0.48, -0.32], 0.01);
     });
   });
 

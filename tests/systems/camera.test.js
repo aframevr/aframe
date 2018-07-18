@@ -1,7 +1,10 @@
 /* global assert, process, setup, suite, test, sinon */
+var constants = require('constants/');
 var entityFactory = require('../helpers').entityFactory;
 
 suite('camera system', function () {
+  var sceneEl;
+
   setup(function (done) {
     var el = this.el = entityFactory();
     if (el.hasLoaded) { done(); }
@@ -10,39 +13,112 @@ suite('camera system', function () {
     });
   });
 
-  suite('setupDefaultCamera', function () {
-    test('uses defined camera if defined', function (done) {
-      var assetsEl;
-      var imgEl;  // Image that will never load.
-      var cameraEl;
-      var sceneEl;
+  test('creates default camera if not defined', function (done) {
+    // Create scene.
+    sceneEl = document.createElement('a-scene');
 
-      // Create assets.
-      assetsEl = document.createElement('a-assets');
-      imgEl = document.createElement('img');
-      imgEl.setAttribute('src', 'neverloadlalala5.gif');
-      assetsEl.appendChild(imgEl);
-
-      // Create scene.
-      sceneEl = document.createElement('a-scene');
-      sceneEl.appendChild(assetsEl);
-
-      // Create camera.
-      cameraEl = document.createElement('a-entity');
-      cameraEl.setAttribute('camera', '');
-      sceneEl.appendChild(cameraEl);
-
-      sceneEl.addEventListener('loaded', function () {
-        assert.equal(sceneEl.camera.el, cameraEl);
-        done();
-      });
-
-      document.body.appendChild(sceneEl);
-
-      // Trigger scene load through assets. Camera will be waiting for assets.
-      // Add `setTimeout` to mimic asynchrony of asset loading.
-      setTimeout(function () { assetsEl.load(); });
+    sceneEl.addEventListener('loaded', function () {
+      assert.ok(sceneEl.camera);
+      assert.ok(sceneEl.camera.el.getObject3D('camera'));
+      assert.ok(sceneEl.camera.el.hasAttribute(constants.AFRAME_INJECTED));
+      assert.ok(sceneEl.camera.el.hasAttribute('look-controls'));
+      done();
     });
+
+    document.body.appendChild(sceneEl);
+  });
+
+  test('uses defined camera if defined', function (done) {
+    var assetsEl;
+    var imgEl;  // Image that will never load.
+    var cameraEl;
+    var sceneEl;
+
+    // Create assets.
+    assetsEl = document.createElement('a-assets');
+    imgEl = document.createElement('img');
+    imgEl.setAttribute('src', 'neverloadlalala5.gif');
+    assetsEl.appendChild(imgEl);
+
+    // Create scene.
+    sceneEl = document.createElement('a-scene');
+    sceneEl.appendChild(assetsEl);
+
+    // Create camera.
+    cameraEl = document.createElement('a-entity');
+    cameraEl.setAttribute('camera', '');
+    sceneEl.appendChild(cameraEl);
+
+    sceneEl.addEventListener('loaded', function () {
+      assert.equal(sceneEl.camera.el, cameraEl);
+      done();
+    });
+
+    document.body.appendChild(sceneEl);
+
+    // Trigger scene load through assets. Camera will be waiting for assets.
+    // Add `setTimeout` to mimic asynchrony of asset loading.
+    setTimeout(function () { assetsEl.load(); });
+  });
+
+  test('uses defined a-camera if defined', function (done) {
+    var cameraEl;
+    var sceneEl;
+
+    // Create scene.
+    sceneEl = document.createElement('a-scene');
+
+    // Create camera.
+    cameraEl = document.createElement('a-camera');
+    sceneEl.appendChild(cameraEl);
+
+    sceneEl.addEventListener('cameraready', function () {
+      assert.ok(cameraEl.getObject3D('camera'));
+      assert.equal(sceneEl.camera.el, cameraEl);
+      done();
+    });
+
+    document.body.appendChild(sceneEl);
+  });
+
+  test('does not choose defined spectator camera as initial camera', function (done) {
+    var cameraEl;
+    var sceneEl;
+
+    // Create scene.
+    sceneEl = document.createElement('a-scene');
+
+    // Create camera.
+    cameraEl = document.createElement('a-entity');
+    cameraEl.setAttribute('camera', 'spectator: true');
+    sceneEl.appendChild(cameraEl);
+
+    sceneEl.addEventListener('loaded', function () {
+      assert.notEqual(sceneEl.camera.el, cameraEl);
+      done();
+    });
+
+    document.body.appendChild(sceneEl);
+  });
+
+  test('does not choose non-active camera as initial camera', function (done) {
+    var cameraEl;
+    var sceneEl;
+
+    // Create scene.
+    sceneEl = document.createElement('a-scene');
+
+    // Create camera.
+    cameraEl = document.createElement('a-entity');
+    cameraEl.setAttribute('camera', 'active: false');
+    sceneEl.appendChild(cameraEl);
+
+    sceneEl.addEventListener('loaded', function () {
+      assert.notEqual(sceneEl.camera.el, cameraEl);
+      done();
+    });
+
+    document.body.appendChild(sceneEl);
   });
 
   suite('setActiveCamera', function () {

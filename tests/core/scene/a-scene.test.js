@@ -40,6 +40,7 @@ suite('a-scene (without renderer)', function () {
     setup(function () {
       sceneEl = document.createElement('a-scene');
     });
+
     test('initializes scene object', function () {
       assert.equal(sceneEl.object3D.type, 'Scene');
     });
@@ -62,11 +63,9 @@ suite('a-scene (without renderer)', function () {
       var sceneEl = this.el;
       sceneEl.addEventListener('loaded', function () {
         assert.ok(Object.keys(sceneEl.systems).length);
-        assert.ok(Object.keys(sceneEl.systems).length);
         assert.ok(this.behaviors.tick);
         assert.ok(this.behaviors.tock);
-        assert.equal(sceneEl.isPlaying, true);
-        assert.equal(sceneEl.hasLoaded, true);
+        assert.equal(sceneEl.hasLoaded, true, 'Has loaded');
         assert.equal(sceneEl.renderTarget, null);
         // Default components.
         assert.ok(sceneEl.hasAttribute('inspector'));
@@ -84,10 +83,12 @@ suite('a-scene (without renderer)', function () {
       var sceneEl = this.el;
       var exitVRStub = this.sinon.stub(sceneEl, 'exitVR');
       event = new CustomEvent('vrdisplaydisconnect');
-      window.dispatchEvent(event);
-      process.nextTick(function () {
-        assert.ok(exitVRStub.calledWith(true));
-        done();
+      sceneEl.addEventListener('loaded', () => {
+        window.dispatchEvent(event);
+        setTimeout(function () {
+          assert.ok(exitVRStub.calledWith(true));
+          done();
+        });
       });
     });
   });
@@ -102,9 +103,11 @@ suite('a-scene (without renderer)', function () {
         done();
       });
 
-      event = new CustomEvent('vrdisplaypresentchange');
-      event.display = {isPresenting: true};
-      window.dispatchEvent(event);
+      sceneEl.addEventListener('loaded', () => {
+        event = new CustomEvent('vrdisplaypresentchange');
+        event.display = {isPresenting: true};
+        window.dispatchEvent(event);
+      });
     });
 
     test('tells A-Frame about exiting VR if no longer presenting', function (done) {
@@ -117,9 +120,11 @@ suite('a-scene (without renderer)', function () {
         done();
       });
 
-      event = new CustomEvent('vrdisplaypresentchange');
-      event.display = {isPresenting: false};
-      window.dispatchEvent(event);
+      sceneEl.addEventListener('loaded', () => {
+        event = new CustomEvent('vrdisplaypresentchange');
+        event.display = {isPresenting: false};
+        window.dispatchEvent(event);
+      });
     });
   });
 
@@ -436,11 +441,13 @@ suite('a-scene (without renderer)', function () {
 
       requestPointerLockSpy = this.sinon.spy(sceneEl.canvas, 'requestPointerLock');
       event = new CustomEvent('vrdisplaypointerrestricted');
-      window.dispatchEvent(event);
 
-      process.nextTick(function () {
-        assert.ok(requestPointerLockSpy.called);
-        done();
+      sceneEl.addEventListener('loaded', () => {
+        window.dispatchEvent(event);
+        process.nextTick(function () {
+          assert.ok(requestPointerLockSpy.called);
+          done();
+        });
       });
     });
 
@@ -456,11 +463,13 @@ suite('a-scene (without renderer)', function () {
       this.sinon.stub(sceneEl, 'getPointerLockElement', function () {
         return sceneEl.canvas;
       });
-      window.dispatchEvent(event);
 
-      process.nextTick(function () {
-        assert.ok(exitPointerLockSpy.called);
-        done();
+      sceneEl.addEventListener('loaded', () => {
+        window.dispatchEvent(event);
+        process.nextTick(function () {
+          assert.ok(exitPointerLockSpy.called);
+          done();
+        });
       });
     });
 
@@ -478,11 +487,12 @@ suite('a-scene (without renderer)', function () {
         // independently of the a-scene handler for vrdisplaypointerrestricted event
         return document.createElement('canvas');
       });
-      window.dispatchEvent(event);
-
-      process.nextTick(function () {
-        assert.notOk(exitPointerLockSpy.called);
-        done();
+      sceneEl.addEventListener('loaded', () => {
+        window.dispatchEvent(event);
+        process.nextTick(function () {
+          assert.notOk(exitPointerLockSpy.called);
+          done();
+        });
       });
     });
 
@@ -501,12 +511,14 @@ suite('a-scene (without renderer)', function () {
         // independently of the a-scene handler for vrdisplaypointerrestricted event
         return document.createElement('canvas');
       });
-      window.dispatchEvent(event);
 
-      process.nextTick(function () {
-        assert.ok(exitPointerLockSpy.called);
-        assert.ok(requestPointerLockSpy.called);
-        done();
+      sceneEl.addEventListener('loaded', () => {
+        window.dispatchEvent(event);
+        process.nextTick(function () {
+          assert.ok(exitPointerLockSpy.called);
+          assert.ok(requestPointerLockSpy.called);
+          done();
+        });
       });
     });
   });

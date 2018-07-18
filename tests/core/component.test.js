@@ -1000,7 +1000,7 @@ suite('registerComponent warnings', function () {
 
   setup(function (done) {
     var el = entityFactory();
-    el.addEventListener('loaded', function () {
+    setTimeout(() => {
       sceneEl = el.sceneEl;
       script = document.createElement('script');
       script.innerHTML = `AFRAME.registerComponent('testorder', {});`;
@@ -1011,7 +1011,7 @@ suite('registerComponent warnings', function () {
   teardown(function () {
     delete AFRAME.components.testorder;
     delete Component.registrationOrderWarnings.testorder;
-    if (script.parentNode) { script.parentNode.removeChild(script); }
+    if (script && script.parentNode) { script.parentNode.removeChild(script); }
   });
 
   test('does not throw warning if component registered in head', function (done) {

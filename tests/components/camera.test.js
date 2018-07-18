@@ -4,10 +4,11 @@ var entityFactory = require('../helpers').entityFactory;
 suite('camera', function () {
   setup(function (done) {
     var el = this.el = entityFactory();
-    el.setAttribute('camera', 'userHeight: 1.6');
-    if (el.hasLoaded) { done(); }
-    el.addEventListener('loaded', function () {
-      done();
+    setTimeout(() => {
+      el.sceneEl.addEventListener('loaded', function () {
+        el.setAttribute('camera', 'userHeight: 1.6');
+        done();
+      });
     });
   });
 
