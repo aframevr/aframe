@@ -75573,19 +75573,32 @@ module.exports.AScene = registerElement('a-scene', {
 
     attachedCallback: {
       value: function () {
-        var resize;
         var self = this;
 
         // Renderer initialization
         setupCanvas(this);
         this.setupRenderer();
+
         this.resize();
         this.addFullScreenStyles();
         initPostMessageAPI(this);
 
         initMetaTags(this);
         initWakelock(this);
+
+        // Camera set up by camera system.
+        this.addEventListener('cameraready', function () {
+          self.attachedCallbackPostCamera();
+        });
+
         this.initSystems();
+      }
+    },
+
+    attachedCallbackPostCamera: {
+      value: function () {
+        var resize;
+        var self = this;
 
         resize = bind(this.resize, this);
         window.addEventListener('load', resize);
@@ -75642,7 +75655,15 @@ module.exports.AScene = registerElement('a-scene', {
      */
     initSystems: {
       value: function () {
-        Object.keys(systems).forEach(bind(this.initSystem, this));
+        var name;
+
+        // Initialize camera system first.
+        this.initSystem('camera');
+
+        for (name in systems) {
+          if (name === 'camera') { continue; }
+          this.initSystem(name);
+        }
       }
     },
 
@@ -76010,10 +76031,9 @@ module.exports.AScene = registerElement('a-scene', {
         renderer = this.renderer = new THREE.WebGLRenderer(rendererConfig);
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.sortObjects = false;
-        // We expect camera-set-active to be triggered at least once in the life of an a-frame app. Usually soon after
-        // it is initialized.
+        renderer.vr.setPoseTarget(this.camera);
         this.addEventListener('camera-set-active', function () {
-          renderer.vr.setPoseTarget(self.camera.el.object3D);
+          renderer.vr.setPoseTarget(self.camera);
         });
       },
       writable: window.debug
@@ -76026,6 +76046,8 @@ module.exports.AScene = registerElement('a-scene', {
     play: {
       value: function () {
         var self = this;
+        var sceneEl = this;
+
         if (this.renderStarted) {
           AEntity.prototype.play.call(this);
           return;
@@ -76034,28 +76056,17 @@ module.exports.AScene = registerElement('a-scene', {
         this.addEventListener('loaded', function () {
           AEntity.prototype.play.call(this);  // .play() *before* render.
 
-          // Wait for camera if necessary before rendering.
-          if (this.camera) {
-            startRender(this);
-            return;
-          }
-          this.addEventListener('camera-set-active', function () { startRender(this); });
+          if (sceneEl.renderStarted) { return; }
 
-          function startRender (sceneEl) {
-            if (sceneEl.renderStarted) { return; }
+          sceneEl.resize();
 
-            sceneEl.resize();
-
-            // Kick off render loop.
-            if (sceneEl.renderer) {
-              if (window.performance) {
-                window.performance.mark('render-started');
-              }
-              sceneEl.clock = new THREE.Clock();
-              sceneEl.render();
-              sceneEl.renderStarted = true;
-              sceneEl.emit('renderstart');
-            }
+          // Kick off render loop.
+          if (sceneEl.renderer) {
+            if (window.performance) { window.performance.mark('render-started'); }
+            sceneEl.clock = new THREE.Clock();
+            sceneEl.render();
+            sceneEl.renderStarted = true;
+            sceneEl.emit('renderstart');
           }
         });
 
@@ -77981,7 +77992,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.2 (Date 2018-07-05, Commit #dfbf210)');
+console.log('A-Frame Version: 0.8.2 (Date 2018-07-18, Commit #e0c8ff7)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -78603,34 +78614,96 @@ var DEFAULT_CAMERA_ATTR = 'data-aframe-default-camera';
 module.exports.System = registerSystem('camera', {
   init: function () {
     this.activeCameraEl = null;
-    this.bindMethods();
-    // Wait for all entities to fully load before checking for existence of camera.
-    // Since entities wait for <a-assets> to load, any cameras attaching to the scene
-    // will do so asynchronously.
-    this.sceneEl.addEventListener('loaded', this.setupDefaultCamera);
-  },
 
-  bindMethods: function () {
-    this.setupDefaultCamera = this.setupDefaultCamera.bind(this);
-    this.wrapRender = this.wrapRender.bind(this);
-    this.unwrapRender = this.unwrapRender.bind(this);
     this.render = this.render.bind(this);
+    this.unwrapRender = this.unwrapRender.bind(this);
+    this.wrapRender = this.wrapRender.bind(this);
+
+    this.initialCameraFound = false;
+    this.numUserCameras = 0;
+    this.numUserCamerasChecked = 0;
+    this.setupInitialCamera();
   },
 
   /**
-   * Create a default camera if user has not added one during the initial scene traversal.
+   * Setup initial camera, either searching for camera or
+   * creating a default camera if user has not added one during the initial scene traversal.
+   * We want sceneEl.camera to be ready, set, and initialized before the rest of the scene
+   * loads.
    *
    * Default camera offset height is at average eye level (~1.6m).
    */
-  setupDefaultCamera: function () {
+  setupInitialCamera: function () {
+    var cameraEls;
+    var i;
     var sceneEl = this.sceneEl;
-    var defaultCameraEl;
+    var self = this;
 
     // Camera already defined or the one defined it is an spectator one.
     if (sceneEl.camera && !sceneEl.camera.el.getAttribute('camera').spectator) {
-      sceneEl.emit('camera-ready', {cameraEl: sceneEl.camera.el});
+      sceneEl.emit('cameraready', {cameraEl: sceneEl.camera.el});
       return;
     }
+
+    // Search for initial user-defined camera.
+    cameraEls = sceneEl.querySelectorAll('a-camera, [camera]');
+
+    // No user cameras, create default one.
+    if (!cameraEls.length) {
+      this.createDefaultCamera();
+      return;
+    }
+
+    this.numUserCameras = cameraEls.length;
+    for (i = 0; i < cameraEls.length; i++) {
+      cameraEls[i].addEventListener('object3dset', function (evt) {
+        if (evt.detail.type !== 'camera') { return; }
+        self.checkUserCamera(this);
+      });
+
+      // Load camera and wait for camera to initialize.
+      if (cameraEls[i].isNode) {
+        cameraEls[i].load();
+      } else {
+        cameraEls[i].addEventListener('nodeready', function () {
+          this.load();
+        });
+      }
+    }
+  },
+
+  /**
+   * Check if a user-defined camera entity is appropriate to be initial camera.
+   * (active + non-spectator).
+   *
+   * Keep track of the number of cameras we checked and whether we found one.
+   */
+  checkUserCamera: function (cameraEl) {
+    var cameraData;
+    var sceneEl = this.el.sceneEl;
+    this.numUserCamerasChecked++;
+
+    // Already found one.
+    if (this.initialCameraFound) { return; }
+
+    // Check if camera is appropriate for being the initial camera.
+    cameraData = cameraEl.getAttribute('camera');
+    if (!cameraData.active || cameraData.spectator) {
+      // No user cameras eligible, create default camera.
+      if (this.numUserCamerasChecked === this.numUserCameras) {
+        this.createDefaultCamera();
+      }
+      return;
+    }
+
+    this.initialCameraFound = true;
+    sceneEl.camera = cameraEl.getObject3D('camera');
+    sceneEl.emit('cameraready', {cameraEl: cameraEl});
+  },
+
+  createDefaultCamera: function () {
+    var defaultCameraEl;
+    var sceneEl = this.sceneEl;
 
     // Set up default camera.
     defaultCameraEl = document.createElement('a-entity');
@@ -78638,13 +78711,16 @@ module.exports.System = registerSystem('camera', {
     defaultCameraEl.setAttribute('wasd-controls', '');
     defaultCameraEl.setAttribute('look-controls', '');
     defaultCameraEl.setAttribute(constants.AFRAME_INJECTED, '');
-    defaultCameraEl.setAttribute('position', {
-      x: 0,
-      y: constants.DEFAULT_CAMERA_HEIGHT,
-      z: 0
+    defaultCameraEl.object3D.position.set(0, constants.DEFAULT_CAMERA_HEIGHT, 0);
+
+    defaultCameraEl.addEventListener('object3dset', function (evt) {
+      if (evt.detail.type !== 'camera') { return; }
+      sceneEl.camera = evt.detail.object;
+      sceneEl.emit('cameraready', {cameraEl: defaultCameraEl});
     });
+
     sceneEl.appendChild(defaultCameraEl);
-    sceneEl.emit('camera-ready', {cameraEl: defaultCameraEl});
+    defaultCameraEl.load();
   },
 
   /**
@@ -78654,8 +78730,10 @@ module.exports.System = registerSystem('camera', {
    * the new camera.
    */
   disableActiveCamera: function () {
-    var cameraEls = this.sceneEl.querySelectorAll('[camera]');
-    var newActiveCameraEl = cameraEls[cameraEls.length - 1];
+    var cameraEls;
+    var newActiveCameraEl;
+    cameraEls = this.sceneEl.querySelectorAll('[camera]');
+    newActiveCameraEl = cameraEls[cameraEls.length - 1];
     newActiveCameraEl.setAttribute('camera', 'active', true);
   },
 
@@ -78762,9 +78840,11 @@ module.exports.System = registerSystem('camera', {
   },
 
   render: function (scene, camera, renderTarget) {
-    var spectatorCamera;
+    var isVREnabled;
     var sceneEl = this.sceneEl;
-    var isVREnabled = sceneEl.renderer.vr.enabled;
+    var spectatorCamera;
+
+    isVREnabled = sceneEl.renderer.vr.enabled;
     this.originalRender.call(sceneEl.renderer, scene, camera, renderTarget);
     if (!this.spectatorCameraEl || sceneEl.isMobile || !isVREnabled) { return; }
     spectatorCamera = this.spectatorCameraEl.components.camera.camera;
