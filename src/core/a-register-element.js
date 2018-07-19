@@ -81,7 +81,8 @@ function wrapANodeMethods (obj) {
   var ANodeMethods = [
     'attachedCallback',
     'attributeChangedCallback',
-    'createdCallback'
+    'createdCallback',
+    'detachedCallback'
   ];
   wrapMethods(newObj, ANodeMethods, obj, ANode.prototype);
   copyProperties(obj, newObj);
@@ -100,7 +101,8 @@ function wrapAEntityMethods (obj) {
   var ANodeMethods = [
     'attachedCallback',
     'attributeChangedCallback',
-    'createdCallback'
+    'createdCallback',
+    'detachedCallback'
   ];
   var AEntityMethods = [
     'attachedCallback',
