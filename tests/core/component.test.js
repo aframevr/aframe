@@ -547,6 +547,12 @@ suite('Component', function () {
       }, Error);
       assert.notOk('my__component' in components);
     });
+
+    test('can have underscore in component id', function () {
+      AFRAME.registerComponent('test', {multiple: true});
+      el.setAttribute('test__foo__bar', '');
+      assert.equal(el.components['test__foo__bar'].id, 'foo__bar');
+    });
   });
 
   suite('schema', function () {

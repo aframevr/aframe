@@ -309,8 +309,10 @@ var proto = Object.create(ANode.prototype, {
       var isComponentDefined;
 
       componentInfo = utils.split(attrName, MULTIPLE_COMPONENT_DELIMITER);
-      componentId = componentInfo[1];
       componentName = componentInfo[0];
+      componentId = componentInfo.length > 2
+        ? componentInfo.slice(1).join('__')
+        : componentInfo[1];
 
       // Not a registered component.
       if (!COMPONENTS[componentName]) { return; }
