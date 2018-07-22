@@ -73463,8 +73463,10 @@ var proto = Object.create(ANode.prototype, {
       var isComponentDefined;
 
       componentInfo = utils.split(attrName, MULTIPLE_COMPONENT_DELIMITER);
-      componentId = componentInfo[1];
       componentName = componentInfo[0];
+      componentId = componentInfo.length > 2
+        ? componentInfo.slice(1).join('__')
+        : componentInfo[1];
 
       // Not a registered component.
       if (!COMPONENTS[componentName]) { return; }
@@ -77992,7 +77994,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.2 (Date 2018-07-18, Commit #e0c8ff7)');
+console.log('A-Frame Version: 0.8.2 (Date 2018-07-22, Commit #030023f)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
