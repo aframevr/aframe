@@ -127,6 +127,7 @@ module.exports.Component = registerComponent('cursor', {
     el.addEventListener('raycaster-intersection-cleared', this.onIntersectionCleared);
 
     window.addEventListener('resize', this.updateCanvasBounds);
+    window.addEventListener('scroll', this.updateCanvasBounds);
   },
 
   removeEventListeners: function () {
