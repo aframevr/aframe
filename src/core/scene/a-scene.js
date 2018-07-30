@@ -120,7 +120,7 @@ module.exports.AScene = registerElement('a-scene', {
           // after an orientation change. The window size is correct if the operation
           // is postponed a few milliseconds.
           // self.resize can be called directly once the bug above is fixed.
-          if (this.isIOS) {
+          if (self.isIOS) {
             setTimeout(resize, 100);
           } else {
             resize();
