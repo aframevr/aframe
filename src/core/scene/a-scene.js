@@ -709,7 +709,7 @@ function getMaxSize (maxSize, isVR) {
   var size;
   var pixelRatio = window.devicePixelRatio;
 
-  size = {height: window.innerHeight, width: window.innerWidth};
+  size = {height: document.body.offsetHeight, width: document.body.offsetWidth};
   if (!maxSize || isVR || (maxSize.width === -1 && maxSize.height === -1)) {
     return size;
   }
