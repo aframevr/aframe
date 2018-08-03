@@ -520,6 +520,10 @@ module.exports.AScene = registerElement('a-scene', {
           rendererConfig.antialias = this.getAttribute('antialias') === 'true';
         }
 
+        if (this.hasAttribute('logarithmicDepthBuffer')) {
+          rendererConfig.logarithmicDepthBuffer = this.getAttribute('logarithmicDepthBuffer') === 'true';
+        }
+
         this.maxCanvasSize = {height: 1920, width: 1920};
 
         if (this.hasAttribute('renderer')) {

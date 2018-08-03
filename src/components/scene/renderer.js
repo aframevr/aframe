@@ -13,6 +13,7 @@ var warn = debug('components:renderer:warn');
 module.exports.Component = register('renderer', {
   schema: {
     antialias: {default: 'auto', oneOf: ['true', 'false', 'auto']},
+    logarithmicDepthBuffer: {default: 'auto', oneOf: ['true', 'false', 'auto']},
     maxCanvasWidth: {default: 1920},
     maxCanvasHeight: {default: 1920},
     gammaOutput: {default: false},
@@ -41,6 +42,10 @@ module.exports.Component = register('renderer', {
 
     if (sceneEl.time > 0 && data.antialias !== prevData.antialias) {
       warn('Property "antialias" cannot be changed after scene initialization');
+    }
+
+    if (sceneEl.time > 0 && data.logarithmicDepthBuffer !== prevData.logarithmicDepthBuffer) {
+      warn('Property "logarithmicDepthBuffer" cannot be changed after scene initialization');
     }
 
     if (data.sortObjects !== prevData.sortObjects) {
