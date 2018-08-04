@@ -1,9 +1,9 @@
 ---
-title: "Interactions & Controllers"
+title: Interactions & Controllers
 type: introduction
 layout: docs
 parent_section: introduction
-order: 8.5
+order: 9
 examples:
   - title: Basic Interaction
     src: https://glitch.com/edit/#!/aframe-basic-interaction?path=index.html:1:0
