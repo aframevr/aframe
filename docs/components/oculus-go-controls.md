@@ -19,11 +19,11 @@ and/or pressed buttons (trackpad, trigger).
 
 ```html
 <!-- Match Oculus Go controller if present, regardless of hand. -->
-<a-entity gearvr-controls></a-entity>
+<a-entity oculus-go-controls></a-entity>
 
 <!-- Match Oculus Go controller if present and for specified hand. -->
-<a-entity gearvr-controls="hand: left"></a-entity>
-<a-entity gearvr-controls="hand: right"></a-entity>
+<a-entity oculus-go-controls="hand: left"></a-entity>
+<a-entity oculus-go-controls="hand: right"></a-entity>
 ```
 
 ## Value
