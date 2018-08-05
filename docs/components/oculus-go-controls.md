@@ -35,7 +35,7 @@ and/or pressed buttons (trackpad, trigger).
 | buttonTouchedColor   | Button colors when touched.                        | #777777              |
 | buttonHighlightColor | Button colors when pressed and active.             | #FFFFFF              |
 | hand                 | The hand that will be tracked (e.g., right, left). |                      |
-| model                | Whether the Gear controller model is loaded.       | true                 |
+| model                | Whether the Oculus Go controller model is loaded.       | true                 |
 | orientationOffset    | Offset to apply to model orientation.              | x: 0, y: 0, z: 0     |
 
 ## Events
