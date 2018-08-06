@@ -3,7 +3,7 @@ title: "Hosting & Publishing"
 type: introduction
 layout: docs
 parent_section: introduction
-order: 10
+order: 12
 ---
 
 This section will show several ways to deploy, host, and publish an A-Frame

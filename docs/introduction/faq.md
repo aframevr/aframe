@@ -3,7 +3,7 @@ title: FAQ
 type: introduction
 layout: docs
 parent_section: introduction
-order: 12
+order: 14
 ---
 
 [ecs]: ./entity-component-system.md
