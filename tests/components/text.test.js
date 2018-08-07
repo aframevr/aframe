@@ -11,7 +11,8 @@ suite('text', function () {
       return {
         default: '/base/tests/assets/test.fnt?foo',
         mozillavr: '/base/tests/assets/test.fnt?bar',
-        roboto: '/base/tests/assets/test.fnt?baz'
+        roboto: '/base/tests/assets/test.fnt?baz',
+        msdf: '/base/tests/assets/test.fnt?msdf'
       }[key];
     });
 
@@ -230,6 +231,28 @@ suite('text', function () {
         done();
       });
       el.setAttribute('text', {font: 'mozillavr', fontImage: '/base/tests/assets/test2.png'});
+    });
+
+    test('loads font with inferred font image', function (done) {
+      // `test.fnt` contains an absolute filepath, which should be ignored
+      // in favor of a page-relative texture URL.
+      el.addEventListener('textfontset', evt => {
+        component.currentFont.pages[0] = 'C:\\Windows\\Documents\\custom-texture.png';
+        assert.equal(component.getFontImageSrc(), '/base/tests/assets/test.png');
+        done();
+      });
+      el.setAttribute('text', 'font', '/base/tests/assets/test.fnt');
+    });
+
+    test('loads font with referenced font image', function (done) {
+      // `test.fnt` contains a local reference to the page texture, which
+      // should be loaded relative to the font's base path.
+      el.addEventListener('textfontset', evt => {
+        component.currentFont.pages[0] = 'custom-texture.png';
+        assert.equal(component.getFontImageSrc(), '/base/tests/assets/custom-texture.png');
+        done();
+      });
+      el.setAttribute('text', {font: 'msdf'});
     });
 
     test('uses up-to-date data once loaded', function (done) {
