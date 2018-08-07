@@ -69528,6 +69528,7 @@ var warn = debug('components:renderer:warn');
 module.exports.Component = register('renderer', {
   schema: {
     antialias: {default: 'auto', oneOf: ['true', 'false', 'auto']},
+    logarithmicDepthBuffer: {default: 'auto', oneOf: ['true', 'false', 'auto']},
     maxCanvasWidth: {default: 1920},
     maxCanvasHeight: {default: 1920},
     gammaOutput: {default: false},
@@ -69556,6 +69557,10 @@ module.exports.Component = register('renderer', {
 
     if (sceneEl.time > 0 && data.antialias !== prevData.antialias) {
       warn('Property "antialias" cannot be changed after scene initialization');
+    }
+
+    if (sceneEl.time > 0 && data.logarithmicDepthBuffer !== prevData.logarithmicDepthBuffer) {
+      warn('Property "logarithmicDepthBuffer" cannot be changed after scene initialization');
     }
 
     if (data.sortObjects !== prevData.sortObjects) {
@@ -75972,9 +75977,13 @@ module.exports.AScene = registerElement('a-scene', {
         var rendererAttrString;
         var rendererConfig;
 
-        rendererConfig = {alpha: true, antialias: !isMobile, canvas: this.canvas};
+        rendererConfig = {alpha: true, antialias: !isMobile, canvas: this.canvas, logarithmicDepthBuffer: false};
         if (this.hasAttribute('antialias')) {
           rendererConfig.antialias = this.getAttribute('antialias') === 'true';
+        }
+
+        if (this.hasAttribute('logarithmicDepthBuffer')) {
+          rendererConfig.logarithmicDepthBuffer = this.getAttribute('logarithmicDepthBuffer') === 'true';
         }
 
         this.maxCanvasSize = {height: 1920, width: 1920};
@@ -77961,7 +77970,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.2 (Date 2018-08-07, Commit #592c290)');
+console.log('A-Frame Version: 0.8.2 (Date 2018-08-07, Commit #2f96417)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
