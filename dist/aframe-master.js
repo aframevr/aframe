@@ -74460,7 +74460,8 @@ function wrapANodeMethods (obj) {
   var ANodeMethods = [
     'attachedCallback',
     'attributeChangedCallback',
-    'createdCallback'
+    'createdCallback',
+    'detachedCallback'
   ];
   wrapMethods(newObj, ANodeMethods, obj, ANode.prototype);
   copyProperties(obj, newObj);
@@ -74479,7 +74480,8 @@ function wrapAEntityMethods (obj) {
   var ANodeMethods = [
     'attachedCallback',
     'attributeChangedCallback',
-    'createdCallback'
+    'createdCallback',
+    'detachedCallback'
   ];
   var AEntityMethods = [
     'attachedCallback',
@@ -77950,7 +77952,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.2 (Date 2018-08-01, Commit #f9f3146)');
+console.log('A-Frame Version: 0.8.2 (Date 2018-08-07, Commit #9a778cc)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
