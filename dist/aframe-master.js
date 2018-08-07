@@ -70425,6 +70425,9 @@ var cache = new PromiseCache();
 var fontWidthFactors = {};
 var textures = {};
 
+// Regular expression for detecting a URLs with a protocol prefix.
+var protocolRe = /^\w+:/;
+
 /**
  * SDF-based text component.
  * Based on https://github.com/Jam3/three-bmfont-text.
@@ -70484,13 +70487,12 @@ module.exports.Component = registerComponent('text', {
   update: function (oldData) {
     var data = coerceData(this.data);
     var font = this.currentFont;
-    var fontImage = this.getFontImageSrc();
 
-    if (textures[fontImage]) {
-      this.texture = textures[fontImage];
+    if (textures[data.font]) {
+      this.texture = textures[data.font];
     } else {
       // Create texture per font.
-      this.texture = textures[fontImage] = new THREE.Texture();
+      this.texture = textures[data.font] = new THREE.Texture();
       this.texture.anisotropy = MAX_ANISOTROPY;
     }
 
@@ -70623,7 +70625,7 @@ module.exports.Component = registerComponent('text', {
         var texture = self.texture;
         texture.image = image;
         texture.needsUpdate = true;
-        textures[fontImgSrc] = texture;
+        textures[data.font] = texture;
         self.texture = texture;
         self.mesh.visible = true;
         el.emit('textfontset', {font: data.font, fontObj: font});
@@ -70638,8 +70640,15 @@ module.exports.Component = registerComponent('text', {
   },
 
   getFontImageSrc: function () {
+    if (this.data.fontImage) { return this.data.fontImage; }
     var fontSrc = this.lookupFont(this.data.font || DEFAULT_FONT) || this.data.font;
-    return this.data.fontImage || fontSrc.replace(/(\.fnt)|(\.json)/, '.png');
+    var imageSrc = this.currentFont.pages[0];
+    // If the image URL contains a non-HTTP(S) protocol, assume it's an absolute
+    // path on disk and try to infer the path from the font source instead.
+    if (imageSrc.match(protocolRe) && imageSrc.indexOf('http') !== 0) {
+      return fontSrc.replace(/(\.fnt)|(\.json)/, '.png');
+    }
+    return THREE.LoaderUtils.extractUrlBase(fontSrc) + imageSrc;
   },
 
   /**
@@ -77952,7 +77961,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.2 (Date 2018-08-07, Commit #9a778cc)');
+console.log('A-Frame Version: 0.8.2 (Date 2018-08-07, Commit #592c290)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
