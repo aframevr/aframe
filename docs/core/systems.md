@@ -7,8 +7,7 @@ order: 4
 source_code: src/core/systems.js
 examples: 
   - title: System providing envMaps
-    src: https://aframe-refraction-system.glitch.me/
----
+    src: https://glitch.com/edit/#!/aframe-refraction-system
 
 [ecs]: ../introduction/entity-component-system.md
 
