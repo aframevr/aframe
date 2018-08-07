@@ -515,7 +515,7 @@ module.exports.AScene = registerElement('a-scene', {
         var rendererAttrString;
         var rendererConfig;
 
-        rendererConfig = {alpha: true, antialias: !isMobile, canvas: this.canvas};
+        rendererConfig = {alpha: true, antialias: !isMobile, canvas: this.canvas, logarithmicDepthBuffer: false};
         if (this.hasAttribute('antialias')) {
           rendererConfig.antialias = this.getAttribute('antialias') === 'true';
         }
