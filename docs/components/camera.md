@@ -104,7 +104,7 @@ AFRAME.registerComponent('rotation-reader', {
     console.log(this.el.object3D.rotation);
 
     // `position` is a three.js Vector3.
-    console.log(this.el.object3D.rotation);
+    console.log(this.el.object3D.position);
   }
 });
 
