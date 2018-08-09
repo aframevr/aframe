@@ -223,6 +223,15 @@ suite('a-entity', function () {
       el.addState('happy');
       assert.ok(el.states.length === 1);
     });
+
+    test('it emits stateadded', function (done) {
+      var el = this.el;
+      el.addEventListener('stateadded', function (evt) {
+        assert.ok(evt.detail.state === 'happy');
+        done();
+      });
+      el.addState('happy');
+    });
   });
 
   suite('removeState', function () {
