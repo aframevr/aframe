@@ -747,7 +747,7 @@ var proto = Object.create(ANode.prototype, {
     value: function (state) {
       if (this.is(state)) { return; }
       this.states.push(state);
-      this.emit('stateadded', state);
+      this.emit('stateadded', {state: state});
     }
   },
 
