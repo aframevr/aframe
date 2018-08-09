@@ -159,7 +159,7 @@ event, and we can check the state can for existence using `.is`:
 
 ```js
 entity.addEventListener('stateadded', function (evt) {
-  if (evt.detail.state === 'selected') {
+  if (evt.detail === 'selected') {
     console.log('Entity now selected!');
   }
 });
