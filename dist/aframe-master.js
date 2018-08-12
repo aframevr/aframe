@@ -75582,7 +75582,7 @@ module.exports.AScene = registerElement('a-scene', {
           // after an orientation change. The window size is correct if the operation
           // is postponed a few milliseconds.
           // self.resize can be called directly once the bug above is fixed.
-          if (this.isIOS) {
+          if (self.isIOS) {
             setTimeout(resize, 100);
           } else {
             resize();
@@ -76175,7 +76175,7 @@ function getMaxSize (maxSize, isVR) {
   var size;
   var pixelRatio = window.devicePixelRatio;
 
-  size = {height: window.innerHeight, width: window.innerWidth};
+  size = {height: document.body.offsetHeight, width: document.body.offsetWidth};
   if (!maxSize || isVR || (maxSize.width === -1 && maxSize.height === -1)) {
     return size;
   }
@@ -77970,7 +77970,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.2 (Date 2018-08-07, Commit #2f96417)');
+console.log('A-Frame Version: 0.8.2 (Date 2018-08-12, Commit #6bde785)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
