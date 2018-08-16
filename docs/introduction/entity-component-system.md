@@ -41,7 +41,7 @@ for VR development, and A-Frame is based entirely around this paradigm:
 - [*Evolve Your Hierarchy* by Mick West](http://cowboyprogramming.com/2007/01/05/evolve-your-heirachy/)
 
 A well-known game engine implementing ECS is Unity. Although there are pain
-points in cross-entity communication. But we'll see how A-Frame, the DOM, and
+points in cross-entity communication, we'll see how A-Frame, the DOM, and
 declarative HTML really make ECS shine.
 
 <!--toc-->
