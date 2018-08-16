@@ -27,7 +27,7 @@ The benefits of ECS include:
 6. Allows for extending new features (possibly sharing them as community components).
 
 On the 2D Web, we lay out elements that have fixed behavior in a hierarchy. 3D
-and VR is different; there are infinite types of possible objects that with
+and VR is different; there are infinite types of possible objects that have
 unbounded behavior. ECS provides a manageable pattern to construct types of
 objects.
 
