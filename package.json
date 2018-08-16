@@ -32,7 +32,9 @@
   "license": "MIT",
   "files": [
     "dist/*",
-    "docs/**/*"
+    "docs/**/*",
+    "src/**/*",
+    "vendor/**/*"
   ],
   "dependencies": {
     "@tweenjs/tween.js": "^16.8.0",
