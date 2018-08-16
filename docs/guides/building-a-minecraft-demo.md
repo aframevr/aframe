@@ -423,28 +423,24 @@ VR is to use a raycaster, a laser that shoots out and returns objects that it
 intersects with.  Then we implement the cursor states by listening to
 interaction events and checking the raycaster for intersections.
 
-[controller-cursor]: https://github.com/bryik/aframe-controller-cursor-component/
-
-A-Frame provides a gaze-based cursor for clicking by looking at objects, but
-there's also a [controller-cursor component][controller-cursor] available that
-attaches the clicking laser to VR tracked controllers.  Like the
+A-Frame provides `laser-controls` component for controller laser interaction
+that attaches the clicking laser to VR tracked controllers.  Like the
 `teleport-controls` component, we include the script tag and attach the
-`controller-cursor` component. This time to the right hand:
+`laser-controls` component. This time to the right hand:
 
 ```html
 <script src="https://aframe.io/releases/0.8.2/aframe.min.js"></script>
 <script src="https://unpkg.com/aframe-teleport-controls@0.2.x/dist/aframe-teleport-controls.min.js"></script>
-<script src="https://unpkg.com/aframe-controller-cursor-component@0.2.x/dist/aframe-controller-cursor-component.min.js"></script>
 
 <!-- ... -->
 
 <a-entity id="teleHand" hand-controls="left" teleport-controls="type: parabolic; collisionEntities: [mixin='voxel'], #ground"></a-entity>
-<a-entity id="blockHand" hand-controls="right" controller-cursor></a-entity>
+<a-entity id="blockHand" hand-controls="right" laser-controls></a-entity>
 ```
 
 
 Now when we pull the trigger button on the tracked controllers,
-`controller-cursor` will emit a `click` event on both the controller and the
+`laser-controls` will emit a `click` event on both the controller and the
 entity it is intersecting at the time. Events such as `mouseenter`,
 `mouseleave` are also provided. The event contains details about the
 intersection.
@@ -480,7 +476,7 @@ GitHub][intersection-spawn]. We attach `intersection-spawn` capabilities to the
 right hand:
 
 ```html
-<a-entity id="blockHand" hand-controls="right" controller-cursor intersection-spawn="event: click; mixin: voxel"></a-entity>
+<a-entity id="blockHand" hand-controls="right" laser-controls intersection-spawn="event: click; mixin: voxel"></a-entity>
 ```
 
 Now when we click, we spawn voxels!
@@ -495,7 +491,7 @@ component with the gaze-based `cursor` component so that we can also spawn
 blocks on mobile and desktop, without changing a thing about the component!
 
 ```html
-<a-entity id="blockHand" hand-controls="right" controller-cursor intersection-spawn="event: click; mixin: voxel"></a-entity>
+<a-entity id="blockHand" hand-controls="right" laser-controls intersection-spawn="event: click; mixin: voxel"></a-entity>
 
 <a-camera>
   <a-cursor intersection-spawn="event: click; mixin: voxel"></a-cursor>

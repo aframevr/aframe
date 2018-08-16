@@ -560,7 +560,7 @@ raycaster][raycasterfar]. When the laser intersects with an entity, the length
 of the laser will be truncated.
 
 ```html
-<a-entity hand-controls controller-cursor raycaster="far: 2"></a-entity>
+<a-entity hand-controls laser-controls raycaster="far: 2"></a-entity>
 ```
 
 [gaze]: #gaze-based-interactions-with-cursor-component

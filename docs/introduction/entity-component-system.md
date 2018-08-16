@@ -172,7 +172,7 @@ entity:
   vive-controls  <!-- Vive button mappings. -->
   oculus-touch-controls  <!-- Oculus button mappings. -->
   hand-controls  <!-- Appearance (model), gestures, and events. -->
-  controller-cursor  <!-- Laser to interact with menus and UI. -->
+  laser-controls <!-- Laser to interact with menus and UI. -->
   sphere-collider  <!-- Listen when hand is in contact with an object. -->
   grab  <!-- Provide ability to grab objects. -->
   throw <!-- Provide ability to throw objects. -->
