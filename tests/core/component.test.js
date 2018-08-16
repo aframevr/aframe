@@ -481,6 +481,23 @@ suite('Component', function () {
       assert.equal(data.el.constructor, HTMLHeadElement);
       assert.equal(data.el, el.components.dummy.attrValue.el);
     });
+
+    test('updates data when combining setAttribute and object3D manipulation', function () {
+      var el = document.createElement('a-entity');
+      el.hasLoaded = true;
+      el.setAttribute('position', '3 3 3');
+      assert.equal(3, el.object3D.position.x);
+      assert.equal(3, el.object3D.position.y);
+      assert.equal(3, el.object3D.position.z);
+      el.object3D.position.set(5, 5, 5);
+      assert.equal(5, el.object3D.position.x);
+      assert.equal(5, el.object3D.position.y);
+      assert.equal(5, el.object3D.position.z);
+      el.setAttribute('position', '3 3 3');
+      assert.equal(3, el.object3D.position.x);
+      assert.equal(3, el.object3D.position.y);
+      assert.equal(3, el.object3D.position.z);
+    });
   });
 
   suite('resetProperty', function () {

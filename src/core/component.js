@@ -222,6 +222,7 @@ Component.prototype = {
     var key;
     var skipTypeChecking;
     var oldData = this.oldData;
+    var hasComponentChanged;
 
     // Just cache the attribute if the entity has not loaded
     // Components are not initialized until the entity has loaded
@@ -282,12 +283,17 @@ Component.prototype = {
       if (el.isPlaying) { this.play(); }
       el.emit('componentinitialized', this.evtDetail, false);
     } else {
-      // Don't update if properties haven't changed
-      if (utils.deepEqual(this.oldData, this.data)) { return; }
+      hasComponentChanged = !utils.deepEqual(this.oldData, this.data);
+      // Don't update if properties haven't changed.
+      // Always update rotation, position, scale.
+      if (!this.isPositionRotationScale && !hasComponentChanged) { return; }
      // Store current data as previous data for future updates.
       this.oldData = extendProperties({}, this.data, isSinglePropSchema);
       // Update component.
       this.update(oldData);
+      // In the case of position, rotation, scale always update the component
+      // but don't emit componentchanged event if component has not changed.
+      if (!hasComponentChanged) { return; }
       this.throttledEmitComponentChanged();
     }
   },
@@ -476,6 +482,7 @@ module.exports.registerComponent = function (name, definition) {
 
   NewComponent.prototype = Object.create(Component.prototype, proto);
   NewComponent.prototype.name = name;
+  NewComponent.prototype.isPositionRotationScale = name === 'position' || name === 'rotation' || name === 'scale';
   NewComponent.prototype.constructor = NewComponent;
   NewComponent.prototype.system = systems && systems.systems[name];
   NewComponent.prototype.play = wrapPlay(NewComponent.prototype.play);
