@@ -27,7 +27,7 @@ The benefits of ECS include:
 6. Allows for extending new features (possibly sharing them as community components).
 
 On the 2D Web, we lay out elements that have fixed behavior in a hierarchy. 3D
-and VR is different; there are infinite types of possible objects that with
+and VR is different; there are infinite types of possible objects that have
 unbounded behavior. ECS provides a manageable pattern to construct types of
 objects.
 
@@ -41,7 +41,7 @@ for VR development, and A-Frame is based entirely around this paradigm:
 - [*Evolve Your Hierarchy* by Mick West](http://cowboyprogramming.com/2007/01/05/evolve-your-heirachy/)
 
 A well-known game engine implementing ECS is Unity. Although there are pain
-points in cross-entity communication. But we'll see how A-Frame, the DOM, and
+points in cross-entity communication, we'll see how A-Frame, the DOM, and
 declarative HTML really make ECS shine.
 
 <!--toc-->
