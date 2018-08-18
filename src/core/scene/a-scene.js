@@ -503,6 +503,7 @@ module.exports.AScene = registerElement('a-scene', {
 
         // Notify renderer of size change.
         this.renderer.setSize(size.width, size.height, false);
+        this.emit('rendererresize', null, false);
       },
       writable: true
     },

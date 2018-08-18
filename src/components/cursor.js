@@ -58,7 +58,7 @@ module.exports.Component = registerComponent('cursor', {
     // Debounce.
     this.updateCanvasBounds = utils.debounce(function updateCanvasBounds () {
       self.canvasBounds = self.el.sceneEl.canvas.getBoundingClientRect();
-    }, 1000);
+    }, 500);
 
     this.eventDetail = {};
     this.intersectedEventDetail = {cursorEl: this.el};
@@ -126,6 +126,7 @@ module.exports.Component = registerComponent('cursor', {
     el.addEventListener('raycaster-intersection', this.onIntersection);
     el.addEventListener('raycaster-intersection-cleared', this.onIntersectionCleared);
 
+    el.sceneEl.addEventListener('rendererresize', this.updateCanvasBounds);
     window.addEventListener('resize', this.updateCanvasBounds);
     window.addEventListener('scroll', this.updateCanvasBounds);
   },
@@ -157,7 +158,10 @@ module.exports.Component = registerComponent('cursor', {
     canvas.removeEventListener('mousemove', this.onMouseMove);
     canvas.removeEventListener('touchstart', this.onMouseMove);
     canvas.removeEventListener('touchmove', this.onMouseMove);
-    canvas.removeEventListener('resize', this.updateCanvasBounds);
+
+    el.sceneEl.removeEventListener('rendererresize', this.updateCanvasBounds);
+    window.removeEventListener('resize', this.updateCanvasBounds);
+    window.removeEventListener('scroll', this.updateCanvasBounds);
   },
 
   updateMouseEventListeners: function () {
