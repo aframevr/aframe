@@ -20,6 +20,7 @@ module.exports.objectPool = objectPool;
 module.exports.split = require('./split').split;
 module.exports.styleParser = require('./styleParser');
 module.exports.trackedControls = require('./tracked-controls');
+module.exports.bindEvent = require('./event-decorators').bindEvent;
 
 module.exports.checkHeadsetConnected = function () {
   warn('`utils.checkHeadsetConnected` has moved to `utils.device.checkHeadsetConnected`');

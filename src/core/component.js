@@ -3,6 +3,7 @@ var schema = require('./schema');
 var scenes = require('./scene/scenes');
 var systems = require('./system');
 var utils = require('../utils/');
+var executeDecorators = require('../utils/event-decorators').executeDecorators;
 
 var components = module.exports.components = {};  // Keep track of registered components.
 var parseProperties = schema.parseProperties;
@@ -268,6 +269,8 @@ Component.prototype = {
       if (el.initializingComponents[this.name]) { return; }
       // Prevent infinite loop in case of init method setting same component on the entity.
       el.initializingComponents[this.name] = true;
+      // Execute decorator functions on component before init
+      executeDecorators(this);
       // Initialize component.
       this.init();
       this.initialized = true;
