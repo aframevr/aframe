@@ -278,7 +278,7 @@ module.exports.Component = registerComponent('cursor', {
     // Ignore events further away than active intersection.
     if (this.intersectedEl) {
       currentIntersection = this.el.components.raycaster.getIntersection(this.intersectedEl);
-      if (currentIntersection.distance <= intersection.distance) { return; }
+      if (currentIntersection && currentIntersection.distance <= intersection.distance) { return; }
     }
 
     // Unset current intersection.
