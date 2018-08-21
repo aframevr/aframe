@@ -43,30 +43,30 @@
  *
  * @returns {function} Decorated function which wraps the input function.
  */
-function bindEvent(p1, p2) {
-  if (typeof p1 === "function") {
+function bindEvent (p1, p2) {
+  if (typeof p1 === 'function') {
     return decorate(p1, BindToEventDecorator());
-  } else if (typeof p1 === "object" && typeof p2 === "function") {
+  } else if (typeof p1 === 'object' && typeof p2 === 'function') {
     return decorate(p2, BindToEventDecorator(p1.event, p1.target, p1.listenIn, p1.removeIn));
   } else {
-    throw new Error("bindEvent must take: (function), or a ([object], function)")
+    throw new Error('bindEvent must take: (function), or a ([object], function)');
   }
 }
 
 // Implements the automatic binding and unbinding of the chosen function. Wraps its listenIn and removeIn
 // functions to add and remove the event listener at the correct times.
-function BindToEventDecorator(_event, _target, _listenIn, _removeIn) {
+function BindToEventDecorator (_event, _target, _listenIn, _removeIn) {
   return function (propertyName, func) {
     var scope = this;
     var event = _event || propertyName;
     var target = !_target ? this.el : document.querySelector(_target);
     if (!target) {
-      console.warn("Couldn't subscribe " + this.name + "." + propertyName + " to " + event + " on " + _target
-        + " because querySelector returned undefined.");
+      console.warn("Couldn't subscribe " + this.name + '.' + propertyName + ' to ' + event + ' on ' + _target +
+        ' because querySelector returned undefined.');
       return;
     }
-    var listenIn = _listenIn || "init";
-    var removeIn = _removeIn || "remove";
+    var listenIn = _listenIn || 'init';
+    var removeIn = _removeIn || 'remove';
 
     var listenFunc = this[listenIn];
     var removeFunc = this[removeIn];
@@ -77,17 +77,17 @@ function BindToEventDecorator(_event, _target, _listenIn, _removeIn) {
         listenFunc.apply(scope, arguments);
       }
       target.addEventListener(event, boundFunc);
-    }
+    };
 
     this[removeIn] = function () {
       if (removeFunc !== undefined) {
         removeFunc.apply(scope, arguments);
       }
       target.removeEventListener(event, boundFunc);
-    }
+    };
 
     return func;
-  }
+  };
 }
 
 /*
@@ -106,7 +106,7 @@ function BindToEventDecorator(_event, _target, _listenIn, _removeIn) {
  *
  * @returns A pending decorated functor which will be executed when a component that owns it is instantiated.
  */
-function decorate(func, decoratorFunc) {
+function decorate (func, decoratorFunc) {
   return decorations.add(func, decoratorFunc);
 }
 
@@ -114,11 +114,11 @@ function decorate(func, decoratorFunc) {
  * Executes all decorated functions on the given component. You shouldn't need to call
  * this yourself.
  */
-function executeDecorators(component) {
+function executeDecorators (component) {
   var prot = Object.getPrototypeOf(component);
   Object.getOwnPropertyNames(prot).forEach(function (name) {
     var prop = prot[name];
-    if (typeof prop === "function" && decorations.isFunctionDecorated(prop)) {
+    if (typeof prop === 'function' && decorations.isFunctionDecorated(prop)) {
       decorations.getAll(prop).forEach(function (decorator) {
         component[name] = decorator.call(component, name, prop);
       });
@@ -130,7 +130,7 @@ function executeDecorators(component) {
 var decorations = (function () {
   var funcMap = new WeakMap();
 
-  function add(func, decorator) {
+  function add (func, decorator) {
     var parent = funcMap.has(func) ? func : undefined; // In case decorators are nested.
     var decoratedFunc = function () {
       func.apply(this, arguments);
@@ -139,7 +139,7 @@ var decorations = (function () {
     return decoratedFunc;
   }
 
-  function getAll(func) {
+  function getAll (func) {
     var iter = funcMap.get(func);
     var decorators = [];
     while (iter !== undefined) {
@@ -149,7 +149,7 @@ var decorations = (function () {
     return decorators;
   }
 
-  function isFunctionDecorated(func) {
+  function isFunctionDecorated (func) {
     return funcMap.has(func);
   }
 
@@ -160,4 +160,4 @@ var decorations = (function () {
   };
 })();
 
-exports = module.exports = { bindEvent, executeDecorators }
+exports = module.exports = { bindEvent, executeDecorators };
