@@ -65693,7 +65693,7 @@ module.exports.Component = registerComponent('cursor', {
     // Ignore events further away than active intersection.
     if (this.intersectedEl) {
       currentIntersection = this.el.components.raycaster.getIntersection(this.intersectedEl);
-      if (currentIntersection.distance <= intersection.distance) { return; }
+      if (currentIntersection && currentIntersection.distance <= intersection.distance) { return; }
     }
 
     // Unset current intersection.
@@ -77984,7 +77984,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.2 (Date 2018-08-18, Commit #a4cf088)');
+console.log('A-Frame Version: 0.8.2 (Date 2018-08-21, Commit #9def2ee)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
