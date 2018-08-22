@@ -270,15 +270,17 @@ module.exports.Component = registerComponent('text', {
     var baseline;
     var el = this.el;
     var geometry = this.geometry;
-    var geometryComponent = el.getAttribute('geometry');
+    var geometryComponent;
     var height;
-    var layout = geometry.layout;
+    var layout;
     var mesh = this.mesh;
     var textRenderWidth;
     var textScale;
     var width;
     var x;
     var y;
+
+    if (!geometry.layout) { return; }
 
     // Determine width to use (defined width, geometry's width, or default width).
     geometryComponent = el.getAttribute('geometry');
@@ -291,6 +293,7 @@ module.exports.Component = registerComponent('text', {
     textScale = width / textRenderWidth;
 
     // Determine height to use.
+    layout = geometry.layout;
     height = textScale * (layout.height + layout.descender);
 
     // Update geometry dimensions to match text layout if width and height are set to 0.
