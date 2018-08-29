@@ -70,7 +70,6 @@ module.exports.Component = registerComponent('oculus-go-controls', {
     el.addEventListener('model-loaded', this.onModelLoaded);
     el.addEventListener('axismove', this.onAxisMoved);
     this.controllerEventsActive = true;
-    this.addControllersUpdateListener();
   },
 
   removeEventListeners: function () {
@@ -83,7 +82,6 @@ module.exports.Component = registerComponent('oculus-go-controls', {
     el.removeEventListener('model-loaded', this.onModelLoaded);
     el.removeEventListener('axismove', this.onAxisMoved);
     this.controllerEventsActive = false;
-    this.removeControllersUpdateListener();
   },
 
   checkIfControllerPresent: function () {
