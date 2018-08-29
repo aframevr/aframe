@@ -66043,7 +66043,6 @@ module.exports.Component = registerComponent('gearvr-controls', {
     el.addEventListener('model-loaded', this.onModelLoaded);
     el.addEventListener('axismove', this.onAxisMoved);
     this.controllerEventsActive = true;
-    this.addControllersUpdateListener();
   },
 
   removeEventListeners: function () {
@@ -66056,7 +66055,6 @@ module.exports.Component = registerComponent('gearvr-controls', {
     el.removeEventListener('model-loaded', this.onModelLoaded);
     el.removeEventListener('axismove', this.onAxisMoved);
     this.controllerEventsActive = false;
-    this.removeControllersUpdateListener();
   },
 
   checkIfControllerPresent: function () {
@@ -68315,7 +68313,6 @@ module.exports.Component = registerComponent('oculus-go-controls', {
     el.addEventListener('model-loaded', this.onModelLoaded);
     el.addEventListener('axismove', this.onAxisMoved);
     this.controllerEventsActive = true;
-    this.addControllersUpdateListener();
   },
 
   removeEventListeners: function () {
@@ -68328,7 +68325,6 @@ module.exports.Component = registerComponent('oculus-go-controls', {
     el.removeEventListener('model-loaded', this.onModelLoaded);
     el.removeEventListener('axismove', this.onAxisMoved);
     this.controllerEventsActive = false;
-    this.removeControllersUpdateListener();
   },
 
   checkIfControllerPresent: function () {
@@ -77987,7 +77983,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.2 (Date 2018-08-23, Commit #0ff443b)');
+console.log('A-Frame Version: 0.8.2 (Date 2018-08-29, Commit #dc8662b)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
