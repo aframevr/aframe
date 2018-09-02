@@ -2,6 +2,13 @@ var THREE = require('../lib/three');
 
 var HLS_MIMETYPES = ['application/x-mpegurl', 'application/vnd.apple.mpegurl'];
 
+var COLOR_MAPS = new Set([
+  'emissiveMap',
+  'envMap',
+  'map',
+  'specularMap'
+]);
+
 /**
  * Update `material` texture property (usually but not always `map`)
  * from `data` property (usually but not always `src`)
@@ -50,7 +57,11 @@ module.exports.updateMapMaterialFromData = function (materialName, dataName, sha
   }
 
   function setMap (texture) {
+    var colorSpace = shader.el.sceneEl.getAttribute('color-space');
     material[materialName] = texture;
+    if (texture) {
+      material[materialName].encoding = getTextureEncoding(texture, materialName, colorSpace);
+    }
     material.needsUpdate = true;
     handleTextureEvents(el, texture);
   }
@@ -101,7 +112,12 @@ module.exports.updateDistortionMap = function (longType, shader, data) {
   setMap(null);
 
   function setMap (texture) {
-    material[shortType + 'Map'] = texture;
+    var slot = shortType + 'Map';
+    var colorSpace = shader.el.sceneEl.getAttribute('color-space');
+    material[slot] = texture;
+    if (texture) {
+      material[slot].encoding = getTextureEncoding(texture, slot, colorSpace);
+    }
     material.needsUpdate = true;
     handleTextureEvents(el, texture);
   }
@@ -151,3 +167,10 @@ module.exports.isHLS = function (src, type) {
   if (src && src.toLowerCase().indexOf('.m3u8') > 0) { return true; }
   return false;
 };
+
+function getTextureEncoding (texture, slot, colorSpace) {
+  if (colorSpace === 'sRGB' && COLOR_MAPS.has(slot)) {
+    return THREE.sRGBEncoding;
+  }
+  return THREE.LinearEncoding;
+}
