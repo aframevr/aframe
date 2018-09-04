@@ -9,146 +9,106 @@
   <body>
     <a-scene background="color: #ECECEC">
       <!-- A series of cylinders that scale in succession to create "warp" animations -->
-
       <!-- Warps 1 -->
-
       <a-entity position="-2 1.5 -10">
-
         <!-- Green -->
-        <a-entity>
-          <a-animation attribute="scale" from="1 0 1" to="1 1 1" dur="2000" fill="both"></a-animation>
-          <a-cylinder position="0 2 0" radius="2" height="2" color="#7BC8A4" open-ended="true" side="double">
-            <a-animation attribute="scale" from="1 1.25 1" to="1 0 1" dur="2000" fill="both"></a-animation>
+        <a-entity scale="1 0 1" animation="property: scale; to: 1 1 1; dur: 2000">
+          <a-cylinder position="0 2 0" radius="2" height="2" color="#7BC8A4" open-ended="true" side="double"
+                      scale="1 1.25 1" animation="property: scale; to: 1 0 1; dur: 2000">
           </a-cylinder>
 
-          <a-cylinder position="0 -2 0" radius="2" height="2" color="#7BC8A4" open-ended="true" side="double">
-            <a-animation attribute="scale" from="1 1.25 1" to="1 0 1" dur="2000" fill="both"></a-animation>
+          <a-cylinder position="0 -2 0" radius="2" height="2" color="#7BC8A4" open-ended="true" side="double"
+                      scale="1 1.25 1" animation="property: scale; to: 1 0 1; dur: 2000">
           </a-cylinder>
         </a-entity>
 
         <!-- Orange -->
-        <a-entity>
-          <a-animation attribute="scale" from="0.9 0 0.9" to="0.9 1 0.9" delay="200" dur="2000" fill="both"></a-animation>
-          <a-cylinder position="0 2 0" radius="2" height="2" color="#F16745" open-ended="true" side="double">
-            <a-animation attribute="scale" from="1 1.25 1" to="1 0 1" delay="200" dur="2000" fill="both"></a-animation>
-          </a-cylinder>
+        <a-entity scale="0.9 0.9 0.9" animation="property: scale; to: 0.9 1 0.9; delay: 200; dur: 2000">
+          <a-cylinder position="0 2 0" radius="2" height="2" color="#F16745" open-ended="true" side="double"
+                      scale="1 1.25 1" animation="property: scale; to: 1 0 1; delay: 200; dur: 2000"></a-cylinder>
 
-          <a-cylinder position="0 -2 0" radius="2" height="2" color="#F16745" open-ended="true" side="double">
-            <a-animation attribute="scale" from="1 1.25 1" to="1 0 1" delay="200" dur="2000" fill="both"></a-animation>
-          </a-cylinder>
+          <a-cylinder position="0 -2 0" radius="2" height="2" color="#F16745" open-ended="true" side="double"
+                      scale="1 1.25 1" animation="property: scale; to: 1 0 1; delay: 200; dur: 2000"></a-cylinder>
         </a-entity>
 
         <!-- Blue -->
-        <a-entity>
-          <a-animation attribute="scale" from="0.8 0 0.8" to="0.8 1 0.8" delay="400" dur="2000" fill="both"></a-animation>
-          <a-cylinder position="0 2 0" radius="2" height="2" color="#4CC3D9" open-ended="true" side="double">
-            <a-animation attribute="scale" from="1 1.25 1" to="1 0 1" delay="400" dur="2000" fill="both"></a-animation>
-          </a-cylinder>
+        <a-entity scale="0.8 0 0.8" animation="property: scale; to: 0.8 1 0.8; delay: 400; dur: 2000">
+          <a-cylinder position="0 2 0" radius="2" height="2" color="#4CC3D9" open-ended="true" side="double"
+                      scale="1 1.25 1" animation="property: scale; to: 1 0 1; delay: 400; dur: 2000"></a-cylinder>
 
-          <a-cylinder position="0 -2 0" radius="2" height="2" color="#4CC3D9" open-ended="true" side="double">
-            <a-animation attribute="scale" from="1 1.25 1" to="1 0 1" delay="400" dur="2000" fill="both"></a-animation>
-          </a-cylinder>
+          <a-cylinder position="0 -2 0" radius="2" height="2" color="#4CC3D9" open-ended="true" side="double"
+                      scale="1 1.25 1" animation="property: scale; to: 1 0 1; delay: 400; dur: 2000"></a-cylinder>
         </a-entity>
 
         <!-- Yellow -->
-        <a-entity>
-          <a-animation attribute="scale" from="0.7 0 0.7" to="0.7 1 0.7" delay="600" dur="2000" fill="both"></a-animation>
-          <a-cylinder position="0 2 0" radius="2" height="2" color="#FFC65D" open-ended="true" side="double">
-            <a-animation attribute="scale" from="1 1.25 1" to="1 0 1" delay="600" dur="2000" fill="both"></a-animation>
-          </a-cylinder>
+        <a-entity scale="0.7 0 0.7" animation="property: scale; to: 0.7 1 0.7; delay: 600; dur: 2000">
+          <a-cylinder position="0 2 0" radius="2" height="2" color="#FFC65D" open-ended="true" side="double"
+                      scale="1 1.25 1" animation="property: scale; to: 1 0 1; delay: 600; dur: 2000"></a-cylinder>
 
-          <a-cylinder position="0 -2 0" radius="2" height="2" color="#FFC65D" open-ended="true" side="double">
-            <a-animation attribute="scale" from="1 1.25 1" to="1 0 1" delay="600" dur="2000" fill="both"></a-animation>
-          </a-cylinder>
+          <a-cylinder position="0 -2 0" radius="2" height="2" color="#FFC65D" open-ended="true" side="double"
+                      scale="1 1.25 1" animation="property: scale; to: 1 0 1; delay: 600; dur: 2000"></a-cylinder>
         </a-entity>
 
         <!-- Purple -->
-        <a-entity>
-          <a-animation attribute="scale" from="0.6 0 0.6" to="0.6 1 0.6" delay="800" dur="2000" fill="both"></a-animation>
-          <a-cylinder position="0 2 0" radius="2" height="2" color="#93648D" open-ended="true" side="double">
-            <a-animation attribute="scale" from="1 1.25 1" to="1 0 1" delay="800" dur="2000" fill="both"></a-animation>
-          </a-cylinder>
+        <a-entity scale="0.6 0 0.6" animation="property: scale; to: 0.6 1 0.6; delay: 800; dur: 2000">
+          <a-cylinder position="0 2 0" radius="2" height="2" color="#93648D" open-ended="true" side="double"
+                      scale="1 1.25 1" animation="property: scale; to: 1 0 1; delay: 800; dur: 2000"></a-cylinder>
 
-          <a-cylinder position="0 -2 0" radius="2" height="2" color="#93648D" open-ended="true" side="double">
-            <a-animation attribute="scale" from="1 1.25 1" to="1 0 1" delay="800" dur="2000" fill="both"></a-animation>
-          </a-cylinder>
+          <a-cylinder position="0 -2 0" radius="2" height="2" color="#93648D" open-ended="true" side="double"
+                      scale="1 1.25 1" animation="property: scale; to: 1 0 1; delay: 800; dur: 2000"></a-cylinder>
         </a-entity>
-
       </a-entity>
-
-
 
       <!-- Warps 2 -->
-
-      <a-entity position="2 1.5 -6">
-        <a-animation attribute="scale" from="0 1 0" to="1 1 1" delay="1000" dur="2000" fill="both"></a-animation>
-
+      <a-entity position="2 1.5 -6" scale="0 1 0" animation="property: scale; to: 1 1 1; delay: 1000; dur: 2000">
         <!-- Green -->
-        <a-entity>
-          <a-animation attribute="scale" from="1 0 1" to="1 1 1" dur="2000" fill="both"></a-animation>
-          <a-cylinder position="0 2 0" radius="2" height="2" color="#7BC8A4" open-ended="true" side="double">
-            <a-animation attribute="scale" from="1 40 1" to="1 0 1" dur="2000" fill="both"></a-animation>
-          </a-cylinder>
+        <a-entity scale="1 0 1" animation="property: scale; to: 1 1 1; dur: 2000">
+          <a-cylinder position="0 2 0" radius="2" height="2" color="#7BC8A4" open-ended="true" side="double"
+                      scale="1 40 1" animation="property: scale; to: 1 0 1; dur: 2000"></a-cylinder>
 
-          <a-cylinder position="0 -2 0" radius="2" height="2" color="#7BC8A4" open-ended="true" side="double">
-            <a-animation attribute="scale" from="1 40 1" to="1 0 1" dur="2000" fill="both"></a-animation>
-          </a-cylinder>
+          <a-cylinder scale="1 40 1" position="0 -2 0" radius="2" height="2" color="#7BC8A4" open-ended="true" side="double"
+                      animation="property: scale; to: 1 0 1; dur: 2000"></a-cylinder>
         </a-entity>
 
         <!-- Orange -->
-        <a-entity>
-          <a-animation attribute="scale" from="0.9 0 0.9" to="0.9 1 0.9" delay="200" dur="2000" fill="both"></a-animation>
-          <a-cylinder position="0 2 0" radius="2" height="2" color="#F16745" open-ended="true" side="double">
-            <a-animation attribute="scale" from="1 40 1" to="1 0 1" delay="200" dur="2000" fill="both"></a-animation>
-          </a-cylinder>
+        <a-entity scale="0.9 0 0.9" animation="property: scale; to: 0.9 1 0.9; delay: 200; dur: 2000">
+          <a-cylinder position="0 2 0" radius="2" height="2" color="#F16745" open-ended="true" side="double"
+                      scale="1 40 1" animation="property: scale; to: 1 0 1; delay: 200; dur: 2000"></a-cylinder>
 
-          <a-cylinder position="0 -2 0" radius="2" height="2" color="#F16745" open-ended="true" side="double">
-            <a-animation attribute="scale" from="1 40 1" to="1 0 1" delay="200" dur="2000" fill="both"></a-animation>
-          </a-cylinder>
+          <a-cylinder position="0 -2 0" radius="2" height="2" color="#F16745" open-ended="true" side="double"
+                      scale="1 40 1" animation="property: scale; to: 1 0 1; delay: 200; dur: 2000"></a-cylinder>
         </a-entity>
 
         <!-- Blue -->
-        <a-entity>
-          <a-animation attribute="scale" from="0.8 0 0.8" to="0.8 1 0.8" delay="400" dur="2000" fill="both"></a-animation>
-          <a-cylinder position="0 2 0" radius="2" height="2" color="#4CC3D9" open-ended="true" side="double">
-            <a-animation attribute="scale" from="1 40 1" to="1 0 1" delay="400" dur="2000" fill="both"></a-animation>
-          </a-cylinder>
+        <a-entity scale="0.8 0 0.8" animation="property: scale; to: 0.8 1 0.8; delay: 400; dur: 2000">
+          <a-cylinder position="0 2 0" radius="2" height="2" color="#4CC3D9" open-ended="true" side="double"
+                      scale="1 40 1" animation="property: scale; to: 1 0 1; delay: 400; dur: 2000"></a-cylinder>
 
-          <a-cylinder position="0 -2 0" radius="2" height="2" color="#4CC3D9" open-ended="true" side="double">
-            <a-animation attribute="scale" from="1 40 1" to="1 0 1" delay="400" dur="2000" fill="both"></a-animation>
-          </a-cylinder>
+          <a-cylinder position="0 -2 0" radius="2" height="2" color="#4CC3D9" open-ended="true" side="double"
+                      scale="1 40 1" animation="property: scale; to: 1 0 1; delay: 400; dur: 2000"></a-cylinder>
         </a-entity>
 
         <!-- Yellow -->
-        <a-entity>
-          <a-animation attribute="scale" from="0.7 0 0.7" to="0.7 1 0.7" delay="600" dur="2000" fill="both"></a-animation>
-          <a-cylinder position="0 2 0" radius="2" height="2" color="#FFC65D" open-ended="true" side="double">
-            <a-animation attribute="scale" from="1 40 1" to="1 0 1" delay="600" dur="2000" fill="both"></a-animation>
-          </a-cylinder>
+        <a-entity scale="0.7 0 0.7" animation="property: scale; to: 0.7 1 0.7; delay: 600; dur: 2000">
+          <a-cylinder position="0 2 0" radius="2" height="2" color="#FFC65D" open-ended="true" side="double"
+                      scale="1 40 1" animation="property: scale; to: 1 0 1; delay: 600; dur: 2000"></a-cylinder>
 
-          <a-cylinder position="0 -2 0" radius="2" height="2" color="#FFC65D" open-ended="true" side="double">
-            <a-animation attribute="scale" from="1 40 1" to="1 0 1" delay="600" dur="2000" fill="both"></a-animation>
-          </a-cylinder>
+          <a-cylinder position="0 -2 0" radius="2" height="2" color="#FFC65D" open-ended="true" side="double"
+                      scale="1 40 1" animation="property: scale; to: 1 0 1; delay: 600; dur: 2000"></a-cylinder>
         </a-entity>
 
         <!-- Purple -->
-        <a-entity>
-          <a-animation attribute="scale" from="0.6 0 0.6" to="0.6 1 0.6" delay="800" dur="2000" fill="both"></a-animation>
-          <a-cylinder position="0 2 0" radius="2" height="2" color="#93648D" open-ended="true" side="double">
-            <a-animation attribute="scale" from="1 40 1" to="1 0 1" delay="800" dur="2000" fill="both"></a-animation>
-          </a-cylinder>
+        <a-entity scale="0.6 0 0.6" animation="property: scale; to: 0.6 1 0.6; delay: 800; dur: 2000">
+          <a-cylinder position="0 2 0" radius="2" height="2" color="#93648D" open-ended="true" side="double"
+                      scale="1 40 1" animation="property: scale; to: 1 0 1; delay: 800; dur: 2000"></a-cylinder>
 
-          <a-cylinder position="0 -2 0" radius="2" height="2" color="#93648D" open-ended="true" side="double">
-            <a-animation attribute="scale" from="1 40 1" to="1 0 1" delay="800" dur="2000" fill="both"></a-animation>
-          </a-cylinder>
+          <a-cylinder position="0 -2 0" radius="2" height="2" color="#93648D" open-ended="true" side="double"
+                      scale="1 40 1" animation="property: scale; to: 1 0 1; delay: 800; dur: 2000"></a-cylinder>
         </a-entity>
-
       </a-entity>
-
 
       <a-light type="directional" color="#FFF" intensity="0.2" position="-1 2 1"></a-light>
       <a-light type="ambient" color="#FFF"></a-light>
-
     </a-scene>
   </body>
 </html>

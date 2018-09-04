@@ -65,7 +65,7 @@ This is the starting point for our scene:
 
 [a-sky]: ../primitives/a-sky.md
 [ams]: ../core/asset-management-system.md
-[animation-begin]: ../core/animations.md#begin
+[animation-begin]: ../components/animation.md
 [camera]: ../primitives/a-camera.md
 [component]: ../core/component.md
 [cursor]: ../components/cursor.md

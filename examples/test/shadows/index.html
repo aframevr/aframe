@@ -23,22 +23,17 @@
                   material="color: #FAFAFA; shader: flat"
                   light="castShadow: true; color: #FAFAFA; intensity: 0.5; shadowBias: 0.01
                          shadowCameraNear: 1; type: point; shadowMapWidth: 1024; shadowMapHeight: 1024"
-                  position="0 -1 1">
-          <a-animation attribute="scale" to="2 2 2" dur="3000" direction="alternate"
-                       repeat="indefinite"></a-animation>
-          <a-animation attribute="intensity" to="1" dur="3000" direction="alternate"
-                       repeat="indefinite"></a-animation>
-        </a-entity>
+                  position="0 -1 1"
+                  animation="property: scale; to: 2 2 2; dur: 3000; dir: alternate; loop: true"
+                  animation="property: intensity; to: 1; dur: 3000; dir: alternate; loop: true"></a-entity>
 
         <!-- Animating point light. -->
-        <a-entity>
+        <a-entity animation="property: rotation; to: 0 360 360; dur: 5000; easing: linear; loop: true">
           <a-entity geometry="primitive: sphere; radius: 0.25"
                     material="color: #EF2D5E; shader: flat"
                     light="castShadow: true; color: #EF2D5E; intensity: 1; shadowBias: 0.01
                            shadowCameraNear: 1; type: point; shadowMapWidth: 1024; shadowMapHeight: 1024"
                     position="0 5 5"></a-entity>
-          <a-animation attribute="rotation" to="0 360 360" dur="5000" easing="linear"
-                       repeat="indefinite"></a-animation>
         </a-entity>
 
         <!-- Torus. -->
@@ -46,9 +41,8 @@
                             segmentsRadial: 150; segmentsTubular: 20; p: 17; q: 4;"
                   material="color: #EF2D5E; metalness: 0.75"
                   shadow="cast: true; receive: true"
-                  position="0 -1 2">
-          <a-animation attribute="rotation" dur="36000" to="0 360 0" repeat="indefinite"
-                       easing="linear"></a-animation>
+                  position="0 -1 2"
+                  animation="property: rotation; dur: 36000; to: 0 360 0; loop: true; easing: linear">
         </a-entity>
 
         <!-- Walls. -->
@@ -60,12 +54,9 @@
       </a-entity>
 
       <!-- Meshes -->
-      <a-entity geometry="primitive: box" material="color: #EF2D5E; metalness: 0" shadow
-                position="0 0 -4"></a-entity>
-      <a-entity geometry="primitive: sphere" material="color: #EF2D5E; metalness: 0" shadow
-                position="-2 0 -4"></a-entity>
-      <a-entity geometry="primitive: cylinder" material="color: #EF2D5E; metalness: 0" shadow
-                position="2 0 -4"></a-entity>
+      <a-entity geometry="primitive: box" material="color: #EF2D5E; metalness: 0" shadow position="0 0 -4"></a-entity>
+      <a-entity geometry="primitive: sphere" material="color: #EF2D5E; metalness: 0" shadow position="-2 0 -4"></a-entity>
+      <a-entity geometry="primitive: cylinder" material="color: #EF2D5E; metalness: 0" shadow position="2 0 -4"></a-entity>
     </a-scene>
   </body>
 </html>

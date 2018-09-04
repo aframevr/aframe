@@ -170,15 +170,13 @@ entity.is('selected');  // >> true
 
 ### `emit (name, detail, bubbles)`
 
-[animation-begin]: ./animations.md#begin
+[animation]: ../components/animation.md
 
 `emit` emits a custom DOM event on the entity. For example, we can emit an event to
-[trigger an animation][animation-begin]:
+[trigger an animation][animation]:
 
 ```js
-// <a-entity>
-//   <a-animation attribute="rotation" begin="rotate" to="0 360 0"></a-animation>
-// </a-entity>
+// <a-entity animation="property: rotation; to: 0 360 0; startEvents: rotate">
 entity.emit('rotate');
 ```
 

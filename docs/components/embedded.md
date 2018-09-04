@@ -32,7 +32,7 @@ a-scene {
 </body>
 ```
 
-An example of an embedded scene:
+An inline example of an embedded scene:
 
 <script src="https://aframe.io/releases/0.8.2/aframe.min.js"></script>
 
@@ -44,14 +44,11 @@ An example of an embedded scene:
 </style>
 
 <div id="myEmbeddedScene">
-  <a-scene embedded>
-    <a-entity position="0 0 3.8"><a-camera></a-camera></a-entity>
-    <a-sphere position="0 1.25 -1" radius="1.25" color="#EF2D5E"></a-sphere>
-    <a-box position="-1 0.5 1" rotation="0 45 0" width="1" height="1" depth="1"  color="#4CC3D9">
-      <a-animation attribute="rotation" dur="10000" fill="forwards" to="0 360 0" repeat="indefinite"></a-animation>
-    </a-box>
-    <a-cylinder position="1 0.75 1" radius="0.5" height="1.5" color="#FFC65D"></a-cylinder>
-    <a-plane rotation="-90 0 0" width="4" height="4" color="#7BC8A4"></a-plane>
+  <a-scene background="color: #ECECEC" embedded>
+    <a-box position="-1 0.5 -3" rotation="0 45 0" color="#4CC3D9" shadow></a-box>
+    <a-sphere position="0 1.25 -5" radius="1.25" color="#EF2D5E" shadow></a-sphere>
+    <a-cylinder position="1 0.75 -3" radius="0.5" height="1.5" color="#FFC65D" shadow></a-cylinder>
+    <a-plane position="0 0 -4" rotation="-90 0 0" width="4" height="4" color="#7BC8A4" shadow></a-plane>
   </a-scene>
 </div>
 

@@ -60,7 +60,6 @@ var shaders = require('./core/shader').shaders;
 var systems = require('./core/system').systems;
 // Exports THREE to window so three.js can be used without alteration.
 var THREE = window.THREE = require('./lib/three');
-var TWEEN = window.TWEEN = require('@tweenjs/tween.js');
 
 var pkg = require('../package');
 
@@ -71,7 +70,6 @@ require('./systems/index'); // Register standard systems.
 var ANode = require('./core/a-node');
 var AEntity = require('./core/a-entity'); // Depends on ANode and core components.
 
-require('./core/a-animation');
 require('./core/a-assets');
 require('./core/a-cubemap');
 require('./core/a-mixin');
@@ -88,6 +86,7 @@ module.exports = window.AFRAME = {
   AComponent: require('./core/component').Component,
   AEntity: AEntity,
   ANode: ANode,
+  ANIME: require('animejs'),
   AScene: AScene,
   components: components,
   geometries: require('./core/geometry').geometries,
@@ -106,7 +105,6 @@ module.exports = window.AFRAME = {
   shaders: shaders,
   systems: systems,
   THREE: THREE,
-  TWEEN: TWEEN,
   utils: utils,
   version: pkg.version
 };

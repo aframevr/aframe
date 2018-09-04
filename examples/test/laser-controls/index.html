@@ -47,9 +47,7 @@
         }
       });
     </script>
-
     <a-scene background="color: #212" antialias="true">
-       
       <a-entity position="0 3.2 0" camera look-controls wasd-controls></a-entity>
       <a-entity id="leftHand" laser-controls="hand: left" raycaster="objects: [mixin='box']"></a-entity>
       <a-entity id="rightHand" laser-controls="hand: right" raycaster="objects: [mixin='box']" line="color: #118A7E"></a-entity>
@@ -64,15 +62,9 @@
 
         <a-light type="point" position="0 10 -30" intensity="0.85" shadow-if-mobile></a-light>
 
-        <a-torus radius="20" arc="190" rotation="0 90 0">
-          <a-animation attribute="rotation" to="0 450 0" repeat="indefinite" dur="16000" easing="linear"></a-animation>
-        </a-torus>
-        <a-torus radius="20" arc="190" rotation="0 45 0">
-          <a-animation attribute="rotation" to="0 405 0" repeat="indefinite" dur="16000" easing="linear"></a-animation>
-        </a-torus>
-        <a-torus radius="20" arc="190" rotation="0 135 0">
-          <a-animation attribute="rotation" to="0 495 0" direction="reverse" repeat="indefinite" dur="16000" easing="linear"></a-animation>
-        </a-torus>
+        <a-torus radius="20" arc="190" rotation="0 90 0" animation="property: rotation; to: 0 450 0; loop: true; dur: 16000; easing: linear"></a-torus>
+        <a-torus radius="20" arc="190" rotation="0 45 0" animation="property: rotation; to: 0 405 0; loop: true; dur: 16000; easing: linear"></a-torus>
+        <a-torus radius="20" arc="190" rotation="0 135 0" animation="property: rotation; to: 0 495 0; dir: reverse; loop: true; dur: 16000; easing: linear"></a-torus>
         <a-torus radius="20" arc="360" rotation="-90 0 0"></a-torus>
       </a-entity>
     </a-scene>

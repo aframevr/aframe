@@ -1,6 +1,6 @@
 .DS_Store
 .cache
-*.swp
+*.sw*
 build
 firefox/
 tests/coverage/

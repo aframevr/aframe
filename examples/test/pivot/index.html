@@ -7,34 +7,23 @@
     <script src="../../../dist/aframe-master.js"></script>
   </head>
   <body>
-    <a-scene>
+    <a-scene background="color: #335">
       <a-assets>
-        <a-mixin id="flap" attribute="rotation" direction="alternate"
-                 repeat="indefinite"></a-mixin>
-        <a-mixin id="rotate" attribute="rotation" repeat="indefinite"></a-mixin>
+        <a-mixin id="flap" animation="property: rotation; dir: alternate; loop: true"></a-mixin>
+        <a-mixin id="rotate" animation="property: rotation; loop: true"></a-mixin>
         <a-mixin id="wing" geometry="primitive: box; depth: .005; height: 1; width: 0.5"
                            material="color: #9D0B28" rotation="0 0 0"
                            pivot="0.25 0 0" scale="1 1.25 1"></a-mixin>
       </a-assets>
 
-      <!-- Skysphere. -->
-      <a-entity geometry="primitive: sphere; radius: 100"
-                material="color: #335; shader: flat" scale="1 1 -1">
-      </a-entity>
-
       <!-- Butterfly with pivoting wings. -->
-      <a-entity position="0 2.5 -5">
-        <a-animation mixin="rotate" to="0 360 0" dur="3000" easing="linear"></a-animation>
+      <a-entity mixin="rotate" position="0 2.5 -5" animation="to: 0 360 0; dur: 3000; easing: linear">
         <a-entity rotation="0 90 0" position="2.5 0 0">
           <a-entity rotation="-45 0 90">
-            <a-entity mixin="wing">
-              <a-animation mixin="flap" to="0 120 0"></a-animation>
-            </a-entity>
+            <a-entity mixin="wing flap" animation="to: 0 120 0"></a-entity>
           </a-entity>
           <a-entity rotation="-45 0 90">
-            <a-entity mixin="wing">
-              <a-animation mixin="flap" to="0 -120 0"></a-animation>
-            </a-entity>
+            <a-entity mixin="wing flag" animation="to: 0 -120 0"></a-entity>
           </a-entity>
         </a-entity>
       </a-entity>

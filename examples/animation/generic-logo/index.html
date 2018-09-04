@@ -9,8 +9,7 @@
   <body>
     <a-scene background="color: #ECECEC">
       <a-assets>
-        <a-mixin id="frame-edge" geometry="primitive: box; depth: 10; height: 0.1; width: 0.1"
-                                 material="color: #404040"></a-mixin>
+        <a-mixin id="frame-edge" geometry="primitive: box; depth: 10; height: 0.1; width: 0.1" material="color: #404040"></a-mixin>
       </a-assets>
 
       <a-entity>
@@ -18,14 +17,12 @@
       </a-entity>
 
       <!-- A generic logo made of animated elements -->
-      <a-entity id="logo" position="0 0.15 -1" scale=".5 .5 .5">
-        <a-entity id="box">
-          <a-animation attribute="scale" from="0 0 0" to="1 1 1" delay="500" dur="500"
-                       fill="both" easing="ease-out"></a-animation>
-          <a-animation attribute="position" from="0 -0.5 0" to="0 0 0" delay="500" dur="500"
-                       fill="both" easing="ease-out"></a-animation>
-          <a-animation attribute="rotation" from="0 -300 0" to="30 54 36" delay="500" dur="1200"
-                       fill="both" easing="ease-out"></a-animation>
+      <a-entity id="logo" position="0 1.6 -1" scale=".5 .5 .5">
+        <a-entity id="box"
+          animation__scale="property: scale; to: 1 1 1; delay: 500; dur: 500; easing: easeOutCubic"
+          animation__position="property: position; to: 0 0 0; delay: 500; dur: 500; easing: easeOutCubic"
+          animation__rotation="property: rotation; to: 30 54 36; delay: 500; dur: 1200; easing: easeOutCubic"
+          scale="0 0 0" position="0 -0.5 0" rotation ="0 -300 0">
           <a-box width="0.25" depth="0.25" height="0.25" color="#EF2D5E"></a-box>
 
           <a-entity scale="0.04 0.04 0.04">
@@ -44,42 +41,23 @@
           </a-entity>
         </a-entity>
 
-        <a-entity id="dots1" rotation="0 0 45">
-          <a-animation attribute="scale" from="1 0 1" to="1 0.6 1" delay="800" dur="750"
-                       fill="both" easing="ease-out"></a-animation>
-          <a-cylinder position="0 2 0" radius="0.04" height="2" color="#EF2D5E"
-                      open-ended="true" side="double">
-            <a-animation attribute="scale" from="1 1.25 1" to="1 0 1" delay="800" dur="750"
-                         fill="both" easing="ease-out"></a-animation>
-          </a-cylinder>
-          <a-cylinder position="0 -2 0" radius="0.04" height="2" color="#EF2D5E"
-                      open-ended="true" side="double">
-            <a-animation attribute="scale" from="1 1.25 1" to="1 0 1" delay="800" dur="750"
-                         fill="both" easing="ease-out"></a-animation>
-          </a-cylinder>
+        <a-entity id="dots1" rotation="0 0 45" animation="property: scale; to: 1 0.6 1; delay: 800; dur: 750; easing: easeOutCubic" scale="1 0 1">
+          <a-cylinder position="0 2 0" radius="0.04" height="2" color="#EF2D5E" open-ended="true" side="double"
+                      animation="property: scale; to: 1 0 1; delay: 800; dur: 750; easing: easeOutCubic"></a-cylinder>
+          <a-cylinder position="0 -2 0" radius="0.04" height="2" color="#EF2D5E" open-ended="true" side="double"
+                      animation="property: scale; to: 1 0 1; delay: 800; dur: 750; easing: easeOutCubic"></a-cylinder>
         </a-entity>
 
-        <a-entity id="dots1" rotation="0 0 -45">
-          <a-animation attribute="scale" from="1 0 1" to="1 0.6 1" delay="800" dur="750"
-                       fill="both" easing="ease-out"></a-animation>
-          <a-cylinder position="0 2 0" radius="0.04" height="2" color="#EF2D5E"
-                      open-ended="true" side="double">
-            <a-animation attribute="scale" from="1 1.25 1" to="1 0 1" delay="800" dur="750"
-                         fill="both" easing="ease-out"></a-animation>
-          </a-cylinder>
-          <a-cylinder position="0 -2 0" radius="0.04" height="2" color="#EF2D5E"
-                      open-ended="true" side="double">
-            <a-animation attribute="scale" from="1 1.25 1" to="1 0 1" delay="800" dur="750"
-                         fill="both" easing="ease-out"></a-animation>
-          </a-cylinder>
+        <a-entity id="dots1" rotation="0 0 -45" animation="property: scale; from: 1 0 1; to: 1 0.6 1; delay: 800; dur: 750; easing: easeOutCubic" scale="1 0 1">
+          <a-cylinder position="0 2 0" radius="0.04" height="2" color="#EF2D5E" open-ended="true" side="double"
+                      animation="property: scale; to: 1 0 1; delay: 800; dur: 750; easing: easeOutCubic" scale="1 1.25 1"></a-cylinder>
+          <a-cylinder position="0 -2 0" radius="0.04" height="2" color="#EF2D5E" open-ended="true" side="double"
+                      animation="property: scale; to: 1 0 1; delay: 800; dur: 750; easing: easeOutCubic" scale="1 1.25 1"></a-cylinder>
         </a-entity>
 
-        <a-image id="webvr" src="webvr.png" width="1" height="0.25" opacity="0.75">
-          <a-animation attribute="scale" from="1 0 1" to="0.75 0.75 0.75" delay="1500"
-                       dur="200" fill="both" easing="ease-out"></a-animation>
-          <a-animation attribute="position" from="0 -3 0" to="0 -0.7 0" delay="1000"
-                       dur="1000" fill="both" easing="ease-out"></a-animation>
-        </a-image>
+        <a-image id="webvr" src="webvr.png" width="1" height="0.25" opacity="0.75" scale="1 0 1" position="0 -3 0"
+                 animation__scale="property: scale; to: 0.75 0.75 0.75; delay: 1500; dur: 200; easing: easeOutCubic"
+                 animation__position="property: position; to: 0 -0.7 0; delay: 1000; dur: 1000; easing: easeOutCubic"></a-image>
       </a-entity>
 
       <a-light type="directional" color="#fff" intensity="0.2" position="-1 2 1"></a-light>

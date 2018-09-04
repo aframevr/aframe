@@ -37,7 +37,7 @@
     "vendor/**/*"
   ],
   "dependencies": {
-    "@tweenjs/tween.js": "^16.8.0",
+    "animejs": "^2.2.0",
     "browserify-css": "^0.8.2",
     "debug": "ngokevin/debug#noTimestamp",
     "deep-assign": "^2.0.0",

@@ -9,32 +9,26 @@
   <body>
     <a-scene>
       <a-assets>
-        <a-mixin id="plane" geometry="height: 1; width: 4" pivot="-2 0.5 0"></a-mixin>
+        <a-mixin id="plane" geometry="height: 1; width: 4"></a-mixin>
         <img id="background" src="../../assets/img/gray-gradient.jpg">
       </a-assets>
 
       <!-- Series of planes that use pivot, position, and animated scales to reveal themselves. -->
       <a-entity position="-2 -1 -7" rotation="0 35 0">
-        <a-plane mixin="plane" position="0 6 0" color="#F16745">
-          <a-animation attribute="scale" from="1 0 1" to="1 1 1" dur="750" delay="500"
-                       fill="backwards"></a-animation>
+        <a-plane id="test" mixin="plane" position="0 6 0" color="#F16745" scale="1 0 1"
+                 animation="property: object3D.scale.y; to: 1; dur: 750; delay: 500"></a-plane>
+
+        <a-plane mixin="plane" position="0 4 0" color="#7BC8A4" scale="0 1 1"
+                 animation="property: scale; to: 1 1 1; dur: 750; delay: 500">
         </a-plane>
 
-        <a-plane mixin="plane" position="0 4 0" color="#7BC8A4">
-          <a-animation attribute="scale" from="0 1 1" to="1 1 1" dur="750" delay="500"
-                       fill="backwards"></a-animation>
+        <a-plane mixin="plane" position="0 2 0" color="#4CC3D9" scale="0 0 0"
+          animation__1="property: scale; to: 1 0.05 1; dur: 500; delay: 500"
+          animation__2="property: scale; from: 1 0.05 1; to: 1 1 1; dur: 250; delay: 1000">
         </a-plane>
 
-        <a-plane mixin="plane" position="0 2 0" color="#4CC3D9">
-          <a-animation attribute="scale" from="0 0 0" to="1 0.05 1" dur="500"
-                       delay="500"></a-animation>
-          <a-animation attribute="scale" from="1 0.05 1" to="1 1 1" dur="250" delay="1000"
-                       fill="both"></a-animation>
-        </a-plane>
-
-        <a-plane mixin="plane" position="0 0 0" color="#EF2D5E">
-          <a-animation attribute="rotation" from="90 0 0" to="0 0 0" dur="750" delay="500"x
-                        fill="backwards"></a-animation>
+        <a-plane mixin="plane" color="#EF2D5E" rotation="90 0 0"
+                 animation="property: rotation; from: 90 0 0; to: 0 0 0; dur: 750; delay: 500">
         </a-plane>
       </a-entity>
 

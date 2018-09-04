@@ -5,7 +5,6 @@ var re = require('../a-register-element');
 var scenes = require('./scenes');
 var systems = require('../system').systems;
 var THREE = require('../../lib/three');
-var TWEEN = require('@tweenjs/tween.js');
 var utils = require('../../utils/');
 // Require after.
 var AEntity = require('../a-entity');
@@ -614,9 +613,6 @@ module.exports.AScene = registerElement('a-scene', {
       value: function (time, timeDelta) {
         var i;
         var systems = this.systems;
-
-        // Animations.
-        TWEEN.update();
 
         // Components.
         for (i = 0; i < this.behaviors.tick.length; i++) {

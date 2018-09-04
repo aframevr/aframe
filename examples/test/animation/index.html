@@ -7,13 +7,11 @@
     <script src="../../../dist/aframe-master.js"></script>
   </head>
   <body>
-    <a-scene stats>
+    <a-scene background="color: #333" stats>
       <a-assets>
         <a-mixin id="planet" geometry="primitive: sphere; radius: 0.5"></a-mixin>
-        <a-mixin id="orbit" attribute="rotation" to="0 360 0"
-                  repeat="indefinite" easing="linear" dur="3000"></a-mixin>
-        <a-mixin id="spin" attribute="rotation" to="0 360 0"
-                  repeat="indefinite" easing="linear" dur="96000"></a-mixin>
+        <a-mixin id="orbitAnimation" animation="property: object3D.rotation.y; to: 360; loop: true; easing: linear; dur: 3000"></a-mixin>
+        <a-mixin id="spinAnimation" animation="property: object3D.rotation.y; to: 360; loop: true; easing: linear; dur: 96000"></a-mixin>
         <img id="sun" src="sun.jpg">
       </a-assets>
 
@@ -21,39 +19,27 @@
         <a-camera wasd-controls-enabled="false"></a-camera>
       </a-entity>
 
-      <a-entity rotation="0 0 0" position="0 0 -5">
+      <a-entity position="0 0 -5">
         <!-- Lights. -->
         <a-entity light="type: point; intensity: 2"></a-entity>
         <a-entity light="type: ambient; color: #888"></a-entity>
 
-        <a-entity mixin="planet" geometry="radius: 3" material="shader: flat; src: #sun"
-                  rotation="0 0 0">
-          <a-animation mixin="spin"></a-animation>
+        <a-entity mixin="planet spinAnimation" geometry="radius: 3" material="shader: flat; src: #sun"></a-entity>
+
+        <a-entity mixin="orbitAnimation" animation="dur: 8000">
+          <a-entity mixin="planet" material="color: red" position="8 0 0" geometry="radius: 1"></a-entity>
         </a-entity>
 
-        <a-entity position="0 0 0">
-          <a-animation mixin="orbit" dur="8000"></a-animation>
-          <a-entity mixin="planet" material="color: red" position="8 0 0"
-                    geometry="radius: 1"></a-entity>
+        <a-entity mixin="orbitAnimation" animation="dur: 4000">
+          <a-entity mixin="planet" material="color: blue" position="6 0 0"></a-entity>
         </a-entity>
 
-        <a-entity position="0 0 0">
-          <a-animation mixin="orbit" dur="4000"></a-animation>
-          <a-entity mixin="planet" material="color: blue"
-                     position="6 0 0"></a-entity>
-        </a-entity>
-
-        <a-entity position="0 0 0">
-          <a-animation mixin="orbit" dur="2000"></a-animation>
-          <a-entity geometry="primitive: torusKnot; radius: .5; radiusTubular: .05"
-                    material="color: green" position="4 0 0">
-            <a-animation attribute="geometry.p" direction="alternate" fill="forwards"
-                         ease="linear"
-                         repeat="indefinite" to="4"></a-animation>
-            <a-animation attribute="geometry.q" direction="alternate" fill="forwards"
-                         ease="linear"
-                         repeat="indefinite" to="7"></a-animation>
-          </a-entity>
+        <a-entity mixin="orbitAnimation" animation="dur: 2000">
+          <a-entity
+            animation__p="property: geometry.p; dir: alternate; easing: linear; loop: true; to: 4"
+            animation__q="property: geometry.q; dir: alternate; easing: linear; loop: true; to: 7"
+            geometry="primitive: torusKnot; radius: .5; radiusTubular: .05"
+            material="color: green" position="4 0 0"></a-entity>
         </a-entity>
       </a-entity>
     </a-scene>
