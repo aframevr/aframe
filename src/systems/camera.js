@@ -105,10 +105,14 @@ module.exports.System = registerSystem('camera', {
     // Set up default camera.
     defaultCameraEl = document.createElement('a-entity');
     defaultCameraEl.setAttribute('camera', {active: true});
+    defaultCameraEl.setAttribute('position', {
+      x: 0,
+      y: constants.DEFAULT_CAMERA_HEIGHT,
+      z: 0
+    });
     defaultCameraEl.setAttribute('wasd-controls', '');
     defaultCameraEl.setAttribute('look-controls', '');
     defaultCameraEl.setAttribute(constants.AFRAME_INJECTED, '');
-    defaultCameraEl.object3D.position.set(0, constants.DEFAULT_CAMERA_HEIGHT, 0);
 
     defaultCameraEl.addEventListener('object3dset', function (evt) {
       if (evt.detail.type !== 'camera') { return; }
