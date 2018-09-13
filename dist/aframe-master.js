@@ -67274,6 +67274,8 @@ var checkHasPositionalTracking = utils.device.checkHasPositionalTracking;
  * look-controls. Update entity pose, factoring mouse, touch, and WebVR API data.
  */
 module.exports.Component = registerComponent('look-controls', {
+  dependencies: ['position', 'rotation'],
+
   schema: {
     enabled: {default: true},
     hmdEnabled: {default: true},
@@ -77061,7 +77063,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.2 (Date 2018-09-13, Commit #d404990)');
+console.log('A-Frame Version: 0.8.2 (Date 2018-09-13, Commit #86fcf8a)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -77777,10 +77779,14 @@ module.exports.System = registerSystem('camera', {
     // Set up default camera.
     defaultCameraEl = document.createElement('a-entity');
     defaultCameraEl.setAttribute('camera', {active: true});
+    defaultCameraEl.setAttribute('position', {
+      x: 0,
+      y: constants.DEFAULT_CAMERA_HEIGHT,
+      z: 0
+    });
     defaultCameraEl.setAttribute('wasd-controls', '');
     defaultCameraEl.setAttribute('look-controls', '');
     defaultCameraEl.setAttribute(constants.AFRAME_INJECTED, '');
-    defaultCameraEl.object3D.position.set(0, constants.DEFAULT_CAMERA_HEIGHT, 0);
 
     defaultCameraEl.addEventListener('object3dset', function (evt) {
       if (evt.detail.type !== 'camera') { return; }
