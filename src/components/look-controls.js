@@ -14,8 +14,6 @@ var checkHasPositionalTracking = utils.device.checkHasPositionalTracking;
  * look-controls. Update entity pose, factoring mouse, touch, and WebVR API data.
  */
 module.exports.Component = registerComponent('look-controls', {
-  dependencies: ['position', 'rotation'],
-
   schema: {
     enabled: {default: true},
     hmdEnabled: {default: true},

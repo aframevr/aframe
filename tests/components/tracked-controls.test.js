@@ -149,7 +149,7 @@ suite('tracked-controls', function () {
       el.sceneEl.systems['tracked-controls'].vrDisplay = true;
       component.tick();
       // assert position after default camera position and arm model are applied
-      assertVec3CloseTo(el.getAttribute('position'), [0.28, -0.48, -0.32], 0.01);
+      assertVec3CloseTo(el.getAttribute('position'), [0.28, 1.12, -0.32], 0.01);
     });
   });
 
