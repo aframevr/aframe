@@ -71245,8 +71245,6 @@ module.exports.Component = registerComponent('wasd-controls', {
   init: function () {
     // To keep track of the pressed keys.
     this.keys = {};
-
-    this.position = {};
     this.velocity = new THREE.Vector3();
 
     // Bind methods and add event listeners.
@@ -71259,11 +71257,8 @@ module.exports.Component = registerComponent('wasd-controls', {
   },
 
   tick: function (time, delta) {
-    var currentPosition;
     var data = this.data;
     var el = this.el;
-    var movementVector;
-    var position = this.position;
     var velocity = this.velocity;
 
     if (!velocity[data.adAxis] && !velocity[data.wsAxis] &&
@@ -71276,12 +71271,7 @@ module.exports.Component = registerComponent('wasd-controls', {
     if (!velocity[data.adAxis] && !velocity[data.wsAxis]) { return; }
 
     // Get movement vector and translate position.
-    currentPosition = el.getAttribute('position');
-    movementVector = this.getMovementVector(delta);
-    position.x = currentPosition.x + movementVector.x;
-    position.y = currentPosition.y + movementVector.y;
-    position.z = currentPosition.z + movementVector.z;
-    el.setAttribute('position', position);
+    el.object3D.position.add(this.getMovementVector(delta));
   },
 
   remove: function () {
@@ -77066,7 +77056,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.2 (Date 2018-09-14, Commit #4961a55)');
+console.log('A-Frame Version: 0.8.2 (Date 2018-09-14, Commit #e198427)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
