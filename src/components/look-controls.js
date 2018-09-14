@@ -21,6 +21,7 @@ module.exports.Component = registerComponent('look-controls', {
     hmdEnabled: {default: true},
     pointerLockEnabled: {default: false},
     reverseMouseDrag: {default: false},
+    reverseTouchDrag: {default: false},
     touchEnabled: {default: true}
   },
 
@@ -282,6 +283,7 @@ module.exports.Component = registerComponent('look-controls', {
    * Translate touch move to Y-axis rotation.
    */
   onTouchMove: function (evt) {
+    var direction;
     var canvas = this.el.sceneEl.canvas;
     var deltaY;
     var yawObject = this.yawObject;
@@ -290,8 +292,9 @@ module.exports.Component = registerComponent('look-controls', {
 
     deltaY = 2 * Math.PI * (evt.touches[0].pageX - this.touchStart.x) / canvas.clientWidth;
 
+    direction = this.data.reverseTouchDrag ? 1 : -1;
     // Limit touch orientaion to to yaw (y axis).
-    yawObject.rotation.y -= deltaY * 0.5;
+    yawObject.rotation.y -= deltaY * 0.5 * direction;
     this.touchStart = {
       x: evt.touches[0].pageX,
       y: evt.touches[0].pageY
