@@ -50,24 +50,24 @@ suite('text', function () {
 
   suite('update', function () {
     test('updates value', function (done) {
-      var updateSpy = this.sinon.spy(component, 'updateGeometry');
+      var updateSpy = this.sinon.spy(component.geometry, 'update');
       el.addEventListener('textfontset', evt => {
+        assert.equal(updateSpy.getCalls()[0].args[0].value, '');
         el.setAttribute('text', {value: 'foo', font: 'mozillavr'});
+        assert.equal(updateSpy.getCalls()[1].args[0].value, 'foo');
         el.setAttribute('text', {value: 'bar', font: 'mozillavr'});
-        assert.equal(updateSpy.getCalls()[0].args[1].value, '');
-        assert.equal(updateSpy.getCalls()[1].args[1].value, 'foo');
-        assert.equal(updateSpy.getCalls()[2].args[1].value, 'bar');
+        assert.equal(updateSpy.getCalls()[2].args[0].value, 'bar');
         done();
       });
       el.setAttribute('text', {font: 'mozillavr'});
     });
 
     test('updates value with number', function (done) {
-      var updateSpy = this.sinon.spy(component, 'updateGeometry');
+      var updateSpy = this.sinon.spy(component.geometry, 'update');
       el.addEventListener('textfontset', evt => {
+        assert.equal(updateSpy.getCalls()[0].args[0].value, '');
         el.setAttribute('text', {value: 10, font: 'mozillavr'});
-        assert.equal(updateSpy.getCalls()[0].args[1].value, '');
-        assert.equal(updateSpy.getCalls()[1].args[1].value, '10');
+        assert.equal(updateSpy.getCalls()[1].args[0].value, '10');
         done();
       });
       el.setAttribute('text', {font: 'mozillavr'});
@@ -256,9 +256,9 @@ suite('text', function () {
     });
 
     test('uses up-to-date data once loaded', function (done) {
-      var updateSpy = this.sinon.spy(component, 'updateGeometry');
+      var updateSpy = this.sinon.spy(component.geometry, 'update');
       el.addEventListener('textfontset', evt => {
-        assert.equal(updateSpy.getCalls()[0].args[1].value, 'bar');
+        assert.equal(updateSpy.getCalls()[0].args[0].value, 'bar');
         done();
       });
       el.setAttribute('text', {value: 'foo', font: 'mozillavr'});
