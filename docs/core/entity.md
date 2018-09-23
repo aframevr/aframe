@@ -473,8 +473,8 @@ Below is what the event detail contains for each event:
 |                      | data      | Component data.                                    |
 | componentremoved     | name      | Name of component that was removed.                |
 |                      | id        | ID of component that was removed.                  |
-| stateadded           | state     | The state that was attached (string).              |
-| stateremoved         | state     | The state that was detached (string).              |
+| stateadded           | N/A       | The state that was attached (string).              |
+| stateremoved         | N/A       | The state that was detached (string).              |
 | schemachanged        | component | Name of component that had it's schema changed.    |
 
 #### Listening for Component Changes
