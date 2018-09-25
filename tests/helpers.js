@@ -17,9 +17,11 @@ module.exports.once = function (el, eventName, handler) {
  * Helper method to create a scene, create an entity, add entity to scene,
  * add scene to document.
  *
+ * Deprecated in favor of elFactory.
+ *
  * @returns {object} An `<a-entity>` element.
  */
-module.exports.entityFactory = function (opts) {
+function entityFactory (opts) {
   var scene = document.createElement('a-scene');
   var assets = document.createElement('a-assets');
   var entity = document.createElement('a-entity');
@@ -37,6 +39,28 @@ module.exports.entityFactory = function (opts) {
 
   document.body.appendChild(scene);
   return entity;
+}
+module.exports.entityFactory = entityFactory;
+
+/**
+ * A more robust entity factory that resolves once stuff is loaded without having to wait
+ * on fragile asynchrony.
+ *
+ * @returns {Promise}
+ */
+module.exports.elFactory = function (opts) {
+  let entity = entityFactory(opts);
+  return new Promise(resolve => {
+    if (entity.sceneEl) {
+      if (entity.sceneEl.hasLoaded) { return resolve(entity); }
+      entity.sceneEl.addEventListener('loaded', () => { resolve(entity); });
+      return;
+    }
+    entity.addEventListener('nodeready', () => {
+      if (entity.sceneEl.hasLoaded) { return resolve(entity); }
+      entity.sceneEl.addEventListener('loaded', () => { resolve(entity); });
+    });
+  });
 };
 
 /**
