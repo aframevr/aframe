@@ -51,35 +51,10 @@ suite('obj-model', function () {
     el.setAttribute('obj-model', {mtl: `url(${MTL})`, obj: `url(${OBJ})`});
   });
 
-  test('can load .OBJ with material', function (done) {
-    var el = this.el;
-    el.setAttribute('material', 'color', 'red');
-    el.addEventListener('object3dset', () => {
-      var material = el.getObject3D('mesh').children[0].material;
-      assert.equal(material.color.r, 1);
-      done();
-    });
-    el.setAttribute('obj-model', 'obj', '#obj');
-  });
-});
-
-suite('multiple OBJ', function () {
-  setup(function (done) {
-    var el;
-    var objAsset = document.createElement('a-asset-item');
-    var mtlAsset = document.createElement('a-asset-item');
-    mtlAsset.setAttribute('id', 'mtl');
-    mtlAsset.setAttribute('src', MTL);
-    objAsset.setAttribute('id', 'obj');
-    objAsset.setAttribute('src', OBJ);
-    el = this.el = entityFactory({assets: [mtlAsset, objAsset]});
-    if (el.hasLoaded) { done(); }
-    el.addEventListener('loaded', function () { done(); });
-  });
-
   test('can load multiple .OBJ', function (done) {
     var el = this.el;
     var el2 = document.createElement('a-entity');
+
     var elPromise = new Promise(function (resolve) {
       el.addEventListener('model-loaded', resolve);
     });
@@ -99,5 +74,16 @@ suite('multiple OBJ', function () {
       el2.setAttribute('obj-model', {obj: '#obj'});
     });
     el.sceneEl.appendChild(el2);
+  });
+
+  test('can load .OBJ with material', function (done) {
+    var el = this.el;
+    el.setAttribute('material', 'color', 'red');
+    el.addEventListener('object3dset', () => {
+      var material = el.getObject3D('mesh').children[0].material;
+      assert.equal(material.color.r, 1);
+      done();
+    });
+    el.setAttribute('obj-model', 'obj', '#obj');
   });
 });

@@ -21,12 +21,16 @@ module.exports.Component = registerComponent('obj-model', {
   update: function () {
     var data = this.data;
     if (!data.obj) { return; }
-    this.remove();
+    this.resetMesh();
     this.loadObj(data.obj, data.mtl);
   },
 
   remove: function () {
     if (!this.model) { return; }
+    this.resetMesh();
+  },
+
+  resetMesh: function () {
     this.el.removeObject3D('mesh');
   },
 
