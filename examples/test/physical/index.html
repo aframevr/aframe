@@ -25,7 +25,7 @@
                   metalness: alpha,
                   roughness: beta,
                 });
-                obj.object3D.position.set(alpha * 50, beta * 50 - 25, gamma * 50 - 150);
+                obj.object3D.position.set(alpha * 50 - 25, beta * 50 - 25, gamma * 50 - 100);
                 scene.appendChild(obj);
               }
             }
@@ -35,7 +35,7 @@
     </script>
   </head>
   <body>
-    <a-scene generate stats>
+    <a-scene generate background="#111">
       <a-assets>
         <a-cubemap id="reflection">
           <img src="milkyway/px.jpg">
@@ -51,11 +51,6 @@
                  material="shader: flat"></a-mixin>
         <a-mixin id="sphere" geometry="primitive: sphere; radius: 5"></a-mixin>
       </a-assets>
-
-      <!-- Skysphere. -->
-      <a-entity geometry="primitive: sphere; radius: 500"
-                material="color: #111; shader: flat"
-                scale="1 1 -1"></a-entity>
 
       <!-- Lights. -->
       <a-entity light="color: #666; type: ambient"></a-entity>
