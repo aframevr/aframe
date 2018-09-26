@@ -3,6 +3,7 @@
  * Some code adapted from `style-attr` (https://github.com/joshwnj/style-attr)
  * by Josh Johnston (MIT License).
  */
+var DASH_REGEX = /-([a-z])/g;
 
 /**
  * Deserialize style-like string into an object of properties.
@@ -38,7 +39,7 @@ module.exports.stringify = function (data) {
  * @return {string} CamelCased string.
  */
 function toCamelCase (str) {
-  return str.replace(/-([a-z])/g, upperCase);
+  return str.replace(DASH_REGEX, upperCase);
 }
 module.exports.toCamelCase = toCamelCase;
 

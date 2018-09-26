@@ -258,11 +258,7 @@ Component.prototype = {
     var key;
     var initialOldData;
     var skipTypeChecking;
-<<<<<<< HEAD
-    var oldData = this.oldData;
     var hasComponentChanged;
-=======
->>>>>>> object pooling in component core, optimize style parser to reuse object
 
     // Just cache the attribute if the entity has not loaded
     // Components are not initialized until the entity has loaded
@@ -292,11 +288,8 @@ Component.prototype = {
     // Cache previously passed attribute to decide if we skip type checking.
     this.previousAttrValue = attrValue;
 
-<<<<<<< HEAD
-    // Cache current attrValue for future updates. Updates `this.attrValue`.
-    attrValue = this.parseAttrValueForCache(attrValue);
-=======
     // Parse the attribute value.
+    // Cache current attrValue for future updates. Updates `this.attrValue`.
     attrValue = this.parseAttrValueForCache(attrValue);
 
     // Update previous attribute value to later decide if we skip type checking.
@@ -306,7 +299,6 @@ Component.prototype = {
     this.data = this.buildData(attrValue, clobber, false, skipTypeChecking);
 
     // Cache current attrValue for future updates.
->>>>>>> object pooling in component core, optimize style parser to reuse object
     this.updateCachedAttrValue(attrValue, clobber);
 
     if (this.updateSchema) {
@@ -337,22 +329,6 @@ Component.prototype = {
       if (el.isPlaying) { this.play(); }
       el.emit('componentinitialized', this.evtDetail, false);
     } else {
-<<<<<<< HEAD
-      hasComponentChanged = !utils.deepEqual(this.oldData, this.data);
-      // Don't update if properties haven't changed.
-      // Always update rotation, position, scale.
-      if (!this.isPositionRotationScale && !hasComponentChanged) { return; }
-     // Store current data as previous data for future updates.
-      this.oldData = extendProperties({}, this.data, isSinglePropSchema);
-      // Update component.
-      this.update(oldData);
-      // In the case of position, rotation, scale always update the component
-      // but don't emit componentchanged event if component has not changed.
-      if (!hasComponentChanged) { return; }
-=======
-      // Don't update if properties haven't changed
-      if (utils.deepEqual(this.oldData, this.data)) { return; }
-
       // Store the previous old data before we calculate the new oldData.
       if (this.previousOldData instanceof Object) {
         utils.objectPool.clearObject(this.previousOldData);
@@ -363,15 +339,20 @@ Component.prototype = {
         this.previousOldData = this.oldData;
       }
 
+      hasComponentChanged = !utils.deepEqual(this.oldData, this.data);
+
+      // Don't update if properties haven't changed.
+      // Always update rotation, position, scale.
+      if (!this.isPositionRotationScale && !hasComponentChanged) { return; }
+
       // Store current data as previous data for future updates.
       // Reuse `this.oldData` object to try not to allocate another one.
       if (this.oldData instanceof Object) { utils.objectPool.clearObject(this.oldData); }
       this.oldData = extendProperties(this.oldData, this.data, this.isObjectBased);
 
-      // Update component.
+      // Update component with the previous old data.
       this.update(this.previousOldData);
 
->>>>>>> object pooling in component core, optimize style parser to reuse object
       this.throttledEmitComponentChanged();
     }
   },
@@ -630,28 +611,20 @@ function copyData (dest, sourceData) {
 * @param {boolean} isObjectBased - Whether values are objects.
 * @returns Overridden object or value.
 */
-<<<<<<< HEAD
-function extendProperties (dest, source, isSinglePropSchema) {
-  if (isSinglePropSchema && (source === null || typeof source !== 'object')) { return source; }
-  var copy = utils.extend(dest, source);
-  var key;
-  for (key in copy) {
-    if (!copy[key] || copy[key].constructor !== Object) { continue; }
-    copy[key] = utils.clone(copy[key]);
-  }
-  return copy;
-=======
 function extendProperties (dest, source, isObjectBased) {
   var key;
-  if (isObjectBased && source instanceof Object) {
+  if (isObjectBased && source.constructor === Object) {
     for (key in source) {
       if (source[key] === undefined) { continue; }
-      dest[key] = source[key];
+      if (source[key] && source[key].constructor === Object) {
+        dest[key] = utils.clone(source[key]);
+      } else {
+        dest[key] = source[key];
+      }
     }
     return dest;
   }
   return source;
->>>>>>> object pooling in component core, optimize style parser to reuse object
 }
 
 /**

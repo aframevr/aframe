@@ -289,25 +289,28 @@ suite('Component', function () {
     });
 
     test('does not emit componentchanged for multi-prop if not changed', function (done) {
-      el.addEventListener('componentinitialized', function (evt) {
+      function componentChanged (evt) {
         if (evt.detail.name !== 'material') { return; }
+        el.removeEventListener('componentchanged', componentChanged);
+        // Should not reach here.
+        assert.equal(true, false, 'Component should not have emitted changed.');
+      }
 
-        el.addEventListener('componentchanged', function (evt) {
-          if (evt.detail.name !== 'material') { return; }
-          // Should not reach here.
-          assert.equal(true, false, 'Component should not have emitted changed.');
-        });
-
-        // Update.
+      function componentInitialized (evt) {
+        if (evt.detail.name !== 'material') { return; }
+        el.addEventListener('componentchanged', componentChanged);
         el.setAttribute('material', 'color', 'red');
+      }
 
-        // Have `done()` race with the failing assertion in the event handler.
-        setTimeout(() => {
-          done();
-        }, 100);
-      });
-      // Initialization.
+      el.addEventListener('componentinitialized', componentInitialized);
       el.setAttribute('material', 'color', 'red');
+
+      // Have `done()` race with the failing assertion in the event handler.
+      setTimeout(() => {
+        el.removeEventListener('componentchanged', componentChanged);
+        el.removeEventListener('componentinitialized', componentInitialized);
+        done();
+      }, 100);
     });
 
     test('does not update for multi-prop if not changed', function (done) {
@@ -358,25 +361,27 @@ suite('Component', function () {
     });
 
     test('does not emit componentchanged for single-prop if not changed', function (done) {
-      el.addEventListener('componentinitialized', function (evt) {
-        if (evt.detail.name !== 'position') { return; }
+      function componentInitialized (evt) {
+        if (evt.detail.name !== 'visible') { return; }
+        el.addEventListener('componentchanged', componentChanged);
+        el.setAttribute('visible', false);
+      }
 
-        el.addEventListener('componentchanged', function (evt) {
-          if (evt.detail.name !== 'position') { return; }
-          // Should not reach here.
-          assert.equal(true, false, 'Component should not have emitted changed.');
-        });
+      function componentChanged (evt) {
+        if (evt.detail.name !== 'visible') { return; }
+        // Should not reach here.
+        assert.equal(true, false, 'Component should not have emitted changed.');
+      }
 
-        // Update.
-        el.setAttribute('position', {x: 1, y: 2, z: 3});
+      el.addEventListener('componentinitialized', componentInitialized);
+      el.setAttribute('visible', false);
 
-        // Have `done()` race with the failing assertion in the event handler.
-        setTimeout(() => {
-          done();
-        }, 100);
-      });
-      // Initialization.
-      el.setAttribute('position', {x: 1, y: 2, z: 3});
+      // Have `done()` race with the failing assertion in the event handler.
+      setTimeout(() => {
+        el.removeEventListener('componentinitialized', componentInitialized);
+        el.removeEventListener('componentchanged', componentChanged);
+        done();
+      }, 100);
     });
 
     test('does not emit componentchanged for value if not changed', function (done) {
@@ -437,8 +442,6 @@ suite('Component', function () {
     });
 
     test('does not clone properties from attrValue into data that are not plain objects', function () {
-      var attrValue;
-      var data;
       var el;
       registerComponent('dummy', {
         schema: {
@@ -457,6 +460,19 @@ suite('Component', function () {
       var attrValue;
       var el;
       var data;
+
+      registerComponent('dummy', {
+        schema: {
+          color: {type: 'string'},
+          direction: {type: 'vec3'},
+          el: {type: 'selector', default: 'body'}
+        }
+      });
+
+      el = document.createElement('a-entity');
+      el.hasLoaded = true;
+      el.setAttribute('dummy', '');
+      assert.notOk(el.components.dummy.attrValue.el);
 
       // Direction property preserved across updateProperties calls but cloned into a different
       // object.
@@ -702,8 +718,8 @@ suite('Component', function () {
 
   suite('updateProperties', function () {
     setup(function (done) {
-      components.dummy = undefined;
       var el = this.el = entityFactory();
+      components.dummy = undefined;
       if (el.hasLoaded) { done(); }
       el.addEventListener('loaded', function () { done(); });
     });
@@ -749,7 +765,7 @@ suite('Component', function () {
       el.addEventListener('loaded', function () { done(); });
     });
 
-    test('init is only called once if the init routine sets the component', function () {
+    test('init is called once if the init routine sets the component', function () {
       var initCanaryStub = sinon.stub();
       var el = this.el;
       registerComponent('dummy', {
@@ -1016,15 +1032,19 @@ suite('Component', function () {
   test('applies default array property types with no defined value', function (done) {
     var el;
     registerComponent('test', {
-      schema: {default: ['foo']},
+      schema: {
+        arr: {default: ['foo']}
+      },
 
       update: function () {
-        assert.equal(this.data[0], 'foo');
+        assert.equal(this.data.arr[0], 'foo');
         done();
       }
     });
     el = entityFactory();
-    el.setAttribute('test', '');
+    el.addEventListener('loaded', () => {
+      el.setAttribute('test', '');
+    });
   });
 });
 

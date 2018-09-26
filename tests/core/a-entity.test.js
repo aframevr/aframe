@@ -466,7 +466,6 @@ suite('a-entity', function () {
 
   suite('flushToDOM', function () {
     test('updates DOM attributes', function () {
-      var el = this.el;
       var material;
       var materialStr = 'color: #F0F; metalness: 0.75';
       el.setAttribute('material', materialStr);
@@ -478,7 +477,6 @@ suite('a-entity', function () {
     });
 
     test('updates DOM attributes of a multiple component', function () {
-      var el = this.el;
       var soundAttrValue;
       var soundStr = 'src: url(mysoundfile.mp3); autoplay: true';
       el.setAttribute('sound__1', {'src': 'url(mysoundfile.mp3)', autoplay: true});
@@ -907,16 +905,7 @@ suite('a-entity', function () {
       assert.equal(el.getAttribute('material').color, '#FFF');
     });
 
-    test('does not remove default component', function () {
-      var el = this.el;
-      assert.ok('position' in el.components);
-      el.removeAttribute('position');
-      assert.shallowDeepEqual(el.getDOMAttribute('position'), {});
-      assert.ok('position' in el.components);
-    });
-
     test('does not remove mixed-in component', function () {
-      var el = this.el;
       mixinFactory('foo', {position: '1 2 3'});
       mixinFactory('bar', {scale: '1 2 3'});
       el.setAttribute('mixin', 'foo bar');
@@ -934,8 +923,6 @@ suite('a-entity', function () {
 
   suite('initComponent', function () {
     test('initializes component', function () {
-      var el = this.el;
-      el.initComponent('material', false, 'color: #F0F; transparent: true');
       el.initComponent('material', 'color: #F0F; transparent: true', false);
       assert.ok(el.components.material);
     });
@@ -949,7 +936,6 @@ suite('a-entity', function () {
     });
 
     test('initializes dependency component and can set attribute', function () {
-      var el = this.el;
       el.initComponent('material', '', true);
       assert.shallowDeepEqual(el.getAttribute('material'), {});
     });
