@@ -17,7 +17,7 @@ The cylinder primitive is versatile and can be used to create different kinds of
 <a-cylinder color="crimson" height="3" radius="1.5"></a-cylinder>
 
 <!-- Hexagon. -->
-<a-cylinder color="cyan" segments-radial="8"></a-cylinder>
+<a-cylinder color="cyan" segments-radial="7"></a-cylinder>
 
 <!-- Pac-man. -->
 <a-cylinder color="yellow" theta-start="50" theta-length="280" side="double"></a-cylinder>
