@@ -79,11 +79,6 @@ module.exports.Component = registerComponent('camera', {
       // Camera disabled. Set camera to another camera.
       system.disableSpectatorCamera();
     }
-
-    this.savedPose = {
-      position: el.getAttribute('position'),
-      rotation: el.getAttribute('rotation')
-    };
   },
 
   /**

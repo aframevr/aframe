@@ -18,7 +18,6 @@ suite('geometry', function () {
   suite('update', function () {
     test('allows empty geometry', function () {
       this.el.setAttribute('geometry', '');
-      this.el.setAttribute('geometry', '');
     });
 
     test('creates geometry', function () {
