@@ -52,4 +52,14 @@ iOS has a lot of restrictions on playing videos in the browser. To play an inlin
 Since iOS 11, iOS has required user interaction to trigger video playback. This is also true on a number of Android device and
 browser combinations.
 
+## Fine-Tuning
+
+Ensuring that the video is not distorted by stretching requires us to appropriately set the `width` and `height` preserving the original aspect ratio of the video. This properties are set in meters, don't confuse with pixels.
+
+For example, a 2:1 video:
+
+```html
+<a-video src="#myvideo" width="3" height="1.5"></a-video>
+```
+
 
