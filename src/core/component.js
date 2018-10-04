@@ -473,7 +473,7 @@ Component.prototype = {
       if (this.isSingleProperty) {
         if (skipTypeChecking === true) { return newData; }
         // If object-based, copy the value to not modify the original.
-        if (this.isObjectBased) {
+        if (isObject(newData)) {
           copyData(this.parsingAttrValue, newData);
           return parseProperty(this.parsingAttrValue, schema);
         }

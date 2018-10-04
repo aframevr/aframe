@@ -250,6 +250,24 @@ suite('Component', function () {
         done();
       });
     });
+
+    test('copies data correctly for single-prop object-based with string input', done => {
+      registerComponent('test', {
+        schema: {
+          default: {},
+          parse: function (value) {
+            return value;
+          }
+        }
+      });
+
+      helpers.elFactory().then(el => {
+        el.setAttribute('test', 'foo');
+        el.setAttribute('test', 'bar');
+        assert.equal(el.components.test.data, 'bar');
+        done();
+      });
+    });
   });
 
   suite('updateProperties', function () {
