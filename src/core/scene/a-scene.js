@@ -1,6 +1,7 @@
 /* global Promise, screen */
 var initMetaTags = require('./metaTags').inject;
 var initWakelock = require('./wakelock');
+var loadingScreen = require('../loadingScreen');
 var re = require('../a-register-element');
 var scenes = require('./scenes');
 var systems = require('../system').systems;
@@ -85,7 +86,6 @@ module.exports.AScene = registerElement('a-scene', {
     attachedCallback: {
       value: function () {
         var self = this;
-
         // Renderer initialization
         setupCanvas(this);
         this.setupRenderer();
@@ -551,6 +551,7 @@ module.exports.AScene = registerElement('a-scene', {
         this.addEventListener('camera-set-active', function () {
           renderer.vr.setPoseTarget(self.camera);
         });
+        loadingScreen.setup(this, getCanvasSize);
       },
       writable: window.debug
     },
@@ -580,6 +581,7 @@ module.exports.AScene = registerElement('a-scene', {
           if (sceneEl.renderer) {
             if (window.performance) { window.performance.mark('render-started'); }
             sceneEl.clock = new THREE.Clock();
+            loadingScreen.remove();
             sceneEl.render();
             sceneEl.renderStarted = true;
             sceneEl.emit('renderstart');
