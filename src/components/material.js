@@ -53,10 +53,16 @@ module.exports.Component = registerComponent('material', {
   },
 
   updateSchema: function (data) {
-    var newShader = data.shader;
-    var currentShader = this.data && this.data.shader;
-    var shader = newShader || currentShader;
-    var schema = shaders[shader] && shaders[shader].schema;
+    var currentShader;
+    var newShader;
+    var schema;
+    var shader;
+
+    newShader = data && data.shader;
+    currentShader = this.oldData && this.oldData.shader;
+    shader = newShader || currentShader;
+    schema = shaders[shader] && shaders[shader].schema;
+
     if (!schema) { error('Unknown shader schema ' + shader); }
     if (currentShader && newShader === currentShader) { return; }
     this.extendSchema(schema);

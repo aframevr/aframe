@@ -61,12 +61,10 @@ module.exports.Component = registerComponent('geometry', {
 
   /**
    * Update geometry component schema based on geometry type.
-   *
-   * @param {object} data - New data passed by Component.
    */
   updateSchema: function (data) {
+    var currentGeometryType = this.oldData && this.oldData.primitive;
     var newGeometryType = data.primitive;
-    var currentGeometryType = this.data && this.data.primitive;
     var schema = geometries[newGeometryType] && geometries[newGeometryType].schema;
 
     // Geometry has no schema.

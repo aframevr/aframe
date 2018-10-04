@@ -72,7 +72,7 @@ module.exports.createPool = function createPool (objectFactory) {
 
 function clearObject (obj) {
   var key;
-  if (!(obj.constructor === Object)) { return; }
+  if (!obj || obj.constructor !== Object) { return; }
   for (key in obj) { obj[key] = undefined; }
 }
 module.exports.clearObject = clearObject;
