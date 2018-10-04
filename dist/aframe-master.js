@@ -3064,7 +3064,7 @@ function findChar (array, value, start) {
   }
   return -1
 }
-},{"as-number":3,"word-wrapper":47,"xtend":50}],23:[function(_dereq_,module,exports){
+},{"as-number":3,"word-wrapper":46,"xtend":49}],23:[function(_dereq_,module,exports){
 (function (Buffer){
 var xhr = _dereq_('xhr')
 var noop = function(){}
@@ -3166,7 +3166,7 @@ function getBinaryOpts(opt) {
 
 }).call(this,_dereq_("buffer").Buffer)
 
-},{"./lib/is-binary":24,"buffer":7,"parse-bmfont-ascii":26,"parse-bmfont-binary":27,"parse-bmfont-xml":28,"xhr":48,"xtend":50}],24:[function(_dereq_,module,exports){
+},{"./lib/is-binary":24,"buffer":7,"parse-bmfont-ascii":26,"parse-bmfont-binary":27,"parse-bmfont-xml":28,"xhr":47,"xtend":49}],24:[function(_dereq_,module,exports){
 (function (Buffer){
 var equal = _dereq_('buffer-equal')
 var HEADER = new Buffer([66, 77, 70, 3])
@@ -3626,7 +3626,7 @@ function getAttribList(element) {
 function mapName(nodeName) {
   return NAME_MAP[nodeName.toLowerCase()] || nodeName
 }
-},{"./parse-attribs":29,"xml-parse-from-string":49}],29:[function(_dereq_,module,exports){
+},{"./parse-attribs":29,"xml-parse-from-string":48}],29:[function(_dereq_,module,exports){
 //Some versions of GlyphDesigner have a typo
 //that causes some bugs with parsing. 
 //Need to confirm with recent version of the software
@@ -3687,7 +3687,7 @@ module.exports = function (headers) {
 
   return result
 }
-},{"for-each":14,"trim":45}],31:[function(_dereq_,module,exports){
+},{"for-each":14,"trim":44}],31:[function(_dereq_,module,exports){
 (function (global){
 var performance = global.performance || {};
 
@@ -4146,137 +4146,6 @@ module.exports = function createQuadElements(array, opt) {
     return indices
 }
 },{"an-array":1,"dtype":12,"is-buffer":18}],35:[function(_dereq_,module,exports){
-
-
-/*:: type Attr = { [key: string]: string | number } */
-/*:: type Opts = { preserveNumbers: ?boolean } */
-
-/*
-
-style-attr
-====
-
-Very simple parsing and stringifying of style attributes.
-
-`parse`
-----
-
-Convert a style attribute string to an object.
-
-*/
-
-/*:: declare function parse (raw: string, opts: ?Opts): Attr */
-function parse(raw, opts) {
-  opts = opts || {};
-
-  var preserveNumbers = opts.preserveNumbers;
-  var trim = function (s) {
-    return s.trim();
-  };
-  var obj = {};
-
-  getKeyValueChunks(raw).map(trim).filter(Boolean).forEach(function (item) {
-    // split with `.indexOf` rather than `.split` because the value may also contain colons.
-    var pos = item.indexOf(':');
-    var key = item.substr(0, pos).trim();
-    var val = item.substr(pos + 1).trim();
-    if (preserveNumbers && isNumeric(val)) {
-      val = Number(val);
-    }
-
-    obj[key] = val;
-  });
-
-  return obj;
-}
-
-/*
-
-`isNumeric`
-----
-
-Check if a value is numeric.
-Via: https://stackoverflow.com/a/1830844/9324
-
-*/
-
-/*:: declare function isNumeric (n: any): boolean */
-
-function isNumeric(n) {
-  return !isNaN(parseFloat(n)) && isFinite(n);
-}
-
-/*
-
-`getKeyValueChunks`
-----
-
-Split a string into chunks matching `<key>: <value>`
-
-*/
-/*:: declare function getKeyValueChunks (raw: string): Array<string> */
-function getKeyValueChunks(raw) {
-  var chunks = [];
-  var offset = 0;
-  var sep = ';';
-  var hasUnclosedUrl = /url\([^\)]+$/;
-  var chunk = '';
-  var nextSplit;
-  while (offset < raw.length) {
-    nextSplit = raw.indexOf(sep, offset);
-    if (nextSplit === -1) {
-      nextSplit = raw.length;
-    }
-
-    chunk += raw.substring(offset, nextSplit);
-
-    // data URIs can contain semicolons, so make sure we get the whole thing
-    if (hasUnclosedUrl.test(chunk)) {
-      chunk += ';';
-      offset = nextSplit + 1;
-      continue;
-    }
-
-    chunks.push(chunk);
-    chunk = '';
-    offset = nextSplit + 1;
-  }
-
-  return chunks;
-}
-
-/*
-
-`stringify`
-----
-
-Convert an object into an attribute string
-
-*/
-/*:: declare function stringify (obj: Attr): string */
-function stringify(obj) {
-  return Object.keys(obj).map(function (key) {
-    return key + ':' + obj[key];
-  }).join(';');
-}
-
-/*
-
-`normalize`
-----
-
-Normalize an attribute string (eg. collapse duplicates)
-
-*/
-/*:: declare function normalize (str: string, opts: ?Opts): string */
-function normalize(str, opts) {
-  return stringify(parse(str, opts));
-}
-
-module.exports.parse = parse;
-module.exports.stringify = stringify;
-module.exports.normalize = normalize;
-},{}],36:[function(_dereq_,module,exports){
 var createLayout = _dereq_('layout-bmfont-text')
 var inherits = _dereq_('inherits')
 var createIndices = _dereq_('quad-indices')
@@ -4402,7 +4271,7 @@ TextGeometry.prototype.computeBoundingBox = function () {
   utils.computeBox(positions, bbox)
 }
 
-},{"./lib/utils":37,"./lib/vertices":38,"inherits":17,"layout-bmfont-text":22,"object-assign":25,"quad-indices":34,"three-buffer-vertex-data":39}],37:[function(_dereq_,module,exports){
+},{"./lib/utils":36,"./lib/vertices":37,"inherits":17,"layout-bmfont-text":22,"object-assign":25,"quad-indices":34,"three-buffer-vertex-data":38}],36:[function(_dereq_,module,exports){
 var itemSize = 2
 var box = { min: [0, 0], max: [0, 0] }
 
@@ -4442,7 +4311,7 @@ module.exports.computeSphere = function (positions, output) {
   output.radius = length / 2
 }
 
-},{}],38:[function(_dereq_,module,exports){
+},{}],37:[function(_dereq_,module,exports){
 module.exports.pages = function pages (glyphs) {
   var pages = new Float32Array(glyphs.length * 4 * 1)
   var i = 0
@@ -4521,7 +4390,7 @@ module.exports.positions = function positions (glyphs) {
   return positions
 }
 
-},{}],39:[function(_dereq_,module,exports){
+},{}],38:[function(_dereq_,module,exports){
 var flatten = _dereq_('flatten-vertex-data')
 var warned = false;
 
@@ -4621,7 +4490,7 @@ function rebuildAttribute (attrib, data, itemSize) {
   return false
 }
 
-},{"flatten-vertex-data":13}],40:[function(_dereq_,module,exports){
+},{"flatten-vertex-data":13}],39:[function(_dereq_,module,exports){
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
 	typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -51972,7 +51841,7 @@ function rebuildAttribute (attrib, data, itemSize) {
 
 })));
 
-},{}],41:[function(_dereq_,module,exports){
+},{}],40:[function(_dereq_,module,exports){
 /**
  * @author mrdoob / http://mrdoob.com/
  * @author Mugen87 / https://github.com/Mugen87
@@ -55862,7 +55731,7 @@ THREE.ColladaLoader.prototype = {
 
 };
 
-},{}],42:[function(_dereq_,module,exports){
+},{}],41:[function(_dereq_,module,exports){
 /**
  * @author Rich Tibbett / https://github.com/richtr
  * @author mrdoob / http://mrdoob.com/
@@ -58972,7 +58841,7 @@ THREE.GLTFLoader = ( function () {
 
 } )();
 
-},{}],43:[function(_dereq_,module,exports){
+},{}],42:[function(_dereq_,module,exports){
 /**
  * Loads a Wavefront .mtl file specifying materials
  *
@@ -59534,7 +59403,7 @@ THREE.MTLLoader.MaterialCreator.prototype = {
 
 };
 
-},{}],44:[function(_dereq_,module,exports){
+},{}],43:[function(_dereq_,module,exports){
 /**
  * @author mrdoob / http://mrdoob.com/
  */
@@ -60329,7 +60198,7 @@ THREE.OBJLoader = ( function () {
 
 } )();
 
-},{}],45:[function(_dereq_,module,exports){
+},{}],44:[function(_dereq_,module,exports){
 
 exports = module.exports = trim;
 
@@ -60345,7 +60214,7 @@ exports.right = function(str){
   return str.replace(/\s*$/, '');
 };
 
-},{}],46:[function(_dereq_,module,exports){
+},{}],45:[function(_dereq_,module,exports){
 (function (global){
 /**
  * @license
@@ -63847,7 +63716,7 @@ return src;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],47:[function(_dereq_,module,exports){
+},{}],46:[function(_dereq_,module,exports){
 var newline = /\n/
 var newlineChar = '\n'
 var whitespace = /\s/
@@ -63975,7 +63844,7 @@ function monospace(text, start, end, width) {
         end: start+glyphs
     }
 }
-},{}],48:[function(_dereq_,module,exports){
+},{}],47:[function(_dereq_,module,exports){
 "use strict";
 var window = _dereq_("global/window")
 var isFunction = _dereq_("is-function")
@@ -64222,7 +64091,7 @@ function getXml(xhr) {
 
 function noop() {}
 
-},{"global/window":15,"is-function":19,"parse-headers":30,"xtend":50}],49:[function(_dereq_,module,exports){
+},{"global/window":15,"is-function":19,"parse-headers":30,"xtend":49}],48:[function(_dereq_,module,exports){
 module.exports = (function xmlparser() {
   //common browsers
   if (typeof self.DOMParser !== 'undefined') {
@@ -64251,7 +64120,7 @@ module.exports = (function xmlparser() {
   }
 })()
 
-},{}],50:[function(_dereq_,module,exports){
+},{}],49:[function(_dereq_,module,exports){
 module.exports = extend
 
 var hasOwnProperty = Object.prototype.hasOwnProperty;
@@ -64272,7 +64141,7 @@ function extend() {
     return target
 }
 
-},{}],51:[function(_dereq_,module,exports){
+},{}],50:[function(_dereq_,module,exports){
 module.exports={
   "name": "aframe",
   "version": "0.8.2",
@@ -64408,7 +64277,7 @@ module.exports={
   }
 }
 
-},{}],52:[function(_dereq_,module,exports){
+},{}],51:[function(_dereq_,module,exports){
 var anime = _dereq_('animejs');
 var components = _dereq_('../core/component').components;
 var registerComponent = _dereq_('../core/component').registerComponent;
@@ -65024,7 +64893,7 @@ function isRawProperty (data) {
          data.property.startsWith(STRING_OBJECT3D);
 }
 
-},{"../core/component":102,"../lib/three":150,"../utils":172,"animejs":2}],53:[function(_dereq_,module,exports){
+},{"../core/component":101,"../lib/three":149,"../utils":171,"animejs":2}],52:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 
@@ -65116,7 +64985,7 @@ module.exports.Component = registerComponent('camera', {
   }
 });
 
-},{"../core/component":102,"../lib/three":150}],54:[function(_dereq_,module,exports){
+},{"../core/component":101,"../lib/three":149}],53:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 
@@ -65150,7 +65019,7 @@ module.exports.Component = registerComponent('collada-model', {
   }
 });
 
-},{"../core/component":102,"../lib/three":150}],55:[function(_dereq_,module,exports){
+},{"../core/component":101,"../lib/three":149}],54:[function(_dereq_,module,exports){
 /* global THREE */
 var registerComponent = _dereq_('../core/component').registerComponent;
 var utils = _dereq_('../utils/');
@@ -65528,7 +65397,7 @@ module.exports.Component = registerComponent('cursor', {
   }
 });
 
-},{"../core/component":102,"../utils/":172}],56:[function(_dereq_,module,exports){
+},{"../core/component":101,"../utils/":171}],55:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var bind = _dereq_('../utils/bind');
 var checkControllerPresentAndSetup = _dereq_('../utils/tracked-controls').checkControllerPresentAndSetup;
@@ -65706,7 +65575,7 @@ module.exports.Component = registerComponent('daydream-controls', {
   }
 });
 
-},{"../core/component":102,"../utils/bind":166,"../utils/tracked-controls":178}],57:[function(_dereq_,module,exports){
+},{"../core/component":101,"../utils/bind":165,"../utils/tracked-controls":177}],56:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var bind = _dereq_('../utils/bind');
 var trackedControlsUtils = _dereq_('../utils/tracked-controls');
@@ -65882,7 +65751,7 @@ module.exports.Component = registerComponent('gearvr-controls', {
   }
 });
 
-},{"../core/component":102,"../utils/bind":166,"../utils/tracked-controls":178}],58:[function(_dereq_,module,exports){
+},{"../core/component":101,"../utils/bind":165,"../utils/tracked-controls":177}],57:[function(_dereq_,module,exports){
 var geometries = _dereq_('../core/geometry').geometries;
 var geometryNames = _dereq_('../core/geometry').geometryNames;
 var registerComponent = _dereq_('../core/component').registerComponent;
@@ -65946,12 +65815,10 @@ module.exports.Component = registerComponent('geometry', {
 
   /**
    * Update geometry component schema based on geometry type.
-   *
-   * @param {object} data - New data passed by Component.
    */
   updateSchema: function (data) {
+    var currentGeometryType = this.oldData && this.oldData.primitive;
     var newGeometryType = data.primitive;
-    var currentGeometryType = this.data && this.data.primitive;
     var schema = geometries[newGeometryType] && geometries[newGeometryType].schema;
 
     // Geometry has no schema.
@@ -65963,7 +65830,7 @@ module.exports.Component = registerComponent('geometry', {
   }
 });
 
-},{"../core/component":102,"../core/geometry":103,"../lib/three":150}],59:[function(_dereq_,module,exports){
+},{"../core/component":101,"../core/geometry":102,"../lib/three":149}],58:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 var utils = _dereq_('../utils/');
@@ -66007,7 +65874,7 @@ module.exports.Component = registerComponent('gltf-model', {
   }
 });
 
-},{"../core/component":102,"../lib/three":150,"../utils/":172}],60:[function(_dereq_,module,exports){
+},{"../core/component":101,"../lib/three":149,"../utils/":171}],59:[function(_dereq_,module,exports){
 /* global THREE */
 var registerComponent = _dereq_('../core/component').registerComponent;
 
@@ -66390,7 +66257,7 @@ function isViveController (trackedControls) {
   return controllerId && controllerId.indexOf('OpenVR ') === 0;
 }
 
-},{"../core/component":102}],61:[function(_dereq_,module,exports){
+},{"../core/component":101}],60:[function(_dereq_,module,exports){
 _dereq_('./animation');
 _dereq_('./camera');
 _dereq_('./collada-model');
@@ -66434,7 +66301,7 @@ _dereq_('./scene/screenshot');
 _dereq_('./scene/stats');
 _dereq_('./scene/vr-mode-ui');
 
-},{"./animation":52,"./camera":53,"./collada-model":54,"./cursor":55,"./daydream-controls":56,"./gearvr-controls":57,"./geometry":58,"./gltf-model":59,"./hand-controls":60,"./laser-controls":62,"./light":63,"./line":64,"./link":65,"./look-controls":66,"./material":67,"./obj-model":68,"./oculus-go-controls":69,"./oculus-touch-controls":70,"./position":71,"./raycaster":72,"./rotation":73,"./scale":74,"./scene/background":75,"./scene/debug":76,"./scene/embedded":77,"./scene/fog":78,"./scene/inspector":79,"./scene/keyboard-shortcuts":80,"./scene/pool":81,"./scene/renderer":82,"./scene/screenshot":83,"./scene/stats":84,"./scene/vr-mode-ui":85,"./shadow":86,"./sound":87,"./text":88,"./tracked-controls":89,"./visible":90,"./vive-controls":91,"./wasd-controls":92,"./windows-motion-controls":93}],62:[function(_dereq_,module,exports){
+},{"./animation":51,"./camera":52,"./collada-model":53,"./cursor":54,"./daydream-controls":55,"./gearvr-controls":56,"./geometry":57,"./gltf-model":58,"./hand-controls":59,"./laser-controls":61,"./light":62,"./line":63,"./link":64,"./look-controls":65,"./material":66,"./obj-model":67,"./oculus-go-controls":68,"./oculus-touch-controls":69,"./position":70,"./raycaster":71,"./rotation":72,"./scale":73,"./scene/background":74,"./scene/debug":75,"./scene/embedded":76,"./scene/fog":77,"./scene/inspector":78,"./scene/keyboard-shortcuts":79,"./scene/pool":80,"./scene/renderer":81,"./scene/screenshot":82,"./scene/stats":83,"./scene/vr-mode-ui":84,"./shadow":85,"./sound":86,"./text":87,"./tracked-controls":88,"./visible":89,"./vive-controls":90,"./wasd-controls":91,"./windows-motion-controls":92}],61:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var utils = _dereq_('../utils/');
 
@@ -66533,7 +66400,7 @@ registerComponent('laser-controls', {
   }
 });
 
-},{"../core/component":102,"../utils/":172}],63:[function(_dereq_,module,exports){
+},{"../core/component":101,"../utils/":171}],62:[function(_dereq_,module,exports){
 var bind = _dereq_('../utils/bind');
 var diff = _dereq_('../utils').diff;
 var debug = _dereq_('../utils/debug');
@@ -66810,7 +66677,7 @@ module.exports.Component = registerComponent('light', {
   }
 });
 
-},{"../core/component":102,"../lib/three":150,"../utils":172,"../utils/bind":166,"../utils/debug":168}],64:[function(_dereq_,module,exports){
+},{"../core/component":101,"../lib/three":149,"../utils":171,"../utils/bind":165,"../utils/debug":167}],63:[function(_dereq_,module,exports){
 /* global THREE */
 var registerComponent = _dereq_('../core/component').registerComponent;
 
@@ -66885,7 +66752,7 @@ function isEqualVec3 (a, b) {
   return (a.x === b.x && a.y === b.y && a.z === b.z);
 }
 
-},{"../core/component":102}],65:[function(_dereq_,module,exports){
+},{"../core/component":101}],64:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var registerShader = _dereq_('../core/shader').registerShader;
 var THREE = _dereq_('../lib/three');
@@ -67257,7 +67124,7 @@ registerShader('portal', {
 });
 /* eslint-enable */
 
-},{"../core/component":102,"../core/shader":111,"../lib/three":150}],66:[function(_dereq_,module,exports){
+},{"../core/component":101,"../core/shader":110,"../lib/three":149}],65:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 var utils = _dereq_('../utils/');
@@ -67657,7 +67524,7 @@ module.exports.Component = registerComponent('look-controls', {
   }
 });
 
-},{"../core/component":102,"../lib/three":150,"../utils":172,"../utils/":172}],67:[function(_dereq_,module,exports){
+},{"../core/component":101,"../lib/three":149,"../utils":171,"../utils/":171}],66:[function(_dereq_,module,exports){
 /* global Promise */
 var utils = _dereq_('../utils/');
 var component = _dereq_('../core/component');
@@ -67713,10 +67580,16 @@ module.exports.Component = registerComponent('material', {
   },
 
   updateSchema: function (data) {
-    var newShader = data.shader;
-    var currentShader = this.data && this.data.shader;
-    var shader = newShader || currentShader;
-    var schema = shaders[shader] && shaders[shader].schema;
+    var currentShader;
+    var newShader;
+    var schema;
+    var shader;
+
+    newShader = data && data.shader;
+    currentShader = this.oldData && this.oldData.shader;
+    shader = newShader || currentShader;
+    schema = shaders[shader] && shaders[shader].schema;
+
     if (!schema) { error('Unknown shader schema ' + shader); }
     if (currentShader && newShader === currentShader) { return; }
     this.extendSchema(schema);
@@ -67911,7 +67784,7 @@ function disposeMaterial (material, system) {
   system.unregisterMaterial(material);
 }
 
-},{"../core/component":102,"../core/shader":111,"../lib/three":150,"../utils/":172}],68:[function(_dereq_,module,exports){
+},{"../core/component":101,"../core/shader":110,"../lib/three":149,"../utils/":171}],67:[function(_dereq_,module,exports){
 var debug = _dereq_('../utils/debug');
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
@@ -67935,12 +67808,16 @@ module.exports.Component = registerComponent('obj-model', {
   update: function () {
     var data = this.data;
     if (!data.obj) { return; }
-    this.remove();
+    this.resetMesh();
     this.loadObj(data.obj, data.mtl);
   },
 
   remove: function () {
     if (!this.model) { return; }
+    this.resetMesh();
+  },
+
+  resetMesh: function () {
     this.el.removeObject3D('mesh');
   },
 
@@ -67987,7 +67864,7 @@ module.exports.Component = registerComponent('obj-model', {
   }
 });
 
-},{"../core/component":102,"../lib/three":150,"../utils/debug":168}],69:[function(_dereq_,module,exports){
+},{"../core/component":101,"../lib/three":149,"../utils/debug":167}],68:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var bind = _dereq_('../utils/bind');
 var trackedControlsUtils = _dereq_('../utils/tracked-controls');
@@ -68159,7 +68036,7 @@ module.exports.Component = registerComponent('oculus-go-controls', {
   }
 });
 
-},{"../core/component":102,"../utils/bind":166,"../utils/tracked-controls":178}],70:[function(_dereq_,module,exports){
+},{"../core/component":101,"../utils/bind":165,"../utils/tracked-controls":177}],69:[function(_dereq_,module,exports){
 var bind = _dereq_('../utils/bind');
 var registerComponent = _dereq_('../core/component').registerComponent;
 var trackedControlsUtils = _dereq_('../utils/tracked-controls');
@@ -68377,7 +68254,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   }
 });
 
-},{"../core/component":102,"../lib/three":150,"../utils/bind":166,"../utils/tracked-controls":178}],71:[function(_dereq_,module,exports){
+},{"../core/component":101,"../lib/three":149,"../utils/bind":165,"../utils/tracked-controls":177}],70:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 
 module.exports.Component = registerComponent('position', {
@@ -68395,7 +68272,7 @@ module.exports.Component = registerComponent('position', {
   }
 });
 
-},{"../core/component":102}],72:[function(_dereq_,module,exports){
+},{"../core/component":101}],71:[function(_dereq_,module,exports){
 /* global MutationObserver */
 
 var registerComponent = _dereq_('../core/component').registerComponent;
@@ -68824,7 +68701,7 @@ function copyArray (a, b) {
   }
 }
 
-},{"../core/component":102,"../lib/three":150,"../utils/":172}],73:[function(_dereq_,module,exports){
+},{"../core/component":101,"../lib/three":149,"../utils/":171}],72:[function(_dereq_,module,exports){
 var degToRad = _dereq_('../lib/three').Math.degToRad;
 var registerComponent = _dereq_('../core/component').registerComponent;
 
@@ -68847,7 +68724,7 @@ module.exports.Component = registerComponent('rotation', {
   }
 });
 
-},{"../core/component":102,"../lib/three":150}],74:[function(_dereq_,module,exports){
+},{"../core/component":101,"../lib/three":149}],73:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 
 // Avoids triggering a zero-determinant which makes object3D matrix non-invertible.
@@ -68874,7 +68751,7 @@ module.exports.Component = registerComponent('scale', {
   }
 });
 
-},{"../core/component":102}],75:[function(_dereq_,module,exports){
+},{"../core/component":101}],74:[function(_dereq_,module,exports){
 /* global THREE */
 var register = _dereq_('../../core/component').registerComponent;
 
@@ -68894,14 +68771,14 @@ module.exports.Component = register('background', {
   }
 });
 
-},{"../../core/component":102}],76:[function(_dereq_,module,exports){
+},{"../../core/component":101}],75:[function(_dereq_,module,exports){
 var register = _dereq_('../../core/component').registerComponent;
 
 module.exports.Component = register('debug', {
   schema: {default: true}
 });
 
-},{"../../core/component":102}],77:[function(_dereq_,module,exports){
+},{"../../core/component":101}],76:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 
 /**
@@ -68926,7 +68803,7 @@ module.exports.Component = registerComponent('embedded', {
 
 });
 
-},{"../../core/component":102}],78:[function(_dereq_,module,exports){
+},{"../../core/component":101}],77:[function(_dereq_,module,exports){
 var register = _dereq_('../../core/component').registerComponent;
 var THREE = _dereq_('../../lib/three');
 var debug = _dereq_('../../utils/debug');
@@ -68999,7 +68876,7 @@ function getFog (data) {
   return fog;
 }
 
-},{"../../core/component":102,"../../lib/three":150,"../../utils/debug":168}],79:[function(_dereq_,module,exports){
+},{"../../core/component":101,"../../lib/three":149,"../../utils/debug":167}],78:[function(_dereq_,module,exports){
 (function (process){
 /* global AFRAME */
 var AFRAME_INJECTED = _dereq_('../../constants').AFRAME_INJECTED;
@@ -69104,7 +68981,7 @@ module.exports.Component = registerComponent('inspector', {
 
 }).call(this,_dereq_('_process'))
 
-},{"../../../package":51,"../../constants":94,"../../core/component":102,"../../utils/bind":166,"_process":32}],80:[function(_dereq_,module,exports){
+},{"../../../package":50,"../../constants":93,"../../core/component":101,"../../utils/bind":165,"_process":32}],79:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var shouldCaptureKeyEvent = _dereq_('../../utils/').shouldCaptureKeyEvent;
 
@@ -69143,7 +69020,7 @@ module.exports.Component = registerComponent('keyboard-shortcuts', {
   }
 });
 
-},{"../../core/component":102,"../../utils/":172}],81:[function(_dereq_,module,exports){
+},{"../../core/component":101,"../../utils/":171}],80:[function(_dereq_,module,exports){
 var debug = _dereq_('../../utils/debug');
 var registerComponent = _dereq_('../../core/component').registerComponent;
 
@@ -69261,7 +69138,7 @@ module.exports.Component = registerComponent('pool', {
   }
 });
 
-},{"../../core/component":102,"../../utils/debug":168}],82:[function(_dereq_,module,exports){
+},{"../../core/component":101,"../../utils/debug":167}],81:[function(_dereq_,module,exports){
 var register = _dereq_('../../core/component').registerComponent;
 var debug = _dereq_('../../utils/debug');
 
@@ -69343,7 +69220,7 @@ module.exports.Component = register('renderer', {
   }
 });
 
-},{"../../core/component":102,"../../utils/debug":168}],83:[function(_dereq_,module,exports){
+},{"../../core/component":101,"../../utils/debug":167}],82:[function(_dereq_,module,exports){
 /* global ImageData, URL */
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var THREE = _dereq_('../../lib/three');
@@ -69602,7 +69479,7 @@ module.exports.Component = registerComponent('screenshot', {
   }
 });
 
-},{"../../core/component":102,"../../lib/three":150}],84:[function(_dereq_,module,exports){
+},{"../../core/component":101,"../../lib/three":149}],83:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var RStats = _dereq_('../../../vendor/rStats');
 var utils = _dereq_('../../utils');
@@ -69682,7 +69559,7 @@ function createStats (scene) {
   });
 }
 
-},{"../../../vendor/rStats":180,"../../../vendor/rStats.extras":179,"../../core/component":102,"../../lib/rStatsAframe":149,"../../utils":172}],85:[function(_dereq_,module,exports){
+},{"../../../vendor/rStats":179,"../../../vendor/rStats.extras":178,"../../core/component":101,"../../lib/rStatsAframe":148,"../../utils":171}],84:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var constants = _dereq_('../../constants/');
 var utils = _dereq_('../../utils/');
@@ -69868,7 +69745,7 @@ function createOrientationModal (onClick) {
   return modal;
 }
 
-},{"../../constants/":94,"../../core/component":102,"../../utils/":172}],86:[function(_dereq_,module,exports){
+},{"../../constants/":93,"../../core/component":101,"../../utils/":171}],85:[function(_dereq_,module,exports){
 var component = _dereq_('../core/component');
 var THREE = _dereq_('../lib/three');
 var bind = _dereq_('../utils/bind');
@@ -69922,7 +69799,7 @@ module.exports.Component = registerComponent('shadow', {
   }
 });
 
-},{"../core/component":102,"../lib/three":150,"../utils/bind":166}],87:[function(_dereq_,module,exports){
+},{"../core/component":101,"../lib/three":149,"../utils/bind":165}],86:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var debug = _dereq_('../utils/debug');
 var bind = _dereq_('../utils/bind');
@@ -70140,7 +70017,7 @@ module.exports.Component = registerComponent('sound', {
   }
 });
 
-},{"../core/component":102,"../lib/three":150,"../utils/bind":166,"../utils/debug":168}],88:[function(_dereq_,module,exports){
+},{"../core/component":101,"../lib/three":149,"../utils/bind":165,"../utils/debug":167}],87:[function(_dereq_,module,exports){
 var createTextGeometry = _dereq_('three-bmfont-text');
 var loadBMFont = _dereq_('load-bmfont');
 
@@ -70625,7 +70502,7 @@ function PromiseCache () {
   };
 }
 
-},{"../core/component":102,"../core/shader":111,"../lib/three":150,"../utils/":172,"load-bmfont":23,"three-bmfont-text":36}],89:[function(_dereq_,module,exports){
+},{"../core/component":101,"../core/shader":110,"../lib/three":149,"../utils/":171,"load-bmfont":23,"three-bmfont-text":35}],88:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var controllerUtils = _dereq_('../utils/tracked-controls');
 var DEFAULT_CAMERA_HEIGHT = _dereq_('../constants').DEFAULT_CAMERA_HEIGHT;
@@ -70959,7 +70836,7 @@ module.exports.Component = registerComponent('tracked-controls', {
   }
 });
 
-},{"../constants":94,"../core/component":102,"../lib/three":150,"../utils/tracked-controls":178}],90:[function(_dereq_,module,exports){
+},{"../constants":93,"../core/component":101,"../lib/three":149,"../utils/tracked-controls":177}],89:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 
 /**
@@ -70973,7 +70850,7 @@ module.exports.Component = registerComponent('visible', {
   }
 });
 
-},{"../core/component":102}],91:[function(_dereq_,module,exports){
+},{"../core/component":101}],90:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var utils = _dereq_('../utils/');
 
@@ -71202,7 +71079,7 @@ module.exports.Component = registerComponent('vive-controls', {
   }
 });
 
-},{"../core/component":102,"../utils/":172,"../utils/tracked-controls":178}],92:[function(_dereq_,module,exports){
+},{"../core/component":101,"../utils/":171,"../utils/tracked-controls":177}],91:[function(_dereq_,module,exports){
 var KEYCODE_TO_CODE = _dereq_('../constants').keyboardevent.KEYCODE_TO_CODE;
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
@@ -71411,7 +71288,7 @@ function isEmptyObject (keys) {
   return true;
 }
 
-},{"../constants":94,"../core/component":102,"../lib/three":150,"../utils/":172}],93:[function(_dereq_,module,exports){
+},{"../constants":93,"../core/component":101,"../lib/three":149,"../utils/":171}],92:[function(_dereq_,module,exports){
 /* global THREE */
 var bind = _dereq_('../utils/bind');
 var registerComponent = _dereq_('../core/component').registerComponent;
@@ -71860,7 +71737,7 @@ module.exports.Component = registerComponent('windows-motion-controls', {
   }
 });
 
-},{"../constants":94,"../core/component":102,"../utils/":172,"../utils/bind":166,"../utils/tracked-controls":178}],94:[function(_dereq_,module,exports){
+},{"../constants":93,"../core/component":101,"../utils/":171,"../utils/bind":165,"../utils/tracked-controls":177}],93:[function(_dereq_,module,exports){
 module.exports = {
   AFRAME_INJECTED: 'aframe-injected',
   DEFAULT_CAMERA_HEIGHT: 1.6,
@@ -71868,7 +71745,7 @@ module.exports = {
   keyboardevent: _dereq_('./keyboardevent')
 };
 
-},{"./keyboardevent":95}],95:[function(_dereq_,module,exports){
+},{"./keyboardevent":94}],94:[function(_dereq_,module,exports){
 module.exports = {
   // Tiny KeyboardEvent.code polyfill.
   KEYCODE_TO_CODE: {
@@ -71883,7 +71760,7 @@ module.exports = {
   }
 };
 
-},{}],96:[function(_dereq_,module,exports){
+},{}],95:[function(_dereq_,module,exports){
 var ANode = _dereq_('./a-node');
 var bind = _dereq_('../utils/bind');
 var debug = _dereq_('../utils/debug');
@@ -72148,7 +72025,7 @@ function inferResponseType (src) {
 }
 module.exports.inferResponseType = inferResponseType;
 
-},{"../lib/three":150,"../utils/bind":166,"../utils/debug":168,"./a-node":100,"./a-register-element":101}],97:[function(_dereq_,module,exports){
+},{"../lib/three":149,"../utils/bind":165,"../utils/debug":167,"./a-node":99,"./a-register-element":100}],96:[function(_dereq_,module,exports){
 var debug = _dereq_('../utils/debug');
 var registerElement = _dereq_('./a-register-element').registerElement;
 
@@ -72198,7 +72075,7 @@ module.exports = registerElement('a-cubemap', {
   })
 });
 
-},{"../utils/debug":168,"./a-register-element":101}],98:[function(_dereq_,module,exports){
+},{"../utils/debug":167,"./a-register-element":100}],97:[function(_dereq_,module,exports){
 var ANode = _dereq_('./a-node');
 var COMPONENTS = _dereq_('./component').components;
 var registerElement = _dereq_('./a-register-element').registerElement;
@@ -73044,7 +72921,7 @@ function getRotation (entityEl) {
 AEntity = registerElement('a-entity', {prototype: proto});
 module.exports = AEntity;
 
-},{"../lib/three":150,"../utils/":172,"./a-node":100,"./a-register-element":101,"./component":102}],99:[function(_dereq_,module,exports){
+},{"../lib/three":149,"../utils/":171,"./a-node":99,"./a-register-element":100,"./component":101}],98:[function(_dereq_,module,exports){
 var ANode = _dereq_('./a-node');
 var registerElement = _dereq_('./a-register-element').registerElement;
 var components = _dereq_('./component').components;
@@ -73159,7 +73036,7 @@ module.exports = registerElement('a-mixin', {
   })
 });
 
-},{"../utils":172,"./a-node":100,"./a-register-element":101,"./component":102}],100:[function(_dereq_,module,exports){
+},{"../utils":171,"./a-node":99,"./a-register-element":100,"./component":101}],99:[function(_dereq_,module,exports){
 /* global CustomEvent, MutationObserver */
 var registerElement = _dereq_('./a-register-element').registerElement;
 var isNode = _dereq_('./a-register-element').isNode;
@@ -73467,7 +73344,7 @@ module.exports = registerElement('a-node', {
   })
 });
 
-},{"../utils/":172,"./a-register-element":101}],101:[function(_dereq_,module,exports){
+},{"../utils/":171,"./a-register-element":100}],100:[function(_dereq_,module,exports){
 /*
   ------------------------------------------------------------
   ------------- WARNING WARNING WARNING WARNING --------------
@@ -73654,7 +73531,7 @@ function copyProperties (source, destination) {
 ANode = _dereq_('./a-node');
 AEntity = _dereq_('./a-entity');
 
-},{"./a-entity":98,"./a-node":100,"document-register-element":11}],102:[function(_dereq_,module,exports){
+},{"./a-entity":97,"./a-node":99,"document-register-element":11}],101:[function(_dereq_,module,exports){
 /* global Node */
 var schema = _dereq_('./schema');
 var scenes = _dereq_('./scene/scenes');
@@ -73673,6 +73550,9 @@ var warn = utils.debug('core:component:warn');
 
 var aframeScript = document.currentScript;
 var upperCaseRegExp = new RegExp('[A-Z]+');
+
+// Object pools by component, created upon registration.
+var objectPools = {};
 
 /**
  * Component class definition.
@@ -73694,13 +73574,23 @@ var Component = module.exports.Component = function (el, attrValue, id) {
   this.attrName = this.name + (id ? '__' + id : '');
   this.evtDetail = {id: this.id, name: this.name};
   this.initialized = false;
+  this.isSingleProperty = isSingleProp(this.schema);
+  this.isSinglePropertyObject = this.isSingleProperty &&
+                                isObject(parseProperty(undefined, this.schema));
+  this.isObjectBased = !this.isSingleProperty || this.isSinglePropertyObject;
   this.el.components[this.attrName] = this;
+  this.objectPool = objectPools[this.name];
 
   // Store component data from previous update call.
-  this.oldData = undefined;
+  this.attrValue = undefined;
+  this.nextData = this.isObjectBased ? this.objectPool.use() : undefined;
+  this.oldData = this.isObjectBased ? this.objectPool.use() : undefined;
+  this.previousOldData = this.isObjectBased ? this.objectPool.use() : undefined;
+  this.parsingAttrValue = this.isObjectBased ? this.objectPool.use() : undefined;
+  // Purely for deciding to skip type checking.
+  this.previousAttrValue = undefined;
 
   // Last value passed to updateProperties.
-  this.previousAttrValue = undefined;
   this.throttledEmitComponentChanged = utils.throttle(function emitChange () {
     el.emit('componentchanged', self.evtDetail, false);
   }, 200);
@@ -73780,7 +73670,7 @@ Component.prototype = {
    */
   parse: function (value, silent) {
     var schema = this.schema;
-    if (isSingleProp(schema)) { return parseProperty(value, schema); }
+    if (this.isSingleProperty) { return parseProperty(value, schema); }
     return parseProperties(styleParser.parse(value), schema, true, this.name, silent);
   },
 
@@ -73796,7 +73686,7 @@ Component.prototype = {
   stringify: function (data) {
     var schema = this.schema;
     if (typeof data === 'string') { return data; }
-    if (isSingleProp(schema)) { return stringifyProperty(data, schema); }
+    if (this.isSingleProperty) { return stringifyProperty(data, schema); }
     data = stringifyProperties(data, schema);
     return styleParser.stringify(data);
   },
@@ -73808,28 +73698,51 @@ Component.prototype = {
    * @param {boolean } clobber - Whether to wipe out and replace previous data.
    */
   updateCachedAttrValue: function (value, clobber) {
-    var attrValue = this.parseAttrValueForCache(value);
-    var isSinglePropSchema = isSingleProp(this.schema);
+    var newAttrValue;
+    var tempObject;
     var property;
+
     if (value === undefined) { return; }
 
-    // Merge new data with previous `attrValue` if updating and not clobbering.
-    if (!isSinglePropSchema && !clobber) {
-      this.attrValue = this.attrValue ? cloneData(this.attrValue) : {};
-      for (property in attrValue) {
-        this.attrValue[property] = attrValue[property];
+    // If null value is the new attribute value, make the attribute value falsy.
+    if (value === null) {
+      if (this.isObjectBased && this.attrValue) {
+        this.objectPool.recycle(this.attrValue);
       }
+      this.attrValue = undefined;
       return;
     }
 
-    // If single-prop schema or clobber.
-    this.attrValue = attrValue;
+    if (value instanceof Object) {
+      // If value is an object, copy it to our pooled newAttrValue object to use to update
+      // the attrValue.
+      tempObject = this.objectPool.use();
+      newAttrValue = utils.extend(tempObject, value);
+    } else {
+      newAttrValue = this.parseAttrValueForCache(value);
+    }
+
+    // Merge new data with previous `attrValue` if updating and not clobbering.
+    if (this.isObjectBased && !clobber && this.attrValue) {
+      for (property in this.attrValue) {
+        if (newAttrValue[property] === undefined) {
+          newAttrValue[property] = this.attrValue[property];
+        }
+      }
+    }
+
+    // Update attrValue.
+    if (this.isObjectBased && !this.attrValue) {
+      this.attrValue = this.objectPool.use();
+    }
+    utils.objectPool.clearObject(this.attrValue);
+    this.attrValue = extendProperties(this.attrValue, newAttrValue, this.isObjectBased);
+    utils.objectPool.clearObject(tempObject);
   },
 
   /**
-   * Given an HTML attribute value parses the string
-   * based on the component schema. To avoid double parsings of
-   * strings into strings we store the original instead
+   * Given an HTML attribute value parses the string based on the component schema.
+   * To avoid double parsings of strings into strings we store the original instead
    * of the parsed one
    *
    * @param {string} value - HTML attribute value
@@ -73837,7 +73750,7 @@ Component.prototype = {
   parseAttrValueForCache: function (value) {
     var parsedValue;
     if (typeof value !== 'string') { return value; }
-    if (isSingleProp(this.schema)) {
+    if (this.isSingleProperty) {
       parsedValue = this.schema.parse(value);
       /**
        * To avoid bogus double parsings. Cached values will be parsed when building
@@ -73848,7 +73761,8 @@ Component.prototype = {
       if (typeof parsedValue === 'string') { parsedValue = value; }
     } else {
       // Parse using the style parser to avoid double parsing of individual properties.
-      parsedValue = styleParser.parse(value);
+      utils.objectPool.clearObject(this.parsingAttrValue);
+      parsedValue = styleParser.parse(value, this.parsingAttrValue);
     }
     return parsedValue;
   },
@@ -73863,7 +73777,7 @@ Component.prototype = {
     var attrValue = isDefault ? this.data : this.attrValue;
     if (!attrValue) { return; }
     window.HTMLElement.prototype.setAttribute.call(this.el, this.attrName,
-                                            this.stringify(attrValue));
+                                                   this.stringify(attrValue));
   },
 
   /**
@@ -73875,10 +73789,9 @@ Component.prototype = {
    */
   updateProperties: function (attrValue, clobber) {
     var el = this.el;
-    var isSinglePropSchema;
     var key;
+    var initialOldData;
     var skipTypeChecking;
-    var oldData = this.oldData;
     var hasComponentChanged;
 
     // Just cache the attribute if the entity has not loaded
@@ -73887,8 +73800,6 @@ Component.prototype = {
       this.updateCachedAttrValue(attrValue);
       return;
     }
-
-    isSinglePropSchema = isSingleProp(this.schema);
 
     // Disable type checking if the passed attribute is an object and has not changed.
     skipTypeChecking = attrValue !== null && typeof this.previousAttrValue === 'object' &&
@@ -73911,8 +73822,17 @@ Component.prototype = {
     // Cache previously passed attribute to decide if we skip type checking.
     this.previousAttrValue = attrValue;
 
+    // Parse the attribute value.
     // Cache current attrValue for future updates. Updates `this.attrValue`.
     attrValue = this.parseAttrValueForCache(attrValue);
+
+    // Update previous attribute value to later decide if we skip type checking.
+    this.previousAttrValue = attrValue;
+
+    if (this.updateSchema) { this.updateSchema(this.buildData(attrValue, false, true)); }
+    this.data = this.buildData(attrValue, clobber, false, skipTypeChecking);
+
+    // Cache current attrValue for future updates.
     this.updateCachedAttrValue(attrValue, clobber);
 
     if (this.updateSchema) {
@@ -73929,28 +73849,44 @@ Component.prototype = {
       this.init();
       this.initialized = true;
       delete el.initializingComponents[this.name];
+
+      // Store current data as previous data for future updates.
+      this.oldData = extendProperties(this.oldData, this.data, this.isObjectBased);
+
       // For oldData, pass empty object to multiple-prop schemas or object single-prop schema.
       // Pass undefined to rest of types.
-      oldData = (!isSinglePropSchema ||
-                 typeof parseProperty(undefined, this.schema) === 'object') ? {} : undefined;
-      // Store current data as previous data for future updates.
-      this.oldData = extendProperties({}, this.data, isSinglePropSchema);
-      this.update(oldData);
+      initialOldData = this.isObjectBased ? this.objectPool.use() : undefined;
+      this.update(initialOldData);
+      if (this.isObjectBased) { this.objectPool.recycle(initialOldData); }
+
       // Play the component if the entity is playing.
       if (el.isPlaying) { this.play(); }
       el.emit('componentinitialized', this.evtDetail, false);
     } else {
+      // Store the previous old data before we calculate the new oldData.
+      if (this.previousOldData instanceof Object) {
+        utils.objectPool.clearObject(this.previousOldData);
+      }
+      if (this.isObjectBased) {
+        copyData(this.previousOldData, this.oldData);
+      } else {
+        this.previousOldData = this.oldData;
+      }
+
       hasComponentChanged = !utils.deepEqual(this.oldData, this.data);
+
       // Don't update if properties haven't changed.
       // Always update rotation, position, scale.
       if (!this.isPositionRotationScale && !hasComponentChanged) { return; }
-     // Store current data as previous data for future updates.
-      this.oldData = extendProperties({}, this.data, isSinglePropSchema);
-      // Update component.
-      this.update(oldData);
-      // In the case of position, rotation, scale always update the component
-      // but don't emit componentchanged event if component has not changed.
-      if (!hasComponentChanged) { return; }
+
+      // Store current data as previous data for future updates.
+      // Reuse `this.oldData` object to try not to allocate another one.
+      if (this.oldData instanceof Object) { utils.objectPool.clearObject(this.oldData); }
+      this.oldData = extendProperties(this.oldData, this.data, this.isObjectBased);
+
+      // Update component with the previous old data.
+      this.update(this.previousOldData);
+
       this.throttledEmitComponentChanged();
     }
   },
@@ -73962,7 +73898,7 @@ Component.prototype = {
    * @param {string} propertyName - Name of property to reset.
    */
   resetProperty: function (propertyName) {
-    if (isSingleProp(this.schema)) {
+    if (!this.isObjectBased) {
       this.attrValue = undefined;
     } else {
       if (!(propertyName in this.attrValue)) { return; }
@@ -73981,16 +73917,17 @@ Component.prototype = {
    * @param {object} schemaAddon - Schema chunk that extend base schema.
    */
   extendSchema: function (schemaAddon) {
+    var extendedSchema;
     // Clone base schema.
-    var extendedSchema = utils.extend({}, components[this.name].schema);
+    extendedSchema = utils.extend({}, components[this.name].schema);
     // Extend base schema with new schema chunk.
     utils.extend(extendedSchema, schemaAddon);
     this.schema = processSchema(extendedSchema);
-    this.el.emit('schemachanged', {component: this.name});
+    this.el.emit('schemachanged', this.evtDetail);
   },
 
   /**
-   * Builds component data from the current state of the entity, ultimately
+   * Build component data from the current state of the entity, ultimately
    * updating this.data.
    *
    * If the component was detached completely, set data to null.
@@ -74005,19 +73942,18 @@ Component.prototype = {
    * @param {object} newData - Element new data.
    * @param {boolean} clobber - The previous data is completely replaced by the new one.
    * @param {boolean} silent - Suppress warning messages.
-   * @param {boolean} skipTypeChecking - Skip type checking and cohercion.
+   * @param {boolean} skipTypeChecking - Skip type checking and coercion.
    * @return {object} The component data
    */
   buildData: function (newData, clobber, silent, skipTypeChecking) {
     var componentDefined;
     var data;
     var defaultValue;
-    var keys;
-    var keysLength;
+    var key;
     var mixinData;
+    var nextData = this.nextData;
     var schema = this.schema;
     var i;
-    var isSinglePropSchema = isSingleProp(schema);
     var mixinEls = this.el.mixinEls;
     var previousData;
 
@@ -74026,46 +73962,62 @@ Component.prototype = {
       ? newData.length
       : newData !== undefined && newData !== null;
 
+    if (this.isObjectBased) { utils.objectPool.clearObject(nextData); }
+
     // 1. Default values (lowest precendence).
-    if (isSinglePropSchema) {
-      // Clone default value if plain object so components don't share the same object
-      // that might be modified by the user.
-      data = isObjectOrArray(schema.default) ? utils.clone(schema.default) : schema.default;
+    if (this.isSingleProperty) {
+      if (this.isObjectBased) {
+        // If object-based single-prop, then copy over the data to our pooled object.
+        data = copyData(nextData, schema.default);
+      } else {
+        // If is plain single-prop, copy by value the default.
+        data = isObjectOrArray(schema.default)
+          ? utils.clone(schema.default)
+          : schema.default;
+      }
     } else {
       // Preserve previously set properties if clobber not enabled.
       previousData = !clobber && this.attrValue;
-      // Clone previous data to prevent sharing references with attrValue that might be
-      // modified by the user.
-      data = typeof previousData === 'object' ? cloneData(previousData) : {};
+
+      // Clone default value if object so components don't share object
+      data = previousData instanceof Object
+        ? copyData(nextData, previousData)
+        : nextData;
 
       // Apply defaults.
-      for (i = 0, keys = Object.keys(schema), keysLength = keys.length; i < keysLength; i++) {
-        defaultValue = schema[keys[i]].default;
-        if (data[keys[i]] !== undefined) { continue; }
+      for (key in schema) {
+        defaultValue = schema[key].default;
+        if (data[key] !== undefined) { continue; }
         // Clone default value if object so components don't share object
-        data[keys[i]] = isObjectOrArray(defaultValue) ? utils.clone(defaultValue) : defaultValue;
+        data[key] = isObjectOrArray(defaultValue)
+          ? utils.clone(defaultValue)
+          : defaultValue;
       }
     }
 
     // 2. Mixin values.
     for (i = 0; i < mixinEls.length; i++) {
       mixinData = mixinEls[i].getAttribute(this.attrName);
-      if (mixinData) {
-        data = extendProperties(data, mixinData, isSinglePropSchema);
-      }
+      if (!mixinData) { continue; }
+      data = extendProperties(data, mixinData, this.isObjectBased);
     }
 
     // 3. Attribute values (highest precendence).
     if (componentDefined) {
-      if (isSinglePropSchema) {
+      if (this.isSingleProperty) {
         if (skipTypeChecking === true) { return newData; }
+        // If object-based, copy the value to not modify the original.
+        if (this.isObjectBased) {
+          copyData(this.parsingAttrValue, newData);
+          return parseProperty(this.parsingAttrValue, schema);
+        }
         return parseProperty(newData, schema);
       }
-      data = extendProperties(data, newData, isSinglePropSchema);
+      data = extendProperties(data, newData, this.isObjectBased);
     } else {
       if (skipTypeChecking === true) { return data; }
       // Parse and coerce using the schema.
-      if (isSinglePropSchema) { return parseProperty(data, schema); }
+      if (this.isSingleProperty) { return parseProperty(data, schema); }
     }
 
     if (skipTypeChecking === true) { return data; }
@@ -74144,15 +74096,21 @@ module.exports.registerComponent = function (name, definition) {
   NewComponent.prototype.system = systems && systems.systems[name];
   NewComponent.prototype.play = wrapPlay(NewComponent.prototype.play);
   NewComponent.prototype.pause = wrapPause(NewComponent.prototype.pause);
+  NewComponent.prototype.remove = wrapRemove(NewComponent.prototype.remove);
+
+  // Create object pool for class of components.
+  objectPools[name] = utils.objectPool.createPool();
 
   components[name] = {
     Component: NewComponent,
     dependencies: NewComponent.prototype.dependencies,
     isSingleProp: isSingleProp(NewComponent.prototype.schema),
     multiple: NewComponent.prototype.multiple,
+    name: name,
     parse: NewComponent.prototype.parse,
     parseAttrValueForCache: NewComponent.prototype.parseAttrValueForCache,
-    schema: utils.extend(processSchema(NewComponent.prototype.schema, NewComponent.prototype.name)),
+    schema: utils.extend(processSchema(NewComponent.prototype.schema,
+                                       NewComponent.prototype.name)),
     stringify: NewComponent.prototype.stringify,
     type: NewComponent.prototype.type
   };
@@ -74166,15 +74124,17 @@ module.exports.registerComponent = function (name, definition) {
 * @param data - Component data to clone.
 * @returns Cloned data.
 */
-function cloneData (data) {
-  var clone = {};
+function copyData (dest, sourceData) {
   var parsedProperty;
   var key;
-  for (key in data) {
-    parsedProperty = data[key];
-    clone[key] = isObjectOrArray(parsedProperty) ? utils.clone(parsedProperty) : parsedProperty;
+  for (key in sourceData) {
+    if (sourceData[key] === undefined) { continue; }
+    parsedProperty = sourceData[key];
+    dest[key] = isObjectOrArray(parsedProperty)
+      ? utils.clone(parsedProperty)
+      : parsedProperty;
   }
-  return clone;
+  return dest;
 }
 
 /**
@@ -74182,18 +74142,23 @@ function cloneData (data) {
 *
 * @param dest - Destination object or value.
 * @param source - Source object or value
-* @param {boolean} isSinglePropSchema - Whether or not schema is only a single property.
+* @param {boolean} isObjectBased - Whether values are objects.
 * @returns Overridden object or value.
 */
-function extendProperties (dest, source, isSinglePropSchema) {
-  if (isSinglePropSchema && (source === null || typeof source !== 'object')) { return source; }
-  var copy = utils.extend(dest, source);
+function extendProperties (dest, source, isObjectBased) {
   var key;
-  for (key in copy) {
-    if (!copy[key] || copy[key].constructor !== Object) { continue; }
-    copy[key] = utils.clone(copy[key]);
+  if (isObjectBased && source.constructor === Object) {
+    for (key in source) {
+      if (source[key] === undefined) { continue; }
+      if (source[key] && source[key].constructor === Object) {
+        dest[key] = utils.clone(source[key]);
+      } else {
+        dest[key] = source[key];
+      }
+    }
+    return dest;
   }
-  return copy;
+  return source;
 }
 
 /**
@@ -74204,10 +74169,10 @@ function hasBehavior (component) {
 }
 
 /**
- * Wrapper for user defined pause method
+ * Wrapper for defined pause method.
  * Pause component by removing tick behavior and calling user's pause method.
  *
- * @param pauseMethod {function} - user defined pause method
+ * @param pauseMethod {function}
  */
 function wrapPause (pauseMethod) {
   return function pause () {
@@ -74222,11 +74187,10 @@ function wrapPause (pauseMethod) {
 }
 
 /**
- * Wrapper for user defined play method
+ * Wrapper for defined play method.
  * Play component by adding tick behavior and calling user's play method.
  *
- * @param playMethod {function} - user defined play method
- *
+ * @param playMethod {function}
  */
 function wrapPlay (playMethod) {
   return function play () {
@@ -74241,11 +74205,30 @@ function wrapPlay (playMethod) {
   };
 }
 
+/**
+ * Wrapper for defined remove method.
+ * Clean up memory.
+ *
+ * @param removeMethod {function} - Defined remove method.
+ */
+function wrapRemove (removeMethod) {
+  return function remove () {
+    removeMethod.call(this);
+    this.objectPool.recycle(this.attrValue);
+    this.objectPool.recycle(this.oldData);
+    this.objectPool.recycle(this.parsingAttrValue);
+  };
+}
+
+function isObject (value) {
+  return value && value.constructor === Object;
+}
+
 function isObjectOrArray (value) {
   return value && (value.constructor === Object || value.constructor === Array);
 }
 
-},{"../utils/":172,"./scene/scenes":108,"./schema":110,"./system":112}],103:[function(_dereq_,module,exports){
+},{"../utils/":171,"./scene/scenes":107,"./schema":109,"./system":111}],102:[function(_dereq_,module,exports){
 var schema = _dereq_('./schema');
 
 var processSchema = schema.process;
@@ -74319,7 +74302,7 @@ module.exports.registerGeometry = function (name, definition) {
   return NewGeometry;
 };
 
-},{"../lib/three":150,"./schema":110}],104:[function(_dereq_,module,exports){
+},{"../lib/three":149,"./schema":109}],103:[function(_dereq_,module,exports){
 var coordinates = _dereq_('../utils/coordinates');
 var debug = _dereq_('debug');
 
@@ -74543,7 +74526,7 @@ function isValidDefaultCoordinate (possibleCoordinates, dimensions) {
 }
 module.exports.isValidDefaultCoordinate = isValidDefaultCoordinate;
 
-},{"../utils/coordinates":167,"debug":8}],105:[function(_dereq_,module,exports){
+},{"../utils/coordinates":166,"debug":8}],104:[function(_dereq_,module,exports){
 /* global Promise, screen */
 var initMetaTags = _dereq_('./metaTags').inject;
 var initWakelock = _dereq_('./wakelock');
@@ -75336,7 +75319,7 @@ function setupCanvas (sceneEl) {
 }
 module.exports.setupCanvas = setupCanvas;  // For testing.
 
-},{"../../lib/three":150,"../../utils/":172,"../a-entity":98,"../a-node":100,"../a-register-element":101,"../system":112,"./metaTags":106,"./postMessage":107,"./scenes":108,"./wakelock":109}],106:[function(_dereq_,module,exports){
+},{"../../lib/three":149,"../../utils/":171,"../a-entity":97,"../a-node":99,"../a-register-element":100,"../system":111,"./metaTags":105,"./postMessage":106,"./scenes":107,"./wakelock":108}],105:[function(_dereq_,module,exports){
 var constants = _dereq_('../../constants/');
 var extend = _dereq_('../../utils').extend;
 
@@ -75417,7 +75400,7 @@ function createTag (tagObj) {
   return extend(meta, tagObj.attributes);
 }
 
-},{"../../constants/":94,"../../utils":172}],107:[function(_dereq_,module,exports){
+},{"../../constants/":93,"../../utils":171}],106:[function(_dereq_,module,exports){
 var bind = _dereq_('../../utils/bind');
 var isIframed = _dereq_('../../utils/').isIframed;
 
@@ -75450,13 +75433,13 @@ function postMessageAPIHandler (event) {
   }
 }
 
-},{"../../utils/":172,"../../utils/bind":166}],108:[function(_dereq_,module,exports){
+},{"../../utils/":171,"../../utils/bind":165}],107:[function(_dereq_,module,exports){
 /*
   Scene index for keeping track of created scenes.
 */
 module.exports = [];
 
-},{}],109:[function(_dereq_,module,exports){
+},{}],108:[function(_dereq_,module,exports){
 var Wakelock = _dereq_('../../../vendor/wakelock/wakelock');
 
 module.exports = function initWakelock (scene) {
@@ -75467,7 +75450,7 @@ module.exports = function initWakelock (scene) {
   scene.addEventListener('exit-vr', function () { wakelock.release(); });
 };
 
-},{"../../../vendor/wakelock/wakelock":182}],110:[function(_dereq_,module,exports){
+},{"../../../vendor/wakelock/wakelock":181}],109:[function(_dereq_,module,exports){
 var utils = _dereq_('../utils/');
 var PropertyTypes = _dereq_('./propertyTypes');
 
@@ -75598,7 +75581,7 @@ module.exports.parseProperties = (function () {
 
     // Validation errors.
     for (propName in propData) {
-      if (!schema[propName] && !silent) {
+      if (propData[propName] !== undefined && !schema[propName] && !silent) {
         warn('Unknown property `' + propName +
              '` for component/system `' + componentName + '`.');
       }
@@ -75668,7 +75651,7 @@ function stringifyProperty (value, propDefinition) {
 }
 module.exports.stringifyProperty = stringifyProperty;
 
-},{"../utils/":172,"./propertyTypes":104}],111:[function(_dereq_,module,exports){
+},{"../utils/":171,"./propertyTypes":103}],110:[function(_dereq_,module,exports){
 var schema = _dereq_('./schema');
 
 var processSchema = schema.process;
@@ -75857,7 +75840,7 @@ module.exports.registerShader = function (name, definition) {
   return NewShader;
 };
 
-},{"../lib/three":150,"../utils":172,"./schema":110}],112:[function(_dereq_,module,exports){
+},{"../lib/three":149,"../utils":171,"./schema":109}],111:[function(_dereq_,module,exports){
 var components = _dereq_('./component');
 var schema = _dereq_('./schema');
 var utils = _dereq_('../utils/');
@@ -76015,10 +75998,10 @@ module.exports.registerSystem = function (name, definition) {
   for (i = 0; i < scenes.length; i++) { scenes[i].initSystem(name); }
 };
 
-},{"../utils/":172,"./component":102,"./schema":110}],113:[function(_dereq_,module,exports){
+},{"../utils/":171,"./component":101,"./schema":109}],112:[function(_dereq_,module,exports){
 _dereq_('./pivot');
 
-},{"./pivot":114}],114:[function(_dereq_,module,exports){
+},{"./pivot":113}],113:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var THREE = _dereq_('../../lib/three');
 
@@ -76067,7 +76050,7 @@ registerComponent('pivot', {
   }
 });
 
-},{"../../core/component":102,"../../lib/three":150}],115:[function(_dereq_,module,exports){
+},{"../../core/component":101,"../../lib/three":149}],114:[function(_dereq_,module,exports){
 /**
  * Common mesh defaults, mappings, and transforms.
  */
@@ -76094,7 +76077,7 @@ module.exports = function getMeshMixin () {
   };
 };
 
-},{"../../core/component":102,"../../core/shader":111,"../../utils/":172}],116:[function(_dereq_,module,exports){
+},{"../../core/component":101,"../../core/shader":110,"../../utils/":171}],115:[function(_dereq_,module,exports){
 _dereq_('./primitives/a-camera');
 _dereq_('./primitives/a-collada-model');
 _dereq_('./primitives/a-cursor');
@@ -76111,7 +76094,7 @@ _dereq_('./primitives/a-video');
 _dereq_('./primitives/a-videosphere');
 _dereq_('./primitives/meshPrimitives');
 
-},{"./primitives/a-camera":118,"./primitives/a-collada-model":119,"./primitives/a-cursor":120,"./primitives/a-curvedimage":121,"./primitives/a-gltf-model":122,"./primitives/a-image":123,"./primitives/a-light":124,"./primitives/a-link":125,"./primitives/a-obj-model":126,"./primitives/a-sky":127,"./primitives/a-sound":128,"./primitives/a-text":129,"./primitives/a-video":130,"./primitives/a-videosphere":131,"./primitives/meshPrimitives":132}],117:[function(_dereq_,module,exports){
+},{"./primitives/a-camera":117,"./primitives/a-collada-model":118,"./primitives/a-cursor":119,"./primitives/a-curvedimage":120,"./primitives/a-gltf-model":121,"./primitives/a-image":122,"./primitives/a-light":123,"./primitives/a-link":124,"./primitives/a-obj-model":125,"./primitives/a-sky":126,"./primitives/a-sound":127,"./primitives/a-text":128,"./primitives/a-video":129,"./primitives/a-videosphere":130,"./primitives/meshPrimitives":131}],116:[function(_dereq_,module,exports){
 var AEntity = _dereq_('../../core/a-entity');
 var components = _dereq_('../../core/component').components;
 var registerElement = _dereq_('../../core/a-register-element').registerElement;
@@ -76310,7 +76293,7 @@ function definePrimitive (tagName, defaultComponents, mappings) {
 }
 module.exports.definePrimitive = definePrimitive;
 
-},{"../../core/a-entity":98,"../../core/a-register-element":101,"../../core/component":102,"../../utils/":172}],118:[function(_dereq_,module,exports){
+},{"../../core/a-entity":97,"../../core/a-register-element":100,"../../core/component":101,"../../utils/":171}],117:[function(_dereq_,module,exports){
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 
 registerPrimitive('a-camera', {
@@ -76334,7 +76317,7 @@ registerPrimitive('a-camera', {
   }
 });
 
-},{"../primitives":117}],119:[function(_dereq_,module,exports){
+},{"../primitives":116}],118:[function(_dereq_,module,exports){
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 
 registerPrimitive('a-collada-model', {
@@ -76343,7 +76326,7 @@ registerPrimitive('a-collada-model', {
   }
 });
 
-},{"../primitives":117}],120:[function(_dereq_,module,exports){
+},{"../primitives":116}],119:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -76378,7 +76361,7 @@ registerPrimitive('a-cursor', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":172,"../getMeshMixin":115,"../primitives":117}],121:[function(_dereq_,module,exports){
+},{"../../../utils/":171,"../getMeshMixin":114,"../primitives":116}],120:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -76415,7 +76398,7 @@ registerPrimitive('a-curvedimage', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":172,"../getMeshMixin":115,"../primitives":117}],122:[function(_dereq_,module,exports){
+},{"../../../utils/":171,"../getMeshMixin":114,"../primitives":116}],121:[function(_dereq_,module,exports){
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 
 registerPrimitive('a-gltf-model', {
@@ -76424,7 +76407,7 @@ registerPrimitive('a-gltf-model', {
   }
 });
 
-},{"../primitives":117}],123:[function(_dereq_,module,exports){
+},{"../primitives":116}],122:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -76448,7 +76431,7 @@ registerPrimitive('a-image', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":172,"../getMeshMixin":115,"../primitives":117}],124:[function(_dereq_,module,exports){
+},{"../../../utils/":171,"../getMeshMixin":114,"../primitives":116}],123:[function(_dereq_,module,exports){
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 
 registerPrimitive('a-light', {
@@ -76469,7 +76452,7 @@ registerPrimitive('a-light', {
   }
 });
 
-},{"../primitives":117}],125:[function(_dereq_,module,exports){
+},{"../primitives":116}],124:[function(_dereq_,module,exports){
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 
 registerPrimitive('a-link', {
@@ -76482,7 +76465,7 @@ registerPrimitive('a-link', {
   }
 });
 
-},{"../primitives":117}],126:[function(_dereq_,module,exports){
+},{"../primitives":116}],125:[function(_dereq_,module,exports){
 var meshMixin = _dereq_('../getMeshMixin')();
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -76498,7 +76481,7 @@ registerPrimitive('a-obj-model', utils.extendDeep({}, meshMixin, {
   }
 }));
 
-},{"../../../utils/":172,"../getMeshMixin":115,"../primitives":117}],127:[function(_dereq_,module,exports){
+},{"../../../utils/":171,"../getMeshMixin":114,"../primitives":116}],126:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -76524,7 +76507,7 @@ registerPrimitive('a-sky', utils.extendDeep({}, getMeshMixin(), {
   mappings: utils.extendDeep({}, meshPrimitives['a-sphere'].prototype.mappings)
 }));
 
-},{"../../../utils/":172,"../getMeshMixin":115,"../primitives":117,"./meshPrimitives":132}],128:[function(_dereq_,module,exports){
+},{"../../../utils/":171,"../getMeshMixin":114,"../primitives":116,"./meshPrimitives":131}],127:[function(_dereq_,module,exports){
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 
 registerPrimitive('a-sound', {
@@ -76541,12 +76524,12 @@ registerPrimitive('a-sound', {
   }
 });
 
-},{"../primitives":117}],129:[function(_dereq_,module,exports){
+},{"../primitives":116}],128:[function(_dereq_,module,exports){
 // <a-text> using `definePrimitive` helper.
 var definePrimitive = _dereq_('../primitives').definePrimitive;
 definePrimitive('a-text', {text: {anchor: 'align', width: 5}});
 
-},{"../primitives":117}],130:[function(_dereq_,module,exports){
+},{"../primitives":116}],129:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -76570,7 +76553,7 @@ registerPrimitive('a-video', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":172,"../getMeshMixin":115,"../primitives":117}],131:[function(_dereq_,module,exports){
+},{"../../../utils/":171,"../getMeshMixin":114,"../primitives":116}],130:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -76599,7 +76582,7 @@ registerPrimitive('a-videosphere', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":172,"../getMeshMixin":115,"../primitives":117}],132:[function(_dereq_,module,exports){
+},{"../../../utils/":171,"../getMeshMixin":114,"../primitives":116}],131:[function(_dereq_,module,exports){
 /**
  * Automated mesh primitive registration.
  */
@@ -76639,7 +76622,7 @@ function unCamelCase (str) {
   return str.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
 }
 
-},{"../../../core/geometry":103,"../../../utils/":172,"../getMeshMixin":115,"../primitives":117}],133:[function(_dereq_,module,exports){
+},{"../../../core/geometry":102,"../../../utils/":171,"../getMeshMixin":114,"../primitives":116}],132:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -76660,7 +76643,7 @@ registerGeometry('box', {
   }
 });
 
-},{"../core/geometry":103,"../lib/three":150}],134:[function(_dereq_,module,exports){
+},{"../core/geometry":102,"../lib/three":149}],133:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -76680,7 +76663,7 @@ registerGeometry('circle', {
   }
 });
 
-},{"../core/geometry":103,"../lib/three":150}],135:[function(_dereq_,module,exports){
+},{"../core/geometry":102,"../lib/three":149}],134:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -76706,7 +76689,7 @@ registerGeometry('cone', {
   }
 });
 
-},{"../core/geometry":103,"../lib/three":150}],136:[function(_dereq_,module,exports){
+},{"../core/geometry":102,"../lib/three":149}],135:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -76730,7 +76713,7 @@ registerGeometry('cylinder', {
   }
 });
 
-},{"../core/geometry":103,"../lib/three":150}],137:[function(_dereq_,module,exports){
+},{"../core/geometry":102,"../lib/three":149}],136:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -76745,7 +76728,7 @@ registerGeometry('dodecahedron', {
   }
 });
 
-},{"../core/geometry":103,"../lib/three":150}],138:[function(_dereq_,module,exports){
+},{"../core/geometry":102,"../lib/three":149}],137:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -76760,7 +76743,7 @@ registerGeometry('icosahedron', {
   }
 });
 
-},{"../core/geometry":103,"../lib/three":150}],139:[function(_dereq_,module,exports){
+},{"../core/geometry":102,"../lib/three":149}],138:[function(_dereq_,module,exports){
 _dereq_('./box.js');
 _dereq_('./circle.js');
 _dereq_('./cone.js');
@@ -76776,7 +76759,7 @@ _dereq_('./torus.js');
 _dereq_('./torusKnot.js');
 _dereq_('./triangle.js');
 
-},{"./box.js":133,"./circle.js":134,"./cone.js":135,"./cylinder.js":136,"./dodecahedron.js":137,"./icosahedron.js":138,"./octahedron.js":140,"./plane.js":141,"./ring.js":142,"./sphere.js":143,"./tetrahedron.js":144,"./torus.js":145,"./torusKnot.js":146,"./triangle.js":147}],140:[function(_dereq_,module,exports){
+},{"./box.js":132,"./circle.js":133,"./cone.js":134,"./cylinder.js":135,"./dodecahedron.js":136,"./icosahedron.js":137,"./octahedron.js":139,"./plane.js":140,"./ring.js":141,"./sphere.js":142,"./tetrahedron.js":143,"./torus.js":144,"./torusKnot.js":145,"./triangle.js":146}],139:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -76791,7 +76774,7 @@ registerGeometry('octahedron', {
   }
 });
 
-},{"../core/geometry":103,"../lib/three":150}],141:[function(_dereq_,module,exports){
+},{"../core/geometry":102,"../lib/three":149}],140:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -76808,7 +76791,7 @@ registerGeometry('plane', {
   }
 });
 
-},{"../core/geometry":103,"../lib/three":150}],142:[function(_dereq_,module,exports){
+},{"../core/geometry":102,"../lib/three":149}],141:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -76831,7 +76814,7 @@ registerGeometry('ring', {
   }
 });
 
-},{"../core/geometry":103,"../lib/three":150}],143:[function(_dereq_,module,exports){
+},{"../core/geometry":102,"../lib/three":149}],142:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -76855,7 +76838,7 @@ registerGeometry('sphere', {
   }
 });
 
-},{"../core/geometry":103,"../lib/three":150}],144:[function(_dereq_,module,exports){
+},{"../core/geometry":102,"../lib/three":149}],143:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -76870,7 +76853,7 @@ registerGeometry('tetrahedron', {
   }
 });
 
-},{"../core/geometry":103,"../lib/three":150}],145:[function(_dereq_,module,exports){
+},{"../core/geometry":102,"../lib/three":149}],144:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -76892,7 +76875,7 @@ registerGeometry('torus', {
   }
 });
 
-},{"../core/geometry":103,"../lib/three":150}],146:[function(_dereq_,module,exports){
+},{"../core/geometry":102,"../lib/three":149}],145:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -76913,7 +76896,7 @@ registerGeometry('torusKnot', {
   }
 });
 
-},{"../core/geometry":103,"../lib/three":150}],147:[function(_dereq_,module,exports){
+},{"../core/geometry":102,"../lib/three":149}],146:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -76968,7 +76951,7 @@ registerGeometry('triangle', {
   }
 });
 
-},{"../core/geometry":103,"../lib/three":150}],148:[function(_dereq_,module,exports){
+},{"../core/geometry":102,"../lib/three":149}],147:[function(_dereq_,module,exports){
 // Check before the polyfill runs.
 window.hasNativeWebVRImplementation = !!window.navigator.getVRDisplays || !!window.navigator.getVRDevices;
 
@@ -77049,7 +77032,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.2 (Date 2018-09-26, Commit #3f37ec0)');
+console.log('A-Frame Version: 0.8.2 (Date 2018-10-04, Commit #6deaea0)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -77080,7 +77063,7 @@ module.exports = window.AFRAME = {
   version: pkg.version
 };
 
-},{"../package":51,"./components/index":61,"./core/a-assets":96,"./core/a-cubemap":97,"./core/a-entity":98,"./core/a-mixin":99,"./core/a-node":100,"./core/a-register-element":101,"./core/component":102,"./core/geometry":103,"./core/scene/a-scene":105,"./core/scene/scenes":108,"./core/schema":110,"./core/shader":111,"./core/system":112,"./extras/components/":113,"./extras/primitives/":116,"./extras/primitives/getMeshMixin":115,"./extras/primitives/primitives":117,"./geometries/index":139,"./lib/three":150,"./shaders/index":152,"./style/aframe.css":157,"./style/rStats.css":158,"./systems/index":161,"./utils/":172,"animejs":2,"present":31,"promise-polyfill":33,"webvr-polyfill":46}],149:[function(_dereq_,module,exports){
+},{"../package":50,"./components/index":60,"./core/a-assets":95,"./core/a-cubemap":96,"./core/a-entity":97,"./core/a-mixin":98,"./core/a-node":99,"./core/a-register-element":100,"./core/component":101,"./core/geometry":102,"./core/scene/a-scene":104,"./core/scene/scenes":107,"./core/schema":109,"./core/shader":110,"./core/system":111,"./extras/components/":112,"./extras/primitives/":115,"./extras/primitives/getMeshMixin":114,"./extras/primitives/primitives":116,"./geometries/index":138,"./lib/three":149,"./shaders/index":151,"./style/aframe.css":156,"./style/rStats.css":157,"./systems/index":160,"./utils/":171,"animejs":2,"present":31,"promise-polyfill":33,"webvr-polyfill":45}],148:[function(_dereq_,module,exports){
 window.aframeStats = function (scene) {
   var _rS = null;
   var _scene = scene;
@@ -77137,7 +77120,7 @@ if (typeof module === 'object') {
   };
 }
 
-},{}],150:[function(_dereq_,module,exports){
+},{}],149:[function(_dereq_,module,exports){
 (function (global){
 var THREE = global.THREE = _dereq_('three');
 
@@ -77174,7 +77157,7 @@ module.exports = THREE;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"three":40,"three/examples/js/loaders/ColladaLoader":41,"three/examples/js/loaders/GLTFLoader":42,"three/examples/js/loaders/MTLLoader":43,"three/examples/js/loaders/OBJLoader":44}],151:[function(_dereq_,module,exports){
+},{"three":39,"three/examples/js/loaders/ColladaLoader":40,"three/examples/js/loaders/GLTFLoader":41,"three/examples/js/loaders/MTLLoader":42,"three/examples/js/loaders/OBJLoader":43}],150:[function(_dereq_,module,exports){
 var registerShader = _dereq_('../core/shader').registerShader;
 var THREE = _dereq_('../lib/three');
 var utils = _dereq_('../utils/');
@@ -77239,14 +77222,14 @@ function getMaterialData (data) {
   };
 }
 
-},{"../core/shader":111,"../lib/three":150,"../utils/":172}],152:[function(_dereq_,module,exports){
+},{"../core/shader":110,"../lib/three":149,"../utils/":171}],151:[function(_dereq_,module,exports){
 _dereq_('./flat');
 _dereq_('./standard');
 _dereq_('./sdf');
 _dereq_('./msdf');
 _dereq_('./ios10hls');
 
-},{"./flat":151,"./ios10hls":153,"./msdf":154,"./sdf":155,"./standard":156}],153:[function(_dereq_,module,exports){
+},{"./flat":150,"./ios10hls":152,"./msdf":153,"./sdf":154,"./standard":155}],152:[function(_dereq_,module,exports){
 var registerShader = _dereq_('../core/shader').registerShader;
 
 /**
@@ -77281,7 +77264,7 @@ module.exports.Shader = registerShader('ios10hls', {
 });
 
 
-},{"../core/shader":111}],154:[function(_dereq_,module,exports){
+},{"../core/shader":110}],153:[function(_dereq_,module,exports){
 var registerShader = _dereq_('../core/shader').registerShader;
 
 /**
@@ -77349,7 +77332,7 @@ module.exports.Shader = registerShader('msdf', {
   ].join('\n')
 });
 
-},{"../core/shader":111}],155:[function(_dereq_,module,exports){
+},{"../core/shader":110}],154:[function(_dereq_,module,exports){
 var registerShader = _dereq_('../core/shader').registerShader;
 
 /**
@@ -77456,7 +77439,7 @@ module.exports.Shader = registerShader('sdf', {
   ].join('\n')
 });
 
-},{"../core/shader":111}],156:[function(_dereq_,module,exports){
+},{"../core/shader":110}],155:[function(_dereq_,module,exports){
 var registerShader = _dereq_('../core/shader').registerShader;
 var THREE = _dereq_('../lib/three');
 var utils = _dereq_('../utils/');
@@ -77638,11 +77621,11 @@ function getMaterialData (data) {
   return newData;
 }
 
-},{"../core/shader":111,"../lib/three":150,"../utils/":172}],157:[function(_dereq_,module,exports){
+},{"../core/shader":110,"../lib/three":149,"../utils/":171}],156:[function(_dereq_,module,exports){
 var css = ".a-html{bottom:0;left:0;position:fixed;right:0;top:0}.a-body{height:100%;margin:0;overflow:hidden;padding:0;width:100%}:-webkit-full-screen{background-color:transparent}.a-hidden{display:none!important}.a-canvas{height:100%;left:0;position:absolute;top:0;width:100%}.a-canvas.a-grab-cursor:hover{cursor:grab;cursor:-moz-grab;cursor:-webkit-grab}.a-canvas.a-grab-cursor:active,.a-grabbing{cursor:grabbing;cursor:-moz-grabbing;cursor:-webkit-grabbing}a-scene.fullscreen .a-canvas{width:100%!important;height:100%!important;top:0!important;left:0!important;right:0!important;bottom:0!important;position:fixed!important}.a-inspector-loader{background-color:#ed3160;position:fixed;left:3px;top:3px;padding:6px 10px;color:#fff;text-decoration:none;font-size:12px;font-family:Roboto,sans-serif;text-align:center;z-index:99999;width:204px}@keyframes dots-1{from{opacity:0}25%{opacity:1}}@keyframes dots-2{from{opacity:0}50%{opacity:1}}@keyframes dots-3{from{opacity:0}75%{opacity:1}}@-webkit-keyframes dots-1{from{opacity:0}25%{opacity:1}}@-webkit-keyframes dots-2{from{opacity:0}50%{opacity:1}}@-webkit-keyframes dots-3{from{opacity:0}75%{opacity:1}}.a-inspector-loader .dots span{animation:dots-1 2s infinite steps(1);-webkit-animation:dots-1 2s infinite steps(1)}.a-inspector-loader .dots span:first-child+span{animation-name:dots-2;-webkit-animation-name:dots-2}.a-inspector-loader .dots span:first-child+span+span{animation-name:dots-3;-webkit-animation-name:dots-3}a-scene{display:block;position:relative;height:100%;width:100%}a-assets,a-scene audio,a-scene img,a-scene video{display:none}.a-enter-vr-modal,.a-orientation-modal{font-family:Consolas,Andale Mono,Courier New,monospace}.a-enter-vr-modal a{border-bottom:1px solid #fff;padding:2px 0;text-decoration:none;transition:.1s color ease-in}.a-enter-vr-modal a:hover{background-color:#fff;color:#111;padding:2px 4px;position:relative;left:-4px}.a-enter-vr{font-family:sans-serif,monospace;font-size:13px;width:100%;font-weight:200;line-height:16px;position:absolute;right:20px;bottom:20px}.a-enter-vr.embedded{right:5px;bottom:5px}.a-enter-vr-button,.a-enter-vr-modal,.a-enter-vr-modal a{color:#fff}.a-enter-vr-button{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20245.82%20141.73%22%3E%3Cdefs%3E%3Cstyle%3E.a%7Bfill%3A%23fff%3Bfill-rule%3Aevenodd%3B%7D%3C%2Fstyle%3E%3C%2Fdefs%3E%3Ctitle%3Emask%3C%2Ftitle%3E%3Cpath%20class%3D%22a%22%20d%3D%22M175.56%2C111.37c-22.52%2C0-40.77-18.84-40.77-42.07S153%2C27.24%2C175.56%2C27.24s40.77%2C18.84%2C40.77%2C42.07S198.08%2C111.37%2C175.56%2C111.37ZM26.84%2C69.31c0-23.23%2C18.25-42.07%2C40.77-42.07s40.77%2C18.84%2C40.77%2C42.07-18.26%2C42.07-40.77%2C42.07S26.84%2C92.54%2C26.84%2C69.31ZM27.27%2C0C11.54%2C0%2C0%2C12.34%2C0%2C28.58V110.9c0%2C16.24%2C11.54%2C30.83%2C27.27%2C30.83H99.57c2.17%2C0%2C4.19-1.83%2C5.4-3.7L116.47%2C118a8%2C8%2C0%2C0%2C1%2C12.52-.18l11.51%2C20.34c1.2%2C1.86%2C3.22%2C3.61%2C5.39%2C3.61h72.29c15.74%2C0%2C27.63-14.6%2C27.63-30.83V28.58C245.82%2C12.34%2C233.93%2C0%2C218.19%2C0H27.27Z%22%2F%3E%3C%2Fsvg%3E) 50% 50%/70% 70% no-repeat rgba(0,0,0,.35);border:0;bottom:0;cursor:pointer;min-width:50px;min-height:30px;padding-right:5%;padding-top:4%;position:absolute;right:0;transition:background-color .05s ease;-webkit-transition:background-color .05s ease;z-index:9999}.a-enter-vr-button:active,.a-enter-vr-button:hover{background-color:#666}[data-a-enter-vr-no-webvr] .a-enter-vr-button{border-color:#666;opacity:.65}[data-a-enter-vr-no-webvr] .a-enter-vr-button:active,[data-a-enter-vr-no-webvr] .a-enter-vr-button:hover{background-color:rgba(0,0,0,.35);cursor:not-allowed}.a-enter-vr-modal{background-color:#666;border-radius:0;display:none;min-height:32px;margin-right:70px;padding:9px;width:280px;right:2%;position:absolute}.a-enter-vr-modal:after{border-bottom:10px solid transparent;border-left:10px solid #666;border-top:10px solid transparent;display:inline-block;content:'';position:absolute;right:-5px;top:5px;width:0;height:0}.a-enter-vr-modal a,.a-enter-vr-modal p{display:inline}.a-enter-vr-modal p{margin:0}.a-enter-vr-modal p:after{content:' '}[data-a-enter-vr-no-headset].a-enter-vr:hover .a-enter-vr-modal,[data-a-enter-vr-no-webvr].a-enter-vr:hover .a-enter-vr-modal{display:block}.a-orientation-modal{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%20version%3D%221.1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%2090%2090%22%20enable-background%3D%22new%200%200%2090%2090%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpolygon%20points%3D%220%2C0%200%2C0%200%2C0%20%22%3E%3C/polygon%3E%3Cg%3E%3Cpath%20d%3D%22M71.545%2C48.145h-31.98V20.743c0-2.627-2.138-4.765-4.765-4.765H18.456c-2.628%2C0-4.767%2C2.138-4.767%2C4.765v42.789%20%20%20c0%2C2.628%2C2.138%2C4.766%2C4.767%2C4.766h5.535v0.959c0%2C2.628%2C2.138%2C4.765%2C4.766%2C4.765h42.788c2.628%2C0%2C4.766-2.137%2C4.766-4.765V52.914%20%20%20C76.311%2C50.284%2C74.173%2C48.145%2C71.545%2C48.145z%20M18.455%2C16.935h16.344c2.1%2C0%2C3.808%2C1.708%2C3.808%2C3.808v27.401H37.25V22.636%20%20%20c0-0.264-0.215-0.478-0.479-0.478H16.482c-0.264%2C0-0.479%2C0.214-0.479%2C0.478v36.585c0%2C0.264%2C0.215%2C0.478%2C0.479%2C0.478h7.507v7.644%20%20%20h-5.534c-2.101%2C0-3.81-1.709-3.81-3.81V20.743C14.645%2C18.643%2C16.354%2C16.935%2C18.455%2C16.935z%20M16.96%2C23.116h19.331v25.031h-7.535%20%20%20c-2.628%2C0-4.766%2C2.139-4.766%2C4.768v5.828h-7.03V23.116z%20M71.545%2C73.064H28.757c-2.101%2C0-3.81-1.708-3.81-3.808V52.914%20%20%20c0-2.102%2C1.709-3.812%2C3.81-3.812h42.788c2.1%2C0%2C3.809%2C1.71%2C3.809%2C3.812v16.343C75.354%2C71.356%2C73.645%2C73.064%2C71.545%2C73.064z%22%3E%3C/path%3E%3Cpath%20d%3D%22M28.919%2C58.424c-1.466%2C0-2.659%2C1.193-2.659%2C2.66c0%2C1.466%2C1.193%2C2.658%2C2.659%2C2.658c1.468%2C0%2C2.662-1.192%2C2.662-2.658%20%20%20C31.581%2C59.617%2C30.387%2C58.424%2C28.919%2C58.424z%20M28.919%2C62.786c-0.939%2C0-1.703-0.764-1.703-1.702c0-0.939%2C0.764-1.704%2C1.703-1.704%20%20%20c0.94%2C0%2C1.705%2C0.765%2C1.705%2C1.704C30.623%2C62.022%2C29.858%2C62.786%2C28.919%2C62.786z%22%3E%3C/path%3E%3Cpath%20d%3D%22M69.654%2C50.461H33.069c-0.264%2C0-0.479%2C0.215-0.479%2C0.479v20.288c0%2C0.264%2C0.215%2C0.478%2C0.479%2C0.478h36.585%20%20%20c0.263%2C0%2C0.477-0.214%2C0.477-0.478V50.939C70.131%2C50.676%2C69.917%2C50.461%2C69.654%2C50.461z%20M69.174%2C51.417V70.75H33.548V51.417H69.174z%22%3E%3C/path%3E%3Cpath%20d%3D%22M45.201%2C30.296c6.651%2C0%2C12.233%2C5.351%2C12.551%2C11.977l-3.033-2.638c-0.193-0.165-0.507-0.142-0.675%2C0.048%20%20%20c-0.174%2C0.198-0.153%2C0.501%2C0.045%2C0.676l3.883%2C3.375c0.09%2C0.075%2C0.198%2C0.115%2C0.312%2C0.115c0.141%2C0%2C0.273-0.061%2C0.362-0.166%20%20%20l3.371-3.877c0.173-0.2%2C0.151-0.502-0.047-0.675c-0.194-0.166-0.508-0.144-0.676%2C0.048l-2.592%2C2.979%20%20%20c-0.18-3.417-1.629-6.605-4.099-9.001c-2.538-2.461-5.877-3.817-9.404-3.817c-0.264%2C0-0.479%2C0.215-0.479%2C0.479%20%20%20C44.72%2C30.083%2C44.936%2C30.296%2C45.201%2C30.296z%22%3E%3C/path%3E%3C/g%3E%3C/svg%3E) center/50% 50% no-repeat rgba(244,244,244,1);bottom:0;font-size:14px;font-weight:600;left:0;line-height:20px;right:0;position:fixed;top:0;z-index:9999999}.a-orientation-modal:after{color:#666;content:\"Insert phone into Cardboard holder.\";display:block;position:absolute;text-align:center;top:70%;transform:translateY(-70%);width:100%}.a-orientation-modal button{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%20version%3D%221.1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%20100%20100%22%20enable-background%3D%22new%200%200%20100%20100%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpath%20fill%3D%22%23000000%22%20d%3D%22M55.209%2C50l17.803-17.803c1.416-1.416%2C1.416-3.713%2C0-5.129c-1.416-1.417-3.713-1.417-5.129%2C0L50.08%2C44.872%20%20L32.278%2C27.069c-1.416-1.417-3.714-1.417-5.129%2C0c-1.417%2C1.416-1.417%2C3.713%2C0%2C5.129L44.951%2C50L27.149%2C67.803%20%20c-1.417%2C1.416-1.417%2C3.713%2C0%2C5.129c0.708%2C0.708%2C1.636%2C1.062%2C2.564%2C1.062c0.928%2C0%2C1.856-0.354%2C2.564-1.062L50.08%2C55.13l17.803%2C17.802%20%20c0.708%2C0.708%2C1.637%2C1.062%2C2.564%2C1.062s1.856-0.354%2C2.564-1.062c1.416-1.416%2C1.416-3.713%2C0-5.129L55.209%2C50z%22%3E%3C/path%3E%3C/svg%3E) no-repeat;border:none;height:50px;text-indent:-9999px;width:50px}"; (_dereq_("browserify-css").createStyle(css, { "href": "src/style/aframe.css"})); module.exports = css;
-},{"browserify-css":5}],158:[function(_dereq_,module,exports){
+},{"browserify-css":5}],157:[function(_dereq_,module,exports){
 var css = ".rs-base{background-color:#333;color:#fafafa;border-radius:0;font:10px monospace;left:5px;line-height:1em;opacity:.85;overflow:hidden;padding:10px;position:fixed;top:5px;width:300px;z-index:10000}.rs-base div.hidden{display:none}.rs-base h1{color:#fff;cursor:pointer;font-size:1.4em;font-weight:300;margin:0 0 5px;padding:0}.rs-group{display:-webkit-box;display:-webkit-flex;display:flex;-webkit-flex-direction:column-reverse;flex-direction:column-reverse;margin-bottom:5px}.rs-group:last-child{margin-bottom:0}.rs-counter-base{align-items:center;display:-webkit-box;display:-webkit-flex;display:flex;height:10px;-webkit-justify-content:space-between;justify-content:space-between;margin:2px 0}.rs-counter-base.alarm{color:#b70000;text-shadow:0 0 0 #b70000,0 0 1px #fff,0 0 1px #fff,0 0 2px #fff,0 0 2px #fff,0 0 3px #fff,0 0 3px #fff,0 0 4px #fff,0 0 4px #fff}.rs-counter-id{font-weight:300;-webkit-box-ordinal-group:0;-webkit-order:0;order:0;width:54px}.rs-counter-value{font-weight:300;-webkit-box-ordinal-group:1;-webkit-order:1;order:1;text-align:right;width:35px}.rs-canvas{-webkit-box-ordinal-group:2;-webkit-order:2;order:2}@media (min-width:480px){.rs-base{left:20px;top:20px}}"; (_dereq_("browserify-css").createStyle(css, { "href": "src/style/rStats.css"})); module.exports = css;
-},{"browserify-css":5}],159:[function(_dereq_,module,exports){
+},{"browserify-css":5}],158:[function(_dereq_,module,exports){
 var constants = _dereq_('../constants/');
 var registerSystem = _dereq_('../core/system').registerSystem;
 
@@ -77916,7 +77899,7 @@ function removeDefaultCamera (sceneEl) {
   sceneEl.removeChild(defaultCamera);
 }
 
-},{"../constants/":94,"../core/system":112}],160:[function(_dereq_,module,exports){
+},{"../constants/":93,"../core/system":111}],159:[function(_dereq_,module,exports){
 var geometries = _dereq_('../core/geometry').geometries;
 var registerSystem = _dereq_('../core/system').registerSystem;
 var THREE = _dereq_('../lib/three');
@@ -78056,7 +78039,7 @@ function toBufferGeometry (geometry, doBuffer) {
   return bufferGeometry;
 }
 
-},{"../core/geometry":103,"../core/system":112,"../lib/three":150}],161:[function(_dereq_,module,exports){
+},{"../core/geometry":102,"../core/system":111,"../lib/three":149}],160:[function(_dereq_,module,exports){
 _dereq_('./camera');
 _dereq_('./geometry');
 _dereq_('./light');
@@ -78065,7 +78048,7 @@ _dereq_('./shadow');
 _dereq_('./tracked-controls');
 
 
-},{"./camera":159,"./geometry":160,"./light":162,"./material":163,"./shadow":164,"./tracked-controls":165}],162:[function(_dereq_,module,exports){
+},{"./camera":158,"./geometry":159,"./light":161,"./material":162,"./shadow":163,"./tracked-controls":164}],161:[function(_dereq_,module,exports){
 var registerSystem = _dereq_('../core/system').registerSystem;
 var bind = _dereq_('../utils/bind');
 var constants = _dereq_('../constants/');
@@ -78151,7 +78134,7 @@ module.exports.System = registerSystem('light', {
   }
 });
 
-},{"../constants/":94,"../core/system":112,"../utils/bind":166}],163:[function(_dereq_,module,exports){
+},{"../constants/":93,"../core/system":111,"../utils/bind":165}],162:[function(_dereq_,module,exports){
 var registerSystem = _dereq_('../core/system').registerSystem;
 var THREE = _dereq_('../lib/three');
 var utils = _dereq_('../utils/');
@@ -78556,7 +78539,7 @@ function fixVideoAttributes (videoEl) {
   return videoEl;
 }
 
-},{"../core/system":112,"../lib/three":150,"../utils/":172,"../utils/material":173}],164:[function(_dereq_,module,exports){
+},{"../core/system":111,"../lib/three":149,"../utils/":171,"../utils/material":172}],163:[function(_dereq_,module,exports){
 var registerSystem = _dereq_('../core/system').registerSystem;
 var THREE = _dereq_('../lib/three');
 
@@ -78604,7 +78587,7 @@ module.exports.System = registerSystem('shadow', {
   }
 });
 
-},{"../core/system":112,"../lib/three":150}],165:[function(_dereq_,module,exports){
+},{"../core/system":111,"../lib/three":149}],164:[function(_dereq_,module,exports){
 var registerSystem = _dereq_('../core/system').registerSystem;
 var utils = _dereq_('../utils');
 
@@ -78663,7 +78646,7 @@ module.exports.System = registerSystem('tracked-controls', {
   }
 });
 
-},{"../core/system":112,"../utils":172}],166:[function(_dereq_,module,exports){
+},{"../core/system":111,"../utils":171}],165:[function(_dereq_,module,exports){
 /**
  * Faster version of Function.prototype.bind
  * @param {Function} fn - Function to wrap.
@@ -78680,7 +78663,7 @@ module.exports = function bind (fn, ctx/* , arg1, arg2 */) {
   })(Array.prototype.slice.call(arguments, 2));
 };
 
-},{}],167:[function(_dereq_,module,exports){
+},{}],166:[function(_dereq_,module,exports){
 /* global THREE */
 var debug = _dereq_('./debug');
 var extend = _dereq_('object-assign');
@@ -78778,7 +78761,7 @@ module.exports.toVector3 = function (vec3) {
   return new THREE.Vector3(vec3.x, vec3.y, vec3.z);
 };
 
-},{"./debug":168,"object-assign":25}],168:[function(_dereq_,module,exports){
+},{"./debug":167,"object-assign":25}],167:[function(_dereq_,module,exports){
 (function (process){
 var debugLib = _dereq_('debug');
 var extend = _dereq_('object-assign');
@@ -78875,7 +78858,7 @@ module.exports = debug;
 
 }).call(this,_dereq_('_process'))
 
-},{"_process":32,"debug":8,"object-assign":25}],169:[function(_dereq_,module,exports){
+},{"_process":32,"debug":8,"object-assign":25}],168:[function(_dereq_,module,exports){
 (function (process){
 var vrDisplay;
 
@@ -79014,7 +78997,7 @@ module.exports.PolyfillControls = function PolyfillControls (object) {
 
 }).call(this,_dereq_('_process'))
 
-},{"_process":32}],170:[function(_dereq_,module,exports){
+},{"_process":32}],169:[function(_dereq_,module,exports){
 /**
  * Split a delimited component property string (e.g., `material.color`) to an object
  * containing `component` name and `property` name. If there is no delimiter, just return the
@@ -79076,7 +79059,7 @@ module.exports.setComponentProperty = function (el, name, value, delimiter) {
   el.setAttribute(name, value);
 };
 
-},{}],171:[function(_dereq_,module,exports){
+},{}],170:[function(_dereq_,module,exports){
 module.exports = function forceCanvasResizeSafariMobile (canvasEl) {
   var width = canvasEl.style.width;
   var height = canvasEl.style.height;
@@ -79092,7 +79075,7 @@ module.exports = function forceCanvasResizeSafariMobile (canvasEl) {
   }, 200);
 };
 
-},{}],172:[function(_dereq_,module,exports){
+},{}],171:[function(_dereq_,module,exports){
 /* global location */
 
 /* Centralized place to reference utilities since utils is exposed to the user. */
@@ -79419,7 +79402,7 @@ module.exports.findAllScenes = function (el) {
 // Must be at bottom to avoid circular dependency.
 module.exports.srcLoader = _dereq_('./src-loader');
 
-},{"./bind":166,"./coordinates":167,"./debug":168,"./device":169,"./entity":170,"./forceCanvasResizeSafariMobile":171,"./material":173,"./object-pool":174,"./split":175,"./src-loader":176,"./styleParser":177,"./tracked-controls":178,"deep-assign":10,"object-assign":25}],173:[function(_dereq_,module,exports){
+},{"./bind":165,"./coordinates":166,"./debug":167,"./device":168,"./entity":169,"./forceCanvasResizeSafariMobile":170,"./material":172,"./object-pool":173,"./split":174,"./src-loader":175,"./styleParser":176,"./tracked-controls":177,"deep-assign":10,"object-assign":25}],172:[function(_dereq_,module,exports){
 var THREE = _dereq_('../lib/three');
 
 var HLS_MIMETYPES = ['application/x-mpegurl', 'application/vnd.apple.mpegurl'];
@@ -79574,7 +79557,7 @@ module.exports.isHLS = function (src, type) {
   return false;
 };
 
-},{"../lib/three":150}],174:[function(_dereq_,module,exports){
+},{"../lib/three":149}],173:[function(_dereq_,module,exports){
 /*
   Adapted deePool by Kyle Simpson.
   MIT License: http://getify.mit-license.org
@@ -79649,12 +79632,12 @@ module.exports.createPool = function createPool (objectFactory) {
 
 function clearObject (obj) {
   var key;
-  if (!(obj.constructor === Object)) { return; }
+  if (!obj || obj.constructor !== Object) { return; }
   for (key in obj) { obj[key] = undefined; }
 }
 module.exports.clearObject = clearObject;
 
-},{}],175:[function(_dereq_,module,exports){
+},{}],174:[function(_dereq_,module,exports){
 /**
  * String split with cached result.
  */
@@ -79671,7 +79654,7 @@ module.exports.split = (function () {
   };
 })();
 
-},{}],176:[function(_dereq_,module,exports){
+},{}],175:[function(_dereq_,module,exports){
 /* global Image, XMLHttpRequest */
 var debug = _dereq_('./debug');
 
@@ -79830,20 +79813,25 @@ module.exports = {
   validateCubemapSrc: validateCubemapSrc
 };
 
-},{"./debug":168}],177:[function(_dereq_,module,exports){
-/* Utils for parsing style-like strings (e.g., "primitive: box; width: 5; height: 4.5"). */
-var styleParser = _dereq_('style-attr');
+},{"./debug":167}],176:[function(_dereq_,module,exports){
+/**
+ * Utils for parsing style-like strings (e.g., "primitive: box; width: 5; height: 4.5").
+ * Some code adapted from `style-attr` (https://github.com/joshwnj/style-attr)
+ * by Josh Johnston (MIT License).
+ */
+var DASH_REGEX = /-([a-z])/g;
 
 /**
- * Deserializes style-like string into an object of properties.
+ * Deserialize style-like string into an object of properties.
  *
  * @param {string} value - HTML attribute value.
+ * @param {object} obj - Reused object for object pooling.
  * @returns {object} Property data.
  */
-module.exports.parse = function (value) {
+module.exports.parse = function (value, obj) {
   var parsedData;
   if (typeof value !== 'string') { return value; }
-  parsedData = styleParser.parse(value);
+  parsedData = styleParse(value, obj);
   // The style parser returns an object { "" : "test"} when fed a string
   if (parsedData['']) { return value; }
   return transformKeysToCamelCase(parsedData);
@@ -79857,7 +79845,7 @@ module.exports.parse = function (value) {
  */
 module.exports.stringify = function (data) {
   if (typeof data === 'string') { return data; }
-  return styleParser.stringify(data);
+  return styleStringify(data);
 };
 
 /**
@@ -79867,8 +79855,7 @@ module.exports.stringify = function (data) {
  * @return {string} CamelCased string.
  */
 function toCamelCase (str) {
-  return str.replace(/-([a-z])/g, camelCase);
-  function camelCase (g) { return g[1].toUpperCase(); }
+  return str.replace(DASH_REGEX, upperCase);
 }
 module.exports.toCamelCase = toCamelCase;
 
@@ -79880,17 +79867,106 @@ module.exports.toCamelCase = toCamelCase;
  * @return {object} The object with keys camelCased.
  */
 function transformKeysToCamelCase (obj) {
-  var keys = Object.keys(obj);
-  var camelCaseObj = {};
-  keys.forEach(function (key) {
-    var camelCaseKey = toCamelCase(key);
-    camelCaseObj[camelCaseKey] = obj[key];
-  });
-  return camelCaseObj;
+  var camelKey;
+  var key;
+  for (key in obj) {
+    camelKey = toCamelCase(key);
+    if (key === camelKey) { continue; }
+    obj[camelKey] = obj[key];
+    delete obj[key];
+  }
+  return obj;
 }
 module.exports.transformKeysToCamelCase = transformKeysToCamelCase;
 
-},{"style-attr":35}],178:[function(_dereq_,module,exports){
+/**
+ * Split a string into chunks matching `<key>: <value>`
+ */
+var getKeyValueChunks = (function () {
+  var chunks = [];
+  var hasUnclosedUrl = /url\([^)]+$/;
+
+  return function getKeyValueChunks (raw) {
+    var chunk = '';
+    var nextSplit;
+    var offset = 0;
+    var sep = ';';
+
+    chunks.length = 0;
+
+    while (offset < raw.length) {
+      nextSplit = raw.indexOf(sep, offset);
+      if (nextSplit === -1) { nextSplit = raw.length; }
+
+      chunk += raw.substring(offset, nextSplit);
+
+      // data URIs can contain semicolons, so make sure we get the whole thing
+      if (hasUnclosedUrl.test(chunk)) {
+        chunk += ';';
+        offset = nextSplit + 1;
+        continue;
+      }
+
+      chunks.push(chunk.trim());
+      chunk = '';
+      offset = nextSplit + 1;
+    }
+
+    return chunks;
+  };
+})();
+
+/**
+ * Convert a style attribute string to an object.
+ *
+ * @param {object} str - Attribute string.
+ * @param {object} obj - Object to reuse as a base, else a new one will be allocated.
+ */
+function styleParse (str, obj) {
+  var chunks;
+  var i;
+  var item;
+  var pos;
+  var key;
+  var val;
+
+  obj = obj || {};
+
+  chunks = getKeyValueChunks(str);
+  for (i = 0; i < chunks.length; i++) {
+    item = chunks[i];
+    if (!item) { continue; }
+    // Split with `.indexOf` rather than `.split` because the value may also contain colons.
+    pos = item.indexOf(':');
+    key = item.substr(0, pos).trim();
+    val = item.substr(pos + 1).trim();
+    obj[key] = val;
+  }
+  return obj;
+}
+
+/**
+ * Convert an object into an attribute string
+ **/
+function styleStringify (obj) {
+  var key;
+  var keyCount = 0;
+  var i = 0;
+  var str = '';
+
+  for (key in obj) { keyCount++; }
+
+  for (key in obj) {
+    str += (key + ': ' + obj[key]);
+    if (i < keyCount - 1) { str += '; '; }
+    i++;
+  }
+  return str;
+}
+
+function upperCase (str) { return str[1].toUpperCase(); }
+
+},{}],177:[function(_dereq_,module,exports){
 var DEFAULT_HANDEDNESS = _dereq_('../constants').DEFAULT_HANDEDNESS;
 var AXIS_LABELS = ['x', 'y', 'z', 'w'];
 var NUM_HANDS = 2;  // Number of hands in a pair. Should always be 2.
@@ -80070,7 +80146,7 @@ module.exports.onButtonEvent = function (id, evtName, component, hand) {
   }
 };
 
-},{"../constants":94}],179:[function(_dereq_,module,exports){
+},{"../constants":93}],178:[function(_dereq_,module,exports){
 window.glStats = function () {
 
     var _rS = null;
@@ -80331,7 +80407,7 @@ if (typeof module === 'object') {
   };
 }
 
-},{}],180:[function(_dereq_,module,exports){
+},{}],179:[function(_dereq_,module,exports){
 // performance.now() polyfill from https://gist.github.com/paulirish/5438650
 'use strict';
 
@@ -80786,7 +80862,7 @@ if (typeof module === 'object') {
   module.exports = window.rStats;
 }
 
-},{}],181:[function(_dereq_,module,exports){
+},{}],180:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -80848,7 +80924,7 @@ Util.isLandscapeMode = function() {
 
 module.exports = Util;
 
-},{}],182:[function(_dereq_,module,exports){
+},{}],181:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -80924,6 +81000,6 @@ function getWakeLock() {
 
 module.exports = getWakeLock();
 
-},{"./util.js":181}]},{},[148])(148)
+},{"./util.js":180}]},{},[147])(147)
 });
 //# sourceMappingURL=aframe-master.js.map
