@@ -70,28 +70,35 @@ module.exports.Component = registerComponent('material', {
   },
 
   updateBehavior: function () {
+    var key;
+    var sceneEl = this.el.sceneEl;
     var schema = this.schema;
     var self = this;
-    var sceneEl = this.el.sceneEl;
-    var tickProperties = {};
-    var tick = function (time, delta) {
-      Object.keys(tickProperties).forEach(function update (key) {
+    var tickProperties;
+
+    function tickTime (time, delta) {
+      var key;
+      for (key in tickProperties) {
         tickProperties[key] = time;
-      });
+      }
       self.shader.update(tickProperties);
-    };
+    }
+
     this.tick = undefined;
-    Object.keys(schema).forEach(function (key) {
+
+    tickProperties = {};
+    for (key in schema) {
       if (schema[key].type === 'time') {
-        self.tick = tick;
+        this.tick = tickTime;
         tickProperties[key] = true;
       }
-    });
+    }
+
     if (!sceneEl) { return; }
-    if (!this.tick) {
-      sceneEl.removeBehavior(this);
-    } else {
+    if (this.tick) {
       sceneEl.addBehavior(this);
+    } else {
+      sceneEl.removeBehavior(this);
     }
   },
 
@@ -117,6 +124,7 @@ module.exports.Component = registerComponent('material', {
   updateMaterial: function (oldData) {
     var data = this.data;
     var material = this.material;
+    var oldDataHasKeys;
 
     // Base material properties.
     material.alphaTest = data.alphaTest;
@@ -131,7 +139,8 @@ module.exports.Component = registerComponent('material', {
     material.blending = parseBlending(data.blending);
 
     // Check if material needs update.
-    if (Object.keys(oldData).length &&
+    for (oldDataHasKeys in oldData) { break; }
+    if (oldDataHasKeys &&
         (oldData.alphaTest !== data.alphaTest ||
          oldData.side !== data.side ||
          oldData.vertexColors !== data.vertexColors)) {
