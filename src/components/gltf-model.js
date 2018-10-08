@@ -10,8 +10,12 @@ module.exports.Component = registerComponent('gltf-model', {
   schema: {type: 'model'},
 
   init: function () {
+    var dracoLoader = this.system.getDRACOLoader();
     this.model = null;
     this.loader = new THREE.GLTFLoader();
+    if (dracoLoader) {
+      this.loader.setDRACOLoader(dracoLoader);
+    }
   },
 
   update: function () {
