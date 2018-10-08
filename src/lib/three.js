@@ -19,6 +19,7 @@ if (THREE.Cache) {
 }
 
 // TODO: Eventually include these only if they are needed by a component.
+require('three/examples/js/loaders/DRACOLoader');  // THREE.DRACOLoader
 require('three/examples/js/loaders/GLTFLoader');  // THREE.GLTFLoader
 require('three/examples/js/loaders/OBJLoader');  // THREE.OBJLoader
 require('three/examples/js/loaders/MTLLoader');  // THREE.MTLLoader
