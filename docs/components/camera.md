@@ -131,6 +131,6 @@ AFRAME.registerComponent('rotation-reader', {
       this.el.object3D.getWorldRotation(rotation);
       // position and rotation now contain vector and euler in world space.
     };
-  });
+  })
 });
 ```
