@@ -68,7 +68,7 @@ We need to calculate `r` or `θ` for `S` to match the `height` value preserving
 the original aspect ratio of the image. In this formula, `θ` is set in radians 
 and `radius` and `S` properties are set in meters.
 
-<p align="center"><img width="350" alt="Arc formula" src="https://ucarecdn.com/cd84b49e-c981-4b3c-9b50-edafaf045f7d/"></p>
+<p align="center"><img width="350" alt="Arc formula" src="https://user-images.githubusercontent.com/21111451/46638723-e28f3800-cb27-11e8-9d6f-f8ddf5c87f62.png"></p>
 
 In degrees, `thetaStart` defines where to start the arc and `thetaLength` defines where the arc ends. 
 
