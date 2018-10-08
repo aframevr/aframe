@@ -1,20 +1,23 @@
 ---
-title: loader
+title: loading-screen
 type: components
 layout: docs
 parent_section: components
 examples: []
 ---
 
-The loader component configures the loading screen visual style.
+The loading screen component configures the loading screen visual style.
 
-To configure the style of the loader title bar one can redefine `.a-loader-title` style. The example below sets the text color to red:
+To configure the style of the loader title bar one can redefine
+`.a-loader-title` style. The example below sets the text color to red:
 
 ```css
  .a-loader-title {
    color: red;
  }
 ```
+
+The title text is set to whatever is in `document.title` or `<title></title>`.
 
 ## Example
 

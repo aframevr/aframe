@@ -1,7 +1,7 @@
 /* global Promise, screen */
 var initMetaTags = require('./metaTags').inject;
 var initWakelock = require('./wakelock');
-var loadingScreen = require('../loadingScreen');
+var loadingScreen = require('./loadingScreen');
 var re = require('../a-register-element');
 var scenes = require('./scenes');
 var systems = require('../system').systems;
