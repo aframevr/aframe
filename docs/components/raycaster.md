@@ -53,7 +53,7 @@ AFRAME.registerComponent('collider-check', {
 | Property            | Description                                                                                                                                                        | Default Value |
 | --------            | -----------                                                                                                                                                        | ------------- |
 | autoRefresh         | Whether to automatically refresh raycaster's list of objects to test for intersection using mutation observers to detect added or removed entities and components. | true          |
-| direction           | Vector3 coordinate of which direction the ray should point from relative to the entity's origin.                                                                   | 0, 0, 0       |
+| direction           | Vector3 coordinate of which direction the ray should point from relative to the entity's origin.                                                                   | 0, 0, -1       |
 | enabled             | Whether raycaster is actively checking for intersections.                                                                                                          | true          |
 | far                 | Maximum distance under which resulting entities are returned. Cannot be lower than `near`.                                                                         | Infinity      |
 | interval            | Number of milliseconds to wait in between each intersection test. Lower number is better for faster updates. Higher number is better for performance.              | 0           |
