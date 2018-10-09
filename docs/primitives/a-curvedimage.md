@@ -58,5 +58,19 @@ textures mapped to the inside of the cylinder.
 
 Ensuring that the image is not distorted by stretching requires us to carefully
 set the `height`, `radius`, and `theta-length` attributes relative to the image
-aspect ratio. Once those values are fine-tuned to avoid distortion, we can use
+aspect ratio. 
+
+According to this formula:
+
+S = r * θ
+
+We need to calculate `r` or `θ` for `S` to match the `height` value preserving 
+the original aspect ratio of the image. In this formula, `θ` is set in radians 
+and `radius` and `S` properties are set in meters.
+
+<p align="center"><img width="350" alt="Arc formula" src="https://user-images.githubusercontent.com/21111451/46638723-e28f3800-cb27-11e8-9d6f-f8ddf5c87f62.png"></p>
+
+In degrees, `thetaStart` defines where to start the arc and `thetaLength` defines where the arc ends. 
+
+Once those values are fine-tuned to avoid distortion, we can use
 `scale` to safely adjust the distance of the curved image relative to the user.
