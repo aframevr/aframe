@@ -140,7 +140,7 @@ rotated by `-90 0 0` to display properly:
 <html>
   <head>
     <script src="https://aframe.io/releases/0.8.2/aframe.min.js"></script>
-    <script src="https://rawgit.com/donmccurdy/aframe-extras/v2.1.1/dist/aframe-extras.loaders.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v2.1.1/dist/aframe-extras.loaders.min.js"></script>
   </head>
   <body>
     <a-scene>

@@ -281,7 +281,7 @@ application using components, all our code is inherently modular and reusable!
 We'll have a `snap` component to snap our boxes to a grid so they aren't
 overlapping. We won't get into the details of how this component is
 implemented, but you can check out [the snap component's source
-code](https://rawgit.com/ngokevin/kframe/csstricks/scenes/aincraft/components/snap.js)
+code](https://cdn.jsdelivr.net/gh/ngokevin/kframe@dae06f2d832e4d305ec7da830fb09a6079af4790/scenes/aincraft/components/snap.js)
 (20 lines of JavaScript).
 
 We attach the snap component to our box so that it snaps to every half meter,

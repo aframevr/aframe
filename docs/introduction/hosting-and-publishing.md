@@ -140,6 +140,8 @@ directories into the site directory:
 
 *Neocities Asset Uploader*
 
+[jsdelivr]: https://www.jsdelivr.com/?docs=gh
+
 Or we can upload assets to a GitHub repository, and use GitHub to serve the
 model files.
 
@@ -150,8 +152,8 @@ model files.
 5. Wait for processing.
 6. Once finished, click on the primary asset file.
 7. Click on **Raw**.
-8. Then we have our asset URL hosted on GitHub. We can also change
-`raw.githubusercontent.com` to `cdn.rawgit.com` to use a different CDN.
+8. Then we have our asset URL hosted on GitHub. Then the asset can be
+hosted and referenced via [JSDelivr CDN][jsdelivr].
 
 Below is a video of the workflow:
 

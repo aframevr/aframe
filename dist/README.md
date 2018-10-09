@@ -3,7 +3,7 @@
 To include these builds, you can download and serve them locally.
 
 To include the latest [master build](#master-builds) from a CDN, include the
-script below from the [rawgit CDN](https://rawgit.com/):
+script below from the [jsdelivr CDN](https://www.jsdelivr.com/):
 
 ```html
 <html>
