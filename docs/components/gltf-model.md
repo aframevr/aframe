@@ -103,18 +103,68 @@ If you want to use the animations from your glTF model, you can use the [animati
 <a-entity gltf-model="#monster" animation-mixer></a-entity>
 ```
 
+## Geometry compression with Draco
+
+[draco]: https://google.github.io/draco/
+[gltf-pipeline]: https://github.com/AnalyticalGraphicsInc/gltf-pipeline
+
+Geometry in a glTF model may be compressed using the [Draco library][draco].
+For models containing primarily geometry, with simple untextured materials or
+vertex colors, compression can often reduce file size by 90–95%. When the model
+contains other large data — like textures or animation, which Draco does not
+affect — file size savings will be less significant.
+
+The tradeoff with any form of compression will be decoding time. Compressed
+models take less time to download and use less bandwidth, but cannot be rendered
+until they're decompressed. To avoid dropping frames in VR, delay the beginning
+of the experience until models are downloaded and decompressed.
+
+To apply Draco compression to an existing glTF model, use
+[glTF-Pipeline][gltf-pipeline]. You'll also need to host the Draco decoder
+library with your scene and configure scene properties as explained below.
+
+## Scene properties
+
+[draco-decoders]: https://github.com/mrdoob/three.js/tree/master/examples/js/libs/draco/gltf
+
+When using glTF models compressed with Draco, you must host the Draco decoder
+library with your scene and configure the path to the decoder:
+
+```html
+<a-scene gltf-model="dracoDecoderPath: path/to/decoder/;">
+  <a-entity gltf-model="url(pony.glb)"></a-entity>
+</a-scene>
+```
+
+| Property         | Description                                                                                                                                                                                           | Default Value                       |
+|------------------|--------------------------------------|----|
+| dracoDecoderPath | Path to the Draco decoder libraries. | '' |
+
+The decoder folder must contain three files:
+
+* `draco_decoder.js` — Emscripten-compiled decoder, compatible with any modern browser.
+* `draco_decoder.wasm` — WebAssembly decoder, compatible with newer browsers and devices.
+* `draco_wasm_wrapper.js` — JavaScript wrapper for the WASM decoder.
+
+All files are available from the three.js repository, under
+[examples/js/libs/draco/gltf][draco-decoders]. The `gltf-model` component will
+automatically choose whether to use a WASM or JavaScript decoder, so both should
+be included.
+
 ## More Resources
 
 [sketchfab]: https://sketchfab.com/models?features=downloadable&sort_by=-likeCount
 [blender-exporter]: https://github.com/KhronosGroup/glTF-Blender-Exporter/
 [obj-converter]: https://github.com/AnalyticalGraphicsInc/obj2gltf
+[fbx-converter]: https://github.com/facebookincubator/FBX2glTF
 [collada-converter]: http://cesiumjs.org/convertmodel.html
 
 Over 100,000 glTF models are free for download on [Sketchfab][sketchfab], and
 various exporters and converters converters are available:
 
-- [Blender Exporter](blender-exporter)
+- [Blender Exporter][blender-exporter]
 - [OBJ &rarr; glTF][obj-converter]
+- [FBX &rarr; glTF][fbx-converter]
 - [COLLADA &rarr; glTF][collada-converter]
 - [glTF Workflow for A Saturday Night](https://blog.mozvr.com/a-saturday-night-gltf-workflow/)
 
