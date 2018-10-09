@@ -1,11 +1,12 @@
 /* global THREE */
-var utils = require('../utils/');
+var utils = require('../../utils/');
 var styleParser = utils.styleParser;
 
 var sceneEl;
 var titleEl;
 var getSceneCanvasSize;
 
+var ATTR_NAME = 'loading-screen';
 var LOADER_TITLE_CLASS = 'a-loader-title';
 
 // It catches vrdisplayactivate early to ensure we can enter VR mode after the scene loads.
@@ -23,7 +24,7 @@ window.addEventListener('vrdisplayactivate', function () {
 module.exports.setup = function setup (el, getCanvasSize) {
   sceneEl = el;
   getSceneCanvasSize = getCanvasSize;
-  var loaderAttribute = sceneEl.hasAttribute('loader') ? styleParser.parse(sceneEl.getAttribute('loader')) : undefined;
+  var loaderAttribute = sceneEl.hasAttribute(ATTR_NAME) ? styleParser.parse(sceneEl.getAttribute(ATTR_NAME)) : undefined;
   var dotsColor = loaderAttribute && loaderAttribute.dotsColor || 'white';
   var backgroundColor = loaderAttribute && loaderAttribute.backgroundColor || '#24CAFF';
   var loaderEnabled = loaderAttribute === undefined || loaderAttribute.enabled === true || loaderAttribute.enabled === undefined; // true default

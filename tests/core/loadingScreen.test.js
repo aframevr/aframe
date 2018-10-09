@@ -19,7 +19,7 @@ helpers.getSkipCISuite()('loadingScreen', function () {
 
     test('does not add title element if loadingScreen is disabled', function (done) {
       var el = this.el = document.createElement('a-scene');
-      el.setAttribute('loader', 'enabled: false');
+      el.setAttribute('loading-screen', 'enabled: false');
       document.body.appendChild(el);
       el.addEventListener('loaded', function () {
         assert.notOk(el.querySelector('.a-loader-title'));
