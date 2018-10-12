@@ -26,6 +26,14 @@ The cylinder primitive is versatile and can be used to create different kinds of
 <a-cylinder color="green" open-ended="true"></a-cylinder>
 ```
 
+In degrees, `thetaStart` defines where to start the arc and `thetaLength` defines where the arc ends. 
+
+Also, we can create a tube by making the cylinder open-ended, which removes the top and bottom surfaces of the cylinder such that the inside is visible. Then, we need a double-sided material to render properly:
+
+```html
+<a-cylinder color="cyan" material="side: double" open-ended="true" rotation="90 0 0"></a-cylinder>
+```
+
 ## Attributes
 
 | Attribute                        | Component Mapping                      | Default Value |
