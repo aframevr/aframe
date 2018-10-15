@@ -40,5 +40,4 @@ The .OBJ model primitive displays a 3D Wavefront model.
 
 ## Troubleshooting
 
-If you don't see your model, try scaling it down. OBJ models generally have
-extremely large scales in comparison to A-Frame's scale.
+See [Introduction → 3D Models → Troubleshooting](../introduction/models.md#troubleshooting).
