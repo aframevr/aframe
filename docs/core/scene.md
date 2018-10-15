@@ -57,6 +57,12 @@ before kicking off the render loop.
 | systems       | Instantiated [systems][systems].                                          |
 | time          | Global uptime of scene in seconds.                                        |
 
+## States
+
+| Name    | Description                                                                                                            |
+|---------|------------------------------------------------------------------------------------------------------------------------|
+| vr-mode | Added and removed when entering and exiting VR, respectively. Check with `sceneEl.is('vr-mode')`. |
+
 ## Methods
 
 | Name    | Description                                                                                                            |
