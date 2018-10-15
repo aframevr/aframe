@@ -9,6 +9,12 @@ examples: []
 
 The collada-model component loads a 3D model using a [COLLADA][wiki-collada] (.DAE) file.
 
+> **DEPRECATED**: The `collada-model` component is deprecated. Consider
+converting models with [COLLADA2GLTF][collada2gltf] and using `gltf-model`
+instead.
+
+[collada2gltf]: https://github.com/KhronosGroup/COLLADA2glTF
+
 ## Example
 
 We can load a COLLADA model by pointing to an asset that specifies the `src` to a COLLADA file.

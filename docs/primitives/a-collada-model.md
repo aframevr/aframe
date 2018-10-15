@@ -9,6 +9,12 @@ source_code: src/extras/primitives/primitives/a-collada-model.js
 The COLLADA model primitive displays a 3D COLLADA model created from a 3D
 modeling program or downloaded from the web.
 
+> **DEPRECATED**: The `collada-model` component is deprecated. Consider
+converting models with [COLLADA2GLTF][collada2gltf] and using `gltf-model`
+instead.
+
+[collada2gltf]: https://github.com/KhronosGroup/COLLADA2glTF
+
 ## Example
 
 ```html

@@ -1,5 +1,8 @@
 var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../lib/three');
+var debug = require('../utils/debug');
+
+var warn = debug('components:collada-model:warn');
 
 module.exports.Component = registerComponent('collada-model', {
   schema: {type: 'asset'},
@@ -7,6 +10,7 @@ module.exports.Component = registerComponent('collada-model', {
   init: function () {
     this.model = null;
     this.loader = new THREE.ColladaLoader();
+    warn('`collada-model` is deprecated. Consider using `gltf-model` instead.');
   },
 
   update: function () {
