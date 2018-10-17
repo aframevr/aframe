@@ -1,7 +1,6 @@
  /* global Event, assert, process, setup, suite, test */
 
 var CANVAS_GRAB_CLASS = 'a-grab-cursor';
-var GRABBING_CLASS = 'a-grabbing';
 
 suite('look-controls', function () {
   setup(function (done) {
@@ -31,22 +30,23 @@ suite('look-controls', function () {
       this.sceneEl.canvas.classList.contains(CANVAS_GRAB_CLASS);
     });
 
-    test('adds grabbing class to document body on mousedown', function (done) {
-      var el = this.sceneEl;
+    test('adds grabbing style to scene canvas on mousedown', function (done) {
+      var canvasEl = this.sceneEl.canvas;
       process.nextTick(function () {
-        assert.ok(document.body.classList.contains(GRABBING_CLASS));
-        document.body.classList.remove(GRABBING_CLASS);
+        assert.ok(canvasEl.style.cursor === 'grabbing');
+        canvasEl.style.cursor = '';
         done();
       });
       var event = new Event('mousedown');
       event.button = 0;
-      el.canvas.dispatchEvent(event);
+      canvasEl.dispatchEvent(event);
     });
 
-    test('removes grabbing class from document body on document body mouseup', function (done) {
-      document.body.classList.add(GRABBING_CLASS);
+    test('removes grabbing style from scene el canvas on document body mouseup', function (done) {
+      var canvasEl = this.sceneEl.canvas;
+      canvasEl.style.cursor = 'grabbing';
       process.nextTick(function () {
-        assert.notOk(document.body.classList.contains(GRABBING_CLASS));
+        assert.notOk(canvasEl.style.cursor === 'grabbing');
         done();
       });
       window.dispatchEvent(new Event('mouseup'));
@@ -61,7 +61,7 @@ suite('look-controls', function () {
 
       process.nextTick(function () {
         assert.ok(requestPointerLock.called);
-        document.body.classList.remove(GRABBING_CLASS);
+        canvasEl.style.cursor = '';
         done();
       });
 
@@ -81,7 +81,7 @@ suite('look-controls', function () {
 
       process.nextTick(function () {
         assert.notOk(requestPointerLock.called);
-        document.body.classList.remove(GRABBING_CLASS);
+        canvasEl.style.cursor = '';
         done();
       });
 

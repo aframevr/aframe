@@ -39,12 +39,6 @@
   cursor: -webkit-grab;
 }
 
-.a-grabbing,
-.a-canvas.a-grab-cursor:active {
-  cursor: grabbing;
-  cursor: -moz-grabbing;
-  cursor: -webkit-grabbing;
-}
 
 /* Class is removed when doing <a-scene embedded>. */
 a-scene.fullscreen .a-canvas {
