@@ -11,7 +11,7 @@ module.exports.System = registerSystem('tracked-controls', {
 
     this.controllers = [];
 
-    this.updateControllerList(navigator.getGamepads && navigator.getGamepads());
+    this.updateControllerList();
     this.throttledUpdateControllerList = utils.throttle(this.updateControllerList, 500, this);
 
     if (!navigator.getVRDisplays) { return; }
@@ -24,21 +24,24 @@ module.exports.System = registerSystem('tracked-controls', {
   },
 
   tick: function () {
-    var gamepads;
-    // Call getGamepads for Chrome.
-    gamepads = navigator.getGamepads && navigator.getGamepads();
-    this.throttledUpdateControllerList(gamepads);
+    if (navigator.userAgent.indexOf('Chrome') !== -1) {
+      // Call getGamepads for Chrome for it to update. Not sure if needed in future.
+      navigator.getGamepads && navigator.getGamepads();
+    }
+    this.throttledUpdateControllerList();
   },
 
   /**
    * Update controller list.
    */
-  updateControllerList: function (gamepads) {
+  updateControllerList: function () {
     var controllers = this.controllers;
     var gamepad;
+    var gamepads;
     var i;
     var prevCount;
 
+    gamepads = navigator.getGamepads && navigator.getGamepads();
     if (!gamepads) { return; }
 
     prevCount = controllers.length;
