@@ -622,52 +622,59 @@ var proto = Object.create(ANode.prototype, {
    *   it is a boolean indicating whether to clobber previous values (defaults to false).
    */
   setAttribute: {
-    value: function (attrName, arg1, arg2) {
-      var newAttrValue;
-      var clobber;
-      var componentName;
-      var delimiterIndex;
-      var isDebugMode;
+    value: (function () {
+      var singlePropUpdate = {};
 
-      delimiterIndex = attrName.indexOf(MULTIPLE_COMPONENT_DELIMITER);
-      componentName = delimiterIndex > 0 ? attrName.substring(0, delimiterIndex) : attrName;
+      return function (attrName, arg1, arg2) {
+        var newAttrValue;
+        var clobber;
+        var componentName;
+        var delimiterIndex;
+        var isDebugMode;
+        var key;
 
-      // Not a component. Normal set attribute.
-      if (!COMPONENTS[componentName]) {
-        if (attrName === 'mixin') { this.mixinUpdate(arg1); }
-        ANode.prototype.setAttribute.call(this, attrName, arg1);
-        return;
-      }
+        delimiterIndex = attrName.indexOf(MULTIPLE_COMPONENT_DELIMITER);
+        componentName = delimiterIndex > 0 ? attrName.substring(0, delimiterIndex) : attrName;
 
-      // Initialize component first if not yet initialized.
-      if (!this.components[attrName] && this.hasAttribute(attrName)) {
-        this.updateComponent(attrName,
-                             window.HTMLElement.prototype.getAttribute.call(this, attrName));
-      }
+        // Not a component. Normal set attribute.
+        if (!COMPONENTS[componentName]) {
+          if (attrName === 'mixin') { this.mixinUpdate(arg1); }
+          ANode.prototype.setAttribute.call(this, attrName, arg1);
+          return;
+        }
 
-      // Determine new attributes from the arguments
-      if (typeof arg2 !== 'undefined' &&
-          typeof arg1 === 'string' &&
-          arg1.length > 0 &&
-          typeof utils.styleParser.parse(arg1) === 'string') {
-        // Update a single property of a multi-property component
-        newAttrValue = {};
-        newAttrValue[arg1] = arg2;
-        clobber = false;
-      } else {
-        // Update with a value, object, or CSS-style property string, with the possiblity
-        // of clobbering previous values.
-        newAttrValue = arg1;
-        clobber = (arg2 === true);
-      }
+        // Initialize component first if not yet initialized.
+        if (!this.components[attrName] && this.hasAttribute(attrName)) {
+          this.updateComponent(
+            attrName,
+            window.HTMLElement.prototype.getAttribute.call(this, attrName));
+        }
 
-      // Update component
-      this.updateComponent(attrName, newAttrValue, clobber);
+        // Determine new attributes from the arguments
+        if (typeof arg2 !== 'undefined' &&
+            typeof arg1 === 'string' &&
+            arg1.length > 0 &&
+            typeof utils.styleParser.parse(arg1) === 'string') {
+          // Update a single property of a multi-property component
+          for (key in singlePropUpdate) { delete singlePropUpdate[key]; }
+          newAttrValue = singlePropUpdate;
+          newAttrValue[arg1] = arg2;
+          clobber = false;
+        } else {
+          // Update with a value, object, or CSS-style property string, with the possiblity
+          // of clobbering previous values.
+          newAttrValue = arg1;
+          clobber = (arg2 === true);
+        }
 
-      // In debug mode, write component data up to the DOM.
-      isDebugMode = this.sceneEl && this.sceneEl.getAttribute('debug');
-      if (isDebugMode) { this.components[attrName].flushToDOM(); }
-    },
+        // Update component
+        this.updateComponent(attrName, newAttrValue, clobber);
+
+        // In debug mode, write component data up to the DOM.
+        isDebugMode = this.sceneEl && this.sceneEl.getAttribute('debug');
+        if (isDebugMode) { this.components[attrName].flushToDOM(); }
+      };
+    })(),
     writable: window.debug
   },
 
