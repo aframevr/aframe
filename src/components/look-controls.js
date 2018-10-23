@@ -5,7 +5,6 @@ var bind = utils.bind;
 var PolyfillControls = require('../utils').device.PolyfillControls;
 
 // To avoid recalculation at every mouse movement tick
-var GRABBING_CLASS = 'a-grabbing';
 var PI_2 = Math.PI / 2;
 
 var checkHasPositionalTracking = utils.device.checkHasPositionalTracking;
@@ -248,7 +247,7 @@ module.exports.Component = registerComponent('look-controls', {
 
     this.mouseDown = true;
     this.previousMouseEvent = evt;
-    document.body.classList.add(GRABBING_CLASS);
+    this.showGrabbingCursor();
 
     if (this.data.pointerLockEnabled && !this.pointerLocked) {
       if (canvasEl.requestPointerLock) {
@@ -260,11 +259,25 @@ module.exports.Component = registerComponent('look-controls', {
   },
 
   /**
+   * Shows grabbing cursor on scene
+   */
+  showGrabbingCursor: function () {
+    this.el.sceneEl.canvas.style.cursor = 'grabbing';
+  },
+
+  /**
+   * Hides grabbing cursor on scene
+   */
+  hideGrabbingCursor: function () {
+    this.el.sceneEl.canvas.style.cursor = '';
+  },
+
+  /**
    * Register mouse up to detect release of mouse drag.
    */
   onMouseUp: function () {
     this.mouseDown = false;
-    document.body.classList.remove(GRABBING_CLASS);
+    this.hideGrabbingCursor();
   },
 
   /**
