@@ -24,7 +24,7 @@ The title text is set to whatever is in `document.title` or `<title></title>`.
 The example below sets the background color to black and dots color to red.
 
 ```html
-<a-scene loader="dotsColor: red; backgroundColor: black"></a-scene>
+<a-scene loading-screen="dotsColor: red; backgroundColor: black"></a-scene>
 ```
 
 ## Properties
