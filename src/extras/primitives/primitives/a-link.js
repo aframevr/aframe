@@ -1,7 +1,11 @@
 var registerPrimitive = require('../primitives').registerPrimitive;
 
 registerPrimitive('a-link', {
-  defaultComponents: {},
+  defaultComponents: {
+    link: {
+      visualAspectEnabled: true
+    }
+  },
 
   mappings: {
     href: 'link.href',
