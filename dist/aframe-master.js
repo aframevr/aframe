@@ -64696,7 +64696,7 @@ module.exports={
   ],
   "dependencies": {
     "animejs": "^2.2.0",
-    "browserify-css": "^0.8.2",
+    "browserify-css": "^0.8.4",
     "debug": "ngokevin/debug#noTimestamp",
     "deep-assign": "^2.0.0",
     "document-register-element": "dmarcos/document-register-element#8ccc532b7f3744be954574caf3072a5fd260ca90",
@@ -77690,7 +77690,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.2 (Date 2018-10-26, Commit #e43bb3d)');
+console.log('A-Frame Version: 0.8.2 (Date 2018-10-26, Commit #d156e82)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
