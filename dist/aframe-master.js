@@ -77110,7 +77110,11 @@ registerPrimitive('a-light', {
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 
 registerPrimitive('a-link', {
-  defaultComponents: {},
+  defaultComponents: {
+    link: {
+      visualAspectEnabled: true
+    }
+  },
 
   mappings: {
     href: 'link.href',
@@ -77686,7 +77690,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.2 (Date 2018-10-26, Commit #4007268)');
+console.log('A-Frame Version: 0.8.2 (Date 2018-10-26, Commit #e43bb3d)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
