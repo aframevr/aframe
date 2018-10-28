@@ -295,15 +295,10 @@ Component.prototype = {
     // Update previous attribute value to later decide if we skip type checking.
     this.previousAttrValue = attrValue;
 
-    if (this.updateSchema) { this.updateSchema(this.buildData(attrValue, false, true)); }
-    this.data = this.buildData(attrValue, clobber, false, skipTypeChecking);
-
     // Cache current attrValue for future updates.
     this.updateCachedAttrValue(attrValue, clobber);
 
-    if (this.updateSchema) {
-      this.updateSchema(this.buildData(this.attrValue, false, true));
-    }
+    if (this.updateSchema) { this.updateSchema(this.buildData(this.attrValue, false, true)); }
     this.data = this.buildData(this.attrValue, clobber, false, skipTypeChecking);
 
     if (!this.initialized) {
