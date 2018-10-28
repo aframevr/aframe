@@ -434,16 +434,16 @@ suite('Component', function () {
       el.setAttribute('material', '');
     });
 
-    test('does not clone selector property default into data', function () {
-      var el;
+    test('does not clone selector property default into data', function (done) {
       registerComponent('dummy', {
         schema: {type: 'selector', default: document.body}
       });
-      el = document.createElement('a-entity');
-      el.hasLoaded = true;
-      el.setAttribute('dummy', 'head');
-      el.components.dummy.updateProperties('');
-      assert.equal(el.components.dummy.data, el.components.dummy.schema.default);
+
+      helpers.elFactory().then(el => {
+        el.setAttribute('dummy', 'head');
+        assert.equal(el.components.dummy.data, el.components.dummy.schema.default);
+        done();
+      });
     });
 
     test('clones plain object schema default into data', function () {

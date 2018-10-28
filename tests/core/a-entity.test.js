@@ -394,12 +394,12 @@ suite('a-entity', function () {
     });
 
     test('only caches modified properties when changing schema only', function () {
-      var geometry;
       el.setAttribute('geometry', {primitive: 'box'});
       assert.deepEqual(el.components.geometry.attrValue, {primitive: 'box'});
       el.setAttribute('geometry', {primitive: 'sphere', radius: 10});
       assert.deepEqual(el.components.geometry.attrValue, {primitive: 'sphere', radius: 10});
-      geometry = el.getAttribute('geometry');
+
+      const geometry = el.getAttribute('geometry');
       assert.equal(geometry.primitive, 'sphere');
       assert.equal(geometry.radius, 10);
       assert.notOk(geometry.depth);
@@ -434,7 +434,8 @@ suite('a-entity', function () {
           var geometry;
           var setObj;
 
-          assert.shallowDeepEqual(el.components.geometry.attrValue, {primitive: 'box', width: 5});
+          assert.shallowDeepEqual(el.components.geometry.attrValue,
+                                  {primitive: 'box', width: 5});
 
           // First setAttribute.
           setObj = {depth: 10, height: 20};
@@ -443,7 +444,6 @@ suite('a-entity', function () {
           assert.equal(geometry.depth, 10);
           assert.equal(geometry.height, 20);
           assert.equal(geometry.width, 5, 'First setAttribute');
-          assert.equal(el.components.geometry.previousAttrValue, setObj);
 
           // Second setAttribute.
           el.setAttribute('geometry', {depth: 20, height: 10});
@@ -1355,18 +1355,6 @@ suite('a-entity component lifecycle management', function () {
     sinon.assert.calledOnce(TestComponent.update);
     el.setAttribute('test', 'a: 3');
     sinon.assert.calledOnce(TestComponent.update);
-  });
-
-  test('does not check types if the same object is passed again', function () {
-    var componentData;
-    var attrValue = {a: 3};
-    el.setAttribute('test', attrValue);
-    componentData = el.getAttribute('test');
-    assert.ok(componentData.a === 3);
-    attrValue.a = '3';
-    el.setAttribute('test', attrValue);
-    componentData = el.getAttribute('test');
-    assert.ok(componentData.a === '3');
   });
 
   test('parses if mix of unparsed data and reused object from setAttribute', function (done) {
