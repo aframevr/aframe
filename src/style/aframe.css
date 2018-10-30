@@ -1,5 +1,5 @@
-/* Applied to the html element */
-.a-html {
+/* .a-fullscreen means not embedded. */
+html.a-fullscreen {
   bottom: 0;
   left: 0;
   position: fixed;
@@ -7,13 +7,28 @@
   top: 0;
 }
 
-/* Applied to the body element */
-.a-body {
+html.a-fullscreen body {
   height: 100%;
   margin: 0;
   overflow: hidden;
   padding: 0;
   width: 100%;
+}
+
+/* Class is removed when doing <a-scene embedded>. */
+html.a-fullscreen .a-canvas {
+  width: 100% !important;
+  height: 100% !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  position: fixed !important;
+}
+
+html:not(.a-fullscreen) .a-enter-vr {
+  right: 5px;
+  bottom: 5px;
 }
 
 /* In chrome mobile the user agent stylesheet set it to white  */
@@ -37,18 +52,6 @@
   cursor: grab;
   cursor: -moz-grab;
   cursor: -webkit-grab;
-}
-
-
-/* Class is removed when doing <a-scene embedded>. */
-a-scene.fullscreen .a-canvas {
-  width: 100% !important;
-  height: 100% !important;
-  top: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
-  bottom: 0 !important;
-  position: fixed !important;
 }
 
 .a-inspector-loader {
@@ -132,11 +135,6 @@ a-scene audio {
   position: absolute;
   right: 20px;
   bottom: 20px;
-}
-
-.a-enter-vr.embedded {
-  right: 5px;
-  bottom: 5px;
 }
 
 .a-enter-vr-button,

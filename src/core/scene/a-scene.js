@@ -67,19 +67,13 @@ module.exports.AScene = registerElement('a-scene', {
 
     addFullScreenStyles: {
       value: function () {
-        var htmlEl = document.documentElement;
-        htmlEl.classList.add('a-html');
-        document.body.classList.add('a-body');
-        this.classList.add('fullscreen');
+        document.documentElement.classList.add('a-fullscreen');
       }
     },
 
     removeFullScreenStyles: {
       value: function () {
-        var htmlEl = document.documentElement;
-        htmlEl.classList.remove('a-html');
-        document.body.classList.remove('a-body');
-        this.classList.remove('fullscreen');
+        document.documentElement.classList.remove('a-fullscreen');
       }
     },
 

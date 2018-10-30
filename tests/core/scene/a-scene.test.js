@@ -196,7 +196,7 @@ suite('a-scene (without renderer)', function () {
     test('adds fullscreen styles', function (done) {
       var sceneEl = this.el;
       sceneEl.enterVR().then(function () {
-        assert.ok(sceneEl.classList.contains('fullscreen'));
+        assert.ok(document.documentElement.classList.contains('a-fullscreen'));
         done();
       });
     });
@@ -293,18 +293,18 @@ suite('a-scene (without renderer)', function () {
     test('removes fullscreen styles if embedded', function (done) {
       var sceneEl = this.el;
       sceneEl.setAttribute('embedded', 'true');
-      sceneEl.classList.add('fullscreen');
+      document.documentElement.classList.add('a-fullscreen');
       sceneEl.exitVR().then(function () {
-        assert.notOk(sceneEl.classList.contains('fullscreen'));
+        assert.notOk(document.documentElement.classList.contains('a-fullscreen'));
         done();
       });
     });
 
     test('does not remove fullscreen styles if not embedded', function (done) {
       var sceneEl = this.el;
-      sceneEl.classList.add('fullscreen');
+      document.documentElement.classList.add('a-fullscreen');
       sceneEl.exitVR().then(function () {
-        assert.ok(sceneEl.classList.contains('fullscreen'));
+        assert.ok(document.documentElement.classList.contains('a-fullscreen'));
         done();
       });
     });
