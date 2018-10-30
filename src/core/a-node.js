@@ -1,12 +1,10 @@
-/* global CustomEvent, MutationObserver */
+/* global CustomEvent */
 var registerElement = require('./a-register-element').registerElement;
 var isNode = require('./a-register-element').isNode;
 var utils = require('../utils/');
 
 var warn = utils.debug('core:a-node:warn');
 var error = utils.debug('core:a-node:error');
-
-var MIXIN_OBSERVER_CONFIG = {attributes: true};
 
 /**
  * Base class for A-Frame that manages loading of objects.
@@ -22,7 +20,6 @@ module.exports = registerElement('a-node', {
         this.hasLoaded = false;
         this.isNode = true;
         this.mixinEls = [];
-        this.mixinObservers = {};
       },
       writable: window.debug
     },
@@ -212,7 +209,6 @@ module.exports = registerElement('a-node', {
         // Register mixin.
         this.computedMixinStr = this.computedMixinStr + ' ' + mixinEl.id;
         this.mixinEls.push(mixinEl);
-        this.attachMixinListener(mixinEl);
       }
     },
 
@@ -235,46 +231,7 @@ module.exports = registerElement('a-node', {
             break;
           }
         }
-        this.removeMixinListener(mixinId);
       }
-    },
-
-    removeMixinListener: {
-      value: function (mixinId) {
-        var observer = this.mixinObservers[mixinId];
-        if (!observer) { return; }
-        observer.disconnect();
-        this.mixinObservers[mixinId] = null;
-      }
-    },
-
-    /**
-     * Add mutation observer from entity to mixin.
-     */
-    attachMixinListener: {
-      value: function (mixinEl) {
-        var currentObserver;
-        var mixinId;
-        var observer;
-        var self = this;
-
-        if (!mixinEl) { return; }
-
-        mixinId = mixinEl.id;
-        currentObserver = this.mixinObservers[mixinId];
-        if (currentObserver) { return; }
-
-        // Add observer.
-        observer = new MutationObserver(function (mutations) {
-          self.handleMixinUpdate(mutations[0].attributeName);
-        });
-        observer.observe(mixinEl, MIXIN_OBSERVER_CONFIG);
-        this.mixinObservers[mixinId] = observer;
-      }
-    },
-
-    handleMixinUpdate: {
-      value: function () { /* no-op */ }
     },
 
     /**

@@ -22,6 +22,7 @@ module.exports = registerElement('a-mixin', {
     attributeChangedCallback: {
       value: function (attr, oldVal, newVal) {
         this.cacheAttribute(attr, newVal);
+        this.updateEntities();
       }
     },
 

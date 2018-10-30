@@ -111,19 +111,6 @@ var proto = Object.create(ANode.prototype, {
     }
   },
 
-  /**
-   * Apply mixin to component.
-   */
-  handleMixinUpdate: {
-    value: function (attrName) {
-      if (!attrName) {
-        this.updateComponents();
-        return;
-      }
-      this.updateComponent(attrName, this.getDOMAttribute(attrName));
-    }
-  },
-
   getObject3D: {
     value: function (type) {
       return this.object3DMap[type];
