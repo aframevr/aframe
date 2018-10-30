@@ -72729,19 +72729,6 @@ var proto = Object.create(ANode.prototype, {
     }
   },
 
-  /**
-   * Apply mixin to component.
-   */
-  handleMixinUpdate: {
-    value: function (attrName) {
-      if (!attrName) {
-        this.updateComponents();
-        return;
-      }
-      this.updateComponent(attrName, this.getDOMAttribute(attrName));
-    }
-  },
-
   getObject3D: {
     value: function (type) {
       return this.object3DMap[type];
@@ -73493,6 +73480,7 @@ module.exports = registerElement('a-mixin', {
     attributeChangedCallback: {
       value: function (attr, oldVal, newVal) {
         this.cacheAttribute(attr, newVal);
+        this.updateEntities();
       }
     },
 
@@ -73584,15 +73572,13 @@ module.exports = registerElement('a-mixin', {
 });
 
 },{"../utils":174,"./a-node":100,"./a-register-element":101,"./component":102}],100:[function(_dereq_,module,exports){
-/* global CustomEvent, MutationObserver */
+/* global CustomEvent */
 var registerElement = _dereq_('./a-register-element').registerElement;
 var isNode = _dereq_('./a-register-element').isNode;
 var utils = _dereq_('../utils/');
 
 var warn = utils.debug('core:a-node:warn');
 var error = utils.debug('core:a-node:error');
-
-var MIXIN_OBSERVER_CONFIG = {attributes: true};
 
 /**
  * Base class for A-Frame that manages loading of objects.
@@ -73608,7 +73594,6 @@ module.exports = registerElement('a-node', {
         this.hasLoaded = false;
         this.isNode = true;
         this.mixinEls = [];
-        this.mixinObservers = {};
       },
       writable: window.debug
     },
@@ -73798,7 +73783,6 @@ module.exports = registerElement('a-node', {
         // Register mixin.
         this.computedMixinStr = this.computedMixinStr + ' ' + mixinEl.id;
         this.mixinEls.push(mixinEl);
-        this.attachMixinListener(mixinEl);
       }
     },
 
@@ -73821,46 +73805,7 @@ module.exports = registerElement('a-node', {
             break;
           }
         }
-        this.removeMixinListener(mixinId);
       }
-    },
-
-    removeMixinListener: {
-      value: function (mixinId) {
-        var observer = this.mixinObservers[mixinId];
-        if (!observer) { return; }
-        observer.disconnect();
-        this.mixinObservers[mixinId] = null;
-      }
-    },
-
-    /**
-     * Add mutation observer from entity to mixin.
-     */
-    attachMixinListener: {
-      value: function (mixinEl) {
-        var currentObserver;
-        var mixinId;
-        var observer;
-        var self = this;
-
-        if (!mixinEl) { return; }
-
-        mixinId = mixinEl.id;
-        currentObserver = this.mixinObservers[mixinId];
-        if (currentObserver) { return; }
-
-        // Add observer.
-        observer = new MutationObserver(function (mutations) {
-          self.handleMixinUpdate(mutations[0].attributeName);
-        });
-        observer.observe(mixinEl, MIXIN_OBSERVER_CONFIG);
-        this.mixinObservers[mixinId] = observer;
-      }
-    },
-
-    handleMixinUpdate: {
-      value: function () { /* no-op */ }
     },
 
     /**
@@ -77679,7 +77624,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.2 (Date 2018-10-30, Commit #af1bd0c)');
+console.log('A-Frame Version: 0.8.2 (Date 2018-10-30, Commit #6c9f98e)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
