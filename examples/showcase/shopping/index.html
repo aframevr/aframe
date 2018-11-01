@@ -7,9 +7,9 @@
     <script src="../../../dist/aframe-master.js"></script>
   </head>
   <body>
-    <a-scene background="color: #ECECEC">
+    <a-scene background="color: #ECECEC" renderer="gammaOutput: true;">
       <a-assets>
-        <a-asset-item id="why-male-models" src="man/man.dae"></a-asset-item>
+        <a-asset-item id="why-male-models" src="man/man.glb"></a-asset-item>
         <img id="fall" src="fall.png">
         <img id="goggles" src="goggles.png">
         <img id="price" src="price.png">
@@ -18,7 +18,7 @@
       </a-assets>
 
       <a-entity id="model" position="0 0 -3" animation="property: rotation; from: 0 -30 0; to: 0 330 0; dur: 15000; easing: linear; loop: true">
-        <a-collada-model position="-.35 0 .55" rotation="0 -20 0" scale="1.5 1.5 1.5" src="#why-male-models"></a-collada-model>
+        <a-gltf-model position="-.35 0 .55" rotation="0 -20 0" scale="1.5 1.5 1.5" src="#why-male-models"></a-gltf-model>
         <a-image src="#shadow2" rotation="-90 0 0" scale="0.5 0.5 0.5"></a-image>
       </a-entity>
 

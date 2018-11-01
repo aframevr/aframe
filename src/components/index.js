@@ -1,6 +1,5 @@
 require('./animation');
 require('./camera');
-require('./collada-model');
 require('./cursor');
 require('./daydream-controls');
 require('./gearvr-controls');

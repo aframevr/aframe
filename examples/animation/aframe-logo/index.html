@@ -11,13 +11,13 @@
              background="color: #24CAFF;"
              renderer="colorManagement: true;">
       <a-assets>
-        <a-asset-item id="treeModel" src="../../assets/models/tree1/tree1.dae"></a-asset-item>
+        <a-asset-item id="treeModel" src="../../assets/models/tree1/tree1.glb"></a-asset-item>
         <a-mixin
           id="tree"
           position="0 10 0"
           animation="property: object3D.position.y; to: 0; dur: 800; easing: easeOutCubic"
           animation__visible="property: visible; to: true; dur: 1"
-          collada-model="#treeModel"
+          gltf-model="#treeModel"
           scale="2.5 2.5 2.5"
           visible="false"></a-mixin>
       </a-assets>

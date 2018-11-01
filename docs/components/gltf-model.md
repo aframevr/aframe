@@ -34,7 +34,6 @@ active.
 ## Why use glTF?
 
 [obj-model]: ./obj-model.md
-[collada-model]: ./collada-model.md
 
 In comparison to the older [OBJ][obj-model] format, which supports only
 vertices, normals, texture coordinates, and basic materials, glTF provides a
@@ -48,15 +47,15 @@ more powerful set of features. In addition to all of the above, glTF offers:
 For simple models with no animation, OBJ is nevertheless a common and reliable
 choice.
 
-In comparison to [COLLADA][collada-model], the supported features are very
+In comparison to COLLADA or FBX, the supported features are very
 similar. However, because glTF focuses on providing a "transmission format"
 rather than an editor format, it is more interoperable with web technologies.
 By analogy, the .PSD (Adobe Photoshop) format is helpful for editing 2D images,
 but images are converted to .JPG for use on the web. In the same way, glTF is a
 simpler way of transmitting 3D assets while rendering the same result.
 
-In short, expect glTF models to work with A-Frame more reliably than COLLADA
-models.
+In short, expect glTF models to work with A-Frame more reliably than other
+formats.
 
 ## Example
 
