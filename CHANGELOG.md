@@ -1,3 +1,67 @@
+## 0.9.0 (TBD)
+
+Performance improvements.
+
+### Major Changes
+
+- Remove `<a-animation>` in favor of new animation component (#3678).
+- Bump to three.js r95 (f9f314).
+- Raycaster events such as `raycaster-intersected` no longer directly contain intersection data. Use `.getIntersection` function supplied in event detail or `el.components.raycaster.getIntersection(el)` to retrieve intersection data. Done to reduce garbage (a87e3b).
+- Disable link portal appearance by default (`link.visualAspectEnabled`), link component defaults to purely to listening to an event to trigger navigation (#3743).
+
+### Deprecations
+
+### Fixes
+
+- setPoseTarget to underlying object3D to fix issues with entities as child of camera (#3820).
+- Don't disable `matrixAutoUpdate` for tracked-controls outside VR (643fdc).
+- Render spectator view after VR submit frame (#3577).
+- Allow components to write to camera Z rotation when look-controls enabled (9a78a)
+- Clear raycaster intersections when toggling disabled (#3594).
+- Postpone renderer until scene is appended to DOM (#3574).
+- Fix canvas textures (b47f20).
+- Fix faces and vertices numbers on stats panel (#3573).
+- Fix magic window mode on Chrome (aaa3bf).
+- Fix audio asset preloading (2a899c).
+- Fix raycaster flatten to only include objects part of `el.object3DMap` versus arbitrary children (8809e7).
+- Fix canvas getting squished on orientation change on mobile (64ed3d).
+- Update position, rotation, scale components when calling `.setAttribute` on them (#3738).
+- Update canvas bounds for mouse cursor on renderer resize (a4cf08).
+- Fix controller reconnecting on Oculus Go and GearVR (dc8662).
+
+### Enhancements
+
+- Add `oculus-go-controls`, thanks Oculus! (cbbe75)
+- Add `loading-screen` component (#3760).
+- Support custom enter VR buttons through vr-mode-ui (#3606).
+- Add `material.blending` property (#3543).
+- Add `light.shadowRadius` property (21b38).
+- Add ability to cap canvas size to pixel value (92b2f9).
+- Reduce npm bundle (53f58f).
+- Allow double underscores in component IDs (e.g., `animation__foo__bar`) (030023).
+- Add `renderer.logarithmicDepthBuffer` option (d210a2).
+- Add `look-controls.reverseTouchDrag` property (#3761).
+- Switch to jsdelivr with rawgit going away.
+- Support preprocessing of sound in `sound.playSound()` (2b2819).
+- Consolidate fullscreen styles under single CSS class (`html.a-fullscreen`) (#3828).
+
+### Performance
+
+- Large refactor of core component update path, reducing memory allocation and using object pooling (#3772).
+- Remove spamming `navigator.getGamepad` calls in tracked-controls (#3816).
+- Remove object allocation in `.setAttribute(component, propertyName, value)` (#3812).
+- Simplify text shader hacks and make text alpha look prettier (#3557).
+- Remove garbage and bubbling from tracked-controls (#3589).
+- Remove redundant matrix world update in raycaster (ae7eba).
+- Replace Oculus OBJ model with a glTF one (#3539).
+- Optimize coordinate parse (bf66ba).
+- Simply wasd-controls tick (#3763).
+- Optimize text component (#3768).
+- Remove memory allocations in material code (#3789).
+- Remove garbage in sound component (2b2819).
+- Improve grabbing class cursor performance in 2D look-controls (#3790).
+- Remove unused and redundant mixin observers (#3831).
+
 ## 0.8.2 (April 15, 2018)
 
 Bug fixes after 0.8.0 release.
@@ -21,7 +85,7 @@ Bug fixes after 0.8.0 release.
 - Fix video sphere not rendering due to missing back material flag. (fix #3444)
 - Fixes pointerlock mode camera movement jank. (#3434)
 
-### Performance 
+### Performance
 
 - Remove default components to 4 component initializations per entity. (#3490)
 - Save one array initialization per tick and raycaster. (#3438) (fix #3437)

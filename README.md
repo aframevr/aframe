@@ -205,6 +205,12 @@ For questions and support, [ask on StackOverflow](https://stackoverflow.com/ques
 - [Follow `A Week of A-Frame` on the A-Frame blog](https://aframe.io/blog).
 - [Follow @aframevr on Twitter](https://twitter.com/aframevr).
 
+And get in touch with the maintainers!
+
+- [Diego Marcos](https://twitter.com/dmarcos)
+- [Don McCurdy](https://twitter.com/donrmccurdy)
+- [Kevin Ngo](https://twitter.com/andgokevin)
+
 ## Contributing
 
 Get involved! Check out the [Contributing Guide](CONTRIBUTING.md) for how to get started.
