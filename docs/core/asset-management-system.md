@@ -137,7 +137,7 @@ the `loaded` event when they say they have finished loading.
 ### `<a-asset-item>`
 
 `<a-asset-item>` invokes the [three.js
-FileLoader](https://threejs.org/docs/#Reference/Loaders/FileLoader).  We can use
+FileLoader](https://threejs.org/docs/#api/en/loaders/FileLoader).  We can use
 `<a-asset-item>` for any file type. When finished, it will set its `data`
 member with the text response.
 
