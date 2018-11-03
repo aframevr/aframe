@@ -678,6 +678,8 @@ function wrapRemove (removeMethod) {
     this.objectPool.recycle(this.attrValue);
     this.objectPool.recycle(this.oldData);
     this.objectPool.recycle(this.parsingAttrValue);
+
+    this.attrValue = this.oldData = this.parsingAttrValue = undefined;
   };
 }
 
