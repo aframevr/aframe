@@ -74734,6 +74734,8 @@ function wrapRemove (removeMethod) {
     this.objectPool.recycle(this.attrValue);
     this.objectPool.recycle(this.oldData);
     this.objectPool.recycle(this.parsingAttrValue);
+
+    this.attrValue = this.oldData = this.parsingAttrValue = undefined;
   };
 }
 
@@ -77654,7 +77656,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.2 (Date 2018-11-01, Commit #843a67f)');
+console.log('A-Frame Version: 0.8.2 (Date 2018-11-03, Commit #6fde084)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
