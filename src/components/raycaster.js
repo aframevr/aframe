@@ -109,7 +109,14 @@ module.exports.Component = registerComponent('raycaster', {
     }
 
     if (data.objects !== oldData.objects && !OBSERVER_SELECTOR_RE.test(data.objects)) {
-      warn('Selector "' + data.objects + '" may not update automatically with DOM changes.');
+      warn('[raycaster] Selector "' + data.objects +
+           '" may not update automatically with DOM changes.');
+    }
+
+    if (!data.objects) {
+      warn('[raycaster] For performance, please define raycaster.objects when using ' +
+           'raycaster or cursor components to whitelist which entities to intersect with. ' +
+           'e.g., raycaster="objects: [data-raycastable]".');
     }
 
     if (data.autoRefresh !== oldData.autoRefresh && el.isPlaying) {
