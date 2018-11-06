@@ -68924,7 +68924,14 @@ module.exports.Component = registerComponent('raycaster', {
     }
 
     if (data.objects !== oldData.objects && !OBSERVER_SELECTOR_RE.test(data.objects)) {
-      warn('Selector "' + data.objects + '" may not update automatically with DOM changes.');
+      warn('[raycaster] Selector "' + data.objects +
+           '" may not update automatically with DOM changes.');
+    }
+
+    if (!data.objects) {
+      warn('[raycaster] For performance, please define raycaster.objects when using ' +
+           'raycaster or cursor components to whitelist which entities to intersect with. ' +
+           'e.g., raycaster="objects: [data-raycastable]".');
     }
 
     if (data.autoRefresh !== oldData.autoRefresh && el.isPlaying) {
@@ -77656,7 +77663,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.2 (Date 2018-11-03, Commit #6fde084)');
+console.log('A-Frame Version: 0.8.2 (Date 2018-11-06, Commit #2d4c4b3)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
