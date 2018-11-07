@@ -68869,6 +68869,8 @@ module.exports.Component = registerComponent('raycaster', {
     useWorldCoordinates: {default: false}
   },
 
+  multiple: true,
+
   init: function () {
     this.clearedIntersectedEls = [];
     this.unitLineEndVec3 = new THREE.Vector3();
@@ -69002,6 +69004,8 @@ module.exports.Component = registerComponent('raycaster', {
     var data = this.data;
     var prevCheckTime = this.prevCheckTime;
 
+    if (!data.enabled) { return; }
+
     // Only check for intersection if interval time has passed.
     if (prevCheckTime && (time - prevCheckTime < data.interval)) { return; }
 
@@ -69025,8 +69029,6 @@ module.exports.Component = registerComponent('raycaster', {
     var newIntersections = this.newIntersections;
     var prevIntersectedEls = this.prevIntersectedEls;
     var rawIntersections = this.rawIntersections;
-
-    if (!this.data.enabled) { return; }
 
     // Refresh the object whitelist if needed.
     if (this.dirty) { this.refreshObjects(); }
@@ -77664,7 +77666,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.2 (Date 2018-11-07, Commit #dbc3202)');
+console.log('A-Frame Version: 0.8.2 (Date 2018-11-07, Commit #fc18cde)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
