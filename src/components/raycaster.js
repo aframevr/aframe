@@ -54,6 +54,8 @@ module.exports.Component = registerComponent('raycaster', {
     useWorldCoordinates: {default: false}
   },
 
+  multiple: true,
+
   init: function () {
     this.clearedIntersectedEls = [];
     this.unitLineEndVec3 = new THREE.Vector3();
@@ -187,6 +189,8 @@ module.exports.Component = registerComponent('raycaster', {
     var data = this.data;
     var prevCheckTime = this.prevCheckTime;
 
+    if (!data.enabled) { return; }
+
     // Only check for intersection if interval time has passed.
     if (prevCheckTime && (time - prevCheckTime < data.interval)) { return; }
 
@@ -210,8 +214,6 @@ module.exports.Component = registerComponent('raycaster', {
     var newIntersections = this.newIntersections;
     var prevIntersectedEls = this.prevIntersectedEls;
     var rawIntersections = this.rawIntersections;
-
-    if (!this.data.enabled) { return; }
 
     // Refresh the object whitelist if needed.
     if (this.dirty) { this.refreshObjects(); }
