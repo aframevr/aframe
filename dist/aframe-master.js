@@ -70349,7 +70349,6 @@ module.exports.Component = registerComponent('shadow', {
 },{"../core/component":102,"../lib/three":151,"../utils/bind":168}],87:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var debug = _dereq_('../utils/debug');
-var bind = _dereq_('../utils/bind');
 var THREE = _dereq_('../lib/three');
 
 var warn = debug('components:sound:warn');
@@ -70380,7 +70379,9 @@ module.exports.Component = registerComponent('sound', {
     this.pool = new THREE.Group();
     this.loaded = false;
     this.mustPlay = false;
-    this.playSound = bind(this.playSound, this);
+
+    // Don't pass evt because playSound takes a function as parameter.
+    this.playSoundBound = () => { this.playSound(); };
   },
 
   update: function (oldData) {
@@ -70468,12 +70469,12 @@ module.exports.Component = registerComponent('sound', {
   */
   updateEventListener: function (oldEvt) {
     var el = this.el;
-    if (oldEvt) { el.removeEventListener(oldEvt, this.playSound); }
-    el.addEventListener(this.data.on, this.playSound);
+    if (oldEvt) { el.removeEventListener(oldEvt, this.playSoundBound); }
+    el.addEventListener(this.data.on, this.playSoundBound);
   },
 
   removeEventListener: function () {
-    this.el.removeEventListener(this.data.on, this.playSound);
+    this.el.removeEventListener(this.data.on, this.playSoundBound);
   },
 
   /**
@@ -70594,7 +70595,7 @@ module.exports.Component = registerComponent('sound', {
   }
 });
 
-},{"../core/component":102,"../lib/three":151,"../utils/bind":168,"../utils/debug":170}],88:[function(_dereq_,module,exports){
+},{"../core/component":102,"../lib/three":151,"../utils/debug":170}],88:[function(_dereq_,module,exports){
 var createTextGeometry = _dereq_('three-bmfont-text');
 var loadBMFont = _dereq_('load-bmfont');
 
@@ -77663,7 +77664,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.2 (Date 2018-11-06, Commit #2d4c4b3)');
+console.log('A-Frame Version: 0.8.2 (Date 2018-11-07, Commit #dbc3202)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
