@@ -1,6 +1,5 @@
 var registerComponent = require('../core/component').registerComponent;
 var debug = require('../utils/debug');
-var bind = require('../utils/bind');
 var THREE = require('../lib/three');
 
 var warn = debug('components:sound:warn');
@@ -31,7 +30,9 @@ module.exports.Component = registerComponent('sound', {
     this.pool = new THREE.Group();
     this.loaded = false;
     this.mustPlay = false;
-    this.playSound = bind(this.playSound, this);
+
+    // Don't pass evt because playSound takes a function as parameter.
+    this.playSoundBound = () => { this.playSound(); };
   },
 
   update: function (oldData) {
@@ -119,12 +120,12 @@ module.exports.Component = registerComponent('sound', {
   */
   updateEventListener: function (oldEvt) {
     var el = this.el;
-    if (oldEvt) { el.removeEventListener(oldEvt, this.playSound); }
-    el.addEventListener(this.data.on, this.playSound);
+    if (oldEvt) { el.removeEventListener(oldEvt, this.playSoundBound); }
+    el.addEventListener(this.data.on, this.playSoundBound);
   },
 
   removeEventListener: function () {
-    this.el.removeEventListener(this.data.on, this.playSound);
+    this.el.removeEventListener(this.data.on, this.playSoundBound);
   },
 
   /**

@@ -186,6 +186,17 @@ suite('sound', function () {
       el.setAttribute('sound', 'src', 'url(base/tests/assets/test.ogg)');
       el.components.sound.isPlaying = true;
     });
+
+    test('plays sound on event', function (done) {
+      const el = this.el;
+      el.setAttribute('sound', 'on', 'foo');
+      const playSoundStub = el.components.sound.playSound = sinon.stub();
+      el.emit('foo');
+      setTimeout(() => {
+        assert.ok(playSoundStub.called);
+        done();
+      });
+    });
   });
 
   suite('stopSound', function () {
