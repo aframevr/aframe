@@ -6,6 +6,7 @@ var warn = debug('core:propertyTypes:warn');
 
 var propertyTypes = module.exports.propertyTypes = {};
 var nonCharRegex = /[,> .[\]:]/;
+var urlRegex = /\url\((.+)\)/;
 
 // Built-in property types.
 registerPropertyType('audio', '', assetParse);
@@ -77,7 +78,7 @@ function assetParse (value) {
   if (typeof value !== 'string') { return value; }
 
   // Wrapped `url()` in case of data URI.
-  parsedUrl = value.match(/\url\((.+)\)/);
+  parsedUrl = value.match(urlRegex);
   if (parsedUrl) { return parsedUrl[1]; }
 
   // ID.
