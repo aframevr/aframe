@@ -92,7 +92,7 @@ module.exports.isLandscape = function () {
  * Check if device is iOS and older than version 10.
  */
 module.exports.isIOSOlderThan10 = function (userAgent) {
-  return /(iphone|ipod|ipad).*os.(7|8|9)/i.test(userAgent);
+  return /(iphone|ipod|ipad).*os.(7_|8_|9_)/i.test(userAgent);
 };
 
 /**

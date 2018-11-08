@@ -35,6 +35,11 @@ suite('isIOSOlderThan10', function () {
     assert.notOk(device.isIOSOlderThan10(v11));
     assert.notOk(device.isIOSOlderThan10(v12));
   });
+
+  test('is false for webview', function () {
+    var chromeiOS = `Mozilla/5.0 (iPhone; CPU iPhone OS 12_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/70.0.3538.60 Mobile/15E148 Safari/605.1`;
+    assert.notOk(device.isIOSOlderThan10(chromeiOS));
+  });
 });
 
 suite('environment', function () {
