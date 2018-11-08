@@ -77666,7 +77666,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.2 (Date 2018-11-07, Commit #fc18cde)');
+console.log('A-Frame Version: 0.8.2 (Date 2018-11-08, Commit #79177fc)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -79627,7 +79627,7 @@ module.exports.isLandscape = function () {
  * Check if device is iOS and older than version 10.
  */
 module.exports.isIOSOlderThan10 = function (userAgent) {
-  return /(iphone|ipod|ipad).*os.(7|8|9)/i.test(userAgent);
+  return /(iphone|ipod|ipad).*os.(7_|8_|9_)/i.test(userAgent);
 };
 
 /**
