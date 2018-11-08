@@ -74840,6 +74840,7 @@ var warn = debug('core:propertyTypes:warn');
 
 var propertyTypes = module.exports.propertyTypes = {};
 var nonCharRegex = /[,> .[\]:]/;
+var urlRegex = /\url\((.+)\)/;
 
 // Built-in property types.
 registerPropertyType('audio', '', assetParse);
@@ -74911,7 +74912,7 @@ function assetParse (value) {
   if (typeof value !== 'string') { return value; }
 
   // Wrapped `url()` in case of data URI.
-  parsedUrl = value.match(/\url\((.+)\)/);
+  parsedUrl = value.match(urlRegex);
   if (parsedUrl) { return parsedUrl[1]; }
 
   // ID.
@@ -77666,7 +77667,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.2 (Date 2018-11-08, Commit #79177fc)');
+console.log('A-Frame Version: 0.8.2 (Date 2018-11-08, Commit #c1106e1)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
