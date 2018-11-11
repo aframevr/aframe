@@ -466,6 +466,7 @@ var proto = Object.create(ANode.prototype, {
   updateComponent: {
     value: function (attr, attrValue, clobber) {
       var component = this.components[attr];
+
       if (component) {
         // Remove component.
         if (attrValue === null && !checkComponentDefined(this, attr)) {
@@ -586,12 +587,54 @@ var proto = Object.create(ANode.prototype, {
     }
   },
 
+  /**
+   * When mixins updated, trigger init or optimized-update of relevant components.
+   */
   mixinUpdate: {
-    value: function (newMixins, oldMixins) {
-      oldMixins = oldMixins || this.getAttribute('mixin');
-      this.updateMixins(newMixins, oldMixins);
-      this.updateComponents();
-    }
+    value: (function () {
+      var componentsUpdated = [];
+
+      return function (newMixins, oldMixins) {
+        var component;
+        var mixinEl;
+        var mixinIds;
+        var i;
+
+        oldMixins = oldMixins || this.getAttribute('mixin');
+        mixinIds = this.updateMixins(newMixins, oldMixins);
+
+        // Loop over current mixins.
+        componentsUpdated.length = 0;
+        for (i = 0; i < this.mixinEls.length; i++) {
+          for (component in this.mixinEls[i].componentCache) {
+            if (componentsUpdated.indexOf(component) === -1) {
+              if (this.components[component]) {
+                // Update. Just rebuild data.
+                this.components[component].handleMixinUpdate();
+              } else {
+                // Init. buildData will gather mixin values.
+                this.initComponent(component, null);
+              }
+              componentsUpdated.push(component);
+            }
+          }
+        }
+
+        // Loop over old mixins to call for data rebuild.
+        for (i = 0; i < mixinIds.oldMixinIds.length; i++) {
+          mixinEl = document.getElementById(mixinIds.oldMixinIds[i]);
+          if (!mixinEl) { continue; }
+          for (component in mixinEl.componentCache) {
+            if (componentsUpdated.indexOf(component) === -1) {
+              if (this.components[component]) {
+                // Compoennt removed. Rebuild data if not yet rebuilt.
+                this.components[component].handleMixinUpdate();
+              }
+            }
+          }
+        }
+      };
+    })()
   },
 
   /**

@@ -16,7 +16,7 @@ suite('pool', function () {
     var poolComponent = sceneEl.components.pool;
     assert.equal(poolComponent.availableEls.length, 1);
     assert.equal(poolComponent.usedEls.length, 0);
-    assert.equal(sceneEl.querySelectorAll('[material]').length, 1);
+    assert.equal(sceneEl.querySelectorAll('a-entity[material]').length, 1);
   });
 
   test('can specify container', function (done) {

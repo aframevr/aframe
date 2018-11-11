@@ -148,6 +148,7 @@ module.exports = registerElement('a-node', {
       value: (function () {
         var newMixinIdArray = [];
         var oldMixinIdArray = [];
+        var mixinIds = {};
 
         return function (newMixins, oldMixins) {
           var i;
@@ -158,6 +159,9 @@ module.exports = registerElement('a-node', {
           oldMixinIdArray.length = 0;
           newMixinIds = newMixins ? utils.split(newMixins.trim(), /\s+/) : newMixinIdArray;
           oldMixinIds = oldMixins ? utils.split(oldMixins.trim(), /\s+/) : oldMixinIdArray;
+
+          mixinIds.newMixinIds = newMixinIds;
+          mixinIds.oldMixinIds = oldMixinIds;
 
           // Unregister old mixins.
           for (i = 0; i < oldMixinIds.length; i++) {
@@ -180,6 +184,8 @@ module.exports = registerElement('a-node', {
             window.HTMLElement.prototype.setAttribute.call(this, 'mixin',
                                                            this.computedMixinStr);
           }
+
+          return mixinIds;
         };
       })()
     },
