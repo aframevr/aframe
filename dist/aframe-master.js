@@ -69660,11 +69660,11 @@ module.exports.Component = registerComponent('pool', {
     var el;
     if (this.availableEls.length === 0) {
       if (this.data.dynamic === false) {
-        warn('Requested entity from empty pool: ' + this.name);
+        warn('Requested entity from empty pool: ' + this.attrName);
         return;
       } else {
         warn('Requested entity from empty pool. This pool is dynamic and will resize ' +
-             'automatically. You might want to increase its initial size: ' + this.name);
+             'automatically. You might want to increase its initial size: ' + this.attrName);
       }
       this.createEntity();
     }
@@ -69680,7 +69680,7 @@ module.exports.Component = registerComponent('pool', {
   returnEntity: function (el) {
     var index = this.usedEls.indexOf(el);
     if (index === -1) {
-      warn('The returned entity was not previously pooled from ' + this.name);
+      warn('The returned entity was not previously pooled from ' + this.attrName);
       return;
     }
     this.usedEls.splice(index, 1);
@@ -77783,7 +77783,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.2 (Date 2018-11-11, Commit #5759e99)');
+console.log('A-Frame Version: 0.8.2 (Date 2018-11-12, Commit #49965ce)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
