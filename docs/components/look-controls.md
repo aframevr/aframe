@@ -59,3 +59,9 @@ replace the `require` statements with A-Frame globals (e.g.,
 If you want to create your own component for look controls, you will have to
 copy and paste the HMD-tracking bits into your component. In the future, we may
 have a system for people to more easily create their controls.
+
+When creating custom controls eg `touch-controls` you need to explicitly define the camera ie
+
+```html
+<a-entity camera touch-controls></a-entity>
+```
