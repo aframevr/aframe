@@ -32,7 +32,7 @@ module.exports.Component = registerComponent('sound', {
     this.mustPlay = false;
 
     // Don't pass evt because playSound takes a function as parameter.
-    this.playSoundBound = () => { this.playSound(); };
+    this.playSoundBound = this.playSound.bind(this);
   },
 
   update: function (oldData) {
