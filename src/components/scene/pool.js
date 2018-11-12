@@ -84,11 +84,11 @@ module.exports.Component = registerComponent('pool', {
     var el;
     if (this.availableEls.length === 0) {
       if (this.data.dynamic === false) {
-        warn('Requested entity from empty pool: ' + this.name);
+        warn('Requested entity from empty pool: ' + this.attrName);
         return;
       } else {
         warn('Requested entity from empty pool. This pool is dynamic and will resize ' +
-             'automatically. You might want to increase its initial size: ' + this.name);
+             'automatically. You might want to increase its initial size: ' + this.attrName);
       }
       this.createEntity();
     }
@@ -104,7 +104,7 @@ module.exports.Component = registerComponent('pool', {
   returnEntity: function (el) {
     var index = this.usedEls.indexOf(el);
     if (index === -1) {
-      warn('The returned entity was not previously pooled from ' + this.name);
+      warn('The returned entity was not previously pooled from ' + this.attrName);
       return;
     }
     this.usedEls.splice(index, 1);
