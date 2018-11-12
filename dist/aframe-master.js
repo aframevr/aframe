@@ -70387,7 +70387,7 @@ module.exports.Component = registerComponent('sound', {
     this.mustPlay = false;
 
     // Don't pass evt because playSound takes a function as parameter.
-    this.playSoundBound = () => { this.playSound(); };
+    this.playSoundBound = this.playSound.bind(this);
   },
 
   update: function (oldData) {
@@ -77783,7 +77783,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.2 (Date 2018-11-12, Commit #49965ce)');
+console.log('A-Frame Version: 0.8.2 (Date 2018-11-12, Commit #256c325)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
