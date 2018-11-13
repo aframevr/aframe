@@ -25,6 +25,8 @@ module.exports.Component = registerComponent('sound', {
   multiple: true,
 
   init: function () {
+    var self = this;
+
     this.listener = null;
     this.audioLoader = new THREE.AudioLoader();
     this.pool = new THREE.Group();
@@ -32,7 +34,7 @@ module.exports.Component = registerComponent('sound', {
     this.mustPlay = false;
 
     // Don't pass evt because playSound takes a function as parameter.
-    this.playSoundBound = this.playSound.bind(this);
+    this.playSoundBound = function () { self.playSound(); };
   },
 
   update: function (oldData) {
