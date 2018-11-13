@@ -82,6 +82,26 @@ suite('raycaster', function () {
       sceneEl.appendChild(el2);
     });
 
+    test('cannot have redundant objects', function (done) {
+      const el1 = document.createElement('a-entity');
+      el1.setAttribute('geometry', 'primitive: box');
+      const el2 = document.createElement('a-entity');
+      el2.setAttribute('geometry', 'primitive: box');
+      el1.appendChild(el2);
+
+      el1.addEventListener('loaded', function () {
+        component.refreshObjects();
+        const mesh = el2.getObject3D('mesh');
+        let count = 0;
+        component.objects.forEach(obj => {
+          if (obj === mesh) { count++; }
+        });
+        assert.equal(count, 1);
+        done();
+      });
+      sceneEl.appendChild(el1);
+    });
+
     test('can whitelist objects to intersect', function (done) {
       var el2 = document.createElement('a-entity');
       var el3 = document.createElement('a-entity');

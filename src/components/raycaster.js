@@ -388,7 +388,7 @@ module.exports.Component = registerComponent('raycaster', {
    * so that non-recursive raycasting remains useful.
    *
    * Only push children defined as component attachemnts (e.g., setObject3D),
-   * not actual children in the scene graph hierarchy.
+   * NOT actual children in the scene graph hierarchy.
    *
    * @param  {Array<Element>} els
    * @return {Array<THREE.Object3D>}
