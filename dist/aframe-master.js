@@ -77705,17 +77705,6 @@ registerGeometry('triangle', {
 });
 
 },{"../core/geometry":103,"../lib/three":151}],149:[function(_dereq_,module,exports){
-// Check before the polyfill runs.
-window.hasNativeWebVRImplementation = !!window.navigator.getVRDisplays || !!window.navigator.getVRDevices;
-
-// WebVR polyfill
-var WebVRPolyfill = _dereq_('webvr-polyfill');
-window.webvrpolyfill = new WebVRPolyfill({
-  BUFFER_SCALE: 1,
-  CARDBOARD_UI_DISABLED: true,
-  ROTATE_INSTRUCTIONS_DISABLED: true
-});
-
 var utils = _dereq_('./utils/');
 
 var debug = utils.debug;
@@ -77741,11 +77730,22 @@ if (window.location.protocol === 'file:') {
 // Polyfill `Promise`.
 window.Promise = window.Promise || _dereq_('promise-polyfill');
 
+// WebVR polyfill
+// Check before the polyfill runs.
+window.hasNativeWebVRImplementation = !!window.navigator.getVRDisplays ||
+                                      !!window.navigator.getVRDevices;
+var WebVRPolyfill = _dereq_('webvr-polyfill');
+var polyfillConfig = {
+  BUFFER_SCALE: 1,
+  CARDBOARD_UI_DISABLED: true,
+  ROTATE_INSTRUCTIONS_DISABLED: true
+};
 // Workaround for iOS Safari canvas sizing issues in stereo (webvr-polyfill/issues/102).
 // Only for iOS on versions older than 10.
 if (utils.device.isIOSOlderThan10(window.navigator.userAgent)) {
-  window.WebVRConfig.BUFFER_SCALE = 1 / window.devicePixelRatio;
+  polyfillConfig.BUFFER_SCALE = 1 / window.devicePixelRatio;
 }
+window.webvrpolyfill = new WebVRPolyfill(polyfillConfig);
 
 _dereq_('present'); // Polyfill `performance.now()`.
 
@@ -77785,7 +77785,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.2 (Date 2018-11-13, Commit #5ba089f)');
+console.log('A-Frame Version: 0.8.2 (Date 2018-11-13, Commit #4103950)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
