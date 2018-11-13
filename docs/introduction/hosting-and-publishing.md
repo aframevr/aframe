@@ -117,7 +117,6 @@ scene. Plus, if we're using `<a-assets>`, we should usually set
 
 There are several simple options to host assets via a CDN:
 
-- [A-Frame Asset Uploader](https://cdn.aframe.io/) - Uses UploadCare.
 - [Glitch Asset Uploader](https://glitch.com/) - The Glitch code editor has a
   panel to upload assets and get CDN URLs in return.
 - [imgur](https://imgur.com/) - For images, we could use imgur, a popular image
