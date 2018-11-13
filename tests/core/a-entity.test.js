@@ -1251,6 +1251,27 @@ suite('a-entity', function () {
       assert.shallowDeepEqual(el.getAttribute('material').color, 'red');
     });
 
+    test('does not override defined property on subsequent updates', function () {
+      el.setAttribute('material', {color: 'red'});
+      mixinFactory('blue', {material: 'color: blue'});
+      mixinFactory('opacity', {opacity: 0.25});
+
+      el.setAttribute('mixin', 'blue');
+      assert.equal(el.getAttribute('material').color, 'red');
+
+      el.setAttribute('material', {opacity: 0.5});
+      assert.equal(el.getAttribute('material').color, 'red');
+      assert.equal(el.getAttribute('material').opacity, 0.5);
+
+      el.setAttribute('mixin', 'blue opacity');
+      assert.equal(el.getAttribute('material').color, 'red');
+      assert.equal(el.getAttribute('material').opacity, 0.5);
+
+      el.setAttribute('material', {side: 'back'});
+      assert.equal(el.getAttribute('material').color, 'red');
+      assert.equal(el.getAttribute('material').opacity, 0.5);
+    });
+
     test('applies multiple components from mixin', function () {
       var mixinId = 'sound';
       var soundUrl = 'mysoundfile.mp3';
