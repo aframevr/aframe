@@ -1311,6 +1311,40 @@ suite('a-entity', function () {
       assert.shallowDeepEqual(el.getAttribute('position'), {x: 0, y: 0, z: 0});
       assert.equal(el.mixinEls.length, 0);
     });
+
+    /**
+     * Fixed a weird case where attributeChangedCallback on mixin was fired during scene init.
+     * That fired mixinUpdate before the entity was loaded (and el.sceneEl was undefined).
+     * And tried to update components before the entity was ready.
+     * This test mimics that state where mixinUpdate called when entity not fully loaded but
+     * component is still initializing.
+     */
+    test('wait for entity to load on mixin update', function (done) {
+      const TestComponent = AFRAME.registerComponent('test', {
+        update: function () {
+          assert.ok(this.el.sceneEl);
+          done();
+        }
+      });
+
+      elFactory().then(someEl => {
+        const sceneEl = someEl.sceneEl;
+
+        const mixin = document.createElement('a-mixin');
+        mixin.setAttribute('id', 'foo');
+        mixin.setAttribute('test', '');
+        sceneEl.appendChild(mixin);
+
+        setTimeout(() => {
+          const el = document.createElement('a-entity');
+          el.setAttribute('mixin', 'foo');
+          el.components.test = new TestComponent(el, {}, '');
+          el.components.test.oldData = 'foo';
+          el.mixinUpdate('foo');
+          sceneEl.appendChild(el);
+        });
+      });
+    });
   });
 });
 
