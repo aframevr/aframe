@@ -4,7 +4,9 @@ type: components
 layout: docs
 parent_section: components
 source_code: src/components/gltf-model.js
-examples: []
+examples:
+ - title: Modifying Material of Model
+   src: https://glitch.com/edit/#!/aframe-modify-model-material?path=index.html:1:0
 ---
 
 [about-gltf]: https://www.khronos.org/gltf
@@ -97,7 +99,7 @@ rendering.
 
 ## Using animations
 
-If you want to use the animations from your glTF model, you can use the [animation-mixer](https://github.com/donmccurdy/aframe-extras/tree/master/src/loaders#animation) component from [aframe-extras](https://github.com/donmccurdy/aframe-extras). By default all animations are played in a loop. 
+If you want to use the animations from your glTF model, you can use the [animation-mixer](https://github.com/donmccurdy/aframe-extras/tree/master/src/loaders#animation) component from [aframe-extras](https://github.com/donmccurdy/aframe-extras). By default all animations are played in a loop.
 
 ```html
 <a-entity gltf-model="#monster" animation-mixer></a-entity>

@@ -28,7 +28,7 @@ Important distinguishing features include whether they:
 - Have controllers or not, and whether those controllers have 6DoF
   or 3DoF. Generally, the number of degrees of freedom of the controllers
   matches that of the headset.
-- Are powered by a PC or by a mobile device or smartphone.
+- Are powered by a PC or by a mobile device or standalone.
 
 Rotational tracking allows people to look around or rotate objects. All
 headsets provide rotational tracking.
@@ -40,7 +40,7 @@ controllers. Positional tracking is important to give people presence, to make
 them feel they are in a real environment. With rotational-only tracking, people
 are constrained to looking around and wiggling the controller.
 
-### What Are the Current Headsets on the Market?
+### What Are Some Current Headsets?
 
 [HTC Vive]: https://www.vive.com/
 [Oculus Rift]: https://www.oculus.com/rift/
@@ -48,32 +48,27 @@ are constrained to looking around and wiggling the controller.
 [Samsung GearVR]: http://www.samsung.com/global/galaxy/gear-vr/
 [Windows Mixed Reality]: https://developer.microsoft.com/en-us/windows/mixed-reality/
 
-| Headset                 | Platform | Positional Tracking | Controllers        | Controller Positional Tracking |
-|-------------------------|----------|---------------------|--------------------|---------------------------------|
-| [HTC Vive]              | PC       | :white_check_mark:  | :white_check_mark: | :white_check_mark:              |
-| [Oculus Rift]           | PC       | :white_check_mark:  | :white_check_mark: | :white_check_mark:              |
-| [Google Daydream]       | Android  | :x:                 | :white_check_mark: | :x:                             |
-| [Samsung GearVR]        | Android  | :x:                 | :white_check_mark: | :x:                             |
-| [Windows Mixed Reality] | PC       | :white_check_mark:  | :white_check_mark: | :white_check_mark:              |
+| Headset                 | Platform   | Positional Tracking | Controllers        | Controller Positional Tracking |
+|-------------------------|------------|---------------------|--------------------|--------------------------------|
+| [HTC Vive]              | PC         | :white_check_mark:  | :white_check_mark: | :white_check_mark:             |
+| [Oculus Rift]           | PC         | :white_check_mark:  | :white_check_mark: | :white_check_mark:             |
+| [Google Daydream]       | Android    | :x:                 | :white_check_mark: | :x:                            |
+| [Samsung GearVR]        | Android    | :x:                 | :white_check_mark: | :x:                            |
+| [Windows Mixed Reality] | PC         | :white_check_mark:  | :white_check_mark: | :white_check_mark:             |
+| [Oculus Go]             | Standalone | :x:                 | :white_check_mark: | :x:                            |
+| [Vive Focus]            | Standalone | :x:                 | :white_check_mark: | :x:                            |
+| Oculus Quest            | Standalone | :white_check_mark:  | :white_check_mark: | :white_check_mark:             |
 
 ## What is WebVR?
 
-[vlad]: https://en.wikipedia.org/wiki/Vladimir_Vuki%C4%87evi%C4%87
-
 WebVR is a JavaScript API for creating immersive 3D, virtual reality
-experiences in your browser. WebVR was originally conceived at Mozilla by
-[Vladimir Vukicvic]. See the [WebVR API specification on
-W3C][w3c].
+experiences in your browser. Or simply put, allows VR in the browser over the
+Web.
 
 A-Frame uses the WebVR API to gain access to VR headset sensor data (position,
 orientation) to transform the camera and to render content directly to VR
 headsets. Note that WebVR, which provides data, should not be confused nor
 conflated with WebGL, which provides graphics and rendering.
-
-For up-to-date and detailed information about WebVR, [visit
-`https://webvr.rocks`](https://webvr.rocks):
-
-<iframe src="https://webvr.rocks" height="400px" width="100%"></iframe>
 
 ## Where Does A-Frame Want to Take WebVR?
 
@@ -93,30 +88,31 @@ landscape.
 
 ## Which Platforms Does A-Frame Support?
 
-General platforms that A-Frame supports include:
+A-Frame supports mostly all platforms through browsers General platforms that
+A-Frame supports include:
 
 - VR on desktop with a headset
 - VR on mobile with a headset
+- VR on standalone headset
 - Flat on desktop (i.e., mouse and keyboard)
 - Flat mobile (i.e., magic window)
 
-[alt]: https://altvr.com/
-
 Some other platforms that have been shown to work with A-Frame include:
 
-- Augmented reality (AR) on AR headsets (e.g., HoloLens, Windows Mixed Reality)
-- Augmented reality (AR) on mobile (i.e., magic window)
-- [AltSpaceVR][alt] through native SDK
+- Augmented reality (AR) on AR headsets (e.g., Magic Leap, HoloLens)
+- Augmented reality (AR) on mobile (i.e., magic window, ARKit, ARCore)
 
 ## Which VR Headsets Does A-Frame Support?
 
-VR headsets that A-Frame supports include:
+A-Frame supports most headsets through browsers. Some VR headsets that A-Frame
+supports include:
 
-- HTC Vive with controllers and trackers
-- Oculus Rift with Touch controllers
-- Google Daydream with controller
-- Samsung GearVR with controller
-- Google Cardboard
+- HTC Vive
+- Oculus Rift
+- Oculus Go
+- Google Daydream
+- Samsung GearVR
+- Vive Focus
 
 For general hardware recommendations (not requirements):
 
@@ -126,18 +122,18 @@ For general hardware recommendations (not requirements):
 
 ## Which Browsers Does A-Frame Support?
 
-Again [see `https://webvr.rocks`](https://webvr.rocks) for information on which
-browsers support WebVR. Chances are, this list will quickly become outdated.
 A-Frame supports VR for any browser that implements the [WebVR
-specification][w3c]:
+specification][w3c], and flat 3D for most browsers. Large browser vendors are
+slowly moving to the WebXR specification, though it does not have much
+front-facing changes to A-Frame developers, involving mostly renaming of APIs.
 
-- [Firefox 55+ for Windows](https://www.mozilla.org/en-US/firefox/desktop/)
-- [Supermedium](https://www.supermedium.com)
-- [Experimental builds of Chromium](https://webvr.info/get-chrome/)
-- Chrome for Android (Daydream)
-- Oculus Browser (GearVR)
-- Samsung Internet (GearVR)
+- [Supermedium](https://www.supermedium.com) (available on Oculus and Steam)
+- Firefox
+- Oculus Browser
+- Samsung Internet
 - Microsoft Edge
+- Chrome (WebXR under origin trials)
+- Exokit (experimental early support)
 
 [webvrpolyfill]: https://github.com/googlevr/webvr-polyfill
 
@@ -159,3 +155,4 @@ specifically those that support WebGL including:
 - Firefox
 - Chrome
 - Safari
+- Edge

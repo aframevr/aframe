@@ -12,9 +12,7 @@ examples:
     src: https://glitch.com/edit/#!/aframe?path=index.html
 ---
 
-[mozilla]: https://mozilla.org
 [three.js]: https://threejs.org
-[webvr]: https://iswebvrready.com
 
 ## Getting Started
 
@@ -23,7 +21,8 @@ examples:
 A-Frame can be developed from a plain HTML file without having to install
 anything. A great way to try out A-Frame is to **[remix the starter example on
 Glitch][glitch]**, an online code editor that instantly hosts and deploys for
-free. Alternatively, create an `.html` file and include A-Frame in the `<head>`:
+free. Alternatively, create an `.html` file and include A-Frame in the
+`<head>`:
 
 ```html
 <html>
@@ -57,8 +56,9 @@ visual step-by-step lessons to complement the documentation.
 ![A-Frame](https://cloud.githubusercontent.com/assets/674727/25392020/6f011d10-298c-11e7-845e-c3c5baebd14d.jpg)
 
 :a:-Frame is a web framework for building virtual reality (VR) experiences.
-Originally from [Mozilla][mozilla], A-Frame was developed to be an easy but
-powerful way to develop VR content. As an [independent open source
+Originally from Mozilla and largely maintained by the co-creators of A-Frame
+within [Supermedium](https://supermedium.com), A-Frame was developed to be an
+easy yet powerful way to develop VR content. As an [independent open source
 project][github], A-Frame has grown to be one of the [largest and most
 welcoming VR communities][community].
 
@@ -67,15 +67,21 @@ is not just a 3D scene graph or a markup language; the core is a powerful
 entity-component framework that provides a declarative, extensible, and
 composable structure to [three.js].
 
-A-Frame supports most VR headsets such as Vive, Rift, Windows Mixed Reality, Daydream, GearVR,
-Cardboard, and can even be used for augmented reality. Although A-Frame
-supports the whole spectrum, A-Frame aims to define fully immersive
-interactive VR experiences that go beyond basic 360&deg; content, making
-full use of positional tracking and controllers.
+A-Frame supports most VR headsets such as Vive, Rift, Windows Mixed Reality,
+Daydream, GearVR, Cardboard, and can even be used for augmented reality.
+Although A-Frame supports the whole spectrum, A-Frame aims to define fully
+immersive interactive VR experiences that go beyond basic 360&deg; content,
+making full use of positional tracking and controllers.
 
 <div class="docs-introduction-examples">
+  <a href="https://supermedium.com/supercraft">
+    <img alt="Supercraft" target="_blank" src="https://user-images.githubusercontent.com/674727/41085457-f5429566-69eb-11e8-92e5-3210e4c6c4a0.gif" height="190" width="32%">
+  </a>
   <a href="https://aframe.io/a-painter/?url=https://ucarecdn.com/962b242b-87a9-422c-b730-febdc470f203/">
     <img alt="A-Painter" target="_blank" src="https://cloud.githubusercontent.com/assets/674727/24531388/acfc3dda-156d-11e7-8563-5bd75252f70f.gif" height="190" width="32%">
+  </a>
+  <a href="https://supermedium.com">
+    <img alt="Supermedium" target="_blank" src="https://user-images.githubusercontent.com/674727/37294616-7212cd20-25d3-11e8-9e7f-c0c61074f1e0.png" height="190" width="32%">
   </a>
   <a href="https://aframe.io/a-blast/">
     <img alt="A-Blast" target="_blank" src="https://cloud.githubusercontent.com/assets/674727/24531440/0336e66e-156e-11e7-95c2-f2e6ebc0393d.gif" height="190" width="32%">
@@ -83,14 +89,8 @@ full use of positional tracking and controllers.
   <a href="https://aframe.io/a-saturday-night/">
     <img alt="A-Saturday-Night" target="_blank" src="https://cloud.githubusercontent.com/assets/674727/24531477/44272daa-156e-11e7-8ef9-d750ed430f3a.gif" height="190" width="32%">
   </a>
-  <a href="https://ngokevin.github.io/kframe/scenes/aincraft/">
-    <img alt="Aincraft" target="_blank" src="https://cloud.githubusercontent.com/assets/674727/24531777/25b8ff5e-1570-11e7-896c-3446d1419eb8.gif" height="190" width="32%">
-  </a>
   <a href="https://github.com/googlecreativelab/webvr-musicalforest">
     <img alt="Musical Forest by @googlecreativelab" target="_blank" src="https://cloud.githubusercontent.com/assets/674727/25109861/b8e9ec48-2394-11e7-8f2d-ea1cd9df69c8.gif" height="190" width="32%">
-  </a>
-  <a href="https://aframe-gallery.glitch.me">
-    <img alt="360 Image Gallery" target="_blank" src="https://cloud.githubusercontent.com/assets/674727/24572552/72f81bec-162e-11e7-9851-037d0280abdb.gif" height="190" width="32%">
   </a>
 </div>
 
@@ -104,6 +104,12 @@ install, no build steps.
 copy-and-paste. Being based on top of HTML, A-Frame is accessible to everyone:
 web developers, VR enthusiasts, artists, designers, educators, makers, kids.
 
+:electric_plug: **Entity-Component Architecture**: A-Frame is a powerful
+[three.js] framework, providing a declarative, composable, reusable
+[entity-component structure][ecs]. HTML is just the tip of the iceberg;
+developers have unlimited access to JavaScript, DOM APIs, three.js, WebVR, and
+WebGL.
+
 :globe_with_meridians: **Cross-Platform VR**: Build VR applications for Vive,
 Rift, Windows Mixed Reality, Daydream, GearVR, and Cardboard with support for all respective
 controllers. Don't have a headset or controllers? No problem! A-Frame still
@@ -111,32 +117,15 @@ works on standard desktop and smartphones.
 
 [ecs]: ./entity-component-system.md
 
-:electric_plug: **Entity-Component Architecture**: A-Frame is a powerful
-[three.js] framework, providing a declarative, composable, reusable
-[entity-component structure][ecs]. HTML is just the tip of the iceberg;
-developers have unlimited access to JavaScript, DOM APIs, three.js, WebVR, and
-WebGL.
-
 [A-Painter]: https://github.com/aframevr/a-painter
 [Tilt Brush]: https://www.tiltbrush.com/
 
 :zap: **Performance**: A-Frame is optimized from the ground up for WebVR. While
 A-Frame uses the DOM, its elements don't touch the browser layout engine. 3D
-object updates are all done in memory with little overhead under a single
-`requestAnimationFrame` call. For reference, see [A-Painter], a [Tilt Brush]
-clone built in A-Frame that runs like native (90+ FPS).
-
-[React]: https://github.com/aframevr/aframe-react/
-[Preact]: https://github.com/aframevr/aframe-react#using-with-preact
-[Vue.js]: https://vuejs.org/
-[Angular]: https://angularjs.org/
-[d3.js]: http://blockbuilder.org/search#text=aframe
-[Ember.js]: https://www.emberjs.com/
-[jQuery]: http://jquery.com/download/
-
-:hammer: **Tool Agnostic**: Since the Web was built on the notion of HTML,
-A-Frame is compatible with most libraries, frameworks, and tools including
-[React], [Preact], [Vue.js], [d3.js], [Ember.js], [jQuery].
+object updates are all done in memory with little garbage and overhead. The most
+interactive and large scale WebVR applications have been done in A-Frame
+running at 90fps. For reference, see [A-Painter], a [Tilt Brush] clone built in
+A-Frame that is indiscernible from native.
 
 [inspector]: ./visual-inspector-and-dev-tools.md
 
@@ -164,17 +153,27 @@ controls. Get even further with community components such as [particle systems],
 [physics], [multiuser], [oceans], [mountains], [speech recognition], [motion capture],
 [teleportation], [super hands], and [augmented reality].
 
+:earth_americas: **Proven and Scalable**: A-Frame has been used by companies
+such as Google, Disney, Toyota, Ford, Amnesty International, CERN, NPR, Al
+Jazeera, The Washington Post. Many startups and studios have founded themselves
+on top of A-Frame (e.g., Supermedium, Virtuleap, 3Data, Scapic, Halo Labs,
+Archilogic, Lucid Web, Composure). A-Frame has been used everywhere in large
+interactive applications running at 90fps such as
+[Supercraft](https://supermedium.com/supercraft/) (similar to Google Blocks),
+[A-Painter](https://github.com/aframevr/a-painter) (similar to Tilt Brush), or
+Soundboxing. Check out [WebVR Directory](https://webvr.directory) for more!
+
 ## Off You Go!
 
 If it's your first time here, here's a plan for success for getting into
 A-Frame:
 
 1. For inspiration, check out what other people have built with A-Frame on the
-[Weekly Blog](https://aframe.io/blog/). Users of A-Frame have included The
-Washington Post, Amnesty International, Google, Al Jazeera, NPR, Shopify,
-iStaging, IDEO, and [Supermedium](https://supermedium.com).
+[Weekly Blog](https://aframe.io/blog/) or [WebVR Directory](https://webvr.directory).
 
-2. Read through the basic documentation and guides to get a grasp.
+2. Read through the documentation to get a grasp.
+[Glitch](https://glitch.com/~aframe) is used as a recommended coding playground
+and for examples.
 
 3. Run through [A-Frame School](https://aframe.io/school/), a brief
 step-by-step visual tutorial.
@@ -184,7 +183,7 @@ questions, [search and ask on
 StackOverflow](http://stackoverflow.com/questions/ask/?tags=aframe), and
 someone will get right to you!
 
-5. When you build something, share your project online and we'll feature it on
-[*A Week of A-Frame*](https://aframe.io/blog/)!
+5. When you build something, share your project online and we'll try to feature
+it on [*A Week of A-Frame*](https://aframe.io/blog/)!
 
 Have fun!
