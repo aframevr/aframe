@@ -1,10 +1,23 @@
 var vrDisplay;
+var webXRAvailable = false;
 
-if (navigator.getVRDisplays) {
-  navigator.getVRDisplays().then(function (displays) {
-    vrDisplay = displays.length && displays[0];
+// Support both WebVR and WebXR APIs.
+if (navigator.xr) {
+  navigator.xr.requestDevice().then(function (device) {
+    device.supportsSession({immersive: true, exclusive: true}).then(function () {
+      vrDisplay = device;
+      webXRAvailable = true;
+    });
   });
+} else {
+  if (navigator.getVRDisplays) {
+    navigator.getVRDisplays().then(function (displays) {
+      vrDisplay = displays.length && displays[0];
+    });
+  }
 }
+
+module.exports.isWebXR = function isWebXR () { return webXRAvailable; };
 
 function getVRDisplay () { return vrDisplay; }
 module.exports.getVRDisplay = getVRDisplay;
@@ -107,7 +120,7 @@ module.exports.isNodeEnvironment = !module.exports.isBrowserEnvironment;
  */
 module.exports.PolyfillControls = function PolyfillControls (object) {
   var frameData;
-  var vrDisplay = window.webvrpolyfill.getPolyfillDisplays()[0];
+  var vrDisplay = window.webvrpolyfill && window.webvrpolyfill.getPolyfillDisplays()[0];
   if (window.VRFrameData) { frameData = new window.VRFrameData(); }
   this.update = function () {
     var pose;

@@ -15,6 +15,7 @@ var initPostMessageAPI = require('./postMessage');
 var bind = utils.bind;
 var isIOS = utils.device.isIOS();
 var isMobile = utils.device.isMobile();
+var isWebXR = utils.device.isWebXR;
 var registerElement = re.registerElement;
 var warn = utils.debug('core:a-scene:warn');
 
@@ -261,13 +262,39 @@ module.exports.AScene = registerElement('a-scene', {
           vrDisplay = utils.device.getVRDisplay();
           vrManager.setDevice(vrDisplay);
           vrManager.enabled = true;
-          if (!vrDisplay.isPresenting) {
-            return vrDisplay.requestPresent([{source: this.canvas}])
-                            .then(enterVRSuccess, enterVRFailure);
+          if (isWebXR()) {
+            if (this.xrSession) { this.xrSession.removeEventListener('end', this.exitVRBound); }
+            vrDisplay.requestSession({immersive: true, exclusive: true}).then(enterXRSuccess);
+          } else {
+            if (!vrDisplay.isPresenting) {
+              return vrDisplay.requestPresent([{source: this.canvas}]).then(enterVRSuccess, enterVRFailure);
+            }
           }
         }
         enterVRSuccess();
         return Promise.resolve();
+
+        function enterXRSuccess (xrSession) {
+          self.xrSession = xrSession;
+          vrManager.setSession(xrSession);
+          xrSession.addEventListener('end', self.exitVRBound);
+          self.addState('vr-mode');
+          self.emit('enter-vr', {target: self});
+          // Lock to landscape orientation on mobile.
+          if (self.isMobile && screen.orientation && screen.orientation.lock) {
+            screen.orientation.lock('landscape');
+          }
+          self.addFullScreenStyles();
+
+          // On mobile, the polyfill handles fullscreen.
+          // TODO: 07/16 Chromium builds break when `requestFullscreen`ing on a canvas
+          // that we are also `requestPresent`ing. Until then, don't fullscreen if headset
+          // connected.
+          if (!self.isMobile && !self.checkHeadsetConnected()) {
+            requestFullscreen(self.canvas);
+          }
+          self.resize();
+        }
 
         function enterVRSuccess () {
           self.addState('vr-mode');
@@ -299,7 +326,7 @@ module.exports.AScene = registerElement('a-scene', {
       writable: true
     },
      /**
-     * Call `exitPresent` if WebVR or WebVR polyfill.
+     * Call `exitPresent` if WebVR / WebXR or WebVR polyfill.
      * Handle events, states, fullscreen styles.
      *
      * @returns {Promise}
@@ -308,6 +335,7 @@ module.exports.AScene = registerElement('a-scene', {
       value: function () {
         var self = this;
         var vrDisplay;
+        var vrManager = this.renderer.vr;
 
         // Don't exit VR if not in VR.
         if (!this.is('vr-mode')) { return Promise.resolve('Not in VR.'); }
@@ -315,10 +343,16 @@ module.exports.AScene = registerElement('a-scene', {
         exitFullscreen();
         // Handle exiting VR if not yet already and in a headset or polyfill.
         if (this.checkHeadsetConnected() || this.isMobile) {
-          this.renderer.vr.enabled = false;
+          vrManager.enabled = false;
           vrDisplay = utils.device.getVRDisplay();
-          if (vrDisplay.isPresenting) {
-            return vrDisplay.exitPresent().then(exitVRSuccess, exitVRFailure);
+          if (isWebXR()) {
+            this.xrSession.removeEventListener('end', this.exitVRBound);
+            this.xrSession.end();
+            vrManager.setSession(null);
+          } else {
+            if (vrDisplay.isPresenting) {
+              return vrDisplay.exitPresent().then(exitVRSuccess, exitVRFailure);
+            }
           }
         }
 
@@ -576,6 +610,7 @@ module.exports.AScene = registerElement('a-scene', {
             if (window.performance) { window.performance.mark('render-started'); }
             sceneEl.clock = new THREE.Clock();
             loadingScreen.remove();
+            sceneEl.renderer.setAnimationLoop(this.render);
             sceneEl.render();
             sceneEl.renderStarted = true;
             sceneEl.emit('renderstart');
@@ -664,7 +699,6 @@ module.exports.AScene = registerElement('a-scene', {
 
         if (this.isPlaying) { this.tick(this.time, this.delta); }
 
-        renderer.setAnimationLoop(this.render);
         renderer.render(this.object3D, this.camera, this.renderTarget);
       },
       writable: true

@@ -7,8 +7,6 @@ var PolyfillControls = require('../utils').device.PolyfillControls;
 // To avoid recalculation at every mouse movement tick
 var PI_2 = Math.PI / 2;
 
-var checkHasPositionalTracking = utils.device.checkHasPositionalTracking;
-
 /**
  * look-controls. Update entity pose, factoring mouse, touch, and WebVR API data.
  */
@@ -190,7 +188,6 @@ module.exports.Component = registerComponent('look-controls', {
 
     // In VR mode, THREE is in charge of updating the camera rotation.
     if (sceneEl.is('vr-mode') && sceneEl.checkHeadsetConnected()) { return; }
-
     // Calculate polyfilled HMD quaternion.
     this.polyfillControls.update();
     hmdEuler.setFromQuaternion(this.polyfillObject.quaternion, 'YXZ');
@@ -380,11 +377,6 @@ module.exports.Component = registerComponent('look-controls', {
    */
   saveCameraPose: function () {
     var el = this.el;
-    var hasPositionalTracking = this.hasPositionalTracking !== undefined
-      ? this.hasPositionalTracking
-      : checkHasPositionalTracking();
-
-    if (this.hasSavedPose || !hasPositionalTracking) { return; }
 
     this.savedPose.position.copy(el.object3D.position);
     this.savedPose.rotation.copy(el.object3D.rotation);
@@ -397,11 +389,8 @@ module.exports.Component = registerComponent('look-controls', {
   restoreCameraPose: function () {
     var el = this.el;
     var savedPose = this.savedPose;
-    var hasPositionalTracking = this.hasPositionalTracking !== undefined
-      ? this.hasPositionalTracking
-      : checkHasPositionalTracking();
 
-    if (!this.hasSavedPose || !hasPositionalTracking) { return; }
+    if (!this.hasSavedPose) { return; }
 
     // Reset camera orientation.
     el.object3D.position.copy(savedPose.position);
