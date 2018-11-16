@@ -177,7 +177,7 @@ module.exports.Component = registerComponent('raycaster', {
     // If objects not defined, intersect with everything.
     els = data.objects
       ? this.el.sceneEl.querySelectorAll(data.objects)
-      : this.el.sceneEl.children;
+      : this.el.sceneEl.querySelectorAll('*');
     this.objects = this.flattenObject3DMaps(els);
     this.dirty = false;
   },
@@ -388,7 +388,7 @@ module.exports.Component = registerComponent('raycaster', {
    * so that non-recursive raycasting remains useful.
    *
    * Only push children defined as component attachemnts (e.g., setObject3D),
-   * not actual children in the scene graph hierarchy.
+   * NOT actual children in the scene graph hierarchy.
    *
    * @param  {Array<Element>} els
    * @return {Array<THREE.Object3D>}
@@ -401,7 +401,7 @@ module.exports.Component = registerComponent('raycaster', {
     // Push meshes and other attachments onto list of objects to intersect.
     objects.length = 0;
     for (i = 0; i < els.length; i++) {
-      if (els[i].object3D) {
+      if (els[i].isEntity && els[i].object3D) {
         for (key in els[i].object3DMap) {
           objects.push(els[i].getObject3D(key));
         }

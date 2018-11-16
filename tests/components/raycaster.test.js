@@ -40,24 +40,27 @@ suite('raycaster', function () {
     });
 
     test('defaults to intersecting all objects', function (done) {
-      var el2 = document.createElement('a-entity');
-      var el3 = document.createElement('a-entity');
-      var i;
+      const wrapper = document.createElement('a-entity');
+      const el2 = document.createElement('a-entity');
+      const el3 = document.createElement('a-entity');
 
       // Add geometry to test raycast and wait for them to be loaded.
       el2.setAttribute('geometry', 'primitive: box');
       el3.setAttribute('geometry', 'primitive: box');
 
-      el3.addEventListener('loaded', function () {
+      el3.addEventListener('loaded', () => {
         component.refreshObjects();
         // Check that groups are not the raycast targets.
-        for (i = 0; i < component.objects.length; i++) {
+        for (let i = 0; i < component.objects.length; i++) {
           assert.notEqual(component.objects[i], sceneEl.object3D.children[i].object3D);
         }
+        assert.ok(component.objects.includes(el2.getObject3D('mesh')));
+        assert.ok(component.objects.includes(el3.getObject3D('mesh')));
         done();
       });
-      sceneEl.appendChild(el2);
-      sceneEl.appendChild(el3);
+      wrapper.appendChild(el2);
+      wrapper.appendChild(el3);
+      sceneEl.appendChild(wrapper);
     });
 
     test('does not include non-object3DMap children in objects', function (done) {
@@ -77,6 +80,26 @@ suite('raycaster', function () {
         done();
       });
       sceneEl.appendChild(el2);
+    });
+
+    test('cannot have redundant objects', function (done) {
+      const el1 = document.createElement('a-entity');
+      el1.setAttribute('geometry', 'primitive: box');
+      const el2 = document.createElement('a-entity');
+      el2.setAttribute('geometry', 'primitive: box');
+      el1.appendChild(el2);
+
+      el1.addEventListener('loaded', function () {
+        component.refreshObjects();
+        const mesh = el2.getObject3D('mesh');
+        let count = 0;
+        component.objects.forEach(obj => {
+          if (obj === mesh) { count++; }
+        });
+        assert.equal(count, 1);
+        done();
+      });
+      sceneEl.appendChild(el1);
     });
 
     test('can whitelist objects to intersect', function (done) {
