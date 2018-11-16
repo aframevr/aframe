@@ -89,13 +89,6 @@ module.exports.isLandscape = function () {
 };
 
 /**
- * Check if device is iOS and older than version 10.
- */
-module.exports.isIOSOlderThan10 = function (userAgent) {
-  return /(iphone|ipod|ipad).*os.(7_|8_|9_)/i.test(userAgent);
-};
-
-/**
  * Check if running in a browser or spoofed browser (bundler).
  * We need to check a node api that isn't mocked on either side.
  * `require` and `module.exports` are mocked in browser by bundlers.
