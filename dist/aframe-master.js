@@ -71272,7 +71272,6 @@ module.exports.Component = registerComponent('tracked-controls', {
     // Apply transforms, if 6DOF and in VR.
     if (vrDisplay && pose.position) {
       standingMatrix = this.el.sceneEl.renderer.vr.getStandingMatrix();
-      object3D.matrixAutoUpdate = false;
       object3D.matrix.compose(object3D.position, object3D.quaternion, object3D.scale);
       object3D.matrix.multiplyMatrices(standingMatrix, object3D.matrix);
       object3D.matrix.decompose(object3D.position, object3D.quaternion, object3D.scale);
@@ -71281,9 +71280,6 @@ module.exports.Component = registerComponent('tracked-controls', {
     object3D.rotateX(this.data.orientationOffset.x * THREE.Math.DEG2RAD);
     object3D.rotateY(this.data.orientationOffset.y * THREE.Math.DEG2RAD);
     object3D.rotateZ(this.data.orientationOffset.z * THREE.Math.DEG2RAD);
-
-    object3D.updateMatrix();
-    object3D.matrixWorldNeedsUpdate = true;
   },
 
   /**
@@ -77790,7 +77786,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.2 (Date 2018-11-16, Commit #512d110)');
+console.log('A-Frame Version: 0.8.2 (Date 2018-11-18, Commit #7f9c5bf)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
