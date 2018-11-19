@@ -5,7 +5,7 @@ var utils = require('../utils');
  * Tracked controls system.
  * Maintain list with available tracked controllers.
  */
-module.exports.System = registerSystem('tracked-controls', {
+module.exports.System = registerSystem('tracked-controls-webvr', {
   init: function () {
     var self = this;
 

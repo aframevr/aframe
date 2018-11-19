@@ -30,7 +30,7 @@ suite('gearvr-controls', function () {
       var addEventListenersSpy = sinon.spy(component, 'addEventListeners');
       var injectTrackedControlsSpy = sinon.spy(component, 'injectTrackedControls');
 
-      el.sceneEl.systems['tracked-controls'].controllers = [];
+      el.sceneEl.systems['tracked-controls-webvr'].controllers = [];
 
       component.controllerPresent = false;
 
@@ -48,7 +48,7 @@ suite('gearvr-controls', function () {
       var injectTrackedControlsSpy = sinon.spy(component, 'injectTrackedControls');
       var removeEventListenersSpy = sinon.spy(component, 'removeEventListeners');
 
-      el.sceneEl.systems['tracked-controls'].controllers = [];
+      el.sceneEl.systems['tracked-controls-webvr'].controllers = [];
 
       component.controllerEventsActive = false;
       component.controllerPresent = false;
@@ -68,7 +68,7 @@ suite('gearvr-controls', function () {
       var injectTrackedControlsSpy = sinon.spy(component, 'injectTrackedControls');
       var removeEventListenersSpy = sinon.spy(component, 'removeEventListeners');
 
-      el.sceneEl.systems['tracked-controls'].controllers = component.controllersWhenPresent;
+      el.sceneEl.systems['tracked-controls-webvr'].controllers = component.controllersWhenPresent;
 
       component.controllerPresent = false;
 
@@ -87,7 +87,7 @@ suite('gearvr-controls', function () {
       var injectTrackedControlsSpy = sinon.spy(component, 'injectTrackedControls');
       var removeEventListenersSpy = sinon.spy(component, 'removeEventListeners');
 
-      el.sceneEl.systems['tracked-controls'].controllers = component.controllersWhenPresent;
+      el.sceneEl.systems['tracked-controls-webvr'].controllers = component.controllersWhenPresent;
 
       component.controllerEventsActive = true;
       component.controllerPresent = true;
@@ -107,7 +107,7 @@ suite('gearvr-controls', function () {
       var injectTrackedControlsSpy = sinon.spy(component, 'injectTrackedControls');
       var removeEventListenersSpy = sinon.spy(component, 'removeEventListeners');
 
-      el.sceneEl.systems['tracked-controls'].controllers = [];
+      el.sceneEl.systems['tracked-controls-webvr'].controllers = [];
 
       component.controllerEventsActive = true;
       component.controllerPresent = true;
@@ -126,7 +126,7 @@ suite('gearvr-controls', function () {
       var el = this.el;
       var component = el.components['gearvr-controls'];
 
-      el.sceneEl.systems['tracked-controls'].controllers = component.controllersWhenPresent;
+      el.sceneEl.systems['tracked-controls-webvr'].controllers = component.controllersWhenPresent;
 
       component.checkIfControllerPresent();
 
@@ -146,7 +146,7 @@ suite('gearvr-controls', function () {
       var el = this.el;
       var component = el.components['gearvr-controls'];
 
-      el.sceneEl.systems['tracked-controls'].controllers = component.controllersWhenPresent;
+      el.sceneEl.systems['tracked-controls-webvr'].controllers = component.controllersWhenPresent;
 
       component.checkIfControllerPresent();
 
@@ -168,7 +168,7 @@ suite('gearvr-controls', function () {
         var el = this.el;
         var component = el.components['gearvr-controls'];
 
-        el.sceneEl.systems['tracked-controls'].controllers = component.controllersWhenPresent;
+        el.sceneEl.systems['tracked-controls-webvr'].controllers = component.controllersWhenPresent;
 
         component.checkIfControllerPresent();
 
@@ -187,7 +187,7 @@ suite('gearvr-controls', function () {
         var el = this.el;
         var component = el.components['gearvr-controls'];
 
-        el.sceneEl.systems['tracked-controls'].controllers = component.controllersWhenPresent;
+        el.sceneEl.systems['tracked-controls-webvr'].controllers = component.controllersWhenPresent;
 
         component.checkIfControllerPresent();
 
@@ -202,7 +202,7 @@ suite('gearvr-controls', function () {
         var el = this.el;
         var component = el.components['gearvr-controls'];
 
-        el.sceneEl.systems['tracked-controls'].controllers = component.controllersWhenPresent;
+        el.sceneEl.systems['tracked-controls-webvr'].controllers = component.controllersWhenPresent;
 
         component.checkIfControllerPresent();
 
@@ -218,7 +218,7 @@ suite('gearvr-controls', function () {
   suite('armModel', function () {
     function makePresent (el) {
       var component = el.components['gearvr-controls'];
-      el.sceneEl.systems['tracked-controls'].controllers = component.controllersWhenPresent;
+      el.sceneEl.systems['tracked-controls-webvr'].controllers = component.controllersWhenPresent;
       component.checkIfControllerPresent();
     }
 
@@ -226,7 +226,7 @@ suite('gearvr-controls', function () {
       var el = this.el;
       el.setAttribute('gearvr-controls', 'armModel', false);
       makePresent(el);
-      var trackedControls = el.components['tracked-controls'];
+      var trackedControls = el.components['tracked-controls-webvr'];
       var applyArmModelSpy = sinon.spy(trackedControls, 'applyArmModel');
       trackedControls.tick();
 
@@ -243,7 +243,7 @@ suite('gearvr-controls', function () {
       var el = this.el;
       el.setAttribute('gearvr-controls', 'armModel', true);
       makePresent(el);
-      var trackedControls = el.components['tracked-controls'];
+      var trackedControls = el.components['tracked-controls-webvr'];
       var applyArmModelSpy = sinon.spy(trackedControls, 'applyArmModel');
       trackedControls.tick();
 
@@ -255,7 +255,7 @@ suite('gearvr-controls', function () {
       var el = this.el;
       el.setAttribute('gearvr-controls', 'armModel', true);
       makePresent(el);
-      var trackedControls = el.components['tracked-controls'];
+      var trackedControls = el.components['tracked-controls-webvr'];
       trackedControls.tick();
       assert.ok(el.object3D.position.x > 0);
     });
@@ -266,7 +266,7 @@ suite('gearvr-controls', function () {
       el.setAttribute('gearvr-controls', 'hand', 'left');
       el.components['gearvr-controls'].controllersWhenPresent[0].hand = 'left';
       makePresent(el);
-      var trackedControls = el.components['tracked-controls'];
+      var trackedControls = el.components['tracked-controls-webvr'];
       trackedControls.tick();
       assert.ok(el.object3D.position.x < 0);
     });

@@ -1,12 +1,10 @@
 var vrDisplay;
-var webXRAvailable = false;
 
 // Support both WebVR and WebXR APIs.
 if (navigator.xr) {
   navigator.xr.requestDevice().then(function (device) {
     device.supportsSession({immersive: true, exclusive: true}).then(function () {
       vrDisplay = device;
-      webXRAvailable = true;
     });
   });
 } else {
@@ -17,7 +15,7 @@ if (navigator.xr) {
   }
 }
 
-module.exports.isWebXR = function isWebXR () { return webXRAvailable; };
+module.exports.isWebXRAvailable = navigator.xr !== undefined;
 
 function getVRDisplay () { return vrDisplay; }
 module.exports.getVRDisplay = getVRDisplay;
