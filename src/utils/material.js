@@ -19,6 +19,7 @@ var COLOR_MAPS = new Set([
 module.exports.updateMapMaterialFromData = function (materialName, dataName, shader, data) {
   var el = shader.el;
   var material = shader.material;
+  var system = el.sceneEl.systems.material;
   var src = data[dataName];
 
   // Because a single material / shader may have multiple textures,
@@ -57,10 +58,9 @@ module.exports.updateMapMaterialFromData = function (materialName, dataName, sha
   }
 
   function setMap (texture) {
-    var colorSpace = shader.el.sceneEl.getAttribute('color-space');
     material[materialName] = texture;
     if (texture) {
-      material[materialName].encoding = getTextureEncoding(texture, materialName, colorSpace);
+      material[materialName].encoding = getTextureEncoding(texture, materialName, system.data.colorSpace);
     }
     material.needsUpdate = true;
     handleTextureEvents(el, texture);
@@ -89,6 +89,7 @@ module.exports.updateDistortionMap = function (longType, shader, data) {
   if (longType === 'ambientOcclusion') { shortType = 'ao'; }
   var el = shader.el;
   var material = shader.material;
+  var system = el.sceneEl.systems.material;
   var src = data[longType + 'Map'];
   var info = {};
   info.src = src;
@@ -113,10 +114,9 @@ module.exports.updateDistortionMap = function (longType, shader, data) {
 
   function setMap (texture) {
     var slot = shortType + 'Map';
-    var colorSpace = shader.el.sceneEl.getAttribute('color-space');
     material[slot] = texture;
     if (texture) {
-      material[slot].encoding = getTextureEncoding(texture, slot, colorSpace);
+      material[slot].encoding = getTextureEncoding(texture, slot, system.data.colorSpace);
     }
     material.needsUpdate = true;
     handleTextureEvents(el, texture);

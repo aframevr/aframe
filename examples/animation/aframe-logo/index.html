@@ -7,7 +7,10 @@
     <script src="../../../dist/aframe-master.js"></script>
   </head>
   <body>
-    <a-scene vr-mode-ui="enabled: false" background="color: #24CAFF">
+    <a-scene vr-mode-ui="enabled: false;"
+             background="color: #24CAFF;"
+             material="colorSpace: sRGB;"
+             renderer="gammaOutput: true;">
       <a-assets>
         <a-asset-item id="treeModel" src="../../assets/models/tree1/tree1.dae"></a-asset-item>
         <a-mixin

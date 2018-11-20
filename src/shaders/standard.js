@@ -59,8 +59,9 @@ module.exports.Shader = registerShader('standard', {
    * Adds a reference from the scene to this entity as the camera.
    */
   init: function (data) {
+    this.system = this.el.sceneEl.systems.material;
     this.materialData = {color: new THREE.Color(), emissive: new THREE.Color()};
-    getMaterialData(data, this.materialData);
+    getMaterialData(data, this.materialData, this.system.data.colorSpace);
     this.material = new THREE.MeshStandardMaterial(this.materialData);
 
     utils.material.updateMap(this, data);
@@ -92,7 +93,7 @@ module.exports.Shader = registerShader('standard', {
   updateMaterial: function (data) {
     var key;
     var material = this.material;
-    getMaterialData(data, this.materialData);
+    getMaterialData(data, this.materialData, this.system.data.colorSpace);
     for (key in this.materialData) {
       material[key] = this.materialData[key];
     }
@@ -158,9 +159,10 @@ module.exports.Shader = registerShader('standard', {
  *
  * @param {object} data - Material data.
  * @param {object} materialData - Object to use.
+ * @param {string} colorSpace - Current colorspace.
  * @returns {object} Updated materialData.
  */
-function getMaterialData (data, materialData) {
+function getMaterialData (data, materialData, colorSpace) {
   materialData.color.set(data.color);
   materialData.emissive.set(data.emissive);
   materialData.emissiveIntensity = data.emissiveIntensity;
@@ -169,6 +171,11 @@ function getMaterialData (data, materialData) {
   materialData.roughness = data.roughness;
   materialData.wireframe = data.wireframe;
   materialData.wireframeLinewidth = data.wireframeLinewidth;
+
+  if (colorSpace === 'sRGB') {
+    materialData.color.convertGammaToLinear(2.2);
+    materialData.emissive.convertGammaToLinear(2.2);
+  }
 
   if (data.normalMap) { materialData.normalScale = data.normalScale; }
 
