@@ -58,7 +58,7 @@ attribute:
 
 ### Multi-Property Component
 
-If a component is a *multi-property* component, meaning the data is consists of
+If a component is a *multi-property* component, meaning the data consists of
 multiple properties and values, then in HTML, the component value resembles
 inline CSS styles:
 
