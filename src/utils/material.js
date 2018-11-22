@@ -19,7 +19,7 @@ var COLOR_MAPS = new Set([
 module.exports.updateMapMaterialFromData = function (materialName, dataName, shader, data) {
   var el = shader.el;
   var material = shader.material;
-  var system = el.sceneEl.systems.material;
+  var workflow = el.sceneEl.systems.renderer.data.workflow;
   var src = data[dataName];
 
   // Because a single material / shader may have multiple textures,
@@ -60,7 +60,7 @@ module.exports.updateMapMaterialFromData = function (materialName, dataName, sha
   function setMap (texture) {
     material[materialName] = texture;
     if (texture) {
-      material[materialName].encoding = getTextureEncoding(texture, materialName, system.data.colorSpace);
+      material[materialName].encoding = getTextureEncoding(texture, materialName, workflow);
     }
     material.needsUpdate = true;
     handleTextureEvents(el, texture);
@@ -89,7 +89,7 @@ module.exports.updateDistortionMap = function (longType, shader, data) {
   if (longType === 'ambientOcclusion') { shortType = 'ao'; }
   var el = shader.el;
   var material = shader.material;
-  var system = el.sceneEl.systems.material;
+  var workflow = el.sceneEl.systems.renderer.data.workflow;
   var src = data[longType + 'Map'];
   var info = {};
   info.src = src;
@@ -116,7 +116,7 @@ module.exports.updateDistortionMap = function (longType, shader, data) {
     var slot = shortType + 'Map';
     material[slot] = texture;
     if (texture) {
-      material[slot].encoding = getTextureEncoding(texture, slot, system.data.colorSpace);
+      material[slot].encoding = getTextureEncoding(texture, slot, workflow);
     }
     material.needsUpdate = true;
     handleTextureEvents(el, texture);
@@ -168,8 +168,8 @@ module.exports.isHLS = function (src, type) {
   return false;
 };
 
-function getTextureEncoding (texture, slot, colorSpace) {
-  if (colorSpace === 'sRGB' && COLOR_MAPS.has(slot)) {
+function getTextureEncoding (texture, slot, workflow) {
+  if (workflow === 'linear' && COLOR_MAPS.has(slot)) {
     return THREE.sRGBEncoding;
   }
   return THREE.LinearEncoding;

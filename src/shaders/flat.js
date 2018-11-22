@@ -23,10 +23,10 @@ module.exports.Shader = registerShader('flat', {
    * Adds a reference from the scene to this entity as the camera.
    */
   init: function (data) {
-    this.system = this.el.sceneEl.systems.material;
+    this.rendererSystem = this.el.sceneEl.systems.renderer;
     this.materialData = {color: new THREE.Color()};
     this.textureSrc = null;
-    getMaterialData(data, this.materialData, this.system.data.colorSpace);
+    getMaterialData(data, this.materialData, this.rendererSystem.data.workflow);
     this.material = new THREE.MeshBasicMaterial(this.materialData);
     utils.material.updateMap(this, data);
   },
@@ -43,7 +43,7 @@ module.exports.Shader = registerShader('flat', {
    */
   updateMaterial: function (data) {
     var key;
-    getMaterialData(data, this.materialData, this.system.data.colorSpace);
+    getMaterialData(data, this.materialData, this.rendererSystem.data.workflow);
     for (key in this.materialData) {
       this.material[key] = this.materialData[key];
     }
@@ -55,16 +55,16 @@ module.exports.Shader = registerShader('flat', {
  *
  * @param {object} data - Material data.
  * @param {object} materialData - Object to reuse.
- * @param {string} colorSpace - Current colorspace.
+ * @param {string} workflow - Current workflow.
  * @returns {object} Updated material data.
  */
-function getMaterialData (data, materialData, colorSpace) {
+function getMaterialData (data, materialData, workflow) {
   materialData.color.set(data.color);
   materialData.fog = data.fog;
   materialData.wireframe = data.wireframe;
   materialData.wireframeLinewidth = data.wireframeLinewidth;
 
-  if (colorSpace === 'sRGB') {
+  if (workflow === 'linear') {
     materialData.color.convertGammaToLinear(2.2);
   }
 

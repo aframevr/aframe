@@ -7,14 +7,14 @@ source_code: src/components/renderer.js
 examples: []
 ---
 
-The `renderer` component configures a scene's
+The `renderer` system configures a scene's
 [THREE.WebGLRenderer](https://threejs.org/docs/#api/renderers/WebGLRenderer) instance.
 
 ## Example
 
 ```html
 <a-scene renderer="antialias: true;
-                   gammaOutput: true;
+                   workflow: linear;
                    sortObjects: true;
                    physicallyCorrectLights: true;
                    maxCanvasWidth: 1920;
@@ -32,22 +32,22 @@ The `renderer` component configures a scene's
 | maxCanvasWidth          | Maximum canvas width. Uses the size multiplied by device pixel ratio. Does not limit canvas width if set to -1.                                | 1920            |
 | maxCanvasHeight         | Maximum canvas height. Behaves the same as maxCanvasWidth.              | 1920            |
 
+> **NOTE:** Once the scene is initialized, these properties may no longer be changed.
 
 ### antialias
 
 When enabled, smooths jagged edges on curved lines and diagonals at moderate performance cost.
 By default, antialiasing is disabled on mobile devices.
 
-> **NOTE:** Once the scene is initialized, `antialias` may no longer be
-> changed.
+### workflow
 
-### gammaOutput
+Two workflows — `gamma` and `linear` — are available for rendering. The `linear` workflow gives
+more accurate rendering, and reduces the likelihood that scenes will appear overlit or "washed
+out." The `gamma` workflow is provided for backwards compatibility. When changing the workflow
+for an existing scene, you may need to adjust colors or lights.
 
-Typically, textures are converted to linear colorspace in the renderer for lighting calculations.
-Unless post-processing used after the initial render,
-[gamma correction](https://en.wikipedia.org/wiki/Gamma_correction) should be applied with
-`renderer="gammaOutput: true;"` for best color reproduction. By default, gamma correction is off
-in order to preserve backward-compatibility. When changed, adjustments to lighting may be needed.
+> **NOTE:** In three.js, and previous versions of A-Frame, a `gammaOutput: true` property was
+> available. This is applied automatically in the `linear` workflow.
 
 ### sortObjects
 

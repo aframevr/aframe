@@ -24,9 +24,6 @@ TextureLoader.setCrossOrigin('anonymous');
  *   - Videos: textureCache has mapping of videoElement -> cached three.js texture.
  */
 module.exports.System = registerSystem('material', {
-  schema: {
-    colorSpace: {default: 'linear', oneOf: ['linear', 'sRGB']}
-  },
 
   init: function () {
     this.materials = {};
