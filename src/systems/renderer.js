@@ -11,7 +11,7 @@ module.exports.System = registerSystem('renderer', {
     maxCanvasHeight: {default: 1920},
     physicallyCorrectLights: {default: false},
     sortObjects: {default: false},
-    workflow: {default: 'gamma', oneOf: ['linear', 'gamma']}
+    workflow: {default: 'linear', oneOf: ['linear', 'gamma']}
   },
 
   init: function () {
