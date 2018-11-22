@@ -59,9 +59,9 @@ module.exports.Shader = registerShader('standard', {
    * Adds a reference from the scene to this entity as the camera.
    */
   init: function (data) {
-    this.rendererSystem = this.el.sceneEl.systems.renderer;
+    this.workflow = this.el.sceneEl.systems.renderer.data.workflow;
     this.materialData = {color: new THREE.Color(), emissive: new THREE.Color()};
-    getMaterialData(data, this.materialData, this.rendererSystem.data.workflow);
+    getMaterialData(data, this.materialData, this.workflow);
     this.material = new THREE.MeshStandardMaterial(this.materialData);
 
     utils.material.updateMap(this, data);
@@ -93,7 +93,7 @@ module.exports.Shader = registerShader('standard', {
   updateMaterial: function (data) {
     var key;
     var material = this.material;
-    getMaterialData(data, this.materialData, this.rendererSystem.data.workflow);
+    getMaterialData(data, this.materialData, this.workflow);
     for (key in this.materialData) {
       material[key] = this.materialData[key];
     }
