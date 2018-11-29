@@ -328,7 +328,7 @@ module.exports.Component = registerComponent('text', {
 
     // Position and scale mesh to apply layout.
     mesh.position.x = x * textScale + data.xOffset;
-    mesh.position.y = y * textScale;
+    mesh.position.y = y * textScale + data.yOffset;
     // Place text slightly in front to avoid Z-fighting.
     mesh.position.z = data.zOffset;
     mesh.scale.set(textScale, -1 * textScale, textScale);
