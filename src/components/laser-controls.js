@@ -18,6 +18,7 @@ registerComponent('laser-controls', {
     el.setAttribute('oculus-go-controls', {hand: data.hand});
     el.setAttribute('oculus-touch-controls', {hand: data.hand});
     el.setAttribute('vive-controls', {hand: data.hand});
+    el.setAttribute('vive-focus-controls', {hand: data.hand});
     el.setAttribute('windows-motion-controls', {hand: data.hand});
 
     // Wait for controller to connect, or have a valid pointing pose, before creating ray
@@ -87,6 +88,10 @@ registerComponent('laser-controls', {
 
     'vive-controls': {
       cursor: {downEvents: ['triggerdown'], upEvents: ['triggerup']}
+    },
+
+    'vive-focus-controls': {
+      cursor: {downEvents: ['trackpaddown', 'triggerdown'], upEvents: ['trackpadup', 'triggerup']}
     },
 
     'windows-motion-controls': {

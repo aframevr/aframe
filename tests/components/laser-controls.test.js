@@ -20,6 +20,7 @@ suite('laser-controls', function () {
       assert.ok(el.components['oculus-go-controls']);
       assert.ok(el.components['oculus-touch-controls']);
       assert.ok(el.components['vive-controls']);
+      assert.ok(el.components['vive-focus-controls']);
       assert.ok(el.components['windows-motion-controls']);
     });
 
