@@ -146,9 +146,9 @@ have developed, we gain power without needing to write our own code.
 
 We'll go through using three community components:
 
-- [template](https://ngokevin.github.io/kframe/components/template/)
-- [layout](https://ngokevin.github.io/kframe/components/layout/)
-- [event-set](https://ngokevin.github.io/kframe/components/event-set/)
+- [template](https://supermedium.com/superframe/components/template/)
+- [layout](https://supermedium.com/superframe/components/layout/)
+- [event-set](https://supermedium.com/superframe/components/event-set/)
 
 Community components are generally available through both GitHub and published
 on npm. An easy way to include components is to use the [unpkg.com

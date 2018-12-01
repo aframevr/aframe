@@ -10,7 +10,7 @@ order: 13
 
 [ecs]: ./entity-component-system.md
 [mixins]: ../core/mixins.md
-[template]: https://github.com/ngokevin/kframe/tree/master/components/template/
+[template]: https://github.com/supermedium/superframe/tree/master/components/template/
 
 The core structure of A-Frame is [entity-component (ECS)][ecs]. Place and
 structure application code within purely A-Frame components for reusability,

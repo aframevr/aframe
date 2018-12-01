@@ -48,7 +48,7 @@ Updates at the three.js level will still be reflected when doing
 
 ## Hiding Entity Until Texture Loaded
 
-[event-set]: https://github.com/ngokevin/kframe/tree/master/components/event-set
+[event-set]: https://github.com/supermedium/superframe/tree/master/components/event-set
 
 While we can do this with, the [event-set][event-set] component, we can also do
 this with the built-in animation component. Here's an example of updating

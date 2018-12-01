@@ -137,7 +137,7 @@ and fly around to peek under the hood!
 
 [augmented reality]: https://github.com/jeromeetienne/AR.js#augmented-reality-for-the-web-in-less-than-10-lines-of-html
 [motion capture]: https://github.com/dmarcos/aframe-motion-capture
-[mountains]: https://github.com/ngokevin/kframe/tree/master/components/mountain/
+[mountains]: https://github.com/supermedium/superframe/tree/master/components/mountain/
 [multiuser]: https://github.com/haydenjameslee/networked-aframe
 [oceans]: https://github.com/donmccurdy/aframe-extras/tree/master/src/primitives
 [particle systems]: https://github.com/IdeaSpaceVR/aframe-particle-system-component

@@ -9,7 +9,7 @@ examples:
     src: https://glitch.com/edit/#!/aframe-aincraft?path=index.html
 ---
 
-[github]: https://github.com/ngokevin/kframe/tree/csstricks/scenes/aincraft/
+[github]: https://github.com/supermedium/superframe/tree/csstricks/scenes/aincraft/
 [glitch]: https://glitch.com/~aframe-aincraft/
 [glitchdemo]: https://aframe-aincraft.glitch.me
 
@@ -276,12 +276,12 @@ application using components, all our code is inherently modular and reusable!
 
 ### Snap Component
 
-[snap]: https://github.com/ngokevin/kframe/blob/csstricks/scenes/aincraft/components/snap.js
+[snap]: https://github.com/supermedium/superframe/blob/csstricks/scenes/aincraft/components/snap.js
 
 We'll have a `snap` component to snap our boxes to a grid so they aren't
 overlapping. We won't get into the details of how this component is
 implemented, but you can check out [the snap component's source
-code](https://cdn.jsdelivr.net/gh/ngokevin/kframe@dae06f2d832e4d305ec7da830fb09a6079af4790/scenes/aincraft/components/snap.js)
+code](https://cdn.jsdelivr.net/gh/supermedium/superframe@dae06f2d832e4d305ec7da830fb09a6079af4790/scenes/aincraft/components/snap.js)
 (20 lines of JavaScript).
 
 We attach the snap component to our box so that it snaps to every half meter,
@@ -466,7 +466,7 @@ document.querySelector('#blockHand').addEventListener(`click`, function (evt) {
 });
 ```
 
-[intersection-spawn]: https://github.com/ngokevin/kframe/blob/csstricks/scenes/aincraft/components/intersection-spawn.js
+[intersection-spawn]: https://github.com/supermedium/superframe/blob/csstricks/scenes/aincraft/components/intersection-spawn.js
 
 To generalize creating entities from an intersection event, we've created an
 `intersection-spawn` component that can be configured with any event and list
@@ -508,12 +508,12 @@ Oculus Rift + Touch), we can grab a [WebVR-enabled browser][rocks] and [head
 over to the demo][demo]. Try it in VR by plugging in an HTC Vive or Oculus Rift
 and [using a WebVR-enabled browser][rocks].
 
-[demo]: https://ngokevin.github.io/kframe/scenes/aincraft/
+[demo]: https://supermedium.com/superframe/scenes/aincraft/
 [rocks]: https://webvr.rocks
 
 <p data-height="265" data-theme-id="dark" data-slug-hash="OpbwMJ" data-default-tab="html,result" data-user="mozvr" data-embed-version="2" data-pen-title="Minecraft VR Demo (Final)" data-preview="true" data-editable="true" class="codepen">See the Pen <a href="http://codepen.io/mozvr/pen/OpbwMJ/">Minecraft VR Demo (Final)</a> by mozvr (<a href="http://codepen.io/mozvr">@mozvr</a>) on <a href="http://codepen.io">CodePen</a>.</p>
 
-[demorecorded]: https://ngokevin.github.io/kframe/scenes/aincraft/?avatar-recording=recording.json
+[demorecorded]: https://supermedium.com/superframe/scenes/aincraft/?avatar-recording=recording.json
 
 If we want to view what the experience looks like when used in VR from our
 desktop or mobile device, [check out the demo with pre-recorded VR motion
