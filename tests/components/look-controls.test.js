@@ -103,15 +103,6 @@ suite('look-controls', function () {
       assert.shallowDeepEqual(lookControlsComponent.savedPose.position,
                               {x: 3.0, y: 3.0, z: 3.0});
     });
-
-    test('does not save camera pose when entering VR w/o positional tracking', function () {
-      var sceneEl = this.sceneEl;
-      var cameraEl = sceneEl.camera.el;
-      var lookControlsComponent = cameraEl.components['look-controls'];
-      lookControlsComponent.hasPositionalTracking = false;
-      sceneEl.emit('enter-vr');
-      assert.notOk(lookControlsComponent.hasSavedPose);
-    });
   });
 
   suite('restoreCameraPose (exit VR)', function () {
@@ -123,16 +114,6 @@ suite('look-controls', function () {
       sceneEl.emit('enter-vr');
       cameraEl.setAttribute('position', {x: 9, y: 9, z: 9});
       assert.shallowDeepEqual(cameraEl.getAttribute('position'), {x: 9, y: 9, z: 9});
-      sceneEl.emit('exit-vr');
-      assert.shallowDeepEqual(cameraEl.getAttribute('position'), {x: 6, y: 6, z: 6});
-    });
-
-    test('does not restore camera pose without headset', function () {
-      var sceneEl = this.sceneEl;
-      var cameraEl = sceneEl.camera.el;
-      cameraEl.components['look-controls'].hasPositionalTracking = false;
-      sceneEl.emit('enter-vr');
-      cameraEl.setAttribute('position', {x: 6, y: 6, z: 6});
       sceneEl.emit('exit-vr');
       assert.shallowDeepEqual(cameraEl.getAttribute('position'), {x: 6, y: 6, z: 6});
     });

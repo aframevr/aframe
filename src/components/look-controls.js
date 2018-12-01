@@ -7,8 +7,6 @@ var PolyfillControls = require('../utils').device.PolyfillControls;
 // To avoid recalculation at every mouse movement tick
 var PI_2 = Math.PI / 2;
 
-var checkHasPositionalTracking = utils.device.checkHasPositionalTracking;
-
 /**
  * look-controls. Update entity pose, factoring mouse, touch, and WebVR API data.
  */
@@ -40,6 +38,7 @@ module.exports.Component = registerComponent('look-controls', {
     this.pointerLocked = false;
     this.setupMouseControls();
     this.bindMethods();
+    this.el.object3D.matrixAutoUpdate = false;
 
     this.savedPose = {
       position: new THREE.Vector3(),
@@ -181,24 +180,40 @@ module.exports.Component = registerComponent('look-controls', {
    * Update orientation for mobile, mouse drag, and headset.
    * Mouse-drag only enabled if HMD is not active.
    */
-  updateOrientation: function () {
-    var el = this.el;
-    var hmdEuler = this.hmdEuler;
-    var pitchObject = this.pitchObject;
-    var yawObject = this.yawObject;
-    var sceneEl = this.el.sceneEl;
+  updateOrientation: (function () {
+    var poseMatrix = new THREE.Matrix4();
 
-    // In VR mode, THREE is in charge of updating the camera rotation.
-    if (sceneEl.is('vr-mode') && sceneEl.checkHeadsetConnected()) { return; }
+    return function () {
+      var hmdEuler = this.hmdEuler;
+      var object3D = this.el.object3D;
+      var pitchObject = this.pitchObject;
+      var yawObject = this.yawObject;
+      var pose;
+      var sceneEl = this.el.sceneEl;
 
-    // Calculate polyfilled HMD quaternion.
-    this.polyfillControls.update();
-    hmdEuler.setFromQuaternion(this.polyfillObject.quaternion, 'YXZ');
+      // WebXR API updates applies headset pose to the object3D matrixWorld internally.
+      // Reflect values back on position, rotation, scale so setAttribute returns expected values.
+      if (sceneEl.is('vr-mode') && sceneEl.hasWebXR) {
+        pose = sceneEl.renderer.vr.getCameraPose();
+        if (pose) {
+          poseMatrix.elements = pose.poseModelMatrix;
+          poseMatrix.decompose(object3D.position, object3D.rotation, object3D.scale);
+        }
+      } else {
+        object3D.updateMatrix();
+      }
 
-    // On mobile, do camera rotation with touch events and sensors.
-    el.object3D.rotation.x = hmdEuler.x + pitchObject.rotation.x;
-    el.object3D.rotation.y = hmdEuler.y + yawObject.rotation.y;
-  },
+      // In VR mode, THREE is in charge of updating the camera rotation.
+      if (sceneEl.is('vr-mode') && sceneEl.checkHeadsetConnected()) { return; }
+      // Calculate polyfilled HMD quaternion.
+      this.polyfillControls.update();
+      hmdEuler.setFromQuaternion(this.polyfillObject.quaternion, 'YXZ');
+
+      // On mobile, do camera rotation with touch events and sensors.
+      object3D.rotation.x = hmdEuler.x + pitchObject.rotation.x;
+      object3D.rotation.y = hmdEuler.y + yawObject.rotation.y;
+    };
+  })(),
 
   /**
    * Translate mouse drag into rotation.
@@ -326,6 +341,8 @@ module.exports.Component = registerComponent('look-controls', {
    */
   onEnterVR: function () {
     this.saveCameraPose();
+    this.el.object3D.position.set(0, 0, 0);
+    this.el.object3D.updateMatrix();
   },
 
   /**
@@ -380,11 +397,6 @@ module.exports.Component = registerComponent('look-controls', {
    */
   saveCameraPose: function () {
     var el = this.el;
-    var hasPositionalTracking = this.hasPositionalTracking !== undefined
-      ? this.hasPositionalTracking
-      : checkHasPositionalTracking();
-
-    if (this.hasSavedPose || !hasPositionalTracking) { return; }
 
     this.savedPose.position.copy(el.object3D.position);
     this.savedPose.rotation.copy(el.object3D.rotation);
@@ -397,11 +409,8 @@ module.exports.Component = registerComponent('look-controls', {
   restoreCameraPose: function () {
     var el = this.el;
     var savedPose = this.savedPose;
-    var hasPositionalTracking = this.hasPositionalTracking !== undefined
-      ? this.hasPositionalTracking
-      : checkHasPositionalTracking();
 
-    if (!this.hasSavedPose || !hasPositionalTracking) { return; }
+    if (!this.hasSavedPose) { return; }
 
     // Reset camera orientation.
     el.object3D.position.copy(savedPose.position);

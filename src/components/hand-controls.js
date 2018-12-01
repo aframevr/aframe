@@ -78,11 +78,12 @@ module.exports.Component = registerComponent('hand-controls', {
     this.onBorYTouchEnd = function () { self.handleButton('BorY', 'touchend'); };
     this.onSurfaceTouchStart = function () { self.handleButton('surface', 'touchstart'); };
     this.onSurfaceTouchEnd = function () { self.handleButton('surface', 'touchend'); };
-    this.onControllerConnected = function () { self.setModelVisibility(true); };
-    this.onControllerDisconnected = function () { self.setModelVisibility(false); };
 
     el.addEventListener('controllerconnected', this.onControllerConnected);
     el.addEventListener('controllerdisconnected', this.onControllerDisconnected);
+
+    // Hidden by default.
+    el.object3D.visible = false;
   },
 
   play: function () {
@@ -182,8 +183,6 @@ module.exports.Component = registerComponent('hand-controls', {
         el.setObject3D('mesh', mesh);
         mesh.position.set(0, 0, 0);
         mesh.rotation.set(0, 0, 0);
-        // hidden by default
-        mesh.visible = false;
         el.setAttribute('vive-controls', controlConfiguration);
         el.setAttribute('oculus-touch-controls', controlConfiguration);
         el.setAttribute('windows-motion-controls', controlConfiguration);
@@ -341,12 +340,6 @@ module.exports.Component = registerComponent('hand-controls', {
     fromAction.play();
     toAction.play();
     fromAction.crossFadeTo(toAction, 0.15, true);
-  },
-
-  setModelVisibility: function (visible) {
-    var model = this.el.getObject3D('mesh');
-    if (!model) { return; }
-    model.visible = visible;
   }
 });
 

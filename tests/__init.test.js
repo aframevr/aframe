@@ -37,6 +37,7 @@ setup(function () {
       enabled: false
     },
     getContext: function () { return undefined; },
+    setAnimationLoop: function () {},
     setSize: function () {},
     shadowMap: {}
   };

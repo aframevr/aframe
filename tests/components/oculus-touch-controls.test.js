@@ -56,7 +56,7 @@ suite('oculus-touch-controls', function () {
       var removeEventListenersSpy = sinon.spy(component, 'removeEventListeners');
 
       // Mock isControllerPresent to return true.
-      el.sceneEl.systems['tracked-controls'].controllers = component.controllersWhenPresent;
+      el.sceneEl.systems['tracked-controls-webvr'].controllers = component.controllersWhenPresent;
 
       // Mock that it's never been checked previously.
       delete component.controllerPresent;
@@ -75,7 +75,7 @@ suite('oculus-touch-controls', function () {
       var removeEventListenersSpy = sinon.spy(component, 'removeEventListeners');
 
       // Mock isControllerPresent to return true.
-      el.sceneEl.systems['tracked-controls'].controllers = component.controllersWhenPresent;
+      el.sceneEl.systems['tracked-controls-webvr'].controllers = component.controllersWhenPresent;
 
       // Mock that it's was currently present.
       component.controllerEventsActive = true;
@@ -107,7 +107,7 @@ suite('oculus-touch-controls', function () {
 
   suite('axismove', function () {
     test('emits thumbstick moved', function (done) {
-      el.sceneEl.systems['tracked-controls'].controllers = component.controllersWhenPresent;
+      el.sceneEl.systems['tracked-controls-webvr'].controllers = component.controllersWhenPresent;
       // Do the check.
       component.checkIfControllerPresent();
       // Set up the event details.
@@ -123,7 +123,7 @@ suite('oculus-touch-controls', function () {
     });
 
     test('does not emit thumbstickmoved if axismove has no changes', function (done) {
-      el.sceneEl.systems['tracked-controls'].controllers = component.controllersWhenPresent;
+      el.sceneEl.systems['tracked-controls-webvr'].controllers = component.controllersWhenPresent;
       // Do the check.
       component.checkIfControllerPresent();
       // Fail purposely.
@@ -138,7 +138,7 @@ suite('oculus-touch-controls', function () {
 
   suite('buttonchanged', function () {
     test('can emit triggerchanged', function (done) {
-      el.sceneEl.systems['tracked-controls'].controllers = component.controllersWhenPresent;
+      el.sceneEl.systems['tracked-controls-webvr'].controllers = component.controllersWhenPresent;
       // Do the check.
       component.checkIfControllerPresent();
       // Prepare the event details

@@ -30,7 +30,7 @@ suite('oculus-go-controls', function () {
       var addEventListenersSpy = sinon.spy(component, 'addEventListeners');
       var injectTrackedControlsSpy = sinon.spy(component, 'injectTrackedControls');
 
-      el.sceneEl.systems['tracked-controls'].controllers = [];
+      el.sceneEl.systems['tracked-controls-webvr'].controllers = [];
 
       component.controllerPresent = false;
 
@@ -48,7 +48,7 @@ suite('oculus-go-controls', function () {
       var injectTrackedControlsSpy = sinon.spy(component, 'injectTrackedControls');
       var removeEventListenersSpy = sinon.spy(component, 'removeEventListeners');
 
-      el.sceneEl.systems['tracked-controls'].controllers = [];
+      el.sceneEl.systems['tracked-controls-webvr'].controllers = [];
 
       component.controllerEventsActive = false;
       component.controllerPresent = false;
@@ -68,7 +68,7 @@ suite('oculus-go-controls', function () {
       var injectTrackedControlsSpy = sinon.spy(component, 'injectTrackedControls');
       var removeEventListenersSpy = sinon.spy(component, 'removeEventListeners');
 
-      el.sceneEl.systems['tracked-controls'].controllers = component.controllersWhenPresent;
+      el.sceneEl.systems['tracked-controls-webvr'].controllers = component.controllersWhenPresent;
 
       component.controllerPresent = false;
 
@@ -87,7 +87,7 @@ suite('oculus-go-controls', function () {
       var injectTrackedControlsSpy = sinon.spy(component, 'injectTrackedControls');
       var removeEventListenersSpy = sinon.spy(component, 'removeEventListeners');
 
-      el.sceneEl.systems['tracked-controls'].controllers = component.controllersWhenPresent;
+      el.sceneEl.systems['tracked-controls-webvr'].controllers = component.controllersWhenPresent;
 
       component.controllerEventsActive = true;
       component.controllerPresent = true;
@@ -107,7 +107,7 @@ suite('oculus-go-controls', function () {
       var injectTrackedControlsSpy = sinon.spy(component, 'injectTrackedControls');
       var removeEventListenersSpy = sinon.spy(component, 'removeEventListeners');
 
-      el.sceneEl.systems['tracked-controls'].controllers = [];
+      el.sceneEl.systems['tracked-controls-webvr'].controllers = [];
 
       component.controllerEventsActive = true;
       component.controllerPresent = true;
@@ -201,7 +201,7 @@ suite('oculus-go-controls', function () {
       el.setAttribute('oculus-go-controls', 'armModel', false);
       setupTestControllers(el);
 
-      var trackedControls = el.components['tracked-controls'];
+      var trackedControls = el.components['tracked-controls-webvr'];
       var applyArmModelSpy = sinon.spy(trackedControls, 'applyArmModel');
       trackedControls.tick();
 
@@ -219,7 +219,7 @@ suite('oculus-go-controls', function () {
       el.setAttribute('oculus-go-controls', 'armModel', true);
       setupTestControllers(el);
 
-      var trackedControls = el.components['tracked-controls'];
+      var trackedControls = el.components['tracked-controls-webvr'];
       var applyArmModelSpy = sinon.spy(trackedControls, 'applyArmModel');
       trackedControls.tick();
 
@@ -232,7 +232,7 @@ suite('oculus-go-controls', function () {
       el.setAttribute('oculus-go-controls', 'armModel', true);
       setupTestControllers(el);
 
-      var trackedControls = el.components['tracked-controls'];
+      var trackedControls = el.components['tracked-controls-webvr'];
       trackedControls.tick();
       assert.ok(el.object3D.position.x > 0);
     });
@@ -244,7 +244,7 @@ suite('oculus-go-controls', function () {
       el.components['oculus-go-controls'].controllersWhenPresent[0].hand = 'left';
       setupTestControllers(el);
 
-      var trackedControls = el.components['tracked-controls'];
+      var trackedControls = el.components['tracked-controls-webvr'];
       trackedControls.tick();
       assert.ok(el.object3D.position.x < 0);
     });
@@ -257,7 +257,7 @@ suite('oculus-go-controls', function () {
    */
   function setupTestControllers (el) {
     var component = el.components['oculus-go-controls'];
-    el.sceneEl.systems['tracked-controls'].controllers = component.controllersWhenPresent;
+    el.sceneEl.systems['tracked-controls-webvr'].controllers = component.controllersWhenPresent;
     component.checkIfControllerPresent();
   }
 });

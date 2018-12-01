@@ -5,19 +5,22 @@ window.Promise = window.Promise || require('promise-polyfill');
 // Check before the polyfill runs.
 window.hasNativeWebVRImplementation = !!window.navigator.getVRDisplays ||
                                       !!window.navigator.getVRDevices;
+window.hasNativeWebXRImplementation = navigator.xr !== undefined;
 
-var isIOSOlderThan10 = require('./utils/isIOSOlderThan10');
-// Workaround for iOS Safari canvas sizing issues in stereo (webvr-polyfill/issues/102).
-// Only for iOS on versions older than 10.
-var bufferScale = isIOSOlderThan10(window.navigator.userAgent) ? 1 / window.devicePixelRatio : 1;
-var WebVRPolyfill = require('webvr-polyfill');
-var polyfillConfig = {
-  BUFFER_SCALE: bufferScale,
-  CARDBOARD_UI_DISABLED: true,
-  ROTATE_INSTRUCTIONS_DISABLED: true
-};
-
-window.webvrpolyfill = new WebVRPolyfill(polyfillConfig);
+// If WebXR is defined WebVRPolyfill does not initialize.
+if (!window.hasNativeWebXRImplementation) {
+  var isIOSOlderThan10 = require('./utils/isIOSOlderThan10');
+  // Workaround for iOS Safari canvas sizing issues in stereo (webvr-polyfill/issues/102).
+  // Only for iOS on versions older than 10.
+  var bufferScale = isIOSOlderThan10(window.navigator.userAgent) ? 1 / window.devicePixelRatio : 1;
+  var WebVRPolyfill = require('webvr-polyfill');
+  var polyfillConfig = {
+    BUFFER_SCALE: bufferScale,
+    CARDBOARD_UI_DISABLED: true,
+    ROTATE_INSTRUCTIONS_DISABLED: true
+  };
+  window.webvrpolyfill = new WebVRPolyfill(polyfillConfig);
+}
 
 var utils = require('./utils/');
 var debug = utils.debug;
