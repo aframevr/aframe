@@ -104,7 +104,7 @@ attached to the camera:
 
 [Remix this event set component example on Glitch](https://glitch.com/~aframe-event-set-component).
 
-[event-set]: https://github.com/ngokevin/kframe/tree/master/components/event-set
+[event-set]: https://github.com/supermedium/superframe/tree/master/components/event-set
 
 Now let's handle the events that the cursor component provides. The cursor
 component emits synthetic events like `click`, `mouseenter`, `mouseleave`,

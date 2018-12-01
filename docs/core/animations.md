@@ -9,7 +9,7 @@ examples: []
 ---
 
 > Also check out the
-> [aframe-animation-component](https://github.com/ngokevin/kframe/tree/master/components/animation/)
+> [aframe-animation-component](https://github.com/supermedium/superframe/tree/master/components/animation/)
 
 We can add animations in A-Frame attaching an `<a-animation>` element as a
 child of the entity to animate.

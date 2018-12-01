@@ -83,7 +83,7 @@ full use of positional tracking and controllers.
   <a href="https://aframe.io/a-saturday-night/">
     <img alt="A-Saturday-Night" target="_blank" src="https://cloud.githubusercontent.com/assets/674727/24531477/44272daa-156e-11e7-8ef9-d750ed430f3a.gif" height="190" width="32%">
   </a>
-  <a href="https://ngokevin.github.io/kframe/scenes/aincraft/">
+  <a href="https://supermedium.com/superframe/scenes/aincraft/">
     <img alt="Aincraft" target="_blank" src="https://cloud.githubusercontent.com/assets/674727/24531777/25b8ff5e-1570-11e7-896c-3446d1419eb8.gif" height="190" width="32%">
   </a>
   <a href="https://github.com/googlecreativelab/webvr-musicalforest">
@@ -148,7 +148,7 @@ and fly around to peek under the hood!
 
 [augmented reality]: https://github.com/jeromeetienne/AR.js#augmented-reality-for-the-web-in-less-than-10-lines-of-html
 [motion capture]: https://github.com/dmarcos/aframe-motion-capture
-[mountains]: https://github.com/ngokevin/kframe/tree/master/components/mountain/
+[mountains]: https://github.com/supermedium/superframe/tree/master/components/mountain/
 [multiuser]: https://github.com/haydenjameslee/networked-aframe
 [oceans]: https://github.com/donmccurdy/aframe-extras/tree/master/src/primitives
 [particle systems]: https://github.com/IdeaSpaceVR/aframe-particle-system-component
