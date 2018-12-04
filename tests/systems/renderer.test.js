@@ -10,8 +10,8 @@ suite('renderer', function () {
   test('default initialization', function (done) {
     var sceneEl = createScene();
     sceneEl.addEventListener('loaded', function () {
-      assert.ok(sceneEl.renderer.gammaOutput);
-      assert.equal(sceneEl.renderer.gammaFactor, 2.2);
+      assert.notOk(sceneEl.renderer.gammaOutput);
+      assert.notOk(sceneEl.renderer.gammaFactor);
       assert.notOk(sceneEl.renderer.sortObjects);
       assert.notOk(sceneEl.renderer.physicallyCorrectLights);
       done();
@@ -21,9 +21,10 @@ suite('renderer', function () {
 
   test('change renderer workflow', function (done) {
     var sceneEl = createScene();
-    sceneEl.setAttribute('renderer', 'workflow: gamma;');
+    sceneEl.setAttribute('renderer', 'workflow: linear;');
     sceneEl.addEventListener('loaded', function () {
-      assert.notOk(sceneEl.renderer.gammaOutput);
+      assert.ok(sceneEl.renderer.gammaOutput);
+      assert.equal(sceneEl.renderer.gammaFactor, 2.2);
       done();
     });
     document.body.appendChild(sceneEl);
