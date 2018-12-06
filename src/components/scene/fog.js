@@ -21,7 +21,6 @@ module.exports.Component = register('fog', {
     var data = this.data;
     var el = this.el;
     var fog = this.el.object3D.fog;
-    var rendererSystem = this.el.sceneEl.systems.renderer;
 
     if (!el.isScene) {
       warn('Fog component can only be applied to <a-scene>');
@@ -30,8 +29,7 @@ module.exports.Component = register('fog', {
 
     // (Re)create fog if fog doesn't exist or fog type changed.
     if (!fog || data.type !== fog.name) {
-      el.object3D.fog = fog = getFog(data);
-      rendererSystem.applyColorCorrection(fog.color);
+      el.object3D.fog = getFog(data);
       el.systems.material.updateMaterials();
       return;
     }
@@ -39,10 +37,7 @@ module.exports.Component = register('fog', {
     // Fog data changed. Update fog.
     Object.keys(this.schema).forEach(function (key) {
       var value = data[key];
-      if (key === 'color') {
-        value = new THREE.Color(value);
-        rendererSystem.applyColorCorrection(value);
-      }
+      if (key === 'color') { value = new THREE.Color(value); }
       fog[key] = value;
     });
   },

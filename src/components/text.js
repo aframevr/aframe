@@ -92,7 +92,6 @@ module.exports.Component = registerComponent('text', {
     this.geometry = createTextGeometry();
     this.createOrUpdateMaterial();
     this.mesh = new THREE.Mesh(this.geometry, this.material);
-    this.rendererSystem = this.el.sceneEl.systems.renderer;
     this.el.setObject3D(this.attrName, this.mesh);
   },
 
