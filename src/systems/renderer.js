@@ -1,5 +1,6 @@
 var registerSystem = require('../core/system').registerSystem;
 var utils = require('../utils/');
+var THREE = require('../lib/three');
 
 var debug = utils.debug;
 var warn = debug('components:renderer:warn');
@@ -35,9 +36,22 @@ module.exports.System = registerSystem('renderer', {
       }
     }
 
-    // TODO: Uncomment these lines and deprecate 'antialias' for v0.9.0.
-    // if (el.hasAttribute('antialias')) {
-    //   warn('Component `antialias` is deprecated. Use `renderer="antialias: true"` instead.');
-    // }
+    if (sceneEl.hasAttribute('antialias')) {
+      warn('Component `antialias` is deprecated. Use `renderer="antialias: true"` instead.');
+    }
+
+    if (sceneEl.hasAttribute('logarithmicDepthBuffer')) {
+      warn('Component `logarithmicDepthBuffer` is deprecated. Use `renderer="logarithmicDepthBuffer: true"` instead.');
+    }
+  },
+
+  applyColorCorrection: function (colorOrTexture) {
+    if (this.data.workflow !== 'linear' || !colorOrTexture) {
+      return;
+    } else if (colorOrTexture.isColor) {
+      colorOrTexture.convertSRGBToLinear();
+    } else if (colorOrTexture.isTexture) {
+      colorOrTexture.encoding = THREE.sRGBEncoding;
+    }
   }
 });

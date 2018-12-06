@@ -59,9 +59,11 @@ module.exports.Shader = registerShader('standard', {
    * Adds a reference from the scene to this entity as the camera.
    */
   init: function (data) {
-    this.workflow = this.el.sceneEl.systems.renderer.data.workflow;
+    this.rendererSystem = this.el.sceneEl.systems.renderer;
     this.materialData = {color: new THREE.Color(), emissive: new THREE.Color()};
-    getMaterialData(data, this.materialData, this.workflow);
+    getMaterialData(data, this.materialData);
+    this.rendererSystem.applyColorCorrection(this.materialData.color);
+    this.rendererSystem.applyColorCorrection(this.materialData.emissive);
     this.material = new THREE.MeshStandardMaterial(this.materialData);
 
     utils.material.updateMap(this, data);
@@ -93,7 +95,9 @@ module.exports.Shader = registerShader('standard', {
   updateMaterial: function (data) {
     var key;
     var material = this.material;
-    getMaterialData(data, this.materialData, this.workflow);
+    getMaterialData(data, this.materialData);
+    this.rendererSystem.applyColorCorrection(this.materialData.color);
+    this.rendererSystem.applyColorCorrection(this.materialData.emissive);
     for (key in this.materialData) {
       material[key] = this.materialData[key];
     }
@@ -159,10 +163,9 @@ module.exports.Shader = registerShader('standard', {
  *
  * @param {object} data - Material data.
  * @param {object} materialData - Object to use.
- * @param {string} workflow - Current workflow.
  * @returns {object} Updated materialData.
  */
-function getMaterialData (data, materialData, workflow) {
+function getMaterialData (data, materialData) {
   materialData.color.set(data.color);
   materialData.emissive.set(data.emissive);
   materialData.emissiveIntensity = data.emissiveIntensity;
@@ -171,11 +174,6 @@ function getMaterialData (data, materialData, workflow) {
   materialData.roughness = data.roughness;
   materialData.wireframe = data.wireframe;
   materialData.wireframeLinewidth = data.wireframeLinewidth;
-
-  if (workflow === 'linear') {
-    materialData.color.convertGammaToLinear(2.2);
-    materialData.emissive.convertGammaToLinear(2.2);
-  }
 
   if (data.normalMap) { materialData.normalScale = data.normalScale; }
 

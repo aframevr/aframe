@@ -552,13 +552,6 @@ module.exports.AScene = registerElement('a-scene', {
         var rendererConfig;
 
         rendererConfig = {alpha: true, antialias: !isMobile, canvas: this.canvas, logarithmicDepthBuffer: false};
-        if (this.hasAttribute('antialias')) {
-          rendererConfig.antialias = this.getAttribute('antialias') === 'true';
-        }
-
-        if (this.hasAttribute('logarithmicDepthBuffer')) {
-          rendererConfig.logarithmicDepthBuffer = this.getAttribute('logarithmicDepthBuffer') === 'true';
-        }
 
         this.maxCanvasSize = {height: 1920, width: 1920};
 
@@ -568,6 +561,10 @@ module.exports.AScene = registerElement('a-scene', {
 
           if (rendererAttr.antialias && rendererAttr.antialias !== 'auto') {
             rendererConfig.antialias = rendererAttr.antialias === 'true';
+          }
+
+          if (rendererAttr.logarithmicDepthBuffer && rendererAttr.logarithmicDepthBuffer !== 'auto') {
+            rendererConfig.logarithmicDepthBuffer = rendererAttr.logarithmicDepthBuffer === 'true';
           }
 
           this.maxCanvasSize = {
