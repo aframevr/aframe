@@ -26,11 +26,12 @@ The `renderer` system configures a scene's
 | Property                | Description                                                                     | Default Value |
 |-------------------------|---------------------------------------------------------------------------------|---------------|
 | antialias               | Whether to perform antialiasing. If `auto`, antialiasing is disabled on mobile. | auto          |
-| gammaOutput             | Whether to pre-multiply gamma on textures and colors before rendering.          | false         |
+| workflow                | Whether to use color-managed (`linear`) or legacy (`gamma`) workflow.           | gamma         |
 | sortObjects             | Whether to sort objects before rendering.                                       | false         |
 | physicallyCorrectLights | Whether to use physically-correct light attenuation.                            | false         |
 | maxCanvasWidth          | Maximum canvas width. Uses the size multiplied by device pixel ratio. Does not limit canvas width if set to -1.                                | 1920            |
-| maxCanvasHeight         | Maximum canvas height. Behaves the same as maxCanvasWidth.              | 1920            |
+| maxCanvasHeight         | Maximum canvas height. Behaves the same as maxCanvasWidth.                      | 1920          |
+| logarithmicDepthBuffer  | Whether to use a logarithmic depth buffer.                                      | auto          |
 
 > **NOTE:** Once the scene is initialized, these properties may no longer be changed.
 
@@ -41,10 +42,11 @@ By default, antialiasing is disabled on mobile devices.
 
 ### workflow
 
-Two workflows — `gamma` and `linear` — are available for rendering. The `linear` workflow gives
-more accurate rendering, and reduces the likelihood that scenes will appear overlit or "washed
-out." The `gamma` workflow is provided for backwards compatibility. When changing the workflow
-for an existing scene, you may need to adjust colors or lights.
+Two workflows — `gamma` and `linear` — are available for rendering. The `linear` workflow
+provides color management to give more accurate rendering, and reduces the likelihood that
+scenes will appear overlit or "washed out." The `gamma` workflow is provided for backwards
+compatibility. When changing the workflow for an existing scene, you may need to adjust
+colors or lights.
 
 > **NOTE:** In three.js, and previous versions of A-Frame, a `gammaOutput: true` property was
 > available. This is applied automatically in the `linear` workflow.
@@ -66,3 +68,8 @@ be adjusted when making this change. Performance is not significantly affected i
 
 > **NOTE:** When glTF models contain lights, use the physically-correct lighting mode to match
 > the results in the original modeling tool.
+
+### logarithmicDepthBuffer
+
+A logarithmic depth buffer may provide better sorting and rendering in scenes containing very
+large differences of scale and distance.
