@@ -256,53 +256,50 @@ module.exports.AScene = registerElement('a-scene', {
         var self = this;
         var vrDisplay;
         var vrManager = self.renderer.vr;
+
         // Don't enter VR if already in VR.
         if (this.is('vr-mode')) { return Promise.resolve('Already in VR.'); }
-        // Enter VR via WebVR API.
+
+        // Has VR.
         if (this.checkHeadsetConnected() || this.isMobile) {
           vrDisplay = utils.device.getVRDisplay();
           vrManager.setDevice(vrDisplay);
           vrManager.enabled = true;
+
           if (this.hasWebXR) {
-            if (this.xrSession) { this.xrSession.removeEventListener('end', this.exitVRBound); }
-            vrDisplay.requestSession({immersive: true, exclusive: true}).then(enterXRSuccess);
+            // XR API.
+            if (this.xrSession) {
+              this.xrSession.removeEventListener('end', this.exitVRBound);
+            }
+            vrDisplay.requestSession({
+              immersive: true,
+              exclusive: true
+            }).then(function requestSuccess (xrSession) {
+              self.xrSession = xrSession;
+              vrManager.setSession(xrSession);
+              xrSession.addEventListener('end', self.exitVRBound);
+              xrSession.requestFrameOfReference('stage').then(function (frameOfReference) {
+                self.frameOfReference = frameOfReference;
+              });
+              enterVRSuccess();
+            });
           } else {
+            // WebVR API.
             if (vrDisplay.isPresenting) {
               enterVRSuccess();
               return Promise.resolve();
             }
-            return vrDisplay.requestPresent([{source: this.canvas}]).then(enterVRSuccess, enterVRFailure);
+            return vrDisplay.requestPresent([{source: this.canvas}]).then(
+              enterVRSuccess, enterVRFailure);
           }
           return Promise.resolve();
         }
+
+        // No VR.
         enterVRSuccess();
         return Promise.resolve();
 
-        function enterXRSuccess (xrSession) {
-          self.xrSession = xrSession;
-          vrManager.setSession(xrSession);
-          xrSession.addEventListener('end', self.exitVRBound);
-          xrSession.requestFrameOfReference('stage').then(function (frameOfReference) {
-            self.frameOfReference = frameOfReference;
-          });
-          self.addState('vr-mode');
-          self.emit('enter-vr', {target: self});
-          // Lock to landscape orientation on mobile.
-          if (self.isMobile && screen.orientation && screen.orientation.lock) {
-            screen.orientation.lock('landscape');
-          }
-          self.addFullScreenStyles();
-
-          // On mobile, the polyfill handles fullscreen.
-          // TODO: 07/16 Chromium builds break when `requestFullscreen`ing on a canvas
-          // that we are also `requestPresent`ing. Until then, don't fullscreen if headset
-          // connected.
-          if (!self.isMobile && !self.checkHeadsetConnected()) {
-            requestFullscreen(self.canvas);
-          }
-          self.resize();
-        }
-
+        // Callback that happens on enter VR success or enter fullscreen (any API).
         function enterVRSuccess () {
           self.addState('vr-mode');
           self.emit('enter-vr', {target: self});
