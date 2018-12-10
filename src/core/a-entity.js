@@ -814,6 +814,15 @@ var proto = Object.create(ANode.prototype, {
     value: function (state) {
       return this.states.indexOf(state) !== -1;
     }
+  },
+
+  /**
+   * Open Inspector to this entity.
+   */
+  inspect: {
+    value: function () {
+      this.sceneEl.components.inspector.openInspector(this);
+    }
   }
 });
 
