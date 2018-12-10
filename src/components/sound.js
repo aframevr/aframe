@@ -45,10 +45,7 @@ module.exports.Component = registerComponent('sound', {
 
     // Create new sound if not yet created or changing `src`.
     if (srcChanged) {
-      if (!data.src) {
-        warn('Audio source was not specified with `src`');
-        return;
-      }
+      if (!data.src) { return; }
       this.setupSound();
     }
 
@@ -104,7 +101,10 @@ module.exports.Component = registerComponent('sound', {
     var sound;
 
     this.removeEventListener();
-    this.el.removeObject3D(this.attrName);
+
+    if (this.el.getObject3D(this.attrName)) {
+      this.el.removeObject3D(this.attrName);
+    }
 
     try {
       for (i = 0; i < this.pool.children.length; i++) {
