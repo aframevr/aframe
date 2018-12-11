@@ -71654,10 +71654,7 @@ module.exports.Component = registerComponent('sound', {
 
     // Create new sound if not yet created or changing `src`.
     if (srcChanged) {
-      if (!data.src) {
-        warn('Audio source was not specified with `src`');
-        return;
-      }
+      if (!data.src) { return; }
       this.setupSound();
     }
 
@@ -71713,7 +71710,10 @@ module.exports.Component = registerComponent('sound', {
     var sound;
 
     this.removeEventListener();
-    this.el.removeObject3D(this.attrName);
+
+    if (this.el.getObject3D(this.attrName)) {
+      this.el.removeObject3D(this.attrName);
+    }
 
     try {
       for (i = 0; i < this.pool.children.length; i++) {
@@ -79409,7 +79409,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.2 (Date 2018-12-10, Commit #57778b8)');
+console.log('A-Frame Version: 0.8.2 (Date 2018-12-11, Commit #632f875)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
