@@ -66893,6 +66893,8 @@ module.exports.Component = registerComponent('cursor', {
     el.sceneEl.addEventListener('rendererresize', this.updateCanvasBounds);
     window.addEventListener('resize', this.updateCanvasBounds);
     window.addEventListener('scroll', this.updateCanvasBounds);
+
+    this.updateMouseEventListeners();
   },
 
   removeEventListeners: function () {
@@ -79409,7 +79411,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.2 (Date 2018-12-11, Commit #632f875)');
+console.log('A-Frame Version: 0.8.2 (Date 2018-12-14, Commit #771b67d)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
