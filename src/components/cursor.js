@@ -129,6 +129,8 @@ module.exports.Component = registerComponent('cursor', {
     el.sceneEl.addEventListener('rendererresize', this.updateCanvasBounds);
     window.addEventListener('resize', this.updateCanvasBounds);
     window.addEventListener('scroll', this.updateCanvasBounds);
+
+    this.updateMouseEventListeners();
   },
 
   removeEventListeners: function () {
