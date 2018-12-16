@@ -65,7 +65,8 @@ module.exports.Component = registerComponent('tracked-controls-webxr', {
     );
     // Legacy handle to the controller for old components.
     this.el.components['tracked-controls'].controller = this.controller;
-    this.el.object3D.visible = !!this.controller;
+
+    if (this.data.autoHide) { this.el.object3D.visible = !!this.controller; }
   },
 
   tick: function () {
