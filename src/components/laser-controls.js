@@ -74,7 +74,7 @@ registerComponent('laser-controls', {
 
   config: {
     'daydream-controls': {
-      cursor: {downEvents: ['trackpaddown'], upEvents: ['trackpadup']}
+      cursor: {downEvents: ['trackpaddown', 'triggerdown'], upEvents: ['trackpadup', 'triggerup']}
     },
 
     'gearvr-controls': {
