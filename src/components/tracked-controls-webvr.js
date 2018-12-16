@@ -35,6 +35,7 @@ var EVENTS = {
  */
 module.exports.Component = registerComponent('tracked-controls-webvr', {
   schema: {
+    autoHide: {default: true},
     controller: {default: 0},
     id: {type: 'string', default: ''},
     hand: {type: 'string', default: ''},
@@ -102,7 +103,8 @@ module.exports.Component = registerComponent('tracked-controls-webvr', {
     this.controller = controller;
     // Legacy handle to the controller for old components.
     this.el.components['tracked-controls'].controller = controller;
-    this.el.object3D.visible = !!this.controller;
+
+    if (this.data.autoHide) { this.el.object3D.visible = !!this.controller; }
   },
 
   /**

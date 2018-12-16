@@ -12,6 +12,7 @@ var registerComponent = require('../core/component').registerComponent;
  */
 module.exports.Component = registerComponent('tracked-controls', {
   schema: {
+    autoHide: {default: true},
     controller: {default: 0},
     id: {type: 'string', default: ''},
     hand: {type: 'string', default: ''},
