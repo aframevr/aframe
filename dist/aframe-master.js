@@ -72101,12 +72101,12 @@ module.exports.Component = registerComponent('text', {
         self.mesh.visible = true;
         el.emit('textfontset', {font: data.font, fontObj: font});
       }).catch(function (err) {
-        error(err);
-        throw err;
+        error(err.message);
+        error(err.stack);
       });
     }).catch(function (err) {
-      error(err);
-      throw err;
+      error(err.message);
+      error(err.stack);
     });
   },
 
@@ -72159,7 +72159,7 @@ module.exports.Component = registerComponent('text', {
 
     // Update geometry dimensions to match text layout if width and height are set to 0.
     // For example, scales a plane to fit text.
-    if (geometryComponent) {
+    if (geometryComponent && geometryComponent.primitive === 'plane') {
       if (!geometryComponent.width) { el.setAttribute('geometry', 'width', width); }
       if (!geometryComponent.height) { el.setAttribute('geometry', 'height', height); }
     }
@@ -79411,7 +79411,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.2 (Date 2018-12-15, Commit #1b30260)');
+console.log('A-Frame Version: 0.8.2 (Date 2018-12-16, Commit #6537bea)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
