@@ -6,6 +6,7 @@ var registerSystem = require('../core/system').registerSystem;
  */
 module.exports.System = registerSystem('tracked-controls-webxr', {
   init: function () {
+    this.controllers = [];
     this.addSessionEventListeners = this.addSessionEventListeners.bind(this);
     this.onInputSourcesChange = this.onInputSourcesChange.bind(this);
     this.addSessionEventListeners();
