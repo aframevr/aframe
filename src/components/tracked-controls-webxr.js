@@ -75,6 +75,7 @@ module.exports.Component = registerComponent('tracked-controls-webxr', {
     var object3D = this.el.object3D;
     if (!this.controller || !sceneEl.frame) { return; }
     pose = sceneEl.frame.getInputPose(this.controller, sceneEl.frameOfReference);
+    if (!pose) { return; }
     object3D.matrix.elements = pose.targetRay.transformMatrix;
     object3D.matrix.decompose(object3D.position, object3D.rotation, object3D.scale);
   }
