@@ -239,12 +239,12 @@ module.exports.Component = registerComponent('text', {
         self.mesh.visible = true;
         el.emit('textfontset', {font: data.font, fontObj: font});
       }).catch(function (err) {
-        error(err);
-        throw err;
+        error(err.message);
+        error(err.stack);
       });
     }).catch(function (err) {
-      error(err);
-      throw err;
+      error(err.message);
+      error(err.stack);
     });
   },
 
@@ -297,7 +297,7 @@ module.exports.Component = registerComponent('text', {
 
     // Update geometry dimensions to match text layout if width and height are set to 0.
     // For example, scales a plane to fit text.
-    if (geometryComponent) {
+    if (geometryComponent && geometryComponent.primitive === 'plane') {
       if (!geometryComponent.width) { el.setAttribute('geometry', 'width', width); }
       if (!geometryComponent.height) { el.setAttribute('geometry', 'height', height); }
     }

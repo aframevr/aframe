@@ -66130,7 +66130,7 @@ module.exports.Component = registerComponent('animation', {
 
     this.animationIsPlaying = false;
 
-    if (oldData.enabled && !this.data.enabled) { return; }
+    if (!this.data.enabled) { return; }
 
     if (!data.property) { return; }
 
@@ -66893,6 +66893,8 @@ module.exports.Component = registerComponent('cursor', {
     el.sceneEl.addEventListener('rendererresize', this.updateCanvasBounds);
     window.addEventListener('resize', this.updateCanvasBounds);
     window.addEventListener('scroll', this.updateCanvasBounds);
+
+    this.updateMouseEventListeners();
   },
 
   removeEventListeners: function () {
@@ -68114,7 +68116,7 @@ registerComponent('laser-controls', {
 
   config: {
     'daydream-controls': {
-      cursor: {downEvents: ['trackpaddown'], upEvents: ['trackpadup']}
+      cursor: {downEvents: ['trackpaddown', 'triggerdown'], upEvents: ['trackpadup', 'triggerup']}
     },
 
     'gearvr-controls': {
@@ -71654,10 +71656,7 @@ module.exports.Component = registerComponent('sound', {
 
     // Create new sound if not yet created or changing `src`.
     if (srcChanged) {
-      if (!data.src) {
-        warn('Audio source was not specified with `src`');
-        return;
-      }
+      if (!data.src) { return; }
       this.setupSound();
     }
 
@@ -71713,7 +71712,10 @@ module.exports.Component = registerComponent('sound', {
     var sound;
 
     this.removeEventListener();
-    this.el.removeObject3D(this.attrName);
+
+    if (this.el.getObject3D(this.attrName)) {
+      this.el.removeObject3D(this.attrName);
+    }
 
     try {
       for (i = 0; i < this.pool.children.length; i++) {
@@ -72099,12 +72101,12 @@ module.exports.Component = registerComponent('text', {
         self.mesh.visible = true;
         el.emit('textfontset', {font: data.font, fontObj: font});
       }).catch(function (err) {
-        error(err);
-        throw err;
+        error(err.message);
+        error(err.stack);
       });
     }).catch(function (err) {
-      error(err);
-      throw err;
+      error(err.message);
+      error(err.stack);
     });
   },
 
@@ -72157,7 +72159,7 @@ module.exports.Component = registerComponent('text', {
 
     // Update geometry dimensions to match text layout if width and height are set to 0.
     // For example, scales a plane to fit text.
-    if (geometryComponent) {
+    if (geometryComponent && geometryComponent.primitive === 'plane') {
       if (!geometryComponent.width) { el.setAttribute('geometry', 'width', width); }
       if (!geometryComponent.height) { el.setAttribute('geometry', 'height', height); }
     }
@@ -72380,6 +72382,7 @@ var EVENTS = {
  */
 module.exports.Component = registerComponent('tracked-controls-webvr', {
   schema: {
+    autoHide: {default: true},
     controller: {default: 0},
     id: {type: 'string', default: ''},
     hand: {type: 'string', default: ''},
@@ -72447,7 +72450,8 @@ module.exports.Component = registerComponent('tracked-controls-webvr', {
     this.controller = controller;
     // Legacy handle to the controller for old components.
     this.el.components['tracked-controls'].controller = controller;
-    this.el.object3D.visible = !!this.controller;
+
+    if (this.data.autoHide) { this.el.object3D.visible = !!this.controller; }
   },
 
   /**
@@ -72745,7 +72749,8 @@ module.exports.Component = registerComponent('tracked-controls-webxr', {
     );
     // Legacy handle to the controller for old components.
     this.el.components['tracked-controls'].controller = this.controller;
-    this.el.object3D.visible = !!this.controller;
+
+    if (this.data.autoHide) { this.el.object3D.visible = !!this.controller; }
   },
 
   tick: function () {
@@ -72774,6 +72779,7 @@ var registerComponent = _dereq_('../core/component').registerComponent;
  */
 module.exports.Component = registerComponent('tracked-controls', {
   schema: {
+    autoHide: {default: true},
     controller: {default: 0},
     id: {type: 'string', default: ''},
     hand: {type: 'string', default: ''},
@@ -78670,7 +78676,7 @@ registerPrimitive('a-camera', {
     'camera': {},
     'look-controls': {},
     'wasd-controls': {},
-    'position': {y: 1.6}
+    'position': {x: 0, y: 1.6, z: 0}
   },
 
   mappings: {
@@ -79409,7 +79415,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.2 (Date 2018-12-10, Commit #57778b8)');
+console.log('A-Frame Version: 0.8.2 (Date 2018-12-16, Commit #3c4fff2)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -81072,6 +81078,7 @@ var registerSystem = _dereq_('../core/system').registerSystem;
  */
 module.exports.System = registerSystem('tracked-controls-webxr', {
   init: function () {
+    this.controllers = [];
     this.addSessionEventListeners = this.addSessionEventListeners.bind(this);
     this.onInputSourcesChange = this.onInputSourcesChange.bind(this);
     this.addSessionEventListeners();
