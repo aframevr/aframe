@@ -108,7 +108,7 @@ module.exports.Component = registerComponent('animation', {
 
     this.animationIsPlaying = false;
 
-    if (oldData.enabled && !this.data.enabled) { return; }
+    if (!this.data.enabled) { return; }
 
     if (!data.property) { return; }
 
