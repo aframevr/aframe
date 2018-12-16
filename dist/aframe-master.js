@@ -79415,7 +79415,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.2 (Date 2018-12-16, Commit #7754b2c)');
+console.log('A-Frame Version: 0.8.2 (Date 2018-12-16, Commit #730735b)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -81078,6 +81078,7 @@ var registerSystem = _dereq_('../core/system').registerSystem;
  */
 module.exports.System = registerSystem('tracked-controls-webxr', {
   init: function () {
+    this.controllers = [];
     this.addSessionEventListeners = this.addSessionEventListeners.bind(this);
     this.onInputSourcesChange = this.onInputSourcesChange.bind(this);
     this.addSessionEventListeners();
