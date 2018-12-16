@@ -66130,7 +66130,7 @@ module.exports.Component = registerComponent('animation', {
 
     this.animationIsPlaying = false;
 
-    if (oldData.enabled && !this.data.enabled) { return; }
+    if (!this.data.enabled) { return; }
 
     if (!data.property) { return; }
 
@@ -79411,7 +79411,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.2 (Date 2018-12-16, Commit #6537bea)');
+console.log('A-Frame Version: 0.8.2 (Date 2018-12-16, Commit #a647fb9)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
