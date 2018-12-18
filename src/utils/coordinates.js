@@ -11,6 +11,9 @@ var COORDINATE_KEYS = ['x', 'y', 'z', 'w'];
 var regex = /^\s*((-?\d*\.{0,1}\d+(e-?\d+)?)\s+){2,3}(-?\d*\.{0,1}\d+(e-?\d+)?)\s*$/;
 module.exports.regex = regex;
 
+var OBJECT = 'object';
+var whitespaceRegex = /\s+/g;
+
 /**
  * Parses coordinates from an "x y z" string.
  * Example: "3 10 -5" to {x: 3, y: 10, z: -5}.
@@ -21,36 +24,43 @@ module.exports.regex = regex;
  */
 function parse (value, defaultVec) {
   var coordinate;
+  var defaultVal;
+  var key;
+  var i;
   var vec;
+  var x;
+  var y;
+  var z;
+  var w;
 
   if (value && value instanceof Object) {
-    var x = value.x === undefined ? defaultVec && defaultVec.x : value.x;
-    var y = value.y === undefined ? defaultVec && defaultVec.y : value.y;
-    var z = value.z === undefined ? defaultVec && defaultVec.z : value.z;
-    var w = value.w === undefined ? defaultVec && defaultVec.w : value.w;
-    if (x !== undefined) value.x = parseIfString(x);
-    if (y !== undefined) value.y = parseIfString(y);
-    if (z !== undefined) value.z = parseIfString(z);
-    if (w !== undefined) value.w = parseIfString(w);
+    x = value.x === undefined ? defaultVec && defaultVec.x : value.x;
+    y = value.y === undefined ? defaultVec && defaultVec.y : value.y;
+    z = value.z === undefined ? defaultVec && defaultVec.z : value.z;
+    w = value.w === undefined ? defaultVec && defaultVec.w : value.w;
+    if (x !== undefined) { value.x = parseIfString(x); }
+    if (y !== undefined) { value.y = parseIfString(y); }
+    if (z !== undefined) { value.z = parseIfString(z); }
+    if (w !== undefined) { value.w = parseIfString(w); }
     return value;
   }
 
   if (value === null || value === undefined) {
-    return typeof defaultVec === 'object' ? extend({}, defaultVec) : defaultVec;
+    return typeof defaultVec === OBJECT ? extend({}, defaultVec) : defaultVec;
   }
 
-  coordinate = value.trim().split(/\s+/g);
-
+  coordinate = value.trim().split(whitespaceRegex);
   vec = {};
-  COORDINATE_KEYS.forEach(function (key, i) {
+  for (i = 0; i < COORDINATE_KEYS.length; i++) {
+    key = COORDINATE_KEYS[i];
     if (coordinate[i]) {
       vec[key] = parseFloat(coordinate[i], 10);
     } else {
-      var defaultVal = defaultVec && defaultVec[key];
-      if (defaultVal === undefined) { return; }
+      defaultVal = defaultVec && defaultVec[key];
+      if (defaultVal === undefined) { continue; }
       vec[key] = parseIfString(defaultVal);
     }
-  });
+  }
   return vec;
 }
 module.exports.parse = parse;
@@ -63,8 +73,12 @@ module.exports.parse = parse;
  * @returns {string} An "x y z" string.
  */
 function stringify (data) {
-  if (typeof data !== 'object') { return data; }
-  return [data.x, data.y, data.z, data.w].join(' ').trim();
+  var str;
+  if (typeof data !== OBJECT) { return data; }
+  str = data.x + ' ' + data.y;
+  if (data.z) { str += ' ' + data.z; }
+  if (data.w) { str += ' ' + data.w; }
+  return str;
 }
 module.exports.stringify = stringify;
 
