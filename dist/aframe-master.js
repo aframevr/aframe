@@ -76034,6 +76034,9 @@ Component.prototype = {
 
     // Apply new value to this.data in place since direct update.
     if (this.isSingleProperty) {
+      if (this.isObjectBased) {
+        parseProperty(attrValue, this.schema);
+      }
       // Single-property (already parsed).
       this.data = attrValue;
       return;
@@ -79416,7 +79419,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.2 (Date 2018-12-18, Commit #acbfd55)');
+console.log('A-Frame Version: 0.8.2 (Date 2018-12-18, Commit #02711d8)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
