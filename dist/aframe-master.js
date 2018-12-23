@@ -68051,7 +68051,9 @@ var utils = _dereq_('../utils/');
 
 registerComponent('laser-controls', {
   schema: {
-    hand: {default: 'right'}
+    hand: {default: 'right'},
+    model: {default: true},
+    defaultModelColor: {type: 'color', default: 'grey'}
   },
 
   init: function () {
@@ -68059,15 +68061,20 @@ registerComponent('laser-controls', {
     var data = this.data;
     var el = this.el;
     var self = this;
+    var modelEnabled = this.data.model && !this.el.sceneEl.hasWebXR;
+    var controlsConfiguration = {hand: data.hand, model: modelEnabled};
 
     // Set all controller models.
-    el.setAttribute('daydream-controls', {hand: data.hand});
-    el.setAttribute('gearvr-controls', {hand: data.hand});
-    el.setAttribute('oculus-go-controls', {hand: data.hand});
-    el.setAttribute('oculus-touch-controls', {hand: data.hand});
-    el.setAttribute('vive-controls', {hand: data.hand});
-    el.setAttribute('vive-focus-controls', {hand: data.hand});
-    el.setAttribute('windows-motion-controls', {hand: data.hand});
+    el.setAttribute('daydream-controls', controlsConfiguration);
+    el.setAttribute('gearvr-controls', controlsConfiguration);
+    el.setAttribute('oculus-go-controls', controlsConfiguration);
+    el.setAttribute('oculus-touch-controls', controlsConfiguration);
+    el.setAttribute('vive-controls', controlsConfiguration);
+    el.setAttribute('vive-focus-controls', controlsConfiguration);
+    el.setAttribute('windows-motion-controls', controlsConfiguration);
+
+    // WebXR doesn't allow to discriminate between controllers, a default model is used.
+    if (this.data.model && this.el.sceneEl.hasWebXR) { this.initDefaultModel(); }
 
     // Wait for controller to connect, or have a valid pointing pose, before creating ray
     el.addEventListener('controllerconnected', createRay);
@@ -68146,6 +68153,16 @@ registerComponent('laser-controls', {
       cursor: {downEvents: ['triggerdown'], upEvents: ['triggerup']},
       raycaster: {showLine: false}
     }
+  },
+
+  initDefaultModel: function () {
+    var modelEl = this.modelEl = document.createElement('a-entity');
+    modelEl.setAttribute('geometry', {
+      primitive: 'sphere',
+      radius: 0.03
+    });
+    modelEl.setAttribute('material', {color: this.data.color});
+    this.el.appendChild(modelEl);
   }
 });
 
@@ -79419,7 +79436,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.2 (Date 2018-12-23, Commit #6a413d4)');
+console.log('A-Frame Version: 0.8.2 (Date 2018-12-23, Commit #d399a0d)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
