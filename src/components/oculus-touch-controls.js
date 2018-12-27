@@ -160,10 +160,10 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     // Update trigger and/or grip meshes, if any.
     if (buttonMeshes) {
       if (button === 'trigger' && buttonMeshes.trigger) {
-        buttonMeshes.trigger.rotation.x = -analogValue * (Math.PI / 24);
+        buttonMeshes.trigger.rotation.x = this.originalXRotationTrigger - analogValue * (Math.PI / 26);
       }
       if (button === 'grip' && buttonMeshes.grip) {
-        buttonMeshes.grip.rotation.y = (this.data.hand === 'left' ? -1 : 1) * analogValue * (Math.PI / 60);
+        buttonMeshes.grip.position.x = this.originalXPositionGrip + (this.data.hand === 'left' ? -1 : 1) * analogValue * 0.004;
       }
     }
 
@@ -176,16 +176,17 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     var buttonMeshes;
     if (!this.data.model) { return; }
 
-    var leftHand = this.data.hand === 'left';
     buttonMeshes = this.buttonMeshes = {};
 
-    buttonMeshes.grip = controllerObject3D.getObjectByName(leftHand ? 'buttonHand_oculus-touch-controller-left.004' : 'buttonHand_oculus-touch-controller-right.005');
-    buttonMeshes.thumbstick = controllerObject3D.getObjectByName(leftHand ? 'stick_oculus-touch-controller-left.007' : 'stick_oculus-touch-controller-right.004');
-    buttonMeshes.trigger = controllerObject3D.getObjectByName(leftHand ? 'buttonTrigger_oculus-touch-controller-left.005' : 'buttonTrigger_oculus-touch-controller-right.006');
-    buttonMeshes.xbutton = controllerObject3D.getObjectByName('buttonX_oculus-touch-controller-left.002');
-    buttonMeshes.abutton = controllerObject3D.getObjectByName('buttonA_oculus-touch-controller-right.002');
-    buttonMeshes.ybutton = controllerObject3D.getObjectByName('buttonY_oculus-touch-controller-left.001');
-    buttonMeshes.bbutton = controllerObject3D.getObjectByName('buttonB_oculus-touch-controller-right.003');
+    buttonMeshes.grip = controllerObject3D.getObjectByName('buttonHand');
+    this.originalXPositionGrip = buttonMeshes.grip.position.x;
+    buttonMeshes.thumbstick = controllerObject3D.getObjectByName('stick');
+    buttonMeshes.trigger = controllerObject3D.getObjectByName('buttonTrigger');
+    this.originalXRotationTrigger = buttonMeshes.trigger.rotation.x;
+    buttonMeshes.xbutton = controllerObject3D.getObjectByName('buttonX');
+    buttonMeshes.abutton = controllerObject3D.getObjectByName('buttonA');
+    buttonMeshes.ybutton = controllerObject3D.getObjectByName('buttonY');
+    buttonMeshes.bbutton = controllerObject3D.getObjectByName('buttonB');
 
     // Offset pivot point
     controllerObject3D.position.copy(DEFAULT_MODEL_PIVOT_OFFSET);
