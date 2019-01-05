@@ -1,4 +1,5 @@
 var registerPrimitive = require('../primitives').registerPrimitive;
+var autoPropertyMapping = require('../../../utils/autoPropertyMapping').autoPropertyMapping;
 
 registerPrimitive('a-link', {
   defaultComponents: {
@@ -7,9 +8,5 @@ registerPrimitive('a-link', {
     }
   },
 
-  mappings: {
-    href: 'link.href',
-    image: 'link.image',
-    title: 'link.title'
-  }
+  mappings: autoPropertyMapping('link')
 });
