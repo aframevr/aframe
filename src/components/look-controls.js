@@ -66,7 +66,7 @@ module.exports.Component = registerComponent('look-controls', {
     if (oldData && !data.pointerLockEnabled !== oldData.pointerLockEnabled) {
       this.removeEventListeners();
       this.addEventListeners();
-      if (this.pointerLocked) { document.exitPointerLock(); }
+      if (this.pointerLocked) { this.exitPointerLock(); }
     }
   },
 
@@ -82,10 +82,12 @@ module.exports.Component = registerComponent('look-controls', {
 
   pause: function () {
     this.removeEventListeners();
+    if (this.pointerLocked) { this.exitPointerLock(); }
   },
 
   remove: function () {
     this.removeEventListeners();
+    if (this.pointerLocked) { this.exitPointerLock(); }
   },
 
   bindMethods: function () {
@@ -364,6 +366,12 @@ module.exports.Component = registerComponent('look-controls', {
    * Recover from Pointer Lock error.
    */
   onPointerLockError: function () {
+    this.pointerLocked = false;
+  },
+
+  // Exits pointer-locked mode.
+  exitPointerLock: function () {
+    document.exitPointerLock();
     this.pointerLocked = false;
   },
 
