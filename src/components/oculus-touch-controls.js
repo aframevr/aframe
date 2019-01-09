@@ -12,7 +12,6 @@ var TOUCH_CONTROLLER_MODEL_URL = {
 
 var GAMEPAD_ID_PREFIX = 'Oculus Touch';
 
-var DEFAULT_MODEL_PIVOT_OFFSET = new THREE.Vector3(0, 0, -0.053);
 var RAY_ORIGIN = {
   left: {origin: {x: 0.008, y: -0.004, z: 0}, direction: {x: 0, y: -0.8, z: -1}},
   right: {origin: {x: -0.008, y: -0.004, z: 0}, direction: {x: 0, y: -0.8, z: -1}}
@@ -59,6 +58,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     this.onControllersUpdate = bind(this.onControllersUpdate, this);
     this.checkIfControllerPresent = bind(this.checkIfControllerPresent, this);
     this.onAxisMoved = bind(this.onAxisMoved, this);
+    this.onThumbstickMoved = bind(this.onThumbstickMoved, this);
   },
 
   init: function () {
@@ -87,6 +87,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     el.addEventListener('touchend', this.onButtonTouchEnd);
     el.addEventListener('axismove', this.onAxisMoved);
     el.addEventListener('model-loaded', this.onModelLoaded);
+    el.addEventListener('thumbstickmoved', this.onThumbstickMoved);
     this.controllerEventsActive = true;
   },
 
@@ -99,6 +100,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     el.removeEventListener('touchend', this.onButtonTouchEnd);
     el.removeEventListener('axismove', this.onAxisMoved);
     el.removeEventListener('model-loaded', this.onModelLoaded);
+    el.removeEventListener('thumbstickmoved', this.onThumbstickMoved);
     this.controllerEventsActive = false;
   },
 
@@ -188,8 +190,28 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     buttonMeshes.ybutton = controllerObject3D.getObjectByName('buttonY');
     buttonMeshes.bbutton = controllerObject3D.getObjectByName('buttonB');
 
-    // Offset pivot point
-    controllerObject3D.position.copy(DEFAULT_MODEL_PIVOT_OFFSET);
+    var thumbstick = buttonMeshes.thumbstick;
+    var thumbstickParent = thumbstick.parent;
+    // Attach thumbstick to pivot group to center the pivot point properly.
+    thumbstickParent.remove(thumbstick);
+
+    var thumbstickBoundingBox = new THREE.Box3().setFromObject(thumbstick);
+    thumbstickBoundingBox.getCenter(thumbstick.position);
+
+    // tweak thumbstick down into the controller body a little to improve aesthetics.
+    var thumbstickPosTweak = 0.002;
+    thumbstick.position.y -= thumbstickPosTweak;
+    thumbstick.position.z += thumbstickPosTweak / 6.5;
+
+    var thumbstickPivot = new THREE.Group();
+    thumbstickParent.add(thumbstickPivot);
+    thumbstickPivot.add(thumbstick);
+
+    thumbstick.geometry.center();
+
+    this.originalXRotationThumbstick = thumbstick.rotation.x;
+    this.originalYRotationThumbstick = thumbstick.rotation.y;
+    this.originalZRotationThumbstick = thumbstick.rotation.z;
 
     this.el.emit('controllermodelready', {
       name: 'oculus-touch-controls',
@@ -200,6 +222,27 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
 
   onAxisMoved: function (evt) {
     this.emitIfAxesChanged(this, this.mapping[this.data.hand].axes, evt);
+  },
+
+  onThumbstickMoved: function (evt) {
+    var buttonMeshes = this.buttonMeshes;
+    var thumbstick = (buttonMeshes && buttonMeshes.thumbstick) ? buttonMeshes.thumbstick : null;
+    var analogValueX, analogValueY;
+    var maxRot = Math.PI / 180.0 * 24.0;
+
+    analogValueX = evt.detail.x;
+    analogValueY = evt.detail.y;
+
+    if (thumbstick) {
+      // up-down axis
+      buttonMeshes.thumbstick.rotation.x = this.originalXRotationThumbstick + analogValueY * maxRot;
+      // left-right axis
+      // Note: oculus controller face is angled at approx 30-deg angle, thus a 5 to 3 ratio.
+      var axis = new THREE.Vector3(0, 3, -5).normalize();
+      buttonMeshes.thumbstick.rotation.y = this.originalYRotationThumbstick;
+      buttonMeshes.thumbstick.rotation.z = this.originalZRotationThumbstick;
+      buttonMeshes.thumbstick.rotateOnAxis(axis, -analogValueX * maxRot);
+    }
   },
 
   updateModel: function (buttonName, evtName) {
