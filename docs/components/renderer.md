@@ -14,7 +14,7 @@ The `renderer` system configures a scene's
 
 ```html
 <a-scene renderer="antialias: true;
-                   workflow: linear;
+                   colorManagement: true;
                    sortObjects: true;
                    physicallyCorrectLights: true;
                    maxCanvasWidth: 1920;
@@ -26,7 +26,7 @@ The `renderer` system configures a scene's
 | Property                | Description                                                                     | Default Value |
 |-------------------------|---------------------------------------------------------------------------------|---------------|
 | antialias               | Whether to perform antialiasing. If `auto`, antialiasing is disabled on mobile. | auto          |
-| workflow                | Whether to use color-managed (`linear`) or legacy (`gamma`) workflow.           | gamma         |
+| colorManagement         | Whether to use a color-managed linear workflow.                                 | false         |
 | sortObjects             | Whether to sort objects before rendering.                                       | false         |
 | physicallyCorrectLights | Whether to use physically-correct light attenuation.                            | false         |
 | maxCanvasWidth          | Maximum canvas width. Uses the size multiplied by device pixel ratio. Does not limit canvas width if set to -1.                                | 1920            |
@@ -40,16 +40,18 @@ The `renderer` system configures a scene's
 When enabled, smooths jagged edges on curved lines and diagonals at moderate performance cost.
 By default, antialiasing is disabled on mobile devices.
 
-### workflow
+### colorManagement
 
-Two workflows — `gamma` and `linear` — are available for rendering. The `linear` workflow
-provides color management to give more accurate rendering, and reduces the likelihood that
-scenes will appear overlit or "washed out." The `gamma` workflow is provided for backwards
-compatibility. When changing the workflow for an existing scene, you may need to adjust
-colors or lights.
+Color management provides more accurate rendering and reduces the likelihood that scenes
+will appear overlit or "washed out." Enabling color management is recommended for precisely
+matching colors from texturing and modeling tools, but unofficial components may not always
+respond to color management properly at this time.
+
+Managed and unmanaged color modes are similar to linear and gamma workflows, respectively, in
+other engines and tools.
 
 > **NOTE:** In three.js, and previous versions of A-Frame, a `gammaOutput: true` property was
-> available. This is applied automatically in the `linear` workflow.
+> available. This is applied automatically when color management is enabled.
 
 ### sortObjects
 

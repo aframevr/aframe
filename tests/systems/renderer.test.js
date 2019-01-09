@@ -19,9 +19,9 @@ suite('renderer', function () {
     document.body.appendChild(sceneEl);
   });
 
-  test('change renderer workflow', function (done) {
+  test('change renderer colorManagement', function (done) {
     var sceneEl = createScene();
-    sceneEl.setAttribute('renderer', 'workflow: linear;');
+    sceneEl.setAttribute('renderer', 'colorManagement: true;');
     sceneEl.addEventListener('loaded', function () {
       assert.ok(sceneEl.renderer.gammaOutput);
       assert.equal(sceneEl.renderer.gammaFactor, 2.2);

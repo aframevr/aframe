@@ -16,7 +16,7 @@ module.exports.System = registerSystem('renderer', {
     maxCanvasHeight: {default: 1920},
     physicallyCorrectLights: {default: false},
     sortObjects: {default: false},
-    workflow: {default: 'gamma', oneOf: ['linear', 'gamma']},
+    colorManagement: {default: false},
     gammaOutput: {default: false}
   },
 
@@ -28,11 +28,11 @@ module.exports.System = registerSystem('renderer', {
     renderer.sortObjects = data.sortObjects;
     renderer.physicallyCorrectLights = data.physicallyCorrectLights;
 
-    if (data.workflow === 'linear' || data.gammaOutput) {
+    if (data.colorManagement || data.gammaOutput) {
       renderer.gammaOutput = true;
       renderer.gammaFactor = 2.2;
       if (data.gammaOutput) {
-        warn('Property `gammaOutput` is deprecated. Use `renderer="workflow: linear;"` instead.');
+        warn('Property `gammaOutput` is deprecated. Use `renderer="colorManagement: true;"` instead.');
       }
     }
 
@@ -46,7 +46,7 @@ module.exports.System = registerSystem('renderer', {
   },
 
   applyColorCorrection: function (colorOrTexture) {
-    if (this.data.workflow !== 'linear' || !colorOrTexture) {
+    if (!this.data.colorManagement || !colorOrTexture) {
       return;
     } else if (colorOrTexture.isColor) {
       colorOrTexture.convertSRGBToLinear();
