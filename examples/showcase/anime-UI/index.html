@@ -7,9 +7,9 @@
     <script src="../../../dist/aframe-master.js"></script>
   </head>
   <body>
-    <a-scene>
+    <a-scene renderer="colorManagement: true;">
       <a-assets>
-        <a-asset-item id="engine" src="models/engine.dae"></a-asset-item>
+        <a-asset-item id="engine" src="models/engine.glb"></a-asset-item>
         <a-mixin id="image" geometry="height: 2; width: 2"></a-mixin>
         <a-mixin id="toggleAnimation" animation="property: visible; from: false; to: true; dur: 1" visible="false"></a-mixin>
         <audio id="blip1" src="audio/321103__nsstudios__blip1.wav"></audio>
@@ -36,7 +36,7 @@
       </a-entity>
 
       <a-entity position="0 0 -3">
-        <a-collada-model src="#engine" rotation="90 0 0" scale="18 18 18"></a-collada-model>
+        <a-gltf-model src="#engine" rotation="90 0 0" scale="18 18 18"></a-gltf-model>
       </a-entity>
 
       <a-entity id="wall-lights" position="-7.25 1.5 2.9" rotation="0 90 0" scale="1.25 1.25 1.25">

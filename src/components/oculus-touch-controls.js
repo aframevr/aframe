@@ -71,6 +71,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     this.controllerPresent = false;
     this.lastControllerCheck = 0;
     this.previousButtonValues = {};
+    this.rendererSystem = this.el.sceneEl.systems.renderer;
     this.bindMethods();
 
     // Allow mock.
@@ -208,11 +209,14 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   },
 
   updateButtonModel: function (buttonName, state) {
+    var button;
     var color = (state === 'up' || state === 'touchend') ? this.data.buttonColor : state === 'touchstart' ? this.data.buttonTouchColor : this.data.buttonHighlightColor;
     var buttonMeshes = this.buttonMeshes;
     if (!this.data.model) { return; }
     if (buttonMeshes && buttonMeshes[buttonName]) {
-      buttonMeshes[buttonName].material.color.set(color);
+      button = buttonMeshes[buttonName];
+      button.material.color.set(color);
+      this.rendererSystem.applyColorCorrection(button.material.color);
     }
   }
 });
