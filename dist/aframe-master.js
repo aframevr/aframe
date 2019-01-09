@@ -66213,7 +66213,7 @@ module.exports.Component = registerComponent('animation', {
     this.time = 0;
     this.animationIsPlaying = true;
     this.stopRelatedAnimations();
-    this.el.emit('animationbegin', this.eventDetail);
+    this.el.emit('animationbegin', this.eventDetail, false);
   },
 
   pauseAnimation: function () {
@@ -79403,7 +79403,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.2 (Date 2019-01-09, Commit #9d7b425)');
+console.log('A-Frame Version: 0.8.2 (Date 2019-01-09, Commit #6cec770)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
