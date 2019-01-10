@@ -579,7 +579,6 @@ module.exports.AScene = registerElement('a-scene', {
 
         renderer = this.renderer = new THREE.WebGLRenderer(rendererConfig);
         renderer.setPixelRatio(window.devicePixelRatio);
-        renderer.gammaFactor = 2.2;
         renderer.sortObjects = false;
         if (this.camera) { renderer.vr.setPoseTarget(this.camera.el.object3D); }
         this.addEventListener('camera-set-active', function () {
