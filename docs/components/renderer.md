@@ -7,14 +7,14 @@ source_code: src/components/renderer.js
 examples: []
 ---
 
-The `renderer` component configures a scene's
+The `renderer` system configures a scene's
 [THREE.WebGLRenderer](https://threejs.org/docs/#api/renderers/WebGLRenderer) instance.
 
 ## Example
 
 ```html
 <a-scene renderer="antialias: true;
-                   gammaOutput: true;
+                   colorManagement: true;
                    sortObjects: true;
                    physicallyCorrectLights: true;
                    maxCanvasWidth: 1920;
@@ -26,28 +26,32 @@ The `renderer` component configures a scene's
 | Property                | Description                                                                     | Default Value |
 |-------------------------|---------------------------------------------------------------------------------|---------------|
 | antialias               | Whether to perform antialiasing. If `auto`, antialiasing is disabled on mobile. | auto          |
-| gammaOutput             | Whether to pre-multiply gamma on textures and colors before rendering.          | false         |
+| colorManagement         | Whether to use a color-managed linear workflow.                                 | false         |
 | sortObjects             | Whether to sort objects before rendering.                                       | false         |
 | physicallyCorrectLights | Whether to use physically-correct light attenuation.                            | false         |
 | maxCanvasWidth          | Maximum canvas width. Uses the size multiplied by device pixel ratio. Does not limit canvas width if set to -1.                                | 1920            |
-| maxCanvasHeight         | Maximum canvas height. Behaves the same as maxCanvasWidth.              | 1920            |
+| maxCanvasHeight         | Maximum canvas height. Behaves the same as maxCanvasWidth.                      | 1920          |
+| logarithmicDepthBuffer  | Whether to use a logarithmic depth buffer.                                      | auto          |
 
+> **NOTE:** Once the scene is initialized, these properties may no longer be changed.
 
 ### antialias
 
 When enabled, smooths jagged edges on curved lines and diagonals at moderate performance cost.
 By default, antialiasing is disabled on mobile devices.
 
-> **NOTE:** Once the scene is initialized, `antialias` may no longer be
-> changed.
+### colorManagement
 
-### gammaOutput
+Color management provides more accurate rendering and reduces the likelihood that scenes
+will appear overlit or "washed out." Enabling color management is recommended for precisely
+matching colors from texturing and modeling tools, but unofficial components may not always
+respond to color management properly at this time.
 
-Typically, textures are converted to linear colorspace in the renderer for lighting calculations.
-Unless post-processing used after the initial render,
-[gamma correction](https://en.wikipedia.org/wiki/Gamma_correction) should be applied with
-`renderer="gammaOutput: true;"` for best color reproduction. By default, gamma correction is off
-in order to preserve backward-compatibility. When changed, adjustments to lighting may be needed.
+Managed and unmanaged color modes are similar to linear and gamma workflows, respectively, in
+other engines and tools.
+
+> **NOTE:** In three.js, and previous versions of A-Frame, a `gammaOutput: true` property was
+> available. This is applied automatically when color management is enabled.
 
 ### sortObjects
 
@@ -66,3 +70,8 @@ be adjusted when making this change. Performance is not significantly affected i
 
 > **NOTE:** When glTF models contain lights, use the physically-correct lighting mode to match
 > the results in the original modeling tool.
+
+### logarithmicDepthBuffer
+
+A logarithmic depth buffer may provide better sorting and rendering in scenes containing very
+large differences of scale and distance.

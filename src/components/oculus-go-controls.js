@@ -55,6 +55,7 @@ module.exports.Component = registerComponent('oculus-go-controls', {
     this.onAxisMoved = bind(this.onAxisMoved, this);
     this.controllerPresent = false;
     this.lastControllerCheck = 0;
+    this.rendererSystem = this.el.sceneEl.systems.renderer;
     this.bindMethods();
     this.checkControllerPresentAndSetup = checkControllerPresentAndSetup;  // To allow mock.
     this.emitIfAxesChanged = emitIfAxesChanged;  // To allow mock.
@@ -155,6 +156,7 @@ module.exports.Component = registerComponent('oculus-go-controls', {
     var buttonMeshes = this.buttonMeshes;
     if (!buttonMeshes || !buttonMeshes[buttonName]) { return; }
     var color;
+    var button;
     switch (state) {
       case 'down':
         color = this.data.buttonHighlightColor;
@@ -165,6 +167,8 @@ module.exports.Component = registerComponent('oculus-go-controls', {
       default:
         color = this.data.buttonColor;
     }
-    buttonMeshes[buttonName].material.color.set(color);
+    button = buttonMeshes[buttonName];
+    button.material.color.set(color);
+    this.rendererSystem.applyColorCorrection(button.material.color);
   }
 });

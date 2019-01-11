@@ -16,6 +16,7 @@ module.exports.Component = registerComponent('line', {
     var data = this.data;
     var geometry;
     var material;
+    this.rendererSystem = this.el.sceneEl.systems.renderer;
     material = this.material = new THREE.LineBasicMaterial({
       color: data.color,
       opacity: data.opacity,
@@ -25,6 +26,7 @@ module.exports.Component = registerComponent('line', {
     geometry = this.geometry = new THREE.BufferGeometry();
     geometry.addAttribute('position', new THREE.BufferAttribute(new Float32Array(2 * 3), 3));
 
+    this.rendererSystem.applyColorCorrection(material.color);
     this.line = new THREE.Line(geometry, material);
     this.el.setObject3D(this.attrName, this.line);
   },
@@ -57,6 +59,7 @@ module.exports.Component = registerComponent('line', {
     }
 
     material.color.setStyle(data.color);
+    this.rendererSystem.applyColorCorrection(material.color);
     material.opacity = data.opacity;
     material.transparent = data.opacity < 1;
     material.visible = data.visible;

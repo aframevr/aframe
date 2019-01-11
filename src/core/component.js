@@ -329,6 +329,9 @@ Component.prototype = {
 
     // Apply new value to this.data in place since direct update.
     if (this.isSingleProperty) {
+      if (this.isObjectBased) {
+        parseProperty(attrValue, this.schema);
+      }
       // Single-property (already parsed).
       this.data = attrValue;
       return;

@@ -49,5 +49,13 @@ suite('position', function () {
       assert.equal(el.object3D.position.y, 2);
       assert.equal(el.object3D.position.z, 3);
     });
+
+    test('can set position with incomplete object', function () {
+      var el = this.el;
+      el.setAttribute('position', {y: 2});
+      assert.equal(el.object3D.position.x, 0);
+      assert.equal(el.object3D.position.y, 2);
+      assert.equal(el.object3D.position.z, 0);
+    });
   });
 });

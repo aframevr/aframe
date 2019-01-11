@@ -13,6 +13,7 @@ module.exports.Component = registerComponent('collada-model', {
     var self = this;
     var el = this.el;
     var src = this.data;
+    var rendererSystem = this.el.sceneEl.systems.renderer;
 
     if (!src) { return; }
 
@@ -20,6 +21,15 @@ module.exports.Component = registerComponent('collada-model', {
 
     this.loader.load(src, function (colladaModel) {
       self.model = colladaModel.scene;
+      self.model.traverse(function (object) {
+        if (object.isMesh) {
+          var material = object.material;
+          if (material.color) rendererSystem.applyColorCorrection(material.color);
+          if (material.map) rendererSystem.applyColorCorrection(material.map);
+          if (material.emissive) rendererSystem.applyColorCorrection(material.emissive);
+          if (material.emissiveMap) rendererSystem.applyColorCorrection(material.emissiveMap);
+        }
+      });
       el.setObject3D('mesh', self.model);
       el.emit('model-loaded', {format: 'collada', model: self.model});
     });

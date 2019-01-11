@@ -39,6 +39,7 @@ module.exports.Component = registerComponent('obj-model', {
     var el = this.el;
     var mtlLoader = this.mtlLoader;
     var objLoader = this.objLoader;
+    var rendererSystem = this.el.sceneEl.systems.renderer;
 
     if (mtlUrl) {
       // .OBJ with an .MTL.
@@ -51,6 +52,15 @@ module.exports.Component = registerComponent('obj-model', {
         objLoader.setMaterials(materials);
         objLoader.load(objUrl, function (objModel) {
           self.model = objModel;
+          self.model.traverse(function (object) {
+            if (object.isMesh) {
+              var material = object.material;
+              if (material.color) rendererSystem.applyColorCorrection(material.color);
+              if (material.map) rendererSystem.applyColorCorrection(material.map);
+              if (material.emissive) rendererSystem.applyColorCorrection(material.emissive);
+              if (material.emissiveMap) rendererSystem.applyColorCorrection(material.emissiveMap);
+            }
+          });
           el.setObject3D('mesh', objModel);
           el.emit('model-loaded', {format: 'obj', model: objModel});
         });
