@@ -7,7 +7,7 @@ window.hasNativeWebVRImplementation = !!window.navigator.getVRDisplays ||
                                       !!window.navigator.getVRDevices;
 window.hasNativeWebXRImplementation = navigator.xr !== undefined;
 
-// If WebXR and WebVR are not defined WebVRPolyfill does not initialize.
+// If native WebXR or WebVR are defined WebVRPolyfill does not initialize.
 if (!window.hasNativeWebXRImplementation && !window.hasNativeWebVRImplementation) {
   var isIOSOlderThan10 = require('./utils/isIOSOlderThan10');
   // Workaround for iOS Safari canvas sizing issues in stereo (webvr-polyfill/issues/102).
