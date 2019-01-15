@@ -2,15 +2,15 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Models (glTF, OBJ, COLLADA)</title>
-    <meta name="description" content="Models (glTF, OBJ, COLLADA) — A-Frame">
+    <title>Models (glTF, OBJ)</title>
+    <meta name="description" content="Models (glTF, OBJ) — A-Frame">
     <script src="../../../dist/aframe-master.js"></script>
   </head>
   <body>
-    <a-scene>
+    <a-scene renderer="colorManagement: true;">
       <a-assets>
-        <a-asset-item id="tree1" src="../../assets/models/tree1/tree1.dae"></a-asset-item>
-        <a-asset-item id="tree2" src="../../assets/models/tree2/tree2.dae"></a-asset-item>
+        <a-asset-item id="tree1" src="../../assets/models/tree1.glb"></a-asset-item>
+        <a-asset-item id="tree2" src="../../assets/models/tree2.glb"></a-asset-item>
         <a-asset-item id="crate-mtl" src="../../assets/models/crate/crate.mtl"></a-asset-item>
         <a-asset-item id="crate-obj" src="../../assets/models/crate/crate.obj"></a-asset-item>
         <a-asset-item id="brainstem" src="https://cdn.aframe.io/test-models/models/glTF-2.0/brainstem/BrainStem.gltf"></a-asset-item>
@@ -25,32 +25,32 @@
 
       <a-obj-model src="#crate-obj" mtl="#crate-mtl"></a-obj-model>
 
-      <a-collada-model src="#tree1" position="1 0 -1" rotation="0 30 0"
-                       scale="1.4 1.4 1.4"></a-collada-model>
-      <a-collada-model src="#tree2" position="2.5 0 1.5" rotation="0 25 0"
-                       scale="1.4 1.4 1.4"></a-collada-model>
+      <a-gltf-model src="#tree1" position="1 0 -1" rotation="0 30 0"
+                       scale="1.4 1.4 1.4"></a-gltf-model>
+      <a-gltf-model src="#tree2" position="2.5 0 1.5" rotation="0 25 0"
+                       scale="1.4 1.4 1.4"></a-gltf-model>
 
-      <a-collada-model src="#tree2" position="-2 0 -4" rotation="0 60 0"
-                       scale="1.5 1.5 1.5"></a-collada-model>
-      <a-collada-model src="#tree1" position="-8 0 -9" rotation="0 60 0"
-                       scale="1.4 1.4 1.4"></a-collada-model>
+      <a-gltf-model src="#tree2" position="-2 0 -4" rotation="0 60 0"
+                       scale="1.5 1.5 1.5"></a-gltf-model>
+      <a-gltf-model src="#tree1" position="-8 0 -9" rotation="0 60 0"
+                       scale="1.4 1.4 1.4"></a-gltf-model>
 
-      <a-collada-model src="#tree2" position="-12 0 3" rotation="0 60 0"
-                       scale="1.5 1.5 1.5"></a-collada-model>
-      <a-collada-model src="#tree1" position="-7 0 -3" rotation="0 60 0"
-                       scale="1.3 1.3 1.3"></a-collada-model>
+      <a-gltf-model src="#tree2" position="-12 0 3" rotation="0 60 0"
+                       scale="1.5 1.5 1.5"></a-gltf-model>
+      <a-gltf-model src="#tree1" position="-7 0 -3" rotation="0 60 0"
+                       scale="1.3 1.3 1.3"></a-gltf-model>
 
-      <a-collada-model src="#tree2" position="-4 0 1" rotation="0 10 0"
-                       scale="1.4 1.4 1.4"></a-collada-model>
-      <a-collada-model src="#tree1" position="-5 0 5" rotation="0 45 0"
-                       scale="1.5 1.5 1.5"></a-collada-model>
+      <a-gltf-model src="#tree2" position="-4 0 1" rotation="0 10 0"
+                       scale="1.4 1.4 1.4"></a-gltf-model>
+      <a-gltf-model src="#tree1" position="-5 0 5" rotation="0 45 0"
+                       scale="1.5 1.5 1.5"></a-gltf-model>
 
-      <a-collada-model src="#tree2" position="0 0 9" rotation="0 220 0"
-                       scale="1.6 1.6 1.6"></a-collada-model>
-      <a-collada-model src="#tree2" position="-2 0 12" rotation="0 30 0"
-                       scale="1.4 1.4 1.4"></a-collada-model>
-      <a-collada-model src="#tree1" position="-7 0 10" rotation="0 30 0"
-                       scale="1.4 1.4 1.4"></a-collada-model>
+      <a-gltf-model src="#tree2" position="0 0 9" rotation="0 220 0"
+                       scale="1.6 1.6 1.6"></a-gltf-model>
+      <a-gltf-model src="#tree2" position="-2 0 12" rotation="0 30 0"
+                       scale="1.4 1.4 1.4"></a-gltf-model>
+      <a-gltf-model src="#tree1" position="-7 0 10" rotation="0 30 0"
+                       scale="1.4 1.4 1.4"></a-gltf-model>
 
       <a-sky src="#sky"></a-sky>
 

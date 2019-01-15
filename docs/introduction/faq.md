@@ -143,15 +143,6 @@ glTF is feature-rich, compact, and efficient. glTF focuses on providing a
 with web technologies.  [Read more about glTF and A-Frame's glTF
 component][whygltf].
 
-[collada]: https://en.wikipedia.org/wiki/COLLADA
-
-[COLLADA (`.dae`)][collada] is an XML-based format with a rich feature set.
-COLLADA is more common in comparison to glTF since it is older, but more suited
-to native applications that package all their contents together. COLLADA is not
-recommended since they're like the `.PSD` files of 3D models whereas glTF are
-like the `.JPG` of 3D models. They're heavy because they contain complete
-subscenes.
-
 [obj]: https://en.wikipedia.org/wiki/Wavefront_.obj_file
 
 [Wavefront (`.obj`)][obj] is also a well-known format but has some limitations
