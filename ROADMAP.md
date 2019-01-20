@@ -6,7 +6,7 @@
 - **Performance:** maintain high framerate with low latency
 - **Ecosystem:** enable discovery and distribution of reusable components
 
-## 0.9.0 (est. JAM 2019)
+## 0.9.0 (est. Jan 2019)
 
 The roadmap has recently and largely defined through battle-testing A-Frame by
 the Supermedium team to build the browser, content, and tools. We will release
