@@ -205,12 +205,12 @@ suite('a-scene (without renderer)', function () {
       var sceneEl = this.el;
       var fullscreenSpy;
 
-      if (sceneEl.canvas.mozRequestFullScreen) {
+      if (sceneEl.canvas.requestFullscreen) {
+        fullscreenSpy = this.sinon.spy(sceneEl.canvas, 'requestFullscreen');
+      } else if (sceneEl.canvas.mozRequestFullScreen) {
         fullscreenSpy = this.sinon.spy(sceneEl.canvas, 'mozRequestFullScreen');
       } else if (sceneEl.canvas.webkitRequestFullScreen) {
         fullscreenSpy = this.sinon.spy(sceneEl.canvas, 'webkitRequestFullscreen');
-      } else {
-        fullscreenSpy = this.sinon.spy(sceneEl.canvas, 'requestFullscreen');
       }
 
       this.sinon.stub(sceneEl, 'checkHeadsetConnected').returns(false);
