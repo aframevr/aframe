@@ -11,7 +11,7 @@ module.exports.Component = registerComponent('tracked-controls-webxr', {
     this.updateController = this.updateController.bind(this);
     this.emitButtonUpEvent = this.emitButtonUpEvent.bind(this);
     this.emitButtonDownEvent = this.emitButtonDownEvent.bind(this);
-    this.buttonEventDetails = {id: 'trigger'};
+    this.buttonEventDetails = {id: 'trigger', state: {pressed: false}};
   },
 
   play: function () {
@@ -45,13 +45,17 @@ module.exports.Component = registerComponent('tracked-controls-webxr', {
 
   emitButtonDownEvent: function (evt) {
     if (!this.controller || evt.inputSource.handedness !== this.data.hand) { return; }
+    this.buttonEventDetails.state.pressed = true;
     this.el.emit('buttondown', this.buttonEventDetails);
+    this.el.emit('buttonchanged', this.buttonEventDetails);
     this.el.emit('triggerdown');
   },
 
   emitButtonUpEvent: function (evt) {
     if (!this.controller || evt.inputSource.handedness !== this.data.hand) { return; }
+    this.buttonEventDetails.state.pressed = false;
     this.el.emit('buttonup', this.buttonEventDetails);
+    this.el.emit('buttonchanged', this.buttonEventDetails);
     this.el.emit('triggerup');
   },
 
