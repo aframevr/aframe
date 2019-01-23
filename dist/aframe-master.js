@@ -75448,7 +75448,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.2 (Date 2019-01-23, Commit #d967fa4)');
+console.log('A-Frame Version: 0.8.2 (Date 2019-01-23, Commit #d7baf5b)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -77171,6 +77171,7 @@ module.exports.System = registerSystem('tracked-controls-webvr', {
 
 },{"../core/system":113,"../utils":175}],168:[function(_dereq_,module,exports){
 var registerSystem = _dereq_('../core/system').registerSystem;
+var utils = _dereq_('../utils');
 
 /**
  * Tracked controls system.
@@ -77179,26 +77180,23 @@ var registerSystem = _dereq_('../core/system').registerSystem;
 module.exports.System = registerSystem('tracked-controls-webxr', {
   init: function () {
     this.controllers = [];
-    this.addSessionEventListeners = this.addSessionEventListeners.bind(this);
-    this.onInputSourcesChange = this.onInputSourcesChange.bind(this);
-    this.addSessionEventListeners();
-    this.el.sceneEl.addEventListener('enter-vr', this.addSessionEventListeners);
+    this.throttledUpdateControllerList = utils.throttle(this.updateControllerList, 500, this);
   },
 
-  addSessionEventListeners: function () {
-    var sceneEl = this.el;
-    if (!sceneEl.xrSession) { return; }
-    this.onInputSourcesChange();
-    sceneEl.xrSession.addEventListener('inputsourceschange', this.onInputSourcesChange);
+  tick: function () {
+    this.throttledUpdateControllerList();
   },
 
-  onInputSourcesChange: function () {
+  updateControllerList: function () {
+    var oldControllersLength = this.controllers.length;
+    if (!this.el.xrSession) { return; }
     this.controllers = this.el.xrSession.getInputSources();
+    if (oldControllersLength === this.controllers.length) { return; }
     this.el.emit('controllersupdated', undefined, false);
   }
 });
 
-},{"../core/system":113}],169:[function(_dereq_,module,exports){
+},{"../core/system":113,"../utils":175}],169:[function(_dereq_,module,exports){
 /**
  * Faster version of Function.prototype.bind
  * @param {Function} fn - Function to wrap.
