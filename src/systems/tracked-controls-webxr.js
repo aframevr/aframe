@@ -1,4 +1,5 @@
 var registerSystem = require('../core/system').registerSystem;
+var utils = require('../utils');
 
 /**
  * Tracked controls system.
@@ -7,21 +8,18 @@ var registerSystem = require('../core/system').registerSystem;
 module.exports.System = registerSystem('tracked-controls-webxr', {
   init: function () {
     this.controllers = [];
-    this.addSessionEventListeners = this.addSessionEventListeners.bind(this);
-    this.onInputSourcesChange = this.onInputSourcesChange.bind(this);
-    this.addSessionEventListeners();
-    this.el.sceneEl.addEventListener('enter-vr', this.addSessionEventListeners);
+    this.throttledUpdateControllerList = utils.throttle(this.updateControllerList, 500, this);
   },
 
-  addSessionEventListeners: function () {
-    var sceneEl = this.el;
-    if (!sceneEl.xrSession) { return; }
-    this.onInputSourcesChange();
-    sceneEl.xrSession.addEventListener('inputsourceschange', this.onInputSourcesChange);
+  tick: function () {
+    this.throttledUpdateControllerList();
   },
 
-  onInputSourcesChange: function () {
+  updateControllerList: function () {
+    var oldControllersLength = this.controllers.length;
+    if (!this.el.xrSession) { return; }
     this.controllers = this.el.xrSession.getInputSources();
+    if (oldControllersLength === this.controllers.length) { return; }
     this.el.emit('controllersupdated', undefined, false);
   }
 });
