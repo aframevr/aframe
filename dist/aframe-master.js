@@ -75452,7 +75452,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.2 (Date 2019-01-23, Commit #d54a738)');
+console.log('A-Frame Version: 0.8.2 (Date 2019-01-23, Commit #a8baa43)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -77465,7 +77465,7 @@ module.exports.checkHeadsetConnected = checkHeadsetConnected;
  */
 function checkHasPositionalTracking () {
   var vrDisplay = getVRDisplay();
-  if (isMobile() || isGearVR()) { return false; }
+  if (isMobile() || isGearVR() || isOculusGo()) { return false; }
   return vrDisplay && vrDisplay.capabilities.hasPosition;
 }
 module.exports.checkHasPositionalTracking = checkHasPositionalTracking;
@@ -77483,6 +77483,9 @@ var isMobile = (function () {
     }
     if (isIOS() || isTablet() || isR7()) {
       _isMobile = true;
+    }
+    if (isOculusGo()) {
+      _isMobile = false;
     }
   })(window.navigator.userAgent || window.navigator.vendor || window.opera);
 
