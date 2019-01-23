@@ -35,7 +35,7 @@ module.exports.checkHeadsetConnected = checkHeadsetConnected;
  */
 function checkHasPositionalTracking () {
   var vrDisplay = getVRDisplay();
-  if (isMobile() || isGearVR()) { return false; }
+  if (isMobile() || isGearVR() || isOculusGo()) { return false; }
   return vrDisplay && vrDisplay.capabilities.hasPosition;
 }
 module.exports.checkHasPositionalTracking = checkHasPositionalTracking;
@@ -53,6 +53,9 @@ var isMobile = (function () {
     }
     if (isIOS() || isTablet() || isR7()) {
       _isMobile = true;
+    }
+    if (isOculusGo()) {
+      _isMobile = false;
     }
   })(window.navigator.userAgent || window.navigator.vendor || window.opera);
 
