@@ -150,8 +150,11 @@ function findMatchingControllerWebVR (controllers, filterIdExact, filterIdPrefix
 
 function findMatchingControllerWebXR (controllers, handedness) {
   var i;
+  var controllerHandedness;
   for (i = 0; i < controllers.length; i++) {
-    if (controllers[i].handedness === handedness) {
+    controllerHandedness = controllers[i].handedness;
+    if (!handedness || (controllerHandedness === '' && handedness === 'right') ||
+        controllers[i].handedness === handedness) {
       return controllers[i];
     }
   }
