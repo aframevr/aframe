@@ -75448,7 +75448,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.2 (Date 2019-01-23, Commit #1decb90)');
+console.log('A-Frame Version: 0.8.2 (Date 2019-01-23, Commit #d967fa4)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -78717,8 +78717,11 @@ function findMatchingControllerWebVR (controllers, filterIdExact, filterIdPrefix
 
 function findMatchingControllerWebXR (controllers, handedness) {
   var i;
+  var controllerHandedness;
   for (i = 0; i < controllers.length; i++) {
-    if (controllers[i].handedness === handedness) {
+    controllerHandedness = controllers[i].handedness;
+    if (!handedness || (controllerHandedness === '' && handedness === 'right') ||
+        controllers[i].handedness === handedness) {
       return controllers[i];
     }
   }
