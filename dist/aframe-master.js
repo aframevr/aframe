@@ -62009,6 +62009,7 @@ module.exports={
     "prepush": "node scripts/testOnlyCheck.js",
     "prerelease": "node scripts/release.js 0.7.1 0.8.0",
     "start": "npm run dev",
+    "start:https": "cross-env SSL=true npm run dev",
     "test": "karma start ./tests/karma.conf.js",
     "test:docs": "node scripts/docsLint.js",
     "test:firefox": "npm test -- --browsers Firefox",
@@ -75447,7 +75448,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.2 (Date 2019-01-21, Commit #6e07ab0)');
+console.log('A-Frame Version: 0.8.2 (Date 2019-01-23, Commit #1decb90)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
