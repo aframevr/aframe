@@ -29,6 +29,7 @@ var opts = {
   host: process.env.HOST,
   port: process.env.PORT || consts.PORT,
   watchGlob: consts.WATCH,
+  ssl: process.env.SSL,
   browserifyArgs: ['-s', consts.NAME],
   middleware: function (req, res, next) {
     // Route `dist/aframe-master.js` to `build/aframe-master.js` so we can
