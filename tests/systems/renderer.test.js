@@ -10,6 +10,7 @@ suite('renderer', function () {
   test('default initialization', function (done) {
     var sceneEl = createScene();
     sceneEl.addEventListener('loaded', function () {
+      assert.notOk(sceneEl.highRefreshRate);
       assert.notOk(sceneEl.renderer.gammaOutput);
       assert.notOk(sceneEl.renderer.gammaFactor);
       assert.notOk(sceneEl.renderer.sortObjects);
@@ -45,6 +46,16 @@ suite('renderer', function () {
     sceneEl.setAttribute('renderer', 'physicallyCorrectLights: true;');
     sceneEl.addEventListener('loaded', function () {
       assert.ok(sceneEl.renderer.physicallyCorrectLights);
+      done();
+    });
+    document.body.appendChild(sceneEl);
+  });
+
+  test('change renderer highRefreshRate', function (done) {
+    var sceneEl = createScene();
+    sceneEl.setAttribute('renderer', 'highRefreshRate: true');
+    sceneEl.addEventListener('loaded', function () {
+      assert.ok(sceneEl.highRefreshRate);
       done();
     });
     document.body.appendChild(sceneEl);
