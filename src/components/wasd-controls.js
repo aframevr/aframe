@@ -22,7 +22,6 @@ module.exports.Component = registerComponent('wasd-controls', {
     adAxis: {default: 'x', oneOf: ['x', 'y', 'z']},
     adEnabled: {default: true},
     adInverted: {default: false},
-    easing: {default: 20},
     enabled: {default: true},
     fly: {default: false},
     wsAxis: {default: 'z', oneOf: ['x', 'y', 'z']},
@@ -33,6 +32,8 @@ module.exports.Component = registerComponent('wasd-controls', {
   init: function () {
     // To keep track of the pressed keys.
     this.keys = {};
+    this.easing = 1.1;
+
     this.velocity = new THREE.Vector3();
 
     // Bind methods and add event listeners.
@@ -96,12 +97,14 @@ module.exports.Component = registerComponent('wasd-controls', {
       return;
     }
 
-    // Decay velocity.
+    // https://gamedev.stackexchange.com/questions/151383/frame-rate-independant-movement-with-acceleration
+    var scaledEasing = Math.pow(1 / this.easing, delta * 60);
+    // Velocity Easing.
     if (velocity[adAxis] !== 0) {
-      velocity[adAxis] -= velocity[adAxis] * data.easing * delta;
+      velocity[adAxis] -= velocity[adAxis] * scaledEasing;
     }
     if (velocity[wsAxis] !== 0) {
-      velocity[wsAxis] -= velocity[wsAxis] * data.easing * delta;
+      velocity[wsAxis] -= velocity[wsAxis] * scaledEasing;
     }
 
     // Clamp velocity easing.
