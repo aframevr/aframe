@@ -1,7 +1,7 @@
 /* global assert, process, setup, suite, test */
 var entityFactory = require('../helpers').entityFactory;
 
-suite('hand-controls', function () {
+suite.skip('hand-controls', function () {
   var component;
   var el;
 

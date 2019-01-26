@@ -61,7 +61,8 @@ suite('tracked-controls-webxr', function () {
       component.controller = {};
       component.emitButtonDownEvent({inputSource: {handedness: 'right'}});
       assert.equal(emitSpy.getCalls()[0].args[0], 'buttondown');
-      assert.equal(emitSpy.getCalls()[1].args[0], 'triggerdown');
+      assert.equal(emitSpy.getCalls()[1].args[0], 'buttonchanged');
+      assert.equal(emitSpy.getCalls()[2].args[0], 'triggerdown');
     });
 
     test('emit buttonup / triggerup events', function () {
@@ -69,7 +70,8 @@ suite('tracked-controls-webxr', function () {
       component.controller = {};
       component.emitButtonUpEvent({inputSource: {handedness: 'right'}});
       assert.equal(emitSpy.getCalls()[0].args[0], 'buttonup');
-      assert.equal(emitSpy.getCalls()[1].args[0], 'triggerup');
+      assert.equal(emitSpy.getCalls()[1].args[0], 'buttonchanged');
+      assert.equal(emitSpy.getCalls()[2].args[0], 'triggerup');
     });
   });
 });
