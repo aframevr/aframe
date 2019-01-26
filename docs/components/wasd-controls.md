@@ -25,7 +25,6 @@ component][components-camera].
 | acceleration | How fast the entity accelerates when holding the keys.                   | 65            |
 | adAxis       | Axis that the `A` and `D` keys act upon.                                 | x             |
 | adInverted   | Whether the axis that the `A` and `D` keys act upon are inverted.        | false         |
-| easing       | How fast the entity decelerates after releasing the keys. Like friction. | 20            |
 | enabled      | Whether the WASD controls are enabled.                                   | true          |
 | fly          | Whether or not movement is restricted to the entity's initial plane.     | false         |
 | wsAxis       | Axis that the `W` and `S` keys act upon.                                 | z             |
