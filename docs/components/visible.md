@@ -50,7 +50,7 @@ Updates at the three.js level will still be reflected when doing
 
 [event-set]: https://github.com/supermedium/superframe/tree/master/components/event-set
 
-While we can do this with, the [event-set][event-set] component, we can also do
+While we can do this with the [event-set][event-set] component, we can also do
 this with the built-in animation component. Here's an example of updating
 visibility on an event.
 
