@@ -311,3 +311,9 @@ The [roadmap is on GitHub][roadmap]!
 ## Do I call it "A-Frame" or "aframe" or "aframevr" or "aFrame"?
 
 A-Frame!
+
+## Why do my textures render black?
+
+[precision]: ../components/renderer.md#precision
+
+Phones with Adreno 300 series GPUs are notoriously problematic. Set [renderer precision][precision] to `medium` as a workaround. Real fix has to happen at the driver / device level.

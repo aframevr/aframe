@@ -23,6 +23,8 @@ The `renderer` system configures a scene's
 
 ## Properties
 
+[precision]: #precision
+
 | Property                | Description                                                                     | Default Value |
 |-------------------------|---------------------------------------------------------------------------------|---------------|
 | antialias               | Whether to perform antialiasing. If `auto`, antialiasing is disabled on mobile. | auto          |
@@ -32,6 +34,7 @@ The `renderer` system configures a scene's
 | maxCanvasWidth          | Maximum canvas width. Uses the size multiplied by device pixel ratio. Does not limit canvas width if set to -1.                                | 1920            |
 | maxCanvasHeight         | Maximum canvas height. Behaves the same as maxCanvasWidth.                      | 1920          |
 | logarithmicDepthBuffer  | Whether to use a logarithmic depth buffer.                                      | auto          |
+| precision  |       Fragment shader [precision][precision] : low, medium or high.                                | high          |
 
 > **NOTE:** Once the scene is initialized, these properties may no longer be changed.
 
@@ -75,3 +78,7 @@ be adjusted when making this change. Performance is not significantly affected i
 
 A logarithmic depth buffer may provide better sorting and rendering in scenes containing very
 large differences of scale and distance.
+
+### Precision
+
+Set precision in fragment shaders. Main use is to address issues in older hardware / drivers. Adreno 300 series GPU based phones are [particularly problematic](https://github.com/mrdoob/three.js/issues/14137). You can set to `mediump` as a workaround. It will improve performance, in mobile in particular but be aware that might cause visual artifacts in shaders / textures.
