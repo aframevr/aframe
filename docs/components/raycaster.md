@@ -21,6 +21,11 @@ checks for intersections at a certain interval against a list of objects, and
 will emit events on the entity when it detects intersections or clearing of
 intersections (i.e., when the raycaster is no longer intersecting an entity).
 
+We prescribe that the set of objects that the raycaster tests for intersection
+is explicitly defined via the `objects` selector property described below.
+Raycasting is an expensive operation, and we should raycast against only
+targets that need to be interactable at any given time.
+
 [cursor]: ./cursor.md
 [laser-controls]: ./laser-controls.md
 
@@ -35,6 +40,9 @@ both build on top of the raycaster component.
 </a-entity>
 <a-entity class="collidable" geometry="primitive: box" position="1 0 0"></a-entity>
 ```
+
+Whenever an entity adds or removes the class `collidable`, the raycaster will
+refresh its list of objects it is raycasting against.
 
 ```js
 AFRAME.registerComponent('collider-check', {
@@ -58,9 +66,8 @@ AFRAME.registerComponent('collider-check', {
 | far                 | Maximum distance under which resulting entities are returned. Cannot be lower than `near`.                                                                                                                     | Infinity      |
 | interval            | Number of milliseconds to wait in between each intersection test. Lower number is better for faster updates. Higher number is better for performance. Intersection tests are performed at most once per frame. | 0             |
 | near                | Minimum distance over which resuilting entities are returned. Cannot be lower than 0.                                                                                                                          | 0             |
-| objects             | Query selector to pick which objects to test for intersection. If not specified, all entities will be tested. Note that only objects attached via `.setObject3D` will be tested.                               | null          |
+| objects             | Query selector to pick which objects to test for intersection. If not specified, all entities will be tested. Note that only objects attached via `.setObject3D` and their recursive children will be tested.                               | null          |
 | origin              | Vector3 coordinate of where the ray should originate from relative to the entity's origin.                                                                                                                     | 0, 0, 0       |
-| recursive           | Checks children of objects if set. Else only checks intersections with root objects. Note that only objects attached via `setObject3D` are tested.                                                             | true          |
 | showLine            | Whether or not to display the raycaster visually with the [line component][line].                                                                                                                              | false         |
 | useWorldCoordinates | Whether the raycaster origin and direction properties are specified in world coordinates.                                                                                                                      | false         |
 

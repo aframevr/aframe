@@ -49,7 +49,6 @@ module.exports.Component = registerComponent('raycaster', {
     near: {default: 0},
     objects: {default: ''},
     origin: {type: 'vec3'},
-    recursive: {default: true},
     showLine: {default: false},
     useWorldCoordinates: {default: false}
   },
@@ -224,7 +223,7 @@ module.exports.Component = registerComponent('raycaster', {
     // Raycast.
     this.updateOriginDirection();
     rawIntersections.length = 0;
-    this.raycaster.intersectObjects(this.objects, data.recursive, rawIntersections);
+    this.raycaster.intersectObjects(this.objects, true, rawIntersections);
 
     // Only keep intersections against objects that have a reference to an entity.
     intersections.length = 0;
