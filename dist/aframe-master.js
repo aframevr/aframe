@@ -75455,7 +75455,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.2 (Date 2019-01-26, Commit #3b64726)');
+console.log('A-Frame Version: 0.8.2 (Date 2019-01-30, Commit #ccd4cbc)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -76187,7 +76187,6 @@ module.exports.System = registerSystem('camera', {
     });
 
     sceneEl.appendChild(defaultCameraEl);
-    defaultCameraEl.load();
   },
 
   /**
