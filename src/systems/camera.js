@@ -121,7 +121,6 @@ module.exports.System = registerSystem('camera', {
     });
 
     sceneEl.appendChild(defaultCameraEl);
-    defaultCameraEl.load();
   },
 
   /**
