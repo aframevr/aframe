@@ -1312,6 +1312,22 @@ suite('a-entity', function () {
       assert.equal(el.mixinEls.length, 0);
     });
 
+    test('remove mixin', function (done) {
+      registerComponent('test', {
+        remove: function () {
+          // Should be called or else will timeout.
+          done();
+        }
+      });
+      mixinFactory('test', {test: ''});
+      setTimeout(() => {
+        el.setAttribute('mixin', 'test');
+        assert.equal(el.mixinEls.length, 1);
+        el.setAttribute('mixin', '');
+        assert.equal(el.mixinEls.length, 0);
+      });
+    });
+
     /**
      * Fixed a weird case where attributeChangedCallback on mixin was fired during scene init.
      * That fired mixinUpdate before the entity was loaded (and el.sceneEl was undefined).
