@@ -548,7 +548,13 @@ module.exports.AScene = registerElement('a-scene', {
         var rendererAttrString;
         var rendererConfig;
 
-        rendererConfig = {alpha: true, antialias: !isMobile, canvas: this.canvas, logarithmicDepthBuffer: false};
+        rendererConfig = {
+          alpha: true,
+          antialias: !isMobile,
+          canvas: this.canvas,
+          logarithmicDepthBuffer: false,
+          precision: isMobile && !window.hasNativeVR ? 'mediump' : 'highp'
+        };
 
         this.maxCanvasSize = {height: 1920, width: 1920};
 
