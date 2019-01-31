@@ -156,3 +156,4 @@ specifically those that support WebGL including:
 - Chrome
 - Safari
 - Edge
+- Internet Explorer 11

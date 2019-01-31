@@ -40,6 +40,7 @@
   "dependencies": {
     "animejs": "^2.2.0",
     "browserify-css": "^0.8.4",
+    "custom-event-polyfill": "^1.0.6",
     "debug": "ngokevin/debug#noTimestamp",
     "deep-assign": "^2.0.0",
     "document-register-element": "dmarcos/document-register-element#8ccc532b7f3744be954574caf3072a5fd260ca90",

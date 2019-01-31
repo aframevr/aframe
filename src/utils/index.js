@@ -15,6 +15,7 @@ module.exports.debug = debug;
 module.exports.device = device;
 module.exports.entity = require('./entity');
 module.exports.forceCanvasResizeSafariMobile = require('./forceCanvasResizeSafariMobile');
+module.exports.isIE11 = require('./is-ie11');
 module.exports.material = require('./material');
 module.exports.objectPool = objectPool;
 module.exports.split = require('./split').split;

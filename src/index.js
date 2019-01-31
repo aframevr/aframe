@@ -25,6 +25,13 @@ if (!window.hasNativeWebXRImplementation && !window.hasNativeWebVRImplementation
 var utils = require('./utils/');
 var debug = utils.debug;
 
+if (utils.isIE11) {
+  // Polyfill `CustomEvent`.
+  require('custom-event-polyfill');
+  // Polyfill String.startsWith.
+  require('../vendor/starts-with-polyfill');
+}
+
 var error = debug('A-Frame:error');
 var warn = debug('A-Frame:warn');
 
