@@ -356,29 +356,6 @@ suite('raycaster', function () {
     });
   });
 
-  suite('non-recursive raycaster', function () {
-    var targetEl;
-
-    setup(function (done) {
-      targetEl = document.createElement('a-entity');
-
-      el.setAttribute('position', '0 0 1');
-      el.setAttribute('raycaster', {recursive: false, near: 0.1, far: 10});
-
-      targetEl.setAttribute('geometry', 'primitive: box');
-      targetEl.setAttribute('position', '0 0 -1');
-      targetEl.addEventListener('loaded', function () {
-        setTimeout(() => { done(); });
-      });
-      sceneEl.appendChild(targetEl);
-    });
-
-    test('can catch basic intersection', function (done) {
-      targetEl.addEventListener('raycaster-intersected', function () { done(); });
-      component.tick();
-    });
-  });
-
   suite('updateOriginDirection', function () {
     test('updates ray origin if position changes', function () {
       var origin;
