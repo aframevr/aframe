@@ -102,6 +102,52 @@ A-Frame get a head start to help test it out.
 - Add warning to developers to specify `raycaster.objects` (#3839).
 - Cache asset property type regex (#3854).
 
+### Inspector
+
+Kevin spent some time getting the Inspector into ship shape.
+
+#### Major Changes
+
+[A-Frame Watcher]: https://supermedium.com/aframe-watcher/
+
+- Introducing the [A-Frame Watcher] to sync updates of entities with IDs from Inspector to HTML files.
+- Remove HTML exporter.
+- Remove old A-Frame Registry code.
+- Remove broken Uploadcare uploader.
+- Remove motion capture tools.
+
+#### Enhancements
+
+- Orthographic cameras.
+- Improve raycasting to picking entities.
+- Syntax highlighting of entities.
+- Highlight and describe entities on viewport bar when hovering.
+- Added `?inspector={selector}` to automatically launch Inspector and focus on entity.
+- Show bounding box of selected entities.
+- Show with icon what entities contain text in scenegraph.
+- Sort component properties alphabetically.
+- Display class names on entity panel.
+- Only show camera and light helpers when respective entity is selected.
+- Improve position when focusing on entity.
+- Polish components panel.
+- Center editor controls to the scene camera position.
+- Support arrow keys for number widgets.
+- .glb export.
+- Add `o` shortcut to toggle transform widget.
+- Add `esc` shortcut to unselect entity.
+- Refactor most everything (modularize, data flow, Stylus, Prettier).
+- Tweak grid colors.
+- Bigger checkboxes.
+- Fix color picker in components panel.
+- Fix display of mixins.
+
+#### Performance
+
+- Don't load 50 images when opening the Inspector.
+- Optimize and fix helpers for position, rotation, scale.
+- Speed up scene graph search.
+- Remove global mutation observer.
+
 ## 0.8.2 (April 15, 2018)
 
 Bug fixes after 0.8.0 release.
