@@ -24,6 +24,8 @@
         <a-mixin id="sphere" geometry="primitive: sphere"></a-mixin>
       </a-assets>
 
+      <a-entity id="mouseCursor" cursor="rayOrigin: mouse" raycaster="objects: .intersectable"></a-entity>
+
       <a-entity position="0 .6 4">
         <a-camera>
           <a-entity raycaster="far: 30; objects: .intersectable"

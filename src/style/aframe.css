@@ -54,6 +54,10 @@ html:not(.a-fullscreen) .a-enter-vr {
   cursor: -webkit-grab;
 }
 
+canvas.a-canvas.a-mouse-cursor-hover:hover {
+  cursor: pointer;
+}
+
 .a-inspector-loader {
   background-color: #ed3160;
   position: fixed;

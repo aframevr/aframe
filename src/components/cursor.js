@@ -24,6 +24,8 @@ var CANVAS_EVENTS = {
   UP: ['mouseup', 'touchend']
 };
 
+var CANVAS_HOVER_CLASS = 'a-mouse-cursor-hover';
+
 /**
  * Cursor component. Applies the raycaster component specifically for starting the raycaster
  * from the camera and pointing from camera's facing direction, and then only returning the
@@ -43,6 +45,7 @@ module.exports.Component = registerComponent('cursor', {
     downEvents: {default: []},
     fuse: {default: utils.device.isMobile()},
     fuseTimeout: {default: 1500, min: 0},
+    mouseCursorStylesEnabled: {default: true},
     upEvents: {default: []},
     rayOrigin: {default: 'entity', oneOf: ['mouse', 'entity']}
   },
@@ -315,6 +318,10 @@ module.exports.Component = registerComponent('cursor', {
     intersectedEl.addState(STATES.HOVERED);
     this.twoWayEmit(EVENTS.MOUSEENTER);
 
+    if (this.data.mouseCursorStylesEnabled && this.data.rayOrigin === 'mouse') {
+      this.el.sceneEl.canvas.classList.add(CANVAS_HOVER_CLASS);
+    }
+
     // Begin fuse if necessary.
     if (data.fuseTimeout === 0 || !data.fuse) { return; }
     cursorEl.addState(STATES.FUSING);
@@ -339,6 +346,10 @@ module.exports.Component = registerComponent('cursor', {
     cursorEl.removeState(STATES.HOVERING);
     cursorEl.removeState(STATES.FUSING);
     this.twoWayEmit(EVENTS.MOUSELEAVE);
+
+    if (this.data.mouseCursorStylesEnabled && this.data.rayOrigin === 'mouse') {
+      this.el.sceneEl.canvas.classList.remove(CANVAS_HOVER_CLASS);
+    }
 
     // Unset intersected entity (after emitting the event).
     this.intersectedEl = null;
