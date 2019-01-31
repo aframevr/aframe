@@ -29,7 +29,7 @@ opening the HTML file in a browser. Since most of the Web was built on top of
 HTML, most existing tools and libraries work with A-Frame including React,
 Vue.js, Angular, d3.js, and jQuery.
 
-![HTML Scene](https://cloud.githubusercontent.com/assets/674727/25414676/cb87f7c4-29e7-11e7-9c98-e6880c9def05.jpg)
+![HTML Scene](https://user-images.githubusercontent.com/674727/52090525-79b04d80-2566-11e9-993f-7a8b19ca25b1.png))
 
 If you don't have too much experience with HTML, no problem! It's fairly easy
 to pick up and perhaps even easier to grasp than 2D HTML. Once you pick up the
