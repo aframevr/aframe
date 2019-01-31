@@ -73434,13 +73434,7 @@ module.exports.AScene = registerElement('a-scene', {
         var rendererAttrString;
         var rendererConfig;
 
-        rendererConfig = {
-          alpha: true,
-          antialias: !isMobile,
-          canvas: this.canvas,
-          logarithmicDepthBuffer: false,
-          precision: isMobile && !window.hasNativeVR ? 'mediump' : 'highp'
-        };
+        rendererConfig = {alpha: true, antialias: !isMobile, canvas: this.canvas, logarithmicDepthBuffer: false};
 
         this.maxCanvasSize = {height: 1920, width: 1920};
 
@@ -75458,7 +75452,6 @@ window.Promise = window.Promise || _dereq_('promise-polyfill');
 window.hasNativeWebVRImplementation = !!window.navigator.getVRDisplays ||
                                       !!window.navigator.getVRDevices;
 window.hasNativeWebXRImplementation = navigator.xr !== undefined;
-window.hasNativeVR = window.hasNativeWebVRImplementation || window.hasNativeWebXRImplementation;
 
 // If native WebXR or WebVR are defined WebVRPolyfill does not initialize.
 if (!window.hasNativeWebXRImplementation && !window.hasNativeWebVRImplementation) {
@@ -75542,7 +75535,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.2 (Date 2019-01-31, Commit #8481314)');
+console.log('A-Frame Version: 0.8.2 (Date 2019-01-31, Commit #c3e5533)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
