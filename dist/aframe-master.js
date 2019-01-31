@@ -70975,8 +70975,13 @@ var proto = Object.create(ANode.prototype, {
           for (component in mixinEl.componentCache) {
             if (componentsUpdated.indexOf(component) === -1) {
               if (this.components[component]) {
-                // Component removed. Rebuild data if not yet rebuilt.
-                this.components[component].handleMixinUpdate();
+                if (this.getDOMAttribute(component)) {
+                  // Update component if explicitly defined.
+                  this.components[component].handleMixinUpdate();
+                } else {
+                  // Remove component if not explicitly defined.
+                  this.removeComponent(component);
+                }
               }
             }
           }
@@ -75519,7 +75524,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.2 (Date 2019-01-31, Commit #6b2c57e)');
+console.log('A-Frame Version: 0.8.2 (Date 2019-01-31, Commit #283daa0)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
