@@ -70,6 +70,13 @@ orientation) to transform the camera and to render content directly to VR
 headsets. Note that WebVR, which provides data, should not be confused nor
 conflated with WebGL, which provides graphics and rendering.
 
+## What Browsers Support VR?
+
+Including [Supermedium](https://supermedium.com) and
+[Exokit](https://github.com/webmixedreality/exokit):
+
+<iframe src="https://caniuse.com/#search=webxr" height="480px" width="100%"></iframe>
+
 ## Where Does A-Frame Want to Take WebVR?
 
 A-Frame aims for highly immersive and interactive VR content with native-like
