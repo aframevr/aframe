@@ -24,6 +24,7 @@ LICENSE text
 # Avoid creation of unnecessary big commit objects
 # For these files we do not want to see text diff for
 
+*.glb binary
 *.min.* binary minified
 *js.map* binary
 *.svg binary
