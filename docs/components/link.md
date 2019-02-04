@@ -17,7 +17,8 @@ across pages, the following conditions must apply:
 [vrdisplayactivate]: https://w3c.github.io/webvr/spec/1.1/#interface-window
 
 - The browser is up-to-date with the WebVR specification and implements the `vrdisplayactivate` event.
-- The destination web page listens to the window [`vrdisplayactivate`] event and enters VR.
+- The destination web page listens to the window [`vrdisplayactivate`] event and enters VR. A-Frame experiences behave this way by default.
+- At the moment, In-VR navigation is only implemented by Firefox desktop, Oculus Browser Samsung Internet and Supermedium
 
 ## Link UX
 
