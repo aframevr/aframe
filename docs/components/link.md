@@ -19,6 +19,8 @@ across pages, the following conditions must apply:
 - The browser is up-to-date with the WebVR specification and implements the `vrdisplayactivate` event.
 - The destination web page listens to the window [`vrdisplayactivate`] event and enters VR.
 
+> N.B. Currently, VR is only maintained when using desktop VR such as HTC Vive, not google cardboard or even 2d browser fullscreen
+
 ## Link UX
 
 A link in VR can be anything such as grabbing onto an object, placing something
