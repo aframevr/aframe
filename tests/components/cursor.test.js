@@ -155,6 +155,16 @@ suite('cursor', function () {
       });
       component.onCursorUp();
     });
+
+    test('emits click event on intersectedEl when fuse and mouse cursor enabled', function (done) {
+      el.setAttribute('cursor', 'fuse', true);
+      el.setAttribute('cursor', 'rayOrigin', 'mouse');
+      component.intersection = intersection;
+      component.intersectedEl = intersectedEl;
+      component.cursorDownEl = intersectedEl;
+      once(intersectedEl, 'click', function () { done(); });
+      component.onCursorUp({type: 'touchend', preventDefault: function () {}});
+    });
   });
 
   suite('onIntersection', function () {
