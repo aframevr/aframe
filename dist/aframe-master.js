@@ -62915,6 +62915,7 @@ module.exports.Component = registerComponent('cursor', {
    *   in case user mousedowned one entity, dragged to another, and mouseupped.
    */
   onCursorUp: function (evt) {
+    var data = this.data;
     this.twoWayEmit(EVENTS.MOUSEUP);
 
     // If intersected entity has changed since the cursorDown, still emit mouseUp on the
@@ -62924,7 +62925,8 @@ module.exports.Component = registerComponent('cursor', {
       this.cursorDownEl.emit(EVENTS.MOUSEUP, this.intersectedEventDetail);
     }
 
-    if (!this.data.fuse && this.intersectedEl && this.cursorDownEl === this.intersectedEl) {
+    if ((!data.fuse || data.rayOrigin === 'mouse') &&
+        this.intersectedEl && this.cursorDownEl === this.intersectedEl) {
       this.twoWayEmit(EVENTS.CLICK);
     }
 
@@ -75325,7 +75327,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.2 (Date 2019-02-05, Commit #878331d)');
+console.log('A-Frame Version: 0.8.2 (Date 2019-02-05, Commit #050135f)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
