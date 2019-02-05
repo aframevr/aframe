@@ -78,10 +78,8 @@ module.exports.Component = registerComponent('screenshot', {
       self.camera = new THREE.OrthographicCamera(-1 / 2, 1 / 2, 1 / 2, -1 / 2, -10000, 10000);
       self.canvas = document.createElement('canvas');
       self.ctx = self.canvas.getContext('2d');
-      if (el.camera) { el.camera.add(self.quad); }
+      el.object3D.add(self.quad);
       self.onKeyDown = self.onKeyDown.bind(self);
-      self.onCameraActive = self.onCameraActive.bind(self);
-      el.addEventListener('camera-set-active', self.onCameraActive);
     }
   },
 
@@ -116,12 +114,6 @@ module.exports.Component = registerComponent('screenshot', {
     window.addEventListener('keydown', this.onKeyDown);
   },
 
-  onCameraActive: function (evt) {
-    var cameraParent = this.quad.parent;
-    if (cameraParent) { cameraParent.remove(this.quad); }
-    evt.detail.cameraEl.getObject3D('camera').add(this.quad);
-  },
-
   /**
    * <ctrl> + <alt> + s = Regular screenshot.
    * <ctrl> + <alt> + <shift> + s = Equirectangular screenshot.
@@ -153,16 +145,14 @@ module.exports.Component = registerComponent('screenshot', {
     } else {
       // Use ortho camera.
       camera = this.camera;
-      // Copy position and rotation of scene camera into the ortho one.
-      el.camera.getWorldPosition(camera.position);
-      el.camera.getWorldQuaternion(camera.quaternion);
       // Create cube camera and copy position from scene camera.
       cubeCamera = new THREE.CubeCamera(el.camera.near, el.camera.far,
                                         Math.min(this.cubeMapSize, 2048));
+      // Copy camera position into cube camera;
       el.camera.getWorldPosition(cubeCamera.position);
       el.camera.getWorldQuaternion(cubeCamera.quaternion);
       // Render scene with cube camera.
-      cubeCamera.updateCubeMap(el.renderer, el.object3D);
+      cubeCamera.update(el.renderer, el.object3D);
       this.quad.material.uniforms.map.value = cubeCamera.renderTarget.texture;
       size = {width: this.data.width, height: this.data.height};
       // Use quad to project image taken by the cube camera.
@@ -179,10 +169,17 @@ module.exports.Component = registerComponent('screenshot', {
    * Maintained for backwards compatibility.
    */
   capture: function (projection) {
-    var params = this.setCapture(projection);
+    var isVREnabled = this.el.renderer.vr.enabled;
+    var renderer = this.el.renderer;
+    var params;
+    // Disable VR.
+    renderer.vr.enabled = false;
+    params = this.setCapture(projection);
     this.renderCapture(params.camera, params.size, params.projection);
     // Trigger file download.
     this.saveCapture();
+    // Restore VR.
+    renderer.vr.enabled = isVREnabled;
   },
 
   /**
@@ -200,7 +197,7 @@ module.exports.Component = registerComponent('screenshot', {
     var imageData;
     var output;
     var pixels;
-    var renderer = this.el.renderer;
+    var renderer = el.renderer;
     // Create rendering target and buffer to store the read pixels.
     output = this.getRenderTarget(size.width, size.height);
     pixels = new Uint8Array(4 * size.width * size.height);
