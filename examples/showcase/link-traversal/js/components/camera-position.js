@@ -2,11 +2,12 @@
 AFRAME.registerComponent('camera-position', {
   schema: {
     mobile: {type: 'vec3', default: '0 1.6 3'},
-    desktop: {type: 'vec3', default: '0 1.6 3'}
+    desktop: {type: 'vec3', default: '0 1.6 2'}
   },
   init: function () {
     this.onCameraSetActive = this.onCameraSetActive.bind(this);
     this.resetCamera = this.resetCamera.bind(this);
+    if (this.el.camera) { this.onCameraSetActive(); }
     this.el.addEventListener('camera-set-active', this.onCameraSetActive);
     this.el.addEventListener('exit-vr', this.onCameraSetActive);
     this.el.addEventListener('enter-vr', this.resetCamera);
