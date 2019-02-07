@@ -2,29 +2,21 @@
 
 Performance improvements, WebXR support, Inspector updates!
 
-[Supermedium]: https://supermedium.com
-[Supercraft]: https://supermedium.com/supercraft
-[BeatSaver Viewer]: https://supermedium.com/beatsaver-viewer
-
-A-Frame is primarily maintained by us members of [Supermedium] that had created
-and developed A-Frame from within Mozilla. Over the past year, we've been
-building large WebVR projects such as [Supermedium], [Supercraft], and the
-[BeatSaver Viewer].  We continued to battle test A-Frame to produce native-like
-VR experiences and continue to add large performance gains.
-
-We have also introduced initial WebXR support! Although the spec currently does
-not seem ready to ship and does not have feature parity with WebVR 1.1, we had
-A-Frame get a head start to help test it out.
+We continued to battle test A-Frame to produce native-like VR experiences and
+continue to add large performance gains.  We have also introduced initial WebXR
+support! Although the spec is heavily in flux and yet to have feature parity
+with WebVR 1.1, we had A-Frame get a head start to help test it out and smooth
+out the changes.
 
 ### Major Changes
 
-- Bump to three.js r100 (f9f314).
+- Bump to three.js r101 on a branch with a few extra patches for WebXR support (f9f314).
 - WebXR support (#3875).
-- Add `renderer.colorManagement` property (disabled by default) to accurately match colors against modeling tools, but may changes in scene colors when flipped on. `renderer.gammaFactor` will be set to 2.2. Call `scene.renderer.systems.applyColorCorrection` on `THREE.Color`s and `THREE.Texture`s to normalize changes (#3757).
+- Remove `<a-animation>` in favor of new animation component (#3678).
 - Remove `collada-model` component (#3866).
+- Add `renderer.colorManagement` property (disabled by default) to accurately match colors against modeling tools, but may changes in scene colors when flipped on. `renderer.gammaFactor` will be set to 2.2. Call `scene.renderer.systems.applyColorCorrection` on `THREE.Color`s and `THREE.Texture`s to normalize changes (#3757).
 - Have raycasters only intersect against objects defined via `.setObject3D`. `raycaster.objects` should be specified (e.g., `objects: [data-raycastable] or objects: .raycastable`) because raycasting is expensive. `raycaster.recursive` property removed (#3980) but will default to be recursive only under objects defined via `.setObject3D` (#3652).
 - Add `renderer` component (#3757).
-- Remove `<a-animation>` in favor of new animation component (#3678).
 - `antialias` attribute moved to `renderer.antialias`.
 - Raycaster events such as `raycaster-intersected` no longer directly contain intersection data. Use `.getIntersection` function supplied in event detail or `el.components.raycaster.getIntersection(el)` to retrieve intersection data. Done to reduce garbage (a87e3b).
 - Disable link portal appearance by default (`link.visualAspectEnabled`), link component defaults to purely to listening to an event to trigger navigation (#3743).
@@ -58,13 +50,17 @@ A-Frame get a head start to help test it out.
 - Fix text when used with other geometry types (#3909).
 - Fix `daydream-controls` trigger not working with cursor by default (#3916).
 - Fix accessing Inspector in pointer lock mode (#3947).
+- Fix mouse cursor not emitting click when fuse is set (#4000).
+- Fix screenshots (#3998).
+- Fix camera offset getting applied when entering 2D fullscreen (#3902).
 
 ### Enhancements
 
 - Add `oculus-go-controls`, thanks Oculus! (cbbe75)
 - Add `vive-focus-controls` (#3876).
 - Add `loading-screen` component (#3760).
-- Added `?inspector={selector}` and `Entity.inspect()` to automatically launch Inspector and focus on entity (#3894).
+- Add `?inspector={selector}` and `Entity.inspect()` to automatically launch Inspector and focus on entity (#3894).
+- Add `renderer.highRefreshRate` to enable 72hz mode on Oculus Browser (#3967).
 - Add `tracked-controls.autoHide` property to configure whether controllers automatically hide when connected or disconnected (#3912).
 - Enable multiple raycasters on an entity (fc18cd).
 - Support custom enter VR buttons through vr-mode-ui (#3606).
@@ -80,6 +76,7 @@ A-Frame get a head start to help test it out.
 - Consolidate fullscreen styles under single CSS class (`html.a-fullscreen`) (#3828).
 - Emit `displayconnected` event when headset connected (#3918).
 - Enable antialias by default on Oculus Go (#3942).
+- Update to webvr-polyfill v0.10.10 (#3993).
 
 ### Performance
 
