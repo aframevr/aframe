@@ -71655,7 +71655,8 @@ var Component = module.exports.Component = function (el, attrValue, id) {
   this.initialized = false;
   this.isSingleProperty = isSingleProp(this.schema);
   this.isSinglePropertyObject = this.isSingleProperty &&
-                                isObject(parseProperty(undefined, this.schema));
+                                isObject(parseProperty(undefined, this.schema)) &&
+                                !(this.schema.default instanceof window.HTMLElement);
   this.isObjectBased = !this.isSingleProperty || this.isSinglePropertyObject;
   this.el.components[this.attrName] = this;
   this.objectPool = objectPools[this.name];
@@ -71790,7 +71791,7 @@ Component.prototype = {
       return;
     }
 
-    if (value instanceof Object) {
+    if (value instanceof Object && !(value instanceof window.HTMLElement)) {
       // If value is an object, copy it to our pooled newAttrValue object to use to update
       // the attrValue.
       tempObject = this.objectPool.use();
@@ -72360,11 +72361,12 @@ function wrapRemove (removeMethod) {
 }
 
 function isObject (value) {
-  return value && value.constructor === Object;
+  return value && value.constructor === Object && !(value instanceof window.HTMLElement);
 }
 
 function isObjectOrArray (value) {
-  return value && (value.constructor === Object || value.constructor === Array);
+  return value && (value.constructor === Object || value.constructor === Array) &&
+         !(value instanceof window.HTMLElement);
 }
 
 },{"../utils/":176,"./scene/scenes":110,"./schema":112,"./system":114}],104:[function(_dereq_,module,exports){
@@ -75330,7 +75332,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.2 (Date 2019-02-07, Commit #a22d6af)');
+console.log('A-Frame Version: 0.8.2 (Date 2019-02-07, Commit #7624cd4)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
