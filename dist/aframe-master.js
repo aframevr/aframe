@@ -72710,6 +72710,7 @@ module.exports.AScene = registerElement('a-scene', {
         this.isIOS = isIOS;
         this.isMobile = isMobile;
         this.hasWebXR = isWebXRAvailable;
+        this.highRefreshRate = false;
         this.isScene = true;
         this.object3D = new THREE.Scene();
         var self = this;
@@ -72958,8 +72959,10 @@ module.exports.AScene = registerElement('a-scene', {
               enterVRSuccess();
               return Promise.resolve();
             }
-            return vrDisplay.requestPresent([{source: this.canvas}]).then(
-              enterVRSuccess, enterVRFailure);
+            return vrDisplay.requestPresent([{
+              source: this.canvas,
+              attributes: {highRefreshRate: this.highRefreshRate}
+            }]).then(enterVRSuccess, enterVRFailure);
           }
           return Promise.resolve();
         }
@@ -75327,7 +75330,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.2 (Date 2019-02-07, Commit #cf95191)');
+console.log('A-Frame Version: 0.8.2 (Date 2019-02-07, Commit #a22d6af)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
@@ -76893,6 +76896,7 @@ var warn = debug('components:renderer:warn');
 module.exports.System = registerSystem('renderer', {
   schema: {
     antialias: {default: 'auto', oneOf: ['true', 'false', 'auto']},
+    highRefreshRate: {default: false},
     logarithmicDepthBuffer: {default: 'auto', oneOf: ['true', 'false', 'auto']},
     maxCanvasWidth: {default: 1920},
     maxCanvasHeight: {default: 1920},
@@ -76910,6 +76914,7 @@ module.exports.System = registerSystem('renderer', {
 
     renderer.sortObjects = data.sortObjects;
     renderer.physicallyCorrectLights = data.physicallyCorrectLights;
+    sceneEl.highRefreshRate = data.highRefreshRate;
 
     if (data.colorManagement || data.gammaOutput) {
       renderer.gammaOutput = true;
