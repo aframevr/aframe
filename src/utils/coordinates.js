@@ -38,10 +38,10 @@ function parse (value, defaultVec) {
     y = value.y === undefined ? defaultVec && defaultVec.y : value.y;
     z = value.z === undefined ? defaultVec && defaultVec.z : value.z;
     w = value.w === undefined ? defaultVec && defaultVec.w : value.w;
-    if (x !== undefined) { value.x = parseIfString(x); }
-    if (y !== undefined) { value.y = parseIfString(y); }
-    if (z !== undefined) { value.z = parseIfString(z); }
-    if (w !== undefined) { value.w = parseIfString(w); }
+    if (x !== undefined && x !== null) { value.x = parseIfString(x); }
+    if (y !== undefined && y !== null) { value.y = parseIfString(y); }
+    if (z !== undefined && z !== null) { value.z = parseIfString(z); }
+    if (w !== undefined && w !== null) { value.w = parseIfString(w); }
     return value;
   }
 
@@ -96,7 +96,7 @@ module.exports.isCoordinate = function (value) {
 };
 
 function parseIfString (val) {
-  if (val.constructor === String) {
+  if (val !== null && val !== undefined && val.constructor === String) {
     return parseFloat(val, 10);
   }
   return val;
