@@ -29,6 +29,7 @@ The `renderer` system configures a scene's
 |-------------------------|---------------------------------------------------------------------------------|---------------|
 | antialias               | Whether to perform antialiasing. If `auto`, antialiasing is disabled on mobile. | auto          |
 | colorManagement         | Whether to use a color-managed linear workflow.                                 | false         |
+| highRefreshRate         | Toggles 72hz mode on Oculus Browser. Defaults to 60hz.                          | false         |
 | sortObjects             | Whether to sort objects before rendering.                                       | false         |
 | physicallyCorrectLights | Whether to use physically-correct light attenuation.                            | false         |
 | maxCanvasWidth          | Maximum canvas width. Uses the size multiplied by device pixel ratio. Does not limit canvas width if set to -1.                                | 1920            |

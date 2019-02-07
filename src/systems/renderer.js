@@ -11,6 +11,7 @@ var warn = debug('components:renderer:warn');
 module.exports.System = registerSystem('renderer', {
   schema: {
     antialias: {default: 'auto', oneOf: ['true', 'false', 'auto']},
+    highRefreshRate: {default: false},
     logarithmicDepthBuffer: {default: 'auto', oneOf: ['true', 'false', 'auto']},
     maxCanvasWidth: {default: 1920},
     maxCanvasHeight: {default: 1920},
@@ -28,6 +29,7 @@ module.exports.System = registerSystem('renderer', {
 
     renderer.sortObjects = data.sortObjects;
     renderer.physicallyCorrectLights = data.physicallyCorrectLights;
+    sceneEl.highRefreshRate = data.highRefreshRate;
 
     if (data.colorManagement || data.gammaOutput) {
       renderer.gammaOutput = true;
