@@ -43,7 +43,7 @@ var Component = module.exports.Component = function (el, attrValue, id) {
   this.isSingleProperty = isSingleProp(this.schema);
   this.isSinglePropertyObject = this.isSingleProperty &&
                                 isObject(parseProperty(undefined, this.schema)) &&
-                                !this.schema.type.startsWith('selector');
+                                !(this.schema.default instanceof window.HTMLElement);
   this.isObjectBased = !this.isSingleProperty || this.isSinglePropertyObject;
   this.el.components[this.attrName] = this;
   this.objectPool = objectPools[this.name];
