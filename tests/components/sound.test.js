@@ -238,7 +238,7 @@ suite('sound', function () {
       });
     });
 
-    test('preloading audio tag', function (done) {
+    test.skip('preloading audio tag', function (done) {
       var sceneEl = this.el.sceneEl;
       var assetsEl = sceneEl.querySelector('a-assets');
       sceneEl.removeChild(assetsEl);

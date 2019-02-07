@@ -42,7 +42,8 @@ var Component = module.exports.Component = function (el, attrValue, id) {
   this.initialized = false;
   this.isSingleProperty = isSingleProp(this.schema);
   this.isSinglePropertyObject = this.isSingleProperty &&
-                                isObject(parseProperty(undefined, this.schema));
+                                isObject(parseProperty(undefined, this.schema)) &&
+                                !(this.schema.default instanceof window.HTMLElement);
   this.isObjectBased = !this.isSingleProperty || this.isSinglePropertyObject;
   this.el.components[this.attrName] = this;
   this.objectPool = objectPools[this.name];
@@ -177,7 +178,7 @@ Component.prototype = {
       return;
     }
 
-    if (value instanceof Object) {
+    if (value instanceof Object && !(value instanceof window.HTMLElement)) {
       // If value is an object, copy it to our pooled newAttrValue object to use to update
       // the attrValue.
       tempObject = this.objectPool.use();
@@ -747,9 +748,10 @@ function wrapRemove (removeMethod) {
 }
 
 function isObject (value) {
-  return value && value.constructor === Object;
+  return value && value.constructor === Object && !(value instanceof window.HTMLElement);
 }
 
 function isObjectOrArray (value) {
-  return value && (value.constructor === Object || value.constructor === Array);
+  return value && (value.constructor === Object || value.constructor === Array) &&
+         !(value instanceof window.HTMLElement);
 }

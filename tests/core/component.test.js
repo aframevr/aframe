@@ -268,6 +268,18 @@ suite('Component', function () {
         done();
       });
     });
+
+    test('handles single-property selector type', function (done) {
+      registerComponent('dummy', {
+        schema: {type: 'selector'}
+      });
+
+      helpers.elFactory().then(el => {
+        el.setAttribute('dummy', 'a-entity');
+        assert.ok(el.components.dummy.data.isEntity);
+        done();
+      });
+    });
   });
 
   suite('updateProperties', function () {
@@ -440,8 +452,10 @@ suite('Component', function () {
       });
 
       helpers.elFactory().then(el => {
-        el.setAttribute('dummy', 'head');
+        el.setAttribute('dummy', '');
         assert.equal(el.components.dummy.data, el.components.dummy.schema.default);
+        el.setAttribute('dummy', 'head');
+        assert.notEqual(el.components.dummy.data, el.components.dummy.schema.default);
         done();
       });
     });
