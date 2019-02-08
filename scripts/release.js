@@ -12,8 +12,16 @@ if (!prevVersion || !nextVersion) {
   process.exit(1);
 }
 
-const distMin = pkg.scripts['dist:min'].replace(/master/g, 'v0.9.0');
-const distMax = pkg.scripts['dist:max'].replace(/master/g, 'v0.9.0');
+let distMin;
+let distMax;
+if (process.env.FOR_RELEASE) {
+  distMin = pkg.scripts['dist:min'].replace(/-master/g, '');
+  distMax = pkg.scripts['dist:max'].replace(/-master/g, '');
+} else {
+  distMin = pkg.scripts['dist:min'].replace(/master/g, `v${nextVersion}`);
+  distMax = pkg.scripts['dist:max'].replace(/master/g, `v${nextVersion}`);
+}
+
 execSync(distMin, {stdio: 'inherit'});
 execSync(distMax, {stdio: 'inherit'});
 
