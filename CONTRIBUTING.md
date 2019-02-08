@@ -44,7 +44,7 @@ Check out the [issues labeled *help wanted (easy)*][easy] or [*help wanted
 1. Have a [GitHub account](https://github.com/join) with [SSH keys][ssh] set up.
 2. [Fork](https://github.com/aframevr/aframe/fork) the repository on GitHub.
 3. Clone your fork of the repository locally (i.e., `git clone git@github.com:yourusername/aframe`).
-4. Run `npm install` to get dependencies and `npm run dev` to serve the test examples.
+4. Run `npm install` to get dependencies and `npm start` to serve the test examples.
 5. Create a branch to work in (i.e., `git checkout -b mybranch`).
 6. Make changes to your fork of the repository, commit them, and push them (i.e., `git add -A . && git commit -m 'My Changes (fixes #1234)' && git push origin mybranch`).
 7. If necessary, write [unit tests](tests/) ([guide][testing-guide]) and run with `npm test`.
