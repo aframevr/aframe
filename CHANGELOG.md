@@ -1,4 +1,4 @@
-## 0.9.0 (Late Jan - Early Feb 2019)
+## 0.9.0
 
 Performance improvements, WebXR support, Inspector updates!
 
