@@ -317,7 +317,7 @@ Component.prototype = {
    */
   updateComponent: function (attrValue, clobber) {
     var key;
-    var mayNeedSchemaUpdate;
+    var mayNeedSchemaUpdate = this.schemaAlwaysUpdates;
 
     if (clobber) {
       // Clobber. Rebuild.
@@ -338,7 +338,8 @@ Component.prototype = {
       return;
     }
 
-    parseProperties(attrValue, this.schema, true, this.name);
+    // Silence unknown property warning if schema will be updating
+    parseProperties(attrValue, this.schema, true, this.name, mayNeedSchemaUpdate);
 
     // Check if we need to update schema.
     if (this.schemaChangeKeys.length) {

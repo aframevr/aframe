@@ -473,7 +473,8 @@ AFRAME.registerComponent('sound', {
 `.updateSchema ()`, if defined, is called when certain flagged properties are
 updated to check if the schema also needs to be modified. To flag a property
 as one that triggers a schema udpate, add `schemaChange: true` to the property
-definition.
+definition. For a schema that always updates, for example to accept new
+properties, set the `schemaAlwaysUpdates` definition property to `true`.
 
 The `updateSchema` handler is often used to:
 
@@ -586,6 +587,28 @@ AFRAME.registerComponent('foo', {
   update: function () {
     // An object3D will be set using `foo__bar` as the key.
     this.el.setObject3D(this.attrName, new THREE.Mesh());
+  }
+});
+```
+
+### `schemaAlwaysUpdates`
+
+Normally, the `updateSchema` process is optimized to only rebuild the schema
+and data when specified properties change. Setting the `schemaAlwaysUpdates`
+to `true` overides this optimized behavior and updates the schema on every
+`setAttribute` call. This can be used to create a fully dynamic schema that
+expands to accept new properties as they are set.
+
+```
+AFRAME.registerComponent('foo', {
+  schemaAlwaysUpdates: true,
+  schema: {},
+  updateSchema: function (data) {
+    var newSchema = this.schema;
+    for (let key in data) {
+      newSchema[key] = { type: 'number' };
+    }
+    this.extendSchema(newSchema);
   }
 });
 ```
