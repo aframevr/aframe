@@ -11,9 +11,7 @@ var MOBILE_HEAD_TAGS = module.exports.MOBILE_HEAD_TAGS = [
 
 var MOBILE_IOS_HEAD_TAGS = [
   // iOS-specific meta tags for fullscreen when pinning to homescreen.
-  Meta({name: 'apple-mobile-web-app-capable', content: 'yes'}),
-  Meta({name: 'apple-mobile-web-app-status-bar-style', content: 'black'}),
-  Link({rel: 'apple-touch-icon', href: 'https://aframe.io/images/aframe-logo-152.png'})
+  Meta({name: 'apple-mobile-web-app-capable', content: 'no'})
 ];
 
 function Meta (attrs) {
@@ -21,14 +19,6 @@ function Meta (attrs) {
     tagName: 'meta',
     attributes: attrs,
     exists: function () { return document.querySelector('meta[name="' + attrs.name + '"]'); }
-  };
-}
-
-function Link (attrs) {
-  return {
-    tagName: 'link',
-    attributes: attrs,
-    exists: function () { return document.querySelector('link[rel="' + attrs.rel + '"]'); }
   };
 }
 
