@@ -10,8 +10,8 @@ const contents = fs.readFileSync('./src/index.js', 'utf-8');
 const timestamp = getBuildTimestamp();
 gitRev.short(hash => {
   const newContents = contents.replace(
-    /console.log\('A-Frame Version:.*\)/,
-    `console.log('A-Frame Version: ${pkg.version} (Date ${timestamp}, Commit #${hash})')`);
+    /console.log\('8-Frame Version:.*\)/,
+    `console.log('8-Frame Version: ${pkg.version} (Date ${timestamp}, Commit #${hash})')`);
   fs.writeFileSync('./src/index.js', newContents);
 });
 
