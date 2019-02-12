@@ -164,10 +164,15 @@ class AScene extends AEntity {
         self.resize();
       }
     });
-    this.play();
 
-    // Add to scene index.
-    scenes.push(this);
+    const onPlay = () => {
+      this.play();
+
+      // Add to scene index.
+      scenes.push(this);
+    };
+
+    window.XR ? onPlay() : window.addEventListener('xrloaded', onPlay);
   }
 
   /**
