@@ -122,10 +122,15 @@ module.exports.AScene = registerElement('a-scene', {
             resize();
           }
         });
-        this.play();
 
-        // Add to scene index.
-        scenes.push(this);
+        const onPlay = () => {
+          this.play();
+
+          // Add to scene index.
+          scenes.push(this);
+        };
+
+        window.XR ? onPlay() : window.addEventListener('xrloaded', onPlay);
 
         // Handler to exit VR (e.g., Oculus Browser back button).
         this.onVRPresentChangeBound = bind(this.onVRPresentChange, this);
