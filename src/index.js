@@ -1,6 +1,9 @@
 // Polyfill `Promise`.
 window.Promise = window.Promise || require('promise-polyfill');
 
+window.WebVRConfig = window.WebVRConfig || {};
+window.navigator.getVRDisplays = function () { return Promise.resolve([{ displayName: 'noVRDisplay' }]); };
+
 // WebVR polyfill
 // Check before the polyfill runs.
 window.hasNativeWebVRImplementation = !!window.navigator.getVRDisplays ||
