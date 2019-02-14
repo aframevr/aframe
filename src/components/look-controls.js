@@ -39,6 +39,7 @@ module.exports.Component = registerComponent('look-controls', {
     this.setupMouseControls();
     this.bindMethods();
     this.el.object3D.matrixAutoUpdate = false;
+    this.el.object3D.updateMatrix();
 
     this.savedPose = {
       position: new THREE.Vector3(),
