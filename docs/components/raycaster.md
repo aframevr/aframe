@@ -77,9 +77,9 @@ The raycaster component is useful because of the events it emits on entities. It
 
 | Event Name                     | Description                                                                            |
 |--------------------------------|----------------------------------------------------------------------------------------|
-| raycaster-intersected          | Emitted on the intersected entity. Entity is intersecting with a raycaster. Event detail will contain `el`, the raycasting entity, and `intersection`, an object containing detailed data about the intersection.            |
+| raycaster-intersected          | Emitted on the intersected entity. Entity is intersecting with a raycaster. Event detail will contain `el`, the raycasting entity, and `intersection`, and `.getIntersection (el)` function which can be used to obtain current intersection data.            |
 | raycaster-intersected-cleared  | Emitted on the intersected entity. Entity is no longer intersecting with a raycaster. Event detail will contain `el`, the raycasting entity.  |
-| raycaster-intersection         | Emitted on the raycasting entity. Raycaster is intersecting with one or more entities. Event detail will contain `els`, an array with the intersected entities, and `intersections`, an array of objects containing detailed data about the intersections. |
+| raycaster-intersection         | Emitted on the raycasting entity. Raycaster is intersecting with one or more entities. Event detail will contain `els`, an array with the intersected entities, and `intersections`, and `.getIntersection (el)` function which can be used to obtain current intersection data. |
 | raycaster-intersection-cleared | Emitted on the raycasting entity. Raycaster is no longer intersecting with one or more entities. Event detail will contain `clearedEls`, an array with the formerly intersected entities.  |
 
 ### Intersection Object
@@ -109,16 +109,18 @@ The event detail contains intersection objects. They are returned straight from
 
 ## Methods
 
-| Method         | Description                                                                                 |
-|----------------|---------------------------------------------------------------------------------------------|
-| refreshObjects | Refreshes the list of objects based off of the `objects` property to test for intersection. |
+| Method               | Description                                                                                                                           |
+|----------------------|---------------------------------------------------------------------------------------------------------------------------------------|
+| getIntersection (el) | Given an entity, return current intersection data if any. This method is also passed into intersection event details for convenience. |
+| refreshObjects       | Refreshes the list of objects based off of the `objects` property to test for intersection.                                           |
 
-## Whitelisting Entities to Test for Intersection
+## Selecting Entities to Test for Intersection
 
-We usually don't want to test everything in the scene for intersections (e.g.,
-for collisions or for clicks). Selective intersections are good for performance
-to limit the number of entities to test for intersection since intersection
-testing is an operation that will run over 60 times per second.
+Raycasting is a relatively expensive operation. We heavily recommend and
+prescribe setting the `objects` property which will filter what entities the
+raycaster is listening to for intersections.  Selective intersections are good
+for performance to limit the number of entities to test for intersection since
+  intersection testing is an operation that many times per second.
 
 To select or pick the entities we want to test for intersection, we can use the
 `objects` property. If this property is not defined, then the raycaster will
@@ -130,6 +132,48 @@ selector value:
 <a-entity class="clickable" geometry="primitive: box" position="1 0 0"></a-entity>
 <a-entity class="not-clickable" geometry="primitive: sphere" position="-1 0 0"></a-entity>
 ```
+
+In that example, we can remove or add entities to the raycast list by setting
+or removing the `clickable` class (`el.classList.toggle('clickable')`). Another
+good way to filter is using data attributes instead of classes
+(`[data-raycastable]` and `el.setAttribute('data-raycastable', '')`).
+
+## Listening for Raycaster Intersection Data Change
+
+When we want to listen for change to the intersection data (e.g., listen to
+change of the actual point of intersection), we can use the `.getIntersection
+(el)` method, which takes an entity and returns intersection data if the
+raycaster is currently intersecting the entity. Below is an example component
+of doing so in the tick handler:
+
+```js
+AFRAME.registerComponent('raycaster-listen', {
+	init: function () {
+    // Use events to figure out what raycaster is listening so we don't have to
+    // hardcode the raycaster.
+    this.el.addEventListener('raycaster-intersected', evt => {
+      this.raycaster = evt.detail.el;
+    });
+    this.el.addEventListener('raycaster-intersected-cleared', evt => {
+      this.raycaster = null;
+    });
+  },
+
+  tick: function () {
+    if (!this.raycaster) { return; }  // Not intersecting.
+
+    let intersection = this.raycaster.getIntersection(this.el);
+    if (!intersection) { return; }
+    console.log(intersection.point);
+  }
+});
+
+// <a-entity id="raycaster" raycaster></a-entity>
+// <a-entity geometry material raycaster-listen></a-entity>
+```
+
+Now on every frame, the entity will check its intersection data and do
+something with it (e.g., draw a sphere at the point of intersection).
 
 ## Manually Refreshing the Target Entities of the Raycaster
 
