@@ -162,7 +162,7 @@ AFRAME.registerComponent('raycaster-listen', {
   tick: function () {
     if (!this.raycaster) { return; }  // Not intersecting.
 
-    let intersection = this.raycaster.getIntersection(this.el);
+    let intersection = this.raycaster.components.raycaster.getIntersection(this.el);
     if (!intersection) { return; }
     console.log(intersection.point);
   }
