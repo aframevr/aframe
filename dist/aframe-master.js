@@ -64867,6 +64867,7 @@ module.exports.Component = registerComponent('look-controls', {
     this.setupMouseControls();
     this.bindMethods();
     this.el.object3D.matrixAutoUpdate = false;
+    this.el.object3D.updateMatrix();
 
     this.savedPose = {
       position: new THREE.Vector3(),
@@ -75332,7 +75333,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.9.0 (Date 2019-02-14, Commit #2b910f0)');
+console.log('A-Frame Version: 0.9.0 (Date 2019-02-14, Commit #cb364dd)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
