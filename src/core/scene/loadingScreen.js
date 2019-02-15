@@ -12,8 +12,12 @@ var LOADER_TITLE_CLASS = 'a-loader-title';
 // It catches vrdisplayactivate early to ensure we can enter VR mode after the scene loads.
 window.addEventListener('vrdisplayactivate', function () {
   var vrManager = sceneEl.renderer.vr;
-  var vrDisplay = utils.device.getVRDisplay();
+  var vrDisplay;
 
+  // WebXR takes priority if available.
+  if (navigator.xr) { return; }
+
+  vrDisplay = utils.device.getVRDisplay();
   vrManager.setDevice(vrDisplay);
   vrManager.enabled = true;
   if (!vrDisplay.isPresenting) {
