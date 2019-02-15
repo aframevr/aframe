@@ -72810,22 +72810,24 @@ module.exports.AScene = registerElement('a-scene', {
         this.pointerRestrictedBound = function () { self.pointerRestricted(); };
         this.pointerUnrestrictedBound = function () { self.pointerUnrestricted(); };
 
-        // Enter VR on `vrdisplayactivate` (e.g. putting on Rift headset).
-        window.addEventListener('vrdisplayactivate', this.enterVRBound);
+        if (!isWebXRAvailable) {
+          // Enter VR on `vrdisplayactivate` (e.g. putting on Rift headset).
+          window.addEventListener('vrdisplayactivate', this.enterVRBound);
 
-        // Exit VR on `vrdisplaydeactivate` (e.g. taking off Rift headset).
-        window.addEventListener('vrdisplaydeactivate', this.exitVRBound);
+          // Exit VR on `vrdisplaydeactivate` (e.g. taking off Rift headset).
+          window.addEventListener('vrdisplaydeactivate', this.exitVRBound);
 
-        // Exit VR on `vrdisplaydisconnect` (e.g. unplugging Rift headset).
-        window.addEventListener('vrdisplaydisconnect', this.exitVRTrueBound);
+          // Exit VR on `vrdisplaydisconnect` (e.g. unplugging Rift headset).
+          window.addEventListener('vrdisplaydisconnect', this.exitVRTrueBound);
 
-        // Register for mouse restricted events while in VR
-        // (e.g. mouse no longer available on desktop 2D view)
-        window.addEventListener('vrdisplaypointerrestricted', this.pointerRestrictedBound);
+          // Register for mouse restricted events while in VR
+          // (e.g. mouse no longer available on desktop 2D view)
+          window.addEventListener('vrdisplaypointerrestricted', this.pointerRestrictedBound);
 
-        // Register for mouse unrestricted events while in VR
-        // (e.g. mouse once again available on desktop 2D view)
-        window.addEventListener('vrdisplaypointerunrestricted', this.pointerUnrestrictedBound);
+          // Register for mouse unrestricted events while in VR
+          // (e.g. mouse once again available on desktop 2D view)
+          window.addEventListener('vrdisplaypointerunrestricted', this.pointerUnrestrictedBound);
+        }
       },
       writable: window.debug
     },
@@ -73522,8 +73524,12 @@ var LOADER_TITLE_CLASS = 'a-loader-title';
 // It catches vrdisplayactivate early to ensure we can enter VR mode after the scene loads.
 window.addEventListener('vrdisplayactivate', function () {
   var vrManager = sceneEl.renderer.vr;
-  var vrDisplay = utils.device.getVRDisplay();
+  var vrDisplay;
 
+  // WebXR takes priority if available.
+  if (navigator.xr) { return; }
+
+  vrDisplay = utils.device.getVRDisplay();
   vrManager.setDevice(vrDisplay);
   vrManager.enabled = true;
   if (!vrDisplay.isPresenting) {
@@ -75333,7 +75339,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.9.0 (Date 2019-02-15, Commit #990d20f)');
+console.log('A-Frame Version: 0.9.0 (Date 2019-02-15, Commit #6a4ea77)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
