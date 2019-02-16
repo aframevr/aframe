@@ -339,10 +339,13 @@ module.exports.Component = registerComponent('hand-controls', {
     toAction.loop = THREE.LoopRepeat;
     toAction.repetitions = 0;
     toAction.timeScale = reverse ? -1 : 1;
+    toAction.time = reverse ? clip.duration : 0;
     toAction.weight = 1;
 
     // No gesture to gesture or gesture to no gesture.
     if (!lastGesture || gesture === lastGesture) {
+      // Stop all current animations.
+      mesh.mixer.stopAllAction();
       // Play animation.
       toAction.play();
       return;
