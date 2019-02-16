@@ -68837,7 +68837,6 @@ module.exports.Component = registerComponent('vive-controls', {
       idPrefix: GAMEPAD_ID_PREFIX,
       // Hand IDs: 0 = right, 1 = left, 2 = anything else.
       controller: data.hand === 'right' ? 0 : data.hand === 'left' ? 1 : 2,
-      hand: data.hand,
       orientationOffset: data.orientationOffset
     });
 
@@ -75339,7 +75338,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.9.0 (Date 2019-02-16, Commit #76eb7eb)');
+console.log('A-Frame Version: 0.9.0 (Date 2019-02-16, Commit #0176636)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
