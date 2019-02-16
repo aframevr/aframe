@@ -3,8 +3,8 @@ var registerComponent = require('../core/component').registerComponent;
 
 // Found at https://github.com/aframevr/assets.
 var MODEL_URLS = {
-  left: 'https://cdn.aframe.io/controllers/oculus-hands/v2/leftHand.json',
-  right: 'https://cdn.aframe.io/controllers/oculus-hands/v2/rightHand.json'
+  left: 'https://cdn.aframe.io/controllers/hands/leftHand.glb',
+  right: 'https://cdn.aframe.io/controllers/hands/rightHand.glb'
 };
 
 // Poses.
@@ -55,7 +55,7 @@ module.exports.Component = registerComponent('hand-controls', {
     // Active buttons populated by events provided by the attached controls.
     this.pressedButtons = {};
     this.touchedButtons = {};
-    this.loader = new THREE.ObjectLoader();
+    this.loader = new THREE.GLTFLoader();
     this.loader.setCrossOrigin('anonymous');
 
     this.onGripDown = function () { self.handleButton('grip', 'down'); };
@@ -166,6 +166,7 @@ module.exports.Component = registerComponent('hand-controls', {
     var controlConfiguration;
     var el = this.el;
     var hand = this.data;
+    var self = this;
 
     // Get common configuration to abstract different vendor controls.
     controlConfiguration = {
@@ -176,10 +177,10 @@ module.exports.Component = registerComponent('hand-controls', {
 
     // Set model.
     if (hand !== previousHand) {
-      this.loader.load(MODEL_URLS[hand], function (scene) {
-        var mesh = scene.getObjectByName('Hand');
-        mesh.material.skinning = true;
+      this.loader.load(MODEL_URLS[hand], function (gltf) {
+        var mesh = gltf.scene.children[0];
         mesh.mixer = new THREE.AnimationMixer(mesh);
+        self.clips = gltf.animations;
         el.setObject3D('mesh', mesh);
         mesh.position.set(0, 0, 0);
         mesh.rotation.set(0, 0, 0);
@@ -227,7 +228,6 @@ module.exports.Component = registerComponent('hand-controls', {
 
     // Same gesture.
     if (this.gesture === lastGesture) { return; }
-
     // Animate gesture.
     this.animateGesture(this.gesture, lastGesture);
 
@@ -269,6 +269,18 @@ module.exports.Component = registerComponent('hand-controls', {
   },
 
   /**
+   * Play corresponding clip to a gesture
+   */
+  getClip: function (gesture) {
+    var i;
+    for (i = 0; i < this.clips.length; i++) {
+      let clip = this.clips[i];
+      if (clip.name !== gesture) { continue; }
+      return clip;
+    }
+  },
+
+  /**
    * Play gesture animation.
    *
    * @param {string} gesture - Which pose to animate to. If absent, then animate to open.
@@ -279,6 +291,7 @@ module.exports.Component = registerComponent('hand-controls', {
       this.playAnimation(gesture || ANIMATIONS.open, lastGesture, false);
       return;
     }
+
     // If no gesture, then reverse the current gesture back to open pose.
     this.playAnimation(lastGesture, lastGesture, true);
   },
@@ -309,33 +322,38 @@ module.exports.Component = registerComponent('hand-controls', {
   * @param {boolean} reverse - Whether animation should play in reverse.
   */
   playAnimation: function (gesture, lastGesture, reverse) {
+    var clip;
     var fromAction;
     var mesh = this.el.getObject3D('mesh');
     var toAction;
 
     if (!mesh) { return; }
 
+    // Stop all current animations.
+    mesh.mixer.stopAllAction();
+
     // Grab clip action.
-    toAction = mesh.mixer.clipAction(gesture);
+    clip = this.getClip(gesture);
+    toAction = mesh.mixer.clipAction(clip);
     toAction.clampWhenFinished = true;
     toAction.loop = THREE.LoopRepeat;
     toAction.repetitions = 0;
     toAction.timeScale = reverse ? -1 : 1;
+    toAction.time = reverse ? clip.duration : 0;
     toAction.weight = 1;
 
     // No gesture to gesture or gesture to no gesture.
     if (!lastGesture || gesture === lastGesture) {
       // Stop all current animations.
       mesh.mixer.stopAllAction();
-
       // Play animation.
       toAction.play();
       return;
     }
 
     // Animate or crossfade from gesture to gesture.
-    fromAction = mesh.mixer.clipAction(lastGesture);
-    mesh.mixer.stopAllAction();
+    clip = this.getClip(lastGesture);
+    fromAction = mesh.mixer.clipAction(clip);
     fromAction.weight = 0.15;
     fromAction.play();
     toAction.play();
