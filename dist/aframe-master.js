@@ -75339,7 +75339,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.9.0 (Date 2019-02-15, Commit #6a4ea77)');
+console.log('A-Frame Version: 0.9.0 (Date 2019-02-16, Commit #76eb7eb)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
@@ -77186,8 +77186,8 @@ function stringify (data) {
   var str;
   if (typeof data !== OBJECT) { return data; }
   str = data.x + ' ' + data.y;
-  if (data.z !== null) { str += ' ' + data.z; }
-  if (data.w !== null) { str += ' ' + data.w; }
+  if (data.z != null) { str += ' ' + data.z; }
+  if (data.w != null) { str += ' ' + data.w; }
   return str;
 }
 module.exports.stringify = stringify;
