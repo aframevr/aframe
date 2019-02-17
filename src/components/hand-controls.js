@@ -272,9 +272,10 @@ module.exports.Component = registerComponent('hand-controls', {
    * Play corresponding clip to a gesture
    */
   getClip: function (gesture) {
+    var clip;
     var i;
     for (i = 0; i < this.clips.length; i++) {
-      let clip = this.clips[i];
+      clip = this.clips[i];
       if (clip.name !== gesture) { continue; }
       return clip;
     }
