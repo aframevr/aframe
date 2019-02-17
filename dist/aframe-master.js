@@ -63819,9 +63819,10 @@ module.exports.Component = registerComponent('hand-controls', {
    * Play corresponding clip to a gesture
    */
   getClip: function (gesture) {
+    var clip;
     var i;
     for (i = 0; i < this.clips.length; i++) {
-      let clip = this.clips[i];
+      clip = this.clips[i];
       if (clip.name !== gesture) { continue; }
       return clip;
     }
@@ -75356,7 +75357,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.9.0 (Date 2019-02-16, Commit #a1cdd27)');
+console.log('A-Frame Version: 0.9.0 (Date 2019-02-17, Commit #04c9372)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
