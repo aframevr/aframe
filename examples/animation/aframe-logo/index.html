@@ -5,6 +5,7 @@
     <title>A-Frame Logo</title>
     <meta name="description" content="A-Frame Logo - A-Frame">
     <script src="../../../dist/aframe-master.js"></script>
+    <script src="https://unpkg.com/aframe-event-set-component@4.2.1/dist/aframe-event-set-component.min.js"></script>
   </head>
   <body>
     <a-scene vr-mode-ui="enabled: false;"
@@ -16,7 +17,7 @@
           id="tree"
           position="0 10 0"
           animation="property: object3D.position.y; to: 0; dur: 800; easing: easeOutCubic"
-          animation__visible="property: visible; to: true; dur: 1"
+          event-set__loaded="visible: true; _delay: 100"
           gltf-model="#treeModel"
           scale="2.5 2.5 2.5"
           visible="false"></a-mixin>
@@ -32,7 +33,9 @@
       <a-entity id="logo" rotation="0 45 0">
         <!-- Right side -->
         <a-entity animation="property: object3D.scale.y; from: 0.0001; to: 1; delay: 200; dur: 1000; easing: easeOutCubic"
-                  rotation="-20 0 0" position="0 0 10.75" scale="1 0.0001 1">
+                  rotation="-20 0 0" position="0 0 10.75" scale="1 0.0001 1"
+                  event-set__loaded="visible: true; _delay: 300"
+                  visible="false">
           <a-box width="12.5" depth="1" height="30" color="#EF2D5E" position="0 15 0">
 
             <!-- Left side -->
@@ -46,7 +49,9 @@
 
         <!-- Cross-bar -->
         <a-entity animation="property: object3D.scale.y; from: 0.0001; to: 1; delay: 800; dur: 600; easing: easeOutCubic"
-                  rotation="-90 0 0" position="0 8 7.5" scale="1 0.0001 1">
+                  rotation="-90 0 0" position="0 8 7.5" scale="1 0.0001 1"
+                  event-set__loaded="visible: true; _delay: 500"
+                  visible="false">
           <a-box width="12.45" depth=".1" height="14" color="#F2E646" position="0 7 .52" shader="flat"></a-box>
           <a-box width="12.5" depth="1" height="14" color="#EF2D5E" position="0 7 0"></a-box>
         </a-entity>
@@ -62,7 +67,7 @@
 
           <!-- Behind the A -->
           <a-box animation="property: object3D.position.z; to: 100; delay: 1000; dur: 36000"
-                 animation__visible="property: visible; from: false; to: true; delay: 1000; dur: 1"
+                 event-set__loaded="visible: true; _delay: 1000"
                  position="10 12 -10" color="white" opacity="0.75" width="6" depth="9" height="4" visible="false"></a-box>
 
           <a-box animation="property: object3D.position.z; to: 120; delay: 200; dur: 52000; easing: linear; loop: true"
@@ -89,7 +94,7 @@
 
         <!-- Trees -->
         <a-entity position="-10 0.2 -10">
-          <a-entity mixin="tree" animation="delay: 650" animation__visible="delay: 800"></a-entity>
+          <a-entity id="tree" mixin="tree" animation="delay: 650" animation__visible="delay: 800"></a-entity>
         </a-entity>
         <a-entity position="-10 0.2 6">
           <a-entity mixin="tree" animation="delay: 400" animation__visible="delay: 400"></a-entity>
