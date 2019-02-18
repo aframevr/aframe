@@ -1,4 +1,4 @@
-var anime = require('animejs');
+var anime = require('super-animejs');
 var components = require('../core/component').components;
 var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../lib/three');
@@ -165,6 +165,7 @@ module.exports.Component = registerComponent('animation', {
     this.updateConfig();
     this.animationIsPlaying = false;
     this.animation = anime(this.config);
+    this.animation.began = true;
 
     this.removeEventListeners();
     this.addEventListeners();
@@ -188,6 +189,7 @@ module.exports.Component = registerComponent('animation', {
    */
   beginAnimation: function () {
     this.updateConfig();
+    this.animation.began = true;
     this.time = 0;
     this.animationIsPlaying = true;
     this.stopRelatedAnimations();
