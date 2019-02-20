@@ -27,8 +27,7 @@ module.exports.checkHeadsetConnected = function () {
   return device.checkHeadsetConnected(arguments);
 };
 module.exports.isGearVR = function () {
-  warn('`utils.isGearVR` has moved to `utils.device.isGearVR`');
-  return device.isGearVR(arguments);
+  warn('`utils.isGearVR` has been deprecated, use `utils.device.isMobileVR`');
 };
 module.exports.isIOS = function () {
   warn('`utils.isIOS` has moved to `utils.device.isIOS`');
