@@ -3,6 +3,7 @@ var vrDisplay;
 // Support both WebVR and WebXR APIs.
 if (navigator.xr) {
   navigator.xr.requestDevice().then(function (device) {
+    if (!device) { return; }
     device.supportsSession({immersive: true, exclusive: true}).then(function () {
       var sceneEl = document.querySelector('a-scene');
       vrDisplay = device;
