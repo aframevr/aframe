@@ -76712,7 +76712,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.9.0 (Date 2019-02-18, Commit #03b36e1)');
+console.log('A-Frame Version: 0.9.0 (Date 2019-02-20, Commit #aa792c9)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
@@ -78696,6 +78696,7 @@ var vrDisplay;
 // Support both WebVR and WebXR APIs.
 if (navigator.xr) {
   navigator.xr.requestDevice().then(function (device) {
+    if (!device) { return; }
     device.supportsSession({immersive: true, exclusive: true}).then(function () {
       var sceneEl = document.querySelector('a-scene');
       vrDisplay = device;
