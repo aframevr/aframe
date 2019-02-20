@@ -76712,7 +76712,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.9.0 (Date 2019-02-20, Commit #aa792c9)');
+console.log('A-Frame Version: 0.9.0 (Date 2019-02-20, Commit #34b12ec)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
@@ -78725,17 +78725,7 @@ function checkHeadsetConnected () { return !!getVRDisplay(); }
 module.exports.checkHeadsetConnected = checkHeadsetConnected;
 
 /**
- * Check for positional tracking.
- */
-function checkHasPositionalTracking () {
-  var vrDisplay = getVRDisplay();
-  if (isMobile() || isGearVR() || isOculusGo()) { return false; }
-  return vrDisplay && vrDisplay.capabilities.hasPosition;
-}
-module.exports.checkHasPositionalTracking = checkHasPositionalTracking;
-
-/**
- * Checks if browser is mobile.
+ * Checks if browser is mobile and not stand-alone dedicated vr device.
  * @return {Boolean} True if mobile browser detected.
  */
 var isMobile = (function () {
@@ -78748,7 +78738,7 @@ var isMobile = (function () {
     if (isIOS() || isTablet() || isR7()) {
       _isMobile = true;
     }
-    if (isOculusGo()) {
+    if (isMobileVR()) {
       _isMobile = false;
     }
   })(window.navigator.userAgent || window.navigator.vendor || window.opera);
@@ -78772,18 +78762,13 @@ function isIOS () {
 }
 module.exports.isIOS = isIOS;
 
-function isGearVR () {
-  return /SamsungBrowser.+Mobile VR/i.test(window.navigator.userAgent);
-}
-module.exports.isGearVR = isGearVR;
-
 /**
- *  Detect Oculus Go device
+ *  Detect browsers in Stand-Alone headsets
  */
-function isOculusGo () {
-  return /Pacific Build.+OculusBrowser.+SamsungBrowser.+Mobile VR/i.test(window.navigator.userAgent);
+function isMobileVR () {
+  return /(OculusBrowser)|(SamsungBrowser)|(Mobile VR)/i.test(window.navigator.userAgent);
 }
-module.exports.isOculusGo = isOculusGo;
+module.exports.isMobileVR = isMobileVR;
 
 function isR7 () {
   return /R7 Build/.test(window.navigator.userAgent);
@@ -78948,8 +78933,7 @@ module.exports.checkHeadsetConnected = function () {
   return device.checkHeadsetConnected(arguments);
 };
 module.exports.isGearVR = function () {
-  warn('`utils.isGearVR` has moved to `utils.device.isGearVR`');
-  return device.isGearVR(arguments);
+  warn('`utils.isGearVR` has been deprecated, use `utils.device.isMobileVR`');
 };
 module.exports.isIOS = function () {
   warn('`utils.isIOS` has moved to `utils.device.isIOS`');
