@@ -76712,7 +76712,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.9.0 (Date 2019-02-20, Commit #34b12ec)');
+console.log('A-Frame Version: 0.9.0 (Date 2019-02-21, Commit #6e7d33b)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
@@ -78932,12 +78932,15 @@ module.exports.checkHeadsetConnected = function () {
   warn('`utils.checkHeadsetConnected` has moved to `utils.device.checkHeadsetConnected`');
   return device.checkHeadsetConnected(arguments);
 };
-module.exports.isGearVR = function () {
+module.exports.isGearVR = module.exports.device.isGearVR = function () {
   warn('`utils.isGearVR` has been deprecated, use `utils.device.isMobileVR`');
 };
 module.exports.isIOS = function () {
   warn('`utils.isIOS` has moved to `utils.device.isIOS`');
   return device.isIOS(arguments);
+};
+module.exports.isOculusGo = module.exports.device.isOculusGo = function () {
+  warn('`utils.isOculusGo` has been deprecated, use `utils.device.isMobileVR`');
 };
 module.exports.isMobile = function () {
   warn('`utils.isMobile has moved to `utils.device.isMobile`');
