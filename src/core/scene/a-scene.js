@@ -579,7 +579,7 @@ module.exports.AScene = registerElement('a-scene', {
           }
 
           if (rendererAttr.webgl2 && rendererAttr.webgl2 === 'true') {
-            rendererConfig.context = this.canvas.getContext('webgl2', {
+            const context = this.canvas.getContext('webgl2', {
               alpha: rendererConfig.alpha,
               depth: true,
               stencil: true,
@@ -588,6 +588,13 @@ module.exports.AScene = registerElement('a-scene', {
               preserveDrawingBuffer: false,
               powerPreference: 'default'
             });
+
+            if (context) {
+              console.log('Using WebGL 2.0 context.');
+              rendererConfig.context = context;
+            } else {
+              console.log('No WebGL 2.0 context available. Falling back to WebGL 1.0');
+            }
           }
 
           this.maxCanvasSize = {
