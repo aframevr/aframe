@@ -34,7 +34,7 @@ These master builds are unstable **bleeding-edge unstable builds** that contain
 newer fixes or features from the **master branch** on GitHub, but may contain
 regressions or breaking changes.
 
-If you're pointing to these builds via the [rawgit CDN](https://rawgit.com/),
+If you're pointing to these builds via the [jsDelivr CDN](https://www.jsdelivr.com/features#gh),
 we recommend locking it down to a commit hash rather than pointing directly at
 master such that your scene does not break unexpectedly.
 
