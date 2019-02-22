@@ -578,6 +578,18 @@ module.exports.AScene = registerElement('a-scene', {
             rendererConfig.logarithmicDepthBuffer = rendererAttr.logarithmicDepthBuffer === 'true';
           }
 
+          if (rendererAttr.webgl2 && rendererAttr.webgl2 === 'true') {
+            rendererConfig.context = this.canvas.getContext('webgl2', {
+              alpha: rendererConfig.alpha,
+              depth: true,
+              stencil: true,
+              antialias: rendererConfig.antialias,
+              premultipliedAlpha: true,
+              preserveDrawingBuffer: false,
+              powerPreference: 'default'
+            });
+          }
+
           this.maxCanvasSize = {
             width: rendererAttr.maxCanvasWidth
               ? parseInt(rendererAttr.maxCanvasWidth)
