@@ -1,3 +1,5 @@
+var error = require('debug')('device:error');
+
 var vrDisplay;
 
 // Support both WebVR and WebXR APIs.
@@ -9,6 +11,8 @@ if (navigator.xr) {
       vrDisplay = device;
       if (sceneEl) { sceneEl.emit('displayconnected', {vrDisplay: vrDisplay}); }
     });
+  }).catch(function (err) {
+    error('WebXR Request Device: ' + err.message);
   });
 } else {
   if (navigator.getVRDisplays) {
