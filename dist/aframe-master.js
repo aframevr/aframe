@@ -76712,7 +76712,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.9.0 (Date 2019-02-21, Commit #6e7d33b)');
+console.log('A-Frame Version: 0.9.0 (Date 2019-02-24, Commit #8bd9ca8)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
@@ -78691,6 +78691,8 @@ module.exports = debug;
 
 },{"_process":33,"debug":9,"object-assign":26}],174:[function(_dereq_,module,exports){
 (function (process){
+var error = _dereq_('debug')('device:error');
+
 var vrDisplay;
 
 // Support both WebVR and WebXR APIs.
@@ -78702,6 +78704,8 @@ if (navigator.xr) {
       vrDisplay = device;
       if (sceneEl) { sceneEl.emit('displayconnected', {vrDisplay: vrDisplay}); }
     });
+  }).catch(function (err) {
+    error('WebXR Request Device: ' + err.message);
   });
 } else {
   if (navigator.getVRDisplays) {
@@ -78825,7 +78829,7 @@ module.exports.PolyfillControls = function PolyfillControls (object) {
 
 }).call(this,_dereq_('_process'))
 
-},{"_process":33}],175:[function(_dereq_,module,exports){
+},{"_process":33,"debug":9}],175:[function(_dereq_,module,exports){
 /**
  * Split a delimited component property string (e.g., `material.color`) to an object
  * containing `component` name and `property` name. If there is no delimiter, just return the
