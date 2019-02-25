@@ -133,7 +133,7 @@ module.exports.Component = registerComponent('material', {
     material.opacity = data.opacity;
     material.flatShading = data.flatShading;
     material.side = parseSide(data.side);
-    material.transparent = data.transparent !== false || data.opacity < 1.0;
+    material.transparent = data.transparent !== false || data.opacity < 1.0 || data.shader === 'shadow';
     material.vertexColors = parseVertexColors(data.vertexColors);
     material.visible = data.visible;
     material.blending = parseBlending(data.blending);
