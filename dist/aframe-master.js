@@ -74623,6 +74623,10 @@ module.exports.AScene = registerElement('a-scene', {
             rendererConfig.logarithmicDepthBuffer = rendererAttr.logarithmicDepthBuffer === 'true';
           }
 
+          if (rendererAttr.alpha) {
+            rendererConfig.alpha = rendererAttr.alpha === 'true';
+          }
+
           this.maxCanvasSize = {
             width: rendererAttr.maxCanvasWidth
               ? parseInt(rendererAttr.maxCanvasWidth)
@@ -76712,7 +76716,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.9.0 (Date 2019-02-27, Commit #54b795e)');
+console.log('A-Frame Version: 0.9.0 (Date 2019-02-27, Commit #1b02e1c)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
@@ -78286,7 +78290,8 @@ module.exports.System = registerSystem('renderer', {
     precision: {default: 'high', oneOf: ['high', 'medium', 'low']},
     sortObjects: {default: false},
     colorManagement: {default: false},
-    gammaOutput: {default: false}
+    gammaOutput: {default: false},
+    alpha: { default: true }
   },
 
   init: function () {
