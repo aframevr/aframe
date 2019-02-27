@@ -19,7 +19,8 @@ module.exports.System = registerSystem('renderer', {
     precision: {default: 'high', oneOf: ['high', 'medium', 'low']},
     sortObjects: {default: false},
     colorManagement: {default: false},
-    gammaOutput: {default: false}
+    gammaOutput: {default: false},
+    alpha: { default: true }
   },
 
   init: function () {

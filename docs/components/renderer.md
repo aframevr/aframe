@@ -36,6 +36,7 @@ The `renderer` system configures a scene's
 | maxCanvasHeight         | Maximum canvas height. Behaves the same as maxCanvasWidth.                      | 1920          |
 | logarithmicDepthBuffer  | Whether to use a logarithmic depth buffer.                                      | auto          |
 | precision  |       Fragment shader [precision][precision] : low, medium or high.                                | high          |
+| alpha                   | Whether the canvas should contain an alpha buffer.                              | true          |
 
 > **NOTE:** Once the scene is initialized, these properties may no longer be changed.
 
@@ -83,3 +84,7 @@ large differences of scale and distance.
 ### Precision
 
 Set precision in fragment shaders. Main use is to address issues in older hardware / drivers. Adreno 300 series GPU based phones are [particularly problematic](https://github.com/mrdoob/three.js/issues/14137). You can set to `mediump` as a workaround. It will improve performance, in mobile in particular but be aware that might cause visual artifacts in shaders / textures.
+
+### alpha
+
+Whether the canvas should contain an alpha buffer. If this is true the renderer will have a transparent backbuffer and the canvas can be composited with the rest of the webpage. [See here for more info.](https://webglfundamentals.org/webgl/lessons/webgl-and-alpha.html)
