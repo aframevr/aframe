@@ -38,7 +38,6 @@
     "vendor/**/*"
   ],
   "dependencies": {
-    "animejs": "^2.2.0",
     "browserify-css": "^0.8.4",
     "custom-event-polyfill": "^1.0.6",
     "debug": "ngokevin/debug#noTimestamp",
