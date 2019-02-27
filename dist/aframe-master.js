@@ -63217,7 +63217,6 @@ module.exports={
     "vendor/**/*"
   ],
   "dependencies": {
-    "animejs": "^2.2.0",
     "browserify-css": "^0.8.4",
     "custom-event-polyfill": "^1.0.6",
     "debug": "ngokevin/debug#noTimestamp",
@@ -76716,7 +76715,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.9.0 (Date 2019-02-27, Commit #1b02e1c)');
+console.log('A-Frame Version: 0.9.0 (Date 2019-02-27, Commit #c29cfbb)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
