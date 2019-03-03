@@ -401,7 +401,7 @@ module.exports.Component = registerComponent('animation', {
     config.update = (function () {
       var lastValue = {};
       return function (anim) {
-        var value = anim.animations[0].target;
+        var value = anim.animatables[0].target;
 
         // Animate rotation through radians.
         // For animation timeline.
