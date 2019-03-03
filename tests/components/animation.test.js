@@ -1,5 +1,7 @@
 /* global assert, setup, suite, test, THREE */
 var entityFactory = require('../helpers').entityFactory;
+var components = require('index').components;
+var registerComponent = require('index').registerComponent;
 
 suite('animation', function () {
   var component;
@@ -184,6 +186,10 @@ suite('animation', function () {
   });
 
   suite('vec3 animation', () => {
+    setup(function () {
+      components.dummy = undefined;
+    });
+
     test('can animate vec3', function () {
       el.setAttribute('animation', {
         property: 'position',
@@ -228,6 +234,54 @@ suite('animation', function () {
       assert.equal(el.object3D.rotation.x, THREE.Math.degToRad(30));
       assert.equal(el.object3D.rotation.y, THREE.Math.degToRad(60));
       assert.equal(el.object3D.rotation.z, THREE.Math.degToRad(90));
+    });
+
+    test('can animate vec3 single-property custom component', function () {
+      registerComponent('dummy', {
+        schema: {type: 'vec3'}
+      });
+      el.setAttribute('dummy');
+      el.setAttribute('animation', {
+        property: 'dummy',
+        dur: 1000,
+        from: '1 1 1',
+        to: '0 0 0'
+      });
+      component.tick(0, 1);
+      assert.equal(el.components.dummy.data.x, 1);
+      assert.equal(el.components.dummy.data.y, 1);
+      assert.equal(el.components.dummy.data.z, 1);
+      component.tick(0, 500);
+      assert.ok(el.components.dummy.data.x > 0);
+      assert.ok(el.components.dummy.data.x < 1);
+      component.tick(0, 500);
+      assert.equal(el.components.dummy.data.x, 0);
+      assert.equal(el.components.dummy.data.y, 0);
+      assert.equal(el.components.dummy.data.z, 0);
+    });
+
+    test('can animate vec3 property of custom component', function () {
+      registerComponent('dummy', {
+        schema: {vector: {type: 'vec3'}}
+      });
+      el.setAttribute('dummy', '');
+      el.setAttribute('animation', {
+        property: 'dummy.vector',
+        dur: 1000,
+        from: '1 1 1',
+        to: '0 0 0'
+      });
+      component.tick(0, 1);
+      assert.equal(el.components.dummy.data.vector.x, 1);
+      assert.equal(el.components.dummy.data.vector.y, 1);
+      assert.equal(el.components.dummy.data.vector.z, 1);
+      component.tick(0, 500);
+      assert.ok(el.components.dummy.data.vector.x > 0);
+      assert.ok(el.components.dummy.data.vector.x < 1);
+      component.tick(0, 500);
+      assert.equal(el.components.dummy.data.vector.x, 0);
+      assert.equal(el.components.dummy.data.vector.y, 0);
+      assert.equal(el.components.dummy.data.vector.z, 0);
     });
   });
 
