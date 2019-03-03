@@ -63681,7 +63681,7 @@ module.exports.Component = registerComponent('animation', {
     config.update = (function () {
       var lastValue = {};
       return function (anim) {
-        var value = anim.animations[0].target;
+        var value = anim.animatables[0].target;
 
         // Animate rotation through radians.
         // For animation timeline.
@@ -76678,7 +76678,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.9.0 (Date 2019-03-01, Commit #9d23889)');
+console.log('A-Frame Version: 0.9.0 (Date 2019-03-03, Commit #ed33b84)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
