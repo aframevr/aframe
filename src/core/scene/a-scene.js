@@ -293,13 +293,13 @@ module.exports.AScene = registerElement('a-scene', {
             }
 
             var rendererSystem = this.getAttribute('renderer');
-            var presentationAttribute = {
+            var presentationAttributes = {
               highRefreshRate: rendererSystem.highRefreshRate,
               foveationLevel: rendererSystem.foveationLevel
             };
             return vrDisplay.requestPresent([{
               source: this.canvas,
-              attributes: presentationAttribute
+              attributes: presentationAttributes
             }]).then(enterVRSuccess, enterVRFailure);
           }
           return Promise.resolve();
