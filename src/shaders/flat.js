@@ -23,8 +23,12 @@ module.exports.Shader = registerShader('flat', {
    * Adds a reference from the scene to this entity as the camera.
    */
   init: function (data) {
+    this.rendererSystem = this.el.sceneEl.systems.renderer;
+    this.materialData = {color: new THREE.Color()};
     this.textureSrc = null;
-    this.material = new THREE.MeshBasicMaterial(getMaterialData(data));
+    getMaterialData(data, this.materialData);
+    this.rendererSystem.applyColorCorrection(this.materialData.color);
+    this.material = new THREE.MeshBasicMaterial(this.materialData);
     utils.material.updateMap(this, data);
   },
 
@@ -39,11 +43,12 @@ module.exports.Shader = registerShader('flat', {
    * @param {object} data - Material component data.
    */
   updateMaterial: function (data) {
-    var material = this.material;
-    data = getMaterialData(data);
-    Object.keys(data).forEach(function (key) {
-      material[key] = data[key];
-    });
+    var key;
+    getMaterialData(data, this.materialData);
+    this.rendererSystem.applyColorCorrection(this.materialData.color);
+    for (key in this.materialData) {
+      this.material[key] = this.materialData[key];
+    }
   }
 });
 
@@ -51,13 +56,13 @@ module.exports.Shader = registerShader('flat', {
  * Builds and normalize material data, normalizing stuff along the way.
  *
  * @param {object} data - Material data.
- * @returns {object} data - Processed material data.
+ * @param {object} materialData - Object to reuse.
+ * @returns {object} Updated material data.
  */
-function getMaterialData (data) {
-  return {
-    fog: data.fog,
-    color: new THREE.Color(data.color),
-    wireframe: data.wireframe,
-    wireframeLinewidth: data.wireframeLinewidth
-  };
+function getMaterialData (data, materialData) {
+  materialData.color.set(data.color);
+  materialData.fog = data.fog;
+  materialData.wireframe = data.wireframe;
+  materialData.wireframeLinewidth = data.wireframeLinewidth;
+  return materialData;
 }

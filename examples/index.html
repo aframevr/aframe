@@ -101,24 +101,6 @@
         padding-left: 0.75rem;
         padding-right: 0.75rem;
       }
-      .moz-link {
-        display: block;
-        margin: -2.4rem;
-        padding: 2rem;
-        opacity: 0.5;
-        position: absolute;
-        top: 0;
-        right: 0;
-        text-align: right;
-        transition: 0.075s opacity ease-in-out;
-      }
-      .moz-link:hover {
-        opacity: 1;
-      }
-      .moz-logo {
-        display: block;
-        height: 1.7rem;
-      }
       @media only screen and (min-width: 1000px) {
         h1 {
           font-size: 3rem;
@@ -132,29 +114,24 @@
         .resources li + li {
           margin-left: 2.5rem;
         }
-        .moz-link {
-          top: 1.2rem;
-          height: 1.8rem;
-        }
       }
     </style>
   </head>
   <body>
     <header class="header">
       <h1>A-Frame Examples</h1>
-      <a href="https://mozilla.org/" class="moz-link"><img src="assets/img/moz-logo-one-color-white-rgb.svg" class="moz-logo" alt="Mozilla" title="Mozilla"></a>
       <ul id="resources" class="resources">
         <li><a href="https://aframe.io">aframe.io</a></li>
         <li><a href="https://github.com/aframevr">GitHub</a></li>
         <li><a href="https://aframevr-slack.herokuapp.com/">Slack</a></li>
         <li><a href="https://twitter.com/aframevr">Twitter</a></li>
-        <li><a href="https://cdn.aframe.io">Asset Uploader</a></li>
+        <li><a href="https://webvr.directory">Showcase Directory</a></li>
       </ul>
     </header>
 
     <hr>
 
-    <h2>Showcase</h2>
+    <h2>Examples</h2>
 
     <ul class="links">
       <li><a href="showcase/anime-UI/">Anime UI</a></li>
@@ -166,27 +143,10 @@
       <li><a href="showcase/shopping/">Shopping</a></li>
       <li><a href="showcase/spheres-and-fog/">Spheres and Fog</a></li>
       <li><a href="showcase/wikipedia/">Wikipedia</a></li>
-    </ul>
-
-    <h2>Boilerplates</h2>
-
-    <ul class="links">
       <li><a href="boilerplate/hello-world/">Hello World</a></li>
       <li><a href="boilerplate/panorama/">360&deg; Image</a></li>
       <li><a href="boilerplate/360-video/">360&deg; Video</a></li>
-      <li><a href="boilerplate/3d-model/">3D Model (COLLADA)</a></li>
-    </ul>
-
-    <h2>Animations</h2>
-
-    <ul class="links">
-      <li><a href="animation/aframe-logo/">A-Frame Logo</a></li>
-      <li><a href="animation/arms/">Arms</a></li>
-      <li><a href="animation/plane-reveals/">Plane Reveals</a></li>
-      <li><a href="animation/generic-logo/">Generic Logo</a></li>
-      <li><a href="animation/pivots/">Pivots</a></li>
-      <li><a href="animation/unfold/">Unfold</a></li>
-      <li><a href="animation/warps/">Warps</a></li>
+      <li><a href="boilerplate/3d-model/">3D Model (glTF)</a></li>
     </ul>
 
     <h2>Tests</h2>
@@ -202,19 +162,19 @@
       <li><a href="test/fog/">Fog</a></li>
       <li><a href="test/geometry/">Geometry</a></li>
       <li><a href="test/geometry-gallery/">Geometry Gallery</a></li>
-      <li><a href="test/geometry-merging/">Geometry Merging</a></li>
       <li><a href="test/gltf-model/">glTF Model</a></li>
       <li><a href="test/laser-controls/">Laser Controls</a></li>
       <li><a href="test/mixin/">Mixin</a></li>
-      <li><a href="test/model/">Model <em>(glTF, OBJ, COLLADA)</em></a></li>
+      <li><a href="test/model/">Model <em>(glTF, OBJ)</em></a></li>
       <li><a href="test/opacity/">Opacity</a></li>
       <li><a href="test/physical/">Physically-Based Materials</a></li>
       <li><a href="test/pivot/">Pivot</a></li>
+      <li><a href="test/pool/">Pool</a></li>
       <li><a href="primitives/boxes/">Primitive: Boxes</a></li>
       <li><a href="primitives/cylinders/">Primitive: Cylinders</a></li>
       <li><a href="primitives/defaults/">Primitive: Defaults</a></li>
       <li><a href="primitives/images/">Primitive: Images</a></li>
-      <li><a href="primitives/models/">Primitive: Models <em>(glTF, OBJ, COLLADA)</em></a></li>
+      <li><a href="primitives/models/">Primitive: Models <em>(glTF, OBJ)</em></a></li>
       <li><a href="primitives/planes/">Primitive: Planes</a></li>
       <li><a href="primitives/ring/">Primitive: Ring</a></li>
       <li><a href="primitives/torus/">Primitive: Torus</a></li>
@@ -233,10 +193,22 @@
       <li><a href="test/visibility/">Visibility</a></li>
     </ul>
 
+    <h2>Animations</h2>
+
+    <ul class="links">
+      <li><a href="animation/aframe-logo/">A-Frame Logo</a></li>
+      <li><a href="animation/arms/">Arms</a></li>
+      <li><a href="animation/plane-reveals/">Plane Reveals</a></li>
+      <li><a href="animation/generic-logo/">Generic Logo</a></li>
+      <li><a href="animation/pivots/">Pivots</a></li>
+      <li><a href="animation/unfold/">Unfold</a></li>
+      <li><a href="animation/warps/">Warps</a></li>
+    </ul>
+
     <h2>Performance</h2>
 
     <ul class="links">
-      <li><a href="performance/animation/">Animation</a></li>
+      <li><a href="performance/animation-raw/">Animation</a></li>
       <li><a href="performance/cubes/">Cubes</a></li>
       <li><a href="performance/entity-count/">Entity Count</a></li>
       <li><a href="performance/in-vr/">In VR</a></li>

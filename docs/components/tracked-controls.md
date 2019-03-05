@@ -23,6 +23,11 @@ the entity, observes buttons state and emits appropriate events.  For non-6DOF c
 such as [daydream-controls][daydreamcontrols], a primitive arm model is used to emulate
 positional data.
 
+tracked-controls sets two components that handles different Web API versions for VR:
+
+- tracked-controls-webvr
+- tracked-controls-webxr
+
 ## Example
 
 Note that due to recent browser-specific changes, Vive controllers may be returned
@@ -35,26 +40,29 @@ so using idPrefix for Vive / OpenVR controllers is recommended.
 
 ## Value
 
-| Property          | Description                                                     | Default Value              |
-|-------------------|-----------------------------------------------------------------|----------------------------|
-| armModel          | Whether the arm model is used for positional data if absent.    | true                       |
-| controller        | Index of the controller in array returned by the Gamepad API.   | 0                          |
-| id                | Selects the controller from the Gamepad API using exact match.  |                            |
-| idPrefix          | Selects the controller from the Gamepad API using prefix match. |                            |
-| rotationOffset    | Offset to add to model rotation.                                | 0                          |
-| headElement       | Head element for arm model if needed (if not active camera).    |                            |
-| hand              | Which hand to use, if arm model is needed.  (left negates X)    | right                      |
+| Property          | Description                                                                              | Default Value    |
+|-------------------|------------------------------------------------------------------------------------------|------------------|
+| armModel          | Whether the arm model is used for positional data if absent.                             | true             |
+| autoHide          | Whether to toggle visibility automatically when controller is connected or disconnected. | true             |
+| controller        | Index of the controller in array returned by the Gamepad API.                            | 0                |
+| id                | Selects the controller from the Gamepad API using exact match.                           |                  |
+| idPrefix          | Selects the controller from the Gamepad API using prefix match.                          |                  |
+| headElement       | Head element for arm model if needed (if not active camera).                             |                  |
+| hand              | Which hand to use, if arm model is needed.  (left negates X)                             | right            |
+| orientationOffset | Offset to apply to model orientation.                                                    | x: 0, y: 0, z: 0 |
 
 ## Events
 
 | Event Name    | Description                                                                                                                                                                       |
 |---------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| axismove      | Axis changed (e.g., for thumbstick, touchpad). Contains `axis` and `axesChanged` in the event detail. `axis` is an array of values from `-1.0` (left, down) to `1.0` (right, up). |
-| buttonchanged | Any touch or press of a button fires this.                                                                                                                                        |
-| buttondown    | Button pressed.                                                                                                                                                                   |
-| buttonup      | Button released.                                                                                                                                                                  |
-| touchstart    | Touch sensitive button touched.                                                                                                                                                   |
-| touchend      | Touch sensitive button released.                                                                                                                                                  |
+| controllerconnected    | Controller connected and set up.          |
+| controllerdisconnected | Controller disconnected.               |
+| axismove               | Axis changed (e.g., for thumbstick, touchpad). Contains `axis` and `axesChanged` in the event detail. `axis` is an array of values from `-1.0` (left, down) to `1.0` (right, up). |
+| buttonchanged          | Any touch or press of a button fires this.                                                                                                                                         |
+| buttondown             | Button pressed.                                                                                                                                                                   |
+| buttonup               | Button released.                                                                                                                                                                   |
+| touchstart             | Touch sensitive button touched.                                                                                                                                                   |
+| touchend               | Touch sensitive button released.                                                                                                                                                   |
 
 ### More Resources
 

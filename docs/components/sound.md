@@ -36,6 +36,7 @@ component is positional and is thus affected by the
 | maxDistance   | Maximum distance between the audio source and the listener, after which the volume is not reduced any further. | 10000         |
 | on            | An event for the entity to listen to before playing sound.                                                     | null          |
 | poolSize      | Numbers of simultaneous instances of this sound that can be playing at the same time                           | 1             |
+| positional    | Whether or not the audio is positional (movable).                                                               | true          |
 | refDistance   | Reference distance for reducing volume as the audio source moves further from the listener.                    | 1             |
 | rolloffFactor | Describes how quickly the volume is reduced as the source moves away from the listener.                        | 1             |
 | src           | Selector to an asset `<audio>`or `url()`-enclosed path to sound file.                                          | null          |

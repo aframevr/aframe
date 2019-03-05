@@ -4,7 +4,9 @@ type: components
 layout: docs
 parent_section: components
 source_code: src/components/obj-model.js
-examples: []
+examples:
+ - title: Modifying Material of Model
+   src: https://glitch.com/edit/#!/aframe-modify-model-material?path=index.html:1:0
 ---
 
 The obj-model component loads a 3D model and material using a

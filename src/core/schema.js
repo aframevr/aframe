@@ -122,13 +122,16 @@ module.exports.parseProperties = (function () {
     var propValue;
 
     propNames.length = 0;
-    for (propName in (getPartialData ? propData : schema)) { propNames.push(propName); }
+    for (propName in (getPartialData ? propData : schema)) {
+      if (getPartialData && propData[propName] === undefined) { continue; }
+      propNames.push(propName);
+    }
 
     if (propData === null || typeof propData !== 'object') { return propData; }
 
     // Validation errors.
     for (propName in propData) {
-      if (!schema[propName] && !silent) {
+      if (propData[propName] !== undefined && !schema[propName] && !silent) {
         warn('Unknown property `' + propName +
              '` for component/system `' + componentName + '`.');
       }

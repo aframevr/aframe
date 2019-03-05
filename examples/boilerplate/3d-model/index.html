@@ -2,17 +2,17 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>3D Model (COLLADA)</title>
-    <meta name="description" content="3D Model (COLLADA) — A-Frame">
+    <title>3D Model (glTF)</title>
+    <meta name="description" content="3D Model (glTF) — A-Frame">
     <script src="../../../dist/aframe-master.js"></script>
   </head>
   <body>
     <a-scene background="color: #ECECEC">
       <a-assets>
-        <a-asset-item id="tree" src="../../assets/models/tree2/tree2.dae"></a-asset-item>
+        <a-asset-item id="tree" src="../../assets/models/tree2.glb"></a-asset-item>
       </a-assets>
 
-      <a-collada-model src="#tree" rotation="0 45 0"></a-model>
+      <a-gltf-model src="#tree" rotation="0 45 0"></a-gltf-model>
       <a-entity position="0 0 4">
         <a-camera></a-camera>
       </a-entity>

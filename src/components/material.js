@@ -26,11 +26,12 @@ module.exports.Component = registerComponent('material', {
     offset: {type: 'vec2', default: {x: 0, y: 0}},
     opacity: {default: 1.0, min: 0.0, max: 1.0},
     repeat: {type: 'vec2', default: {x: 1, y: 1}},
-    shader: {default: 'standard', oneOf: shaderNames},
+    shader: {default: 'standard', oneOf: shaderNames, schemaChange: true},
     side: {default: 'front', oneOf: ['front', 'back', 'double']},
     transparent: {default: false},
     vertexColors: {type: 'string', default: 'none', oneOf: ['face', 'vertex']},
-    visible: {default: true}
+    visible: {default: true},
+    blending: {default: 'normal', oneOf: ['none', 'normal', 'additive', 'subtractive', 'multiply']}
   },
 
   init: function () {
@@ -52,10 +53,16 @@ module.exports.Component = registerComponent('material', {
   },
 
   updateSchema: function (data) {
-    var newShader = data.shader;
-    var currentShader = this.data && this.data.shader;
-    var shader = newShader || currentShader;
-    var schema = shaders[shader] && shaders[shader].schema;
+    var currentShader;
+    var newShader;
+    var schema;
+    var shader;
+
+    newShader = data && data.shader;
+    currentShader = this.oldData && this.oldData.shader;
+    shader = newShader || currentShader;
+    schema = shaders[shader] && shaders[shader].schema;
+
     if (!schema) { error('Unknown shader schema ' + shader); }
     if (currentShader && newShader === currentShader) { return; }
     this.extendSchema(schema);
@@ -63,28 +70,35 @@ module.exports.Component = registerComponent('material', {
   },
 
   updateBehavior: function () {
+    var key;
+    var sceneEl = this.el.sceneEl;
     var schema = this.schema;
     var self = this;
-    var sceneEl = this.el.sceneEl;
-    var tickProperties = {};
-    var tick = function (time, delta) {
-      Object.keys(tickProperties).forEach(function update (key) {
+    var tickProperties;
+
+    function tickTime (time, delta) {
+      var key;
+      for (key in tickProperties) {
         tickProperties[key] = time;
-      });
+      }
       self.shader.update(tickProperties);
-    };
+    }
+
     this.tick = undefined;
-    Object.keys(schema).forEach(function (key) {
+
+    tickProperties = {};
+    for (key in schema) {
       if (schema[key].type === 'time') {
-        self.tick = tick;
+        this.tick = tickTime;
         tickProperties[key] = true;
       }
-    });
+    }
+
     if (!sceneEl) { return; }
-    if (!this.tick) {
-      sceneEl.removeBehavior(this);
-    } else {
+    if (this.tick) {
       sceneEl.addBehavior(this);
+    } else {
+      sceneEl.removeBehavior(this);
     }
   },
 
@@ -110,6 +124,7 @@ module.exports.Component = registerComponent('material', {
   updateMaterial: function (oldData) {
     var data = this.data;
     var material = this.material;
+    var oldDataHasKeys;
 
     // Base material properties.
     material.alphaTest = data.alphaTest;
@@ -121,9 +136,11 @@ module.exports.Component = registerComponent('material', {
     material.transparent = data.transparent !== false || data.opacity < 1.0;
     material.vertexColors = parseVertexColors(data.vertexColors);
     material.visible = data.visible;
+    material.blending = parseBlending(data.blending);
 
     // Check if material needs update.
-    if (Object.keys(oldData).length &&
+    for (oldDataHasKeys in oldData) { break; }
+    if (oldDataHasKeys &&
         (oldData.alphaTest !== data.alphaTest ||
          oldData.side !== data.side ||
          oldData.vertexColors !== data.vertexColors)) {
@@ -210,6 +227,33 @@ function parseVertexColors (coloring) {
     }
     default: {
       return THREE.NoColors;
+    }
+  }
+}
+
+/**
+ * Return a three.js constant determining blending
+ *
+ * @param {string} [blending=normal]
+ * - `none`, additive`, `subtractive`,`multiply` or `normal`.
+ * @returns {number}
+ */
+function parseBlending (blending) {
+  switch (blending) {
+    case 'none': {
+      return THREE.NoBlending;
+    }
+    case 'additive': {
+      return THREE.AdditiveBlending;
+    }
+    case 'subtractive': {
+      return THREE.SubtractiveBlending;
+    }
+    case 'multiply': {
+      return THREE.MultiplyBlending;
+    }
+    default: {
+      return THREE.NormalBlending;
     }
   }
 }

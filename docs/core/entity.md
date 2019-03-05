@@ -159,7 +159,7 @@ event, and we can check the state can for existence using `.is`:
 
 ```js
 entity.addEventListener('stateadded', function (evt) {
-  if (evt.detail.state === 'selected') {
+  if (evt.detail === 'selected') {
     console.log('Entity now selected!');
   }
 });
@@ -170,15 +170,13 @@ entity.is('selected');  // >> true
 
 ### `emit (name, detail, bubbles)`
 
-[animation-begin]: ./animations.md#begin
+[animation]: ../components/animation.md
 
 `emit` emits a custom DOM event on the entity. For example, we can emit an event to
-[trigger an animation][animation-begin]:
+[trigger an animation][animation]:
 
 ```js
-// <a-entity>
-//   <a-animation attribute="rotation" begin="rotate" to="0 360 0"></a-animation>
-// </a-entity>
+// <a-entity animation="property: rotation; to: 0 360 0; startEvents: rotate">
 entity.emit('rotate');
 ```
 
@@ -446,20 +444,20 @@ entity.is('selected');  // >> false
 
 ## Events
 
-| Event Name       | Description                                                                                                                      |
-|------------------|----------------------------------------------------------------------------------------------------------------------------------|
-| child-attached   | A child entity was attached to the entity.                                                                                       |
-| child-detached   | A child entity was detached from the entity.                                                                                     |
-| componentchanged | One of the entity's components was modified.                                                                                     |
-| componentinitialized | One of the entity's components was initialized.                                                                                  |
-| componentremoved | One of the entity's components was removed.                                                                                      |
-| loaded           | The entity has attached and initialized its components.                                                                          |
-| object3dset      | `THREE.Object3D` was set on entity using `setObject3D(name)`. Event detail will contain `name` used to set on the `object3DMap`. |
-| pause            | The entity is now inactive and paused in terms of dynamic behavior.                                                              |
-| play             | The entity is now active and playing in terms of dynamic behavior.                                                               |
-| stateadded       | The entity received a new state.                                                                                                 |
-| stateremoved     | The entity no longer has a certain state.                                                                                        |
-| schemachanged    | The schema of a component was changed.                                                                                           |
+| Event Name           | Description                                                                                                                                                                                                            |
+|----------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| child-attached       | A child entity was attached to the entity.                                                                                                                                                                             |
+| child-detached       | A child entity was detached from the entity.                                                                                                                                                                           |
+| componentchanged     | One of the entity's components was modified. This event is throttled. Do not use this for reading position and rotation changes, rather [use a tick handler](../camera.md#reading-position-or-rotation-of-the-camera). |
+| componentinitialized | One of the entity's components was initialized.                                                                                                                                                                        |
+| componentremoved     | One of the entity's components was removed.                                                                                                                                                                            |
+| loaded               | The entity has attached and initialized its components.                                                                                                                                                                |
+| object3dset          | `THREE.Object3D` was set on entity using `setObject3D(name)`. Event detail will contain `name` used to set on the `object3DMap`.                                                                                       |
+| pause                | The entity is now inactive and paused in terms of dynamic behavior.                                                                                                                                                    |
+| play                 | The entity is now active and playing in terms of dynamic behavior.                                                                                                                                                     |
+| stateadded           | The entity received a new state.                                                                                                                                                                                       |
+| stateremoved         | The entity no longer has a certain state.                                                                                                                                                                              |
+| schemachanged        | The schema of a component was changed.                                                                                                                                                                                 |
 
 ### Event Detail
 
@@ -475,8 +473,8 @@ Below is what the event detail contains for each event:
 |                      | data      | Component data.                                    |
 | componentremoved     | name      | Name of component that was removed.                |
 |                      | id        | ID of component that was removed.                  |
-| stateadded           | state     | The state that was attached (string).              |
-| stateremoved         | state     | The state that was detached (string).              |
+| stateadded           | N/A       | The state that was attached (string).              |
+| stateremoved         | N/A       | The state that was detached (string).              |
 | schemachanged        | component | Name of component that had it's schema changed.    |
 
 #### Listening for Component Changes

@@ -14,7 +14,7 @@ suite('vive-controls', function () {
       component.controllersWhenPresent = [
         {id: 'OpenVR Gamepad', index: 0, hand: 'right', pose: {}}
       ];
-      controlsSystem = el.sceneEl.systems['tracked-controls'];
+      controlsSystem = el.sceneEl.systems['tracked-controls-webvr'];
       done();
     });
     el.setAttribute('vive-controls', 'hand: right; model: false');  // To ensure index = 0.

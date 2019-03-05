@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <title>Images</title>
-    <meta name="description" content="Images – A-Frame">
+    <meta name="description" content="Images - A-Frame">
     <script src="../../../dist/aframe-master.js"></script>
   </head>
   <body>
@@ -13,34 +13,24 @@
         <img id="office2" src="mozvr-office-2.jpg">
         <img id="office3" src="mozvr-office-3.jpg">
       </a-assets>
-      
+
       <a-entity position="0 0 4">
       	<a-camera></a-camera>
       </a-entity>
 
       <a-image position="-4 -7 -20" width="16" height="4.5" src="#office1"></a-image>
-      <a-image position="10 10 -20" width="14" height="9" scale="0.4 0.4 0.4"
-               src="#office2"></a-image>
-      <a-image position="-6 6 -4" width="14" height="9" scale="0.4 0.4 0.4"
-               src="#office2"></a-image>
-      <a-image position="-2 -5 -10" width="14" height="9" scale="0.4 0.4 0.4"
-               src="#office2"></a-image>
-      <a-image position="-15 -1 -1" width="12" height="8" scale="0.5 0.5 0.5"
-               src="#office3"></a-image>
-      <a-image position="5 -2 -3" width="12" height="8" scale="0.3 0.3 0.3"
-               src="#office3"></a-image>
+      <a-image position="10 10 -20" width="14" height="9" scale="0.4 0.4 0.4" src="#office2"></a-image>
+      <a-image position="-6 6 -4" width="14" height="9" scale="0.4 0.4 0.4" src="#office2"></a-image>
+      <a-image position="-2 -5 -10" width="14" height="9" scale="0.4 0.4 0.4" src="#office2"></a-image>
+      <a-image position="-15 -1 -1" width="12" height="8" scale="0.5 0.5 0.5" src="#office3"></a-image>
+      <a-image position="5 -2 -3" width="12" height="8" scale="0.3 0.3 0.3" src="#office3"></a-image>
 
-      <!-- Hide a-image element until the texture has actually been loaded, then transition
-           inside the camera view -->
-      <a-image id="eventImage" opacity="0.0" position="0 1 -50" width="16" height="4.5"
-               src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Big_Wood,_N2.JPG">
-
-        <a-animation begin="material-texture-loaded" attribute="opacity" to="1.0"
-                     dur="2000"></a-animation>
-        <a-animation begin="material-texture-loaded" attribute="rotation" from="180 0 0"
-                     to="0 0 0" dur="2500"> </a-animation>
-        <a-animation begin="material-texture-loaded" attribute="position" to="0 1 -8"
-                     dur="3000"> </a-animation>
+      <!-- Hide a-image element until the texture has actually been loaded, then transition inside the camera view. -->
+      <a-image id="eventImage" opacity="0" position="0 1 -50" width="16" height="4.5"
+               src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Big_Wood,_N2.JPG"
+               animation__opacity="startEvents: materialtextureloaded; property: components.material.material.opacity; to: 1; dur: 2000"
+               animation__rotation="startEvents: materialtextureloaded; property: rotation; from: 180 0 0; to: 0 0 0; dur: 2500"
+               animation__position="startEvents: materialtextureloaded; property: position; to: 0 1 -8; dur: 3000">
       </a-image>
     </a-scene>
   </body>

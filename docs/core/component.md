@@ -13,6 +13,7 @@ examples: []
 [multiple]: #multiple
 [three]: http://threejs.org/
 [setAttribute]: ../introduction/javascript-events-dom-apis.md#updating-a-component-with-setattribute
+[flushToDom]: #flushtodom
 
 In the [entity-component-system pattern][ecs], a component is a reusable and
 modular chunk of data that we plug into an entity to add appearance, behavior,
@@ -57,7 +58,7 @@ attribute:
 
 ### Multi-Property Component
 
-If a component is a *multi-property* component, meaning the data is consists of
+If a component is a *multi-property* component, meaning the data consists of
 multiple properties and values, then in HTML, the component value resembles
 inline CSS styles:
 
@@ -179,20 +180,27 @@ schema: {type: 'vec3'}  // default: {x: 0, y: 0, z: 0}
 
 #### Custom Property Type
 
-We can also define our own property type or parser by providing a `parse`
+We can also define our own property type by providing a `parse` and `stringify`
 function in place of a `type`:
 
 ```js
 schema: {
-  // Parse slash-delimited string to an array (e.g., `foo="myProperty: a/b"` to `['a', 'b']`).
+  // Parse slash-delimited string to an array (e.g., `foo="myProperty: a/b"` to `['a', 'b']`),
+  // stringify array to string (e.g., `['a', 'b']` to `foo="myProperty: a/b"`)
   myProperty: {
     default: [],
     parse: function (value) {
       return value.split('/');
+    },
+    stringify: function (value) {
+      return value.join('/');
     }
   }
 }
 ```
+
+`parse` is called when component properties are updated by `setAttribute` method.
+`stringify` is called when DOM is updated by [flushToDom][flushToDom] method.
 
 ### Single-Property Schema
 

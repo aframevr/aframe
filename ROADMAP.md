@@ -6,7 +6,9 @@
 - **Performance:** maintain high framerate with low latency
 - **Ecosystem:** enable discovery and distribution of reusable components
 
-## 0.8.0 (est. Feb 2018, updated Feb 2018)
+## 1.0.0 / 0.10.0
 
-- Replace VREffect / VRControls with new three.js WebVR API
-- Performance improvements
+- Bug fixes following 0.9.0.
+- Continued tracking of changes in WebXR spec.
+- Updated documentation and guides.
+- Oculus Quest support.

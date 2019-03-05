@@ -7,15 +7,15 @@
     <script src="../../../dist/aframe-master.js"></script>
   </head>
   <body>
-    <a-scene>
+    <a-scene renderer="colorManagement: true;">
       <a-assets>
         <img id="lake" src="lake.jpg">
         <img id="pdx" src="portland.png">
-        <a-asset-item id="sculpture" src="sculpture.dae"></a-asset-item>
+        <a-asset-item id="sculpture" src="sculpture.glb"></a-asset-item>
       </a-assets>
 
       <a-sky src="#lake"></a-sky>
-      <a-collada-model src="#sculpture" position="0 0 -6"></a-collada-model>
+      <a-gltf-model src="#sculpture" position="0 0 -6"></a-gltf-model>
       <a-image src="#pdx" width="10" height="5" position="-2 1.2 -3"
                scale="0.2 0.2 0.2"></a-image>
     </a-scene>

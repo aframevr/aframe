@@ -1,20 +1,21 @@
 ---
-title: "3D Models"
+title: 3D Models
 type: introduction
 layout: docs
 parent_section: introduction
-order: 8.75
-examples: []
+order: 10
+examples:
+ - title: Modifying Material of Model
+   src: https://glitch.com/edit/#!/aframe-modify-model-material?path=index.html:1:0
 ---
 
 [3loaders]: https://github.com/mrdoob/three.js/tree/dev/examples/js/loaders
-[COLLADA]: ../components/collada-model.md
 [ecsfind]: ./entity-component-system.md#where-to-find-components
 [glTF]: ../components/gltf-model.md
 [OBJ]: ../components/obj-model.md
 [recommend using glTF]: ../components/gltf-model.md#why-use-gltf
 
-A-Frame provides components for loading [glTF], [OBJ], [COLLADA]. We [recommend
+A-Frame provides components for loading [glTF] and [OBJ]. We [recommend
 using glTF] if possible as glTF gains adoption as the standard for transmitting
 3D models over the Web. Components can be written to handle any file format,
 specifically any format that has a [three.js loader][3loaders]. We can also try
@@ -56,6 +57,9 @@ Places to find 3D models include:
 
 Programs to create models include:
 
+- [Supercraft](https://supermedium.com/supercraft/) - Built **with** A-Frame to
+  model directly within VR with no modeling skill required and load with
+  [`aframe-supercraft-loader`](https://www.npmjs.com/package/aframe-supercraft-loader).
 - [Blender](https://www.blender.org/)
 - [MagicaVoxel](https://ephtracy.github.io/)
 - [Autodesk Maya](https://www.autodesk.com/products/maya/overview) or [Maya LT](https://www.autodesk.com/products/maya-lt/overview)
@@ -65,6 +69,46 @@ Programs to create models include:
 
 Refer to [Hosting and Publishing &mdash; Hosting
 Models](./hosting-and-publishing.md#hosting-models).
+
+## Modifying Materials
+
+[modify]: https://glitch.com/edit/#!/aframe-modify-model-material?path=index.html:1:0
+
+To modify the material of a model, we need to wait for the model to load, and
+then modify the three.js meshes created from the model. What happens is an
+A-Frame model component requests on the network the model, parses the model,
+creates three.js meshes or objects, and loads them in under the `<a-entity>`
+under `.getObject3D('mesh')`. We can reach into that mesh and modify whatever,
+in this case, three.js materials.
+
+See this live example of [modifying material of a loaded model][modify].
+
+```html
+<script>
+	AFRAME.registerComponent('modify-materials', {
+		init: function () {
+			// Wait for model to load.
+			this.el.addEventListener('model-loaded', () => {
+				// Grab the mesh / scene.
+				const obj = this.el.getObject3D('mesh');
+				// Go over the submeshes and modify materials we want.
+				obj.traverse(node => {
+					if (node.name.indexOf('ship') !== -1) {
+						node.material.color.set('red');
+					}
+				});
+			});
+		}
+	});
+</script>
+
+<a-scene background="color: #ECECEC">
+  <a-assets>
+    <a-asset-item id="cityModel" src="https://cdn.aframe.io/test-models/models/glTF-2.0/virtualcity/VC.gltf"></a-asset-item>
+  </a-assets>
+  <a-entity gltf-model="#cityModel" modify-materials></a-entity>
+</a-scene>
+```
 
 ## Troubleshooting
 
@@ -99,6 +143,8 @@ model or `.mtl` file.
 1. Open the model (or .mtl if you're doing OBJ) in a plain text editor
 2. Search for the name of your texture (e.g., `texture.jpg`)
 3. Fix the path to the texture by making it relative instead of absolute
+
+If this didn't work, you should check your MTL file and you might notice it is trying to use TGA or some other sort of textures that aren't plain images. In this case, you need to include additional three.js loaders. However it might be easier to try converting all the TGAs to just use images like PNGs using a converter, and replace all instances of 'tga' with 'png'.
 
 ### My Model Isn't Animating
 

@@ -9,7 +9,7 @@ var GEARVR_CONTROLLER_MODEL_BASE_URL = 'https://cdn.aframe.io/controllers/samsun
 var GEARVR_CONTROLLER_MODEL_OBJ_URL = GEARVR_CONTROLLER_MODEL_BASE_URL + 'gear_vr_controller.obj';
 var GEARVR_CONTROLLER_MODEL_OBJ_MTL = GEARVR_CONTROLLER_MODEL_BASE_URL + 'gear_vr_controller.mtl';
 
-var GAMEPAD_ID_PREFIX = 'Gear VR|GearVR|Oculus Go';
+var GAMEPAD_ID_PREFIX = 'Gear VR';
 
 /**
  * Gear VR controls.
@@ -24,7 +24,7 @@ module.exports.Component = registerComponent('gearvr-controls', {
     buttonTouchedColor: {type: 'color', default: '#777777'},
     buttonHighlightColor: {type: 'color', default: '#FFFFFF'},
     model: {default: true},
-    rotationOffset: {default: 0},
+    orientationOffset: {type: 'vec3'},
     armModel: {default: true}
   },
 
@@ -72,7 +72,6 @@ module.exports.Component = registerComponent('gearvr-controls', {
     el.addEventListener('model-loaded', this.onModelLoaded);
     el.addEventListener('axismove', this.onAxisMoved);
     this.controllerEventsActive = true;
-    this.addControllersUpdateListener();
   },
 
   removeEventListeners: function () {
@@ -85,7 +84,6 @@ module.exports.Component = registerComponent('gearvr-controls', {
     el.removeEventListener('model-loaded', this.onModelLoaded);
     el.removeEventListener('axismove', this.onAxisMoved);
     this.controllerEventsActive = false;
-    this.removeControllersUpdateListener();
   },
 
   checkIfControllerPresent: function () {
@@ -109,7 +107,7 @@ module.exports.Component = registerComponent('gearvr-controls', {
     el.setAttribute('tracked-controls', {
       armModel: data.armModel,
       idPrefix: GAMEPAD_ID_PREFIX,
-      rotationOffset: data.rotationOffset
+      orientationOffset: data.orientationOffset
     });
     if (!this.data.model) { return; }
     this.el.setAttribute('obj-model', {

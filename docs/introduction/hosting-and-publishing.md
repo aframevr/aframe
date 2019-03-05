@@ -3,7 +3,7 @@ title: "Hosting & Publishing"
 type: introduction
 layout: docs
 parent_section: introduction
-order: 10
+order: 12
 ---
 
 This section will show several ways to deploy, host, and publish an A-Frame
@@ -117,7 +117,6 @@ scene. Plus, if we're using `<a-assets>`, we should usually set
 
 There are several simple options to host assets via a CDN:
 
-- [A-Frame Asset Uploader](https://cdn.aframe.io/) - Uses UploadCare.
 - [Glitch Asset Uploader](https://glitch.com/) - The Glitch code editor has a
   panel to upload assets and get CDN URLs in return.
 - [imgur](https://imgur.com/) - For images, we could use imgur, a popular image
@@ -140,6 +139,8 @@ directories into the site directory:
 
 *Neocities Asset Uploader*
 
+[jsdelivr]: https://www.jsdelivr.com/?docs=gh
+
 Or we can upload assets to a GitHub repository, and use GitHub to serve the
 model files.
 
@@ -150,8 +151,8 @@ model files.
 5. Wait for processing.
 6. Once finished, click on the primary asset file.
 7. Click on **Raw**.
-8. Then we have our asset URL hosted on GitHub. We can also change
-`raw.githubusercontent.com` to `cdn.rawgit.com` to use a different CDN.
+8. Then we have our asset URL hosted on GitHub. Then the asset can be
+hosted and referenced via [JSDelivr CDN][jsdelivr].
 
 Below is a video of the workflow:
 

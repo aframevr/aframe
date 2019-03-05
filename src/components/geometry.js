@@ -12,7 +12,7 @@ var dummyGeometry = new THREE.Geometry();
 module.exports.Component = registerComponent('geometry', {
   schema: {
     buffer: {default: true},
-    primitive: {default: 'box', oneOf: geometryNames},
+    primitive: {default: 'box', oneOf: geometryNames, schemaChange: true},
     skipCache: {default: false}
   },
 
@@ -61,12 +61,10 @@ module.exports.Component = registerComponent('geometry', {
 
   /**
    * Update geometry component schema based on geometry type.
-   *
-   * @param {object} data - New data passed by Component.
    */
   updateSchema: function (data) {
+    var currentGeometryType = this.oldData && this.oldData.primitive;
     var newGeometryType = data.primitive;
-    var currentGeometryType = this.data && this.data.primitive;
     var schema = geometries[newGeometryType] && geometries[newGeometryType].schema;
 
     // Geometry has no schema.

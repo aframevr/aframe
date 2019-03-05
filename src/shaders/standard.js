@@ -59,7 +59,13 @@ module.exports.Shader = registerShader('standard', {
    * Adds a reference from the scene to this entity as the camera.
    */
   init: function (data) {
-    this.material = new THREE.MeshStandardMaterial(getMaterialData(data));
+    this.rendererSystem = this.el.sceneEl.systems.renderer;
+    this.materialData = {color: new THREE.Color(), emissive: new THREE.Color()};
+    getMaterialData(data, this.materialData);
+    this.rendererSystem.applyColorCorrection(this.materialData.color);
+    this.rendererSystem.applyColorCorrection(this.materialData.emissive);
+    this.material = new THREE.MeshStandardMaterial(this.materialData);
+
     utils.material.updateMap(this, data);
     if (data.normalMap) { utils.material.updateDistortionMap('normal', this, data); }
     if (data.displacementMap) { utils.material.updateDistortionMap('displacement', this, data); }
@@ -87,11 +93,14 @@ module.exports.Shader = registerShader('standard', {
    * @returns {object} Material.
    */
   updateMaterial: function (data) {
+    var key;
     var material = this.material;
-    data = getMaterialData(data);
-    Object.keys(data).forEach(function (key) {
-      material[key] = data[key];
-    });
+    getMaterialData(data, this.materialData);
+    this.rendererSystem.applyColorCorrection(this.materialData.color);
+    this.rendererSystem.applyColorCorrection(this.materialData.emissive);
+    for (key in this.materialData) {
+      material[key] = this.materialData[key];
+    }
   },
 
   /**
@@ -153,28 +162,29 @@ module.exports.Shader = registerShader('standard', {
  * Builds and normalize material data, normalizing stuff along the way.
  *
  * @param {object} data - Material data.
- * @returns {object} data - Processed material data.
+ * @param {object} materialData - Object to use.
+ * @returns {object} Updated materialData.
  */
-function getMaterialData (data) {
-  var newData = {
-    color: new THREE.Color(data.color),
-    emissive: new THREE.Color(data.emissive),
-    emissiveIntensity: data.emissiveIntensity,
-    fog: data.fog,
-    metalness: data.metalness,
-    roughness: data.roughness,
-    wireframe: data.wireframe,
-    wireframeLinewidth: data.wireframeLinewidth
-  };
+function getMaterialData (data, materialData) {
+  materialData.color.set(data.color);
+  materialData.emissive.set(data.emissive);
+  materialData.emissiveIntensity = data.emissiveIntensity;
+  materialData.fog = data.fog;
+  materialData.metalness = data.metalness;
+  materialData.roughness = data.roughness;
+  materialData.wireframe = data.wireframe;
+  materialData.wireframeLinewidth = data.wireframeLinewidth;
 
-  if (data.normalMap) { newData.normalScale = data.normalScale; }
+  if (data.normalMap) { materialData.normalScale = data.normalScale; }
 
-  if (data.ambientOcclusionMap) { newData.aoMapIntensity = data.ambientOcclusionMapIntensity; }
-
-  if (data.displacementMap) {
-    newData.displacementScale = data.displacementScale;
-    newData.displacementBias = data.displacementBias;
+  if (data.ambientOcclusionMap) {
+    materialData.aoMapIntensity = data.ambientOcclusionMapIntensity;
   }
 
-  return newData;
+  if (data.displacementMap) {
+    materialData.displacementScale = data.displacementScale;
+    materialData.displacementBias = data.displacementBias;
+  }
+
+  return materialData;
 }

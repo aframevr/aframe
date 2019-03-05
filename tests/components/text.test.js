@@ -11,7 +11,8 @@ suite('text', function () {
       return {
         default: '/base/tests/assets/test.fnt?foo',
         mozillavr: '/base/tests/assets/test.fnt?bar',
-        roboto: '/base/tests/assets/test.fnt?baz'
+        roboto: '/base/tests/assets/test.fnt?baz',
+        msdf: '/base/tests/assets/test.fnt?msdf'
       }[key];
     });
 
@@ -49,24 +50,24 @@ suite('text', function () {
 
   suite('update', function () {
     test('updates value', function (done) {
-      var updateSpy = this.sinon.spy(component, 'updateGeometry');
+      var updateSpy = this.sinon.spy(component.geometry, 'update');
       el.addEventListener('textfontset', evt => {
+        assert.equal(updateSpy.getCalls()[0].args[0].value, '');
         el.setAttribute('text', {value: 'foo', font: 'mozillavr'});
+        assert.equal(updateSpy.getCalls()[1].args[0].value, 'foo');
         el.setAttribute('text', {value: 'bar', font: 'mozillavr'});
-        assert.equal(updateSpy.getCalls()[0].args[1].value, '');
-        assert.equal(updateSpy.getCalls()[1].args[1].value, 'foo');
-        assert.equal(updateSpy.getCalls()[2].args[1].value, 'bar');
+        assert.equal(updateSpy.getCalls()[2].args[0].value, 'bar');
         done();
       });
       el.setAttribute('text', {font: 'mozillavr'});
     });
 
     test('updates value with number', function (done) {
-      var updateSpy = this.sinon.spy(component, 'updateGeometry');
+      var updateSpy = this.sinon.spy(component.geometry, 'update');
       el.addEventListener('textfontset', evt => {
+        assert.equal(updateSpy.getCalls()[0].args[0].value, '');
         el.setAttribute('text', {value: 10, font: 'mozillavr'});
-        assert.equal(updateSpy.getCalls()[0].args[1].value, '');
-        assert.equal(updateSpy.getCalls()[1].args[1].value, '10');
+        assert.equal(updateSpy.getCalls()[1].args[0].value, '10');
         done();
       });
       el.setAttribute('text', {font: 'mozillavr'});
@@ -232,10 +233,32 @@ suite('text', function () {
       el.setAttribute('text', {font: 'mozillavr', fontImage: '/base/tests/assets/test2.png'});
     });
 
-    test('uses up-to-date data once loaded', function (done) {
-      var updateSpy = this.sinon.spy(component, 'updateGeometry');
+    test('loads font with inferred font image', function (done) {
+      // `test.fnt` contains an absolute filepath, which should be ignored
+      // in favor of a page-relative texture URL.
       el.addEventListener('textfontset', evt => {
-        assert.equal(updateSpy.getCalls()[0].args[1].value, 'bar');
+        component.currentFont.pages[0] = 'C:\\Windows\\Documents\\custom-texture.png';
+        assert.equal(component.getFontImageSrc(), '/base/tests/assets/test.png');
+        done();
+      });
+      el.setAttribute('text', 'font', '/base/tests/assets/test.fnt');
+    });
+
+    test('loads font with referenced font image', function (done) {
+      // `test.fnt` contains a local reference to the page texture, which
+      // should be loaded relative to the font's base path.
+      el.addEventListener('textfontset', evt => {
+        component.currentFont.pages[0] = 'custom-texture.png';
+        assert.equal(component.getFontImageSrc(), '/base/tests/assets/custom-texture.png');
+        done();
+      });
+      el.setAttribute('text', {font: 'msdf'});
+    });
+
+    test('uses up-to-date data once loaded', function (done) {
+      var updateSpy = this.sinon.spy(component.geometry, 'update');
+      el.addEventListener('textfontset', evt => {
+        assert.equal(updateSpy.getCalls()[0].args[0].value, 'bar');
         done();
       });
       el.setAttribute('text', {value: 'foo', font: 'mozillavr'});

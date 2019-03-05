@@ -72,14 +72,10 @@
         </a-camera>
       </a-entity>
 
-      <a-entity position="0 10 0" entity-generator="mixin: box">
-        <a-animation attribute="position" dur="16000" easing="linear" repeat="indefinite"
-                     to="0 0 0"></a-animation>
-      </a-entity>
-      <a-entity position="0 10 0" entity-generator="mixin: sphere">
-        <a-animation attribute="position" dur="16000" easing="linear" repeat="indefinite"
-                     to="0 0 0"></a-animation>
-      </a-entity>
+      <a-entity position="0 10 0" entity-generator="mixin: box"
+                animation="property: position; dur: 16000; easing: linear; loop: false; to: 0 0 0"></a-entity>
+      <a-entity position="0 10 0" entity-generator="mixin: sphere"
+               animation="property: position; dur: 16000; easing: linear; loop: false; to: 0 0 0"></a-entity>
     </a-scene>
   </body>
 </html>

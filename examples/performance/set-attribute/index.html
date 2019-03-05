@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>.setAttribute Performance Test - A-Frame</title>
+    <meta name="description" content="">
+    <script src="../../../dist/aframe-master.js"></script>
+    <script>
+      AFRAME.registerComponent('dummy', {
+        schema: {
+          foo: {default: 0},
+          bar: {default: ''},
+          baz: {default: true},
+          qux: {default: true},
+          qaz: {default: true},
+          a: {default: true},
+          b: {default: true},
+          c: {default: true},
+          d: {default: true},
+          e: {default: true},
+          f: {default: true},
+          g: {default: true},
+          h: {default: true},
+          i: {default: true},
+          j: {default: true},
+          k: {default: true}
+        },
+
+        multiple: true
+      });
+
+      AFRAME.registerComponent('set-attribute-test', {
+        dependencies: ['dummy__1'],
+
+        play: function () {
+          const t0 = window.performance.now();
+          for (let i = 0; i < 100000; i++) {
+            this.el.setAttribute('dummy__1', 'foo', i);
+          }
+          const t1 = window.performance.now();
+          console.log((t1 - t0) / 100000, 'ms');
+        }
+      });
+    </script>
+  </head>
+  <body>
+    <a-scene>
+      <a-mixin id="foo" dummy__1="foo: 1"></a-mixin>
+      <a-mixin id="bar" dummy__1="foo: 2"></a-mixin>
+      <a-mixin id="baz" dummy__1="foo: 3"></a-mixin>
+
+      <a-entity mixin="foo bar baz" dummy__1="a: false; b: false; c: false; d: false; e: false; f: false; g: false" set-attribute-test></a-entity>
+    </a-scene>
+  </body>
+</html>
+

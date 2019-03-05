@@ -1,5 +1,6 @@
 /* global assert, process, setup, suite, test */
 var entityFactory = require('../helpers').entityFactory;
+var THREE = require('index').THREE;
 
 suite('light', function () {
   setup(function (done) {
@@ -57,6 +58,15 @@ suite('light', function () {
       });
       assert.ok(el.getObject3D('light').castShadow);
       assert.equal(el.getObject3D('light').shadow.bias, 0.25);
+    });
+
+    test('can set shadow radius', function () {
+      var el = this.el;
+      el.setAttribute('light', {
+        castShadow: true,
+        shadowRadius: 2
+      });
+      assert.equal(el.getObject3D('light').shadow.radius, 2);
     });
   });
 
@@ -148,9 +158,10 @@ suite('light', function () {
       lightEl.setAttribute('light', 'type', 'spot');
       light = lightEl.getObject3D('light');
 
-      assert.equal(lightEl.object3D.position.x, light.getWorldPosition().x);
-      assert.equal(lightEl.object3D.position.y, light.getWorldPosition().y);
-      assert.equal(lightEl.object3D.position.z, light.getWorldPosition().z);
+      var pos = light.getWorldPosition(new THREE.Vector3());
+      assert.equal(lightEl.object3D.position.x, pos.x);
+      assert.equal(lightEl.object3D.position.y, pos.y);
+      assert.equal(lightEl.object3D.position.z, pos.z);
     });
 
     test('directional light object3d position is at light element position', function () {
@@ -160,9 +171,10 @@ suite('light', function () {
       lightEl.setAttribute('light', 'type', 'directional');
       light = lightEl.getObject3D('light');
 
-      assert.equal(lightEl.object3D.position.x, light.getWorldPosition().x);
-      assert.equal(lightEl.object3D.position.y, light.getWorldPosition().y);
-      assert.equal(lightEl.object3D.position.z, light.getWorldPosition().z);
+      var pos = light.getWorldPosition(new THREE.Vector3());
+      assert.equal(lightEl.object3D.position.x, pos.x);
+      assert.equal(lightEl.object3D.position.y, pos.y);
+      assert.equal(lightEl.object3D.position.z, pos.z);
     });
 
     // point light doesn't have the bug
@@ -173,9 +185,10 @@ suite('light', function () {
       lightEl.setAttribute('light', 'type', 'point');
       light = lightEl.getObject3D('light');
 
-      assert.equal(lightEl.object3D.position.x, light.getWorldPosition().x);
-      assert.equal(lightEl.object3D.position.y, light.getWorldPosition().y);
-      assert.equal(lightEl.object3D.position.z, light.getWorldPosition().z);
+      var pos = light.getWorldPosition(new THREE.Vector3());
+      assert.equal(lightEl.object3D.position.x, pos.x);
+      assert.equal(lightEl.object3D.position.y, pos.y);
+      assert.equal(lightEl.object3D.position.z, pos.z);
     });
 
     // ambient light doesn't have the bug
@@ -186,9 +199,10 @@ suite('light', function () {
       lightEl.setAttribute('light', 'type', 'ambient');
       light = lightEl.getObject3D('light');
 
-      assert.equal(lightEl.object3D.position.x, light.getWorldPosition().x);
-      assert.equal(lightEl.object3D.position.y, light.getWorldPosition().y);
-      assert.equal(lightEl.object3D.position.z, light.getWorldPosition().z);
+      var pos = light.getWorldPosition(new THREE.Vector3());
+      assert.equal(lightEl.object3D.position.x, pos.x);
+      assert.equal(lightEl.object3D.position.y, pos.y);
+      assert.equal(lightEl.object3D.position.z, pos.z);
     });
 
     test('hemisphere light object3d position is at light element position', function () {
@@ -198,9 +212,10 @@ suite('light', function () {
       lightEl.setAttribute('light', 'type', 'hemisphere');
       light = lightEl.getObject3D('light');
 
-      assert.equal(lightEl.object3D.position.x, light.getWorldPosition().x);
-      assert.equal(lightEl.object3D.position.y, light.getWorldPosition().y);
-      assert.equal(lightEl.object3D.position.z, light.getWorldPosition().z);
+      var pos = light.getWorldPosition(new THREE.Vector3());
+      assert.equal(lightEl.object3D.position.x, pos.x);
+      assert.equal(lightEl.object3D.position.y, pos.y);
+      assert.equal(lightEl.object3D.position.z, pos.z);
     });
   });
 

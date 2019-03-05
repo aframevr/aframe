@@ -4,9 +4,15 @@ var extend = require('object-assign');
 
 var warn = debug('utils:coordinates:warn');
 
+// Order of coordinates parsed by coordinates.parse.
+var COORDINATE_KEYS = ['x', 'y', 'z', 'w'];
+
 // Coordinate string regex. Handles negative, positive, and decimals.
 var regex = /^\s*((-?\d*\.{0,1}\d+(e-?\d+)?)\s+){2,3}(-?\d*\.{0,1}\d+(e-?\d+)?)\s*$/;
 module.exports.regex = regex;
+
+var OBJECT = 'object';
+var whitespaceRegex = /\s+/g;
 
 /**
  * Parses coordinates from an "x y z" string.
@@ -18,29 +24,44 @@ module.exports.regex = regex;
  */
 function parse (value, defaultVec) {
   var coordinate;
+  var defaultVal;
+  var key;
+  var i;
   var vec;
+  var x;
+  var y;
+  var z;
+  var w;
 
   if (value && value instanceof Object) {
-    if (defaultVec) {
-      value.x = value.x === undefined ? defaultVec.x : value.x;
-      value.y = value.y === undefined ? defaultVec.y : value.y;
-      value.z = value.z === undefined ? defaultVec.z : value.z;
-      value.w = value.w === undefined ? defaultVec.w : value.w;
-    }
-    return vecParseFloat(value);
+    x = value.x === undefined ? defaultVec && defaultVec.x : value.x;
+    y = value.y === undefined ? defaultVec && defaultVec.y : value.y;
+    z = value.z === undefined ? defaultVec && defaultVec.z : value.z;
+    w = value.w === undefined ? defaultVec && defaultVec.w : value.w;
+    if (x !== undefined && x !== null) { value.x = parseIfString(x); }
+    if (y !== undefined && y !== null) { value.y = parseIfString(y); }
+    if (z !== undefined && z !== null) { value.z = parseIfString(z); }
+    if (w !== undefined && w !== null) { value.w = parseIfString(w); }
+    return value;
   }
 
   if (value === null || value === undefined) {
-    return typeof defaultVec === 'object' ? extend({}, defaultVec) : defaultVec;
+    return typeof defaultVec === OBJECT ? extend({}, defaultVec) : defaultVec;
   }
 
-  coordinate = value.trim().replace(/\s+/g, ' ').split(' ');
+  coordinate = value.trim().split(whitespaceRegex);
   vec = {};
-  vec.x = coordinate[0] || defaultVec && defaultVec.x;
-  vec.y = coordinate[1] || defaultVec && defaultVec.y;
-  vec.z = coordinate[2] || defaultVec && defaultVec.z;
-  vec.w = coordinate[3] || defaultVec && defaultVec.w;
-  return vecParseFloat(vec);
+  for (i = 0; i < COORDINATE_KEYS.length; i++) {
+    key = COORDINATE_KEYS[i];
+    if (coordinate[i]) {
+      vec[key] = parseFloat(coordinate[i], 10);
+    } else {
+      defaultVal = defaultVec && defaultVec[key];
+      if (defaultVal === undefined) { continue; }
+      vec[key] = parseIfString(defaultVal);
+    }
+  }
+  return vec;
 }
 module.exports.parse = parse;
 
@@ -52,8 +73,12 @@ module.exports.parse = parse;
  * @returns {string} An "x y z" string.
  */
 function stringify (data) {
-  if (typeof data !== 'object') { return data; }
-  return [data.x, data.y, data.z, data.w].join(' ').trim();
+  var str;
+  if (typeof data !== OBJECT) { return data; }
+  str = data.x + ' ' + data.y;
+  if (data.z != null) { str += ' ' + data.z; }
+  if (data.w != null) { str += ' ' + data.w; }
+  return str;
 }
 module.exports.stringify = stringify;
 
@@ -70,18 +95,11 @@ module.exports.isCoordinate = function (value) {
   return isCoordinates(value);
 };
 
-function vecParseFloat (vec) {
-  var key;
-  for (key in vec) {
-    if (vec[key] === undefined) {
-      delete vec[key];
-      continue;
-    }
-    if (vec[key].constructor === String) {
-      vec[key] = parseFloat(vec[key], 10);
-    }
+function parseIfString (val) {
+  if (val !== null && val !== undefined && val.constructor === String) {
+    return parseFloat(val, 10);
   }
-  return vec;
+  return val;
 }
 
 /**

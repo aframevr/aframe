@@ -1,21 +1,24 @@
 /* global assert, process, sinon, setup, suite, test */
 var entityFactory = require('../helpers').entityFactory;
+var THREE = require('index').THREE;
 
 suite('sound', function () {
   setup(function (done) {
     var el = this.el = entityFactory();
-    el.setAttribute('sound', {
-      autoplay: true,
-      src: 'url(mysoundfile.mp3)',
-      loop: true,
-      distanceModel: 'exponential',
-      maxDistance: 20000,
-      refDistance: 2,
-      rolloffFactor: 4,
-      poolSize: 3
-    });
-    el.addEventListener('loaded', function () {
-      done();
+    THREE.Cache.files = {};
+    setTimeout(() => {
+      el.sceneEl.addEventListener('loaded', function () { done(); });
+
+      el.setAttribute('sound', {
+        autoplay: true,
+        src: 'url(mysoundfile.mp3)',
+        loop: true,
+        distanceModel: 'exponential',
+        maxDistance: 20000,
+        refDistance: 2,
+        rolloffFactor: 4,
+        poolSize: 3
+      });
     });
   });
 
@@ -56,14 +59,15 @@ suite('sound', function () {
       }
     });
 
-    test('can change volume', function () {
+    test.skip('can change volume', function () {
+      var audioPool;
       var el = this.el;
-      el.setAttribute('sound', 'volume', 0.75);
+      var i;
 
-      var audioPool = el.getObject3D(el.components.sound.attrName);
-      for (var i = 0; i < audioPool.children.length; i++) {
-        var audio = audioPool.children[i];
-        assert.equal(audio.getVolume(), 0.75);
+      el.setAttribute('sound', 'volume', 0.75);
+      audioPool = el.getObject3D(el.components.sound.attrName);
+      for (i = 0; i < audioPool.children.length; i++) {
+        assert.equal(audioPool.children[i].getVolume(), 0.75);
       }
     });
   });
@@ -182,6 +186,17 @@ suite('sound', function () {
       el.setAttribute('sound', 'src', 'url(base/tests/assets/test.ogg)');
       el.components.sound.isPlaying = true;
     });
+
+    test('plays sound on event', function (done) {
+      const el = this.el;
+      el.setAttribute('sound', 'on', 'foo');
+      const playSoundStub = el.components.sound.playSound = sinon.stub();
+      el.emit('foo');
+      setTimeout(() => {
+        assert.ok(playSoundStub.called);
+        done();
+      });
+    });
   });
 
   suite('stopSound', function () {
@@ -196,6 +211,106 @@ suite('sound', function () {
       };
       el.components.sound.stopSound();
       assert.ok(sound.stop.called);
+    });
+  });
+
+  suite('asset', function () {
+    test('audio tag', function (done) {
+      var sceneEl = this.el.sceneEl;
+      var assetsEl = sceneEl.querySelector('a-assets');
+      sceneEl.removeChild(assetsEl);
+      process.nextTick(function () {
+        assetsEl = document.createElement('a-assets');
+        var audioEl = document.createElement('audio');
+        audioEl.setAttribute('src', 'base/tests/assets/test.ogg');
+        audioEl.setAttribute('id', 'testogg');
+        assetsEl.appendChild(audioEl);
+        sceneEl.appendChild(assetsEl);
+        setTimeout(function () {
+          var el = document.createElement('a-entity');
+          el.addEventListener('sound-loaded', function () {
+            assert.ok(this.components.sound.loaded);
+            done();
+          });
+          el.setAttribute('sound', 'src', '#testogg');
+          sceneEl.appendChild(el);
+        });
+      });
+    });
+
+    test.skip('preloading audio tag', function (done) {
+      var sceneEl = this.el.sceneEl;
+      var assetsEl = sceneEl.querySelector('a-assets');
+      sceneEl.removeChild(assetsEl);
+      process.nextTick(function () {
+        assetsEl = document.createElement('a-assets');
+        var audioEl = document.createElement('audio');
+        audioEl.setAttribute('src', 'base/tests/assets/test.ogg');
+        audioEl.setAttribute('id', 'testogg');
+        audioEl.setAttribute('autoplay', '');
+        assetsEl.appendChild(audioEl);
+        sceneEl.appendChild(assetsEl);
+        setTimeout(function () {
+          var el = document.createElement('a-entity');
+          el.addEventListener('sound-loaded', function () {
+            assert.ok(this.components.sound.loaded);
+            done();
+          });
+          el.setAttribute('sound', 'src', '#testogg');
+          sceneEl.appendChild(el);
+        }, 10);
+      });
+    });
+
+    test('a-asset-item', function (done) {
+      var sceneEl = this.el.sceneEl;
+      var assetsEl = sceneEl.querySelector('a-assets');
+      sceneEl.removeChild(assetsEl);
+      process.nextTick(function () {
+        assetsEl = document.createElement('a-assets');
+        var assetItemEl = document.createElement('a-asset-item');
+        assetItemEl.setAttribute('src', 'base/tests/assets/test.ogg');
+        assetItemEl.setAttribute('id', 'testogg');
+        assetItemEl.setAttribute('response-type', 'arraybuffer');
+        assetsEl.appendChild(assetItemEl);
+        sceneEl.appendChild(assetsEl);
+        process.nextTick(function () {
+          var el = document.createElement('a-entity');
+          el.setAttribute('sound', 'src', '#testogg');
+          el.addEventListener('sound-loaded', function () {
+            assert.ok(this.components.sound.loaded);
+            done();
+          });
+          sceneEl.appendChild(el);
+        });
+      });
+    });
+  });
+
+  suite('use the same src twice', function () {
+    test('use the same src twice', function (done) {
+      var sceneEl = this.el.sceneEl;
+      var el1 = document.createElement('a-entity');
+      var el2 = document.createElement('a-entity');
+      el1.setAttribute('sound', 'src', 'url(base/tests/assets/test.ogg)');
+      el2.setAttribute('sound', 'src', 'url(base/tests/assets/test.ogg)');
+      var loadedCount = 0;
+      el1.addEventListener('sound-loaded', function () {
+        assert.ok(el1.components.sound.loaded);
+        loadedCount++;
+        if (loadedCount === 2) {
+          done();
+        }
+      });
+      el2.addEventListener('sound-loaded', function () {
+        assert.ok(el2.components.sound.loaded);
+        loadedCount++;
+        if (loadedCount === 2) {
+          done();
+        }
+      });
+      sceneEl.appendChild(el1);
+      sceneEl.appendChild(el2);
     });
   });
 });

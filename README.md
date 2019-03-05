@@ -34,8 +34,14 @@
 
 ## Examples
 
+<a href="https://supermedium.com/supercraft">
+  <img alt="Supercraft" target="_blank" src="https://user-images.githubusercontent.com/674727/41085457-f5429566-69eb-11e8-92e5-3210e4c6c4a0.gif" height="190" width="32%">
+</a>
 <a href="https://aframe.io/a-painter/?url=https://ucarecdn.com/962b242b-87a9-422c-b730-febdc470f203/">
   <img alt="A-Painter" target="_blank" src="https://cloud.githubusercontent.com/assets/674727/24531388/acfc3dda-156d-11e7-8563-5bd75252f70f.gif" height="190" width="32%">
+</a>
+<a href="https://supermedium.com">
+  <img alt="Supermedium" target="_blank" src="https://user-images.githubusercontent.com/674727/37294616-7212cd20-25d3-11e8-9e7f-c0c61074f1e0.png" height="190" width="32%">
 </a>
 <a href="https://aframe.io/a-blast/">
   <img alt="A-Blast" target="_blank" src="https://cloud.githubusercontent.com/assets/674727/24531440/0336e66e-156e-11e7-95c2-f2e6ebc0393d.gif" height="190" width="32%">
@@ -43,14 +49,8 @@
 <a href="https://aframe.io/a-saturday-night/">
   <img alt="A-Saturday-Night" target="_blank" src="https://cloud.githubusercontent.com/assets/674727/24531477/44272daa-156e-11e7-8ef9-d750ed430f3a.gif" height="190" width="32%">
 </a>
-<a href="https://supermedium.com">
-  <img alt="Supermedium" target="_blank" src="https://user-images.githubusercontent.com/674727/37294616-7212cd20-25d3-11e8-9e7f-c0c61074f1e0.png" height="190" width="32%">
-</a>
 <a href="https://github.com/googlecreativelab/webvr-musicalforest">
   <img alt="Musical Forest by @googlecreativelab" target="_blank" src="https://cloud.githubusercontent.com/assets/674727/25109861/b8e9ec48-2394-11e7-8f2d-ea1cd9df69c8.gif" height="190" width="32%">
-</a>
-<a href="https://aframe-gallery.glitch.me">
-  <img alt="360 Image Gallery" target="_blank" src="https://cloud.githubusercontent.com/assets/674727/24572552/72f81bec-162e-11e7-9851-037d0280abdb.gif" height="190" width="32%">
 </a>
 
 *Find more examples on [the homepage](https://aframe.io), [A Week of A-Frame](https://aframe.io/blog/), and [WebVR Directory](https://webvr.directory).*
@@ -95,14 +95,15 @@ mountains, speech recognition, or teleportation!
 ### Example
 
 Build VR scenes in the browser with just a few lines of HTML! To start playing
-and publishing now, remix the starter example on Glitch:
+and publishing now, remix the starter example on 
+:
 
-[![Remix](https://cloud.githubusercontent.com/assets/674727/24572421/688f7fc0-162d-11e7-8a35-b02bc050c043.jpg)](https://glitch.com/~aframe)
+[![Remix](https://cloud.githubusercontent.com/assets/674727/24572421/688f7fc0-162d-11e7-8a35-b02bc050c043.jpg)](https://glitch.com/~aframe) [![Fork](https://user-images.githubusercontent.com/39342/52831020-d42dcb80-3087-11e9-833f-2d6191c69eb9.png)](https://repl.it/@dmarcos/aframe)
 
 ```html
 <html>
   <head>
-    <script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/0.9.0/aframe.min.js"></script>
   </head>
   <body>
     <a-scene>
@@ -117,17 +118,16 @@ and publishing now, remix the starter example on Glitch:
 ```
 
 With A-Frame's [entity-component
-architecture](https://aframe.io/docs/0.8.0/core/), we can drop in community
+architecture](https://aframe.io/docs/0.9.0/core/), we can drop in community
 components from the ecosystem (e.g., ocean, physics) and plug them into our
 objects straight from HTML:
 
-[![Remix](https://cloud.githubusercontent.com/assets/674727/24572421/688f7fc0-162d-11e7-8a35-b02bc050c043.jpg)](https://glitch.com/~aframe-registry)
+[![Remix](https://cloud.githubusercontent.com/assets/674727/24572421/688f7fc0-162d-11e7-8a35-b02bc050c043.jpg)](https://glitch.com/~aframe-registry) [![Fork](https://user-images.githubusercontent.com/39342/52831020-d42dcb80-3087-11e9-833f-2d6191c69eb9.png)](https://repl.it/@dmarcos/aframe)
 
 ```html
 <html>
   <head>
-    <script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
-    <script src="https://unpkg.com/aframe-animation-component@3.2.1/dist/aframe-animation-component.min.js"></script>
+    <script src="https://aframe.io/releases/0.9.0/aframe.min.js"></script>
     <script src="https://unpkg.com/aframe-particle-system-component@1.0.x/dist/aframe-particle-system-component.min.js"></script>
     <script src="https://unpkg.com/aframe-extras.ocean@%5E3.5.x/dist/aframe-extras.ocean.min.js"></script>
     <script src="https://unpkg.com/aframe-gradient-sky@1.0.4/dist/gradientsky.min.js"></script>
@@ -158,11 +158,11 @@ objects straight from HTML:
 
 ### Builds
 
-To use the latest stable build of A-Frame, include [`aframe.min.js`](https://aframe.io/releases/0.8.0/aframe.min.js):
+To use the latest stable build of A-Frame, include [`aframe.min.js`](https://aframe.io/releases/0.9.0/aframe.min.js):
 
 ```js
 <head>
-  <script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
+  <script src="https://aframe.io/releases/0.9.0/aframe.min.js"></script>
 </head>
 ```
 
@@ -204,6 +204,12 @@ For questions and support, [ask on StackOverflow](https://stackoverflow.com/ques
 - To hang out with the community, [join the A-Frame Slack](https://aframevr-slack.herokuapp.com).
 - [Follow `A Week of A-Frame` on the A-Frame blog](https://aframe.io/blog).
 - [Follow @aframevr on Twitter](https://twitter.com/aframevr).
+
+And get in touch with the maintainers!
+
+- [Diego Marcos](https://twitter.com/dmarcos)
+- [Don McCurdy](https://twitter.com/donrmccurdy)
+- [Kevin Ngo](https://twitter.com/andgokevin)
 
 ## Contributing
 

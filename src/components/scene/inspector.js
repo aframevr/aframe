@@ -1,8 +1,8 @@
 /* global AFRAME */
 var AFRAME_INJECTED = require('../../constants').AFRAME_INJECTED;
-var bind = require('../../utils/bind');
 var pkg = require('../../../package');
 var registerComponent = require('../../core/component').registerComponent;
+var utils = require('../../utils/');
 
 /**
  * 0.4.2 to 0.4.x
@@ -26,11 +26,22 @@ module.exports.Component = registerComponent('inspector', {
   },
 
   init: function () {
-    this.onKeydown = bind(this.onKeydown, this);
-    this.onMessage = bind(this.onMessage, this);
+    this.firstPlay = true;
+    this.onKeydown = this.onKeydown.bind(this);
+    this.onMessage = this.onMessage.bind(this);
     this.initOverlay();
     window.addEventListener('keydown', this.onKeydown);
     window.addEventListener('message', this.onMessage);
+  },
+
+  play: function () {
+    var urlParam;
+    if (!this.firstPlay) { return; }
+    urlParam = utils.getUrlParameter('inspector');
+    if (urlParam !== 'false' && !!urlParam) {
+      this.openInspector();
+      this.firstPlay = false;
+    }
   },
 
   initOverlay: function () {
@@ -49,8 +60,8 @@ module.exports.Component = registerComponent('inspector', {
    */
   onKeydown: function (evt) {
     var shortcutPressed = evt.keyCode === 73 && evt.ctrlKey && evt.altKey;
-    if (!this.data || !shortcutPressed) { return; }
-    this.injectInspector();
+    if (!shortcutPressed) { return; }
+    this.openInspector();
   },
 
   showLoader: function () {
@@ -65,14 +76,18 @@ module.exports.Component = registerComponent('inspector', {
    * postMessage. aframe.io uses this to create a button on examples to open Inspector.
    */
   onMessage: function (evt) {
-    if (evt.data === 'INJECT_AFRAME_INSPECTOR') { this.injectInspector(); }
+    if (evt.data === 'INJECT_AFRAME_INSPECTOR') { this.openInspector(); }
   },
 
-  injectInspector: function () {
+  openInspector: function (focusEl) {
     var self = this;
     var script;
 
-    if (AFRAME.INSPECTOR || AFRAME.inspectorInjected) { return; }
+    // Already injected. Open.
+    if (AFRAME.INSPECTOR || AFRAME.inspectorInjected) {
+      AFRAME.INSPECTOR.open(focusEl);
+      return;
+    }
 
     this.showLoader();
 
@@ -82,7 +97,7 @@ module.exports.Component = registerComponent('inspector', {
     script.setAttribute('data-name', 'aframe-inspector');
     script.setAttribute(AFRAME_INJECTED, '');
     script.onload = function () {
-      AFRAME.INSPECTOR.open();
+      AFRAME.INSPECTOR.open(focusEl);
       self.hideLoader();
       self.removeEventListeners();
     };

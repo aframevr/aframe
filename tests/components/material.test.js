@@ -80,6 +80,19 @@ suite('material', function () {
       });
     });
 
+    test('can load canvas texture', function (done) {
+      var canvas = document.createElement('canvas');
+      canvas.setAttribute('id', 'canvas');
+      el.sceneEl.appendChild(canvas);
+      el.addEventListener('materialtextureloaded', function (evt) {
+        assert.equal(el.components.material.material.map.image, canvas);
+        done();
+      });
+      setTimeout(() => {
+        el.setAttribute('material', {src: '#canvas'});
+      });
+    });
+
     test('removes texture when src attribute removed', function (done) {
       var imageUrl = 'base/tests/assets/test.png';
       el.setAttribute('material', '');
@@ -307,5 +320,32 @@ suite('material', function () {
     assert.ok(el.getObject3D('mesh').material.visible);
     el.setAttribute('material', 'visible: false');
     assert.notOk(el.getObject3D('mesh').material.visible);
+  });
+
+  suite('blending', function () {
+    test('defaults to normal', function () {
+      assert.equal(el.getAttribute('material').blending, 'normal');
+      assert.equal(el.components.material.material.blending, THREE.NormalBlending);
+    });
+
+    test('can set to no blending', function () {
+      el.setAttribute('material', 'blending', 'none');
+      assert.equal(el.components.material.material.blending, THREE.NoBlending);
+    });
+
+    test('can set to additive', function () {
+      el.setAttribute('material', 'blending', 'additive');
+      assert.equal(el.components.material.material.blending, THREE.AdditiveBlending);
+    });
+
+    test('can set to subtractibv', function () {
+      el.setAttribute('material', 'blending', 'subtractive');
+      assert.equal(el.components.material.material.blending, THREE.SubtractiveBlending);
+    });
+
+    test('can set to multiply', function () {
+      el.setAttribute('material', 'blending', 'multiply');
+      assert.equal(el.components.material.material.blending, THREE.MultiplyBlending);
+    });
   });
 });

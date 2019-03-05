@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Animation Performance with Raw Property</title>
+    <meta name="description" content="Animation Performance with Raw Property - A-Frame">
+    <script src="../../../dist/aframe-master.js"></script>
+    <script>
+      AFRAME.registerComponent('generate-fans', {
+        init: function () {
+          var ball =
+            '<a-entity>' +
+              '<a-entity mixin="ball opacityAnimation"></a-entity>' +
+            '</a-entity>';
+          var ballInitX = -15;
+          var fanInitX = -60;
+          var fanInitY = -40;
+          var numBalls = 11;
+          var numFanRows = 3;
+          var numFans = 3;
+          var numRows = 4;
+
+          for (let n = 0; n < numFanRows; ++n) {
+            let fanRow = document.createElement('a-entity');
+            fanRow.object3D.position.y = fanInitY - (n * fanInitY);
+            for (let k = 0; k < numFans; ++k) {
+              let fanEl = document.createElement('a-entity');
+              fanEl.object3D.position.x = fanInitX - (k * fanInitX);
+              fanEl.setAttribute('mixin', 'spinAnimation');
+              for (let i = 0; i < numRows; ++i) {
+                let rowEl = document.createElement('a-entity');
+                rowEl.object3D.rotation.z = THREE.Math.degToRad(i * (180 / numRows));
+                for (let j = 0; j < numBalls; ++j) {
+                  let offset = ballInitX + 3 * j;
+                  if (offset === 0) { continue; }
+                  let ballEl = document.createElement('a-entity');
+                  ballEl.object3D.position.x = ballInitX + 3 * j;
+                  ballEl.innerHTML = ball;
+                  ballEl.setAttribute('animation', 'delay', Math.random() * 2000);
+                  rowEl.appendChild(ballEl);
+                }
+                fanEl.appendChild(rowEl);
+              }
+              fanRow.appendChild(fanEl);
+            }
+            this.el.appendChild(fanRow);
+          }
+        }
+      });
+    </script>
+  </head>
+  <body>
+    <a-scene stats>
+      <a-assets>
+        <a-mixin id="ball" geometry="primitive: sphere; radius: 1" material="shader: flat; color: red"></a-mixin>
+        <a-mixin id="opacityAnimation" animation="property: components.material.material.opacity; dur: 2000; dir: alternate; loop: true; easing: linear; from: 0.3; to: 1"></a-mixin>
+        <a-mixin id="spinAnimation" animation="property: object3D.rotation.z; from: 0; to: 360; dur: 5000; loop: true; easing: linear"></a-mixin>
+      </a-assets>
+
+      <a-entity id="fans" position="0 0 -80" generate-fans></a-entity>
+    </a-scene>
+  </body>
+</html>

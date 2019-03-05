@@ -73,6 +73,10 @@ if (process.env.TEST_ENV === 'ci') {
   karmaConf.browsers = ['Firefox', 'ChromeTravis'];
 }
 
+if (process.env.NO_BROWSER) {
+  delete karmaConf.browsers;
+}
+
 // Apply configuration.
 module.exports = function (config) {
   config.set(karmaConf);

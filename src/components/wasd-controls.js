@@ -22,7 +22,6 @@ module.exports.Component = registerComponent('wasd-controls', {
     adAxis: {default: 'x', oneOf: ['x', 'y', 'z']},
     adEnabled: {default: true},
     adInverted: {default: false},
-    easing: {default: 20},
     enabled: {default: true},
     fly: {default: false},
     wsAxis: {default: 'z', oneOf: ['x', 'y', 'z']},
@@ -33,8 +32,8 @@ module.exports.Component = registerComponent('wasd-controls', {
   init: function () {
     // To keep track of the pressed keys.
     this.keys = {};
+    this.easing = 1.1;
 
-    this.position = {};
     this.velocity = new THREE.Vector3();
 
     // Bind methods and add event listeners.
@@ -47,11 +46,8 @@ module.exports.Component = registerComponent('wasd-controls', {
   },
 
   tick: function (time, delta) {
-    var currentPosition;
     var data = this.data;
     var el = this.el;
-    var movementVector;
-    var position = this.position;
     var velocity = this.velocity;
 
     if (!velocity[data.adAxis] && !velocity[data.wsAxis] &&
@@ -64,12 +60,7 @@ module.exports.Component = registerComponent('wasd-controls', {
     if (!velocity[data.adAxis] && !velocity[data.wsAxis]) { return; }
 
     // Get movement vector and translate position.
-    currentPosition = el.getAttribute('position');
-    movementVector = this.getMovementVector(delta);
-    position.x = currentPosition.x + movementVector.x;
-    position.y = currentPosition.y + movementVector.y;
-    position.z = currentPosition.z + movementVector.z;
-    el.setAttribute('position', position);
+    el.object3D.position.add(this.getMovementVector(delta));
   },
 
   remove: function () {
@@ -106,12 +97,14 @@ module.exports.Component = registerComponent('wasd-controls', {
       return;
     }
 
-    // Decay velocity.
+    // https://gamedev.stackexchange.com/questions/151383/frame-rate-independant-movement-with-acceleration
+    var scaledEasing = Math.pow(1 / this.easing, delta * 60);
+    // Velocity Easing.
     if (velocity[adAxis] !== 0) {
-      velocity[adAxis] -= velocity[adAxis] * data.easing * delta;
+      velocity[adAxis] -= velocity[adAxis] * scaledEasing;
     }
     if (velocity[wsAxis] !== 0) {
-      velocity[wsAxis] -= velocity[wsAxis] * data.easing * delta;
+      velocity[wsAxis] -= velocity[wsAxis] * scaledEasing;
     }
 
     // Clamp velocity easing.

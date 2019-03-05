@@ -36,6 +36,9 @@ var cache = new PromiseCache();
 var fontWidthFactors = {};
 var textures = {};
 
+// Regular expression for detecting a URLs with a protocol prefix.
+var protocolRe = /^\w+:/;
+
 /**
  * SDF-based text component.
  * Based on https://github.com/Jam3/three-bmfont-text.
@@ -93,15 +96,14 @@ module.exports.Component = registerComponent('text', {
   },
 
   update: function (oldData) {
-    var data = coerceData(this.data);
+    var data = this.data;
     var font = this.currentFont;
-    var fontImage = this.getFontImageSrc();
 
-    if (textures[fontImage]) {
-      this.texture = textures[fontImage];
+    if (textures[data.font]) {
+      this.texture = textures[data.font];
     } else {
       // Create texture per font.
-      this.texture = textures[fontImage] = new THREE.Texture();
+      this.texture = textures[data.font] = new THREE.Texture();
       this.texture.anisotropy = MAX_ANISOTROPY;
     }
 
@@ -116,8 +118,8 @@ module.exports.Component = registerComponent('text', {
 
     // Update geometry and layout.
     if (font) {
-      this.updateGeometry(this.geometry, data, font);
-      this.updateLayout(data);
+      this.updateGeometry(this.geometry, font);
+      this.updateLayout();
     }
   },
 
@@ -206,7 +208,6 @@ module.exports.Component = registerComponent('text', {
     cache.get(fontSrc, function doLoadFont () {
       return loadFont(fontSrc, data.yOffset);
     }).then(function setFont (font) {
-      var coercedData;
       var fontImgSrc;
 
       if (font.pages.length !== 1) {
@@ -218,12 +219,11 @@ module.exports.Component = registerComponent('text', {
       }
 
       // Update geometry given font metrics.
-      coercedData = coerceData(data);
-      self.updateGeometry(geometry, self.data, font);
+      self.updateGeometry(geometry, font);
 
       // Set font and update layout.
       self.currentFont = font;
-      self.updateLayout(coercedData);
+      self.updateLayout();
 
       // Look up font image URL to use, and perform cached load.
       fontImgSrc = self.getFontImageSrc();
@@ -234,42 +234,52 @@ module.exports.Component = registerComponent('text', {
         var texture = self.texture;
         texture.image = image;
         texture.needsUpdate = true;
-        textures[fontImgSrc] = texture;
+        textures[data.font] = texture;
         self.texture = texture;
         self.mesh.visible = true;
         el.emit('textfontset', {font: data.font, fontObj: font});
       }).catch(function (err) {
-        error(err);
-        throw err;
+        error(err.message);
+        error(err.stack);
       });
     }).catch(function (err) {
-      error(err);
-      throw err;
+      error(err.message);
+      error(err.stack);
     });
   },
 
   getFontImageSrc: function () {
+    if (this.data.fontImage) { return this.data.fontImage; }
     var fontSrc = this.lookupFont(this.data.font || DEFAULT_FONT) || this.data.font;
-    return this.data.fontImage || fontSrc.replace(/(\.fnt)|(\.json)/, '.png');
+    var imageSrc = this.currentFont.pages[0];
+    // If the image URL contains a non-HTTP(S) protocol, assume it's an absolute
+    // path on disk and try to infer the path from the font source instead.
+    if (imageSrc.match(protocolRe) && imageSrc.indexOf('http') !== 0) {
+      return fontSrc.replace(/(\.fnt)|(\.json)/, '.png');
+    }
+    return THREE.LoaderUtils.extractUrlBase(fontSrc) + imageSrc;
   },
 
   /**
    * Update layout with anchor, alignment, baseline, and considering any meshes.
    */
-  updateLayout: function (data) {
+  updateLayout: function () {
     var anchor;
     var baseline;
     var el = this.el;
+    var data = this.data;
     var geometry = this.geometry;
-    var geometryComponent = el.getAttribute('geometry');
+    var geometryComponent;
     var height;
-    var layout = geometry.layout;
+    var layout;
     var mesh = this.mesh;
     var textRenderWidth;
     var textScale;
     var width;
     var x;
     var y;
+
+    if (!geometry.layout) { return; }
 
     // Determine width to use (defined width, geometry's width, or default width).
     geometryComponent = el.getAttribute('geometry');
@@ -282,11 +292,12 @@ module.exports.Component = registerComponent('text', {
     textScale = width / textRenderWidth;
 
     // Determine height to use.
+    layout = geometry.layout;
     height = textScale * (layout.height + layout.descender);
 
     // Update geometry dimensions to match text layout if width and height are set to 0.
     // For example, scales a plane to fit text.
-    if (geometryComponent) {
+    if (geometryComponent && geometryComponent.primitive === 'plane') {
       if (!geometryComponent.width) { el.setAttribute('geometry', 'width', width); }
       if (!geometryComponent.height) { el.setAttribute('geometry', 'height', height); }
     }
@@ -321,7 +332,6 @@ module.exports.Component = registerComponent('text', {
     // Place text slightly in front to avoid Z-fighting.
     mesh.position.z = data.zOffset;
     mesh.scale.set(textScale, -1 * textScale, textScale);
-    this.geometry.computeBoundingSphere();
   },
 
   /**
@@ -335,14 +345,26 @@ module.exports.Component = registerComponent('text', {
   /**
    * Update the text geometry using `three-bmfont-text.update`.
    */
-  updateGeometry: function (geometry, data, font) {
-    geometry.update(utils.extend({}, data, {
-      font: font,
-      width: computeWidth(data.wrapPixels, data.wrapCount, font.widthFactor),
-      text: data.value.toString().replace(/\\n/g, '\n').replace(/\\t/g, '\t'),
-      lineHeight: data.lineHeight || font.common.lineHeight
-    }));
-  }
+  updateGeometry: (function () {
+    var geometryUpdateBase = {};
+    var geometryUpdateData = {};
+    var newLineRegex = /\\n/g;
+    var tabRegex = /\\t/g;
+
+    return function (geometry, font) {
+      var data = this.data;
+
+      geometryUpdateData.font = font;
+      geometryUpdateData.lineHeight = data.lineHeight && isFinite(data.lineHeight)
+        ? data.lineHeight
+        : font.common.lineHeight;
+      geometryUpdateData.text = data.value.toString().replace(newLineRegex, '\n')
+                                                     .replace(tabRegex, '\t');
+      geometryUpdateData.width = computeWidth(data.wrapPixels, data.wrapCount,
+                                              font.widthFactor);
+      geometry.update(utils.extend(geometryUpdateBase, data, geometryUpdateData));
+    };
+  })()
 });
 
 /**
@@ -361,23 +383,6 @@ function parseSide (side) {
       return THREE.BackSide;
     }
   }
-}
-
-/**
- * Coerce some data to numbers.
- * as they will be passed directly into text creation and update
- */
-function coerceData (data) {
-  data = utils.clone(data);
-  if (data.lineHeight !== undefined) {
-    data.lineHeight = parseFloat(data.lineHeight);
-    if (!isFinite(data.lineHeight)) { data.lineHeight = undefined; }
-  }
-  if (data.width !== undefined) {
-    data.width = parseFloat(data.width);
-    if (!isFinite(data.width)) { data.width = undefined; }
-  }
-  return data;
 }
 
 /**

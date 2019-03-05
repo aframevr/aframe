@@ -17,7 +17,9 @@ across pages, the following conditions must apply:
 [vrdisplayactivate]: https://w3c.github.io/webvr/spec/1.1/#interface-window
 
 - The browser is up-to-date with the WebVR specification and implements the `vrdisplayactivate` event.
-- The destination web page listens to the window [`vrdisplayactivate`] event and enters VR.
+- The destination web page listens to the window [`vrdisplayactivate`] event and enters VR. A-Frame experiences behave this way by default.
+- At the moment, in-VR navigation is only implemented by Firefox desktop,
+  Oculus Browser, Samsung Internet, and Supermedium.
 
 ## Link UX
 
@@ -72,12 +74,13 @@ We also provide a link primitive with a different syntax:
 | titleColor          | Color of the text displayed on the link.                                                                                                     | white         |
 | visualAspectEnabled | Whether to enable the default visual appearance of a portal. Set to false if we want to implement our own pattern or form of link traversal. | true          |
 
-## Methods
+## Manually Navigating
 
-### .navigate (url)
+[so]: https://stackoverflow.com/questions/503093/how-do-i-redirect-to-another-webpage
 
-Sends the user to the page specified by the `href` property:
+To navigate manually, use `window.location` API. See this [StackOverflow question on navigating][so]. For example:
 
 ```js
-document.querySelector('a-link').navigate('destination.html');
+window.location.href = 'https://supermedium.com/supercraft/';
+// or window.location.replace
 ```

@@ -13,7 +13,9 @@ to move and rotate the camera.
 
 ## Examples
 
-A camera should usually be positioned at the average height of human eye level (1.6 meters). When used with controls that receive rotation or position (e.g. from a VR device) this position will be overridden.
+A camera should usually be positioned at the average height of human eye level
+(1.6 meters). When used with controls that receive rotation or position (e.g.
+from a VR device) this position will be overridden.
 
 ```html
 <a-entity camera look-controls position="0 1.6 0"></a-entity>
@@ -58,6 +60,9 @@ When exiting VR, the camera will restore its rotation to its rotation *before*
 it entered VR. This is so when we exit VR, the rotation of the camera is back
 to normal for a desktop screen.
 
+Far, near, fov, zoom properties only apply in 2D and magic window modes. 
+In VR mode the camera parameters are supplied by the WebVR / WebXR API to match IPD and headset FOV. Those aren't configurable. 
+
 ## Changing the Active Camera
 
 When the `active` property gets toggled, the component will notify the camera system
@@ -85,3 +90,50 @@ Note that you should use HUDs sparingly as they cause irritation and eye strain
 in VR. Consider integrating menus into the fabric of the world itself. If you
 do create a HUD, make sure that the HUD is more in the center of the field of
 view such that the user does not have to strain their eyes to read it.
+
+## Reading Position or Rotation of the Camera
+
+To actively read the position or rotation of the camera, use a `tick` handler
+of a component that reads the position or rotation, and does something with it.
+Then attach the component to the camera.
+
+```js
+AFRAME.registerComponent('rotation-reader', {
+  tick: function () {
+    // `this.el` is the element.
+    // `object3D` is the three.js object.
+
+    // `rotation` is a three.js Euler using radians. `quaternion` also available.
+    console.log(this.el.object3D.rotation);
+
+    // `position` is a three.js Vector3.
+    console.log(this.el.object3D.position);
+  }
+});
+
+// <a-entity camera look-controls rotation-reader>
+```
+
+### Reading World Position or Rotation of the Camera
+
+three.js has methods to attain position or rotation (or scale) in world space
+versus object local space.
+
+```js
+AFRAME.registerComponent('rotation-reader', {
+  /**
+   * We use IIFE (immediately-invoked function expression) to only allocate one
+   * vector or euler and not re-create on every tick to save memory.
+   */
+  tick: (function () {
+    var position = new THREE.Vector3();
+    var rotation = new THREE.Euler();
+
+    return function () {
+      this.el.object3D.getWorldPosition(position);
+      this.el.object3D.getWorldRotation(rotation);
+      // position and rotation now contain vector and euler in world space.
+    };
+  })
+});
+```

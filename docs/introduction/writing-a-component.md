@@ -174,7 +174,7 @@ name/value pairs separated by `:` and properties separated by `;`):
 ### Handling Property Updates
 
 So far, we've been using just the `.init()` handler which is called only once
-at the beginning of the component lifeycle with only its initial properties.
+at the beginning of the component lifecycle with only its initial properties.
 But components often have their properties updated dynamically. We can use the
 `.update()` handler to handle property updates.
 
@@ -583,7 +583,7 @@ AFRAME.registerComponent('box', {
 
     // Material-related properties changed. Update the material.
     if (data.color !== oldData.color) {
-      el.getObject3D('mesh').material.color = data.color;
+      el.getObject3D('mesh').material.color = new THREE.Color(data.color);
     }
   }
 });
@@ -731,13 +731,11 @@ components to see how they're built and what use cases they provide for. Here
 are a few places to look:
 
 [registry]: https://aframe.io/registry/
-[awesomecomponents]: https://github.com/aframevr/awesome-aframe#components
 [corecomponents]: https://github.com/aframevr/aframe/tree/master/src/components
 [paintercomponents]: https://github.com/aframevr/a-painter/tree/master/src/components
 
 - [A-Frame Registry][registry] - Curated community components.
 - [A-Frame core components][corecomponents] - Source code of A-Frame's standard components.
-- [awesome-aframe components][awesomecomponents] - Giant list of community components.
 - [A-Painter components][paintercomponents] - Application-specific components for A-Painter.
 
 ## Publishing a Component
@@ -766,6 +764,6 @@ npm install -g angle && angle initcomponent
 `initcomponent` will ask for some information like the component name to get
 the template set up. Write some code, examples, and documentation, and [send a
 pull request][pr] to the [A-Frame Registry][registry] to get it featured! Follow the
-[Registry guidelnes][guidelines], we'll do a quick code review, and then the
+[Registry guidelines][guidelines], we'll do a quick code review, and then the
 community will be able to use your component, and hopefully send some helpful
 pull requests back if needed!

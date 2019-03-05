@@ -31,8 +31,9 @@ component](camera.md).
 | enabled          | Whether look controls are enabled.                               | true          |
 | hmdEnabled       | Whether to use VR headset pose in VR mode.                       | true          |
 | reverseMouseDrag | Whether to reverse mouse drag.                                   | false         |
+| reverseTouchDrag | Whether to reverse touch drag.                                   | false         |
 | touchEnabled     | Whether to use touch controls in magic window mode.              | true          |
-| pointerLockEnabled | Whether to hide the cursor using the [Pointer Lock API][pointer-lock-api]. | true |
+| pointerLockEnabled | Whether to hide the cursor using the [Pointer Lock API][pointer-lock-api]. | false |
 
 ## Customizing look-controls
 

@@ -11,55 +11,47 @@
       <a-assets>
         <img id="background" src="black-grid.png">
       </a-assets>
+
       <a-entity position="0 0 4">
         <a-camera></a-camera>
       </a-entity>
+
       <!-- Directly beneath the camera -->
       <a-entity position="0 -10.1 -1" rotation="30 180 0">
         <a-sphere radius="7" color="#7BC8A4"></a-sphere>
 
-        <a-entity>
-          <a-animation attribute="rotation" to="45 100 100" dur="5000" delay="250" repeat="indefinite" direction="alternate"></a-animation>
+        <a-entity animation="property: rotation; to: 45 100 100; dur: 5000; delay: 250; loop: true; dir: alternate">
           <a-sphere radius="1.5" color="#7BC8A4"></a-sphere>
           <a-cylinder position="0 5 0" height="10" radius="0.075" color="#404040"></a-cylinder>
 
-          <a-entity position="0 10 0">
-            <a-animation attribute="rotation" to="90 90 0" dur="2000" delay="0" repeat="indefinite" direction="alternate"></a-animation>
+          <a-entity position="0 10 0" animation="property: rotation; to: 90 90 0; dur: 2000; delay: 0; loop: true; dir: alternate">
             <a-sphere radius="1" color="#F16745"></a-sphere>
             <a-cylinder position="0 5 0" height="10" radius="0.075" color="#404040"></a-cylinder>
 
-            <a-entity position="0 10 0">
-              <a-animation attribute="rotation" to="50 10 100" dur="2000" delay="0" repeat="indefinite" direction="alternate"></a-animation>
+            <a-entity position="0 10 0" animation="property: rotation; to: 50 10 100; dur: 2000; delay: 0; loop: true; dir: alternate">
               <a-sphere radius="3" color="#4CC3D9"></a-sphere>
               <a-cylinder position="0 5 0" height="10" radius="0.075" color="#404040"></a-cylinder>
 
-              <a-entity position="0 10 0">
-                <a-animation attribute="rotation" to="50 40 50" dur="2000" delay="250" repeat="indefinite" direction="alternate"></a-animation>
+              <a-entity position="0 10 0" animation="property: rotation; to: 50 40 50; dur: 2000; delay: 250; loop: true; dir: alternate">
                 <a-sphere radius="4.5" color="#FFC65D"></a-sphere>
                 <a-cylinder position="0 5 0" height="10" radius="0.075" color="#404040"></a-cylinder>
 
-                <a-entity position="0 10 0">
-                  <a-animation attribute="rotation" to="90 90 0" dur="2000" delay="0" repeat="indefinite" direction="alternate"></a-animation>
+                <a-entity position="0 10 0" animation="property: rotation; to: 90 90 0; dur: 2000; delay: 0; loop: true; dir: alternate">
                   <a-sphere radius="1.5" color="#93648D"></a-sphere>
                   <a-cylinder position="0 5 0" height="10" radius="0.075" color="#404040"></a-cylinder>
 
                   <a-entity position="0 10 0">
                     <a-sphere radius="1.5" color="#FFF"></a-sphere>
-
                   </a-entity>
                 </a-entity>
               </a-entity>
-            </a-entity>
-          </a-entity>
+            </a-entity> </a-entity>
         </a-entity>
       </a-entity>
 
       <!-- Distant orbit -->
       <a-entity rotation="120 40 0" scale="10 10 10">
-
-        <a-entity rotation="0 0 0">
-          <a-animation attribute="rotation" to="0 0 360" dur="20000" easing="linear" repeat="indefinite"></a-animation>
-
+        <a-entity animation="property: rotation; to: 0 0 360; dur: 20000; easing: linear; loop: true">
           <a-entity position="-18.25 -5 0" rotation="0 0 0">
             <a-sphere radius="0.3" color="#7e3f1a"></a-sphere>
             <a-cylinder position="0 5 0" height="10" radius="0.015" color="#7e3f1a"></a-cylinder>
@@ -99,7 +91,6 @@
                             <a-entity position="0 10 0" rotation="0 0 -36">
                               <a-sphere radius="0.05" color="#7e3f1a"></a-sphere>
                               <a-cylinder position="0 5 0" height="10" radius="0.015" color="#7e3f1a"></a-cylinder>
-
                             </a-entity>
                           </a-entity>
                         </a-entity>
@@ -113,37 +104,29 @@
         </a-entity>
       </a-entity>
 
-      <a-entity>
-        <a-animation attribute="rotation" to="360 0 0" dur="50000" easing="linear" repeat="indefinite" direction="normal" fill="none"></a-animation>
-
-        <a-entity position="0 -20 -50">
-          <a-animation attribute="rotation" to="45 100 100" dur="5000" delay="250" repeat="indefinite" direction="alternate"></a-animation>
+      <a-entity animation="property: rotation; to: 360 0 0; dur: 50000; easing: linear; loop: true; dir: normal">
+        <a-entity position="0 -20 -50" animation="property: rotation; to: 45 100 100; dur: 5000; delay: 250; loop: true; dir: alternate">
           <a-sphere radius="1.5" color="#7BC8A4"></a-sphere>
           <a-cylinder position="0 5 0" height="10" radius="0.075" color="#404040"></a-cylinder>
 
-          <a-entity position="0 10 0">
-            <a-animation attribute="rotation" to="90 90 0" dur="2000" delay="0" repeat="indefinite" direction="alternate"></a-animation>
+          <a-entity position="0 10 0" animation="property: rotation; to: 90 90 0; dur: 2000; delay: 0; loop: true; dir: alternate">
             <a-sphere radius="1" color="#F16745"></a-sphere>
             <a-cylinder position="0 5 0" height="10" radius="0.075" color="#404040"></a-cylinder>
 
-            <a-entity position="0 10 0">
-              <a-animation attribute="rotation" to="50 10 100" dur="2000" delay="0" repeat="indefinite" direction="alternate"></a-animation>
+            <a-entity position="0 10 0" animation="property: rotation; to: 50 10 100; dur: 2000; delay: 0; loop: true; dir: alternate">
               <a-sphere radius="3" color="#4CC3D9"></a-sphere>
               <a-cylinder position="0 5 0" height="10" radius="0.075" color="#404040"></a-cylinder>
 
-              <a-entity position="0 10 0">
-                <a-animation attribute="rotation" to="50 40 50" dur="2000" delay="250" repeat="indefinite" direction="alternate"></a-animation>
+              <a-entity position="0 10 0" animation="property: rotation; to: 50 40 50; dur: 2000; delay: 250; loop: true; dir: alternate">
                 <a-sphere radius="4.5" color="#FFC65D"></a-sphere>
                 <a-cylinder position="0 5 0" height="10" radius="0.075" color="#404040"></a-cylinder>
 
-                <a-entity position="0 10 0">
-                  <a-animation attribute="rotation" to="90 90 0" dur="2000" delay="0" repeat="indefinite" direction="alternate"></a-animation>
+                <a-entity position="0 10 0" animation="property: rotation; to: 90 90 0; dur: 2000; delay: 0; loop: true; dir: alternate">
                   <a-sphere radius="1.5" color="#93648D"></a-sphere>
                   <a-cylinder position="0 5 0" height="10" radius="0.075" color="#404040"></a-cylinder>
 
                   <a-entity position="0 10 0">
                     <a-sphere radius="1.5" color="#FFF"></a-sphere>
-
                   </a-entity>
                 </a-entity>
               </a-entity>
@@ -152,38 +135,29 @@
         </a-entity>
       </a-entity>
 
-
-      <a-entity>
-        <a-animation attribute="rotation" to="360 360 0" dur="20000" easing="linear" repeat="indefinite" direction="normal" fill="none"></a-animation>
-
-        <a-entity position="-20 0 100">
-          <a-animation attribute="rotation" to="45 100 100" dur="5000" delay="250" repeat="indefinite" direction="alternate"></a-animation>
+      <a-entity animation="property: rotation; to: 360 360 0; dur: 20000; easing: linear; loop: true; dir: normal">
+        <a-entity position="-20 0 100" animation="property: rotation; to: 45 100 100; dur: 5000; delay: 250; loop: true; dir: alternate">
           <a-sphere radius="1.5" color="#7BC8A4"></a-sphere>
           <a-cylinder position="0 5 0" height="10" radius="0.075" color="#404040"></a-cylinder>
 
-          <a-entity position="0 10 0">
-            <a-animation attribute="rotation" to="90 90 0" dur="2000" delay="0" repeat="indefinite" direction="alternate"></a-animation>
+          <a-entity position="0 10 0" animation="property: rotation; to: 90 90 0; dur: 2000; delay: 0; loop: true; dir: alternate">
             <a-sphere radius="1" color="#F16745"></a-sphere>
             <a-cylinder position="0 5 0" height="10" radius="0.075" color="#404040"></a-cylinder>
 
-            <a-entity position="0 10 0">
-              <a-animation attribute="rotation" to="50 10 100" dur="2000" delay="0" repeat="indefinite" direction="alternate"></a-animation>
+            <a-entity position="0 10 0" animation="property: rotation; to: 50 10 100; dur: 2000; delay: 0; loop: true; dir: alternate">
               <a-sphere radius="3" color="#4CC3D9"></a-sphere>
               <a-cylinder position="0 5 0" height="10" radius="0.075" color="#404040"></a-cylinder>
 
-              <a-entity position="0 10 0">
-                <a-animation attribute="rotation" to="50 40 50" dur="2000" delay="250" repeat="indefinite" direction="alternate"></a-animation>
+              <a-entity position="0 10 0" animation="property: rotation; to: 50 40 50; dur: 2000; delay: 250; loop: true; dir: alternate">
                 <a-sphere radius="4.5" color="#FFC65D"></a-sphere>
                 <a-cylinder position="0 5 0" height="10" radius="0.075" color="#404040"></a-cylinder>
 
-                <a-entity position="0 10 0">
-                  <a-animation attribute="rotation" to="90 90 0" dur="2000" delay="0" repeat="indefinite" direction="alternate"></a-animation>
+                <a-entity position="0 10 0" animation="property: rotation; to: 90 90 0; dur: 2000; delay: 0; loop: true; dir: alternate">
                   <a-sphere radius="1.5" color="#93648D"></a-sphere>
                   <a-cylinder position="0 5 0" height="10" radius="0.075" color="#404040"></a-cylinder>
 
                   <a-entity position="0 10 0">
                     <a-sphere radius="1.5" color="#FFF"></a-sphere>
-
                   </a-entity>
                 </a-entity>
               </a-entity>
@@ -192,101 +166,25 @@
         </a-entity>
       </a-entity>
 
-      <a-entity>
-        <a-animation attribute="rotation" to="-360 360 -360" dur="30000" easing="linear" repeat="indefinite" direction="normal" fill="none"></a-animation>
+      <a-entity animation="property: rotation; to: -360 360 -360; dur: 30000; easing: linear; loop: true; dir: normal; fill: none">
 
-        <a-entity position="0 -20 50">
-          <a-animation attribute="rotation" to="45 100 100" dur="5000" delay="250" repeat="indefinite" direction="alternate"></a-animation>
+        <a-entity position="0 -20 50" animation="property: rotation; to: 45 100 100; dur: 5000; delay: 250; repeat: indefinite; direction: alternate">
           <a-sphere radius="1.5" color="#7BC8A4"></a-sphere>
           <a-cylinder position="0 5 0" height="10" radius="0.075" color="#404040"></a-cylinder>
 
-          <a-entity position="0 10 0">
-            <a-animation attribute="rotation" to="90 90 0" dur="2000" delay="0" repeat="indefinite" direction="alternate"></a-animation>
+          <a-entity position="0 10 0" animation="property: rotation; to: 90 90 0; dur: 2000; delay: 0; repeat: indefinite; direction: alternate">
             <a-sphere radius="1" color="#F16745"></a-sphere>
             <a-cylinder position="0 5 0" height="10" radius="0.075" color="#404040"></a-cylinder>
 
-            <a-entity position="0 10 0">
-              <a-animation attribute="rotation" to="50 10 100" dur="2000" delay="0" repeat="indefinite" direction="alternate"></a-animation>
+            <a-entity position="0 10 0" animation="property: rotation; to: 50 10 100; dur: 2000; delay: 0; repeat: indefinite; direction: alternate">
               <a-sphere radius="3" color="#4CC3D9"></a-sphere>
               <a-cylinder position="0 5 0" height="10" radius="0.075" color="#404040"></a-cylinder>
 
-              <a-entity position="0 10 0">
-                <a-animation attribute="rotation" to="50 40 50" dur="2000" delay="250" repeat="indefinite" direction="alternate"></a-animation>
+              <a-entity position="0 10 0" animation="property: rotation; to: 50 40 50; dur: 2000; delay: 250; repeat: indefinite; direction: alternate">
                 <a-sphere radius="4.5" color="#FFC65D"></a-sphere>
                 <a-cylinder position="0 5 0" height="10" radius="0.075" color="#404040"></a-cylinder>
 
-                <a-entity position="0 10 0">
-                  <a-animation attribute="rotation" to="90 90 0" dur="2000" delay="0" repeat="indefinite" direction="alternate"></a-animation>
-                  <a-sphere radius="1.5" color="#93648D"></a-sphere>
-                  <a-cylinder position="0 5 0" height="10" radius="0.075" color="#404040"></a-cylinder>
-
-                  <a-entity position="0 10 0">
-                    <a-sphere radius="1.5" color="#FFF"></a-sphere>
-
-                  </a-entity>
-                </a-entity>
-              </a-entity>
-            </a-entity>
-          </a-entity>
-        </a-entity>
-
-        <a-entity position="40 20 0">
-          <a-animation attribute="rotation" to="45 100 100" dur="5000" delay="250" repeat="indefinite" direction="alternate"></a-animation>
-          <a-sphere radius="1.5" color="#7BC8A4"></a-sphere>
-          <a-cylinder position="0 5 0" height="10" radius="0.075" color="#404040"></a-cylinder>
-
-          <a-entity position="0 10 0">
-            <a-animation attribute="rotation" to="90 90 0" dur="2000" delay="0" repeat="indefinite" direction="alternate"></a-animation>
-            <a-sphere radius="1" color="#F16745"></a-sphere>
-            <a-cylinder position="0 5 0" height="10" radius="0.075" color="#404040"></a-cylinder>
-
-            <a-entity position="0 10 0">
-              <a-animation attribute="rotation" to="50 10 100" dur="2000" delay="0" repeat="indefinite" direction="alternate"></a-animation>
-              <a-sphere radius="3" color="#4CC3D9"></a-sphere>
-              <a-cylinder position="0 5 0" height="10" radius="0.075" color="#404040"></a-cylinder>
-
-              <a-entity position="0 10 0">
-                <a-animation attribute="rotation" to="50 40 50" dur="2000" delay="250" repeat="indefinite" direction="alternate"></a-animation>
-                <a-sphere radius="4.5" color="#FFC65D"></a-sphere>
-                <a-cylinder position="0 5 0" height="10" radius="0.075" color="#404040"></a-cylinder>
-
-                <a-entity position="0 10 0">
-                  <a-animation attribute="rotation" to="90 90 0" dur="2000" delay="0" repeat="indefinite" direction="alternate"></a-animation>
-                  <a-sphere radius="1.5" color="#93648D"></a-sphere>
-                  <a-cylinder position="0 5 0" height="10" radius="0.075" color="#404040"></a-cylinder>
-
-                  <a-entity position="0 10 0">
-                    <a-sphere radius="1.5" color="#FFF"></a-sphere>
-
-                  </a-entity>
-                </a-entity>
-              </a-entity>
-            </a-entity>
-          </a-entity>
-        </a-entity>
-
-        <a-entity position="-60 0 -60">
-          <a-animation attribute="rotation" to="45 100 100" dur="5000" delay="250" repeat="indefinite" direction="alternate"></a-animation>
-          <a-sphere radius="1.5" color="#7BC8A4"></a-sphere>
-          <a-cylinder position="0 5 0" height="10" radius="0.075" color="#404040"></a-cylinder>
-
-          <a-entity position="0 10 0">
-            <a-animation attribute="rotation" to="90 90 0" dur="2000" delay="0" repeat="indefinite" direction="alternate"></a-animation>
-            <a-sphere radius="1" color="#F16745"></a-sphere>
-            <a-cylinder position="0 5 0" height="10" radius="0.075" color="#404040"></a-cylinder>
-
-            <a-entity position="0 10 0">
-              <a-animation attribute="rotation" to="50 10 100" dur="2000" delay="0" repeat="indefinite" direction="alternate"></a-animation>
-              <a-sphere radius="3" color="#4CC3D9"></a-sphere>
-              <a-cylinder position="0 5 0" height="10" radius="0.075" color="#404040"></a-cylinder>
-
-              <a-entity position="0 10 0">
-                <a-animation attribute="rotation" to="50 40 50" dur="2000" delay="250" repeat="indefinite" direction="alternate"></a-animation>
-                <a-sphere radius="4.5" color="#FFC65D"></a-sphere>
-                <a-cylinder position="0 5 0" height="10" radius="0.075" color="#404040"></a-cylinder>
-
-                <a-entity position="0 10 0">
-                  <a-animation attribute="rotation" to="90 90 0" dur="2000" delay="0" repeat="indefinite" direction="alternate"></a-animation>
+                <a-entity position="0 10 0" animation="property: rotation; to: 90 90 0; dur: 2000; delay: 0; repeat: indefinite; direction: alternate">
                   <a-sphere radius="1.5" color="#93648D"></a-sphere>
                   <a-cylinder position="0 5 0" height="10" radius="0.075" color="#404040"></a-cylinder>
 
@@ -299,11 +197,67 @@
           </a-entity>
         </a-entity>
 
+        <a-entity position="40 20 0" animation="property: rotation; to: 45 100 100; dur: 5000; delay: 250; repeat: indefinite; direction: alternate">
+          <a-sphere radius="1.5" color="#7BC8A4"></a-sphere>
+          <a-cylinder position="0 5 0" height="10" radius="0.075" color="#404040"></a-cylinder>
+
+          <a-entity position="0 10 0" animation="property: rotation; to: 90 90 0; dur: 2000; delay: 0; loop: true; dir: alternate">
+            <a-sphere radius="1" color="#F16745"></a-sphere>
+            <a-cylinder position="0 5 0" height="10" radius="0.075" color="#404040"></a-cylinder>
+
+            <a-entity position="0 10 0" animation="property: rotation; to: 50 10 100; dur: 2000; delay: 0; loop: true; dir: alternate">
+              <a-sphere radius="3" color="#4CC3D9"></a-sphere>
+              <a-cylinder position="0 5 0" height="10" radius="0.075" color="#404040"></a-cylinder>
+
+              <a-entity position="0 10 0" animation="property: rotation; to: 50 40 50; dur: 2000; delay: 250; repeat: indefinite; direction: alternate">
+                <a-sphere radius="4.5" color="#FFC65D"></a-sphere>
+                <a-cylinder position="0 5 0" height="10" radius="0.075" color="#404040"></a-cylinder>
+
+                <a-entity position="0 10 0" animation="property: rotation; to: 90 90 0; dur: 2000; delay: 0; repeat: indefinite; direction: alternate">
+                  <a-sphere radius="1.5" color="#93648D"></a-sphere>
+                  <a-cylinder position="0 5 0" height="10" radius="0.075" color="#404040"></a-cylinder>
+
+                  <a-entity position="0 10 0">
+                    <a-sphere radius="1.5" color="#FFF"></a-sphere>
+                  </a-entity>
+                </a-entity>
+              </a-entity>
+            </a-entity>
+          </a-entity>
+        </a-entity>
+
+        <a-entity position="-60 0 -60" animation="property: rotation; to: 45 100 100; dur: 5000; delay: 250; loop: true; dir: alternate">
+          <a-sphere radius="1.5" color="#7BC8A4"></a-sphere>
+          <a-cylinder position="0 5 0" height="10" radius="0.075" color="#404040"></a-cylinder>
+
+          <a-entity position="0 10 0" animation="property: rotation; to: 90 90 0; dur: 2000; delay: 0; loop: true; dir: alternate">
+            <a-sphere radius="1" color="#F16745"></a-sphere>
+            <a-cylinder position="0 5 0" height="10" radius="0.075" color="#404040"></a-cylinder>
+
+            <a-entity position="0 10 0" animation="property: rotation; to: 50 10 100; dur: 2000; delay: 0; loop: true; dir: alternate">
+              <a-sphere radius="3" color="#4CC3D9"></a-sphere>
+              <a-cylinder position="0 5 0" height="10" radius="0.075" color="#404040"></a-cylinder>
+
+              <a-entity position="0 10 0" animation="property: rotation; to: 50 40 50; dur: 2000; delay: 250; loop: true; dir: alternate">
+                <a-sphere radius="4.5" color="#FFC65D"></a-sphere>
+                <a-cylinder position="0 5 0" height="10" radius="0.075" color="#404040"></a-cylinder>
+
+                <a-entity position="0 10 0" animation="property: rotation; to: 90 90 0; dur: 2000; delay: 0; loop: true; dir: alternate">
+                  <a-sphere radius="1.5" color="#93648D"></a-sphere>
+                  <a-cylinder position="0 5 0" height="10" radius="0.075" color="#404040"></a-cylinder>
+
+                  <a-entity position="0 10 0">
+                    <a-sphere radius="1.5" color="#FFF"></a-sphere>
+                  </a-entity>
+                </a-entity>
+              </a-entity>
+            </a-entity>
+          </a-entity>
+        </a-entity>
       </a-entity>
 
       <a-sky src="#background"></a-sky>
-      <a-entity light="type: directional; color: #FFF; intensity: 0.5"
-                position="-1 2 1"></a-entity>
+      <a-entity light="type: directional; color: #FFF; intensity: 0.5" position="-1 2 1"></a-entity>
       <a-entity light="type: ambient; color: #461e06;"></a-entity>
     </a-scene>
   </body>

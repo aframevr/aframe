@@ -42,7 +42,7 @@ We start out with a minimal HTML structure:
 ```html
 <html>
   <head>
-    <script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/0.9.0/aframe.min.js"></script>
   </head>
   <body>
     <a-scene>
@@ -230,7 +230,7 @@ First, include the environment component using a script tag after A-Frame:
 
 ```html
 <head>
-  <script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
+  <script src="https://aframe.io/releases/0.9.0/aframe.min.js"></script>
   <script src="https://unpkg.com/aframe-environment-component/dist/aframe-environment-component.min.js"></script>
 </head>
 ```
@@ -429,7 +429,7 @@ depends on its distance to the entity:
 
 > `<a-animation>` may become [deprecated in favor of a component
 > form](https://github.com/aframevr/aframe/issues/1927) like this [Animation
-> Component](https://github.com/ngokevin/kframe/tree/master/components/animation/).
+> Component](https://github.com/supermedium/superframe/tree/master/components/animation/).
 
 [animation]: ../core/animations.md
 
@@ -662,7 +662,7 @@ For this guide, let's use the primitive form of the text component, `<a-text>`:
 
 Other ways to do text include:
 
-[textgeometry]: https://github.com/ngokevin/kframe/tree/master/components/text-geometry/
+[textgeometry]: https://github.com/supermedium/superframe/tree/master/components/text-geometry/
 [htmlshader]: https://github.com/mayognaise/aframe-html-shader/
 [Kevin Ngo]: https://twitter.com/andgokevin
 [Mayo Tobita]: https://twitter.com/mayognaise

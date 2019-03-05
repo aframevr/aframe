@@ -10,6 +10,7 @@ var warn = utils.debug('core:a-entity:warn');
 
 var MULTIPLE_COMPONENT_DELIMITER = '__';
 var OBJECT3D_COMPONENTS = ['position', 'rotation', 'scale', 'visible'];
+var ONCE = {once: true};
 
 /**
  * Entity is a container object that components are plugged into to comprise everything in
@@ -108,19 +109,6 @@ var proto = Object.create(ANode.prototype, {
 
       // Remove cyclic reference.
       this.object3D.el = null;
-    }
-  },
-
-  /**
-   * Apply mixin to component.
-   */
-  handleMixinUpdate: {
-    value: function (attrName) {
-      if (!attrName) {
-        this.updateComponents();
-        return;
-      }
-      this.updateComponent(attrName, this.getDOMAttribute(attrName));
     }
   },
 
@@ -241,7 +229,7 @@ var proto = Object.create(ANode.prototype, {
       var parentEl = this.parentEl;
       this.parentEl.remove(this);
       this.attachedToParent = false;
-      this.parentEl = this.parentNode = null;
+      this.parentEl = null;
       parentEl.emit('child-detached', {el: this});
     }
   },
@@ -309,8 +297,10 @@ var proto = Object.create(ANode.prototype, {
       var isComponentDefined;
 
       componentInfo = utils.split(attrName, MULTIPLE_COMPONENT_DELIMITER);
-      componentId = componentInfo[1];
       componentName = componentInfo[0];
+      componentId = componentInfo.length > 2
+        ? componentInfo.slice(1).join('__')
+        : componentInfo[1];
 
       // Not a registered component.
       if (!COMPONENTS[componentName]) { return; }
@@ -477,6 +467,7 @@ var proto = Object.create(ANode.prototype, {
   updateComponent: {
     value: function (attr, attrValue, clobber) {
       var component = this.components[attr];
+
       if (component) {
         // Remove component.
         if (attrValue === null && !checkComponentDefined(this, attr)) {
@@ -597,12 +588,67 @@ var proto = Object.create(ANode.prototype, {
     }
   },
 
+  /**
+   * When mixins updated, trigger init or optimized-update of relevant components.
+   */
   mixinUpdate: {
-    value: function (newMixins, oldMixins) {
-      oldMixins = oldMixins || this.getAttribute('mixin');
-      this.updateMixins(newMixins, oldMixins);
-      this.updateComponents();
-    }
+    value: (function () {
+      var componentsUpdated = [];
+
+      return function (newMixins, oldMixins) {
+        var component;
+        var mixinEl;
+        var mixinIds;
+        var i;
+        var self = this;
+
+        if (!this.hasLoaded) {
+          this.addEventListener('loaded', function () {
+            self.mixinUpdate(newMixins, oldMixins);
+          }, ONCE);
+          return;
+        }
+
+        oldMixins = oldMixins || this.getAttribute('mixin');
+        mixinIds = this.updateMixins(newMixins, oldMixins);
+
+        // Loop over current mixins.
+        componentsUpdated.length = 0;
+        for (i = 0; i < this.mixinEls.length; i++) {
+          for (component in this.mixinEls[i].componentCache) {
+            if (componentsUpdated.indexOf(component) === -1) {
+              if (this.components[component]) {
+                // Update. Just rebuild data.
+                this.components[component].handleMixinUpdate();
+              } else {
+                // Init. buildData will gather mixin values.
+                this.initComponent(component, null);
+              }
+              componentsUpdated.push(component);
+            }
+          }
+        }
+
+        // Loop over old mixins to call for data rebuild.
+        for (i = 0; i < mixinIds.oldMixinIds.length; i++) {
+          mixinEl = document.getElementById(mixinIds.oldMixinIds[i]);
+          if (!mixinEl) { continue; }
+          for (component in mixinEl.componentCache) {
+            if (componentsUpdated.indexOf(component) === -1) {
+              if (this.components[component]) {
+                if (this.getDOMAttribute(component)) {
+                  // Update component if explicitly defined.
+                  this.components[component].handleMixinUpdate();
+                } else {
+                  // Remove component if not explicitly defined.
+                  this.removeComponent(component);
+                }
+              }
+            }
+          }
+        }
+      };
+    })()
   },
 
   /**
@@ -620,52 +666,59 @@ var proto = Object.create(ANode.prototype, {
    *   it is a boolean indicating whether to clobber previous values (defaults to false).
    */
   setAttribute: {
-    value: function (attrName, arg1, arg2) {
-      var newAttrValue;
-      var clobber;
-      var componentName;
-      var delimiterIndex;
-      var isDebugMode;
+    value: (function () {
+      var singlePropUpdate = {};
 
-      delimiterIndex = attrName.indexOf(MULTIPLE_COMPONENT_DELIMITER);
-      componentName = delimiterIndex > 0 ? attrName.substring(0, delimiterIndex) : attrName;
+      return function (attrName, arg1, arg2) {
+        var newAttrValue;
+        var clobber;
+        var componentName;
+        var delimiterIndex;
+        var isDebugMode;
+        var key;
 
-      // Not a component. Normal set attribute.
-      if (!COMPONENTS[componentName]) {
-        if (attrName === 'mixin') { this.mixinUpdate(arg1); }
-        ANode.prototype.setAttribute.call(this, attrName, arg1);
-        return;
-      }
+        delimiterIndex = attrName.indexOf(MULTIPLE_COMPONENT_DELIMITER);
+        componentName = delimiterIndex > 0 ? attrName.substring(0, delimiterIndex) : attrName;
 
-      // Initialize component first if not yet initialized.
-      if (!this.components[attrName] && this.hasAttribute(attrName)) {
-        this.updateComponent(attrName,
-                             window.HTMLElement.prototype.getAttribute.call(this, attrName));
-      }
+        // Not a component. Normal set attribute.
+        if (!COMPONENTS[componentName]) {
+          if (attrName === 'mixin') { this.mixinUpdate(arg1); }
+          ANode.prototype.setAttribute.call(this, attrName, arg1);
+          return;
+        }
 
-      // Determine new attributes from the arguments
-      if (typeof arg2 !== 'undefined' &&
-          typeof arg1 === 'string' &&
-          arg1.length > 0 &&
-          typeof utils.styleParser.parse(arg1) === 'string') {
-        // Update a single property of a multi-property component
-        newAttrValue = {};
-        newAttrValue[arg1] = arg2;
-        clobber = false;
-      } else {
-        // Update with a value, object, or CSS-style property string, with the possiblity
-        // of clobbering previous values.
-        newAttrValue = arg1;
-        clobber = (arg2 === true);
-      }
+        // Initialize component first if not yet initialized.
+        if (!this.components[attrName] && this.hasAttribute(attrName)) {
+          this.updateComponent(
+            attrName,
+            window.HTMLElement.prototype.getAttribute.call(this, attrName));
+        }
 
-      // Update component
-      this.updateComponent(attrName, newAttrValue, clobber);
+        // Determine new attributes from the arguments
+        if (typeof arg2 !== 'undefined' &&
+            typeof arg1 === 'string' &&
+            arg1.length > 0 &&
+            typeof utils.styleParser.parse(arg1) === 'string') {
+          // Update a single property of a multi-property component
+          for (key in singlePropUpdate) { delete singlePropUpdate[key]; }
+          newAttrValue = singlePropUpdate;
+          newAttrValue[arg1] = arg2;
+          clobber = false;
+        } else {
+          // Update with a value, object, or CSS-style property string, with the possiblity
+          // of clobbering previous values.
+          newAttrValue = arg1;
+          clobber = (arg2 === true);
+        }
 
-      // In debug mode, write component data up to the DOM.
-      isDebugMode = this.sceneEl && this.sceneEl.getAttribute('debug');
-      if (isDebugMode) { this.components[attrName].flushToDOM(); }
-    },
+        // Update component
+        this.updateComponent(attrName, newAttrValue, clobber);
+
+        // In debug mode, write component data up to the DOM.
+        isDebugMode = this.sceneEl && this.sceneEl.getAttribute('debug');
+        if (isDebugMode) { this.components[attrName].flushToDOM(); }
+      };
+    })(),
     writable: window.debug
   },
 
@@ -765,6 +818,15 @@ var proto = Object.create(ANode.prototype, {
   is: {
     value: function (state) {
       return this.states.indexOf(state) !== -1;
+    }
+  },
+
+  /**
+   * Open Inspector to this entity.
+   */
+  inspect: {
+    value: function () {
+      this.sceneEl.components.inspector.openInspector(this);
     }
   }
 });

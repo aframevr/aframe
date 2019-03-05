@@ -9,34 +9,22 @@
   <body>
     <a-scene background="color: #ECECEC">
       <a-assets>
-        <a-mixin id="board" geometry="depth: .05; height: 1; width: 6" material="shader: flat"
-                 pivot="0 0.5 0" position="0 -1 0"></a-mixin>
-        <a-mixin id="unhinge" attribute="rotation" to="0 0 0" dur="1000" fill="both"></a-mixin>
+        <a-mixin id="board" geometry="depth: .05; height: 1; width: 6" material="shader: flat" pivot="0 0.5 0" position="0 -1 0"></a-mixin>
+        <a-mixin id="unhinge" animation="property: rotation; to: 0 0 0; dur: 1000"></a-mixin>
         <img id="shadow" src="../../assets/img/radial-shadow-2.png">
       </a-assets>
 
       <!-- Series of nested boards that unfold one by one. -->
-      <a-entity position="0 0 -8" scale="1 1 1">
-        <!-- Animate rotation and position of group for extra visual flair. -->
-        <a-animation attribute="position" to="0 5 -8" dur="2000"></a-animation>
-        <a-animation attribute="rotation" from="0 60 0" to="0 30 0" dur="2500"></a-animation>
+      <a-entity position="0 3 -8" scale="1 1 1"
+                animation__position="attribute: position; to: 0 5 -8; dur: 2000"
+                animation__rotation="property: rotation; from: 0 60 0; to: 0 30 0; dur: 2500">
 
         <!-- Pivot and position are used to set the "hinge" of each board to it's top edge. -->
-        <a-box mixin="board" color="#F16745">
-          <a-animation mixin="unhinge" from="-20 0 0" delay="1000"></a-animation>
-
-          <a-box mixin="board" color="#FFC65D">
-            <a-animation mixin="unhinge" from="-175 0 0" delay="250"></a-animation>
-
-            <a-box mixin="board" color="#7BC8A4">
-              <a-animation mixin="unhinge" from="-180 0 0" delay="500"></a-animation>
-
-              <a-box mixin="board" color="#4CC3D9">
-                <a-animation mixin="unhinge" from="-180 0 0" delay="750"></a-animation>
-
-                <a-box mixin="board" color="#93648D">
-                  <a-animation mixin="unhinge" from="-180 0 0" delay="1000"></a-animation>
-                </a-box>
+        <a-box mixin="board unhinge" color="#F16745" rotation="-20 0 0" animation="delay: 1000">
+          <a-box mixin="board unhinge" color="#FFC65D" rotation="-175 0 0" animation="delay: 250">
+            <a-box mixin="board unhinge" color="#7BC8A4" rotation="-180 0 0" animation="delay: 500">
+              <a-box mixin="board unhinge" color="#4CC3D9" rotation="-180 0 0" animation="delay: 750">
+                <a-box mixin="board unhinge" color="#93648D" rotation="-180 0 0" animation="delay: 1000">
               </a-box>
             </a-box>
           </a-box>

@@ -5,9 +5,37 @@
     <title>Physically-Based Materials</title>
     <meta name="description" content="Physically-Based Materials - A-Frame">
     <script src="../../../dist/aframe-master.js"></script>
+    <script>
+      AFRAME.registerComponent('generate', {
+        /**
+         * Creates matrix of objects with varying diffuse colors, metalnesses, and
+         * roughnesses.
+         */
+        init: function () {
+          let scene = this.el;
+
+          for (let alpha = 0; alpha <= 1.0; alpha += 0.25) {
+            for (let beta = 0; beta <= 1.0; beta += 0.25) {
+              for (let gamma = 0; gamma <= 1.0; gamma += 0.25) {
+                let obj = document.createElement('a-entity');
+                obj.setAttribute('mixin', 'sphere');
+                obj.setAttribute('material', {
+                  color: new THREE.Color(gamma, gamma, gamma).getStyle(),
+                  envMap: '#reflection',
+                  metalness: alpha,
+                  roughness: beta,
+                });
+                obj.object3D.position.set(alpha * 50 - 25, beta * 50 - 25, gamma * 50 - 100);
+                scene.appendChild(obj);
+              }
+            }
+          }
+        }
+      });
+    </script>
   </head>
   <body>
-    <a-scene stats>
+    <a-scene generate background="#111">
       <a-assets>
         <a-cubemap id="reflection">
           <img src="milkyway/px.jpg">
@@ -17,61 +45,21 @@
           <img src="milkyway/pz.jpg">
           <img src="milkyway/nz.jpg">
         </a-cubemap>
-        <a-mixin id="animation" easing="linear" dur="4096" repeat="indefinite"></a-mixin>
+        <a-mixin id="animation" animation="easing: linear; dur: 4096; loop: true"></a-mixin>
         <a-mixin id="light" geometry="primitive: sphere; radius: .25"
                  light="color: #FFF; intensity: .5; type: point"
                  material="shader: flat"></a-mixin>
         <a-mixin id="sphere" geometry="primitive: sphere; radius: 5"></a-mixin>
       </a-assets>
 
-      <!-- Skysphere. -->
-      <a-entity geometry="primitive: sphere; radius: 500"
-                material="color: #111; shader: flat"
-                scale="1 1 -1"></a-entity>
-
       <!-- Lights. -->
       <a-entity light="color: #666; type: ambient"></a-entity>
-      <a-entity position="0 0 -40">
-        <a-animation mixin="animation" attribute="rotation" to="0 360 0">
-        </a-animation>
+      <a-entity mixin="animation" position="0 0 -40" animation="property: rotation; to: 0 360 0">
         <a-entity mixin="light" position="0 0 70"></a-entity>
       </a-entity>
-      <a-entity position="0 0 -40">
-        <a-animation mixin="animation" attribute="rotation" to="360 0 0">
-        </a-animation>
+      <a-entity mixin="animation" position="0 0 -40" animation="property: rotation; to: 360 0 0">
         <a-entity mixin="light" position="0 70 0"></a-entity>
       </a-entity>
     </a-scene>
-
-    <script>
-      (function () {
-        /**
-         * Creates matrix of objects with varying diffuse colors, metalnesses, and
-         * roughnesses.
-         */
-        var scene = document.querySelector('a-scene');
-
-        for (var alpha = 0; alpha <= 1.0; alpha += 0.25) {
-          for (var beta = 0; beta <= 1.0; beta += 0.25) {
-            for (var gamma = 0; gamma <= 1.0; gamma += 0.25) {
-              var obj = document.createElement('a-entity');
-              obj.setAttribute('mixin', 'sphere');
-              obj.setAttribute('material', {
-                color: new THREE.Color(gamma, gamma, gamma).getStyle(),
-                envMap: '#reflection',
-                metalness: alpha,
-                roughness: beta,
-              });
-              obj.setAttribute('position', {
-                x: alpha * 50,
-                y: beta * 50 - 25,
-                z: gamma * 50 - 150
-              });
-              scene.appendChild(obj);
-            }
-          }
-        }
-      })();
-    </script>
   </body>
 </html>

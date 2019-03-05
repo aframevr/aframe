@@ -2,6 +2,13 @@ var THREE = require('../lib/three');
 
 var HLS_MIMETYPES = ['application/x-mpegurl', 'application/vnd.apple.mpegurl'];
 
+var COLOR_MAPS = new Set([
+  'emissiveMap',
+  'envMap',
+  'map',
+  'specularMap'
+]);
+
 /**
  * Update `material` texture property (usually but not always `map`)
  * from `data` property (usually but not always `src`)
@@ -12,6 +19,7 @@ var HLS_MIMETYPES = ['application/x-mpegurl', 'application/vnd.apple.mpegurl'];
 module.exports.updateMapMaterialFromData = function (materialName, dataName, shader, data) {
   var el = shader.el;
   var material = shader.material;
+  var rendererSystem = el.sceneEl.systems.renderer;
   var src = data[dataName];
 
   // Because a single material / shader may have multiple textures,
@@ -51,6 +59,9 @@ module.exports.updateMapMaterialFromData = function (materialName, dataName, sha
 
   function setMap (texture) {
     material[materialName] = texture;
+    if (texture && COLOR_MAPS.has(materialName)) {
+      rendererSystem.applyColorCorrection(texture);
+    }
     material.needsUpdate = true;
     handleTextureEvents(el, texture);
   }
@@ -78,6 +89,7 @@ module.exports.updateDistortionMap = function (longType, shader, data) {
   if (longType === 'ambientOcclusion') { shortType = 'ao'; }
   var el = shader.el;
   var material = shader.material;
+  var rendererSystem = el.sceneEl.systems.renderer;
   var src = data[longType + 'Map'];
   var info = {};
   info.src = src;
@@ -101,7 +113,11 @@ module.exports.updateDistortionMap = function (longType, shader, data) {
   setMap(null);
 
   function setMap (texture) {
-    material[shortType + 'Map'] = texture;
+    var slot = shortType + 'Map';
+    material[slot] = texture;
+    if (texture && COLOR_MAPS.has(slot)) {
+      rendererSystem.applyColorCorrection(texture);
+    }
     material.needsUpdate = true;
     handleTextureEvents(el, texture);
   }

@@ -1,13 +1,30 @@
-var vrDisplay;
-var polyfilledVRDisplay;
-var POLYFILL_VRDISPLAY_ID = 'Cardboard VRDisplay';
+var error = require('debug')('device:error');
 
-if (navigator.getVRDisplays) {
-  navigator.getVRDisplays().then(function (displays) {
-    vrDisplay = displays.length && displays[0];
-    polyfilledVRDisplay = vrDisplay.displayName === POLYFILL_VRDISPLAY_ID;
+var vrDisplay;
+
+// Support both WebVR and WebXR APIs.
+if (navigator.xr) {
+  navigator.xr.requestDevice().then(function (device) {
+    if (!device) { return; }
+    device.supportsSession({immersive: true, exclusive: true}).then(function () {
+      var sceneEl = document.querySelector('a-scene');
+      vrDisplay = device;
+      if (sceneEl) { sceneEl.emit('displayconnected', {vrDisplay: vrDisplay}); }
+    });
+  }).catch(function (err) {
+    error('WebXR Request Device: ' + err.message);
   });
+} else {
+  if (navigator.getVRDisplays) {
+    navigator.getVRDisplays().then(function (displays) {
+      var sceneEl = document.querySelector('a-scene');
+      vrDisplay = displays.length && displays[0];
+      if (sceneEl) { sceneEl.emit('displayconnected', {vrDisplay: vrDisplay}); }
+    });
+  }
 }
+
+module.exports.isWebXRAvailable = navigator.xr !== undefined;
 
 function getVRDisplay () { return vrDisplay; }
 module.exports.getVRDisplay = getVRDisplay;
@@ -19,17 +36,7 @@ function checkHeadsetConnected () { return !!getVRDisplay(); }
 module.exports.checkHeadsetConnected = checkHeadsetConnected;
 
 /**
- * Check for positional tracking.
- */
-function checkHasPositionalTracking () {
-  var vrDisplay = getVRDisplay();
-  if (isMobile() || isGearVR()) { return false; }
-  return vrDisplay && vrDisplay.capabilities.hasPosition;
-}
-module.exports.checkHasPositionalTracking = checkHasPositionalTracking;
-
-/**
- * Checks if browser is mobile.
+ * Checks if browser is mobile and not stand-alone dedicated vr device.
  * @return {Boolean} True if mobile browser detected.
  */
 var isMobile = (function () {
@@ -41,6 +48,9 @@ var isMobile = (function () {
     }
     if (isIOS() || isTablet() || isR7()) {
       _isMobile = true;
+    }
+    if (isMobileVR()) {
+      _isMobile = false;
     }
   })(window.navigator.userAgent || window.navigator.vendor || window.opera);
 
@@ -63,10 +73,13 @@ function isIOS () {
 }
 module.exports.isIOS = isIOS;
 
-function isGearVR () {
-  return /SamsungBrowser.+Mobile VR/i.test(window.navigator.userAgent);
+/**
+ *  Detect browsers in Stand-Alone headsets
+ */
+function isMobileVR () {
+  return /(OculusBrowser)|(SamsungBrowser)|(Mobile VR)/i.test(window.navigator.userAgent);
 }
-module.exports.isGearVR = isGearVR;
+module.exports.isMobileVR = isMobileVR;
 
 function isR7 () {
   return /R7 Build/.test(window.navigator.userAgent);
@@ -81,13 +94,6 @@ module.exports.isLandscape = function () {
   var orientation = window.orientation;
   if (isR7()) { orientation += 90; }
   return orientation === 90 || orientation === -90;
-};
-
-/**
- * Check if device is iOS and older than version 10.
- */
-module.exports.isIOSOlderThan10 = function (userAgent) {
-  return /(iphone|ipod|ipad).*os.(7|8|9)/i.test(userAgent);
 };
 
 /**
@@ -109,10 +115,11 @@ module.exports.isNodeEnvironment = !module.exports.isBrowserEnvironment;
  */
 module.exports.PolyfillControls = function PolyfillControls (object) {
   var frameData;
+  var vrDisplay = window.webvrpolyfill && window.webvrpolyfill.getPolyfillDisplays()[0];
   if (window.VRFrameData) { frameData = new window.VRFrameData(); }
   this.update = function () {
     var pose;
-    if (!vrDisplay || !polyfilledVRDisplay) { return; }
+    if (!vrDisplay) { return; }
     vrDisplay.getFrameData(frameData);
     pose = frameData.pose;
     if (pose.orientation !== null) {

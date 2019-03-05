@@ -27,7 +27,7 @@ The benefits of ECS include:
 6. Allows for extending new features (possibly sharing them as community components).
 
 On the 2D Web, we lay out elements that have fixed behavior in a hierarchy. 3D
-and VR is different; there are infinite types of possible objects that with
+and VR is different; there are infinite types of possible objects that have
 unbounded behavior. ECS provides a manageable pattern to construct types of
 objects.
 
@@ -41,7 +41,7 @@ for VR development, and A-Frame is based entirely around this paradigm:
 - [*Evolve Your Hierarchy* by Mick West](http://cowboyprogramming.com/2007/01/05/evolve-your-heirachy/)
 
 A well-known game engine implementing ECS is Unity. Although there are pain
-points in cross-entity communication. But we'll see how A-Frame, the DOM, and
+points in cross-entity communication, we'll see how A-Frame, the DOM, and
 declarative HTML really make ECS shine.
 
 <!--toc-->
@@ -172,7 +172,7 @@ entity:
   vive-controls  <!-- Vive button mappings. -->
   oculus-touch-controls  <!-- Oculus button mappings. -->
   hand-controls  <!-- Appearance (model), gestures, and events. -->
-  controller-cursor  <!-- Laser to interact with menus and UI. -->
+  laser-controls <!-- Laser to interact with menus and UI. -->
   sphere-collider  <!-- Listen when hand is in contact with an object. -->
   grab  <!-- Provide ability to grab objects. -->
   throw <!-- Provide ability to throw objects. -->
@@ -429,7 +429,7 @@ Now we can include it into our HTML:
 ```html
 <html>
   <head>
-    <script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/0.9.0/aframe.min.js"></script>
     <script src="https://unpkg.com/aframe-particle-system-component@1.0.9/dist/aframe-particle-system-component.min.js"></script>
   </head>
   <body>
@@ -450,7 +450,7 @@ Now we can include it into our HTML:
 ```html
 <html>
   <head>
-    <script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/0.9.0/aframe.min.js"></script>
     <script src="https://unpkg.com/aframe-particle-system-component@1.0.9/dist/aframe-particle-system-component.min.js"></script>
   </head>
   <body>
@@ -474,7 +474,7 @@ Glitch][glitch].
 ```html
 <html>
   <head>
-    <script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/0.9.0/aframe.min.js"></script>
     <script src="https://unpkg.com/aframe-animation-component@3.2.1/dist/aframe-animation-component.min.js"></script>
     <script src="https://unpkg.com/aframe-particle-system-component@1.0.x/dist/aframe-particle-system-component.min.js"></script>
     <script src="https://unpkg.com/aframe-extras.ocean@%5E3.5.x/dist/aframe-extras.ocean.min.js"></script>

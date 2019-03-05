@@ -40,24 +40,66 @@ suite('raycaster', function () {
     });
 
     test('defaults to intersecting all objects', function (done) {
-      var el2 = document.createElement('a-entity');
-      var el3 = document.createElement('a-entity');
-      var i;
+      const wrapper = document.createElement('a-entity');
+      const el2 = document.createElement('a-entity');
+      const el3 = document.createElement('a-entity');
 
       // Add geometry to test raycast and wait for them to be loaded.
       el2.setAttribute('geometry', 'primitive: box');
       el3.setAttribute('geometry', 'primitive: box');
 
-      el3.addEventListener('loaded', function () {
+      el3.addEventListener('loaded', () => {
         component.refreshObjects();
-        // Check that the child is the raycaster target, not the THREE.Group.
-        for (i = 0; i < component.objects.length; i++) {
-          assert.equal(component.objects[i], sceneEl.object3D.children[i].children[0]);
+        // Check that groups are not the raycast targets.
+        for (let i = 0; i < component.objects.length; i++) {
+          assert.notEqual(component.objects[i], sceneEl.object3D.children[i].object3D);
         }
+        assert.ok(component.objects.includes(el2.getObject3D('mesh')));
+        assert.ok(component.objects.includes(el3.getObject3D('mesh')));
+        done();
+      });
+      wrapper.appendChild(el2);
+      wrapper.appendChild(el3);
+      sceneEl.appendChild(wrapper);
+    });
+
+    test('does not include non-object3DMap children in objects', function (done) {
+      var dummyObject3D;
+      var el2 = document.createElement('a-entity');
+
+      // Add geometry to test raycast and wait for them to be loaded.
+      el2.setAttribute('geometry', 'primitive: box');
+
+      dummyObject3D = new THREE.Object3D();
+      el2.object3D.add(dummyObject3D);
+
+      el2.addEventListener('loaded', function () {
+        component.refreshObjects();
+        assert.equal(component.objects.indexOf(dummyObject3D), -1);
+        assert.notEqual(component.objects.indexOf(el2.getObject3D('mesh')), -1);
         done();
       });
       sceneEl.appendChild(el2);
-      sceneEl.appendChild(el3);
+    });
+
+    test('cannot have redundant objects', function (done) {
+      const el1 = document.createElement('a-entity');
+      el1.setAttribute('geometry', 'primitive: box');
+      const el2 = document.createElement('a-entity');
+      el2.setAttribute('geometry', 'primitive: box');
+      el1.appendChild(el2);
+
+      el1.addEventListener('loaded', function () {
+        component.refreshObjects();
+        const mesh = el2.getObject3D('mesh');
+        let count = 0;
+        component.objects.forEach(obj => {
+          if (obj === mesh) { count++; }
+        });
+        assert.equal(count, 1);
+        done();
+      });
+      sceneEl.appendChild(el1);
     });
 
     test('can whitelist objects to intersect', function (done) {
@@ -194,7 +236,10 @@ suite('raycaster', function () {
     });
 
     test('can catch basic intersection', function (done) {
-      targetEl.addEventListener('raycaster-intersected', function () { done(); });
+      targetEl.addEventListener('raycaster-intersected', function (evt) {
+        assert.ok(evt.detail.getIntersection(targetEl));
+        done();
+      });
       component.tick();
     });
 
@@ -261,8 +306,9 @@ suite('raycaster', function () {
       raycasterEl.addEventListener('raycaster-intersection', function () {
         // Point raycaster somewhere else.
         raycasterEl.setAttribute('rotation', '90 0 0');
-        raycasterEl.addEventListener('raycaster-intersection-cleared', function (evt) {
+        raycasterEl.addEventListener('raycaster-intersection-cleared', function cb (evt) {
           assert.notEqual(component.clearedIntersectedEls.indexOf(targetEl), -1);
+          raycasterEl.removeEventListener('raycaster-intersection-cleared', cb);
           done();
         });
         component.tick();
@@ -283,27 +329,29 @@ suite('raycaster', function () {
       });
       component.tick();
     });
-  });
 
-  suite('non-recursive raycaster', function () {
-    var targetEl;
-
-    setup(function (done) {
-      targetEl = document.createElement('a-entity');
-
-      el.setAttribute('position', '0 0 1');
-      el.setAttribute('raycaster', {recursive: false, near: 0.1, far: 10});
-
-      targetEl.setAttribute('geometry', 'primitive: box');
-      targetEl.setAttribute('position', '0 0 -1');
-      targetEl.addEventListener('loaded', function () {
-        setTimeout(() => { done(); });
+    test('clears intersections when disabled', function (done) {
+      targetEl.addEventListener('raycaster-intersected', function () {
+        targetEl.addEventListener('raycaster-intersected-cleared', function () {
+          done();
+        });
+        assert.equal(component.intersectedEls.length, 2);
+        assert.equal(component.clearedIntersectedEls.length, 0);
+        el.setAttribute('raycaster', 'enabled', false);
+        assert.equal(component.intersectedEls.length, 0);
+        assert.equal(component.intersections.length, 0);
+        assert.equal(component.clearedIntersectedEls.length, 2);
       });
-      sceneEl.appendChild(targetEl);
+      component.tick();
     });
 
-    test('can catch basic intersection', function (done) {
-      targetEl.addEventListener('raycaster-intersected', function () { done(); });
+    test('emits intersectioncleared when disabled', function (done) {
+      targetEl.addEventListener('raycaster-intersected', function () {
+        el.addEventListener('raycaster-intersection-cleared', function () {
+          done();
+        });
+        el.setAttribute('raycaster', 'enabled', false);
+      });
       component.tick();
     });
   });

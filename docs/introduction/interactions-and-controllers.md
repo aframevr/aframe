@@ -1,9 +1,9 @@
 ---
-title: "Interactions & Controllers"
+title: Interactions & Controllers
 type: introduction
 layout: docs
 parent_section: introduction
-order: 8.5
+order: 9
 examples:
   - title: Basic Interaction
     src: https://glitch.com/edit/#!/aframe-basic-interaction?path=index.html:1:0
@@ -75,7 +75,7 @@ clicking directly on the entity using a raycaster.
 We'll first go over gaze-based interactions. Gaze-based interactions rely on
 rotating our heads and looking at objects to interact with them. This type of
 interaction is for headsets without a controller. Even with a rotation-only
-controller (Daydream, GearVR), the interaction is still similar. Since A-Frame
+controller (Daydream, GearVR, Oculus Go), the interaction is still similar. Since A-Frame
 provides mouse-drag controls by default, gaze-based can sort of be used on
 desktop to preview the interaction by dragging the camera rotation.
 
@@ -104,7 +104,7 @@ attached to the camera:
 
 [Remix this event set component example on Glitch](https://glitch.com/~aframe-event-set-component).
 
-[event-set]: https://github.com/ngokevin/kframe/tree/master/components/event-set
+[event-set]: https://github.com/supermedium/superframe/tree/master/components/event-set
 
 Now let's handle the events that the cursor component provides. The cursor
 component emits synthetic events like `click`, `mouseenter`, `mouseleave`,
@@ -137,7 +137,7 @@ If we want to change the color of a box on hover and restore it when no longer
 hovering:
 
 ```html
-<script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
+<script src="https://aframe.io/releases/0.9.0/aframe.min.js"></script>
 <script src="https://unpkg.com/aframe-event-set-component@3.0.3/dist/aframe-event-set-component.min.js"></script>
 <body>
   <a-scene>
@@ -157,7 +157,7 @@ ${selector}`. If we want to display a text label when an entity is hovered
 over:
 
 ```html
-<script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
+<script src="https://aframe.io/releases/0.9.0/aframe.min.js"></script>
 <script src="https://unpkg.com/aframe-event-set-component@3.0.3/dist/aframe-event-set-component.min.js"></script>
 <body>
   <a-scene>
@@ -180,7 +180,7 @@ properties using A-Frame component dot syntax (i.e.,
 `${componentName}.${propertyName}`):
 
 ```html
-<script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
+<script src="https://aframe.io/releases/0.9.0/aframe.min.js"></script>
 <script src="https://unpkg.com/aframe-event-set-component@3.0.3/dist/aframe-event-set-component.min.js"></script>
 <body>
   <a-scene>
@@ -213,7 +213,7 @@ To demonstrate what the event set component does under the hood, let's have a
 box change color on hover and on leaving hover with JavaScript:
 
 ```html
-<script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
+<script src="https://aframe.io/releases/0.9.0/aframe.min.js"></script>
 <script>
   AFRAME.registerComponent('change-color-on-hover', {
     schema: {
@@ -262,7 +262,7 @@ interact with objects with their hands.
 
 A-Frame provides components for controllers across the spectrum as supported by
 their respective WebVR browsers through the [Gamepad Web API][gamepad]. There
-are components for Vive, Oculus Touch, Daydream, and GearVR controllers.
+are components for Vive, Oculus Touch, Daydream, GearVR and Oculus Go controllers.
 
 To inspect the Gamepad object for poking around or to get the Gamepad ID, we
 can call `navigator.getGamepads()` in the browser console. This will return a
@@ -313,7 +313,7 @@ component by:
 The controller components following are only activated if they detect the
 controller is found and seen as connected in the Gamepad API.
 
-### Adding 3DoF Controllers (daydream-controls, gearvr-controls)
+### Adding 3DoF Controllers (daydream-controls, gearvr-controls, oculus-go-controls)
 
 [dof]: http://www.roadtovr.com/introduction-positional-tracking-degrees-freedom-dof/
 
@@ -325,7 +325,7 @@ degrees of freedom for VR][dof].
 
 The 3DoF controller components provide rotational tracking, a default model
 matching the real-life hardware, and events to abstract the button mappings.
-The controllers for Google Daydream and Samsung GearVR have 3DoF, and both
+The controllers for Google Daydream, Samsung GearVR and Oculus Go have 3DoF, and both
 support only one controller for one hand.
 
 [daydreamcomponent]: ../components/daydream-controls.md
@@ -346,6 +346,16 @@ Internet on a smartphone with GearVR:
 
 ```html
 <a-entity gearvr-controls></a-entity>
+```
+
+[oculusgocomponent]: ../components/oculus-go-controls.md
+
+To add a controller for Oculus Go, use the [oculus-go-controls
+component][oculusgocomponent]. Then try it out on Oculus Browser or Samsung
+Internet on an Oculus Go standalone headset:
+
+```html
+<a-entity oculus-go-controls></a-entity>
 ```
 
 ### Adding 6DoF Controllers (vive-controls, oculus-touch-controls)
@@ -392,7 +402,7 @@ desktop browser][rocks]:
 The Web has the benefit of being able to support multiple platforms. Though
 it's less clear in VR what supporting multiple platforms entails since a 3DoF
 platform versus a 6DoF platform provide different interactions and require
-different user experience treatent. It will be up to the application what
+different user experience treatment. It will be up to the application what
 "responsive" means for VR on the Web. What we can show are several different
 methods, but none that are truly one-size-fits-all.
 
@@ -461,10 +471,11 @@ AFRAME.registerComponent('custom-controls', {
   },
 
   update: function () {
+    var hand = this.data.hand;
     var controlConfiguration = {
-      hand: this.data.hand,
+      hand: hand,
       model: false,
-      rotationOffset: hand === 'left' ? 90 : -90
+      orientationOffset: {x: 0, y: 0, z: hand === 'left' ? 90 : -90}
     };
 
     // Build on top of controller components.
@@ -549,7 +560,7 @@ raycaster][raycasterfar]. When the laser intersects with an entity, the length
 of the laser will be truncated.
 
 ```html
-<a-entity hand-controls controller-cursor raycaster="far: 2"></a-entity>
+<a-entity hand-controls laser-controls raycaster="far: 2"></a-entity>
 ```
 
 [gaze]: #gaze-based-interactions-with-cursor-component

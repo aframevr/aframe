@@ -65,7 +65,7 @@ This is the starting point for our scene:
 
 [a-sky]: ../primitives/a-sky.md
 [ams]: ../core/asset-management-system.md
-[animation-begin]: ../core/animations.md#begin
+[animation-begin]: ../components/animation.md
 [camera]: ../primitives/a-camera.md
 [component]: ../core/component.md
 [cursor]: ../components/cursor.md
@@ -146,9 +146,9 @@ have developed, we gain power without needing to write our own code.
 
 We'll go through using three community components:
 
-- [template](https://ngokevin.github.io/kframe/components/template/)
-- [layout](https://ngokevin.github.io/kframe/components/layout/)
-- [event-set](https://ngokevin.github.io/kframe/components/event-set/)
+- [template](https://supermedium.com/superframe/components/template/)
+- [layout](https://supermedium.com/superframe/components/layout/)
+- [event-set](https://supermedium.com/superframe/components/event-set/)
 
 Community components are generally available through both GitHub and published
 on npm. An easy way to include components is to use the [unpkg.com
@@ -160,7 +160,7 @@ need to know the component's npm package name and the path:
 <html>
   <head>
     <title>360° Image Browser</title>
-    <script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/0.9.0/aframe.min.js"></script>
     <script src="https://unpkg.com/aframe-template-component@3.x.x/dist/aframe-template-component.min.js"></script>
     <script src="https://unpkg.com/aframe-layout-component@3.x.x/dist/aframe-layout-component.min.js"></script>
     <script src="https://unpkg.com/aframe-event-set-component@3.x.x/dist/aframe-event-set-component.min.js"></script>

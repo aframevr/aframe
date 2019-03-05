@@ -1,5 +1,7 @@
+var execSync = require('child_process').execSync;
 var fs = require('fs');
 var glob = require('glob');
+var pkg = require('../package.json');
 
 var prevVersion = process.argv[2];
 var nextVersion = process.argv[3];
@@ -10,13 +12,18 @@ if (!prevVersion || !nextVersion) {
   process.exit(1);
 }
 
-// Copy `aframe.js` to `aframe-v{newVersion}js`.
-glob.sync('dist/aframe-master*', {
-  exclude: `dist/aframe*v${prevVersion}*`
-}).forEach(function copyMasterToStable (masterFilename) {
-  var stableFilename = masterFilename.replace('master', `v${nextVersion}`);
-  fs.createReadStream(masterFilename).pipe(fs.createWriteStream(stableFilename));
-});
+let distMin;
+let distMax;
+if (process.env.FOR_RELEASE) {
+  distMin = pkg.scripts['dist:min'].replace(/-master/g, '');
+  distMax = pkg.scripts['dist:max'].replace(/-master/g, '');
+} else {
+  distMin = pkg.scripts['dist:min'].replace(/master/g, `v${nextVersion}`);
+  distMax = pkg.scripts['dist:max'].replace(/master/g, `v${nextVersion}`);
+}
+
+execSync(distMin, {stdio: 'inherit'});
+execSync(distMax, {stdio: 'inherit'});
 
 // Remove `aframe-v{prevVersion}.js`.
 glob.sync(`dist/aframe*v${prevVersion}*`).forEach(fs.unlinkSync);

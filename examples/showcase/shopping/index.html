@@ -7,61 +7,38 @@
     <script src="../../../dist/aframe-master.js"></script>
   </head>
   <body>
-    <a-scene background="color: #ECECEC">
+    <a-scene background="color: #ECECEC" renderer="colorManagement: true;">
       <a-assets>
-        <a-asset-item id="why-male-models" src="man/man.dae"></a-asset-item>
+        <a-asset-item id="why-male-models" src="man.glb"></a-asset-item>
         <img id="fall" src="fall.png">
         <img id="goggles" src="goggles.png">
-        <img id="mozvr" src="../../assets/img/mozvr.png">
         <img id="price" src="price.png">
         <img id="shadow2" src="../../assets/img/radial-shadow-2.png">
         <img id="shoes" src="shoes.png">
       </a-assets>
 
-      <a-entity id="model" position="0 0 -3">
-        <a-animation attribute="rotation" from="0 -30 0" to="0 330 0" dur="15000"
-                     easing="linear" repeat="indefinite"></a-animation>
-        <a-collada-model position="-.35 0 .55" rotation="0 -20 0" scale="1.5 1.5 1.5"
-                         src="#why-male-models"></a-collada-model>
+      <a-entity id="model" position="0 0 -3" animation="property: rotation; from: 0 -30 0; to: 0 330 0; dur: 15000; easing: linear; loop: true">
+        <a-gltf-model position="-.35 0 .55" rotation="0 -20 0" scale="1.5 1.5 1.5" src="#why-male-models"></a-gltf-model>
         <a-image src="#shadow2" rotation="-90 0 0" scale="0.5 0.5 0.5"></a-image>
       </a-entity>
 
-      <a-curvedimage id="mozvr-logo" src="#mozvr" radius="5.7" theta-length="36" height="1"
-                     position="0 2.6 -1" opacity="0.5">
-        <a-animation attribute="rotation" from="0 10 0" to="0 200 0" delay="500"
-                     dur="1000"></a-animation>
-      </a-curvedimage>
+      <a-image id="price" src="#price" width="7" height="3.5" scale="0.2 0.2 0.2"
+               animation="property: position; from: 0 2.8 -6; to: 2.25 2.8 -6; delay: 1000; dur: 1000"></a-image>
 
-      <a-image id="price" src="#price" width="7" height="3.5" scale="0.2 0.2 0.2">
-        <a-animation attribute="position" from="0 2.8 -6" to="2.25 2.8 -6" delay="1000"
-                     dur="1000"></a-animation>
-      </a-image>
-
-      <a-cylinder id="goggles" color="#101010" height="0.02" radius="0.8">
-        <a-animation attribute="rotation" from="-270 0 0" to="-90 0 0" dur="750" delay="1000"
-                     fill="both"></a-animation>
-        <a-animation attribute="position" from="8 0 -9" to="8 3.5 -9" dur="750" delay="1000"
-                     fill="both"></a-animation>
-        <a-image src="#goggles" width="2" height="1" rotation="90 0 0" position="0 -.05 0"
-                 scale=".4 .4 .4"></a-image>
+      <a-cylinder id="goggles" color="#101010" height="0.02" radius="0.8"
+        animation__rotation="property: rotation; from: -270 0 0; to: -90 0 0; dur: 750; delay: 1000"
+        animation__position="property: position; from: 8 0 -9; to: 8 3.5 -9; dur: 750; delay: 1000">
+        <a-image src="#goggles" width="2" height="1" rotation="90 0 0" position="0 -.05 0" scale=".4 .4 .4"></a-image>
       </a-cylinder>
 
       <a-curvedimage id="stereoscopic-fall-collection-text" src="#fall" radius="5.7"
-                     theta-length="18" height=".45" position="0 0.9 0" scale=".4 .4 .4">
-        <a-animation attribute="rotation" from="0 180 0" to="0 210 0" delay="750"
-                     dur="1000"></a-animation>
-      </a-curvedimage>
+                     theta-length="18" height=".45" position="0 0.9 0" scale=".4 .4 .4"
+                     animation="property: rotation; from: 0 180 0; to: 0 210 0; delay: 750; dur: 1000"></a-curvedimage>
 
-      <a-curvedimage id="shoes" src="#shoes" radius="5.7" theta-length="18" height=".8"
-                     position="0 0.9 0" scale=".4 .4 .4">
-        <a-animation attribute="rotation" from="0 180 0" to="0 130 0" delay="750"
-                     dur="1000"></a-animation>
-      </a-curvedimage>
+      <a-curvedimage id="shoes" src="#shoes" radius="5.7" theta-length="18" height=".8" position="0 0.9 0" scale=".4 .4 .4"
+                     animation="property: rotation; from: 0 180 0; to: 0 130 0; delay: 750; dur: 1000"></a-curvedimage>
 
-      <a-entity>
-        <a-cylinder position="0 0.5 0" radius="4" height="1.6" side="back" open-ended="true"
-                    color="#FFF"></a-cylinder>
-      </a-entity>
+      <a-cylinder position="0 0.5 0" radius="4" height="1.6" side="back" open-ended="true" color="#FFF"></a-cylinder>
 
       <a-light type="directional" color="#fff" intensity="0.2" position="-1 2 1"></a-light>
       <a-light type="ambient" color="#fff"></a-light>

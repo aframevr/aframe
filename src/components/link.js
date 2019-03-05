@@ -19,7 +19,7 @@ module.exports.Component = registerComponent('link', {
     peekMode: {default: false},
     title: {default: ''},
     titleColor: {default: 'white', type: 'color'},
-    visualAspectEnabled: {default: true}
+    visualAspectEnabled: {default: false}
   },
 
   init: function () {
@@ -28,7 +28,6 @@ module.exports.Component = registerComponent('link', {
     this.quaternionClone = new THREE.Quaternion();
     // Store hidden elements during peek mode so we can show them again later.
     this.hiddenEls = [];
-    this.initVisualAspect();
   },
 
   update: function (oldData) {
@@ -37,6 +36,10 @@ module.exports.Component = registerComponent('link', {
     var backgroundColor;
     var strokeColor;
 
+    if (!data.visualAspectEnabled) { return; }
+
+    this.initVisualAspect();
+
     backgroundColor = data.highlighted ? data.highlightedColor : data.backgroundColor;
     strokeColor = data.highlighted ? data.highlightedColor : data.borderColor;
     el.setAttribute('material', 'backgroundColor', backgroundColor);
@@ -44,7 +47,7 @@ module.exports.Component = registerComponent('link', {
 
     if (data.on !== oldData.on) { this.updateEventListener(); }
 
-    if (data.visualAspectEnabled && oldData.peekMode !== undefined &&
+    if (oldData.peekMode !== undefined &&
         data.peekMode !== oldData.peekMode) { this.updatePeekMode(); }
 
     if (!data.image || oldData.image === data.image) { return; }
@@ -97,7 +100,7 @@ module.exports.Component = registerComponent('link', {
     var sphereEl;
     var textEl;
 
-    if (!this.data.visualAspectEnabled) { return; }
+    if (!this.data.visualAspectEnabled || this.visualAspectInitialized) { return; }
 
     textEl = this.textEl = this.textEl || document.createElement('a-entity');
     sphereEl = this.sphereEl = this.sphereEl || document.createElement('a-entity');
@@ -155,6 +158,8 @@ module.exports.Component = registerComponent('link', {
     });
     sphereEl.setAttribute('visible', false);
     el.appendChild(sphereEl);
+
+    this.visualAspectInitialized = true;
   },
 
   navigate: function () {

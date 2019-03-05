@@ -11,12 +11,15 @@ suite('pool', function () {
     sceneEl.addEventListener('loaded', function () { done(); });
   });
 
-  test('pool is initialized', function () {
+  test('pool is initialized', function (done) {
     var sceneEl = this.sceneEl;
     var poolComponent = sceneEl.components.pool;
     assert.equal(poolComponent.availableEls.length, 1);
     assert.equal(poolComponent.usedEls.length, 0);
-    assert.equal(sceneEl.querySelectorAll('[material]').length, 1);
+    setTimeout(() => {
+      assert.equal(sceneEl.querySelectorAll('a-entity[material]').length, 1);
+      done();
+    });
   });
 
   test('can specify container', function (done) {

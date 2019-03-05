@@ -3,7 +3,7 @@ title: Visual Inspector & Dev Tools
 type: introduction
 layout: docs
 parent_section: introduction
-order: 9
+order: 11
 ---
 
 [inspector]: https://github.com/aframevr/aframe-inspector
@@ -189,13 +189,13 @@ and send it to us! Now we're unblocked from developing.
 and want to show it to someone. Take a recording and send it to them to debug.
 No need to give bug reproduction steps, it's all in the recording!
 
-[machinima]: https://github.com/wmurphyrd/aframe-machinima-testing/
-[William Murphy]: https://twitter.com/datatitian
-
 7. **Automated unit testing**: We can use recordings with unit testing
 frameworks such as Karma and Mocha to replay the recording and make assertions.
 For example, touch an box and check that it changes color. See [A-Frame
 Machinima Testing][machinima] by [William Murphy] for an example.
+
+[machinima]: https://github.com/wmurphyrd/aframe-machinima-testing/
+[William Murphy]: https://twitter.com/datatitian
 
 ### How to Record
 
@@ -227,7 +227,7 @@ we want to take our recording on the go, here's how to replay a recording
 
 1. Put the recording file somewhere accessible to the web page (i.e., in the project directory or online)
 2. Add `avatar-replayer` component to the scene (i.e., `<a-scene avatar-replayer>`)
-3. Append `?avatar-recording=path/to/recording.json` to the URL *or* set `<a-scene avatar-replayer="src: path/to/recording.json>`
+3. Append `?avatar-recording=path/to/recording.json` to the URL *or* set `<a-scene avatar-replayer="src: path/to/recording.json">`
 
 Then replay the recording on any device from anywhere without a headset to our
 heart's content. Get in the headset, record some clicks, and then from a
@@ -257,6 +257,12 @@ view at whatever angle or focus on whatever area.
 People have built tools on top of A-Frame to abstract away code via an
 interface or application, making content creation even easier. These act as
 more complete editors rather than developer tools.
+
+### [Supercraft](https://supermedium.com/supercraft)
+
+Build VR Sites with Your Hands, all in VR, and publish to Web.
+
+<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/ONhhKHjSO-4?rel=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
 
 ### [Ottifox](http://ottifox.com/)
 

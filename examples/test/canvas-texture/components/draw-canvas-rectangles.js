@@ -4,10 +4,10 @@
  * Draw dynamic colorful rectangles.
  */
 AFRAME.registerComponent('draw-canvas-rectangles', {
-  schema: {type: 'selector'},
+  schema: {canvas: {type: 'selector'}},
 
   init: function () {
-    var canvas = this.canvas = this.data;
+    var canvas = this.canvas = this.data.canvas;
     var ctx = this.ctx = canvas.getContext('2d');
     ctx.fillStyle = 'rgb(0, 0, 0)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
