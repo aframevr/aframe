@@ -64432,7 +64432,6 @@ module.exports.Component = registerComponent('daydream-controls', {
 
   init: function () {
     var self = this;
-    this.animationActive = 'pointing';
     this.onButtonChanged = bind(this.onButtonChanged, this);
     this.onButtonDown = function (evt) { onButtonEvent(evt.detail.id, 'down', self); };
     this.onButtonUp = function (evt) { onButtonEvent(evt.detail.id, 'up', self); };
@@ -64609,7 +64608,6 @@ module.exports.Component = registerComponent('gearvr-controls', {
 
   init: function () {
     var self = this;
-    this.animationActive = 'pointing';
     this.onButtonChanged = bind(this.onButtonChanged, this);
     this.onButtonDown = function (evt) { onButtonEvent(evt.detail.id, 'down', self); };
     this.onButtonUp = function (evt) { onButtonEvent(evt.detail.id, 'up', self); };
@@ -67003,7 +67001,6 @@ module.exports.Component = registerComponent('oculus-go-controls', {
 
   init: function () {
     var self = this;
-    this.animationActive = 'pointing';
     this.onButtonChanged = bind(this.onButtonChanged, this);
     this.onButtonDown = function (evt) { onButtonEvent(evt.detail.id, 'down', self); };
     this.onButtonUp = function (evt) { onButtonEvent(evt.detail.id, 'up', self); };
@@ -70094,7 +70091,6 @@ module.exports.Component = registerComponent('vive-controls', {
 
   init: function () {
     var self = this;
-    this.animationActive = 'pointing';
     this.checkControllerPresentAndSetup = checkControllerPresentAndSetup;  // To allow mock.
     this.controllerPresent = false;
     this.emitIfAxesChanged = emitIfAxesChanged;  // To allow mock.
@@ -70331,7 +70327,6 @@ module.exports.Component = registerComponent('vive-focus-controls', {
 
   init: function () {
     var self = this;
-    this.animationActive = 'pointing';
     this.onButtonChanged = bind(this.onButtonChanged, this);
     this.onButtonDown = function (evt) { onButtonEvent(evt.detail.id, 'down', self); };
     this.onButtonUp = function (evt) { onButtonEvent(evt.detail.id, 'up', self); };
@@ -76679,7 +76674,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.9.0 (Date 2019-03-05, Commit #fde0190)');
+console.log('A-Frame Version: 0.9.0 (Date 2019-03-05, Commit #d1cb8f4)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
