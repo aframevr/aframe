@@ -248,20 +248,21 @@ module.exports.Component = registerComponent('hand-controls', {
     var isVive = isViveController(this.el.components['tracked-controls']);
 
     // Works well with Oculus Touch and Windows Motion Controls, but Vive needs tweaks.
-    if (isGripActive) {
-      if (isVive) {
+    if (isVive) {
+      if (isGripActive || isTriggerActive) {
         gesture = ANIMATIONS.fist;
-      } else
+      } else if (isTrackpadActive) {
+        gesture = ANIMATIONS.point;
+      }
+    } else {
+      if (isGripActive) {
         if (isSurfaceActive || isABXYActive || isTrackpadActive) {
           gesture = isTriggerActive ? ANIMATIONS.fist : ANIMATIONS.point;
         } else {
           gesture = isTriggerActive ? ANIMATIONS.thumbUp : ANIMATIONS.pointThumb;
         }
-    } else {
-      if (isTriggerActive) {
-        gesture = !isVive ? ANIMATIONS.hold : ANIMATIONS.fist;
-      } else if (isVive && isTrackpadActive) {
-        gesture = ANIMATIONS.point;
+      } else if (isTriggerActive) {
+        gesture = ANIMATIONS.hold;
       }
     }
 

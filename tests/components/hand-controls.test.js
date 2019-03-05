@@ -1,9 +1,18 @@
 /* global assert, process, setup, suite, test */
 var entityFactory = require('../helpers').entityFactory;
+var CONTROLLER_TYPE_VIVE = 'OpenVR Gamepad';
+var CONTROLLER_TYPE_GENERIC = 'Generic Gamepad';
 
-suite.skip('hand-controls', function () {
+suite('hand-controls', function () {
   var component;
   var el;
+
+  function setupTrackedControls (controllerType) {
+    var trackedControls;
+    el.setAttribute('tracked-controls', '');
+    trackedControls = el.components['tracked-controls'];
+    trackedControls.controller = {id: controllerType, connected: true};
+  }
 
   setup(function (done) {
     el = entityFactory();
@@ -29,10 +38,7 @@ suite.skip('hand-controls', function () {
     });
 
     test('makes point gesture', function () {
-      var trackedControls;
-      el.setAttribute('tracked-controls', '');
-      trackedControls = el.components['tracked-controls'];
-      trackedControls.controller = {id: 'Foobar', connected: true};
+      setupTrackedControls(CONTROLLER_TYPE_GENERIC);
 
       component.pressedButtons['grip'] = true;
       component.pressedButtons['trigger'] = false;
@@ -46,10 +52,7 @@ suite.skip('hand-controls', function () {
     });
 
     test('makes point gesture on vive', function () {
-      var trackedControls;
-      el.setAttribute('tracked-controls', '');
-      trackedControls = el.components['tracked-controls'];
-      trackedControls.controller = {id: 'OpenVR Gamepad', connected: true};
+      setupTrackedControls(CONTROLLER_TYPE_VIVE);
 
       component.pressedButtons['grip'] = false;
       component.pressedButtons['trigger'] = false;
@@ -63,10 +66,7 @@ suite.skip('hand-controls', function () {
     });
 
     test('makes fist gesture', function () {
-      var trackedControls;
-      el.setAttribute('tracked-controls', '');
-      trackedControls = el.components['tracked-controls'];
-      trackedControls.controller = {id: 'Foobar', connected: true};
+      setupTrackedControls(CONTROLLER_TYPE_GENERIC);
 
       component.pressedButtons['grip'] = true;
       component.pressedButtons['trigger'] = true;
@@ -80,10 +80,7 @@ suite.skip('hand-controls', function () {
     });
 
     test('makes fist gesture on vive', function () {
-      var trackedControls;
-      el.setAttribute('tracked-controls', '');
-      trackedControls = el.components['tracked-controls'];
-      trackedControls.controller = {id: 'OpenVR Gamepad', connected: true};
+      setupTrackedControls(CONTROLLER_TYPE_VIVE);
 
       component.pressedButtons['grip'] = true;
       component.pressedButtons['trigger'] = false;
@@ -108,6 +105,36 @@ suite.skip('hand-controls', function () {
 
       component.pressedButtons['menu'] = true;
       assert.equal(component.determineGesture(), 'Fist');
+    });
+
+    test('makes a hold gesture', function () {
+      setupTrackedControls(CONTROLLER_TYPE_GENERIC);
+
+      component.pressedButtons['grip'] = false;
+      component.pressedButtons['trigger'] = true;
+      assert.equal(component.determineGesture(), 'Hold');
+    });
+
+    test('makes a thumbs up gesture', function () {
+      setupTrackedControls(CONTROLLER_TYPE_GENERIC);
+
+      component.pressedButtons['grip'] = true;
+      component.pressedButtons['trigger'] = true;
+      assert.equal(component.determineGesture(), 'Thumb Up');
+
+      // Verify that the gesture still works with touch in addition to press.
+      component.pressedButtons['grip'] = true;
+      component.pressedButtons['trigger'] = false;
+      component.touchedButtons['trigger'] = true;
+      assert.equal(component.determineGesture(), 'Thumb Up');
+    });
+
+    test('makes a point and thumb gesture', function () {
+      setupTrackedControls(CONTROLLER_TYPE_GENERIC);
+
+      component.pressedButtons['grip'] = true;
+      component.pressedButtons['trigger'] = false;
+      assert.equal(component.determineGesture(), 'Point + Thumb');
     });
   });
 });
