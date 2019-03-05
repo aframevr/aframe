@@ -42,7 +42,6 @@ module.exports.Component = registerComponent('vive-controls', {
 
   init: function () {
     var self = this;
-    this.animationActive = 'pointing';
     this.checkControllerPresentAndSetup = checkControllerPresentAndSetup;  // To allow mock.
     this.controllerPresent = false;
     this.emitIfAxesChanged = emitIfAxesChanged;  // To allow mock.
