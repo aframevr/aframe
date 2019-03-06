@@ -48,7 +48,7 @@ suite('oculus-go-controls', function () {
      *
      * @param {object} component - The oculus-go-controls component to verify fields.
      */
-    function verifyControllerSetup(component) {
+    function verifyControllerSetup (component) {
       sinon.assert.calledOnce(injectTrackedControlsSpy);
       sinon.assert.calledOnce(addEventListenersSpy);
       sinon.assert.notCalled(removeEventListenersSpy);
