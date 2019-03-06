@@ -173,7 +173,7 @@ module.exports.Component = registerComponent('sound', {
     for (i = 0; i < this.pool.children.length; i++) {
       sound = this.pool.children[i];
       sound.onEnded = function () {
-        this.isPlaying = false;
+        self.isPlaying = false;
         el.emit('sound-ended', self.evtDetail, false);
       };
     }
