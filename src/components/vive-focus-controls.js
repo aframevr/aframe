@@ -21,7 +21,7 @@ module.exports.Component = registerComponent('vive-focus-controls', {
     buttonTouchedColor: {type: 'color', default: '#BBBBBB'},
     buttonHighlightColor: {type: 'color', default: '#7A7A7A'},
     model: {default: true},
-    rotationOffset: {default: 0},
+    orientationOffset: {type: 'vec3'},
     armModel: {default: true}
   },
 
@@ -105,7 +105,7 @@ module.exports.Component = registerComponent('vive-focus-controls', {
     el.setAttribute('tracked-controls', {
       armModel: data.armModel,
       idPrefix: GAMEPAD_ID_PREFIX,
-      rotationOffset: data.rotationOffset
+      orientationOffset: data.orientationOffset
     });
     if (!this.data.model) { return; }
     this.el.setAttribute('gltf-model', VIVE_FOCUS_CONTROLLER_MODEL_URL);
