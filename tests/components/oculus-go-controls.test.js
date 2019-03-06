@@ -7,6 +7,9 @@ suite('oculus-go-controls', function () {
     el.setAttribute('oculus-go-controls', 'hand: right');  // To ensure index is 0.
     el.addEventListener('loaded', function () {
       var component = el.components['oculus-go-controls'];
+      // Initially no controllers are present
+      component.controllers = [];
+      // Our Mock data for enabling the controllers.
       component.controllersWhenPresent = [{
         id: 'Oculus Go Controller',
         index: 0,
@@ -24,35 +27,37 @@ suite('oculus-go-controls', function () {
   });
 
   suite('checkIfControllerPresent', function () {
-    test('returns not present if no controllers on first on first call', function () {
-      var el = this.el;
-      var component = el.components['oculus-go-controls'];
-      var addEventListenersSpy = sinon.spy(component, 'addEventListeners');
-      var injectTrackedControlsSpy = sinon.spy(component, 'injectTrackedControls');
+    var component;
+    var controllerSystem;
+    var addEventListenersSpy;
+    var injectTrackedControlsSpy;
+    var removeEventListenersSpy;
 
-      el.sceneEl.systems['tracked-controls-webvr'].controllers = [];
-
-      component.controllerPresent = false;
-
-      component.checkIfControllerPresent();
-
-      sinon.assert.notCalled(injectTrackedControlsSpy);
-      sinon.assert.notCalled(addEventListenersSpy);
-      assert.strictEqual(component.controllerPresent, false);
+    setup(function (done) {
+      component = this.el.components['oculus-go-controls'];
+      controllerSystem = this.el.sceneEl.systems['tracked-controls-webvr'];
+      addEventListenersSpy = sinon.spy(component, 'addEventListeners');
+      injectTrackedControlsSpy = sinon.spy(component, 'injectTrackedControls');
+      removeEventListenersSpy = sinon.spy(component, 'removeEventListeners');
+      done();
     });
 
-    test('does not remove event listeners if no controllers', function () {
-      var el = this.el;
-      var component = el.components['oculus-go-controls'];
-      var addEventListenersSpy = sinon.spy(component, 'addEventListeners');
-      var injectTrackedControlsSpy = sinon.spy(component, 'injectTrackedControls');
-      var removeEventListenersSpy = sinon.spy(component, 'removeEventListeners');
+    /**
+     * Verifies that the method spy's are in the right state for a controller
+     * that has been injected.
+     *
+     * @param {object} component - The oculus-go-controls component to verify fields.
+     */
+    function verifyControllerSetup(component) {
+      sinon.assert.calledOnce(injectTrackedControlsSpy);
+      sinon.assert.calledOnce(addEventListenersSpy);
+      sinon.assert.notCalled(removeEventListenersSpy);
+      assert.strictEqual(component.controllerPresent, true);
+    }
 
-      el.sceneEl.systems['tracked-controls-webvr'].controllers = [];
-
-      component.controllerEventsActive = false;
-      component.controllerPresent = false;
-
+    test('returns not present if no controllers on first call', function () {
+      // Our current setup state is that no controllers are present. Check for presence
+      // and verify that we do not find controllers or call any spy methods.
       component.checkIfControllerPresent();
 
       sinon.assert.notCalled(injectTrackedControlsSpy);
@@ -62,55 +67,43 @@ suite('oculus-go-controls', function () {
     });
 
     test('attaches events if controller is newly present', function () {
-      var el = this.el;
-      var component = el.components['oculus-go-controls'];
-      var addEventListenersSpy = sinon.spy(component, 'addEventListeners');
-      var injectTrackedControlsSpy = sinon.spy(component, 'injectTrackedControls');
-      var removeEventListenersSpy = sinon.spy(component, 'removeEventListeners');
-
-      el.sceneEl.systems['tracked-controls-webvr'].controllers = component.controllersWhenPresent;
-
-      component.controllerPresent = false;
-
+      // Setup our mock controller with an initial state of no controllers present and verify
+      // that we detect the controller and inject our tracked-controls component.
+      controllerSystem.controllers = component.controllersWhenPresent;
       component.checkIfControllerPresent();
 
-      sinon.assert.calledOnce(injectTrackedControlsSpy);
-      sinon.assert.calledOnce(addEventListenersSpy);
-      sinon.assert.notCalled(removeEventListenersSpy);
-      assert.strictEqual(component.controllerPresent, true);
+      verifyControllerSetup(component);
     });
 
     test('does not inject/attach events again if controller already present', function () {
-      var el = this.el;
-      var component = el.components['oculus-go-controls'];
-      var addEventListenersSpy = sinon.spy(component, 'addEventListeners');
-      var injectTrackedControlsSpy = sinon.spy(component, 'injectTrackedControls');
-      var removeEventListenersSpy = sinon.spy(component, 'removeEventListeners');
+      // Controllers are both present and already attached. No events or attachment should happen.
+      controllerSystem.controllers = component.controllersWhenPresent;
 
-      el.sceneEl.systems['tracked-controls-webvr'].controllers = component.controllersWhenPresent;
-
-      component.controllerEventsActive = true;
-      component.controllerPresent = true;
-
+      // First set up a real controller so the internal state is consistent with an already
+      // present controller.
       component.checkIfControllerPresent();
+      verifyControllerSetup(component);
 
-      sinon.assert.notCalled(injectTrackedControlsSpy);
-      sinon.assert.notCalled(addEventListenersSpy);
-      sinon.assert.notCalled(removeEventListenersSpy);
-      assert.strictEqual(component.controllerPresent, true);
+      // Check again to verify that the already attached controller doesn't cause any side effects.
+      // The counts on the spies should be exactly the same as they were prior.
+      component.checkIfControllerPresent();
+      verifyControllerSetup(component);
     });
 
     test('removes event listeners if controller disappears', function () {
-      var el = this.el;
-      var component = el.components['oculus-go-controls'];
-      var addEventListenersSpy = sinon.spy(component, 'addEventListeners');
-      var injectTrackedControlsSpy = sinon.spy(component, 'injectTrackedControls');
-      var removeEventListenersSpy = sinon.spy(component, 'removeEventListeners');
+      controllerSystem.controllers = component.controllersWhenPresent;
 
-      el.sceneEl.systems['tracked-controls-webvr'].controllers = [];
+      // First set up a real controller so the internal state is consistent with an already
+      // present controller.
+      component.checkIfControllerPresent();
+      verifyControllerSetup(component);
 
-      component.controllerEventsActive = true;
-      component.controllerPresent = true;
+      // Remove the controllers and verify that everything is cleaned up correctly. We do this
+      // by resetting the spy methods so we are certain only the remove is called.
+      controllerSystem.controllers = [];
+      injectTrackedControlsSpy.reset();
+      addEventListenersSpy.reset();
+      removeEventListenersSpy.reset();
 
       component.checkIfControllerPresent();
 
