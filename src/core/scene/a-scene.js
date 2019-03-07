@@ -41,7 +41,6 @@ module.exports.AScene = registerElement('a-scene', {
         this.isIOS = isIOS;
         this.isMobile = isMobile;
         this.hasWebXR = isWebXRAvailable;
-        this.highRefreshRate = false;
         this.isScene = true;
         this.object3D = new THREE.Scene();
         var self = this;
@@ -292,9 +291,15 @@ module.exports.AScene = registerElement('a-scene', {
               enterVRSuccess();
               return Promise.resolve();
             }
+
+            var rendererSystem = this.getAttribute('renderer');
+            var presentationAttributes = {
+              highRefreshRate: rendererSystem.highRefreshRate,
+              foveationLevel: rendererSystem.foveationLevel
+            };
             return vrDisplay.requestPresent([{
               source: this.canvas,
-              attributes: {highRefreshRate: this.highRefreshRate}
+              attributes: presentationAttributes
             }]).then(enterVRSuccess, enterVRFailure);
           }
           return Promise.resolve();

@@ -9,6 +9,7 @@ examples: []
 
 The `renderer` system configures a scene's
 [THREE.WebGLRenderer](https://threejs.org/docs/#api/renderers/WebGLRenderer) instance.
+It also configures presentation attributes when entering WebVR/WebXR.
 
 ## Example
 
@@ -30,6 +31,7 @@ The `renderer` system configures a scene's
 | antialias               | Whether to perform antialiasing. If `auto`, antialiasing is disabled on mobile. | auto          |
 | colorManagement         | Whether to use a color-managed linear workflow.                                 | false         |
 | highRefreshRate         | Toggles 72hz mode on Oculus Browser. Defaults to 60hz.                          | false         |
+| foveationLevel          | Enables foveation in VR to improve perf. 0 none, 1 low, 2 medium, 3 high        | 0             |
 | sortObjects             | Whether to sort objects before rendering.                                       | false         |
 | physicallyCorrectLights | Whether to use physically-correct light attenuation.                            | false         |
 | maxCanvasWidth          | Maximum canvas width. Uses the size multiplied by device pixel ratio. Does not limit canvas width if set to -1.                                | 1920            |
@@ -57,6 +59,17 @@ other engines and tools.
 
 > **NOTE:** In three.js, and previous versions of A-Frame, a `gammaOutput: true` property was
 > available. This is applied automatically when color management is enabled.
+
+### highRefreshRate
+
+Toggles on the highest refresh rate for the given device. Currently this is supported on the Oculus
+Browser in Oculus Go and switches rendering from 60hz to 72hz.
+
+### foveationLevel
+
+Sets the level of requested foveation which renders fewer pixels around the edges of the viewport
+when in stereo rendering mode on certain systems. This is currently supported by the Oculus Browser
+on the Oculus Go with values ranging from 0 (none) to 3 (high). 
 
 ### sortObjects
 
