@@ -101,6 +101,7 @@ module.exports = window.AFRAME = {
   ANIME: require('super-animejs'),
   AScene: AScene,
   components: components,
+  coreComponents: Object.keys(components),
   geometries: require('./core/geometry').geometries,
   registerComponent: registerComponent,
   registerElement: require('./core/a-register-element').registerElement,
