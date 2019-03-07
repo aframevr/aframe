@@ -76689,7 +76689,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.9.0 (Date 2019-03-07, Commit #624bc0d)');
+console.log('A-Frame Version: 0.9.0 (Date 2019-03-07, Commit #f3d2517)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
@@ -76701,6 +76701,7 @@ module.exports = window.AFRAME = {
   ANIME: _dereq_('super-animejs'),
   AScene: AScene,
   components: components,
+  coreComponents: Object.keys(components),
   geometries: _dereq_('./core/geometry').geometries,
   registerComponent: registerComponent,
   registerElement: _dereq_('./core/a-register-element').registerElement,
