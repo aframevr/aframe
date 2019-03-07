@@ -64437,7 +64437,6 @@ module.exports.Component = registerComponent('daydream-controls', {
     this.onButtonUp = function (evt) { onButtonEvent(evt.detail.id, 'up', self); };
     this.onButtonTouchStart = function (evt) { onButtonEvent(evt.detail.id, 'touchstart', self); };
     this.onButtonTouchEnd = function (evt) { onButtonEvent(evt.detail.id, 'touchend', self); };
-    this.onAxisMoved = bind(this.onAxisMoved, this);
     this.controllerPresent = false;
     this.lastControllerCheck = 0;
     this.bindMethods();
@@ -64613,7 +64612,6 @@ module.exports.Component = registerComponent('gearvr-controls', {
     this.onButtonUp = function (evt) { onButtonEvent(evt.detail.id, 'up', self); };
     this.onButtonTouchStart = function (evt) { onButtonEvent(evt.detail.id, 'touchstart', self); };
     this.onButtonTouchEnd = function (evt) { onButtonEvent(evt.detail.id, 'touchend', self); };
-    this.onAxisMoved = bind(this.onAxisMoved, this);
     this.controllerPresent = false;
     this.lastControllerCheck = 0;
     this.bindMethods();
@@ -67018,7 +67016,6 @@ module.exports.Component = registerComponent('oculus-go-controls', {
     this.onButtonUp = function (evt) { onButtonEvent(evt.detail.id, 'up', self); };
     this.onButtonTouchStart = function (evt) { onButtonEvent(evt.detail.id, 'touchstart', self); };
     this.onButtonTouchEnd = function (evt) { onButtonEvent(evt.detail.id, 'touchend', self); };
-    this.onAxisMoved = bind(this.onAxisMoved, this);
     this.controllerPresent = false;
     this.lastControllerCheck = 0;
     this.rendererSystem = this.el.sceneEl.systems.renderer;
@@ -70115,7 +70112,6 @@ module.exports.Component = registerComponent('vive-controls', {
     this.onButtonUp = function (evt) { onButtonEvent(evt.detail.id, 'up', self); };
     this.onButtonTouchEnd = function (evt) { onButtonEvent(evt.detail.id, 'touchend', self); };
     this.onButtonTouchStart = function (evt) { onButtonEvent(evt.detail.id, 'touchstart', self); };
-    this.onAxisMoved = bind(this.onAxisMoved, this);
     this.previousButtonValues = {};
     this.rendererSystem = this.el.sceneEl.systems.renderer;
 
@@ -70347,7 +70343,6 @@ module.exports.Component = registerComponent('vive-focus-controls', {
     this.onButtonUp = function (evt) { onButtonEvent(evt.detail.id, 'up', self); };
     this.onButtonTouchStart = function (evt) { onButtonEvent(evt.detail.id, 'touchstart', self); };
     this.onButtonTouchEnd = function (evt) { onButtonEvent(evt.detail.id, 'touchend', self); };
-    this.onAxisMoved = bind(this.onAxisMoved, this);
     this.controllerPresent = false;
     this.lastControllerCheck = 0;
     this.bindMethods();
@@ -76694,7 +76689,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.9.0 (Date 2019-03-07, Commit #523f1dc)');
+console.log('A-Frame Version: 0.9.0 (Date 2019-03-07, Commit #fa6e610)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
