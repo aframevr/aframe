@@ -86,4 +86,18 @@ suite('obj-model', function () {
     });
     el.setAttribute('obj-model', 'obj', '#obj');
   });
+
+  test('can load .OBJ with reset material', function (done) {
+    var el = this.el;
+    el.setAttribute('material', 'color', 'red');
+    el.addEventListener('object3dset', () => {
+      el.removeAttribute('material');
+      el.setAttribute('material', 'color', 'blue');
+      setTimeout(() => {
+        assert.equal(el.getObject3D('mesh').children[0].material.color.b, 1);
+        done();
+      });
+    });
+    el.setAttribute('obj-model', 'obj', '#obj');
+  });
 });
