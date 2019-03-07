@@ -66977,7 +66977,7 @@ module.exports.Component = registerComponent('oculus-go-controls', {
     buttonTouchedColor: {type: 'color', default: '#BBBBBB'},
     buttonHighlightColor: {type: 'color', default: '#7A7A7A'},
     model: {default: true},
-    rotationOffset: {default: 0},
+    orientationOffset: {type: 'vec3'},
     armModel: {default: true}
   },
 
@@ -67060,7 +67060,7 @@ module.exports.Component = registerComponent('oculus-go-controls', {
     el.setAttribute('tracked-controls', {
       armModel: data.armModel,
       idPrefix: GAMEPAD_ID_PREFIX,
-      rotationOffset: data.rotationOffset
+      orientationOffset: data.orientationOffset
     });
     if (!this.data.model) { return; }
     this.el.setAttribute('gltf-model', OCULUS_GO_CONTROLLER_MODEL_URL);
@@ -70303,7 +70303,7 @@ module.exports.Component = registerComponent('vive-focus-controls', {
     buttonTouchedColor: {type: 'color', default: '#BBBBBB'},
     buttonHighlightColor: {type: 'color', default: '#7A7A7A'},
     model: {default: true},
-    rotationOffset: {default: 0},
+    orientationOffset: {type: 'vec3'},
     armModel: {default: true}
   },
 
@@ -70387,7 +70387,7 @@ module.exports.Component = registerComponent('vive-focus-controls', {
     el.setAttribute('tracked-controls', {
       armModel: data.armModel,
       idPrefix: GAMEPAD_ID_PREFIX,
-      rotationOffset: data.rotationOffset
+      orientationOffset: data.orientationOffset
     });
     if (!this.data.model) { return; }
     this.el.setAttribute('gltf-model', VIVE_FOCUS_CONTROLLER_MODEL_URL);
@@ -76674,7 +76674,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.9.0 (Date 2019-03-05, Commit #d1cb8f4)');
+console.log('A-Frame Version: 0.9.0 (Date 2019-03-07, Commit #4c9a5ae)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
