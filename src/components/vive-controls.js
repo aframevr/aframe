@@ -51,7 +51,6 @@ module.exports.Component = registerComponent('vive-controls', {
     this.onButtonUp = function (evt) { onButtonEvent(evt.detail.id, 'up', self); };
     this.onButtonTouchEnd = function (evt) { onButtonEvent(evt.detail.id, 'touchend', self); };
     this.onButtonTouchStart = function (evt) { onButtonEvent(evt.detail.id, 'touchstart', self); };
-    this.onAxisMoved = bind(this.onAxisMoved, this);
     this.previousButtonValues = {};
     this.rendererSystem = this.el.sceneEl.systems.renderer;
 
