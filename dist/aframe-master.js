@@ -74059,7 +74059,6 @@ module.exports.AScene = registerElement('a-scene', {
         this.isIOS = isIOS;
         this.isMobile = isMobile;
         this.hasWebXR = isWebXRAvailable;
-        this.highRefreshRate = false;
         this.isScene = true;
         this.object3D = new THREE.Scene();
         var self = this;
@@ -74310,9 +74309,15 @@ module.exports.AScene = registerElement('a-scene', {
               enterVRSuccess();
               return Promise.resolve();
             }
+
+            var rendererSystem = this.getAttribute('renderer');
+            var presentationAttributes = {
+              highRefreshRate: rendererSystem.highRefreshRate,
+              foveationLevel: rendererSystem.foveationLevel
+            };
             return vrDisplay.requestPresent([{
               source: this.canvas,
-              attributes: {highRefreshRate: this.highRefreshRate}
+              attributes: presentationAttributes
             }]).then(enterVRSuccess, enterVRFailure);
           }
           return Promise.resolve();
@@ -76689,7 +76694,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.9.0 (Date 2019-03-07, Commit #f3d2517)');
+console.log('A-Frame Version: 0.9.0 (Date 2019-03-07, Commit #523f1dc)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
@@ -78265,17 +78270,18 @@ module.exports.System = registerSystem('renderer', {
     sortObjects: {default: false},
     colorManagement: {default: false},
     gammaOutput: {default: false},
-    alpha: { default: true }
+    alpha: {default: true},
+    foveationLevel: {default: 0}
   },
 
   init: function () {
     var data = this.data;
     var sceneEl = this.el;
+    // This is the rendering engine, such as THREE.js so copy over any persistent properties from the rendering system.
     var renderer = sceneEl.renderer;
 
     renderer.sortObjects = data.sortObjects;
     renderer.physicallyCorrectLights = data.physicallyCorrectLights;
-    sceneEl.highRefreshRate = data.highRefreshRate;
 
     if (data.colorManagement || data.gammaOutput) {
       renderer.gammaOutput = true;
