@@ -1,5 +1,6 @@
 var registerComponent = require('../core/component').registerComponent;
 var bind = require('../utils/bind');
+
 var trackedControlsUtils = require('../utils/tracked-controls');
 var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
 var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
@@ -56,8 +57,6 @@ module.exports.Component = registerComponent('oculus-go-controls', {
     this.lastControllerCheck = 0;
     this.rendererSystem = this.el.sceneEl.systems.renderer;
     this.bindMethods();
-    this.checkControllerPresentAndSetup = checkControllerPresentAndSetup;  // To allow mock.
-    this.emitIfAxesChanged = emitIfAxesChanged;  // To allow mock.
   },
 
   addEventListeners: function () {
@@ -85,7 +84,7 @@ module.exports.Component = registerComponent('oculus-go-controls', {
   },
 
   checkIfControllerPresent: function () {
-    this.checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX,
+    checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX,
                                         this.data.hand ? {hand: this.data.hand} : {});
   },
 
@@ -143,7 +142,7 @@ module.exports.Component = registerComponent('oculus-go-controls', {
   },
 
   onAxisMoved: function (evt) {
-    this.emitIfAxesChanged(this, this.mapping.axes, evt);
+    emitIfAxesChanged(this, this.mapping.axes, evt);
   },
 
   updateModel: function (buttonName, evtName) {
