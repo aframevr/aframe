@@ -979,6 +979,16 @@ suite('Component', function () {
       sinon.assert.notCalled(updateStub);
       assert.equal(HTMLElement.prototype.getAttribute.call(el, 'dummy'), 'color: blue');
     });
+
+    test('flushes false boolean', function () {
+      var el = document.createElement('a-entity');
+      registerComponent('dummy', {
+        schema: {isDurrr: {default: true}}
+      });
+      el.setAttribute('dummy', {isDurrr: false});
+      el.components.dummy.flushToDOM();
+      assert.equal(HTMLElement.prototype.getAttribute.call(el, 'dummy'), 'isDurrr: false');
+    });
   });
 
   suite('play', function () {
