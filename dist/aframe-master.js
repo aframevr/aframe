@@ -64383,8 +64383,9 @@ module.exports.Component = registerComponent('cursor', {
 },{"../core/component":103,"../utils/":176}],55:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var bind = _dereq_('../utils/bind');
-var checkControllerPresentAndSetup = _dereq_('../utils/tracked-controls').checkControllerPresentAndSetup;
+
 var trackedControlsUtils = _dereq_('../utils/tracked-controls');
+var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
 var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
 var onButtonEvent = trackedControlsUtils.onButtonEvent;
 
@@ -64440,8 +64441,6 @@ module.exports.Component = registerComponent('daydream-controls', {
     this.controllerPresent = false;
     this.lastControllerCheck = 0;
     this.bindMethods();
-    this.checkControllerPresentAndSetup = checkControllerPresentAndSetup;  // To allow mock.
-    this.emitIfAxesChanged = emitIfAxesChanged;  // To allow mock.
   },
 
   addEventListeners: function () {
@@ -64469,7 +64468,7 @@ module.exports.Component = registerComponent('daydream-controls', {
   },
 
   checkIfControllerPresent: function () {
-    this.checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX, {hand: this.data.hand});
+    checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX, {hand: this.data.hand});
   },
 
   play: function () {
@@ -64523,7 +64522,7 @@ module.exports.Component = registerComponent('daydream-controls', {
   },
 
   onAxisMoved: function (evt) {
-    this.emitIfAxesChanged(this, this.mapping.axes, evt);
+    emitIfAxesChanged(this, this.mapping.axes, evt);
   },
 
   onButtonChanged: function (evt) {
@@ -64559,6 +64558,7 @@ module.exports.Component = registerComponent('daydream-controls', {
 },{"../core/component":103,"../utils/bind":170,"../utils/tracked-controls":184}],56:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var bind = _dereq_('../utils/bind');
+
 var trackedControlsUtils = _dereq_('../utils/tracked-controls');
 var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
 var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
@@ -64615,8 +64615,6 @@ module.exports.Component = registerComponent('gearvr-controls', {
     this.controllerPresent = false;
     this.lastControllerCheck = 0;
     this.bindMethods();
-    this.checkControllerPresentAndSetup = checkControllerPresentAndSetup;  // To allow mock.
-    this.emitIfAxesChanged = emitIfAxesChanged;  // To allow mock.
   },
 
   addEventListeners: function () {
@@ -64644,7 +64642,7 @@ module.exports.Component = registerComponent('gearvr-controls', {
   },
 
   checkIfControllerPresent: function () {
-    this.checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX,
+    checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX,
                                         this.data.hand ? {hand: this.data.hand} : {});
   },
 
@@ -64704,7 +64702,7 @@ module.exports.Component = registerComponent('gearvr-controls', {
   },
 
   onAxisMoved: function (evt) {
-    this.emitIfAxesChanged(this, this.mapping.axes, evt);
+    emitIfAxesChanged(this, this.mapping.axes, evt);
   },
 
   updateModel: function (buttonName, evtName) {
@@ -66965,6 +66963,7 @@ module.exports.Component = registerComponent('obj-model', {
 },{"../core/component":103,"../lib/three":151,"../utils/debug":172}],68:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var bind = _dereq_('../utils/bind');
+
 var trackedControlsUtils = _dereq_('../utils/tracked-controls');
 var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
 var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
@@ -67020,8 +67019,6 @@ module.exports.Component = registerComponent('oculus-go-controls', {
     this.lastControllerCheck = 0;
     this.rendererSystem = this.el.sceneEl.systems.renderer;
     this.bindMethods();
-    this.checkControllerPresentAndSetup = checkControllerPresentAndSetup;  // To allow mock.
-    this.emitIfAxesChanged = emitIfAxesChanged;  // To allow mock.
   },
 
   addEventListeners: function () {
@@ -67049,7 +67046,7 @@ module.exports.Component = registerComponent('oculus-go-controls', {
   },
 
   checkIfControllerPresent: function () {
-    this.checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX,
+    checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX,
                                         this.data.hand ? {hand: this.data.hand} : {});
   },
 
@@ -67107,7 +67104,7 @@ module.exports.Component = registerComponent('oculus-go-controls', {
   },
 
   onAxisMoved: function (evt) {
-    this.emitIfAxesChanged(this, this.mapping.axes, evt);
+    emitIfAxesChanged(this, this.mapping.axes, evt);
   },
 
   updateModel: function (buttonName, evtName) {
@@ -67139,8 +67136,11 @@ module.exports.Component = registerComponent('oculus-go-controls', {
 },{"../core/component":103,"../utils/bind":170,"../utils/tracked-controls":184}],69:[function(_dereq_,module,exports){
 var bind = _dereq_('../utils/bind');
 var registerComponent = _dereq_('../core/component').registerComponent;
-var trackedControlsUtils = _dereq_('../utils/tracked-controls');
 var THREE = _dereq_('../lib/three');
+
+var trackedControlsUtils = _dereq_('../utils/tracked-controls');
+var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
+var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
 var onButtonEvent = trackedControlsUtils.onButtonEvent;
 
 var TOUCH_CONTROLLER_MODEL_BASE_URL = 'https://cdn.aframe.io/controllers/oculus/oculus-touch-controller-';
@@ -67212,10 +67212,6 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     this.previousButtonValues = {};
     this.rendererSystem = this.el.sceneEl.systems.renderer;
     this.bindMethods();
-
-    // Allow mock.
-    this.emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
-    this.checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
   },
 
   addEventListeners: function () {
@@ -67243,7 +67239,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   },
 
   checkIfControllerPresent: function () {
-    this.checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX, {
+    checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX, {
       hand: this.data.hand
     });
   },
@@ -67339,7 +67335,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   },
 
   onAxisMoved: function (evt) {
-    this.emitIfAxesChanged(this, this.mapping[this.data.hand].axes, evt);
+    emitIfAxesChanged(this, this.mapping[this.data.hand].axes, evt);
   },
 
   updateModel: function (buttonName, evtName) {
@@ -70060,9 +70056,8 @@ module.exports.Component = registerComponent('visible', {
 
 },{"../core/component":103}],91:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
-var utils = _dereq_('../utils/');
+var bind = _dereq_('../utils/bind');
 
-var bind = utils.bind;
 var trackedControlsUtils = _dereq_('../utils/tracked-controls');
 var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
 var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
@@ -70103,9 +70098,7 @@ module.exports.Component = registerComponent('vive-controls', {
 
   init: function () {
     var self = this;
-    this.checkControllerPresentAndSetup = checkControllerPresentAndSetup;  // To allow mock.
     this.controllerPresent = false;
-    this.emitIfAxesChanged = emitIfAxesChanged;  // To allow mock.
     this.lastControllerCheck = 0;
     this.onButtonChanged = bind(this.onButtonChanged, this);
     this.onButtonDown = function (evt) { onButtonEvent(evt.detail.id, 'down', self); };
@@ -70162,14 +70155,14 @@ module.exports.Component = registerComponent('vive-controls', {
 
   /**
    * Once OpenVR returns correct hand data in supporting browsers, we can use hand property.
-   * var isPresent = this.checkControllerPresentAndSetup(this.el.sceneEl, GAMEPAD_ID_PREFIX,
+   * var isPresent = checkControllerPresentAndSetup(this.el.sceneEl, GAMEPAD_ID_PREFIX,
                                                         { hand: data.hand });
    * Until then, use hardcoded index.
    */
   checkIfControllerPresent: function () {
     var data = this.data;
     var controllerIndex = data.hand === 'right' ? 0 : data.hand === 'left' ? 1 : 2;
-    this.checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX, {index: controllerIndex});
+    checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX, {index: controllerIndex});
   },
 
   injectTrackedControls: function () {
@@ -70254,7 +70247,7 @@ module.exports.Component = registerComponent('vive-controls', {
   },
 
   onAxisMoved: function (evt) {
-    this.emitIfAxesChanged(this, this.mapping.axes, evt);
+    emitIfAxesChanged(this, this.mapping.axes, evt);
   },
 
   updateModel: function (buttonName, evtName) {
@@ -70290,9 +70283,10 @@ module.exports.Component = registerComponent('vive-controls', {
   }
 });
 
-},{"../core/component":103,"../utils/":176,"../utils/tracked-controls":184}],92:[function(_dereq_,module,exports){
+},{"../core/component":103,"../utils/bind":170,"../utils/tracked-controls":184}],92:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var bind = _dereq_('../utils/bind');
+
 var trackedControlsUtils = _dereq_('../utils/tracked-controls');
 var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
 var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
@@ -70346,8 +70340,6 @@ module.exports.Component = registerComponent('vive-focus-controls', {
     this.controllerPresent = false;
     this.lastControllerCheck = 0;
     this.bindMethods();
-    this.checkControllerPresentAndSetup = checkControllerPresentAndSetup;  // To allow mock.
-    this.emitIfAxesChanged = emitIfAxesChanged;  // To allow mock.
   },
 
   addEventListeners: function () {
@@ -70377,7 +70369,7 @@ module.exports.Component = registerComponent('vive-focus-controls', {
   },
 
   checkIfControllerPresent: function () {
-    this.checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX,
+    checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX,
                                         this.data.hand ? {hand: this.data.hand} : {});
   },
 
@@ -70442,7 +70434,7 @@ module.exports.Component = registerComponent('vive-focus-controls', {
   },
 
   onAxisMoved: function (evt) {
-    this.emitIfAxesChanged(this, this.mapping.axes, evt);
+    emitIfAxesChanged(this, this.mapping.axes, evt);
   },
 
   updateModel: function (buttonName, evtName) {
@@ -70687,10 +70679,14 @@ function isEmptyObject (keys) {
 
 },{"../constants":95,"../core/component":103,"../lib/three":151,"../utils/":176}],94:[function(_dereq_,module,exports){
 /* global THREE */
-var bind = _dereq_('../utils/bind');
 var registerComponent = _dereq_('../core/component').registerComponent;
+var bind = _dereq_('../utils/bind');
+
 var trackedControlsUtils = _dereq_('../utils/tracked-controls');
+var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
+var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
 var onButtonEvent = trackedControlsUtils.onButtonEvent;
+
 var utils = _dereq_('../utils/');
 
 var debug = utils.debug('components:windows-motion-controls:debug');
@@ -70785,10 +70781,6 @@ module.exports.Component = registerComponent('windows-motion-controls', {
       createdFromMesh: false
     };
 
-    // Stored on object to allow for mocking in tests
-    this.emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
-    this.checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
-
     el.addEventListener('controllerconnected', this.onControllerConnected);
     el.addEventListener('controllerdisconnected', this.onControllerDisconnected);
   },
@@ -70820,7 +70812,7 @@ module.exports.Component = registerComponent('windows-motion-controls', {
   },
 
   checkIfControllerPresent: function () {
-    this.checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX, {
+    checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX, {
       hand: this.data.hand,
       index: this.data.pair
     });
@@ -71122,7 +71114,7 @@ module.exports.Component = registerComponent('windows-motion-controls', {
       }
     }
 
-    this.emitIfAxesChanged(this, this.mapping.axes, evt);
+    emitIfAxesChanged(this, this.mapping.axes, evt);
   },
 
   setModelVisibility: function (visible) {
@@ -76689,7 +76681,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.9.0 (Date 2019-03-07, Commit #fa6e610)');
+console.log('A-Frame Version: 0.9.0 (Date 2019-03-08, Commit #f241920)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
