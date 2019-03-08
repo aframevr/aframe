@@ -240,7 +240,7 @@ Component.prototype = {
    */
   flushToDOM: function (isDefault) {
     var attrValue = isDefault ? this.data : this.attrValue;
-    if (!attrValue) { return; }
+    if (attrValue === null || attrValue === undefined) { return; }
     window.HTMLElement.prototype.setAttribute.call(this.el, this.attrName,
                                                    this.stringify(attrValue));
   },
