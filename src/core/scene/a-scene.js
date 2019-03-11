@@ -797,7 +797,7 @@ function requestFullscreen (canvas) {
     canvas.webkitRequestFullscreen ||
     canvas.mozRequestFullScreen ||  // The capitalized `S` is not a typo.
     canvas.msRequestFullscreen;
-  requestFullscreen.apply(canvas);
+  requestFullscreen.apply(canvas, [{ navigationUI: "hide" }]); //hide annoying navigation buttons on android
 }
 
 function exitFullscreen () {
