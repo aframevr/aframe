@@ -159,14 +159,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
       }
     }
 
-    // Potentially update the modelUrl used to load the model. This is used when testing/debugging
-    // new models. However, the ray cast origin and pivot point are still determined by the base controller
-    // properties. If necessary an override can be added for those properties as well.
     var modelUrl = this.displayModel[data.hand].modelUrl;
-    if (this.data.modelUrl !== '') {
-      modelUrl = this.data.modelUrl;
-    }
-
     this.el.setAttribute('gltf-model', 'url(' + modelUrl + ')');
   },
 
