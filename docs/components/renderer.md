@@ -3,7 +3,7 @@ title: renderer
 type: components
 layout: docs
 parent_section: components
-source_code: src/components/renderer.js
+source_code: src/systems/renderer.js
 examples: []
 ---
 
