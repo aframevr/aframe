@@ -118,7 +118,7 @@ and publishing now, remix the starter example on
 ```
 
 With A-Frame's [entity-component
-architecture](https://aframe.io/docs/0.9.0/core/), we can drop in community
+architecture](https://aframe.io/docs/0.9.0/introduction/entity-component-system.html), we can drop in community
 components from the ecosystem (e.g., ocean, physics) and plug them into our
 objects straight from HTML:
 
