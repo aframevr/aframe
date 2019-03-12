@@ -48,13 +48,14 @@ module.exports.Component = registerComponent('obj-model', {
     var mtlLoader = this.mtlLoader;
     var objLoader = this.objLoader;
     var rendererSystem = this.el.sceneEl.systems.renderer;
+    var BASE_PATH = mtlUrl.substr(0, mtlUrl.lastIndexOf('/') + 1);
 
     if (mtlUrl) {
       // .OBJ with an .MTL.
       if (el.hasAttribute('material')) {
         warn('Material component properties are ignored when a .MTL is provided');
       }
-      mtlLoader.setTexturePath(mtlUrl.substr(0, mtlUrl.lastIndexOf('/') + 1));
+      mtlLoader.setResourcePath(BASE_PATH);
       mtlLoader.load(mtlUrl, function (materials) {
         materials.preload();
         objLoader.setMaterials(materials);
