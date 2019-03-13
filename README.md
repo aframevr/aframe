@@ -27,7 +27,7 @@
   &mdash;
   <a href="https://aframe.io/school/">School</a>
   &mdash;
-  <a href="https://aframevr-slack.herokuapp.com">Slack</a>
+  <a href="https://aframe.io/slack-invite/">Slack</a>
   &mdash;
   <a href="https://aframe.io/blog/">Blog</a>
 </div>
