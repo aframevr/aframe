@@ -262,6 +262,7 @@ var proto = Object.create(ANode.prototype, {
         this.object3D.remove(el.object3D);
       } else {
         this.object3D.remove(...this.object3D.children);
+        this.parentNode.removeChild(this);
       }
     }
   },
