@@ -15,7 +15,7 @@ window.addEventListener('vrdisplayactivate', function () {
   var vrDisplay;
 
   // WebXR takes priority if available.
-  if (navigator.xr) { return; }
+  if (navigator.xr && navigator.xr.requestDevice) { return; }
 
   vrDisplay = utils.device.getVRDisplay();
   vrManager.setDevice(vrDisplay);
