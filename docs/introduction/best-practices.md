@@ -247,7 +247,7 @@ performance code because they will be run 90 times per second.
 
 ## VR Design
 
-[oculus]: https://developer.oculus.com/documentation/intro-vr/latest/concepts/bp_intro/
+[oculus]: https://developer.oculus.com/design/latest/concepts/book-bp/
 
 Designing for VR is different than designing for flat experiences. As a new
 medium, there are new sets of best practices to follow, especially to maintain
