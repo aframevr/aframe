@@ -286,6 +286,12 @@ module.exports.AScene = registerElement('a-scene', {
               enterVRSuccess();
             });
           } else {
+            // WebVR API.
+            if (vrDisplay.isPresenting) {
+              enterVRSuccess();
+              return Promise.resolve();
+            }
+
             var rendererSystem = this.getAttribute('renderer');
             var presentationAttributes = {
               highRefreshRate: rendererSystem.highRefreshRate,
@@ -618,11 +624,10 @@ module.exports.AScene = registerElement('a-scene', {
         }
 
         this.addEventListener('loaded', function () {
-          var renderer = this.renderer;
-          var vrManager = this.renderer.vr;
           AEntity.prototype.play.call(this);  // .play() *before* render.
 
           if (sceneEl.renderStarted) { return; }
+
           sceneEl.resize();
 
           // Kick off render loop.
@@ -630,12 +635,7 @@ module.exports.AScene = registerElement('a-scene', {
             if (window.performance) { window.performance.mark('render-started'); }
             sceneEl.clock = new THREE.Clock();
             loadingScreen.remove();
-            if (utils.device.getVRDisplay().isPresenting) {
-              vrManager.setDevice(utils.device.getVRDisplay());
-              vrManager.enabled = true;
-              sceneEl.enterVR();
-            }
-            renderer.setAnimationLoop(this.render);
+            sceneEl.renderer.setAnimationLoop(this.render);
             sceneEl.render();
             sceneEl.renderStarted = true;
             sceneEl.emit('renderstart');
