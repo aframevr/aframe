@@ -9,6 +9,22 @@ var getSceneCanvasSize;
 var ATTR_NAME = 'loading-screen';
 var LOADER_TITLE_CLASS = 'a-loader-title';
 
+// It catches vrdisplayactivate early to ensure we can enter VR mode after the scene loads.
+window.addEventListener('vrdisplayactivate', function () {
+  var vrManager = sceneEl.renderer.vr;
+  var vrDisplay;
+
+  // WebXR takes priority if available.
+  if (navigator.xr) { return; }
+
+  vrDisplay = utils.device.getVRDisplay();
+  vrManager.setDevice(vrDisplay);
+  vrManager.enabled = true;
+  if (!vrDisplay.isPresenting) {
+    return vrDisplay.requestPresent([{source: sceneEl.canvas}]).then(function () {}, function () {});
+  }
+});
+
 module.exports.setup = function setup (el, getCanvasSize) {
   sceneEl = el;
   getSceneCanvasSize = getCanvasSize;
