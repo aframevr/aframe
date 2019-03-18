@@ -74544,12 +74544,6 @@ module.exports.AScene = registerElement('a-scene', {
               enterVRSuccess();
             });
           } else {
-            // WebVR API.
-            if (vrDisplay.isPresenting) {
-              enterVRSuccess();
-              return Promise.resolve();
-            }
-
             var rendererSystem = this.getAttribute('renderer');
             var presentationAttributes = {
               highRefreshRate: rendererSystem.highRefreshRate,
@@ -74882,10 +74876,11 @@ module.exports.AScene = registerElement('a-scene', {
         }
 
         this.addEventListener('loaded', function () {
+          var renderer = this.renderer;
+          var vrManager = this.renderer.vr;
           AEntity.prototype.play.call(this);  // .play() *before* render.
 
           if (sceneEl.renderStarted) { return; }
-
           sceneEl.resize();
 
           // Kick off render loop.
@@ -74893,7 +74888,12 @@ module.exports.AScene = registerElement('a-scene', {
             if (window.performance) { window.performance.mark('render-started'); }
             sceneEl.clock = new THREE.Clock();
             loadingScreen.remove();
-            sceneEl.renderer.setAnimationLoop(this.render);
+            if (utils.device.getVRDisplay().isPresenting) {
+              vrManager.setDevice(utils.device.getVRDisplay());
+              vrManager.enabled = true;
+              sceneEl.enterVR();
+            }
+            renderer.setAnimationLoop(this.render);
             sceneEl.render();
             sceneEl.renderStarted = true;
             sceneEl.emit('renderstart');
@@ -75115,22 +75115,6 @@ var getSceneCanvasSize;
 
 var ATTR_NAME = 'loading-screen';
 var LOADER_TITLE_CLASS = 'a-loader-title';
-
-// It catches vrdisplayactivate early to ensure we can enter VR mode after the scene loads.
-window.addEventListener('vrdisplayactivate', function () {
-  var vrManager = sceneEl.renderer.vr;
-  var vrDisplay;
-
-  // WebXR takes priority if available.
-  if (navigator.xr) { return; }
-
-  vrDisplay = utils.device.getVRDisplay();
-  vrManager.setDevice(vrDisplay);
-  vrManager.enabled = true;
-  if (!vrDisplay.isPresenting) {
-    return vrDisplay.requestPresent([{source: sceneEl.canvas}]).then(function () {}, function () {});
-  }
-});
 
 module.exports.setup = function setup (el, getCanvasSize) {
   sceneEl = el;
@@ -76934,7 +76918,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.9.0 (Date 2019-03-15, Commit #789eed3)');
+console.log('A-Frame Version: 0.9.0 (Date 2019-03-18, Commit #55172bb)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
@@ -78926,6 +78910,17 @@ module.exports = debug;
 var error = _dereq_('debug')('device:error');
 
 var vrDisplay;
+
+// Catch vrdisplayactivate early to ensure we can enter VR mode after the scene loads.
+window.addEventListener('vrdisplayactivate', function (evt) {
+  var canvasEl;
+  // WebXR takes priority if available.
+  if (navigator.xr) { return; }
+  canvasEl = document.createElement('canvas');
+  vrDisplay = evt.display;
+  // Request present immediately. a-scene will be allowed to enter VR without user gesture.
+  vrDisplay.requestPresent([{source: canvasEl}]).then(function () {}, function () {});
+});
 
 // Support both WebVR and WebXR APIs.
 if (navigator.xr) {
