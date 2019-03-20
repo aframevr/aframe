@@ -2,7 +2,7 @@ var error = require('debug')('device:error');
 
 var vrDisplay;
 
-// It catches vrdisplayactivate early to ensure we can enter VR mode after the scene loads.
+// Catch vrdisplayactivate early to ensure we can enter VR mode after the scene loads.
 window.addEventListener('vrdisplayactivate', function (evt) {
   var canvasEl;
   // WebXR takes priority if available.
