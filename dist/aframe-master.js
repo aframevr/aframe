@@ -19989,6 +19989,10 @@ module.exports = anime;
 			var tempB = new Vector3();
 			var tempC = new Vector3();
 
+			var morphA = new Vector3();
+			var morphB = new Vector3();
+			var morphC = new Vector3();
+
 			var uvA = new Vector2();
 			var uvB = new Vector2();
 			var uvC = new Vector2();
@@ -20027,11 +20031,42 @@ module.exports = anime;
 
 			}
 
-			function checkBufferGeometryIntersection( object, material, raycaster, ray, position, uv, a, b, c ) {
+			function checkBufferGeometryIntersection( object, material, raycaster, ray, position, morphPosition, uv, a, b, c ) {
 
 				vA.fromBufferAttribute( position, a );
 				vB.fromBufferAttribute( position, b );
 				vC.fromBufferAttribute( position, c );
+
+				var morphInfluences = object.morphTargetInfluences;
+
+				if ( material.morphTargets && morphPosition && morphInfluences ) {
+
+					morphA.set( 0, 0, 0 );
+					morphB.set( 0, 0, 0 );
+					morphC.set( 0, 0, 0 );
+
+					for ( var i = 0, il = morphPosition.length; i < il; i ++ ) {
+
+						var influence = morphInfluences[ i ];
+						var morphAttribute = morphPosition[ i ];
+
+						if ( influence === 0 ) continue;
+
+						tempA.fromBufferAttribute( morphAttribute, a );
+						tempB.fromBufferAttribute( morphAttribute, b );
+						tempC.fromBufferAttribute( morphAttribute, c );
+
+						morphA.addScaledVector( tempA.sub( vA ), influence );
+						morphB.addScaledVector( tempB.sub( vB ), influence );
+						morphC.addScaledVector( tempC.sub( vC ), influence );
+
+					}
+
+					vA.add( morphA );
+					vB.add( morphB );
+					vC.add( morphC );
+
+				}
 
 				var intersection = checkIntersection( object, material, raycaster, ray, vA, vB, vC, intersectionPoint );
 
@@ -20095,6 +20130,7 @@ module.exports = anime;
 					var a, b, c;
 					var index = geometry.index;
 					var position = geometry.attributes.position;
+					var morphPosition = geometry.morphAttributes.position;
 					var uv = geometry.attributes.uv;
 					var groups = geometry.groups;
 					var drawRange = geometry.drawRange;
@@ -20122,7 +20158,7 @@ module.exports = anime;
 									b = index.getX( j + 1 );
 									c = index.getX( j + 2 );
 
-									intersection = checkBufferGeometryIntersection( this, groupMaterial, raycaster, ray, position, uv, a, b, c );
+									intersection = checkBufferGeometryIntersection( this, groupMaterial, raycaster, ray, position, morphPosition, uv, a, b, c );
 
 									if ( intersection ) {
 
@@ -20147,7 +20183,7 @@ module.exports = anime;
 								b = index.getX( i + 1 );
 								c = index.getX( i + 2 );
 
-								intersection = checkBufferGeometryIntersection( this, material, raycaster, ray, position, uv, a, b, c );
+								intersection = checkBufferGeometryIntersection( this, material, raycaster, ray, position, morphPosition, uv, a, b, c );
 
 								if ( intersection ) {
 
@@ -20180,7 +20216,7 @@ module.exports = anime;
 									b = j + 1;
 									c = j + 2;
 
-									intersection = checkBufferGeometryIntersection( this, groupMaterial, raycaster, ray, position, uv, a, b, c );
+									intersection = checkBufferGeometryIntersection( this, groupMaterial, raycaster, ray, position, morphPosition, uv, a, b, c );
 
 									if ( intersection ) {
 
@@ -20205,7 +20241,7 @@ module.exports = anime;
 								b = i + 1;
 								c = i + 2;
 
-								intersection = checkBufferGeometryIntersection( this, material, raycaster, ray, position, uv, a, b, c );
+								intersection = checkBufferGeometryIntersection( this, material, raycaster, ray, position, morphPosition, uv, a, b, c );
 
 								if ( intersection ) {
 
@@ -20242,39 +20278,6 @@ module.exports = anime;
 						fvA = vertices[ face.a ];
 						fvB = vertices[ face.b ];
 						fvC = vertices[ face.c ];
-
-						if ( faceMaterial.morphTargets === true ) {
-
-							var morphTargets = geometry.morphTargets;
-							var morphInfluences = this.morphTargetInfluences;
-
-							vA.set( 0, 0, 0 );
-							vB.set( 0, 0, 0 );
-							vC.set( 0, 0, 0 );
-
-							for ( var t = 0, tl = morphTargets.length; t < tl; t ++ ) {
-
-								var influence = morphInfluences[ t ];
-
-								if ( influence === 0 ) continue;
-
-								var targets = morphTargets[ t ].vertices;
-
-								vA.addScaledVector( tempA.subVectors( targets[ face.a ], fvA ), influence );
-								vB.addScaledVector( tempB.subVectors( targets[ face.b ], fvB ), influence );
-								vC.addScaledVector( tempC.subVectors( targets[ face.c ], fvC ), influence );
-
-							}
-
-							vA.add( fvA );
-							vB.add( fvB );
-							vC.add( fvC );
-
-							fvA = vA;
-							fvB = vB;
-							fvC = vC;
-
-						}
 
 						intersection = checkIntersection( this, faceMaterial, raycaster, ray, fvA, fvB, fvC, intersectionPoint );
 
@@ -27453,26 +27456,13 @@ module.exports = anime;
 
 		function onVRDisplayPresentChange() {
 
+			updateDrawingBufferSize();
+
 			if ( isPresenting() ) {
-
-				var eyeParameters = device.getEyeParameters( 'left' );
-				var renderWidth = eyeParameters.renderWidth * framebufferScaleFactor;
-				var renderHeight = eyeParameters.renderHeight * framebufferScaleFactor;
-
-				currentPixelRatio = renderer.getPixelRatio();
-				renderer.getSize( currentSize );
-
-				renderer.setDrawingBufferSize( renderWidth * 2, renderHeight, 1 );
 
 				animation.start();
 
 			} else {
-
-				if ( scope.enabled ) {
-
-					renderer.setDrawingBufferSize( currentSize.width, currentSize.height, currentPixelRatio );
-
-				}
 
 				animation.stop();
 
@@ -27500,6 +27490,31 @@ module.exports = anime;
 					if ( j === id ) return gamepad;
 
 					j ++;
+
+				}
+
+			}
+
+		}
+
+		function updateDrawingBufferSize() {
+
+			if ( isPresenting() ) {
+
+				var eyeParameters = device.getEyeParameters( 'left' );
+				var renderWidth = eyeParameters.renderWidth * framebufferScaleFactor;
+				var renderHeight = eyeParameters.renderHeight * framebufferScaleFactor;
+
+				renderer.setDrawingBufferSize( renderWidth * 2, renderHeight, 1 );
+
+			} else {
+
+				if ( scope.enabled ) {
+
+					currentPixelRatio = renderer.getPixelRatio();
+					renderer.getSize( currentSize );
+
+					renderer.setDrawingBufferSize( currentSize.width, currentSize.height, currentPixelRatio );
 
 				}
 
@@ -27597,6 +27612,10 @@ module.exports = anime;
 			if ( value !== undefined ) device = value;
 
 			animation.setContext( value );
+
+			updateDrawingBufferSize();
+
+			if ( isPresenting() ) animation.start();
 
 		};
 
@@ -27767,7 +27786,7 @@ module.exports = anime;
 
 			animation.setAnimationLoop( callback );
 
-			if ( isPresenting() ) { animation.start(); }
+			if ( isPresenting() ) animation.start();
 
 		};
 
@@ -29269,6 +29288,10 @@ module.exports = anime;
 
 			//
 
+			scene.onAfterRender( _this, scene, camera );
+
+			//
+
 			if ( _currentRenderTarget !== null ) {
 
 				// Generate mipmap if we're using any kind of mipmap filtering
@@ -29288,8 +29311,6 @@ module.exports = anime;
 			state.buffers.color.setMask( true );
 
 			state.setPolygonOffset( false );
-
-			scene.onAfterRender( _this, scene, camera );
 
 			if ( vr.enabled ) {
 
@@ -63444,7 +63465,7 @@ module.exports={
     "promise-polyfill": "^3.1.0",
     "style-attr": "^1.0.2",
     "super-animejs": "^3.0.0",
-    "super-three": "^0.102.1",
+    "super-three": "^0.102.2",
     "three-bmfont-text": "^2.1.0",
     "webvr-polyfill": "^0.10.10"
   },
@@ -74296,6 +74317,7 @@ module.exports.AScene = registerElement('a-scene', {
   prototype: Object.create(AEntity.prototype, {
     createdCallback: {
       value: function () {
+        this.clock = new THREE.Clock();
         this.isIOS = isIOS;
         this.isMobile = isMobile;
         this.hasWebXR = isWebXRAvailable;
@@ -74523,8 +74545,8 @@ module.exports.AScene = registerElement('a-scene', {
         // Has VR.
         if (this.checkHeadsetConnected() || this.isMobile) {
           vrDisplay = utils.device.getVRDisplay();
-          vrManager.setDevice(vrDisplay);
           vrManager.enabled = true;
+          vrManager.setDevice(vrDisplay);
 
           if (this.hasWebXR) {
             // XR API.
@@ -74544,17 +74566,12 @@ module.exports.AScene = registerElement('a-scene', {
               enterVRSuccess();
             });
           } else {
-            // WebVR API.
-            if (vrDisplay.isPresenting) {
-              enterVRSuccess();
-              return Promise.resolve();
-            }
-
             var rendererSystem = this.getAttribute('renderer');
             var presentationAttributes = {
               highRefreshRate: rendererSystem.highRefreshRate,
               foveationLevel: rendererSystem.foveationLevel
             };
+
             return vrDisplay.requestPresent([{
               source: this.canvas,
               attributes: presentationAttributes
@@ -74584,6 +74601,8 @@ module.exports.AScene = registerElement('a-scene', {
           if (!self.isMobile && !self.checkHeadsetConnected()) {
             requestFullscreen(self.canvas);
           }
+
+          self.renderer.setAnimationLoop(self.render);
           self.resize();
         }
 
@@ -74882,19 +74901,23 @@ module.exports.AScene = registerElement('a-scene', {
         }
 
         this.addEventListener('loaded', function () {
+          var renderer = this.renderer;
+          var vrManager = this.renderer.vr;
           AEntity.prototype.play.call(this);  // .play() *before* render.
 
           if (sceneEl.renderStarted) { return; }
-
           sceneEl.resize();
 
           // Kick off render loop.
           if (sceneEl.renderer) {
             if (window.performance) { window.performance.mark('render-started'); }
-            sceneEl.clock = new THREE.Clock();
             loadingScreen.remove();
-            sceneEl.renderer.setAnimationLoop(this.render);
-            sceneEl.render();
+            if (utils.device.getVRDisplay().isPresenting) {
+              vrManager.setDevice(utils.device.getVRDisplay());
+              vrManager.enabled = true;
+              sceneEl.enterVR();
+            }
+            renderer.setAnimationLoop(this.render);
             sceneEl.renderStarted = true;
             sceneEl.emit('renderstart');
           }
@@ -75115,22 +75138,6 @@ var getSceneCanvasSize;
 
 var ATTR_NAME = 'loading-screen';
 var LOADER_TITLE_CLASS = 'a-loader-title';
-
-// It catches vrdisplayactivate early to ensure we can enter VR mode after the scene loads.
-window.addEventListener('vrdisplayactivate', function () {
-  var vrManager = sceneEl.renderer.vr;
-  var vrDisplay;
-
-  // WebXR takes priority if available.
-  if (navigator.xr) { return; }
-
-  vrDisplay = utils.device.getVRDisplay();
-  vrManager.setDevice(vrDisplay);
-  vrManager.enabled = true;
-  if (!vrDisplay.isPresenting) {
-    return vrDisplay.requestPresent([{source: sceneEl.canvas}]).then(function () {}, function () {});
-  }
-});
 
 module.exports.setup = function setup (el, getCanvasSize) {
   sceneEl = el;
@@ -76934,7 +76941,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.9.0 (Date 2019-03-18, Commit #9c9dd8c)');
+console.log('A-Frame Version: 0.9.0 (Date 2019-03-20, Commit #c02d7c1)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
@@ -78926,6 +78933,17 @@ module.exports = debug;
 var error = _dereq_('debug')('device:error');
 
 var vrDisplay;
+
+// Catch vrdisplayactivate early to ensure we can enter VR mode after the scene loads.
+window.addEventListener('vrdisplayactivate', function (evt) {
+  var canvasEl;
+  // WebXR takes priority if available.
+  if (navigator.xr) { return; }
+  canvasEl = document.createElement('canvas');
+  vrDisplay = evt.display;
+  // Request present immediately. a-scene will be allowed to enter VR without user gesture.
+  vrDisplay.requestPresent([{source: canvasEl}]).then(function () {}, function () {});
+});
 
 // Support both WebVR and WebXR APIs.
 if (navigator.xr) {
