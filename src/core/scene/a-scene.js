@@ -58,7 +58,6 @@ module.exports.AScene = registerElement('a-scene', {
         this.hasLoaded = false;
         this.isPlaying = false;
         this.originalHTML = this.innerHTML;
-        this.renderTarget = null;
 
         // Default components.
         this.setAttribute('inspector', '');
@@ -727,7 +726,7 @@ module.exports.AScene = registerElement('a-scene', {
 
         if (this.isPlaying) { this.tick(this.time, this.delta); }
 
-        renderer.render(this.object3D, this.camera, this.renderTarget);
+        renderer.render(this.object3D, this.camera);
       },
       writable: true
     }
