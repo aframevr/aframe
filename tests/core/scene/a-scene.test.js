@@ -141,7 +141,9 @@ suite('a-scene (without renderer)', function () {
           getDevice: function () {},
           setDevice: function () {},
           setPoseTarget: function () {}
-        }
+        },
+        getContext: function () { return undefined; },
+        setAnimationLoop: function () {}
       };
 
       // mock camera

@@ -38,6 +38,7 @@ module.exports.AScene = registerElement('a-scene', {
   prototype: Object.create(AEntity.prototype, {
     createdCallback: {
       value: function () {
+        this.clock = new THREE.Clock();
         this.isIOS = isIOS;
         this.isMobile = isMobile;
         this.hasWebXR = isWebXRAvailable;
@@ -265,8 +266,8 @@ module.exports.AScene = registerElement('a-scene', {
         // Has VR.
         if (this.checkHeadsetConnected() || this.isMobile) {
           vrDisplay = utils.device.getVRDisplay();
-          vrManager.setDevice(vrDisplay);
           vrManager.enabled = true;
+          vrManager.setDevice(vrDisplay);
 
           if (this.hasWebXR) {
             // XR API.
@@ -286,17 +287,12 @@ module.exports.AScene = registerElement('a-scene', {
               enterVRSuccess();
             });
           } else {
-            // WebVR API.
-            if (vrDisplay.isPresenting) {
-              enterVRSuccess();
-              return Promise.resolve();
-            }
-
             var rendererSystem = this.getAttribute('renderer');
             var presentationAttributes = {
               highRefreshRate: rendererSystem.highRefreshRate,
               foveationLevel: rendererSystem.foveationLevel
             };
+
             return vrDisplay.requestPresent([{
               source: this.canvas,
               attributes: presentationAttributes
@@ -326,6 +322,8 @@ module.exports.AScene = registerElement('a-scene', {
           if (!self.isMobile && !self.checkHeadsetConnected()) {
             requestFullscreen(self.canvas);
           }
+
+          self.renderer.setAnimationLoop(self.render);
           self.resize();
         }
 
@@ -624,19 +622,23 @@ module.exports.AScene = registerElement('a-scene', {
         }
 
         this.addEventListener('loaded', function () {
+          var renderer = this.renderer;
+          var vrManager = this.renderer.vr;
           AEntity.prototype.play.call(this);  // .play() *before* render.
 
           if (sceneEl.renderStarted) { return; }
-
           sceneEl.resize();
 
           // Kick off render loop.
           if (sceneEl.renderer) {
             if (window.performance) { window.performance.mark('render-started'); }
-            sceneEl.clock = new THREE.Clock();
             loadingScreen.remove();
-            sceneEl.renderer.setAnimationLoop(this.render);
-            sceneEl.render();
+            if (utils.device.getVRDisplay().isPresenting) {
+              vrManager.setDevice(utils.device.getVRDisplay());
+              vrManager.enabled = true;
+              sceneEl.enterVR();
+            }
+            renderer.setAnimationLoop(this.render);
             sceneEl.renderStarted = true;
             sceneEl.emit('renderstart');
           }
