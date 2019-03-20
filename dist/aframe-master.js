@@ -74337,7 +74337,6 @@ module.exports.AScene = registerElement('a-scene', {
         this.hasLoaded = false;
         this.isPlaying = false;
         this.originalHTML = this.innerHTML;
-        this.renderTarget = null;
 
         // Default components.
         this.setAttribute('inspector', '');
@@ -75006,7 +75005,7 @@ module.exports.AScene = registerElement('a-scene', {
 
         if (this.isPlaying) { this.tick(this.time, this.delta); }
 
-        renderer.render(this.object3D, this.camera, this.renderTarget);
+        renderer.render(this.object3D, this.camera);
       },
       writable: true
     }
@@ -76941,7 +76940,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.9.0 (Date 2019-03-20, Commit #c02d7c1)');
+console.log('A-Frame Version: 0.9.0 (Date 2019-03-20, Commit #e3784f4)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
@@ -77793,13 +77792,13 @@ module.exports.System = registerSystem('camera', {
     this.originalRender = undefined;
   },
 
-  render: function (scene, camera, renderTarget) {
+  render: function (scene, camera) {
     var isVREnabled;
     var sceneEl = this.sceneEl;
     var spectatorCamera;
 
     isVREnabled = sceneEl.renderer.vr.enabled;
-    this.originalRender.call(sceneEl.renderer, scene, camera, renderTarget);
+    this.originalRender.call(sceneEl.renderer, scene, camera);
     if (!this.spectatorCameraEl || sceneEl.isMobile || !isVREnabled) { return; }
     spectatorCamera = this.spectatorCameraEl.components.camera.camera;
     sceneEl.renderer.vr.enabled = false;
