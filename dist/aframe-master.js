@@ -69149,8 +69149,6 @@ module.exports.Component = registerComponent('sound', {
     this.loaded = false;
     this.mustPlay = false;
 
-    this.onEnded = this.onEnded.bind(this);
-
     // Don't pass evt because playSound takes a function as parameter.
     this.playSoundBound = function () { self.playSound(); };
   },
@@ -69257,6 +69255,7 @@ module.exports.Component = registerComponent('sound', {
     var el = this.el;
     var i;
     var sceneEl = el.sceneEl;
+    var self = this;
     var sound;
 
     if (this.pool.children.length > 0) {
@@ -69289,13 +69288,11 @@ module.exports.Component = registerComponent('sound', {
 
     for (i = 0; i < this.pool.children.length; i++) {
       sound = this.pool.children[i];
-      sound.onEnded = this.onEnded;
+      sound.onEnded = function () {
+        sound.isPlaying = false;
+        self.el.emit('sound-ended', self.evtDetail, false);
+      };
     }
-  },
-
-  onEnded: function () {
-    this.isPlaying = false;
-    this.el.emit('sound-ended', this.evtDetail, false);
   },
 
   /**
@@ -76940,7 +76937,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.9.0 (Date 2019-03-20, Commit #e3784f4)');
+console.log('A-Frame Version: 0.9.0 (Date 2019-03-23, Commit #d646d2b)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
