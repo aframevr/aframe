@@ -33,8 +33,6 @@ module.exports.Component = registerComponent('sound', {
     this.loaded = false;
     this.mustPlay = false;
 
-    this.onEnded = this.onEnded.bind(this);
-
     // Don't pass evt because playSound takes a function as parameter.
     this.playSoundBound = function () { self.playSound(); };
   },
@@ -141,6 +139,7 @@ module.exports.Component = registerComponent('sound', {
     var el = this.el;
     var i;
     var sceneEl = el.sceneEl;
+    var self = this;
     var sound;
 
     if (this.pool.children.length > 0) {
@@ -173,13 +172,11 @@ module.exports.Component = registerComponent('sound', {
 
     for (i = 0; i < this.pool.children.length; i++) {
       sound = this.pool.children[i];
-      sound.onEnded = this.onEnded;
+      sound.onEnded = function () {
+        sound.isPlaying = false;
+        self.el.emit('sound-ended', self.evtDetail, false);
+      };
     }
-  },
-
-  onEnded: function () {
-    this.isPlaying = false;
-    this.el.emit('sound-ended', this.evtDetail, false);
   },
 
   /**
