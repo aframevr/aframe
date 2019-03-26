@@ -75074,7 +75074,8 @@ function requestFullscreen (canvas) {
     canvas.webkitRequestFullscreen ||
     canvas.mozRequestFullScreen ||  // The capitalized `S` is not a typo.
     canvas.msRequestFullscreen;
-  requestFullscreen.apply(canvas);
+  // Hide navigation buttons on Android.
+  requestFullscreen.apply(canvas, [{navigationUI: 'hide'}]);
 }
 
 function exitFullscreen () {
@@ -76937,7 +76938,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.9.0 (Date 2019-03-23, Commit #d646d2b)');
+console.log('A-Frame Version: 0.9.0 (Date 2019-03-26, Commit #54785ed)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
