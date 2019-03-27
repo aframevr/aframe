@@ -69289,7 +69289,7 @@ module.exports.Component = registerComponent('sound', {
     for (i = 0; i < this.pool.children.length; i++) {
       sound = this.pool.children[i];
       sound.onEnded = function () {
-        sound.isPlaying = false;
+        this.isPlaying = false;
         self.el.emit('sound-ended', self.evtDetail, false);
       };
     }
@@ -76938,7 +76938,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.9.0 (Date 2019-03-26, Commit #54785ed)');
+console.log('A-Frame Version: 0.9.0 (Date 2019-03-27, Commit #a30e9e3)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
