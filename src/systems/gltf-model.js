@@ -21,8 +21,9 @@ module.exports.System = registerSystem('gltf-model', {
   },
 
   update: function () {
-		if (this.dracoLoader) { return; }
-    var path = this.data.dracoDecoderPath;
+    var path;	  
+    if (this.dracoLoader) { return; }
+    path = this.data.dracoDecoderPath;
     THREE.DRACOLoader.setDecoderPath(path);
     this.dracoLoader = path ? new THREE.DRACOLoader() : null;
   },
