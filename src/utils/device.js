@@ -4,13 +4,33 @@ var vrDisplay;
 
 // Catch vrdisplayactivate early to ensure we can enter VR mode after the scene loads.
 window.addEventListener('vrdisplayactivate', function (evt) {
-  var canvasEl;
   // WebXR takes priority if available.
   if (navigator.xr) { return; }
-  canvasEl = document.createElement('canvas');
+
   vrDisplay = evt.display;
+
+  const scene = document.querySelector('a-scene');
+  const rendererSystem = scene.getAttribute('renderer');
+  const canvas = scene.canvas; // Oculus Browser will fail if we don't provide correct canvas VRLayer
+
+  // Not sure if required but seems good practise to stay consistent on request present
+  const presentationAttributes = {
+    highRefreshRate: rendererSystem.highRefreshRate,
+    foveationLevel: rendererSystem.foveationLevel
+  };
+
   // Request present immediately. a-scene will be allowed to enter VR without user gesture.
-  vrDisplay.requestPresent([{source: canvasEl}]).then(function () {}, function () {});
+  return vrDisplay.requestPresent([{
+    source: canvas,
+    attributes: presentationAttributes
+  }]).then(function () { console.warn('Succeeded to enter VR mode (`requestPresent`)'); },
+    function (err) {
+      if (err && err.message) {
+        throw new Error('Failed to enter VR mode (`requestPresent`): ' + err.message);
+      } else {
+        throw new Error('Failed to enter VR mode (`requestPresent`).');
+      }
+    });
 });
 
 // Support both WebVR and WebXR APIs.
