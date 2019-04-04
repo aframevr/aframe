@@ -74898,6 +74898,7 @@ module.exports.AScene = registerElement('a-scene', {
 
         this.addEventListener('loaded', function () {
           var renderer = this.renderer;
+          var vrDisplay;
           var vrManager = this.renderer.vr;
           AEntity.prototype.play.call(this);  // .play() *before* render.
 
@@ -74908,8 +74909,9 @@ module.exports.AScene = registerElement('a-scene', {
           if (sceneEl.renderer) {
             if (window.performance) { window.performance.mark('render-started'); }
             loadingScreen.remove();
-            if (utils.device.getVRDisplay().isPresenting) {
-              vrManager.setDevice(utils.device.getVRDisplay());
+            vrDisplay = utils.device.getVRDisplay();
+            if (vrDisplay && vrDisplay.isPresenting) {
+              vrManager.setDevice(vrDisplay);
               vrManager.enabled = true;
               sceneEl.enterVR();
             }
@@ -76938,7 +76940,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.9.0 (Date 2019-03-27, Commit #a30e9e3)');
+console.log('A-Frame Version: 0.9.0 (Date 2019-04-04, Commit #3c2f68e)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
@@ -77980,6 +77982,14 @@ module.exports.System = registerSystem('gltf-model', {
 
   init: function () {
     var path = this.data.dracoDecoderPath;
+    THREE.DRACOLoader.setDecoderPath(path);
+    this.dracoLoader = path ? new THREE.DRACOLoader() : null;
+  },
+
+  update: function () {
+    var path;
+    if (this.dracoLoader) { return; }
+    path = this.data.dracoDecoderPath;
     THREE.DRACOLoader.setDecoderPath(path);
     this.dracoLoader = path ? new THREE.DRACOLoader() : null;
   },
