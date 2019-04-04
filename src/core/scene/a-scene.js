@@ -622,6 +622,7 @@ module.exports.AScene = registerElement('a-scene', {
 
         this.addEventListener('loaded', function () {
           var renderer = this.renderer;
+          var vrDisplay;
           var vrManager = this.renderer.vr;
           AEntity.prototype.play.call(this);  // .play() *before* render.
 
@@ -632,8 +633,9 @@ module.exports.AScene = registerElement('a-scene', {
           if (sceneEl.renderer) {
             if (window.performance) { window.performance.mark('render-started'); }
             loadingScreen.remove();
-            if (utils.device.getVRDisplay().isPresenting) {
-              vrManager.setDevice(utils.device.getVRDisplay());
+            vrDisplay = utils.device.getVRDisplay();
+            if (vrDisplay && vrDisplay.isPresenting) {
+              vrManager.setDevice(vrDisplay);
               vrManager.enabled = true;
               sceneEl.enterVR();
             }
