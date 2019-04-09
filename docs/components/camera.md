@@ -27,7 +27,7 @@ while still allowing the tracked area to be moved independently around the
 scene.
 
 ```html
-<a-entity id="#rig" position="25 10 0">
+<a-entity id="rig" position="25 10 0">
   <a-entity id="camera" camera look-controls></a-entity>
 </a-entity>
 ```
