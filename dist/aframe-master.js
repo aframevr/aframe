@@ -73266,6 +73266,8 @@ var Component = module.exports.Component = function (el, attrValue, id) {
   this.el.components[this.attrName] = this;
   this.objectPool = objectPools[this.name];
 
+  eventsBind(this, this.events);
+
   // Store component data from previous update call.
   this.attrValue = undefined;
   this.nextData = this.isObjectBased ? this.objectPool.use() : undefined;
@@ -73293,6 +73295,13 @@ Component.prototype = {
    * Components can use this to set initial state.
    */
   init: function () { /* no-op */ },
+
+  /**
+   * Map of event names to binded event handlers that will be lifecycle-handled.
+   * Will be detached on pause / remove.
+   * Will be attached on play.
+   */
+  events: {},
 
   /**
    * Update handler. Similar to attributeChangedCallback.
@@ -73747,8 +73756,37 @@ Component.prototype = {
     }
 
     return parseProperties(data, schema, undefined, this.name, silent);
+  },
+
+  /**
+   * Attach events from component-defined events map.
+   */
+  eventsAttach: function () {
+    var eventName;
+    // Safety detach to prevent double-registration.
+    this.eventsDetach();
+    for (eventName in this.events) {
+      this.el.addEventListener(eventName, this.events[eventName]);
+    }
+  },
+
+  /**
+   * Detach events from component-defined events map.
+   */
+  eventsDetach: function () {
+    var eventName;
+    for (eventName in this.events) {
+      this.el.removeEventListener(eventName, this.events[eventName]);
+    }
   }
 };
+
+function eventsBind (component, events) {
+  var eventName;
+  for (eventName in events) {
+    events[eventName] = events[eventName].bind(component);
+  }
+}
 
 // For testing.
 if (window.debug) {
@@ -73756,7 +73794,7 @@ if (window.debug) {
 }
 
 /**
- * Registers a component to A-Frame.
+ * Register a component to A-Frame.
  *
  * @param {string} name - Component name.
  * @param {object} definition - Component schema and lifecycle method handlers.
@@ -73923,6 +73961,7 @@ function wrapPause (pauseMethod) {
     if (!this.isPlaying) { return; }
     pauseMethod.call(this);
     this.isPlaying = false;
+    this.eventsDetach();
     // Remove tick behavior.
     if (!hasBehavior(this)) { return; }
     sceneEl.removeBehavior(this);
@@ -73942,6 +73981,7 @@ function wrapPlay (playMethod) {
     if (!this.initialized || !shouldPlay) { return; }
     playMethod.call(this);
     this.isPlaying = true;
+    this.eventsAttach();
     // Add tick behavior.
     if (!hasBehavior(this)) { return; }
     sceneEl.addBehavior(this);
@@ -73960,7 +74000,6 @@ function wrapRemove (removeMethod) {
     this.objectPool.recycle(this.attrValue);
     this.objectPool.recycle(this.oldData);
     this.objectPool.recycle(this.parsingAttrValue);
-
     this.attrValue = this.oldData = this.parsingAttrValue = undefined;
   };
 }
@@ -76940,7 +76979,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.9.0 (Date 2019-04-04, Commit #3c2f68e)');
+console.log('A-Frame Version: 0.9.0 (Date 2019-04-11, Commit #d6e8488)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
