@@ -247,6 +247,7 @@ the data to modify the entity. The handlers will usually interact with the
 | play         | Called whenever the scene or entity plays to add any background or dynamic behavior. Also called once when the component is initialized. Used to start or resume behavior.                                                |
 | pause        | Called whenever the scene or entity pauses to remove any background or dynamic behavior. Also called when the component is removed from the entity or when the entity is detached from the scene. Used to pause behavior. |
 | updateSchema | Called whenever any of the component's properties is updated. Can be used to dynamically modify the schema.                                                                                                               |
+
 ### Component Prototype Properties
 
 [scene]: ./scene.md
@@ -407,7 +408,7 @@ AFRAME.registerComponent('tracked-controls', {
 
 ### `.tock (time, timeDelta, camera)`
 
-Identical to the tick method but invoked after the scene has rendered. 
+Identical to the tick method but invoked after the scene has rendered.
 
 The `tock` handler is used to run logic that needs access to the drawn scene before it's pushed into the headset like postprocessing effects.
 
@@ -579,6 +580,31 @@ AFRAME.registerComponent('foo', {
   update: function () {
     // An object3D will be set using `foo__bar` as the key.
     this.el.setObject3D(this.attrName, new THREE.Mesh());
+  }
+});
+```
+
+### `events`
+
+The `events` object allows for conveniently defining event handlers that get
+binded and automatically attached and detached at appropriate times during the
+component's lifecycle:
+
+- Attached on `.play()`
+- Detached on `.pause()` and `.remove()`
+
+Using `events` ensures that event handlers properly clean themselves up when
+the entity or scene is paused, or the component is detached. If a component's
+event handlers are registered manually and not detached properly, the event
+handler can still fire even after the component no longer exists.
+
+```js
+AFRAME.registerComponent('foo', {
+  events: {
+    click: function (evt) {
+      console.log('This entity was clicked!');
+      this.el.setAttribute('material', 'color', 'red');
+    }
   }
 });
 ```
