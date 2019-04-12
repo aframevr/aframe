@@ -12,8 +12,6 @@ image:
 examples:
   - title: Basic Guide with Environment
     src: https://glitch.com/edit/#!/aframe-basic-guide-with-environment?path=index.html
-  - title: Basic Guide with Custom Environment
-    src: https://glitch.com/edit/#!/aframe-basic-guide?path=index.html
 ---
 
 [primitives]: ../primitives/
@@ -427,16 +425,12 @@ depends on its distance to the entity:
 
 ## Adding Animation
 
-> `<a-animation>` may become [deprecated in favor of a component
-> form](https://github.com/aframevr/aframe/issues/1927) like this [Animation
-> Component](https://github.com/supermedium/superframe/tree/master/components/animation/).
-
-[animation]: ../core/animations.md
+[animation]: ../components/animations.md
 
 We can add animations to the box using A-Frame's [built-in animation
-system][animation]. Animations *interpolate* or *tween* a value over time. We
-can place an `<a-animation>` element as a child of the entity. Let's have the
-box hover up and down to add some motion to the scene.
+system][animation]. Animations interpolate or tween a value over time. We can
+set the animation component on the entity. Let's have the box hover up and down
+to add some motion to the scene.
 
 ```html
 <a-scene>
@@ -444,33 +438,24 @@ box hover up and down to add some motion to the scene.
     <img id="boxTexture" src="https://i.imgur.com/mYmmbrp.jpg">
   </a-assets>
 
-  <a-box src="#boxTexture" position="0 2 -5" rotation="0 45 45" scale="2 2 2">
-    <a-animation attribute="position" to="0 2.2 -5" direction="alternate" dur="2000"
-      repeat="indefinite"></a-animation>
-  </a-box>
+  <a-box src="#boxTexture" position="0 2 -5" rotation="0 45 45" scale="2 2 2"
+         animation="property: object3D.position.y; to: 2.2; dir: alternate; dur: 2000; loop: true"></a-box>
 </a-scene>
 ```
 
-We tell `<a-animation>` to:
+[entity]: ../core/entity.md
+[object3d]: ../core/entity.md#object3d
 
-- Animate the position *attribute*.
-- Animate *to* `0 2.2. -5` which is 20 centimeters higher.
-- Alternate the *direction* of the animation on each repeated cycle of the animation.
-- Last for 2000 millisecond *duration* on each cycle.
-- *Repeat* the animation indefinitely.
+We tell the animation component to:
+
+- Animate the [entity][entity's [object3D][object3d's position's Y axis.
+- Animate *to* `2.2` which is 20 centimeters higher.
+- Alternate the *dir* (direction) of the animation on each repeated cycle of the animation so it goes back and forth.
+- Last for 2000 millisecond *dur* (duration) on each cycle.
+- *Loop* or repeat the animation forever.
 
 [animationgif]: https://cloud.githubusercontent.com/assets/674727/20375894/e8b3fa48-ac36-11e6-9ecd-5a5fe33cb9db.gif
 ![animationgif]
-
-### Advanced Details
-
-`<a-animation>` hooks into A-Frame's render loop such that it is called only
-once per frame. If you need more control and want to manually interpolate or
-tween a value, you can write an A-Frame component using the `tick` handler and
-a library like Tween.js (which is available at `AFRAME.TWEEN` for now). For best
-performance, once-per-frame operations should be done at an A-Frame level, try
-not to create your own `requestAnimationFrame` when A-Frame already provides
-one.
 
 ## Adding Interaction
 
@@ -504,10 +489,8 @@ need to now define [`<a-camera>`][camera] containing `<a-cursor>`:
     <img id="boxTexture" src="https://i.imgur.com/mYmmbrp.jpg">
   </a-assets>
 
-  <a-box src="#boxTexture" position="0 2 -5" rotation="0 45 45" scale="2 2 2">
-    <a-animation attribute="position" to="0 2.2 -5" direction="alternate" dur="2000"
-      repeat="indefinite"></a-animation>
-  </a-box>
+  <a-box src="#boxTexture" position="0 2 -5" rotation="0 45 45" scale="2 2 2"
+         animation="property: object3D.position.y; to: 2.2; dir: alternate; dur: 2000; loop: true"></a-box>
 
   <a-camera>
     <a-cursor></a-cursor>
@@ -550,19 +533,20 @@ But a much more robust method would be to encapsulate this logic into an
 A-Frame component. This way, we don't have to wait for the scene to load, we
 don't have to run query selectors because components give us context, and
 components can be reused and configured versus having an uncontrolled script
-running on the page:
+running on the page. And better yet would be to skip calling `.setAttribute`
+and set the value on the `this.el.object3D.scale` directly for performance.
 
 ```js
 <script>
   AFRAME.registerComponent('scale-on-mouseenter', {
     schema: {
-      to: {default: '2.5 2.5 2.5'}
+      to: {default: '2.5 2.5 2.5', type: 'vec3'}
     },
 
     init: function () {
       var data = this.data;
       this.el.addEventListener('mouseenter', function () {
-        this.setAttribute('scale', data.to);
+        this.el.object3D.scale.copy(data.to);
       });
     }
   });
@@ -581,35 +565,32 @@ We can attach this component to our box straight from HTML:
 <a-scene>
   <!-- ... -->
   <a-box src="#boxTexture" position="0 2 -5" rotation="0 45 45" scale="2 2 2"
-         scale-on-mouseenter="to: 2.2 2.2 2.2">
-    <a-animation attribute="position" to="0 2.2 -5" direction="alternate" dur="2000"
-      repeat="indefinite"></a-animation>
-  </a-box>
+         animation="property: object3D.position.y; to: 2.2; dir: alternate; dur: 2000; loop: true"
+         scale-on-mouseenter></a-box>
   <!-- ... -->
 </a-scene>
 ```
 
 ### Animating on Events
 
-`<a-animation>` has a feature to begin its animation when the entity it is
-animating emits an event. This can be done through the `begin` attribute, which
-takes an event name.
+The animation component has a feature to start its animation when the entity an
+event. This can be done through the `startEvents` attribute, which takes an
+comma-separated list of event names.
 
 We can add two animations for the cursor component's `mouseenter` and one
 `mouseleave` events to change the box's scale, and one for rotating the box
-around the Y-axis on `click`:
+around the Y-axis on `click`. Note that an entity can have multiple animations
+by suffixing the attribute name with `__<ID>`:
 
 ```html
-<a-box color="#FFF" width="4" height="10" depth="2"
-       position="-10 2 -5" rotation="0 0 45" scale="2 0.5 3"
-       src="#texture">
-  <a-animation attribute="position" to="0 2.2 -5" direction="alternate" dur="2000"
-    repeat="indefinite"></a-animation>
-  <!-- These animations will start when the box is looked at. -->
-  <a-animation attribute="scale" begin="mouseenter" dur="300" to="2.3 2.3 2.3"></a-animation>
-  <a-animation attribute="scale" begin="mouseleave" dur="300" to="2 2 2"></a-animation>
-  <a-animation attribute="rotation" begin="click" dur="2000" to="360 405 45"></a-animation>
-</a-box>
+<a-box
+  src="#boxTexture"
+  position="0 2 -5"
+  rotation="0 45 45"
+  scale="2 2 2"
+  animation__position="property: object3D.position.y; to: 2.2; dir: alternate; dur: 2000; loop: true"
+  animation__mouseenter="property: scale; to: 2.3 2.3 2.3; dur: 300; startEvents: mouseenter"
+  animation__mouseleave="property: scale; to: 2 2 2; dur: 300; startEvents: mouseleave"></a-box>
 ```
 
 ## Adding Audio
@@ -651,25 +632,14 @@ the sound in our scene using `position`.
 A-Frame comes with a [text component][text]. There are several ways to render
 text, each with their advantages and disadvantages, A-Frame comes with an SDF
 text implementation using [`three-bmfont-text`][three-bmfont-text] that is
-relatively sharp and performant.
-
-For this guide, let's use the primitive form of the text component, `<a-text>`:
+relatively sharp and performant:
 
 ```html
-<a-text value="Hello, A-Frame!" color="#BBB"
-        position="-0.9 0.2 -3" scale="1.5 1.5 1.5"></a-text>
+<a-entity
+  text="value: Hello, A-Frame!; color: #BBB"
+  position="-0.9 0.2 -3"
+  scale="1.5 1.5 1.5"></a-entity>
 ```
-
-Other ways to do text include:
-
-[textgeometry]: https://github.com/supermedium/superframe/tree/master/components/text-geometry/
-[htmlshader]: https://github.com/mayognaise/aframe-html-shader/
-[Kevin Ngo]: https://twitter.com/andgokevin
-[Mayo Tobita]: https://twitter.com/mayognaise
-
-- [Text Geometry][textgeometry] by [Kevin Ngo] - 3D text. More expensive to draw.
-- [HTML Shader][htmlshader] by [Mayo Tobita] - Render HTML as a texture. Easy
-  to style, but can be slow to compute.
 
 ## Play With It!
 
