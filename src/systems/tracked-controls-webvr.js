@@ -10,6 +10,7 @@ module.exports.System = registerSystem('tracked-controls-webvr', {
     var self = this;
 
     this.controllers = [];
+    this.isChrome = navigator.userAgent.indexOf('Chrome') !== -1;
 
     this.updateControllerList();
     this.throttledUpdateControllerList = utils.throttle(this.updateControllerList, 500, this);
@@ -24,11 +25,12 @@ module.exports.System = registerSystem('tracked-controls-webvr', {
   },
 
   tick: function () {
-    if (navigator.userAgent.indexOf('Chrome') !== -1) {
-      // Call getGamepads for Chrome for it to update. Not sure if needed in future.
-      navigator.getGamepads && navigator.getGamepads();
+    if (this.isChrome) {
+      // Retrieve new controller handlers with updated state (pose, buttons...)
+      this.updateControllerList();
+    } else {
+      this.throttledUpdateControllerList();
     }
-    this.throttledUpdateControllerList();
   },
 
   /**
