@@ -5,6 +5,8 @@ layout: docs
 parent_section: components
 source_code: src/components/animation.js
 examples:
+ - title: Animating on Events
+   src: https://glitch.com/edit/#!/aframe-animation-events?path=index.html:1:0
  - title: Generated Animations
    src: https://glitch.com/~aframe-shooting-stars
 ---
@@ -95,10 +97,11 @@ animation.
 
 ### Events
 
-| Property          | Description                                                     |
-| --------          | -----------                                                     |
-| animationbegin    | Animation began. Event detail contains `name` of animation.     |
-| animationcomplete | Animation completed. Event detail contains `name` of animation. |
+| Property                | Description                                                            |
+| --------                | -----------                                                            |
+| animationbegin          | Animation began. Event detail contains `name` of animation.            |
+| animationcomplete       | Animation completed. Event detail contains `name` of animation.        |
+| animationcomplete__<id> | Animation completed if animation has an ID (e.g., `animation__click`). |
 
 ### Members
 
@@ -108,6 +111,24 @@ Accessed as `el.components.animation.<MEMBER>`.
 |-----------|----------------------------|
 | animation | anime.js object.           |
 | config    | Config passed to anime.js. |
+
+## Animating on Events
+
+We can use the `startEvents` property to animate upon events:
+
+```html
+<a-entity id="mouseCursor" cursor="rayOrigin: mouse"></a-entity>
+
+<a-entity
+  geometry="primitive: box"
+  material="color: red"
+  animation__mouseenter="property: components.material.material.color; type: color; to: blue; startEvents: mouseenter; dur: 500";
+  animation__mouseleave="property: components.material.material.color; type: color; to: red; startEvents: mouseleave; dur: 500";
+```
+
+[eventsglitch]: https://glitch.com/edit/#!/aframe-animation-events?path=index.html:1:0
+
+[Remix the Animating on Events Glitch][eventsglitch].
 
 ## Animating Different Types of Values
 
