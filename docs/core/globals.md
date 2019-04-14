@@ -21,7 +21,6 @@ global. This same interface is also exposed if requiring with CommonJS
 [primitiveregister]: ../introduction/html-and-primitives.md#registering-a-primitive
 [scene]: ./scene.md
 [three.js]: http://threejs.org
-[tween.js]: https://github.com/tweenjs/tween.js
 [utils]: ./utils.md
 
 | Property              | Description                                                                                                                                                                                                                            |
@@ -42,7 +41,6 @@ global. This same interface is also exposed if requiring with CommonJS
 | shaders               | Object of registered shaders.                                                                                                                                                                                                          |
 | systems               | Object of registered systems.                                                                                                                                                                                                          |
 | THREE                 | Global [three.js][three.js] object.                                                                                                                                                                                                    |
-| TWEEN                 | Global [tween.js][tween.js] object.                                                                                                                                                                                                    |
 | utils                 | A-Frame [utility modules][utils].                                                                                                                                                                                                      |
 | version               | Version of A-Frame build.                                                                                                                                                                                                              |
 
