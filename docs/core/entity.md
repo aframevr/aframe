@@ -388,7 +388,7 @@ attribute from the DOM, `removeAttribute` will also detach the component from
 the entity, invoking the component's `remove` lifecycle method.
 
 ```js
-entity.removeAttribute('goemetry');  // Detach the geometry component.
+entity.removeAttribute('geometry');  // Detach the geometry component.
 entity.removeAttribute('sound');  // Detach the sound component.
 ```
 
