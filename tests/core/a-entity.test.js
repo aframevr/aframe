@@ -1522,6 +1522,25 @@ suite('a-entity component lifecycle management', function () {
     el.play();
     assert.equal(el.sceneEl.behaviors.tock.indexOf(testComponentInstance), -1);
   });
+
+  suite('remove', function () {
+    test('detaches if called with no arguments', function (done) {
+      el.remove();
+      setTimeout(() => {
+        assert.notOk(el.parentNode);
+        done();
+      });
+    });
+
+    test('detaches child object3D if called with child', function (done) {
+      const childrenLength = el.parentNode.object3D.children.length;
+      el.parentNode.remove(el);
+      setTimeout(() => {
+        assert.ok(el.parentNode.object3D.children.length < childrenLength);
+        done();
+      });
+    });
+  });
 });
 
 suite('a-entity component dependency management', function () {
