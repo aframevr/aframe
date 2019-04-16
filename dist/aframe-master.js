@@ -76995,7 +76995,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.9.0 (Date 2019-04-16, Commit #1aabd7f)');
+console.log('A-Frame Version: 0.9.0 (Date 2019-04-16, Commit #4b0b72a)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
@@ -77295,6 +77295,14 @@ module.exports.Shader = registerShader('msdf', {
     '  vec2 duv = dscale * (dFdx(vUV) + dFdy(vUV));',
     '  float isBigEnough = max(abs(duv.x), abs(duv.y));',
 
+    // When texel is too small, blend raw alpha value rather than supersampling.
+    // FIXME: Experimentally determined constant.
+    '  // Do modified alpha test.',
+    '  if (isBigEnough > BIG_ENOUGH) {',
+    '    float ratio = BIG_ENOUGH / isBigEnough;',
+    '    alpha = ratio * alpha + (1.0 - ratio) * (sigDist + 0.5);',
+    '  }',
+
     '  // Do modified alpha test.',
     '  if (alpha < alphaTest * MODIFIED_ALPHATEST) { discard; return; }',
     '  gl_FragColor = vec4(color.xyz, alpha * opacity);',
@@ -77372,6 +77380,13 @@ module.exports.Shader = registerShader('sdf', {
 
     '    vec2 duv = dscale * (dFdx(uv) + dFdy(uv));',
     '    float isBigEnough = max(abs(duv.x), abs(duv.y));',
+
+         // When texel is too small, blend raw alpha value rather than supersampling.
+         // FIXME: experimentally determined constant
+    '    if (isBigEnough > BIG_ENOUGH) {',
+    '      float ratio = BIG_ENOUGH / isBigEnough;',
+    '      alpha = ratio * alpha + (1.0 - ratio) * dist;',
+    '    }',
 
          // Otherwise do weighted supersampling.
          // FIXME: why this weighting?
