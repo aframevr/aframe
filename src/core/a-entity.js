@@ -258,7 +258,11 @@ var proto = Object.create(ANode.prototype, {
    */
   remove: {
     value: function (el) {
-      this.object3D.remove(el.object3D);
+      if (el) {
+        this.object3D.remove(el.object3D);
+      } else {
+        this.parentNode.removeChild(this);
+      }
     }
   },
 
