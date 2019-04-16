@@ -70443,8 +70443,8 @@ module.exports.Component = registerComponent('vive-controls', {
     // If we have an OpenVR Gamepad, use the fixed mapping.
     el.setAttribute('tracked-controls', {
       idPrefix: GAMEPAD_ID_PREFIX,
-      // Hand IDs: 0 = right, 1 = left, 2 = anything else.
-      controller: data.hand === 'right' ? 0 : data.hand === 'left' ? 1 : 2,
+      // Hand IDs: 1 = right, 0 = left, 2 = anything else.
+      controller: data.hand === 'right' ? 1 : data.hand === 'left' ? 0 : 2,
       orientationOffset: data.orientationOffset
     });
 
@@ -76991,7 +76991,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.9.0 (Date 2019-04-16, Commit #ffe3dfc)');
+console.log('A-Frame Version: 0.9.0 (Date 2019-04-16, Commit #e0342d6)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
