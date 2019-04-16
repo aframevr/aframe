@@ -297,7 +297,7 @@ listener to do `setAttribute`s on the [scale component][scale] in response to
 [cursor events][cursorevents]. This is a fairly common pattern so there is an
 [event-set component][eventset] that does `setAttribute` in response to events.
 
-[multiple]: ../core/component.md#multiple-instancing
+[multiple]: ../core/component.md#multiple
 
 Let's attach event listeners on our links to scale them up when they are gazed
 over, scale them down as they are being clicked, and scale them back when they

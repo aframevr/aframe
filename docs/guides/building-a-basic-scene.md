@@ -444,11 +444,11 @@ to add some motion to the scene.
 ```
 
 [entity]: ../core/entity.md
-[object3d]: ../core/entity.md#object3d
+[object3D]: ../core/entity.md#object3d
 
 We tell the animation component to:
 
-- Animate the [entity][entity's [object3D][object3d's position's Y axis.
+- Animate the [entity's][entity] [object3D's][object3D] position's Y axis.
 - Animate *to* `2.2` which is 20 centimeters higher.
 - Alternate the *dir* (direction) of the animation on each repeated cycle of the animation so it goes back and forth.
 - Last for 2000 millisecond *dur* (duration) on each cycle.
