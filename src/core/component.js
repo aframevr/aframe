@@ -130,7 +130,13 @@ Component.prototype = {
   tock: undefined,
 
   /**
-   * Called to start any dynamic behavior (e.g., animation, AI, events, physics).
+   * Called only once when scene is loaded or when component is attached to loaded entity.
+   */
+  load: function () { /* no-op */ },
+
+  /**
+   * Called when entity is activated, either first start or on resume
+   * (e.g., animation, AI, events, physics).
    */
   play: function () { /* no-op */ },
 
@@ -772,10 +778,22 @@ function wrapPlay (playMethod) {
   return function play () {
     var sceneEl = this.el.sceneEl;
     var shouldPlay = this.el.isPlaying && !this.isPlaying;
+
     if (!this.initialized || !shouldPlay) { return; }
-    playMethod.call(this);
+
+    // Set isPlaying.
     this.isPlaying = true;
+
+    // Attach Component.events.
     this.eventsAttach();
+
+    // Call `.load` handler.
+    if (this.isFirstLoad) {
+      this.load();
+      this.isFirstLoad = false;
+    }
+    playMethod.call(this);
+
     // Add tick behavior.
     if (!hasBehavior(this)) { return; }
     sceneEl.addBehavior(this);
