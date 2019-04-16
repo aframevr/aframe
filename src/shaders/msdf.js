@@ -58,6 +58,14 @@ module.exports.Shader = registerShader('msdf', {
     '  vec2 duv = dscale * (dFdx(vUV) + dFdy(vUV));',
     '  float isBigEnough = max(abs(duv.x), abs(duv.y));',
 
+    // When texel is too small, blend raw alpha value rather than supersampling.
+    // FIXME: Experimentally determined constant.
+    '  // Do modified alpha test.',
+    '  if (isBigEnough > BIG_ENOUGH) {',
+    '    float ratio = BIG_ENOUGH / isBigEnough;',
+    '    alpha = ratio * alpha + (1.0 - ratio) * (sigDist + 0.5);',
+    '  }',
+
     '  // Do modified alpha test.',
     '  if (alpha < alphaTest * MODIFIED_ALPHATEST) { discard; return; }',
     '  gl_FragColor = vec4(color.xyz, alpha * opacity);',
