@@ -568,6 +568,10 @@ function getRawProperty (el, path) {
   for (i = 0; i < split.length; i++) {
     value = value[split[i]];
   }
+  if (value === undefined) {
+    console.log(el);
+    throw new Error('[animation] property (' + path + ') could not be found');
+  }
   return value;
 }
 
