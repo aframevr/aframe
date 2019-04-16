@@ -73270,10 +73270,22 @@ var Component = module.exports.Component = function (el, attrValue, id) {
 
   // Store component data from previous update call.
   this.attrValue = undefined;
-  this.nextData = this.isObjectBased ? this.objectPool.use() : undefined;
-  this.oldData = this.isObjectBased ? this.objectPool.use() : undefined;
-  this.previousOldData = this.isObjectBased ? this.objectPool.use() : undefined;
-  this.parsingAttrValue = this.isObjectBased ? this.objectPool.use() : undefined;
+  if (this.isObjectBased) {
+    this.nextData = this.objectPool.use();
+    // Drop any properties added by dynamic schemas in previous use
+    utils.objectPool.removeUnusedKeys(this.nextData, this.schema);
+    this.oldData = this.objectPool.use();
+    utils.objectPool.removeUnusedKeys(this.oldData, this.schema);
+    this.previousOldData = this.objectPool.use();
+    utils.objectPool.removeUnusedKeys(this.previousOldData, this.schema);
+    this.parsingAttrValue = this.objectPool.use();
+    utils.objectPool.removeUnusedKeys(this.parsingAttrValue, this.schema);
+  } else {
+    this.nextData = undefined;
+    this.oldData = undefined;
+    this.previousOldData = undefined;
+    this.parsingAttrValue = undefined;
+  }
 
   // Last value passed to updateProperties.
   this.throttledEmitComponentChanged = utils.throttle(function emitChange () {
@@ -76979,7 +76991,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.9.0 (Date 2019-04-12, Commit #ee5591a)');
+console.log('A-Frame Version: 0.9.0 (Date 2019-04-16, Commit #ffe3dfc)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
@@ -79811,6 +79823,17 @@ function clearObject (obj) {
   for (key in obj) { obj[key] = undefined; }
 }
 module.exports.clearObject = clearObject;
+
+function removeUnusedKeys (obj, schema) {
+  var key;
+  if (!obj || obj.constructor !== Object) { return; }
+  for (key in obj) {
+    if (!(key in schema)) {
+      delete obj[key];
+    }
+  }
+}
+module.exports.removeUnusedKeys = removeUnusedKeys;
 
 },{}],181:[function(_dereq_,module,exports){
 /**
