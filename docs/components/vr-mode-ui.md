@@ -6,9 +6,9 @@ parent_section: components
 source_code: src/components/scene/vr-mode-ui.js
 ---
 
-The vr-mode-ui component toggles UI such as an Enter VR button, compatibility
+The vr-mode-ui component allows disabling of UI such as an Enter VR button, compatibility
 modal, and orientation modal for mobile. The vr-mode-ui component applies only
-to the [`<a-scene>` element][scene].
+to the [`<a-scene>` element][scene]. If we wish to simply toggle the UI, use CSS instead.
 
 ## Example
 
