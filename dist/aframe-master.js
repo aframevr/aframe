@@ -71996,7 +71996,11 @@ var proto = Object.create(ANode.prototype, {
    */
   remove: {
     value: function (el) {
-      this.object3D.remove(el.object3D);
+      if (el) {
+        this.object3D.remove(el.object3D);
+      } else {
+        this.parentNode.removeChild(this);
+      }
     }
   },
 
@@ -76991,7 +76995,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.9.0 (Date 2019-04-16, Commit #e0342d6)');
+console.log('A-Frame Version: 0.9.0 (Date 2019-04-16, Commit #1aabd7f)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
