@@ -17,6 +17,7 @@ var TestComponent = {
   init: function () { },
   update: function () { },
   remove: function () { },
+  load: function () { },
   play: function () { },
   pause: function () { },
   tick: function () { },
@@ -1483,6 +1484,38 @@ suite('a-entity component lifecycle management', function () {
     sinon.assert.notCalled(TestComponent.play);
     el.play();
     sinon.assert.called(TestComponent.play);
+  });
+
+  test('does not call load on resume', function () {
+    var TestComponent = this.TestComponent.prototype;
+
+    this.sinon.spy(TestComponent, 'load');
+    el.setAttribute('test', '');
+    sinon.assert.calledOnce(TestComponent.load);
+    el.pause();
+    el.play();
+    sinon.assert.calledOnce(TestComponent.load);
+  });
+
+  test('calls load on attach once', function () {
+    var TestComponent = this.TestComponent.prototype;
+
+    this.sinon.spy(TestComponent, 'load');
+    el.setAttribute('test', '');
+    sinon.assert.calledOnce(TestComponent.load);
+    el.setAttribute('test', 'a: 5');
+    sinon.assert.calledOnce(TestComponent.load);
+  });
+
+  test('does not call load on play / resume', function () {
+    var TestComponent = this.TestComponent.prototype;
+
+    this.sinon.spy(TestComponent, 'load');
+    el.setAttribute('test', '');
+    sinon.assert.calledOnce(TestComponent.load);
+    el.pause();
+    el.play();
+    sinon.assert.calledOnce(TestComponent.load);
   });
 
   test('removes tick from scene behaviors on entity pause', function () {

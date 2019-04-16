@@ -40,6 +40,7 @@ var Component = module.exports.Component = function (el, attrValue, id) {
   this.attrName = this.name + (id ? '__' + id : '');
   this.evtDetail = {id: this.id, name: this.name};
   this.initialized = false;
+  this.isFirstLoad = true;
   this.isSingleProperty = isSingleProp(this.schema);
   this.isSinglePropertyObject = this.isSingleProperty &&
                                 isObject(parseProperty(undefined, this.schema)) &&
