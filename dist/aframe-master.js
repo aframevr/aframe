@@ -71838,7 +71838,9 @@ var proto = Object.create(ANode.prototype, {
       if (!this.parentEl) { return; }
 
       // Remove components.
-      for (componentName in this.components) { this.removeComponent(componentName); }
+      for (componentName in this.components) {
+        this.removeComponent(componentName, false);
+      }
 
       if (this.isScene) { return; }
 
@@ -72115,7 +72117,7 @@ var proto = Object.create(ANode.prototype, {
   },
 
   removeComponent: {
-    value: function (name) {
+    value: function (name, destroy) {
       var component;
 
       component = this.components[name];
@@ -72125,7 +72127,7 @@ var proto = Object.create(ANode.prototype, {
       if (!component.initialized) {
         this.addEventListener('componentinitialized', function tryRemoveLater (evt) {
           if (evt.detail.name !== name) { return; }
-          this.removeComponent(name);
+          this.removeComponent(name, destroy);
           this.removeEventListener('componentinitialized', tryRemoveLater);
         });
         return;
@@ -72133,8 +72135,14 @@ var proto = Object.create(ANode.prototype, {
 
       component.pause();
       component.remove();
-      delete this.components[name];
-      this.emit('componentremoved', component.evtDetail);
+
+      // Keep component attached to entity in case of just full entity detach.
+      if (destroy) {
+        component.destroy();
+        delete this.components[name];
+      }
+
+      this.emit('componentremoved', component.evtDetail, false);
     },
     writable: window.debug
   },
@@ -72213,7 +72221,7 @@ var proto = Object.create(ANode.prototype, {
       if (component) {
         // Remove component.
         if (attrValue === null && !checkComponentDefined(this, attr)) {
-          this.removeComponent(attr);
+          this.removeComponent(attr, true);
           return;
         }
         // Component already initialized. Update component.
@@ -72240,7 +72248,7 @@ var proto = Object.create(ANode.prototype, {
 
       // Remove component.
       if (component && propertyName === undefined) {
-        this.removeComponent(attr);
+        this.removeComponent(attr, true);
       }
 
       // Reset component property value.
@@ -72383,7 +72391,7 @@ var proto = Object.create(ANode.prototype, {
                   this.components[component].handleMixinUpdate();
                 } else {
                   // Remove component if not explicitly defined.
-                  this.removeComponent(component);
+                  this.removeComponent(component, true);
                 }
               }
             }
@@ -72569,6 +72577,22 @@ var proto = Object.create(ANode.prototype, {
   inspect: {
     value: function () {
       this.sceneEl.components.inspector.openInspector(this);
+    }
+  },
+
+  /**
+   * Clean up memory and return memory to object pools.
+   */
+  destroy: {
+    value: function () {
+      var key;
+      if (this.el.parentNode) {
+        warn('Entity can only be destroyed if detached from scenegraph.');
+        return;
+      }
+      for (key in this.components) {
+        this.components[key].destroy();
+      }
     }
   }
 });
@@ -73794,6 +73818,16 @@ Component.prototype = {
     for (eventName in this.events) {
       this.el.removeEventListener(eventName, this.events[eventName]);
     }
+  },
+
+  /**
+   * Release and free memory.
+   */
+  destroy: function () {
+    this.objectPool.recycle(this.attrValue);
+    this.objectPool.recycle(this.oldData);
+    this.objectPool.recycle(this.parsingAttrValue);
+    this.attrValue = this.oldData = this.parsingAttrValue = undefined;
   }
 };
 
@@ -73880,7 +73914,6 @@ module.exports.registerComponent = function (name, definition) {
   NewComponent.prototype.system = systems && systems.systems[name];
   NewComponent.prototype.play = wrapPlay(NewComponent.prototype.play);
   NewComponent.prototype.pause = wrapPause(NewComponent.prototype.pause);
-  NewComponent.prototype.remove = wrapRemove(NewComponent.prototype.remove);
 
   schema = utils.extend(processSchema(NewComponent.prototype.schema,
                                       NewComponent.prototype.name));
@@ -74001,22 +74034,6 @@ function wrapPlay (playMethod) {
     // Add tick behavior.
     if (!hasBehavior(this)) { return; }
     sceneEl.addBehavior(this);
-  };
-}
-
-/**
- * Wrapper for defined remove method.
- * Clean up memory.
- *
- * @param removeMethod {function} - Defined remove method.
- */
-function wrapRemove (removeMethod) {
-  return function remove () {
-    removeMethod.call(this);
-    this.objectPool.recycle(this.attrValue);
-    this.objectPool.recycle(this.oldData);
-    this.objectPool.recycle(this.parsingAttrValue);
-    this.attrValue = this.oldData = this.parsingAttrValue = undefined;
   };
 }
 
@@ -76995,7 +77012,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.9.0 (Date 2019-04-16, Commit #4b0b72a)');
+console.log('A-Frame Version: 0.9.0 (Date 2019-04-17, Commit #1d7d279)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
