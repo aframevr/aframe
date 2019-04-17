@@ -64121,6 +64121,10 @@ function getRawProperty (el, path) {
   for (i = 0; i < split.length; i++) {
     value = value[split[i]];
   }
+  if (value === undefined) {
+    console.log(el);
+    throw new Error('[animation] property (' + path + ') could not be found');
+  }
   return value;
 }
 
@@ -77012,7 +77016,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.9.0 (Date 2019-04-17, Commit #1d7d279)');
+console.log('A-Frame Version: 0.9.0 (Date 2019-04-17, Commit #46ca729)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
