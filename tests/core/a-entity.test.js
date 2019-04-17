@@ -80,8 +80,8 @@ suite('a-entity', function () {
     const el2 = document.createElement('a-entity');
     el2.object3D = new THREE.Mesh();
     el2.setAttribute('geometry', 'primitive:plane');
-    parentEl.appendChild(el2);
     el2.addEventListener('loaded', afterFirstAttachment);
+    parentEl.appendChild(el2);
 
     function afterFirstAttachment () {
       el2.removeEventListener('loaded', afterFirstAttachment);
@@ -93,18 +93,18 @@ suite('a-entity', function () {
       assert.isTrue(el2.hasLoaded);
 
       parentEl.removeChild(el2);
-      process.nextTick(afterDetachment);
+      setTimeout(afterDetachment);
     }
 
     function afterDetachment () {
       assert.equal(parentEl.object3D.children.length, 0);
       assert.notOk(el2.parentEl);
       assert.notOk(el2.parentNode);
-      assert.notOk(el2.components.geometry);
+      assert.ok(el2.components.geometry);
       assert.isFalse(el2.hasLoaded);
 
-      parentEl.appendChild(el2);
       el2.addEventListener('loaded', afterSecondAttachment);
+      parentEl.appendChild(el2);
     }
 
     function afterSecondAttachment () {
@@ -544,7 +544,7 @@ suite('a-entity', function () {
       assert.notEqual(el.sceneEl.behaviors.tock.indexOf(el.components.test), -1);
       parentEl.removeChild(el);
       process.nextTick(function () {
-        assert.notOk('test' in el.components);
+        assert.ok('test' in el.components);
         assert.equal(el.sceneEl.behaviors.tick.indexOf(el.components.test), -1);
         assert.equal(el.sceneEl.behaviors.tock.indexOf(el.components.test), -1);
         done();
