@@ -1,4 +1,54 @@
-## 0.9.0
+## 0.9.1 (April 2019)
+
+Follow-up fixes and improvements to 0.9.0.
+
+Released Hot Module Replacement loader for A-Frame: https://github.com/supermedium/aframe-super-hot-loader
+
+### Major Changes
+
+- Detaching entity from scene will preserve component data. Add
+  `Entity.destroy()` method to clear components and return their memory to the
+  pool (#4121).
+- Use controller index to determine left / right controllers which may impact
+  cases like Vive Trackers. Will look to make this more robust soon (#4013).
+
+### Deprecations
+
+- Deprecate `utils.device.isOculusGo` in favor of `utils.device.isMobileVR` (#4032).
+
+### Fixes
+
+- Updated documentation guides for 0.9.0.
+- Fix text antialiasing from distance (#4039).
+- Improve `vrdisplayactivate` path for more robust navigation (#4093, 3c2f68e).
+- Clean up object requested from pool by component to prevent pollution of old keys from other schemas (#4016).
+- Fix initial camera position, rotation, scale potentially not getting applied (#4020).
+- Fix `utils.coordinates.stringify` for zeroed vectors (#4017).
+- Handle if both WebVR and both WebXR APIs are available (#4022).
+- Handle null device from WebXR (#4030).
+- Catch `navigator.xr.requestDevice` error (#4035).
+- Fix animation for custom vec3 properties (#4051).
+- Fix sound `onEnded` not setting `isPlaying` to false (#4061, #4097, #4101).
+- Fix new materials not getting applied to `obj-model` recursively (#4062).
+- Fix boolean values in `.flushToDOM` (#4069).
+- Hide navigation buttons on Android (#4090).
+- Fix Chrome gamepads by checking `getGamepads` on every tick for Chrome (#4116).
+
+### Enhancements
+
+- Add `Component.events` API to define event handlers that are automatically attached and detached depending on entity lifecycle (#4114).
+- Improve animation error message when passing invalid `animation.property` (#4122).
+- Have `Entity.remove` detach entity to match HTML element behavior (#4082).
+- Migrate `hand-controls` model to glTF (#3932).
+- Add `shadow.enabled` property to shadow system (#4040).
+- Add `renderer.alpha` property to renderer system (#4040).
+- Add `AFRAME.coreComponents` for a list of the core components (#4064).
+
+### Performance
+
+- Use a fork of anime.js that has memory improvements from Kevin (#4028).
+
+## 0.9.0 (February 7, 2019)
 
 Performance improvements, WebXR support, Inspector updates!
 
