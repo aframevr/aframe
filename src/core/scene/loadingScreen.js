@@ -15,6 +15,7 @@ module.exports.setup = function setup (el, getCanvasSize) {
   var loaderAttribute = sceneEl.hasAttribute(ATTR_NAME) ? styleParser.parse(sceneEl.getAttribute(ATTR_NAME)) : undefined;
   var dotsColor = loaderAttribute && loaderAttribute.dotsColor || 'white';
   var backgroundColor = loaderAttribute && loaderAttribute.backgroundColor || '#24CAFF';
+  var logoTexturePath = loaderAttribute && loaderAttribute.logoTexturePath || undefined;
   var loaderEnabled = loaderAttribute === undefined || loaderAttribute.enabled === true || loaderAttribute.enabled === undefined; // true default
   var loaderScene;
   var sphereGeometry;
@@ -22,6 +23,10 @@ module.exports.setup = function setup (el, getCanvasSize) {
   var sphereMesh1;
   var sphereMesh2;
   var sphereMesh3;
+  var planeGeometry;
+  var planeMaterial;
+  var planeMesh;
+  var logoTextureLoader;
   var camera;
   var clock;
   var time;
@@ -46,6 +51,17 @@ module.exports.setup = function setup (el, getCanvasSize) {
     sphereMesh2.visible = time >= 2;
     sphereMesh3.visible = time >= 3;
   };
+
+  if (logoTexturePath) {
+    logoTextureLoader = new THREE.TextureLoader();
+    logoTextureLoader.load(logoTexturePath, logoTextureLoader => {
+      planeGeometry = new THREE.PlaneGeometry(10, 10, 1, 1);
+      planeMaterial = new THREE.MeshBasicMaterial({map: logoTextureLoader, transparent: true, opacity: 1});
+      planeMesh = new THREE.Mesh(planeGeometry, planeMaterial);
+      planeMesh.position.set(0, 6, -15);
+      camera.add(planeMesh);
+    });
+  }
 
   loaderScene.background = new THREE.Color(backgroundColor);
   loaderScene.add(camera);
