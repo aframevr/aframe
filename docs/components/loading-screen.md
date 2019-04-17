@@ -31,6 +31,7 @@ The example below sets the background color to black and dots color to red.
 
 | Property        | Description                                               | Default Value |
 |-----------------|-----------------------------------------------------------|---------------|
+| logoTexturePath | url or path to an image file                              | null          |
 | dotsColor       | Loader dots color.                                        | white         |
 | backgroundColor | Loader background color.                                  | #24CAFF       |
 | enabled         | Enables / Disables the loading screen.                    | true          |
