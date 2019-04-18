@@ -63415,7 +63415,7 @@ function extend() {
 },{}],51:[function(_dereq_,module,exports){
 module.exports={
   "name": "aframe",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "description": "A web framework for building virtual reality experiences.",
   "homepage": "https://aframe.io/",
   "main": "dist/aframe-master.js",
@@ -63434,7 +63434,7 @@ module.exports={
     "lint:fix": "semistandard --fix",
     "precommit": "npm run lint",
     "prepush": "node scripts/testOnlyCheck.js",
-    "prerelease": "node scripts/release.js 0.8.2 0.9.0",
+    "prerelease": "node scripts/release.js 0.9.0 0.9.1",
     "start": "npm run dev",
     "start:https": "cross-env SSL=true npm run dev",
     "test": "karma start ./tests/karma.conf.js",
@@ -77016,7 +77016,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.9.0 (Date 2019-04-17, Commit #46ca729)');
+console.log('A-Frame Version: 0.9.1 (Date 2019-04-18, Commit #0ea981b)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
