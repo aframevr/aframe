@@ -1,6 +1,6 @@
 {
   "name": "aframe",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "description": "A web framework for building virtual reality experiences.",
   "homepage": "https://aframe.io/",
   "main": "dist/aframe-master.js",
@@ -19,7 +19,7 @@
     "lint:fix": "semistandard --fix",
     "precommit": "npm run lint",
     "prepush": "node scripts/testOnlyCheck.js",
-    "prerelease": "node scripts/release.js 0.8.2 0.9.0",
+    "prerelease": "node scripts/release.js 0.9.0 0.9.1",
     "start": "npm run dev",
     "start:https": "cross-env SSL=true npm run dev",
     "test": "karma start ./tests/karma.conf.js",
