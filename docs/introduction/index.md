@@ -176,10 +176,10 @@ step-by-step visual tutorial.
 4. [Join us on Slack](https://aframevr-slack.herokuapp.com) or [Discord] and if
 you have any questions, [search and ask on
 StackOverflow](http://stackoverflow.com/questions/ask/?tags=aframe), and
-someone try to get to you!
+someone will try to get to you!
 
 5. When you build something, share your project online and we'll try to feature
 it on [*A Week of A-Frame*](https://aframe.io/blog/)!
 
-And it really helps to have dig into the fundamentals on JavaScript and
+And it really helps to have a dig into the fundamentals on JavaScript and
 three.js. Have fun!
