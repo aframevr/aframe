@@ -95,7 +95,7 @@ landscape.
 
 ## Which Platforms Does A-Frame Support?
 
-A-Frame supports mostly all platforms through browsers General platforms that
+A-Frame supports almost all platforms through browsers. General platforms that
 A-Frame supports include:
 
 - VR on desktop with a headset
