@@ -1,3 +1,9 @@
+// Prevent native WebXR implementation from impeding 8th Wall XR
+if (window.XR && typeof window.XR === 'function') {
+  window.nativeXR = window.XR;
+  window.XR = undefined;
+}
+
 // Polyfill `Promise`.
 window.Promise = window.Promise || require('promise-polyfill');
 
@@ -92,7 +98,7 @@ require('./core/a-mixin');
 require('./extras/components/');
 require('./extras/primitives/');
 
-console.log('8-Frame Version: 0.9.0 (Date 2019-02-25, Commit #8fb963e8)');
+console.log('8-Frame Version: 0.9.0 (Date 2019-04-18, Commit #34a56c79)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
