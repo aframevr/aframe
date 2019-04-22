@@ -14,7 +14,7 @@ is primarily HTML and JavaScript.
 
 ## Code Editors in the Browser
 
-The fastest way to start playing from within the browser.
+The fastest way is to start playing from within the browser.
 
 ### Remix on Glitch
 
@@ -43,7 +43,7 @@ Below are a few other A-Frame Glitches for starters:
 
 ### Other Code Editors
 
-Below are a couple A-Frame starter kits on other browser-based code
+Below are a couple of A-Frame starter kits on other browser-based code
 editors. Both support remixing or forking:
 
 - [Mozilla Thimble &mdash; A-Frame](https://thimble.mozilla.org/en-US/user/ngokevin/864056)
