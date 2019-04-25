@@ -1541,6 +1541,23 @@ suite('a-entity component lifecycle management', function () {
       });
     });
   });
+
+  suite('destroy', function () {
+    test('does not destroy components if still attached', function () {
+      el.setAttribute('test', '');
+      const destroySpy = this.sinon.spy(el.components.test, 'destroy');
+      el.destroy();
+      assert.notOk(destroySpy.callCount);
+    });
+
+    test('destroys components if destroyed', function () {
+      el.setAttribute('test', '');
+      el.parentNode.removeChild(el);
+      const destroySpy = this.sinon.spy(el.components.test, 'destroy');
+      el.destroy();
+      assert.ok(destroySpy.callCount);
+    });
+  });
 });
 
 suite('a-entity component dependency management', function () {

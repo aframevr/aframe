@@ -848,7 +848,7 @@ var proto = Object.create(ANode.prototype, {
   destroy: {
     value: function () {
       var key;
-      if (this.el.parentNode) {
+      if (this.parentNode) {
         warn('Entity can only be destroyed if detached from scenegraph.');
         return;
       }
