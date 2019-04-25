@@ -73,7 +73,7 @@ conflated with WebGL, which provides graphics and rendering.
 ## What Browsers Support VR?
 
 Including [Supermedium](https://supermedium.com) and
-[Exokit](https://github.com/webmixedreality/exokit):
+[Exokit](https://github.com/exokitxr/exokit):
 
 <iframe src="https://caniuse.com/#search=webxr" height="480px" width="100%"></iframe>
 
