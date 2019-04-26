@@ -75157,6 +75157,11 @@ function requestFullscreen (canvas) {
 }
 
 function exitFullscreen () {
+  var fullscreenEl =
+    document.fullscreenElement ||
+    document.webkitFullscreenElement ||
+    document.mozFullScreenElement;
+  if (!fullscreenEl) { return; }
   if (document.exitFullscreen) {
     document.exitFullscreen();
   } else if (document.mozCancelFullScreen) {
@@ -77016,7 +77021,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.9.1 (Date 2019-04-26, Commit #b3d1c0b)');
+console.log('A-Frame Version: 0.9.1 (Date 2019-04-26, Commit #86d9c5e)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
