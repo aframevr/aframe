@@ -72590,7 +72590,7 @@ var proto = Object.create(ANode.prototype, {
   destroy: {
     value: function () {
       var key;
-      if (this.el.parentNode) {
+      if (this.parentNode) {
         warn('Entity can only be destroyed if detached from scenegraph.');
         return;
       }
@@ -77016,7 +77016,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.9.1 (Date 2019-04-18, Commit #0ea981b)');
+console.log('A-Frame Version: 0.9.1 (Date 2019-04-26, Commit #b3d1c0b)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
