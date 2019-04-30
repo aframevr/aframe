@@ -75305,7 +75305,7 @@ var constants = _dereq_('../../constants/');
 var extend = _dereq_('../../utils').extend;
 
 var MOBILE_HEAD_TAGS = module.exports.MOBILE_HEAD_TAGS = [
-  Meta({name: 'viewport', content: 'width=device-width,initial-scale=1,maximum-scale=1,shrink-to-fit=no,user-scalable=no,minimal-ui'}),
+  Meta({name: 'viewport', content: 'width=device-width,initial-scale=1,maximum-scale=1,shrink-to-fit=no,user-scalable=no,minimal-ui,viewport-fit=cover'}),
 
   // W3C-standardised meta tags.
   Meta({name: 'mobile-web-app-capable', content: 'yes'}),
@@ -77021,7 +77021,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.9.1 (Date 2019-04-26, Commit #86d9c5e)');
+console.log('A-Frame Version: 0.9.1 (Date 2019-04-30, Commit #1302ccd)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
