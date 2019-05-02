@@ -386,8 +386,8 @@ AFRAME.registerShader('my-custom', {
 </script>
 ```
 
-[rawshader]: https://threejs.org/docs/api/materials/RawShaderMaterial.html
-[shadermaterial]: https://threejs.org/docs/api/materials/ShaderMaterial.html
+[rawshader]: https://threejs.org/docs/#api/en/materials/RawShaderMaterial
+[shadermaterial]: https://threejs.org/docs/#api/en/materials/ShaderMaterial
 
 Setting `raw` to `true` uses [THREE.RawShaderMaterial][rawshader] instead of
 [ShaderMaterial][shadermaterial] so built-in uniforms and attributes are not
