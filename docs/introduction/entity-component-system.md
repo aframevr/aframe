@@ -320,19 +320,6 @@ There are hundreds of components out in the wild. We try our best to make them
 discoverable. If you develop a component, please submit it through these
 channels to share!
 
-#### Registry
-
-[angle]: https://github.com/aframevr/angle/
-[registry]: https://aframe.io/aframe-registry
-
-![A-Frame Registry](https://cloud.githubusercontent.com/assets/674727/20289850/13a4b42e-aa91-11e6-84bc-c5aa8ea6fe6c.png)
-
-Components are curated and collected into the [A-Frame Registry][registry] This
-is similar to the collection of components and modules on the Unity Asset
-Store, but free and open source. We try to make sure they work well. Once a
-component is in the Registry, the component can be easily searchable and
-installable from multiple channels (e.g., [angle]).
-
 #### npm
 
 [search]: https://www.npmjs.com/search?q=aframe-component
@@ -341,16 +328,6 @@ Most A-Frame components are published on npm as well as GitHub. We can use
 [npm's search to search for `aframe-components`][search]. npm lets us sort by
 quality, popularity, and maintenance. This is a great place to look for a more
 complete list of components.
-
-#### *A Week of A-Frame*
-
-[blog]: https://aframe.io/blog/
-[homepage]: https://aframe.io/
-
-[Every week on the blog][blog], we round up all the activity in the A-Frame
-community and ecosystem. This includes featuring components that have been
-freshly released or updated. [The homepage of A-Frame][homepage] will usually
-have a link to the most recent *A Week of A-Frame* entry.
 
 #### GitHub Projects
 
@@ -361,8 +338,20 @@ those A-Frame applications are open source on [GitHub]. Their codebases will
 contain components that we can use directly, refer to, or copy from. Projects
 to look at include:
 
+- [BeatSaver Viewer](https://github.com/supermedium/beatsaver-viewer/)
+- [Super Says](https://github.com/supermedium/supersays/)
 - [A-Painter](https://github.com/aframevr/a-painter/)
 - [A-Blast](https://github.com/aframevr/a-blast/)
+
+#### *A Week of A-Frame*
+
+[blog]: https://aframe.io/blog/
+[homepage]: https://aframe.io/
+
+[Every week on the blog][blog], we round up all the activity in the A-Frame
+community and ecosystem. This includes featuring components that have been
+freshly released or updated. [The homepage of A-Frame][homepage] will usually
+have a link to the most recent *A Week of A-Frame* entry.
 
 ### Using a Community Component
 
