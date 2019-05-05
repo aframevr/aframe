@@ -119,6 +119,7 @@ supports include:
 
 - HTC Vive
 - Oculus Rift
+- Oculus Quest
 - Oculus Go
 - Google Daydream
 - Samsung GearVR
