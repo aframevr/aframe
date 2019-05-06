@@ -1,4 +1,16 @@
-## 0.9.1 (April 2019)
+## 0.9.2 (May 6, 2019)
+
+Follow-up fix to 0.9.1 for fixing `vrdisplayactivate` and link traversal flow.
+
+### Fixes
+
+- Fix `vrdisplayactivate` and link traversal due to last build having outdated version our three.js fork.
+- Fix `Entity.destroy` not catching if entity is not attached to scenegraph (#4140).
+- Fix exiting fullscreen on Chrome m71+ (#4136).
+- Fix URL bar not hiding in iOS Safari in fullscreen (#4146).
+- Fix wrong sized canvas in iOS VR by preventing multiple `requestPresent` calls if already presenting (#4148).
+
+## 0.9.1 (April 17, 2019)
 
 Follow-up fixes and improvements to 0.9.0.
 
