@@ -196,7 +196,7 @@ Now we see our box!
 
 ### Default Controls
 
-For flat displays (i.e., laptop, desktop), the default control scheme lets us
+For flat displays (i.e., laptop, desktop), the default control scheme let us
 look around by click-dragging the mouse and move around with the `WASD` or
 arrow keys. On mobile, we can pan the phone around to rotate the camera.
 Although A-Frame is tailored for WebVR, this default control scheme allows
