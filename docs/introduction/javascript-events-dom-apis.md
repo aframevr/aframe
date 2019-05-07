@@ -184,6 +184,10 @@ for (var i = 0; i < els.length; i++) {
 }
 ```
 
+### A Note About Performance
+
+Be careful when using `.querySelectorAll()` and `.querySelector()` to query or loop over a large number of entities. If you need to deal with large number of entities, it's better to maintain your own array of relevant entities and loop over that instead.
+
 ## Retrieving Component Data with `.getAttribute()`
 
 We can get the data of components of an entity via `.getAttribute`. A-Frame
