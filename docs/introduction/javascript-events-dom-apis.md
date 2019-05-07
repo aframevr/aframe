@@ -184,9 +184,27 @@ for (var i = 0; i < els.length; i++) {
 }
 ```
 
-### A Note About Performance
+#### A Note About Performance
 
-Be careful when using `.querySelectorAll()` and `.querySelector()` to query or loop over a large number of entities. If you need to deal with large number of entities, it's better to maintain your own array of relevant entities and loop over that instead.
+Avoid using `.querySelector` and `.querySelectorAll` in `tick` and `tock` functions
+that get called every frame as it does take some time to loop over the DOM to retrieve
+entities. Instead, keep a cached list of entities, calling the query selectors beforehand,
+and then just loop over that.
+
+```js
+AFRAME.registerComponent('query-selector-example', {
+  init: function () {
+    this.entities = document.querySelectorAll('.box');
+  },
+  
+  tick: function () {
+    // Don't call query selector in here, query beforehand.
+    for (let i = 0; i < this.entities.length; i++) {
+      // Do something with entities.
+    }
+  }
+});
+```
 
 ## Retrieving Component Data with `.getAttribute()`
 
