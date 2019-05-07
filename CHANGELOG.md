@@ -4,6 +4,7 @@ Follow-up fix to 0.9.1 for fixing `vrdisplayactivate` and link traversal flow.
 
 ### Fixes
 
+- Move `vrdisplayactivate` handler back earlier to fix auto entering VR in many cases (#4155).
 - Fix `vrdisplayactivate` and link traversal due to last build having outdated version our three.js fork.
 - Fix `Entity.destroy` not catching if entity is not attached to scenegraph (#4140).
 - Fix exiting fullscreen on Chrome m71+ (#4136).
