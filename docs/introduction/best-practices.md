@@ -71,7 +71,9 @@ purpose of using A-Frame.
 [hardware]: ./vr-headsets-and-webvr-browsers.md
 [merge]: https://www.npmjs.com/package/aframe-geometry-merger-component
 [stats]: ../components/stats.md
+[pool]: ../components/pool.md
 [background]: ../components/background.md
+[pool]
 [geometrymerger]: https://www.npmjs.com/package/aframe-geometry-merger-component
 
 
@@ -117,7 +119,7 @@ an A-Frame scene:
   use the **[pool component][pool]** to pre-generate and reuse entities. This
   avoids the cost of creating entities on the fly and reduces garbage collection.
 - When using the animation component, [animate values
-  directly][animationdirect] which will skip `.setAttribute` and animate JS
+  directly][animation] which will skip `.setAttribute` and animate JS
   values directly. For example, instead of `material.opacity`, animate
   `components.material.material.opacity`.
 
