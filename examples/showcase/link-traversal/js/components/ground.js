@@ -7,7 +7,7 @@ AFRAME.registerComponent('ground', {
     var objectLoader;
     var self = this;
     if (this.objectLoader) { return; }
-    objectLoader = this.objectLoader = new THREE.ObjectLoader();
+    objectLoader = this.objectLoader = new THREE.LegacyJSONLoader();
     objectLoader.setCrossOrigin('');
     objectLoader.load(this.data.url, function (obj) {
       obj.children.forEach(function (value) {
