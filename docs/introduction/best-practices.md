@@ -118,10 +118,10 @@ an A-Frame scene:
 - If you need to create, remove and re-create many entities of the same type,
   use the **[pool component][pool]** to pre-generate and reuse entities. This
   avoids the cost of creating entities on the fly and reduces garbage collection.
-- When using the animation component, [animate values
-  directly][animation] which will skip `.setAttribute` and animate JS
-  values directly. For example, instead of `material.opacity`, animate
-  `components.material.material.opacity`.
+- When using the animation component, [animate values directly][animation] 
+  which will skip `.setAttribute` and animate JS values directly. 
+  For example, instead of `material.opacity`, 
+  animate `components.material.material.opacity`.
 
 ### GPU Texture Preloading
 
