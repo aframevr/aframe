@@ -4512,29 +4512,16 @@ function filterArray(arr, callback) {
   return result;
 }
 
-var auxArrayFlatten = [];
-
-function flattenArray(arr) {
-  if (!arr.length) { return arr; }
-
-  var result = auxArrayFlatten;
-  var node = arr.pop();
-
-  do {
-    if (node.constructor === Array) {
-      for (var i = 0; i < node.length; i++) {
-        arr.push(node[i]);
-      }
+function flattenArray (arr, result) {
+  if (!result) { result = []; }
+  for (var i = 0, length = arr.length; i < length; i++) {
+    var value = arr[i];
+    if (Array.isArray(value)) {
+      flattenArray(value, result);
     } else {
-      result.push(node);
+      result.push(value);
     }
-  } while (arr.length && (node = arr.pop()) !== undefined);
-
-  result.reverse();  // Reverse result to restore the original order.
-
-  // arr turns into the auxArray and we return the previously aux array.
-  auxArrayFlatten = arr;
-  auxArrayFilter.length = 0;
+  }
   return result;
 }
 
@@ -63464,7 +63451,7 @@ module.exports={
     "present": "0.0.6",
     "promise-polyfill": "^3.1.0",
     "style-attr": "^1.0.2",
-    "super-animejs": "^3.0.0",
+    "super-animejs": "^3.1.0",
     "super-three": "^0.102.2",
     "three-bmfont-text": "^2.1.0",
     "webvr-polyfill": "^0.10.10"
@@ -77024,7 +77011,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.9.2 (Date 2019-05-06, Commit #f57a1fa)');
+console.log('A-Frame Version: 0.9.2 (Date 2019-05-08, Commit #799dea5)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
