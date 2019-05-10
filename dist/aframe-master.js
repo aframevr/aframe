@@ -67330,6 +67330,7 @@ module.exports.Component = registerComponent('oculus-go-controls', {
     var data = this.data;
     el.setAttribute('tracked-controls', {
       armModel: data.armModel,
+      hand: data.hand,
       idPrefix: GAMEPAD_ID_PREFIX,
       orientationOffset: data.orientationOffset
     });
@@ -77011,7 +77012,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.9.2 (Date 2019-05-08, Commit #799dea5)');
+console.log('A-Frame Version: 0.9.2 (Date 2019-05-10, Commit #b356db2)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
