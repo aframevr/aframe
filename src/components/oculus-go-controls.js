@@ -102,6 +102,7 @@ module.exports.Component = registerComponent('oculus-go-controls', {
     var data = this.data;
     el.setAttribute('tracked-controls', {
       armModel: data.armModel,
+      hand: data.hand,
       idPrefix: GAMEPAD_ID_PREFIX,
       orientationOffset: data.orientationOffset
     });
