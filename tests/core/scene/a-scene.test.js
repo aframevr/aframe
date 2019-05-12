@@ -345,6 +345,32 @@ suite('a-scene (without renderer)', function () {
       assert.equal(spy.getCalls().length, 1);
       delete AFRAME.systems.foo;
     });
+
+    test('calls component tick on second entity after first entity removes itself', function (done) {
+      var spy = this.sinon.spy();
+      AFRAME.registerComponent('test', {
+        tick: function () {
+          spy();
+          this.el.parentNode.removeChild(this.el);
+        }
+      });
+
+      helpers.elFactory().then(function (elOne) {
+        var sceneEl = elOne.sceneEl;
+
+        elOne.setAttribute('test', '');
+
+        var elTwo = document.createElement('a-entity');
+        elTwo.setAttribute('test', '');
+        sceneEl.appendChild(elTwo);
+
+        process.nextTick(function () {
+          sceneEl.tick();
+          assert.equal(spy.getCalls().length, 2);
+          done();
+        });
+      });
+    });
   });
 
   suite('tock', function () {
