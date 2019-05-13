@@ -1,5 +1,5 @@
-/* global ANodeV1, customElements */
-require('./a-node');
+/* global customElements */
+var ANode = require('./a-node');
 var COMPONENTS = require('./component').components;
 var THREE = require('../lib/three');
 var utils = require('../utils/');
@@ -22,7 +22,7 @@ var ONCE = {once: true};
  * @member {array} states
  * @member {boolean} isPlaying - false if dynamic behavior of the entity is paused.
  */
-class AEntity extends ANodeV1 {
+class AEntity extends ANode {
   constructor () {
     super();
     this.components = {};
