@@ -8,7 +8,7 @@ var THREE = require('../../lib/three');
 var utils = require('../../utils/');
 // Require after.
 var AEntity = require('../a-entity');
-var ANode = require('../a-node');
+var ANode = require('../a-node').ANode;
 var initPostMessageAPI = require('./postMessage');
 
 var bind = utils.bind;

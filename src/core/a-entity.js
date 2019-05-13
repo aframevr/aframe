@@ -1,5 +1,5 @@
 /* global customElements */
-var ANode = require('./a-node');
+var ANode = require('./a-node').ANode;
 var COMPONENTS = require('./component').components;
 var THREE = require('../lib/three');
 var utils = require('../utils/');

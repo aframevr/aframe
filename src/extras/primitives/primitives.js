@@ -1,6 +1,7 @@
 /* global customElements */
 var AEntity = require('../../core/a-entity');
 var components = require('../../core/component').components;
+var knownTags = require('../../core/a-node').knownTags;
 var utils = require('../../utils/');
 
 var debug = utils.debug;
@@ -149,6 +150,7 @@ module.exports.registerPrimitive = function registerPrimitive (name, definition)
 
   customElements.define(name, primitiveClass);
   primitiveClass.mappings = mappings;
+  knownTags[name.toLowerCase()] = true;
 
   // Store.
   primitives[name] = primitiveClass;

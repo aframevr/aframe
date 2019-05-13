@@ -1,9 +1,17 @@
 /* global customElements, CustomEvent, HTMLElement */
-var isNode = require('./a-register-element').isNode;
 var utils = require('../utils/');
 
 var warn = utils.debug('core:a-node:warn');
 var error = utils.debug('core:a-node:error');
+
+var knownTags = {
+  'a-assets': true,
+  'a-assets-items': true,
+  'a-cubemap': true,
+  'a-mixin': true,
+  'a-node': true,
+  'a-entity': true
+};
 
 /**
  * Base class for A-Frame that manages loading of objects.
@@ -237,5 +245,17 @@ ANode.newMixinIdArray = [];
 ANode.oldMixinIdArray = [];
 ANode.mixinIds = {};
 
-module.exports = ANode;
+module.exports.ANode = ANode;
+module.exports.knownTags = knownTags;
+
 customElements.define('a-node-v1', ANode);
+
+/**
+ * Return whether the element type is one of our known registered ones.
+ *
+ * @param {string} node - The name of the tag to register.
+ * @returns {boolean} Whether the tag name matches that of our registered custom elements.
+ */
+function isNode (node) {
+  return node.tagName.toLowerCase() in knownTags || node.isNode;
+}
