@@ -1,5 +1,5 @@
 /* global customElements */
-var ANode = require('./a-node');
+var ANode = require('./a-node').ANode;
 var bind = require('../utils/bind');
 var debug = require('../utils/debug');
 var THREE = require('../lib/three');
