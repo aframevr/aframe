@@ -10,9 +10,10 @@ class ACubeMap extends HTMLElement {
   /**
    * Calculates this.srcs.
    */
-  constructor () {
-    super();
-    this.srcs = this.validate();
+  constructor (self) {
+    super(self);
+    self = self || this;
+    self.srcs = self.validate();
   }
 
   /**

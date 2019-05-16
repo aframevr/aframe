@@ -28,14 +28,15 @@ module.exports.registerPrimitive = function registerPrimitive (name, definition)
              .concat(['mixin']);
     }
 
-    constructor () {
-      super();
-      this.defaultComponentsFromPrimitive = definition.defaultComponents || definition.defaultAttributes || {};
-      this.deprecated = definition.deprecated || null;
-      this.deprecatedMappings = definition.deprecatedMappings || {};
-      this.mappings = mappings;
+    constructor (self) {
+      super(self);
+      self = self || this;
+      self.defaultComponentsFromPrimitive = definition.defaultComponents || definition.defaultAttributes || {};
+      self.deprecated = definition.deprecated || null;
+      self.deprecatedMappings = definition.deprecatedMappings || {};
+      self.mappings = mappings;
       if (definition.deprecated) { console.warn(definition.deprecated); }
-      this.resolveMappingCollisions();
+      self.resolveMappingCollisions();
     }
 
     /**

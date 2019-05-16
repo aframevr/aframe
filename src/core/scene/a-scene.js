@@ -33,28 +33,28 @@ var warn = utils.debug('core:a-scene:warn');
  * @member {number} time
  */
 class AScene extends AEntity {
-  constructor () {
-    super();
-    this.clock = new THREE.Clock();
-    this.isIOS = isIOS;
-    this.isMobile = isMobile;
-    this.hasWebXR = isWebXRAvailable;
-    this.isScene = true;
-    this.object3D = new THREE.Scene();
-    var self = this;
-    this.object3D.onAfterRender = function (renderer, scene, camera) {
+  constructor (self) {
+    super(self);
+    self = self || this;
+    self.clock = new THREE.Clock();
+    self.isIOS = isIOS;
+    self.isMobile = isMobile;
+    self.hasWebXR = isWebXRAvailable;
+    self.isScene = true;
+    self.object3D = new THREE.Scene();
+    self.object3D.onAfterRender = function (renderer, scene, camera) {
       // THREE may swap the camera used for the rendering if in VR, so we pass it to tock
       if (self.isPlaying) { self.tock(self.time, self.delta, camera); }
     };
-    this.render = bind(this.render, this);
-    this.systems = {};
-    this.systemNames = [];
-    this.time = this.delta = 0;
+    self.render = bind(self.render, self);
+    self.systems = {};
+    self.systemNames = [];
+    self.time = self.delta = 0;
 
-    this.behaviors = {tick: [], tock: []};
-    this.hasLoaded = false;
-    this.isPlaying = false;
-    this.originalHTML = this.innerHTML;
+    self.behaviors = {tick: [], tock: []};
+    self.hasLoaded = false;
+    self.isPlaying = false;
+    self.originalHTML = self.innerHTML;
   }
 
   addFullScreenStyles () {

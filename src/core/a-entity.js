@@ -27,20 +27,21 @@ class AEntity extends ANode {
     return Object.keys(COMPONENTS).concat(['mixin']);
   }
 
-  constructor () {
-    super();
-    this.components = {};
+  constructor (self) {
+    super(self);
+    self = self || this;
+    self.components = {};
     // To avoid double initializations and infinite loops.
-    this.initializingComponents = {};
-    this.componentsToUpdate = {};
-    this.isEntity = true;
-    this.isPlaying = false;
-    this.object3D = new THREE.Group();
-    this.object3D.el = this;
-    this.object3DMap = {};
-    this.parentEl = null;
-    this.rotationObj = {};
-    this.states = [];
+    self.initializingComponents = {};
+    self.componentsToUpdate = {};
+    self.isEntity = true;
+    self.isPlaying = false;
+    self.object3D = new THREE.Group();
+    self.object3D.el = self;
+    self.object3DMap = {};
+    self.parentEl = null;
+    self.rotationObj = {};
+    self.states = [];
   }
 
   /**

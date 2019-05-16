@@ -24,12 +24,13 @@ class ANode extends HTMLElement {
     return ['mixin'];
   }
 
-  constructor () {
-    super();
-    this.computedMixinStr = '';
-    this.hasLoaded = false;
-    this.isNode = true;
-    this.mixinEls = [];
+  constructor (self) {
+    super(self);
+    self = self || this;
+    self.computedMixinStr = '';
+    self.hasLoaded = false;
+    self.isNode = true;
+    self.mixinEls = [];
   }
 
   connectedCallback () {
