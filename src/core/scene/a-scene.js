@@ -178,7 +178,8 @@ class AScene extends AEntity {
     // Remove from scene index.
     var sceneIndex = scenes.indexOf(this);
 
-    super.disconnectedCallback.call(this);
+    // AEntity
+    super.disconnectedCallback();
 
     scenes.splice(sceneIndex, 1);
 
@@ -801,3 +802,4 @@ function setupCanvas (sceneEl) {
   }
 }
 module.exports.setupCanvas = setupCanvas;  // For testing.
+module.exports.AScene = AScene;  // For testing.

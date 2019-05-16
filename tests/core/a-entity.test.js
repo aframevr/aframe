@@ -1,6 +1,6 @@
 /* global AFRAME, assert, process, sinon, setup, suite, teardown, test, HTMLElement */
 var AEntity = require('core/a-entity');
-var ANode = require('core/a-node');
+var ANode = require('core/a-node').ANode;
 var extend = require('utils').extend;
 var registerComponent = require('core/component').registerComponent;
 var components = require('core/component').components;

@@ -22,6 +22,12 @@ module.exports.registerPrimitive = function registerPrimitive (name, definition)
 
   var mappings = definition.mappings || {};
   var primitiveClass = class extends AEntity {
+    static get observedAttributes () {
+      return Object.keys(components)
+             .concat(Object.keys(mappings))
+             .concat(['mixin']);
+    }
+
     constructor () {
       super();
       this.defaultComponentsFromPrimitive = definition.defaultComponents || definition.defaultAttributes || {};
@@ -135,7 +141,6 @@ module.exports.registerPrimitive = function registerPrimitive (name, definition)
      */
     attributeChangedCallback (attr, oldVal, value) {
       var componentName = this.mappings[attr];
-
       super.attributeChangedCallback.call(this, attr, oldVal, value);
       if (attr in this.deprecatedMappings) {
         console.warn(this.deprecatedMappings[attr]);
