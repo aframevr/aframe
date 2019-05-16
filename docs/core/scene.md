@@ -69,7 +69,6 @@ before kicking off the render loop.
 |---------|------------------------------------------------------------------------------------------------------------------------|
 | enterVR | Switch to stereo render and push content to the headset. Needs to be called within a user-generated event handler like `click`. the first time a page enters VR. |
 | exitVR  | Switch to mono renderer and stops presenting content on the headset.                                                                           |
-| reload  | Revert the scene to its original state.                                                                                |
 
 ## Events
 
