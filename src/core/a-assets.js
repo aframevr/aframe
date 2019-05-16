@@ -11,11 +11,12 @@ var warn = debug('core:a-assets:warn');
  * Asset management system. Handles blocking on asset loading.
  */
 class AAssets extends ANode {
-  constructor () {
-    super();
-    this.isAssets = true;
-    this.fileLoader = fileLoader;
-    this.timeout = null;
+  constructor (self) {
+    super(self);
+    self = self || this;
+    self.isAssets = true;
+    self.fileLoader = fileLoader;
+    self.timeout = null;
   }
 
   connectedCallback () {
@@ -90,10 +91,11 @@ customElements.define('a-assets', AAssets);
  * Preload using XHRLoader for any type of asset.
  */
 class AAssetItem extends ANode {
-  constructor () {
-    super();
-    this.data = null;
-    this.isAssetItem = true;
+  constructor (self) {
+    super(self);
+    self = self || this;
+    self.data = null;
+    self.isAssetItem = true;
   }
 
   connectedCallback () {
