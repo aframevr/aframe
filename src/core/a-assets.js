@@ -31,6 +31,8 @@ class AAssets extends ANode {
     if (!this.parentNode.isScene) {
       throw new Error('<a-assets> must be a child of a <a-scene>.');
     }
+    // ANode method.
+    super.connectedCallback();
 
     // Wait for <img>s.
     imgEls = this.querySelectorAll('img');
@@ -69,6 +71,9 @@ class AAssets extends ANode {
   }
 
   disconnectedCallback () {
+    // ANode method.
+    super.disconnectedCallback();
+
     if (this.timeout) { clearTimeout(this.timeout); }
   }
 
@@ -94,6 +99,10 @@ class AAssetItem extends ANode {
   connectedCallback () {
     var self = this;
     var src = this.getAttribute('src');
+
+    // ANode method.
+    super.connectedCallback();
+
     fileLoader.setResponseType(
       this.getAttribute('response-type') || inferResponseType(src));
     fileLoader.load(src, function handleOnLoad (response) {

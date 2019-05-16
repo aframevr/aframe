@@ -10,6 +10,10 @@ var MULTIPLE_COMPONENT_DELIMITER = '__';
  *         are component names and the values are already parsed by the component.
  */
 class AMixin extends ANode {
+  static get observedAttributes () {
+    return Object.keys(components);
+  }
+
   constructor () {
     super();
     this.componentCache = {};
@@ -17,6 +21,7 @@ class AMixin extends ANode {
   }
 
   attributeChangedCallback (attr, oldVal, newVal) {
+    super.attributeChangedCallback(attr, oldVal, newVal);
     this.cacheAttribute(attr, newVal);
     this.updateEntities();
   }

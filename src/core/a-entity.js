@@ -23,6 +23,10 @@ var ONCE = {once: true};
  * @member {boolean} isPlaying - false if dynamic behavior of the entity is paused.
  */
 class AEntity extends ANode {
+  static get observedAttributes () {
+    return Object.keys(COMPONENTS).concat(['mixin']);
+  }
+
   constructor () {
     super();
     this.components = {};
@@ -44,7 +48,6 @@ class AEntity extends ANode {
    */
   attributeChangedCallback (attr, oldVal, newVal) {
     var component = this.components[attr];
-
     super.attributeChangedCallback();
 
     // If the empty string is passed by the component initialization
@@ -63,11 +66,12 @@ class AEntity extends ANode {
    */
   connectedCallback () {
     var assetsEl;  // Asset management system element.
-    var sceneEl = this.sceneEl;
+    var sceneEl;
     var self = this;  // Component.
 
     // ANode method.
     super.connectedCallback();
+    sceneEl = this.sceneEl;
 
     this.addToParent();
 

@@ -20,6 +20,10 @@ var knownTags = {
  * Nodes emit a `loaded` event when they and their children have initialized.
  */
 class ANode extends HTMLElement {
+  static get observedAttributes () {
+    return ['mixin'];
+  }
+
   constructor () {
     super();
     this.computedMixinStr = '';
@@ -248,7 +252,7 @@ ANode.mixinIds = {};
 module.exports.ANode = ANode;
 module.exports.knownTags = knownTags;
 
-customElements.define('a-node-v1', ANode);
+customElements.define('a-node', ANode);
 
 /**
  * Return whether the element type is one of our known registered ones.
