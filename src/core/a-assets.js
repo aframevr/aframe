@@ -79,7 +79,7 @@ class AAssets extends ANode {
   }
 
   load () {
-    super.load.call(this, null, function waitOnFilter (el) {
+    super.load(null, function waitOnFilter (el) {
       return el.isAssetItem && el.hasAttribute('src');
     });
   }

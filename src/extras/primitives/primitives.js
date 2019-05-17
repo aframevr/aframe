@@ -142,7 +142,7 @@ module.exports.registerPrimitive = function registerPrimitive (name, definition)
      */
     attributeChangedCallback (attr, oldVal, value) {
       var componentName = this.mappings[attr];
-      super.attributeChangedCallback.call(this, attr, oldVal, value);
+      super.attributeChangedCallback(attr, oldVal, value);
       if (attr in this.deprecatedMappings) {
         console.warn(this.deprecatedMappings[attr]);
       }
