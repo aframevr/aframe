@@ -343,6 +343,14 @@ fully transparent, and the rest fully opaque), try setting `transparent: false`
 and like `alphaTest: 0.5` to solve transparency issues. Play around with the alpha
 test value.
 
+### `render-order` Component
+
+[render-order component]: https://github.com/supermedium/superframe/tree/master/components/render-order#aframe-render-order-component
+
+Use the [render-order component] to tell the render to sort transparent objects
+by depth and to be able to manually define render order of entities in HTML via
+named layers. If you have transparency ordering issues, use this component.
+
 ## Register a Custom Shader Material
 
 We can register custom shader materials for appearances and effects using
