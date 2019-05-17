@@ -1,4 +1,5 @@
 /* global customElements */
+var addComponentSetterAndGetter = require('./component').addComponentSetterAndGetter;
 var ANode = require('./a-node').ANode;
 var COMPONENTS = require('./component').components;
 var THREE = require('../lib/three');
@@ -790,10 +791,19 @@ class AEntity extends ANode {
   }
 }
 
+addComponentsGettersAndSetters();
+
 AEntity.componentsUpdated = [];
 AEntity.singlePropUpdate = {};
 
 customElements.define('a-entity', AEntity);
+
+function addComponentsGettersAndSetters () {
+  Object.keys(COMPONENTS).forEach(function (componentName) {
+    console.log(componentName);
+    addComponentSetterAndGetter(componentName, AEntity.prototype);
+  });
+}
 
 /**
  * Check if a component is *defined* for an entity, including defaults and mixins.

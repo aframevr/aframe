@@ -698,6 +698,11 @@ module.exports.registerComponent = function (name, definition) {
     stringify: NewComponent.prototype.stringify,
     type: NewComponent.prototype.type
   };
+
+  if (window.AFRAME && window.AFRAME.AEntity) {
+    addComponentSetterAndGetter(name, window.AFRAME.AEntity.prototype);
+  }
+
   return NewComponent;
 };
 
@@ -799,3 +804,15 @@ function isObjectOrArray (value) {
   return value && (value.constructor === Object || value.constructor === Array) &&
          !(value instanceof window.HTMLElement);
 }
+
+var addComponentSetterAndGetter = module.exports.addComponentSetterAndGetter = function addComponentSetterAndGetter (componentName, proto) {
+  Object.defineProperty(
+    proto,
+    componentName,
+    {
+      configurable: true,
+      set: function (value) { this.setAttribute(componentName, value); },
+      get: function () { return this.getAttribute(componentName); }
+    }
+  );
+};

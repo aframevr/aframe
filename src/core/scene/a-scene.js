@@ -36,6 +36,7 @@ class AScene extends AEntity {
   constructor (self) {
     super(self);
     self = self || this;
+    Object.defineProperty(self, 'camera', {writable: true});
     self.clock = new THREE.Clock();
     self.isIOS = isIOS;
     self.isMobile = isMobile;
