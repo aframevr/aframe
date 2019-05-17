@@ -233,7 +233,7 @@ class AEntity extends ANode {
 
     if (this.hasLoaded || !this.parentEl) { return; }
 
-    super.load.call(this, function entityLoadCallback () {
+    super.load(function entityLoadCallback () {
       // Check if entity was detached while it was waiting to load.
       if (!self.parentEl) { return; }
 

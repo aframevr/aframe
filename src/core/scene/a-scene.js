@@ -74,7 +74,7 @@ class AScene extends AEntity {
     this.setAttribute('screenshot', '');
     this.setAttribute('vr-mode-ui', '');
 
-    super.connectedCallback.call(this);
+    super.connectedCallback();
 
     // Renderer initialization
     setupCanvas(this);
