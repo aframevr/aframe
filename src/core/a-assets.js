@@ -12,11 +12,11 @@ var warn = debug('core:a-assets:warn');
  */
 class AAssets extends ANode {
   constructor (self) {
-    super(self);
-    self = self || this;
+    self = super(self);
     self.isAssets = true;
     self.fileLoader = fileLoader;
     self.timeout = null;
+    return self;
   }
 
   connectedCallback () {
@@ -92,10 +92,10 @@ customElements.define('a-assets', AAssets);
  */
 class AAssetItem extends ANode {
   constructor (self) {
-    super(self);
-    self = self || this;
+    self = super(self);
     self.data = null;
     self.isAssetItem = true;
+    return self;
   }
 
   connectedCallback () {

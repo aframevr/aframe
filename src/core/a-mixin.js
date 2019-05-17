@@ -15,10 +15,10 @@ class AMixin extends ANode {
   }
 
   constructor (self) {
-    super(self);
-    self = self || this;
+    self = super(self);
     self.componentCache = {};
     self.isMixin = true;
+    return self;
   }
 
   attributeChangedCallback (attr, oldVal, newVal) {

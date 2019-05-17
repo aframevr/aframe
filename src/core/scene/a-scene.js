@@ -34,8 +34,7 @@ var warn = utils.debug('core:a-scene:warn');
  */
 class AScene extends AEntity {
   constructor (self) {
-    super(self);
-    self = self || this;
+    self = super(self);
     self.clock = new THREE.Clock();
     self.isIOS = isIOS;
     self.isMobile = isMobile;
@@ -55,6 +54,7 @@ class AScene extends AEntity {
     self.hasLoaded = false;
     self.isPlaying = false;
     self.originalHTML = self.innerHTML;
+    return self;
   }
 
   addFullScreenStyles () {

@@ -29,14 +29,14 @@ module.exports.registerPrimitive = function registerPrimitive (name, definition)
     }
 
     constructor (self) {
-      super(self);
-      self = self || this;
+      self = super(self);
       self.defaultComponentsFromPrimitive = definition.defaultComponents || definition.defaultAttributes || {};
       self.deprecated = definition.deprecated || null;
       self.deprecatedMappings = definition.deprecatedMappings || {};
       self.mappings = mappings;
       if (definition.deprecated) { console.warn(definition.deprecated); }
       self.resolveMappingCollisions();
+      return self;
     }
 
     /**

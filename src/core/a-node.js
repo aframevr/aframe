@@ -25,12 +25,12 @@ class ANode extends HTMLElement {
   }
 
   constructor (self) {
-    super(self);
-    self = self || this;
+    self = super(self);
     self.computedMixinStr = '';
     self.hasLoaded = false;
     self.isNode = true;
     self.mixinEls = [];
+    return self;
   }
 
   connectedCallback () {

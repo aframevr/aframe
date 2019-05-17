@@ -28,8 +28,7 @@ class AEntity extends ANode {
   }
 
   constructor (self) {
-    super(self);
-    self = self || this;
+    self = super(self);
     self.components = {};
     // To avoid double initializations and infinite loops.
     self.initializingComponents = {};
@@ -42,6 +41,7 @@ class AEntity extends ANode {
     self.parentEl = null;
     self.rotationObj = {};
     self.states = [];
+    return self;
   }
 
   /**
