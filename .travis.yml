@@ -10,7 +10,7 @@ addons:
       - google-chrome-stable
 
 node_js:
-  - '4.6'
+  - '7.5'
 
 install:
   - npm install
