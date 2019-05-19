@@ -27,7 +27,6 @@ var EVENTS = {};
 EVENTS[ANIMATIONS.fist] = 'grip';
 EVENTS[ANIMATIONS.thumbUp] = 'pistol';
 EVENTS[ANIMATIONS.point] = 'pointing';
-EVENTS[ANIMATIONS.thumb] = 'thumb';
 
 /**
  * Hand controls component that abstracts 6DoF controls:
@@ -378,7 +377,7 @@ function getGestureEventName (gesture, active) {
   if (eventName === 'grip') {
     return eventName + (active ? 'close' : 'open');
   }
-  if (eventName === 'point' || eventName === 'thumb') {
+  if (eventName === 'point') {
     return eventName + (active ? 'up' : 'down');
   }
   if (eventName === 'pointing' || eventName === 'pistol') {
