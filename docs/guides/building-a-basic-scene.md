@@ -546,7 +546,7 @@ and set the value on the `this.el.object3D.scale` directly for performance.
     init: function () {
       var data = this.data;
       this.el.addEventListener('mouseenter', function () {
-        this.el.object3D.scale.copy(data.to);
+        this.object3D.scale.copy(data.to);
       });
     }
   });
