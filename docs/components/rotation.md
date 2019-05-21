@@ -85,3 +85,11 @@ A-Frame will convert from radians and degrees and return a normal JavaScript
 object with x/y/z properties.
 
 See also [reading position and rotation of the camera](./camera.md#reading-position-or-rotation-of-the-camera).
+
+### Order of Transformations
+
+Transformations are applied to entities in this order:
+
+* [scale](scale.md)
+* rotation
+* [position/translation](position.md)

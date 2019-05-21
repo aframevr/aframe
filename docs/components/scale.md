@@ -87,3 +87,11 @@ el.object3D.scale.sub(someOtherVector);
 To reflect updates done at the three.js level, A-Frame returns the actual
 `Object3D.scale` vector object when doing `.getAttribute('scale')`. Note
 modifying the return value will modify the entity itself.
+
+### Order of Transformations
+
+Transformations are applied to entities in this order:
+
+* scale
+* [rotation](rotation.md)
+* [position/translation](position.md)
