@@ -77021,7 +77021,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.9.2 (Date 2019-05-20, Commit #552ae96)');
+console.log('A-Frame Version: 0.9.2 (Date 2019-05-28, Commit #c96ac9f)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
@@ -79125,7 +79125,7 @@ module.exports.isIOS = isIOS;
  *  Detect browsers in Stand-Alone headsets
  */
 function isMobileVR () {
-  return /(OculusBrowser)|(SamsungBrowser)|(Mobile VR)/i.test(window.navigator.userAgent);
+  return /(OculusBrowser)|(Mobile VR)/i.test(window.navigator.userAgent);
 }
 module.exports.isMobileVR = isMobileVR;
 
