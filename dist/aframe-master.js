@@ -67918,7 +67918,7 @@ module.exports.Component = registerComponent('raycaster', {
     }
 
     // Update line length.
-    setTimeout(this.updateLine);
+    if (data.showLine) { setTimeout(this.updateLine); }
   },
 
   updateLine: function () {
@@ -67926,16 +67926,14 @@ module.exports.Component = registerComponent('raycaster', {
     var intersections = this.intersections;
     var lineLength;
 
-    if (this.data.showLine) {
-      if (intersections.length) {
-        if (intersections[0].object.el === el && intersections[1]) {
-          lineLength = intersections[1].distance;
-        } else {
-          lineLength = intersections[0].distance;
-        }
+    if (intersections.length) {
+      if (intersections[0].object.el === el && intersections[1]) {
+        lineLength = intersections[1].distance;
+      } else {
+        lineLength = intersections[0].distance;
       }
-      this.drawLine(lineLength);
     }
+    this.drawLine(lineLength);
   },
 
   /**
@@ -77021,7 +77019,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.9.2 (Date 2019-05-28, Commit #c96ac9f)');
+console.log('A-Frame Version: 0.9.2 (Date 2019-05-30, Commit #c5c8442)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
