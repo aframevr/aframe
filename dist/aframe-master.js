@@ -30600,6 +30600,33 @@ module.exports = anime;
 
 		}
 
+		// this.setTexture2D = setTexture2D;
+		this.setTexture2D = ( function () {
+
+			var warned = false;
+
+			// backwards compatibility: peel texture.texture
+			return function setTexture2D( texture, slot ) {
+
+				if ( texture && texture.isWebGLRenderTarget ) {
+
+					if ( ! warned ) {
+
+						console.warn( "THREE.WebGLRenderer.setTexture2D: don't use render targets as textures. Use their .texture property instead." );
+						warned = true;
+
+					}
+
+					texture = texture.texture;
+
+				}
+
+				textures.setTexture2D( texture, slot );
+
+			};
+
+		}() );
+
 		//
 		this.setFramebuffer = function ( value ) {
 
@@ -53811,11 +53838,6 @@ module.exports = anime;
 			console.warn( 'THREE.WebGLRenderer: .setTexture() has been removed.' );
 
 		},
-		setTexture2D: function () {
-
-			console.warn( 'THREE.WebGLRenderer: .setTexture2D() has been removed.' );
-
-		},
 		setTextureCube: function () {
 
 			console.warn( 'THREE.WebGLRenderer: .setTextureCube() has been removed.' );
@@ -57812,13 +57834,7 @@ THREE.GLTFLoader = ( function () {
 							? new THREE.SkinnedMesh( geometry, material )
 							: new THREE.Mesh( geometry, material );
 
-						if ( mesh.isSkinnedMesh === true && !mesh.geometry.attributes.skinWeight.normalized ) {
-
-							// we normalize floating point skin weight array to fix malformed assets (see #15319)
-							// it's important to skip this for non-float32 data since normalizeSkinWeights assumes non-normalized inputs
-							mesh.normalizeSkinWeights();
-
-						}
+						if ( mesh.isSkinnedMesh === true ) mesh.normalizeSkinWeights(); // #15319
 
 						if ( primitive.mode === WEBGL_CONSTANTS.TRIANGLE_STRIP ) {
 
@@ -64091,7 +64107,7 @@ module.exports={
     "promise-polyfill": "^3.1.0",
     "style-attr": "^1.0.2",
     "super-animejs": "^3.1.0",
-    "super-three": "^0.105.1",
+    "super-three": "^0.105.2",
     "three-bmfont-text": "^2.1.0",
     "webvr-polyfill": "^0.10.10"
   },
@@ -77658,7 +77674,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.9.2 (Date 2019-05-31, Commit #843206d)');
+console.log('A-Frame Version: 0.9.2 (Date 2019-05-31, Commit #5e6640a)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
