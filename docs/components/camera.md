@@ -127,12 +127,12 @@ AFRAME.registerComponent('rotation-reader', {
    */
   tick: (function () {
     var position = new THREE.Vector3();
-    var rotation = new THREE.Euler();
+    var quaternion = new THREE.Quaternion();
 
     return function () {
       this.el.object3D.getWorldPosition(position);
-      this.el.object3D.getWorldRotation(rotation);
-      // position and rotation now contain vector and euler in world space.
+      this.el.object3D.getWorldQuaternion(quaternion);
+      // position and rotation now contain vector and quaternion in world space.
     };
   })
 });
