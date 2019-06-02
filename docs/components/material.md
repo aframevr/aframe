@@ -315,7 +315,7 @@ refresh itself as the canvas changes.
 
 ### Repeating Textures
 
-We might want to tile textures rather than having them stretch. The `repeat`
+We might want to repeat tile textures rather than having them stretch. The `repeat`
 property can repeat textures.
 
 ```html
