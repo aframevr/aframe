@@ -11,6 +11,8 @@ suite('node acceptance tests', function () {
     global.navigator = _window.navigator;
     global.document = _window.document;
     global.screen = {};
+    global.HTMLElement = _window.Element;
+    global.window.customElements = {define: function () {}};
   });
 
   teardown(function () {

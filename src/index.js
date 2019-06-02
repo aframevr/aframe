@@ -1,3 +1,5 @@
+require('document-register-element');
+
 // Polyfill `Promise`.
 window.Promise = window.Promise || require('promise-polyfill');
 
@@ -78,7 +80,7 @@ require('./components/index'); // Register standard components.
 require('./geometries/index'); // Register standard geometries.
 require('./shaders/index'); // Register standard shaders.
 require('./systems/index'); // Register standard systems.
-var ANode = require('./core/a-node');
+var ANode = require('./core/a-node').ANode;
 var AEntity = require('./core/a-entity'); // Depends on ANode and core components.
 
 require('./core/a-assets');
@@ -103,8 +105,8 @@ module.exports = window.AFRAME = {
   components: components,
   coreComponents: Object.keys(components),
   geometries: require('./core/geometry').geometries,
+  knownTags: require('./core/a-node').knownTags,
   registerComponent: registerComponent,
-  registerElement: require('./core/a-register-element').registerElement,
   registerGeometry: registerGeometry,
   registerPrimitive: registerPrimitive,
   registerShader: registerShader,
