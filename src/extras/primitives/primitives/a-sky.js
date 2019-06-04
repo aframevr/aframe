@@ -20,5 +20,5 @@ registerPrimitive('a-sky', utils.extendDeep({}, getMeshMixin(), {
     scale: '-1 1 1'
   },
 
-  mappings: utils.extendDeep({}, meshPrimitives['a-sphere'].prototype.mappings)
+  mappings: utils.extendDeep({}, meshPrimitives['a-sphere'].mappings)
 }));

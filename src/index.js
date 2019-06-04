@@ -1,3 +1,6 @@
+require('document-register-element');
+require('./components/index'); // Register standard components.
+
 // Polyfill `Promise`.
 window.Promise = window.Promise || require('promise-polyfill');
 
@@ -59,8 +62,6 @@ if (utils.device.isBrowserEnvironment) {
   require('./style/rStats.css');
 }
 
-// Required before `AEntity` so that all components are registered.
-var AScene = require('./core/scene/a-scene').AScene;
 var components = require('./core/component').components;
 var registerComponent = require('./core/component').registerComponent;
 var registerGeometry = require('./core/geometry').registerGeometry;
@@ -74,11 +75,12 @@ var THREE = window.THREE = require('./lib/three');
 
 var pkg = require('../package');
 
-require('./components/index'); // Register standard components.
 require('./geometries/index'); // Register standard geometries.
 require('./shaders/index'); // Register standard shaders.
 require('./systems/index'); // Register standard systems.
-var ANode = require('./core/a-node');
+// Required before `AEntity` so that all components are registered.
+var AScene = require('./core/scene/a-scene').AScene;
+var ANode = require('./core/a-node').ANode;
 var AEntity = require('./core/a-entity'); // Depends on ANode and core components.
 
 require('./core/a-assets');
@@ -103,8 +105,8 @@ module.exports = window.AFRAME = {
   components: components,
   coreComponents: Object.keys(components),
   geometries: require('./core/geometry').geometries,
+  knownTags: require('./core/a-node').knownTags,
   registerComponent: registerComponent,
-  registerElement: require('./core/a-register-element').registerElement,
   registerGeometry: registerGeometry,
   registerPrimitive: registerPrimitive,
   registerShader: registerShader,
