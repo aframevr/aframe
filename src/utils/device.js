@@ -9,6 +9,9 @@ window.addEventListener('vrdisplayactivate', function (evt) {
   if (navigator.xr) { return; }
   canvasEl = document.createElement('canvas');
   vrDisplay = evt.display;
+  // We need to make sure the canvas has a WebGL context associated with it.
+  // Otherwise, the requestPresent could be denied.
+  canvasEl.getContext('webgl', {});
   // Request present immediately. a-scene will be allowed to enter VR without user gesture.
   vrDisplay.requestPresent([{source: canvasEl}]).then(function () {}, function () {});
 });
