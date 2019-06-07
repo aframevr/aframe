@@ -1,4 +1,4 @@
-/* global Promise, screen */
+/* global Promise, screen, CustomEvent */
 var initMetaTags = require('./metaTags').inject;
 var initWakelock = require('./wakelock');
 var loadingScreen = require('./loadingScreen');
@@ -10,7 +10,6 @@ var utils = require('../../utils/');
 // Require after.
 var AEntity = require('../a-entity');
 var ANode = require('../a-node');
-var CustomEvent = require('custom-event');
 var initPostMessageAPI = require('./postMessage');
 
 var bind = utils.bind;
