@@ -75000,7 +75000,7 @@ function isValidDefaultCoordinate (possibleCoordinates, dimensions) {
 module.exports.isValidDefaultCoordinate = isValidDefaultCoordinate;
 
 },{"../utils/coordinates":171,"debug":8}],106:[function(_dereq_,module,exports){
-/* global Promise, screen */
+/* global Promise, screen, CustomEvent */
 var initMetaTags = _dereq_('./metaTags').inject;
 var initWakelock = _dereq_('./wakelock');
 var loadingScreen = _dereq_('./loadingScreen');
@@ -75311,6 +75311,14 @@ module.exports.AScene = registerElement('a-scene', {
 
         // Callback that happens on enter VR success or enter fullscreen (any API).
         function enterVRSuccess () {
+          // vrdisplaypresentchange fires only once when the first requestPresent is completed;
+          // the first requestPresent could be called from ondisplayactivate and there is no way
+          // to setup everything from there. Thus, we need to emulate another vrdisplaypresentchange
+          // for the actual requestPresent. Need to make sure there are no issues with firing the
+          // vrdisplaypresentchange multiple times.
+          var event = new CustomEvent('vrdisplaypresentchange', {detail: {display: utils.device.getVRDisplay()}});
+          window.dispatchEvent(event);
+
           self.addState('vr-mode');
           self.emit('enter-vr', {target: self});
           // Lock to landscape orientation on mobile.
@@ -77674,7 +77682,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.9.2 (Date 2019-05-31, Commit #5e6640a)');
+console.log('A-Frame Version: 0.9.2 (Date 2019-06-07, Commit #9f8e41a)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
@@ -79699,6 +79707,9 @@ window.addEventListener('vrdisplayactivate', function (evt) {
   if (navigator.xr) { return; }
   canvasEl = document.createElement('canvas');
   vrDisplay = evt.display;
+  // We need to make sure the canvas has a WebGL context associated with it.
+  // Otherwise, the requestPresent could be denied.
+  canvasEl.getContext('webgl', {});
   // Request present immediately. a-scene will be allowed to enter VR without user gesture.
   vrDisplay.requestPresent([{source: canvasEl}]).then(function () {}, function () {});
 });
