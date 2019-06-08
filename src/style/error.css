@@ -1,0 +1,10 @@
+body::after {
+    color: #000;
+    background-color: #FFF;
+    content: "It looks like your motion tracking is turned off. Go to Settings -> Safari -> Motion & Orientation Access to enable it.";
+    display: block;
+    position: absolute;
+    text-align: center;
+    top: 5%;
+    width: 100%;
+}

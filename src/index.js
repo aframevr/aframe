@@ -59,6 +59,19 @@ if (utils.device.isBrowserEnvironment) {
   require('./style/rStats.css');
 }
 
+// Check iOS motion enabled
+var isIOSMotionalEnabled = utils.device.isIOSMotionAndOritentationEnabled();
+
+isIOSMotionalEnabled.then(function (result) {
+  if (!result) {
+    require('./style/error.css');
+
+    error(
+      'Please go to Settings -> Safari -> Motion And Orientation Access' +
+      'Ensure that it is enabled then refresh the page.');
+  }
+});
+
 // Required before `AEntity` so that all components are registered.
 var AScene = require('./core/scene/a-scene').AScene;
 var components = require('./core/component').components;
@@ -91,7 +104,7 @@ require('./extras/primitives/');
 
 console.log('A-Frame Version: 0.9.2 (Date 2019-06-07, Commit #9f8e41a)');
 console.log('three Version (https://github.com/supermedium/three.js):',
-            pkg.dependencies['super-three']);
+  pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
 module.exports = window.AFRAME = {

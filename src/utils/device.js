@@ -13,17 +13,17 @@ window.addEventListener('vrdisplayactivate', function (evt) {
   // Otherwise, the requestPresent could be denied.
   canvasEl.getContext('webgl', {});
   // Request present immediately. a-scene will be allowed to enter VR without user gesture.
-  vrDisplay.requestPresent([{source: canvasEl}]).then(function () {}, function () {});
+  vrDisplay.requestPresent([{ source: canvasEl }]).then(function () {}, function () {});
 });
 
 // Support both WebVR and WebXR APIs.
 if (navigator.xr) {
   navigator.xr.requestDevice().then(function (device) {
     if (!device) { return; }
-    device.supportsSession({immersive: true, exclusive: true}).then(function () {
+    device.supportsSession({ immersive: true, exclusive: true }).then(function () {
       var sceneEl = document.querySelector('a-scene');
       vrDisplay = device;
-      if (sceneEl) { sceneEl.emit('displayconnected', {vrDisplay: vrDisplay}); }
+      if (sceneEl) { sceneEl.emit('displayconnected', { vrDisplay: vrDisplay }); }
     });
   }).catch(function (err) {
     error('WebXR Request Device: ' + err.message);
@@ -33,7 +33,7 @@ if (navigator.xr) {
     navigator.getVRDisplays().then(function (displays) {
       var sceneEl = document.querySelector('a-scene');
       vrDisplay = displays.length && displays[0];
-      if (sceneEl) { sceneEl.emit('displayconnected', {vrDisplay: vrDisplay}); }
+      if (sceneEl) { sceneEl.emit('displayconnected', { vrDisplay: vrDisplay }); }
     });
   }
 }
@@ -63,6 +63,7 @@ var isMobile = (function () {
     if (isIOS() || isTablet() || isR7()) {
       _isMobile = true;
     }
+
     if (isMobileVR()) {
       _isMobile = false;
     }
@@ -86,6 +87,26 @@ function isIOS () {
   return /iPad|iPhone|iPod/.test(window.navigator.platform);
 }
 module.exports.isIOS = isIOS;
+
+/**
+ * It helps to be holding the device for this to work.
+ */
+async function isIOSMotionAndOrientationEnabled () {
+  var deviceorientationEvt = false;
+  window.addEventListener('deviceorientation', function (event) {
+    // process event.alpha, event.beta and event.gamma
+    deviceorientationEvt = event.returnValue;
+  }, true);
+
+  return await new Promise((resolve, reject) => setTimeout(() => {
+    if (isIOS()) {
+      resolve(deviceorientationEvt);
+    } else {
+      reject('Not iOS device');
+    }
+  }, 1000));
+}
+module.exports.isIOSMotionAndOritentationEnabled = isIOSMotionAndOrientationEnabled;
 
 /**
  *  Detect browsers in Stand-Alone headsets
@@ -146,4 +167,3 @@ module.exports.PolyfillControls = function PolyfillControls (object) {
     }
   };
 };
-
