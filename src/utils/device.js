@@ -106,7 +106,7 @@ async function isIOSMotionAndOrientationEnabled () {
     }
   }, 1000));
 }
-module.exports.isIOSMotionAndOritentationEnabled = isIOSMotionAndOrientationEnabled;
+module.exports.isIOSMotionAndOrientationEnabled = isIOSMotionAndOrientationEnabled;
 
 /**
  *  Detect browsers in Stand-Alone headsets

@@ -60,7 +60,7 @@ if (utils.device.isBrowserEnvironment) {
 }
 
 // Check iOS motion enabled
-var isIOSMotionalEnabled = utils.device.isIOSMotionAndOritentationEnabled();
+var isIOSMotionalEnabled = utils.device.isIOSMotionAndOrientationEnabled();
 
 isIOSMotionalEnabled.then(function (result) {
   if (!result) {
