@@ -62,14 +62,17 @@ if (utils.device.isBrowserEnvironment) {
 // Check iOS motion enabled
 var isIOSMotionalEnabled = utils.device.isIOSMotionAndOrientationEnabled();
 
-isIOSMotionalEnabled.then(function (result) {
-  if (!result) {
-    require('./style/error.css');
+isIOSMotionalEnabled.then(function () {
+  result => function (result) {
+    if (!result) {
+      require('./style/error.css');
 
-    error(
-      'Please go to Settings -> Safari -> Motion And Orientation Access' +
+      error(
+        'Please go to Settings -> Safari -> Motion And Orientation Access' +
       'Ensure that it is enabled then refresh the page.');
-  }
+    }
+  };
+  error => console.log(error);
 });
 
 // Required before `AEntity` so that all components are registered.

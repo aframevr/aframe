@@ -92,19 +92,25 @@ module.exports.isIOS = isIOS;
  * It helps to be holding the device for this to work.
  */
 async function isIOSMotionAndOrientationEnabled () {
-  var deviceorientationEvt = false;
-  window.addEventListener('deviceorientation', function (event) {
-    // process event.alpha, event.beta and event.gamma
-    deviceorientationEvt = event.returnValue;
-  }, true);
+  try {
+    var deviceorientationEvt = false;
+    window.addEventListener('deviceorientation', function (event) {
+      // process event.alpha, event.beta and event.gamma
+      deviceorientationEvt = event.returnValue;
+    }, true);
 
-  return await new Promise((resolve, reject) => setTimeout(() => {
-    if (isIOS()) {
-      resolve(deviceorientationEvt);
-    } else {
-      reject('Not iOS device');
-    }
-  }, 1000));
+    var promise = await new Promise((resolve, reject) => setTimeout(() => {
+      if (deviceorientationEvt && isIOS()) {
+        resolve(true);
+      } else {
+        resolve(false);
+      }
+    }, 1000)).finally().catch(err => console.log(err));
+
+    return promise;
+  } catch (error) {
+    console.log(error);
+  }
 }
 module.exports.isIOSMotionAndOrientationEnabled = isIOSMotionAndOrientationEnabled;
 
