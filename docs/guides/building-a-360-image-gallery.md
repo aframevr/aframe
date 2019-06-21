@@ -168,8 +168,8 @@ need to know the component's npm package name and the path:
     <title>360° Image Browser</title>
     <script src="https://aframe.io/releases/0.9.2/aframe.min.js"></script>
     <script src="https://unpkg.com/aframe-template-component@3.x.x/dist/aframe-template-component.min.js"></script>
-    <script src="https://unpkg.com/aframe-layout-component@3.x.x/dist/aframe-layout-component.min.js"></script>
-    <script src="https://unpkg.com/aframe-event-set-component@3.x.x/dist/aframe-event-set-component.min.js"></script>
+    <script src="https://unpkg.com/aframe-layout-component@4.x.x/dist/aframe-layout-component.min.js"></script>
+    <script src="https://unpkg.com/aframe-event-set-component@5.x.x/dist/aframe-event-set-component.min.js"></script>
   </head>
   <body>
     <a-scene>
@@ -185,7 +185,7 @@ Currently, we have one link. We want to create three of them, one for each of
 our 360&deg; images. We want to be able to reuse the HTML definition for all of
 them.
 
-One solution is the [template component][template] integrates templating
+One solution is the [template component][template], which integrates templating
 engines into A-Frame at runtime.  This lets us do things such as encapsulate
 groups of entities, passing data to generate entities, or iteration. Since we
 want to turn one link into three, without copy-and-pasting HTML, we can use the
@@ -196,7 +196,7 @@ template component.
 > Ideally, we would do this at build time (e.g., with the [Super Nunjucks Webpack Loader]),
 > instead of wasting time doing it at runtime. But for simplicity for this
 > tutorial to demonstrate components, we will use the template component. In
-> practice, we'd want to do it with like Webpack.
+> practice, we'd want to do it with a module bundler such as Webpack.
 
 [template]: https://github.com/supermedium/superframe/tree/master/components/template#aframe-template-component
 
@@ -272,7 +272,7 @@ We create a wrapper entity around our links and attach the layout component
 using the `line` layout:
 
 ```html
-<a-entity id="links" layout="layout: line; margin: 1.5" position="-3 -1 -4">
+<a-entity id="links" layout="type: line; margin: 1.5" position="-3 -1 -4">
   <a-entity template="src: #plane" data-thumb="#city-thumb"></a-entity>
   <a-entity template="src: #plane" data-thumb="#cubes-thumb"></a-entity>
   <a-entity template="src: #plane" data-thumb="#sechelt-thumb"></a-entity>
@@ -314,21 +314,29 @@ the `setAttribute` calls. Notice that the event-set component can have
     sound="on: click; src: #click-sound"
     event-set__mouseenter="scale: 1.2 1.2 1"
     event-set__mouseleave="scale: 1 1 1"
-    event-set__click="_target: #360-image; _delay: 300; material.src: ${src}"></a-entity>
+    event-set__click="_target: #image-360; _delay: 300; material.src: ${src}"></a-entity>
 </script>
+```
+
+Remember to add `data-src` attributes to the link entities to load the full image on click:
+
+```
+<a-entity template="src: #plane" data-src="#city" data-thumb="#city-thumb"></a-entity>
+<a-entity template="src: #plane" data-src="#cubes" data-thumb="#cubes-thumb"></a-entity>
+<a-entity template="src: #plane" data-src="#sechelt" data-thumb="#sechelt-thumb"></a-entity>
 ```
 
 Next, we want to actually set the new background image. We'll add a nice fade-to-black effect.
 
 The last `event-set__click` is more complex in that it sets a property on
-another entity (our background noted as ID `#360-image`) with a delay of 300,
+another entity (our background noted as ID `#image-360`) with a delay of 300,
 setting the texture with `material.src`. The delay of 300 will allow for the
 fade-to-black animation to run before setting the texture.
 
 ## `proxy-event` Component to Change the Background
 
 Next, we want to wire up the click on the link to actually changing the
-background. We can use the `proxy-set` to pass an event from one entity to
+background. We can use `proxy-set` to pass an event from one entity to
 another. It's a convenient way for telling the background that one of the links
 was clicked in order to begin the animation:
 
@@ -336,11 +344,11 @@ was clicked in order to begin the animation:
 <a-entity
   class="link"
   <!-- ... -->
-  proxy-event="event: click; to: #360-image; as: fade"></a-entity>
+  proxy-event="event: click; to: #image-360; as: fade"></a-entity>
 ```
 
 When the link is clicked, it will emit the event also on our background (IDed
-as `#360-image`), renaming the event from `click` to `fade`. Now let's handle this event
+as `#image-360`), renaming the event from `click` to `fade`. Now let's handle this event
 to begin the animation:
 
 ```html
