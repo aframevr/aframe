@@ -15,7 +15,7 @@ component][components-camera].
 ## Example
 
 ```html
-<a-entity camera look-controls wasd-controls position="0 1.6 0"></a-entity>
+<a-entity camera look-controls wasd-controls="acceleration:100" position="0 1.6 0"></a-entity>
 ```
 
 ## Properties
