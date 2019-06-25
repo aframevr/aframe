@@ -38,17 +38,14 @@
     "vendor/**/*"
   ],
   "dependencies": {
-    "browserify-css": "^0.8.4",
     "custom-event-polyfill": "^1.0.6",
     "debug": "ngokevin/debug#noTimestamp",
     "deep-assign": "^2.0.0",
     "document-register-element": "dmarcos/document-register-element#8ccc532b7f3744be954574caf3072a5fd260ca90",
-    "envify": "^3.4.1",
     "load-bmfont": "^1.2.3",
     "object-assign": "^4.0.1",
     "present": "0.0.6",
     "promise-polyfill": "^3.1.0",
-    "style-attr": "^1.0.2",
     "super-animejs": "^3.1.0",
     "super-three": "^0.105.2",
     "three-bmfont-text": "^2.1.0",
@@ -56,6 +53,7 @@
   },
   "devDependencies": {
     "browserify": "^13.1.0",
+    "browserify-css": "^0.8.4",
     "browserify-derequire": "^0.9.4",
     "browserify-istanbul": "^2.0.0",
     "budo": "^9.2.0",
@@ -64,6 +62,7 @@
     "chalk": "^1.1.3",
     "codecov": "^1.0.1",
     "cross-env": "^5.0.1",
+    "envify": "^3.4.1",
     "exorcist": "^0.4.0",
     "ghpages": "0.0.8",
     "git-rev": "^0.2.1",
