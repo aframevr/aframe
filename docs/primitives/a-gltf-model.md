@@ -14,7 +14,7 @@ modeling program or downloaded from the web.
 ```html
 <a-scene>
   <a-assets>
-    <a-asset-item id="tree" src="tree.gltf">
+    <a-asset-item id="tree" src="tree.gltf"></a-asset-item>
   </a-assets>
 
   <!-- Using the asset management system. -->
