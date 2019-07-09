@@ -66,7 +66,7 @@ module.exports.registerElement = function (tagName, obj) {
     }
   });
 
-  return document.registerElement(tagName, newObj);
+  return window.customElements.define(tagName, newObj);
 };
 
 /**
