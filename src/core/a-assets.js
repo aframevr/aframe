@@ -253,7 +253,7 @@ function extractDomain (url) {
 function inferResponseType (src) {
   var dotLastIndex = src.lastIndexOf('.');
   if (dotLastIndex >= 0) {
-    var extension = src.slice(dotLastIndex, src.length);
+    var extension = src.slice(dotLastIndex, src.search(/\?|#|$/));
     if (extension === '.gltf' || extension === '.glb') {
       return 'arraybuffer';
     }

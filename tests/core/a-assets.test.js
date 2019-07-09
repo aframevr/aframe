@@ -328,5 +328,9 @@ suite('a-asset-item', function () {
     test('returns arraybuffer for .glb file', function () {
       assert.equal(inferResponseType(XHR_SRC_GLB), 'arraybuffer');
     });
+
+    test('returns arraybuffer for .glb file with query string', function () {
+      assert.equal(inferResponseType(XHR_SRC_GLB + '?a=1'), 'arraybuffer');
+    });
   });
 });
