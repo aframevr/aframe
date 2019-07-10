@@ -100,7 +100,7 @@ module.exports.Component = registerComponent('wasd-controls', {
     if (delta > MAX_DELTA) {
       velocity[adAxis] = 0;
       velocity[wsAxis] = 0;
-      velocity[udAxis] = 0;   
+      velocity[udAxis] = 0;
       return;
     }
 
@@ -114,7 +114,7 @@ module.exports.Component = registerComponent('wasd-controls', {
       velocity[wsAxis] -= velocity[wsAxis] * scaledEasing;
     }
     if (velocity[udAxis] !== 0) {
-      velocity[udAxis] -= velocity[udAxis] * scaledEasing; 
+      velocity[udAxis] -= velocity[udAxis] * scaledEasing;
     }
 
     // Clamp velocity easing.
