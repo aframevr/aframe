@@ -1,6 +1,8 @@
 module.exports = {
   // Tiny KeyboardEvent.code polyfill.
   KEYCODE_TO_CODE: {
+    '33': 'PageUp',
+    '34': 'PageDown',
     '38': 'ArrowUp',
     '37': 'ArrowLeft',
     '40': 'ArrowDown',
