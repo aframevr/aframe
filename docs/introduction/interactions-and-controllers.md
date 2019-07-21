@@ -472,6 +472,7 @@ AFRAME.registerComponent('custom-controls', {
 
   update: function () {
     var hand = this.data.hand;
+    var el = this.el;
     var controlConfiguration = {
       hand: hand,
       model: false,
