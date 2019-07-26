@@ -15,7 +15,7 @@ module.exports.setup = function setup (el, getCanvasSize) {
   var loaderAttribute = sceneEl.hasAttribute(ATTR_NAME) ? styleParser.parse(sceneEl.getAttribute(ATTR_NAME)) : undefined;
   var dotsColor = loaderAttribute && loaderAttribute.dotsColor || 'white';
   var backgroundColor = loaderAttribute && loaderAttribute.backgroundColor || '#24CAFF';
-  var loaderEnabled = loaderAttribute === undefined || loaderAttribute.enabled === true || loaderAttribute.enabled === undefined; // true default
+  var loaderEnabled = loaderAttribute === undefined || loaderAttribute.enabled === 'true' || loaderAttribute.enabled === undefined; // true default
   var loaderScene;
   var sphereGeometry;
   var sphereMaterial;

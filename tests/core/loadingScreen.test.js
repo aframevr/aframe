@@ -27,6 +27,16 @@ helpers.getSkipCISuite()('loadingScreen', function () {
       });
     });
 
+    test('adds title element if enabled is true', function (done) {
+      var el = this.el = document.createElement('a-scene');
+      el.setAttribute('loading-screen', 'enabled: true');
+      document.body.appendChild(el);
+      el.addEventListener('loaded', function () {
+        assert.ok(el.querySelector('.a-loader-title'));
+        done();
+      });
+    });
+
     teardown(function () {
       document.body.removeChild(this.el);
     });
