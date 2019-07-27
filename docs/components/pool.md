@@ -43,7 +43,7 @@ sceneEl.components.pool__enemy.returnEntity(el);
 ### .requestEntity ()
 
 Request one of the available entities in the pool. Will return `undefined` and 
-log a warning if `grow` is set to `false` and you have exhausted the pool.
+log a warning if `dynamic` is set to `false` and you have exhausted the pool.
 
 ### .returnEntity (entityEl)
 
