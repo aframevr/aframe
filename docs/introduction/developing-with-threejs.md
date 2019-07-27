@@ -218,13 +218,15 @@ three.js defaults `Object3D.matrixAutoUpdate` to `true`. We can use three.js's
 To get the world position of an `Object3D`:
 
 ```js
-entityEl.object3D.getWorldPosition(new THREE.Vector3);
+var worldPosition = new THREE.Vector3();
+entityEl.object3D.getWorldPosition(worldPosition);
 ```
 
 To get the world rotation of an `Object3D`:
 
 ```js
-entityEl.object3D.getWorldQuaternion(new THREE.Quaternion);
+var worldQuaternion = new THREE.Quaternion();
+entityEl.object3D.getWorldQuaternion(worldQuaternion);
 ```
 
 three.js `Object3D` has [more functions available for local-to-world transforms][object3d]:
