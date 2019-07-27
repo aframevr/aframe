@@ -159,6 +159,7 @@ as Google, Microsoft, Oculus, and Samsung have made contributions to A-Frame.
 ## Off You Go!
 
 [Discord]: https://supermedium.com/discord
+[slack]: https://aframe.io/slack-invite/
 
 If it's your first time here, here's a plan for success for getting into
 A-Frame:
@@ -173,7 +174,7 @@ and for examples.
 3. Run through [A-Frame School](https://aframe.io/school/), a brief
 step-by-step visual tutorial.
 
-4. [Join us on Slack](https://aframe.io/slack-invite) or [Discord] and if
+4. [Join us on Slack][slack] or [Discord] and if
 you have any questions, [search and ask on
 StackOverflow](http://stackoverflow.com/questions/ask/?tags=aframe), and
 someone will try to get to you!

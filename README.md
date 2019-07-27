@@ -201,7 +201,7 @@ For questions and support, [ask on StackOverflow](https://stackoverflow.com/ques
 
 ## Stay in Touch
 
-- To hang out with the community, [join the A-Frame Slack](https://aframevr-slack.herokuapp.com).
+- To hang out with the community, [join the A-Frame Slack](https://aframe.io/slack-invite/).
 - [Follow `A Week of A-Frame` on the A-Frame blog](https://aframe.io/blog).
 - [Follow @aframevr on Twitter](https://twitter.com/aframevr).
 
