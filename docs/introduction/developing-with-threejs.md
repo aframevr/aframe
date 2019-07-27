@@ -213,26 +213,28 @@ accomplished with matrices, but three.js provides helpers to make them easier.
 
 Normally, we'd need to call `.updateMatrixWorld ()` on parent `Object3D`s, but
 three.js defaults `Object3D.matrixAutoUpdate` to `true`. We can use three.js's
-`.getWorldPosition ()` and `.getWorldRotation ()`.
+`.getWorldPosition (vector)` and `.getWorldQuaternion (quaternion)`.
 
 To get the world position of an `Object3D`:
 
 ```js
-entityEl.object3D.getWorldPosition();
+var worldPosition = new THREE.Vector3();
+entityEl.object3D.getWorldPosition(worldPosition);
 ```
 
 To get the world rotation of an `Object3D`:
 
 ```js
-entityEl.object3D.getWorldRotation();
+var worldQuaternion = new THREE.Quaternion();
+entityEl.object3D.getWorldQuaternion(worldQuaternion);
 ```
 
 three.js `Object3D` has [more functions available for local-to-world transforms][object3d]:
 
 - `.localToWorld (vector)`
-- `.getWorldDirection ()`
-- `.getWorldQuaternion ()`
-- `.getWorldScale ()`
+- `.getWorldDirection (vector)`
+- `.getWorldQuaternion (quaternion)`
+- `.getWorldScale (vector)`
 
 ### World to Local Transforms
 
