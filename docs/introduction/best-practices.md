@@ -202,7 +202,7 @@ More articles on reducing garbage collector activity:
 
 ### `tick` Handlers
 
-[throttle]: ../core/utils.md#aframeutilsthrottle-function-minimuminterval--optionalcontext
+[throttle]: ../core/utils.html#aframe-utils-throttletick-function-t-dt-minimuminterval-optionalcontext
 
 In component tick handlers, be frugal on creating new objects. Try to reuse
 objects. A pattern to create private reusable auxiliary variables is with a
@@ -251,7 +251,7 @@ AFRAME.registerComponent('foo', {
 
 Again be careful what you do in tick functions, treat them as critical
 performance code because they will be run 90 times per second. [Consider
-using `utils.throttle`][throttle] to run your code at less frequent intervals.
+using `utils.throttleTick`][throttle] to run your code at less frequent intervals.
 
 ## VR Design
 
