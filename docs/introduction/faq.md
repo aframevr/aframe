@@ -9,7 +9,7 @@ order: 14
 [ecs]: ./entity-component-system.md
 [github]: http://github.com/aframevr/aframe/
 [three]: http://threejs.org
-[slack]: https://aframe.io/slack-invite
+[slack]: https://aframe.io/slack-invite/
 [twitter]: https://twitter.com/aframevr/
 [stackoverflow]: http://stackoverflow.com/questions/tagged/aframe/
 
