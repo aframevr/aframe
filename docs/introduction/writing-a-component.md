@@ -634,6 +634,15 @@ AFRAME.registerComponent('follow', {
 });
 ```
 
+Later, when we use this component via HTML, the syntax will look like:
+
+```html
+<a-scene>
+  <a-box id="target-box" color="#5E82C5" position="-3 0 -5"></a-box>
+  <a-box follow="target: #target-box; speed: 1" color="#FF6B6B" position="3 0 -5"></a-box>
+</a-scene>
+```
+
 ### Creating a Helper Vector
 
 Since the `.tick()` handler will be called on every frame (e.g., 90 times per
