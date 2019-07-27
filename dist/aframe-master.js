@@ -65182,17 +65182,14 @@ module.exports={
     "vendor/**/*"
   ],
   "dependencies": {
-    "browserify-css": "^0.8.4",
     "custom-event-polyfill": "^1.0.6",
     "debug": "ngokevin/debug#noTimestamp",
     "deep-assign": "^2.0.0",
     "document-register-element": "dmarcos/document-register-element#8ccc532b7f3744be954574caf3072a5fd260ca90",
-    "envify": "^3.4.1",
     "load-bmfont": "^1.2.3",
     "object-assign": "^4.0.1",
     "present": "0.0.6",
     "promise-polyfill": "^3.1.0",
-    "style-attr": "^1.0.2",
     "super-animejs": "^3.1.0",
     "super-three": "^0.105.2",
     "three-bmfont-text": "^2.1.0",
@@ -65200,6 +65197,7 @@ module.exports={
   },
   "devDependencies": {
     "browserify": "^13.1.0",
+    "browserify-css": "^0.8.4",
     "browserify-derequire": "^0.9.4",
     "browserify-istanbul": "^2.0.0",
     "budo": "^9.2.0",
@@ -65208,6 +65206,7 @@ module.exports={
     "chalk": "^1.1.3",
     "codecov": "^1.0.1",
     "cross-env": "^5.0.1",
+    "envify": "^3.4.1",
     "exorcist": "^0.4.0",
     "ghpages": "0.0.8",
     "git-rev": "^0.2.1",
@@ -66891,7 +66890,6 @@ var EVENTS = {};
 EVENTS[ANIMATIONS.fist] = 'grip';
 EVENTS[ANIMATIONS.thumbUp] = 'pistol';
 EVENTS[ANIMATIONS.point] = 'pointing';
-EVENTS[ANIMATIONS.thumb] = 'thumb';
 
 /**
  * Hand controls component that abstracts 6DoF controls:
@@ -67242,7 +67240,7 @@ function getGestureEventName (gesture, active) {
   if (eventName === 'grip') {
     return eventName + (active ? 'close' : 'open');
   }
-  if (eventName === 'point' || eventName === 'thumb') {
+  if (eventName === 'point') {
     return eventName + (active ? 'up' : 'down');
   }
   if (eventName === 'pointing' || eventName === 'pistol') {
@@ -73171,6 +73169,8 @@ var THREE = _dereq_('../lib/three');
 var fileLoader = new THREE.FileLoader();
 var warn = debug('core:a-assets:warn');
 
+var GLTF_HEADER_MAGIC = 'glTF';
+
 /**
  * Asset management system. Handles blocking on asset loading.
  */
@@ -73268,10 +73268,19 @@ registerElement('a-asset-item', {
       value: function () {
         var self = this;
         var src = this.getAttribute('src');
-        fileLoader.setResponseType(
-          this.getAttribute('response-type') || inferResponseType(src));
+        var responseType = this.getAttribute('response-type');
+
+        fileLoader.setResponseType(responseType || 'text');
+
         fileLoader.load(src, function handleOnLoad (response) {
-          self.data = response;
+          // if the response type is not given, check for the GLTF header
+          // and convert the response to an arraybuffer if it is present.
+          if (!responseType && (response.indexOf(GLTF_HEADER_MAGIC) === 0)) {
+            self.data = getArrayBuffer(response);
+          } else {
+            self.data = response;
+          }
+
           /*
             Workaround for a Chrome bug. If another XHR is sent to the same url before the
             previous one closes, the second request never finishes.
@@ -73406,25 +73415,23 @@ function extractDomain (url) {
 }
 
 /**
- * Infer response-type attribute from src.
- * Default is text(default XMLHttpRequest.responseType)
- * but we use arraybuffer for .gltf and .glb files
- * because of THREE.GLTFLoader specification.
- *
- * @param {string} src
- * @returns {string}
+ * getArrayBuffer accepts a string and returns it as an array buffer.
+ * @param {string} string
+ * @returns {arraybuffer}
  */
-function inferResponseType (src) {
-  var dotLastIndex = src.lastIndexOf('.');
-  if (dotLastIndex >= 0) {
-    var extension = src.slice(dotLastIndex, src.length);
-    if (extension === '.gltf' || extension === '.glb') {
-      return 'arraybuffer';
-    }
+function getArrayBuffer (string) {
+  // utf-16 has 2 bytes for each char
+  var buffer = new ArrayBuffer(string.length * 2);
+  var view = new Uint16Array(buffer);
+
+  for (var i = 0, len = string.length; i < len; i++) {
+    view[i] = string.charCodeAt(i);
   }
-  return 'text';
+
+  return buffer;
 }
-module.exports.inferResponseType = inferResponseType;
+
+module.exports.getArrayBuffer = getArrayBuffer;
 
 },{"../lib/three":172,"../utils/bind":191,"../utils/debug":193,"./a-node":122,"./a-register-element":123}],119:[function(_dereq_,module,exports){
 var debug = _dereq_('../utils/debug');
@@ -78769,7 +78776,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.9.2 (Date 2019-07-27, Commit #26262098)');
+console.log('A-Frame Version: 0.9.2 (Date 2019-07-27, Commit #baa6fbed)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
