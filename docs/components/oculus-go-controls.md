@@ -47,6 +47,7 @@ and/or pressed buttons (trackpad, trigger).
 | trackpadup         | Trackpad released.    |
 | trackpadtouchstart | Trackpad touched.     |
 | trackpadtouchend   | Trackpad not touched. |
+| trackpadmoved      | Trackpad moved.       |
 | triggerchanged     | Trigger changed.      |
 | triggerdown        | Trigger pressed.      |
 | triggerup          | Trigger released.     |
