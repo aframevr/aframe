@@ -76938,6 +76938,7 @@ function setupCanvas (sceneEl) {
   document.addEventListener('fullscreenchange', onFullScreenChange);
   document.addEventListener('mozfullscreenchange', onFullScreenChange);
   document.addEventListener('webkitfullscreenchange', onFullScreenChange);
+  document.addEventListener('MSFullscreenChange', onFullScreenChange);
 
   // Prevent overscroll on mobile.
   canvasEl.addEventListener('touchmove', function (event) { event.preventDefault(); });
@@ -78776,7 +78777,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.9.2 (Date 2019-07-27, Commit #d079a63e)');
+console.log('A-Frame Version: 0.9.2 (Date 2019-08-05, Commit #b644173d)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
