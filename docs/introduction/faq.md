@@ -318,8 +318,8 @@ A-Frame!
 
 Phones with Adreno 300 series GPUs are notoriously problematic. Set [renderer precision][precision] to `medium` as a workaround. Real fix has to happen at the driver / device level.
 
-## Why is the gyroscope / magic window mode not working on iOS?
+## Why is the gyroscope not working on iOS?
 
-Since iOS 12.2 Safari applies new restrictions on the devicemotion API. The content has to be served over `https` and the user has to enable the API manually on `Settings -> Safari -> Motion & Orientation access`. iOS 12.3 is introducing a `DeviceOrientationEvent.requestPermission` method that A-Frame will call to ask for user permission without requiring manual steps.
+iOS 12.2 Safari applies new restrictions to the devicemotion API. Pages have to be served over `https` and the user has to enable the API manually on `Settings -> Safari -> Motion & Orientation access`. iOS 12.3 is introducing a `DeviceOrientationEvent.requestPermission` method that A-Frame will call to ask for user permission without manual steps.
 
 
