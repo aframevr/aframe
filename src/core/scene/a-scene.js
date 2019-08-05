@@ -842,6 +842,7 @@ function setupCanvas (sceneEl) {
   document.addEventListener('fullscreenchange', onFullScreenChange);
   document.addEventListener('mozfullscreenchange', onFullScreenChange);
   document.addEventListener('webkitfullscreenchange', onFullScreenChange);
+  document.addEventListener('MSFullscreenChange', onFullScreenChange);
 
   // Prevent overscroll on mobile.
   canvasEl.addEventListener('touchmove', function (event) { event.preventDefault(); });
