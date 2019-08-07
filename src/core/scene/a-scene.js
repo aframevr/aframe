@@ -88,9 +88,7 @@ module.exports.AScene = registerElement('a-scene', {
         this.setupRenderer();
 
         this.resize();
-        if (!embedded) {
-          this.addFullScreenStyles();
-        }
+        if (!embedded) { this.addFullScreenStyles(); }
         initPostMessageAPI(this);
 
         initMetaTags(this);
