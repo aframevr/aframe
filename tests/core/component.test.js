@@ -1159,6 +1159,36 @@ suite('Component', function () {
         });
       });
     });
+
+    test('does not collide with other component instances', function (done) {
+      registerComponent('test2', {
+        events: {
+          foo: function (evt) {
+            assert.equal(this.el.id, 'foo');
+          },
+
+          bar: function (evt) {
+            assert.equal(this.el.id, 'bar');
+          }
+        }
+      });
+
+      el.id = 'foo';
+      el.setAttribute('test2', '');
+
+      const el2 = document.createElement('a-entity');
+      el2.id = 'bar';
+      el2.setAttribute('test2', '');
+      el.appendChild(el2);
+
+      setTimeout(() => {
+        el.emit('foo', null, false);
+        el2.emit('bar', null, false);
+        setTimeout(() => {
+          done();
+        });
+      });
+    });
   });
 });
 
