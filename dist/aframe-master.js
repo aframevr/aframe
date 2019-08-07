@@ -75042,7 +75042,9 @@ var Component = module.exports.Component = function (el, attrValue, id) {
   this.el.components[this.attrName] = this;
   this.objectPool = objectPools[this.name];
 
-  eventsBind(this, this.events);
+  const events = this.events;
+  this.events = {};
+  eventsBind(this, events);
 
   // Store component data from previous update call.
   this.attrValue = undefined;
@@ -75582,7 +75584,7 @@ Component.prototype = {
 function eventsBind (component, events) {
   var eventName;
   for (eventName in events) {
-    events[eventName] = events[eventName].bind(component);
+    component.events[eventName] = events[eventName].bind(component);
   }
 }
 
@@ -78779,7 +78781,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.9.2 (Date 2019-08-07, Commit #69ecc5c7)');
+console.log('A-Frame Version: 0.9.2 (Date 2019-08-07, Commit #40b44656)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
