@@ -75,7 +75,8 @@ module.exports.remove = function remove () {
 };
 
 function resize (camera) {
-  var size = getSceneCanvasSize(sceneEl.canvas, false, sceneEl.maxCanvasSize, sceneEl.is('vr-mode'));
+  var embedded = sceneEl.hasAttribute('embedded');
+  var size = getSceneCanvasSize(sceneEl.canvas, embedded, sceneEl.maxCanvasSize, sceneEl.is('vr-mode'));
   camera.aspect = size.width / size.height;
   camera.updateProjectionMatrix();
    // Notify renderer of size change.
