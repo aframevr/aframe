@@ -244,9 +244,7 @@ module.exports.Component = registerComponent('cursor', {
    *   in case user mousedowned one entity, dragged to another, and mouseupped.
    */
   onCursorUp: function (evt) {
-    if (!this.isCursorDown) {
-      return;
-    }
+    if (!this.isCursorDown) { return; }
 
     this.isCursorDown = false;
 
