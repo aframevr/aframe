@@ -78787,7 +78787,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.9.2 (Date 2019-08-08, Commit #66827ccd)');
+console.log('A-Frame Version: 0.9.2 (Date 2019-08-08, Commit #82293865)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
@@ -80377,7 +80377,7 @@ var warn = debug('components:renderer:warn');
 module.exports.System = registerSystem('renderer', {
   schema: {
     antialias: {default: 'auto', oneOf: ['true', 'false', 'auto']},
-    highRefreshRate: {default: false},
+    highRefreshRate: {default: utils.device.isOculusBrowser()},
     logarithmicDepthBuffer: {default: 'auto', oneOf: ['true', 'false', 'auto']},
     maxCanvasWidth: {default: 1920},
     maxCanvasHeight: {default: 1920},
@@ -80893,8 +80893,16 @@ module.exports.isIOS = isIOS;
 /**
  *  Detect browsers in Stand-Alone headsets
  */
+function isOculusBrowser () {
+  return /(OculusBrowser)/i.test(window.navigator.userAgent);
+}
+module.exports.isOculusBrowser = isOculusBrowser;
+
+/**
+ *  Detect browsers in Stand-Alone headsets
+ */
 function isMobileVR () {
-  return /(OculusBrowser)|(Mobile VR)/i.test(window.navigator.userAgent);
+  return isOculusBrowser() || /(Mobile VR)/i.test(window.navigator.userAgent);
 }
 module.exports.isMobileVR = isMobileVR;
 
