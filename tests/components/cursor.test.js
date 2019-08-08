@@ -123,6 +123,7 @@ suite('cursor', function () {
       once(el, 'mouseup', function () {
         done();
       });
+      component.isCursorDown = true;
       component.onCursorUp();
     });
 
@@ -133,6 +134,7 @@ suite('cursor', function () {
       once(intersectedEl, 'mouseup', function () {
         done();
       });
+      component.isCursorDown = true;
       component.onCursorUp();
     });
 
@@ -143,6 +145,7 @@ suite('cursor', function () {
       once(el, 'click', function () {
         done();
       });
+      component.isCursorDown = true;
       component.onCursorUp();
     });
 
@@ -153,6 +156,7 @@ suite('cursor', function () {
       once(intersectedEl, 'click', function () {
         done();
       });
+      component.isCursorDown = true;
       component.onCursorUp();
     });
 
@@ -163,6 +167,7 @@ suite('cursor', function () {
       component.intersectedEl = intersectedEl;
       component.cursorDownEl = intersectedEl;
       once(intersectedEl, 'click', function () { done(); });
+      component.isCursorDown = true;
       component.onCursorUp({type: 'touchend', preventDefault: function () {}});
     });
   });
