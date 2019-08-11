@@ -395,6 +395,7 @@ module.exports.AScene = registerElement('a-scene', {
           if (self.hasAttribute('embedded')) { self.removeFullScreenStyles(); }
           self.resize();
           if (self.isIOS) { utils.forceCanvasResizeSafariMobile(self.canvas); }
+          self.renderer.setPixelRatio(window.devicePixelRatio);
           self.emit('exit-vr', {target: self});
         }
 

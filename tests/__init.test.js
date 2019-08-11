@@ -39,6 +39,7 @@ setup(function () {
     getContext: function () { return undefined; },
     setAnimationLoop: function () {},
     setSize: function () {},
+    setPixelRatio: function () {},
     shadowMap: {}
   };
 });
