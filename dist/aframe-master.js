@@ -76499,6 +76499,7 @@ module.exports.AScene = registerElement('a-scene', {
           if (self.hasAttribute('embedded')) { self.removeFullScreenStyles(); }
           self.resize();
           if (self.isIOS) { utils.forceCanvasResizeSafariMobile(self.canvas); }
+          self.renderer.setPixelRatio(window.devicePixelRatio);
           self.emit('exit-vr', {target: self});
         }
 
@@ -78787,7 +78788,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.9.2 (Date 2019-08-08, Commit #82293865)');
+console.log('A-Frame Version: 0.9.2 (Date 2019-08-11, Commit #9785b6cd)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
