@@ -237,11 +237,14 @@ suite('a-scene (without renderer)', function () {
       sceneEl.canvas = document.createElement('canvas');
 
       // Stub renderer.
-      sceneEl.renderer = {vr: {
-        getDevice: function () {},
-        setDevice: function () {},
-        setPoseTarget: function () {}
-      }};
+      sceneEl.renderer = {
+        vr: {
+          getDevice: function () {},
+          setDevice: function () {},
+          setPoseTarget: function () {}
+        },
+        setPixelRatio: function () {}
+      };
 
       sceneEl.addState('vr-mode');
     });
