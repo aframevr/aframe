@@ -178,7 +178,7 @@ bundle of components.
 We'll put the pattern to action by writing an A-Frame component to set a random
 color on our box. Components are registered with `AFRAME.registerComponent`. We
 can define a schema, (the component's data) and lifecycle handler methods (the
-component's logic). For the random color component, we'll won't be setting a schema
+component's logic). For the random color component, we won't be setting a schema
 since it won't be configurable. But we will define the `init` handler, which is
 called exactly once when the component is attached:
 
