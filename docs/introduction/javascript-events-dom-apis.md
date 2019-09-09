@@ -127,7 +127,7 @@ AFRAME.registerComponent('foo', {
 If an element has an ID, we can use an ID selector (i.e., `#<ID>`). Let's grab
 the red box which has an ID. Before we did a query selector on the entire
 document. Here, we'll do a query selector just within the scope of the scene.
-With query selectors, we're able to limit to scope of the query to within any
+With query selectors, we're able to limit the scope of the query to within any
 element:
 
 ```js
