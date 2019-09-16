@@ -272,19 +272,15 @@ module.exports.AScene = registerElement('a-scene', {
             if (this.xrSession) {
               this.xrSession.removeEventListener('end', this.exitVRBound);
             }
-            vrDisplay.requestSession({
-              immersive: true,
-              exclusive: true
-            }).then(function requestSuccess (xrSession) {
+            navigator.xr.requestSession('immersive-vr').then(function requestSuccess (xrSession) {
               self.xrSession = xrSession;
               vrManager.setSession(xrSession);
               xrSession.addEventListener('end', self.exitVRBound);
-              xrSession.requestFrameOfReference('stage').then(function (frameOfReference) {
-                self.frameOfReference = frameOfReference;
-              });
               enterVRSuccess();
             });
           } else {
+            vrDisplay = utils.device.getVRDisplay();
+            vrManager.setDevice(vrDisplay);
             if (vrDisplay.isPresenting &&
                 !window.hasNativeWebVRImplementation) {
               enterVRSuccess();
@@ -316,7 +312,7 @@ module.exports.AScene = registerElement('a-scene', {
           // for the actual requestPresent. Need to make sure there are no issues with firing the
           // vrdisplaypresentchange multiple times.
           var event = new CustomEvent('vrdisplaypresentchange', {detail: {display: utils.device.getVRDisplay()}});
-          window.dispatchEvent(event);
+          if (!isWebXRAvailable) { window.dispatchEvent(event); }
 
           self.addState('vr-mode');
           self.emit('enter-vr', {target: self});
@@ -533,10 +529,9 @@ module.exports.AScene = registerElement('a-scene', {
         var embedded;
         var isVRPresenting;
         var size;
-        var vrDevice;
 
-        vrDevice = this.renderer.vr.getDevice();
-        isVRPresenting = this.renderer.vr.enabled && vrDevice && vrDevice.isPresenting;
+        var isPresenting = this.renderer.vr.isPresenting();
+        isVRPresenting = this.renderer.vr.enabled && isPresenting;
 
         // Do not update renderer, if a camera or a canvas have not been injected.
         // In VR mode, three handles canvas resize based on the dimensions returned by

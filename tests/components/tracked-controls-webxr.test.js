@@ -36,11 +36,11 @@ suite('tracked-controls-webxr', function () {
   suite('tick', function () {
     test('updates pose and buttons even if mesh is not defined', function () {
       el.sceneEl.frame = {
-        getInputPose: function () {
+        getPose: function () {
           var euler = new THREE.Euler(Math.PI / 2, 0, 0);
           return {
-            targetRay: {
-              transformMatrix: new THREE.Matrix4().compose(
+            transform: {
+              matrix: new THREE.Matrix4().compose(
                 new THREE.Vector3(1, 2, 3),
                 new THREE.Quaternion().setFromEuler(euler),
                 new THREE.Vector3(1, 1, 1)).elements

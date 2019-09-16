@@ -1,6 +1,7 @@
 var error = require('debug')('device:error');
 
 var vrDisplay;
+var supportsXRSession = false;
 
 // Catch vrdisplayactivate early to ensure we can enter VR mode after the scene loads.
 window.addEventListener('vrdisplayactivate', function (evt) {
@@ -18,13 +19,8 @@ window.addEventListener('vrdisplayactivate', function (evt) {
 
 // Support both WebVR and WebXR APIs.
 if (navigator.xr) {
-  navigator.xr.requestDevice().then(function (device) {
-    if (!device) { return; }
-    device.supportsSession({immersive: true, exclusive: true}).then(function () {
-      var sceneEl = document.querySelector('a-scene');
-      vrDisplay = device;
-      if (sceneEl) { sceneEl.emit('displayconnected', {vrDisplay: vrDisplay}); }
-    });
+  navigator.xr.supportsSession('immersive-vr').then(function () {
+    supportsXRSession = true;
   }).catch(function (err) {
     error('WebXR Request Device: ' + err.message);
   });
@@ -46,7 +42,7 @@ module.exports.getVRDisplay = getVRDisplay;
 /**
  * Determine if a headset is connected by checking if a vrDisplay is available.
  */
-function checkHeadsetConnected () { return !!getVRDisplay(); }
+function checkHeadsetConnected () { return supportsXRSession || !!getVRDisplay(); }
 module.exports.checkHeadsetConnected = checkHeadsetConnected;
 
 /**
