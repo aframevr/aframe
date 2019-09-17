@@ -1,5 +1,5 @@
 sudo: required
-dist: trusty
+dist: bionic
 language: node_js
 addons:
   firefox: 'latest'
