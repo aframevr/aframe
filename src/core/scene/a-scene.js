@@ -42,6 +42,7 @@ module.exports.AScene = registerElement('a-scene', {
         this.isIOS = isIOS;
         this.isMobile = isMobile;
         this.hasWebXR = isWebXRAvailable;
+        this.isAR = false;
         this.isScene = true;
         this.object3D = new THREE.Scene();
         var self = this;
@@ -245,15 +246,25 @@ module.exports.AScene = registerElement('a-scene', {
       writable: window.debug
     },
 
+    enterAR: {
+      value: function () {
+        if (!this.hasWebXR) {
+          throw new Error('Failed to enter AR mode, WebXR not supported.');
+        }
+        this.enterVR(true);
+      }
+    },
+
     /**
      * Call `requestPresent` if WebVR or WebVR polyfill.
      * Call `requestFullscreen` on desktop.
      * Handle events, states, fullscreen styles.
      *
+     * @param {bool?} useAR - if true, try immersive-ar mode
      * @returns {Promise}
      */
     enterVR: {
-      value: function () {
+      value: function (useAR) {
         var self = this;
         var vrDisplay;
         var vrManager = self.renderer.vr;
@@ -272,10 +283,16 @@ module.exports.AScene = registerElement('a-scene', {
             if (this.xrSession) {
               this.xrSession.removeEventListener('end', this.exitVRBound);
             }
-            navigator.xr.requestSession('immersive-vr').then(function requestSuccess (xrSession) {
+            navigator.xr.requestSession(useAR ? 'immersive-ar' : 'immersive-vr', {
+              requiredFeatures: ['local-floor'],
+              optionalFeatures: ['bounded-floor']
+            }).then(function requestSuccess (xrSession) {
               self.xrSession = xrSession;
               vrManager.setSession(xrSession);
               xrSession.addEventListener('end', self.exitVRBound);
+              if (useAR) {
+                self.addState('ar-mode');
+              }
               enterVRSuccess();
             });
           } else {
@@ -317,7 +334,7 @@ module.exports.AScene = registerElement('a-scene', {
           self.addState('vr-mode');
           self.emit('enter-vr', {target: self});
           // Lock to landscape orientation on mobile.
-          if (self.isMobile && screen.orientation && screen.orientation.lock) {
+          if (!navigator.xr && self.isMobile && screen.orientation && screen.orientation.lock) {
             screen.orientation.lock('landscape');
           }
           self.addFullScreenStyles();
@@ -383,6 +400,7 @@ module.exports.AScene = registerElement('a-scene', {
 
         function exitVRSuccess () {
           self.removeState('vr-mode');
+          self.removeState('ar-mode');
           // Lock to landscape orientation on mobile.
           if (self.isMobile && screen.orientation && screen.orientation.unlock) {
             screen.orientation.unlock();
@@ -735,8 +753,17 @@ module.exports.AScene = registerElement('a-scene', {
         this.time = this.clock.elapsedTime * 1000;
 
         if (this.isPlaying) { this.tick(this.time, this.delta); }
-
+        var savedBackground = null;
+        if (this.is('ar-mode')) {
+          // In AR mode, don't render the default background. Hide it, then
+          // restore it again after rendering.
+          savedBackground = this.object3D.background;
+          this.object3D.background = null;
+        }
         renderer.render(this.object3D, this.camera);
+        if (savedBackground) {
+          this.object3D.background = savedBackground;
+        }
       },
       writable: true
     }
