@@ -79164,7 +79164,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.9.2 (Date 2019-09-17, Commit #6c533498)');
+console.log('A-Frame Version: 0.9.2 (Date 2019-09-29, Commit #41547f59)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
@@ -80221,16 +80221,16 @@ module.exports.System = registerSystem('gltf-model', {
 
   init: function () {
     var path = this.data.dracoDecoderPath;
-    THREE.DRACOLoader.setDecoderPath(path);
-    this.dracoLoader = path ? new THREE.DRACOLoader() : null;
+    this.dracoLoader = new THREE.DRACOLoader();
+    this.dracoLoader.setDecoderPath(path);
   },
 
   update: function () {
     var path;
     if (this.dracoLoader) { return; }
     path = this.data.dracoDecoderPath;
-    THREE.DRACOLoader.setDecoderPath(path);
-    this.dracoLoader = path ? new THREE.DRACOLoader() : null;
+    this.dracoLoader = new THREE.DRACOLoader();
+    this.dracoLoader.setDecoderPath(path);
   },
 
   getDRACOLoader: function () {
