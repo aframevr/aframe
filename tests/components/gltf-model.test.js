@@ -75,6 +75,7 @@ suite('gltf-model', function () {
       this.load = function (url, onLoad) {
         process.nextTick(onLoad.bind(null, gltfMock));
       };
+      this.setDRACOLoader = function () {};
     });
 
     el.addEventListener('model-loaded', function () {
