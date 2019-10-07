@@ -95,8 +95,7 @@ mountains, speech recognition, or teleportation!
 ### Example
 
 Build VR scenes in the browser with just a few lines of HTML! To start playing
-and publishing now, remix the starter example on 
-:
+and publishing now, remix the starter example on:
 
 [![Remix](https://cloud.githubusercontent.com/assets/674727/24572421/688f7fc0-162d-11e7-8a35-b02bc050c043.jpg)](https://glitch.com/~aframe) [![Fork](https://user-images.githubusercontent.com/39342/52831020-d42dcb80-3087-11e9-833f-2d6191c69eb9.png)](https://repl.it/@dmarcos/aframe)
 
