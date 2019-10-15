@@ -26,6 +26,9 @@ var CANVAS_EVENTS = {
 
 var CANVAS_HOVER_CLASS = 'a-mouse-cursor-hover';
 
+// check cursor move over this treshold
+var CURSOR_MOVE_TRESHOLD = 50;
+
 /**
  * Cursor component. Applies the raycaster component specifically for starting the raycaster
  * from the camera and pointing from camera's facing direction, and then only returning the
@@ -58,6 +61,7 @@ module.exports.Component = registerComponent('cursor', {
     this.intersectedEl = null;
     this.canvasBounds = document.body.getBoundingClientRect();
     this.isCursorDown = false;
+    this.cursorDownStart = undefined;
 
     // Debounce.
     this.updateCanvasBounds = utils.debounce(function updateCanvasBounds () {
@@ -225,6 +229,7 @@ module.exports.Component = registerComponent('cursor', {
    */
   onCursorDown: function (evt) {
     this.isCursorDown = true;
+    this.cursorDownStart = {x: evt.clientX, y: evt.clientY};
     // Raycast again for touch.
     if (this.data.rayOrigin === 'mouse' && evt.type === 'touchstart') {
       this.onMouseMove(evt);
@@ -259,8 +264,16 @@ module.exports.Component = registerComponent('cursor', {
     }
 
     if ((!data.fuse || data.rayOrigin === 'mouse') &&
-        this.intersectedEl && this.cursorDownEl === this.intersectedEl) {
-      this.twoWayEmit(EVENTS.CLICK);
+      this.intersectedEl && this.cursorDownEl === this.intersectedEl) {
+        // do not trigger click if mouse travels more than treshold
+      var nowPosition = {x: evt.clientY, y: evt.clientX};
+      var distTravelled = Math.hypot(
+        nowPosition.x - this.cursorDownStart.x,
+        nowPosition.y - this.cursorDownStart.y
+      );
+      if (distTravelled <= CURSOR_MOVE_TRESHOLD) {
+        this.twoWayEmit(EVENTS.CLICK);
+      }
     }
 
     this.cursorDownEl = null;
