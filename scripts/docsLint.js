@@ -18,6 +18,7 @@ pages.forEach(function checkPage (pagePath) {
   var referencingMatch;
   var referencingRegex;
   var urlRegex;
+  var nodejs;
 
   let content = fs.readFileSync(pagePath, 'utf-8');
 
