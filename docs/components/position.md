@@ -58,7 +58,7 @@ three.js [Object3D][object3d] `.position` [Vector3][vector] versus [via
 
 This method is easier because we have access to all the [Vector3
 utilities][vector], and faster by skipping `.setAttribute` overhead and not
-needing to create an object to set rotation:
+needing to create an object to set position:
 
 ```js
 // With three.js
