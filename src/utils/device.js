@@ -20,10 +20,12 @@ window.addEventListener('vrdisplayactivate', function (evt) {
 
 // Support both WebVR and WebXR APIs.
 if (navigator.xr) {
-  var emitChangeEvent = function () {
+  var updateEnterInterfaces = function () {
     var sceneEl = document.querySelector('a-scene');
-    if (sceneEl) {
-      sceneEl.emit('update-vr-devices');
+    if (sceneEl.hasLoaded) {
+      sceneEl.components['vr-mode-ui'].updateEnterInterfaces();
+    } else {
+      sceneEl.addEventListener('loaded', updateEnterInterfaces);
     }
   };
   var errorHandler = function (err) {
@@ -33,11 +35,13 @@ if (navigator.xr) {
     // Current WebXR spec uses a boolean-returning isSessionSupported promise
     navigator.xr.isSessionSupported('immersive-vr').then(function (supported) {
       supportsVRSession = supported;
-      emitChangeEvent();
+      updateEnterInterfaces();
     }).catch(errorHandler);
+
     navigator.xr.isSessionSupported('immersive-ar').then(function (supported) {
       supportsARSession = supported;
-      emitChangeEvent();
+
+      updateEnterInterfaces();
     }).catch(errorHandler);
   } else if (navigator.xr.supportsSession) {
     // Fallback for implementations that haven't updated to the new spec yet,
@@ -45,11 +49,11 @@ if (navigator.xr) {
     // support.
     navigator.xr.supportsSession('immersive-vr').then(function () {
       supportsVRSession = true;
-      emitChangeEvent();
+      updateEnterInterfaces();
     }).catch(errorHandler);
     navigator.xr.supportsSession('immersive-ar').then(function () {
       supportsARSession = true;
-      emitChangeEvent();
+      updateEnterInterfaces();
     }).catch(errorHandler);
   } else {
     error('WebXR has neither isSessionSupported or supportsSession?!');
