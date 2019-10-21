@@ -19,7 +19,8 @@ module.exports.Component = registerComponent('look-controls', {
     pointerLockEnabled: {default: false},
     reverseMouseDrag: {default: false},
     reverseTouchDrag: {default: false},
-    touchEnabled: {default: true}
+    touchEnabled: {default: true},
+    keepInitialRotation: {default: false}
   },
 
   init: function () {
@@ -113,6 +114,11 @@ module.exports.Component = registerComponent('look-controls', {
     this.yawObject = new THREE.Object3D();
     this.yawObject.position.y = 10;
     this.yawObject.add(this.pitchObject);
+
+    if (this.data.keepInitialRotation) {
+      this.pitchObject.rotation.x = this.el.object3D.rotation.x;
+      this.yawObject.rotation.y = this.el.object3D.rotation.y;
+    }
   },
 
   /**
