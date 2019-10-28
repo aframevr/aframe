@@ -4,7 +4,9 @@ var utils = require('../../utils/');
 var bind = utils.bind;
 
 var ENTER_VR_CLASS = 'a-enter-vr';
+var ENTER_AR_CLASS = 'a-enter-ar';
 var ENTER_VR_BTN_CLASS = 'a-enter-vr-button';
+var ENTER_AR_BTN_CLASS = 'a-enter-ar-button';
 var HIDDEN_CLASS = 'a-hidden';
 var ORIENTATION_MODAL_CLASS = 'a-orientation-modal';
 
@@ -16,7 +18,8 @@ module.exports.Component = registerComponent('vr-mode-ui', {
 
   schema: {
     enabled: {default: true},
-    enterVRButton: {default: ''}
+    enterVRButton: {default: ''},
+    enterARButton: {default: ''}
   },
 
   init: function () {
@@ -27,12 +30,14 @@ module.exports.Component = registerComponent('vr-mode-ui', {
 
     this.insideLoader = false;
     this.enterVREl = null;
+    this.enterAREl = null;
     this.orientationModalEl = null;
     this.bindMethods();
 
     // Hide/show VR UI when entering/exiting VR mode.
-    sceneEl.addEventListener('enter-vr', this.updateEnterVRInterface);
-    sceneEl.addEventListener('exit-vr', this.updateEnterVRInterface);
+    sceneEl.addEventListener('enter-vr', this.updateEnterInterfaces);
+    sceneEl.addEventListener('exit-vr', this.updateEnterInterfaces);
+    sceneEl.addEventListener('update-vr-devices', this.updateEnterInterfaces);
 
     window.addEventListener('message', function (event) {
       if (event.data.type === 'loaderReady') {
@@ -47,9 +52,10 @@ module.exports.Component = registerComponent('vr-mode-ui', {
 
   bindMethods: function () {
     this.onEnterVRButtonClick = bind(this.onEnterVRButtonClick, this);
+    this.onEnterARButtonClick = bind(this.onEnterARButtonClick, this);
     this.onModalClick = bind(this.onModalClick, this);
     this.toggleOrientationModalIfNeeded = bind(this.toggleOrientationModalIfNeeded, this);
-    this.updateEnterVRInterface = bind(this.updateEnterVRInterface, this);
+    this.updateEnterInterfaces = bind(this.updateEnterInterfaces, this);
   },
 
   /**
@@ -60,10 +66,17 @@ module.exports.Component = registerComponent('vr-mode-ui', {
   },
 
   /**
-   * Enter VR when modal clicked.
+   * Enter VR when clicked.
    */
   onEnterVRButtonClick: function () {
     this.el.enterVR();
+  },
+
+  /**
+   * Enter AR when clicked.
+   */
+  onEnterARButtonClick: function () {
+    this.el.enterAR();
   },
 
   update: function () {
@@ -73,7 +86,8 @@ module.exports.Component = registerComponent('vr-mode-ui', {
     if (!data.enabled || this.insideLoader || utils.getUrlParameter('ui') === 'false') {
       return this.remove();
     }
-    if (this.enterVREl || this.orientationModalEl) { return; }
+
+    if (this.enterVREl || this.enterAREl || this.orientationModalEl) { return; }
 
     // Add UI if enabled and not already present.
     if (data.enterVRButton) {
@@ -84,23 +98,32 @@ module.exports.Component = registerComponent('vr-mode-ui', {
       this.enterVREl = createEnterVRButton(this.onEnterVRButtonClick);
       sceneEl.appendChild(this.enterVREl);
     }
+    if (data.enterARButton) {
+      // Custom button.
+      this.enterAREl = document.querySelector(data.enterARButton);
+      this.enterAREl.addEventListener('click', this.onEnterARButtonClick);
+    } else {
+      this.enterAREl = createEnterARButton(this.onEnterARButtonClick);
+      sceneEl.appendChild(this.enterAREl);
+    }
 
     this.orientationModalEl = createOrientationModal(this.onModalClick);
     sceneEl.appendChild(this.orientationModalEl);
 
-    this.updateEnterVRInterface();
+    this.updateEnterInterfaces();
   },
 
   remove: function () {
-    [this.enterVREl, this.orientationModalEl].forEach(function (uiElement) {
+    [this.enterVREl, this.enterAREl, this.orientationModalEl].forEach(function (uiElement) {
       if (uiElement && uiElement.parentNode) {
         uiElement.parentNode.removeChild(uiElement);
       }
     });
   },
 
-  updateEnterVRInterface: function () {
+  updateEnterInterfaces: function () {
     this.toggleEnterVRButtonIfNeeded();
+    this.toggleEnterARButtonIfNeeded();
     this.toggleOrientationModalIfNeeded();
   },
 
@@ -111,6 +134,17 @@ module.exports.Component = registerComponent('vr-mode-ui', {
       this.enterVREl.classList.add(HIDDEN_CLASS);
     } else {
       this.enterVREl.classList.remove(HIDDEN_CLASS);
+    }
+  },
+
+  toggleEnterARButtonIfNeeded: function () {
+    var sceneEl = this.el;
+    if (!this.enterAREl) { return; }
+    // Hide the button while in a session, or if AR is not supported.
+    if (sceneEl.is('vr-mode') || !utils.device.checkARSupport()) {
+      this.enterAREl.classList.add(HIDDEN_CLASS);
+    } else {
+      this.enterAREl.classList.remove(HIDDEN_CLASS);
     }
   },
 
@@ -149,10 +183,40 @@ function createEnterVRButton (onClick) {
     'Enter VR mode with a headset or fullscreen mode on a desktop. ' +
     'Visit https://webvr.rocks or https://webvr.info for more information.');
   vrButton.setAttribute(constants.AFRAME_INJECTED, '');
-
   // Insert elements.
   wrapper.appendChild(vrButton);
   vrButton.addEventListener('click', function (evt) {
+    onClick();
+    evt.stopPropagation();
+  });
+  return wrapper;
+}
+
+/**
+ * Create a button that when clicked will enter into AR mode
+ *
+ * Structure: <div><button></div>
+ *
+ * @param {function} onClick - click event handler
+ * @returns {Element} Wrapper <div>.
+ */
+function createEnterARButton (onClick) {
+  var arButton;
+  var wrapper;
+
+  // Create elements.
+  wrapper = document.createElement('div');
+  wrapper.classList.add(ENTER_AR_CLASS);
+  wrapper.setAttribute(constants.AFRAME_INJECTED, '');
+  arButton = document.createElement('button');
+  arButton.className = ENTER_AR_BTN_CLASS;
+  arButton.setAttribute('title',
+    'Enter AR mode with a headset or handheld device. ' +
+    'Visit https://webvr.rocks or https://webvr.info for more information.');
+  arButton.setAttribute(constants.AFRAME_INJECTED, '');
+  // Insert elements.
+  wrapper.appendChild(arButton);
+  arButton.addEventListener('click', function (evt) {
     onClick();
     evt.stopPropagation();
   });

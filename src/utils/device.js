@@ -1,7 +1,8 @@
 var error = require('debug')('device:error');
 
 var vrDisplay;
-var supportsXRSession = false;
+var supportsVRSession = false;
+var supportsARSession = false;
 
 // Catch vrdisplayactivate early to ensure we can enter VR mode after the scene loads.
 window.addEventListener('vrdisplayactivate', function (evt) {
@@ -19,11 +20,44 @@ window.addEventListener('vrdisplayactivate', function (evt) {
 
 // Support both WebVR and WebXR APIs.
 if (navigator.xr) {
-  navigator.xr.supportsSession('immersive-vr').then(function () {
-    supportsXRSession = true;
-  }).catch(function (err) {
-    error('WebXR Request Device: ' + err.message);
-  });
+  var updateEnterInterfaces = function () {
+    var sceneEl = document.querySelector('a-scene');
+    if (sceneEl.hasLoaded) {
+      sceneEl.components['vr-mode-ui'].updateEnterInterfaces();
+    } else {
+      sceneEl.addEventListener('loaded', updateEnterInterfaces);
+    }
+  };
+  var errorHandler = function (err) {
+    error('WebXR session support error: ' + err.message);
+  };
+  if (navigator.xr.isSessionSupported) {
+    // Current WebXR spec uses a boolean-returning isSessionSupported promise
+    navigator.xr.isSessionSupported('immersive-vr').then(function (supported) {
+      supportsVRSession = supported;
+      updateEnterInterfaces();
+    }).catch(errorHandler);
+
+    navigator.xr.isSessionSupported('immersive-ar').then(function (supported) {
+      supportsARSession = supported;
+
+      updateEnterInterfaces();
+    }).catch(errorHandler);
+  } else if (navigator.xr.supportsSession) {
+    // Fallback for implementations that haven't updated to the new spec yet,
+    // the old version used supportsSession which is rejected for missing
+    // support.
+    navigator.xr.supportsSession('immersive-vr').then(function () {
+      supportsVRSession = true;
+      updateEnterInterfaces();
+    }).catch(errorHandler);
+    navigator.xr.supportsSession('immersive-ar').then(function () {
+      supportsARSession = true;
+      updateEnterInterfaces();
+    }).catch(errorHandler);
+  } else {
+    error('WebXR has neither isSessionSupported or supportsSession?!');
+  }
 } else {
   if (navigator.getVRDisplays) {
     navigator.getVRDisplays().then(function (displays) {
@@ -42,8 +76,13 @@ module.exports.getVRDisplay = getVRDisplay;
 /**
  * Determine if a headset is connected by checking if a vrDisplay is available.
  */
-function checkHeadsetConnected () { return supportsXRSession || !!getVRDisplay(); }
+function checkHeadsetConnected () {
+  return supportsVRSession || supportsARSession || !!getVRDisplay();
+}
 module.exports.checkHeadsetConnected = checkHeadsetConnected;
+
+function checkARSupport () { return supportsARSession; }
+module.exports.checkARSupport = checkARSupport;
 
 /**
  * Checks if browser is mobile and not stand-alone dedicated vr device.
@@ -150,4 +189,3 @@ module.exports.PolyfillControls = function PolyfillControls (object) {
     }
   };
 };
-

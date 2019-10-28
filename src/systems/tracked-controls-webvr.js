@@ -15,6 +15,9 @@ module.exports.System = registerSystem('tracked-controls-webvr', {
     this.updateControllerList();
     this.throttledUpdateControllerList = utils.throttle(this.updateControllerList, 500, this);
 
+    // Don't use WebVR if WebXR is available?
+    if (navigator.xr) { return; }
+
     if (!navigator.getVRDisplays) { return; }
 
     this.sceneEl.addEventListener('enter-vr', function () {

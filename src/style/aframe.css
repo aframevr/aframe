@@ -26,7 +26,8 @@ html.a-fullscreen .a-canvas {
   position: fixed !important;
 }
 
-html:not(.a-fullscreen) .a-enter-vr {
+html:not(.a-fullscreen) .a-enter-vr,
+html:not(.a-fullscreen) .a-enter-ar {
   right: 5px;
   bottom: 5px;
 }
@@ -130,7 +131,8 @@ a-scene audio {
   left: -4px;
 }
 
-.a-enter-vr {
+.a-enter-vr,
+.a-enter-ar {
   font-family: sans-serif, monospace;
   font-size: 13px;
   width: 100%;
@@ -141,6 +143,10 @@ a-scene audio {
   bottom: 20px;
 }
 
+.a-enter-ar {
+  right: 80px;
+}
+
 .a-enter-vr-button,
 .a-enter-vr-modal,
 .a-enter-vr-modal a {
@@ -149,6 +155,14 @@ a-scene audio {
 
 .a-enter-vr-button {
   background: rgba(0, 0, 0, 0.35) url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20245.82%20141.73%22%3E%3Cdefs%3E%3Cstyle%3E.a%7Bfill%3A%23fff%3Bfill-rule%3Aevenodd%3B%7D%3C%2Fstyle%3E%3C%2Fdefs%3E%3Ctitle%3Emask%3C%2Ftitle%3E%3Cpath%20class%3D%22a%22%20d%3D%22M175.56%2C111.37c-22.52%2C0-40.77-18.84-40.77-42.07S153%2C27.24%2C175.56%2C27.24s40.77%2C18.84%2C40.77%2C42.07S198.08%2C111.37%2C175.56%2C111.37ZM26.84%2C69.31c0-23.23%2C18.25-42.07%2C40.77-42.07s40.77%2C18.84%2C40.77%2C42.07-18.26%2C42.07-40.77%2C42.07S26.84%2C92.54%2C26.84%2C69.31ZM27.27%2C0C11.54%2C0%2C0%2C12.34%2C0%2C28.58V110.9c0%2C16.24%2C11.54%2C30.83%2C27.27%2C30.83H99.57c2.17%2C0%2C4.19-1.83%2C5.4-3.7L116.47%2C118a8%2C8%2C0%2C0%2C1%2C12.52-.18l11.51%2C20.34c1.2%2C1.86%2C3.22%2C3.61%2C5.39%2C3.61h72.29c15.74%2C0%2C27.63-14.6%2C27.63-30.83V28.58C245.82%2C12.34%2C233.93%2C0%2C218.19%2C0H27.27Z%22%2F%3E%3C%2Fsvg%3E) 50% 50% no-repeat;
+}
+
+.a-enter-ar-button {
+  background: rgba(0, 0, 0, 0.35) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 245.8 141.7'%3E%3Cdefs%3E%3Cstyle%3E .a%7Bfill:%23fff;fill-rule:evenodd;%7D%3C/style%3E%3C/defs%3E%3Ctitle%3E mask%3C/title%3E%3Cpath d='m115 104.7c-22.5 0-40.8-18.8-40.8-42.1s18.2-42.1 40.8-42.1 40.8 18.8 40.8 42.1-18.2 42.1-40.8 42.1zm-21.9-0.8c-0.4-14.7 27.8-23.8 50.3-23.8s50.3 8.8 50.8 23c0.4 12.7-26.8 22.2-49.3 22.2s-51.4-6.2-51.9-21.5zm-65.8-103.8c-15.7 0-27.3 12.3-27.3 28.6v82.3c0 16.2 11.5 30.8 27.3 30.8 74 0 146.7 0.9 190.9 0 15.7 0 27.6-14.6 27.6-30.8v-82.4c0-16.2-11.9-28.6-27.6-28.6z' class='a' fill='%23fff'/%3E%3C/svg%3E") 50% 50% no-repeat;
+}
+
+.a-enter-vr-button,
+.a-enter-ar-button {
   background-size: 70% 70%;
   border: 0;
   bottom: 0;
