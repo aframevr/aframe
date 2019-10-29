@@ -123,3 +123,8 @@ module.exports = window.AFRAME = {
   utils: utils,
   version: pkg.version
 };
+
+// If 8frame loads after XR8, manually register the component
+if (window.XR8) {
+  window.AFRAME.registerComponent('xrweb', window.XR8.AFrame.xrwebComponent());
+}
