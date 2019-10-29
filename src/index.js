@@ -1,14 +1,8 @@
-// Prevent deprecation warning from showing up when accessing XR
-const tempWarn = console.warn;
-console.warn = function () {};
-
 // Prevent native WebXR implementation from impeding 8th Wall XR
-if (window.XR && typeof window.XR === 'function') {
+if (!window.XR8 && window.XR && typeof window.XR === 'function') {
   window.nativeXR = window.XR;
   window.XR = undefined;
 }
-
-console.warn = tempWarn;
 
 // Polyfill `Promise`.
 window.Promise = window.Promise || require('promise-polyfill');
