@@ -14,30 +14,34 @@ var TOUCH_CONTROLLER_MODEL_BASE_URL = 'https://cdn.aframe.io/controllers/oculus/
 // For now the generation 2 model is the same as the original until a new one is prepared for upload.
 var TOUCH_GEN2_CONTROLLER_MODEL_BASE_URL = TOUCH_CONTROLLER_MODEL_BASE_URL;
 
-var CONTROLLER_DEFAULT = 'oculus_touch_gen1';
+var CONTROLLER_DEFAULT = 'oculusTouchGen1';
 var CONTROLLER_PROPERTIES = {
-  oculus_touch_gen1: {
+  oculusTouchGen1: {
     left: {
       modelUrl: TOUCH_CONTROLLER_MODEL_BASE_URL + 'left.gltf',
-      rayOrigin: {origin: {x: 0.008, y: -0.004, z: 0}, direction: {x: 0, y: -0.8, z: -1}},
-      modelPivotOffset: new THREE.Vector3(0, 0, -0.053)
+      rayOrigin: {origin: {x: 0.008, y: -0.01, z: 0}, direction: {x: 0, y: -0.8, z: -1}},
+      modelPivotOffset: new THREE.Vector3(0, 0, -0.053),
+      modelPivotRotation: new THREE.Euler(0, 0, 0)
     },
     right: {
       modelUrl: TOUCH_CONTROLLER_MODEL_BASE_URL + 'right.gltf',
-      rayOrigin: {origin: {x: -0.008, y: -0.004, z: 0}, direction: {x: 0, y: -0.8, z: -1}},
-      modelPivotOffset: new THREE.Vector3(0, 0, -0.053)
+      rayOrigin: {origin: {x: -0.008, y: -0.01, z: 0}, direction: {x: 0, y: -0.8, z: -1}},
+      modelPivotOffset: new THREE.Vector3(0, 0, -0.053),
+      modelPivotRotation: new THREE.Euler(0, 0, 0)
     }
   },
-  oculus_touch_gen2: {
+  oculusTouchGen2: {
     left: {
-      modelUrl: TOUCH_GEN2_CONTROLLER_MODEL_BASE_URL + 'left.gltf',
-      rayOrigin: {origin: {x: 0.008, y: -0.004, z: 0}, direction: {x: 0, y: -0.8, z: -1}},
-      modelPivotOffset: new THREE.Vector3(0, 0, -0.053)
+      modelUrl: TOUCH_GEN2_CONTROLLER_MODEL_BASE_URL + 'gen2-left.gltf',
+      rayOrigin: {origin: {x: -0.01, y: 0, z: 0}, direction: {x: 0, y: -0.8, z: -1}},
+      modelPivotOffset: new THREE.Vector3(0, 0.012, 0),
+      modelPivotRotation: new THREE.Euler(-Math.PI / 4, 0, 0)
     },
     right: {
-      modelUrl: TOUCH_GEN2_CONTROLLER_MODEL_BASE_URL + 'right.gltf',
-      rayOrigin: {origin: {x: -0.008, y: -0.004, z: 0}, direction: {x: 0, y: -0.8, z: -1}},
-      modelPivotOffset: new THREE.Vector3(0, 0, -0.053)
+      modelUrl: TOUCH_GEN2_CONTROLLER_MODEL_BASE_URL + 'gen2-right.gltf',
+      rayOrigin: {origin: {x: 0.01, y: 0, z: 0}, direction: {x: 0, y: -0.8, z: -1}},
+      modelPivotOffset: new THREE.Vector3(0, 0.012, 0),
+      modelPivotRotation: new THREE.Euler(-Math.PI / 4, 0, 0)
     }
   }
 };
@@ -154,7 +158,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
         var displayName = trackedControlsSystem.vrDisplay.displayName;
         // The Oculus Quest uses the updated generation 2 inside-out tracked controllers so update the displayModel.
         if (/^Oculus Quest$/.test(displayName)) {
-          this.displayModel = CONTROLLER_PROPERTIES['oculus_touch_gen2'];
+          this.displayModel = CONTROLLER_PROPERTIES['oculusTouchGen2'];
         }
       }
     }
@@ -230,6 +234,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
 
     // Offset pivot point
     controllerObject3D.position.copy(this.displayModel[this.data.hand].modelPivotOffset);
+    controllerObject3D.rotation.copy(this.displayModel[this.data.hand].modelPivotRotation);
 
     this.el.emit('controllermodelready', {
       name: 'oculus-touch-controls',
