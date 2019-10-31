@@ -32,6 +32,7 @@ setup(function () {
   AScene.prototype.renderer = {
     vr: {
       getDevice: function () { return {requestPresent: function () {}}; },
+      isPresenting: function () { return true; },
       setDevice: function () {},
       setPoseTarget: function () {},
       enabled: false
