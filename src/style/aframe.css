@@ -243,9 +243,11 @@ a-scene audio {
 }
 
 .a-device-motion-permission {
+  background-color: #966;
   font-family: sans-serif, monospace;
   font-size: 13px;
-  width: 100%;
+  width: 160px;
+  height: 48px;
   font-weight: 200;
   line-height: 16px;
   position: absolute;
@@ -256,24 +258,18 @@ a-scene audio {
 .a-device-motion-permission-button {
   font-family: sans-serif, monospace;
   font-size: 13px;
-  width: 100%;
   font-weight: 200;
   line-height: 16px;
-  position: absolute;
-  left: 20px;
-  bottom: 20px;
 }
 
 .a-device-motion-permission-button {
   background-size: 70% 70%;
+  opacity: 0.5;
   border: 0;
   cursor: pointer;
   min-width: 50px;
-  min-height: 30px;
-  padding-right: 5%;
+  min-height: 30px;;
   padding-top: 4%;
-  position: absolute;
-  left: 0;
   transition: background-color .05s ease;
   -webkit-transition: background-color .05s ease;
   z-index: 9999;

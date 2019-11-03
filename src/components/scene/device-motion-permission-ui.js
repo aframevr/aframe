@@ -26,6 +26,7 @@ var ORIENTATION_MODAL_CLASS = 'a-orientation-modal';
     var sceneEl = this.el;
     this.deviceMotionEl = null;
     this.onDeviceMotionClick = bind(this.onDeviceMotionClick, this);
+    this.grantedDeviceMotion = bind(this.grantedDeviceMotion, this);
   },
 
   update: function () {
@@ -67,21 +68,24 @@ var ORIENTATION_MODAL_CLASS = 'a-orientation-modal';
           DeviceMotionEvent.requestPermission().then(
             response => {
               if (response === 'granted') {
-                grantedDeviceMotion(funcArg)
+                this.grantedDeviceMotion(funcArg)
               }else{
+                alert('DeviceMotionEvent.requestPermission().then');
                 console.log('Device Motion permission not granted.')
               }
             })
             .catch(console.error)
         } else {
-          grantedDeviceMotion(funcArg)
+          this.grantedDeviceMotion(funcArg)
         }
       } catch (oops) {
+        alert('DeviceMotionEvent.requestPermission()=catch(oops)');
         console.log('Your device and application combination do not support device motion events.')
       }
     },
 
    grantedDeviceMotion: function(funcArg) {
+     alert('prettiest please');
     window.addEventListener(
       'devicemotion',
       funcArg,
@@ -119,5 +123,4 @@ function createDeviceMotionButton (onClick) {
     evt.stopPropagation();
   });
   return wrapper;
-}
 }
