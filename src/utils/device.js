@@ -122,6 +122,11 @@ function isIOS () {
 }
 module.exports.isIOS = isIOS;
 
+function isMobileDeviceRequestingDesktopSite () {
+  return !isMobile() && window.orientation !== undefined;
+}
+module.exports.isMobileDeviceRequestingDesktopSite = isMobileDeviceRequestingDesktopSite;
+
 /**
  *  Detect browsers in Stand-Alone headsets
  */
