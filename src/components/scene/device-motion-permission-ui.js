@@ -18,7 +18,7 @@ var ORIENTATION_MODAL_CLASS = 'a-orientation-modal';
 
   schema: {
     enabled: {default: true},
-    enableFunc: {default:{}}
+    enableFunc: {default:''}
   },
 
   init: function () {
@@ -68,7 +68,7 @@ var ORIENTATION_MODAL_CLASS = 'a-orientation-modal';
           DeviceMotionEvent.requestPermission().then(
             response => {
               if (response === 'granted') {
-                this.grantedDeviceMotion(funcArg)
+                this.grantedDeviceMotion(this.data.enableFunc)
               }else{
                 alert('DeviceMotionEvent.requestPermission().then');
                 console.log('Device Motion permission not granted.')
@@ -76,7 +76,7 @@ var ORIENTATION_MODAL_CLASS = 'a-orientation-modal';
             })
             .catch(console.error)
         } else {
-          this.grantedDeviceMotion(funcArg)
+          this.grantedDeviceMotion(this.data.enableFunc)
         }
       } catch (oops) {
         alert('DeviceMotionEvent.requestPermission()=catch(oops)');
@@ -85,7 +85,7 @@ var ORIENTATION_MODAL_CLASS = 'a-orientation-modal';
     },
 
    grantedDeviceMotion: function(funcArg) {
-     alert('prettiest please');
+     alert(`prettiest please=${funcArg}`);
     window.addEventListener(
       'devicemotion',
       funcArg,
