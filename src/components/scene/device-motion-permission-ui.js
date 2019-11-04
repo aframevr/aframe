@@ -1,19 +1,17 @@
 var registerComponent = require('../../core/component').registerComponent;
 var utils = require('../../utils/');
 var bind = utils.bind;
-// const AFrame = require('../../');
+
 var constants = require('../../constants/');
-//{AFRAME_INJECTED: 'aframe-injected'} //
+
 var DEVICE_PERMISSION_CLASS = 'a-device-motion-permission';
 var DEVICE_PERMISSION_BTN_CLASS = 'a-device-motion-permission-button';
-var HIDDEN_CLASS = 'a-hidden';
-var ORIENTATION_MODAL_CLASS = 'a-orientation-modal';
 
 /**
- * UI for entering VR mode.
+ * UI for enabling device motion permission
  */
  module.exports.Component = registerComponent('device-motion-permission', {
-// AFrame.registerComponent('vr-mode-ui', {
+
   dependencies: ['canvas'],
 
   schema: {
@@ -57,7 +55,7 @@ var ORIENTATION_MODAL_CLASS = 'a-orientation-modal';
   },
 
   /**
-   * Enter VR when modal clicked.
+   * Enable device motion permission when clicked.
    */
   onDeviceMotionClick: function () {
     try {
@@ -92,7 +90,7 @@ var ORIENTATION_MODAL_CLASS = 'a-orientation-modal';
 });
 
 /**
- * Create a button that when clicked will enter into stereo-rendering mode for VR.
+ * Create a button that when clicked will provide device motion permission.
  *
  * Structure: <div><button></div>
  *
@@ -105,12 +103,12 @@ function createDeviceMotionButton (onClick) {
 
   // Create elements.
   wrapper = document.createElement('div');
-  wrapper.classList.add(DEVICE_PERMISSION_CLASS); // DEVICE_PERMISSION_CLASS);
+  wrapper.classList.add(DEVICE_PERMISSION_CLASS);
   wrapper.setAttribute(constants.AFRAME_INJECTED, '');
   vrButton = document.createElement('button');
-  vrButton.className = DEVICE_PERMISSION_BTN_CLASS; // DEVICE_PERMISSION_BTN_CLASS;
+  vrButton.className = DEVICE_PERMISSION_BTN_CLASS;
   vrButton.setAttribute('title',
-    'We need your permission to access the orientation of your device.');
+    'We need your permission to access the motion of your device.');
   vrButton.setAttribute(constants.AFRAME_INJECTED, '');
 
   // Insert elements.
