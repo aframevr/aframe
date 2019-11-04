@@ -70,7 +70,6 @@ var ORIENTATION_MODAL_CLASS = 'a-orientation-modal';
               if (response === 'granted') {
                 this.grantedDeviceMotion(this.data.enableFunc)
               }else{
-                alert('DeviceMotionEvent.requestPermission().then');
                 console.log('Device Motion permission not granted.')
               }
             })
@@ -79,13 +78,11 @@ var ORIENTATION_MODAL_CLASS = 'a-orientation-modal';
           this.grantedDeviceMotion(this.data.enableFunc)
         }
       } catch (oops) {
-        alert('DeviceMotionEvent.requestPermission()=catch(oops)');
         console.log('Your device and application combination do not support device motion events.')
       }
     },
 
    grantedDeviceMotion: function(funcArg) {
-     alert(`prettiest please=${funcArg}`);
     window.addEventListener(
       'devicemotion',
       funcArg,
