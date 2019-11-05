@@ -106,7 +106,9 @@ module.exports.Component = registerComponent('gearvr-controls', {
       idPrefix: GAMEPAD_ID_PREFIX,
       orientationOffset: data.orientationOffset
     });
-    if (!this.data.model) { return; }
+    if (!this.data.model || this.el.getAttribute('obj-model') !== null) {
+      return;
+    }
     this.el.setAttribute('obj-model', {
       obj: GEARVR_CONTROLLER_MODEL_OBJ_URL,
       mtl: GEARVR_CONTROLLER_MODEL_OBJ_MTL

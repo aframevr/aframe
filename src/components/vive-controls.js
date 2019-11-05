@@ -121,7 +121,9 @@ module.exports.Component = registerComponent('vive-controls', {
     });
 
     // Load model.
-    if (!this.data.model) { return; }
+    if (!this.data.model || this.el.getAttribute('obj-model') !== null) {
+      return;
+    }
     this.el.setAttribute('obj-model', {
       obj: VIVE_CONTROLLER_MODEL_OBJ_URL,
       mtl: VIVE_CONTROLLER_MODEL_OBJ_MTL

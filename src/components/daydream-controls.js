@@ -107,7 +107,9 @@ module.exports.Component = registerComponent('daydream-controls', {
       idPrefix: GAMEPAD_ID_PREFIX,
       orientationOffset: data.orientationOffset
     });
-    if (!this.data.model) { return; }
+    if (!this.data.model || this.el.getAttribute('obj-model') !== null) {
+      return;
+    }
     this.el.setAttribute('obj-model', {
       obj: DAYDREAM_CONTROLLER_MODEL_OBJ_URL,
       mtl: DAYDREAM_CONTROLLER_MODEL_OBJ_MTL
