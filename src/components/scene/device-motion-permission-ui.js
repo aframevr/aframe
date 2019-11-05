@@ -12,6 +12,11 @@ var DEVICE_PERMISSION_BTN_CLASS = 'a-device-motion-permission-button';
  */
  module.exports.Component = registerComponent('device-motion-permission', {
 
+   schema: {
+     enabled: {default: true}
+   },
+
+
   init: function () {
     var self = this;
     var sceneEl = this.el;
@@ -100,6 +105,7 @@ function createDeviceMotionButton (onClick) {
   wrapper.setAttribute(constants.AFRAME_INJECTED, '');
   dmButton = document.createElement('button');
   dmButton.className = DEVICE_PERMISSION_BTN_CLASS;
+  dmButton.setAttribute(constants.AFRAME_INJECTED, '');
 
   // Insert elements.
   wrapper.appendChild(dmButton);
