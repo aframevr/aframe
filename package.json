@@ -17,7 +17,7 @@
     "ghpages": "ghpages -p gh-pages/",
     "lint": "semistandard -v | snazzy",
     "lint:fix": "semistandard --fix",
-    "porecommit": "npm run lint",
+    "precommit": "npm run lint",
     "prepush": "node scripts/testOnlyCheck.js",
     "prerelease": "node scripts/release.js 0.9.1 0.9.2",
     "start": "npm run dev",

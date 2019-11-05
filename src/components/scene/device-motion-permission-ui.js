@@ -12,13 +12,6 @@ var DEVICE_PERMISSION_BTN_CLASS = 'a-device-motion-permission-button';
  */
  module.exports.Component = registerComponent('device-motion-permission', {
 
-  dependencies: ['canvas'],
-
-  schema: {
-    enabled: {default: true},
-    enableFunc: {default:''}
-  },
-
   init: function () {
     var self = this;
     var sceneEl = this.el;
@@ -98,22 +91,19 @@ var DEVICE_PERMISSION_BTN_CLASS = 'a-device-motion-permission-button';
  * @returns {Element} Wrapper <div>.
  */
 function createDeviceMotionButton (onClick) {
-  var vrButton;
+  var dmButton;
   var wrapper;
 
   // Create elements.
   wrapper = document.createElement('div');
   wrapper.classList.add(DEVICE_PERMISSION_CLASS);
   wrapper.setAttribute(constants.AFRAME_INJECTED, '');
-  vrButton = document.createElement('button');
-  vrButton.className = DEVICE_PERMISSION_BTN_CLASS;
-  vrButton.setAttribute('title',
-    'We need your permission to access the motion of your device.');
-  vrButton.setAttribute(constants.AFRAME_INJECTED, '');
+  dmButton = document.createElement('button');
+  dmButton.className = DEVICE_PERMISSION_BTN_CLASS;
 
   // Insert elements.
-  wrapper.appendChild(vrButton);
-  vrButton.addEventListener('click', function (evt) {
+  wrapper.appendChild(dmButton);
+  dmButton.addEventListener('click', function (evt) {
     onClick();
     evt.stopPropagation();
   });
