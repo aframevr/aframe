@@ -10,12 +10,12 @@ var DEVICE_PERMISSION_BTN_CLASS = 'a-device-motion-permission-button';
 /**
  * UI for enabling device motion permission
  */
- module.exports.Component = registerComponent('device-motion-permission', {
+module.exports.Component = registerComponent('device-motion-permission-ui', {
 
-   schema: {
-     enabled: {default: true}
-   },
-
+  schema: {
+    enabled: { default: true },
+    enableFunc: { default: 'okay' }
+  },
 
   init: function () {
     var self = this;
@@ -47,38 +47,40 @@ var DEVICE_PERMISSION_BTN_CLASS = 'a-device-motion-permission-button';
   },
 
   remove: function () {
-      if (this.deviceMotionEl && this.deviceMotionEl.parentNode) {
-        this.deviceMotionEl.parentNode.removeChild(this.deviceMotionEl);
-      }
+    if (this.deviceMotionEl && this.deviceMotionEl.parentNode) {
+      this.deviceMotionEl.parentNode.removeChild(this.deviceMotionEl);
+    }
   },
 
   /**
    * Enable device motion permission when clicked.
    */
   onDeviceMotionClick: function () {
+    const func = this.el.getAttribute('enableFunc') ? this.el.getAttribute('enableFunc') : null;
     try {
-        if (
-          DeviceMotionEvent &&
+      if (
+        DeviceMotionEvent &&
           typeof DeviceMotionEvent.requestPermission === 'function'
-        ){
-          DeviceMotionEvent.requestPermission().then(
-            response => {
-              if (response === 'granted') {
-                this.grantedDeviceMotion(this.data.enableFunc)
-              }else{
-                console.log('Device Motion permission not granted.')
-              }
-            })
-            .catch(console.error)
-        } else {
-          this.grantedDeviceMotion(this.data.enableFunc)
-        }
-      } catch (oops) {
-        console.log('Your device and application combination do not support device motion events.')
+      ) {
+        DeviceMotionEvent.requestPermission().then(
+          response => {
+            if (response === 'granted') {
+              this.grantedDeviceMotion(func);
+            } else {
+              console.log('Device Motion permission not granted.');
+            }
+          })
+          .catch(console.error);
+      } else {
+        this.grantedDeviceMotion(func);
       }
-    },
+    } catch (oops) {
+      console.log('Your device and application combination do not support device motion events.');
+    }
+  },
 
-   grantedDeviceMotion: function(funcArg) {
+  grantedDeviceMotion: function (funcArg) {
+    alert(funcArg);
     window.addEventListener(
       'devicemotion',
       funcArg,
@@ -105,7 +107,6 @@ function createDeviceMotionButton (onClick) {
   wrapper.setAttribute(constants.AFRAME_INJECTED, '');
   dmButton = document.createElement('button');
   dmButton.className = DEVICE_PERMISSION_BTN_CLASS;
-  dmButton.setAttribute(constants.AFRAME_INJECTED, '');
 
   // Insert elements.
   wrapper.appendChild(dmButton);
