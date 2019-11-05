@@ -56,9 +56,11 @@ to the distance to the intersection point.
 
 ## Properties
 
-| Properties | Description        |
-|------------|--------------------|
-| hand       | `left` or `right`. |
+| Properties        | Description                                             |
+|-------------------|---------------------------------------------------------|
+| hand              | `left` or `right`.                                      |
+| model             | Whether the default model for the controller is loaded. |
+| defaultModelColor | Color for the default controller model.                 |
 
 ## Customizing the Raycaster
 
