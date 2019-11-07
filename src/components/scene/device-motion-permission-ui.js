@@ -13,8 +13,7 @@ var DEVICE_PERMISSION_BTN_CLASS = 'a-device-motion-permission-button';
 module.exports.Component = registerComponent('device-motion-permission-ui', {
 
   schema: {
-    enabled: { default: true },
-    enableFunc: { default: 'okay' }
+    enabled: { default: true }
   },
 
   init: function () {
@@ -22,6 +21,7 @@ module.exports.Component = registerComponent('device-motion-permission-ui', {
     var sceneEl = this.el;
     this.deviceMotionEl = null;
     this.onDeviceMotionClick = bind(this.onDeviceMotionClick, this);
+    this.onOrientationChangeClick = bind(this.onOrientationChangeClick, this);
     this.grantedDeviceMotion = bind(this.grantedDeviceMotion, this);
   },
 
@@ -59,10 +59,10 @@ module.exports.Component = registerComponent('device-motion-permission-ui', {
     const func = this.el.getAttribute('enableFunc') ? this.el.getAttribute('enableFunc') : null;
     try {
       if (
-        DeviceMotionEvent &&
-          typeof DeviceMotionEvent.requestPermission === 'function'
+        DeviceOrientationEvent &&
+          typeof DeviceOrientationEvent.requestPermission === 'function'
       ) {
-        DeviceMotionEvent.requestPermission().then(
+        DeviceOrientationEvent.requestPermission().then(
           response => {
             if (response === 'granted') {
               this.grantedDeviceMotion(func);
@@ -80,12 +80,13 @@ module.exports.Component = registerComponent('device-motion-permission-ui', {
   },
 
   grantedDeviceMotion: function (funcArg) {
-    alert(funcArg);
-    window.addEventListener(
-      'devicemotion',
-      funcArg,
-      false
-    );
+    if (response == 'granted') {
+      window.addEventListener('deviceorientation', (e) => {
+        funcArg();
+      })
+    } else {
+      console.log('Device motion permission not granted.');
+    }
   }
 });
 
