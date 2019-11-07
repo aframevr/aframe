@@ -4,7 +4,7 @@ var scenes = require('./scene/scenes');
 var systems = require('./system');
 var utils = require('../utils/');
 
-var components = module.exports.components = {};  // Keep track of registered components.
+var components = module.exports.components = {}; // Keep track of registered components.
 var parseProperties = schema.parseProperties;
 var parseProperty = schema.parseProperty;
 var processSchema = schema.process;
@@ -38,7 +38,7 @@ var Component = module.exports.Component = function (el, attrValue, id) {
   this.el = el;
   this.id = id;
   this.attrName = this.name + (id ? '__' + id : '');
-  this.evtDetail = {id: this.id, name: this.name};
+  this.evtDetail = { id: this.id, name: this.name };
   this.initialized = false;
   this.isSingleProperty = isSingleProp(this.schema);
   this.isSinglePropertyObject = this.isSingleProperty &&
@@ -265,7 +265,7 @@ Component.prototype = {
     var attrValue = isDefault ? this.data : this.attrValue;
     if (attrValue === null || attrValue === undefined) { return; }
     window.HTMLElement.prototype.setAttribute.call(this.el, this.attrName,
-                                                   this.stringify(attrValue));
+      this.stringify(attrValue));
   },
 
   /**
@@ -672,7 +672,7 @@ module.exports.registerComponent = function (name, definition) {
   NewComponent.prototype.pause = wrapPause(NewComponent.prototype.pause);
 
   schema = utils.extend(processSchema(NewComponent.prototype.schema,
-                                      NewComponent.prototype.name));
+    NewComponent.prototype.name));
   schemaIsSingleProp = isSingleProp(NewComponent.prototype.schema);
 
   // Keep track of keys that may potentially change the schema.

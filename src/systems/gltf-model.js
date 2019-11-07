@@ -11,7 +11,7 @@ var THREE = require('../lib/three');
  */
 module.exports.System = registerSystem('gltf-model', {
   schema: {
-    dracoDecoderPath: {default: ''}
+    dracoDecoderPath: { default: '' }
   },
 
   init: function () {

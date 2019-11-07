@@ -11,7 +11,7 @@ let warningCount = 0;
 const errors = {};
 const warnings = {};
 
-let pages = glob.sync('docs/**/*.md');
+const pages = glob.sync('docs/**/*.md');
 pages.forEach(function checkPage (pagePath) {
   var match;
   var referencedMatch;
@@ -19,13 +19,13 @@ pages.forEach(function checkPage (pagePath) {
   var referencingRegex;
   var urlRegex;
 
-  let content = fs.readFileSync(pagePath, 'utf-8');
+  const content = fs.readFileSync(pagePath, 'utf-8');
 
   // Check prose with `write-good`.
   checkProse(pagePath, content);
 
   // Inline links: `[link](../page.md)`
-  let inlineLinkRegex = /\[.*?\]\((.*?)\)/g;
+  const inlineLinkRegex = /\[.*?\]\((.*?)\)/g;
   match = inlineLinkRegex.exec(content);
   while (match !== null) {
     checkLink(pagePath, match[1], 'Page does not exist');
@@ -33,7 +33,7 @@ pages.forEach(function checkPage (pagePath) {
   }
 
   // Referenced links: `[link][page] -> [page]: ../page.md`
-  let referencedLinkRegex = /\[.*?\]\[(.*?)\]/g;
+  const referencedLinkRegex = /\[.*?\]\[(.*?)\]/g;
   match = referencedLinkRegex.exec(content);
   while (match !== null) {
     urlRegex = new RegExp(`\\[${match[1]}\\]: \(\.\*\)`, 'g');
@@ -51,7 +51,7 @@ pages.forEach(function checkPage (pagePath) {
   }
 
   // Unused defined links: `[page]: ../page.md -> [*][page]`
-  let referenceRegex = new RegExp(`\\[\(\.\*\)\?\\]: \.\*`, 'g');
+  const referenceRegex = new RegExp('\\[\(\.\*\)\?\\]: \.\*', 'g');
   match = referenceRegex.exec(content);
   while (match !== null) {
     referencingRegex = new RegExp(`\\[${match[1]}\\]`, 'g');
@@ -100,19 +100,19 @@ function convertHeading (heading) {
   return heading
     .replace(/#+\s+/, '')
     .toLowerCase()
-    .replace(/`\./g, '')  // Remove leading dot.
-    .replace(/[`*\(\),]/g, '')  // Remove special characters.
+    .replace(/`\./g, '') // Remove leading dot.
+    .replace(/[`*\(\),]/g, '') // Remove special characters.
     .replace(/[^\w]+/g, '-')
     .replace(/-$/g, '');
 }
 
 function checkProse (pagePath, content) {
-  content = content.replace(/^---[\s\S]*?---/g, '');  // Remove metadata.
-  content = content.replace(/(\|.*\|)+/g, '');  // Remove tables.
-  content = content.replace(/```[\s\S]*?```/g, '');  // Remove code blocks.
-  content = content.replace(/`[\s\S]*?`/g, '');  // Remove inline code.
-  content = content.replace(/\n#+.*/g, '');  // Remove headings.
-  writeGood(content, {adverb: false, illusion: false}).forEach(function add (error) {
+  content = content.replace(/^---[\s\S]*?---/g, ''); // Remove metadata.
+  content = content.replace(/(\|.*\|)+/g, ''); // Remove tables.
+  content = content.replace(/```[\s\S]*?```/g, ''); // Remove code blocks.
+  content = content.replace(/`[\s\S]*?`/g, ''); // Remove inline code.
+  content = content.replace(/\n#+.*/g, ''); // Remove headings.
+  writeGood(content, { adverb: false, illusion: false }).forEach(function add (error) {
     addWarning(
       pagePath,
       `...${content.substring(error.index - 10, error.index + error.offset + 10).replace(/\n/g, '')}...`,

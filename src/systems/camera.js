@@ -38,7 +38,7 @@ module.exports.System = registerSystem('camera', {
 
     // Camera already defined or the one defined it is an spectator one.
     if (sceneEl.camera && !sceneEl.camera.el.getAttribute('camera').spectator) {
-      sceneEl.emit('cameraready', {cameraEl: sceneEl.camera.el});
+      sceneEl.emit('cameraready', { cameraEl: sceneEl.camera.el });
       return;
     }
 
@@ -95,7 +95,7 @@ module.exports.System = registerSystem('camera', {
 
     this.initialCameraFound = true;
     sceneEl.camera = cameraEl.getObject3D('camera');
-    sceneEl.emit('cameraready', {cameraEl: cameraEl});
+    sceneEl.emit('cameraready', { cameraEl: cameraEl });
   },
 
   createDefaultCamera: function () {
@@ -104,7 +104,7 @@ module.exports.System = registerSystem('camera', {
 
     // Set up default camera.
     defaultCameraEl = document.createElement('a-entity');
-    defaultCameraEl.setAttribute('camera', {active: true});
+    defaultCameraEl.setAttribute('camera', { active: true });
     defaultCameraEl.setAttribute('position', {
       x: 0,
       y: constants.DEFAULT_CAMERA_HEIGHT,
@@ -117,7 +117,7 @@ module.exports.System = registerSystem('camera', {
     defaultCameraEl.addEventListener('object3dset', function (evt) {
       if (evt.detail.type !== 'camera') { return; }
       sceneEl.camera = evt.detail.object;
-      sceneEl.emit('cameraready', {cameraEl: defaultCameraEl});
+      sceneEl.emit('cameraready', { cameraEl: defaultCameraEl });
     });
 
     sceneEl.appendChild(defaultCameraEl);
@@ -182,7 +182,7 @@ module.exports.System = registerSystem('camera', {
       cameraEl.setAttribute('camera', 'active', false);
       cameraEl.pause();
     }
-    sceneEl.emit('camera-set-active', {cameraEl: newCameraEl});
+    sceneEl.emit('camera-set-active', { cameraEl: newCameraEl });
   },
 
   /**
@@ -213,7 +213,7 @@ module.exports.System = registerSystem('camera', {
     spectatorCameraEl.setAttribute('camera', 'active', false);
     spectatorCameraEl.play();
 
-    sceneEl.emit('camera-set-spectator', {cameraEl: newCameraEl});
+    sceneEl.emit('camera-set-spectator', { cameraEl: newCameraEl });
   },
 
   /**

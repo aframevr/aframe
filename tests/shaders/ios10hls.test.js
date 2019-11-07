@@ -1,4 +1,4 @@
-/* global AFRAME, CustomEvent, assert, process, setup, suite, test */
+/* global AFRAME, CustomEvent, assert, setup, suite, test */
 var entityFactory = require('../helpers').entityFactory;
 
 suite.skip('ios10hls', function () {
@@ -20,7 +20,7 @@ suite.skip('ios10hls', function () {
     videoEl.type = 'application/x-mpegurl';
     assert.equal(AFRAME.utils.material.isHLS(videoEl.src, videoEl.type), true);
 
-    el.setAttribute('material', {src: videoEl});
+    el.setAttribute('material', { src: videoEl });
     videoEl.dispatchEvent(new CustomEvent('loadeddata'));
 
     setTimeout(function () {

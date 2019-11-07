@@ -28,19 +28,19 @@ var GAMEPAD_ID_PATTERN = /([0-9a-zA-Z]+-[0-9a-zA-Z]+)$/;
  */
 module.exports.Component = registerComponent('windows-motion-controls', {
   schema: {
-    hand: {default: DEFAULT_HANDEDNESS},
+    hand: { default: DEFAULT_HANDEDNESS },
     // It is possible to have multiple pairs of controllers attached (a pair has both left and right).
     // Set this to 1 to use a controller from the second pair, 2 from the third pair, etc.
-    pair: {default: 0},
+    pair: { default: 0 },
     // If true, loads the controller glTF asset.
-    model: {default: true},
+    model: { default: true },
     // If true, will hide the model from the scene if no matching gamepad (based on ID & hand) is connected.
-    hideDisconnected: {default: true}
+    hideDisconnected: { default: true }
   },
 
   mapping: {
     // A-Frame specific semantic axis names
-    axes: {'thumbstick': [0, 1], 'trackpad': [2, 3]},
+    axes: { thumbstick: [0, 1], trackpad: [2, 3] },
     // A-Frame specific semantic button names
     buttons: ['thumbstick', 'trigger', 'grip', 'menu', 'trackpad'],
     // A mapping of the semantic name to node name in the glTF model file,
@@ -56,11 +56,11 @@ module.exports.Component = registerComponent('windows-motion-controls', {
     // A mapping of the semantic name to button node name in the glTF model file,
     // that should be transformed by button value.
     buttonMeshNames: {
-      'trigger': 'SELECT',
-      'menu': 'MENU',
-      'grip': 'GRASP',
-      'thumbstick': 'THUMBSTICK_PRESS',
-      'trackpad': 'TOUCHPAD_PRESS'
+      trigger: 'SELECT',
+      menu: 'MENU',
+      grip: 'GRASP',
+      thumbstick: 'THUMBSTICK_PRESS',
+      trackpad: 'TOUCHPAD_PRESS'
     },
     pointingPoseMeshName: 'POINTING_POSE'
   },
@@ -321,7 +321,7 @@ module.exports.Component = registerComponent('windows-motion-controls', {
     function getImmediateChildByName (object3d, value) {
       for (var i = 0, l = object3d.children.length; i < l; i++) {
         var obj = object3d.children[i];
-        if (obj && obj['name'] === value) {
+        if (obj && obj.name === value) {
           return obj;
         }
       }

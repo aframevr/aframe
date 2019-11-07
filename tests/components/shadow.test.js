@@ -18,12 +18,12 @@ suite('shadow component', function () {
       el.setAttribute('shadow', {});
       mesh = new THREE.Mesh(
         new THREE.Sphere(2),
-        new THREE.MeshBasicMaterial({color: 0xffff00})
+        new THREE.MeshBasicMaterial({ color: 0xffff00 })
       );
       meshWithMaterialArray = new THREE.Mesh(
         new THREE.Sphere(2),
-        [new THREE.MeshBasicMaterial({color: 0xffff00}),
-          new THREE.MeshBasicMaterial({color: 0xffff00})]
+        [new THREE.MeshBasicMaterial({ color: 0xffff00 }),
+          new THREE.MeshBasicMaterial({ color: 0xffff00 })]
       );
     });
   });
@@ -34,10 +34,10 @@ suite('shadow component', function () {
       component.update();
       assert.ok(mesh.castShadow);
       assert.ok(mesh.receiveShadow);
-      el.setAttribute('shadow', {cast: true, receive: false});
+      el.setAttribute('shadow', { cast: true, receive: false });
       assert.ok(mesh.castShadow);
       assert.notOk(mesh.receiveShadow);
-      el.setAttribute('shadow', {cast: false, receive: false});
+      el.setAttribute('shadow', { cast: false, receive: false });
       assert.notOk(mesh.castShadow);
       assert.notOk(mesh.receiveShadow);
     });

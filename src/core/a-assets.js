@@ -135,7 +135,7 @@ registerElement('a-asset-item', {
             xhr: xhr
           });
         }, function handleOnError (xhr) {
-          self.emit('error', {xhr: xhr});
+          self.emit('error', { xhr: xhr });
         });
       }
     }
@@ -155,8 +155,8 @@ function mediaElementLoaded (el) {
 
   // If media specifies autoplay or preload, wait until media is completely buffered.
   return new Promise(function (resolve, reject) {
-    if (el.readyState === 4) { return resolve(); }  // Already loaded.
-    if (el.error) { return reject(); }  // Error.
+    if (el.readyState === 4) { return resolve(); } // Already loaded.
+    if (el.error) { return reject(new Error('Error with mediaElementLoaded.')); } // Error.
 
     el.addEventListener('loadeddata', checkProgress, false);
     el.addEventListener('progress', checkProgress, false);

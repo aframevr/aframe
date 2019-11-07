@@ -24,7 +24,7 @@ geometryNames.forEach(function registerMeshPrimitive (geometryName) {
   // Register.
   var tagName = 'a-' + geometryHyphened;
   var primitive = registerPrimitive(tagName, utils.extendDeep({}, getMeshMixin(), {
-    defaultComponents: {geometry: {primitive: geometryName}},
+    defaultComponents: { geometry: { primitive: geometryName } },
     mappings: mappings
   }));
   meshPrimitives[tagName] = primitive;

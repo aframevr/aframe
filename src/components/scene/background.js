@@ -3,8 +3,8 @@ var register = require('../../core/component').registerComponent;
 
 module.exports.Component = register('background', {
   schema: {
-    color: {type: 'color', default: 'black'},
-    transparent: {default: false}
+    color: { type: 'color', default: 'black' },
+    transparent: { default: false }
   },
   update: function () {
     var data = this.data;

@@ -22,13 +22,13 @@ suite('animation', function () {
 
   suite('basic animation', () => {
     test('sets from value', function () {
-      el.setAttribute('animation', {property: 'light.intensity', from: 0.5, to: 1});
+      el.setAttribute('animation', { property: 'light.intensity', from: 0.5, to: 1 });
       component.tick(0, 20);
       assert.equal(el.getAttribute('light').intensity, 0.5);
     });
 
     test('sets between value', function () {
-      el.setAttribute('animation', {property: 'light.intensity', from: 0.5, to: 1.0, dur: 500});
+      el.setAttribute('animation', { property: 'light.intensity', from: 0.5, to: 1.0, dur: 500 });
       component.tick(0, 100);
       component.tick(0, 100);
       assert.ok(el.getAttribute('light').intensity > 0.5);
@@ -36,7 +36,7 @@ suite('animation', function () {
     });
 
     test('sets to value', function () {
-      el.setAttribute('animation', {property: 'light.intensity', from: 0.5, to: 1.0, dur: 500});
+      el.setAttribute('animation', { property: 'light.intensity', from: 0.5, to: 1.0, dur: 500 });
       component.tick(0, 1);
       component.tick(0, 500);
       assert.equal(el.getAttribute('light').intensity, 1.0);
@@ -44,12 +44,12 @@ suite('animation', function () {
 
     test('can infer from value', function () {
       el.setAttribute('light', 'intensity', 0.75);
-      el.setAttribute('animation', {property: 'light.intensity', to: 1});
+      el.setAttribute('animation', { property: 'light.intensity', to: 1 });
       assert.equal(component.config.targets.aframeProperty, 0.75);
     });
 
     test('handles non-truthy from value (i.e., 0)', function () {
-      el.setAttribute('text', {value: 'supermedium'});
+      el.setAttribute('text', { value: 'supermedium' });
       el.setAttribute('animation', {
         property: 'components.text.material.uniforms.opacity.value',
         from: 0,
@@ -141,7 +141,7 @@ suite('animation', function () {
       assert.equal(el.object3D.position.x, 0);
       component.tick(0, 500);
       assert.equal(THREE.Math.degToRad(component.config.targets.aframeProperty),
-                   el.object3D.rotation.x);
+        el.object3D.rotation.x);
     });
   });
 
@@ -238,7 +238,7 @@ suite('animation', function () {
 
     test('can animate vec3 single-property custom component', function () {
       registerComponent('dummy', {
-        schema: {type: 'vec3'}
+        schema: { type: 'vec3' }
       });
       el.setAttribute('dummy');
       el.setAttribute('animation', {
@@ -262,7 +262,7 @@ suite('animation', function () {
 
     test('can animate vec3 property of custom component', function () {
       registerComponent('dummy', {
-        schema: {vector: {type: 'vec3'}}
+        schema: { vector: { type: 'vec3' } }
       });
       el.setAttribute('dummy', '');
       el.setAttribute('animation', {
@@ -287,7 +287,7 @@ suite('animation', function () {
 
   suite('boolean animation', () => {
     test('can toggle from false to true via strings', function () {
-      el.setAttribute('animation', {property: 'visible', from: 'false', to: 'true', dur: 1000});
+      el.setAttribute('animation', { property: 'visible', from: 'false', to: 'true', dur: 1000 });
       component.tick(0, 1);
       assert.equal(el.object3D.visible, false);
       component.tick(0, 500);
@@ -297,7 +297,7 @@ suite('animation', function () {
     });
 
     test('can toggle from false to true via bools', function () {
-      el.setAttribute('animation', {property: 'visible', from: false, to: true, dur: 1000});
+      el.setAttribute('animation', { property: 'visible', from: false, to: true, dur: 1000 });
       component.tick(0, 1);
       assert.equal(el.object3D.visible, false);
       component.tick(0, 500);
@@ -401,12 +401,12 @@ suite('animation', function () {
 
   suite('startAnimation', function () {
     test('plays by default', function () {
-      el.setAttribute('animation', {property: 'position'});
+      el.setAttribute('animation', { property: 'position' });
       assert.ok(component.animationIsPlaying);
     });
 
     test('plays on delay', function (done) {
-      el.setAttribute('animation', {property: 'position', delay: 100});
+      el.setAttribute('animation', { property: 'position', delay: 100 });
       assert.notOk(component.animationIsPlaying);
       setTimeout(() => {
         assert.ok(component.animationIsPlaying);
@@ -415,19 +415,19 @@ suite('animation', function () {
     });
 
     test('does not play if startEvents', function () {
-      el.setAttribute('animation', {property: 'position', startEvents: 'foo'});
+      el.setAttribute('animation', { property: 'position', startEvents: 'foo' });
       assert.notOk(component.animationIsPlaying);
     });
 
     test('does not play if not autoplay', function () {
-      el.setAttribute('animation', {property: 'position', autoplay: false});
+      el.setAttribute('animation', { property: 'position', autoplay: false });
       assert.notOk(component.animationIsPlaying);
     });
   });
 
   suite('event listeners', () => {
     test('plays on startEvents', function (done) {
-      el.setAttribute('animation', {property: 'position', startEvents: ['foo', 'far']});
+      el.setAttribute('animation', { property: 'position', startEvents: ['foo', 'far'] });
       assert.notOk(component.animationIsPlaying);
       el.addEventListener('foo', function handler () {
         assert.ok(component.animationIsPlaying);
@@ -471,7 +471,7 @@ suite('animation', function () {
     });
 
     test('pauses on pauseEvents', function (done) {
-      el.setAttribute('animation', {property: 'position', pauseEvents: 'bar, boo'});
+      el.setAttribute('animation', { property: 'position', pauseEvents: 'bar, boo' });
       assert.ok(component.animationIsPlaying);
       el.addEventListener('bar', function handler () {
         setTimeout(() => {
@@ -484,7 +484,7 @@ suite('animation', function () {
     });
 
     test('resumes on resumeEvents', function (done) {
-      el.setAttribute('text', {opacity: 0, value: 'supermedium'});
+      el.setAttribute('text', { opacity: 0, value: 'supermedium' });
       el.setAttribute('animation', {
         property: 'components.text.material.uniforms.opacity.value',
         from: 0,
@@ -520,7 +520,7 @@ suite('animation', function () {
   suite('event emissions', function () {
     test('emits animationbegin event', function (done) {
       el.addEventListener('animationbegin', evt => { done(); });
-      el.setAttribute('animation', {property: 'position', to: '2 2 2'});
+      el.setAttribute('animation', { property: 'position', to: '2 2 2' });
     });
 
     test('emits animationcomplete event', function (done) {
@@ -529,7 +529,7 @@ suite('animation', function () {
         component.tick(1, 1);
         component.tick(100000, 99999);
       });
-      el.setAttribute('animation', {property: 'position', to: '2 2 2'});
+      el.setAttribute('animation', { property: 'position', to: '2 2 2' });
     });
 
     test('emits animationcomplete event twice', function (done) {
@@ -560,7 +560,7 @@ suite('animation', function () {
   suite('tick', function () {
     test('only calls animejs animation.tick if playing', function () {
       el.setAttribute('animation', 'property', 'position');
-      let animationTickSpy = this.sinon.spy(component.animation, 'tick');
+      const animationTickSpy = this.sinon.spy(component.animation, 'tick');
       component.animationIsPlaying = false;
       component.tick(0, 10);
       assert.notOk(animationTickSpy.called);
@@ -573,14 +573,14 @@ suite('animation', function () {
 
   suite('remove', function () {
     test('stops animation', function () {
-      el.setAttribute('animation', {property: 'position'});
+      el.setAttribute('animation', { property: 'position' });
       assert.ok(component.animationIsPlaying);
       el.removeAttribute('animation');
       assert.notOk(component.animationIsPlaying);
     });
 
     test('removes event listeners', function (done) {
-      el.setAttribute('animation', {property: 'position', startEvents: 'foo'});
+      el.setAttribute('animation', { property: 'position', startEvents: 'foo' });
       el.removeAttribute('animation');
       el.emit('foo');
       setTimeout(() => {
@@ -604,8 +604,8 @@ suite('animation', function () {
         dur: 10000
       });
 
-      let mouseenterComponent = el.components['animation__mouseenter'];
-      let mouseleaveComponent = el.components['animation__mouseleave'];
+      const mouseenterComponent = el.components.animation__mouseenter;
+      const mouseleaveComponent = el.components.animation__mouseleave;
       assert.notOk(mouseenterComponent.animationIsPlaying);
       assert.notOk(mouseleaveComponent.animationIsPlaying);
 

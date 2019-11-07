@@ -6,10 +6,10 @@
  */
 AFRAME.registerComponent('entity-generator', {
   schema: {
-    mixin: {default: ''},
-    num: {default: 1000},
-    raycasterEls: {default: '[mixin~="raycaster"]', type: 'selectorAll'},
-    spread: {default: 20}
+    mixin: { default: '' },
+    num: { default: 1000 },
+    raycasterEls: { default: '[mixin~="raycaster"]', type: 'selectorAll' },
+    spread: { default: 20 }
   },
 
   init: function () {

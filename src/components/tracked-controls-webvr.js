@@ -5,12 +5,12 @@ var THREE = require('../lib/three');
 
 var DEFAULT_HANDEDNESS = require('../constants').DEFAULT_HANDEDNESS;
 // Vector from eyes to elbow (divided by user height).
-var EYES_TO_ELBOW = {x: 0.175, y: -0.3, z: -0.03};
+var EYES_TO_ELBOW = { x: 0.175, y: -0.3, z: -0.03 };
 // Vector from eyes to elbow (divided by user height).
-var FOREARM = {x: 0, y: 0, z: -0.175};
+var FOREARM = { x: 0, y: 0, z: -0.175 };
 
 // Due to unfortunate name collision, add empty touches array to avoid Daydream error.
-var EMPTY_DAYDREAM_TOUCHES = {touches: []};
+var EMPTY_DAYDREAM_TOUCHES = { touches: [] };
 
 var EVENTS = {
   AXISMOVE: 'axismove',
@@ -35,15 +35,15 @@ var EVENTS = {
  */
 module.exports.Component = registerComponent('tracked-controls-webvr', {
   schema: {
-    autoHide: {default: true},
-    controller: {default: 0},
-    id: {type: 'string', default: ''},
-    hand: {type: 'string', default: ''},
-    idPrefix: {type: 'string', default: ''},
-    orientationOffset: {type: 'vec3'},
+    autoHide: { default: true },
+    controller: { default: 0 },
+    id: { type: 'string', default: '' },
+    hand: { type: 'string', default: '' },
+    idPrefix: { type: 'string', default: '' },
+    orientationOffset: { type: 'vec3' },
     // Arm model parameters when not 6DoF.
-    armModel: {default: true},
-    headElement: {type: 'selector'}
+    armModel: { default: true },
+    headElement: { type: 'selector' }
   },
 
   init: function () {
@@ -54,7 +54,7 @@ module.exports.Component = registerComponent('tracked-controls-webvr', {
     this.changedAxes = [];
     this.targetControllerNumber = this.data.controller;
 
-    this.axisMoveEventDetail = {axis: this.axis, changed: this.changedAxes};
+    this.axisMoveEventDetail = { axis: this.axis, changed: this.changedAxes };
     this.deltaControllerPosition = new THREE.Vector3();
     this.controllerQuaternion = new THREE.Quaternion();
     this.controllerEuler = new THREE.Euler();
@@ -137,8 +137,8 @@ module.exports.Component = registerComponent('tracked-controls-webvr', {
     // Set offset for degenerate "arm model" to elbow.
     deltaControllerPosition.set(
       EYES_TO_ELBOW.x * (hand === 'left' ? -1 : hand === 'right' ? 1 : 0),
-      EYES_TO_ELBOW.y,  // Lower than our eyes.
-      EYES_TO_ELBOW.z);  // Slightly out in front.
+      EYES_TO_ELBOW.y, // Lower than our eyes.
+      EYES_TO_ELBOW.z); // Slightly out in front.
     // Scale offset by user height.
     deltaControllerPosition.multiplyScalar(userHeight);
     // Apply camera Y rotation (not X or Z, so you can look down at your hand).
@@ -217,10 +217,10 @@ module.exports.Component = registerComponent('tracked-controls-webvr', {
     for (id = 0; id < controller.buttons.length; ++id) {
       // Initialize button state.
       if (!this.buttonStates[id]) {
-        this.buttonStates[id] = {pressed: false, touched: false, value: 0};
+        this.buttonStates[id] = { pressed: false, touched: false, value: 0 };
       }
       if (!this.buttonEventDetails[id]) {
-        this.buttonEventDetails[id] = {id: id, state: this.buttonStates[id]};
+        this.buttonEventDetails[id] = { id: id, state: this.buttonStates[id] };
       }
 
       buttonState = controller.buttons[id];

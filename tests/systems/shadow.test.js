@@ -1,4 +1,4 @@
-/* global process, setup, suite, test, assert, THREE */
+/* global setup, suite, test, assert, THREE */
 var entityFactory = require('../helpers').entityFactory;
 
 suite('shadow system', function () {
@@ -8,7 +8,7 @@ suite('shadow system', function () {
   setup(function (done) {
     var el = this.el = entityFactory();
     el.addEventListener('loaded', function () {
-      renderer = el.sceneEl.renderer = {shadowMap: {}};
+      renderer = el.sceneEl.renderer = { shadowMap: {} };
       system = el.sceneEl.systems.shadow;
       done();
     });
@@ -27,7 +27,7 @@ suite('shadow system', function () {
       div = document.createElement('div');
       div.innerHTML = '<a-scene shadow="type: basic; autoUpdate: false">';
       scene = div.children[0];
-      renderer = scene.renderer = {shadowMap: {}};
+      renderer = scene.renderer = { shadowMap: {} };
       document.body.appendChild(div);
 
       setTimeout(() => {

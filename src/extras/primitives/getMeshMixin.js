@@ -19,7 +19,7 @@ function addMapping (prop) {
 
 module.exports = function getMeshMixin () {
   return {
-    defaultComponents: {material: {}},
+    defaultComponents: { material: {} },
     mappings: utils.extend({}, materialMappings)
   };
 };

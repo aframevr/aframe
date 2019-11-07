@@ -105,7 +105,7 @@ suite('a-scene (without renderer)', function () {
 
       sceneEl.addEventListener('loaded', () => {
         event = new CustomEvent('vrdisplaypresentchange');
-        event.display = {isPresenting: true};
+        event.display = { isPresenting: true };
         window.dispatchEvent(event);
       });
     });
@@ -122,7 +122,7 @@ suite('a-scene (without renderer)', function () {
 
       sceneEl.addEventListener('loaded', () => {
         event = new CustomEvent('vrdisplaypresentchange');
-        event.display = {isPresenting: false};
+        event.display = { isPresenting: false };
         window.dispatchEvent(event);
       });
     });
@@ -147,7 +147,7 @@ suite('a-scene (without renderer)', function () {
       };
 
       // mock camera
-      sceneEl.camera = {el: {object3D: {}}};
+      sceneEl.camera = { el: { object3D: {} } };
     });
 
     test('does not try to enter VR if already in VR', function (done) {
@@ -332,7 +332,7 @@ suite('a-scene (without renderer)', function () {
       el.isPlaying = true;
       sceneEl.addBehavior(new AFRAME.components.test.Component(el));
       sceneEl.addBehavior(new AFRAME.components.test.Component(el));
-      sceneEl.addBehavior({el: {isPlaying: true}});
+      sceneEl.addBehavior({ el: { isPlaying: true } });
       sceneEl.tick();
       assert.equal(spy.getCalls().length, 2);
     });
@@ -361,7 +361,7 @@ suite('a-scene (without renderer)', function () {
       el.isPlaying = true;
       sceneEl.addBehavior(new AFRAME.components.test.Component(el));
       sceneEl.addBehavior(new AFRAME.components.test.Component(el));
-      sceneEl.addBehavior({el: {isPlaying: true}, tick: () => {}});
+      sceneEl.addBehavior({ el: { isPlaying: true }, tick: () => {} });
       sceneEl.tock();
       assert.equal(spy.getCalls().length, 2);
     });
@@ -394,7 +394,7 @@ suite('a-scene (without renderer)', function () {
       sceneEl.renderer = {
         vr: {
           isPresenting: function () { return true; },
-          getDevice: function () { return {isPresenting: false}; },
+          getDevice: function () { return { isPresenting: false }; },
           setDevice: function () {}
         },
         setSize: setSizeSpy
@@ -423,7 +423,7 @@ suite('a-scene (without renderer)', function () {
     });
 
     test('does not resize renderer when in vr mode and presenting in a headset', function () {
-      sceneEl.renderer.vr.getDevice = function () { return {isPresenting: true}; };
+      sceneEl.renderer.vr.getDevice = function () { return { isPresenting: true }; };
       sceneEl.renderer.vr.enabled = true;
       sceneEl.addState('vr-mode');
       sceneEl.resize();
@@ -538,8 +538,8 @@ suite('a-scene (without renderer)', function () {
     test('can getAttribute', function () {
       var sceneEl = document.createElement('a-scene');
 
-      AFRAME.registerComponent('test', {schema: {default: 'component'}});
-      AFRAME.registerSystem('test', {schema: {default: 'system'}});
+      AFRAME.registerComponent('test', { schema: { default: 'component' } });
+      AFRAME.registerSystem('test', { schema: { default: 'system' } });
 
       sceneEl.initSystem('test');
       assert.equal(sceneEl.getAttribute('test'), 'system');
@@ -550,7 +550,7 @@ suite('a-scene (without renderer)', function () {
       var sceneEl = document.createElement('a-scene');
       var stub = sinon.stub();
 
-      AFRAME.registerComponent('test', {init: stub});
+      AFRAME.registerComponent('test', { init: stub });
       AFRAME.registerSystem('test', {});
 
       sceneEl.setAttribute('test', '');
@@ -567,11 +567,11 @@ suite('a-scene (without renderer)', function () {
       var componentUpdateStub = sinon.stub();
       var sceneEl;
       AFRAME.registerComponent('test', {
-        schema: {componentProp: {default: 'foo'}},
+        schema: { componentProp: { default: 'foo' } },
         update: componentUpdateStub
       });
       AFRAME.registerSystem('test', {
-        schema: {systemProp: {default: 'foo'}}
+        schema: { systemProp: { default: 'foo' } }
       });
 
       childEl = document.createElement('a-entity');
@@ -664,10 +664,10 @@ helpers.getSkipCISuite()('a-scene (with renderer)', function () {
 
   test('calls tick behaviors', function () {
     var scene = this.el;
-    var Component = {el: {isPlaying: true}, tick: function () {}};
+    var Component = { el: { isPlaying: true }, tick: function () {} };
     this.sinon.spy(Component, 'tick');
     scene.addBehavior(Component);
-    scene.addBehavior({el: {isPlaying: true}});
+    scene.addBehavior({ el: { isPlaying: true } });
     scene.render();
     sinon.assert.called(Component.tick);
     sinon.assert.calledWith(Component.tick, scene.time);
@@ -675,10 +675,10 @@ helpers.getSkipCISuite()('a-scene (with renderer)', function () {
 
   test('calls tock behaviors', function () {
     var scene = this.el;
-    var Component = {el: {isPlaying: true}, tock: function () {}};
+    var Component = { el: { isPlaying: true }, tock: function () {} };
     this.sinon.spy(Component, 'tock');
     scene.addBehavior(Component);
-    scene.addBehavior({el: {isPlaying: true}});
+    scene.addBehavior({ el: { isPlaying: true } });
     scene.render();
     sinon.assert.called(Component.tock);
     sinon.assert.calledWith(Component.tock, scene.time);

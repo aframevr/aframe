@@ -1,4 +1,4 @@
-/* global assert, process, setup, suite, test */
+/* global assert, setup, suite, test */
 var entityFactory = require('../helpers').entityFactory;
 
 var MTL = '/base/tests/assets/crate/crate.mtl';
@@ -13,7 +13,7 @@ suite('obj-model', function () {
     mtlAsset.setAttribute('src', MTL);
     objAsset.setAttribute('id', 'obj');
     objAsset.setAttribute('src', OBJ);
-    el = this.el = entityFactory({assets: [mtlAsset, objAsset]});
+    el = this.el = entityFactory({ assets: [mtlAsset, objAsset] });
     if (el.hasLoaded) { done(); }
     el.addEventListener('loaded', function () { done(); });
   });
@@ -29,26 +29,26 @@ suite('obj-model', function () {
 
   test('can load .OBJ + .MTL', function (done) {
     var el = this.el;
-    var handled = false;  // Event listener is not getting torn down for some reason.
+    var handled = false; // Event listener is not getting torn down for some reason.
     el.addEventListener('model-loaded', function () {
       if (handled) { return; }
       handled = true;
       assert.ok(el.components['obj-model'].model);
       done();
     });
-    el.setAttribute('obj-model', {mtl: '#mtl', obj: '#obj'});
+    el.setAttribute('obj-model', { mtl: '#mtl', obj: '#obj' });
   });
 
   test('can load .OBJ + .MTL with url()', function (done) {
     var el = this.el;
-    var handled = false;  // Event listener is not getting torn down for some reason.
+    var handled = false; // Event listener is not getting torn down for some reason.
     el.addEventListener('model-loaded', function () {
       if (handled) { return; }
       handled = true;
       assert.ok(el.components['obj-model'].model);
       done();
     });
-    el.setAttribute('obj-model', {mtl: `url(${MTL})`, obj: `url(${OBJ})`});
+    el.setAttribute('obj-model', { mtl: `url(${MTL})`, obj: `url(${OBJ})` });
   });
 
   test('can load multiple .OBJ', function (done) {
@@ -70,8 +70,8 @@ suite('obj-model', function () {
     });
 
     el2.addEventListener('loaded', function () {
-      el.setAttribute('obj-model', {obj: '#obj'});
-      el2.setAttribute('obj-model', {obj: '#obj'});
+      el.setAttribute('obj-model', { obj: '#obj' });
+      el2.setAttribute('obj-model', { obj: '#obj' });
     });
     el.sceneEl.appendChild(el2);
   });

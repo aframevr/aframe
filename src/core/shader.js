@@ -1,8 +1,8 @@
 var schema = require('./schema');
 
 var processSchema = schema.process;
-var shaders = module.exports.shaders = {};  // Keep track of registered shaders.
-var shaderNames = module.exports.shaderNames = [];  // Keep track of the names of registered shaders.
+var shaders = module.exports.shaders = {}; // Keep track of registered shaders.
+var shaderNames = module.exports.shaderNames = []; // Keep track of the names of registered shaders.
 var THREE = require('../lib/three');
 var utils = require('../utils');
 
@@ -72,7 +72,7 @@ Shader.prototype = {
       varType = propertyToThreeMapping[schema[key].type];
       variables[key] = {
         type: varType,
-        value: undefined  // Let updateVariables handle setting these.
+        value: undefined // Let updateVariables handle setting these.
       };
     }
     return variables;

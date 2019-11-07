@@ -49,7 +49,7 @@ module.exports.entityFactory = entityFactory;
  * @returns {Promise}
  */
 module.exports.elFactory = function (opts) {
-  let entity = entityFactory(opts);
+  const entity = entityFactory(opts);
   return new Promise(resolve => {
     if (entity.sceneEl) {
       if (entity.sceneEl.hasLoaded) { return resolve(entity); }

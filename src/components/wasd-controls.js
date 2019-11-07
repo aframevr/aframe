@@ -18,15 +18,15 @@ var KEYS = [
  */
 module.exports.Component = registerComponent('wasd-controls', {
   schema: {
-    acceleration: {default: 65},
-    adAxis: {default: 'x', oneOf: ['x', 'y', 'z']},
-    adEnabled: {default: true},
-    adInverted: {default: false},
-    enabled: {default: true},
-    fly: {default: false},
-    wsAxis: {default: 'z', oneOf: ['x', 'y', 'z']},
-    wsEnabled: {default: true},
-    wsInverted: {default: false}
+    acceleration: { default: 65 },
+    adAxis: { default: 'x', oneOf: ['x', 'y', 'z'] },
+    adEnabled: { default: true },
+    adInverted: { default: false },
+    enabled: { default: true },
+    fly: { default: false },
+    wsAxis: { default: 'z', oneOf: ['x', 'y', 'z'] },
+    wsEnabled: { default: true },
+    wsInverted: { default: false }
   },
 
   init: function () {

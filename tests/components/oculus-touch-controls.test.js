@@ -1,4 +1,4 @@
-/* global assert, process, setup, sinon, suite, test */
+/* global assert, setup, sinon, suite, test */
 var entityFactory = require('../helpers').entityFactory;
 
 suite('oculus-touch-controls', function () {
@@ -117,7 +117,7 @@ suite('oculus-touch-controls', function () {
       // Do the check.
       component.checkIfControllerPresent();
       // Set up the event details.
-      const eventDetails = {axis: [0.1, 0.2], changed: [true, false]};
+      const eventDetails = { axis: [0.1, 0.2], changed: [true, false] };
       // Install event handler listening for thumbstickmoved.
       this.el.addEventListener('thumbstickmoved', function (evt) {
         assert.equal(evt.detail.x, eventDetails.axis[0]);
@@ -137,7 +137,7 @@ suite('oculus-touch-controls', function () {
         assert.fail('thumbstickmoved should not be called');
       });
       // Emit axismove with no changes.
-      this.el.emit('axismove', {axis: [0.1, 0.2], changed: [false, false]});
+      this.el.emit('axismove', { axis: [0.1, 0.2], changed: [false, false] });
       setTimeout(() => { done(); });
     });
   });
@@ -148,14 +148,14 @@ suite('oculus-touch-controls', function () {
       // Do the check.
       component.checkIfControllerPresent();
       // Prepare the event details
-      const eventState = {value: 0.5, pressed: true, touched: true};
+      const eventState = { value: 0.5, pressed: true, touched: true };
       // Install event handler listening for triggerchanged.
       el.addEventListener('triggerchanged', function (evt) {
         assert.deepEqual(evt.detail, eventState);
         done();
       });
       // Emit buttonchanged.
-      el.emit('buttonchanged', {id: 1, state: eventState});
+      el.emit('buttonchanged', { id: 1, state: eventState });
     });
   });
 });

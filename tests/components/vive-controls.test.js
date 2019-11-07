@@ -1,4 +1,4 @@
-/* global assert, process, setup, suite, test, THREE */
+/* global assert, setup, suite, test, THREE */
 var entityFactory = require('../helpers').entityFactory;
 
 suite('vive-controls', function () {
@@ -12,12 +12,12 @@ suite('vive-controls', function () {
       if (evt.detail.name !== 'vive-controls') { return; }
       component = el.components['vive-controls'];
       component.controllersWhenPresent = [
-        {id: 'OpenVR Gamepad', index: 0, hand: 'right', pose: {}}
+        { id: 'OpenVR Gamepad', index: 0, hand: 'right', pose: {} }
       ];
       controlsSystem = el.sceneEl.systems['tracked-controls-webvr'];
       done();
     });
-    el.setAttribute('vive-controls', 'hand: right; model: false');  // To ensure index = 0.
+    el.setAttribute('vive-controls', 'hand: right; model: false'); // To ensure index = 0.
   });
 
   suite('checkIfControllerPresent', function () {
@@ -33,7 +33,7 @@ suite('vive-controls', function () {
 
       assert.notOk(injectTrackedControlsSpy.called);
       assert.notOk(addEventListenersSpy.called);
-      assert.strictEqual(component.controllerPresent, false);  // Not undefined.
+      assert.strictEqual(component.controllerPresent, false); // Not undefined.
     });
 
     test('does not remove event listeners if no controllers again', function () {
@@ -50,7 +50,7 @@ suite('vive-controls', function () {
       assert.notOk(injectTrackedControlsSpy.called);
       assert.notOk(addEventListenersSpy.called);
       assert.notOk(removeEventListenersSpy.called);
-      assert.strictEqual(component.controllerPresent, false);  // Not undefined.
+      assert.strictEqual(component.controllerPresent, false); // Not undefined.
     });
 
     test('attaches events if controller is newly present', function () {
@@ -122,7 +122,7 @@ suite('vive-controls', function () {
       });
 
       // Emit axismove.
-      el.emit('axismove', {axis: [0.1, 0.2], changed: [true, false]});
+      el.emit('axismove', { axis: [0.1, 0.2], changed: [true, false] });
     });
 
     test('does not emit trackpadmoved on axismove with no changes', function (done) {
@@ -135,7 +135,7 @@ suite('vive-controls', function () {
       });
 
       // Emit axismove.
-      el.emit('axismove', {axis: [0.1, 0.2], changed: [false, false]});
+      el.emit('axismove', { axis: [0.1, 0.2], changed: [false, false] });
 
       setTimeout(function () { done(); });
     });
@@ -143,7 +143,7 @@ suite('vive-controls', function () {
 
   suite('buttonchanged', function () {
     // Generate 3 tests for each button. Verify that it fires up/down/changed for all remapped buttons.
-    [ { button: 'trackpad', id: 0 },
+    [{ button: 'trackpad', id: 0 },
       { button: 'trigger', id: 1 },
       { button: 'grip', id: 2 },
       { button: 'menu', id: 3 },
@@ -156,7 +156,7 @@ suite('vive-controls', function () {
           assert.ok(evt.detail);
           done();
         });
-        el.emit('buttonchanged', {id: buttonDescription.id, state: {value: 0.5, pressed: true, touched: true}});
+        el.emit('buttonchanged', { id: buttonDescription.id, state: { value: 0.5, pressed: true, touched: true } });
       });
 
       test('emits ' + buttonDescription.button + 'down on buttondown', function (done) {
@@ -165,7 +165,7 @@ suite('vive-controls', function () {
         el.addEventListener(buttonDescription.button + 'down', function (evt) {
           done();
         });
-        el.emit('buttondown', {id: buttonDescription.id});
+        el.emit('buttondown', { id: buttonDescription.id });
       });
 
       test('emits ' + buttonDescription.button + 'up on buttonup', function (done) {
@@ -174,7 +174,7 @@ suite('vive-controls', function () {
         el.addEventListener(buttonDescription.button + 'up', function (evt) {
           done();
         });
-        el.emit('buttonup', {id: buttonDescription.id});
+        el.emit('buttonup', { id: buttonDescription.id });
       });
     });
   });
@@ -232,7 +232,7 @@ suite('vive-controls', function () {
     test('sets trigger to highlight color when down', function (done) {
       component.addEventListeners();
       el.addEventListener('model-loaded', function (evt) {
-        el.emit('buttondown', {id: 1, state: {}});
+        el.emit('buttondown', { id: 1, state: {} });
         setTimeout(() => {
           var color = component.buttonMeshes.trigger.material.color;
           assert.equal(new THREE.Color(color).getHexString(), '22d1ee');
@@ -247,7 +247,7 @@ suite('vive-controls', function () {
       component.addEventListeners();
       el.addEventListener('model-loaded', function (evt) {
         component.buttonMeshes.trigger.material.color.set('#22d1ee');
-        el.emit('buttonup', {id: 1, state: {}});
+        el.emit('buttonup', { id: 1, state: {} });
         setTimeout(() => {
           var color = component.buttonMeshes.trigger.material.color;
           assert.equal(new THREE.Color(color).getHexString(), 'fafafa');
@@ -261,7 +261,7 @@ suite('vive-controls', function () {
     test('sets trackpad to highlight color when down', function (done) {
       component.addEventListeners();
       el.addEventListener('model-loaded', function (evt) {
-        el.emit('buttondown', {id: 0, state: {}});
+        el.emit('buttondown', { id: 0, state: {} });
         setTimeout(() => {
           var color = component.buttonMeshes.trackpad.material.color;
           assert.equal(new THREE.Color(color).getHexString(), '22d1ee');
@@ -275,7 +275,7 @@ suite('vive-controls', function () {
     test('does not change color for trigger touch', function (done) {
       component.addEventListeners();
       el.addEventListener('model-loaded', function (evt) {
-        el.emit('touchstart', {id: 1, state: {}});
+        el.emit('touchstart', { id: 1, state: {} });
         setTimeout(() => {
           var color = component.buttonMeshes.trigger.material.color;
           assert.equal(new THREE.Color(color).getHexString(), 'fafafa');
@@ -289,7 +289,7 @@ suite('vive-controls', function () {
     test('does not change color for trackpad touch', function (done) {
       component.addEventListeners();
       el.addEventListener('model-loaded', function (evt) {
-        el.emit('touchstart', {id: 0, state: {}});
+        el.emit('touchstart', { id: 0, state: {} });
         setTimeout(() => {
           var color = component.buttonMeshes.trackpad.material.color;
           assert.equal(new THREE.Color(color).getHexString(), 'fafafa');

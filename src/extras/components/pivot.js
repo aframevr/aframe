@@ -10,7 +10,7 @@ var originalRotation = new THREE.Vector3();
 registerComponent('pivot', {
   dependencies: ['position'],
 
-  schema: {type: 'vec3'},
+  schema: { type: 'vec3' },
 
   init: function () {
     var data = this.data;
@@ -38,7 +38,7 @@ registerComponent('pivot', {
     // Offset the pivot so that world position not affected.
     // And restore position onto outer group.
     outerGroup.position.set(data.x + originalPosition.x, data.y + originalPosition.y,
-                            data.z + originalPosition.z);
+      data.z + originalPosition.z);
 
     // Transfer rotation to outer group.
     outerGroup.rotation.copy(originalGroup.rotation);

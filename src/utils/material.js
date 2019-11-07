@@ -47,7 +47,7 @@ module.exports.updateMapMaterialFromData = function (materialName, dataName, sha
     // Load texture for the new material src.
     // (And check if we should still use it once available in callback.)
     el.sceneEl.systems.material.loadTexture(src,
-      {src: src, repeat: data.repeat, offset: data.offset, npot: data.npot},
+      { src: src, repeat: data.repeat, offset: data.offset, npot: data.npot },
       checkSetMap);
   }
 
@@ -132,7 +132,7 @@ module.exports.updateDistortionMap = function (longType, shader, data) {
 function handleTextureEvents (el, texture) {
   if (!texture) { return; }
 
-  el.emit('materialtextureloaded', {src: texture.image, texture: texture});
+  el.emit('materialtextureloaded', { src: texture.image, texture: texture });
 
   // Video events.
   if (!texture.image || texture.image.tagName !== 'VIDEO') { return; }
@@ -147,11 +147,11 @@ function handleTextureEvents (el, texture) {
       el.setAttribute('material', 'shader', 'ios10hls');
     }
 
-    el.emit('materialvideoloadeddata', {src: texture.image, texture: texture});
+    el.emit('materialvideoloadeddata', { src: texture.image, texture: texture });
   });
   texture.image.addEventListener('ended', function emitVideoTextureEndedAll () {
     // Works for non-looping videos only.
-    el.emit('materialvideoended', {src: texture.image, texture: texture});
+    el.emit('materialvideoended', { src: texture.image, texture: texture });
   });
 }
 module.exports.handleTextureEvents = handleTextureEvents;

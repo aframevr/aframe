@@ -1,4 +1,4 @@
-/* global assert, process, setup, suite, test */
+/* global assert, setup, suite, test */
 var helpers = require('../../helpers');
 
 suite('pool', function () {
@@ -6,7 +6,7 @@ suite('pool', function () {
     var el = helpers.entityFactory();
     var sceneEl = this.sceneEl = el.parentNode;
     sceneEl.setAttribute('pool', 'mixin: test; size: 1');
-    helpers.mixinFactory('test', {material: 'color: red'}, sceneEl);
+    helpers.mixinFactory('test', { material: 'color: red' }, sceneEl);
     if (sceneEl.hasLoaded) { done(); return; }
     sceneEl.addEventListener('loaded', function () { done(); });
   });

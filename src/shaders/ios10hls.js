@@ -6,8 +6,8 @@ var registerShader = require('../core/shader').registerShader;
  */
 module.exports.Shader = registerShader('ios10hls', {
   schema: {
-    src: {type: 'map', is: 'uniform'},
-    opacity: {type: 'number', is: 'uniform', default: 1}
+    src: { type: 'map', is: 'uniform' },
+    opacity: { type: 'number', is: 'uniform', default: 1 }
   },
 
   vertexShader: [
@@ -30,4 +30,3 @@ module.exports.Shader = registerShader('ios10hls', {
     '}'
   ].join('\n')
 });
-

@@ -22,7 +22,7 @@ var LOADING_ERROR_MESSAGE = 'Error loading Inspector';
 
 module.exports.Component = registerComponent('inspector', {
   schema: {
-    url: {default: INSPECTOR_URL}
+    url: { default: INSPECTOR_URL }
   },
 
   init: function () {

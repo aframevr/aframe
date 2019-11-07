@@ -2,10 +2,10 @@ var registerPrimitive = require('../primitives').registerPrimitive;
 
 registerPrimitive('a-camera', {
   defaultComponents: {
-    'camera': {},
+    camera: {},
     'look-controls': {},
     'wasd-controls': {},
-    'position': {x: 0, y: 1.6, z: 0}
+    position: { x: 0, y: 1.6, z: 0 }
   },
 
   mappings: {

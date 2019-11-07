@@ -1,4 +1,4 @@
-/* global assert, process, setup, suite, test */
+/* global assert, setup, suite, test */
 suite('a-camera', function () {
   setup(function (done) {
     var sceneEl = this.sceneEl = document.createElement('a-scene');

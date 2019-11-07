@@ -1,4 +1,4 @@
-/* global assert, process, setup, sinon, suite, test, THREE */
+/* global assert, setup, sinon, suite, test, THREE */
 const entityFactory = require('../helpers').entityFactory;
 
 suite('tracked-controls-webxr', function () {
@@ -15,9 +15,9 @@ suite('tracked-controls-webxr', function () {
       el.sceneEl.addEventListener('loaded', function () {
         system = el.sceneEl.systems['tracked-controls-webxr'];
         el.components['tracked-controls'] = {};
-        controller = {handedness: 'left'};
+        controller = { handedness: 'left' };
         system.controllers = [controller];
-        el.setAttribute('tracked-controls-webxr', {'hand': 'right'});
+        el.setAttribute('tracked-controls-webxr', { hand: 'right' });
         component = el.components['tracked-controls-webxr'];
         done();
       });
@@ -27,7 +27,7 @@ suite('tracked-controls-webxr', function () {
   suite('updateGamepad', function () {
     test('matches controller with same hand', function () {
       assert.strictEqual(component.controller, undefined);
-      el.setAttribute('tracked-controls-webxr', {'hand': 'left'});
+      el.setAttribute('tracked-controls-webxr', { hand: 'left' });
       component.updateController();
       assert.equal(component.controller, controller);
     });
@@ -50,7 +50,7 @@ suite('tracked-controls-webxr', function () {
       };
       component.controller = {};
       component.tick();
-      assert.shallowDeepEqual(component.el.getAttribute('position'), {x: 1, y: 2, z: 3});
+      assert.shallowDeepEqual(component.el.getAttribute('position'), { x: 1, y: 2, z: 3 });
       assert.shallowDeepEqual(Math.round(component.el.getAttribute('rotation').x), 90);
     });
   });
@@ -59,7 +59,7 @@ suite('tracked-controls-webxr', function () {
     test('emit buttondown / triggerdown events', function () {
       const emitSpy = sinon.spy(el, 'emit');
       component.controller = {};
-      component.emitButtonDownEvent({inputSource: {handedness: 'right'}});
+      component.emitButtonDownEvent({ inputSource: { handedness: 'right' } });
       assert.equal(emitSpy.getCalls()[0].args[0], 'buttondown');
       assert.equal(emitSpy.getCalls()[1].args[0], 'buttonchanged');
       assert.equal(emitSpy.getCalls()[2].args[0], 'triggerdown');
@@ -68,11 +68,10 @@ suite('tracked-controls-webxr', function () {
     test('emit buttonup / triggerup events', function () {
       const emitSpy = sinon.spy(el, 'emit');
       component.controller = {};
-      component.emitButtonUpEvent({inputSource: {handedness: 'right'}});
+      component.emitButtonUpEvent({ inputSource: { handedness: 'right' } });
       assert.equal(emitSpy.getCalls()[0].args[0], 'buttonup');
       assert.equal(emitSpy.getCalls()[1].args[0], 'buttonchanged');
       assert.equal(emitSpy.getCalls()[2].args[0], 'triggerup');
     });
   });
 });
-

@@ -18,12 +18,12 @@ var VIVE_FOCUS_CONTROLLER_MODEL_URL = 'https://cdn.aframe.io/controllers/vive/fo
  */
 module.exports.Component = registerComponent('vive-focus-controls', {
   schema: {
-    hand: {default: ''},  // This informs the degenerate arm model.
-    buttonTouchedColor: {type: 'color', default: '#BBBBBB'},
-    buttonHighlightColor: {type: 'color', default: '#7A7A7A'},
-    model: {default: true},
-    orientationOffset: {type: 'vec3'},
-    armModel: {default: true}
+    hand: { default: '' }, // This informs the degenerate arm model.
+    buttonTouchedColor: { type: 'color', default: '#BBBBBB' },
+    buttonHighlightColor: { type: 'color', default: '#7A7A7A' },
+    model: { default: true },
+    orientationOffset: { type: 'vec3' },
+    armModel: { default: true }
   },
 
   /**
@@ -32,7 +32,7 @@ module.exports.Component = registerComponent('vive-focus-controls', {
    * 1 - trigger
    */
   mapping: {
-    axes: {trackpad: [0, 1]},
+    axes: { trackpad: [0, 1] },
     buttons: ['trigger', 'trackpad']
   },
 
@@ -84,7 +84,7 @@ module.exports.Component = registerComponent('vive-focus-controls', {
 
   checkIfControllerPresent: function () {
     checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX,
-                                        this.data.hand ? {hand: this.data.hand} : {});
+      this.data.hand ? { hand: this.data.hand } : {});
   },
 
   play: function () {

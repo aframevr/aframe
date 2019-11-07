@@ -14,14 +14,14 @@ AFRAME.registerSystem('link-controls', {
  * @member {object} hiddenEls - Stores the hidden elements during peek mode.
  */
 AFRAME.registerComponent('link-controls', {
-  schema: {hand: {default: 'left'}},
+  schema: { hand: { default: 'left' } },
 
   init: function () {
     var el = this.el;
     var self = this;
 
-    el.setAttribute('laser-controls', {hand: this.data.hand});
-    el.setAttribute('raycaster', {far: 100, objects: '[link]'});
+    el.setAttribute('laser-controls', { hand: this.data.hand });
+    el.setAttribute('raycaster', { far: 100, objects: '[link]' });
     // Wait for controller to connect before
     el.addEventListener('controllerconnected', function (evt) {
       var isMobile = AFRAME.utils.device.isMobile();

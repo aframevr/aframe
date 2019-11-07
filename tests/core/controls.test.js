@@ -9,7 +9,7 @@ suite('position controls on camera with WASD controls (integration unit test)', 
 
     setTimeout(() => {
       el.sceneEl.addEventListener('loaded', function () {
-        self.el = el.sceneEl.querySelector('[camera]');  // Default camera.
+        self.el = el.sceneEl.querySelector('[camera]'); // Default camera.
         done();
       });
     });
@@ -190,7 +190,7 @@ suite('rotation controls on camera in VR mode', function () {
     var el = this.el;
     var cameraEl = el.sceneEl.querySelector('[camera]');
     this.orientation = [PI / 4, PI / 6, PI / 2];
-    cameraEl.setAttribute('rotation', {x: -10000, y: -10000, z: -10000});
+    cameraEl.setAttribute('rotation', { x: -10000, y: -10000, z: -10000 });
     el.sceneEl.render();
     var rotation = cameraEl.getAttribute('rotation');
     assert.equal(Math.round(rotation.x), 45);
@@ -202,7 +202,7 @@ suite('rotation controls on camera in VR mode', function () {
     var el = this.el;
     var cameraEl = el.sceneEl.querySelector('[camera]');
     this.orientation = [PI / 4, PI / 6, PI / 2];
-    cameraEl.setAttribute('rotation', {x: 0, y: 0, z: 0});
+    cameraEl.setAttribute('rotation', { x: 0, y: 0, z: 0 });
     el.sceneEl.renderer.vr.enabled = false;
     el.sceneEl.render();
     var rotation = cameraEl.getAttribute('rotation');
@@ -409,12 +409,12 @@ suite('rotation controls on camera with touch drag (integration unit test)', fun
 
     // Dispatch touchstart event.
     touchStartEvent = new Event('touchstart');
-    touchStartEvent.touches = [{pageX: 0, pageY: 0}];
+    touchStartEvent.touches = [{ pageX: 0, pageY: 0 }];
     canvas.dispatchEvent(touchStartEvent);
 
     process.nextTick(function afterTouchstart () {
       var touchMoveEvent = new Event('touchmove');
-      touchMoveEvent.touches = [{pageX: 500, pageY: 0}];
+      touchMoveEvent.touches = [{ pageX: 500, pageY: 0 }];
       window.dispatchEvent(touchMoveEvent);
       process.nextTick(function afterTouchmove () {
         var rotation;
@@ -439,12 +439,12 @@ suite('rotation controls on camera with touch drag (integration unit test)', fun
 
     // Dispatch touchstart event.
     touchStartEvent = new Event('touchstart');
-    touchStartEvent.touches = [{pageX: 0, pageY: 0}];
+    touchStartEvent.touches = [{ pageX: 0, pageY: 0 }];
     canvas.dispatchEvent(touchStartEvent);
 
     process.nextTick(function afterTouchstart () {
       var touchMoveEvent = new Event('touchmove');
-      touchMoveEvent.touches = [{pageX: 0, pageY: 500}];
+      touchMoveEvent.touches = [{ pageX: 0, pageY: 500 }];
       window.dispatchEvent(touchMoveEvent);
       process.nextTick(function afterTouchmove () {
         var rotation;

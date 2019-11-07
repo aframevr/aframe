@@ -45,9 +45,9 @@ var FRAGMENT_SHADER = [
  */
 module.exports.Component = registerComponent('screenshot', {
   schema: {
-    width: {default: 4096},
-    height: {default: 2048},
-    camera: {type: 'selector'}
+    width: { default: 4096 },
+    height: { default: 2048 },
+    camera: { type: 'selector' }
   },
 
   init: function () {
@@ -65,7 +65,7 @@ module.exports.Component = registerComponent('screenshot', {
       if (!gl) { return; }
       self.cubeMapSize = gl.getParameter(gl.MAX_CUBE_MAP_TEXTURE_SIZE);
       self.material = new THREE.RawShaderMaterial({
-        uniforms: {map: {type: 't', value: null}},
+        uniforms: { map: { type: 't', value: null } },
         vertexShader: VERTEX_SHADER,
         fragmentShader: FRAGMENT_SHADER,
         side: THREE.DoubleSide
@@ -141,20 +141,20 @@ module.exports.Component = registerComponent('screenshot', {
       this.quad.visible = false;
       // Use scene camera.
       camera = (this.data.camera && this.data.camera.components.camera.camera) || el.camera;
-      size = {width: this.data.width, height: this.data.height};
+      size = { width: this.data.width, height: this.data.height };
     } else {
       // Use ortho camera.
       camera = this.camera;
       // Create cube camera and copy position from scene camera.
       cubeCamera = new THREE.CubeCamera(el.camera.near, el.camera.far,
-                                        Math.min(this.cubeMapSize, 2048));
+        Math.min(this.cubeMapSize, 2048));
       // Copy camera position into cube camera;
       el.camera.getWorldPosition(cubeCamera.position);
       el.camera.getWorldQuaternion(cubeCamera.quaternion);
       // Render scene with cube camera.
       cubeCamera.update(el.renderer, el.object3D);
       this.quad.material.uniforms.map.value = cubeCamera.renderTarget.texture;
-      size = {width: this.data.width, height: this.data.height};
+      size = { width: this.data.width, height: this.data.height };
       // Use quad to project image taken by the cube camera.
       this.quad.visible = true;
     }

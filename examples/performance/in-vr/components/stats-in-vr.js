@@ -2,7 +2,7 @@
 AFRAME.registerComponent('stats-in-vr', {
   schema: {
     // Number of frames for moving average.
-    frames: {default: 30}
+    frames: { default: 30 }
   },
 
   init: function () {

@@ -30,7 +30,7 @@ suite('camera system', function () {
 
   test('uses defined camera if defined', function (done) {
     var assetsEl;
-    var imgEl;  // Image that will never load.
+    var imgEl; // Image that will never load.
     var cameraEl;
     var sceneEl;
 

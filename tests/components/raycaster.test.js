@@ -1,4 +1,4 @@
-/* global assert, process, setup, suite, test, THREE */
+/* global assert, setup, suite, test, THREE */
 var entityFactory = require('../helpers').entityFactory;
 
 suite('raycaster', function () {
@@ -187,7 +187,7 @@ suite('raycaster', function () {
     });
 
     test('refresh objects when entities are modified', function (done) {
-      el.setAttribute('raycaster', {objects: '[ray-target]'});
+      el.setAttribute('raycaster', { objects: '[ray-target]' });
       var newEl = document.createElement('a-entity');
       newEl.setAttribute('geometry', 'primitive: box');
       newEl.addEventListener('loaded', function doAssert () {
@@ -205,7 +205,7 @@ suite('raycaster', function () {
     });
 
     test('refresh objects when setObject3D() or removeObject3D() is called', function () {
-      el.setAttribute('raycaster', {objects: '[ray-target]'});
+      el.setAttribute('raycaster', { objects: '[ray-target]' });
       component.tick();
       assert.equal(component.dirty, false);
       sceneEl.emit('object3dset');
@@ -224,7 +224,7 @@ suite('raycaster', function () {
       targetEl = document.createElement('a-entity');
 
       el.setAttribute('position', '0 0 1');
-      el.setAttribute('raycaster', {near: 0.1, far: 10});
+      el.setAttribute('raycaster', { near: 0.1, far: 10 });
 
       targetEl.setAttribute('id', 'target');
       targetEl.setAttribute('geometry', 'primitive: box');
@@ -360,7 +360,7 @@ suite('raycaster', function () {
     test('updates ray origin if position changes', function () {
       var origin;
       el.setAttribute('position', '1 2 3');
-      sceneEl.object3D.updateMatrixWorld();  // Normally handled by renderer.
+      sceneEl.object3D.updateMatrixWorld(); // Normally handled by renderer.
       component.tick();
       origin = raycaster.ray.origin;
       assert.equal(origin.x, 1);
@@ -371,7 +371,7 @@ suite('raycaster', function () {
     test('updates ray origin if parent position changes', function () {
       var origin;
       parentEl.setAttribute('position', '1 2 3');
-      sceneEl.object3D.updateMatrixWorld();  // Normally handled by renderer.
+      sceneEl.object3D.updateMatrixWorld(); // Normally handled by renderer.
       component.tick();
       origin = raycaster.ray.origin;
       assert.equal(origin.x, 1);
@@ -448,7 +448,7 @@ suite('raycaster', function () {
       el.setAttribute('raycaster', 'direction', '2 2 2');
       el.setAttribute('position', '5 5 5');
       el.setAttribute('rotation', '30 45 90');
-      sceneEl.object3D.updateMatrixWorld();  // Normally handled by renderer.
+      sceneEl.object3D.updateMatrixWorld(); // Normally handled by renderer.
       component.tick();
       var origin = raycaster.ray.origin;
       var direction = raycaster.ray.direction;
@@ -470,8 +470,8 @@ suite('raycaster', function () {
       var lineData;
       assert.ok(el.getObject3D('line'));
       lineData = el.getAttribute('line');
-      assert.shallowDeepEqual(lineData.start, {x: 0, y: 0, z: 0});
-      assert.shallowDeepEqual(lineData.end, {x: 0, y: 0, z: -1000});
+      assert.shallowDeepEqual(lineData.start, { x: 0, y: 0, z: 0 });
+      assert.shallowDeepEqual(lineData.end, { x: 0, y: 0, z: -1000 });
     });
 
     test('can remove line', function () {
@@ -491,19 +491,19 @@ suite('raycaster', function () {
       var lineData;
       el.setAttribute('raycaster', 'origin', '5 10 -20');
       lineData = el.getAttribute('line');
-      assert.shallowDeepEqual(lineData.start, {x: 5, y: 10, z: -20});
+      assert.shallowDeepEqual(lineData.start, { x: 5, y: 10, z: -20 });
     });
 
     test('truncates length to point of intersection', function (done) {
       var box;
       var line;
 
-      el.setAttribute('raycaster', {direction: '0 0 -1', origin: '0 0 0'});
+      el.setAttribute('raycaster', { direction: '0 0 -1', origin: '0 0 0' });
       line = el.getAttribute('line');
       assert.equal(new THREE.Vector3().copy(line.start).sub(line.end).length(), 1000);
 
       box = document.createElement('a-entity');
-      box.setAttribute('geometry', {primitive: 'box', width: 1, height: 1, depth: 1});
+      box.setAttribute('geometry', { primitive: 'box', width: 1, height: 1, depth: 1 });
       box.setAttribute('position', '0 0 -25');
       sceneEl.appendChild(box);
 
@@ -535,7 +535,7 @@ suite('raycaster', function () {
       var lineStart = new THREE.Vector3();
       var lineEnd = new THREE.Vector3();
 
-      el.setAttribute('raycaster', {direction: '0 0 -1', origin: '0 0 0', objects: '#target'});
+      el.setAttribute('raycaster', { direction: '0 0 -1', origin: '0 0 0', objects: '#target' });
       lineArray = el.components.line.geometry.attributes.position.array;
 
       rayEl2 = document.createElement('a-entity');
@@ -554,7 +554,7 @@ suite('raycaster', function () {
 
       box = document.createElement('a-entity');
       box.id = 'target';
-      box.setAttribute('geometry', {primitive: 'box', width: 1, height: 1, depth: 1});
+      box.setAttribute('geometry', { primitive: 'box', width: 1, height: 1, depth: 1 });
       box.setAttribute('position', '0 0 -25');
       sceneEl.appendChild(box);
 

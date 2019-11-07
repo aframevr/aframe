@@ -11,8 +11,8 @@
  */
 AFRAME.registerComponent('aabb-collider', {
   schema: {
-    objects: {default: ''},
-    state: {default: 'collided'}
+    objects: { default: '' },
+    state: { default: 'collided' }
   },
 
   init: function () {
@@ -57,7 +57,7 @@ AFRAME.registerComponent('aabb-collider', {
       // Emit events.
       collisions.forEach(handleHit);
       // No collisions.
-      if (collisions.length === 0) { self.el.emit('hit', {el: null}); }
+      if (collisions.length === 0) { self.el.emit('hit', { el: null }); }
       // Updated the state of the elements that are not intersected anymore.
       this.collisions.filter(function (el) {
         return collisions.indexOf(el) === -1;
@@ -92,7 +92,7 @@ AFRAME.registerComponent('aabb-collider', {
       function handleHit (hitEl) {
         hitEl.emit('hit');
         hitEl.addState(self.data.state);
-        self.el.emit('hit', {el: hitEl});
+        self.el.emit('hit', { el: hitEl });
       }
 
       function updateBoundingBox () {

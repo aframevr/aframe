@@ -10,18 +10,18 @@ var warn = debug('components:renderer:warn');
  */
 module.exports.System = registerSystem('renderer', {
   schema: {
-    antialias: {default: 'auto', oneOf: ['true', 'false', 'auto']},
-    highRefreshRate: {default: utils.device.isOculusBrowser()},
-    logarithmicDepthBuffer: {default: 'auto', oneOf: ['true', 'false', 'auto']},
-    maxCanvasWidth: {default: 1920},
-    maxCanvasHeight: {default: 1920},
-    physicallyCorrectLights: {default: false},
-    precision: {default: 'high', oneOf: ['high', 'medium', 'low']},
-    sortObjects: {default: false},
-    colorManagement: {default: false},
-    gammaOutput: {default: false},
-    alpha: {default: true},
-    foveationLevel: {default: 0}
+    antialias: { default: 'auto', oneOf: ['true', 'false', 'auto'] },
+    highRefreshRate: { default: utils.device.isOculusBrowser() },
+    logarithmicDepthBuffer: { default: 'auto', oneOf: ['true', 'false', 'auto'] },
+    maxCanvasWidth: { default: 1920 },
+    maxCanvasHeight: { default: 1920 },
+    physicallyCorrectLights: { default: false },
+    precision: { default: 'high', oneOf: ['high', 'medium', 'low'] },
+    sortObjects: { default: false },
+    colorManagement: { default: false },
+    gammaOutput: { default: false },
+    alpha: { default: true },
+    foveationLevel: { default: 0 }
   },
 
   init: function () {
@@ -52,7 +52,7 @@ module.exports.System = registerSystem('renderer', {
 
   applyColorCorrection: function (colorOrTexture) {
     if (!this.data.colorManagement || !colorOrTexture) {
-      return;
+
     } else if (colorOrTexture.isColor) {
       colorOrTexture.convertSRGBToLinear();
     } else if (colorOrTexture.isTexture) {

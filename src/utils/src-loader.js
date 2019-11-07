@@ -144,7 +144,7 @@ function validateAndGetQuerySelector (selector) {
       warn('No element was found matching the selector: "%s"', selector);
     }
     return el;
-  } catch (e) {  // Capture exception if it's not a valid selector.
+  } catch (e) { // Capture exception if it's not a valid selector.
     warn('"%s" is not a valid selector', selector);
     return undefined;
   }

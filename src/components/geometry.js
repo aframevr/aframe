@@ -11,9 +11,9 @@ var dummyGeometry = new THREE.Geometry();
  */
 module.exports.Component = registerComponent('geometry', {
   schema: {
-    buffer: {default: true},
-    primitive: {default: 'box', oneOf: geometryNames, schemaChange: true},
-    skipCache: {default: false}
+    buffer: { default: true },
+    primitive: { default: 'box', oneOf: geometryNames, schemaChange: true },
+    skipCache: { default: false }
   },
 
   init: function () {

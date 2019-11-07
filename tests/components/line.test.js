@@ -1,4 +1,4 @@
-/* global assert, process, setup, suite, test */
+/* global assert, setup, suite, test */
 var entityFactory = require('../helpers').entityFactory;
 
 suite('line', function () {
@@ -18,7 +18,7 @@ suite('line', function () {
 
   suite('init', function () {
     test('set start and end position', function () {
-      el.setAttribute('line', {start: '1 2 3', end: '4 5 6'});
+      el.setAttribute('line', { start: '1 2 3', end: '4 5 6' });
       var positionArray = component.geometry.attributes.position.array;
       assert.equal(positionArray[0], 1);
       assert.equal(positionArray[1], 2);
@@ -29,7 +29,7 @@ suite('line', function () {
     });
 
     test('set start but no end position', function () {
-      el.setAttribute('line', {start: '1 2 3'});
+      el.setAttribute('line', { start: '1 2 3' });
       var positionArray = component.geometry.attributes.position.array;
       assert.equal(positionArray[0], 1);
       assert.equal(positionArray[1], 2);
@@ -40,7 +40,7 @@ suite('line', function () {
     });
 
     test('set end but no start position', function () {
-      el.setAttribute('line', {end: '4 5 6'});
+      el.setAttribute('line', { end: '4 5 6' });
       var positionArray = component.geometry.attributes.position.array;
       assert.equal(positionArray[0], 0);
       assert.equal(positionArray[1], 0);
@@ -51,7 +51,7 @@ suite('line', function () {
     });
 
     test('set end and move it', function () {
-      el.setAttribute('line', {end: '4 5 6'});
+      el.setAttribute('line', { end: '4 5 6' });
       var positionArray = component.geometry.attributes.position.array;
       assert.equal(positionArray[0], 0);
       assert.equal(positionArray[1], 0);
@@ -60,7 +60,7 @@ suite('line', function () {
       assert.equal(positionArray[4], 5);
       assert.equal(positionArray[5], 6);
 
-      el.setAttribute('line', {end: '7 8 9'});
+      el.setAttribute('line', { end: '7 8 9' });
       assert.equal(positionArray[0], 0);
       assert.equal(positionArray[1], 0);
       assert.equal(positionArray[2], 0);
@@ -70,18 +70,18 @@ suite('line', function () {
     });
 
     test('set end but no start position', function () {
-      var end = {x: 4, y: 5, z: 6};
-      el.setAttribute('line', {end: end});
+      var end = { x: 4, y: 5, z: 6 };
+      el.setAttribute('line', { end: end });
       end.z = 9;
       var updateSpy = this.sinon.spy(el.components.line, 'update');
-      el.setAttribute('line', {end: end});
+      el.setAttribute('line', { end: end });
       var endPoint = el.getAttribute('line').end;
       assert.equal(endPoint.z, 9);
       assert.ok(updateSpy.called);
     });
 
     test('modify color', function () {
-      el.setAttribute('line', {color: '#f9a'});
+      el.setAttribute('line', { color: '#f9a' });
 
       var material = component.material;
 

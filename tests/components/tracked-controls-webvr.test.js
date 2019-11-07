@@ -1,4 +1,4 @@
-/* global assert, process, setup, sinon, suite, teardown, test, THREE */
+/* global assert, setup, sinon, suite, teardown, test, THREE */
 const entityFactory = require('../helpers').entityFactory;
 
 const PI = Math.PI;
@@ -29,8 +29,8 @@ suite('tracked-controls-webvr', function () {
             orientation: [0, 0, 0, 1]
           },
           buttons: [
-            {pressed: false, touched: false, value: 0},
-            {pressed: false, touched: false, value: 0}
+            { pressed: false, touched: false, value: 0 },
+            { pressed: false, touched: false, value: 0 }
           ],
           axes: [0, 0, 0]
         };
@@ -188,7 +188,7 @@ suite('tracked-controls-webvr', function () {
     });
 
     test('applies orientation offset', function () {
-      el.setAttribute('tracked-controls-webvr', 'orientationOffset', {x: 3, y: 4, z: 5});
+      el.setAttribute('tracked-controls-webvr', 'orientationOffset', { x: 3, y: 4, z: 5 });
       component.tick();
       var rotation = el.getAttribute('rotation');
       rotation.x = Math.round(rotation.x);
@@ -316,7 +316,7 @@ suite('tracked-controls-webvr', function () {
 
     test('emits independent streams for buttonup, touchend and buttonchanged', function () {
       const emitSpy = sinon.spy(el, 'emit');
-      component.buttonStates[0] = {pressed: true, touched: true, value: 1};
+      component.buttonStates[0] = { pressed: true, touched: true, value: 1 };
       controller.buttons[0].pressed = false;
       controller.buttons[0].touched = false;
       controller.buttons[0].value = 0;
@@ -405,7 +405,7 @@ suite('tracked-controls-webvr', function () {
       const emitSpy = sinon.spy(el, 'emit');
       component.tick();
       sinon.assert.notCalled(emitSpy);
-      assert.notOk(component.handlePress(0, {pressed: false, touched: false, value: 0}));
+      assert.notOk(component.handlePress(0, { pressed: false, touched: false, value: 0 }));
     });
 
     test('emits buttondown if button pressed', function () {
@@ -422,8 +422,8 @@ suite('tracked-controls-webvr', function () {
 
     test('emits buttonup if button released', function () {
       const emitSpy = sinon.spy(el, 'emit');
-      component.buttonStates[1] = {pressed: true, touched: false, value: 1};
-      component.buttonEventDetails[1] = {id: 1, state: component.buttonStates[1]};
+      component.buttonStates[1] = { pressed: true, touched: false, value: 1 };
+      component.buttonEventDetails[1] = { id: 1, state: component.buttonStates[1] };
       controller.buttons[1].pressed = false;
       controller.buttons[1].value = 0;
       component.tick();
@@ -446,7 +446,7 @@ suite('tracked-controls-webvr', function () {
 
     test('does not emit buttondown if button released', function () {
       const emitSpy = sinon.spy(el, 'emit');
-      component.buttonStates[1] = {pressed: true, touched: false, value: 1};
+      component.buttonStates[1] = { pressed: true, touched: false, value: 1 };
       controller.buttons[1].pressed = false;
       controller.buttons[1].value = 0;
       component.tick();
@@ -462,7 +462,7 @@ suite('tracked-controls-webvr', function () {
       const emitSpy = sinon.spy(el, 'emit');
       component.tick();
       sinon.assert.notCalled(emitSpy);
-      assert.notOk(component.handleTouch(0, {pressed: false, touched: false, value: 0}));
+      assert.notOk(component.handleTouch(0, { pressed: false, touched: false, value: 0 }));
     });
 
     test('emits touchstart if button touched', function () {
@@ -479,8 +479,8 @@ suite('tracked-controls-webvr', function () {
 
     test('emits touchend if button no longer touched', function () {
       const emitSpy = sinon.spy(el, 'emit');
-      component.buttonStates[1] = {pressed: false, touched: true, value: 1};
-      component.buttonEventDetails[1] = {id: 1, state: component.buttonStates[1]};
+      component.buttonStates[1] = { pressed: false, touched: true, value: 1 };
+      component.buttonEventDetails[1] = { id: 1, state: component.buttonStates[1] };
       controller.buttons[1].touched = false;
       controller.buttons[1].value = 0;
       component.tick();

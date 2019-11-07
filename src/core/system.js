@@ -8,7 +8,7 @@ var processSchema = schema.process;
 var isSingleProp = schema.isSingleProperty;
 var styleParser = utils.styleParser;
 
-var systems = module.exports.systems = {};  // Keep track of registered systems.
+var systems = module.exports.systems = {}; // Keep track of registered systems.
 
 /**
  * System class definition.

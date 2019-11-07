@@ -7,7 +7,7 @@ const jsdom = require('jsdom');
 
 suite('node acceptance tests', function () {
   setup(function () {
-    let _window = global.window = jsdom.jsdom().defaultView;
+    const _window = global.window = jsdom.jsdom().defaultView;
     global.navigator = _window.navigator;
     global.document = _window.document;
     global.screen = {};
@@ -21,7 +21,7 @@ suite('node acceptance tests', function () {
   });
 
   test('can run in node', function () {
-    let aframe = require(path.join(process.cwd(), 'src'));
+    const aframe = require(path.join(process.cwd(), 'src'));
 
     assert.ok(aframe.version);
   });

@@ -19,11 +19,11 @@ var GAMEPAD_ID_PREFIX = 'OpenVR ';
  */
 module.exports.Component = registerComponent('vive-controls', {
   schema: {
-    hand: {default: 'left'},
-    buttonColor: {type: 'color', default: '#FAFAFA'},  // Off-white.
-    buttonHighlightColor: {type: 'color', default: '#22D1EE'},  // Light blue.
-    model: {default: true},
-    orientationOffset: {type: 'vec3'}
+    hand: { default: 'left' },
+    buttonColor: { type: 'color', default: '#FAFAFA' }, // Off-white.
+    buttonHighlightColor: { type: 'color', default: '#22D1EE' }, // Light blue.
+    model: { default: true },
+    orientationOffset: { type: 'vec3' }
   },
 
   /**
@@ -35,7 +35,7 @@ module.exports.Component = registerComponent('vive-controls', {
    * 4 - system (never dispatched on this layer)
    */
   mapping: {
-    axes: {trackpad: [0, 1]},
+    axes: { trackpad: [0, 1] },
     buttons: ['trackpad', 'trigger', 'grip', 'menu', 'system']
   },
 
@@ -105,7 +105,7 @@ module.exports.Component = registerComponent('vive-controls', {
   checkIfControllerPresent: function () {
     var data = this.data;
     var controllerIndex = data.hand === 'right' ? 0 : data.hand === 'left' ? 1 : 2;
-    checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX, {index: controllerIndex});
+    checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX, { index: controllerIndex });
   },
 
   injectTrackedControls: function () {

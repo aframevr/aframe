@@ -15,9 +15,9 @@ var SHADOW_MAP_TYPE_MAP = {
  */
 module.exports.System = registerSystem('shadow', {
   schema: {
-    enabled: {default: true},
-    autoUpdate: {default: true},
-    type: {default: 'pcf', oneOf: ['basic', 'pcf', 'pcfsoft']}
+    enabled: { default: true },
+    autoUpdate: { default: true },
+    type: { default: 'pcf', oneOf: ['basic', 'pcf', 'pcfsoft'] }
   },
 
   init: function () {
@@ -26,7 +26,7 @@ module.exports.System = registerSystem('shadow', {
 
     this.shadowMapEnabled = false;
 
-    if (!sceneEl.renderer) { return; }  // For tests.
+    if (!sceneEl.renderer) { return; } // For tests.
 
     sceneEl.renderer.shadowMap.type = SHADOW_MAP_TYPE_MAP[data.type];
     sceneEl.renderer.shadowMap.autoUpdate = data.autoUpdate;

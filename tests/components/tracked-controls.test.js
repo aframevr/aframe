@@ -1,4 +1,4 @@
-/* global assert, process, setup, suite, test */
+/* global assert, setup, suite, test */
 const entityFactory = require('../helpers').entityFactory;
 
 suite('tracked-controls', function () {
@@ -27,4 +27,3 @@ suite('tracked-controls', function () {
     assert.notOk(el.components['tracked-controls-webxr']);
   });
 });
-

@@ -42,12 +42,12 @@ module.exports.Component = registerComponent('cursor', {
   dependencies: ['raycaster'],
 
   schema: {
-    downEvents: {default: []},
-    fuse: {default: utils.device.isMobile()},
-    fuseTimeout: {default: 1500, min: 0},
-    mouseCursorStylesEnabled: {default: true},
-    upEvents: {default: []},
-    rayOrigin: {default: 'entity', oneOf: ['mouse', 'entity']}
+    downEvents: { default: [] },
+    fuse: { default: utils.device.isMobile() },
+    fuseTimeout: { default: 1500, min: 0 },
+    mouseCursorStylesEnabled: { default: true },
+    upEvents: { default: [] },
+    rayOrigin: { default: 'entity', oneOf: ['mouse', 'entity'] }
   },
 
   init: function () {
@@ -65,7 +65,7 @@ module.exports.Component = registerComponent('cursor', {
     }, 500);
 
     this.eventDetail = {};
-    this.intersectedEventDetail = {cursorEl: this.el};
+    this.intersectedEventDetail = { cursorEl: this.el };
 
     // Bind methods.
     this.onCursorDown = bind(this.onCursorDown, this);
@@ -189,7 +189,7 @@ module.exports.Component = registerComponent('cursor', {
     var direction = new THREE.Vector3();
     var mouse = new THREE.Vector2();
     var origin = new THREE.Vector3();
-    var rayCasterConfig = {origin: origin, direction: direction};
+    var rayCasterConfig = { origin: origin, direction: direction };
 
     return function (evt) {
       var bounds = this.canvasBounds;

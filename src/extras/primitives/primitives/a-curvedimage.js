@@ -30,6 +30,6 @@ registerPrimitive('a-curvedimage', utils.extendDeep({}, getMeshMixin(), {
     start: 'geometry.thetaStart',
     'theta-length': 'geometry.thetaLength',
     'theta-start': 'geometry.thetaStart',
-    'width': 'geometry.thetaLength'
+    width: 'geometry.thetaLength'
   }
 }));

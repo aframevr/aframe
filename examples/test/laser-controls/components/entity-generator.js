@@ -6,9 +6,9 @@
  */
 AFRAME.registerComponent('entity-generator', {
   schema: {
-    mixin: {default: ''},
-    num: {default: 100},
-    spread: {default: 20}
+    mixin: { default: '' },
+    num: { default: 100 },
+    spread: { default: 20 }
   },
 
   init: function () {

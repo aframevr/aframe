@@ -10,7 +10,7 @@ suite('background', function () {
   test('change the background color', function () {
     var sceneEl = this.sceneEl;
     assert.shallowDeepEqual(sceneEl.object3D.background, null);
-    sceneEl.setAttribute('background', {color: 'yellow'});
-    assert.shallowDeepEqual(sceneEl.object3D.background, {r: 1, g: 1, b: 0});
+    sceneEl.setAttribute('background', { color: 'yellow' });
+    assert.shallowDeepEqual(sceneEl.object3D.background, { r: 1, g: 1, b: 0 });
   });
 });

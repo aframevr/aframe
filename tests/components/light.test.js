@@ -1,4 +1,4 @@
-/* global assert, process, setup, suite, test */
+/* global assert, setup, suite, test */
 var entityFactory = require('../helpers').entityFactory;
 var THREE = require('index').THREE;
 
@@ -19,7 +19,7 @@ suite('light', function () {
     test('updates light', function () {
       var el = this.el;
       el.setAttribute('light', 'color: #F0F');
-      assert.shallowDeepEqual(el.getObject3D('light').color, {r: 1, g: 0, b: 1});
+      assert.shallowDeepEqual(el.getObject3D('light').color, { r: 1, g: 0, b: 1 });
     });
 
     test('does not recreate light for basic updates', function () {
@@ -136,7 +136,7 @@ suite('light', function () {
       var el = this.el;
       var oldLight = this.el.components.light.light;
 
-      el.components.light.setLight({type: 'nonvalidtype'});
+      el.components.light.setLight({ type: 'nonvalidtype' });
       assert.equal(oldLight, el.components.light.light);
     });
 
@@ -144,7 +144,7 @@ suite('light', function () {
       var el = this.el;
       var oldLight = this.el.components.light.light;
 
-      el.components.light.setLight({type: 'spot'});
+      el.components.light.setLight({ type: 'spot' });
       assert.notEqual(oldLight, el.components.light.light);
       assert.equal(oldLight.parent, null);
     });

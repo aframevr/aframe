@@ -81,7 +81,7 @@ suite('sound', function () {
         stop: sinon.stub(),
         isPlaying: false,
         buffer: true,
-        source: {buffer: true}
+        source: { buffer: true }
       };
       el.pause();
       assert.notOk(sound.pause.called);
@@ -95,7 +95,7 @@ suite('sound', function () {
         stop: sinon.stub(),
         isPlaying: true,
         buffer: true,
-        source: {buffer: true}
+        source: { buffer: true }
       };
       el.components.sound.isPlaying = true;
       el.pause();
@@ -116,7 +116,7 @@ suite('sound', function () {
         stop: sinon.stub(),
         isPlaying: false,
         buffer: true,
-        source: {buffer: true}
+        source: { buffer: true }
       };
       el.components.sound.autoplay = true;
       el.play();
@@ -134,7 +134,7 @@ suite('sound', function () {
         stop: sinon.stub(),
         pause: sinon.stub(),
         buffer: true,
-        source: {buffer: true}
+        source: { buffer: true }
       };
       el.components.sound.pauseSound();
       assert.ok(sound.pause.called);
@@ -151,7 +151,7 @@ suite('sound', function () {
         stop: sinon.stub(),
         isPlaying: false,
         buffer: true,
-        source: {buffer: true}
+        source: { buffer: true }
       };
       el.components.sound.loaded = false;
 
@@ -167,7 +167,7 @@ suite('sound', function () {
         stop: sinon.stub(),
         isPlaying: false,
         buffer: true,
-        source: {buffer: true}
+        source: { buffer: true }
       };
       el.components.sound.loaded = true;
 
@@ -207,7 +207,7 @@ suite('sound', function () {
         isPlaying: true,
         stop: sinon.stub(),
         buffer: true,
-        source: {buffer: true}
+        source: { buffer: true }
       };
       el.components.sound.stopSound();
       assert.ok(sound.stop.called);

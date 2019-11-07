@@ -5,11 +5,11 @@ var degToRad = THREE.Math.degToRad;
 
 registerGeometry('torus', {
   schema: {
-    arc: {default: 360},
-    radius: {default: 1, min: 0},
-    radiusTubular: {default: 0.2, min: 0},
-    segmentsRadial: {default: 36, min: 2, type: 'int'},
-    segmentsTubular: {default: 32, min: 3, type: 'int'}
+    arc: { default: 360 },
+    radius: { default: 1, min: 0 },
+    radiusTubular: { default: 0.2, min: 0 },
+    segmentsRadial: { default: 36, min: 2, type: 'int' },
+    segmentsTubular: { default: 32, min: 3, type: 'int' }
   },
 
   init: function (data) {

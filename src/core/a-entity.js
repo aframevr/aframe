@@ -10,7 +10,7 @@ var warn = utils.debug('core:a-entity:warn');
 
 var MULTIPLE_COMPONENT_DELIMITER = '__';
 var OBJECT3D_COMPONENTS = ['position', 'rotation', 'scale', 'visible'];
-var ONCE = {once: true};
+var ONCE = { once: true };
 
 /**
  * Entity is a container object that components are plugged into to comprise everything in
@@ -64,9 +64,9 @@ var proto = Object.create(ANode.prototype, {
    */
   attachedCallback: {
     value: function () {
-      var assetsEl;  // Asset management system element.
+      var assetsEl; // Asset management system element.
       var sceneEl = this.sceneEl;
-      var self = this;  // Component.
+      var self = this; // Component.
 
       this.addToParent();
 
@@ -153,7 +153,7 @@ var proto = Object.create(ANode.prototype, {
       // Add.
       this.object3D.add(obj);
       this.object3DMap[type] = obj;
-      this.emit('object3dset', {object: obj, type: type});
+      this.emit('object3dset', { object: obj, type: type });
     }
   },
 
@@ -169,7 +169,7 @@ var proto = Object.create(ANode.prototype, {
       }
       this.object3D.remove(obj);
       delete this.object3DMap[type];
-      this.emit('object3dremove', {type: type});
+      this.emit('object3dremove', { type: type });
     }
   },
 
@@ -204,7 +204,7 @@ var proto = Object.create(ANode.prototype, {
         throw new Error("Trying to add an element that doesn't have an `object3D`");
       }
       this.object3D.add(el.object3D);
-      this.emit('child-attached', {el: el});
+      this.emit('child-attached', { el: el });
     }
   },
 
@@ -219,7 +219,7 @@ var proto = Object.create(ANode.prototype, {
       if (!parentNode || !parentNode.add || this.attachedToParent) { return; }
 
       parentNode.add(this);
-      this.attachedToParent = true;  // To prevent multiple attachments to same parent.
+      this.attachedToParent = true; // To prevent multiple attachments to same parent.
     }
   },
 
@@ -232,7 +232,7 @@ var proto = Object.create(ANode.prototype, {
       this.parentEl.remove(this);
       this.attachedToParent = false;
       this.parentEl = null;
-      parentEl.emit('child-detached', {el: this});
+      parentEl.emit('child-detached', { el: this });
     }
   },
 
@@ -459,7 +459,7 @@ var proto = Object.create(ANode.prototype, {
       // Initialize or update rest of components.
       for (name in componentsToUpdate) {
         data = mergeComponentData(this.getDOMAttribute(name),
-                                  extraComponents && extraComponents[name]);
+          extraComponents && extraComponents[name]);
         this.updateComponent(name, data);
         delete componentsToUpdate[name];
       }
@@ -928,5 +928,5 @@ function getRotation (entityEl) {
   return rotationObj;
 }
 
-AEntity = registerElement('a-entity', {prototype: proto});
+AEntity = registerElement('a-entity', { prototype: proto });
 module.exports = AEntity;

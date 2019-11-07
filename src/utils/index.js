@@ -147,8 +147,8 @@ var deepEqual = (function () {
 
     // If not objects or arrays, compare as values.
     if (a === undefined || b === undefined || a === null || b === null ||
-        !(a && b && (a.constructor === Object && b.constructor === Object) ||
-                    (a.constructor === Array && b.constructor === Array))) {
+        !(a && b && ((a.constructor === Object && b.constructor === Object) ||
+                    (a.constructor === Array && b.constructor === Array)))) {
       return a === b;
     }
 

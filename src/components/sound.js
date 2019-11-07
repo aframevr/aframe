@@ -9,17 +9,17 @@ var warn = debug('components:sound:warn');
  */
 module.exports.Component = registerComponent('sound', {
   schema: {
-    autoplay: {default: false},
-    distanceModel: {default: 'inverse', oneOf: ['linear', 'inverse', 'exponential']},
-    loop: {default: false},
-    maxDistance: {default: 10000},
-    on: {default: ''},
-    poolSize: {default: 1},
-    positional: {default: true},
-    refDistance: {default: 1},
-    rolloffFactor: {default: 1},
-    src: {type: 'audio'},
-    volume: {default: 1}
+    autoplay: { default: false },
+    distanceModel: { default: 'inverse', oneOf: ['linear', 'inverse', 'exponential'] },
+    loop: { default: false },
+    maxDistance: { default: 10000 },
+    on: { default: '' },
+    poolSize: { default: 1 },
+    positional: { default: true },
+    refDistance: { default: 1 },
+    rolloffFactor: { default: 1 },
+    src: { type: 'audio' },
+    volume: { default: 1 }
   },
 
   multiple: true,

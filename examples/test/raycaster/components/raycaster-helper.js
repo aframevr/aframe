@@ -17,7 +17,7 @@ AFRAME.registerComponent('raycaster-helper', {
     var length = raycaster.far === Infinity ? 1000 : raycaster.far;
 
     geometry.vertices.push(originVector,
-                           raycaster.ray.direction.clone().multiplyScalar(length));
+      raycaster.ray.direction.clone().multiplyScalar(length));
     material.opacity = el.getAttribute('material').opacity;
     material.transparent = true;
     el.setObject3D('line', new THREE.Line(geometry, material));

@@ -20,13 +20,13 @@ var GAMEPAD_ID_PREFIX = 'Daydream Controller';
  */
 module.exports.Component = registerComponent('daydream-controls', {
   schema: {
-    hand: {default: ''},  // This informs the degenerate arm model.
-    buttonColor: {type: 'color', default: '#000000'},
-    buttonTouchedColor: {type: 'color', default: '#777777'},
-    buttonHighlightColor: {type: 'color', default: '#FFFFFF'},
-    model: {default: true},
-    orientationOffset: {type: 'vec3'},
-    armModel: {default: true}
+    hand: { default: '' }, // This informs the degenerate arm model.
+    buttonColor: { type: 'color', default: '#000000' },
+    buttonTouchedColor: { type: 'color', default: '#777777' },
+    buttonHighlightColor: { type: 'color', default: '#FFFFFF' },
+    model: { default: true },
+    orientationOffset: { type: 'vec3' },
+    armModel: { default: true }
   },
 
   /**
@@ -36,7 +36,7 @@ module.exports.Component = registerComponent('daydream-controls', {
    * 2 - system (never dispatched on this layer)
    */
   mapping: {
-    axes: {trackpad: [0, 1]},
+    axes: { trackpad: [0, 1] },
     buttons: ['trackpad', 'menu', 'system']
   },
 
@@ -85,7 +85,7 @@ module.exports.Component = registerComponent('daydream-controls', {
   },
 
   checkIfControllerPresent: function () {
-    checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX, {hand: this.data.hand});
+    checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX, { hand: this.data.hand });
   },
 
   play: function () {

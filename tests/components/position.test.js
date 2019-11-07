@@ -1,4 +1,4 @@
-/* global assert, process, setup, suite, test */
+/* global assert, setup, suite, test */
 var entityFactory = require('../helpers').entityFactory;
 
 suite('position', function () {
@@ -44,7 +44,7 @@ suite('position', function () {
 
     test('can set position with object', function () {
       var el = this.el;
-      el.setAttribute('position', {x: 1, y: 2, z: 3});
+      el.setAttribute('position', { x: 1, y: 2, z: 3 });
       assert.equal(el.object3D.position.x, 1);
       assert.equal(el.object3D.position.y, 2);
       assert.equal(el.object3D.position.z, 3);
@@ -52,7 +52,7 @@ suite('position', function () {
 
     test('can set position with incomplete object', function () {
       var el = this.el;
-      el.setAttribute('position', {y: 2});
+      el.setAttribute('position', { y: 2 });
       assert.equal(el.object3D.position.x, 0);
       assert.equal(el.object3D.position.y, 2);
       assert.equal(el.object3D.position.z, 0);

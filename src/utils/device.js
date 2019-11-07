@@ -15,7 +15,7 @@ window.addEventListener('vrdisplayactivate', function (evt) {
   // Otherwise, the requestPresent could be denied.
   canvasEl.getContext('webgl', {});
   // Request present immediately. a-scene will be allowed to enter VR without user gesture.
-  vrDisplay.requestPresent([{source: canvasEl}]).then(function () {}, function () {});
+  vrDisplay.requestPresent([{ source: canvasEl }]).then(function () {}, function () {});
 });
 
 // Support both WebVR and WebXR APIs.
@@ -63,7 +63,7 @@ if (navigator.xr) {
     navigator.getVRDisplays().then(function (displays) {
       var sceneEl = document.querySelector('a-scene');
       vrDisplay = displays.length && displays[0];
-      if (sceneEl) { sceneEl.emit('displayconnected', {vrDisplay: vrDisplay}); }
+      if (sceneEl) { sceneEl.emit('displayconnected', { vrDisplay: vrDisplay }); }
     });
   }
 }

@@ -20,13 +20,13 @@ var GAMEPAD_ID_PREFIX = 'Gear VR';
  */
 module.exports.Component = registerComponent('gearvr-controls', {
   schema: {
-    hand: {default: ''},  // This informs the degenerate arm model.
-    buttonColor: {type: 'color', default: '#000000'},
-    buttonTouchedColor: {type: 'color', default: '#777777'},
-    buttonHighlightColor: {type: 'color', default: '#FFFFFF'},
-    model: {default: true},
-    orientationOffset: {type: 'vec3'},
-    armModel: {default: true}
+    hand: { default: '' }, // This informs the degenerate arm model.
+    buttonColor: { type: 'color', default: '#000000' },
+    buttonTouchedColor: { type: 'color', default: '#777777' },
+    buttonHighlightColor: { type: 'color', default: '#FFFFFF' },
+    model: { default: true },
+    orientationOffset: { type: 'vec3' },
+    armModel: { default: true }
   },
 
   /**
@@ -35,7 +35,7 @@ module.exports.Component = registerComponent('gearvr-controls', {
    * 1 - trigger
    */
   mapping: {
-    axes: {trackpad: [0, 1]},
+    axes: { trackpad: [0, 1] },
     buttons: ['trackpad', 'trigger']
   },
 
@@ -85,7 +85,7 @@ module.exports.Component = registerComponent('gearvr-controls', {
 
   checkIfControllerPresent: function () {
     checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX,
-                                        this.data.hand ? {hand: this.data.hand} : {});
+      this.data.hand ? { hand: this.data.hand } : {});
   },
 
   play: function () {

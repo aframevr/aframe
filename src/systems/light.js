@@ -15,7 +15,7 @@ var DEFAULT_LIGHT_ATTR = 'data-aframe-default-light';
  */
 module.exports.System = registerSystem('light', {
   schema: {
-    defaultLightsEnabled: {default: true}
+    defaultLightsEnabled: { default: true }
   },
 
   init: function () {
@@ -67,14 +67,14 @@ module.exports.System = registerSystem('light', {
     }
 
     ambientLight = document.createElement('a-entity');
-    ambientLight.setAttribute('light', {color: '#BBB', type: 'ambient'});
+    ambientLight.setAttribute('light', { color: '#BBB', type: 'ambient' });
     ambientLight.setAttribute(DEFAULT_LIGHT_ATTR, '');
     ambientLight.setAttribute(constants.AFRAME_INJECTED, '');
     sceneEl.appendChild(ambientLight);
 
     directionalLight = document.createElement('a-entity');
-    directionalLight.setAttribute('light', {color: '#FFF', intensity: 0.6, castShadow: true});
-    directionalLight.setAttribute('position', {x: -0.5, y: 1, z: 1});
+    directionalLight.setAttribute('light', { color: '#FFF', intensity: 0.6, castShadow: true });
+    directionalLight.setAttribute('position', { x: -0.5, y: 1, z: 1 });
     directionalLight.setAttribute(DEFAULT_LIGHT_ATTR, '');
     directionalLight.setAttribute(constants.AFRAME_INJECTED, '');
     sceneEl.appendChild(directionalLight);

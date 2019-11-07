@@ -19,13 +19,13 @@ var CONTROLLER_PROPERTIES = {
   oculusTouchGen1: {
     left: {
       modelUrl: TOUCH_CONTROLLER_MODEL_BASE_URL + 'left.gltf',
-      rayOrigin: {origin: {x: 0.008, y: -0.01, z: 0}, direction: {x: 0, y: -0.8, z: -1}},
+      rayOrigin: { origin: { x: 0.008, y: -0.01, z: 0 }, direction: { x: 0, y: -0.8, z: -1 } },
       modelPivotOffset: new THREE.Vector3(0, 0, -0.053),
       modelPivotRotation: new THREE.Euler(0, 0, 0)
     },
     right: {
       modelUrl: TOUCH_CONTROLLER_MODEL_BASE_URL + 'right.gltf',
-      rayOrigin: {origin: {x: -0.008, y: -0.01, z: 0}, direction: {x: 0, y: -0.8, z: -1}},
+      rayOrigin: { origin: { x: -0.008, y: -0.01, z: 0 }, direction: { x: 0, y: -0.8, z: -1 } },
       modelPivotOffset: new THREE.Vector3(0, 0, -0.053),
       modelPivotRotation: new THREE.Euler(0, 0, 0)
     }
@@ -33,13 +33,13 @@ var CONTROLLER_PROPERTIES = {
   oculusTouchGen2: {
     left: {
       modelUrl: TOUCH_GEN2_CONTROLLER_MODEL_BASE_URL + 'gen2-left.gltf',
-      rayOrigin: {origin: {x: -0.01, y: 0, z: 0}, direction: {x: 0, y: -0.8, z: -1}},
+      rayOrigin: { origin: { x: -0.01, y: 0, z: 0 }, direction: { x: 0, y: -0.8, z: -1 } },
       modelPivotOffset: new THREE.Vector3(0, 0.012, 0),
       modelPivotRotation: new THREE.Euler(-Math.PI / 4, 0, 0)
     },
     right: {
       modelUrl: TOUCH_GEN2_CONTROLLER_MODEL_BASE_URL + 'gen2-right.gltf',
-      rayOrigin: {origin: {x: 0.01, y: 0, z: 0}, direction: {x: 0, y: -0.8, z: -1}},
+      rayOrigin: { origin: { x: 0.01, y: 0, z: 0 }, direction: { x: 0, y: -0.8, z: -1 } },
       modelPivotOffset: new THREE.Vector3(0, 0.012, 0),
       modelPivotRotation: new THREE.Euler(-Math.PI / 4, 0, 0)
     }
@@ -54,13 +54,13 @@ var CONTROLLER_PROPERTIES = {
  */
 module.exports.Component = registerComponent('oculus-touch-controls', {
   schema: {
-    hand: {default: 'left'},
-    buttonColor: {type: 'color', default: '#999'},  // Off-white.
-    buttonTouchColor: {type: 'color', default: '#8AB'},
-    buttonHighlightColor: {type: 'color', default: '#2DF'},  // Light blue.
-    model: {default: true},
-    controllerType: {default: 'auto', oneOf: ['auto', 'oculus_touch_gen1', 'oculus_touch_gen2']},
-    orientationOffset: {type: 'vec3', default: {x: 43, y: 0, z: 0}}
+    hand: { default: 'left' },
+    buttonColor: { type: 'color', default: '#999' }, // Off-white.
+    buttonTouchColor: { type: 'color', default: '#8AB' },
+    buttonHighlightColor: { type: 'color', default: '#2DF' }, // Light blue.
+    model: { default: true },
+    controllerType: { default: 'auto', oneOf: ['auto', 'oculus_touch_gen1', 'oculus_touch_gen2'] },
+    orientationOffset: { type: 'vec3', default: { x: 43, y: 0, z: 0 } }
   },
 
   /**
@@ -74,11 +74,11 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
    */
   mapping: {
     left: {
-      axes: {thumbstick: [0, 1]},
+      axes: { thumbstick: [0, 1] },
       buttons: ['thumbstick', 'trigger', 'grip', 'xbutton', 'ybutton', 'surface']
     },
     right: {
-      axes: {thumbstick: [0, 1]},
+      axes: { thumbstick: [0, 1] },
       buttons: ['thumbstick', 'trigger', 'grip', 'abutton', 'bbutton', 'surface']
     }
   },
@@ -158,7 +158,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
         var displayName = trackedControlsSystem.vrDisplay.displayName;
         // The Oculus Quest uses the updated generation 2 inside-out tracked controllers so update the displayModel.
         if (/^Oculus Quest$/.test(displayName)) {
-          this.displayModel = CONTROLLER_PROPERTIES['oculusTouchGen2'];
+          this.displayModel = CONTROLLER_PROPERTIES.oculusTouchGen2;
         }
       }
     }

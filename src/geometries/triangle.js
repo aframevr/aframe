@@ -9,9 +9,9 @@ var uvScaleVector = new THREE.Vector2();
 
 registerGeometry('triangle', {
   schema: {
-    vertexA: {type: 'vec3', default: {x: 0, y: 0.5, z: 0}},
-    vertexB: {type: 'vec3', default: {x: -0.5, y: -0.5, z: 0}},
-    vertexC: {type: 'vec3', default: {x: 0.5, y: -0.5, z: 0}}
+    vertexA: { type: 'vec3', default: { x: 0, y: 0.5, z: 0 } },
+    vertexB: { type: 'vec3', default: { x: -0.5, y: -0.5, z: 0 } },
+    vertexC: { type: 'vec3', default: { x: 0.5, y: -0.5, z: 0 } }
   },
 
   init: function (data) {

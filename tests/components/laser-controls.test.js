@@ -1,4 +1,4 @@
-/* global assert, process, setup, suite, test */
+/* global assert, setup, suite, test */
 var entityFactory = require('../helpers').entityFactory;
 
 suite('laser-controls', function () {
@@ -29,7 +29,7 @@ suite('laser-controls', function () {
     });
 
     test('injects cursor when controller connected', function (done) {
-      el.emit('controllerconnected', {name: 'vive-controls'});
+      el.emit('controllerconnected', { name: 'vive-controls' });
       setTimeout(() => {
         var cursor = el.getAttribute('cursor');
         var raycaster = el.getAttribute('raycaster');
@@ -42,7 +42,7 @@ suite('laser-controls', function () {
     });
 
     test('configures raycaster for oculus-touch-controls', function (done) {
-      el.emit('controllerconnected', {name: 'gearvr-controls'});
+      el.emit('controllerconnected', { name: 'gearvr-controls' });
       setTimeout(() => {
         var raycaster = el.getAttribute('raycaster');
         assert.equal(raycaster.origin.x, 0);
@@ -52,7 +52,7 @@ suite('laser-controls', function () {
     });
 
     test('creates line', function (done) {
-      el.emit('controllerconnected', {name: 'daydream-controls'});
+      el.emit('controllerconnected', { name: 'daydream-controls' });
       setTimeout(() => {
         assert.ok(el.getAttribute('line').color);
         done();
@@ -61,7 +61,7 @@ suite('laser-controls', function () {
 
     test('respects set line color', function (done) {
       el.setAttribute('line', 'color', 'red');
-      el.emit('controllerconnected', {name: 'daydream-controls'});
+      el.emit('controllerconnected', { name: 'daydream-controls' });
       setTimeout(() => {
         assert.equal(el.getAttribute('line').color, 'red');
         done();

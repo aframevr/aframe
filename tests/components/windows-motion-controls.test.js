@@ -1,4 +1,4 @@
-/* global assert, process, setup, suite, test, THREE */
+/* global assert, setup, suite, test, THREE */
 var entityFactory = require('../helpers').entityFactory;
 
 suite('windows-motion-controls', function () {
@@ -88,7 +88,7 @@ suite('windows-motion-controls', function () {
     test('does not detect presence of controller with missing id suffix', function () {
       // Mock isControllerPresent to return true.
       el.sceneEl.systems['tracked-controls-webvr'].controllers = [
-        {id: 'Spatial Controller (Spatial Interaction Source)', index: 0, hand: MOCKS.HAND_LEFT, pose: {}}
+        { id: 'Spatial Controller (Spatial Interaction Source)', index: 0, hand: MOCKS.HAND_LEFT, pose: {} }
       ];
 
       // delete our previously created mock, so component behaves as if it's never
@@ -103,7 +103,7 @@ suite('windows-motion-controls', function () {
     test('does not detect presence of controller with unknown device ID', function () {
       // Mock isControllerPresent to return true.
       el.sceneEl.systems['tracked-controls-webvr'].controllers = [
-        {id: 'unknown', index: 0, hand: MOCKS.HAND_LEFT, pose: {}}
+        { id: 'unknown', index: 0, hand: MOCKS.HAND_LEFT, pose: {} }
       ];
 
       // delete our previously created mock, so component behaves as if it's never
@@ -477,7 +477,7 @@ suite('windows-motion-controls', function () {
 
       // Perform the test
       component.checkIfControllerPresent();
-      el.emit('model-error', {detail: {src: TEST_URL_MODEL}});
+      el.emit('model-error', { detail: { src: TEST_URL_MODEL } });
 
       assert.ok(loadModelSpy.called, 'loadModel called');
       assert.strictEqual(loadModelSpy.getCalls().length, 2, 'loadMesh called twice');
@@ -504,7 +504,7 @@ suite('windows-motion-controls', function () {
     });
 
     function buttonTestHelper (done, buttonIndex, buttonName) {
-      var state = {value: 0.5, pressed: true, touched: true};
+      var state = { value: 0.5, pressed: true, touched: true };
       el.sceneEl.systems['tracked-controls-webvr'].controllers = createMotionControllersList(MOCKS.HAND_RIGHT);
       // Do the check.
       component.checkIfControllerPresent();
@@ -517,7 +517,7 @@ suite('windows-motion-controls', function () {
         done();
       });
       // Emit buttonchanged.
-      el.emit('buttonchanged', {id: buttonIndex, state: state});
+      el.emit('buttonchanged', { id: buttonIndex, state: state });
     }
   });
 
@@ -565,7 +565,7 @@ suite('windows-motion-controls', function () {
 
     for (var i = 0; i < arguments.length; i++) {
       controllersList.push(
-        {id: 'Spatial Controller (Spatial Interaction Source) 045E-065A', index: i, hand: arguments[i], pose: {}}
+        { id: 'Spatial Controller (Spatial Interaction Source) 045E-065A', index: i, hand: arguments[i], pose: {} }
       );
     }
 

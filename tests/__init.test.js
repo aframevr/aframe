@@ -14,7 +14,7 @@ navigator.getVRDisplays = function () {
     getPose: function () { return { orientation: null, position: null }; },
     requestAnimationFrame: function () { return 1; },
     requestPresent: resolvePromise,
-    submitFrame: function () { return; }
+    submitFrame: function () { }
   };
   return Promise.resolve([mockVRDisplay]);
 };
@@ -31,7 +31,7 @@ setup(function () {
   // Mock renderer.
   AScene.prototype.renderer = {
     vr: {
-      getDevice: function () { return {requestPresent: function () {}}; },
+      getDevice: function () { return { requestPresent: function () {} }; },
       isPresenting: function () { return true; },
       setDevice: function () {},
       setPoseTarget: function () {},

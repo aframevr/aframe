@@ -232,28 +232,28 @@ suite('propertyTypes', function () {
       assert.equal(isValidDefaultCoordinate(null, 2), true);
     });
     test('is true for vec2 if {x: num, y:num}', function () {
-      var validCoordinates = {x: 1, y: 2};
+      var validCoordinates = { x: 1, y: 2 };
       assert.equal(isValidDefaultCoordinate(validCoordinates, 2), true);
     });
 
     test('is true for vec3 if {x: num, y:num z: num}', function () {
-      var validCoordinates = {x: 1, y: 2, z: 3};
+      var validCoordinates = { x: 1, y: 2, z: 3 };
       assert.equal(isValidDefaultCoordinate(validCoordinates, 3), true);
     });
 
     test('is true for vec4 if {x: num, y:num z: num w: num}', function () {
-      var validCoordinates = {x: 1, y: 2, z: 3, w: 4};
+      var validCoordinates = { x: 1, y: 2, z: 3, w: 4 };
       assert.equal(isValidDefaultCoordinate(validCoordinates, 4), true);
     });
 
     test('is false for everything else', function () {
-      var invalidCoordinates1 = {notX: 1};
-      var invalidCoordinates2 = {x: ''};
-      var invalidCoordinates3 = {x: 0, z: 5};
-      var invalidCoordinates4 = {x: 5, y: {}};
-      var invalidCoordinates5 = {x: 1, y: []};
-      var invalidCoordinates6 = {notX: 'not coordinates at all'};
-      var invalidCoordinates7 = {x: 5, y: 1, z: 2};  // Invalid for vec4.
+      var invalidCoordinates1 = { notX: 1 };
+      var invalidCoordinates2 = { x: '' };
+      var invalidCoordinates3 = { x: 0, z: 5 };
+      var invalidCoordinates4 = { x: 5, y: {} };
+      var invalidCoordinates5 = { x: 1, y: [] };
+      var invalidCoordinates6 = { notX: 'not coordinates at all' };
+      var invalidCoordinates7 = { x: 5, y: 1, z: 2 }; // Invalid for vec4.
       assert.equal(isValidDefaultCoordinate(invalidCoordinates1, 2), false);
       assert.equal(isValidDefaultCoordinate(invalidCoordinates2, 2), false);
       assert.equal(isValidDefaultCoordinate(invalidCoordinates3, 2), false);
@@ -280,9 +280,9 @@ suite('propertyTypes', function () {
       assert.equal(isValidDefaultValue('src', 'string'), true);
       assert.equal(isValidDefaultValue('string', 'string'), true);
       assert.equal(isValidDefaultValue('time', 24), true);
-      assert.equal(isValidDefaultValue('vec2', {x: 1, y: 1}), true);
-      assert.equal(isValidDefaultValue('vec3', {x: 0, y: 9, z: 0}), true);
-      assert.equal(isValidDefaultValue('vec4', {x: 9, y: 9, z: 9, w: 9}), true);
+      assert.equal(isValidDefaultValue('vec2', { x: 1, y: 1 }), true);
+      assert.equal(isValidDefaultValue('vec3', { x: 0, y: 9, z: 0 }), true);
+      assert.equal(isValidDefaultValue('vec4', { x: 9, y: 9, z: 9, w: 9 }), true);
       assert.equal(isValidDefaultValue('vec4', null), true);
     });
 
@@ -290,7 +290,7 @@ suite('propertyTypes', function () {
       assert.equal(isValidDefaultValue('audio', 1), false);
       assert.equal(isValidDefaultValue('array', {}), false);
       assert.equal(isValidDefaultValue('asset', 2), false);
-      assert.equal(isValidDefaultValue('boolean', {not: 'a boolean'}), false);
+      assert.equal(isValidDefaultValue('boolean', { not: 'a boolean' }), false);
       assert.equal(isValidDefaultValue('color', 123456), false);
       assert.equal(isValidDefaultValue('int', 'not a number'), false);
       assert.equal(isValidDefaultValue('number', ['something else']), false);

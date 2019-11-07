@@ -9,17 +9,17 @@ var THREE = require('../lib/three');
  */
 module.exports.Component = registerComponent('link', {
   schema: {
-    backgroundColor: {default: 'red', type: 'color'},
-    borderColor: {default: 'white', type: 'color'},
-    highlighted: {default: false},
-    highlightedColor: {default: '#24CAFF', type: 'color'},
-    href: {default: ''},
-    image: {type: 'asset'},
-    on: {default: 'click'},
-    peekMode: {default: false},
-    title: {default: ''},
-    titleColor: {default: 'white', type: 'color'},
-    visualAspectEnabled: {default: false}
+    backgroundColor: { default: 'red', type: 'color' },
+    borderColor: { default: 'white', type: 'color' },
+    highlighted: { default: false },
+    highlightedColor: { default: '#24CAFF', type: 'color' },
+    href: { default: '' },
+    image: { type: 'asset' },
+    on: { default: 'click' },
+    peekMode: { default: false },
+    title: { default: '' },
+    titleColor: { default: 'white', type: 'color' },
+    visualAspectEnabled: { default: false }
   },
 
   init: function () {
@@ -53,7 +53,7 @@ module.exports.Component = registerComponent('link', {
     if (!data.image || oldData.image === data.image) { return; }
 
     el.setAttribute('material', 'pano',
-                    typeof data.image === 'string' ? data.image : data.image.src);
+      typeof data.image === 'string' ? data.image : data.image.src);
   },
 
   /*
@@ -107,8 +107,8 @@ module.exports.Component = registerComponent('link', {
     semiSphereEl = this.semiSphereEl = this.semiSphereEl || document.createElement('a-entity');
 
     // Set portal.
-    el.setAttribute('geometry', {primitive: 'circle', radius: 1.0, segments: 64});
-    el.setAttribute('material', {shader: 'portal', pano: this.data.image, side: 'double'});
+    el.setAttribute('geometry', { primitive: 'circle', radius: 1.0, segments: 64 });
+    el.setAttribute('material', { shader: 'portal', pano: this.data.image, side: 'double' });
 
     // Set text that displays the link title and URL.
     textEl.setAttribute('text', {

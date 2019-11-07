@@ -49,7 +49,7 @@ AFRAME.registerComponent('rotate-obj3d-set', {
 AFRAME.registerComponent('rotate-get-set', {
   tick: function () {
     var el = this.el;
-    var rotationAux = this.rotationAux = this.rotationAux || {x: 0, y: 0, z: 0};
+    var rotationAux = this.rotationAux = this.rotationAux || { x: 0, y: 0, z: 0 };
     var rotation = el.getAttribute('rotation');
     rotationAux.x = rotation.x + randomIncDeg(0.1);
     rotationAux.y = rotation.y + randomIncDeg(0.2);

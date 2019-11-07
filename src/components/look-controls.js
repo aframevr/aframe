@@ -14,12 +14,12 @@ module.exports.Component = registerComponent('look-controls', {
   dependencies: ['position', 'rotation'],
 
   schema: {
-    enabled: {default: true},
-    hmdEnabled: {default: true},
-    pointerLockEnabled: {default: false},
-    reverseMouseDrag: {default: false},
-    reverseTouchDrag: {default: false},
-    touchEnabled: {default: true}
+    enabled: { default: true },
+    hmdEnabled: { default: true },
+    pointerLockEnabled: { default: false },
+    reverseMouseDrag: { default: false },
+    reverseTouchDrag: { default: false },
+    touchEnabled: { default: true }
   },
 
   init: function () {
@@ -104,7 +104,7 @@ module.exports.Component = registerComponent('look-controls', {
     this.onPointerLockError = bind(this.onPointerLockError, this);
   },
 
- /**
+  /**
   * Set up states and Object3Ds needed to store rotation data.
   */
   setupMouseControls: function () {

@@ -12,15 +12,15 @@ var registerComponent = require('../core/component').registerComponent;
  */
 module.exports.Component = registerComponent('tracked-controls', {
   schema: {
-    autoHide: {default: true},
-    controller: {default: 0},
-    id: {type: 'string', default: ''},
-    hand: {type: 'string', default: ''},
-    idPrefix: {type: 'string', default: ''},
-    orientationOffset: {type: 'vec3'},
+    autoHide: { default: true },
+    controller: { default: 0 },
+    id: { type: 'string', default: '' },
+    hand: { type: 'string', default: '' },
+    idPrefix: { type: 'string', default: '' },
+    orientationOffset: { type: 'vec3' },
     // Arm model parameters when not 6DoF.
-    armModel: {default: true},
-    headElement: {type: 'selector'}
+    armModel: { default: true },
+    headElement: { type: 'selector' }
   },
 
   update: function () {

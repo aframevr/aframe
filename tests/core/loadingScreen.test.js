@@ -1,4 +1,4 @@
-/* global assert, process, setup, suite, teardown, test */
+/* global assert, setup, suite, teardown, test */
 var AScene = require('core/scene/a-scene').AScene;
 var helpers = require('../helpers');
 

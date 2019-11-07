@@ -59,7 +59,7 @@ module.exports = registerElement('a-node', {
       }
     },
 
-   /**
+    /**
     * Returns the first scene by traversing up the tree starting from and
     * including receiver element.
     */
@@ -182,7 +182,7 @@ module.exports = registerElement('a-node', {
           if (this.computedMixinStr) {
             this.computedMixinStr = this.computedMixinStr.trim();
             window.HTMLElement.prototype.setAttribute.call(this, 'mixin',
-                                                           this.computedMixinStr);
+              this.computedMixinStr);
           }
 
           return mixinIds;

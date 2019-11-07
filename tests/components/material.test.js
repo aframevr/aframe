@@ -1,4 +1,4 @@
-/* global assert, process, setup, suite, test, sinon, AFRAME */
+/* global assert, setup, suite, test, sinon, AFRAME */
 var entityFactory = require('../helpers').entityFactory;
 var shaders = require('core/shader').shaders;
 var THREE = require('index').THREE;
@@ -27,7 +27,7 @@ suite('material', function () {
     test('updates material', function () {
       el.setAttribute('material', 'color: #F0F; side: double');
       assert.shallowDeepEqual(el.getObject3D('mesh').material.color,
-                             {r: 1, g: 0, b: 1});
+        { r: 1, g: 0, b: 1 });
       assert.shallowDeepEqual(el.getObject3D('mesh').material.side, THREE.DoubleSide);
     });
 
@@ -89,7 +89,7 @@ suite('material', function () {
         done();
       });
       setTimeout(() => {
-        el.setAttribute('material', {src: '#canvas'});
+        el.setAttribute('material', { src: '#canvas' });
       });
     });
 
@@ -164,7 +164,7 @@ suite('material', function () {
 
   suite('updateSchema', function () {
     test('updates schema for flat shader', function () {
-      el.components.material.updateSchema({shader: 'flat'});
+      el.components.material.updateSchema({ shader: 'flat' });
       assert.ok(el.components.material.schema.color);
       assert.ok(el.components.material.schema.fog);
       assert.ok(el.components.material.schema.height);
@@ -180,8 +180,8 @@ suite('material', function () {
       delete shaders.test;
       AFRAME.registerShader('test', {
         schema: {
-          color: {type: 'color'},
-          luminance: {default: 1}
+          color: { type: 'color' },
+          luminance: { default: 1 }
         }
       });
       el.setAttribute('material', 'shader', 'test');

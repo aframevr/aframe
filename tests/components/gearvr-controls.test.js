@@ -1,10 +1,10 @@
-/* global assert, process, setup, sinon, suite, test */
+/* global assert, setup, sinon, suite, test */
 var entityFactory = require('../helpers').entityFactory;
 
 suite('gearvr-controls', function () {
   setup(function (done) {
     var el = this.el = entityFactory();
-    el.setAttribute('gearvr-controls', 'hand: right');  // To ensure index is 0.
+    el.setAttribute('gearvr-controls', 'hand: right'); // To ensure index is 0.
     el.addEventListener('loaded', function () {
       var component = el.components['gearvr-controls'];
       component.controllersWhenPresent = [{
@@ -13,10 +13,10 @@ suite('gearvr-controls', function () {
         hand: 'right',
         axes: [0, 0],
         buttons: [
-          {value: 0, pressed: false, touched: false},
-          {value: 0, pressed: false, touched: false}
+          { value: 0, pressed: false, touched: false },
+          { value: 0, pressed: false, touched: false }
         ],
-        pose: {orientation: [1, 0, 0, 0], position: null}
+        pose: { orientation: [1, 0, 0, 0], position: null }
       }];
       el.parentEl.renderer.vr.getStandingMatrix = function () {};
       done();
@@ -131,7 +131,7 @@ suite('gearvr-controls', function () {
       component.checkIfControllerPresent();
 
       // Configure the event state for which we'll use the axis state for verification.
-      const eventState = {axis: [0.1, 0.2], changed: [true, false]};
+      const eventState = { axis: [0.1, 0.2], changed: [true, false] };
 
       el.addEventListener('trackpadmoved', function (evt) {
         assert.equal(evt.detail.x, eventState.axis[0]);
@@ -155,13 +155,13 @@ suite('gearvr-controls', function () {
         assert.fail('trackpadmoved was called when there was no change.');
       });
 
-      el.emit('axismove', {axis: [0.1, 0.2], changed: [false, false]});
+      el.emit('axismove', { axis: [0.1, 0.2], changed: [false, false] });
       setTimeout(() => { done(); });
     });
   });
 
   suite('buttonchanged', function () {
-    [ { button: 'trackpad', id: 0 },
+    [{ button: 'trackpad', id: 0 },
       { button: 'trigger', id: 1 }
     ].forEach(function (buttonDescription) {
       test('if we get buttonchanged for button ' + buttonDescription.id + ', emit ' + buttonDescription.button + 'changed', function (done) {
@@ -173,14 +173,14 @@ suite('gearvr-controls', function () {
         component.checkIfControllerPresent();
 
         // Configure the expected event state and use it to fire the event.
-        const eventState = {value: 0.5, pressed: true, touched: true};
+        const eventState = { value: 0.5, pressed: true, touched: true };
 
         el.addEventListener(buttonDescription.button + 'changed', function (evt) {
           assert.deepEqual(evt.detail, eventState);
           done();
         });
 
-        el.emit('buttonchanged', {id: buttonDescription.id, state: eventState});
+        el.emit('buttonchanged', { id: buttonDescription.id, state: eventState });
       });
 
       test('if we get buttondown for button ' + buttonDescription.id + ', emit ' + buttonDescription.button + 'down', function (done) {
@@ -195,7 +195,7 @@ suite('gearvr-controls', function () {
           done();
         });
 
-        el.emit('buttondown', {id: buttonDescription.id});
+        el.emit('buttondown', { id: buttonDescription.id });
       });
 
       test('if we get buttonup for button ' + buttonDescription.id + ', emit ' + buttonDescription.button + 'up', function (done) {
@@ -210,7 +210,7 @@ suite('gearvr-controls', function () {
           done();
         });
 
-        el.emit('buttonup', {id: buttonDescription.id});
+        el.emit('buttonup', { id: buttonDescription.id });
       });
     });
   });

@@ -1,4 +1,4 @@
-/* global assert, process, setup, suite, teardown, test */
+/* global assert, setup, suite, teardown, test */
 var entityFactory = require('../helpers').entityFactory;
 
 suite('geometry system', function () {
@@ -17,7 +17,7 @@ suite('geometry system', function () {
     });
 
     test('sets hash on cache', function () {
-      var data = {primitive: 'box'};
+      var data = { primitive: 'box' };
       var system = this.system;
       var hash = system.hash(data);
 
@@ -27,15 +27,15 @@ suite('geometry system', function () {
     });
 
     test('does not hash on cache if skipCache', function () {
-      var data = {primitive: 'box', skipCache: true};
+      var data = { primitive: 'box', skipCache: true };
       var system = this.system;
       var hash = system.hash(data);
-      system.getOrCreateGeometry({primitive: 'box'});
+      system.getOrCreateGeometry({ primitive: 'box' });
       assert.notOk(system.cache[hash]);
     });
 
     test('caches identical geometries', function () {
-      var data = {primitive: 'box', width: 5};
+      var data = { primitive: 'box', width: 5 };
       var geometry1;
       var geometry2;
       var system = this.system;
@@ -52,7 +52,7 @@ suite('geometry system', function () {
     });
 
     test('preserves original metadata on BufferGeometry', function () {
-      var data = {primitive: 'box', width: 5, buffer: true};
+      var data = { primitive: 'box', width: 5, buffer: true };
       var geometry = this.system.getOrCreateGeometry(data);
       assert.equal(geometry.metadata.type, 'BoxGeometry');
       assert.equal(geometry.metadata.parameters.width, 5);
@@ -65,7 +65,7 @@ suite('geometry system', function () {
     });
 
     test('disposes geometry if no longer used', function () {
-      var data = {primitive: 'box'};
+      var data = { primitive: 'box' };
       var system = this.system;
       var hash = system.hash(data);
       var sinon = this.sinon;
@@ -80,7 +80,7 @@ suite('geometry system', function () {
     });
 
     test('does not dispose geometry if still used', function () {
-      var data = {primitive: 'box'};
+      var data = { primitive: 'box' };
       var system = this.system;
       var hash = system.hash(data);
       var sinon = this.sinon;

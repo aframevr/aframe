@@ -9,10 +9,10 @@ window.aframeStats = function (scene) {
       caption: 'Load Time'
     }
   };
-  var _groups = [ {
+  var _groups = [{
     caption: 'A-Frame',
-    values: [ 'te', 'lt' ]
-  } ];
+    values: ['te', 'lt']
+  }];
 
   function _update () {
     _rS('te').set(getEntityCount());

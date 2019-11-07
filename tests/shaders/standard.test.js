@@ -1,4 +1,4 @@
-/* global assert, process, setup, suite, test */
+/* global assert, setup, suite, test */
 var entityFactory = require('../helpers').entityFactory;
 var THREE = require('index').THREE;
 
@@ -8,7 +8,7 @@ suite('standard material', function () {
   setup(function (done) {
     var el = this.el = entityFactory();
     el.setAttribute('geometry', '');
-    el.setAttribute('material', {shader: 'standard'});
+    el.setAttribute('material', { shader: 'standard' });
     if (el.hasLoaded) { done(); }
     el.addEventListener('loaded', function () {
       done();
@@ -42,10 +42,10 @@ suite('standard material', function () {
     var imageUrl = 'base/tests/assets/test.png';
     assert.isNull(el.getObject3D('mesh').material.normalMap);
     el.setAttribute('material', {
-      normalScale: {x: 0.3, y: -0.4},
+      normalScale: { x: 0.3, y: -0.4 },
       normalMap: `url(${imageUrl})`,
-      normalTextureRepeat: {x: 2, y: 2},
-      normalTextureOffset: {x: 0.1, y: 0.1}
+      normalTextureRepeat: { x: 2, y: 2 },
+      normalTextureOffset: { x: 0.1, y: 0.1 }
     });
     assert.equal(el.getObject3D('mesh').material.normalScale.x, 0.3);
     assert.equal(el.getObject3D('mesh').material.normalScale.y, -0.4);
@@ -65,8 +65,8 @@ suite('standard material', function () {
       displacementScale: 0.3,
       displacementBias: 0.2,
       displacementMap: `url(${imageUrl})`,
-      displacementTextureRepeat: {x: 2, y: 2},
-      displacementTextureOffset: {x: 0.1, y: 0.1}
+      displacementTextureRepeat: { x: 2, y: 2 },
+      displacementTextureOffset: { x: 0.1, y: 0.1 }
     });
     assert.equal(el.getObject3D('mesh').material.displacementScale, 0.3);
     assert.equal(el.getObject3D('mesh').material.displacementBias, 0.2);

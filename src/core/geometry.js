@@ -1,8 +1,8 @@
 var schema = require('./schema');
 
 var processSchema = schema.process;
-var geometries = module.exports.geometries = {};  // Registered geometries.
-var geometryNames = module.exports.geometryNames = [];  // Names of registered geometries.
+var geometries = module.exports.geometries = {}; // Registered geometries.
+var geometryNames = module.exports.geometryNames = []; // Names of registered geometries.
 var THREE = require('../lib/three');
 
 /**

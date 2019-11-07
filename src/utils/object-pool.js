@@ -12,7 +12,7 @@ function defaultObjectFactory () { return {}; }
  */
 module.exports.createPool = function createPool (objectFactory) {
   var objPool = [];
-  var nextFreeSlot = null;  // Pool location to look for a free object to use.
+  var nextFreeSlot = null; // Pool location to look for a free object to use.
 
   objectFactory = objectFactory || defaultObjectFactory;
 

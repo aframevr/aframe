@@ -1,4 +1,4 @@
-/* global Promise */
+/* global  */
 var utils = require('../utils/');
 var component = require('../core/component');
 var THREE = require('../lib/three');
@@ -18,20 +18,20 @@ var shaderNames = shader.shaderNames;
  */
 module.exports.Component = registerComponent('material', {
   schema: {
-    alphaTest: {default: 0.0, min: 0.0, max: 1.0},
-    depthTest: {default: true},
-    depthWrite: {default: true},
-    flatShading: {default: false},
-    npot: {default: false},
-    offset: {type: 'vec2', default: {x: 0, y: 0}},
-    opacity: {default: 1.0, min: 0.0, max: 1.0},
-    repeat: {type: 'vec2', default: {x: 1, y: 1}},
-    shader: {default: 'standard', oneOf: shaderNames, schemaChange: true},
-    side: {default: 'front', oneOf: ['front', 'back', 'double']},
-    transparent: {default: false},
-    vertexColors: {type: 'string', default: 'none', oneOf: ['face', 'vertex']},
-    visible: {default: true},
-    blending: {default: 'normal', oneOf: ['none', 'normal', 'additive', 'subtractive', 'multiply']}
+    alphaTest: { default: 0.0, min: 0.0, max: 1.0 },
+    depthTest: { default: true },
+    depthWrite: { default: true },
+    flatShading: { default: false },
+    npot: { default: false },
+    offset: { type: 'vec2', default: { x: 0, y: 0 } },
+    opacity: { default: 1.0, min: 0.0, max: 1.0 },
+    repeat: { type: 'vec2', default: { x: 1, y: 1 } },
+    shader: { default: 'standard', oneOf: shaderNames, schemaChange: true },
+    side: { default: 'front', oneOf: ['front', 'back', 'double'] },
+    transparent: { default: false },
+    vertexColors: { type: 'string', default: 'none', oneOf: ['face', 'vertex'] },
+    visible: { default: true },
+    blending: { default: 'normal', oneOf: ['none', 'normal', 'additive', 'subtractive', 'multiply'] }
   },
 
   init: function () {

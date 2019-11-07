@@ -6,11 +6,11 @@ var registerShader = require('../core/shader').registerShader;
  */
 module.exports.Shader = registerShader('msdf', {
   schema: {
-    alphaTest: {type: 'number', is: 'uniform', default: 0.5},
-    color: {type: 'color', is: 'uniform', default: 'white'},
-    map: {type: 'map', is: 'uniform'},
-    negate: {type: 'boolean', is: 'uniform', default: true},
-    opacity: {type: 'number', is: 'uniform', default: 1.0}
+    alphaTest: { type: 'number', is: 'uniform', default: 0.5 },
+    color: { type: 'color', is: 'uniform', default: 'white' },
+    map: { type: 'map', is: 'uniform' },
+    negate: { type: 'boolean', is: 'uniform', default: true },
+    opacity: { type: 'number', is: 'uniform', default: 1.0 }
   },
 
   raw: true,

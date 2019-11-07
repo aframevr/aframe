@@ -12,34 +12,34 @@ var warn = debug('components:light:warn');
  */
 module.exports.Component = registerComponent('light', {
   schema: {
-    angle: {default: 60, if: {type: ['spot']}},
-    color: {type: 'color'},
-    groundColor: {type: 'color', if: {type: ['hemisphere']}},
-    decay: {default: 1, if: {type: ['point', 'spot']}},
-    distance: {default: 0.0, min: 0, if: {type: ['point', 'spot']}},
-    intensity: {default: 1.0, min: 0, if: {type: ['ambient', 'directional', 'hemisphere', 'point', 'spot']}},
-    penumbra: {default: 0, min: 0, max: 1, if: {type: ['spot']}},
+    angle: { default: 60, if: { type: ['spot'] } },
+    color: { type: 'color' },
+    groundColor: { type: 'color', if: { type: ['hemisphere'] } },
+    decay: { default: 1, if: { type: ['point', 'spot'] } },
+    distance: { default: 0.0, min: 0, if: { type: ['point', 'spot'] } },
+    intensity: { default: 1.0, min: 0, if: { type: ['ambient', 'directional', 'hemisphere', 'point', 'spot'] } },
+    penumbra: { default: 0, min: 0, max: 1, if: { type: ['spot'] } },
     type: {
       default: 'directional',
       oneOf: ['ambient', 'directional', 'hemisphere', 'point', 'spot'],
       schemaChange: true
     },
-    target: {type: 'selector', if: {type: ['spot', 'directional']}},
+    target: { type: 'selector', if: { type: ['spot', 'directional'] } },
 
     // Shadows.
-    castShadow: {default: false, if: {type: ['point', 'spot', 'directional']}},
-    shadowBias: {default: 0, if: {castShadow: true}},
-    shadowCameraFar: {default: 500, if: {castShadow: true}},
-    shadowCameraFov: {default: 90, if: {castShadow: true}},
-    shadowCameraNear: {default: 0.5, if: {castShadow: true}},
-    shadowCameraTop: {default: 5, if: {castShadow: true}},
-    shadowCameraRight: {default: 5, if: {castShadow: true}},
-    shadowCameraBottom: {default: -5, if: {castShadow: true}},
-    shadowCameraLeft: {default: -5, if: {castShadow: true}},
-    shadowCameraVisible: {default: false, if: {castShadow: true}},
-    shadowMapHeight: {default: 512, if: {castShadow: true}},
-    shadowMapWidth: {default: 512, if: {castShadow: true}},
-    shadowRadius: {default: 1, if: {castShadow: true}}
+    castShadow: { default: false, if: { type: ['point', 'spot', 'directional'] } },
+    shadowBias: { default: 0, if: { castShadow: true } },
+    shadowCameraFar: { default: 500, if: { castShadow: true } },
+    shadowCameraFov: { default: 90, if: { castShadow: true } },
+    shadowCameraNear: { default: 0.5, if: { castShadow: true } },
+    shadowCameraTop: { default: 5, if: { castShadow: true } },
+    shadowCameraRight: { default: 5, if: { castShadow: true } },
+    shadowCameraBottom: { default: -5, if: { castShadow: true } },
+    shadowCameraLeft: { default: -5, if: { castShadow: true } },
+    shadowCameraVisible: { default: false, if: { castShadow: true } },
+    shadowMapHeight: { default: 512, if: { castShadow: true } },
+    shadowMapWidth: { default: 512, if: { castShadow: true } },
+    shadowRadius: { default: 1, if: { castShadow: true } }
   },
 
   /**

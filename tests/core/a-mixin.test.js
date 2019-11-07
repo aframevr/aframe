@@ -200,7 +200,7 @@ suite('a-mixin (detached)', function () {
       var mixinEl = document.createElement('a-mixin');
       mixinEl.setAttribute('material', 'color: red');
       mixinEl.cacheAttributes();
-      assert.shallowDeepEqual(mixinEl.componentCache.material, {color: 'red'});
+      assert.shallowDeepEqual(mixinEl.componentCache.material, { color: 'red' });
     });
 
     test('does not cache non-component attributes', function () {
@@ -214,8 +214,7 @@ suite('a-mixin (detached)', function () {
       var mixinEl = document.createElement('a-mixin');
       mixinEl.setAttribute('sound__test', 'src: url(mysoundfile.mp3)');
       mixinEl.cacheAttributes();
-      assert.shallowDeepEqual(mixinEl.componentCache.sound__test, {src: 'url(mysoundfile.mp3)'});
+      assert.shallowDeepEqual(mixinEl.componentCache.sound__test, { src: 'url(mysoundfile.mp3)' });
     });
   });
 });
-

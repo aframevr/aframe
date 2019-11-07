@@ -1,4 +1,4 @@
-/* global AFRAME, assert, process, suite, test, setup */
+/* global AFRAME, assert, suite, test, setup */
 var components = require('core/component').components;
 var systems = require('core/system').systems;
 var registerSystem = require('core/system').registerSystem;
@@ -53,7 +53,7 @@ suite('System', function () {
       var TestSystem;
 
       AFRAME.registerSystem('test', {
-        schema: {default: ''}
+        schema: { default: '' }
       });
       TestSystem = systems.test;
 
@@ -69,8 +69,8 @@ suite('System', function () {
 
       AFRAME.registerSystem('test', {
         schema: {
-          a: {type: 'number'},
-          b: {type: 'string'}
+          a: { type: 'number' },
+          b: { type: 'string' }
         }
       });
       TestSystem = systems.test;
@@ -88,8 +88,8 @@ suite('System', function () {
 
       AFRAME.registerSystem('test', {
         schema: {
-          a: {default: 50},
-          b: {default: 'horses'}
+          a: { default: 50 },
+          b: { default: 'horses' }
         }
       });
       TestSystem = systems.test;
@@ -104,7 +104,7 @@ suite('System', function () {
       var system;
       var TestSystem;
 
-      AFRAME.registerSystem('test', {schema: {}});
+      AFRAME.registerSystem('test', { schema: {} });
       TestSystem = systems.test;
 
       system = new TestSystem(sceneEl);
@@ -117,8 +117,8 @@ suite('System', function () {
     var system;
     AFRAME.registerSystem('test', {
       schema: {
-        foo: {type: 'string'},
-        bar: {type: 'number'}
+        foo: { type: 'string' },
+        bar: { type: 'number' }
       }
     });
     sceneEl = document.createElement('a-scene');
@@ -127,7 +127,7 @@ suite('System', function () {
     setTimeout(() => {
       system = sceneEl.systems.test;
 
-      sceneEl.setAttribute('test', {foo: 'foo', bar: 10});
+      sceneEl.setAttribute('test', { foo: 'foo', bar: 10 });
       assert.equal(sceneEl.getAttribute('test').foo, 'foo');
       assert.equal(sceneEl.getAttribute('test').bar, 10);
       assert.equal(system.data.foo, 'foo');
@@ -142,8 +142,8 @@ suite('System', function () {
     var sceneEl;
     AFRAME.registerSystem('test', {
       schema: {
-        foo: {type: 'string', default: 'qaz'},
-        bar: {type: 'number', default: 50}
+        foo: { type: 'string', default: 'qaz' },
+        bar: { type: 'number', default: 50 }
       },
 
       update: function () {
@@ -161,8 +161,8 @@ suite('System', function () {
     var sceneEl;
     AFRAME.registerSystem('test', {
       schema: {
-        foo: {type: 'string', default: 'default'},
-        bar: {type: 'number', default: 0}
+        foo: { type: 'string', default: 'default' },
+        bar: { type: 'number', default: 0 }
       },
 
       update: function (oldData) {
@@ -178,7 +178,7 @@ suite('System', function () {
     sceneEl = document.createElement('a-scene');
     document.body.appendChild(sceneEl);
     setTimeout(() => {
-      sceneEl.setAttribute('test', {foo: 'foo', bar: 10});
+      sceneEl.setAttribute('test', { foo: 'foo', bar: 10 });
     });
   });
 });

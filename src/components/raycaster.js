@@ -41,16 +41,16 @@ var EVENTS = {
  */
 module.exports.Component = registerComponent('raycaster', {
   schema: {
-    autoRefresh: {default: true},
-    direction: {type: 'vec3', default: {x: 0, y: 0, z: -1}},
-    enabled: {default: true},
-    far: {default: 1000},
-    interval: {default: 0},
-    near: {default: 0},
-    objects: {default: ''},
-    origin: {type: 'vec3'},
-    showLine: {default: false},
-    useWorldCoordinates: {default: false}
+    autoRefresh: { default: true },
+    direction: { type: 'vec3', default: { x: 0, y: 0, z: -1 } },
+    enabled: { default: true },
+    far: { default: 1000 },
+    interval: { default: 0 },
+    near: { default: 0 },
+    objects: { default: '' },
+    origin: { type: 'vec3' },
+    showLine: { default: false },
+    useWorldCoordinates: { default: false }
   },
 
   multiple: true,
@@ -74,12 +74,12 @@ module.exports.Component = registerComponent('raycaster', {
     this.dirty = true;
     this.lineEndVec3 = new THREE.Vector3();
     this.otherLineEndVec3 = new THREE.Vector3();
-    this.lineData = {end: this.lineEndVec3};
+    this.lineData = { end: this.lineEndVec3 };
 
     this.getIntersection = this.getIntersection.bind(this);
-    this.intersectedDetail = {el: this.el, getIntersection: this.getIntersection};
-    this.intersectedClearedDetail = {el: this.el};
-    this.intersectionClearedDetail = {clearedEls: this.clearedIntersectedEls};
+    this.intersectedDetail = { el: this.el, getIntersection: this.getIntersection };
+    this.intersectedClearedDetail = { el: this.el };
+    this.intersectionClearedDetail = { clearedEls: this.clearedIntersectedEls };
     this.intersectionDetail = {};
   },
 
@@ -255,7 +255,7 @@ module.exports.Component = registerComponent('raycaster', {
     for (i = 0; i < prevIntersectedEls.length; i++) {
       if (intersectedEls.indexOf(prevIntersectedEls[i]) !== -1) { continue; }
       prevIntersectedEls[i].emit(EVENTS.INTERSECT_CLEAR,
-                                 this.intersectedClearedDetail);
+        this.intersectedClearedDetail);
       clearedIntersectedEls.push(prevIntersectedEls[i]);
     }
     if (clearedIntersectedEls.length) {
@@ -412,7 +412,7 @@ module.exports.Component = registerComponent('raycaster', {
     var i;
     for (i = 0; i < this.intersectedEls.length; i++) {
       this.intersectedEls[i].emit(EVENTS.INTERSECT_CLEAR,
-                                  this.intersectedClearedDetail);
+        this.intersectedClearedDetail);
     }
     copyArray(this.clearedIntersectedEls, this.intersectedEls);
     this.intersectedEls.length = 0;

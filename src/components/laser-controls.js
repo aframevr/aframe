@@ -3,9 +3,9 @@ var utils = require('../utils/');
 
 registerComponent('laser-controls', {
   schema: {
-    hand: {default: 'right'},
-    model: {default: true},
-    defaultModelColor: {type: 'color', default: 'grey'}
+    hand: { default: 'right' },
+    model: { default: true },
+    defaultModelColor: { type: 'color', default: 'grey' }
   },
 
   init: function () {
@@ -14,7 +14,7 @@ registerComponent('laser-controls', {
     var el = this.el;
     var self = this;
     var modelEnabled = this.data.model && !this.el.sceneEl.hasWebXR;
-    var controlsConfiguration = {hand: data.hand, model: modelEnabled};
+    var controlsConfiguration = { hand: data.hand, model: modelEnabled };
 
     // Set all controller models.
     el.setAttribute('daydream-controls', controlsConfiguration);
@@ -75,35 +75,35 @@ registerComponent('laser-controls', {
 
   config: {
     'daydream-controls': {
-      cursor: {downEvents: ['trackpaddown', 'triggerdown'], upEvents: ['trackpadup', 'triggerup']}
+      cursor: { downEvents: ['trackpaddown', 'triggerdown'], upEvents: ['trackpadup', 'triggerup'] }
     },
 
     'gearvr-controls': {
-      cursor: {downEvents: ['triggerdown'], upEvents: ['triggerup']},
-      raycaster: {origin: {x: 0, y: 0.0005, z: 0}}
+      cursor: { downEvents: ['triggerdown'], upEvents: ['triggerup'] },
+      raycaster: { origin: { x: 0, y: 0.0005, z: 0 } }
     },
 
     'oculus-go-controls': {
-      cursor: {downEvents: ['triggerdown'], upEvents: ['triggerup']},
-      raycaster: {origin: {x: 0, y: 0.0005, z: 0}}
+      cursor: { downEvents: ['triggerdown'], upEvents: ['triggerup'] },
+      raycaster: { origin: { x: 0, y: 0.0005, z: 0 } }
     },
 
     'oculus-touch-controls': {
-      cursor: {downEvents: ['triggerdown'], upEvents: ['triggerup']},
-      raycaster: {origin: {x: 0, y: 0, z: 0}}
+      cursor: { downEvents: ['triggerdown'], upEvents: ['triggerup'] },
+      raycaster: { origin: { x: 0, y: 0, z: 0 } }
     },
 
     'vive-controls': {
-      cursor: {downEvents: ['triggerdown'], upEvents: ['triggerup']}
+      cursor: { downEvents: ['triggerdown'], upEvents: ['triggerup'] }
     },
 
     'vive-focus-controls': {
-      cursor: {downEvents: ['trackpaddown', 'triggerdown'], upEvents: ['trackpadup', 'triggerup']}
+      cursor: { downEvents: ['trackpaddown', 'triggerdown'], upEvents: ['trackpadup', 'triggerup'] }
     },
 
     'windows-motion-controls': {
-      cursor: {downEvents: ['triggerdown'], upEvents: ['triggerup']},
-      raycaster: {showLine: false}
+      cursor: { downEvents: ['triggerdown'], upEvents: ['triggerup'] },
+      raycaster: { showLine: false }
     }
   },
 
@@ -113,7 +113,7 @@ registerComponent('laser-controls', {
       primitive: 'sphere',
       radius: 0.03
     });
-    modelEl.setAttribute('material', {color: this.data.color});
+    modelEl.setAttribute('material', { color: this.data.color });
     this.el.appendChild(modelEl);
   }
 });

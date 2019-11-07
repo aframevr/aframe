@@ -34,7 +34,7 @@ suite('inspector', function () {
 
   test('injects inspector <script> via postMessage', function () {
     var el = this.sceneEl;
-    el.components.inspector.onMessage({data: 'INJECT_AFRAME_INSPECTOR'});
+    el.components.inspector.onMessage({ data: 'INJECT_AFRAME_INSPECTOR' });
     assert.ok(document.querySelector(SCRIPT_SELECTOR));
   });
 });

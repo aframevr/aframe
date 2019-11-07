@@ -50,41 +50,41 @@ module.exports.Component = registerComponent('text', {
   multiple: true,
 
   schema: {
-    align: {type: 'string', default: 'left', oneOf: ['left', 'right', 'center']},
-    alphaTest: {default: 0.5},
+    align: { type: 'string', default: 'left', oneOf: ['left', 'right', 'center'] },
+    alphaTest: { default: 0.5 },
     // `anchor` defaults to center to match geometries.
-    anchor: {default: 'center', oneOf: ['left', 'right', 'center', 'align']},
-    baseline: {default: 'center', oneOf: ['top', 'center', 'bottom']},
-    color: {type: 'color', default: '#FFF'},
-    font: {type: 'string', default: DEFAULT_FONT},
+    anchor: { default: 'center', oneOf: ['left', 'right', 'center', 'align'] },
+    baseline: { default: 'center', oneOf: ['top', 'center', 'bottom'] },
+    color: { type: 'color', default: '#FFF' },
+    font: { type: 'string', default: DEFAULT_FONT },
     // `fontImage` defaults to the font name as a .png (e.g., mozillavr.fnt -> mozillavr.png).
-    fontImage: {type: 'string'},
+    fontImage: { type: 'string' },
     // `height` has no default, will be populated at layout.
-    height: {type: 'number'},
-    letterSpacing: {type: 'number', default: 0},
+    height: { type: 'number' },
+    letterSpacing: { type: 'number', default: 0 },
     // `lineHeight` defaults to font's `lineHeight` value.
-    lineHeight: {type: 'number'},
+    lineHeight: { type: 'number' },
     // `negate` must be true for fonts generated with older versions of msdfgen (white background).
-    negate: {type: 'boolean', default: true},
-    opacity: {type: 'number', default: 1.0},
-    shader: {default: 'sdf', oneOf: shaders},
-    side: {default: 'front', oneOf: ['front', 'back', 'double']},
-    tabSize: {default: 4},
-    transparent: {default: true},
-    value: {type: 'string'},
-    whiteSpace: {default: 'normal', oneOf: ['normal', 'pre', 'nowrap']},
+    negate: { type: 'boolean', default: true },
+    opacity: { type: 'number', default: 1.0 },
+    shader: { default: 'sdf', oneOf: shaders },
+    side: { default: 'front', oneOf: ['front', 'back', 'double'] },
+    tabSize: { default: 4 },
+    transparent: { default: true },
+    value: { type: 'string' },
+    whiteSpace: { default: 'normal', oneOf: ['normal', 'pre', 'nowrap'] },
     // `width` defaults to geometry width if present, else `DEFAULT_WIDTH`.
-    width: {type: 'number'},
+    width: { type: 'number' },
     // `wrapCount` units are about one default font character. Wrap roughly at this number.
-    wrapCount: {type: 'number', default: 40},
+    wrapCount: { type: 'number', default: 40 },
     // `wrapPixels` will wrap using bmfont pixel units (e.g., dejavu's is 32 pixels).
-    wrapPixels: {type: 'number'},
+    wrapPixels: { type: 'number' },
     // `xOffset` to add padding.
-    xOffset: {type: 'number', default: 0},
+    xOffset: { type: 'number', default: 0 },
     // `yOffset` to adjust generated fonts from tools that may have incorrect metrics.
-    yOffset: {type: 'number', default: 0},
+    yOffset: { type: 'number', default: 0 },
     // `zOffset` will provide a small z offset to avoid z-fighting.
-    zOffset: {type: 'number', default: 0.001}
+    zOffset: { type: 'number', default: 0.001 }
   },
 
   init: function () {
@@ -237,7 +237,7 @@ module.exports.Component = registerComponent('text', {
         textures[data.font] = texture;
         self.texture = texture;
         self.mesh.visible = true;
-        el.emit('textfontset', {font: data.font, fontObj: font});
+        el.emit('textfontset', { font: data.font, fontObj: font });
       }).catch(function (err) {
         error(err.message);
         error(err.stack);
@@ -288,7 +288,7 @@ module.exports.Component = registerComponent('text', {
     // Determine wrap pixel count. Either specified or by experimental fudge factor.
     // Note that experimental factor will never be correct for variable width fonts.
     textRenderWidth = computeWidth(data.wrapPixels, data.wrapCount,
-                                   this.currentFont.widthFactor);
+      this.currentFont.widthFactor);
     textScale = width / textRenderWidth;
 
     // Determine height to use.
@@ -359,9 +359,9 @@ module.exports.Component = registerComponent('text', {
         ? data.lineHeight
         : font.common.lineHeight;
       geometryUpdateData.text = data.value.toString().replace(newLineRegex, '\n')
-                                                     .replace(tabRegex, '\t');
+        .replace(tabRegex, '\t');
       geometryUpdateData.width = computeWidth(data.wrapPixels, data.wrapCount,
-                                              font.widthFactor);
+        font.widthFactor);
       geometry.update(utils.extend(geometryUpdateBase, data, geometryUpdateData));
     };
   })()
@@ -415,7 +415,7 @@ function loadTexture (src) {
       resolve(image);
     }, undefined, function () {
       error('Error loading font image', src);
-      reject(null);
+      reject(new Error('Error loading font image.'));
     });
   });
 }

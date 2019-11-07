@@ -3,7 +3,7 @@ var registerComponent = require('../core/component').registerComponent;
 
 module.exports.Component = registerComponent('tracked-controls-webxr', {
   schema: {
-    hand: {type: 'string', default: ''}
+    hand: { type: 'string', default: '' }
   },
 
   init: function () {
@@ -11,7 +11,7 @@ module.exports.Component = registerComponent('tracked-controls-webxr', {
     this.updateController = this.updateController.bind(this);
     this.emitButtonUpEvent = this.emitButtonUpEvent.bind(this);
     this.emitButtonDownEvent = this.emitButtonDownEvent.bind(this);
-    this.buttonEventDetails = {id: 'trigger', state: {pressed: false}};
+    this.buttonEventDetails = { id: 'trigger', state: { pressed: false } };
   },
 
   play: function () {

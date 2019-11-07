@@ -1,4 +1,4 @@
-/* global assert, process, setup, suite, test */
+/* global assert, setup, suite, test */
 var helpers = require('../helpers');
 var degToRad = require('index').THREE.Math.degToRad;
 
@@ -160,8 +160,7 @@ suite('standard geometries', function () {
 
   test('icosahedron', function () {
     var geometry;
-    el.setAttribute('geometry', {
-      buffer: false, primitive: 'icosahedron', detail: 0, radius: 5});
+    el.setAttribute('geometry', { buffer: false, primitive: 'icosahedron', detail: 0, radius: 5 });
 
     geometry = el.getObject3D('mesh').geometry;
     assert.equal(geometry.type, 'IcosahedronGeometry');
@@ -171,7 +170,7 @@ suite('standard geometries', function () {
 
   test('plane', function () {
     var geometry;
-    el.setAttribute('geometry', {buffer: false, primitive: 'plane', width: 1, height: 2});
+    el.setAttribute('geometry', { buffer: false, primitive: 'plane', width: 1, height: 2 });
 
     geometry = el.getObject3D('mesh').geometry;
     assert.equal(geometry.type, 'PlaneGeometry');
@@ -181,8 +180,7 @@ suite('standard geometries', function () {
 
   test('ring', function () {
     var geometry;
-    el.setAttribute('geometry', {
-      buffer: false, primitive: 'ring', radiusInner: 1, radiusOuter: 2, segmentsTheta: 3});
+    el.setAttribute('geometry', { buffer: false, primitive: 'ring', radiusInner: 1, radiusOuter: 2, segmentsTheta: 3 });
 
     geometry = el.getObject3D('mesh').geometry;
     assert.equal(geometry.type, 'RingGeometry');
@@ -264,9 +262,9 @@ suite('standard geometries', function () {
     el.setAttribute('geometry', {
       buffer: false,
       primitive: 'triangle',
-      vertexA: {x: 1, y: 2, z: 3},
-      vertexB: {x: 4, y: 5, z: 6},
-      vertexC: {x: 7, y: 8, z: 9}
+      vertexA: { x: 1, y: 2, z: 3 },
+      vertexB: { x: 4, y: 5, z: 6 },
+      vertexC: { x: 7, y: 8, z: 9 }
     });
 
     geometry = el.getObject3D('mesh').geometry;

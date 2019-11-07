@@ -99,7 +99,7 @@ suite('a-register-element', function () {
       // Wrap.
       WrappedDerivedPrototype = {};
       wrapMethods(WrappedDerivedPrototype, ['createdCallback'], DerivedPrototype,
-                  BasePrototype);
+        BasePrototype);
 
       // Check Base (0) before Derived (1).
       WrappedDerivedPrototype.createdCallback.value();

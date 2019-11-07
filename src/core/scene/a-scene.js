@@ -55,7 +55,7 @@ module.exports.AScene = registerElement('a-scene', {
         this.systemNames = [];
         this.time = this.delta = 0;
 
-        this.behaviors = {tick: [], tock: []};
+        this.behaviors = { tick: [], tock: [] };
         this.hasLoaded = false;
         this.isPlaying = false;
         this.originalHTML = this.innerHTML;
@@ -120,7 +120,7 @@ module.exports.AScene = registerElement('a-scene', {
           // Register for mouse unrestricted events while in VR
           // (e.g. mouse once again available on desktop 2D view)
           window.addEventListener('vrdisplaypointerunrestricted',
-                                  this.pointerUnrestrictedBound);
+            this.pointerUnrestrictedBound);
         }
 
         // Camera set up by camera system.
@@ -328,11 +328,11 @@ module.exports.AScene = registerElement('a-scene', {
           // to setup everything from there. Thus, we need to emulate another vrdisplaypresentchange
           // for the actual requestPresent. Need to make sure there are no issues with firing the
           // vrdisplaypresentchange multiple times.
-          var event = new CustomEvent('vrdisplaypresentchange', {detail: {display: utils.device.getVRDisplay()}});
+          var event = new CustomEvent('vrdisplaypresentchange', { detail: { display: utils.device.getVRDisplay() } });
           if (!isWebXRAvailable) { window.dispatchEvent(event); }
 
           self.addState('vr-mode');
-          self.emit('enter-vr', {target: self});
+          self.emit('enter-vr', { target: self });
           // Lock to landscape orientation on mobile.
           if (!navigator.xr && self.isMobile && screen.orientation && screen.orientation.lock) {
             screen.orientation.lock('landscape');
@@ -361,7 +361,7 @@ module.exports.AScene = registerElement('a-scene', {
       },
       writable: true
     },
-     /**
+    /**
      * Call `exitPresent` if WebVR / WebXR or WebVR polyfill.
      * Handle events, states, fullscreen styles.
      *
@@ -410,7 +410,7 @@ module.exports.AScene = registerElement('a-scene', {
           self.resize();
           if (self.isIOS) { utils.forceCanvasResizeSafariMobile(self.canvas); }
           self.renderer.setPixelRatio(window.devicePixelRatio);
-          self.emit('exit-vr', {target: self});
+          self.emit('exit-vr', { target: self });
         }
 
         function exitVRFailure (err) {
@@ -588,7 +588,7 @@ module.exports.AScene = registerElement('a-scene', {
           logarithmicDepthBuffer: false
         };
 
-        this.maxCanvasSize = {height: 1920, width: 1920};
+        this.maxCanvasSize = { height: 1920, width: 1920 };
 
         if (this.hasAttribute('renderer')) {
           rendererAttrString = this.getAttribute('renderer');
@@ -650,7 +650,7 @@ module.exports.AScene = registerElement('a-scene', {
           var renderer = this.renderer;
           var vrDisplay;
           var vrManager = this.renderer.vr;
-          AEntity.prototype.play.call(this);  // .play() *before* render.
+          AEntity.prototype.play.call(this); // .play() *before* render.
 
           if (sceneEl.renderStarted) { return; }
           sceneEl.resize();
@@ -804,7 +804,7 @@ function getMaxSize (maxSize, isVR) {
   var size;
   var pixelRatio = window.devicePixelRatio;
 
-  size = {height: document.body.offsetHeight, width: document.body.offsetWidth};
+  size = { height: document.body.offsetHeight, width: document.body.offsetWidth };
   if (!maxSize || isVR || (maxSize.width === -1 && maxSize.height === -1)) {
     return size;
   }
@@ -833,10 +833,10 @@ function requestFullscreen (canvas) {
   var requestFullscreen =
     canvas.requestFullscreen ||
     canvas.webkitRequestFullscreen ||
-    canvas.mozRequestFullScreen ||  // The capitalized `S` is not a typo.
+    canvas.mozRequestFullScreen || // The capitalized `S` is not a typo.
     canvas.msRequestFullscreen;
   // Hide navigation buttons on Android.
-  requestFullscreen.apply(canvas, [{navigationUI: 'hide'}]);
+  requestFullscreen.apply(canvas, [{ navigationUI: 'hide' }]);
 }
 
 function exitFullscreen () {
@@ -873,7 +873,7 @@ function setupCanvas (sceneEl) {
 
   // Set canvas on scene.
   sceneEl.canvas = canvasEl;
-  sceneEl.emit('render-target-loaded', {target: canvasEl});
+  sceneEl.emit('render-target-loaded', { target: canvasEl });
   // For unknown reasons a synchronous resize does not work on desktop when
   // entering/exiting fullscreen.
   setTimeout(bind(sceneEl.resize, sceneEl), 0);
@@ -889,4 +889,4 @@ function setupCanvas (sceneEl) {
     document.body.focus();
   }
 }
-module.exports.setupCanvas = setupCanvas;  // For testing.
+module.exports.setupCanvas = setupCanvas; // For testing.

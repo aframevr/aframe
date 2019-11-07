@@ -41,14 +41,14 @@ var STRING_OBJECT3D = 'object3D';
  */
 module.exports.Component = registerComponent('animation', {
   schema: {
-    autoplay: {default: true},
-    delay: {default: 0},
-    dir: {default: ''},
-    dur: {default: 1000},
-    easing: {default: 'easeInQuad'},
-    elasticity: {default: 400},
-    enabled: {default: true},
-    from: {default: ''},
+    autoplay: { default: true },
+    delay: { default: 0 },
+    dir: { default: '' },
+    dur: { default: 1000 },
+    easing: { default: 'easeInQuad' },
+    elasticity: { default: 400 },
+    enabled: { default: true },
+    from: { default: '' },
     loop: {
       default: 0,
       parse: function (value) {
@@ -58,14 +58,14 @@ module.exports.Component = registerComponent('animation', {
         return parseInt(value, 10);
       }
     },
-    property: {default: ''},
-    startEvents: {type: 'array'},
-    pauseEvents: {type: 'array'},
-    resumeEvents: {type: 'array'},
-    round: {default: false},
-    to: {default: ''},
-    type: {default: ''},
-    isRawProperty: {default: false}
+    property: { default: '' },
+    startEvents: { type: 'array' },
+    pauseEvents: { type: 'array' },
+    resumeEvents: { type: 'array' },
+    round: { default: false },
+    to: { default: '' },
+    type: { default: '' },
+    isRawProperty: { default: false }
   },
 
   multiple: true,
@@ -73,7 +73,7 @@ module.exports.Component = registerComponent('animation', {
   init: function () {
     var self = this;
 
-    this.eventDetail = {name: this.attrName};
+    this.eventDetail = { name: this.attrName };
     this.time = 0;
 
     this.animation = null;
@@ -171,7 +171,7 @@ module.exports.Component = registerComponent('animation', {
     this.addEventListeners();
 
     // Wait for start events for animation.
-    if (!data.autoplay || data.startEvents && data.startEvents.length) { return; }
+    if (!data.autoplay || (data.startEvents && data.startEvents.length)) { return; }
 
     // Delay animation.
     if (data.delay) {
@@ -353,8 +353,8 @@ module.exports.Component = registerComponent('animation', {
 
     // Parse coordinates.
     from = data.from !== ''
-      ? utils.coordinates.parse(data.from)  // If data.from defined, use that.
-      : getComponentProperty(el, data.property);  // If data.from not defined, get on the fly.
+      ? utils.coordinates.parse(data.from) // If data.from defined, use that.
+      : getComponentProperty(el, data.property); // If data.from not defined, get on the fly.
     to = utils.coordinates.parse(data.to);
 
     if (data.property === PROP_ROTATION) {

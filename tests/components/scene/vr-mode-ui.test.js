@@ -34,7 +34,7 @@ suite('vr-mode-ui', function () {
   test('hides on enter VR', function () {
     var scene = this.el;
     // mock camera
-    scene.camera = {el: {object3D: {}}};
+    scene.camera = { el: { object3D: {} } };
     scene.enterVR();
     UI_CLASSES.forEach(function (uiClass) {
       assert.ok(scene.querySelector(uiClass).className.indexOf('a-hidden'));
@@ -44,13 +44,13 @@ suite('vr-mode-ui', function () {
   test('shows on exit VR', function (done) {
     var scene = this.el;
     // mock camera
-    scene.camera = {el: {object3D: {}, getAttribute: function () { return {spectator: false}; }}};
+    scene.camera = { el: { object3D: {}, getAttribute: function () { return { spectator: false }; } } };
     scene.enterVR();
     scene.exitVR();
 
     process.nextTick(function () {
       assert.equal(scene.querySelector('.a-enter-vr-button').className.indexOf('a-hidden'),
-                   -1);
+        -1);
       done();
     });
   });

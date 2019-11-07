@@ -13,10 +13,10 @@ var warn = debug('components:pool:warn');
  */
 module.exports.Component = registerComponent('pool', {
   schema: {
-    container: {default: ''},
-    mixin: {default: ''},
-    size: {default: 0},
-    dynamic: {default: false}
+    container: { default: '' },
+    mixin: { default: '' },
+    size: { default: 0 },
+    dynamic: { default: false }
   },
 
   multiple: true,

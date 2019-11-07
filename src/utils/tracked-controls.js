@@ -1,6 +1,6 @@
 var DEFAULT_HANDEDNESS = require('../constants').DEFAULT_HANDEDNESS;
 var AXIS_LABELS = ['x', 'y', 'z', 'w'];
-var NUM_HANDS = 2;  // Number of hands in a pair. Should always be 2.
+var NUM_HANDS = 2; // Number of hands in a pair. Should always be 2.
 
 /**
  * Called on controller component `.play` handlers.
@@ -38,10 +38,10 @@ module.exports.checkControllerPresentAndSetup = function (component, idPrefix, q
   if (isPresent) {
     component.injectTrackedControls();
     if (!hasWebXR) { component.addEventListeners(); }
-    el.emit('controllerconnected', {name: component.name, component: component});
+    el.emit('controllerconnected', { name: component.name, component: component });
   } else {
     component.removeEventListeners();
-    el.emit('controllerdisconnected', {name: component.name, component: component});
+    el.emit('controllerdisconnected', { name: component.name, component: component });
   }
 };
 
@@ -67,7 +67,7 @@ function isControllerPresentWebVR (component, idPrefix, queryObject) {
   if (!gamepads.length) { return false; }
 
   return !!findMatchingControllerWebVR(gamepads, null, idPrefix, queryObject.hand,
-                                  filterControllerIndex);
+    filterControllerIndex);
 }
 
 /**
@@ -113,7 +113,7 @@ module.exports.isControllerPresentWebXR = isControllerPresentWebXR;
  * where n equals filterControllerIndex. defaults to 0.
  */
 function findMatchingControllerWebVR (controllers, filterIdExact, filterIdPrefix, filterHand,
-                                 filterControllerIndex) {
+  filterControllerIndex) {
   var controller;
   var i;
   var matchingControllerOccurence = 0;

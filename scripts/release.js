@@ -22,8 +22,8 @@ if (process.env.FOR_RELEASE) {
   distMax = pkg.scripts['dist:max'].replace(/master/g, `v${nextVersion}`);
 }
 
-execSync(distMin, {stdio: 'inherit'});
-execSync(distMax, {stdio: 'inherit'});
+execSync(distMin, { stdio: 'inherit' });
+execSync(distMax, { stdio: 'inherit' });
 
 // Remove `aframe-v{prevVersion}.js`.
 glob.sync(`dist/aframe*v${prevVersion}*`).forEach(fs.unlinkSync);

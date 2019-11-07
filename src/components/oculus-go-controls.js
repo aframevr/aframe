@@ -18,13 +18,13 @@ var OCULUS_GO_CONTROLLER_MODEL_URL = 'https://cdn.aframe.io/controllers/oculus/g
  */
 module.exports.Component = registerComponent('oculus-go-controls', {
   schema: {
-    hand: {default: ''},  // This informs the degenerate arm model.
-    buttonColor: {type: 'color', default: '#FFFFFF'},
-    buttonTouchedColor: {type: 'color', default: '#BBBBBB'},
-    buttonHighlightColor: {type: 'color', default: '#7A7A7A'},
-    model: {default: true},
-    orientationOffset: {type: 'vec3'},
-    armModel: {default: true}
+    hand: { default: '' }, // This informs the degenerate arm model.
+    buttonColor: { type: 'color', default: '#FFFFFF' },
+    buttonTouchedColor: { type: 'color', default: '#BBBBBB' },
+    buttonHighlightColor: { type: 'color', default: '#7A7A7A' },
+    model: { default: true },
+    orientationOffset: { type: 'vec3' },
+    armModel: { default: true }
   },
 
   /**
@@ -33,7 +33,7 @@ module.exports.Component = registerComponent('oculus-go-controls', {
    * 1 - trigger
    */
   mapping: {
-    axes: {trackpad: [0, 1]},
+    axes: { trackpad: [0, 1] },
     buttons: ['trackpad', 'trigger']
   },
 
@@ -84,7 +84,7 @@ module.exports.Component = registerComponent('oculus-go-controls', {
 
   checkIfControllerPresent: function () {
     checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX,
-                                        this.data.hand ? {hand: this.data.hand} : {});
+      this.data.hand ? { hand: this.data.hand } : {});
   },
 
   play: function () {

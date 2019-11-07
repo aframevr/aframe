@@ -21,7 +21,7 @@ suite('a-node', function () {
         assert.equal(event.target, el);
         done();
       });
-      el.emit('hadouken', {power: 10});
+      el.emit('hadouken', { power: 10 });
     });
 
     test('does not leak detail between events', function (done) {
@@ -34,8 +34,8 @@ suite('a-node', function () {
         });
       });
 
-      el.emit('foo', {foo: 10});
-      el.emit('bar', {bar: 20});
+      el.emit('foo', { foo: 10 });
+      el.emit('bar', { bar: 20 });
     });
 
     test('can emit event with extraData', function (done) {
@@ -46,7 +46,7 @@ suite('a-node', function () {
         assert.equal(event.target, el);
         done();
       });
-      el.emit('hadouken', {power: 10}, true, {cancelable: true});
+      el.emit('hadouken', { power: 10 }, true, { cancelable: true });
     });
 
     test('bubbles', function (done) {

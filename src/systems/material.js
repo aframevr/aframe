@@ -105,7 +105,7 @@ module.exports.System = registerSystem('material', {
     cb(texture);
   },
 
-    /**
+  /**
    * Load video texture (THREE.VideoTexture).
    * Which is just an image texture that RAFs + needsUpdate.
    * Note that creating a video texture is synchronous unlike loading an image texture.
@@ -158,7 +158,7 @@ module.exports.System = registerSystem('material', {
     // If iOS and video is HLS, do some hacks.
     if (this.sceneEl.isIOS &&
         isHLS(videoEl.src || videoEl.getAttribute('src'),
-              videoEl.type || videoEl.getAttribute('type'))) {
+          videoEl.type || videoEl.getAttribute('type'))) {
       // Actually BGRA. Tell shader to correct later.
       texture.format = THREE.RGBAFormat;
       texture.needsCorrectionBGRA = true;
@@ -168,7 +168,7 @@ module.exports.System = registerSystem('material', {
     }
 
     // Cache as promise to be consistent with image texture caching.
-    videoTextureResult = {texture: texture, videoEl: videoEl};
+    videoTextureResult = { texture: texture, videoEl: videoEl };
     textureCache[hash] = Promise.resolve(videoTextureResult);
     handleVideoTextureLoaded(videoTextureResult);
   },
@@ -311,7 +311,7 @@ function loadImageTexture (src, data) {
       function () { /* no-op */ },
       function (xhr) {
         error('`$s` could not be fetched (Error code: %s; Response: %s)', xhr.status,
-              xhr.statusText);
+          xhr.statusText);
       }
     );
   }
@@ -323,8 +323,8 @@ function loadImageTexture (src, data) {
  * @param {object} data - With keys like `repeat`.
  */
 function setTextureProperties (texture, data) {
-  var offset = data.offset || {x: 0, y: 0};
-  var repeat = data.repeat || {x: 1, y: 1};
+  var offset = data.offset || { x: 0, y: 0 };
+  var repeat = data.repeat || { x: 1, y: 1 };
   var npot = data.npot || false;
 
   // To support NPOT textures, wrap must be ClampToEdge (not Repeat),

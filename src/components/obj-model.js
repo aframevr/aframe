@@ -6,8 +6,8 @@ var warn = debug('components:obj-model:warn');
 
 module.exports.Component = registerComponent('obj-model', {
   schema: {
-    mtl: {type: 'model'},
-    obj: {type: 'model'}
+    mtl: { type: 'model' },
+    obj: { type: 'model' }
   },
 
   init: function () {
@@ -71,7 +71,7 @@ module.exports.Component = registerComponent('obj-model', {
             }
           });
           el.setObject3D('mesh', objModel);
-          el.emit('model-loaded', {format: 'obj', model: objModel});
+          el.emit('model-loaded', { format: 'obj', model: objModel });
         });
       });
       return;
@@ -82,7 +82,7 @@ module.exports.Component = registerComponent('obj-model', {
       self.model = objModel;
       self.applyMaterial();
       el.setObject3D('mesh', objModel);
-      el.emit('model-loaded', {format: 'obj', model: objModel});
+      el.emit('model-loaded', { format: 'obj', model: objModel });
     });
   },
 

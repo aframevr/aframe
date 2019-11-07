@@ -15,7 +15,7 @@
 // Polyfill `document.registerElement`.
 require('document-register-element');
 
-var ANode;  // Must declare before AEntity. Initialized at the bottom.
+var ANode; // Must declare before AEntity. Initialized at the bottom.
 var AEntity;
 var knownTags = module.exports.knownTags = {};
 
@@ -49,13 +49,13 @@ module.exports.registerElement = function (tagName, obj) {
   // Wrap if element inherits from `ANode`.
   if (isANode) {
     newObj = wrapANodeMethods(obj.prototype);
-    newObj = {prototype: Object.create(proto, newObj)};
+    newObj = { prototype: Object.create(proto, newObj) };
   }
 
   // Wrap if element inherits from `AEntity`.
   if (isAEntity) {
     newObj = wrapAEntityMethods(obj.prototype);
-    newObj = {prototype: Object.create(proto, newObj)};
+    newObj = { prototype: Object.create(proto, newObj) };
   }
 
   // Give all functions their proper name.
@@ -176,7 +176,7 @@ function copyProperties (source, destination) {
     var desc;
     if (!destination[prop]) {
       desc = Object.getOwnPropertyDescriptor(source, prop);
-      destination[prop] = {value: source[prop], writable: desc.writable};
+      destination[prop] = { value: source[prop], writable: desc.writable };
     }
   });
 }

@@ -11,8 +11,8 @@ var registerComponent = component.registerComponent;
  */
 module.exports.Component = registerComponent('shadow', {
   schema: {
-    cast: {default: true},
-    receive: {default: true}
+    cast: { default: true },
+    receive: { default: true }
   },
 
   init: function () {
