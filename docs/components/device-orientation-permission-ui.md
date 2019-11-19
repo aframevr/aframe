@@ -44,4 +44,5 @@ To configure the style of the dialog one can redefine the associated css styles.
 | deviceorientationpermissiongranted   | User has granted access to DeviceOrientation events                                        |
 | deviceorientationpermissionrejected  | User or browser has denied access to DeviceOrientation events                              |
 | deviceorientationpermissionrequested | Application has requested permission to access DeviceOrientation events                    |
+
 [scene]: ../core/scene.md
