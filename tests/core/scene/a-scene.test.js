@@ -319,6 +319,20 @@ suite('a-scene (without renderer)', function () {
       sceneEl.addEventListener('exit-vr', function () { done(); });
       sceneEl.exitVR();
     });
+
+    test('reset xrSession to undefined', function () {
+      var sceneEl = this.el;
+      sceneEl.xrSession = {
+        removeEventListener: function () {},
+        end: function () {}
+      };
+      sceneEl.renderer.vr = {setSession: function () {}};
+      sceneEl.hasWebXR = true;
+      sceneEl.checkHeadsetConnected = function () { return true; };
+      assert.ok(sceneEl.xrSession);
+      sceneEl.exitVR();
+      assert.notOk(sceneEl.xrSession);
+    });
   });
 
   suite('tick', function () {
