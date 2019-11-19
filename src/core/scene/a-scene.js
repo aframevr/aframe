@@ -65,6 +65,7 @@ module.exports.AScene = registerElement('a-scene', {
         this.setAttribute('keyboard-shortcuts', '');
         this.setAttribute('screenshot', '');
         this.setAttribute('vr-mode-ui', '');
+        this.setAttribute('device-orientation-permission-ui', '');
       }
     },
 
