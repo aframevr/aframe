@@ -77287,6 +77287,7 @@ module.exports.AScene = registerElement('a-scene', {
           if (this.hasWebXR) {
             this.xrSession.removeEventListener('end', this.exitVRBound);
             this.xrSession.end();
+            this.xrSession = undefined;
             vrManager.setSession(null);
           } else {
             if (vrDisplay.isPresenting) {
@@ -79610,7 +79611,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.9.2 (Date 2019-11-19, Commit #994e7fcf)');
+console.log('A-Frame Version: 0.9.2 (Date 2019-11-19, Commit #5969f101)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
