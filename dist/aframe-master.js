@@ -66414,7 +66414,7 @@ function isRawProperty (data) {
          data.property.startsWith(STRING_OBJECT3D);
 }
 
-},{"../core/component":124,"../lib/three":172,"../utils":197,"super-animejs":56}],74:[function(_dereq_,module,exports){
+},{"../core/component":125,"../lib/three":173,"../utils":198,"super-animejs":56}],74:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 
@@ -66506,7 +66506,7 @@ module.exports.Component = registerComponent('camera', {
   }
 });
 
-},{"../core/component":124,"../lib/three":172}],75:[function(_dereq_,module,exports){
+},{"../core/component":125,"../lib/three":173}],75:[function(_dereq_,module,exports){
 /* global THREE */
 var registerComponent = _dereq_('../core/component').registerComponent;
 var utils = _dereq_('../utils/');
@@ -66905,7 +66905,7 @@ module.exports.Component = registerComponent('cursor', {
   }
 });
 
-},{"../core/component":124,"../utils/":197}],76:[function(_dereq_,module,exports){
+},{"../core/component":125,"../utils/":198}],76:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var bind = _dereq_('../utils/bind');
 
@@ -67080,7 +67080,7 @@ module.exports.Component = registerComponent('daydream-controls', {
   }
 });
 
-},{"../core/component":124,"../utils/bind":191,"../utils/tracked-controls":205}],77:[function(_dereq_,module,exports){
+},{"../core/component":125,"../utils/bind":192,"../utils/tracked-controls":206}],77:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var bind = _dereq_('../utils/bind');
 
@@ -67253,7 +67253,7 @@ module.exports.Component = registerComponent('gearvr-controls', {
   }
 });
 
-},{"../core/component":124,"../utils/bind":191,"../utils/tracked-controls":205}],78:[function(_dereq_,module,exports){
+},{"../core/component":125,"../utils/bind":192,"../utils/tracked-controls":206}],78:[function(_dereq_,module,exports){
 var geometries = _dereq_('../core/geometry').geometries;
 var geometryNames = _dereq_('../core/geometry').geometryNames;
 var registerComponent = _dereq_('../core/component').registerComponent;
@@ -67332,7 +67332,7 @@ module.exports.Component = registerComponent('geometry', {
   }
 });
 
-},{"../core/component":124,"../core/geometry":125,"../lib/three":172}],79:[function(_dereq_,module,exports){
+},{"../core/component":125,"../core/geometry":126,"../lib/three":173}],79:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 var utils = _dereq_('../utils/');
@@ -67380,7 +67380,7 @@ module.exports.Component = registerComponent('gltf-model', {
   }
 });
 
-},{"../core/component":124,"../lib/three":172,"../utils/":197}],80:[function(_dereq_,module,exports){
+},{"../core/component":125,"../lib/three":173,"../utils/":198}],80:[function(_dereq_,module,exports){
 /* global THREE */
 var registerComponent = _dereq_('../core/component').registerComponent;
 
@@ -67775,7 +67775,7 @@ function isViveController (trackedControls) {
   return controllerId && controllerId.indexOf('OpenVR ') === 0;
 }
 
-},{"../core/component":124}],81:[function(_dereq_,module,exports){
+},{"../core/component":125}],81:[function(_dereq_,module,exports){
 _dereq_('./animation');
 _dereq_('./camera');
 _dereq_('./cursor');
@@ -67811,6 +67811,7 @@ _dereq_('./windows-motion-controls');
 
 _dereq_('./scene/background');
 _dereq_('./scene/debug');
+_dereq_('./scene/device-orientation-permission-ui');
 _dereq_('./scene/embedded');
 _dereq_('./scene/inspector');
 _dereq_('./scene/fog');
@@ -67820,7 +67821,7 @@ _dereq_('./scene/screenshot');
 _dereq_('./scene/stats');
 _dereq_('./scene/vr-mode-ui');
 
-},{"./animation":73,"./camera":74,"./cursor":75,"./daydream-controls":76,"./gearvr-controls":77,"./geometry":78,"./gltf-model":79,"./hand-controls":80,"./laser-controls":82,"./light":83,"./line":84,"./link":85,"./look-controls":86,"./material":87,"./obj-model":88,"./oculus-go-controls":89,"./oculus-touch-controls":90,"./position":91,"./raycaster":92,"./rotation":93,"./scale":94,"./scene/background":95,"./scene/debug":96,"./scene/embedded":97,"./scene/fog":98,"./scene/inspector":99,"./scene/keyboard-shortcuts":100,"./scene/pool":101,"./scene/screenshot":102,"./scene/stats":103,"./scene/vr-mode-ui":104,"./shadow":105,"./sound":106,"./text":107,"./tracked-controls":110,"./tracked-controls-webvr":108,"./tracked-controls-webxr":109,"./visible":111,"./vive-controls":112,"./vive-focus-controls":113,"./wasd-controls":114,"./windows-motion-controls":115}],82:[function(_dereq_,module,exports){
+},{"./animation":73,"./camera":74,"./cursor":75,"./daydream-controls":76,"./gearvr-controls":77,"./geometry":78,"./gltf-model":79,"./hand-controls":80,"./laser-controls":82,"./light":83,"./line":84,"./link":85,"./look-controls":86,"./material":87,"./obj-model":88,"./oculus-go-controls":89,"./oculus-touch-controls":90,"./position":91,"./raycaster":92,"./rotation":93,"./scale":94,"./scene/background":95,"./scene/debug":96,"./scene/device-orientation-permission-ui":97,"./scene/embedded":98,"./scene/fog":99,"./scene/inspector":100,"./scene/keyboard-shortcuts":101,"./scene/pool":102,"./scene/screenshot":103,"./scene/stats":104,"./scene/vr-mode-ui":105,"./shadow":106,"./sound":107,"./text":108,"./tracked-controls":111,"./tracked-controls-webvr":109,"./tracked-controls-webxr":110,"./visible":112,"./vive-controls":113,"./vive-focus-controls":114,"./wasd-controls":115,"./windows-motion-controls":116}],82:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var utils = _dereq_('../utils/');
 
@@ -67941,7 +67942,7 @@ registerComponent('laser-controls', {
   }
 });
 
-},{"../core/component":124,"../utils/":197}],83:[function(_dereq_,module,exports){
+},{"../core/component":125,"../utils/":198}],83:[function(_dereq_,module,exports){
 var bind = _dereq_('../utils/bind');
 var diff = _dereq_('../utils').diff;
 var debug = _dereq_('../utils/debug');
@@ -68230,7 +68231,7 @@ module.exports.Component = registerComponent('light', {
   }
 });
 
-},{"../core/component":124,"../lib/three":172,"../utils":197,"../utils/bind":191,"../utils/debug":193}],84:[function(_dereq_,module,exports){
+},{"../core/component":125,"../lib/three":173,"../utils":198,"../utils/bind":192,"../utils/debug":194}],84:[function(_dereq_,module,exports){
 /* global THREE */
 var registerComponent = _dereq_('../core/component').registerComponent;
 
@@ -68308,7 +68309,7 @@ function isEqualVec3 (a, b) {
   return (a.x === b.x && a.y === b.y && a.z === b.z);
 }
 
-},{"../core/component":124}],85:[function(_dereq_,module,exports){
+},{"../core/component":125}],85:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var registerShader = _dereq_('../core/shader').registerShader;
 var THREE = _dereq_('../lib/three');
@@ -68680,7 +68681,7 @@ registerShader('portal', {
 });
 /* eslint-enable */
 
-},{"../core/component":124,"../core/shader":134,"../lib/three":172}],86:[function(_dereq_,module,exports){
+},{"../core/component":125,"../core/shader":135,"../lib/three":173}],86:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 var utils = _dereq_('../utils/');
@@ -69113,7 +69114,7 @@ module.exports.Component = registerComponent('look-controls', {
   }
 });
 
-},{"../core/component":124,"../lib/three":172,"../utils":197,"../utils/":197}],87:[function(_dereq_,module,exports){
+},{"../core/component":125,"../lib/three":173,"../utils":198,"../utils/":198}],87:[function(_dereq_,module,exports){
 /* global Promise */
 var utils = _dereq_('../utils/');
 var component = _dereq_('../core/component');
@@ -69382,7 +69383,7 @@ function disposeMaterial (material, system) {
   system.unregisterMaterial(material);
 }
 
-},{"../core/component":124,"../core/shader":134,"../lib/three":172,"../utils/":197}],88:[function(_dereq_,module,exports){
+},{"../core/component":125,"../core/shader":135,"../lib/three":173,"../utils/":198}],88:[function(_dereq_,module,exports){
 var debug = _dereq_('../utils/debug');
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
@@ -69485,7 +69486,7 @@ module.exports.Component = registerComponent('obj-model', {
   }
 });
 
-},{"../core/component":124,"../lib/three":172,"../utils/debug":193}],89:[function(_dereq_,module,exports){
+},{"../core/component":125,"../lib/three":173,"../utils/debug":194}],89:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var bind = _dereq_('../utils/bind');
 
@@ -69659,7 +69660,7 @@ module.exports.Component = registerComponent('oculus-go-controls', {
   }
 });
 
-},{"../core/component":124,"../utils/bind":191,"../utils/tracked-controls":205}],90:[function(_dereq_,module,exports){
+},{"../core/component":125,"../utils/bind":192,"../utils/tracked-controls":206}],90:[function(_dereq_,module,exports){
 var bind = _dereq_('../utils/bind');
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
@@ -69927,7 +69928,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   }
 });
 
-},{"../core/component":124,"../lib/three":172,"../utils/bind":191,"../utils/tracked-controls":205}],91:[function(_dereq_,module,exports){
+},{"../core/component":125,"../lib/three":173,"../utils/bind":192,"../utils/tracked-controls":206}],91:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 
 module.exports.Component = registerComponent('position', {
@@ -69945,7 +69946,7 @@ module.exports.Component = registerComponent('position', {
   }
 });
 
-},{"../core/component":124}],92:[function(_dereq_,module,exports){
+},{"../core/component":125}],92:[function(_dereq_,module,exports){
 /* global MutationObserver */
 
 var registerComponent = _dereq_('../core/component').registerComponent;
@@ -70380,7 +70381,7 @@ function copyArray (a, b) {
   }
 }
 
-},{"../core/component":124,"../lib/three":172,"../utils/":197}],93:[function(_dereq_,module,exports){
+},{"../core/component":125,"../lib/three":173,"../utils/":198}],93:[function(_dereq_,module,exports){
 var degToRad = _dereq_('../lib/three').Math.degToRad;
 var registerComponent = _dereq_('../core/component').registerComponent;
 
@@ -70403,7 +70404,7 @@ module.exports.Component = registerComponent('rotation', {
   }
 });
 
-},{"../core/component":124,"../lib/three":172}],94:[function(_dereq_,module,exports){
+},{"../core/component":125,"../lib/three":173}],94:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 
 // Avoids triggering a zero-determinant which makes object3D matrix non-invertible.
@@ -70430,7 +70431,7 @@ module.exports.Component = registerComponent('scale', {
   }
 });
 
-},{"../core/component":124}],95:[function(_dereq_,module,exports){
+},{"../core/component":125}],95:[function(_dereq_,module,exports){
 /* global THREE */
 var register = _dereq_('../../core/component').registerComponent;
 
@@ -70450,14 +70451,189 @@ module.exports.Component = register('background', {
   }
 });
 
-},{"../../core/component":124}],96:[function(_dereq_,module,exports){
+},{"../../core/component":125}],96:[function(_dereq_,module,exports){
 var register = _dereq_('../../core/component').registerComponent;
 
 module.exports.Component = register('debug', {
   schema: {default: true}
 });
 
-},{"../../core/component":124}],97:[function(_dereq_,module,exports){
+},{"../../core/component":125}],97:[function(_dereq_,module,exports){
+/* global DeviceOrientationEvent  */
+var registerComponent = _dereq_('../../core/component').registerComponent;
+var utils = _dereq_('../../utils/');
+var bind = utils.bind;
+
+var constants = _dereq_('../../constants/');
+
+var MODAL_CLASS = 'a-modal';
+var DIALOG_CLASS = 'a-dialog';
+var DIALOG_TEXT_CLASS = 'a-dialog-text';
+var DIALOG_TEXT_CONTAINER_CLASS = 'a-dialog-text-container';
+var DIALOG_BUTTONS_CONTAINER_CLASS = 'a-dialog-buttons-container';
+var DIALOG_BUTTON_CLASS = 'a-dialog-button';
+var DIALOG_ALLOW_BUTTON_CLASS = 'a-dialog-allow-button';
+var DIALOG_DENY_BUTTON_CLASS = 'a-dialog-deny-button';
+var DIALOG_OK_BUTTON_CLASS = 'a-dialog-ok-button';
+
+/**
+ * UI for enabling device motion permission
+ */
+module.exports.Component = registerComponent('device-orientation-permission-ui', {
+  schema: {enabled: {default: true}},
+
+  init: function () {
+    var self = this;
+
+    if (!this.data.enabled) { return; }
+
+    // Show alert on iPad if Safari is on desktop mode.
+    if (utils.device.isMobileDeviceRequestingDesktopSite()) { this.showMobileDesktopModeAlert(); }
+
+    // Browser doesn't support or doesn't require permission to DeviceOrientationEvent API.
+    if (!DeviceOrientationEvent || !DeviceOrientationEvent.requestPermission) { return; }
+    this.onDeviceMotionDialogAllowClicked = bind(this.onDeviceMotionDialogAllowClicked, this);
+    this.onDeviceMotionDialogDenyClicked = bind(this.onDeviceMotionDialogDenyClicked, this);
+    // Show dialog only if permission has not yet been granted.
+    DeviceOrientationEvent.requestPermission().catch(function () {
+      self.devicePermissionDialogEl = createPermissionDialog(
+        'This immersive website requires access to your device motion sensors',
+        self.onDeviceMotionDialogAllowClicked,
+        self.onDeviceMotionDialogDenyClicked);
+      self.el.appendChild(self.devicePermissionDialogEl);
+    }).then(function () {
+      self.el.emit('deviceorientationpermissiongranted');
+    });
+  },
+
+  remove: function () {
+    // This removes the modal screen
+    if (this.devicePermissionDialogEl) { this.el.removeChild(this.devicePermissionDialogEl); }
+  },
+
+  onDeviceMotionDialogDenyClicked: function () {
+    this.remove();
+  },
+
+  showMobileDesktopModeAlert: function () {
+    var self = this;
+    var safariIpadAlertEl = createAlertDialog(
+      'Request the mobile version of this site to enjoy it in immersive mode',
+      function () { self.el.removeChild(safariIpadAlertEl); });
+    this.el.appendChild(safariIpadAlertEl);
+  },
+
+  /**
+   * Enable device motion permission when clicked.
+   */
+  onDeviceMotionDialogAllowClicked: function () {
+    var self = this;
+    this.el.emit('deviceorientationpermissionrequested');
+    DeviceOrientationEvent.requestPermission().then(function (response) {
+      if (response === 'granted') {
+        self.el.emit('deviceorientationpermissiongranted');
+      } else {
+        self.el.emit('deviceorientationpermissionrejected');
+      }
+      self.remove();
+    }).catch(console.error);
+  }
+});
+
+/**
+ * Create a modal dialog that request users permission to access the Device Motion API.
+ *
+ * @param {function} onAllowClicked - click event handler
+ * @returns {Element} Wrapper <div>.
+ */
+function createPermissionDialog (text, onAllowClicked, onDenyClicked) {
+  var buttonsContainer;
+  var denyButton;
+  var acceptButton;
+
+  buttonsContainer = document.createElement('div');
+  buttonsContainer.classList.add(DIALOG_BUTTONS_CONTAINER_CLASS);
+
+  // Buttons
+  denyButton = document.createElement('button');
+  denyButton.classList.add(DIALOG_BUTTON_CLASS, DIALOG_DENY_BUTTON_CLASS);
+  denyButton.setAttribute(constants.AFRAME_INJECTED, '');
+  denyButton.innerHTML = 'Deny';
+  buttonsContainer.appendChild(denyButton);
+
+  acceptButton = document.createElement('button');
+  acceptButton.classList.add(DIALOG_BUTTON_CLASS, DIALOG_ALLOW_BUTTON_CLASS);
+  acceptButton.setAttribute(constants.AFRAME_INJECTED, '');
+  acceptButton.innerHTML = 'Allow';
+  buttonsContainer.appendChild(acceptButton);
+
+  // Ask for sensor events to be used
+  acceptButton.addEventListener('click', function (evt) {
+    evt.stopPropagation();
+    onAllowClicked();
+  });
+
+  denyButton.addEventListener('click', function (evt) {
+    evt.stopPropagation();
+    onDenyClicked();
+  });
+
+  return createDialog(text, buttonsContainer);
+}
+
+function createAlertDialog (text, onOkClicked) {
+  var buttonsContainer;
+  var okButton;
+
+  buttonsContainer = document.createElement('div');
+  buttonsContainer.classList.add(DIALOG_BUTTONS_CONTAINER_CLASS);
+
+  // Buttons
+  okButton = document.createElement('button');
+  okButton.classList.add(DIALOG_BUTTON_CLASS, DIALOG_OK_BUTTON_CLASS);
+  okButton.setAttribute(constants.AFRAME_INJECTED, '');
+  okButton.innerHTML = 'Ok';
+  buttonsContainer.appendChild(okButton);
+
+  // Ask for sensor events to be used
+  okButton.addEventListener('click', function (evt) {
+    evt.stopPropagation();
+    onOkClicked();
+  });
+
+  return createDialog(text, buttonsContainer);
+}
+
+function createDialog (text, buttonsContainerEl) {
+  var modalContainer;
+  var dialog;
+  var dialogTextContainer;
+  var dialogText;
+
+  modalContainer = document.createElement('div');
+  modalContainer.classList.add(MODAL_CLASS);
+  modalContainer.setAttribute(constants.AFRAME_INJECTED, '');
+
+  dialog = document.createElement('div');
+  dialog.className = DIALOG_CLASS;
+  dialog.setAttribute(constants.AFRAME_INJECTED, '');
+  modalContainer.appendChild(dialog);
+
+  dialogTextContainer = document.createElement('div');
+  dialogTextContainer.classList.add(DIALOG_TEXT_CONTAINER_CLASS);
+  dialog.appendChild(dialogTextContainer);
+
+  dialogText = document.createElement('div');
+  dialogText.classList.add(DIALOG_TEXT_CLASS);
+  dialogText.innerHTML = text;
+  dialogTextContainer.appendChild(dialogText);
+
+  dialog.appendChild(buttonsContainerEl);
+
+  return modalContainer;
+}
+
+},{"../../constants/":117,"../../core/component":125,"../../utils/":198}],98:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 
 /**
@@ -70482,7 +70658,7 @@ module.exports.Component = registerComponent('embedded', {
 
 });
 
-},{"../../core/component":124}],98:[function(_dereq_,module,exports){
+},{"../../core/component":125}],99:[function(_dereq_,module,exports){
 var register = _dereq_('../../core/component').registerComponent;
 var THREE = _dereq_('../../lib/three');
 var debug = _dereq_('../../utils/debug');
@@ -70555,7 +70731,7 @@ function getFog (data) {
   return fog;
 }
 
-},{"../../core/component":124,"../../lib/three":172,"../../utils/debug":193}],99:[function(_dereq_,module,exports){
+},{"../../core/component":125,"../../lib/three":173,"../../utils/debug":194}],100:[function(_dereq_,module,exports){
 (function (process){
 /* global AFRAME */
 var AFRAME_INJECTED = _dereq_('../../constants').AFRAME_INJECTED;
@@ -70675,7 +70851,7 @@ module.exports.Component = registerComponent('inspector', {
 
 }).call(this,_dereq_('_process'))
 
-},{"../../../package":72,"../../constants":116,"../../core/component":124,"../../utils/":197,"_process":49}],100:[function(_dereq_,module,exports){
+},{"../../../package":72,"../../constants":117,"../../core/component":125,"../../utils/":198,"_process":49}],101:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var shouldCaptureKeyEvent = _dereq_('../../utils/').shouldCaptureKeyEvent;
 
@@ -70714,7 +70890,7 @@ module.exports.Component = registerComponent('keyboard-shortcuts', {
   }
 });
 
-},{"../../core/component":124,"../../utils/":197}],101:[function(_dereq_,module,exports){
+},{"../../core/component":125,"../../utils/":198}],102:[function(_dereq_,module,exports){
 var debug = _dereq_('../../utils/debug');
 var registerComponent = _dereq_('../../core/component').registerComponent;
 
@@ -70832,7 +71008,7 @@ module.exports.Component = registerComponent('pool', {
   }
 });
 
-},{"../../core/component":124,"../../utils/debug":193}],102:[function(_dereq_,module,exports){
+},{"../../core/component":125,"../../utils/debug":194}],103:[function(_dereq_,module,exports){
 /* global ImageData, URL */
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var THREE = _dereq_('../../lib/three');
@@ -71097,7 +71273,7 @@ module.exports.Component = registerComponent('screenshot', {
   }
 });
 
-},{"../../core/component":124,"../../lib/three":172}],103:[function(_dereq_,module,exports){
+},{"../../core/component":125,"../../lib/three":173}],104:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var RStats = _dereq_('../../../vendor/rStats');
 var utils = _dereq_('../../utils');
@@ -71177,7 +71353,7 @@ function createStats (scene) {
   });
 }
 
-},{"../../../vendor/rStats":207,"../../../vendor/rStats.extras":206,"../../core/component":124,"../../lib/rStatsAframe":171,"../../utils":197}],104:[function(_dereq_,module,exports){
+},{"../../../vendor/rStats":208,"../../../vendor/rStats.extras":207,"../../core/component":125,"../../lib/rStatsAframe":172,"../../utils":198}],105:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var constants = _dereq_('../../constants/');
 var utils = _dereq_('../../utils/');
@@ -71427,7 +71603,7 @@ function createOrientationModal (onClick) {
   return modal;
 }
 
-},{"../../constants/":116,"../../core/component":124,"../../utils/":197}],105:[function(_dereq_,module,exports){
+},{"../../constants/":117,"../../core/component":125,"../../utils/":198}],106:[function(_dereq_,module,exports){
 var component = _dereq_('../core/component');
 var THREE = _dereq_('../lib/three');
 var bind = _dereq_('../utils/bind');
@@ -71481,7 +71657,7 @@ module.exports.Component = registerComponent('shadow', {
   }
 });
 
-},{"../core/component":124,"../lib/three":172,"../utils/bind":191}],106:[function(_dereq_,module,exports){
+},{"../core/component":125,"../lib/three":173,"../utils/bind":192}],107:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var debug = _dereq_('../utils/debug');
 var THREE = _dereq_('../lib/three');
@@ -71732,7 +71908,7 @@ module.exports.Component = registerComponent('sound', {
   }
 });
 
-},{"../core/component":124,"../lib/three":172,"../utils/debug":193}],107:[function(_dereq_,module,exports){
+},{"../core/component":125,"../lib/three":173,"../utils/debug":194}],108:[function(_dereq_,module,exports){
 var createTextGeometry = _dereq_('three-bmfont-text');
 var loadBMFont = _dereq_('load-bmfont');
 
@@ -72217,7 +72393,7 @@ function PromiseCache () {
   };
 }
 
-},{"../core/component":124,"../core/shader":134,"../lib/three":172,"../utils/":197,"load-bmfont":37,"three-bmfont-text":62}],108:[function(_dereq_,module,exports){
+},{"../core/component":125,"../core/shader":135,"../lib/three":173,"../utils/":198,"load-bmfont":37,"three-bmfont-text":62}],109:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var controllerUtils = _dereq_('../utils/tracked-controls');
 var DEFAULT_CAMERA_HEIGHT = _dereq_('../constants').DEFAULT_CAMERA_HEIGHT;
@@ -72554,7 +72730,7 @@ module.exports.Component = registerComponent('tracked-controls-webvr', {
   }
 });
 
-},{"../constants":116,"../core/component":124,"../lib/three":172,"../utils/tracked-controls":205}],109:[function(_dereq_,module,exports){
+},{"../constants":117,"../core/component":125,"../lib/three":173,"../utils/tracked-controls":206}],110:[function(_dereq_,module,exports){
 var controllerUtils = _dereq_('../utils/tracked-controls');
 var registerComponent = _dereq_('../core/component').registerComponent;
 
@@ -72642,7 +72818,7 @@ module.exports.Component = registerComponent('tracked-controls-webxr', {
   }
 });
 
-},{"../core/component":124,"../utils/tracked-controls":205}],110:[function(_dereq_,module,exports){
+},{"../core/component":125,"../utils/tracked-controls":206}],111:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 
 /**
@@ -72679,7 +72855,7 @@ module.exports.Component = registerComponent('tracked-controls', {
   }
 });
 
-},{"../core/component":124}],111:[function(_dereq_,module,exports){
+},{"../core/component":125}],112:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 
 /**
@@ -72693,7 +72869,7 @@ module.exports.Component = registerComponent('visible', {
   }
 });
 
-},{"../core/component":124}],112:[function(_dereq_,module,exports){
+},{"../core/component":125}],113:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var bind = _dereq_('../utils/bind');
 
@@ -72922,7 +73098,7 @@ module.exports.Component = registerComponent('vive-controls', {
   }
 });
 
-},{"../core/component":124,"../utils/bind":191,"../utils/tracked-controls":205}],113:[function(_dereq_,module,exports){
+},{"../core/component":125,"../utils/bind":192,"../utils/tracked-controls":206}],114:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var bind = _dereq_('../utils/bind');
 
@@ -73104,7 +73280,7 @@ module.exports.Component = registerComponent('vive-focus-controls', {
   }
 });
 
-},{"../core/component":124,"../utils/bind":191,"../utils/tracked-controls":205}],114:[function(_dereq_,module,exports){
+},{"../core/component":125,"../utils/bind":192,"../utils/tracked-controls":206}],115:[function(_dereq_,module,exports){
 var KEYCODE_TO_CODE = _dereq_('../constants').keyboardevent.KEYCODE_TO_CODE;
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
@@ -73316,7 +73492,7 @@ function isEmptyObject (keys) {
   return true;
 }
 
-},{"../constants":116,"../core/component":124,"../lib/three":172,"../utils/":197}],115:[function(_dereq_,module,exports){
+},{"../constants":117,"../core/component":125,"../lib/three":173,"../utils/":198}],116:[function(_dereq_,module,exports){
 /* global THREE */
 var registerComponent = _dereq_('../core/component').registerComponent;
 var bind = _dereq_('../utils/bind');
@@ -73765,7 +73941,7 @@ module.exports.Component = registerComponent('windows-motion-controls', {
   }
 });
 
-},{"../constants":116,"../core/component":124,"../utils/":197,"../utils/bind":191,"../utils/tracked-controls":205}],116:[function(_dereq_,module,exports){
+},{"../constants":117,"../core/component":125,"../utils/":198,"../utils/bind":192,"../utils/tracked-controls":206}],117:[function(_dereq_,module,exports){
 module.exports = {
   AFRAME_INJECTED: 'aframe-injected',
   DEFAULT_CAMERA_HEIGHT: 1.6,
@@ -73773,7 +73949,7 @@ module.exports = {
   keyboardevent: _dereq_('./keyboardevent')
 };
 
-},{"./keyboardevent":117}],117:[function(_dereq_,module,exports){
+},{"./keyboardevent":118}],118:[function(_dereq_,module,exports){
 module.exports = {
   // Tiny KeyboardEvent.code polyfill.
   KEYCODE_TO_CODE: {
@@ -73788,7 +73964,7 @@ module.exports = {
   }
 };
 
-},{}],118:[function(_dereq_,module,exports){
+},{}],119:[function(_dereq_,module,exports){
 var ANode = _dereq_('./a-node');
 var bind = _dereq_('../utils/bind');
 var debug = _dereq_('../utils/debug');
@@ -74062,7 +74238,7 @@ function getArrayBuffer (string) {
 
 module.exports.getArrayBuffer = getArrayBuffer;
 
-},{"../lib/three":172,"../utils/bind":191,"../utils/debug":193,"./a-node":122,"./a-register-element":123}],119:[function(_dereq_,module,exports){
+},{"../lib/three":173,"../utils/bind":192,"../utils/debug":194,"./a-node":123,"./a-register-element":124}],120:[function(_dereq_,module,exports){
 var debug = _dereq_('../utils/debug');
 var registerElement = _dereq_('./a-register-element').registerElement;
 
@@ -74112,7 +74288,7 @@ module.exports = registerElement('a-cubemap', {
   })
 });
 
-},{"../utils/debug":193,"./a-register-element":123}],120:[function(_dereq_,module,exports){
+},{"../utils/debug":194,"./a-register-element":124}],121:[function(_dereq_,module,exports){
 var ANode = _dereq_('./a-node');
 var COMPONENTS = _dereq_('./component').components;
 var registerElement = _dereq_('./a-register-element').registerElement;
@@ -75046,7 +75222,7 @@ function getRotation (entityEl) {
 AEntity = registerElement('a-entity', {prototype: proto});
 module.exports = AEntity;
 
-},{"../lib/three":172,"../utils/":197,"./a-node":122,"./a-register-element":123,"./component":124}],121:[function(_dereq_,module,exports){
+},{"../lib/three":173,"../utils/":198,"./a-node":123,"./a-register-element":124,"./component":125}],122:[function(_dereq_,module,exports){
 var ANode = _dereq_('./a-node');
 var registerElement = _dereq_('./a-register-element').registerElement;
 var components = _dereq_('./component').components;
@@ -75162,7 +75338,7 @@ module.exports = registerElement('a-mixin', {
   })
 });
 
-},{"../utils":197,"./a-node":122,"./a-register-element":123,"./component":124}],122:[function(_dereq_,module,exports){
+},{"../utils":198,"./a-node":123,"./a-register-element":124,"./component":125}],123:[function(_dereq_,module,exports){
 /* global CustomEvent */
 var registerElement = _dereq_('./a-register-element').registerElement;
 var isNode = _dereq_('./a-register-element').isNode;
@@ -75433,7 +75609,7 @@ module.exports = registerElement('a-node', {
   })
 });
 
-},{"../utils/":197,"./a-register-element":123}],123:[function(_dereq_,module,exports){
+},{"../utils/":198,"./a-register-element":124}],124:[function(_dereq_,module,exports){
 /*
   ------------------------------------------------------------
   ------------- WARNING WARNING WARNING WARNING --------------
@@ -75620,7 +75796,7 @@ function copyProperties (source, destination) {
 ANode = _dereq_('./a-node');
 AEntity = _dereq_('./a-entity');
 
-},{"./a-entity":120,"./a-node":122,"document-register-element":12}],124:[function(_dereq_,module,exports){
+},{"./a-entity":121,"./a-node":123,"document-register-element":12}],125:[function(_dereq_,module,exports){
 /* global Node */
 var schema = _dereq_('./schema');
 var scenes = _dereq_('./scene/scenes');
@@ -76425,7 +76601,7 @@ function isObjectOrArray (value) {
          !(value instanceof window.HTMLElement);
 }
 
-},{"../utils/":197,"./scene/scenes":131,"./schema":133,"./system":135}],125:[function(_dereq_,module,exports){
+},{"../utils/":198,"./scene/scenes":132,"./schema":134,"./system":136}],126:[function(_dereq_,module,exports){
 var schema = _dereq_('./schema');
 
 var processSchema = schema.process;
@@ -76499,7 +76675,7 @@ module.exports.registerGeometry = function (name, definition) {
   return NewGeometry;
 };
 
-},{"../lib/three":172,"./schema":133}],126:[function(_dereq_,module,exports){
+},{"../lib/three":173,"./schema":134}],127:[function(_dereq_,module,exports){
 var coordinates = _dereq_('../utils/coordinates');
 var debug = _dereq_('debug');
 
@@ -76724,7 +76900,7 @@ function isValidDefaultCoordinate (possibleCoordinates, dimensions) {
 }
 module.exports.isValidDefaultCoordinate = isValidDefaultCoordinate;
 
-},{"../utils/coordinates":192,"debug":8}],127:[function(_dereq_,module,exports){
+},{"../utils/coordinates":193,"debug":8}],128:[function(_dereq_,module,exports){
 /* global Promise, screen, CustomEvent */
 var initMetaTags = _dereq_('./metaTags').inject;
 var initWakelock = _dereq_('./wakelock');
@@ -76792,6 +76968,7 @@ module.exports.AScene = registerElement('a-scene', {
         this.setAttribute('keyboard-shortcuts', '');
         this.setAttribute('screenshot', '');
         this.setAttribute('vr-mode-ui', '');
+        this.setAttribute('device-orientation-permission-ui', '');
       }
     },
 
@@ -77618,7 +77795,7 @@ function setupCanvas (sceneEl) {
 }
 module.exports.setupCanvas = setupCanvas;  // For testing.
 
-},{"../../lib/three":172,"../../utils/":197,"../a-entity":120,"../a-node":122,"../a-register-element":123,"../system":135,"./loadingScreen":128,"./metaTags":129,"./postMessage":130,"./scenes":131,"./wakelock":132}],128:[function(_dereq_,module,exports){
+},{"../../lib/three":173,"../../utils/":198,"../a-entity":121,"../a-node":123,"../a-register-element":124,"../system":136,"./loadingScreen":129,"./metaTags":130,"./postMessage":131,"./scenes":132,"./wakelock":133}],129:[function(_dereq_,module,exports){
 /* global THREE */
 var utils = _dereq_('../../utils/');
 var styleParser = utils.styleParser;
@@ -77712,7 +77889,7 @@ function setupTitle () {
   sceneEl.appendChild(titleEl);
 }
 
-},{"../../utils/":197}],129:[function(_dereq_,module,exports){
+},{"../../utils/":198}],130:[function(_dereq_,module,exports){
 var constants = _dereq_('../../constants/');
 var extend = _dereq_('../../utils').extend;
 
@@ -77793,7 +77970,7 @@ function createTag (tagObj) {
   return extend(meta, tagObj.attributes);
 }
 
-},{"../../constants/":116,"../../utils":197}],130:[function(_dereq_,module,exports){
+},{"../../constants/":117,"../../utils":198}],131:[function(_dereq_,module,exports){
 var bind = _dereq_('../../utils/bind');
 var isIframed = _dereq_('../../utils/').isIframed;
 
@@ -77826,13 +78003,13 @@ function postMessageAPIHandler (event) {
   }
 }
 
-},{"../../utils/":197,"../../utils/bind":191}],131:[function(_dereq_,module,exports){
+},{"../../utils/":198,"../../utils/bind":192}],132:[function(_dereq_,module,exports){
 /*
   Scene index for keeping track of created scenes.
 */
 module.exports = [];
 
-},{}],132:[function(_dereq_,module,exports){
+},{}],133:[function(_dereq_,module,exports){
 var Wakelock = _dereq_('../../../vendor/wakelock/wakelock');
 
 module.exports = function initWakelock (scene) {
@@ -77843,7 +78020,7 @@ module.exports = function initWakelock (scene) {
   scene.addEventListener('exit-vr', function () { wakelock.release(); });
 };
 
-},{"../../../vendor/wakelock/wakelock":210}],133:[function(_dereq_,module,exports){
+},{"../../../vendor/wakelock/wakelock":211}],134:[function(_dereq_,module,exports){
 var utils = _dereq_('../utils/');
 var PropertyTypes = _dereq_('./propertyTypes');
 
@@ -78047,7 +78224,7 @@ function stringifyProperty (value, propDefinition) {
 }
 module.exports.stringifyProperty = stringifyProperty;
 
-},{"../utils/":197,"./propertyTypes":126}],134:[function(_dereq_,module,exports){
+},{"../utils/":198,"./propertyTypes":127}],135:[function(_dereq_,module,exports){
 var schema = _dereq_('./schema');
 
 var processSchema = schema.process;
@@ -78236,7 +78413,7 @@ module.exports.registerShader = function (name, definition) {
   return NewShader;
 };
 
-},{"../lib/three":172,"../utils":197,"./schema":133}],135:[function(_dereq_,module,exports){
+},{"../lib/three":173,"../utils":198,"./schema":134}],136:[function(_dereq_,module,exports){
 var components = _dereq_('./component');
 var schema = _dereq_('./schema');
 var utils = _dereq_('../utils/');
@@ -78394,10 +78571,10 @@ module.exports.registerSystem = function (name, definition) {
   for (i = 0; i < scenes.length; i++) { scenes[i].initSystem(name); }
 };
 
-},{"../utils/":197,"./component":124,"./schema":133}],136:[function(_dereq_,module,exports){
+},{"../utils/":198,"./component":125,"./schema":134}],137:[function(_dereq_,module,exports){
 _dereq_('./pivot');
 
-},{"./pivot":137}],137:[function(_dereq_,module,exports){
+},{"./pivot":138}],138:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var THREE = _dereq_('../../lib/three');
 
@@ -78446,7 +78623,7 @@ registerComponent('pivot', {
   }
 });
 
-},{"../../core/component":124,"../../lib/three":172}],138:[function(_dereq_,module,exports){
+},{"../../core/component":125,"../../lib/three":173}],139:[function(_dereq_,module,exports){
 /**
  * Common mesh defaults, mappings, and transforms.
  */
@@ -78473,7 +78650,7 @@ module.exports = function getMeshMixin () {
   };
 };
 
-},{"../../core/component":124,"../../core/shader":134,"../../utils/":197}],139:[function(_dereq_,module,exports){
+},{"../../core/component":125,"../../core/shader":135,"../../utils/":198}],140:[function(_dereq_,module,exports){
 _dereq_('./primitives/a-camera');
 _dereq_('./primitives/a-cursor');
 _dereq_('./primitives/a-curvedimage');
@@ -78489,7 +78666,7 @@ _dereq_('./primitives/a-video');
 _dereq_('./primitives/a-videosphere');
 _dereq_('./primitives/meshPrimitives');
 
-},{"./primitives/a-camera":141,"./primitives/a-cursor":142,"./primitives/a-curvedimage":143,"./primitives/a-gltf-model":144,"./primitives/a-image":145,"./primitives/a-light":146,"./primitives/a-link":147,"./primitives/a-obj-model":148,"./primitives/a-sky":149,"./primitives/a-sound":150,"./primitives/a-text":151,"./primitives/a-video":152,"./primitives/a-videosphere":153,"./primitives/meshPrimitives":154}],140:[function(_dereq_,module,exports){
+},{"./primitives/a-camera":142,"./primitives/a-cursor":143,"./primitives/a-curvedimage":144,"./primitives/a-gltf-model":145,"./primitives/a-image":146,"./primitives/a-light":147,"./primitives/a-link":148,"./primitives/a-obj-model":149,"./primitives/a-sky":150,"./primitives/a-sound":151,"./primitives/a-text":152,"./primitives/a-video":153,"./primitives/a-videosphere":154,"./primitives/meshPrimitives":155}],141:[function(_dereq_,module,exports){
 var AEntity = _dereq_('../../core/a-entity');
 var components = _dereq_('../../core/component').components;
 var registerElement = _dereq_('../../core/a-register-element').registerElement;
@@ -78688,7 +78865,7 @@ function definePrimitive (tagName, defaultComponents, mappings) {
 }
 module.exports.definePrimitive = definePrimitive;
 
-},{"../../core/a-entity":120,"../../core/a-register-element":123,"../../core/component":124,"../../utils/":197}],141:[function(_dereq_,module,exports){
+},{"../../core/a-entity":121,"../../core/a-register-element":124,"../../core/component":125,"../../utils/":198}],142:[function(_dereq_,module,exports){
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 
 registerPrimitive('a-camera', {
@@ -78712,7 +78889,7 @@ registerPrimitive('a-camera', {
   }
 });
 
-},{"../primitives":140}],142:[function(_dereq_,module,exports){
+},{"../primitives":141}],143:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -78747,7 +78924,7 @@ registerPrimitive('a-cursor', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":197,"../getMeshMixin":138,"../primitives":140}],143:[function(_dereq_,module,exports){
+},{"../../../utils/":198,"../getMeshMixin":139,"../primitives":141}],144:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -78784,7 +78961,7 @@ registerPrimitive('a-curvedimage', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":197,"../getMeshMixin":138,"../primitives":140}],144:[function(_dereq_,module,exports){
+},{"../../../utils/":198,"../getMeshMixin":139,"../primitives":141}],145:[function(_dereq_,module,exports){
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 
 registerPrimitive('a-gltf-model', {
@@ -78793,7 +78970,7 @@ registerPrimitive('a-gltf-model', {
   }
 });
 
-},{"../primitives":140}],145:[function(_dereq_,module,exports){
+},{"../primitives":141}],146:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -78817,7 +78994,7 @@ registerPrimitive('a-image', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":197,"../getMeshMixin":138,"../primitives":140}],146:[function(_dereq_,module,exports){
+},{"../../../utils/":198,"../getMeshMixin":139,"../primitives":141}],147:[function(_dereq_,module,exports){
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 
 registerPrimitive('a-light', {
@@ -78838,7 +79015,7 @@ registerPrimitive('a-light', {
   }
 });
 
-},{"../primitives":140}],147:[function(_dereq_,module,exports){
+},{"../primitives":141}],148:[function(_dereq_,module,exports){
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 
 registerPrimitive('a-link', {
@@ -78855,7 +79032,7 @@ registerPrimitive('a-link', {
   }
 });
 
-},{"../primitives":140}],148:[function(_dereq_,module,exports){
+},{"../primitives":141}],149:[function(_dereq_,module,exports){
 var meshMixin = _dereq_('../getMeshMixin')();
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -78871,7 +79048,7 @@ registerPrimitive('a-obj-model', utils.extendDeep({}, meshMixin, {
   }
 }));
 
-},{"../../../utils/":197,"../getMeshMixin":138,"../primitives":140}],149:[function(_dereq_,module,exports){
+},{"../../../utils/":198,"../getMeshMixin":139,"../primitives":141}],150:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -78897,7 +79074,7 @@ registerPrimitive('a-sky', utils.extendDeep({}, getMeshMixin(), {
   mappings: utils.extendDeep({}, meshPrimitives['a-sphere'].prototype.mappings)
 }));
 
-},{"../../../utils/":197,"../getMeshMixin":138,"../primitives":140,"./meshPrimitives":154}],150:[function(_dereq_,module,exports){
+},{"../../../utils/":198,"../getMeshMixin":139,"../primitives":141,"./meshPrimitives":155}],151:[function(_dereq_,module,exports){
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 
 registerPrimitive('a-sound', {
@@ -78914,12 +79091,12 @@ registerPrimitive('a-sound', {
   }
 });
 
-},{"../primitives":140}],151:[function(_dereq_,module,exports){
+},{"../primitives":141}],152:[function(_dereq_,module,exports){
 // <a-text> using `definePrimitive` helper.
 var definePrimitive = _dereq_('../primitives').definePrimitive;
 definePrimitive('a-text', {text: {anchor: 'align', width: 5}});
 
-},{"../primitives":140}],152:[function(_dereq_,module,exports){
+},{"../primitives":141}],153:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -78943,7 +79120,7 @@ registerPrimitive('a-video', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":197,"../getMeshMixin":138,"../primitives":140}],153:[function(_dereq_,module,exports){
+},{"../../../utils/":198,"../getMeshMixin":139,"../primitives":141}],154:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -78972,7 +79149,7 @@ registerPrimitive('a-videosphere', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":197,"../getMeshMixin":138,"../primitives":140}],154:[function(_dereq_,module,exports){
+},{"../../../utils/":198,"../getMeshMixin":139,"../primitives":141}],155:[function(_dereq_,module,exports){
 /**
  * Automated mesh primitive registration.
  */
@@ -79012,7 +79189,7 @@ function unCamelCase (str) {
   return str.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
 }
 
-},{"../../../core/geometry":125,"../../../utils/":197,"../getMeshMixin":138,"../primitives":140}],155:[function(_dereq_,module,exports){
+},{"../../../core/geometry":126,"../../../utils/":198,"../getMeshMixin":139,"../primitives":141}],156:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -79033,7 +79210,7 @@ registerGeometry('box', {
   }
 });
 
-},{"../core/geometry":125,"../lib/three":172}],156:[function(_dereq_,module,exports){
+},{"../core/geometry":126,"../lib/three":173}],157:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -79053,7 +79230,7 @@ registerGeometry('circle', {
   }
 });
 
-},{"../core/geometry":125,"../lib/three":172}],157:[function(_dereq_,module,exports){
+},{"../core/geometry":126,"../lib/three":173}],158:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -79079,7 +79256,7 @@ registerGeometry('cone', {
   }
 });
 
-},{"../core/geometry":125,"../lib/three":172}],158:[function(_dereq_,module,exports){
+},{"../core/geometry":126,"../lib/three":173}],159:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -79103,7 +79280,7 @@ registerGeometry('cylinder', {
   }
 });
 
-},{"../core/geometry":125,"../lib/three":172}],159:[function(_dereq_,module,exports){
+},{"../core/geometry":126,"../lib/three":173}],160:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -79118,7 +79295,7 @@ registerGeometry('dodecahedron', {
   }
 });
 
-},{"../core/geometry":125,"../lib/three":172}],160:[function(_dereq_,module,exports){
+},{"../core/geometry":126,"../lib/three":173}],161:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -79133,7 +79310,7 @@ registerGeometry('icosahedron', {
   }
 });
 
-},{"../core/geometry":125,"../lib/three":172}],161:[function(_dereq_,module,exports){
+},{"../core/geometry":126,"../lib/three":173}],162:[function(_dereq_,module,exports){
 _dereq_('./box.js');
 _dereq_('./circle.js');
 _dereq_('./cone.js');
@@ -79149,7 +79326,7 @@ _dereq_('./torus.js');
 _dereq_('./torusKnot.js');
 _dereq_('./triangle.js');
 
-},{"./box.js":155,"./circle.js":156,"./cone.js":157,"./cylinder.js":158,"./dodecahedron.js":159,"./icosahedron.js":160,"./octahedron.js":162,"./plane.js":163,"./ring.js":164,"./sphere.js":165,"./tetrahedron.js":166,"./torus.js":167,"./torusKnot.js":168,"./triangle.js":169}],162:[function(_dereq_,module,exports){
+},{"./box.js":156,"./circle.js":157,"./cone.js":158,"./cylinder.js":159,"./dodecahedron.js":160,"./icosahedron.js":161,"./octahedron.js":163,"./plane.js":164,"./ring.js":165,"./sphere.js":166,"./tetrahedron.js":167,"./torus.js":168,"./torusKnot.js":169,"./triangle.js":170}],163:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -79164,7 +79341,7 @@ registerGeometry('octahedron', {
   }
 });
 
-},{"../core/geometry":125,"../lib/three":172}],163:[function(_dereq_,module,exports){
+},{"../core/geometry":126,"../lib/three":173}],164:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -79181,7 +79358,7 @@ registerGeometry('plane', {
   }
 });
 
-},{"../core/geometry":125,"../lib/three":172}],164:[function(_dereq_,module,exports){
+},{"../core/geometry":126,"../lib/three":173}],165:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -79204,7 +79381,7 @@ registerGeometry('ring', {
   }
 });
 
-},{"../core/geometry":125,"../lib/three":172}],165:[function(_dereq_,module,exports){
+},{"../core/geometry":126,"../lib/three":173}],166:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -79228,7 +79405,7 @@ registerGeometry('sphere', {
   }
 });
 
-},{"../core/geometry":125,"../lib/three":172}],166:[function(_dereq_,module,exports){
+},{"../core/geometry":126,"../lib/three":173}],167:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -79243,7 +79420,7 @@ registerGeometry('tetrahedron', {
   }
 });
 
-},{"../core/geometry":125,"../lib/three":172}],167:[function(_dereq_,module,exports){
+},{"../core/geometry":126,"../lib/three":173}],168:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -79265,7 +79442,7 @@ registerGeometry('torus', {
   }
 });
 
-},{"../core/geometry":125,"../lib/three":172}],168:[function(_dereq_,module,exports){
+},{"../core/geometry":126,"../lib/three":173}],169:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -79286,7 +79463,7 @@ registerGeometry('torusKnot', {
   }
 });
 
-},{"../core/geometry":125,"../lib/three":172}],169:[function(_dereq_,module,exports){
+},{"../core/geometry":126,"../lib/three":173}],170:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -79341,7 +79518,7 @@ registerGeometry('triangle', {
   }
 });
 
-},{"../core/geometry":125,"../lib/three":172}],170:[function(_dereq_,module,exports){
+},{"../core/geometry":126,"../lib/three":173}],171:[function(_dereq_,module,exports){
 // Polyfill `Promise`.
 window.Promise = window.Promise || _dereq_('promise-polyfill');
 
@@ -79433,7 +79610,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.9.2 (Date 2019-10-31, Commit #b7a65d05)');
+console.log('A-Frame Version: 0.9.2 (Date 2019-11-19, Commit #21242616)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
@@ -79466,7 +79643,7 @@ module.exports = window.AFRAME = {
   version: pkg.version
 };
 
-},{"../package":72,"../vendor/starts-with-polyfill":208,"./components/index":81,"./core/a-assets":118,"./core/a-cubemap":119,"./core/a-entity":120,"./core/a-mixin":121,"./core/a-node":122,"./core/a-register-element":123,"./core/component":124,"./core/geometry":125,"./core/scene/a-scene":127,"./core/scene/scenes":131,"./core/schema":133,"./core/shader":134,"./core/system":135,"./extras/components/":136,"./extras/primitives/":139,"./extras/primitives/getMeshMixin":138,"./extras/primitives/primitives":140,"./geometries/index":161,"./lib/three":172,"./shaders/index":174,"./style/aframe.css":179,"./style/rStats.css":180,"./systems/index":184,"./utils/":197,"./utils/isIOSOlderThan10":199,"custom-event-polyfill":7,"present":48,"promise-polyfill":50,"super-animejs":56,"webvr-polyfill":67}],171:[function(_dereq_,module,exports){
+},{"../package":72,"../vendor/starts-with-polyfill":209,"./components/index":81,"./core/a-assets":119,"./core/a-cubemap":120,"./core/a-entity":121,"./core/a-mixin":122,"./core/a-node":123,"./core/a-register-element":124,"./core/component":125,"./core/geometry":126,"./core/scene/a-scene":128,"./core/scene/scenes":132,"./core/schema":134,"./core/shader":135,"./core/system":136,"./extras/components/":137,"./extras/primitives/":140,"./extras/primitives/getMeshMixin":139,"./extras/primitives/primitives":141,"./geometries/index":162,"./lib/three":173,"./shaders/index":175,"./style/aframe.css":180,"./style/rStats.css":181,"./systems/index":185,"./utils/":198,"./utils/isIOSOlderThan10":200,"custom-event-polyfill":7,"present":48,"promise-polyfill":50,"super-animejs":56,"webvr-polyfill":67}],172:[function(_dereq_,module,exports){
 window.aframeStats = function (scene) {
   var _rS = null;
   var _scene = scene;
@@ -79523,7 +79700,7 @@ if (typeof module === 'object') {
   };
 }
 
-},{}],172:[function(_dereq_,module,exports){
+},{}],173:[function(_dereq_,module,exports){
 (function (global){
 var THREE = global.THREE = _dereq_('super-three');
 
@@ -79560,7 +79737,7 @@ module.exports = THREE;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"super-three":57,"super-three/examples/js/loaders/DRACOLoader":58,"super-three/examples/js/loaders/GLTFLoader":59,"super-three/examples/js/loaders/MTLLoader":60,"super-three/examples/js/loaders/OBJLoader":61}],173:[function(_dereq_,module,exports){
+},{"super-three":57,"super-three/examples/js/loaders/DRACOLoader":58,"super-three/examples/js/loaders/GLTFLoader":59,"super-three/examples/js/loaders/MTLLoader":60,"super-three/examples/js/loaders/OBJLoader":61}],174:[function(_dereq_,module,exports){
 var registerShader = _dereq_('../core/shader').registerShader;
 var THREE = _dereq_('../lib/three');
 var utils = _dereq_('../utils/');
@@ -79630,14 +79807,14 @@ function getMaterialData (data, materialData) {
   return materialData;
 }
 
-},{"../core/shader":134,"../lib/three":172,"../utils/":197}],174:[function(_dereq_,module,exports){
+},{"../core/shader":135,"../lib/three":173,"../utils/":198}],175:[function(_dereq_,module,exports){
 _dereq_('./flat');
 _dereq_('./standard');
 _dereq_('./sdf');
 _dereq_('./msdf');
 _dereq_('./ios10hls');
 
-},{"./flat":173,"./ios10hls":175,"./msdf":176,"./sdf":177,"./standard":178}],175:[function(_dereq_,module,exports){
+},{"./flat":174,"./ios10hls":176,"./msdf":177,"./sdf":178,"./standard":179}],176:[function(_dereq_,module,exports){
 var registerShader = _dereq_('../core/shader').registerShader;
 
 /**
@@ -79672,7 +79849,7 @@ module.exports.Shader = registerShader('ios10hls', {
 });
 
 
-},{"../core/shader":134}],176:[function(_dereq_,module,exports){
+},{"../core/shader":135}],177:[function(_dereq_,module,exports){
 var registerShader = _dereq_('../core/shader').registerShader;
 
 /**
@@ -79748,7 +79925,7 @@ module.exports.Shader = registerShader('msdf', {
   ].join('\n')
 });
 
-},{"../core/shader":134}],177:[function(_dereq_,module,exports){
+},{"../core/shader":135}],178:[function(_dereq_,module,exports){
 var registerShader = _dereq_('../core/shader').registerShader;
 
 /**
@@ -79862,7 +80039,7 @@ module.exports.Shader = registerShader('sdf', {
   ].join('\n')
 });
 
-},{"../core/shader":134}],178:[function(_dereq_,module,exports){
+},{"../core/shader":135}],179:[function(_dereq_,module,exports){
 var registerShader = _dereq_('../core/shader').registerShader;
 var THREE = _dereq_('../lib/three');
 var utils = _dereq_('../utils/');
@@ -80054,11 +80231,11 @@ function getMaterialData (data, materialData) {
   return materialData;
 }
 
-},{"../core/shader":134,"../lib/three":172,"../utils/":197}],179:[function(_dereq_,module,exports){
-var css = "html.a-fullscreen{bottom:0;left:0;position:fixed;right:0;top:0}html.a-fullscreen body{height:100%;margin:0;overflow:hidden;padding:0;width:100%}html.a-fullscreen .a-canvas{width:100%!important;height:100%!important;top:0!important;left:0!important;right:0!important;bottom:0!important;position:fixed!important}html:not(.a-fullscreen) .a-enter-ar,html:not(.a-fullscreen) .a-enter-vr{right:5px;bottom:5px}:-webkit-full-screen{background-color:transparent}.a-hidden{display:none!important}.a-canvas{height:100%;left:0;position:absolute;top:0;width:100%}.a-canvas.a-grab-cursor:hover{cursor:grab;cursor:-moz-grab;cursor:-webkit-grab}canvas.a-canvas.a-mouse-cursor-hover:hover{cursor:pointer}.a-inspector-loader{background-color:#ed3160;position:fixed;left:3px;top:3px;padding:6px 10px;color:#fff;text-decoration:none;font-size:12px;font-family:Roboto,sans-serif;text-align:center;z-index:99999;width:204px}@keyframes dots-1{from{opacity:0}25%{opacity:1}}@keyframes dots-2{from{opacity:0}50%{opacity:1}}@keyframes dots-3{from{opacity:0}75%{opacity:1}}@-webkit-keyframes dots-1{from{opacity:0}25%{opacity:1}}@-webkit-keyframes dots-2{from{opacity:0}50%{opacity:1}}@-webkit-keyframes dots-3{from{opacity:0}75%{opacity:1}}.a-inspector-loader .dots span{animation:dots-1 2s infinite steps(1);-webkit-animation:dots-1 2s infinite steps(1)}.a-inspector-loader .dots span:first-child+span{animation-name:dots-2;-webkit-animation-name:dots-2}.a-inspector-loader .dots span:first-child+span+span{animation-name:dots-3;-webkit-animation-name:dots-3}a-scene{display:block;position:relative;height:100%;width:100%}a-assets,a-scene audio,a-scene img,a-scene video{display:none}.a-enter-vr-modal,.a-orientation-modal{font-family:Consolas,Andale Mono,Courier New,monospace}.a-enter-vr-modal a{border-bottom:1px solid #fff;padding:2px 0;text-decoration:none;transition:.1s color ease-in}.a-enter-vr-modal a:hover{background-color:#fff;color:#111;padding:2px 4px;position:relative;left:-4px}.a-enter-ar,.a-enter-vr{font-family:sans-serif,monospace;font-size:13px;width:100%;font-weight:200;line-height:16px;position:absolute;right:20px;bottom:20px}.a-enter-ar{right:80px}.a-enter-vr-button,.a-enter-vr-modal,.a-enter-vr-modal a{color:#fff}.a-enter-vr-button{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20245.82%20141.73%22%3E%3Cdefs%3E%3Cstyle%3E.a%7Bfill%3A%23fff%3Bfill-rule%3Aevenodd%3B%7D%3C%2Fstyle%3E%3C%2Fdefs%3E%3Ctitle%3Emask%3C%2Ftitle%3E%3Cpath%20class%3D%22a%22%20d%3D%22M175.56%2C111.37c-22.52%2C0-40.77-18.84-40.77-42.07S153%2C27.24%2C175.56%2C27.24s40.77%2C18.84%2C40.77%2C42.07S198.08%2C111.37%2C175.56%2C111.37ZM26.84%2C69.31c0-23.23%2C18.25-42.07%2C40.77-42.07s40.77%2C18.84%2C40.77%2C42.07-18.26%2C42.07-40.77%2C42.07S26.84%2C92.54%2C26.84%2C69.31ZM27.27%2C0C11.54%2C0%2C0%2C12.34%2C0%2C28.58V110.9c0%2C16.24%2C11.54%2C30.83%2C27.27%2C30.83H99.57c2.17%2C0%2C4.19-1.83%2C5.4-3.7L116.47%2C118a8%2C8%2C0%2C0%2C1%2C12.52-.18l11.51%2C20.34c1.2%2C1.86%2C3.22%2C3.61%2C5.39%2C3.61h72.29c15.74%2C0%2C27.63-14.6%2C27.63-30.83V28.58C245.82%2C12.34%2C233.93%2C0%2C218.19%2C0H27.27Z%22%2F%3E%3C%2Fsvg%3E) 50% 50% no-repeat rgba(0,0,0,.35)}.a-enter-ar-button{background:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 245.8 141.7'%3E%3Cdefs%3E%3Cstyle%3E .a%7Bfill:%23fff;fill-rule:evenodd;%7D%3C/style%3E%3C/defs%3E%3Ctitle%3E mask%3C/title%3E%3Cpath d='m115 104.7c-22.5 0-40.8-18.8-40.8-42.1s18.2-42.1 40.8-42.1 40.8 18.8 40.8 42.1-18.2 42.1-40.8 42.1zm-21.9-0.8c-0.4-14.7 27.8-23.8 50.3-23.8s50.3 8.8 50.8 23c0.4 12.7-26.8 22.2-49.3 22.2s-51.4-6.2-51.9-21.5zm-65.8-103.8c-15.7 0-27.3 12.3-27.3 28.6v82.3c0 16.2 11.5 30.8 27.3 30.8 74 0 146.7 0.9 190.9 0 15.7 0 27.6-14.6 27.6-30.8v-82.4c0-16.2-11.9-28.6-27.6-28.6z' class='a' fill='%23fff'/%3E%3C/svg%3E\") 50% 50% no-repeat rgba(0,0,0,.35)}.a-enter-ar-button,.a-enter-vr-button{background-size:70% 70%;border:0;bottom:0;cursor:pointer;min-width:50px;min-height:30px;padding-right:5%;padding-top:4%;position:absolute;right:0;transition:background-color .05s ease;-webkit-transition:background-color .05s ease;z-index:9999}.a-enter-vr-button:active,.a-enter-vr-button:hover{background-color:#666}[data-a-enter-vr-no-webvr] .a-enter-vr-button{border-color:#666;opacity:.65}[data-a-enter-vr-no-webvr] .a-enter-vr-button:active,[data-a-enter-vr-no-webvr] .a-enter-vr-button:hover{background-color:rgba(0,0,0,.35);cursor:not-allowed}.a-enter-vr-modal{background-color:#666;border-radius:0;display:none;min-height:32px;margin-right:70px;padding:9px;width:280px;right:2%;position:absolute}.a-enter-vr-modal:after{border-bottom:10px solid transparent;border-left:10px solid #666;border-top:10px solid transparent;display:inline-block;content:'';position:absolute;right:-5px;top:5px;width:0;height:0}.a-enter-vr-modal a,.a-enter-vr-modal p{display:inline}.a-enter-vr-modal p{margin:0}.a-enter-vr-modal p:after{content:' '}[data-a-enter-vr-no-headset].a-enter-vr:hover .a-enter-vr-modal,[data-a-enter-vr-no-webvr].a-enter-vr:hover .a-enter-vr-modal{display:block}.a-orientation-modal{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%20version%3D%221.1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%2090%2090%22%20enable-background%3D%22new%200%200%2090%2090%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpolygon%20points%3D%220%2C0%200%2C0%200%2C0%20%22%3E%3C/polygon%3E%3Cg%3E%3Cpath%20d%3D%22M71.545%2C48.145h-31.98V20.743c0-2.627-2.138-4.765-4.765-4.765H18.456c-2.628%2C0-4.767%2C2.138-4.767%2C4.765v42.789%20%20%20c0%2C2.628%2C2.138%2C4.766%2C4.767%2C4.766h5.535v0.959c0%2C2.628%2C2.138%2C4.765%2C4.766%2C4.765h42.788c2.628%2C0%2C4.766-2.137%2C4.766-4.765V52.914%20%20%20C76.311%2C50.284%2C74.173%2C48.145%2C71.545%2C48.145z%20M18.455%2C16.935h16.344c2.1%2C0%2C3.808%2C1.708%2C3.808%2C3.808v27.401H37.25V22.636%20%20%20c0-0.264-0.215-0.478-0.479-0.478H16.482c-0.264%2C0-0.479%2C0.214-0.479%2C0.478v36.585c0%2C0.264%2C0.215%2C0.478%2C0.479%2C0.478h7.507v7.644%20%20%20h-5.534c-2.101%2C0-3.81-1.709-3.81-3.81V20.743C14.645%2C18.643%2C16.354%2C16.935%2C18.455%2C16.935z%20M16.96%2C23.116h19.331v25.031h-7.535%20%20%20c-2.628%2C0-4.766%2C2.139-4.766%2C4.768v5.828h-7.03V23.116z%20M71.545%2C73.064H28.757c-2.101%2C0-3.81-1.708-3.81-3.808V52.914%20%20%20c0-2.102%2C1.709-3.812%2C3.81-3.812h42.788c2.1%2C0%2C3.809%2C1.71%2C3.809%2C3.812v16.343C75.354%2C71.356%2C73.645%2C73.064%2C71.545%2C73.064z%22%3E%3C/path%3E%3Cpath%20d%3D%22M28.919%2C58.424c-1.466%2C0-2.659%2C1.193-2.659%2C2.66c0%2C1.466%2C1.193%2C2.658%2C2.659%2C2.658c1.468%2C0%2C2.662-1.192%2C2.662-2.658%20%20%20C31.581%2C59.617%2C30.387%2C58.424%2C28.919%2C58.424z%20M28.919%2C62.786c-0.939%2C0-1.703-0.764-1.703-1.702c0-0.939%2C0.764-1.704%2C1.703-1.704%20%20%20c0.94%2C0%2C1.705%2C0.765%2C1.705%2C1.704C30.623%2C62.022%2C29.858%2C62.786%2C28.919%2C62.786z%22%3E%3C/path%3E%3Cpath%20d%3D%22M69.654%2C50.461H33.069c-0.264%2C0-0.479%2C0.215-0.479%2C0.479v20.288c0%2C0.264%2C0.215%2C0.478%2C0.479%2C0.478h36.585%20%20%20c0.263%2C0%2C0.477-0.214%2C0.477-0.478V50.939C70.131%2C50.676%2C69.917%2C50.461%2C69.654%2C50.461z%20M69.174%2C51.417V70.75H33.548V51.417H69.174z%22%3E%3C/path%3E%3Cpath%20d%3D%22M45.201%2C30.296c6.651%2C0%2C12.233%2C5.351%2C12.551%2C11.977l-3.033-2.638c-0.193-0.165-0.507-0.142-0.675%2C0.048%20%20%20c-0.174%2C0.198-0.153%2C0.501%2C0.045%2C0.676l3.883%2C3.375c0.09%2C0.075%2C0.198%2C0.115%2C0.312%2C0.115c0.141%2C0%2C0.273-0.061%2C0.362-0.166%20%20%20l3.371-3.877c0.173-0.2%2C0.151-0.502-0.047-0.675c-0.194-0.166-0.508-0.144-0.676%2C0.048l-2.592%2C2.979%20%20%20c-0.18-3.417-1.629-6.605-4.099-9.001c-2.538-2.461-5.877-3.817-9.404-3.817c-0.264%2C0-0.479%2C0.215-0.479%2C0.479%20%20%20C44.72%2C30.083%2C44.936%2C30.296%2C45.201%2C30.296z%22%3E%3C/path%3E%3C/g%3E%3C/svg%3E) center/50% 50% no-repeat rgba(244,244,244,1);bottom:0;font-size:14px;font-weight:600;left:0;line-height:20px;right:0;position:fixed;top:0;z-index:9999999}.a-orientation-modal:after{color:#666;content:\"Insert phone into Cardboard holder.\";display:block;position:absolute;text-align:center;top:70%;transform:translateY(-70%);width:100%}.a-orientation-modal button{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%20version%3D%221.1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%20100%20100%22%20enable-background%3D%22new%200%200%20100%20100%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpath%20fill%3D%22%23000000%22%20d%3D%22M55.209%2C50l17.803-17.803c1.416-1.416%2C1.416-3.713%2C0-5.129c-1.416-1.417-3.713-1.417-5.129%2C0L50.08%2C44.872%20%20L32.278%2C27.069c-1.416-1.417-3.714-1.417-5.129%2C0c-1.417%2C1.416-1.417%2C3.713%2C0%2C5.129L44.951%2C50L27.149%2C67.803%20%20c-1.417%2C1.416-1.417%2C3.713%2C0%2C5.129c0.708%2C0.708%2C1.636%2C1.062%2C2.564%2C1.062c0.928%2C0%2C1.856-0.354%2C2.564-1.062L50.08%2C55.13l17.803%2C17.802%20%20c0.708%2C0.708%2C1.637%2C1.062%2C2.564%2C1.062s1.856-0.354%2C2.564-1.062c1.416-1.416%2C1.416-3.713%2C0-5.129L55.209%2C50z%22%3E%3C/path%3E%3C/svg%3E) no-repeat;border:none;height:50px;text-indent:-9999px;width:50px}.a-loader-title{background-color:rgba(0,0,0,.6);font-family:sans-serif,monospace;text-align:center;font-size:20px;height:50px;font-weight:300;line-height:50px;position:absolute;right:0;left:0;top:0;color:#fff}"; (_dereq_("browserify-css").createStyle(css, { "href": "src/style/aframe.css"})); module.exports = css;
-},{"browserify-css":4}],180:[function(_dereq_,module,exports){
-var css = ".rs-base{background-color:#333;color:#fafafa;border-radius:0;font:10px monospace;left:5px;line-height:1em;opacity:.85;overflow:hidden;padding:10px;position:fixed;top:5px;width:300px;z-index:10000}.rs-base div.hidden{display:none}.rs-base h1{color:#fff;cursor:pointer;font-size:1.4em;font-weight:300;margin:0 0 5px;padding:0}.rs-group{display:-webkit-box;display:-webkit-flex;display:flex;-webkit-flex-direction:column-reverse;flex-direction:column-reverse;margin-bottom:5px}.rs-group:last-child{margin-bottom:0}.rs-counter-base{align-items:center;display:-webkit-box;display:-webkit-flex;display:flex;height:10px;-webkit-justify-content:space-between;justify-content:space-between;margin:2px 0}.rs-counter-base.alarm{color:#b70000;text-shadow:0 0 0 #b70000,0 0 1px #fff,0 0 1px #fff,0 0 2px #fff,0 0 2px #fff,0 0 3px #fff,0 0 3px #fff,0 0 4px #fff,0 0 4px #fff}.rs-counter-id{font-weight:300;-webkit-box-ordinal-group:0;-webkit-order:0;order:0;width:54px}.rs-counter-value{font-weight:300;-webkit-box-ordinal-group:1;-webkit-order:1;order:1;text-align:right;width:35px}.rs-canvas{-webkit-box-ordinal-group:2;-webkit-order:2;order:2}@media (min-width:480px){.rs-base{left:20px;top:20px}}"; (_dereq_("browserify-css").createStyle(css, { "href": "src/style/rStats.css"})); module.exports = css;
+},{"../core/shader":135,"../lib/three":173,"../utils/":198}],180:[function(_dereq_,module,exports){
+var css = "html.a-fullscreen{bottom:0;left:0;position:fixed;right:0;top:0}html.a-fullscreen body{height:100%;margin:0;overflow:hidden;padding:0;width:100%}html.a-fullscreen .a-canvas{width:100%!important;height:100%!important;top:0!important;left:0!important;right:0!important;bottom:0!important;position:fixed!important}html:not(.a-fullscreen) .a-enter-ar,html:not(.a-fullscreen) .a-enter-vr{right:5px;bottom:5px}:-webkit-full-screen{background-color:transparent}.a-hidden{display:none!important}.a-canvas{height:100%;left:0;position:absolute;top:0;width:100%}.a-canvas.a-grab-cursor:hover{cursor:grab;cursor:-moz-grab;cursor:-webkit-grab}canvas.a-canvas.a-mouse-cursor-hover:hover{cursor:pointer}.a-inspector-loader{background-color:#ed3160;position:fixed;left:3px;top:3px;padding:6px 10px;color:#fff;text-decoration:none;font-size:12px;font-family:Roboto,sans-serif;text-align:center;z-index:99999;width:204px}@keyframes dots-1{from{opacity:0}25%{opacity:1}}@keyframes dots-2{from{opacity:0}50%{opacity:1}}@keyframes dots-3{from{opacity:0}75%{opacity:1}}@-webkit-keyframes dots-1{from{opacity:0}25%{opacity:1}}@-webkit-keyframes dots-2{from{opacity:0}50%{opacity:1}}@-webkit-keyframes dots-3{from{opacity:0}75%{opacity:1}}.a-inspector-loader .dots span{animation:dots-1 2s infinite steps(1);-webkit-animation:dots-1 2s infinite steps(1)}.a-inspector-loader .dots span:first-child+span{animation-name:dots-2;-webkit-animation-name:dots-2}.a-inspector-loader .dots span:first-child+span+span{animation-name:dots-3;-webkit-animation-name:dots-3}a-scene{display:block;position:relative;height:100%;width:100%}a-assets,a-scene audio,a-scene img,a-scene video{display:none}.a-enter-vr-modal,.a-orientation-modal{font-family:Consolas,Andale Mono,Courier New,monospace}.a-enter-vr-modal a{border-bottom:1px solid #fff;padding:2px 0;text-decoration:none;transition:.1s color ease-in}.a-enter-vr-modal a:hover{background-color:#fff;color:#111;padding:2px 4px;position:relative;left:-4px}.a-enter-ar,.a-enter-vr{font-family:sans-serif,monospace;font-size:13px;width:100%;font-weight:200;line-height:16px;position:absolute;right:20px;bottom:20px}.a-enter-ar{right:80px}.a-enter-vr-button,.a-enter-vr-modal,.a-enter-vr-modal a{color:#fff}.a-enter-vr-button{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20245.82%20141.73%22%3E%3Cdefs%3E%3Cstyle%3E.a%7Bfill%3A%23fff%3Bfill-rule%3Aevenodd%3B%7D%3C%2Fstyle%3E%3C%2Fdefs%3E%3Ctitle%3Emask%3C%2Ftitle%3E%3Cpath%20class%3D%22a%22%20d%3D%22M175.56%2C111.37c-22.52%2C0-40.77-18.84-40.77-42.07S153%2C27.24%2C175.56%2C27.24s40.77%2C18.84%2C40.77%2C42.07S198.08%2C111.37%2C175.56%2C111.37ZM26.84%2C69.31c0-23.23%2C18.25-42.07%2C40.77-42.07s40.77%2C18.84%2C40.77%2C42.07-18.26%2C42.07-40.77%2C42.07S26.84%2C92.54%2C26.84%2C69.31ZM27.27%2C0C11.54%2C0%2C0%2C12.34%2C0%2C28.58V110.9c0%2C16.24%2C11.54%2C30.83%2C27.27%2C30.83H99.57c2.17%2C0%2C4.19-1.83%2C5.4-3.7L116.47%2C118a8%2C8%2C0%2C0%2C1%2C12.52-.18l11.51%2C20.34c1.2%2C1.86%2C3.22%2C3.61%2C5.39%2C3.61h72.29c15.74%2C0%2C27.63-14.6%2C27.63-30.83V28.58C245.82%2C12.34%2C233.93%2C0%2C218.19%2C0H27.27Z%22%2F%3E%3C%2Fsvg%3E) 50% 50% no-repeat rgba(0,0,0,.35)}.a-enter-ar-button{background:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 245.8 141.7'%3E%3Cdefs%3E%3Cstyle%3E .a%7Bfill:%23fff;fill-rule:evenodd;%7D%3C/style%3E%3C/defs%3E%3Ctitle%3E mask%3C/title%3E%3Cpath d='m115 104.7c-22.5 0-40.8-18.8-40.8-42.1s18.2-42.1 40.8-42.1 40.8 18.8 40.8 42.1-18.2 42.1-40.8 42.1zm-21.9-0.8c-0.4-14.7 27.8-23.8 50.3-23.8s50.3 8.8 50.8 23c0.4 12.7-26.8 22.2-49.3 22.2s-51.4-6.2-51.9-21.5zm-65.8-103.8c-15.7 0-27.3 12.3-27.3 28.6v82.3c0 16.2 11.5 30.8 27.3 30.8 74 0 146.7 0.9 190.9 0 15.7 0 27.6-14.6 27.6-30.8v-82.4c0-16.2-11.9-28.6-27.6-28.6z' class='a' fill='%23fff'/%3E%3C/svg%3E\") 50% 50% no-repeat rgba(0,0,0,.35)}.a-enter-ar-button,.a-enter-vr-button{background-size:70% 70%;border:0;bottom:0;cursor:pointer;min-width:50px;min-height:30px;padding-right:5%;padding-top:4%;position:absolute;right:0;transition:background-color .05s ease;-webkit-transition:background-color .05s ease;z-index:9999}.a-enter-vr-button:active,.a-enter-vr-button:hover{background-color:#666}[data-a-enter-vr-no-webvr] .a-enter-vr-button{border-color:#666;opacity:.65}[data-a-enter-vr-no-webvr] .a-enter-vr-button:active,[data-a-enter-vr-no-webvr] .a-enter-vr-button:hover{background-color:rgba(0,0,0,.35);cursor:not-allowed}.a-enter-vr-modal{background-color:#666;border-radius:0;display:none;min-height:32px;margin-right:70px;padding:9px;width:280px;right:2%;position:absolute}.a-enter-vr-modal:after{border-bottom:10px solid transparent;border-left:10px solid #666;border-top:10px solid transparent;display:inline-block;content:'';position:absolute;right:-5px;top:5px;width:0;height:0}.a-enter-vr-modal a,.a-enter-vr-modal p{display:inline}.a-enter-vr-modal p{margin:0}.a-enter-vr-modal p:after{content:' '}[data-a-enter-vr-no-headset].a-enter-vr:hover .a-enter-vr-modal,[data-a-enter-vr-no-webvr].a-enter-vr:hover .a-enter-vr-modal{display:block}.a-orientation-modal{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%20version%3D%221.1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%2090%2090%22%20enable-background%3D%22new%200%200%2090%2090%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpolygon%20points%3D%220%2C0%200%2C0%200%2C0%20%22%3E%3C/polygon%3E%3Cg%3E%3Cpath%20d%3D%22M71.545%2C48.145h-31.98V20.743c0-2.627-2.138-4.765-4.765-4.765H18.456c-2.628%2C0-4.767%2C2.138-4.767%2C4.765v42.789%20%20%20c0%2C2.628%2C2.138%2C4.766%2C4.767%2C4.766h5.535v0.959c0%2C2.628%2C2.138%2C4.765%2C4.766%2C4.765h42.788c2.628%2C0%2C4.766-2.137%2C4.766-4.765V52.914%20%20%20C76.311%2C50.284%2C74.173%2C48.145%2C71.545%2C48.145z%20M18.455%2C16.935h16.344c2.1%2C0%2C3.808%2C1.708%2C3.808%2C3.808v27.401H37.25V22.636%20%20%20c0-0.264-0.215-0.478-0.479-0.478H16.482c-0.264%2C0-0.479%2C0.214-0.479%2C0.478v36.585c0%2C0.264%2C0.215%2C0.478%2C0.479%2C0.478h7.507v7.644%20%20%20h-5.534c-2.101%2C0-3.81-1.709-3.81-3.81V20.743C14.645%2C18.643%2C16.354%2C16.935%2C18.455%2C16.935z%20M16.96%2C23.116h19.331v25.031h-7.535%20%20%20c-2.628%2C0-4.766%2C2.139-4.766%2C4.768v5.828h-7.03V23.116z%20M71.545%2C73.064H28.757c-2.101%2C0-3.81-1.708-3.81-3.808V52.914%20%20%20c0-2.102%2C1.709-3.812%2C3.81-3.812h42.788c2.1%2C0%2C3.809%2C1.71%2C3.809%2C3.812v16.343C75.354%2C71.356%2C73.645%2C73.064%2C71.545%2C73.064z%22%3E%3C/path%3E%3Cpath%20d%3D%22M28.919%2C58.424c-1.466%2C0-2.659%2C1.193-2.659%2C2.66c0%2C1.466%2C1.193%2C2.658%2C2.659%2C2.658c1.468%2C0%2C2.662-1.192%2C2.662-2.658%20%20%20C31.581%2C59.617%2C30.387%2C58.424%2C28.919%2C58.424z%20M28.919%2C62.786c-0.939%2C0-1.703-0.764-1.703-1.702c0-0.939%2C0.764-1.704%2C1.703-1.704%20%20%20c0.94%2C0%2C1.705%2C0.765%2C1.705%2C1.704C30.623%2C62.022%2C29.858%2C62.786%2C28.919%2C62.786z%22%3E%3C/path%3E%3Cpath%20d%3D%22M69.654%2C50.461H33.069c-0.264%2C0-0.479%2C0.215-0.479%2C0.479v20.288c0%2C0.264%2C0.215%2C0.478%2C0.479%2C0.478h36.585%20%20%20c0.263%2C0%2C0.477-0.214%2C0.477-0.478V50.939C70.131%2C50.676%2C69.917%2C50.461%2C69.654%2C50.461z%20M69.174%2C51.417V70.75H33.548V51.417H69.174z%22%3E%3C/path%3E%3Cpath%20d%3D%22M45.201%2C30.296c6.651%2C0%2C12.233%2C5.351%2C12.551%2C11.977l-3.033-2.638c-0.193-0.165-0.507-0.142-0.675%2C0.048%20%20%20c-0.174%2C0.198-0.153%2C0.501%2C0.045%2C0.676l3.883%2C3.375c0.09%2C0.075%2C0.198%2C0.115%2C0.312%2C0.115c0.141%2C0%2C0.273-0.061%2C0.362-0.166%20%20%20l3.371-3.877c0.173-0.2%2C0.151-0.502-0.047-0.675c-0.194-0.166-0.508-0.144-0.676%2C0.048l-2.592%2C2.979%20%20%20c-0.18-3.417-1.629-6.605-4.099-9.001c-2.538-2.461-5.877-3.817-9.404-3.817c-0.264%2C0-0.479%2C0.215-0.479%2C0.479%20%20%20C44.72%2C30.083%2C44.936%2C30.296%2C45.201%2C30.296z%22%3E%3C/path%3E%3C/g%3E%3C/svg%3E) center/50% 50% no-repeat rgba(244,244,244,1);bottom:0;font-size:14px;font-weight:600;left:0;line-height:20px;right:0;position:fixed;top:0;z-index:9999999}.a-orientation-modal:after{color:#666;content:\"Insert phone into Cardboard holder.\";display:block;position:absolute;text-align:center;top:70%;transform:translateY(-70%);width:100%}.a-orientation-modal button{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%20version%3D%221.1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%20100%20100%22%20enable-background%3D%22new%200%200%20100%20100%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpath%20fill%3D%22%23000000%22%20d%3D%22M55.209%2C50l17.803-17.803c1.416-1.416%2C1.416-3.713%2C0-5.129c-1.416-1.417-3.713-1.417-5.129%2C0L50.08%2C44.872%20%20L32.278%2C27.069c-1.416-1.417-3.714-1.417-5.129%2C0c-1.417%2C1.416-1.417%2C3.713%2C0%2C5.129L44.951%2C50L27.149%2C67.803%20%20c-1.417%2C1.416-1.417%2C3.713%2C0%2C5.129c0.708%2C0.708%2C1.636%2C1.062%2C2.564%2C1.062c0.928%2C0%2C1.856-0.354%2C2.564-1.062L50.08%2C55.13l17.803%2C17.802%20%20c0.708%2C0.708%2C1.637%2C1.062%2C2.564%2C1.062s1.856-0.354%2C2.564-1.062c1.416-1.416%2C1.416-3.713%2C0-5.129L55.209%2C50z%22%3E%3C/path%3E%3C/svg%3E) no-repeat;border:none;height:50px;text-indent:-9999px;width:50px}.a-loader-title{background-color:rgba(0,0,0,.6);font-family:sans-serif,monospace;text-align:center;font-size:20px;height:50px;font-weight:300;line-height:50px;position:absolute;right:0;left:0;top:0;color:#fff}.a-modal{background:0 0/50% 50% rgba(0,0,0,.6);bottom:0;font-size:14px;font-weight:600;left:0;line-height:20px;right:0;position:fixed;top:0;z-index:9999999}.a-dialog{position:relative;left:50%;top:50%;transform:translate(-50%,-50%);z-index:199995;width:300px;height:200px;background-size:contain;background-color:#fff;font-family:sans-serif,monospace;font-size:20px;border-radius:3px;padding:6px}.a-dialog-text-container{width:100%;height:70%;align-self:flex-start;display:flex;justify-content:center;align-content:center;flex-direction:column}.a-dialog-text{display:inline-block;font-weight:400;font-size:14pt;margin:8px}.a-dialog-buttons-container{display:inline-flex;align-self:flex-end;width:100%;height:30%}.a-dialog-button{cursor:pointer;align-self:center;opacity:.9;height:80%;width:50%;font-size:12pt;margin:4px;border-radius:2px;text-align:center;border:none;display:inline-block;-webkit-transition:all .25s ease-in-out;transition:all .25s ease-in-out;box-shadow:0 1px 3px rgba(0,0,0,.1),0 1px 2px rgba(0,0,0,.2);user-select:none}.a-dialog-permission-button:hover{box-shadow:0 7px 14px rgba(0,0,0,.2),0 2px 2px rgba(0,0,0,.2)}.a-dialog-allow-button{background-color:#8ce3ba}.a-dialog-deny-button{background-color:#ff4b8b}.a-dialog-ok-button{background-color:#8ce3ba;width:100%}"; (_dereq_("browserify-css").createStyle(css, { "href": "src/style/aframe.css"})); module.exports = css;
 },{"browserify-css":4}],181:[function(_dereq_,module,exports){
+var css = ".rs-base{background-color:#333;color:#fafafa;border-radius:0;font:10px monospace;left:5px;line-height:1em;opacity:.85;overflow:hidden;padding:10px;position:fixed;top:5px;width:300px;z-index:10000}.rs-base div.hidden{display:none}.rs-base h1{color:#fff;cursor:pointer;font-size:1.4em;font-weight:300;margin:0 0 5px;padding:0}.rs-group{display:-webkit-box;display:-webkit-flex;display:flex;-webkit-flex-direction:column-reverse;flex-direction:column-reverse;margin-bottom:5px}.rs-group:last-child{margin-bottom:0}.rs-counter-base{align-items:center;display:-webkit-box;display:-webkit-flex;display:flex;height:10px;-webkit-justify-content:space-between;justify-content:space-between;margin:2px 0}.rs-counter-base.alarm{color:#b70000;text-shadow:0 0 0 #b70000,0 0 1px #fff,0 0 1px #fff,0 0 2px #fff,0 0 2px #fff,0 0 3px #fff,0 0 3px #fff,0 0 4px #fff,0 0 4px #fff}.rs-counter-id{font-weight:300;-webkit-box-ordinal-group:0;-webkit-order:0;order:0;width:54px}.rs-counter-value{font-weight:300;-webkit-box-ordinal-group:1;-webkit-order:1;order:1;text-align:right;width:35px}.rs-canvas{-webkit-box-ordinal-group:2;-webkit-order:2;order:2}@media (min-width:480px){.rs-base{left:20px;top:20px}}"; (_dereq_("browserify-css").createStyle(css, { "href": "src/style/rStats.css"})); module.exports = css;
+},{"browserify-css":4}],182:[function(_dereq_,module,exports){
 var constants = _dereq_('../constants/');
 var registerSystem = _dereq_('../core/system').registerSystem;
 
@@ -80331,7 +80508,7 @@ function removeDefaultCamera (sceneEl) {
   sceneEl.removeChild(defaultCamera);
 }
 
-},{"../constants/":116,"../core/system":135}],182:[function(_dereq_,module,exports){
+},{"../constants/":117,"../core/system":136}],183:[function(_dereq_,module,exports){
 var geometries = _dereq_('../core/geometry').geometries;
 var registerSystem = _dereq_('../core/system').registerSystem;
 var THREE = _dereq_('../lib/three');
@@ -80471,7 +80648,7 @@ function toBufferGeometry (geometry, doBuffer) {
   return bufferGeometry;
 }
 
-},{"../core/geometry":125,"../core/system":135,"../lib/three":172}],183:[function(_dereq_,module,exports){
+},{"../core/geometry":126,"../core/system":136,"../lib/three":173}],184:[function(_dereq_,module,exports){
 var registerSystem = _dereq_('../core/system').registerSystem;
 var THREE = _dereq_('../lib/three');
 
@@ -80507,7 +80684,7 @@ module.exports.System = registerSystem('gltf-model', {
   }
 });
 
-},{"../core/system":135,"../lib/three":172}],184:[function(_dereq_,module,exports){
+},{"../core/system":136,"../lib/three":173}],185:[function(_dereq_,module,exports){
 _dereq_('./camera');
 _dereq_('./geometry');
 _dereq_('./gltf-model');
@@ -80518,7 +80695,7 @@ _dereq_('./shadow');
 _dereq_('./tracked-controls-webvr');
 _dereq_('./tracked-controls-webxr');
 
-},{"./camera":181,"./geometry":182,"./gltf-model":183,"./light":185,"./material":186,"./renderer":187,"./shadow":188,"./tracked-controls-webvr":189,"./tracked-controls-webxr":190}],185:[function(_dereq_,module,exports){
+},{"./camera":182,"./geometry":183,"./gltf-model":184,"./light":186,"./material":187,"./renderer":188,"./shadow":189,"./tracked-controls-webvr":190,"./tracked-controls-webxr":191}],186:[function(_dereq_,module,exports){
 var registerSystem = _dereq_('../core/system').registerSystem;
 var bind = _dereq_('../utils/bind');
 var constants = _dereq_('../constants/');
@@ -80604,7 +80781,7 @@ module.exports.System = registerSystem('light', {
   }
 });
 
-},{"../constants/":116,"../core/system":135,"../utils/bind":191}],186:[function(_dereq_,module,exports){
+},{"../constants/":117,"../core/system":136,"../utils/bind":192}],187:[function(_dereq_,module,exports){
 var registerSystem = _dereq_('../core/system').registerSystem;
 var THREE = _dereq_('../lib/three');
 var utils = _dereq_('../utils/');
@@ -81009,7 +81186,7 @@ function fixVideoAttributes (videoEl) {
   return videoEl;
 }
 
-},{"../core/system":135,"../lib/three":172,"../utils/":197,"../utils/material":200}],187:[function(_dereq_,module,exports){
+},{"../core/system":136,"../lib/three":173,"../utils/":198,"../utils/material":201}],188:[function(_dereq_,module,exports){
 var registerSystem = _dereq_('../core/system').registerSystem;
 var utils = _dereq_('../utils/');
 var THREE = _dereq_('../lib/three');
@@ -81073,7 +81250,7 @@ module.exports.System = registerSystem('renderer', {
   }
 });
 
-},{"../core/system":135,"../lib/three":172,"../utils/":197}],188:[function(_dereq_,module,exports){
+},{"../core/system":136,"../lib/three":173,"../utils/":198}],189:[function(_dereq_,module,exports){
 var registerSystem = _dereq_('../core/system').registerSystem;
 var THREE = _dereq_('../lib/three');
 
@@ -81128,7 +81305,7 @@ module.exports.System = registerSystem('shadow', {
   }
 });
 
-},{"../core/system":135,"../lib/three":172}],189:[function(_dereq_,module,exports){
+},{"../core/system":136,"../lib/three":173}],190:[function(_dereq_,module,exports){
 var registerSystem = _dereq_('../core/system').registerSystem;
 var utils = _dereq_('../utils');
 
@@ -81195,7 +81372,7 @@ module.exports.System = registerSystem('tracked-controls-webvr', {
   }
 });
 
-},{"../core/system":135,"../utils":197}],190:[function(_dereq_,module,exports){
+},{"../core/system":136,"../utils":198}],191:[function(_dereq_,module,exports){
 var registerSystem = _dereq_('../core/system').registerSystem;
 var utils = _dereq_('../utils');
 
@@ -81228,7 +81405,7 @@ module.exports.System = registerSystem('tracked-controls-webxr', {
   }
 });
 
-},{"../core/system":135,"../utils":197}],191:[function(_dereq_,module,exports){
+},{"../core/system":136,"../utils":198}],192:[function(_dereq_,module,exports){
 /**
  * Faster version of Function.prototype.bind
  * @param {Function} fn - Function to wrap.
@@ -81245,7 +81422,7 @@ module.exports = function bind (fn, ctx/* , arg1, arg2 */) {
   })(Array.prototype.slice.call(arguments, 2));
 };
 
-},{}],192:[function(_dereq_,module,exports){
+},{}],193:[function(_dereq_,module,exports){
 /* global THREE */
 var debug = _dereq_('./debug');
 var extend = _dereq_('object-assign');
@@ -81357,7 +81534,7 @@ module.exports.toVector3 = function (vec3) {
   return new THREE.Vector3(vec3.x, vec3.y, vec3.z);
 };
 
-},{"./debug":193,"object-assign":39}],193:[function(_dereq_,module,exports){
+},{"./debug":194,"object-assign":39}],194:[function(_dereq_,module,exports){
 (function (process){
 var debugLib = _dereq_('debug');
 var extend = _dereq_('object-assign');
@@ -81454,7 +81631,7 @@ module.exports = debug;
 
 }).call(this,_dereq_('_process'))
 
-},{"_process":49,"debug":8,"object-assign":39}],194:[function(_dereq_,module,exports){
+},{"_process":49,"debug":8,"object-assign":39}],195:[function(_dereq_,module,exports){
 (function (process){
 var error = _dereq_('debug')('device:error');
 
@@ -81580,6 +81757,11 @@ function isIOS () {
 }
 module.exports.isIOS = isIOS;
 
+function isMobileDeviceRequestingDesktopSite () {
+  return !isMobile() && window.orientation !== undefined;
+}
+module.exports.isMobileDeviceRequestingDesktopSite = isMobileDeviceRequestingDesktopSite;
+
 /**
  *  Detect browsers in Stand-Alone headsets
  */
@@ -81650,7 +81832,7 @@ module.exports.PolyfillControls = function PolyfillControls (object) {
 
 }).call(this,_dereq_('_process'))
 
-},{"_process":49,"debug":8}],195:[function(_dereq_,module,exports){
+},{"_process":49,"debug":8}],196:[function(_dereq_,module,exports){
 /**
  * Split a delimited component property string (e.g., `material.color`) to an object
  * containing `component` name and `property` name. If there is no delimiter, just return the
@@ -81712,7 +81894,7 @@ module.exports.setComponentProperty = function (el, name, value, delimiter) {
   el.setAttribute(name, value);
 };
 
-},{}],196:[function(_dereq_,module,exports){
+},{}],197:[function(_dereq_,module,exports){
 module.exports = function forceCanvasResizeSafariMobile (canvasEl) {
   var width = canvasEl.style.width;
   var height = canvasEl.style.height;
@@ -81728,7 +81910,7 @@ module.exports = function forceCanvasResizeSafariMobile (canvasEl) {
   }, 200);
 };
 
-},{}],197:[function(_dereq_,module,exports){
+},{}],198:[function(_dereq_,module,exports){
 /* global location */
 
 /* Centralized place to reference utilities since utils is exposed to the user. */
@@ -82058,7 +82240,7 @@ module.exports.findAllScenes = function (el) {
 // Must be at bottom to avoid circular dependency.
 module.exports.srcLoader = _dereq_('./src-loader');
 
-},{"./bind":191,"./coordinates":192,"./debug":193,"./device":194,"./entity":195,"./forceCanvasResizeSafariMobile":196,"./is-ie11":198,"./material":200,"./object-pool":201,"./split":202,"./src-loader":203,"./styleParser":204,"./tracked-controls":205,"deep-assign":10,"object-assign":39}],198:[function(_dereq_,module,exports){
+},{"./bind":192,"./coordinates":193,"./debug":194,"./device":195,"./entity":196,"./forceCanvasResizeSafariMobile":197,"./is-ie11":199,"./material":201,"./object-pool":202,"./split":203,"./src-loader":204,"./styleParser":205,"./tracked-controls":206,"deep-assign":10,"object-assign":39}],199:[function(_dereq_,module,exports){
 // https://stackoverflow.com/a/17907562
 function getInternetExplorerVersion () {
   var version = -1;
@@ -82076,7 +82258,7 @@ function getInternetExplorerVersion () {
 
 module.exports = getInternetExplorerVersion() === 11;
 
-},{}],199:[function(_dereq_,module,exports){
+},{}],200:[function(_dereq_,module,exports){
 /**
  * Check if device is iOS and older than version 10.
  */
@@ -82084,7 +82266,7 @@ module.exports = function isIOSOlderThan10 (userAgent) {
   return /(iphone|ipod|ipad).*os.(7_|8_|9_)/i.test(userAgent);
 };
 
-},{}],200:[function(_dereq_,module,exports){
+},{}],201:[function(_dereq_,module,exports){
 var THREE = _dereq_('../lib/three');
 
 var HLS_MIMETYPES = ['application/x-mpegurl', 'application/vnd.apple.mpegurl'];
@@ -82255,7 +82437,7 @@ module.exports.isHLS = function (src, type) {
   return false;
 };
 
-},{"../lib/three":172}],201:[function(_dereq_,module,exports){
+},{"../lib/three":173}],202:[function(_dereq_,module,exports){
 /*
   Adapted deePool by Kyle Simpson.
   MIT License: http://getify.mit-license.org
@@ -82346,7 +82528,7 @@ function removeUnusedKeys (obj, schema) {
 }
 module.exports.removeUnusedKeys = removeUnusedKeys;
 
-},{}],202:[function(_dereq_,module,exports){
+},{}],203:[function(_dereq_,module,exports){
 /**
  * String split with cached result.
  */
@@ -82363,7 +82545,7 @@ module.exports.split = (function () {
   };
 })();
 
-},{}],203:[function(_dereq_,module,exports){
+},{}],204:[function(_dereq_,module,exports){
 /* global Image, XMLHttpRequest */
 var debug = _dereq_('./debug');
 
@@ -82522,7 +82704,7 @@ module.exports = {
   validateCubemapSrc: validateCubemapSrc
 };
 
-},{"./debug":193}],204:[function(_dereq_,module,exports){
+},{"./debug":194}],205:[function(_dereq_,module,exports){
 /**
  * Utils for parsing style-like strings (e.g., "primitive: box; width: 5; height: 4.5").
  * Some code adapted from `style-attr` (https://github.com/joshwnj/style-attr)
@@ -82675,7 +82857,7 @@ function styleStringify (obj) {
 
 function upperCase (str) { return str[1].toUpperCase(); }
 
-},{}],205:[function(_dereq_,module,exports){
+},{}],206:[function(_dereq_,module,exports){
 var DEFAULT_HANDEDNESS = _dereq_('../constants').DEFAULT_HANDEDNESS;
 var AXIS_LABELS = ['x', 'y', 'z', 'w'];
 var NUM_HANDS = 2;  // Number of hands in a pair. Should always be 2.
@@ -82892,7 +83074,7 @@ module.exports.onButtonEvent = function (id, evtName, component, hand) {
   }
 };
 
-},{"../constants":116}],206:[function(_dereq_,module,exports){
+},{"../constants":117}],207:[function(_dereq_,module,exports){
 window.glStats = function () {
 
     var _rS = null;
@@ -83153,7 +83335,7 @@ if (typeof module === 'object') {
   };
 }
 
-},{}],207:[function(_dereq_,module,exports){
+},{}],208:[function(_dereq_,module,exports){
 // performance.now() polyfill from https://gist.github.com/paulirish/5438650
 'use strict';
 
@@ -83608,7 +83790,7 @@ if (typeof module === 'object') {
   module.exports = window.rStats;
 }
 
-},{}],208:[function(_dereq_,module,exports){
+},{}],209:[function(_dereq_,module,exports){
 // https://stackoverflow.com/a/36213464
 if (!String.prototype.startsWith) {
     String.prototype.startsWith = function(searchString, position){
@@ -83617,7 +83799,7 @@ if (!String.prototype.startsWith) {
   };
 }
 
-},{}],209:[function(_dereq_,module,exports){
+},{}],210:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -83679,7 +83861,7 @@ Util.isLandscapeMode = function() {
 
 module.exports = Util;
 
-},{}],210:[function(_dereq_,module,exports){
+},{}],211:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -83755,6 +83937,6 @@ function getWakeLock() {
 
 module.exports = getWakeLock();
 
-},{"./util.js":209}]},{},[170])(170)
+},{"./util.js":210}]},{},[171])(171)
 });
 //# sourceMappingURL=aframe-master.js.map
