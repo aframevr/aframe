@@ -70491,7 +70491,7 @@ module.exports.Component = registerComponent('device-orientation-permission-ui',
     if (utils.device.isMobileDeviceRequestingDesktopSite()) { this.showMobileDesktopModeAlert(); }
 
     // Browser doesn't support or doesn't require permission to DeviceOrientationEvent API.
-    if (!DeviceOrientationEvent || !DeviceOrientationEvent.requestPermission) { return; }
+    if (typeof DeviceOrientationEvent === 'undefined' || !DeviceOrientationEvent.requestPermission) { return; }
     this.onDeviceMotionDialogAllowClicked = bind(this.onDeviceMotionDialogAllowClicked, this);
     this.onDeviceMotionDialogDenyClicked = bind(this.onDeviceMotionDialogDenyClicked, this);
     // Show dialog only if permission has not yet been granted.
@@ -79610,7 +79610,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.9.2 (Date 2019-11-19, Commit #21242616)');
+console.log('A-Frame Version: 0.9.2 (Date 2019-11-19, Commit #994e7fcf)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
