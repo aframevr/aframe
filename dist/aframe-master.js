@@ -77232,8 +77232,11 @@ module.exports.AScene = registerElement('a-scene', {
           // to setup everything from there. Thus, we need to emulate another vrdisplaypresentchange
           // for the actual requestPresent. Need to make sure there are no issues with firing the
           // vrdisplaypresentchange multiple times.
-          var event = new CustomEvent('vrdisplaypresentchange', {detail: {display: utils.device.getVRDisplay()}});
-          if (!isWebXRAvailable) { window.dispatchEvent(event); }
+          var event;
+          if (window.hasNativeWebVRImplementation) {
+            event = new CustomEvent('vrdisplaypresentchange', {detail: {display: utils.device.getVRDisplay()}});
+            window.dispatchEvent(event);
+          }
 
           self.addState('vr-mode');
           self.emit('enter-vr', {target: self});
@@ -79611,7 +79614,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.9.2 (Date 2019-11-19, Commit #5969f101)');
+console.log('A-Frame Version: 0.9.2 (Date 2019-11-20, Commit #a732a528)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
