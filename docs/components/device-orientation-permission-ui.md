@@ -6,7 +6,7 @@ parent_section: components
 source_code: src/components/scene/device-orientation-permission-ui.js
 ---
 
-Some browsers like Safari on iOS 13 and later require sites to request user permission to access DeviceOrientation events. This component presents a permission dialog for the user to grant or deny access.
+Starting with Safari on iOS 13 browsers require sites to be served over `https` and request user permission to access DeviceOrientation events. This component presents a permission dialog for the user to grant or deny access.
 The device-orientation-permission-ui component applies only to the [`<a-scene>` element][scene]
 
 To configure the style of the dialog one can redefine the associated css styles. To change the colors of the allow, deny and ok buttons:
