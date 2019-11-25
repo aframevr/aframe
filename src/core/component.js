@@ -653,6 +653,11 @@ module.exports.registerComponent = function (name, definition) {
   });
 
   if (components[name]) {
+    if (name === 'xrweb') {
+      warn('xrweb component is being registered multiple times.');
+      return components[name];
+    }
+
     throw new Error('The component `' + name + '` has been already registered. ' +
                     'Check that you are not loading two versions of the same component ' +
                     'or two different components of the same name.');
