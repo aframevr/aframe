@@ -14,7 +14,7 @@ is primarily HTML and JavaScript.
 
 ## Code Editors in the Browser
 
-The fastest way to start playing from within the browser.
+The fastest way is to start playing from within the browser.
 
 ### Remix on Glitch
 
@@ -43,7 +43,7 @@ Below are a few other A-Frame Glitches for starters:
 
 ### Other Code Editors
 
-Below are a couple A-Frame starter kits on other browser-based code
+Below are a couple of A-Frame starter kits on other browser-based code
 editors. Both support remixing or forking:
 
 - [Mozilla Thimble &mdash; A-Frame](https://thimble.mozilla.org/en-US/user/ngokevin/864056)
@@ -92,14 +92,14 @@ CDN build:
 
 ```html
 <head>
-  <script src="https://aframe.io/releases/0.9.0/aframe.min.js"></script>
+  <script src="https://aframe.io/releases/0.9.2/aframe.min.js"></script>
 </head>
 ```
 
 If we want to serve it ourselves, we can download the JS build:
 
-<a id="builds-prod" class="btn btn-download" href="https://aframe.io/releases/0.9.0/aframe.min.js" download>Production Version <span>0.9.0</span></a> <em class="install-note">Minified</em>
-<a id="builds-dev" class="btn btn-download" href="https://aframe.io/releases/0.9.0/aframe.js" download>Development Version <span>0.9.0</span></a> <em class="install-note">Uncompressed with Source Maps</em>
+<a id="builds-prod" class="btn btn-download" href="https://aframe.io/releases/0.9.2/aframe.min.js" download>Production Version <span>0.9.2</span></a> <em class="install-note">Minified</em>
+<a id="builds-dev" class="btn btn-download" href="https://aframe.io/releases/0.9.2/aframe.js" download>Development Version <span>0.9.2</span></a> <em class="install-note">Uncompressed with Source Maps</em>
 
 ### Install from npm
 

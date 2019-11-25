@@ -155,7 +155,7 @@ be included.
 ## More Resources
 
 [sketchfab]: https://sketchfab.com/models?features=downloadable&sort_by=-likeCount
-[blender-exporter]: https://github.com/KhronosGroup/glTF-Blender-Exporter/
+[blender]: https://www.blender.org/
 [obj-converter]: https://github.com/AnalyticalGraphicsInc/obj2gltf
 [fbx-converter]: https://github.com/facebookincubator/FBX2glTF
 [collada-converter]: http://cesiumjs.org/convertmodel.html
@@ -163,7 +163,7 @@ be included.
 Over 100,000 glTF models are free for download on [Sketchfab][sketchfab], and
 various exporters and converters converters are available:
 
-- [Blender Exporter][blender-exporter]
+- [Blender 2.80+][blender]
 - [OBJ &rarr; glTF][obj-converter]
 - [FBX &rarr; glTF][fbx-converter]
 - [COLLADA &rarr; glTF][collada-converter]

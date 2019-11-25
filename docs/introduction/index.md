@@ -27,7 +27,7 @@ free. Alternatively, create an `.html` file and include A-Frame in the
 ```html
 <html>
   <head>
-    <script src="https://aframe.io/releases/0.9.0/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/0.9.2/aframe.min.js"></script>
   </head>
   <body>
     <a-scene>
@@ -159,6 +159,7 @@ as Google, Microsoft, Oculus, and Samsung have made contributions to A-Frame.
 ## Off You Go!
 
 [Discord]: https://supermedium.com/discord
+[slack]: https://aframe.io/slack-invite/
 
 If it's your first time here, here's a plan for success for getting into
 A-Frame:
@@ -173,13 +174,13 @@ and for examples.
 3. Run through [A-Frame School](https://aframe.io/school/), a brief
 step-by-step visual tutorial.
 
-4. [Join us on Slack](https://aframevr-slack.herokuapp.com) or [Discord] and if
+4. [Join us on Slack][slack] or [Discord] and if
 you have any questions, [search and ask on
 StackOverflow](http://stackoverflow.com/questions/ask/?tags=aframe), and
-someone try to get to you!
+someone will try to get to you!
 
 5. When you build something, share your project online and we'll try to feature
 it on [*A Week of A-Frame*](https://aframe.io/blog/)!
 
-And it really helps to have dig into the fundamentals on JavaScript and
+And it really helps to have a dig into the fundamentals on JavaScript and
 three.js. Have fun!

@@ -10,18 +10,22 @@ examples: []
 The pool component allows for [object
 pooling](https://en.wikipedia.org/wiki/Object_pool_pattern). This gives us a
 reusable pool of entities to avoid creating and destroying the same kind of
-entities in dynamic scenes. Object pooling helps reduce GC pauses.
+entities in dynamic scenes. Object pooling helps reduce garbage collection pauses.
+
+Note that entities requested from the pool are paused by default and you need 
+to call `.play()` in order to activate their components' tick functions.
 
 ## Example
 
 For example, we may have a game with enemy entities that we want to reuse.
 
 ```html
-<a-scene pool__enemy="mixin: enemy; size : 10"></a-scene>
+<a-scene pool__enemy="mixin: enemy; size: 10"></a-scene>
 ```
 
 ```js
 var el = sceneEl.components.pool__enemy.requestEntity();
+el.play();
 sceneEl.components.pool__enemy.returnEntity(el);
 ```
 
@@ -38,8 +42,10 @@ sceneEl.components.pool__enemy.returnEntity(el);
 
 ### .requestEntity ()
 
-Request one of the available entities in the pool.
+Request one of the available entities in the pool. Will return `undefined` and 
+log a warning if `dynamic` is set to `false` and you have exhausted the pool.
 
 ### .returnEntity (entityEl)
 
-Relinquish an entity back to the pool.
+Relinquish an entity back to the pool. Will log a warning if you attempt to return
+an entity that did not belong to this pool.

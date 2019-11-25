@@ -48,12 +48,28 @@ var Component = module.exports.Component = function (el, attrValue, id) {
   this.el.components[this.attrName] = this;
   this.objectPool = objectPools[this.name];
 
+  const events = this.events;
+  this.events = {};
+  eventsBind(this, events);
+
   // Store component data from previous update call.
   this.attrValue = undefined;
-  this.nextData = this.isObjectBased ? this.objectPool.use() : undefined;
-  this.oldData = this.isObjectBased ? this.objectPool.use() : undefined;
-  this.previousOldData = this.isObjectBased ? this.objectPool.use() : undefined;
-  this.parsingAttrValue = this.isObjectBased ? this.objectPool.use() : undefined;
+  if (this.isObjectBased) {
+    this.nextData = this.objectPool.use();
+    // Drop any properties added by dynamic schemas in previous use
+    utils.objectPool.removeUnusedKeys(this.nextData, this.schema);
+    this.oldData = this.objectPool.use();
+    utils.objectPool.removeUnusedKeys(this.oldData, this.schema);
+    this.previousOldData = this.objectPool.use();
+    utils.objectPool.removeUnusedKeys(this.previousOldData, this.schema);
+    this.parsingAttrValue = this.objectPool.use();
+    utils.objectPool.removeUnusedKeys(this.parsingAttrValue, this.schema);
+  } else {
+    this.nextData = undefined;
+    this.oldData = undefined;
+    this.previousOldData = undefined;
+    this.parsingAttrValue = undefined;
+  }
 
   // Last value passed to updateProperties.
   this.throttledEmitComponentChanged = utils.throttle(function emitChange () {
@@ -75,6 +91,13 @@ Component.prototype = {
    * Components can use this to set initial state.
    */
   init: function () { /* no-op */ },
+
+  /**
+   * Map of event names to binded event handlers that will be lifecycle-handled.
+   * Will be detached on pause / remove.
+   * Will be attached on play.
+   */
+  events: {},
 
   /**
    * Update handler. Similar to attributeChangedCallback.
@@ -240,7 +263,7 @@ Component.prototype = {
    */
   flushToDOM: function (isDefault) {
     var attrValue = isDefault ? this.data : this.attrValue;
-    if (!attrValue) { return; }
+    if (attrValue === null || attrValue === undefined) { return; }
     window.HTMLElement.prototype.setAttribute.call(this.el, this.attrName,
                                                    this.stringify(attrValue));
   },
@@ -529,8 +552,47 @@ Component.prototype = {
     }
 
     return parseProperties(data, schema, undefined, this.name, silent);
+  },
+
+  /**
+   * Attach events from component-defined events map.
+   */
+  eventsAttach: function () {
+    var eventName;
+    // Safety detach to prevent double-registration.
+    this.eventsDetach();
+    for (eventName in this.events) {
+      this.el.addEventListener(eventName, this.events[eventName]);
+    }
+  },
+
+  /**
+   * Detach events from component-defined events map.
+   */
+  eventsDetach: function () {
+    var eventName;
+    for (eventName in this.events) {
+      this.el.removeEventListener(eventName, this.events[eventName]);
+    }
+  },
+
+  /**
+   * Release and free memory.
+   */
+  destroy: function () {
+    this.objectPool.recycle(this.attrValue);
+    this.objectPool.recycle(this.oldData);
+    this.objectPool.recycle(this.parsingAttrValue);
+    this.attrValue = this.oldData = this.parsingAttrValue = undefined;
   }
 };
+
+function eventsBind (component, events) {
+  var eventName;
+  for (eventName in events) {
+    component.events[eventName] = events[eventName].bind(component);
+  }
+}
 
 // For testing.
 if (window.debug) {
@@ -538,7 +600,7 @@ if (window.debug) {
 }
 
 /**
- * Registers a component to A-Frame.
+ * Register a component to A-Frame.
  *
  * @param {string} name - Component name.
  * @param {object} definition - Component schema and lifecycle method handlers.
@@ -608,7 +670,6 @@ module.exports.registerComponent = function (name, definition) {
   NewComponent.prototype.system = systems && systems.systems[name];
   NewComponent.prototype.play = wrapPlay(NewComponent.prototype.play);
   NewComponent.prototype.pause = wrapPause(NewComponent.prototype.pause);
-  NewComponent.prototype.remove = wrapRemove(NewComponent.prototype.remove);
 
   schema = utils.extend(processSchema(NewComponent.prototype.schema,
                                       NewComponent.prototype.name));
@@ -705,6 +766,7 @@ function wrapPause (pauseMethod) {
     if (!this.isPlaying) { return; }
     pauseMethod.call(this);
     this.isPlaying = false;
+    this.eventsDetach();
     // Remove tick behavior.
     if (!hasBehavior(this)) { return; }
     sceneEl.removeBehavior(this);
@@ -724,26 +786,10 @@ function wrapPlay (playMethod) {
     if (!this.initialized || !shouldPlay) { return; }
     playMethod.call(this);
     this.isPlaying = true;
+    this.eventsAttach();
     // Add tick behavior.
     if (!hasBehavior(this)) { return; }
     sceneEl.addBehavior(this);
-  };
-}
-
-/**
- * Wrapper for defined remove method.
- * Clean up memory.
- *
- * @param removeMethod {function} - Defined remove method.
- */
-function wrapRemove (removeMethod) {
-  return function remove () {
-    removeMethod.call(this);
-    this.objectPool.recycle(this.attrValue);
-    this.objectPool.recycle(this.oldData);
-    this.objectPool.recycle(this.parsingAttrValue);
-
-    this.attrValue = this.oldData = this.parsingAttrValue = undefined;
   };
 }
 

@@ -39,6 +39,7 @@ module.exports.Component = registerComponent('look-controls', {
     this.setupMouseControls();
     this.bindMethods();
     this.el.object3D.matrixAutoUpdate = false;
+    this.el.object3D.updateMatrix();
 
     this.savedPose = {
       position: new THREE.Vector3(),
@@ -198,7 +199,7 @@ module.exports.Component = registerComponent('look-controls', {
       if (sceneEl.is('vr-mode') && sceneEl.hasWebXR) {
         pose = sceneEl.renderer.vr.getCameraPose();
         if (pose) {
-          poseMatrix.elements = pose.poseModelMatrix;
+          poseMatrix.elements = pose.transform.matrix;
           poseMatrix.decompose(object3D.position, object3D.rotation, object3D.scale);
         }
       } else {

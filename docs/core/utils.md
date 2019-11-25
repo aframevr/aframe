@@ -142,10 +142,6 @@ diff({a: 1, b: 2, c: 3}, {b: 2, c: 4})
 
 ## `AFRAME.utils.device`
 
-### `AFRAME.utils.device.checkHasPositionalTracking ()`
-
-Checks if there is positional tracking available. Returns a `boolean`.
-
 ### `AFRAME.utils.device.checkHeadsetConnected ()`
 
 Checks if a VR headset is connected by looking for orientation data. Returns a `boolean`.

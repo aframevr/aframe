@@ -68,6 +68,13 @@ module.exports.Shader = registerShader('sdf', {
     '    vec2 duv = dscale * (dFdx(uv) + dFdy(uv));',
     '    float isBigEnough = max(abs(duv.x), abs(duv.y));',
 
+         // When texel is too small, blend raw alpha value rather than supersampling.
+         // FIXME: experimentally determined constant
+    '    if (isBigEnough > BIG_ENOUGH) {',
+    '      float ratio = BIG_ENOUGH / isBigEnough;',
+    '      alpha = ratio * alpha + (1.0 - ratio) * dist;',
+    '    }',
+
          // Otherwise do weighted supersampling.
          // FIXME: why this weighting?
     '    if (isBigEnough <= BIG_ENOUGH) {',

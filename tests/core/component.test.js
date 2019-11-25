@@ -39,9 +39,9 @@ suite('Component', function () {
           size: {default: 5}
         }
       });
-      var el = document.createElement('a-entity');
+      const el = document.createElement('a-entity');
       el.setAttribute('dummy', '');
-      var data = el.components.dummy.buildData({}, null);
+      const data = el.components.dummy.buildData({}, null);
       assert.equal(data.color, 'blue');
       assert.equal(data.size, 5);
     });
@@ -979,6 +979,16 @@ suite('Component', function () {
       sinon.assert.notCalled(updateStub);
       assert.equal(HTMLElement.prototype.getAttribute.call(el, 'dummy'), 'color: blue');
     });
+
+    test('flushes false boolean', function () {
+      var el = document.createElement('a-entity');
+      registerComponent('dummy', {
+        schema: {isDurrr: {default: true}}
+      });
+      el.setAttribute('dummy', {isDurrr: false});
+      el.components.dummy.flushToDOM();
+      assert.equal(HTMLElement.prototype.getAttribute.call(el, 'dummy'), 'isDurrr: false');
+    });
   });
 
   suite('play', function () {
@@ -1062,7 +1072,6 @@ suite('Component', function () {
   });
 
   test('applies default array property types with no defined value', function (done) {
-    var el;
     registerComponent('test', {
       schema: {
         arr: {default: ['foo']}
@@ -1073,9 +1082,112 @@ suite('Component', function () {
         done();
       }
     });
-    el = entityFactory();
+    const el = entityFactory();
     el.addEventListener('loaded', () => {
       el.setAttribute('test', '');
+    });
+  });
+
+  suite('events', () => {
+    let component;
+    let el;
+    let fooSpy;
+
+    setup(function (done) {
+      fooSpy = this.sinon.spy();
+
+      registerComponent('test', {
+        events: {
+          foo: function (evt) {
+            assert.ok(evt);
+            assert.ok(this === component);
+            fooSpy();
+          }
+        }
+      });
+
+      helpers.elFactory().then(_el => {
+        el = _el;
+        el.setAttribute('test', '');
+        component = el.components.test;
+        done();
+      });
+    });
+
+    test('calls handler on event', function (done) {
+      el.emit('foo');
+      setTimeout(() => {
+        assert.equal(fooSpy.callCount, 1);
+        done();
+      });
+    });
+
+    test('detaches on component pause', function (done) {
+      component.pause();
+      el.emit('foo');
+      setTimeout(() => {
+        assert.notOk(fooSpy.called);
+        done();
+      });
+    });
+
+    test('detaches on component remove', function (done) {
+      el.removeAttribute('test');
+      el.emit('foo');
+      setTimeout(() => {
+        assert.notOk(fooSpy.called);
+        done();
+      });
+    });
+
+    test('detaches on entity pause', function (done) {
+      el.pause();
+      el.emit('foo');
+      setTimeout(() => {
+        assert.notOk(fooSpy.called);
+        done();
+      });
+    });
+
+    test('detaches on entity remove', function (done) {
+      el.parentNode.removeChild(el);
+      setTimeout(() => {
+        el.emit('foo');
+        setTimeout(() => {
+          assert.notOk(fooSpy.called);
+          done();
+        });
+      });
+    });
+
+    test('does not collide with other component instances', function (done) {
+      registerComponent('test2', {
+        events: {
+          foo: function (evt) {
+            assert.equal(this.el.id, 'foo');
+          },
+
+          bar: function (evt) {
+            assert.equal(this.el.id, 'bar');
+          }
+        }
+      });
+
+      el.id = 'foo';
+      el.setAttribute('test2', '');
+
+      const el2 = document.createElement('a-entity');
+      el2.id = 'bar';
+      el2.setAttribute('test2', '');
+      el.appendChild(el2);
+
+      setTimeout(() => {
+        el.emit('foo', null, false);
+        el2.emit('bar', null, false);
+        setTimeout(() => {
+          done();
+        });
+      });
     });
   });
 });

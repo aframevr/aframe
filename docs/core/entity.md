@@ -320,6 +320,10 @@ object:
 entity.setAttribute('position', { x: 1, y: 2, z: 3 });
 ```
 
+### `destroy ()`
+
+Clean up memory related to the entity such as clearing all components and their data.
+
 #### Updating Multi-Property Component Data
 
 To update component data for a multi-property component, we can pass the name
@@ -388,7 +392,7 @@ attribute from the DOM, `removeAttribute` will also detach the component from
 the entity, invoking the component's `remove` lifecycle method.
 
 ```js
-entity.removeAttribute('goemetry');  // Detach the geometry component.
+entity.removeAttribute('geometry');  // Detach the geometry component.
 entity.removeAttribute('sound');  // Detach the sound component.
 ```
 

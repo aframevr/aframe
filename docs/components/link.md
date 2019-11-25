@@ -74,12 +74,13 @@ We also provide a link primitive with a different syntax:
 | titleColor          | Color of the text displayed on the link.                                                                                                     | white         |
 | visualAspectEnabled | Whether to enable the default visual appearance of a portal. Set to false if we want to implement our own pattern or form of link traversal. | true          |
 
-## Methods
+## Manually Navigating
 
-### .navigate (url)
+[so]: https://stackoverflow.com/questions/503093/how-do-i-redirect-to-another-webpage
 
-Sends the user to the page specified by the `href` property:
+To navigate manually, use `window.location` API. See this [StackOverflow question on navigating][so]. For example:
 
 ```js
-document.querySelector('a-link').navigate('destination.html');
+window.location.href = 'https://supermedium.com/supercraft/';
+// or window.location.replace
 ```

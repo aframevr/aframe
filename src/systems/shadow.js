@@ -15,6 +15,7 @@ var SHADOW_MAP_TYPE_MAP = {
  */
 module.exports.System = registerSystem('shadow', {
   schema: {
+    enabled: {default: true},
     autoUpdate: {default: true},
     type: {default: 'pcf', oneOf: ['basic', 'pcf', 'pcfsoft']}
   },
@@ -32,15 +33,21 @@ module.exports.System = registerSystem('shadow', {
     this.setShadowMapEnabled(this.shadowMapEnabled);
   },
 
+  update: function (prevData) {
+    if (prevData.enabled !== this.data.enabled) {
+      this.setShadowMapEnabled(this.data.enabled);
+    }
+  },
+
   /**
    * Enables/disables the renderer shadow map.
    * @param {boolean} enabled
    */
   setShadowMapEnabled: function (enabled) {
     var renderer = this.sceneEl.renderer;
-    this.shadowMapEnabled = enabled;
+    this.shadowMapEnabled = this.data.enabled && enabled;
     if (renderer) {
-      renderer.shadowMap.enabled = enabled;
+      renderer.shadowMap.enabled = this.shadowMapEnabled;
     }
   }
 });

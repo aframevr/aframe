@@ -71,9 +71,16 @@ suite('utils.coordinates', function () {
     test('stringifies a vec3', function () {
       assert.equal(coordinates.stringify({x: 1, y: 2, z: -3}), '1 2 -3');
     });
+    test('stringifies a zeroed vec3', function () {
+      assert.equal(coordinates.stringify({x: 0, y: 0, z: 0}), '0 0 0');
+    });
 
     test('stringifies a vec4', function () {
       assert.equal(coordinates.stringify({x: 1, y: 2, z: -3, w: -4}), '1 2 -3 -4');
+    });
+
+    test('stringifies a zeroed vec4', function () {
+      assert.equal(coordinates.stringify({x: 0, y: 0, z: 0, w: 0}), '0 0 0 0');
     });
 
     test('returns already-stringified string', function () {

@@ -8,4 +8,7 @@
 
 ## 1.0.0 / 0.10.0
 
-0.9.0 was just released. Roadmap for next version will be updated later!
+- Bug fixes following 0.9.0.
+- Continued tracking of changes in WebXR spec.
+- Updated documentation and guides.
+- Oculus Quest support.

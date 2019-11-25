@@ -7,6 +7,8 @@ var THREE = require('../lib/three');
 var fileLoader = new THREE.FileLoader();
 var warn = debug('core:a-assets:warn');
 
+var GLTF_HEADER_MAGIC = 'glTF';
+
 /**
  * Asset management system. Handles blocking on asset loading.
  */
@@ -104,10 +106,19 @@ registerElement('a-asset-item', {
       value: function () {
         var self = this;
         var src = this.getAttribute('src');
-        fileLoader.setResponseType(
-          this.getAttribute('response-type') || inferResponseType(src));
+        var responseType = this.getAttribute('response-type');
+
+        fileLoader.setResponseType(responseType || 'text');
+
         fileLoader.load(src, function handleOnLoad (response) {
-          self.data = response;
+          // if the response type is not given, check for the GLTF header
+          // and convert the response to an arraybuffer if it is present.
+          if (!responseType && (response.indexOf(GLTF_HEADER_MAGIC) === 0)) {
+            self.data = getArrayBuffer(response);
+          } else {
+            self.data = response;
+          }
+
           /*
             Workaround for a Chrome bug. If another XHR is sent to the same url before the
             previous one closes, the second request never finishes.
@@ -242,22 +253,20 @@ function extractDomain (url) {
 }
 
 /**
- * Infer response-type attribute from src.
- * Default is text(default XMLHttpRequest.responseType)
- * but we use arraybuffer for .gltf and .glb files
- * because of THREE.GLTFLoader specification.
- *
- * @param {string} src
- * @returns {string}
+ * getArrayBuffer accepts a string and returns it as an array buffer.
+ * @param {string} string
+ * @returns {arraybuffer}
  */
-function inferResponseType (src) {
-  var dotLastIndex = src.lastIndexOf('.');
-  if (dotLastIndex >= 0) {
-    var extension = src.slice(dotLastIndex, src.length);
-    if (extension === '.gltf' || extension === '.glb') {
-      return 'arraybuffer';
-    }
+function getArrayBuffer (string) {
+  // utf-16 has 2 bytes for each char
+  var buffer = new ArrayBuffer(string.length * 2);
+  var view = new Uint16Array(buffer);
+
+  for (var i = 0, len = string.length; i < len; i++) {
+    view[i] = string.charCodeAt(i);
   }
-  return 'text';
+
+  return buffer;
 }
-module.exports.inferResponseType = inferResponseType;
+
+module.exports.getArrayBuffer = getArrayBuffer;

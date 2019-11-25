@@ -9,7 +9,7 @@ order: 14
 [ecs]: ./entity-component-system.md
 [github]: http://github.com/aframevr/aframe/
 [three]: http://threejs.org
-[slack]: https://aframevr-slack.herokuapp.com/
+[slack]: https://aframe.io/slack-invite/
 [twitter]: https://twitter.com/aframevr/
 [stackoverflow]: http://stackoverflow.com/questions/tagged/aframe/
 
@@ -317,3 +317,9 @@ A-Frame!
 [precision]: ../components/renderer.md#precision
 
 Phones with Adreno 300 series GPUs are notoriously problematic. Set [renderer precision][precision] to `medium` as a workaround. Real fix has to happen at the driver / device level.
+
+## Why is the gyroscope not working on iOS?
+
+iOS 12.2 Safari applies new restrictions to the devicemotion API. Pages have to be served over `https` and the user has to enable the API manually on `Settings -> Safari -> Motion & Orientation access`. iOS 12.3 is introducing a `DeviceOrientationEvent.requestPermission` method that A-Frame will call to ask for user permission without manual steps.
+
+

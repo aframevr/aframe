@@ -315,7 +315,7 @@ refresh itself as the canvas changes.
 
 ### Repeating Textures
 
-We might want to tile textures rather than having them stretch. The `repeat`
+We might want to repeat tile textures rather than having them stretch. The `repeat`
 property can repeat textures.
 
 ```html
@@ -343,6 +343,14 @@ fully transparent, and the rest fully opaque), try setting `transparent: false`
 and like `alphaTest: 0.5` to solve transparency issues. Play around with the alpha
 test value.
 
+### `render-order` Component
+
+[render-order component]: https://github.com/supermedium/superframe/tree/master/components/render-order#aframe-render-order-component
+
+Use the [render-order component] to tell the render to sort transparent objects
+by depth and to be able to manually define render order of entities in HTML via
+named layers. If you have transparency ordering issues, use this component.
+
 ## Register a Custom Shader Material
 
 We can register custom shader materials for appearances and effects using
@@ -354,7 +362,7 @@ Let's walk through an [example CodePen][example] with step-by-step commentary.
 As always, we need to include the A-Frame script.
 
 ```js
-<script src="https://aframe.io/releases/0.9.0/aframe.min.js"></script>
+<script src="https://aframe.io/releases/0.9.2/aframe.min.js"></script>
 ```
 
 Next, we define any components and shaders we need after the A-Frame
@@ -386,8 +394,8 @@ AFRAME.registerShader('my-custom', {
 </script>
 ```
 
-[rawshader]: https://threejs.org/docs/api/materials/RawShaderMaterial.html
-[shadermaterial]: https://threejs.org/docs/api/materials/ShaderMaterial.html
+[rawshader]: https://threejs.org/docs/#api/en/materials/RawShaderMaterial
+[shadermaterial]: https://threejs.org/docs/#api/en/materials/ShaderMaterial
 
 Setting `raw` to `true` uses [THREE.RawShaderMaterial][rawshader] instead of
 [ShaderMaterial][shadermaterial] so built-in uniforms and attributes are not

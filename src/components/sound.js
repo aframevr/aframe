@@ -136,10 +136,10 @@ module.exports.Component = registerComponent('sound', {
    * @returns {object} sound
    */
   setupSound: function () {
-    var self = this;
     var el = this.el;
     var i;
     var sceneEl = el.sceneEl;
+    var self = this;
     var sound;
 
     if (this.pool.children.length > 0) {
@@ -174,7 +174,7 @@ module.exports.Component = registerComponent('sound', {
       sound = this.pool.children[i];
       sound.onEnded = function () {
         this.isPlaying = false;
-        el.emit('sound-ended', self.evtDetail, false);
+        self.el.emit('sound-ended', self.evtDetail, false);
       };
     }
   },

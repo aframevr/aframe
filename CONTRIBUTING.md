@@ -1,4 +1,4 @@
-[slack]: https://aframevr-slack.herokuapp.com
+[slack]: https://aframe.io/slack-invite/
 [stackoverflow]: http://stackoverflow.com/questions/tagged/aframe
 
 Interested in contributing? As an open source project, we'd appreciate any help
@@ -58,7 +58,7 @@ under the [MIT License](LICENSE).
 
 1. Create something awesome like a scene, a component, or a shader.
 2. Publish your work to Github (and GitHub pages) so everyone can learn from your work.
-3. Share it on [Slack](https://aframevr-slack.herokuapp.com), Twitter, or the [awesome-aframe repository](https://github.com/aframevr/awesome-aframe).
+3. Share it on [Slack][slack] or Twitter.
 4. Let us know about it so we can feature it on our blog: [A Week of A-Frame](https://aframe.io/blog/).
 4. For bonus points, write and publish a case study to explain how you built it.
 
@@ -96,7 +96,7 @@ Glitch and update the `src` URL.
 
 ## On Slack
 
-1. [Invite yourself](https://aframevr-slack.herokuapp.com/) to the A-Frame Slack channel.
+1. [Invite yourself][slack] to the A-Frame Slack channel.
 2. Help answer questions that people might have and welcome new people.
 3. Redirect or cross-post questions to the [Stack Overflow A-Frame tag][stackoverflow].
 
@@ -113,10 +113,6 @@ Every week, we round up all the cool stuff happening with A-Frame on the
 issues](https://github.com/aframevr/aframe-site/labels/A%20Week%20of%20A-Frame).
 If you see anything, just post it there!
 
-We also need help keeping the [`awesome-aframe`
-repository](https://github.com/aframevr/awesome-aframe) up to date. If you see
-any missing content or things that haven't been synced to the blog, make a pull
-request there.
 
 # Spread the Word
 

@@ -11,11 +11,19 @@ module.exports.Component = registerComponent('obj-model', {
   },
 
   init: function () {
+    var self = this;
+
     this.model = null;
     this.objLoader = new THREE.OBJLoader();
     this.mtlLoader = new THREE.MTLLoader(this.objLoader.manager);
     // Allow cross-origin images to be loaded.
     this.mtlLoader.crossOrigin = '';
+
+    this.el.addEventListener('componentinitialized', function (evt) {
+      if (!self.model) { return; }
+      if (evt.detail.name !== 'material') { return; }
+      self.applyMaterial();
+    });
   },
 
   update: function () {
@@ -40,13 +48,14 @@ module.exports.Component = registerComponent('obj-model', {
     var mtlLoader = this.mtlLoader;
     var objLoader = this.objLoader;
     var rendererSystem = this.el.sceneEl.systems.renderer;
+    var BASE_PATH = mtlUrl.substr(0, mtlUrl.lastIndexOf('/') + 1);
 
     if (mtlUrl) {
       // .OBJ with an .MTL.
       if (el.hasAttribute('material')) {
         warn('Material component properties are ignored when a .MTL is provided');
       }
-      mtlLoader.setTexturePath(mtlUrl.substr(0, mtlUrl.lastIndexOf('/') + 1));
+      mtlLoader.setResourcePath(BASE_PATH);
       mtlLoader.load(mtlUrl, function (materials) {
         materials.preload();
         objLoader.setMaterials(materials);
@@ -70,19 +79,23 @@ module.exports.Component = registerComponent('obj-model', {
 
     // .OBJ only.
     objLoader.load(objUrl, function loadObjOnly (objModel) {
-      // Apply material.
-      var material = el.components.material;
-      if (material) {
-        objModel.traverse(function (child) {
-          if (child instanceof THREE.Mesh) {
-            child.material = material.material;
-          }
-        });
-      }
-
       self.model = objModel;
+      self.applyMaterial();
       el.setObject3D('mesh', objModel);
       el.emit('model-loaded', {format: 'obj', model: objModel});
+    });
+  },
+
+  /**
+   * Apply material from material component recursively.
+   */
+  applyMaterial: function () {
+    var material = this.el.components.material;
+    if (!material) { return; }
+    this.model.traverse(function (child) {
+      if (child instanceof THREE.Mesh) {
+        child.material = material.material;
+      }
     });
   }
 });

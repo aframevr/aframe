@@ -9,7 +9,9 @@ examples: []
 ---
 
 A-Frame has an asset management system that allows us to place our assets in
-one place and to preload and cache assets for better performance.
+one place and to preload and cache assets for better performance. Note the asset
+management system is purely for **preloading assets**. Assets that are set on
+entities at runtime could be done via direct URLs to the assets.
 
 Games and rich 3D experiences traditionally preload their assets, such as
 models or textures, before rendering their scenes. This makes sure that assets

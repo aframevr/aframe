@@ -8,6 +8,7 @@ var utils = require('../utils');
 module.exports.System = registerSystem('tracked-controls-webxr', {
   init: function () {
     this.controllers = [];
+    this.oldControllersLength = 0;
     this.throttledUpdateControllerList = utils.throttle(this.updateControllerList, 500, this);
   },
 
@@ -16,10 +17,15 @@ module.exports.System = registerSystem('tracked-controls-webxr', {
   },
 
   updateControllerList: function () {
-    var oldControllersLength = this.controllers.length;
-    if (!this.el.xrSession) { return; }
-    this.controllers = this.el.xrSession.getInputSources();
-    if (oldControllersLength === this.controllers.length) { return; }
+    var xrSession = this.el.xrSession;
+    var self = this;
+    if (!xrSession) { return; }
+    this.controllers = this.el.xrSession.inputSources;
+    if (this.oldControllersLength === this.controllers.length) { return; }
+    this.oldControllersLength = this.controllers.length;
+    xrSession.requestReferenceSpace('local-floor').then(function (referenceSpace) {
+      self.referenceSpace = referenceSpace;
+    });
     this.el.emit('controllersupdated', undefined, false);
   }
 });

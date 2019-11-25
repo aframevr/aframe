@@ -27,7 +27,7 @@ while still allowing the tracked area to be moved independently around the
 scene.
 
 ```html
-<a-entity id="#rig" position="25 10 0">
+<a-entity id="rig" position="25 10 0">
   <a-entity id="camera" camera look-controls></a-entity>
 </a-entity>
 ```
@@ -127,12 +127,12 @@ AFRAME.registerComponent('rotation-reader', {
    */
   tick: (function () {
     var position = new THREE.Vector3();
-    var rotation = new THREE.Euler();
+    var quaternion = new THREE.Quaternion();
 
     return function () {
       this.el.object3D.getWorldPosition(position);
-      this.el.object3D.getWorldRotation(rotation);
-      // position and rotation now contain vector and euler in world space.
+      this.el.object3D.getWorldQuaternion(quaternion);
+      // position and rotation now contain vector and quaternion in world space.
     };
   })
 });

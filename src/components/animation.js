@@ -1,4 +1,4 @@
-var anime = require('animejs');
+var anime = require('super-animejs');
 var components = require('../core/component').components;
 var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../lib/three');
@@ -165,6 +165,7 @@ module.exports.Component = registerComponent('animation', {
     this.updateConfig();
     this.animationIsPlaying = false;
     this.animation = anime(this.config);
+    this.animation.began = true;
 
     this.removeEventListeners();
     this.addEventListeners();
@@ -188,6 +189,7 @@ module.exports.Component = registerComponent('animation', {
    */
   beginAnimation: function () {
     this.updateConfig();
+    this.animation.began = true;
     this.time = 0;
     this.animationIsPlaying = true;
     this.stopRelatedAnimations();
@@ -399,7 +401,7 @@ module.exports.Component = registerComponent('animation', {
     config.update = (function () {
       var lastValue = {};
       return function (anim) {
-        var value = anim.animations[0].target;
+        var value = anim.animatables[0].target;
 
         // Animate rotation through radians.
         // For animation timeline.
@@ -565,6 +567,10 @@ function getRawProperty (el, path) {
   value = el;
   for (i = 0; i < split.length; i++) {
     value = value[split[i]];
+  }
+  if (value === undefined) {
+    console.log(el);
+    throw new Error('[animation] property (' + path + ') could not be found');
   }
   return value;
 }

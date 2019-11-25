@@ -58,7 +58,7 @@ three.js [Object3D][object3d] `.position` [Vector3][vector] versus [via
 
 This method is easier because we have access to all the [Vector3
 utilities][vector], and faster by skipping `.setAttribute` overhead and not
-needing to create an object to set rotation:
+needing to create an object to set position:
 
 ```js
 // With three.js
@@ -84,3 +84,11 @@ To reflect updates done at the three.js level, A-Frame returns the actual
 modifying the return value will modify the entity itself.
 
 See also [reading position and rotation of the camera](./camera.md#reading-position-or-rotation-of-the-camera).
+
+### Order of Transformations
+
+Transformations are applied to entities in this order:
+
+* [scale](scale.md)
+* [rotation](rotation.md)
+* position/translation

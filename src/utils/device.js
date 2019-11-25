@@ -1,14 +1,63 @@
+var error = require('debug')('device:error');
+
 var vrDisplay;
+var supportsVRSession = false;
+var supportsARSession = false;
+
+// Catch vrdisplayactivate early to ensure we can enter VR mode after the scene loads.
+window.addEventListener('vrdisplayactivate', function (evt) {
+  var canvasEl;
+  // WebXR takes priority if available.
+  if (navigator.xr) { return; }
+  canvasEl = document.createElement('canvas');
+  vrDisplay = evt.display;
+  // We need to make sure the canvas has a WebGL context associated with it.
+  // Otherwise, the requestPresent could be denied.
+  canvasEl.getContext('webgl', {});
+  // Request present immediately. a-scene will be allowed to enter VR without user gesture.
+  vrDisplay.requestPresent([{source: canvasEl}]).then(function () {}, function () {});
+});
 
 // Support both WebVR and WebXR APIs.
 if (navigator.xr) {
-  navigator.xr.requestDevice().then(function (device) {
-    device.supportsSession({immersive: true, exclusive: true}).then(function () {
-      var sceneEl = document.querySelector('a-scene');
-      vrDisplay = device;
-      if (sceneEl) { sceneEl.emit('displayconnected', {vrDisplay: vrDisplay}); }
-    });
-  });
+  var updateEnterInterfaces = function () {
+    var sceneEl = document.querySelector('a-scene');
+    if (sceneEl.hasLoaded) {
+      sceneEl.components['vr-mode-ui'].updateEnterInterfaces();
+    } else {
+      sceneEl.addEventListener('loaded', updateEnterInterfaces);
+    }
+  };
+  var errorHandler = function (err) {
+    error('WebXR session support error: ' + err.message);
+  };
+  if (navigator.xr.isSessionSupported) {
+    // Current WebXR spec uses a boolean-returning isSessionSupported promise
+    navigator.xr.isSessionSupported('immersive-vr').then(function (supported) {
+      supportsVRSession = supported;
+      updateEnterInterfaces();
+    }).catch(errorHandler);
+
+    navigator.xr.isSessionSupported('immersive-ar').then(function (supported) {
+      supportsARSession = supported;
+
+      updateEnterInterfaces();
+    }).catch(errorHandler);
+  } else if (navigator.xr.supportsSession) {
+    // Fallback for implementations that haven't updated to the new spec yet,
+    // the old version used supportsSession which is rejected for missing
+    // support.
+    navigator.xr.supportsSession('immersive-vr').then(function () {
+      supportsVRSession = true;
+      updateEnterInterfaces();
+    }).catch(errorHandler);
+    navigator.xr.supportsSession('immersive-ar').then(function () {
+      supportsARSession = true;
+      updateEnterInterfaces();
+    }).catch(errorHandler);
+  } else {
+    error('WebXR has neither isSessionSupported or supportsSession?!');
+  }
 } else {
   if (navigator.getVRDisplays) {
     navigator.getVRDisplays().then(function (displays) {
@@ -27,21 +76,16 @@ module.exports.getVRDisplay = getVRDisplay;
 /**
  * Determine if a headset is connected by checking if a vrDisplay is available.
  */
-function checkHeadsetConnected () { return !!getVRDisplay(); }
+function checkHeadsetConnected () {
+  return supportsVRSession || supportsARSession || !!getVRDisplay();
+}
 module.exports.checkHeadsetConnected = checkHeadsetConnected;
 
-/**
- * Check for positional tracking.
- */
-function checkHasPositionalTracking () {
-  var vrDisplay = getVRDisplay();
-  if (isMobile() || isGearVR() || isOculusGo()) { return false; }
-  return vrDisplay && vrDisplay.capabilities.hasPosition;
-}
-module.exports.checkHasPositionalTracking = checkHasPositionalTracking;
+function checkARSupport () { return supportsARSession; }
+module.exports.checkARSupport = checkARSupport;
 
 /**
- * Checks if browser is mobile.
+ * Checks if browser is mobile and not stand-alone dedicated vr device.
  * @return {Boolean} True if mobile browser detected.
  */
 var isMobile = (function () {
@@ -54,7 +98,7 @@ var isMobile = (function () {
     if (isIOS() || isTablet() || isR7()) {
       _isMobile = true;
     }
-    if (isOculusGo()) {
+    if (isMobileVR()) {
       _isMobile = false;
     }
   })(window.navigator.userAgent || window.navigator.vendor || window.opera);
@@ -78,18 +122,26 @@ function isIOS () {
 }
 module.exports.isIOS = isIOS;
 
-function isGearVR () {
-  return /SamsungBrowser.+Mobile VR/i.test(window.navigator.userAgent);
+function isMobileDeviceRequestingDesktopSite () {
+  return !isMobile() && window.orientation !== undefined;
 }
-module.exports.isGearVR = isGearVR;
+module.exports.isMobileDeviceRequestingDesktopSite = isMobileDeviceRequestingDesktopSite;
 
 /**
- *  Detect Oculus Go device
+ *  Detect browsers in Stand-Alone headsets
  */
-function isOculusGo () {
-  return /Pacific Build.+OculusBrowser.+SamsungBrowser.+Mobile VR/i.test(window.navigator.userAgent);
+function isOculusBrowser () {
+  return /(OculusBrowser)/i.test(window.navigator.userAgent);
 }
-module.exports.isOculusGo = isOculusGo;
+module.exports.isOculusBrowser = isOculusBrowser;
+
+/**
+ *  Detect browsers in Stand-Alone headsets
+ */
+function isMobileVR () {
+  return isOculusBrowser() || /(Mobile VR)/i.test(window.navigator.userAgent);
+}
+module.exports.isMobileVR = isMobileVR;
 
 function isR7 () {
   return /R7 Build/.test(window.navigator.userAgent);
@@ -142,4 +194,3 @@ module.exports.PolyfillControls = function PolyfillControls (object) {
     }
   };
 };
-

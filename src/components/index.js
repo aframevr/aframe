@@ -33,6 +33,7 @@ require('./windows-motion-controls');
 
 require('./scene/background');
 require('./scene/debug');
+require('./scene/device-orientation-permission-ui');
 require('./scene/embedded');
 require('./scene/inspector');
 require('./scene/fog');

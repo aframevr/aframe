@@ -141,7 +141,9 @@ suite('a-scene (without renderer)', function () {
           getDevice: function () {},
           setDevice: function () {},
           setPoseTarget: function () {}
-        }
+        },
+        getContext: function () { return undefined; },
+        setAnimationLoop: function () {}
       };
 
       // mock camera
@@ -235,11 +237,14 @@ suite('a-scene (without renderer)', function () {
       sceneEl.canvas = document.createElement('canvas');
 
       // Stub renderer.
-      sceneEl.renderer = {vr: {
-        getDevice: function () {},
-        setDevice: function () {},
-        setPoseTarget: function () {}
-      }};
+      sceneEl.renderer = {
+        vr: {
+          getDevice: function () {},
+          setDevice: function () {},
+          setPoseTarget: function () {}
+        },
+        setPixelRatio: function () {}
+      };
 
       sceneEl.addState('vr-mode');
     });
@@ -313,6 +318,20 @@ suite('a-scene (without renderer)', function () {
       var sceneEl = this.el;
       sceneEl.addEventListener('exit-vr', function () { done(); });
       sceneEl.exitVR();
+    });
+
+    test('reset xrSession to undefined', function () {
+      var sceneEl = this.el;
+      sceneEl.xrSession = {
+        removeEventListener: function () {},
+        end: function () {}
+      };
+      sceneEl.renderer.vr = {setSession: function () {}};
+      sceneEl.hasWebXR = true;
+      sceneEl.checkHeadsetConnected = function () { return true; };
+      assert.ok(sceneEl.xrSession);
+      sceneEl.exitVR();
+      assert.notOk(sceneEl.xrSession);
     });
   });
 
@@ -388,6 +407,7 @@ suite('a-scene (without renderer)', function () {
       // Stub renderer.
       sceneEl.renderer = {
         vr: {
+          isPresenting: function () { return true; },
           getDevice: function () { return {isPresenting: false}; },
           setDevice: function () {}
         },
@@ -401,7 +421,7 @@ suite('a-scene (without renderer)', function () {
     });
 
     test('resize renderer when in vr mode in fullscreen presentation (desktop, no headset)', function () {
-      sceneEl.renderer.vr.enabled = true;
+      sceneEl.renderer.vr.enabled = false;
       sceneEl.addState('vr-mode');
       sceneEl.resize();
       assert.ok(setSizeSpy.called);
