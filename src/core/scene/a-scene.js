@@ -171,7 +171,7 @@ class AScene extends AEntity {
       scenes.push(self);
     }
 
-    window.XR ? onPlay() : window.addEventListener('xrloaded', onPlay);
+    window.XR8 ? onPlay() : window.addEventListener('xrloaded', onPlay);
   }
 
   /**
