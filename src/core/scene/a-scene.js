@@ -168,7 +168,7 @@ module.exports.AScene = registerElement('a-scene', {
           scenes.push(self);
         }
 
-        window.XR ? onPlay() : window.addEventListener('xrloaded', onPlay);
+        window.XR8 ? onPlay() : window.addEventListener('xrloaded', onPlay);
       },
       writable: window.debug
     },
