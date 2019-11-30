@@ -154,35 +154,45 @@ a-scene audio {
 }
 
 .a-enter-vr-button {
-  background: rgba(0, 0, 0, 0.35) url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20245.82%20141.73%22%3E%3Cdefs%3E%3Cstyle%3E.a%7Bfill%3A%23fff%3Bfill-rule%3Aevenodd%3B%7D%3C%2Fstyle%3E%3C%2Fdefs%3E%3Ctitle%3Emask%3C%2Ftitle%3E%3Cpath%20class%3D%22a%22%20d%3D%22M175.56%2C111.37c-22.52%2C0-40.77-18.84-40.77-42.07S153%2C27.24%2C175.56%2C27.24s40.77%2C18.84%2C40.77%2C42.07S198.08%2C111.37%2C175.56%2C111.37ZM26.84%2C69.31c0-23.23%2C18.25-42.07%2C40.77-42.07s40.77%2C18.84%2C40.77%2C42.07-18.26%2C42.07-40.77%2C42.07S26.84%2C92.54%2C26.84%2C69.31ZM27.27%2C0C11.54%2C0%2C0%2C12.34%2C0%2C28.58V110.9c0%2C16.24%2C11.54%2C30.83%2C27.27%2C30.83H99.57c2.17%2C0%2C4.19-1.83%2C5.4-3.7L116.47%2C118a8%2C8%2C0%2C0%2C1%2C12.52-.18l11.51%2C20.34c1.2%2C1.86%2C3.22%2C3.61%2C5.39%2C3.61h72.29c15.74%2C0%2C27.63-14.6%2C27.63-30.83V28.58C245.82%2C12.34%2C233.93%2C0%2C218.19%2C0H27.27Z%22%2F%3E%3C%2Fsvg%3E) 50% 50% no-repeat;
+  background: rgba(0, 0, 0, 0.35) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='108' height='62' viewBox='0 0 108 62'%3E%3Ctitle%3Eaframe-vrmode-noborder-reduced-tracking%3C/title%3E%3Cpath d='M68.81,21.56H64.23v8.27h4.58a4.13,4.13,0,0,0,3.1-1.09,4.2,4.2,0,0,0,1-3,4.24,4.24,0,0,0-1-3A4.05,4.05,0,0,0,68.81,21.56Z' fill='%23fff'/%3E%3Cpath d='M96,0H12A12,12,0,0,0,0,12V50A12,12,0,0,0,12,62H96a12,12,0,0,0,12-12V12A12,12,0,0,0,96,0ZM41.9,46H34L24,16h8l6,21.84,6-21.84H52Zm39.29,0H73.44L68.15,35.39H64.23V46H57V16H68.81q5.32,0,8.34,2.37a8,8,0,0,1,3,6.69,9.68,9.68,0,0,1-1.27,5.18,8.9,8.9,0,0,1-4,3.34l6.26,12.11Z' fill='%23fff'/%3E%3C/svg%3E") 50% 50% no-repeat;
 }
 
 .a-enter-ar-button {
-  background: rgba(0, 0, 0, 0.35) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 245.8 141.7'%3E%3Cdefs%3E%3Cstyle%3E .a%7Bfill:%23fff;fill-rule:evenodd;%7D%3C/style%3E%3C/defs%3E%3Ctitle%3E mask%3C/title%3E%3Cpath d='m115 104.7c-22.5 0-40.8-18.8-40.8-42.1s18.2-42.1 40.8-42.1 40.8 18.8 40.8 42.1-18.2 42.1-40.8 42.1zm-21.9-0.8c-0.4-14.7 27.8-23.8 50.3-23.8s50.3 8.8 50.8 23c0.4 12.7-26.8 22.2-49.3 22.2s-51.4-6.2-51.9-21.5zm-65.8-103.8c-15.7 0-27.3 12.3-27.3 28.6v82.3c0 16.2 11.5 30.8 27.3 30.8 74 0 146.7 0.9 190.9 0 15.7 0 27.6-14.6 27.6-30.8v-82.4c0-16.2-11.9-28.6-27.6-28.6z' class='a' fill='%23fff'/%3E%3C/svg%3E") 50% 50% no-repeat;
+  background: rgba(0, 0, 0, 0.35) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='108' height='62' viewBox='0 0 108 62'%3E%3Ctitle%3Eaframe-armode-noborder-reduced-tracking%3C/title%3E%3Cpath d='M96,0H12A12,12,0,0,0,0,12V50A12,12,0,0,0,12,62H96a12,12,0,0,0,12-12V12A12,12,0,0,0,96,0Zm8,50a8,8,0,0,1-8,8H12a8,8,0,0,1-8-8V12a8,8,0,0,1,8-8H96a8,8,0,0,1,8,8Z' fill='%23fff'/%3E%3Cpath d='M43.35,39.82H32.51L30.45,46H23.88L35,16h5.73L52,46H45.43Zm-9.17-5h7.5L37.91,23.58Z' fill='%23fff'/%3E%3Cpath d='M68.11,35H63.18V46H57V16H68.15q5.31,0,8.2,2.37a8.18,8.18,0,0,1,2.88,6.7,9.22,9.22,0,0,1-1.33,5.12,9.09,9.09,0,0,1-4,3.26l6.49,12.26V46H73.73Zm-4.93-5h5a5.09,5.09,0,0,0,3.6-1.18,4.21,4.21,0,0,0,1.28-3.27,4.56,4.56,0,0,0-1.2-3.34A5,5,0,0,0,68.15,21h-5Z' fill='%23fff'/%3E%3C/svg%3E") 50% 50% no-repeat;
 }
 
 .a-enter-vr-button,
 .a-enter-ar-button {
-  background-size: 70% 70%;
+  background-size: 90% 90%;
   border: 0;
   bottom: 0;
   cursor: pointer;
-  min-width: 50px;
-  min-height: 30px;
+  min-width: 58px;
+  min-height: 34px;
+  /* 1.74418604651 */
   /*
     In order to keep the aspect ratio when resizing
     padding-top percentages are relative to the containing block's width.
     http://stackoverflow.com/questions/12121090/responsively-change-div-size-keeping-aspect-ratio
   */
-  padding-right: 5%;
-  padding-top: 4%;
+  padding-right: 0;
+  padding-top: 0;
   position: absolute;
   right: 0;
   transition: background-color .05s ease;
   -webkit-transition: background-color .05s ease;
   z-index: 9999;
+  border-radius: 8px;
 }
 
+.a-enter-ar-button {
+  background-size: 100% 90%;
+  margin-right: 10px;
+  border-radius: 7px;
+}
+
+.a-enter-ar-button:active,
+.a-enter-ar-button:hover,
 .a-enter-vr-button:active,
 .a-enter-vr-button:hover {
   background-color: #666;
