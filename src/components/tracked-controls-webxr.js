@@ -12,6 +12,7 @@ var EVENTS = {
 
 module.exports.Component = registerComponent('tracked-controls-webxr', {
   schema: {
+    id: {type: 'string', default: ''},
     hand: {type: 'string', default: ''}
   },
 
@@ -82,6 +83,7 @@ module.exports.Component = registerComponent('tracked-controls-webxr', {
   updateController: function () {
     this.controller = controllerUtils.findMatchingControllerWebXR(
       this.system.controllers,
+      this.data.id,
       this.data.hand
     );
     // Legacy handle to the controller for old components.

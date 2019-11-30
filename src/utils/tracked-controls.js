@@ -74,7 +74,7 @@ function isControllerPresentWebVR (component, idPrefix, queryObject) {
  *
  * @param {object} component - Tracked controls component.
  */
-function isControllerPresentWebXR (component, idPrefix, queryObject) {
+function isControllerPresentWebXR (component, id, queryObject) {
   var controllers;
   var sceneEl = component.el.sceneEl;
   var trackedControlsSystem = sceneEl && sceneEl.systems['tracked-controls-webxr'];
@@ -83,7 +83,7 @@ function isControllerPresentWebXR (component, idPrefix, queryObject) {
   controllers = trackedControlsSystem.controllers;
   if (!controllers || !controllers.length) { return false; }
 
-  return findMatchingControllerWebXR(controllers, queryObject.hand);
+  return findMatchingControllerWebXR(controllers, id, queryObject.hand);
 }
 
 module.exports.isControllerPresentWebVR = isControllerPresentWebVR;
@@ -148,13 +148,16 @@ function findMatchingControllerWebVR (controllers, filterIdExact, filterIdPrefix
   return undefined;
 }
 
-function findMatchingControllerWebXR (controllers, handedness) {
+function findMatchingControllerWebXR (controllers, id, handedness) {
   var i;
+  var controller;
   var controllerHandedness;
   for (i = 0; i < controllers.length; i++) {
-    controllerHandedness = controllers[i].handedness;
+    controller = controllers[i];
+    if (controller.profiles[0] !== id) { continue; }
+    controllerHandedness = controller.handedness;
     if (!handedness || (controllerHandedness === '' && handedness === 'right') ||
-        controllers[i].handedness === handedness) {
+        controller.handedness === handedness) {
       return controllers[i];
     }
   }

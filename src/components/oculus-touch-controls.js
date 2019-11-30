@@ -7,8 +7,13 @@ var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresent
 var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
 var onButtonEvent = trackedControlsUtils.onButtonEvent;
 
+var isWebXRAvailable = require('../utils/').device.isWebXRAvailable;
+
+var GAMEPAD_ID_WEBXR = 'oculus-touch';
+
 // Prefix for Gen1 and Gen2 Oculus Touch Controllers.
-var GAMEPAD_ID_PREFIX = 'Oculus Touch';
+var GAMEPAD_ID_PREFIX = isWebXRAvailable ? GAMEPAD_ID_WEBXR : 'Oculus Touch';
+
 // First generation model URL.
 var TOUCH_CONTROLLER_MODEL_BASE_URL = 'https://cdn.aframe.io/controllers/oculus/oculus-touch-controller-';
 // For now the generation 2 model is the same as the original until a new one is prepared for upload.
@@ -59,7 +64,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     buttonTouchColor: {type: 'color', default: '#8AB'},
     buttonHighlightColor: {type: 'color', default: '#2DF'},  // Light blue.
     model: {default: true},
-    controllerType: {default: 'auto', oneOf: ['auto', 'oculus_touch_gen1', 'oculus_touch_gen2']},
+    controllerType: {default: 'oculus_touch_gen2', oneOf: ['auto', 'oculus_touch_gen1', 'oculus_touch_gen2']},
     orientationOffset: {type: 'vec3', default: {x: 43, y: 0, z: 0}}
   },
 
@@ -169,8 +174,11 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
 
   injectTrackedControls: function () {
     var data = this.data;
+    var webXRId = GAMEPAD_ID_WEBXR;
+    var webVRId = data.hand === 'right' ? 'Oculus Touch (Right)' : 'Oculus Touch (Left)';
+    var id = isWebXRAvailable ? webXRId : webVRId;
     this.el.setAttribute('tracked-controls', {
-      id: data.hand === 'right' ? 'Oculus Touch (Right)' : 'Oculus Touch (Left)',
+      id: id,
       controller: 0,
       hand: data.hand,
       orientationOffset: data.orientationOffset
