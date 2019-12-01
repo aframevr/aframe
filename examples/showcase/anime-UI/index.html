@@ -10,7 +10,7 @@
   <body>
     <a-scene renderer="colorManagement: true;">
       <a-assets>
-        <a-asset-item id="engine" src="models/engine.glb"></a-asset-item>
+        <a-asset-item id="engine" src="models/engine.glb" response-type="arraybuffer"></a-asset-item>
         <a-mixin id="image" geometry="height: 2; width: 2"></a-mixin>
         <a-mixin id="delayVisible" event-set__loaded="visible: true" visible="false"></a-mixin>
         <audio id="blip1" src="audio/321103__nsstudios__blip1.wav"></audio>
