@@ -43,19 +43,19 @@ suite('shadow component', function () {
     });
 
     test('sets needsUpdate on material', function () {
+      var oldMaterialVersion = mesh.material.version;
       el.object3D.add(mesh);
-      mesh.material.needsUpdate = false;
       component.update();
-      assert.ok(mesh.material.needsUpdate);
+      assert.equal(mesh.material.version, oldMaterialVersion + 1);
     });
 
     test('sets needsUpdate on material array', function () {
+      var oldMaterial0Version = meshWithMaterialArray.material[0].version;
+      var oldMaterial1Version = meshWithMaterialArray.material[1].version;
       el.object3D.add(meshWithMaterialArray);
-      meshWithMaterialArray.material[0].needsUpdate = false;
-      meshWithMaterialArray.material[1].needsUpdate = false;
       component.update();
-      assert.ok(meshWithMaterialArray.material[0].needsUpdate &&
-        meshWithMaterialArray.material[1].needsUpdate);
+      assert.equal(meshWithMaterialArray.material[0].version, oldMaterial0Version + 1);
+      assert.equal(meshWithMaterialArray.material[1].version, oldMaterial1Version + 1);
     });
 
     test('refreshes after setObject3D', function () {
