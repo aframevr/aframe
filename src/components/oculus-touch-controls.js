@@ -51,6 +51,25 @@ var CONTROLLER_PROPERTIES = {
   }
 };
 
+var BUTTONS_MAPPING = isWebXRAvailable ? {
+  left: {
+    axes: {thumbstick: [2, 3]},
+    buttons: ['trigger', 'grip', 'none', 'thumbstick', 'xbutton', 'ybutton', 'surface']
+  },
+  right: {
+    axes: {thumbstick: [2, 3]},
+    buttons: ['trigger', 'grip', 'none', 'thumbstick', 'abutton', 'bbutton', 'surface']
+  }} : {
+    left: {
+      axes: {thumbstick: [0, 1]},
+      buttons: ['thumbstick', 'trigger', 'grip', 'xbutton', 'ybutton', 'surface']
+    },
+    right: {
+      axes: {thumbstick: [0, 1]},
+      buttons: ['thumbstick', 'trigger', 'grip', 'abutton', 'bbutton', 'surface']
+    }
+  };
+
 /**
  * Oculus Touch controls.
  * Interface with Oculus Touch controllers and map Gamepad events to
@@ -77,16 +96,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
    * 4 - Y (left) or B (right)
    * 5 - surface (touch only)
    */
-  mapping: {
-    left: {
-      axes: {thumbstick: [0, 1]},
-      buttons: ['thumbstick', 'trigger', 'grip', 'xbutton', 'ybutton', 'surface']
-    },
-    right: {
-      axes: {thumbstick: [0, 1]},
-      buttons: ['thumbstick', 'trigger', 'grip', 'abutton', 'bbutton', 'surface']
-    }
-  },
+  mapping: BUTTONS_MAPPING,
 
   bindMethods: function () {
     this.onModelLoaded = bind(this.onModelLoaded, this);
@@ -203,7 +213,6 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     var button = this.mapping[this.data.hand].buttons[evt.detail.id];
     var buttonMeshes = this.buttonMeshes;
     var analogValue;
-
     if (!button) { return; }
 
     if (button === 'trigger' || button === 'grip') { analogValue = evt.detail.state.value; }

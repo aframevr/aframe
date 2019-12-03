@@ -1,7 +1,7 @@
 /* global assert, process, setup, sinon, suite, test, THREE */
 const entityFactory = require('../helpers').entityFactory;
 
-suite.only('tracked-controls-webxr', function () {
+suite('tracked-controls-webxr', function () {
   var component;
   var controller;
   var el;
