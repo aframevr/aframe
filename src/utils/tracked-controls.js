@@ -37,7 +37,7 @@ module.exports.checkControllerPresentAndSetup = function (component, idPrefix, q
   // Update controller presence.
   if (isPresent) {
     component.injectTrackedControls();
-    if (!hasWebXR) { component.addEventListeners(); }
+    component.addEventListeners();
     el.emit('controllerconnected', {name: component.name, component: component});
   } else {
     component.removeEventListeners();
