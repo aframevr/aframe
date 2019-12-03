@@ -154,7 +154,7 @@ function findMatchingControllerWebXR (controllers, id, handedness) {
   var controllerHandedness;
   for (i = 0; i < controllers.length; i++) {
     controller = controllers[i];
-    if (controller.profiles[0] !== id) { continue; }
+    if (id && controller.profiles[0] && controller.profiles[0] !== id) { continue; }
     controllerHandedness = controller.handedness;
     if (!handedness || (controllerHandedness === '' && handedness === 'right') ||
         controller.handedness === handedness) {
