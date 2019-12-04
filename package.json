@@ -48,7 +48,7 @@
     "promise-polyfill": "^3.1.0",
     "super-animejs": "^3.1.0",
     "super-three": "^0.111.3",
-    "three-bmfont-text": "^2.1.0",
+    "three-bmfont-text": "dmarcos/three-bmfont-text#1babdf8507",
     "webvr-polyfill": "^0.10.10"
   },
   "devDependencies": {
