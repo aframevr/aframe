@@ -62186,56 +62186,20 @@ function setAttribute (geometry, key, data, itemSize, dtype) {
 
   var attrib = geometry.getAttribute(key)
   var newAttrib = updateAttribute(attrib, data, itemSize, dtype)
-  if (newAttrib) {
-    geometry.addAttribute(key, newAttrib)
-  }
+  geometry.setAttribute(key, newAttrib)
 }
 
 function updateAttribute (attrib, data, itemSize, dtype) {
   data = data || []
-  if (!attrib || rebuildAttribute(attrib, data, itemSize)) {
-    // create a new array with desired type
-    data = flatten(data, dtype)
 
-    var needsNewBuffer = attrib && typeof attrib.setArray !== 'function'
-    if (!attrib || needsNewBuffer) {
-      // We are on an old version of ThreeJS which can't
-      // support growing / shrinking buffers, so we need
-      // to build a new buffer
-      if (needsNewBuffer && !warned) {
-        warned = true
-        console.warn([
-          'A WebGL buffer is being updated with a new size or itemSize, ',
-          'however this version of ThreeJS only supports fixed-size buffers.',
-          '\nThe old buffer may still be kept in memory.\n',
-          'To avoid memory leaks, it is recommended that you dispose ',
-          'your geometries and create new ones, or update to ThreeJS r82 or newer.\n',
-          'See here for discussion:\n',
-          'https://github.com/mrdoob/three.js/pull/9631'
-        ].join(''))
-      }
+  // create a new array with desired type
+  data = flatten(data, dtype)
 
-      // Build a new attribute
-      attrib = new THREE.BufferAttribute(data, itemSize);
-    }
+  attrib = new THREE.BufferAttribute(data, itemSize);
+  attrib.itemSize = itemSize;
+  attrib.needsUpdate = true;
 
-    attrib.itemSize = itemSize
-    attrib.needsUpdate = true
-
-    // New versions of ThreeJS suggest using setArray
-    // to change the data. It will use bufferData internally,
-    // so you can change the array size without any issues
-    if (typeof attrib.setArray === 'function') {
-      attrib.setArray(data)
-    }
-
-    return attrib
-  } else {
-    // copy data into the existing array
-    flatten(data, attrib.array)
-    attrib.needsUpdate = true
-    return null
-  }
+  return attrib
 }
 
 // Test whether the attribute needs to be re-created,
@@ -66288,7 +66252,7 @@ module.exports={
     "promise-polyfill": "^3.1.0",
     "super-animejs": "^3.1.0",
     "super-three": "^0.111.3",
-    "three-bmfont-text": "^2.1.0",
+    "three-bmfont-text": "dmarcos/three-bmfont-text#1babdf8507",
     "webvr-polyfill": "^0.10.10"
   },
   "devDependencies": {
@@ -80196,7 +80160,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.9.2 (Date 2019-12-03, Commit #9c9ade79)');
+console.log('A-Frame Version: 0.9.2 (Date 2019-12-04, Commit #48381d53)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
