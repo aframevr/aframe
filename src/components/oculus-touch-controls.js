@@ -7,6 +7,7 @@ var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresent
 var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
 var onButtonEvent = trackedControlsUtils.onButtonEvent;
 
+var isOculusBrowser = require('../utils/').device.isOculusBrowser();
 var isWebXRAvailable = require('../utils/').device.isWebXRAvailable;
 
 var GAMEPAD_ID_WEBXR = 'oculus-touch';
@@ -19,9 +20,9 @@ var TOUCH_CONTROLLER_MODEL_BASE_URL = 'https://cdn.aframe.io/controllers/oculus/
 // For now the generation 2 model is the same as the original until a new one is prepared for upload.
 var TOUCH_GEN2_CONTROLLER_MODEL_BASE_URL = TOUCH_CONTROLLER_MODEL_BASE_URL;
 
-var CONTROLLER_DEFAULT = 'oculusTouchGen1';
+var CONTROLLER_DEFAULT = 'oculus-touch';
 var CONTROLLER_PROPERTIES = {
-  oculusTouchGen1: {
+  'oculus-touch': {
     left: {
       modelUrl: TOUCH_CONTROLLER_MODEL_BASE_URL + 'left.gltf',
       rayOrigin: {origin: {x: 0.008, y: -0.01, z: 0}, direction: {x: 0, y: -0.8, z: -1}},
@@ -35,18 +36,18 @@ var CONTROLLER_PROPERTIES = {
       modelPivotRotation: new THREE.Euler(0, 0, 0)
     }
   },
-  oculusTouchGen2: {
+  'oculus-touch-v2': {
     left: {
       modelUrl: TOUCH_GEN2_CONTROLLER_MODEL_BASE_URL + 'gen2-left.gltf',
       rayOrigin: {origin: {x: -0.01, y: 0, z: 0}, direction: {x: 0, y: -0.8, z: -1}},
       modelPivotOffset: new THREE.Vector3(0, 0.012, 0),
-      modelPivotRotation: new THREE.Euler(-Math.PI / 4, 0, 0)
+      modelPivotRotation: new THREE.Euler(-Math.PI / 2, 0, 0)
     },
     right: {
       modelUrl: TOUCH_GEN2_CONTROLLER_MODEL_BASE_URL + 'gen2-right.gltf',
       rayOrigin: {origin: {x: 0.01, y: 0, z: 0}, direction: {x: 0, y: -0.8, z: -1}},
       modelPivotOffset: new THREE.Vector3(0, 0.012, 0),
-      modelPivotRotation: new THREE.Euler(-Math.PI / 4, 0, 0)
+      modelPivotRotation: new THREE.Euler(-Math.PI / 2, 0, 0)
     }
   }
 };
@@ -83,7 +84,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     buttonTouchColor: {type: 'color', default: '#8AB'},
     buttonHighlightColor: {type: 'color', default: '#2DF'},  // Light blue.
     model: {default: true},
-    controllerType: {default: 'auto', oneOf: ['auto', 'oculus_touch_gen1', 'oculus_touch_gen2']},
+    controllerType: {default: 'auto', oneOf: ['auto', 'oculus-touch', 'oculus-touch-v2']},
     orientationOffset: {type: 'vec3', default: {x: 43, y: 0, z: 0}}
   },
 
@@ -173,11 +174,11 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
         var displayName = trackedControlsSystem.vrDisplay.displayName;
         // The Oculus Quest uses the updated generation 2 inside-out tracked controllers so update the displayModel.
         if (/^Oculus Quest$/.test(displayName)) {
-          this.displayModel = CONTROLLER_PROPERTIES['oculusTouchGen2'];
+          this.displayModel = CONTROLLER_PROPERTIES['oculus-touch-v2'];
         }
       }
+      if (isOculusBrowser) { this.displayModel = CONTROLLER_PROPERTIES['oculus-touch-v2']; }
     }
-
     var modelUrl = this.displayModel[data.hand].modelUrl;
     this.el.setAttribute('gltf-model', 'url(' + modelUrl + ')');
   },

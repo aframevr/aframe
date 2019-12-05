@@ -1,6 +1,7 @@
 var DEFAULT_HANDEDNESS = require('../constants').DEFAULT_HANDEDNESS;
 var AXIS_LABELS = ['x', 'y', 'z', 'w'];
 var NUM_HANDS = 2;  // Number of hands in a pair. Should always be 2.
+var isOculusBrowser = require('./device').isOculusBrowser();
 
 /**
  * Called on controller component `.play` handlers.
@@ -148,13 +149,18 @@ function findMatchingControllerWebVR (controllers, filterIdExact, filterIdPrefix
   return undefined;
 }
 
-function findMatchingControllerWebXR (controllers, id, handedness) {
+function findMatchingControllerWebXR (controllers, idPrefix, handedness) {
   var i;
   var controller;
+  var controllerMatch;
   var controllerHandedness;
   for (i = 0; i < controllers.length; i++) {
     controller = controllers[i];
-    if (id && controller.profiles[0] && controller.profiles[0] !== id) { continue; }
+    // Hack needed in Oculus Browser 7 because the profiles array
+    // of the WebXR gamepad module is not populated. Fix expected in Oculus Browser 7.1
+    controllerMatch = controller.profiles[0] && controller.profiles[0].startsWith(idPrefix) ||
+      isOculusBrowser && idPrefix === 'oculus-touch';
+    if (!controllerMatch) { continue; }
     controllerHandedness = controller.handedness;
     if (!handedness || (controllerHandedness === '' && handedness === 'right') ||
         controller.handedness === handedness) {
