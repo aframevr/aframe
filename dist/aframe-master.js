@@ -28495,7 +28495,7 @@ module.exports = anime;
 
 		if ( typeof navigator !== 'undefined' ) {
 
-			vr = ( 'xr' in navigator ) ? new WebXRManager( _this ) : new WebVRManager( _this );
+			vr = ( false ) ? new WebXRManager( _this ) : new WebVRManager( _this );
 
 		}
 
@@ -77130,7 +77130,7 @@ window.Promise = window.Promise || _dereq_('promise-polyfill');
 // Check before the polyfill runs.
 window.hasNativeWebVRImplementation = !!window.navigator.getVRDisplays ||
                                       !!window.navigator.getVRDevices;
-window.hasNativeWebXRImplementation = navigator.xr !== undefined;
+window.hasNativeWebXRImplementation = false;
 
 // If native WebXR or WebVR are defined WebVRPolyfill does not initialize.
 if (!window.hasNativeWebXRImplementation && !window.hasNativeWebVRImplementation) {
@@ -79236,7 +79236,7 @@ var vrDisplay;
 window.addEventListener('vrdisplayactivate', function (evt) {
   var canvasEl;
   // WebXR takes priority if available.
-  if (navigator.xr) { return; }
+  if (false) { return; }
   canvasEl = document.createElement('canvas');
   vrDisplay = evt.display;
   // Request present immediately. a-scene will be allowed to enter VR without user gesture.
@@ -79244,7 +79244,7 @@ window.addEventListener('vrdisplayactivate', function (evt) {
 });
 
 // Support both WebVR and WebXR APIs.
-if (navigator.xr && navigator.xr.requestDevice) {
+if (false) {
   navigator.xr.requestDevice().then(function (device) {
     if (!device) { return; }
     device.supportsSession({immersive: true, exclusive: true}).then(function () {
@@ -79265,7 +79265,7 @@ if (navigator.xr && navigator.xr.requestDevice) {
   }
 }
 
-module.exports.isWebXRAvailable = navigator.xr !== undefined;
+module.exports.isWebXRAvailable = false;
 
 function getVRDisplay () { return vrDisplay; }
 module.exports.getVRDisplay = getVRDisplay;
