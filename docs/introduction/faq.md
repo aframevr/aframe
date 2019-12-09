@@ -57,6 +57,15 @@ complexity and characteristics of each individual application. To get the best
 use of resources, we will need deeper understanding about 3D graphics.  See
 [best performance practices and guidelines][bestpractices] to get started.
 
+## Why is my experiencing not entering VR or AR mode?
+
+[release]: https://github.com/aframevr/aframe/releases
+[webxr]: https://immersive-web.github.io/webxr/
+
+If you are using A-Frame 0.9.2 or older you probably need to update to the [latest release][release]. Browsers are migrating to the [WebXR standard][webxr] and old versions might no longer work.
+
+You also have to serve your content over HTTPS. The WebXR API won't be available over HTTP.
+
 ## Why does my asset (e.g., image, video, model) not load?
 
 [cors]: https://en.wikipedia.org/wiki/Cross-origin_resource_sharing
