@@ -17,7 +17,7 @@ suite('tracked-controls-webxr', function () {
         el.components['tracked-controls'] = {};
         controller = {
           handedness: 'left',
-          profiles: []
+          profiles: ['test']
         };
         system.controllers = [controller];
         el.setAttribute('tracked-controls-webxr', {'hand': 'right'});
