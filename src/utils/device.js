@@ -123,12 +123,12 @@ function isIOS () {
 module.exports.isIOS = isIOS;
 
 function isMobileDeviceRequestingDesktopSite () {
-  return !isMobile() && window.orientation !== undefined;
+  return !isMobile() && !isMobileVR() && window.orientation !== undefined;
 }
 module.exports.isMobileDeviceRequestingDesktopSite = isMobileDeviceRequestingDesktopSite;
 
 /**
- *  Detect browsers in Stand-Alone headsets
+ *  Detect Oculus Browser (standalone headset)
  */
 function isOculusBrowser () {
   return /(OculusBrowser)/i.test(window.navigator.userAgent);
@@ -136,10 +136,18 @@ function isOculusBrowser () {
 module.exports.isOculusBrowser = isOculusBrowser;
 
 /**
+ *  Detect Firefox Reality (standalone headset)
+ */
+function isFirefoxReality () {
+  return /(Mobile VR)/i.test(window.navigator.userAgent);
+}
+module.exports.isFirefoxReality = isFirefoxReality;
+
+/**
  *  Detect browsers in Stand-Alone headsets
  */
 function isMobileVR () {
-  return isOculusBrowser() || /(Mobile VR)/i.test(window.navigator.userAgent);
+  return isOculusBrowser() || isFirefoxReality();
 }
 module.exports.isMobileVR = isMobileVR;
 
