@@ -80160,7 +80160,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.9.2 (Date 2019-12-04, Commit #48381d53)');
+console.log('A-Frame Version: 0.9.2 (Date 2019-12-09, Commit #c4432e7c)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
@@ -82308,12 +82308,12 @@ function isIOS () {
 module.exports.isIOS = isIOS;
 
 function isMobileDeviceRequestingDesktopSite () {
-  return !isMobile() && window.orientation !== undefined;
+  return !isMobile() && !isMobileVR() && window.orientation !== undefined;
 }
 module.exports.isMobileDeviceRequestingDesktopSite = isMobileDeviceRequestingDesktopSite;
 
 /**
- *  Detect browsers in Stand-Alone headsets
+ *  Detect Oculus Browser (standalone headset)
  */
 function isOculusBrowser () {
   return /(OculusBrowser)/i.test(window.navigator.userAgent);
@@ -82321,10 +82321,18 @@ function isOculusBrowser () {
 module.exports.isOculusBrowser = isOculusBrowser;
 
 /**
+ *  Detect Firefox Reality (standalone headset)
+ */
+function isFirefoxReality () {
+  return /(Mobile VR)/i.test(window.navigator.userAgent);
+}
+module.exports.isFirefoxReality = isFirefoxReality;
+
+/**
  *  Detect browsers in Stand-Alone headsets
  */
 function isMobileVR () {
-  return isOculusBrowser() || /(Mobile VR)/i.test(window.navigator.userAgent);
+  return isOculusBrowser() || isFirefoxReality();
 }
 module.exports.isMobileVR = isMobileVR;
 
