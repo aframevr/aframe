@@ -4,11 +4,17 @@ var vrDisplay;
 var supportsVRSession = false;
 var supportsARSession = false;
 
+/**
+ * Oculus Browser 7 doesn't support the WebXR gamepads module.
+ * We fallback to WebVR API and will hotfix when implementation is complete.
+ */
+var isWebXRAvailable = module.exports.isWebXRAvailable = !isOculusBrowser() && navigator.xr !== undefined;
+
 // Catch vrdisplayactivate early to ensure we can enter VR mode after the scene loads.
 window.addEventListener('vrdisplayactivate', function (evt) {
   var canvasEl;
   // WebXR takes priority if available.
-  if (navigator.xr) { return; }
+  if (isWebXRAvailable) { return; }
   canvasEl = document.createElement('canvas');
   vrDisplay = evt.display;
   // We need to make sure the canvas has a WebGL context associated with it.
@@ -19,7 +25,7 @@ window.addEventListener('vrdisplayactivate', function (evt) {
 });
 
 // Support both WebVR and WebXR APIs.
-if (navigator.xr) {
+if (isWebXRAvailable) {
   var updateEnterInterfaces = function () {
     var sceneEl = document.querySelector('a-scene');
     if (sceneEl.hasLoaded) {
@@ -40,7 +46,6 @@ if (navigator.xr) {
 
     navigator.xr.isSessionSupported('immersive-ar').then(function (supported) {
       supportsARSession = supported;
-
       updateEnterInterfaces();
     }).catch(errorHandler);
   } else if (navigator.xr.supportsSession) {
@@ -67,8 +72,6 @@ if (navigator.xr) {
     });
   }
 }
-
-module.exports.isWebXRAvailable = navigator.xr !== undefined;
 
 function getVRDisplay () { return vrDisplay; }
 module.exports.getVRDisplay = getVRDisplay;
