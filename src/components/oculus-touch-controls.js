@@ -11,9 +11,10 @@ var isOculusBrowser = require('../utils/').device.isOculusBrowser();
 var isWebXRAvailable = require('../utils/').device.isWebXRAvailable;
 
 var GAMEPAD_ID_WEBXR = 'oculus-touch';
+var GAMEPAD_ID_WEBVR = 'Oculus Touch';
 
 // Prefix for Gen1 and Gen2 Oculus Touch Controllers.
-var GAMEPAD_ID_PREFIX = isWebXRAvailable ? GAMEPAD_ID_WEBXR : 'Oculus Touch';
+var GAMEPAD_ID_PREFIX = isWebXRAvailable ? GAMEPAD_ID_WEBXR : GAMEPAD_ID_WEBVR;
 
 // First generation model URL.
 var TOUCH_CONTROLLER_MODEL_BASE_URL = 'https://cdn.aframe.io/controllers/oculus/oculus-touch-controller-';
@@ -52,7 +53,44 @@ var CONTROLLER_PROPERTIES = {
   }
 };
 
-var BUTTONS_MAPPING = isWebXRAvailable ? {
+/**
+ * Button indices:
+ * 0 - thumbstick (which has separate axismove / thumbstickmoved events)
+ * 1 - trigger (with analog value, which goes up to 1)
+ * 2 - grip (with analog value, which goes up to 1)
+ * 3 - X (left) or A (right)
+ * 4 - Y (left) or B (right)
+ * 5 - surface (touch only)
+ */
+var INPUT_MAPPING_WEBVR = {
+  left: {
+    axes: {thumbstick: [0, 1]},
+    buttons: ['thumbstick', 'trigger', 'grip', 'xbutton', 'ybutton', 'surface']
+  },
+  right: {
+    axes: {thumbstick: [0, 1]},
+    buttons: ['thumbstick', 'trigger', 'grip', 'abutton', 'bbutton', 'surface']
+  }
+};
+
+/**
+ * Button indices:
+ * 0 - trigger
+ * 1 - grip
+ * 2 - none
+ * 3 - thumbstick
+ * 4 - X or A button
+ * 5 - Y or B button
+ * 6 - surface
+ *
+ * Axis:
+ * 0 - none
+ * 1 - none
+ * 2 - thumbstick
+ * 3 - thumbstick
+ * Reference: https://github.com/immersive-web/webxr-input-profiles/blob/master/packages/registry/profiles/oculus/oculus-touch.json
+ */
+var INPUT_MAPPING_WEBXR = {
   left: {
     axes: {thumbstick: [2, 3]},
     buttons: ['trigger', 'grip', 'none', 'thumbstick', 'xbutton', 'ybutton', 'surface']
@@ -60,16 +98,10 @@ var BUTTONS_MAPPING = isWebXRAvailable ? {
   right: {
     axes: {thumbstick: [2, 3]},
     buttons: ['trigger', 'grip', 'none', 'thumbstick', 'abutton', 'bbutton', 'surface']
-  }} : {
-    left: {
-      axes: {thumbstick: [0, 1]},
-      buttons: ['thumbstick', 'trigger', 'grip', 'xbutton', 'ybutton', 'surface']
-    },
-    right: {
-      axes: {thumbstick: [0, 1]},
-      buttons: ['thumbstick', 'trigger', 'grip', 'abutton', 'bbutton', 'surface']
-    }
-  };
+  }
+};
+
+var INPUT_MAPPING = isWebXRAvailable ? INPUT_MAPPING_WEBXR : INPUT_MAPPING_WEBVR;
 
 /**
  * Oculus Touch controls.
@@ -88,16 +120,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     orientationOffset: {type: 'vec3', default: {x: 43, y: 0, z: 0}}
   },
 
-  /**
-   * Button IDs:
-   * 0 - thumbstick (which has separate axismove / thumbstickmoved events)
-   * 1 - trigger (with analog value, which goes up to 1)
-   * 2 - grip (with analog value, which goes up to 1)
-   * 3 - X (left) or A (right)
-   * 4 - Y (left) or B (right)
-   * 5 - surface (touch only)
-   */
-  mapping: BUTTONS_MAPPING,
+  mapping: INPUT_MAPPING,
 
   bindMethods: function () {
     this.onModelLoaded = bind(this.onModelLoaded, this);

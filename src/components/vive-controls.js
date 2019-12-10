@@ -9,7 +9,46 @@ var onButtonEvent = trackedControlsUtils.onButtonEvent;
 var VIVE_CONTROLLER_MODEL_OBJ_URL = 'https://cdn.aframe.io/controllers/vive/vr_controller_vive.obj';
 var VIVE_CONTROLLER_MODEL_OBJ_MTL = 'https://cdn.aframe.io/controllers/vive/vr_controller_vive.mtl';
 
-var GAMEPAD_ID_PREFIX = 'OpenVR ';
+var isWebXRAvailable = require('../utils/').device.isWebXRAvailable;
+
+var GAMEPAD_ID_WEBXR = 'htc-vive';
+var GAMEPAD_ID_WEBVR = 'OpenVR ';
+
+// Prefix for Gen1 and Gen2 Oculus Touch Controllers.
+var GAMEPAD_ID_PREFIX = isWebXRAvailable ? GAMEPAD_ID_WEBXR : GAMEPAD_ID_WEBVR;
+
+/**
+ * Button IDs:
+ * 0 - trackpad
+ * 1 - trigger (intensity value from 0.5 to 1)
+ * 2 - grip
+ * 3 - menu (dispatch but better for menu options)
+ * 4 - system (never dispatched on this layer)
+ */
+var INPUT_MAPPING_WEBVR = {
+  axes: {trackpad: [0, 1]},
+  buttons: ['trackpad', 'trigger', 'grip', 'menu', 'system']
+};
+
+/**
+ * Button IDs:
+ * 0 - trigger
+ * 1 - squeeze
+ * 2 - touchpad
+ * 3 - none (dispatch but better for menu options)
+ * 4 - menu (never dispatched on this layer)
+ *
+ * Axis:
+ * 0 - touchpad x axis
+ * 1 - touchpad y axis
+ * Reference: https://github.com/immersive-web/webxr-input-profiles/blob/master/packages/registry/profiles/htc/htc-vive.json
+ */
+var INPUT_MAPPING_WEBXR = {
+  axes: {thumbstick: [0, 1]},
+  buttons: ['trigger', 'squeeze', 'touchpad', 'none', 'menu']
+};
+
+var INPUT_MAPPING = isWebXRAvailable ? INPUT_MAPPING_WEBXR : INPUT_MAPPING_WEBVR;
 
 /**
  * Vive controls.
@@ -26,18 +65,7 @@ module.exports.Component = registerComponent('vive-controls', {
     orientationOffset: {type: 'vec3'}
   },
 
-  /**
-   * Button IDs:
-   * 0 - trackpad
-   * 1 - trigger (intensity value from 0.5 to 1)
-   * 2 - grip
-   * 3 - menu (dispatch but better for menu options)
-   * 4 - system (never dispatched on this layer)
-   */
-  mapping: {
-    axes: {trackpad: [0, 1]},
-    buttons: ['trackpad', 'trigger', 'grip', 'menu', 'system']
-  },
+  mapping: INPUT_MAPPING,
 
   init: function () {
     var self = this;
