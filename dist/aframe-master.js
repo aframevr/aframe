@@ -77787,7 +77787,7 @@ module.exports.AScene = registerElement('a-scene', {
           self.addState('vr-mode');
           self.emit('enter-vr', {target: self});
           // Lock to landscape orientation on mobile.
-          if (!navigator.xr && self.isMobile && screen.orientation && screen.orientation.lock) {
+          if (!isWebXRAvailable && self.isMobile && screen.orientation && screen.orientation.lock) {
             screen.orientation.lock('landscape');
           }
           self.addFullScreenStyles();
@@ -80072,11 +80072,13 @@ registerGeometry('triangle', {
 // Polyfill `Promise`.
 window.Promise = window.Promise || _dereq_('promise-polyfill');
 
+var isOculusBrowser = /(OculusBrowser)/i.test(window.navigator.userAgent);
+
 // WebVR polyfill
 // Check before the polyfill runs.
 window.hasNativeWebVRImplementation = !!window.navigator.getVRDisplays ||
                                       !!window.navigator.getVRDevices;
-window.hasNativeWebXRImplementation = navigator.xr !== undefined;
+window.hasNativeWebXRImplementation = !isOculusBrowser && navigator.xr !== undefined;
 
 // If native WebXR or WebVR are defined WebVRPolyfill does not initialize.
 if (!window.hasNativeWebXRImplementation && !window.hasNativeWebVRImplementation) {
@@ -80160,7 +80162,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.9.2 (Date 2019-12-09, Commit #c4432e7c)');
+console.log('A-Frame Version: 0.9.2 (Date 2019-12-10, Commit #d7b096af)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
@@ -81858,6 +81860,7 @@ module.exports.System = registerSystem('shadow', {
 },{"../core/system":136,"../lib/three":173}],190:[function(_dereq_,module,exports){
 var registerSystem = _dereq_('../core/system').registerSystem;
 var utils = _dereq_('../utils');
+var isWebXRAvailable = utils.device.isWebXRAvailable;
 
 /**
  * Tracked controls system.
@@ -81874,7 +81877,7 @@ module.exports.System = registerSystem('tracked-controls-webvr', {
     this.throttledUpdateControllerList = utils.throttle(this.updateControllerList, 500, this);
 
     // Don't use WebVR if WebXR is available?
-    if (navigator.xr) { return; }
+    if (isWebXRAvailable) { return; }
 
     if (!navigator.getVRDisplays) { return; }
 
@@ -82189,11 +82192,17 @@ var vrDisplay;
 var supportsVRSession = false;
 var supportsARSession = false;
 
+/**
+ * Oculus Browser 7 doesn't support the WebXR gamepads module.
+ * We fallback to WebVR API and will hotfix when implementation is complete.
+ */
+var isWebXRAvailable = module.exports.isWebXRAvailable = !isOculusBrowser() && navigator.xr !== undefined;
+
 // Catch vrdisplayactivate early to ensure we can enter VR mode after the scene loads.
 window.addEventListener('vrdisplayactivate', function (evt) {
   var canvasEl;
   // WebXR takes priority if available.
-  if (navigator.xr) { return; }
+  if (isWebXRAvailable) { return; }
   canvasEl = document.createElement('canvas');
   vrDisplay = evt.display;
   // We need to make sure the canvas has a WebGL context associated with it.
@@ -82204,7 +82213,7 @@ window.addEventListener('vrdisplayactivate', function (evt) {
 });
 
 // Support both WebVR and WebXR APIs.
-if (navigator.xr) {
+if (isWebXRAvailable) {
   var updateEnterInterfaces = function () {
     var sceneEl = document.querySelector('a-scene');
     if (sceneEl.hasLoaded) {
@@ -82225,7 +82234,6 @@ if (navigator.xr) {
 
     navigator.xr.isSessionSupported('immersive-ar').then(function (supported) {
       supportsARSession = supported;
-
       updateEnterInterfaces();
     }).catch(errorHandler);
   } else if (navigator.xr.supportsSession) {
@@ -82252,8 +82260,6 @@ if (navigator.xr) {
     });
   }
 }
-
-module.exports.isWebXRAvailable = navigator.xr !== undefined;
 
 function getVRDisplay () { return vrDisplay; }
 module.exports.getVRDisplay = getVRDisplay;
