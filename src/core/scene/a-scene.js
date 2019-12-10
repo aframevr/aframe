@@ -338,7 +338,7 @@ module.exports.AScene = registerElement('a-scene', {
           self.addState('vr-mode');
           self.emit('enter-vr', {target: self});
           // Lock to landscape orientation on mobile.
-          if (!navigator.xr && self.isMobile && screen.orientation && screen.orientation.lock) {
+          if (!isWebXRAvailable && self.isMobile && screen.orientation && screen.orientation.lock) {
             screen.orientation.lock('landscape');
           }
           self.addFullScreenStyles();
