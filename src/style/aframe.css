@@ -151,6 +151,8 @@ a-scene audio {
 .a-enter-vr-modal,
 .a-enter-vr-modal a {
   color: #fff;
+  user-select: none;
+  outline: none;
 }
 
 .a-enter-vr-button {
