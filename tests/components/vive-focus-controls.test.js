@@ -18,7 +18,7 @@ suite('vive-focus-controls', function () {
         ],
         pose: {orientation: [1, 0, 0, 0], position: null}
       }];
-      el.parentEl.renderer.vr.getStandingMatrix = function () {};
+      el.parentEl.renderer.xr.getStandingMatrix = function () {};
       done();
     });
   });

@@ -47,7 +47,7 @@
     "present": "0.0.6",
     "promise-polyfill": "^3.1.0",
     "super-animejs": "^3.1.0",
-    "super-three": "^0.111.3",
+    "super-three": "^0.111.4",
     "three-bmfont-text": "dmarcos/three-bmfont-text#1babdf8507",
     "webvr-polyfill": "^0.10.10"
   },

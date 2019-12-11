@@ -197,7 +197,7 @@ module.exports.Component = registerComponent('look-controls', {
       // WebXR API updates applies headset pose to the object3D matrixWorld internally.
       // Reflect values back on position, rotation, scale so setAttribute returns expected values.
       if (sceneEl.is('vr-mode') && sceneEl.hasWebXR) {
-        pose = sceneEl.renderer.vr.getCameraPose();
+        pose = sceneEl.renderer.xr.getCameraPose();
         if (pose) {
           poseMatrix.elements = pose.transform.matrix;
           poseMatrix.decompose(object3D.position, object3D.rotation, object3D.scale);

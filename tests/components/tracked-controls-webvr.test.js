@@ -17,7 +17,7 @@ suite('tracked-controls-webvr', function () {
       el.setAttribute('position', '');
       el.setAttribute('tracked-controls', '');
       el.sceneEl.addEventListener('loaded', function () {
-        el.parentNode.renderer.vr.getStandingMatrix = function () {
+        el.parentNode.renderer.xr.getStandingMatrix = function () {
           return standingMatrix;
         };
         component = el.components['tracked-controls-webvr'];

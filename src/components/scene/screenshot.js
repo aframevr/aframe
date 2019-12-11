@@ -169,31 +169,31 @@ module.exports.Component = registerComponent('screenshot', {
    * Maintained for backwards compatibility.
    */
   capture: function (projection) {
-    var isVREnabled = this.el.renderer.vr.enabled;
+    var isVREnabled = this.el.renderer.xr.enabled;
     var renderer = this.el.renderer;
     var params;
     // Disable VR.
-    renderer.vr.enabled = false;
+    renderer.xr.enabled = false;
     params = this.setCapture(projection);
     this.renderCapture(params.camera, params.size, params.projection);
     // Trigger file download.
     this.saveCapture();
     // Restore VR.
-    renderer.vr.enabled = isVREnabled;
+    renderer.xr.enabled = isVREnabled;
   },
 
   /**
    * Return canvas instead of triggering download (e.g., for uploading blob to server).
    */
   getCanvas: function (projection) {
-    var isVREnabled = this.el.renderer.vr.enabled;
+    var isVREnabled = this.el.renderer.xr.enabled;
     var renderer = this.el.renderer;
     // Disable VR.
     var params = this.setCapture(projection);
-    renderer.vr.enabled = false;
+    renderer.xr.enabled = false;
     this.renderCapture(params.camera, params.size, params.projection);
     // Restore VR.
-    renderer.vr.enabled = isVREnabled;
+    renderer.xr.enabled = isVREnabled;
     return this.canvas;
   },
 
