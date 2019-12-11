@@ -197,7 +197,7 @@ a-scene audio {
 .a-enter-ar-button:hover,
 .a-enter-vr-button:active,
 .a-enter-vr-button:hover {
-  background-color: #666;
+  background-color: #ef2d5e;
 }
 
 [data-a-enter-vr-no-webvr] .a-enter-vr-button {
