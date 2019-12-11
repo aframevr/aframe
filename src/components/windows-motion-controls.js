@@ -19,7 +19,7 @@ var MODEL_FILENAMES = { left: 'left.glb', right: 'right.glb', default: 'universa
 
 var isWebXRAvailable = require('../utils/').device.isWebXRAvailable;
 
-var GAMEPAD_ID_WEBXR = 'microsoft-mixed-reality';
+var GAMEPAD_ID_WEBXR = 'windows-mixed-reality';
 var GAMEPAD_ID_WEBVR = 'Spatial Controller (Spatial Interaction Source) ';
 var GAMEPAD_ID_PATTERN = /([0-9a-zA-Z]+-[0-9a-zA-Z]+)$/;
 
