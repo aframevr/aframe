@@ -330,7 +330,7 @@ module.exports.AScene = registerElement('a-scene', {
           // for the actual requestPresent. Need to make sure there are no issues with firing the
           // vrdisplaypresentchange multiple times.
           var event;
-          if (window.hasNativeWebVRImplementation) {
+          if (window.hasNativeWebVRImplementation && !window.hasNativeWebXRImplementation) {
             event = new CustomEvent('vrdisplaypresentchange', {detail: {display: utils.device.getVRDisplay()}});
             window.dispatchEvent(event);
           }
