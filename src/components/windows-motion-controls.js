@@ -207,7 +207,7 @@ module.exports.Component = registerComponent('windows-motion-controls', {
     var hand = this.data.hand;
     var filename;
 
-    if (controller) {
+    if (controller && !window.hasNativeWebXRImplementation) {
       // Read hand directly from the controller, rather than this.data, as in the case that the controller
       // is unhanded this.data will still have 'left' or 'right' (depending on what the user inserted in to the scene).
       // In this case, we want to load the universal model, so need to get the '' from the controller.
