@@ -463,7 +463,7 @@ module.exports.AScene = registerElement('a-scene', {
         // Polyfill places display inside the detail property
         var display = evt.display || evt.detail.display;
         // Entering VR.
-        if (display.isPresenting) {
+        if (display && display.isPresenting) {
           this.enterVR();
           return;
         }

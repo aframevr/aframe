@@ -1,8 +1,18 @@
 var controllerUtils = require('../utils/tracked-controls');
 var registerComponent = require('../core/component').registerComponent;
 
+var EVENTS = {
+  AXISMOVE: 'axismove',
+  BUTTONCHANGED: 'buttonchanged',
+  BUTTONDOWN: 'buttondown',
+  BUTTONUP: 'buttonup',
+  TOUCHSTART: 'touchstart',
+  TOUCHEND: 'touchend'
+};
+
 module.exports.Component = registerComponent('tracked-controls-webxr', {
   schema: {
+    id: {type: 'string', default: ''},
     hand: {type: 'string', default: ''}
   },
 
@@ -11,7 +21,13 @@ module.exports.Component = registerComponent('tracked-controls-webxr', {
     this.updateController = this.updateController.bind(this);
     this.emitButtonUpEvent = this.emitButtonUpEvent.bind(this);
     this.emitButtonDownEvent = this.emitButtonDownEvent.bind(this);
-    this.buttonEventDetails = {id: 'trigger', state: {pressed: false}};
+
+    this.selectEventDetails = {id: 'trigger', state: {pressed: false}};
+    this.buttonEventDetails = {};
+    this.buttonStates = this.el.components['tracked-controls'].buttonStates = {};
+    this.axis = this.el.components['tracked-controls'].axis = [0, 0, 0];
+    this.changedAxes = [];
+    this.axisMoveEventDetail = {axis: this.axis, changed: this.changedAxes};
   },
 
   play: function () {
@@ -45,17 +61,19 @@ module.exports.Component = registerComponent('tracked-controls-webxr', {
 
   emitButtonDownEvent: function (evt) {
     if (!this.controller || evt.inputSource.handedness !== this.data.hand) { return; }
-    this.buttonEventDetails.state.pressed = true;
-    this.el.emit('buttondown', this.buttonEventDetails);
-    this.el.emit('buttonchanged', this.buttonEventDetails);
+    if (this.controller.gamepad) { return; }
+    this.selectEventDetails.state.pressed = true;
+    this.el.emit('buttondown', this.selectEventDetails);
+    this.el.emit('buttonchanged', this.selectEventDetails);
     this.el.emit('triggerdown');
   },
 
   emitButtonUpEvent: function (evt) {
     if (!this.controller || evt.inputSource.handedness !== this.data.hand) { return; }
-    this.buttonEventDetails.state.pressed = false;
-    this.el.emit('buttonup', this.buttonEventDetails);
-    this.el.emit('buttonchanged', this.buttonEventDetails);
+    if (this.controller.gamepad) { return; }
+    this.selectEventDetails.state.pressed = false;
+    this.el.emit('buttonup', this.selectEventDetails);
+    this.el.emit('buttonchanged', this.selectEventDetails);
     this.el.emit('triggerup');
   },
 
@@ -65,6 +83,7 @@ module.exports.Component = registerComponent('tracked-controls-webxr', {
   updateController: function () {
     this.controller = controllerUtils.findMatchingControllerWebXR(
       this.system.controllers,
+      this.data.id,
       this.data.hand
     );
     // Legacy handle to the controller for old components.
@@ -74,13 +93,149 @@ module.exports.Component = registerComponent('tracked-controls-webxr', {
   },
 
   tick: function () {
-    var pose;
     var sceneEl = this.el.sceneEl;
-    var object3D = this.el.object3D;
     if (!this.controller || !sceneEl.frame) { return; }
-    pose = sceneEl.frame.getPose(this.controller.targetRaySpace, this.system.referenceSpace);
+    this.pose = sceneEl.frame.getPose(this.controller.targetRaySpace, this.system.referenceSpace);
+    this.updatePose();
+    this.updateButtons();
+  },
+
+  updatePose: function () {
+    var object3D = this.el.object3D;
+    var pose = this.pose;
     if (!pose) { return; }
     object3D.matrix.elements = pose.transform.matrix;
     object3D.matrix.decompose(object3D.position, object3D.rotation, object3D.scale);
+  },
+
+  /**
+   * Handle button changes including axes, presses, touches, values.
+   */
+  updateButtons: function () {
+    var buttonState;
+    var id;
+    var controller = this.controller;
+    var gamepad;
+    if (!controller || !controller.gamepad) { return; }
+
+    gamepad = controller.gamepad;
+    // Check every button.
+    for (id = 0; id < gamepad.buttons.length; ++id) {
+      // Initialize button state.
+      if (!this.buttonStates[id]) {
+        this.buttonStates[id] = {pressed: false, touched: false, value: 0};
+      }
+      if (!this.buttonEventDetails[id]) {
+        this.buttonEventDetails[id] = {id: id, state: this.buttonStates[id]};
+      }
+
+      buttonState = gamepad.buttons[id];
+      this.handleButton(id, buttonState);
+    }
+    // Check axes.
+    this.handleAxes();
+  },
+
+  /**
+   * Handle presses and touches for a single button.
+   *
+   * @param {number} id - Index of button in Gamepad button array.
+   * @param {number} buttonState - Value of button state from 0 to 1.
+   * @returns {boolean} Whether button has changed in any way.
+   */
+  handleButton: function (id, buttonState) {
+    var changed;
+    changed = this.handlePress(id, buttonState) |
+              this.handleTouch(id, buttonState) |
+              this.handleValue(id, buttonState);
+    if (!changed) { return false; }
+    this.el.emit(EVENTS.BUTTONCHANGED, this.buttonEventDetails[id], false);
+    return true;
+  },
+
+  /**
+   * An axis is an array of values from -1 (up, left) to 1 (down, right).
+   * Compare each component of the axis to the previous value to determine change.
+   *
+   * @returns {boolean} Whether axes changed.
+   */
+  handleAxes: function () {
+    var changed = false;
+    var controllerAxes = this.controller.gamepad.axes;
+    var i;
+    var previousAxis = this.axis;
+    var changedAxes = this.changedAxes;
+
+    // Check if axis changed.
+    this.changedAxes.length = 0;
+    for (i = 0; i < controllerAxes.length; ++i) {
+      changedAxes.push(previousAxis[i] !== controllerAxes[i]);
+      if (changedAxes[i]) { changed = true; }
+    }
+    if (!changed) { return false; }
+
+    this.axis.length = 0;
+    for (i = 0; i < controllerAxes.length; i++) {
+      this.axis.push(controllerAxes[i]);
+    }
+    this.el.emit(EVENTS.AXISMOVE, this.axisMoveEventDetail, false);
+    return true;
+  },
+
+  /**
+   * Determine whether a button press has occured and emit events as appropriate.
+   *
+   * @param {string} id - ID of the button to check.
+   * @param {object} buttonState - State of the button to check.
+   * @returns {boolean} Whether button press state changed.
+   */
+  handlePress: function (id, buttonState) {
+    var evtName;
+    var previousButtonState = this.buttonStates[id];
+
+    // Not changed.
+    if (buttonState.pressed === previousButtonState.pressed) { return false; }
+
+    evtName = buttonState.pressed ? EVENTS.BUTTONDOWN : EVENTS.BUTTONUP;
+    this.el.emit(evtName, this.buttonEventDetails[id], false);
+    previousButtonState.pressed = buttonState.pressed;
+    return true;
+  },
+
+  /**
+   * Determine whether a button touch has occured and emit events as appropriate.
+   *
+   * @param {string} id - ID of the button to check.
+   * @param {object} buttonState - State of the button to check.
+   * @returns {boolean} Whether button touch state changed.
+   */
+  handleTouch: function (id, buttonState) {
+    var evtName;
+    var previousButtonState = this.buttonStates[id];
+
+    // Not changed.
+    if (buttonState.touched === previousButtonState.touched) { return false; }
+
+    evtName = buttonState.touched ? EVENTS.TOUCHSTART : EVENTS.TOUCHEND;
+    this.el.emit(evtName, this.buttonEventDetails[id], false);
+    previousButtonState.touched = buttonState.touched;
+    return true;
+  },
+
+  /**
+   * Determine whether a button value has changed.
+   *
+   * @param {string} id - Id of the button to check.
+   * @param {object} buttonState - State of the button to check.
+   * @returns {boolean} Whether button value changed.
+   */
+  handleValue: function (id, buttonState) {
+    var previousButtonState = this.buttonStates[id];
+
+    // Not changed.
+    if (buttonState.value === previousButtonState.value) { return false; }
+
+    previousButtonState.value = buttonState.value;
+    return true;
   }
 });

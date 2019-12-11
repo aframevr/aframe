@@ -7,16 +7,23 @@ var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresent
 var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
 var onButtonEvent = trackedControlsUtils.onButtonEvent;
 
+var isOculusBrowser = require('../utils/').device.isOculusBrowser();
+var isWebXRAvailable = require('../utils/').device.isWebXRAvailable;
+
+var GAMEPAD_ID_WEBXR = 'oculus-touch';
+var GAMEPAD_ID_WEBVR = 'Oculus Touch';
+
 // Prefix for Gen1 and Gen2 Oculus Touch Controllers.
-var GAMEPAD_ID_PREFIX = 'Oculus Touch';
+var GAMEPAD_ID_PREFIX = isWebXRAvailable ? GAMEPAD_ID_WEBXR : GAMEPAD_ID_WEBVR;
+
 // First generation model URL.
 var TOUCH_CONTROLLER_MODEL_BASE_URL = 'https://cdn.aframe.io/controllers/oculus/oculus-touch-controller-';
 // For now the generation 2 model is the same as the original until a new one is prepared for upload.
 var TOUCH_GEN2_CONTROLLER_MODEL_BASE_URL = TOUCH_CONTROLLER_MODEL_BASE_URL;
 
-var CONTROLLER_DEFAULT = 'oculusTouchGen1';
+var CONTROLLER_DEFAULT = 'oculus-touch';
 var CONTROLLER_PROPERTIES = {
-  oculusTouchGen1: {
+  'oculus-touch': {
     left: {
       modelUrl: TOUCH_CONTROLLER_MODEL_BASE_URL + 'left.gltf',
       rayOrigin: {origin: {x: 0.008, y: -0.01, z: 0}, direction: {x: 0, y: -0.8, z: -1}},
@@ -30,21 +37,71 @@ var CONTROLLER_PROPERTIES = {
       modelPivotRotation: new THREE.Euler(0, 0, 0)
     }
   },
-  oculusTouchGen2: {
+  'oculus-touch-v2': {
     left: {
       modelUrl: TOUCH_GEN2_CONTROLLER_MODEL_BASE_URL + 'gen2-left.gltf',
       rayOrigin: {origin: {x: -0.01, y: 0, z: 0}, direction: {x: 0, y: -0.8, z: -1}},
-      modelPivotOffset: new THREE.Vector3(0, 0.012, 0),
-      modelPivotRotation: new THREE.Euler(-Math.PI / 4, 0, 0)
+      modelPivotOffset: new THREE.Vector3(0, 0, 0),
+      modelPivotRotation: new THREE.Euler(0, 0, 0)
     },
     right: {
       modelUrl: TOUCH_GEN2_CONTROLLER_MODEL_BASE_URL + 'gen2-right.gltf',
       rayOrigin: {origin: {x: 0.01, y: 0, z: 0}, direction: {x: 0, y: -0.8, z: -1}},
-      modelPivotOffset: new THREE.Vector3(0, 0.012, 0),
-      modelPivotRotation: new THREE.Euler(-Math.PI / 4, 0, 0)
+      modelPivotOffset: new THREE.Vector3(0, 0, 0),
+      modelPivotRotation: new THREE.Euler(0, 0, 0)
     }
   }
 };
+
+/**
+ * Button indices:
+ * 0 - thumbstick (which has separate axismove / thumbstickmoved events)
+ * 1 - trigger (with analog value, which goes up to 1)
+ * 2 - grip (with analog value, which goes up to 1)
+ * 3 - X (left) or A (right)
+ * 4 - Y (left) or B (right)
+ * 5 - surface (touch only)
+ */
+var INPUT_MAPPING_WEBVR = {
+  left: {
+    axes: {thumbstick: [0, 1]},
+    buttons: ['thumbstick', 'trigger', 'grip', 'xbutton', 'ybutton', 'surface']
+  },
+  right: {
+    axes: {thumbstick: [0, 1]},
+    buttons: ['thumbstick', 'trigger', 'grip', 'abutton', 'bbutton', 'surface']
+  }
+};
+
+/**
+ * Button indices:
+ * 0 - trigger
+ * 1 - grip
+ * 2 - none
+ * 3 - thumbstick
+ * 4 - X or A button
+ * 5 - Y or B button
+ * 6 - surface
+ *
+ * Axis:
+ * 0 - none
+ * 1 - none
+ * 2 - thumbstick
+ * 3 - thumbstick
+ * Reference: https://github.com/immersive-web/webxr-input-profiles/blob/master/packages/registry/profiles/oculus/oculus-touch.json
+ */
+var INPUT_MAPPING_WEBXR = {
+  left: {
+    axes: {thumbstick: [2, 3]},
+    buttons: ['trigger', 'grip', 'none', 'thumbstick', 'xbutton', 'ybutton', 'surface']
+  },
+  right: {
+    axes: {thumbstick: [2, 3]},
+    buttons: ['trigger', 'grip', 'none', 'thumbstick', 'abutton', 'bbutton', 'surface']
+  }
+};
+
+var INPUT_MAPPING = isWebXRAvailable ? INPUT_MAPPING_WEBXR : INPUT_MAPPING_WEBVR;
 
 /**
  * Oculus Touch controls.
@@ -59,29 +116,11 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     buttonTouchColor: {type: 'color', default: '#8AB'},
     buttonHighlightColor: {type: 'color', default: '#2DF'},  // Light blue.
     model: {default: true},
-    controllerType: {default: 'auto', oneOf: ['auto', 'oculus_touch_gen1', 'oculus_touch_gen2']},
+    controllerType: {default: 'auto', oneOf: ['auto', 'oculus-touch', 'oculus-touch-v2']},
     orientationOffset: {type: 'vec3', default: {x: 43, y: 0, z: 0}}
   },
 
-  /**
-   * Button IDs:
-   * 0 - thumbstick (which has separate axismove / thumbstickmoved events)
-   * 1 - trigger (with analog value, which goes up to 1)
-   * 2 - grip (with analog value, which goes up to 1)
-   * 3 - X (left) or A (right)
-   * 4 - Y (left) or B (right)
-   * 5 - surface (touch only)
-   */
-  mapping: {
-    left: {
-      axes: {thumbstick: [0, 1]},
-      buttons: ['thumbstick', 'trigger', 'grip', 'xbutton', 'ybutton', 'surface']
-    },
-    right: {
-      axes: {thumbstick: [0, 1]},
-      buttons: ['thumbstick', 'trigger', 'grip', 'abutton', 'bbutton', 'surface']
-    }
-  },
+  mapping: INPUT_MAPPING,
 
   bindMethods: function () {
     this.onModelLoaded = bind(this.onModelLoaded, this);
@@ -158,19 +197,22 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
         var displayName = trackedControlsSystem.vrDisplay.displayName;
         // The Oculus Quest uses the updated generation 2 inside-out tracked controllers so update the displayModel.
         if (/^Oculus Quest$/.test(displayName)) {
-          this.displayModel = CONTROLLER_PROPERTIES['oculusTouchGen2'];
+          this.displayModel = CONTROLLER_PROPERTIES['oculus-touch-v2'];
         }
       }
+      if (isOculusBrowser) { this.displayModel = CONTROLLER_PROPERTIES['oculus-touch-v2']; }
     }
-
     var modelUrl = this.displayModel[data.hand].modelUrl;
     this.el.setAttribute('gltf-model', 'url(' + modelUrl + ')');
   },
 
   injectTrackedControls: function () {
     var data = this.data;
+    var webXRId = GAMEPAD_ID_WEBXR;
+    var webVRId = data.hand === 'right' ? 'Oculus Touch (Right)' : 'Oculus Touch (Left)';
+    var id = isWebXRAvailable ? webXRId : webVRId;
     this.el.setAttribute('tracked-controls', {
-      id: data.hand === 'right' ? 'Oculus Touch (Right)' : 'Oculus Touch (Left)',
+      id: id,
       controller: 0,
       hand: data.hand,
       orientationOffset: data.orientationOffset
@@ -195,7 +237,6 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     var button = this.mapping[this.data.hand].buttons[evt.detail.id];
     var buttonMeshes = this.buttonMeshes;
     var analogValue;
-
     if (!button) { return; }
 
     if (button === 'trigger' || button === 'grip') { analogValue = evt.detail.state.value; }

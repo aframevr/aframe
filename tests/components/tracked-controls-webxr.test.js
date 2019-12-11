@@ -15,7 +15,10 @@ suite('tracked-controls-webxr', function () {
       el.sceneEl.addEventListener('loaded', function () {
         system = el.sceneEl.systems['tracked-controls-webxr'];
         el.components['tracked-controls'] = {};
-        controller = {handedness: 'left'};
+        controller = {
+          handedness: 'left',
+          profiles: ['test']
+        };
         system.controllers = [controller];
         el.setAttribute('tracked-controls-webxr', {'hand': 'right'});
         component = el.components['tracked-controls-webxr'];
@@ -27,7 +30,7 @@ suite('tracked-controls-webxr', function () {
   suite('updateGamepad', function () {
     test('matches controller with same hand', function () {
       assert.strictEqual(component.controller, undefined);
-      el.setAttribute('tracked-controls-webxr', {'hand': 'left'});
+      el.setAttribute('tracked-controls-webxr', {hand: 'left'});
       component.updateController();
       assert.equal(component.controller, controller);
     });
