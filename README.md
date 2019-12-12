@@ -203,6 +203,7 @@ For questions and support, [ask on StackOverflow](https://stackoverflow.com/ques
 - To hang out with the community, [join the A-Frame Slack](https://aframe.io/slack-invite/).
 - [Follow `A Week of A-Frame` on the A-Frame blog](https://aframe.io/blog).
 - [Follow @aframevr on Twitter](https://twitter.com/aframevr).
+- [Subscribe to the Newsletter](https://aframe.io/subscribe/).
 
 And get in touch with the maintainers!
 
