@@ -67972,7 +67972,12 @@ var DAYDREAM_CONTROLLER_MODEL_BASE_URL = 'https://cdn.aframe.io/controllers/goog
 var DAYDREAM_CONTROLLER_MODEL_OBJ_URL = DAYDREAM_CONTROLLER_MODEL_BASE_URL + 'vr_controller_daydream.obj';
 var DAYDREAM_CONTROLLER_MODEL_OBJ_MTL = DAYDREAM_CONTROLLER_MODEL_BASE_URL + 'vr_controller_daydream.mtl';
 
-var GAMEPAD_ID_PREFIX = 'Daydream Controller';
+var isWebXRAvailable = _dereq_('../utils/').device.isWebXRAvailable;
+
+var GAMEPAD_ID_WEBXR = 'google-daydream';
+var GAMEPAD_ID_WEBVR = 'Daydream Controller';
+
+var GAMEPAD_ID_PREFIX = isWebXRAvailable ? GAMEPAD_ID_WEBXR : GAMEPAD_ID_WEBVR;
 
 /**
  * Daydream controls.
@@ -68134,7 +68139,7 @@ module.exports.Component = registerComponent('daydream-controls', {
   }
 });
 
-},{"../core/component":125,"../utils/bind":192,"../utils/tracked-controls":206}],77:[function(_dereq_,module,exports){
+},{"../core/component":125,"../utils/":198,"../utils/bind":192,"../utils/tracked-controls":206}],77:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var bind = _dereq_('../utils/bind');
 
@@ -80916,7 +80921,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.9.2 (Date 2019-12-11, Commit #864bb66c)');
+console.log('A-Frame Version: 0.9.2 (Date 2019-12-12, Commit #038eb3f8)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
