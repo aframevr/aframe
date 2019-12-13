@@ -80942,7 +80942,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.9.2 (Date 2019-12-13, Commit #b5a121e2)');
+console.log('A-Frame Version: 0.9.2 (Date 2019-12-13, Commit #4471a5f3)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
@@ -83015,7 +83015,7 @@ if (isWebXRAvailable) {
     navigator.xr.isSessionSupported('immersive-ar').then(function (supported) {
       supportsARSession = supported;
       updateEnterInterfaces();
-    }).catch(errorHandler);
+    }).catch(function () { console.log('AR not available on this device'); });
   } else if (navigator.xr.supportsSession) {
     // Fallback for implementations that haven't updated to the new spec yet,
     // the old version used supportsSession which is rejected for missing
@@ -83027,7 +83027,7 @@ if (isWebXRAvailable) {
     navigator.xr.supportsSession('immersive-ar').then(function () {
       supportsARSession = true;
       updateEnterInterfaces();
-    }).catch(errorHandler);
+    }).catch(function () { console.log('AR not available on this device'); });
   } else {
     error('WebXR has neither isSessionSupported or supportsSession?!');
   }
