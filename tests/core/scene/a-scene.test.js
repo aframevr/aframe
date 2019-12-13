@@ -324,7 +324,7 @@ suite('a-scene (without renderer)', function () {
       var sceneEl = this.el;
       sceneEl.xrSession = {
         removeEventListener: function () {},
-        end: function () {}
+        end: function () { return Promise.resolve(); }
       };
       sceneEl.renderer.xr = {setSession: function () {}};
       sceneEl.hasWebXR = true;
