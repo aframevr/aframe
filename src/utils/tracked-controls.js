@@ -83,7 +83,7 @@ function isControllerPresentWebXR (component, id, queryObject) {
   controllers = trackedControlsSystem.controllers;
   if (!controllers || !controllers.length) { return false; }
 
-  return findMatchingControllerWebXR(controllers, id, queryObject.hand);
+  return findMatchingControllerWebXR(controllers, id, queryObject.hand, queryObject.index);
 }
 
 module.exports.isControllerPresentWebVR = isControllerPresentWebVR;
@@ -148,7 +148,7 @@ function findMatchingControllerWebVR (controllers, filterIdExact, filterIdPrefix
   return undefined;
 }
 
-function findMatchingControllerWebXR (controllers, idPrefix, handedness) {
+function findMatchingControllerWebXR (controllers, idPrefix, handedness, index) {
   var i;
   var j;
   var controller;
@@ -164,8 +164,9 @@ function findMatchingControllerWebXR (controllers, idPrefix, handedness) {
     }
     if (!controllerMatch) { continue; }
     controllerHandedness = controller.handedness;
-    if (!handedness || (controllerHandedness === '' && handedness === 'right') ||
-        controller.handedness === handedness) {
+    if ((controller.handedness === handedness) ||
+        (i === index) ||
+        (controllerHandedness === '' && handedness === 'right')) {
       return controllers[i];
     }
   }
