@@ -47,7 +47,7 @@ if (isWebXRAvailable) {
     navigator.xr.isSessionSupported('immersive-ar').then(function (supported) {
       supportsARSession = supported;
       updateEnterInterfaces();
-    }).catch(errorHandler);
+    }).catch(function () { console.log('AR not available on this device'); });
   } else if (navigator.xr.supportsSession) {
     // Fallback for implementations that haven't updated to the new spec yet,
     // the old version used supportsSession which is rejected for missing
@@ -59,7 +59,7 @@ if (isWebXRAvailable) {
     navigator.xr.supportsSession('immersive-ar').then(function () {
       supportsARSession = true;
       updateEnterInterfaces();
-    }).catch(errorHandler);
+    }).catch(function () { console.log('AR not available on this device'); });
   } else {
     error('WebXR has neither isSessionSupported or supportsSession?!');
   }
