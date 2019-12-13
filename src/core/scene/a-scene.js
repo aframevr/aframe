@@ -386,7 +386,8 @@ module.exports.AScene = registerElement('a-scene', {
           vrDisplay = utils.device.getVRDisplay();
           if (this.hasWebXR) {
             this.xrSession.removeEventListener('end', this.exitVRBound);
-            this.xrSession.end();
+            // Capture promise to avoid errors.
+            this.xrSession.end().then(function () {}, function () {});
             this.xrSession = undefined;
             vrManager.setSession(null);
           } else {
