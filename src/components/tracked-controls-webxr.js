@@ -14,7 +14,7 @@ module.exports.Component = registerComponent('tracked-controls-webxr', {
   schema: {
     id: {type: 'string', default: ''},
     hand: {type: 'string', default: ''},
-    index: {type: 'int', default: 0}
+    index: {type: 'int', default: -1}
   },
 
   init: function () {

@@ -117,7 +117,7 @@ function findMatchingControllerWebVR (controllers, filterIdExact, filterIdPrefix
   var controller;
   var i;
   var matchingControllerOccurence = 0;
-  var targetControllerMatch = filterControllerIndex || 0;
+  var targetControllerMatch = filterControllerIndex >= 0 ? filterControllerIndex : 0;
 
   for (i = 0; i < controllers.length; i++) {
     controller = controllers[i];

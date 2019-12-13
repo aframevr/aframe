@@ -232,7 +232,6 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     var id = isWebXRAvailable ? webXRId : webVRId;
     this.el.setAttribute('tracked-controls', {
       id: id,
-      controller: 0,
       hand: data.hand,
       orientationOffset: data.orientationOffset
     });
