@@ -33,7 +33,7 @@ module.exports.Component = registerComponent('vive-focus-controls', {
    */
   mapping: {
     axes: {trackpad: [0, 1]},
-    buttons: ['trigger', 'trackpad']
+    buttons: ['trackpad', 'trigger']
   },
 
   bindMethods: function () {
