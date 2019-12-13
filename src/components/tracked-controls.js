@@ -27,7 +27,11 @@ module.exports.Component = registerComponent('tracked-controls', {
     var data = this.data;
     var el = this.el;
     if (el.sceneEl.hasWebXR) {
-      el.setAttribute('tracked-controls-webxr', data);
+      el.setAttribute('tracked-controls-webxr', {
+        id: data.id,
+        hand: data.hand,
+        index: data.controller
+      });
     } else {
       el.setAttribute('tracked-controls-webvr', data);
     }

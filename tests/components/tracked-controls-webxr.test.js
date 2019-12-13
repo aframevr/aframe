@@ -22,6 +22,7 @@ suite('tracked-controls-webxr', function () {
         system.controllers = [controller];
         el.setAttribute('tracked-controls-webxr', {'hand': 'right'});
         component = el.components['tracked-controls-webxr'];
+        component.controller = undefined;
         done();
       });
     });
@@ -30,7 +31,7 @@ suite('tracked-controls-webxr', function () {
   suite('updateGamepad', function () {
     test('matches controller with same hand', function () {
       assert.strictEqual(component.controller, undefined);
-      el.setAttribute('tracked-controls-webxr', {hand: 'left'});
+      el.setAttribute('tracked-controls-webxr', {id: 'test', hand: 'left'});
       component.updateController();
       assert.equal(component.controller, controller);
     });

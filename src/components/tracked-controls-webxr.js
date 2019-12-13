@@ -13,7 +13,8 @@ var EVENTS = {
 module.exports.Component = registerComponent('tracked-controls-webxr', {
   schema: {
     id: {type: 'string', default: ''},
-    hand: {type: 'string', default: ''}
+    hand: {type: 'string', default: ''},
+    index: {type: 'int', default: 0}
   },
 
   init: function () {
@@ -84,7 +85,8 @@ module.exports.Component = registerComponent('tracked-controls-webxr', {
     this.controller = controllerUtils.findMatchingControllerWebXR(
       this.system.controllers,
       this.data.id,
-      this.data.hand
+      this.data.hand,
+      this.data.index
     );
     // Legacy handle to the controller for old components.
     this.el.components['tracked-controls'].controller = this.controller;
