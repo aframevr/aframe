@@ -70742,34 +70742,53 @@ var TOUCH_CONTROLLER_MODEL_BASE_URL = 'https://cdn.aframe.io/controllers/oculus/
 // For now the generation 2 model is the same as the original until a new one is prepared for upload.
 var TOUCH_GEN2_CONTROLLER_MODEL_BASE_URL = TOUCH_CONTROLLER_MODEL_BASE_URL;
 
+var OCULUS_TOUCH_WEBVR = {
+  left: {
+    modelUrl: TOUCH_CONTROLLER_MODEL_BASE_URL + 'left.gltf',
+    rayOrigin: {origin: {x: 0.008, y: -0.01, z: 0}, direction: {x: 0, y: -0.8, z: -1}},
+    modelPivotOffset: new THREE.Vector3(-0.005, 0.003, -0.055),
+    modelPivotRotation: new THREE.Euler(0, 0, 0)
+  },
+  right: {
+    modelUrl: TOUCH_CONTROLLER_MODEL_BASE_URL + 'right.gltf',
+    rayOrigin: {origin: {x: -0.008, y: -0.01, z: 0}, direction: {x: 0, y: -0.8, z: -1}},
+    modelPivotOffset: new THREE.Vector3(0.005, 0.003, -0.055),
+    modelPivotRotation: new THREE.Euler(0, 0, 0)
+  }
+};
+
+var OCULUS_TOUCH_WEBXR = {
+  left: {
+    modelUrl: TOUCH_CONTROLLER_MODEL_BASE_URL + 'left.gltf',
+    rayOrigin: {origin: {x: 0.002, y: -0.005, z: -0.03}, direction: {x: 0, y: -0.8, z: -1}},
+    modelPivotOffset: new THREE.Vector3(-0.005, 0.036, -0.037),
+    modelPivotRotation: new THREE.Euler(Math.PI / 4.5, 0, 0)
+  },
+  right: {
+    modelUrl: TOUCH_CONTROLLER_MODEL_BASE_URL + 'right.gltf',
+    rayOrigin: {origin: {x: -0.002, y: -0.005, z: -0.03}, direction: {x: 0, y: -0.8, z: -1}},
+    modelPivotOffset: new THREE.Vector3(0.005, 0.036, -0.037),
+    modelPivotRotation: new THREE.Euler(Math.PI / 4.5, 0, 0)
+  }
+};
+
+var OCULUS_TOUCH_CONFIG = isWebXRAvailable ? OCULUS_TOUCH_WEBXR : OCULUS_TOUCH_WEBVR;
+
 var CONTROLLER_DEFAULT = 'oculus-touch';
 var CONTROLLER_PROPERTIES = {
-  'oculus-touch': {
-    left: {
-      modelUrl: TOUCH_CONTROLLER_MODEL_BASE_URL + 'left.gltf',
-      rayOrigin: {origin: {x: 0.008, y: -0.01, z: 0}, direction: {x: 0, y: -0.8, z: -1}},
-      modelPivotOffset: new THREE.Vector3(0, 0, -0.053),
-      modelPivotRotation: new THREE.Euler(0, 0, 0)
-    },
-    right: {
-      modelUrl: TOUCH_CONTROLLER_MODEL_BASE_URL + 'right.gltf',
-      rayOrigin: {origin: {x: -0.008, y: -0.01, z: 0}, direction: {x: 0, y: -0.8, z: -1}},
-      modelPivotOffset: new THREE.Vector3(0, 0, -0.053),
-      modelPivotRotation: new THREE.Euler(0, 0, 0)
-    }
-  },
+  'oculus-touch': OCULUS_TOUCH_CONFIG,
   'oculus-touch-v2': {
     left: {
       modelUrl: TOUCH_GEN2_CONTROLLER_MODEL_BASE_URL + 'gen2-left.gltf',
-      rayOrigin: {origin: {x: -0.01, y: 0, z: 0}, direction: {x: 0, y: -0.8, z: -1}},
+      rayOrigin: {origin: {x: -0.01, y: -0.01, z: 0}, direction: {x: 0, y: -0.8, z: -1}},
       modelPivotOffset: new THREE.Vector3(0, 0, 0),
-      modelPivotRotation: new THREE.Euler(0, 0, 0)
+      modelPivotRotation: new THREE.Euler(-Math.PI / 4, 0, 0)
     },
     right: {
       modelUrl: TOUCH_GEN2_CONTROLLER_MODEL_BASE_URL + 'gen2-right.gltf',
-      rayOrigin: {origin: {x: 0.01, y: 0, z: 0}, direction: {x: 0, y: -0.8, z: -1}},
+      rayOrigin: {origin: {x: 0.01, y: -0.01, z: 0}, direction: {x: 0, y: -0.8, z: -1}},
       modelPivotOffset: new THREE.Vector3(0, 0, 0),
-      modelPivotRotation: new THREE.Euler(0, 0, 0)
+      modelPivotRotation: new THREE.Euler(-Math.PI / 4, 0, 0)
     }
   }
 };
@@ -80942,7 +80961,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.9.2 (Date 2019-12-13, Commit #d6a84e26)');
+console.log('A-Frame Version: 0.9.2 (Date 2019-12-13, Commit #3100c2c4)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
