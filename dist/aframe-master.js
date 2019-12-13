@@ -80963,7 +80963,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.9.2 (Date 2019-12-13, Commit #abc18b3e)');
+console.log('A-Frame Version: 0.9.2 (Date 2019-12-13, Commit #a657138c)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
@@ -84378,7 +84378,7 @@ function findMatchingControllerWebXR (controllers, idPrefix, handedness, index) 
   var j;
   var controller;
   var controllerMatch = false;
-  var controllerHandedness;
+  var controllerHasHandedness;
   var profiles;
   for (i = 0; i < controllers.length; i++) {
     controller = controllers[i];
@@ -84388,11 +84388,12 @@ function findMatchingControllerWebXR (controllers, idPrefix, handedness, index) 
       if (controllerMatch) { break; }
     }
     if (!controllerMatch) { continue; }
-    controllerHandedness = controller.handedness;
-    if ((controller.handedness === handedness) ||
-        (i === index) ||
-        (controllerHandedness === '' && handedness === 'right')) {
-      return controllers[i];
+    // Vive controllers are assigned handedness at runtime and it might not be always available.
+    controllerHasHandedness = controller.handedness === 'right' || controller.handedness === 'left';
+    if (controllerHasHandedness) {
+      if (controller.handedness === handedness) { return controllers[i]; }
+    } else { // Fallback to index if controller has no handedness.
+      if ((i === index)) { return controllers[i]; }
     }
   }
   return undefined;
