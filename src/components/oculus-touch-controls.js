@@ -222,7 +222,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
       if (isOculusBrowser) { this.displayModel = CONTROLLER_PROPERTIES['oculus-touch-v2']; }
     }
     var modelUrl = this.displayModel[data.hand].modelUrl;
-    this.el.setAttribute('gltf-model', 'url(' + modelUrl + ')');
+    this.el.setAttribute('gltf-model', modelUrl);
   },
 
   injectTrackedControls: function () {
