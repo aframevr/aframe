@@ -74195,7 +74195,7 @@ var INPUT_MAPPING_WEBVR = {
  */
 var INPUT_MAPPING_WEBXR = {
   axes: {thumbstick: [0, 1]},
-  buttons: ['trigger', 'squeeze', 'touchpad', 'none', 'menu']
+  buttons: ['trigger', 'grip', 'trackpad', 'none', 'menu']
 };
 
 var INPUT_MAPPING = isWebXRAvailable ? INPUT_MAPPING_WEBXR : INPUT_MAPPING_WEBVR;
@@ -80963,7 +80963,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.9.2 (Date 2019-12-13, Commit #d5acb548)');
+console.log('A-Frame Version: 0.9.2 (Date 2019-12-13, Commit #abc18b3e)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
