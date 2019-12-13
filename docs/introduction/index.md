@@ -164,23 +164,20 @@ as Google, Microsoft, Oculus, and Samsung have made contributions to A-Frame.
 If it's your first time here, here's a plan for success for getting into
 A-Frame:
 
-1. For inspiration, check out what other people have built with A-Frame on the
-[Weekly Blog](https://aframe.io/blog/) or [WebVR Directory](https://webvr.directory).
+1. [Subscribe to the Newsletter](https://aframe.io/subscribe/) for updates and
+tips on A-Frame and to see featured community projects.
 
 2. Read through the documentation to get a grasp.
 [Glitch](https://glitch.com/~aframe) is used as a recommended coding playground
 and for examples.
 
-3. Run through [A-Frame School](https://aframe.io/school/), a brief
-step-by-step visual tutorial.
+3. [Join us on Discord][Discord] and [Slack][slack and if you have any
+questions, [search and ask on StackOverflow](http://stackoverflow.com/questions/ask/?tags=aframe),
+and someone will try to get to you!
 
-4. [Join us on Slack][slack] or [Discord] and if
-you have any questions, [search and ask on
-StackOverflow](http://stackoverflow.com/questions/ask/?tags=aframe), and
-someone will try to get to you!
-
-5. When you build something, share your project online and we'll try to feature
-it on [*A Week of A-Frame*](https://aframe.io/blog/)!
+4. When you build something, share your project online and we'll try to feature
+it on the [newsletter](https://aframe.io/subscribe/) and the
+[blog](https://aframe.io/blog/)!
 
 And it really helps to have a dig into the fundamentals on JavaScript and
 three.js. Have fun!
