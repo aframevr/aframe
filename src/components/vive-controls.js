@@ -82,6 +82,11 @@ module.exports.Component = registerComponent('vive-controls', {
     this.bindMethods();
   },
 
+  update: function () {
+    var data = this.data;
+    this.controllerIndex = data.hand === 'right' ? 0 : data.hand === 'left' ? 1 : 2;
+  },
+
   play: function () {
     this.checkIfControllerPresent();
     this.addControllersUpdateListener();
@@ -132,8 +137,7 @@ module.exports.Component = registerComponent('vive-controls', {
    */
   checkIfControllerPresent: function () {
     var data = this.data;
-    var controllerIndex = data.hand === 'right' ? 0 : data.hand === 'left' ? 1 : 2;
-    checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX, {index: controllerIndex, hand: data.hand});
+    checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX, {index: this.controllerIndex, hand: data.hand});
   },
 
   injectTrackedControls: function () {
@@ -144,8 +148,7 @@ module.exports.Component = registerComponent('vive-controls', {
     el.setAttribute('tracked-controls', {
       idPrefix: GAMEPAD_ID_PREFIX,
       hand: data.hand,
-      // Hand IDs: 1 = right, 0 = left, 2 = anything else.
-      controller: data.hand === 'right' ? 1 : data.hand === 'left' ? 0 : 2,
+      controller: this.controllerIndex,
       orientationOffset: data.orientationOffset
     });
 
