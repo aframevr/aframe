@@ -70953,7 +70953,6 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     var id = isWebXRAvailable ? webXRId : webVRId;
     this.el.setAttribute('tracked-controls', {
       id: id,
-      controller: 0,
       hand: data.hand,
       orientationOffset: data.orientationOffset
     });
@@ -73865,7 +73864,7 @@ module.exports.Component = registerComponent('tracked-controls-webxr', {
   schema: {
     id: {type: 'string', default: ''},
     hand: {type: 'string', default: ''},
-    index: {type: 'int', default: 0}
+    index: {type: 'int', default: -1}
   },
 
   init: function () {
@@ -74109,7 +74108,7 @@ var registerComponent = _dereq_('../core/component').registerComponent;
 module.exports.Component = registerComponent('tracked-controls', {
   schema: {
     autoHide: {default: true},
-    controller: {default: 0},
+    controller: {default: -1},
     id: {type: 'string', default: ''},
     hand: {type: 'string', default: ''},
     idPrefix: {type: 'string', default: ''},
@@ -80964,7 +80963,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.9.2 (Date 2019-12-13, Commit #6d117138)');
+console.log('A-Frame Version: 0.9.2 (Date 2019-12-13, Commit #d5acb548)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
@@ -84343,7 +84342,7 @@ function findMatchingControllerWebVR (controllers, filterIdExact, filterIdPrefix
   var controller;
   var i;
   var matchingControllerOccurence = 0;
-  var targetControllerMatch = filterControllerIndex || 0;
+  var targetControllerMatch = filterControllerIndex >= 0 ? filterControllerIndex : 0;
 
   for (i = 0; i < controllers.length; i++) {
     controller = controllers[i];
