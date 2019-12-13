@@ -70943,7 +70943,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
       if (isOculusBrowser) { this.displayModel = CONTROLLER_PROPERTIES['oculus-touch-v2']; }
     }
     var modelUrl = this.displayModel[data.hand].modelUrl;
-    this.el.setAttribute('gltf-model', 'url(' + modelUrl + ')');
+    this.el.setAttribute('gltf-model', modelUrl);
   },
 
   injectTrackedControls: function () {
@@ -74233,6 +74233,11 @@ module.exports.Component = registerComponent('vive-controls', {
     this.bindMethods();
   },
 
+  update: function () {
+    var data = this.data;
+    this.controllerIndex = data.hand === 'right' ? 0 : data.hand === 'left' ? 1 : 2;
+  },
+
   play: function () {
     this.checkIfControllerPresent();
     this.addControllersUpdateListener();
@@ -74283,8 +74288,7 @@ module.exports.Component = registerComponent('vive-controls', {
    */
   checkIfControllerPresent: function () {
     var data = this.data;
-    var controllerIndex = data.hand === 'right' ? 0 : data.hand === 'left' ? 1 : 2;
-    checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX, {index: controllerIndex, hand: data.hand});
+    checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX, {index: this.controllerIndex, hand: data.hand});
   },
 
   injectTrackedControls: function () {
@@ -74295,8 +74299,7 @@ module.exports.Component = registerComponent('vive-controls', {
     el.setAttribute('tracked-controls', {
       idPrefix: GAMEPAD_ID_PREFIX,
       hand: data.hand,
-      // Hand IDs: 1 = right, 0 = left, 2 = anything else.
-      controller: data.hand === 'right' ? 1 : data.hand === 'left' ? 0 : 2,
+      controller: this.controllerIndex,
       orientationOffset: data.orientationOffset
     });
 
@@ -80961,7 +80964,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.9.2 (Date 2019-12-13, Commit #3100c2c4)');
+console.log('A-Frame Version: 0.9.2 (Date 2019-12-13, Commit #6d117138)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
