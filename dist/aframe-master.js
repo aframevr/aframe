@@ -68519,6 +68519,8 @@ module.exports.Component = registerComponent('hand-controls', {
     this.onBorYTouchEnd = function () { self.handleButton('BorY', 'touchend'); };
     this.onSurfaceTouchStart = function () { self.handleButton('surface', 'touchstart'); };
     this.onSurfaceTouchEnd = function () { self.handleButton('surface', 'touchend'); };
+    this.onControllerConnected = this.onControllerConnected.bind(this);
+    this.onControllerDisconnected = this.onControllerDisconnected.bind(this);
 
     el.addEventListener('controllerconnected', this.onControllerConnected);
     el.addEventListener('controllerdisconnected', this.onControllerDisconnected);
@@ -68541,6 +68543,14 @@ module.exports.Component = registerComponent('hand-controls', {
     if (!mesh || !mesh.mixer) { return; }
 
     mesh.mixer.update(delta / 1000);
+  },
+
+  onControllerConnected: function () {
+    this.el.object3D.visible = true;
+  },
+
+  onControllerDisconnected: function () {
+    this.el.object3D.visible = false;
   },
 
   addEventListeners: function () {
@@ -68829,9 +68839,12 @@ function getGestureEventName (gesture, active) {
 }
 
 function isViveController (trackedControls) {
-  var controllerId = trackedControls && trackedControls.controller &&
-                     trackedControls.controller.id;
-  return controllerId && controllerId.indexOf('OpenVR ') === 0;
+  var controller = trackedControls && trackedControls.controller;
+  var isVive = controller && (controller.id && controller.id.indexOf('OpenVR ') === 0 ||
+    (controller.profiles &&
+     controller.profiles[0] &&
+     controller.profiles[0] === 'htc-vive-controller-mv'));
+  return isVive;
 }
 
 },{"../core/component":125}],81:[function(_dereq_,module,exports){
@@ -73832,7 +73845,8 @@ var EVENTS = {
 module.exports.Component = registerComponent('tracked-controls-webxr', {
   schema: {
     id: {type: 'string', default: ''},
-    hand: {type: 'string', default: ''}
+    hand: {type: 'string', default: ''},
+    index: {type: 'int', default: 0}
   },
 
   init: function () {
@@ -73903,7 +73917,8 @@ module.exports.Component = registerComponent('tracked-controls-webxr', {
     this.controller = controllerUtils.findMatchingControllerWebXR(
       this.system.controllers,
       this.data.id,
-      this.data.hand
+      this.data.hand,
+      this.data.index
     );
     // Legacy handle to the controller for old components.
     this.el.components['tracked-controls'].controller = this.controller;
@@ -74089,7 +74104,11 @@ module.exports.Component = registerComponent('tracked-controls', {
     var data = this.data;
     var el = this.el;
     if (el.sceneEl.hasWebXR) {
-      el.setAttribute('tracked-controls-webxr', data);
+      el.setAttribute('tracked-controls-webxr', {
+        id: data.id,
+        hand: data.hand,
+        index: data.controller
+      });
     } else {
       el.setAttribute('tracked-controls-webvr', data);
     }
@@ -74124,7 +74143,7 @@ var VIVE_CONTROLLER_MODEL_OBJ_MTL = 'https://cdn.aframe.io/controllers/vive/vr_c
 
 var isWebXRAvailable = _dereq_('../utils/').device.isWebXRAvailable;
 
-var GAMEPAD_ID_WEBXR = 'htc-vive';
+var GAMEPAD_ID_WEBXR = 'htc-vive-controller-mv';
 var GAMEPAD_ID_WEBVR = 'OpenVR ';
 
 // Prefix for Gen1 and Gen2 Oculus Touch Controllers.
@@ -74246,7 +74265,7 @@ module.exports.Component = registerComponent('vive-controls', {
   checkIfControllerPresent: function () {
     var data = this.data;
     var controllerIndex = data.hand === 'right' ? 0 : data.hand === 'left' ? 1 : 2;
-    checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX, {index: controllerIndex});
+    checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX, {index: controllerIndex, hand: data.hand});
   },
 
   injectTrackedControls: function () {
@@ -74256,6 +74275,7 @@ module.exports.Component = registerComponent('vive-controls', {
     // If we have an OpenVR Gamepad, use the fixed mapping.
     el.setAttribute('tracked-controls', {
       idPrefix: GAMEPAD_ID_PREFIX,
+      hand: data.hand,
       // Hand IDs: 1 = right, 0 = left, 2 = anything else.
       controller: data.hand === 'right' ? 1 : data.hand === 'left' ? 0 : 2,
       orientationOffset: data.orientationOffset
@@ -80921,7 +80941,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.9.2 (Date 2019-12-12, Commit #038eb3f8)');
+console.log('A-Frame Version: 0.9.2 (Date 2019-12-13, Commit #d29d4125)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
@@ -84266,7 +84286,7 @@ function isControllerPresentWebXR (component, id, queryObject) {
   controllers = trackedControlsSystem.controllers;
   if (!controllers || !controllers.length) { return false; }
 
-  return findMatchingControllerWebXR(controllers, id, queryObject.hand);
+  return findMatchingControllerWebXR(controllers, id, queryObject.hand, queryObject.index);
 }
 
 module.exports.isControllerPresentWebVR = isControllerPresentWebVR;
@@ -84331,7 +84351,7 @@ function findMatchingControllerWebVR (controllers, filterIdExact, filterIdPrefix
   return undefined;
 }
 
-function findMatchingControllerWebXR (controllers, idPrefix, handedness) {
+function findMatchingControllerWebXR (controllers, idPrefix, handedness, index) {
   var i;
   var j;
   var controller;
@@ -84347,8 +84367,9 @@ function findMatchingControllerWebXR (controllers, idPrefix, handedness) {
     }
     if (!controllerMatch) { continue; }
     controllerHandedness = controller.handedness;
-    if (!handedness || (controllerHandedness === '' && handedness === 'right') ||
-        controller.handedness === handedness) {
+    if ((controller.handedness === handedness) ||
+        (i === index) ||
+        (controllerHandedness === '' && handedness === 'right')) {
       return controllers[i];
     }
   }
