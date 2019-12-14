@@ -13,7 +13,7 @@
     <script src="https://unpkg.com/aframe-event-set-component@4.0.1/dist/aframe-event-set-component.min.js"></script>
   </head>
   <body>
-    <a-scene cursor="rayOrigin: mouse" fog="color: #bc483e; near: 0; far: 65;">
+    <a-scene cursor="rayOrigin: mouse" raycaster="objects: [cube]" fog="color: #bc483e; near: 0; far: 65;">
       <a-assets>
         <a-mixin id="cube"
                  event-set__grab="material.color: #FFEF4F"
