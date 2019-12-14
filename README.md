@@ -95,15 +95,14 @@ mountains, speech recognition, or teleportation!
 ### Example
 
 Build VR scenes in the browser with just a few lines of HTML! To start playing
-and publishing now, remix the starter example on 
-:
+and publishing now, remix the starter example on:
 
 [![Remix](https://cloud.githubusercontent.com/assets/674727/24572421/688f7fc0-162d-11e7-8a35-b02bc050c043.jpg)](https://glitch.com/~aframe) [![Fork](https://user-images.githubusercontent.com/39342/52831020-d42dcb80-3087-11e9-833f-2d6191c69eb9.png)](https://repl.it/@dmarcos/aframe)
 
 ```html
 <html>
   <head>
-    <script src="https://aframe.io/releases/0.9.2/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/1.0.0/aframe.min.js"></script>
   </head>
   <body>
     <a-scene>
@@ -118,7 +117,7 @@ and publishing now, remix the starter example on
 ```
 
 With A-Frame's [entity-component
-architecture](https://aframe.io/docs/0.9.2/introduction/entity-component-system.html), we can drop in community
+architecture](https://aframe.io/docs/1.0.0/introduction/entity-component-system.html), we can drop in community
 components from the ecosystem (e.g., ocean, physics) and plug them into our
 objects straight from HTML:
 
@@ -127,7 +126,7 @@ objects straight from HTML:
 ```html
 <html>
   <head>
-    <script src="https://aframe.io/releases/0.9.2/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/1.0.0/aframe.min.js"></script>
     <script src="https://unpkg.com/aframe-particle-system-component@1.0.x/dist/aframe-particle-system-component.min.js"></script>
     <script src="https://unpkg.com/aframe-extras.ocean@%5E3.5.x/dist/aframe-extras.ocean.min.js"></script>
     <script src="https://unpkg.com/aframe-gradient-sky@1.0.4/dist/gradientsky.min.js"></script>
@@ -158,11 +157,11 @@ objects straight from HTML:
 
 ### Builds
 
-To use the latest stable build of A-Frame, include [`aframe.min.js`](https://aframe.io/releases/0.9.2/aframe.min.js):
+To use the latest stable build of A-Frame, include [`aframe.min.js`](https://aframe.io/releases/1.0.0/aframe.min.js):
 
 ```js
 <head>
-  <script src="https://aframe.io/releases/0.9.2/aframe.min.js"></script>
+  <script src="https://aframe.io/releases/1.0.0/aframe.min.js"></script>
 </head>
 ```
 
@@ -201,9 +200,10 @@ For questions and support, [ask on StackOverflow](https://stackoverflow.com/ques
 
 ## Stay in Touch
 
-- To hang out with the community, [join the A-Frame Slack](https://aframevr-slack.herokuapp.com).
+- To hang out with the community, [join the A-Frame Slack](https://aframe.io/slack-invite/).
 - [Follow `A Week of A-Frame` on the A-Frame blog](https://aframe.io/blog).
 - [Follow @aframevr on Twitter](https://twitter.com/aframevr).
+- [Subscribe to the Newsletter](https://aframe.io/subscribe/).
 
 And get in touch with the maintainers!
 
