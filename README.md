@@ -102,7 +102,7 @@ and publishing now, remix the starter example on:
 ```html
 <html>
   <head>
-    <script src="https://aframe.io/releases/0.9.2/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/1.0.0/aframe.min.js"></script>
   </head>
   <body>
     <a-scene>
@@ -117,7 +117,7 @@ and publishing now, remix the starter example on:
 ```
 
 With A-Frame's [entity-component
-architecture](https://aframe.io/docs/0.9.2/introduction/entity-component-system.html), we can drop in community
+architecture](https://aframe.io/docs/1.0.0/introduction/entity-component-system.html), we can drop in community
 components from the ecosystem (e.g., ocean, physics) and plug them into our
 objects straight from HTML:
 
@@ -126,7 +126,7 @@ objects straight from HTML:
 ```html
 <html>
   <head>
-    <script src="https://aframe.io/releases/0.9.2/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/1.0.0/aframe.min.js"></script>
     <script src="https://unpkg.com/aframe-particle-system-component@1.0.x/dist/aframe-particle-system-component.min.js"></script>
     <script src="https://unpkg.com/aframe-extras.ocean@%5E3.5.x/dist/aframe-extras.ocean.min.js"></script>
     <script src="https://unpkg.com/aframe-gradient-sky@1.0.4/dist/gradientsky.min.js"></script>
@@ -157,11 +157,11 @@ objects straight from HTML:
 
 ### Builds
 
-To use the latest stable build of A-Frame, include [`aframe.min.js`](https://aframe.io/releases/0.9.2/aframe.min.js):
+To use the latest stable build of A-Frame, include [`aframe.min.js`](https://aframe.io/releases/1.0.0/aframe.min.js):
 
 ```js
 <head>
-  <script src="https://aframe.io/releases/0.9.2/aframe.min.js"></script>
+  <script src="https://aframe.io/releases/1.0.0/aframe.min.js"></script>
 </head>
 ```
 
