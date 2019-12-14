@@ -1,3 +1,50 @@
+## 1.0.0 (Dec 13, 2019)
+
+WebXR final spec support
+
+### Major Changes
+- `WebXR` spec support (@klausw, @Artyom17, @dmarcos)
+- Support `WebXR gamepads` module (#4322) (@dmarcos, @arpu)
+    - HTC Vive (@dmarcos)
+    - Daydream (@arpu)
+    - Oculus Rift (@DigiTec, @dmarcos)
+    - Oculus Rift S (@DigiTec, @dmarcos)
+     - Oculus Go (@arpu)
+     - Oculus Quest (@dmarcos, @Knochi)
+     - Microsoft Mixed Reality (@arpu)
+     - Vive Focus (@IvoJager, @dmarcos)
+- Support  experimental `WebXR AR` mode (#4281) (@klausw)
+- New enter VR and AR icons (#4326) (@klausw, @brendanciccone, @ngokevin, @thedart76 and all members of the community that provided feedback)
+- `Quest` controller support (#4073) (@DigiTec, @dmarcos)
+- Set `72Hz mode` by default on Oculus Browser for Quest (#4232) (@dmarcos)
+- Fallback to WebVR on Oculus Browser until WebXR gamepad module ships (#4342) (@dmarcos)
+- Permission dialog to request access to `DeviceOrientation` events due to iOS 13 new policy (#4303) (@KevinEverywhere, @dmarcos)
+- Update to THREE r111
+
+### Fixes
+- Fix resolution drop on exiting VR mode (#4246) (@tomegz)
+- Don't emit synthetic `vrdisplaypresentchange` event unless there's native WebVR implementation (#4301)  (@dmarcos)
+- Set `xrSession` to undefined after exiting VR mode (#4321) (@klausw, @dmarcos)
+- Emit cursor `mouseup` if `mousedown` if it's only originated on scene (#4249) (@edsilv, @dmarcos)
+- Fix `IE 11` fullscreen mode (#4243) (@AlexandraWins)
+- Bump `animejs` fork to fix flattenArray (#4158) (@ngokevin)
+- Replace undefined check to prevent ReferenceError in `JavaScriptCore` (#4318) (@nuel, @dmarcos)
+- Fix component.events singleton, events being overridden by components of the same type (#4250) (@ngokevin)
+- Honor `embedded mode` on loading screen (#4245) (@dmarcos)
+- Fix incorrect response type inference for glb/gltf files (#4219) (@Ely-S)
+- Fix WebVR deep-linking / navigation (#4199) (@Artyom17)
+- Restore render target to canvas to prevent freezes (@dmarcos)
+- Adjust `three-bmfont-text` to THREE r111 API changes (#4331) (@dmarcos) 
+- Don't consider Firefox Reality and Oculus Browser mobile / phone browsers (#4338) (@dmarcos) 
+- `DracoLoader` Path set for THREE v108 (#4272) (@arpu)
+- Use glTF header to determine a-asset-item response type (#4228) (@Ely-S) 
+- Remove `setTimeout` call in tick if not raycaster.showLine (#4192) (@ngokevin)
+- isMobileVR differentiates Samsung Internet for Gear VR from Samsung Internet for Android (#4188) (@DougReeder)
+- Apply handedness to Oculus Go controller (#4162) (@dmarcos)
+- Fix button mapping for Vive Focus (fix #4344) (@dmarcos, @IvoJager)
+### Deprecations
+- Deprecate `checkHasPositionalTracking` (#4255) (@dirkk0)
+
 ## 0.9.2 (May 6, 2019)
 
 Follow-up fix to 0.9.1 for fixing `vrdisplayactivate` and link traversal flow.
