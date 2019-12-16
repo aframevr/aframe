@@ -30,6 +30,8 @@
   <a href="https://aframe.io/slack-invite/">Slack</a>
   &mdash;
   <a href="https://aframe.io/blog/">Blog</a>
+  &mdash;
+  <a href="https://aframe.io/subscribe/">Newsletter</a>
 </div>
 
 ## Examples
