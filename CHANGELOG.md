@@ -1,6 +1,8 @@
 ## 1.0.0 (Dec 13, 2019)
 
-WebXR final spec support
+WebXR final spec support!
+
+[Subscribe to the newsletter](https://aframe.io/subscribe/) for continuing updates.
 
 ### Major Changes
 - `WebXR` spec support (@klausw, @Artyom17, @dmarcos)
