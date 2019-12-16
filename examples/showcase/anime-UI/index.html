@@ -6,6 +6,23 @@
     <meta name="description" content="Anime UI — A-Frame">
     <script src="../../../dist/aframe-master.js"></script>
     <script src="https://unpkg.com/aframe-event-set-component@4.2.1/dist/aframe-event-set-component.min.js"></script>
+    <script>
+      AFRAME.registerComponent('hide-in-ar-mode', {
+        // Set this object invisible while in AR mode.
+        // TODO: could this be replaced with bind="visible: !ar-mode"
+        // with https://www.npmjs.com/package/aframe-state-component ?
+        init: function () {
+          this.el.sceneEl.addEventListener('enter-vr', (ev) => {
+            if (this.el.sceneEl.is('ar-mode')) {
+              this.el.setAttribute('visible', false);
+            }
+          });
+          this.el.sceneEl.addEventListener('exit-vr', (ev) => {
+            this.el.setAttribute('visible', true);
+          });
+        }
+      })
+    </script>
   </head>
   <body>
     <a-scene renderer="colorManagement: true;">
@@ -36,7 +53,7 @@
         <a-camera position="0 0 0" near="0.1"></a-camera>
       </a-entity>
 
-      <a-entity position="0 0 -3">
+      <a-entity position="0 0 -3" hide-in-ar-mode>
         <a-gltf-model src="#engine" rotation="90 0 0" scale="18 18 18"></a-gltf-model>
       </a-entity>
 
