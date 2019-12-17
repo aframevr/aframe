@@ -138,6 +138,8 @@ function findMatchingControllerWebVR (controllers, filterIdExact, filterIdPrefix
     // NUM_HANDS matches for each controller number, instead of 1.
     if (filterHand && !controller.hand) {
       targetControllerMatch = NUM_HANDS * filterControllerIndex + ((filterHand === DEFAULT_HANDEDNESS) ? 0 : 1);
+    } else {
+      return controller;
     }
 
     // We are looking for the nth occurence of a matching controller
