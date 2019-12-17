@@ -75556,9 +75556,8 @@ function extractDomain (url) {
 
 /**
  * Infer response-type attribute from src.
- * Default is text(default XMLHttpRequest.responseType)
- * but we use arraybuffer for .gltf and .glb files
- * because of THREE.GLTFLoader specification.
+ * Default is text (default XMLHttpRequest.responseType)
+ * and arraybuffer for .glb files.
  *
  * @param {string} src
  * @returns {string}
@@ -75576,6 +75575,12 @@ function inferResponseType (src) {
 }
 module.exports.inferResponseType = inferResponseType;
 
+/**
+ * Extract filename from URL
+ *
+ * @param {string} url
+ * @returns {string}
+ */
 function getFileNameFromURL (url) {
   var parser = document.createElement('a');
   parser.href = url;
@@ -80964,7 +80969,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 1.0.0 (Date 2019-12-17, Commit #46094e08)');
+console.log('A-Frame Version: 1.0.0 (Date 2019-12-17, Commit #a8b7ddcd)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
