@@ -80963,7 +80963,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 1.0.0 (Date 2019-12-14, Commit #dc7d6174)');
+console.log('A-Frame Version: 1.0.0 (Date 2019-12-17, Commit #45362dad)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
@@ -84363,6 +84363,8 @@ function findMatchingControllerWebVR (controllers, filterIdExact, filterIdPrefix
     // NUM_HANDS matches for each controller number, instead of 1.
     if (filterHand && !controller.hand) {
       targetControllerMatch = NUM_HANDS * filterControllerIndex + ((filterHand === DEFAULT_HANDEDNESS) ? 0 : 1);
+    } else {
+      return controller;
     }
 
     // We are looking for the nth occurence of a matching controller
