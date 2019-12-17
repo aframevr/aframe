@@ -243,9 +243,8 @@ function extractDomain (url) {
 
 /**
  * Infer response-type attribute from src.
- * Default is text(default XMLHttpRequest.responseType)
- * but we use arraybuffer for .gltf and .glb files
- * because of THREE.GLTFLoader specification.
+ * Default is text (default XMLHttpRequest.responseType)
+ * and arraybuffer for .glb files.
  *
  * @param {string} src
  * @returns {string}
@@ -263,6 +262,12 @@ function inferResponseType (src) {
 }
 module.exports.inferResponseType = inferResponseType;
 
+/**
+ * Extract filename from URL
+ *
+ * @param {string} url
+ * @returns {string}
+ */
 function getFileNameFromURL (url) {
   var parser = document.createElement('a');
   parser.href = url;
