@@ -7,8 +7,6 @@ var THREE = require('../lib/three');
 var fileLoader = new THREE.FileLoader();
 var warn = debug('core:a-assets:warn');
 
-var GLTF_HEADER_MAGIC = 'glTF';
-
 /**
  * Asset management system. Handles blocking on asset loading.
  */
@@ -106,19 +104,10 @@ registerElement('a-asset-item', {
       value: function () {
         var self = this;
         var src = this.getAttribute('src');
-        var responseType = this.getAttribute('response-type');
-
-        fileLoader.setResponseType(responseType || 'text');
-
+        fileLoader.setResponseType(
+          this.getAttribute('response-type') || inferResponseType(src));
         fileLoader.load(src, function handleOnLoad (response) {
-          // if the response type is not given, check for the GLTF header
-          // and convert the response to an arraybuffer if it is present.
-          if (!responseType && (response.indexOf(GLTF_HEADER_MAGIC) === 0)) {
-            self.data = getArrayBuffer(response);
-          } else {
-            self.data = response;
-          }
-
+          self.data = response;
           /*
             Workaround for a Chrome bug. If another XHR is sent to the same url before the
             previous one closes, the second request never finishes.
@@ -253,20 +242,32 @@ function extractDomain (url) {
 }
 
 /**
- * getArrayBuffer accepts a string and returns it as an array buffer.
- * @param {string} string
- * @returns {arraybuffer}
+ * Infer response-type attribute from src.
+ * Default is text(default XMLHttpRequest.responseType)
+ * but we use arraybuffer for .gltf and .glb files
+ * because of THREE.GLTFLoader specification.
+ *
+ * @param {string} src
+ * @returns {string}
  */
-function getArrayBuffer (string) {
-  // utf-16 has 2 bytes for each char
-  var buffer = new ArrayBuffer(string.length * 2);
-  var view = new Uint16Array(buffer);
-
-  for (var i = 0, len = string.length; i < len; i++) {
-    view[i] = string.charCodeAt(i);
+function inferResponseType (src) {
+  var fileName = getFileNameFromURL(src);
+  var dotLastIndex = fileName.lastIndexOf('.');
+  if (dotLastIndex >= 0) {
+    var extension = fileName.slice(dotLastIndex, src.search(/\?|#|$/));
+    if (extension === '.glb') {
+      return 'arraybuffer';
+    }
   }
-
-  return buffer;
+  return 'text';
 }
+module.exports.inferResponseType = inferResponseType;
 
-module.exports.getArrayBuffer = getArrayBuffer;
+function getFileNameFromURL (url) {
+  var parser = document.createElement('a');
+  parser.href = url;
+  var query = parser.search.replace(/^\?/, '');
+  var filePath = url.replace(query, '').replace('?', '');
+  return filePath.substring(filePath.lastIndexOf('/') + 1);
+}
+module.exports.getFileNameFromURL = getFileNameFromURL;
