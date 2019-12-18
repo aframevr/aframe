@@ -201,6 +201,10 @@ a-scene audio {
   background-color: #ef2d5e;
 }
 
+.a-enter-vr-button.resethover {
+  background-color: rgba(0, 0, 0, 0.35);
+}
+
 [data-a-enter-vr-no-webvr] .a-enter-vr-button {
   border-color: #666;
   opacity: 0.65;

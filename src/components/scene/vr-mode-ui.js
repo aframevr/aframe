@@ -183,6 +183,7 @@ function createEnterVRButton (onClick) {
     'Enter VR mode with a headset or fullscreen mode on a desktop. ' +
     'Visit https://webvr.rocks or https://webvr.info for more information.');
   vrButton.setAttribute(constants.AFRAME_INJECTED, '');
+  if (utils.device.isIOS()) { applyStickyHoverFixiOS(vrButton); }
   // Insert elements.
   wrapper.appendChild(vrButton);
   vrButton.addEventListener('click', function (evt) {
@@ -214,6 +215,7 @@ function createEnterARButton (onClick) {
     'Enter AR mode with a headset or handheld device. ' +
     'Visit https://webvr.rocks or https://webvr.info for more information.');
   arButton.setAttribute(constants.AFRAME_INJECTED, '');
+  if (utils.device.isIOS()) { applyStickyHoverFixiOS(arButton); }
   // Insert elements.
   wrapper.appendChild(arButton);
   arButton.addEventListener('click', function (evt) {
@@ -245,4 +247,20 @@ function createOrientationModal (onClick) {
   modal.appendChild(exit);
 
   return modal;
+}
+
+/**
+ * CSS hover state is sticky in iOS (as in 12/18/2019)
+ * They are not removed on mouseleave and this function applies a class
+ * to resets the style.
+ *
+ * @param {function} buttonEl - Button element
+ */
+function applyStickyHoverFixiOS (buttonEl) {
+  buttonEl.addEventListener('touchstart', function () {
+    buttonEl.classList.remove('resethover');
+  });
+  buttonEl.addEventListener('touchend', function () {
+    buttonEl.classList.add('resethover');
+  });
 }
