@@ -185,6 +185,7 @@ a-scene audio {
   -webkit-transition: background-color .05s ease;
   z-index: 9999;
   border-radius: 8px;
+  touch-action: manipulation; /* Prevent iOS double tap zoom on the button */
 }
 
 .a-enter-ar-button {
