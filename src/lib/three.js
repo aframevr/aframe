@@ -18,6 +18,8 @@ if (THREE.Cache) {
   THREE.Cache.enabled = true;
 }
 
+require('super-three/examples/js/controls/DeviceOrientationControls'); // THREE.DeviceOrientationControls
+
 // TODO: Eventually include these only if they are needed by a component.
 require('super-three/examples/js/loaders/DRACOLoader');  // THREE.DRACOLoader
 require('super-three/examples/js/loaders/GLTFLoader');  // THREE.GLTFLoader
