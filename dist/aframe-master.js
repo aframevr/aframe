@@ -71601,7 +71601,7 @@ module.exports.Component = register('debug', {
 });
 
 },{"../../core/component":125}],97:[function(_dereq_,module,exports){
-/* global DeviceOrientationEvent  */
+/* global DeviceOrientationEvent, location  */
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var utils = _dereq_('../../utils/');
 var bind = utils.bind;
@@ -71628,6 +71628,12 @@ module.exports.Component = registerComponent('device-orientation-permission-ui',
     var self = this;
 
     if (!this.data.enabled) { return; }
+
+    if (location.hostname !== 'localhost' &&
+        location.hostname !== '127.0.0.1' &&
+        location.protocol === 'http:') {
+      this.showHTTPAlert();
+    }
 
     // Show alert on iPad if Safari is on desktop mode.
     if (utils.device.isMobileDeviceRequestingDesktopSite()) { this.showMobileDesktopModeAlert(); }
@@ -71668,6 +71674,14 @@ module.exports.Component = registerComponent('device-orientation-permission-ui',
       'Request the mobile version of this site to enjoy it in immersive mode.',
       function () { self.el.removeChild(safariIpadAlertEl); });
     this.el.appendChild(safariIpadAlertEl);
+  },
+
+  showHTTPAlert: function () {
+    var self = this;
+    var httpAlertEl = createAlertDialog(
+      'Access this site over HTTPS to enter VR mode and grant access to the device sensors.',
+      function () { self.el.removeChild(httpAlertEl); });
+    this.el.appendChild(httpAlertEl);
   },
 
   /**
@@ -81014,7 +81028,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 1.0.0 (Date 2019-12-19, Commit #247d02fa)');
+console.log('A-Frame Version: 1.0.0 (Date 2019-12-19, Commit #110e0e12)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
