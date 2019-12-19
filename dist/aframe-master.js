@@ -69740,11 +69740,11 @@ registerShader('portal', {
 /* eslint-enable */
 
 },{"../core/component":125,"../core/shader":135,"../lib/three":173}],86:[function(_dereq_,module,exports){
+/* global DeviceOrientationEvent  */
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 var utils = _dereq_('../utils/');
 var bind = utils.bind;
-var PolyfillControls = _dereq_('../utils').device.PolyfillControls;
 
 // To avoid recalculation at every mouse movement tick
 var PI_2 = Math.PI / 2;
@@ -69772,8 +69772,7 @@ module.exports.Component = registerComponent('look-controls', {
     // To save / restore camera pose
     this.savedRotation = new THREE.Vector3();
     this.savedPosition = new THREE.Vector3();
-    this.polyfillObject = new THREE.Object3D();
-    this.polyfillControls = new PolyfillControls(this.polyfillObject);
+    this.magicWindowObject = new THREE.Object3D();
     this.rotation = {};
     this.deltaRotation = {};
     this.savedPose = null;
@@ -69783,6 +69782,8 @@ module.exports.Component = registerComponent('look-controls', {
     this.el.object3D.matrixAutoUpdate = false;
     this.el.object3D.updateMatrix();
 
+    this.setupMagicWindowControls();
+
     this.savedPose = {
       position: new THREE.Vector3(),
       rotation: new THREE.Euler()
@@ -69790,6 +69791,24 @@ module.exports.Component = registerComponent('look-controls', {
 
     // Call enter VR handler if the scene has entered VR before the event listeners attached.
     if (this.el.sceneEl.is('vr-mode')) { this.onEnterVR(); }
+  },
+
+  setupMagicWindowControls: function () {
+    var magicWindowControls;
+    // Only on mobile devices and only enabled if DeviceOrientation permission has been granted.
+    if (utils.device.isMobile()) {
+      magicWindowControls = this.magicWindowControls = new THREE.DeviceOrientationControls(this.magicWindowObject);
+      if (typeof DeviceOrientationEvent === 'undefined' && DeviceOrientationEvent.requestPermission) {
+        magicWindowControls.enabled = false;
+        if (this.el.sceneEl.components['device-orientation-permission-ui'].premissionGranted) {
+          magicWindowControls.enabled = true;
+        } else {
+          this.el.scenEl.addEventListener('deviceorientationpermissiongranted', function () {
+            magicWindowControls.enabled = true;
+          });
+        }
+      }
+    }
   },
 
   update: function (oldData) {
@@ -69950,9 +69969,11 @@ module.exports.Component = registerComponent('look-controls', {
 
       // In VR mode, THREE is in charge of updating the camera rotation.
       if (sceneEl.is('vr-mode') && sceneEl.checkHeadsetConnected()) { return; }
-      // Calculate polyfilled HMD quaternion.
-      this.polyfillControls.update();
-      hmdEuler.setFromQuaternion(this.polyfillObject.quaternion, 'YXZ');
+      // Calculate magic window HMD quaternion.
+      if (this.magicWindowControls && this.magicWindowControls.enabled) {
+        this.magicWindowControls.update();
+        hmdEuler.setFromQuaternion(this.magicWindowObject.quaternion, 'YXZ');
+      }
 
       // On mobile, do camera rotation with touch events and sensors.
       object3D.rotation.x = hmdEuler.x + pitchObject.rotation.x;
@@ -70172,7 +70193,7 @@ module.exports.Component = registerComponent('look-controls', {
   }
 });
 
-},{"../core/component":125,"../lib/three":173,"../utils":198,"../utils/":198}],87:[function(_dereq_,module,exports){
+},{"../core/component":125,"../lib/three":173,"../utils/":198}],87:[function(_dereq_,module,exports){
 /* global Promise */
 var utils = _dereq_('../utils/');
 var component = _dereq_('../core/component');
@@ -71608,7 +71629,11 @@ module.exports.Component = registerComponent('device-orientation-permission-ui',
     if (utils.device.isMobileDeviceRequestingDesktopSite()) { this.showMobileDesktopModeAlert(); }
 
     // Browser doesn't support or doesn't require permission to DeviceOrientationEvent API.
-    if (typeof DeviceOrientationEvent === 'undefined' || !DeviceOrientationEvent.requestPermission) { return; }
+    if (typeof DeviceOrientationEvent === 'undefined' || !DeviceOrientationEvent.requestPermission) {
+      this.permissionGranted = true;
+      return;
+    }
+
     this.onDeviceMotionDialogAllowClicked = bind(this.onDeviceMotionDialogAllowClicked, this);
     this.onDeviceMotionDialogDenyClicked = bind(this.onDeviceMotionDialogDenyClicked, this);
     // Show dialog only if permission has not yet been granted.
@@ -71620,6 +71645,7 @@ module.exports.Component = registerComponent('device-orientation-permission-ui',
       self.el.appendChild(self.devicePermissionDialogEl);
     }).then(function () {
       self.el.emit('deviceorientationpermissiongranted');
+      self.permissionGranted = true;
     });
   },
 
@@ -71649,6 +71675,7 @@ module.exports.Component = registerComponent('device-orientation-permission-ui',
     DeviceOrientationEvent.requestPermission().then(function (response) {
       if (response === 'granted') {
         self.el.emit('deviceorientationpermissiongranted');
+        self.permissionGranted = true;
       } else {
         self.el.emit('deviceorientationpermissionrejected');
       }
@@ -72470,7 +72497,7 @@ function createStats (scene) {
   });
 }
 
-},{"../../../vendor/rStats":208,"../../../vendor/rStats.extras":207,"../../core/component":125,"../../lib/rStatsAframe":172,"../../utils":198}],105:[function(_dereq_,module,exports){
+},{"../../../vendor/rStats":209,"../../../vendor/rStats.extras":208,"../../core/component":125,"../../lib/rStatsAframe":172,"../../utils":198}],105:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var constants = _dereq_('../../constants/');
 var utils = _dereq_('../../utils/');
@@ -79395,7 +79422,7 @@ module.exports = function initWakelock (scene) {
   scene.addEventListener('exit-vr', function () { wakelock.release(); });
 };
 
-},{"../../../vendor/wakelock/wakelock":211}],134:[function(_dereq_,module,exports){
+},{"../../../vendor/wakelock/wakelock":212}],134:[function(_dereq_,module,exports){
 var utils = _dereq_('../utils/');
 var PropertyTypes = _dereq_('./propertyTypes');
 
@@ -80987,7 +81014,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 1.0.0 (Date 2019-12-18, Commit #c4b57368)');
+console.log('A-Frame Version: 1.0.0 (Date 2019-12-19, Commit #5a966629)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
@@ -81020,7 +81047,7 @@ module.exports = window.AFRAME = {
   version: pkg.version
 };
 
-},{"../package":72,"../vendor/starts-with-polyfill":209,"./components/index":81,"./core/a-assets":119,"./core/a-cubemap":120,"./core/a-entity":121,"./core/a-mixin":122,"./core/a-node":123,"./core/a-register-element":124,"./core/component":125,"./core/geometry":126,"./core/scene/a-scene":128,"./core/scene/scenes":132,"./core/schema":134,"./core/shader":135,"./core/system":136,"./extras/components/":137,"./extras/primitives/":140,"./extras/primitives/getMeshMixin":139,"./extras/primitives/primitives":141,"./geometries/index":162,"./lib/three":173,"./shaders/index":175,"./style/aframe.css":180,"./style/rStats.css":181,"./systems/index":185,"./utils/":198,"./utils/isIOSOlderThan10":200,"custom-event-polyfill":7,"present":48,"promise-polyfill":50,"super-animejs":56,"webvr-polyfill":67}],172:[function(_dereq_,module,exports){
+},{"../package":72,"../vendor/starts-with-polyfill":210,"./components/index":81,"./core/a-assets":119,"./core/a-cubemap":120,"./core/a-entity":121,"./core/a-mixin":122,"./core/a-node":123,"./core/a-register-element":124,"./core/component":125,"./core/geometry":126,"./core/scene/a-scene":128,"./core/scene/scenes":132,"./core/schema":134,"./core/shader":135,"./core/system":136,"./extras/components/":137,"./extras/primitives/":140,"./extras/primitives/getMeshMixin":139,"./extras/primitives/primitives":141,"./geometries/index":162,"./lib/three":173,"./shaders/index":175,"./style/aframe.css":180,"./style/rStats.css":181,"./systems/index":185,"./utils/":198,"./utils/isIOSOlderThan10":200,"custom-event-polyfill":7,"present":48,"promise-polyfill":50,"super-animejs":56,"webvr-polyfill":67}],172:[function(_dereq_,module,exports){
 window.aframeStats = function (scene) {
   var _rS = null;
   var _scene = scene;
@@ -81100,6 +81127,7 @@ if (THREE.Cache) {
 }
 
 // TODO: Eventually include these only if they are needed by a component.
+_dereq_('../../vendor/DeviceOrientationControls'); // THREE.DeviceOrientationControls
 _dereq_('super-three/examples/js/loaders/DRACOLoader');  // THREE.DRACOLoader
 _dereq_('super-three/examples/js/loaders/GLTFLoader');  // THREE.GLTFLoader
 _dereq_('super-three/examples/js/loaders/OBJLoader');  // THREE.OBJLoader
@@ -81114,7 +81142,7 @@ module.exports = THREE;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"super-three":57,"super-three/examples/js/loaders/DRACOLoader":58,"super-three/examples/js/loaders/GLTFLoader":59,"super-three/examples/js/loaders/MTLLoader":60,"super-three/examples/js/loaders/OBJLoader":61}],174:[function(_dereq_,module,exports){
+},{"../../vendor/DeviceOrientationControls":207,"super-three":57,"super-three/examples/js/loaders/DRACOLoader":58,"super-three/examples/js/loaders/GLTFLoader":59,"super-three/examples/js/loaders/MTLLoader":60,"super-three/examples/js/loaders/OBJLoader":61}],174:[function(_dereq_,module,exports){
 var registerShader = _dereq_('../core/shader').registerShader;
 var THREE = _dereq_('../lib/three');
 var utils = _dereq_('../utils/');
@@ -83196,29 +83224,6 @@ module.exports.isBrowserEnvironment = !!(!process || process.browser);
  */
 module.exports.isNodeEnvironment = !module.exports.isBrowserEnvironment;
 
-/**
- * Update an Object3D pose if a polyfilled vrDisplay is present.
- */
-module.exports.PolyfillControls = function PolyfillControls (object) {
-  var frameData;
-  var vrDisplay = window.webvrpolyfill && window.webvrpolyfill.getPolyfillDisplays()[0];
-  if (window.VRFrameData) { frameData = new window.VRFrameData(); }
-  this.update = function () {
-    var pose;
-    if (!vrDisplay) { return; }
-    vrDisplay.getFrameData(frameData);
-    pose = frameData.pose;
-    if (pose.orientation !== null) {
-      object.quaternion.fromArray(pose.orientation);
-    }
-    if (pose.position !== null) {
-      object.position.fromArray(pose.position);
-    } else {
-      object.position.set(0, 0, 0);
-    }
-  };
-};
-
 }).call(this,_dereq_('_process'))
 
 },{"_process":49,"debug":8}],196:[function(_dereq_,module,exports){
@@ -84479,6 +84484,117 @@ module.exports.onButtonEvent = function (id, evtName, component, hand) {
 };
 
 },{"../constants":117}],207:[function(_dereq_,module,exports){
+/**
+ * @author richt / http://richt.me
+ * @author WestLangley / http://github.com/WestLangley
+ *
+ * W3C Device Orientation control (http://w3c.github.io/deviceorientation/spec-source-orientation.html)
+ */
+
+THREE.DeviceOrientationControls = function ( object ) {
+
+  var scope = this;
+
+  this.object = object;
+  this.object.rotation.reorder( 'YXZ' );
+
+  this.enabled = true;
+
+  this.deviceOrientation = {};
+  this.screenOrientation = 0;
+
+  this.alphaOffset = 0; // radians
+
+  var onDeviceOrientationChangeEvent = function ( event ) {
+
+    scope.deviceOrientation = event;
+
+  };
+
+  var onScreenOrientationChangeEvent = function () {
+
+    scope.screenOrientation = window.orientation || 0;
+
+  };
+
+  // The angles alpha, beta and gamma form a set of intrinsic Tait-Bryan angles of type Z-X'-Y''
+
+  var setObjectQuaternion = function () {
+
+    var zee = new THREE.Vector3( 0, 0, 1 );
+
+    var euler = new THREE.Euler();
+
+    var q0 = new THREE.Quaternion();
+
+    var q1 = new THREE.Quaternion( - Math.sqrt( 0.5 ), 0, 0, Math.sqrt( 0.5 ) ); // - PI/2 around the x-axis
+
+    return function ( quaternion, alpha, beta, gamma, orient ) {
+
+      euler.set( beta, alpha, - gamma, 'YXZ' ); // 'ZXY' for the device, but 'YXZ' for us
+
+      quaternion.setFromEuler( euler ); // orient the device
+
+      quaternion.multiply( q1 ); // camera looks out the back of the device, not the top
+
+      quaternion.multiply( q0.setFromAxisAngle( zee, - orient ) ); // adjust for screen orientation
+
+    };
+
+  }();
+
+  this.connect = function () {
+ 
+    window.addEventListener( 'orientationchange', onScreenOrientationChangeEvent, false );
+    window.addEventListener( 'deviceorientation', onDeviceOrientationChangeEvent, false );
+
+    scope.enabled = true;
+
+  };
+
+  this.disconnect = function () {
+
+    window.removeEventListener( 'orientationchange', onScreenOrientationChangeEvent, false );
+    window.removeEventListener( 'deviceorientation', onDeviceOrientationChangeEvent, false );
+
+    scope.enabled = false;
+
+  };
+
+  this.update = function () {
+
+    if ( scope.enabled === false ) return;
+
+    var device = scope.deviceOrientation;
+
+    if ( device ) {
+
+      var alpha = device.alpha ? THREE.Math.degToRad( device.alpha ) + scope.alphaOffset : 0; // Z
+
+      var beta = device.beta ? THREE.Math.degToRad( device.beta ) : 0; // X'
+
+      var gamma = device.gamma ? THREE.Math.degToRad( device.gamma ) : 0; // Y''
+
+      var orient = scope.screenOrientation ? THREE.Math.degToRad( scope.screenOrientation ) : 0; // O
+
+      setObjectQuaternion( scope.object.quaternion, alpha, beta, gamma, orient );
+
+    }
+
+
+  };
+
+  this.dispose = function () {
+
+    scope.disconnect();
+
+  };
+
+  this.connect();
+
+};
+
+},{}],208:[function(_dereq_,module,exports){
 window.glStats = function () {
 
     var _rS = null;
@@ -84739,7 +84855,7 @@ if (typeof module === 'object') {
   };
 }
 
-},{}],208:[function(_dereq_,module,exports){
+},{}],209:[function(_dereq_,module,exports){
 // performance.now() polyfill from https://gist.github.com/paulirish/5438650
 'use strict';
 
@@ -85194,7 +85310,7 @@ if (typeof module === 'object') {
   module.exports = window.rStats;
 }
 
-},{}],209:[function(_dereq_,module,exports){
+},{}],210:[function(_dereq_,module,exports){
 // https://stackoverflow.com/a/36213464
 if (!String.prototype.startsWith) {
     String.prototype.startsWith = function(searchString, position){
@@ -85203,7 +85319,7 @@ if (!String.prototype.startsWith) {
   };
 }
 
-},{}],210:[function(_dereq_,module,exports){
+},{}],211:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -85265,7 +85381,7 @@ Util.isLandscapeMode = function() {
 
 module.exports = Util;
 
-},{}],211:[function(_dereq_,module,exports){
+},{}],212:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -85341,6 +85457,6 @@ function getWakeLock() {
 
 module.exports = getWakeLock();
 
-},{"./util.js":210}]},{},[171])(171)
+},{"./util.js":211}]},{},[171])(171)
 });
 //# sourceMappingURL=aframe-master.js.map
