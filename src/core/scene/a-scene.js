@@ -275,9 +275,7 @@ module.exports.AScene = registerElement('a-scene', {
 
         // Has VR.
         if (this.checkHeadsetConnected() || this.isMobile) {
-          vrDisplay = utils.device.getVRDisplay();
           vrManager.enabled = true;
-          vrManager.setDevice(vrDisplay);
 
           if (this.hasWebXR) {
             // XR API.

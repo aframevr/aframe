@@ -8,7 +8,7 @@ var supportsARSession = false;
  * Oculus Browser 7 doesn't support the WebXR gamepads module.
  * We fallback to WebVR API and will hotfix when implementation is complete.
  */
-var isWebXRAvailable = module.exports.isWebXRAvailable = !window.debug && !isOculusBrowser() && navigator.xr !== undefined;
+var isWebXRAvailable = module.exports.isWebXRAvailable = !window.debug && navigator.xr !== undefined;
 
 // Catch vrdisplayactivate early to ensure we can enter VR mode after the scene loads.
 window.addEventListener('vrdisplayactivate', function (evt) {

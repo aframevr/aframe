@@ -1,13 +1,11 @@
 // Polyfill `Promise`.
 window.Promise = window.Promise || require('promise-polyfill');
 
-var isOculusBrowser = /(OculusBrowser)/i.test(window.navigator.userAgent);
-
 // WebVR polyfill
 // Check before the polyfill runs.
 window.hasNativeWebVRImplementation = !!window.navigator.getVRDisplays ||
                                       !!window.navigator.getVRDevices;
-window.hasNativeWebXRImplementation = !isOculusBrowser && navigator.xr !== undefined;
+window.hasNativeWebXRImplementation = navigator.xr !== undefined;
 
 // If native WebXR or WebVR are defined WebVRPolyfill does not initialize.
 if (!window.hasNativeWebXRImplementation && !window.hasNativeWebVRImplementation) {
