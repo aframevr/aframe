@@ -385,14 +385,14 @@ a-scene audio {
 }
 
 .a-dialog-allow-button {
-  background-color: #8ce3ba;
+  background-color: #00ceff;
 }
 
 .a-dialog-deny-button {
-  background-color: #ff4b8b;
+  background-color: #ff005b;
 }
 
 .a-dialog-ok-button {
-  background-color: #8ce3ba;
+  background-color: #00ceff;
   width: 100%;
 }
