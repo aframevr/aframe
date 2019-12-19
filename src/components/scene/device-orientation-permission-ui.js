@@ -1,4 +1,4 @@
-/* global DeviceOrientationEvent  */
+/* global DeviceOrientationEvent, location  */
 var registerComponent = require('../../core/component').registerComponent;
 var utils = require('../../utils/');
 var bind = utils.bind;
@@ -25,6 +25,12 @@ module.exports.Component = registerComponent('device-orientation-permission-ui',
     var self = this;
 
     if (!this.data.enabled) { return; }
+
+    if (location.hostname !== 'localhost' &&
+        location.hostname !== '127.0.0.1' &&
+        location.protocol === 'http:') {
+      this.showHTTPAlert();
+    }
 
     // Show alert on iPad if Safari is on desktop mode.
     if (utils.device.isMobileDeviceRequestingDesktopSite()) { this.showMobileDesktopModeAlert(); }
@@ -65,6 +71,14 @@ module.exports.Component = registerComponent('device-orientation-permission-ui',
       'Request the mobile version of this site to enjoy it in immersive mode.',
       function () { self.el.removeChild(safariIpadAlertEl); });
     this.el.appendChild(safariIpadAlertEl);
+  },
+
+  showHTTPAlert: function () {
+    var self = this;
+    var httpAlertEl = createAlertDialog(
+      'Access this site over HTTPS to enter VR mode and grant access to the device sensors.',
+      function () { self.el.removeChild(httpAlertEl); });
+    this.el.appendChild(httpAlertEl);
   },
 
   /**
