@@ -69802,12 +69802,12 @@ module.exports.Component = registerComponent('look-controls', {
     // Only on mobile devices and only enabled if DeviceOrientation permission has been granted.
     if (utils.device.isMobile()) {
       magicWindowControls = this.magicWindowControls = new THREE.DeviceOrientationControls(this.magicWindowObject);
-      if (typeof DeviceOrientationEvent === 'undefined' && DeviceOrientationEvent.requestPermission) {
+      if (typeof DeviceOrientationEvent !== 'undefined' && DeviceOrientationEvent.requestPermission) {
         magicWindowControls.enabled = false;
-        if (this.el.sceneEl.components['device-orientation-permission-ui'].premissionGranted) {
+        if (this.el.sceneEl.components['device-orientation-permission-ui'].permissionGranted) {
           magicWindowControls.enabled = true;
         } else {
-          this.el.scenEl.addEventListener('deviceorientationpermissiongranted', function () {
+          this.el.sceneEl.addEventListener('deviceorientationpermissiongranted', function () {
             magicWindowControls.enabled = true;
           });
         }
@@ -81014,7 +81014,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 1.0.0 (Date 2019-12-19, Commit #377e1de1)');
+console.log('A-Frame Version: 1.0.0 (Date 2019-12-19, Commit #247d02fa)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
