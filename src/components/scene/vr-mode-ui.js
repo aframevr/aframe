@@ -183,7 +183,7 @@ function createEnterVRButton (onClick) {
     'Enter VR mode with a headset or fullscreen mode on a desktop. ' +
     'Visit https://webvr.rocks or https://webvr.info for more information.');
   vrButton.setAttribute(constants.AFRAME_INJECTED, '');
-  if (utils.device.isIOS()) { applyStickyHoverFixiOS(vrButton); }
+  if (utils.device.isMobile()) { applyStickyHoverFix(vrButton); }
   // Insert elements.
   wrapper.appendChild(vrButton);
   vrButton.addEventListener('click', function (evt) {
@@ -215,7 +215,7 @@ function createEnterARButton (onClick) {
     'Enter AR mode with a headset or handheld device. ' +
     'Visit https://webvr.rocks or https://webvr.info for more information.');
   arButton.setAttribute(constants.AFRAME_INJECTED, '');
-  if (utils.device.isIOS()) { applyStickyHoverFixiOS(arButton); }
+  if (utils.device.isMobile()) { applyStickyHoverFix(arButton); }
   // Insert elements.
   wrapper.appendChild(arButton);
   arButton.addEventListener('click', function (evt) {
@@ -256,7 +256,7 @@ function createOrientationModal (onClick) {
  *
  * @param {function} buttonEl - Button element
  */
-function applyStickyHoverFixiOS (buttonEl) {
+function applyStickyHoverFix (buttonEl) {
   buttonEl.addEventListener('touchstart', function () {
     buttonEl.classList.remove('resethover');
   });
