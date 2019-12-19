@@ -268,16 +268,14 @@ module.exports.AScene = registerElement('a-scene', {
       value: function (useAR) {
         var self = this;
         var vrDisplay;
-        var vrManager = self.renderer.vr;
+        var vrManager = self.renderer.xr;
 
         // Don't enter VR if already in VR.
         if (this.is('vr-mode')) { return Promise.resolve('Already in VR.'); }
 
         // Has VR.
         if (this.checkHeadsetConnected() || this.isMobile) {
-          vrDisplay = utils.device.getVRDisplay();
           vrManager.enabled = true;
-          vrManager.setDevice(vrDisplay);
 
           if (this.hasWebXR) {
             // XR API.
@@ -330,7 +328,7 @@ module.exports.AScene = registerElement('a-scene', {
           // for the actual requestPresent. Need to make sure there are no issues with firing the
           // vrdisplaypresentchange multiple times.
           var event;
-          if (window.hasNativeWebVRImplementation) {
+          if (window.hasNativeWebVRImplementation && !window.hasNativeWebXRImplementation) {
             event = new CustomEvent('vrdisplaypresentchange', {detail: {display: utils.device.getVRDisplay()}});
             window.dispatchEvent(event);
           }
@@ -338,7 +336,7 @@ module.exports.AScene = registerElement('a-scene', {
           self.addState('vr-mode');
           self.emit('enter-vr', {target: self});
           // Lock to landscape orientation on mobile.
-          if (!navigator.xr && self.isMobile && screen.orientation && screen.orientation.lock) {
+          if (!isWebXRAvailable && self.isMobile && screen.orientation && screen.orientation.lock) {
             screen.orientation.lock('landscape');
           }
           self.addFullScreenStyles();
@@ -375,7 +373,7 @@ module.exports.AScene = registerElement('a-scene', {
       value: function () {
         var self = this;
         var vrDisplay;
-        var vrManager = this.renderer.vr;
+        var vrManager = this.renderer.xr;
 
         // Don't exit VR if not in VR.
         if (!this.is('vr-mode')) { return Promise.resolve('Not in VR.'); }
@@ -386,7 +384,8 @@ module.exports.AScene = registerElement('a-scene', {
           vrDisplay = utils.device.getVRDisplay();
           if (this.hasWebXR) {
             this.xrSession.removeEventListener('end', this.exitVRBound);
-            this.xrSession.end();
+            // Capture promise to avoid errors.
+            this.xrSession.end().then(function () {}, function () {});
             this.xrSession = undefined;
             vrManager.setSession(null);
           } else {
@@ -463,7 +462,7 @@ module.exports.AScene = registerElement('a-scene', {
         // Polyfill places display inside the detail property
         var display = evt.display || evt.detail.display;
         // Entering VR.
-        if (display.isPresenting) {
+        if (display && display.isPresenting) {
           this.enterVR();
           return;
         }
@@ -553,8 +552,8 @@ module.exports.AScene = registerElement('a-scene', {
         var isVRPresenting;
         var size;
 
-        var isPresenting = this.renderer.vr.isPresenting();
-        isVRPresenting = this.renderer.vr.enabled && isPresenting;
+        var isPresenting = this.renderer.xr.isPresenting();
+        isVRPresenting = this.renderer.xr.enabled && isPresenting;
 
         // Do not update renderer, if a camera or a canvas have not been injected.
         // In VR mode, three handles canvas resize based on the dimensions returned by
@@ -628,9 +627,9 @@ module.exports.AScene = registerElement('a-scene', {
         renderer = this.renderer = new THREE.WebGLRenderer(rendererConfig);
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.sortObjects = false;
-        if (this.camera) { renderer.vr.setPoseTarget(this.camera.el.object3D); }
+        if (this.camera) { renderer.xr.setPoseTarget(this.camera.el.object3D); }
         this.addEventListener('camera-set-active', function () {
-          renderer.vr.setPoseTarget(self.camera.el.object3D);
+          renderer.xr.setPoseTarget(self.camera.el.object3D);
         });
         loadingScreen.setup(this, getCanvasSize);
       },
@@ -654,7 +653,7 @@ module.exports.AScene = registerElement('a-scene', {
         this.addEventListener('loaded', function () {
           var renderer = this.renderer;
           var vrDisplay;
-          var vrManager = this.renderer.vr;
+          var vrManager = this.renderer.xr;
           AEntity.prototype.play.call(this);  // .play() *before* render.
 
           if (sceneEl.renderStarted) { return; }

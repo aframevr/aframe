@@ -1,8 +1,8 @@
+/* global DeviceOrientationEvent  */
 var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../lib/three');
 var utils = require('../utils/');
 var bind = utils.bind;
-var PolyfillControls = require('../utils').device.PolyfillControls;
 
 // To avoid recalculation at every mouse movement tick
 var PI_2 = Math.PI / 2;
@@ -30,8 +30,7 @@ module.exports.Component = registerComponent('look-controls', {
     // To save / restore camera pose
     this.savedRotation = new THREE.Vector3();
     this.savedPosition = new THREE.Vector3();
-    this.polyfillObject = new THREE.Object3D();
-    this.polyfillControls = new PolyfillControls(this.polyfillObject);
+    this.magicWindowObject = new THREE.Object3D();
     this.rotation = {};
     this.deltaRotation = {};
     this.savedPose = null;
@@ -41,6 +40,8 @@ module.exports.Component = registerComponent('look-controls', {
     this.el.object3D.matrixAutoUpdate = false;
     this.el.object3D.updateMatrix();
 
+    this.setupMagicWindowControls();
+
     this.savedPose = {
       position: new THREE.Vector3(),
       rotation: new THREE.Euler()
@@ -48,6 +49,24 @@ module.exports.Component = registerComponent('look-controls', {
 
     // Call enter VR handler if the scene has entered VR before the event listeners attached.
     if (this.el.sceneEl.is('vr-mode')) { this.onEnterVR(); }
+  },
+
+  setupMagicWindowControls: function () {
+    var magicWindowControls;
+    // Only on mobile devices and only enabled if DeviceOrientation permission has been granted.
+    if (utils.device.isMobile()) {
+      magicWindowControls = this.magicWindowControls = new THREE.DeviceOrientationControls(this.magicWindowObject);
+      if (typeof DeviceOrientationEvent !== 'undefined' && DeviceOrientationEvent.requestPermission) {
+        magicWindowControls.enabled = false;
+        if (this.el.sceneEl.components['device-orientation-permission-ui'].permissionGranted) {
+          magicWindowControls.enabled = true;
+        } else {
+          this.el.sceneEl.addEventListener('deviceorientationpermissiongranted', function () {
+            magicWindowControls.enabled = true;
+          });
+        }
+      }
+    }
   },
 
   update: function (oldData) {
@@ -197,7 +216,7 @@ module.exports.Component = registerComponent('look-controls', {
       // WebXR API updates applies headset pose to the object3D matrixWorld internally.
       // Reflect values back on position, rotation, scale so setAttribute returns expected values.
       if (sceneEl.is('vr-mode') && sceneEl.hasWebXR) {
-        pose = sceneEl.renderer.vr.getCameraPose();
+        pose = sceneEl.renderer.xr.getCameraPose();
         if (pose) {
           poseMatrix.elements = pose.transform.matrix;
           poseMatrix.decompose(object3D.position, object3D.rotation, object3D.scale);
@@ -208,9 +227,11 @@ module.exports.Component = registerComponent('look-controls', {
 
       // In VR mode, THREE is in charge of updating the camera rotation.
       if (sceneEl.is('vr-mode') && sceneEl.checkHeadsetConnected()) { return; }
-      // Calculate polyfilled HMD quaternion.
-      this.polyfillControls.update();
-      hmdEuler.setFromQuaternion(this.polyfillObject.quaternion, 'YXZ');
+      // Calculate magic window HMD quaternion.
+      if (this.magicWindowControls && this.magicWindowControls.enabled) {
+        this.magicWindowControls.update();
+        hmdEuler.setFromQuaternion(this.magicWindowObject.quaternion, 'YXZ');
+      }
 
       // On mobile, do camera rotation with touch events and sensors.
       object3D.rotation.x = hmdEuler.x + pitchObject.rotation.x;

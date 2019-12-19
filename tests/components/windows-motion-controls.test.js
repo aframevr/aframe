@@ -129,20 +129,6 @@ suite('windows-motion-controls', function () {
       assert.notOk(component.controllerPresent, 'controllers present');
     });
 
-    test('does not detect presence of controller in second pair with not enough connected', function () {
-      // Mock isControllerPresent to return false.
-      component.data.pair = 1;
-      el.sceneEl.systems['tracked-controls-webvr'].controllers = createMotionControllersList(MOCKS.HAND_LEFT, MOCKS.HAND_RIGHT);
-
-      // delete our previously created mock, so component behaves as if it's never
-      // checked for controller presence previously.
-      delete component.controllerPresent;
-
-      component.checkIfControllerPresent();
-
-      assert.notOk(component.controllerPresent, 'controllers present');
-    });
-
     test('detects presence of controller in third pair', function () {
       // Mock isControllerPresent to return true.
       component.data.pair = 2;

@@ -9,7 +9,46 @@ var onButtonEvent = trackedControlsUtils.onButtonEvent;
 var VIVE_CONTROLLER_MODEL_OBJ_URL = 'https://cdn.aframe.io/controllers/vive/vr_controller_vive.obj';
 var VIVE_CONTROLLER_MODEL_OBJ_MTL = 'https://cdn.aframe.io/controllers/vive/vr_controller_vive.mtl';
 
-var GAMEPAD_ID_PREFIX = 'OpenVR ';
+var isWebXRAvailable = require('../utils/').device.isWebXRAvailable;
+
+var GAMEPAD_ID_WEBXR = 'htc-vive-controller-mv';
+var GAMEPAD_ID_WEBVR = 'OpenVR ';
+
+// Prefix for Gen1 and Gen2 Oculus Touch Controllers.
+var GAMEPAD_ID_PREFIX = isWebXRAvailable ? GAMEPAD_ID_WEBXR : GAMEPAD_ID_WEBVR;
+
+/**
+ * Button IDs:
+ * 0 - trackpad
+ * 1 - trigger (intensity value from 0.5 to 1)
+ * 2 - grip
+ * 3 - menu (dispatch but better for menu options)
+ * 4 - system (never dispatched on this layer)
+ */
+var INPUT_MAPPING_WEBVR = {
+  axes: {trackpad: [0, 1]},
+  buttons: ['trackpad', 'trigger', 'grip', 'menu', 'system']
+};
+
+/**
+ * Button IDs:
+ * 0 - trigger
+ * 1 - squeeze
+ * 2 - touchpad
+ * 3 - none (dispatch but better for menu options)
+ * 4 - menu (never dispatched on this layer)
+ *
+ * Axis:
+ * 0 - touchpad x axis
+ * 1 - touchpad y axis
+ * Reference: https://github.com/immersive-web/webxr-input-profiles/blob/master/packages/registry/profiles/htc/htc-vive.json
+ */
+var INPUT_MAPPING_WEBXR = {
+  axes: {thumbstick: [0, 1]},
+  buttons: ['trigger', 'grip', 'trackpad', 'none', 'menu']
+};
+
+var INPUT_MAPPING = isWebXRAvailable ? INPUT_MAPPING_WEBXR : INPUT_MAPPING_WEBVR;
 
 /**
  * Vive controls.
@@ -26,18 +65,7 @@ module.exports.Component = registerComponent('vive-controls', {
     orientationOffset: {type: 'vec3'}
   },
 
-  /**
-   * Button IDs:
-   * 0 - trackpad
-   * 1 - trigger (intensity value from 0.5 to 1)
-   * 2 - grip
-   * 3 - menu (dispatch but better for menu options)
-   * 4 - system (never dispatched on this layer)
-   */
-  mapping: {
-    axes: {trackpad: [0, 1]},
-    buttons: ['trackpad', 'trigger', 'grip', 'menu', 'system']
-  },
+  mapping: INPUT_MAPPING,
 
   init: function () {
     var self = this;
@@ -52,6 +80,11 @@ module.exports.Component = registerComponent('vive-controls', {
     this.rendererSystem = this.el.sceneEl.systems.renderer;
 
     this.bindMethods();
+  },
+
+  update: function () {
+    var data = this.data;
+    this.controllerIndex = data.hand === 'right' ? 0 : data.hand === 'left' ? 1 : 2;
   },
 
   play: function () {
@@ -104,8 +137,7 @@ module.exports.Component = registerComponent('vive-controls', {
    */
   checkIfControllerPresent: function () {
     var data = this.data;
-    var controllerIndex = data.hand === 'right' ? 0 : data.hand === 'left' ? 1 : 2;
-    checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX, {index: controllerIndex});
+    checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX, {index: this.controllerIndex, hand: data.hand});
   },
 
   injectTrackedControls: function () {
@@ -115,8 +147,8 @@ module.exports.Component = registerComponent('vive-controls', {
     // If we have an OpenVR Gamepad, use the fixed mapping.
     el.setAttribute('tracked-controls', {
       idPrefix: GAMEPAD_ID_PREFIX,
-      // Hand IDs: 1 = right, 0 = left, 2 = anything else.
-      controller: data.hand === 'right' ? 1 : data.hand === 'left' ? 0 : 2,
+      hand: data.hand,
+      controller: this.controllerIndex,
       orientationOffset: data.orientationOffset
     });
 

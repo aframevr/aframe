@@ -18,7 +18,7 @@ suite('vive-focus-controls', function () {
         ],
         pose: {orientation: [1, 0, 0, 0], position: null}
       }];
-      el.parentEl.renderer.vr.getStandingMatrix = function () {};
+      el.parentEl.renderer.xr.getStandingMatrix = function () {};
       done();
     });
   });
@@ -153,8 +153,8 @@ suite('vive-focus-controls', function () {
   });
 
   suite('buttonchanged', function () {
-    [ { button: 'trigger', id: 0 },
-      { button: 'trackpad', id: 1 }
+    [ { button: 'trackpad', id: 0 },
+      { button: 'trigger', id: 1 }
     ].forEach(function (buttonDescription) {
       test('if we get buttonchanged for button ' + buttonDescription.id + ', emit ' + buttonDescription.button + 'changed', function (done) {
         var el = this.el;

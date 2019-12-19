@@ -178,12 +178,12 @@ Lastly, you should specify the character set used in your HTML by using `<meta>`
 <html>
   <head>
     <meta charset="UTF-8">
-    <script src="https://aframe.io/releases/0.9.2/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/1.0.0/aframe.min.js"></script>
   </head>
   <body>
     <a-scene>
       <a-sky color="lightblue"></a-sky>
-      <a-text value="ABCあいうえお日本語" font="custom-msdf.json" negate="false" scale="2 2 1" position="-2 2 -4"></a-text>
+      <a-text value="ABCあいうえお日本語" font="custom-msdf.json" font-image="custom-msdf.png" negate="false" scale="2 2 1" position="-2 2 -4"></a-text>
     </a-scene>
   </body>
 </html>

@@ -192,7 +192,7 @@ module.exports.Component = registerComponent('tracked-controls-webvr', {
 
     // Apply transforms, if 6DOF and in VR.
     if (vrDisplay && pose.position) {
-      standingMatrix = this.el.sceneEl.renderer.vr.getStandingMatrix();
+      standingMatrix = this.el.sceneEl.renderer.xr.getStandingMatrix();
       object3D.matrix.compose(object3D.position, object3D.quaternion, object3D.scale);
       object3D.matrix.multiplyMatrices(standingMatrix, object3D.matrix);
       object3D.matrix.decompose(object3D.position, object3D.quaternion, object3D.scale);

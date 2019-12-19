@@ -135,7 +135,7 @@ suite('rotation controls on camera in VR mode', function () {
     this.position = [0, 0, 0];
     this.orientation = [0, 0, 0];
     sceneEl.addEventListener('cameraready', function () {
-      sceneEl.renderer.vr.getCamera = function (obj) {
+      sceneEl.renderer.xr.getCamera = function (obj) {
         if (!this.enabled) { return; }
         obj.position.fromArray(self.position);
         obj.rotation.fromArray(self.orientation);
@@ -143,9 +143,9 @@ suite('rotation controls on camera in VR mode', function () {
       };
       sceneEl.querySelector('[camera]').addEventListener('loaded', function () {
         sceneEl.addState('vr-mode');
-        el.sceneEl.renderer.vr.enabled = true;
+        el.sceneEl.renderer.xr.enabled = true;
         sceneEl.render = function () {
-          sceneEl.renderer.vr.getCamera(sceneEl.camera.el.object3D);
+          sceneEl.renderer.xr.getCamera(sceneEl.camera.el.object3D);
         };
         done();
       });
@@ -203,7 +203,7 @@ suite('rotation controls on camera in VR mode', function () {
     var cameraEl = el.sceneEl.querySelector('[camera]');
     this.orientation = [PI / 4, PI / 6, PI / 2];
     cameraEl.setAttribute('rotation', {x: 0, y: 0, z: 0});
-    el.sceneEl.renderer.vr.enabled = false;
+    el.sceneEl.renderer.xr.enabled = false;
     el.sceneEl.render();
     var rotation = cameraEl.getAttribute('rotation');
     assert.equal(Math.round(rotation.x), 0);
@@ -467,7 +467,7 @@ suite('position controls on camera with VRControls (integration unit test)', fun
     this.orientation = [0, 0, 0];
     sceneEl.addEventListener('cameraready', function () {
       var cameraEl = self.cameraEl = sceneEl.querySelector('[camera]');
-      sceneEl.renderer.vr.getCamera = function (obj) {
+      sceneEl.renderer.xr.getCamera = function (obj) {
         if (!this.enabled) { return; }
         obj.position.fromArray(self.position);
         obj.rotation.fromArray(self.orientation);
@@ -475,9 +475,9 @@ suite('position controls on camera with VRControls (integration unit test)', fun
       };
       cameraEl.addEventListener('loaded', function () {
         sceneEl.addState('vr-mode');
-        el.sceneEl.renderer.vr.enabled = true;
+        el.sceneEl.renderer.xr.enabled = true;
         sceneEl.render = function () {
-          sceneEl.renderer.vr.getCamera(cameraEl.object3D);
+          sceneEl.renderer.xr.getCamera(cameraEl.object3D);
         };
         done();
       });

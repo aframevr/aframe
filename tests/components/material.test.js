@@ -233,13 +233,13 @@ suite('material', function () {
     });
 
     test('sets material.needsUpdate true if side switchs from/to double', function () {
+      var oldMaterialVersion = el.getObject3D('mesh').material.version;
       el.setAttribute('material', 'side: front');
-      el.getObject3D('mesh').material.needsUpdate = false;
+      assert.equal(el.getObject3D('mesh').material.version, oldMaterialVersion);
       el.setAttribute('material', 'side: double');
-      assert.equal(el.getObject3D('mesh').material.needsUpdate, 1);
-      el.getObject3D('mesh').material.needsUpdate = false;
+      assert.equal(el.getObject3D('mesh').material.version, oldMaterialVersion + 2);
       el.setAttribute('material', 'side: front');
-      assert.equal(el.getObject3D('mesh').material.needsUpdate, 1);
+      assert.equal(el.getObject3D('mesh').material.version, oldMaterialVersion + 4);
     });
   });
 
@@ -289,11 +289,11 @@ suite('material', function () {
     });
 
     test('sets material.needsUpdate true if alphaTest is updated', function () {
+      var oldMaterialVersion = el.getObject3D('mesh').material.version;
       el.setAttribute('material', 'alphaTest: 0.0');
-      el.getObject3D('mesh').material.needsUpdate = false;
-      assert.equal(el.getObject3D('mesh').material.needsUpdate, 0);
+      assert.equal(el.getObject3D('mesh').material.version, oldMaterialVersion);
       el.setAttribute('material', 'alphaTest: 1.0');
-      assert.equal(el.getObject3D('mesh').material.needsUpdate, 1);
+      assert.equal(el.getObject3D('mesh').material.version, oldMaterialVersion + 2);
     });
   });
 
@@ -304,15 +304,17 @@ suite('material', function () {
     });
 
     test('can set to vertex color', function () {
+      var oldMaterialVersion = el.getObject3D('mesh').material.version;
       el.setAttribute('material', 'vertexColors', 'vertex');
       assert.equal(el.components.material.material.vertexColors, THREE.VertexColors);
-      assert.ok(el.components.material.material.needsUpdate);
+      assert.equal(el.components.material.material.version, oldMaterialVersion + 2);
     });
 
     test('can set to face color', function () {
+      var oldMaterialVersion = el.getObject3D('mesh').material.version;
       el.setAttribute('material', 'vertexColors', 'face');
       assert.equal(el.components.material.material.vertexColors, THREE.FaceColors);
-      assert.ok(el.components.material.material.needsUpdate);
+      assert.equal(el.components.material.material.version, oldMaterialVersion + 2);
     });
   });
 

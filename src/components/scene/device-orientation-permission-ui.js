@@ -30,18 +30,23 @@ module.exports.Component = registerComponent('device-orientation-permission-ui',
     if (utils.device.isMobileDeviceRequestingDesktopSite()) { this.showMobileDesktopModeAlert(); }
 
     // Browser doesn't support or doesn't require permission to DeviceOrientationEvent API.
-    if (typeof DeviceOrientationEvent === 'undefined' || !DeviceOrientationEvent.requestPermission) { return; }
+    if (typeof DeviceOrientationEvent === 'undefined' || !DeviceOrientationEvent.requestPermission) {
+      this.permissionGranted = true;
+      return;
+    }
+
     this.onDeviceMotionDialogAllowClicked = bind(this.onDeviceMotionDialogAllowClicked, this);
     this.onDeviceMotionDialogDenyClicked = bind(this.onDeviceMotionDialogDenyClicked, this);
     // Show dialog only if permission has not yet been granted.
     DeviceOrientationEvent.requestPermission().catch(function () {
       self.devicePermissionDialogEl = createPermissionDialog(
-        'This immersive website requires access to your device motion sensors',
+        'This immersive website requires access to your device motion sensors.',
         self.onDeviceMotionDialogAllowClicked,
         self.onDeviceMotionDialogDenyClicked);
       self.el.appendChild(self.devicePermissionDialogEl);
     }).then(function () {
       self.el.emit('deviceorientationpermissiongranted');
+      self.permissionGranted = true;
     });
   },
 
@@ -57,7 +62,7 @@ module.exports.Component = registerComponent('device-orientation-permission-ui',
   showMobileDesktopModeAlert: function () {
     var self = this;
     var safariIpadAlertEl = createAlertDialog(
-      'Request the mobile version of this site to enjoy it in immersive mode',
+      'Request the mobile version of this site to enjoy it in immersive mode.',
       function () { self.el.removeChild(safariIpadAlertEl); });
     this.el.appendChild(safariIpadAlertEl);
   },
@@ -71,6 +76,7 @@ module.exports.Component = registerComponent('device-orientation-permission-ui',
     DeviceOrientationEvent.requestPermission().then(function (response) {
       if (response === 'granted') {
         self.el.emit('deviceorientationpermissiongranted');
+        self.permissionGranted = true;
       } else {
         self.el.emit('deviceorientationpermissionrejected');
       }

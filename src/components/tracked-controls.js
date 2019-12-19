@@ -13,7 +13,7 @@ var registerComponent = require('../core/component').registerComponent;
 module.exports.Component = registerComponent('tracked-controls', {
   schema: {
     autoHide: {default: true},
-    controller: {default: 0},
+    controller: {default: -1},
     id: {type: 'string', default: ''},
     hand: {type: 'string', default: ''},
     idPrefix: {type: 'string', default: ''},
@@ -27,7 +27,11 @@ module.exports.Component = registerComponent('tracked-controls', {
     var data = this.data;
     var el = this.el;
     if (el.sceneEl.hasWebXR) {
-      el.setAttribute('tracked-controls-webxr', data);
+      el.setAttribute('tracked-controls-webxr', {
+        id: data.id,
+        hand: data.hand,
+        index: data.controller
+      });
     } else {
       el.setAttribute('tracked-controls-webvr', data);
     }

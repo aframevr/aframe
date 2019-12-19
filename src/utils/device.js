@@ -4,11 +4,17 @@ var vrDisplay;
 var supportsVRSession = false;
 var supportsARSession = false;
 
+/**
+ * Oculus Browser 7 doesn't support the WebXR gamepads module.
+ * We fallback to WebVR API and will hotfix when implementation is complete.
+ */
+var isWebXRAvailable = module.exports.isWebXRAvailable = !window.debug && navigator.xr !== undefined;
+
 // Catch vrdisplayactivate early to ensure we can enter VR mode after the scene loads.
 window.addEventListener('vrdisplayactivate', function (evt) {
   var canvasEl;
   // WebXR takes priority if available.
-  if (navigator.xr) { return; }
+  if (isWebXRAvailable) { return; }
   canvasEl = document.createElement('canvas');
   vrDisplay = evt.display;
   // We need to make sure the canvas has a WebGL context associated with it.
@@ -19,7 +25,7 @@ window.addEventListener('vrdisplayactivate', function (evt) {
 });
 
 // Support both WebVR and WebXR APIs.
-if (navigator.xr) {
+if (isWebXRAvailable) {
   var updateEnterInterfaces = function () {
     var sceneEl = document.querySelector('a-scene');
     if (sceneEl.hasLoaded) {
@@ -40,9 +46,8 @@ if (navigator.xr) {
 
     navigator.xr.isSessionSupported('immersive-ar').then(function (supported) {
       supportsARSession = supported;
-
       updateEnterInterfaces();
-    }).catch(errorHandler);
+    }).catch(function () {});
   } else if (navigator.xr.supportsSession) {
     // Fallback for implementations that haven't updated to the new spec yet,
     // the old version used supportsSession which is rejected for missing
@@ -54,7 +59,7 @@ if (navigator.xr) {
     navigator.xr.supportsSession('immersive-ar').then(function () {
       supportsARSession = true;
       updateEnterInterfaces();
-    }).catch(errorHandler);
+    }).catch(function () {});
   } else {
     error('WebXR has neither isSessionSupported or supportsSession?!');
   }
@@ -67,8 +72,6 @@ if (navigator.xr) {
     });
   }
 }
-
-module.exports.isWebXRAvailable = navigator.xr !== undefined;
 
 function getVRDisplay () { return vrDisplay; }
 module.exports.getVRDisplay = getVRDisplay;
@@ -123,12 +126,12 @@ function isIOS () {
 module.exports.isIOS = isIOS;
 
 function isMobileDeviceRequestingDesktopSite () {
-  return !isMobile() && window.orientation !== undefined;
+  return !isMobile() && !isMobileVR() && window.orientation !== undefined;
 }
 module.exports.isMobileDeviceRequestingDesktopSite = isMobileDeviceRequestingDesktopSite;
 
 /**
- *  Detect browsers in Stand-Alone headsets
+ *  Detect Oculus Browser (standalone headset)
  */
 function isOculusBrowser () {
   return /(OculusBrowser)/i.test(window.navigator.userAgent);
@@ -136,10 +139,18 @@ function isOculusBrowser () {
 module.exports.isOculusBrowser = isOculusBrowser;
 
 /**
+ *  Detect Firefox Reality (standalone headset)
+ */
+function isFirefoxReality () {
+  return /(Mobile VR)/i.test(window.navigator.userAgent);
+}
+module.exports.isFirefoxReality = isFirefoxReality;
+
+/**
  *  Detect browsers in Stand-Alone headsets
  */
 function isMobileVR () {
-  return isOculusBrowser() || /(Mobile VR)/i.test(window.navigator.userAgent);
+  return isOculusBrowser() || isFirefoxReality();
 }
 module.exports.isMobileVR = isMobileVR;
 
@@ -171,26 +182,3 @@ module.exports.isBrowserEnvironment = !!(!process || process.browser);
  * Check if running in node on the server.
  */
 module.exports.isNodeEnvironment = !module.exports.isBrowserEnvironment;
-
-/**
- * Update an Object3D pose if a polyfilled vrDisplay is present.
- */
-module.exports.PolyfillControls = function PolyfillControls (object) {
-  var frameData;
-  var vrDisplay = window.webvrpolyfill && window.webvrpolyfill.getPolyfillDisplays()[0];
-  if (window.VRFrameData) { frameData = new window.VRFrameData(); }
-  this.update = function () {
-    var pose;
-    if (!vrDisplay) { return; }
-    vrDisplay.getFrameData(frameData);
-    pose = frameData.pose;
-    if (pose.orientation !== null) {
-      object.quaternion.fromArray(pose.orientation);
-    }
-    if (pose.position !== null) {
-      object.position.fromArray(pose.position);
-    } else {
-      object.position.set(0, 0, 0);
-    }
-  };
-};

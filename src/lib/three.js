@@ -19,6 +19,7 @@ if (THREE.Cache) {
 }
 
 // TODO: Eventually include these only if they are needed by a component.
+require('../../vendor/DeviceOrientationControls'); // THREE.DeviceOrientationControls
 require('super-three/examples/js/loaders/DRACOLoader');  // THREE.DRACOLoader
 require('super-three/examples/js/loaders/GLTFLoader');  // THREE.GLTFLoader
 require('super-three/examples/js/loaders/OBJLoader');  // THREE.OBJLoader

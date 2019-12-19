@@ -77,6 +77,8 @@ module.exports.Component = registerComponent('hand-controls', {
     this.onBorYTouchEnd = function () { self.handleButton('BorY', 'touchend'); };
     this.onSurfaceTouchStart = function () { self.handleButton('surface', 'touchstart'); };
     this.onSurfaceTouchEnd = function () { self.handleButton('surface', 'touchend'); };
+    this.onControllerConnected = this.onControllerConnected.bind(this);
+    this.onControllerDisconnected = this.onControllerDisconnected.bind(this);
 
     el.addEventListener('controllerconnected', this.onControllerConnected);
     el.addEventListener('controllerdisconnected', this.onControllerDisconnected);
@@ -99,6 +101,14 @@ module.exports.Component = registerComponent('hand-controls', {
     if (!mesh || !mesh.mixer) { return; }
 
     mesh.mixer.update(delta / 1000);
+  },
+
+  onControllerConnected: function () {
+    this.el.object3D.visible = true;
+  },
+
+  onControllerDisconnected: function () {
+    this.el.object3D.visible = false;
   },
 
   addEventListeners: function () {
@@ -387,7 +397,10 @@ function getGestureEventName (gesture, active) {
 }
 
 function isViveController (trackedControls) {
-  var controllerId = trackedControls && trackedControls.controller &&
-                     trackedControls.controller.id;
-  return controllerId && controllerId.indexOf('OpenVR ') === 0;
+  var controller = trackedControls && trackedControls.controller;
+  var isVive = controller && (controller.id && controller.id.indexOf('OpenVR ') === 0 ||
+    (controller.profiles &&
+     controller.profiles[0] &&
+     controller.profiles[0] === 'htc-vive-controller-mv'));
+  return isVive;
 }
