@@ -29968,7 +29968,14 @@ module.exports = anime;
 				session.addEventListener( 'end', onSessionEnd );
 
 				// eslint-disable-next-line no-undef
-				session.updateRenderState( { baseLayer: new XRWebGLLayer( session, gl ) } );
+				session.updateRenderState( { baseLayer: new XRWebGLLayer( session, gl,
+					{
+						antialias: gl.getContextAttributes().antialias,
+						alpha: gl.getContextAttributes().alpha,
+						depth: gl.getContextAttributes().depth,
+						stencil: gl.getContextAttributes().stencil
+					}
+				) } );
 
 				session.requestReferenceSpace( referenceSpaceType ).then( onRequestReferenceSpace );
 
@@ -30447,10 +30454,7 @@ module.exports = anime;
 
 		// xr
 
-		var isOculusBrowser = /(OculusBrowser)/i.test(window.navigator.userAgent);
-
-		// Disable WebXR for Oculus Browser.
-		var xr = ( !isOculusBrowser && typeof navigator !== 'undefined' && 'xr' in navigator ) ? new WebXRManager( _this, _gl ) : new WebVRManager( _this );
+		var xr = ( typeof navigator !== 'undefined' && 'xr' in navigator ) ? new WebXRManager( _this, _gl ) : new WebVRManager( _this );
 
 		this.xr = xr;
 
@@ -66759,7 +66763,7 @@ module.exports={
     "present": "0.0.6",
     "promise-polyfill": "^3.1.0",
     "super-animejs": "^3.1.0",
-    "super-three": "^0.111.4",
+    "super-three": "^0.111.5",
     "three-bmfont-text": "dmarcos/three-bmfont-text#1babdf8507",
     "webvr-polyfill": "^0.10.10"
   },
@@ -78575,9 +78579,7 @@ module.exports.AScene = registerElement('a-scene', {
 
         // Has VR.
         if (this.checkHeadsetConnected() || this.isMobile) {
-          vrDisplay = utils.device.getVRDisplay();
           vrManager.enabled = true;
-          vrManager.setDevice(vrDisplay);
 
           if (this.hasWebXR) {
             // XR API.
@@ -80924,13 +80926,11 @@ registerGeometry('triangle', {
 // Polyfill `Promise`.
 window.Promise = window.Promise || _dereq_('promise-polyfill');
 
-var isOculusBrowser = /(OculusBrowser)/i.test(window.navigator.userAgent);
-
 // WebVR polyfill
 // Check before the polyfill runs.
 window.hasNativeWebVRImplementation = !!window.navigator.getVRDisplays ||
                                       !!window.navigator.getVRDevices;
-window.hasNativeWebXRImplementation = !isOculusBrowser && navigator.xr !== undefined;
+window.hasNativeWebXRImplementation = navigator.xr !== undefined;
 
 // If native WebXR or WebVR are defined WebVRPolyfill does not initialize.
 if (!window.hasNativeWebXRImplementation && !window.hasNativeWebVRImplementation) {
@@ -81014,7 +81014,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 1.0.0 (Date 2019-12-19, Commit #265716ff)');
+console.log('A-Frame Version: 1.0.0 (Date 2019-12-19, Commit #377e1de1)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
@@ -83049,7 +83049,7 @@ var supportsARSession = false;
  * Oculus Browser 7 doesn't support the WebXR gamepads module.
  * We fallback to WebVR API and will hotfix when implementation is complete.
  */
-var isWebXRAvailable = module.exports.isWebXRAvailable = !window.debug && !isOculusBrowser() && navigator.xr !== undefined;
+var isWebXRAvailable = module.exports.isWebXRAvailable = !window.debug && navigator.xr !== undefined;
 
 // Catch vrdisplayactivate early to ensure we can enter VR mode after the scene loads.
 window.addEventListener('vrdisplayactivate', function (evt) {
