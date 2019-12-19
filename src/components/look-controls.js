@@ -56,12 +56,12 @@ module.exports.Component = registerComponent('look-controls', {
     // Only on mobile devices and only enabled if DeviceOrientation permission has been granted.
     if (utils.device.isMobile()) {
       magicWindowControls = this.magicWindowControls = new THREE.DeviceOrientationControls(this.magicWindowObject);
-      if (typeof DeviceOrientationEvent === 'undefined' && DeviceOrientationEvent.requestPermission) {
+      if (typeof DeviceOrientationEvent !== 'undefined' && DeviceOrientationEvent.requestPermission) {
         magicWindowControls.enabled = false;
-        if (this.el.sceneEl.components['device-orientation-permission-ui'].premissionGranted) {
+        if (this.el.sceneEl.components['device-orientation-permission-ui'].permissionGranted) {
           magicWindowControls.enabled = true;
         } else {
-          this.el.scenEl.addEventListener('deviceorientationpermissiongranted', function () {
+          this.el.sceneEl.addEventListener('deviceorientationpermissiongranted', function () {
             magicWindowControls.enabled = true;
           });
         }
