@@ -68913,7 +68913,7 @@ registerComponent('laser-controls', {
     var data = this.data;
     var el = this.el;
     var self = this;
-    var controlsConfiguration = {hand: data.hand, model: true};
+    var controlsConfiguration = {hand: data.hand, model: data.model};
 
     // Set all controller models.
     el.setAttribute('daydream-controls', controlsConfiguration);
@@ -81028,7 +81028,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 1.0.0 (Date 2019-12-19, Commit #110e0e12)');
+console.log('A-Frame Version: 1.0.0 (Date 2019-12-20, Commit #9995628d)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
