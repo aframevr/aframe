@@ -1,3 +1,21 @@
+### 1.0.1 (Dec 19, 2019)
+
+Post 1.0.0 release bug fixes.
+
+### Fixes
+
+* Reintroduce a-asset-item logic to assign response type to `glTF` models automatically. It now ignores query parameters that made it fail before. (#4219) (@dmarcos)
+* Prevent zoom on enter `VR / AR buttons` when double tapping on touch screens (@dmarcos)
+* Apply style to reset the enter `AR / VR buttons` background on mouseleave. CSS Hover is sticky on mobile devices (@dmarcos)
+* Fix `magic window mode` in Daydream / ARCore Android devices. Use DeviceOrientationControls for tracking. (#4355) (@mako-lw, @dmarcos)
+* Honor model property in `laser-controls` (#4354) (@dala00, @dmarcos)
+
+### Enhancements
+
+* Improve visual design of `modal dialogs` (#4359) (@thedart76, @dmarcos)
+* Reinstate `WebXR` as the default code path for Oculus Browser. Oculus Browser 7.1 now ships the gamepad module (#4360) (@dmarcos)
+* Show `alert dialog` if the site is served over HTTP (#4357) (@brendanciccone, @thedart76, @mkungla, @dmarcos)
+
 ## 1.0.0 (Dec 13, 2019)
 
 WebXR final spec support!
