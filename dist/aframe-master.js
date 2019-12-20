@@ -80476,7 +80476,7 @@ registerPrimitive('a-sky', utils.extendDeep({}, getMeshMixin(), {
   defaultComponents: {
     geometry: {
       primitive: 'sphere',
-      radius: 5000,
+      radius: 500,
       segmentsWidth: 64,
       segmentsHeight: 32
     },
@@ -80547,7 +80547,7 @@ registerPrimitive('a-videosphere', utils.extendDeep({}, getMeshMixin(), {
   defaultComponents: {
     geometry: {
       primitive: 'sphere',
-      radius: 5000,
+      radius: 500,
       segmentsWidth: 64,
       segmentsHeight: 32
     },
@@ -81028,7 +81028,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 1.0.1 (Date 2019-12-20, Commit #082c8dfe)');
+console.log('A-Frame Version: 1.0.1 (Date 2019-12-20, Commit #7b1a50f7)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
