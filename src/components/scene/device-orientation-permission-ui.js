@@ -68,7 +68,7 @@ module.exports.Component = registerComponent('device-orientation-permission-ui',
   showMobileDesktopModeAlert: function () {
     var self = this;
     var safariIpadAlertEl = createAlertDialog(
-      'Request the mobile version of this site to enjoy it in immersive mode.',
+      'Set your browser to request the mobile version of the site and reload the page to enjoy immersive mode.',
       function () { self.el.removeChild(safariIpadAlertEl); });
     this.el.appendChild(safariIpadAlertEl);
   },
@@ -151,7 +151,7 @@ function createAlertDialog (text, onOkClicked) {
   okButton = document.createElement('button');
   okButton.classList.add(DIALOG_BUTTON_CLASS, DIALOG_OK_BUTTON_CLASS);
   okButton.setAttribute(constants.AFRAME_INJECTED, '');
-  okButton.innerHTML = 'Ok';
+  okButton.innerHTML = 'Close';
   buttonsContainer.appendChild(okButton);
 
   // Ask for sensor events to be used
