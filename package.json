@@ -19,7 +19,7 @@
     "lint:fix": "semistandard --fix",
     "precommit": "npm run lint",
     "prepush": "node scripts/testOnlyCheck.js",
-    "prerelease": "cross-env FOR_RELEASE=true node scripts/release.js 1.0.0 1.0.1",
+    "prerelease": "cross-env node scripts/release.js 1.0.1 1.0.2",
     "start": "npm run dev",
     "start:https": "cross-env SSL=true npm run dev",
     "test": "karma start ./tests/karma.conf.js",
