@@ -66735,7 +66735,7 @@ module.exports={
     "lint:fix": "semistandard --fix",
     "precommit": "npm run lint",
     "prepush": "node scripts/testOnlyCheck.js",
-    "prerelease": "cross-env FOR_RELEASE=true node scripts/release.js 1.0.0 1.0.1",
+    "prerelease": "cross-env node scripts/release.js 1.0.1 1.0.2",
     "start": "npm run dev",
     "start:https": "cross-env SSL=true npm run dev",
     "test": "karma start ./tests/karma.conf.js",
@@ -81054,7 +81054,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 1.0.2 (Date 2019-12-23, Commit #52b781c6)');
+console.log('A-Frame Version: 1.0.2 (Date 2019-12-23, Commit #4e784978)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
