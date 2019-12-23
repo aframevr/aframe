@@ -1,3 +1,15 @@
+### 1.0.2 (Dec 23, 2019)
+
+Bug fixes
+
+### Fixes
+
+* Track DeviceMotionControls yaw delta instead of absolute value to honor initial camera orientation (fix #4368) (@dmarcos)
+* Disable touchmove / mousemove tracking in VR mode. Pose is preserved when exiting VR (@dmarcos)
+* Hide Device Motion permission dialog on desktop requests from mobile devices. Only the alert about requesting mobile page is shown (fix #4369) (@dmarcos)
+* Reset camera rotation to 0 when entering VR to prevent collision between magic window and WebXR poses (fix #4371) (@karanganesan, @dmarcos)
+* Check if headset is connected before disabling mouse controls (fix #4370) (@KrisMerckx, @dmarcos)
+
 ### 1.0.1 (Dec 20, 2019)
 
 Post 1.0.0 release bug fixes.
