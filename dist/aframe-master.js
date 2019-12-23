@@ -69769,9 +69769,11 @@ module.exports.Component = registerComponent('look-controls', {
   },
 
   init: function () {
+    this.deltaYaw = 0;
     this.previousHMDPosition = new THREE.Vector3();
     this.hmdQuaternion = new THREE.Quaternion();
-    this.hmdEuler = new THREE.Euler();
+    this.magicWindowAbsoluteEuler = new THREE.Euler();
+    this.magicWindowDeltaEuler = new THREE.Euler();
     this.position = new THREE.Vector3();
     // To save / restore camera pose
     this.savedRotation = new THREE.Vector3();
@@ -69799,6 +69801,7 @@ module.exports.Component = registerComponent('look-controls', {
 
   setupMagicWindowControls: function () {
     var magicWindowControls;
+
     // Only on mobile devices and only enabled if DeviceOrientation permission has been granted.
     if (utils.device.isMobile()) {
       magicWindowControls = this.magicWindowControls = new THREE.DeviceOrientationControls(this.magicWindowObject);
@@ -69952,7 +69955,6 @@ module.exports.Component = registerComponent('look-controls', {
     var poseMatrix = new THREE.Matrix4();
 
     return function () {
-      var hmdEuler = this.hmdEuler;
       var object3D = this.el.object3D;
       var pitchObject = this.pitchObject;
       var yawObject = this.yawObject;
@@ -69975,17 +69977,33 @@ module.exports.Component = registerComponent('look-controls', {
         object3D.updateMatrix();
       }
 
-      // Calculate magic window HMD quaternion.
-      if (this.magicWindowControls && this.magicWindowControls.enabled) {
-        this.magicWindowControls.update();
-        hmdEuler.setFromQuaternion(this.magicWindowObject.quaternion, 'YXZ');
-      }
+      this.updateMagicWindowOrientation();
 
       // On mobile, do camera rotation with touch events and sensors.
-      object3D.rotation.x = hmdEuler.x + pitchObject.rotation.x;
-      object3D.rotation.y = hmdEuler.y + yawObject.rotation.y;
+      object3D.rotation.x = this.magicWindowDeltaEuler.x + pitchObject.rotation.x;
+      object3D.rotation.y = this.magicWindowDeltaEuler.y + yawObject.rotation.y;
+      object3D.rotation.z = this.magicWindowDeltaEuler.z;
     };
   })(),
+
+  updateMagicWindowOrientation: function () {
+    var magicWindowAbsoluteEuler = this.magicWindowAbsoluteEuler;
+    var magicWindowDeltaEuler = this.magicWindowDeltaEuler;
+    // Calculate magic window HMD quaternion.
+    if (this.magicWindowControls && this.magicWindowControls.enabled) {
+      this.magicWindowControls.update();
+      magicWindowAbsoluteEuler.setFromQuaternion(this.magicWindowObject.quaternion, 'YXZ');
+      if (!this.previousMagicWindowYaw && magicWindowAbsoluteEuler.y !== 0) {
+        this.previousMagicWindowYaw = magicWindowAbsoluteEuler.y;
+      }
+      if (this.previousMagicWindowYaw) {
+        magicWindowDeltaEuler.x = magicWindowAbsoluteEuler.x;
+        magicWindowDeltaEuler.y += magicWindowAbsoluteEuler.y - this.previousMagicWindowYaw;
+        magicWindowDeltaEuler.z = magicWindowAbsoluteEuler.z;
+        this.previousMagicWindowYaw = magicWindowAbsoluteEuler.y;
+      }
+    }
+  },
 
   /**
    * Translate mouse drag into rotation.
@@ -81036,7 +81054,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 1.0.1 (Date 2019-12-23, Commit #7cdf7600)');
+console.log('A-Frame Version: 1.0.1 (Date 2019-12-23, Commit #8466038c)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
