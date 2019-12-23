@@ -369,6 +369,7 @@ module.exports.Component = registerComponent('look-controls', {
     if (!this.el.sceneEl.checkHeadsetConnected()) { return; }
     this.saveCameraPose();
     this.el.object3D.position.set(0, 0, 0);
+    this.el.object3D.rotation.set(0, 0, 0);
     this.el.object3D.updateMatrix();
   },
 
