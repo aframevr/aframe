@@ -213,20 +213,22 @@ module.exports.Component = registerComponent('look-controls', {
       var pose;
       var sceneEl = this.el.sceneEl;
 
-      // WebXR API updates applies headset pose to the object3D matrixWorld internally.
-      // Reflect values back on position, rotation, scale so setAttribute returns expected values.
-      if (sceneEl.is('vr-mode') && sceneEl.hasWebXR) {
-        pose = sceneEl.renderer.xr.getCameraPose();
-        if (pose) {
-          poseMatrix.elements = pose.transform.matrix;
-          poseMatrix.decompose(object3D.position, object3D.rotation, object3D.scale);
+      // In VR mode, THREE is in charge of updating the camera pose.
+      if (sceneEl.is('vr-mode') && sceneEl.checkHeadsetConnected()) {
+        // With WebXR THREE applies headset pose to the object3D matrixWorld internally.
+        // Reflect values back on position, rotation, scale for getAttribute to return the expected values.
+        if (sceneEl.hasWebXR) {
+          pose = sceneEl.renderer.xr.getCameraPose();
+          if (pose) {
+            poseMatrix.elements = pose.transform.matrix;
+            poseMatrix.decompose(object3D.position, object3D.rotation, object3D.scale);
+          }
         }
+        return;
       } else {
         object3D.updateMatrix();
       }
 
-      // In VR mode, THREE is in charge of updating the camera rotation.
-      if (sceneEl.is('vr-mode') && sceneEl.checkHeadsetConnected()) { return; }
       // Calculate magic window HMD quaternion.
       if (this.magicWindowControls && this.magicWindowControls.enabled) {
         this.magicWindowControls.update();
