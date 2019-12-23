@@ -33,7 +33,10 @@ module.exports.Component = registerComponent('device-orientation-permission-ui',
     }
 
     // Show alert on iPad if Safari is on desktop mode.
-    if (utils.device.isMobileDeviceRequestingDesktopSite()) { this.showMobileDesktopModeAlert(); }
+    if (utils.device.isMobileDeviceRequestingDesktopSite()) {
+      this.showMobileDesktopModeAlert();
+      return;
+    }
 
     // Browser doesn't support or doesn't require permission to DeviceOrientationEvent API.
     if (typeof DeviceOrientationEvent === 'undefined' || !DeviceOrientationEvent.requestPermission) {
