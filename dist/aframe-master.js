@@ -81054,7 +81054,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 1.0.2 (Date 2019-12-23, Commit #4e784978)');
+console.log('A-Frame Version: 1.0.2 (Date 2019-12-25, Commit #7f017a3a)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
@@ -83109,6 +83109,10 @@ window.addEventListener('vrdisplayactivate', function (evt) {
 if (isWebXRAvailable) {
   var updateEnterInterfaces = function () {
     var sceneEl = document.querySelector('a-scene');
+    if (!sceneEl) {
+      window.addEventListener('DOMContentLoaded', updateEnterInterfaces);
+      return;
+    }
     if (sceneEl.hasLoaded) {
       sceneEl.components['vr-mode-ui'].updateEnterInterfaces();
     } else {
