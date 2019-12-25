@@ -81054,7 +81054,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 1.0.2 (Date 2019-12-25, Commit #7f017a3a)');
+console.log('A-Frame Version: 1.0.2 (Date 2019-12-25, Commit #19f66c12)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
@@ -84589,6 +84589,8 @@ THREE.DeviceOrientationControls = function ( object ) {
 
   this.connect = function () {
  
+    onScreenOrientationChangeEvent();
+
     window.addEventListener( 'orientationchange', onScreenOrientationChangeEvent, false );
     window.addEventListener( 'deviceorientation', onDeviceOrientationChangeEvent, false );
 
