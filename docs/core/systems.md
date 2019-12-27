@@ -35,7 +35,7 @@ If the system name matches a component name, then the component will have a
 reference to the system as `this.system`:
 
 ```js
-AFRAME.registerSystem('my-component', {
+AFRAME.registerSystem('my-system', {
   schema: {},  // System schema. Parses into `this.data`.
 
   init: function () {
@@ -93,7 +93,7 @@ systems handle the heavy lifting, and components only worry about managing its
 data through its lifecycle methods:
 
 ```js
-AFRAME.registerSystem('my-component', {
+AFRAME.registerSystem('my-system', {
   createComplexObject: function (data) {
     // Do calculations and stuff with data.
     return new ComplexObject(data);
@@ -119,7 +119,7 @@ pattern is to have components subscribe themselves to the system. The system
 then has references to all of its components:
 
 ```js
-AFRAME.registerSystem('my-component', {
+AFRAME.registerSystem('my-system', {
   init: function () {
     this.entities = [];
   },
