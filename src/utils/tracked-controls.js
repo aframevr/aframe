@@ -83,7 +83,9 @@ function isControllerPresentWebXR (component, id, queryObject) {
   controllers = trackedControlsSystem.controllers;
   if (!controllers || !controllers.length) { return false; }
 
-  return findMatchingControllerWebXR(controllers, id, queryObject.hand, queryObject.index);
+  return findMatchingControllerWebXR(
+    controllers, id,
+    queryObject.hand, queryObject.index, queryObject.iterateControllerProfiles);
 }
 
 module.exports.isControllerPresentWebVR = isControllerPresentWebVR;
@@ -150,7 +152,7 @@ function findMatchingControllerWebVR (controllers, filterIdExact, filterIdPrefix
   return undefined;
 }
 
-function findMatchingControllerWebXR (controllers, idPrefix, handedness, index) {
+function findMatchingControllerWebXR (controllers, idPrefix, handedness, index, iterateProfiles) {
   var i;
   var j;
   var controller;
@@ -160,9 +162,13 @@ function findMatchingControllerWebXR (controllers, idPrefix, handedness, index) 
   for (i = 0; i < controllers.length; i++) {
     controller = controllers[i];
     profiles = controller.profiles;
-    for (j = 0; j < profiles.length; j++) {
-      controllerMatch = profiles[j].startsWith(idPrefix);
-      if (controllerMatch) { break; }
+    if (iterateProfiles) {
+      for (j = 0; j < profiles.length; j++) {
+        controllerMatch = profiles[j].startsWith(idPrefix);
+        if (controllerMatch) { break; }
+      }
+    } else {
+      controllerMatch = profiles[0].startsWith(idPrefix);
     }
     if (!controllerMatch) { continue; }
     // Vive controllers are assigned handedness at runtime and it might not be always available.

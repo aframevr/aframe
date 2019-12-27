@@ -14,7 +14,8 @@ module.exports.Component = registerComponent('tracked-controls-webxr', {
   schema: {
     id: {type: 'string', default: ''},
     hand: {type: 'string', default: ''},
-    index: {type: 'int', default: -1}
+    index: {type: 'int', default: -1},
+    iterateControllerProfiles: {default: false}
   },
 
   init: function () {
@@ -86,7 +87,8 @@ module.exports.Component = registerComponent('tracked-controls-webxr', {
       this.system.controllers,
       this.data.id,
       this.data.hand,
-      this.data.index
+      this.data.index,
+      this.data.iterateControllerProfiles
     );
     // Legacy handle to the controller for old components.
     this.el.components['tracked-controls'].controller = this.controller;

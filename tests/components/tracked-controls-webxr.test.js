@@ -35,6 +35,19 @@ suite('tracked-controls-webxr', function () {
       component.updateController();
       assert.equal(component.controller, controller);
     });
+
+    test('matches generic controller', function () {
+      controller = {
+        handedness: 'left',
+        profiles: ['generic-touchpad']
+      };
+      system.controllers = [controller];
+      assert.strictEqual(component.controller, undefined);
+      el.setAttribute('tracked-controls-webxr',
+        {id: 'generic', hand: 'left', iterateControllerProfiles: true});
+      component.updateController();
+      assert.equal(component.controller, controller);
+    });
   });
 
   suite('tick', function () {
