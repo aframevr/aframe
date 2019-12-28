@@ -34,7 +34,6 @@ var INPUT_MAPPING_WEBVR = {
  * 0 - trigger
  * 1 - none
  * 2 - touchpad
- * 3 - thumbstick
  *
  * Axis:
  * 0 - touchpad x
