@@ -68151,12 +68151,56 @@ var trackedControlsUtils = _dereq_('../utils/tracked-controls');
 var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
 var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
 var onButtonEvent = trackedControlsUtils.onButtonEvent;
+var isWebXRAvailable = _dereq_('../utils/').device.isWebXRAvailable;
 
 var GEARVR_CONTROLLER_MODEL_BASE_URL = 'https://cdn.aframe.io/controllers/samsung/';
 var GEARVR_CONTROLLER_MODEL_OBJ_URL = GEARVR_CONTROLLER_MODEL_BASE_URL + 'gear_vr_controller.obj';
 var GEARVR_CONTROLLER_MODEL_OBJ_MTL = GEARVR_CONTROLLER_MODEL_BASE_URL + 'gear_vr_controller.mtl';
 
-var GAMEPAD_ID_PREFIX = 'Gear VR';
+var GAMEPAD_ID_WEBXR = 'samsung-gearvr';
+var GAMEPAD_ID_WEBVR = 'Gear VR';
+
+// Prefix for Gen1 and Gen2 Oculus Touch Controllers.
+var GAMEPAD_ID_PREFIX = isWebXRAvailable ? GAMEPAD_ID_WEBXR : GAMEPAD_ID_WEBVR;
+
+/**
+ * Button indices:
+ * 0 - trackpad
+ * 1 - trigger
+ *
+ * Axis:
+ * 0 - trackpad x
+ * 1 - trackpad y
+ */
+var INPUT_MAPPING_WEBVR = {
+  axes: {trackpad: [0, 1]},
+  buttons: ['trackpad', 'trigger']
+};
+
+/**
+ * Button indices:
+ * 0 - trigger
+ * 1 - none
+ * 2 - touchpad
+ * 3 - menu
+ *
+ * Axis:
+ * 0 - touchpad x
+ * 1 - touchpad y
+ * Reference: https://github.com/immersive-web/webxr-input-profiles/blob/master/packages/registry/profiles/oculus/oculus-go.json
+ */
+var INPUT_MAPPING_WEBXR = {
+  left: {
+    axes: {touchpad: [0, 1]},
+    buttons: ['trigger', 'none', 'touchpad', 'menu']
+  },
+  right: {
+    axes: {touchpad: [0, 1]},
+    buttons: ['trigger', 'none', 'touchpad', 'menu']
+  }
+};
+
+var INPUT_MAPPING = isWebXRAvailable ? INPUT_MAPPING_WEBXR : INPUT_MAPPING_WEBVR;
 
 /**
  * Gear VR controls.
@@ -68180,10 +68224,7 @@ module.exports.Component = registerComponent('gearvr-controls', {
    * 0 - trackpad
    * 1 - trigger
    */
-  mapping: {
-    axes: {trackpad: [0, 1]},
-    buttons: ['trackpad', 'trigger']
-  },
+  mapping: INPUT_MAPPING,
 
   bindMethods: function () {
     this.onModelLoaded = bind(this.onModelLoaded, this);
@@ -68231,7 +68272,7 @@ module.exports.Component = registerComponent('gearvr-controls', {
 
   checkIfControllerPresent: function () {
     checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX,
-                                        this.data.hand ? {hand: this.data.hand} : {});
+      this.data.hand ? {hand: this.data.hand} : {});
   },
 
   play: function () {
@@ -68249,7 +68290,9 @@ module.exports.Component = registerComponent('gearvr-controls', {
     var data = this.data;
     el.setAttribute('tracked-controls', {
       armModel: data.armModel,
+      hand: data.hand,
       idPrefix: GAMEPAD_ID_PREFIX,
+      id: GAMEPAD_ID_PREFIX,
       orientationOffset: data.orientationOffset
     });
     if (!this.data.model) { return; }
@@ -68316,7 +68359,7 @@ module.exports.Component = registerComponent('gearvr-controls', {
   }
 });
 
-},{"../core/component":126,"../utils/bind":193,"../utils/tracked-controls":207}],78:[function(_dereq_,module,exports){
+},{"../core/component":126,"../utils/":199,"../utils/bind":193,"../utils/tracked-controls":207}],78:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var bind = _dereq_('../utils/bind');
 
@@ -69142,7 +69185,7 @@ registerComponent('laser-controls', {
 
     'gearvr-controls': {
       cursor: {downEvents: ['triggerdown'], upEvents: ['triggerup']},
-      raycaster: {origin: {x: 0, y: 0.0005, z: 0}}
+      raycaster: {origin: {x: 0, y: 0.0010, z: 0}}
     },
 
     'generic-tracked-controller-controls': {
@@ -70799,7 +70842,6 @@ var INPUT_MAPPING_WEBVR = {
  * 0 - trigger
  * 1 - none
  * 2 - touchpad
- * 3 - thumbstick
  *
  * Axis:
  * 0 - touchpad x
@@ -81269,7 +81311,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 1.0.2 (Date 2019-12-27, Commit #17b754ea)');
+console.log('A-Frame Version: 1.0.2 (Date 2019-12-28, Commit #e3dc61b9)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
