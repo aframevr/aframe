@@ -81311,7 +81311,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 1.0.2 (Date 2019-12-28, Commit #e3dc61b9)');
+console.log('A-Frame Version: 1.0.2 (Date 2019-12-29, Commit #9a7d7f41)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
@@ -84717,6 +84717,7 @@ function findMatchingControllerWebXR (controllers, idPrefix, handedness, index, 
   for (i = 0; i < controllers.length; i++) {
     controller = controllers[i];
     profiles = controller.profiles;
+    if (profiles.length === 0) { return; }
     if (iterateProfiles) {
       for (j = 0; j < profiles.length; j++) {
         controllerMatch = profiles[j].startsWith(idPrefix);
