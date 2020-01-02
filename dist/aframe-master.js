@@ -74249,8 +74249,8 @@ module.exports.Component = registerComponent('tracked-controls-webxr', {
   removeSessionEventListeners: function () {
     var sceneEl = this.el.sceneEl;
     if (!sceneEl.xrSession) { return; }
-    sceneEl.xrSession.addEventListener('selectstart', this.emitButtonDownEvent);
-    sceneEl.xrSession.addEventListener('selectend', this.emitButtonUpEvent);
+    sceneEl.xrSession.removeEventListener('selectstart', this.emitButtonDownEvent);
+    sceneEl.xrSession.removeEventListener('selectend', this.emitButtonUpEvent);
   },
 
   emitButtonDownEvent: function (evt) {
@@ -81311,7 +81311,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 1.0.3 (Date 2019-12-29, Commit #1dd9ae28)');
+console.log('A-Frame Version: 1.0.3 (Date 2020-01-01, Commit #5ae949dc)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
