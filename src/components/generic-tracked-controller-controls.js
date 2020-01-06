@@ -5,72 +5,41 @@ var trackedControlsUtils = require('../utils/tracked-controls');
 var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
 var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
 var onButtonEvent = trackedControlsUtils.onButtonEvent;
-var isWebXRAvailable = require('../utils/').device.isWebXRAvailable;
 
-var GEARVR_CONTROLLER_MODEL_BASE_URL = 'https://cdn.aframe.io/controllers/samsung/';
-var GEARVR_CONTROLLER_MODEL_OBJ_URL = GEARVR_CONTROLLER_MODEL_BASE_URL + 'gear_vr_controller.obj';
-var GEARVR_CONTROLLER_MODEL_OBJ_MTL = GEARVR_CONTROLLER_MODEL_BASE_URL + 'gear_vr_controller.mtl';
-
-var GAMEPAD_ID_WEBXR = 'samsung-gearvr';
-var GAMEPAD_ID_WEBVR = 'Gear VR';
-
-// Prefix for Gen1 and Gen2 Oculus Touch Controllers.
-var GAMEPAD_ID_PREFIX = isWebXRAvailable ? GAMEPAD_ID_WEBXR : GAMEPAD_ID_WEBVR;
-
-/**
- * Button indices:
- * 0 - trackpad
- * 1 - trigger
- *
- * Axis:
- * 0 - trackpad x
- * 1 - trackpad y
- */
-var INPUT_MAPPING_WEBVR = {
-  axes: {trackpad: [0, 1]},
-  buttons: ['trackpad', 'trigger']
-};
+var GAMEPAD_ID_PREFIX = 'generic';
 
 /**
  * Button indices:
  * 0 - trigger
- * 1 - none
+ * 1 - squeeze
  * 2 - touchpad
- * 3 - menu
+ * 3 - thumbstick
  *
  * Axis:
- * 0 - touchpad x
- * 1 - touchpad y
- * Reference: https://github.com/immersive-web/webxr-input-profiles/blob/master/packages/registry/profiles/oculus/oculus-go.json
+ * 0 - touchpad
+ * 1 - thumbstick
+ *
  */
-var INPUT_MAPPING_WEBXR = {
-  left: {
-    axes: {touchpad: [0, 1]},
-    buttons: ['trigger', 'none', 'touchpad', 'menu']
+var INPUT_MAPPING = {
+  axes: {
+    touchpad: [0, 1],
+    thumbstick: [2, 3]
   },
-  right: {
-    axes: {touchpad: [0, 1]},
-    buttons: ['trigger', 'none', 'touchpad', 'menu']
-  }
+  buttons: ['trigger', 'squeeze', 'touchpad', 'thumbstick']
 };
 
-var INPUT_MAPPING = isWebXRAvailable ? INPUT_MAPPING_WEBXR : INPUT_MAPPING_WEBVR;
-
 /**
- * Gear VR controls.
- * Interface with Gear VR controller and map Gamepad events to
+ * Oculus Go controls.
+ * Interface with Oculus Go controller and map Gamepad events to
  * controller buttons: trackpad, trigger
  * Load a controller model and highlight the pressed buttons.
  */
-module.exports.Component = registerComponent('gearvr-controls', {
+module.exports.Component = registerComponent('generic-tracked-controller-controls', {
   schema: {
     hand: {default: ''},  // This informs the degenerate arm model.
-    buttonColor: {type: 'color', default: '#000000'},
-    buttonTouchedColor: {type: 'color', default: '#777777'},
-    buttonHighlightColor: {type: 'color', default: '#FFFFFF'},
-    model: {default: true},
-    orientationOffset: {type: 'vec3'},
-    armModel: {default: true}
+    defaultModel: {default: true},
+    defaultModelColor: {default: 'gray'},
+    orientationOffset: {type: 'vec3'}
   },
 
   /**
@@ -97,6 +66,7 @@ module.exports.Component = registerComponent('gearvr-controls', {
     this.onButtonTouchEnd = function (evt) { onButtonEvent(evt.detail.id, 'touchend', self); };
     this.controllerPresent = false;
     this.lastControllerCheck = 0;
+    this.rendererSystem = this.el.sceneEl.systems.renderer;
     this.bindMethods();
   },
 
@@ -119,14 +89,16 @@ module.exports.Component = registerComponent('gearvr-controls', {
     el.removeEventListener('buttonup', this.onButtonUp);
     el.removeEventListener('touchstart', this.onButtonTouchStart);
     el.removeEventListener('touchend', this.onButtonTouchEnd);
-    el.removeEventListener('model-loaded', this.onModelLoaded);
     el.removeEventListener('axismove', this.onAxisMoved);
     this.controllerEventsActive = false;
   },
 
   checkIfControllerPresent: function () {
-    checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX,
-      this.data.hand ? {hand: this.data.hand} : {});
+    var data = this.data;
+    var hand = data.hand ? data.hand : undefined;
+    checkControllerPresentAndSetup(
+      this, GAMEPAD_ID_PREFIX,
+      {hand: hand, iterateControllerProfiles: true});
   },
 
   play: function () {
@@ -142,18 +114,17 @@ module.exports.Component = registerComponent('gearvr-controls', {
   injectTrackedControls: function () {
     var el = this.el;
     var data = this.data;
+    // Do nothing if tracked-controls already set.
+    // Generic controls have the lowest precedence.
+    if (this.el.components['tracked-controls']) { return; }
     el.setAttribute('tracked-controls', {
-      armModel: data.armModel,
       hand: data.hand,
       idPrefix: GAMEPAD_ID_PREFIX,
-      id: GAMEPAD_ID_PREFIX,
-      orientationOffset: data.orientationOffset
+      orientationOffset: data.orientationOffset,
+      iterateControllerProfiles: true
     });
-    if (!this.data.model) { return; }
-    this.el.setAttribute('obj-model', {
-      obj: GEARVR_CONTROLLER_MODEL_OBJ_URL,
-      mtl: GEARVR_CONTROLLER_MODEL_OBJ_MTL
-    });
+    if (!this.data.defaultModel) { return; }
+    this.initDefaultModel();
   },
 
   addControllersUpdateListener: function () {
@@ -168,17 +139,6 @@ module.exports.Component = registerComponent('gearvr-controls', {
     this.checkIfControllerPresent();
   },
 
-  // No need for onButtonChanged, since Gear VR controller has no analog buttons.
-
-  onModelLoaded: function (evt) {
-    var controllerObject3D = evt.detail.model;
-    var buttonMeshes;
-    if (!this.data.model) { return; }
-    buttonMeshes = this.buttonMeshes = {};
-    buttonMeshes.trigger = controllerObject3D.children[2];
-    buttonMeshes.trackpad = controllerObject3D.children[1];
-  },
-
   onButtonChanged: function (evt) {
     var button = this.mapping.buttons[evt.detail.id];
     if (!button) return;
@@ -190,25 +150,13 @@ module.exports.Component = registerComponent('gearvr-controls', {
     emitIfAxesChanged(this, this.mapping.axes, evt);
   },
 
-  updateModel: function (buttonName, evtName) {
-    if (!this.data.model) { return; }
-    this.updateButtonModel(buttonName, evtName);
-  },
-
-  updateButtonModel: function (buttonName, state) {
-    var buttonMeshes = this.buttonMeshes;
-    if (!buttonMeshes || !buttonMeshes[buttonName]) { return; }
-    var color;
-    switch (state) {
-      case 'down':
-        color = this.data.buttonHighlightColor;
-        break;
-      case 'touchstart':
-        color = this.data.buttonTouchedColor;
-        break;
-      default:
-        color = this.data.buttonColor;
-    }
-    buttonMeshes[buttonName].material.color.set(color);
+  initDefaultModel: function () {
+    var modelEl = this.modelEl = document.createElement('a-entity');
+    modelEl.setAttribute('geometry', {
+      primitive: 'sphere',
+      radius: 0.03
+    });
+    modelEl.setAttribute('material', {color: this.data.color});
+    this.el.appendChild(modelEl);
   }
 });

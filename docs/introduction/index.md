@@ -27,7 +27,7 @@ free. Alternatively, create an `.html` file and include A-Frame in the
 ```html
 <html>
   <head>
-    <script src="https://aframe.io/releases/1.0.0/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/1.0.3/aframe.min.js"></script>
   </head>
   <body>
     <a-scene>
@@ -171,7 +171,7 @@ tips on A-Frame and to see featured community projects.
 [Glitch](https://glitch.com/~aframe) is used as a recommended coding playground
 and for examples.
 
-3. [Join us on Discord][Discord] and [Slack][slack and if you have any
+3. [Join us on Discord][Discord] and [Slack][slack] and if you have any
 questions, [search and ask on StackOverflow](http://stackoverflow.com/questions/ask/?tags=aframe),
 and someone will try to get to you!
 

@@ -62,7 +62,7 @@ use of resources, we will need deeper understanding about 3D graphics.  See
 [release]: https://github.com/aframevr/aframe/releases
 [webxr]: https://immersive-web.github.io/webxr/
 
-If you are using A-Frame 1.0.0 or older you probably need to update to the [latest release][release]. Browsers are migrating to the [WebXR standard][webxr] and old versions might no longer work.
+If you are using A-Frame 1.0.3 or older you probably need to update to the [latest release][release]. Browsers are migrating to the [WebXR standard][webxr] and old versions might no longer work.
 
 You also have to serve your content over HTTPS. The WebXR API won't be available over HTTP.
 
@@ -327,8 +327,8 @@ A-Frame!
 
 Phones with Adreno 300 series GPUs are notoriously problematic. Set [renderer precision][precision] to `medium` as a workaround. Real fix has to happen at the driver / device level.
 
-## Why is the gyroscope not working on iOS?
+## Why is the gyroscope / magic window mode not working?
 
-iOS 12.2 Safari applies new restrictions to the devicemotion API. Pages have to be served over `https` and the user has to enable the API manually on `Settings -> Safari -> Motion & Orientation access`. iOS 12.3 is introducing a `DeviceOrientationEvent.requestPermission` method that A-Frame will call to ask for user permission without manual steps.
+[New browser policies](https://www.w3.org/TR/orientation-event/#dom-deviceorientationevent-requestpermission) require sites to prompt the user for permission before getting access to DeviceMotionEvents. [Starting with iOS 13](https://webkit.org/blog/9674/new-webkit-features-in-safari-13/) DeviceMotionEvents are only available for pages served over `https`. Other browsers will also apply same policies and restrictions. A-Frame now [incorporates customoziable UI](https://aframe.io/docs/1.0.0/components/device-orientation-permission-ui.html#sidebar) to request the necessary permissions to the user. Make sure to update to [A-Frame latest version](https://github.com/aframevr/aframe/releases)  
 
 

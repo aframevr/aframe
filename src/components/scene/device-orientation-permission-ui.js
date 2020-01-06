@@ -1,4 +1,4 @@
-/* global DeviceOrientationEvent  */
+/* global DeviceOrientationEvent, location  */
 var registerComponent = require('../../core/component').registerComponent;
 var utils = require('../../utils/');
 var bind = utils.bind;
@@ -26,8 +26,17 @@ module.exports.Component = registerComponent('device-orientation-permission-ui',
 
     if (!this.data.enabled) { return; }
 
+    if (location.hostname !== 'localhost' &&
+        location.hostname !== '127.0.0.1' &&
+        location.protocol === 'http:') {
+      this.showHTTPAlert();
+    }
+
     // Show alert on iPad if Safari is on desktop mode.
-    if (utils.device.isMobileDeviceRequestingDesktopSite()) { this.showMobileDesktopModeAlert(); }
+    if (utils.device.isMobileDeviceRequestingDesktopSite()) {
+      this.showMobileDesktopModeAlert();
+      return;
+    }
 
     // Browser doesn't support or doesn't require permission to DeviceOrientationEvent API.
     if (typeof DeviceOrientationEvent === 'undefined' || !DeviceOrientationEvent.requestPermission) {
@@ -62,9 +71,17 @@ module.exports.Component = registerComponent('device-orientation-permission-ui',
   showMobileDesktopModeAlert: function () {
     var self = this;
     var safariIpadAlertEl = createAlertDialog(
-      'Request the mobile version of this site to enjoy it in immersive mode.',
+      'Set your browser to request the mobile version of the site and reload the page to enjoy immersive mode.',
       function () { self.el.removeChild(safariIpadAlertEl); });
     this.el.appendChild(safariIpadAlertEl);
+  },
+
+  showHTTPAlert: function () {
+    var self = this;
+    var httpAlertEl = createAlertDialog(
+      'Access this site over HTTPS to enter VR mode and grant access to the device sensors.',
+      function () { self.el.removeChild(httpAlertEl); });
+    this.el.appendChild(httpAlertEl);
   },
 
   /**
@@ -137,7 +154,7 @@ function createAlertDialog (text, onOkClicked) {
   okButton = document.createElement('button');
   okButton.classList.add(DIALOG_BUTTON_CLASS, DIALOG_OK_BUTTON_CLASS);
   okButton.setAttribute(constants.AFRAME_INJECTED, '');
-  okButton.innerHTML = 'Ok';
+  okButton.innerHTML = 'Close';
   buttonsContainer.appendChild(okButton);
 
   // Ask for sensor events to be used

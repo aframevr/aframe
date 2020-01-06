@@ -46,7 +46,7 @@ suite('laser-controls', function () {
       setTimeout(() => {
         var raycaster = el.getAttribute('raycaster');
         assert.equal(raycaster.origin.x, 0);
-        assert.equal(raycaster.origin.y, 0.0005);
+        assert.equal(raycaster.origin.y, 0.001);
         done();
       });
     });

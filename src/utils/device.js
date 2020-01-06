@@ -28,6 +28,10 @@ window.addEventListener('vrdisplayactivate', function (evt) {
 if (isWebXRAvailable) {
   var updateEnterInterfaces = function () {
     var sceneEl = document.querySelector('a-scene');
+    if (!sceneEl) {
+      window.addEventListener('DOMContentLoaded', updateEnterInterfaces);
+      return;
+    }
     if (sceneEl.hasLoaded) {
       sceneEl.components['vr-mode-ui'].updateEnterInterfaces();
     } else {

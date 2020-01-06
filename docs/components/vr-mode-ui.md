@@ -22,13 +22,16 @@ to the [`<a-scene>` element][scene]. If we wish to simply toggle the UI, use CSS
 |---------------|---------------------------------------------------------------------|---------------|
 | enabled       | Whether or not to display UI related to entering VR.                | true          |
 | enterVRButton | Selector to a custom VR button. On click, the button will enter VR. | ''            |
+| enterARButton | Selector to a custom AR button. On click, the button will enter AR. | ''            |
 
 ### Specifying a Custom Enter VR Button
 
 ```html
-<a-scene vr-mode-ui="enterVRButton: #myEnterVRButton">
+<a-scene
+  vr-mode-ui="enterVRButton: #myEnterVRButton; enterARButton: #myEnterARButton">
   <!-- Style the button with images or whatever. -->
   <a id="myEnterVRButton" href="#"></a>
+  <a id="myEnterARButton" href="#"></a>
 </a-scene>
 ```
 

@@ -14,7 +14,8 @@ module.exports.Component = registerComponent('tracked-controls-webxr', {
   schema: {
     id: {type: 'string', default: ''},
     hand: {type: 'string', default: ''},
-    index: {type: 'int', default: -1}
+    index: {type: 'int', default: -1},
+    iterateControllerProfiles: {default: false}
   },
 
   init: function () {
@@ -56,8 +57,8 @@ module.exports.Component = registerComponent('tracked-controls-webxr', {
   removeSessionEventListeners: function () {
     var sceneEl = this.el.sceneEl;
     if (!sceneEl.xrSession) { return; }
-    sceneEl.xrSession.addEventListener('selectstart', this.emitButtonDownEvent);
-    sceneEl.xrSession.addEventListener('selectend', this.emitButtonUpEvent);
+    sceneEl.xrSession.removeEventListener('selectstart', this.emitButtonDownEvent);
+    sceneEl.xrSession.removeEventListener('selectend', this.emitButtonUpEvent);
   },
 
   emitButtonDownEvent: function (evt) {
@@ -86,7 +87,8 @@ module.exports.Component = registerComponent('tracked-controls-webxr', {
       this.system.controllers,
       this.data.id,
       this.data.hand,
-      this.data.index
+      this.data.index,
+      this.data.iterateControllerProfiles
     );
     // Legacy handle to the controller for old components.
     this.el.components['tracked-controls'].controller = this.controller;
