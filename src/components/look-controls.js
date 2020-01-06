@@ -39,8 +39,6 @@ module.exports.Component = registerComponent('look-controls', {
     this.pointerLocked = false;
     this.setupMouseControls();
     this.bindMethods();
-    this.el.object3D.matrixAutoUpdate = false;
-    this.el.object3D.updateMatrix();
 
     this.setupMagicWindowControls();
 
@@ -227,8 +225,6 @@ module.exports.Component = registerComponent('look-controls', {
           }
         }
         return;
-      } else {
-        object3D.updateMatrix();
       }
 
       this.updateMagicWindowOrientation();
@@ -386,11 +382,15 @@ module.exports.Component = registerComponent('look-controls', {
    * Save pose.
    */
   onEnterVR: function () {
-    if (!this.el.sceneEl.checkHeadsetConnected()) { return; }
+    var sceneEl = this.el.sceneEl;
+    if (!sceneEl.checkHeadsetConnected()) { return; }
     this.saveCameraPose();
     this.el.object3D.position.set(0, 0, 0);
     this.el.object3D.rotation.set(0, 0, 0);
-    this.el.object3D.updateMatrix();
+    if (sceneEl.hasWebXR) {
+      this.el.object3D.matrixAutoUpdate = false;
+      this.el.object3D.updateMatrix();
+    }
   },
 
   /**
@@ -400,6 +400,7 @@ module.exports.Component = registerComponent('look-controls', {
     if (!this.el.sceneEl.checkHeadsetConnected()) { return; }
     this.restoreCameraPose();
     this.previousHMDPosition.set(0, 0, 0);
+    this.el.object3D.matrixAutoUpdate = true;
   },
 
   /**
