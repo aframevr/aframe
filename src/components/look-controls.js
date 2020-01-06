@@ -60,8 +60,10 @@ module.exports.Component = registerComponent('look-controls', {
       magicWindowControls = this.magicWindowControls = new THREE.DeviceOrientationControls(this.magicWindowObject);
       if (typeof DeviceOrientationEvent !== 'undefined' && DeviceOrientationEvent.requestPermission) {
         magicWindowControls.enabled = false;
-        if (this.el.sceneEl.components['device-orientation-permission-ui'].permissionGranted) {
-          magicWindowControls.enabled = data.magicWindowTrackingEnabled;
+        const permissionComponent = this.el.sceneEl.components['device-orientation-permission-ui'];
+        const isWaitingOnPermission = permissionComponent && !permissionComponent.permissionGranted;
+        if (!isWaitingOnPermission) {
+          magicWindowControls.enabled = true;
         } else {
           this.el.sceneEl.addEventListener('deviceorientationpermissiongranted', function () {
             magicWindowControls.enabled = data.magicWindowTrackingEnabled;
