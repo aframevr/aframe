@@ -187,12 +187,12 @@ module.exports.Component = registerComponent('hand-controls', {
     // Set model.
     if (hand !== previousHand) {
       this.loader.load(MODEL_URLS[hand], function (gltf) {
-        var mesh = gltf.scene.children[0];
-        mesh.mixer = new THREE.AnimationMixer(mesh);
+        self.mesh = gltf.scene.children[0];
+        self.mesh.mixer = new THREE.AnimationMixer(self.mesh);
         self.clips = gltf.animations;
-        el.setObject3D('mesh', mesh);
-        mesh.position.set(0, 0, 0);
-        mesh.rotation.set(0, 0, 0);
+        el.setObject3D('mesh', self.mesh);
+        self.mesh.position.set(0, 0, 0);
+        self.mesh.rotation.set(0, 0, 0);
         el.setAttribute('vive-controls', controlConfiguration);
         el.setAttribute('oculus-touch-controls', controlConfiguration);
         el.setAttribute('windows-motion-controls', controlConfiguration);

@@ -204,6 +204,9 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
 
   loadModel: function () {
     var data = this.data;
+    if (!data.model && this.el.components['hand-controls']) {
+      this.el.components['hand-controls'].mesh.rotation.set(0, 0, data.hand === 'left' ? Math.PI / 2 : -Math.PI / 2);
+    }
     if (!data.model) { return; }
 
     // Set the controller display model based on the data passed in.
