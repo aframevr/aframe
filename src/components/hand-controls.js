@@ -180,19 +180,19 @@ module.exports.Component = registerComponent('hand-controls', {
     // Get common configuration to abstract different vendor controls.
     controlConfiguration = {
       hand: hand,
-      model: false,
-      orientationOffset: {x: 0, y: 0, z: hand === 'left' ? 90 : -90}
+      model: false
     };
 
     // Set model.
     if (hand !== previousHand) {
       this.loader.load(MODEL_URLS[hand], function (gltf) {
         var mesh = gltf.scene.children[0];
+        var handModelOrientation = hand === 'left' ? Math.PI / 2 : -Math.PI / 2;
         mesh.mixer = new THREE.AnimationMixer(mesh);
         self.clips = gltf.animations;
         el.setObject3D('mesh', mesh);
         mesh.position.set(0, 0, 0);
-        mesh.rotation.set(0, 0, 0);
+        mesh.rotation.set(0, 0, handModelOrientation);
         el.setAttribute('vive-controls', controlConfiguration);
         el.setAttribute('oculus-touch-controls', controlConfiguration);
         el.setAttribute('windows-motion-controls', controlConfiguration);
