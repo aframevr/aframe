@@ -223,3 +223,19 @@ string.
 AFRAME.utils.getUrlParameter('testing');
 // If visiting the current page with ?testing=aframe, this will log 'aframe'.
 ```
+
+### `AFRAME.utils.shouldCaptureKeyEvent (event)`
+
+Returns whether we should capture this keyboard event for keyboard shortcuts. This is determined by whether or not `document.activeElement === document.body`.
+
+```js
+document.addEventListener('keyup', function (event) {
+  // If event is captured in an <input>, <textarea>, etc., exit the handler.
+  if (!AFRAME.utils.shouldCaptureKeyEvent(event)) { return; }
+  
+  // Do key binding shortcut behavior here.
+  if (event.code === 'keyI') {
+    console.log('The I key was released.');
+  }
+});
+```
