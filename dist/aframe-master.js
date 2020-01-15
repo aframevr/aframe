@@ -68833,19 +68833,19 @@ module.exports.Component = registerComponent('hand-controls', {
     // Get common configuration to abstract different vendor controls.
     controlConfiguration = {
       hand: hand,
-      model: false,
-      orientationOffset: {x: 0, y: 0, z: hand === 'left' ? 90 : -90}
+      model: false
     };
 
     // Set model.
     if (hand !== previousHand) {
       this.loader.load(MODEL_URLS[hand], function (gltf) {
         var mesh = gltf.scene.children[0];
+        var handModelOrientation = hand === 'left' ? Math.PI / 2 : -Math.PI / 2;
         mesh.mixer = new THREE.AnimationMixer(mesh);
         self.clips = gltf.animations;
         el.setObject3D('mesh', mesh);
         mesh.position.set(0, 0, 0);
-        mesh.rotation.set(0, 0, 0);
+        mesh.rotation.set(0, 0, handModelOrientation);
         el.setAttribute('vive-controls', controlConfiguration);
         el.setAttribute('oculus-touch-controls', controlConfiguration);
         el.setAttribute('windows-motion-controls', controlConfiguration);
@@ -81312,7 +81312,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 1.0.3 (Date 2020-01-15, Commit #5bb1aeb3)');
+console.log('A-Frame Version: 1.0.3 (Date 2020-01-15, Commit #746be947)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
