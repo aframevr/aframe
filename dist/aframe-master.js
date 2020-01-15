@@ -73898,7 +73898,7 @@ module.exports.Component = registerComponent('tracked-controls-webvr', {
     idPrefix: {type: 'string', default: ''},
     orientationOffset: {type: 'vec3'},
     // Arm model parameters when not 6DoF.
-    armModel: {default: true},
+    armModel: {default: false},
     headElement: {type: 'selector'}
   },
 
@@ -74459,7 +74459,7 @@ module.exports.Component = registerComponent('tracked-controls', {
     idPrefix: {type: 'string', default: ''},
     orientationOffset: {type: 'vec3'},
     // Arm model parameters when not 6DoF.
-    armModel: {default: true},
+    armModel: {default: false},
     headElement: {type: 'selector'},
     iterateControllerProfiles: {default: false}
   },
@@ -81312,7 +81312,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 1.0.3 (Date 2020-01-06, Commit #d3b9a30a)');
+console.log('A-Frame Version: 1.0.3 (Date 2020-01-15, Commit #5bb1aeb3)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
