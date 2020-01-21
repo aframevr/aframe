@@ -68847,6 +68847,7 @@ module.exports.Component = registerComponent('hand-controls', {
         mesh.position.set(0, 0, 0);
         mesh.rotation.set(0, 0, handModelOrientation);
         el.setAttribute('vive-controls', controlConfiguration);
+        el.setAttribute('ml-controls', controlConfiguration);
         el.setAttribute('oculus-touch-controls', controlConfiguration);
         el.setAttribute('windows-motion-controls', controlConfiguration);
       });
@@ -69074,6 +69075,7 @@ _dereq_('./line');
 _dereq_('./link');
 _dereq_('./look-controls');
 _dereq_('./material');
+_dereq_('./ml-controls');
 _dereq_('./obj-model');
 _dereq_('./oculus-go-controls');
 _dereq_('./oculus-touch-controls');
@@ -69105,7 +69107,7 @@ _dereq_('./scene/screenshot');
 _dereq_('./scene/stats');
 _dereq_('./scene/vr-mode-ui');
 
-},{"./animation":73,"./camera":74,"./cursor":75,"./daydream-controls":76,"./gearvr-controls":77,"./generic-tracked-controller-controls":78,"./geometry":79,"./gltf-model":80,"./hand-controls":81,"./laser-controls":83,"./light":84,"./line":85,"./link":86,"./look-controls":87,"./material":88,"./obj-model":89,"./oculus-go-controls":90,"./oculus-touch-controls":91,"./position":92,"./raycaster":93,"./rotation":94,"./scale":95,"./scene/background":96,"./scene/debug":97,"./scene/device-orientation-permission-ui":98,"./scene/embedded":99,"./scene/fog":100,"./scene/inspector":101,"./scene/keyboard-shortcuts":102,"./scene/pool":103,"./scene/screenshot":104,"./scene/stats":105,"./scene/vr-mode-ui":106,"./shadow":107,"./sound":108,"./text":109,"./tracked-controls":112,"./tracked-controls-webvr":110,"./tracked-controls-webxr":111,"./visible":113,"./vive-controls":114,"./vive-focus-controls":115,"./wasd-controls":116,"./windows-motion-controls":117}],83:[function(_dereq_,module,exports){
+},{"./animation":73,"./camera":74,"./cursor":75,"./daydream-controls":76,"./gearvr-controls":77,"./generic-tracked-controller-controls":78,"./geometry":79,"./gltf-model":80,"./hand-controls":81,"./laser-controls":83,"./light":84,"./line":85,"./link":86,"./look-controls":87,"./material":88,"./obj-model":89,"./oculus-go-controls":90,"./oculus-touch-controls":91,"./position":92,"./raycaster":93,"./rotation":94,"./scale":95,"./scene/background":96,"./scene/debug":97,"./scene/device-orientation-permission-ui":98,"./scene/embedded":99,"./scene/fog":100,"./scene/inspector":101,"./scene/keyboard-shortcuts":102,"./scene/pool":103,"./scene/screenshot":104,"./scene/stats":105,"./scene/vr-mode-ui":106,"./shadow":107,"./sound":108,"./text":109,"./tracked-controls":112,"./tracked-controls-webvr":110,"./tracked-controls-webxr":111,"./visible":113,"./vive-controls":114,"./vive-focus-controls":115,"./wasd-controls":116,"./windows-motion-controls":117,"./ml-controls":214}],83:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var utils = _dereq_('../utils/');
 
@@ -69126,6 +69128,7 @@ registerComponent('laser-controls', {
     // Set all controller models.
     el.setAttribute('daydream-controls', controlsConfiguration);
     el.setAttribute('gearvr-controls', controlsConfiguration);
+    el.setAttribute('ml-controls', controlsConfiguration);
     el.setAttribute('oculus-go-controls', controlsConfiguration);
     el.setAttribute('oculus-touch-controls', controlsConfiguration);
     el.setAttribute('vive-controls', controlsConfiguration);
@@ -69189,6 +69192,10 @@ registerComponent('laser-controls', {
     },
 
     'generic-tracked-controller-controls': {
+      cursor: {downEvents: ['triggerdown'], upEvents: ['triggerup']}
+    },
+
+    'ml-controls': {
       cursor: {downEvents: ['triggerdown'], upEvents: ['triggerup']}
     },
 
@@ -69295,7 +69302,8 @@ module.exports.Component = registerComponent('light', {
             light.color.set(value);
             rendererSystem.applyColorCorrection(light.color);
             break;
-          }
+          },
+          orientationOffset: {x: 0, y: 0, z: hand === 'left' ? 90 : -90}
 
           case 'groundColor': {
             light.groundColor.set(value);
@@ -74255,8 +74263,12 @@ module.exports.Component = registerComponent('tracked-controls-webxr', {
   },
 
   emitButtonDownEvent: function (evt) {
-    if (!this.controller || evt.inputSource.handedness !== this.data.hand) { return; }
+    if (!this.controller) { return; }
     if (this.controller.gamepad) { return; }
+    if (evt.inputSource.handedness !== "none" &&
+        evt.inputSource.handedness !== this.data.hand) {
+      return;
+    }
     this.selectEventDetails.state.pressed = true;
     this.el.emit('buttondown', this.selectEventDetails);
     this.el.emit('buttonchanged', this.selectEventDetails);
@@ -74264,8 +74276,12 @@ module.exports.Component = registerComponent('tracked-controls-webxr', {
   },
 
   emitButtonUpEvent: function (evt) {
-    if (!this.controller || evt.inputSource.handedness !== this.data.hand) { return; }
+    if (!this.controller) { return; }
     if (this.controller.gamepad) { return; }
+    if (evt.inputSource.handedness !== "none" &&
+        evt.inputSource.handedness !== this.data.hand) {
+      return;
+    }
     this.selectEventDetails.state.pressed = false;
     this.el.emit('buttonup', this.selectEventDetails);
     this.el.emit('buttonchanged', this.selectEventDetails);
@@ -83098,7 +83114,15 @@ module.exports.System = registerSystem('tracked-controls-webxr', {
   updateControllerList: function () {
     var xrSession = this.el.xrSession;
     var self = this;
-    if (!xrSession) { return; }
+    if (!xrSession) {
+      if ( this.oldControllersLength > 0 ) {
+        this.oldControllersLength = 0;
+        this.controllers = [];
+        this.el.emit('controllersupdated', undefined, false);
+      }
+      return;
+    }
+
     this.controllers = this.el.xrSession.inputSources;
     if (this.oldControllersLength === this.controllers.length) { return; }
     this.oldControllersLength = this.controllers.length;
@@ -84718,7 +84742,12 @@ function findMatchingControllerWebXR (controllers, idPrefix, handedness, index, 
   for (i = 0; i < controllers.length; i++) {
     controller = controllers[i];
     profiles = controller.profiles;
-    if (profiles.length === 0) { return; }
+    // Support for older api without profiles
+    if (profiles === undefined || profiles.length === 0) {
+      if ((i === index)) {
+        return controllers[i];
+      }
+    }
     if (iterateProfiles) {
       for (j = 0; j < profiles.length; j++) {
         controllerMatch = profiles[j].startsWith(idPrefix);
@@ -85768,6 +85797,275 @@ function getWakeLock() {
 
 module.exports = getWakeLock();
 
-},{"./util.js":212}]},{},[172])(172)
+},{"./util.js":212}], 214:[function(_dereq_,module,exports){
+var bind = _dereq_('../utils/bind');
+var registerComponent = _dereq_('../core/component').registerComponent;
+// THREE?
+
+var trackedControlsUtils = _dereq_('../utils/tracked-controls');
+var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
+var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
+var onButtonEvent = trackedControlsUtils.onButtonEvent;
+
+// 
+var isWebXRAvailable = _dereq_('../utils/').device.isWebXRAvailable;
+
+var GAMEPAD_ID_WEBXR = 'magic-leap';
+var GAMEPAD_ID_WEBVR = 'OpenVR ';
+
+var GAMEPAD_ID_PREFIX = isWebXRAvailable ? GAMEPAD_ID_WEBXR : GAMEPAD_ID_WEBVR;
+
+// TODO: Add/Replace with MagicLeap Models
+// var MAGICLEAP_CONTROLLER_MODEL_OBJ_URL = 'https://cdn.aframe.io/controllers/magicleap/controller_ml.obj';
+// var MAGICLEAP_CONTROLLER_MODEL_OBJ_MTL = 'https://cdn.aframe.io/controllers/magicleap/controller_ml.mtl';
+var MAGICLEAP_CONTROLLER_MODEL_OBJ_URL = 'https://cdn.aframe.io/controllers/vive/vr_controller_vive.obj';
+var MAGICLEAP_CONTROLLER_MODEL_OBJ_MTL = 'https://cdn.aframe.io/controllers/vive/vr_controller_vive.mtl';
+
+/**
+ * Button IDs:
+ * 0 - trigger
+ * 1 - squeeze
+ * 2 - touchpad
+ * 3 - none (dispatch but better for menu options)
+ * 4 - menu (never dispatched on this layer)
+ *
+ * Axis:
+ * 0 - touchpad x axis
+ * 1 - touchpad y axis
+ * Reference: https://github.com/immersive-web/webxr-input-profiles/blob/master/packages/registry/profiles/htc/htc-vive.json
+ */
+var INPUT_MAPPING_WEBXR = {
+  axes: {thumbstick: [0, 1]},
+  buttons: ['trigger', 'grip', 'trackpad', 'menu']
+};
+
+/**
+ * Button IDs:
+ * 0 - trackpad
+ * 1 - trigger (intensity value from 0.5 to 1)
+ * 2 - grip
+ * 3 - menu (dispatch but better for menu options)
+ * 4 - system (never dispatched on this layer)
+ */
+var INPUT_MAPPING_WEBVR = {
+  axes: {trackpad: [0, 1]},
+  buttons: ['trigger', 'grip', 'trackpad', 'menu']
+};
+
+var INPUT_MAPPING = isWebXRAvailable ? INPUT_MAPPING_WEBXR : INPUT_MAPPING_WEBVR;
+
+/**
+ * Vive controls.
+ * Interface with Vive controllers and map Gamepad events to controller buttons:
+ * trackpad, trigger, grip, menu, system
+ * Load a controller model and highlight the pressed buttons.
+ */
+module.exports.Component = registerComponent('ml-controls', {
+  schema: {
+    hand: {default: 'left'},
+    buttonColor: {type: 'color', default: '#FAFAFA'},  // Off-white.
+    buttonHighlightColor: {type: 'color', default: '#22D1EE'},  // Light blue.
+    model: {default: true},
+    orientationOffset: {type: 'vec3'}
+  },
+
+  mapping: INPUT_MAPPING,
+
+  init: function () {
+    var self = this;
+    this.controllerPresent = false;
+    this.lastControllerCheck = 0;
+    this.onButtonChanged = bind(this.onButtonChanged, this);
+    this.onButtonDown = function (evt) { onButtonEvent(evt.detail.id, 'down', self); };
+    this.onButtonUp = function (evt) { onButtonEvent(evt.detail.id, 'up', self); };
+    this.onButtonTouchEnd = function (evt) { onButtonEvent(evt.detail.id, 'touchend', self); };
+    this.onButtonTouchStart = function (evt) { onButtonEvent(evt.detail.id, 'touchstart', self); };
+    this.previousButtonValues = {};
+    this.rendererSystem = this.el.sceneEl.systems.renderer;
+
+    this.bindMethods();
+  },
+
+  update: function () {
+    var data = this.data;
+    this.controllerIndex = data.hand === 'right' ? 0 : data.hand === 'left' ? 1 : 2;
+  },
+
+  play: function () {
+    this.checkIfControllerPresent();
+    this.addControllersUpdateListener();
+  },
+
+  pause: function () {
+    this.removeEventListeners();
+    this.removeControllersUpdateListener();
+  },
+
+  bindMethods: function () {
+    this.onModelLoaded = bind(this.onModelLoaded, this);
+    this.onControllersUpdate = bind(this.onControllersUpdate, this);
+    this.checkIfControllerPresent = bind(this.checkIfControllerPresent, this);
+    this.removeControllersUpdateListener = bind(this.removeControllersUpdateListener, this);
+    this.onAxisMoved = bind(this.onAxisMoved, this);
+  },
+
+  addEventListeners: function () {
+    var el = this.el;
+    el.addEventListener('buttonchanged', this.onButtonChanged);
+    el.addEventListener('buttondown', this.onButtonDown);
+    el.addEventListener('buttonup', this.onButtonUp);
+    el.addEventListener('touchend', this.onButtonTouchEnd);
+    el.addEventListener('touchstart', this.onButtonTouchStart);
+    el.addEventListener('model-loaded', this.onModelLoaded);
+    el.addEventListener('axismove', this.onAxisMoved);
+    this.controllerEventsActive = true;
+  },
+
+  removeEventListeners: function () {
+    var el = this.el;
+    el.removeEventListener('buttonchanged', this.onButtonChanged);
+    el.removeEventListener('buttondown', this.onButtonDown);
+    el.removeEventListener('buttonup', this.onButtonUp);
+    el.removeEventListener('touchend', this.onButtonTouchEnd);
+    el.removeEventListener('touchstart', this.onButtonTouchStart);
+    el.removeEventListener('model-loaded', this.onModelLoaded);
+    el.removeEventListener('axismove', this.onAxisMoved);
+    this.controllerEventsActive = false;
+  },
+
+  /**
+   * Once OpenVR returns correct hand data in supporting browsers, we can use hand property.
+   * var isPresent = checkControllerPresentAndSetup(this.el.sceneEl, GAMEPAD_ID_PREFIX,
+                                                        { hand: data.hand });
+   * Until then, use hardcoded index.
+   */
+  checkIfControllerPresent: function () {
+    var data = this.data;
+    checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX,
+                                   {index: this.controllerIndex, hand: data.hand});
+
+  },
+
+  injectTrackedControls: function () {
+    var el = this.el;
+    var data = this.data;
+
+    // If we have an OpenVR Gamepad, use the fixed mapping.
+    el.setAttribute('tracked-controls', {
+      idPrefix: GAMEPAD_ID_PREFIX,
+      hand: data.hand,
+      controller: this.controllerIndex,
+      orientationOffset: data.orientationOffset
+    });
+
+    // Load model.
+    if (!this.data.model) { return; }
+    this.el.setAttribute('obj-model', {
+      obj: VIVE_CONTROLLER_MODEL_OBJ_URL,
+      mtl: VIVE_CONTROLLER_MODEL_OBJ_MTL
+    });
+  },
+
+  addControllersUpdateListener: function () {
+    this.el.sceneEl.addEventListener('controllersupdated', this.onControllersUpdate, false);
+  },
+
+  removeControllersUpdateListener: function () {
+    this.el.sceneEl.removeEventListener('controllersupdated', this.onControllersUpdate, false);
+  },
+
+  onControllersUpdate: function () {
+    this.checkIfControllerPresent();
+  },
+
+  /**
+   * Rotate the trigger button based on how hard the trigger is pressed.
+   */
+  onButtonChanged: function (evt) {
+    var button = this.mapping.buttons[evt.detail.id];
+    var buttonMeshes = this.buttonMeshes;
+    var analogValue;
+
+    if (!button) { return; }
+
+    if (button === 'trigger') {
+      analogValue = evt.detail.state.value;
+      // Update trigger rotation depending on button value.
+      if (buttonMeshes && buttonMeshes.trigger) {
+        buttonMeshes.trigger.rotation.x = -analogValue * (Math.PI / 12);
+      }
+    }
+
+    // Pass along changed event with button state, using button mapping for convenience.
+    this.el.emit(button + 'changed', evt.detail.state);
+  },
+
+  onModelLoaded: function (evt) {
+    var buttonMeshes;
+    var controllerObject3D = evt.detail.model;
+    var self = this;
+
+    if (!this.data.model) { return; }
+
+    // Store button meshes object to be able to change their colors.
+    buttonMeshes = this.buttonMeshes = {};
+    buttonMeshes.grip = {
+      left: controllerObject3D.getObjectByName('leftgrip'),
+      right: controllerObject3D.getObjectByName('rightgrip')
+    };
+    buttonMeshes.menu = controllerObject3D.getObjectByName('menubutton');
+    buttonMeshes.system = controllerObject3D.getObjectByName('systembutton');
+    buttonMeshes.trackpad = controllerObject3D.getObjectByName('touchpad');
+    buttonMeshes.trigger = controllerObject3D.getObjectByName('trigger');
+
+    // Set default colors.
+    Object.keys(buttonMeshes).forEach(function (buttonName) {
+      self.setButtonColor(buttonName, self.data.buttonColor);
+    });
+
+    // Offset pivot point.
+    controllerObject3D.position.set(0, -0.015, 0.04);
+  },
+
+  onAxisMoved: function (evt) {
+    emitIfAxesChanged(this, this.mapping.axes, evt);
+  },
+
+  updateModel: function (buttonName, evtName) {
+    var color;
+    var isTouch;
+    if (!this.data.model) { return; }
+
+    isTouch = evtName.indexOf('touch') !== -1;
+    // Don't change color for trackpad touch.
+    if (isTouch) { return; }
+
+    // Update colors.
+    color = evtName === 'up' ? this.data.buttonColor : this.data.buttonHighlightColor;
+    this.setButtonColor(buttonName, color);
+  },
+
+  setButtonColor: function (buttonName, color) {
+    var buttonMeshes = this.buttonMeshes;
+    var rendererSystem = this.rendererSystem;
+
+    if (!buttonMeshes) { return; }
+
+    // Need to do both left and right sides for grip.
+    if (buttonName === 'grip') {
+      buttonMeshes.grip.left.material.color.set(color);
+      buttonMeshes.grip.right.material.color.set(color);
+      rendererSystem.applyColorCorrection(buttonMeshes.grip.left.material.color);
+      rendererSystem.applyColorCorrection(buttonMeshes.grip.right.material.color);
+      return;
+    }
+    buttonMeshes[buttonName].material.color.set(color);
+    rendererSystem.applyColorCorrection(buttonMeshes[buttonName].material.color);
+  }
+});
+
+},{"../core/component":126,"../utils/":199,"../utils/bind":193,"../utils/tracked-controls":207}]
+
+},{},[172])(172)
 });
 //# sourceMappingURL=aframe-master.js.map
