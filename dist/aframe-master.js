@@ -66764,7 +66764,7 @@ module.exports={
     "promise-polyfill": "^3.1.0",
     "super-animejs": "^3.1.0",
     "super-three": "^0.111.5",
-    "three-bmfont-text": "dmarcos/three-bmfont-text#1babdf8507",
+    "three-bmfont-text": "dmarcos/three-bmfont-text#1babdf8507c731a18f8af3b807292e2b9740955e",
     "webvr-polyfill": "^0.10.10"
   },
   "devDependencies": {
@@ -81312,7 +81312,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 1.0.3 (Date 2020-01-15, Commit #746be947)');
+console.log('A-Frame Version: 1.0.3 (Date 2020-01-22, Commit #bac9bff2)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
