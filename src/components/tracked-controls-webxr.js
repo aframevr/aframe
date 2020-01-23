@@ -61,9 +61,18 @@ module.exports.Component = registerComponent('tracked-controls-webxr', {
     sceneEl.xrSession.removeEventListener('selectend', this.emitButtonUpEvent);
   },
 
+  isControllerPresent: function (evt) {
+    if (!this.controller || this.controller.gamepad) { return false; }
+    if (evt.inputSource.handedness !== 'none' &&
+        evt.inputSource.handedness !== this.data.hand) {
+      return false;
+    }
+    return true;
+  },
+
   emitButtonDownEvent: function (evt) {
-    if (!this.controller || evt.inputSource.handedness !== this.data.hand) { return; }
-    if (this.controller.gamepad) { return; }
+    if (!this.isControllerPresent(evt)) { return; }
+
     this.selectEventDetails.state.pressed = true;
     this.el.emit('buttondown', this.selectEventDetails);
     this.el.emit('buttonchanged', this.selectEventDetails);
@@ -71,8 +80,8 @@ module.exports.Component = registerComponent('tracked-controls-webxr', {
   },
 
   emitButtonUpEvent: function (evt) {
-    if (!this.controller || evt.inputSource.handedness !== this.data.hand) { return; }
-    if (this.controller.gamepad) { return; }
+    if (!this.isControllerPresent(evt)) { return; }
+
     this.selectEventDetails.state.pressed = false;
     this.el.emit('buttonup', this.selectEventDetails);
     this.el.emit('buttonchanged', this.selectEventDetails);
