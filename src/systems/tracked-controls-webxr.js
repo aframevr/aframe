@@ -19,7 +19,16 @@ module.exports.System = registerSystem('tracked-controls-webxr', {
   updateControllerList: function () {
     var xrSession = this.el.xrSession;
     var self = this;
-    if (!xrSession) { return; }
+    if (!xrSession) {
+      // Broadcast that we now have zero controllers connected if there is
+      // no session
+      if (this.oldControllersLength > 0) {
+        this.oldControllersLength = 0;
+        this.controllers = [];
+        this.el.emit('controllersupdated', undefined, false);
+      }
+      return;
+    }
     this.controllers = this.el.xrSession.inputSources;
     if (this.oldControllersLength === this.controllers.length) { return; }
     this.oldControllersLength = this.controllers.length;
