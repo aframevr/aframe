@@ -202,6 +202,7 @@ module.exports.Component = registerComponent('hand-controls', {
         el.setObject3D('mesh', mesh);
         mesh.position.set(0, 0, 0);
         mesh.rotation.set(0, 0, handModelOrientation);
+        el.setAttribute('magicleap-controls', controlConfiguration);
         el.setAttribute('vive-controls', controlConfiguration);
         el.setAttribute('oculus-touch-controls', controlConfiguration);
         el.setAttribute('windows-motion-controls', controlConfiguration);
