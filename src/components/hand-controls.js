@@ -3,8 +3,12 @@ var registerComponent = require('../core/component').registerComponent;
 
 // Found at https://github.com/aframevr/assets.
 var MODEL_URLS = {
-  left: 'https://cdn.aframe.io/controllers/hands/leftHand.glb',
-  right: 'https://cdn.aframe.io/controllers/hands/rightHand.glb'
+  toon_left: 'https://cdn.aframe.io/controllers/hands/leftHand.glb',
+  toon_right: 'https://cdn.aframe.io/controllers/hands/rightHand.glb',
+  low_left: 'https://cdn.aframe.io/controllers/hands/leftHandLow.glb',
+  low_right: 'https://cdn.aframe.io/controllers/hands/rightHandLow.glb',
+  high_left: 'https://cdn.aframe.io/controllers/hands/leftHandHigh.glb',
+  high_right: 'https://cdn.aframe.io/controllers/hands/rightHandHigh.glb'
 };
 
 // Poses.
@@ -44,7 +48,12 @@ EVENTS[ANIMATIONS.point] = 'pointing';
  * @property {string} Hand mapping (`left`, `right`).
  */
 module.exports.Component = registerComponent('hand-controls', {
-  schema: {default: 'left'},
+  // schema: {default: 'left'},
+  schema: {
+    hand: { default: 'left' },
+    // toon, low or high
+    quality: { default: 'low' }
+  },
 
   init: function () {
     var self = this;
@@ -174,7 +183,8 @@ module.exports.Component = registerComponent('hand-controls', {
   update: function (previousHand) {
     var controlConfiguration;
     var el = this.el;
-    var hand = this.data;
+    var hand = this.data.hand;
+    var quality = this.data.quality;
     var self = this;
 
     // Get common configuration to abstract different vendor controls.
@@ -185,7 +195,7 @@ module.exports.Component = registerComponent('hand-controls', {
 
     // Set model.
     if (hand !== previousHand) {
-      this.loader.load(MODEL_URLS[hand], function (gltf) {
+      this.loader.load(MODEL_URLS[quality + '_' + hand], function (gltf) {
         var mesh = gltf.scene.children[0];
         var handModelOrientation = hand === 'left' ? Math.PI / 2 : -Math.PI / 2;
         mesh.mixer = new THREE.AnimationMixer(mesh);
@@ -249,11 +259,11 @@ module.exports.Component = registerComponent('hand-controls', {
    */
   determineGesture: function () {
     var gesture;
-    var isGripActive = this.pressedButtons['grip'];
-    var isSurfaceActive = this.pressedButtons['surface'] || this.touchedButtons['surface'];
-    var isTrackpadActive = this.pressedButtons['trackpad'] || this.touchedButtons['trackpad'];
-    var isTriggerActive = this.pressedButtons['trigger'] || this.touchedButtons['trigger'];
-    var isABXYActive = this.touchedButtons['AorX'] || this.touchedButtons['BorY'];
+    var isGripActive = this.pressedButtons.grip;
+    var isSurfaceActive = this.pressedButtons.surface || this.touchedButtons.surface;
+    var isTrackpadActive = this.pressedButtons.trackpad || this.touchedButtons.trackpad;
+    var isTriggerActive = this.pressedButtons.trigger || this.touchedButtons.trigger;
+    var isABXYActive = this.touchedButtons.AorX || this.touchedButtons.BorY;
     var isVive = isViveController(this.el.components['tracked-controls']);
 
     // Works well with Oculus Touch and Windows Motion Controls, but Vive needs tweaks.
@@ -325,7 +335,7 @@ module.exports.Component = registerComponent('hand-controls', {
     if (eventName) { el.emit(eventName); }
   },
 
-/**
+  /**
   * Play hand animation based on button state.
   *
   * @param {string} gesture - Name of the animation as specified by the model.
@@ -393,7 +403,6 @@ function getGestureEventName (gesture, active) {
   if (eventName === 'pointing' || eventName === 'pistol') {
     return eventName + (active ? 'start' : 'end');
   }
-  return;
 }
 
 function isViveController (trackedControls) {
