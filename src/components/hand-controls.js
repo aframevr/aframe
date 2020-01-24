@@ -52,7 +52,7 @@ module.exports.Component = registerComponent('hand-controls', {
   schema: {
     hand: { default: 'left' },
     // toon, low or high
-    quality: { default: 'low' }
+    handModelStyle: { default: 'low' }
   },
 
   init: function () {
@@ -184,7 +184,7 @@ module.exports.Component = registerComponent('hand-controls', {
     var controlConfiguration;
     var el = this.el;
     var hand = this.data.hand;
-    var quality = this.data.quality;
+    var handModelStyle = this.data.handModelStyle;
     var self = this;
 
     // Get common configuration to abstract different vendor controls.
@@ -195,7 +195,7 @@ module.exports.Component = registerComponent('hand-controls', {
 
     // Set model.
     if (hand !== previousHand) {
-      this.loader.load(MODEL_URLS[quality + '_' + hand], function (gltf) {
+      this.loader.load(MODEL_URLS[handModelStyle + '_' + hand], function (gltf) {
         var mesh = gltf.scene.children[0];
         var handModelOrientation = hand === 'left' ? Math.PI / 2 : -Math.PI / 2;
         mesh.mixer = new THREE.AnimationMixer(mesh);
