@@ -3,12 +3,12 @@ var registerComponent = require('../core/component').registerComponent;
 
 // Found at https://github.com/aframevr/assets.
 var MODEL_URLS = {
-  toon_left: 'https://cdn.aframe.io/controllers/hands/leftHand.glb',
-  toon_right: 'https://cdn.aframe.io/controllers/hands/rightHand.glb',
-  low_left: 'https://cdn.aframe.io/controllers/hands/leftHandLow.glb',
-  low_right: 'https://cdn.aframe.io/controllers/hands/rightHandLow.glb',
-  high_left: 'https://cdn.aframe.io/controllers/hands/leftHandHigh.glb',
-  high_right: 'https://cdn.aframe.io/controllers/hands/rightHandHigh.glb'
+  toonLeft: 'https://cdn.aframe.io/controllers/hands/leftHand.glb',
+  toonRight: 'https://cdn.aframe.io/controllers/hands/rightHand.glb',
+  lowPolyLeft: 'https://cdn.aframe.io/controllers/hands/leftHandLow.glb',
+  lowPolyRight: 'https://cdn.aframe.io/controllers/hands/rightHandLow.glb',
+  highPolyLeft: 'https://cdn.aframe.io/controllers/hands/leftHandHigh.glb',
+  highPolyRight: 'https://cdn.aframe.io/controllers/hands/rightHandHigh.glb'
 };
 
 // Poses.
@@ -48,11 +48,9 @@ EVENTS[ANIMATIONS.point] = 'pointing';
  * @property {string} Hand mapping (`left`, `right`).
  */
 module.exports.Component = registerComponent('hand-controls', {
-  // schema: {default: 'left'},
   schema: {
     hand: { default: 'left' },
-    // toon, low or high
-    handModelStyle: { default: 'low' }
+    handModelStyle: {default: 'lowPoly', oneOf: ['lowPoly', 'highPoly', 'toon']}
   },
 
   init: function () {
@@ -195,7 +193,7 @@ module.exports.Component = registerComponent('hand-controls', {
 
     // Set model.
     if (hand !== previousHand) {
-      this.loader.load(MODEL_URLS[handModelStyle + '_' + hand], function (gltf) {
+      this.loader.load(MODEL_URLS[handModelStyle + hand.charAt(0).toUpperCase() + hand.slice(1)], function (gltf) {
         var mesh = gltf.scene.children[0];
         var handModelOrientation = hand === 'left' ? Math.PI / 2 : -Math.PI / 2;
         mesh.mixer = new THREE.AnimationMixer(mesh);
