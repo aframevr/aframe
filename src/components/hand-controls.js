@@ -193,7 +193,8 @@ module.exports.Component = registerComponent('hand-controls', {
 
     // Set model.
     if (hand !== previousHand) {
-      this.loader.load(MODEL_URLS[handModelStyle + hand.charAt(0).toUpperCase() + hand.slice(1)], function (gltf) {
+      var handmodelUrl = MODEL_URLS[handModelStyle + hand.charAt(0).toUpperCase() + hand.slice(1)];
+      this.loader.load(handmodelUrl, function (gltf) {
         var mesh = gltf.scene.children[0];
         var handModelOrientation = hand === 'left' ? Math.PI / 2 : -Math.PI / 2;
         mesh.mixer = new THREE.AnimationMixer(mesh);
