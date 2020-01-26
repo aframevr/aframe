@@ -15,7 +15,7 @@ module.exports.Component = registerComponent('link', {
     highlightedColor: {default: '#24CAFF', type: 'color'},
     href: {default: ''},
     image: {type: 'asset'},
-    previewDistance: {default: 15},
+    previewDistance: {default: 15, min: 1},
     on: {default: 'click'},
     peekMode: {default: false},
     title: {default: ''},
