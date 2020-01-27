@@ -160,7 +160,7 @@ additional properties:
 | Property            | Light type      | Description                                                                                                                                | Default Value |
 |---------------------|-----------------|--------------------------------------------------------------------------------------------------------------------------------------------|---------------|
 | castShadow          |                 | Whether this light casts shadows on the scene.                                                                                             | false         |
-| shadowBias          |                 | Offset depth when deciding whether a surface is in shadow. Tiny adjustments here (in the order of 0.0001) may reduce artifacts in shadows. | 0             |
+| shadowBias          |                 | Offset depth when deciding whether a surface is in shadow. Tiny adjustments here (in the order of +/-0.0001) may reduce artifacts in shadows. | 0             |
 | shadowCameraBottom  | `directional`   | Bottom plane of shadow camera frustum.                                                                                                     | -5            |
 | shadowCameraFar     |                 | Far plane of shadow camera frustum.                                                                                                        | 500           |
 | shadowCameraFov     | `point`, `spot` | Shadow camera's FOV.                                                                                                                       | 50            |
