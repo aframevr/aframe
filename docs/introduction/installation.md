@@ -46,7 +46,6 @@ Below are a few other A-Frame Glitches for starters:
 Below are a couple of A-Frame starter kits on other browser-based code
 editors. Both support remixing or forking:
 
-- [Mozilla Thimble &mdash; A-Frame](https://thimble.mozilla.org/en-US/user/ngokevin/864056)
 - [CodePen &mdash; A-Frame](https://codepen.io/mozvr/pen/BjygdO)
 
 ## Local Development
