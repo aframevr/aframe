@@ -68702,6 +68702,7 @@ EVENTS[ANIMATIONS.point] = 'pointing';
  */
 module.exports.Component = registerComponent('hand-controls', {
   schema: {
+    color: {default: 'white', type: 'color'},
     hand: { default: 'left' },
     handModelStyle: {default: 'lowPoly', oneOf: ['lowPoly', 'highPoly', 'toon']}
   },
@@ -68836,6 +68837,7 @@ module.exports.Component = registerComponent('hand-controls', {
     var el = this.el;
     var hand = this.data.hand;
     var handModelStyle = this.data.handModelStyle;
+    var handColor = this.data.color;
     var self = this;
 
     // Get common configuration to abstract different vendor controls.
@@ -68853,6 +68855,9 @@ module.exports.Component = registerComponent('hand-controls', {
         mesh.mixer = new THREE.AnimationMixer(mesh);
         self.clips = gltf.animations;
         el.setObject3D('mesh', mesh);
+
+        var handMaterial = mesh.children[1].material;
+        handMaterial.color = new THREE.Color(handColor);
         mesh.position.set(0, 0, 0);
         mesh.rotation.set(0, 0, handModelOrientation);
         el.setAttribute('magicleap-controls', controlConfiguration);
@@ -81516,7 +81521,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 1.0.3 (Date 2020-01-29, Commit #d41f3c74)');
+console.log('A-Frame Version: 1.0.3 (Date 2020-01-30, Commit #92ac1600)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
