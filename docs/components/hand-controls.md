@@ -32,7 +32,7 @@ handles hand animations and poses.
 |----------------|----------------------------------------------------------------------------------------|---------------|
 | color          | Color of hand material.                                                                | white         |
 | hand           | Associated controller. Can be `left` or `right`.                                       | left          |
-| handModelStyle | Style oh the hand 3D model loaded. Can be `lowPoly`, `highPoly` or `toon`.             | lowPoly       |
+| handModelStyle | Style of the hand 3D model loaded. Can be `lowPoly`, `highPoly` or `toon`.             | lowPoly       |
 
 
 ## Events
