@@ -138,6 +138,7 @@ module.exports.Component = registerComponent('material', {
     material.vertexColors = parseVertexColors(data.vertexColors);
     material.visible = data.visible;
     material.blending = parseBlending(data.blending);
+    material.dithering = data.dithering;
 
     // Check if material needs update.
     for (oldDataHasKeys in oldData) { break; }
