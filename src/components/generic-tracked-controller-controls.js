@@ -50,7 +50,6 @@ module.exports.Component = registerComponent('generic-tracked-controller-control
   mapping: INPUT_MAPPING,
 
   bindMethods: function () {
-    this.onModelLoaded = bind(this.onModelLoaded, this);
     this.onControllersUpdate = bind(this.onControllersUpdate, this);
     this.checkIfControllerPresent = bind(this.checkIfControllerPresent, this);
     this.removeControllersUpdateListener = bind(this.removeControllersUpdateListener, this);
@@ -77,7 +76,6 @@ module.exports.Component = registerComponent('generic-tracked-controller-control
     el.addEventListener('buttonup', this.onButtonUp);
     el.addEventListener('touchstart', this.onButtonTouchStart);
     el.addEventListener('touchend', this.onButtonTouchEnd);
-    el.addEventListener('model-loaded', this.onModelLoaded);
     el.addEventListener('axismove', this.onAxisMoved);
     this.controllerEventsActive = true;
   },
