@@ -107,7 +107,7 @@ module.exports.Component = registerComponent('tracked-controls-webxr', {
 
   tick: function () {
     var sceneEl = this.el.sceneEl;
-    if (!this.controller || !sceneEl.frame) { return; }
+    if (!this.controller || !sceneEl.frame || !this.system.referenceSpace) { return; }
     this.pose = sceneEl.frame.getPose(this.controller.targetRaySpace, this.system.referenceSpace);
     this.updatePose();
     this.updateButtons();
