@@ -68412,7 +68412,6 @@ module.exports.Component = registerComponent('generic-tracked-controller-control
   mapping: INPUT_MAPPING,
 
   bindMethods: function () {
-    this.onModelLoaded = bind(this.onModelLoaded, this);
     this.onControllersUpdate = bind(this.onControllersUpdate, this);
     this.checkIfControllerPresent = bind(this.checkIfControllerPresent, this);
     this.removeControllersUpdateListener = bind(this.removeControllersUpdateListener, this);
@@ -68439,7 +68438,6 @@ module.exports.Component = registerComponent('generic-tracked-controller-control
     el.addEventListener('buttonup', this.onButtonUp);
     el.addEventListener('touchstart', this.onButtonTouchStart);
     el.addEventListener('touchend', this.onButtonTouchEnd);
-    el.addEventListener('model-loaded', this.onModelLoaded);
     el.addEventListener('axismove', this.onAxisMoved);
     this.controllerEventsActive = true;
   },
@@ -81517,7 +81515,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 1.0.3 (Date 2020-02-04, Commit #74610add)');
+console.log('A-Frame Version: 1.0.3 (Date 2020-02-04, Commit #54dd718a)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
