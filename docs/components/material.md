@@ -73,7 +73,7 @@ depending on the material type applied.
 | vertexColors | Whether to use vertex or face colors to shade the material. Can be one of `none`, `vertex`, or `face`.                                            | none          |
 | visible      | Whether material is visible. Raycasters will ignore invisible materials.                                                                          | true          |
 | blending     | The blending mode for the material's RGB and Alpha sent to the WebGLRenderer. Can be one of `none`, `normal`, `additive`, `subtractive` or `multiply`.  | normal          |
-| dithering    | Whether material is dithered with noise. Removes banding from gradients like ones produced by lightingIf there is no active/visible animation and the user has no updated the view or other controls, I just skip that frame. It looks good and keeps the device from heating up and draining the battery, especially if I get up and walk away for a bit with the tab open..                                                                 | true          |
+| dithering    | Whether material is dithered with noise. Removes banding from gradients like ones produced by lighting.                                           | true          |
 
 ## Events
 
