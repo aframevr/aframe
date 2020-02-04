@@ -67591,6 +67591,11 @@ var CANVAS_EVENTS = {
   UP: ['mouseup', 'touchend']
 };
 
+var WEBXR_EVENTS = {
+  DOWN: ['selectstart'],
+  UP: ['selectend']
+};
+
 var CANVAS_HOVER_CLASS = 'a-mouse-cursor-hover';
 
 /**
@@ -67640,6 +67645,7 @@ module.exports.Component = registerComponent('cursor', {
     this.onIntersection = bind(this.onIntersection, this);
     this.onIntersectionCleared = bind(this.onIntersectionCleared, this);
     this.onMouseMove = bind(this.onMouseMove, this);
+    this.onEnterVR = bind(this.onEnterVR, this);
   },
 
   update: function (oldData) {
@@ -67698,6 +67704,7 @@ module.exports.Component = registerComponent('cursor', {
     el.addEventListener('raycaster-intersection-cleared', this.onIntersectionCleared);
 
     el.sceneEl.addEventListener('rendererresize', this.updateCanvasBounds);
+    el.sceneEl.addEventListener('enter-vr', this.onEnterVR);
     window.addEventListener('resize', this.updateCanvasBounds);
     window.addEventListener('scroll', this.updateCanvasBounds);
 
@@ -67733,6 +67740,7 @@ module.exports.Component = registerComponent('cursor', {
     canvas.removeEventListener('touchmove', this.onMouseMove);
 
     el.sceneEl.removeEventListener('rendererresize', this.updateCanvasBounds);
+    el.sceneEl.removeEventListener('enter-vr', this.onEnterVR);
     window.removeEventListener('resize', this.updateCanvasBounds);
     window.removeEventListener('scroll', this.updateCanvasBounds);
   },
@@ -67875,6 +67883,18 @@ module.exports.Component = registerComponent('cursor', {
     // Check if the current intersection has ended
     if (clearedEls.indexOf(this.intersectedEl) === -1) { return; }
     this.clearCurrentIntersection();
+  },
+
+  onEnterVR: function () {
+    var xrSession = this.el.xrSession;
+    var self = this;
+    if (!xrSession) { return; }
+    WEBXR_EVENTS.DOWN.forEach(function (downEvent) {
+      xrSession.addEventListener(downEvent, self.onCursorDown);
+    });
+    WEBXR_EVENTS.UP.forEach(function (upEvent) {
+      xrSession.addEventListener(upEvent, self.onCursorUp);
+    });
   },
 
   setIntersection: function (intersectedEl, intersection) {
@@ -81515,7 +81535,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 1.0.3 (Date 2020-02-04, Commit #54dd718a)');
+console.log('A-Frame Version: 1.0.3 (Date 2020-02-04, Commit #1bf82ec2)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
