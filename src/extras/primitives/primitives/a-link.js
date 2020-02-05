@@ -10,7 +10,6 @@ registerPrimitive('a-link', {
   mappings: {
     href: 'link.href',
     image: 'link.image',
-    title: 'link.title',
-    'preview-distance': 'link.previewDistance'
+    title: 'link.title'
   }
 });

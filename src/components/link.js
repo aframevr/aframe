@@ -15,7 +15,6 @@ module.exports.Component = registerComponent('link', {
     highlightedColor: {default: '#24CAFF', type: 'color'},
     href: {default: ''},
     image: {type: 'asset'},
-    previewDistance: {default: 15, min: 1},
     on: {default: 'click'},
     peekMode: {default: false},
     title: {default: ''},
@@ -29,6 +28,7 @@ module.exports.Component = registerComponent('link', {
     this.quaternionClone = new THREE.Quaternion();
     // Store hidden elements during peek mode so we can show them again later.
     this.hiddenEls = [];
+    this.previewDistance = 15;
   },
 
   update: function (oldData) {
@@ -38,6 +38,9 @@ module.exports.Component = registerComponent('link', {
     var strokeColor;
 
     if (!data.visualAspectEnabled) { return; }
+
+    var elScale = this.el.getAttribute('scale');
+    this.previewDistance = 15 * (elScale.x + elScale.y) / 2;
 
     this.initVisualAspect();
 
@@ -109,7 +112,7 @@ module.exports.Component = registerComponent('link', {
 
     // Set portal.
     el.setAttribute('geometry', {primitive: 'circle', radius: 1.0, segments: 64});
-    el.setAttribute('material', {shader: 'portal', pano: this.data.image, side: 'double', previewDistance: this.data.previewDistance});
+    el.setAttribute('material', {shader: 'portal', pano: this.data.image, side: 'double', previewDistance: this.previewDistance});
 
     // Set text that displays the link title and URL.
     textEl.setAttribute('text', {
@@ -138,7 +141,7 @@ module.exports.Component = registerComponent('link', {
       borderEnabled: 0.0,
       pano: this.data.image,
       side: 'back',
-      previewDistance: this.data.previewDistance
+      previewDistance: this.previewDistance
     });
     semiSphereEl.setAttribute('rotation', '0 180 0');
     semiSphereEl.setAttribute('position', '0 0 0');
@@ -157,7 +160,7 @@ module.exports.Component = registerComponent('link', {
       borderEnabled: 0.0,
       pano: this.data.image,
       side: 'back',
-      previewDistance: this.data.previewDistance
+      previewDistance: this.previewDistance
     });
     sphereEl.setAttribute('visible', false);
     el.appendChild(sphereEl);
@@ -202,7 +205,7 @@ module.exports.Component = registerComponent('link', {
       cameraWorldPosition.setFromMatrixPosition(camera.matrixWorld);
       distance = elWorldPosition.distanceTo(cameraWorldPosition);
 
-      if (distance > this.data.previewDistance + 5) {
+      if (distance > this.previewDistance + 5) {
         // Store original orientation to be restored when the portal stops facing the camera.
         if (!this.previousQuaternion) {
           this.quaternionClone.copy(quaternion);
