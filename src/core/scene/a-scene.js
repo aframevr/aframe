@@ -333,8 +333,7 @@ module.exports.AScene = registerElement('a-scene', {
             window.dispatchEvent(event);
           }
 
-          self.addState('vr-mode');
-          self.emit('enter-vr', {target: self});
+        
           // Lock to landscape orientation on mobile.
           if (!isWebXRAvailable && self.isMobile && screen.orientation && screen.orientation.lock) {
             screen.orientation.lock('landscape');
@@ -347,6 +346,9 @@ module.exports.AScene = registerElement('a-scene', {
           // connected.
           if (!self.isMobile && !self.checkHeadsetConnected()) {
             requestFullscreen(self.canvas);
+          } else {
+            self.addState('vr-mode');
+            self.emit('enter-vr', {target: self});
           }
 
           self.renderer.setAnimationLoop(self.render);
