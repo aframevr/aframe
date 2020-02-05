@@ -6530,7 +6530,7 @@ module.exports = anime;
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
 	typeof define === 'function' && define.amd ? define(['exports'], factory) :
 	(global = global || self, factory(global.THREE = {}));
-}(this, function (exports) { 'use strict';
+}(this, (function (exports) { 'use strict';
 
 	// Polyfills
 
@@ -29876,6 +29876,9 @@ module.exports = anime;
 		cameraVR.layers.enable( 1 );
 		cameraVR.layers.enable( 2 );
 
+		var _currentDepthNear = null;
+		var _currentDepthFar = null;
+
 		//
 
 		this.enabled = false;
@@ -30040,6 +30043,20 @@ module.exports = anime;
 		};
 
 		this.getCamera = function ( camera ) {
+
+			cameraVR.near = cameraR.near = cameraL.near = camera.near;
+			cameraVR.far = cameraR.far = cameraL.far = camera.far;
+			if ( _currentDepthNear !== cameraVR.near || _currentDepthFar !== cameraVR.far ) {
+
+				session.updateRenderState( {
+					depthNear: cameraVR.near,
+					depthFar: cameraVR.far
+				} );
+
+				_currentDepthNear = cameraVR.near;
+				_currentDepthFar = cameraVR.far;
+
+			}
 
 			var parent = camera.parent;
 			var cameras = cameraVR.cameras;
@@ -32745,7 +32762,7 @@ module.exports = anime;
 
 		function materialNeedsLights( material ) {
 
-			return material.isMeshLambertMaterial || material.isMeshToonMaterial || material.isMeshPhongMaterial ||
+			return material.isMeshLambertMaterial || material.isMeshToonMaterial || material.isMeshPhongMaterial ||
 				material.isMeshStandardMaterial || material.isShadowMaterial ||
 				( material.isShaderMaterial && material.lights === true );
 
@@ -39351,6 +39368,7 @@ module.exports = anime;
 
 
 	var Geometries = /*#__PURE__*/Object.freeze({
+		__proto__: null,
 		WireframeGeometry: WireframeGeometry,
 		ParametricGeometry: ParametricGeometry,
 		ParametricBufferGeometry: ParametricBufferGeometry,
@@ -40379,6 +40397,7 @@ module.exports = anime;
 
 
 	var Materials = /*#__PURE__*/Object.freeze({
+		__proto__: null,
 		ShadowMaterial: ShadowMaterial,
 		SpriteMaterial: SpriteMaterial,
 		RawShaderMaterial: RawShaderMaterial,
@@ -44688,6 +44707,7 @@ module.exports = anime;
 
 
 	var Curves = /*#__PURE__*/Object.freeze({
+		__proto__: null,
 		ArcCurve: ArcCurve,
 		CatmullRomCurve3: CatmullRomCurve3,
 		CubicBezierCurve: CubicBezierCurve,
@@ -57182,7 +57202,7 @@ module.exports = anime;
 
 	Object.defineProperty(exports, '__esModule', { value: true });
 
-}));
+})));
 
 },{}],58:[function(_dereq_,module,exports){
 /**
@@ -66763,7 +66783,7 @@ module.exports={
     "present": "0.0.6",
     "promise-polyfill": "^3.1.0",
     "super-animejs": "^3.1.0",
-    "super-three": "^0.111.5",
+    "super-three": "^0.111.6",
     "three-bmfont-text": "dmarcos/three-bmfont-text#1babdf8507c731a18f8af3b807292e2b9740955e",
     "webvr-polyfill": "^0.10.10"
   },
@@ -81535,7 +81555,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 1.0.3 (Date 2020-02-04, Commit #1bf82ec2)');
+console.log('A-Frame Version: 1.0.3 (Date 2020-02-05, Commit #3bd4be2c)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
