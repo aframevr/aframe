@@ -333,7 +333,6 @@ module.exports.AScene = registerElement('a-scene', {
             window.dispatchEvent(event);
           }
 
-        
           // Lock to landscape orientation on mobile.
           if (!isWebXRAvailable && self.isMobile && screen.orientation && screen.orientation.lock) {
             screen.orientation.lock('landscape');
