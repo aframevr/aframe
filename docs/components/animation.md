@@ -27,14 +27,14 @@ We can also tween values directly for better performance versus going through
 For example, translating a box:
 
 ```html
-<a-box position="0 1.6 0" animation="property: position; to: 5 1.6 0; dur: 1500; easing: linear"></a-box>
+<a-box position="-1 1.6 -5" animation="property: position; to: 1 8 -10; dur: 2000; easing: linear; loop: true" color="tomato"></a-box>
 ```
 
 Or orbiting a sphere in a 5-meter radius:
 
 ```html
 <a-entity rotation="0 0 0" animation="property: rotation; to: 0 360 0; loop: true; dur: 10000">
-  <a-entity position="5 0 0"></a-entity>
+        <a-sphere position="5 0 0" color="mediumseagreen"></a-sphere>
 </a-entity>
 ```
 

@@ -18,6 +18,7 @@ registerComponent('laser-controls', {
     // Set all controller models.
     el.setAttribute('daydream-controls', controlsConfiguration);
     el.setAttribute('gearvr-controls', controlsConfiguration);
+    el.setAttribute('magicleap-controls', controlsConfiguration);
     el.setAttribute('oculus-go-controls', controlsConfiguration);
     el.setAttribute('oculus-touch-controls', controlsConfiguration);
     el.setAttribute('vive-controls', controlsConfiguration);
@@ -82,6 +83,10 @@ registerComponent('laser-controls', {
 
     'generic-tracked-controller-controls': {
       cursor: {downEvents: ['triggerdown'], upEvents: ['triggerup']}
+    },
+
+    'magicleap-controls': {
+      cursor: {downEvents: ['trackpaddown', 'triggerdown'], upEvents: ['trackpadup', 'triggerup']}
     },
 
     'oculus-go-controls': {

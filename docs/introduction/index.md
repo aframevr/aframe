@@ -27,7 +27,7 @@ free. Alternatively, create an `.html` file and include A-Frame in the
 ```html
 <html>
   <head>
-    <script src="https://aframe.io/releases/1.0.3/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
   </head>
   <body>
     <a-scene>

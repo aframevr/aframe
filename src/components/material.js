@@ -31,7 +31,8 @@ module.exports.Component = registerComponent('material', {
     transparent: {default: false},
     vertexColors: {type: 'string', default: 'none', oneOf: ['face', 'vertex']},
     visible: {default: true},
-    blending: {default: 'normal', oneOf: ['none', 'normal', 'additive', 'subtractive', 'multiply']}
+    blending: {default: 'normal', oneOf: ['none', 'normal', 'additive', 'subtractive', 'multiply']},
+    dithering: {default: true}
   },
 
   init: function () {
@@ -137,6 +138,7 @@ module.exports.Component = registerComponent('material', {
     material.vertexColors = parseVertexColors(data.vertexColors);
     material.visible = data.visible;
     material.blending = parseBlending(data.blending);
+    material.dithering = data.dithering;
 
     // Check if material needs update.
     for (oldDataHasKeys in oldData) { break; }

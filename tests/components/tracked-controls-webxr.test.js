@@ -65,6 +65,7 @@ suite('tracked-controls-webxr', function () {
           };
         }
       };
+      component.system.referenceSpace = {};
       component.controller = {};
       component.tick();
       assert.shallowDeepEqual(component.el.getAttribute('position'), {x: 1, y: 2, z: 3});

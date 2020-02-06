@@ -73,6 +73,7 @@ depending on the material type applied.
 | vertexColors | Whether to use vertex or face colors to shade the material. Can be one of `none`, `vertex`, or `face`.                                            | none          |
 | visible      | Whether material is visible. Raycasters will ignore invisible materials.                                                                          | true          |
 | blending     | The blending mode for the material's RGB and Alpha sent to the WebGLRenderer. Can be one of `none`, `normal`, `additive`, `subtractive` or `multiply`.  | normal          |
+| dithering    | Whether material is dithered with noise. Removes banding from gradients like ones produced by lighting.                                           | true          |
 
 ## Events
 
@@ -362,7 +363,7 @@ Let's walk through an [example CodePen][example] with step-by-step commentary.
 As always, we need to include the A-Frame script.
 
 ```js
-<script src="https://aframe.io/releases/1.0.3/aframe.min.js"></script>
+<script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
 ```
 
 Next, we define any components and shaders we need after the A-Frame
