@@ -170,7 +170,8 @@ module.exports.Component = registerComponent('windows-motion-controls', {
   checkIfControllerPresent: function () {
     checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX, {
       hand: this.data.hand,
-      index: this.data.pair
+      index: this.data.pair,
+      iterateControllerProfiles: true
     });
   },
 
