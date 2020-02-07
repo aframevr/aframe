@@ -19,6 +19,8 @@ module.exports.Component = registerComponent('light', {
     distance: {default: 0.0, min: 0, if: {type: ['point', 'spot']}},
     intensity: {default: 1.0, min: 0, if: {type: ['ambient', 'directional', 'hemisphere', 'point', 'spot']}},
     penumbra: {default: 0, min: 0, max: 1, if: {type: ['spot']}},
+    width: {default: 1, min: 0, if: {type: ['area']}},
+    height: {default: 1, min: 0, if: {type: ['area']}},
     type: {
       default: 'directional',
       oneOf: ['ambient', 'directional', 'hemisphere', 'point', 'spot'],
@@ -220,6 +222,8 @@ module.exports.Component = registerComponent('light', {
     this.rendererSystem.applyColorCorrection(groundColor);
     groundColor = groundColor.getHex();
     var intensity = data.intensity;
+    var width = data.width;
+    var height = data.height;
     var type = data.type;
     var target = data.target;
     var light = null;
@@ -262,7 +266,16 @@ module.exports.Component = registerComponent('light', {
         }
         return light;
       }
+      case 'area': {
+        THREE.RectAreaLightUniformsLib.init();
 
+        if (THREE.RectAreaLightUniformsLib === undefined) {
+          warn('RectAreaLightUniformsLib.js file not present. Please include the file in your webpage using a script tag like:\n <script src="https://threejs.org/examples/js/lights/RectAreaLightUniformsLib.js"></script>');
+          break;
+        } else {
+          return new THREE.RectAreaLight(color, intensity, width, height);
+        }
+      }
       default: {
         warn('%s is not a valid light type. ' +
            'Choose from ambient, directional, hemisphere, point, spot.', type);
