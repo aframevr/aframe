@@ -1,5 +1,4 @@
-LightUniformsLib.js file not present. Please include the file in your webpage using a script tag like:\n <script src="https://threejs.org/examples/js/lights/RectAreaLightUniformsLib.js"></script>');
-          break;var bind = require('../utils/bind');
+var bind = require('../utils/bind');
 var diff = require('../utils').diff;
 var debug = require('../utils/debug');
 var registerComponent = require('../core/component').registerComponent;
