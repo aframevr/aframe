@@ -267,12 +267,13 @@ module.exports.Component = registerComponent('light', {
         return light;
       }
       case 'area': {
+        var intensitycalc = width + height;
         if (THREE.RectAreaLightUniformsLib === undefined) {
           warn('RectAreaLightUniformsLib.js not found. Please include the file in your project using a script tag (it MUST load after aframe does):\n<script src="https://threejs.org/examples/js/lights/RectAreaLightUniformsLib.js"></script>');
           break;
         } else {
           THREE.RectAreaLightUniformsLib.init();
-          return new THREE.RectAreaLight(color, intensity, width, height);
+          return new THREE.RectAreaLight(color, intensity * 8 / intensitycalc, width, height);
         }
       }
       default: {
