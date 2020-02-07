@@ -43,11 +43,11 @@ To manually disable the defaults, without adding other lights:
 
 All light types support a few basic properties:
 
-| Property  | Description                                                     | Default Value |
-|-----------|-----------------------------------------------------------------|---------------|
-| type      | One of `ambient`, `directional`, `hemisphere`, `point`, `spot`. | directional   |
-| color     | Light color.                                                    | #fff          |
-| intensity | Light strength.                                                 | 1.0           |
+| Property  | Description                                                             | Default Value |
+|-----------|-------------------------------------------------------------------------|---------------|
+| type      | One of `ambient`, `directional`, `hemisphere`, `point`, `spot`, `area`. | directional   |
+| color     | Light color.                                                            | #fff          |
+| intensity | Light strength.                                                         | 1.0           |
 
 ## Light Types
 
@@ -144,6 +144,28 @@ omni-directional. They mainly cast light in one direction, like the
 | distance    | Distance where intensity becomes 0. If `distance` is `0`, then the point light does not decay with distance.   | 0.0           |
 | penumbra    | Percent of the spotlight cone that is attenuated due to penumbra.                                              | 0.0           |
 | target      | element the spot should point to. set to null to transform spotlight by orientation, pointing to it's -Z axis. | null          |
+
+### Area
+
+You must include "RectAreaLightUniformsLib.js" in your project for area lights to function.
+
+The console will point out if you are missing this file or if it couldn't be loaded.
+```html
+<script src="https://threejs.org/examples/js/lights/RectAreaLightUniformsLib.js"></script>
+```
+
+Area lights can be described as "half of a point light".
+They are directional and cast light from a rectangular plane over an 180° radius.
+They, however, do not cast shadows.
+
+```html
+<a-entity light="type: area; width:0.5; height:0.5;"></a-entity>
+```
+
+| Property    | Description                                                                                                    | Default Value |
+|-------------|----------------------------------------------------------------------------------------------------------------|---------------|
+| width       | The width of the area light.                                                                    | 1             |
+| height      | The height of the area light.                                                                   | 1             |
 
 ## Configuring Shadows
 
