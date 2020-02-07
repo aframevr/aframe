@@ -273,7 +273,7 @@ module.exports.Component = registerComponent('light', {
           break;
         } else {
           THREE.RectAreaLightUniformsLib.init();
-          return new THREE.RectAreaLight(color, intensity * 8 / intensitycalc, width, height);
+          return new THREE.RectAreaLight(color, intensity * 32 / intensitycalc, width, height);
         }
       }
       default: {
