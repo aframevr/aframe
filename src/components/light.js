@@ -1,4 +1,5 @@
-var bind = require('../utils/bind');
+LightUniformsLib.js file not present. Please include the file in your webpage using a script tag like:\n <script src="https://threejs.org/examples/js/lights/RectAreaLightUniformsLib.js"></script>');
+          break;var bind = require('../utils/bind');
 var diff = require('../utils').diff;
 var debug = require('../utils/debug');
 var registerComponent = require('../core/component').registerComponent;
@@ -270,7 +271,7 @@ module.exports.Component = registerComponent('light', {
         THREE.RectAreaLightUniformsLib.init();
 
         if (THREE.RectAreaLightUniformsLib === undefined) {
-          warn('RectAreaLightUniformsLib.js file not present. Please include the file in your webpage using a script tag like:\n <script src="https://threejs.org/examples/js/lights/RectAreaLightUniformsLib.js"></script>');
+          warn('RectAreaLightUniformsLib.js not found. Please include the file in your project using a script tag (it MUST load after aframe does):\n <script src="https://threejs.org/examples/js/lights/RectAreaLightUniformsLib.js"></script>');
           break;
         } else {
           return new THREE.RectAreaLight(color, intensity, width, height);
@@ -278,7 +279,7 @@ module.exports.Component = registerComponent('light', {
       }
       default: {
         warn('%s is not a valid light type. ' +
-           'Choose from ambient, directional, hemisphere, point, spot.', type);
+           'Choose from ambient, directional, hemisphere, point, spot, area.', type);
       }
     }
   },
