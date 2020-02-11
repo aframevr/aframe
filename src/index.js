@@ -89,7 +89,7 @@ require('./core/a-mixin');
 require('./extras/components/');
 require('./extras/primitives/');
 
-console.log('A-Frame Version: 1.0.4 (Date 2020-02-08, Commit #920892e5)');
+console.log('A-Frame Version: 1.0.4 (Date 2020-02-11, Commit #e03f0dfd)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);

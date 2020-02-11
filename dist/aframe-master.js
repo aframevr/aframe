@@ -69591,7 +69591,7 @@ module.exports.Component = registerComponent('line', {
       visible: data.visible
     });
     geometry = this.geometry = new THREE.BufferGeometry();
-    geometry.addAttribute('position', new THREE.BufferAttribute(new Float32Array(2 * 3), 3));
+    geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(2 * 3), 3));
 
     this.rendererSystem.applyColorCorrection(material.color);
     this.line = new THREE.Line(geometry, material);
@@ -81557,7 +81557,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 1.0.4 (Date 2020-02-08, Commit #920892e5)');
+console.log('A-Frame Version: 1.0.4 (Date 2020-02-11, Commit #e03f0dfd)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
