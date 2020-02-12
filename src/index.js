@@ -14,7 +14,7 @@ if (!window.hasNativeWebXRImplementation && !window.hasNativeWebVRImplementation
   // Only for iOS on versions older than 10.
   var bufferScale = isIOSOlderThan10(window.navigator.userAgent) ? 1 / window.devicePixelRatio : 1;
   var WebVRPolyfill = require('webvr-polyfill');
-  var polyfillConfig = {
+  var polyfillConfig = window.polyfillConfig || {
     BUFFER_SCALE: bufferScale,
     CARDBOARD_UI_DISABLED: true,
     ROTATE_INSTRUCTIONS_DISABLED: true
