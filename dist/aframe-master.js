@@ -66742,12 +66742,12 @@ module.exports={
   "main": "dist/aframe-master.js",
   "scripts": {
     "browserify": "browserify src/index.js -s 'AFRAME' -p browserify-derequire",
-    "build": "shx mkdir -p build/ && npm run browserify -- --debug -t [envify --INSPECTOR_VERSION dev] -o build/aframe.js",
+    "build": "shx mkdir -p build/ && npm run browserify -- --debug -t [ envify --INSPECTOR_VERSION dev ] -o build/aframe.js",
     "codecov": "codecov",
     "dev": "npm run build && cross-env INSPECTOR_VERSION=dev node ./scripts/budo -t envify",
     "dist": "node scripts/updateVersionLog.js && npm run dist:min && npm run dist:max",
     "dist:max": "npm run browserify -s -- --debug | exorcist dist/aframe-master.js.map > dist/aframe-master.js",
-    "dist:min": "npm run browserify -s -- --debug -p [minifyify --map aframe-master.min.js.map --output dist/aframe-master.min.js.map] -o dist/aframe-master.min.js",
+    "dist:min": "npm run browserify -s -- --debug -p [ minifyify --map aframe-master.min.js.map --output dist/aframe-master.min.js.map ] -o dist/aframe-master.min.js",
     "docs": "markserv --dir docs --port 9001",
     "preghpages": "node ./scripts/preghpages.js",
     "ghpages": "ghpages -p gh-pages/",
@@ -81557,7 +81557,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 1.0.4 (Date 2020-02-11, Commit #e03f0dfd)');
+console.log('A-Frame Version: 1.0.4 (Date 2020-02-12, Commit #e949907e)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
