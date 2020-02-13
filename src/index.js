@@ -1,27 +1,4 @@
-// Polyfill `Promise`.
-window.Promise = window.Promise || require('promise-polyfill');
-
-// WebVR polyfill
-// Check before the polyfill runs.
-window.hasNativeWebVRImplementation = !!window.navigator.getVRDisplays ||
-                                      !!window.navigator.getVRDevices;
-window.hasNativeWebXRImplementation = navigator.xr !== undefined;
-
-// If native WebXR or WebVR are defined WebVRPolyfill does not initialize.
-if (!window.hasNativeWebXRImplementation && !window.hasNativeWebVRImplementation) {
-  var isIOSOlderThan10 = require('./utils/isIOSOlderThan10');
-  // Workaround for iOS Safari canvas sizing issues in stereo (webvr-polyfill/issues/102).
-  // Only for iOS on versions older than 10.
-  var bufferScale = isIOSOlderThan10(window.navigator.userAgent) ? 1 / window.devicePixelRatio : 1;
-  var WebVRPolyfill = require('webvr-polyfill');
-  var polyfillConfig = window.polyfillConfig || {
-    BUFFER_SCALE: bufferScale,
-    CARDBOARD_UI_DISABLED: true,
-    ROTATE_INSTRUCTIONS_DISABLED: true
-  };
-  window.webvrpolyfill = new WebVRPolyfill(polyfillConfig);
-}
-
+var _ = require('lodash');
 var utils = require('./utils/');
 var debug = utils.debug;
 
@@ -35,20 +12,54 @@ if (utils.isIE11) {
 var error = debug('A-Frame:error');
 var warn = debug('A-Frame:warn');
 
-if (window.document.currentScript && window.document.currentScript.parentNode !==
-    window.document.head && !window.debug) {
-  warn('Put the A-Frame <script> tag in the <head> of the HTML *before* the scene to ' +
-       'ensure everything for A-Frame is properly registered before they are used from ' +
-       'HTML.');
+// Polyfill `Promise`.
+window.Promise = window.Promise || require('promise-polyfill');
+
+var isIOSOlderThan10 = require('./utils/isIOSOlderThan10');
+// Workaround for iOS Safari canvas sizing issues in stereo (webvr-polyfill/issues/102).
+// Only for iOS on versions older than 10.
+var bufferScale = isIOSOlderThan10(window.navigator.userAgent) ? 1 / window.devicePixelRatio : 1;
+
+var aframeConfig = _.merge({
+  appMode: false,
+  polyfillConfig: {
+    BUFFER_SCALE: bufferScale,
+    CARDBOARD_UI_DISABLED: true,
+    ROTATE_INSTRUCTIONS_DISABLED: true
+  }
+}, window.aframeConfig);
+console.log({aframeConfig});
+
+// WebVR polyfill
+// Check before the polyfill runs.
+window.hasNativeWebVRImplementation = !!window.navigator.getVRDisplays ||
+                                      !!window.navigator.getVRDevices;
+window.hasNativeWebXRImplementation = navigator.xr !== undefined;
+
+// If native WebXR or WebVR are defined WebVRPolyfill does not initialize.
+if (!window.hasNativeWebXRImplementation && !window.hasNativeWebVRImplementation) {
+  var WebVRPolyfill = require('webvr-polyfill');
+  window.webvrpolyfill = new WebVRPolyfill(aframeConfig.polyfillConfig);
 }
 
-// Error if not using a server.
-if (window.location.protocol === 'file:') {
-  error(
-    'This HTML file is currently being served via the file:// protocol. ' +
-    'Assets, textures, and models WILL NOT WORK due to cross-origin policy! ' +
-    'Please use a local or hosted server: ' +
-    'https://aframe.io/docs/0.5.0/introduction/getting-started.html#using-a-local-server.');
+// These errors/warnings apply only when aframe is running in browser mode.
+// If aframe is running in app mode, the <head> and file: checks do not matter.
+if (!aframeConfig.appMode) {
+  if (window.document.currentScript && window.document.currentScript.parentNode !==
+      window.document.head && !window.debug) {
+    warn('Put the A-Frame <script> tag in the <head> of the HTML *before* the scene to ' +
+        'ensure everything for A-Frame is properly registered before they are used from ' +
+        'HTML.');
+  }
+
+  // Error if not using a server.
+  if (window.location.protocol === 'file:') {
+    error(
+      'This HTML file is currently being served via the file:// protocol. ' +
+      'Assets, textures, and models WILL NOT WORK due to cross-origin policy! ' +
+      'Please use a local or hosted server: ' +
+      'https://aframe.io/docs/0.5.0/introduction/getting-started.html#using-a-local-server.');
+  }
 }
 
 require('present'); // Polyfill `performance.now()`.
