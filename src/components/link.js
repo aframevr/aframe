@@ -1,6 +1,7 @@
 var registerComponent = require('../core/component').registerComponent;
 var registerShader = require('../core/shader').registerShader;
 var THREE = require('../lib/three');
+var DEFAULT_PREVIEW_DISTANCE = 15.0;
 
 /**
  * Link component. Connect experiences and traverse between them in VR
@@ -28,7 +29,7 @@ module.exports.Component = registerComponent('link', {
     this.quaternionClone = new THREE.Quaternion();
     // Store hidden elements during peek mode so we can show them again later.
     this.hiddenEls = [];
-    this.previewDistance = 15;
+    this.previewDistance = DEFAULT_PREVIEW_DISTANCE;
   },
 
   update: function (oldData) {
@@ -40,7 +41,7 @@ module.exports.Component = registerComponent('link', {
     if (!data.visualAspectEnabled) { return; }
 
     var elScale = this.el.getAttribute('scale');
-    this.previewDistance = 15 * (elScale.x + elScale.y) / 2;
+    this.previewDistance = DEFAULT_PREVIEW_DISTANCE * (elScale.x + elScale.y) / 2;
 
     this.initVisualAspect();
 
@@ -205,7 +206,7 @@ module.exports.Component = registerComponent('link', {
       cameraWorldPosition.setFromMatrixPosition(camera.matrixWorld);
       distance = elWorldPosition.distanceTo(cameraWorldPosition);
 
-      if (distance > this.previewDistance + 5) {
+      if (distance > this.previewDistance * 1.33333) {
         // Store original orientation to be restored when the portal stops facing the camera.
         if (!this.previousQuaternion) {
           this.quaternionClone.copy(quaternion);
@@ -334,7 +335,7 @@ registerShader('portal', {
     backgroundColor: {default: 'red', type: 'color', is: 'uniform'},
     pano: {type: 'map', is: 'uniform'},
     strokeColor: {default: 'white', type: 'color', is: 'uniform'},
-    previewDistance: {default: 15.0, type: 'float', is: 'uniform'}
+    previewDistance: {default: DEFAULT_PREVIEW_DISTANCE, type: 'float', is: 'uniform'}
   },
 
   vertexShader: [
