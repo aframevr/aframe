@@ -42,7 +42,7 @@ module.exports.Component = registerComponent('tracked-controls-webvr', {
     idPrefix: {type: 'string', default: ''},
     orientationOffset: {type: 'vec3'},
     // Arm model parameters when not 6DoF.
-    armModel: {default: true},
+    armModel: {default: false},
     headElement: {type: 'selector'}
   },
 

@@ -1,4 +1,33 @@
+### 1.0.4 (Feb 5, 2020)
+
+Bug fixes
+
+### Fixes
+
+* Reset `referenceSpace` and controllers list when entering / exiting VR (#4406) @AG-LucidWeb @Artyom17 @dmarcos
+* Fix WebXR buttons mapping for Oculus Go controller @dmarcos
+* Properly remove `selectstart` / `selectend` event listeners when XR session ends @DougReeder
+* Apply handedness orientation directly to the hands model (#4388) @dbradleyfl @dala00 @dmarcos
+* Set tracked-controls `armModel` default to false (#4405) @dmarcos
+* Set camera entity `matrixAutoupdate` to false only for the WebXR case (#4383) @liewol @dmarcos
+* Check if headset is connected when ignoring `mousedown` events (#4380) @AG-LucidWeb @dmarcos
+* Get rid of invalid character in TRHEE build (#4428) @kennardconsulting @dmarcos
+
+### Enhancements
+
+* Add dithering property in materials component (#4433) @Firepal
+* Add Magic Leap Controller Support @atarng-magicleap
+* New high poly, low poly and toon styles for `hand-controls` @arturitu
+* Listens to WebXR `selectstart` / `selectstart` and reemits as mousedown / mouseup. Simple screen input for AR experiences (fix #4407) @dmarcos
+* Use full hash in dependencies to comply with pnpm @pleku
+* Add color property to `hand-controls` @arturitu
+* Docs improvements @d2s @ChicagoDev @dirkk0 @omgitsraven @dmarcos
+* Add API to set WebXR far and near camera planes (#4387) @DougReeder
+
+
 ### 1.0.3 (Dec 30, 2019)
+
+Bug fixes
 
 ### Fixes
 

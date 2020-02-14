@@ -146,6 +146,7 @@ suite('tracked-controls-webvr', function () {
     test('does not apply standing matrix transform for 3DoF', function () {
       standingMatrix.makeTranslation(1, 0.5, -3);
       controller.pose.position = null;
+      el.setAttribute('tracked-controls-webvr', 'armModel', true);
       el.sceneEl.systems['tracked-controls-webvr'].vrDisplay = true;
       component.tick();
       // assert position after default camera position and arm model are applied
