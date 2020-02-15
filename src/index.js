@@ -19,6 +19,9 @@ if (!window.hasNativeWebXRImplementation && !window.hasNativeWebVRImplementation
     CARDBOARD_UI_DISABLED: true,
     ROTATE_INSTRUCTIONS_DISABLED: true
   };
+  if (window.cordova) {
+    polyfillConfig.DPDB_URL = null;
+  }
   window.webvrpolyfill = new WebVRPolyfill(polyfillConfig);
 }
 
@@ -35,20 +38,22 @@ if (utils.isIE11) {
 var error = debug('A-Frame:error');
 var warn = debug('A-Frame:warn');
 
-if (window.document.currentScript && window.document.currentScript.parentNode !==
-    window.document.head && !window.debug) {
-  warn('Put the A-Frame <script> tag in the <head> of the HTML *before* the scene to ' +
-       'ensure everything for A-Frame is properly registered before they are used from ' +
-       'HTML.');
-}
+if (!window.cordova) {
+  if (window.document.currentScript && window.document.currentScript.parentNode !==
+      window.document.head && !window.debug) {
+    warn('Put the A-Frame <script> tag in the <head> of the HTML *before* the scene to ' +
+        'ensure everything for A-Frame is properly registered before they are used from ' +
+        'HTML.');
+  }
 
-// Error if not using a server.
-if (window.location.protocol === 'file:') {
-  error(
-    'This HTML file is currently being served via the file:// protocol. ' +
-    'Assets, textures, and models WILL NOT WORK due to cross-origin policy! ' +
-    'Please use a local or hosted server: ' +
-    'https://aframe.io/docs/0.5.0/introduction/getting-started.html#using-a-local-server.');
+  // Error if not using a server.
+  if (window.location.protocol === 'file:') {
+    error(
+      'This HTML file is currently being served via the file:// protocol. ' +
+      'Assets, textures, and models WILL NOT WORK due to cross-origin policy! ' +
+      'Please use a local or hosted server: ' +
+      'https://aframe.io/docs/' + pkg.version + '/introduction/installation.html#use-a-local-server.');
+  }
 }
 
 require('present'); // Polyfill `performance.now()`.

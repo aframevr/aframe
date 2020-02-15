@@ -123,3 +123,12 @@ A-Frame.  `angle` can initialize a scene template with a single command:
 ```sh
 npm install -g angle && angle initscene
 ```
+
+## Cordova Development
+
+A-Frame is compatible with Cordva-based mobile apps. Use a local copy of A-Frame and make sure it is loaded after Cordova:
+
+```
+<script type="text/javascript" src="cordova.js"></script>
+<script type="text/javascript" src="./js/aframe-master.js"></script>
+```
