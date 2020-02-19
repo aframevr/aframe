@@ -59,7 +59,7 @@ if (!window.cordova) {
 require('present'); // Polyfill `performance.now()`.
 
 // CSS.
-if (utils.device.isBrowserEnvironment) {
+if (utils.device.isBrowserEnvironment || window.cordova) {
   require('./style/aframe.css');
   require('./style/rStats.css');
 }
