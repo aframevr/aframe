@@ -70046,9 +70046,6 @@ module.exports.Component = registerComponent('look-controls', {
     this.magicWindowAbsoluteEuler = new THREE.Euler();
     this.magicWindowDeltaEuler = new THREE.Euler();
     this.position = new THREE.Vector3();
-    // To save / restore camera pose
-    this.savedRotation = new THREE.Vector3();
-    this.savedPosition = new THREE.Vector3();
     this.magicWindowObject = new THREE.Object3D();
     this.rotation = {};
     this.deltaRotation = {};
@@ -70059,6 +70056,7 @@ module.exports.Component = registerComponent('look-controls', {
 
     this.setupMagicWindowControls();
 
+    // To save / restore camera pose
     this.savedPose = {
       position: new THREE.Vector3(),
       rotation: new THREE.Euler()
@@ -81557,7 +81555,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 1.0.4 (Date 2020-02-12, Commit #e949907e)');
+console.log('A-Frame Version: 1.0.4 (Date 2020-02-19, Commit #5d4beb9e)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
