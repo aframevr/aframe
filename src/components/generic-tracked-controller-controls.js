@@ -37,7 +37,7 @@ var INPUT_MAPPING = {
 module.exports.Component = registerComponent('generic-tracked-controller-controls', {
   schema: {
     hand: {default: ''},  // This informs the degenerate arm model.
-    defaultModel: {default: true},
+    model: {default: true},
     defaultModelColor: {default: 'gray'},
     orientationOffset: {type: 'vec3'}
   },
@@ -121,7 +121,7 @@ module.exports.Component = registerComponent('generic-tracked-controller-control
       orientationOffset: data.orientationOffset,
       iterateControllerProfiles: true
     });
-    if (!this.data.defaultModel) { return; }
+    if (!this.data.model) { return; }
     this.initDefaultModel();
   },
 
