@@ -50,7 +50,8 @@ module.exports.Component = registerComponent('raycaster', {
     objects: {default: ''},
     origin: {type: 'vec3'},
     showLine: {default: false},
-    useWorldCoordinates: {default: false}
+    useWorldCoordinates: {default: false},
+    lineComponent: {type: 'string', default: 'line'}
   },
 
   multiple: true,
@@ -106,7 +107,7 @@ module.exports.Component = registerComponent('raycaster', {
     }
 
     if (!data.showLine && oldData.showLine) {
-      el.removeAttribute('line');
+      el.removeAttribute(oldData.lineComponent);
     }
 
     if (data.objects !== oldData.objects && !OBSERVER_SELECTOR_RE.test(data.objects)) {
@@ -141,7 +142,7 @@ module.exports.Component = registerComponent('raycaster', {
 
   remove: function () {
     if (this.data.showLine) {
-      this.el.removeAttribute('line');
+      this.el.removeAttribute(this.data.lineComponent);
     }
     this.clearAllIntersections();
   },
@@ -231,7 +232,7 @@ module.exports.Component = registerComponent('raycaster', {
     for (i = 0; i < rawIntersections.length; i++) {
       intersection = rawIntersections[i];
       // Don't intersect with own line.
-      if (data.showLine && intersection.object === el.getObject3D('line')) {
+      if (data.showLine && intersection.object === el.getObject3D(this.data.lineComponent)) {
         continue;
       }
       if (intersection.object.el) {
@@ -376,7 +377,7 @@ module.exports.Component = registerComponent('raycaster', {
     // given by data.direction, then we apply a scalar to give it a length.
     this.lineData.start = data.origin;
     this.lineData.end = endVec3.copy(this.unitLineEndVec3).multiplyScalar(length);
-    el.setAttribute('line', this.lineData);
+    el.setAttribute(data.lineComponent, this.lineData);
   },
 
   /**
