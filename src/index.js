@@ -21,6 +21,7 @@ if (!window.hasNativeWebXRImplementation && !window.hasNativeWebVRImplementation
   };
   if (window.cordova) {
     polyfillConfig.DPDB_URL = null;
+    polyfillConfig.MOBILE_WAKE_LOCK = false;
   }
   window.webvrpolyfill = new WebVRPolyfill(polyfillConfig);
 }
@@ -62,6 +63,9 @@ require('present'); // Polyfill `performance.now()`.
 if (utils.device.isBrowserEnvironment || window.cordova) {
   require('./style/aframe.css');
   require('./style/rStats.css');
+}
+if (window.cordova) {
+  require('./style/cordova.css');
 }
 
 // Required before `AEntity` so that all components are registered.
