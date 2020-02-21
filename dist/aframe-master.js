@@ -74691,14 +74691,14 @@ module.exports.Component = registerComponent('tracked-controls-webvr', {
     var changedAxes = this.changedAxes;
 
     // Check if axis changed.
-    this.changedAxes.length = 0;
+    this.changedAxes.splice(0, this.changedAxes.length);
     for (i = 0; i < controllerAxes.length; ++i) {
       changedAxes.push(previousAxis[i] !== controllerAxes[i]);
       if (changedAxes[i]) { changed = true; }
     }
     if (!changed) { return false; }
 
-    this.axis.length = 0;
+    this.axis.splice(0, this.axis.length);
     for (i = 0; i < controllerAxes.length; i++) {
       this.axis.push(controllerAxes[i]);
     }
@@ -74947,14 +74947,14 @@ module.exports.Component = registerComponent('tracked-controls-webxr', {
     var changedAxes = this.changedAxes;
 
     // Check if axis changed.
-    this.changedAxes.length = 0;
+    this.changedAxes.splice(0, this.changedAxes.length);
     for (i = 0; i < controllerAxes.length; ++i) {
       changedAxes.push(previousAxis[i] !== controllerAxes[i]);
       if (changedAxes[i]) { changed = true; }
     }
     if (!changed) { return false; }
 
-    this.axis.length = 0;
+    this.axis.splice(0, this.axis.length);
     for (i = 0; i < controllerAxes.length; i++) {
       this.axis.push(controllerAxes[i]);
     }
@@ -81899,7 +81899,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 1.0.4 (Date 2020-02-21, Commit #28e010dc)');
+console.log('A-Frame Version: 1.0.4 (Date 2020-02-21, Commit #a04ae406)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
