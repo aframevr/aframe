@@ -143,11 +143,15 @@ suite('a-scene (without renderer)', function () {
           setPoseTarget: function () {}
         },
         getContext: function () { return undefined; },
-        setAnimationLoop: function () {}
+        setAnimationLoop: function () {},
+        setSize: function () {}
       };
 
       // mock camera
-      sceneEl.camera = {el: {object3D: {}}};
+      sceneEl.camera = {
+        el: {object3D: {}},
+        updateProjectionMatrix: function () {}
+      };
     });
 
     test('does not try to enter VR if already in VR', function (done) {
@@ -243,7 +247,8 @@ suite('a-scene (without renderer)', function () {
           setDevice: function () {},
           setPoseTarget: function () {}
         },
-        setPixelRatio: function () {}
+        setPixelRatio: function () {},
+        setSize: function () {}
       };
 
       sceneEl.addState('vr-mode');
@@ -399,7 +404,6 @@ suite('a-scene (without renderer)', function () {
 
     setup(function () {
       sceneEl = this.el;
-      AScene.prototype.resize.restore();
       sceneEl.camera = { updateProjectionMatrix: function () {} };
       sceneEl.canvas = document.createElement('canvas');
       setSizeSpy = this.sinon.spy();
@@ -612,7 +616,6 @@ helpers.getSkipCISuite()('a-scene (with renderer)', function () {
     var el;
     var self = this;
     AScene.prototype.setupRenderer.restore();
-    AScene.prototype.resize.restore();
     AScene.prototype.render.restore();
     el = self.el = document.createElement('a-scene');
     document.body.appendChild(el);
