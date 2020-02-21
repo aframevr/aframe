@@ -8,7 +8,11 @@ suite('shadow system', function () {
   setup(function (done) {
     var el = this.el = entityFactory();
     el.addEventListener('loaded', function () {
-      renderer = el.sceneEl.renderer = {shadowMap: {}};
+      renderer = el.sceneEl.renderer = {
+        shadowMap: {},
+        xr: {isPresenting: false},
+        setSize: function () {}
+      };
       system = el.sceneEl.systems.shadow;
       done();
     });
@@ -22,19 +26,17 @@ suite('shadow system', function () {
     test('configures renderer properties', function (done) {
       var div;
       var scene;
-      var renderer;
 
       div = document.createElement('div');
       div.innerHTML = '<a-scene shadow="type: basic; autoUpdate: false">';
       scene = div.children[0];
-      renderer = scene.renderer = {shadowMap: {}};
-      document.body.appendChild(div);
-
-      setTimeout(() => {
-        assert.equal(renderer.shadowMap.type, THREE.BasicShadowMap);
-        assert.notOk(renderer.shadowMap.autoUpdate);
+      scene.addEventListener('loaded', function () {
+        assert.equal(scene.renderer.shadowMap.type, THREE.BasicShadowMap);
+        assert.notOk(scene.renderer.shadowMap.autoUpdate);
         done();
       });
+
+      document.body.appendChild(div);
     });
   });
 
