@@ -64,9 +64,6 @@ if (utils.device.isBrowserEnvironment || window.cordova) {
   require('./style/aframe.css');
   require('./style/rStats.css');
 }
-if (window.cordova) {
-  require('./style/cordova.css');
-}
 
 // Required before `AEntity` so that all components are registered.
 var AScene = require('./core/scene/a-scene').AScene;
