@@ -126,6 +126,6 @@ npm install -g angle && angle initscene
 
 ## Cordova Development
 
-A-Frame is compatible with Cordva-based mobile apps. A-Frame ships as a separate [cordova-plugin-aframe](https://github.com/benallfree/cordova-plugin-aframe) because Cordova has a few extra dependencies and adjustments that do not belong in the A-Frame core. Please see the Cordova plugin for usage.
+A-Frame is compatible with Cordva-based mobile apps. A-Frame ships as Cordova plugin because Cordova has a few extra dependencies and adjustments that do not belong in the A-Frame core. Proceed to [cordova-plugin-aframe](https://github.com/benallfree/cordova-plugin-aframe) for the official package.
 
 Check out the [demos](https://github.com/benallfree/cordova-aframe-demos) too!
