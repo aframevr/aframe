@@ -1,3 +1,6 @@
+// Package metadata
+var pkg = require('../package');
+
 // Polyfill `Promise`.
 window.Promise = window.Promise || require('promise-polyfill');
 
@@ -77,8 +80,6 @@ var shaders = require('./core/shader').shaders;
 var systems = require('./core/system').systems;
 // Exports THREE to window so three.js can be used without alteration.
 var THREE = window.THREE = require('./lib/three');
-
-var pkg = require('../package');
 
 require('./components/index'); // Register standard components.
 require('./geometries/index'); // Register standard geometries.
