@@ -75624,10 +75624,10 @@ module.exports.Component = registerComponent('wasd-controls', {
     var scaledEasing = Math.pow(1 / this.easing, delta * 60);
     // Velocity Easing.
     if (velocity[adAxis] !== 0) {
-      velocity[adAxis] -= velocity[adAxis] * scaledEasing;
+      velocity[adAxis] = velocity[adAxis] * scaledEasing;
     }
     if (velocity[wsAxis] !== 0) {
-      velocity[wsAxis] -= velocity[wsAxis] * scaledEasing;
+      velocity[wsAxis] = velocity[wsAxis] * scaledEasing;
     }
 
     // Clamp velocity easing.
@@ -81899,7 +81899,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 1.0.4 (Date 2020-02-21, Commit #a04ae406)');
+console.log('A-Frame Version: 1.0.4 (Date 2020-02-25, Commit #36db6192)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
