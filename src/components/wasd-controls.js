@@ -101,10 +101,10 @@ module.exports.Component = registerComponent('wasd-controls', {
     var scaledEasing = Math.pow(1 / this.easing, delta * 60);
     // Velocity Easing.
     if (velocity[adAxis] !== 0) {
-      velocity[adAxis] -= velocity[adAxis] * scaledEasing;
+      velocity[adAxis] = velocity[adAxis] * scaledEasing;
     }
     if (velocity[wsAxis] !== 0) {
-      velocity[wsAxis] -= velocity[wsAxis] * scaledEasing;
+      velocity[wsAxis] = velocity[wsAxis] * scaledEasing;
     }
 
     // Clamp velocity easing.
