@@ -50,7 +50,8 @@
     "promise-polyfill": "^3.1.0",
     "super-animejs": "^3.1.0",
     "three-bmfont-text": "github:dmarcos/three-bmfont-text#1babdf8507c731a18f8af3b807292e2b9740955e",
-    "webvr-polyfill": "^0.10.10"
+    "webxr-polyfill": "^1.0.13",
+    "three": "0.113.21"
   },
   "devDependencies": {
     "browserify": "^13.1.0",

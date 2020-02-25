@@ -296,7 +296,6 @@ module.exports.AScene = registerElement('a-scene', {
             });
           } else {
             vrDisplay = utils.device.getVRDisplay();
-            vrManager.setDevice(vrDisplay);
             if (vrDisplay.isPresenting &&
                 !window.hasNativeWebVRImplementation) {
               enterVRSuccess();
@@ -666,7 +665,6 @@ module.exports.AScene = registerElement('a-scene', {
             loadingScreen.remove();
             vrDisplay = utils.device.getVRDisplay();
             if (vrDisplay && vrDisplay.isPresenting) {
-              vrManager.setDevice(vrDisplay);
               vrManager.enabled = true;
               sceneEl.enterVR();
             }

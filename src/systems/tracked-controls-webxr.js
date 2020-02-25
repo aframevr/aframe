@@ -21,7 +21,7 @@ module.exports.System = registerSystem('tracked-controls-webxr', {
 
   updateReferenceSpace: function () {
     var self = this;
-    var xrSession = this.el.xrSession;
+    var xrSession = this.el.sceneEl.xrSession;
     if (!xrSession) {
       this.referenceSpace = undefined;
       this.controllers = [];
@@ -37,7 +37,7 @@ module.exports.System = registerSystem('tracked-controls-webxr', {
   },
 
   updateControllerList: function () {
-    var xrSession = this.el.xrSession;
+    var xrSession = this.el.sceneEl.xrSession;
     if (!xrSession) {
       if (this.oldControllersLength === 0) { return; }
       // Broadcast that we now have zero controllers connected if there is
