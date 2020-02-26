@@ -8,7 +8,7 @@ var bind = utils.bind;
 var PI_2 = Math.PI / 2;
 
 /**
- * look-controls. Update entity pose, factoring mouse, touch, and WebVR API data.
+ * look-controls. Update entity pose, factoring mouse, touch, and WebXR API data.
  */
 module.exports.Component = registerComponent('look-controls', {
   dependencies: ['position', 'rotation'],

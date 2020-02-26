@@ -5907,8 +5907,8 @@ arguments[4][5][0].apply(exports,arguments)
 (function (global){
 /**
  * @license
- * webvr-polyfill
- * Copyright (c) 2015-2017 Google
+ * webxr-polyfill
+ * Copyright (c) 2017 Google
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -6007,8 +6007,1652 @@ arguments[4][5][0].apply(exports,arguments)
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
 	typeof define === 'function' && define.amd ? define(factory) :
-	(global.WebVRPolyfill = factory());
+	(global.WebXRPolyfill = factory());
 }(this, (function () { 'use strict';
+
+var _global = typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : typeof window !== 'undefined' ? window : {};
+
+var classCallCheck = function (instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+};
+
+var createClass = function () {
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];
+      descriptor.enumerable = descriptor.enumerable || false;
+      descriptor.configurable = true;
+      if ("value" in descriptor) descriptor.writable = true;
+      Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }
+
+  return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);
+    if (staticProps) defineProperties(Constructor, staticProps);
+    return Constructor;
+  };
+}();
+
+
+
+
+
+
+
+
+
+var inherits = function (subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
+  }
+
+  subClass.prototype = Object.create(superClass && superClass.prototype, {
+    constructor: {
+      value: subClass,
+      enumerable: false,
+      writable: true,
+      configurable: true
+    }
+  });
+  if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+};
+
+
+
+
+
+
+
+
+
+
+
+var possibleConstructorReturn = function (self, call) {
+  if (!self) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }
+
+  return call && (typeof call === "object" || typeof call === "function") ? call : self;
+};
+
+var PRIVATE = Symbol('@@webxr-polyfill/EventTarget');
+var EventTarget = function () {
+  function EventTarget() {
+    classCallCheck(this, EventTarget);
+    this[PRIVATE] = {
+      listeners: new Map()
+    };
+  }
+  createClass(EventTarget, [{
+    key: 'addEventListener',
+    value: function addEventListener(type, listener) {
+      if (typeof type !== 'string') {
+        throw new Error('`type` must be a string');
+      }
+      if (typeof listener !== 'function') {
+        throw new Error('`listener` must be a function');
+      }
+      var typedListeners = this[PRIVATE].listeners.get(type) || [];
+      typedListeners.push(listener);
+      this[PRIVATE].listeners.set(type, typedListeners);
+    }
+  }, {
+    key: 'removeEventListener',
+    value: function removeEventListener(type, listener) {
+      if (typeof type !== 'string') {
+        throw new Error('`type` must be a string');
+      }
+      if (typeof listener !== 'function') {
+        throw new Error('`listener` must be a function');
+      }
+      var typedListeners = this[PRIVATE].listeners.get(type) || [];
+      for (var i = typedListeners.length; i >= 0; i--) {
+        if (typedListeners[i] === listener) {
+          typedListeners.pop();
+        }
+      }
+    }
+  }, {
+    key: 'dispatchEvent',
+    value: function dispatchEvent(type, event) {
+      var typedListeners = this[PRIVATE].listeners.get(type) || [];
+      var queue = [];
+      for (var i = 0; i < typedListeners.length; i++) {
+        queue[i] = typedListeners[i];
+      }
+      var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+      var _iteratorError = undefined;
+      try {
+        for (var _iterator = queue[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          var listener = _step.value;
+          listener(event);
+        }
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion && _iterator.return) {
+            _iterator.return();
+          }
+        } finally {
+          if (_didIteratorError) {
+            throw _iteratorError;
+          }
+        }
+      }
+      if (typeof this['on' + type] === 'function') {
+        this['on' + type](event);
+      }
+    }
+  }]);
+  return EventTarget;
+}();
+
+var PRIVATE$1 = Symbol('@@webxr-polyfill/XR');
+var XR = function (_EventTarget) {
+  inherits(XR, _EventTarget);
+  function XR(device) {
+    classCallCheck(this, XR);
+    var _this = possibleConstructorReturn(this, (XR.__proto__ || Object.getPrototypeOf(XR)).call(this));
+    _this[PRIVATE$1] = {
+      device: device
+    };
+    return _this;
+  }
+  createClass(XR, [{
+    key: 'requestDevice',
+    value: function requestDevice() {
+      return new Promise(function ($return, $error) {
+        var device;
+        return Promise.resolve(this[PRIVATE$1].device).then(function ($await_1) {
+          try {
+            device = $await_1;
+            if (device) {
+              return $return(device);
+            }
+            return $error(new Error('NotFoundError'));
+          } catch ($boundEx) {
+            return $error($boundEx);
+          }
+        }.bind(this), $error);
+      }.bind(this));
+    }
+  }]);
+  return XR;
+}(EventTarget);
+
+var now = void 0;
+if ('performance' in _global === false) {
+  var startTime = Date.now();
+  now = function now() {
+    return Date.now() - startTime;
+  };
+} else {
+  now = function now() {
+    return performance.now();
+  };
+}
+var now$1 = now;
+
+var PRIVATE$2 = Symbol('@@webxr-polyfill/XRPresentationContext');
+var XRPresentationContext = function () {
+  function XRPresentationContext(canvas, ctx, glAttribs) {
+    classCallCheck(this, XRPresentationContext);
+    this[PRIVATE$2] = { canvas: canvas, ctx: ctx, glAttribs: glAttribs };
+    Object.assign(this, ctx);
+  }
+  createClass(XRPresentationContext, [{
+    key: 'canvas',
+    get: function get$$1() {
+      return this[PRIVATE$2].canvas;
+    }
+  }]);
+  return XRPresentationContext;
+}();
+
+var EPSILON = 0.000001;
+var ARRAY_TYPE = typeof Float32Array !== 'undefined' ? Float32Array : Array;
+
+
+var degree = Math.PI / 180;
+
+function create() {
+  var out = new ARRAY_TYPE(16);
+  if (ARRAY_TYPE != Float32Array) {
+    out[1] = 0;
+    out[2] = 0;
+    out[3] = 0;
+    out[4] = 0;
+    out[6] = 0;
+    out[7] = 0;
+    out[8] = 0;
+    out[9] = 0;
+    out[11] = 0;
+    out[12] = 0;
+    out[13] = 0;
+    out[14] = 0;
+  }
+  out[0] = 1;
+  out[5] = 1;
+  out[10] = 1;
+  out[15] = 1;
+  return out;
+}
+
+function copy(out, a) {
+  out[0] = a[0];
+  out[1] = a[1];
+  out[2] = a[2];
+  out[3] = a[3];
+  out[4] = a[4];
+  out[5] = a[5];
+  out[6] = a[6];
+  out[7] = a[7];
+  out[8] = a[8];
+  out[9] = a[9];
+  out[10] = a[10];
+  out[11] = a[11];
+  out[12] = a[12];
+  out[13] = a[13];
+  out[14] = a[14];
+  out[15] = a[15];
+  return out;
+}
+
+
+function identity(out) {
+  out[0] = 1;
+  out[1] = 0;
+  out[2] = 0;
+  out[3] = 0;
+  out[4] = 0;
+  out[5] = 1;
+  out[6] = 0;
+  out[7] = 0;
+  out[8] = 0;
+  out[9] = 0;
+  out[10] = 1;
+  out[11] = 0;
+  out[12] = 0;
+  out[13] = 0;
+  out[14] = 0;
+  out[15] = 1;
+  return out;
+}
+
+function invert(out, a) {
+  var a00 = a[0],
+      a01 = a[1],
+      a02 = a[2],
+      a03 = a[3];
+  var a10 = a[4],
+      a11 = a[5],
+      a12 = a[6],
+      a13 = a[7];
+  var a20 = a[8],
+      a21 = a[9],
+      a22 = a[10],
+      a23 = a[11];
+  var a30 = a[12],
+      a31 = a[13],
+      a32 = a[14],
+      a33 = a[15];
+  var b00 = a00 * a11 - a01 * a10;
+  var b01 = a00 * a12 - a02 * a10;
+  var b02 = a00 * a13 - a03 * a10;
+  var b03 = a01 * a12 - a02 * a11;
+  var b04 = a01 * a13 - a03 * a11;
+  var b05 = a02 * a13 - a03 * a12;
+  var b06 = a20 * a31 - a21 * a30;
+  var b07 = a20 * a32 - a22 * a30;
+  var b08 = a20 * a33 - a23 * a30;
+  var b09 = a21 * a32 - a22 * a31;
+  var b10 = a21 * a33 - a23 * a31;
+  var b11 = a22 * a33 - a23 * a32;
+  var det = b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06;
+  if (!det) {
+    return null;
+  }
+  det = 1.0 / det;
+  out[0] = (a11 * b11 - a12 * b10 + a13 * b09) * det;
+  out[1] = (a02 * b10 - a01 * b11 - a03 * b09) * det;
+  out[2] = (a31 * b05 - a32 * b04 + a33 * b03) * det;
+  out[3] = (a22 * b04 - a21 * b05 - a23 * b03) * det;
+  out[4] = (a12 * b08 - a10 * b11 - a13 * b07) * det;
+  out[5] = (a00 * b11 - a02 * b08 + a03 * b07) * det;
+  out[6] = (a32 * b02 - a30 * b05 - a33 * b01) * det;
+  out[7] = (a20 * b05 - a22 * b02 + a23 * b01) * det;
+  out[8] = (a10 * b10 - a11 * b08 + a13 * b06) * det;
+  out[9] = (a01 * b08 - a00 * b10 - a03 * b06) * det;
+  out[10] = (a30 * b04 - a31 * b02 + a33 * b00) * det;
+  out[11] = (a21 * b02 - a20 * b04 - a23 * b00) * det;
+  out[12] = (a11 * b07 - a10 * b09 - a12 * b06) * det;
+  out[13] = (a00 * b09 - a01 * b07 + a02 * b06) * det;
+  out[14] = (a31 * b01 - a30 * b03 - a32 * b00) * det;
+  out[15] = (a20 * b03 - a21 * b01 + a22 * b00) * det;
+  return out;
+}
+
+
+function multiply(out, a, b) {
+  var a00 = a[0],
+      a01 = a[1],
+      a02 = a[2],
+      a03 = a[3];
+  var a10 = a[4],
+      a11 = a[5],
+      a12 = a[6],
+      a13 = a[7];
+  var a20 = a[8],
+      a21 = a[9],
+      a22 = a[10],
+      a23 = a[11];
+  var a30 = a[12],
+      a31 = a[13],
+      a32 = a[14],
+      a33 = a[15];
+  var b0 = b[0],
+      b1 = b[1],
+      b2 = b[2],
+      b3 = b[3];
+  out[0] = b0 * a00 + b1 * a10 + b2 * a20 + b3 * a30;
+  out[1] = b0 * a01 + b1 * a11 + b2 * a21 + b3 * a31;
+  out[2] = b0 * a02 + b1 * a12 + b2 * a22 + b3 * a32;
+  out[3] = b0 * a03 + b1 * a13 + b2 * a23 + b3 * a33;
+  b0 = b[4];b1 = b[5];b2 = b[6];b3 = b[7];
+  out[4] = b0 * a00 + b1 * a10 + b2 * a20 + b3 * a30;
+  out[5] = b0 * a01 + b1 * a11 + b2 * a21 + b3 * a31;
+  out[6] = b0 * a02 + b1 * a12 + b2 * a22 + b3 * a32;
+  out[7] = b0 * a03 + b1 * a13 + b2 * a23 + b3 * a33;
+  b0 = b[8];b1 = b[9];b2 = b[10];b3 = b[11];
+  out[8] = b0 * a00 + b1 * a10 + b2 * a20 + b3 * a30;
+  out[9] = b0 * a01 + b1 * a11 + b2 * a21 + b3 * a31;
+  out[10] = b0 * a02 + b1 * a12 + b2 * a22 + b3 * a32;
+  out[11] = b0 * a03 + b1 * a13 + b2 * a23 + b3 * a33;
+  b0 = b[12];b1 = b[13];b2 = b[14];b3 = b[15];
+  out[12] = b0 * a00 + b1 * a10 + b2 * a20 + b3 * a30;
+  out[13] = b0 * a01 + b1 * a11 + b2 * a21 + b3 * a31;
+  out[14] = b0 * a02 + b1 * a12 + b2 * a22 + b3 * a32;
+  out[15] = b0 * a03 + b1 * a13 + b2 * a23 + b3 * a33;
+  return out;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+function fromRotationTranslation(out, q, v) {
+  var x = q[0],
+      y = q[1],
+      z = q[2],
+      w = q[3];
+  var x2 = x + x;
+  var y2 = y + y;
+  var z2 = z + z;
+  var xx = x * x2;
+  var xy = x * y2;
+  var xz = x * z2;
+  var yy = y * y2;
+  var yz = y * z2;
+  var zz = z * z2;
+  var wx = w * x2;
+  var wy = w * y2;
+  var wz = w * z2;
+  out[0] = 1 - (yy + zz);
+  out[1] = xy + wz;
+  out[2] = xz - wy;
+  out[3] = 0;
+  out[4] = xy - wz;
+  out[5] = 1 - (xx + zz);
+  out[6] = yz + wx;
+  out[7] = 0;
+  out[8] = xz + wy;
+  out[9] = yz - wx;
+  out[10] = 1 - (xx + yy);
+  out[11] = 0;
+  out[12] = v[0];
+  out[13] = v[1];
+  out[14] = v[2];
+  out[15] = 1;
+  return out;
+}
+
+function getTranslation(out, mat) {
+  out[0] = mat[12];
+  out[1] = mat[13];
+  out[2] = mat[14];
+  return out;
+}
+
+function getRotation(out, mat) {
+  var trace = mat[0] + mat[5] + mat[10];
+  var S = 0;
+  if (trace > 0) {
+    S = Math.sqrt(trace + 1.0) * 2;
+    out[3] = 0.25 * S;
+    out[0] = (mat[6] - mat[9]) / S;
+    out[1] = (mat[8] - mat[2]) / S;
+    out[2] = (mat[1] - mat[4]) / S;
+  } else if (mat[0] > mat[5] && mat[0] > mat[10]) {
+    S = Math.sqrt(1.0 + mat[0] - mat[5] - mat[10]) * 2;
+    out[3] = (mat[6] - mat[9]) / S;
+    out[0] = 0.25 * S;
+    out[1] = (mat[1] + mat[4]) / S;
+    out[2] = (mat[8] + mat[2]) / S;
+  } else if (mat[5] > mat[10]) {
+    S = Math.sqrt(1.0 + mat[5] - mat[0] - mat[10]) * 2;
+    out[3] = (mat[8] - mat[2]) / S;
+    out[0] = (mat[1] + mat[4]) / S;
+    out[1] = 0.25 * S;
+    out[2] = (mat[6] + mat[9]) / S;
+  } else {
+    S = Math.sqrt(1.0 + mat[10] - mat[0] - mat[5]) * 2;
+    out[3] = (mat[1] - mat[4]) / S;
+    out[0] = (mat[8] + mat[2]) / S;
+    out[1] = (mat[6] + mat[9]) / S;
+    out[2] = 0.25 * S;
+  }
+  return out;
+}
+
+
+
+
+function perspective(out, fovy, aspect, near, far) {
+  var f = 1.0 / Math.tan(fovy / 2),
+      nf = void 0;
+  out[0] = f / aspect;
+  out[1] = 0;
+  out[2] = 0;
+  out[3] = 0;
+  out[4] = 0;
+  out[5] = f;
+  out[6] = 0;
+  out[7] = 0;
+  out[8] = 0;
+  out[9] = 0;
+  out[11] = -1;
+  out[12] = 0;
+  out[13] = 0;
+  out[15] = 0;
+  if (far != null && far !== Infinity) {
+    nf = 1 / (near - far);
+    out[10] = (far + near) * nf;
+    out[14] = 2 * far * near * nf;
+  } else {
+    out[10] = -1;
+    out[14] = -2 * near;
+  }
+  return out;
+}
+
+var PRIVATE$3 = Symbol('@@webxr-polyfill/XRDevicePose');
+var XRDevicePose = function () {
+  function XRDevicePose(polyfill) {
+    classCallCheck(this, XRDevicePose);
+    this[PRIVATE$3] = {
+      polyfill: polyfill,
+      leftViewMatrix: identity(new Float32Array(16)),
+      rightViewMatrix: identity(new Float32Array(16)),
+      poseModelMatrix: identity(new Float32Array(16))
+    };
+  }
+  createClass(XRDevicePose, [{
+    key: 'getViewMatrix',
+    value: function getViewMatrix(view) {
+      switch (view.eye) {
+        case 'left':
+          return this[PRIVATE$3].leftViewMatrix;
+        case 'right':
+          return this[PRIVATE$3].rightViewMatrix;
+      }
+      throw new Error('view is not a valid XREye');
+    }
+  }, {
+    key: 'updateFromFrameOfReference',
+    value: function updateFromFrameOfReference(frameOfRef) {
+      var pose = this[PRIVATE$3].polyfill.getBasePoseMatrix();
+      var leftViewMatrix = this[PRIVATE$3].polyfill.getBaseViewMatrix('left');
+      var rightViewMatrix = this[PRIVATE$3].polyfill.getBaseViewMatrix('right');
+      if (pose) {
+        frameOfRef.transformBasePoseMatrix(this[PRIVATE$3].poseModelMatrix, pose);
+      }
+      if (leftViewMatrix && rightViewMatrix) {
+        frameOfRef.transformBaseViewMatrix(this[PRIVATE$3].leftViewMatrix, leftViewMatrix, this[PRIVATE$3].poseModelMatrix);
+        frameOfRef.transformBaseViewMatrix(this[PRIVATE$3].rightViewMatrix, rightViewMatrix, this[PRIVATE$3].poseModelMatrix);
+      }
+    }
+  }, {
+    key: 'poseModelMatrix',
+    get: function get$$1() {
+      return this[PRIVATE$3].poseModelMatrix;
+    }
+  }]);
+  return XRDevicePose;
+}();
+
+var PRIVATE$4 = Symbol('@@webxr-polyfill/XRViewport');
+var XRViewport = function () {
+  function XRViewport(target) {
+    classCallCheck(this, XRViewport);
+    this[PRIVATE$4] = { target: target };
+  }
+  createClass(XRViewport, [{
+    key: 'x',
+    get: function get$$1() {
+      return this[PRIVATE$4].target.x;
+    }
+  }, {
+    key: 'y',
+    get: function get$$1() {
+      return this[PRIVATE$4].target.y;
+    }
+  }, {
+    key: 'width',
+    get: function get$$1() {
+      return this[PRIVATE$4].target.width;
+    }
+  }, {
+    key: 'height',
+    get: function get$$1() {
+      return this[PRIVATE$4].target.height;
+    }
+  }]);
+  return XRViewport;
+}();
+
+var XREyes = ['left', 'right'];
+var PRIVATE$5 = Symbol('@@webxr-polyfill/XRView');
+var XRView = function () {
+  function XRView(polyfill, eye, sessionId) {
+    classCallCheck(this, XRView);
+    if (!XREyes.includes(eye)) {
+      throw new Error('XREye must be one of: ' + XREyes);
+    }
+    var temp = Object.create(null);
+    var viewport = new XRViewport(temp);
+    this[PRIVATE$5] = {
+      polyfill: polyfill,
+      eye: eye,
+      viewport: viewport,
+      temp: temp,
+      sessionId: sessionId
+    };
+  }
+  createClass(XRView, [{
+    key: '_getViewport',
+    value: function _getViewport(layer) {
+      var viewport = this[PRIVATE$5].viewport;
+      if (this[PRIVATE$5].polyfill.getViewport(this[PRIVATE$5].sessionId, this.eye, layer, this[PRIVATE$5].temp)) {
+        return this[PRIVATE$5].viewport;
+      }
+      return undefined;
+    }
+  }, {
+    key: 'eye',
+    get: function get$$1() {
+      return this[PRIVATE$5].eye;
+    }
+  }, {
+    key: 'projectionMatrix',
+    get: function get$$1() {
+      return this[PRIVATE$5].polyfill.getProjectionMatrix(this.eye);
+    }
+  }]);
+  return XRView;
+}();
+
+var PRIVATE$6 = Symbol('@@webxr-polyfill/XRFrame');
+var XRFrame = function () {
+  function XRFrame(polyfill, session, sessionId) {
+    classCallCheck(this, XRFrame);
+    var devicePose = new XRDevicePose(polyfill);
+    var views = [new XRView(polyfill, 'left', sessionId)];
+    if (session.immersive) {
+      views.push(new XRView(polyfill, 'right', sessionId));
+    }
+    this[PRIVATE$6] = {
+      polyfill: polyfill,
+      devicePose: devicePose,
+      views: views,
+      session: session
+    };
+  }
+  createClass(XRFrame, [{
+    key: 'getDevicePose',
+    value: function getDevicePose(coordinateSystem) {
+      this[PRIVATE$6].devicePose.updateFromFrameOfReference(coordinateSystem);
+      return this[PRIVATE$6].devicePose;
+    }
+  }, {
+    key: 'getInputPose',
+    value: function getInputPose(inputSource, coordinateSystem) {
+      return this[PRIVATE$6].polyfill.getInputPose(inputSource, coordinateSystem);
+    }
+  }, {
+    key: 'session',
+    get: function get$$1() {
+      return this[PRIVATE$6].session;
+    }
+  }, {
+    key: 'views',
+    get: function get$$1() {
+      return this[PRIVATE$6].views;
+    }
+  }]);
+  return XRFrame;
+}();
+
+var PRIVATE$7 = Symbol('@@webxr-polyfill/XRStageBoundsPoint');
+var XRStageBoundsPoint = function () {
+  function XRStageBoundsPoint(x, z) {
+    classCallCheck(this, XRStageBoundsPoint);
+    this[PRIVATE$7] = { x: x, z: z };
+  }
+  createClass(XRStageBoundsPoint, [{
+    key: 'x',
+    get: function get$$1() {
+      return this[PRIVATE$7].x;
+    }
+  }, {
+    key: 'z',
+    get: function get$$1() {
+      return this[PRIVATE$7].z;
+    }
+  }]);
+  return XRStageBoundsPoint;
+}();
+
+var PRIVATE$8 = Symbol('@@webxr-polyfill/XRStageBounds');
+var XRStageBounds = function () {
+  function XRStageBounds(boundsData) {
+    classCallCheck(this, XRStageBounds);
+    var geometry = [];
+    for (var i = 0; i < boundsData.length; i += 2) {
+      geometry.push(new XRStageBoundsPoint(boundsData[i], boundsData[i + 1]));
+    }
+    this[PRIVATE$8] = { geometry: geometry };
+  }
+  createClass(XRStageBounds, [{
+    key: 'geometry',
+    get: function get$$1() {
+      return this[PRIVATE$8].geometry;
+    }
+  }]);
+  return XRStageBounds;
+}();
+
+var XRCoordinateSystem = function () {
+  function XRCoordinateSystem() {
+    classCallCheck(this, XRCoordinateSystem);
+  }
+  createClass(XRCoordinateSystem, [{
+    key: 'getTransformTo',
+    value: function getTransformTo(other) {
+      throw new Error('Not yet supported');
+    }
+  }]);
+  return XRCoordinateSystem;
+}();
+
+var DEFAULT_EMULATION_HEIGHT = 1.6;
+var PRIVATE$9 = Symbol('@@webxr-polyfill/XRFrameOfReference');
+var XRFrameOfReferenceTypes = ['head-model', 'eye-level', 'stage'];
+var XRFrameOfReferenceOptions = Object.freeze({
+  disableStageEmulation: false,
+  stageEmulationHeight: 0
+});
+var XRFrameOfReference = function (_XRCoordinateSystem) {
+  inherits(XRFrameOfReference, _XRCoordinateSystem);
+  function XRFrameOfReference(polyfill, type, options, transform, bounds) {
+    classCallCheck(this, XRFrameOfReference);
+    options = Object.assign({}, XRFrameOfReferenceOptions, options);
+    if (!XRFrameOfReferenceTypes.includes(type)) {
+      throw new Error('XRFrameOfReferenceType must be one of ' + XRFrameOfReferenceTypes);
+    }
+    var _this = possibleConstructorReturn(this, (XRFrameOfReference.__proto__ || Object.getPrototypeOf(XRFrameOfReference)).call(this));
+    if (type === 'stage' && options.disableStageEmulation && !transform) {
+      throw new Error('XRFrameOfReference cannot use \'stage\' type, if disabling emulation and platform does not provide');
+    }
+    var _options = options,
+        disableStageEmulation = _options.disableStageEmulation,
+        stageEmulationHeight = _options.stageEmulationHeight;
+    var emulatedHeight = 0;
+    if (type === 'stage' && !transform) {
+      emulatedHeight = stageEmulationHeight !== 0 ? stageEmulationHeight : DEFAULT_EMULATION_HEIGHT;
+    }
+    if (type === 'stage' && !transform) {
+      transform = identity(new Float32Array(16));
+      transform[13] = emulatedHeight;
+    }
+    _this[PRIVATE$9] = {
+      disableStageEmulation: disableStageEmulation,
+      stageEmulationHeight: stageEmulationHeight,
+      emulatedHeight: emulatedHeight,
+      type: type,
+      transform: transform,
+      polyfill: polyfill,
+      bounds: bounds
+    };
+    _this.onboundschange = undefined;
+    return _this;
+  }
+  createClass(XRFrameOfReference, [{
+    key: 'transformBasePoseMatrix',
+    value: function transformBasePoseMatrix(out, pose) {
+      if (this[PRIVATE$9].transform) {
+        multiply(out, this[PRIVATE$9].transform, pose);
+        return;
+      }
+      switch (this.type) {
+        case 'head-model':
+          if (out !== pose) {
+            copy(out, pose);
+          }
+          out[12] = out[13] = out[14] = 0;
+          return;
+        case 'eye-level':
+          if (out !== pose) {
+            copy(out, pose);
+          }
+          return;
+      }
+    }
+  }, {
+    key: 'transformBaseViewMatrix',
+    value: function transformBaseViewMatrix(out, view) {
+      var frameOfRef = this[PRIVATE$9].transform;
+      if (frameOfRef) {
+        invert(out, frameOfRef);
+        multiply(out, view, out);
+      }
+      else if (this.type === 'head-model') {
+          invert(out, view);
+          out[12] = 0;
+          out[13] = 0;
+          out[14] = 0;
+          invert(out, out);
+          return out;
+        }
+        else {
+            copy(out, view);
+          }
+      return out;
+    }
+  }, {
+    key: 'bounds',
+    get: function get$$1() {
+      return this[PRIVATE$9].bounds;
+    }
+  }, {
+    key: 'emulatedHeight',
+    get: function get$$1() {
+      return this[PRIVATE$9].emulatedHeight;
+    }
+  }, {
+    key: 'type',
+    get: function get$$1() {
+      return this[PRIVATE$9].type;
+    }
+  }]);
+  return XRFrameOfReference;
+}(XRCoordinateSystem);
+
+var PRIVATE$10 = Symbol('@@webxr-polyfill/XRSession');
+var XRSessionCreationOptions = Object.freeze({
+  immersive: false,
+  outputContext: undefined
+});
+var validateSessionOptions = function validateSessionOptions(options) {
+  var immersive = options.immersive,
+      outputContext = options.outputContext;
+  if (!immersive && !outputContext) {
+    return false;
+  }
+  if (outputContext !== undefined && !(outputContext instanceof XRPresentationContext)) {
+    return false;
+  }
+  return true;
+};
+var XRSession = function (_EventTarget) {
+  inherits(XRSession, _EventTarget);
+  function XRSession(polyfill, device, sessionOptions, id) {
+    classCallCheck(this, XRSession);
+    sessionOptions = Object.assign({}, XRSessionCreationOptions, sessionOptions);
+    var _this = possibleConstructorReturn(this, (XRSession.__proto__ || Object.getPrototypeOf(XRSession)).call(this));
+    var _sessionOptions = sessionOptions,
+        immersive = _sessionOptions.immersive,
+        outputContext = _sessionOptions.outputContext;
+    _this[PRIVATE$10] = {
+      polyfill: polyfill,
+      device: device,
+      immersive: immersive,
+      outputContext: outputContext,
+      ended: false,
+      suspended: false,
+      suspendedCallback: null,
+      id: id
+    };
+    var frame = new XRFrame(polyfill, _this, _this[PRIVATE$10].id);
+    _this[PRIVATE$10].frame = frame;
+    _this[PRIVATE$10].onPresentationEnd = function (sessionId) {
+      if (sessionId !== _this[PRIVATE$10].id) {
+        _this[PRIVATE$10].suspended = false;
+        _this.dispatchEvent('focus', { session: _this });
+        var suspendedCallback = _this[PRIVATE$10].suspendedCallback;
+        _this[PRIVATE$10].suspendedCallback = null;
+        if (suspendedCallback) {
+          _this.requestAnimationFrame(suspendedCallback);
+        }
+        return;
+      }
+      _this[PRIVATE$10].ended = true;
+      polyfill.removeEventListener('@webvr-polyfill/vr-present-end', _this[PRIVATE$10].onPresentationEnd);
+      polyfill.removeEventListener('@webvr-polyfill/vr-present-start', _this[PRIVATE$10].onPresentationStart);
+      polyfill.removeEventListener('@@webvr-polyfill/input-select-start', _this[PRIVATE$10].onSelectStart);
+      polyfill.removeEventListener('@@webvr-polyfill/input-select-end', _this[PRIVATE$10].onSelectEnd);
+      _this.dispatchEvent('end', { session: _this });
+    };
+    polyfill.addEventListener('@@webxr-polyfill/vr-present-end', _this[PRIVATE$10].onPresentationEnd);
+    _this[PRIVATE$10].onPresentationStart = function (sessionId) {
+      if (sessionId === _this[PRIVATE$10].id) {
+        return;
+      }
+      _this[PRIVATE$10].suspended = true;
+      _this.dispatchEvent('blur', { session: _this });
+    };
+    polyfill.addEventListener('@@webxr-polyfill/vr-present-start', _this[PRIVATE$10].onPresentationStart);
+    _this[PRIVATE$10].onSelectStart = function (evt) {
+      if (evt.sessionId !== _this[PRIVATE$10].id) {
+        return;
+      }
+      _this.dispatchEvent('selectstart', {
+        frame: _this[PRIVATE$10].frame,
+        inputSource: evt.inputSource
+      });
+    };
+    polyfill.addEventListener('@@webxr-polyfill/input-select-start', _this[PRIVATE$10].onSelectStart);
+    _this[PRIVATE$10].onSelectEnd = function (evt) {
+      if (evt.sessionId !== _this[PRIVATE$10].id) {
+        return;
+      }
+      _this.dispatchEvent('selectend', {
+        frame: _this[PRIVATE$10].frame,
+        inputSource: evt.inputSource
+      });
+      _this.dispatchEvent('select', {
+        frame: _this[PRIVATE$10].frame,
+        inputSource: evt.inputSource
+      });
+    };
+    polyfill.addEventListener('@@webxr-polyfill/input-select-end', _this[PRIVATE$10].onSelectEnd);
+    _this.onblur = undefined;
+    _this.onfocus = undefined;
+    _this.onresetpose = undefined;
+    _this.onend = undefined;
+    _this.onselect = undefined;
+    _this.onselectstart = undefined;
+    _this.onselectend = undefined;
+    return _this;
+  }
+  createClass(XRSession, [{
+    key: 'requestFrameOfReference',
+    value: function requestFrameOfReference(type) {
+      var $args = arguments;return new Promise(function ($return, $error) {
+        var options, transform, bounds;
+        options = $args.length > 1 && $args[1] !== undefined ? $args[1] : {};
+        if (this[PRIVATE$10].ended) {
+          return $return();
+        }
+        options = Object.assign({}, XRFrameOfReferenceOptions, options);
+        if (!XRFrameOfReferenceTypes.includes(type)) {
+          return $error(new TypeError('XRFrameOfReferenceType must be one of ' + XRFrameOfReferenceTypes));
+        }
+        transform = null;
+        bounds = null;
+        var $Try_1_Post = function () {
+          try {
+            if (type === 'stage' && transform) {
+              bounds = this[PRIVATE$10].polyfill.requestStageBounds();
+              if (bounds) {
+                bounds = new XRStageBounds(bounds);
+              }
+            }
+            return $return(new XRFrameOfReference(this[PRIVATE$10].polyfill, type, options, transform, bounds));
+          } catch ($boundEx) {
+            return $error($boundEx);
+          }
+        }.bind(this);var $Try_1_Catch = function (e) {
+          try {
+            if (type !== 'stage' || options.disableStageEmulation) {
+              throw e;
+            }
+            return $Try_1_Post();
+          } catch ($boundEx) {
+            return $error($boundEx);
+          }
+        }.bind(this);
+        try {
+          return Promise.resolve(this[PRIVATE$10].polyfill.requestFrameOfReferenceTransform(type, options)).then(function ($await_2) {
+            try {
+              transform = $await_2;
+              return $Try_1_Post();
+            } catch ($boundEx) {
+              return $Try_1_Catch($boundEx);
+            }
+          }.bind(this), $Try_1_Catch);
+        } catch (e) {
+          $Try_1_Catch(e);
+        }
+      }.bind(this));
+    }
+  }, {
+    key: 'requestAnimationFrame',
+    value: function requestAnimationFrame(callback) {
+      var _this2 = this;
+      if (this[PRIVATE$10].ended) {
+        return;
+      }
+      if (this[PRIVATE$10].suspended && this[PRIVATE$10].suspendedCallback) {
+        return;
+      }
+      if (this[PRIVATE$10].suspended && !this[PRIVATE$10].suspendedCallback) {
+        this[PRIVATE$10].suspendedCallback = callback;
+      }
+      return this[PRIVATE$10].polyfill.requestAnimationFrame(function () {
+        _this2[PRIVATE$10].polyfill.onFrameStart(_this2[PRIVATE$10].id);
+        callback(now$1(), _this2[PRIVATE$10].frame);
+        _this2[PRIVATE$10].polyfill.onFrameEnd(_this2[PRIVATE$10].id);
+      });
+    }
+  }, {
+    key: 'cancelAnimationFrame',
+    value: function cancelAnimationFrame(handle) {
+      if (this[PRIVATE$10].ended) {
+        return;
+      }
+      this[PRIVATE$10].polyfill.cancelAnimationFrame(handle);
+    }
+  }, {
+    key: 'getInputSources',
+    value: function getInputSources() {
+      return this[PRIVATE$10].polyfill.getInputSources();
+    }
+  }, {
+    key: 'end',
+    value: function end() {
+      return new Promise(function ($return, $error) {
+        if (this[PRIVATE$10].ended) {
+          return $return();
+        }
+        if (!this.immersive) {
+          this[PRIVATE$10].ended = true;
+          this[PRIVATE$10].polyfill.removeEventListener('@@webvr-polyfill/vr-present-start', this[PRIVATE$10].onPresentationStart);
+          this[PRIVATE$10].polyfill.removeEventListener('@@webvr-polyfill/vr-present-end', this[PRIVATE$10].onPresentationEnd);
+          this[PRIVATE$10].polyfill.removeEventListener('@@webvr-polyfill/input-select-start', this[PRIVATE$10].onSelectStart);
+          this[PRIVATE$10].polyfill.removeEventListener('@@webvr-polyfill/input-select-end', this[PRIVATE$10].onSelectEnd);
+          this.dispatchEvent('end', { session: this });
+        }
+        return $return(this[PRIVATE$10].polyfill.endSession(this[PRIVATE$10].id));
+      }.bind(this));
+    }
+  }, {
+    key: 'device',
+    get: function get$$1() {
+      return this[PRIVATE$10].device;
+    }
+  }, {
+    key: 'immersive',
+    get: function get$$1() {
+      return this[PRIVATE$10].immersive;
+    }
+  }, {
+    key: 'outputContext',
+    get: function get$$1() {
+      return this[PRIVATE$10].outputContext;
+    }
+  }, {
+    key: 'depthNear',
+    get: function get$$1() {
+      return this[PRIVATE$10].polyfill.depthNear;
+    }
+    ,
+    set: function set$$1(value) {
+      this[PRIVATE$10].polyfill.depthNear = value;
+    }
+  }, {
+    key: 'depthFar',
+    get: function get$$1() {
+      return this[PRIVATE$10].polyfill.depthFar;
+    }
+    ,
+    set: function set$$1(value) {
+      this[PRIVATE$10].polyfill.depthFar = value;
+    }
+  }, {
+    key: 'environmentBlendMode',
+    get: function get$$1() {
+      return this[PRIVATE$10].polyfill.environmentBlendMode || 'opaque';
+    }
+  }, {
+    key: 'baseLayer',
+    get: function get$$1() {
+      return this[PRIVATE$10].baseLayer;
+    }
+    ,
+    set: function set$$1(value) {
+      if (this[PRIVATE$10].ended) {
+        return;
+      }
+      this[PRIVATE$10].baseLayer = value;
+      this[PRIVATE$10].polyfill.onBaseLayerSet(this[PRIVATE$10].id, value);
+    }
+  }]);
+  return XRSession;
+}(EventTarget);
+
+var PRIVATE$11 = Symbol('@@webxr-polyfill/XRDevice');
+var XRDevice = function (_EventTarget) {
+  inherits(XRDevice, _EventTarget);
+  function XRDevice(polyfill) {
+    classCallCheck(this, XRDevice);
+    if (!polyfill) {
+      throw new Error('XRDevice must receive a PolyfilledXRDevice.');
+    }
+    var _this = possibleConstructorReturn(this, (XRDevice.__proto__ || Object.getPrototypeOf(XRDevice)).call(this));
+    _this[PRIVATE$11] = {
+      polyfill: polyfill,
+      immersiveSession: null,
+      nonImmersiveSessions: new Set()
+    };
+    _this.ondeactive = undefined;
+    return _this;
+  }
+  createClass(XRDevice, [{
+    key: 'supportsSession',
+    value: function supportsSession() {
+      var $args = arguments;return new Promise(function ($return, $error) {
+        var sessionOptions = $args.length > 0 && $args[0] !== undefined ? $args[0] : {};
+        sessionOptions = Object.assign({}, XRSessionCreationOptions, sessionOptions);
+        if (!validateSessionOptions(sessionOptions)) {
+          return $return(Promise.reject(null));
+        }
+        if (!this[PRIVATE$11].polyfill.supportsSession(sessionOptions)) {
+          return $return(Promise.reject(null));
+        }
+        return $return(null);
+      }.bind(this));
+    }
+  }, {
+    key: 'requestSession',
+    value: function requestSession(sessionOptions) {
+      return new Promise(function ($return, $error) {
+        var _this2, sessionId, session, onSessionEnd;
+        _this2 = this;
+        sessionOptions = Object.assign({}, XRSessionCreationOptions, sessionOptions);
+        if (!validateSessionOptions(sessionOptions)) {
+          return $error(new Error('NotSupportedError'));
+        }
+        if (this[PRIVATE$11].immersiveSession && sessionOptions.immersive) {
+          return $error(new Error('InvalidStateError'));
+        }
+        return Promise.resolve(this[PRIVATE$11].polyfill.requestSession(sessionOptions)).then(function ($await_1) {
+          try {
+            sessionId = $await_1;
+            session = new XRSession(this[PRIVATE$11].polyfill, this, sessionOptions, sessionId);
+            if (sessionOptions.immersive) {
+              this[PRIVATE$11].immersiveSession = session;
+            } else {
+              this[PRIVATE$11].nonImmersiveSessions.add(session);
+            }
+            onSessionEnd = function onSessionEnd() {
+              if (session.immersive) {
+                _this2[PRIVATE$11].immersiveSession = null;
+              } else {
+                _this2[PRIVATE$11].nonImmersiveSessions.delete(session);
+              }
+              session.removeEventListener('end', onSessionEnd);
+            };
+            session.addEventListener('end', onSessionEnd);
+            return $return(session);
+          } catch ($boundEx) {
+            return $error($boundEx);
+          }
+        }.bind(this), $error);
+      }.bind(this));
+    }
+  }]);
+  return XRDevice;
+}(EventTarget);
+
+var domPointROExport = 'DOMPointReadOnly' in _global ? DOMPointReadOnly : null;
+if (!domPointROExport) {
+  var PRIVATE$12 = Symbol('@@webxr-polyfill/DOMPointReadOnly');
+  domPointROExport = function () {
+    function DOMPointReadOnly(x, y, z, w) {
+      classCallCheck(this, DOMPointReadOnly);
+      if (arguments.length === 1) {
+        this[PRIVATE$12] = {
+          x: x.x,
+          y: x.y,
+          z: x.z,
+          w: x.w
+        };
+      } else if (arguments.length === 4) {
+        this[PRIVATE$12] = {
+          x: x,
+          y: y,
+          z: z,
+          w: w
+        };
+      } else {
+        throw new TypeError('Must supply either 1 or 4 arguments');
+      }
+    }
+    createClass(DOMPointReadOnly, [{
+      key: 'x',
+      get: function get$$1() {
+        return this[PRIVATE$12].x;
+      }
+    }, {
+      key: 'y',
+      get: function get$$1() {
+        return this[PRIVATE$12].y;
+      }
+    }, {
+      key: 'z',
+      get: function get$$1() {
+        return this[PRIVATE$12].z;
+      }
+    }, {
+      key: 'w',
+      get: function get$$1() {
+        return this[PRIVATE$12].w;
+      }
+    }]);
+    return DOMPointReadOnly;
+  }();
+}
+var DOMPointReadOnly$1 = domPointROExport;
+
+var XRRay =
+function XRRay() {
+  var origin = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : new DOMPointReadOnly$1(0, 0, 0, 1);
+  var direction = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : new DOMPointReadOnly$1(0, 0, -1, 0);
+  var transformMatrix = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : new Float32Array(16);
+  classCallCheck(this, XRRay);
+  if (!(origin instanceof DOMPointReadOnly$1)) {
+    throw new Error('origin must be a DOMPointReadOnly');
+  }
+  if (!(direction instanceof DOMPointReadOnly$1)) {
+    throw new Error('direction must be a DOMPointReadOnly');
+  }
+  if (!(transformMatrix instanceof Float32Array)) {
+    throw new Error('transformMatrix must be a Float32Array');
+  }
+  Object.defineProperties(this, {
+    origin: {
+      value: origin,
+      writable: false
+    },
+    direction: {
+      value: direction,
+      writable: false
+    },
+    transformMatrix: {
+      value: transformMatrix,
+      writable: false
+    }
+  });
+};
+
+var PRIVATE$13 = Symbol('@@webxr-polyfill/XRInputPose');
+var XRInputPose = function () {
+  function XRInputPose(inputSourceImpl, hasGripMatrix) {
+    classCallCheck(this, XRInputPose);
+    this[PRIVATE$13] = {
+      inputSourceImpl: inputSourceImpl,
+      targetRay: new XRRay(),
+      gripMatrix: hasGripMatrix ? create() : null
+    };
+  }
+  createClass(XRInputPose, [{
+    key: 'targetRay',
+    get: function get$$1() {
+      return this[PRIVATE$13].targetRay;
+    }
+    ,
+    set: function set$$1(value) {
+      this[PRIVATE$13].targetRay = value;
+    }
+  }, {
+    key: 'emulatedPosition',
+    get: function get$$1() {
+      return this[PRIVATE$13].inputSourceImpl.emulatedPosition;
+    }
+  }, {
+    key: 'gripMatrix',
+    get: function get$$1() {
+      return this[PRIVATE$13].gripMatrix;
+    }
+  }]);
+  return XRInputPose;
+}();
+
+var PRIVATE$14 = Symbol('@@webxr-polyfill/XRInputSource');
+var XRInputSource = function () {
+  function XRInputSource(impl) {
+    classCallCheck(this, XRInputSource);
+    this[PRIVATE$14] = {
+      impl: impl
+    };
+  }
+  createClass(XRInputSource, [{
+    key: 'handedness',
+    get: function get$$1() {
+      return this[PRIVATE$14].impl.handedness;
+    }
+  }, {
+    key: 'targetRayMode',
+    get: function get$$1() {
+      return this[PRIVATE$14].impl.targetRayMode;
+    }
+  }]);
+  return XRInputSource;
+}();
+
+var XRLayer = function () {
+  function XRLayer() {
+    classCallCheck(this, XRLayer);
+  }
+  createClass(XRLayer, [{
+    key: "getViewport",
+    value: function getViewport(view) {
+      return view._getViewport(this);
+    }
+  }]);
+  return XRLayer;
+}();
+
+var POLYFILLED_COMPATIBLE_XR_DEVICE = Symbol('@@webxr-polyfill/polyfilled-compatible-xr-device');
+var COMPATIBLE_XR_DEVICE = Symbol('@@webxr-polyfill/compatible-xr-device');
+
+var PRIVATE$15 = Symbol('@@webxr-polyfill/XRWebGLLayer');
+var XRWebGLLayerInit = Object.freeze({
+  antialias: true,
+  depth: false,
+  stencil: false,
+  alpha: true,
+  multiview: false,
+  framebufferScaleFactor: 0
+});
+var XRWebGLLayer = function (_XRLayer) {
+  inherits(XRWebGLLayer, _XRLayer);
+  function XRWebGLLayer(session, context) {
+    var layerInit = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+    classCallCheck(this, XRWebGLLayer);
+    var config = Object.assign({}, XRWebGLLayerInit, layerInit);
+    if (!(session instanceof XRSession)) {
+      throw new Error('session must be a XRSession');
+    }
+    if (session.ended) {
+      throw new Error('InvalidStateError');
+    }
+    if (context[POLYFILLED_COMPATIBLE_XR_DEVICE]) {
+      if (context[COMPATIBLE_XR_DEVICE] !== session.device) {
+        throw new Error('InvalidStateError');
+      }
+    }
+    var framebuffer = context.getParameter(context.FRAMEBUFFER_BINDING);
+    var _this = possibleConstructorReturn(this, (XRWebGLLayer.__proto__ || Object.getPrototypeOf(XRWebGLLayer)).call(this));
+    _this[PRIVATE$15] = {
+      context: context,
+      config: config,
+      framebuffer: framebuffer
+    };
+    return _this;
+  }
+  createClass(XRWebGLLayer, [{
+    key: 'requestViewportScaling',
+    value: function requestViewportScaling(viewportScaleFactor) {
+      console.warn('requestViewportScaling is not yet implemented');
+    }
+  }, {
+    key: 'context',
+    get: function get$$1() {
+      return this[PRIVATE$15].context;
+    }
+  }, {
+    key: 'antialias',
+    get: function get$$1() {
+      return this[PRIVATE$15].config.antialias;
+    }
+  }, {
+    key: 'depth',
+    get: function get$$1() {
+      return this[PRIVATE$15].config.depth;
+    }
+  }, {
+    key: 'stencil',
+    get: function get$$1() {
+      return this[PRIVATE$15].config.stencil;
+    }
+  }, {
+    key: 'alpha',
+    get: function get$$1() {
+      return this[PRIVATE$15].config.alpha;
+    }
+  }, {
+    key: 'multiview',
+    get: function get$$1() {
+      return false;
+    }
+  }, {
+    key: 'framebuffer',
+    get: function get$$1() {
+      return this[PRIVATE$15].framebuffer;
+    }
+  }, {
+    key: 'framebufferWidth',
+    get: function get$$1() {
+      return this[PRIVATE$15].context.drawingBufferWidth;
+    }
+  }, {
+    key: 'framebufferHeight',
+    get: function get$$1() {
+      return this[PRIVATE$15].context.drawingBufferHeight;
+    }
+  }]);
+  return XRWebGLLayer;
+}(XRLayer);
+
+var API = {
+  XR: XR,
+  XRDevice: XRDevice,
+  XRSession: XRSession,
+  XRFrame: XRFrame,
+  XRView: XRView,
+  XRViewport: XRViewport,
+  XRDevicePose: XRDevicePose,
+  XRLayer: XRLayer,
+  XRWebGLLayer: XRWebGLLayer,
+  XRPresentationContext: XRPresentationContext,
+  XRCoordinateSystem: XRCoordinateSystem,
+  XRFrameOfReference: XRFrameOfReference,
+  XRStageBounds: XRStageBounds,
+  XRStageBoundsPoint: XRStageBoundsPoint,
+  XRInputPose: XRInputPose,
+  XRInputSource: XRInputSource,
+  XRRay: XRRay
+};
+
+var polyfillSetCompatibleXRDevice = function polyfillSetCompatibleXRDevice(Context) {
+  if (typeof Context.prototype.setCompatibleXRDevice === 'function') {
+    return false;
+  }
+  Context.prototype.setCompatibleXRDevice = function (xrDevice) {
+    var _this = this;
+    return new Promise(function (resolve, reject) {
+      if (xrDevice && typeof xrDevice.requestSession === 'function') {
+        resolve();
+      } else {
+        reject();
+      }
+    }).then(function () {
+      return _this[COMPATIBLE_XR_DEVICE] = xrDevice;
+    });
+  };
+  return true;
+};
+var polyfillGetContext = function polyfillGetContext(Canvas, renderContextType) {
+  var getContext = Canvas.prototype.getContext;
+  Canvas.prototype.getContext = function (contextType, glAttribs) {
+    if (renderContextType && contextType === 'xrpresent') {
+      var _ctx = getContext.call(this, renderContextType, glAttribs);
+      return new XRPresentationContext(this, _ctx, glAttribs);
+    }
+    var ctx = getContext.call(this, contextType, glAttribs);
+    ctx[POLYFILLED_COMPATIBLE_XR_DEVICE] = true;
+    if (glAttribs && 'compatibleXRDevice' in glAttribs) {
+      ctx[COMPATIBLE_XR_DEVICE] = glAttribs.compatibleXRDevice;
+    }
+    return ctx;
+  };
+};
+
+function create$1() {
+  var out = new ARRAY_TYPE(3);
+  if (ARRAY_TYPE != Float32Array) {
+    out[0] = 0;
+    out[1] = 0;
+    out[2] = 0;
+  }
+  return out;
+}
+function clone$1(a) {
+  var out = new ARRAY_TYPE(3);
+  out[0] = a[0];
+  out[1] = a[1];
+  out[2] = a[2];
+  return out;
+}
+function length(a) {
+  var x = a[0];
+  var y = a[1];
+  var z = a[2];
+  return Math.sqrt(x * x + y * y + z * z);
+}
+function fromValues$1(x, y, z) {
+  var out = new ARRAY_TYPE(3);
+  out[0] = x;
+  out[1] = y;
+  out[2] = z;
+  return out;
+}
+function copy$1(out, a) {
+  out[0] = a[0];
+  out[1] = a[1];
+  out[2] = a[2];
+  return out;
+}
+function set$2(out, x, y, z) {
+  out[0] = x;
+  out[1] = y;
+  out[2] = z;
+  return out;
+}
+function add$1(out, a, b) {
+  out[0] = a[0] + b[0];
+  out[1] = a[1] + b[1];
+  out[2] = a[2] + b[2];
+  return out;
+}
+function subtract$1(out, a, b) {
+  out[0] = a[0] - b[0];
+  out[1] = a[1] - b[1];
+  out[2] = a[2] - b[2];
+  return out;
+}
+
+
+
+
+
+
+
+function scale$1(out, a, b) {
+  out[0] = a[0] * b;
+  out[1] = a[1] * b;
+  out[2] = a[2] * b;
+  return out;
+}
+
+
+
+
+
+
+function normalize(out, a) {
+  var x = a[0];
+  var y = a[1];
+  var z = a[2];
+  var len = x * x + y * y + z * z;
+  if (len > 0) {
+    len = 1 / Math.sqrt(len);
+    out[0] = a[0] * len;
+    out[1] = a[1] * len;
+    out[2] = a[2] * len;
+  }
+  return out;
+}
+function dot(a, b) {
+  return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+}
+function cross(out, a, b) {
+  var ax = a[0],
+      ay = a[1],
+      az = a[2];
+  var bx = b[0],
+      by = b[1],
+      bz = b[2];
+  out[0] = ay * bz - az * by;
+  out[1] = az * bx - ax * bz;
+  out[2] = ax * by - ay * bx;
+  return out;
+}
+
+
+
+
+function transformMat4(out, a, m) {
+  var x = a[0],
+      y = a[1],
+      z = a[2];
+  var w = m[3] * x + m[7] * y + m[11] * z + m[15];
+  w = w || 1.0;
+  out[0] = (m[0] * x + m[4] * y + m[8] * z + m[12]) / w;
+  out[1] = (m[1] * x + m[5] * y + m[9] * z + m[13]) / w;
+  out[2] = (m[2] * x + m[6] * y + m[10] * z + m[14]) / w;
+  return out;
+}
+
+function transformQuat(out, a, q) {
+  var qx = q[0],
+      qy = q[1],
+      qz = q[2],
+      qw = q[3];
+  var x = a[0],
+      y = a[1],
+      z = a[2];
+  var uvx = qy * z - qz * y,
+      uvy = qz * x - qx * z,
+      uvz = qx * y - qy * x;
+  var uuvx = qy * uvz - qz * uvy,
+      uuvy = qz * uvx - qx * uvz,
+      uuvz = qx * uvy - qy * uvx;
+  var w2 = qw * 2;
+  uvx *= w2;
+  uvy *= w2;
+  uvz *= w2;
+  uuvx *= 2;
+  uuvy *= 2;
+  uuvz *= 2;
+  out[0] = x + uvx + uuvx;
+  out[1] = y + uvy + uuvy;
+  out[2] = z + uvz + uuvz;
+  return out;
+}
+
+
+
+function angle(a, b) {
+  var tempA = fromValues$1(a[0], a[1], a[2]);
+  var tempB = fromValues$1(b[0], b[1], b[2]);
+  normalize(tempA, tempA);
+  normalize(tempB, tempB);
+  var cosine = dot(tempA, tempB);
+  if (cosine > 1.0) {
+    return 0;
+  } else if (cosine < -1.0) {
+    return Math.PI;
+  } else {
+    return Math.acos(cosine);
+  }
+}
+
+
+
+var sub$1 = subtract$1;
+
+
+
+
+var len = length;
+
+var forEach = function () {
+  var vec = create$1();
+  return function (a, stride, offset, count, fn, arg) {
+    var i = void 0,
+        l = void 0;
+    if (!stride) {
+      stride = 3;
+    }
+    if (!offset) {
+      offset = 0;
+    }
+    if (count) {
+      l = Math.min(count * stride + offset, a.length);
+    } else {
+      l = a.length;
+    }
+    for (i = offset; i < l; i += stride) {
+      vec[0] = a[i];vec[1] = a[i + 1];vec[2] = a[i + 2];
+      fn(vec, vec, arg);
+      a[i] = vec[0];a[i + 1] = vec[1];a[i + 2] = vec[2];
+    }
+    return a;
+  };
+}();
+
+var isImageBitmapSupported = function isImageBitmapSupported(global) {
+  return !!(global.ImageBitmapRenderingContext && global.createImageBitmap);
+};
+var poseMatrixToXRRay = function poseMatrixToXRRay(poseMatrix) {
+  var rayOrigin = [];
+  var rayDirection = [];
+  set$2(rayOrigin, 0, 0, 0);
+  transformMat4(rayOrigin, rayOrigin, poseMatrix);
+  set$2(rayDirection, 0, 0, -1);
+  transformMat4(rayDirection, rayDirection, poseMatrix);
+  sub$1(rayDirection, rayDirection, rayOrigin);
+  normalize(rayDirection, rayDirection);
+  return new XRRay(new DOMPointReadOnly$1(rayOrigin[0], rayOrigin[1], rayOrigin[2], 1.0), new DOMPointReadOnly$1(rayDirection[0], rayDirection[1], rayDirection[2], 0.0), poseMatrix);
+};
+var isMobile = function isMobile(global) {
+  var check = false;
+  (function (a) {
+    if (/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(a) || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0, 4))) check = true;
+  })(global.navigator.userAgent || global.navigator.vendor || global.opera);
+  return check;
+};
+var applyCanvasStylesForMinimalRendering = function applyCanvasStylesForMinimalRendering(canvas) {
+  canvas.style.display = 'block';
+  canvas.style.position = 'absolute';
+  canvas.style.width = canvas.style.height = '1px';
+  canvas.style.top = canvas.style.left = '0px';
+};
 
 var commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
@@ -6022,103 +7666,7 @@ function createCommonjsModule(fn, module) {
 	return module = { exports: {} }, fn(module, module.exports), module.exports;
 }
 
-var isMobile = function isMobile() {
-  return (/Android/i.test(navigator.userAgent) || /iPhone|iPad|iPod/i.test(navigator.userAgent)
-  );
-};
-var copyArray = function copyArray(source, dest) {
-  for (var i = 0, n = source.length; i < n; i++) {
-    dest[i] = source[i];
-  }
-};
-var extend = function extend(dest, src) {
-  for (var key in src) {
-    if (src.hasOwnProperty(key)) {
-      dest[key] = src[key];
-    }
-  }
-  return dest;
-};
-
 var cardboardVrDisplay = createCommonjsModule(function (module, exports) {
-/**
- * @license
- * cardboard-vr-display
- * Copyright (c) 2015-2017 Google
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-/**
- * @license
- * gl-preserve-state
- * Copyright (c) 2016, Brandon Jones.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
-/**
- * @license
- * webvr-polyfill-dpdb
- * Copyright (c) 2015-2017 Google
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-/**
- * @license
- * nosleep.js
- * Copyright (c) 2017, Rich Tibbett
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
 (function (global, factory) {
 	module.exports = factory();
 }(commonjsGlobal, (function () { var classCallCheck = function (instance, Constructor) {
@@ -7781,8 +9329,8 @@ function CardboardViewer(params) {
 }
 DeviceInfo.Viewers = Viewers;
 var format = 1;
-var last_updated = "2019-11-09T17:36:14Z";
-var devices = [{"type":"android","rules":[{"mdmh":"asus/*/Nexus 7/*"},{"ua":"Nexus 7"}],"dpi":[320.8,323],"bw":3,"ac":500},{"type":"android","rules":[{"mdmh":"asus/*/ASUS_X00PD/*"},{"ua":"ASUS_X00PD"}],"dpi":245,"bw":3,"ac":500},{"type":"android","rules":[{"mdmh":"asus/*/ASUS_X008D/*"},{"ua":"ASUS_X008D"}],"dpi":282,"bw":3,"ac":500},{"type":"android","rules":[{"mdmh":"asus/*/ASUS_Z00AD/*"},{"ua":"ASUS_Z00AD"}],"dpi":[403,404.6],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"Google/*/Pixel 2 XL/*"},{"ua":"Pixel 2 XL"}],"dpi":537.9,"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"Google/*/Pixel 3 XL/*"},{"ua":"Pixel 3 XL"}],"dpi":[558.5,553.8],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"Google/*/Pixel XL/*"},{"ua":"Pixel XL"}],"dpi":[537.9,533],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"Google/*/Pixel 3/*"},{"ua":"Pixel 3"}],"dpi":442.4,"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"Google/*/Pixel 2/*"},{"ua":"Pixel 2"}],"dpi":441,"bw":3,"ac":500},{"type":"android","rules":[{"mdmh":"Google/*/Pixel/*"},{"ua":"Pixel"}],"dpi":[432.6,436.7],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"HTC/*/HTC6435LVW/*"},{"ua":"HTC6435LVW"}],"dpi":[449.7,443.3],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"HTC/*/HTC One XL/*"},{"ua":"HTC One XL"}],"dpi":[315.3,314.6],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"htc/*/Nexus 9/*"},{"ua":"Nexus 9"}],"dpi":289,"bw":3,"ac":500},{"type":"android","rules":[{"mdmh":"HTC/*/HTC One M9/*"},{"ua":"HTC One M9"}],"dpi":[442.5,443.3],"bw":3,"ac":500},{"type":"android","rules":[{"mdmh":"HTC/*/HTC One_M8/*"},{"ua":"HTC One_M8"}],"dpi":[449.7,447.4],"bw":3,"ac":500},{"type":"android","rules":[{"mdmh":"HTC/*/HTC One/*"},{"ua":"HTC One"}],"dpi":472.8,"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"Huawei/*/Nexus 6P/*"},{"ua":"Nexus 6P"}],"dpi":[515.1,518],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"Huawei/*/BLN-L24/*"},{"ua":"HONORBLN-L24"}],"dpi":480,"bw":4,"ac":500},{"type":"android","rules":[{"mdmh":"Huawei/*/BKL-L09/*"},{"ua":"BKL-L09"}],"dpi":403,"bw":3.47,"ac":500},{"type":"android","rules":[{"mdmh":"LENOVO/*/Lenovo PB2-690Y/*"},{"ua":"Lenovo PB2-690Y"}],"dpi":[457.2,454.713],"bw":3,"ac":500},{"type":"android","rules":[{"mdmh":"LGE/*/Nexus 5X/*"},{"ua":"Nexus 5X"}],"dpi":[422,419.9],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"LGE/*/LGMS345/*"},{"ua":"LGMS345"}],"dpi":[221.7,219.1],"bw":3,"ac":500},{"type":"android","rules":[{"mdmh":"LGE/*/LG-D800/*"},{"ua":"LG-D800"}],"dpi":[422,424.1],"bw":3,"ac":500},{"type":"android","rules":[{"mdmh":"LGE/*/LG-D850/*"},{"ua":"LG-D850"}],"dpi":[537.9,541.9],"bw":3,"ac":500},{"type":"android","rules":[{"mdmh":"LGE/*/VS985 4G/*"},{"ua":"VS985 4G"}],"dpi":[537.9,535.6],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"LGE/*/Nexus 5/*"},{"ua":"Nexus 5 B"}],"dpi":[442.4,444.8],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"LGE/*/Nexus 4/*"},{"ua":"Nexus 4"}],"dpi":[319.8,318.4],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"LGE/*/LG-P769/*"},{"ua":"LG-P769"}],"dpi":[240.6,247.5],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"LGE/*/LGMS323/*"},{"ua":"LGMS323"}],"dpi":[206.6,204.6],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"LGE/*/LGLS996/*"},{"ua":"LGLS996"}],"dpi":[403.4,401.5],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"Micromax/*/4560MMX/*"},{"ua":"4560MMX"}],"dpi":[240,219.4],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"Micromax/*/A250/*"},{"ua":"Micromax A250"}],"dpi":[480,446.4],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"Micromax/*/Micromax AQ4501/*"},{"ua":"Micromax AQ4501"}],"dpi":240,"bw":3,"ac":500},{"type":"android","rules":[{"mdmh":"motorola/*/G5/*"},{"ua":"Moto G (5) Plus"}],"dpi":[403.4,403],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"motorola/*/DROID RAZR/*"},{"ua":"DROID RAZR"}],"dpi":[368.1,256.7],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"motorola/*/XT830C/*"},{"ua":"XT830C"}],"dpi":[254,255.9],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"motorola/*/XT1021/*"},{"ua":"XT1021"}],"dpi":[254,256.7],"bw":3,"ac":500},{"type":"android","rules":[{"mdmh":"motorola/*/XT1023/*"},{"ua":"XT1023"}],"dpi":[254,256.7],"bw":3,"ac":500},{"type":"android","rules":[{"mdmh":"motorola/*/XT1028/*"},{"ua":"XT1028"}],"dpi":[326.6,327.6],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"motorola/*/XT1034/*"},{"ua":"XT1034"}],"dpi":[326.6,328.4],"bw":3,"ac":500},{"type":"android","rules":[{"mdmh":"motorola/*/XT1053/*"},{"ua":"XT1053"}],"dpi":[315.3,316.1],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"motorola/*/XT1562/*"},{"ua":"XT1562"}],"dpi":[403.4,402.7],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"motorola/*/Nexus 6/*"},{"ua":"Nexus 6 B"}],"dpi":[494.3,489.7],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"motorola/*/XT1063/*"},{"ua":"XT1063"}],"dpi":[295,296.6],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"motorola/*/XT1064/*"},{"ua":"XT1064"}],"dpi":[295,295.6],"bw":3,"ac":500},{"type":"android","rules":[{"mdmh":"motorola/*/XT1092/*"},{"ua":"XT1092"}],"dpi":[422,424.1],"bw":3,"ac":500},{"type":"android","rules":[{"mdmh":"motorola/*/XT1095/*"},{"ua":"XT1095"}],"dpi":[422,423.4],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"motorola/*/G4/*"},{"ua":"Moto G (4)"}],"dpi":401,"bw":4,"ac":1000},{"type":"android","rules":[{"mdmh":"OnePlus/*/A0001/*"},{"ua":"A0001"}],"dpi":[403.4,401],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"OnePlus/*/ONE E1001/*"},{"ua":"ONE E1001"}],"dpi":[442.4,441.4],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"OnePlus/*/ONE E1003/*"},{"ua":"ONE E1003"}],"dpi":[442.4,441.4],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"OnePlus/*/ONE E1005/*"},{"ua":"ONE E1005"}],"dpi":[442.4,441.4],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"OnePlus/*/ONE A2001/*"},{"ua":"ONE A2001"}],"dpi":[391.9,405.4],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"OnePlus/*/ONE A2003/*"},{"ua":"ONE A2003"}],"dpi":[391.9,405.4],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"OnePlus/*/ONE A2005/*"},{"ua":"ONE A2005"}],"dpi":[391.9,405.4],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"OnePlus/*/ONEPLUS A3000/*"},{"ua":"ONEPLUS A3000"}],"dpi":401,"bw":3,"ac":500},{"type":"android","rules":[{"mdmh":"OnePlus/*/ONEPLUS A3003/*"},{"ua":"ONEPLUS A3003"}],"dpi":401,"bw":3,"ac":500},{"type":"android","rules":[{"mdmh":"OnePlus/*/ONEPLUS A3010/*"},{"ua":"ONEPLUS A3010"}],"dpi":401,"bw":3,"ac":500},{"type":"android","rules":[{"mdmh":"OnePlus/*/ONEPLUS A5000/*"},{"ua":"ONEPLUS A5000 "}],"dpi":[403.411,399.737],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"OnePlus/*/ONE A5010/*"},{"ua":"ONEPLUS A5010"}],"dpi":[403,400],"bw":2,"ac":1000},{"type":"android","rules":[{"mdmh":"OnePlus/*/ONEPLUS A6000/*"},{"ua":"ONEPLUS A6000"}],"dpi":401,"bw":3,"ac":500},{"type":"android","rules":[{"mdmh":"OnePlus/*/ONEPLUS A6003/*"},{"ua":"ONEPLUS A6003"}],"dpi":401,"bw":3,"ac":500},{"type":"android","rules":[{"mdmh":"OnePlus/*/ONEPLUS A6010/*"},{"ua":"ONEPLUS A6010"}],"dpi":401,"bw":2,"ac":500},{"type":"android","rules":[{"mdmh":"OnePlus/*/ONEPLUS A6013/*"},{"ua":"ONEPLUS A6013"}],"dpi":401,"bw":2,"ac":500},{"type":"android","rules":[{"mdmh":"OPPO/*/X909/*"},{"ua":"X909"}],"dpi":[442.4,444.1],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"samsung/*/GT-I9082/*"},{"ua":"GT-I9082"}],"dpi":[184.7,185.4],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"samsung/*/SM-G360P/*"},{"ua":"SM-G360P"}],"dpi":[196.7,205.4],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"samsung/*/Nexus S/*"},{"ua":"Nexus S"}],"dpi":[234.5,229.8],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"samsung/*/GT-I9300/*"},{"ua":"GT-I9300"}],"dpi":[304.8,303.9],"bw":5,"ac":500},{"type":"android","rules":[{"mdmh":"samsung/*/SM-T230NU/*"},{"ua":"SM-T230NU"}],"dpi":216,"bw":3,"ac":500},{"type":"android","rules":[{"mdmh":"samsung/*/SGH-T399/*"},{"ua":"SGH-T399"}],"dpi":[217.7,231.4],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"samsung/*/SGH-M919/*"},{"ua":"SGH-M919"}],"dpi":[440.8,437.7],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"samsung/*/SM-N9005/*"},{"ua":"SM-N9005"}],"dpi":[386.4,387],"bw":3,"ac":500},{"type":"android","rules":[{"mdmh":"samsung/*/SAMSUNG-SM-N900A/*"},{"ua":"SAMSUNG-SM-N900A"}],"dpi":[386.4,387.7],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"samsung/*/GT-I9500/*"},{"ua":"GT-I9500"}],"dpi":[442.5,443.3],"bw":3,"ac":500},{"type":"android","rules":[{"mdmh":"samsung/*/GT-I9505/*"},{"ua":"GT-I9505"}],"dpi":439.4,"bw":4,"ac":1000},{"type":"android","rules":[{"mdmh":"samsung/*/SM-G900F/*"},{"ua":"SM-G900F"}],"dpi":[415.6,431.6],"bw":5,"ac":1000},{"type":"android","rules":[{"mdmh":"samsung/*/SM-G900M/*"},{"ua":"SM-G900M"}],"dpi":[415.6,431.6],"bw":5,"ac":1000},{"type":"android","rules":[{"mdmh":"samsung/*/SM-G800F/*"},{"ua":"SM-G800F"}],"dpi":326.8,"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"samsung/*/SM-G906S/*"},{"ua":"SM-G906S"}],"dpi":[562.7,572.4],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"samsung/*/GT-I9300/*"},{"ua":"GT-I9300"}],"dpi":[306.7,304.8],"bw":5,"ac":1000},{"type":"android","rules":[{"mdmh":"samsung/*/SM-T535/*"},{"ua":"SM-T535"}],"dpi":[142.6,136.4],"bw":3,"ac":500},{"type":"android","rules":[{"mdmh":"samsung/*/SM-N920C/*"},{"ua":"SM-N920C"}],"dpi":[515.1,518.4],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"samsung/*/SM-N920P/*"},{"ua":"SM-N920P"}],"dpi":[386.3655,390.144],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"samsung/*/SM-N920W8/*"},{"ua":"SM-N920W8"}],"dpi":[515.1,518.4],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"samsung/*/GT-I9300I/*"},{"ua":"GT-I9300I"}],"dpi":[304.8,305.8],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"samsung/*/GT-I9195/*"},{"ua":"GT-I9195"}],"dpi":[249.4,256.7],"bw":3,"ac":500},{"type":"android","rules":[{"mdmh":"samsung/*/SPH-L520/*"},{"ua":"SPH-L520"}],"dpi":[249.4,255.9],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"samsung/*/SAMSUNG-SGH-I717/*"},{"ua":"SAMSUNG-SGH-I717"}],"dpi":285.8,"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"samsung/*/SPH-D710/*"},{"ua":"SPH-D710"}],"dpi":[217.7,204.2],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"samsung/*/GT-N7100/*"},{"ua":"GT-N7100"}],"dpi":265.1,"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"samsung/*/SCH-I605/*"},{"ua":"SCH-I605"}],"dpi":265.1,"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"samsung/*/Galaxy Nexus/*"},{"ua":"Galaxy Nexus"}],"dpi":[315.3,314.2],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"samsung/*/SM-N910H/*"},{"ua":"SM-N910H"}],"dpi":[515.1,518],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"samsung/*/SM-N910C/*"},{"ua":"SM-N910C"}],"dpi":[515.2,520.2],"bw":3,"ac":500},{"type":"android","rules":[{"mdmh":"samsung/*/SM-G130M/*"},{"ua":"SM-G130M"}],"dpi":[165.9,164.8],"bw":3,"ac":500},{"type":"android","rules":[{"mdmh":"samsung/*/SM-G928I/*"},{"ua":"SM-G928I"}],"dpi":[515.1,518.4],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"samsung/*/SM-G920F/*"},{"ua":"SM-G920F"}],"dpi":580.6,"bw":3,"ac":500},{"type":"android","rules":[{"mdmh":"samsung/*/SM-G920P/*"},{"ua":"SM-G920P"}],"dpi":[522.5,577],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"samsung/*/SM-G925F/*"},{"ua":"SM-G925F"}],"dpi":580.6,"bw":3,"ac":500},{"type":"android","rules":[{"mdmh":"samsung/*/SM-G925V/*"},{"ua":"SM-G925V"}],"dpi":[522.5,576.6],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"samsung/*/SM-G930F/*"},{"ua":"SM-G930F"}],"dpi":576.6,"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"samsung/*/SM-G935F/*"},{"ua":"SM-G935F"}],"dpi":533,"bw":3,"ac":500},{"type":"android","rules":[{"mdmh":"samsung/*/SM-G950F/*"},{"ua":"SM-G950F"}],"dpi":[562.707,565.293],"bw":3,"ac":500},{"type":"android","rules":[{"mdmh":"samsung/*/SM-G955U/*"},{"ua":"SM-G955U"}],"dpi":[522.514,525.762],"bw":3,"ac":500},{"type":"android","rules":[{"mdmh":"samsung/*/SM-G955F/*"},{"ua":"SM-G955F"}],"dpi":[522.514,525.762],"bw":3,"ac":500},{"type":"android","rules":[{"mdmh":"samsung/*/SM-G960F/*"},{"ua":"SM-G960F"}],"dpi":[569.575,571.5],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"samsung/*/SM-G9600/*"},{"ua":"SM-G9600"}],"dpi":[569.575,571.5],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"samsung/*/SM-G960T/*"},{"ua":"SM-G960T"}],"dpi":[569.575,571.5],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"samsung/*/SM-G960N/*"},{"ua":"SM-G960N"}],"dpi":[569.575,571.5],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"samsung/*/SM-G960U/*"},{"ua":"SM-G960U"}],"dpi":[569.575,571.5],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"samsung/*/SM-G9608/*"},{"ua":"SM-G9608"}],"dpi":[569.575,571.5],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"samsung/*/SM-G960FD/*"},{"ua":"SM-G960FD"}],"dpi":[569.575,571.5],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"samsung/*/SM-G960W/*"},{"ua":"SM-G960W"}],"dpi":[569.575,571.5],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"samsung/*/SM-G965F/*"},{"ua":"SM-G965F"}],"dpi":529,"bw":2,"ac":1000},{"type":"android","rules":[{"mdmh":"Sony/*/C6903/*"},{"ua":"C6903"}],"dpi":[442.5,443.3],"bw":3,"ac":500},{"type":"android","rules":[{"mdmh":"Sony/*/D6653/*"},{"ua":"D6653"}],"dpi":[428.6,427.6],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"Sony/*/E6653/*"},{"ua":"E6653"}],"dpi":[428.6,425.7],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"Sony/*/E6853/*"},{"ua":"E6853"}],"dpi":[403.4,401.9],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"Sony/*/SGP321/*"},{"ua":"SGP321"}],"dpi":[224.7,224.1],"bw":3,"ac":500},{"type":"android","rules":[{"mdmh":"TCT/*/ALCATEL ONE TOUCH Fierce/*"},{"ua":"ALCATEL ONE TOUCH Fierce"}],"dpi":[240,247.5],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"THL/*/thl 5000/*"},{"ua":"thl 5000"}],"dpi":[480,443.3],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"Fly/*/IQ4412/*"},{"ua":"IQ4412"}],"dpi":307.9,"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"ZTE/*/ZTE Blade L2/*"},{"ua":"ZTE Blade L2"}],"dpi":240,"bw":3,"ac":500},{"type":"android","rules":[{"mdmh":"BENEVE/*/VR518/*"},{"ua":"VR518"}],"dpi":480,"bw":3,"ac":500},{"type":"ios","rules":[{"res":[640,960]}],"dpi":[325.1,328.4],"bw":4,"ac":1000},{"type":"ios","rules":[{"res":[640,1136]}],"dpi":[317.1,320.2],"bw":3,"ac":1000},{"type":"ios","rules":[{"res":[750,1334]}],"dpi":326.4,"bw":4,"ac":1000},{"type":"ios","rules":[{"res":[1242,2208]}],"dpi":[453.6,458.4],"bw":4,"ac":1000},{"type":"ios","rules":[{"res":[1125,2001]}],"dpi":[410.9,415.4],"bw":4,"ac":1000},{"type":"ios","rules":[{"res":[1125,2436]}],"dpi":458,"bw":4,"ac":1000},{"type":"android","rules":[{"mdmh":"Huawei/*/EML-L29/*"},{"ua":"EML-L29"}],"dpi":428,"bw":3.45,"ac":500},{"type":"android","rules":[{"mdmh":"Nokia/*/Nokia 7.1/*"},{"ua":"Nokia 7.1"}],"dpi":[432,431.9],"bw":3,"ac":500},{"type":"ios","rules":[{"res":[1242,2688]}],"dpi":458,"bw":4,"ac":1000},{"type":"android","rules":[{"mdmh":"samsung/*/SM-G570M/*"},{"ua":"SM-G570M"}],"dpi":320,"bw":3.684,"ac":1000},{"type":"android","rules":[{"mdmh":"samsung/*/SM-G970F/*"},{"ua":"SM-G970F"}],"dpi":438,"bw":2.281,"ac":500},{"type":"android","rules":[{"mdmh":"samsung/*/SM-G973F/*"},{"ua":"SM-G973F"}],"dpi":550,"bw":2.002,"ac":500},{"type":"android","rules":[{"mdmh":"samsung/*/SM-G975F/*"},{"ua":"SM-G975F"}],"dpi":522,"bw":2.054,"ac":500},{"type":"android","rules":[{"mdmh":"samsung/*/SM-G977F/*"},{"ua":"SM-G977F"}],"dpi":505,"bw":2.334,"ac":500},{"type":"ios","rules":[{"res":[828,1792]}],"dpi":326,"bw":5,"ac":500}];
+var last_updated = "2018-12-10T17:01:42Z";
+var devices = [{"type":"android","rules":[{"mdmh":"asus/*/Nexus 7/*"},{"ua":"Nexus 7"}],"dpi":[320.8,323],"bw":3,"ac":500},{"type":"android","rules":[{"mdmh":"asus/*/ASUS_Z00AD/*"},{"ua":"ASUS_Z00AD"}],"dpi":[403,404.6],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"Google/*/Pixel 2 XL/*"},{"ua":"Pixel 2 XL"}],"dpi":537.9,"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"Google/*/Pixel 3 XL/*"},{"ua":"Pixel 3 XL"}],"dpi":[558.5,553.8],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"Google/*/Pixel XL/*"},{"ua":"Pixel XL"}],"dpi":[537.9,533],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"Google/*/Pixel 3/*"},{"ua":"Pixel 3"}],"dpi":442.4,"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"Google/*/Pixel 2/*"},{"ua":"Pixel 2"}],"dpi":441,"bw":3,"ac":500},{"type":"android","rules":[{"mdmh":"Google/*/Pixel/*"},{"ua":"Pixel"}],"dpi":[432.6,436.7],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"HTC/*/HTC6435LVW/*"},{"ua":"HTC6435LVW"}],"dpi":[449.7,443.3],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"HTC/*/HTC One XL/*"},{"ua":"HTC One XL"}],"dpi":[315.3,314.6],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"htc/*/Nexus 9/*"},{"ua":"Nexus 9"}],"dpi":289,"bw":3,"ac":500},{"type":"android","rules":[{"mdmh":"HTC/*/HTC One M9/*"},{"ua":"HTC One M9"}],"dpi":[442.5,443.3],"bw":3,"ac":500},{"type":"android","rules":[{"mdmh":"HTC/*/HTC One_M8/*"},{"ua":"HTC One_M8"}],"dpi":[449.7,447.4],"bw":3,"ac":500},{"type":"android","rules":[{"mdmh":"HTC/*/HTC One/*"},{"ua":"HTC One"}],"dpi":472.8,"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"Huawei/*/Nexus 6P/*"},{"ua":"Nexus 6P"}],"dpi":[515.1,518],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"Huawei/*/BLN-L24/*"},{"ua":"HONORBLN-L24"}],"dpi":480,"bw":4,"ac":500},{"type":"android","rules":[{"mdmh":"Huawei/*/BKL-L09/*"},{"ua":"BKL-L09"}],"dpi":403,"bw":3.47,"ac":500},{"type":"android","rules":[{"mdmh":"LENOVO/*/Lenovo PB2-690Y/*"},{"ua":"Lenovo PB2-690Y"}],"dpi":[457.2,454.713],"bw":3,"ac":500},{"type":"android","rules":[{"mdmh":"LGE/*/Nexus 5X/*"},{"ua":"Nexus 5X"}],"dpi":[422,419.9],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"LGE/*/LGMS345/*"},{"ua":"LGMS345"}],"dpi":[221.7,219.1],"bw":3,"ac":500},{"type":"android","rules":[{"mdmh":"LGE/*/LG-D800/*"},{"ua":"LG-D800"}],"dpi":[422,424.1],"bw":3,"ac":500},{"type":"android","rules":[{"mdmh":"LGE/*/LG-D850/*"},{"ua":"LG-D850"}],"dpi":[537.9,541.9],"bw":3,"ac":500},{"type":"android","rules":[{"mdmh":"LGE/*/VS985 4G/*"},{"ua":"VS985 4G"}],"dpi":[537.9,535.6],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"LGE/*/Nexus 5/*"},{"ua":"Nexus 5 B"}],"dpi":[442.4,444.8],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"LGE/*/Nexus 4/*"},{"ua":"Nexus 4"}],"dpi":[319.8,318.4],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"LGE/*/LG-P769/*"},{"ua":"LG-P769"}],"dpi":[240.6,247.5],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"LGE/*/LGMS323/*"},{"ua":"LGMS323"}],"dpi":[206.6,204.6],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"LGE/*/LGLS996/*"},{"ua":"LGLS996"}],"dpi":[403.4,401.5],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"Micromax/*/4560MMX/*"},{"ua":"4560MMX"}],"dpi":[240,219.4],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"Micromax/*/A250/*"},{"ua":"Micromax A250"}],"dpi":[480,446.4],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"Micromax/*/Micromax AQ4501/*"},{"ua":"Micromax AQ4501"}],"dpi":240,"bw":3,"ac":500},{"type":"android","rules":[{"mdmh":"motorola/*/G5/*"},{"ua":"Moto G (5) Plus"}],"dpi":[403.4,403],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"motorola/*/DROID RAZR/*"},{"ua":"DROID RAZR"}],"dpi":[368.1,256.7],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"motorola/*/XT830C/*"},{"ua":"XT830C"}],"dpi":[254,255.9],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"motorola/*/XT1021/*"},{"ua":"XT1021"}],"dpi":[254,256.7],"bw":3,"ac":500},{"type":"android","rules":[{"mdmh":"motorola/*/XT1023/*"},{"ua":"XT1023"}],"dpi":[254,256.7],"bw":3,"ac":500},{"type":"android","rules":[{"mdmh":"motorola/*/XT1028/*"},{"ua":"XT1028"}],"dpi":[326.6,327.6],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"motorola/*/XT1034/*"},{"ua":"XT1034"}],"dpi":[326.6,328.4],"bw":3,"ac":500},{"type":"android","rules":[{"mdmh":"motorola/*/XT1053/*"},{"ua":"XT1053"}],"dpi":[315.3,316.1],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"motorola/*/XT1562/*"},{"ua":"XT1562"}],"dpi":[403.4,402.7],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"motorola/*/Nexus 6/*"},{"ua":"Nexus 6 B"}],"dpi":[494.3,489.7],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"motorola/*/XT1063/*"},{"ua":"XT1063"}],"dpi":[295,296.6],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"motorola/*/XT1064/*"},{"ua":"XT1064"}],"dpi":[295,295.6],"bw":3,"ac":500},{"type":"android","rules":[{"mdmh":"motorola/*/XT1092/*"},{"ua":"XT1092"}],"dpi":[422,424.1],"bw":3,"ac":500},{"type":"android","rules":[{"mdmh":"motorola/*/XT1095/*"},{"ua":"XT1095"}],"dpi":[422,423.4],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"motorola/*/G4/*"},{"ua":"Moto G (4)"}],"dpi":401,"bw":4,"ac":1000},{"type":"android","rules":[{"mdmh":"OnePlus/*/A0001/*"},{"ua":"A0001"}],"dpi":[403.4,401],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"OnePlus/*/ONE E1005/*"},{"ua":"ONE E1005"}],"dpi":[442.4,441.4],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"OnePlus/*/ONE A2005/*"},{"ua":"ONE A2005"}],"dpi":[391.9,405.4],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"OnePlus/*/ONEPLUS A5000/*"},{"ua":"ONEPLUS A5000 "}],"dpi":[403.411,399.737],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"OnePlus/*/ONE A5010/*"},{"ua":"ONEPLUS A5010"}],"dpi":[403,400],"bw":2,"ac":1000},{"type":"android","rules":[{"mdmh":"OPPO/*/X909/*"},{"ua":"X909"}],"dpi":[442.4,444.1],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"samsung/*/GT-I9082/*"},{"ua":"GT-I9082"}],"dpi":[184.7,185.4],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"samsung/*/SM-G360P/*"},{"ua":"SM-G360P"}],"dpi":[196.7,205.4],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"samsung/*/Nexus S/*"},{"ua":"Nexus S"}],"dpi":[234.5,229.8],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"samsung/*/GT-I9300/*"},{"ua":"GT-I9300"}],"dpi":[304.8,303.9],"bw":5,"ac":500},{"type":"android","rules":[{"mdmh":"samsung/*/SM-T230NU/*"},{"ua":"SM-T230NU"}],"dpi":216,"bw":3,"ac":500},{"type":"android","rules":[{"mdmh":"samsung/*/SGH-T399/*"},{"ua":"SGH-T399"}],"dpi":[217.7,231.4],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"samsung/*/SGH-M919/*"},{"ua":"SGH-M919"}],"dpi":[440.8,437.7],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"samsung/*/SM-N9005/*"},{"ua":"SM-N9005"}],"dpi":[386.4,387],"bw":3,"ac":500},{"type":"android","rules":[{"mdmh":"samsung/*/SAMSUNG-SM-N900A/*"},{"ua":"SAMSUNG-SM-N900A"}],"dpi":[386.4,387.7],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"samsung/*/GT-I9500/*"},{"ua":"GT-I9500"}],"dpi":[442.5,443.3],"bw":3,"ac":500},{"type":"android","rules":[{"mdmh":"samsung/*/GT-I9505/*"},{"ua":"GT-I9505"}],"dpi":439.4,"bw":4,"ac":1000},{"type":"android","rules":[{"mdmh":"samsung/*/SM-G900F/*"},{"ua":"SM-G900F"}],"dpi":[415.6,431.6],"bw":5,"ac":1000},{"type":"android","rules":[{"mdmh":"samsung/*/SM-G900M/*"},{"ua":"SM-G900M"}],"dpi":[415.6,431.6],"bw":5,"ac":1000},{"type":"android","rules":[{"mdmh":"samsung/*/SM-G800F/*"},{"ua":"SM-G800F"}],"dpi":326.8,"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"samsung/*/SM-G906S/*"},{"ua":"SM-G906S"}],"dpi":[562.7,572.4],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"samsung/*/GT-I9300/*"},{"ua":"GT-I9300"}],"dpi":[306.7,304.8],"bw":5,"ac":1000},{"type":"android","rules":[{"mdmh":"samsung/*/SM-T535/*"},{"ua":"SM-T535"}],"dpi":[142.6,136.4],"bw":3,"ac":500},{"type":"android","rules":[{"mdmh":"samsung/*/SM-N920C/*"},{"ua":"SM-N920C"}],"dpi":[515.1,518.4],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"samsung/*/SM-N920P/*"},{"ua":"SM-N920P"}],"dpi":[386.3655,390.144],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"samsung/*/SM-N920W8/*"},{"ua":"SM-N920W8"}],"dpi":[515.1,518.4],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"samsung/*/GT-I9300I/*"},{"ua":"GT-I9300I"}],"dpi":[304.8,305.8],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"samsung/*/GT-I9195/*"},{"ua":"GT-I9195"}],"dpi":[249.4,256.7],"bw":3,"ac":500},{"type":"android","rules":[{"mdmh":"samsung/*/SPH-L520/*"},{"ua":"SPH-L520"}],"dpi":[249.4,255.9],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"samsung/*/SAMSUNG-SGH-I717/*"},{"ua":"SAMSUNG-SGH-I717"}],"dpi":285.8,"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"samsung/*/SPH-D710/*"},{"ua":"SPH-D710"}],"dpi":[217.7,204.2],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"samsung/*/GT-N7100/*"},{"ua":"GT-N7100"}],"dpi":265.1,"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"samsung/*/SCH-I605/*"},{"ua":"SCH-I605"}],"dpi":265.1,"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"samsung/*/Galaxy Nexus/*"},{"ua":"Galaxy Nexus"}],"dpi":[315.3,314.2],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"samsung/*/SM-N910H/*"},{"ua":"SM-N910H"}],"dpi":[515.1,518],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"samsung/*/SM-N910C/*"},{"ua":"SM-N910C"}],"dpi":[515.2,520.2],"bw":3,"ac":500},{"type":"android","rules":[{"mdmh":"samsung/*/SM-G130M/*"},{"ua":"SM-G130M"}],"dpi":[165.9,164.8],"bw":3,"ac":500},{"type":"android","rules":[{"mdmh":"samsung/*/SM-G928I/*"},{"ua":"SM-G928I"}],"dpi":[515.1,518.4],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"samsung/*/SM-G920F/*"},{"ua":"SM-G920F"}],"dpi":580.6,"bw":3,"ac":500},{"type":"android","rules":[{"mdmh":"samsung/*/SM-G920P/*"},{"ua":"SM-G920P"}],"dpi":[522.5,577],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"samsung/*/SM-G925F/*"},{"ua":"SM-G925F"}],"dpi":580.6,"bw":3,"ac":500},{"type":"android","rules":[{"mdmh":"samsung/*/SM-G925V/*"},{"ua":"SM-G925V"}],"dpi":[522.5,576.6],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"samsung/*/SM-G930F/*"},{"ua":"SM-G930F"}],"dpi":576.6,"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"samsung/*/SM-G935F/*"},{"ua":"SM-G935F"}],"dpi":533,"bw":3,"ac":500},{"type":"android","rules":[{"mdmh":"samsung/*/SM-G950F/*"},{"ua":"SM-G950F"}],"dpi":[562.707,565.293],"bw":3,"ac":500},{"type":"android","rules":[{"mdmh":"samsung/*/SM-G955U/*"},{"ua":"SM-G955U"}],"dpi":[522.514,525.762],"bw":3,"ac":500},{"type":"android","rules":[{"mdmh":"samsung/*/SM-G955F/*"},{"ua":"SM-G955F"}],"dpi":[522.514,525.762],"bw":3,"ac":500},{"type":"android","rules":[{"mdmh":"Sony/*/C6903/*"},{"ua":"C6903"}],"dpi":[442.5,443.3],"bw":3,"ac":500},{"type":"android","rules":[{"mdmh":"Sony/*/D6653/*"},{"ua":"D6653"}],"dpi":[428.6,427.6],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"Sony/*/E6653/*"},{"ua":"E6653"}],"dpi":[428.6,425.7],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"Sony/*/E6853/*"},{"ua":"E6853"}],"dpi":[403.4,401.9],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"Sony/*/SGP321/*"},{"ua":"SGP321"}],"dpi":[224.7,224.1],"bw":3,"ac":500},{"type":"android","rules":[{"mdmh":"TCT/*/ALCATEL ONE TOUCH Fierce/*"},{"ua":"ALCATEL ONE TOUCH Fierce"}],"dpi":[240,247.5],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"THL/*/thl 5000/*"},{"ua":"thl 5000"}],"dpi":[480,443.3],"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"Fly/*/IQ4412/*"},{"ua":"IQ4412"}],"dpi":307.9,"bw":3,"ac":1000},{"type":"android","rules":[{"mdmh":"ZTE/*/ZTE Blade L2/*"},{"ua":"ZTE Blade L2"}],"dpi":240,"bw":3,"ac":500},{"type":"android","rules":[{"mdmh":"BENEVE/*/VR518/*"},{"ua":"VR518"}],"dpi":480,"bw":3,"ac":500},{"type":"ios","rules":[{"res":[640,960]}],"dpi":[325.1,328.4],"bw":4,"ac":1000},{"type":"ios","rules":[{"res":[640,1136]}],"dpi":[317.1,320.2],"bw":3,"ac":1000},{"type":"ios","rules":[{"res":[750,1334]}],"dpi":326.4,"bw":4,"ac":1000},{"type":"ios","rules":[{"res":[1242,2208]}],"dpi":[453.6,458.4],"bw":4,"ac":1000},{"type":"ios","rules":[{"res":[1125,2001]}],"dpi":[410.9,415.4],"bw":4,"ac":1000},{"type":"ios","rules":[{"res":[1125,2436]}],"dpi":458,"bw":4,"ac":1000}];
 var DPDB_CACHE = {
 	format: format,
 	last_updated: last_updated,
@@ -9210,10 +10758,7 @@ CardboardVRDisplay.prototype.submitFrame = function (pose) {
     this.updateBounds_();
     this.distorter_.submitFrame();
   } else if (this.cardboardUI_ && this.layer_) {
-    var gl = this.layer_.source.getContext('webgl');
-    if (!gl) gl = this.layer_.source.getContext('experimental-webgl');
-    if (!gl) gl = this.layer_.source.getContext('webgl2');
-    var canvas = gl.canvas;
+    var canvas = this.layer_.source.getContext('webgl').canvas;
     if (canvas.width != this.lastWidth || canvas.height != this.lastHeight) {
       this.cardboardUI_.onResize();
     }
@@ -9232,8 +10777,6 @@ CardboardVRDisplay.prototype.onOrientationChange_ = function (e) {
 CardboardVRDisplay.prototype.onResize_ = function (e) {
   if (this.layer_) {
     var gl = this.layer_.source.getContext('webgl');
-    if (!gl) gl = this.layer_.source.getContext('experimental-webgl');
-    if (!gl) gl = this.layer_.source.getContext('webgl2');
     var cssProperties = ['position: absolute', 'top: 0', 'left: 0',
     'width: 100vw', 'height: 100vh', 'border: 0', 'margin: 0',
     'padding: 0px', 'box-sizing: content-box'];
@@ -9264,121 +10807,1331 @@ return CardboardVRDisplay;
 });
 var CardboardVRDisplay = unwrapExports(cardboardVrDisplay);
 
-var version = "0.10.10";
+var PolyfilledXRDevice = function (_EventTarget) {
+  inherits(PolyfilledXRDevice, _EventTarget);
+  function PolyfilledXRDevice(global) {
+    classCallCheck(this, PolyfilledXRDevice);
+    var _this = possibleConstructorReturn(this, (PolyfilledXRDevice.__proto__ || Object.getPrototypeOf(PolyfilledXRDevice)).call(this));
+    _this.global = global;
+    _this.onWindowResize = _this.onWindowResize.bind(_this);
+    _this.global.window.addEventListener('resize', _this.onWindowResize);
+    _this.environmentBlendMode = 'opaque';
+    return _this;
+  }
+  createClass(PolyfilledXRDevice, [{
+    key: 'onBaseLayerSet',
+    value: function onBaseLayerSet(sessionId, layer) {
+      throw new Error('Not implemented');
+    }
+  }, {
+    key: 'supportsSession',
+    value: function supportsSession() {
+      throw new Error('Not implemented');
+    }
+  }, {
+    key: 'requestSession',
+    value: function requestSession() {
+      return new Promise(function ($return, $error) {
+        return $error(new Error('Not implemented'));
+      }.bind(this));
+    }
+  }, {
+    key: 'requestAnimationFrame',
+    value: function requestAnimationFrame(callback) {
+      throw new Error('Not implemented');
+    }
+  }, {
+    key: 'onFrameStart',
+    value: function onFrameStart(sessionId) {
+      throw new Error('Not implemented');
+    }
+  }, {
+    key: 'onFrameEnd',
+    value: function onFrameEnd(sessionId) {
+      throw new Error('Not implemented');
+    }
+  }, {
+    key: 'requestStageBounds',
+    value: function requestStageBounds() {
+      throw new Error('Not implemented');
+    }
+  }, {
+    key: 'requestFrameOfReferenceTransform',
+    value: function requestFrameOfReferenceTransform(type, options) {
+      return new Promise(function ($return, $error) {
+        return $return(undefined);
+      }.bind(this));
+    }
+  }, {
+    key: 'cancelAnimationFrame',
+    value: function cancelAnimationFrame(handle) {
+      throw new Error('Not implemented');
+    }
+  }, {
+    key: 'endSession',
+    value: function endSession(sessionId) {
+      throw new Error('Not implemented');
+    }
+  }, {
+    key: 'getViewport',
+    value: function getViewport(sessionId, eye, layer, target) {
+      throw new Error('Not implemented');
+    }
+  }, {
+    key: 'getProjectionMatrix',
+    value: function getProjectionMatrix(eye) {
+      throw new Error('Not implemented');
+    }
+  }, {
+    key: 'getBasePoseMatrix',
+    value: function getBasePoseMatrix() {
+      throw new Error('Not implemented');
+    }
+  }, {
+    key: 'getBaseViewMatrix',
+    value: function getBaseViewMatrix(eye) {
+      throw new Error('Not implemented');
+    }
+  }, {
+    key: 'getInputSources',
+    value: function getInputSources() {
+      throw new Error('Not implemented');
+    }
+  }, {
+    key: 'getInputPose',
+    value: function getInputPose(inputSource, coordinateSystem) {
+      throw new Error('Not implemented');
+    }
+  }, {
+    key: 'onWindowResize',
+    value: function onWindowResize() {
+      this.onWindowResize();
+    }
+  }, {
+    key: 'depthNear',
+    get: function get$$1() {
+      throw new Error('Not implemented');
+    }
+    ,
+    set: function set$$1(val) {
+      throw new Error('Not implemented');
+    }
+  }, {
+    key: 'depthFar',
+    get: function get$$1() {
+      throw new Error('Not implemented');
+    }
+    ,
+    set: function set$$1(val) {
+      throw new Error('Not implemented');
+    }
+  }]);
+  return PolyfilledXRDevice;
+}(EventTarget);
 
-var DefaultConfig = {
-  ADDITIONAL_VIEWERS: [],
-  DEFAULT_VIEWER: '',
-  PROVIDE_MOBILE_VRDISPLAY: true,
-  MOBILE_WAKE_LOCK: true,
-  DEBUG: false,
-  DPDB_URL: 'https://dpdb.webvr.rocks/dpdb.json',
-  K_FILTER: 0.98,
-  PREDICTION_TIME_S: 0.040,
-  CARDBOARD_UI_DISABLED: false,
-  ROTATE_INSTRUCTIONS_DISABLED: false,
-  YAW_ONLY: false,
-  BUFFER_SCALE: 0.5,
-  DIRTY_SUBMIT_FRAME_BINDINGS: false
-};
+function create$2() {
+  var out = new ARRAY_TYPE(9);
+  if (ARRAY_TYPE != Float32Array) {
+    out[1] = 0;
+    out[2] = 0;
+    out[3] = 0;
+    out[5] = 0;
+    out[6] = 0;
+    out[7] = 0;
+  }
+  out[0] = 1;
+  out[4] = 1;
+  out[8] = 1;
+  return out;
+}
 
-function WebVRPolyfill(config) {
-  this.config = extend(extend({}, DefaultConfig), config);
-  this.polyfillDisplays = [];
-  this.enabled = false;
-  this.hasNative = 'getVRDisplays' in navigator;
-  this.native = {};
-  this.native.getVRDisplays = navigator.getVRDisplays;
-  this.native.VRFrameData = window.VRFrameData;
-  this.native.VRDisplay = window.VRDisplay;
-  if (!this.hasNative || this.config.PROVIDE_MOBILE_VRDISPLAY && isMobile()) {
-    this.enable();
-    this.getVRDisplays().then(function (displays) {
-      if (displays && displays[0] && displays[0].fireVRDisplayConnect_) {
-        displays[0].fireVRDisplayConnect_();
-      }
-    });
+function create$3() {
+  var out = new ARRAY_TYPE(4);
+  if (ARRAY_TYPE != Float32Array) {
+    out[0] = 0;
+    out[1] = 0;
+    out[2] = 0;
+    out[3] = 0;
+  }
+  return out;
+}
+function clone$3(a) {
+  var out = new ARRAY_TYPE(4);
+  out[0] = a[0];
+  out[1] = a[1];
+  out[2] = a[2];
+  out[3] = a[3];
+  return out;
+}
+
+function copy$3(out, a) {
+  out[0] = a[0];
+  out[1] = a[1];
+  out[2] = a[2];
+  out[3] = a[3];
+  return out;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function normalize$1(out, a) {
+  var x = a[0];
+  var y = a[1];
+  var z = a[2];
+  var w = a[3];
+  var len = x * x + y * y + z * z + w * w;
+  if (len > 0) {
+    len = 1 / Math.sqrt(len);
+    out[0] = x * len;
+    out[1] = y * len;
+    out[2] = z * len;
+    out[3] = w * len;
+  }
+  return out;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+var forEach$1 = function () {
+  var vec = create$3();
+  return function (a, stride, offset, count, fn, arg) {
+    var i = void 0,
+        l = void 0;
+    if (!stride) {
+      stride = 4;
+    }
+    if (!offset) {
+      offset = 0;
+    }
+    if (count) {
+      l = Math.min(count * stride + offset, a.length);
+    } else {
+      l = a.length;
+    }
+    for (i = offset; i < l; i += stride) {
+      vec[0] = a[i];vec[1] = a[i + 1];vec[2] = a[i + 2];vec[3] = a[i + 3];
+      fn(vec, vec, arg);
+      a[i] = vec[0];a[i + 1] = vec[1];a[i + 2] = vec[2];a[i + 3] = vec[3];
+    }
+    return a;
+  };
+}();
+
+function create$4() {
+  var out = new ARRAY_TYPE(4);
+  if (ARRAY_TYPE != Float32Array) {
+    out[0] = 0;
+    out[1] = 0;
+    out[2] = 0;
+  }
+  out[3] = 1;
+  return out;
+}
+
+function setAxisAngle(out, axis, rad) {
+  rad = rad * 0.5;
+  var s = Math.sin(rad);
+  out[0] = s * axis[0];
+  out[1] = s * axis[1];
+  out[2] = s * axis[2];
+  out[3] = Math.cos(rad);
+  return out;
+}
+
+function multiply$4(out, a, b) {
+  var ax = a[0],
+      ay = a[1],
+      az = a[2],
+      aw = a[3];
+  var bx = b[0],
+      by = b[1],
+      bz = b[2],
+      bw = b[3];
+  out[0] = ax * bw + aw * bx + ay * bz - az * by;
+  out[1] = ay * bw + aw * by + az * bx - ax * bz;
+  out[2] = az * bw + aw * bz + ax * by - ay * bx;
+  out[3] = aw * bw - ax * bx - ay * by - az * bz;
+  return out;
+}
+
+
+
+
+function slerp(out, a, b, t) {
+  var ax = a[0],
+      ay = a[1],
+      az = a[2],
+      aw = a[3];
+  var bx = b[0],
+      by = b[1],
+      bz = b[2],
+      bw = b[3];
+  var omega = void 0,
+      cosom = void 0,
+      sinom = void 0,
+      scale0 = void 0,
+      scale1 = void 0;
+  cosom = ax * bx + ay * by + az * bz + aw * bw;
+  if (cosom < 0.0) {
+    cosom = -cosom;
+    bx = -bx;
+    by = -by;
+    bz = -bz;
+    bw = -bw;
+  }
+  if (1.0 - cosom > EPSILON) {
+    omega = Math.acos(cosom);
+    sinom = Math.sin(omega);
+    scale0 = Math.sin((1.0 - t) * omega) / sinom;
+    scale1 = Math.sin(t * omega) / sinom;
+  } else {
+    scale0 = 1.0 - t;
+    scale1 = t;
+  }
+  out[0] = scale0 * ax + scale1 * bx;
+  out[1] = scale0 * ay + scale1 * by;
+  out[2] = scale0 * az + scale1 * bz;
+  out[3] = scale0 * aw + scale1 * bw;
+  return out;
+}
+
+function invert$2(out, a) {
+  var a0 = a[0],
+      a1 = a[1],
+      a2 = a[2],
+      a3 = a[3];
+  var dot$$1 = a0 * a0 + a1 * a1 + a2 * a2 + a3 * a3;
+  var invDot = dot$$1 ? 1.0 / dot$$1 : 0;
+  out[0] = -a0 * invDot;
+  out[1] = -a1 * invDot;
+  out[2] = -a2 * invDot;
+  out[3] = a3 * invDot;
+  return out;
+}
+
+function fromMat3(out, m) {
+  var fTrace = m[0] + m[4] + m[8];
+  var fRoot = void 0;
+  if (fTrace > 0.0) {
+    fRoot = Math.sqrt(fTrace + 1.0);
+    out[3] = 0.5 * fRoot;
+    fRoot = 0.5 / fRoot;
+    out[0] = (m[5] - m[7]) * fRoot;
+    out[1] = (m[6] - m[2]) * fRoot;
+    out[2] = (m[1] - m[3]) * fRoot;
+  } else {
+    var i = 0;
+    if (m[4] > m[0]) i = 1;
+    if (m[8] > m[i * 3 + i]) i = 2;
+    var j = (i + 1) % 3;
+    var k = (i + 2) % 3;
+    fRoot = Math.sqrt(m[i * 3 + i] - m[j * 3 + j] - m[k * 3 + k] + 1.0);
+    out[i] = 0.5 * fRoot;
+    fRoot = 0.5 / fRoot;
+    out[3] = (m[j * 3 + k] - m[k * 3 + j]) * fRoot;
+    out[j] = (m[j * 3 + i] + m[i * 3 + j]) * fRoot;
+    out[k] = (m[k * 3 + i] + m[i * 3 + k]) * fRoot;
+  }
+  return out;
+}
+function fromEuler(out, x, y, z) {
+  var halfToRad = 0.5 * Math.PI / 180.0;
+  x *= halfToRad;
+  y *= halfToRad;
+  z *= halfToRad;
+  var sx = Math.sin(x);
+  var cx = Math.cos(x);
+  var sy = Math.sin(y);
+  var cy = Math.cos(y);
+  var sz = Math.sin(z);
+  var cz = Math.cos(z);
+  out[0] = sx * cy * cz - cx * sy * sz;
+  out[1] = cx * sy * cz + sx * cy * sz;
+  out[2] = cx * cy * sz - sx * sy * cz;
+  out[3] = cx * cy * cz + sx * sy * sz;
+  return out;
+}
+
+var clone$4 = clone$3;
+
+var copy$4 = copy$3;
+
+
+
+
+
+
+
+
+
+
+var normalize$2 = normalize$1;
+
+
+var rotationTo = function () {
+  var tmpvec3 = create$1();
+  var xUnitVec3 = fromValues$1(1, 0, 0);
+  var yUnitVec3 = fromValues$1(0, 1, 0);
+  return function (out, a, b) {
+    var dot$$1 = dot(a, b);
+    if (dot$$1 < -0.999999) {
+      cross(tmpvec3, xUnitVec3, a);
+      if (len(tmpvec3) < 0.000001) cross(tmpvec3, yUnitVec3, a);
+      normalize(tmpvec3, tmpvec3);
+      setAxisAngle(out, tmpvec3, Math.PI);
+      return out;
+    } else if (dot$$1 > 0.999999) {
+      out[0] = 0;
+      out[1] = 0;
+      out[2] = 0;
+      out[3] = 1;
+      return out;
+    } else {
+      cross(tmpvec3, a, b);
+      out[0] = tmpvec3[0];
+      out[1] = tmpvec3[1];
+      out[2] = tmpvec3[2];
+      out[3] = 1 + dot$$1;
+      return normalize$2(out, out);
+    }
+  };
+}();
+var sqlerp = function () {
+  var temp1 = create$4();
+  var temp2 = create$4();
+  return function (out, a, b, c, d, t) {
+    slerp(temp1, a, d, t);
+    slerp(temp2, b, c, t);
+    slerp(out, temp1, temp2, 2 * t * (1 - t));
+    return out;
+  };
+}();
+var setAxes = function () {
+  var matr = create$2();
+  return function (out, view, right, up) {
+    matr[0] = right[0];
+    matr[3] = right[1];
+    matr[6] = right[2];
+    matr[1] = up[0];
+    matr[4] = up[1];
+    matr[7] = up[2];
+    matr[2] = -view[0];
+    matr[5] = -view[1];
+    matr[8] = -view[2];
+    return normalize$2(out, fromMat3(out, matr));
+  };
+}();
+
+var HEAD_ELBOW_OFFSET_RIGHTHANDED = fromValues$1(0.155, -0.465, -0.15);
+var HEAD_ELBOW_OFFSET_LEFTHANDED = fromValues$1(-0.155, -0.465, -0.15);
+var ELBOW_WRIST_OFFSET = fromValues$1(0, 0, -0.25);
+var WRIST_CONTROLLER_OFFSET = fromValues$1(0, 0, 0.05);
+var ARM_EXTENSION_OFFSET = fromValues$1(-0.08, 0.14, 0.08);
+var ELBOW_BEND_RATIO = 0.4;
+var EXTENSION_RATIO_WEIGHT = 0.4;
+var MIN_ANGULAR_SPEED = 0.61;
+var MIN_ANGLE_DELTA = 0.175;
+var MIN_EXTENSION_COS = 0.12;
+var MAX_EXTENSION_COS = 0.87;
+var RAD_TO_DEG = 180 / Math.PI;
+function eulerFromQuaternion(out, q, order) {
+  function clamp(value, min$$1, max$$1) {
+    return value < min$$1 ? min$$1 : value > max$$1 ? max$$1 : value;
+  }
+  var sqx = q[0] * q[0];
+  var sqy = q[1] * q[1];
+  var sqz = q[2] * q[2];
+  var sqw = q[3] * q[3];
+  if (order === 'XYZ') {
+    out[0] = Math.atan2(2 * (q[0] * q[3] - q[1] * q[2]), sqw - sqx - sqy + sqz);
+    out[1] = Math.asin(clamp(2 * (q[0] * q[2] + q[1] * q[3]), -1, 1));
+    out[2] = Math.atan2(2 * (q[2] * q[3] - q[0] * q[1]), sqw + sqx - sqy - sqz);
+  } else if (order === 'YXZ') {
+    out[0] = Math.asin(clamp(2 * (q[0] * q[3] - q[1] * q[2]), -1, 1));
+    out[1] = Math.atan2(2 * (q[0] * q[2] + q[1] * q[3]), sqw - sqx - sqy + sqz);
+    out[2] = Math.atan2(2 * (q[0] * q[1] + q[2] * q[3]), sqw - sqx + sqy - sqz);
+  } else if (order === 'ZXY') {
+    out[0] = Math.asin(clamp(2 * (q[0] * q[3] + q[1] * q[2]), -1, 1));
+    out[1] = Math.atan2(2 * (q[1] * q[3] - q[2] * q[0]), sqw - sqx - sqy + sqz);
+    out[2] = Math.atan2(2 * (q[2] * q[3] - q[0] * q[1]), sqw - sqx + sqy - sqz);
+  } else if (order === 'ZYX') {
+    out[0] = Math.atan2(2 * (q[0] * q[3] + q[2] * q[1]), sqw - sqx - sqy + sqz);
+    out[1] = Math.asin(clamp(2 * (q[1] * q[3] - q[0] * q[2]), -1, 1));
+    out[2] = Math.atan2(2 * (q[0] * q[1] + q[2] * q[3]), sqw + sqx - sqy - sqz);
+  } else if (order === 'YZX') {
+    out[0] = Math.atan2(2 * (q[0] * q[3] - q[2] * q[1]), sqw - sqx + sqy - sqz);
+    out[1] = Math.atan2(2 * (q[1] * q[3] - q[0] * q[2]), sqw + sqx - sqy - sqz);
+    out[2] = Math.asin(clamp(2 * (q[0] * q[1] + q[2] * q[3]), -1, 1));
+  } else if (order === 'XZY') {
+    out[0] = Math.atan2(2 * (q[0] * q[3] + q[1] * q[2]), sqw - sqx + sqy - sqz);
+    out[1] = Math.atan2(2 * (q[0] * q[2] + q[1] * q[3]), sqw + sqx - sqy - sqz);
+    out[2] = Math.asin(clamp(2 * (q[2] * q[3] - q[0] * q[1]), -1, 1));
+  } else {
+    console.log('No order given for quaternion to euler conversion.');
+    return;
   }
 }
-WebVRPolyfill.prototype.getPolyfillDisplays = function () {
-  if (this._polyfillDisplaysPopulated) {
-    return this.polyfillDisplays;
+var OrientationArmModel = function () {
+  function OrientationArmModel() {
+    classCallCheck(this, OrientationArmModel);
+    this.hand = 'right';
+    this.headElbowOffset = HEAD_ELBOW_OFFSET_RIGHTHANDED;
+    this.controllerQ = create$4();
+    this.lastControllerQ = create$4();
+    this.headQ = create$4();
+    this.headPos = create$1();
+    this.elbowPos = create$1();
+    this.wristPos = create$1();
+    this.time = null;
+    this.lastTime = null;
+    this.rootQ = create$4();
+    this.position = create$1();
   }
-  if (isMobile()) {
-    var vrDisplay = new CardboardVRDisplay({
-      ADDITIONAL_VIEWERS: this.config.ADDITIONAL_VIEWERS,
-      DEFAULT_VIEWER: this.config.DEFAULT_VIEWER,
-      MOBILE_WAKE_LOCK: this.config.MOBILE_WAKE_LOCK,
-      DEBUG: this.config.DEBUG,
-      DPDB_URL: this.config.DPDB_URL,
-      CARDBOARD_UI_DISABLED: this.config.CARDBOARD_UI_DISABLED,
-      K_FILTER: this.config.K_FILTER,
-      PREDICTION_TIME_S: this.config.PREDICTION_TIME_S,
-      ROTATE_INSTRUCTIONS_DISABLED: this.config.ROTATE_INSTRUCTIONS_DISABLED,
-      YAW_ONLY: this.config.YAW_ONLY,
-      BUFFER_SCALE: this.config.BUFFER_SCALE,
-      DIRTY_SUBMIT_FRAME_BINDINGS: this.config.DIRTY_SUBMIT_FRAME_BINDINGS
-    });
-    this.polyfillDisplays.push(vrDisplay);
+  createClass(OrientationArmModel, [{
+    key: 'setHandedness',
+    value: function setHandedness(hand) {
+      if (this.hand != hand) {
+        this.hand = hand;
+        if (this.hand == 'left') {
+          this.headElbowOffset = HEAD_ELBOW_OFFSET_LEFTHANDED;
+        } else {
+          this.headElbowOffset = HEAD_ELBOW_OFFSET_RIGHTHANDED;
+        }
+      }
+    }
+  }, {
+    key: 'update',
+    value: function update(controllerOrientation, headPoseMatrix) {
+      this.time = now$1();
+      if (controllerOrientation) {
+        copy$4(this.lastControllerQ, this.controllerQ);
+        copy$4(this.controllerQ, controllerOrientation);
+      }
+      if (headPoseMatrix) {
+        getTranslation(this.headPos, headPoseMatrix);
+        getRotation(this.headQ, headPoseMatrix);
+      }
+      var headYawQ = this.getHeadYawOrientation_();
+      var angleDelta = this.quatAngle_(this.lastControllerQ, this.controllerQ);
+      var timeDelta = (this.time - this.lastTime) / 1000;
+      var controllerAngularSpeed = angleDelta / timeDelta;
+      if (controllerAngularSpeed > MIN_ANGULAR_SPEED) {
+        slerp(this.rootQ, this.rootQ, headYawQ, Math.min(angleDelta / MIN_ANGLE_DELTA, 1.0));
+      } else {
+        copy$4(this.rootQ, headYawQ);
+      }
+      var controllerForward = fromValues$1(0, 0, -1.0);
+      transformQuat(controllerForward, controllerForward, this.controllerQ);
+      var controllerDotY = dot(controllerForward, [0, 1, 0]);
+      var extensionRatio = this.clamp_((controllerDotY - MIN_EXTENSION_COS) / MAX_EXTENSION_COS, 0.0, 1.0);
+      var controllerCameraQ = clone$4(this.rootQ);
+      invert$2(controllerCameraQ, controllerCameraQ);
+      multiply$4(controllerCameraQ, controllerCameraQ, this.controllerQ);
+      var elbowPos = this.elbowPos;
+      copy$1(elbowPos, this.headPos);
+      add$1(elbowPos, elbowPos, this.headElbowOffset);
+      var elbowOffset = clone$1(ARM_EXTENSION_OFFSET);
+      scale$1(elbowOffset, elbowOffset, extensionRatio);
+      add$1(elbowPos, elbowPos, elbowOffset);
+      var totalAngle = this.quatAngle_(controllerCameraQ, create$4());
+      var totalAngleDeg = totalAngle * RAD_TO_DEG;
+      var lerpSuppression = 1 - Math.pow(totalAngleDeg / 180, 4);var elbowRatio = ELBOW_BEND_RATIO;
+      var wristRatio = 1 - ELBOW_BEND_RATIO;
+      var lerpValue = lerpSuppression * (elbowRatio + wristRatio * extensionRatio * EXTENSION_RATIO_WEIGHT);
+      var wristQ = create$4();
+      slerp(wristQ, wristQ, controllerCameraQ, lerpValue);
+      var invWristQ = invert$2(create$4(), wristQ);
+      var elbowQ = clone$4(controllerCameraQ);
+      multiply$4(elbowQ, elbowQ, invWristQ);
+      var wristPos = this.wristPos;
+      copy$1(wristPos, WRIST_CONTROLLER_OFFSET);
+      transformQuat(wristPos, wristPos, wristQ);
+      add$1(wristPos, wristPos, ELBOW_WRIST_OFFSET);
+      transformQuat(wristPos, wristPos, elbowQ);
+      add$1(wristPos, wristPos, elbowPos);
+      var offset = clone$1(ARM_EXTENSION_OFFSET);
+      scale$1(offset, offset, extensionRatio);
+      add$1(this.position, this.wristPos, offset);
+      transformQuat(this.position, this.position, this.rootQ);
+      this.lastTime = this.time;
+    }
+  }, {
+    key: 'getPosition',
+    value: function getPosition() {
+      return this.position;
+    }
+  }, {
+    key: 'getHeadYawOrientation_',
+    value: function getHeadYawOrientation_() {
+      var headEuler = create$1();
+      eulerFromQuaternion(headEuler, this.headQ, 'YXZ');
+      var destinationQ = fromEuler(create$4(), 0, headEuler[1] * RAD_TO_DEG, 0);
+      return destinationQ;
+    }
+  }, {
+    key: 'clamp_',
+    value: function clamp_(value, min$$1, max$$1) {
+      return Math.min(Math.max(value, min$$1), max$$1);
+    }
+  }, {
+    key: 'quatAngle_',
+    value: function quatAngle_(q1, q2) {
+      var vec1 = [0, 0, -1];
+      var vec2 = [0, 0, -1];
+      transformQuat(vec1, vec1, q1);
+      transformQuat(vec2, vec2, q2);
+      return angle(vec1, vec2);
+    }
+  }]);
+  return OrientationArmModel;
+}();
+
+var GamepadXRInputSource = function () {
+  function GamepadXRInputSource(polyfill) {
+    var primaryButtonIndex = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+    classCallCheck(this, GamepadXRInputSource);
+    this.polyfill = polyfill;
+    this.gamepad = null;
+    this.inputSource = new XRInputSource(this);
+    this.lastPosition = create$1();
+    this.emulatedPosition = false;
+    this.basePoseMatrix = create();
+    this.inputPoses = new WeakMap();
+    this.primaryButtonIndex = primaryButtonIndex;
+    this.primaryActionPressed = false;
+    this.handedness = '';
+    this.targetRayMode = 'gaze';
+    this.armModel = null;
   }
-  this._polyfillDisplaysPopulated = true;
-  return this.polyfillDisplays;
+  createClass(GamepadXRInputSource, [{
+    key: 'updateFromGamepad',
+    value: function updateFromGamepad(gamepad) {
+      this.gamepad = gamepad;
+      this.handedness = gamepad.hand;
+      if (gamepad.pose) {
+        this.targetRayMode = 'tracked-pointer';
+        this.emulatedPosition = !gamepad.pose.hasPosition;
+      } else if (gamepad.hand === '') {
+        this.targetRayMode = 'gaze';
+        this.emulatedPosition = false;
+      }
+    }
+  }, {
+    key: 'updateBasePoseMatrix',
+    value: function updateBasePoseMatrix() {
+      if (this.gamepad && this.gamepad.pose) {
+        var pose = this.gamepad.pose;
+        var position = pose.position;
+        var orientation = pose.orientation;
+        if (!position && !orientation) {
+          return;
+        }
+        if (!position) {
+          if (!pose.hasPosition) {
+            if (!this.armModel) {
+              this.armModel = new OrientationArmModel();
+            }
+            this.armModel.setHandedness(this.gamepad.hand);
+            this.armModel.update(orientation, this.polyfill.getBasePoseMatrix());
+            position = this.armModel.getPosition();
+          } else {
+            position = this.lastPosition;
+          }
+        } else {
+          this.lastPosition[0] = position[0];
+          this.lastPosition[1] = position[1];
+          this.lastPosition[2] = position[2];
+        }
+        fromRotationTranslation(this.basePoseMatrix, orientation, position);
+      } else {
+        copy(this.basePoseMatrix, this.polyfill.getBasePoseMatrix());
+      }
+      return this.basePoseMatrix;
+    }
+  }, {
+    key: 'getXRInputPose',
+    value: function getXRInputPose(coordinateSystem) {
+      this.updateBasePoseMatrix();
+      var inputPose = this.inputPoses.get(coordinateSystem);
+      if (!inputPose) {
+        inputPose = new XRInputPose(this, this.gamepad && this.gamepad.pose);
+        this.inputPoses.set(coordinateSystem, inputPose);
+      }
+      var rayTransformMatrix = new Float32Array(16);
+      coordinateSystem.transformBasePoseMatrix(rayTransformMatrix, this.basePoseMatrix);
+      inputPose.targetRay = poseMatrixToXRRay(rayTransformMatrix);
+      if (inputPose.gripMatrix) {
+        coordinateSystem.transformBasePoseMatrix(inputPose.gripMatrix, this.basePoseMatrix);
+      }
+      return inputPose;
+    }
+  }]);
+  return GamepadXRInputSource;
+}();
+
+var TEST_ENV = "production" === 'test';
+var EXTRA_PRESENTATION_ATTRIBUTES = {
+  highRefreshRate: true
 };
-WebVRPolyfill.prototype.enable = function () {
-  this.enabled = true;
-  if (this.hasNative && this.native.VRFrameData) {
-    var NativeVRFrameData = this.native.VRFrameData;
-    var nativeFrameData = new this.native.VRFrameData();
-    var nativeGetFrameData = this.native.VRDisplay.prototype.getFrameData;
-    window.VRDisplay.prototype.getFrameData = function (frameData) {
-      if (frameData instanceof NativeVRFrameData) {
-        nativeGetFrameData.call(this, frameData);
+var PRIMARY_BUTTON_MAP = {
+  oculus: 1,
+  openvr: 1,
+  'spatial controller (spatial interaction source)': 1
+};
+var SESSION_ID = 0;
+var Session = function Session(sessionOptions) {
+  var polyfillOptions = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+  classCallCheck(this, Session);
+  this.outputContext = sessionOptions.outputContext;
+  this.immersive = sessionOptions.immersive;
+  this.ended = null;
+  this.baseLayer = null;
+  this.id = ++SESSION_ID;
+  this.modifiedCanvasLayer = false;
+  if (this.outputContext && !TEST_ENV) {
+    var renderContextType = polyfillOptions.renderContextType || '2d';
+    this.renderContext = this.outputContext.canvas.getContext(renderContextType);
+  }
+};
+
+var WebVRDevice = function (_PolyfilledXRDevice) {
+  inherits(WebVRDevice, _PolyfilledXRDevice);
+  function WebVRDevice(global, display) {
+    classCallCheck(this, WebVRDevice);
+    var canPresent = display.capabilities.canPresent;
+    var _this = possibleConstructorReturn(this, (WebVRDevice.__proto__ || Object.getPrototypeOf(WebVRDevice)).call(this, global));
+    _this.display = display;
+    _this.frame = new global.VRFrameData();
+    _this.sessions = new Map();
+    _this.immersiveSession = null;
+    _this.canPresent = canPresent;
+    _this.baseModelMatrix = create();
+    _this.gamepadInputSources = {};
+    _this.tempVec3 = new Float32Array(3);
+    _this.onVRDisplayPresentChange = _this.onVRDisplayPresentChange.bind(_this);
+    global.window.addEventListener('vrdisplaypresentchange', _this.onVRDisplayPresentChange);
+    _this.CAN_USE_GAMEPAD = global.navigator && 'getGamepads' in global.navigator;
+    _this.HAS_BITMAP_SUPPORT = isImageBitmapSupported(global);
+    return _this;
+  }
+  createClass(WebVRDevice, [{
+    key: 'onBaseLayerSet',
+    value: function onBaseLayerSet(sessionId, layer) {
+      var _this2 = this;
+      var session = this.sessions.get(sessionId);
+      var canvas = layer.context.canvas;
+      if (session.immersive) {
+        var left = this.display.getEyeParameters('left');
+        var right = this.display.getEyeParameters('right');
+        canvas.width = Math.max(left.renderWidth, right.renderWidth) * 2;
+        canvas.height = Math.max(left.renderHeight, right.renderHeight);
+        this.display.requestPresent([{
+          source: canvas, attributes: EXTRA_PRESENTATION_ATTRIBUTES
+        }]).then(function () {
+          if (!TEST_ENV && !_this2.global.document.body.contains(canvas)) {
+            session.modifiedCanvasLayer = true;
+            _this2.global.document.body.appendChild(canvas);
+            applyCanvasStylesForMinimalRendering(canvas);
+          }
+          session.baseLayer = layer;
+        });
+      }
+      else if (session.outputContext) {
+          session.baseLayer = layer;
+        }
+    }
+  }, {
+    key: 'supportsSession',
+    value: function supportsSession() {
+      var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+      if (options.immersive === true && this.canPresent === false) {
+        return false;
+      }
+      return true;
+    }
+  }, {
+    key: 'requestSession',
+    value: function requestSession() {
+      var $args = arguments;return new Promise(function ($return, $error) {
+        var options, canvas, ctx, session;
+        options = $args.length > 0 && $args[0] !== undefined ? $args[0] : {};
+        if (!this.supportsSession(options)) {
+          return $return(Promise.reject());
+        }
+        if (options.immersive) {
+          canvas = this.global.document.createElement('canvas');
+          if (!TEST_ENV) {
+            ctx = canvas.getContext('webgl');
+          }
+          return Promise.resolve(this.display.requestPresent([{
+            source: canvas, attributes: EXTRA_PRESENTATION_ATTRIBUTES }])).then(function ($await_2) {
+            try {
+              return $If_1.call(this);
+            } catch ($boundEx) {
+              return $error($boundEx);
+            }
+          }.bind(this), $error);
+        }
+        function $If_1() {
+          session = new Session(options, {
+            renderContextType: this.HAS_BITMAP_SUPPORT ? 'bitmaprenderer' : '2d'
+          });
+          this.sessions.set(session.id, session);
+          if (options.immersive) {
+            this.immersiveSession = session;
+            this.dispatchEvent('@@webxr-polyfill/vr-present-start', session.id);
+          }
+          return $return(Promise.resolve(session.id));
+        }
+        return $If_1.call(this);
+      }.bind(this));
+    }
+  }, {
+    key: 'requestAnimationFrame',
+    value: function requestAnimationFrame(callback) {
+      return this.display.requestAnimationFrame(callback);
+    }
+  }, {
+    key: 'getPrimaryButtonIndex',
+    value: function getPrimaryButtonIndex(gamepad) {
+      var primaryButton = 0;
+      var name = gamepad.id.toLowerCase();
+      for (var key in PRIMARY_BUTTON_MAP) {
+        if (name.includes(key)) {
+          primaryButton = PRIMARY_BUTTON_MAP[key];
+          break;
+        }
+      }
+      return Math.min(primaryButton, gamepad.buttons.length - 1);
+    }
+  }, {
+    key: 'onFrameStart',
+    value: function onFrameStart(sessionId) {
+      this.display.getFrameData(this.frame);
+      var session = this.sessions.get(sessionId);
+      if (session.immersive && this.CAN_USE_GAMEPAD) {
+        var prevInputSources = this.gamepadInputSources;
+        this.gamepadInputSources = {};
+        var gamepads = this.global.navigator.getGamepads();
+        for (var i = 0; i < gamepads.length; ++i) {
+          var gamepad = gamepads[i];
+          if (gamepad && gamepad.displayId === this.display.displayId) {
+            var inputSourceImpl = prevInputSources[i];
+            if (!inputSourceImpl) {
+              inputSourceImpl = new GamepadXRInputSource(this, this.getPrimaryButtonIndex(gamepad));
+            }
+            inputSourceImpl.updateFromGamepad(gamepad);
+            this.gamepadInputSources[i] = inputSourceImpl;
+            if (inputSourceImpl.primaryButtonIndex != -1) {
+              var primaryActionPressed = gamepad.buttons[inputSourceImpl.primaryButtonIndex].pressed;
+              if (primaryActionPressed && !inputSourceImpl.primaryActionPressed) {
+                this.dispatchEvent('@@webxr-polyfill/input-select-start', { sessionId: session.id, inputSource: inputSourceImpl.inputSource });
+              } else if (!primaryActionPressed && inputSourceImpl.primaryActionPressed) {
+                this.dispatchEvent('@@webxr-polyfill/input-select-end', { sessionId: session.id, inputSource: inputSourceImpl.inputSource });
+              }
+              inputSourceImpl.primaryActionPressed = primaryActionPressed;
+            }
+          }
+        }
+      }
+      if (TEST_ENV) {
         return;
       }
-      nativeGetFrameData.call(this, nativeFrameData);
-      frameData.pose = nativeFrameData.pose;
-      copyArray(nativeFrameData.leftProjectionMatrix, frameData.leftProjectionMatrix);
-      copyArray(nativeFrameData.rightProjectionMatrix, frameData.rightProjectionMatrix);
-      copyArray(nativeFrameData.leftViewMatrix, frameData.leftViewMatrix);
-      copyArray(nativeFrameData.rightViewMatrix, frameData.rightViewMatrix);
+      if (session.outputContext && !session.immersive) {
+        var outputCanvas = session.outputContext.canvas;
+        var oWidth = outputCanvas.offsetWidth;
+        var oHeight = outputCanvas.offsetHeight;
+        if (outputCanvas.width != oWidth) {
+          outputCanvas.width = oWidth;
+        }
+        if (outputCanvas.height != oHeight) {
+          outputCanvas.height = oHeight;
+        }
+        var canvas = session.baseLayer.context.canvas;
+        if (!this.immersiveSession || canvas !== this.immersiveSession.baseLayer.context.canvas) {
+          if (canvas.width != oWidth) {
+            canvas.width = oWidth;
+          }
+          if (canvas.height != oHeight) {
+            canvas.height = oHeight;
+          }
+          perspective(this.frame.leftProjectionMatrix, Math.PI * 0.4, oWidth / oHeight, this.depthNear, this.depthFar);
+        }
+      }
+    }
+  }, {
+    key: 'onFrameEnd',
+    value: function onFrameEnd(sessionId) {
+      var session = this.sessions.get(sessionId);
+      if (session.ended || !session.baseLayer) {
+        return;
+      }
+      if (session.outputContext && !(session.immersive && !this.display.capabilities.hasExternalDisplay)) {
+        var mirroring = session.immersive && this.display.capabilities.hasExternalDisplay;
+        var iCanvas = session.baseLayer.context.canvas;
+        var iWidth = mirroring ? iCanvas.width / 2 : iCanvas.width;
+        var iHeight = iCanvas.height;
+        if (!TEST_ENV) {
+          var oCanvas = session.outputContext.canvas;
+          var oWidth = oCanvas.width;
+          var oHeight = oCanvas.height;
+          var renderContext = session.renderContext;
+          if (this.HAS_BITMAP_SUPPORT) {
+            if (iCanvas.transferToImageBitmap) {
+              renderContext.transferFromImageBitmap(iCanvas.transferToImageBitmap());
+            }
+            else {
+                this.global.createImageBitmap(iCanvas, 0, 0, iWidth, iHeight, {
+                  resizeWidth: oWidth,
+                  resizeHeight: oHeight
+                }).then(function (bitmap) {
+                  return renderContext.transferFromImageBitmap(bitmap);
+                });
+              }
+          } else {
+            renderContext.drawImage(iCanvas, 0, 0, iWidth, iHeight, 0, 0, oWidth, oHeight);
+          }
+        }
+      }
+      if (session.immersive && session.baseLayer) {
+        this.display.submitFrame();
+      }
+    }
+  }, {
+    key: 'cancelAnimationFrame',
+    value: function cancelAnimationFrame(handle) {
+      this.display.cancelAnimationFrame(handle);
+    }
+  }, {
+    key: 'endSession',
+    value: function endSession(sessionId) {
+      return new Promise(function ($return, $error) {
+        var session = this.sessions.get(sessionId);
+        if (session.ended) {
+          return $return();
+        }
+        if (session.immersive) {
+          return $return(this.display.exitPresent());
+        } else {
+          session.ended = true;
+        }
+        return $return();
+      }.bind(this));
+    }
+  }, {
+    key: 'requestStageBounds',
+    value: function requestStageBounds() {
+      if (this.display.stageParameters) {
+        var width = this.display.stageParameters.sizeX;
+        var depth = this.display.stageParameters.sizeZ;
+        var data = [];
+        data.push(-width / 2);
+        data.push(-depth / 2);
+        data.push(width / 2);
+        data.push(-depth / 2);
+        data.push(width / 2);
+        data.push(depth / 2);
+        data.push(-width / 2);
+        data.push(depth / 2);
+        return data;
+      }
+      return null;
+    }
+  }, {
+    key: 'requestFrameOfReferenceTransform',
+    value: function requestFrameOfReferenceTransform(type, options) {
+      return new Promise(function ($return, $error) {
+        if (type === 'stage' && this.display.stageParameters && this.display.stageParameters.sittingToStandingTransform) {
+          return $return(this.display.stageParameters.sittingToStandingTransform);
+        }
+        return $return();
+      }.bind(this));
+    }
+  }, {
+    key: 'getProjectionMatrix',
+    value: function getProjectionMatrix(eye) {
+      if (eye === 'left') {
+        return this.frame.leftProjectionMatrix;
+      } else if (eye === 'right') {
+        return this.frame.rightProjectionMatrix;
+      } else {
+        throw new Error('eye must be of type \'left\' or \'right\'');
+      }
+    }
+  }, {
+    key: 'getViewport',
+    value: function getViewport(sessionId, eye, layer, target) {
+      var session = this.sessions.get(sessionId);
+      var _layer$context$canvas = layer.context.canvas,
+          width = _layer$context$canvas.width,
+          height = _layer$context$canvas.height;
+      if (!session.immersive) {
+        target.x = target.y = 0;
+        target.width = width;
+        target.height = height;
+        return true;
+      }
+      if (eye === 'left') {
+        target.x = 0;
+      } else if (eye === 'right') {
+        target.x = width / 2;
+      } else {
+        return false;
+      }
+      target.y = 0;
+      target.width = width / 2;
+      target.height = height;
+      return true;
+    }
+  }, {
+    key: 'getBasePoseMatrix',
+    value: function getBasePoseMatrix() {
+      var _frame$pose = this.frame.pose,
+          position = _frame$pose.position,
+          orientation = _frame$pose.orientation;
+      if (!position && !orientation) {
+        return this.baseModelMatrix;
+      }
+      if (!position) {
+        position = this.tempVec3;
+        position[0] = position[1] = position[2] = 0;
+      }
+      fromRotationTranslation(this.baseModelMatrix, orientation, position);
+      return this.baseModelMatrix;
+    }
+  }, {
+    key: 'getBaseViewMatrix',
+    value: function getBaseViewMatrix(eye) {
+      if (eye === 'left') {
+        return this.frame.leftViewMatrix;
+      } else if (eye === 'right') {
+        return this.frame.rightViewMatrix;
+      } else {
+        throw new Error('eye must be of type \'left\' or \'right\'');
+      }
+    }
+  }, {
+    key: 'getInputSources',
+    value: function getInputSources() {
+      var inputSources = [];
+      for (var i in this.gamepadInputSources) {
+        inputSources.push(this.gamepadInputSources[i].inputSource);
+      }
+      return inputSources;
+    }
+  }, {
+    key: 'getInputPose',
+    value: function getInputPose(inputSource, coordinateSystem) {
+      if (!coordinateSystem) {
+        return null;
+      }
+      for (var i in this.gamepadInputSources) {
+        var inputSourceImpl = this.gamepadInputSources[i];
+        if (inputSourceImpl.inputSource === inputSource) {
+          return inputSourceImpl.getXRInputPose(coordinateSystem);
+        }
+      }
+      return null;
+    }
+  }, {
+    key: 'onWindowResize',
+    value: function onWindowResize() {}
+  }, {
+    key: 'onVRDisplayPresentChange',
+    value: function onVRDisplayPresentChange(e) {
+      var _this3 = this;
+      if (!this.display.isPresenting) {
+        this.sessions.forEach(function (session) {
+          if (session.immersive && !session.ended) {
+            if (session.modifiedCanvasLayer) {
+              var canvas = session.baseLayer.context.canvas;
+              document.body.removeChild(canvas);
+              canvas.setAttribute('style', '');
+            }
+            if (_this3.immersiveSession === session) {
+              _this3.immersiveSession = null;
+            }
+            _this3.dispatchEvent('@@webxr-polyfill/vr-present-end', session.id);
+          }
+        });
+      }
+    }
+  }, {
+    key: 'depthNear',
+    get: function get$$1() {
+      return this.display.depthNear;
+    }
+    ,
+    set: function set$$1(val) {
+      this.display.depthNear = val;
+    }
+  }, {
+    key: 'depthFar',
+    get: function get$$1() {
+      return this.display.depthFar;
+    }
+    ,
+    set: function set$$1(val) {
+      this.display.depthFar = val;
+    }
+  }]);
+  return WebVRDevice;
+}(PolyfilledXRDevice);
+
+var CardboardXRDevice = function (_WebVRDevice) {
+  inherits(CardboardXRDevice, _WebVRDevice);
+  function CardboardXRDevice(global) {
+    classCallCheck(this, CardboardXRDevice);
+    var display = new CardboardVRDisplay();
+    var _this = possibleConstructorReturn(this, (CardboardXRDevice.__proto__ || Object.getPrototypeOf(CardboardXRDevice)).call(this, global, display));
+    _this.display = display;
+    _this.frame = {
+      rightViewMatrix: new Float32Array(16),
+      leftViewMatrix: new Float32Array(16),
+      rightProjectionMatrix: new Float32Array(16),
+      leftProjectionMatrix: new Float32Array(16),
+      pose: null,
+      timestamp: null
     };
+    return _this;
   }
-  navigator.getVRDisplays = this.getVRDisplays.bind(this);
-  window.VRDisplay = CardboardVRDisplay.VRDisplay;
-  window.VRFrameData = CardboardVRDisplay.VRFrameData;
+  return CardboardXRDevice;
+}(WebVRDevice);
+
+var getXRDevice = function getXRDevice(global) {
+  return new Promise(function ($return, $error) {
+    var device;
+    device = null;
+    if ('xr' in global.navigator) {
+      var $Try_1_Post = function () {
+        try {
+          return $If_3.call(this);
+        } catch ($boundEx) {
+          return $error($boundEx);
+        }
+      }.bind(this);var $Try_1_Catch = function (e) {
+        try {
+          return $Try_1_Post();
+        } catch ($boundEx) {
+          return $error($boundEx);
+        }
+      }.bind(this);
+      try {
+        return Promise.resolve(global.navigator.xr.requestDevice()).then(function ($await_6) {
+          try {
+            device = $await_6;
+            return $Try_1_Post();
+          } catch ($boundEx) {
+            return $Try_1_Catch($boundEx);
+          }
+        }.bind(this), $Try_1_Catch);
+      } catch (e) {
+        $Try_1_Catch(e);
+      }
+    }
+    function $If_3() {
+      return $return(device);
+    }
+    return $If_3.call(this);
+  }.bind(this));
 };
-WebVRPolyfill.prototype.getVRDisplays = function () {
-  var _this = this;
-  var config = this.config;
-  if (!this.hasNative) {
-    return Promise.resolve(this.getPolyfillDisplays());
-  }
-  return this.native.getVRDisplays.call(navigator).then(function (nativeDisplays) {
-    return nativeDisplays.length > 0 ? nativeDisplays : _this.getPolyfillDisplays();
-  });
+var getVRDisplay = function getVRDisplay(global) {
+  return new Promise(function ($return, $error) {
+    var device, displays;
+    device = null;
+    if ('getVRDisplays' in global.navigator) {
+      var $Try_2_Post = function () {
+        try {
+          return $If_4.call(this);
+        } catch ($boundEx) {
+          return $error($boundEx);
+        }
+      }.bind(this);var $Try_2_Catch = function (e) {
+        try {
+          return $Try_2_Post();
+        } catch ($boundEx) {
+          return $error($boundEx);
+        }
+      }.bind(this);
+      try {
+        return Promise.resolve(global.navigator.getVRDisplays()).then(function ($await_7) {
+          try {
+            displays = $await_7;
+            if (displays && displays.length) {
+              device = new WebVRDevice(global, displays[0]);
+            }
+            return $Try_2_Post();
+          } catch ($boundEx) {
+            return $Try_2_Catch($boundEx);
+          }
+        }.bind(this), $Try_2_Catch);
+      } catch (e) {
+        $Try_2_Catch(e);
+      }
+    }
+    function $If_4() {
+      return $return(device);
+    }
+    return $If_4.call(this);
+  }.bind(this));
 };
-WebVRPolyfill.version = version;
-WebVRPolyfill.VRFrameData = CardboardVRDisplay.VRFrameData;
-WebVRPolyfill.VRDisplay = CardboardVRDisplay.VRDisplay;
+var requestDevice = function requestDevice(global, config) {
+  return new Promise(function ($return, $error) {
+    var device;
+    return Promise.resolve(getXRDevice(global)).then(function ($await_8) {
+      try {
+        device = $await_8;
+        if (device) {
+          return $return(device);
+        }
+        if (config.webvr) {
+          return Promise.resolve(getVRDisplay(global)).then(function ($await_9) {
+            try {
+              device = $await_9;
+              if (device) {
+                return $return(new XRDevice(device));
+              }
+              return $If_5.call(this);
+            } catch ($boundEx) {
+              return $error($boundEx);
+            }
+          }.bind(this), $error);
+        }
+        function $If_5() {
+          if (config.cardboard && isMobile(global)) {
+            if (!global.VRFrameData) {
+              global.VRFrameData = function () {
+                this.rightViewMatrix = new Float32Array(16);
+                this.leftViewMatrix = new Float32Array(16);
+                this.rightProjectionMatrix = new Float32Array(16);
+                this.leftProjectionMatrix = new Float32Array(16);
+                this.pose = null;
+              };
+            }
+            return $return(new XRDevice(new CardboardXRDevice(global)));
+          }
+          return $return(null);
+        }
+        return $If_5.call(this);
+      } catch ($boundEx) {
+        return $error($boundEx);
+      }
+    }.bind(this), $error);
+  }.bind(this));
+};
 
-
-var webvrPolyfill = Object.freeze({
-	default: WebVRPolyfill
-});
-
-var require$$0 = ( webvrPolyfill && WebVRPolyfill ) || webvrPolyfill;
-
-if (typeof commonjsGlobal !== 'undefined' && commonjsGlobal.window) {
-  if (!commonjsGlobal.document) {
-    commonjsGlobal.document = commonjsGlobal.window.document;
+var CONFIG_DEFAULTS = {
+  webvr: true,
+  cardboard: true
+};
+var partials = ['navigator', 'HTMLCanvasElement', 'WebGLRenderingContext'];
+var WebXRPolyfill = function () {
+  function WebXRPolyfill(global) {
+    var config = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    classCallCheck(this, WebXRPolyfill);
+    this.global = global || _global;
+    this.config = Object.freeze(Object.assign({}, CONFIG_DEFAULTS, config));
+    this.nativeWebXR = 'xr' in this.global.navigator;
+    this.injected = false;
+    if (!this.nativeWebXR) {
+      this._injectPolyfill(this.global);
+    }
+    else if (this.config.cardboard && isMobile(this.global)) {
+        this._patchRequestDevice();
+      }
   }
-  if (!commonjsGlobal.navigator) {
-    commonjsGlobal.navigator = commonjsGlobal.window.navigator;
-  }
-}
-var src = require$$0;
+  createClass(WebXRPolyfill, [{
+    key: '_injectPolyfill',
+    value: function _injectPolyfill(global) {
+      if (!partials.every(function (iface) {
+        return !!global[iface];
+      })) {
+        throw new Error('Global must have the following attributes : ' + partials);
+      }
+      var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+      var _iteratorError = undefined;
+      try {
+        for (var _iterator = Object.keys(API)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          var className = _step.value;
+          if (global[className] !== undefined) {
+            console.warn(className + ' already defined on global.');
+          } else {
+            global[className] = API[className];
+          }
+        }
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion && _iterator.return) {
+            _iterator.return();
+          }
+        } finally {
+          if (_didIteratorError) {
+            throw _iteratorError;
+          }
+        }
+      }
+      {
+        var polyfilledCtx = polyfillSetCompatibleXRDevice(global.WebGLRenderingContext);
+        if (polyfilledCtx) {
+          var renderContextType = isImageBitmapSupported(global) ? 'bitmaprenderer' : '2d';
+          polyfillGetContext(global.HTMLCanvasElement, renderContextType);
+          if (global.OffscreenCanvas) {
+            polyfillGetContext(global.OffscreenCanvas, null);
+          }
+          if (global.WebGL2RenderingContext) {
+            polyfillSetCompatibleXRDevice(global.WebGL2RenderingContext);
+          }
+        }
+      }
+      this.injected = true;
+      this._patchRequestDevice();
+    }
+  }, {
+    key: '_patchRequestDevice',
+    value: function _patchRequestDevice() {
+      var device = requestDevice(this.global, this.config);
+      this.xr = new XR(device);
+      Object.defineProperty(this.global.navigator, 'xr', {
+        value: this.xr,
+        configurable: true
+      });
+    }
+  }]);
+  return WebXRPolyfill;
+}();
 
-return src;
+return WebXRPolyfill;
 
 })));
 
@@ -9864,8 +12617,7 @@ module.exports={
     "promise-polyfill": "^3.1.0",
     "super-animejs": "^3.1.0",
     "three-bmfont-text": "github:dmarcos/three-bmfont-text#1babdf8507c731a18f8af3b807292e2b9740955e",
-    "webxr-polyfill": "^1.0.13",
-    "three": "0.113.21"
+    "webxr-polyfill": "^1.0.13"
   },
   "devDependencies": {
     "browserify": "^13.1.0",
@@ -10572,7 +13324,7 @@ function isRawProperty (data) {
          data.property.startsWith(STRING_OBJECT3D);
 }
 
-},{"../core/component":101,"../lib/three":149,"../utils":174,"super-animejs":34}],48:[function(_dereq_,module,exports){
+},{"../core/component":100,"../lib/three":148,"../utils":172,"super-animejs":34}],48:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 
@@ -10664,7 +13416,7 @@ module.exports.Component = registerComponent('camera', {
   }
 });
 
-},{"../core/component":101,"../lib/three":149}],49:[function(_dereq_,module,exports){
+},{"../core/component":100,"../lib/three":148}],49:[function(_dereq_,module,exports){
 /* global THREE */
 var registerComponent = _dereq_('../core/component').registerComponent;
 var utils = _dereq_('../utils/');
@@ -11083,7 +13835,7 @@ module.exports.Component = registerComponent('cursor', {
   }
 });
 
-},{"../core/component":101,"../utils/":174}],50:[function(_dereq_,module,exports){
+},{"../core/component":100,"../utils/":172}],50:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var bind = _dereq_('../utils/bind');
 
@@ -11263,7 +14015,7 @@ module.exports.Component = registerComponent('daydream-controls', {
   }
 });
 
-},{"../core/component":101,"../utils/":174,"../utils/bind":168,"../utils/tracked-controls":182}],51:[function(_dereq_,module,exports){
+},{"../core/component":100,"../utils/":172,"../utils/bind":166,"../utils/tracked-controls":179}],51:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var bind = _dereq_('../utils/bind');
 
@@ -11479,7 +14231,7 @@ module.exports.Component = registerComponent('gearvr-controls', {
   }
 });
 
-},{"../core/component":101,"../utils/":174,"../utils/bind":168,"../utils/tracked-controls":182}],52:[function(_dereq_,module,exports){
+},{"../core/component":100,"../utils/":172,"../utils/bind":166,"../utils/tracked-controls":179}],52:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var bind = _dereq_('../utils/bind');
 
@@ -11641,7 +14393,7 @@ module.exports.Component = registerComponent('generic-tracked-controller-control
   }
 });
 
-},{"../core/component":101,"../utils/bind":168,"../utils/tracked-controls":182}],53:[function(_dereq_,module,exports){
+},{"../core/component":100,"../utils/bind":166,"../utils/tracked-controls":179}],53:[function(_dereq_,module,exports){
 var geometries = _dereq_('../core/geometry').geometries;
 var geometryNames = _dereq_('../core/geometry').geometryNames;
 var registerComponent = _dereq_('../core/component').registerComponent;
@@ -11720,7 +14472,7 @@ module.exports.Component = registerComponent('geometry', {
   }
 });
 
-},{"../core/component":101,"../core/geometry":102,"../lib/three":149}],54:[function(_dereq_,module,exports){
+},{"../core/component":100,"../core/geometry":101,"../lib/three":148}],54:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 var utils = _dereq_('../utils/');
@@ -11768,7 +14520,7 @@ module.exports.Component = registerComponent('gltf-model', {
   }
 });
 
-},{"../core/component":101,"../lib/three":149,"../utils/":174}],55:[function(_dereq_,module,exports){
+},{"../core/component":100,"../lib/three":148,"../utils/":172}],55:[function(_dereq_,module,exports){
 /* global THREE */
 var registerComponent = _dereq_('../core/component').registerComponent;
 
@@ -12190,7 +14942,7 @@ function isViveController (trackedControls) {
   return isVive;
 }
 
-},{"../core/component":101}],56:[function(_dereq_,module,exports){
+},{"../core/component":100}],56:[function(_dereq_,module,exports){
 _dereq_('./animation');
 _dereq_('./camera');
 _dereq_('./cursor');
@@ -12218,7 +14970,6 @@ _dereq_('./shadow');
 _dereq_('./sound');
 _dereq_('./text');
 _dereq_('./tracked-controls');
-_dereq_('./tracked-controls-webvr');
 _dereq_('./tracked-controls-webxr');
 _dereq_('./visible');
 _dereq_('./vive-controls');
@@ -12238,7 +14989,7 @@ _dereq_('./scene/screenshot');
 _dereq_('./scene/stats');
 _dereq_('./scene/vr-mode-ui');
 
-},{"./animation":47,"./camera":48,"./cursor":49,"./daydream-controls":50,"./gearvr-controls":51,"./generic-tracked-controller-controls":52,"./geometry":53,"./gltf-model":54,"./hand-controls":55,"./laser-controls":57,"./light":58,"./line":59,"./link":60,"./look-controls":61,"./magicleap-controls":62,"./material":63,"./obj-model":64,"./oculus-go-controls":65,"./oculus-touch-controls":66,"./position":67,"./raycaster":68,"./rotation":69,"./scale":70,"./scene/background":71,"./scene/debug":72,"./scene/device-orientation-permission-ui":73,"./scene/embedded":74,"./scene/fog":75,"./scene/inspector":76,"./scene/keyboard-shortcuts":77,"./scene/pool":78,"./scene/screenshot":79,"./scene/stats":80,"./scene/vr-mode-ui":81,"./shadow":82,"./sound":83,"./text":84,"./tracked-controls":87,"./tracked-controls-webvr":85,"./tracked-controls-webxr":86,"./visible":88,"./vive-controls":89,"./vive-focus-controls":90,"./wasd-controls":91,"./windows-motion-controls":92}],57:[function(_dereq_,module,exports){
+},{"./animation":47,"./camera":48,"./cursor":49,"./daydream-controls":50,"./gearvr-controls":51,"./generic-tracked-controller-controls":52,"./geometry":53,"./gltf-model":54,"./hand-controls":55,"./laser-controls":57,"./light":58,"./line":59,"./link":60,"./look-controls":61,"./magicleap-controls":62,"./material":63,"./obj-model":64,"./oculus-go-controls":65,"./oculus-touch-controls":66,"./position":67,"./raycaster":68,"./rotation":69,"./scale":70,"./scene/background":71,"./scene/debug":72,"./scene/device-orientation-permission-ui":73,"./scene/embedded":74,"./scene/fog":75,"./scene/inspector":76,"./scene/keyboard-shortcuts":77,"./scene/pool":78,"./scene/screenshot":79,"./scene/stats":80,"./scene/vr-mode-ui":81,"./shadow":82,"./sound":83,"./text":84,"./tracked-controls":86,"./tracked-controls-webxr":85,"./visible":87,"./vive-controls":88,"./vive-focus-controls":89,"./wasd-controls":90,"./windows-motion-controls":91}],57:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var utils = _dereq_('../utils/');
 
@@ -12355,7 +15106,7 @@ registerComponent('laser-controls', {
   }
 });
 
-},{"../core/component":101,"../utils/":174}],58:[function(_dereq_,module,exports){
+},{"../core/component":100,"../utils/":172}],58:[function(_dereq_,module,exports){
 var bind = _dereq_('../utils/bind');
 var diff = _dereq_('../utils').diff;
 var debug = _dereq_('../utils/debug');
@@ -12644,7 +15395,7 @@ module.exports.Component = registerComponent('light', {
   }
 });
 
-},{"../core/component":101,"../lib/three":149,"../utils":174,"../utils/bind":168,"../utils/debug":170}],59:[function(_dereq_,module,exports){
+},{"../core/component":100,"../lib/three":148,"../utils":172,"../utils/bind":166,"../utils/debug":168}],59:[function(_dereq_,module,exports){
 /* global THREE */
 var registerComponent = _dereq_('../core/component').registerComponent;
 
@@ -12722,7 +15473,7 @@ function isEqualVec3 (a, b) {
   return (a.x === b.x && a.y === b.y && a.z === b.z);
 }
 
-},{"../core/component":101}],60:[function(_dereq_,module,exports){
+},{"../core/component":100}],60:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var registerShader = _dereq_('../core/shader').registerShader;
 var THREE = _dereq_('../lib/three');
@@ -13094,7 +15845,7 @@ registerShader('portal', {
 });
 /* eslint-enable */
 
-},{"../core/component":101,"../core/shader":111,"../lib/three":149}],61:[function(_dereq_,module,exports){
+},{"../core/component":100,"../core/shader":110,"../lib/three":148}],61:[function(_dereq_,module,exports){
 /* global DeviceOrientationEvent  */
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
@@ -13105,7 +15856,7 @@ var bind = utils.bind;
 var PI_2 = Math.PI / 2;
 
 /**
- * look-controls. Update entity pose, factoring mouse, touch, and WebVR API data.
+ * look-controls. Update entity pose, factoring mouse, touch, and WebXR API data.
  */
 module.exports.Component = registerComponent('look-controls', {
   dependencies: ['position', 'rotation'],
@@ -13572,7 +16323,7 @@ module.exports.Component = registerComponent('look-controls', {
   }
 });
 
-},{"../core/component":101,"../lib/three":149,"../utils/":174}],62:[function(_dereq_,module,exports){
+},{"../core/component":100,"../lib/three":148,"../utils/":172}],62:[function(_dereq_,module,exports){
 var bind = _dereq_('../utils/bind');
 var registerComponent = _dereq_('../core/component').registerComponent;
 
@@ -13752,7 +16503,7 @@ module.exports.Component = registerComponent('magicleap-controls', {
 
 });
 
-},{"../core/component":101,"../utils/bind":168,"../utils/tracked-controls":182}],63:[function(_dereq_,module,exports){
+},{"../core/component":100,"../utils/bind":166,"../utils/tracked-controls":179}],63:[function(_dereq_,module,exports){
 /* global Promise */
 var utils = _dereq_('../utils/');
 var component = _dereq_('../core/component');
@@ -14023,7 +16774,7 @@ function disposeMaterial (material, system) {
   system.unregisterMaterial(material);
 }
 
-},{"../core/component":101,"../core/shader":111,"../lib/three":149,"../utils/":174}],64:[function(_dereq_,module,exports){
+},{"../core/component":100,"../core/shader":110,"../lib/three":148,"../utils/":172}],64:[function(_dereq_,module,exports){
 var debug = _dereq_('../utils/debug');
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
@@ -14126,7 +16877,7 @@ module.exports.Component = registerComponent('obj-model', {
   }
 });
 
-},{"../core/component":101,"../lib/three":149,"../utils/debug":170}],65:[function(_dereq_,module,exports){
+},{"../core/component":100,"../lib/three":148,"../utils/debug":168}],65:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var bind = _dereq_('../utils/bind');
 
@@ -14334,7 +17085,7 @@ module.exports.Component = registerComponent('oculus-go-controls', {
   }
 });
 
-},{"../core/component":101,"../utils/":174,"../utils/bind":168,"../utils/tracked-controls":182}],66:[function(_dereq_,module,exports){
+},{"../core/component":100,"../utils/":172,"../utils/bind":166,"../utils/tracked-controls":179}],66:[function(_dereq_,module,exports){
 var bind = _dereq_('../utils/bind');
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
@@ -14661,7 +17412,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   }
 });
 
-},{"../core/component":101,"../lib/three":149,"../utils/":174,"../utils/bind":168,"../utils/tracked-controls":182}],67:[function(_dereq_,module,exports){
+},{"../core/component":100,"../lib/three":148,"../utils/":172,"../utils/bind":166,"../utils/tracked-controls":179}],67:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 
 module.exports.Component = registerComponent('position', {
@@ -14679,7 +17430,7 @@ module.exports.Component = registerComponent('position', {
   }
 });
 
-},{"../core/component":101}],68:[function(_dereq_,module,exports){
+},{"../core/component":100}],68:[function(_dereq_,module,exports){
 /* global MutationObserver */
 
 var registerComponent = _dereq_('../core/component').registerComponent;
@@ -15115,7 +17866,7 @@ function copyArray (a, b) {
   }
 }
 
-},{"../core/component":101,"../lib/three":149,"../utils/":174}],69:[function(_dereq_,module,exports){
+},{"../core/component":100,"../lib/three":148,"../utils/":172}],69:[function(_dereq_,module,exports){
 var degToRad = _dereq_('../lib/three').Math.degToRad;
 var registerComponent = _dereq_('../core/component').registerComponent;
 
@@ -15138,7 +17889,7 @@ module.exports.Component = registerComponent('rotation', {
   }
 });
 
-},{"../core/component":101,"../lib/three":149}],70:[function(_dereq_,module,exports){
+},{"../core/component":100,"../lib/three":148}],70:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 
 // Avoids triggering a zero-determinant which makes object3D matrix non-invertible.
@@ -15165,7 +17916,7 @@ module.exports.Component = registerComponent('scale', {
   }
 });
 
-},{"../core/component":101}],71:[function(_dereq_,module,exports){
+},{"../core/component":100}],71:[function(_dereq_,module,exports){
 /* global THREE */
 var register = _dereq_('../../core/component').registerComponent;
 
@@ -15185,14 +17936,14 @@ module.exports.Component = register('background', {
   }
 });
 
-},{"../../core/component":101}],72:[function(_dereq_,module,exports){
+},{"../../core/component":100}],72:[function(_dereq_,module,exports){
 var register = _dereq_('../../core/component').registerComponent;
 
 module.exports.Component = register('debug', {
   schema: {default: true}
 });
 
-},{"../../core/component":101}],73:[function(_dereq_,module,exports){
+},{"../../core/component":100}],73:[function(_dereq_,module,exports){
 /* global DeviceOrientationEvent, location  */
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var utils = _dereq_('../../utils/');
@@ -15390,7 +18141,7 @@ function createDialog (text, buttonsContainerEl) {
   return modalContainer;
 }
 
-},{"../../constants/":93,"../../core/component":101,"../../utils/":174}],74:[function(_dereq_,module,exports){
+},{"../../constants/":92,"../../core/component":100,"../../utils/":172}],74:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 
 /**
@@ -15415,7 +18166,7 @@ module.exports.Component = registerComponent('embedded', {
 
 });
 
-},{"../../core/component":101}],75:[function(_dereq_,module,exports){
+},{"../../core/component":100}],75:[function(_dereq_,module,exports){
 var register = _dereq_('../../core/component').registerComponent;
 var THREE = _dereq_('../../lib/three');
 var debug = _dereq_('../../utils/debug');
@@ -15488,7 +18239,7 @@ function getFog (data) {
   return fog;
 }
 
-},{"../../core/component":101,"../../lib/three":149,"../../utils/debug":170}],76:[function(_dereq_,module,exports){
+},{"../../core/component":100,"../../lib/three":148,"../../utils/debug":168}],76:[function(_dereq_,module,exports){
 (function (process){
 /* global AFRAME */
 var AFRAME_INJECTED = _dereq_('../../constants').AFRAME_INJECTED;
@@ -15608,7 +18359,7 @@ module.exports.Component = registerComponent('inspector', {
 
 }).call(this,_dereq_('_process'))
 
-},{"../../../package":46,"../../constants":93,"../../core/component":101,"../../utils/":174,"_process":5}],77:[function(_dereq_,module,exports){
+},{"../../../package":46,"../../constants":92,"../../core/component":100,"../../utils/":172,"_process":5}],77:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var shouldCaptureKeyEvent = _dereq_('../../utils/').shouldCaptureKeyEvent;
 
@@ -15647,7 +18398,7 @@ module.exports.Component = registerComponent('keyboard-shortcuts', {
   }
 });
 
-},{"../../core/component":101,"../../utils/":174}],78:[function(_dereq_,module,exports){
+},{"../../core/component":100,"../../utils/":172}],78:[function(_dereq_,module,exports){
 var debug = _dereq_('../../utils/debug');
 var registerComponent = _dereq_('../../core/component').registerComponent;
 
@@ -15765,7 +18516,7 @@ module.exports.Component = registerComponent('pool', {
   }
 });
 
-},{"../../core/component":101,"../../utils/debug":170}],79:[function(_dereq_,module,exports){
+},{"../../core/component":100,"../../utils/debug":168}],79:[function(_dereq_,module,exports){
 /* global ImageData, URL */
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var THREE = _dereq_('../../lib/three');
@@ -16030,7 +18781,7 @@ module.exports.Component = registerComponent('screenshot', {
   }
 });
 
-},{"../../core/component":101,"../../lib/three":149}],80:[function(_dereq_,module,exports){
+},{"../../core/component":100,"../../lib/three":148}],80:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var RStats = _dereq_('../../../vendor/rStats');
 var utils = _dereq_('../../utils');
@@ -16110,7 +18861,7 @@ function createStats (scene) {
   });
 }
 
-},{"../../../vendor/rStats":185,"../../../vendor/rStats.extras":184,"../../core/component":101,"../../lib/rStatsAframe":148,"../../utils":174}],81:[function(_dereq_,module,exports){
+},{"../../../vendor/rStats":182,"../../../vendor/rStats.extras":181,"../../core/component":100,"../../lib/rStatsAframe":147,"../../utils":172}],81:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var constants = _dereq_('../../constants/');
 var utils = _dereq_('../../utils/');
@@ -16378,7 +19129,7 @@ function applyStickyHoverFix (buttonEl) {
   });
 }
 
-},{"../../constants/":93,"../../core/component":101,"../../utils/":174}],82:[function(_dereq_,module,exports){
+},{"../../constants/":92,"../../core/component":100,"../../utils/":172}],82:[function(_dereq_,module,exports){
 var component = _dereq_('../core/component');
 var THREE = _dereq_('../lib/three');
 var bind = _dereq_('../utils/bind');
@@ -16432,7 +19183,7 @@ module.exports.Component = registerComponent('shadow', {
   }
 });
 
-},{"../core/component":101,"../lib/three":149,"../utils/bind":168}],83:[function(_dereq_,module,exports){
+},{"../core/component":100,"../lib/three":148,"../utils/bind":166}],83:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var debug = _dereq_('../utils/debug');
 var THREE = _dereq_('../lib/three');
@@ -16683,7 +19434,7 @@ module.exports.Component = registerComponent('sound', {
   }
 });
 
-},{"../core/component":101,"../lib/three":149,"../utils/debug":170}],84:[function(_dereq_,module,exports){
+},{"../core/component":100,"../lib/three":148,"../utils/debug":168}],84:[function(_dereq_,module,exports){
 var createTextGeometry = _dereq_('three-bmfont-text');
 var loadBMFont = _dereq_('load-bmfont');
 
@@ -17168,341 +19919,7 @@ function PromiseCache () {
   };
 }
 
-},{"../core/component":101,"../core/shader":111,"../lib/three":149,"../utils/":174,"load-bmfont":23,"three-bmfont-text":35}],85:[function(_dereq_,module,exports){
-var registerComponent = _dereq_('../core/component').registerComponent;
-var controllerUtils = _dereq_('../utils/tracked-controls');
-var DEFAULT_CAMERA_HEIGHT = _dereq_('../constants').DEFAULT_CAMERA_HEIGHT;
-var THREE = _dereq_('../lib/three');
-
-var DEFAULT_HANDEDNESS = _dereq_('../constants').DEFAULT_HANDEDNESS;
-// Vector from eyes to elbow (divided by user height).
-var EYES_TO_ELBOW = {x: 0.175, y: -0.3, z: -0.03};
-// Vector from eyes to elbow (divided by user height).
-var FOREARM = {x: 0, y: 0, z: -0.175};
-
-// Due to unfortunate name collision, add empty touches array to avoid Daydream error.
-var EMPTY_DAYDREAM_TOUCHES = {touches: []};
-
-var EVENTS = {
-  AXISMOVE: 'axismove',
-  BUTTONCHANGED: 'buttonchanged',
-  BUTTONDOWN: 'buttondown',
-  BUTTONUP: 'buttonup',
-  TOUCHSTART: 'touchstart',
-  TOUCHEND: 'touchend'
-};
-
-/**
- * Tracked controls component.
- * Wrap the gamepad API for pose and button states.
- * Select the appropriate controller and apply pose to the entity.
- * Observe button states and emit appropriate events.
- *
- * @property {number} controller - Index of controller in array returned by Gamepad API.
- *  Only used if hand property is not set.
- * @property {string} id - Selected controller among those returned by Gamepad API.
- * @property {number} hand - If multiple controllers found with id, choose the one with the
- *  given value for hand. If set, we ignore 'controller' property
- */
-module.exports.Component = registerComponent('tracked-controls-webvr', {
-  schema: {
-    autoHide: {default: true},
-    controller: {default: 0},
-    id: {type: 'string', default: ''},
-    hand: {type: 'string', default: ''},
-    idPrefix: {type: 'string', default: ''},
-    orientationOffset: {type: 'vec3'},
-    // Arm model parameters when not 6DoF.
-    armModel: {default: false},
-    headElement: {type: 'selector'}
-  },
-
-  init: function () {
-    // Copy variables back to tracked-controls for backwards compatibility.
-    // Some 3rd components rely on them.
-    this.axis = this.el.components['tracked-controls'].axis = [0, 0, 0];
-    this.buttonStates = this.el.components['tracked-controls'].buttonStates = {};
-    this.changedAxes = [];
-    this.targetControllerNumber = this.data.controller;
-
-    this.axisMoveEventDetail = {axis: this.axis, changed: this.changedAxes};
-    this.deltaControllerPosition = new THREE.Vector3();
-    this.controllerQuaternion = new THREE.Quaternion();
-    this.controllerEuler = new THREE.Euler();
-
-    this.updateGamepad();
-
-    this.buttonEventDetails = {};
-  },
-
-  tick: function (time, delta) {
-    var mesh = this.el.getObject3D('mesh');
-    // Update mesh animations.
-    if (mesh && mesh.update) { mesh.update(delta / 1000); }
-    this.updateGamepad();
-    this.updatePose();
-    this.updateButtons();
-  },
-
-  /**
-   * Return default user height to use for non-6DOF arm model.
-   */
-  defaultUserHeight: function () {
-    return DEFAULT_CAMERA_HEIGHT;
-  },
-
-  /**
-   * Return head element to use for non-6DOF arm model.
-   */
-  getHeadElement: function () {
-    return this.data.headElement || this.el.sceneEl.camera.el;
-  },
-
-  /**
-   * Handle update controller match criteria (such as `id`, `idPrefix`, `hand`, `controller`)
-   */
-  updateGamepad: function () {
-    var data = this.data;
-    var controller = controllerUtils.findMatchingControllerWebVR(
-      this.system.controllers,
-      data.id,
-      data.idPrefix,
-      data.hand,
-      data.controller
-    );
-
-    this.controller = controller;
-    // Legacy handle to the controller for old components.
-    this.el.components['tracked-controls'].controller = controller;
-
-    if (this.data.autoHide) { this.el.object3D.visible = !!this.controller; }
-  },
-
-  /**
-   * Applies an artificial arm model to simulate elbow to wrist positioning
-   * based on the orientation of the controller.
-   *
-   * @param {object} controllerPosition - Existing vector to update with controller position.
-   */
-  applyArmModel: function (controllerPosition) {
-    // Use controllerPosition and deltaControllerPosition to avoid creating variables.
-    var controller = this.controller;
-    var controllerEuler = this.controllerEuler;
-    var controllerQuaternion = this.controllerQuaternion;
-    var deltaControllerPosition = this.deltaControllerPosition;
-    var hand;
-    var headEl;
-    var headObject3D;
-    var pose;
-    var userHeight;
-
-    headEl = this.getHeadElement();
-    headObject3D = headEl.object3D;
-    userHeight = this.defaultUserHeight();
-
-    pose = controller.pose;
-    hand = (controller ? controller.hand : undefined) || DEFAULT_HANDEDNESS;
-
-    // Use camera position as head position.
-    controllerPosition.copy(headObject3D.position);
-    // Set offset for degenerate "arm model" to elbow.
-    deltaControllerPosition.set(
-      EYES_TO_ELBOW.x * (hand === 'left' ? -1 : hand === 'right' ? 1 : 0),
-      EYES_TO_ELBOW.y,  // Lower than our eyes.
-      EYES_TO_ELBOW.z);  // Slightly out in front.
-    // Scale offset by user height.
-    deltaControllerPosition.multiplyScalar(userHeight);
-    // Apply camera Y rotation (not X or Z, so you can look down at your hand).
-    deltaControllerPosition.applyAxisAngle(headObject3D.up, headObject3D.rotation.y);
-    // Apply rotated offset to position.
-    controllerPosition.add(deltaControllerPosition);
-
-    // Set offset for degenerate "arm model" forearm. Forearm sticking out from elbow.
-    deltaControllerPosition.set(FOREARM.x, FOREARM.y, FOREARM.z);
-    // Scale offset by user height.
-    deltaControllerPosition.multiplyScalar(userHeight);
-    // Apply controller X/Y rotation (tilting up/down/left/right is usually moving the arm).
-    if (pose.orientation) {
-      controllerQuaternion.fromArray(pose.orientation);
-    } else {
-      controllerQuaternion.copy(headObject3D.quaternion);
-    }
-    controllerEuler.setFromQuaternion(controllerQuaternion);
-    controllerEuler.set(controllerEuler.x, controllerEuler.y, 0);
-    deltaControllerPosition.applyEuler(controllerEuler);
-    // Apply rotated offset to position.
-    controllerPosition.add(deltaControllerPosition);
-  },
-
-  /**
-   * Read pose from controller (from Gamepad API), apply transforms, apply to entity.
-   */
-  updatePose: function () {
-    var controller = this.controller;
-    var data = this.data;
-    var object3D = this.el.object3D;
-    var pose;
-    var vrDisplay = this.system.vrDisplay;
-
-    if (!controller) { return; }
-
-    // Compose pose from Gamepad.
-    pose = controller.pose;
-
-    if (pose.position) {
-      object3D.position.fromArray(pose.position);
-    } else {
-      // Controller not 6DOF, apply arm model.
-      if (data.armModel) { this.applyArmModel(object3D.position); }
-    }
-
-    if (pose.orientation) {
-      object3D.quaternion.fromArray(pose.orientation);
-    }
-
-    // Apply transforms, if 6DOF and in VR.
-    if (vrDisplay && pose.position) {
-      object3D.matrix.compose(object3D.position, object3D.quaternion, object3D.scale);
-      object3D.matrix.decompose(object3D.position, object3D.quaternion, object3D.scale);
-    }
-
-    object3D.rotateX(this.data.orientationOffset.x * THREE.Math.DEG2RAD);
-    object3D.rotateY(this.data.orientationOffset.y * THREE.Math.DEG2RAD);
-    object3D.rotateZ(this.data.orientationOffset.z * THREE.Math.DEG2RAD);
-  },
-
-  /**
-   * Handle button changes including axes, presses, touches, values.
-   */
-  updateButtons: function () {
-    var buttonState;
-    var controller = this.controller;
-    var id;
-
-    if (!controller) { return; }
-
-    // Check every button.
-    for (id = 0; id < controller.buttons.length; ++id) {
-      // Initialize button state.
-      if (!this.buttonStates[id]) {
-        this.buttonStates[id] = {pressed: false, touched: false, value: 0};
-      }
-      if (!this.buttonEventDetails[id]) {
-        this.buttonEventDetails[id] = {id: id, state: this.buttonStates[id]};
-      }
-
-      buttonState = controller.buttons[id];
-      this.handleButton(id, buttonState);
-    }
-    // Check axes.
-    this.handleAxes();
-  },
-
-  /**
-   * Handle presses and touches for a single button.
-   *
-   * @param {number} id - Index of button in Gamepad button array.
-   * @param {number} buttonState - Value of button state from 0 to 1.
-   * @returns {boolean} Whether button has changed in any way.
-   */
-  handleButton: function (id, buttonState) {
-    var changed;
-    changed = this.handlePress(id, buttonState) |
-              this.handleTouch(id, buttonState) |
-              this.handleValue(id, buttonState);
-    if (!changed) { return false; }
-    this.el.emit(EVENTS.BUTTONCHANGED, this.buttonEventDetails[id], false);
-    return true;
-  },
-
-  /**
-   * An axis is an array of values from -1 (up, left) to 1 (down, right).
-   * Compare each component of the axis to the previous value to determine change.
-   *
-   * @returns {boolean} Whether axes changed.
-   */
-  handleAxes: function () {
-    var changed = false;
-    var controllerAxes = this.controller.axes;
-    var i;
-    var previousAxis = this.axis;
-    var changedAxes = this.changedAxes;
-
-    // Check if axis changed.
-    this.changedAxes.length = 0;
-    for (i = 0; i < controllerAxes.length; ++i) {
-      changedAxes.push(previousAxis[i] !== controllerAxes[i]);
-      if (changedAxes[i]) { changed = true; }
-    }
-    if (!changed) { return false; }
-
-    this.axis.length = 0;
-    for (i = 0; i < controllerAxes.length; i++) {
-      this.axis.push(controllerAxes[i]);
-    }
-    this.el.emit(EVENTS.AXISMOVE, this.axisMoveEventDetail, false);
-    return true;
-  },
-
-  /**
-   * Determine whether a button press has occured and emit events as appropriate.
-   *
-   * @param {string} id - ID of the button to check.
-   * @param {object} buttonState - State of the button to check.
-   * @returns {boolean} Whether button press state changed.
-   */
-  handlePress: function (id, buttonState) {
-    var evtName;
-    var previousButtonState = this.buttonStates[id];
-
-    // Not changed.
-    if (buttonState.pressed === previousButtonState.pressed) { return false; }
-
-    evtName = buttonState.pressed ? EVENTS.BUTTONDOWN : EVENTS.BUTTONUP;
-    this.el.emit(evtName, this.buttonEventDetails[id], false);
-    previousButtonState.pressed = buttonState.pressed;
-    return true;
-  },
-
-  /**
-   * Determine whether a button touch has occured and emit events as appropriate.
-   *
-   * @param {string} id - ID of the button to check.
-   * @param {object} buttonState - State of the button to check.
-   * @returns {boolean} Whether button touch state changed.
-   */
-  handleTouch: function (id, buttonState) {
-    var evtName;
-    var previousButtonState = this.buttonStates[id];
-
-    // Not changed.
-    if (buttonState.touched === previousButtonState.touched) { return false; }
-
-    evtName = buttonState.touched ? EVENTS.TOUCHSTART : EVENTS.TOUCHEND;
-    this.el.emit(evtName, this.buttonEventDetails[id], false, EMPTY_DAYDREAM_TOUCHES);
-    previousButtonState.touched = buttonState.touched;
-    return true;
-  },
-
-  /**
-   * Determine whether a button value has changed.
-   *
-   * @param {string} id - Id of the button to check.
-   * @param {object} buttonState - State of the button to check.
-   * @returns {boolean} Whether button value changed.
-   */
-  handleValue: function (id, buttonState) {
-    var previousButtonState = this.buttonStates[id];
-
-    // Not changed.
-    if (buttonState.value === previousButtonState.value) { return false; }
-
-    previousButtonState.value = buttonState.value;
-    return true;
-  }
-});
-
-},{"../constants":93,"../core/component":101,"../lib/three":149,"../utils/tracked-controls":182}],86:[function(_dereq_,module,exports){
+},{"../core/component":100,"../core/shader":110,"../lib/three":148,"../utils/":172,"load-bmfont":23,"three-bmfont-text":35}],85:[function(_dereq_,module,exports){
 var controllerUtils = _dereq_('../utils/tracked-controls');
 var registerComponent = _dereq_('../core/component').registerComponent;
 
@@ -17758,7 +20175,7 @@ module.exports.Component = registerComponent('tracked-controls-webxr', {
   }
 });
 
-},{"../core/component":101,"../utils/tracked-controls":182}],87:[function(_dereq_,module,exports){
+},{"../core/component":100,"../utils/tracked-controls":179}],86:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 
 /**
@@ -17795,13 +20212,11 @@ module.exports.Component = registerComponent('tracked-controls', {
         index: data.controller,
         iterateControllerProfiles: data.iterateControllerProfiles
       });
-    } else {
-      el.setAttribute('tracked-controls-webvr', data);
     }
   }
 });
 
-},{"../core/component":101}],88:[function(_dereq_,module,exports){
+},{"../core/component":100}],87:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 
 /**
@@ -17815,7 +20230,7 @@ module.exports.Component = registerComponent('visible', {
   }
 });
 
-},{"../core/component":101}],89:[function(_dereq_,module,exports){
+},{"../core/component":100}],88:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var bind = _dereq_('../utils/bind');
 
@@ -18076,7 +20491,7 @@ module.exports.Component = registerComponent('vive-controls', {
   }
 });
 
-},{"../core/component":101,"../utils/":174,"../utils/bind":168,"../utils/tracked-controls":182}],90:[function(_dereq_,module,exports){
+},{"../core/component":100,"../utils/":172,"../utils/bind":166,"../utils/tracked-controls":179}],89:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var bind = _dereq_('../utils/bind');
 
@@ -18258,7 +20673,7 @@ module.exports.Component = registerComponent('vive-focus-controls', {
   }
 });
 
-},{"../core/component":101,"../utils/bind":168,"../utils/tracked-controls":182}],91:[function(_dereq_,module,exports){
+},{"../core/component":100,"../utils/bind":166,"../utils/tracked-controls":179}],90:[function(_dereq_,module,exports){
 var KEYCODE_TO_CODE = _dereq_('../constants').keyboardevent.KEYCODE_TO_CODE;
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
@@ -18470,7 +20885,7 @@ function isEmptyObject (keys) {
   return true;
 }
 
-},{"../constants":93,"../core/component":101,"../lib/three":149,"../utils/":174}],92:[function(_dereq_,module,exports){
+},{"../constants":92,"../core/component":100,"../lib/three":148,"../utils/":172}],91:[function(_dereq_,module,exports){
 /* global THREE */
 var registerComponent = _dereq_('../core/component').registerComponent;
 var bind = _dereq_('../utils/bind');
@@ -18956,7 +21371,7 @@ module.exports.Component = registerComponent('windows-motion-controls', {
   }
 });
 
-},{"../constants":93,"../core/component":101,"../utils/":174,"../utils/bind":168,"../utils/tracked-controls":182}],93:[function(_dereq_,module,exports){
+},{"../constants":92,"../core/component":100,"../utils/":172,"../utils/bind":166,"../utils/tracked-controls":179}],92:[function(_dereq_,module,exports){
 module.exports = {
   AFRAME_INJECTED: 'aframe-injected',
   DEFAULT_CAMERA_HEIGHT: 1.6,
@@ -18964,7 +21379,7 @@ module.exports = {
   keyboardevent: _dereq_('./keyboardevent')
 };
 
-},{"./keyboardevent":94}],94:[function(_dereq_,module,exports){
+},{"./keyboardevent":93}],93:[function(_dereq_,module,exports){
 module.exports = {
   // Tiny KeyboardEvent.code polyfill.
   KEYCODE_TO_CODE: {
@@ -18979,7 +21394,7 @@ module.exports = {
   }
 };
 
-},{}],95:[function(_dereq_,module,exports){
+},{}],94:[function(_dereq_,module,exports){
 var ANode = _dereq_('./a-node');
 var bind = _dereq_('../utils/bind');
 var debug = _dereq_('../utils/debug');
@@ -19259,7 +21674,7 @@ function getFileNameFromURL (url) {
 }
 module.exports.getFileNameFromURL = getFileNameFromURL;
 
-},{"../lib/three":149,"../utils/bind":168,"../utils/debug":170,"./a-node":99,"./a-register-element":100}],96:[function(_dereq_,module,exports){
+},{"../lib/three":148,"../utils/bind":166,"../utils/debug":168,"./a-node":98,"./a-register-element":99}],95:[function(_dereq_,module,exports){
 var debug = _dereq_('../utils/debug');
 var registerElement = _dereq_('./a-register-element').registerElement;
 
@@ -19309,7 +21724,7 @@ module.exports = registerElement('a-cubemap', {
   })
 });
 
-},{"../utils/debug":170,"./a-register-element":100}],97:[function(_dereq_,module,exports){
+},{"../utils/debug":168,"./a-register-element":99}],96:[function(_dereq_,module,exports){
 var ANode = _dereq_('./a-node');
 var COMPONENTS = _dereq_('./component').components;
 var registerElement = _dereq_('./a-register-element').registerElement;
@@ -20243,7 +22658,7 @@ function getRotation (entityEl) {
 AEntity = registerElement('a-entity', {prototype: proto});
 module.exports = AEntity;
 
-},{"../lib/three":149,"../utils/":174,"./a-node":99,"./a-register-element":100,"./component":101}],98:[function(_dereq_,module,exports){
+},{"../lib/three":148,"../utils/":172,"./a-node":98,"./a-register-element":99,"./component":100}],97:[function(_dereq_,module,exports){
 var ANode = _dereq_('./a-node');
 var registerElement = _dereq_('./a-register-element').registerElement;
 var components = _dereq_('./component').components;
@@ -20359,7 +22774,7 @@ module.exports = registerElement('a-mixin', {
   })
 });
 
-},{"../utils":174,"./a-node":99,"./a-register-element":100,"./component":101}],99:[function(_dereq_,module,exports){
+},{"../utils":172,"./a-node":98,"./a-register-element":99,"./component":100}],98:[function(_dereq_,module,exports){
 /* global CustomEvent */
 var registerElement = _dereq_('./a-register-element').registerElement;
 var isNode = _dereq_('./a-register-element').isNode;
@@ -20630,7 +23045,7 @@ module.exports = registerElement('a-node', {
   })
 });
 
-},{"../utils/":174,"./a-register-element":100}],100:[function(_dereq_,module,exports){
+},{"../utils/":172,"./a-register-element":99}],99:[function(_dereq_,module,exports){
 /*
   ------------------------------------------------------------
   ------------- WARNING WARNING WARNING WARNING --------------
@@ -20817,7 +23232,7 @@ function copyProperties (source, destination) {
 ANode = _dereq_('./a-node');
 AEntity = _dereq_('./a-entity');
 
-},{"./a-entity":97,"./a-node":99,"document-register-element":12}],101:[function(_dereq_,module,exports){
+},{"./a-entity":96,"./a-node":98,"document-register-element":12}],100:[function(_dereq_,module,exports){
 /* global Node */
 var schema = _dereq_('./schema');
 var scenes = _dereq_('./scene/scenes');
@@ -21622,7 +24037,7 @@ function isObjectOrArray (value) {
          !(value instanceof window.HTMLElement);
 }
 
-},{"../utils/":174,"./scene/scenes":108,"./schema":110,"./system":112}],102:[function(_dereq_,module,exports){
+},{"../utils/":172,"./scene/scenes":107,"./schema":109,"./system":111}],101:[function(_dereq_,module,exports){
 var schema = _dereq_('./schema');
 
 var processSchema = schema.process;
@@ -21696,7 +24111,7 @@ module.exports.registerGeometry = function (name, definition) {
   return NewGeometry;
 };
 
-},{"../lib/three":149,"./schema":110}],103:[function(_dereq_,module,exports){
+},{"../lib/three":148,"./schema":109}],102:[function(_dereq_,module,exports){
 var coordinates = _dereq_('../utils/coordinates');
 var debug = _dereq_('debug');
 
@@ -21921,8 +24336,8 @@ function isValidDefaultCoordinate (possibleCoordinates, dimensions) {
 }
 module.exports.isValidDefaultCoordinate = isValidDefaultCoordinate;
 
-},{"../utils/coordinates":169,"debug":9}],104:[function(_dereq_,module,exports){
-/* global Promise, screen, CustomEvent */
+},{"../utils/coordinates":167,"debug":9}],103:[function(_dereq_,module,exports){
+/* global Promise, screen */
 var initMetaTags = _dereq_('./metaTags').inject;
 var initWakelock = _dereq_('./wakelock');
 var loadingScreen = _dereq_('./loadingScreen');
@@ -22020,33 +24435,8 @@ module.exports.AScene = registerElement('a-scene', {
         initMetaTags(this);
         initWakelock(this);
 
-        // Handler to exit VR (e.g., Oculus Browser back button).
-        this.onVRPresentChangeBound = bind(this.onVRPresentChange, this);
-        window.addEventListener('vrdisplaypresentchange', this.onVRPresentChangeBound);
-
         // Bind functions.
-        this.enterVRBound = function () { self.enterVR(); };
         this.exitVRBound = function () { self.exitVR(); };
-        this.exitVRTrueBound = function () { self.exitVR(true); };
-        this.pointerRestrictedBound = function () { self.pointerRestricted(); };
-        this.pointerUnrestrictedBound = function () { self.pointerUnrestricted(); };
-
-        if (!isWebXRAvailable) {
-          // Exit VR on `vrdisplaydeactivate` (e.g. taking off Rift headset).
-          window.addEventListener('vrdisplaydeactivate', this.exitVRBound);
-
-          // Exit VR on `vrdisplaydisconnect` (e.g. unplugging Rift headset).
-          window.addEventListener('vrdisplaydisconnect', this.exitVRTrueBound);
-
-          // Register for mouse restricted events while in VR
-          // (e.g. mouse no longer available on desktop 2D view)
-          window.addEventListener('vrdisplaypointerrestricted', this.pointerRestrictedBound);
-
-          // Register for mouse unrestricted events while in VR
-          // (e.g. mouse once again available on desktop 2D view)
-          window.addEventListener('vrdisplaypointerunrestricted',
-                                  this.pointerUnrestrictedBound);
-        }
 
         // Camera set up by camera system.
         this.addEventListener('cameraready', function () {
@@ -22120,14 +24510,6 @@ module.exports.AScene = registerElement('a-scene', {
         // Remove from scene index.
         var sceneIndex = scenes.indexOf(this);
         scenes.splice(sceneIndex, 1);
-
-        window.removeEventListener('vrdisplaypresentchange', this.onVRPresentChangeBound);
-        window.removeEventListener('vrdisplayactivate', this.enterVRBound);
-        window.removeEventListener('vrdisplaydeactivate', this.exitVRBound);
-        window.removeEventListener('vrdisplayconnect', this.enterVRBound);
-        window.removeEventListener('vrdisplaydisconnect', this.exitVRTrueBound);
-        window.removeEventListener('vrdisplaypointerrestricted', this.pointerRestrictedBound);
-        window.removeEventListener('vrdisplaypointerunrestricted', this.pointerUnrestrictedBound);
       }
     },
 
@@ -22156,16 +24538,6 @@ module.exports.AScene = registerElement('a-scene', {
     /**
      * For tests.
      */
-    getPointerLockElement: {
-      value: function () {
-        return document.pointerLockElement;
-      },
-      writable: window.debug
-    },
-
-    /**
-     * For tests.
-     */
     checkHeadsetConnected: {
       value: utils.device.checkHeadsetConnected,
       writable: window.debug
@@ -22181,7 +24553,6 @@ module.exports.AScene = registerElement('a-scene', {
     },
 
     /**
-     * Call `requestPresent` if WebVR or WebVR polyfill.
      * Call `requestFullscreen` on desktop.
      * Handle events, states, fullscreen styles.
      *
@@ -22191,7 +24562,6 @@ module.exports.AScene = registerElement('a-scene', {
     enterVR: {
       value: function (useAR) {
         var self = this;
-        var vrDisplay;
         var vrManager = self.renderer.xr;
 
         // Don't enter VR if already in VR.
@@ -22217,24 +24587,7 @@ module.exports.AScene = registerElement('a-scene', {
                 self.addState('ar-mode');
               }
               enterVRSuccess();
-            });
-          } else {
-            vrDisplay = utils.device.getVRDisplay();
-            if (vrDisplay.isPresenting &&
-                !window.hasNativeWebVRImplementation) {
-              enterVRSuccess();
-              return Promise.resolve();
-            }
-            var rendererSystem = this.getAttribute('renderer');
-            var presentationAttributes = {
-              highRefreshRate: rendererSystem.highRefreshRate,
-              foveationLevel: rendererSystem.foveationLevel
-            };
-
-            return vrDisplay.requestPresent([{
-              source: this.canvas,
-              attributes: presentationAttributes
-            }]).then(enterVRSuccess, enterVRFailure);
+            }, enterVRFailure);
           }
           return Promise.resolve();
         }
@@ -22245,17 +24598,6 @@ module.exports.AScene = registerElement('a-scene', {
 
         // Callback that happens on enter VR success or enter fullscreen (any API).
         function enterVRSuccess () {
-          // vrdisplaypresentchange fires only once when the first requestPresent is completed;
-          // the first requestPresent could be called from ondisplayactivate and there is no way
-          // to setup everything from there. Thus, we need to emulate another vrdisplaypresentchange
-          // for the actual requestPresent. Need to make sure there are no issues with firing the
-          // vrdisplaypresentchange multiple times.
-          var event;
-          if (window.hasNativeWebVRImplementation && !window.hasNativeWebXRImplementation) {
-            event = new CustomEvent('vrdisplaypresentchange', {detail: {display: utils.device.getVRDisplay()}});
-            window.dispatchEvent(event);
-          }
-
           self.addState('vr-mode');
           self.emit('enter-vr', {target: self});
           // Lock to landscape orientation on mobile.
@@ -22278,9 +24620,9 @@ module.exports.AScene = registerElement('a-scene', {
 
         function enterVRFailure (err) {
           if (err && err.message) {
-            throw new Error('Failed to enter VR mode (`requestPresent`): ' + err.message);
+            throw new Error('Failed to enter VR mode (`requestSession`): ' + err.message);
           } else {
-            throw new Error('Failed to enter VR mode (`requestPresent`).');
+            throw new Error('Failed to enter VR mode (`requestSession`).');
           }
         }
       },
@@ -22349,49 +24691,6 @@ module.exports.AScene = registerElement('a-scene', {
         }
       },
       writable: true
-    },
-
-    pointerRestricted: {
-      value: function () {
-        if (this.canvas) {
-          var pointerLockElement = this.getPointerLockElement();
-          if (pointerLockElement && pointerLockElement !== this.canvas && document.exitPointerLock) {
-            // Recreate pointer lock on the canvas, if taken on another element.
-            document.exitPointerLock();
-          }
-
-          if (this.canvas.requestPointerLock) {
-            this.canvas.requestPointerLock();
-          }
-        }
-      }
-    },
-
-    pointerUnrestricted: {
-      value: function () {
-        var pointerLockElement = this.getPointerLockElement();
-        if (pointerLockElement && pointerLockElement === this.canvas && document.exitPointerLock) {
-          document.exitPointerLock();
-        }
-      }
-    },
-
-    /**
-     * Handle `vrdisplaypresentchange` event for exiting VR through other means than
-     * `<ESC>` key. For example, GearVR back button on Oculus Browser.
-     */
-    onVRPresentChange: {
-      value: function (evt) {
-        // Polyfill places display inside the detail property
-        var display = evt.display || evt.detail.display;
-        // Entering VR.
-        if (display && display.isPresenting) {
-          this.enterVR();
-          return;
-        }
-        // Exiting VR.
-        this.exitVR();
-      }
     },
 
     /**
@@ -22480,7 +24779,7 @@ module.exports.AScene = registerElement('a-scene', {
 
         // Do not update renderer, if a camera or a canvas have not been injected.
         // In VR mode, three handles canvas resize based on the dimensions returned by
-        // the getEyeParameters function of the WebVR API. These dimensions are independent of
+        // the getEyeParameters function of the WebXR API. These dimensions are independent of
         // the window size, therefore should not be overwritten with the window's width and
         // height, // except when in fullscreen mode.
         if (!camera || !canvas || (this.is('vr-mode') && (this.isMobile || isVRPresenting))) {
@@ -22818,7 +25117,7 @@ function setupCanvas (sceneEl) {
 }
 module.exports.setupCanvas = setupCanvas;  // For testing.
 
-},{"../../lib/three":149,"../../utils/":174,"../a-entity":97,"../a-node":99,"../a-register-element":100,"../system":112,"./loadingScreen":105,"./metaTags":106,"./postMessage":107,"./scenes":108,"./wakelock":109}],105:[function(_dereq_,module,exports){
+},{"../../lib/three":148,"../../utils/":172,"../a-entity":96,"../a-node":98,"../a-register-element":99,"../system":111,"./loadingScreen":104,"./metaTags":105,"./postMessage":106,"./scenes":107,"./wakelock":108}],104:[function(_dereq_,module,exports){
 /* global THREE */
 var utils = _dereq_('../../utils/');
 var styleParser = utils.styleParser;
@@ -22912,7 +25211,7 @@ function setupTitle () {
   sceneEl.appendChild(titleEl);
 }
 
-},{"../../utils/":174}],106:[function(_dereq_,module,exports){
+},{"../../utils/":172}],105:[function(_dereq_,module,exports){
 var constants = _dereq_('../../constants/');
 var extend = _dereq_('../../utils').extend;
 
@@ -22993,7 +25292,7 @@ function createTag (tagObj) {
   return extend(meta, tagObj.attributes);
 }
 
-},{"../../constants/":93,"../../utils":174}],107:[function(_dereq_,module,exports){
+},{"../../constants/":92,"../../utils":172}],106:[function(_dereq_,module,exports){
 var bind = _dereq_('../../utils/bind');
 var isIframed = _dereq_('../../utils/').isIframed;
 
@@ -23026,13 +25325,13 @@ function postMessageAPIHandler (event) {
   }
 }
 
-},{"../../utils/":174,"../../utils/bind":168}],108:[function(_dereq_,module,exports){
+},{"../../utils/":172,"../../utils/bind":166}],107:[function(_dereq_,module,exports){
 /*
   Scene index for keeping track of created scenes.
 */
 module.exports = [];
 
-},{}],109:[function(_dereq_,module,exports){
+},{}],108:[function(_dereq_,module,exports){
 var Wakelock = _dereq_('../../../vendor/wakelock/wakelock');
 
 module.exports = function initWakelock (scene) {
@@ -23043,7 +25342,7 @@ module.exports = function initWakelock (scene) {
   scene.addEventListener('exit-vr', function () { wakelock.release(); });
 };
 
-},{"../../../vendor/wakelock/wakelock":188}],110:[function(_dereq_,module,exports){
+},{"../../../vendor/wakelock/wakelock":185}],109:[function(_dereq_,module,exports){
 var utils = _dereq_('../utils/');
 var PropertyTypes = _dereq_('./propertyTypes');
 
@@ -23247,7 +25546,7 @@ function stringifyProperty (value, propDefinition) {
 }
 module.exports.stringifyProperty = stringifyProperty;
 
-},{"../utils/":174,"./propertyTypes":103}],111:[function(_dereq_,module,exports){
+},{"../utils/":172,"./propertyTypes":102}],110:[function(_dereq_,module,exports){
 var schema = _dereq_('./schema');
 
 var processSchema = schema.process;
@@ -23436,7 +25735,7 @@ module.exports.registerShader = function (name, definition) {
   return NewShader;
 };
 
-},{"../lib/three":149,"../utils":174,"./schema":110}],112:[function(_dereq_,module,exports){
+},{"../lib/three":148,"../utils":172,"./schema":109}],111:[function(_dereq_,module,exports){
 var components = _dereq_('./component');
 var schema = _dereq_('./schema');
 var utils = _dereq_('../utils/');
@@ -23594,10 +25893,10 @@ module.exports.registerSystem = function (name, definition) {
   for (i = 0; i < scenes.length; i++) { scenes[i].initSystem(name); }
 };
 
-},{"../utils/":174,"./component":101,"./schema":110}],113:[function(_dereq_,module,exports){
+},{"../utils/":172,"./component":100,"./schema":109}],112:[function(_dereq_,module,exports){
 _dereq_('./pivot');
 
-},{"./pivot":114}],114:[function(_dereq_,module,exports){
+},{"./pivot":113}],113:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var THREE = _dereq_('../../lib/three');
 
@@ -23646,7 +25945,7 @@ registerComponent('pivot', {
   }
 });
 
-},{"../../core/component":101,"../../lib/three":149}],115:[function(_dereq_,module,exports){
+},{"../../core/component":100,"../../lib/three":148}],114:[function(_dereq_,module,exports){
 /**
  * Common mesh defaults, mappings, and transforms.
  */
@@ -23673,7 +25972,7 @@ module.exports = function getMeshMixin () {
   };
 };
 
-},{"../../core/component":101,"../../core/shader":111,"../../utils/":174}],116:[function(_dereq_,module,exports){
+},{"../../core/component":100,"../../core/shader":110,"../../utils/":172}],115:[function(_dereq_,module,exports){
 _dereq_('./primitives/a-camera');
 _dereq_('./primitives/a-cursor');
 _dereq_('./primitives/a-curvedimage');
@@ -23689,7 +25988,7 @@ _dereq_('./primitives/a-video');
 _dereq_('./primitives/a-videosphere');
 _dereq_('./primitives/meshPrimitives');
 
-},{"./primitives/a-camera":118,"./primitives/a-cursor":119,"./primitives/a-curvedimage":120,"./primitives/a-gltf-model":121,"./primitives/a-image":122,"./primitives/a-light":123,"./primitives/a-link":124,"./primitives/a-obj-model":125,"./primitives/a-sky":126,"./primitives/a-sound":127,"./primitives/a-text":128,"./primitives/a-video":129,"./primitives/a-videosphere":130,"./primitives/meshPrimitives":131}],117:[function(_dereq_,module,exports){
+},{"./primitives/a-camera":117,"./primitives/a-cursor":118,"./primitives/a-curvedimage":119,"./primitives/a-gltf-model":120,"./primitives/a-image":121,"./primitives/a-light":122,"./primitives/a-link":123,"./primitives/a-obj-model":124,"./primitives/a-sky":125,"./primitives/a-sound":126,"./primitives/a-text":127,"./primitives/a-video":128,"./primitives/a-videosphere":129,"./primitives/meshPrimitives":130}],116:[function(_dereq_,module,exports){
 var AEntity = _dereq_('../../core/a-entity');
 var components = _dereq_('../../core/component').components;
 var registerElement = _dereq_('../../core/a-register-element').registerElement;
@@ -23888,7 +26187,7 @@ function definePrimitive (tagName, defaultComponents, mappings) {
 }
 module.exports.definePrimitive = definePrimitive;
 
-},{"../../core/a-entity":97,"../../core/a-register-element":100,"../../core/component":101,"../../utils/":174}],118:[function(_dereq_,module,exports){
+},{"../../core/a-entity":96,"../../core/a-register-element":99,"../../core/component":100,"../../utils/":172}],117:[function(_dereq_,module,exports){
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 
 registerPrimitive('a-camera', {
@@ -23912,7 +26211,7 @@ registerPrimitive('a-camera', {
   }
 });
 
-},{"../primitives":117}],119:[function(_dereq_,module,exports){
+},{"../primitives":116}],118:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -23947,7 +26246,7 @@ registerPrimitive('a-cursor', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":174,"../getMeshMixin":115,"../primitives":117}],120:[function(_dereq_,module,exports){
+},{"../../../utils/":172,"../getMeshMixin":114,"../primitives":116}],119:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -23984,7 +26283,7 @@ registerPrimitive('a-curvedimage', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":174,"../getMeshMixin":115,"../primitives":117}],121:[function(_dereq_,module,exports){
+},{"../../../utils/":172,"../getMeshMixin":114,"../primitives":116}],120:[function(_dereq_,module,exports){
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 
 registerPrimitive('a-gltf-model', {
@@ -23993,7 +26292,7 @@ registerPrimitive('a-gltf-model', {
   }
 });
 
-},{"../primitives":117}],122:[function(_dereq_,module,exports){
+},{"../primitives":116}],121:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -24017,7 +26316,7 @@ registerPrimitive('a-image', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":174,"../getMeshMixin":115,"../primitives":117}],123:[function(_dereq_,module,exports){
+},{"../../../utils/":172,"../getMeshMixin":114,"../primitives":116}],122:[function(_dereq_,module,exports){
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 
 registerPrimitive('a-light', {
@@ -24038,7 +26337,7 @@ registerPrimitive('a-light', {
   }
 });
 
-},{"../primitives":117}],124:[function(_dereq_,module,exports){
+},{"../primitives":116}],123:[function(_dereq_,module,exports){
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 
 registerPrimitive('a-link', {
@@ -24055,7 +26354,7 @@ registerPrimitive('a-link', {
   }
 });
 
-},{"../primitives":117}],125:[function(_dereq_,module,exports){
+},{"../primitives":116}],124:[function(_dereq_,module,exports){
 var meshMixin = _dereq_('../getMeshMixin')();
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -24071,7 +26370,7 @@ registerPrimitive('a-obj-model', utils.extendDeep({}, meshMixin, {
   }
 }));
 
-},{"../../../utils/":174,"../getMeshMixin":115,"../primitives":117}],126:[function(_dereq_,module,exports){
+},{"../../../utils/":172,"../getMeshMixin":114,"../primitives":116}],125:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -24097,7 +26396,7 @@ registerPrimitive('a-sky', utils.extendDeep({}, getMeshMixin(), {
   mappings: utils.extendDeep({}, meshPrimitives['a-sphere'].prototype.mappings)
 }));
 
-},{"../../../utils/":174,"../getMeshMixin":115,"../primitives":117,"./meshPrimitives":131}],127:[function(_dereq_,module,exports){
+},{"../../../utils/":172,"../getMeshMixin":114,"../primitives":116,"./meshPrimitives":130}],126:[function(_dereq_,module,exports){
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 
 registerPrimitive('a-sound', {
@@ -24114,12 +26413,12 @@ registerPrimitive('a-sound', {
   }
 });
 
-},{"../primitives":117}],128:[function(_dereq_,module,exports){
+},{"../primitives":116}],127:[function(_dereq_,module,exports){
 // <a-text> using `definePrimitive` helper.
 var definePrimitive = _dereq_('../primitives').definePrimitive;
 definePrimitive('a-text', {text: {anchor: 'align', width: 5}});
 
-},{"../primitives":117}],129:[function(_dereq_,module,exports){
+},{"../primitives":116}],128:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -24143,7 +26442,7 @@ registerPrimitive('a-video', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":174,"../getMeshMixin":115,"../primitives":117}],130:[function(_dereq_,module,exports){
+},{"../../../utils/":172,"../getMeshMixin":114,"../primitives":116}],129:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -24172,7 +26471,7 @@ registerPrimitive('a-videosphere', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":174,"../getMeshMixin":115,"../primitives":117}],131:[function(_dereq_,module,exports){
+},{"../../../utils/":172,"../getMeshMixin":114,"../primitives":116}],130:[function(_dereq_,module,exports){
 /**
  * Automated mesh primitive registration.
  */
@@ -24212,7 +26511,7 @@ function unCamelCase (str) {
   return str.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
 }
 
-},{"../../../core/geometry":102,"../../../utils/":174,"../getMeshMixin":115,"../primitives":117}],132:[function(_dereq_,module,exports){
+},{"../../../core/geometry":101,"../../../utils/":172,"../getMeshMixin":114,"../primitives":116}],131:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -24233,7 +26532,7 @@ registerGeometry('box', {
   }
 });
 
-},{"../core/geometry":102,"../lib/three":149}],133:[function(_dereq_,module,exports){
+},{"../core/geometry":101,"../lib/three":148}],132:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -24253,7 +26552,7 @@ registerGeometry('circle', {
   }
 });
 
-},{"../core/geometry":102,"../lib/three":149}],134:[function(_dereq_,module,exports){
+},{"../core/geometry":101,"../lib/three":148}],133:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -24279,7 +26578,7 @@ registerGeometry('cone', {
   }
 });
 
-},{"../core/geometry":102,"../lib/three":149}],135:[function(_dereq_,module,exports){
+},{"../core/geometry":101,"../lib/three":148}],134:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -24303,7 +26602,7 @@ registerGeometry('cylinder', {
   }
 });
 
-},{"../core/geometry":102,"../lib/three":149}],136:[function(_dereq_,module,exports){
+},{"../core/geometry":101,"../lib/three":148}],135:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -24318,7 +26617,7 @@ registerGeometry('dodecahedron', {
   }
 });
 
-},{"../core/geometry":102,"../lib/three":149}],137:[function(_dereq_,module,exports){
+},{"../core/geometry":101,"../lib/three":148}],136:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -24333,7 +26632,7 @@ registerGeometry('icosahedron', {
   }
 });
 
-},{"../core/geometry":102,"../lib/three":149}],138:[function(_dereq_,module,exports){
+},{"../core/geometry":101,"../lib/three":148}],137:[function(_dereq_,module,exports){
 _dereq_('./box.js');
 _dereq_('./circle.js');
 _dereq_('./cone.js');
@@ -24349,7 +26648,7 @@ _dereq_('./torus.js');
 _dereq_('./torusKnot.js');
 _dereq_('./triangle.js');
 
-},{"./box.js":132,"./circle.js":133,"./cone.js":134,"./cylinder.js":135,"./dodecahedron.js":136,"./icosahedron.js":137,"./octahedron.js":139,"./plane.js":140,"./ring.js":141,"./sphere.js":142,"./tetrahedron.js":143,"./torus.js":144,"./torusKnot.js":145,"./triangle.js":146}],139:[function(_dereq_,module,exports){
+},{"./box.js":131,"./circle.js":132,"./cone.js":133,"./cylinder.js":134,"./dodecahedron.js":135,"./icosahedron.js":136,"./octahedron.js":138,"./plane.js":139,"./ring.js":140,"./sphere.js":141,"./tetrahedron.js":142,"./torus.js":143,"./torusKnot.js":144,"./triangle.js":145}],138:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -24364,7 +26663,7 @@ registerGeometry('octahedron', {
   }
 });
 
-},{"../core/geometry":102,"../lib/three":149}],140:[function(_dereq_,module,exports){
+},{"../core/geometry":101,"../lib/three":148}],139:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -24381,7 +26680,7 @@ registerGeometry('plane', {
   }
 });
 
-},{"../core/geometry":102,"../lib/three":149}],141:[function(_dereq_,module,exports){
+},{"../core/geometry":101,"../lib/three":148}],140:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -24404,7 +26703,7 @@ registerGeometry('ring', {
   }
 });
 
-},{"../core/geometry":102,"../lib/three":149}],142:[function(_dereq_,module,exports){
+},{"../core/geometry":101,"../lib/three":148}],141:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -24428,7 +26727,7 @@ registerGeometry('sphere', {
   }
 });
 
-},{"../core/geometry":102,"../lib/three":149}],143:[function(_dereq_,module,exports){
+},{"../core/geometry":101,"../lib/three":148}],142:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -24443,7 +26742,7 @@ registerGeometry('tetrahedron', {
   }
 });
 
-},{"../core/geometry":102,"../lib/three":149}],144:[function(_dereq_,module,exports){
+},{"../core/geometry":101,"../lib/three":148}],143:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -24465,7 +26764,7 @@ registerGeometry('torus', {
   }
 });
 
-},{"../core/geometry":102,"../lib/three":149}],145:[function(_dereq_,module,exports){
+},{"../core/geometry":101,"../lib/three":148}],144:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -24486,7 +26785,7 @@ registerGeometry('torusKnot', {
   }
 });
 
-},{"../core/geometry":102,"../lib/three":149}],146:[function(_dereq_,module,exports){
+},{"../core/geometry":101,"../lib/three":148}],145:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -24541,29 +26840,21 @@ registerGeometry('triangle', {
   }
 });
 
-},{"../core/geometry":102,"../lib/three":149}],147:[function(_dereq_,module,exports){
+},{"../core/geometry":101,"../lib/three":148}],146:[function(_dereq_,module,exports){
 // Polyfill `Promise`.
 window.Promise = window.Promise || _dereq_('promise-polyfill');
 
-// WebVR polyfill
+// WebXR polyfill
 // Check before the polyfill runs.
 window.hasNativeWebVRImplementation = !!window.navigator.getVRDisplays ||
                                       !!window.navigator.getVRDevices;
 window.hasNativeWebXRImplementation = navigator.xr !== undefined;
 
-// If native WebXR or WebVR are defined WebVRPolyfill does not initialize.
-if (!window.hasNativeWebXRImplementation && !window.hasNativeWebVRImplementation) {
-  var isIOSOlderThan10 = _dereq_('./utils/isIOSOlderThan10');
-  // Workaround for iOS Safari canvas sizing issues in stereo (webvr-polyfill/issues/102).
-  // Only for iOS on versions older than 10.
-  var bufferScale = isIOSOlderThan10(window.navigator.userAgent) ? 1 / window.devicePixelRatio : 1;
-  var WebVRPolyfill = _dereq_('webvr-polyfill');
-  var polyfillConfig = {
-    BUFFER_SCALE: bufferScale,
-    CARDBOARD_UI_DISABLED: true,
-    ROTATE_INSTRUCTIONS_DISABLED: true
-  };
-  window.webvrpolyfill = new WebVRPolyfill(polyfillConfig);
+// If native WebXR or WebVR are defined WebXRPolyfill does not initialize.
+if (!window.hasNativeWebXRImplementation) {
+  var WebXRPolyfill = _dereq_('webxr-polyfill');
+  var polyfillConfig = {};
+  window.webxrpolyfill = new WebXRPolyfill(polyfillConfig);
 }
 
 var utils = _dereq_('./utils/');
@@ -24633,10 +26924,10 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 1.0.4 (Date 2020-02-25, Commit #6323de60)');
+console.log('A-Frame Version: 1.0.4 (Date 2020-02-26, Commit #5baf8fb6)');
 console.log('three Version (https://github.com/ForwardXP/three.js):',
             pkg.dependencies['three']);
-console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
+console.log('WebXR Polyfill Version:', pkg.dependencies['webxr-polyfill']);
 
 module.exports = window.AFRAME = {
   AComponent: _dereq_('./core/component').Component,
@@ -24666,7 +26957,7 @@ module.exports = window.AFRAME = {
   version: pkg.version
 };
 
-},{"../package":46,"../vendor/starts-with-polyfill":186,"./components/index":56,"./core/a-assets":95,"./core/a-cubemap":96,"./core/a-entity":97,"./core/a-mixin":98,"./core/a-node":99,"./core/a-register-element":100,"./core/component":101,"./core/geometry":102,"./core/scene/a-scene":104,"./core/scene/scenes":108,"./core/schema":110,"./core/shader":111,"./core/system":112,"./extras/components/":113,"./extras/primitives/":116,"./extras/primitives/getMeshMixin":115,"./extras/primitives/primitives":117,"./geometries/index":138,"./lib/three":149,"./shaders/index":151,"./style/aframe.css":156,"./style/rStats.css":157,"./systems/index":161,"./utils/":174,"./utils/isIOSOlderThan10":176,"custom-event-polyfill":8,"present":31,"promise-polyfill":32,"super-animejs":34,"webvr-polyfill":41}],148:[function(_dereq_,module,exports){
+},{"../package":46,"../vendor/starts-with-polyfill":183,"./components/index":56,"./core/a-assets":94,"./core/a-cubemap":95,"./core/a-entity":96,"./core/a-mixin":97,"./core/a-node":98,"./core/a-register-element":99,"./core/component":100,"./core/geometry":101,"./core/scene/a-scene":103,"./core/scene/scenes":107,"./core/schema":109,"./core/shader":110,"./core/system":111,"./extras/components/":112,"./extras/primitives/":115,"./extras/primitives/getMeshMixin":114,"./extras/primitives/primitives":116,"./geometries/index":137,"./lib/three":148,"./shaders/index":150,"./style/aframe.css":155,"./style/rStats.css":156,"./systems/index":160,"./utils/":172,"custom-event-polyfill":8,"present":31,"promise-polyfill":32,"super-animejs":34,"webxr-polyfill":41}],147:[function(_dereq_,module,exports){
 window.aframeStats = function (scene) {
   var _rS = null;
   var _scene = scene;
@@ -24723,7 +27014,7 @@ if (typeof module === 'object') {
   };
 }
 
-},{}],149:[function(_dereq_,module,exports){
+},{}],148:[function(_dereq_,module,exports){
 (function (global){
 var THREE = global.THREE = _dereq_('three');
 
@@ -24761,7 +27052,7 @@ module.exports = THREE;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"../../vendor/DeviceOrientationControls":183,"three":189,"three/examples/js/loaders/DRACOLoader":190,"three/examples/js/loaders/GLTFLoader":191,"three/examples/js/loaders/MTLLoader":192,"three/examples/js/loaders/OBJLoader":193}],150:[function(_dereq_,module,exports){
+},{"../../vendor/DeviceOrientationControls":180,"three":186,"three/examples/js/loaders/DRACOLoader":187,"three/examples/js/loaders/GLTFLoader":188,"three/examples/js/loaders/MTLLoader":189,"three/examples/js/loaders/OBJLoader":190}],149:[function(_dereq_,module,exports){
 var registerShader = _dereq_('../core/shader').registerShader;
 var THREE = _dereq_('../lib/three');
 var utils = _dereq_('../utils/');
@@ -24831,14 +27122,14 @@ function getMaterialData (data, materialData) {
   return materialData;
 }
 
-},{"../core/shader":111,"../lib/three":149,"../utils/":174}],151:[function(_dereq_,module,exports){
+},{"../core/shader":110,"../lib/three":148,"../utils/":172}],150:[function(_dereq_,module,exports){
 _dereq_('./flat');
 _dereq_('./standard');
 _dereq_('./sdf');
 _dereq_('./msdf');
 _dereq_('./ios10hls');
 
-},{"./flat":150,"./ios10hls":152,"./msdf":153,"./sdf":154,"./standard":155}],152:[function(_dereq_,module,exports){
+},{"./flat":149,"./ios10hls":151,"./msdf":152,"./sdf":153,"./standard":154}],151:[function(_dereq_,module,exports){
 var registerShader = _dereq_('../core/shader').registerShader;
 
 /**
@@ -24873,7 +27164,7 @@ module.exports.Shader = registerShader('ios10hls', {
 });
 
 
-},{"../core/shader":111}],153:[function(_dereq_,module,exports){
+},{"../core/shader":110}],152:[function(_dereq_,module,exports){
 var registerShader = _dereq_('../core/shader').registerShader;
 
 /**
@@ -24949,7 +27240,7 @@ module.exports.Shader = registerShader('msdf', {
   ].join('\n')
 });
 
-},{"../core/shader":111}],154:[function(_dereq_,module,exports){
+},{"../core/shader":110}],153:[function(_dereq_,module,exports){
 var registerShader = _dereq_('../core/shader').registerShader;
 
 /**
@@ -25063,7 +27354,7 @@ module.exports.Shader = registerShader('sdf', {
   ].join('\n')
 });
 
-},{"../core/shader":111}],155:[function(_dereq_,module,exports){
+},{"../core/shader":110}],154:[function(_dereq_,module,exports){
 var registerShader = _dereq_('../core/shader').registerShader;
 var THREE = _dereq_('../lib/three');
 var utils = _dereq_('../utils/');
@@ -25255,11 +27546,11 @@ function getMaterialData (data, materialData) {
   return materialData;
 }
 
-},{"../core/shader":111,"../lib/three":149,"../utils/":174}],156:[function(_dereq_,module,exports){
+},{"../core/shader":110,"../lib/three":148,"../utils/":172}],155:[function(_dereq_,module,exports){
 var css = "html.a-fullscreen{bottom:0;left:0;position:fixed;right:0;top:0}html.a-fullscreen body{height:100%;margin:0;overflow:hidden;padding:0;width:100%}html.a-fullscreen .a-canvas{width:100%!important;height:100%!important;top:0!important;left:0!important;right:0!important;bottom:0!important;position:fixed!important}html:not(.a-fullscreen) .a-enter-ar,html:not(.a-fullscreen) .a-enter-vr{right:5px;bottom:5px}:-webkit-full-screen{background-color:transparent}.a-hidden{display:none!important}.a-canvas{height:100%;left:0;position:absolute;top:0;width:100%}.a-canvas.a-grab-cursor:hover{cursor:grab;cursor:-moz-grab;cursor:-webkit-grab}canvas.a-canvas.a-mouse-cursor-hover:hover{cursor:pointer}.a-inspector-loader{background-color:#ed3160;position:fixed;left:3px;top:3px;padding:6px 10px;color:#fff;text-decoration:none;font-size:12px;font-family:Roboto,sans-serif;text-align:center;z-index:99999;width:204px}@keyframes dots-1{from{opacity:0}25%{opacity:1}}@keyframes dots-2{from{opacity:0}50%{opacity:1}}@keyframes dots-3{from{opacity:0}75%{opacity:1}}@-webkit-keyframes dots-1{from{opacity:0}25%{opacity:1}}@-webkit-keyframes dots-2{from{opacity:0}50%{opacity:1}}@-webkit-keyframes dots-3{from{opacity:0}75%{opacity:1}}.a-inspector-loader .dots span{animation:dots-1 2s infinite steps(1);-webkit-animation:dots-1 2s infinite steps(1)}.a-inspector-loader .dots span:first-child+span{animation-name:dots-2;-webkit-animation-name:dots-2}.a-inspector-loader .dots span:first-child+span+span{animation-name:dots-3;-webkit-animation-name:dots-3}a-scene{display:block;position:relative;height:100%;width:100%}a-assets,a-scene audio,a-scene img,a-scene video{display:none}.a-enter-vr-modal,.a-orientation-modal{font-family:Consolas,Andale Mono,Courier New,monospace}.a-enter-vr-modal a{border-bottom:1px solid #fff;padding:2px 0;text-decoration:none;transition:.1s color ease-in}.a-enter-vr-modal a:hover{background-color:#fff;color:#111;padding:2px 4px;position:relative;left:-4px}.a-enter-ar,.a-enter-vr{font-family:sans-serif,monospace;font-size:13px;width:100%;font-weight:200;line-height:16px;position:absolute;right:20px;bottom:20px}.a-enter-ar{right:80px}.a-enter-vr-button,.a-enter-vr-modal,.a-enter-vr-modal a{color:#fff;user-select:none;outline:0}.a-enter-vr-button{background:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='108' height='62' viewBox='0 0 108 62'%3E%3Ctitle%3Eaframe-vrmode-noborder-reduced-tracking%3C/title%3E%3Cpath d='M68.81,21.56H64.23v8.27h4.58a4.13,4.13,0,0,0,3.1-1.09,4.2,4.2,0,0,0,1-3,4.24,4.24,0,0,0-1-3A4.05,4.05,0,0,0,68.81,21.56Z' fill='%23fff'/%3E%3Cpath d='M96,0H12A12,12,0,0,0,0,12V50A12,12,0,0,0,12,62H96a12,12,0,0,0,12-12V12A12,12,0,0,0,96,0ZM41.9,46H34L24,16h8l6,21.84,6-21.84H52Zm39.29,0H73.44L68.15,35.39H64.23V46H57V16H68.81q5.32,0,8.34,2.37a8,8,0,0,1,3,6.69,9.68,9.68,0,0,1-1.27,5.18,8.9,8.9,0,0,1-4,3.34l6.26,12.11Z' fill='%23fff'/%3E%3C/svg%3E\") 50% 50% no-repeat rgba(0,0,0,.35)}.a-enter-ar-button{background:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='108' height='62' viewBox='0 0 108 62'%3E%3Ctitle%3Eaframe-armode-noborder-reduced-tracking%3C/title%3E%3Cpath d='M96,0H12A12,12,0,0,0,0,12V50A12,12,0,0,0,12,62H96a12,12,0,0,0,12-12V12A12,12,0,0,0,96,0Zm8,50a8,8,0,0,1-8,8H12a8,8,0,0,1-8-8V12a8,8,0,0,1,8-8H96a8,8,0,0,1,8,8Z' fill='%23fff'/%3E%3Cpath d='M43.35,39.82H32.51L30.45,46H23.88L35,16h5.73L52,46H45.43Zm-9.17-5h7.5L37.91,23.58Z' fill='%23fff'/%3E%3Cpath d='M68.11,35H63.18V46H57V16H68.15q5.31,0,8.2,2.37a8.18,8.18,0,0,1,2.88,6.7,9.22,9.22,0,0,1-1.33,5.12,9.09,9.09,0,0,1-4,3.26l6.49,12.26V46H73.73Zm-4.93-5h5a5.09,5.09,0,0,0,3.6-1.18,4.21,4.21,0,0,0,1.28-3.27,4.56,4.56,0,0,0-1.2-3.34A5,5,0,0,0,68.15,21h-5Z' fill='%23fff'/%3E%3C/svg%3E\") 50% 50% no-repeat rgba(0,0,0,.2)}.a-enter-ar-button,.a-enter-vr-button{background-size:90% 90%;border:0;bottom:0;cursor:pointer;min-width:58px;min-height:34px;padding-right:0;padding-top:0;position:absolute;right:0;transition:background-color .05s ease;-webkit-transition:background-color .05s ease;z-index:9999;border-radius:8px;touch-action:manipulation}.a-enter-ar-button{background-size:100% 90%;margin-right:10px;border-radius:7px}.a-enter-ar-button:active,.a-enter-ar-button:hover,.a-enter-vr-button:active,.a-enter-vr-button:hover{background-color:#ef2d5e}.a-enter-vr-button.resethover{background-color:rgba(0,0,0,.35)}[data-a-enter-vr-no-webvr] .a-enter-vr-button{border-color:#666;opacity:.65}[data-a-enter-vr-no-webvr] .a-enter-vr-button:active,[data-a-enter-vr-no-webvr] .a-enter-vr-button:hover{background-color:rgba(0,0,0,.35);cursor:not-allowed}.a-enter-vr-modal{background-color:#666;border-radius:0;display:none;min-height:32px;margin-right:70px;padding:9px;width:280px;right:2%;position:absolute}.a-enter-vr-modal:after{border-bottom:10px solid transparent;border-left:10px solid #666;border-top:10px solid transparent;display:inline-block;content:'';position:absolute;right:-5px;top:5px;width:0;height:0}.a-enter-vr-modal a,.a-enter-vr-modal p{display:inline}.a-enter-vr-modal p{margin:0}.a-enter-vr-modal p:after{content:' '}[data-a-enter-vr-no-headset].a-enter-vr:hover .a-enter-vr-modal,[data-a-enter-vr-no-webvr].a-enter-vr:hover .a-enter-vr-modal{display:block}.a-orientation-modal{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%20version%3D%221.1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%2090%2090%22%20enable-background%3D%22new%200%200%2090%2090%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpolygon%20points%3D%220%2C0%200%2C0%200%2C0%20%22%3E%3C/polygon%3E%3Cg%3E%3Cpath%20d%3D%22M71.545%2C48.145h-31.98V20.743c0-2.627-2.138-4.765-4.765-4.765H18.456c-2.628%2C0-4.767%2C2.138-4.767%2C4.765v42.789%20%20%20c0%2C2.628%2C2.138%2C4.766%2C4.767%2C4.766h5.535v0.959c0%2C2.628%2C2.138%2C4.765%2C4.766%2C4.765h42.788c2.628%2C0%2C4.766-2.137%2C4.766-4.765V52.914%20%20%20C76.311%2C50.284%2C74.173%2C48.145%2C71.545%2C48.145z%20M18.455%2C16.935h16.344c2.1%2C0%2C3.808%2C1.708%2C3.808%2C3.808v27.401H37.25V22.636%20%20%20c0-0.264-0.215-0.478-0.479-0.478H16.482c-0.264%2C0-0.479%2C0.214-0.479%2C0.478v36.585c0%2C0.264%2C0.215%2C0.478%2C0.479%2C0.478h7.507v7.644%20%20%20h-5.534c-2.101%2C0-3.81-1.709-3.81-3.81V20.743C14.645%2C18.643%2C16.354%2C16.935%2C18.455%2C16.935z%20M16.96%2C23.116h19.331v25.031h-7.535%20%20%20c-2.628%2C0-4.766%2C2.139-4.766%2C4.768v5.828h-7.03V23.116z%20M71.545%2C73.064H28.757c-2.101%2C0-3.81-1.708-3.81-3.808V52.914%20%20%20c0-2.102%2C1.709-3.812%2C3.81-3.812h42.788c2.1%2C0%2C3.809%2C1.71%2C3.809%2C3.812v16.343C75.354%2C71.356%2C73.645%2C73.064%2C71.545%2C73.064z%22%3E%3C/path%3E%3Cpath%20d%3D%22M28.919%2C58.424c-1.466%2C0-2.659%2C1.193-2.659%2C2.66c0%2C1.466%2C1.193%2C2.658%2C2.659%2C2.658c1.468%2C0%2C2.662-1.192%2C2.662-2.658%20%20%20C31.581%2C59.617%2C30.387%2C58.424%2C28.919%2C58.424z%20M28.919%2C62.786c-0.939%2C0-1.703-0.764-1.703-1.702c0-0.939%2C0.764-1.704%2C1.703-1.704%20%20%20c0.94%2C0%2C1.705%2C0.765%2C1.705%2C1.704C30.623%2C62.022%2C29.858%2C62.786%2C28.919%2C62.786z%22%3E%3C/path%3E%3Cpath%20d%3D%22M69.654%2C50.461H33.069c-0.264%2C0-0.479%2C0.215-0.479%2C0.479v20.288c0%2C0.264%2C0.215%2C0.478%2C0.479%2C0.478h36.585%20%20%20c0.263%2C0%2C0.477-0.214%2C0.477-0.478V50.939C70.131%2C50.676%2C69.917%2C50.461%2C69.654%2C50.461z%20M69.174%2C51.417V70.75H33.548V51.417H69.174z%22%3E%3C/path%3E%3Cpath%20d%3D%22M45.201%2C30.296c6.651%2C0%2C12.233%2C5.351%2C12.551%2C11.977l-3.033-2.638c-0.193-0.165-0.507-0.142-0.675%2C0.048%20%20%20c-0.174%2C0.198-0.153%2C0.501%2C0.045%2C0.676l3.883%2C3.375c0.09%2C0.075%2C0.198%2C0.115%2C0.312%2C0.115c0.141%2C0%2C0.273-0.061%2C0.362-0.166%20%20%20l3.371-3.877c0.173-0.2%2C0.151-0.502-0.047-0.675c-0.194-0.166-0.508-0.144-0.676%2C0.048l-2.592%2C2.979%20%20%20c-0.18-3.417-1.629-6.605-4.099-9.001c-2.538-2.461-5.877-3.817-9.404-3.817c-0.264%2C0-0.479%2C0.215-0.479%2C0.479%20%20%20C44.72%2C30.083%2C44.936%2C30.296%2C45.201%2C30.296z%22%3E%3C/path%3E%3C/g%3E%3C/svg%3E) center/50% 50% no-repeat rgba(244,244,244,1);bottom:0;font-size:14px;font-weight:600;left:0;line-height:20px;right:0;position:fixed;top:0;z-index:9999999}.a-orientation-modal:after{color:#666;content:\"Insert phone into Cardboard holder.\";display:block;position:absolute;text-align:center;top:70%;transform:translateY(-70%);width:100%}.a-orientation-modal button{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%20version%3D%221.1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%20100%20100%22%20enable-background%3D%22new%200%200%20100%20100%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpath%20fill%3D%22%23000000%22%20d%3D%22M55.209%2C50l17.803-17.803c1.416-1.416%2C1.416-3.713%2C0-5.129c-1.416-1.417-3.713-1.417-5.129%2C0L50.08%2C44.872%20%20L32.278%2C27.069c-1.416-1.417-3.714-1.417-5.129%2C0c-1.417%2C1.416-1.417%2C3.713%2C0%2C5.129L44.951%2C50L27.149%2C67.803%20%20c-1.417%2C1.416-1.417%2C3.713%2C0%2C5.129c0.708%2C0.708%2C1.636%2C1.062%2C2.564%2C1.062c0.928%2C0%2C1.856-0.354%2C2.564-1.062L50.08%2C55.13l17.803%2C17.802%20%20c0.708%2C0.708%2C1.637%2C1.062%2C2.564%2C1.062s1.856-0.354%2C2.564-1.062c1.416-1.416%2C1.416-3.713%2C0-5.129L55.209%2C50z%22%3E%3C/path%3E%3C/svg%3E) no-repeat;border:none;height:50px;text-indent:-9999px;width:50px}.a-loader-title{background-color:rgba(0,0,0,.6);font-family:sans-serif,monospace;text-align:center;font-size:20px;height:50px;font-weight:300;line-height:50px;position:absolute;right:0;left:0;top:0;color:#fff}.a-modal{background:0 0/50% 50% rgba(0,0,0,.6);bottom:0;font-size:14px;font-weight:600;left:0;line-height:20px;right:0;position:fixed;top:0;z-index:9999999}.a-dialog{position:relative;left:50%;top:50%;transform:translate(-50%,-50%);z-index:199995;width:300px;height:200px;background-size:contain;background-color:#fff;font-family:sans-serif,monospace;font-size:20px;border-radius:3px;padding:6px}.a-dialog-text-container{width:100%;height:70%;align-self:flex-start;display:flex;justify-content:center;align-content:center;flex-direction:column}.a-dialog-text{display:inline-block;font-weight:400;font-size:14pt;margin:8px}.a-dialog-buttons-container{display:inline-flex;align-self:flex-end;width:100%;height:30%}.a-dialog-button{cursor:pointer;align-self:center;opacity:.9;height:80%;width:50%;font-size:12pt;margin:4px;border-radius:2px;text-align:center;border:none;display:inline-block;-webkit-transition:all .25s ease-in-out;transition:all .25s ease-in-out;box-shadow:0 1px 3px rgba(0,0,0,.1),0 1px 2px rgba(0,0,0,.2);user-select:none}.a-dialog-permission-button:hover{box-shadow:0 7px 14px rgba(0,0,0,.2),0 2px 2px rgba(0,0,0,.2)}.a-dialog-allow-button{background-color:#00ceff}.a-dialog-deny-button{background-color:#ff005b}.a-dialog-ok-button{background-color:#00ceff;width:100%}"; (_dereq_("browserify-css").createStyle(css, { "href": "src\\style\\aframe.css"})); module.exports = css;
-},{"browserify-css":4}],157:[function(_dereq_,module,exports){
+},{"browserify-css":4}],156:[function(_dereq_,module,exports){
 var css = ".rs-base{background-color:#333;color:#fafafa;border-radius:0;font:10px monospace;left:5px;line-height:1em;opacity:.85;overflow:hidden;padding:10px;position:fixed;top:5px;width:300px;z-index:10000}.rs-base div.hidden{display:none}.rs-base h1{color:#fff;cursor:pointer;font-size:1.4em;font-weight:300;margin:0 0 5px;padding:0}.rs-group{display:-webkit-box;display:-webkit-flex;display:flex;-webkit-flex-direction:column-reverse;flex-direction:column-reverse;margin-bottom:5px}.rs-group:last-child{margin-bottom:0}.rs-counter-base{align-items:center;display:-webkit-box;display:-webkit-flex;display:flex;height:10px;-webkit-justify-content:space-between;justify-content:space-between;margin:2px 0}.rs-counter-base.alarm{color:#b70000;text-shadow:0 0 0 #b70000,0 0 1px #fff,0 0 1px #fff,0 0 2px #fff,0 0 2px #fff,0 0 3px #fff,0 0 3px #fff,0 0 4px #fff,0 0 4px #fff}.rs-counter-id{font-weight:300;-webkit-box-ordinal-group:0;-webkit-order:0;order:0;width:54px}.rs-counter-value{font-weight:300;-webkit-box-ordinal-group:1;-webkit-order:1;order:1;text-align:right;width:35px}.rs-canvas{-webkit-box-ordinal-group:2;-webkit-order:2;order:2}@media (min-width:480px){.rs-base{left:20px;top:20px}}"; (_dereq_("browserify-css").createStyle(css, { "href": "src\\style\\rStats.css"})); module.exports = css;
-},{"browserify-css":4}],158:[function(_dereq_,module,exports){
+},{"browserify-css":4}],157:[function(_dereq_,module,exports){
 var constants = _dereq_('../constants/');
 var registerSystem = _dereq_('../core/system').registerSystem;
 
@@ -25532,7 +27823,7 @@ function removeDefaultCamera (sceneEl) {
   sceneEl.removeChild(defaultCamera);
 }
 
-},{"../constants/":93,"../core/system":112}],159:[function(_dereq_,module,exports){
+},{"../constants/":92,"../core/system":111}],158:[function(_dereq_,module,exports){
 var geometries = _dereq_('../core/geometry').geometries;
 var registerSystem = _dereq_('../core/system').registerSystem;
 var THREE = _dereq_('../lib/three');
@@ -25672,7 +27963,7 @@ function toBufferGeometry (geometry, doBuffer) {
   return bufferGeometry;
 }
 
-},{"../core/geometry":102,"../core/system":112,"../lib/three":149}],160:[function(_dereq_,module,exports){
+},{"../core/geometry":101,"../core/system":111,"../lib/three":148}],159:[function(_dereq_,module,exports){
 var registerSystem = _dereq_('../core/system').registerSystem;
 var THREE = _dereq_('../lib/three');
 
@@ -25708,7 +27999,7 @@ module.exports.System = registerSystem('gltf-model', {
   }
 });
 
-},{"../core/system":112,"../lib/three":149}],161:[function(_dereq_,module,exports){
+},{"../core/system":111,"../lib/three":148}],160:[function(_dereq_,module,exports){
 _dereq_('./camera');
 _dereq_('./geometry');
 _dereq_('./gltf-model');
@@ -25716,10 +28007,9 @@ _dereq_('./light');
 _dereq_('./material');
 _dereq_('./renderer');
 _dereq_('./shadow');
-_dereq_('./tracked-controls-webvr');
 _dereq_('./tracked-controls-webxr');
 
-},{"./camera":158,"./geometry":159,"./gltf-model":160,"./light":162,"./material":163,"./renderer":164,"./shadow":165,"./tracked-controls-webvr":166,"./tracked-controls-webxr":167}],162:[function(_dereq_,module,exports){
+},{"./camera":157,"./geometry":158,"./gltf-model":159,"./light":161,"./material":162,"./renderer":163,"./shadow":164,"./tracked-controls-webxr":165}],161:[function(_dereq_,module,exports){
 var registerSystem = _dereq_('../core/system').registerSystem;
 var bind = _dereq_('../utils/bind');
 var constants = _dereq_('../constants/');
@@ -25805,7 +28095,7 @@ module.exports.System = registerSystem('light', {
   }
 });
 
-},{"../constants/":93,"../core/system":112,"../utils/bind":168}],163:[function(_dereq_,module,exports){
+},{"../constants/":92,"../core/system":111,"../utils/bind":166}],162:[function(_dereq_,module,exports){
 var registerSystem = _dereq_('../core/system').registerSystem;
 var THREE = _dereq_('../lib/three');
 var utils = _dereq_('../utils/');
@@ -26210,7 +28500,7 @@ function fixVideoAttributes (videoEl) {
   return videoEl;
 }
 
-},{"../core/system":112,"../lib/three":149,"../utils/":174,"../utils/material":177}],164:[function(_dereq_,module,exports){
+},{"../core/system":111,"../lib/three":148,"../utils/":172,"../utils/material":174}],163:[function(_dereq_,module,exports){
 var registerSystem = _dereq_('../core/system').registerSystem;
 var utils = _dereq_('../utils/');
 var THREE = _dereq_('../lib/three');
@@ -26274,7 +28564,7 @@ module.exports.System = registerSystem('renderer', {
   }
 });
 
-},{"../core/system":112,"../lib/three":149,"../utils/":174}],165:[function(_dereq_,module,exports){
+},{"../core/system":111,"../lib/three":148,"../utils/":172}],164:[function(_dereq_,module,exports){
 var registerSystem = _dereq_('../core/system').registerSystem;
 var THREE = _dereq_('../lib/three');
 
@@ -26329,75 +28619,7 @@ module.exports.System = registerSystem('shadow', {
   }
 });
 
-},{"../core/system":112,"../lib/three":149}],166:[function(_dereq_,module,exports){
-var registerSystem = _dereq_('../core/system').registerSystem;
-var utils = _dereq_('../utils');
-var isWebXRAvailable = utils.device.isWebXRAvailable;
-
-/**
- * Tracked controls system.
- * Maintain list with available tracked controllers.
- */
-module.exports.System = registerSystem('tracked-controls-webvr', {
-  init: function () {
-    var self = this;
-
-    this.controllers = [];
-    this.isChrome = navigator.userAgent.indexOf('Chrome') !== -1;
-
-    this.updateControllerList();
-    this.throttledUpdateControllerList = utils.throttle(this.updateControllerList, 500, this);
-
-    // Don't use WebVR if WebXR is available?
-    if (isWebXRAvailable) { return; }
-
-    if (!navigator.getVRDisplays) { return; }
-
-    this.sceneEl.addEventListener('enter-vr', function () {
-      navigator.getVRDisplays().then(function (displays) {
-        if (displays.length) { self.vrDisplay = displays[0]; }
-      });
-    });
-  },
-
-  tick: function () {
-    if (this.isChrome) {
-      // Retrieve new controller handlers with updated state (pose, buttons...)
-      this.updateControllerList();
-    } else {
-      this.throttledUpdateControllerList();
-    }
-  },
-
-  /**
-   * Update controller list.
-   */
-  updateControllerList: function () {
-    var controllers = this.controllers;
-    var gamepad;
-    var gamepads;
-    var i;
-    var prevCount;
-
-    gamepads = navigator.getGamepads && navigator.getGamepads();
-    if (!gamepads) { return; }
-
-    prevCount = controllers.length;
-    controllers.length = 0;
-    for (i = 0; i < gamepads.length; ++i) {
-      gamepad = gamepads[i];
-      if (gamepad && gamepad.pose) {
-        controllers.push(gamepad);
-      }
-    }
-
-    if (controllers.length !== prevCount) {
-      this.el.emit('controllersupdated', undefined, false);
-    }
-  }
-});
-
-},{"../core/system":112,"../utils":174}],167:[function(_dereq_,module,exports){
+},{"../core/system":111,"../lib/three":148}],165:[function(_dereq_,module,exports){
 var registerSystem = _dereq_('../core/system').registerSystem;
 var utils = _dereq_('../utils');
 
@@ -26454,7 +28676,7 @@ module.exports.System = registerSystem('tracked-controls-webxr', {
   }
 });
 
-},{"../core/system":112,"../utils":174}],168:[function(_dereq_,module,exports){
+},{"../core/system":111,"../utils":172}],166:[function(_dereq_,module,exports){
 /**
  * Faster version of Function.prototype.bind
  * @param {Function} fn - Function to wrap.
@@ -26471,7 +28693,7 @@ module.exports = function bind (fn, ctx/* , arg1, arg2 */) {
   })(Array.prototype.slice.call(arguments, 2));
 };
 
-},{}],169:[function(_dereq_,module,exports){
+},{}],167:[function(_dereq_,module,exports){
 /* global THREE */
 var debug = _dereq_('./debug');
 var extend = _dereq_('object-assign');
@@ -26583,7 +28805,7 @@ module.exports.toVector3 = function (vec3) {
   return new THREE.Vector3(vec3.x, vec3.y, vec3.z);
 };
 
-},{"./debug":170,"object-assign":25}],170:[function(_dereq_,module,exports){
+},{"./debug":168,"object-assign":25}],168:[function(_dereq_,module,exports){
 (function (process){
 var debugLib = _dereq_('debug');
 var extend = _dereq_('object-assign');
@@ -26680,7 +28902,7 @@ module.exports = debug;
 
 }).call(this,_dereq_('_process'))
 
-},{"_process":5,"debug":9,"object-assign":25}],171:[function(_dereq_,module,exports){
+},{"_process":5,"debug":9,"object-assign":25}],169:[function(_dereq_,module,exports){
 (function (process){
 var error = _dereq_('debug')('device:error');
 
@@ -26689,26 +28911,11 @@ var supportsVRSession = false;
 var supportsARSession = false;
 
 /**
- * Oculus Browser 7 doesn't support the WebXR gamepads module.
  * We fallback to WebVR API and will hotfix when implementation is complete.
  */
 var isWebXRAvailable = module.exports.isWebXRAvailable = !window.debug && navigator.xr !== undefined;
 
-// Catch vrdisplayactivate early to ensure we can enter VR mode after the scene loads.
-window.addEventListener('vrdisplayactivate', function (evt) {
-  var canvasEl;
-  // WebXR takes priority if available.
-  if (isWebXRAvailable) { return; }
-  canvasEl = document.createElement('canvas');
-  vrDisplay = evt.display;
-  // We need to make sure the canvas has a WebGL context associated with it.
-  // Otherwise, the requestPresent could be denied.
-  canvasEl.getContext('webgl', {});
-  // Request present immediately. a-scene will be allowed to enter VR without user gesture.
-  vrDisplay.requestPresent([{source: canvasEl}]).then(function () {}, function () {});
-});
-
-// Support both WebVR and WebXR APIs.
+// Support WebXR APIs.
 if (isWebXRAvailable) {
   var updateEnterInterfaces = function () {
     var sceneEl = document.querySelector('a-scene');
@@ -26750,14 +28957,6 @@ if (isWebXRAvailable) {
     }).catch(function () {});
   } else {
     error('WebXR has neither isSessionSupported or supportsSession?!');
-  }
-} else {
-  if (navigator.getVRDisplays) {
-    navigator.getVRDisplays().then(function (displays) {
-      var sceneEl = document.querySelector('a-scene');
-      vrDisplay = displays.length && displays[0];
-      if (sceneEl) { sceneEl.emit('displayconnected', {vrDisplay: vrDisplay}); }
-    });
   }
 }
 
@@ -26873,7 +29072,7 @@ module.exports.isNodeEnvironment = !module.exports.isBrowserEnvironment;
 
 }).call(this,_dereq_('_process'))
 
-},{"_process":5,"debug":9}],172:[function(_dereq_,module,exports){
+},{"_process":5,"debug":9}],170:[function(_dereq_,module,exports){
 /**
  * Split a delimited component property string (e.g., `material.color`) to an object
  * containing `component` name and `property` name. If there is no delimiter, just return the
@@ -26935,7 +29134,7 @@ module.exports.setComponentProperty = function (el, name, value, delimiter) {
   el.setAttribute(name, value);
 };
 
-},{}],173:[function(_dereq_,module,exports){
+},{}],171:[function(_dereq_,module,exports){
 module.exports = function forceCanvasResizeSafariMobile (canvasEl) {
   var width = canvasEl.style.width;
   var height = canvasEl.style.height;
@@ -26951,7 +29150,7 @@ module.exports = function forceCanvasResizeSafariMobile (canvasEl) {
   }, 200);
 };
 
-},{}],174:[function(_dereq_,module,exports){
+},{}],172:[function(_dereq_,module,exports){
 /* global location */
 
 /* Centralized place to reference utilities since utils is exposed to the user. */
@@ -27281,7 +29480,7 @@ module.exports.findAllScenes = function (el) {
 // Must be at bottom to avoid circular dependency.
 module.exports.srcLoader = _dereq_('./src-loader');
 
-},{"./bind":168,"./coordinates":169,"./debug":170,"./device":171,"./entity":172,"./forceCanvasResizeSafariMobile":173,"./is-ie11":175,"./material":177,"./object-pool":178,"./split":179,"./src-loader":180,"./styleParser":181,"./tracked-controls":182,"deep-assign":11,"object-assign":25}],175:[function(_dereq_,module,exports){
+},{"./bind":166,"./coordinates":167,"./debug":168,"./device":169,"./entity":170,"./forceCanvasResizeSafariMobile":171,"./is-ie11":173,"./material":174,"./object-pool":175,"./split":176,"./src-loader":177,"./styleParser":178,"./tracked-controls":179,"deep-assign":11,"object-assign":25}],173:[function(_dereq_,module,exports){
 // https://stackoverflow.com/a/17907562
 function getInternetExplorerVersion () {
   var version = -1;
@@ -27299,15 +29498,7 @@ function getInternetExplorerVersion () {
 
 module.exports = getInternetExplorerVersion() === 11;
 
-},{}],176:[function(_dereq_,module,exports){
-/**
- * Check if device is iOS and older than version 10.
- */
-module.exports = function isIOSOlderThan10 (userAgent) {
-  return /(iphone|ipod|ipad).*os.(7_|8_|9_)/i.test(userAgent);
-};
-
-},{}],177:[function(_dereq_,module,exports){
+},{}],174:[function(_dereq_,module,exports){
 var THREE = _dereq_('../lib/three');
 
 var HLS_MIMETYPES = ['application/x-mpegurl', 'application/vnd.apple.mpegurl'];
@@ -27478,7 +29669,7 @@ module.exports.isHLS = function (src, type) {
   return false;
 };
 
-},{"../lib/three":149}],178:[function(_dereq_,module,exports){
+},{"../lib/three":148}],175:[function(_dereq_,module,exports){
 /*
   Adapted deePool by Kyle Simpson.
   MIT License: http://getify.mit-license.org
@@ -27569,7 +29760,7 @@ function removeUnusedKeys (obj, schema) {
 }
 module.exports.removeUnusedKeys = removeUnusedKeys;
 
-},{}],179:[function(_dereq_,module,exports){
+},{}],176:[function(_dereq_,module,exports){
 /**
  * String split with cached result.
  */
@@ -27586,7 +29777,7 @@ module.exports.split = (function () {
   };
 })();
 
-},{}],180:[function(_dereq_,module,exports){
+},{}],177:[function(_dereq_,module,exports){
 /* global Image, XMLHttpRequest */
 var debug = _dereq_('./debug');
 
@@ -27745,7 +29936,7 @@ module.exports = {
   validateCubemapSrc: validateCubemapSrc
 };
 
-},{"./debug":170}],181:[function(_dereq_,module,exports){
+},{"./debug":168}],178:[function(_dereq_,module,exports){
 /**
  * Utils for parsing style-like strings (e.g., "primitive: box; width: 5; height: 4.5").
  * Some code adapted from `style-attr` (https://github.com/joshwnj/style-attr)
@@ -27898,7 +30089,7 @@ function styleStringify (obj) {
 
 function upperCase (str) { return str[1].toUpperCase(); }
 
-},{}],182:[function(_dereq_,module,exports){
+},{}],179:[function(_dereq_,module,exports){
 var DEFAULT_HANDEDNESS = _dereq_('../constants').DEFAULT_HANDEDNESS;
 var AXIS_LABELS = ['x', 'y', 'z', 'w'];
 var NUM_HANDS = 2;  // Number of hands in a pair. Should always be 2.
@@ -28141,7 +30332,7 @@ module.exports.onButtonEvent = function (id, evtName, component, hand) {
   }
 };
 
-},{"../constants":93}],183:[function(_dereq_,module,exports){
+},{"../constants":92}],180:[function(_dereq_,module,exports){
 /**
  * @author richt / http://richt.me
  * @author WestLangley / http://github.com/WestLangley
@@ -28254,7 +30445,7 @@ THREE.DeviceOrientationControls = function ( object ) {
 
 };
 
-},{}],184:[function(_dereq_,module,exports){
+},{}],181:[function(_dereq_,module,exports){
 window.glStats = function () {
 
     var _rS = null;
@@ -28515,7 +30706,7 @@ if (typeof module === 'object') {
   };
 }
 
-},{}],185:[function(_dereq_,module,exports){
+},{}],182:[function(_dereq_,module,exports){
 // performance.now() polyfill from https://gist.github.com/paulirish/5438650
 'use strict';
 
@@ -28970,7 +31161,7 @@ if (typeof module === 'object') {
   module.exports = window.rStats;
 }
 
-},{}],186:[function(_dereq_,module,exports){
+},{}],183:[function(_dereq_,module,exports){
 // https://stackoverflow.com/a/36213464
 if (!String.prototype.startsWith) {
     String.prototype.startsWith = function(searchString, position){
@@ -28979,7 +31170,7 @@ if (!String.prototype.startsWith) {
   };
 }
 
-},{}],187:[function(_dereq_,module,exports){
+},{}],184:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -29041,7 +31232,7 @@ Util.isLandscapeMode = function() {
 
 module.exports = Util;
 
-},{}],188:[function(_dereq_,module,exports){
+},{}],185:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -29117,7 +31308,7 @@ function getWakeLock() {
 
 module.exports = getWakeLock();
 
-},{"./util.js":187}],189:[function(_dereq_,module,exports){
+},{"./util.js":184}],186:[function(_dereq_,module,exports){
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
 	typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -53793,7 +55984,6 @@ module.exports = getWakeLock();
 
 			}
 
-			//console.log( "webglrender.render: THREE.camera = " + AFRAME.objectId(camera) + " : camera.isCamera = " + (camera?camera.isCamera:'undefined'));
 			if ( ! ( camera && camera.isCamera ) ) {
 
 				console.error( 'THREE.WebGLRenderer.render: camera is not an instance of THREE.Camera.' );
@@ -79788,7 +81978,7 @@ module.exports = getWakeLock();
 
 })));
 
-},{}],190:[function(_dereq_,module,exports){
+},{}],187:[function(_dereq_,module,exports){
 /**
  * @author Don McCurdy / https://www.donmccurdy.com
  */
@@ -80468,7 +82658,7 @@ THREE.DRACOLoader.getDecoderModule = function () {
 
 };
 
-},{}],191:[function(_dereq_,module,exports){
+},{}],188:[function(_dereq_,module,exports){
 /**
  * @author Rich Tibbett / https://github.com/richtr
  * @author mrdoob / http://mrdoob.com/
@@ -83649,7 +85839,7 @@ THREE.GLTFLoader = ( function () {
 
 } )();
 
-},{}],192:[function(_dereq_,module,exports){
+},{}],189:[function(_dereq_,module,exports){
 /**
  * Loads a Wavefront .mtl file specifying materials
  *
@@ -84182,7 +86372,7 @@ THREE.MTLLoader.MaterialCreator.prototype = {
 
 };
 
-},{}],193:[function(_dereq_,module,exports){
+},{}],190:[function(_dereq_,module,exports){
 /**
  * @author mrdoob / http://mrdoob.com/
  */
@@ -84979,6 +87169,6 @@ THREE.OBJLoader = ( function () {
 
 } )();
 
-},{}]},{},[147])(147)
+},{}]},{},[146])(146)
 });
 //# sourceMappingURL=aframe-master.js.map

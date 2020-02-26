@@ -1,4 +1,4 @@
-/* global Promise, screen, CustomEvent */
+/* global Promise, screen */
 var initMetaTags = require('./metaTags').inject;
 var initWakelock = require('./wakelock');
 var loadingScreen = require('./loadingScreen');
@@ -96,33 +96,8 @@ module.exports.AScene = registerElement('a-scene', {
         initMetaTags(this);
         initWakelock(this);
 
-        // Handler to exit VR (e.g., Oculus Browser back button).
-        this.onVRPresentChangeBound = bind(this.onVRPresentChange, this);
-        window.addEventListener('vrdisplaypresentchange', this.onVRPresentChangeBound);
-
         // Bind functions.
-        this.enterVRBound = function () { self.enterVR(); };
         this.exitVRBound = function () { self.exitVR(); };
-        this.exitVRTrueBound = function () { self.exitVR(true); };
-        this.pointerRestrictedBound = function () { self.pointerRestricted(); };
-        this.pointerUnrestrictedBound = function () { self.pointerUnrestricted(); };
-
-        if (!isWebXRAvailable) {
-          // Exit VR on `vrdisplaydeactivate` (e.g. taking off Rift headset).
-          window.addEventListener('vrdisplaydeactivate', this.exitVRBound);
-
-          // Exit VR on `vrdisplaydisconnect` (e.g. unplugging Rift headset).
-          window.addEventListener('vrdisplaydisconnect', this.exitVRTrueBound);
-
-          // Register for mouse restricted events while in VR
-          // (e.g. mouse no longer available on desktop 2D view)
-          window.addEventListener('vrdisplaypointerrestricted', this.pointerRestrictedBound);
-
-          // Register for mouse unrestricted events while in VR
-          // (e.g. mouse once again available on desktop 2D view)
-          window.addEventListener('vrdisplaypointerunrestricted',
-                                  this.pointerUnrestrictedBound);
-        }
 
         // Camera set up by camera system.
         this.addEventListener('cameraready', function () {
@@ -196,14 +171,6 @@ module.exports.AScene = registerElement('a-scene', {
         // Remove from scene index.
         var sceneIndex = scenes.indexOf(this);
         scenes.splice(sceneIndex, 1);
-
-        window.removeEventListener('vrdisplaypresentchange', this.onVRPresentChangeBound);
-        window.removeEventListener('vrdisplayactivate', this.enterVRBound);
-        window.removeEventListener('vrdisplaydeactivate', this.exitVRBound);
-        window.removeEventListener('vrdisplayconnect', this.enterVRBound);
-        window.removeEventListener('vrdisplaydisconnect', this.exitVRTrueBound);
-        window.removeEventListener('vrdisplaypointerrestricted', this.pointerRestrictedBound);
-        window.removeEventListener('vrdisplaypointerunrestricted', this.pointerUnrestrictedBound);
       }
     },
 
@@ -232,16 +199,6 @@ module.exports.AScene = registerElement('a-scene', {
     /**
      * For tests.
      */
-    getPointerLockElement: {
-      value: function () {
-        return document.pointerLockElement;
-      },
-      writable: window.debug
-    },
-
-    /**
-     * For tests.
-     */
     checkHeadsetConnected: {
       value: utils.device.checkHeadsetConnected,
       writable: window.debug
@@ -257,7 +214,6 @@ module.exports.AScene = registerElement('a-scene', {
     },
 
     /**
-     * Call `requestPresent` if WebVR or WebVR polyfill.
      * Call `requestFullscreen` on desktop.
      * Handle events, states, fullscreen styles.
      *
@@ -267,7 +223,6 @@ module.exports.AScene = registerElement('a-scene', {
     enterVR: {
       value: function (useAR) {
         var self = this;
-        var vrDisplay;
         var vrManager = self.renderer.xr;
 
         // Don't enter VR if already in VR.
@@ -293,24 +248,7 @@ module.exports.AScene = registerElement('a-scene', {
                 self.addState('ar-mode');
               }
               enterVRSuccess();
-            });
-          } else {
-            vrDisplay = utils.device.getVRDisplay();
-            if (vrDisplay.isPresenting &&
-                !window.hasNativeWebVRImplementation) {
-              enterVRSuccess();
-              return Promise.resolve();
-            }
-            var rendererSystem = this.getAttribute('renderer');
-            var presentationAttributes = {
-              highRefreshRate: rendererSystem.highRefreshRate,
-              foveationLevel: rendererSystem.foveationLevel
-            };
-
-            return vrDisplay.requestPresent([{
-              source: this.canvas,
-              attributes: presentationAttributes
-            }]).then(enterVRSuccess, enterVRFailure);
+            }, enterVRFailure);
           }
           return Promise.resolve();
         }
@@ -321,17 +259,6 @@ module.exports.AScene = registerElement('a-scene', {
 
         // Callback that happens on enter VR success or enter fullscreen (any API).
         function enterVRSuccess () {
-          // vrdisplaypresentchange fires only once when the first requestPresent is completed;
-          // the first requestPresent could be called from ondisplayactivate and there is no way
-          // to setup everything from there. Thus, we need to emulate another vrdisplaypresentchange
-          // for the actual requestPresent. Need to make sure there are no issues with firing the
-          // vrdisplaypresentchange multiple times.
-          var event;
-          if (window.hasNativeWebVRImplementation && !window.hasNativeWebXRImplementation) {
-            event = new CustomEvent('vrdisplaypresentchange', {detail: {display: utils.device.getVRDisplay()}});
-            window.dispatchEvent(event);
-          }
-
           self.addState('vr-mode');
           self.emit('enter-vr', {target: self});
           // Lock to landscape orientation on mobile.
@@ -354,9 +281,9 @@ module.exports.AScene = registerElement('a-scene', {
 
         function enterVRFailure (err) {
           if (err && err.message) {
-            throw new Error('Failed to enter VR mode (`requestPresent`): ' + err.message);
+            throw new Error('Failed to enter VR mode (`requestSession`): ' + err.message);
           } else {
-            throw new Error('Failed to enter VR mode (`requestPresent`).');
+            throw new Error('Failed to enter VR mode (`requestSession`).');
           }
         }
       },
@@ -425,49 +352,6 @@ module.exports.AScene = registerElement('a-scene', {
         }
       },
       writable: true
-    },
-
-    pointerRestricted: {
-      value: function () {
-        if (this.canvas) {
-          var pointerLockElement = this.getPointerLockElement();
-          if (pointerLockElement && pointerLockElement !== this.canvas && document.exitPointerLock) {
-            // Recreate pointer lock on the canvas, if taken on another element.
-            document.exitPointerLock();
-          }
-
-          if (this.canvas.requestPointerLock) {
-            this.canvas.requestPointerLock();
-          }
-        }
-      }
-    },
-
-    pointerUnrestricted: {
-      value: function () {
-        var pointerLockElement = this.getPointerLockElement();
-        if (pointerLockElement && pointerLockElement === this.canvas && document.exitPointerLock) {
-          document.exitPointerLock();
-        }
-      }
-    },
-
-    /**
-     * Handle `vrdisplaypresentchange` event for exiting VR through other means than
-     * `<ESC>` key. For example, GearVR back button on Oculus Browser.
-     */
-    onVRPresentChange: {
-      value: function (evt) {
-        // Polyfill places display inside the detail property
-        var display = evt.display || evt.detail.display;
-        // Entering VR.
-        if (display && display.isPresenting) {
-          this.enterVR();
-          return;
-        }
-        // Exiting VR.
-        this.exitVR();
-      }
     },
 
     /**
@@ -556,7 +440,7 @@ module.exports.AScene = registerElement('a-scene', {
 
         // Do not update renderer, if a camera or a canvas have not been injected.
         // In VR mode, three handles canvas resize based on the dimensions returned by
-        // the getEyeParameters function of the WebVR API. These dimensions are independent of
+        // the getEyeParameters function of the WebXR API. These dimensions are independent of
         // the window size, therefore should not be overwritten with the window's width and
         // height, // except when in fullscreen mode.
         if (!camera || !canvas || (this.is('vr-mode') && (this.isMobile || isVRPresenting))) {

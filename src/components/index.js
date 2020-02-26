@@ -25,7 +25,6 @@ require('./shadow');
 require('./sound');
 require('./text');
 require('./tracked-controls');
-require('./tracked-controls-webvr');
 require('./tracked-controls-webxr');
 require('./visible');
 require('./vive-controls');
