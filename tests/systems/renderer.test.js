@@ -31,7 +31,7 @@ suite('renderer', function () {
     var sceneEl = createScene();
     sceneEl.setAttribute('renderer', 'colorManagement: true;');
     sceneEl.addEventListener('loaded', function () {
-      assert.ok(sceneEl.renderer.outputEncodingt);
+      assert.ok(sceneEl.renderer.outputEncoding);
       assert.equal(sceneEl.renderer.outputEncoding, THREE.sRGBEncoding);
       done();
     });
