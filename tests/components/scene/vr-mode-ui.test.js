@@ -44,7 +44,10 @@ suite('vr-mode-ui', function () {
   test('shows on exit VR', function (done) {
     var scene = this.el;
     // mock camera
-    scene.camera = {el: {object3D: {}, getAttribute: function () { return {spectator: false}; }}};
+    scene.camera = {
+      el: {object3D: {}, getAttribute: function () { return {spectator: false}; }},
+      updateProjectionMatrix: function () {}
+    };
     scene.enterVR();
     scene.exitVR();
 

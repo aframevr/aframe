@@ -157,7 +157,7 @@ like decomposed to its fundamental components. `<a-box>` wraps the components:
 
 ```html
 <!-- <a-box color="red" depth="0.5" height="0.5" shader="flat" width="0.5"></a-box> -->
-<a-entity geometry="primitive: box; depth: 0.5; height: 0.5; width 0.5"
+<a-entity geometry="primitive: box; depth: 0.5; height: 0.5; width: 0.5"
           material="color: red; shader: standard"></a-entity>
 ```
 
@@ -242,11 +242,12 @@ and include it before the scene:
 
 <a-scene>
   <a-assets>
+    <img id="groundTexture" src="https://cdn.aframe.io/a-painter/images/floor.jpg">
     <img id="skyTexture" src="https://cdn.aframe.io/a-painter/images/sky.jpg">
   </a-assets>
 
   <!-- Box with random color. -->
-  <a-entity geometry="primitive: box; depth: 0.5; height: 0.5; width 0.5"
+  <a-entity geometry="primitive: box; depth: 0.5; height: 0.5; width: 0.5"
             material="shader: standard"
             position="0 0.5 -2"
             random-color></a-entity>

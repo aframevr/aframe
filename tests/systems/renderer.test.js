@@ -1,4 +1,4 @@
-/* global assert, suite, test */
+/* global assert, suite, test, THREE */
 
 suite('renderer', function () {
   function createScene () {
@@ -19,8 +19,7 @@ suite('renderer', function () {
 
       // Verify properties that are transferred from the renderer system to the rendering engine.
       var renderingEngine = sceneEl.renderer;
-      assert.notOk(renderingEngine.gammaOutput);
-      assert.notOk(renderingEngine.gammaFactor);
+      assert.notOk(renderingEngine.outputEncoding);
       assert.notOk(renderingEngine.sortObjects);
       assert.strictEqual(renderingEngine.physicallyCorrectLights, false);
       done();
@@ -32,8 +31,8 @@ suite('renderer', function () {
     var sceneEl = createScene();
     sceneEl.setAttribute('renderer', 'colorManagement: true;');
     sceneEl.addEventListener('loaded', function () {
-      assert.ok(sceneEl.renderer.gammaOutput);
-      assert.equal(sceneEl.renderer.gammaFactor, 2.2);
+      assert.ok(sceneEl.renderer.outputEncoding);
+      assert.equal(sceneEl.renderer.outputEncoding, THREE.sRGBEncoding);
       done();
     });
     document.body.appendChild(sceneEl);

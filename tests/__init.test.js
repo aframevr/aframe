@@ -26,7 +26,6 @@ setup(function () {
   this.sinon = sinon.sandbox.create();
   // Stubs to not create a WebGL context since Travis CI runs headless.
   this.sinon.stub(AScene.prototype, 'render');
-  this.sinon.stub(AScene.prototype, 'resize');
   this.sinon.stub(AScene.prototype, 'setupRenderer');
   // Mock renderer.
   AScene.prototype.renderer = {
