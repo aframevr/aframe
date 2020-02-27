@@ -1,4 +1,4 @@
-/* global assert, suite, test */
+/* global assert, suite, test, THREE */
 
 suite('renderer', function () {
   function createScene () {
