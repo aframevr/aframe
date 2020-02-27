@@ -81899,7 +81899,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 1.0.4 (Date 2020-02-25, Commit #36db6192)');
+console.log('A-Frame Version: 1.0.4 (Date 2020-02-27, Commit #b8d66dbe)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
@@ -83513,8 +83513,7 @@ module.exports.System = registerSystem('renderer', {
     renderer.physicallyCorrectLights = data.physicallyCorrectLights;
 
     if (data.colorManagement || data.gammaOutput) {
-      renderer.gammaOutput = true;
-      renderer.gammaFactor = 2.2;
+      renderer.outputEncoding = THREE.sRGBEncoding;
       if (data.gammaOutput) {
         warn('Property `gammaOutput` is deprecated. Use `renderer="colorManagement: true;"` instead.');
       }
