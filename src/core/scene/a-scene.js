@@ -285,7 +285,7 @@ module.exports.AScene = registerElement('a-scene', {
               this.xrSession.removeEventListener('end', this.exitVRBound);
             }
             var xrMode = useAR ? 'immersive-ar' : 'immersive-vr';
-            var xrInit = this.getAttribute('renderer').xrSessionInit;
+            var xrInit = this.systems.renderer.xrSessionInit;
             navigator.xr.requestSession(xrMode, xrInit).then(
                 function requestSuccess (xrSession) {
                   self.xrSession = xrSession;

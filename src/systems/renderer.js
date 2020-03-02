@@ -22,9 +22,8 @@ module.exports.System = registerSystem('renderer', {
     gammaOutput: {default: false},
     alpha: {default: true},
     foveationLevel: {default: 0},
-    xrSessionInit: {default: {
-      requiredFeatures: ['local-floor'],
-      optionalFeatures: ['bounded-floor']}}
+    webXRRequiredFeatures: {type: 'array', default: ['local-floor']},
+    webXROptionalFeatures: {type: 'array', default: ['bounded-floor']}
   },
 
   init: function () {
@@ -32,6 +31,10 @@ module.exports.System = registerSystem('renderer', {
     var sceneEl = this.el;
     // This is the rendering engine, such as THREE.js so copy over any persistent properties from the rendering system.
     var renderer = sceneEl.renderer;
+
+    this.xrSessionInit = {
+      requiredFeatures: data.webXRRequiredFeatures,
+      optionalFeatures: data.webXROptionalFeatures};
 
     renderer.sortObjects = data.sortObjects;
     renderer.physicallyCorrectLights = data.physicallyCorrectLights;
