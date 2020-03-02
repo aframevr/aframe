@@ -10,7 +10,7 @@ module.exports.System = registerSystem('dom-overlay', {
   },
 
   init: function () {
-    let xrinit = this.sceneEl.systems.renderer.xrSessionInit;
+    var xrinit = this.sceneEl.systems.renderer.xrSessionInit;
     if (this.data.required) {
       xrinit.requiredFeatures.push('dom-overlay');
     } else {
