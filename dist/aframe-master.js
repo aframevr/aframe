@@ -81899,7 +81899,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 1.0.4 (Date 2020-02-27, Commit #b8d66dbe)');
+console.log('A-Frame Version: 1.0.4 (Date 2020-03-04, Commit #8c16bf2f)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
@@ -82191,10 +82191,10 @@ module.exports.Shader = registerShader('msdf', {
     '#define MODIFIED_ALPHATEST (0.02 * isBigEnough / BIG_ENOUGH)',
 
     'void main() {',
-    '  vec3 sample = texture2D(map, vUV).rgb;',
-    '  if (negate) { sample = 1.0 - sample; }',
+    '  vec3 sampleColor = texture2D(map, vUV).rgb;',
+    '  if (negate) { sampleColor = 1.0 - sampleColor; }',
 
-    '  float sigDist = median(sample.r, sample.g, sample.b) - 0.5;',
+    '  float sigDist = median(sampleColor.r, sampleColor.g, sampleColor.b) - 0.5;',
     '  float alpha = clamp(sigDist / fwidth(sigDist) + 0.5, 0.0, 1.0);',
     '  float dscale = 0.353505;',
     '  vec2 duv = dscale * (dFdx(vUV) + dFdy(vUV));',
