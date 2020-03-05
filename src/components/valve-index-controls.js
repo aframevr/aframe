@@ -1,5 +1,6 @@
 var registerComponent = require('../core/component').registerComponent;
 var bind = require('../utils/bind');
+var THREE = require('../lib/three');
 
 var trackedControlsUtils = require('../utils/tracked-controls');
 var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
@@ -12,7 +13,17 @@ var INDEX_CONTROLLER_MODEL_URL = {
   right: INDEX_CONTROLLER_MODEL_BASE_URL + 'right.gltf'
 };
 
-var GAMEPAD_ID_PREFIX = 'Valve Index ';
+var GAMEPAD_ID_PREFIX = 'valve';
+
+var INDEX_CONTROLLER_POSITION_OFFSET = {
+  left: {x: -0.00023692678902063457, y: 0.04724540367838371, z: -0.061959880395271096},
+  right: {x: 0.002471558599671131, y: 0.055765208987076195, z: -0.061068168708348844}
+};
+
+var INDEX_CONTROLLER_ROTATION_OFFSET = {
+  left: {_x: 0.692295102620542, _y: -0.0627618864318427, _z: -0.06265893149611756, _order: 'XYZ'},
+  right: {_x: 0.6484021229942998, _y: -0.032563619881892894, _z: -0.1327973171917482, _order: 'XYZ'}
+};
 
 /**
  * Vive controls.
@@ -29,18 +40,10 @@ module.exports.Component = registerComponent('valve-index-controls', {
     orientationOffset: {type: 'vec3'}
   },
 
-  /**
-   * Button IDs:
-   * 0 - trackpad
-   * 1 - trigger (intensity value from 0.5 to 1)
-   * 2 - grip
-   * 3 - menu (dispatch but better for menu options)
-   * 4 - system (never dispatched on this layer)
-   */
   mapping: {
     axes: {trackpad: [0, 1]},
     buttons: [
-      'trackpad', 'trigger', 'grip', 'menu',
+      'trigger', 'grip', 'joystick', 'abutton', 'abutton',
       'system', 'finger1', 'finger2', 'finger3',
       'finger4', 'finger5']
   },
@@ -111,7 +114,7 @@ module.exports.Component = registerComponent('valve-index-controls', {
   checkIfControllerPresent: function () {
     var data = this.data;
     var controllerIndex = data.hand === 'right' ? 0 : data.hand === 'left' ? 1 : 2;
-    checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX, {index: controllerIndex});
+    checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX, {index: controllerIndex, iterateControllerProfiles: true, hand: data.hand});
   },
 
   injectTrackedControls: function () {
@@ -123,6 +126,7 @@ module.exports.Component = registerComponent('valve-index-controls', {
       idPrefix: GAMEPAD_ID_PREFIX,
       // Hand IDs: 1 = right, 0 = left, 2 = anything else.
       controller: data.hand === 'right' ? 1 : data.hand === 'left' ? 0 : 2,
+      hand: data.hand,
       orientationOffset: data.orientationOffset
     });
 
@@ -132,7 +136,7 @@ module.exports.Component = registerComponent('valve-index-controls', {
   loadModel: function () {
     var data = this.data;
     if (!data.model) { return; }
-    this.el.setAttribute('gltf-model', 'url(' + INDEX_CONTROLLER_MODEL_URL[data.hand] + ')');
+    this.el.setAttribute('gltf-model', '' + INDEX_CONTROLLER_MODEL_URL[data.hand] + '');
   },
 
   addControllersUpdateListener: function () {
@@ -193,7 +197,14 @@ module.exports.Component = registerComponent('valve-index-controls', {
     });
 
     // Offset pivot point.
-    controllerObject3D.position.set(0, -0.015, 0.04);
+    controllerObject3D.position.copy(INDEX_CONTROLLER_POSITION_OFFSET[this.data.hand]);
+    controllerObject3D.rotation.copy(INDEX_CONTROLLER_ROTATION_OFFSET[this.data.hand]);
+
+    this.el.emit('controllermodelready', {
+      name: 'valve-index-controlls',
+      model: this.data.model,
+      rayOrigin: new THREE.Vector3(0, 0, 0)
+    });
   },
 
   onAxisMoved: function (evt) {
@@ -213,22 +224,8 @@ module.exports.Component = registerComponent('valve-index-controls', {
     color = evtName === 'up' ? this.data.buttonColor : this.data.buttonHighlightColor;
     this.setButtonColor(buttonName, color);
   },
-
   setButtonColor: function (buttonName, color) {
-    var buttonMeshes = this.buttonMeshes;
-    var rendererSystem = this.rendererSystem;
-
-    if (!buttonMeshes) { return; }
-
-    // Need to do both left and right sides for grip.
-    if (buttonName === 'grip') {
-      buttonMeshes.grip.left.material.color.set(color);
-      buttonMeshes.grip.right.material.color.set(color);
-      rendererSystem.applyColorCorrection(buttonMeshes.grip.left.material.color);
-      rendererSystem.applyColorCorrection(buttonMeshes.grip.right.material.color);
-      return;
-    }
-    buttonMeshes[buttonName].material.color.set(color);
-    rendererSystem.applyColorCorrection(buttonMeshes[buttonName].material.color);
+    // TODO: The meshes aren't set up correctly now, skipping for the moment
+    return;
   }
 });

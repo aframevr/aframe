@@ -26,6 +26,7 @@ require('./tracked-controls');
 require('./tracked-controls-webvr');
 require('./tracked-controls-webxr');
 require('./visible');
+require('./valve-index-controls');
 require('./vive-controls');
 require('./vive-focus-controls');
 require('./wasd-controls');

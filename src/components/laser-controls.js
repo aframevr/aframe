@@ -94,6 +94,10 @@ registerComponent('laser-controls', {
       raycaster: {origin: {x: 0, y: 0, z: 0}}
     },
 
+    'valve-index-controls': {
+      cursor: {downEvents: ['triggerdown'], upEvents: ['triggerup']}
+    },
+
     'vive-controls': {
       cursor: {downEvents: ['triggerdown'], upEvents: ['triggerup']}
     },
