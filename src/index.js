@@ -28,7 +28,7 @@ if (utils.isIE11) {
 var error = debug('A-Frame:error');
 var warn = debug('A-Frame:warn');
 
-if (window.AFRAME_CONFIG.debug.warnIfNotHead && window.document.currentScript && window.document.currentScript.parentNode !==
+if (!window.cordova && window.document.currentScript && window.document.currentScript.parentNode !==
     window.document.head && !window.debug) {
   warn('Put the A-Frame <script> tag in the <head> of the HTML *before* the scene to ' +
        'ensure everything for A-Frame is properly registered before they are used from ' +
@@ -36,7 +36,7 @@ if (window.AFRAME_CONFIG.debug.warnIfNotHead && window.document.currentScript &&
 }
 
 // Error if not using a server.
-if (window.AFRAME_CONFIG.debug.warnIfFileProtocol && window.location.protocol === 'file:') {
+if (!window.cordova && window.location.protocol === 'file:') {
   error(
     'This HTML file is currently being served via the file:// protocol. ' +
     'Assets, textures, and models WILL NOT WORK due to cross-origin policy! ' +
