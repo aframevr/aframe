@@ -67834,7 +67834,7 @@ function isRawProperty (data) {
          data.property.startsWith(STRING_OBJECT3D);
 }
 
-},{"../core/component":127,"../lib/three":175,"../utils":200,"super-animejs":56}],74:[function(_dereq_,module,exports){
+},{"../core/component":128,"../lib/three":176,"../utils":201,"super-animejs":56}],74:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 
@@ -67926,7 +67926,7 @@ module.exports.Component = registerComponent('camera', {
   }
 });
 
-},{"../core/component":127,"../lib/three":175}],75:[function(_dereq_,module,exports){
+},{"../core/component":128,"../lib/three":176}],75:[function(_dereq_,module,exports){
 /* global THREE */
 var registerComponent = _dereq_('../core/component').registerComponent;
 var utils = _dereq_('../utils/');
@@ -68345,7 +68345,7 @@ module.exports.Component = registerComponent('cursor', {
   }
 });
 
-},{"../core/component":127,"../utils/":200}],76:[function(_dereq_,module,exports){
+},{"../core/component":128,"../utils/":201}],76:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var bind = _dereq_('../utils/bind');
 
@@ -68525,7 +68525,7 @@ module.exports.Component = registerComponent('daydream-controls', {
   }
 });
 
-},{"../core/component":127,"../utils/":200,"../utils/bind":194,"../utils/tracked-controls":208}],77:[function(_dereq_,module,exports){
+},{"../core/component":128,"../utils/":201,"../utils/bind":195,"../utils/tracked-controls":209}],77:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var bind = _dereq_('../utils/bind');
 
@@ -68741,7 +68741,7 @@ module.exports.Component = registerComponent('gearvr-controls', {
   }
 });
 
-},{"../core/component":127,"../utils/":200,"../utils/bind":194,"../utils/tracked-controls":208}],78:[function(_dereq_,module,exports){
+},{"../core/component":128,"../utils/":201,"../utils/bind":195,"../utils/tracked-controls":209}],78:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var bind = _dereq_('../utils/bind');
 
@@ -68903,7 +68903,7 @@ module.exports.Component = registerComponent('generic-tracked-controller-control
   }
 });
 
-},{"../core/component":127,"../utils/bind":194,"../utils/tracked-controls":208}],79:[function(_dereq_,module,exports){
+},{"../core/component":128,"../utils/bind":195,"../utils/tracked-controls":209}],79:[function(_dereq_,module,exports){
 var geometries = _dereq_('../core/geometry').geometries;
 var geometryNames = _dereq_('../core/geometry').geometryNames;
 var registerComponent = _dereq_('../core/component').registerComponent;
@@ -68982,7 +68982,7 @@ module.exports.Component = registerComponent('geometry', {
   }
 });
 
-},{"../core/component":127,"../core/geometry":128,"../lib/three":175}],80:[function(_dereq_,module,exports){
+},{"../core/component":128,"../core/geometry":129,"../lib/three":176}],80:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 var utils = _dereq_('../utils/');
@@ -69030,7 +69030,7 @@ module.exports.Component = registerComponent('gltf-model', {
   }
 });
 
-},{"../core/component":127,"../lib/three":175,"../utils/":200}],81:[function(_dereq_,module,exports){
+},{"../core/component":128,"../lib/three":176,"../utils/":201}],81:[function(_dereq_,module,exports){
 /* global THREE */
 var registerComponent = _dereq_('../core/component').registerComponent;
 
@@ -69452,7 +69452,7 @@ function isViveController (trackedControls) {
   return isVive;
 }
 
-},{"../core/component":127}],82:[function(_dereq_,module,exports){
+},{"../core/component":128}],82:[function(_dereq_,module,exports){
 _dereq_('./animation');
 _dereq_('./camera');
 _dereq_('./cursor');
@@ -69483,6 +69483,7 @@ _dereq_('./tracked-controls');
 _dereq_('./tracked-controls-webvr');
 _dereq_('./tracked-controls-webxr');
 _dereq_('./visible');
+_dereq_('./valve-index-controls');
 _dereq_('./vive-controls');
 _dereq_('./vive-focus-controls');
 _dereq_('./wasd-controls');
@@ -69500,7 +69501,7 @@ _dereq_('./scene/screenshot');
 _dereq_('./scene/stats');
 _dereq_('./scene/vr-mode-ui');
 
-},{"./animation":73,"./camera":74,"./cursor":75,"./daydream-controls":76,"./gearvr-controls":77,"./generic-tracked-controller-controls":78,"./geometry":79,"./gltf-model":80,"./hand-controls":81,"./laser-controls":83,"./light":84,"./line":85,"./link":86,"./look-controls":87,"./magicleap-controls":88,"./material":89,"./obj-model":90,"./oculus-go-controls":91,"./oculus-touch-controls":92,"./position":93,"./raycaster":94,"./rotation":95,"./scale":96,"./scene/background":97,"./scene/debug":98,"./scene/device-orientation-permission-ui":99,"./scene/embedded":100,"./scene/fog":101,"./scene/inspector":102,"./scene/keyboard-shortcuts":103,"./scene/pool":104,"./scene/screenshot":105,"./scene/stats":106,"./scene/vr-mode-ui":107,"./shadow":108,"./sound":109,"./text":110,"./tracked-controls":113,"./tracked-controls-webvr":111,"./tracked-controls-webxr":112,"./visible":114,"./vive-controls":115,"./vive-focus-controls":116,"./wasd-controls":117,"./windows-motion-controls":118}],83:[function(_dereq_,module,exports){
+},{"./animation":73,"./camera":74,"./cursor":75,"./daydream-controls":76,"./gearvr-controls":77,"./generic-tracked-controller-controls":78,"./geometry":79,"./gltf-model":80,"./hand-controls":81,"./laser-controls":83,"./light":84,"./line":85,"./link":86,"./look-controls":87,"./magicleap-controls":88,"./material":89,"./obj-model":90,"./oculus-go-controls":91,"./oculus-touch-controls":92,"./position":93,"./raycaster":94,"./rotation":95,"./scale":96,"./scene/background":97,"./scene/debug":98,"./scene/device-orientation-permission-ui":99,"./scene/embedded":100,"./scene/fog":101,"./scene/inspector":102,"./scene/keyboard-shortcuts":103,"./scene/pool":104,"./scene/screenshot":105,"./scene/stats":106,"./scene/vr-mode-ui":107,"./shadow":108,"./sound":109,"./text":110,"./tracked-controls":113,"./tracked-controls-webvr":111,"./tracked-controls-webxr":112,"./valve-index-controls":114,"./visible":115,"./vive-controls":116,"./vive-focus-controls":117,"./wasd-controls":118,"./windows-motion-controls":119}],83:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var utils = _dereq_('../utils/');
 
@@ -69524,6 +69525,7 @@ registerComponent('laser-controls', {
     el.setAttribute('magicleap-controls', controlsConfiguration);
     el.setAttribute('oculus-go-controls', controlsConfiguration);
     el.setAttribute('oculus-touch-controls', controlsConfiguration);
+    el.setAttribute('valve-index-controls', controlsConfiguration);
     el.setAttribute('vive-controls', controlsConfiguration);
     el.setAttribute('vive-focus-controls', controlsConfiguration);
     el.setAttribute('windows-motion-controls', controlsConfiguration);
@@ -69602,6 +69604,10 @@ registerComponent('laser-controls', {
       raycaster: {origin: {x: 0, y: 0, z: 0}}
     },
 
+    'valve-index-controls': {
+      cursor: {downEvents: ['triggerdown'], upEvents: ['triggerup']}
+    },
+
     'vive-controls': {
       cursor: {downEvents: ['triggerdown'], upEvents: ['triggerup']}
     },
@@ -69617,7 +69623,7 @@ registerComponent('laser-controls', {
   }
 });
 
-},{"../core/component":127,"../utils/":200}],84:[function(_dereq_,module,exports){
+},{"../core/component":128,"../utils/":201}],84:[function(_dereq_,module,exports){
 var bind = _dereq_('../utils/bind');
 var diff = _dereq_('../utils').diff;
 var debug = _dereq_('../utils/debug');
@@ -69906,7 +69912,7 @@ module.exports.Component = registerComponent('light', {
   }
 });
 
-},{"../core/component":127,"../lib/three":175,"../utils":200,"../utils/bind":194,"../utils/debug":196}],85:[function(_dereq_,module,exports){
+},{"../core/component":128,"../lib/three":176,"../utils":201,"../utils/bind":195,"../utils/debug":197}],85:[function(_dereq_,module,exports){
 /* global THREE */
 var registerComponent = _dereq_('../core/component').registerComponent;
 
@@ -69984,7 +69990,7 @@ function isEqualVec3 (a, b) {
   return (a.x === b.x && a.y === b.y && a.z === b.z);
 }
 
-},{"../core/component":127}],86:[function(_dereq_,module,exports){
+},{"../core/component":128}],86:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var registerShader = _dereq_('../core/shader').registerShader;
 var THREE = _dereq_('../lib/three');
@@ -70356,7 +70362,7 @@ registerShader('portal', {
 });
 /* eslint-enable */
 
-},{"../core/component":127,"../core/shader":137,"../lib/three":175}],87:[function(_dereq_,module,exports){
+},{"../core/component":128,"../core/shader":138,"../lib/three":176}],87:[function(_dereq_,module,exports){
 /* global DeviceOrientationEvent  */
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
@@ -70832,7 +70838,7 @@ module.exports.Component = registerComponent('look-controls', {
   }
 });
 
-},{"../core/component":127,"../lib/three":175,"../utils/":200}],88:[function(_dereq_,module,exports){
+},{"../core/component":128,"../lib/three":176,"../utils/":201}],88:[function(_dereq_,module,exports){
 var bind = _dereq_('../utils/bind');
 var registerComponent = _dereq_('../core/component').registerComponent;
 
@@ -71012,7 +71018,7 @@ module.exports.Component = registerComponent('magicleap-controls', {
 
 });
 
-},{"../core/component":127,"../utils/bind":194,"../utils/tracked-controls":208}],89:[function(_dereq_,module,exports){
+},{"../core/component":128,"../utils/bind":195,"../utils/tracked-controls":209}],89:[function(_dereq_,module,exports){
 /* global Promise */
 var utils = _dereq_('../utils/');
 var component = _dereq_('../core/component');
@@ -71283,7 +71289,7 @@ function disposeMaterial (material, system) {
   system.unregisterMaterial(material);
 }
 
-},{"../core/component":127,"../core/shader":137,"../lib/three":175,"../utils/":200}],90:[function(_dereq_,module,exports){
+},{"../core/component":128,"../core/shader":138,"../lib/three":176,"../utils/":201}],90:[function(_dereq_,module,exports){
 var debug = _dereq_('../utils/debug');
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
@@ -71386,7 +71392,7 @@ module.exports.Component = registerComponent('obj-model', {
   }
 });
 
-},{"../core/component":127,"../lib/three":175,"../utils/debug":196}],91:[function(_dereq_,module,exports){
+},{"../core/component":128,"../lib/three":176,"../utils/debug":197}],91:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var bind = _dereq_('../utils/bind');
 
@@ -71594,7 +71600,7 @@ module.exports.Component = registerComponent('oculus-go-controls', {
   }
 });
 
-},{"../core/component":127,"../utils/":200,"../utils/bind":194,"../utils/tracked-controls":208}],92:[function(_dereq_,module,exports){
+},{"../core/component":128,"../utils/":201,"../utils/bind":195,"../utils/tracked-controls":209}],92:[function(_dereq_,module,exports){
 var bind = _dereq_('../utils/bind');
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
@@ -71921,7 +71927,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   }
 });
 
-},{"../core/component":127,"../lib/three":175,"../utils/":200,"../utils/bind":194,"../utils/tracked-controls":208}],93:[function(_dereq_,module,exports){
+},{"../core/component":128,"../lib/three":176,"../utils/":201,"../utils/bind":195,"../utils/tracked-controls":209}],93:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 
 module.exports.Component = registerComponent('position', {
@@ -71939,7 +71945,7 @@ module.exports.Component = registerComponent('position', {
   }
 });
 
-},{"../core/component":127}],94:[function(_dereq_,module,exports){
+},{"../core/component":128}],94:[function(_dereq_,module,exports){
 /* global MutationObserver */
 
 var registerComponent = _dereq_('../core/component').registerComponent;
@@ -72374,7 +72380,7 @@ function copyArray (a, b) {
   }
 }
 
-},{"../core/component":127,"../lib/three":175,"../utils/":200}],95:[function(_dereq_,module,exports){
+},{"../core/component":128,"../lib/three":176,"../utils/":201}],95:[function(_dereq_,module,exports){
 var degToRad = _dereq_('../lib/three').Math.degToRad;
 var registerComponent = _dereq_('../core/component').registerComponent;
 
@@ -72397,7 +72403,7 @@ module.exports.Component = registerComponent('rotation', {
   }
 });
 
-},{"../core/component":127,"../lib/three":175}],96:[function(_dereq_,module,exports){
+},{"../core/component":128,"../lib/three":176}],96:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 
 // Avoids triggering a zero-determinant which makes object3D matrix non-invertible.
@@ -72424,7 +72430,7 @@ module.exports.Component = registerComponent('scale', {
   }
 });
 
-},{"../core/component":127}],97:[function(_dereq_,module,exports){
+},{"../core/component":128}],97:[function(_dereq_,module,exports){
 /* global THREE */
 var register = _dereq_('../../core/component').registerComponent;
 
@@ -72444,14 +72450,14 @@ module.exports.Component = register('background', {
   }
 });
 
-},{"../../core/component":127}],98:[function(_dereq_,module,exports){
+},{"../../core/component":128}],98:[function(_dereq_,module,exports){
 var register = _dereq_('../../core/component').registerComponent;
 
 module.exports.Component = register('debug', {
   schema: {default: true}
 });
 
-},{"../../core/component":127}],99:[function(_dereq_,module,exports){
+},{"../../core/component":128}],99:[function(_dereq_,module,exports){
 /* global DeviceOrientationEvent, location  */
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var utils = _dereq_('../../utils/');
@@ -72649,7 +72655,7 @@ function createDialog (text, buttonsContainerEl) {
   return modalContainer;
 }
 
-},{"../../constants/":119,"../../core/component":127,"../../utils/":200}],100:[function(_dereq_,module,exports){
+},{"../../constants/":120,"../../core/component":128,"../../utils/":201}],100:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 
 /**
@@ -72674,7 +72680,7 @@ module.exports.Component = registerComponent('embedded', {
 
 });
 
-},{"../../core/component":127}],101:[function(_dereq_,module,exports){
+},{"../../core/component":128}],101:[function(_dereq_,module,exports){
 var register = _dereq_('../../core/component').registerComponent;
 var THREE = _dereq_('../../lib/three');
 var debug = _dereq_('../../utils/debug');
@@ -72747,7 +72753,7 @@ function getFog (data) {
   return fog;
 }
 
-},{"../../core/component":127,"../../lib/three":175,"../../utils/debug":196}],102:[function(_dereq_,module,exports){
+},{"../../core/component":128,"../../lib/three":176,"../../utils/debug":197}],102:[function(_dereq_,module,exports){
 (function (process){
 /* global AFRAME */
 var AFRAME_INJECTED = _dereq_('../../constants').AFRAME_INJECTED;
@@ -72867,7 +72873,7 @@ module.exports.Component = registerComponent('inspector', {
 
 }).call(this,_dereq_('_process'))
 
-},{"../../../package":72,"../../constants":119,"../../core/component":127,"../../utils/":200,"_process":49}],103:[function(_dereq_,module,exports){
+},{"../../../package":72,"../../constants":120,"../../core/component":128,"../../utils/":201,"_process":49}],103:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var shouldCaptureKeyEvent = _dereq_('../../utils/').shouldCaptureKeyEvent;
 
@@ -72906,7 +72912,7 @@ module.exports.Component = registerComponent('keyboard-shortcuts', {
   }
 });
 
-},{"../../core/component":127,"../../utils/":200}],104:[function(_dereq_,module,exports){
+},{"../../core/component":128,"../../utils/":201}],104:[function(_dereq_,module,exports){
 var debug = _dereq_('../../utils/debug');
 var registerComponent = _dereq_('../../core/component').registerComponent;
 
@@ -73024,7 +73030,7 @@ module.exports.Component = registerComponent('pool', {
   }
 });
 
-},{"../../core/component":127,"../../utils/debug":196}],105:[function(_dereq_,module,exports){
+},{"../../core/component":128,"../../utils/debug":197}],105:[function(_dereq_,module,exports){
 /* global ImageData, URL */
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var THREE = _dereq_('../../lib/three');
@@ -73289,7 +73295,7 @@ module.exports.Component = registerComponent('screenshot', {
   }
 });
 
-},{"../../core/component":127,"../../lib/three":175}],106:[function(_dereq_,module,exports){
+},{"../../core/component":128,"../../lib/three":176}],106:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var RStats = _dereq_('../../../vendor/rStats');
 var utils = _dereq_('../../utils');
@@ -73369,7 +73375,7 @@ function createStats (scene) {
   });
 }
 
-},{"../../../vendor/rStats":211,"../../../vendor/rStats.extras":210,"../../core/component":127,"../../lib/rStatsAframe":174,"../../utils":200}],107:[function(_dereq_,module,exports){
+},{"../../../vendor/rStats":212,"../../../vendor/rStats.extras":211,"../../core/component":128,"../../lib/rStatsAframe":175,"../../utils":201}],107:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var constants = _dereq_('../../constants/');
 var utils = _dereq_('../../utils/');
@@ -73637,7 +73643,7 @@ function applyStickyHoverFix (buttonEl) {
   });
 }
 
-},{"../../constants/":119,"../../core/component":127,"../../utils/":200}],108:[function(_dereq_,module,exports){
+},{"../../constants/":120,"../../core/component":128,"../../utils/":201}],108:[function(_dereq_,module,exports){
 var component = _dereq_('../core/component');
 var THREE = _dereq_('../lib/three');
 var bind = _dereq_('../utils/bind');
@@ -73691,7 +73697,7 @@ module.exports.Component = registerComponent('shadow', {
   }
 });
 
-},{"../core/component":127,"../lib/three":175,"../utils/bind":194}],109:[function(_dereq_,module,exports){
+},{"../core/component":128,"../lib/three":176,"../utils/bind":195}],109:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var debug = _dereq_('../utils/debug');
 var THREE = _dereq_('../lib/three');
@@ -73942,7 +73948,7 @@ module.exports.Component = registerComponent('sound', {
   }
 });
 
-},{"../core/component":127,"../lib/three":175,"../utils/debug":196}],110:[function(_dereq_,module,exports){
+},{"../core/component":128,"../lib/three":176,"../utils/debug":197}],110:[function(_dereq_,module,exports){
 var createTextGeometry = _dereq_('three-bmfont-text');
 var loadBMFont = _dereq_('load-bmfont');
 
@@ -74427,7 +74433,7 @@ function PromiseCache () {
   };
 }
 
-},{"../core/component":127,"../core/shader":137,"../lib/three":175,"../utils/":200,"load-bmfont":37,"three-bmfont-text":62}],111:[function(_dereq_,module,exports){
+},{"../core/component":128,"../core/shader":138,"../lib/three":176,"../utils/":201,"load-bmfont":37,"three-bmfont-text":62}],111:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var controllerUtils = _dereq_('../utils/tracked-controls');
 var DEFAULT_CAMERA_HEIGHT = _dereq_('../constants').DEFAULT_CAMERA_HEIGHT;
@@ -74764,7 +74770,7 @@ module.exports.Component = registerComponent('tracked-controls-webvr', {
   }
 });
 
-},{"../constants":119,"../core/component":127,"../lib/three":175,"../utils/tracked-controls":208}],112:[function(_dereq_,module,exports){
+},{"../constants":120,"../core/component":128,"../lib/three":176,"../utils/tracked-controls":209}],112:[function(_dereq_,module,exports){
 var controllerUtils = _dereq_('../utils/tracked-controls');
 var registerComponent = _dereq_('../core/component').registerComponent;
 
@@ -75020,7 +75026,7 @@ module.exports.Component = registerComponent('tracked-controls-webxr', {
   }
 });
 
-},{"../core/component":127,"../utils/tracked-controls":208}],113:[function(_dereq_,module,exports){
+},{"../core/component":128,"../utils/tracked-controls":209}],113:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 
 /**
@@ -75063,7 +75069,240 @@ module.exports.Component = registerComponent('tracked-controls', {
   }
 });
 
-},{"../core/component":127}],114:[function(_dereq_,module,exports){
+},{"../core/component":128}],114:[function(_dereq_,module,exports){
+var registerComponent = _dereq_('../core/component').registerComponent;
+var bind = _dereq_('../utils/bind');
+var THREE = _dereq_('../lib/three');
+
+var trackedControlsUtils = _dereq_('../utils/tracked-controls');
+var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
+var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
+var onButtonEvent = trackedControlsUtils.onButtonEvent;
+
+var INDEX_CONTROLLER_MODEL_BASE_URL = 'https://cdn.aframe.io/controllers/valve/index/valve_index_';
+var INDEX_CONTROLLER_MODEL_URL = {
+  left: INDEX_CONTROLLER_MODEL_BASE_URL + 'left.gltf',
+  right: INDEX_CONTROLLER_MODEL_BASE_URL + 'right.gltf'
+};
+
+var GAMEPAD_ID_PREFIX = 'valve';
+
+var INDEX_CONTROLLER_POSITION_OFFSET = {
+  left: {x: -0.00023692678902063457, y: 0.04724540367838371, z: -0.061959880395271096},
+  right: {x: 0.002471558599671131, y: 0.055765208987076195, z: -0.061068168708348844}
+};
+
+var INDEX_CONTROLLER_ROTATION_OFFSET = {
+  left: {_x: 0.692295102620542, _y: -0.0627618864318427, _z: -0.06265893149611756, _order: 'XYZ'},
+  right: {_x: 0.6484021229942998, _y: -0.032563619881892894, _z: -0.1327973171917482, _order: 'XYZ'}
+};
+
+/**
+ * Vive controls.
+ * Interface with Vive controllers and map Gamepad events to controller buttons:
+ * trackpad, trigger, grip, menu, system
+ * Load a controller model and highlight the pressed buttons.
+ */
+module.exports.Component = registerComponent('valve-index-controls', {
+  schema: {
+    hand: {default: 'left'},
+    buttonColor: {type: 'color', default: '#FAFAFA'},  // Off-white.
+    buttonHighlightColor: {type: 'color', default: '#22D1EE'},  // Light blue.
+    model: {default: true},
+    orientationOffset: {type: 'vec3'}
+  },
+
+  mapping: {
+    axes: {trackpad: [0, 1]},
+    buttons: [
+      'trigger', 'grip', 'joystick', 'abutton', 'abutton',
+      'system', 'finger1', 'finger2', 'finger3',
+      'finger4', 'finger5']
+  },
+
+  init: function () {
+    var self = this;
+    this.controllerPresent = false;
+    this.lastControllerCheck = 0;
+    this.onButtonChanged = bind(this.onButtonChanged, this);
+    this.onButtonDown = function (evt) { onButtonEvent(evt.detail.id, 'down', self); };
+    this.onButtonUp = function (evt) { onButtonEvent(evt.detail.id, 'up', self); };
+    this.onButtonTouchEnd = function (evt) { onButtonEvent(evt.detail.id, 'touchend', self); };
+    this.onButtonTouchStart = function (evt) { onButtonEvent(evt.detail.id, 'touchstart', self); };
+    this.previousButtonValues = {};
+    this.rendererSystem = this.el.sceneEl.systems.renderer;
+
+    this.bindMethods();
+  },
+
+  play: function () {
+    this.checkIfControllerPresent();
+    this.addControllersUpdateListener();
+  },
+
+  pause: function () {
+    this.removeEventListeners();
+    this.removeControllersUpdateListener();
+  },
+
+  bindMethods: function () {
+    this.onModelLoaded = bind(this.onModelLoaded, this);
+    this.onControllersUpdate = bind(this.onControllersUpdate, this);
+    this.checkIfControllerPresent = bind(this.checkIfControllerPresent, this);
+    this.removeControllersUpdateListener = bind(this.removeControllersUpdateListener, this);
+    this.onAxisMoved = bind(this.onAxisMoved, this);
+  },
+
+  addEventListeners: function () {
+    var el = this.el;
+    el.addEventListener('buttonchanged', this.onButtonChanged);
+    el.addEventListener('buttondown', this.onButtonDown);
+    el.addEventListener('buttonup', this.onButtonUp);
+    el.addEventListener('touchend', this.onButtonTouchEnd);
+    el.addEventListener('touchstart', this.onButtonTouchStart);
+    el.addEventListener('model-loaded', this.onModelLoaded);
+    el.addEventListener('axismove', this.onAxisMoved);
+    this.controllerEventsActive = true;
+  },
+
+  removeEventListeners: function () {
+    var el = this.el;
+    el.removeEventListener('buttonchanged', this.onButtonChanged);
+    el.removeEventListener('buttondown', this.onButtonDown);
+    el.removeEventListener('buttonup', this.onButtonUp);
+    el.removeEventListener('touchend', this.onButtonTouchEnd);
+    el.removeEventListener('touchstart', this.onButtonTouchStart);
+    el.removeEventListener('model-loaded', this.onModelLoaded);
+    el.removeEventListener('axismove', this.onAxisMoved);
+    this.controllerEventsActive = false;
+  },
+
+  /**
+   * Once OpenVR returns correct hand data in supporting browsers, we can use hand property.
+   * var isPresent = checkControllerPresentAndSetup(this.el.sceneEl, GAMEPAD_ID_PREFIX,
+                                                        { hand: data.hand });
+   * Until then, use hardcoded index.
+   */
+  checkIfControllerPresent: function () {
+    var data = this.data;
+    var controllerIndex = data.hand === 'right' ? 0 : data.hand === 'left' ? 1 : 2;
+    checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX, {index: controllerIndex, iterateControllerProfiles: true, hand: data.hand});
+  },
+
+  injectTrackedControls: function () {
+    var el = this.el;
+    var data = this.data;
+
+    // If we have an OpenVR Gamepad, use the fixed mapping.
+    el.setAttribute('tracked-controls', {
+      idPrefix: GAMEPAD_ID_PREFIX,
+      // Hand IDs: 1 = right, 0 = left, 2 = anything else.
+      controller: data.hand === 'right' ? 1 : data.hand === 'left' ? 0 : 2,
+      hand: data.hand,
+      orientationOffset: data.orientationOffset
+    });
+
+    this.loadModel();
+  },
+
+  loadModel: function () {
+    var data = this.data;
+    if (!data.model) { return; }
+    this.el.setAttribute('gltf-model', '' + INDEX_CONTROLLER_MODEL_URL[data.hand] + '');
+  },
+
+  addControllersUpdateListener: function () {
+    this.el.sceneEl.addEventListener('controllersupdated', this.onControllersUpdate, false);
+  },
+
+  removeControllersUpdateListener: function () {
+    this.el.sceneEl.removeEventListener('controllersupdated', this.onControllersUpdate, false);
+  },
+
+  onControllersUpdate: function () {
+    this.checkIfControllerPresent();
+  },
+
+  /**
+   * Rotate the trigger button based on how hard the trigger is pressed.
+   */
+  onButtonChanged: function (evt) {
+    var button = this.mapping.buttons[evt.detail.id];
+    var buttonMeshes = this.buttonMeshes;
+    var analogValue;
+
+    if (!button) { return; }
+
+    if (button === 'trigger') {
+      analogValue = evt.detail.state.value;
+      // Update trigger rotation depending on button value.
+      if (buttonMeshes && buttonMeshes.trigger) {
+        buttonMeshes.trigger.rotation.x = -analogValue * (Math.PI / 12);
+      }
+    }
+
+    // Pass along changed event with button state, using button mapping for convenience.
+    this.el.emit(button + 'changed', evt.detail.state);
+  },
+
+  onModelLoaded: function (evt) {
+    var buttonMeshes;
+    var controllerObject3D = evt.detail.model;
+    var self = this;
+
+    if (!this.data.model) { return; }
+
+    // Store button meshes object to be able to change their colors.
+    buttonMeshes = this.buttonMeshes = {};
+    buttonMeshes.grip = {
+      left: controllerObject3D.getObjectByName('leftgrip'),
+      right: controllerObject3D.getObjectByName('rightgrip')
+    };
+    buttonMeshes.menu = controllerObject3D.getObjectByName('menubutton');
+    buttonMeshes.system = controllerObject3D.getObjectByName('systembutton');
+    buttonMeshes.trackpad = controllerObject3D.getObjectByName('touchpad');
+    buttonMeshes.trigger = controllerObject3D.getObjectByName('trigger');
+
+    // Set default colors.
+    Object.keys(buttonMeshes).forEach(function (buttonName) {
+      self.setButtonColor(buttonName, self.data.buttonColor);
+    });
+
+    // Offset pivot point.
+    controllerObject3D.position.copy(INDEX_CONTROLLER_POSITION_OFFSET[this.data.hand]);
+    controllerObject3D.rotation.copy(INDEX_CONTROLLER_ROTATION_OFFSET[this.data.hand]);
+
+    this.el.emit('controllermodelready', {
+      name: 'valve-index-controlls',
+      model: this.data.model,
+      rayOrigin: new THREE.Vector3(0, 0, 0)
+    });
+  },
+
+  onAxisMoved: function (evt) {
+    emitIfAxesChanged(this, this.mapping.axes, evt);
+  },
+
+  updateModel: function (buttonName, evtName) {
+    var color;
+    var isTouch;
+    if (!this.data.model) { return; }
+
+    isTouch = evtName.indexOf('touch') !== -1;
+    // Don't change color for trackpad touch.
+    if (isTouch) { return; }
+
+    // Update colors.
+    color = evtName === 'up' ? this.data.buttonColor : this.data.buttonHighlightColor;
+    this.setButtonColor(buttonName, color);
+  },
+  setButtonColor: function (buttonName, color) {
+    // TODO: The meshes aren't set up correctly now, skipping for the moment
+    return;
+  }
+});
+
+},{"../core/component":128,"../lib/three":176,"../utils/bind":195,"../utils/tracked-controls":209}],115:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 
 /**
@@ -75077,7 +75316,7 @@ module.exports.Component = registerComponent('visible', {
   }
 });
 
-},{"../core/component":127}],115:[function(_dereq_,module,exports){
+},{"../core/component":128}],116:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var bind = _dereq_('../utils/bind');
 
@@ -75338,7 +75577,7 @@ module.exports.Component = registerComponent('vive-controls', {
   }
 });
 
-},{"../core/component":127,"../utils/":200,"../utils/bind":194,"../utils/tracked-controls":208}],116:[function(_dereq_,module,exports){
+},{"../core/component":128,"../utils/":201,"../utils/bind":195,"../utils/tracked-controls":209}],117:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var bind = _dereq_('../utils/bind');
 
@@ -75520,7 +75759,7 @@ module.exports.Component = registerComponent('vive-focus-controls', {
   }
 });
 
-},{"../core/component":127,"../utils/bind":194,"../utils/tracked-controls":208}],117:[function(_dereq_,module,exports){
+},{"../core/component":128,"../utils/bind":195,"../utils/tracked-controls":209}],118:[function(_dereq_,module,exports){
 var KEYCODE_TO_CODE = _dereq_('../constants').keyboardevent.KEYCODE_TO_CODE;
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
@@ -75732,7 +75971,7 @@ function isEmptyObject (keys) {
   return true;
 }
 
-},{"../constants":119,"../core/component":127,"../lib/three":175,"../utils/":200}],118:[function(_dereq_,module,exports){
+},{"../constants":120,"../core/component":128,"../lib/three":176,"../utils/":201}],119:[function(_dereq_,module,exports){
 /* global THREE */
 var registerComponent = _dereq_('../core/component').registerComponent;
 var bind = _dereq_('../utils/bind');
@@ -76218,7 +76457,7 @@ module.exports.Component = registerComponent('windows-motion-controls', {
   }
 });
 
-},{"../constants":119,"../core/component":127,"../utils/":200,"../utils/bind":194,"../utils/tracked-controls":208}],119:[function(_dereq_,module,exports){
+},{"../constants":120,"../core/component":128,"../utils/":201,"../utils/bind":195,"../utils/tracked-controls":209}],120:[function(_dereq_,module,exports){
 module.exports = {
   AFRAME_INJECTED: 'aframe-injected',
   DEFAULT_CAMERA_HEIGHT: 1.6,
@@ -76226,7 +76465,7 @@ module.exports = {
   keyboardevent: _dereq_('./keyboardevent')
 };
 
-},{"./keyboardevent":120}],120:[function(_dereq_,module,exports){
+},{"./keyboardevent":121}],121:[function(_dereq_,module,exports){
 module.exports = {
   // Tiny KeyboardEvent.code polyfill.
   KEYCODE_TO_CODE: {
@@ -76241,7 +76480,7 @@ module.exports = {
   }
 };
 
-},{}],121:[function(_dereq_,module,exports){
+},{}],122:[function(_dereq_,module,exports){
 var ANode = _dereq_('./a-node');
 var bind = _dereq_('../utils/bind');
 var debug = _dereq_('../utils/debug');
@@ -76521,7 +76760,7 @@ function getFileNameFromURL (url) {
 }
 module.exports.getFileNameFromURL = getFileNameFromURL;
 
-},{"../lib/three":175,"../utils/bind":194,"../utils/debug":196,"./a-node":125,"./a-register-element":126}],122:[function(_dereq_,module,exports){
+},{"../lib/three":176,"../utils/bind":195,"../utils/debug":197,"./a-node":126,"./a-register-element":127}],123:[function(_dereq_,module,exports){
 var debug = _dereq_('../utils/debug');
 var registerElement = _dereq_('./a-register-element').registerElement;
 
@@ -76571,7 +76810,7 @@ module.exports = registerElement('a-cubemap', {
   })
 });
 
-},{"../utils/debug":196,"./a-register-element":126}],123:[function(_dereq_,module,exports){
+},{"../utils/debug":197,"./a-register-element":127}],124:[function(_dereq_,module,exports){
 var ANode = _dereq_('./a-node');
 var COMPONENTS = _dereq_('./component').components;
 var registerElement = _dereq_('./a-register-element').registerElement;
@@ -77505,7 +77744,7 @@ function getRotation (entityEl) {
 AEntity = registerElement('a-entity', {prototype: proto});
 module.exports = AEntity;
 
-},{"../lib/three":175,"../utils/":200,"./a-node":125,"./a-register-element":126,"./component":127}],124:[function(_dereq_,module,exports){
+},{"../lib/three":176,"../utils/":201,"./a-node":126,"./a-register-element":127,"./component":128}],125:[function(_dereq_,module,exports){
 var ANode = _dereq_('./a-node');
 var registerElement = _dereq_('./a-register-element').registerElement;
 var components = _dereq_('./component').components;
@@ -77621,7 +77860,7 @@ module.exports = registerElement('a-mixin', {
   })
 });
 
-},{"../utils":200,"./a-node":125,"./a-register-element":126,"./component":127}],125:[function(_dereq_,module,exports){
+},{"../utils":201,"./a-node":126,"./a-register-element":127,"./component":128}],126:[function(_dereq_,module,exports){
 /* global CustomEvent */
 var registerElement = _dereq_('./a-register-element').registerElement;
 var isNode = _dereq_('./a-register-element').isNode;
@@ -77892,7 +78131,7 @@ module.exports = registerElement('a-node', {
   })
 });
 
-},{"../utils/":200,"./a-register-element":126}],126:[function(_dereq_,module,exports){
+},{"../utils/":201,"./a-register-element":127}],127:[function(_dereq_,module,exports){
 /*
   ------------------------------------------------------------
   ------------- WARNING WARNING WARNING WARNING --------------
@@ -78079,7 +78318,7 @@ function copyProperties (source, destination) {
 ANode = _dereq_('./a-node');
 AEntity = _dereq_('./a-entity');
 
-},{"./a-entity":123,"./a-node":125,"document-register-element":12}],127:[function(_dereq_,module,exports){
+},{"./a-entity":124,"./a-node":126,"document-register-element":12}],128:[function(_dereq_,module,exports){
 /* global Node */
 var schema = _dereq_('./schema');
 var scenes = _dereq_('./scene/scenes');
@@ -78884,7 +79123,7 @@ function isObjectOrArray (value) {
          !(value instanceof window.HTMLElement);
 }
 
-},{"../utils/":200,"./scene/scenes":134,"./schema":136,"./system":138}],128:[function(_dereq_,module,exports){
+},{"../utils/":201,"./scene/scenes":135,"./schema":137,"./system":139}],129:[function(_dereq_,module,exports){
 var schema = _dereq_('./schema');
 
 var processSchema = schema.process;
@@ -78958,7 +79197,7 @@ module.exports.registerGeometry = function (name, definition) {
   return NewGeometry;
 };
 
-},{"../lib/three":175,"./schema":136}],129:[function(_dereq_,module,exports){
+},{"../lib/three":176,"./schema":137}],130:[function(_dereq_,module,exports){
 var coordinates = _dereq_('../utils/coordinates');
 var debug = _dereq_('debug');
 
@@ -79183,7 +79422,7 @@ function isValidDefaultCoordinate (possibleCoordinates, dimensions) {
 }
 module.exports.isValidDefaultCoordinate = isValidDefaultCoordinate;
 
-},{"../utils/coordinates":195,"debug":8}],130:[function(_dereq_,module,exports){
+},{"../utils/coordinates":196,"debug":8}],131:[function(_dereq_,module,exports){
 /* global Promise, screen, CustomEvent */
 var initMetaTags = _dereq_('./metaTags').inject;
 var initWakelock = _dereq_('./wakelock');
@@ -80084,7 +80323,7 @@ function setupCanvas (sceneEl) {
 }
 module.exports.setupCanvas = setupCanvas;  // For testing.
 
-},{"../../lib/three":175,"../../utils/":200,"../a-entity":123,"../a-node":125,"../a-register-element":126,"../system":138,"./loadingScreen":131,"./metaTags":132,"./postMessage":133,"./scenes":134,"./wakelock":135}],131:[function(_dereq_,module,exports){
+},{"../../lib/three":176,"../../utils/":201,"../a-entity":124,"../a-node":126,"../a-register-element":127,"../system":139,"./loadingScreen":132,"./metaTags":133,"./postMessage":134,"./scenes":135,"./wakelock":136}],132:[function(_dereq_,module,exports){
 /* global THREE */
 var utils = _dereq_('../../utils/');
 var styleParser = utils.styleParser;
@@ -80178,7 +80417,7 @@ function setupTitle () {
   sceneEl.appendChild(titleEl);
 }
 
-},{"../../utils/":200}],132:[function(_dereq_,module,exports){
+},{"../../utils/":201}],133:[function(_dereq_,module,exports){
 var constants = _dereq_('../../constants/');
 var extend = _dereq_('../../utils').extend;
 
@@ -80259,7 +80498,7 @@ function createTag (tagObj) {
   return extend(meta, tagObj.attributes);
 }
 
-},{"../../constants/":119,"../../utils":200}],133:[function(_dereq_,module,exports){
+},{"../../constants/":120,"../../utils":201}],134:[function(_dereq_,module,exports){
 var bind = _dereq_('../../utils/bind');
 var isIframed = _dereq_('../../utils/').isIframed;
 
@@ -80292,13 +80531,13 @@ function postMessageAPIHandler (event) {
   }
 }
 
-},{"../../utils/":200,"../../utils/bind":194}],134:[function(_dereq_,module,exports){
+},{"../../utils/":201,"../../utils/bind":195}],135:[function(_dereq_,module,exports){
 /*
   Scene index for keeping track of created scenes.
 */
 module.exports = [];
 
-},{}],135:[function(_dereq_,module,exports){
+},{}],136:[function(_dereq_,module,exports){
 var Wakelock = _dereq_('../../../vendor/wakelock/wakelock');
 
 module.exports = function initWakelock (scene) {
@@ -80309,7 +80548,7 @@ module.exports = function initWakelock (scene) {
   scene.addEventListener('exit-vr', function () { wakelock.release(); });
 };
 
-},{"../../../vendor/wakelock/wakelock":214}],136:[function(_dereq_,module,exports){
+},{"../../../vendor/wakelock/wakelock":215}],137:[function(_dereq_,module,exports){
 var utils = _dereq_('../utils/');
 var PropertyTypes = _dereq_('./propertyTypes');
 
@@ -80513,7 +80752,7 @@ function stringifyProperty (value, propDefinition) {
 }
 module.exports.stringifyProperty = stringifyProperty;
 
-},{"../utils/":200,"./propertyTypes":129}],137:[function(_dereq_,module,exports){
+},{"../utils/":201,"./propertyTypes":130}],138:[function(_dereq_,module,exports){
 var schema = _dereq_('./schema');
 
 var processSchema = schema.process;
@@ -80702,7 +80941,7 @@ module.exports.registerShader = function (name, definition) {
   return NewShader;
 };
 
-},{"../lib/three":175,"../utils":200,"./schema":136}],138:[function(_dereq_,module,exports){
+},{"../lib/three":176,"../utils":201,"./schema":137}],139:[function(_dereq_,module,exports){
 var components = _dereq_('./component');
 var schema = _dereq_('./schema');
 var utils = _dereq_('../utils/');
@@ -80860,10 +81099,10 @@ module.exports.registerSystem = function (name, definition) {
   for (i = 0; i < scenes.length; i++) { scenes[i].initSystem(name); }
 };
 
-},{"../utils/":200,"./component":127,"./schema":136}],139:[function(_dereq_,module,exports){
+},{"../utils/":201,"./component":128,"./schema":137}],140:[function(_dereq_,module,exports){
 _dereq_('./pivot');
 
-},{"./pivot":140}],140:[function(_dereq_,module,exports){
+},{"./pivot":141}],141:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var THREE = _dereq_('../../lib/three');
 
@@ -80912,7 +81151,7 @@ registerComponent('pivot', {
   }
 });
 
-},{"../../core/component":127,"../../lib/three":175}],141:[function(_dereq_,module,exports){
+},{"../../core/component":128,"../../lib/three":176}],142:[function(_dereq_,module,exports){
 /**
  * Common mesh defaults, mappings, and transforms.
  */
@@ -80939,7 +81178,7 @@ module.exports = function getMeshMixin () {
   };
 };
 
-},{"../../core/component":127,"../../core/shader":137,"../../utils/":200}],142:[function(_dereq_,module,exports){
+},{"../../core/component":128,"../../core/shader":138,"../../utils/":201}],143:[function(_dereq_,module,exports){
 _dereq_('./primitives/a-camera');
 _dereq_('./primitives/a-cursor');
 _dereq_('./primitives/a-curvedimage');
@@ -80955,7 +81194,7 @@ _dereq_('./primitives/a-video');
 _dereq_('./primitives/a-videosphere');
 _dereq_('./primitives/meshPrimitives');
 
-},{"./primitives/a-camera":144,"./primitives/a-cursor":145,"./primitives/a-curvedimage":146,"./primitives/a-gltf-model":147,"./primitives/a-image":148,"./primitives/a-light":149,"./primitives/a-link":150,"./primitives/a-obj-model":151,"./primitives/a-sky":152,"./primitives/a-sound":153,"./primitives/a-text":154,"./primitives/a-video":155,"./primitives/a-videosphere":156,"./primitives/meshPrimitives":157}],143:[function(_dereq_,module,exports){
+},{"./primitives/a-camera":145,"./primitives/a-cursor":146,"./primitives/a-curvedimage":147,"./primitives/a-gltf-model":148,"./primitives/a-image":149,"./primitives/a-light":150,"./primitives/a-link":151,"./primitives/a-obj-model":152,"./primitives/a-sky":153,"./primitives/a-sound":154,"./primitives/a-text":155,"./primitives/a-video":156,"./primitives/a-videosphere":157,"./primitives/meshPrimitives":158}],144:[function(_dereq_,module,exports){
 var AEntity = _dereq_('../../core/a-entity');
 var components = _dereq_('../../core/component').components;
 var registerElement = _dereq_('../../core/a-register-element').registerElement;
@@ -81154,7 +81393,7 @@ function definePrimitive (tagName, defaultComponents, mappings) {
 }
 module.exports.definePrimitive = definePrimitive;
 
-},{"../../core/a-entity":123,"../../core/a-register-element":126,"../../core/component":127,"../../utils/":200}],144:[function(_dereq_,module,exports){
+},{"../../core/a-entity":124,"../../core/a-register-element":127,"../../core/component":128,"../../utils/":201}],145:[function(_dereq_,module,exports){
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 
 registerPrimitive('a-camera', {
@@ -81178,7 +81417,7 @@ registerPrimitive('a-camera', {
   }
 });
 
-},{"../primitives":143}],145:[function(_dereq_,module,exports){
+},{"../primitives":144}],146:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -81213,7 +81452,7 @@ registerPrimitive('a-cursor', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":200,"../getMeshMixin":141,"../primitives":143}],146:[function(_dereq_,module,exports){
+},{"../../../utils/":201,"../getMeshMixin":142,"../primitives":144}],147:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -81250,7 +81489,7 @@ registerPrimitive('a-curvedimage', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":200,"../getMeshMixin":141,"../primitives":143}],147:[function(_dereq_,module,exports){
+},{"../../../utils/":201,"../getMeshMixin":142,"../primitives":144}],148:[function(_dereq_,module,exports){
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 
 registerPrimitive('a-gltf-model', {
@@ -81259,7 +81498,7 @@ registerPrimitive('a-gltf-model', {
   }
 });
 
-},{"../primitives":143}],148:[function(_dereq_,module,exports){
+},{"../primitives":144}],149:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -81283,7 +81522,7 @@ registerPrimitive('a-image', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":200,"../getMeshMixin":141,"../primitives":143}],149:[function(_dereq_,module,exports){
+},{"../../../utils/":201,"../getMeshMixin":142,"../primitives":144}],150:[function(_dereq_,module,exports){
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 
 registerPrimitive('a-light', {
@@ -81304,7 +81543,7 @@ registerPrimitive('a-light', {
   }
 });
 
-},{"../primitives":143}],150:[function(_dereq_,module,exports){
+},{"../primitives":144}],151:[function(_dereq_,module,exports){
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 
 registerPrimitive('a-link', {
@@ -81321,7 +81560,7 @@ registerPrimitive('a-link', {
   }
 });
 
-},{"../primitives":143}],151:[function(_dereq_,module,exports){
+},{"../primitives":144}],152:[function(_dereq_,module,exports){
 var meshMixin = _dereq_('../getMeshMixin')();
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -81337,7 +81576,7 @@ registerPrimitive('a-obj-model', utils.extendDeep({}, meshMixin, {
   }
 }));
 
-},{"../../../utils/":200,"../getMeshMixin":141,"../primitives":143}],152:[function(_dereq_,module,exports){
+},{"../../../utils/":201,"../getMeshMixin":142,"../primitives":144}],153:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -81363,7 +81602,7 @@ registerPrimitive('a-sky', utils.extendDeep({}, getMeshMixin(), {
   mappings: utils.extendDeep({}, meshPrimitives['a-sphere'].prototype.mappings)
 }));
 
-},{"../../../utils/":200,"../getMeshMixin":141,"../primitives":143,"./meshPrimitives":157}],153:[function(_dereq_,module,exports){
+},{"../../../utils/":201,"../getMeshMixin":142,"../primitives":144,"./meshPrimitives":158}],154:[function(_dereq_,module,exports){
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 
 registerPrimitive('a-sound', {
@@ -81380,12 +81619,12 @@ registerPrimitive('a-sound', {
   }
 });
 
-},{"../primitives":143}],154:[function(_dereq_,module,exports){
+},{"../primitives":144}],155:[function(_dereq_,module,exports){
 // <a-text> using `definePrimitive` helper.
 var definePrimitive = _dereq_('../primitives').definePrimitive;
 definePrimitive('a-text', {text: {anchor: 'align', width: 5}});
 
-},{"../primitives":143}],155:[function(_dereq_,module,exports){
+},{"../primitives":144}],156:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -81409,7 +81648,7 @@ registerPrimitive('a-video', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":200,"../getMeshMixin":141,"../primitives":143}],156:[function(_dereq_,module,exports){
+},{"../../../utils/":201,"../getMeshMixin":142,"../primitives":144}],157:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -81438,7 +81677,7 @@ registerPrimitive('a-videosphere', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":200,"../getMeshMixin":141,"../primitives":143}],157:[function(_dereq_,module,exports){
+},{"../../../utils/":201,"../getMeshMixin":142,"../primitives":144}],158:[function(_dereq_,module,exports){
 /**
  * Automated mesh primitive registration.
  */
@@ -81478,7 +81717,7 @@ function unCamelCase (str) {
   return str.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
 }
 
-},{"../../../core/geometry":128,"../../../utils/":200,"../getMeshMixin":141,"../primitives":143}],158:[function(_dereq_,module,exports){
+},{"../../../core/geometry":129,"../../../utils/":201,"../getMeshMixin":142,"../primitives":144}],159:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -81499,7 +81738,7 @@ registerGeometry('box', {
   }
 });
 
-},{"../core/geometry":128,"../lib/three":175}],159:[function(_dereq_,module,exports){
+},{"../core/geometry":129,"../lib/three":176}],160:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -81519,7 +81758,7 @@ registerGeometry('circle', {
   }
 });
 
-},{"../core/geometry":128,"../lib/three":175}],160:[function(_dereq_,module,exports){
+},{"../core/geometry":129,"../lib/three":176}],161:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -81545,7 +81784,7 @@ registerGeometry('cone', {
   }
 });
 
-},{"../core/geometry":128,"../lib/three":175}],161:[function(_dereq_,module,exports){
+},{"../core/geometry":129,"../lib/three":176}],162:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -81569,7 +81808,7 @@ registerGeometry('cylinder', {
   }
 });
 
-},{"../core/geometry":128,"../lib/three":175}],162:[function(_dereq_,module,exports){
+},{"../core/geometry":129,"../lib/three":176}],163:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -81584,7 +81823,7 @@ registerGeometry('dodecahedron', {
   }
 });
 
-},{"../core/geometry":128,"../lib/three":175}],163:[function(_dereq_,module,exports){
+},{"../core/geometry":129,"../lib/three":176}],164:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -81599,7 +81838,7 @@ registerGeometry('icosahedron', {
   }
 });
 
-},{"../core/geometry":128,"../lib/three":175}],164:[function(_dereq_,module,exports){
+},{"../core/geometry":129,"../lib/three":176}],165:[function(_dereq_,module,exports){
 _dereq_('./box.js');
 _dereq_('./circle.js');
 _dereq_('./cone.js');
@@ -81615,7 +81854,7 @@ _dereq_('./torus.js');
 _dereq_('./torusKnot.js');
 _dereq_('./triangle.js');
 
-},{"./box.js":158,"./circle.js":159,"./cone.js":160,"./cylinder.js":161,"./dodecahedron.js":162,"./icosahedron.js":163,"./octahedron.js":165,"./plane.js":166,"./ring.js":167,"./sphere.js":168,"./tetrahedron.js":169,"./torus.js":170,"./torusKnot.js":171,"./triangle.js":172}],165:[function(_dereq_,module,exports){
+},{"./box.js":159,"./circle.js":160,"./cone.js":161,"./cylinder.js":162,"./dodecahedron.js":163,"./icosahedron.js":164,"./octahedron.js":166,"./plane.js":167,"./ring.js":168,"./sphere.js":169,"./tetrahedron.js":170,"./torus.js":171,"./torusKnot.js":172,"./triangle.js":173}],166:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -81630,7 +81869,7 @@ registerGeometry('octahedron', {
   }
 });
 
-},{"../core/geometry":128,"../lib/three":175}],166:[function(_dereq_,module,exports){
+},{"../core/geometry":129,"../lib/three":176}],167:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -81647,7 +81886,7 @@ registerGeometry('plane', {
   }
 });
 
-},{"../core/geometry":128,"../lib/three":175}],167:[function(_dereq_,module,exports){
+},{"../core/geometry":129,"../lib/three":176}],168:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -81670,7 +81909,7 @@ registerGeometry('ring', {
   }
 });
 
-},{"../core/geometry":128,"../lib/three":175}],168:[function(_dereq_,module,exports){
+},{"../core/geometry":129,"../lib/three":176}],169:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -81694,7 +81933,7 @@ registerGeometry('sphere', {
   }
 });
 
-},{"../core/geometry":128,"../lib/three":175}],169:[function(_dereq_,module,exports){
+},{"../core/geometry":129,"../lib/three":176}],170:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -81709,7 +81948,7 @@ registerGeometry('tetrahedron', {
   }
 });
 
-},{"../core/geometry":128,"../lib/three":175}],170:[function(_dereq_,module,exports){
+},{"../core/geometry":129,"../lib/three":176}],171:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -81731,7 +81970,7 @@ registerGeometry('torus', {
   }
 });
 
-},{"../core/geometry":128,"../lib/three":175}],171:[function(_dereq_,module,exports){
+},{"../core/geometry":129,"../lib/three":176}],172:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -81752,7 +81991,7 @@ registerGeometry('torusKnot', {
   }
 });
 
-},{"../core/geometry":128,"../lib/three":175}],172:[function(_dereq_,module,exports){
+},{"../core/geometry":129,"../lib/three":176}],173:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -81807,7 +82046,7 @@ registerGeometry('triangle', {
   }
 });
 
-},{"../core/geometry":128,"../lib/three":175}],173:[function(_dereq_,module,exports){
+},{"../core/geometry":129,"../lib/three":176}],174:[function(_dereq_,module,exports){
 // Polyfill `Promise`.
 window.Promise = window.Promise || _dereq_('promise-polyfill');
 
@@ -81899,7 +82138,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 1.0.4 (Date 2020-03-04, Commit #8c16bf2f)');
+console.log('A-Frame Version: 1.0.4 (Date 2020-03-06, Commit #9790fec7)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
@@ -81932,7 +82171,7 @@ module.exports = window.AFRAME = {
   version: pkg.version
 };
 
-},{"../package":72,"../vendor/starts-with-polyfill":212,"./components/index":82,"./core/a-assets":121,"./core/a-cubemap":122,"./core/a-entity":123,"./core/a-mixin":124,"./core/a-node":125,"./core/a-register-element":126,"./core/component":127,"./core/geometry":128,"./core/scene/a-scene":130,"./core/scene/scenes":134,"./core/schema":136,"./core/shader":137,"./core/system":138,"./extras/components/":139,"./extras/primitives/":142,"./extras/primitives/getMeshMixin":141,"./extras/primitives/primitives":143,"./geometries/index":164,"./lib/three":175,"./shaders/index":177,"./style/aframe.css":182,"./style/rStats.css":183,"./systems/index":187,"./utils/":200,"./utils/isIOSOlderThan10":202,"custom-event-polyfill":7,"present":48,"promise-polyfill":50,"super-animejs":56,"webvr-polyfill":67}],174:[function(_dereq_,module,exports){
+},{"../package":72,"../vendor/starts-with-polyfill":213,"./components/index":82,"./core/a-assets":122,"./core/a-cubemap":123,"./core/a-entity":124,"./core/a-mixin":125,"./core/a-node":126,"./core/a-register-element":127,"./core/component":128,"./core/geometry":129,"./core/scene/a-scene":131,"./core/scene/scenes":135,"./core/schema":137,"./core/shader":138,"./core/system":139,"./extras/components/":140,"./extras/primitives/":143,"./extras/primitives/getMeshMixin":142,"./extras/primitives/primitives":144,"./geometries/index":165,"./lib/three":176,"./shaders/index":178,"./style/aframe.css":183,"./style/rStats.css":184,"./systems/index":188,"./utils/":201,"./utils/isIOSOlderThan10":203,"custom-event-polyfill":7,"present":48,"promise-polyfill":50,"super-animejs":56,"webvr-polyfill":67}],175:[function(_dereq_,module,exports){
 window.aframeStats = function (scene) {
   var _rS = null;
   var _scene = scene;
@@ -81989,7 +82228,7 @@ if (typeof module === 'object') {
   };
 }
 
-},{}],175:[function(_dereq_,module,exports){
+},{}],176:[function(_dereq_,module,exports){
 (function (global){
 var THREE = global.THREE = _dereq_('super-three');
 
@@ -82027,7 +82266,7 @@ module.exports = THREE;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"../../vendor/DeviceOrientationControls":209,"super-three":57,"super-three/examples/js/loaders/DRACOLoader":58,"super-three/examples/js/loaders/GLTFLoader":59,"super-three/examples/js/loaders/MTLLoader":60,"super-three/examples/js/loaders/OBJLoader":61}],176:[function(_dereq_,module,exports){
+},{"../../vendor/DeviceOrientationControls":210,"super-three":57,"super-three/examples/js/loaders/DRACOLoader":58,"super-three/examples/js/loaders/GLTFLoader":59,"super-three/examples/js/loaders/MTLLoader":60,"super-three/examples/js/loaders/OBJLoader":61}],177:[function(_dereq_,module,exports){
 var registerShader = _dereq_('../core/shader').registerShader;
 var THREE = _dereq_('../lib/three');
 var utils = _dereq_('../utils/');
@@ -82097,14 +82336,14 @@ function getMaterialData (data, materialData) {
   return materialData;
 }
 
-},{"../core/shader":137,"../lib/three":175,"../utils/":200}],177:[function(_dereq_,module,exports){
+},{"../core/shader":138,"../lib/three":176,"../utils/":201}],178:[function(_dereq_,module,exports){
 _dereq_('./flat');
 _dereq_('./standard');
 _dereq_('./sdf');
 _dereq_('./msdf');
 _dereq_('./ios10hls');
 
-},{"./flat":176,"./ios10hls":178,"./msdf":179,"./sdf":180,"./standard":181}],178:[function(_dereq_,module,exports){
+},{"./flat":177,"./ios10hls":179,"./msdf":180,"./sdf":181,"./standard":182}],179:[function(_dereq_,module,exports){
 var registerShader = _dereq_('../core/shader').registerShader;
 
 /**
@@ -82139,7 +82378,7 @@ module.exports.Shader = registerShader('ios10hls', {
 });
 
 
-},{"../core/shader":137}],179:[function(_dereq_,module,exports){
+},{"../core/shader":138}],180:[function(_dereq_,module,exports){
 var registerShader = _dereq_('../core/shader').registerShader;
 
 /**
@@ -82215,7 +82454,7 @@ module.exports.Shader = registerShader('msdf', {
   ].join('\n')
 });
 
-},{"../core/shader":137}],180:[function(_dereq_,module,exports){
+},{"../core/shader":138}],181:[function(_dereq_,module,exports){
 var registerShader = _dereq_('../core/shader').registerShader;
 
 /**
@@ -82329,7 +82568,7 @@ module.exports.Shader = registerShader('sdf', {
   ].join('\n')
 });
 
-},{"../core/shader":137}],181:[function(_dereq_,module,exports){
+},{"../core/shader":138}],182:[function(_dereq_,module,exports){
 var registerShader = _dereq_('../core/shader').registerShader;
 var THREE = _dereq_('../lib/three');
 var utils = _dereq_('../utils/');
@@ -82521,11 +82760,11 @@ function getMaterialData (data, materialData) {
   return materialData;
 }
 
-},{"../core/shader":137,"../lib/three":175,"../utils/":200}],182:[function(_dereq_,module,exports){
+},{"../core/shader":138,"../lib/three":176,"../utils/":201}],183:[function(_dereq_,module,exports){
 var css = "html.a-fullscreen{bottom:0;left:0;position:fixed;right:0;top:0}html.a-fullscreen body{height:100%;margin:0;overflow:hidden;padding:0;width:100%}html.a-fullscreen .a-canvas{width:100%!important;height:100%!important;top:0!important;left:0!important;right:0!important;bottom:0!important;position:fixed!important}html:not(.a-fullscreen) .a-enter-ar,html:not(.a-fullscreen) .a-enter-vr{right:5px;bottom:5px}:-webkit-full-screen{background-color:transparent}.a-hidden{display:none!important}.a-canvas{height:100%;left:0;position:absolute;top:0;width:100%}.a-canvas.a-grab-cursor:hover{cursor:grab;cursor:-moz-grab;cursor:-webkit-grab}canvas.a-canvas.a-mouse-cursor-hover:hover{cursor:pointer}.a-inspector-loader{background-color:#ed3160;position:fixed;left:3px;top:3px;padding:6px 10px;color:#fff;text-decoration:none;font-size:12px;font-family:Roboto,sans-serif;text-align:center;z-index:99999;width:204px}@keyframes dots-1{from{opacity:0}25%{opacity:1}}@keyframes dots-2{from{opacity:0}50%{opacity:1}}@keyframes dots-3{from{opacity:0}75%{opacity:1}}@-webkit-keyframes dots-1{from{opacity:0}25%{opacity:1}}@-webkit-keyframes dots-2{from{opacity:0}50%{opacity:1}}@-webkit-keyframes dots-3{from{opacity:0}75%{opacity:1}}.a-inspector-loader .dots span{animation:dots-1 2s infinite steps(1);-webkit-animation:dots-1 2s infinite steps(1)}.a-inspector-loader .dots span:first-child+span{animation-name:dots-2;-webkit-animation-name:dots-2}.a-inspector-loader .dots span:first-child+span+span{animation-name:dots-3;-webkit-animation-name:dots-3}a-scene{display:block;position:relative;height:100%;width:100%}a-assets,a-scene audio,a-scene img,a-scene video{display:none}.a-enter-vr-modal,.a-orientation-modal{font-family:Consolas,Andale Mono,Courier New,monospace}.a-enter-vr-modal a{border-bottom:1px solid #fff;padding:2px 0;text-decoration:none;transition:.1s color ease-in}.a-enter-vr-modal a:hover{background-color:#fff;color:#111;padding:2px 4px;position:relative;left:-4px}.a-enter-ar,.a-enter-vr{font-family:sans-serif,monospace;font-size:13px;width:100%;font-weight:200;line-height:16px;position:absolute;right:20px;bottom:20px}.a-enter-ar{right:80px}.a-enter-vr-button,.a-enter-vr-modal,.a-enter-vr-modal a{color:#fff;user-select:none;outline:0}.a-enter-vr-button{background:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='108' height='62' viewBox='0 0 108 62'%3E%3Ctitle%3Eaframe-vrmode-noborder-reduced-tracking%3C/title%3E%3Cpath d='M68.81,21.56H64.23v8.27h4.58a4.13,4.13,0,0,0,3.1-1.09,4.2,4.2,0,0,0,1-3,4.24,4.24,0,0,0-1-3A4.05,4.05,0,0,0,68.81,21.56Z' fill='%23fff'/%3E%3Cpath d='M96,0H12A12,12,0,0,0,0,12V50A12,12,0,0,0,12,62H96a12,12,0,0,0,12-12V12A12,12,0,0,0,96,0ZM41.9,46H34L24,16h8l6,21.84,6-21.84H52Zm39.29,0H73.44L68.15,35.39H64.23V46H57V16H68.81q5.32,0,8.34,2.37a8,8,0,0,1,3,6.69,9.68,9.68,0,0,1-1.27,5.18,8.9,8.9,0,0,1-4,3.34l6.26,12.11Z' fill='%23fff'/%3E%3C/svg%3E\") 50% 50% no-repeat rgba(0,0,0,.35)}.a-enter-ar-button{background:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='108' height='62' viewBox='0 0 108 62'%3E%3Ctitle%3Eaframe-armode-noborder-reduced-tracking%3C/title%3E%3Cpath d='M96,0H12A12,12,0,0,0,0,12V50A12,12,0,0,0,12,62H96a12,12,0,0,0,12-12V12A12,12,0,0,0,96,0Zm8,50a8,8,0,0,1-8,8H12a8,8,0,0,1-8-8V12a8,8,0,0,1,8-8H96a8,8,0,0,1,8,8Z' fill='%23fff'/%3E%3Cpath d='M43.35,39.82H32.51L30.45,46H23.88L35,16h5.73L52,46H45.43Zm-9.17-5h7.5L37.91,23.58Z' fill='%23fff'/%3E%3Cpath d='M68.11,35H63.18V46H57V16H68.15q5.31,0,8.2,2.37a8.18,8.18,0,0,1,2.88,6.7,9.22,9.22,0,0,1-1.33,5.12,9.09,9.09,0,0,1-4,3.26l6.49,12.26V46H73.73Zm-4.93-5h5a5.09,5.09,0,0,0,3.6-1.18,4.21,4.21,0,0,0,1.28-3.27,4.56,4.56,0,0,0-1.2-3.34A5,5,0,0,0,68.15,21h-5Z' fill='%23fff'/%3E%3C/svg%3E\") 50% 50% no-repeat rgba(0,0,0,.2)}.a-enter-ar-button,.a-enter-vr-button{background-size:90% 90%;border:0;bottom:0;cursor:pointer;min-width:58px;min-height:34px;padding-right:0;padding-top:0;position:absolute;right:0;transition:background-color .05s ease;-webkit-transition:background-color .05s ease;z-index:9999;border-radius:8px;touch-action:manipulation}.a-enter-ar-button{background-size:100% 90%;margin-right:10px;border-radius:7px}.a-enter-ar-button:active,.a-enter-ar-button:hover,.a-enter-vr-button:active,.a-enter-vr-button:hover{background-color:#ef2d5e}.a-enter-vr-button.resethover{background-color:rgba(0,0,0,.35)}[data-a-enter-vr-no-webvr] .a-enter-vr-button{border-color:#666;opacity:.65}[data-a-enter-vr-no-webvr] .a-enter-vr-button:active,[data-a-enter-vr-no-webvr] .a-enter-vr-button:hover{background-color:rgba(0,0,0,.35);cursor:not-allowed}.a-enter-vr-modal{background-color:#666;border-radius:0;display:none;min-height:32px;margin-right:70px;padding:9px;width:280px;right:2%;position:absolute}.a-enter-vr-modal:after{border-bottom:10px solid transparent;border-left:10px solid #666;border-top:10px solid transparent;display:inline-block;content:'';position:absolute;right:-5px;top:5px;width:0;height:0}.a-enter-vr-modal a,.a-enter-vr-modal p{display:inline}.a-enter-vr-modal p{margin:0}.a-enter-vr-modal p:after{content:' '}[data-a-enter-vr-no-headset].a-enter-vr:hover .a-enter-vr-modal,[data-a-enter-vr-no-webvr].a-enter-vr:hover .a-enter-vr-modal{display:block}.a-orientation-modal{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%20version%3D%221.1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%2090%2090%22%20enable-background%3D%22new%200%200%2090%2090%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpolygon%20points%3D%220%2C0%200%2C0%200%2C0%20%22%3E%3C/polygon%3E%3Cg%3E%3Cpath%20d%3D%22M71.545%2C48.145h-31.98V20.743c0-2.627-2.138-4.765-4.765-4.765H18.456c-2.628%2C0-4.767%2C2.138-4.767%2C4.765v42.789%20%20%20c0%2C2.628%2C2.138%2C4.766%2C4.767%2C4.766h5.535v0.959c0%2C2.628%2C2.138%2C4.765%2C4.766%2C4.765h42.788c2.628%2C0%2C4.766-2.137%2C4.766-4.765V52.914%20%20%20C76.311%2C50.284%2C74.173%2C48.145%2C71.545%2C48.145z%20M18.455%2C16.935h16.344c2.1%2C0%2C3.808%2C1.708%2C3.808%2C3.808v27.401H37.25V22.636%20%20%20c0-0.264-0.215-0.478-0.479-0.478H16.482c-0.264%2C0-0.479%2C0.214-0.479%2C0.478v36.585c0%2C0.264%2C0.215%2C0.478%2C0.479%2C0.478h7.507v7.644%20%20%20h-5.534c-2.101%2C0-3.81-1.709-3.81-3.81V20.743C14.645%2C18.643%2C16.354%2C16.935%2C18.455%2C16.935z%20M16.96%2C23.116h19.331v25.031h-7.535%20%20%20c-2.628%2C0-4.766%2C2.139-4.766%2C4.768v5.828h-7.03V23.116z%20M71.545%2C73.064H28.757c-2.101%2C0-3.81-1.708-3.81-3.808V52.914%20%20%20c0-2.102%2C1.709-3.812%2C3.81-3.812h42.788c2.1%2C0%2C3.809%2C1.71%2C3.809%2C3.812v16.343C75.354%2C71.356%2C73.645%2C73.064%2C71.545%2C73.064z%22%3E%3C/path%3E%3Cpath%20d%3D%22M28.919%2C58.424c-1.466%2C0-2.659%2C1.193-2.659%2C2.66c0%2C1.466%2C1.193%2C2.658%2C2.659%2C2.658c1.468%2C0%2C2.662-1.192%2C2.662-2.658%20%20%20C31.581%2C59.617%2C30.387%2C58.424%2C28.919%2C58.424z%20M28.919%2C62.786c-0.939%2C0-1.703-0.764-1.703-1.702c0-0.939%2C0.764-1.704%2C1.703-1.704%20%20%20c0.94%2C0%2C1.705%2C0.765%2C1.705%2C1.704C30.623%2C62.022%2C29.858%2C62.786%2C28.919%2C62.786z%22%3E%3C/path%3E%3Cpath%20d%3D%22M69.654%2C50.461H33.069c-0.264%2C0-0.479%2C0.215-0.479%2C0.479v20.288c0%2C0.264%2C0.215%2C0.478%2C0.479%2C0.478h36.585%20%20%20c0.263%2C0%2C0.477-0.214%2C0.477-0.478V50.939C70.131%2C50.676%2C69.917%2C50.461%2C69.654%2C50.461z%20M69.174%2C51.417V70.75H33.548V51.417H69.174z%22%3E%3C/path%3E%3Cpath%20d%3D%22M45.201%2C30.296c6.651%2C0%2C12.233%2C5.351%2C12.551%2C11.977l-3.033-2.638c-0.193-0.165-0.507-0.142-0.675%2C0.048%20%20%20c-0.174%2C0.198-0.153%2C0.501%2C0.045%2C0.676l3.883%2C3.375c0.09%2C0.075%2C0.198%2C0.115%2C0.312%2C0.115c0.141%2C0%2C0.273-0.061%2C0.362-0.166%20%20%20l3.371-3.877c0.173-0.2%2C0.151-0.502-0.047-0.675c-0.194-0.166-0.508-0.144-0.676%2C0.048l-2.592%2C2.979%20%20%20c-0.18-3.417-1.629-6.605-4.099-9.001c-2.538-2.461-5.877-3.817-9.404-3.817c-0.264%2C0-0.479%2C0.215-0.479%2C0.479%20%20%20C44.72%2C30.083%2C44.936%2C30.296%2C45.201%2C30.296z%22%3E%3C/path%3E%3C/g%3E%3C/svg%3E) center/50% 50% no-repeat rgba(244,244,244,1);bottom:0;font-size:14px;font-weight:600;left:0;line-height:20px;right:0;position:fixed;top:0;z-index:9999999}.a-orientation-modal:after{color:#666;content:\"Insert phone into Cardboard holder.\";display:block;position:absolute;text-align:center;top:70%;transform:translateY(-70%);width:100%}.a-orientation-modal button{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%20version%3D%221.1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%20100%20100%22%20enable-background%3D%22new%200%200%20100%20100%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpath%20fill%3D%22%23000000%22%20d%3D%22M55.209%2C50l17.803-17.803c1.416-1.416%2C1.416-3.713%2C0-5.129c-1.416-1.417-3.713-1.417-5.129%2C0L50.08%2C44.872%20%20L32.278%2C27.069c-1.416-1.417-3.714-1.417-5.129%2C0c-1.417%2C1.416-1.417%2C3.713%2C0%2C5.129L44.951%2C50L27.149%2C67.803%20%20c-1.417%2C1.416-1.417%2C3.713%2C0%2C5.129c0.708%2C0.708%2C1.636%2C1.062%2C2.564%2C1.062c0.928%2C0%2C1.856-0.354%2C2.564-1.062L50.08%2C55.13l17.803%2C17.802%20%20c0.708%2C0.708%2C1.637%2C1.062%2C2.564%2C1.062s1.856-0.354%2C2.564-1.062c1.416-1.416%2C1.416-3.713%2C0-5.129L55.209%2C50z%22%3E%3C/path%3E%3C/svg%3E) no-repeat;border:none;height:50px;text-indent:-9999px;width:50px}.a-loader-title{background-color:rgba(0,0,0,.6);font-family:sans-serif,monospace;text-align:center;font-size:20px;height:50px;font-weight:300;line-height:50px;position:absolute;right:0;left:0;top:0;color:#fff}.a-modal{background:0 0/50% 50% rgba(0,0,0,.6);bottom:0;font-size:14px;font-weight:600;left:0;line-height:20px;right:0;position:fixed;top:0;z-index:9999999}.a-dialog{position:relative;left:50%;top:50%;transform:translate(-50%,-50%);z-index:199995;width:300px;height:200px;background-size:contain;background-color:#fff;font-family:sans-serif,monospace;font-size:20px;border-radius:3px;padding:6px}.a-dialog-text-container{width:100%;height:70%;align-self:flex-start;display:flex;justify-content:center;align-content:center;flex-direction:column}.a-dialog-text{display:inline-block;font-weight:400;font-size:14pt;margin:8px}.a-dialog-buttons-container{display:inline-flex;align-self:flex-end;width:100%;height:30%}.a-dialog-button{cursor:pointer;align-self:center;opacity:.9;height:80%;width:50%;font-size:12pt;margin:4px;border-radius:2px;text-align:center;border:none;display:inline-block;-webkit-transition:all .25s ease-in-out;transition:all .25s ease-in-out;box-shadow:0 1px 3px rgba(0,0,0,.1),0 1px 2px rgba(0,0,0,.2);user-select:none}.a-dialog-permission-button:hover{box-shadow:0 7px 14px rgba(0,0,0,.2),0 2px 2px rgba(0,0,0,.2)}.a-dialog-allow-button{background-color:#00ceff}.a-dialog-deny-button{background-color:#ff005b}.a-dialog-ok-button{background-color:#00ceff;width:100%}"; (_dereq_("browserify-css").createStyle(css, { "href": "src/style/aframe.css"})); module.exports = css;
-},{"browserify-css":4}],183:[function(_dereq_,module,exports){
-var css = ".rs-base{background-color:#333;color:#fafafa;border-radius:0;font:10px monospace;left:5px;line-height:1em;opacity:.85;overflow:hidden;padding:10px;position:fixed;top:5px;width:300px;z-index:10000}.rs-base div.hidden{display:none}.rs-base h1{color:#fff;cursor:pointer;font-size:1.4em;font-weight:300;margin:0 0 5px;padding:0}.rs-group{display:-webkit-box;display:-webkit-flex;display:flex;-webkit-flex-direction:column-reverse;flex-direction:column-reverse;margin-bottom:5px}.rs-group:last-child{margin-bottom:0}.rs-counter-base{align-items:center;display:-webkit-box;display:-webkit-flex;display:flex;height:10px;-webkit-justify-content:space-between;justify-content:space-between;margin:2px 0}.rs-counter-base.alarm{color:#b70000;text-shadow:0 0 0 #b70000,0 0 1px #fff,0 0 1px #fff,0 0 2px #fff,0 0 2px #fff,0 0 3px #fff,0 0 3px #fff,0 0 4px #fff,0 0 4px #fff}.rs-counter-id{font-weight:300;-webkit-box-ordinal-group:0;-webkit-order:0;order:0;width:54px}.rs-counter-value{font-weight:300;-webkit-box-ordinal-group:1;-webkit-order:1;order:1;text-align:right;width:35px}.rs-canvas{-webkit-box-ordinal-group:2;-webkit-order:2;order:2}@media (min-width:480px){.rs-base{left:20px;top:20px}}"; (_dereq_("browserify-css").createStyle(css, { "href": "src/style/rStats.css"})); module.exports = css;
 },{"browserify-css":4}],184:[function(_dereq_,module,exports){
+var css = ".rs-base{background-color:#333;color:#fafafa;border-radius:0;font:10px monospace;left:5px;line-height:1em;opacity:.85;overflow:hidden;padding:10px;position:fixed;top:5px;width:300px;z-index:10000}.rs-base div.hidden{display:none}.rs-base h1{color:#fff;cursor:pointer;font-size:1.4em;font-weight:300;margin:0 0 5px;padding:0}.rs-group{display:-webkit-box;display:-webkit-flex;display:flex;-webkit-flex-direction:column-reverse;flex-direction:column-reverse;margin-bottom:5px}.rs-group:last-child{margin-bottom:0}.rs-counter-base{align-items:center;display:-webkit-box;display:-webkit-flex;display:flex;height:10px;-webkit-justify-content:space-between;justify-content:space-between;margin:2px 0}.rs-counter-base.alarm{color:#b70000;text-shadow:0 0 0 #b70000,0 0 1px #fff,0 0 1px #fff,0 0 2px #fff,0 0 2px #fff,0 0 3px #fff,0 0 3px #fff,0 0 4px #fff,0 0 4px #fff}.rs-counter-id{font-weight:300;-webkit-box-ordinal-group:0;-webkit-order:0;order:0;width:54px}.rs-counter-value{font-weight:300;-webkit-box-ordinal-group:1;-webkit-order:1;order:1;text-align:right;width:35px}.rs-canvas{-webkit-box-ordinal-group:2;-webkit-order:2;order:2}@media (min-width:480px){.rs-base{left:20px;top:20px}}"; (_dereq_("browserify-css").createStyle(css, { "href": "src/style/rStats.css"})); module.exports = css;
+},{"browserify-css":4}],185:[function(_dereq_,module,exports){
 var constants = _dereq_('../constants/');
 var registerSystem = _dereq_('../core/system').registerSystem;
 
@@ -82798,7 +83037,7 @@ function removeDefaultCamera (sceneEl) {
   sceneEl.removeChild(defaultCamera);
 }
 
-},{"../constants/":119,"../core/system":138}],185:[function(_dereq_,module,exports){
+},{"../constants/":120,"../core/system":139}],186:[function(_dereq_,module,exports){
 var geometries = _dereq_('../core/geometry').geometries;
 var registerSystem = _dereq_('../core/system').registerSystem;
 var THREE = _dereq_('../lib/three');
@@ -82938,7 +83177,7 @@ function toBufferGeometry (geometry, doBuffer) {
   return bufferGeometry;
 }
 
-},{"../core/geometry":128,"../core/system":138,"../lib/three":175}],186:[function(_dereq_,module,exports){
+},{"../core/geometry":129,"../core/system":139,"../lib/three":176}],187:[function(_dereq_,module,exports){
 var registerSystem = _dereq_('../core/system').registerSystem;
 var THREE = _dereq_('../lib/three');
 
@@ -82974,7 +83213,7 @@ module.exports.System = registerSystem('gltf-model', {
   }
 });
 
-},{"../core/system":138,"../lib/three":175}],187:[function(_dereq_,module,exports){
+},{"../core/system":139,"../lib/three":176}],188:[function(_dereq_,module,exports){
 _dereq_('./camera');
 _dereq_('./geometry');
 _dereq_('./gltf-model');
@@ -82985,7 +83224,7 @@ _dereq_('./shadow');
 _dereq_('./tracked-controls-webvr');
 _dereq_('./tracked-controls-webxr');
 
-},{"./camera":184,"./geometry":185,"./gltf-model":186,"./light":188,"./material":189,"./renderer":190,"./shadow":191,"./tracked-controls-webvr":192,"./tracked-controls-webxr":193}],188:[function(_dereq_,module,exports){
+},{"./camera":185,"./geometry":186,"./gltf-model":187,"./light":189,"./material":190,"./renderer":191,"./shadow":192,"./tracked-controls-webvr":193,"./tracked-controls-webxr":194}],189:[function(_dereq_,module,exports){
 var registerSystem = _dereq_('../core/system').registerSystem;
 var bind = _dereq_('../utils/bind');
 var constants = _dereq_('../constants/');
@@ -83071,7 +83310,7 @@ module.exports.System = registerSystem('light', {
   }
 });
 
-},{"../constants/":119,"../core/system":138,"../utils/bind":194}],189:[function(_dereq_,module,exports){
+},{"../constants/":120,"../core/system":139,"../utils/bind":195}],190:[function(_dereq_,module,exports){
 var registerSystem = _dereq_('../core/system').registerSystem;
 var THREE = _dereq_('../lib/three');
 var utils = _dereq_('../utils/');
@@ -83476,7 +83715,7 @@ function fixVideoAttributes (videoEl) {
   return videoEl;
 }
 
-},{"../core/system":138,"../lib/three":175,"../utils/":200,"../utils/material":203}],190:[function(_dereq_,module,exports){
+},{"../core/system":139,"../lib/three":176,"../utils/":201,"../utils/material":204}],191:[function(_dereq_,module,exports){
 var registerSystem = _dereq_('../core/system').registerSystem;
 var utils = _dereq_('../utils/');
 var THREE = _dereq_('../lib/three');
@@ -83539,7 +83778,7 @@ module.exports.System = registerSystem('renderer', {
   }
 });
 
-},{"../core/system":138,"../lib/three":175,"../utils/":200}],191:[function(_dereq_,module,exports){
+},{"../core/system":139,"../lib/three":176,"../utils/":201}],192:[function(_dereq_,module,exports){
 var registerSystem = _dereq_('../core/system').registerSystem;
 var THREE = _dereq_('../lib/three');
 
@@ -83594,7 +83833,7 @@ module.exports.System = registerSystem('shadow', {
   }
 });
 
-},{"../core/system":138,"../lib/three":175}],192:[function(_dereq_,module,exports){
+},{"../core/system":139,"../lib/three":176}],193:[function(_dereq_,module,exports){
 var registerSystem = _dereq_('../core/system').registerSystem;
 var utils = _dereq_('../utils');
 var isWebXRAvailable = utils.device.isWebXRAvailable;
@@ -83662,7 +83901,7 @@ module.exports.System = registerSystem('tracked-controls-webvr', {
   }
 });
 
-},{"../core/system":138,"../utils":200}],193:[function(_dereq_,module,exports){
+},{"../core/system":139,"../utils":201}],194:[function(_dereq_,module,exports){
 var registerSystem = _dereq_('../core/system').registerSystem;
 var utils = _dereq_('../utils');
 
@@ -83719,7 +83958,7 @@ module.exports.System = registerSystem('tracked-controls-webxr', {
   }
 });
 
-},{"../core/system":138,"../utils":200}],194:[function(_dereq_,module,exports){
+},{"../core/system":139,"../utils":201}],195:[function(_dereq_,module,exports){
 /**
  * Faster version of Function.prototype.bind
  * @param {Function} fn - Function to wrap.
@@ -83736,7 +83975,7 @@ module.exports = function bind (fn, ctx/* , arg1, arg2 */) {
   })(Array.prototype.slice.call(arguments, 2));
 };
 
-},{}],195:[function(_dereq_,module,exports){
+},{}],196:[function(_dereq_,module,exports){
 /* global THREE */
 var debug = _dereq_('./debug');
 var extend = _dereq_('object-assign');
@@ -83848,7 +84087,7 @@ module.exports.toVector3 = function (vec3) {
   return new THREE.Vector3(vec3.x, vec3.y, vec3.z);
 };
 
-},{"./debug":196,"object-assign":39}],196:[function(_dereq_,module,exports){
+},{"./debug":197,"object-assign":39}],197:[function(_dereq_,module,exports){
 (function (process){
 var debugLib = _dereq_('debug');
 var extend = _dereq_('object-assign');
@@ -83945,7 +84184,7 @@ module.exports = debug;
 
 }).call(this,_dereq_('_process'))
 
-},{"_process":49,"debug":8,"object-assign":39}],197:[function(_dereq_,module,exports){
+},{"_process":49,"debug":8,"object-assign":39}],198:[function(_dereq_,module,exports){
 (function (process){
 var error = _dereq_('debug')('device:error');
 
@@ -84138,7 +84377,7 @@ module.exports.isNodeEnvironment = !module.exports.isBrowserEnvironment;
 
 }).call(this,_dereq_('_process'))
 
-},{"_process":49,"debug":8}],198:[function(_dereq_,module,exports){
+},{"_process":49,"debug":8}],199:[function(_dereq_,module,exports){
 /**
  * Split a delimited component property string (e.g., `material.color`) to an object
  * containing `component` name and `property` name. If there is no delimiter, just return the
@@ -84200,7 +84439,7 @@ module.exports.setComponentProperty = function (el, name, value, delimiter) {
   el.setAttribute(name, value);
 };
 
-},{}],199:[function(_dereq_,module,exports){
+},{}],200:[function(_dereq_,module,exports){
 module.exports = function forceCanvasResizeSafariMobile (canvasEl) {
   var width = canvasEl.style.width;
   var height = canvasEl.style.height;
@@ -84216,7 +84455,7 @@ module.exports = function forceCanvasResizeSafariMobile (canvasEl) {
   }, 200);
 };
 
-},{}],200:[function(_dereq_,module,exports){
+},{}],201:[function(_dereq_,module,exports){
 /* global location */
 
 /* Centralized place to reference utilities since utils is exposed to the user. */
@@ -84546,7 +84785,7 @@ module.exports.findAllScenes = function (el) {
 // Must be at bottom to avoid circular dependency.
 module.exports.srcLoader = _dereq_('./src-loader');
 
-},{"./bind":194,"./coordinates":195,"./debug":196,"./device":197,"./entity":198,"./forceCanvasResizeSafariMobile":199,"./is-ie11":201,"./material":203,"./object-pool":204,"./split":205,"./src-loader":206,"./styleParser":207,"./tracked-controls":208,"deep-assign":10,"object-assign":39}],201:[function(_dereq_,module,exports){
+},{"./bind":195,"./coordinates":196,"./debug":197,"./device":198,"./entity":199,"./forceCanvasResizeSafariMobile":200,"./is-ie11":202,"./material":204,"./object-pool":205,"./split":206,"./src-loader":207,"./styleParser":208,"./tracked-controls":209,"deep-assign":10,"object-assign":39}],202:[function(_dereq_,module,exports){
 // https://stackoverflow.com/a/17907562
 function getInternetExplorerVersion () {
   var version = -1;
@@ -84564,7 +84803,7 @@ function getInternetExplorerVersion () {
 
 module.exports = getInternetExplorerVersion() === 11;
 
-},{}],202:[function(_dereq_,module,exports){
+},{}],203:[function(_dereq_,module,exports){
 /**
  * Check if device is iOS and older than version 10.
  */
@@ -84572,7 +84811,7 @@ module.exports = function isIOSOlderThan10 (userAgent) {
   return /(iphone|ipod|ipad).*os.(7_|8_|9_)/i.test(userAgent);
 };
 
-},{}],203:[function(_dereq_,module,exports){
+},{}],204:[function(_dereq_,module,exports){
 var THREE = _dereq_('../lib/three');
 
 var HLS_MIMETYPES = ['application/x-mpegurl', 'application/vnd.apple.mpegurl'];
@@ -84743,7 +84982,7 @@ module.exports.isHLS = function (src, type) {
   return false;
 };
 
-},{"../lib/three":175}],204:[function(_dereq_,module,exports){
+},{"../lib/three":176}],205:[function(_dereq_,module,exports){
 /*
   Adapted deePool by Kyle Simpson.
   MIT License: http://getify.mit-license.org
@@ -84834,7 +85073,7 @@ function removeUnusedKeys (obj, schema) {
 }
 module.exports.removeUnusedKeys = removeUnusedKeys;
 
-},{}],205:[function(_dereq_,module,exports){
+},{}],206:[function(_dereq_,module,exports){
 /**
  * String split with cached result.
  */
@@ -84851,7 +85090,7 @@ module.exports.split = (function () {
   };
 })();
 
-},{}],206:[function(_dereq_,module,exports){
+},{}],207:[function(_dereq_,module,exports){
 /* global Image, XMLHttpRequest */
 var debug = _dereq_('./debug');
 
@@ -85010,7 +85249,7 @@ module.exports = {
   validateCubemapSrc: validateCubemapSrc
 };
 
-},{"./debug":196}],207:[function(_dereq_,module,exports){
+},{"./debug":197}],208:[function(_dereq_,module,exports){
 /**
  * Utils for parsing style-like strings (e.g., "primitive: box; width: 5; height: 4.5").
  * Some code adapted from `style-attr` (https://github.com/joshwnj/style-attr)
@@ -85163,7 +85402,7 @@ function styleStringify (obj) {
 
 function upperCase (str) { return str[1].toUpperCase(); }
 
-},{}],208:[function(_dereq_,module,exports){
+},{}],209:[function(_dereq_,module,exports){
 var DEFAULT_HANDEDNESS = _dereq_('../constants').DEFAULT_HANDEDNESS;
 var AXIS_LABELS = ['x', 'y', 'z', 'w'];
 var NUM_HANDS = 2;  // Number of hands in a pair. Should always be 2.
@@ -85402,7 +85641,7 @@ module.exports.onButtonEvent = function (id, evtName, component, hand) {
   }
 };
 
-},{"../constants":119}],209:[function(_dereq_,module,exports){
+},{"../constants":120}],210:[function(_dereq_,module,exports){
 /**
  * @author richt / http://richt.me
  * @author WestLangley / http://github.com/WestLangley
@@ -85515,7 +85754,7 @@ THREE.DeviceOrientationControls = function ( object ) {
 
 };
 
-},{}],210:[function(_dereq_,module,exports){
+},{}],211:[function(_dereq_,module,exports){
 window.glStats = function () {
 
     var _rS = null;
@@ -85776,7 +86015,7 @@ if (typeof module === 'object') {
   };
 }
 
-},{}],211:[function(_dereq_,module,exports){
+},{}],212:[function(_dereq_,module,exports){
 // performance.now() polyfill from https://gist.github.com/paulirish/5438650
 'use strict';
 
@@ -86231,7 +86470,7 @@ if (typeof module === 'object') {
   module.exports = window.rStats;
 }
 
-},{}],212:[function(_dereq_,module,exports){
+},{}],213:[function(_dereq_,module,exports){
 // https://stackoverflow.com/a/36213464
 if (!String.prototype.startsWith) {
     String.prototype.startsWith = function(searchString, position){
@@ -86240,7 +86479,7 @@ if (!String.prototype.startsWith) {
   };
 }
 
-},{}],213:[function(_dereq_,module,exports){
+},{}],214:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -86302,7 +86541,7 @@ Util.isLandscapeMode = function() {
 
 module.exports = Util;
 
-},{}],214:[function(_dereq_,module,exports){
+},{}],215:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -86378,6 +86617,6 @@ function getWakeLock() {
 
 module.exports = getWakeLock();
 
-},{"./util.js":213}]},{},[173])(173)
+},{"./util.js":214}]},{},[174])(174)
 });
 //# sourceMappingURL=aframe-master.js.map
