@@ -20,20 +20,9 @@ var DEFAULT_CONFIG = {
   }
 };
 
-function deepMerge (carry, toMerge) {
-  var keys = Object.keys(toMerge);
-  for (var i in keys) {
-    var key = keys[i];
-    if (typeof carry[key] === 'object') {
-      deepMerge(carry[key], toMerge[key]);
-    } else {
-      carry[key] = toMerge[key];
-    }
-  }
-  return carry;
-}
+var extendDeep = require('./utils').extendDeep;
 
-var finalConfig = deepMerge(DEFAULT_CONFIG, window.AFRAME_CONFIG);
+var finalConfig = extendDeep({}, DEFAULT_CONFIG, window.AFRAME_CONFIG);
 
 console.log({ finalConfig });
 
