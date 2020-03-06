@@ -1,6 +1,3 @@
-// Package metadata
-var pkg = require('../package');
-
 window.AFRAME_CONFIG = require('./config');
 
 // Polyfill `Promise`.
@@ -34,8 +31,8 @@ var warn = debug('A-Frame:warn');
 if (window.AFRAME_CONFIG.debug.warnIfNotHead && window.document.currentScript && window.document.currentScript.parentNode !==
     window.document.head && !window.debug) {
   warn('Put the A-Frame <script> tag in the <head> of the HTML *before* the scene to ' +
-      'ensure everything for A-Frame is properly registered before they are used from ' +
-      'HTML.');
+       'ensure everything for A-Frame is properly registered before they are used from ' +
+       'HTML.');
 }
 
 // Error if not using a server.
@@ -44,7 +41,7 @@ if (window.AFRAME_CONFIG.debug.warnIfFileProtocol && window.location.protocol ==
     'This HTML file is currently being served via the file:// protocol. ' +
     'Assets, textures, and models WILL NOT WORK due to cross-origin policy! ' +
     'Please use a local or hosted server: ' +
-    'https://aframe.io/docs/' + pkg.version + '/introduction/installation.html#use-a-local-server.');
+    'https://aframe.io/docs/0.5.0/introduction/getting-started.html#using-a-local-server.');
 }
 
 require('present'); // Polyfill `performance.now()`.
@@ -67,6 +64,8 @@ var shaders = require('./core/shader').shaders;
 var systems = require('./core/system').systems;
 // Exports THREE to window so three.js can be used without alteration.
 var THREE = window.THREE = require('./lib/three');
+
+var pkg = require('../package');
 
 require('./components/index'); // Register standard components.
 require('./geometries/index'); // Register standard geometries.
