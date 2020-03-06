@@ -24,6 +24,4 @@ var extendDeep = require('./utils').extendDeep;
 
 var finalConfig = extendDeep({}, DEFAULT_CONFIG, window.AFRAME_CONFIG);
 
-console.log({ finalConfig });
-
 module.exports = finalConfig;

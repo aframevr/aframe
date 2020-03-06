@@ -116,4 +116,3 @@ module.exports = window.AFRAME = {
 };
 
 document.dispatchEvent(new window.Event('aframe-ready'));
-console.log('A-Frame is ready.');
