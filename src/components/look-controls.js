@@ -29,9 +29,6 @@ module.exports.Component = registerComponent('look-controls', {
     this.magicWindowAbsoluteEuler = new THREE.Euler();
     this.magicWindowDeltaEuler = new THREE.Euler();
     this.position = new THREE.Vector3();
-    // To save / restore camera pose
-    this.savedRotation = new THREE.Vector3();
-    this.savedPosition = new THREE.Vector3();
     this.magicWindowObject = new THREE.Object3D();
     this.rotation = {};
     this.deltaRotation = {};
@@ -42,6 +39,7 @@ module.exports.Component = registerComponent('look-controls', {
 
     this.setupMagicWindowControls();
 
+    // To save / restore camera pose
     this.savedPose = {
       position: new THREE.Vector3(),
       rotation: new THREE.Euler()
