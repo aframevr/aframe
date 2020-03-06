@@ -10,7 +10,7 @@ var isWebXRAvailable = require('../utils/').device.isWebXRAvailable;
 var GAMEPAD_ID_WEBXR = 'oculus-go';
 var GAMEPAD_ID_WEBVR = 'Oculus Go';
 
-var OCULUS_GO_CONTROLLER_MODEL_URL = 'https://cdn.aframe.io/controllers/oculus/go/oculus-go-controller.gltf';
+var OCULUS_GO_CONTROLLER_MODEL_URL = window.AFRAME_CONFIG.ASSET_BASE_URL + 'controllers/oculus/go/oculus-go-controller.gltf';
 
 // Prefix for Gen1 and Gen2 Oculus Touch Controllers.
 var GAMEPAD_ID_PREFIX = isWebXRAvailable ? GAMEPAD_ID_WEBXR : GAMEPAD_ID_WEBVR;

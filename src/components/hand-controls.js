@@ -3,12 +3,12 @@ var registerComponent = require('../core/component').registerComponent;
 
 // Found at https://github.com/aframevr/assets.
 var MODEL_URLS = {
-  toonLeft: 'https://cdn.aframe.io/controllers/hands/leftHand.glb',
-  toonRight: 'https://cdn.aframe.io/controllers/hands/rightHand.glb',
-  lowPolyLeft: 'https://cdn.aframe.io/controllers/hands/leftHandLow.glb',
-  lowPolyRight: 'https://cdn.aframe.io/controllers/hands/rightHandLow.glb',
-  highPolyLeft: 'https://cdn.aframe.io/controllers/hands/leftHandHigh.glb',
-  highPolyRight: 'https://cdn.aframe.io/controllers/hands/rightHandHigh.glb'
+  toonLeft: window.AFRAME_CONFIG.ASSET_BASE_URL + 'controllers/hands/leftHand.glb',
+  toonRight: window.AFRAME_CONFIG.ASSET_BASE_URL + 'controllers/hands/rightHand.glb',
+  lowPolyLeft: window.AFRAME_CONFIG.ASSET_BASE_URL + 'controllers/hands/leftHandLow.glb',
+  lowPolyRight: window.AFRAME_CONFIG.ASSET_BASE_URL + 'controllers/hands/rightHandLow.glb',
+  highPolyLeft: window.AFRAME_CONFIG.ASSET_BASE_URL + 'controllers/hands/leftHandHigh.glb',
+  highPolyRight: window.AFRAME_CONFIG.ASSET_BASE_URL + 'controllers/hands/rightHandHigh.glb'
 };
 
 // Poses.

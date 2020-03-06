@@ -13,7 +13,7 @@ var GAMEPAD_ID_PREFIX = 'magicleap';
 var GAMEPAD_ID_SUFFIX = '-one';
 var GAMEPAD_ID_COMPOSITE = GAMEPAD_ID_PREFIX + GAMEPAD_ID_SUFFIX;
 
-var MAGICLEAP_CONTROLLER_MODEL_GLB_URL = 'https://cdn.aframe.io/controllers/magicleap/magicleap-one-controller.glb';
+var MAGICLEAP_CONTROLLER_MODEL_GLB_URL = window.AFRAME_CONFIG.ASSET_BASE_URL + 'controllers/magicleap/magicleap-one-controller.glb';
 
 /**
  * Button IDs:

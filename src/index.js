@@ -1,6 +1,8 @@
 // Package metadata
 var pkg = require('../package');
 
+window.AFRAME_CONFIG = require('./config');
+
 // Polyfill `Promise`.
 window.Promise = window.Promise || require('promise-polyfill');
 
@@ -12,21 +14,8 @@ window.hasNativeWebXRImplementation = navigator.xr !== undefined;
 
 // If native WebXR or WebVR are defined WebVRPolyfill does not initialize.
 if (!window.hasNativeWebXRImplementation && !window.hasNativeWebVRImplementation) {
-  var isIOSOlderThan10 = require('./utils/isIOSOlderThan10');
-  // Workaround for iOS Safari canvas sizing issues in stereo (webvr-polyfill/issues/102).
-  // Only for iOS on versions older than 10.
-  var bufferScale = isIOSOlderThan10(window.navigator.userAgent) ? 1 / window.devicePixelRatio : 1;
   var WebVRPolyfill = require('webvr-polyfill');
-  var polyfillConfig = {
-    BUFFER_SCALE: bufferScale,
-    CARDBOARD_UI_DISABLED: true,
-    ROTATE_INSTRUCTIONS_DISABLED: true
-  };
-  if (window.cordova) {
-    polyfillConfig.DPDB_URL = null;
-    polyfillConfig.MOBILE_WAKE_LOCK = false;
-  }
-  window.webvrpolyfill = new WebVRPolyfill(polyfillConfig);
+  window.webvrpolyfill = new WebVRPolyfill(window.AFRAME_CONFIG.polyfillConfig);
 }
 
 var utils = require('./utils/');
@@ -42,28 +31,26 @@ if (utils.isIE11) {
 var error = debug('A-Frame:error');
 var warn = debug('A-Frame:warn');
 
-if (!window.cordova) {
-  if (window.document.currentScript && window.document.currentScript.parentNode !==
-      window.document.head && !window.debug) {
-    warn('Put the A-Frame <script> tag in the <head> of the HTML *before* the scene to ' +
-        'ensure everything for A-Frame is properly registered before they are used from ' +
-        'HTML.');
-  }
+if (window.AFRAME_CONFIG.debug.warnIfNotHead && window.document.currentScript && window.document.currentScript.parentNode !==
+    window.document.head && !window.debug) {
+  warn('Put the A-Frame <script> tag in the <head> of the HTML *before* the scene to ' +
+      'ensure everything for A-Frame is properly registered before they are used from ' +
+      'HTML.');
+}
 
-  // Error if not using a server.
-  if (window.location.protocol === 'file:') {
-    error(
-      'This HTML file is currently being served via the file:// protocol. ' +
-      'Assets, textures, and models WILL NOT WORK due to cross-origin policy! ' +
-      'Please use a local or hosted server: ' +
-      'https://aframe.io/docs/' + pkg.version + '/introduction/installation.html#use-a-local-server.');
-  }
+// Error if not using a server.
+if (window.AFRAME_CONFIG.debug.warnIfFileProtocol && window.location.protocol === 'file:') {
+  error(
+    'This HTML file is currently being served via the file:// protocol. ' +
+    'Assets, textures, and models WILL NOT WORK due to cross-origin policy! ' +
+    'Please use a local or hosted server: ' +
+    'https://aframe.io/docs/' + pkg.version + '/introduction/installation.html#use-a-local-server.');
 }
 
 require('present'); // Polyfill `performance.now()`.
 
 // CSS.
-if (utils.device.isBrowserEnvironment || window.cordova) {
+if (utils.device.isBrowserEnvironment) {
   require('./style/aframe.css');
   require('./style/rStats.css');
 }
@@ -128,3 +115,6 @@ module.exports = window.AFRAME = {
   utils: utils,
   version: pkg.version
 };
+
+document.dispatchEvent(new window.Event('aframe-ready'));
+console.log('A-Frame is ready.');
