@@ -126,4 +126,47 @@ npm install -g angle && angle initscene
 
 ## Cordova Development
 
-See [cordova-plugin-aframe](https://github.com/benallfree/cordova-plugin-aframe).
+A-Frame is compatible with Cordova apps. Currently, network access is required as A-Frame and its dependencies load assets from CDN sources.
+
+### Installation
+
+Install the [cordova-plugin-xhr-local-file](https://github.com/benallfree/cordova-plugin-xhr-local-file) plugin.
+
+```bash
+cordova plugin add cordova-plugin-xhr-local-file
+```
+
+In your `index.html`, adjust as follows:
+
+```html
+<head>
+  <meta
+        http-equiv="Content-Security-Policy"
+        content="
+          default-src 
+            'self' 
+            data: 
+            gap: 
+            https://ssl.gstatic.com 
+            'unsafe-eval' 
+            https://cdn.aframe.io         <-- required
+            https://dpdb.webvr.rocks      <-- required
+            https://fonts.googleapis.com  <-- required
+            https://cdn.jsdelivr.net      <-- your choice, see below
+            ; 
+          style-src 
+            'self' 
+            'unsafe-inline'
+            ; 
+          media-src *; 
+          img-src 
+            'self' 
+            data:                         <-- required
+            content:                      <-- required
+            ;
+        "
+      />
+  ...
+  <script src="https://cdn.jsdelivr.net/npm/aframe@1.0.4/dist/aframe-master.min.js"></script>
+</head>
+```
