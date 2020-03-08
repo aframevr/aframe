@@ -50,6 +50,9 @@ require('present'); // Polyfill `performance.now()`.
 if (utils.device.isBrowserEnvironment) {
   require('./style/aframe.css');
   require('./style/rStats.css');
+  if (window.cordova) {
+    require('./style/cordova.css');
+  }
 }
 
 // Required before `AEntity` so that all components are registered.
@@ -114,5 +117,3 @@ module.exports = window.AFRAME = {
   utils: utils,
   version: pkg.version
 };
-
-document.dispatchEvent(new window.Event('aframe-ready'));
