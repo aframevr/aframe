@@ -128,6 +128,8 @@ npm install -g angle && angle initscene
 
 A-Frame is compatible with Cordova apps. Currently, network access is required as A-Frame and its dependencies load assets from CDN sources.
 
+[Cordova A-Frame Showcase App (demo)](https://github.com/benallfree/cordova-aframe-showcase)
+
 ### Installation
 
 Install the [cordova-plugin-xhr-local-file](https://github.com/benallfree/cordova-plugin-xhr-local-file) plugin. This is needed because
@@ -164,6 +166,7 @@ In your `index.html`, adjust as follows:
             'self' 
             data:                         <-- required
             content:                      <-- required
+            blob:                         <-- required
             ;
         "
       />
