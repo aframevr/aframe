@@ -36,7 +36,7 @@ if (utils.isIE11) {
 var error = debug('A-Frame:error');
 var warn = debug('A-Frame:warn');
 
-if (!window.cordova && window.document.currentScript && window.document.currentScript.parentNode !==
+if (window.document.currentScript && window.document.currentScript.parentNode !==
     window.document.head && !window.debug) {
   warn('Put the A-Frame <script> tag in the <head> of the HTML *before* the scene to ' +
        'ensure everything for A-Frame is properly registered before they are used from ' +
