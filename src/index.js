@@ -44,7 +44,7 @@ if (window.document.currentScript && window.document.currentScript.parentNode !=
 }
 
 // Error if not using a server.
-if (window.location.protocol === 'file:') {
+if (!window.cordova && window.location.protocol === 'file:') {
   error(
     'This HTML file is currently being served via the file:// protocol. ' +
     'Assets, textures, and models WILL NOT WORK due to cross-origin policy! ' +
