@@ -44,7 +44,7 @@ if (window.document.currentScript && window.document.currentScript.parentNode !=
 }
 
 // Error if not using a server.
-if (!window.cordova && window.location.protocol === 'file:') {
+if (window.location.protocol === 'file:') {
   error(
     'This HTML file is currently being served via the file:// protocol. ' +
     'Assets, textures, and models WILL NOT WORK due to cross-origin policy! ' +
@@ -58,9 +58,6 @@ require('present'); // Polyfill `performance.now()`.
 if (utils.device.isBrowserEnvironment) {
   require('./style/aframe.css');
   require('./style/rStats.css');
-  if (window.cordova) {
-    require('./style/cordova.css');
-  }
 }
 
 // Required before `AEntity` so that all components are registered.
