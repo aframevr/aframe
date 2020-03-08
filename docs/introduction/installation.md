@@ -130,6 +130,13 @@ A-Frame is compatible with Cordova apps. Currently, network access is required a
 
 ### Installation
 
+Install the [cordova-plugin-xhr-local-file](https://github.com/benallfree/cordova-plugin-xhr-local-file) plugin. This is needed because
+Cordova runs from `file://`, and XHR requests to local `file://` assets (JSON fonts, 3D models, etc) will fail without this plugin.
+
+```bash
+cordova plugin add cordova-plugin-xhr-local-file
+```
+
 In your `index.html`, adjust as follows:
 
 ```html
