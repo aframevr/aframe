@@ -172,5 +172,38 @@ In your `index.html`, adjust as follows:
       />
   ...
   <script src="https://cdn.jsdelivr.net/npm/aframe@1.0.4/dist/aframe-master.min.js"></script>
+  <script id='my-scene' type="text/html">
+    ...your scene goes here...
+  </script>
+  <script>
+    document.addEventListener('deviceready', function() {
+      // After the 'deviceready' event, Cordova is ready for you to render your A-Frame scene.
+      document.getElementById('scene-root').innerHTML = document.getElementById('my-scene').innerHTML
+    })
 </head>
+<body>
+  <div id='scene-root'></div>
+  ...
+</body>
 ```
+
+### Discussion
+
+
+#### deviceready
+The most important difference between a browser environment and a Cordova environment is waiting for the `deviceready` event
+before rendering your scene. 
+
+The sample above shows a pure DOM+JS approach, but you can also use a framework like React:
+
+```javascript
+document.addEventListener('deviceready', () => {
+  ReactDOM.render(<Root />, document.getElementById('root'))
+})
+```
+
+#### Layout
+
+Depending on your target device, you may find that A-Frame's default CSS causes certain buttons and controls to appear out of
+position or too close to the edge of the phone screen. Supply your own CSS overrides to adjust positioning to fit
+the target device.
