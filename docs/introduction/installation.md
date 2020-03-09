@@ -180,6 +180,7 @@ In your `index.html`, adjust as follows:
       // After the 'deviceready' event, Cordova is ready for you to render your A-Frame scene.
       document.getElementById('scene-root').innerHTML = document.getElementById('my-scene').innerHTML
     })
+  </script>
 </head>
 <body>
   <div id='scene-root'></div>
