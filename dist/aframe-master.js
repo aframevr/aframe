@@ -79575,7 +79575,7 @@ module.exports.AScene = registerElement('a-scene', {
           if (self.isIOS) {
             setTimeout(self.resize, 100);
           } else {
-            resize();
+            self.resize();
           }
         });
         this.play();
@@ -82138,7 +82138,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 1.0.4 (Date 2020-03-06, Commit #9790fec7)');
+console.log('A-Frame Version: 1.0.4 (Date 2020-03-11, Commit #ad641ee3)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
