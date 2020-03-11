@@ -150,7 +150,7 @@ module.exports.AScene = registerElement('a-scene', {
           if (self.isIOS) {
             setTimeout(self.resize, 100);
           } else {
-            resize();
+            self.resize();
           }
         });
         this.play();
