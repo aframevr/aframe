@@ -34,6 +34,7 @@ module.exports.Component = registerComponent('tracked-controls', {
         index: data.controller,
         iterateControllerProfiles: data.iterateControllerProfiles
       });
+      el.components["tracked-controls-webxr"].updateController();
     } else {
       el.setAttribute('tracked-controls-webvr', data);
     }
