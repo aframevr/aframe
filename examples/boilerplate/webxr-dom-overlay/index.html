@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Hello, World! • A-Frame</title>
+    <title>Hello, DOM Overlay! • A-Frame</title>
     <meta name="description" content="Hello, World! • A-Frame">
     <script src="../../../dist/aframe-master.js"></script>
     <style>
@@ -50,7 +50,7 @@
       <button id="exit-ar">Exit AR</button>
     </div>
     <a-scene background="color: #ECECEC"
-             dom-overlay="required: true; rootElement: #overlay">
+             webxr="optionalFeatures: dom-overlay; overlayElement: #overlay">
       <a-entity exit-ar-button="element: #exit-ar"></a-entity>
       <a-box position="-1 0.5 -3" rotation="0 45 0" color="#4CC3D9" shadow></a-box>
       <a-sphere position="0 1.25 -5" radius="1.25" color="#EF2D5E" shadow></a-sphere>

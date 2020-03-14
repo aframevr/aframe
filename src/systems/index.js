@@ -7,4 +7,4 @@ require('./renderer');
 require('./shadow');
 require('./tracked-controls-webvr');
 require('./tracked-controls-webxr');
-require('./dom-overlay');  // needs to be after "renderer"
+require('./webxr');
