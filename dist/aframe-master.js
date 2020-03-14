@@ -82138,7 +82138,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 1.0.4 (Date 2020-03-14, Commit #ccd877c3)');
+console.log('A-Frame Version: 1.0.4 (Date 2020-03-14, Commit #4ccb1922)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
@@ -83996,7 +83996,7 @@ module.exports.System = registerSystem('webxr', {
     if (feature === 'viewer' || feature === 'local') return true;
 
     if (this.sessionConfiguration.requiredFeatures.includes(feature) ||
-        this.sessionConfiguration.requiredFeatures.includes(feature)) {
+        this.sessionConfiguration.optionalFeatures.includes(feature)) {
       return true;
     }
 
