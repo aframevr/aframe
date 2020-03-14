@@ -38,7 +38,7 @@ module.exports.System = registerSystem('tracked-controls-webxr', {
       console.warn('Failed to get reference space "' + refspace + '": ' + err);
       self.el.sceneEl.systems.webxr.warnIfFeatureNotRequested(
           refspace,
-          "tracked-controls-webxr uses reference space '" + refspace + "'.");
+          'tracked-controls-webxr uses reference space "' + refspace + '".');
     });
   },
 

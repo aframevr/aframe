@@ -36,11 +36,11 @@ module.exports.System = registerSystem('webxr', {
     return false;
   },
 
-  warnIfFeatureNotRequested: function (feature, opt_intro) {
+  warnIfFeatureNotRequested: function (feature, optIntro) {
     if (!this.wasFeatureRequested(feature)) {
-      var msg = "Please add the feature '" + feature + "' to a-scene's " +
-          "webxr system options in requiredFeatures/optionalFeatures.";
-      console.warn((opt_intro ? opt_intro + ' ' : '') + msg);
+      var msg = 'Please add the feature "' + feature + '" to a-scene\'s ' +
+          'webxr system options in requiredFeatures/optionalFeatures.';
+      console.warn((optIntro ? optIntro + ' ' : '') + msg);
     }
   }
 });
