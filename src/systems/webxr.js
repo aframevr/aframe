@@ -29,7 +29,7 @@ module.exports.System = registerSystem('webxr', {
     if (feature === 'viewer' || feature === 'local') return true;
 
     if (this.sessionConfiguration.requiredFeatures.includes(feature) ||
-        this.sessionConfiguration.requiredFeatures.includes(feature)) {
+        this.sessionConfiguration.optionalFeatures.includes(feature)) {
       return true;
     }
 
