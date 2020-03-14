@@ -11,11 +11,11 @@ module.exports.System = registerSystem('webxr', {
   },
 
   update: function () {
-    var data =  this.data;
+    var data = this.data;
     this.sessionConfiguration = {
       requiredFeatures: data.requiredFeatures,
       optionalFeatures: data.optionalFeatures
-    }
+    };
 
     if (data.overlayElement) {
       this.warnIfFeatureNotRequested('dom-overlay');
@@ -26,7 +26,7 @@ module.exports.System = registerSystem('webxr', {
   wasFeatureRequested: function (feature) {
     // Features available by default for immersive sessions don't need to
     // be requested explicitly.
-    if (feature == 'viewer' || feature == 'local') return true;
+    if (feature === 'viewer' || feature === 'local') return true;
 
     if (this.sessionConfiguration.requiredFeatures.includes(feature) ||
         this.sessionConfiguration.requiredFeatures.includes(feature)) {
