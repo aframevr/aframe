@@ -26,11 +26,41 @@ them.
 
 | Property                | Description                                                    | Default Value |
 |-------------------------|----------------------------------------------------------------|---------------|
+| referenceSpaceType      | The scene's reference space type for camera and controllers.   | local-floor   |
 | requiredFeatures        | Required WebXR session features.                               | local-floor   |
 | optionalFeatures        | Optional WebXR session features.                               | bounded-floor |
 | overlayElement          | Element selector for use as a WebXR DOM Overlay in AR mode.    | null          |
 
 > **NOTE:** Once the scene is initialized, these properties may no longer be changed.
+
+### referenceSpaceType
+
+Name of the reference space used by default for the scene, must be one of the
+entries in [reference space names](https://immersive-web.github.io/webxr/#xrreferencespace).
+
+| Name | Description |
+|------|-------------|
+| viewer | Rigidly attached to the camera and moves/rotates with it |
+| local | Origin is an arbitrary point close to the user's head location at session start. |
+| local-floor | Origin is an arbitrary point close to the user's feet at session start. |
+| bounded-floor | Same as local-floor, but supports room-scale tracking with safety bounds. |
+| unbounded | Same as local, but supports large-scale movement beyond ~5 meters / 15 feet. |
+
+The default 'local-floor' should work reasonably well on all systems, but please
+be aware that the floor position may be a rough estimate for 3DoF VR systems, or
+for handheld AR. For AR applications that need accurate floor location, it's
+recommended to use type 'local' along with world hit testing or plane detection.
+
+Make sure the reference space name is included in `requiredFeatures`. ('viewer' and
+'local' are automatically available, all others must be requested as features.)
+
+Applications are free to use additional reference spaces internally, but it's
+important that the viewer (camera) and controllers are consistent.
+
+For consistency when used in components, this name is available as
+`sceneEl.systems.webxr.sessionReferenceSpaceType`, and the corresponding
+reference space object is available during the XR session as
+`sceneEl.systems['tracked-controls-webxr'].referenceSpace`.
 
 ### requiredFeatures
 

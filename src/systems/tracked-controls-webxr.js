@@ -31,7 +31,7 @@ module.exports.System = registerSystem('tracked-controls-webxr', {
       }
       return;
     }
-    var refspace = 'local-floor';
+    var refspace = self.el.sceneEl.systems.webxr.sessionReferenceSpaceType;
     xrSession.requestReferenceSpace(refspace).then(function (referenceSpace) {
       self.referenceSpace = referenceSpace;
     }).catch(function (err) {

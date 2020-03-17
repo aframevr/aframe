@@ -5,6 +5,7 @@ var registerSystem = require('../core/system').registerSystem;
  */
 module.exports.System = registerSystem('webxr', {
   schema: {
+    referenceSpaceType: {type: 'string', default: ['local-floor']},
     requiredFeatures: {type: 'array', default: ['local-floor']},
     optionalFeatures: {type: 'array', default: ['bounded-floor']},
     overlayElement: {type: 'selector'}
@@ -16,6 +17,7 @@ module.exports.System = registerSystem('webxr', {
       requiredFeatures: data.requiredFeatures,
       optionalFeatures: data.optionalFeatures
     };
+    this.sessionReferenceSpaceType = data.referenceSpaceType;
 
     if (data.overlayElement) {
       this.warnIfFeatureNotRequested('dom-overlay');
