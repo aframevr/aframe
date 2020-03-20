@@ -79713,6 +79713,8 @@ module.exports.AScene = registerElement('a-scene', {
             if (this.xrSession) {
               this.xrSession.removeEventListener('end', this.exitVRBound);
             }
+            var refspace = this.sceneEl.systems.webxr.sessionReferenceSpaceType;
+            vrManager.setReferenceSpaceType(refspace);
             var xrMode = useAR ? 'immersive-ar' : 'immersive-vr';
             var xrInit = this.sceneEl.systems.webxr.sessionConfiguration;
             navigator.xr.requestSession(xrMode, xrInit).then(
@@ -82142,7 +82144,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 1.0.4 (Date 2020-03-20, Commit #dd764e12)');
+console.log('A-Frame Version: 1.0.4 (Date 2020-03-20, Commit #a52d7e77)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
@@ -83939,14 +83941,14 @@ module.exports.System = registerSystem('tracked-controls-webxr', {
       }
       return;
     }
-    var refspace = 'local-floor';
+    var refspace = self.el.sceneEl.systems.webxr.sessionReferenceSpaceType;
     xrSession.requestReferenceSpace(refspace).then(function (referenceSpace) {
       self.referenceSpace = referenceSpace;
     }).catch(function (err) {
-      console.warn('Failed to get reference space "' + refspace + '": ' + err);
       self.el.sceneEl.systems.webxr.warnIfFeatureNotRequested(
           refspace,
           'tracked-controls-webxr uses reference space "' + refspace + '".');
+      throw err;
     });
   },
 
@@ -83971,11 +83973,15 @@ module.exports.System = registerSystem('tracked-controls-webxr', {
 },{"../core/system":139,"../utils":202}],195:[function(_dereq_,module,exports){
 var registerSystem = _dereq_('../core/system').registerSystem;
 
+var utils = _dereq_('../utils/');
+var warn = utils.debug('systems:webxr:warn');
+
 /**
  * WebXR session initialization and XR module support.
  */
 module.exports.System = registerSystem('webxr', {
   schema: {
+    referenceSpaceType: {type: 'string', default: 'local-floor'},
     requiredFeatures: {type: 'array', default: ['local-floor']},
     optionalFeatures: {type: 'array', default: ['bounded-floor']},
     overlayElement: {type: 'selector'}
@@ -83987,6 +83993,7 @@ module.exports.System = registerSystem('webxr', {
       requiredFeatures: data.requiredFeatures,
       optionalFeatures: data.optionalFeatures
     };
+    this.sessionReferenceSpaceType = data.referenceSpaceType;
 
     if (data.overlayElement) {
       this.warnIfFeatureNotRequested('dom-overlay');
@@ -84011,12 +84018,12 @@ module.exports.System = registerSystem('webxr', {
     if (!this.wasFeatureRequested(feature)) {
       var msg = 'Please add the feature "' + feature + '" to a-scene\'s ' +
           'webxr system options in requiredFeatures/optionalFeatures.';
-      console.warn((optIntro ? optIntro + ' ' : '') + msg);
+      warn((optIntro ? optIntro + ' ' : '') + msg);
     }
   }
 });
 
-},{"../core/system":139}],196:[function(_dereq_,module,exports){
+},{"../core/system":139,"../utils/":202}],196:[function(_dereq_,module,exports){
 /**
  * Faster version of Function.prototype.bind
  * @param {Function} fn - Function to wrap.
