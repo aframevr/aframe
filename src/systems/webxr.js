@@ -1,5 +1,8 @@
 var registerSystem = require('../core/system').registerSystem;
 
+var utils = require('../utils/');
+var warn = utils.debug('systems:webxr:warn');
+
 /**
  * WebXR session initialization and XR module support.
  */
@@ -42,7 +45,7 @@ module.exports.System = registerSystem('webxr', {
     if (!this.wasFeatureRequested(feature)) {
       var msg = 'Please add the feature "' + feature + '" to a-scene\'s ' +
           'webxr system options in requiredFeatures/optionalFeatures.';
-      console.warn((optIntro ? optIntro + ' ' : '') + msg);
+      warn((optIntro ? optIntro + ' ' : '') + msg);
     }
   }
 });
