@@ -32,6 +32,10 @@ module.exports.Component = registerComponent('tracked-controls-webxr', {
     this.axisMoveEventDetail = {axis: this.axis, changed: this.changedAxes};
   },
 
+  update: function () {
+    this.updateController();
+  },
+
   play: function () {
     var sceneEl = this.el.sceneEl;
     this.updateController();
