@@ -5,7 +5,7 @@ var registerSystem = require('../core/system').registerSystem;
  */
 module.exports.System = registerSystem('webxr', {
   schema: {
-    referenceSpaceType: {type: 'string', default: ['local-floor']},
+    referenceSpaceType: {type: 'string', default: 'local-floor'},
     requiredFeatures: {type: 'array', default: ['local-floor']},
     optionalFeatures: {type: 'array', default: ['bounded-floor']},
     overlayElement: {type: 'selector'}
