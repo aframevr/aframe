@@ -47,14 +47,15 @@
         }
       });
     </script>
-    <a-scene background="color: #212" antialias="true">
-      <a-entity position="0 3.2 0" camera look-controls wasd-controls></a-entity>
+    <a-scene background="color: #212" antialias="true"
+             webxr="referenceSpaceType: local">
+      <a-entity position="0 1.6 0" camera look-controls wasd-controls></a-entity>
       <a-entity id="leftHand" laser-controls="hand: left" raycaster="objects: [mixin='box']"></a-entity>
       <a-entity id="rightHand" laser-controls="hand: right" raycaster="objects: [mixin='box']" line="color: #118A7E"></a-entity>
 
       <a-light position="0 0.5 1" intensity="0.75"></a-light>
 
-      <a-entity position="0 0 -10">
+      <a-entity position="0 -1.6 -10">
         <a-mixin id="box" geometry="primitive: box" material="color: #FAFAFA" rotation="0 0 -35" scale="0.5 0.5 0.5" intersect-color-change shadow="cast: true; receive: false"></a-mixin>
         <a-entity boxes></a-entity>
 
