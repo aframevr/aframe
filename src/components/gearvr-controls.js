@@ -44,14 +44,8 @@ var INPUT_MAPPING_WEBVR = {
  * Reference: https://github.com/immersive-web/webxr-input-profiles/blob/master/packages/registry/profiles/oculus/oculus-go.json
  */
 var INPUT_MAPPING_WEBXR = {
-  left: {
-    axes: {touchpad: [0, 1]},
-    buttons: ['trigger', 'none', 'touchpad', 'menu']
-  },
-  right: {
-    axes: {touchpad: [0, 1]},
-    buttons: ['trigger', 'none', 'touchpad', 'menu']
-  }
+  axes: {touchpad: [0, 1]},
+  buttons: ['trigger', 'none', 'touchpad', 'menu']
 };
 
 var INPUT_MAPPING = isWebXRAvailable ? INPUT_MAPPING_WEBXR : INPUT_MAPPING_WEBVR;
