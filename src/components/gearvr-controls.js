@@ -41,11 +41,11 @@ var INPUT_MAPPING_WEBVR = {
  * Axis:
  * 0 - touchpad x
  * 1 - touchpad y
- * Reference: https://github.com/immersive-web/webxr-input-profiles/blob/master/packages/registry/profiles/oculus/oculus-go.json
+ * Reference: https://github.com/immersive-web/webxr-input-profiles/blob/master/packages/registry/profiles/samsung/samsung-gearvr.json
  */
 var INPUT_MAPPING_WEBXR = {
   axes: {touchpad: [0, 1]},
-  buttons: ['trigger', 'none', 'touchpad', 'menu']
+  buttons: ['trigger', 'none', 'touchpad', 'none', 'menu']
 };
 
 var INPUT_MAPPING = isWebXRAvailable ? INPUT_MAPPING_WEBXR : INPUT_MAPPING_WEBVR;
