@@ -39,17 +39,17 @@
   ],
   "dependencies": {
     "custom-event-polyfill": "^1.0.6",
-    "debug": "ngokevin/debug#noTimestamp",
+    "debug": "github:ngokevin/debug#noTimestamp",
     "deep-assign": "^2.0.0",
-    "document-register-element": "dmarcos/document-register-element#8ccc532b7f3744be954574caf3072a5fd260ca90",
+    "document-register-element": "github:dmarcos/document-register-element#8ccc532b7f3744be954574caf3072a5fd260ca90",
     "load-bmfont": "^1.2.3",
     "object-assign": "^4.0.1",
     "present": "0.0.6",
     "promise-polyfill": "^3.1.0",
     "super-animejs": "^3.1.0",
     "super-three": "^0.113.0",
-    "three-bmfont-text": "dmarcos/three-bmfont-text#1babdf8507c731a18f8af3b807292e2b9740955e",
-    "webvr-polyfill": "^0.10.10"
+    "three-bmfont-text": "github:dmarcos/three-bmfont-text#1babdf8507c731a18f8af3b807292e2b9740955e",
+    "webvr-polyfill": "github:chenzlabs/webvr-polyfill#handle-missing-rotationrate"
   },
   "devDependencies": {
     "browserify": "^13.1.0",
@@ -92,7 +92,7 @@
     "sinon": "^1.17.5",
     "sinon-chai": "2.8.0",
     "snazzy": "^5.0.0",
-    "too-wordy": "ngokevin/too-wordy",
+    "too-wordy": "github:ngokevin/too-wordy",
     "uglifyjs": "^2.4.10",
     "write-good": "^0.9.1"
   },
