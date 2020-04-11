@@ -1,6 +1,8 @@
 // Polyfill `Promise`.
 window.Promise = window.Promise || require('promise-polyfill');
 
+var utils = require('./utils/');
+
 // WebVR polyfill
 // Check before the polyfill runs.
 window.hasNativeWebVRImplementation = !!window.navigator.getVRDisplays ||
@@ -15,6 +17,7 @@ if (!window.hasNativeWebXRImplementation && !window.hasNativeWebVRImplementation
   var bufferScale = isIOSOlderThan10(window.navigator.userAgent) ? 1 / window.devicePixelRatio : 1;
   var WebVRPolyfill = require('webvr-polyfill');
   var polyfillConfig = {
+    MOBILE_WAKE_LOCK: !utils.device.isIOS() || isIOSOlderThan10(window.navigator.userAgent),
     BUFFER_SCALE: bufferScale,
     CARDBOARD_UI_DISABLED: true,
     ROTATE_INSTRUCTIONS_DISABLED: true
@@ -22,7 +25,6 @@ if (!window.hasNativeWebXRImplementation && !window.hasNativeWebVRImplementation
   window.webvrpolyfill = new WebVRPolyfill(polyfillConfig);
 }
 
-var utils = require('./utils/');
 var debug = utils.debug;
 
 if (utils.isIE11) {
