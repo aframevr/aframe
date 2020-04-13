@@ -168,6 +168,7 @@ various exporters and converters converters are available:
 - [FBX &rarr; glTF][fbx-converter]
 - [COLLADA &rarr; glTF][collada-converter]
 - [glTF Workflow for A Saturday Night](https://blog.mozvr.com/a-saturday-night-gltf-workflow/)
+- [gTLF in React; Based on Google POLY API](https://github.com/rand0mC0d3r/poly-a-frame-viewer)
 
 [spec]: https://github.com/KhronosGroup/glTF
 
