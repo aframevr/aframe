@@ -3,7 +3,7 @@ title: stats
 type: components
 layout: docs
 parent_section: components
-source_code: src/components/stats.js
+source_code: src/components/scene/stats.js
 ---
 
 [scene]: ../core/scene.md
