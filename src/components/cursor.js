@@ -319,6 +319,7 @@ module.exports.Component = registerComponent('cursor', {
   },
 
   onEnterVR: function () {
+    if (this.data.rayOrigin === 'mouse') { this.clearCurrentIntersection(true); }
     var xrSession = this.el.sceneEl.xrSession;
     var self = this;
     if (!xrSession) { return; }
