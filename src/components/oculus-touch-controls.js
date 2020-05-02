@@ -59,14 +59,14 @@ var CONTROLLER_PROPERTIES = {
   'oculus-touch-v2': {
     left: {
       modelUrl: TOUCH_GEN2_CONTROLLER_MODEL_BASE_URL + 'gen2-left.gltf',
-      rayOrigin: {origin: {x: -0.01, y: 0, z: -0.02}, direction: {x: 0, y: -0.5, z: -1}},
-      modelPivotOffset: new THREE.Vector3(0, 0, 0),
+      rayOrigin: {origin: {x: 0, y: 0, z: 0}, direction: {x: 0, y: 0, z: -1}},
+      modelPivotOffset: new THREE.Vector3(0.01, 0.005, 0.03),
       modelPivotRotation: new THREE.Euler(0, 0, 0)
     },
     right: {
       modelUrl: TOUCH_GEN2_CONTROLLER_MODEL_BASE_URL + 'gen2-right.gltf',
-      rayOrigin: {origin: {x: 0.01, y: 0, z: -0.02}, direction: {x: 0, y: -0.5, z: -1}},
-      modelPivotOffset: new THREE.Vector3(0, 0, 0),
+      rayOrigin: {origin: {x: 0, y: 0, z: 0}, direction: {x: 0, y: 0, z: -1}},
+      modelPivotOffset: new THREE.Vector3(-0.01, 0.005, 0.03),
       modelPivotRotation: new THREE.Euler(0, 0, 0)
     }
   }
