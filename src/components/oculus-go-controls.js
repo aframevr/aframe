@@ -39,6 +39,8 @@ var INPUT_MAPPING_WEBVR = {
  * 0 - touchpad x
  * 1 - touchpad y
  * Reference: https://github.com/immersive-web/webxr-input-profiles/blob/master/packages/registry/profiles/oculus/oculus-go.json
+ *
+ * We map touchpad* events to trackpad*, for backwards compatibility.
  */
 var INPUT_MAPPING_WEBXR = {
   axes: {touchpad: [0, 1]},
@@ -77,6 +79,9 @@ module.exports.Component = registerComponent('oculus-go-controls', {
     this.checkIfControllerPresent = bind(this.checkIfControllerPresent, this);
     this.removeControllersUpdateListener = bind(this.removeControllersUpdateListener, this);
     this.onAxisMoved = bind(this.onAxisMoved, this);
+    if (isWebXRAvailable) {
+      this.mapTouchpadToTrackpad = bind(this.mapTouchpadToTrackpad, this);
+    }
   },
 
   init: function () {
@@ -101,6 +106,14 @@ module.exports.Component = registerComponent('oculus-go-controls', {
     el.addEventListener('touchend', this.onButtonTouchEnd);
     el.addEventListener('model-loaded', this.onModelLoaded);
     el.addEventListener('axismove', this.onAxisMoved);
+    if (isWebXRAvailable) {
+      el.addEventListener('touchpadchanged', this.mapTouchpadToTrackpad);
+      el.addEventListener('touchpaddown', this.mapTouchpadToTrackpad);
+      el.addEventListener('touchpadup', this.mapTouchpadToTrackpad);
+      el.addEventListener('touchpadtouchstart', this.mapTouchpadToTrackpad);
+      el.addEventListener('touchpadtouchend', this.mapTouchpadToTrackpad);
+      el.addEventListener('touchpadmoved', this.mapTouchpadToTrackpad);
+    }
     this.controllerEventsActive = true;
   },
 
@@ -113,6 +126,14 @@ module.exports.Component = registerComponent('oculus-go-controls', {
     el.removeEventListener('touchend', this.onButtonTouchEnd);
     el.removeEventListener('model-loaded', this.onModelLoaded);
     el.removeEventListener('axismove', this.onAxisMoved);
+    if (isWebXRAvailable) {
+      el.removeEventListener('touchpadchanged', this.mapTouchpadToTrackpad);
+      el.removeEventListener('touchpaddown', this.mapTouchpadToTrackpad);
+      el.removeEventListener('touchpadup', this.mapTouchpadToTrackpad);
+      el.removeEventListener('touchpadtouchstart', this.mapTouchpadToTrackpad);
+      el.removeEventListener('touchpadtouchend', this.mapTouchpadToTrackpad);
+      el.removeEventListener('touchpadmoved', this.mapTouchpadToTrackpad);
+    }
     this.controllerEventsActive = false;
   },
 
@@ -202,5 +223,9 @@ module.exports.Component = registerComponent('oculus-go-controls', {
     button = buttonMeshes[buttonName];
     button.material.color.set(color);
     this.rendererSystem.applyColorCorrection(button.material.color);
+  },
+  // Backwards compatibility: also issue trackpad events
+  mapTouchpadToTrackpad: function (evt) {
+    this.el.emit(evt.type.replace('touchpad', 'trackpad'), evt.detail);
   }
 });
