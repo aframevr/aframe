@@ -54,7 +54,7 @@ and/or pressed buttons (trackpad, trigger).
 
 ### Legacy WebVR Browsers
 
-Legacy (WebVR-based) Oculus Go browsers use the older 'trackpadXXXX' event names, rather than the
+Legacy WebVR browsers use the older 'trackpadXXXX' event names, rather than the
 [WebXR nomenclature](https://github.com/immersive-web/webxr-input-profiles/tree/master/packages/assets/profiles)
 'touchpadXXXX'. If you want to support both event types, then you can listen for both flavors of event names.
 
