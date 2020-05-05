@@ -80073,6 +80073,9 @@ module.exports.AScene = registerElement('a-scene', {
           var vrManager = this.renderer.xr;
           AEntity.prototype.play.call(this);  // .play() *before* render.
 
+          // WebXR Immersive navigation handler.
+          navigator.xr.addEventListener('sessiongranted', function () { sceneEl.enterVR(); });
+
           if (sceneEl.renderStarted) { return; }
           sceneEl.resize();
 
@@ -82128,7 +82131,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 1.0.4 (Date 2020-04-17, Commit #46169b32)');
+console.log('A-Frame Version: 1.0.4 (Date 2020-05-05, Commit #62617e23)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
