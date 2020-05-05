@@ -661,6 +661,9 @@ module.exports.AScene = registerElement('a-scene', {
           var vrManager = this.renderer.xr;
           AEntity.prototype.play.call(this);  // .play() *before* render.
 
+          // WebXR Immersive navigation handler.
+          navigator.xr.addEventListener('sessiongranted', function () { sceneEl.enterVR(); });
+
           if (sceneEl.renderStarted) { return; }
           sceneEl.resize();
 
