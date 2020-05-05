@@ -42,15 +42,26 @@ and/or pressed buttons (trackpad, trigger).
 
 | Event Name         | Description           |
 | ----------         | -----------           |
-| trackpadchanged    | Trackpad changed.     |
-| trackpaddown       | Trackpad pressed.     |
-| trackpadup         | Trackpad released.    |
-| trackpadtouchstart | Trackpad touched.     |
-| trackpadtouchend   | Trackpad not touched. |
-| trackpadmoved      | Trackpad moved.       |
+| touchpadchanged    | Touchpad changed.     |
+| touchpaddown       | Touchpad pressed.     |
+| touchpadup         | Touchpad released.    |
+| touchpadtouchstart | Touchpad touched.     |
+| touchpadtouchend   | Touchpad not touched. |
+| touchpadmoved      | Touchpad moved.       |
 | triggerchanged     | Trigger changed.      |
 | triggerdown        | Trigger pressed.      |
 | triggerup          | Trigger released.     |
+
+### Legacy WebVR Browsers
+
+Legacy WebVR browsers use the older 'trackpadXXXX' event names, rather than the
+[WebXR nomenclature](https://github.com/immersive-web/webxr-input-profiles/tree/master/packages/assets/profiles)
+'touchpadXXXX'. If you want to support both event types, then you can listen for both flavors of event names.
+
+```.js
+el.addEventListener('touchpadchanged', yourHandler);
+el.addEventListener('trackpadchanged', yourHandler);
+```
 
 ## Assets
 
