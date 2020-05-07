@@ -92,10 +92,10 @@ module.exports.Component = registerComponent('generic-tracked-controller-control
   },
 
   checkIfControllerPresent: function () {
-    // Do nothing if tracked-controls already set.
+    // Do nothing if another tracked-controls already set.
     // Generic controls have the lowest precedence.
-    var trackedControl = this.el.components['tracked-controls'];
-    if (trackedControl && trackedControl.data.idPrefix !== GAMEPAD_ID_PREFIX) { return; }
+    var trackedControls = this.el.getAttribute('tracked-controls');
+    if (trackedControls && trackedControls.idPrefix !== GAMEPAD_ID_PREFIX) { return; }
     var data = this.data;
     var hand = data.hand ? data.hand : undefined;
     checkControllerPresentAndSetup(
