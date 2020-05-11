@@ -97,9 +97,6 @@ AFRAME.registerComponent('thumbstick-logging',{
 });
 ```
 
-If a camera is specified (e.g., our own `<a-camera>` or `<a-entity camera>`),
-then the default camera will not be added.
-
 ## Assets
 
 - [Left Controller OBJ](https://cdn.aframe.io/controllers/oculus/oculus-touch-controller-left.obj)
