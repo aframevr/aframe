@@ -26,7 +26,7 @@ suite('look-controls', function () {
     });
   });
 
-  helpers.getSkipCISuite(suite('grabbing', function () {
+  helpers.getSkipCISuite('grabbing', function () {
     test('enables grab cursor on canvas', function () {
       this.sceneEl.canvas.classList.contains(CANVAS_GRAB_CLASS);
     });
@@ -90,7 +90,7 @@ suite('look-controls', function () {
       event.button = 0;
       canvasEl.dispatchEvent(event);
     });
-  }));
+  });
 
   suite('saveCameraPose', function () {
     test('saves camera pose when entering VR w/ positional tracking', function () {
