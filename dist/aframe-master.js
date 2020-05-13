@@ -69029,6 +69029,39 @@ var GAMEPAD_ID_WEBVR = 'Daydream Controller';
 var GAMEPAD_ID_PREFIX = isWebXRAvailable ? GAMEPAD_ID_WEBXR : GAMEPAD_ID_WEBVR;
 
 /**
+ * Button indices:
+ * 0 - trackpad
+ * 1 - menu (never dispatched on this layer)
+ * 2 - system (never dispatched on this layer)
+ *
+ * Axis:
+ * 0 - trackpad x
+ * 1 - trackpad y
+ */
+var INPUT_MAPPING_WEBVR = {
+  axes: {trackpad: [0, 1]},
+  buttons: ['trackpad', 'menu', 'system']
+};
+
+/**
+ * Button indices:
+ * 0 - none
+ * 1 - none
+ * 2 - touchpad
+ *
+ * Axis:
+ * 0 - touchpad x
+ * 1 - touchpad y
+ * Reference: https://github.com/immersive-web/webxr-input-profiles/blob/master/packages/registry/profiles/google/google-daydream.json
+ */
+var INPUT_MAPPING_WEBXR = {
+  axes: {touchpad: [0, 1]},
+  buttons: ['none', 'none', 'touchpad', 'menu', 'system']
+};
+
+var INPUT_MAPPING = isWebXRAvailable ? INPUT_MAPPING_WEBXR : INPUT_MAPPING_WEBVR;
+
+/**
  * Daydream controls.
  * Interface with Daydream controller and map Gamepad events to
  * controller buttons: trackpad, menu, system
@@ -69045,16 +69078,7 @@ module.exports.Component = registerComponent('daydream-controls', {
     armModel: {default: true}
   },
 
-  /**
-   * Button IDs:
-   * 0 - trackpad
-   * 1 - menu (never dispatched on this layer)
-   * 2 - system (never dispatched on this layer)
-   */
-  mapping: {
-    axes: {trackpad: [0, 1]},
-    buttons: ['trackpad', 'menu', 'system']
-  },
+  mapping: INPUT_MAPPING,
 
   bindMethods: function () {
     this.onModelLoaded = bind(this.onModelLoaded, this);
@@ -69101,7 +69125,8 @@ module.exports.Component = registerComponent('daydream-controls', {
   },
 
   checkIfControllerPresent: function () {
-    checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX, {hand: this.data.hand});
+    checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX,
+      this.data.hand ? {hand: this.data.hand} : {});
   },
 
   play: function () {
@@ -69121,6 +69146,7 @@ module.exports.Component = registerComponent('daydream-controls', {
       armModel: data.armModel,
       hand: data.hand,
       idPrefix: GAMEPAD_ID_PREFIX,
+      id: GAMEPAD_ID_PREFIX,
       orientationOffset: data.orientationOffset
     });
     if (!this.data.model) { return; }
@@ -69150,6 +69176,7 @@ module.exports.Component = registerComponent('daydream-controls', {
     buttonMeshes.menu = controllerObject3D.getObjectByName('AppButton_AppButton_Cylinder.004');
     buttonMeshes.system = controllerObject3D.getObjectByName('HomeButton_HomeButton_Cylinder.005');
     buttonMeshes.trackpad = controllerObject3D.getObjectByName('TouchPad_TouchPad_Cylinder.003');
+    buttonMeshes.touchpad = controllerObject3D.getObjectByName('TouchPad_TouchPad_Cylinder.003');
     // Offset pivot point.
     controllerObject3D.position.set(0, 0, -0.04);
   },
@@ -69232,17 +69259,11 @@ var INPUT_MAPPING_WEBVR = {
  * Axis:
  * 0 - touchpad x
  * 1 - touchpad y
- * Reference: https://github.com/immersive-web/webxr-input-profiles/blob/master/packages/registry/profiles/oculus/oculus-go.json
+ * Reference: https://github.com/immersive-web/webxr-input-profiles/blob/master/packages/registry/profiles/samsung/samsung-gearvr.json
  */
 var INPUT_MAPPING_WEBXR = {
-  left: {
-    axes: {touchpad: [0, 1]},
-    buttons: ['trigger', 'none', 'touchpad', 'menu']
-  },
-  right: {
-    axes: {touchpad: [0, 1]},
-    buttons: ['trigger', 'none', 'touchpad', 'menu']
-  }
+  axes: {touchpad: [0, 1]},
+  buttons: ['trigger', 'none', 'touchpad', 'none', 'menu']
 };
 
 var INPUT_MAPPING = isWebXRAvailable ? INPUT_MAPPING_WEBXR : INPUT_MAPPING_WEBVR;
@@ -69264,11 +69285,6 @@ module.exports.Component = registerComponent('gearvr-controls', {
     armModel: {default: true}
   },
 
-  /**
-   * Button IDs:
-   * 0 - trackpad
-   * 1 - trigger
-   */
   mapping: INPUT_MAPPING,
 
   bindMethods: function () {
@@ -69368,6 +69384,7 @@ module.exports.Component = registerComponent('gearvr-controls', {
     buttonMeshes = this.buttonMeshes = {};
     buttonMeshes.trigger = controllerObject3D.children[2];
     buttonMeshes.trackpad = controllerObject3D.children[1];
+    buttonMeshes.touchpad = controllerObject3D.children[1];
   },
 
   onButtonChanged: function (evt) {
@@ -72122,11 +72139,6 @@ module.exports.Component = registerComponent('oculus-go-controls', {
     armModel: {default: true}
   },
 
-  /**
-   * Button IDs:
-   * 0 - trackpad
-   * 1 - trigger
-   */
   mapping: INPUT_MAPPING,
 
   bindMethods: function () {
@@ -72224,6 +72236,7 @@ module.exports.Component = registerComponent('oculus-go-controls', {
     buttonMeshes = this.buttonMeshes = {};
     buttonMeshes.trigger = controllerObject3D.getObjectByName('oculus_go_button_trigger');
     buttonMeshes.trackpad = controllerObject3D.getObjectByName('oculus_go_touchpad');
+    buttonMeshes.touchpad = controllerObject3D.getObjectByName('oculus_go_touchpad');
   },
 
   onButtonChanged: function (evt) {
@@ -82813,7 +82826,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 1.0.4 (Date 2020-05-13, Commit #5178b92a)');
+console.log('A-Frame Version: 1.0.4 (Date 2020-05-13, Commit #ef405451)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
@@ -86301,14 +86314,13 @@ function findMatchingControllerWebXR (controllers, idPrefix, handedness, index, 
   for (i = 0; i < controllers.length; i++) {
     controller = controllers[i];
     profiles = controller.profiles;
-    if (profiles.length === 0) { return; }
     if (iterateProfiles) {
       for (j = 0; j < profiles.length; j++) {
         controllerMatch = profiles[j].startsWith(idPrefix);
         if (controllerMatch) { break; }
       }
     } else {
-      controllerMatch = profiles[0].startsWith(idPrefix);
+      controllerMatch = profiles.length > 0 && profiles[0].startsWith(idPrefix);
     }
     if (!controllerMatch) { continue; }
     // Vive controllers are assigned handedness at runtime and it might not be always available.
