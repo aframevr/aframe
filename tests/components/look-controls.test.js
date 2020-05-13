@@ -1,6 +1,7 @@
  /* global Event, assert, process, setup, suite, test */
 
 var CANVAS_GRAB_CLASS = 'a-grab-cursor';
+var helpers = require('../helpers');
 
 suite('look-controls', function () {
   setup(function (done) {
@@ -25,7 +26,7 @@ suite('look-controls', function () {
     });
   });
 
-  suite('grabbing', function () {
+  helpers.getSkipCISuite(suite('grabbing', function () {
     test('enables grab cursor on canvas', function () {
       this.sceneEl.canvas.classList.contains(CANVAS_GRAB_CLASS);
     });
@@ -89,7 +90,7 @@ suite('look-controls', function () {
       event.button = 0;
       canvasEl.dispatchEvent(event);
     });
-  });
+  }));
 
   suite('saveCameraPose', function () {
     test('saves camera pose when entering VR w/ positional tracking', function () {

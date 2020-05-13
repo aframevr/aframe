@@ -3,7 +3,7 @@ dist: trusty
 language: node_js
 addons:
   firefox: 'latest'
-  chrome: beta
+  chrome: stable
 
 node_js:
   - '11.6'
