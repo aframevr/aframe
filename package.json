@@ -49,7 +49,7 @@
     "super-animejs": "^3.1.0",
     "super-three": "^0.115.1",
     "three-bmfont-text": "dmarcos/three-bmfont-text#1babdf8507c731a18f8af3b807292e2b9740955e",
-    "webvr-polyfill": "^0.10.10"
+    "webvr-polyfill": "^0.10.12"
   },
   "devDependencies": {
     "browserify": "^13.1.0",
