@@ -162,14 +162,13 @@ function findMatchingControllerWebXR (controllers, idPrefix, handedness, index, 
   for (i = 0; i < controllers.length; i++) {
     controller = controllers[i];
     profiles = controller.profiles;
-    if (profiles.length === 0) { return; }
     if (iterateProfiles) {
       for (j = 0; j < profiles.length; j++) {
         controllerMatch = profiles[j].startsWith(idPrefix);
         if (controllerMatch) { break; }
       }
     } else {
-      controllerMatch = profiles[0].startsWith(idPrefix);
+      controllerMatch = profiles.length > 0 && profiles[0].startsWith(idPrefix);
     }
     if (!controllerMatch) { continue; }
     // Vive controllers are assigned handedness at runtime and it might not be always available.
