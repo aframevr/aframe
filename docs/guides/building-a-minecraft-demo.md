@@ -394,7 +394,7 @@ component on the controller on the entity:
 
 ```html
 <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
-<script src="https://unpkg.com/aframe-teleport-controls@0.2.x/dist/aframe-teleport-controls.min.js"></script>
+<script src="https://unpkg.com/aframe-teleport-controls@0.3.x/dist/aframe-teleport-controls.min.js"></script>
 
 <!-- ... -->
 
