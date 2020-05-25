@@ -218,7 +218,7 @@ modify the object directly:
 ```js
 // <a-entity geometry="primitive: sphere; radius: 2"></a-entity>
 el.getAttribute('geometry');
-// >> {"primitive": "sphere", "radius: 2", ...}
+// >> {"primitive": "sphere", "radius": 2, ...}
 ```
 
 ### Retrieving `position` and `scale`
