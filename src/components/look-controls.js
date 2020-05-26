@@ -36,6 +36,7 @@ module.exports.Component = registerComponent('look-controls', {
     this.pointerLocked = false;
     this.setupMouseControls();
     this.bindMethods();
+    this.previousMouseEvent = {};
 
     this.setupMagicWindowControls();
 
@@ -278,7 +279,8 @@ module.exports.Component = registerComponent('look-controls', {
       movementX = event.screenX - previousMouseEvent.screenX;
       movementY = event.screenY - previousMouseEvent.screenY;
     }
-    this.previousMouseEvent = event;
+    this.previousMouseEvent.screenX = event.screenX;
+    this.previousMouseEvent.screenY = event.screenY;
 
     // Calculate rotation.
     direction = this.data.reverseMouseDrag ? 1 : -1;
@@ -290,16 +292,17 @@ module.exports.Component = registerComponent('look-controls', {
   /**
    * Register mouse down to detect mouse drag.
    */
-  onMouseDown: function (evt) {
+  onMouseDown: function (event) {
     var sceneEl = this.el.sceneEl;
     if (!this.data.enabled || (sceneEl.is('vr-mode') && sceneEl.checkHeadsetConnected())) { return; }
     // Handle only primary button.
-    if (evt.button !== 0) { return; }
+    if (event.button !== 0) { return; }
 
     var canvasEl = sceneEl && sceneEl.canvas;
 
     this.mouseDown = true;
-    this.previousMouseEvent = evt;
+    this.previousMouseEvent.screenX = event.screenX;
+    this.previousMouseEvent.screenY = event.screenY;
     this.showGrabbingCursor();
 
     if (this.data.pointerLockEnabled && !this.pointerLocked) {
@@ -336,13 +339,13 @@ module.exports.Component = registerComponent('look-controls', {
   /**
    * Register touch down to detect touch drag.
    */
-  onTouchStart: function (evt) {
-    if (evt.touches.length !== 1 ||
+  onTouchStart: function (event) {
+    if (event.touches.length !== 1 ||
         !this.data.touchEnabled ||
         this.el.sceneEl.is('vr-mode')) { return; }
     this.touchStart = {
-      x: evt.touches[0].pageX,
-      y: evt.touches[0].pageY
+      x: event.touches[0].pageX,
+      y: event.touches[0].pageY
     };
     this.touchStarted = true;
   },
@@ -350,7 +353,7 @@ module.exports.Component = registerComponent('look-controls', {
   /**
    * Translate touch move to Y-axis rotation.
    */
-  onTouchMove: function (evt) {
+  onTouchMove: function (event) {
     var direction;
     var canvas = this.el.sceneEl.canvas;
     var deltaY;
@@ -358,14 +361,14 @@ module.exports.Component = registerComponent('look-controls', {
 
     if (!this.touchStarted || !this.data.touchEnabled) { return; }
 
-    deltaY = 2 * Math.PI * (evt.touches[0].pageX - this.touchStart.x) / canvas.clientWidth;
+    deltaY = 2 * Math.PI * (event.touches[0].pageX - this.touchStart.x) / canvas.clientWidth;
 
     direction = this.data.reverseTouchDrag ? 1 : -1;
     // Limit touch orientaion to to yaw (y axis).
     yawObject.rotation.y -= deltaY * 0.5 * direction;
     this.touchStart = {
-      x: evt.touches[0].pageX,
-      y: evt.touches[0].pageY
+      x: event.touches[0].pageX,
+      y: event.touches[0].pageY
     };
   },
 
