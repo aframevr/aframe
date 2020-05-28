@@ -36,6 +36,7 @@ module.exports.Component = registerComponent('look-controls', {
     this.pointerLocked = false;
     this.setupMouseControls();
     this.bindMethods();
+    this.previousMouseEvent = {};
 
     this.setupMagicWindowControls();
 
@@ -259,7 +260,7 @@ module.exports.Component = registerComponent('look-controls', {
    * Dragging up and down rotates the camera around the X-axis (yaw).
    * Dragging left and right rotates the camera around the Y-axis (pitch).
    */
-  onMouseMove: function (event) {
+  onMouseMove: function (evt) {
     var direction;
     var movementX;
     var movementY;
@@ -272,13 +273,14 @@ module.exports.Component = registerComponent('look-controls', {
 
     // Calculate delta.
     if (this.pointerLocked) {
-      movementX = event.movementX || event.mozMovementX || 0;
-      movementY = event.movementY || event.mozMovementY || 0;
+      movementX = evt.movementX || evt.mozMovementX || 0;
+      movementY = evt.movementY || evt.mozMovementY || 0;
     } else {
-      movementX = event.screenX - previousMouseEvent.screenX;
-      movementY = event.screenY - previousMouseEvent.screenY;
+      movementX = evt.screenX - previousMouseEvent.screenX;
+      movementY = evt.screenY - previousMouseEvent.screenY;
     }
-    this.previousMouseEvent = event;
+    this.previousMouseEvent.screenX = evt.screenX;
+    this.previousMouseEvent.screenY = evt.screenY;
 
     // Calculate rotation.
     direction = this.data.reverseMouseDrag ? 1 : -1;
@@ -299,7 +301,8 @@ module.exports.Component = registerComponent('look-controls', {
     var canvasEl = sceneEl && sceneEl.canvas;
 
     this.mouseDown = true;
-    this.previousMouseEvent = evt;
+    this.previousMouseEvent.screenX = evt.screenX;
+    this.previousMouseEvent.screenY = evt.screenY;
     this.showGrabbingCursor();
 
     if (this.data.pointerLockEnabled && !this.pointerLocked) {
