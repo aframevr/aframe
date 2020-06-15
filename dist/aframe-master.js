@@ -71060,7 +71060,7 @@ module.exports.Component = registerComponent('look-controls', {
 
   schema: {
     enabled: {default: true},
-    hmdEnabled: {default: true},
+    magicWindowTrackingEnabled: {default: true},
     pointerLockEnabled: {default: false},
     reverseMouseDrag: {default: false},
     reverseTouchDrag: {default: false},
@@ -71097,6 +71097,7 @@ module.exports.Component = registerComponent('look-controls', {
 
   setupMagicWindowControls: function () {
     var magicWindowControls;
+    var data = this.data;
 
     // Only on mobile devices and only enabled if DeviceOrientation permission has been granted.
     if (utils.device.isMobile()) {
@@ -71104,10 +71105,10 @@ module.exports.Component = registerComponent('look-controls', {
       if (typeof DeviceOrientationEvent !== 'undefined' && DeviceOrientationEvent.requestPermission) {
         magicWindowControls.enabled = false;
         if (this.el.sceneEl.components['device-orientation-permission-ui'].permissionGranted) {
-          magicWindowControls.enabled = true;
+          magicWindowControls.enabled = data.magicWindowTrackingEnabled;
         } else {
           this.el.sceneEl.addEventListener('deviceorientationpermissiongranted', function () {
-            magicWindowControls.enabled = true;
+            magicWindowControls.enabled = data.magicWindowTrackingEnabled;
           });
         }
       }
@@ -71122,10 +71123,15 @@ module.exports.Component = registerComponent('look-controls', {
       this.updateGrabCursor(data.enabled);
     }
 
-    // Reset pitch and yaw if disabling HMD.
-    if (oldData && !data.hmdEnabled && !oldData.hmdEnabled) {
-      this.pitchObject.rotation.set(0, 0, 0);
-      this.yawObject.rotation.set(0, 0, 0);
+    // Reset magic window eulers if tracking is disabled.
+    if (oldData && !data.magicWindowTrackingEnabled && oldData.magicWindowTrackingEnabled) {
+      this.magicWindowAbsoluteEuler.set(0, 0, 0);
+      this.magicWindowDeltaEuler.set(0, 0, 0);
+    }
+
+    // Pass on magic window tracking setting to magicWindowControls.
+    if (this.magicWindowControls) {
+      this.magicWindowControls.enabled = data.magicWindowTrackingEnabled;
     }
 
     if (oldData && !data.pointerLockEnabled !== oldData.pointerLockEnabled) {
@@ -82829,7 +82835,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 1.0.4 (Date 2020-05-28, Commit #2ced23bf)');
+console.log('A-Frame Version: 1.0.4 (Date 2020-06-15, Commit #936e32a1)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
