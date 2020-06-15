@@ -81,6 +81,7 @@ The boilerplate contains:
 We can grab the boilerplate in one of two ways:
 
 <a class="btn btn-download" href="https://github.com/aframevr/aframe-boilerplate/">Fork on GitHub</a>
+<br>(Note this is marked as 'discontinued', the Aframe version packaged with this is 0.5)
 
 <a class="btn btn-download" href="https://github.com/aframevr/aframe-boilerplate/archive/master.zip" download="aframe-boilerplate.zip">Download .ZIP<span></span></a>
 
