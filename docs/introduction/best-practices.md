@@ -62,7 +62,7 @@ purpose of using A-Frame.
 
 ## WebVR
 
-[See WebVR Guidelines](https://www.supermedium.com/blog/webvr-guidelines).
+[See WebVR Guidelines](http://supermedium.mystrikingly.com/blog/webvr-guidelines).
 
 ## Performance
 
