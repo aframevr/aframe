@@ -8,6 +8,7 @@ require('./generic-tracked-controller-controls');
 require('./gltf-model');
 require('./hand-controls');
 require('./laser-controls');
+require('./layer');
 require('./light');
 require('./line');
 require('./link');

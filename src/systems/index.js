@@ -1,6 +1,7 @@
 require('./camera');
 require('./geometry');
 require('./gltf-model');
+require('./layer');
 require('./light');
 require('./material');
 require('./renderer');
