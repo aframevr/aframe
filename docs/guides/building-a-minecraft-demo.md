@@ -331,9 +331,8 @@ using `<a-mixin>` which can be reused to create voxels like a prefab:
 
   <a-entity mixin="voxel" position="-1 0 -2"></a-entity>
   <a-entity mixin="voxel" position="0 0 -2"></a-entity>
-  <a-entity mixin="voxel" position="0 1 -2">
-    <a-animation attribute="rotation" to="0 360 0" repeat="indefinite"></a-animation>
-  </a-entity>
+  <a-entity mixin="voxel" position="0 1 -2"
+            animation="property: rotation; to: 0 360 0; loop: true"></a-entity>
   <a-entity mixin="voxel" position="1 0 -2"></a-entity>
 </a-scene>
 ```
@@ -343,9 +342,8 @@ And we've added voxels using that mixin:
 ```html
 <a-entity mixin="voxel" position="-1 0 -2"></a-entity>
 <a-entity mixin="voxel" position="0 0 -2"></a-entity>
-<a-entity mixin="voxel" position="0 1 -2">
-  <a-animation attribute="rotation" to="0 360 0" repeat="indefinite"></a-animation>
-</a-entity>
+<a-entity mixin="voxel" position="0 1 -2"
+          animation="property: rotation; to: 0 360 0; loop: true"></a-entity>
 <a-entity mixin="voxel" position="1 0 -2"></a-entity>
 ```
 
