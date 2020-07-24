@@ -17,6 +17,7 @@ module.exports.Component = registerComponent('tracked-controls', {
     id: {type: 'string', default: ''},
     hand: {type: 'string', default: ''},
     idPrefix: {type: 'string', default: ''},
+    handTrackingEnabled: {default: false},
     orientationOffset: {type: 'vec3'},
     // Arm model parameters when not 6DoF.
     armModel: {default: false},
@@ -32,7 +33,8 @@ module.exports.Component = registerComponent('tracked-controls', {
         id: data.id,
         hand: data.hand,
         index: data.controller,
-        iterateControllerProfiles: data.iterateControllerProfiles
+        iterateControllerProfiles: data.iterateControllerProfiles,
+        handTrackingEnabled: data.handTrackingEnabled
       });
     } else {
       el.setAttribute('tracked-controls-webvr', data);

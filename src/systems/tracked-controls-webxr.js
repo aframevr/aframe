@@ -44,6 +44,7 @@ module.exports.System = registerSystem('tracked-controls-webxr', {
 
   updateControllerList: function () {
     var xrSession = this.el.xrSession;
+    var oldControllers;
     if (!xrSession) {
       if (this.oldControllersLength === 0) { return; }
       // Broadcast that we now have zero controllers connected if there is
@@ -53,8 +54,17 @@ module.exports.System = registerSystem('tracked-controls-webxr', {
       this.el.emit('controllersupdated', undefined, false);
       return;
     }
+    oldControllers = this.controllers;
     this.controllers = xrSession.inputSources;
-    if (this.oldControllersLength === this.controllers.length) { return; }
+    if (this.oldControllersLength === this.controllers.length) {
+      var equal = true;
+      for (var i = 0; i < this.controllers.length; ++i) {
+        if (this.controllers[i] === oldControllers[i]) { continue; }
+        equal = false;
+        break;
+      }
+      if (equal) { return; }
+    }
     this.oldControllersLength = this.controllers.length;
     this.el.emit('controllersupdated', undefined, false);
   }

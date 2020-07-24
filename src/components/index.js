@@ -6,6 +6,7 @@ require('./gearvr-controls');
 require('./geometry');
 require('./generic-tracked-controller-controls');
 require('./gltf-model');
+require('./hand-tracking-controls');
 require('./hand-controls');
 require('./laser-controls');
 require('./light');
