@@ -25,11 +25,12 @@ A-Frame uses a right-handed coordinate system. When aligning our right hand's
 thumb with a positive axis, our hand will curl in the positive direction of
 rotation.
 
-| Axis | Description                       | Default Value
-|------|-----------------------------------|---------------|
-| x    | Pitch, rotation about the X-axis. | 0             |
-| y    | Yaw, rotation about the Y-axis.   | 0             |
-| z    | Roll, rotation about the Z-axis.  | 0             |
+| Axis  | Description                           | Default Value
+|-------|---------------------------------------|---------------|
+| x     | Pitch, rotation about the X-axis.     | 0             |
+| y     | Yaw, rotation about the Y-axis.       | 0             |
+| z     | Roll, rotation about the Z-axis.      | 0             |
+| order | Order that the rotations are applied. | 'XYZ'         |
 
 ## Relative Rotation
 
@@ -91,5 +92,5 @@ See also [reading position and rotation of the camera](./camera.md#reading-posit
 Transformations are applied to entities in this order:
 
 * [scale](scale.md)
-* rotation
+* rotation (in the order described by the attribute `order` (default: Pitch then Yaw then Roll)
 * [position/translation](position.md)
