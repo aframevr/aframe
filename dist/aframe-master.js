@@ -83190,7 +83190,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 1.0.4 (Date 2020-08-05, Commit #21035ef1)');
+console.log('A-Frame Version: 1.0.4 (Date 2020-08-17, Commit #9ace681e)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
@@ -84045,7 +84045,7 @@ module.exports.System = registerSystem('camera', {
    * the spectator camera after vrDisplay.submitFrame.
    */
   wrapRender: function () {
-    if (!this.spectatorCameraEl) { return; }
+    if (!this.spectatorCameraEl || this.originalRender) { return; }
     this.originalRender = this.sceneEl.renderer.render;
     this.sceneEl.renderer.render = this.render;
   },
