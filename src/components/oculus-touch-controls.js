@@ -12,6 +12,7 @@ var isWebXRAvailable = require('../utils/').device.isWebXRAvailable;
 
 var GAMEPAD_ID_WEBXR = 'oculus-touch';
 var GAMEPAD_ID_WEBVR = 'Oculus Touch';
+var GAMEPAD_ID_STEAMVR = 'oculus-oculus-rift-s';
 
 // Prefix for Gen1 and Gen2 Oculus Touch Controllers.
 var GAMEPAD_ID_PREFIX = isWebXRAvailable ? GAMEPAD_ID_WEBXR : GAMEPAD_ID_WEBVR;
@@ -187,9 +188,43 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   },
 
   checkIfControllerPresent: function () {
-    checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX, {
+    if (!isWebXRAvailable) {
+      checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX, {
+        hand: this.data.hand
+      });
+      return;
+    }
+
+    if (this.controllerPresent) {
+      checkControllerPresentAndSetup(this, this.webXRId, {
+        hand: this.data.hand
+      });
+
+      if (!this.controllerPresent) {
+        this.webXRId = undefined;
+      }
+      return;
+    }
+
+    this.webXRId = GAMEPAD_ID_WEBXR;
+    checkControllerPresentAndSetup(this, GAMEPAD_ID_WEBXR, {
       hand: this.data.hand
     });
+
+    if (this.controllerPresent) {
+      return;
+    }
+
+    this.webXRId = GAMEPAD_ID_STEAMVR;
+    checkControllerPresentAndSetup(this, GAMEPAD_ID_STEAMVR, {
+      hand: this.data.hand
+    });
+
+    if (this.controllerPresent) {
+      return;
+    }
+
+    this.webXRId = undefined;
   },
 
   play: function () {
@@ -227,7 +262,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
 
   injectTrackedControls: function () {
     var data = this.data;
-    var webXRId = GAMEPAD_ID_WEBXR;
+    var webXRId = this.webXRId || GAMEPAD_ID_WEBXR;
     var webVRId = data.hand === 'right' ? 'Oculus Touch (Right)' : 'Oculus Touch (Left)';
     var id = isWebXRAvailable ? webXRId : webVRId;
     this.el.setAttribute('tracked-controls', {
