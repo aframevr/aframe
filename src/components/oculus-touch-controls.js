@@ -233,7 +233,8 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     this.el.setAttribute('tracked-controls', {
       id: id,
       hand: data.hand,
-      orientationOffset: data.orientationOffset
+      orientationOffset: data.orientationOffset,
+      handTrackingEnabled: false
     });
     this.loadModel();
   },

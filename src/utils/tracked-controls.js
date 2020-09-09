@@ -36,8 +36,8 @@ module.exports.checkControllerPresentAndSetup = function (component, idPrefix, q
 
   // Update controller presence.
   if (isPresent) {
-    component.injectTrackedControls();
     component.addEventListeners();
+    component.injectTrackedControls();
     el.emit('controllerconnected', {name: component.name, component: component});
   } else {
     component.removeEventListeners();
@@ -85,7 +85,7 @@ function isControllerPresentWebXR (component, id, queryObject) {
 
   return findMatchingControllerWebXR(
     controllers, id,
-    queryObject.hand, queryObject.index, queryObject.iterateControllerProfiles);
+    queryObject.hand, queryObject.index, queryObject.iterateControllerProfiles, queryObject.handTracking);
 }
 
 module.exports.isControllerPresentWebVR = isControllerPresentWebVR;
@@ -152,7 +152,7 @@ function findMatchingControllerWebVR (controllers, filterIdExact, filterIdPrefix
   return undefined;
 }
 
-function findMatchingControllerWebXR (controllers, idPrefix, handedness, index, iterateProfiles) {
+function findMatchingControllerWebXR (controllers, idPrefix, handedness, index, iterateProfiles, handTracking) {
   var i;
   var j;
   var controller;
@@ -162,13 +162,17 @@ function findMatchingControllerWebXR (controllers, idPrefix, handedness, index, 
   for (i = 0; i < controllers.length; i++) {
     controller = controllers[i];
     profiles = controller.profiles;
-    if (iterateProfiles) {
-      for (j = 0; j < profiles.length; j++) {
-        controllerMatch = profiles[j].startsWith(idPrefix);
-        if (controllerMatch) { break; }
-      }
+    if (handTracking) {
+      controllerMatch = controller.hand;
     } else {
-      controllerMatch = profiles.length > 0 && profiles[0].startsWith(idPrefix);
+      if (iterateProfiles) {
+        for (j = 0; j < profiles.length; j++) {
+          controllerMatch = profiles[j].startsWith(idPrefix);
+          if (controllerMatch) { break; }
+        }
+      } else {
+        controllerMatch = profiles.length > 0 && profiles[0].startsWith(idPrefix);
+      }
     }
     if (!controllerMatch) { continue; }
     // Vive controllers are assigned handedness at runtime and it might not be always available.

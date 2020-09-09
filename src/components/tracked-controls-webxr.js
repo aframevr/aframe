@@ -14,6 +14,7 @@ module.exports.Component = registerComponent('tracked-controls-webxr', {
   schema: {
     id: {type: 'string', default: ''},
     hand: {type: 'string', default: ''},
+    handTrackingEnabled: {default: false},
     index: {type: 'int', default: -1},
     iterateControllerProfiles: {default: false}
   },
@@ -101,20 +102,24 @@ module.exports.Component = registerComponent('tracked-controls-webxr', {
       this.data.id,
       this.data.hand,
       this.data.index,
-      this.data.iterateControllerProfiles
+      this.data.iterateControllerProfiles,
+      this.data.handTrackingEnabled
     );
     // Legacy handle to the controller for old components.
     this.el.components['tracked-controls'].controller = this.controller;
-
     if (this.data.autoHide) { this.el.object3D.visible = !!this.controller; }
   },
 
   tick: function () {
     var sceneEl = this.el.sceneEl;
-    if (!this.controller || !sceneEl.frame || !this.system.referenceSpace) { return; }
-    this.pose = sceneEl.frame.getPose(this.controller.targetRaySpace, this.system.referenceSpace);
-    this.updatePose();
-    this.updateButtons();
+    var controller = this.controller;
+    var frame = sceneEl.frame;
+    if (!controller || !sceneEl.frame || !this.system.referenceSpace) { return; }
+    if (!controller.hand) {
+      this.pose = frame.getPose(controller.targetRaySpace, this.system.referenceSpace);
+      this.updatePose();
+      this.updateButtons();
+    }
   },
 
   updatePose: function () {
