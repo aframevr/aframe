@@ -4,7 +4,10 @@ type: components
 layout: docs
 parent_section: components
 source_code: src/components/text.js
-examples: []
+examples:
+  - title: Stock Font Showcase
+    src: https://glitch.com/~aframe-text-fonts-demo
+
 ---
 
 The text component renders signed distance field (SDF) font text.
