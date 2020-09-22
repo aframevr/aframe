@@ -50,6 +50,7 @@ are constrained to looking around and wiggling the controller.
 [Oculus Go]: https://www.oculus.com/go
 [Vive Focus]: https://enterprise.vive.com/us/vivefocus/
 [Oculus Quest]: https://www.oculus.com/quest
+[Oculus Quest 2]: https://www.oculus.com/quest-2/
 
 | Headset                 | Platform   | Positional Tracking | Controllers        | Controller Positional Tracking |
 |-------------------------|------------|---------------------|--------------------|--------------------------------|
@@ -61,6 +62,7 @@ are constrained to looking around and wiggling the controller.
 | [Oculus Go]             | Standalone | :x:                 | :white_check_mark: | :x:                            |
 | [Vive Focus]            | Standalone | :x:                 | :white_check_mark: | :x:                            |
 | [Oculus Quest]            | Standalone | :white_check_mark:  | :white_check_mark: | :white_check_mark:             |
+| [Oculus Quest 2]            | Standalone | :white_check_mark:  | :white_check_mark: | :white_check_mark:             |
 
 ## What is WebVR?
 
