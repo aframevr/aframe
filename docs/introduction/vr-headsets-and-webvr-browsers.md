@@ -43,14 +43,11 @@ are constrained to looking around and wiggling the controller.
 ### What Are Some Current Headsets?
 
 [HTC Vive]: https://www.vive.com/
-[Oculus Rift]: https://www.oculus.com/rift/
+[Oculus headsets]: https://www.oculus.com
 [Google Daydream]: https://vr.google.com/daydream/
 [Samsung GearVR]: http://www.samsung.com/global/galaxy/gear-vr/
 [Windows Mixed Reality]: https://developer.microsoft.com/en-us/windows/mixed-reality/
-[Oculus Go]: https://www.oculus.com/go
 [Vive Focus]: https://enterprise.vive.com/us/vivefocus/
-[Oculus Quest]: https://www.oculus.com/quest
-[Oculus Quest 2]: https://www.oculus.com/quest-2/
 
 | Headset                 | Platform   | Positional Tracking | Controllers        | Controller Positional Tracking |
 |-------------------------|------------|---------------------|--------------------|--------------------------------|
