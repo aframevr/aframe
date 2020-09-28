@@ -69269,6 +69269,7 @@ module.exports.Component = registerComponent('cursor', {
     var xrSession = this.el.sceneEl.xrSession;
     var self = this;
     if (!xrSession) { return; }
+    if (this.data.rayOrigin === 'mouse') { return; }
     WEBXR_EVENTS.DOWN.forEach(function (downEvent) {
       xrSession.addEventListener(downEvent, self.onCursorDown);
     });
@@ -83523,7 +83524,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 1.0.4 (Date 2020-09-09, Commit #dbacbdbf)');
+console.log('A-Frame Version: 1.0.4 (Date 2020-09-28, Commit #f0aad7d0)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
