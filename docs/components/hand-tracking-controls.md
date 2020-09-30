@@ -25,7 +25,8 @@ Use `hand-tracking-controls` to integrate [hand tracked input][webxrhandinput] i
 | hand                 | The hand that will be tracked (i.e., right, left). | left                 |
 | modelColor          | Color of hand material.                                                                | white         |
 | modelStyle           | Mesh representing the hand or dots matching the joints        | mesh
-
+| startPinchDistance    | Maximum distance between tip of thumb and index finger before a pinch gesture is started. | 0.015 |
+| endPinchDistance    | Minimum distance between tip of thumb and index finger before a pinch gesture is ended. | 0.03 |
 
 ## Events
 
