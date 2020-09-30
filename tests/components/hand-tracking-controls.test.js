@@ -8,6 +8,8 @@ suite('tracked-controls-webxr', function () {
   var standingMatrix = new THREE.Matrix4();
   var index = {transform: {position: {x: 0, y: 0, z: 0}}};
   var thumb = {transform: {position: {x: 0, y: 0, z: 0}}};
+  var indexPosition = new THREE.Vector3();
+  var thumbPosition = new THREE.Vector3();
 
   setup(function (done) {
     standingMatrix.identity();
@@ -53,6 +55,13 @@ suite('tracked-controls-webxr', function () {
       el.components['hand-tracking-controls'].checkIfControllerPresent();
       el.components['hand-tracking-controls'].detectPinch();
       assert.equal(emitSpy.getCalls()[0].args[0], 'pinchstarted');
+      indexPosition.copy(index.transform.position);
+      indexPosition.y += 1.5;
+      thumbPosition.copy(thumb.transform.position);
+      thumbPosition.y += 1.5;
+      const indexThumbDistance = indexPosition.distanceTo(thumbPosition);
+      assert.isAtMost(emitSpy.getCalls()[0].args[1].position.distanceTo(indexPosition), indexThumbDistance);
+      assert.isAtMost(emitSpy.getCalls()[0].args[1].position.distanceTo(thumbPosition), indexThumbDistance);
     });
 
     test('pinchended', function () {
@@ -61,8 +70,16 @@ suite('tracked-controls-webxr', function () {
       el.components['hand-tracking-controls'].checkIfControllerPresent();
       el.components['hand-tracking-controls'].isPinched = true;
       thumb.transform.position.z = 10;
+      thumbPosition.copy(thumb.transform.position);
       el.components['hand-tracking-controls'].detectPinch();
       assert.equal(emitSpy.getCalls()[0].args[0], 'pinchended');
+      indexPosition.copy(index.transform.position);
+      indexPosition.y += 1.5;
+      thumbPosition.copy(thumb.transform.position);
+      thumbPosition.y += 1.5;
+      const indexThumbDistance = indexPosition.distanceTo(thumbPosition);
+      assert.isAtMost(emitSpy.getCalls()[0].args[1].position.distanceTo(indexPosition), indexThumbDistance);
+      assert.isAtMost(emitSpy.getCalls()[0].args[1].position.distanceTo(thumbPosition), indexThumbDistance);
     });
   });
 });

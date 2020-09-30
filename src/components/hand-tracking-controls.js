@@ -221,20 +221,20 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
 
       if (distance < this.data.startPinchDistance && this.isPinched === false) {
         this.isPinched = true;
-        this.pinchEventDetail.position.copy(indexTipPose.transform.position);
+        this.pinchEventDetail.position.copy(indexTipPosition).lerp(thumbTipPosition, 0.5);
         this.pinchEventDetail.position.y += 1.5;
         this.el.emit('pinchstarted', this.pinchEventDetail);
       }
 
       if (distance > this.data.endPinchDistance && this.isPinched === true) {
         this.isPinched = false;
-        this.pinchEventDetail.position.copy(indexTipPose.transform.position);
+        this.pinchEventDetail.position.copy(indexTipPosition).lerp(thumbTipPosition, 0.5);
         this.pinchEventDetail.position.y += 1.5;
         this.el.emit('pinchended', this.pinchEventDetail);
       }
 
       if (this.isPinched) {
-        this.pinchEventDetail.position.copy(indexTipPose.transform.position);
+        this.pinchEventDetail.position.copy(indexTipPosition).lerp(thumbTipPosition, 0.5);
         this.pinchEventDetail.position.y += 1.5;
         this.el.emit('pinchmoved', this.pinchEventDetail);
       }
