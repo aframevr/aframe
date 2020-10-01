@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://aframe.io/releases/0.5.0/aframe.min.js"></script>
+    <title>Document</title>
+  </head>
+  <body>
+    <a-assets>
+      <img
+        id="logo"
+        src="https://cdn.glitch.com/0101814b-5088-4b1e-8baf-dbfd02e4e7a4%2Fdsc_logo.png?v=1600371914454"
+      />
+    </a-assets>
+    <a-scene>
+      <!-- <a-entity id="lightSphere" geometry="primitive:sphere" material="color:#FFF; shader:flat" light="type:point" > </a-entity> -->
+      <a-box position="-4 0.5 -3" rotation="0 90 0" color="#EF2D5E"></a-box>
+     
+      <a-box position="-2.5 1 -4" rotation="0 100 0" color="#00cc00"></a-box>
+      
+      <!-- <a-plane position="-2.5 2 -4" material="src: https://w0.pngwave.com/png/342/131/penguin-tux-design-logo-linux-penguin-png-clip-art.png; -->
+      transparent: true"></a-plane>
+      <a-box position="0 2.5 -5" rotation="0 90 -88" color="#66ccff"></a-box>
+    
+      <!-- <a-box src="https://cdn.glitch.com/0101814b-5088-4b1e-8baf-dbfd02e4e7a4%2Fdsc_logo.png?v=1600374344899" position="0 1 -3"></a-box> -->
+      
+      <a-box position="2.5 1 -4" rotation="0 -100 0" color="#4d0026"></a-box>
+    
+      <a-box position="4 0.5 -3" rotation="0 -90 0" color="#007a99"></a-box>
+      
+      <a-sky color="#fff"> </a-sky>
+      <!-- <a-entity id="logo_DSC" position="2.6 1 -3" geometry="height: 50; width: 50" material="src: #logo" ></a-entity> -->
+      <!--       <a-image src="https://cdn.glitch.com/0101814b-5088-4b1e-8baf-dbfd02e4e7a4%2Fdsc_logo.png?v=1600371914454" width="6" height="10">
+      </a-image> -->
+
+      
+      <!-- <a-entity light="type: ambient; color: #222"></a-entity>
+      <a-entity light="type: directional; color: #111" position="-1 1 0"></a-entity> -->
+    </a-scene>
+  </body>
+</html>
