@@ -50,9 +50,7 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
   schema: {
     hand: {default: 'right', oneOf: ['left', 'right']},
     modelStyle: {default: 'mesh', oneOf: ['dots', 'mesh']},
-    modelColor: {default: 'white'},
-    startPinchDistance: {default: 0.015},
-    endPinchDistance: {default: 0.03}
+    modelColor: {default: 'white'}
   },
 
   bindMethods: function () {
@@ -219,14 +217,14 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
 
       var distance = indexTipPosition.distanceTo(thumbTipPosition);
 
-      if (distance < this.data.startPinchDistance && this.isPinched === false) {
+      if (distance < 0.015 && this.isPinched === false) {
         this.isPinched = true;
         this.pinchEventDetail.position.copy(indexTipPosition).lerp(thumbTipPosition, 0.5);
         this.pinchEventDetail.position.y += 1.5;
         this.el.emit('pinchstarted', this.pinchEventDetail);
       }
 
-      if (distance > this.data.endPinchDistance && this.isPinched === true) {
+      if (distance > 0.03 && this.isPinched === true) {
         this.isPinched = false;
         this.pinchEventDetail.position.copy(indexTipPosition).lerp(thumbTipPosition, 0.5);
         this.pinchEventDetail.position.y += 1.5;
