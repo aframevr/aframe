@@ -30,9 +30,23 @@ Use `hand-tracking-controls` to integrate [hand tracked input][webxrhandinput] i
 
 | Event Name    | Description                                                    |
 | ----------    | -----------                                                    |
-| pinchstarted  | The pinch gesture has started. World coordinates passed as event detail.                                 |
-| pinchended    | The pinch gesture has ended. World coordinates passed as event detail.                                    |
-| pinchmoved    | The hand moved while making the pinch gesture. Useful for interactions that track the hand while the gesture is engaged. World coordinates passed as event detail.                  |
+| pinchstarted  | The pinch gesture has started. World coordinates and wrist orientation passed as event detail.                                 |
+| pinchended    | The pinch gesture has ended. World coordinates and wrist orientation passed as event detail.                                    |
+
+## Members
+
+Accessed as `el.components['hand-tracking-controls'].<MEMBER>`.
+
+| Member    | Description                                                                           |
+|-----------|---------------------------------------------------------------------------------------|
+| pinchWorldPosition    | The position of the active pinch gesture  |
+| wristWorldOrientation | The orientation of the wrist  |
+
+## States
+
+| State Name  | Description                                                                           |
+|-------------|---------------------------------------------------------------------------------------|
+| pinched | Set while the pinch gesture is active  |
 
 ## Assets
 
