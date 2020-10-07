@@ -41,17 +41,11 @@ var INPUT_MAPPING_WEBVR = {
  * Axis:
  * 0 - touchpad x
  * 1 - touchpad y
- * Reference: https://github.com/immersive-web/webxr-input-profiles/blob/master/packages/registry/profiles/oculus/oculus-go.json
+ * Reference: https://github.com/immersive-web/webxr-input-profiles/blob/master/packages/registry/profiles/samsung/samsung-gearvr.json
  */
 var INPUT_MAPPING_WEBXR = {
-  left: {
-    axes: {touchpad: [0, 1]},
-    buttons: ['trigger', 'none', 'touchpad', 'menu']
-  },
-  right: {
-    axes: {touchpad: [0, 1]},
-    buttons: ['trigger', 'none', 'touchpad', 'menu']
-  }
+  axes: {touchpad: [0, 1]},
+  buttons: ['trigger', 'none', 'touchpad', 'none', 'menu']
 };
 
 var INPUT_MAPPING = isWebXRAvailable ? INPUT_MAPPING_WEBXR : INPUT_MAPPING_WEBVR;
@@ -73,11 +67,6 @@ module.exports.Component = registerComponent('gearvr-controls', {
     armModel: {default: true}
   },
 
-  /**
-   * Button IDs:
-   * 0 - trackpad
-   * 1 - trigger
-   */
   mapping: INPUT_MAPPING,
 
   bindMethods: function () {
@@ -177,6 +166,7 @@ module.exports.Component = registerComponent('gearvr-controls', {
     buttonMeshes = this.buttonMeshes = {};
     buttonMeshes.trigger = controllerObject3D.children[2];
     buttonMeshes.trackpad = controllerObject3D.children[1];
+    buttonMeshes.touchpad = controllerObject3D.children[1];
   },
 
   onButtonChanged: function (evt) {

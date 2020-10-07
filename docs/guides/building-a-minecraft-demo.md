@@ -331,9 +331,8 @@ using `<a-mixin>` which can be reused to create voxels like a prefab:
 
   <a-entity mixin="voxel" position="-1 0 -2"></a-entity>
   <a-entity mixin="voxel" position="0 0 -2"></a-entity>
-  <a-entity mixin="voxel" position="0 1 -2">
-    <a-animation attribute="rotation" to="0 360 0" repeat="indefinite"></a-animation>
-  </a-entity>
+  <a-entity mixin="voxel" position="0 1 -2"
+            animation="property: rotation; to: 0 360 0; loop: true"></a-entity>
   <a-entity mixin="voxel" position="1 0 -2"></a-entity>
 </a-scene>
 ```
@@ -343,9 +342,8 @@ And we've added voxels using that mixin:
 ```html
 <a-entity mixin="voxel" position="-1 0 -2"></a-entity>
 <a-entity mixin="voxel" position="0 0 -2"></a-entity>
-<a-entity mixin="voxel" position="0 1 -2">
-  <a-animation attribute="rotation" to="0 360 0" repeat="indefinite"></a-animation>
-</a-entity>
+<a-entity mixin="voxel" position="0 1 -2"
+          animation="property: rotation; to: 0 360 0; loop: true"></a-entity>
 <a-entity mixin="voxel" position="1 0 -2"></a-entity>
 ```
 
@@ -372,8 +370,8 @@ responsible for teleporting around and the right hand responsible for spawning
 and placing blocks.
 
 ```html
-<a-entity id="teleHand" hand-controls="left"></a-entity>
-<a-entity id="blockHand" hand-controls="right"></a-entity>
+<a-entity id="teleHand" hand-controls="hand: left"></a-entity>
+<a-entity id="blockHand" hand-controls="hand: right"></a-entity>
 ```
 
 ### Adding Teleportation to the Left Hand
@@ -394,12 +392,12 @@ component on the controller on the entity:
 
 ```html
 <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
-<script src="https://unpkg.com/aframe-teleport-controls@0.2.x/dist/aframe-teleport-controls.min.js"></script>
+<script src="https://unpkg.com/aframe-teleport-controls@0.3.x/dist/aframe-teleport-controls.min.js"></script>
 
 <!-- ... -->
 
-<a-entity id="teleHand" hand-controls="left" teleport-controls></a-entity>
-<a-entity id="blockHand" hand-controls="right"></a-entity>
+<a-entity id="teleHand" hand-controls="hand: left" teleport-controls></a-entity>
+<a-entity id="blockHand" hand-controls="hand: right"></a-entity>
 ```
 
 Then we'll configure the `teleport-controls` component to use an arc `type` of
@@ -409,7 +407,7 @@ ground, but we can specify with `collisionEntities` to teleport on the blocks
 `teleport-controls` component was created with:
 
 ```html
-<a-entity id="teleHand" hand-controls="left" teleport-controls="type: parabolic; collisionEntities: [mixin='voxel'], #ground"></a-entity>
+<a-entity id="teleHand" hand-controls="hand: left" teleport-controls="type: parabolic; collisionEntities: [mixin='voxel'], #ground"></a-entity>
 ```
 
 That's it! **One script tag and one HTML attribute and we can teleport**.  For
@@ -431,12 +429,12 @@ that attaches the clicking laser to VR tracked controllers.  Like the
 
 ```html
 <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
-<script src="https://unpkg.com/aframe-teleport-controls@0.2.x/dist/aframe-teleport-controls.min.js"></script>
+<script src="https://unpkg.com/aframe-teleport-controls@0.3.x/dist/aframe-teleport-controls.min.js"></script>
 
 <!-- ... -->
 
-<a-entity id="teleHand" hand-controls="left" teleport-controls="type: parabolic; collisionEntities: [mixin='voxel'], #ground"></a-entity>
-<a-entity id="blockHand" hand-controls="right" laser-controls></a-entity>
+<a-entity id="teleHand" hand-controls="hand: left" teleport-controls="type: parabolic; collisionEntities: [mixin='voxel'], #ground"></a-entity>
+<a-entity id="blockHand" hand-controls="hand: right" laser-controls></a-entity>
 ```
 
 
@@ -477,7 +475,7 @@ GitHub][intersection-spawn]. We attach `intersection-spawn` capabilities to the
 right hand:
 
 ```html
-<a-entity id="blockHand" hand-controls="right" laser-controls intersection-spawn="event: click; mixin: voxel"></a-entity>
+<a-entity id="blockHand" hand-controls="hand: right" laser-controls intersection-spawn="event: click; mixin: voxel"></a-entity>
 ```
 
 Now when we click, we spawn voxels!
@@ -492,7 +490,7 @@ component with the gaze-based `cursor` component so that we can also spawn
 blocks on mobile and desktop, without changing a thing about the component!
 
 ```html
-<a-entity id="blockHand" hand-controls="right" laser-controls intersection-spawn="event: click; mixin: voxel"></a-entity>
+<a-entity id="blockHand" hand-controls="hand: right" laser-controls intersection-spawn="event: click; mixin: voxel"></a-entity>
 
 <a-camera>
   <a-cursor intersection-spawn="event: click; mixin: voxel"></a-cursor>

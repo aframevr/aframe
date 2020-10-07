@@ -319,9 +319,11 @@ module.exports.Component = registerComponent('cursor', {
   },
 
   onEnterVR: function () {
-    var xrSession = this.el.xrSession;
+    this.clearCurrentIntersection(true);
+    var xrSession = this.el.sceneEl.xrSession;
     var self = this;
     if (!xrSession) { return; }
+    if (this.data.rayOrigin === 'mouse') { return; }
     WEBXR_EVENTS.DOWN.forEach(function (downEvent) {
       xrSession.addEventListener(downEvent, self.onCursorDown);
     });

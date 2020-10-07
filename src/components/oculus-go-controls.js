@@ -64,11 +64,6 @@ module.exports.Component = registerComponent('oculus-go-controls', {
     armModel: {default: true}
   },
 
-  /**
-   * Button IDs:
-   * 0 - trackpad
-   * 1 - trigger
-   */
   mapping: INPUT_MAPPING,
 
   bindMethods: function () {
@@ -166,6 +161,7 @@ module.exports.Component = registerComponent('oculus-go-controls', {
     buttonMeshes = this.buttonMeshes = {};
     buttonMeshes.trigger = controllerObject3D.getObjectByName('oculus_go_button_trigger');
     buttonMeshes.trackpad = controllerObject3D.getObjectByName('oculus_go_touchpad');
+    buttonMeshes.touchpad = controllerObject3D.getObjectByName('oculus_go_touchpad');
   },
 
   onButtonChanged: function (evt) {

@@ -425,7 +425,7 @@ depends on its distance to the entity:
 
 ## Adding Animation
 
-[animation]: ../components/animations.md
+[animation]: ../components/animation.md
 
 We can add animations to the box using A-Frame's [built-in animation
 system][animation]. Animations interpolate or tween a value over time. We can

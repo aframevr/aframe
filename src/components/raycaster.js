@@ -326,8 +326,8 @@ module.exports.Component = registerComponent('raycaster', {
         return;
       }
 
-      // Grab the position and rotation. (As a side effect, this updates el.object3D.matrixWorld.)
-      el.object3D.getWorldPosition(originVec3);
+      el.object3D.updateMatrixWorld();
+      originVec3.setFromMatrixPosition(el.object3D.matrixWorld);
 
       // If non-zero origin, translate the origin into world space.
       if (data.origin.x !== 0 || data.origin.y !== 0 || data.origin.z !== 0) {

@@ -168,6 +168,10 @@ entity.addState('selected');
 entity.is('selected');  // >> true
 ```
 
+### `destroy ()`
+
+Clean up memory related to the entity such as clearing all components and their data.
+
 ### `emit (name, detail, bubbles)`
 
 [animation]: ../components/animation.md
@@ -319,10 +323,6 @@ object:
 ```js
 entity.setAttribute('position', { x: 1, y: 2, z: 3 });
 ```
-
-### `destroy ()`
-
-Clean up memory related to the entity such as clearing all components and their data.
 
 #### Updating Multi-Property Component Data
 

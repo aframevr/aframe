@@ -15,7 +15,7 @@ module.exports.Component = registerComponent('look-controls', {
 
   schema: {
     enabled: {default: true},
-    hmdEnabled: {default: true},
+    magicWindowTrackingEnabled: {default: true},
     pointerLockEnabled: {default: false},
     reverseMouseDrag: {default: false},
     reverseTouchDrag: {default: false},
@@ -36,6 +36,7 @@ module.exports.Component = registerComponent('look-controls', {
     this.pointerLocked = false;
     this.setupMouseControls();
     this.bindMethods();
+    this.previousMouseEvent = {};
 
     this.setupMagicWindowControls();
 
@@ -51,6 +52,7 @@ module.exports.Component = registerComponent('look-controls', {
 
   setupMagicWindowControls: function () {
     var magicWindowControls;
+    var data = this.data;
 
     // Only on mobile devices and only enabled if DeviceOrientation permission has been granted.
     if (utils.device.isMobile()) {
@@ -58,10 +60,10 @@ module.exports.Component = registerComponent('look-controls', {
       if (typeof DeviceOrientationEvent !== 'undefined' && DeviceOrientationEvent.requestPermission) {
         magicWindowControls.enabled = false;
         if (this.el.sceneEl.components['device-orientation-permission-ui'].permissionGranted) {
-          magicWindowControls.enabled = true;
+          magicWindowControls.enabled = data.magicWindowTrackingEnabled;
         } else {
           this.el.sceneEl.addEventListener('deviceorientationpermissiongranted', function () {
-            magicWindowControls.enabled = true;
+            magicWindowControls.enabled = data.magicWindowTrackingEnabled;
           });
         }
       }
@@ -76,10 +78,15 @@ module.exports.Component = registerComponent('look-controls', {
       this.updateGrabCursor(data.enabled);
     }
 
-    // Reset pitch and yaw if disabling HMD.
-    if (oldData && !data.hmdEnabled && !oldData.hmdEnabled) {
-      this.pitchObject.rotation.set(0, 0, 0);
-      this.yawObject.rotation.set(0, 0, 0);
+    // Reset magic window eulers if tracking is disabled.
+    if (oldData && !data.magicWindowTrackingEnabled && oldData.magicWindowTrackingEnabled) {
+      this.magicWindowAbsoluteEuler.set(0, 0, 0);
+      this.magicWindowDeltaEuler.set(0, 0, 0);
+    }
+
+    // Pass on magic window tracking setting to magicWindowControls.
+    if (this.magicWindowControls) {
+      this.magicWindowControls.enabled = data.magicWindowTrackingEnabled;
     }
 
     if (oldData && !data.pointerLockEnabled !== oldData.pointerLockEnabled) {
@@ -259,7 +266,7 @@ module.exports.Component = registerComponent('look-controls', {
    * Dragging up and down rotates the camera around the X-axis (yaw).
    * Dragging left and right rotates the camera around the Y-axis (pitch).
    */
-  onMouseMove: function (event) {
+  onMouseMove: function (evt) {
     var direction;
     var movementX;
     var movementY;
@@ -272,13 +279,14 @@ module.exports.Component = registerComponent('look-controls', {
 
     // Calculate delta.
     if (this.pointerLocked) {
-      movementX = event.movementX || event.mozMovementX || 0;
-      movementY = event.movementY || event.mozMovementY || 0;
+      movementX = evt.movementX || evt.mozMovementX || 0;
+      movementY = evt.movementY || evt.mozMovementY || 0;
     } else {
-      movementX = event.screenX - previousMouseEvent.screenX;
-      movementY = event.screenY - previousMouseEvent.screenY;
+      movementX = evt.screenX - previousMouseEvent.screenX;
+      movementY = evt.screenY - previousMouseEvent.screenY;
     }
-    this.previousMouseEvent = event;
+    this.previousMouseEvent.screenX = evt.screenX;
+    this.previousMouseEvent.screenY = evt.screenY;
 
     // Calculate rotation.
     direction = this.data.reverseMouseDrag ? 1 : -1;
@@ -299,7 +307,8 @@ module.exports.Component = registerComponent('look-controls', {
     var canvasEl = sceneEl && sceneEl.canvas;
 
     this.mouseDown = true;
-    this.previousMouseEvent = evt;
+    this.previousMouseEvent.screenX = evt.screenX;
+    this.previousMouseEvent.screenY = evt.screenY;
     this.showGrabbingCursor();
 
     if (this.data.pointerLockEnabled && !this.pointerLocked) {

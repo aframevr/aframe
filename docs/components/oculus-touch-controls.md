@@ -42,6 +42,7 @@ mappings, events, and a Touch controller model.
 | thumbsticktouchstart | Thumbstick touched.               |
 | thumbsticktouchend   | Thumbstick no longer touched.     |
 | thumbstickchanged    | Thumbstick changed.               |
+| thumbstickmoved      | Thumbstick direction changed.     |
 | gripdown             | Grip button pressed.              |
 | gripup               | Grip button released.             |
 | griptouchstart       | Grip button touched.              |
@@ -72,6 +73,29 @@ mappings, events, and a Touch controller model.
 | surfacetouchstart    | Surface button touched.           |
 | surfacetouchend      | Surface button no longer touched. |
 | surfacechanged       | Surface button changed.           |
+
+## Read thumbstick values
+
+Listen to the `thumbstick` event and the values are available in the object passed to the handler
+
+```html
+<a-entity oculus-touch-controls="hand: left" thumbstick-logging></a-entity>
+<a-entity oculus-touch-controls="hand: right" thumbstick-logging></a-entity>
+```
+
+```javascript
+AFRAME.registerComponent('thumbstick-logging',{
+  init: function () {
+    this.el.addEventListener('thumbstickmoved', this.logThumbstick);
+  },
+  logThumbstick: function (evt) {
+    if (evt.detail.y > 0.95) { console.log("DOWN"); }
+    if (evt.detail.y < -0.95) { console.log("UP"); }
+    if (evt.detail.x < -0.95) { console.log("LEFT"); }
+    if (evt.detail.x > 0.95) { console.log("RIGHT"); }
+  }
+});
+```
 
 ## Assets
 

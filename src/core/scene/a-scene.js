@@ -150,7 +150,7 @@ module.exports.AScene = registerElement('a-scene', {
           if (self.isIOS) {
             setTimeout(self.resize, 100);
           } else {
-            resize();
+            self.resize();
           }
         });
         this.play();
@@ -284,18 +284,20 @@ module.exports.AScene = registerElement('a-scene', {
             if (this.xrSession) {
               this.xrSession.removeEventListener('end', this.exitVRBound);
             }
-            navigator.xr.requestSession(useAR ? 'immersive-ar' : 'immersive-vr', {
-              requiredFeatures: ['local-floor'],
-              optionalFeatures: ['bounded-floor']
-            }).then(function requestSuccess (xrSession) {
-              self.xrSession = xrSession;
-              vrManager.setSession(xrSession);
-              xrSession.addEventListener('end', self.exitVRBound);
-              if (useAR) {
-                self.addState('ar-mode');
-              }
-              enterVRSuccess();
-            });
+            var refspace = this.sceneEl.systems.webxr.sessionReferenceSpaceType;
+            vrManager.setReferenceSpaceType(refspace);
+            var xrMode = useAR ? 'immersive-ar' : 'immersive-vr';
+            var xrInit = this.sceneEl.systems.webxr.sessionConfiguration;
+            navigator.xr.requestSession(xrMode, xrInit).then(
+                function requestSuccess (xrSession) {
+                  self.xrSession = xrSession;
+                  vrManager.setSession(xrSession);
+                  xrSession.addEventListener('end', self.exitVRBound);
+                  if (useAR) {
+                    self.addState('ar-mode');
+                  }
+                  enterVRSuccess();
+                });
           } else {
             vrDisplay = utils.device.getVRDisplay();
             vrManager.setDevice(vrDisplay);
@@ -658,6 +660,11 @@ module.exports.AScene = registerElement('a-scene', {
           var vrDisplay;
           var vrManager = this.renderer.xr;
           AEntity.prototype.play.call(this);  // .play() *before* render.
+
+          // WebXR Immersive navigation handler.
+          if (this.hasWebXR && navigator.xr && navigator.xr.addEventListener) {
+            navigator.xr.addEventListener('sessiongranted', function () { sceneEl.enterVR(); });
+          }
 
           if (sceneEl.renderStarted) { return; }
           sceneEl.resize();

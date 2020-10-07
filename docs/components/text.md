@@ -4,7 +4,10 @@ type: components
 layout: docs
 parent_section: components
 source_code: src/components/text.js
-examples: []
+examples:
+  - title: Stock Font Showcase
+    src: https://glitch.com/~aframe-text-fonts-demo
+
 ---
 
 The text component renders signed distance field (SDF) font text.
@@ -19,7 +22,7 @@ The text component renders signed distance field (SDF) font text.
 [three-bmfont-text]: https://github.com/Jam3/three-bmfont-text
 
 Note that rendering text in 3D is hard. In 2D web development, text is the most
-basic thing because the browser's renderer and layout engine handles
+basic thing because the browser's renderer and layout engine handle
 everything. In a 3D context, we don't have those luxuries. There are several
 other different ways to render text in A-Frame including:
 

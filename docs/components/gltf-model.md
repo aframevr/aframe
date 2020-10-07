@@ -152,6 +152,8 @@ All files are available from the three.js repository, under
 automatically choose whether to use a WASM or JavaScript decoder, so both should
 be included.
 
+A Google-hosted version of the Draco decoder libraries saves you from needing to include these libraries in your own project: set `https://www.gstatic.com/draco/v1/decoders/` as the value for `dracoDecoderPath`.
+
 ## More Resources
 
 [sketchfab]: https://sketchfab.com/models?features=downloadable&sort_by=-likeCount

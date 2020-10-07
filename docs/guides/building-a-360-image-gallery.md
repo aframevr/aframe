@@ -201,11 +201,11 @@ template component.
 [template]: https://github.com/supermedium/superframe/tree/master/components/template#aframe-template-component
 
 If we read the [template component's documentation][template], we see one way
-to define a template is via a script tag in `<a-assets>`. Let's make our link a
+to define a template is via a script tag in `<head>`. Let's make our link a
 template and give it a name using an `id`:
 
 ```html
-<a-assets>
+<head>
   <!-- ... -->
   <script id="plane" type="text/html">
     <a-entity class="link"
@@ -213,7 +213,7 @@ template and give it a name using an `id`:
       material="shader: flat; src: #cubes-thumb"
       sound="on: click; src: #click-sound"></a-entity>
   </script>
-</a-assets>
+</head>
 ```
 
 Then we can use the template to create multiple planes without much work:
