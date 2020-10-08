@@ -83528,7 +83528,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 1.0.4 (Date 2020-10-05, Commit #da238996)');
+console.log('A-Frame Version: 1.0.4 (Date 2020-10-08, Commit #2d7bee0d)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
@@ -85300,6 +85300,7 @@ var utils = _dereq_('../utils');
 module.exports.System = registerSystem('tracked-controls-webxr', {
   init: function () {
     this.controllers = [];
+    this.oldControllers = [];
     this.oldControllersLength = 0;
     this.throttledUpdateControllerList = utils.throttle(this.updateControllerList, 500, this);
     this.updateReferenceSpace = this.updateReferenceSpace.bind(this);
@@ -85314,6 +85315,7 @@ module.exports.System = registerSystem('tracked-controls-webxr', {
   updateReferenceSpace: function () {
     var self = this;
     var xrSession = this.el.xrSession;
+
     if (!xrSession) {
       this.referenceSpace = undefined;
       this.controllers = [];
@@ -85336,7 +85338,8 @@ module.exports.System = registerSystem('tracked-controls-webxr', {
 
   updateControllerList: function () {
     var xrSession = this.el.xrSession;
-    var oldControllers;
+    var oldControllers = this.oldControllers;
+    var i;
     if (!xrSession) {
       if (this.oldControllersLength === 0) { return; }
       // Broadcast that we now have zero controllers connected if there is
@@ -85346,17 +85349,25 @@ module.exports.System = registerSystem('tracked-controls-webxr', {
       this.el.emit('controllersupdated', undefined, false);
       return;
     }
-    oldControllers = this.controllers;
+
     this.controllers = xrSession.inputSources;
     if (this.oldControllersLength === this.controllers.length) {
       var equal = true;
-      for (var i = 0; i < this.controllers.length; ++i) {
-        if (this.controllers[i] === oldControllers[i]) { continue; }
+      for (i = 0; i < this.controllers.length; ++i) {
+        if (this.controllers[i] === oldControllers[i] &&
+            this.controllers[i].gamepad === oldControllers[i].gamepad) { continue; }
         equal = false;
         break;
       }
       if (equal) { return; }
     }
+
+    // Store reference to current controllers
+    oldControllers.length = 0;
+    for (i = 0; i < this.controllers.length; i++) {
+      oldControllers.push(this.controllers[i]);
+    }
+
     this.oldControllersLength = this.controllers.length;
     this.el.emit('controllersupdated', undefined, false);
   }
