@@ -31,10 +31,13 @@ AFRAME.registerComponent('button', {
     this.el.appendChild(labelEl);
 
     this.bindMethods();
-    this.el.addEventListener('stateadded', this.stateChanged);
-    this.el.addEventListener('stateremoved', this.stateChanged);
-    this.el.addEventListener('pressedstarted', this.onPressedStarted);
-    this.el.addEventListener('pressedended', this.onPressedEnded);
+
+    el.addEventListener('mouseenter', this.onPressedStarted);
+    el.addEventListener('mouseleave', this.onPressedEnded);
+    el.addEventListener('stateadded', this.stateChanged);
+    el.addEventListener('stateremoved', this.stateChanged);
+    el.addEventListener('pressedstarted', this.onPressedStarted);
+    el.addEventListener('pressedended', this.onPressedEnded);
   },
 
   bindMethods: function () {

@@ -6,13 +6,47 @@
     <meta name="description" content="Hello, World! • A-Frame">
     <script src="../../../dist/aframe-master.js"></script>
     <script src="https://unpkg.com/aframe-environment-component@1.1.0/dist/aframe-environment-component.min.js"></script>
+    <script src="page-turn.js"></script>
+    <script src="button.js"></script>
   </head>
   <body>
-    <a-scene environment="preset: forest">
+    <a-scene environment="preset: forest" raycaster="objects: [button];" cursor="rayOrigin: mouse">
       <a-assets>
-        <img id="comic" crossOrigin="anonymous" src="comic.jpg">
+        <video id="bunny" autoplay preload="auto" loop crossorigin="anonymous" width="1920" height="1080">
+          <source src="bunny.mp4"></source>
+        </video>
+        <!-- <img id="learninganatomycubemap" crossOrigin="anonymous" src="https://vr1.otoycdn.net/vr/pano/16976_E8CF73F1-0AE3-47B1-AF13-BD5F875D9D37_pano.png">
+        <img id="imaginerealitycubemap" crossOrigin="anonymous" src="https://vr1.otoycdn.net/vr/pano/23036_7E20F856-0889-4C02-8029-78A4D02F5834_pano.png">
+        <img id="inariforestcubemap" crossOrigin="anonymous" src="https://vr1.otoycdn.net/vr/pano/3781_4CE2FAD6-7D67-4B17-87F2-AB796090E65A_pano.png">
+        <img id="daybegancubemap" crossOrigin="anonymous" src="https://vr1.otoycdn.net/vr/pano/9828_17AD4FA9-6C29-460D-B611-FEC36370C0A6_pano.png">
+
+
+        <img id="realizationcubemap" crossOrigin="anonymous" src="https://vr1.otoycdn.net/vr/pano/23252_C59E51B1-932C-4273-960F-FC7208C0A80E_pano.png">
+        <img id="losttimecubemap" crossOrigin="anonymous" src="https://vr1.otoycdn.net/vr/pano/23624_2CA89B4A-6E0F-452E-99B6-5DC46B00C34D_pano.png">
+
+
+         <img id="toystorycubemap" crossOrigin="anonymous" src="https://vr1.otoycdn.net/vr/pano/5034_9D12BBB5-DFBC-4DEC-82D5-0CF7EE320F4F_pano.png">
+         <img id="creativemindcubemap" crossOrigin="anonymous" src="https://vr1.otoycdn.net/vr/pano/19732_EC1B4D6A-FE93-48B2-B7F0-445177C3DC35_pano.png"> -->
+
+  <!-- <img id="bathtubparanoiacubemap" crossOrigin="anonymous" src="https://vr1.otoycdn.net/vr/pano/10320_1512DF39-F81A-48CA-8BB0-5E3CAD4B28D1_pano.png"> -->
+           <img id="livingwithnaturecubemap" crossOrigin="anonymous" src="https://vr1.otoycdn.net/vr/pano/18537_03DCCB5D-33A5-4136-83DA-3F8C758ED7AA_pano.png">
+       <img id="panel1" crossOrigin="anonymous" src="panel1.png">
+        <img id="panel2" crossOrigin="anonymous" src="panel2.png">
+        <img id="ghibli" crossOrigin="anonymous" src="ghibli.jpg">
       </a-assets>
-      <a-entity layer="src: #comic" position="0 1.6 -1"></a-entity>
+      <a-entity
+        layer="src: #livingwithnaturecubemap"
+        position="0 1.8 -1.5"></a-entity>
+      <a-entity
+        rotation="0 80 0"
+        position="-1.6 1.8 0.2"
+        material="shader: flat; src: #panel1"
+        geometry="primitive: plane; width: 1.920; height: 1.038"></a-entity>
+      <a-entity laser-controls="hand: left" raycaster="objects: [button]"></a-entity>
+      <a-entity laser-controls="hand: right" raycaster="objects: [button]"></a-entity>
+
+      <a-entity page-turn="direction: forward" id="nextButton" button="label: Next" position="0.5 1.1 -1.5"></a-entity>
+      <a-entity page-turn="direction: backward" id="previousButton"button="label: Previous" position="-0.5 1.1 -1.5"></a-entity>
     </a-scene>
   </body>
 </html>
