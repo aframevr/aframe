@@ -18,6 +18,9 @@
   <a href="https://npmjs.com/package/aframe">
     <img src="https://img.shields.io/npm/l/aframe.svg?style=flat-square" alt="License"></a>
   </a>
+  <a href="https://gitpod.io/from-referrer/">
+    <img src="https://img.shields.io/badge/Gitpod-Ready--to--Code-blue?logo=gitpod" alt="Gitpod Ready-to-Code"/>
+  </a>
 </p>
 
 <div align="center">
@@ -189,6 +192,16 @@ npm start  # Start the local development server.
 ```
 
 And open in your browser **[http://localhost:9000](http://localhost:9000)**.
+
+## Online one-click setup
+
+You can use Gitpod(an Online Open Source VS Code like IDE which is free for Open Source) for developing online. With a single click it will start a workspace and automatically:
+
+- clone the `aframe` repo.
+- install the dependencies via `npm start`.
+- start the local development server.
+
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/from-referrer/)
 
 ### Generating Builds
 
