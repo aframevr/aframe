@@ -13,10 +13,6 @@ module.exports.Component = registerComponent('layer', {
   init: function () {
     var gl = this.el.sceneEl.renderer.getContext();
 
-    this.cubeMapTexturesCache = {};
-    this.cubeMapCacheSize = 3;
-    this.cubeMapCacheQueue = [];
-
     this.quaternion = new THREE.Quaternion();
     this.position = new THREE.Vector3();
 
@@ -61,8 +57,6 @@ module.exports.Component = registerComponent('layer', {
     var xrGLFactory = this.xrGLFactory;
     var frame = this.el.sceneEl.frame;
     var src = this.data.src;
-    var cubeMapTexturesCached = (this.cubeMapTexturesCache[src.src] &&
-      this.cubeMapTexturesCache[src.src][0]);
 
     this.visibilityChanged = false;
     if (!this.layer) { return; }
@@ -72,7 +66,7 @@ module.exports.Component = registerComponent('layer', {
       this.pendingCubeMapUpdate = false;
     }
 
-    if (!cubeMapTexturesCached && !this.loadingScreen) {
+    if (!this.loadingScreen) {
       this.loadingScreen = true;
     } else {
       this.loadingScreen = false;
@@ -121,7 +115,6 @@ module.exports.Component = registerComponent('layer', {
     var cubefaceTextures = [];
     var imgTmp0;
     var imgTmp2;
-    var oldestCacheEntry;
 
     for (var i = 0; i < 6; i++) {
       var tempCanvas = document.createElement('CANVAS');
@@ -171,26 +164,12 @@ module.exports.Component = registerComponent('layer', {
       cubefaceTextures[5] = imgTmp0;
     }
 
-    if (src.complete) {
-      this.cubeMapTexturesCache[src.src] = this.cubeMapTexturesCache[src.src] || {};
-      this.cubeMapTexturesCache[src.src][faceOffset] = cubefaceTextures;
-      if (this.cubeMapCacheQueue.indexOf(src.src) === -1) { this.cubeMapCacheQueue.unshift(src.src); }
-      if (this.cubeMapCacheQueue.length > this.cubeMapCacheSize) {
-        oldestCacheEntry = this.cubeMapCacheQueue[this.cubeMapCacheSize];
-        delete this.cubeMapTexturesCache[oldestCacheEntry];
-        this.cubeMapTexturesCache[oldestCacheEntry] = undefined;
-        this.cubeMapCacheQueue.pop();
-      }
-    }
-
     if (callback) { callback(); }
     return cubefaceTextures;
   },
 
   loadCubeMapImage: function (layerColorTexture, src, faceOffset) {
     var gl = this.el.sceneEl.renderer.getContext();
-    var cubeMapTexturesCached = (this.cubeMapTexturesCache[src.src] &&
-             this.cubeMapTexturesCache[src.src][faceOffset]);
     var cubefaceTextures;
 
     // dont flip the pixels as we load them into the texture buffer.
@@ -201,8 +180,6 @@ module.exports.Component = registerComponent('layer', {
 
     if (!src.complete || this.loadingScreen) {
       cubefaceTextures = this.loadingScreenImages;
-    } else if (cubeMapTexturesCached) {
-      cubefaceTextures = this.cubeMapTexturesCache[src.src][faceOffset];
     } else {
       cubefaceTextures = this.generateCubeMapTextures(src, faceOffset);
     }
@@ -220,7 +197,7 @@ module.exports.Component = registerComponent('layer', {
       errorCode = gl.getError();
     });
 
-    this.el.sceneEl.skipRender = true;
+    // this.el.sceneEl.skipRender = true;
     // this.el.sceneEl.pause();
 
     if (errorCode !== 0) {

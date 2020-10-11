@@ -788,7 +788,7 @@ module.exports.AScene = registerElement('a-scene', {
           savedBackground = this.object3D.background;
           this.object3D.background = null;
         }
-        renderer.render(this.object3D, this.camera);
+        if (!this.skipRender) { renderer.render(this.object3D, this.camera); }
         if (savedBackground) {
           this.object3D.background = savedBackground;
         }
