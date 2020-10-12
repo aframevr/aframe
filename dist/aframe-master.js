@@ -30420,6 +30420,8 @@ module.exports = anime;
 		var controllers = [];
 		var inputSourcesMap = new Map();
 
+		var layers = [];
+
 		//
 
 		var cameraL = new PerspectiveCamera();
@@ -30581,6 +30583,20 @@ module.exports = anime;
 
 		};
 
+		this.addLayer = function(layer) {
+
+	    layers.push(layer);
+	    session.updateRenderState( { layers: layers } );
+
+	  };
+
+	  this.removeLayer = function(layer) {
+
+	    layers.splice(layers.indexOf(layer), 1);
+	    session.updateRenderState( { layers: layers } );
+
+	  };
+
 		this.setSession = function ( value ) {
 
 			session = value;
@@ -30613,8 +30629,7 @@ module.exports = anime;
 
 				// eslint-disable-next-line no-undef
 				var baseLayer = new XRWebGLLayer( session, gl, layerInit );
-
-				session.updateRenderState( { baseLayer: baseLayer } );
+				this.addLayer( baseLayer );
 
 				session.requestReferenceSpace( referenceSpaceType ).then( onRequestReferenceSpace );
 
@@ -68522,7 +68537,7 @@ module.exports={
     "present": "0.0.6",
     "promise-polyfill": "^3.1.0",
     "super-animejs": "^3.1.0",
-    "super-three": "^0.120.0",
+    "super-three": "^0.120.1",
     "three-bmfont-text": "dmarcos/three-bmfont-text#1babdf8507c731a18f8af3b807292e2b9740955e",
     "webvr-polyfill": "^0.10.12"
   },
@@ -83908,7 +83923,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 1.0.4 (Date 2020-10-11, Commit #87930d4f)');
+console.log('A-Frame Version: 1.0.4 (Date 2020-10-12, Commit #e04ee391)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
