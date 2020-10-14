@@ -30421,6 +30421,7 @@ module.exports = anime;
 		var inputSourcesMap = new Map();
 
 		var layers = [];
+		var baseLayer;
 
 		//
 
@@ -30628,7 +30629,7 @@ module.exports = anime;
 				};
 
 				// eslint-disable-next-line no-undef
-				var baseLayer = new XRWebGLLayer( session, gl, layerInit );
+				baseLayer = new XRWebGLLayer( session, gl, layerInit );
 				this.addLayer( baseLayer );
 
 				session.requestReferenceSpace( referenceSpaceType ).then( onRequestReferenceSpace );
@@ -30840,7 +30841,6 @@ module.exports = anime;
 			if ( pose !== null ) {
 
 				var views = pose.views;
-				var baseLayer = session.renderState.baseLayer;
 
 				renderer.setFramebuffer( baseLayer.framebuffer );
 
@@ -68537,7 +68537,7 @@ module.exports={
     "present": "0.0.6",
     "promise-polyfill": "^3.1.0",
     "super-animejs": "^3.1.0",
-    "super-three": "^0.120.2",
+    "super-three": "^0.120.3",
     "three-bmfont-text": "dmarcos/three-bmfont-text#1babdf8507c731a18f8af3b807292e2b9740955e",
     "webvr-polyfill": "^0.10.12"
   },
@@ -83923,7 +83923,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 1.0.4 (Date 2020-10-13, Commit #37125d91)');
+console.log('A-Frame Version: 1.0.4 (Date 2020-10-14, Commit #583b0e74)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
