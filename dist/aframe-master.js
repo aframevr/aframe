@@ -74199,6 +74199,7 @@ module.exports.Component = registerComponent('scale', {
 },{"../core/component":129}],98:[function(_dereq_,module,exports){
 /* global THREE */
 var register = _dereq_('../../core/component').registerComponent;
+var COMPONENTS = _dereq_('../../core/component').components;
 
 module.exports.Component = register('background', {
   schema: {
@@ -74213,6 +74214,16 @@ module.exports.Component = register('background', {
       return;
     }
     object3D.background = new THREE.Color(data.color);
+  },
+
+  remove: function () {
+    var data = this.data;
+    var object3D = this.el.object3D;
+    if (data.transparent) {
+      object3D.background = null;
+      return;
+    }
+    object3D.background = COMPONENTS[this.name].schema.color.default;
   }
 });
 
@@ -83923,7 +83934,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 1.0.4 (Date 2020-10-14, Commit #583b0e74)');
+console.log('A-Frame Version: 1.0.4 (Date 2020-10-20, Commit #1b0df517)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
