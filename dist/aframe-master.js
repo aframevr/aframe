@@ -74945,6 +74945,7 @@ module.exports.Component = registerComponent('screenshot', {
     var size;
     var camera;
     var cubeCamera;
+    var cubeRenderTarget;
     // Configure camera.
     if (projection === 'perspective') {
       // Quad is only used in equirectangular mode. Hide it in this case.
@@ -74955,9 +74956,16 @@ module.exports.Component = registerComponent('screenshot', {
     } else {
       // Use ortho camera.
       camera = this.camera;
+      cubeRenderTarget = new THREE.WebGLCubeRenderTarget(
+        Math.min(this.cubeMapSize, 2048),
+        {
+          format: THREE.RGBFormat,
+          generateMipmaps: true,
+          minFilter: THREE.LinearMipmapLinearFilter,
+          encoding: THREE.sRGBEncoding
+        });
       // Create cube camera and copy position from scene camera.
-      cubeCamera = new THREE.CubeCamera(el.camera.near, el.camera.far,
-                                        Math.min(this.cubeMapSize, 2048));
+      cubeCamera = new THREE.CubeCamera(el.camera.near, el.camera.far, cubeRenderTarget);
       // Copy camera position into cube camera;
       el.camera.getWorldPosition(cubeCamera.position);
       el.camera.getWorldQuaternion(cubeCamera.quaternion);
@@ -83934,7 +83942,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 1.0.4 (Date 2020-10-20, Commit #1b0df517)');
+console.log('A-Frame Version: 1.0.4 (Date 2020-10-21, Commit #8b59e7f3)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
