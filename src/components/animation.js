@@ -122,30 +122,31 @@ module.exports.Component = registerComponent('animation', {
     config.loop = data.loop;
     config.round = data.round;
 
-    this.clockSynced = data.clockSynced;
-
     // Start new animation.
     this.createAndStartAnimation();
   },
 
   tick: function (t, dt) {
     if (!this.animationIsPlaying) { return; }
-      if (this.clockSynced) {
-          var clock = new Date().getTime();
-          var direction = this.animation.direction;
-          if (direction == "alternate") {
-              direction = clock % (this.animation.duration * 2) < this.animation.duration ?
-                  "normal" : "reverse";
-          }
-          var time = clock % this.animation.duration;
-          if (direction == "reverse") {
-              time = this.animation.duration - time;
-          }
-          this.animation.seek(time);
-      } else {
-          this.time += dt;
-          this.animation.tick(this.time);
+    if (this.data.clockSynced) {
+      var clock = new Date().getTime();
+      var direction = this.animation.direction;
+      if (direction === 'alternate') {
+        if (clock % (this.animation.duration * 2) < this.animation.duration) {
+          direction = 'normal';
+        } else {
+          direction = 'reverse';
+        }
       }
+      var time = clock % this.animation.duration;
+      if (direction === 'reverse') {
+        time = this.animation.duration - time;
+      }
+      this.animation.seek(time);
+    } else {
+      this.time += dt;
+      this.animation.tick(this.time);
+    }
   },
 
   remove: function () {
