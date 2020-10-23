@@ -48,6 +48,7 @@ module.exports.Component = registerComponent('animation', {
     easing: {default: 'easeInQuad'},
     elasticity: {default: 400},
     enabled: {default: true},
+    clockSynced: {default: false},
     from: {default: ''},
     loop: {
       default: 0,
@@ -121,14 +122,30 @@ module.exports.Component = registerComponent('animation', {
     config.loop = data.loop;
     config.round = data.round;
 
+    this.clockSynced = data.clockSynced;
+
     // Start new animation.
     this.createAndStartAnimation();
   },
 
   tick: function (t, dt) {
     if (!this.animationIsPlaying) { return; }
-    this.time += dt;
-    this.animation.tick(this.time);
+      if (this.clockSynced) {
+          var clock = new Date().getTime();
+          var direction = this.animation.direction;
+          if (direction == "alternate") {
+              direction = clock % (this.animation.duration * 2) < this.animation.duration ?
+                  "normal" : "reverse";
+          }
+          var time = clock % this.animation.duration;
+          if (direction == "reverse") {
+              time = this.animation.duration - time;
+          }
+          this.animation.seek(time);
+      } else {
+          this.time += dt;
+          this.animation.tick(this.time);
+      }
   },
 
   remove: function () {
