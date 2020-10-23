@@ -277,6 +277,7 @@ module.exports.AScene = registerElement('a-scene', {
         var self = this;
         var vrDisplay;
         var vrManager = self.renderer.xr;
+        var xrInit;
 
         // Don't enter VR if already in VR.
         if (this.is('vr-mode')) { return Promise.resolve('Already in VR.'); }
@@ -293,11 +294,12 @@ module.exports.AScene = registerElement('a-scene', {
             var refspace = this.sceneEl.systems.webxr.sessionReferenceSpaceType;
             vrManager.setReferenceSpaceType(refspace);
             var xrMode = useAR ? 'immersive-ar' : 'immersive-vr';
-            var xrInit = this.sceneEl.systems.webxr.sessionConfiguration;
+            xrInit = this.sceneEl.systems.webxr.sessionConfiguration;
             return new Promise(function (resolve, reject) {
               navigator.xr.requestSession(xrMode, xrInit).then(
                 function requestSuccess (xrSession) {
                   self.xrSession = xrSession;
+                  vrManager.layersEnabled = xrInit.requiredFeatures.indexOf('layers') !== -1;
                   vrManager.setSession(xrSession);
                   xrSession.addEventListener('end', self.exitVRBound);
                   if (useAR) { self.addState('ar-mode'); }
