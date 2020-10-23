@@ -30444,6 +30444,7 @@ module.exports = anime;
 
 		//
 
+		this.layersEnabled = false;
 		this.enabled = false;
 
 		this.isPresenting = false;
@@ -30586,6 +30587,7 @@ module.exports = anime;
 
 		this.addLayer = function(layer) {
 
+	    if (!window.XRWebGLBinding || !this.layersEnabled) { return; }
 	    layers.push(layer);
 	    session.updateRenderState( { layers: layers } );
 
@@ -30593,6 +30595,7 @@ module.exports = anime;
 
 	  this.removeLayer = function(layer) {
 
+	    if (!window.XRWebGLBinding || !this.layersEnabled) { return; }
 	    layers.splice(layers.indexOf(layer), 1);
 	    session.updateRenderState( { layers: layers } );
 
@@ -30630,7 +30633,12 @@ module.exports = anime;
 
 				// eslint-disable-next-line no-undef
 				baseLayer = new XRWebGLLayer( session, gl, layerInit );
-				this.addLayer( baseLayer );
+
+				if (window.XRWebGLBinding && this.layersEnabled) {
+					this.addLayer( baseLayer );
+				} else {
+					session.updateRenderState( { baseLayer: baseLayer } );
+				}
 
 				session.requestReferenceSpace( referenceSpaceType ).then( onRequestReferenceSpace );
 
@@ -68537,7 +68545,7 @@ module.exports={
     "present": "0.0.6",
     "promise-polyfill": "^3.1.0",
     "super-animejs": "^3.1.0",
-    "super-three": "^0.120.3",
+    "super-three": "^0.120.6",
     "three-bmfont-text": "dmarcos/three-bmfont-text#1babdf8507c731a18f8af3b807292e2b9740955e",
     "webvr-polyfill": "^0.10.12"
   },
@@ -81498,6 +81506,7 @@ module.exports.AScene = registerElement('a-scene', {
         var self = this;
         var vrDisplay;
         var vrManager = self.renderer.xr;
+        var xrInit;
 
         // Don't enter VR if already in VR.
         if (this.is('vr-mode')) { return Promise.resolve('Already in VR.'); }
@@ -81514,11 +81523,12 @@ module.exports.AScene = registerElement('a-scene', {
             var refspace = this.sceneEl.systems.webxr.sessionReferenceSpaceType;
             vrManager.setReferenceSpaceType(refspace);
             var xrMode = useAR ? 'immersive-ar' : 'immersive-vr';
-            var xrInit = this.sceneEl.systems.webxr.sessionConfiguration;
+            xrInit = this.sceneEl.systems.webxr.sessionConfiguration;
             return new Promise(function (resolve, reject) {
               navigator.xr.requestSession(xrMode, xrInit).then(
                 function requestSuccess (xrSession) {
                   self.xrSession = xrSession;
+                  vrManager.layersEnabled = xrInit.requiredFeatures.indexOf('layers') !== -1;
                   vrManager.setSession(xrSession);
                   xrSession.addEventListener('end', self.exitVRBound);
                   if (useAR) { self.addState('ar-mode'); }
@@ -83954,7 +83964,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 1.0.4 (Date 2020-10-21, Commit #2effdc61)');
+console.log('A-Frame Version: 1.0.4 (Date 2020-10-23, Commit #8036f714)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
