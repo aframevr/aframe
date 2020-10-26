@@ -5,8 +5,8 @@ var warn = utils.debug('components:layer:warn');
 
 module.exports.Component = registerComponent('layer', {
   schema: {
-    src: {type: 'map'},
     type: {default: 'quad', oneOf: ['quad', 'monocubemap', 'stereocubemap']},
+    src: {type: 'map'},
     rotateCubemap: {default: false}
   },
 
@@ -196,9 +196,6 @@ module.exports.Component = registerComponent('layer', {
       );
       errorCode = gl.getError();
     });
-
-    // this.el.sceneEl.skipRender = true;
-    // this.el.sceneEl.pause();
 
     if (errorCode !== 0) {
       console.log('renderingError, WebGL Error Code: ' + errorCode);
