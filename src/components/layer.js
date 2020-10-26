@@ -6,7 +6,7 @@ var warn = utils.debug('components:layer:warn');
 module.exports.Component = registerComponent('layer', {
   schema: {
     src: {type: 'map'},
-    type: {default: 'stereocubemap', oneOf: ['quad', 'monocubemap', 'stereocubemap']},
+    type: {default: 'quad', oneOf: ['quad', 'monocubemap', 'stereocubemap']},
     rotateCubemap: {default: false}
   },
 
