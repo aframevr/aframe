@@ -141,7 +141,7 @@ module.exports.Component = registerComponent('layer', {
         0, // dest x offset in the canvas
         0, // dest y offset in the canvas
         cubeFaceSize, // x pixel count in dest
-        cubeFaceSize, // y pixel count in dest
+        cubeFaceSize  // y pixel count in dest
       );
 
       tempCanvasContext.restore();
