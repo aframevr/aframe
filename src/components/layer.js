@@ -381,9 +381,10 @@ var vertexBuffer;
 var shaderProgram;
 var indexBuffer;
 
+// Counter-clockwise triangle winding.
 var indices = [
-  1, 2, 3, // top-right
-  0, 1, 3 // bottom-left
+  0, 3, 1, // bottom-left
+  2, 1, 3  // top-right
 ];
 
 function initQuad (gl) {
@@ -392,19 +393,18 @@ function initQuad (gl) {
 
   // x, y, z, u, v
   var vertices = [
-    -1.0, 1.0, 0.0, 0, 0,  // bottom-left
-    -1.0, -1.0, 0.0, 0, 1, // top-left
-    1.0, -1.0, 0.0, 1, 1,  // top-right
-    1.0, 1.0, 0.0, 1, 0    // bottom-right
+    -1.0, -1.0, 0.0, 0, 0, // bottom-left
+    -1.0, 1.0, 0.0, 0, 1,  // top-left
+    1.0, 1.0, 0.0, 1, 1,   // top-right
+    1.0, -1.0, 0.0, 1, 0   // bottom-right
   ];
 
-  // Y coordinates inverted due to Oculus Browser bug.
-  // -1,-1 --------------- 1,-1
+  // -1, 1 -------------- 1, 1
   //   |                    |
   //   |                    |
   //   |                    |
   //   |                    |
-  // -1,1 ---------------- 1,1
+  // -1,-1 -------------- 1,-1
 
   // Create an empty buffer object to store vertex buffer
   vertexBuffer = gl.createBuffer();
