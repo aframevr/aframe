@@ -194,7 +194,7 @@ module.exports.Component = registerComponent('layer', {
         0, 0,
         gl.RGBA,
         gl.UNSIGNED_BYTE,
-        canvas,
+        canvas
       );
       errorCode = gl.getError();
     });
