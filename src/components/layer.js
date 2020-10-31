@@ -296,6 +296,15 @@ module.exports.Component = registerComponent('layer', {
     this.layer = undefined;
   },
 
+  toggleCompositorLayer: function () {
+    this.enableCompositorLayer(!this.layerEnabled);
+  },
+
+  enableCompositorLayer: function (enable) {
+    this.layerEnabled = enable;
+    this.quadPanelEl.object3D.visible = !this.layerEnabled;
+  },
+
   updateQuadPanel: function () {
     var quadPanelEl = this.quadPanelEl;
     if (!this.quadPanelEl) {
@@ -339,6 +348,7 @@ module.exports.Component = registerComponent('layer', {
     el.object3D.updateMatrixWorld();
     position.setFromMatrixPosition(el.object3D.matrixWorld);
     quaternion.setFromRotationMatrix(el.object3D.matrixWorld);
+    if (!this.layerEnabled) { position.set(0, 0, 100000000); }
     this.layer.transform = new XRRigidTransform(position, quaternion);
   },
 
@@ -351,6 +361,7 @@ module.exports.Component = registerComponent('layer', {
     }
     xrSession.requestReferenceSpace('local').then(this.onRequestedReferenceSpace);
     this.needsRedraw = true;
+    this.layerEnabled = true;
     if (this.quadPanelEl) {
       this.quadPanelEl.object3D.visible = false;
     }
