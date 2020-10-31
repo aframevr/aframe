@@ -73784,7 +73784,6 @@ var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresent
 var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
 var onButtonEvent = trackedControlsUtils.onButtonEvent;
 
-var isOculusBrowser = _dereq_('../utils/').device.isOculusBrowser();
 var isWebXRAvailable = _dereq_('../utils/').device.isWebXRAvailable;
 
 var GAMEPAD_ID_WEBXR = 'oculus-touch';
@@ -73795,8 +73794,6 @@ var GAMEPAD_ID_PREFIX = isWebXRAvailable ? GAMEPAD_ID_WEBXR : GAMEPAD_ID_WEBVR;
 
 // First generation model URL.
 var TOUCH_CONTROLLER_MODEL_BASE_URL = 'https://cdn.aframe.io/controllers/oculus/oculus-touch-controller-';
-// For now the generation 2 model is the same as the original until a new one is prepared for upload.
-var TOUCH_GEN2_CONTROLLER_MODEL_BASE_URL = TOUCH_CONTROLLER_MODEL_BASE_URL;
 
 var OCULUS_TOUCH_WEBVR = {
   left: {
@@ -73835,16 +73832,30 @@ var CONTROLLER_PROPERTIES = {
   'oculus-touch': OCULUS_TOUCH_CONFIG,
   'oculus-touch-v2': {
     left: {
-      modelUrl: TOUCH_GEN2_CONTROLLER_MODEL_BASE_URL + 'gen2-left.gltf',
+      modelUrl: TOUCH_CONTROLLER_MODEL_BASE_URL + 'gen2-left.gltf',
       rayOrigin: {origin: {x: -0.01, y: 0, z: -0.02}, direction: {x: 0, y: -0.5, z: -1}},
       modelPivotOffset: new THREE.Vector3(0, 0, 0),
       modelPivotRotation: new THREE.Euler(0, 0, 0)
     },
     right: {
-      modelUrl: TOUCH_GEN2_CONTROLLER_MODEL_BASE_URL + 'gen2-right.gltf',
+      modelUrl: TOUCH_CONTROLLER_MODEL_BASE_URL + 'gen2-right.gltf',
       rayOrigin: {origin: {x: 0.01, y: 0, z: -0.02}, direction: {x: 0, y: -0.5, z: -1}},
       modelPivotOffset: new THREE.Vector3(0, 0, 0),
       modelPivotRotation: new THREE.Euler(0, 0, 0)
+    }
+  },
+  'oculus-touch-v3': {
+    left: {
+      modelUrl: TOUCH_CONTROLLER_MODEL_BASE_URL + 'v3-left.glb',
+      rayOrigin: {origin: {x: 0.015, y: 0.005, z: 0}, direction: {x: 0, y: 0, z: -1}},
+      modelPivotOffset: new THREE.Vector3(0.01, -0.01, 0.05),
+      modelPivotRotation: new THREE.Euler(Math.PI / 4, 0, 0)
+    },
+    right: {
+      modelUrl: TOUCH_CONTROLLER_MODEL_BASE_URL + 'v3-right.glb',
+      rayOrigin: {origin: {x: -0.015, y: 0.005, z: 0}, direction: {x: 0, y: 0, z: -1}},
+      modelPivotOffset: new THREE.Vector3(-0.01, -0.01, 0.05),
+      modelPivotRotation: new THREE.Euler(Math.PI / 4, 0, 0)
     }
   }
 };
@@ -73912,7 +73923,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     buttonTouchColor: {type: 'color', default: '#8AB'},
     buttonHighlightColor: {type: 'color', default: '#2DF'},  // Light blue.
     model: {default: true},
-    controllerType: {default: 'auto', oneOf: ['auto', 'oculus-touch', 'oculus-touch-v2']},
+    controllerType: {default: 'auto', oneOf: ['auto', 'oculus-touch', 'oculus-touch-v2', 'oculus-touch-v3']},
     orientationOffset: {type: 'vec3', default: {x: 43, y: 0, z: 0}}
   },
 
@@ -73979,30 +73990,36 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     this.removeControllersUpdateListener();
   },
 
-  loadModel: function () {
+  loadModel: function (controller) {
     var data = this.data;
-    if (!data.model) { return; }
+    var controllerId;
 
+    if (!data.model) { return; }
     // Set the controller display model based on the data passed in.
     this.displayModel = CONTROLLER_PROPERTIES[data.controllerType] || CONTROLLER_PROPERTIES[CONTROLLER_DEFAULT];
     // If the developer is asking for auto-detection, see if the displayName can be retrieved to identify the specific unit.
     // This only works for WebVR currently.
     if (data.controllerType === 'auto') {
       var trackedControlsSystem = this.el.sceneEl.systems['tracked-controls-webvr'];
+      // WebVR
       if (trackedControlsSystem && trackedControlsSystem.vrDisplay) {
         var displayName = trackedControlsSystem.vrDisplay.displayName;
         // The Oculus Quest uses the updated generation 2 inside-out tracked controllers so update the displayModel.
         if (/^Oculus Quest$/.test(displayName)) {
           this.displayModel = CONTROLLER_PROPERTIES['oculus-touch-v2'];
         }
+      } else { // WebXR
+        controllerId = CONTROLLER_DEFAULT;
+        controllerId = controller.profiles.indexOf('oculus-touch-v2') !== -1 ? 'oculus-touch-v2' : controllerId;
+        controllerId = controller.profiles.indexOf('oculus-touch-v3') !== -1 ? 'oculus-touch-v3' : controllerId;
+        this.displayModel = CONTROLLER_PROPERTIES[controllerId];
       }
-      if (isOculusBrowser) { this.displayModel = CONTROLLER_PROPERTIES['oculus-touch-v2']; }
     }
     var modelUrl = this.displayModel[data.hand].modelUrl;
     this.el.setAttribute('gltf-model', modelUrl);
   },
 
-  injectTrackedControls: function () {
+  injectTrackedControls: function (controller) {
     var data = this.data;
     var webXRId = GAMEPAD_ID_WEBXR;
     var webVRId = data.hand === 'right' ? 'Oculus Touch (Right)' : 'Oculus Touch (Left)';
@@ -74013,7 +74030,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
       orientationOffset: data.orientationOffset,
       handTrackingEnabled: false
     });
-    this.loadModel();
+    this.loadModel(controller);
   },
 
   addControllersUpdateListener: function () {
@@ -74052,7 +74069,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   },
 
   onModelLoaded: function (evt) {
-    var controllerObject3D = evt.detail.model;
+    var controllerObject3D = this.controllerObject3D = evt.detail.model;
     var buttonMeshes;
 
     if (!this.data.model) { return; }
@@ -74060,10 +74077,10 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     buttonMeshes = this.buttonMeshes = {};
 
     buttonMeshes.grip = controllerObject3D.getObjectByName('buttonHand');
-    this.originalXPositionGrip = buttonMeshes.grip.position.x;
+    this.originalXPositionGrip = buttonMeshes.grip && buttonMeshes.grip.position.x;
     buttonMeshes.thumbstick = controllerObject3D.getObjectByName('stick');
     buttonMeshes.trigger = controllerObject3D.getObjectByName('buttonTrigger');
-    this.originalXRotationTrigger = buttonMeshes.trigger.rotation.x;
+    this.originalXRotationTrigger = buttonMeshes.trigger && buttonMeshes.trigger.rotation.x;
     buttonMeshes.xbutton = controllerObject3D.getObjectByName('buttonX');
     buttonMeshes.abutton = controllerObject3D.getObjectByName('buttonA');
     buttonMeshes.ybutton = controllerObject3D.getObjectByName('buttonY');
@@ -84324,7 +84341,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 1.0.4 (Date 2020-10-29, Commit #411e6607)');
+console.log('A-Frame Version: 1.0.4 (Date 2020-10-31, Commit #4705cda1)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
@@ -87706,7 +87723,7 @@ module.exports.checkControllerPresentAndSetup = function (component, idPrefix, q
   // Update controller presence.
   if (isPresent) {
     component.addEventListeners();
-    component.injectTrackedControls();
+    component.injectTrackedControls(controller);
     el.emit('controllerconnected', {name: component.name, component: component});
   } else {
     component.removeEventListeners();
