@@ -56031,7 +56031,7 @@ module.exports.Component = registerComponent('daydream-controls', {
   }
 });
 
-},{"../core/component":130,"../utils/":204,"../utils/bind":198,"../utils/tracked-controls":212}],77:[function(_dereq_,module,exports){
+},{"../core/component":130,"../utils/":204,"../utils/bind":198,"../utils/tracked-controls":213}],77:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var bind = _dereq_('../utils/bind');
 
@@ -56237,7 +56237,7 @@ module.exports.Component = registerComponent('gearvr-controls', {
   }
 });
 
-},{"../core/component":130,"../utils/":204,"../utils/bind":198,"../utils/tracked-controls":212}],78:[function(_dereq_,module,exports){
+},{"../core/component":130,"../utils/":204,"../utils/bind":198,"../utils/tracked-controls":213}],78:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var bind = _dereq_('../utils/bind');
 
@@ -56402,7 +56402,7 @@ module.exports.Component = registerComponent('generic-tracked-controller-control
   }
 });
 
-},{"../core/component":130,"../utils/bind":198,"../utils/tracked-controls":212}],79:[function(_dereq_,module,exports){
+},{"../core/component":130,"../utils/bind":198,"../utils/tracked-controls":213}],79:[function(_dereq_,module,exports){
 var geometries = _dereq_('../core/geometry').geometries;
 var geometryNames = _dereq_('../core/geometry').geometryNames;
 var registerComponent = _dereq_('../core/component').registerComponent;
@@ -57279,7 +57279,7 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
 });
 
 
-},{"../core/component":130,"../utils/bind":198,"../utils/tracked-controls":212}],83:[function(_dereq_,module,exports){
+},{"../core/component":130,"../utils/bind":198,"../utils/tracked-controls":213}],83:[function(_dereq_,module,exports){
 _dereq_('./animation');
 _dereq_('./camera');
 _dereq_('./cursor');
@@ -59264,7 +59264,7 @@ module.exports.Component = registerComponent('magicleap-controls', {
 
 });
 
-},{"../core/component":130,"../utils/bind":198,"../utils/tracked-controls":212}],91:[function(_dereq_,module,exports){
+},{"../core/component":130,"../utils/bind":198,"../utils/tracked-controls":213}],91:[function(_dereq_,module,exports){
 /* global Promise */
 var utils = _dereq_('../utils/');
 var component = _dereq_('../core/component');
@@ -59842,7 +59842,7 @@ module.exports.Component = registerComponent('oculus-go-controls', {
   }
 });
 
-},{"../core/component":130,"../utils/":204,"../utils/bind":198,"../utils/tracked-controls":212}],94:[function(_dereq_,module,exports){
+},{"../core/component":130,"../utils/":204,"../utils/bind":198,"../utils/tracked-controls":213}],94:[function(_dereq_,module,exports){
 var bind = _dereq_('../utils/bind');
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
@@ -60187,7 +60187,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   }
 });
 
-},{"../core/component":130,"../lib/three":178,"../utils/":204,"../utils/bind":198,"../utils/tracked-controls":212}],95:[function(_dereq_,module,exports){
+},{"../core/component":130,"../lib/three":178,"../utils/":204,"../utils/bind":198,"../utils/tracked-controls":213}],95:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 
 module.exports.Component = registerComponent('position', {
@@ -61654,7 +61654,7 @@ function createStats (scene) {
   });
 }
 
-},{"../../../vendor/rStats":215,"../../../vendor/rStats.extras":214,"../../core/component":130,"../../lib/rStatsAframe":177,"../../utils":204}],109:[function(_dereq_,module,exports){
+},{"../../../vendor/rStats":216,"../../../vendor/rStats.extras":215,"../../core/component":130,"../../lib/rStatsAframe":177,"../../utils":204}],109:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var constants = _dereq_('../../constants/');
 var utils = _dereq_('../../utils/');
@@ -63049,7 +63049,7 @@ module.exports.Component = registerComponent('tracked-controls-webvr', {
   }
 });
 
-},{"../constants":122,"../core/component":130,"../lib/three":178,"../utils/tracked-controls":212}],114:[function(_dereq_,module,exports){
+},{"../constants":122,"../core/component":130,"../lib/three":178,"../utils/tracked-controls":213}],114:[function(_dereq_,module,exports){
 var controllerUtils = _dereq_('../utils/tracked-controls');
 var registerComponent = _dereq_('../core/component').registerComponent;
 
@@ -63273,7 +63273,7 @@ module.exports.Component = registerComponent('tracked-controls-webxr', {
   }
 });
 
-},{"../core/component":130,"../utils/tracked-controls":212}],115:[function(_dereq_,module,exports){
+},{"../core/component":130,"../utils/tracked-controls":213}],115:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 
 /**
@@ -63551,7 +63551,7 @@ module.exports.Component = registerComponent('valve-index-controls', {
   }
 });
 
-},{"../core/component":130,"../lib/three":178,"../utils/bind":198,"../utils/tracked-controls":212}],117:[function(_dereq_,module,exports){
+},{"../core/component":130,"../lib/three":178,"../utils/bind":198,"../utils/tracked-controls":213}],117:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 
 /**
@@ -63826,7 +63826,7 @@ module.exports.Component = registerComponent('vive-controls', {
   }
 });
 
-},{"../core/component":130,"../utils/":204,"../utils/bind":198,"../utils/tracked-controls":212}],119:[function(_dereq_,module,exports){
+},{"../core/component":130,"../utils/":204,"../utils/bind":198,"../utils/tracked-controls":213}],119:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var bind = _dereq_('../utils/bind');
 
@@ -64008,7 +64008,7 @@ module.exports.Component = registerComponent('vive-focus-controls', {
   }
 });
 
-},{"../core/component":130,"../utils/bind":198,"../utils/tracked-controls":212}],120:[function(_dereq_,module,exports){
+},{"../core/component":130,"../utils/bind":198,"../utils/tracked-controls":213}],120:[function(_dereq_,module,exports){
 var KEYCODE_TO_CODE = _dereq_('../constants').keyboardevent.KEYCODE_TO_CODE;
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
@@ -64706,7 +64706,7 @@ module.exports.Component = registerComponent('windows-motion-controls', {
   }
 });
 
-},{"../constants":122,"../core/component":130,"../utils/":204,"../utils/bind":198,"../utils/tracked-controls":212}],122:[function(_dereq_,module,exports){
+},{"../constants":122,"../core/component":130,"../utils/":204,"../utils/bind":198,"../utils/tracked-controls":213}],122:[function(_dereq_,module,exports){
 module.exports = {
   AFRAME_INJECTED: 'aframe-injected',
   DEFAULT_CAMERA_HEIGHT: 1.6,
@@ -67693,6 +67693,8 @@ var isWebXRAvailable = utils.device.isWebXRAvailable;
 var registerElement = re.registerElement;
 var warn = utils.debug('core:a-scene:warn');
 
+if (isIOS) { _dereq_('../../utils/ios-orientationchange-blank-bug'); }
+
 /**
  * Scene element, holds all entities.
  *
@@ -68593,7 +68595,7 @@ function setupCanvas (sceneEl) {
 }
 module.exports.setupCanvas = setupCanvas;  // For testing.
 
-},{"../../lib/three":178,"../../utils/":204,"../a-entity":126,"../a-node":128,"../a-register-element":129,"../system":141,"./loadingScreen":134,"./metaTags":135,"./postMessage":136,"./scenes":137,"./wakelock":138}],134:[function(_dereq_,module,exports){
+},{"../../lib/three":178,"../../utils/":204,"../../utils/ios-orientationchange-blank-bug":205,"../a-entity":126,"../a-node":128,"../a-register-element":129,"../system":141,"./loadingScreen":134,"./metaTags":135,"./postMessage":136,"./scenes":137,"./wakelock":138}],134:[function(_dereq_,module,exports){
 /* global THREE */
 var utils = _dereq_('../../utils/');
 var styleParser = utils.styleParser;
@@ -68818,7 +68820,7 @@ module.exports = function initWakelock (scene) {
   scene.addEventListener('exit-vr', function () { wakelock.release(); });
 };
 
-},{"../../../vendor/wakelock/wakelock":218}],139:[function(_dereq_,module,exports){
+},{"../../../vendor/wakelock/wakelock":219}],139:[function(_dereq_,module,exports){
 var utils = _dereq_('../utils/');
 var PropertyTypes = _dereq_('./propertyTypes');
 
@@ -70409,7 +70411,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 1.0.4 (Date 2020-10-31, Commit #291d62ab)');
+console.log('A-Frame Version: 1.0.4 (Date 2020-11-02, Commit #37437cf1)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
@@ -70442,7 +70444,7 @@ module.exports = window.AFRAME = {
   version: pkg.version
 };
 
-},{"../package":72,"../vendor/starts-with-polyfill":216,"./components/index":83,"./core/a-assets":124,"./core/a-cubemap":125,"./core/a-entity":126,"./core/a-mixin":127,"./core/a-node":128,"./core/a-register-element":129,"./core/component":130,"./core/geometry":131,"./core/scene/a-scene":133,"./core/scene/scenes":137,"./core/schema":139,"./core/shader":140,"./core/system":141,"./extras/components/":142,"./extras/primitives/":145,"./extras/primitives/getMeshMixin":144,"./extras/primitives/primitives":146,"./geometries/index":167,"./lib/three":178,"./shaders/index":180,"./style/aframe.css":185,"./style/rStats.css":186,"./systems/index":190,"./utils/":204,"./utils/isIOSOlderThan10":206,"custom-event-polyfill":7,"present":48,"promise-polyfill":50,"super-animejs":56,"webvr-polyfill":67}],177:[function(_dereq_,module,exports){
+},{"../package":72,"../vendor/starts-with-polyfill":217,"./components/index":83,"./core/a-assets":124,"./core/a-cubemap":125,"./core/a-entity":126,"./core/a-mixin":127,"./core/a-node":128,"./core/a-register-element":129,"./core/component":130,"./core/geometry":131,"./core/scene/a-scene":133,"./core/scene/scenes":137,"./core/schema":139,"./core/shader":140,"./core/system":141,"./extras/components/":142,"./extras/primitives/":145,"./extras/primitives/getMeshMixin":144,"./extras/primitives/primitives":146,"./geometries/index":167,"./lib/three":178,"./shaders/index":180,"./style/aframe.css":185,"./style/rStats.css":186,"./systems/index":190,"./utils/":204,"./utils/isIOSOlderThan10":207,"custom-event-polyfill":7,"present":48,"promise-polyfill":50,"super-animejs":56,"webvr-polyfill":67}],177:[function(_dereq_,module,exports){
 window.aframeStats = function (scene) {
   var _rS = null;
   var _scene = scene;
@@ -70537,7 +70539,7 @@ module.exports = THREE;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"../../vendor/DeviceOrientationControls":213,"super-three":57,"super-three/examples/js/loaders/DRACOLoader":58,"super-three/examples/js/loaders/GLTFLoader":59,"super-three/examples/js/loaders/MTLLoader":60,"super-three/examples/js/loaders/OBJLoader":61}],179:[function(_dereq_,module,exports){
+},{"../../vendor/DeviceOrientationControls":214,"super-three":57,"super-three/examples/js/loaders/DRACOLoader":58,"super-three/examples/js/loaders/GLTFLoader":59,"super-three/examples/js/loaders/MTLLoader":60,"super-three/examples/js/loaders/OBJLoader":61}],179:[function(_dereq_,module,exports){
 var registerShader = _dereq_('../core/shader').registerShader;
 var THREE = _dereq_('../lib/three');
 var utils = _dereq_('../utils/');
@@ -71985,7 +71987,7 @@ function fixVideoAttributes (videoEl) {
   return videoEl;
 }
 
-},{"../core/system":141,"../lib/three":178,"../utils/":204,"../utils/material":207}],193:[function(_dereq_,module,exports){
+},{"../core/system":141,"../lib/three":178,"../utils/":204,"../utils/material":208}],193:[function(_dereq_,module,exports){
 var registerSystem = _dereq_('../core/system').registerSystem;
 var utils = _dereq_('../utils/');
 var THREE = _dereq_('../lib/three');
@@ -73134,7 +73136,22 @@ module.exports.findAllScenes = function (el) {
 // Must be at bottom to avoid circular dependency.
 module.exports.srcLoader = _dereq_('./src-loader');
 
-},{"./bind":198,"./coordinates":199,"./debug":200,"./device":201,"./entity":202,"./forceCanvasResizeSafariMobile":203,"./is-ie11":205,"./material":207,"./object-pool":208,"./split":209,"./src-loader":210,"./styleParser":211,"./tracked-controls":212,"deep-assign":10,"object-assign":39}],205:[function(_dereq_,module,exports){
+},{"./bind":198,"./coordinates":199,"./debug":200,"./device":201,"./entity":202,"./forceCanvasResizeSafariMobile":203,"./is-ie11":206,"./material":208,"./object-pool":209,"./split":210,"./src-loader":211,"./styleParser":212,"./tracked-controls":213,"deep-assign":10,"object-assign":39}],205:[function(_dereq_,module,exports){
+// Safari regression introduced in iOS 12 and remains in iOS 13.
+// https://stackoverflow.com/questions/62717621/white-space-at-page-bottom-after-device-rotation-in-ios-safari
+window.addEventListener('orientationchange', function () {
+  document.documentElement.style.height = `initial`;
+  setTimeout(function () {
+    document.documentElement.style.height = `100%`;
+    setTimeout(function () {
+      // this line prevents the content
+      // from hiding behind the address bar
+      window.scrollTo(0, 1);
+    }, 500);
+  }, 500);
+});
+
+},{}],206:[function(_dereq_,module,exports){
 // https://stackoverflow.com/a/17907562
 function getInternetExplorerVersion () {
   var version = -1;
@@ -73152,7 +73169,7 @@ function getInternetExplorerVersion () {
 
 module.exports = getInternetExplorerVersion() === 11;
 
-},{}],206:[function(_dereq_,module,exports){
+},{}],207:[function(_dereq_,module,exports){
 /**
  * Check if device is iOS and older than version 10.
  */
@@ -73160,7 +73177,7 @@ module.exports = function isIOSOlderThan10 (userAgent) {
   return /(iphone|ipod|ipad).*os.(7_|8_|9_)/i.test(userAgent);
 };
 
-},{}],207:[function(_dereq_,module,exports){
+},{}],208:[function(_dereq_,module,exports){
 var THREE = _dereq_('../lib/three');
 
 var HLS_MIMETYPES = ['application/x-mpegurl', 'application/vnd.apple.mpegurl'];
@@ -73331,7 +73348,7 @@ module.exports.isHLS = function (src, type) {
   return false;
 };
 
-},{"../lib/three":178}],208:[function(_dereq_,module,exports){
+},{"../lib/three":178}],209:[function(_dereq_,module,exports){
 /*
   Adapted deePool by Kyle Simpson.
   MIT License: http://getify.mit-license.org
@@ -73422,7 +73439,7 @@ function removeUnusedKeys (obj, schema) {
 }
 module.exports.removeUnusedKeys = removeUnusedKeys;
 
-},{}],209:[function(_dereq_,module,exports){
+},{}],210:[function(_dereq_,module,exports){
 /**
  * String split with cached result.
  */
@@ -73439,7 +73456,7 @@ module.exports.split = (function () {
   };
 })();
 
-},{}],210:[function(_dereq_,module,exports){
+},{}],211:[function(_dereq_,module,exports){
 /* global Image, XMLHttpRequest */
 var debug = _dereq_('./debug');
 
@@ -73598,7 +73615,7 @@ module.exports = {
   validateCubemapSrc: validateCubemapSrc
 };
 
-},{"./debug":200}],211:[function(_dereq_,module,exports){
+},{"./debug":200}],212:[function(_dereq_,module,exports){
 /**
  * Utils for parsing style-like strings (e.g., "primitive: box; width: 5; height: 4.5").
  * Some code adapted from `style-attr` (https://github.com/joshwnj/style-attr)
@@ -73751,7 +73768,7 @@ function styleStringify (obj) {
 
 function upperCase (str) { return str[1].toUpperCase(); }
 
-},{}],212:[function(_dereq_,module,exports){
+},{}],213:[function(_dereq_,module,exports){
 var DEFAULT_HANDEDNESS = _dereq_('../constants').DEFAULT_HANDEDNESS;
 var AXIS_LABELS = ['x', 'y', 'z', 'w'];
 var NUM_HANDS = 2;  // Number of hands in a pair. Should always be 2.
@@ -73993,7 +74010,7 @@ module.exports.onButtonEvent = function (id, evtName, component, hand) {
   }
 };
 
-},{"../constants":122}],213:[function(_dereq_,module,exports){
+},{"../constants":122}],214:[function(_dereq_,module,exports){
 /**
  * @author richt / http://richt.me
  * @author WestLangley / http://github.com/WestLangley
@@ -74106,7 +74123,7 @@ THREE.DeviceOrientationControls = function ( object ) {
 
 };
 
-},{}],214:[function(_dereq_,module,exports){
+},{}],215:[function(_dereq_,module,exports){
 window.glStats = function () {
 
     var _rS = null;
@@ -74367,7 +74384,7 @@ if (typeof module === 'object') {
   };
 }
 
-},{}],215:[function(_dereq_,module,exports){
+},{}],216:[function(_dereq_,module,exports){
 // performance.now() polyfill from https://gist.github.com/paulirish/5438650
 'use strict';
 
@@ -74822,7 +74839,7 @@ if (typeof module === 'object') {
   module.exports = window.rStats;
 }
 
-},{}],216:[function(_dereq_,module,exports){
+},{}],217:[function(_dereq_,module,exports){
 // https://stackoverflow.com/a/36213464
 if (!String.prototype.startsWith) {
     String.prototype.startsWith = function(searchString, position){
@@ -74831,7 +74848,7 @@ if (!String.prototype.startsWith) {
   };
 }
 
-},{}],217:[function(_dereq_,module,exports){
+},{}],218:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -74893,7 +74910,7 @@ Util.isLandscapeMode = function() {
 
 module.exports = Util;
 
-},{}],218:[function(_dereq_,module,exports){
+},{}],219:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -74969,6 +74986,6 @@ function getWakeLock() {
 
 module.exports = getWakeLock();
 
-},{"./util.js":217}]},{},[176])(176)
+},{"./util.js":218}]},{},[176])(176)
 });
 //# sourceMappingURL=aframe-master.js.map
