@@ -19,6 +19,8 @@ var isWebXRAvailable = utils.device.isWebXRAvailable;
 var registerElement = re.registerElement;
 var warn = utils.debug('core:a-scene:warn');
 
+if (isIOS) { require('../../utils/ios-orientationchange-blank-bug'); }
+
 /**
  * Scene element, holds all entities.
  *
