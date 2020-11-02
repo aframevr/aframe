@@ -35,5 +35,5 @@ The benefits of layers are:
 | Properties        | Description                                             |
 |-------------------|---------------------------------------------------------|
 | type              | `quad`, `monocubemap` or `stereocubemap`                |
-| src               | Image or video loade in the layer.                      |
+| src               | Image or video loaded in the layer.                      |
 | rotateCubemap     | Rotates the cubemap 180 degrees in the y-axis.          |
