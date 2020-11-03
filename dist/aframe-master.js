@@ -70411,7 +70411,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 1.0.4 (Date 2020-11-02, Commit #37437cf1)');
+console.log('A-Frame Version: 1.0.4 (Date 2020-11-03, Commit #50298b00)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
@@ -70654,6 +70654,124 @@ module.exports.Shader = registerShader('ios10hls', {
 },{"../core/shader":140}],182:[function(_dereq_,module,exports){
 var registerShader = _dereq_('../core/shader').registerShader;
 
+var isWebGL2AVailable = !!document.createElement('canvas').getContext('webgl2');
+
+var VERTEX_SHADER_WEBGL1 = [
+  'attribute vec2 uv;',
+  'attribute vec3 position;',
+  'uniform mat4 projectionMatrix;',
+  'uniform mat4 modelViewMatrix;',
+  'varying vec2 vUV;',
+  'void main(void) {',
+  '  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);',
+  '  vUV = uv;',
+  '}'
+].join('\n');
+
+var VERTEX_SHADER_WEBGL2 = [
+  '#version 300 es',
+  'in vec2 uv;',
+  'in vec3 position;',
+  'uniform mat4 projectionMatrix;',
+  'uniform mat4 modelViewMatrix;',
+  'out vec2 vUV;',
+  'void main(void) {',
+  '  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);',
+  '  vUV = uv;',
+  '}'
+].join('\n');
+
+var VERTEX_SHADER = isWebGL2AVailable ? VERTEX_SHADER_WEBGL2 : VERTEX_SHADER_WEBGL1;
+
+var FRAGMENT_SHADER_WEBGL1 = [
+  '#ifdef GL_OES_standard_derivatives',
+  '#extension GL_OES_standard_derivatives: enable',
+  '#endif',
+  'precision highp float;',
+  'uniform bool negate;',
+  'uniform float alphaTest;',
+  'uniform float opacity;',
+  'uniform sampler2D map;',
+  'uniform vec3 color;',
+  'varying vec2 vUV;',
+
+  'float median(float r, float g, float b) {',
+  '  return max(min(r, g), min(max(r, g), b));',
+  '}',
+
+  // FIXME: Experimentally determined constants.
+  '#define BIG_ENOUGH 0.001',
+  '#define MODIFIED_ALPHATEST (0.02 * isBigEnough / BIG_ENOUGH)',
+
+  'void main() {',
+  '  vec3 sampleColor = texture2D(map, vUV).rgb;',
+  '  if (negate) { sampleColor = 1.0 - sampleColor; }',
+
+  '  float sigDist = median(sampleColor.r, sampleColor.g, sampleColor.b) - 0.5;',
+  '  float alpha = clamp(sigDist / fwidth(sigDist) + 0.5, 0.0, 1.0);',
+  '  float dscale = 0.353505;',
+  '  vec2 duv = dscale * (dFdx(vUV) + dFdy(vUV));',
+  '  float isBigEnough = max(abs(duv.x), abs(duv.y));',
+
+  // When texel is too small, blend raw alpha value rather than supersampling.
+  // FIXME: Experimentally determined constant.
+  '  // Do modified alpha test.',
+  '  if (isBigEnough > BIG_ENOUGH) {',
+  '    float ratio = BIG_ENOUGH / isBigEnough;',
+  '    alpha = ratio * alpha + (1.0 - ratio) * (sigDist + 0.5);',
+  '  }',
+
+  '  // Do modified alpha test.',
+  '  if (alpha < alphaTest * MODIFIED_ALPHATEST) { discard; return; }',
+  '  gl_FragColor = vec4(color.xyz, alpha * opacity);',
+  '}'
+].join('\n');
+
+var FRAGMENT_SHADER_WEBGL2 = [
+  '#version 300 es',
+  'precision highp float;',
+  'uniform bool negate;',
+  'uniform float alphaTest;',
+  'uniform float opacity;',
+  'uniform sampler2D map;',
+  'uniform vec3 color;',
+  'in vec2 vUV;',
+  'out vec4 fragColor;',
+
+  'float median(float r, float g, float b) {',
+  '  return max(min(r, g), min(max(r, g), b));',
+  '}',
+
+  // FIXME: Experimentally determined constants.
+  '#define BIG_ENOUGH 0.001',
+  '#define MODIFIED_ALPHATEST (0.02 * isBigEnough / BIG_ENOUGH)',
+
+  'void main() {',
+  '  vec3 sampleColor = texture(map, vUV).rgb;',
+  '  if (negate) { sampleColor = 1.0 - sampleColor; }',
+
+  '  float sigDist = median(sampleColor.r, sampleColor.g, sampleColor.b) - 0.5;',
+  '  float alpha = clamp(sigDist / fwidth(sigDist) + 0.5, 0.0, 1.0);',
+  '  float dscale = 0.353505;',
+  '  vec2 duv = dscale * (dFdx(vUV) + dFdy(vUV));',
+  '  float isBigEnough = max(abs(duv.x), abs(duv.y));',
+
+  // When texel is too small, blend raw alpha value rather than supersampling.
+  // FIXME: Experimentally determined constant.
+  '  // Do modified alpha test.',
+  '  if (isBigEnough > BIG_ENOUGH) {',
+  '    float ratio = BIG_ENOUGH / isBigEnough;',
+  '    alpha = ratio * alpha + (1.0 - ratio) * (sigDist + 0.5);',
+  '  }',
+
+  '  // Do modified alpha test.',
+  '  if (alpha < alphaTest * MODIFIED_ALPHATEST) { discard; return; }',
+  '  fragColor = vec4(color.xyz, alpha * opacity);',
+  '}'
+].join('\n');
+
+var FRAGMENT_SHADER = isWebGL2AVailable ? FRAGMENT_SHADER_WEBGL2 : FRAGMENT_SHADER_WEBGL1;
+
 /**
  * Multi-channel signed distance field.
  * Used by text component.
@@ -70669,61 +70787,9 @@ module.exports.Shader = registerShader('msdf', {
 
   raw: true,
 
-  vertexShader: [
-    '#version 300 es',
-    'in vec2 uv;',
-    'in vec3 position;',
-    'uniform mat4 projectionMatrix;',
-    'uniform mat4 modelViewMatrix;',
-    'out vec2 vUV;',
-    'void main(void) {',
-    '  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);',
-    '  vUV = uv;',
-    '}'
-  ].join('\n'),
+  vertexShader: VERTEX_SHADER,
 
-  fragmentShader: [
-    '#version 300 es',
-    'precision highp float;',
-    'uniform bool negate;',
-    'uniform float alphaTest;',
-    'uniform float opacity;',
-    'uniform sampler2D map;',
-    'uniform vec3 color;',
-    'in vec2 vUV;',
-    'out vec4 fragColor;',
-
-    'float median(float r, float g, float b) {',
-    '  return max(min(r, g), min(max(r, g), b));',
-    '}',
-
-    // FIXME: Experimentally determined constants.
-    '#define BIG_ENOUGH 0.001',
-    '#define MODIFIED_ALPHATEST (0.02 * isBigEnough / BIG_ENOUGH)',
-
-    'void main() {',
-    '  vec3 sampleColor = texture(map, vUV).rgb;',
-    '  if (negate) { sampleColor = 1.0 - sampleColor; }',
-
-    '  float sigDist = median(sampleColor.r, sampleColor.g, sampleColor.b) - 0.5;',
-    '  float alpha = clamp(sigDist / fwidth(sigDist) + 0.5, 0.0, 1.0);',
-    '  float dscale = 0.353505;',
-    '  vec2 duv = dscale * (dFdx(vUV) + dFdy(vUV));',
-    '  float isBigEnough = max(abs(duv.x), abs(duv.y));',
-
-    // When texel is too small, blend raw alpha value rather than supersampling.
-    // FIXME: Experimentally determined constant.
-    '  // Do modified alpha test.',
-    '  if (isBigEnough > BIG_ENOUGH) {',
-    '    float ratio = BIG_ENOUGH / isBigEnough;',
-    '    alpha = ratio * alpha + (1.0 - ratio) * (sigDist + 0.5);',
-    '  }',
-
-    '  // Do modified alpha test.',
-    '  if (alpha < alphaTest * MODIFIED_ALPHATEST) { discard; return; }',
-    '  fragColor = vec4(color.xyz, alpha * opacity);',
-    '}'
-  ].join('\n')
+  fragmentShader: FRAGMENT_SHADER
 });
 
 },{"../core/shader":140}],183:[function(_dereq_,module,exports){
