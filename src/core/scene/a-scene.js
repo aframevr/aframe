@@ -134,6 +134,11 @@ module.exports.AScene = registerElement('a-scene', {
         });
 
         this.initSystems();
+
+        // WebXR Immersive navigation handler.
+        if (this.hasWebXR && navigator.xr && navigator.xr.addEventListener) {
+          navigator.xr.addEventListener('sessiongranted', function () { self.enterVR(); });
+        }
       }
     },
 
@@ -676,11 +681,6 @@ module.exports.AScene = registerElement('a-scene', {
           var vrDisplay;
           var vrManager = this.renderer.xr;
           AEntity.prototype.play.call(this);  // .play() *before* render.
-
-          // WebXR Immersive navigation handler.
-          if (this.hasWebXR && navigator.xr && navigator.xr.addEventListener) {
-            navigator.xr.addEventListener('sessiongranted', function () { sceneEl.enterVR(); });
-          }
 
           if (sceneEl.renderStarted) { return; }
           sceneEl.resize();
