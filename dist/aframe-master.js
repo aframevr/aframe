@@ -58587,7 +58587,7 @@ registerShader('portal', {
     'vec3 direction = normalize(vWorldPosition - cameraPosition);',
     'vec2 sampleUV;',
     'float borderThickness = clamp(exp(-vDistance / 50.0), 0.6, 0.95);',
-    'sampleUV.y = saturate(direction.y * 0.5  + 0.5);',
+    'sampleUV.y = clamp(direction.y * 0.5  + 0.5, 0.0, 1.0);',
     'sampleUV.x = atan(direction.z, -direction.x) * -RECIPROCAL_PI2 + 0.5;',
     'if (vDistanceToCenter > borderThickness && borderEnabled == 1.0) {',
     'gl_FragColor = vec4(strokeColor, 1.0);',
@@ -67808,6 +67808,11 @@ module.exports.AScene = registerElement('a-scene', {
         });
 
         this.initSystems();
+
+        // WebXR Immersive navigation handler.
+        if (this.hasWebXR && navigator.xr && navigator.xr.addEventListener) {
+          navigator.xr.addEventListener('sessiongranted', function () { self.enterVR(); });
+        }
       }
     },
 
@@ -68350,11 +68355,6 @@ module.exports.AScene = registerElement('a-scene', {
           var vrDisplay;
           var vrManager = this.renderer.xr;
           AEntity.prototype.play.call(this);  // .play() *before* render.
-
-          // WebXR Immersive navigation handler.
-          if (this.hasWebXR && navigator.xr && navigator.xr.addEventListener) {
-            navigator.xr.addEventListener('sessiongranted', function () { sceneEl.enterVR(); });
-          }
 
           if (sceneEl.renderStarted) { return; }
           sceneEl.resize();
@@ -70411,7 +70411,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 1.0.4 (Date 2020-11-03, Commit #50298b00)');
+console.log('A-Frame Version: 1.0.4 (Date 2020-11-05, Commit #f8751c73)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
