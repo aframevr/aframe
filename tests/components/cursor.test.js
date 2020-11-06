@@ -435,7 +435,7 @@ suite('cursor', function () {
       target.addEventListener('loaded', function () {
         target.object3D.updateMatrixWorld();
         el.components.raycaster.refreshObjects();
-        el.components.raycaster.tick();
+        el.components.raycaster.tock();
         assert.strictEqual(component.intersectedEl, target);
         event.touches = {item: function () { return {clientX: 5, clientY: 5}; }};
         el.sceneEl.canvas.dispatchEvent(event);

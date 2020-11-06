@@ -184,7 +184,7 @@ module.exports.Component = registerComponent('raycaster', {
   /**
    * Check for intersections and cleared intersections on an interval.
    */
-  tick: function (time) {
+  tock: function (time) {
     var data = this.data;
     var prevCheckTime = this.prevCheckTime;
 

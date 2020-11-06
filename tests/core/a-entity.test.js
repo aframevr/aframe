@@ -1125,9 +1125,9 @@ suite('a-entity', function () {
       el.play();
       el.setAttribute('raycaster', '');
       component = el.components['raycaster'];
-      assert.notEqual(sceneEl.behaviors.tick.indexOf(component), -1);
+      assert.notEqual(sceneEl.behaviors.tock.indexOf(component), -1);
       el.removeAttribute('raycaster');
-      assert.equal(sceneEl.behaviors.tick.indexOf(component), -1);
+      assert.equal(sceneEl.behaviors.tock.indexOf(component), -1);
     });
 
     test('waits for component to initialize', function (done) {
