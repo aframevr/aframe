@@ -25,6 +25,8 @@ To configure the style of the dialog one can redefine the associated css styles.
  }
 ```
 
+The dialog can also be disabled all together if you prefer to handle the permissions workflow differently.
+
 ## Example
 
 ```html
@@ -36,6 +38,10 @@ To configure the style of the dialog one can redefine the associated css styles.
 | Property      | Description                                                         | Default Value |
 |---------------|---------------------------------------------------------------------|---------------|
 | enabled       | Whether or not to display the dialog when required                  | true          |
+| deviceMotionMessage       | Message in dialog requesting user permission to enable the Device Motion API.                 | English text       |
+| mobileDestkopMessage       | Message displayed in modal requesting user to switch to mobile browsing mode.                  | English text          |
+| httpsMessage       | Message requesting user to switch to HTTPS.                  | English text          |
+
 
 ## Events
 

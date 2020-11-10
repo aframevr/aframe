@@ -19,7 +19,18 @@ var DIALOG_OK_BUTTON_CLASS = 'a-dialog-ok-button';
  * UI for enabling device motion permission
  */
 module.exports.Component = registerComponent('device-orientation-permission-ui', {
-  schema: {enabled: {default: true}},
+  schema: {
+    enabled: {default: true},
+    deviceMotionMessage: {
+      default: 'This immersive website requires access to your device motion sensors.'
+    },
+    mobileDestkopMessage: {
+      default: 'Set your browser to request the mobile version of the site and reload the page to enjoy immersive mode.'
+    },
+    httpsMessage: {
+      default: 'Access this site over HTTPS to enter VR mode and grant access to the device sensors.'
+    }
+  },
 
   init: function () {
     var self = this;
@@ -49,7 +60,7 @@ module.exports.Component = registerComponent('device-orientation-permission-ui',
     // Show dialog only if permission has not yet been granted.
     DeviceOrientationEvent.requestPermission().catch(function () {
       self.devicePermissionDialogEl = createPermissionDialog(
-        'This immersive website requires access to your device motion sensors.',
+        self.data.message,
         self.onDeviceMotionDialogAllowClicked,
         self.onDeviceMotionDialogDenyClicked);
       self.el.appendChild(self.devicePermissionDialogEl);
@@ -71,7 +82,7 @@ module.exports.Component = registerComponent('device-orientation-permission-ui',
   showMobileDesktopModeAlert: function () {
     var self = this;
     var safariIpadAlertEl = createAlertDialog(
-      'Set your browser to request the mobile version of the site and reload the page to enjoy immersive mode.',
+      self.data.mobileDestkopMessage,
       function () { self.el.removeChild(safariIpadAlertEl); });
     this.el.appendChild(safariIpadAlertEl);
   },
@@ -79,7 +90,7 @@ module.exports.Component = registerComponent('device-orientation-permission-ui',
   showHTTPAlert: function () {
     var self = this;
     var httpAlertEl = createAlertDialog(
-      'Access this site over HTTPS to enter VR mode and grant access to the device sensors.',
+      self.data.httpsMessage,
       function () { self.el.removeChild(httpAlertEl); });
     this.el.appendChild(httpAlertEl);
   },
