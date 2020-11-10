@@ -34,6 +34,7 @@ component](camera.md).
 | reverseTouchDrag | Whether to reverse touch drag.                                   | false         |
 | touchEnabled     | Whether to use touch controls in magic window mode.              | true          |
 | pointerLockEnabled | Whether to hide the cursor using the [Pointer Lock API][pointer-lock-api]. | false |
+| magicWindowTrackingEnabled | Wheter gyroscope camera tracking is enabled on mobile devices. | true |
 
 ## Customizing look-controls
 
