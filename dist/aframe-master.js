@@ -60791,7 +60791,7 @@ module.exports.Component = registerComponent('device-orientation-permission-ui',
     // Show dialog only if permission has not yet been granted.
     DeviceOrientationEvent.requestPermission().catch(function () {
       self.devicePermissionDialogEl = createPermissionDialog(
-        self.data.message,
+        self.data.deviceMotionMessage,
         self.onDeviceMotionDialogAllowClicked,
         self.onDeviceMotionDialogDenyClicked);
       self.el.appendChild(self.devicePermissionDialogEl);
@@ -70422,7 +70422,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 1.0.4 (Date 2020-11-10, Commit #d271b324)');
+console.log('A-Frame Version: 1.0.4 (Date 2020-11-11, Commit #c31e005c)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
