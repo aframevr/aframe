@@ -60,7 +60,7 @@ module.exports.Component = registerComponent('device-orientation-permission-ui',
     // Show dialog only if permission has not yet been granted.
     DeviceOrientationEvent.requestPermission().catch(function () {
       self.devicePermissionDialogEl = createPermissionDialog(
-        self.data.message,
+        self.data.deviceMotionMessage,
         self.onDeviceMotionDialogAllowClicked,
         self.onDeviceMotionDialogDenyClicked);
       self.el.appendChild(self.devicePermissionDialogEl);
