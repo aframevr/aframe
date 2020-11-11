@@ -60760,7 +60760,10 @@ module.exports.Component = registerComponent('device-orientation-permission-ui',
     },
     httpsMessage: {
       default: 'Access this site over HTTPS to enter VR mode and grant access to the device sensors.'
-    }
+    },
+    denyButtonText: {default: 'Deny'},
+    allowButtonText: {default: 'Allow'},
+    cancelButtonText: {default: 'Cancel'}
   },
 
   init: function () {
@@ -60791,6 +60794,8 @@ module.exports.Component = registerComponent('device-orientation-permission-ui',
     // Show dialog only if permission has not yet been granted.
     DeviceOrientationEvent.requestPermission().catch(function () {
       self.devicePermissionDialogEl = createPermissionDialog(
+        self.data.denyButtonText,
+        self.data.allowButtonText,
         self.data.deviceMotionMessage,
         self.onDeviceMotionDialogAllowClicked,
         self.onDeviceMotionDialogDenyClicked);
@@ -60813,6 +60818,7 @@ module.exports.Component = registerComponent('device-orientation-permission-ui',
   showMobileDesktopModeAlert: function () {
     var self = this;
     var safariIpadAlertEl = createAlertDialog(
+      self.data.cancelButtonText,
       self.data.mobileDestkopMessage,
       function () { self.el.removeChild(safariIpadAlertEl); });
     this.el.appendChild(safariIpadAlertEl);
@@ -60821,6 +60827,7 @@ module.exports.Component = registerComponent('device-orientation-permission-ui',
   showHTTPAlert: function () {
     var self = this;
     var httpAlertEl = createAlertDialog(
+      self.data.cancelButtonText,
       self.data.httpsMessage,
       function () { self.el.removeChild(httpAlertEl); });
     this.el.appendChild(httpAlertEl);
@@ -60848,9 +60855,12 @@ module.exports.Component = registerComponent('device-orientation-permission-ui',
  * Create a modal dialog that request users permission to access the Device Motion API.
  *
  * @param {function} onAllowClicked - click event handler
+ * @param {function} onDenyClicked - click event handler
+ *
  * @returns {Element} Wrapper <div>.
  */
-function createPermissionDialog (text, onAllowClicked, onDenyClicked) {
+function createPermissionDialog (
+  denyText, allowText, dialogText, onAllowClicked, onDenyClicked) {
   var buttonsContainer;
   var denyButton;
   var acceptButton;
@@ -60862,13 +60872,13 @@ function createPermissionDialog (text, onAllowClicked, onDenyClicked) {
   denyButton = document.createElement('button');
   denyButton.classList.add(DIALOG_BUTTON_CLASS, DIALOG_DENY_BUTTON_CLASS);
   denyButton.setAttribute(constants.AFRAME_INJECTED, '');
-  denyButton.innerHTML = 'Deny';
+  denyButton.innerHTML = denyText;
   buttonsContainer.appendChild(denyButton);
 
   acceptButton = document.createElement('button');
   acceptButton.classList.add(DIALOG_BUTTON_CLASS, DIALOG_ALLOW_BUTTON_CLASS);
   acceptButton.setAttribute(constants.AFRAME_INJECTED, '');
-  acceptButton.innerHTML = 'Allow';
+  acceptButton.innerHTML = allowText;
   buttonsContainer.appendChild(acceptButton);
 
   // Ask for sensor events to be used
@@ -60882,10 +60892,10 @@ function createPermissionDialog (text, onAllowClicked, onDenyClicked) {
     onDenyClicked();
   });
 
-  return createDialog(text, buttonsContainer);
+  return createDialog(dialogText, buttonsContainer);
 }
 
-function createAlertDialog (text, onOkClicked) {
+function createAlertDialog (closeText, dialogText, onOkClicked) {
   var buttonsContainer;
   var okButton;
 
@@ -60896,7 +60906,7 @@ function createAlertDialog (text, onOkClicked) {
   okButton = document.createElement('button');
   okButton.classList.add(DIALOG_BUTTON_CLASS, DIALOG_OK_BUTTON_CLASS);
   okButton.setAttribute(constants.AFRAME_INJECTED, '');
-  okButton.innerHTML = 'Close';
+  okButton.innerHTML = closeText;
   buttonsContainer.appendChild(okButton);
 
   // Ask for sensor events to be used
@@ -60905,7 +60915,7 @@ function createAlertDialog (text, onOkClicked) {
     onOkClicked();
   });
 
-  return createDialog(text, buttonsContainer);
+  return createDialog(dialogText, buttonsContainer);
 }
 
 function createDialog (text, buttonsContainerEl) {
@@ -70422,7 +70432,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 1.0.4 (Date 2020-11-11, Commit #c31e005c)');
+console.log('A-Frame Version: 1.0.4 (Date 2020-11-11, Commit #bd3445c1)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
