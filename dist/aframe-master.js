@@ -63349,24 +63349,39 @@ var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresent
 var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
 var onButtonEvent = trackedControlsUtils.onButtonEvent;
 
-var INDEX_CONTROLLER_MODEL_BASE_URL = 'https://cdn.aframe.io/controllers/valve/index/valve_index_';
+var INDEX_CONTROLLER_MODEL_BASE_URL = 'https://cdn.aframe.io/controllers/valve/index/valve-index-';
 var INDEX_CONTROLLER_MODEL_URL = {
-  left: INDEX_CONTROLLER_MODEL_BASE_URL + 'left.gltf',
-  right: INDEX_CONTROLLER_MODEL_BASE_URL + 'right.gltf'
+  left: INDEX_CONTROLLER_MODEL_BASE_URL + 'left.glb',
+  right: INDEX_CONTROLLER_MODEL_BASE_URL + 'right.glb'
 };
 
 var GAMEPAD_ID_PREFIX = 'valve';
 
-var INDEX_CONTROLLER_POSITION_OFFSET = {
+var isWebXRAvailable = _dereq_('../utils/').device.isWebXRAvailable;
+
+var INDEX_CONTROLLER_POSITION_OFFSET_WEBVR = {
   left: {x: -0.00023692678902063457, y: 0.04724540367838371, z: -0.061959880395271096},
   right: {x: 0.002471558599671131, y: 0.055765208987076195, z: -0.061068168708348844}
 };
 
-var INDEX_CONTROLLER_ROTATION_OFFSET = {
+var INDEX_CONTROLLER_POSITION_OFFSET_WEBXR = {
+  left: {x: 0, y: -0.05, z: 0.06},
+  right: {x: 0, y: -0.05, z: 0.06}
+};
+
+var INDEX_CONTROLLER_ROTATION_OFFSET_WEBVR = {
   left: {_x: 0.692295102620542, _y: -0.0627618864318427, _z: -0.06265893149611756, _order: 'XYZ'},
   right: {_x: 0.6484021229942998, _y: -0.032563619881892894, _z: -0.1327973171917482, _order: 'XYZ'}
 };
 
+var INDEX_CONTROLLER_ROTATION_OFFSET_WEBXR = {
+  left: {_x: Math.PI / 3, _y: 0, _z: 0, _order: 'XYZ'},
+  right: {_x: Math.PI / 3, _y: 0, _z: 0, _order: 'XYZ'}
+};
+
+var INDEX_CONTROLLER_ROTATION_OFFSET = isWebXRAvailable ? INDEX_CONTROLLER_ROTATION_OFFSET_WEBXR : INDEX_CONTROLLER_ROTATION_OFFSET_WEBVR;
+
+var INDEX_CONTROLLER_POSITION_OFFSET = isWebXRAvailable ? INDEX_CONTROLLER_POSITION_OFFSET_WEBXR : INDEX_CONTROLLER_POSITION_OFFSET_WEBVR;
 /**
  * Vive controls.
  * Interface with Vive controllers and map Gamepad events to controller buttons:
@@ -63507,7 +63522,7 @@ module.exports.Component = registerComponent('valve-index-controls', {
       analogValue = evt.detail.state.value;
       // Update trigger rotation depending on button value.
       if (buttonMeshes && buttonMeshes.trigger) {
-        buttonMeshes.trigger.rotation.x = -analogValue * (Math.PI / 12);
+        buttonMeshes.trigger.rotation.x = this.triggerOriginalRotationX - analogValue * (Math.PI / 40);
       }
     }
 
@@ -63532,6 +63547,7 @@ module.exports.Component = registerComponent('valve-index-controls', {
     buttonMeshes.system = controllerObject3D.getObjectByName('systembutton');
     buttonMeshes.trackpad = controllerObject3D.getObjectByName('touchpad');
     buttonMeshes.trigger = controllerObject3D.getObjectByName('trigger');
+    this.triggerOriginalRotationX = buttonMeshes.trigger.rotation.x;
 
     // Set default colors.
     Object.keys(buttonMeshes).forEach(function (buttonName) {
@@ -63572,7 +63588,7 @@ module.exports.Component = registerComponent('valve-index-controls', {
   }
 });
 
-},{"../core/component":130,"../lib/three":178,"../utils/bind":198,"../utils/tracked-controls":213}],117:[function(_dereq_,module,exports){
+},{"../core/component":130,"../lib/three":178,"../utils/":204,"../utils/bind":198,"../utils/tracked-controls":213}],117:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 
 /**
@@ -70432,7 +70448,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 1.0.4 (Date 2020-11-11, Commit #bd3445c1)');
+console.log('A-Frame Version: 1.0.4 (Date 2020-11-11, Commit #0f767d11)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
