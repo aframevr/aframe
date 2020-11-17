@@ -68033,6 +68033,7 @@ module.exports.AScene = registerElement('a-scene', {
             });
           } else {
             vrDisplay = utils.device.getVRDisplay();
+            self.addState('vr-mode');
             vrManager.setDevice(vrDisplay);
             if (vrDisplay.isPresenting &&
                 !window.hasNativeWebVRImplementation) {
@@ -68069,7 +68070,6 @@ module.exports.AScene = registerElement('a-scene', {
             window.dispatchEvent(event);
           }
 
-          self.addState('vr-mode');
           self.emit('enter-vr', {target: self});
           // Lock to landscape orientation on mobile.
           if (!isWebXRAvailable && self.isMobile && screen.orientation && screen.orientation.lock) {
@@ -68091,6 +68091,7 @@ module.exports.AScene = registerElement('a-scene', {
         }
 
         function enterVRFailure (err) {
+          self.removeState('vr-mode');
           if (err && err.message) {
             throw new Error('Failed to enter VR mode (`requestPresent`): ' + err.message);
           } else {
@@ -70449,7 +70450,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 1.0.4 (Date 2020-11-13, Commit #a75adf2d)');
+console.log('A-Frame Version: 1.0.4 (Date 2020-11-17, Commit #f1f0fb3b)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
