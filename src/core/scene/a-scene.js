@@ -19,6 +19,8 @@ var isWebXRAvailable = utils.device.isWebXRAvailable;
 var registerElement = re.registerElement;
 var warn = utils.debug('core:a-scene:warn');
 
+if (isIOS) { require('../../utils/ios-orientationchange-blank-bug'); }
+
 /**
  * Scene element, holds all entities.
  *
@@ -132,6 +134,11 @@ module.exports.AScene = registerElement('a-scene', {
         });
 
         this.initSystems();
+
+        // WebXR Immersive navigation handler.
+        if (this.hasWebXR && navigator.xr && navigator.xr.addEventListener) {
+          navigator.xr.addEventListener('sessiongranted', function () { self.enterVR(); });
+        }
       }
     },
 
@@ -251,10 +258,16 @@ module.exports.AScene = registerElement('a-scene', {
 
     enterAR: {
       value: function () {
+        var errorMessage;
         if (!this.hasWebXR) {
-          throw new Error('Failed to enter AR mode, WebXR not supported.');
+          errorMessage = 'Failed to enter AR mode, WebXR not supported.';
+          throw new Error(errorMessage);
         }
-        this.enterVR(true);
+        if (!utils.device.checkARSupport()) {
+          errorMessage = 'Failed to enter AR, WebXR immersive-ar mode not supported in your browser or device.';
+          throw new Error(errorMessage);
+        }
+        return this.enterVR(true);
       }
     },
 
@@ -271,6 +284,7 @@ module.exports.AScene = registerElement('a-scene', {
         var self = this;
         var vrDisplay;
         var vrManager = self.renderer.xr;
+        var xrInit;
 
         // Don't enter VR if already in VR.
         if (this.is('vr-mode')) { return Promise.resolve('Already in VR.'); }
@@ -287,19 +301,27 @@ module.exports.AScene = registerElement('a-scene', {
             var refspace = this.sceneEl.systems.webxr.sessionReferenceSpaceType;
             vrManager.setReferenceSpaceType(refspace);
             var xrMode = useAR ? 'immersive-ar' : 'immersive-vr';
-            var xrInit = this.sceneEl.systems.webxr.sessionConfiguration;
-            navigator.xr.requestSession(xrMode, xrInit).then(
+            xrInit = this.sceneEl.systems.webxr.sessionConfiguration;
+            return new Promise(function (resolve, reject) {
+              navigator.xr.requestSession(xrMode, xrInit).then(
                 function requestSuccess (xrSession) {
                   self.xrSession = xrSession;
+                  vrManager.layersEnabled = xrInit.requiredFeatures.indexOf('layers') !== -1;
                   vrManager.setSession(xrSession);
                   xrSession.addEventListener('end', self.exitVRBound);
-                  if (useAR) {
-                    self.addState('ar-mode');
-                  }
-                  enterVRSuccess();
-                });
+                  if (useAR) { self.addState('ar-mode'); }
+                  enterVRSuccess(resolve);
+                },
+                function requestFail (error) {
+                  var useAR = xrMode === 'immersive-ar';
+                  var mode = useAR ? 'AR' : 'VR';
+                  throw new Error('Failed to enter ' + mode + ' mode (`requestSession`) ' + error);
+                }
+              );
+            });
           } else {
             vrDisplay = utils.device.getVRDisplay();
+            self.addState('vr-mode');
             vrManager.setDevice(vrDisplay);
             if (vrDisplay.isPresenting &&
                 !window.hasNativeWebVRImplementation) {
@@ -317,7 +339,6 @@ module.exports.AScene = registerElement('a-scene', {
               attributes: presentationAttributes
             }]).then(enterVRSuccess, enterVRFailure);
           }
-          return Promise.resolve();
         }
 
         // No VR.
@@ -325,7 +346,7 @@ module.exports.AScene = registerElement('a-scene', {
         return Promise.resolve();
 
         // Callback that happens on enter VR success or enter fullscreen (any API).
-        function enterVRSuccess () {
+        function enterVRSuccess (resolve) {
           // vrdisplaypresentchange fires only once when the first requestPresent is completed;
           // the first requestPresent could be called from ondisplayactivate and there is no way
           // to setup everything from there. Thus, we need to emulate another vrdisplaypresentchange
@@ -337,7 +358,6 @@ module.exports.AScene = registerElement('a-scene', {
             window.dispatchEvent(event);
           }
 
-          self.addState('vr-mode');
           self.emit('enter-vr', {target: self});
           // Lock to landscape orientation on mobile.
           if (!isWebXRAvailable && self.isMobile && screen.orientation && screen.orientation.lock) {
@@ -355,9 +375,11 @@ module.exports.AScene = registerElement('a-scene', {
 
           self.renderer.setAnimationLoop(self.render);
           self.resize();
+          if (resolve) { resolve(); }
         }
 
         function enterVRFailure (err) {
+          self.removeState('vr-mode');
           if (err && err.message) {
             throw new Error('Failed to enter VR mode (`requestPresent`): ' + err.message);
           } else {
@@ -660,11 +682,6 @@ module.exports.AScene = registerElement('a-scene', {
           var vrDisplay;
           var vrManager = this.renderer.xr;
           AEntity.prototype.play.call(this);  // .play() *before* render.
-
-          // WebXR Immersive navigation handler.
-          if (this.hasWebXR && navigator.xr && navigator.xr.addEventListener) {
-            navigator.xr.addEventListener('sessiongranted', function () { sceneEl.enterVR(); });
-          }
 
           if (sceneEl.renderStarted) { return; }
           sceneEl.resize();

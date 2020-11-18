@@ -217,6 +217,8 @@ And get in touch with the maintainers!
 
 Get involved! Check out the [Contributing Guide](CONTRIBUTING.md) for how to get started.
 
+You can also support development by [buying a gorgeous A-Frame t-shirt with exclusive designs](https://teespring.com/stores/aframe)
+
 ## License
 
 This program is free software and is distributed under an [MIT License](LICENSE).

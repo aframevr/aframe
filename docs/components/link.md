@@ -9,17 +9,17 @@ source_code: src/components/link.js
 examples: []
 ---
 
-The link component connects between experiences and allows for traversing
-between VR web pages. When activated via an event, the link component sends the
-user to a different page, just like a normal web page redirect. To maintain VR
-across pages, the following conditions must apply:
+[invrproposal]: https://github.com/immersive-web/navigation#api-proposal
 
-[vrdisplayactivate]: https://w3c.github.io/webvr/spec/1.1/#interface-window
+The link component connects between experiences and allows for traversing between VR web pages. When activated via an event, the link component sends the user to a different page, just like a normal web page redirect. To maintain VR across pages, the following conditions must apply:
 
-- The browser is up-to-date with the WebVR specification and implements the `vrdisplayactivate` event.
-- The destination web page listens to the window [`vrdisplayactivate`] event and enters VR. A-Frame experiences behave this way by default.
-- At the moment, in-VR navigation is only implemented by Firefox desktop,
-  Oculus Browser, Samsung Internet, and Supermedium.
+- Your browser implements the WebXR [in-VR navigation proposal][invrproposal]. Notice that is not yet part of the standard. Support is experimental an varies accross browsers.
+
+[sessiongranted]: https://github.com/immersive-web/navigation#api-proposal
+
+- The destination Web page listens to the window [`sessiongranted`] event and enters VR. A-Frame experiences behave this way by default.
+
+- At the moment, The Oculus Browser on Quest is the only browser shipping the [in-VR navigation proposal][invrproposal].
 
 ## Link UX
 

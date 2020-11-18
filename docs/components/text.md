@@ -173,7 +173,12 @@ the SDF font, DejaVu:
 
 To use non-ascii characters, you need to create your own custom font. The easiest way is to use [a web-based MSDF tool][msdf-bmfont-web]. Select your required character set and generate your own custom msdf font zip file.
 
-Once you download your custom msdf font zip file, extract it and rename `*.png` to `*-msdf.png`, then put both png and json files to your A-Frame directory.
+Here is an example of a French character set you can use:
+
+    ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.?!/:;,*§£$ø@+°-~#&²'{}[]|`\()=%*µ àâéèëêïîöôùüûÀÂÉÈËÊÏÎÖÔÜÛçÇ€
+
+Once you download your custom msdf font zip file, extract it, then put both png and json files to your A-Frame directory.
+From A-Frame 0.9.0 and above, you don't need to rename `*.png` to `*-msdf.png` anymore, A-Frame loads the image defined in the json file.
 
 Lastly, you should specify the character set used in your HTML by using `<meta>` tag to avoid text to be garbled. If your text is garbled, it is not rendered.
 

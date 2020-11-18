@@ -43,6 +43,10 @@ var BONE_MAPPING = [
   'pinky_null'
 ];
 
+var PINCH_START_DISTANCE = 0.015;
+var PINCH_END_DISTANCE = 0.03;
+var PINCH_POSITION_INTERPOLATION = 0.5;
+
 /**
  * Controls for hand tracking
  */
@@ -217,22 +221,22 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
 
       var distance = indexTipPosition.distanceTo(thumbTipPosition);
 
-      if (distance < 0.01 && this.isPinched === false) {
+      if (distance < PINCH_START_DISTANCE && this.isPinched === false) {
         this.isPinched = true;
-        this.pinchEventDetail.position.copy(indexTipPose.transform.position);
+        this.pinchEventDetail.position.copy(indexTipPosition).lerp(thumbTipPosition, PINCH_POSITION_INTERPOLATION);
         this.pinchEventDetail.position.y += 1.5;
         this.el.emit('pinchstarted', this.pinchEventDetail);
       }
 
-      if (distance > 0.03 && this.isPinched === true) {
+      if (distance > PINCH_END_DISTANCE && this.isPinched === true) {
         this.isPinched = false;
-        this.pinchEventDetail.position.copy(indexTipPose.transform.position);
+        this.pinchEventDetail.position.copy(indexTipPosition).lerp(thumbTipPosition, PINCH_POSITION_INTERPOLATION);
         this.pinchEventDetail.position.y += 1.5;
         this.el.emit('pinchended', this.pinchEventDetail);
       }
 
       if (this.isPinched) {
-        this.pinchEventDetail.position.copy(indexTipPose.transform.position);
+        this.pinchEventDetail.position.copy(indexTipPosition).lerp(thumbTipPosition, PINCH_POSITION_INTERPOLATION);
         this.pinchEventDetail.position.y += 1.5;
         this.el.emit('pinchmoved', this.pinchEventDetail);
       }
