@@ -136,7 +136,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     buttonHighlightColor: {type: 'color', default: '#2DF'},  // Light blue.
     model: {default: true},
     controllerType: {default: 'auto', oneOf: ['auto', 'oculus-touch', 'oculus-touch-v2']},
-    orientationOffset: {type: 'vec3', default: {x: 43, y: 0, z: 0}}
+    orientationOffset: {type: 'vec3', default: {x: 0, y: 0, z: 0}}
   },
 
   mapping: INPUT_MAPPING,
