@@ -258,7 +258,7 @@ suite('a-scene (without renderer)', function () {
       var sceneEl = this.el;
       sceneEl.removeState('vr-mode');
       sceneEl.exitVR().then(function (val) {
-        assert.equal(val, 'Not in VR.');
+        assert.equal(val, 'Not in immersive mode.');
         done();
       });
     });
