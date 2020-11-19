@@ -309,7 +309,11 @@ module.exports.AScene = registerElement('a-scene', {
                   vrManager.layersEnabled = xrInit.requiredFeatures.indexOf('layers') !== -1;
                   vrManager.setSession(xrSession);
                   xrSession.addEventListener('end', self.exitVRBound);
-                  if (useAR) { self.addState('ar-mode'); }
+                  if (useAR) {
+                    self.addState('ar-mode');
+                  } else {
+                    self.addState('vr-mode');
+                  }
                   enterVRSuccess(resolve);
                 },
                 function requestFail (error) {
