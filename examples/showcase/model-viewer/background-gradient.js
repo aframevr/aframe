@@ -1,8 +1,8 @@
 /* global AFRAME */
 AFRAME.registerShader('background-gradient', {
   schema: {
-    colorTop: { type: 'color', default: 'black', is: 'uniform' },
-    colorBottom: { type: 'color', default: 'red', is: 'uniform' }
+    colorTop: { type: 'color', default: '#37383c', is: 'uniform' },
+    colorBottom: { type: 'color', default: '#757575', is: 'uniform' }
   },
 
   vertexShader: [
@@ -32,7 +32,7 @@ AFRAME.registerShader('background-gradient', {
 
     'f = sin(pointOnSphere.y * 2.2) + 0.4;',
 
-    'gl_FragColor = vec4(mix(colorBottom,colorTop, f), 1.0);',
+    'gl_FragColor = vec4(mix(colorBottom, colorTop, f), 1.0);',
 
     '}'
   ].join('\n')
