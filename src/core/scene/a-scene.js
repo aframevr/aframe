@@ -90,7 +90,7 @@ module.exports.AScene = registerElement('a-scene', {
         var embedded = this.hasAttribute('embedded');
         // Renderer initialization
         setupCanvas(this);
-        this.setupRenderer();
+        loadingScreen.setup(this, getCanvasSize);
 
         this.resize();
         if (!embedded) { this.addFullScreenStyles(); }
@@ -662,7 +662,6 @@ module.exports.AScene = registerElement('a-scene', {
         this.addEventListener('camera-set-active', function () {
           renderer.xr.setPoseTarget(self.camera.el.object3D);
         });
-        loadingScreen.setup(this, getCanvasSize);
       },
       writable: window.debug
     },
@@ -816,6 +815,7 @@ module.exports.AScene = registerElement('a-scene', {
  * @param {boolean} isVR - If in VR
  */
 function getCanvasSize (canvasEl, embedded, maxSize, isVR) {
+  if (!canvasEl.parentElement) { return {height: 0, width: 0}; }
   if (embedded) {
     return {
       height: canvasEl.parentElement.offsetHeight,
