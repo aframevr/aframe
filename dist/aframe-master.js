@@ -68021,7 +68021,11 @@ module.exports.AScene = registerElement('a-scene', {
                   vrManager.layersEnabled = xrInit.requiredFeatures.indexOf('layers') !== -1;
                   vrManager.setSession(xrSession);
                   xrSession.addEventListener('end', self.exitVRBound);
-                  if (useAR) { self.addState('ar-mode'); }
+                  if (useAR) {
+                    self.addState('ar-mode');
+                  } else {
+                    self.addState('vr-mode');
+                  }
                   enterVRSuccess(resolve);
                 },
                 function requestFail (error) {
@@ -70450,7 +70454,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 1.0.4 (Date 2020-11-19, Commit #5c31bd99)');
+console.log('A-Frame Version: 1.0.4 (Date 2020-11-20, Commit #4addaf8f)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
@@ -72338,6 +72342,7 @@ module.exports.System = registerSystem('tracked-controls-webxr', {
       return;
     }
 
+    if (!xrSession.inputSources) { return; }
     this.controllers = xrSession.inputSources;
     if (this.oldControllersLength === this.controllers.length) {
       var equal = true;
