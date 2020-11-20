@@ -67802,7 +67802,7 @@ module.exports.AScene = registerElement('a-scene', {
         var embedded = this.hasAttribute('embedded');
         // Renderer initialization
         setupCanvas(this);
-        this.setupRenderer();
+        loadingScreen.setup(this, getCanvasSize);
 
         this.resize();
         if (!embedded) { this.addFullScreenStyles(); }
@@ -68374,7 +68374,6 @@ module.exports.AScene = registerElement('a-scene', {
         this.addEventListener('camera-set-active', function () {
           renderer.xr.setPoseTarget(self.camera.el.object3D);
         });
-        loadingScreen.setup(this, getCanvasSize);
       },
       writable: window.debug
     },
@@ -68528,6 +68527,7 @@ module.exports.AScene = registerElement('a-scene', {
  * @param {boolean} isVR - If in VR
  */
 function getCanvasSize (canvasEl, embedded, maxSize, isVR) {
+  if (!canvasEl.parentElement) { return {height: 0, width: 0}; }
   if (embedded) {
     return {
       height: canvasEl.parentElement.offsetHeight,
@@ -70454,7 +70454,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 1.0.4 (Date 2020-11-20, Commit #4addaf8f)');
+console.log('A-Frame Version: 1.0.4 (Date 2020-11-20, Commit #dbe675e4)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
