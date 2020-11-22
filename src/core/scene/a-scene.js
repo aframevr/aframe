@@ -90,6 +90,7 @@ module.exports.AScene = registerElement('a-scene', {
         var embedded = this.hasAttribute('embedded');
         // Renderer initialization
         setupCanvas(this);
+        this.setupRenderer();
         loadingScreen.setup(this, getCanvasSize);
 
         this.resize();
@@ -201,6 +202,7 @@ module.exports.AScene = registerElement('a-scene', {
      */
     detachedCallback: {
       value: function () {
+        var renderer = this.renderer;
         // Remove from scene index.
         var sceneIndex = scenes.indexOf(this);
         scenes.splice(sceneIndex, 1);
@@ -213,6 +215,35 @@ module.exports.AScene = registerElement('a-scene', {
         window.removeEventListener('vrdisplaypointerrestricted', this.pointerRestrictedBound);
         window.removeEventListener('vrdisplaypointerunrestricted', this.pointerUnrestrictedBound);
         window.removeEventListener('sessionend', this.resize);
+
+        renderer.setAnimationLoop(null);
+        renderer.forceContextLoss();
+        renderer.domElement = null;
+
+        (function traverse (obj, fn) {
+          if (!obj) { return; }
+          fn(obj);
+
+          if (obj.children && obj.children.length) {
+            obj.children.forEach(function (child) {
+              traverse(child, fn);
+            });
+          }
+        })(this.object3D, function (obj) {
+          if (obj.geometry) {
+            obj.geometry.dispose();
+          }
+
+          if (obj.material) {
+            if (obj.material.length) {
+              obj.material.forEach(function (mat) {
+                mat.dispose();
+              });
+            } else {
+              obj.material.dispose();
+            }
+          }
+        });
       }
     },
 
