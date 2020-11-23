@@ -628,6 +628,11 @@ helpers.getSkipCISuite()('a-scene (with renderer)', function () {
     });
   });
 
+  teardown(function () {
+    this.sinon.stub(AScene.prototype, 'render');
+    this.sinon.stub(AScene.prototype, 'setupRenderer');
+  });
+
   suite('detachedCallback', function () {
     test.skip('cancels request animation frame', function (done) {
       var el = this.el;

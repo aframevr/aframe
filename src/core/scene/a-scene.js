@@ -90,6 +90,7 @@ module.exports.AScene = registerElement('a-scene', {
         var embedded = this.hasAttribute('embedded');
         // Renderer initialization
         setupCanvas(this);
+        this.setupRenderer();
         loadingScreen.setup(this, getCanvasSize);
 
         this.resize();
