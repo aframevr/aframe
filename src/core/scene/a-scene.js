@@ -220,30 +220,7 @@ module.exports.AScene = registerElement('a-scene', {
         renderer.forceContextLoss();
         renderer.domElement = null;
 
-        (function traverse (obj, fn) {
-          if (!obj) { return; }
-          fn(obj);
-
-          if (obj.children && obj.children.length) {
-            obj.children.forEach(function (child) {
-              traverse(child, fn);
-            });
-          }
-        })(this.object3D, function (obj) {
-          if (obj.geometry) {
-            obj.geometry.dispose();
-          }
-
-          if (obj.material) {
-            if (obj.material.length) {
-              obj.material.forEach(function (mat) {
-                mat.dispose();
-              });
-            } else {
-              obj.material.dispose();
-            }
-          }
-        });
+        disposeTHREEResources(this.object3D);
       }
     },
 
@@ -956,3 +933,25 @@ function setupCanvas (sceneEl) {
   }
 }
 module.exports.setupCanvas = setupCanvas;  // For testing.
+
+function disposeTHREEResources (object3D) {
+  if (!object3D) { return; }
+  disposeObject3DResources(object3D);
+
+  if (object3D.children && object3D.children.length) {
+    object3D.children.forEach(disposeTHREEResources);
+  }
+
+  function disposeObject3DResources (object3D) {
+    var geometry = object3D.geometry;
+    var material = object3D.material;
+    if (geometry && geometry.dispose) { geometry.dispose(); }
+    if (material) {
+      if (material.length) {
+        material.forEach(function (childMaterial) { if (childMaterial.dispose) { childMaterial.dispose(); } });
+      } else {
+        if (material.dispose) { material.dispose(); }
+      }
+    }
+  }
+}
