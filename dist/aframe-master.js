@@ -63401,11 +63401,11 @@ module.exports.Component = registerComponent('valve-index-controls', {
   },
 
   mapping: {
-    axes: {trackpad: [0, 1]},
-    buttons: [
-      'trigger', 'grip', 'joystick', 'abutton', 'abutton',
-      'system', 'finger1', 'finger2', 'finger3',
-      'finger4', 'finger5']
+    axes: {
+      trackpad: [0, 1],
+      thumbstick: [2, 3]
+    },
+    buttons: ['trigger', 'grip', 'trackpad', 'thumbstick', 'abutton']
   },
 
   init: function () {
@@ -70457,7 +70457,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 1.0.4 (Date 2020-11-23, Commit #8a0fb7f6)');
+console.log('A-Frame Version: 1.0.4 (Date 2020-11-23, Commit #4404d74d)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
