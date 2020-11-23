@@ -56,11 +56,11 @@ module.exports.Component = registerComponent('valve-index-controls', {
   },
 
   mapping: {
-    axes: {trackpad: [0, 1]},
-    buttons: [
-      'trigger', 'grip', 'joystick', 'abutton', 'abutton',
-      'system', 'finger1', 'finger2', 'finger3',
-      'finger4', 'finger5']
+    axes: {
+      trackpad: [0, 1],
+      thumbstick: [2, 3]
+    },
+    buttons: ['trigger', 'grip', 'trackpad', 'thumbstick', 'abutton']
   },
 
   init: function () {
