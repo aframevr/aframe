@@ -67804,6 +67804,7 @@ module.exports.AScene = registerElement('a-scene', {
         var embedded = this.hasAttribute('embedded');
         // Renderer initialization
         setupCanvas(this);
+        this.setupRenderer();
         loadingScreen.setup(this, getCanvasSize);
 
         this.resize();
@@ -70456,7 +70457,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 1.0.4 (Date 2020-11-20, Commit #9df4ae34)');
+console.log('A-Frame Version: 1.0.4 (Date 2020-11-23, Commit #8a0fb7f6)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
