@@ -16,6 +16,8 @@ AFRAME.registerComponent('model-controls', {
     this.onTouchMove = this.onTouchMove.bind(this);
     this.onTouchEnd = this.onTouchEnd.bind(this);
 
+    this.onThumbstickMoved = this.onThumbstickMoved.bind(this);
+
     this.onEnterVR = this.onEnterVR.bind(this);
     this.onExitVR = this.onExitVR.bind(this);
 
@@ -33,6 +35,9 @@ AFRAME.registerComponent('model-controls', {
     this.laserHitPanelEl.addEventListener('mousedown', this.onMouseDownLaserHitPanel);
     this.laserHitPanelEl.addEventListener('mouseup', this.onMouseUpLaserHitPanel);
 
+    this.leftHandEl.addEventListener('thumbstickmoved', this.onThumbstickMoved);
+    this.rightHandEl.addEventListener('thumbstickmoved', this.onThumbstickMoved);
+
     document.addEventListener('mouseup', this.onMouseUp);
     document.addEventListener('mousemove', this.onMouseMove);
     document.addEventListener('mousedown', this.onMouseDown);
@@ -45,6 +50,14 @@ AFRAME.registerComponent('model-controls', {
     this.el.sceneEl.addEventListener('exit-vr', this.onExitVR);
 
     if (AFRAME.utils.device.isLandscape()) { this.modelEl.object3D.position.z += 1; }
+  },
+
+  onThumbstickMoved: function (evt) {
+    var modelScale = this.modelScale || this.el.object3D.scale.x;
+    modelScale -= evt.detail.y / 20;
+    modelScale = Math.min(Math.max(0.8, modelScale), 1.5);
+    this.el.object3D.scale.set(modelScale, modelScale, modelScale);
+    this.modelScale = modelScale;
   },
 
   onMouseWheel: function (evt) {

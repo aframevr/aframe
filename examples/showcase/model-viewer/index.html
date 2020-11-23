@@ -52,8 +52,8 @@
       look-controls="magicWindowTrackingEnabled: false; touchEnabled: false; mouseEnabled: false">
     </a-entity>
     <!-- Hand controls -->
-    <a-entity id="leftHand" laser-controls="hand: left" raycaster="objects: .raycastable" line="color: #118A7E"></a-entity>
-    <a-entity id="rightHand" laser-controls="hand: right" raycaster="objects: .raycastable" line="color: #118A7E"></a-entity>
+    <a-entity rotation="0 90 0" id="leftHand" laser-controls="hand: left" raycaster="objects: .raycastable" line="color: #118A7E"></a-entity>
+    <a-entity rotation="0 90 0" id="rightHand" laser-controls="hand: right" raycaster="objects: .raycastable" line="color: #118A7E"></a-entity>
   </a-entity>
 
   <a-entity id="model">
@@ -63,7 +63,7 @@
       geometry="primitive: plane; width: 30; height: 20"
       material="color: red"
       class="raycastable"
-      visible="true">
+      visible="false">
     </a-entity>
     <a-entity
       id="dino"
@@ -97,8 +97,6 @@
       hide-on-enter-ar>
     </a-entity>
   </a-entity>
-
-  <!-- <a-entity id="slider" slider position="0 -0.25 -2.4" scale="2 2 2"></a-entity> -->
 
   <a-light
     id="light"
