@@ -60758,7 +60758,7 @@ module.exports.Component = registerComponent('device-orientation-permission-ui',
     deviceMotionMessage: {
       default: 'This immersive website requires access to your device motion sensors.'
     },
-    mobileDestkopMessage: {
+    mobileDesktopMessage: {
       default: 'Set your browser to request the mobile version of the site and reload the page to enjoy immersive mode.'
     },
     httpsMessage: {
@@ -60822,7 +60822,7 @@ module.exports.Component = registerComponent('device-orientation-permission-ui',
     var self = this;
     var safariIpadAlertEl = createAlertDialog(
       self.data.cancelButtonText,
-      self.data.mobileDestkopMessage,
+      self.data.mobileDesktopMessage,
       function () { self.el.removeChild(safariIpadAlertEl); });
     this.el.appendChild(safariIpadAlertEl);
   },
@@ -70457,7 +70457,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 1.0.4 (Date 2020-11-23, Commit #4404d74d)');
+console.log('A-Frame Version: 1.0.4 (Date 2020-11-24, Commit #d3b58a14)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
