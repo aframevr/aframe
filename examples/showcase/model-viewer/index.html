@@ -11,7 +11,6 @@
   <script src="ar-shadows.js"></script>
   <script src="ar-hit-test.js"></script>
   <script src="model-controls.js"></script>
-  <script src="slider.js"></script>
   <script src="background-gradient.js"></script>
 </head>
 <body>
@@ -30,11 +29,11 @@
     -->
     <a-asset-item id="triceratops"
       src="https://cdn.aframe.io/examples/ar/models/triceratops/scene.gltf"
-      response-type="arraybuffer"></a-asset-item>
+      response-type="arraybuffer" crossorigin="anonymous"></a-asset-item>
 
     <a-asset-item id="reticle"
       src="https://cdn.aframe.io/examples/ar/models/reticle/reticle.gltf"
-      response-type="arraybuffer"></a-asset-item>
+      response-type="arraybuffer" crossorigin="anonymous"></a-asset-item>
 
     <img id="shadow" src="shadow.png"></img>
     <a-asset-item id="messageText" src="message.html"></a-asset-item>
@@ -118,7 +117,7 @@
   <a-entity
     gltf-model="#reticle"
     scale="0.8 0.8 0.8"
-    ar-hit-test="targetEl: #dino"></a-entity>
+    ar-hit-test="targetEl: #dino" visible="false"></a-entity>
 
 </a-scene>
 </body>
