@@ -37521,7 +37521,13 @@ module.exports = anime;
 							break;
 
 						case 'Geometry':
-							console.error('THREE.ObjectLoader: Loading "Geometry" is not supported anymore.');
+							if ('THREE' in window && 'LegacyJSONLoader' in THREE) {
+								var geometryLoader = new THREE.LegacyJSONLoader();
+								geometry = geometryLoader.parse(data, this.resourcePath).geometry;
+							} else {
+								console.error('THREE.ObjectLoader: You have to import LegacyJSONLoader in order load geometry data of type "Geometry".');
+							}
+
 							break;
 
 						default:
@@ -55545,7 +55551,7 @@ module.exports={
     "present": "0.0.6",
     "promise-polyfill": "^3.1.0",
     "super-animejs": "^3.1.0",
-    "super-three": "^0.123.0",
+    "super-three": "^0.123.1",
     "three-bmfont-text": "dmarcos/three-bmfont-text#1babdf8507c731a18f8af3b807292e2b9740955e",
     "webvr-polyfill": "^0.10.12"
   },
@@ -71400,7 +71406,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 1.0.4 (Date 2020-11-26, Commit #65ad0803)');
+console.log('A-Frame Version: 1.0.4 (Date 2020-11-26, Commit #f76ef56d)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
