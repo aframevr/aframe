@@ -13,13 +13,13 @@
   <body>
     <a-scene fog="color: #241417; near: 0; far: 30;" raycaster="far: 100; objects: [link];" cursor="rayOrigin: mouse" camera-position environment="preset: forest">
       <a-assets>
-        <img id="thumbHome" crossOrigin="anonymous" src="https://cdn.aframe.io/link-traversal/thumbs/home.png">
-        <img id="thumbCity" crossOrigin="anonymous" src="https://cdn.aframe.io/link-traversal/thumbs/city.png">
-        <img id="thumbMountains" crossOrigin="anonymous" src="https://cdn.aframe.io/link-traversal/thumbs/mountains.png">
+        <img id="thumbIndex" crossOrigin="anonymous" src="https://cdn.aframe.io/link-traversal/thumbs/index.png">
+        <img id="thumbJapan" crossOrigin="anonymous" src="https://cdn.aframe.io/link-traversal/thumbs/japan.png">
+        <img id="thumbEgypt" crossOrigin="anonymous" src="https://cdn.aframe.io/link-traversal/thumbs/egypt.png">
       </a-assets>
-      <a-link href="index.html" position="-3.5 1.5 -1.0" image="#thumbHome"></a-link>
-      <a-link href="japan.html" position="0 1.5 -1.0" image="#thumbCity"></a-link>
-      <a-link href="forest.html" position="3.5 1.5 -1.0" image="#thumbMountains"></a-link>
+      <a-link href="index.html" position="-3.5 1.5 -1.0" image="#thumbIndex"></a-link>
+      <a-link href="japan.html" position="0 1.5 -1.0" image="#thumbJapan"></a-link>
+      <a-link href="egypt.html" position="3.5 1.5 -1.0" image="#thumbEgypt"></a-link>
       <a-entity light="type: point; color: #f4f4f4; intensity: 0.4; distance: 0" position="0 2 0"></a-entity>
       <a-entity id="leftHand" link-controls="hand: left"></a-entity>
       <a-entity id="rightHand" link-controls="hand: right"></a-entity>
