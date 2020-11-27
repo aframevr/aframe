@@ -1,4 +1,4 @@
-/* global AFRAME */
+/* global AFRAME, THREE */
 AFRAME.registerComponent('model-controls', {
   init: function () {
     this.modelEl = document.querySelector('#model');
@@ -7,6 +7,8 @@ AFRAME.registerComponent('model-controls', {
     this.titleEl = document.querySelector('#title');
     this.leftHandEl = document.querySelector('#leftHand');
     this.rightHandEl = document.querySelector('#rightHand');
+
+    this.onModelLoaded = this.onModelLoaded.bind(this);
 
     this.onMouseUp = this.onMouseUp.bind(this);
     this.onMouseMove = this.onMouseMove.bind(this);
@@ -48,6 +50,8 @@ AFRAME.registerComponent('model-controls', {
 
     this.el.sceneEl.addEventListener('enter-vr', this.onEnterVR);
     this.el.sceneEl.addEventListener('exit-vr', this.onExitVR);
+
+    this.modelEl.addEventListener('model-loaded', this.onModelLoaded);
 
     if (AFRAME.utils.device.isLandscape()) { this.modelEl.object3D.position.z += 1; }
   },
@@ -222,6 +226,36 @@ AFRAME.registerComponent('model-controls', {
     this.el.object3D.rotation.x -= dY / 200;
     this.oldClientX = evt.clientX;
     this.oldClientY = evt.clientY;
+  },
+
+  onModelLoaded: function () {
+    this.centerAndScaleModel();
+  },
+
+  centerAndScaleModel: function () {
+    var box;
+    var size;
+    var center;
+    var scale;
+    var gltfEl = this.modelEl.querySelector('[gltf-model]');
+    var gltfObject = gltfEl.getObject3D('mesh');
+
+    gltfEl.object3D.updateMatrixWorld();
+    box = new THREE.Box3().setFromObject(gltfObject);
+    size = box.getSize(new THREE.Vector3());
+
+    // Human scale.
+    scale = 1.6 / size.z;
+    box.expandByScalar(scale);
+
+    gltfEl.object3D.scale.set(scale, scale, scale);
+    gltfEl.object3D.updateMatrixWorld();
+    box = new THREE.Box3().setFromObject(gltfObject);
+    center = box.getCenter(new THREE.Vector3());
+
+    gltfEl.object3D.position.x += (gltfEl.object3D.position.x - center.x);
+    gltfEl.object3D.position.y += (gltfEl.object3D.position.y - center.y);
+    gltfEl.object3D.position.z += (gltfEl.object3D.position.z - center.z);
   },
 
   onMouseDown: function (evt) {

@@ -45,7 +45,7 @@
     material="shader: background-gradient; colorTop: #37383c; colorBottom: #757575; side: back"
     hide-on-enter-ar></a-entity>
 
-  <a-entity id="cameraRig" position="0 0.6 0">
+  <a-entity id="cameraRig" position="0 0 2.0">
     <a-entity
       camera="fov: 60"
       look-controls="magicWindowTrackingEnabled: false; touchEnabled: false; mouseEnabled: false">
@@ -65,12 +65,10 @@
       visible="false">
     </a-entity>
     <a-entity
-      id="dino"
-      position="0.4 0 -3.4"
+      id="modelPivot"
       model-controls>
       <a-entity
-        scale="0.010 0.010 0.010"
-        position="-0.2 0 0" rotation="0 -30 0"
+        position="0 0 0" rotation="0 -30 0"
         gltf-model="#triceratops"
         animation-mixer
         shadow="cast: true; receive: false">
@@ -91,7 +89,7 @@
     </a-entity>
     <a-entity
       id="title"
-      position="2.3 2.3 -5"
+      position="2 1.6 -2"
       text="value: Triceratops; width: 6"
       hide-on-enter-ar>
     </a-entity>
@@ -109,7 +107,7 @@
       shadowCameraBottom: -5;
       shadowCameraTop: 5;
       intensity: 0.5"
-    target="dino">
+    target="modelPivot">
   </a-light>
 
   <a-entity light="type: hemisphere; intensity: 1"></a-entity>
@@ -118,8 +116,12 @@
   <a-entity
     gltf-model="#reticle"
     scale="0.8 0.8 0.8"
-    ar-hit-test="targetEl: #dino" visible="false"></a-entity>
+    ar-hit-test="targetEl: #modelPivot" visible="false"></a-entity>
 
 </a-scene>
+
+<a rel="ar" href="triceratops.usdz" id="triceratopsModel">
+    <img src="model-preview.jpg">
+</a style="display: none">
 </body>
 </html>
