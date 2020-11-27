@@ -41,7 +41,7 @@ Every geometry type will have these properties:
 
 ### `box`
 
-The box geometry defines boxes (i.e., any quadilateral, not just cubes).
+The box geometry defines boxes (i.e., any quadrilateral, not just cubes).
 
 ```html
 <a-entity geometry="primitive: box; width: 1; height: 1; depth: 1"></a-entity>
