@@ -224,6 +224,11 @@ AFRAME.registerComponent('model-controls', {
     dY = this.oldClientY - evt.clientY;
     this.el.object3D.rotation.y -= dX / 100;
     this.el.object3D.rotation.x -= dY / 200;
+
+    // Clamp x rotation to [-90,90]
+    this.el.object3D.rotation.x = Math.min(Math.max(-Math.PI / 2, this.el.object3D.rotation.x), Math.PI / 2);
+    console.log('XXX ' + this.el.object3D.rotation.x);
+
     this.oldClientX = evt.clientX;
     this.oldClientY = evt.clientY;
   },
