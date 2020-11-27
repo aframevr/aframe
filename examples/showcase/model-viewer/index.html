@@ -45,7 +45,7 @@
     material="shader: background-gradient; colorTop: #37383c; colorBottom: #757575; side: back"
     hide-on-enter-ar></a-entity>
 
-  <a-entity id="cameraRig" position="0 0 2.0">
+  <a-entity id="cameraRig" position="0 0 3.0">
     <a-entity
       camera="fov: 60"
       look-controls="magicWindowTrackingEnabled: false; touchEnabled: false; mouseEnabled: false">
@@ -68,17 +68,16 @@
       id="modelPivot"
       model-controls>
       <a-entity
-        position="0 0 0" rotation="0 -30 0"
+        rotation="0 -30 0"
         gltf-model="#triceratops"
         animation-mixer
         shadow="cast: true; receive: false">
-          <a-entity
-            position="0 0.1 0"
-            rotation="-90 0 0"
-            scale="110 180 0"
-            geometry="primitive: plane; width: 1.0; height: 1.0";
-            material="src: #shadow; transparent: true; opacity: 0.40" hide-on-enter-ar>
-          </a-entity>
+      </a-entity>
+      <a-entity
+        id="shadow"
+        rotation="-90 -30 0"
+        geometry="primitive: plane; width: 1.0; height: 1.0";
+        material="src: #shadow; transparent: true; opacity: 0.40" hide-on-enter-ar>
       </a-entity>
       <!-- This shadow-receiving plane is only visible in AR mode.-->
       <a-plane
@@ -89,7 +88,6 @@
     </a-entity>
     <a-entity
       id="title"
-      position="2 1.6 -2"
       text="value: Triceratops; width: 6"
       hide-on-enter-ar>
     </a-entity>
@@ -116,12 +114,12 @@
   <a-entity
     gltf-model="#reticle"
     scale="0.8 0.8 0.8"
-    ar-hit-test="targetEl: #modelPivot" visible="false"></a-entity>
-
-</a-scene>
+    ar-hit-test="targetEl: #modelPivot" visible="false">
+  </a-entity>
 
 <a rel="ar" href="triceratops.usdz" id="triceratopsModel">
     <img src="model-preview.jpg">
 </a style="display: none">
+</a-scene>
 </body>
 </html>

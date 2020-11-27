@@ -59,7 +59,7 @@ AFRAME.registerComponent('model-controls', {
   onThumbstickMoved: function (evt) {
     var modelScale = this.modelScale || this.el.object3D.scale.x;
     modelScale -= evt.detail.y / 20;
-    modelScale = Math.min(Math.max(0.8, modelScale), 1.5);
+    modelScale = Math.min(Math.max(0.8, modelScale), 2.0);
     this.el.object3D.scale.set(modelScale, modelScale, modelScale);
     this.modelScale = modelScale;
   },
@@ -67,7 +67,7 @@ AFRAME.registerComponent('model-controls', {
   onMouseWheel: function (evt) {
     var modelScale = this.modelScale || this.el.object3D.scale.x;
     modelScale -= evt.deltaY / 100;
-    modelScale = Math.min(Math.max(0.8, modelScale), 1.5);
+    modelScale = Math.min(Math.max(0.8, modelScale), 2.0);
     // Clamp scale.
     this.el.object3D.scale.set(modelScale, modelScale, modelScale);
     this.modelScale = modelScale;
@@ -163,6 +163,9 @@ AFRAME.registerComponent('model-controls', {
     this.oldClientX = evt.touches[0].clientX;
 
     this.el.object3D.rotation.x -= dY / 100;
+
+    // Clamp x rotation to [-90,90]
+    this.el.object3D.rotation.x = Math.min(Math.max(-Math.PI / 2, this.el.object3D.rotation.x), Math.PI / 2);
     this.oldClientY = evt.touches[0].clientY;
   },
 
@@ -175,7 +178,7 @@ AFRAME.registerComponent('model-controls', {
     var modelScale = this.modelScale || this.el.object3D.scale.x;
 
     modelScale -= distanceDifference / 500;
-    modelScale = Math.min(Math.max(0.8, modelScale), 1.5);
+    modelScale = Math.min(Math.max(0.8, modelScale), 2.0);
     // Clamp scale.
     this.el.object3D.scale.set(modelScale, modelScale, modelScale);
 
@@ -227,7 +230,6 @@ AFRAME.registerComponent('model-controls', {
 
     // Clamp x rotation to [-90,90]
     this.el.object3D.rotation.x = Math.min(Math.max(-Math.PI / 2, this.el.object3D.rotation.x), Math.PI / 2);
-    console.log('XXX ' + this.el.object3D.rotation.x);
 
     this.oldClientX = evt.clientX;
     this.oldClientY = evt.clientY;
@@ -243,6 +245,8 @@ AFRAME.registerComponent('model-controls', {
     var center;
     var scale;
     var gltfEl = this.modelEl.querySelector('[gltf-model]');
+    var shadowEl = this.modelEl.querySelector('#shadow');
+    var titleEl = this.modelEl.querySelector('#title');
     var gltfObject = gltfEl.getObject3D('mesh');
 
     gltfEl.object3D.updateMatrixWorld();
@@ -250,13 +254,25 @@ AFRAME.registerComponent('model-controls', {
     size = box.getSize(new THREE.Vector3());
 
     // Human scale.
-    scale = 1.6 / size.z;
-    box.expandByScalar(scale);
+    scale = 1.6 / size.y;
+    scale = 2.0 / size.x < scale ? 2.0 / size.x : scale;
+    scale = 2.0 / size.z < scale ? 2.0 / size.z : scale;
 
     gltfEl.object3D.scale.set(scale, scale, scale);
     gltfEl.object3D.updateMatrixWorld();
     box = new THREE.Box3().setFromObject(gltfObject);
     center = box.getCenter(new THREE.Vector3());
+    size = box.getSize(new THREE.Vector3());
+
+    shadowEl.object3D.scale.y = size.x;
+    shadowEl.object3D.scale.x = size.y;
+    shadowEl.object3D.position.y = -size.y / 2;
+    shadowEl.object3D.position.z += (gltfEl.object3D.position.z - center.z);
+    shadowEl.object3D.position.x += (gltfEl.object3D.position.x - center.x);
+
+    titleEl.object3D.position.x = (gltfEl.object3D.position.x - center.x) + 2.2;
+    titleEl.object3D.position.y = size.y + 0.3;
+    titleEl.object3D.position.z = -2;
 
     gltfEl.object3D.position.x += (gltfEl.object3D.position.x - center.x);
     gltfEl.object3D.position.y += (gltfEl.object3D.position.y - center.y);
