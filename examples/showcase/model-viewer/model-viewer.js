@@ -2,7 +2,8 @@
 AFRAME.registerComponent('model-viewer', {
   schema: {
     gltfModel: {default: ''},
-    title: {default: ''}
+    title: {default: ''},
+    uploadUIEnabled: {default: true}
   },
   init: function () {
     var el = this.el;
@@ -34,29 +35,33 @@ AFRAME.registerComponent('model-viewer', {
 
     this.onOrientationChange = this.onOrientationChange.bind(this);
 
-    this.initModelEntities();
+    this.initEntities();
     this.initBackground();
     this.initCameraRig();
-    this.initUploadInput();
+
+    if (this.data.uploadUIEnabled) { this.initUploadInput(); }
 
     // Disable context menu on canvas when pressing mouse right button;
     this.el.sceneEl.canvas.oncontextmenu = function (evt) { evt.preventDefault(); };
 
     window.addEventListener('orientationchange', this.onOrientationChange);
 
+    // VR controls.
     this.laserHitPanelEl.addEventListener('mousedown', this.onMouseDownLaserHitPanel);
     this.laserHitPanelEl.addEventListener('mouseup', this.onMouseUpLaserHitPanel);
 
     this.leftHandEl.addEventListener('thumbstickmoved', this.onThumbstickMoved);
     this.rightHandEl.addEventListener('thumbstickmoved', this.onThumbstickMoved);
 
+    // Mouse 2D controls.
     document.addEventListener('mouseup', this.onMouseUp);
     document.addEventListener('mousemove', this.onMouseMove);
     document.addEventListener('mousedown', this.onMouseDown);
+    document.addEventListener('wheel', this.onMouseWheel);
 
+    // Mobile 2D controls.
     document.addEventListener('touchend', this.onTouchEnd);
     document.addEventListener('touchmove', this.onTouchMove);
-    document.addEventListener('wheel', this.onMouseWheel);
 
     this.el.sceneEl.addEventListener('enter-vr', this.onEnterVR);
     this.el.sceneEl.addEventListener('exit-vr', this.onExitVR);
@@ -172,17 +177,27 @@ AFRAME.registerComponent('model-viewer', {
     backgroundEl.setAttribute('hide-on-enter-ar', '');
   },
 
-  initModelEntities: function () {
+  initEntities: function () {
+    // Container for our entities to keep the scene clean and tidy.
     var containerEl = this.containerEl = document.createElement('a-entity');
+    // Plane used as a hit target for laser controls when in VR mode
     var laserHitPanelEl = this.laserHitPanelEl = document.createElement('a-entity');
+    // Models are often not centered on the 0,0,0.
+    // We will center the model and rotate a pivot.
     var modelPivotEl = this.modelPivotEl = document.createElement('a-entity');
+    // This is our glTF model entity.
     var modelEl = this.modelEl = document.createElement('a-entity');
+    // Shadow blurb for 2D and VR modes. Scaled to match the size of the model.
     var shadowEl = this.shadowEl = document.createElement('a-entity');
+    // Real time shadow only used in AR mode.
     var arShadowEl = this.arShadowEl = document.createElement('a-entity');
+    // The title / legend displayed above the model.
     var titleEl = this.titleEl = document.createElement('a-entity');
+    // Reticle model used to position the model in AR mode.
+    var reticleEl = this.reticleEl = document.createElement('a-entity');
+    // Scene ligthing.
     var lightEl = this.lightEl = document.createElement('a-entity');
     var sceneLightEl = this.sceneLightEl = document.createElement('a-entity');
-    var reticleEl = this.reticleEl = document.createElement('a-entity');
 
     sceneLightEl.setAttribute('light', {
       type: 'hemisphere',
@@ -450,20 +465,24 @@ AFRAME.registerComponent('model-viewer', {
     var titleEl = this.titleEl;
     var gltfObject = modelEl.getObject3D('mesh');
 
+    // Reset position and scales.
     modelEl.object3D.position.set(0, 0, 0);
     modelEl.object3D.scale.set(1.0, 1.0, 1.0);
     this.cameraRigEl.object3D.position.z = 3.0;
 
+    // Calculate model size.
     modelEl.object3D.updateMatrixWorld();
     box = new THREE.Box3().setFromObject(gltfObject);
     size = box.getSize(new THREE.Vector3());
 
-    // Human scale.
+    // Calculate scale factor to resize model to human scale.
     scale = 1.6 / size.y;
     scale = 2.0 / size.x < scale ? 2.0 / size.x : scale;
     scale = 2.0 / size.z < scale ? 2.0 / size.z : scale;
 
     modelEl.object3D.scale.set(scale, scale, scale);
+
+    // Center model at (0, 0, 0).
     modelEl.object3D.updateMatrixWorld();
     box = new THREE.Box3().setFromObject(gltfObject);
     center = box.getCenter(new THREE.Vector3());
@@ -484,13 +503,12 @@ AFRAME.registerComponent('model-viewer', {
     modelEl.object3D.position.y = -center.y;
     modelEl.object3D.position.z = -center.z;
 
+    // When in mobile landscape we want to bring the model a bit closer.
     if (AFRAME.utils.device.isLandscape()) { this.cameraRigEl.object3D.position.z -= 1; }
   },
 
   onMouseDown: function (evt) {
-    if (evt.buttons) {
-      this.leftRightButtonPressed = evt.buttons === 3;
-    }
+    if (evt.buttons) { this.leftRightButtonPressed = evt.buttons === 3; }
     this.oldClientX = evt.clientX;
     this.oldClientY = evt.clientY;
   }
