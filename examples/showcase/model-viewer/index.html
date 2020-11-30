@@ -10,7 +10,7 @@
   <script src="../../js/hide-on-enter-ar.js"></script>
   <script src="ar-shadows.js"></script>
   <script src="ar-hit-test.js"></script>
-  <script src="model-controls.js"></script>
+  <script src="model-viewer.js"></script>
   <script src="background-gradient.js"></script>
 </head>
 <body>
@@ -18,9 +18,7 @@
 <a-scene
   renderer="colorManagement: true;"
   info-message="htmlSrc: #messageText"
-  cursor="rayOrigin: mouse; fuse: false"
-  webxr="optionalFeatures: hit-test, local-floor;"
-  raycaster="objects: .raycastable">
+  model-viewer="gltfModel: #triceratops; title: Triceratops">
   <a-assets>
     <!--
       Model source: https://sketchfab.com/3d-models/triceratops-d16aabe33dc24f8ab37e3df50c068265
@@ -38,88 +36,6 @@
     <img id="shadow" src="shadow.png"></img>
     <a-asset-item id="messageText" src="message.html"></a-asset-item>
   </a-assets>
-
-  <a-entity
-    id="sky"
-    geometry="primitive: sphere; radius: 65;"
-    material="shader: background-gradient; colorTop: #37383c; colorBottom: #757575; side: back"
-    hide-on-enter-ar></a-entity>
-
-  <a-entity id="cameraRig" position="0 0 3.0">
-    <a-entity
-      camera="fov: 60"
-      look-controls="magicWindowTrackingEnabled: false; touchEnabled: false; mouseEnabled: false">
-    </a-entity>
-    <!-- Hand controls -->
-    <a-entity rotation="0 90 0" id="leftHand" laser-controls="hand: left" raycaster="objects: .raycastable" line="color: #118A7E"></a-entity>
-    <a-entity rotation="0 90 0" id="rightHand" laser-controls="hand: right" raycaster="objects: .raycastable" line="color: #118A7E"></a-entity>
-  </a-entity>
-
-  <a-entity id="model">
-    <a-entity
-      id="laserHitPanel"
-      position="0 0 -10"
-      geometry="primitive: plane; width: 30; height: 20"
-      material="color: red"
-      class="raycastable"
-      visible="false">
-    </a-entity>
-    <a-entity
-      id="modelPivot"
-      model-controls>
-      <a-entity
-        rotation="0 -30 0"
-        gltf-model="#triceratops"
-        animation-mixer
-        shadow="cast: true; receive: false">
-      </a-entity>
-      <a-entity
-        id="shadow"
-        rotation="-90 -30 0"
-        geometry="primitive: plane; width: 1.0; height: 1.0";
-        material="src: #shadow; transparent: true; opacity: 0.40" hide-on-enter-ar>
-      </a-entity>
-      <!-- This shadow-receiving plane is only visible in AR mode.-->
-      <a-plane
-        height="30" width="30" rotation="-90 0 0"
-        shadow="receive: true"
-        ar-shadows="opacity: 0.2"
-        visible="false"></a-plane>
-    </a-entity>
-    <a-entity
-      id="title"
-      text="value: Triceratops; width: 6"
-      hide-on-enter-ar>
-    </a-entity>
-  </a-entity>
-
-  <a-light
-    id="light"
-    position="-2 4 2"
-    type="directional"
-    light="castShadow: true;
-      shadowMapHeight: 1024;
-      shadowMapWidth: 1024;
-      shadowCameraLeft: -7;
-      shadowCameraRight: 5;
-      shadowCameraBottom: -5;
-      shadowCameraTop: 5;
-      intensity: 0.5"
-    target="modelPivot">
-  </a-light>
-
-  <a-entity light="type: hemisphere; intensity: 1"></a-entity>
-
-  <!-- Reticle model by Toji https://twitter.com/tojiro -->
-  <a-entity
-    gltf-model="#reticle"
-    scale="0.8 0.8 0.8"
-    ar-hit-test="targetEl: #modelPivot" visible="false">
-  </a-entity>
-
-<a rel="ar" href="triceratops.usdz" id="triceratopsModel">
-    <img src="model-preview.jpg">
-</a style="display: none">
 </a-scene>
 </body>
 </html>
