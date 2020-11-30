@@ -83,6 +83,12 @@ AFRAME.registerComponent('model-viewer', {
       '@media only screen and (max-width: 700px) {' +
       '.a-upload-model {display: none}}';
     var inputDefaultValue = this.inputDefaultValue = 'Copy URL to glTF or glb model';
+
+    if (AFRAME.utils.device.checkARSupport()) {
+      css += '@media only screen and (max-width: 800px) {' +
+      '.a-upload-model-input {width: 60%;}}';
+    }
+
     uploadContainerEl.classList.add('a-upload-model');
     if (style.styleSheet) {
       style.styleSheet.cssText = css;
