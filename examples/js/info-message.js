@@ -2,7 +2,9 @@
 AFRAME.registerComponent('info-message', {
   schema: {
     htmlSrc: {type: 'selector'},
-    startOpened: {default: false}
+    startOpened: {default: false},
+    width: {default: 400},
+    height: {default: 320}
   },
   init: function () {
     var sceneEl = this.el.sceneEl;
@@ -25,6 +27,7 @@ AFRAME.registerComponent('info-message', {
 
     this.messageEl.style.display = startOpened ? '' : 'none';
     this.infoButton.style.display = startOpened ? 'none' : '';
+    messageEl.addEventListener('click', function (evt) { evt.stopPropagation(); });
   },
 
   update: function () {
@@ -35,8 +38,8 @@ AFRAME.registerComponent('info-message', {
 
   addStyles: function () {
     var css =
-      '.a-info-message{border-radius: 10px; position: absolute; width: 400px;' +
-      'height: 320px; background-color: white; border: 3px solid rgba(0,0,0,.75);' +
+      '.a-info-message{border-radius: 10px; position: absolute; width: ' + this.data.width + 'px;' +
+      'height: ' + this.data.height + 'px; background-color: white; border: 3px solid rgba(0,0,0,.75);' +
       'bottom: 22px; left: 22px; color: rgb(51, 51, 51); padding: 20px 15px 0 15px;' +
       'font-size: 11pt; line-height: 20pt;}' +
 
