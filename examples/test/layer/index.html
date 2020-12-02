@@ -14,26 +14,26 @@
     <a-scene environment="preset: forest" raycaster="objects: [button];" cursor="rayOrigin: mouse">
       <a-assets>
         <!--
-        SOURCE
-        Title:  Big Buck Bunny
-        Author: Blender Institute
-        URL:    https://peach.blender.org/
+          SOURCE
+          Title:  Big Buck Bunny
+          Author: Blender Institute
+          URL:    https://peach.blender.org/
         -->
         <video id="bunny" autoplay preload="auto" loop crossorigin="anonymous" width="1920" height="1080">
           <source src="https://cdn.aframe.io/videos/bunny.mp4"></source>
         </video>
-        <img id="panel1" crossOrigin="anonymous" src="panel1.png">
-        <img id="panel2" crossOrigin="anonymous" src="panel2.png">
+        <img id="panel" crossOrigin="anonymous" src="panel.png">
+        <!--
+          SOURCE
+          Title: Ponyo
+          Author: Ghibli Studio
+          URL: http://www.ghibli.jp/works/ponyo/#frame
+        -->
         <img id="ghibli" crossOrigin="anonymous" src="ghibli.jpg">
       </a-assets>
       <a-entity
-        layer="src: #panel1; width: 1.920; height: 1.038"
+        layer="src: #panel; width: 1.920; height: 1.038"
         position="0 1.8 -1.5"></a-entity>
-      <a-entity
-        rotation="0 80 0"
-        position="-1.6 1.8 0.2"
-        material="shader: flat; src: #panel1"
-        geometry="primitive: plane; width: 1.920; height: 1.038"></a-entity>
       <a-entity id="leftHand" toggle-layer laser-controls="hand: left" raycaster="objects: [button]"></a-entity>
       <a-entity id="rightHand" toggle-layer laser-controls="hand: right" raycaster="objects: [button]"></a-entity>
 

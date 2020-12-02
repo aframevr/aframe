@@ -2,7 +2,7 @@
 AFRAME.registerComponent('page-turn', {
   schema: {direction: {default: 'forward', oneOf: ['forward', 'backward']}},
   init: function () {
-    this.pages = ['panel1', 'panel2', 'ghibli', 'bunny'];
+    this.pages = ['panel', 'ghibli', 'bunny'];
     this.turnPage = this.turnPage.bind(this);
     this.el.addEventListener('click', this.turnPage);
     this.layerEl = document.querySelector('[layer]');
