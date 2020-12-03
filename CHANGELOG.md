@@ -1,3 +1,68 @@
+### 1.1.0 (Dec 3, 2020)
+
+5 years of A-Frame! 🥳
+
+40 amazing A-Framers participated in this release. Thank you 👏
+
+AR, hand tracking, compositor layers, immersive navigation (Quest only), Quest 2 support and much more.
+
+[Buy an gorgeous t-shirt](https://cottonbureau.com/products/fragments) 👕 to support the project.
+
+### Major Changes
+
+* Support for [WebXR compositor layers API](https://immersive-web.github.io/layers/) @rcabanier @Artyom17 @dmarcos
+* Support for [WebXR DOM Overlays](https://immersive-web.github.io/dom-overlays/) support @klausw
+* Support for the [WebXR immersive navigation proposal](https://github.com/immersive-web/navigation) @arpu @Artyom17 @dmarcos
+* Support for the [WebXR hand tracking API proposal](https://github.com/immersive-web/webxr-hand-input/blob/master/explainer.md) (#4650) @machenmusik @dmarcos
+* Support for Quest 2 controllers @dmarcos
+* Update THREE to r123 @dmarcos
+
+### Fixes
+
+* Fix problem with Windows Mixed Reality controller falling to generic model @arpu
+* Fix incorrect values returned by the `axismove` event on Oculus Quest (#4472) @Sujoy-Ghosh
+* Fix `npm run dist` command when running in zsh @benallfree
+* Fix [wasd-controls](https://aframe.io/docs/1.0.0/components/wasd-controls.html#sidebar) easing to prevent sudden position jumps (#4241) @ntamas
+* Replace calls to `THREE: getWorld*` methods that don't know work in immersive mode (#4521) @NNskelly @dmarcos
+* Fix undetected controllers when using WebXR API @cabanier @Artyom17
+* Fix `selectstart` / `selectend` never detected by the [cursor component](https://aframe.io/docs/1.0.0/components/cursor.html#sidebar) @vincentfretin
+* Fix for duplicated [cursor component](https://aframe.io/docs/1.0.0/components/cursor.html#sidebar) events (#4494) @binzume
+* Listen to `sessiongranted` event only if WebXR is available @dmarcos
+* Bump `webvr-polyfill` to fix magic window mode in iOS 13 (#4554) @jwjordan @dax72 @NomisGnos @dmarcos
+* Fix Gear VR controller detection @vincentfretin
+* Fix spectator camera mode when entering VR mode (#4666) @broehl @dmarcos
+* Fix duplicated cursor component event in VR mode (#4494) @binzume @dmarcos
+* [Background component](https://aframe.io/docs/1.0.0/components/background.html#sidebar) can now be removed (#4676) @NVFedorov @dmarcos
+* Fix [screenshot](https://aframe.io/docs/1.0.0/components/screenshot.html#sidebar) component (#4685) @bknill @dmarcos
+* Add user gesture to start video playback in examples @dmarcos
+* Fix white stripe at the bottom of the screen when exiting VR mode in iOS (#4617) @jgutierro @dmarcos
+* Fix msdf shader compatibility with WebGL 1 devices (Safari iOS) @dmarcos
+* Fix for immersive navigation where the `sessiongranted` event was not captured @dmarcos
+* Move `raycaster` collision detection from `tick` to `tock` to prevent bogus collisions on first frame @dmarcos
+* Fix for camera pose not correctly restored when exiting VR mode @dmarcos
+* Make sure exit immersive logic runs when exiting AR mode @dmarcos
+* Add `vr-mode` state to `<a-scene>` when entering immersive mode with WebXR @dmarcos
+* Fix Valve Index controller button mappings @dmarcos
+
+### Enhancements
+
+* Pass high-performance to the WebGL context to prioritize rendering performance over power consumption @arpu
+* Docs improvements @rotoglup @richardjbaker @klausw @dmarcos @kfarr @majecty @AdaRoseCannon @ngokevin @sonnynomnom @lordbron @da4throux @danbuckland @vikohone @pixelistik @vincentfretin @stefanhuber
+* Code hygiene @Jamesgt @Shalwaban
+* Use new `THREE.WebGLRenderer` outputEncoding @arpu
+* Make msdf shader WebGL 2 compliant @arpu
+* Valve Index controller support @zach-capalbo
+* Cordova compatibility @benallfree
+* Change [look-controls](https://aframe.io/docs/1.0.0/components/look-controls.html#sidebar) `hmdEnable` property name to `magicWindowTrackingEnabled` @dmarcos
+* Improve hand tracking pinch gesture accuracy @cesmoak (#4691)
+* Improve error handling when entering immersive mode (#4660) @federico-camonapp @dmarcos
+* Make text of [device permission ui component](https://aframe.io/docs/1.0.0/components/device-orientation-permission-ui.html#sidebar) dialogs configurable @dmarcos
+* Add [look controls](https://aframe.io/docs/1.0.0/components/look-controls.html#sidebar) `mouseEnabled` property to enable / disable mouse input @dmarcos
+* Add [model viewer example](https://aframe.io/aframe/examples/showcase/model-viewer) with AR / VR and 2D mode compatibility @dmarcos
+* Add [user interface example](https://aframe.io/aframe/examples/showcase/ui/) that works in VR, desktop and mobile @dmarcos
+* Make [raycaster component](https://aframe.io/docs/1.0.0/components/raycaster.html#sidebar) line color configurable @dmarcos
+* Add info panel to examples @thedart76 @dmarcos to show instructions, controls and credit authors.
+
 ### 1.0.4 (Feb 5, 2020)
 
 Bug fixes

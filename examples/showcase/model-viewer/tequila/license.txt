@@ -1,0 +1,11 @@
+Model Information:
+* title:	[FREE] Tesla Tequila
+* source:	https://sketchfab.com/3d-models/free-tesla-tequila-a469399f7e4e428ca70bc923fab766d5
+* author:	bubelrobert (https://sketchfab.com/bubelrobert)
+
+Model License:
+* license type:	CC-BY-NC-ND-4.0 (http://creativecommons.org/licenses/by-nc-nd/4.0/)
+* requirements:	Author must be credited. No commercial use. Modified versions can not be distributed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "[FREE] Tesla Tequila" (https://sketchfab.com/3d-models/free-tesla-tequila-a469399f7e4e428ca70bc923fab766d5) by bubelrobert (https://sketchfab.com/bubelrobert) licensed under CC-BY-NC-ND-4.0 (http://creativecommons.org/licenses/by-nc-nd/4.0/)
