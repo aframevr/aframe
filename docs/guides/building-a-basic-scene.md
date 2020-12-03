@@ -40,7 +40,7 @@ We start out with a minimal HTML structure:
 ```html
 <html>
   <head>
-    <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/1.1.0/aframe.min.js"></script>
   </head>
   <body>
     <a-scene>
@@ -228,7 +228,7 @@ First, include the environment component using a script tag after A-Frame:
 
 ```html
 <head>
-  <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+  <script src="https://aframe.io/releases/1.1.0/aframe.min.js"></script>
   <script src="https://unpkg.com/aframe-environment-component/dist/aframe-environment-component.min.js"></script>
 </head>
 ```
@@ -425,7 +425,7 @@ depends on its distance to the entity:
 
 ## Adding Animation
 
-[animation]: ../components/animations.md
+[animation]: ../components/animation.md
 
 We can add animations to the box using A-Frame's [built-in animation
 system][animation]. Animations interpolate or tween a value over time. We can

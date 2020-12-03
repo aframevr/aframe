@@ -184,7 +184,6 @@ include:
 - [WebVR Slack channel][slack-webvr].
 - [/r/WebVR subreddit][reddit-webvr].
 - Write a case study and tell us to feature on the [A-Frame Blog][blog].
-- [Featuring on Supermedium](https://www.supermedium.com/blog/webvr-guidelines)
 
 ## Embedding
 

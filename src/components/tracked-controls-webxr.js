@@ -14,17 +14,13 @@ module.exports.Component = registerComponent('tracked-controls-webxr', {
   schema: {
     id: {type: 'string', default: ''},
     hand: {type: 'string', default: ''},
+    handTrackingEnabled: {default: false},
     index: {type: 'int', default: -1},
     iterateControllerProfiles: {default: false}
   },
 
   init: function () {
-    this.addSessionEventListeners = this.addSessionEventListeners.bind(this);
     this.updateController = this.updateController.bind(this);
-    this.emitButtonUpEvent = this.emitButtonUpEvent.bind(this);
-    this.emitButtonDownEvent = this.emitButtonDownEvent.bind(this);
-
-    this.selectEventDetails = {id: 'trigger', state: {pressed: false}};
     this.buttonEventDetails = {};
     this.buttonStates = this.el.components['tracked-controls'].buttonStates = {};
     this.axis = this.el.components['tracked-controls'].axis = [0, 0, 0];
@@ -39,30 +35,12 @@ module.exports.Component = registerComponent('tracked-controls-webxr', {
   play: function () {
     var sceneEl = this.el.sceneEl;
     this.updateController();
-    this.addSessionEventListeners();
-    sceneEl.addEventListener('enter-vr', this.addSessionEventListeners);
     sceneEl.addEventListener('controllersupdated', this.updateController);
   },
 
   pause: function () {
     var sceneEl = this.el.sceneEl;
-    this.removeSessionEventListeners();
-    sceneEl.removeEventListener('enter-vr', this.addSessionEventListeners);
     sceneEl.removeEventListener('controllersupdated', this.updateController);
-  },
-
-  addSessionEventListeners: function () {
-    var sceneEl = this.el.sceneEl;
-    if (!sceneEl.xrSession) { return; }
-    sceneEl.xrSession.addEventListener('selectstart', this.emitButtonDownEvent);
-    sceneEl.xrSession.addEventListener('selectend', this.emitButtonUpEvent);
-  },
-
-  removeSessionEventListeners: function () {
-    var sceneEl = this.el.sceneEl;
-    if (!sceneEl.xrSession) { return; }
-    sceneEl.xrSession.removeEventListener('selectstart', this.emitButtonDownEvent);
-    sceneEl.xrSession.removeEventListener('selectend', this.emitButtonUpEvent);
   },
 
   isControllerPresent: function (evt) {
@@ -74,24 +52,6 @@ module.exports.Component = registerComponent('tracked-controls-webxr', {
     return true;
   },
 
-  emitButtonDownEvent: function (evt) {
-    if (!this.isControllerPresent(evt)) { return; }
-
-    this.selectEventDetails.state.pressed = true;
-    this.el.emit('buttondown', this.selectEventDetails);
-    this.el.emit('buttonchanged', this.selectEventDetails);
-    this.el.emit('triggerdown');
-  },
-
-  emitButtonUpEvent: function (evt) {
-    if (!this.isControllerPresent(evt)) { return; }
-
-    this.selectEventDetails.state.pressed = false;
-    this.el.emit('buttonup', this.selectEventDetails);
-    this.el.emit('buttonchanged', this.selectEventDetails);
-    this.el.emit('triggerup');
-  },
-
   /**
    * Handle update controller match criteria (such as `id`, `idPrefix`, `hand`, `controller`)
    */
@@ -101,20 +61,24 @@ module.exports.Component = registerComponent('tracked-controls-webxr', {
       this.data.id,
       this.data.hand,
       this.data.index,
-      this.data.iterateControllerProfiles
+      this.data.iterateControllerProfiles,
+      this.data.handTrackingEnabled
     );
     // Legacy handle to the controller for old components.
     this.el.components['tracked-controls'].controller = this.controller;
-
     if (this.data.autoHide) { this.el.object3D.visible = !!this.controller; }
   },
 
   tick: function () {
     var sceneEl = this.el.sceneEl;
-    if (!this.controller || !sceneEl.frame || !this.system.referenceSpace) { return; }
-    this.pose = sceneEl.frame.getPose(this.controller.targetRaySpace, this.system.referenceSpace);
-    this.updatePose();
-    this.updateButtons();
+    var controller = this.controller;
+    var frame = sceneEl.frame;
+    if (!controller || !sceneEl.frame || !this.system.referenceSpace) { return; }
+    if (!controller.hand) {
+      this.pose = frame.getPose(controller.targetRaySpace, this.system.referenceSpace);
+      this.updatePose();
+      this.updateButtons();
+    }
   },
 
   updatePose: function () {

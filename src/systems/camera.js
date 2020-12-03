@@ -228,7 +228,7 @@ module.exports.System = registerSystem('camera', {
    * the spectator camera after vrDisplay.submitFrame.
    */
   wrapRender: function () {
-    if (!this.spectatorCameraEl) { return; }
+    if (!this.spectatorCameraEl || this.originalRender) { return; }
     this.originalRender = this.sceneEl.renderer.render;
     this.sceneEl.renderer.render = this.render;
   },

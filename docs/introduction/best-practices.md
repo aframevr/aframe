@@ -60,10 +60,6 @@ purpose of using A-Frame.
 </a-scene>
 ```
 
-## WebVR
-
-[See WebVR Guidelines](https://www.supermedium.com/blog/webvr-guidelines).
-
 ## Performance
 
 [animation]: ../components/animation.md#direct-values-through-object3d-and-components

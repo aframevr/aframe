@@ -323,6 +323,7 @@ module.exports.Component = registerComponent('cursor', {
     var xrSession = this.el.sceneEl.xrSession;
     var self = this;
     if (!xrSession) { return; }
+    if (this.data.rayOrigin === 'mouse') { return; }
     WEBXR_EVENTS.DOWN.forEach(function (downEvent) {
       xrSession.addEventListener(downEvent, self.onCursorDown);
     });

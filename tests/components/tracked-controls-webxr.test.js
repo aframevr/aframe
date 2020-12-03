@@ -1,4 +1,4 @@
-/* global assert, process, setup, sinon, suite, test, THREE */
+/* global assert, process, setup, suite, test, THREE */
 const entityFactory = require('../helpers').entityFactory;
 
 suite('tracked-controls-webxr', function () {
@@ -70,26 +70,6 @@ suite('tracked-controls-webxr', function () {
       component.tick();
       assert.shallowDeepEqual(component.el.getAttribute('position'), {x: 1, y: 2, z: 3});
       assert.shallowDeepEqual(Math.round(component.el.getAttribute('rotation').x), 90);
-    });
-  });
-
-  suite('emit events', function () {
-    test('emit buttondown / triggerdown events', function () {
-      const emitSpy = sinon.spy(el, 'emit');
-      component.controller = {};
-      component.emitButtonDownEvent({inputSource: {handedness: 'right'}});
-      assert.equal(emitSpy.getCalls()[0].args[0], 'buttondown');
-      assert.equal(emitSpy.getCalls()[1].args[0], 'buttonchanged');
-      assert.equal(emitSpy.getCalls()[2].args[0], 'triggerdown');
-    });
-
-    test('emit buttonup / triggerup events', function () {
-      const emitSpy = sinon.spy(el, 'emit');
-      component.controller = {};
-      component.emitButtonUpEvent({inputSource: {handedness: 'right'}});
-      assert.equal(emitSpy.getCalls()[0].args[0], 'buttonup');
-      assert.equal(emitSpy.getCalls()[1].args[0], 'buttonchanged');
-      assert.equal(emitSpy.getCalls()[2].args[0], 'triggerup');
     });
   });
 });

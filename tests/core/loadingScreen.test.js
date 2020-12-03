@@ -1,13 +1,8 @@
-/* global assert, process, setup, suite, teardown, test */
-var AScene = require('core/scene/a-scene').AScene;
+/* global assert, process, suite, teardown, test */
 var helpers = require('../helpers');
 
 helpers.getSkipCISuite()('loadingScreen', function () {
   suite('setup', function () {
-    setup(function () {
-      AScene.prototype.setupRenderer.restore();
-    });
-
     test('adds title element', function (done) {
       var el = this.el = document.createElement('a-scene');
       document.body.appendChild(el);

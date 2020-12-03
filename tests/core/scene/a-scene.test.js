@@ -26,7 +26,8 @@ suite('a-scene (without renderer)', function () {
       },
       exitPresent: function () {
         return Promise.resolve();
-      }
+      },
+      isPresenting: true
     });
     document.body.appendChild(el);
   });
@@ -144,6 +145,7 @@ suite('a-scene (without renderer)', function () {
         },
         getContext: function () { return undefined; },
         setAnimationLoop: function () {},
+        setPixelRatio: function () {},
         setSize: function () {}
       };
 
@@ -247,6 +249,7 @@ suite('a-scene (without renderer)', function () {
           setDevice: function () {},
           setPoseTarget: function () {}
         },
+        setAnimationLoop: function () {},
         setPixelRatio: function () {},
         setSize: function () {}
       };
@@ -258,7 +261,7 @@ suite('a-scene (without renderer)', function () {
       var sceneEl = this.el;
       sceneEl.removeState('vr-mode');
       sceneEl.exitVR().then(function (val) {
-        assert.equal(val, 'Not in VR.');
+        assert.equal(val, 'Not in immersive mode.');
         done();
       });
     });
@@ -415,6 +418,7 @@ suite('a-scene (without renderer)', function () {
           getDevice: function () { return {isPresenting: false}; },
           setDevice: function () {}
         },
+        setAnimationLoop: function () {},
         setSize: setSizeSpy
       };
     });
@@ -624,6 +628,11 @@ helpers.getSkipCISuite()('a-scene (with renderer)', function () {
     });
   });
 
+  teardown(function () {
+    this.sinon.stub(AScene.prototype, 'render');
+    this.sinon.stub(AScene.prototype, 'setupRenderer');
+  });
+
   suite('detachedCallback', function () {
     test.skip('cancels request animation frame', function (done) {
       var el = this.el;
@@ -694,6 +703,10 @@ helpers.getSkipCISuite()('a-scene (with renderer)', function () {
     var scene = this.el;
     var Component = {el: {isPlaying: true}, tock: function () {}};
     this.sinon.spy(Component, 'tock');
+    scene.render = function () {
+      scene.time = 1;
+      if (scene.isPlaying) { scene.tock(1); }
+    };
     scene.addBehavior(Component);
     scene.addBehavior({el: {isPlaying: true}});
     scene.render();
