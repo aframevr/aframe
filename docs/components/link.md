@@ -13,7 +13,7 @@ examples: []
 
 The link component connects between experiences and allows for traversing between VR web pages. When activated via an event, the link component sends the user to a different page, just like a normal web page redirect. To maintain VR across pages, the following conditions must apply:
 
-- Your browser implements the WebXR [in-VR navigation proposal][invrproposal]. Notice that is not yet part of the standard. Support is experimental an varies accross browsers.
+- Your browser implements the WebXR [in-VR navigation proposal][invrproposal]. Notice that is not yet part of the standard. Support is experimental, varies accross browsers and it might require enabling manually in settings.
 
 [sessiongranted]: https://github.com/immersive-web/navigation#api-proposal
 

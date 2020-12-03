@@ -12,12 +12,18 @@
     <script src="../../js/info-message.js"></script>
   </head>
   <body>
-    <a-scene raycaster="far: 100; objects: [link];" cursor="rayOrigin: mouse" camera-position environment info-message="htmlSrc: #messageText">
+    <a-scene
+      raycaster="far: 100; objects: [link];"
+      cursor="rayOrigin: mouse"
+      camera-position
+      environment
+      info-message="htmlSrc: #messageText">
       <a-assets>
         <a-asset-item id="messageText" src="message.html"></a-asset-item>
        <img id="thumbJapan" crossOrigin="anonymous" src="https://cdn.aframe.io/link-traversal/thumbs/japan.png">
        <img id="thumbEgypt" crossOrigin="anonymous" src="https://cdn.aframe.io/link-traversal/thumbs/egypt.png">
        <img id="thumbForest" crossOrigin="anonymous" src="https://cdn.aframe.io/link-traversal/thumbs/forest.png">
+       <a-asset-item id="messageText" src="message.html"></a-asset-item>
       </a-assets>
       <a-link href="japan.html" position="-3.5 1.5 -1.0" image="#thumbJapan"></a-link>
       <a-link href="egypt.html" position="0 1.5 -1.0" image="#thumbEgypt"></a-link>
