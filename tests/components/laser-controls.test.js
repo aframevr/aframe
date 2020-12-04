@@ -60,10 +60,10 @@ suite('laser-controls', function () {
     });
 
     test('respects set line color', function (done) {
-      el.setAttribute('line', 'color', 'red');
+      el.setAttribute('line', 'color', 'white');
       el.emit('controllerconnected', {name: 'daydream-controls'});
       setTimeout(() => {
-        assert.equal(el.getAttribute('line').color, 'red');
+        assert.equal(el.getAttribute('line').color, 'white');
         done();
       });
     });

@@ -33,6 +33,7 @@ suite('oculus-touch-controls', function () {
     setup(function (done) {
       component = this.el.components['oculus-touch-controls'];
       controllerSystem = this.el.sceneEl.systems['tracked-controls-webvr'];
+      controllerSystem.vrDisplay = true;
       addEventListenersSpy = sinon.spy(component, 'addEventListeners');
       injectTrackedControlsSpy = sinon.spy(component, 'injectTrackedControls');
       removeEventListenersSpy = sinon.spy(component, 'removeEventListeners');
@@ -112,8 +113,16 @@ suite('oculus-touch-controls', function () {
   });
 
   suite('axismove', function () {
+    var controllerSystem;
+
+    setup(function (done) {
+      controllerSystem = this.el.sceneEl.systems['tracked-controls-webvr'];
+      controllerSystem.controllers = component.controllersWhenPresent;
+      controllerSystem.vrDisplay = true;
+      done();
+    });
+
     test('emits thumbstick moved', function (done) {
-      el.sceneEl.systems['tracked-controls-webvr'].controllers = component.controllersWhenPresent;
       // Do the check.
       component.checkIfControllerPresent();
       // Set up the event details.
@@ -129,7 +138,6 @@ suite('oculus-touch-controls', function () {
     });
 
     test('does not emit thumbstickmoved if axismove has no changes', function (done) {
-      el.sceneEl.systems['tracked-controls-webvr'].controllers = component.controllersWhenPresent;
       // Do the check.
       component.checkIfControllerPresent();
       // Fail purposely.
@@ -145,6 +153,7 @@ suite('oculus-touch-controls', function () {
   suite('buttonchanged', function () {
     test('can emit triggerchanged', function (done) {
       el.sceneEl.systems['tracked-controls-webvr'].controllers = component.controllersWhenPresent;
+      el.sceneEl.systems['tracked-controls-webvr'].vrDisplay = true;
       // Do the check.
       component.checkIfControllerPresent();
       // Prepare the event details

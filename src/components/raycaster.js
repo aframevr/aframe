@@ -50,6 +50,7 @@ module.exports.Component = registerComponent('raycaster', {
     objects: {default: ''},
     origin: {type: 'vec3'},
     showLine: {default: false},
+    lineColor: {default: 'white'},
     useWorldCoordinates: {default: false}
   },
 
@@ -184,7 +185,7 @@ module.exports.Component = registerComponent('raycaster', {
   /**
    * Check for intersections and cleared intersections on an interval.
    */
-  tick: function (time) {
+  tock: function (time) {
     var data = this.data;
     var prevCheckTime = this.prevCheckTime;
 
@@ -376,6 +377,7 @@ module.exports.Component = registerComponent('raycaster', {
     // given by data.direction, then we apply a scalar to give it a length.
     this.lineData.start = data.origin;
     this.lineData.end = endVec3.copy(this.unitLineEndVec3).multiplyScalar(length);
+    this.lineData.color = data.lineColor;
     el.setAttribute('line', this.lineData);
   },
 

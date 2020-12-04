@@ -37,7 +37,7 @@ module.exports.checkControllerPresentAndSetup = function (component, idPrefix, q
   // Update controller presence.
   if (isPresent) {
     component.addEventListeners();
-    component.injectTrackedControls();
+    component.injectTrackedControls(controller);
     el.emit('controllerconnected', {name: component.name, component: component});
   } else {
     component.removeEventListeners();

@@ -40,7 +40,8 @@ setup(function () {
     setAnimationLoop: function () {},
     setSize: function () {},
     setPixelRatio: function () {},
-    shadowMap: {}
+    render: function () {},
+    shadowMap: {enabled: false}
   };
 });
 

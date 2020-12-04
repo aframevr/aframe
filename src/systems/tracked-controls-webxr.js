@@ -58,6 +58,7 @@ module.exports.System = registerSystem('tracked-controls-webxr', {
       return;
     }
 
+    if (!xrSession.inputSources) { return; }
     this.controllers = xrSession.inputSources;
     if (this.oldControllersLength === this.controllers.length) {
       var equal = true;
