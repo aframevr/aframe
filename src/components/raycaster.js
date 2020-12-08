@@ -50,7 +50,7 @@ module.exports.Component = registerComponent('raycaster', {
     objects: {default: ''},
     origin: {type: 'vec3'},
     showLine: {default: false},
-    lineColor: {},
+    lineColor: {default: undefined},
     useWorldCoordinates: {default: false}
   },
 
