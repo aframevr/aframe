@@ -50,7 +50,8 @@ module.exports.Component = registerComponent('raycaster', {
     objects: {default: ''},
     origin: {type: 'vec3'},
     showLine: {default: false},
-    lineColor: {default: undefined},
+    lineColor: {default: 'white'},
+    lineOpacity: {default: 1},
     useWorldCoordinates: {default: false}
   },
 
@@ -378,6 +379,7 @@ module.exports.Component = registerComponent('raycaster', {
     this.lineData.start = data.origin;
     this.lineData.end = endVec3.copy(this.unitLineEndVec3).multiplyScalar(length);
     this.lineData.color = data.lineColor;
+    this.lineData.opacity = data.lineOpacity;
     el.setAttribute('line', this.lineData);
   },
 
