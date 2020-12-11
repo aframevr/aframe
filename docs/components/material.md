@@ -122,7 +122,6 @@ These properties are available on top of the base material properties.
 | normalTextureOffset           | How the normal texture is offset in the x y direction.                                                                                          | 0 0           |
 | repeat                        | How many times a texture (defined by `src`) repeats in the X and Y direction.                                                                   | 1 1           |
 | roughness                     | How rough the material is from `0` to `1`. A rougher material will scatter reflected light in more directions than a smooth material.           | 0.5           |
-| sphericalEnvMap               | Environment spherical texture for reflections. Can either be a selector to an `<img>`, or an inline URL.                                        | None          |
 | width                         | Width of video (in pixels), if defining a video texture.                                                                                        | 640           |
 | wireframe                     | Whether to render just the geometry edges.                                                                                                      | false         |
 | wireframeLinewidth            | Width in px of the rendered line.                                                                                                               | 2             |
@@ -164,12 +163,9 @@ There are three properties which give the illusion of complex geometry:
 
 #### Environment Maps
 
-The `envMap` and `sphericalEnvMap` properties define what environment
+The `envMap` property defines what environment
 the material reflects. The clarity of the environment reflection depends
 on the `metalness`, and `roughness` properties.
-
-The `sphericalEnvMap` property takes a single spherical mapped
-texture. Of the kind you would assign to a `<a-sky>`.
 
 Unlike textures, the `envMap` property takes a cubemap, six images put together
 to form a cube. The cubemap wraps around the mesh and applied as a texture.

@@ -53,7 +53,6 @@ component with the type set to `plane`.
 | roughness                        | material.roughness                     | 0.5           |
 | segments-height                  | geometry.segmentsHeight                | 1             |
 | segments-width                   | geometry.segmentsWidth                 | 1             |
-| spherical-env-map                | material.sphericalEnvMap               | None          |
 | src                              | material.src                           | None          |
 | width                            | geometry.width                         | 1             |
 | wireframe                        | material.wireframe                     | false         |

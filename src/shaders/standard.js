@@ -47,7 +47,6 @@ module.exports.Shader = registerShader('standard', {
     roughnessTextureOffset: {type: 'vec2'},
     roughnessTextureRepeat: {type: 'vec2', default: {x: 1, y: 1}},
 
-    sphericalEnvMap: {type: 'map'},
     src: {type: 'map'},
     width: {default: 512},
     wireframe: {default: false},
@@ -110,27 +109,14 @@ module.exports.Shader = registerShader('standard', {
     var self = this;
     var material = this.material;
     var envMap = data.envMap;
-    var sphericalEnvMap = data.sphericalEnvMap;
 
     // No envMap defined or already loading.
-    if ((!envMap && !sphericalEnvMap) || this.isLoadingEnvMap) {
+    if (!envMap || this.isLoadingEnvMap) {
       material.envMap = null;
       material.needsUpdate = true;
       return;
     }
     this.isLoadingEnvMap = true;
-
-    // if a spherical env map is defined then use it.
-    if (sphericalEnvMap) {
-      this.el.sceneEl.systems.material.loadTexture(sphericalEnvMap, {src: sphericalEnvMap}, function textureLoaded (texture) {
-        self.isLoadingEnvMap = false;
-        texture.mapping = THREE.SphericalReflectionMapping;
-        material.envMap = texture;
-        utils.material.handleTextureEvents(self.el, texture);
-        material.needsUpdate = true;
-      });
-      return;
-    }
 
     // Another material is already loading this texture. Wait on promise.
     if (texturePromises[envMap]) {

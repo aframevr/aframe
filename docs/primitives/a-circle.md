@@ -51,7 +51,6 @@ component with the type set to `circle`.
 | repeat                           | material.repeat                        | 1 1           |
 | roughness                        | material.roughness                     | 0.5           |
 | segments                         | geometry.segments                      | 32            |
-| spherical-env-map                | material.sphericalEnvMap               | None          |
 | src                              | material.src                           | None          |
 | theta-length                     | geometry.thetaLength                   | 360           |
 | theta-start                      | geometry.thetaStart                    | 0             |
