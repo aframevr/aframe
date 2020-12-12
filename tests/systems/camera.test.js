@@ -147,7 +147,7 @@ suite('camera system', function () {
           assert.ok(cameraEl.getAttribute('camera').active);
           assert.ok(cameraSystem.setActiveCamera.calledOnce);
           assert.equal(cameraSystem.activeCameraEl, cameraEl);
-          cameraSystem.setActiveCamera.reset();
+          cameraSystem.setActiveCamera.resetHistory();
           done();
         });
       });
@@ -175,7 +175,7 @@ suite('camera system', function () {
           assert.ok(cameraEl.getAttribute('camera').active);
           assert.ok(cameraSystem.setActiveCamera.calledOnce);
           assert.equal(cameraSystem.activeCameraEl, cameraEl);
-          cameraSystem.setActiveCamera.reset();
+          cameraSystem.setActiveCamera.resetHistory();
           done();
         });
       });

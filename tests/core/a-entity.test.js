@@ -929,7 +929,7 @@ suite('a-entity', function () {
 
     test('does not initialized non-registered component', function () {
       var nativeSetAttribute = HTMLElement.prototype.setAttribute;
-      this.sinon.stub(el, 'setAttribute', nativeSetAttribute);
+      this.sinon.stub(el, 'setAttribute').callsFake(nativeSetAttribute);
       el.setAttribute('fake-component', 'color: #F0F;');
       el.initComponent('fake-component');
       assert.notOk(el.components.fakeComponent);
@@ -1049,8 +1049,8 @@ suite('a-entity', function () {
       var materialAttribute = 'color: #F0F; transparent: true';
       var nativeSetAttribute = HTMLElement.prototype.setAttribute;
       var nativeGetAttribute = HTMLElement.prototype.getAttribute;
-      this.sinon.stub(el, 'setAttribute', nativeSetAttribute);
-      this.sinon.stub(el, 'getAttribute', nativeGetAttribute);
+      this.sinon.stub(el, 'setAttribute').callsFake(nativeSetAttribute);
+      this.sinon.stub(el, 'getAttribute').callsFake(nativeGetAttribute);
       el.setAttribute('material', materialAttribute);
       el.initComponent('material', '', true);
       assert.equal(el.getAttribute('material'), materialAttribute);
@@ -1137,7 +1137,7 @@ suite('a-entity', function () {
 
       box.setAttribute('geometry', {primitive: 'box'});
       component = box.components.geometry;
-      removeSpy = this.sinon.stub(component, 'remove', () => {});
+      removeSpy = this.sinon.stub(component, 'remove').callsFake(() => {});
 
       box.removeComponent('geometry');
       assert.notOk(removeSpy.called);

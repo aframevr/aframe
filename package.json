@@ -52,7 +52,7 @@
     "webvr-polyfill": "^0.10.12"
   },
   "devDependencies": {
-    "browserify": "^16.5.2",
+    "browserify": "^17.0.0",
     "browserify-css": "^0.15.0",
     "browserify-derequire": "^1.0.1",
     "browserify-istanbul": "^3.0.1",
@@ -71,7 +71,7 @@
     "istanbul": "^0.4.5",
     "jsdom": "^9.11.0",
     "karma": "^5.2.3",
-    "karma-browserify": "^7.0.0",
+    "karma-browserify": "^8.0.0",
     "karma-chai-shallow-deep-equal": "0.0.4",
     "karma-chrome-launcher": "^2.0.0",
     "karma-coverage": "^1.1.1",
@@ -88,12 +88,11 @@
     "semistandard": "^9.0.0",
     "shelljs": "^0.7.7",
     "shx": "^0.2.2",
-    "sinon": "^1.17.5",
-    "sinon-chai": "2.8.0",
+    "sinon": "^4.1.2",
+    "sinon-chai": "^2.14.0",
     "snazzy": "^5.0.0",
     "too-wordy": "ngokevin/too-wordy",
     "uglifyify": "^5.0.2",
-    "uglifyjs": "^2.4.10",
     "write-good": "^0.9.1"
   },
   "link": true,
