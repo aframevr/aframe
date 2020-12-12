@@ -79,6 +79,7 @@ AFRAME.registerComponent('model-viewer', {
       'bottom: 20px; left: 15%; right: 15%; position: absolute; color: white;' +
       'font-size: 12px; line-height: 12px; border: none;' +
       'border-radius: 5px}' +
+      '.a-upload-model.hidden {display: none}' +
       '.a-upload-model-button {cursor: pointer; padding: 0px 2px 0 2px; font-weight: bold; color: #666; border: 3px solid #666; box-sizing: border-box; vertical-align: middle; width: 25%; max-width: 110px; border-radius: 10px; height: 34px; background-color: white; margin: 0;}' +
       '.a-upload-model-button:hover {border-color: #ef2d5e; color: #ef2d5e}' +
       '.a-upload-model-input {color: #666; vertical-align: middle; padding: 0px 10px 0 10px; text-transform: uppercase; border: 0; width: 75%; height: 100%; border-radius: 10px; margin-right: 10px}' +
@@ -115,6 +116,13 @@ AFRAME.registerComponent('model-viewer', {
       if (this.value) { return; }
       this.value = inputDefaultValue;
     };
+
+    this.el.sceneEl.addEventListener('infomessageopened', function () {
+      uploadContainerEl.classList.add('hidden');
+    });
+    this.el.sceneEl.addEventListener('infomessageclosed', function () {
+      uploadContainerEl.classList.remove('hidden');
+    });
 
     inputEl.value = inputDefaultValue;
 
