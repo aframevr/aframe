@@ -629,6 +629,9 @@ module.exports.AScene = registerElement('a-scene', {
 
         this.maxCanvasSize = {height: 1920, width: 1920};
 
+        // By default, we are having 8Frame 1.1.0 run WebGL1 instead of vanilla Aframe-1.1.0's
+        // default behavior of using WebGL2.
+        let useWebGL2 = false;
         if (this.hasAttribute('renderer')) {
           rendererAttrString = this.getAttribute('renderer');
           rendererAttr = utils.styleParser.parse(rendererAttrString);
@@ -653,6 +656,10 @@ module.exports.AScene = registerElement('a-scene', {
             rendererConfig.preserveDrawingBuffer = rendererAttr.preserveDrawingBuffer === 'true';
           }
 
+          if (rendererAttr.webgl2) {
+            useWebGL2 = rendererAttr.webgl2 === 'true';
+          }
+
           this.maxCanvasSize = {
             width: rendererAttr.maxCanvasWidth
               ? parseInt(rendererAttr.maxCanvasWidth)
@@ -663,7 +670,8 @@ module.exports.AScene = registerElement('a-scene', {
           };
         }
 
-        renderer = this.renderer = new THREE.WebGLRenderer(rendererConfig);
+        renderer = this.renderer = useWebGL2
+          ? new THREE.WebGLRenderer(rendererConfig) : new THREE.WebGL1Renderer(rendererConfig);
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.sortObjects = false;
         if (this.camera) { renderer.xr.setPoseTarget(this.camera.el.object3D); }
