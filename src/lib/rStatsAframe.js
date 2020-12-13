@@ -1,7 +1,7 @@
 window.aframeStats = function (scene) {
-  var _rS = null;
-  var _scene = scene;
-  var _values = {
+  let _rS = null;
+  let _scene = scene;
+  let _values = {
     te: {
       caption: 'Entities'
     },
@@ -9,7 +9,7 @@ window.aframeStats = function (scene) {
       caption: 'Load Time'
     }
   };
-  var _groups = [ {
+  let _groups = [ {
     caption: 'A-Frame',
     values: [ 'te', 'lt' ]
   } ];
@@ -22,7 +22,7 @@ window.aframeStats = function (scene) {
   }
 
   function getEntityCount () {
-    var elements = _scene.querySelectorAll('*');
+    let elements = _scene.querySelectorAll('*');
     Array.prototype.slice.call(elements).filter(function (el) {
       return el.isEntity;
     });

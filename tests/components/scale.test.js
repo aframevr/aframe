@@ -1,9 +1,9 @@
 /* global assert, process, setup, suite, test */
-var entityFactory = require('../helpers').entityFactory;
+let entityFactory = require('../helpers').entityFactory;
 
 suite('scale', function () {
   setup(function (done) {
-    var el = this.el = entityFactory();
+    let el = this.el = entityFactory();
     el.setAttribute('scale', '');
     el.addEventListener('loaded', function () {
       done();
@@ -11,7 +11,7 @@ suite('scale', function () {
   });
 
   test('defaults to 1 1 1', function () {
-    var el = this.el;
+    let el = this.el;
     assert.equal(el.object3D.scale.x, 1);
     assert.equal(el.object3D.scale.y, 1);
     assert.equal(el.object3D.scale.z, 1);
@@ -25,7 +25,7 @@ suite('scale', function () {
     });
 
     test('can get defined scale', function () {
-      var el = this.el;
+      let el = this.el;
       el.setAttribute('scale', '1 2 3');
       assert.shallowDeepEqual(el.getAttribute('scale'), {
         x: 1, y: 2, z: 3
@@ -35,7 +35,7 @@ suite('scale', function () {
 
   suite('update', function () {
     test('can set scale', function () {
-      var el = this.el;
+      let el = this.el;
       el.setAttribute('scale', '-1 0.5 3.0');
       assert.equal(el.object3D.scale.x, -1);
       assert.equal(el.object3D.scale.y, 0.5);

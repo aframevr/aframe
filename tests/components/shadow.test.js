@@ -1,12 +1,12 @@
 /* global assert, setup, suite, test */
-var entityFactory = require('../helpers').entityFactory;
-var THREE = require('index').THREE;
+let entityFactory = require('../helpers').entityFactory;
+let THREE = require('index').THREE;
 
 suite('shadow component', function () {
-  var component;
-  var el;
-  var mesh;
-  var meshWithMaterialArray;
+  let component;
+  let el;
+  let mesh;
+  let meshWithMaterialArray;
 
   setup(function (done) {
     el = entityFactory();
@@ -43,15 +43,15 @@ suite('shadow component', function () {
     });
 
     test('sets needsUpdate on material', function () {
-      var oldMaterialVersion = mesh.material.version;
+      let oldMaterialVersion = mesh.material.version;
       el.object3D.add(mesh);
       component.update();
       assert.equal(mesh.material.version, oldMaterialVersion + 1);
     });
 
     test('sets needsUpdate on material array', function () {
-      var oldMaterial0Version = meshWithMaterialArray.material[0].version;
-      var oldMaterial1Version = meshWithMaterialArray.material[1].version;
+      let oldMaterial0Version = meshWithMaterialArray.material[0].version;
+      let oldMaterial1Version = meshWithMaterialArray.material[1].version;
       el.object3D.add(meshWithMaterialArray);
       component.update();
       assert.equal(meshWithMaterialArray.material[0].version, oldMaterial0Version + 1);

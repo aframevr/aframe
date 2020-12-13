@@ -6,7 +6,7 @@ AFRAME.registerComponent('model-viewer', {
     uploadUIEnabled: {default: true}
   },
   init: function () {
-    var el = this.el;
+    let el = this.el;
 
     el.setAttribute('renderer', {colorManagement: true});
     el.setAttribute('cursor', {rayOrigin: 'mouse', fuse: false});
@@ -70,11 +70,11 @@ AFRAME.registerComponent('model-viewer', {
   },
 
   initUploadInput: function () {
-    var uploadContainerEl = this.uploadContainerEl = document.createElement('div');
-    var inputEl = this.inputEl = document.createElement('input');
-    var submitButtonEl = this.submitButtonEl = document.createElement('button');
-    var style = document.createElement('style');
-    var css =
+    let uploadContainerEl = this.uploadContainerEl = document.createElement('div');
+    let inputEl = this.inputEl = document.createElement('input');
+    let submitButtonEl = this.submitButtonEl = document.createElement('button');
+    let style = document.createElement('style');
+    let css =
       '.a-upload-model  {box-sizing: border-box; display: inline-block; height: 34px; padding: 0; width: 70%;' +
       'bottom: 20px; left: 15%; right: 15%; position: absolute; color: white;' +
       'font-size: 12px; line-height: 12px; border: none;' +
@@ -88,7 +88,7 @@ AFRAME.registerComponent('model-viewer', {
       '.a-upload-model-input {width: 70%;}}' +
       '@media only screen and (max-width: 700px) {' +
       '.a-upload-model {display: none}}';
-    var inputDefaultValue = this.inputDefaultValue = 'Copy URL to glTF or glb model';
+    let inputDefaultValue = this.inputDefaultValue = 'Copy URL to glTF or glb model';
 
     if (AFRAME.utils.device.checkARSupport()) {
       css += '@media only screen and (max-width: 800px) {' +
@@ -138,16 +138,16 @@ AFRAME.registerComponent('model-viewer', {
   },
 
   submitURLButtonClicked: function (evt) {
-    var modelURL = this.inputEl.value;
+    let modelURL = this.inputEl.value;
     if (modelURL === this.inputDefaultValue) { return; }
     this.el.setAttribute('model-viewer', 'gltfModel', modelURL);
   },
 
   initCameraRig: function () {
-    var cameraRigEl = this.cameraRigEl = document.createElement('a-entity');
-    var cameraEl = this.cameraEl = document.createElement('a-entity');
-    var rightHandEl = this.rightHandEl = document.createElement('a-entity');
-    var leftHandEl = this.leftHandEl = document.createElement('a-entity');
+    let cameraRigEl = this.cameraRigEl = document.createElement('a-entity');
+    let cameraEl = this.cameraEl = document.createElement('a-entity');
+    let rightHandEl = this.rightHandEl = document.createElement('a-entity');
+    let leftHandEl = this.leftHandEl = document.createElement('a-entity');
 
     cameraEl.setAttribute('camera', {fov: 60});
     cameraEl.setAttribute('look-controls', {
@@ -174,7 +174,7 @@ AFRAME.registerComponent('model-viewer', {
   },
 
   initBackground: function () {
-    var backgroundEl = this.backgroundEl = document.querySelector('a-entity');
+    let backgroundEl = this.backgroundEl = document.querySelector('a-entity');
     backgroundEl.setAttribute('geometry', {primitive: 'sphere', radius: 65});
     backgroundEl.setAttribute('material', {
       shader: 'background-gradient',
@@ -187,25 +187,25 @@ AFRAME.registerComponent('model-viewer', {
 
   initEntities: function () {
     // Container for our entities to keep the scene clean and tidy.
-    var containerEl = this.containerEl = document.createElement('a-entity');
+    let containerEl = this.containerEl = document.createElement('a-entity');
     // Plane used as a hit target for laser controls when in VR mode
-    var laserHitPanelEl = this.laserHitPanelEl = document.createElement('a-entity');
+    let laserHitPanelEl = this.laserHitPanelEl = document.createElement('a-entity');
     // Models are often not centered on the 0,0,0.
     // We will center the model and rotate a pivot.
-    var modelPivotEl = this.modelPivotEl = document.createElement('a-entity');
+    let modelPivotEl = this.modelPivotEl = document.createElement('a-entity');
     // This is our glTF model entity.
-    var modelEl = this.modelEl = document.createElement('a-entity');
+    let modelEl = this.modelEl = document.createElement('a-entity');
     // Shadow blurb for 2D and VR modes. Scaled to match the size of the model.
-    var shadowEl = this.shadowEl = document.createElement('a-entity');
+    let shadowEl = this.shadowEl = document.createElement('a-entity');
     // Real time shadow only used in AR mode.
-    var arShadowEl = this.arShadowEl = document.createElement('a-entity');
+    let arShadowEl = this.arShadowEl = document.createElement('a-entity');
     // The title / legend displayed above the model.
-    var titleEl = this.titleEl = document.createElement('a-entity');
+    let titleEl = this.titleEl = document.createElement('a-entity');
     // Reticle model used to position the model in AR mode.
-    var reticleEl = this.reticleEl = document.createElement('a-entity');
+    let reticleEl = this.reticleEl = document.createElement('a-entity');
     // Scene ligthing.
-    var lightEl = this.lightEl = document.createElement('a-entity');
-    var sceneLightEl = this.sceneLightEl = document.createElement('a-entity');
+    let lightEl = this.lightEl = document.createElement('a-entity');
+    let sceneLightEl = this.sceneLightEl = document.createElement('a-entity');
 
     sceneLightEl.setAttribute('light', {
       type: 'hemisphere',
@@ -279,8 +279,8 @@ AFRAME.registerComponent('model-viewer', {
   },
 
   onThumbstickMoved: function (evt) {
-    var modelPivotEl = this.modelPivotEl;
-    var modelScale = this.modelScale || modelPivotEl.object3D.scale.x;
+    let modelPivotEl = this.modelPivotEl;
+    let modelScale = this.modelScale || modelPivotEl.object3D.scale.x;
     modelScale -= evt.detail.y / 20;
     modelScale = Math.min(Math.max(0.8, modelScale), 2.0);
     modelPivotEl.object3D.scale.set(modelScale, modelScale, modelScale);
@@ -288,8 +288,8 @@ AFRAME.registerComponent('model-viewer', {
   },
 
   onMouseWheel: function (evt) {
-    var modelPivotEl = this.modelPivotEl;
-    var modelScale = this.modelScale || modelPivotEl.object3D.scale.x;
+    let modelPivotEl = this.modelPivotEl;
+    let modelScale = this.modelScale || modelPivotEl.object3D.scale.x;
     modelScale -= evt.deltaY / 100;
     modelScale = Math.min(Math.max(0.8, modelScale), 2.0);
     // Clamp scale.
@@ -298,8 +298,8 @@ AFRAME.registerComponent('model-viewer', {
   },
 
   onMouseDownLaserHitPanel: function (evt) {
-    var cursorEl = evt.detail.cursorEl;
-    var intersection = cursorEl.components.raycaster.getIntersection(this.laserHitPanelEl);
+    let cursorEl = evt.detail.cursorEl;
+    let intersection = cursorEl.components.raycaster.getIntersection(this.laserHitPanelEl);
     if (!intersection) { return; }
     cursorEl.setAttribute('raycaster', 'lineColor', 'white');
     this.activeHandEl = cursorEl;
@@ -308,7 +308,7 @@ AFRAME.registerComponent('model-viewer', {
   },
 
   onMouseUpLaserHitPanel: function (evt) {
-    var cursorEl = evt.detail.cursorEl;
+    let cursorEl = evt.detail.cursorEl;
     if (cursorEl === this.leftHandEl) { this.leftHandPressed = false; }
     if (cursorEl === this.rightHandEl) { this.rightHandPressed = false; }
     cursorEl.setAttribute('raycaster', 'lineColor', 'white');
@@ -324,11 +324,11 @@ AFRAME.registerComponent('model-viewer', {
   },
 
   tick: function () {
-    var modelPivotEl = this.modelPivotEl;
-    var intersection;
-    var intersectionPosition;
-    var laserHitPanelEl = this.laserHitPanelEl;
-    var activeHandEl = this.activeHandEl;
+    let modelPivotEl = this.modelPivotEl;
+    let intersection;
+    let intersectionPosition;
+    let laserHitPanelEl = this.laserHitPanelEl;
+    let activeHandEl = this.activeHandEl;
     if (!this.el.sceneEl.is('vr-mode')) { return; }
     if (!activeHandEl) { return; }
     intersection = activeHandEl.components.raycaster.getIntersection(laserHitPanelEl);
@@ -349,7 +349,7 @@ AFRAME.registerComponent('model-viewer', {
   },
 
   onEnterVR: function () {
-    var cameraRigEl = this.cameraRigEl;
+    let cameraRigEl = this.cameraRigEl;
 
     this.cameraRigPosition = cameraRigEl.object3D.position.clone();
     this.cameraRigRotation = cameraRigEl.object3D.rotation.clone();
@@ -359,7 +359,7 @@ AFRAME.registerComponent('model-viewer', {
   },
 
   onExitVR: function () {
-    var cameraRigEl = this.cameraRigEl;
+    let cameraRigEl = this.cameraRigEl;
 
     cameraRigEl.object3D.position.copy(this.cameraRigPosition);
     cameraRigEl.object3D.rotation.copy(this.cameraRigRotation);
@@ -371,9 +371,9 @@ AFRAME.registerComponent('model-viewer', {
   },
 
   onSingleTouchMove: function (evt) {
-    var dX;
-    var dY;
-    var modelPivotEl = this.modelPivotEl;
+    let dX;
+    let dY;
+    let modelPivotEl = this.modelPivotEl;
     this.oldClientX = this.oldClientX || evt.touches[0].clientX;
     this.oldClientY = this.oldClientY || evt.touches[0].clientY;
 
@@ -391,13 +391,13 @@ AFRAME.registerComponent('model-viewer', {
   },
 
   onPinchMove: function (evt) {
-    var dX = evt.touches[0].clientX - evt.touches[1].clientX;
-    var dY = evt.touches[0].clientY - evt.touches[1].clientY;
-    var modelPivotEl = this.modelPivotEl;
-    var distance = Math.sqrt(dX * dX + dY * dY);
-    var oldDistance = this.oldDistance || distance;
-    var distanceDifference = oldDistance - distance;
-    var modelScale = this.modelScale || modelPivotEl.object3D.scale.x;
+    let dX = evt.touches[0].clientX - evt.touches[1].clientX;
+    let dY = evt.touches[0].clientY - evt.touches[1].clientY;
+    let modelPivotEl = this.modelPivotEl;
+    let distance = Math.sqrt(dX * dX + dY * dY);
+    let oldDistance = this.oldDistance || distance;
+    let distanceDifference = oldDistance - distance;
+    let modelScale = this.modelScale || modelPivotEl.object3D.scale.x;
 
     modelScale -= distanceDifference / 500;
     modelScale = Math.min(Math.max(0.8, modelScale), 2.0);
@@ -430,9 +430,9 @@ AFRAME.registerComponent('model-viewer', {
   },
 
   dragModel: function (evt) {
-    var dX;
-    var dY;
-    var modelPivotEl = this.modelPivotEl;
+    let dX;
+    let dY;
+    let modelPivotEl = this.modelPivotEl;
     if (!this.oldClientX) { return; }
     dX = this.oldClientX - evt.clientX;
     dY = this.oldClientY - evt.clientY;
@@ -443,9 +443,9 @@ AFRAME.registerComponent('model-viewer', {
   },
 
   rotateModel: function (evt) {
-    var dX;
-    var dY;
-    var modelPivotEl = this.modelPivotEl;
+    let dX;
+    let dY;
+    let modelPivotEl = this.modelPivotEl;
     if (!this.oldClientX) { return; }
     dX = this.oldClientX - evt.clientX;
     dY = this.oldClientY - evt.clientY;
@@ -464,14 +464,14 @@ AFRAME.registerComponent('model-viewer', {
   },
 
   centerAndScaleModel: function () {
-    var box;
-    var size;
-    var center;
-    var scale;
-    var modelEl = this.modelEl;
-    var shadowEl = this.shadowEl;
-    var titleEl = this.titleEl;
-    var gltfObject = modelEl.getObject3D('mesh');
+    let box;
+    let size;
+    let center;
+    let scale;
+    let modelEl = this.modelEl;
+    let shadowEl = this.shadowEl;
+    let titleEl = this.titleEl;
+    let gltfObject = modelEl.getObject3D('mesh');
 
     // Reset position and scales.
     modelEl.object3D.position.set(0, 0, 0);

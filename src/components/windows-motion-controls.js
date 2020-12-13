@@ -1,31 +1,31 @@
 /* global THREE */
-var registerComponent = require('../core/component').registerComponent;
-var bind = require('../utils/bind');
+let registerComponent = require('../core/component').registerComponent;
+let bind = require('../utils/bind');
 
-var trackedControlsUtils = require('../utils/tracked-controls');
-var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
-var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
-var onButtonEvent = trackedControlsUtils.onButtonEvent;
+let trackedControlsUtils = require('../utils/tracked-controls');
+let checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
+let emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
+let onButtonEvent = trackedControlsUtils.onButtonEvent;
 
-var utils = require('../utils/');
+let utils = require('../utils/');
 
-var debug = utils.debug('components:windows-motion-controls:debug');
-var warn = utils.debug('components:windows-motion-controls:warn');
+let debug = utils.debug('components:windows-motion-controls:debug');
+let warn = utils.debug('components:windows-motion-controls:warn');
 
-var DEFAULT_HANDEDNESS = require('../constants').DEFAULT_HANDEDNESS;
+let DEFAULT_HANDEDNESS = require('../constants').DEFAULT_HANDEDNESS;
 
-var MODEL_BASE_URL = 'https://cdn.aframe.io/controllers/microsoft/';
-var MODEL_FILENAMES = { left: 'left.glb', right: 'right.glb', default: 'universal.glb' };
+let MODEL_BASE_URL = 'https://cdn.aframe.io/controllers/microsoft/';
+let MODEL_FILENAMES = { left: 'left.glb', right: 'right.glb', default: 'universal.glb' };
 
-var isWebXRAvailable = require('../utils/').device.isWebXRAvailable;
+let isWebXRAvailable = require('../utils/').device.isWebXRAvailable;
 
-var GAMEPAD_ID_WEBXR = 'windows-mixed-reality';
-var GAMEPAD_ID_WEBVR = 'Spatial Controller (Spatial Interaction Source) ';
-var GAMEPAD_ID_PATTERN = /([0-9a-zA-Z]+-[0-9a-zA-Z]+)$/;
+let GAMEPAD_ID_WEBXR = 'windows-mixed-reality';
+let GAMEPAD_ID_WEBVR = 'Spatial Controller (Spatial Interaction Source) ';
+let GAMEPAD_ID_PATTERN = /([0-9a-zA-Z]+-[0-9a-zA-Z]+)$/;
 
-var GAMEPAD_ID_PREFIX = isWebXRAvailable ? GAMEPAD_ID_WEBXR : GAMEPAD_ID_WEBVR;
+let GAMEPAD_ID_PREFIX = isWebXRAvailable ? GAMEPAD_ID_WEBXR : GAMEPAD_ID_WEBVR;
 
-var INPUT_MAPPING_WEBVR = {
+let INPUT_MAPPING_WEBVR = {
   // A-Frame specific semantic axis names
   axes: {'thumbstick': [0, 1], 'trackpad': [2, 3]},
   // A-Frame specific semantic button names
@@ -52,7 +52,7 @@ var INPUT_MAPPING_WEBVR = {
   pointingPoseMeshName: 'POINTING_POSE'
 };
 
-var INPUT_MAPPING_WEBXR = {
+let INPUT_MAPPING_WEBXR = {
   // A-Frame specific semantic axis names
   axes: {'touchpad': [0, 1], 'thumbstick': [2, 3]},
   // A-Frame specific semantic button names
@@ -79,7 +79,7 @@ var INPUT_MAPPING_WEBXR = {
   pointingPoseMeshName: 'POINTING_POSE'
 };
 
-var INPUT_MAPPING = isWebXRAvailable ? INPUT_MAPPING_WEBXR : INPUT_MAPPING_WEBVR;
+let INPUT_MAPPING = isWebXRAvailable ? INPUT_MAPPING_WEBXR : INPUT_MAPPING_WEBVR;
 
 /**
  * Windows Motion Controller controls.
@@ -110,8 +110,8 @@ module.exports.Component = registerComponent('windows-motion-controls', {
   },
 
   init: function () {
-    var self = this;
-    var el = this.el;
+    let self = this;
+    let el = this.el;
     this.onButtonChanged = bind(this.onButtonChanged, this);
     this.onButtonDown = function (evt) { onButtonEvent(evt.detail.id, 'down', self); };
     this.onButtonUp = function (evt) { onButtonEvent(evt.detail.id, 'up', self); };
@@ -142,7 +142,7 @@ module.exports.Component = registerComponent('windows-motion-controls', {
   },
 
   addEventListeners: function () {
-    var el = this.el;
+    let el = this.el;
     el.addEventListener('buttonchanged', this.onButtonChanged);
     el.addEventListener('buttondown', this.onButtonDown);
     el.addEventListener('buttonup', this.onButtonUp);
@@ -155,7 +155,7 @@ module.exports.Component = registerComponent('windows-motion-controls', {
   },
 
   removeEventListeners: function () {
-    var el = this.el;
+    let el = this.el;
     el.removeEventListener('buttonchanged', this.onButtonChanged);
     el.removeEventListener('buttondown', this.onButtonDown);
     el.removeEventListener('buttonup', this.onButtonUp);
@@ -192,7 +192,7 @@ module.exports.Component = registerComponent('windows-motion-controls', {
       return;
     }
 
-    var sourceUrl = this.createControllerModelUrl();
+    let sourceUrl = this.createControllerModelUrl();
     this.loadModel(sourceUrl);
   },
 
@@ -202,11 +202,11 @@ module.exports.Component = registerComponent('windows-motion-controls', {
    */
   createControllerModelUrl: function (forceDefault) {
     // Determine the device specific folder based on the ID suffix
-    var trackedControlsComponent = this.el.components['tracked-controls'];
-    var controller = trackedControlsComponent ? trackedControlsComponent.controller : null;
-    var device = 'default';
-    var hand = this.data.hand;
-    var filename;
+    let trackedControlsComponent = this.el.components['tracked-controls'];
+    let controller = trackedControlsComponent ? trackedControlsComponent.controller : null;
+    let device = 'default';
+    let hand = this.data.hand;
+    let filename;
 
     if (controller && !window.hasNativeWebXRImplementation) {
       // Read hand directly from the controller, rather than this.data, as in the case that the controller
@@ -215,7 +215,7 @@ module.exports.Component = registerComponent('windows-motion-controls', {
       hand = controller.hand;
 
       if (!forceDefault) {
-        var match = controller.id.match(GAMEPAD_ID_PATTERN);
+        let match = controller.id.match(GAMEPAD_ID_PATTERN);
         device = ((match && match[0]) || device);
       }
     }
@@ -228,7 +228,7 @@ module.exports.Component = registerComponent('windows-motion-controls', {
   },
 
   injectTrackedControls: function () {
-    var data = this.data;
+    let data = this.data;
     this.el.setAttribute('tracked-controls', {
       idPrefix: GAMEPAD_ID_PREFIX,
       controller: data.pair,
@@ -252,7 +252,7 @@ module.exports.Component = registerComponent('windows-motion-controls', {
   },
 
   onModelError: function (evt) {
-    var defaultUrl = this.createControllerModelUrl(true);
+    let defaultUrl = this.createControllerModelUrl(true);
     if (evt.detail.src !== defaultUrl) {
       warn('Failed to load controller model for device, attempting to load default.');
       this.loadModel(defaultUrl);
@@ -268,12 +268,12 @@ module.exports.Component = registerComponent('windows-motion-controls', {
   },
 
   onModelLoaded: function (evt) {
-    var rootNode = this.controllerModel = evt.detail.model;
-    var loadedMeshInfo = this.loadedMeshInfo;
-    var i;
-    var meshName;
-    var mesh;
-    var meshInfo;
+    let rootNode = this.controllerModel = evt.detail.model;
+    let loadedMeshInfo = this.loadedMeshInfo;
+    let i;
+    let meshName;
+    let mesh;
+    let meshInfo;
 
     debug('Processing model');
 
@@ -356,8 +356,8 @@ module.exports.Component = registerComponent('windows-motion-controls', {
 
     // Look through only immediate children. This will return null if no mesh exists with the given name.
     function getImmediateChildByName (object3d, value) {
-      for (var i = 0, l = object3d.children.length; i < l; i++) {
-        var obj = object3d.children[i];
+      for (let i = 0, l = object3d.children.length; i < l; i++) {
+        let obj = object3d.children[i];
         if (obj && obj['name'] === value) {
           return obj;
         }
@@ -367,9 +367,9 @@ module.exports.Component = registerComponent('windows-motion-controls', {
   },
 
   calculateRayOriginFromMesh: (function () {
-    var quaternion = new THREE.Quaternion();
+    let quaternion = new THREE.Quaternion();
     return function (rootNode) {
-      var mesh;
+      let mesh;
 
       // Calculate the pointer pose (used for rays), by applying the world transform of th POINTER_POSE node
       // in the glTF (assumes that root node is at world origin)
@@ -380,7 +380,7 @@ module.exports.Component = registerComponent('windows-motion-controls', {
       // Try to read Pointing pose from the source model
       mesh = rootNode.getObjectByName(this.mapping.pointingPoseMeshName);
       if (mesh) {
-        var parent = rootNode.parent;
+        let parent = rootNode.parent;
 
         // We need to read pose transforms accumulated from the root of the glTF, not the scene.
         if (parent) {
@@ -407,31 +407,31 @@ module.exports.Component = registerComponent('windows-motion-controls', {
   })(),
 
   lerpAxisTransform: (function () {
-    var quaternion = new THREE.Quaternion();
+    let quaternion = new THREE.Quaternion();
     return function (axis, axisValue) {
-      var axisMeshInfo = this.loadedMeshInfo.axisMeshes[axis];
+      let axisMeshInfo = this.loadedMeshInfo.axisMeshes[axis];
       if (!axisMeshInfo) return;
 
-      var min = axisMeshInfo.min;
-      var max = axisMeshInfo.max;
-      var target = axisMeshInfo.value;
+      let min = axisMeshInfo.min;
+      let max = axisMeshInfo.max;
+      let target = axisMeshInfo.value;
 
       // Convert from gamepad value range (-1 to +1) to lerp range (0 to 1)
-      var lerpValue = axisValue * 0.5 + 0.5;
+      let lerpValue = axisValue * 0.5 + 0.5;
       target.setRotationFromQuaternion(quaternion.copy(min.quaternion).slerp(max.quaternion, lerpValue));
       target.position.lerpVectors(min.position, max.position, lerpValue);
     };
   })(),
 
   lerpButtonTransform: (function () {
-    var quaternion = new THREE.Quaternion();
+    let quaternion = new THREE.Quaternion();
     return function (buttonName, buttonValue) {
-      var buttonMeshInfo = this.loadedMeshInfo.buttonMeshes[buttonName];
+      let buttonMeshInfo = this.loadedMeshInfo.buttonMeshes[buttonName];
       if (!buttonMeshInfo) return;
 
-      var min = buttonMeshInfo.unpressed;
-      var max = buttonMeshInfo.pressed;
-      var target = buttonMeshInfo.value;
+      let min = buttonMeshInfo.unpressed;
+      let max = buttonMeshInfo.pressed;
+      let target = buttonMeshInfo.value;
 
       target.setRotationFromQuaternion(quaternion.copy(min.quaternion).slerp(max.quaternion, buttonValue));
       target.position.lerpVectors(min.position, max.position, buttonValue);
@@ -447,7 +447,7 @@ module.exports.Component = registerComponent('windows-motion-controls', {
   },
 
   onButtonChanged: function (evt) {
-    var buttonName = this.mapping.buttons[evt.detail.id];
+    let buttonName = this.mapping.buttons[evt.detail.id];
 
     if (buttonName) {
       // Update the button mesh transform
@@ -461,11 +461,11 @@ module.exports.Component = registerComponent('windows-motion-controls', {
   },
 
   onAxisMoved: function (evt) {
-    var numAxes = this.mapping.axisMeshNames.length;
+    let numAxes = this.mapping.axisMeshNames.length;
 
     // Only attempt to update meshes if we have valid data.
     if (this.loadedMeshInfo && this.loadedMeshInfo.axisMeshes) {
-      for (var axis = 0; axis < numAxes; axis++) {
+      for (let axis = 0; axis < numAxes; axis++) {
         // Update the button mesh transform
         this.lerpAxisTransform(axis, evt.detail.axis[axis] || 0.0);
       }
@@ -475,7 +475,7 @@ module.exports.Component = registerComponent('windows-motion-controls', {
   },
 
   setModelVisibility: function (visible) {
-    var model = this.el.getObject3D('mesh');
+    let model = this.el.getObject3D('mesh');
     visible = visible !== undefined ? visible : this.modelVisible;
     this.modelVisible = visible;
     if (!model) { return; }

@@ -6,8 +6,8 @@
 window.debug = true;
 
 navigator.getVRDisplays = function () {
-  var resolvePromise = Promise.resolve();
-  var mockVRDisplay = {
+  let resolvePromise = Promise.resolve();
+  let mockVRDisplay = {
     cancelAnimationFrame: function (h) { return window.cancelAnimationFrame(1); },
     capabilities: {},
     exitPresent: resolvePromise,
@@ -20,7 +20,7 @@ navigator.getVRDisplays = function () {
 };
 
 require('index');
-var AScene = require('core/scene/a-scene').AScene;
+let AScene = require('core/scene/a-scene').AScene;
 
 setup(function () {
   this.sinon = sinon.sandbox.create();
@@ -47,9 +47,9 @@ setup(function () {
 
 teardown(function (done) {
   // Clean up any attached elements.
-  var attachedEls = ['canvas', 'a-assets', 'a-scene'];
-  var els = document.querySelectorAll(attachedEls.join(','));
-  for (var i = 0; i < els.length; i++) {
+  let attachedEls = ['canvas', 'a-assets', 'a-scene'];
+  let els = document.querySelectorAll(attachedEls.join(','));
+  for (let i = 0; i < els.length; i++) {
     els[i].parentNode.removeChild(els[i]);
   }
   this.sinon.restore();

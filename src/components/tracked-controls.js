@@ -1,4 +1,4 @@
-var registerComponent = require('../core/component').registerComponent;
+let registerComponent = require('../core/component').registerComponent;
 
 /**
  * Tracked controls.
@@ -26,8 +26,8 @@ module.exports.Component = registerComponent('tracked-controls', {
   },
 
   update: function () {
-    var data = this.data;
-    var el = this.el;
+    let data = this.data;
+    let el = this.el;
     if (el.sceneEl.hasWebXR) {
       el.setAttribute('tracked-controls-webxr', {
         id: data.id,

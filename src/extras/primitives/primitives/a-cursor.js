@@ -1,6 +1,6 @@
-var getMeshMixin = require('../getMeshMixin');
-var registerPrimitive = require('../primitives').registerPrimitive;
-var utils = require('../../../utils/');
+let getMeshMixin = require('../getMeshMixin');
+let registerPrimitive = require('../primitives').registerPrimitive;
+let utils = require('../../../utils/');
 
 registerPrimitive('a-cursor', utils.extendDeep({}, getMeshMixin(), {
   defaultComponents: {

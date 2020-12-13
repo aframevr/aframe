@@ -1,26 +1,26 @@
 /* global MutationObserver */
 
-var registerComponent = require('../core/component').registerComponent;
-var THREE = require('../lib/three');
-var utils = require('../utils/');
+let registerComponent = require('../core/component').registerComponent;
+let THREE = require('../lib/three');
+let utils = require('../utils/');
 
-var warn = utils.debug('components:raycaster:warn');
+let warn = utils.debug('components:raycaster:warn');
 
 // Defines selectors that should be 'safe' for the MutationObserver used to
 // refresh the whitelist. Matches classnames, IDs, and presence of attributes.
 // Selectors for the value of an attribute, like [position=0 2 0], cannot be
 // reliably detected and are therefore disallowed.
-var OBSERVER_SELECTOR_RE = /^[\w\s-.,[\]#]*$/;
+let OBSERVER_SELECTOR_RE = /^[\w\s-.,[\]#]*$/;
 
 // Configuration for the MutationObserver used to refresh the whitelist.
 // Listens for addition/removal of elements and attributes within the scene.
-var OBSERVER_CONFIG = {
+let OBSERVER_CONFIG = {
   childList: true,
   attributes: true,
   subtree: true
 };
 
-var EVENTS = {
+let EVENTS = {
   INTERSECT: 'raycaster-intersected',
   INTERSECTION: 'raycaster-intersection',
   INTERSECT_CLEAR: 'raycaster-intersected-cleared',
@@ -89,9 +89,9 @@ module.exports.Component = registerComponent('raycaster', {
    * Create or update raycaster object.
    */
   update: function (oldData) {
-    var data = this.data;
-    var el = this.el;
-    var raycaster = this.raycaster;
+    let data = this.data;
+    let el = this.el;
+    let raycaster = this.raycaster;
 
     // Set raycaster properties.
     raycaster.far = data.far;
@@ -172,8 +172,8 @@ module.exports.Component = registerComponent('raycaster', {
    * Update list of objects to test for intersection.
    */
   refreshObjects: function () {
-    var data = this.data;
-    var els;
+    let data = this.data;
+    let els;
 
     // If objects not defined, intersect with everything.
     els = data.objects
@@ -187,8 +187,8 @@ module.exports.Component = registerComponent('raycaster', {
    * Check for intersections and cleared intersections on an interval.
    */
   tock: function (time) {
-    var data = this.data;
-    var prevCheckTime = this.prevCheckTime;
+    let data = this.data;
+    let prevCheckTime = this.prevCheckTime;
 
     if (!data.enabled) { return; }
 
@@ -204,17 +204,17 @@ module.exports.Component = registerComponent('raycaster', {
    * Raycast for intersections and emit events for current and cleared intersections.
    */
   checkIntersections: function () {
-    var clearedIntersectedEls = this.clearedIntersectedEls;
-    var el = this.el;
-    var data = this.data;
-    var i;
-    var intersectedEls = this.intersectedEls;
-    var intersection;
-    var intersections = this.intersections;
-    var newIntersectedEls = this.newIntersectedEls;
-    var newIntersections = this.newIntersections;
-    var prevIntersectedEls = this.prevIntersectedEls;
-    var rawIntersections = this.rawIntersections;
+    let clearedIntersectedEls = this.clearedIntersectedEls;
+    let el = this.el;
+    let data = this.data;
+    let i;
+    let intersectedEls = this.intersectedEls;
+    let intersection;
+    let intersections = this.intersections;
+    let newIntersectedEls = this.newIntersectedEls;
+    let newIntersections = this.newIntersections;
+    let prevIntersectedEls = this.prevIntersectedEls;
+    let rawIntersections = this.rawIntersections;
 
     // Refresh the object whitelist if needed.
     if (this.dirty) { this.refreshObjects(); }
@@ -281,9 +281,9 @@ module.exports.Component = registerComponent('raycaster', {
   },
 
   updateLine: function () {
-    var el = this.el;
-    var intersections = this.intersections;
-    var lineLength;
+    let el = this.el;
+    let intersections = this.intersections;
+    let lineLength;
 
     if (intersections.length) {
       if (intersections[0].object.el === el && intersections[1]) {
@@ -301,8 +301,8 @@ module.exports.Component = registerComponent('raycaster', {
    * @return {Object}
    */
   getIntersection: function (el) {
-    var i;
-    var intersection;
+    let i;
+    let intersection;
     for (i = 0; i < this.intersections.length; i++) {
       intersection = this.intersections[i];
       if (intersection.object.el === el) { return intersection; }
@@ -315,13 +315,13 @@ module.exports.Component = registerComponent('raycaster', {
    * direction offsets.
    */
   updateOriginDirection: (function () {
-    var direction = new THREE.Vector3();
-    var originVec3 = new THREE.Vector3();
+    let direction = new THREE.Vector3();
+    let originVec3 = new THREE.Vector3();
 
     // Closure to make quaternion/vector3 objects private.
     return function updateOriginDirection () {
-      var el = this.el;
-      var data = this.data;
+      let el = this.el;
+      let data = this.data;
 
       if (data.useWorldCoordinates) {
         this.raycaster.set(data.origin, data.direction);
@@ -360,9 +360,9 @@ module.exports.Component = registerComponent('raycaster', {
    *   point. If not provided, length will default to the max length, `raycaster.far`.
    */
   drawLine: function (length) {
-    var data = this.data;
-    var el = this.el;
-    var endVec3;
+    let data = this.data;
+    let el = this.el;
+    let endVec3;
 
     // Switch each time vector so line update triggered and to avoid unnecessary vector clone.
     endVec3 = this.lineData.end === this.lineEndVec3
@@ -395,9 +395,9 @@ module.exports.Component = registerComponent('raycaster', {
    * @return {Array<THREE.Object3D>}
    */
   flattenObject3DMaps: function (els) {
-    var key;
-    var i;
-    var objects = this.objects;
+    let key;
+    let i;
+    let objects = this.objects;
 
     // Push meshes and other attachments onto list of objects to intersect.
     objects.length = 0;
@@ -413,7 +413,7 @@ module.exports.Component = registerComponent('raycaster', {
   },
 
   clearAllIntersections: function () {
-    var i;
+    let i;
     for (i = 0; i < this.intersectedEls.length; i++) {
       this.intersectedEls[i].emit(EVENTS.INTERSECT_CLEAR,
                                   this.intersectedClearedDetail);
@@ -429,7 +429,7 @@ module.exports.Component = registerComponent('raycaster', {
  * Copy contents of one array to another without allocating new array.
  */
 function copyArray (a, b) {
-  var i;
+  let i;
   a.length = b.length;
   for (i = 0; i < b.length; i++) {
     a[i] = b[i];

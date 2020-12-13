@@ -1,18 +1,18 @@
 /* global THREE */
-var debug = require('./debug');
-var extend = require('object-assign');
+let debug = require('./debug');
+let extend = require('object-assign');
 
-var warn = debug('utils:coordinates:warn');
+let warn = debug('utils:coordinates:warn');
 
 // Order of coordinates parsed by coordinates.parse.
-var COORDINATE_KEYS = ['x', 'y', 'z', 'w'];
+let COORDINATE_KEYS = ['x', 'y', 'z', 'w'];
 
 // Coordinate string regex. Handles negative, positive, and decimals.
-var regex = /^\s*((-?\d*\.{0,1}\d+(e-?\d+)?)\s+){2,3}(-?\d*\.{0,1}\d+(e-?\d+)?)\s*$/;
+let regex = /^\s*((-?\d*\.{0,1}\d+(e-?\d+)?)\s+){2,3}(-?\d*\.{0,1}\d+(e-?\d+)?)\s*$/;
 module.exports.regex = regex;
 
-var OBJECT = 'object';
-var whitespaceRegex = /\s+/g;
+let OBJECT = 'object';
+let whitespaceRegex = /\s+/g;
 
 /**
  * Parses coordinates from an "x y z" string.
@@ -23,15 +23,15 @@ var whitespaceRegex = /\s+/g;
  * @returns {object} An object with keys [x, y, z].
  */
 function parse (value, defaultVec) {
-  var coordinate;
-  var defaultVal;
-  var key;
-  var i;
-  var vec;
-  var x;
-  var y;
-  var z;
-  var w;
+  let coordinate;
+  let defaultVal;
+  let key;
+  let i;
+  let vec;
+  let x;
+  let y;
+  let z;
+  let w;
 
   if (value && value instanceof Object) {
     x = value.x === undefined ? defaultVec && defaultVec.x : value.x;
@@ -73,7 +73,7 @@ module.exports.parse = parse;
  * @returns {string} An "x y z" string.
  */
 function stringify (data) {
-  var str;
+  let str;
   if (typeof data !== OBJECT) { return data; }
   str = data.x + ' ' + data.y;
   if (data.z != null) { str += ' ' + data.z; }

@@ -7,15 +7,15 @@ AFRAME.registerComponent('info-message', {
     height: {default: 320}
   },
   init: function () {
-    var sceneEl = this.el.sceneEl;
-    var messageEl = this.messageEl = document.createElement('div');
-    var startOpened = this.data.startOpened;
+    let sceneEl = this.el.sceneEl;
+    let messageEl = this.messageEl = document.createElement('div');
+    let startOpened = this.data.startOpened;
     this.toggleInfoMessage = this.toggleInfoMessage.bind(this);
 
     messageEl.classList.add('a-info-message');
     messageEl.setAttribute('aframe-injected', '');
 
-    var closeButtonEl = this.closeButtonEl = document.createElement('button');
+    let closeButtonEl = this.closeButtonEl = document.createElement('button');
     closeButtonEl.innerHTML = 'X';
     closeButtonEl.classList.add('a-close-button-info');
     closeButtonEl.onclick = this.toggleInfoMessage;
@@ -31,13 +31,13 @@ AFRAME.registerComponent('info-message', {
   },
 
   update: function () {
-    var messageEl = this.messageEl;
+    let messageEl = this.messageEl;
     messageEl.innerHTML = this.data.htmlSrc.data;
     messageEl.appendChild(this.closeButtonEl);
   },
 
   addStyles: function () {
-    var css =
+    let css =
       '.a-info-message{border-radius: 10px; position: absolute; width: ' + this.data.width + 'px;' +
       'height: ' + this.data.height + 'px; background-color: white; border: 3px solid rgba(0,0,0,0.65);' +
       'bottom: 22px; left: 22px; color: rgb(51, 51, 51); padding: 20px 15px 0 15px;' +
@@ -65,7 +65,7 @@ AFRAME.registerComponent('info-message', {
       '.a-info-message-button {background: rgba(0, 0, 0, 0.35) ' + this.infoMessageButtonDataURI + ' 50% 50% no-repeat;}' +
       '.a-info-message-button {background-size: 92% 90%; border: 0; bottom: 0; cursor: pointer; min-width: 78px; min-height: 34px; padding-right: 0; padding-top: 0; position: absolute; right: 0; transition: background-color .05s ease; -webkit-transition: background-color .05s ease; z-index: 9999; border-radius: 8px; touch-action: manipulation;}' +
       '.a-info-message-button:active, .a-info-message-button:hover {background-color: #ef2d5e;}';
-    var style = document.createElement('style');
+    let style = document.createElement('style');
 
     if (style.styleSheet) {
       style.styleSheet.cssText = css;
@@ -77,7 +77,7 @@ AFRAME.registerComponent('info-message', {
   },
 
   toggleInfoMessage: function () {
-    var display = this.messageEl.style.display;
+    let display = this.messageEl.style.display;
     this.infoButton.style.display = display;
     display = display === 'none' ? '' : 'none';
     this.messageEl.style.display = display;
@@ -89,8 +89,8 @@ AFRAME.registerComponent('info-message', {
   },
 
   createInfoButton: function (onClick) {
-    var infoButton;
-    var wrapper;
+    let infoButton;
+    let wrapper;
 
     // Create elements.
     wrapper = document.createElement('div');

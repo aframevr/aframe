@@ -1,19 +1,19 @@
 /* global AFRAME, assert, process, suite, teardown, test, setup, sinon, HTMLElement, HTMLHeadElement */
-var Component = require('core/component');
-var components = require('index').components;
+let Component = require('core/component');
+let components = require('index').components;
 
-var helpers = require('../helpers');
-var registerComponent = require('index').registerComponent;
+let helpers = require('../helpers');
+let registerComponent = require('index').registerComponent;
 
-var CloneComponent = {
+let CloneComponent = {
   init: function () {
-    var object3D = this.el.object3D;
-    var clone = object3D.clone();
+    let object3D = this.el.object3D;
+    let clone = object3D.clone();
     clone.uuid = 'Bubble Fett';
     object3D.add(clone);
   }
 };
-var entityFactory = helpers.entityFactory;
+let entityFactory = helpers.entityFactory;
 
 suite('Component', function () {
   suite('standard components', function () {
@@ -50,9 +50,9 @@ suite('Component', function () {
       registerComponent('dummy', {
         schema: {default: 'blue'}
       });
-      var el = document.createElement('a-entity');
+      let el = document.createElement('a-entity');
       el.setAttribute('dummy', '');
-      var data = el.components.dummy.buildData(undefined, null);
+      let data = el.components.dummy.buildData(undefined, null);
       assert.equal(data, 'blue');
     });
 
@@ -64,24 +64,24 @@ suite('Component', function () {
           string: {default: ''}
         }
       });
-      var el = document.createElement('a-entity');
+      let el = document.createElement('a-entity');
       el.setAttribute('dummy', '');
-      var data = el.components.dummy.buildData(undefined, null);
+      let data = el.components.dummy.buildData(undefined, null);
       assert.shallowDeepEqual(data.list, [1, 2, 3, 4]);
       assert.equal(data.none, null);
       assert.equal(data.string, '');
     });
 
     test('uses mixin values', function () {
-      var data;
+      let data;
       registerComponent('dummy', {
         schema: {
           color: {default: 'red'},
           size: {default: 5}
         }
       });
-      var el = document.createElement('a-entity');
-      var mixinEl = document.createElement('a-mixin');
+      let el = document.createElement('a-entity');
+      let mixinEl = document.createElement('a-mixin');
       mixinEl.setAttribute('dummy', 'color: blue; size: 10');
       el.mixinEls = [mixinEl];
       el.setAttribute('dummy', '');
@@ -91,14 +91,14 @@ suite('Component', function () {
     });
 
     test('uses mixin values for single-property schema', function () {
-      var data;
+      let data;
       registerComponent('dummy', {
         schema: {
           default: 'red'
         }
       });
-      var el = document.createElement('a-entity');
-      var mixinEl = document.createElement('a-mixin');
+      let el = document.createElement('a-entity');
+      let mixinEl = document.createElement('a-mixin');
       mixinEl.setAttribute('dummy', 'blue');
       el.mixinEls = [mixinEl];
       el.setAttribute('dummy', '');
@@ -107,15 +107,15 @@ suite('Component', function () {
     });
 
     test('uses defined values', function () {
-      var data;
+      let data;
       registerComponent('dummy', {
         schema: {
           color: {default: 'red'},
           size: {default: 5}
         }
       });
-      var el = document.createElement('a-entity');
-      var mixinEl = document.createElement('a-mixin');
+      let el = document.createElement('a-entity');
+      let mixinEl = document.createElement('a-mixin');
 
       mixinEl.setAttribute('dummy', 'color: blue; size: 10');
       el.mixinEls = [mixinEl];
@@ -126,12 +126,12 @@ suite('Component', function () {
     });
 
     test('uses defined values for single-property schema', function () {
-      var data;
+      let data;
       registerComponent('dummy', {
         schema: {default: 'red'}
       });
-      var el = document.createElement('a-entity');
-      var mixinEl = document.createElement('a-mixin');
+      let el = document.createElement('a-entity');
+      let mixinEl = document.createElement('a-mixin');
       mixinEl.setAttribute('dummy', 'blue');
       el.mixinEls = [mixinEl];
       el.setAttribute('dummy', '');
@@ -140,20 +140,20 @@ suite('Component', function () {
     });
 
     test('returns default for single-prop schema when attr is empty string', function () {
-      var data;
+      let data;
       registerComponent('dummy', {
         schema: {default: 'red'}
       });
-      var el = document.createElement('a-entity');
+      let el = document.createElement('a-entity');
       el.setAttribute('dummy', '');
       data = el.components.dummy.buildData('red');
       assert.equal(data, 'red');
     });
 
     test('multiple vec3 properties do not share same default value object', function (done) {
-      var data;
-      var el = entityFactory();
-      var TestComponent = registerComponent('dummy', {
+      let data;
+      let el = entityFactory();
+      let TestComponent = registerComponent('dummy', {
         schema: {
           direction: {type: 'vec3'},
           position: {type: 'vec3'}
@@ -172,14 +172,14 @@ suite('Component', function () {
     });
 
     test('boolean properties are preserved when updating the component data', function () {
-      var data;
+      let data;
       registerComponent('dummy', {
         schema: {
           depthTest: {default: true},
           color: {default: 'red'}
         }
       });
-      var el = document.createElement('a-entity');
+      let el = document.createElement('a-entity');
       el.setAttribute('dummy', {color: 'blue', depthTest: false});
       data = el.components.dummy.buildData({color: 'red'});
       assert.equal(data.depthTest, false);
@@ -187,7 +187,7 @@ suite('Component', function () {
     });
 
     test('returns data for single-prop if default is null', function () {
-      var el = document.createElement('a-entity');
+      let el = document.createElement('a-entity');
       registerComponent('test', {
         schema: {default: null}
       });
@@ -198,7 +198,7 @@ suite('Component', function () {
     });
 
     test('returns data for multi-prop if default is null with previousData', function () {
-      var el = document.createElement('a-entity');
+      let el = document.createElement('a-entity');
       registerComponent('test', {
         schema: {
           foo: {default: null}
@@ -212,9 +212,9 @@ suite('Component', function () {
     });
 
     test('clones array property type', function () {
-      var array = ['a'];
-      var data;
-      var el;
+      let array = ['a'];
+      let data;
+      let el;
       registerComponent('test', {schema: {default: array}});
       el = document.createElement('a-entity');
       el.setAttribute('test', '');
@@ -224,8 +224,8 @@ suite('Component', function () {
     });
 
     test('does not override set data with mixin', function (done) {
-      var el;
-      var mixinEl;
+      let el;
+      let mixinEl;
 
       el = helpers.entityFactory();
 
@@ -283,7 +283,7 @@ suite('Component', function () {
   });
 
   suite('updateProperties', function () {
-    var el;
+    let el;
 
     setup(function (done) {
       helpers.elFactory().then(_el => {
@@ -347,7 +347,7 @@ suite('Component', function () {
     });
 
     test('does not update for multi-prop if not changed', function () {
-      var spy = this.sinon.spy();
+      let spy = this.sinon.spy();
 
       AFRAME.registerComponent('test', {
         schema: {
@@ -367,8 +367,8 @@ suite('Component', function () {
     });
 
     test('does not update for multi-prop if not changed using same object', function () {
-      var data = {foo: 'foo', bar: 'bar'};
-      var spy = this.sinon.spy();
+      let data = {foo: 'foo', bar: 'bar'};
+      let spy = this.sinon.spy();
 
       AFRAME.registerComponent('test', {
         schema: {
@@ -482,8 +482,8 @@ suite('Component', function () {
     });
 
     test('does not clone props from attrValue into data that are not plain objects', function () {
-      var attrValue;
-      var data;
+      let attrValue;
+      let data;
 
       registerComponent('dummy', {
         schema: {
@@ -546,7 +546,7 @@ suite('Component', function () {
   });
 
   suite('resetProperty', function () {
-    var el;
+    let el;
 
     setup(function (done) {
       el = entityFactory();
@@ -577,7 +577,7 @@ suite('Component', function () {
   });
 
   suite('third-party components', function () {
-    var el;
+    let el;
     setup(function () {
       el = entityFactory();
       delete components.clone;
@@ -629,24 +629,24 @@ suite('Component', function () {
     });
 
     test('parses single value component', function () {
-      var TestComponent = registerComponent('dummy', {
+      let TestComponent = registerComponent('dummy', {
         schema: {default: '0 0 1', type: 'vec3'}
       });
-      var el = document.createElement('a-entity');
-      var component = new TestComponent(el);
-      var componentObj = component.parse('1 2 3');
+      let el = document.createElement('a-entity');
+      let component = new TestComponent(el);
+      let componentObj = component.parse('1 2 3');
       assert.deepEqual(componentObj, {x: 1, y: 2, z: 3});
     });
 
     test('parses component properties vec3', function () {
-      var TestComponent = registerComponent('dummy', {
+      let TestComponent = registerComponent('dummy', {
         schema: {
           position: {type: 'vec3', default: '0 0 1'}
         }
       });
-      var el = document.createElement('a-entity');
-      var component = new TestComponent(el);
-      var componentObj = component.parse({position: '0 1 0'});
+      let el = document.createElement('a-entity');
+      let component = new TestComponent(el);
+      let componentObj = component.parse({position: '0 1 0'});
       assert.deepEqual(componentObj.position, {x: 0, y: 1, z: 0});
     });
   });
@@ -657,37 +657,37 @@ suite('Component', function () {
     });
 
     test('parses single value component', function () {
-      var TestComponent = registerComponent('dummy', {
+      let TestComponent = registerComponent('dummy', {
         schema: {default: '0 0 1', type: 'vec3'}
       });
-      var el = document.createElement('a-entity');
-      var component = new TestComponent(el);
-      var componentObj = component.parseAttrValueForCache('1 2 3');
+      let el = document.createElement('a-entity');
+      let component = new TestComponent(el);
+      let componentObj = component.parseAttrValueForCache('1 2 3');
       assert.deepEqual(componentObj, {x: 1, y: 2, z: 3});
     });
 
     test('parses component using the style parser for a complex schema', function () {
-      var TestComponent = registerComponent('dummy', {
+      let TestComponent = registerComponent('dummy', {
         schema: {
           position: {type: 'vec3', default: '0 0 1'},
           color: {default: 'red'}
         }
       });
-      var el = document.createElement('a-entity');
-      var component = new TestComponent(el);
-      var componentObj = component.parseAttrValueForCache({position: '0 1 0', color: 'red'});
+      let el = document.createElement('a-entity');
+      let component = new TestComponent(el);
+      let componentObj = component.parseAttrValueForCache({position: '0 1 0', color: 'red'});
       assert.deepEqual(componentObj, {position: '0 1 0', color: 'red'});
     });
 
     test('does not parse properties that parse to another string', function () {
-      var TestComponent = registerComponent('dummy', {
+      let TestComponent = registerComponent('dummy', {
         schema: {
           url: {type: 'src', default: ''}
         }
       });
-      var el = document.createElement('a-entity');
-      var component = new TestComponent(el);
-      var componentObj = component.parseAttrValueForCache({url: 'url(www.mozilla.com)'});
+      let el = document.createElement('a-entity');
+      let component = new TestComponent(el);
+      let componentObj = component.parseAttrValueForCache({url: 'url(www.mozilla.com)'});
       assert.equal(componentObj.url, 'url(www.mozilla.com)');
     });
   });
@@ -698,25 +698,25 @@ suite('Component', function () {
     });
 
     test('stringifies single value component', function () {
-      var TestComponent = registerComponent('dummy', {
+      let TestComponent = registerComponent('dummy', {
         schema: {default: '0 0 1', type: 'vec3'}
       });
-      var el = document.createElement('a-entity');
-      var component = new TestComponent(el);
-      var componentString = component.stringify({x: 1, y: 2, z: 3});
+      let el = document.createElement('a-entity');
+      let component = new TestComponent(el);
+      let componentString = component.stringify({x: 1, y: 2, z: 3});
       assert.deepEqual(componentString, '1 2 3');
     });
 
     test('stringifies component property vec3', function () {
-      var TestComponent = registerComponent('dummy', {
+      let TestComponent = registerComponent('dummy', {
         schema: {
           position: {type: 'vec3', default: '0 0 1'}
         }
       });
-      var el = document.createElement('a-entity');
-      var component = new TestComponent(el);
-      var componentObj = {position: {x: 1, y: 2, z: 3}};
-      var componentString = component.stringify(componentObj);
+      let el = document.createElement('a-entity');
+      let component = new TestComponent(el);
+      let componentObj = {position: {x: 1, y: 2, z: 3}};
+      let componentString = component.stringify(componentObj);
       assert.equal(componentString, 'position: 1 2 3');
     });
   });
@@ -727,11 +727,11 @@ suite('Component', function () {
     });
 
     test('extends the schema', function () {
-      var TestComponent = registerComponent('dummy', {
+      let TestComponent = registerComponent('dummy', {
         schema: {color: {default: 'red'}}
       });
-      var el = document.createElement('a-entity');
-      var component = new TestComponent(el);
+      let el = document.createElement('a-entity');
+      let component = new TestComponent(el);
       component.extendSchema({size: {default: 5}});
       assert.ok(component.schema.size);
       assert.ok(component.schema.color);
@@ -740,20 +740,20 @@ suite('Component', function () {
 
   suite('updateProperties', function () {
     setup(function (done) {
-      var el = this.el = entityFactory();
+      let el = this.el = entityFactory();
       components.dummy = undefined;
       if (el.hasLoaded) { done(); }
       el.addEventListener('loaded', function () { done(); });
     });
 
     test('updates the schema of a component', function () {
-      var TestComponent = registerComponent('dummy', {
+      let TestComponent = registerComponent('dummy', {
         schema: {color: {default: 'red'}},
         updateSchema: function (data) {
           this.extendSchema({energy: {default: 100}});
         }
       });
-      var component = new TestComponent(this.el);
+      let component = new TestComponent(this.el);
       component.updateProperties(null);
       assert.equal(component.schema.color.default, 'red');
       assert.equal(component.schema.energy.default, 100);
@@ -761,19 +761,19 @@ suite('Component', function () {
     });
 
     test('updates the properties with the new value', function () {
-      var TestComponent = registerComponent('dummy', {
+      let TestComponent = registerComponent('dummy', {
         schema: {color: {default: 'red'}}
       });
-      var component = new TestComponent(this.el);
+      let component = new TestComponent(this.el);
       component.updateProperties(null);
       assert.equal(component.data.color, 'red');
     });
 
     test('updates the properties with a null value', function () {
-      var TestComponent = registerComponent('dummy', {
+      let TestComponent = registerComponent('dummy', {
         schema: {color: {default: 'red'}}
       });
-      var component = new TestComponent(this.el);
+      let component = new TestComponent(this.el);
       component.updateProperties({color: 'blue'});
       assert.equal(component.data.color, 'blue');
     });
@@ -782,14 +782,14 @@ suite('Component', function () {
   suite('init', function () {
     setup(function (done) {
       components.dummy = undefined;
-      var el = this.el = entityFactory();
+      let el = this.el = entityFactory();
       if (el.hasLoaded) { done(); }
       el.addEventListener('loaded', function () { done(); });
     });
 
     test('init is called once if the init routine sets the component', function () {
-      var initCanaryStub = sinon.stub();
-      var el = this.el;
+      let initCanaryStub = sinon.stub();
+      let el = this.el;
       registerComponent('dummy', {
         schema: {color: {default: 'red'}},
         init: function () {
@@ -807,17 +807,17 @@ suite('Component', function () {
   suite('update', function () {
     setup(function (done) {
       components.dummy = undefined;
-      var el = this.el = entityFactory();
+      let el = this.el = entityFactory();
       if (el.hasLoaded) { done(); }
       el.addEventListener('loaded', function () { done(); });
     });
 
     test('not called if component data does not change', function () {
-      var updateStub = sinon.stub();
-      var TestComponent = registerComponent('dummy', {
+      let updateStub = sinon.stub();
+      let TestComponent = registerComponent('dummy', {
         schema: {color: {default: 'red'}}
       });
-      var component = new TestComponent(this.el);
+      let component = new TestComponent(this.el);
       component.update = updateStub;
       component.updateProperties({color: 'blue'});
       component.updateProperties({color: 'blue'});
@@ -825,11 +825,11 @@ suite('Component', function () {
     });
 
     test('supports array properties', function () {
-      var updateStub = sinon.stub();
-      var TestComponent = registerComponent('dummy', {
+      let updateStub = sinon.stub();
+      let TestComponent = registerComponent('dummy', {
         schema: {list: {default: ['a']}}
       });
-      var component = new TestComponent(this.el);
+      let component = new TestComponent(this.el);
       component.update = updateStub;
       component.updateProperties({list: ['b']});
       component.updateProperties({list: ['b']});
@@ -837,8 +837,8 @@ suite('Component', function () {
     });
 
     test('emit componentchanged when update calls setAttribute', function (done) {
-      var component;
-      var TestComponent;
+      let component;
+      let TestComponent;
       TestComponent = registerComponent('dummy', {
         schema: {color: {default: 'red'}},
         update: function () { this.el.setAttribute('dummy', 'color', 'blue'); }
@@ -853,7 +853,7 @@ suite('Component', function () {
     });
 
     test('makes oldData empty object on first call when single property component with an object as default initializes', function () {
-      var updateStub = sinon.stub();
+      let updateStub = sinon.stub();
       registerComponent('dummy', {
         schema: {type: 'vec3'},
         update: updateStub
@@ -865,7 +865,7 @@ suite('Component', function () {
     });
 
     test('makes oldData empty object on first call when multiple property component initializes', function () {
-      var updateStub = sinon.stub();
+      let updateStub = sinon.stub();
       registerComponent('dummy', {
         schema: {
           color: {default: 'red'},
@@ -880,7 +880,7 @@ suite('Component', function () {
     });
 
     test('oldData is undefined on the first call when a single property component initializes', function () {
-      var updateStub = sinon.stub();
+      let updateStub = sinon.stub();
       registerComponent('dummy', {
         schema: {default: 0},
         update: updateStub
@@ -892,9 +892,9 @@ suite('Component', function () {
     });
 
     test('called when modifying component with value returned from getAttribute', function () {
-      var el = this.el;
-      var direction;
-      var updateStub = sinon.stub();
+      let el = this.el;
+      let direction;
+      let updateStub = sinon.stub();
       registerComponent('dummy', {
         schema: {type: 'vec3', default: {x: 1, y: 1, z: 1}},
         update: updateStub
@@ -916,7 +916,7 @@ suite('Component', function () {
     });
 
     test('properly passes oldData and data properly on recursive calls to setAttribute', function () {
-      var el = this.el;
+      let el = this.el;
       registerComponent('dummy', {
         schema: {
           color: {default: 'red'},
@@ -945,7 +945,7 @@ suite('Component', function () {
       registerComponent('dummy', {
         schema: {color: {default: 'red'}}
       });
-      var el = document.createElement('a-entity');
+      let el = document.createElement('a-entity');
       el.setAttribute('dummy', {color: 'blue'});
       assert.equal(HTMLElement.prototype.getAttribute.call(el, 'dummy'), '');
       el.components.dummy.flushToDOM();
@@ -953,9 +953,9 @@ suite('Component', function () {
     });
 
     test('init and update are not called for a not loaded entity', function () {
-      var updateStub = sinon.stub();
-      var initStub = sinon.stub();
-      var el = document.createElement('a-entity');
+      let updateStub = sinon.stub();
+      let initStub = sinon.stub();
+      let el = document.createElement('a-entity');
       registerComponent('dummy', {
         schema: {color: {default: 'red'}},
         init: initStub,
@@ -971,7 +971,7 @@ suite('Component', function () {
     });
 
     test('flushes false boolean', function () {
-      var el = document.createElement('a-entity');
+      let el = document.createElement('a-entity');
       registerComponent('dummy', {
         schema: {isDurrr: {default: true}}
       });
@@ -984,13 +984,13 @@ suite('Component', function () {
   suite('play', function () {
     setup(function () {
       components.dummy = undefined;
-      var playStub = this.playStub = sinon.stub();
+      let playStub = this.playStub = sinon.stub();
       registerComponent('dummy', {play: playStub});
     });
 
     test('not called if entity is not playing', function () {
-      var el = document.createElement('a-entity');
-      var dummyComponent;
+      let el = document.createElement('a-entity');
+      let dummyComponent;
       el.isPlaying = false;
       el.setAttribute('dummy', '');
       dummyComponent = el.components.dummy;
@@ -1000,7 +1000,7 @@ suite('Component', function () {
     });
 
     test('not called if component is not initialized', function () {
-      var el = document.createElement('a-entity');
+      let el = document.createElement('a-entity');
       el.isPlaying = true;
       el.setAttribute('dummy', '');
       el.components.dummy.play();
@@ -1008,8 +1008,8 @@ suite('Component', function () {
     });
 
     test('not called if component is already playing', function () {
-      var el = document.createElement('a-entity');
-      var dummyComponent;
+      let el = document.createElement('a-entity');
+      let dummyComponent;
       el.isPlaying = true;
       el.setAttribute('dummy', '');
       dummyComponent = el.components.dummy;
@@ -1023,7 +1023,7 @@ suite('Component', function () {
   suite('pause', function () {
     setup(function () {
       components.dummy = undefined;
-      var pauseStub = this.pauseStub = sinon.stub();
+      let pauseStub = this.pauseStub = sinon.stub();
       registerComponent('dummy', {
         schema: {color: {default: 'red'}},
         pause: pauseStub
@@ -1031,15 +1031,15 @@ suite('Component', function () {
     });
 
     test('not called if component is not playing', function () {
-      var el = document.createElement('a-entity');
+      let el = document.createElement('a-entity');
       el.setAttribute('dummy', '');
       el.components.dummy.pause();
       sinon.assert.notCalled(this.pauseStub);
     });
 
     test('called if component is playing', function () {
-      var el = document.createElement('a-entity');
-      var dummyComponent;
+      let el = document.createElement('a-entity');
+      let dummyComponent;
       el.setAttribute('dummy', '');
       el.isPlaying = true;
       dummyComponent = el.components.dummy;
@@ -1050,8 +1050,8 @@ suite('Component', function () {
     });
 
     test('not called if component is already paused', function () {
-      var el = document.createElement('a-entity');
-      var dummyComponent;
+      let el = document.createElement('a-entity');
+      let dummyComponent;
       el.setAttribute('dummy', '');
       dummyComponent = el.components.dummy;
       dummyComponent.isPlaying = true;
@@ -1183,11 +1183,11 @@ suite('Component', function () {
 });
 
 suite('registerComponent warnings', function () {
-  var sceneEl;
-  var script;
+  let sceneEl;
+  let script;
 
   setup(function (done) {
-    var el = entityFactory();
+    let el = entityFactory();
     setTimeout(() => {
       sceneEl = el.sceneEl;
       script = document.createElement('script');

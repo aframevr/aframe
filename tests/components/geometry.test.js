@@ -1,6 +1,6 @@
 /* global assert, process, setup, suite, test */
-var helpers = require('../helpers');
-var degToRad = require('index').THREE.Math.degToRad;
+let helpers = require('../helpers');
+let degToRad = require('index').THREE.Math.degToRad;
 
 /**
  * Most geometry tests will disable BufferGeometries in order to assert on geometry types and
@@ -23,26 +23,26 @@ suite('geometry', function () {
     });
 
     test('creates geometry', function () {
-      var mesh = el.getObject3D('mesh');
+      let mesh = el.getObject3D('mesh');
       assert.ok(mesh.geometry);
       assert.equal(mesh.geometry.type, 'BoxGeometry');
     });
 
     test('updates geometry', function () {
-      var mesh = el.getObject3D('mesh');
+      let mesh = el.getObject3D('mesh');
       el.setAttribute('geometry', 'buffer: false; primitive: box; width: 5');
       assert.equal(mesh.geometry.parameters.width, 5);
     });
 
     test('updates geometry for segment-related attribute', function () {
-      var mesh = el.getObject3D('mesh');
+      let mesh = el.getObject3D('mesh');
       el.setAttribute('geometry', 'buffer: false; primitive: sphere');
       el.setAttribute('geometry', 'buffer: false; primitive: sphere; segmentsWidth: 8');
       assert.equal(mesh.geometry.parameters.widthSegments, 8);
     });
 
     test('can change type of geometry', function () {
-      var mesh = el.getObject3D('mesh');
+      let mesh = el.getObject3D('mesh');
       el.setAttribute('geometry', 'buffer: false; primitive: sphere');
       assert.equal(mesh.geometry.type, 'SphereGeometry');
       el.setAttribute('geometry', 'buffer: false; primitive: box');
@@ -50,8 +50,8 @@ suite('geometry', function () {
     });
 
     test('disposes geometry', function () {
-      var geometry = el.getObject3D('mesh').geometry;
-      var disposeSpy = this.sinon.spy(geometry, 'dispose');
+      let geometry = el.getObject3D('mesh').geometry;
+      let disposeSpy = this.sinon.spy(geometry, 'dispose');
       assert.notOk(disposeSpy.called);
       el.setAttribute('geometry', 'primitive: sphere');
       assert.ok(disposeSpy.called);
@@ -60,14 +60,14 @@ suite('geometry', function () {
 
   suite('remove', function () {
     test('removes geometry', function () {
-      var mesh = el.getObject3D('mesh');
+      let mesh = el.getObject3D('mesh');
       el.removeAttribute('geometry');
       assert.equal(mesh.geometry.type, 'Geometry');
     });
 
     test('disposes geometry', function () {
-      var geometry = el.getObject3D('mesh').geometry;
-      var disposeSpy = this.sinon.spy(geometry, 'dispose');
+      let geometry = el.getObject3D('mesh').geometry;
+      let disposeSpy = this.sinon.spy(geometry, 'dispose');
       el.removeAttribute('geometry');
       assert.ok(disposeSpy.called);
     });
@@ -93,7 +93,7 @@ suite('standard geometries', function () {
   });
 
   test('circle', function () {
-    var geometry;
+    let geometry;
     el.setAttribute('geometry', {
       buffer: false, primitive: 'circle', radius: 5, segments: 4, thetaStart: 0, thetaLength: 350
     });
@@ -107,7 +107,7 @@ suite('standard geometries', function () {
   });
 
   test('cylinder', function () {
-    var geometry;
+    let geometry;
     el.setAttribute('geometry', {
       buffer: false,
       primitive: 'cylinder',
@@ -133,7 +133,7 @@ suite('standard geometries', function () {
   });
 
   test('cone', function () {
-    var geometry;
+    let geometry;
     el.setAttribute('geometry', {
       buffer: false,
       primitive: 'cone',
@@ -159,7 +159,7 @@ suite('standard geometries', function () {
   });
 
   test('icosahedron', function () {
-    var geometry;
+    let geometry;
     el.setAttribute('geometry', {
       buffer: false, primitive: 'icosahedron', detail: 0, radius: 5});
 
@@ -170,7 +170,7 @@ suite('standard geometries', function () {
   });
 
   test('plane', function () {
-    var geometry;
+    let geometry;
     el.setAttribute('geometry', {buffer: false, primitive: 'plane', width: 1, height: 2});
 
     geometry = el.getObject3D('mesh').geometry;
@@ -180,7 +180,7 @@ suite('standard geometries', function () {
   });
 
   test('ring', function () {
-    var geometry;
+    let geometry;
     el.setAttribute('geometry', {
       buffer: false, primitive: 'ring', radiusInner: 1, radiusOuter: 2, segmentsTheta: 3});
 
@@ -192,7 +192,7 @@ suite('standard geometries', function () {
   });
 
   test('sphere', function () {
-    var geometry;
+    let geometry;
     el.setAttribute('geometry', {
       buffer: false,
       primitive: 'sphere',
@@ -216,7 +216,7 @@ suite('standard geometries', function () {
   });
 
   test('torus', function () {
-    var geometry;
+    let geometry;
     el.setAttribute('geometry', {
       buffer: false,
       primitive: 'torus',
@@ -237,7 +237,7 @@ suite('standard geometries', function () {
   });
 
   test('torus knot', function () {
-    var geometry;
+    let geometry;
     el.setAttribute('geometry', {
       buffer: false,
       primitive: 'torusKnot',
@@ -260,7 +260,7 @@ suite('standard geometries', function () {
   });
 
   test('triangle', function () {
-    var geometry;
+    let geometry;
     el.setAttribute('geometry', {
       buffer: false,
       primitive: 'triangle',
@@ -271,7 +271,7 @@ suite('standard geometries', function () {
 
     geometry = el.getObject3D('mesh').geometry;
     assert.equal(geometry.type, 'Geometry');
-    var vertices = geometry.vertices;
+    let vertices = geometry.vertices;
     assert.equal(vertices.length, 3);
     assert.equal(vertices[0].x, 1);
     assert.equal(vertices[0].y, 2);

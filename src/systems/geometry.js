@@ -1,6 +1,6 @@
-var geometries = require('../core/geometry').geometries;
-var registerSystem = require('../core/system').registerSystem;
-var THREE = require('../lib/three');
+let geometries = require('../core/geometry').geometries;
+let registerSystem = require('../core/system').registerSystem;
+let THREE = require('../lib/three');
 
 /**
  * System for geometry component.
@@ -30,9 +30,9 @@ module.exports.System = registerSystem('geometry', {
    * @returns {Object|null} A geometry if it exists, else null.
    */
   getOrCreateGeometry: function (data) {
-    var cache = this.cache;
-    var cachedGeometry;
-    var hash;
+    let cache = this.cache;
+    let cachedGeometry;
+    let hash;
 
     // Skip all caching logic.
     if (data.skipCache) { return createGeometry(data); }
@@ -56,10 +56,10 @@ module.exports.System = registerSystem('geometry', {
    * Let system know that an entity is no longer using a geometry.
    */
   unuseGeometry: function (data) {
-    var cache = this.cache;
-    var cacheCount = this.cacheCount;
-    var geometry;
-    var hash;
+    let cache = this.cache;
+    let cacheCount = this.cacheCount;
+    let geometry;
+    let hash;
 
     if (data.skipCache) { return; }
 
@@ -96,9 +96,9 @@ module.exports.System = registerSystem('geometry', {
  * @returns {object} Geometry.
  */
 function createGeometry (data) {
-  var geometryType = data.primitive;
-  var GeometryClass = geometries[geometryType] && geometries[geometryType].Geometry;
-  var geometryInstance = new GeometryClass();
+  let geometryType = data.primitive;
+  let GeometryClass = geometries[geometryType] && geometries[geometryType].Geometry;
+  let geometryInstance = new GeometryClass();
 
   if (!GeometryClass) { throw new Error('Unknown geometry `' + geometryType + '`'); }
 
@@ -128,7 +128,7 @@ function incrementCacheCount (cacheCount, hash) {
  * @returns {object} Geometry.
  */
 function toBufferGeometry (geometry, doBuffer) {
-  var bufferGeometry;
+  let bufferGeometry;
   if (!doBuffer) { return geometry; }
 
   bufferGeometry = new THREE.BufferGeometry().fromGeometry(geometry);

@@ -1,7 +1,7 @@
 /* global Image, XMLHttpRequest */
-var debug = require('./debug');
+let debug = require('./debug');
 
-var warn = debug('utils:src-loader:warn');
+let warn = debug('utils:src-loader:warn');
 
 /**
  * Validate a texture, either as a selector or as a URL.
@@ -34,11 +34,11 @@ function validateSrc (src, isImageCb, isVideoCb) {
           must be wrapped by `url()`.
  */
 function validateCubemapSrc (src, cb) {
-  var aCubemap;
-  var cubemapSrcRegex = '';
-  var i;
-  var urls;
-  var validatedUrls = [];
+  let aCubemap;
+  let cubemapSrcRegex = '';
+  let i;
+  let urls;
+  let validatedUrls = [];
 
   for (i = 0; i < 5; i++) {
     cubemapSrcRegex += '(url\\((?:[^\\)]+)\\),\\s*)';
@@ -77,7 +77,7 @@ function validateCubemapSrc (src, cb) {
  * @return {string} The parsed src, if parseable.
  */
 function parseUrl (src) {
-  var parsedSrc = src.match(/\url\((.+)\)/);
+  let parsedSrc = src.match(/\url\((.+)\)/);
   if (!parsedSrc) { return; }
   return parsedSrc[1];
 }
@@ -89,7 +89,7 @@ function parseUrl (src) {
  * @param {function} onResult - Callback with whether `src` is an image.
  */
 function checkIsImage (src, onResult) {
-  var request;
+  let request;
 
   if (src.tagName) {
     onResult(src.tagName === 'IMG');
@@ -100,7 +100,7 @@ function checkIsImage (src, onResult) {
   // Try to send HEAD request to check if image first.
   request.open('HEAD', src);
   request.addEventListener('load', function (event) {
-    var contentType;
+    let contentType;
     if (request.status >= 200 && request.status < 300) {
       contentType = request.getResponseHeader('Content-Type');
       if (contentType == null) {
@@ -121,7 +121,7 @@ function checkIsImage (src, onResult) {
 }
 
 function checkIsImageFallback (src, onResult) {
-  var tester = new Image();
+  let tester = new Image();
   tester.addEventListener('load', onLoad);
   function onLoad () { onResult(true); }
   tester.addEventListener('error', onError);
@@ -139,7 +139,7 @@ function checkIsImageFallback (src, onResult) {
  */
 function validateAndGetQuerySelector (selector) {
   try {
-    var el = document.querySelector(selector);
+    let el = document.querySelector(selector);
     if (!el) {
       warn('No element was found matching the selector: "%s"', selector);
     }

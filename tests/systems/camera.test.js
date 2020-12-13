@@ -1,12 +1,12 @@
 /* global assert, process, setup, suite, test, sinon */
-var constants = require('constants/');
-var entityFactory = require('../helpers').entityFactory;
+let constants = require('constants/');
+let entityFactory = require('../helpers').entityFactory;
 
 suite('camera system', function () {
-  var sceneEl;
+  let sceneEl;
 
   setup(function (done) {
-    var el = this.el = entityFactory();
+    let el = this.el = entityFactory();
     if (el.hasLoaded) { done(); }
     el.addEventListener('loaded', function () {
       done();
@@ -29,10 +29,10 @@ suite('camera system', function () {
   });
 
   test('uses defined camera if defined', function (done) {
-    var assetsEl;
-    var imgEl;  // Image that will never load.
-    var cameraEl;
-    var sceneEl;
+    let assetsEl;
+    let imgEl;  // Image that will never load.
+    let cameraEl;
+    let sceneEl;
 
     // Create assets.
     assetsEl = document.createElement('a-assets');
@@ -62,8 +62,8 @@ suite('camera system', function () {
   });
 
   test('uses defined a-camera if defined', function (done) {
-    var cameraEl;
-    var sceneEl;
+    let cameraEl;
+    let sceneEl;
 
     // Create scene.
     sceneEl = document.createElement('a-scene');
@@ -82,8 +82,8 @@ suite('camera system', function () {
   });
 
   test('does not choose defined spectator camera as initial camera', function (done) {
-    var cameraEl;
-    var sceneEl;
+    let cameraEl;
+    let sceneEl;
 
     // Create scene.
     sceneEl = document.createElement('a-scene');
@@ -102,8 +102,8 @@ suite('camera system', function () {
   });
 
   test('does not choose non-active camera as initial camera', function (done) {
-    var cameraEl;
-    var sceneEl;
+    let cameraEl;
+    let sceneEl;
 
     // Create scene.
     sceneEl = document.createElement('a-scene');
@@ -123,17 +123,17 @@ suite('camera system', function () {
 
   suite('setActiveCamera', function () {
     test('sets new active camera on scene', function () {
-      var el = this.el;
+      let el = this.el;
       el.setAttribute('camera', '');
       assert.equal(el.sceneEl.camera, el.components.camera.camera);
     });
 
     test('does not get affected by mixins', function (done) {
-      var sceneEl = this.el.sceneEl;
-      var assetsEl = document.querySelector('a-assets');
-      var cameraEl = document.createElement('a-entity');
-      var mixin = document.createElement('a-mixin');
-      var cameraSystem = sceneEl.systems.camera;
+      let sceneEl = this.el.sceneEl;
+      let assetsEl = document.querySelector('a-assets');
+      let cameraEl = document.createElement('a-entity');
+      let mixin = document.createElement('a-mixin');
+      let cameraSystem = sceneEl.systems.camera;
       sinon.spy(cameraSystem, 'setActiveCamera');
 
       cameraEl.setAttribute('camera', '');
@@ -154,11 +154,11 @@ suite('camera system', function () {
     });
 
     test('does not switch active camera to a mixin', function (done) {
-      var sceneEl = this.el.sceneEl;
-      var assetsEl = document.querySelector('a-assets');
-      var cameraEl = document.createElement('a-entity');
-      var mixin = document.createElement('a-mixin');
-      var cameraSystem = sceneEl.systems.camera;
+      let sceneEl = this.el.sceneEl;
+      let assetsEl = document.querySelector('a-assets');
+      let cameraEl = document.createElement('a-entity');
+      let mixin = document.createElement('a-mixin');
+      let cameraSystem = sceneEl.systems.camera;
       sinon.spy(cameraSystem, 'setActiveCamera');
 
       cameraEl.setAttribute('camera', '');
@@ -182,9 +182,9 @@ suite('camera system', function () {
     });
 
     test('switches active camera', function (done) {
-      var sceneEl = this.el.sceneEl;
-      var camera1El = document.createElement('a-entity');
-      var camera2El = document.createElement('a-entity');
+      let sceneEl = this.el.sceneEl;
+      let camera1El = document.createElement('a-entity');
+      let camera2El = document.createElement('a-entity');
       camera1El.setAttribute('camera', 'active: false');
       sceneEl.appendChild(camera1El);
       camera2El.setAttribute('camera', 'active: true');
@@ -198,12 +198,12 @@ suite('camera system', function () {
     });
 
     test('disable inactive cameras', function (done) {
-      var sceneEl = this.el.sceneEl;
-      var cameraEl = document.createElement('a-entity');
+      let sceneEl = this.el.sceneEl;
+      let cameraEl = document.createElement('a-entity');
       cameraEl.setAttribute('camera', 'active: false');
       sceneEl.appendChild(cameraEl);
 
-      var camera2El = document.createElement('a-entity');
+      let camera2El = document.createElement('a-entity');
       camera2El.setAttribute('camera', 'active: false');
       sceneEl.appendChild(camera2El);
 
@@ -218,8 +218,8 @@ suite('camera system', function () {
     });
 
     test('removes the default camera', function (done) {
-      var cameraEl2 = document.createElement('a-entity');
-      var sceneEl = this.el.sceneEl;
+      let cameraEl2 = document.createElement('a-entity');
+      let sceneEl = this.el.sceneEl;
       cameraEl2.setAttribute('camera', 'active: true');
       process.nextTick(function () {
         sceneEl.appendChild(cameraEl2);

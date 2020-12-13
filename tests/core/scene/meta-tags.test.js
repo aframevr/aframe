@@ -1,15 +1,15 @@
 /* global assert, setup, suite, test */
-var helpers = require('../../helpers');
-var initMetaTags = require('core/scene/metaTags').inject;
-var metaTags = require('core/scene/metaTags');
-var constants = require('constants/');
+let helpers = require('../../helpers');
+let initMetaTags = require('core/scene/metaTags').inject;
+let metaTags = require('core/scene/metaTags');
+let constants = require('constants/');
 
 suite('metaTags', function () {
   setup(function (done) {
-    var el = this.el = helpers.entityFactory();
-    var i;
+    let el = this.el = helpers.entityFactory();
+    let i;
     el.addEventListener('loaded', function () {
-      var metaTagEls = document.querySelectorAll('meta');
+      let metaTagEls = document.querySelectorAll('meta');
       for (i = 0; i < metaTagEls.length; i++) {
         metaTagEls[i].parentNode.removeChild(metaTagEls[i]);
       }
@@ -18,10 +18,10 @@ suite('metaTags', function () {
   });
 
   test('sets up meta tags', function () {
-    var appleMobileWebAppCapableMetaTag;
-    var sceneEl = this.el.sceneEl;
-    var viewportMetaTag;
-    var webAppCapableMetaTag;
+    let appleMobileWebAppCapableMetaTag;
+    let sceneEl = this.el.sceneEl;
+    let viewportMetaTag;
+    let webAppCapableMetaTag;
 
     initMetaTags(sceneEl);
 
@@ -36,10 +36,10 @@ suite('metaTags', function () {
   });
 
   test('sets up meta tags for iOS', function () {
-    var appleMobileWebAppCapableMetaTag;
-    var sceneEl = this.el.sceneEl;
-    var viewportMetaTag;
-    var webAppCapableMetaTag;
+    let appleMobileWebAppCapableMetaTag;
+    let sceneEl = this.el.sceneEl;
+    let viewportMetaTag;
+    let webAppCapableMetaTag;
 
     sceneEl.isIOS = true;
     initMetaTags(sceneEl);

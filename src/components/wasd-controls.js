@@ -1,14 +1,14 @@
-var KEYCODE_TO_CODE = require('../constants').keyboardevent.KEYCODE_TO_CODE;
-var registerComponent = require('../core/component').registerComponent;
-var THREE = require('../lib/three');
-var utils = require('../utils/');
+let KEYCODE_TO_CODE = require('../constants').keyboardevent.KEYCODE_TO_CODE;
+let registerComponent = require('../core/component').registerComponent;
+let THREE = require('../lib/three');
+let utils = require('../utils/');
 
-var bind = utils.bind;
-var shouldCaptureKeyEvent = utils.shouldCaptureKeyEvent;
+let bind = utils.bind;
+let shouldCaptureKeyEvent = utils.shouldCaptureKeyEvent;
 
-var CLAMP_VELOCITY = 0.00001;
-var MAX_DELTA = 0.2;
-var KEYS = [
+let CLAMP_VELOCITY = 0.00001;
+let MAX_DELTA = 0.2;
+let KEYS = [
   'KeyW', 'KeyA', 'KeyS', 'KeyD',
   'ArrowUp', 'ArrowLeft', 'ArrowRight', 'ArrowDown'
 ];
@@ -46,9 +46,9 @@ module.exports.Component = registerComponent('wasd-controls', {
   },
 
   tick: function (time, delta) {
-    var data = this.data;
-    var el = this.el;
-    var velocity = this.velocity;
+    let data = this.data;
+    let el = this.el;
+    let velocity = this.velocity;
 
     if (!velocity[data.adAxis] && !velocity[data.wsAxis] &&
         isEmptyObject(this.keys)) { return; }
@@ -78,14 +78,14 @@ module.exports.Component = registerComponent('wasd-controls', {
   },
 
   updateVelocity: function (delta) {
-    var acceleration;
-    var adAxis;
-    var adSign;
-    var data = this.data;
-    var keys = this.keys;
-    var velocity = this.velocity;
-    var wsAxis;
-    var wsSign;
+    let acceleration;
+    let adAxis;
+    let adSign;
+    let data = this.data;
+    let keys = this.keys;
+    let velocity = this.velocity;
+    let wsAxis;
+    let wsSign;
 
     adAxis = data.adAxis;
     wsAxis = data.wsAxis;
@@ -98,7 +98,7 @@ module.exports.Component = registerComponent('wasd-controls', {
     }
 
     // https://gamedev.stackexchange.com/questions/151383/frame-rate-independant-movement-with-acceleration
-    var scaledEasing = Math.pow(1 / this.easing, delta * 60);
+    let scaledEasing = Math.pow(1 / this.easing, delta * 60);
     // Velocity Easing.
     if (velocity[adAxis] !== 0) {
       velocity[adAxis] = velocity[adAxis] * scaledEasing;
@@ -128,13 +128,13 @@ module.exports.Component = registerComponent('wasd-controls', {
   },
 
   getMovementVector: (function () {
-    var directionVector = new THREE.Vector3(0, 0, 0);
-    var rotationEuler = new THREE.Euler(0, 0, 0, 'YXZ');
+    let directionVector = new THREE.Vector3(0, 0, 0);
+    let rotationEuler = new THREE.Euler(0, 0, 0, 'YXZ');
 
     return function (delta) {
-      var rotation = this.el.getAttribute('rotation');
-      var velocity = this.velocity;
-      var xRotation;
+      let rotation = this.el.getAttribute('rotation');
+      let velocity = this.velocity;
+      let xRotation;
 
       directionVector.copy(velocity);
       directionVector.multiplyScalar(delta);
@@ -190,21 +190,21 @@ module.exports.Component = registerComponent('wasd-controls', {
   },
 
   onKeyDown: function (event) {
-    var code;
+    let code;
     if (!shouldCaptureKeyEvent(event)) { return; }
     code = event.code || KEYCODE_TO_CODE[event.keyCode];
     if (KEYS.indexOf(code) !== -1) { this.keys[code] = true; }
   },
 
   onKeyUp: function (event) {
-    var code;
+    let code;
     code = event.code || KEYCODE_TO_CODE[event.keyCode];
     delete this.keys[code];
   }
 });
 
 function isEmptyObject (keys) {
-  var key;
+  let key;
   for (key in keys) { return false; }
   return true;
 }

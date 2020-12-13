@@ -6,8 +6,8 @@ AFRAME.registerComponent('button', {
     toggable: {default: false}
   },
   init: function () {
-    var el = this.el;
-    var labelEl = this.labelEl = document.createElement('a-entity');
+    let el = this.el;
+    let labelEl = this.labelEl = document.createElement('a-entity');
 
     this.color = '#3a50c5';
     el.setAttribute('geometry', {
@@ -50,12 +50,12 @@ AFRAME.registerComponent('button', {
   },
 
   stateChanged: function () {
-    var color = this.el.is('pressed') ? 'green' : this.color;
+    let color = this.el.is('pressed') ? 'green' : this.color;
     this.el.setAttribute('material', {color: color});
   },
 
   onPressedStarted: function () {
-    var el = this.el;
+    let el = this.el;
     el.setAttribute('material', {color: 'green'});
     el.emit('click');
     if (this.data.togabble) {

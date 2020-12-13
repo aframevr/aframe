@@ -1,24 +1,24 @@
 /* global AFRAME */
-var AFRAME_INJECTED = require('../../constants').AFRAME_INJECTED;
-var pkg = require('../../../package');
-var registerComponent = require('../../core/component').registerComponent;
-var utils = require('../../utils/');
+let AFRAME_INJECTED = require('../../constants').AFRAME_INJECTED;
+let pkg = require('../../../package');
+let registerComponent = require('../../core/component').registerComponent;
+let utils = require('../../utils/');
 
 /**
  * 0.4.2 to 0.4.x
  * Will need to update this when A-Frame goes to 1.x.x.
  */
 function getFuzzyPatchVersion (version) {
-  var split = version.split('.');
+  let split = version.split('.');
   split[2] = 'x';
   return split.join('.');
 }
 
-var INSPECTOR_DEV_URL = 'https://aframe.io/aframe-inspector/dist/aframe-inspector.js';
-var INSPECTOR_RELEASE_URL = 'https://unpkg.com/aframe-inspector@' + getFuzzyPatchVersion(pkg.version) + '/dist/aframe-inspector.min.js';
-var INSPECTOR_URL = process.env.INSPECTOR_VERSION === 'dev' ? INSPECTOR_DEV_URL : INSPECTOR_RELEASE_URL;
-var LOADING_MESSAGE = 'Loading Inspector';
-var LOADING_ERROR_MESSAGE = 'Error loading Inspector';
+let INSPECTOR_DEV_URL = 'https://aframe.io/aframe-inspector/dist/aframe-inspector.js';
+let INSPECTOR_RELEASE_URL = 'https://unpkg.com/aframe-inspector@' + getFuzzyPatchVersion(pkg.version) + '/dist/aframe-inspector.min.js';
+let INSPECTOR_URL = process.env.INSPECTOR_VERSION === 'dev' ? INSPECTOR_DEV_URL : INSPECTOR_RELEASE_URL;
+let LOADING_MESSAGE = 'Loading Inspector';
+let LOADING_ERROR_MESSAGE = 'Error loading Inspector';
 
 module.exports.Component = registerComponent('inspector', {
   schema: {
@@ -35,7 +35,7 @@ module.exports.Component = registerComponent('inspector', {
   },
 
   play: function () {
-    var urlParam;
+    let urlParam;
     if (!this.firstPlay) { return; }
     urlParam = utils.getUrlParameter('inspector');
     if (urlParam !== 'false' && !!urlParam) {
@@ -45,7 +45,7 @@ module.exports.Component = registerComponent('inspector', {
   },
 
   initOverlay: function () {
-    var dotsHTML = '<span class="dots"><span>.</span><span>.</span><span>.</span></span>';
+    let dotsHTML = '<span class="dots"><span>.</span><span>.</span><span>.</span></span>';
     this.loadingMessageEl = document.createElement('div');
     this.loadingMessageEl.classList.add('a-inspector-loader');
     this.loadingMessageEl.innerHTML = LOADING_MESSAGE + dotsHTML;
@@ -59,7 +59,7 @@ module.exports.Component = registerComponent('inspector', {
    * <ctrl> + <alt> + i keyboard shortcut.
    */
   onKeydown: function (evt) {
-    var shortcutPressed = evt.keyCode === 73 && evt.ctrlKey && evt.altKey;
+    let shortcutPressed = evt.keyCode === 73 && evt.ctrlKey && evt.altKey;
     if (!shortcutPressed) { return; }
     this.openInspector();
   },
@@ -80,8 +80,8 @@ module.exports.Component = registerComponent('inspector', {
   },
 
   openInspector: function (focusEl) {
-    var self = this;
-    var script;
+    let self = this;
+    let script;
 
     // Already injected. Open.
     if (AFRAME.INSPECTOR || AFRAME.inspectorInjected) {

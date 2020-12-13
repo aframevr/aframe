@@ -1,8 +1,8 @@
 /* global ImageData, URL */
-var registerComponent = require('../../core/component').registerComponent;
-var THREE = require('../../lib/three');
+let registerComponent = require('../../core/component').registerComponent;
+let THREE = require('../../lib/three');
 
-var VERTEX_SHADER = [
+let VERTEX_SHADER = [
   'attribute vec3 position;',
   'attribute vec2 uv;',
   'uniform mat4 projectionMatrix;',
@@ -14,7 +14,7 @@ var VERTEX_SHADER = [
   '}'
 ].join('\n');
 
-var FRAGMENT_SHADER = [
+let FRAGMENT_SHADER = [
   'precision mediump float;',
   'uniform samplerCube map;',
   'varying vec2 vUv;',
@@ -51,8 +51,8 @@ module.exports.Component = registerComponent('screenshot', {
   },
 
   init: function () {
-    var el = this.el;
-    var self = this;
+    let el = this.el;
+    let self = this;
 
     if (el.renderer) {
       setup();
@@ -61,7 +61,7 @@ module.exports.Component = registerComponent('screenshot', {
     }
 
     function setup () {
-      var gl = el.renderer.getContext();
+      let gl = el.renderer.getContext();
       if (!gl) { return; }
       self.cubeMapSize = gl.getParameter(gl.MAX_CUBE_MAP_TEXTURE_SIZE);
       self.material = new THREE.RawShaderMaterial({
@@ -119,9 +119,9 @@ module.exports.Component = registerComponent('screenshot', {
    * <ctrl> + <alt> + <shift> + s = Equirectangular screenshot.
   */
   onKeyDown: function (evt) {
-    var shortcutPressed = evt.keyCode === 83 && evt.ctrlKey && evt.altKey;
+    let shortcutPressed = evt.keyCode === 83 && evt.ctrlKey && evt.altKey;
     if (!this.data || !shortcutPressed) { return; }
-    var projection = evt.shiftKey ? 'equirectangular' : 'perspective';
+    let projection = evt.shiftKey ? 'equirectangular' : 'perspective';
     this.capture(projection);
   },
 
@@ -131,11 +131,11 @@ module.exports.Component = registerComponent('screenshot', {
    * @param {string} projection - Screenshot projection (equirectangular or perspective).
    */
   setCapture: function (projection) {
-    var el = this.el;
-    var size;
-    var camera;
-    var cubeCamera;
-    var cubeRenderTarget;
+    let el = this.el;
+    let size;
+    let camera;
+    let cubeCamera;
+    let cubeRenderTarget;
     // Configure camera.
     if (projection === 'perspective') {
       // Quad is only used in equirectangular mode. Hide it in this case.
@@ -177,9 +177,9 @@ module.exports.Component = registerComponent('screenshot', {
    * Maintained for backwards compatibility.
    */
   capture: function (projection) {
-    var isVREnabled = this.el.renderer.xr.enabled;
-    var renderer = this.el.renderer;
-    var params;
+    let isVREnabled = this.el.renderer.xr.enabled;
+    let renderer = this.el.renderer;
+    let params;
     // Disable VR.
     renderer.xr.enabled = false;
     params = this.setCapture(projection);
@@ -194,10 +194,10 @@ module.exports.Component = registerComponent('screenshot', {
    * Return canvas instead of triggering download (e.g., for uploading blob to server).
    */
   getCanvas: function (projection) {
-    var isVREnabled = this.el.renderer.xr.enabled;
-    var renderer = this.el.renderer;
+    let isVREnabled = this.el.renderer.xr.enabled;
+    let renderer = this.el.renderer;
     // Disable VR.
-    var params = this.setCapture(projection);
+    let params = this.setCapture(projection);
     renderer.xr.enabled = false;
     this.renderCapture(params.camera, params.size, params.projection);
     // Restore VR.
@@ -206,12 +206,12 @@ module.exports.Component = registerComponent('screenshot', {
   },
 
   renderCapture: function (camera, size, projection) {
-    var autoClear = this.el.renderer.autoClear;
-    var el = this.el;
-    var imageData;
-    var output;
-    var pixels;
-    var renderer = el.renderer;
+    let autoClear = this.el.renderer.autoClear;
+    let el = this.el;
+    let imageData;
+    let output;
+    let pixels;
+    let renderer = el.renderer;
     // Create rendering target and buffer to store the read pixels.
     output = this.getRenderTarget(size.width, size.height);
     pixels = new Uint8Array(4 * size.width * size.height);
@@ -237,9 +237,9 @@ module.exports.Component = registerComponent('screenshot', {
   },
 
   flipPixelsVertically: function (pixels, width, height) {
-    var flippedPixels = pixels.slice(0);
-    for (var x = 0; x < width; ++x) {
-      for (var y = 0; y < height; ++y) {
+    let flippedPixels = pixels.slice(0);
+    for (let x = 0; x < width; ++x) {
+      for (let y = 0; y < height; ++y) {
         flippedPixels[x * 4 + y * width * 4] = pixels[x * 4 + (height - y) * width * 4];
         flippedPixels[x * 4 + 1 + y * width * 4] = pixels[x * 4 + 1 + (height - y) * width * 4];
         flippedPixels[x * 4 + 2 + y * width * 4] = pixels[x * 4 + 2 + (height - y) * width * 4];
@@ -254,9 +254,9 @@ module.exports.Component = registerComponent('screenshot', {
    */
   saveCapture: function () {
     this.canvas.toBlob(function (blob) {
-      var fileName = 'screenshot-' + document.title.toLowerCase() + '-' + Date.now() + '.png';
-      var linkEl = document.createElement('a');
-      var url = URL.createObjectURL(blob);
+      let fileName = 'screenshot-' + document.title.toLowerCase() + '-' + Date.now() + '.png';
+      let linkEl = document.createElement('a');
+      let url = URL.createObjectURL(blob);
       linkEl.href = url;
       linkEl.setAttribute('download', fileName);
       linkEl.innerHTML = 'downloading...';

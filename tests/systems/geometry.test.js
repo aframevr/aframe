@@ -1,10 +1,10 @@
 /* global assert, process, setup, suite, teardown, test */
-var entityFactory = require('../helpers').entityFactory;
+let entityFactory = require('../helpers').entityFactory;
 
 suite('geometry system', function () {
   setup(function (done) {
-    var el = entityFactory();
-    var self = this;
+    let el = entityFactory();
+    let self = this;
     el.addEventListener('loaded', function () {
       self.system = el.sceneEl.systems.geometry;
       done();
@@ -17,9 +17,9 @@ suite('geometry system', function () {
     });
 
     test('sets hash on cache', function () {
-      var data = {primitive: 'box'};
-      var system = this.system;
-      var hash = system.hash(data);
+      let data = {primitive: 'box'};
+      let system = this.system;
+      let hash = system.hash(data);
 
       assert.notOk(system.cache[hash]);
       system.getOrCreateGeometry(data);
@@ -27,19 +27,19 @@ suite('geometry system', function () {
     });
 
     test('does not hash on cache if skipCache', function () {
-      var data = {primitive: 'box', skipCache: true};
-      var system = this.system;
-      var hash = system.hash(data);
+      let data = {primitive: 'box', skipCache: true};
+      let system = this.system;
+      let hash = system.hash(data);
       system.getOrCreateGeometry({primitive: 'box'});
       assert.notOk(system.cache[hash]);
     });
 
     test('caches identical geometries', function () {
-      var data = {primitive: 'box', width: 5};
-      var geometry1;
-      var geometry2;
-      var system = this.system;
-      var hash = system.hash(data);
+      let data = {primitive: 'box', width: 5};
+      let geometry1;
+      let geometry2;
+      let system = this.system;
+      let hash = system.hash(data);
 
       geometry1 = system.getOrCreateGeometry(data);
       assert.ok(geometry1);
@@ -52,8 +52,8 @@ suite('geometry system', function () {
     });
 
     test('preserves original metadata on BufferGeometry', function () {
-      var data = {primitive: 'box', width: 5, buffer: true};
-      var geometry = this.system.getOrCreateGeometry(data);
+      let data = {primitive: 'box', width: 5, buffer: true};
+      let geometry = this.system.getOrCreateGeometry(data);
       assert.equal(geometry.metadata.type, 'BoxGeometry');
       assert.equal(geometry.metadata.parameters.width, 5);
     });
@@ -65,13 +65,13 @@ suite('geometry system', function () {
     });
 
     test('disposes geometry if no longer used', function () {
-      var data = {primitive: 'box'};
-      var system = this.system;
-      var hash = system.hash(data);
-      var sinon = this.sinon;
+      let data = {primitive: 'box'};
+      let system = this.system;
+      let hash = system.hash(data);
+      let sinon = this.sinon;
 
-      var geometry = system.getOrCreateGeometry(data);
-      var disposeSpy = sinon.spy(geometry, 'dispose');
+      let geometry = system.getOrCreateGeometry(data);
+      let disposeSpy = sinon.spy(geometry, 'dispose');
       system.unuseGeometry(data);
 
       assert.ok(disposeSpy.called);
@@ -80,13 +80,13 @@ suite('geometry system', function () {
     });
 
     test('does not dispose geometry if still used', function () {
-      var data = {primitive: 'box'};
-      var system = this.system;
-      var hash = system.hash(data);
-      var sinon = this.sinon;
+      let data = {primitive: 'box'};
+      let system = this.system;
+      let hash = system.hash(data);
+      let sinon = this.sinon;
 
-      var geometry = system.getOrCreateGeometry(data);
-      var disposeSpy = sinon.spy(geometry, 'dispose');
+      let geometry = system.getOrCreateGeometry(data);
+      let disposeSpy = sinon.spy(geometry, 'dispose');
 
       system.getOrCreateGeometry(data);
       system.unuseGeometry(data);

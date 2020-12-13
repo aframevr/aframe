@@ -1,10 +1,10 @@
 /* global assert, setup, suite, test, THREE */
-var Component = require('components/text').Component;
-var entityFactory = require('../helpers').entityFactory;
+let Component = require('components/text').Component;
+let entityFactory = require('../helpers').entityFactory;
 
 suite('text', function () {
-  var component;
-  var el;
+  let component;
+  let el;
 
   setup(function (done) {
     this.sinon.stub(Component.prototype, 'lookupFont', function (key) {
@@ -17,7 +17,7 @@ suite('text', function () {
     });
 
     el = entityFactory();
-    var fontSet = false;
+    let fontSet = false;
     el.addEventListener('textfontset', function () {
       if (fontSet) { return; }
       fontSet = true;
@@ -50,7 +50,7 @@ suite('text', function () {
 
   suite('update', function () {
     test('updates value', function (done) {
-      var updateSpy = this.sinon.spy(component.geometry, 'update');
+      let updateSpy = this.sinon.spy(component.geometry, 'update');
       el.addEventListener('textfontset', evt => {
         assert.equal(updateSpy.getCalls()[0].args[0].value, '');
         el.setAttribute('text', {value: 'foo', font: 'mozillavr'});
@@ -63,7 +63,7 @@ suite('text', function () {
     });
 
     test('updates value with number', function (done) {
-      var updateSpy = this.sinon.spy(component.geometry, 'update');
+      let updateSpy = this.sinon.spy(component.geometry, 'update');
       el.addEventListener('textfontset', evt => {
         assert.equal(updateSpy.getCalls()[0].args[0].value, '');
         el.setAttribute('text', {value: 10, font: 'mozillavr'});
@@ -77,7 +77,7 @@ suite('text', function () {
       // There are two paths by which geometry update can happen:
       // 1. As after-effect of font change.
       // 2. As direct effect when no font change.
-      var updateGeometrySpy = this.sinon.spy(component.geometry, 'update');
+      let updateGeometrySpy = this.sinon.spy(component.geometry, 'update');
       el.setAttribute('text', 'value', 'foo');
       if (component.currentFont) {
         assert.equal(updateGeometrySpy.getCalls()[0].args[0].value, 'foo');
@@ -91,44 +91,44 @@ suite('text', function () {
     });
 
     test('updates geometry with align', function () {
-      var updateGeometrySpy = this.sinon.spy(component.geometry, 'update');
+      let updateGeometrySpy = this.sinon.spy(component.geometry, 'update');
       el.setAttribute('text', 'align', 'right');
       assert.equal(updateGeometrySpy.getCalls()[0].args[0].align, 'right');
     });
 
     test('updates geometry with letterSpacing', function () {
-      var updateGeometrySpy = this.sinon.spy(component.geometry, 'update');
+      let updateGeometrySpy = this.sinon.spy(component.geometry, 'update');
       el.setAttribute('text', 'letterSpacing', 2);
       assert.equal(updateGeometrySpy.getCalls()[0].args[0].letterSpacing, 2);
     });
 
     test('updates geometry with lineHeight', function () {
-      var updateGeometrySpy = this.sinon.spy(component.geometry, 'update');
+      let updateGeometrySpy = this.sinon.spy(component.geometry, 'update');
       el.setAttribute('text', 'lineHeight', 2);
       assert.equal(updateGeometrySpy.getCalls()[0].args[0].lineHeight, 2);
     });
 
     test('updates geometry with tabSize', function () {
-      var updateGeometrySpy = this.sinon.spy(component.geometry, 'update');
+      let updateGeometrySpy = this.sinon.spy(component.geometry, 'update');
       el.setAttribute('text', 'tabSize', 2);
       assert.equal(updateGeometrySpy.getCalls()[0].args[0].tabSize, 2);
     });
 
     test('updates geometry with whiteSpace', function () {
-      var updateGeometrySpy = this.sinon.spy(component.geometry, 'update');
+      let updateGeometrySpy = this.sinon.spy(component.geometry, 'update');
       el.setAttribute('text', 'whiteSpace', 'nowrap');
       assert.equal(updateGeometrySpy.getCalls()[0].args[0].whiteSpace, 'nowrap');
     });
 
     test('calls createOrUpdateMaterial if shader changes', function () {
-      var updateMaterialSpy = this.sinon.spy(component, 'createOrUpdateMaterial');
+      let updateMaterialSpy = this.sinon.spy(component, 'createOrUpdateMaterial');
       el.setAttribute('text', 'shader', 'standard');
       el.setAttribute('text', 'shader', 'sdf');
       assert.equal(updateMaterialSpy.getCalls().length, 2);
     });
 
     test('caches texture', function (done) {
-      var el2 = document.createElement('a-entity');
+      let el2 = document.createElement('a-entity');
       el2.setAttribute('text', '');
       el.appendChild(el2);
       setTimeout(() => {
@@ -157,7 +157,7 @@ suite('text', function () {
     });
 
     test('updates material color', function () {
-      var value;
+      let value;
       value = el.getObject3D('text').material.uniforms.color.value;
       assert.equal(new THREE.Color(value.x, value.y, value.z).getHexString(), 'ffffff');
       el.setAttribute('text', 'color', '#123456');
@@ -166,7 +166,7 @@ suite('text', function () {
     });
 
     test('updates material opacity', function () {
-      var value;
+      let value;
       value = el.getObject3D('text').material.uniforms.opacity.value;
       assert.equal(value, 1);
       el.setAttribute('text', 'opacity', '0.55');
@@ -175,14 +175,14 @@ suite('text', function () {
     });
 
     test('updates material side', function () {
-      var value;
+      let value;
       el.setAttribute('text', 'side', 'double');
       value = el.getObject3D('text').material.side;
       assert.equal(value, THREE.DoubleSide);
     });
 
     test('updates material negate', function () {
-      var value;
+      let value;
       el.setAttribute('text', 'negate', false);
       value = el.getObject3D('text').material.uniforms.negate.value;
       assert.equal(value, 0.0);
@@ -213,7 +213,7 @@ suite('text', function () {
     });
 
     test('updates geometry', function (done) {
-      var updateGeometrySpy = this.sinon.spy(component.geometry, 'update');
+      let updateGeometrySpy = this.sinon.spy(component.geometry, 'update');
 
       el.addEventListener('textfontset', evt => {
         assert.shallowDeepEqual(updateGeometrySpy.getCalls()[0].args[0].font,
@@ -256,7 +256,7 @@ suite('text', function () {
     });
 
     test('uses up-to-date data once loaded', function (done) {
-      var updateSpy = this.sinon.spy(component.geometry, 'update');
+      let updateSpy = this.sinon.spy(component.geometry, 'update');
       el.addEventListener('textfontset', evt => {
         assert.equal(updateSpy.getCalls()[0].args[0].value, 'bar');
         done();
@@ -288,8 +288,8 @@ suite('text', function () {
     });
 
     test('baselines top and center', function () {
-      var yTop;
-      var yCenter;
+      let yTop;
+      let yCenter;
       el.setAttribute('text', {baseline: 'top', value: 'a'});
       yTop = el.getObject3D('text').position.y;
       el.setAttribute('text', {baseline: 'center', value: 'a'});
@@ -336,9 +336,9 @@ suite('text', function () {
     });
 
     test('cleans up', function (done) {
-      var geometryDisposeSpy = this.sinon.spy(component.material, 'dispose');
-      var materialDisposeSpy = this.sinon.spy(component.geometry, 'dispose');
-      var textureDisposeSpy = this.sinon.spy(component.texture, 'dispose');
+      let geometryDisposeSpy = this.sinon.spy(component.material, 'dispose');
+      let materialDisposeSpy = this.sinon.spy(component.geometry, 'dispose');
+      let textureDisposeSpy = this.sinon.spy(component.texture, 'dispose');
 
       el.parentNode.removeChild(el);
 

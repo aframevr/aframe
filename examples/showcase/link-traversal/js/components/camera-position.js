@@ -14,18 +14,18 @@ AFRAME.registerComponent('camera-position', {
   },
 
   onCameraSetActive: function () {
-    var cameraEl = this.el.camera.el;
-    var data = this.data;
-    var isMobile = AFRAME.utils.device.isMobile();
-    var position = isMobile ? data.mobile : data.desktop;
-    var savedPose = cameraEl.components.camera.savedPose;
+    let cameraEl = this.el.camera.el;
+    let data = this.data;
+    let isMobile = AFRAME.utils.device.isMobile();
+    let position = isMobile ? data.mobile : data.desktop;
+    let savedPose = cameraEl.components.camera.savedPose;
     if (savedPose) { savedPose.position.z = position.z; }
     this.el.camera.el.setAttribute('position', position);
   },
 
   resetCamera: function () {
-    var cameraEl = this.el.camera.el;
-    var position = cameraEl.getAttribute('position');
+    let cameraEl = this.el.camera.el;
+    let position = cameraEl.getAttribute('position');
     cameraEl.setAttribute('position', {
       x: position.x,
       y: position.y,

@@ -1,12 +1,12 @@
-var coordinates = require('../utils/coordinates');
-var debug = require('debug');
+let coordinates = require('../utils/coordinates');
+let debug = require('debug');
 
-var error = debug('core:propertyTypes:warn');
-var warn = debug('core:propertyTypes:warn');
+let error = debug('core:propertyTypes:warn');
+let warn = debug('core:propertyTypes:warn');
 
-var propertyTypes = module.exports.propertyTypes = {};
-var nonCharRegex = /[,> .[\]:]/;
-var urlRegex = /\url\((.+)\)/;
+let propertyTypes = module.exports.propertyTypes = {};
+let nonCharRegex = /[,> .[\]:]/;
+let urlRegex = /\url\((.+)\)/;
 
 // Built-in property types.
 registerPropertyType('audio', '', assetParse);
@@ -71,8 +71,8 @@ function arrayStringify (value) {
  *   just string.
  */
 function assetParse (value) {
-  var el;
-  var parsedUrl;
+  let el;
+  let parsedUrl;
 
   // If an element was provided (e.g. canvas or video), just return it.
   if (typeof value !== 'string') { return value; }
@@ -208,10 +208,10 @@ function isValidDefaultCoordinate (possibleCoordinates, dimensions) {
   if (Object.keys(possibleCoordinates).length !== dimensions) {
     return false;
   } else {
-    var x = possibleCoordinates.x;
-    var y = possibleCoordinates.y;
-    var z = possibleCoordinates.z;
-    var w = possibleCoordinates.w;
+    let x = possibleCoordinates.x;
+    let y = possibleCoordinates.y;
+    let z = possibleCoordinates.z;
+    let w = possibleCoordinates.w;
 
     if (typeof x !== 'number' || typeof y !== 'number') { return false; }
     if (dimensions > 2 && typeof z !== 'number') { return false; }

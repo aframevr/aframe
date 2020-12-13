@@ -1,7 +1,7 @@
 /*eslint-disable */
 /******/ (function(modules) { // webpackBootstrap
 /******/  // The module cache
-/******/  var installedModules = {};
+/******/  let installedModules = {};
 
 /******/  // The require function
 /******/  function __webpack_require__(moduleId) {
@@ -11,7 +11,7 @@
 /******/      return installedModules[moduleId].exports;
 
 /******/    // Create a new module (and put it into the cache)
-/******/    var module = installedModules[moduleId] = {
+/******/    let module = installedModules[moduleId] = {
 /******/      exports: {},
 /******/      id: moduleId,
 /******/      loaded: false
@@ -78,19 +78,19 @@
      * Called once when component is attached. Generally for initial setup.
      */
     init: function () {
-      var el = this.el;
-      var data = this.data;
+      let el = this.el;
+      let data = this.data;
 
-      var quad = this.quad = document.createElement('a-entity');
-      var self = this;
+      let quad = this.quad = document.createElement('a-entity');
+      let self = this;
 
       quad.setAttribute('rotation', data.rotation);
       quad.setAttribute('text', {width: .25, color: '#fff', value: data.text, align: 'center'});
       el.appendChild(quad);
 
       // Line
-      var material = this.material = new THREE.LineBasicMaterial({color: data.lineColor, opacity: data.opacity, transparent: data.opacity < 1});
-      var geometry = this.geometry = new THREE.BufferGeometry();
+      let material = this.material = new THREE.LineBasicMaterial({color: data.lineColor, opacity: data.opacity, transparent: data.opacity < 1});
+      let geometry = this.geometry = new THREE.BufferGeometry();
       geometry.addAttribute('position', new THREE.BufferAttribute(new Float32Array(2 * 3), 3));
 
       this.line = new THREE.Line(geometry, material);
@@ -104,30 +104,30 @@
      */
 
      updateTooltip: (function () {
-       var parentPosition = new THREE.Vector3();
-       var targetPosition = new THREE.Vector3();
-       var startPosition = new THREE.Vector3();
+       let parentPosition = new THREE.Vector3();
+       let targetPosition = new THREE.Vector3();
+       let startPosition = new THREE.Vector3();
 
        return function () {
-         var data = this.data;
+         let data = this.data;
          parentPosition.copy(this.el.getAttribute('position'));
          targetPosition.copy(data.targetPosition);
 
-         var endPosition = targetPosition.sub(parentPosition);
+         let endPosition = targetPosition.sub(parentPosition);
 
-         var data = this.data;
-         var valign = {top: data.height / 2, bottom: -data.height / 2, center: 0};
-         var halign = {left: -data.width / 2, right: data.width / 2, center: 0};
+         let data = this.data;
+         let valign = {top: data.height / 2, bottom: -data.height / 2, center: 0};
+         let halign = {left: -data.width / 2, right: data.width / 2, center: 0};
 
-         var y = valign[data.lineVerticalAlign];
-         var x = halign[data.lineHorizontalAlign];
+         let y = valign[data.lineVerticalAlign];
+         let x = halign[data.lineHorizontalAlign];
 
          // Update geometry
          this.quad.object3D.updateMatrix();
          startPosition.set(x, y, 0);
          startPosition.applyMatrix4(this.quad.object3D.matrix);
 
-         var pos = this.geometry.attributes.position.array;
+         let pos = this.geometry.attributes.position.array;
          pos[0] = startPosition.x;
          pos[1] = startPosition.y;
          pos[2] = startPosition.z;
@@ -187,18 +187,18 @@
      * Called once when component is attached. Generally for initial setup.
      */
     init: function () {
-      var data = this.data;
-      var material = this.material = new THREE.MeshBasicMaterial({color: data.color, opacity: data.opacity, transparent: data.transparent, wireframe: data.debug});
-      var geometry = this.geometry = new THREE.PlaneBufferGeometry(data.width, data.height, 3, 3);
+      let data = this.data;
+      let material = this.material = new THREE.MeshBasicMaterial({color: data.color, opacity: data.opacity, transparent: data.transparent, wireframe: data.debug});
+      let geometry = this.geometry = new THREE.PlaneBufferGeometry(data.width, data.height, 3, 3);
 
-      var textureLoader = new THREE.TextureLoader();
+      let textureLoader = new THREE.TextureLoader();
       this.plane = new THREE.Mesh(geometry, material);
       this.el.setObject3D('mesh', this.plane);
       this.textureSrc = null;
     },
 
     updateMap: function () {
-      var src = this.data.src;
+      let src = this.data.src;
 
       if (src) {
         if (src === this.textureSrc) { return; }
@@ -221,10 +221,10 @@
     },
 
     regenerateMesh: function () {
-      var data = this.data;
-      var pos = this.geometry.attributes.position.array;
-      var uvs = this.geometry.attributes.uv.array;
-      var image = this.material.map.image;
+      let data = this.data;
+      let pos = this.geometry.attributes.position.array;
+      let uvs = this.geometry.attributes.uv.array;
+      let image = this.material.map.image;
 
       if (!image) {return;}
 
@@ -250,7 +250,7 @@
       }
 
       // Update UVS
-      var uv = {
+      let uv = {
         left: data.left / image.width,
         right: data.right / image.width,
         top: data.top / image.height,
@@ -274,12 +274,12 @@
       setUV(14, uv.right, 0);
 
       // Update vertex positions
-      var w2 = data.width / 2;
-      var h2 = data.height / 2;
-      var left = -w2 + data.padding;
-      var right = w2 - data.padding;
-      var top = h2 - data.padding;
-      var bottom = -h2 + data.padding;
+      let w2 = data.width / 2;
+      let h2 = data.height / 2;
+      let left = -w2 + data.padding;
+      let right = w2 - data.padding;
+      let top = h2 - data.padding;
+      let bottom = -h2 + data.padding;
 
       setPos(0, -w2,    h2);
       setPos(1, left,   h2);
@@ -310,7 +310,7 @@
      * Generally modifies the entity based on the data.
      */
      update: function (oldData) {
-       var data = this.data;
+       let data = this.data;
 
        this.material.color.setStyle(data.color);
        this.material.opacity = data.opacity;
@@ -318,7 +318,7 @@
        this.material.wireframe = data.debug;
        this.material.side = parseSide(data.side);
 
-       var diff = AFRAME.utils.diff(data, oldData);
+       let diff = AFRAME.utils.diff(data, oldData);
        if ('src' in diff) {
          this.updateMap();
        }

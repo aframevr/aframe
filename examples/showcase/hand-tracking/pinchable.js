@@ -5,7 +5,7 @@ AFRAME.registerComponent('pinchable', {
   },
 
   init: function () {
-    var sceneEl = this.el.sceneEl;
+    let sceneEl = this.el.sceneEl;
     this.worldPosition = new THREE.Vector3();
     this.bindMethods();
     this.pinched = false;
@@ -21,7 +21,7 @@ AFRAME.registerComponent('pinchable', {
   },
 
   onPinchStarted: function (evt) {
-    var pinchDistance = this.calculatePinchDistance(evt.detail.position);
+    let pinchDistance = this.calculatePinchDistance(evt.detail.position);
     if (pinchDistance < this.data.pinchDistance) {
       this.el.emit('pinchedstarted');
       this.pinched = true;
@@ -29,9 +29,9 @@ AFRAME.registerComponent('pinchable', {
   },
 
   calculatePinchDistance: function (pinchWorldPosition) {
-    var el = this.el;
-    var worldPosition = this.worldPosition;
-    var pinchDistance;
+    let el = this.el;
+    let worldPosition = this.worldPosition;
+    let pinchDistance;
 
     worldPosition.copy(el.object3D.position);
     el.object3D.parent.updateMatrixWorld();
@@ -50,8 +50,8 @@ AFRAME.registerComponent('pinchable', {
   },
 
   onPinchMoved: function (evt) {
-    var el = this.el;
-    var pinchDistance = this.calculatePinchDistance(evt.detail.position);
+    let el = this.el;
+    let pinchDistance = this.calculatePinchDistance(evt.detail.position);
     if (!this.pinched) { return; }
     if (pinchDistance < this.data.pinchDistance) {
       el.emit('pinchedmoved', evt.detail);

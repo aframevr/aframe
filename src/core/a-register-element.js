@@ -15,9 +15,9 @@
 // Polyfill `document.registerElement`.
 require('document-register-element');
 
-var ANode;  // Must declare before AEntity. Initialized at the bottom.
-var AEntity;
-var knownTags = module.exports.knownTags = {};
+let ANode;  // Must declare before AEntity. Initialized at the bottom.
+let AEntity;
+let knownTags = module.exports.knownTags = {};
 
 function addTagName (tagName) {
   knownTags[tagName.toLowerCase()] = true;
@@ -39,10 +39,10 @@ module.exports.isNode = function (node) {
  * @returns {object} The prototype of the new element.
  */
 module.exports.registerElement = function (tagName, obj) {
-  var proto = Object.getPrototypeOf(obj.prototype);
-  var newObj = obj;
-  var isANode = ANode && proto === ANode.prototype;
-  var isAEntity = AEntity && proto === AEntity.prototype;
+  let proto = Object.getPrototypeOf(obj.prototype);
+  let newObj = obj;
+  let isANode = ANode && proto === ANode.prototype;
+  let isAEntity = AEntity && proto === AEntity.prototype;
 
   if (isANode || isAEntity) { addTagName(tagName); }
 
@@ -60,7 +60,7 @@ module.exports.registerElement = function (tagName, obj) {
 
   // Give all functions their proper name.
   Object.getOwnPropertyNames(newObj.prototype).forEach(function (propName) {
-    var propVal = newObj.prototype[propName];
+    let propVal = newObj.prototype[propName];
     if (typeof propVal === 'function') {
       propVal.displayName = propName;
     }
@@ -77,8 +77,8 @@ module.exports.registerElement = function (tagName, obj) {
  * with some of methods wrapped.
  */
 function wrapANodeMethods (obj) {
-  var newObj = {};
-  var ANodeMethods = [
+  let newObj = {};
+  let ANodeMethods = [
     'attachedCallback',
     'attributeChangedCallback',
     'createdCallback',
@@ -97,14 +97,14 @@ function wrapANodeMethods (obj) {
  * with some of methods wrapped.
  */
 function wrapAEntityMethods (obj) {
-  var newObj = {};
-  var ANodeMethods = [
+  let newObj = {};
+  let ANodeMethods = [
     'attachedCallback',
     'attributeChangedCallback',
     'createdCallback',
     'detachedCallback'
   ];
-  var AEntityMethods = [
+  let AEntityMethods = [
     'attachedCallback',
     'attributeChangedCallback',
     'createdCallback',
@@ -144,8 +144,8 @@ module.exports.wrapMethods = wrapMethods;
  * @param {object} baseObj - Object that derivedObj inherits from.
  */
 function wrapMethod (obj, methodName, derivedObj, baseObj) {
-  var derivedMethod = derivedObj[methodName];
-  var baseMethod = baseObj[methodName];
+  let derivedMethod = derivedObj[methodName];
+  let baseMethod = baseObj[methodName];
 
   // Derived prototype does not define method, no need to wrap.
   if (!derivedMethod || !baseMethod) { return; }
@@ -171,9 +171,9 @@ function wrapMethod (obj, methodName, derivedObj, baseObj) {
  * @param {type} destination - The object where properties are copied to.
  */
 function copyProperties (source, destination) {
-  var props = Object.getOwnPropertyNames(source);
+  let props = Object.getOwnPropertyNames(source);
   props.forEach(function (prop) {
-    var desc;
+    let desc;
     if (!destination[prop]) {
       desc = Object.getOwnPropertyDescriptor(source, prop);
       destination[prop] = {value: source[prop], writable: desc.writable};

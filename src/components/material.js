@@ -1,13 +1,13 @@
 /* global Promise */
-var utils = require('../utils/');
-var component = require('../core/component');
-var THREE = require('../lib/three');
-var shader = require('../core/shader');
+let utils = require('../utils/');
+let component = require('../core/component');
+let THREE = require('../lib/three');
+let shader = require('../core/shader');
 
-var error = utils.debug('components:material:error');
-var registerComponent = component.registerComponent;
-var shaders = shader.shaders;
-var shaderNames = shader.shaderNames;
+let error = utils.debug('components:material:error');
+let registerComponent = component.registerComponent;
+let shaders = shader.shaders;
+let shaderNames = shader.shaderNames;
 
 /**
  * Material component.
@@ -45,7 +45,7 @@ module.exports.Component = registerComponent('material', {
    * @param {object|null} oldData
    */
   update: function (oldData) {
-    var data = this.data;
+    let data = this.data;
     if (!this.shader || data.shader !== oldData.shader) {
       this.updateShader(data.shader);
     }
@@ -54,10 +54,10 @@ module.exports.Component = registerComponent('material', {
   },
 
   updateSchema: function (data) {
-    var currentShader;
-    var newShader;
-    var schema;
-    var shader;
+    let currentShader;
+    let newShader;
+    let schema;
+    let shader;
 
     newShader = data && data.shader;
     currentShader = this.oldData && this.oldData.shader;
@@ -71,14 +71,14 @@ module.exports.Component = registerComponent('material', {
   },
 
   updateBehavior: function () {
-    var key;
-    var sceneEl = this.el.sceneEl;
-    var schema = this.schema;
-    var self = this;
-    var tickProperties;
+    let key;
+    let sceneEl = this.el.sceneEl;
+    let schema = this.schema;
+    let self = this;
+    let tickProperties;
 
     function tickTime (time, delta) {
-      var key;
+      let key;
       for (key in tickProperties) {
         tickProperties[key] = time;
       }
@@ -104,9 +104,9 @@ module.exports.Component = registerComponent('material', {
   },
 
   updateShader: function (shaderName) {
-    var data = this.data;
-    var Shader = shaders[shaderName] && shaders[shaderName].Shader;
-    var shaderInstance;
+    let data = this.data;
+    let Shader = shaders[shaderName] && shaders[shaderName].Shader;
+    let shaderInstance;
 
     if (!Shader) { throw new Error('Unknown shader ' + shaderName); }
 
@@ -123,9 +123,9 @@ module.exports.Component = registerComponent('material', {
    * Set `needsUpdate` when needed.
    */
   updateMaterial: function (oldData) {
-    var data = this.data;
-    var material = this.material;
-    var oldDataHasKeys;
+    let data = this.data;
+    let material = this.material;
+    let oldDataHasKeys;
 
     // Base material properties.
     material.alphaTest = data.alphaTest;
@@ -155,9 +155,9 @@ module.exports.Component = registerComponent('material', {
    * Dispose of it from memory and unsubscribe from scene updates.
    */
   remove: function () {
-    var defaultMaterial = new THREE.MeshBasicMaterial();
-    var material = this.material;
-    var object3D = this.el.getObject3D('mesh');
+    let defaultMaterial = new THREE.MeshBasicMaterial();
+    let material = this.material;
+    let object3D = this.el.getObject3D('mesh');
     if (object3D) { object3D.material = defaultMaterial; }
     disposeMaterial(material, this.system);
   },
@@ -171,9 +171,9 @@ module.exports.Component = registerComponent('material', {
    * @returns {object} Material.
    */
   setMaterial: function (material) {
-    var el = this.el;
-    var mesh;
-    var system = this.system;
+    let el = this.el;
+    let mesh;
+    let system = this.system;
 
     if (this.material) { disposeMaterial(this.material, system); }
 

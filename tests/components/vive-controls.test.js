@@ -1,10 +1,10 @@
 /* global assert, process, setup, suite, test, THREE */
-var entityFactory = require('../helpers').entityFactory;
+let entityFactory = require('../helpers').entityFactory;
 
 suite('vive-controls', function () {
-  var component;
-  var controlsSystem;
-  var el;
+  let component;
+  let controlsSystem;
+  let el;
 
   setup(function (done) {
     el = entityFactory();
@@ -22,8 +22,8 @@ suite('vive-controls', function () {
 
   suite('checkIfControllerPresent', function () {
     test('remember not present if no controllers on first call', function () {
-      var addEventListenersSpy = this.sinon.spy(component, 'addEventListeners');
-      var injectTrackedControlsSpy = this.sinon.spy(component, 'injectTrackedControls');
+      let addEventListenersSpy = this.sinon.spy(component, 'addEventListeners');
+      let injectTrackedControlsSpy = this.sinon.spy(component, 'injectTrackedControls');
       controlsSystem.controllers = [];
 
       // Mock not looked before.
@@ -37,9 +37,9 @@ suite('vive-controls', function () {
     });
 
     test('does not remove event listeners if no controllers again', function () {
-      var addEventListenersSpy = this.sinon.spy(component, 'addEventListeners');
-      var injectTrackedControlsSpy = this.sinon.spy(component, 'injectTrackedControls');
-      var removeEventListenersSpy = this.sinon.spy(component, 'removeEventListeners');
+      let addEventListenersSpy = this.sinon.spy(component, 'addEventListeners');
+      let injectTrackedControlsSpy = this.sinon.spy(component, 'injectTrackedControls');
+      let removeEventListenersSpy = this.sinon.spy(component, 'removeEventListeners');
       controlsSystem.controllers = [];
 
       // Mock not looked before.
@@ -54,9 +54,9 @@ suite('vive-controls', function () {
     });
 
     test('attaches events if controller is newly present', function () {
-      var addEventListenersSpy = this.sinon.spy(component, 'addEventListeners');
-      var injectTrackedControlsSpy = this.sinon.spy(component, 'injectTrackedControls');
-      var removeEventListenersSpy = this.sinon.spy(component, 'removeEventListeners');
+      let addEventListenersSpy = this.sinon.spy(component, 'addEventListeners');
+      let injectTrackedControlsSpy = this.sinon.spy(component, 'injectTrackedControls');
+      let removeEventListenersSpy = this.sinon.spy(component, 'removeEventListeners');
       controlsSystem.controllers = component.controllersWhenPresent;
 
       // Mock not looked before.
@@ -71,9 +71,9 @@ suite('vive-controls', function () {
     });
 
     test('does not inject/attach events again if controller is already present', function () {
-      var addEventListenersSpy = this.sinon.spy(component, 'addEventListeners');
-      var injectTrackedControlsSpy = this.sinon.spy(component, 'injectTrackedControls');
-      var removeEventListenersSpy = this.sinon.spy(component, 'removeEventListeners');
+      let addEventListenersSpy = this.sinon.spy(component, 'addEventListeners');
+      let injectTrackedControlsSpy = this.sinon.spy(component, 'injectTrackedControls');
+      let removeEventListenersSpy = this.sinon.spy(component, 'removeEventListeners');
       controlsSystem.controllers = component.controllersWhenPresent;
 
       // Mock looked before.
@@ -89,9 +89,9 @@ suite('vive-controls', function () {
     });
 
     test('remove event listeners if controller disappears', function () {
-      var addEventListenersSpy = this.sinon.spy(component, 'addEventListeners');
-      var injectTrackedControlsSpy = this.sinon.spy(component, 'injectTrackedControls');
-      var removeEventListenersSpy = this.sinon.spy(component, 'removeEventListeners');
+      let addEventListenersSpy = this.sinon.spy(component, 'addEventListeners');
+      let injectTrackedControlsSpy = this.sinon.spy(component, 'injectTrackedControls');
+      let removeEventListenersSpy = this.sinon.spy(component, 'removeEventListeners');
       controlsSystem.controllers = [];
 
       // Mock looked before.
@@ -197,7 +197,7 @@ suite('vive-controls', function () {
     test('has trigger at default color', function (done) {
       component.addEventListeners();
       el.addEventListener('model-loaded', function (evt) {
-        var color = component.buttonMeshes.trigger.material.color;
+        let color = component.buttonMeshes.trigger.material.color;
         assert.equal(new THREE.Color(color).getHexString(), 'fafafa');
         done();
       });
@@ -208,7 +208,7 @@ suite('vive-controls', function () {
     test('has trackpad at default color', function (done) {
       component.addEventListeners();
       el.addEventListener('model-loaded', function (evt) {
-        var color = component.buttonMeshes.trackpad.material.color;
+        let color = component.buttonMeshes.trackpad.material.color;
         assert.equal(new THREE.Color(color).getHexString(), 'fafafa');
         done();
       });
@@ -219,7 +219,7 @@ suite('vive-controls', function () {
     test('has grips at default colors', function (done) {
       component.addEventListeners();
       el.addEventListener('model-loaded', function (evt) {
-        var color = component.buttonMeshes.grip.left.material.color;
+        let color = component.buttonMeshes.grip.left.material.color;
         assert.equal(new THREE.Color(color).getHexString(), 'fafafa');
         color = component.buttonMeshes.grip.right.material.color;
         assert.equal(new THREE.Color(color).getHexString(), 'fafafa');
@@ -234,7 +234,7 @@ suite('vive-controls', function () {
       el.addEventListener('model-loaded', function (evt) {
         el.emit('buttondown', {id: 1, state: {}});
         setTimeout(() => {
-          var color = component.buttonMeshes.trigger.material.color;
+          let color = component.buttonMeshes.trigger.material.color;
           assert.equal(new THREE.Color(color).getHexString(), '22d1ee');
           done();
         });
@@ -249,7 +249,7 @@ suite('vive-controls', function () {
         component.buttonMeshes.trigger.material.color.set('#22d1ee');
         el.emit('buttonup', {id: 1, state: {}});
         setTimeout(() => {
-          var color = component.buttonMeshes.trigger.material.color;
+          let color = component.buttonMeshes.trigger.material.color;
           assert.equal(new THREE.Color(color).getHexString(), 'fafafa');
           done();
         });
@@ -263,7 +263,7 @@ suite('vive-controls', function () {
       el.addEventListener('model-loaded', function (evt) {
         el.emit('buttondown', {id: 0, state: {}});
         setTimeout(() => {
-          var color = component.buttonMeshes.trackpad.material.color;
+          let color = component.buttonMeshes.trackpad.material.color;
           assert.equal(new THREE.Color(color).getHexString(), '22d1ee');
           done();
         });
@@ -277,7 +277,7 @@ suite('vive-controls', function () {
       el.addEventListener('model-loaded', function (evt) {
         el.emit('touchstart', {id: 1, state: {}});
         setTimeout(() => {
-          var color = component.buttonMeshes.trigger.material.color;
+          let color = component.buttonMeshes.trigger.material.color;
           assert.equal(new THREE.Color(color).getHexString(), 'fafafa');
           done();
         });
@@ -291,7 +291,7 @@ suite('vive-controls', function () {
       el.addEventListener('model-loaded', function (evt) {
         el.emit('touchstart', {id: 0, state: {}});
         setTimeout(() => {
-          var color = component.buttonMeshes.trackpad.material.color;
+          let color = component.buttonMeshes.trackpad.material.color;
           assert.equal(new THREE.Color(color).getHexString(), 'fafafa');
           done();
         });

@@ -10,7 +10,7 @@ AFRAME.registerComponent('size-change', {
   },
 
   onSliderChanged: function (evt) {
-    var scale = evt.detail.value;
+    let scale = evt.detail.value;
     this.el.object3D.scale.set(scale, scale, scale);
   }
 });

@@ -7,18 +7,18 @@ AFRAME.registerComponent('draw-canvas-rectangles', {
   schema: {canvas: {type: 'selector'}},
 
   init: function () {
-    var canvas = this.canvas = this.data.canvas;
-    var ctx = this.ctx = canvas.getContext('2d');
+    let canvas = this.canvas = this.data.canvas;
+    let ctx = this.ctx = canvas.getContext('2d');
     ctx.fillStyle = 'rgb(0, 0, 0)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
   },
 
   tick: function (t) {
-    var canvas = this.canvas;
-    var ctx = this.ctx;
-    var x;
-    var y;
-    var hue = t / 10;
+    let canvas = this.canvas;
+    let ctx = this.ctx;
+    let x;
+    let y;
+    let hue = t / 10;
 
     // Bottom layer rectangle.
     ctx.fillStyle = 'hsl(' + hue + ', 50%, 80%)';

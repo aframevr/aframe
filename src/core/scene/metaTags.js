@@ -1,7 +1,7 @@
-var constants = require('../../constants/');
-var extend = require('../../utils').extend;
+let constants = require('../../constants/');
+let extend = require('../../utils').extend;
 
-var MOBILE_HEAD_TAGS = module.exports.MOBILE_HEAD_TAGS = [
+let MOBILE_HEAD_TAGS = module.exports.MOBILE_HEAD_TAGS = [
   Meta({name: 'viewport', content: 'width=device-width,initial-scale=1,maximum-scale=1,shrink-to-fit=no,user-scalable=no,minimal-ui,viewport-fit=cover'}),
 
   // W3C-standardised meta tags.
@@ -9,7 +9,7 @@ var MOBILE_HEAD_TAGS = module.exports.MOBILE_HEAD_TAGS = [
   Meta({name: 'theme-color', content: 'black'})
 ];
 
-var MOBILE_IOS_HEAD_TAGS = [
+let MOBILE_IOS_HEAD_TAGS = [
   // iOS-specific meta tags for fullscreen when pinning to homescreen.
   Meta({name: 'apple-mobile-web-app-capable', content: 'yes'}),
   Meta({name: 'apple-mobile-web-app-status-bar-style', content: 'black'}),
@@ -45,10 +45,10 @@ function Link (attrs) {
  * @returns {Array}
  */
 module.exports.inject = function injectHeadTags (scene) {
-  var headEl = document.head;
-  var headScriptEl = headEl.querySelector('script');
-  var tag;
-  var headTags = [];
+  let headEl = document.head;
+  let headScriptEl = headEl.querySelector('script');
+  let tag;
+  let headTags = [];
   MOBILE_HEAD_TAGS.forEach(createAndInjectTag);
   if (scene.isIOS) {
     MOBILE_IOS_HEAD_TAGS.forEach(createAndInjectTag);
@@ -73,7 +73,7 @@ module.exports.inject = function injectHeadTags (scene) {
 
 function createTag (tagObj) {
   if (!tagObj || !tagObj.tagName) { return; }
-  var meta = document.createElement(tagObj.tagName);
+  let meta = document.createElement(tagObj.tagName);
   meta.setAttribute(constants.AFRAME_INJECTED, '');
   return extend(meta, tagObj.attributes);
 }

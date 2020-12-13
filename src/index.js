@@ -9,12 +9,12 @@ window.hasNativeWebXRImplementation = navigator.xr !== undefined;
 
 // If native WebXR or WebVR are defined WebVRPolyfill does not initialize.
 if (!window.hasNativeWebXRImplementation && !window.hasNativeWebVRImplementation) {
-  var isIOSOlderThan10 = require('./utils/isIOSOlderThan10');
+  let isIOSOlderThan10 = require('./utils/isIOSOlderThan10');
   // Workaround for iOS Safari canvas sizing issues in stereo (webvr-polyfill/issues/102).
   // Only for iOS on versions older than 10.
-  var bufferScale = isIOSOlderThan10(window.navigator.userAgent) ? 1 / window.devicePixelRatio : 1;
-  var WebVRPolyfill = require('webvr-polyfill');
-  var polyfillConfig = {
+  let bufferScale = isIOSOlderThan10(window.navigator.userAgent) ? 1 / window.devicePixelRatio : 1;
+  let WebVRPolyfill = require('webvr-polyfill');
+  let polyfillConfig = {
     BUFFER_SCALE: bufferScale,
     CARDBOARD_UI_DISABLED: true,
     ROTATE_INSTRUCTIONS_DISABLED: true,
@@ -23,8 +23,8 @@ if (!window.hasNativeWebXRImplementation && !window.hasNativeWebVRImplementation
   window.webvrpolyfill = new WebVRPolyfill(polyfillConfig);
 }
 
-var utils = require('./utils/');
-var debug = utils.debug;
+let utils = require('./utils/');
+let debug = utils.debug;
 
 if (utils.isIE11) {
   // Polyfill `CustomEvent`.
@@ -33,8 +33,8 @@ if (utils.isIE11) {
   require('../vendor/starts-with-polyfill');
 }
 
-var error = debug('A-Frame:error');
-var warn = debug('A-Frame:warn');
+let error = debug('A-Frame:error');
+let warn = debug('A-Frame:warn');
 
 if (window.document.currentScript && window.document.currentScript.parentNode !==
     window.document.head && !window.debug) {
@@ -61,26 +61,26 @@ if (utils.device.isBrowserEnvironment) {
 }
 
 // Required before `AEntity` so that all components are registered.
-var AScene = require('./core/scene/a-scene').AScene;
-var components = require('./core/component').components;
-var registerComponent = require('./core/component').registerComponent;
-var registerGeometry = require('./core/geometry').registerGeometry;
-var registerPrimitive = require('./extras/primitives/primitives').registerPrimitive;
-var registerShader = require('./core/shader').registerShader;
-var registerSystem = require('./core/system').registerSystem;
-var shaders = require('./core/shader').shaders;
-var systems = require('./core/system').systems;
+let AScene = require('./core/scene/a-scene').AScene;
+let components = require('./core/component').components;
+let registerComponent = require('./core/component').registerComponent;
+let registerGeometry = require('./core/geometry').registerGeometry;
+let registerPrimitive = require('./extras/primitives/primitives').registerPrimitive;
+let registerShader = require('./core/shader').registerShader;
+let registerSystem = require('./core/system').registerSystem;
+let shaders = require('./core/shader').shaders;
+let systems = require('./core/system').systems;
 // Exports THREE to window so three.js can be used without alteration.
-var THREE = window.THREE = require('./lib/three');
+let THREE = window.THREE = require('./lib/three');
 
-var pkg = require('../package');
+let pkg = require('../package');
 
 require('./components/index'); // Register standard components.
 require('./geometries/index'); // Register standard geometries.
 require('./shaders/index'); // Register standard shaders.
 require('./systems/index'); // Register standard systems.
-var ANode = require('./core/a-node');
-var AEntity = require('./core/a-entity'); // Depends on ANode and core components.
+let ANode = require('./core/a-node');
+let AEntity = require('./core/a-entity'); // Depends on ANode and core components.
 
 require('./core/a-assets');
 require('./core/a-cubemap');

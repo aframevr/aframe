@@ -1,11 +1,11 @@
 /* global assert, process, setup, suite, test, THREE */
-var entityFactory = require('../helpers').entityFactory;
+let entityFactory = require('../helpers').entityFactory;
 
 suite('windows-motion-controls', function () {
-  var el;
-  var component;
+  let el;
+  let component;
 
-  var MOCKS = {
+  let MOCKS = {
     AXIS_VALUES_VALID: [0.1, 0.2, 0.3, 0.4],
     AXIS_THUMBSTICK_X: 0,
     AXIS_THUMBSTICK_Y: 1,
@@ -32,9 +32,9 @@ suite('windows-motion-controls', function () {
     // Test that we don't listen to a-frame emitted events if the component doesn't have
     // a controller present.
     test('removes event listeners if controllers not present', function () {
-      var addEventListenersSpy = this.sinon.spy(component, 'addEventListeners');
-      var injectTrackedControlsSpy = this.sinon.spy(component, 'injectTrackedControls');
-      var removeEventListenersSpy = this.sinon.spy(component, 'removeEventListeners');
+      let addEventListenersSpy = this.sinon.spy(component, 'addEventListeners');
+      let injectTrackedControlsSpy = this.sinon.spy(component, 'injectTrackedControls');
+      let removeEventListenersSpy = this.sinon.spy(component, 'removeEventListeners');
 
       // delete our previously created mock, so component behaves as if it's never
       // checked for controller presence previously.
@@ -49,9 +49,9 @@ suite('windows-motion-controls', function () {
     });
 
     test('does not call removeEventListeners multiple times', function () {
-      var addEventListenersSpy = this.sinon.spy(component, 'addEventListeners');
-      var injectTrackedControlsSpy = this.sinon.spy(component, 'injectTrackedControls');
-      var removeEventListenersSpy = this.sinon.spy(component, 'removeEventListeners');
+      let addEventListenersSpy = this.sinon.spy(component, 'addEventListeners');
+      let injectTrackedControlsSpy = this.sinon.spy(component, 'injectTrackedControls');
+      let removeEventListenersSpy = this.sinon.spy(component, 'removeEventListeners');
 
       // delete our previously created mock, so component behaves as if it's never
       // checked for controller presence previously.
@@ -66,9 +66,9 @@ suite('windows-motion-controls', function () {
     });
 
     test('attach events if controller is newly present', function () {
-      var addEventListenersSpy = this.sinon.spy(component, 'addEventListeners');
-      var injectTrackedControlsSpy = this.sinon.spy(component, 'injectTrackedControls');
-      var removeEventListenersSpy = this.sinon.spy(component, 'removeEventListeners');
+      let addEventListenersSpy = this.sinon.spy(component, 'addEventListeners');
+      let injectTrackedControlsSpy = this.sinon.spy(component, 'injectTrackedControls');
+      let removeEventListenersSpy = this.sinon.spy(component, 'removeEventListeners');
 
       // Mock isControllerPresent to return true.
       el.sceneEl.systems['tracked-controls-webvr'].controllers = createMotionControllersList(MOCKS.HAND_DEFAULT);
@@ -267,9 +267,9 @@ suite('windows-motion-controls', function () {
     });
 
     test('does not add/remove event listeners if presence does not change', function () {
-      var addEventListenersSpy = this.sinon.spy(component, 'addEventListeners');
-      var injectTrackedControlsSpy = this.sinon.spy(component, 'injectTrackedControls');
-      var removeEventListenersSpy = this.sinon.spy(component, 'removeEventListeners');
+      let addEventListenersSpy = this.sinon.spy(component, 'addEventListeners');
+      let injectTrackedControlsSpy = this.sinon.spy(component, 'injectTrackedControls');
+      let removeEventListenersSpy = this.sinon.spy(component, 'removeEventListeners');
 
       // Mock isControllerPresent to return true.
       el.sceneEl.systems['tracked-controls-webvr'].controllers = createMotionControllersList(MOCKS.HAND_DEFAULT);
@@ -287,8 +287,8 @@ suite('windows-motion-controls', function () {
     });
 
     test('removes event listeners if controller disappears', function () {
-      var addEventListenersSpy = this.sinon.spy(component, 'addEventListeners');
-      var injectTrackedControlsSpy = this.sinon.spy(component, 'injectTrackedControls');
+      let addEventListenersSpy = this.sinon.spy(component, 'addEventListeners');
+      let injectTrackedControlsSpy = this.sinon.spy(component, 'injectTrackedControls');
 
       // Mock to the state that a gamepad is present.
       component.controllerEventsActive = true;
@@ -378,11 +378,11 @@ suite('windows-motion-controls', function () {
   });
 
   suite('mesh', function () {
-    var TEST_URL_MODEL = 'test-url.glb';
-    var TEST_URL_DEFAULT = 'default.glb';
+    let TEST_URL_MODEL = 'test-url.glb';
+    let TEST_URL_DEFAULT = 'default.glb';
 
     test('added when controller updated', function () {
-      var loadModelSpy = this.sinon.spy(component, 'loadModel');
+      let loadModelSpy = this.sinon.spy(component, 'loadModel');
 
       // Mock URL
       component.createControllerModelUrl = function () { return TEST_URL_MODEL; };
@@ -398,7 +398,7 @@ suite('windows-motion-controls', function () {
     });
 
     test('uses correct mesh for left hand', function () {
-      var loadModelSpy = this.sinon.spy(component, 'loadModel');
+      let loadModelSpy = this.sinon.spy(component, 'loadModel');
 
       // Mock isControllerPresent to return true.
       el.sceneEl.systems['tracked-controls-webvr'].controllers = createMotionControllersList(MOCKS.HAND_DEFAULT);
@@ -408,12 +408,12 @@ suite('windows-motion-controls', function () {
 
       assert.strictEqual(loadModelSpy.getCalls().length, 1, 'loadModel called once');
 
-      var arg0 = loadModelSpy.getCall(0).args[0] || '';
+      let arg0 = loadModelSpy.getCall(0).args[0] || '';
       assert.ok(arg0.indexOf('left.glb' !== -1), 'expected left hand GLB file');
     });
 
     test('uses correct mesh for right hand', function () {
-      var loadModelSpy = this.sinon.spy(component, 'loadModel');
+      let loadModelSpy = this.sinon.spy(component, 'loadModel');
 
       component.data.hand = MOCKS.HAND_RIGHT;
 
@@ -425,12 +425,12 @@ suite('windows-motion-controls', function () {
 
       assert.strictEqual(loadModelSpy.getCalls().length, 1, 'loadModel called once');
 
-      var arg0 = loadModelSpy.getCall(0).args[0] || '';
+      let arg0 = loadModelSpy.getCall(0).args[0] || '';
       assert.ok(arg0.indexOf('right.glb' !== -1), 'expected right hand GLB file');
     });
 
     test('uses correct mesh for unhanded', function () {
-      var loadModelSpy = this.sinon.spy(component, 'loadModel');
+      let loadModelSpy = this.sinon.spy(component, 'loadModel');
 
       component.data.hand = MOCKS.HAND_RIGHT;
 
@@ -442,18 +442,18 @@ suite('windows-motion-controls', function () {
 
       assert.strictEqual(loadModelSpy.getCalls().length, 1, 'loadModel called once');
 
-      var arg0 = loadModelSpy.getCall(0).args[0] || '';
+      let arg0 = loadModelSpy.getCall(0).args[0] || '';
       assert.ok(arg0.indexOf('universal.glb' !== -1), 'expected universal GLB file');
     });
 
     test('retries with default model when 404', function () {
-      var loadModelSpy = this.sinon.spy(component, 'loadModel');
+      let loadModelSpy = this.sinon.spy(component, 'loadModel');
 
       // Mock URL to return MODEL first time, DEFAULT thereafter
-      var url = TEST_URL_MODEL;
+      let url = TEST_URL_MODEL;
       component.createControllerModelUrl = function () {
         // Update the mocked value so that the next call to this method will return the default URL.
-        var returnValue = url;
+        let returnValue = url;
         url = TEST_URL_DEFAULT;
         return returnValue;
       };
@@ -490,7 +490,7 @@ suite('windows-motion-controls', function () {
     });
 
     function buttonTestHelper (done, buttonIndex, buttonName) {
-      var state = {value: 0.5, pressed: true, touched: true};
+      let state = {value: 0.5, pressed: true, touched: true};
       el.sceneEl.systems['tracked-controls-webvr'].controllers = createMotionControllersList(MOCKS.HAND_RIGHT);
       // Do the check.
       component.checkIfControllerPresent();
@@ -509,8 +509,8 @@ suite('windows-motion-controls', function () {
 
   suite('setModelVisibility', function () {
     test('shows model', function () {
-      var component = el.components['windows-motion-controls'];
-      var model = new THREE.Object3D();
+      let component = el.components['windows-motion-controls'];
+      let model = new THREE.Object3D();
       model.visible = false;
       el.setObject3D('mesh', model);
       component.setModelVisibility(true);
@@ -518,8 +518,8 @@ suite('windows-motion-controls', function () {
     });
 
     test('hides model', function () {
-      var component = el.components['windows-motion-controls'];
-      var model = new THREE.Object3D();
+      let component = el.components['windows-motion-controls'];
+      let model = new THREE.Object3D();
       model.visible = true;
       el.setObject3D('mesh', model);
       component.setModelVisibility(false);
@@ -529,8 +529,8 @@ suite('windows-motion-controls', function () {
 
   // Helper to create an event argument object for the axismove event
   function createAxisMovedFromChanged () {
-    var changed = [];
-    var i;
+    let changed = [];
+    let i;
 
     for (i = 0; i < MOCKS.AXIS_VALUES_VALID.length; i++) {
       changed.push(false);
@@ -547,9 +547,9 @@ suite('windows-motion-controls', function () {
   }
 
   function createMotionControllersList () {
-    var controllersList = [];
+    let controllersList = [];
 
-    for (var i = 0; i < arguments.length; i++) {
+    for (let i = 0; i < arguments.length; i++) {
       controllersList.push(
         {id: 'Spatial Controller (Spatial Interaction Source) 045E-065A', index: i, hand: arguments[i], pose: {}}
       );

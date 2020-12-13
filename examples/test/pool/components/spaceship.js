@@ -2,9 +2,9 @@
 
 AFRAME.registerComponent('spaceship', {
   init: function () {
-    var el = this.el;
-    var geometry = 'primitive: box; height: 2; width: 2; depth: 2;';
-    var material = 'color: #167341; roughness: 1.0; metalness: 0.2;';
+    let el = this.el;
+    let geometry = 'primitive: box; height: 2; width: 2; depth: 2;';
+    let material = 'color: #167341; roughness: 1.0; metalness: 0.2;';
     el.setAttribute('geometry', geometry);
     el.setAttribute('material', material);
     this.onKeyDown = this.onKeyDown.bind(this);
@@ -19,9 +19,9 @@ AFRAME.registerComponent('spaceship', {
   },
 
   onKeyDown: function (evt) {
-    var el = this.el;
-    var laserEl;
-    var position;
+    let el = this.el;
+    let laserEl;
+    let position;
     if (evt.keyCode !== 32) { return; }
     laserEl = el.sceneEl.components.pool.requestEntity();
     if (!laserEl) { return; }
@@ -32,8 +32,8 @@ AFRAME.registerComponent('spaceship', {
   },
 
   laserDestroyer: function (el) {
-    var laserEl = el;
-    var component = this;
+    let laserEl = el;
+    let component = this;
     return function () {
       if (!laserEl.isPlaying) {
         setTimeout(component.laserDestroyer(laserEl), 1000);

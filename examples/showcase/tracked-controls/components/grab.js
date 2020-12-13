@@ -16,14 +16,14 @@ AFRAME.registerComponent('grab', {
   },
 
   play: function () {
-    var el = this.el;
+    let el = this.el;
     el.addEventListener('hit', this.onHit);
     el.addEventListener('buttondown', this.onGripClose);
     el.addEventListener('buttonup', this.onGripOpen);
   },
 
   pause: function () {
-    var el = this.el;
+    let el = this.el;
     el.removeEventListener('hit', this.onHit);
     el.addEventListener('buttondown', this.onGripClose);
     el.addEventListener('buttonup', this.onGripOpen);
@@ -37,7 +37,7 @@ AFRAME.registerComponent('grab', {
   },
 
   onGripOpen: function (evt) {
-    var hitEl = this.hitEl;
+    let hitEl = this.hitEl;
     if (this.pressedButtonId !== evt.detail.id) { return; }
     this.grabbing = false;
     if (!hitEl) { return; }
@@ -47,7 +47,7 @@ AFRAME.registerComponent('grab', {
   },
 
   onHit: function (evt) {
-    var hitEl = evt.detail.el;
+    let hitEl = evt.detail.el;
     // If the element is already grabbed (it could be grabbed by another controller).
     // If the hand is not grabbing the element does not stick.
     // If we're already grabbing something you can't grab again.
@@ -57,8 +57,8 @@ AFRAME.registerComponent('grab', {
   },
 
   tick: function () {
-    var hitEl = this.hitEl;
-    var position;
+    let hitEl = this.hitEl;
+    let position;
     if (!hitEl) { return; }
     this.updateDelta();
     position = hitEl.getAttribute('position');
@@ -70,15 +70,15 @@ AFRAME.registerComponent('grab', {
   },
 
   updateDelta: function () {
-    var currentPosition = this.currentPosition;
+    let currentPosition = this.currentPosition;
     this.el.object3D.updateMatrixWorld();
     currentPosition.setFromMatrixPosition(this.el.object3D.matrixWorld);
     if (!this.previousPosition) {
       this.previousPosition = new THREE.Vector3();
       this.previousPosition.copy(currentPosition);
     }
-    var previousPosition = this.previousPosition;
-    var deltaPosition = {
+    let previousPosition = this.previousPosition;
+    let deltaPosition = {
       x: currentPosition.x - previousPosition.x,
       y: currentPosition.y - previousPosition.y,
       z: currentPosition.z - previousPosition.z

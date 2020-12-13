@@ -1,9 +1,9 @@
-var registerShader = require('../core/shader').registerShader;
-var THREE = require('../lib/three');
-var utils = require('../utils/');
+let registerShader = require('../core/shader').registerShader;
+let THREE = require('../lib/three');
+let utils = require('../utils/');
 
-var CubeLoader = new THREE.CubeTextureLoader();
-var texturePromises = {};
+let CubeLoader = new THREE.CubeTextureLoader();
+let texturePromises = {};
 
 /**
  * Standard (physically-based) shader using THREE.MeshStandardMaterial.
@@ -93,8 +93,8 @@ module.exports.Shader = registerShader('standard', {
    * @returns {object} Material.
    */
   updateMaterial: function (data) {
-    var key;
-    var material = this.material;
+    let key;
+    let material = this.material;
     getMaterialData(data, this.materialData);
     this.rendererSystem.applyColorCorrection(this.materialData.color);
     this.rendererSystem.applyColorCorrection(this.materialData.emissive);
@@ -107,10 +107,10 @@ module.exports.Shader = registerShader('standard', {
    * Handle environment cubemap. Textures are cached in texturePromises.
    */
   updateEnvMap: function (data) {
-    var self = this;
-    var material = this.material;
-    var envMap = data.envMap;
-    var sphericalEnvMap = data.sphericalEnvMap;
+    let self = this;
+    let material = this.material;
+    let envMap = data.envMap;
+    let sphericalEnvMap = data.sphericalEnvMap;
 
     // No envMap defined or already loading.
     if ((!envMap && !sphericalEnvMap) || this.isLoadingEnvMap) {

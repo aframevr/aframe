@@ -1,10 +1,10 @@
 /* global assert, suite, test, setup */
-var helpers = require('../../../helpers');
+let helpers = require('../../../helpers');
 
 suite('a-sky', function () {
   setup(function (done) {
-    var parentEl = helpers.entityFactory();
-    var skyEl = this.el = document.createElement('a-sky');
+    let parentEl = helpers.entityFactory();
+    let skyEl = this.el = document.createElement('a-sky');
     parentEl.addEventListener('loaded', function () {
       parentEl.sceneEl.appendChild(skyEl);
     });

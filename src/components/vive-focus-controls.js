@@ -1,14 +1,14 @@
-var registerComponent = require('../core/component').registerComponent;
-var bind = require('../utils/bind');
+let registerComponent = require('../core/component').registerComponent;
+let bind = require('../utils/bind');
 
-var trackedControlsUtils = require('../utils/tracked-controls');
-var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
-var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
-var onButtonEvent = trackedControlsUtils.onButtonEvent;
+let trackedControlsUtils = require('../utils/tracked-controls');
+let checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
+let emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
+let onButtonEvent = trackedControlsUtils.onButtonEvent;
 
-var GAMEPAD_ID_PREFIX = 'HTC Vive Focus';
+let GAMEPAD_ID_PREFIX = 'HTC Vive Focus';
 
-var VIVE_FOCUS_CONTROLLER_MODEL_URL = 'https://cdn.aframe.io/controllers/vive/focus-controller/focus-controller.gltf';
+let VIVE_FOCUS_CONTROLLER_MODEL_URL = 'https://cdn.aframe.io/controllers/vive/focus-controller/focus-controller.gltf';
 
 /**
  * Vive Focus controls.
@@ -45,7 +45,7 @@ module.exports.Component = registerComponent('vive-focus-controls', {
   },
 
   init: function () {
-    var self = this;
+    let self = this;
     this.onButtonChanged = bind(this.onButtonChanged, this);
     this.onButtonDown = function (evt) { onButtonEvent(evt.detail.id, 'down', self); };
     this.onButtonUp = function (evt) { onButtonEvent(evt.detail.id, 'up', self); };
@@ -57,7 +57,7 @@ module.exports.Component = registerComponent('vive-focus-controls', {
   },
 
   addEventListeners: function () {
-    var el = this.el;
+    let el = this.el;
     el.addEventListener('buttonchanged', this.onButtonChanged);
     el.addEventListener('buttondown', this.onButtonDown);
     el.addEventListener('buttonup', this.onButtonUp);
@@ -70,7 +70,7 @@ module.exports.Component = registerComponent('vive-focus-controls', {
   },
 
   removeEventListeners: function () {
-    var el = this.el;
+    let el = this.el;
     el.removeEventListener('buttonchanged', this.onButtonChanged);
     el.removeEventListener('buttondown', this.onButtonDown);
     el.removeEventListener('buttonup', this.onButtonUp);
@@ -98,8 +98,8 @@ module.exports.Component = registerComponent('vive-focus-controls', {
   },
 
   injectTrackedControls: function () {
-    var el = this.el;
-    var data = this.data;
+    let el = this.el;
+    let data = this.data;
     el.setAttribute('tracked-controls', {
       armModel: data.armModel,
       idPrefix: GAMEPAD_ID_PREFIX,
@@ -122,8 +122,8 @@ module.exports.Component = registerComponent('vive-focus-controls', {
   },
 
   onModelLoaded: function (evt) {
-    var controllerObject3D = evt.detail.model;
-    var buttonMeshes;
+    let controllerObject3D = evt.detail.model;
+    let buttonMeshes;
 
     if (!this.data.model) { return; }
     buttonMeshes = this.buttonMeshes = {};
@@ -141,7 +141,7 @@ module.exports.Component = registerComponent('vive-focus-controls', {
 
   // No analog buttons, only emits 0/1 values
   onButtonChanged: function (evt) {
-    var button = this.mapping.buttons[evt.detail.id];
+    let button = this.mapping.buttons[evt.detail.id];
     if (!button) return;
     // Pass along changed event with button state, using button mapping for convenience.
     this.el.emit(button + 'changed', evt.detail.state);
@@ -157,12 +157,12 @@ module.exports.Component = registerComponent('vive-focus-controls', {
   },
 
   updateButtonModel: function (buttonName, state) {
-    var buttonMeshes = this.buttonMeshes;
-    var pressedName = buttonName + 'Pressed';
+    let buttonMeshes = this.buttonMeshes;
+    let pressedName = buttonName + 'Pressed';
     if (!buttonMeshes || !buttonMeshes[buttonName] || !buttonMeshes[pressedName]) {
       return;
     }
-    var color;
+    let color;
     switch (state) {
       case 'down':
         color = this.data.buttonHighlightColor;

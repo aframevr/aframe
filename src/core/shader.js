@@ -1,13 +1,13 @@
-var schema = require('./schema');
+let schema = require('./schema');
 
-var processSchema = schema.process;
-var shaders = module.exports.shaders = {};  // Keep track of registered shaders.
-var shaderNames = module.exports.shaderNames = [];  // Keep track of the names of registered shaders.
-var THREE = require('../lib/three');
-var utils = require('../utils');
+let processSchema = schema.process;
+let shaders = module.exports.shaders = {};  // Keep track of registered shaders.
+let shaderNames = module.exports.shaderNames = [];  // Keep track of the names of registered shaders.
+let THREE = require('../lib/three');
+let utils = require('../utils');
 
 // A-Frame properties to three.js uniform types.
-var propertyToThreeMapping = {
+let propertyToThreeMapping = {
   array: 'v3',
   color: 'v3',
   int: 'i',
@@ -26,7 +26,7 @@ var propertyToThreeMapping = {
  * of customized materials
  *
  */
-var Shader = module.exports.Shader = function () {};
+let Shader = module.exports.Shader = function () {};
 
 Shader.prototype = {
   /**
@@ -62,10 +62,10 @@ Shader.prototype = {
   },
 
   initVariables: function (data, type) {
-    var key;
-    var schema = this.schema;
-    var variables = {};
-    var varType;
+    let key;
+    let schema = this.schema;
+    let variables = {};
+    let varType;
 
     for (key in schema) {
       if (schema[key].is !== type) { continue; }
@@ -90,10 +90,10 @@ Shader.prototype = {
   },
 
   updateVariables: function (data, type) {
-    var key;
-    var materialKey;
-    var schema = this.schema;
-    var variables;
+    let key;
+    let materialKey;
+    let schema = this.schema;
+    let variables;
 
     variables = type === 'uniform' ? this.uniforms : this.attributes;
     for (key in data) {
@@ -119,7 +119,7 @@ Shader.prototype = {
   },
 
   parseValue: function (type, value) {
-    var color;
+    let color;
     switch (type) {
       case 'vec2': {
         return new THREE.Vector2(value.x, value.y);
@@ -144,7 +144,7 @@ Shader.prototype = {
   },
 
   setMapOnTextureLoad: function (variables, key, materialKey) {
-    var self = this;
+    let self = this;
     this.el.addEventListener('materialtextureloaded', function () {
       variables[key].value = self.material[materialKey];
       variables[key].needsUpdate = true;
@@ -160,8 +160,8 @@ Shader.prototype = {
  * @returns {object} Shader.
  */
 module.exports.registerShader = function (name, definition) {
-  var NewShader;
-  var proto = {};
+  let NewShader;
+  let proto = {};
 
   // Format definition object to prototype object.
   Object.keys(definition).forEach(function (key) {

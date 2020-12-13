@@ -9,17 +9,17 @@ AFRAME.registerComponent('page-turn', {
   },
 
   tick: function () {
-    var direction = this.data.direction;
-    var pageNumber = this.pages.indexOf(this.layerEl.getAttribute('layer', 'src').src.id);
+    let direction = this.data.direction;
+    let pageNumber = this.pages.indexOf(this.layerEl.getAttribute('layer', 'src').src.id);
     this.el.object3D.visible = direction === 'forward' && pageNumber !== this.pages.length - 1 ||
       direction === 'backward' && pageNumber !== 0;
   },
 
   turnPage: function () {
-    var layerEl = this.layerEl;
-    var srcEl;
-    var pageNumber = this.pages.indexOf(layerEl.getAttribute('layer', 'src').src.id);
-    var previousSrcEl = layerEl.getAttribute('layer', 'src').src;
+    let layerEl = this.layerEl;
+    let srcEl;
+    let pageNumber = this.pages.indexOf(layerEl.getAttribute('layer', 'src').src.id);
+    let previousSrcEl = layerEl.getAttribute('layer', 'src').src;
     pageNumber = this.data.direction === 'forward' ? pageNumber + 1 : pageNumber - 1;
     if (pageNumber < 0 || pageNumber === this.pages.length) { return; }
     layerEl.setAttribute('layer', 'src', '#' + this.pages[pageNumber]);

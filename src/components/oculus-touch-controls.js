@@ -1,24 +1,24 @@
-var bind = require('../utils/bind');
-var registerComponent = require('../core/component').registerComponent;
-var THREE = require('../lib/three');
+let bind = require('../utils/bind');
+let registerComponent = require('../core/component').registerComponent;
+let THREE = require('../lib/three');
 
-var trackedControlsUtils = require('../utils/tracked-controls');
-var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
-var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
-var onButtonEvent = trackedControlsUtils.onButtonEvent;
+let trackedControlsUtils = require('../utils/tracked-controls');
+let checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
+let emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
+let onButtonEvent = trackedControlsUtils.onButtonEvent;
 
-var isWebXRAvailable = require('../utils/').device.isWebXRAvailable;
+let isWebXRAvailable = require('../utils/').device.isWebXRAvailable;
 
-var GAMEPAD_ID_WEBXR = 'oculus-touch';
-var GAMEPAD_ID_WEBVR = 'Oculus Touch';
+let GAMEPAD_ID_WEBXR = 'oculus-touch';
+let GAMEPAD_ID_WEBVR = 'Oculus Touch';
 
 // Prefix for Gen1 and Gen2 Oculus Touch Controllers.
-var GAMEPAD_ID_PREFIX = isWebXRAvailable ? GAMEPAD_ID_WEBXR : GAMEPAD_ID_WEBVR;
+let GAMEPAD_ID_PREFIX = isWebXRAvailable ? GAMEPAD_ID_WEBXR : GAMEPAD_ID_WEBVR;
 
 // First generation model URL.
-var TOUCH_CONTROLLER_MODEL_BASE_URL = 'https://cdn.aframe.io/controllers/oculus/oculus-touch-controller-';
+let TOUCH_CONTROLLER_MODEL_BASE_URL = 'https://cdn.aframe.io/controllers/oculus/oculus-touch-controller-';
 
-var OCULUS_TOUCH_WEBVR = {
+let OCULUS_TOUCH_WEBVR = {
   left: {
     modelUrl: TOUCH_CONTROLLER_MODEL_BASE_URL + 'left.gltf',
     rayOrigin: {origin: {x: 0.008, y: -0.01, z: 0}, direction: {x: 0, y: -0.8, z: -1}},
@@ -33,7 +33,7 @@ var OCULUS_TOUCH_WEBVR = {
   }
 };
 
-var OCULUS_TOUCH_WEBXR = {
+let OCULUS_TOUCH_WEBXR = {
   left: {
     modelUrl: TOUCH_CONTROLLER_MODEL_BASE_URL + 'left.gltf',
     rayOrigin: {origin: {x: 0.002, y: -0.005, z: -0.03}, direction: {x: 0, y: -0.8, z: -1}},
@@ -48,10 +48,10 @@ var OCULUS_TOUCH_WEBXR = {
   }
 };
 
-var OCULUS_TOUCH_CONFIG = isWebXRAvailable ? OCULUS_TOUCH_WEBXR : OCULUS_TOUCH_WEBVR;
+let OCULUS_TOUCH_CONFIG = isWebXRAvailable ? OCULUS_TOUCH_WEBXR : OCULUS_TOUCH_WEBVR;
 
-var CONTROLLER_DEFAULT = 'oculus-touch';
-var CONTROLLER_PROPERTIES = {
+let CONTROLLER_DEFAULT = 'oculus-touch';
+let CONTROLLER_PROPERTIES = {
   'oculus-touch': OCULUS_TOUCH_CONFIG,
   'oculus-touch-v2': {
     left: {
@@ -92,7 +92,7 @@ var CONTROLLER_PROPERTIES = {
  * 4 - Y (left) or B (right)
  * 5 - surface (touch only)
  */
-var INPUT_MAPPING_WEBVR = {
+let INPUT_MAPPING_WEBVR = {
   left: {
     axes: {thumbstick: [0, 1]},
     buttons: ['thumbstick', 'trigger', 'grip', 'xbutton', 'ybutton', 'surface']
@@ -120,7 +120,7 @@ var INPUT_MAPPING_WEBVR = {
  * 3 - thumbstick
  * Reference: https://github.com/immersive-web/webxr-input-profiles/blob/master/packages/registry/profiles/oculus/oculus-touch.json
  */
-var INPUT_MAPPING_WEBXR = {
+let INPUT_MAPPING_WEBXR = {
   left: {
     axes: {thumbstick: [2, 3]},
     buttons: ['trigger', 'grip', 'none', 'thumbstick', 'xbutton', 'ybutton', 'surface']
@@ -131,7 +131,7 @@ var INPUT_MAPPING_WEBXR = {
   }
 };
 
-var INPUT_MAPPING = isWebXRAvailable ? INPUT_MAPPING_WEBXR : INPUT_MAPPING_WEBVR;
+let INPUT_MAPPING = isWebXRAvailable ? INPUT_MAPPING_WEBXR : INPUT_MAPPING_WEBVR;
 
 /**
  * Oculus Touch controls.
@@ -160,7 +160,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   },
 
   init: function () {
-    var self = this;
+    let self = this;
     this.onButtonChanged = bind(this.onButtonChanged, this);
     this.onButtonDown = function (evt) { onButtonEvent(evt.detail.id, 'down', self, self.data.hand); };
     this.onButtonUp = function (evt) { onButtonEvent(evt.detail.id, 'up', self, self.data.hand); };
@@ -174,7 +174,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   },
 
   addEventListeners: function () {
-    var el = this.el;
+    let el = this.el;
     el.addEventListener('buttonchanged', this.onButtonChanged);
     el.addEventListener('buttondown', this.onButtonDown);
     el.addEventListener('buttonup', this.onButtonUp);
@@ -186,7 +186,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   },
 
   removeEventListeners: function () {
-    var el = this.el;
+    let el = this.el;
     el.removeEventListener('buttonchanged', this.onButtonChanged);
     el.removeEventListener('buttondown', this.onButtonDown);
     el.removeEventListener('buttonup', this.onButtonUp);
@@ -214,8 +214,8 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   },
 
   loadModel: function (controller) {
-    var data = this.data;
-    var controllerId;
+    let data = this.data;
+    let controllerId;
 
     if (!data.model) { return; }
     // Set the controller display model based on the data passed in.
@@ -223,10 +223,10 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     // If the developer is asking for auto-detection, see if the displayName can be retrieved to identify the specific unit.
     // This only works for WebVR currently.
     if (data.controllerType === 'auto') {
-      var trackedControlsSystem = this.el.sceneEl.systems['tracked-controls-webvr'];
+      let trackedControlsSystem = this.el.sceneEl.systems['tracked-controls-webvr'];
       // WebVR
       if (trackedControlsSystem && trackedControlsSystem.vrDisplay) {
-        var displayName = trackedControlsSystem.vrDisplay.displayName;
+        let displayName = trackedControlsSystem.vrDisplay.displayName;
         // The Oculus Quest uses the updated generation 2 inside-out tracked controllers so update the displayModel.
         if (/^Oculus Quest$/.test(displayName)) {
           this.displayModel = CONTROLLER_PROPERTIES['oculus-touch-v2'];
@@ -238,15 +238,15 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
         this.displayModel = CONTROLLER_PROPERTIES[controllerId];
       }
     }
-    var modelUrl = this.displayModel[data.hand].modelUrl;
+    let modelUrl = this.displayModel[data.hand].modelUrl;
     this.el.setAttribute('gltf-model', modelUrl);
   },
 
   injectTrackedControls: function (controller) {
-    var data = this.data;
-    var webXRId = GAMEPAD_ID_WEBXR;
-    var webVRId = data.hand === 'right' ? 'Oculus Touch (Right)' : 'Oculus Touch (Left)';
-    var id = isWebXRAvailable ? webXRId : webVRId;
+    let data = this.data;
+    let webXRId = GAMEPAD_ID_WEBXR;
+    let webVRId = data.hand === 'right' ? 'Oculus Touch (Right)' : 'Oculus Touch (Left)';
+    let id = isWebXRAvailable ? webXRId : webVRId;
     this.el.setAttribute('tracked-controls', {
       id: id,
       hand: data.hand,
@@ -270,9 +270,9 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   },
 
   onButtonChanged: function (evt) {
-    var button = this.mapping[this.data.hand].buttons[evt.detail.id];
-    var buttonMeshes = this.buttonMeshes;
-    var analogValue;
+    let button = this.mapping[this.data.hand].buttons[evt.detail.id];
+    let buttonMeshes = this.buttonMeshes;
+    let analogValue;
     if (!button) { return; }
 
     if (button === 'trigger' || button === 'grip') { analogValue = evt.detail.state.value; }
@@ -292,8 +292,8 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   },
 
   onModelLoaded: function (evt) {
-    var controllerObject3D = this.controllerObject3D = evt.detail.model;
-    var buttonMeshes;
+    let controllerObject3D = this.controllerObject3D = evt.detail.model;
+    let buttonMeshes;
 
     if (!this.data.model) { return; }
 
@@ -330,9 +330,9 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   },
 
   updateButtonModel: function (buttonName, state) {
-    var button;
-    var color = (state === 'up' || state === 'touchend') ? this.data.buttonColor : state === 'touchstart' ? this.data.buttonTouchColor : this.data.buttonHighlightColor;
-    var buttonMeshes = this.buttonMeshes;
+    let button;
+    let color = (state === 'up' || state === 'touchend') ? this.data.buttonColor : state === 'touchstart' ? this.data.buttonTouchColor : this.data.buttonHighlightColor;
+    let buttonMeshes = this.buttonMeshes;
     if (!this.data.model) { return; }
     if (buttonMeshes && buttonMeshes[buttonName]) {
       button = buttonMeshes[buttonName];

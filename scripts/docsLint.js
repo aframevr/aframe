@@ -13,11 +13,11 @@ const warnings = {};
 
 let pages = glob.sync('docs/**/*.md');
 pages.forEach(function checkPage (pagePath) {
-  var match;
-  var referencedMatch;
-  var referencingMatch;
-  var referencingRegex;
-  var urlRegex;
+  let match;
+  let referencedMatch;
+  let referencingMatch;
+  let referencingRegex;
+  let urlRegex;
 
   let content = fs.readFileSync(pagePath, 'utf-8');
 
@@ -64,13 +64,13 @@ pages.forEach(function checkPage (pagePath) {
 });
 
 function checkLink (pagePath, url) {
-  var absPath;
-  var content;
-  var hash;
-  var headingMatch;
-  var headingRegex;
-  var headingIds;
-  var urlPath;
+  let absPath;
+  let content;
+  let hash;
+  let headingMatch;
+  let headingRegex;
+  let headingIds;
+  let urlPath;
 
   // Relative path.
   if (url.indexOf('.') === 0) {

@@ -1,24 +1,24 @@
 /* global Node */
-var schema = require('./schema');
-var scenes = require('./scene/scenes');
-var systems = require('./system');
-var utils = require('../utils/');
+let schema = require('./schema');
+let scenes = require('./scene/scenes');
+let systems = require('./system');
+let utils = require('../utils/');
 
-var components = module.exports.components = {};  // Keep track of registered components.
-var parseProperties = schema.parseProperties;
-var parseProperty = schema.parseProperty;
-var processSchema = schema.process;
-var isSingleProp = schema.isSingleProperty;
-var stringifyProperties = schema.stringifyProperties;
-var stringifyProperty = schema.stringifyProperty;
-var styleParser = utils.styleParser;
-var warn = utils.debug('core:component:warn');
+let components = module.exports.components = {};  // Keep track of registered components.
+let parseProperties = schema.parseProperties;
+let parseProperty = schema.parseProperty;
+let processSchema = schema.process;
+let isSingleProp = schema.isSingleProperty;
+let stringifyProperties = schema.stringifyProperties;
+let stringifyProperty = schema.stringifyProperty;
+let styleParser = utils.styleParser;
+let warn = utils.debug('core:component:warn');
 
-var aframeScript = document.currentScript;
-var upperCaseRegExp = new RegExp('[A-Z]+');
+let aframeScript = document.currentScript;
+let upperCaseRegExp = new RegExp('[A-Z]+');
 
 // Object pools by component, created upon registration.
-var objectPools = {};
+let objectPools = {};
 
 /**
  * Component class definition.
@@ -33,8 +33,8 @@ var objectPools = {};
  * @member {object} data - Component data populated by parsing the
  *         mapped attribute of the component plus applying defaults and mixins.
  */
-var Component = module.exports.Component = function (el, attrValue, id) {
-  var self = this;
+let Component = module.exports.Component = function (el, attrValue, id) {
+  let self = this;
   this.el = el;
   this.id = id;
   this.attrName = this.name + (id ? '__' + id : '');
@@ -157,7 +157,7 @@ Component.prototype = {
    * @returns {object} Component data.
    */
   parse: function (value, silent) {
-    var schema = this.schema;
+    let schema = this.schema;
     if (this.isSingleProperty) { return parseProperty(value, schema); }
     return parseProperties(styleParser.parse(value), schema, true, this.name, silent);
   },
@@ -172,7 +172,7 @@ Component.prototype = {
    * @returns {string}
    */
   stringify: function (data) {
-    var schema = this.schema;
+    let schema = this.schema;
     if (typeof data === 'string') { return data; }
     if (this.isSingleProperty) { return stringifyProperty(data, schema); }
     data = stringifyProperties(data, schema);
@@ -186,9 +186,9 @@ Component.prototype = {
    * @param {boolean } clobber - Whether to wipe out and replace previous data.
    */
   updateCachedAttrValue: function (value, clobber) {
-    var newAttrValue;
-    var tempObject;
-    var property;
+    let newAttrValue;
+    let tempObject;
+    let property;
 
     if (value === undefined) { return; }
 
@@ -236,7 +236,7 @@ Component.prototype = {
    * @param {string} value - HTML attribute value
    */
   parseAttrValueForCache: function (value) {
-    var parsedValue;
+    let parsedValue;
     if (typeof value !== 'string') { return value; }
     if (this.isSingleProperty) {
       parsedValue = this.schema.parse(value);
@@ -262,7 +262,7 @@ Component.prototype = {
    *   default components.
    */
   flushToDOM: function (isDefault) {
-    var attrValue = isDefault ? this.data : this.attrValue;
+    let attrValue = isDefault ? this.data : this.attrValue;
     if (attrValue === null || attrValue === undefined) { return; }
     window.HTMLElement.prototype.setAttribute.call(this.el, this.attrName,
                                                    this.stringify(attrValue));
@@ -276,7 +276,7 @@ Component.prototype = {
    * @param {boolean} clobber - The previous component data is overwritten by the atrrValue
    */
   updateProperties: function (attrValue, clobber) {
-    var el = this.el;
+    let el = this.el;
 
     // Just cache the attribute if the entity has not loaded
     // Components are not initialized until the entity has loaded
@@ -304,8 +304,8 @@ Component.prototype = {
   },
 
   initComponent: function () {
-    var el = this.el;
-    var initialOldData;
+    let el = this.el;
+    let initialOldData;
 
     // Build data.
     if (this.updateSchema) { this.updateSchema(this.buildData(this.attrValue, false, true)); }
@@ -339,8 +339,8 @@ Component.prototype = {
    * @param attrValue - Passed argument from setAttribute.
    */
   updateComponent: function (attrValue, clobber) {
-    var key;
-    var mayNeedSchemaUpdate;
+    let key;
+    let mayNeedSchemaUpdate;
 
     if (clobber) {
       // Clobber. Rebuild.
@@ -392,7 +392,7 @@ Component.prototype = {
    * Check if component should fire update and fire update lifecycle handler.
    */
   callUpdateHandler: function () {
-    var hasComponentChanged;
+    let hasComponentChanged;
 
     // Store the previous old data before we calculate the new oldData.
     if (this.previousOldData instanceof Object) {
@@ -454,7 +454,7 @@ Component.prototype = {
    * @param {object} schemaAddon - Schema chunk that extend base schema.
    */
   extendSchema: function (schemaAddon) {
-    var extendedSchema;
+    let extendedSchema;
     // Clone base schema.
     extendedSchema = utils.extend({}, components[this.name].schema);
     // Extend base schema with new schema chunk.
@@ -479,16 +479,16 @@ Component.prototype = {
    * @return {object} The component data
    */
   buildData: function (newData, clobber, silent) {
-    var componentDefined;
-    var data;
-    var defaultValue;
-    var key;
-    var mixinData;
-    var nextData = this.nextData;
-    var schema = this.schema;
-    var i;
-    var mixinEls = this.el.mixinEls;
-    var previousData;
+    let componentDefined;
+    let data;
+    let defaultValue;
+    let key;
+    let mixinData;
+    let nextData = this.nextData;
+    let schema = this.schema;
+    let i;
+    let mixinEls = this.el.mixinEls;
+    let previousData;
 
     // Whether component has a defined value. For arrays, treat empty as not defined.
     componentDefined = newData && newData.constructor === Array
@@ -558,7 +558,7 @@ Component.prototype = {
    * Attach events from component-defined events map.
    */
   eventsAttach: function () {
-    var eventName;
+    let eventName;
     // Safety detach to prevent double-registration.
     this.eventsDetach();
     for (eventName in this.events) {
@@ -570,7 +570,7 @@ Component.prototype = {
    * Detach events from component-defined events map.
    */
   eventsDetach: function () {
-    var eventName;
+    let eventName;
     for (eventName in this.events) {
       this.el.removeEventListener(eventName, this.events[eventName]);
     }
@@ -588,15 +588,16 @@ Component.prototype = {
 };
 
 function eventsBind (component, events) {
-  var eventName;
+  let eventName;
   for (eventName in events) {
     component.events[eventName] = events[eventName].bind(component);
   }
 }
 
+let registrationOrderWarnings;
 // For testing.
 if (window.debug) {
-  var registrationOrderWarnings = module.exports.registrationOrderWarnings = {};
+  registrationOrderWarnings = module.exports.registrationOrderWarnings = {};
 }
 
 /**
@@ -607,11 +608,11 @@ if (window.debug) {
  * @returns {object} Component.
  */
 module.exports.registerComponent = function (name, definition) {
-  var NewComponent;
-  var propertyName;
-  var proto = {};
-  var schema;
-  var schemaIsSingleProp;
+  let NewComponent;
+  let propertyName;
+  let proto = {};
+  let schema;
+  let schemaIsSingleProp;
 
   // Warning if component is statically registered after the scene.
   if (document.currentScript && document.currentScript !== aframeScript) {
@@ -711,8 +712,8 @@ module.exports.registerComponent = function (name, definition) {
 * @returns Cloned data.
 */
 function copyData (dest, sourceData) {
-  var parsedProperty;
-  var key;
+  let parsedProperty;
+  let key;
   for (key in sourceData) {
     if (sourceData[key] === undefined) { continue; }
     parsedProperty = sourceData[key];
@@ -732,7 +733,7 @@ function copyData (dest, sourceData) {
 * @returns Overridden object or value.
 */
 function extendProperties (dest, source, isObjectBased) {
-  var key;
+  let key;
   if (isObjectBased && source.constructor === Object) {
     for (key in source) {
       if (source[key] === undefined) { continue; }
@@ -762,7 +763,7 @@ function hasBehavior (component) {
  */
 function wrapPause (pauseMethod) {
   return function pause () {
-    var sceneEl = this.el.sceneEl;
+    let sceneEl = this.el.sceneEl;
     if (!this.isPlaying) { return; }
     pauseMethod.call(this);
     this.isPlaying = false;
@@ -781,8 +782,8 @@ function wrapPause (pauseMethod) {
  */
 function wrapPlay (playMethod) {
   return function play () {
-    var sceneEl = this.el.sceneEl;
-    var shouldPlay = this.el.isPlaying && !this.isPlaying;
+    let sceneEl = this.el.sceneEl;
+    let shouldPlay = this.el.isPlaying && !this.isPlaying;
     if (!this.initialized || !shouldPlay) { return; }
     playMethod.call(this);
     this.isPlaying = true;

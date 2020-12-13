@@ -1,6 +1,6 @@
-var registerSystem = require('../core/system').registerSystem;
-var utils = require('../utils');
-var isWebXRAvailable = utils.device.isWebXRAvailable;
+let registerSystem = require('../core/system').registerSystem;
+let utils = require('../utils');
+let isWebXRAvailable = utils.device.isWebXRAvailable;
 
 /**
  * Tracked controls system.
@@ -8,7 +8,7 @@ var isWebXRAvailable = utils.device.isWebXRAvailable;
  */
 module.exports.System = registerSystem('tracked-controls-webvr', {
   init: function () {
-    var self = this;
+    let self = this;
 
     this.controllers = [];
     this.isChrome = navigator.userAgent.indexOf('Chrome') !== -1;
@@ -41,11 +41,11 @@ module.exports.System = registerSystem('tracked-controls-webvr', {
    * Update controller list.
    */
   updateControllerList: function () {
-    var controllers = this.controllers;
-    var gamepad;
-    var gamepads;
-    var i;
-    var prevCount;
+    let controllers = this.controllers;
+    let gamepad;
+    let gamepads;
+    let i;
+    let prevCount;
 
     gamepads = navigator.getGamepads && navigator.getGamepads();
     if (!gamepads) { return; }

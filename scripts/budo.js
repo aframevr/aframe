@@ -1,18 +1,18 @@
 #!/usr/bin/env node
 
-var exec = require('child_process').exec;
-var urlParse = require('url').parse;
+let exec = require('child_process').exec;
+let urlParse = require('url').parse;
 
-var budo = require('budo');
+let budo = require('budo');
 
 function execCmd (cmd) {
-  var p = exec(cmd);
+  let p = exec(cmd);
   p.stderr.pipe(process.stderr);
   p.stdout.pipe(process.stdout);
   return p;
 }
 
-var consts = {
+let consts = {
   NAME: 'AFRAME',
   ENTRY: './src/index.js',
   DIST: 'dist/aframe-master.js',
@@ -21,7 +21,7 @@ var consts = {
   PORT: 9000
 };
 
-var opts = {
+let opts = {
   debug: process.env.NODE_ENVIRONMENT !== 'production',
   verbose: true,
   live: true,
@@ -34,7 +34,7 @@ var opts = {
   middleware: function (req, res, next) {
     // Route `dist/aframe-master.js` to `build/aframe-master.js` so we can
     // dev against the examples :)
-    var path = urlParse(req.url).pathname;
+    let path = urlParse(req.url).pathname;
     if (path.indexOf('/' + consts.DIST) !== -1) {
       req.url = req.url.replace('/dist/', '/build/');
     }
@@ -44,7 +44,7 @@ var opts = {
   }
 };
 
-var app = budo(consts.ENTRY + ':' + consts.BUILD, opts);
+let app = budo(consts.ENTRY + ':' + consts.BUILD, opts);
 app.on('update', function () {
   execCmd('semistandard -v | snazzy');
 });

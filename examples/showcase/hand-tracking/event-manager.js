@@ -31,7 +31,7 @@ AFRAME.registerComponent('event-manager', {
   },
 
   onClick: function (evt) {
-    var targetEl = evt.target;
+    let targetEl = evt.target;
     if (targetEl === this.boxButtonEl ||
         targetEl === this.sphereButtonEl ||
         targetEl === this.torusButtonEl) {

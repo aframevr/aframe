@@ -2,14 +2,14 @@
 const entityFactory = require('../helpers').entityFactory;
 
 suite('tracked-controls-webxr', function () {
-  var controller;
-  var el;
-  var system;
-  var standingMatrix = new THREE.Matrix4();
-  var index = {transform: {position: {x: 0, y: 0, z: 0}}};
-  var thumb = {transform: {position: {x: 0, y: 0, z: 0}}};
-  var indexPosition = new THREE.Vector3();
-  var thumbPosition = new THREE.Vector3();
+  let controller;
+  let el;
+  let system;
+  let standingMatrix = new THREE.Matrix4();
+  let index = {transform: {position: {x: 0, y: 0, z: 0}}};
+  let thumb = {transform: {position: {x: 0, y: 0, z: 0}}};
+  let indexPosition = new THREE.Vector3();
+  let thumbPosition = new THREE.Vector3();
 
   setup(function (done) {
     standingMatrix.identity();
@@ -43,7 +43,7 @@ suite('tracked-controls-webxr', function () {
     test('matches controller with same hand', function () {
       el.setAttribute('hand-tracking-controls', {hand: 'left'});
       el.components['hand-tracking-controls'].checkIfControllerPresent();
-      var component = el.components['tracked-controls-webxr'];
+      let component = el.components['tracked-controls-webxr'];
       assert.equal(component.controller, controller);
     });
   });

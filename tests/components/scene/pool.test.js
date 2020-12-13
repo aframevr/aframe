@@ -1,10 +1,10 @@
 /* global assert, process, setup, suite, test */
-var helpers = require('../../helpers');
+let helpers = require('../../helpers');
 
 suite('pool', function () {
   setup(function (done) {
-    var el = helpers.entityFactory();
-    var sceneEl = this.sceneEl = el.parentNode;
+    let el = helpers.entityFactory();
+    let sceneEl = this.sceneEl = el.parentNode;
     sceneEl.setAttribute('pool', 'mixin: test; size: 1');
     helpers.mixinFactory('test', {material: 'color: red'}, sceneEl);
     if (sceneEl.hasLoaded) { done(); return; }
@@ -12,8 +12,8 @@ suite('pool', function () {
   });
 
   test('pool is initialized', function (done) {
-    var sceneEl = this.sceneEl;
-    var poolComponent = sceneEl.components.pool;
+    let sceneEl = this.sceneEl;
+    let poolComponent = sceneEl.components.pool;
     assert.equal(poolComponent.availableEls.length, 1);
     assert.equal(poolComponent.usedEls.length, 0);
     setTimeout(() => {
@@ -23,9 +23,9 @@ suite('pool', function () {
   });
 
   test('can specify container', function (done) {
-    var container;
-    var sceneEl = this.sceneEl;
-    var poolComponent = sceneEl.components.pool;
+    let container;
+    let sceneEl = this.sceneEl;
+    let poolComponent = sceneEl.components.pool;
 
     container = document.createElement('a-entity');
     container.setAttribute('id', 'foo');
@@ -44,9 +44,9 @@ suite('pool', function () {
 
   suite('requestEntity', function () {
     test('can request an available entity', function () {
-      var sceneEl = this.sceneEl;
-      var poolComponent = sceneEl.components.pool;
-      var el = poolComponent.requestEntity();
+      let sceneEl = this.sceneEl;
+      let poolComponent = sceneEl.components.pool;
+      let el = poolComponent.requestEntity();
       el.addEventListener('loaded', function () {
         assert.ok(el);
         assert.equal(el.getAttribute('material').color, 'red');
@@ -54,9 +54,9 @@ suite('pool', function () {
     });
 
     test('get undefined if pool is empty', function () {
-      var sceneEl = this.sceneEl;
-      var poolComponent = sceneEl.components.pool;
-      var el;
+      let sceneEl = this.sceneEl;
+      let poolComponent = sceneEl.components.pool;
+      let el;
       el = poolComponent.requestEntity();
       assert.ok(el);
       el = poolComponent.requestEntity();
@@ -66,19 +66,19 @@ suite('pool', function () {
 
   suite('returnEntity', function () {
     test('can return an entity to the pool', function () {
-      var sceneEl = this.sceneEl;
-      var poolComponent = sceneEl.components.pool;
-      var el = poolComponent.requestEntity();
+      let sceneEl = this.sceneEl;
+      let poolComponent = sceneEl.components.pool;
+      let el = poolComponent.requestEntity();
       assert.equal(poolComponent.availableEls.length, 0);
       poolComponent.returnEntity(el);
       assert.equal(poolComponent.availableEls.length, 1);
     });
 
     test('cannot return an entity that did not belong to the pool', function () {
-      var sceneEl = this.sceneEl;
-      var poolComponent = sceneEl.components.pool;
-      var el = poolComponent.requestEntity();
-      var badEl = document.createElement('a-entity');
+      let sceneEl = this.sceneEl;
+      let poolComponent = sceneEl.components.pool;
+      let el = poolComponent.requestEntity();
+      let badEl = document.createElement('a-entity');
       assert.equal(poolComponent.availableEls.length, 0);
       poolComponent.returnEntity(badEl);
       assert.equal(poolComponent.availableEls.length, 0);
@@ -87,8 +87,8 @@ suite('pool', function () {
     });
 
     test('return an entity and makes the pool grow if dynamic', function () {
-      var sceneEl = this.sceneEl;
-      var poolComponent = sceneEl.components.pool;
+      let sceneEl = this.sceneEl;
+      let poolComponent = sceneEl.components.pool;
       poolComponent.requestEntity();
       sceneEl.setAttribute('pool', 'dynamic', true);
       assert.equal(poolComponent.availableEls.length, 0);
@@ -101,9 +101,9 @@ suite('pool', function () {
 
   suite('wrapPlay', function () {
     test('cannot play an entity that is not in use', function () {
-      var sceneEl = this.sceneEl;
-      var poolComponent = sceneEl.components.pool;
-      var el = poolComponent.requestEntity();
+      let sceneEl = this.sceneEl;
+      let poolComponent = sceneEl.components.pool;
+      let el = poolComponent.requestEntity();
       poolComponent.returnEntity(el);
       el.play();
       assert.equal(el.isPlaying, false);

@@ -1,5 +1,5 @@
-var registerComponent = require('../core/component').registerComponent;
-var utils = require('../utils/');
+let registerComponent = require('../core/component').registerComponent;
+let utils = require('../utils/');
 
 registerComponent('laser-controls', {
   schema: {
@@ -9,11 +9,11 @@ registerComponent('laser-controls', {
   },
 
   init: function () {
-    var config = this.config;
-    var data = this.data;
-    var el = this.el;
-    var self = this;
-    var controlsConfiguration = {hand: data.hand, model: data.model};
+    let config = this.config;
+    let data = this.data;
+    let el = this.el;
+    let self = this;
+    let controlsConfiguration = {hand: data.hand, model: data.model};
 
     // Set all controller models.
     el.setAttribute('daydream-controls', controlsConfiguration);
@@ -36,13 +36,13 @@ registerComponent('laser-controls', {
     });
 
     function createRay (evt) {
-      var controllerConfig = config[evt.detail.name];
+      let controllerConfig = config[evt.detail.name];
 
       if (!controllerConfig) { return; }
 
       // Show the line unless a particular config opts to hide it, until a controllermodelready
       // event comes through.
-      var raycasterConfig = utils.extend({
+      let raycasterConfig = utils.extend({
         showLine: true
       }, controllerConfig.raycaster || {});
 

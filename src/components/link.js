@@ -1,6 +1,6 @@
-var registerComponent = require('../core/component').registerComponent;
-var registerShader = require('../core/shader').registerShader;
-var THREE = require('../lib/three');
+let registerComponent = require('../core/component').registerComponent;
+let registerShader = require('../core/shader').registerShader;
+let THREE = require('../lib/three');
 
 /**
  * Link component. Connect experiences and traverse between them in VR
@@ -31,10 +31,10 @@ module.exports.Component = registerComponent('link', {
   },
 
   update: function (oldData) {
-    var data = this.data;
-    var el = this.el;
-    var backgroundColor;
-    var strokeColor;
+    let data = this.data;
+    let el = this.el;
+    let backgroundColor;
+    let strokeColor;
 
     if (!data.visualAspectEnabled) { return; }
 
@@ -60,8 +60,8 @@ module.exports.Component = registerComponent('link', {
    * Toggle all elements and full 360 preview of the linked page.
    */
   updatePeekMode: function () {
-    var el = this.el;
-    var sphereEl = this.sphereEl;
+    let el = this.el;
+    let sphereEl = this.sphereEl;
     if (this.data.peekMode) {
       this.hideAll();
       el.getObject3D('mesh').visible = false;
@@ -82,23 +82,23 @@ module.exports.Component = registerComponent('link', {
   },
 
   updateEventListener: function () {
-    var el = this.el;
+    let el = this.el;
     if (!el.isPlaying) { return; }
     this.removeEventListener();
     el.addEventListener(this.data.on, this.navigate);
   },
 
   removeEventListener: function () {
-    var on = this.data.on;
+    let on = this.data.on;
     if (!on) { return; }
     this.el.removeEventListener(on, this.navigate);
   },
 
   initVisualAspect: function () {
-    var el = this.el;
-    var semiSphereEl;
-    var sphereEl;
-    var textEl;
+    let el = this.el;
+    let semiSphereEl;
+    let sphereEl;
+    let textEl;
 
     if (!this.data.visualAspectEnabled || this.visualAspectInitialized) { return; }
 
@@ -174,18 +174,18 @@ module.exports.Component = registerComponent('link', {
    * 3. Face portal to camera when far away from user.
    */
   tick: (function () {
-    var cameraWorldPosition = new THREE.Vector3();
-    var elWorldPosition = new THREE.Vector3();
-    var quaternion = new THREE.Quaternion();
-    var scale = new THREE.Vector3();
+    let cameraWorldPosition = new THREE.Vector3();
+    let elWorldPosition = new THREE.Vector3();
+    let quaternion = new THREE.Quaternion();
+    let scale = new THREE.Vector3();
 
     return function () {
-      var el = this.el;
-      var object3D = el.object3D;
-      var camera = el.sceneEl.camera;
-      var cameraPortalOrientation;
-      var distance;
-      var textEl = this.textEl;
+      let el = this.el;
+      let object3D = el.object3D;
+      let camera = el.sceneEl.camera;
+      let cameraPortalOrientation;
+      let distance;
+      let textEl = this.textEl;
 
       if (!this.data.visualAspectEnabled) { return; }
 
@@ -250,9 +250,9 @@ module.exports.Component = registerComponent('link', {
   })(),
 
   hideAll: function () {
-    var el = this.el;
-    var hiddenEls = this.hiddenEls;
-    var self = this;
+    let el = this.el;
+    let hiddenEls = this.hiddenEls;
+    let self = this;
     if (hiddenEls.length > 0) { return; }
     el.sceneEl.object3D.traverse(function (object) {
       if (object && object.el && object.el.hasAttribute('link-controls')) { return; }
@@ -277,14 +277,14 @@ module.exports.Component = registerComponent('link', {
    * @returns {number} > 0 if camera faces front of portal, < 0 if it faces back of portal.
    */
   calculateCameraPortalOrientation: (function () {
-    var mat4 = new THREE.Matrix4();
-    var cameraPosition = new THREE.Vector3();
-    var portalNormal = new THREE.Vector3(0, 0, 1);
-    var portalPosition = new THREE.Vector3(0, 0, 0);
+    let mat4 = new THREE.Matrix4();
+    let cameraPosition = new THREE.Vector3();
+    let portalNormal = new THREE.Vector3(0, 0, 1);
+    let portalPosition = new THREE.Vector3(0, 0, 0);
 
     return function () {
-      var el = this.el;
-      var camera = el.sceneEl.camera;
+      let el = this.el;
+      let camera = el.sceneEl.camera;
 
       // Reset tmp variables.
       cameraPosition.set(0, 0, 0);

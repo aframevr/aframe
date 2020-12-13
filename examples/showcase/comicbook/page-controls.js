@@ -1,9 +1,9 @@
 /* global AFRAME, THREE */
 AFRAME.registerComponent('page-controls', {
   init: function () {
-    var self = this;
-    var el = this.el;
-    var pageEl = this.pageEl = document.querySelector('[layer]');
+    let self = this;
+    let el = this.el;
+    let pageEl = this.pageEl = document.querySelector('[layer]');
     pageEl.object3D.position.set(0, 1.8, -2.5);
 
     this.pageIndex = 0;
@@ -50,8 +50,8 @@ AFRAME.registerComponent('page-controls', {
   },
 
   turnPage: function () {
-    var pages = this.pages;
-    var pageId;
+    let pages = this.pages;
+    let pageId;
     this.pageIndex = (this.pageIndex + 1) % (pages.length);
     pageId = pages[this.pageIndex].page;
     this.pageEl.setAttribute('layer', 'src', '#' + pageId);
@@ -59,7 +59,7 @@ AFRAME.registerComponent('page-controls', {
   },
 
   tick: function (time, delta) {
-    var timeDelta = delta / 1000;
+    let timeDelta = delta / 1000;
     this.updateVelocity(timeDelta);
     this.updatePosition(timeDelta);
     this.zoom(timeDelta);
@@ -69,7 +69,7 @@ AFRAME.registerComponent('page-controls', {
     this.velocity.x += this.acceleration.x * delta;
     this.velocity.y += this.acceleration.y * delta;
 
-    var scaledEasing = Math.pow(1 / this.friction, delta * 60);
+    let scaledEasing = Math.pow(1 / this.friction, delta * 60);
     this.velocity.x = this.velocity.x * scaledEasing;
     this.velocity.y = this.velocity.y * scaledEasing;
 
@@ -78,8 +78,8 @@ AFRAME.registerComponent('page-controls', {
   },
 
   updatePosition: function (delta) {
-    var newX = this.pageEl.object3D.position.x + this.velocity.x * delta;
-    var newY = this.pageEl.object3D.position.y + this.velocity.y * delta;
+    let newX = this.pageEl.object3D.position.x + this.velocity.x * delta;
+    let newY = this.pageEl.object3D.position.y + this.velocity.y * delta;
 
     if (Math.abs(newX) < 1.5) { this.pageEl.object3D.position.x = newX; }
     if (Math.abs(newY) < 2) { this.pageEl.object3D.position.y = newY; }
@@ -91,7 +91,7 @@ AFRAME.registerComponent('page-controls', {
   },
 
   zoom: function (delta) {
-    var position = this.pageEl.object3D.position;
+    let position = this.pageEl.object3D.position;
     if (position.z < -1.0 && this.zoomIn) {
       position.z += 2.5 * delta;
     }

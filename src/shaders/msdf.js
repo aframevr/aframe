@@ -1,8 +1,8 @@
-var registerShader = require('../core/shader').registerShader;
+let registerShader = require('../core/shader').registerShader;
 
-var isWebGL2AVailable = !!document.createElement('canvas').getContext('webgl2');
+let isWebGL2AVailable = !!document.createElement('canvas').getContext('webgl2');
 
-var VERTEX_SHADER_WEBGL1 = [
+let VERTEX_SHADER_WEBGL1 = [
   'attribute vec2 uv;',
   'attribute vec3 position;',
   'uniform mat4 projectionMatrix;',
@@ -14,7 +14,7 @@ var VERTEX_SHADER_WEBGL1 = [
   '}'
 ].join('\n');
 
-var VERTEX_SHADER_WEBGL2 = [
+let VERTEX_SHADER_WEBGL2 = [
   '#version 300 es',
   'in vec2 uv;',
   'in vec3 position;',
@@ -27,9 +27,9 @@ var VERTEX_SHADER_WEBGL2 = [
   '}'
 ].join('\n');
 
-var VERTEX_SHADER = isWebGL2AVailable ? VERTEX_SHADER_WEBGL2 : VERTEX_SHADER_WEBGL1;
+let VERTEX_SHADER = isWebGL2AVailable ? VERTEX_SHADER_WEBGL2 : VERTEX_SHADER_WEBGL1;
 
-var FRAGMENT_SHADER_WEBGL1 = [
+let FRAGMENT_SHADER_WEBGL1 = [
   '#ifdef GL_OES_standard_derivatives',
   '#extension GL_OES_standard_derivatives: enable',
   '#endif',
@@ -73,7 +73,7 @@ var FRAGMENT_SHADER_WEBGL1 = [
   '}'
 ].join('\n');
 
-var FRAGMENT_SHADER_WEBGL2 = [
+let FRAGMENT_SHADER_WEBGL2 = [
   '#version 300 es',
   'precision highp float;',
   'uniform bool negate;',
@@ -116,7 +116,7 @@ var FRAGMENT_SHADER_WEBGL2 = [
   '}'
 ].join('\n');
 
-var FRAGMENT_SHADER = isWebGL2AVailable ? FRAGMENT_SHADER_WEBGL2 : FRAGMENT_SHADER_WEBGL1;
+let FRAGMENT_SHADER = isWebGL2AVailable ? FRAGMENT_SHADER_WEBGL2 : FRAGMENT_SHADER_WEBGL1;
 
 /**
  * Multi-channel signed distance field.

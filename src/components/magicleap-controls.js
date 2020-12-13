@@ -1,19 +1,19 @@
-var bind = require('../utils/bind');
-var registerComponent = require('../core/component').registerComponent;
+let bind = require('../utils/bind');
+let registerComponent = require('../core/component').registerComponent;
 
-var trackedControlsUtils = require('../utils/tracked-controls');
-var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
-var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
-var onButtonEvent = trackedControlsUtils.onButtonEvent;
+let trackedControlsUtils = require('../utils/tracked-controls');
+let checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
+let emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
+let onButtonEvent = trackedControlsUtils.onButtonEvent;
 
 // See Profiles Registry:
 // https://github.com/immersive-web/webxr-input-profiles/tree/master/packages/registry
 // TODO: Add a more robust system for deriving gamepad name.
-var GAMEPAD_ID_PREFIX = 'magicleap';
-var GAMEPAD_ID_SUFFIX = '-one';
-var GAMEPAD_ID_COMPOSITE = GAMEPAD_ID_PREFIX + GAMEPAD_ID_SUFFIX;
+let GAMEPAD_ID_PREFIX = 'magicleap';
+let GAMEPAD_ID_SUFFIX = '-one';
+let GAMEPAD_ID_COMPOSITE = GAMEPAD_ID_PREFIX + GAMEPAD_ID_SUFFIX;
 
-var MAGICLEAP_CONTROLLER_MODEL_GLB_URL = 'https://cdn.aframe.io/controllers/magicleap/magicleap-one-controller.glb';
+let MAGICLEAP_CONTROLLER_MODEL_GLB_URL = 'https://cdn.aframe.io/controllers/magicleap/magicleap-one-controller.glb';
 
 /**
  * Button IDs:
@@ -26,7 +26,7 @@ var MAGICLEAP_CONTROLLER_MODEL_GLB_URL = 'https://cdn.aframe.io/controllers/magi
  * 0 - touchpad x axis
  * 1 - touchpad y axis
  */
-var INPUT_MAPPING_WEBXR = {
+let INPUT_MAPPING_WEBXR = {
   axes: {touchpad: [0, 1]},
   buttons: ['trigger', 'grip', 'touchpad', 'menu']
 };
@@ -47,7 +47,7 @@ module.exports.Component = registerComponent('magicleap-controls', {
   mapping: INPUT_MAPPING_WEBXR,
 
   init: function () {
-    var self = this;
+    let self = this;
     this.controllerPresent = false;
     this.lastControllerCheck = 0;
     this.onButtonChanged = bind(this.onButtonChanged, this);
@@ -62,7 +62,7 @@ module.exports.Component = registerComponent('magicleap-controls', {
   },
 
   update: function () {
-    var data = this.data;
+    let data = this.data;
     this.controllerIndex = data.hand === 'right' ? 0 : data.hand === 'left' ? 1 : 2;
   },
 
@@ -85,7 +85,7 @@ module.exports.Component = registerComponent('magicleap-controls', {
   },
 
   addEventListeners: function () {
-    var el = this.el;
+    let el = this.el;
     el.addEventListener('buttonchanged', this.onButtonChanged);
     el.addEventListener('buttondown', this.onButtonDown);
     el.addEventListener('buttonup', this.onButtonUp);
@@ -97,7 +97,7 @@ module.exports.Component = registerComponent('magicleap-controls', {
   },
 
   removeEventListeners: function () {
-    var el = this.el;
+    let el = this.el;
     el.removeEventListener('buttonchanged', this.onButtonChanged);
     el.removeEventListener('buttondown', this.onButtonDown);
     el.removeEventListener('buttonup', this.onButtonUp);
@@ -109,14 +109,14 @@ module.exports.Component = registerComponent('magicleap-controls', {
   },
 
   checkIfControllerPresent: function () {
-    var data = this.data;
+    let data = this.data;
     checkControllerPresentAndSetup(this, GAMEPAD_ID_COMPOSITE,
                                    {index: this.controllerIndex, hand: data.hand});
   },
 
   injectTrackedControls: function () {
-    var el = this.el;
-    var data = this.data;
+    let el = this.el;
+    let data = this.data;
 
     el.setAttribute('tracked-controls', {
       // TODO: verify expected behavior between reserved prefixes.
@@ -148,8 +148,8 @@ module.exports.Component = registerComponent('magicleap-controls', {
    * Rotate the trigger button based on how hard the trigger is pressed.
    */
   onButtonChanged: function (evt) {
-    var button = this.mapping.buttons[evt.detail.id];
-    var analogValue;
+    let button = this.mapping.buttons[evt.detail.id];
+    let analogValue;
 
     if (!button) { return; }
     if (button === 'trigger') {
@@ -162,7 +162,7 @@ module.exports.Component = registerComponent('magicleap-controls', {
   },
 
   onModelLoaded: function (evt) {
-    var controllerObject3D = evt.detail.model;
+    let controllerObject3D = evt.detail.model;
     // our glb scale is too large.
     controllerObject3D.scale.set(0.01, 0.01, 0.01);
   },

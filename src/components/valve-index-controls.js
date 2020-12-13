@@ -1,45 +1,45 @@
-var registerComponent = require('../core/component').registerComponent;
-var bind = require('../utils/bind');
-var THREE = require('../lib/three');
+let registerComponent = require('../core/component').registerComponent;
+let bind = require('../utils/bind');
+let THREE = require('../lib/three');
 
-var trackedControlsUtils = require('../utils/tracked-controls');
-var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
-var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
-var onButtonEvent = trackedControlsUtils.onButtonEvent;
+let trackedControlsUtils = require('../utils/tracked-controls');
+let checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
+let emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
+let onButtonEvent = trackedControlsUtils.onButtonEvent;
 
-var INDEX_CONTROLLER_MODEL_BASE_URL = 'https://cdn.aframe.io/controllers/valve/index/valve-index-';
-var INDEX_CONTROLLER_MODEL_URL = {
+let INDEX_CONTROLLER_MODEL_BASE_URL = 'https://cdn.aframe.io/controllers/valve/index/valve-index-';
+let INDEX_CONTROLLER_MODEL_URL = {
   left: INDEX_CONTROLLER_MODEL_BASE_URL + 'left.glb',
   right: INDEX_CONTROLLER_MODEL_BASE_URL + 'right.glb'
 };
 
-var GAMEPAD_ID_PREFIX = 'valve';
+let GAMEPAD_ID_PREFIX = 'valve';
 
-var isWebXRAvailable = require('../utils/').device.isWebXRAvailable;
+let isWebXRAvailable = require('../utils/').device.isWebXRAvailable;
 
-var INDEX_CONTROLLER_POSITION_OFFSET_WEBVR = {
+let INDEX_CONTROLLER_POSITION_OFFSET_WEBVR = {
   left: {x: -0.00023692678902063457, y: 0.04724540367838371, z: -0.061959880395271096},
   right: {x: 0.002471558599671131, y: 0.055765208987076195, z: -0.061068168708348844}
 };
 
-var INDEX_CONTROLLER_POSITION_OFFSET_WEBXR = {
+let INDEX_CONTROLLER_POSITION_OFFSET_WEBXR = {
   left: {x: 0, y: -0.05, z: 0.06},
   right: {x: 0, y: -0.05, z: 0.06}
 };
 
-var INDEX_CONTROLLER_ROTATION_OFFSET_WEBVR = {
+let INDEX_CONTROLLER_ROTATION_OFFSET_WEBVR = {
   left: {_x: 0.692295102620542, _y: -0.0627618864318427, _z: -0.06265893149611756, _order: 'XYZ'},
   right: {_x: 0.6484021229942998, _y: -0.032563619881892894, _z: -0.1327973171917482, _order: 'XYZ'}
 };
 
-var INDEX_CONTROLLER_ROTATION_OFFSET_WEBXR = {
+let INDEX_CONTROLLER_ROTATION_OFFSET_WEBXR = {
   left: {_x: Math.PI / 3, _y: 0, _z: 0, _order: 'XYZ'},
   right: {_x: Math.PI / 3, _y: 0, _z: 0, _order: 'XYZ'}
 };
 
-var INDEX_CONTROLLER_ROTATION_OFFSET = isWebXRAvailable ? INDEX_CONTROLLER_ROTATION_OFFSET_WEBXR : INDEX_CONTROLLER_ROTATION_OFFSET_WEBVR;
+let INDEX_CONTROLLER_ROTATION_OFFSET = isWebXRAvailable ? INDEX_CONTROLLER_ROTATION_OFFSET_WEBXR : INDEX_CONTROLLER_ROTATION_OFFSET_WEBVR;
 
-var INDEX_CONTROLLER_POSITION_OFFSET = isWebXRAvailable ? INDEX_CONTROLLER_POSITION_OFFSET_WEBXR : INDEX_CONTROLLER_POSITION_OFFSET_WEBVR;
+let INDEX_CONTROLLER_POSITION_OFFSET = isWebXRAvailable ? INDEX_CONTROLLER_POSITION_OFFSET_WEBXR : INDEX_CONTROLLER_POSITION_OFFSET_WEBVR;
 /**
  * Vive controls.
  * Interface with Vive controllers and map Gamepad events to controller buttons:
@@ -64,7 +64,7 @@ module.exports.Component = registerComponent('valve-index-controls', {
   },
 
   init: function () {
-    var self = this;
+    let self = this;
     this.controllerPresent = false;
     this.lastControllerCheck = 0;
     this.onButtonChanged = bind(this.onButtonChanged, this);
@@ -97,7 +97,7 @@ module.exports.Component = registerComponent('valve-index-controls', {
   },
 
   addEventListeners: function () {
-    var el = this.el;
+    let el = this.el;
     el.addEventListener('buttonchanged', this.onButtonChanged);
     el.addEventListener('buttondown', this.onButtonDown);
     el.addEventListener('buttonup', this.onButtonUp);
@@ -109,7 +109,7 @@ module.exports.Component = registerComponent('valve-index-controls', {
   },
 
   removeEventListeners: function () {
-    var el = this.el;
+    let el = this.el;
     el.removeEventListener('buttonchanged', this.onButtonChanged);
     el.removeEventListener('buttondown', this.onButtonDown);
     el.removeEventListener('buttonup', this.onButtonUp);
@@ -127,14 +127,14 @@ module.exports.Component = registerComponent('valve-index-controls', {
    * Until then, use hardcoded index.
    */
   checkIfControllerPresent: function () {
-    var data = this.data;
-    var controllerIndex = data.hand === 'right' ? 0 : data.hand === 'left' ? 1 : 2;
+    let data = this.data;
+    let controllerIndex = data.hand === 'right' ? 0 : data.hand === 'left' ? 1 : 2;
     checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX, {index: controllerIndex, iterateControllerProfiles: true, hand: data.hand});
   },
 
   injectTrackedControls: function () {
-    var el = this.el;
-    var data = this.data;
+    let el = this.el;
+    let data = this.data;
 
     // If we have an OpenVR Gamepad, use the fixed mapping.
     el.setAttribute('tracked-controls', {
@@ -149,7 +149,7 @@ module.exports.Component = registerComponent('valve-index-controls', {
   },
 
   loadModel: function () {
-    var data = this.data;
+    let data = this.data;
     if (!data.model) { return; }
     this.el.setAttribute('gltf-model', '' + INDEX_CONTROLLER_MODEL_URL[data.hand] + '');
   },
@@ -170,9 +170,9 @@ module.exports.Component = registerComponent('valve-index-controls', {
    * Rotate the trigger button based on how hard the trigger is pressed.
    */
   onButtonChanged: function (evt) {
-    var button = this.mapping.buttons[evt.detail.id];
-    var buttonMeshes = this.buttonMeshes;
-    var analogValue;
+    let button = this.mapping.buttons[evt.detail.id];
+    let buttonMeshes = this.buttonMeshes;
+    let analogValue;
 
     if (!button) { return; }
 
@@ -189,9 +189,9 @@ module.exports.Component = registerComponent('valve-index-controls', {
   },
 
   onModelLoaded: function (evt) {
-    var buttonMeshes;
-    var controllerObject3D = evt.detail.model;
-    var self = this;
+    let buttonMeshes;
+    let controllerObject3D = evt.detail.model;
+    let self = this;
 
     if (!this.data.model) { return; }
 
@@ -228,8 +228,8 @@ module.exports.Component = registerComponent('valve-index-controls', {
   },
 
   updateModel: function (buttonName, evtName) {
-    var color;
-    var isTouch;
+    let color;
+    let isTouch;
     if (!this.data.model) { return; }
 
     isTouch = evtName.indexOf('touch') !== -1;

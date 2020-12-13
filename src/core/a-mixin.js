@@ -1,9 +1,9 @@
-var ANode = require('./a-node');
-var registerElement = require('./a-register-element').registerElement;
-var components = require('./component').components;
-var utils = require('../utils');
+let ANode = require('./a-node');
+let registerElement = require('./a-register-element').registerElement;
+let components = require('./component').components;
+let utils = require('../utils');
 
-var MULTIPLE_COMPONENT_DELIMITER = '__';
+let MULTIPLE_COMPONENT_DELIMITER = '__';
 
 /**
  * @member {object} componentCache - Cache of pre-parsed values. An object where the keys
@@ -50,8 +50,8 @@ module.exports = registerElement('a-mixin', {
      */
     cacheAttribute: {
       value: function (attr, value) {
-        var component;
-        var componentName;
+        let component;
+        let componentName;
 
         // Get component data.
         componentName = utils.split(attr, MULTIPLE_COMPONENT_DELIMITER)[0];
@@ -80,9 +80,9 @@ module.exports = registerElement('a-mixin', {
      */
     cacheAttributes: {
       value: function () {
-        var attributes = this.attributes;
-        var attrName;
-        var i;
+        let attributes = this.attributes;
+        let attrName;
+        let i;
         for (i = 0; i < attributes.length; i++) {
           attrName = attributes[i].name;
           this.cacheAttribute(attrName);
@@ -96,9 +96,9 @@ module.exports = registerElement('a-mixin', {
      */
     updateEntities: {
       value: function () {
-        var entity;
-        var entities;
-        var i;
+        let entity;
+        let entities;
+        let i;
 
         if (!this.sceneEl) { return; }
 

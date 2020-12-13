@@ -1,13 +1,13 @@
-var registerSystem = require('../core/system').registerSystem;
-var THREE = require('../lib/three');
-var utils = require('../utils/');
-var isHLS = require('../utils/material').isHLS;
+let registerSystem = require('../core/system').registerSystem;
+let THREE = require('../lib/three');
+let utils = require('../utils/');
+let isHLS = require('../utils/material').isHLS;
 
-var bind = utils.bind;
-var debug = utils.debug;
-var error = debug('components:texture:error');
-var TextureLoader = new THREE.TextureLoader();
-var warn = debug('components:texture:warn');
+let bind = utils.bind;
+let debug = utils.debug;
+let error = debug('components:texture:error');
+let TextureLoader = new THREE.TextureLoader();
+let warn = debug('components:texture:warn');
 
 TextureLoader.setCrossOrigin('anonymous');
 
@@ -47,7 +47,7 @@ module.exports.System = registerSystem('material', {
    * @param {function} cb - Callback to pass texture to.
    */
   loadTexture: function (src, data, cb) {
-    var self = this;
+    let self = this;
 
     // Canvas.
     if (src.tagName === 'CANVAS') {
@@ -77,8 +77,8 @@ module.exports.System = registerSystem('material', {
    * @param {function} cb - Callback to pass texture to.
    */
   loadImage: function (src, data, handleImageTextureLoaded) {
-    var hash = this.hash(data);
-    var textureCache = this.textureCache;
+    let hash = this.hash(data);
+    let textureCache = this.textureCache;
 
     // Texture already being loaded or already loaded. Wait on promise.
     if (textureCache[hash]) {
@@ -99,7 +99,7 @@ module.exports.System = registerSystem('material', {
    * @param {function} cb - Callback to pass texture to.
    */
   loadCanvas: function (src, data, cb) {
-    var texture;
+    let texture;
     texture = new THREE.CanvasTexture(src);
     setTextureProperties(texture, data);
     cb(texture);
@@ -116,11 +116,11 @@ module.exports.System = registerSystem('material', {
    * @param {function} cb - Callback to pass texture to.
    */
   loadVideo: function (src, data, cb) {
-    var hash;
-    var texture;
-    var textureCache = this.textureCache;
-    var videoEl;
-    var videoTextureResult;
+    let hash;
+    let texture;
+    let textureCache = this.textureCache;
+    let videoEl;
+    let videoTextureResult;
 
     function handleVideoTextureLoaded (result) {
       result.texture.needsUpdate = true;
@@ -208,7 +208,7 @@ module.exports.System = registerSystem('material', {
     delete this.materials[material.uuid];
 
     // If any textures on this material are no longer in use, dispose of them.
-    var textureCounts = this.textureCounts;
+    let textureCounts = this.textureCounts;
     Object.keys(material)
       .filter(function (propName) {
         return material[propName] && material[propName].isTexture;
@@ -225,7 +225,7 @@ module.exports.System = registerSystem('material', {
    * Trigger update to all registered materials.
    */
   updateMaterials: function (material) {
-    var materials = this.materials;
+    let materials = this.materials;
     Object.keys(materials).forEach(function (uuid) {
       materials[uuid].needsUpdate = true;
     });
@@ -257,10 +257,10 @@ module.exports.System = registerSystem('material', {
  * @returns {string}
  */
 function calculateVideoCacheHash (data, videoEl) {
-  var i;
-  var id = videoEl.getAttribute('id');
-  var hash;
-  var videoAttributes;
+  let i;
+  let id = videoEl.getAttribute('id');
+  let hash;
+  let videoAttributes;
 
   if (id) { return id; }
 
@@ -289,7 +289,7 @@ function loadImageTexture (src, data) {
   return new Promise(doLoadImageTexture);
 
   function doLoadImageTexture (resolve, reject) {
-    var isEl = typeof src !== 'string';
+    let isEl = typeof src !== 'string';
 
     function resolveTexture (texture) {
       setTextureProperties(texture, data);
@@ -323,9 +323,9 @@ function loadImageTexture (src, data) {
  * @param {object} data - With keys like `repeat`.
  */
 function setTextureProperties (texture, data) {
-  var offset = data.offset || {x: 0, y: 0};
-  var repeat = data.repeat || {x: 1, y: 1};
-  var npot = data.npot || false;
+  let offset = data.offset || {x: 0, y: 0};
+  let repeat = data.repeat || {x: 1, y: 1};
+  let npot = data.npot || false;
 
   // To support NPOT textures, wrap must be ClampToEdge (not Repeat),
   // and filters must not use mipmaps (i.e. Nearest or Linear).
@@ -357,7 +357,7 @@ function setTextureProperties (texture, data) {
  * @returns {Element} Video element.
  */
 function createVideoEl (src, width, height) {
-  var videoEl = document.createElement('video');
+  let videoEl = document.createElement('video');
   videoEl.width = width;
   videoEl.height = height;
   // Support inline videos for iOS webviews.

@@ -1,14 +1,14 @@
 /* global assert, process, setup, suite, test */
-var constants = require('constants/');
-var entityFactory = require('../helpers').entityFactory;
-var DEFAULT_LIGHT_ATTR = 'data-aframe-default-light';
+let constants = require('constants/');
+let entityFactory = require('../helpers').entityFactory;
+let DEFAULT_LIGHT_ATTR = 'data-aframe-default-light';
 
 suite('light system', function () {
   setup(function (done) {
-    var el = this.el = entityFactory();
+    let el = this.el = entityFactory();
     el.addEventListener('loaded', function () {
-      var i;
-      var lights = el.sceneEl.querySelectorAll('[light]');
+      let i;
+      let lights = el.sceneEl.querySelectorAll('[light]');
       // Remove lights to re-test.
       for (i = 0; i < lights.length; ++i) {
         el.sceneEl.removeChild(lights[i]);
@@ -18,10 +18,10 @@ suite('light system', function () {
   });
 
   test('adds default lights to scene', function () {
-    var sceneEl = this.el.sceneEl;
-    var i;
-    var lights;
-    var lightsNum = 0;
+    let sceneEl = this.el.sceneEl;
+    let i;
+    let lights;
+    let lightsNum = 0;
 
     assert.notOk(document.querySelectorAll('[light]').length);
     sceneEl.systems.light.setupDefaultLights();
@@ -36,8 +36,8 @@ suite('light system', function () {
   });
 
   test('it does not add default lights to scene if there are used define lights', function (done) {
-    var el = this.el;
-    var lightEl = document.createElement('a-entity');
+    let el = this.el;
+    let lightEl = document.createElement('a-entity');
     lightEl.setAttribute('light', '');
 
     assert.notOk(document.querySelectorAll('[light]').length);
@@ -51,8 +51,8 @@ suite('light system', function () {
   });
 
   test('it does not add default lights to scene if they are disabled', function (done) {
-    var el = this.el;
-    var sceneEl = el.sceneEl;
+    let el = this.el;
+    let sceneEl = el.sceneEl;
 
     // Systems cannot yet be updated via setAttribute().
     sceneEl.systems.light.data.defaultLightsEnabled = false;
@@ -67,8 +67,8 @@ suite('light system', function () {
   });
 
   test('removes default lights when more lights are added', function (done) {
-    var el = this.el;
-    var lightEl = document.createElement('a-entity');
+    let el = this.el;
+    let lightEl = document.createElement('a-entity');
     lightEl.setAttribute('light', '');
 
     assert.notOk(document.querySelectorAll('[light]').length);

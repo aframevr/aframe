@@ -7,11 +7,11 @@
         window.performance = {};
     }
 
-    var performance = window.performance;
+    let performance = window.performance;
 
     if ( 'now' in performance == false ) {
 
-        var nowOffset = Date.now();
+        let nowOffset = Date.now();
 
         if ( performance.timing && performance.timing.navigationStart ) {
             nowOffset = performance.timing.navigationStart;
@@ -36,15 +36,15 @@
 window.rStats = function rStats ( settings ) {
 
     function iterateKeys ( array, callback ) {
-        var keys = Object.keys( array );
-        for ( var j = 0, l = keys.length; j < l; j++ ) {
+        let keys = Object.keys( array );
+        for ( let j = 0, l = keys.length; j < l; j++ ) {
             callback( keys[ j ] );
         }
     }
 
     function importCSS ( url ) {
 
-        var element = document.createElement( 'link' );
+        let element = document.createElement( 'link' );
         element.href = url;
         element.rel = 'stylesheet';
         element.type = 'text/css';
@@ -52,34 +52,34 @@ window.rStats = function rStats ( settings ) {
 
     }
 
-    var _settings = settings || {};
-    var _colours = _settings.colours || [ '#850700', '#c74900', '#fcb300', '#284280', '#4c7c0c' ];
+    let _settings = settings || {};
+    let _colours = _settings.colours || [ '#850700', '#c74900', '#fcb300', '#284280', '#4c7c0c' ];
 
-    var _cssFont = 'https://fonts.googleapis.com/css?family=Roboto+Condensed:400,700,300';
-    var _cssRStats = ( _settings.CSSPath ? _settings.CSSPath : '' ) + 'rStats.css';
+    let _cssFont = 'https://fonts.googleapis.com/css?family=Roboto+Condensed:400,700,300';
+    let _cssRStats = ( _settings.CSSPath ? _settings.CSSPath : '' ) + 'rStats.css';
 
-    var _css = _settings.css || [ _cssFont, _cssRStats ];
+    let _css = _settings.css || [ _cssFont, _cssRStats ];
     _css.forEach(function (uri) {
         importCSS( uri );
     });
 
     if ( !_settings.values ) _settings.values = {};
 
-    var _base, _div, _elHeight = 10, _elWidth = 200;
-    var _perfCounters = {};
+    let _base, _div, _elHeight = 10, _elWidth = 200;
+    let _perfCounters = {};
 
 
     function Graph ( _dom, _id, _defArg ) {
 
-        var _def = _defArg || {};
-        var _canvas = document.createElement( 'canvas' ),
+        let _def = _defArg || {};
+        let _canvas = document.createElement( 'canvas' ),
             _ctx = _canvas.getContext( '2d' ),
             _max = 0,
             _current = 0;
 
-        var c = _def.color ? _def.color : '#666666';
+        let c = _def.color ? _def.color : '#666666';
 
-        var _dotCanvas = document.createElement( 'canvas' ),
+        let _dotCanvas = document.createElement( 'canvas' ),
             _dotCtx = _dotCanvas.getContext( '2d' );
         _dotCanvas.width = 1;
         _dotCanvas.height = 2 * _elHeight;
@@ -92,7 +92,7 @@ window.rStats = function rStats ( settings ) {
         _dotCtx.fillRect( 0, _elHeight, 1, 1 );
         _dotCtx.globalAlpha = 1;
 
-        var _alarmCanvas = document.createElement( 'canvas' ),
+        let _alarmCanvas = document.createElement( 'canvas' ),
             _alarmCtx = _alarmCanvas.getContext( '2d' );
         _alarmCanvas.width = 1;
         _alarmCanvas.height = 2 * _elHeight;
@@ -141,7 +141,7 @@ window.rStats = function rStats ( settings ) {
 
     function StackGraph ( _dom, _num ) {
 
-        var _canvas = document.createElement( 'canvas' ),
+        let _canvas = document.createElement( 'canvas' ),
             _ctx = _canvas.getContext( '2d' );
 
         function _init () {
@@ -160,9 +160,9 @@ window.rStats = function rStats ( settings ) {
 
         function _draw ( v ) {
             _ctx.drawImage( _canvas, 1, 0, _canvas.width - 1, _canvas.height, 0, 0, _canvas.width - 1, _canvas.height );
-            var th = 0;
+            let th = 0;
             iterateKeys( v, function ( j ) {
-                var h = v[ j ] * _canvas.height;
+                let h = v[ j ] * _canvas.height;
                 _ctx.fillStyle = _colours[ j ];
                 _ctx.fillRect( _canvas.width - 1, th, 1, h );
                 th += h;
@@ -179,7 +179,7 @@ window.rStats = function rStats ( settings ) {
 
     function PerfCounter ( id, group ) {
 
-        var _id = id,
+        let _id = id,
             _time,
             _value = 0,
             _total = 0,
@@ -212,7 +212,7 @@ window.rStats = function rStats ( settings ) {
             if ( _def && _def.average ) {
                 _accumValue += v;
                 _accumSamples++;
-                var t = performance.now();
+                let t = performance.now();
                 if ( t - _accumStart >= ( _def.avgMs || 1000 ) ) {
                     _averageValue = _accumValue / _accumSamples;
                     _accumValue = 0;
@@ -245,17 +245,17 @@ window.rStats = function rStats ( settings ) {
         }
 
         function _draw () {
-            var v = ( _def && _def.average ) ? _averageValue : _value;
+            let v = ( _def && _def.average ) ? _averageValue : _value;
             _spanValueText.nodeValue = Math.round( v * 100 ) / 100;
-            var a = ( _def && ( ( _def.below && _value < _def.below ) || ( _def.over && _value > _def.over ) ) );
+            let a = ( _def && ( ( _def.below && _value < _def.below ) || ( _def.over && _value > _def.over ) ) );
             _graph.draw( _value, a );
             _dom.className = a ? 'rs-counter-base alarm' : 'rs-counter-base';
 
         }
 
         function _frame () {
-            var t = performance.now();
-            var e = t - _time;
+            let t = performance.now();
+            let e = t - _time;
             _total++;
             if ( e > 1000 ) {
                 if ( _def && _def.interpolate === false ) {
@@ -290,7 +290,7 @@ window.rStats = function rStats ( settings ) {
 
     function sample () {
 
-        var _value = 0;
+        let _value = 0;
 
         function _set ( v ) {
             _value = v;
@@ -307,21 +307,21 @@ window.rStats = function rStats ( settings ) {
 
     function _perf ( idArg ) {
 
-        var id = idArg.toLowerCase();
+        let id = idArg.toLowerCase();
         if ( id === undefined ) id = 'default';
         if ( _perfCounters[ id ] ) return _perfCounters[ id ];
 
-        var group = null;
+        let group = null;
         if ( _settings && _settings.groups ) {
             iterateKeys( _settings.groups, function ( j ) {
-                var g = _settings.groups[ parseInt( j, 10 ) ];
+                let g = _settings.groups[ parseInt( j, 10 ) ];
                 if ( !group && g.values.indexOf( id.toLowerCase() ) !== -1 ) {
                     group = g;
                 }
             } );
         }
 
-        var p = new PerfCounter( id, group );
+        let p = new PerfCounter( id, group );
         _perfCounters[ id ] = p;
         return p;
 
@@ -333,7 +333,7 @@ window.rStats = function rStats ( settings ) {
             if ( !_settings.values ) _settings.values = {};
             if ( !_settings.groups ) _settings.groups = [];
             if ( !_settings.fractions ) _settings.fractions = [];
-            for ( var j = 0; j < _settings.plugins.length; j++ ) {
+            for ( let j = 0; j < _settings.plugins.length; j++ ) {
                 _settings.plugins[ j ].attach( _perf );
                 iterateKeys( _settings.plugins[ j ].values, function ( k ) {
                     _settings.values[ k ] = _settings.plugins[ j ].values[ k ];
@@ -357,11 +357,11 @@ window.rStats = function rStats ( settings ) {
 
         if ( _settings.groups ) {
             iterateKeys( _settings.groups, function ( j ) {
-                var g = _settings.groups[ parseInt( j, 10 ) ];
-                var div = document.createElement( 'div' );
+                let g = _settings.groups[ parseInt( j, 10 ) ];
+                let div = document.createElement( 'div' );
                 div.className = 'rs-group';
                 g.div = div;
-                var h1 = document.createElement( 'h1' );
+                let h1 = document.createElement( 'h1' );
                 h1.textContent = g.caption;
                 h1.addEventListener( 'click', function ( e ) {
                     this.classList.toggle( 'hidden' );
@@ -374,15 +374,15 @@ window.rStats = function rStats ( settings ) {
 
         if ( _settings.fractions ) {
             iterateKeys( _settings.fractions, function ( j ) {
-                var f = _settings.fractions[ parseInt( j, 10 ) ];
-                var div = document.createElement( 'div' );
+                let f = _settings.fractions[ parseInt( j, 10 ) ];
+                let div = document.createElement( 'div' );
                 div.className = 'rs-fraction';
-                var legend = document.createElement( 'div' );
+                let legend = document.createElement( 'div' );
                 legend.className = 'rs-legend';
 
-                var h = 0;
+                let h = 0;
                 iterateKeys( _settings.fractions[ j ].steps, function ( k ) {
-                    var p = document.createElement( 'p' );
+                    let p = document.createElement( 'p' );
                     p.textContent = _settings.fractions[ j ].steps[ k ];
                     p.style.color = _colours[ h ];
                     legend.appendChild( p );
@@ -391,7 +391,7 @@ window.rStats = function rStats ( settings ) {
                 div.appendChild( legend );
                 div.style.height = h * _elHeight + 'px';
                 f.div = div;
-                var graph = new StackGraph( div, h );
+                let graph = new StackGraph( div, h );
                 f.graph = graph;
                 _div.appendChild( div );
             } );
@@ -411,14 +411,14 @@ window.rStats = function rStats ( settings ) {
 
         if ( _settings && _settings.fractions ) {
             iterateKeys( _settings.fractions, function ( j ) {
-                var f = _settings.fractions[ parseInt( j, 10 ) ];
-                var v = [];
-                var base = _perfCounters[ f.base.toLowerCase() ];
+                let f = _settings.fractions[ parseInt( j, 10 ) ];
+                let v = [];
+                let base = _perfCounters[ f.base.toLowerCase() ];
                 if ( base ) {
                     base = base.value();
                     iterateKeys( _settings.fractions[ j ].steps, function ( k ) {
-                        var s = _settings.fractions[ j ].steps[ parseInt( k, 10 ) ].toLowerCase();
-                        var val = _perfCounters[ s ];
+                        let s = _settings.fractions[ j ].steps[ parseInt( k, 10 ) ].toLowerCase();
+                        let val = _perfCounters[ s ];
                         if ( val ) {
                             v.push( val.value() / base );
                         }

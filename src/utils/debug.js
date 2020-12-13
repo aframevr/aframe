@@ -1,7 +1,7 @@
-var debugLib = require('debug');
-var extend = require('object-assign');
+let debugLib = require('debug');
+let extend = require('object-assign');
 
-var settings = {
+let settings = {
   colors: {
     debug: 'gray',
     error: 'red',
@@ -15,8 +15,8 @@ var settings = {
  *
  * (See issue: https://github.com/visionmedia/debug/issues/137)
  */
-var debug = function (namespace) {
-  var d = debugLib(namespace);
+let debug = function (namespace) {
+  let d = debugLib(namespace);
 
   d.color = getDebugNamespaceColor(namespace);
 
@@ -33,7 +33,7 @@ extend(debug, debugLib);
  * @api private
  */
 function getDebugNamespaceType (namespace) {
-  var chunks = namespace.split(':');
+  let chunks = namespace.split(':');
 
   return chunks[chunks.length - 1];  // Return the last one
 }
@@ -47,9 +47,9 @@ function getDebugNamespaceType (namespace) {
  * @api private
  */
 function getDebugNamespaceColor (namespace) {
-  var type = getDebugNamespaceType(namespace);
+  let type = getDebugNamespaceType(namespace);
 
-  var color = settings.colors && settings.colors[type];
+  let color = settings.colors && settings.colors[type];
 
   return color || null;
 }
@@ -80,7 +80,7 @@ function storage () {
  *   localStorage.logs = 0
  *
  */
-var ls = storage();
+let ls = storage();
 if (ls && (parseInt(ls.logs, 10) || ls.logs === 'true')) {
   debug.enable('*');
 } else {

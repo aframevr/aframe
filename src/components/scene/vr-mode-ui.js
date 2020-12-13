@@ -1,14 +1,14 @@
-var registerComponent = require('../../core/component').registerComponent;
-var constants = require('../../constants/');
-var utils = require('../../utils/');
-var bind = utils.bind;
+let registerComponent = require('../../core/component').registerComponent;
+let constants = require('../../constants/');
+let utils = require('../../utils/');
+let bind = utils.bind;
 
-var ENTER_VR_CLASS = 'a-enter-vr';
-var ENTER_AR_CLASS = 'a-enter-ar';
-var ENTER_VR_BTN_CLASS = 'a-enter-vr-button';
-var ENTER_AR_BTN_CLASS = 'a-enter-ar-button';
-var HIDDEN_CLASS = 'a-hidden';
-var ORIENTATION_MODAL_CLASS = 'a-orientation-modal';
+let ENTER_VR_CLASS = 'a-enter-vr';
+let ENTER_AR_CLASS = 'a-enter-ar';
+let ENTER_VR_BTN_CLASS = 'a-enter-vr-button';
+let ENTER_AR_BTN_CLASS = 'a-enter-ar-button';
+let HIDDEN_CLASS = 'a-hidden';
+let ORIENTATION_MODAL_CLASS = 'a-orientation-modal';
 
 /**
  * UI for entering VR mode.
@@ -23,8 +23,8 @@ module.exports.Component = registerComponent('vr-mode-ui', {
   },
 
   init: function () {
-    var self = this;
-    var sceneEl = this.el;
+    let self = this;
+    let sceneEl = this.el;
 
     if (utils.getUrlParameter('ui') === 'false') { return; }
 
@@ -80,8 +80,8 @@ module.exports.Component = registerComponent('vr-mode-ui', {
   },
 
   update: function () {
-    var data = this.data;
-    var sceneEl = this.el;
+    let data = this.data;
+    let sceneEl = this.el;
 
     if (!data.enabled || this.insideLoader || utils.getUrlParameter('ui') === 'false') {
       return this.remove();
@@ -128,7 +128,7 @@ module.exports.Component = registerComponent('vr-mode-ui', {
   },
 
   toggleEnterVRButtonIfNeeded: function () {
-    var sceneEl = this.el;
+    let sceneEl = this.el;
     if (!this.enterVREl) { return; }
     if (sceneEl.is('vr-mode')) {
       this.enterVREl.classList.add(HIDDEN_CLASS);
@@ -138,7 +138,7 @@ module.exports.Component = registerComponent('vr-mode-ui', {
   },
 
   toggleEnterARButtonIfNeeded: function () {
-    var sceneEl = this.el;
+    let sceneEl = this.el;
     if (!this.enterAREl) { return; }
     // Hide the button while in a session, or if AR is not supported.
     if (sceneEl.is('vr-mode') || !utils.device.checkARSupport()) {
@@ -149,8 +149,8 @@ module.exports.Component = registerComponent('vr-mode-ui', {
   },
 
   toggleOrientationModalIfNeeded: function () {
-    var sceneEl = this.el;
-    var orientationModalEl = this.orientationModalEl;
+    let sceneEl = this.el;
+    let orientationModalEl = this.orientationModalEl;
     if (!orientationModalEl || !sceneEl.isMobile) { return; }
     if (!utils.device.isLandscape() && sceneEl.is('vr-mode')) {
       // Show if in VR mode on portrait.
@@ -170,8 +170,8 @@ module.exports.Component = registerComponent('vr-mode-ui', {
  * @returns {Element} Wrapper <div>.
  */
 function createEnterVRButton (onClick) {
-  var vrButton;
-  var wrapper;
+  let vrButton;
+  let wrapper;
 
   // Create elements.
   wrapper = document.createElement('div');
@@ -202,8 +202,8 @@ function createEnterVRButton (onClick) {
  * @returns {Element} Wrapper <div>.
  */
 function createEnterARButton (onClick) {
-  var arButton;
-  var wrapper;
+  let arButton;
+  let wrapper;
 
   // Create elements.
   wrapper = document.createElement('div');
@@ -232,12 +232,12 @@ function createEnterARButton (onClick) {
  * @returns {Element} Wrapper <div>.
  */
 function createOrientationModal (onClick) {
-  var modal = document.createElement('div');
+  let modal = document.createElement('div');
   modal.className = ORIENTATION_MODAL_CLASS;
   modal.classList.add(HIDDEN_CLASS);
   modal.setAttribute(constants.AFRAME_INJECTED, '');
 
-  var exit = document.createElement('button');
+  let exit = document.createElement('button');
   exit.setAttribute(constants.AFRAME_INJECTED, '');
   exit.innerHTML = 'Exit VR';
 

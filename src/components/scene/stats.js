@@ -1,13 +1,13 @@
-var registerComponent = require('../../core/component').registerComponent;
-var RStats = require('../../../vendor/rStats');
-var utils = require('../../utils');
+let registerComponent = require('../../core/component').registerComponent;
+let RStats = require('../../../vendor/rStats');
+let utils = require('../../utils');
 require('../../../vendor/rStats.extras');
 require('../../lib/rStatsAframe');
 
-var AFrameStats = window.aframeStats;
-var bind = utils.bind;
-var HIDDEN_CLASS = 'a-hidden';
-var ThreeStats = window.threeStats;
+let AFrameStats = window.aframeStats;
+let bind = utils.bind;
+let HIDDEN_CLASS = 'a-hidden';
+let ThreeStats = window.threeStats;
 
 /**
  * Stats appended to document.body by RStats.
@@ -16,7 +16,7 @@ module.exports.Component = registerComponent('stats', {
   schema: {default: true},
 
   init: function () {
-    var scene = this.el;
+    let scene = this.el;
 
     if (utils.getUrlParameter('stats') === 'false') { return; }
 
@@ -43,7 +43,7 @@ module.exports.Component = registerComponent('stats', {
   },
 
   tick: function () {
-    var stats = this.stats;
+    let stats = this.stats;
 
     if (!stats) { return; }
 
@@ -62,9 +62,9 @@ module.exports.Component = registerComponent('stats', {
 });
 
 function createStats (scene) {
-  var threeStats = new ThreeStats(scene.renderer);
-  var aframeStats = new AFrameStats(scene);
-  var plugins = scene.isMobile ? [] : [threeStats, aframeStats];
+  let threeStats = new ThreeStats(scene.renderer);
+  let aframeStats = new AFrameStats(scene);
+  let plugins = scene.isMobile ? [] : [threeStats, aframeStats];
   return new RStats({
     css: [],  // Our stylesheet is injected from `src/index.js`.
     values: {

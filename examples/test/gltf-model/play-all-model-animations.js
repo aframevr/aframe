@@ -9,7 +9,7 @@ AFRAME.registerComponent('play-all-model-animations', {
     this.model = null;
     this.mixer = null;
 
-    var model = this.el.getObject3D('mesh');
+    let model = this.el.getObject3D('mesh');
     if (model) {
       this.load(model);
     } else {

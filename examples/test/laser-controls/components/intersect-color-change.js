@@ -5,10 +5,10 @@
  */
 AFRAME.registerComponent('intersect-color-change', {
   init: function () {
-    var el = this.el;
-    var material = el.getAttribute('material');
-    var initialColor = material.color;
-    var self = this;
+    let el = this.el;
+    let material = el.getAttribute('material');
+    let initialColor = material.color;
+    let self = this;
 
     el.addEventListener('mousedown', function (evt) {
       el.setAttribute('material', 'color', '#EF2D5E');

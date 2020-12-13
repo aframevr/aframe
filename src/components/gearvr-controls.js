@@ -1,21 +1,21 @@
-var registerComponent = require('../core/component').registerComponent;
-var bind = require('../utils/bind');
+let registerComponent = require('../core/component').registerComponent;
+let bind = require('../utils/bind');
 
-var trackedControlsUtils = require('../utils/tracked-controls');
-var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
-var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
-var onButtonEvent = trackedControlsUtils.onButtonEvent;
-var isWebXRAvailable = require('../utils/').device.isWebXRAvailable;
+let trackedControlsUtils = require('../utils/tracked-controls');
+let checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
+let emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
+let onButtonEvent = trackedControlsUtils.onButtonEvent;
+let isWebXRAvailable = require('../utils/').device.isWebXRAvailable;
 
-var GEARVR_CONTROLLER_MODEL_BASE_URL = 'https://cdn.aframe.io/controllers/samsung/';
-var GEARVR_CONTROLLER_MODEL_OBJ_URL = GEARVR_CONTROLLER_MODEL_BASE_URL + 'gear_vr_controller.obj';
-var GEARVR_CONTROLLER_MODEL_OBJ_MTL = GEARVR_CONTROLLER_MODEL_BASE_URL + 'gear_vr_controller.mtl';
+let GEARVR_CONTROLLER_MODEL_BASE_URL = 'https://cdn.aframe.io/controllers/samsung/';
+let GEARVR_CONTROLLER_MODEL_OBJ_URL = GEARVR_CONTROLLER_MODEL_BASE_URL + 'gear_vr_controller.obj';
+let GEARVR_CONTROLLER_MODEL_OBJ_MTL = GEARVR_CONTROLLER_MODEL_BASE_URL + 'gear_vr_controller.mtl';
 
-var GAMEPAD_ID_WEBXR = 'samsung-gearvr';
-var GAMEPAD_ID_WEBVR = 'Gear VR';
+let GAMEPAD_ID_WEBXR = 'samsung-gearvr';
+let GAMEPAD_ID_WEBVR = 'Gear VR';
 
 // Prefix for Gen1 and Gen2 Oculus Touch Controllers.
-var GAMEPAD_ID_PREFIX = isWebXRAvailable ? GAMEPAD_ID_WEBXR : GAMEPAD_ID_WEBVR;
+let GAMEPAD_ID_PREFIX = isWebXRAvailable ? GAMEPAD_ID_WEBXR : GAMEPAD_ID_WEBVR;
 
 /**
  * Button indices:
@@ -26,7 +26,7 @@ var GAMEPAD_ID_PREFIX = isWebXRAvailable ? GAMEPAD_ID_WEBXR : GAMEPAD_ID_WEBVR;
  * 0 - trackpad x
  * 1 - trackpad y
  */
-var INPUT_MAPPING_WEBVR = {
+let INPUT_MAPPING_WEBVR = {
   axes: {trackpad: [0, 1]},
   buttons: ['trackpad', 'trigger']
 };
@@ -43,12 +43,12 @@ var INPUT_MAPPING_WEBVR = {
  * 1 - touchpad y
  * Reference: https://github.com/immersive-web/webxr-input-profiles/blob/master/packages/registry/profiles/samsung/samsung-gearvr.json
  */
-var INPUT_MAPPING_WEBXR = {
+let INPUT_MAPPING_WEBXR = {
   axes: {touchpad: [0, 1]},
   buttons: ['trigger', 'none', 'touchpad', 'none', 'menu']
 };
 
-var INPUT_MAPPING = isWebXRAvailable ? INPUT_MAPPING_WEBXR : INPUT_MAPPING_WEBVR;
+let INPUT_MAPPING = isWebXRAvailable ? INPUT_MAPPING_WEBXR : INPUT_MAPPING_WEBVR;
 
 /**
  * Gear VR controls.
@@ -78,7 +78,7 @@ module.exports.Component = registerComponent('gearvr-controls', {
   },
 
   init: function () {
-    var self = this;
+    let self = this;
     this.onButtonChanged = bind(this.onButtonChanged, this);
     this.onButtonDown = function (evt) { onButtonEvent(evt.detail.id, 'down', self); };
     this.onButtonUp = function (evt) { onButtonEvent(evt.detail.id, 'up', self); };
@@ -90,7 +90,7 @@ module.exports.Component = registerComponent('gearvr-controls', {
   },
 
   addEventListeners: function () {
-    var el = this.el;
+    let el = this.el;
     el.addEventListener('buttonchanged', this.onButtonChanged);
     el.addEventListener('buttondown', this.onButtonDown);
     el.addEventListener('buttonup', this.onButtonUp);
@@ -102,7 +102,7 @@ module.exports.Component = registerComponent('gearvr-controls', {
   },
 
   removeEventListeners: function () {
-    var el = this.el;
+    let el = this.el;
     el.removeEventListener('buttonchanged', this.onButtonChanged);
     el.removeEventListener('buttondown', this.onButtonDown);
     el.removeEventListener('buttonup', this.onButtonUp);
@@ -129,8 +129,8 @@ module.exports.Component = registerComponent('gearvr-controls', {
   },
 
   injectTrackedControls: function () {
-    var el = this.el;
-    var data = this.data;
+    let el = this.el;
+    let data = this.data;
     el.setAttribute('tracked-controls', {
       armModel: data.armModel,
       hand: data.hand,
@@ -160,8 +160,8 @@ module.exports.Component = registerComponent('gearvr-controls', {
   // No need for onButtonChanged, since Gear VR controller has no analog buttons.
 
   onModelLoaded: function (evt) {
-    var controllerObject3D = evt.detail.model;
-    var buttonMeshes;
+    let controllerObject3D = evt.detail.model;
+    let buttonMeshes;
     if (!this.data.model) { return; }
     buttonMeshes = this.buttonMeshes = {};
     buttonMeshes.trigger = controllerObject3D.children[2];
@@ -170,7 +170,7 @@ module.exports.Component = registerComponent('gearvr-controls', {
   },
 
   onButtonChanged: function (evt) {
-    var button = this.mapping.buttons[evt.detail.id];
+    let button = this.mapping.buttons[evt.detail.id];
     if (!button) return;
     // Pass along changed event with button state, using button mapping for convenience.
     this.el.emit(button + 'changed', evt.detail.state);
@@ -186,9 +186,9 @@ module.exports.Component = registerComponent('gearvr-controls', {
   },
 
   updateButtonModel: function (buttonName, state) {
-    var buttonMeshes = this.buttonMeshes;
+    let buttonMeshes = this.buttonMeshes;
     if (!buttonMeshes || !buttonMeshes[buttonName]) { return; }
-    var color;
+    let color;
     switch (state) {
       case 'down':
         color = this.data.buttonHighlightColor;

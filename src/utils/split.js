@@ -2,7 +2,7 @@
  * String split with cached result.
  */
 module.exports.split = (function () {
-  var splitCache = {};
+  let splitCache = {};
 
   return function (str, delimiter) {
     if (!(delimiter in splitCache)) { splitCache[delimiter] = {}; }

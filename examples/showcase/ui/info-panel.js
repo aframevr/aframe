@@ -1,8 +1,8 @@
 /* global AFRAME */
 AFRAME.registerComponent('info-panel', {
   init: function () {
-    var buttonEls = document.querySelectorAll('.menu-button');
-    var fadeBackgroundEl = this.fadeBackgroundEl = document.querySelector('#fadeBackground');
+    let buttonEls = document.querySelectorAll('.menu-button');
+    let fadeBackgroundEl = this.fadeBackgroundEl = document.querySelector('#fadeBackground');
 
     this.movieImageEl;
     this.movieTitleEl = document.querySelector('#movieTitle');
@@ -29,7 +29,7 @@ AFRAME.registerComponent('info-panel', {
     this.onMenuButtonClick = this.onMenuButtonClick.bind(this);
     this.onBackgroundClick = this.onBackgroundClick.bind(this);
     this.backgroundEl = document.querySelector('#background');
-    for (var i = 0; i < buttonEls.length; ++i) {
+    for (let i = 0; i < buttonEls.length; ++i) {
       buttonEls[i].addEventListener('click', this.onMenuButtonClick);
     }
     this.backgroundEl.addEventListener('click', this.onBackgroundClick);
@@ -40,7 +40,7 @@ AFRAME.registerComponent('info-panel', {
   },
 
   onMenuButtonClick: function (evt) {
-    var movieInfo = this.movieInfo[evt.currentTarget.id];
+    let movieInfo = this.movieInfo[evt.currentTarget.id];
 
     this.backgroundEl.object3D.scale.set(1, 1, 1);
 

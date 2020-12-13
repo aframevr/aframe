@@ -5,7 +5,7 @@ AFRAME.registerComponent('slider', {
   },
 
   init: function () {
-    var trackEl = this.trackEl = document.createElement('a-entity');
+    let trackEl = this.trackEl = document.createElement('a-entity');
     this.localPosition = new THREE.Vector3();
     this.onPinchedMoved = this.onPinchedMoved.bind(this);
 
@@ -22,7 +22,7 @@ AFRAME.registerComponent('slider', {
 
     this.el.appendChild(trackEl);
 
-    var pickerEl = this.pickerEl = document.createElement('a-entity');
+    let pickerEl = this.pickerEl = document.createElement('a-entity');
 
     pickerEl.setAttribute('geometry', {
       primitive: 'cylinder',
@@ -50,10 +50,10 @@ AFRAME.registerComponent('slider', {
   },
 
   onPinchedMoved: function (evt) {
-    var el = this.el;
-    var evtDetail = this.evtDetail;
-    var halfWidth = this.data.width / 2;
-    var localPosition = this.localPosition;
+    let el = this.el;
+    let evtDetail = this.evtDetail;
+    let halfWidth = this.data.width / 2;
+    let localPosition = this.localPosition;
     localPosition.copy(evt.detail.position);
     el.object3D.updateMatrixWorld();
     el.object3D.worldToLocal(localPosition);

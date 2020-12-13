@@ -1,12 +1,12 @@
 /* global assert, process, setup, suite, test, sinon, AFRAME */
-var entityFactory = require('../helpers').entityFactory;
-var shaders = require('core/shader').shaders;
-var THREE = require('index').THREE;
+let entityFactory = require('../helpers').entityFactory;
+let shaders = require('core/shader').shaders;
+let THREE = require('index').THREE;
 
-var IMG_SRC = '/base/tests/assets/test.png';
+let IMG_SRC = '/base/tests/assets/test.png';
 
 suite('material', function () {
-  var el;
+  let el;
 
   setup(function (done) {
     el = entityFactory();
@@ -38,8 +38,8 @@ suite('material', function () {
     });
 
     test('disposes material when changing to new material', function () {
-      var material = el.getObject3D('mesh').material;
-      var disposeSpy = this.sinon.spy(material, 'dispose');
+      let material = el.getObject3D('mesh').material;
+      let disposeSpy = this.sinon.spy(material, 'dispose');
       el.setAttribute('material', 'shader', 'standard');
       assert.ok(disposeSpy.called);
     });
@@ -51,7 +51,7 @@ suite('material', function () {
     });
 
     test('does not recreate material for basic updates', function () {
-      var uuid = el.getObject3D('mesh').material.uuid;
+      let uuid = el.getObject3D('mesh').material.uuid;
       el.setAttribute('material', 'color', '#F0F');
       assert.equal(el.getObject3D('mesh').material.uuid, uuid);
     });
@@ -69,19 +69,19 @@ suite('material', function () {
     });
 
     test('emits event when loading texture', function (done) {
-      var imageUrl = 'base/tests/assets/test.png';
+      let imageUrl = 'base/tests/assets/test.png';
       el.setAttribute('material', '');
       assert.notOk(el.components.material.material.texture);
       el.setAttribute('material', 'src: url(' + imageUrl + ')');
       el.addEventListener('materialtextureloaded', function (evt) {
-        var loadedTexture = evt.detail.texture;
+        let loadedTexture = evt.detail.texture;
         assert.ok(el.components.material.material.map === loadedTexture);
         done();
       });
     });
 
     test('can load canvas texture', function (done) {
-      var canvas = document.createElement('canvas');
+      let canvas = document.createElement('canvas');
       canvas.setAttribute('id', 'canvas');
       el.sceneEl.appendChild(canvas);
       el.addEventListener('materialtextureloaded', function (evt) {
@@ -94,12 +94,12 @@ suite('material', function () {
     });
 
     test('removes texture when src attribute removed', function (done) {
-      var imageUrl = 'base/tests/assets/test.png';
+      let imageUrl = 'base/tests/assets/test.png';
       el.setAttribute('material', '');
       assert.notOk(el.components.material.material.texture);
       el.setAttribute('material', 'src: url(' + imageUrl + ')');
       el.addEventListener('materialtextureloaded', function (evt) {
-        var loadedTexture = evt.detail.texture;
+        let loadedTexture = evt.detail.texture;
         assert.ok(el.components.material.material.map === loadedTexture);
         el.removeAttribute('material', 'src');
         assert.notOk(el.components.material.material.map);
@@ -108,12 +108,12 @@ suite('material', function () {
     });
 
     test('removes texture when src attribute is empty string', function (done) {
-      var imageUrl = 'base/tests/assets/test.png';
+      let imageUrl = 'base/tests/assets/test.png';
       el.setAttribute('material', '');
       assert.notOk(el.components.material.material.texture);
       el.setAttribute('material', 'src: url(' + imageUrl + ')');
       el.addEventListener('materialtextureloaded', function (evt) {
-        var loadedTexture = evt.detail.texture;
+        let loadedTexture = evt.detail.texture;
         assert.ok(el.components.material.material.map === loadedTexture);
         el.setAttribute('material', 'src', '');
         assert.notOk(el.components.material.material.map);
@@ -122,10 +122,10 @@ suite('material', function () {
     });
 
     test('does not invoke XHR if passing <img>', function (done) {
-      var assetsEl = document.createElement('a-assets');
-      var img = document.createElement('img');
-      var imageLoaderSpy = this.sinon.spy(THREE.ImageLoader.prototype, 'load');
-      var textureLoaderSpy = this.sinon.spy(THREE.TextureLoader.prototype, 'load');
+      let assetsEl = document.createElement('a-assets');
+      let img = document.createElement('img');
+      let imageLoaderSpy = this.sinon.spy(THREE.ImageLoader.prototype, 'load');
+      let textureLoaderSpy = this.sinon.spy(THREE.TextureLoader.prototype, 'load');
       img.setAttribute('src', IMG_SRC);
       img.setAttribute('id', 'foo');
       THREE.Cache.files[IMG_SRC] = img;
@@ -143,7 +143,7 @@ suite('material', function () {
     });
 
     test('invokes XHR if <img> not cached', function (done) {
-      var textureLoaderSpy = this.sinon.spy(THREE.TextureLoader.prototype, 'load');
+      let textureLoaderSpy = this.sinon.spy(THREE.TextureLoader.prototype, 'load');
       el.addEventListener('materialtextureloaded', function () {
         assert.ok(textureLoaderSpy.called);
         assert.ok(IMG_SRC in THREE.Cache.files);
@@ -200,8 +200,8 @@ suite('material', function () {
     });
 
     test('disposes material', function () {
-      var material = el.getObject3D('mesh').material;
-      var disposeSpy = this.sinon.spy(material, 'dispose');
+      let material = el.getObject3D('mesh').material;
+      let disposeSpy = this.sinon.spy(material, 'dispose');
       el.removeAttribute('material');
       assert.ok(disposeSpy.called);
     });
@@ -209,7 +209,7 @@ suite('material', function () {
 
   suite('side', function () {
     test('can be set with initial material', function (done) {
-      var el = entityFactory();
+      let el = entityFactory();
       el.setAttribute('geometry', '');
       el.setAttribute('material', 'side: double');
       el.addEventListener('loaded', function () {
@@ -233,7 +233,7 @@ suite('material', function () {
     });
 
     test('sets material.needsUpdate true if side switchs from/to double', function () {
-      var oldMaterialVersion = el.getObject3D('mesh').material.version;
+      let oldMaterialVersion = el.getObject3D('mesh').material.version;
       el.setAttribute('material', 'side: front');
       assert.equal(el.getObject3D('mesh').material.version, oldMaterialVersion);
       el.setAttribute('material', 'side: double');
@@ -289,7 +289,7 @@ suite('material', function () {
     });
 
     test('sets material.needsUpdate true if alphaTest is updated', function () {
-      var oldMaterialVersion = el.getObject3D('mesh').material.version;
+      let oldMaterialVersion = el.getObject3D('mesh').material.version;
       el.setAttribute('material', 'alphaTest: 0.0');
       assert.equal(el.getObject3D('mesh').material.version, oldMaterialVersion);
       el.setAttribute('material', 'alphaTest: 1.0');
@@ -304,14 +304,14 @@ suite('material', function () {
     });
 
     test('can set to vertex color', function () {
-      var oldMaterialVersion = el.getObject3D('mesh').material.version;
+      let oldMaterialVersion = el.getObject3D('mesh').material.version;
       el.setAttribute('material', 'vertexColors', 'vertex');
       assert.equal(el.components.material.material.vertexColors, THREE.VertexColors);
       assert.equal(el.components.material.material.version, oldMaterialVersion + 2);
     });
 
     test('can set to face color', function () {
-      var oldMaterialVersion = el.getObject3D('mesh').material.version;
+      let oldMaterialVersion = el.getObject3D('mesh').material.version;
       el.setAttribute('material', 'vertexColors', 'face');
       assert.equal(el.components.material.material.vertexColors, THREE.FaceColors);
       assert.equal(el.components.material.material.version, oldMaterialVersion + 2);

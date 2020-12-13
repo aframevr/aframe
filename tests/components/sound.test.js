@@ -1,10 +1,10 @@
 /* global assert, process, sinon, setup, suite, test */
-var entityFactory = require('../helpers').entityFactory;
-var THREE = require('index').THREE;
+let entityFactory = require('../helpers').entityFactory;
+let THREE = require('index').THREE;
 
 suite('sound', function () {
   setup(function (done) {
-    var el = this.el = entityFactory();
+    let el = this.el = entityFactory();
     THREE.Cache.files = {};
     setTimeout(() => {
       el.sceneEl.addEventListener('loaded', function () { done(); });
@@ -24,10 +24,10 @@ suite('sound', function () {
 
   suite('update', function () {
     test('creates sound', function () {
-      var el = this.el;
-      var audioPool = el.getObject3D(el.components.sound.attrName);
-      for (var i = 0; i < audioPool.children.length; i++) {
-        var audio = audioPool.children[i];
+      let el = this.el;
+      let audioPool = el.getObject3D(el.components.sound.attrName);
+      for (let i = 0; i < audioPool.children.length; i++) {
+        let audio = audioPool.children[i];
         assert.equal(audio.type, 'Audio');
         assert.equal(audio.getDistanceModel(), 'exponential');
         assert.equal(audio.getMaxDistance(), 20000);
@@ -40,19 +40,19 @@ suite('sound', function () {
     });
 
     test('re-creates sound when changing src', function () {
-      var el = this.el;
-      var oldAudio = el.getObject3D('sound').children[0];
+      let el = this.el;
+      let oldAudio = el.getObject3D('sound').children[0];
       el.setAttribute('sound', 'src', 'url(anothersound.wav)');
-      var newAudio = el.getObject3D('sound').children[0];
+      let newAudio = el.getObject3D('sound').children[0];
       assert.notEqual(oldAudio.uuid, newAudio.uuid);
     });
 
     test('can change src', function () {
-      var el = this.el;
+      let el = this.el;
       el.setAttribute('sound', 'src', 'url(anothersound.wav)');
-      var audioPool = el.getObject3D(el.components.sound.attrName);
-      for (var i = 0; i < audioPool.children.length; i++) {
-        var audio = audioPool.children[i];
+      let audioPool = el.getObject3D(el.components.sound.attrName);
+      for (let i = 0; i < audioPool.children.length; i++) {
+        let audio = audioPool.children[i];
         assert.equal(audio.type, 'Audio');
         assert.notOk(audio.autoplay);
         assert.ok(audio.getLoop());
@@ -60,9 +60,9 @@ suite('sound', function () {
     });
 
     test.skip('can change volume', function () {
-      var audioPool;
-      var el = this.el;
-      var i;
+      let audioPool;
+      let el = this.el;
+      let i;
 
       el.setAttribute('sound', 'volume', 0.75);
       audioPool = el.getObject3D(el.components.sound.attrName);
@@ -74,8 +74,8 @@ suite('sound', function () {
 
   suite('pause', function () {
     test('does not call sound pause if not playing', function () {
-      var el = this.el;
-      var sound = el.components.sound.pool.children[0] = {
+      let el = this.el;
+      let sound = el.components.sound.pool.children[0] = {
         disconnect: sinon.stub(),
         pause: sinon.stub(),
         stop: sinon.stub(),
@@ -88,8 +88,8 @@ suite('sound', function () {
     });
 
     test('calls sound pause if playing', function () {
-      var el = this.el;
-      var sound = el.components.sound.pool.children[0] = {
+      let el = this.el;
+      let sound = el.components.sound.pool.children[0] = {
         disconnect: sinon.stub(),
         pause: sinon.stub(),
         stop: sinon.stub(),
@@ -109,8 +109,8 @@ suite('sound', function () {
 
   suite('play', function () {
     test('does not call sound pause if not playing', function () {
-      var el = this.el;
-      var sound = el.components.sound.pool.children[0] = {
+      let el = this.el;
+      let sound = el.components.sound.pool.children[0] = {
         disconnect: sinon.stub(),
         play: sinon.stub(),
         stop: sinon.stub(),
@@ -126,8 +126,8 @@ suite('sound', function () {
 
   suite('pauseSound', function () {
     test('pauses sound', function () {
-      var el = this.el;
-      var sound = el.components.sound.pool.children[0] = {
+      let el = this.el;
+      let sound = el.components.sound.pool.children[0] = {
         disconnect: sinon.stub(),
         isPlaying: true,
         isPaused: false,
@@ -144,8 +144,8 @@ suite('sound', function () {
 
   suite('playSound', function () {
     test('plays sound when not loaded', function () {
-      var el = this.el;
-      var sound = el.components.sound.pool.children[0] = {
+      let el = this.el;
+      let sound = el.components.sound.pool.children[0] = {
         disconnect: sinon.stub(),
         play: sinon.stub(),
         stop: sinon.stub(),
@@ -160,8 +160,8 @@ suite('sound', function () {
     });
 
     test('plays sound when loaded', function () {
-      var el = this.el;
-      var sound = el.components.sound.pool.children[0] = {
+      let el = this.el;
+      let sound = el.components.sound.pool.children[0] = {
         disconnect: sinon.stub(),
         play: sinon.stub(),
         stop: sinon.stub(),
@@ -176,8 +176,8 @@ suite('sound', function () {
     });
 
     test('plays sound if sound already playing when changing src', function (done) {
-      var el = this.el;
-      var playSoundStub = el.components.sound.playSound = sinon.stub();
+      let el = this.el;
+      let playSoundStub = el.components.sound.playSound = sinon.stub();
       el.components.sound.stopSound = sinon.stub();
       el.addEventListener('sound-loaded', function () {
         assert.ok(playSoundStub.called);
@@ -201,8 +201,8 @@ suite('sound', function () {
 
   suite('stopSound', function () {
     test('stops sound', function () {
-      var el = this.el;
-      var sound = el.components.sound.pool.children[0] = {
+      let el = this.el;
+      let sound = el.components.sound.pool.children[0] = {
         disconnect: sinon.stub(),
         isPlaying: true,
         stop: sinon.stub(),
@@ -216,18 +216,18 @@ suite('sound', function () {
 
   suite('asset', function () {
     test('audio tag', function (done) {
-      var sceneEl = this.el.sceneEl;
-      var assetsEl = sceneEl.querySelector('a-assets');
+      let sceneEl = this.el.sceneEl;
+      let assetsEl = sceneEl.querySelector('a-assets');
       sceneEl.removeChild(assetsEl);
       process.nextTick(function () {
         assetsEl = document.createElement('a-assets');
-        var audioEl = document.createElement('audio');
+        let audioEl = document.createElement('audio');
         audioEl.setAttribute('src', 'base/tests/assets/test.ogg');
         audioEl.setAttribute('id', 'testogg');
         assetsEl.appendChild(audioEl);
         sceneEl.appendChild(assetsEl);
         setTimeout(function () {
-          var el = document.createElement('a-entity');
+          let el = document.createElement('a-entity');
           el.addEventListener('sound-loaded', function () {
             assert.ok(this.components.sound.loaded);
             done();
@@ -239,19 +239,19 @@ suite('sound', function () {
     });
 
     test.skip('preloading audio tag', function (done) {
-      var sceneEl = this.el.sceneEl;
-      var assetsEl = sceneEl.querySelector('a-assets');
+      let sceneEl = this.el.sceneEl;
+      let assetsEl = sceneEl.querySelector('a-assets');
       sceneEl.removeChild(assetsEl);
       process.nextTick(function () {
         assetsEl = document.createElement('a-assets');
-        var audioEl = document.createElement('audio');
+        let audioEl = document.createElement('audio');
         audioEl.setAttribute('src', 'base/tests/assets/test.ogg');
         audioEl.setAttribute('id', 'testogg');
         audioEl.setAttribute('autoplay', '');
         assetsEl.appendChild(audioEl);
         sceneEl.appendChild(assetsEl);
         setTimeout(function () {
-          var el = document.createElement('a-entity');
+          let el = document.createElement('a-entity');
           el.addEventListener('sound-loaded', function () {
             assert.ok(this.components.sound.loaded);
             done();
@@ -263,19 +263,19 @@ suite('sound', function () {
     });
 
     test('a-asset-item', function (done) {
-      var sceneEl = this.el.sceneEl;
-      var assetsEl = sceneEl.querySelector('a-assets');
+      let sceneEl = this.el.sceneEl;
+      let assetsEl = sceneEl.querySelector('a-assets');
       sceneEl.removeChild(assetsEl);
       process.nextTick(function () {
         assetsEl = document.createElement('a-assets');
-        var assetItemEl = document.createElement('a-asset-item');
+        let assetItemEl = document.createElement('a-asset-item');
         assetItemEl.setAttribute('src', 'base/tests/assets/test.ogg');
         assetItemEl.setAttribute('id', 'testogg');
         assetItemEl.setAttribute('response-type', 'arraybuffer');
         assetsEl.appendChild(assetItemEl);
         sceneEl.appendChild(assetsEl);
         process.nextTick(function () {
-          var el = document.createElement('a-entity');
+          let el = document.createElement('a-entity');
           el.setAttribute('sound', 'src', '#testogg');
           el.addEventListener('sound-loaded', function () {
             assert.ok(this.components.sound.loaded);
@@ -289,12 +289,12 @@ suite('sound', function () {
 
   suite('use the same src twice', function () {
     test('use the same src twice', function (done) {
-      var sceneEl = this.el.sceneEl;
-      var el1 = document.createElement('a-entity');
-      var el2 = document.createElement('a-entity');
+      let sceneEl = this.el.sceneEl;
+      let el1 = document.createElement('a-entity');
+      let el2 = document.createElement('a-entity');
       el1.setAttribute('sound', 'src', 'url(base/tests/assets/test.ogg)');
       el2.setAttribute('sound', 'src', 'url(base/tests/assets/test.ogg)');
-      var loadedCount = 0;
+      let loadedCount = 0;
       el1.addEventListener('sound-loaded', function () {
         assert.ok(el1.components.sound.loaded);
         loadedCount++;

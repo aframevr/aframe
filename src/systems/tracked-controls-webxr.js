@@ -1,5 +1,5 @@
-var registerSystem = require('../core/system').registerSystem;
-var utils = require('../utils');
+let registerSystem = require('../core/system').registerSystem;
+let utils = require('../utils');
 
 /**
  * Tracked controls system.
@@ -21,8 +21,8 @@ module.exports.System = registerSystem('tracked-controls-webxr', {
   },
 
   updateReferenceSpace: function () {
-    var self = this;
-    var xrSession = this.el.xrSession;
+    let self = this;
+    let xrSession = this.el.xrSession;
 
     if (!xrSession) {
       this.referenceSpace = undefined;
@@ -33,7 +33,7 @@ module.exports.System = registerSystem('tracked-controls-webxr', {
       }
       return;
     }
-    var refspace = self.el.sceneEl.systems.webxr.sessionReferenceSpaceType;
+    let refspace = self.el.sceneEl.systems.webxr.sessionReferenceSpaceType;
     xrSession.requestReferenceSpace(refspace).then(function (referenceSpace) {
       self.referenceSpace = referenceSpace;
     }).catch(function (err) {
@@ -45,9 +45,9 @@ module.exports.System = registerSystem('tracked-controls-webxr', {
   },
 
   updateControllerList: function () {
-    var xrSession = this.el.xrSession;
-    var oldControllers = this.oldControllers;
-    var i;
+    let xrSession = this.el.xrSession;
+    let oldControllers = this.oldControllers;
+    let i;
     if (!xrSession) {
       if (this.oldControllersLength === 0) { return; }
       // Broadcast that we now have zero controllers connected if there is
@@ -61,7 +61,7 @@ module.exports.System = registerSystem('tracked-controls-webxr', {
     if (!xrSession.inputSources) { return; }
     this.controllers = xrSession.inputSources;
     if (this.oldControllersLength === this.controllers.length) {
-      var equal = true;
+      let equal = true;
       for (i = 0; i < this.controllers.length; ++i) {
         if (this.controllers[i] === oldControllers[i] &&
             this.controllers[i].gamepad === oldControllers[i].gamepad) { continue; }

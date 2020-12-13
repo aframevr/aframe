@@ -1,13 +1,13 @@
 /* global HTMLElement, assert, suite, test */
-var AEntity = require('core/a-entity.js');
-var ANode = require('core/a-node.js');
-var registerElement = require('core/a-register-element').registerElement;
-var wrapMethods = require('core/a-register-element').wrapMethods;
+let AEntity = require('core/a-entity.js');
+let ANode = require('core/a-node.js');
+let registerElement = require('core/a-register-element').registerElement;
+let wrapMethods = require('core/a-register-element').wrapMethods;
 
 suite('a-register-element', function () {
   suite('registerElement', function () {
     test('wraps node createdCallback', function (done) {
-      var nodeCreatedSpy = this.sinon.spy(ANode.prototype, 'createdCallback');
+      let nodeCreatedSpy = this.sinon.spy(ANode.prototype, 'createdCallback');
       registerElement('a-test-node', {
         prototype: Object.create(ANode.prototype, {
           createdCallback: {
@@ -22,7 +22,7 @@ suite('a-register-element', function () {
     });
 
     test('wraps node attachedCallback', function (done) {
-      var nodeAttachedSpy = this.sinon.spy(ANode.prototype, 'attachedCallback');
+      let nodeAttachedSpy = this.sinon.spy(ANode.prototype, 'attachedCallback');
       registerElement('a-test-node-2', {
         prototype: Object.create(ANode.prototype, {
           attachedCallback: {
@@ -37,7 +37,7 @@ suite('a-register-element', function () {
     });
 
     test('wraps entity createdCallback', function (done) {
-      var entityCreatedSpy = this.sinon.spy(AEntity.prototype, 'createdCallback');
+      let entityCreatedSpy = this.sinon.spy(AEntity.prototype, 'createdCallback');
       registerElement('a-test-entity', {
         prototype: Object.create(AEntity.prototype, {
           createdCallback: {
@@ -52,7 +52,7 @@ suite('a-register-element', function () {
     });
 
     test('wraps entity attachedCallback', function (done) {
-      var entityAttachedSpy = this.sinon.spy(AEntity.prototype, 'attachedCallback');
+      let entityAttachedSpy = this.sinon.spy(AEntity.prototype, 'attachedCallback');
       registerElement('a-test-entity-2', {
         prototype: Object.create(AEntity.prototype, {
           attachedCallback: {
@@ -83,10 +83,10 @@ suite('a-register-element', function () {
 
   suite('wrapMethods', function () {
     test('wraps to call base prototype method before derived prototype method', function () {
-      var BasePrototype;
-      var DerivedPrototype;
-      var checkIn = [];
-      var WrappedDerivedPrototype;
+      let BasePrototype;
+      let DerivedPrototype;
+      let checkIn = [];
+      let WrappedDerivedPrototype;
 
       // Create prototypes;
       BasePrototype = Object.create(HTMLElement.prototype, {

@@ -1,13 +1,13 @@
 /* global assert, process, setup, suite, test */
-var entityFactory = require('../../helpers').entityFactory;
-var utils = require('index').utils;
+let entityFactory = require('../../helpers').entityFactory;
+let utils = require('index').utils;
 
-var UI_CLASSES = ['.a-orientation-modal', '.a-enter-vr-button'];
+let UI_CLASSES = ['.a-orientation-modal', '.a-enter-vr-button'];
 
 suite('vr-mode-ui', function () {
   setup(function (done) {
     this.entityEl = entityFactory();
-    var el = this.el = this.entityEl.parentNode;
+    let el = this.el = this.entityEl.parentNode;
     this.sinon.stub(utils.device, 'getVRDisplay').returns({
       requestPresent: function () {
         return Promise.resolve();
@@ -17,14 +17,14 @@ suite('vr-mode-ui', function () {
   });
 
   test('appends UI', function () {
-    var scene = this.el;
+    let scene = this.el;
     UI_CLASSES.forEach(function (uiClass) {
       assert.equal(scene.querySelectorAll(uiClass).length, 1);
     });
   });
 
   test('can disable UI', function () {
-    var scene = this.el;
+    let scene = this.el;
     scene.setAttribute('vr-mode-ui', 'enabled', false);
     UI_CLASSES.forEach(function (uiClass) {
       assert.notOk(scene.querySelector(uiClass));
@@ -32,7 +32,7 @@ suite('vr-mode-ui', function () {
   });
 
   test('hides on enter VR', function () {
-    var scene = this.el;
+    let scene = this.el;
     // mock camera
     scene.camera = {el: {object3D: {}}};
     scene.enterVR();
@@ -42,7 +42,7 @@ suite('vr-mode-ui', function () {
   });
 
   test('shows on exit VR', function (done) {
-    var scene = this.el;
+    let scene = this.el;
     // mock camera
     scene.camera = {
       el: {object3D: {}, getAttribute: function () { return {spectator: false}; }},

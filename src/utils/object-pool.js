@@ -2,7 +2,7 @@
   Adapted deePool by Kyle Simpson.
   MIT License: http://getify.mit-license.org
 */
-var EMPTY_SLOT = Object.freeze(Object.create(null));
+let EMPTY_SLOT = Object.freeze(Object.create(null));
 
 // Default object factory.
 function defaultObjectFactory () { return {}; }
@@ -11,13 +11,13 @@ function defaultObjectFactory () { return {}; }
  * Create a new pool.
  */
 module.exports.createPool = function createPool (objectFactory) {
-  var objPool = [];
-  var nextFreeSlot = null;  // Pool location to look for a free object to use.
+  let objPool = [];
+  let nextFreeSlot = null;  // Pool location to look for a free object to use.
 
   objectFactory = objectFactory || defaultObjectFactory;
 
   function use () {
-    var objToUse;
+    let objToUse;
     if (nextFreeSlot === null || nextFreeSlot === objPool.length) {
       grow(objPool.length || 5);
     }
@@ -37,8 +37,8 @@ module.exports.createPool = function createPool (objectFactory) {
   }
 
   function grow (count) {
-    var currentLength;
-    var i;
+    let currentLength;
+    let i;
 
     count = count === undefined ? objPool.length : count;
     if (count > 0 && nextFreeSlot == null) {
@@ -71,14 +71,14 @@ module.exports.createPool = function createPool (objectFactory) {
 };
 
 function clearObject (obj) {
-  var key;
+  let key;
   if (!obj || obj.constructor !== Object) { return; }
   for (key in obj) { obj[key] = undefined; }
 }
 module.exports.clearObject = clearObject;
 
 function removeUnusedKeys (obj, schema) {
-  var key;
+  let key;
   if (!obj || obj.constructor !== Object) { return; }
   for (key in obj) {
     if (!(key in schema)) {

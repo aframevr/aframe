@@ -1,29 +1,29 @@
 /**
  * Automated mesh primitive registration.
  */
-var getMeshMixin = require('../getMeshMixin');
-var geometries = require('../../../core/geometry').geometries;
-var geometryNames = require('../../../core/geometry').geometryNames;
-var registerPrimitive = require('../primitives').registerPrimitive;
-var utils = require('../../../utils/');
+let getMeshMixin = require('../getMeshMixin');
+let geometries = require('../../../core/geometry').geometries;
+let geometryNames = require('../../../core/geometry').geometryNames;
+let registerPrimitive = require('../primitives').registerPrimitive;
+let utils = require('../../../utils/');
 
 // For testing.
-var meshPrimitives = module.exports = {};
+let meshPrimitives = module.exports = {};
 
 // Generate primitive for each geometry type.
 geometryNames.forEach(function registerMeshPrimitive (geometryName) {
-  var geometry = geometries[geometryName];
-  var geometryHyphened = unCamelCase(geometryName);
+  let geometry = geometries[geometryName];
+  let geometryHyphened = unCamelCase(geometryName);
 
   // Generate mappings.
-  var mappings = {};
+  let mappings = {};
   Object.keys(geometry.schema).forEach(function createMapping (property) {
     mappings[unCamelCase(property)] = 'geometry.' + property;
   });
 
   // Register.
-  var tagName = 'a-' + geometryHyphened;
-  var primitive = registerPrimitive(tagName, utils.extendDeep({}, getMeshMixin(), {
+  let tagName = 'a-' + geometryHyphened;
+  let primitive = registerPrimitive(tagName, utils.extendDeep({}, getMeshMixin(), {
     defaultComponents: {geometry: {primitive: geometryName}},
     mappings: mappings
   }));

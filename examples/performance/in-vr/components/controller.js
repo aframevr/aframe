@@ -5,9 +5,9 @@ AFRAME.registerComponent('controller', {
   },
 
   init: function () {
-    var config = this.config;
-    var data = this.data;
-    var el = this.el;
+    let config = this.config;
+    let data = this.data;
+    let el = this.el;
 
     el.setAttribute('geometry', {primitive: 'box', depth: 0.15, height: 0.05, width: 0.05});
     el.setAttribute('material', {color: '#222'});
@@ -20,7 +20,7 @@ AFRAME.registerComponent('controller', {
 
     // Wait for controller to connect before adding raycaster.
     el.addEventListener('controllerconnected', function (evt) {
-      var controllerConfig = config[evt.detail.name];
+      let controllerConfig = config[evt.detail.name];
 
       if (!controllerConfig) { return; }
 

@@ -1,5 +1,5 @@
-var bind = require('../../utils/bind');
-var isIframed = require('../../utils/').isIframed;
+let bind = require('../../utils/bind');
+let isIframed = require('../../utils/').isIframed;
 
 /**
  * Provides a post message API for scenes contained
@@ -13,7 +13,7 @@ module.exports = function initPostMessageAPI (scene) {
 };
 
 function postMessageAPIHandler (event) {
-  var scene = this;
+  let scene = this;
   if (!event.data) { return; }
 
   switch (event.data.type) {

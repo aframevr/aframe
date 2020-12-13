@@ -1,14 +1,14 @@
-var AEntity = require('../../core/a-entity');
-var components = require('../../core/component').components;
-var registerElement = require('../../core/a-register-element').registerElement;
-var utils = require('../../utils/');
+let AEntity = require('../../core/a-entity');
+let components = require('../../core/component').components;
+let registerElement = require('../../core/a-register-element').registerElement;
+let utils = require('../../utils/');
 
-var debug = utils.debug;
-var setComponentProperty = utils.entity.setComponentProperty;
-var log = debug('extras:primitives:debug');
-var warn = debug('extras:primitives:warn');
+let debug = utils.debug;
+let setComponentProperty = utils.entity.setComponentProperty;
+let log = debug('extras:primitives:debug');
+let warn = debug('extras:primitives:warn');
 
-var primitives = module.exports.primitives = {};
+let primitives = module.exports.primitives = {};
 
 module.exports.registerPrimitive = function registerPrimitive (name, definition) {
   name = name.toLowerCase();
@@ -19,7 +19,7 @@ module.exports.registerPrimitive = function registerPrimitive (name, definition)
     warn("The 'defaultAttributes' object is deprecated. Use 'defaultComponents' instead.");
   }
 
-  var primitive = registerElement(name, {
+  let primitive = registerElement(name, {
     prototype: Object.create(AEntity.prototype, {
       defaultComponentsFromPrimitive: {
         value: definition.defaultComponents || definition.defaultAttributes || {}
@@ -41,10 +41,10 @@ module.exports.registerPrimitive = function registerPrimitive (name, definition)
        */
       resolveMappingCollisions: {
         value: function () {
-          var mappings = this.mappings;
-          var self = this;
+          let mappings = this.mappings;
+          let self = this;
           Object.keys(mappings).forEach(function resolveCollision (key) {
-            var newAttribute;
+            let newAttribute;
             if (key !== key.toLowerCase()) { warn('Mapping keys should be specified in lower case. The mapping key ' + key + ' may not be recognized'); }
             if (components[key]) {
               newAttribute = mappings[key].replace('.', '-');
@@ -60,13 +60,13 @@ module.exports.registerPrimitive = function registerPrimitive (name, definition)
 
       getExtraComponents: {
         value: function () {
-          var attr;
-          var data;
-          var i;
-          var mapping;
-          var mixins;
-          var path;
-          var self = this;
+          let attr;
+          let data;
+          let i;
+          let mapping;
+          let mixins;
+          let path;
+          let self = this;
 
           // Gather component data from default components.
           data = utils.clone(this.defaultComponentsFromPrimitive);
@@ -76,7 +76,7 @@ module.exports.registerPrimitive = function registerPrimitive (name, definition)
           if (mixins) {
             mixins = mixins.trim().split(' ');
             mixins.forEach(function applyMixin (mixinId) {
-              var mixinComponents = self.sceneEl.querySelector('#' + mixinId).componentCache;
+              let mixinComponents = self.sceneEl.querySelector('#' + mixinId).componentCache;
               Object.keys(mixinComponents).forEach(function setComponent (name) {
                 data[name] = extend(data[name], mixinComponents[name]);
               });
@@ -142,7 +142,7 @@ module.exports.registerPrimitive = function registerPrimitive (name, definition)
        */
       attributeChangedCallback: {
         value: function (attr, oldVal, value) {
-          var componentName = this.mappings[attr];
+          let componentName = this.mappings[attr];
 
           if (attr in this.deprecatedMappings) {
             console.warn(this.deprecatedMappings[attr]);
@@ -166,10 +166,10 @@ module.exports.registerPrimitive = function registerPrimitive (name, definition)
  * Add component mappings using schema.
  */
 function addComponentMapping (componentName, mappings) {
-  var schema = components[componentName].schema;
+  let schema = components[componentName].schema;
   Object.keys(schema).map(function (prop) {
     // Hyphenate where there is camelCase.
-    var attrName = prop.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
+    let attrName = prop.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
     // If there is a mapping collision, prefix with component name and hyphen.
     if (mappings[attrName] !== undefined) { attrName = componentName + '-' + prop; }
     mappings[attrName] = componentName + '.' + prop;

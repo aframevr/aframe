@@ -1,10 +1,10 @@
 /* global assert, suite, test, setup */
-var helpers = require('../../../helpers');
+let helpers = require('../../../helpers');
 
 suite('a-torus', function () {
   setup(function (done) {
-    var el = helpers.entityFactory();
-    var torusEl = this.torusEl = document.createElement('a-torus');
+    let el = helpers.entityFactory();
+    let torusEl = this.torusEl = document.createElement('a-torus');
     el.addEventListener('loaded', function () {
       el.sceneEl.appendChild(torusEl);
     });
@@ -22,8 +22,8 @@ suite('a-torus', function () {
   });
 
   test('can set torus properties', function () {
-    var geometry;
-    var torusEl = this.torusEl;
+    let geometry;
+    let torusEl = this.torusEl;
     torusEl.setAttribute('segments-tubular', '100');
     torusEl.setAttribute('radius', '2');
     torusEl.setAttribute('radius-tubular', '0.1');

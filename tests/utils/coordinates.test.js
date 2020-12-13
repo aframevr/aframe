@@ -1,5 +1,5 @@
 /* global assert, suite, test */
-var coordinates = require('index').utils.coordinates;
+let coordinates = require('index').utils.coordinates;
 
 suite('utils.coordinates', function () {
   suite('isCoordinates', function () {
@@ -41,7 +41,7 @@ suite('utils.coordinates', function () {
     });
 
     test('can return fallback values', function () {
-      var defaultCoordinate = {z: -3};
+      let defaultCoordinate = {z: -3};
       assert.shallowDeepEqual(coordinates.parse('1 2', defaultCoordinate),
                               {x: 1, y: 2, z: -3});
     });

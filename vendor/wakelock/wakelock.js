@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-var Util = require('./util.js');
+let Util = require('./util.js');
 
 /**
  * Android and iOS compatible wakelock implementation.
@@ -21,7 +21,7 @@ var Util = require('./util.js');
  * Refactored thanks to dkovalev@.
  */
 function AndroidWakeLock() {
-  var video = document.createElement('video');
+  let video = document.createElement('video');
 
   video.addEventListener('ended', function() {
     video.play();
@@ -42,7 +42,7 @@ function AndroidWakeLock() {
 }
 
 function iOSWakeLock() {
-  var timer = null;
+  let timer = null;
 
   this.request = function() {
     if (!timer) {
@@ -63,7 +63,7 @@ function iOSWakeLock() {
 
 
 function getWakeLock() {
-  var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+  let userAgent = navigator.userAgent || navigator.vendor || window.opera;
   if (userAgent.match(/iPhone/i) || userAgent.match(/iPod/i)) {
     return iOSWakeLock;
   } else {

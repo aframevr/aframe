@@ -1,12 +1,12 @@
 /* global AFRAME */
 AFRAME.registerComponent('main', {
   init: function () {
-    var urlParams = this.getUrlParams();
-    var defaultNumObjects = 5000;
-    var numObjects = urlParams.numobjects || defaultNumObjects;
+    let urlParams = this.getUrlParams();
+    let defaultNumObjects = 5000;
+    let numObjects = urlParams.numobjects || defaultNumObjects;
     this.cubeDistributionWidth = 100;
-    for (var i = 0; i < numObjects; i++) {
-      var cubeEl = document.createElement('a-entity');
+    for (let i = 0; i < numObjects; i++) {
+      let cubeEl = document.createElement('a-entity');
 
       if (urlParams.component) {
         cubeEl.setAttribute(urlParams.component, '');
@@ -19,12 +19,12 @@ AFRAME.registerComponent('main', {
   },
 
   getUrlParams: function () {
-    var match;
-    var pl = /\+/g;  // Regex for replacing addition symbol with a space
-    var search = /([^&=]+)=?([^&]*)/g;
-    var decode = function (s) { return decodeURIComponent(s.replace(pl, ' ')); };
-    var query = window.location.search.substring(1);
-    var urlParams = {};
+    let match;
+    let pl = /\+/g;  // Regex for replacing addition symbol with a space
+    let search = /([^&=]+)=?([^&]*)/g;
+    let decode = function (s) { return decodeURIComponent(s.replace(pl, ' ')); };
+    let query = window.location.search.substring(1);
+    let urlParams = {};
 
     match = search.exec(query);
     while (match) {
@@ -35,7 +35,7 @@ AFRAME.registerComponent('main', {
   },
 
   getRandomPosition: function () {
-    var cubeDistributionWidth = this.cubeDistributionWidth;
+    let cubeDistributionWidth = this.cubeDistributionWidth;
     return {
       x: Math.random() * cubeDistributionWidth - cubeDistributionWidth / 2,
       y: Math.random() * cubeDistributionWidth - cubeDistributionWidth / 2,

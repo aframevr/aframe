@@ -1,11 +1,11 @@
 /* global assert, setup, suite, teardown, test */
-var utils = require('utils/');
+let utils = require('utils/');
 
 suite('stats', function () {
-  var originalGetUrlParameter = utils.getUrlParameter;
+  let originalGetUrlParameter = utils.getUrlParameter;
 
   setup(function (done) {
-    var el = this.sceneEl = document.createElement('a-scene');
+    let el = this.sceneEl = document.createElement('a-scene');
     el.setAttribute('stats', '');
     document.body.appendChild(el);
 
@@ -15,7 +15,7 @@ suite('stats', function () {
   });
 
   teardown(function () {
-    var el = this.sceneEl;
+    let el = this.sceneEl;
     el.parentNode.removeChild(el);
 
     utils.getUrlParameter = originalGetUrlParameter;

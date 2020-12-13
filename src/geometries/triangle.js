@@ -1,11 +1,11 @@
-var registerGeometry = require('../core/geometry').registerGeometry;
-var THREE = require('../lib/three');
+let registerGeometry = require('../core/geometry').registerGeometry;
+let THREE = require('../lib/three');
 
-var quaternion = new THREE.Quaternion();
-var rotateVector = new THREE.Vector3(0, 0, 1);
-var uvMinVector = new THREE.Vector2();
-var uvMaxVector = new THREE.Vector2();
-var uvScaleVector = new THREE.Vector2();
+let quaternion = new THREE.Quaternion();
+let rotateVector = new THREE.Vector3(0, 0, 1);
+let uvMinVector = new THREE.Vector2();
+let uvMaxVector = new THREE.Vector2();
+let uvScaleVector = new THREE.Vector2();
 
 registerGeometry('triangle', {
   schema: {
@@ -15,12 +15,12 @@ registerGeometry('triangle', {
   },
 
   init: function (data) {
-    var geometry;
-    var normal;
-    var triangle;
-    var uvA;
-    var uvB;
-    var uvC;
+    let geometry;
+    let normal;
+    let triangle;
+    let uvA;
+    let uvB;
+    let uvC;
 
     triangle = new THREE.Triangle();
     triangle.a.set(data.vertexA.x, data.vertexA.y, data.vertexA.z);

@@ -1,8 +1,8 @@
-var debug = require('../utils/debug');
-var registerComponent = require('../core/component').registerComponent;
-var THREE = require('../lib/three');
+let debug = require('../utils/debug');
+let registerComponent = require('../core/component').registerComponent;
+let THREE = require('../lib/three');
 
-var warn = debug('components:obj-model:warn');
+let warn = debug('components:obj-model:warn');
 
 module.exports.Component = registerComponent('obj-model', {
   schema: {
@@ -11,7 +11,7 @@ module.exports.Component = registerComponent('obj-model', {
   },
 
   init: function () {
-    var self = this;
+    let self = this;
 
     this.model = null;
     this.objLoader = new THREE.OBJLoader();
@@ -27,7 +27,7 @@ module.exports.Component = registerComponent('obj-model', {
   },
 
   update: function () {
-    var data = this.data;
+    let data = this.data;
     if (!data.obj) { return; }
     this.resetMesh();
     this.loadObj(data.obj, data.mtl);
@@ -43,12 +43,12 @@ module.exports.Component = registerComponent('obj-model', {
   },
 
   loadObj: function (objUrl, mtlUrl) {
-    var self = this;
-    var el = this.el;
-    var mtlLoader = this.mtlLoader;
-    var objLoader = this.objLoader;
-    var rendererSystem = this.el.sceneEl.systems.renderer;
-    var BASE_PATH = mtlUrl.substr(0, mtlUrl.lastIndexOf('/') + 1);
+    let self = this;
+    let el = this.el;
+    let mtlLoader = this.mtlLoader;
+    let objLoader = this.objLoader;
+    let rendererSystem = this.el.sceneEl.systems.renderer;
+    let BASE_PATH = mtlUrl.substr(0, mtlUrl.lastIndexOf('/') + 1);
 
     if (mtlUrl) {
       // .OBJ with an .MTL.
@@ -63,7 +63,7 @@ module.exports.Component = registerComponent('obj-model', {
           self.model = objModel;
           self.model.traverse(function (object) {
             if (object.isMesh) {
-              var material = object.material;
+              let material = object.material;
               if (material.color) rendererSystem.applyColorCorrection(material.color);
               if (material.map) rendererSystem.applyColorCorrection(material.map);
               if (material.emissive) rendererSystem.applyColorCorrection(material.emissive);
@@ -90,7 +90,7 @@ module.exports.Component = registerComponent('obj-model', {
    * Apply material from material component recursively.
    */
   applyMaterial: function () {
-    var material = this.el.components.material;
+    let material = this.el.components.material;
     if (!material) { return; }
     this.model.traverse(function (child) {
       if (child instanceof THREE.Mesh) {

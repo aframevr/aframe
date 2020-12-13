@@ -3,8 +3,8 @@ AFRAME.registerComponent('ar-hit-test', {
   schema: {targetEl: {type: 'selector'}},
 
   init: function () {
-    var self = this;
-    var targetEl = this.data.targetEl;
+    let self = this;
+    let targetEl = this.data.targetEl;
     this.xrHitTestSource = null;
     this.viewerSpace = null;
     this.refSpace = null;
@@ -16,9 +16,9 @@ AFRAME.registerComponent('ar-hit-test', {
     });
 
     this.el.sceneEl.addEventListener('enter-vr', function () {
-      var el = self.el;
-      var targetEl = self.data.targetEl;
-      var session;
+      let el = self.el;
+      let targetEl = self.data.targetEl;
+      let session;
 
       if (!self.el.sceneEl.is('ar-mode')) { return; }
 
@@ -28,7 +28,7 @@ AFRAME.registerComponent('ar-hit-test', {
       self.el.object3D.visible = true;
 
       session.addEventListener('select', function () {
-        var position = el.getAttribute('position');
+        let position = el.getAttribute('position');
         targetEl.setAttribute('position', position);
         document.getElementById('light').setAttribute('position', {
           x: (position.x - 2),
@@ -57,12 +57,12 @@ AFRAME.registerComponent('ar-hit-test', {
   },
 
   tick: function () {
-    var frame;
-    var xrViewerPose;
-    var hitTestResults;
-    var pose;
-    var inputMat;
-    var position;
+    let frame;
+    let xrViewerPose;
+    let hitTestResults;
+    let pose;
+    let inputMat;
+    let position;
 
     if (this.el.sceneEl.is('ar-mode')) {
       if (!this.viewerSpace) { return; }

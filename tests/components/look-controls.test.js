@@ -1,11 +1,11 @@
  /* global Event, assert, process, setup, suite, test */
 
-var CANVAS_GRAB_CLASS = 'a-grab-cursor';
-var helpers = require('../helpers');
+let CANVAS_GRAB_CLASS = 'a-grab-cursor';
+let helpers = require('../helpers');
 
 suite('look-controls', function () {
   setup(function (done) {
-    var el = this.sceneEl = document.createElement('a-scene');
+    let el = this.sceneEl = document.createElement('a-scene');
     document.body.appendChild(el);
     el.addEventListener('cameraready', function () {
       done();
@@ -14,8 +14,8 @@ suite('look-controls', function () {
 
   suite('exit-vr', function () {
     test('reset previous HMD position upon exit-vr event', function (done) {
-      var el = this.sceneEl;
-      var lookControls = el.camera.el.components['look-controls'];
+      let el = this.sceneEl;
+      let lookControls = el.camera.el.components['look-controls'];
       lookControls.hasPositionalTracking = false;
       lookControls.previousHMDPosition.set(1, 2, 3);
       process.nextTick(function () {
@@ -32,19 +32,19 @@ suite('look-controls', function () {
     });
 
     test('adds grabbing style to scene canvas on mousedown', function (done) {
-      var canvasEl = this.sceneEl.canvas;
+      let canvasEl = this.sceneEl.canvas;
       process.nextTick(function () {
         assert.ok(canvasEl.style.cursor === 'grabbing');
         canvasEl.style.cursor = '';
         done();
       });
-      var event = new Event('mousedown');
+      let event = new Event('mousedown');
       event.button = 0;
       canvasEl.dispatchEvent(event);
     });
 
     test('removes grabbing style from scene el canvas on document body mouseup', function (done) {
-      var canvasEl = this.sceneEl.canvas;
+      let canvasEl = this.sceneEl.canvas;
       canvasEl.style.cursor = 'grabbing';
       process.nextTick(function () {
         assert.notOk(canvasEl.style.cursor === 'grabbing');
@@ -54,10 +54,10 @@ suite('look-controls', function () {
     });
 
     test('requests pointer lock on mousedown', function (done) {
-      var cameraEl = this.sceneEl.camera.el;
-      var canvasEl = this.sceneEl.canvas;
+      let cameraEl = this.sceneEl.camera.el;
+      let canvasEl = this.sceneEl.canvas;
 
-      var requestPointerLock = this.sinon.spy(canvasEl, 'requestPointerLock');
+      let requestPointerLock = this.sinon.spy(canvasEl, 'requestPointerLock');
       cameraEl.setAttribute('look-controls', {pointerLockEnabled: true});
 
       process.nextTick(function () {
@@ -66,17 +66,17 @@ suite('look-controls', function () {
         done();
       });
 
-      var event = new Event('mousedown');
+      let event = new Event('mousedown');
       event.button = 0;
       canvasEl.dispatchEvent(event);
     });
 
     test('does not request pointer lock when option is disabled', function (done) {
-      var sceneEl = this.sceneEl;
-      var canvasEl = sceneEl.canvas;
-      var cameraEl = sceneEl.camera.el;
+      let sceneEl = this.sceneEl;
+      let canvasEl = sceneEl.canvas;
+      let cameraEl = sceneEl.camera.el;
 
-      var requestPointerLock = this.sinon.spy(canvasEl, 'requestPointerLock');
+      let requestPointerLock = this.sinon.spy(canvasEl, 'requestPointerLock');
 
       cameraEl.setAttribute('look-controls', {pointerLockEnabled: false});
 
@@ -86,7 +86,7 @@ suite('look-controls', function () {
         done();
       });
 
-      var event = new Event('mousedown');
+      let event = new Event('mousedown');
       event.button = 0;
       canvasEl.dispatchEvent(event);
     });
@@ -94,9 +94,9 @@ suite('look-controls', function () {
 
   suite('saveCameraPose', function () {
     test('saves camera pose when entering VR w/ positional tracking', function () {
-      var sceneEl = this.sceneEl;
-      var cameraEl = sceneEl.camera.el;
-      var lookControlsComponent = cameraEl.components['look-controls'];
+      let sceneEl = this.sceneEl;
+      let cameraEl = sceneEl.camera.el;
+      let lookControlsComponent = cameraEl.components['look-controls'];
       lookControlsComponent.hasPositionalTracking = true;
       cameraEl.setAttribute('look-controls', {userHeight: 0});
       cameraEl.setAttribute('position', '3 3 3');
@@ -108,8 +108,8 @@ suite('look-controls', function () {
 
   suite('restoreCameraPose (exit VR)', function () {
     test('restores camera pose with headset', function () {
-      var sceneEl = this.sceneEl;
-      var cameraEl = sceneEl.camera.el;
+      let sceneEl = this.sceneEl;
+      let cameraEl = sceneEl.camera.el;
       cameraEl.components['look-controls'].hasPositionalTracking = true;
       cameraEl.setAttribute('position', {x: 6, y: 6, z: 6});
       sceneEl.emit('enter-vr');

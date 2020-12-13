@@ -1,9 +1,9 @@
-var registerSystem = require('../core/system').registerSystem;
-var utils = require('../utils/');
-var THREE = require('../lib/three');
+let registerSystem = require('../core/system').registerSystem;
+let utils = require('../utils/');
+let THREE = require('../lib/three');
 
-var debug = utils.debug;
-var warn = debug('components:renderer:warn');
+let debug = utils.debug;
+let warn = debug('components:renderer:warn');
 
 /**
  * Determines state of various renderer properties.
@@ -25,10 +25,10 @@ module.exports.System = registerSystem('renderer', {
   },
 
   init: function () {
-    var data = this.data;
-    var sceneEl = this.el;
+    let data = this.data;
+    let sceneEl = this.el;
     // This is the rendering engine, such as THREE.js so copy over any persistent properties from the rendering system.
-    var renderer = sceneEl.renderer;
+    let renderer = sceneEl.renderer;
     renderer.sortObjects = data.sortObjects;
     renderer.physicallyCorrectLights = data.physicallyCorrectLights;
 

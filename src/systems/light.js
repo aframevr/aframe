@@ -1,8 +1,8 @@
-var registerSystem = require('../core/system').registerSystem;
-var bind = require('../utils/bind');
-var constants = require('../constants/');
+let registerSystem = require('../core/system').registerSystem;
+let bind = require('../utils/bind');
+let constants = require('../constants/');
 
-var DEFAULT_LIGHT_ATTR = 'data-aframe-default-light';
+let DEFAULT_LIGHT_ATTR = 'data-aframe-default-light';
 
 /**
  * Light system.
@@ -41,12 +41,12 @@ module.exports.System = registerSystem('light', {
   },
 
   removeDefaultLights: function () {
-    var defaultLights;
-    var sceneEl = this.sceneEl;
+    let defaultLights;
+    let sceneEl = this.sceneEl;
 
     if (!this.defaultLights) { return; }
     defaultLights = document.querySelectorAll('[' + DEFAULT_LIGHT_ATTR + ']');
-    for (var i = 0; i < defaultLights.length; i++) {
+    for (let i = 0; i < defaultLights.length; i++) {
       sceneEl.removeChild(defaultLights[i]);
     }
     this.defaultLights = false;
@@ -58,9 +58,9 @@ module.exports.System = registerSystem('light', {
    * These lights are removed if the user adds any lights.
    */
   setupDefaultLights: function () {
-    var sceneEl = this.sceneEl;
-    var ambientLight;
-    var directionalLight;
+    let sceneEl = this.sceneEl;
+    let ambientLight;
+    let directionalLight;
 
     if (this.userDefinedLights || this.defaultLights || !this.data.defaultLightsEnabled) {
       return;

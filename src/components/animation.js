@@ -1,22 +1,22 @@
-var anime = require('super-animejs');
-var components = require('../core/component').components;
-var registerComponent = require('../core/component').registerComponent;
-var THREE = require('../lib/three');
-var utils = require('../utils');
+let anime = require('super-animejs');
+let components = require('../core/component').components;
+let registerComponent = require('../core/component').registerComponent;
+let THREE = require('../lib/three');
+let utils = require('../utils');
 
-var colorHelperFrom = new THREE.Color();
-var colorHelperTo = new THREE.Color();
+let colorHelperFrom = new THREE.Color();
+let colorHelperTo = new THREE.Color();
 
-var getComponentProperty = utils.entity.getComponentProperty;
-var setComponentProperty = utils.entity.setComponentProperty;
-var splitCache = {};
+let getComponentProperty = utils.entity.getComponentProperty;
+let setComponentProperty = utils.entity.setComponentProperty;
+let splitCache = {};
 
-var TYPE_COLOR = 'color';
-var PROP_POSITION = 'position';
-var PROP_ROTATION = 'rotation';
-var PROP_SCALE = 'scale';
-var STRING_COMPONENTS = 'components';
-var STRING_OBJECT3D = 'object3D';
+let TYPE_COLOR = 'color';
+let PROP_POSITION = 'position';
+let PROP_ROTATION = 'rotation';
+let PROP_SCALE = 'scale';
+let STRING_COMPONENTS = 'components';
+let STRING_OBJECT3D = 'object3D';
 
 /**
  * Animation component for A-Frame using anime.js.
@@ -71,7 +71,7 @@ module.exports.Component = registerComponent('animation', {
   multiple: true,
 
   init: function () {
-    var self = this;
+    let self = this;
 
     this.eventDetail = {name: this.attrName};
     this.time = 0;
@@ -103,8 +103,8 @@ module.exports.Component = registerComponent('animation', {
   },
 
   update: function (oldData) {
-    var config = this.config;
-    var data = this.data;
+    let config = this.config;
+    let data = this.data;
 
     this.animationIsPlaying = false;
 
@@ -160,7 +160,7 @@ module.exports.Component = registerComponent('animation', {
    * Start animation from scratch.
    */
   createAndStartAnimation: function () {
-    var data = this.data;
+    let data = this.data;
 
     this.updateConfig();
     this.animationIsPlaying = false;
@@ -228,12 +228,12 @@ module.exports.Component = registerComponent('animation', {
    * rawProperty: true and type: color;
    */
   updateConfigForRawColor: function () {
-    var config = this.config;
-    var data = this.data;
-    var el = this.el;
-    var from;
-    var key;
-    var to;
+    let config = this.config;
+    let data = this.data;
+    let el = this.el;
+    let from;
+    let key;
+    let to;
 
     if (this.waitComponentInitRawProperty(this.updateConfigForRawColor)) {
       return;
@@ -253,9 +253,9 @@ module.exports.Component = registerComponent('animation', {
     for (key in to) { config[key] = to[key]; }
 
     config.update = (function () {
-      var lastValue = {};
+      let lastValue = {};
       return function (anim) {
-        var value;
+        let value;
         value = anim.animatables[0].target;
         // For animation timeline.
         if (value.r === lastValue.r &&
@@ -271,13 +271,13 @@ module.exports.Component = registerComponent('animation', {
    * Stuff property into generic `property` key.
    */
   updateConfigForDefault: function () {
-    var config = this.config;
-    var data = this.data;
-    var el = this.el;
-    var from;
-    var isBoolean;
-    var isNumber;
-    var to;
+    let config = this.config;
+    let data = this.data;
+    let el = this.el;
+    let from;
+    let isBoolean;
+    let isNumber;
+    let to;
 
     if (this.waitComponentInitRawProperty(this.updateConfigForDefault)) {
       return;
@@ -316,10 +316,10 @@ module.exports.Component = registerComponent('animation', {
     config.targets = this.targets;
     config.aframeProperty = to;
     config.update = (function () {
-      var lastValue;
+      let lastValue;
 
       return function (anim) {
-        var value;
+        let value;
         value = anim.animatables[0].target.aframeProperty;
 
         // Need to do a last value check for animation timeline since all the tweening
@@ -344,12 +344,12 @@ module.exports.Component = registerComponent('animation', {
    * Update vector by modifying object3D.
    */
   updateConfigForVector: function () {
-    var config = this.config;
-    var data = this.data;
-    var el = this.el;
-    var key;
-    var from;
-    var to;
+    let config = this.config;
+    let data = this.data;
+    let el = this.el;
+    let key;
+    let from;
+    let to;
 
     // Parse coordinates.
     from = data.from !== ''
@@ -372,9 +372,9 @@ module.exports.Component = registerComponent('animation', {
     if (data.property === PROP_POSITION || data.property === PROP_ROTATION ||
         data.property === PROP_SCALE) {
       config.update = (function () {
-        var lastValue = {};
+        let lastValue = {};
         return function (anim) {
-          var value = anim.animatables[0].target;
+          let value = anim.animatables[0].target;
 
           if (data.property === PROP_SCALE) {
             value.x = Math.max(0.0001, value.x);
@@ -399,9 +399,9 @@ module.exports.Component = registerComponent('animation', {
 
     // Animating some vector.
     config.update = (function () {
-      var lastValue = {};
+      let lastValue = {};
       return function (anim) {
-        var value = anim.animatables[0].target;
+        let value = anim.animatables[0].target;
 
         // Animate rotation through radians.
         // For animation timeline.
@@ -420,7 +420,7 @@ module.exports.Component = registerComponent('animation', {
    * Update the config before each run.
    */
   updateConfig: function () {
-    var propType;
+    let propType;
 
     // Route config type.
     propType = getPropertyType(this.el, this.data.property);
@@ -437,10 +437,10 @@ module.exports.Component = registerComponent('animation', {
    * Wait for component to initialize.
    */
   waitComponentInitRawProperty: function (cb) {
-    var componentName;
-    var data = this.data;
-    var el = this.el;
-    var self = this;
+    let componentName;
+    let data = this.data;
+    let el = this.el;
+    let self = this;
 
     if (data.from !== '') { return false; }
 
@@ -466,8 +466,8 @@ module.exports.Component = registerComponent('animation', {
    *       animation__mouseleave="property: material.opacity"
    */
   stopRelatedAnimations: function () {
-    var component;
-    var componentName;
+    let component;
+    let componentName;
     for (componentName in this.el.components) {
       component = this.el.components[componentName];
       if (componentName === this.attrName) { continue; }
@@ -479,16 +479,16 @@ module.exports.Component = registerComponent('animation', {
   },
 
   addEventListeners: function () {
-    var data = this.data;
-    var el = this.el;
+    let data = this.data;
+    let el = this.el;
     addEventListeners(el, data.startEvents, this.onStartEvent);
     addEventListeners(el, data.pauseEvents, this.pauseAnimation);
     addEventListeners(el, data.resumeEvents, this.resumeAnimation);
   },
 
   removeEventListeners: function () {
-    var data = this.data;
-    var el = this.el;
+    let data = this.data;
+    let el = this.el;
     removeEventListeners(el, data.startEvents, this.onStartEvent);
     removeEventListeners(el, data.pauseEvents, this.pauseAnimation);
     removeEventListeners(el, data.resumeEvents, this.resumeAnimation);
@@ -513,10 +513,10 @@ module.exports.Component = registerComponent('animation', {
  * We just care whether the property is a vector.
  */
 function getPropertyType (el, property) {
-  var component;
-  var componentName;
-  var split;
-  var propertyName;
+  let component;
+  let componentName;
+  let split;
+  let propertyName;
 
   split = property.split('.');
   componentName = split[0];
@@ -546,23 +546,23 @@ function toRadians (obj) {
 }
 
 function addEventListeners (el, eventNames, handler) {
-  var i;
+  let i;
   for (i = 0; i < eventNames.length; i++) {
     el.addEventListener(eventNames[i], handler);
   }
 }
 
 function removeEventListeners (el, eventNames, handler) {
-  var i;
+  let i;
   for (i = 0; i < eventNames.length; i++) {
     el.removeEventListener(eventNames[i], handler);
   }
 }
 
 function getRawProperty (el, path) {
-  var i;
-  var split;
-  var value;
+  let i;
+  let split;
+  let value;
   split = splitDot(path);
   value = el;
   for (i = 0; i < split.length; i++) {
@@ -576,10 +576,10 @@ function getRawProperty (el, path) {
 }
 
 function setRawProperty (el, path, value, type) {
-  var i;
-  var split;
-  var propertyName;
-  var targetValue;
+  let i;
+  let split;
+  let propertyName;
+  let targetValue;
 
   if (path.startsWith('object3D.rotation')) {
     value = THREE.Math.degToRad(value);

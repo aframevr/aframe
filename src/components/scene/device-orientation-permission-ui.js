@@ -1,19 +1,19 @@
 /* global DeviceOrientationEvent, location  */
-var registerComponent = require('../../core/component').registerComponent;
-var utils = require('../../utils/');
-var bind = utils.bind;
+let registerComponent = require('../../core/component').registerComponent;
+let utils = require('../../utils/');
+let bind = utils.bind;
 
-var constants = require('../../constants/');
+let constants = require('../../constants/');
 
-var MODAL_CLASS = 'a-modal';
-var DIALOG_CLASS = 'a-dialog';
-var DIALOG_TEXT_CLASS = 'a-dialog-text';
-var DIALOG_TEXT_CONTAINER_CLASS = 'a-dialog-text-container';
-var DIALOG_BUTTONS_CONTAINER_CLASS = 'a-dialog-buttons-container';
-var DIALOG_BUTTON_CLASS = 'a-dialog-button';
-var DIALOG_ALLOW_BUTTON_CLASS = 'a-dialog-allow-button';
-var DIALOG_DENY_BUTTON_CLASS = 'a-dialog-deny-button';
-var DIALOG_OK_BUTTON_CLASS = 'a-dialog-ok-button';
+let MODAL_CLASS = 'a-modal';
+let DIALOG_CLASS = 'a-dialog';
+let DIALOG_TEXT_CLASS = 'a-dialog-text';
+let DIALOG_TEXT_CONTAINER_CLASS = 'a-dialog-text-container';
+let DIALOG_BUTTONS_CONTAINER_CLASS = 'a-dialog-buttons-container';
+let DIALOG_BUTTON_CLASS = 'a-dialog-button';
+let DIALOG_ALLOW_BUTTON_CLASS = 'a-dialog-allow-button';
+let DIALOG_DENY_BUTTON_CLASS = 'a-dialog-deny-button';
+let DIALOG_OK_BUTTON_CLASS = 'a-dialog-ok-button';
 
 /**
  * UI for enabling device motion permission
@@ -36,7 +36,7 @@ module.exports.Component = registerComponent('device-orientation-permission-ui',
   },
 
   init: function () {
-    var self = this;
+    let self = this;
 
     if (!this.data.enabled) { return; }
 
@@ -85,8 +85,8 @@ module.exports.Component = registerComponent('device-orientation-permission-ui',
   },
 
   showMobileDesktopModeAlert: function () {
-    var self = this;
-    var safariIpadAlertEl = createAlertDialog(
+    let self = this;
+    let safariIpadAlertEl = createAlertDialog(
       self.data.cancelButtonText,
       self.data.mobileDesktopMessage,
       function () { self.el.removeChild(safariIpadAlertEl); });
@@ -94,8 +94,8 @@ module.exports.Component = registerComponent('device-orientation-permission-ui',
   },
 
   showHTTPAlert: function () {
-    var self = this;
-    var httpAlertEl = createAlertDialog(
+    let self = this;
+    let httpAlertEl = createAlertDialog(
       self.data.cancelButtonText,
       self.data.httpsMessage,
       function () { self.el.removeChild(httpAlertEl); });
@@ -106,7 +106,7 @@ module.exports.Component = registerComponent('device-orientation-permission-ui',
    * Enable device motion permission when clicked.
    */
   onDeviceMotionDialogAllowClicked: function () {
-    var self = this;
+    let self = this;
     this.el.emit('deviceorientationpermissionrequested');
     DeviceOrientationEvent.requestPermission().then(function (response) {
       if (response === 'granted') {
@@ -130,9 +130,9 @@ module.exports.Component = registerComponent('device-orientation-permission-ui',
  */
 function createPermissionDialog (
   denyText, allowText, dialogText, onAllowClicked, onDenyClicked) {
-  var buttonsContainer;
-  var denyButton;
-  var acceptButton;
+  let buttonsContainer;
+  let denyButton;
+  let acceptButton;
 
   buttonsContainer = document.createElement('div');
   buttonsContainer.classList.add(DIALOG_BUTTONS_CONTAINER_CLASS);
@@ -165,8 +165,8 @@ function createPermissionDialog (
 }
 
 function createAlertDialog (closeText, dialogText, onOkClicked) {
-  var buttonsContainer;
-  var okButton;
+  let buttonsContainer;
+  let okButton;
 
   buttonsContainer = document.createElement('div');
   buttonsContainer.classList.add(DIALOG_BUTTONS_CONTAINER_CLASS);
@@ -188,10 +188,10 @@ function createAlertDialog (closeText, dialogText, onOkClicked) {
 }
 
 function createDialog (text, buttonsContainerEl) {
-  var modalContainer;
-  var dialog;
-  var dialogTextContainer;
-  var dialogText;
+  let modalContainer;
+  let dialog;
+  let dialogTextContainer;
+  let dialogText;
 
   modalContainer = document.createElement('div');
   modalContainer.classList.add(MODAL_CLASS);

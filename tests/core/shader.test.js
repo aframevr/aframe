@@ -5,7 +5,7 @@ const THREE = require('lib/three');
 const VIDEO = 'base/tests/assets/test.mp4';
 
 suite('shader', function () {
-  var el;
+  let el;
 
   setup(function (done) {
     el = entityFactory();
@@ -23,7 +23,7 @@ suite('shader', function () {
   });
 
   suite('registerShader', function () {
-    var shader;
+    let shader;
 
     setup(function () {
       shader = AFRAME.registerShader('testShader', {});
@@ -86,10 +86,10 @@ suite('shader', function () {
 });
 
 suite('shader data binding', function () {
-  var el;
-  var initSpy;
-  var shader;
-  var updateSpy;
+  let el;
+  let initSpy;
+  let shader;
+  let updateSpy;
 
   setup(function (done) {
     AFRAME.registerShader('testShader', {

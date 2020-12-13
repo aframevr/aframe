@@ -1,8 +1,8 @@
 window.glStats = function () {
 
-    var _rS = null;
+    let _rS = null;
 
-    var _totalDrawArraysCalls = 0,
+    let _totalDrawArraysCalls = 0,
         _totalDrawElementsCalls = 0,
         _totalUseProgramCalls = 0,
         _totalFaces = 0,
@@ -37,7 +37,7 @@ window.glStats = function () {
         _totalBindTexures++;
     } );
 
-    var _values = {
+    let _values = {
         allcalls: {
             over: 3000,
             caption: 'Calls (hook)'
@@ -50,12 +50,12 @@ window.glStats = function () {
         }
     };
 
-    var _groups = [ {
+    let _groups = [ {
         caption: 'WebGL',
         values: [ 'allcalls', 'drawelements', 'drawarrays', 'useprogram', 'bindtexture', 'glfaces', 'glvertices', 'glpoints' ]
     } ];
 
-    var _fractions = [ {
+    let _fractions = [ {
         base: 'allcalls',
         steps: [ 'drawelements', 'drawarrays' ]
     } ];
@@ -101,9 +101,9 @@ window.glStats = function () {
 
 window.threeStats = function ( renderer ) {
 
-    var _rS = null;
+    let _rS = null;
 
-    var _values = {
+    let _values = {
         'renderer.info.memory.geometries': {
             caption: 'Geometries'
         },
@@ -125,7 +125,7 @@ window.threeStats = function ( renderer ) {
         }
     };
 
-    var _groups = [ {
+    let _groups = [ {
         caption: 'Three.js - Memory',
         values: [ 'renderer.info.memory.geometries', 'renderer.info.programs', 'renderer.info.memory.textures' ]
     }, {
@@ -133,7 +133,7 @@ window.threeStats = function ( renderer ) {
         values: [ 'renderer.info.render.calls', 'renderer.info.render.triangles', 'renderer.info.render.points' ]
     } ];
 
-    var _fractions = [];
+    let _fractions = [];
 
     function _update () {
 
@@ -172,9 +172,9 @@ window.threeStats = function ( renderer ) {
 
 window.BrowserStats = function () {
 
-    var _rS = null;
+    let _rS = null;
 
-    var _usedJSHeapSize = 0,
+    let _usedJSHeapSize = 0,
         _totalJSHeapSize = 0;
 
     if ( window.performance && !performance.memory ) {
@@ -188,7 +188,7 @@ window.BrowserStats = function () {
         console.warn( 'totalJSHeapSize === 0... performance.memory is only available in Chrome .' );
     }
 
-    var _values = {
+    let _values = {
         memory: {
             caption: 'Used Memory',
             average: true,
@@ -200,22 +200,22 @@ window.BrowserStats = function () {
         }
     };
 
-    var _groups = [ {
+    let _groups = [ {
         caption: 'Browser',
         values: [ 'memory', 'total' ]
     } ];
 
-    var _fractions = [ {
+    let _fractions = [ {
         base: 'total',
         steps: [ 'memory' ]
     } ];
 
-    var log1024 = Math.log( 1024 );
+    let log1024 = Math.log( 1024 );
 
     function _size ( v ) {
 
-        var precision = 100; //Math.pow(10, 2);
-        var i = Math.floor( Math.log( v ) / log1024 );
+        let precision = 100; //Math.pow(10, 2);
+        let i = Math.floor( Math.log( v ) / log1024 );
         return Math.round( v * precision / Math.pow( 1024, i ) ) / precision; // + ' ' + sizes[i];
 
     }

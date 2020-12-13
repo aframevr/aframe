@@ -1,8 +1,8 @@
-var registerComponent = require('../core/component').registerComponent;
-var debug = require('../utils/debug');
-var THREE = require('../lib/three');
+let registerComponent = require('../core/component').registerComponent;
+let debug = require('../utils/debug');
+let THREE = require('../lib/three');
 
-var warn = debug('components:sound:warn');
+let warn = debug('components:sound:warn');
 
 /**
  * Sound component.
@@ -25,7 +25,7 @@ module.exports.Component = registerComponent('sound', {
   multiple: true,
 
   init: function () {
-    var self = this;
+    let self = this;
 
     this.listener = null;
     this.audioLoader = new THREE.AudioLoader();
@@ -38,10 +38,10 @@ module.exports.Component = registerComponent('sound', {
   },
 
   update: function (oldData) {
-    var data = this.data;
-    var i;
-    var sound;
-    var srcChanged = data.src !== oldData.src;
+    let data = this.data;
+    let i;
+    let sound;
+    let srcChanged = data.src !== oldData.src;
 
     // Create new sound if not yet created or changing `src`.
     if (srcChanged) {
@@ -68,7 +68,7 @@ module.exports.Component = registerComponent('sound', {
 
     // All sound values set. Load in `src`.
     if (srcChanged) {
-      var self = this;
+      let self = this;
 
       this.loaded = false;
       this.audioLoader.load(data.src, function (buffer) {
@@ -97,8 +97,8 @@ module.exports.Component = registerComponent('sound', {
   },
 
   remove: function () {
-    var i;
-    var sound;
+    let i;
+    let sound;
 
     this.removeEventListener();
 
@@ -121,7 +121,7 @@ module.exports.Component = registerComponent('sound', {
   *  Update listener attached to the user defined on event.
   */
   updateEventListener: function (oldEvt) {
-    var el = this.el;
+    let el = this.el;
     if (oldEvt) { el.removeEventListener(oldEvt, this.playSoundBound); }
     el.addEventListener(this.data.on, this.playSoundBound);
   },
@@ -136,11 +136,11 @@ module.exports.Component = registerComponent('sound', {
    * @returns {object} sound
    */
   setupSound: function () {
-    var el = this.el;
-    var i;
-    var sceneEl = el.sceneEl;
-    var self = this;
-    var sound;
+    let el = this.el;
+    let i;
+    let sceneEl = el.sceneEl;
+    let self = this;
+    let sound;
 
     if (this.pool.children.length > 0) {
       this.stopSound();
@@ -148,7 +148,7 @@ module.exports.Component = registerComponent('sound', {
     }
 
     // Only want one AudioListener. Cache it on the scene.
-    var listener = this.listener = sceneEl.audioListener || new THREE.AudioListener();
+    let listener = this.listener = sceneEl.audioListener || new THREE.AudioListener();
     sceneEl.audioListener = listener;
 
     if (sceneEl.camera) {
@@ -183,8 +183,8 @@ module.exports.Component = registerComponent('sound', {
    * Pause all the sounds in the pool.
    */
   pauseSound: function () {
-    var i;
-    var sound;
+    let i;
+    let sound;
 
     this.isPlaying = false;
     for (i = 0; i < this.pool.children.length; i++) {
@@ -201,9 +201,9 @@ module.exports.Component = registerComponent('sound', {
    * Look for an unused sound in the pool and play it if found.
    */
   playSound: function (processSound) {
-    var found;
-    var i;
-    var sound;
+    let found;
+    let i;
+    let sound;
 
     if (!this.loaded) {
       warn('Sound not loaded yet. It will be played once it finished loading');
@@ -237,8 +237,8 @@ module.exports.Component = registerComponent('sound', {
    * Stop all the sounds in the pool.
    */
   stopSound: function () {
-    var i;
-    var sound;
+    let i;
+    let sound;
     this.isPlaying = false;
     for (i = 0; i < this.pool.children.length; i++) {
       sound = this.pool.children[i];

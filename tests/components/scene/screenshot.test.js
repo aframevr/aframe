@@ -1,7 +1,7 @@
 /* global assert, setup, suite, test */
 suite('screenshot', function () {
-  var component;
-  var sceneEl;
+  let component;
+  let sceneEl;
 
   setup(function (done) {
     sceneEl = document.createElement('a-scene');
@@ -13,7 +13,7 @@ suite('screenshot', function () {
   });
 
   test('capture is called when key shortcut is pressed', function () {
-    var captureStub = this.sinon.stub(component, 'capture');
+    let captureStub = this.sinon.stub(component, 'capture');
     // Must call onKeyDown method directly because Chrome doesn't provide a reliable method
     // for KeyboardEvent.
     component.onKeyDown({

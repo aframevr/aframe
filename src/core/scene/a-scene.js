@@ -1,23 +1,23 @@
 /* global Promise, screen, CustomEvent */
-var initMetaTags = require('./metaTags').inject;
-var initWakelock = require('./wakelock');
-var loadingScreen = require('./loadingScreen');
-var re = require('../a-register-element');
-var scenes = require('./scenes');
-var systems = require('../system').systems;
-var THREE = require('../../lib/three');
-var utils = require('../../utils/');
+let initMetaTags = require('./metaTags').inject;
+let initWakelock = require('./wakelock');
+let loadingScreen = require('./loadingScreen');
+let re = require('../a-register-element');
+let scenes = require('./scenes');
+let systems = require('../system').systems;
+let THREE = require('../../lib/three');
+let utils = require('../../utils/');
 // Require after.
-var AEntity = require('../a-entity');
-var ANode = require('../a-node');
-var initPostMessageAPI = require('./postMessage');
+let AEntity = require('../a-entity');
+let ANode = require('../a-node');
+let initPostMessageAPI = require('./postMessage');
 
-var bind = utils.bind;
-var isIOS = utils.device.isIOS();
-var isMobile = utils.device.isMobile();
-var isWebXRAvailable = utils.device.isWebXRAvailable;
-var registerElement = re.registerElement;
-var warn = utils.debug('core:a-scene:warn');
+let bind = utils.bind;
+let isIOS = utils.device.isIOS();
+let isMobile = utils.device.isMobile();
+let isWebXRAvailable = utils.device.isWebXRAvailable;
+let registerElement = re.registerElement;
+let warn = utils.debug('core:a-scene:warn');
 
 if (isIOS) { require('../../utils/ios-orientationchange-blank-bug'); }
 
@@ -47,7 +47,7 @@ module.exports.AScene = registerElement('a-scene', {
         this.isAR = false;
         this.isScene = true;
         this.object3D = new THREE.Scene();
-        var self = this;
+        let self = this;
         this.object3D.onAfterRender = function (renderer, scene, camera) {
           // THREE may swap the camera used for the rendering if in VR, so we pass it to tock
           if (self.isPlaying) { self.tock(self.time, self.delta, camera); }
@@ -86,8 +86,8 @@ module.exports.AScene = registerElement('a-scene', {
 
     attachedCallback: {
       value: function () {
-        var self = this;
-        var embedded = this.hasAttribute('embedded');
+        let self = this;
+        let embedded = this.hasAttribute('embedded');
         // Renderer initialization
         setupCanvas(this);
         this.setupRenderer();
@@ -145,8 +145,8 @@ module.exports.AScene = registerElement('a-scene', {
 
     attachedCallbackPostCamera: {
       value: function () {
-        var resize;
-        var self = this;
+        let resize;
+        let self = this;
 
         window.addEventListener('load', resize);
         window.addEventListener('resize', function () {
@@ -174,7 +174,7 @@ module.exports.AScene = registerElement('a-scene', {
      */
     initSystems: {
       value: function () {
-        var name;
+        let name;
 
         // Initialize camera system first.
         this.initSystem('camera');
@@ -203,7 +203,7 @@ module.exports.AScene = registerElement('a-scene', {
     detachedCallback: {
       value: function () {
         // Remove from scene index.
-        var sceneIndex = scenes.indexOf(this);
+        let sceneIndex = scenes.indexOf(this);
         scenes.splice(sceneIndex, 1);
 
         window.removeEventListener('vrdisplaypresentchange', this.onVRPresentChangeBound);
@@ -224,9 +224,9 @@ module.exports.AScene = registerElement('a-scene', {
      */
     addBehavior: {
       value: function (behavior) {
-        var behaviorArr;
-        var behaviors = this.behaviors;
-        var behaviorType;
+        let behaviorArr;
+        let behaviors = this.behaviors;
+        let behaviorType;
 
         // Check if behavior has tick and/or tock and add the behavior to the appropriate list.
         for (behaviorType in behaviors) {
@@ -259,7 +259,7 @@ module.exports.AScene = registerElement('a-scene', {
 
     enterAR: {
       value: function () {
-        var errorMessage;
+        let errorMessage;
         if (!this.hasWebXR) {
           errorMessage = 'Failed to enter AR mode, WebXR not supported.';
           throw new Error(errorMessage);
@@ -282,10 +282,10 @@ module.exports.AScene = registerElement('a-scene', {
      */
     enterVR: {
       value: function (useAR) {
-        var self = this;
-        var vrDisplay;
-        var vrManager = self.renderer.xr;
-        var xrInit;
+        let self = this;
+        let vrDisplay;
+        let vrManager = self.renderer.xr;
+        let xrInit;
 
         // Don't enter VR if already in VR.
         if (this.is('vr-mode')) { return Promise.resolve('Already in VR.'); }
@@ -299,9 +299,9 @@ module.exports.AScene = registerElement('a-scene', {
             if (this.xrSession) {
               this.xrSession.removeEventListener('end', this.exitVRBound);
             }
-            var refspace = this.sceneEl.systems.webxr.sessionReferenceSpaceType;
+            let refspace = this.sceneEl.systems.webxr.sessionReferenceSpaceType;
             vrManager.setReferenceSpaceType(refspace);
-            var xrMode = useAR ? 'immersive-ar' : 'immersive-vr';
+            let xrMode = useAR ? 'immersive-ar' : 'immersive-vr';
             xrInit = this.sceneEl.systems.webxr.sessionConfiguration;
             return new Promise(function (resolve, reject) {
               navigator.xr.requestSession(xrMode, xrInit).then(
@@ -313,8 +313,8 @@ module.exports.AScene = registerElement('a-scene', {
                   enterVRSuccess(resolve);
                 },
                 function requestFail (error) {
-                  var useAR = xrMode === 'immersive-ar';
-                  var mode = useAR ? 'AR' : 'VR';
+                  let useAR = xrMode === 'immersive-ar';
+                  let mode = useAR ? 'AR' : 'VR';
                   throw new Error('Failed to enter ' + mode + ' mode (`requestSession`) ' + error);
                 }
               );
@@ -327,8 +327,8 @@ module.exports.AScene = registerElement('a-scene', {
               enterVRSuccess();
               return Promise.resolve();
             }
-            var rendererSystem = this.getAttribute('renderer');
-            var presentationAttributes = {
+            let rendererSystem = this.getAttribute('renderer');
+            let presentationAttributes = {
               highRefreshRate: rendererSystem.highRefreshRate,
               foveationLevel: rendererSystem.foveationLevel
             };
@@ -351,7 +351,7 @@ module.exports.AScene = registerElement('a-scene', {
           // to setup everything from there. Thus, we need to emulate another vrdisplaypresentchange
           // for the actual requestPresent. Need to make sure there are no issues with firing the
           // vrdisplaypresentchange multiple times.
-          var event;
+          let event;
           if (window.hasNativeWebVRImplementation && !window.hasNativeWebXRImplementation) {
             event = new CustomEvent('vrdisplaypresentchange', {detail: {display: utils.device.getVRDisplay()}});
             window.dispatchEvent(event);
@@ -401,9 +401,9 @@ module.exports.AScene = registerElement('a-scene', {
      */
     exitVR: {
       value: function () {
-        var self = this;
-        var vrDisplay;
-        var vrManager = this.renderer.xr;
+        let self = this;
+        let vrDisplay;
+        let vrManager = this.renderer.xr;
 
         // Don't exit VR if not in VR.
         if (!this.is('vr-mode') && !this.is('ar-mode')) { return Promise.resolve('Not in immersive mode.'); }
@@ -462,7 +462,7 @@ module.exports.AScene = registerElement('a-scene', {
     pointerRestricted: {
       value: function () {
         if (this.canvas) {
-          var pointerLockElement = this.getPointerLockElement();
+          let pointerLockElement = this.getPointerLockElement();
           if (pointerLockElement && pointerLockElement !== this.canvas && document.exitPointerLock) {
             // Recreate pointer lock on the canvas, if taken on another element.
             document.exitPointerLock();
@@ -477,7 +477,7 @@ module.exports.AScene = registerElement('a-scene', {
 
     pointerUnrestricted: {
       value: function () {
-        var pointerLockElement = this.getPointerLockElement();
+        let pointerLockElement = this.getPointerLockElement();
         if (pointerLockElement && pointerLockElement === this.canvas && document.exitPointerLock) {
           document.exitPointerLock();
         }
@@ -491,7 +491,7 @@ module.exports.AScene = registerElement('a-scene', {
     onVRPresentChange: {
       value: function (evt) {
         // Polyfill places display inside the detail property
-        var display = evt.display || evt.detail.display;
+        let display = evt.display || evt.detail.display;
         // Entering VR.
         if (display && display.isPresenting) {
           this.enterVR();
@@ -508,7 +508,7 @@ module.exports.AScene = registerElement('a-scene', {
      */
     getAttribute: {
       value: function (attr) {
-        var system = this.systems[attr];
+        let system = this.systems[attr];
         if (system) { return system.data; }
         return AEntity.prototype.getAttribute.call(this, attr);
       }
@@ -531,7 +531,7 @@ module.exports.AScene = registerElement('a-scene', {
      */
     getDOMAttribute: {
       value: function (attr) {
-        var system = this.systems[attr];
+        let system = this.systems[attr];
         if (system) { return system.data; }
         return AEntity.prototype.getDOMAttribute.call(this, attr);
       }
@@ -544,7 +544,7 @@ module.exports.AScene = registerElement('a-scene', {
      */
     setAttribute: {
       value: function (attr, value, componentPropValue) {
-        var system = this.systems[attr];
+        let system = this.systems[attr];
         if (system) {
           ANode.prototype.setAttribute.call(this, attr, value);
           system.updateProperties(value);
@@ -559,10 +559,10 @@ module.exports.AScene = registerElement('a-scene', {
      */
     removeBehavior: {
       value: function (behavior) {
-        var behaviorArr;
-        var behaviorType;
-        var behaviors = this.behaviors;
-        var index;
+        let behaviorArr;
+        let behaviorType;
+        let behaviors = this.behaviors;
+        let index;
 
         // Check if behavior has tick and/or tock and remove the behavior from the appropriate
         // array.
@@ -577,12 +577,12 @@ module.exports.AScene = registerElement('a-scene', {
 
     resize: {
       value: function () {
-        var camera = this.camera;
-        var canvas = this.canvas;
-        var embedded;
-        var isVRPresenting;
-        var size;
-        var isPresenting = this.renderer.xr.isPresenting;
+        let camera = this.camera;
+        let canvas = this.canvas;
+        let embedded;
+        let isVRPresenting;
+        let size;
+        let isPresenting = this.renderer.xr.isPresenting;
         isVRPresenting = this.renderer.xr.enabled && isPresenting;
 
         // Do not update renderer, if a camera or a canvas have not been injected.
@@ -609,11 +609,11 @@ module.exports.AScene = registerElement('a-scene', {
 
     setupRenderer: {
       value: function () {
-        var self = this;
-        var renderer;
-        var rendererAttr;
-        var rendererAttrString;
-        var rendererConfig;
+        let self = this;
+        let renderer;
+        let rendererAttr;
+        let rendererAttrString;
+        let rendererConfig;
 
         rendererConfig = {
           alpha: true,
@@ -672,8 +672,8 @@ module.exports.AScene = registerElement('a-scene', {
      */
     play: {
       value: function () {
-        var self = this;
-        var sceneEl = this;
+        let self = this;
+        let sceneEl = this;
 
         if (this.renderStarted) {
           AEntity.prototype.play.call(this);
@@ -681,9 +681,9 @@ module.exports.AScene = registerElement('a-scene', {
         }
 
         this.addEventListener('loaded', function () {
-          var renderer = this.renderer;
-          var vrDisplay;
-          var vrManager = this.renderer.xr;
+          let renderer = this.renderer;
+          let vrDisplay;
+          let vrManager = this.renderer.xr;
           AEntity.prototype.play.call(this);  // .play() *before* render.
 
           if (sceneEl.renderStarted) { return; }
@@ -730,8 +730,8 @@ module.exports.AScene = registerElement('a-scene', {
      */
     tick: {
       value: function (time, timeDelta) {
-        var i;
-        var systems = this.systems;
+        let i;
+        let systems = this.systems;
 
         // Components.
         for (i = 0; i < this.behaviors.tick.length; i++) {
@@ -754,8 +754,8 @@ module.exports.AScene = registerElement('a-scene', {
      */
     tock: {
       value: function (time, timeDelta, camera) {
-        var i;
-        var systems = this.systems;
+        let i;
+        let systems = this.systems;
 
         // Components.
         for (i = 0; i < this.behaviors.tock.length; i++) {
@@ -780,14 +780,14 @@ module.exports.AScene = registerElement('a-scene', {
      */
     render: {
       value: function (time, frame) {
-        var renderer = this.renderer;
+        let renderer = this.renderer;
 
         this.frame = frame;
         this.delta = this.clock.getDelta() * 1000;
         this.time = this.clock.elapsedTime * 1000;
 
         if (this.isPlaying) { this.tick(this.time, this.delta); }
-        var savedBackground = null;
+        let savedBackground = null;
         if (this.is('ar-mode')) {
           // In AR mode, don't render the default background. Hide it, then
           // restore it again after rendering.
@@ -835,9 +835,9 @@ function getCanvasSize (canvasEl, embedded, maxSize, isVR) {
  * @returns {object} Width and height.
  */
 function getMaxSize (maxSize, isVR) {
-  var aspectRatio;
-  var size;
-  var pixelRatio = window.devicePixelRatio;
+  let aspectRatio;
+  let size;
+  let pixelRatio = window.devicePixelRatio;
 
   size = {height: document.body.offsetHeight, width: document.body.offsetWidth};
   if (!maxSize || isVR || (maxSize.width === -1 && maxSize.height === -1)) {
@@ -865,7 +865,7 @@ function getMaxSize (maxSize, isVR) {
 }
 
 function requestFullscreen (canvas) {
-  var requestFullscreen =
+  let requestFullscreen =
     canvas.requestFullscreen ||
     canvas.webkitRequestFullscreen ||
     canvas.mozRequestFullScreen ||  // The capitalized `S` is not a typo.
@@ -875,7 +875,7 @@ function requestFullscreen (canvas) {
 }
 
 function exitFullscreen () {
-  var fullscreenEl =
+  let fullscreenEl =
     document.fullscreenElement ||
     document.webkitFullscreenElement ||
     document.mozFullScreenElement;
@@ -890,7 +890,7 @@ function exitFullscreen () {
 }
 
 function setupCanvas (sceneEl) {
-  var canvasEl;
+  let canvasEl;
 
   canvasEl = document.createElement('canvas');
   canvasEl.classList.add('a-canvas');
@@ -914,7 +914,7 @@ function setupCanvas (sceneEl) {
   setTimeout(bind(sceneEl.resize, sceneEl), 0);
 
   function onFullScreenChange () {
-    var fullscreenEl =
+    let fullscreenEl =
       document.fullscreenElement ||
       document.mozFullScreenElement ||
       document.webkitFullscreenElement;

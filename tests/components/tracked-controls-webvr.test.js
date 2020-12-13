@@ -4,11 +4,11 @@ const entityFactory = require('../helpers').entityFactory;
 const PI = Math.PI;
 
 suite('tracked-controls-webvr', function () {
-  var component;
-  var controller;
-  var el;
-  var system;
-  var standingMatrix = new THREE.Matrix4();
+  let component;
+  let controller;
+  let el;
+  let system;
+  let standingMatrix = new THREE.Matrix4();
 
   setup(function (done) {
     standingMatrix.identity();
@@ -90,8 +90,8 @@ suite('tracked-controls-webvr', function () {
 
   suite('tick', function () {
     test('updates pose and buttons even if mesh is not defined', function () {
-      var updateButtonsSpy = sinon.spy(component, 'updateButtons');
-      var updatePoseSpy = sinon.spy(component, 'updatePose');
+      let updateButtonsSpy = sinon.spy(component, 'updateButtons');
+      let updatePoseSpy = sinon.spy(component, 'updatePose');
       assert.notOk(el.getObject3D('mesh'));
       component.tick();
       sinon.assert.calledOnce(updatePoseSpy);
@@ -191,7 +191,7 @@ suite('tracked-controls-webvr', function () {
     test('applies orientation offset', function () {
       el.setAttribute('tracked-controls-webvr', 'orientationOffset', {x: 3, y: 4, z: 5});
       component.tick();
-      var rotation = el.getAttribute('rotation');
+      let rotation = el.getAttribute('rotation');
       rotation.x = Math.round(rotation.x);
       rotation.y = Math.round(rotation.y);
       rotation.z = Math.round(rotation.z);
@@ -516,14 +516,14 @@ suite('tracked-controls-webvr', function () {
     });
 
     test('if armModel false, do not apply', function () {
-      var applyArmModelSpy = sinon.spy(component, 'applyArmModel');
+      let applyArmModelSpy = sinon.spy(component, 'applyArmModel');
       component.data.armModel = false;
       component.tick();
       sinon.assert.notCalled(applyArmModelSpy);
     });
 
     test('if armModel true, apply', function () {
-      var applyArmModelSpy = sinon.spy(component, 'applyArmModel');
+      let applyArmModelSpy = sinon.spy(component, 'applyArmModel');
       component.data.armModel = true;
       component.tick();
       sinon.assert.calledOnce(applyArmModelSpy);
@@ -536,14 +536,14 @@ suite('tracked-controls-webvr', function () {
 });
 
 function assertVec3CloseTo (vec3, arr, delta) {
-  var debugOutput = `${[vec3.x, vec3.y, vec3.z]} is not close to ${arr}`;
+  let debugOutput = `${[vec3.x, vec3.y, vec3.z]} is not close to ${arr}`;
   assert.closeTo(vec3.x, arr[0], delta, debugOutput);
   assert.closeTo(vec3.y, arr[1], delta, debugOutput);
   assert.closeTo(vec3.z, arr[2], delta, debugOutput);
 }
 
 function assertVec3 (vec3, arr) {
-  var debugOutput = `${[vec3.x, vec3.y, vec3.z]} does not equal ${arr}`;
+  let debugOutput = `${[vec3.x, vec3.y, vec3.z]} does not equal ${arr}`;
   assert.equal(vec3.x, arr[0], debugOutput);
   assert.equal(vec3.y, arr[1], debugOutput);
   assert.equal(vec3.z, arr[2], debugOutput);
@@ -564,8 +564,8 @@ function assertQuaternion (quaternion, arr) {
 }
 
 function toQuaternion (x, y, z) {
-  var euler = new THREE.Euler();
-  var quaternion = new THREE.Quaternion();
+  let euler = new THREE.Euler();
+  let quaternion = new THREE.Quaternion();
   return (function () {
     euler.fromArray([x, y, z]);
     quaternion.setFromEuler(euler);
@@ -596,7 +596,7 @@ function assertButtonEvent (eventCall, eventName, eventId, eventState) {
  * @param {Array} excludedEvents - Unexpected events in the stream. Must be excluded.
  */
 function assertEventStream (eventCalls, expectedEvents, excludedEvents) {
-  for (var eventCall of eventCalls) {
+  for (let eventCall of eventCalls) {
     const expectedIndex = expectedEvents.indexOf(eventCall.args[0]);
     const discludedIndex = excludedEvents.indexOf(eventCall.args[0]);
 

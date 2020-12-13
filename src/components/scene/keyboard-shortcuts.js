@@ -1,5 +1,5 @@
-var registerComponent = require('../../core/component').registerComponent;
-var shouldCaptureKeyEvent = require('../../utils/').shouldCaptureKeyEvent;
+let registerComponent = require('../../core/component').registerComponent;
+let shouldCaptureKeyEvent = require('../../utils/').shouldCaptureKeyEvent;
 
 module.exports.Component = registerComponent('keyboard-shortcuts', {
   schema: {
@@ -12,7 +12,7 @@ module.exports.Component = registerComponent('keyboard-shortcuts', {
   },
 
   update: function (oldData) {
-    var data = this.data;
+    let data = this.data;
     this.enterVREnabled = data.enterVR;
   },
 
@@ -25,7 +25,7 @@ module.exports.Component = registerComponent('keyboard-shortcuts', {
   },
 
   onKeyup: function (evt) {
-    var scene = this.el;
+    let scene = this.el;
     if (!shouldCaptureKeyEvent(evt)) { return; }
     if (this.enterVREnabled && evt.keyCode === 70) {  // f.
       scene.enterVR();

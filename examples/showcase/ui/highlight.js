@@ -1,14 +1,14 @@
 /* global AFRAME */
 AFRAME.registerComponent('highlight', {
   init: function () {
-    var buttonEls = this.buttonEls = this.el.querySelectorAll('.menu-button');
-    var backgroundEl = document.querySelector('#background');
+    let buttonEls = this.buttonEls = this.el.querySelectorAll('.menu-button');
+    let backgroundEl = document.querySelector('#background');
     this.onClick = this.onClick.bind(this);
     this.onMouseEnter = this.onMouseEnter.bind(this);
     this.onMouseLeave = this.onMouseLeave.bind(this);
     this.reset = this.reset.bind(this);
     backgroundEl.addEventListener('click', this.reset);
-    for (var i = 0; i < buttonEls.length; ++i) {
+    for (let i = 0; i < buttonEls.length; ++i) {
       buttonEls[i].addEventListener('mouseenter', this.onMouseEnter);
       buttonEls[i].addEventListener('mouseleave', this.onMouseLeave);
       buttonEls[i].addEventListener('click', this.onClick);
@@ -23,9 +23,9 @@ AFRAME.registerComponent('highlight', {
   },
 
   onMouseEnter: function (evt) {
-    var buttonEls = this.buttonEls;
+    let buttonEls = this.buttonEls;
     evt.target.setAttribute('material', 'color', '#046de7');
-    for (var i = 0; i < buttonEls.length; ++i) {
+    for (let i = 0; i < buttonEls.length; ++i) {
       if (evt.target === buttonEls[i]) { continue; }
       buttonEls[i].setAttribute('material', 'color', 'white');
     }
@@ -37,8 +37,8 @@ AFRAME.registerComponent('highlight', {
   },
 
   reset: function () {
-    var buttonEls = this.buttonEls;
-    for (var i = 0; i < buttonEls.length; ++i) {
+    let buttonEls = this.buttonEls;
+    for (let i = 0; i < buttonEls.length; ++i) {
       this.el.removeState('clicked');
       buttonEls[i].play();
       buttonEls[i].emit('mouseleave');

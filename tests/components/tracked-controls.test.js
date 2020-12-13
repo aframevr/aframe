@@ -2,7 +2,7 @@
 const entityFactory = require('../helpers').entityFactory;
 
 suite('tracked-controls', function () {
-  var el;
+  let el;
 
   setup(function (done) {
     el = entityFactory();

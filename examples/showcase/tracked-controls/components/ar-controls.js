@@ -11,9 +11,9 @@ AFRAME.registerComponent('ar-controls', {
   },
 
   updateControllers: function () {
-    var controllers = this.el.systems['tracked-controls-webxr'].controllers;
-    var i;
-    var xrSession = this.el.xrSession;
+    let controllers = this.el.systems['tracked-controls-webxr'].controllers;
+    let i;
+    let xrSession = this.el.xrSession;
     if (!xrSession) { return; }
     for (i = 0; i < controllers.length; ++i) {
       if (controllers[i].targetRayMode === 'screen') {

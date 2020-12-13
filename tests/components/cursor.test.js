@@ -1,15 +1,15 @@
 /* global assert, process, setup, suite, test, CustomEvent */
-var entityFactory = require('../helpers').entityFactory;
-var once = require('../helpers').once;
+let entityFactory = require('../helpers').entityFactory;
+let once = require('../helpers').once;
 
 suite('cursor', function () {
-  var cameraEl;
-  var component;
-  var el;
-  var intersection;
-  var intersectedEl;
-  var prevIntersection;
-  var prevIntersectedEl;
+  let cameraEl;
+  let component;
+  let el;
+  let intersection;
+  let intersectedEl;
+  let prevIntersection;
+  let prevIntersectedEl;
 
   setup(function (done) {
     cameraEl = entityFactory();
@@ -79,8 +79,8 @@ suite('cursor', function () {
 
     suite('update', function () {
       test('update mousemove event listeners when rayOrigin is the mouse', function () {
-        var updateSpy = this.sinon.spy(el.components.cursor, 'update');
-        var updateMouseEventListenersSpy = this.sinon.spy(el.components.cursor, 'updateMouseEventListeners');
+        let updateSpy = this.sinon.spy(el.components.cursor, 'update');
+        let updateMouseEventListenersSpy = this.sinon.spy(el.components.cursor, 'updateMouseEventListeners');
         el.setAttribute('cursor', 'rayOrigin', 'mouse');
         assert.ok(updateSpy.called);
         assert.ok(updateMouseEventListenersSpy.called);
@@ -231,11 +231,11 @@ suite('cursor', function () {
     });
 
     test('updates intersected entity when nearer intersection occurs', function (done, fail) {
-      var intersection1 = {distance: 10.5};
-      var intersection2 = {distance: 9.0};
-      var intersection3 = {distance: 12.0};
-      var nearerIntersectedEl = document.createElement('a-entity');
-      var furtherIntersectedEl = document.createElement('a-entity');
+      let intersection1 = {distance: 10.5};
+      let intersection2 = {distance: 9.0};
+      let intersection3 = {distance: 12.0};
+      let nearerIntersectedEl = document.createElement('a-entity');
+      let furtherIntersectedEl = document.createElement('a-entity');
 
       this.sinon.stub(el.components.raycaster, 'getIntersection', function (el) {
         switch (el) {
@@ -385,8 +385,8 @@ suite('cursor', function () {
     });
 
     test('sets another intersected element if any', function () {
-      var dummyEl = document.createElement('a-entity');
-      var dummyIntersection = {object: {el: dummyEl}};
+      let dummyEl = document.createElement('a-entity');
+      let dummyIntersection = {object: {el: dummyEl}};
       component.intersectedEl = intersectedEl;
       el.addState('cursor-fusing');
       el.addState('cursor-hovering');
@@ -400,34 +400,34 @@ suite('cursor', function () {
 
   suite('onMouseMove', function () {
     test('update raycaster based on mouse coordinates', function (done) {
-      var event = new CustomEvent('mousemove');
+      let event = new CustomEvent('mousemove');
       event.clientX = 5;
       event.clientY = 5;
       el.setAttribute('cursor', 'rayOrigin', 'mouse');
       el.sceneEl.canvas.dispatchEvent(event);
       process.nextTick(function () {
-        var raycaster = el.getAttribute('raycaster');
+        let raycaster = el.getAttribute('raycaster');
         assert.notEqual(raycaster.direction.x, 0);
         done();
       });
     });
 
     test('update raycaster based on touch coordinates', function (done) {
-      var event = new CustomEvent('touchstart');
+      let event = new CustomEvent('touchstart');
       event.touches = {item: function () { return {clientX: 5, clientY: 5}; }};
       el.setAttribute('cursor', 'rayOrigin', 'mouse');
       el.sceneEl.canvas.dispatchEvent(event);
       process.nextTick(function () {
-        var raycaster = el.getAttribute('raycaster');
+        let raycaster = el.getAttribute('raycaster');
         assert.notEqual(raycaster.direction.x, 0);
         done();
       });
     });
 
     test('casts ray at current touch location', function (done) {
-      var event = new CustomEvent('touchstart');
-      var target = el.sceneEl.appendChild(document.createElement('a-entity'));
-      var mouseDownSpy = this.sinon.spy();
+      let event = new CustomEvent('touchstart');
+      let target = el.sceneEl.appendChild(document.createElement('a-entity'));
+      let mouseDownSpy = this.sinon.spy();
       el.addEventListener('mousedown', mouseDownSpy);
       el.setAttribute('cursor', 'rayOrigin', 'mouse');
       target.setAttribute('geometry', '');
@@ -448,9 +448,9 @@ suite('cursor', function () {
   suite('canvas events', function () {
     test('cursor responds to mouse events on canvas', function () {
       // Cannot spy on onCursorDown/Up directly due to binding.
-      var cursorEmitSpy = this.sinon.spy(component, 'twoWayEmit');
-      var downEvt = new CustomEvent('mousedown');
-      var upEvt = new CustomEvent('mouseup');
+      let cursorEmitSpy = this.sinon.spy(component, 'twoWayEmit');
+      let downEvt = new CustomEvent('mousedown');
+      let upEvt = new CustomEvent('mouseup');
       assert.isFalse(cursorEmitSpy.calledWith('mousedown'));
       el.sceneEl.canvas.dispatchEvent(downEvt);
       assert.isTrue(cursorEmitSpy.calledWith('mousedown'));
@@ -461,10 +461,10 @@ suite('cursor', function () {
 
     test('cursor responds to touch events on canvas', function () {
       // Cannot spy on onCursorDown/Up directly due to binding.
-      var cursorEmitSpy = this.sinon.spy(component, 'twoWayEmit');
-      var downEvt = new CustomEvent('touchstart');
+      let cursorEmitSpy = this.sinon.spy(component, 'twoWayEmit');
+      let downEvt = new CustomEvent('touchstart');
       downEvt.touches = [];
-      var upEvt = new CustomEvent('touchend');
+      let upEvt = new CustomEvent('touchend');
       upEvt.touches = [];
       assert.isFalse(cursorEmitSpy.calledWith('mousedown'));
       el.sceneEl.canvas.dispatchEvent(downEvt);
@@ -478,9 +478,9 @@ suite('cursor', function () {
 
 suite('cursor + raycaster', function () {
   test('can use HTML-configured raycaster', function (done) {
-    var parentEl = entityFactory();
+    let parentEl = entityFactory();
     parentEl.addEventListener('child-attached', function (evt) {
-      var el = evt.detail.el;
+      let el = evt.detail.el;
       el.addEventListener('loaded', function () {
         assert.equal(el.components.raycaster.data.objects, '.clickable');
         done();

@@ -1,5 +1,5 @@
 /* global assert, suite, test */
-var isHLS = require('utils').material.isHLS;
+let isHLS = require('utils').material.isHLS;
 
 suite('utils.isHLS', function () {
   test('survives falsy input (negative)', function () {

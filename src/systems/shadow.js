@@ -1,7 +1,7 @@
-var registerSystem = require('../core/system').registerSystem;
-var THREE = require('../lib/three');
+let registerSystem = require('../core/system').registerSystem;
+let THREE = require('../lib/three');
 
-var SHADOW_MAP_TYPE_MAP = {
+let SHADOW_MAP_TYPE_MAP = {
   basic: THREE.BasicShadowMap,
   pcf: THREE.PCFShadowMap,
   pcfsoft: THREE.PCFSoftShadowMap
@@ -21,8 +21,8 @@ module.exports.System = registerSystem('shadow', {
   },
 
   init: function () {
-    var sceneEl = this.sceneEl;
-    var data = this.data;
+    let sceneEl = this.sceneEl;
+    let data = this.data;
 
     this.shadowMapEnabled = false;
 
@@ -44,7 +44,7 @@ module.exports.System = registerSystem('shadow', {
    * @param {boolean} enabled
    */
   setShadowMapEnabled: function (enabled) {
-    var renderer = this.sceneEl.renderer;
+    let renderer = this.sceneEl.renderer;
     this.shadowMapEnabled = this.data.enabled && enabled;
     if (renderer) {
       renderer.shadowMap.enabled = this.shadowMapEnabled;

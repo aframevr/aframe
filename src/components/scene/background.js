@@ -1,6 +1,6 @@
 /* global THREE */
-var register = require('../../core/component').registerComponent;
-var COMPONENTS = require('../../core/component').components;
+let register = require('../../core/component').registerComponent;
+let COMPONENTS = require('../../core/component').components;
 
 module.exports.Component = register('background', {
   schema: {
@@ -8,8 +8,8 @@ module.exports.Component = register('background', {
     transparent: {default: false}
   },
   update: function () {
-    var data = this.data;
-    var object3D = this.el.object3D;
+    let data = this.data;
+    let object3D = this.el.object3D;
     if (data.transparent) {
       object3D.background = null;
       return;
@@ -18,8 +18,8 @@ module.exports.Component = register('background', {
   },
 
   remove: function () {
-    var data = this.data;
-    var object3D = this.el.object3D;
+    let data = this.data;
+    let object3D = this.el.object3D;
     if (data.transparent) {
       object3D.background = null;
       return;

@@ -1,8 +1,8 @@
 /* global assert, process, setup, suite, test */
-var elFactory = require('../helpers').elFactory;
+let elFactory = require('../helpers').elFactory;
 
 suite('camera', function () {
-  var el;
+  let el;
 
   setup(function (done) {
     elFactory().then(_el => {

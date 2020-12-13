@@ -1,7 +1,7 @@
-var debug = require('../../utils/debug');
-var registerComponent = require('../../core/component').registerComponent;
+let debug = require('../../utils/debug');
+let registerComponent = require('../../core/component').registerComponent;
 
-var warn = debug('components:pool:warn');
+let warn = debug('components:pool:warn');
 
 /**
  * Pool component to reuse entities.
@@ -22,7 +22,7 @@ module.exports.Component = registerComponent('pool', {
   multiple: true,
 
   initPool: function () {
-    var i;
+    let i;
 
     this.availableEls = [];
     this.usedEls = [];
@@ -45,7 +45,7 @@ module.exports.Component = registerComponent('pool', {
   },
 
   update: function (oldData) {
-    var data = this.data;
+    let data = this.data;
     if (oldData.mixin !== data.mixin || oldData.size !== data.size) {
       this.initPool();
     }
@@ -55,7 +55,7 @@ module.exports.Component = registerComponent('pool', {
    * Add a new entity to the list of available entities.
    */
   createEntity: function () {
-    var el;
+    let el;
     el = document.createElement('a-entity');
     el.play = this.wrapPlay(el.play);
     el.setAttribute('mixin', this.data.mixin);
@@ -70,7 +70,7 @@ module.exports.Component = registerComponent('pool', {
    * entities that are not in use.
    */
   wrapPlay: function (playMethod) {
-    var usedEls = this.usedEls;
+    let usedEls = this.usedEls;
     return function () {
       if (usedEls.indexOf(this) === -1) { return; }
       playMethod.call(this);
@@ -81,7 +81,7 @@ module.exports.Component = registerComponent('pool', {
    * Used to request one of the available entities of the pool.
    */
   requestEntity: function () {
-    var el;
+    let el;
     if (this.availableEls.length === 0) {
       if (this.data.dynamic === false) {
         warn('Requested entity from empty pool: ' + this.attrName);
@@ -102,7 +102,7 @@ module.exports.Component = registerComponent('pool', {
    * Used to return a used entity to the pool.
    */
   returnEntity: function (el) {
-    var index = this.usedEls.indexOf(el);
+    let index = this.usedEls.indexOf(el);
     if (index === -1) {
       warn('The returned entity was not previously pooled from ' + this.attrName);
       return;

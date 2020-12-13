@@ -1,14 +1,14 @@
 /* global assert, process, setup, suite, test */
-var entityFactory = require('../helpers').entityFactory;
+let entityFactory = require('../helpers').entityFactory;
 
-var MTL = '/base/tests/assets/crate/crate.mtl';
-var OBJ = '/base/tests/assets/crate/crate.obj';
+let MTL = '/base/tests/assets/crate/crate.mtl';
+let OBJ = '/base/tests/assets/crate/crate.obj';
 
 suite('obj-model', function () {
   setup(function (done) {
-    var el;
-    var objAsset = document.createElement('a-asset-item');
-    var mtlAsset = document.createElement('a-asset-item');
+    let el;
+    let objAsset = document.createElement('a-asset-item');
+    let mtlAsset = document.createElement('a-asset-item');
     mtlAsset.setAttribute('id', 'mtl');
     mtlAsset.setAttribute('src', MTL);
     objAsset.setAttribute('id', 'obj');
@@ -19,7 +19,7 @@ suite('obj-model', function () {
   });
 
   test('can load .OBJ only', function (done) {
-    var el = this.el;
+    let el = this.el;
     el.addEventListener('model-loaded', function () {
       assert.ok(el.components['obj-model'].model);
       done();
@@ -28,8 +28,8 @@ suite('obj-model', function () {
   });
 
   test('can load .OBJ + .MTL', function (done) {
-    var el = this.el;
-    var handled = false;  // Event listener is not getting torn down for some reason.
+    let el = this.el;
+    let handled = false;  // Event listener is not getting torn down for some reason.
     el.addEventListener('model-loaded', function () {
       if (handled) { return; }
       handled = true;
@@ -40,8 +40,8 @@ suite('obj-model', function () {
   });
 
   test('can load .OBJ + .MTL with url()', function (done) {
-    var el = this.el;
-    var handled = false;  // Event listener is not getting torn down for some reason.
+    let el = this.el;
+    let handled = false;  // Event listener is not getting torn down for some reason.
     el.addEventListener('model-loaded', function () {
       if (handled) { return; }
       handled = true;
@@ -52,13 +52,13 @@ suite('obj-model', function () {
   });
 
   test('can load multiple .OBJ', function (done) {
-    var el = this.el;
-    var el2 = document.createElement('a-entity');
+    let el = this.el;
+    let el2 = document.createElement('a-entity');
 
-    var elPromise = new Promise(function (resolve) {
+    let elPromise = new Promise(function (resolve) {
       el.addEventListener('model-loaded', resolve);
     });
-    var el2Promise = new Promise(function (resolve) {
+    let el2Promise = new Promise(function (resolve) {
       el2.addEventListener('model-loaded', resolve);
     });
 
@@ -77,10 +77,10 @@ suite('obj-model', function () {
   });
 
   test('can load .OBJ with material', function (done) {
-    var el = this.el;
+    let el = this.el;
     el.setAttribute('material', 'color', 'red');
     el.addEventListener('object3dset', () => {
-      var material = el.getObject3D('mesh').children[0].material;
+      let material = el.getObject3D('mesh').children[0].material;
       assert.equal(material.color.r, 1);
       done();
     });
@@ -88,7 +88,7 @@ suite('obj-model', function () {
   });
 
   test('can load .OBJ with reset material', function (done) {
-    var el = this.el;
+    let el = this.el;
     el.setAttribute('material', 'color', 'red');
     el.addEventListener('object3dset', () => {
       el.removeAttribute('material');

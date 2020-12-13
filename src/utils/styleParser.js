@@ -3,7 +3,7 @@
  * Some code adapted from `style-attr` (https://github.com/joshwnj/style-attr)
  * by Josh Johnston (MIT License).
  */
-var DASH_REGEX = /-([a-z])/g;
+let DASH_REGEX = /-([a-z])/g;
 
 /**
  * Deserialize style-like string into an object of properties.
@@ -13,7 +13,7 @@ var DASH_REGEX = /-([a-z])/g;
  * @returns {object} Property data.
  */
 module.exports.parse = function (value, obj) {
-  var parsedData;
+  let parsedData;
   if (typeof value !== 'string') { return value; }
   parsedData = styleParse(value, obj);
   // The style parser returns an object { "" : "test"} when fed a string
@@ -51,8 +51,8 @@ module.exports.toCamelCase = toCamelCase;
  * @return {object} The object with keys camelCased.
  */
 function transformKeysToCamelCase (obj) {
-  var camelKey;
-  var key;
+  let camelKey;
+  let key;
   for (key in obj) {
     camelKey = toCamelCase(key);
     if (key === camelKey) { continue; }
@@ -66,15 +66,15 @@ module.exports.transformKeysToCamelCase = transformKeysToCamelCase;
 /**
  * Split a string into chunks matching `<key>: <value>`
  */
-var getKeyValueChunks = (function () {
-  var chunks = [];
-  var hasUnclosedUrl = /url\([^)]+$/;
+let getKeyValueChunks = (function () {
+  let chunks = [];
+  let hasUnclosedUrl = /url\([^)]+$/;
 
   return function getKeyValueChunks (raw) {
-    var chunk = '';
-    var nextSplit;
-    var offset = 0;
-    var sep = ';';
+    let chunk = '';
+    let nextSplit;
+    let offset = 0;
+    let sep = ';';
 
     chunks.length = 0;
 
@@ -107,12 +107,12 @@ var getKeyValueChunks = (function () {
  * @param {object} obj - Object to reuse as a base, else a new one will be allocated.
  */
 function styleParse (str, obj) {
-  var chunks;
-  var i;
-  var item;
-  var pos;
-  var key;
-  var val;
+  let chunks;
+  let i;
+  let item;
+  let pos;
+  let key;
+  let val;
 
   obj = obj || {};
 
@@ -133,10 +133,10 @@ function styleParse (str, obj) {
  * Convert an object into an attribute string
  **/
 function styleStringify (obj) {
-  var key;
-  var keyCount = 0;
-  var i = 0;
-  var str = '';
+  let key;
+  let keyCount = 0;
+  let i = 0;
+  let str = '';
 
   for (key in obj) { keyCount++; }
 

@@ -1,14 +1,14 @@
 /* global assert, process, setup, suite, test */
-var entityFactory = require('../helpers').entityFactory;
-var THREE = require('index').THREE;
+let entityFactory = require('../helpers').entityFactory;
+let THREE = require('index').THREE;
 
-var SRC = '/base/tests/assets/box/Box.gltf';
-var SRC_NO_DEFAULT_SCENE = '/base/tests/assets/box/Box_no_default_scene.gltf';
+let SRC = '/base/tests/assets/box/Box.gltf';
+let SRC_NO_DEFAULT_SCENE = '/base/tests/assets/box/Box_no_default_scene.gltf';
 
 suite('gltf-model', function () {
   setup(function (done) {
-    var el;
-    var asset = document.createElement('a-asset-item');
+    let el;
+    let asset = document.createElement('a-asset-item');
     asset.setAttribute('id', 'gltf');
     asset.setAttribute('src', SRC);
     el = this.el = entityFactory({assets: [asset]});
@@ -17,7 +17,7 @@ suite('gltf-model', function () {
   });
 
   test('can load', function (done) {
-    var el = this.el;
+    let el = this.el;
     el.addEventListener('model-loaded', function () {
       assert.ok(el.components['gltf-model'].model);
       done();
@@ -26,7 +26,7 @@ suite('gltf-model', function () {
   });
 
   test('can load with url()', function (done) {
-    var el = this.el;
+    let el = this.el;
     el.addEventListener('model-loaded', function () {
       assert.ok(el.components['gltf-model'].model);
       done();
@@ -35,12 +35,12 @@ suite('gltf-model', function () {
   });
 
   test('can load multiple models', function (done) {
-    var el = this.el;
-    var el2 = document.createElement('a-entity');
-    var elPromise = new Promise(function (resolve) {
+    let el = this.el;
+    let el2 = document.createElement('a-entity');
+    let elPromise = new Promise(function (resolve) {
       el.addEventListener('model-loaded', resolve);
     });
-    var el2Promise = new Promise(function (resolve) {
+    let el2Promise = new Promise(function (resolve) {
       el2.addEventListener('model-loaded', resolve);
     });
 
@@ -59,13 +59,13 @@ suite('gltf-model', function () {
   });
 
   test('attaches animation clips to model', function (done) {
-    var el = this.el;
-    var sceneMock = new THREE.Object3D();
-    var animations = [
+    let el = this.el;
+    let sceneMock = new THREE.Object3D();
+    let animations = [
       new THREE.AnimationClip('run', 1.0, []),
       new THREE.AnimationClip('jump', 1.0, [])
     ];
-    var gltfMock = {
+    let gltfMock = {
       scene: sceneMock,
       scenes: [sceneMock],
       animations: animations
@@ -79,7 +79,7 @@ suite('gltf-model', function () {
     });
 
     el.addEventListener('model-loaded', function () {
-      var model = el.components['gltf-model'].model;
+      let model = el.components['gltf-model'].model;
       assert.ok(model);
       assert.equal(model.animations, animations);
       done();
@@ -89,7 +89,7 @@ suite('gltf-model', function () {
   });
 
   test('can load data not including default scene', function (done) {
-    var el = this.el;
+    let el = this.el;
     el.addEventListener('model-loaded', function () {
       assert.ok(el.components['gltf-model'].model);
       done();

@@ -1,10 +1,10 @@
-var execSync = require('child_process').execSync;
-var fs = require('fs');
-var glob = require('glob');
-var pkg = require('../package.json');
+let execSync = require('child_process').execSync;
+let fs = require('fs');
+let glob = require('glob');
+let pkg = require('../package.json');
 
-var prevVersion = process.argv[2];
-var nextVersion = process.argv[3];
+let prevVersion = process.argv[2];
+let nextVersion = process.argv[3];
 
 if (!prevVersion || !nextVersion) {
   console.error('Error: you must pass in the old version and new version: ' +
@@ -29,11 +29,11 @@ execSync(distMax, {stdio: 'inherit'});
 glob.sync(`dist/aframe*v${prevVersion}*`).forEach(fs.unlinkSync);
 
 // Replace instances of version in documentation and README.
-var versionRegex = new RegExp(`${prevVersion.replace(/\./g, '\\.')}`, 'g');
+let versionRegex = new RegExp(`${prevVersion.replace(/\./g, '\\.')}`, 'g');
 glob.sync('docs/**/*.md').forEach(updateDoc);
 glob.sync('README.md').forEach(updateDoc);
 function updateDoc (docFilename) {
-  var contents = fs.readFileSync(docFilename, 'utf-8');
+  let contents = fs.readFileSync(docFilename, 'utf-8');
   if (versionRegex.exec(contents)) {
     contents = contents.replace(versionRegex, nextVersion);
     fs.writeFileSync(docFilename, contents);

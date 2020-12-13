@@ -1,8 +1,8 @@
 // Karma configuration.
-var glob = require('glob');
+let glob = require('glob');
 
 // Define test files.
-var FILES = [
+let FILES = [
   // Serve test assets.
   'tests/__init.test.js',
   {pattern: 'tests/assets/**/*', included: false, served: true}
@@ -17,7 +17,7 @@ if (process.env.TEST_FILE) {
   FILES.push('tests/**/*.test.js');
 }
 
-var karmaConf = {
+let karmaConf = {
   basePath: '../',
   browserify: {
     debug: true,

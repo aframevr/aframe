@@ -1,13 +1,13 @@
 /* global location */
 
 /* Centralized place to reference utilities since utils is exposed to the user. */
-var debug = require('./debug');
-var deepAssign = require('deep-assign');
-var device = require('./device');
-var objectAssign = require('object-assign');
-var objectPool = require('./object-pool');
+let debug = require('./debug');
+let deepAssign = require('deep-assign');
+let device = require('./device');
+let objectAssign = require('object-assign');
+let objectPool = require('./object-pool');
 
-var warn = debug('utils:warn');
+let warn = debug('utils:warn');
 
 module.exports.bind = require('./bind');
 module.exports.coordinates = require('./coordinates');
@@ -50,13 +50,13 @@ module.exports.isMobile = function () {
  * @returns {function} Throttled function.
  */
 module.exports.throttle = function (functionToThrottle, minimumInterval, optionalContext) {
-  var lastTime;
+  let lastTime;
   if (optionalContext) {
     functionToThrottle = module.exports.bind(functionToThrottle, optionalContext);
   }
   return function () {
-    var time = Date.now();
-    var sinceLastTime = typeof lastTime === 'undefined' ? minimumInterval : time - lastTime;
+    let time = Date.now();
+    let sinceLastTime = typeof lastTime === 'undefined' ? minimumInterval : time - lastTime;
     if (typeof lastTime === 'undefined' || (sinceLastTime >= minimumInterval)) {
       lastTime = time;
       functionToThrottle.apply(null, arguments);
@@ -74,12 +74,12 @@ module.exports.throttle = function (functionToThrottle, minimumInterval, optiona
  * @returns {function} Throttled function.
  */
 module.exports.throttleTick = function (functionToThrottle, minimumInterval, optionalContext) {
-  var lastTime;
+  let lastTime;
   if (optionalContext) {
     functionToThrottle = module.exports.bind(functionToThrottle, optionalContext);
   }
   return function (time, delta) {
-    var sinceLastTime = typeof lastTime === 'undefined' ? delta : time - lastTime;
+    let sinceLastTime = typeof lastTime === 'undefined' ? delta : time - lastTime;
     if (typeof lastTime === 'undefined' || (sinceLastTime >= minimumInterval)) {
       lastTime = time;
       functionToThrottle(time, sinceLastTime);
@@ -96,15 +96,15 @@ module.exports.throttleTick = function (functionToThrottle, minimumInterval, opt
  * @returns {function} Debounced function.
  */
 module.exports.debounce = function (func, wait, immediate) {
-  var timeout;
+  let timeout;
   return function () {
-    var context = this;
-    var args = arguments;
-    var later = function () {
+    let context = this;
+    let args = arguments;
+    let later = function () {
       timeout = null;
       if (!immediate) func.apply(context, args);
     };
-    var callNow = immediate && !timeout;
+    let callNow = immediate && !timeout;
     clearTimeout(timeout);
     timeout = setTimeout(later, wait);
     if (callNow) func.apply(context, args);
@@ -134,16 +134,16 @@ module.exports.clone = function (obj) {
  * @param {object} b - Second object.
  * @returns {boolean} Whether two objects are deeply equal.
  */
-var deepEqual = (function () {
-  var arrayPool = objectPool.createPool(function () { return []; });
+let deepEqual = (function () {
+  let arrayPool = objectPool.createPool(function () { return []; });
 
   return function (a, b) {
-    var key;
-    var keysA;
-    var keysB;
-    var i;
-    var valA;
-    var valB;
+    let key;
+    let keysA;
+    let keysB;
+    let i;
+    let valA;
+    let valB;
 
     // If not objects or arrays, compare as values.
     if (a === undefined || b === undefined || a === null || b === null ||
@@ -202,16 +202,16 @@ module.exports.deepEqual = deepEqual;
  *   `b`'s values.
  */
 module.exports.diff = (function () {
-  var keys = [];
+  let keys = [];
 
   return function (a, b, targetObject) {
-    var aVal;
-    var bVal;
-    var bKey;
-    var diff;
-    var key;
-    var i;
-    var isComparingObjects;
+    let aVal;
+    let bVal;
+    let bKey;
+    let diff;
+    let key;
+    let i;
+    let isComparingObjects;
 
     diff = targetObject || {};
 
@@ -263,7 +263,7 @@ module.exports.shouldCaptureKeyEvent = function (event) {
 module.exports.splitString = function (str, delimiter) {
   if (typeof delimiter === 'undefined') { delimiter = ' '; }
   // First collapse the whitespace (or whatever the delimiter is).
-  var regex = new RegExp(delimiter, 'g');
+  let regex = new RegExp(delimiter, 'g');
   str = (str || '').replace(regex, delimiter);
   // Then split.
   return str.split(delimiter);
@@ -278,7 +278,7 @@ module.exports.splitString = function (str, delimiter) {
  */
 module.exports.getElData = function (el, defaults) {
   defaults = defaults || {};
-  var data = {};
+  let data = {};
   Object.keys(defaults).forEach(copyAttribute);
   function copyAttribute (key) {
     if (el.hasAttribute(key)) {
@@ -296,8 +296,8 @@ module.exports.getElData = function (el, defaults) {
 module.exports.getUrlParameter = function (name) {
   // eslint-disable-next-line no-useless-escape
   name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
-  var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
-  var results = regex.exec(location.search);
+  let regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+  let results = regex.exec(location.search);
   return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
 };
 
@@ -313,9 +313,9 @@ module.exports.isIframed = function () {
  * property set to true
  */
 module.exports.findAllScenes = function (el) {
-  var matchingElements = [];
-  var allElements = el.getElementsByTagName('*');
-  for (var i = 0, n = allElements.length; i < n; i++) {
+  let matchingElements = [];
+  let allElements = el.getElementsByTagName('*');
+  for (let i = 0, n = allElements.length; i < n; i++) {
     if (allElements[i].isScene) {
       // Element exists with isScene set.
       matchingElements.push(allElements[i]);

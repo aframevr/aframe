@@ -26,8 +26,8 @@ AFRAME.registerComponent('aabb-collider', {
    * Update list of entities to test for collision.
    */
   update: function () {
-    var data = this.data;
-    var objectEls;
+    let data = this.data;
+    let objectEls;
 
     // Push entities into list of els to intersect.
     if (data.objects) {
@@ -41,12 +41,12 @@ AFRAME.registerComponent('aabb-collider', {
   },
 
   tick: (function () {
-    var boundingBox = new THREE.Box3();
+    let boundingBox = new THREE.Box3();
     return function () {
-      var collisions = [];
-      var el = this.el;
-      var mesh = el.getObject3D('mesh');
-      var self = this;
+      let collisions = [];
+      let el = this.el;
+      let mesh = el.getObject3D('mesh');
+      let self = this;
       // No mesh, no collisions
       if (!mesh) { return; }
       // Update the bounding box to account for rotations and
@@ -70,10 +70,10 @@ AFRAME.registerComponent('aabb-collider', {
 
       // AABB collision detection
       function intersect (el) {
-        var intersected;
-        var mesh = el.getObject3D('mesh');
-        var elMin;
-        var elMax;
+        let intersected;
+        let mesh = el.getObject3D('mesh');
+        let elMin;
+        let elMax;
         if (!mesh) { return; }
         boundingBox.setFromObject(mesh);
         elMin = boundingBox.min;

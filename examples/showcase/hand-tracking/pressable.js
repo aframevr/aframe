@@ -11,10 +11,10 @@ AFRAME.registerComponent('pressable', {
   },
 
   tick: function () {
-    var handEls = this.handEls;
-    var handEl;
-    var distance;
-    for (var i = 0; i < handEls.length; i++) {
+    let handEls = this.handEls;
+    let handEl;
+    let distance;
+    for (let i = 0; i < handEls.length; i++) {
       handEl = handEls[i];
       distance = this.calculateFingerDistance(handEl.components['hand-tracking-controls'].indexTipPosition);
       if (distance < this.data.pressDistance) {
@@ -28,8 +28,8 @@ AFRAME.registerComponent('pressable', {
   },
 
   calculateFingerDistance: function (fingerPosition) {
-    var el = this.el;
-    var worldPosition = this.worldPosition;
+    let el = this.el;
+    let worldPosition = this.worldPosition;
 
     worldPosition.copy(el.object3D.position);
     el.object3D.parent.updateMatrixWorld();

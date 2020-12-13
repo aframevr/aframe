@@ -1,5 +1,5 @@
 /* global process, setup, suite, test, assert, THREE */
-var entityFactory = require('../helpers').entityFactory;
+let entityFactory = require('../helpers').entityFactory;
 
 suite('shadow system', function () {
   setup(function () {
@@ -8,18 +8,18 @@ suite('shadow system', function () {
 
   suite('init', function () {
     test('enabled by default', function (done) {
-      var el = this.el;
+      let el = this.el;
       this.el.addEventListener('loaded', function () {
-        var sceneEl = el.sceneEl;
-        var renderer = sceneEl.renderer;
+        let sceneEl = el.sceneEl;
+        let renderer = sceneEl.renderer;
         assert.ok(renderer.shadowMap.enabled);
         done();
       });
     });
 
     test('configures renderer properties', function (done) {
-      var div;
-      var scene;
+      let div;
+      let scene;
 
       div = document.createElement('div');
       div.innerHTML = '<a-scene shadow="type: basic; autoUpdate: false">';
@@ -36,10 +36,10 @@ suite('shadow system', function () {
 
   suite('setShadowMapEnabled', function () {
     test('updates the renderer', function (done) {
-      var el = this.el;
+      let el = this.el;
       el.addEventListener('loaded', function () {
-        var renderer = el.sceneEl.renderer;
-        var system = el.sceneEl.systems.shadow;
+        let renderer = el.sceneEl.renderer;
+        let system = el.sceneEl.systems.shadow;
         system.setShadowMapEnabled(true);
         assert.ok(renderer.shadowMap.enabled);
         done();

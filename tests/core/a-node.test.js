@@ -7,7 +7,7 @@ suite('a-node', function () {
 
   suite('emit', function () {
     test('can emit event', function (done) {
-      var el = this.el;
+      let el = this.el;
       el.addEventListener('hadouken', function () {
         done();
       });
@@ -15,7 +15,7 @@ suite('a-node', function () {
     });
 
     test('can emit event with detail', function (done) {
-      var el = this.el;
+      let el = this.el;
       el.addEventListener('hadouken', function (event) {
         assert.equal(event.detail.power, 10);
         assert.equal(event.target, el);
@@ -25,7 +25,7 @@ suite('a-node', function () {
     });
 
     test('does not leak detail between events', function (done) {
-      var el = this.el;
+      let el = this.el;
       el.addEventListener('foo', function (evt) {
         setTimeout(() => {
           assert.equal(evt.detail.foo, 10);
@@ -39,7 +39,7 @@ suite('a-node', function () {
     });
 
     test('can emit event with extraData', function (done) {
-      var el = this.el;
+      let el = this.el;
       el.addEventListener('hadouken', function (event) {
         assert.equal(event.cancelable, true);
         assert.equal(event.detail.power, 10);
@@ -50,8 +50,8 @@ suite('a-node', function () {
     });
 
     test('bubbles', function (done) {
-      var el = this.el;
-      var child = document.createElement('a-node');
+      let el = this.el;
+      let child = document.createElement('a-node');
       el.appendChild(child);
       el.addEventListener('hadouken', function (event) {
         done();
@@ -60,8 +60,8 @@ suite('a-node', function () {
     });
 
     test('can disable bubble', function (done) {
-      var el = this.el;
-      var child = document.createElement('a-node');
+      let el = this.el;
+      let child = document.createElement('a-node');
       el.appendChild(child);
       el.addEventListener('hadouken', function (event) {
         // Failure case.
@@ -77,11 +77,11 @@ suite('a-node', function () {
 
   suite('getChildren', function () {
     test('returns all children', function () {
-      var el = this.el;
-      var child1 = document.createElement('a-node');
-      var child2 = document.createElement('a');
-      var child3 = document.createElement('a-entity');
-      var nestedChild = document.createElement('a-node');
+      let el = this.el;
+      let child1 = document.createElement('a-node');
+      let child2 = document.createElement('a');
+      let child3 = document.createElement('a-entity');
+      let nestedChild = document.createElement('a-node');
       child1.appendChild(nestedChild);
       el.appendChild(child1);
       el.appendChild(child2);
@@ -94,7 +94,7 @@ suite('a-node', function () {
 
   suite('load', function () {
     test('can load when empty', function (done) {
-      var el = this.el;
+      let el = this.el;
       el.load();
       el.addEventListener('loaded', function () {
         done();
@@ -102,7 +102,7 @@ suite('a-node', function () {
     });
 
     test('sets hasLoaded', function (done) {
-      var el = this.el;
+      let el = this.el;
       assert.notOk(el.hasLoaded);
       el.load();
       el.addEventListener('loaded', function () {
@@ -112,8 +112,8 @@ suite('a-node', function () {
     });
 
     test('can load with a child node', function (done) {
-      var el = this.el;
-      var child = document.createElement('a-node');
+      let el = this.el;
+      let child = document.createElement('a-node');
       el.appendChild(child);
       child.load();
       el.load();
@@ -129,8 +129,8 @@ suite('a-node', function () {
     });
 
     test('does not wait for non-nodes to load', function (done) {
-      var el = this.el;
-      var a = document.createElement('a');
+      let el = this.el;
+      let a = document.createElement('a');
       el.appendChild(a);
       el.load();
       el.addEventListener('loaded', function () {

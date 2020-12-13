@@ -1,11 +1,11 @@
-var utils = require('../utils/');
-var PropertyTypes = require('./propertyTypes');
+let utils = require('../utils/');
+let PropertyTypes = require('./propertyTypes');
 
-var debug = utils.debug;
-var isValidDefaultValue = PropertyTypes.isValidDefaultValue;
-var propertyTypes = PropertyTypes.propertyTypes;
+let debug = utils.debug;
+let isValidDefaultValue = PropertyTypes.isValidDefaultValue;
+let propertyTypes = PropertyTypes.propertyTypes;
 
-var warn = debug('core:schema:warn');
+let warn = debug('core:schema:warn');
 
 /**
  * A schema is classified as a schema for a single property if:
@@ -29,7 +29,7 @@ module.exports.isSingleProperty = isSingleProperty;
  * @returns {object} Schema.
  */
 module.exports.process = function (schema, componentName) {
-  var propName;
+  let propName;
 
   // For single property schema, run processPropDefinition over the whole schema.
   if (isSingleProperty(schema)) {
@@ -50,10 +50,10 @@ module.exports.process = function (schema, componentName) {
  * @param {string} componentName
  */
 function processPropertyDefinition (propDefinition, componentName) {
-  var defaultVal = propDefinition.default;
-  var isCustomType;
-  var propType;
-  var typeName = propDefinition.type;
+  let defaultVal = propDefinition.default;
+  let isCustomType;
+  let propType;
+  let typeName = propDefinition.type;
 
   // Type inference.
   if (!propDefinition.type) {
@@ -113,13 +113,13 @@ module.exports.processPropertyDefinition = processPropertyDefinition;
  * @param {boolean} silent - Suppress warning messages.
  */
 module.exports.parseProperties = (function () {
-  var propNames = [];
+  let propNames = [];
 
   return function (propData, schema, getPartialData, componentName, silent) {
-    var i;
-    var propName;
-    var propDefinition;
-    var propValue;
+    let i;
+    let propName;
+    let propDefinition;
+    let propValue;
 
     propNames.length = 0;
     for (propName in (getPartialData ? propData : schema)) {
@@ -167,11 +167,11 @@ module.exports.parseProperty = parseProperty;
  * Serialize a group of properties.
  */
 module.exports.stringifyProperties = function (propData, schema) {
-  var propName;
-  var propDefinition;
-  var propValue;
-  var stringifiedData = {};
-  var value;
+  let propName;
+  let propDefinition;
+  let propValue;
+  let stringifiedData = {};
+  let value;
 
   for (propName in propData) {
     propDefinition = schema[propName];

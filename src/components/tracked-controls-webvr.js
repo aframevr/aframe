@@ -1,18 +1,18 @@
-var registerComponent = require('../core/component').registerComponent;
-var controllerUtils = require('../utils/tracked-controls');
-var DEFAULT_CAMERA_HEIGHT = require('../constants').DEFAULT_CAMERA_HEIGHT;
-var THREE = require('../lib/three');
+let registerComponent = require('../core/component').registerComponent;
+let controllerUtils = require('../utils/tracked-controls');
+let DEFAULT_CAMERA_HEIGHT = require('../constants').DEFAULT_CAMERA_HEIGHT;
+let THREE = require('../lib/three');
 
-var DEFAULT_HANDEDNESS = require('../constants').DEFAULT_HANDEDNESS;
+let DEFAULT_HANDEDNESS = require('../constants').DEFAULT_HANDEDNESS;
 // Vector from eyes to elbow (divided by user height).
-var EYES_TO_ELBOW = {x: 0.175, y: -0.3, z: -0.03};
+let EYES_TO_ELBOW = {x: 0.175, y: -0.3, z: -0.03};
 // Vector from eyes to elbow (divided by user height).
-var FOREARM = {x: 0, y: 0, z: -0.175};
+let FOREARM = {x: 0, y: 0, z: -0.175};
 
 // Due to unfortunate name collision, add empty touches array to avoid Daydream error.
-var EMPTY_DAYDREAM_TOUCHES = {touches: []};
+let EMPTY_DAYDREAM_TOUCHES = {touches: []};
 
-var EVENTS = {
+let EVENTS = {
   AXISMOVE: 'axismove',
   BUTTONCHANGED: 'buttonchanged',
   BUTTONDOWN: 'buttondown',
@@ -65,7 +65,7 @@ module.exports.Component = registerComponent('tracked-controls-webvr', {
   },
 
   tick: function (time, delta) {
-    var mesh = this.el.getObject3D('mesh');
+    let mesh = this.el.getObject3D('mesh');
     // Update mesh animations.
     if (mesh && mesh.update) { mesh.update(delta / 1000); }
     this.updateGamepad();
@@ -91,8 +91,8 @@ module.exports.Component = registerComponent('tracked-controls-webvr', {
    * Handle update controller match criteria (such as `id`, `idPrefix`, `hand`, `controller`)
    */
   updateGamepad: function () {
-    var data = this.data;
-    var controller = controllerUtils.findMatchingControllerWebVR(
+    let data = this.data;
+    let controller = controllerUtils.findMatchingControllerWebVR(
       this.system.controllers,
       data.id,
       data.idPrefix,
@@ -115,15 +115,15 @@ module.exports.Component = registerComponent('tracked-controls-webvr', {
    */
   applyArmModel: function (controllerPosition) {
     // Use controllerPosition and deltaControllerPosition to avoid creating variables.
-    var controller = this.controller;
-    var controllerEuler = this.controllerEuler;
-    var controllerQuaternion = this.controllerQuaternion;
-    var deltaControllerPosition = this.deltaControllerPosition;
-    var hand;
-    var headEl;
-    var headObject3D;
-    var pose;
-    var userHeight;
+    let controller = this.controller;
+    let controllerEuler = this.controllerEuler;
+    let controllerQuaternion = this.controllerQuaternion;
+    let deltaControllerPosition = this.deltaControllerPosition;
+    let hand;
+    let headEl;
+    let headObject3D;
+    let pose;
+    let userHeight;
 
     headEl = this.getHeadElement();
     headObject3D = headEl.object3D;
@@ -167,12 +167,12 @@ module.exports.Component = registerComponent('tracked-controls-webvr', {
    * Read pose from controller (from Gamepad API), apply transforms, apply to entity.
    */
   updatePose: function () {
-    var controller = this.controller;
-    var data = this.data;
-    var object3D = this.el.object3D;
-    var pose;
-    var vrDisplay = this.system.vrDisplay;
-    var standingMatrix;
+    let controller = this.controller;
+    let data = this.data;
+    let object3D = this.el.object3D;
+    let pose;
+    let vrDisplay = this.system.vrDisplay;
+    let standingMatrix;
 
     if (!controller) { return; }
 
@@ -207,9 +207,9 @@ module.exports.Component = registerComponent('tracked-controls-webvr', {
    * Handle button changes including axes, presses, touches, values.
    */
   updateButtons: function () {
-    var buttonState;
-    var controller = this.controller;
-    var id;
+    let buttonState;
+    let controller = this.controller;
+    let id;
 
     if (!controller) { return; }
 
@@ -238,7 +238,7 @@ module.exports.Component = registerComponent('tracked-controls-webvr', {
    * @returns {boolean} Whether button has changed in any way.
    */
   handleButton: function (id, buttonState) {
-    var changed;
+    let changed;
     changed = this.handlePress(id, buttonState) |
               this.handleTouch(id, buttonState) |
               this.handleValue(id, buttonState);
@@ -254,11 +254,11 @@ module.exports.Component = registerComponent('tracked-controls-webvr', {
    * @returns {boolean} Whether axes changed.
    */
   handleAxes: function () {
-    var changed = false;
-    var controllerAxes = this.controller.axes;
-    var i;
-    var previousAxis = this.axis;
-    var changedAxes = this.changedAxes;
+    let changed = false;
+    let controllerAxes = this.controller.axes;
+    let i;
+    let previousAxis = this.axis;
+    let changedAxes = this.changedAxes;
 
     // Check if axis changed.
     this.changedAxes.splice(0, this.changedAxes.length);
@@ -284,8 +284,8 @@ module.exports.Component = registerComponent('tracked-controls-webvr', {
    * @returns {boolean} Whether button press state changed.
    */
   handlePress: function (id, buttonState) {
-    var evtName;
-    var previousButtonState = this.buttonStates[id];
+    let evtName;
+    let previousButtonState = this.buttonStates[id];
 
     // Not changed.
     if (buttonState.pressed === previousButtonState.pressed) { return false; }
@@ -304,8 +304,8 @@ module.exports.Component = registerComponent('tracked-controls-webvr', {
    * @returns {boolean} Whether button touch state changed.
    */
   handleTouch: function (id, buttonState) {
-    var evtName;
-    var previousButtonState = this.buttonStates[id];
+    let evtName;
+    let previousButtonState = this.buttonStates[id];
 
     // Not changed.
     if (buttonState.touched === previousButtonState.touched) { return false; }
@@ -324,7 +324,7 @@ module.exports.Component = registerComponent('tracked-controls-webvr', {
    * @returns {boolean} Whether button value changed.
    */
   handleValue: function (id, buttonState) {
-    var previousButtonState = this.buttonStates[id];
+    let previousButtonState = this.buttonStates[id];
 
     // Not changed.
     if (buttonState.value === previousButtonState.value) { return false; }

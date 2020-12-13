@@ -17,16 +17,16 @@ AFRAME.registerComponent('link-controls', {
   schema: {hand: {default: 'left'}},
 
   init: function () {
-    var el = this.el;
-    var self = this;
+    let el = this.el;
+    let self = this;
 
     el.setAttribute('laser-controls', {hand: this.data.hand});
     el.setAttribute('raycaster', {far: 100, objects: '[link]'});
     // Wait for controller to connect before
     el.addEventListener('controllerconnected', function (evt) {
-      var isMobile = AFRAME.utils.device.isMobile();
-      var componentName = evt.detail.name;
-      var gearVRorDaydream = componentName === 'daydream-controls' || componentName === 'gearvr-controls';
+      let isMobile = AFRAME.utils.device.isMobile();
+      let componentName = evt.detail.name;
+      let gearVRorDaydream = componentName === 'daydream-controls' || componentName === 'gearvr-controls';
       // Hide second controller for one-controller platforms.
       if (gearVRorDaydream && self.data.hand === 'left') {
         self.el.setAttribute('raycaster', 'showLine', false);
@@ -49,8 +49,8 @@ AFRAME.registerComponent('link-controls', {
   },
 
   initURLView: function () {
-    var urlEl = this.urlEl = document.createElement('a-entity');
-    var urlBackgroundEl = this.urlBackgroundEl = document.createElement('a-entity');
+    let urlEl = this.urlEl = document.createElement('a-entity');
+    let urlBackgroundEl = this.urlBackgroundEl = document.createElement('a-entity');
 
     // Set text that displays the link title / url
     urlEl.setAttribute('text', {
@@ -139,15 +139,15 @@ AFRAME.registerComponent('link-controls', {
   },
 
   initTooltips: function () {
-    var controllerTooltips;
-    var tooltips = this.tooltips;
-    var el = this.el;
+    let controllerTooltips;
+    let tooltips = this.tooltips;
+    let el = this.el;
     if (!this.controller) { return; }
-    var hand = el.getAttribute(this.controller).hand;
+    let hand = el.getAttribute(this.controller).hand;
     controllerTooltips = hand ? tooltips[this.controller][hand] : tooltips[this.controller];
     Object.keys(controllerTooltips).forEach(function (key) {
-      var tooltip = controllerTooltips[key];
-      var tooltipEl = document.createElement('a-entity');
+      let tooltip = controllerTooltips[key];
+      let tooltipEl = document.createElement('a-entity');
       tooltipEl.setAttribute('tooltip', tooltip.tooltip);
       tooltipEl.setAttribute('position', tooltip.position);
       tooltipEl.setAttribute('rotation', tooltip.rotation);
@@ -163,21 +163,21 @@ AFRAME.registerComponent('link-controls', {
   },
 
   play: function () {
-    var sceneEl = this.el.sceneEl;
+    let sceneEl = this.el.sceneEl;
     sceneEl.addEventListener('mouseenter', this.onMouseEnter);
     sceneEl.addEventListener('mouseleave', this.onMouseLeave);
     this.addControllerEventListeners();
   },
 
   pause: function () {
-    var sceneEl = this.el.sceneEl;
+    let sceneEl = this.el.sceneEl;
     sceneEl.removeEventListener('mouseenter', this.onMouseEnter);
     sceneEl.removeEventListener('mouseleave', this.onMouseLeave);
     this.removeControllerEventListeners();
   },
 
   addControllerEventListeners: function () {
-    var el = this.el;
+    let el = this.el;
     if (!this.controller) { return; }
     switch (this.controller) {
       case 'vive-controls':
@@ -204,7 +204,7 @@ AFRAME.registerComponent('link-controls', {
   },
 
   removeControllerEventListeners: function () {
-    var el = this.el;
+    let el = this.el;
     switch (!this.controller) {
       case 'vive-controls':
         el.removeEventListeners('trackpaddown', this.startPeeking);
@@ -230,7 +230,7 @@ AFRAME.registerComponent('link-controls', {
   },
 
   startPeeking: function () {
-    var selectedLinkEl = this.selectedLinkEl;
+    let selectedLinkEl = this.selectedLinkEl;
     if (!selectedLinkEl || this.system.peeking || this.animatedEl) { return; }
     this.peeking = true;
     this.system.peeking = true;
@@ -245,18 +245,18 @@ AFRAME.registerComponent('link-controls', {
   },
 
   updateCameraPosition: function () {
-    var camera = this.el.sceneEl.camera;
+    let camera = this.el.sceneEl.camera;
     camera.parent.updateMatrixWorld();
     camera.updateMatrixWorld();
     this.cameraPosition.setFromMatrixPosition(camera.matrixWorld);
   },
 
   animate: (function () {
-    var linkPosition = new THREE.Vector3();
-    var portalToCameraVector = new THREE.Vector3();
-    var easeOutCubic = function (t) { return (--t) * t * t + 1; };
+    let linkPosition = new THREE.Vector3();
+    let portalToCameraVector = new THREE.Vector3();
+    let easeOutCubic = function (t) { return (--t) * t * t + 1; };
     return function (delta) {
-      var animatedEl = this.animatedEl;
+      let animatedEl = this.animatedEl;
       // There's no element to animate.
       if (!animatedEl) { return; }
       // User is not peeking and animation reached the end
@@ -278,7 +278,7 @@ AFRAME.registerComponent('link-controls', {
         animatedEl.components.link.hideAll();
       }
       // Calculate animation step
-      var step = delta / this.linkAnimationDuration;
+      let step = delta / this.linkAnimationDuration;
       // From [0..1] progress of the animation
       this.linkPositionRatio += this.peeking ? step : -step;
       // clamp to [0,1]
@@ -287,7 +287,7 @@ AFRAME.registerComponent('link-controls', {
       linkPosition.copy(this.animatedElInitPosition);
       // Move link towards the camera: Camera <----- Link
       portalToCameraVector.copy(this.cameraPosition).sub(linkPosition);
-      var distanceToCamera = portalToCameraVector.length();
+      let distanceToCamera = portalToCameraVector.length();
       // Unit vector
       portalToCameraVector.normalize();
       portalToCameraVector.multiplyScalar(distanceToCamera * easeOutCubic(this.linkPositionRatio));
@@ -308,10 +308,10 @@ AFRAME.registerComponent('link-controls', {
   })(),
 
   onMouseEnter: function (evt) {
-    var link;
-    var previousSelectedLinkEl = this.selectedLinkEl;
-    var selectedLinkEl = evt.detail.intersectedEl;
-    var urlEl = this.urlEl;
+    let link;
+    let previousSelectedLinkEl = this.selectedLinkEl;
+    let selectedLinkEl = evt.detail.intersectedEl;
+    let urlEl = this.urlEl;
     if (!selectedLinkEl || previousSelectedLinkEl || selectedLinkEl.components.link === undefined) { return; }
     selectedLinkEl.setAttribute('link', 'highlighted', true);
     this.selectedLinkElPosition = selectedLinkEl.getAttribute('position');
@@ -323,8 +323,8 @@ AFRAME.registerComponent('link-controls', {
   },
 
   onMouseLeave: function (evt) {
-    var selectedLinkEl = this.selectedLinkEl;
-    var urlEl = this.urlEl;
+    let selectedLinkEl = this.selectedLinkEl;
+    let urlEl = this.urlEl;
     if (!selectedLinkEl || !evt.detail.intersectedEl) { return; }
     selectedLinkEl.setAttribute('link', 'highlighted', false);
     this.selectedLinkEl = undefined;

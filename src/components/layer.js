@@ -1,7 +1,7 @@
 /* global THREE, XRRigidTransform, XRWebGLBinding */
-var registerComponent = require('../core/component').registerComponent;
-var utils = require('../utils/');
-var warn = utils.debug('components:layer:warn');
+let registerComponent = require('../core/component').registerComponent;
+let utils = require('../utils/');
+let warn = utils.debug('components:layer:warn');
 
 module.exports.Component = registerComponent('layer', {
   schema: {
@@ -13,7 +13,7 @@ module.exports.Component = registerComponent('layer', {
   },
 
   init: function () {
-    var gl = this.el.sceneEl.renderer.getContext();
+    let gl = this.el.sceneEl.renderer.getContext();
 
     this.quaternion = new THREE.Quaternion();
     this.position = new THREE.Vector3();
@@ -21,7 +21,7 @@ module.exports.Component = registerComponent('layer', {
     this.bindMethods();
     this.needsRedraw = false;
     this.frameBuffer = gl.createFramebuffer();
-    var requiredFeatures = this.el.sceneEl.getAttribute('webxr').requiredFeatures;
+    let requiredFeatures = this.el.sceneEl.getAttribute('webxr').requiredFeatures;
     requiredFeatures.push('layers');
     this.el.sceneEl.getAttribute('webxr', 'requiredFeatures', requiredFeatures);
     this.el.sceneEl.addEventListener('enter-vr', this.onEnterVR);
@@ -39,7 +39,7 @@ module.exports.Component = registerComponent('layer', {
   },
 
   updateSrc: function () {
-    var type = this.data.type;
+    let type = this.data.type;
     this.texture = undefined;
     if (type === 'quad') {
       this.loadQuadImage();
@@ -53,11 +53,11 @@ module.exports.Component = registerComponent('layer', {
   },
 
   loadCubeMapImages: function () {
-    var type = this.data.type;
-    var glayer;
-    var xrGLFactory = this.xrGLFactory;
-    var frame = this.el.sceneEl.frame;
-    var src = this.data.src;
+    let type = this.data.type;
+    let glayer;
+    let xrGLFactory = this.xrGLFactory;
+    let frame = this.el.sceneEl.frame;
+    let src = this.data.src;
 
     this.visibilityChanged = false;
     if (!this.layer) { return; }
@@ -85,8 +85,8 @@ module.exports.Component = registerComponent('layer', {
   },
 
   loadQuadImage: function () {
-    var src = this.data.src;
-    var self = this;
+    let src = this.data.src;
+    let self = this;
     this.el.sceneEl.systems.material.loadTexture(src, {src: src}, function textureLoaded (texture) {
       self.el.sceneEl.renderer.initTexture(texture);
       self.texture = texture;
@@ -110,17 +110,17 @@ module.exports.Component = registerComponent('layer', {
   },
 
   generateCubeMapTextures: function (src, faceOffset, callback) {
-    var data = this.data;
-    var cubeFaceSize = this.cubeFaceSize;
-    var textureSourceCubeFaceSize = Math.min(src.width, src.height);
-    var cubefaceTextures = [];
-    var imgTmp0;
-    var imgTmp2;
+    let data = this.data;
+    let cubeFaceSize = this.cubeFaceSize;
+    let textureSourceCubeFaceSize = Math.min(src.width, src.height);
+    let cubefaceTextures = [];
+    let imgTmp0;
+    let imgTmp2;
 
-    for (var i = 0; i < 6; i++) {
-      var tempCanvas = document.createElement('CANVAS');
+    for (let i = 0; i < 6; i++) {
+      let tempCanvas = document.createElement('CANVAS');
       tempCanvas.width = tempCanvas.height = cubeFaceSize;
-      var tempCanvasContext = tempCanvas.getContext('2d');
+      let tempCanvasContext = tempCanvas.getContext('2d');
 
       if (data.rotateCubemap) {
         if (i === 2 || i === 3) {
@@ -170,8 +170,8 @@ module.exports.Component = registerComponent('layer', {
   },
 
   loadCubeMapImage: function (layerColorTexture, src, faceOffset) {
-    var gl = this.el.sceneEl.renderer.getContext();
-    var cubefaceTextures;
+    let gl = this.el.sceneEl.renderer.getContext();
+    let cubefaceTextures;
 
     // dont flip the pixels as we load them into the texture buffer.
     // TEXTURE_CUBE_MAP expects the Y to be flipped for the faces and it already
@@ -185,7 +185,7 @@ module.exports.Component = registerComponent('layer', {
       cubefaceTextures = this.generateCubeMapTextures(src, faceOffset);
     }
 
-    var errorCode = 0;
+    let errorCode = 0;
     cubefaceTextures.forEach(function (canvas, i) {
       gl.texSubImage2D(
         gl.TEXTURE_CUBE_MAP_POSITIVE_X + i,
@@ -215,8 +215,8 @@ module.exports.Component = registerComponent('layer', {
   },
 
   initLayer: function () {
-    var self = this;
-    var type = this.data.type;
+    let self = this;
+    let type = this.data.type;
 
     this.el.sceneEl.xrSession.onvisibilitychange = function (evt) {
       self.visibilityChanged = evt.session.visibilityState !== 'hidden';
@@ -234,9 +234,9 @@ module.exports.Component = registerComponent('layer', {
   },
 
   initQuadLayer: function () {
-    var sceneEl = this.el.sceneEl;
-    var gl = sceneEl.renderer.getContext();
-    var xrGLFactory = this.xrGLFactory = new XRWebGLBinding(sceneEl.xrSession, gl);
+    let sceneEl = this.el.sceneEl;
+    let gl = sceneEl.renderer.getContext();
+    let xrGLFactory = this.xrGLFactory = new XRWebGLBinding(sceneEl.xrSession, gl);
     if (!this.texture) { return; }
     this.layer = xrGLFactory.createQuadLayer({
       space: this.referenceSpace,
@@ -249,12 +249,12 @@ module.exports.Component = registerComponent('layer', {
   },
 
   initCubeMapLayer: function () {
-    var src = this.data.src;
-    var sceneEl = this.el.sceneEl;
-    var gl = sceneEl.renderer.getContext();
-    var glSizeLimit = gl.getParameter(gl.MAX_CUBE_MAP_TEXTURE_SIZE);
-    var cubeFaceSize = this.cubeFaceSize = Math.min(glSizeLimit, Math.min(src.width, src.height));
-    var xrGLFactory = this.xrGLFactory = new XRWebGLBinding(sceneEl.xrSession, gl);
+    let src = this.data.src;
+    let sceneEl = this.el.sceneEl;
+    let gl = sceneEl.renderer.getContext();
+    let glSizeLimit = gl.getParameter(gl.MAX_CUBE_MAP_TEXTURE_SIZE);
+    let cubeFaceSize = this.cubeFaceSize = Math.min(glSizeLimit, Math.min(src.width, src.height));
+    let xrGLFactory = this.xrGLFactory = new XRWebGLBinding(sceneEl.xrSession, gl);
     this.layer = xrGLFactory.createCubeLayer({
       space: this.referenceSpace,
       viewPixelWidth: cubeFaceSize,
@@ -269,12 +269,12 @@ module.exports.Component = registerComponent('layer', {
   },
 
   initLoadingScreenImages: function () {
-    var cubeFaceSize = this.cubeFaceSize;
-    var loadingScreenImages = this.loadingScreenImages = [];
-    for (var i = 0; i < 6; i++) {
-      var tempCanvas = document.createElement('CANVAS');
+    let cubeFaceSize = this.cubeFaceSize;
+    let loadingScreenImages = this.loadingScreenImages = [];
+    for (let i = 0; i < 6; i++) {
+      let tempCanvas = document.createElement('CANVAS');
       tempCanvas.width = tempCanvas.height = cubeFaceSize;
-      var tempCanvasContext = tempCanvas.getContext('2d');
+      let tempCanvasContext = tempCanvas.getContext('2d');
       tempCanvas.width = tempCanvas.height = cubeFaceSize;
       tempCanvasContext.fillStyle = 'black';
       tempCanvasContext.fillRect(0, 0, cubeFaceSize, cubeFaceSize);
@@ -306,7 +306,7 @@ module.exports.Component = registerComponent('layer', {
   },
 
   updateQuadPanel: function () {
-    var quadPanelEl = this.quadPanelEl;
+    let quadPanelEl = this.quadPanelEl;
     if (!this.quadPanelEl) {
       quadPanelEl = this.quadPanelEl = document.createElement('a-entity');
       this.el.appendChild(quadPanelEl);
@@ -326,11 +326,11 @@ module.exports.Component = registerComponent('layer', {
   },
 
   draw: function () {
-    var sceneEl = this.el.sceneEl;
-    var gl = this.el.sceneEl.renderer.getContext();
-    var glayer = this.xrGLFactory.getSubImage(this.layer, sceneEl.frame);
-    var texture = sceneEl.renderer.properties.get(this.texture).__webglTexture;
-    var previousFrameBuffer = gl.getParameter(gl.FRAMEBUFFER_BINDING);
+    let sceneEl = this.el.sceneEl;
+    let gl = this.el.sceneEl.renderer.getContext();
+    let glayer = this.xrGLFactory.getSubImage(this.layer, sceneEl.frame);
+    let texture = sceneEl.renderer.properties.get(this.texture).__webglTexture;
+    let previousFrameBuffer = gl.getParameter(gl.FRAMEBUFFER_BINDING);
 
     gl.viewport(glayer.viewport.x, glayer.viewport.y, glayer.viewport.width, glayer.viewport.height);
     gl.bindFramebuffer(gl.FRAMEBUFFER, this.frameBuffer);
@@ -342,9 +342,9 @@ module.exports.Component = registerComponent('layer', {
   },
 
   updateTransform: function () {
-    var el = this.el;
-    var position = this.position;
-    var quaternion = this.quaternion;
+    let el = this.el;
+    let position = this.position;
+    let quaternion = this.quaternion;
     el.object3D.updateMatrixWorld();
     position.setFromMatrixPosition(el.object3D.matrixWorld);
     quaternion.setFromRotationMatrix(el.object3D.matrixWorld);
@@ -353,8 +353,8 @@ module.exports.Component = registerComponent('layer', {
   },
 
   onEnterVR: function () {
-    var sceneEl = this.el.sceneEl;
-    var xrSession = sceneEl.xrSession;
+    let sceneEl = this.el.sceneEl;
+    let xrSession = sceneEl.xrSession;
     if (!sceneEl.hasWebXR || !XRWebGLBinding || !xrSession) {
       warn('The layer component requires WebXR and the layers API enabled');
       return;
@@ -381,7 +381,7 @@ module.exports.Component = registerComponent('layer', {
 });
 
 function blitTexture (gl, texture, subImage, textureEl) {
-  var xrReadFramebuffer = gl.createFramebuffer();
+  let xrReadFramebuffer = gl.createFramebuffer();
   let x1offset = subImage.viewport.x;
   let y1offset = subImage.viewport.y;
   let x2offset = subImage.viewport.x + subImage.viewport.width;

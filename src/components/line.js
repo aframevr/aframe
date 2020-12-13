@@ -1,5 +1,5 @@
 /* global THREE */
-var registerComponent = require('../core/component').registerComponent;
+let registerComponent = require('../core/component').registerComponent;
 
 module.exports.Component = registerComponent('line', {
   schema: {
@@ -13,9 +13,9 @@ module.exports.Component = registerComponent('line', {
   multiple: true,
 
   init: function () {
-    var data = this.data;
-    var geometry;
-    var material;
+    let data = this.data;
+    let geometry;
+    let material;
     this.rendererSystem = this.el.sceneEl.systems.renderer;
     material = this.material = new THREE.LineBasicMaterial({
       color: data.color,
@@ -32,11 +32,11 @@ module.exports.Component = registerComponent('line', {
   },
 
   update: function (oldData) {
-    var data = this.data;
-    var geometry = this.geometry;
-    var geoNeedsUpdate = false;
-    var material = this.material;
-    var positionArray = geometry.attributes.position.array;
+    let data = this.data;
+    let geometry = this.geometry;
+    let geoNeedsUpdate = false;
+    let material = this.material;
+    let positionArray = geometry.attributes.position.array;
 
     // Update geometry.
     if (!isEqualVec3(data.start, oldData.start)) {

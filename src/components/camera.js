@@ -1,5 +1,5 @@
-var registerComponent = require('../core/component').registerComponent;
-var THREE = require('../lib/three');
+let registerComponent = require('../core/component').registerComponent;
+let THREE = require('../lib/three');
 
 /**
  * Camera component.
@@ -20,8 +20,8 @@ module.exports.Component = registerComponent('camera', {
    * Add reference from scene to this entity as the camera.
    */
   init: function () {
-    var camera;
-    var el = this.el;
+    let camera;
+    let el = this.el;
 
     // Create camera.
     camera = this.camera = new THREE.PerspectiveCamera();
@@ -32,8 +32,8 @@ module.exports.Component = registerComponent('camera', {
    * Update three.js camera.
    */
   update: function (oldData) {
-    var data = this.data;
-    var camera = this.camera;
+    let data = this.data;
+    let camera = this.camera;
 
     // Update properties.
     camera.aspect = data.aspect || (window.innerWidth / window.innerHeight);
@@ -48,9 +48,9 @@ module.exports.Component = registerComponent('camera', {
   },
 
   updateActiveCamera: function (oldData) {
-    var data = this.data;
-    var el = this.el;
-    var system = this.system;
+    let data = this.data;
+    let el = this.el;
+    let system = this.system;
     // Active property did not change.
     if (oldData && oldData.active === data.active || data.spectator) { return; }
 
@@ -65,9 +65,9 @@ module.exports.Component = registerComponent('camera', {
   },
 
   updateSpectatorCamera: function (oldData) {
-    var data = this.data;
-    var el = this.el;
-    var system = this.system;
+    let data = this.data;
+    let el = this.el;
+    let system = this.system;
     // spectator property did not change.
     if (oldData && oldData.spectator === data.spectator) { return; }
 

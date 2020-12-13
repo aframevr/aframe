@@ -1,7 +1,7 @@
-var debug = require('../utils/debug');
-var registerElement = require('./a-register-element').registerElement;
+let debug = require('../utils/debug');
+let registerElement = require('./a-register-element').registerElement;
 
-var warn = debug('core:cubemap:warn');
+let warn = debug('core:cubemap:warn');
 
 /**
  * Cubemap element that handles validation and exposes list of URLs.
@@ -28,9 +28,9 @@ module.exports = registerElement('a-cubemap', {
      */
     validate: {
       value: function () {
-        var elements = this.querySelectorAll('[src]');
-        var i;
-        var srcs = [];
+        let elements = this.querySelectorAll('[src]');
+        let i;
+        let srcs = [];
         if (elements.length === 6) {
           for (i = 0; i < elements.length; i++) {
             srcs.push(elements[i].getAttribute('src'));

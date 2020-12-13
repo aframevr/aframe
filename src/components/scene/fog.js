@@ -1,8 +1,8 @@
-var register = require('../../core/component').registerComponent;
-var THREE = require('../../lib/three');
-var debug = require('../../utils/debug');
+let register = require('../../core/component').registerComponent;
+let THREE = require('../../lib/three');
+let debug = require('../../utils/debug');
 
-var warn = debug('components:fog:warn');
+let warn = debug('components:fog:warn');
 
 /**
  * Fog component.
@@ -18,9 +18,9 @@ module.exports.Component = register('fog', {
   },
 
   update: function () {
-    var data = this.data;
-    var el = this.el;
-    var fog = this.el.object3D.fog;
+    let data = this.data;
+    let el = this.el;
+    let fog = this.el.object3D.fog;
 
     if (!el.isScene) {
       warn('Fog component can only be applied to <a-scene>');
@@ -36,7 +36,7 @@ module.exports.Component = register('fog', {
 
     // Fog data changed. Update fog.
     Object.keys(this.schema).forEach(function (key) {
-      var value = data[key];
+      let value = data[key];
       if (key === 'color') { value = new THREE.Color(value); }
       fog[key] = value;
     });
@@ -46,7 +46,7 @@ module.exports.Component = register('fog', {
    * Remove fog on remove (callback).
    */
   remove: function () {
-    var fog = this.el.object3D.fog;
+    let fog = this.el.object3D.fog;
     if (!fog) { return; }
     fog.far = 0;
     fog.near = 0.1;
@@ -60,7 +60,7 @@ module.exports.Component = register('fog', {
  * @returns {object} fog
  */
 function getFog (data) {
-  var fog;
+  let fog;
   if (data.type === 'exponential') {
     fog = new THREE.FogExp2(data.color, data.density);
   } else {

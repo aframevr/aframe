@@ -1,14 +1,14 @@
 /* global assert, suite, test */
-var throttleTick = require('utils').throttleTick;
+let throttleTick = require('utils').throttleTick;
 
 suite('utils.throttleTick', function () {
-  var ts;
-  var dts;
-  var interval = 1000;
-  var functionToThrottle = function (t, dt) { ts.push(t); dts.push(dt); };
-  var throttleTickFn = throttleTick(functionToThrottle, interval);
-  var arbitraryLargeTime = 987634578;
-  var arbitraryLargeDelta = 12345;
+  let ts;
+  let dts;
+  let interval = 1000;
+  let functionToThrottle = function (t, dt) { ts.push(t); dts.push(dt); };
+  let throttleTickFn = throttleTick(functionToThrottle, interval);
+  let arbitraryLargeTime = 987634578;
+  let arbitraryLargeDelta = 12345;
 
   test('fires callback on first tick whatever', function () {
     ts = [];
@@ -37,8 +37,8 @@ suite('utils.throttleTick', function () {
   });
 
   test('does not fire callback on ticks too soon', function () {
-    var tlen = ts.length;
-    var dtlen = dts.length;
+    let tlen = ts.length;
+    let dtlen = dts.length;
     assert.equal(ts.length, dts.length);
     throttleTickFn(1);
     assert.equal(ts.length, tlen);
@@ -52,8 +52,8 @@ suite('utils.throttleTick', function () {
   });
 
   test('does fire callback on ticks after enough', function () {
-    var tlen = ts.length;
-    var dtlen = dts.length;
+    let tlen = ts.length;
+    let dtlen = dts.length;
     assert.equal(ts.length, dts.length);
     throttleTickFn(interval);
     assert.equal(ts.length, tlen + 1);
@@ -63,8 +63,8 @@ suite('utils.throttleTick', function () {
   });
 
   test('fires only one callback on multiply late ticks', function () {
-    var tlen = ts.length;
-    var dtlen = dts.length;
+    let tlen = ts.length;
+    let dtlen = dts.length;
     assert.equal(ts.length, dts.length);
     throttleTickFn(interval * 5);
     assert.equal(ts.length, tlen + 1);
@@ -79,9 +79,9 @@ suite('utils.throttleTick', function () {
   });
 
   test('binds function if context given', function () {
-    var obj = {};
+    let obj = {};
     obj.functionToThrottle = function (t, dt) { this.t = t; this.dt = dt; };
-    var spy = this.sinon.spy(obj, 'functionToThrottle');
+    let spy = this.sinon.spy(obj, 'functionToThrottle');
     obj.functionToThrottle = throttleTick(obj.functionToThrottle, interval, obj);
     obj.functionToThrottle(arbitraryLargeTime, arbitraryLargeDelta);
     assert.ok(spy.calledOnce);

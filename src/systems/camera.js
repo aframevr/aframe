@@ -1,7 +1,7 @@
-var constants = require('../constants/');
-var registerSystem = require('../core/system').registerSystem;
+let constants = require('../constants/');
+let registerSystem = require('../core/system').registerSystem;
 
-var DEFAULT_CAMERA_ATTR = 'data-aframe-default-camera';
+let DEFAULT_CAMERA_ATTR = 'data-aframe-default-camera';
 
 /**
  * Camera system. Manages which camera is active among multiple cameras in scene.
@@ -31,10 +31,10 @@ module.exports.System = registerSystem('camera', {
    * Default camera offset height is at average eye level (~1.6m).
    */
   setupInitialCamera: function () {
-    var cameraEls;
-    var i;
-    var sceneEl = this.sceneEl;
-    var self = this;
+    let cameraEls;
+    let i;
+    let sceneEl = this.sceneEl;
+    let self = this;
 
     // Camera already defined or the one defined it is an spectator one.
     if (sceneEl.camera && !sceneEl.camera.el.getAttribute('camera').spectator) {
@@ -76,8 +76,8 @@ module.exports.System = registerSystem('camera', {
    * Keep track of the number of cameras we checked and whether we found one.
    */
   checkUserCamera: function (cameraEl) {
-    var cameraData;
-    var sceneEl = this.el.sceneEl;
+    let cameraData;
+    let sceneEl = this.el.sceneEl;
     this.numUserCamerasChecked++;
 
     // Already found one.
@@ -99,8 +99,8 @@ module.exports.System = registerSystem('camera', {
   },
 
   createDefaultCamera: function () {
-    var defaultCameraEl;
-    var sceneEl = this.sceneEl;
+    let defaultCameraEl;
+    let sceneEl = this.sceneEl;
 
     // Set up default camera.
     defaultCameraEl = document.createElement('a-entity');
@@ -130,8 +130,8 @@ module.exports.System = registerSystem('camera', {
    * the new camera.
    */
   disableActiveCamera: function () {
-    var cameraEls;
-    var newActiveCameraEl;
+    let cameraEls;
+    let newActiveCameraEl;
     cameraEls = this.sceneEl.querySelectorAll('[camera]');
     newActiveCameraEl = cameraEls[cameraEls.length - 1];
     newActiveCameraEl.setAttribute('camera', 'active', true);
@@ -145,20 +145,20 @@ module.exports.System = registerSystem('camera', {
    * @param {Element} newCameraEl - Entity with camera component.
    */
   setActiveCamera: function (newCameraEl) {
-    var cameraEl;
-    var cameraEls;
-    var i;
-    var newCamera;
-    var previousCamera = this.activeCameraEl;
-    var sceneEl = this.sceneEl;
+    let cameraEl;
+    let cameraEls;
+    let i;
+    let newCamera;
+    let previousCamera = this.activeCameraEl;
+    let sceneEl = this.sceneEl;
 
     // Same camera.
     newCamera = newCameraEl.getObject3D('camera');
     if (!newCamera || newCameraEl === this.activeCameraEl) { return; }
 
     // Grab the default camera.
-    var defaultCameraWrapper = sceneEl.querySelector('[' + DEFAULT_CAMERA_ATTR + ']');
-    var defaultCameraEl = defaultCameraWrapper &&
+    let defaultCameraWrapper = sceneEl.querySelector('[' + DEFAULT_CAMERA_ATTR + ']');
+    let defaultCameraEl = defaultCameraWrapper &&
                           defaultCameraWrapper.querySelector('[camera]');
 
     // Remove default camera if new camera is not the default camera.
@@ -191,10 +191,10 @@ module.exports.System = registerSystem('camera', {
    * @param {Element} newCameraEl - Entity with camera component.
    */
   setSpectatorCamera: function (newCameraEl) {
-    var newCamera;
-    var previousCamera = this.spectatorCameraEl;
-    var sceneEl = this.sceneEl;
-    var spectatorCameraEl;
+    let newCamera;
+    let previousCamera = this.spectatorCameraEl;
+    let sceneEl = this.sceneEl;
+    let spectatorCameraEl;
 
     // Same camera.
     newCamera = newCameraEl.getObject3D('camera');
@@ -240,9 +240,9 @@ module.exports.System = registerSystem('camera', {
   },
 
   render: function (scene, camera) {
-    var isVREnabled;
-    var sceneEl = this.sceneEl;
-    var spectatorCamera;
+    let isVREnabled;
+    let sceneEl = this.sceneEl;
+    let spectatorCamera;
 
     isVREnabled = sceneEl.renderer.xr.enabled;
     this.originalRender.call(sceneEl.renderer, scene, camera);
@@ -260,8 +260,8 @@ module.exports.System = registerSystem('camera', {
  * @param {Element} sceneEl
  */
 function removeDefaultCamera (sceneEl) {
-  var defaultCamera;
-  var camera = sceneEl.camera;
+  let defaultCamera;
+  let camera = sceneEl.camera;
   if (!camera) { return; }
 
   // Remove default camera if present.

@@ -1,12 +1,12 @@
 /* global assert, process, setup, suite, test */
-var entityFactory = require('../helpers').entityFactory;
+let entityFactory = require('../helpers').entityFactory;
 
 suite('daydream-controls', function () {
   setup(function (done) {
-    var el = this.el = entityFactory();
+    let el = this.el = entityFactory();
     el.setAttribute('daydream-controls', 'hand: right'); // to ensure index = 0
     el.addEventListener('loaded', function () {
-      var component = el.components['daydream-controls'];
+      let component = el.components['daydream-controls'];
       component.controllersWhenPresent = [{
         id: 'Daydream Controller',
         index: 0,
@@ -22,10 +22,10 @@ suite('daydream-controls', function () {
 
   suite('checkIfControllerPresent', function () {
     test('returns not present if no controllers on the first call', function () {
-      var el = this.el;
-      var component = el.components['daydream-controls'];
-      var addEventListenersSpy = this.sinon.spy(component, 'addEventListeners');
-      var injectTrackedControlsSpy = this.sinon.spy(component, 'injectTrackedControls');
+      let el = this.el;
+      let component = el.components['daydream-controls'];
+      let addEventListenersSpy = this.sinon.spy(component, 'addEventListeners');
+      let injectTrackedControlsSpy = this.sinon.spy(component, 'injectTrackedControls');
 
       el.sceneEl.systems['tracked-controls-webvr'].controllers = [];
 
@@ -39,11 +39,11 @@ suite('daydream-controls', function () {
     });
 
     test('does not remove event listeners if no controllers', function () {
-      var el = this.el;
-      var component = el.components['daydream-controls'];
-      var addEventListenersSpy = this.sinon.spy(component, 'addEventListeners');
-      var injectTrackedControlsSpy = this.sinon.spy(component, 'injectTrackedControls');
-      var removeEventListenersSpy = this.sinon.spy(component, 'removeEventListeners');
+      let el = this.el;
+      let component = el.components['daydream-controls'];
+      let addEventListenersSpy = this.sinon.spy(component, 'addEventListeners');
+      let injectTrackedControlsSpy = this.sinon.spy(component, 'injectTrackedControls');
+      let removeEventListenersSpy = this.sinon.spy(component, 'removeEventListeners');
 
       el.sceneEl.systems['tracked-controls-webvr'].controllers = [];
 
@@ -58,11 +58,11 @@ suite('daydream-controls', function () {
     });
 
     test('attaches events if controller is newly present', function () {
-      var el = this.el;
-      var component = el.components['daydream-controls'];
-      var addEventListenersSpy = this.sinon.spy(component, 'addEventListeners');
-      var injectTrackedControlsSpy = this.sinon.spy(component, 'injectTrackedControls');
-      var removeEventListenersSpy = this.sinon.spy(component, 'removeEventListeners');
+      let el = this.el;
+      let component = el.components['daydream-controls'];
+      let addEventListenersSpy = this.sinon.spy(component, 'addEventListeners');
+      let injectTrackedControlsSpy = this.sinon.spy(component, 'injectTrackedControls');
+      let removeEventListenersSpy = this.sinon.spy(component, 'removeEventListeners');
 
       el.sceneEl.systems['tracked-controls-webvr'].controllers = component.controllersWhenPresent;
 
@@ -77,11 +77,11 @@ suite('daydream-controls', function () {
     });
 
     test('does not inject/attach events again if controller already present', function () {
-      var el = this.el;
-      var component = el.components['daydream-controls'];
-      var addEventListenersSpy = this.sinon.spy(component, 'addEventListeners');
-      var injectTrackedControlsSpy = this.sinon.spy(component, 'injectTrackedControls');
-      var removeEventListenersSpy = this.sinon.spy(component, 'removeEventListeners');
+      let el = this.el;
+      let component = el.components['daydream-controls'];
+      let addEventListenersSpy = this.sinon.spy(component, 'addEventListeners');
+      let injectTrackedControlsSpy = this.sinon.spy(component, 'injectTrackedControls');
+      let removeEventListenersSpy = this.sinon.spy(component, 'removeEventListeners');
 
       el.sceneEl.systems['tracked-controls-webvr'].controllers = component.controllersWhenPresent;
 
@@ -97,11 +97,11 @@ suite('daydream-controls', function () {
     });
 
     test('removes event listeners if controller disappears', function () {
-      var el = this.el;
-      var component = el.components['daydream-controls'];
-      var addEventListenersSpy = this.sinon.spy(component, 'addEventListeners');
-      var injectTrackedControlsSpy = this.sinon.spy(component, 'injectTrackedControls');
-      var removeEventListenersSpy = this.sinon.spy(component, 'removeEventListeners');
+      let el = this.el;
+      let component = el.components['daydream-controls'];
+      let addEventListenersSpy = this.sinon.spy(component, 'addEventListeners');
+      let injectTrackedControlsSpy = this.sinon.spy(component, 'injectTrackedControls');
+      let removeEventListenersSpy = this.sinon.spy(component, 'removeEventListeners');
 
       el.sceneEl.systems['tracked-controls-webvr'].controllers = [];
 
@@ -119,8 +119,8 @@ suite('daydream-controls', function () {
 
   suite('axismove', function () {
     test('emits trackpadmoved on axismove', function (done) {
-      var el = this.el;
-      var component = el.components['daydream-controls'];
+      let el = this.el;
+      let component = el.components['daydream-controls'];
 
       el.sceneEl.systems['tracked-controls-webvr'].controllers = component.controllersWhenPresent;
       component.checkIfControllerPresent();
@@ -137,8 +137,8 @@ suite('daydream-controls', function () {
     });
 
     test('does not emit trackpadmove on axismove with no changes', function (done) {
-      var el = this.el;
-      var component = el.components['daydream-controls'];
+      let el = this.el;
+      let component = el.components['daydream-controls'];
 
       el.sceneEl.systems['tracked-controls-webvr'].controllers = component.controllersWhenPresent;
 
@@ -158,8 +158,8 @@ suite('daydream-controls', function () {
 
   suite('buttonchanged', function () {
     test('emits trackpadchanged on buttonchanged for button 0', function (done) {
-      var el = this.el;
-      var component = el.components['daydream-controls'];
+      let el = this.el;
+      let component = el.components['daydream-controls'];
 
       el.sceneEl.systems['tracked-controls-webvr'].controllers = component.controllersWhenPresent;
 
@@ -178,8 +178,8 @@ suite('daydream-controls', function () {
     });
 
     test('emits menuchanged on buttonchanged for button 1', function (done) {
-      var el = this.el;
-      var component = el.components['daydream-controls'];
+      let el = this.el;
+      let component = el.components['daydream-controls'];
 
       el.sceneEl.systems['tracked-controls-webvr'].controllers = component.controllersWhenPresent;
 
@@ -198,8 +198,8 @@ suite('daydream-controls', function () {
     });
 
     test('emits systemanged on buttonchanged for button 2', function (done) {
-      var el = this.el;
-      var component = el.components['daydream-controls'];
+      let el = this.el;
+      let component = el.components['daydream-controls'];
 
       el.sceneEl.systems['tracked-controls-webvr'].controllers = component.controllersWhenPresent;
 
@@ -220,27 +220,27 @@ suite('daydream-controls', function () {
 
   suite('armModel', function () {
     function makePresent (el) {
-      var component = el.components['daydream-controls'];
+      let component = el.components['daydream-controls'];
       el.sceneEl.systems['tracked-controls-webvr'].controllers = component.controllersWhenPresent;
       component.checkIfControllerPresent();
     }
 
     test('does not apply if armModel disabled', function () {
-      var el = this.el;
+      let el = this.el;
       el.setAttribute('daydream-controls', 'armModel', false);
       makePresent(el);
-      var trackedControls = el.components['tracked-controls-webvr'];
-      var applyArmModelSpy = this.sinon.spy(trackedControls, 'applyArmModel');
+      let trackedControls = el.components['tracked-controls-webvr'];
+      let applyArmModelSpy = this.sinon.spy(trackedControls, 'applyArmModel');
       trackedControls.tick();
       assert.notOk(applyArmModelSpy.called);
     });
 
     test('applies armModel if armModel enabled', function () {
-      var el = this.el;
+      let el = this.el;
       el.setAttribute('daydream-controls', 'armModel', true);
       makePresent(el);
-      var trackedControls = el.components['tracked-controls-webvr'];
-      var applyArmModelSpy = this.sinon.spy(trackedControls, 'applyArmModel');
+      let trackedControls = el.components['tracked-controls-webvr'];
+      let applyArmModelSpy = this.sinon.spy(trackedControls, 'applyArmModel');
       trackedControls.tick();
       assert.ok(applyArmModelSpy.called);
     });

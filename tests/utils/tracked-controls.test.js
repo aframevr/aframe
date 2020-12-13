@@ -1,9 +1,9 @@
 /* global assert, sinon, suite, test */
-var trackedControlsUtils = require('utils/tracked-controls');
+let trackedControlsUtils = require('utils/tracked-controls');
 
 suite('onButtonEvent', function () {
   test('reemit button event based on mappings', function () {
-    var mockedComponent = {
+    let mockedComponent = {
       el: {emit: sinon.stub()},
       mapping: {buttons: ['testbutton']},
       updateModel: sinon.stub()
@@ -14,7 +14,7 @@ suite('onButtonEvent', function () {
   });
 
   test('reemit button event based on mappings with handedness', function () {
-    var mockedComponent = {
+    let mockedComponent = {
       el: {emit: sinon.stub()},
       mapping: {left: {buttons: ['testbutton']}},
       updateModel: sinon.stub()

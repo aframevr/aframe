@@ -6,8 +6,8 @@ AFRAME.registerComponent('button', {
     toggable: {default: false}
   },
   init: function () {
-    var el = this.el;
-    var labelEl = this.labelEl = document.createElement('a-entity');
+    let el = this.el;
+    let labelEl = this.labelEl = document.createElement('a-entity');
 
     this.color = '#c96f47';
     this.hoverColor = '#0cc6b8';

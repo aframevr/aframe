@@ -1,16 +1,16 @@
-var ANode = require('./a-node');
-var COMPONENTS = require('./component').components;
-var registerElement = require('./a-register-element').registerElement;
-var THREE = require('../lib/three');
-var utils = require('../utils/');
+let ANode = require('./a-node');
+let COMPONENTS = require('./component').components;
+let registerElement = require('./a-register-element').registerElement;
+let THREE = require('../lib/three');
+let utils = require('../utils/');
 
-var AEntity;
-var debug = utils.debug('core:a-entity:debug');
-var warn = utils.debug('core:a-entity:warn');
+let AEntity;
+let debug = utils.debug('core:a-entity:debug');
+let warn = utils.debug('core:a-entity:warn');
 
-var MULTIPLE_COMPONENT_DELIMITER = '__';
-var OBJECT3D_COMPONENTS = ['position', 'rotation', 'scale', 'visible'];
-var ONCE = {once: true};
+let MULTIPLE_COMPONENT_DELIMITER = '__';
+let OBJECT3D_COMPONENTS = ['position', 'rotation', 'scale', 'visible'];
+let ONCE = {once: true};
 
 /**
  * Entity is a container object that components are plugged into to comprise everything in
@@ -23,7 +23,7 @@ var ONCE = {once: true};
  * @member {array} states
  * @member {boolean} isPlaying - false if dynamic behavior of the entity is paused.
  */
-var proto = Object.create(ANode.prototype, {
+let proto = Object.create(ANode.prototype, {
   createdCallback: {
     value: function () {
       this.components = {};
@@ -46,7 +46,7 @@ var proto = Object.create(ANode.prototype, {
    */
   attributeChangedCallback: {
     value: function (attr, oldVal, newVal) {
-      var component = this.components[attr];
+      let component = this.components[attr];
       // If the empty string is passed by the component initialization
       // logic we ignore the component update.
       if (component && component.justInitialized && newVal === '') {
@@ -64,9 +64,9 @@ var proto = Object.create(ANode.prototype, {
    */
   attachedCallback: {
     value: function () {
-      var assetsEl;  // Asset management system element.
-      var sceneEl = this.sceneEl;
-      var self = this;  // Component.
+      let assetsEl;  // Asset management system element.
+      let sceneEl = this.sceneEl;
+      let self = this;  // Component.
 
       this.addToParent();
 
@@ -95,7 +95,7 @@ var proto = Object.create(ANode.prototype, {
    */
   detachedCallback: {
     value: function () {
-      var componentName;
+      let componentName;
 
       if (!this.parentEl) { return; }
 
@@ -128,8 +128,8 @@ var proto = Object.create(ANode.prototype, {
    */
   setObject3D: {
     value: function (type, obj) {
-      var oldObj;
-      var self = this;
+      let oldObj;
+      let self = this;
 
       if (!(obj instanceof THREE.Object3D)) {
         throw new Error(
@@ -162,7 +162,7 @@ var proto = Object.create(ANode.prototype, {
    */
   removeObject3D: {
     value: function (type) {
-      var obj = this.getObject3D(type);
+      let obj = this.getObject3D(type);
       if (!obj) {
         warn('Tried to remove `Object3D` of type:', type, 'which was not defined.');
         return;
@@ -182,7 +182,7 @@ var proto = Object.create(ANode.prototype, {
    */
   getOrCreateObject3D: {
     value: function (type, Constructor) {
-      var object3D = this.getObject3D(type);
+      let object3D = this.getObject3D(type);
       if (!object3D && Constructor) {
         object3D = new Constructor();
         this.setObject3D(type, object3D);
@@ -213,7 +213,7 @@ var proto = Object.create(ANode.prototype, {
    */
   addToParent: {
     value: function () {
-      var parentNode = this.parentEl = this.parentNode;
+      let parentNode = this.parentEl = this.parentNode;
 
       // `!parentNode` check primarily for unit tests.
       if (!parentNode || !parentNode.add || this.attachedToParent) { return; }
@@ -228,7 +228,7 @@ var proto = Object.create(ANode.prototype, {
    */
   removeFromParent: {
     value: function () {
-      var parentEl = this.parentEl;
+      let parentEl = this.parentEl;
       this.parentEl.remove(this);
       this.attachedToParent = false;
       this.parentEl = null;
@@ -238,7 +238,7 @@ var proto = Object.create(ANode.prototype, {
 
   load: {
     value: function () {
-      var self = this;
+      let self = this;
 
       if (this.hasLoaded || !this.parentEl) { return; }
 
@@ -273,11 +273,11 @@ var proto = Object.create(ANode.prototype, {
    */
   getChildEntities: {
     value: function () {
-      var children = this.children;
-      var childEntities = [];
+      let children = this.children;
+      let childEntities = [];
 
-      for (var i = 0; i < children.length; i++) {
-        var child = children[i];
+      for (let i = 0; i < children.length; i++) {
+        let child = children[i];
         if (child instanceof AEntity) {
           childEntities.push(child);
         }
@@ -296,11 +296,11 @@ var proto = Object.create(ANode.prototype, {
    */
   initComponent: {
     value: function (attrName, data, isDependency) {
-      var component;
-      var componentId;
-      var componentInfo;
-      var componentName;
-      var isComponentDefined;
+      let component;
+      let componentId;
+      let componentInfo;
+      let componentName;
+      let isComponentDefined;
 
       componentInfo = utils.split(attrName, MULTIPLE_COMPONENT_DELIMITER);
       componentName = componentInfo[0];
@@ -353,10 +353,10 @@ var proto = Object.create(ANode.prototype, {
    */
   initComponentDependencies: {
     value: function (name) {
-      var self = this;
-      var component = COMPONENTS[name];
-      var dependencies;
-      var i;
+      let self = this;
+      let component = COMPONENTS[name];
+      let dependencies;
+      let i;
 
       // Not a component.
       if (!component) { return; }
@@ -380,7 +380,7 @@ var proto = Object.create(ANode.prototype, {
 
   removeComponent: {
     value: function (name, destroy) {
-      var component;
+      let component;
 
       component = this.components[name];
       if (!component) { return; }
@@ -419,11 +419,11 @@ var proto = Object.create(ANode.prototype, {
    */
   updateComponents: {
     value: function () {
-      var data;
-      var extraComponents;
-      var i;
-      var name;
-      var componentsToUpdate = this.componentsToUpdate;
+      let data;
+      let extraComponents;
+      let i;
+      let name;
+      let componentsToUpdate = this.componentsToUpdate;
 
       if (!this.hasLoaded) { return; }
 
@@ -478,7 +478,7 @@ var proto = Object.create(ANode.prototype, {
    */
   updateComponent: {
     value: function (attr, attrValue, clobber) {
-      var component = this.components[attr];
+      let component = this.components[attr];
 
       if (component) {
         // Remove component.
@@ -506,7 +506,7 @@ var proto = Object.create(ANode.prototype, {
    */
   removeAttribute: {
     value: function (attr, propertyName) {
-      var component = this.components[attr];
+      let component = this.components[attr];
 
       // Remove component.
       if (component && propertyName === undefined) {
@@ -534,9 +534,9 @@ var proto = Object.create(ANode.prototype, {
    */
   play: {
     value: function () {
-      var entities;
-      var i;
-      var key;
+      let entities;
+      let i;
+      let key;
 
       // Already playing.
       if (this.isPlaying || !this.hasLoaded) { return; }
@@ -560,9 +560,9 @@ var proto = Object.create(ANode.prototype, {
    */
   pause: {
     value: function () {
-      var entities;
-      var i;
-      var key;
+      let entities;
+      let i;
+      let key;
 
       if (!this.isPlaying) { return; }
       this.isPlaying = false;
@@ -605,14 +605,14 @@ var proto = Object.create(ANode.prototype, {
    */
   mixinUpdate: {
     value: (function () {
-      var componentsUpdated = [];
+      let componentsUpdated = [];
 
       return function (newMixins, oldMixins) {
-        var component;
-        var mixinEl;
-        var mixinIds;
-        var i;
-        var self = this;
+        let component;
+        let mixinEl;
+        let mixinIds;
+        let i;
+        let self = this;
 
         if (!this.hasLoaded) {
           this.addEventListener('loaded', function () {
@@ -679,15 +679,15 @@ var proto = Object.create(ANode.prototype, {
    */
   setAttribute: {
     value: (function () {
-      var singlePropUpdate = {};
+      let singlePropUpdate = {};
 
       return function (attrName, arg1, arg2) {
-        var newAttrValue;
-        var clobber;
-        var componentName;
-        var delimiterIndex;
-        var isDebugMode;
-        var key;
+        let newAttrValue;
+        let clobber;
+        let componentName;
+        let delimiterIndex;
+        let isDebugMode;
+        let key;
 
         delimiterIndex = attrName.indexOf(MULTIPLE_COMPONENT_DELIMITER);
         componentName = delimiterIndex > 0 ? attrName.substring(0, delimiterIndex) : attrName;
@@ -741,11 +741,11 @@ var proto = Object.create(ANode.prototype, {
    **/
   flushToDOM: {
     value: function (recursive) {
-      var components = this.components;
-      var child;
-      var children = this.children;
-      var i;
-      var key;
+      let components = this.components;
+      let child;
+      let children = this.children;
+      let i;
+      let key;
 
       // Flush entity's components to DOM.
       for (key in components) {
@@ -774,7 +774,7 @@ var proto = Object.create(ANode.prototype, {
   getAttribute: {
     value: function (attr) {
       // If component, return component data.
-      var component;
+      let component;
       if (attr === 'position') { return this.object3D.position; }
       if (attr === 'rotation') { return getRotation(this); }
       if (attr === 'scale') { return this.object3D.scale; }
@@ -799,7 +799,7 @@ var proto = Object.create(ANode.prototype, {
   getDOMAttribute: {
     value: function (attr) {
       // If cached value exists, return partial component data.
-      var component = this.components[attr];
+      let component = this.components[attr];
       if (component) { return component.attrValue; }
       return window.HTMLElement.prototype.getAttribute.call(this, attr);
     },
@@ -816,7 +816,7 @@ var proto = Object.create(ANode.prototype, {
 
   removeState: {
     value: function (state) {
-      var stateIndex = this.states.indexOf(state);
+      let stateIndex = this.states.indexOf(state);
       if (stateIndex === -1) { return; }
       this.states.splice(stateIndex, 1);
       this.emit('stateremoved', state);
@@ -847,7 +847,7 @@ var proto = Object.create(ANode.prototype, {
    */
   destroy: {
     value: function () {
-      var key;
+      let key;
       if (this.parentNode) {
         warn('Entity can only be destroyed if detached from scenegraph.');
         return;
@@ -881,8 +881,8 @@ function checkComponentDefined (el, name) {
  * @param {array} mixinEls - Array of <a-mixin>s.
  */
 function isComponentMixedIn (name, mixinEls) {
-  var i;
-  var inMixin = false;
+  let i;
+  let inMixin = false;
   for (i = 0; i < mixinEls.length; ++i) {
     inMixin = mixinEls[i].hasAttribute(name);
     if (inMixin) { break; }
@@ -919,9 +919,9 @@ function isComponent (componentName) {
 }
 
 function getRotation (entityEl) {
-  var radToDeg = THREE.Math.radToDeg;
-  var rotation = entityEl.object3D.rotation;
-  var rotationObj = entityEl.rotationObj;
+  let radToDeg = THREE.Math.radToDeg;
+  let rotation = entityEl.object3D.rotation;
+  let rotationObj = entityEl.rotationObj;
   rotationObj.x = radToDeg(rotation.x);
   rotationObj.y = radToDeg(rotation.y);
   rotationObj.z = radToDeg(rotation.z);

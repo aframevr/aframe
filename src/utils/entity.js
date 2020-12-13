@@ -9,7 +9,7 @@
  * @param {string} delimiter - e.g., `.`.
  * @returns {array} e.g., `['material', 'opacity']`.
  */
-var propertyPathCache = {};
+let propertyPathCache = {};
 function getComponentPropertyPath (str, delimiter) {
   delimiter = delimiter || '.';
   if (!propertyPathCache[delimiter]) { propertyPathCache[delimiter] = {}; }
@@ -28,7 +28,7 @@ module.exports.propertyPathCache = propertyPathCache;
  * delimiter.
  */
 module.exports.getComponentProperty = function (el, name, delimiter) {
-  var splitName;
+  let splitName;
   delimiter = delimiter || '.';
   if (name.indexOf(delimiter) !== -1) {
     splitName = getComponentPropertyPath(name, delimiter);
@@ -45,7 +45,7 @@ module.exports.getComponentProperty = function (el, name, delimiter) {
  * delimiter.
  */
 module.exports.setComponentProperty = function (el, name, value, delimiter) {
-  var splitName;
+  let splitName;
   delimiter = delimiter || '.';
   if (name.indexOf(delimiter) !== -1) {
     splitName = getComponentPropertyPath(name, delimiter);

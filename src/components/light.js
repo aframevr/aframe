@@ -1,11 +1,11 @@
-var bind = require('../utils/bind');
-var diff = require('../utils').diff;
-var debug = require('../utils/debug');
-var registerComponent = require('../core/component').registerComponent;
-var THREE = require('../lib/three');
+let bind = require('../utils/bind');
+let diff = require('../utils').diff;
+let debug = require('../utils/debug');
+let registerComponent = require('../core/component').registerComponent;
+let THREE = require('../lib/three');
 
-var degToRad = THREE.Math.degToRad;
-var warn = debug('components:light:warn');
+let degToRad = THREE.Math.degToRad;
+let warn = debug('components:light:warn');
 
 /**
  * Light component.
@@ -46,7 +46,7 @@ module.exports.Component = registerComponent('light', {
    * Notifies scene a light has been added to remove default lighting.
    */
   init: function () {
-    var el = this.el;
+    let el = this.el;
     this.light = null;
     this.defaultTarget = null;
     this.rendererSystem = this.el.sceneEl.systems.renderer;
@@ -57,18 +57,18 @@ module.exports.Component = registerComponent('light', {
    * (Re)create or update light.
    */
   update: function (oldData) {
-    var data = this.data;
-    var diffData = diff(data, oldData);
-    var light = this.light;
-    var rendererSystem = this.rendererSystem;
-    var self = this;
+    let data = this.data;
+    let diffData = diff(data, oldData);
+    let light = this.light;
+    let rendererSystem = this.rendererSystem;
+    let self = this;
 
     // Existing light.
     if (light && !('type' in diffData)) {
-      var shadowsLoaded = false;
+      let shadowsLoaded = false;
       // Light type has not changed. Update light.
       Object.keys(diffData).forEach(function (key) {
-        var value = data[key];
+        let value = data[key];
 
         switch (key) {
           case 'color': {
@@ -138,8 +138,8 @@ module.exports.Component = registerComponent('light', {
   },
 
   setLight: function (data) {
-    var el = this.el;
-    var newLight = this.getLight(data);
+    let el = this.el;
+    let newLight = this.getLight(data);
     if (newLight) {
       if (this.light) {
         el.removeObject3D('light');
@@ -166,14 +166,14 @@ module.exports.Component = registerComponent('light', {
    * Updates shadow-related properties on the current light.
    */
   updateShadow: function () {
-    var el = this.el;
-    var data = this.data;
-    var light = this.light;
+    let el = this.el;
+    let data = this.data;
+    let light = this.light;
 
     light.castShadow = data.castShadow;
 
     // Shadow camera helper.
-    var cameraHelper = el.getObject3D('cameraHelper');
+    let cameraHelper = el.getObject3D('cameraHelper');
     if (data.shadowCameraVisible && !cameraHelper) {
       el.setObject3D('cameraHelper', new THREE.CameraHelper(light.shadow.camera));
     } else if (!data.shadowCameraVisible && cameraHelper) {
@@ -210,19 +210,19 @@ module.exports.Component = registerComponent('light', {
    * @param {object} data
    */
   getLight: function (data) {
-    var angle = data.angle;
-    var color = new THREE.Color(data.color);
+    let angle = data.angle;
+    let color = new THREE.Color(data.color);
     this.rendererSystem.applyColorCorrection(color);
     color = color.getHex();
-    var decay = data.decay;
-    var distance = data.distance;
-    var groundColor = new THREE.Color(data.groundColor);
+    let decay = data.decay;
+    let distance = data.distance;
+    let groundColor = new THREE.Color(data.groundColor);
     this.rendererSystem.applyColorCorrection(groundColor);
     groundColor = groundColor.getHex();
-    var intensity = data.intensity;
-    var type = data.type;
-    var target = data.target;
-    var light = null;
+    let intensity = data.intensity;
+    let type = data.type;
+    let target = data.target;
+    let light = null;
 
     switch (type.toLowerCase()) {
       case 'ambient': {
@@ -278,7 +278,7 @@ module.exports.Component = registerComponent('light', {
    * Remove light on remove (callback).
    */
   remove: function () {
-    var el = this.el;
+    let el = this.el;
     el.removeObject3D('light');
     if (el.getObject3D('cameraHelper')) {
       el.removeObject3D('cameraHelper');

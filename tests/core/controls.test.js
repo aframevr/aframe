@@ -1,11 +1,11 @@
 /* global Event, assert, process, setup, suite, test */
-var helpers = require('../helpers');
-var PI = Math.PI;
+let helpers = require('../helpers');
+let PI = Math.PI;
 
 suite('position controls on camera with WASD controls (integration unit test)', function () {
   setup(function (done) {
-    var el = helpers.entityFactory();
-    var self = this;
+    let el = helpers.entityFactory();
+    let self = this;
 
     setTimeout(() => {
       el.sceneEl.addEventListener('loaded', function () {
@@ -16,9 +16,9 @@ suite('position controls on camera with WASD controls (integration unit test)', 
   });
 
   test('w moves forward', function (done) {
-    var el = this.el;
-    var keydownEvent;
-    var position;
+    let el = this.el;
+    let keydownEvent;
+    let position;
 
     position = el.getAttribute('position').clone();
     keydownEvent = new Event('keydown');
@@ -28,7 +28,7 @@ suite('position controls on camera with WASD controls (integration unit test)', 
     process.nextTick(function () {
       el.sceneEl.tick(20, 20);
       process.nextTick(function () {
-        var newPos = el.getAttribute('position');
+        let newPos = el.getAttribute('position');
         assert.equal(newPos.x, position.x);
         assert.equal(newPos.y, position.y);
         assert.ok(newPos.z < position.z, 'Translated forward');
@@ -38,9 +38,9 @@ suite('position controls on camera with WASD controls (integration unit test)', 
   });
 
   test('a strafes left', function (done) {
-    var el = this.el;
-    var keydownEvent;
-    var position;
+    let el = this.el;
+    let keydownEvent;
+    let position;
 
     position = el.getAttribute('position').clone();
     keydownEvent = new Event('keydown');
@@ -50,7 +50,7 @@ suite('position controls on camera with WASD controls (integration unit test)', 
     process.nextTick(function () {
       el.sceneEl.tick(20, 20);
       process.nextTick(function () {
-        var newPos = el.getAttribute('position');
+        let newPos = el.getAttribute('position');
         assert.ok(newPos.x < position.x, 'Strafed left');
         assert.equal(newPos.y, position.y);
         assert.equal(newPos.z, position.z);
@@ -60,9 +60,9 @@ suite('position controls on camera with WASD controls (integration unit test)', 
   });
 
   test('s moves backwards', function (done) {
-    var el = this.el;
-    var keydownEvent;
-    var position;
+    let el = this.el;
+    let keydownEvent;
+    let position;
 
     position = el.getAttribute('position').clone();
     keydownEvent = new Event('keydown');
@@ -72,7 +72,7 @@ suite('position controls on camera with WASD controls (integration unit test)', 
     process.nextTick(function () {
       el.sceneEl.tick(20, 20);
       process.nextTick(function () {
-        var newPos = el.getAttribute('position');
+        let newPos = el.getAttribute('position');
         assert.equal(newPos.x, position.x);
         assert.equal(newPos.y, position.y);
         assert.ok(newPos.z > position.z, 'Translated backwards');
@@ -82,9 +82,9 @@ suite('position controls on camera with WASD controls (integration unit test)', 
   });
 
   test('d strafes right', function (done) {
-    var el = this.el;
-    var keydownEvent;
-    var position;
+    let el = this.el;
+    let keydownEvent;
+    let position;
 
     position = el.getAttribute('position').clone();
     keydownEvent = new Event('keydown');
@@ -94,7 +94,7 @@ suite('position controls on camera with WASD controls (integration unit test)', 
     process.nextTick(function () {
       el.sceneEl.tick(20, 20);
       process.nextTick(function () {
-        var newPos = el.getAttribute('position');
+        let newPos = el.getAttribute('position');
         assert.ok(newPos.x > position.x, 'Strafed right');
         assert.equal(newPos.y, position.y);
         assert.equal(newPos.z, position.z);
@@ -104,9 +104,9 @@ suite('position controls on camera with WASD controls (integration unit test)', 
   });
 
   test('moves relative to heading', function (done) {
-    var el = this.el;
-    var keydownEvent;
-    var position;
+    let el = this.el;
+    let keydownEvent;
+    let position;
 
     el.setAttribute('rotation', '0 90 0');
     position = el.getAttribute('position').clone();
@@ -117,7 +117,7 @@ suite('position controls on camera with WASD controls (integration unit test)', 
     process.nextTick(function () {
       el.sceneEl.tick(20, 20);
       process.nextTick(function () {
-        var newPos = el.getAttribute('position');
+        let newPos = el.getAttribute('position');
         assert.ok(newPos.x < position.x, 'Turned left and moved forward');
         assert.equal(newPos.y, position.y);
         assert.equal(Math.round(newPos.z), position.z);
@@ -129,9 +129,9 @@ suite('position controls on camera with WASD controls (integration unit test)', 
 
 suite('rotation controls on camera in VR mode', function () {
   setup(function (done) {
-    var el = this.el = helpers.entityFactory();
-    var sceneEl = el.parentNode;
-    var self = this;
+    let el = this.el = helpers.entityFactory();
+    let sceneEl = el.parentNode;
+    let self = this;
     this.position = [0, 0, 0];
     this.orientation = [0, 0, 0];
     sceneEl.addEventListener('cameraready', function () {
@@ -153,9 +153,9 @@ suite('rotation controls on camera in VR mode', function () {
   });
 
   test('rotates camera around Y', function () {
-    var el = this.el;
-    var rotation;
-    var cameraEl = el.sceneEl.querySelector('[camera]');
+    let el = this.el;
+    let rotation;
+    let cameraEl = el.sceneEl.querySelector('[camera]');
     this.orientation = [0, Math.PI, 0];
     el.sceneEl.render();
     rotation = cameraEl.getAttribute('rotation');
@@ -165,47 +165,47 @@ suite('rotation controls on camera in VR mode', function () {
   });
 
   test('rotates camera composing X and Y', function () {
-    var el = this.el;
-    var cameraEl = el.sceneEl.querySelector('[camera]');
+    let el = this.el;
+    let cameraEl = el.sceneEl.querySelector('[camera]');
     this.orientation = [PI / 4, PI, 0];
     el.sceneEl.render();
-    var rotation = cameraEl.getAttribute('rotation');
+    let rotation = cameraEl.getAttribute('rotation');
     assert.equal(Math.round(rotation.x), 45);
     assert.equal(Math.round(rotation.y), 180);
     assert.equal(Math.round(rotation.z), 0);
   });
 
   test('rotates camera composing X and Y and Z', function () {
-    var el = this.el;
-    var cameraEl = el.sceneEl.querySelector('[camera]');
+    let el = this.el;
+    let cameraEl = el.sceneEl.querySelector('[camera]');
     this.orientation = [PI / 4, PI / 6, PI / 2];
     el.sceneEl.render();
-    var rotation = cameraEl.getAttribute('rotation');
+    let rotation = cameraEl.getAttribute('rotation');
     assert.equal(Math.round(rotation.x), 45);
     assert.equal(Math.round(rotation.y), 30);
     assert.equal(Math.round(rotation.z), 90);
   });
 
   test('replaces previous rotation', function () {
-    var el = this.el;
-    var cameraEl = el.sceneEl.querySelector('[camera]');
+    let el = this.el;
+    let cameraEl = el.sceneEl.querySelector('[camera]');
     this.orientation = [PI / 4, PI / 6, PI / 2];
     cameraEl.setAttribute('rotation', {x: -10000, y: -10000, z: -10000});
     el.sceneEl.render();
-    var rotation = cameraEl.getAttribute('rotation');
+    let rotation = cameraEl.getAttribute('rotation');
     assert.equal(Math.round(rotation.x), 45);
     assert.equal(Math.round(rotation.y), 30);
     assert.equal(Math.round(rotation.z), 90);
   });
 
   test('does not rotate camera if not in VR', function () {
-    var el = this.el;
-    var cameraEl = el.sceneEl.querySelector('[camera]');
+    let el = this.el;
+    let cameraEl = el.sceneEl.querySelector('[camera]');
     this.orientation = [PI / 4, PI / 6, PI / 2];
     cameraEl.setAttribute('rotation', {x: 0, y: 0, z: 0});
     el.sceneEl.renderer.xr.enabled = false;
     el.sceneEl.render();
-    var rotation = cameraEl.getAttribute('rotation');
+    let rotation = cameraEl.getAttribute('rotation');
     assert.equal(Math.round(rotation.x), 0);
     assert.equal(Math.round(rotation.y), 0);
     assert.equal(Math.round(rotation.z), 0);
@@ -214,8 +214,8 @@ suite('rotation controls on camera in VR mode', function () {
 
 suite('rotation controls on camera with mouse drag (integration unit test)', function () {
   setup(function (done) {
-    var el = this.el = helpers.entityFactory();
-    var self = this;
+    let el = this.el = helpers.entityFactory();
+    let self = this;
     setTimeout(() => {
       el.sceneEl.addEventListener('loaded', function () {
         self.cameraEl = el.sceneEl.camera.el;
@@ -225,21 +225,21 @@ suite('rotation controls on camera with mouse drag (integration unit test)', fun
   });
 
   test('rotates camera on dragging mouse around X', function (done) {
-    var el = this.el;
-    var self = this;
-    var mousedownEvent = new Event('mousedown');
+    let el = this.el;
+    let self = this;
+    let mousedownEvent = new Event('mousedown');
     mousedownEvent.screenX = 1000;
     mousedownEvent.screenY = 1000;
     mousedownEvent.button = 0;
     el.sceneEl.canvas.dispatchEvent(mousedownEvent);
     process.nextTick(function afterMousedown () {
-      var mouseMoveEvent = new Event('mousemove');
+      let mouseMoveEvent = new Event('mousemove');
       mouseMoveEvent.screenX = 1500;
       mouseMoveEvent.screenY = 1000.1;
       window.dispatchEvent(mouseMoveEvent);
       process.nextTick(function afterMousemove () {
-        var cameraEl = self.cameraEl;
-        var rotation;
+        let cameraEl = self.cameraEl;
+        let rotation;
         cameraEl.components['look-controls'].updateOrientation();
         rotation = cameraEl.getAttribute('rotation');
         assert.equal(Math.floor(Math.abs(rotation.x)), 0);
@@ -250,21 +250,21 @@ suite('rotation controls on camera with mouse drag (integration unit test)', fun
   });
 
   test('rotates camera on dragging mouse along Y', function (done) {
-    var el = this.el;
-    var self = this;
-    var mousedownEvent = new Event('mousedown');
+    let el = this.el;
+    let self = this;
+    let mousedownEvent = new Event('mousedown');
     mousedownEvent.screenX = 1000;
     mousedownEvent.screenY = 1000;
     mousedownEvent.button = 0;
     el.sceneEl.canvas.dispatchEvent(mousedownEvent);
     process.nextTick(function afterMousedown () {
-      var mouseMoveEvent = new Event('mousemove');
+      let mouseMoveEvent = new Event('mousemove');
       mouseMoveEvent.screenX = 1000.1;
       mouseMoveEvent.screenY = 1500;
       window.dispatchEvent(mouseMoveEvent);
       process.nextTick(function afterMousemove () {
-        var cameraEl = self.cameraEl;
-        var rotation;
+        let cameraEl = self.cameraEl;
+        let rotation;
         cameraEl.components['look-controls'].updateOrientation();
         rotation = cameraEl.getAttribute('rotation');
         assert.equal(Math.floor(Math.abs(rotation.y)), 0);
@@ -275,17 +275,17 @@ suite('rotation controls on camera with mouse drag (integration unit test)', fun
   });
 
   test('rotates camera on moving pointerlocked mouse along X', function (done) {
-    var el = this.el;
-    var self = this;
-    var cameraEl = self.cameraEl;
-    var mousedownEvent = new Event('mousedown');
+    let el = this.el;
+    let self = this;
+    let cameraEl = self.cameraEl;
+    let mousedownEvent = new Event('mousedown');
     mousedownEvent.screenX = 1000;
     mousedownEvent.screenY = 1000;
     mousedownEvent.button = 0;
     el.sceneEl.canvas.dispatchEvent(mousedownEvent);
     process.nextTick(function afterMousedown () {
       cameraEl.components['look-controls'].pointerLocked = true;
-      var mouseMoveEvent = new Event('mousemove');
+      let mouseMoveEvent = new Event('mousemove');
       mouseMoveEvent.movementX = 1000;
       mouseMoveEvent.movementY = 0.1;
       // screen coordinates should be ignored with pointer lock
@@ -293,7 +293,7 @@ suite('rotation controls on camera with mouse drag (integration unit test)', fun
       mouseMoveEvent.screenY = 9000;
       window.dispatchEvent(mouseMoveEvent);
       process.nextTick(function afterMousemove () {
-        var rotation;
+        let rotation;
         cameraEl.components['look-controls'].updateOrientation();
         rotation = cameraEl.getAttribute('rotation');
         assert.equal(Math.floor(Math.abs(rotation.x)), 0);
@@ -304,17 +304,17 @@ suite('rotation controls on camera with mouse drag (integration unit test)', fun
   });
 
   test('rotates camera on moving pointerlocked mouse along Y', function (done) {
-    var el = this.el;
-    var self = this;
-    var cameraEl = self.cameraEl;
-    var mousedownEvent = new Event('mousedown');
+    let el = this.el;
+    let self = this;
+    let cameraEl = self.cameraEl;
+    let mousedownEvent = new Event('mousedown');
     mousedownEvent.screenX = 1000;
     mousedownEvent.screenY = 1000;
     mousedownEvent.button = 0;
     el.sceneEl.canvas.dispatchEvent(mousedownEvent);
     process.nextTick(function afterMousedown () {
       cameraEl.components['look-controls'].pointerLocked = true;
-      var mouseMoveEvent = new Event('mousemove');
+      let mouseMoveEvent = new Event('mousemove');
       mouseMoveEvent.movementX = 0.1;
       mouseMoveEvent.movementY = 1000;
       // screen coordinates should be ignored with pointer lock
@@ -322,7 +322,7 @@ suite('rotation controls on camera with mouse drag (integration unit test)', fun
       mouseMoveEvent.screenY = 9000;
       window.dispatchEvent(mouseMoveEvent);
       process.nextTick(function afterMousemove () {
-        var rotation;
+        let rotation;
         cameraEl.components['look-controls'].updateOrientation();
         rotation = cameraEl.getAttribute('rotation');
         assert.equal(Math.floor(Math.abs(rotation.y)), 0);
@@ -333,22 +333,22 @@ suite('rotation controls on camera with mouse drag (integration unit test)', fun
   });
 
   test('rotates camera dragging mouse on already rotated camera', function (done) {
-    var el = this.el;
-    var self = this;
+    let el = this.el;
+    let self = this;
     this.cameraEl.setAttribute('rotation', '45 45 0');
-    var mousedownEvent = new Event('mousedown');
+    let mousedownEvent = new Event('mousedown');
     mousedownEvent.screenX = 1000;
     mousedownEvent.screenY = 1000;
     mousedownEvent.button = 0;
     el.sceneEl.canvas.dispatchEvent(mousedownEvent);
     process.nextTick(function afterMousedown () {
-      var mouseMoveEvent = new Event('mousemove');
+      let mouseMoveEvent = new Event('mousemove');
       mouseMoveEvent.screenX = 0;
       mouseMoveEvent.screenY = 0;
       window.dispatchEvent(mouseMoveEvent);
       process.nextTick(function afterMousemove () {
-        var cameraEl = self.cameraEl;
-        var rotation;
+        let cameraEl = self.cameraEl;
+        let rotation;
         cameraEl.components['look-controls'].updateOrientation();
         rotation = cameraEl.getAttribute('rotation');
         assert.ok(rotation.x > 45);
@@ -359,21 +359,21 @@ suite('rotation controls on camera with mouse drag (integration unit test)', fun
   });
 
   test('does not rotate camera when dragging in VR with headset', function (done) {
-    var el = this.el;
-    var cameraEl = this.cameraEl;
+    let el = this.el;
+    let cameraEl = this.cameraEl;
     cameraEl.setAttribute('rotation', '30 45 60');
     el.sceneEl.addState('vr-mode');
     el.sceneEl.canvas.dispatchEvent(new Event('mousedown'));
 
     process.nextTick(function afterMousedown () {
-      var mouseMoveEvent = new Event('mousemove');
+      let mouseMoveEvent = new Event('mousemove');
       mouseMoveEvent.movementX = 1000;
       mouseMoveEvent.movementY = 1000;
       mouseMoveEvent.screenX = 1000;
       mouseMoveEvent.screenY = 1000;
       window.dispatchEvent(mouseMoveEvent);
       process.nextTick(function afterMousemove () {
-        var rotation = cameraEl.getAttribute('rotation');
+        let rotation = cameraEl.getAttribute('rotation');
         cameraEl.components['look-controls'].updateOrientation();
         assert.equal(Math.ceil(rotation.x), 30);
         assert.equal(Math.ceil(rotation.y), 45);
@@ -386,8 +386,8 @@ suite('rotation controls on camera with mouse drag (integration unit test)', fun
 
 suite('rotation controls on camera with touch drag (integration unit test)', function () {
   setup(function (done) {
-    var el = this.el = helpers.entityFactory();
-    var self = this;
+    let el = this.el = helpers.entityFactory();
+    let self = this;
     setTimeout(() => {
       el.sceneEl.addEventListener('loaded', () => {
         self.cameraEl = el.sceneEl.camera.el;
@@ -397,11 +397,11 @@ suite('rotation controls on camera with touch drag (integration unit test)', fun
   });
 
   test('rotates camera on touch dragging around X', function (done) {
-    var canvas;
-    var el = this.el;
-    var sceneEl = el.sceneEl;
-    var cameraEl = this.cameraEl;
-    var touchStartEvent;
+    let canvas;
+    let el = this.el;
+    let sceneEl = el.sceneEl;
+    let cameraEl = this.cameraEl;
+    let touchStartEvent;
 
     canvas = sceneEl.canvas;
     sceneEl.isMobile = true;
@@ -413,11 +413,11 @@ suite('rotation controls on camera with touch drag (integration unit test)', fun
     canvas.dispatchEvent(touchStartEvent);
 
     process.nextTick(function afterTouchstart () {
-      var touchMoveEvent = new Event('touchmove');
+      let touchMoveEvent = new Event('touchmove');
       touchMoveEvent.touches = [{pageX: 500, pageY: 0}];
       window.dispatchEvent(touchMoveEvent);
       process.nextTick(function afterTouchmove () {
-        var rotation;
+        let rotation;
         cameraEl.components['look-controls'].updateOrientation();
         rotation = cameraEl.getAttribute('rotation');
         assert.ok(Math.abs(Math.round(rotation.y)) > 0);
@@ -427,11 +427,11 @@ suite('rotation controls on camera with touch drag (integration unit test)', fun
   });
 
   test('does not rotate camera on touch dragging along Y', function (done) {
-    var canvas;
-    var el = this.el;
-    var sceneEl = el.sceneEl;
-    var cameraEl = this.cameraEl;
-    var touchStartEvent;
+    let canvas;
+    let el = this.el;
+    let sceneEl = el.sceneEl;
+    let cameraEl = this.cameraEl;
+    let touchStartEvent;
 
     canvas = sceneEl.canvas;
     sceneEl.isMobile = true;
@@ -443,11 +443,11 @@ suite('rotation controls on camera with touch drag (integration unit test)', fun
     canvas.dispatchEvent(touchStartEvent);
 
     process.nextTick(function afterTouchstart () {
-      var touchMoveEvent = new Event('touchmove');
+      let touchMoveEvent = new Event('touchmove');
       touchMoveEvent.touches = [{pageX: 0, pageY: 500}];
       window.dispatchEvent(touchMoveEvent);
       process.nextTick(function afterTouchmove () {
-        var rotation;
+        let rotation;
         cameraEl.components['look-controls'].updateOrientation();
         rotation = cameraEl.getAttribute('rotation');
         assert.equal(Math.round(rotation.x), 0);
@@ -460,13 +460,13 @@ suite('rotation controls on camera with touch drag (integration unit test)', fun
 
 suite('position controls on camera with VRControls (integration unit test)', function () {
   setup(function (done) {
-    var el = this.el = helpers.entityFactory();
-    var sceneEl = el.parentNode;
-    var self = this;
+    let el = this.el = helpers.entityFactory();
+    let sceneEl = el.parentNode;
+    let self = this;
     this.position = [0, 0, 0];
     this.orientation = [0, 0, 0];
     sceneEl.addEventListener('cameraready', function () {
-      var cameraEl = self.cameraEl = sceneEl.querySelector('[camera]');
+      let cameraEl = self.cameraEl = sceneEl.querySelector('[camera]');
       sceneEl.renderer.xr.getCamera = function (obj) {
         if (!this.enabled) { return; }
         obj.position.fromArray(self.position);
@@ -485,15 +485,15 @@ suite('position controls on camera with VRControls (integration unit test)', fun
   });
 
   test('copies matrix to camera in VR mode', function () {
-    var el = this.el;
-    var sceneEl = el.parentNode;
-    var cameraEl = this.cameraEl;
+    let el = this.el;
+    let sceneEl = el.parentNode;
+    let cameraEl = this.cameraEl;
 
     sceneEl.addState('vr-mode');
     cameraEl.components['look-controls'].hasPositionalTracking = true;
     this.position = [-1, 2, 3];
     el.sceneEl.render();
-    var position = cameraEl.getAttribute('position');
+    let position = cameraEl.getAttribute('position');
     assert.equal(position.x, -1);
     assert.equal(position.y, 2);
     assert.equal(position.z, 3);

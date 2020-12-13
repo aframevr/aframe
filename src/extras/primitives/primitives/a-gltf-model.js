@@ -1,4 +1,4 @@
-var registerPrimitive = require('../primitives').registerPrimitive;
+let registerPrimitive = require('../primitives').registerPrimitive;
 
 registerPrimitive('a-gltf-model', {
   mappings: {

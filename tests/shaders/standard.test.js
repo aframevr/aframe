@@ -1,12 +1,12 @@
 /* global assert, process, setup, suite, test */
-var entityFactory = require('../helpers').entityFactory;
-var THREE = require('index').THREE;
+let entityFactory = require('../helpers').entityFactory;
+let THREE = require('index').THREE;
 
-var VIDEO = 'base/tests/assets/test.mp4';
+let VIDEO = 'base/tests/assets/test.mp4';
 
 suite('standard material', function () {
   setup(function (done) {
-    var el = this.el = entityFactory();
+    let el = this.el = entityFactory();
     el.setAttribute('geometry', '');
     el.setAttribute('material', {shader: 'standard'});
     if (el.hasLoaded) { done(); }
@@ -16,15 +16,15 @@ suite('standard material', function () {
   });
 
   test('can unset fog', function () {
-    var el = this.el;
+    let el = this.el;
     assert.ok(el.getObject3D('mesh').material.fog);
     el.setAttribute('material', 'fog', false);
     assert.notOk(el.getObject3D('mesh').material.fog);
   });
 
   test('can use ambient occlusion maps', function (done) {
-    var el = this.el;
-    var imageUrl = 'base/tests/assets/test.png';
+    let el = this.el;
+    let imageUrl = 'base/tests/assets/test.png';
     assert.isNull(el.getObject3D('mesh').material.aoMap);
     el.setAttribute('material', {
       ambientOcclusionMapIntensity: 0.4,
@@ -38,8 +38,8 @@ suite('standard material', function () {
   });
 
   test('can use normal maps', function (done) {
-    var el = this.el;
-    var imageUrl = 'base/tests/assets/test.png';
+    let el = this.el;
+    let imageUrl = 'base/tests/assets/test.png';
     assert.isNull(el.getObject3D('mesh').material.normalMap);
     el.setAttribute('material', {
       normalScale: {x: 0.3, y: -0.4},
@@ -58,8 +58,8 @@ suite('standard material', function () {
   });
 
   test('can use displacement maps', function (done) {
-    var el = this.el;
-    var imageUrl = 'base/tests/assets/test.png';
+    let el = this.el;
+    let imageUrl = 'base/tests/assets/test.png';
     assert.isNull(el.getObject3D('mesh').material.displacementMap);
     el.setAttribute('material', {
       displacementScale: 0.3,
@@ -79,8 +79,8 @@ suite('standard material', function () {
   });
 
   test('can use spherical env maps', function (done) {
-    var el = this.el;
-    var imageUrl = 'base/tests/assets/test.png';
+    let el = this.el;
+    let imageUrl = 'base/tests/assets/test.png';
     el.setAttribute('material', 'sphericalEnvMap: url(' + imageUrl + ');');
     assert.ok(el.components.material.shader.isLoadingEnvMap);
     el.addEventListener('materialtextureloaded', function (evt) {
@@ -91,8 +91,8 @@ suite('standard material', function () {
   });
 
   test('can use cube env maps', function (done) {
-    var el = this.el;
-    var imageUrl = 'base/tests/assets/test.png';
+    let el = this.el;
+    let imageUrl = 'base/tests/assets/test.png';
     el.setAttribute('material', 'envMap: url(' + imageUrl + '), url(' + imageUrl + '), url(' + imageUrl + '), url(' + imageUrl + '), url(' + imageUrl + '), url(' + imageUrl + ');');
     assert.ok(el.components.material.shader.isLoadingEnvMap);
     el.addEventListener('materialtextureloaded', function (evt) {
@@ -103,7 +103,7 @@ suite('standard material', function () {
   });
 
   test('can use wireframes', function () {
-    var el = this.el;
+    let el = this.el;
     assert.notOk(el.getObject3D('mesh').material.wireframe);
     el.setAttribute('material', 'wireframe', true);
     assert.ok(el.getObject3D('mesh').material.wireframe);
@@ -111,8 +111,8 @@ suite('standard material', function () {
   });
 
   test('can use video textures with selector', function (done) {
-    var el = this.el;
-    var videoEl = document.createElement('video');
+    let el = this.el;
+    let videoEl = document.createElement('video');
     videoEl.setAttribute('src', VIDEO);
     videoEl.setAttribute('id', 'video');
     el.sceneEl.appendChild(videoEl);
@@ -124,7 +124,7 @@ suite('standard material', function () {
   });
 
   test('can use video textures with inline URL', function (done) {
-    var el = this.el;
+    let el = this.el;
     el.addEventListener('materialtextureloaded', () => {
       assert.equal(el.components.material.material.map.image.getAttribute('src'), VIDEO);
       done();

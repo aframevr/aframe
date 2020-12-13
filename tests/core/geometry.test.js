@@ -1,7 +1,7 @@
 /* global assert, process, suite, test, teardown */
-var registerGeometry = require('core/geometry').registerGeometry;
-var geometries = require('core/geometry').geometries;
-var geometryNames = require('core/geometry').geometryNames;
+let registerGeometry = require('core/geometry').registerGeometry;
+let geometries = require('core/geometry').geometries;
+let geometryNames = require('core/geometry').geometryNames;
 
 suite('core/geometry', function () {
   test('registers standard geometries', function () {
@@ -14,7 +14,7 @@ suite('core/geometry', function () {
   suite('registerGeometry', function () {
     teardown(function () {
       delete geometries.test;
-      var i = geometryNames.indexOf('test');
+      let i = geometryNames.indexOf('test');
       geometryNames.splice(i, 1);
     });
 

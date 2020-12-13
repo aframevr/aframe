@@ -1,12 +1,12 @@
 /* global assert, process, setup, suite, test */
-var helpers = require('../../helpers');
-var THREE = require('lib/three');
+let helpers = require('../../helpers');
+let THREE = require('lib/three');
 
-var positionVec3 = new THREE.Vector3();
+let positionVec3 = new THREE.Vector3();
 
 suite('pivot', function () {
   setup(function (done) {
-    var el = this.el = helpers.entityFactory();
+    let el = this.el = helpers.entityFactory();
     el.setAttribute('geometry', {primitive: 'box'});
     el.addEventListener('loaded', function () {
       done();
@@ -14,7 +14,7 @@ suite('pivot', function () {
   });
 
   test('does not translate object', function () {
-    var el = this.el;
+    let el = this.el;
     el.setAttribute('pivot', '0 0.5 0');
     // Grab world coordinates.
     el.sceneEl.object3D.updateMatrixWorld();
@@ -23,7 +23,7 @@ suite('pivot', function () {
   });
 
   test('sets proper pivot point', function () {
-    var el = this.el;
+    let el = this.el;
 
     // Rotate without pivot, center will stay in place.
     el.setAttribute('rotation', '180 0 0');

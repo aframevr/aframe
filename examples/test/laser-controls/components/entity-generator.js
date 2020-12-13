@@ -12,11 +12,11 @@ AFRAME.registerComponent('entity-generator', {
   },
 
   init: function () {
-    var data = this.data;
+    let data = this.data;
 
     // Create entities with supplied mixin.
-    for (var i = 0; i < data.num; i++) {
-      var entity = document.createElement('a-entity');
+    for (let i = 0; i < data.num; i++) {
+      let entity = document.createElement('a-entity');
       entity.setAttribute('mixin', data.mixin);
       // Set random position with supplied spread.
       entity.setAttribute('position', {

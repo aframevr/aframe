@@ -1,5 +1,5 @@
-var registerGeometry = require('../core/geometry').registerGeometry;
-var THREE = require('../lib/three');
+let registerGeometry = require('../core/geometry').registerGeometry;
+let THREE = require('../lib/three');
 
 registerGeometry('octahedron', {
   schema: {

@@ -1,8 +1,8 @@
 /* global assert, process, setup, suite, test */
-var entityFactory = require('../helpers').entityFactory;
+let entityFactory = require('../helpers').entityFactory;
 
 suite('link', function () {
-  var el;
+  let el;
 
   setup(function (done) {
     el = entityFactory();

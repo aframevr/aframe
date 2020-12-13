@@ -1,8 +1,8 @@
 /* global assert, process, setup, suite, test */
-var entityFactory = require('../helpers').entityFactory;
+let entityFactory = require('../helpers').entityFactory;
 
 suite('laser-controls', function () {
-  var el;
+  let el;
 
   setup(function (done) {
     el = entityFactory();
@@ -31,8 +31,8 @@ suite('laser-controls', function () {
     test('injects cursor when controller connected', function (done) {
       el.emit('controllerconnected', {name: 'vive-controls'});
       setTimeout(() => {
-        var cursor = el.getAttribute('cursor');
-        var raycaster = el.getAttribute('raycaster');
+        let cursor = el.getAttribute('cursor');
+        let raycaster = el.getAttribute('raycaster');
         assert.notOk(cursor.fuse);
         assert.ok(raycaster.showLine);
         assert.ok(cursor.downEvents.length);
@@ -44,7 +44,7 @@ suite('laser-controls', function () {
     test('configures raycaster for oculus-touch-controls', function (done) {
       el.emit('controllerconnected', {name: 'gearvr-controls'});
       setTimeout(() => {
-        var raycaster = el.getAttribute('raycaster');
+        let raycaster = el.getAttribute('raycaster');
         assert.equal(raycaster.origin.x, 0);
         assert.equal(raycaster.origin.y, 0.001);
         done();

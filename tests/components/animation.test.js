@@ -1,11 +1,11 @@
 /* global assert, setup, suite, test, THREE */
-var entityFactory = require('../helpers').entityFactory;
-var components = require('index').components;
-var registerComponent = require('index').registerComponent;
+let entityFactory = require('../helpers').entityFactory;
+let components = require('index').components;
+let registerComponent = require('index').registerComponent;
 
 suite('animation', function () {
-  var component;
-  var el;
+  let component;
+  let el;
 
   setup(function (done) {
     this.done = false;
@@ -533,7 +533,7 @@ suite('animation', function () {
     });
 
     test('emits animationcomplete event twice', function (done) {
-      var calledOnce = false;
+      let calledOnce = false;
       el.addEventListener('animationbegin', evt => {
         component.tick(1, 1);
         component.tick(100000, 99999);

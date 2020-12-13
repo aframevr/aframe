@@ -1,10 +1,10 @@
 /* global THREE */
-var registerComponent = require('../core/component').registerComponent;
-var utils = require('../utils/');
+let registerComponent = require('../core/component').registerComponent;
+let utils = require('../utils/');
 
-var bind = utils.bind;
+let bind = utils.bind;
 
-var EVENTS = {
+let EVENTS = {
   CLICK: 'click',
   FUSING: 'fusing',
   MOUSEENTER: 'mouseenter',
@@ -13,23 +13,23 @@ var EVENTS = {
   MOUSEUP: 'mouseup'
 };
 
-var STATES = {
+let STATES = {
   FUSING: 'cursor-fusing',
   HOVERING: 'cursor-hovering',
   HOVERED: 'cursor-hovered'
 };
 
-var CANVAS_EVENTS = {
+let CANVAS_EVENTS = {
   DOWN: ['mousedown', 'touchstart'],
   UP: ['mouseup', 'touchend']
 };
 
-var WEBXR_EVENTS = {
+let WEBXR_EVENTS = {
   DOWN: ['selectstart'],
   UP: ['selectend']
 };
 
-var CANVAS_HOVER_CLASS = 'a-mouse-cursor-hover';
+let CANVAS_HOVER_CLASS = 'a-mouse-cursor-hover';
 
 /**
  * Cursor component. Applies the raycaster component specifically for starting the raycaster
@@ -56,7 +56,7 @@ module.exports.Component = registerComponent('cursor', {
   },
 
   init: function () {
-    var self = this;
+    let self = this;
 
     this.fuseTimeout = undefined;
     this.cursorDownEl = null;
@@ -95,7 +95,7 @@ module.exports.Component = registerComponent('cursor', {
   },
 
   remove: function () {
-    var el = this.el;
+    let el = this.el;
     el.removeState(STATES.HOVERING);
     el.removeState(STATES.FUSING);
     clearTimeout(this.fuseTimeout);
@@ -104,10 +104,10 @@ module.exports.Component = registerComponent('cursor', {
   },
 
   addEventListeners: function () {
-    var canvas;
-    var data = this.data;
-    var el = this.el;
-    var self = this;
+    let canvas;
+    let data = this.data;
+    let el = this.el;
+    let self = this;
 
     function addCanvasListeners () {
       canvas = el.sceneEl.canvas;
@@ -145,10 +145,10 @@ module.exports.Component = registerComponent('cursor', {
   },
 
   removeEventListeners: function () {
-    var canvas;
-    var data = this.data;
-    var el = this.el;
-    var self = this;
+    let canvas;
+    let data = this.data;
+    let el = this.el;
+    let self = this;
 
     canvas = el.sceneEl.canvas;
     if (canvas && !data.downEvents.length && !data.upEvents.length) {
@@ -179,8 +179,8 @@ module.exports.Component = registerComponent('cursor', {
   },
 
   updateMouseEventListeners: function () {
-    var canvas;
-    var el = this.el;
+    let canvas;
+    let el = this.el;
 
     canvas = el.sceneEl.canvas;
     canvas.removeEventListener('mousemove', this.onMouseMove);
@@ -194,17 +194,17 @@ module.exports.Component = registerComponent('cursor', {
   },
 
   onMouseMove: (function () {
-    var direction = new THREE.Vector3();
-    var mouse = new THREE.Vector2();
-    var origin = new THREE.Vector3();
-    var rayCasterConfig = {origin: origin, direction: direction};
+    let direction = new THREE.Vector3();
+    let mouse = new THREE.Vector2();
+    let origin = new THREE.Vector3();
+    let rayCasterConfig = {origin: origin, direction: direction};
 
     return function (evt) {
-      var bounds = this.canvasBounds;
-      var camera = this.el.sceneEl.camera;
-      var left;
-      var point;
-      var top;
+      let bounds = this.canvasBounds;
+      let camera = this.el.sceneEl.camera;
+      let left;
+      let point;
+      let top;
 
       camera.parent.updateMatrixWorld();
 
@@ -256,7 +256,7 @@ module.exports.Component = registerComponent('cursor', {
 
     this.isCursorDown = false;
 
-    var data = this.data;
+    let data = this.data;
     this.twoWayEmit(EVENTS.MOUSEUP);
 
     // If intersected entity has changed since the cursorDown, still emit mouseUp on the
@@ -279,11 +279,11 @@ module.exports.Component = registerComponent('cursor', {
    * Handle intersection.
    */
   onIntersection: function (evt) {
-    var currentIntersection;
-    var cursorEl = this.el;
-    var index;
-    var intersectedEl;
-    var intersection;
+    let currentIntersection;
+    let cursorEl = this.el;
+    let index;
+    let intersectedEl;
+    let intersection;
 
     // Select closest object, excluding the cursor.
     index = evt.detail.els[0] === cursorEl ? 1 : 0;
@@ -312,7 +312,7 @@ module.exports.Component = registerComponent('cursor', {
    * Handle intersection cleared.
    */
   onIntersectionCleared: function (evt) {
-    var clearedEls = evt.detail.clearedEls;
+    let clearedEls = evt.detail.clearedEls;
     // Check if the current intersection has ended
     if (clearedEls.indexOf(this.intersectedEl) === -1) { return; }
     this.clearCurrentIntersection();
@@ -320,8 +320,8 @@ module.exports.Component = registerComponent('cursor', {
 
   onEnterVR: function () {
     this.clearCurrentIntersection(true);
-    var xrSession = this.el.sceneEl.xrSession;
-    var self = this;
+    let xrSession = this.el.sceneEl.xrSession;
+    let self = this;
     if (!xrSession) { return; }
     if (this.data.rayOrigin === 'mouse') { return; }
     WEBXR_EVENTS.DOWN.forEach(function (downEvent) {
@@ -333,9 +333,9 @@ module.exports.Component = registerComponent('cursor', {
   },
 
   setIntersection: function (intersectedEl, intersection) {
-    var cursorEl = this.el;
-    var data = this.data;
-    var self = this;
+    let cursorEl = this.el;
+    let data = this.data;
+    let self = this;
 
     // Already intersecting.
     if (this.intersectedEl === intersectedEl) { return; }
@@ -363,10 +363,10 @@ module.exports.Component = registerComponent('cursor', {
   },
 
   clearCurrentIntersection: function (ignoreRemaining) {
-    var index;
-    var intersection;
-    var intersections;
-    var cursorEl = this.el;
+    let index;
+    let intersection;
+    let intersections;
+    let cursorEl = this.el;
 
     // Nothing to be cleared.
     if (!this.intersectedEl) { return; }
@@ -402,9 +402,9 @@ module.exports.Component = registerComponent('cursor', {
    * Helper to emit on both the cursor and the intersected entity (if exists).
    */
   twoWayEmit: function (evtName) {
-    var el = this.el;
-    var intersectedEl = this.intersectedEl;
-    var intersection;
+    let el = this.el;
+    let intersectedEl = this.intersectedEl;
+    let intersection;
 
     intersection = this.el.components.raycaster.getIntersection(intersectedEl);
     this.eventDetail.intersectedEl = intersectedEl;

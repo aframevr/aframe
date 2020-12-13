@@ -1,10 +1,10 @@
 /* global CustomEvent */
-var registerElement = require('./a-register-element').registerElement;
-var isNode = require('./a-register-element').isNode;
-var utils = require('../utils/');
+let registerElement = require('./a-register-element').registerElement;
+let isNode = require('./a-register-element').isNode;
+let utils = require('../utils/');
 
-var warn = utils.debug('core:a-node:warn');
-var error = utils.debug('core:a-node:error');
+let warn = utils.debug('core:a-node:warn');
+let error = utils.debug('core:a-node:error');
 
 /**
  * Base class for A-Frame that manages loading of objects.
@@ -26,7 +26,7 @@ module.exports = registerElement('a-node', {
 
     attachedCallback: {
       value: function () {
-        var mixins;
+        let mixins;
         this.sceneEl = this.closestScene();
 
         if (!this.sceneEl) {
@@ -65,7 +65,7 @@ module.exports = registerElement('a-node', {
     */
     closestScene: {
       value: function closest () {
-        var element = this;
+        let element = this;
         while (element) {
           if (element.isScene) { break; }
           element = element.parentElement;
@@ -82,9 +82,9 @@ module.exports = registerElement('a-node', {
      */
     closest: {
       value: function closest (selector) {
-        var matches = this.matches || this.mozMatchesSelector ||
+        let matches = this.matches || this.mozMatchesSelector ||
           this.msMatchesSelector || this.oMatchesSelector || this.webkitMatchesSelector;
-        var element = this;
+        let element = this;
         while (element) {
           if (matches.call(element, selector)) { break; }
           element = element.parentElement;
@@ -105,9 +105,9 @@ module.exports = registerElement('a-node', {
      */
     load: {
       value: function (cb, childFilter) {
-        var children;
-        var childrenLoaded;
-        var self = this;
+        let children;
+        let childrenLoaded;
+        let self = this;
 
         if (this.hasLoaded) { return; }
 
@@ -146,14 +146,14 @@ module.exports = registerElement('a-node', {
      */
     updateMixins: {
       value: (function () {
-        var newMixinIdArray = [];
-        var oldMixinIdArray = [];
-        var mixinIds = {};
+        let newMixinIdArray = [];
+        let oldMixinIdArray = [];
+        let mixinIds = {};
 
         return function (newMixins, oldMixins) {
-          var i;
-          var newMixinIds;
-          var oldMixinIds;
+          let i;
+          let newMixinIds;
+          let oldMixinIds;
 
           newMixinIdArray.length = 0;
           oldMixinIdArray.length = 0;
@@ -197,9 +197,9 @@ module.exports = registerElement('a-node', {
      */
     registerMixin: {
       value: function (mixinEl) {
-        var compositedMixinIds;
-        var i;
-        var mixin;
+        let compositedMixinIds;
+        let i;
+        let mixin;
 
         if (!mixinEl) { return; }
 
@@ -227,9 +227,9 @@ module.exports = registerElement('a-node', {
 
     unregisterMixin: {
       value: function (mixinId) {
-        var i;
-        var mixinEls = this.mixinEls;
-        var mixinEl;
+        let i;
+        let mixinEls = this.mixinEls;
+        let mixinEl;
         for (i = 0; i < mixinEls.length; ++i) {
           mixinEl = mixinEls[i];
           if (mixinId === mixinEl.id) {
@@ -250,7 +250,7 @@ module.exports = registerElement('a-node', {
      */
     emit: {
       value: (function () {
-        var data = {};
+        let data = {};
 
         return function (name, detail, bubbles, extraData) {
           if (bubbles === undefined) { bubbles = true; }

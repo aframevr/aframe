@@ -1,6 +1,6 @@
-var registerShader = require('../core/shader').registerShader;
-var THREE = require('../lib/three');
-var utils = require('../utils/');
+let registerShader = require('../core/shader').registerShader;
+let THREE = require('../lib/three');
+let utils = require('../utils/');
 
 /**
  * Flat shader using THREE.MeshBasicMaterial.
@@ -43,7 +43,7 @@ module.exports.Shader = registerShader('flat', {
    * @param {object} data - Material component data.
    */
   updateMaterial: function (data) {
-    var key;
+    let key;
     getMaterialData(data, this.materialData);
     this.rendererSystem.applyColorCorrection(this.materialData.color);
     for (key in this.materialData) {

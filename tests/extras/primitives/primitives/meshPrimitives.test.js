@@ -1,13 +1,13 @@
 /* global assert, suite, test, setup */
-var helpers = require('../../../helpers');
-var geometryNames = require('core/geometry').geometryNames;
-var primitives = require('extras/primitives/primitives/meshPrimitives');
-var utils = require('utils/');
+let helpers = require('../../../helpers');
+let geometryNames = require('core/geometry').geometryNames;
+let primitives = require('extras/primitives/primitives/meshPrimitives');
+let utils = require('utils/');
 
 suite('meshPrimitives', function () {
   setup(function createScene (done) {
-    var self = this;
-    var el = helpers.entityFactory();
+    let self = this;
+    let el = helpers.entityFactory();
     el.addEventListener('loaded', function () {
       self.sceneEl = el.sceneEl;
       done();
@@ -15,7 +15,7 @@ suite('meshPrimitives', function () {
   });
 
   test('registers a-box', function (done) {
-    var el = document.createElement('a-box');
+    let el = document.createElement('a-box');
     this.sceneEl.appendChild(el);
     el.addEventListener('loaded', function () {
       assert.ok(el.isEntity);
@@ -24,7 +24,7 @@ suite('meshPrimitives', function () {
   });
 
   test('registers a-dodecahedron', function (done) {
-    var el = document.createElement('a-dodecahedron');
+    let el = document.createElement('a-dodecahedron');
     this.sceneEl.appendChild(el);
     el.addEventListener('loaded', function () {
       assert.ok(el.isEntity);
@@ -33,7 +33,7 @@ suite('meshPrimitives', function () {
   });
 
   test('registers a-box with mappings', function (done) {
-    var el = document.createElement('a-box');
+    let el = document.createElement('a-box');
     this.sceneEl.appendChild(el);
     el.addEventListener('loaded', function () {
       el.setAttribute('color', 'red');

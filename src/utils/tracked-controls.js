@@ -1,6 +1,6 @@
-var DEFAULT_HANDEDNESS = require('../constants').DEFAULT_HANDEDNESS;
-var AXIS_LABELS = ['x', 'y', 'z', 'w'];
-var NUM_HANDS = 2;  // Number of hands in a pair. Should always be 2.
+let DEFAULT_HANDEDNESS = require('../constants').DEFAULT_HANDEDNESS;
+let AXIS_LABELS = ['x', 'y', 'z', 'w'];
+let NUM_HANDS = 2;  // Number of hands in a pair. Should always be 2.
 
 /**
  * Called on controller component `.play` handlers.
@@ -13,11 +13,11 @@ var NUM_HANDS = 2;  // Number of hands in a pair. Should always be 2.
  * @param {object} queryObject - Map of values to match.
  */
 module.exports.checkControllerPresentAndSetup = function (component, idPrefix, queryObject) {
-  var el = component.el;
-  var controller;
-  var hasWebXR = el.sceneEl.hasWebXR;
-  var isControllerPresent = hasWebXR ? isControllerPresentWebXR : isControllerPresentWebVR;
-  var isPresent;
+  let el = component.el;
+  let controller;
+  let hasWebXR = el.sceneEl.hasWebXR;
+  let isControllerPresent = hasWebXR ? isControllerPresentWebXR : isControllerPresentWebVR;
+  let isPresent;
 
   controller = isControllerPresent(component, idPrefix, queryObject);
   isPresent = !!controller;
@@ -53,10 +53,10 @@ module.exports.checkControllerPresentAndSetup = function (component, idPrefix, q
  * @param {object} queryObject - Map of values to match.
  */
 function isControllerPresentWebVR (component, idPrefix, queryObject) {
-  var gamepads;
-  var sceneEl = component.el.sceneEl;
-  var trackedControlsSystem;
-  var filterControllerIndex = queryObject.index || 0;
+  let gamepads;
+  let sceneEl = component.el.sceneEl;
+  let trackedControlsSystem;
+  let filterControllerIndex = queryObject.index || 0;
 
   if (!idPrefix) { return false; }
 
@@ -75,9 +75,9 @@ function isControllerPresentWebVR (component, idPrefix, queryObject) {
  * @param {object} component - Tracked controls component.
  */
 function isControllerPresentWebXR (component, id, queryObject) {
-  var controllers;
-  var sceneEl = component.el.sceneEl;
-  var trackedControlsSystem = sceneEl && sceneEl.systems['tracked-controls-webxr'];
+  let controllers;
+  let sceneEl = component.el.sceneEl;
+  let trackedControlsSystem = sceneEl && sceneEl.systems['tracked-controls-webxr'];
   if (!trackedControlsSystem) { return false; }
 
   controllers = trackedControlsSystem.controllers;
@@ -116,10 +116,10 @@ module.exports.isControllerPresentWebXR = isControllerPresentWebXR;
  */
 function findMatchingControllerWebVR (controllers, filterIdExact, filterIdPrefix, filterHand,
                                  filterControllerIndex) {
-  var controller;
-  var i;
-  var matchingControllerOccurence = 0;
-  var targetControllerMatch = filterControllerIndex >= 0 ? filterControllerIndex : 0;
+  let controller;
+  let i;
+  let matchingControllerOccurence = 0;
+  let targetControllerMatch = filterControllerIndex >= 0 ? filterControllerIndex : 0;
 
   for (i = 0; i < controllers.length; i++) {
     controller = controllers[i];
@@ -153,12 +153,12 @@ function findMatchingControllerWebVR (controllers, filterIdExact, filterIdPrefix
 }
 
 function findMatchingControllerWebXR (controllers, idPrefix, handedness, index, iterateProfiles, handTracking) {
-  var i;
-  var j;
-  var controller;
-  var controllerMatch = false;
-  var controllerHasHandedness;
-  var profiles;
+  let i;
+  let j;
+  let controller;
+  let controllerMatch = false;
+  let controllerHasHandedness;
+  let profiles;
   for (i = 0; i < controllers.length; i++) {
     controller = controllers[i];
     profiles = controller.profiles;
@@ -197,11 +197,11 @@ module.exports.findMatchingControllerWebXR = findMatchingControllerWebXR;
  * @param {object} evt - Event to process.
  */
 module.exports.emitIfAxesChanged = function (component, axesMapping, evt) {
-  var axes;
-  var buttonType;
-  var changed;
-  var detail;
-  var j;
+  let axes;
+  let buttonType;
+  let changed;
+  let detail;
+  let j;
 
   for (buttonType in axesMapping) {
     axes = axesMapping[buttonType];
@@ -231,8 +231,8 @@ module.exports.emitIfAxesChanged = function (component, axesMapping, evt) {
  * @param {string} hand - handedness of the controller: left or right.
  */
 module.exports.onButtonEvent = function (id, evtName, component, hand) {
-  var mapping = hand ? component.mapping[hand] : component.mapping;
-  var buttonName = mapping.buttons[id];
+  let mapping = hand ? component.mapping[hand] : component.mapping;
+  let buttonName = mapping.buttons[id];
   component.el.emit(buttonName + evtName);
   if (component.updateModel) {
     component.updateModel(buttonName, evtName);

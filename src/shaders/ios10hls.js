@@ -1,4 +1,4 @@
-var registerShader = require('../core/shader').registerShader;
+let registerShader = require('../core/shader').registerShader;
 
 /**
  * Custom shader for iOS 10 HTTP Live Streaming (HLS).

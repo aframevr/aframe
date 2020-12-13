@@ -1,14 +1,14 @@
-var components = require('./component');
-var schema = require('./schema');
-var utils = require('../utils/');
+let components = require('./component');
+let schema = require('./schema');
+let utils = require('../utils/');
 
-var parseProperties = schema.parseProperties;
-var parseProperty = schema.parseProperty;
-var processSchema = schema.process;
-var isSingleProp = schema.isSingleProperty;
-var styleParser = utils.styleParser;
+let parseProperties = schema.parseProperties;
+let parseProperty = schema.parseProperty;
+let processSchema = schema.process;
+let isSingleProp = schema.isSingleProperty;
+let styleParser = utils.styleParser;
 
-var systems = module.exports.systems = {};  // Keep track of registered systems.
+let systems = module.exports.systems = {};  // Keep track of registered systems.
 
 /**
  * System class definition.
@@ -27,8 +27,8 @@ var systems = module.exports.systems = {};  // Keep track of registered systems.
  * @member {string} name - Name that system is registered under.
  * @member {Element} sceneEl - Handle to the scene element where system applies to.
  */
-var System = module.exports.System = function (sceneEl) {
-  var component = components && components.components[this.name];
+let System = module.exports.System = function (sceneEl) {
+  let component = components && components.components[this.name];
 
   // Set reference to scene.
   this.el = sceneEl;
@@ -67,7 +67,7 @@ System.prototype = {
    * @private
    */
   updateProperties: function (rawData) {
-    var oldData = this.data;
+    let oldData = this.data;
     if (!Object.keys(schema).length) { return; }
     this.buildData(rawData);
     this.update(oldData);
@@ -77,7 +77,7 @@ System.prototype = {
    * Parse data.
    */
   buildData: function (rawData) {
-    var schema = this.schema;
+    let schema = this.schema;
     if (!Object.keys(schema).length) { return; }
     rawData = rawData || window.HTMLElement.prototype.getAttribute.call(this.sceneEl, this.name);
     if (isSingleProp(schema)) {
@@ -126,10 +126,10 @@ System.prototype = {
  * @returns {object} Component.
  */
 module.exports.registerSystem = function (name, definition) {
-  var i;
-  var NewSystem;
-  var proto = {};
-  var scenes = utils.findAllScenes(document);
+  let i;
+  let NewSystem;
+  let proto = {};
+  let scenes = utils.findAllScenes(document);
 
   // Format definition object to prototype object.
   Object.keys(definition).forEach(function (key) {

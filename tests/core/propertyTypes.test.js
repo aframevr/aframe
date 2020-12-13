@@ -1,17 +1,17 @@
 /* global assert, setup, suite, teardown, test */
-var PropertyTypes = require('core/propertyTypes');
+let PropertyTypes = require('core/propertyTypes');
 
-var isValidDefaultCoordinate = PropertyTypes.isValidDefaultCoordinate;
-var isValidDefaultValue = PropertyTypes.isValidDefaultValue;
-var propertyTypes = PropertyTypes.propertyTypes;
-var register = PropertyTypes.registerPropertyType;
+let isValidDefaultCoordinate = PropertyTypes.isValidDefaultCoordinate;
+let isValidDefaultValue = PropertyTypes.isValidDefaultValue;
+let propertyTypes = PropertyTypes.propertyTypes;
+let register = PropertyTypes.registerPropertyType;
 
 suite('propertyTypes', function () {
   suite('asset', function () {
-    var parse = propertyTypes.asset.parse;
+    let parse = propertyTypes.asset.parse;
 
     setup(function () {
-      var el = this.el = document.createElement('div');
+      let el = this.el = document.createElement('div');
       document.body.appendChild(el);
     });
 
@@ -25,7 +25,7 @@ suite('propertyTypes', function () {
     });
 
     test('parses <a-asset-item> asset', function () {
-      var asset = document.createElement('a-asset-item');
+      let asset = document.createElement('a-asset-item');
       asset.setAttribute('id', 'foo');
       asset.setAttribute('src', 'bar.gltf');
       this.el.appendChild(asset);
@@ -33,21 +33,21 @@ suite('propertyTypes', function () {
     });
 
     test('parses <img> asset', function () {
-      var img = document.createElement('img');
+      let img = document.createElement('img');
       img.setAttribute('id', 'foo');
       this.el.appendChild(img);
       assert.equal(parse('#foo'), img);
     });
 
     test('parses <canvas> asset', function () {
-      var canvas = document.createElement('canvas');
+      let canvas = document.createElement('canvas');
       canvas.setAttribute('id', 'foo');
       this.el.appendChild(canvas);
       assert.equal(parse('#foo'), canvas);
     });
 
     test('parses <video> asset', function () {
-      var video = document.createElement('video');
+      let video = document.createElement('video');
       video.setAttribute('id', 'foo');
       this.el.appendChild(video);
       assert.equal(parse('#foo'), video);
@@ -55,8 +55,8 @@ suite('propertyTypes', function () {
   });
 
   suite('boolean', function () {
-    var parse = propertyTypes.boolean.parse;
-    var stringify = propertyTypes.boolean.stringify;
+    let parse = propertyTypes.boolean.parse;
+    let stringify = propertyTypes.boolean.stringify;
 
     test('parses false', function () {
       assert.equal(parse('false'), false);
@@ -84,7 +84,7 @@ suite('propertyTypes', function () {
   });
 
   suite('int', function () {
-    var parse = propertyTypes.int.parse;
+    let parse = propertyTypes.int.parse;
 
     test('parses int', function () {
       assert.equal(parse('5'), 5);
@@ -95,11 +95,11 @@ suite('propertyTypes', function () {
   });
 
   suite('selector', function () {
-    var parse = propertyTypes.selector.parse;
-    var stringify = propertyTypes.selector.stringify;
+    let parse = propertyTypes.selector.parse;
+    let stringify = propertyTypes.selector.stringify;
 
     setup(function () {
-      var el = this.el = document.createElement('div');
+      let el = this.el = document.createElement('div');
       el.setAttribute('id', 'hello');
       el.setAttribute('class', 'itsme');
       document.body.appendChild(el);
@@ -146,20 +146,20 @@ suite('propertyTypes', function () {
   });
 
   suite('selectorAll', function () {
-    var parse = propertyTypes.selectorAll.parse;
-    var stringify = propertyTypes.selectorAll.stringify;
-    var slice = function (nodes) {
+    let parse = propertyTypes.selectorAll.parse;
+    let stringify = propertyTypes.selectorAll.stringify;
+    let slice = function (nodes) {
       return Array.prototype.slice.call(nodes, 0);
     };
 
     setup(function () {
-      var el = this.el = document.createElement('div');
+      let el = this.el = document.createElement('div');
 
-      var el1 = this.el1 = document.createElement('div');
+      let el1 = this.el1 = document.createElement('div');
       el1.setAttribute('id', 'hello');
       el1.setAttribute('class', 'itsme');
 
-      var el2 = this.el2 = document.createElement('div');
+      let el2 = this.el2 = document.createElement('div');
       el2.setAttribute('id', 'cool');
       el2.setAttribute('class', 'itworks');
 
@@ -189,8 +189,8 @@ suite('propertyTypes', function () {
   });
 
   suite('array', function () {
-    var parse = propertyTypes.array.parse;
-    var stringify = propertyTypes.array.stringify;
+    let parse = propertyTypes.array.parse;
+    let stringify = propertyTypes.array.stringify;
 
     test('parses array', function () {
       assert.deepEqual(parse(''), []);
@@ -207,10 +207,10 @@ suite('propertyTypes', function () {
   });
 
   suite('src', function () {
-    var parse = propertyTypes.src.parse;
+    let parse = propertyTypes.src.parse;
 
     setup(function () {
-      var el = this.el = document.createElement('div');
+      let el = this.el = document.createElement('div');
       el.setAttribute('id', 'hello');
       el.setAttribute('src', 'file2.jpg');
       document.body.appendChild(el);
@@ -232,28 +232,28 @@ suite('propertyTypes', function () {
       assert.equal(isValidDefaultCoordinate(null, 2), true);
     });
     test('is true for vec2 if {x: num, y:num}', function () {
-      var validCoordinates = {x: 1, y: 2};
+      let validCoordinates = {x: 1, y: 2};
       assert.equal(isValidDefaultCoordinate(validCoordinates, 2), true);
     });
 
     test('is true for vec3 if {x: num, y:num z: num}', function () {
-      var validCoordinates = {x: 1, y: 2, z: 3};
+      let validCoordinates = {x: 1, y: 2, z: 3};
       assert.equal(isValidDefaultCoordinate(validCoordinates, 3), true);
     });
 
     test('is true for vec4 if {x: num, y:num z: num w: num}', function () {
-      var validCoordinates = {x: 1, y: 2, z: 3, w: 4};
+      let validCoordinates = {x: 1, y: 2, z: 3, w: 4};
       assert.equal(isValidDefaultCoordinate(validCoordinates, 4), true);
     });
 
     test('is false for everything else', function () {
-      var invalidCoordinates1 = {notX: 1};
-      var invalidCoordinates2 = {x: ''};
-      var invalidCoordinates3 = {x: 0, z: 5};
-      var invalidCoordinates4 = {x: 5, y: {}};
-      var invalidCoordinates5 = {x: 1, y: []};
-      var invalidCoordinates6 = {notX: 'not coordinates at all'};
-      var invalidCoordinates7 = {x: 5, y: 1, z: 2};  // Invalid for vec4.
+      let invalidCoordinates1 = {notX: 1};
+      let invalidCoordinates2 = {x: ''};
+      let invalidCoordinates3 = {x: 0, z: 5};
+      let invalidCoordinates4 = {x: 5, y: {}};
+      let invalidCoordinates5 = {x: 1, y: []};
+      let invalidCoordinates6 = {notX: 'not coordinates at all'};
+      let invalidCoordinates7 = {x: 5, y: 1, z: 2};  // Invalid for vec4.
       assert.equal(isValidDefaultCoordinate(invalidCoordinates1, 2), false);
       assert.equal(isValidDefaultCoordinate(invalidCoordinates2, 2), false);
       assert.equal(isValidDefaultCoordinate(invalidCoordinates3, 2), false);

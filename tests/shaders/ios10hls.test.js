@@ -1,5 +1,5 @@
 /* global AFRAME, CustomEvent, assert, process, setup, suite, test */
-var entityFactory = require('../helpers').entityFactory;
+let entityFactory = require('../helpers').entityFactory;
 
 suite.skip('ios10hls', function () {
   setup(function (done) {
@@ -12,11 +12,11 @@ suite.skip('ios10hls', function () {
   });
 
   test('iOS HLS video uses appropriate shader', function (done) {
-    var el = this.el;
+    let el = this.el;
     el.sceneEl.isIOS = true;
 
     // Set up and verify video element to be treated as HLS.
-    var videoEl = document.createElement('video');
+    let videoEl = document.createElement('video');
     videoEl.type = 'application/x-mpegurl';
     assert.equal(AFRAME.utils.material.isHLS(videoEl.src, videoEl.type), true);
 

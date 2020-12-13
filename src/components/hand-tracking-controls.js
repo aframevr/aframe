@@ -1,21 +1,21 @@
 /* global THREE, XRRigidTransform, XRHand */
-var registerComponent = require('../core/component').registerComponent;
-var bind = require('../utils/bind');
+let registerComponent = require('../core/component').registerComponent;
+let bind = require('../utils/bind');
 
-var trackedControlsUtils = require('../utils/tracked-controls');
-var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
+let trackedControlsUtils = require('../utils/tracked-controls');
+let checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
 
-var JOINTS_NUMBER = 25;
+let JOINTS_NUMBER = 25;
 
-var LEFT_HAND_MODEL_URL = 'https://cdn.aframe.io/controllers/oculus-hands/unity/left.glb';
-var RIGHT_HAND_MODEL_URL = 'https://cdn.aframe.io/controllers/oculus-hands/unity/right.glb';
+let LEFT_HAND_MODEL_URL = 'https://cdn.aframe.io/controllers/oculus-hands/unity/left.glb';
+let RIGHT_HAND_MODEL_URL = 'https://cdn.aframe.io/controllers/oculus-hands/unity/right.glb';
 
-var BONE_PREFIX = {
+let BONE_PREFIX = {
   left: 'b_l_',
   right: 'b_r_'
 };
 
-var BONE_MAPPING = [
+let BONE_MAPPING = [
   'wrist',
   'thumb1',
   'thumb2',
@@ -43,9 +43,9 @@ var BONE_MAPPING = [
   'pinky_null'
 ];
 
-var PINCH_START_DISTANCE = 0.015;
-var PINCH_END_DISTANCE = 0.03;
-var PINCH_POSITION_INTERPOLATION = 0.5;
+let PINCH_START_DISTANCE = 0.015;
+let PINCH_END_DISTANCE = 0.03;
+let PINCH_POSITION_INTERPOLATION = 0.5;
 
 /**
  * Controls for hand tracking
@@ -65,21 +65,21 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
 
   addEventListeners: function () {
     this.el.addEventListener('model-loaded', this.onModelLoaded);
-    for (var i = 0; i < this.jointEls.length; ++i) {
+    for (let i = 0; i < this.jointEls.length; ++i) {
       this.jointEls[i].object3D.visible = true;
     }
   },
 
   removeEventListeners: function () {
     this.el.removeEventListener('model-loaded', this.onModelLoaded);
-    for (var i = 0; i < this.jointEls.length; ++i) {
+    for (let i = 0; i < this.jointEls.length; ++i) {
       this.jointEls[i].object3D.visible = false;
     }
   },
 
   init: function () {
-    var sceneEl = this.el.sceneEl;
-    var webXROptionalAttributes = sceneEl.getAttribute('webxr').optionalFeatures;
+    let sceneEl = this.el.sceneEl;
+    let webXROptionalAttributes = sceneEl.getAttribute('webxr').optionalFeatures;
     webXROptionalAttributes.push('hand-tracking');
     sceneEl.setAttribute('webxr', {optionalFeatures: webXROptionalAttributes});
     this.onModelLoaded = this.onModelLoaded.bind(this);
@@ -97,11 +97,11 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
   },
 
   updateReferenceSpace: function () {
-    var self = this;
-    var xrSession = this.el.sceneEl.xrSession;
+    let self = this;
+    let xrSession = this.el.sceneEl.xrSession;
     this.referenceSpace = undefined;
     if (!xrSession) { return; }
-    var referenceSpaceType = self.el.sceneEl.systems.webxr.sessionReferenceSpaceType;
+    let referenceSpaceType = self.el.sceneEl.systems.webxr.sessionReferenceSpaceType;
     xrSession.requestReferenceSpace(referenceSpaceType).then(function (referenceSpace) {
       self.referenceSpace = referenceSpace.getOffsetReferenceSpace(new XRRigidTransform({x: 0, y: 1.5, z: 0}));
     }).catch(function (error) {
@@ -111,8 +111,8 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
   },
 
   checkIfControllerPresent: function () {
-    var data = this.data;
-    var hand = data.hand ? data.hand : undefined;
+    let data = this.data;
+    let hand = data.hand ? data.hand : undefined;
     checkControllerPresentAndSetup(
       this, '',
       {hand: hand, iterateControllerProfiles: true, handTracking: true});
@@ -124,10 +124,10 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
   },
 
   tick: function () {
-    var sceneEl = this.el.sceneEl;
-    var controller = this.el.components['tracked-controls'] && this.el.components['tracked-controls'].controller;
-    var frame = sceneEl.frame;
-    var trackedControlsWebXR = this.el.components['tracked-controls-webxr'];
+    let sceneEl = this.el.sceneEl;
+    let controller = this.el.components['tracked-controls'] && this.el.components['tracked-controls'].controller;
+    let frame = sceneEl.frame;
+    let trackedControlsWebXR = this.el.components['tracked-controls-webxr'];
     if (!controller || !frame || !trackedControlsWebXR) { return; }
     if (controller.hand) {
       this.el.object3D.position.set(0, 0, 0);
@@ -148,14 +148,14 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
   },
 
   updateHandMeshModel: function () {
-    var controller = this.el.components['tracked-controls'] && this.el.components['tracked-controls'].controller;
-    var referenceSpace = this.referenceSpace;
+    let controller = this.el.components['tracked-controls'] && this.el.components['tracked-controls'].controller;
+    let referenceSpace = this.referenceSpace;
     if (!controller || !this.mesh || !referenceSpace) { return; }
     this.mesh.visible = false;
-    for (var i = 0; i < controller.hand.length; i++) {
-      var bone;
-      var jointPose;
-      var jointTransform;
+    for (let i = 0; i < controller.hand.length; i++) {
+      let bone;
+      let jointPose;
+      let jointTransform;
       if (!controller.hand[i]) { continue; }
       jointPose = this.el.sceneEl.frame.getJointPose(controller.hand[i], referenceSpace);
       if (BONE_MAPPING[i] == null) { continue; }
@@ -170,24 +170,24 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
   },
 
   getBone: function (name) {
-    var bones = this.bones;
-    for (var i = 0; i < bones.length; i++) {
+    let bones = this.bones;
+    for (let i = 0; i < bones.length; i++) {
       if (bones[i].name === name) { return bones[i]; }
     }
     return null;
   },
 
   updateHandDotsModel: function () {
-    var frame = this.el.sceneEl.frame;
-    var controller = this.el.components['tracked-controls'] && this.el.components['tracked-controls'].controller;
-    var trackedControlsWebXR = this.el.components['tracked-controls-webxr'];
-    var referenceSpace = trackedControlsWebXR.system.referenceSpace;
-    for (var i = 0; i < this.jointEls.length; ++i) {
-      var jointEl = this.jointEls[i];
+    let frame = this.el.sceneEl.frame;
+    let controller = this.el.components['tracked-controls'] && this.el.components['tracked-controls'].controller;
+    let trackedControlsWebXR = this.el.components['tracked-controls-webxr'];
+    let referenceSpace = trackedControlsWebXR.system.referenceSpace;
+    for (let i = 0; i < this.jointEls.length; ++i) {
+      let jointEl = this.jointEls[i];
       jointEl.object3D.visible = !!controller.hand[i];
       if (controller.hand[i]) {
-        var object3D = jointEl.object3D;
-        var pose = frame.getJointPose(controller.hand[i], referenceSpace);
+        let object3D = jointEl.object3D;
+        let pose = frame.getJointPose(controller.hand[i], referenceSpace);
         jointEl.object3D.visible = !!pose;
         if (!pose) { continue; }
         object3D.matrix.elements = pose.transform.matrix;
@@ -202,24 +202,24 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
   },
 
   detectPinch: (function () {
-    var thumbTipPosition = new THREE.Vector3();
+    let thumbTipPosition = new THREE.Vector3();
     return function () {
-      var frame = this.el.sceneEl.frame;
-      var indexTipPosition = this.indexTipPosition;
-      var controller = this.el.components['tracked-controls'] && this.el.components['tracked-controls'].controller;
-      var trackedControlsWebXR = this.el.components['tracked-controls-webxr'];
-      var referenceSpace = this.referenceSpace || trackedControlsWebXR.system.referenceSpace;
+      let frame = this.el.sceneEl.frame;
+      let indexTipPosition = this.indexTipPosition;
+      let controller = this.el.components['tracked-controls'] && this.el.components['tracked-controls'].controller;
+      let trackedControlsWebXR = this.el.components['tracked-controls-webxr'];
+      let referenceSpace = this.referenceSpace || trackedControlsWebXR.system.referenceSpace;
       if (!controller.hand[XRHand.INDEX_PHALANX_TIP] ||
           !controller.hand[XRHand.THUMB_PHALANX_TIP]) { return; }
-      var indexTipPose = frame.getJointPose(controller.hand[XRHand.INDEX_PHALANX_TIP], referenceSpace);
-      var thumbTipPose = frame.getJointPose(controller.hand[XRHand.THUMB_PHALANX_TIP], referenceSpace);
+      let indexTipPose = frame.getJointPose(controller.hand[XRHand.INDEX_PHALANX_TIP], referenceSpace);
+      let thumbTipPose = frame.getJointPose(controller.hand[XRHand.THUMB_PHALANX_TIP], referenceSpace);
 
       if (!indexTipPose || !thumbTipPose) { return; }
 
       thumbTipPosition.copy(thumbTipPose.transform.position);
       indexTipPosition.copy(indexTipPose.transform.position);
 
-      var distance = indexTipPosition.distanceTo(thumbTipPosition);
+      let distance = indexTipPosition.distanceTo(thumbTipPosition);
 
       if (distance < PINCH_START_DISTANCE && this.isPinched === false) {
         this.isPinched = true;
@@ -251,8 +251,8 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
   },
 
   injectTrackedControls: function () {
-    var el = this.el;
-    var data = this.data;
+    let el = this.el;
+    let data = this.data;
     el.setAttribute('tracked-controls', {
       hand: data.hand,
       iterateControllerProfiles: true,
@@ -270,7 +270,7 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
   },
 
   onControllersUpdate: function () {
-    var controller;
+    let controller;
     this.checkIfControllerPresent();
     controller = this.el.components['tracked-controls'] && this.el.components['tracked-controls'].controller;
     if (!this.el.getObject3D('mesh')) { return; }
@@ -292,8 +292,8 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
   initDotsModel: function () {
      // Add models just once.
     if (this.jointEls.length !== 0) { return; }
-    for (var i = 0; i < JOINTS_NUMBER; ++i) {
-      var jointEl = this.jointEl = document.createElement('a-entity');
+    for (let i = 0; i < JOINTS_NUMBER; ++i) {
+      let jointEl = this.jointEl = document.createElement('a-entity');
       jointEl.setAttribute('geometry', {
         primitive: 'sphere',
         radius: 1.0
@@ -306,13 +306,13 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
   },
 
   initMeshHandModel: function () {
-    var modelURL = this.data.hand === 'left' ? LEFT_HAND_MODEL_URL : RIGHT_HAND_MODEL_URL;
+    let modelURL = this.data.hand === 'left' ? LEFT_HAND_MODEL_URL : RIGHT_HAND_MODEL_URL;
     this.el.setAttribute('gltf-model', modelURL);
   },
 
   onModelLoaded: function () {
-    var mesh = this.mesh = this.el.getObject3D('mesh').children[0];
-    var skinnedMesh = this.skinnedMesh = mesh.children[24];
+    let mesh = this.mesh = this.el.getObject3D('mesh').children[0];
+    let skinnedMesh = this.skinnedMesh = mesh.children[24];
     if (!this.skinnedMesh) { return; }
     this.bones = skinnedMesh.skeleton.bones;
     this.el.removeObject3D('mesh');

@@ -5,15 +5,15 @@
  */
 AFRAME.registerComponent('intersect-color-change', {
   init: function () {
-    var el = this.el;
-    var material = el.getAttribute('material');
-    var initialColor = material.color;
-    var initialOpacity = material.opacity;
+    let el = this.el;
+    let material = el.getAttribute('material');
+    let initialColor = material.color;
+    let initialOpacity = material.opacity;
 
     // Set color using raycaster parent color.
     el.addEventListener('raycaster-intersected', function (evt) {
-      var raycasterEl = evt.detail.el;
-      var fingerColor = raycasterEl.parentNode.getAttribute('material').color;
+      let raycasterEl = evt.detail.el;
+      let fingerColor = raycasterEl.parentNode.getAttribute('material').color;
       el.setAttribute('material', 'color', fingerColor);
       el.setAttribute('material', 'opacity', 1.0);
     });

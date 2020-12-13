@@ -1,9 +1,9 @@
 /* global assert, process, setup, sinon, suite, test */
-var entityFactory = require('../helpers').entityFactory;
+let entityFactory = require('../helpers').entityFactory;
 
 suite('oculus-touch-controls', function () {
-  var el;
-  var component;
+  let el;
+  let component;
 
   setup(function (done) {
     el = this.el = entityFactory();
@@ -24,11 +24,11 @@ suite('oculus-touch-controls', function () {
   });
 
   suite('checkIfControllerPresent', function () {
-    var component;
-    var controllerSystem;
-    var addEventListenersSpy;
-    var injectTrackedControlsSpy;
-    var removeEventListenersSpy;
+    let component;
+    let controllerSystem;
+    let addEventListenersSpy;
+    let injectTrackedControlsSpy;
+    let removeEventListenersSpy;
 
     setup(function (done) {
       component = this.el.components['oculus-touch-controls'];
@@ -113,7 +113,7 @@ suite('oculus-touch-controls', function () {
   });
 
   suite('axismove', function () {
-    var controllerSystem;
+    let controllerSystem;
 
     setup(function (done) {
       controllerSystem = this.el.sceneEl.systems['tracked-controls-webvr'];

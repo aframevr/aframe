@@ -1,12 +1,12 @@
-var registerComponent = require('../core/component').registerComponent;
-var bind = require('../utils/bind');
+let registerComponent = require('../core/component').registerComponent;
+let bind = require('../utils/bind');
 
-var trackedControlsUtils = require('../utils/tracked-controls');
-var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
-var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
-var onButtonEvent = trackedControlsUtils.onButtonEvent;
+let trackedControlsUtils = require('../utils/tracked-controls');
+let checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
+let emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
+let onButtonEvent = trackedControlsUtils.onButtonEvent;
 
-var GAMEPAD_ID_PREFIX = 'generic';
+let GAMEPAD_ID_PREFIX = 'generic';
 
 /**
  * Button indices:
@@ -20,7 +20,7 @@ var GAMEPAD_ID_PREFIX = 'generic';
  * 1 - thumbstick
  *
  */
-var INPUT_MAPPING = {
+let INPUT_MAPPING = {
   axes: {
     touchpad: [0, 1],
     thumbstick: [2, 3]
@@ -57,7 +57,7 @@ module.exports.Component = registerComponent('generic-tracked-controller-control
   },
 
   init: function () {
-    var self = this;
+    let self = this;
     this.onButtonChanged = bind(this.onButtonChanged, this);
     this.onButtonDown = function (evt) { onButtonEvent(evt.detail.id, 'down', self); };
     this.onButtonUp = function (evt) { onButtonEvent(evt.detail.id, 'up', self); };
@@ -70,7 +70,7 @@ module.exports.Component = registerComponent('generic-tracked-controller-control
   },
 
   addEventListeners: function () {
-    var el = this.el;
+    let el = this.el;
     el.addEventListener('buttonchanged', this.onButtonChanged);
     el.addEventListener('buttondown', this.onButtonDown);
     el.addEventListener('buttonup', this.onButtonUp);
@@ -81,7 +81,7 @@ module.exports.Component = registerComponent('generic-tracked-controller-control
   },
 
   removeEventListeners: function () {
-    var el = this.el;
+    let el = this.el;
     el.removeEventListener('buttonchanged', this.onButtonChanged);
     el.removeEventListener('buttondown', this.onButtonDown);
     el.removeEventListener('buttonup', this.onButtonUp);
@@ -92,8 +92,8 @@ module.exports.Component = registerComponent('generic-tracked-controller-control
   },
 
   checkIfControllerPresent: function () {
-    var data = this.data;
-    var hand = data.hand ? data.hand : undefined;
+    let data = this.data;
+    let hand = data.hand ? data.hand : undefined;
     checkControllerPresentAndSetup(
       this, GAMEPAD_ID_PREFIX,
       {hand: hand, iterateControllerProfiles: true});
@@ -110,8 +110,8 @@ module.exports.Component = registerComponent('generic-tracked-controller-control
   },
 
   injectTrackedControls: function () {
-    var el = this.el;
-    var data = this.data;
+    let el = this.el;
+    let data = this.data;
     // Do nothing if tracked-controls already set.
     // Generic controls have the lowest precedence.
     if (this.el.components['tracked-controls']) {
@@ -141,7 +141,7 @@ module.exports.Component = registerComponent('generic-tracked-controller-control
   },
 
   onButtonChanged: function (evt) {
-    var button = this.mapping.buttons[evt.detail.id];
+    let button = this.mapping.buttons[evt.detail.id];
     if (!button) return;
     // Pass along changed event with button state, using button mapping for convenience.
     this.el.emit(button + 'changed', evt.detail.state);
@@ -152,7 +152,7 @@ module.exports.Component = registerComponent('generic-tracked-controller-control
   },
 
   initDefaultModel: function () {
-    var modelEl = this.modelEl = document.createElement('a-entity');
+    let modelEl = this.modelEl = document.createElement('a-entity');
     modelEl.setAttribute('geometry', {
       primitive: 'sphere',
       radius: 0.03

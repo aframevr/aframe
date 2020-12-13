@@ -6,16 +6,16 @@ AFRAME.registerComponent('laser', {
   },
 
   init: function () {
-    var el = this.el;
-    var geometry = 'primitive: box; height: 2; width: 0.1; depth: 0.1';
-    var material = 'color: yellow';
+    let el = this.el;
+    let geometry = 'primitive: box; height: 2; width: 0.1; depth: 0.1';
+    let material = 'color: yellow';
     el.setAttribute('geometry', geometry);
     el.setAttribute('material', material);
   },
 
   tick: function () {
-    var el = this.el;
-    var position = el.getAttribute('position');
+    let el = this.el;
+    let position = el.getAttribute('position');
     position.y += this.data.speed;
     el.setAttribute('position', position);
   }

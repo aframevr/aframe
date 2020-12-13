@@ -1,11 +1,11 @@
-var ANode = require('./a-node');
-var bind = require('../utils/bind');
-var debug = require('../utils/debug');
-var registerElement = require('./a-register-element').registerElement;
-var THREE = require('../lib/three');
+let ANode = require('./a-node');
+let bind = require('../utils/bind');
+let debug = require('../utils/debug');
+let registerElement = require('./a-register-element').registerElement;
+let THREE = require('../lib/three');
 
-var fileLoader = new THREE.FileLoader();
-var warn = debug('core:a-assets:warn');
+let fileLoader = new THREE.FileLoader();
+let warn = debug('core:a-assets:warn');
 
 /**
  * Asset management system. Handles blocking on asset loading.
@@ -22,14 +22,14 @@ module.exports = registerElement('a-assets', {
 
     attachedCallback: {
       value: function () {
-        var self = this;
-        var i;
-        var loaded = [];
-        var mediaEl;
-        var mediaEls;
-        var imgEl;
-        var imgEls;
-        var timeout;
+        let self = this;
+        let i;
+        let loaded = [];
+        let mediaEl;
+        let mediaEls;
+        let imgEl;
+        let imgEls;
+        let timeout;
 
         if (!this.parentNode.isScene) {
           throw new Error('<a-assets> must be a child of a <a-scene>.');
@@ -102,8 +102,8 @@ registerElement('a-asset-item', {
 
     attachedCallback: {
       value: function () {
-        var self = this;
-        var src = this.getAttribute('src');
+        let self = this;
+        let src = this.getAttribute('src');
         fileLoader.setResponseType(
           this.getAttribute('response-type') || inferResponseType(src));
         fileLoader.load(src, function handleOnLoad (response) {
@@ -153,8 +153,8 @@ function mediaElementLoaded (el) {
 
     function checkProgress () {
       // Add up the seconds buffered.
-      var secondsBuffered = 0;
-      for (var i = 0; i < el.buffered.length; i++) {
+      let secondsBuffered = 0;
+      for (let i = 0; i < el.buffered.length; i++) {
         secondsBuffered += el.buffered.end(i) - el.buffered.start(i);
       }
 
@@ -179,7 +179,7 @@ function mediaElementLoaded (el) {
  */
 function fixUpMediaElement (mediaEl) {
   // Cross-origin.
-  var newMediaEl = setCrossOrigin(mediaEl);
+  let newMediaEl = setCrossOrigin(mediaEl);
 
   // Plays inline for mobile.
   if (newMediaEl.tagName && newMediaEl.tagName.toLowerCase() === 'video') {
@@ -203,8 +203,8 @@ function fixUpMediaElement (mediaEl) {
  * @returns {Element} Media element to be used to listen to for loaded events.
  */
 function setCrossOrigin (mediaEl) {
-  var newMediaEl;
-  var src;
+  let newMediaEl;
+  let src;
 
   // Already has crossorigin set.
   if (mediaEl.hasAttribute('crossorigin')) { return mediaEl; }
@@ -235,7 +235,7 @@ function setCrossOrigin (mediaEl) {
  */
 function extractDomain (url) {
   // Find and remove protocol (e.g., http, ftp, etc.) to get domain.
-  var domain = url.indexOf('://') > -1 ? url.split('/')[2] : url.split('/')[0];
+  let domain = url.indexOf('://') > -1 ? url.split('/')[2] : url.split('/')[0];
 
   // Find and remove port number.
   return domain.substring(0, domain.indexOf(':'));
@@ -250,10 +250,10 @@ function extractDomain (url) {
  * @returns {string}
  */
 function inferResponseType (src) {
-  var fileName = getFileNameFromURL(src);
-  var dotLastIndex = fileName.lastIndexOf('.');
+  let fileName = getFileNameFromURL(src);
+  let dotLastIndex = fileName.lastIndexOf('.');
   if (dotLastIndex >= 0) {
-    var extension = fileName.slice(dotLastIndex, src.search(/\?|#|$/));
+    let extension = fileName.slice(dotLastIndex, src.search(/\?|#|$/));
     if (extension === '.glb') {
       return 'arraybuffer';
     }
@@ -269,10 +269,10 @@ module.exports.inferResponseType = inferResponseType;
  * @returns {string}
  */
 function getFileNameFromURL (url) {
-  var parser = document.createElement('a');
+  let parser = document.createElement('a');
   parser.href = url;
-  var query = parser.search.replace(/^\?/, '');
-  var filePath = url.replace(query, '').replace('?', '');
+  let query = parser.search.replace(/^\?/, '');
+  let filePath = url.replace(query, '').replace('?', '');
   return filePath.substring(filePath.lastIndexOf('/') + 1);
 }
 module.exports.getFileNameFromURL = getFileNameFromURL;

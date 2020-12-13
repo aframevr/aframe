@@ -1,7 +1,7 @@
-var component = require('../core/component');
-var THREE = require('../lib/three');
-var bind = require('../utils/bind');
-var registerComponent = component.registerComponent;
+let component = require('../core/component');
+let THREE = require('../lib/three');
+let bind = require('../utils/bind');
+let registerComponent = component.registerComponent;
 
 /**
  * Shadow component.
@@ -22,18 +22,18 @@ module.exports.Component = registerComponent('shadow', {
   },
 
   update: function () {
-    var data = this.data;
+    let data = this.data;
     this.updateDescendants(data.cast, data.receive);
   },
 
   remove: function () {
-    var el = this.el;
+    let el = this.el;
     el.removeEventListener('object3dset', this.onMeshChanged);
     this.updateDescendants(false, false);
   },
 
   updateDescendants: function (cast, receive) {
-    var sceneEl = this.el.sceneEl;
+    let sceneEl = this.el.sceneEl;
     this.el.object3D.traverse(function (node) {
       if (!(node instanceof THREE.Mesh)) { return; }
 
@@ -42,8 +42,8 @@ module.exports.Component = registerComponent('shadow', {
 
       // If scene has already rendered, materials must be updated.
       if (sceneEl.hasLoaded && node.material) {
-        var materials = Array.isArray(node.material) ? node.material : [node.material];
-        for (var i = 0; i < materials.length; i++) {
+        let materials = Array.isArray(node.material) ? node.material : [node.material];
+        for (let i = 0; i < materials.length; i++) {
           materials[i].needsUpdate = true;
         }
       }

@@ -1,23 +1,23 @@
-var createTextGeometry = require('three-bmfont-text');
-var loadBMFont = require('load-bmfont');
+let createTextGeometry = require('three-bmfont-text');
+let loadBMFont = require('load-bmfont');
 
-var registerComponent = require('../core/component').registerComponent;
-var coreShader = require('../core/shader');
-var THREE = require('../lib/three');
-var utils = require('../utils/');
+let registerComponent = require('../core/component').registerComponent;
+let coreShader = require('../core/shader');
+let THREE = require('../lib/three');
+let utils = require('../utils/');
 
-var error = utils.debug('components:text:error');
-var shaders = coreShader.shaders;
-var warn = utils.debug('components:text:warn');
+let error = utils.debug('components:text:error');
+let shaders = coreShader.shaders;
+let warn = utils.debug('components:text:warn');
 
 // 1 to match other A-Frame default widths.
-var DEFAULT_WIDTH = 1;
+let DEFAULT_WIDTH = 1;
 
 // @bryik set anisotropy to 16. Improves look of large amounts of text when viewed from angle.
-var MAX_ANISOTROPY = 16;
+let MAX_ANISOTROPY = 16;
 
-var FONT_BASE_URL = 'https://cdn.aframe.io/fonts/';
-var FONTS = {
+let FONT_BASE_URL = 'https://cdn.aframe.io/fonts/';
+let FONTS = {
   aileronsemibold: FONT_BASE_URL + 'Aileron-Semibold.fnt',
   dejavu: FONT_BASE_URL + 'DejaVu-sdf.fnt',
   exo2bold: FONT_BASE_URL + 'Exo2Bold.fnt',
@@ -28,16 +28,16 @@ var FONTS = {
   roboto: FONT_BASE_URL + 'Roboto-msdf.json',
   sourcecodepro: FONT_BASE_URL + 'SourceCodePro.fnt'
 };
-var MSDF_FONTS = ['roboto'];
-var DEFAULT_FONT = 'roboto';
+let MSDF_FONTS = ['roboto'];
+let DEFAULT_FONT = 'roboto';
 module.exports.FONTS = FONTS;
 
-var cache = new PromiseCache();
-var fontWidthFactors = {};
-var textures = {};
+let cache = new PromiseCache();
+let fontWidthFactors = {};
+let textures = {};
 
 // Regular expression for detecting a URLs with a protocol prefix.
-var protocolRe = /^\w+:/;
+let protocolRe = /^\w+:/;
 
 /**
  * SDF-based text component.
@@ -96,8 +96,8 @@ module.exports.Component = registerComponent('text', {
   },
 
   update: function (oldData) {
-    var data = this.data;
-    var font = this.currentFont;
+    let data = this.data;
+    let font = this.currentFont;
 
     if (textures[data.font]) {
       this.texture = textures[data.font];
@@ -143,12 +143,12 @@ module.exports.Component = registerComponent('text', {
    * Update the shader of the material.
    */
   createOrUpdateMaterial: function () {
-    var data = this.data;
-    var hasChangedShader;
-    var material = this.material;
-    var NewShader;
-    var shaderData = this.shaderData;
-    var shaderName;
+    let data = this.data;
+    let hasChangedShader;
+    let material = this.material;
+    let NewShader;
+    let shaderData = this.shaderData;
+    let shaderName;
 
     // Infer shader if using a stock font (or from `-msdf` filename convention).
     shaderName = data.shader;
@@ -192,11 +192,11 @@ module.exports.Component = registerComponent('text', {
    * Load font for geometry, load font image for material, and apply.
    */
   updateFont: function () {
-    var data = this.data;
-    var el = this.el;
-    var fontSrc;
-    var geometry = this.geometry;
-    var self = this;
+    let data = this.data;
+    let el = this.el;
+    let fontSrc;
+    let geometry = this.geometry;
+    let self = this;
 
     if (!data.font) { warn('No font specified. Using the default font.'); }
 
@@ -208,7 +208,7 @@ module.exports.Component = registerComponent('text', {
     cache.get(fontSrc, function doLoadFont () {
       return loadFont(fontSrc, data.yOffset);
     }).then(function setFont (font) {
-      var fontImgSrc;
+      let fontImgSrc;
 
       if (font.pages.length !== 1) {
         throw new Error('Currently only single-page bitmap fonts are supported.');
@@ -231,7 +231,7 @@ module.exports.Component = registerComponent('text', {
         return loadTexture(fontImgSrc);
       }).then(function (image) {
         // Make mesh visible and apply font image as texture.
-        var texture = self.texture;
+        let texture = self.texture;
         texture.image = image;
         texture.needsUpdate = true;
         textures[data.font] = texture;
@@ -250,8 +250,8 @@ module.exports.Component = registerComponent('text', {
 
   getFontImageSrc: function () {
     if (this.data.fontImage) { return this.data.fontImage; }
-    var fontSrc = this.lookupFont(this.data.font || DEFAULT_FONT) || this.data.font;
-    var imageSrc = this.currentFont.pages[0];
+    let fontSrc = this.lookupFont(this.data.font || DEFAULT_FONT) || this.data.font;
+    let imageSrc = this.currentFont.pages[0];
     // If the image URL contains a non-HTTP(S) protocol, assume it's an absolute
     // path on disk and try to infer the path from the font source instead.
     if (imageSrc.match(protocolRe) && imageSrc.indexOf('http') !== 0) {
@@ -264,20 +264,20 @@ module.exports.Component = registerComponent('text', {
    * Update layout with anchor, alignment, baseline, and considering any meshes.
    */
   updateLayout: function () {
-    var anchor;
-    var baseline;
-    var el = this.el;
-    var data = this.data;
-    var geometry = this.geometry;
-    var geometryComponent;
-    var height;
-    var layout;
-    var mesh = this.mesh;
-    var textRenderWidth;
-    var textScale;
-    var width;
-    var x;
-    var y;
+    let anchor;
+    let baseline;
+    let el = this.el;
+    let data = this.data;
+    let geometry = this.geometry;
+    let geometryComponent;
+    let height;
+    let layout;
+    let mesh = this.mesh;
+    let textRenderWidth;
+    let textScale;
+    let width;
+    let x;
+    let y;
 
     if (!geometry.layout) { return; }
 
@@ -346,13 +346,13 @@ module.exports.Component = registerComponent('text', {
    * Update the text geometry using `three-bmfont-text.update`.
    */
   updateGeometry: (function () {
-    var geometryUpdateBase = {};
-    var geometryUpdateData = {};
-    var newLineRegex = /\\n/g;
-    var tabRegex = /\\t/g;
+    let geometryUpdateBase = {};
+    let geometryUpdateData = {};
+    let newLineRegex = /\\n/g;
+    let tabRegex = /\\t/g;
 
     return function (geometry, font) {
-      var data = this.data;
+      let data = this.data;
 
       geometryUpdateData.font = font;
       geometryUpdateData.lineHeight = data.lineHeight && isFinite(data.lineHeight)
@@ -421,8 +421,8 @@ function loadTexture (src) {
 }
 
 function createShader (el, shaderName, data) {
-  var shader;
-  var shaderObject;
+  let shader;
+  let shaderObject;
 
   // Set up Shader.
   shaderObject = new shaders[shaderName].Shader();
@@ -453,9 +453,9 @@ function computeWidth (wrapPixels, wrapCount, widthFactor) {
  * Compute default font width factor to use.
  */
 function computeFontWidthFactor (font) {
-  var sum = 0;
-  var digitsum = 0;
-  var digits = 0;
+  let sum = 0;
+  let digitsum = 0;
+  let digits = 0;
   font.chars.map(function (ch) {
     sum += ch.xadvance;
     if (ch.id >= 48 && ch.id <= 57) {
@@ -471,7 +471,7 @@ function computeFontWidthFactor (font) {
  * @todo Move to a utility and use in other parts of A-Frame.
  */
 function PromiseCache () {
-  var cache = this.cache = {};
+  let cache = this.cache = {};
 
   this.get = function (key, promiseGenerator) {
     if (key in cache) {

@@ -2,11 +2,11 @@
 const entityFactory = require('../helpers').entityFactory;
 
 suite('tracked-controls-webxr', function () {
-  var component;
-  var controller;
-  var el;
-  var system;
-  var standingMatrix = new THREE.Matrix4();
+  let component;
+  let controller;
+  let el;
+  let system;
+  let standingMatrix = new THREE.Matrix4();
 
   setup(function (done) {
     standingMatrix.identity();
@@ -54,7 +54,7 @@ suite('tracked-controls-webxr', function () {
     test('updates pose and buttons even if mesh is not defined', function () {
       el.sceneEl.frame = {
         getPose: function () {
-          var euler = new THREE.Euler(Math.PI / 2, 0, 0);
+          let euler = new THREE.Euler(Math.PI / 2, 0, 0);
           return {
             transform: {
               matrix: new THREE.Matrix4().compose(

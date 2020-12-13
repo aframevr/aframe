@@ -1,23 +1,23 @@
 /* global assert, setup, suite, test */
-var helpers = require('../helpers');
+let helpers = require('../helpers');
 
 suite('a-mixin', function () {
-  var assetsEl;
-  var el;
+  let assetsEl;
+  let el;
 
   setup(function (done) {
     el = helpers.entityFactory();
-    var self = this;
+    let self = this;
 
     el.addEventListener('loaded', function () {
-      var sceneEl = self.sceneEl = el.sceneEl;
+      let sceneEl = self.sceneEl = el.sceneEl;
       assetsEl = sceneEl.querySelector('a-assets');
       done();
     });
   });
 
   test('applies to already loaded entity', function (done) {
-    var mixinEl = document.createElement('a-mixin');
+    let mixinEl = document.createElement('a-mixin');
     el.setAttribute('mixin', 'ring');
 
     mixinEl.setAttribute('id', 'ring');
@@ -35,7 +35,7 @@ suite('a-mixin', function () {
   });
 
   test('applies to already loaded entity with component', function (done) {
-    var mixinEl = document.createElement('a-mixin');
+    let mixinEl = document.createElement('a-mixin');
     el.setAttribute('mixin', 'ring');
     el.setAttribute('geometry', 'buffer: false');
     mixinEl.setAttribute('id', 'ring');
@@ -43,7 +43,7 @@ suite('a-mixin', function () {
     assetsEl.appendChild(mixinEl);
 
     mixinEl.addEventListener('loaded', function () {
-      var geometry = el.getAttribute('geometry');
+      let geometry = el.getAttribute('geometry');
       assert.equal(geometry.buffer, false);
       assert.equal(geometry.primitive, 'ring');
       done();
@@ -52,8 +52,8 @@ suite('a-mixin', function () {
 
   suite('mixin composition', function () {
     test('allows mixin to define mixin post-attach', done => {
-      var mixinEl1;
-      var mixinEl2;
+      let mixinEl1;
+      let mixinEl2;
 
       el.setAttribute('mixin', 'bar');
 
@@ -80,8 +80,8 @@ suite('a-mixin', function () {
     });
 
     test('allows mixin to define mixin pre-attach', done => {
-      var mixinEl1;
-      var mixinEl2;
+      let mixinEl1;
+      let mixinEl2;
 
       mixinEl1 = document.createElement('a-mixin');
       mixinEl1.setAttribute('id', 'foo');
@@ -110,8 +110,8 @@ suite('a-mixin', function () {
     });
 
     test('compositing mixin components override composited mixin components', done => {
-      var mixinEl1;
-      var mixinEl2;
+      let mixinEl1;
+      let mixinEl2;
 
       el.setAttribute('mixin', 'bar');
 
@@ -141,11 +141,11 @@ suite('a-mixin', function () {
     });
 
     test('composites multiple levels of nested mixins', done => {
-      var mixinEl1;
-      var mixinEl2;
-      var mixinEl3;
-      var mixinEl4;
-      var mixinEl5;
+      let mixinEl1;
+      let mixinEl2;
+      let mixinEl3;
+      let mixinEl4;
+      let mixinEl5;
 
       mixinEl1 = document.createElement('a-mixin');
       mixinEl1.setAttribute('id', 'foo');
@@ -197,21 +197,21 @@ suite('a-mixin', function () {
 suite('a-mixin (detached)', function () {
   suite('cacheAttributes', function () {
     test('caches component attributes', function () {
-      var mixinEl = document.createElement('a-mixin');
+      let mixinEl = document.createElement('a-mixin');
       mixinEl.setAttribute('material', 'color: red');
       mixinEl.cacheAttributes();
       assert.shallowDeepEqual(mixinEl.componentCache.material, {color: 'red'});
     });
 
     test('does not cache non-component attributes', function () {
-      var mixinEl = document.createElement('a-mixin');
+      let mixinEl = document.createElement('a-mixin');
       mixinEl.setAttribute('test', 'src: url(www.mozilla.com)');
       mixinEl.cacheAttributes();
       assert.equal(mixinEl.componentCache.test, undefined);
     });
 
     test('caches multiple component attributes', function () {
-      var mixinEl = document.createElement('a-mixin');
+      let mixinEl = document.createElement('a-mixin');
       mixinEl.setAttribute('sound__test', 'src: url(mysoundfile.mp3)');
       mixinEl.cacheAttributes();
       assert.shallowDeepEqual(mixinEl.componentCache.sound__test, {src: 'url(mysoundfile.mp3)'});

@@ -1,14 +1,14 @@
 /* global assert, process, setup, suite, test */
-var entityFactory = require('../helpers').entityFactory;
-var CONTROLLER_TYPE_VIVE = 'OpenVR Gamepad';
-var CONTROLLER_TYPE_GENERIC = 'Generic Gamepad';
+let entityFactory = require('../helpers').entityFactory;
+let CONTROLLER_TYPE_VIVE = 'OpenVR Gamepad';
+let CONTROLLER_TYPE_GENERIC = 'Generic Gamepad';
 
 suite('hand-controls', function () {
-  var component;
-  var el;
+  let component;
+  let el;
 
   function setupTrackedControls (controllerType) {
-    var trackedControls;
+    let trackedControls;
     el.setAttribute('tracked-controls', '');
     trackedControls = el.components['tracked-controls'];
     trackedControls.controller = {id: controllerType, connected: true};

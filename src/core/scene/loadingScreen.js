@@ -1,31 +1,31 @@
 /* global THREE */
-var utils = require('../../utils/');
-var styleParser = utils.styleParser;
+let utils = require('../../utils/');
+let styleParser = utils.styleParser;
 
-var sceneEl;
-var titleEl;
-var getSceneCanvasSize;
+let sceneEl;
+let titleEl;
+let getSceneCanvasSize;
 
-var ATTR_NAME = 'loading-screen';
-var LOADER_TITLE_CLASS = 'a-loader-title';
+let ATTR_NAME = 'loading-screen';
+let LOADER_TITLE_CLASS = 'a-loader-title';
 
 module.exports.setup = function setup (el, getCanvasSize) {
   sceneEl = el;
   getSceneCanvasSize = getCanvasSize;
-  var loaderAttribute = sceneEl.hasAttribute(ATTR_NAME) ? styleParser.parse(sceneEl.getAttribute(ATTR_NAME)) : undefined;
-  var dotsColor = loaderAttribute && loaderAttribute.dotsColor || 'white';
-  var backgroundColor = loaderAttribute && loaderAttribute.backgroundColor || '#24CAFF';
-  var loaderEnabled = loaderAttribute === undefined || loaderAttribute.enabled === 'true' || loaderAttribute.enabled === undefined; // true default
-  var loaderScene;
-  var sphereGeometry;
-  var sphereMaterial;
-  var sphereMesh1;
-  var sphereMesh2;
-  var sphereMesh3;
-  var camera;
-  var clock;
-  var time;
-  var render;
+  let loaderAttribute = sceneEl.hasAttribute(ATTR_NAME) ? styleParser.parse(sceneEl.getAttribute(ATTR_NAME)) : undefined;
+  let dotsColor = loaderAttribute && loaderAttribute.dotsColor || 'white';
+  let backgroundColor = loaderAttribute && loaderAttribute.backgroundColor || '#24CAFF';
+  let loaderEnabled = loaderAttribute === undefined || loaderAttribute.enabled === 'true' || loaderAttribute.enabled === undefined; // true default
+  let loaderScene;
+  let sphereGeometry;
+  let sphereMaterial;
+  let sphereMesh1;
+  let sphereMesh2;
+  let sphereMesh3;
+  let camera;
+  let clock;
+  let time;
+  let render;
 
   if (!loaderEnabled) { return; }
 
@@ -75,8 +75,8 @@ module.exports.remove = function remove () {
 };
 
 function resize (camera) {
-  var embedded = sceneEl.hasAttribute('embedded');
-  var size = getSceneCanvasSize(sceneEl.canvas, embedded, sceneEl.maxCanvasSize, sceneEl.is('vr-mode'));
+  let embedded = sceneEl.hasAttribute('embedded');
+  let size = getSceneCanvasSize(sceneEl.canvas, embedded, sceneEl.maxCanvasSize, sceneEl.is('vr-mode'));
   camera.aspect = size.width / size.height;
   camera.updateProjectionMatrix();
    // Notify renderer of size change.

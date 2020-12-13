@@ -1,14 +1,14 @@
 /* global AFRAME, assert, suite, test, THREE */
-var helpers = require('../../helpers');
-var registerPrimitive = require('extras/primitives/primitives').registerPrimitive;
-var primitives = require('extras/primitives/primitives').primitives;
+let helpers = require('../../helpers');
+let registerPrimitive = require('extras/primitives/primitives').registerPrimitive;
+let primitives = require('extras/primitives/primitives').primitives;
 
-var primitiveId = 0;
+let primitiveId = 0;
 
 function primitiveFactory (definition, cb) {
-  var el;
-  var entity = helpers.entityFactory();
-  var tagName = 'a-test-' + primitiveId++;
+  let el;
+  let entity = helpers.entityFactory();
+  let tagName = 'a-test-' + primitiveId++;
   registerPrimitive(tagName, definition);
   el = document.createElement(tagName);
   el.addEventListener('loaded', function () {
@@ -50,7 +50,7 @@ suite('registerPrimitive', function () {
       }
     }, function (el) {
       el.setAttribute('material', 'color', 'tomato');
-      var material = el.getAttribute('material');
+      let material = el.getAttribute('material');
       assert.equal(material.color, 'tomato');
       assert.equal(material.metalness, 0.63);
       done();
@@ -77,8 +77,8 @@ suite('registerPrimitive', function () {
 
 suite('registerPrimitive (using innerHTML)', function () {
   function primitiveFactory (definition, attributes, cb, preCb) {
-    var el = helpers.entityFactory();
-    var tagName = 'a-test-' + primitiveId++;
+    let el = helpers.entityFactory();
+    let tagName = 'a-test-' + primitiveId++;
     registerPrimitive(tagName, definition);
     if (preCb) { preCb(el.sceneEl); }
     if (cb) {
@@ -97,7 +97,7 @@ suite('registerPrimitive (using innerHTML)', function () {
         material: {color: '#FFF', metalness: 0.63}
       }
     }, 'material="color: tomato"', function (el) {
-      var material = el.getAttribute('material');
+      let material = el.getAttribute('material');
       assert.equal(material.color, 'tomato');
       assert.equal(material.metalness, 0.63);
       done();
@@ -289,9 +289,9 @@ suite('registerPrimitive (using innerHTML)', function () {
   });
 
   test('with multiple primitives', function (done) {
-    var count = 0;
-    var el = helpers.entityFactory();
-    var tagName = 'a-test-' + primitiveId++;
+    let count = 0;
+    let el = helpers.entityFactory();
+    let tagName = 'a-test-' + primitiveId++;
     registerPrimitive(tagName, {
       defaultComponents: {
         geometry: {primitive: 'plane'},

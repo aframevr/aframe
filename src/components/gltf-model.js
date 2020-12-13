@@ -1,7 +1,7 @@
-var registerComponent = require('../core/component').registerComponent;
-var THREE = require('../lib/three');
-var utils = require('../utils/');
-var warn = utils.debug('components:gltf-model:warn');
+let registerComponent = require('../core/component').registerComponent;
+let THREE = require('../lib/three');
+let utils = require('../utils/');
+let warn = utils.debug('components:gltf-model:warn');
 
 /**
  * glTF model loader.
@@ -10,7 +10,7 @@ module.exports.Component = registerComponent('gltf-model', {
   schema: {type: 'model'},
 
   init: function () {
-    var dracoLoader = this.system.getDRACOLoader();
+    let dracoLoader = this.system.getDRACOLoader();
     this.model = null;
     this.loader = new THREE.GLTFLoader();
     if (dracoLoader) {
@@ -19,9 +19,9 @@ module.exports.Component = registerComponent('gltf-model', {
   },
 
   update: function () {
-    var self = this;
-    var el = this.el;
-    var src = this.data;
+    let self = this;
+    let el = this.el;
+    let src = this.data;
 
     if (!src) { return; }
 
@@ -33,7 +33,7 @@ module.exports.Component = registerComponent('gltf-model', {
       el.setObject3D('mesh', self.model);
       el.emit('model-loaded', {format: 'gltf', model: self.model});
     }, undefined /* onProgress */, function gltfFailed (error) {
-      var message = (error && error.message) ? error.message : 'Failed to load glTF model';
+      let message = (error && error.message) ? error.message : 'Failed to load glTF model';
       warn(message);
       el.emit('model-error', {format: 'gltf', src: src});
     });

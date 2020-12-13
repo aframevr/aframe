@@ -1,10 +1,10 @@
 /* global assert, process, setup, suite, test */
-var entityFactory = require('../helpers').entityFactory;
-var degToRad = require('index').THREE.Math.degToRad;
+let entityFactory = require('../helpers').entityFactory;
+let degToRad = require('index').THREE.Math.degToRad;
 
 suite('rotation', function () {
   setup(function (done) {
-    var el = this.el = entityFactory();
+    let el = this.el = entityFactory();
     el.setAttribute('rotation', '');
     el.addEventListener('loaded', function () {
       done();
@@ -12,7 +12,7 @@ suite('rotation', function () {
   });
 
   test('defaults to 0 0 0', function () {
-    var el = this.el;
+    let el = this.el;
     assert.equal(el.object3D.rotation.x, degToRad(0));
     assert.equal(el.object3D.rotation.y, degToRad(0));
     assert.equal(el.object3D.rotation.z, degToRad(0));
@@ -26,7 +26,7 @@ suite('rotation', function () {
     });
 
     test('can get defined rotation', function () {
-      var el = this.el;
+      let el = this.el;
       el.setAttribute('rotation', '360 -90 45');
       assert.shallowDeepEqual(el.getAttribute('rotation'), {
         x: 360, y: -90, z: 45
@@ -36,7 +36,7 @@ suite('rotation', function () {
 
   suite('update', function () {
     test('can set rotation', function () {
-      var el = this.el;
+      let el = this.el;
       el.setAttribute('rotation', '-360 180 90.5');
       assert.equal(el.object3D.rotation.x, degToRad(-360));
       assert.equal(el.object3D.rotation.y, degToRad(180));

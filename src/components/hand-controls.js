@@ -1,8 +1,8 @@
 /* global THREE */
-var registerComponent = require('../core/component').registerComponent;
+let registerComponent = require('../core/component').registerComponent;
 
 // Found at https://github.com/aframevr/assets.
-var MODEL_URLS = {
+let MODEL_URLS = {
   toonLeft: 'https://cdn.aframe.io/controllers/hands/leftHand.glb',
   toonRight: 'https://cdn.aframe.io/controllers/hands/rightHand.glb',
   lowPolyLeft: 'https://cdn.aframe.io/controllers/hands/leftHandLow.glb',
@@ -12,7 +12,7 @@ var MODEL_URLS = {
 };
 
 // Poses.
-var ANIMATIONS = {
+let ANIMATIONS = {
   open: 'Open',
   // point: grip active, trackpad surface active, trigger inactive.
   point: 'Point',
@@ -27,7 +27,7 @@ var ANIMATIONS = {
 };
 
 // Map animation to public events for the API.
-var EVENTS = {};
+let EVENTS = {};
 EVENTS[ANIMATIONS.fist] = 'grip';
 EVENTS[ANIMATIONS.thumbUp] = 'pistol';
 EVENTS[ANIMATIONS.point] = 'pointing';
@@ -55,8 +55,8 @@ module.exports.Component = registerComponent('hand-controls', {
   },
 
   init: function () {
-    var self = this;
-    var el = this.el;
+    let self = this;
+    let el = this.el;
     // Current pose.
     this.gesture = ANIMATIONS.open;
     // Active buttons populated by events provided by the attached controls.
@@ -104,7 +104,7 @@ module.exports.Component = registerComponent('hand-controls', {
   },
 
   tick: function (time, delta) {
-    var mesh = this.el.getObject3D('mesh');
+    let mesh = this.el.getObject3D('mesh');
 
     if (!mesh || !mesh.mixer) { return; }
 
@@ -120,7 +120,7 @@ module.exports.Component = registerComponent('hand-controls', {
   },
 
   addEventListeners: function () {
-    var el = this.el;
+    let el = this.el;
     el.addEventListener('gripdown', this.onGripDown);
     el.addEventListener('gripup', this.onGripUp);
     el.addEventListener('trackpaddown', this.onTrackpadDown);
@@ -148,7 +148,7 @@ module.exports.Component = registerComponent('hand-controls', {
   },
 
   removeEventListeners: function () {
-    var el = this.el;
+    let el = this.el;
     el.removeEventListener('gripdown', this.onGripDown);
     el.removeEventListener('gripup', this.onGripUp);
     el.removeEventListener('trackpaddown', this.onTrackpadDown);
@@ -180,12 +180,12 @@ module.exports.Component = registerComponent('hand-controls', {
    * that won't be changing much.
    */
   update: function (previousHand) {
-    var controlConfiguration;
-    var el = this.el;
-    var hand = this.data.hand;
-    var handModelStyle = this.data.handModelStyle;
-    var handColor = this.data.color;
-    var self = this;
+    let controlConfiguration;
+    let el = this.el;
+    let hand = this.data.hand;
+    let handModelStyle = this.data.handModelStyle;
+    let handColor = this.data.color;
+    let self = this;
 
     // Get common configuration to abstract different vendor controls.
     controlConfiguration = {
@@ -195,15 +195,15 @@ module.exports.Component = registerComponent('hand-controls', {
 
     // Set model.
     if (hand !== previousHand) {
-      var handmodelUrl = MODEL_URLS[handModelStyle + hand.charAt(0).toUpperCase() + hand.slice(1)];
+      let handmodelUrl = MODEL_URLS[handModelStyle + hand.charAt(0).toUpperCase() + hand.slice(1)];
       this.loader.load(handmodelUrl, function (gltf) {
-        var mesh = gltf.scene.children[0];
-        var handModelOrientation = hand === 'left' ? Math.PI / 2 : -Math.PI / 2;
+        let mesh = gltf.scene.children[0];
+        let handModelOrientation = hand === 'left' ? Math.PI / 2 : -Math.PI / 2;
         mesh.mixer = new THREE.AnimationMixer(mesh);
         self.clips = gltf.animations;
         el.setObject3D('mesh', mesh);
 
-        var handMaterial = mesh.children[1].material;
+        let handMaterial = mesh.children[1].material;
         handMaterial.color = new THREE.Color(handColor);
         mesh.position.set(0, 0, 0);
         mesh.rotation.set(0, 0, handModelOrientation);
@@ -231,9 +231,9 @@ module.exports.Component = registerComponent('hand-controls', {
    * @param {string} evt - Type of event for the button (i.e., down/up/touchstart/touchend).
    */
   handleButton: function (button, evt) {
-    var lastGesture;
-    var isPressed = evt === 'down';
-    var isTouched = evt === 'touchstart';
+    let lastGesture;
+    let isPressed = evt === 'down';
+    let isTouched = evt === 'touchstart';
 
     // Update objects.
     if (evt.indexOf('touch') === 0) {
@@ -263,13 +263,13 @@ module.exports.Component = registerComponent('hand-controls', {
    * Determine which pose hand should be in considering active and touched buttons.
    */
   determineGesture: function () {
-    var gesture;
-    var isGripActive = this.pressedButtons.grip;
-    var isSurfaceActive = this.pressedButtons.surface || this.touchedButtons.surface;
-    var isTrackpadActive = this.pressedButtons.trackpad || this.touchedButtons.trackpad;
-    var isTriggerActive = this.pressedButtons.trigger || this.touchedButtons.trigger;
-    var isABXYActive = this.touchedButtons.AorX || this.touchedButtons.BorY;
-    var isVive = isViveController(this.el.components['tracked-controls']);
+    let gesture;
+    let isGripActive = this.pressedButtons.grip;
+    let isSurfaceActive = this.pressedButtons.surface || this.touchedButtons.surface;
+    let isTrackpadActive = this.pressedButtons.trackpad || this.touchedButtons.trackpad;
+    let isTriggerActive = this.pressedButtons.trigger || this.touchedButtons.trigger;
+    let isABXYActive = this.touchedButtons.AorX || this.touchedButtons.BorY;
+    let isVive = isViveController(this.el.components['tracked-controls']);
 
     // Works well with Oculus Touch and Windows Motion Controls, but Vive needs tweaks.
     if (isVive) {
@@ -297,8 +297,8 @@ module.exports.Component = registerComponent('hand-controls', {
    * Play corresponding clip to a gesture
    */
   getClip: function (gesture) {
-    var clip;
-    var i;
+    let clip;
+    let i;
     for (i = 0; i < this.clips.length; i++) {
       clip = this.clips[i];
       if (clip.name !== gesture) { continue; }
@@ -326,8 +326,8 @@ module.exports.Component = registerComponent('hand-controls', {
    * Emit `hand-controls`-specific events.
    */
   emitGestureEvents: function (gesture, lastGesture) {
-    var el = this.el;
-    var eventName;
+    let el = this.el;
+    let eventName;
 
     if (lastGesture === gesture) { return; }
 
@@ -348,10 +348,10 @@ module.exports.Component = registerComponent('hand-controls', {
   * @param {boolean} reverse - Whether animation should play in reverse.
   */
   playAnimation: function (gesture, lastGesture, reverse) {
-    var clip;
-    var fromAction;
-    var mesh = this.el.getObject3D('mesh');
-    var toAction;
+    let clip;
+    let fromAction;
+    let mesh = this.el.getObject3D('mesh');
+    let toAction;
 
     if (!mesh) { return; }
 
@@ -394,7 +394,7 @@ module.exports.Component = registerComponent('hand-controls', {
  * @param {boolean} active
  */
 function getGestureEventName (gesture, active) {
-  var eventName;
+  let eventName;
 
   if (!gesture) { return; }
 
@@ -411,8 +411,8 @@ function getGestureEventName (gesture, active) {
 }
 
 function isViveController (trackedControls) {
-  var controller = trackedControls && trackedControls.controller;
-  var isVive = controller && (controller.id && controller.id.indexOf('OpenVR ') === 0 ||
+  let controller = trackedControls && trackedControls.controller;
+  let isVive = controller && (controller.id && controller.id.indexOf('OpenVR ') === 0 ||
     (controller.profiles &&
      controller.profiles[0] &&
      controller.profiles[0] === 'htc-vive-controller-mv'));

@@ -1,9 +1,9 @@
 /* global AFRAME, assert, process, suite, test, setup */
-var components = require('core/component').components;
-var systems = require('core/system').systems;
-var registerSystem = require('core/system').registerSystem;
+let components = require('core/component').components;
+let systems = require('core/system').systems;
+let registerSystem = require('core/system').registerSystem;
 
-var TestSystem = {
+let TestSystem = {
   init: function () {},
   update: function () {}
 };
@@ -29,7 +29,7 @@ suite('System', function () {
 
   suite('constructor', function () {
     test('sets reference to scene', function (done) {
-      var sceneEl;
+      let sceneEl;
       AFRAME.registerSystem('test', {});
       sceneEl = document.createElement('a-scene');
       document.body.appendChild(sceneEl);
@@ -48,9 +48,9 @@ suite('System', function () {
     });
 
     test('initializes data for single-prop schema', function () {
-      var sceneEl = document.createElement('a-scene');
-      var system;
-      var TestSystem;
+      let sceneEl = document.createElement('a-scene');
+      let system;
+      let TestSystem;
 
       AFRAME.registerSystem('test', {
         schema: {default: ''}
@@ -63,9 +63,9 @@ suite('System', function () {
     });
 
     test('initializes data for multi-prop schema', function () {
-      var sceneEl = document.createElement('a-scene');
-      var system;
-      var TestSystem;
+      let sceneEl = document.createElement('a-scene');
+      let system;
+      let TestSystem;
 
       AFRAME.registerSystem('test', {
         schema: {
@@ -82,9 +82,9 @@ suite('System', function () {
     });
 
     test('uses default values', function () {
-      var sceneEl = document.createElement('a-scene');
-      var system;
-      var TestSystem;
+      let sceneEl = document.createElement('a-scene');
+      let system;
+      let TestSystem;
 
       AFRAME.registerSystem('test', {
         schema: {
@@ -100,9 +100,9 @@ suite('System', function () {
     });
 
     test('can be empty', function () {
-      var sceneEl = document.createElement('a-scene');
-      var system;
-      var TestSystem;
+      let sceneEl = document.createElement('a-scene');
+      let system;
+      let TestSystem;
 
       AFRAME.registerSystem('test', {schema: {}});
       TestSystem = systems.test;
@@ -113,8 +113,8 @@ suite('System', function () {
   });
 
   test('can update system with setAttribute', function (done) {
-    var sceneEl;
-    var system;
+    let sceneEl;
+    let system;
     AFRAME.registerSystem('test', {
       schema: {
         foo: {type: 'string'},
@@ -139,7 +139,7 @@ suite('System', function () {
   });
 
   test('calls update handler on init', function (done) {
-    var sceneEl;
+    let sceneEl;
     AFRAME.registerSystem('test', {
       schema: {
         foo: {type: 'string', default: 'qaz'},
@@ -158,7 +158,7 @@ suite('System', function () {
   });
 
   test('calls update handler on update', function (done) {
-    var sceneEl;
+    let sceneEl;
     AFRAME.registerSystem('test', {
       schema: {
         foo: {type: 'string', default: 'default'},

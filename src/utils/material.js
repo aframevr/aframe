@@ -1,8 +1,8 @@
-var THREE = require('../lib/three');
+let THREE = require('../lib/three');
 
-var HLS_MIMETYPES = ['application/x-mpegurl', 'application/vnd.apple.mpegurl'];
+let HLS_MIMETYPES = ['application/x-mpegurl', 'application/vnd.apple.mpegurl'];
 
-var COLOR_MAPS = new Set([
+let COLOR_MAPS = new Set([
   'emissiveMap',
   'envMap',
   'map',
@@ -17,10 +17,10 @@ var COLOR_MAPS = new Set([
  * @param {object} data
  */
 module.exports.updateMapMaterialFromData = function (materialName, dataName, shader, data) {
-  var el = shader.el;
-  var material = shader.material;
-  var rendererSystem = el.sceneEl.systems.renderer;
-  var src = data[dataName];
+  let el = shader.el;
+  let material = shader.material;
+  let rendererSystem = el.sceneEl.systems.renderer;
+  let src = data[dataName];
 
   // Because a single material / shader may have multiple textures,
   // we need to remember the source value for this data property
@@ -85,13 +85,13 @@ module.exports.updateMap = function (shader, data) {
  * @param {object} data
  */
 module.exports.updateDistortionMap = function (longType, shader, data) {
-  var shortType = longType;
+  let shortType = longType;
   if (longType === 'ambientOcclusion') { shortType = 'ao'; }
-  var el = shader.el;
-  var material = shader.material;
-  var rendererSystem = el.sceneEl.systems.renderer;
-  var src = data[longType + 'Map'];
-  var info = {};
+  let el = shader.el;
+  let material = shader.material;
+  let rendererSystem = el.sceneEl.systems.renderer;
+  let src = data[longType + 'Map'];
+  let info = {};
   info.src = src;
 
   // Pass through the repeat and offset to be handled by the material loader.
@@ -113,7 +113,7 @@ module.exports.updateDistortionMap = function (longType, shader, data) {
   setMap(null);
 
   function setMap (texture) {
-    var slot = shortType + 'Map';
+    let slot = shortType + 'Map';
     material[slot] = texture;
     if (texture && COLOR_MAPS.has(slot)) {
       rendererSystem.applyColorCorrection(texture);

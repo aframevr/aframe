@@ -1,4 +1,4 @@
-var registerComponent = require('../core/component').registerComponent;
+let registerComponent = require('../core/component').registerComponent;
 
 /**
  * Visibility component.

@@ -10,9 +10,9 @@ AFRAME.registerComponent('stats-in-vr', {
   },
 
   tick: function (t, dt) {
-    var color;
-    var fps;
-    var renderTimes = this.renderTimes;
+    let color;
+    let fps;
+    let renderTimes = this.renderTimes;
 
     renderTimes.push(dt);
     if (renderTimes.length > this.data.frames) { renderTimes.shift(); }
