@@ -69079,6 +69079,18 @@ Shader.prototype = {
   init: function (data) {
     this.attributes = this.initVariables(data, 'attribute');
     this.uniforms = this.initVariables(data, 'uniform');
+
+    // msdf uses webgl2 by default during initialization.  If we are using a WebGL1 renderer, this
+    // will error.  Therefore, switch to the WebGL1 shaders here for msdf renderer if we're using
+    // WebGL1.
+    if (this.name === 'msdf' &&
+        this.el.sceneEl &&
+        this.el.sceneEl.renderer &&
+        this.el.sceneEl.renderer.isWebGL1Renderer) {
+      this.vertexShader = this.vertexShaderWebGL1
+      this.fragmentShader = this.fragmentShaderWebGL1
+    }
+
     this.material = new (this.raw ? THREE.RawShaderMaterial : THREE.ShaderMaterial)({
       // attributes: this.attributes,
       uniforms: this.uniforms,
@@ -70411,7 +70423,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('8-Frame Version: 1.1.0 (Date 2020-12-12, Commit #533c4304)');
+console.log('8-Frame Version: 1.1.0 (Date 2020-12-14, Commit #95804676)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
@@ -70794,8 +70806,10 @@ module.exports.Shader = registerShader('msdf', {
   raw: true,
 
   vertexShader: VERTEX_SHADER,
+  vertexShaderWebGL1: VERTEX_SHADER_WEBGL1,
 
-  fragmentShader: FRAGMENT_SHADER
+  fragmentShader: FRAGMENT_SHADER,
+  fragmentShaderWebGL1: FRAGMENT_SHADER_WEBGL1
 });
 
 },{"../core/shader":118}],161:[function(_dereq_,module,exports){

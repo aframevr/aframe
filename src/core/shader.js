@@ -60,8 +60,8 @@ Shader.prototype = {
         this.el.sceneEl &&
         this.el.sceneEl.renderer &&
         this.el.sceneEl.renderer.isWebGL1Renderer) {
-      this.vertexShader = this.vertexShaderWebGL1
-      this.fragmentShader = this.fragmentShaderWebGL1
+      this.vertexShader = this.vertexShaderWebGL1;
+      this.fragmentShader = this.fragmentShaderWebGL1;
     }
 
     this.material = new (this.raw ? THREE.RawShaderMaterial : THREE.ShaderMaterial)({
