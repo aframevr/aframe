@@ -69087,8 +69087,8 @@ Shader.prototype = {
         this.el.sceneEl &&
         this.el.sceneEl.renderer &&
         this.el.sceneEl.renderer.isWebGL1Renderer) {
-      this.vertexShader = this.vertexShaderWebGL1
-      this.fragmentShader = this.fragmentShaderWebGL1
+      this.vertexShader = this.vertexShaderWebGL1;
+      this.fragmentShader = this.fragmentShaderWebGL1;
     }
 
     this.material = new (this.raw ? THREE.RawShaderMaterial : THREE.ShaderMaterial)({
@@ -70423,7 +70423,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('8-Frame Version: 1.1.0 (Date 2020-12-14, Commit #95804676)');
+console.log('8-Frame Version: 1.1.0 (Date 2020-12-14, Commit #08f2040a)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
