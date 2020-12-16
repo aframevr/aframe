@@ -53,10 +53,10 @@ Shader.prototype = {
     this.attributes = this.initVariables(data, 'attribute');
     this.uniforms = this.initVariables(data, 'uniform');
 
-    // msdf uses webgl2 by default during initialization.  If we are using a WebGL1 renderer, this
-    // will error.  Therefore, switch to the WebGL1 shaders here for msdf renderer if we're using
-    // WebGL1.
-    if (this.name === 'msdf' &&
+    // msdf and sdf use webgl2 by default during initialization.  If we are using a WebGL1 renderer,
+    // this will error.  Therefore, switch to the WebGL1 shaders here for the shaders if we're
+    // using WebGL1.
+    if ((this.name === 'msdf' || this.name === 'sdf') &&
         this.el.sceneEl &&
         this.el.sceneEl.renderer &&
         this.el.sceneEl.renderer.isWebGL1Renderer) {
