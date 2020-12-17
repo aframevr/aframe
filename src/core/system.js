@@ -178,7 +178,6 @@ System.prototype = {
     // Reuse `this.oldData` object to try not to allocate another one.
     if (this.oldData instanceof Object) { utils.objectPool.clearObject(this.oldData); }
     this.oldData = extendProperties(this.oldData, this.data, this.isObjectBased);
-    console.log('callUpdateHandler', this.oldData);
     // Update component with the previous old data.
     this.update(this.previousOldData);
   },
