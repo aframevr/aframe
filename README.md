@@ -1,3 +1,12 @@
+# 8Frame
+
+8Frame is 8th Wall's modified version of AFrame.  It has the following changes
+- 8Frame 1.1.0 is webgl1 by dfeault, where as AFrame 1.1.0 is webgl2 by default.  You can specify the webgl version you prefer using `renderer: "webgl2: true/false"`.
+- 8Frame 1.1.0 fixes webgl1 text rendering issues present in AFrame 1.1.0. <a-text/> sdf shader is broken on WebGL1, thus broken on iOS devices.
+- 8Frame exposes properties in THREE.js's `WebGLRenderer` so that it's compatible with MRCS HoloVideoObject.
+- 8Frame improves AFrame's compatibility with XR8.
+
+
 <h1 align="center">A-Frame</h1>
 
 <p align="center"><a href="https://aframe.io" target="_blank"><img width="480" alt="A-Frame" src="https://user-images.githubusercontent.com/674727/32120889-230ef110-bb0f-11e7-908c-76e39aa43149.jpg"></a></p>
