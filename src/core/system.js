@@ -36,6 +36,7 @@ var System = module.exports.System = function (sceneEl) {
   // Set reference to scene.
   this.el = sceneEl;
   this.sceneEl = sceneEl;
+  this.initialized = false;
   this.isSingleProperty = isSingleProp(this.schema);
   this.isSinglePropertyObject =
     this.isSingleProperty &&
@@ -68,9 +69,8 @@ var System = module.exports.System = function (sceneEl) {
   }
 
   // Process system configuration.
-  this.buildData();
-  this.init();
-  this.update({});
+  console.trace('here');
+  this.updateProperties(this.sceneEl.getAttribute(this.name));
 };
 
 System.prototype = {
@@ -97,17 +97,38 @@ System.prototype = {
    * @private
    */
   updateProperties: function (attrValue) {
-    console.log('updateProperties', attrValue);
     // Parse the attribute value.
     if (attrValue !== null) {
       attrValue = this.parseAttrValueForCache(attrValue);
     }
     // Cache current attrValue for future updates. Updates `this.attrValue`.
     this.updateCachedAttrValue(attrValue);
-    var oldData = this.data;
     if (!Object.keys(schema).length) { return; }
-    this.updateSystem(attrValue);
-    this.update(oldData);
+    if (this.initialized) {
+      this.updateSystem(attrValue);
+      this.callUpdateHandler();
+    } else {
+      this.initSystem();
+    }
+  },
+  initSystem: function () {
+    var initialOldData;
+
+    // Build data.
+    this.data = this.buildData();
+
+    // Initialize component.
+    this.init();
+    this.initialized = true;
+
+    // Store current data as previous data for future updates.
+    this.oldData = extendProperties(this.oldData, this.data, this.isObjectBased);
+
+    // For oldData, pass empty object to multiple-prop schemas or object single-prop schema.
+    // Pass undefined to rest of types.
+    initialOldData = this.isObjectBased ? this.objectPool.use() : undefined;
+    this.update(initialOldData);
+    if (this.isObjectBased) { this.objectPool.recycle(initialOldData); }
   },
   /**
    * @param attrValue - Passed argument from setAttribute.
@@ -133,6 +154,34 @@ System.prototype = {
       this.data[key] = attrValue[key];
     }
   },
+  /**
+   * Check if component should fire update and fire update lifecycle handler.
+   */
+  callUpdateHandler: function () {
+    var hasSystemChanged;
+
+    // Store the previous old data before we calculate the new oldData.
+    if (this.previousOldData instanceof Object) {
+      utils.objectPool.clearObject(this.previousOldData);
+    }
+    if (this.isObjectBased) {
+      copyData(this.previousOldData, this.oldData);
+    } else {
+      this.previousOldData = this.oldData;
+    }
+
+    hasSystemChanged = !utils.deepEqual(this.oldData, this.data);
+    // Don't update if properties haven't changed.
+    if (!hasSystemChanged) { return; }
+
+    // Store current data as previous data for future updates.
+    // Reuse `this.oldData` object to try not to allocate another one.
+    if (this.oldData instanceof Object) { utils.objectPool.clearObject(this.oldData); }
+    this.oldData = extendProperties(this.oldData, this.data, this.isObjectBased);
+    console.log('callUpdateHandler', this.oldData);
+    // Update component with the previous old data.
+    this.update(this.previousOldData);
+  },
 
   /**
    * Parse data.
@@ -142,9 +191,9 @@ System.prototype = {
     if (!Object.keys(schema).length) { return; }
     rawData = rawData || window.HTMLElement.prototype.getAttribute.call(this.sceneEl, this.name);
     if (isSingleProp(schema)) {
-      this.data = parseProperty(rawData, schema);
+      return parseProperty(rawData, schema);
     } else {
-      this.data = parseProperties(styleParser.parse(rawData) || {}, schema);
+      return parseProperties(styleParser.parse(rawData) || {}, schema);
     }
   },
 
@@ -332,7 +381,8 @@ module.exports.registerSystem = function (name, definition) {
 */
 function extendProperties (dest, source, isObjectBased) {
   var key;
-  if (isObjectBased && source.constructor === Object) {
+
+  if (isObjectBased && source && source.constructor === Object) {
     for (key in source) {
       if (source[key] === undefined) { continue; }
       if (source[key] && source[key].constructor === Object) {
@@ -346,6 +396,31 @@ function extendProperties (dest, source, isObjectBased) {
   return source;
 }
 
+/**
+* Clone component data.
+* Clone only the properties that are plain objects while keeping a reference for the rest.
+*
+* @param data - Component data to clone.
+* @returns Cloned data.
+*/
+function copyData (dest, sourceData) {
+  var parsedProperty;
+  var key;
+  for (key in sourceData) {
+    if (sourceData[key] === undefined) { continue; }
+    parsedProperty = sourceData[key];
+    dest[key] = isObjectOrArray(parsedProperty)
+      ? utils.clone(parsedProperty)
+      : parsedProperty;
+  }
+  return dest;
+}
+
 function isObject (value) {
   return value && value.constructor === Object && !(value instanceof window.HTMLElement);
+}
+
+function isObjectOrArray (value) {
+  return value && (value.constructor === Object || value.constructor === Array) &&
+    !(value instanceof window.HTMLElement);
 }
