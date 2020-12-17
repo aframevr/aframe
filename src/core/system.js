@@ -24,7 +24,7 @@ var systems = module.exports.systems = {};  // Keep track of registered systems.
  * all entities with a physics or rigid body component.
  *
  * TODO: Have the System prototype reuse the Component prototype. Most code is copied
- * and some pieces are missing from the Component facilities (e.g., attribute caching,
+ * and some pieces are missing from the Component facilities (e.g.,
  * setAttribute behavior).
  *
  * @member {string} name - Name that system is registered under.
@@ -96,11 +96,42 @@ System.prototype = {
    *
    * @private
    */
-  updateProperties: function (rawData) {
+  updateProperties: function (attrValue) {
+    console.log('updateProperties', attrValue);
+    // Parse the attribute value.
+    if (attrValue !== null) {
+      attrValue = this.parseAttrValueForCache(attrValue);
+    }
+    // Cache current attrValue for future updates. Updates `this.attrValue`.
+    this.updateCachedAttrValue(attrValue);
     var oldData = this.data;
     if (!Object.keys(schema).length) { return; }
-    this.buildData(rawData);
+    this.updateSystem(attrValue);
     this.update(oldData);
+  },
+  /**
+   * @param attrValue - Passed argument from setAttribute.
+   */
+  updateSystem: function (attrValue) {
+    var key;
+
+    // Apply new value to this.data in place since direct update.
+    if (this.isSingleProperty) {
+      if (this.isObjectBased) {
+        parseProperty(attrValue, this.schema);
+      }
+      // Single-property (already parsed).
+      this.data = attrValue;
+      return;
+    }
+
+    parseProperties(attrValue, this.schema, true, this.name);
+
+    // Normal update.
+    for (key in attrValue) {
+      if (attrValue[key] === undefined) { continue; }
+      this.data[key] = attrValue[key];
+    }
   },
 
   /**
@@ -152,7 +183,7 @@ System.prototype = {
    *
    * @param {string} value - HTML attribute value.
    * @param {boolean} silent - Suppress warning messages.
-   * @returns {object} Component data.
+   * @returns {object} System data.
    */
   parse: function (value, silent) {
     var schema = this.schema;
@@ -166,7 +197,7 @@ System.prototype = {
    * Only called from `Entity.setAttribute` for properties whose parsers accept a non-string
    * value (e.g., selector, vec3 property types).
    *
-   * @param {object} data - Complete component data.
+   * @param {object} data - Complete system data.
    * @returns {string}
    */
   stringify: function (data) {
@@ -175,6 +206,81 @@ System.prototype = {
     if (this.isSingleProperty) { return stringifyProperty(data, schema); }
     data = stringifyProperties(data, schema);
     return styleParser.stringify(data);
+  },
+
+  /**
+   * Update the cache of the pre-parsed attribute value.
+   *
+   * @param {string} value - New data.
+   * @param {boolean } clobber - Whether to wipe out and replace previous data.
+   */
+  updateCachedAttrValue: function (value) {
+    var newAttrValue;
+    var tempObject;
+    var property;
+
+    if (value === undefined) { return; }
+
+    // If null value is the new attribute value, make the attribute value falsy.
+    if (value === null) {
+      if (this.isObjectBased && this.attrValue) {
+        this.objectPool.recycle(this.attrValue);
+      }
+      this.attrValue = undefined;
+      return;
+    }
+
+    if (value instanceof Object && !(value instanceof window.HTMLElement)) {
+      // If value is an object, copy it to our pooled newAttrValue object to use to update
+      // the attrValue.
+      tempObject = this.objectPool.use();
+      newAttrValue = utils.extend(tempObject, value);
+    } else {
+      newAttrValue = this.parseAttrValueForCache(value);
+    }
+
+    // Merge new data with previous `attrValue` if updating and not clobbering.
+    if (this.isObjectBased && this.attrValue) {
+      for (property in this.attrValue) {
+        if (newAttrValue[property] === undefined) {
+          newAttrValue[property] = this.attrValue[property];
+        }
+      }
+    }
+
+    // Update attrValue.
+    if (this.isObjectBased && !this.attrValue) {
+      this.attrValue = this.objectPool.use();
+    }
+    utils.objectPool.clearObject(this.attrValue);
+    this.attrValue = extendProperties(this.attrValue, newAttrValue, this.isObjectBased);
+    utils.objectPool.clearObject(tempObject);
+  },
+  /**
+   * Given an HTML attribute value parses the string based on the component schema.
+   * To avoid double parsings of strings into strings we store the original instead
+   * of the parsed one
+   *
+   * @param {string} value - HTML attribute value
+   */
+  parseAttrValueForCache: function (value) {
+    var parsedValue;
+    if (typeof value !== 'string') { return value; }
+    if (this.isSingleProperty) {
+      parsedValue = this.schema.parse(value);
+      /**
+       * To avoid bogus double parsings. Cached values will be parsed when building
+       * component data. For instance when parsing a src id to its url, we want to cache
+       * original string and not the parsed one (#monster -> models/monster.dae)
+       * so when building data we parse the expected value.
+       */
+      if (typeof parsedValue === 'string') { parsedValue = value; }
+    } else {
+      // Parse using the style parser to avoid double parsing of individual properties.
+      utils.objectPool.clearObject(this.parsingAttrValue);
+      parsedValue = styleParser.parse(value, this.parsingAttrValue);
+    }
+    return parsedValue;
   }
 };
 
@@ -201,8 +307,8 @@ module.exports.registerSystem = function (name, definition) {
 
   if (systems[name]) {
     throw new Error('The system `' + name + '` has been already registered. ' +
-                    'Check that you are not loading two versions of the same system ' +
-                    'or two different systems of the same name.');
+      'Check that you are not loading two versions of the same system ' +
+      'or two different systems of the same name.');
   }
   NewSystem = function (sceneEl) { System.call(this, sceneEl); };
   NewSystem.prototype = Object.create(System.prototype, proto);
@@ -215,6 +321,31 @@ module.exports.registerSystem = function (name, definition) {
   // Initialize systems for existing scenes
   for (i = 0; i < scenes.length; i++) { scenes[i].initSystem(name); }
 };
+
+/**
+* Object extending with checking for single-property schema.
+*
+* @param dest - Destination object or value.
+* @param source - Source object or value
+* @param {boolean} isObjectBased - Whether values are objects.
+* @returns Overridden object or value.
+*/
+function extendProperties (dest, source, isObjectBased) {
+  var key;
+  if (isObjectBased && source.constructor === Object) {
+    for (key in source) {
+      if (source[key] === undefined) { continue; }
+      if (source[key] && source[key].constructor === Object) {
+        dest[key] = utils.clone(source[key]);
+      } else {
+        dest[key] = source[key];
+      }
+    }
+    return dest;
+  }
+  return source;
+}
+
 function isObject (value) {
   return value && value.constructor === Object && !(value instanceof window.HTMLElement);
 }
