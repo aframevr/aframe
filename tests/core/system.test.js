@@ -138,6 +138,37 @@ suite('System', function () {
     });
   });
 
+  test('can update system with setAttribute with cache', function (done) {
+    var sceneEl;
+    var system;
+    AFRAME.registerSystem('test', {
+      schema: {
+        foo: {type: 'string'},
+        bar: {type: 'number', default: 0}
+      }
+    });
+    sceneEl = document.createElement('a-scene');
+    document.body.appendChild(sceneEl);
+
+    setTimeout(() => {
+      system = sceneEl.systems.test;
+
+      sceneEl.setAttribute('test', {foo: 'foo'});
+      assert.equal(sceneEl.getAttribute('test').foo, 'foo');
+      assert.equal(sceneEl.getAttribute('test').bar, 0);
+      assert.equal(system.data.foo, 'foo');
+      assert.equal(system.data.bar, 0);
+      sceneEl.setAttribute('test', {bar: 10});
+      assert.equal(sceneEl.getAttribute('test').foo, 'foo');
+      assert.equal(sceneEl.getAttribute('test').bar, 10);
+      assert.equal(system.data.foo, 'foo');
+      assert.equal(system.data.bar, 10);
+
+      delete AFRAME.systems.test;
+      done();
+    });
+  });
+
   test('calls update handler on init', function (done) {
     var sceneEl;
     AFRAME.registerSystem('test', {
