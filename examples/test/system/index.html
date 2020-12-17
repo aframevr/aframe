@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Shadows</title>
+  <meta name="description" content="Shadows - A-Frame">
+  <script src="../../../dist/aframe-master.js"></script>
+  <script src="systems/hello.js"></script>
+</head>
+
+<body>
+  <script>
+    setInterval(() => {
+      document.querySelector('a-scene').setAttribute('hello', { count: Date.now() })
+      document.querySelector('a-scene').setAttribute('hello', { random: Math.random() })
+      document.querySelectorAll('a-entity[geometry]').forEach((el) => {
+        el.setAttribute('hello', { count: Date.now() })
+      })
+    }, 1000)
+    
+  </script>
+  <a-scene background="color: #111" stats>
+    <!-- Meshes -->
+    <a-entity geometry="primitive: box" material="color: #EF2D5E; metalness: 0" position="0 0 -4"></a-entity>
+    <a-entity geometry="primitive: sphere" material="color: #EF2D5E; metalness: 0" position="-2 0 -4"></a-entity>
+    <a-entity geometry="primitive: cylinder" material="color: #EF2D5E; metalness: 0" position="2 0 -4">
+    </a-entity>
+  </a-scene>
+</body>
+
+</html>
