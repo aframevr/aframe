@@ -61209,6 +61209,7 @@ module.exports.Component = registerComponent('raycaster', {
     origin: {type: 'vec3'},
     showLine: {default: false},
     lineColor: {default: 'white'},
+    lineOpacity: {default: 1},
     useWorldCoordinates: {default: false}
   },
 
@@ -61358,7 +61359,7 @@ module.exports.Component = registerComponent('raycaster', {
   },
 
   /**
-   * Raycast for intersections and emit events for current and cleared inersections.
+   * Raycast for intersections and emit events for current and cleared intersections.
    */
   checkIntersections: function () {
     var clearedIntersectedEls = this.clearedIntersectedEls;
@@ -61536,6 +61537,7 @@ module.exports.Component = registerComponent('raycaster', {
     this.lineData.start = data.origin;
     this.lineData.end = endVec3.copy(this.unitLineEndVec3).multiplyScalar(length);
     this.lineData.color = data.lineColor;
+    this.lineData.opacity = data.lineOpacity;
     el.setAttribute('line', this.lineData);
   },
 
@@ -61544,7 +61546,7 @@ module.exports.Component = registerComponent('raycaster', {
    * Children are flattened by one level, removing the THREE.Group wrapper,
    * so that non-recursive raycasting remains useful.
    *
-   * Only push children defined as component attachemnts (e.g., setObject3D),
+   * Only push children defined as component attachements (e.g., setObject3D),
    * NOT actual children in the scene graph hierarchy.
    *
    * @param  {Array<Element>} els
@@ -68973,11 +68975,6 @@ module.exports.AScene = registerElement('a-scene', {
                   vrManager.layersEnabled = xrInit.requiredFeatures.indexOf('layers') !== -1;
                   vrManager.setSession(xrSession);
                   xrSession.addEventListener('end', self.exitVRBound);
-                  if (useAR) {
-                    self.addState('ar-mode');
-                  } else {
-                    self.addState('vr-mode');
-                  }
                   enterVRSuccess(resolve);
                 },
                 function requestFail (error) {
@@ -68989,7 +68986,6 @@ module.exports.AScene = registerElement('a-scene', {
             });
           } else {
             vrDisplay = utils.device.getVRDisplay();
-            self.addState('vr-mode');
             vrManager.setDevice(vrDisplay);
             if (vrDisplay.isPresenting &&
                 !window.hasNativeWebVRImplementation) {
@@ -69026,6 +69022,11 @@ module.exports.AScene = registerElement('a-scene', {
             window.dispatchEvent(event);
           }
 
+          if (useAR) {
+            self.addState('ar-mode');
+          } else {
+            self.addState('vr-mode');
+          }
           self.emit('enter-vr', {target: self});
           // Lock to landscape orientation on mobile.
           if (!isWebXRAvailable && self.isMobile && screen.orientation && screen.orientation.lock) {
@@ -71406,7 +71407,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 1.1.0 (Date 2020-12-03, Commit #8aefd214)');
+console.log('A-Frame Version: 1.1.0 (Date 2020-12-09, Commit #41079d2a)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);

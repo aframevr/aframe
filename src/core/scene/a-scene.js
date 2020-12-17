@@ -310,11 +310,6 @@ module.exports.AScene = registerElement('a-scene', {
                   vrManager.layersEnabled = xrInit.requiredFeatures.indexOf('layers') !== -1;
                   vrManager.setSession(xrSession);
                   xrSession.addEventListener('end', self.exitVRBound);
-                  if (useAR) {
-                    self.addState('ar-mode');
-                  } else {
-                    self.addState('vr-mode');
-                  }
                   enterVRSuccess(resolve);
                 },
                 function requestFail (error) {
@@ -326,7 +321,6 @@ module.exports.AScene = registerElement('a-scene', {
             });
           } else {
             vrDisplay = utils.device.getVRDisplay();
-            self.addState('vr-mode');
             vrManager.setDevice(vrDisplay);
             if (vrDisplay.isPresenting &&
                 !window.hasNativeWebVRImplementation) {
@@ -363,6 +357,11 @@ module.exports.AScene = registerElement('a-scene', {
             window.dispatchEvent(event);
           }
 
+          if (useAR) {
+            self.addState('ar-mode');
+          } else {
+            self.addState('vr-mode');
+          }
           self.emit('enter-vr', {target: self});
           // Lock to landscape orientation on mobile.
           if (!isWebXRAvailable && self.isMobile && screen.orientation && screen.orientation.lock) {

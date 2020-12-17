@@ -51,6 +51,7 @@ module.exports.Component = registerComponent('raycaster', {
     origin: {type: 'vec3'},
     showLine: {default: false},
     lineColor: {default: 'white'},
+    lineOpacity: {default: 1},
     useWorldCoordinates: {default: false}
   },
 
@@ -200,7 +201,7 @@ module.exports.Component = registerComponent('raycaster', {
   },
 
   /**
-   * Raycast for intersections and emit events for current and cleared inersections.
+   * Raycast for intersections and emit events for current and cleared intersections.
    */
   checkIntersections: function () {
     var clearedIntersectedEls = this.clearedIntersectedEls;
@@ -378,6 +379,7 @@ module.exports.Component = registerComponent('raycaster', {
     this.lineData.start = data.origin;
     this.lineData.end = endVec3.copy(this.unitLineEndVec3).multiplyScalar(length);
     this.lineData.color = data.lineColor;
+    this.lineData.opacity = data.lineOpacity;
     el.setAttribute('line', this.lineData);
   },
 
@@ -386,7 +388,7 @@ module.exports.Component = registerComponent('raycaster', {
    * Children are flattened by one level, removing the THREE.Group wrapper,
    * so that non-recursive raycasting remains useful.
    *
-   * Only push children defined as component attachemnts (e.g., setObject3D),
+   * Only push children defined as component attachements (e.g., setObject3D),
    * NOT actual children in the scene graph hierarchy.
    *
    * @param  {Array<Element>} els

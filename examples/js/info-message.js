@@ -81,6 +81,11 @@ AFRAME.registerComponent('info-message', {
     this.infoButton.style.display = display;
     display = display === 'none' ? '' : 'none';
     this.messageEl.style.display = display;
+    if (display === 'none') {
+      this.el.emit('infomessageclosed');
+    } else {
+      this.el.emit('infomessageopened');
+    }
   },
 
   createInfoButton: function (onClick) {
