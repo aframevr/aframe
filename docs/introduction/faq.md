@@ -100,11 +100,11 @@ stringification operations. This also means mutation observations will not
 fire. Use the [debug component][debug] or [`.flushToDOM` methods][flushtodom]
 if you need to sync to the DOM.
 
-## Why does my video not play on mobile?
+## Why does my video not play?
 
 [iosvideo]: https://developer.apple.com/library/iad/documentation/UserExperience/Conceptual/iAdJSProgGuide/PlayingVideosinAds/PlayingVideosinAds.html
 
-Mobile browsers have had limitations playing inline video.
+Mobile and now desktop browsers have limitations playing inline video.
 
 Because of an [iOS platform restriction][iosvideo] in order to get inline video
 (with or without autoplay), we must:
@@ -113,15 +113,19 @@ Because of an [iOS platform restriction][iosvideo] in order to get inline video
 - Set the `playsinline` attribute to the video element (is automatically added to all videos).
 - Possibly pin the webpage to the homescreen for older iOS versions.
 
-Inline video support on iOS 10 may change this. On certain Android devices or
-browsers, we must:
+Mobile and desktop browsers have been tightening the video autoplay policies to preserve battery and avoid intrusive advertisements. Most browsers now require a user action (such as a click or tap event) to start video playback:
 
-[android-touch-bug]: https://bugs.chromium.org/p/chromium/issues/detail?id=178297
+-[Chrome for Android](https://bugs.chromium.org/p/chromium/issues/detail?id=178297)
+-[Chrome desktop](https://www.chromium.org/audio-video/autoplay)
+-[Safari](https://webkit.org/blog/7734/auto-play-policy-changes-for-macos/)
+-[Firefox](https://hacks.mozilla.org/2019/02/firefox-66-to-block-automatically-playing-audible-video-and-audio/)
 
-- Require user interaction to trigger the video (such as a click or tap event). See [Chromium Bug 178297][android-touch-bug].
+[video-playback-example]: https://aframe.io/aframe/examples/test/video/
+[video-playback-code]: https://github.com/mayognaise/aframe-html-shader/
 
-Lately, there has been improving support. We do not focus too much on video,
-but below are GitHub issues that may contain helpful information from community:
+There's an [A-Frame example that includes the necessary logic][video-playback-example] to request the user clicking or tapping to start video playback. [The source code is also available][video-playback-code]
+
+We do not focus too much on video, but below are GitHub issues that may contain helpful information from community:
 
 - [*Videos and videospheres don't work on mobile*](https://github.com/aframevr/aframe/issues/316)
 - [*Document iOS video encoding restrictions*](https://github.com/aframevr/aframe/issues/1846)
@@ -329,6 +333,6 @@ Phones with Adreno 300 series GPUs are notoriously problematic. Set [renderer pr
 
 ## Why is the gyroscope / magic window mode not working?
 
-[New browser policies](https://www.w3.org/TR/orientation-event/#dom-deviceorientationevent-requestpermission) require sites to prompt the user for permission before getting access to DeviceMotionEvents. [Starting with iOS 13](https://webkit.org/blog/9674/new-webkit-features-in-safari-13/) DeviceMotionEvents are only available for pages served over `https`. Other browsers will also apply same policies and restrictions. A-Frame now [incorporates customizable UI](https://aframe.io/docs/1.0.0/components/device-orientation-permission-ui.html#sidebar) to request the necessary permissions to the user. Make sure to update to [A-Frame latest version](https://github.com/aframevr/aframe/releases)  
+[New browser policies](https://www.w3.org/TR/orientation-event/#dom-deviceorientationevent-requestpermission) require sites to prompt the user for permission before getting access to DeviceMotionEvents. [Starting with iOS 13](https://webkit.org/blog/9674/new-webkit-features-in-safari-13/) DeviceMotionEvents are only available for pages served over `https`. Other browsers will also apply same policies and restrictions. A-Frame now [incorporates customizable UI](https://aframe.io/docs/1.0.0/components/device-orientation-permission-ui.html#sidebar) to request the necessary permissions to the user. Make sure to update to [A-Frame latest version](https://github.com/aframevr/aframe/releases)
 
 

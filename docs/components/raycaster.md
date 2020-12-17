@@ -14,7 +14,7 @@ examples: []
 The raycaster component provides line-based intersection testing with a
 [raycaster][wiki-raycasting]. Raycasting is the method of extending a line from
 an origin towards a direction, and checking whether that line intersects with
-other entites.
+other entities.
 
 The raycaster component uses the [three.js raycaster][3ray]. The raycaster
 checks for intersections at a certain interval against a list of objects, and
@@ -65,8 +65,9 @@ AFRAME.registerComponent('collider-check', {
 | enabled             | Whether raycaster is actively checking for intersections.                                                                                                                                                      | true          |
 | far                 | Maximum distance under which resulting entities are returned. Cannot be lower than `near`.                                                                                                                     | Infinity      |
 | interval            | Number of milliseconds to wait in between each intersection test. Lower number is better for faster updates. Higher number is better for performance. Intersection tests are performed at most once per frame. | 0             |
-| lineColor             | Raycaster line color if showLine is enabled.                                                                                                                                                      | white          |
-| near                | Minimum distance over which resuilting entities are returned. Cannot be lower than 0.                                                                                                                          | 0             |
+| lineColor           | Raycaster line color if showLine is enabled.                                                                                                                                                      | white          |
+| lineOpacity         | Raycaster line opacity if showLine is enabled.                                                                                                                                                      | white          |
+| near                | Minimum distance over which resulting entities are returned. Cannot be lower than 0.                                                                                                                          | 0             |
 | objects             | Query selector to pick which objects to test for intersection. If not specified, all entities will be tested. Note that only objects attached via `.setObject3D` and their recursive children will be tested.                               | null          |
 | origin              | Vector3 coordinate of where the ray should originate from relative to the entity's origin.                                                                                                                     | 0, 0, 0       |
 | showLine            | Whether or not to display the raycaster visually with the [line component][line].                                                                                                                              | false         |
@@ -205,11 +206,10 @@ mutations (e.g., some entity changes its `class`).
 
 If `showLine` is set to `true`, the raycaster will configure the line given the
 raycaster's `origin`, `direction`, and `far` properties. To customize the line
-appearance provided by the `showLine: true` property, we configure the [line
-component][line]:
+appearance provided by the `showLine: true` property, we can use the `lineColor` and `lineOpacity`:
 
 ```html
-<a-entity raycaster="showLine: true; far: 100" line="color: orange; opacity: 0.5"></a-entity>
+<a-entity raycaster="showLine: true; far: 100; lineColor: red; lineOpacity: 0.5"></a-entity>
 ```
 
 The line length is the raycaster's `far` property when the raycaster is not

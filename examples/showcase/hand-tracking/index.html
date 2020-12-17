@@ -5,6 +5,7 @@
     <title>Hand Tracking! • A-Frame</title>
     <meta name="description" content="Hand Tracking! • A-Frame">
     <script src="../../../dist/aframe-master.js"></script>
+    <script src="../../js/info-message.js"></script>
     <script src="https://unpkg.com/aframe-environment-component@1.1.0/dist/aframe-environment-component.min.js"></script>
     <script src="pinchable.js"></script>
     <script src="color-change.js"></script>
@@ -16,7 +17,10 @@
     <script src="event-manager.js"></script>
   </head>
   <body>
-    <a-scene environment>
+    <a-scene environment info-message="htmlSrc: #messageText">
+      <a-assets>
+        <a-asset-item id="messageText" src="message.html"></a-asset-item>
+      </a-assets>
       <a-entity
         id="boxGeometry"
         position="0 2.0 -1"

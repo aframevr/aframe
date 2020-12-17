@@ -9,13 +9,20 @@
     <script src="js/components/camera-position.js"></script>
     <script src="js/components/link-controls.js"></script>
     <script src="https://unpkg.com/aframe-environment-component@1.1.0/dist/aframe-environment-component.min.js"></script>
+    <script src="../../js/info-message.js"></script>
   </head>
   <body>
-    <a-scene fog="color: #241417; near: 0; far: 30;" raycaster="far: 100; objects: [link];" cursor="rayOrigin: mouse" camera-position environment="preset: japan">
+    <a-scene
+      fog="color: #241417; near: 0; far: 30;"
+      raycaster="far: 100; objects: [link];"
+      cursor="rayOrigin: mouse"
+      camera-position environment="preset: japan"
+      info-message="htmlSrc: #messageText">
       <a-assets>
         <img id="thumbIndex" crossOrigin="anonymous" src="https://cdn.aframe.io/link-traversal/thumbs/index.png">
         <img id="thumbEgypt" crossOrigin="anonymous" src="https://cdn.aframe.io/link-traversal/thumbs/egypt.png">
         <img id="thumbForest" crossOrigin="anonymous" src="https://cdn.aframe.io/link-traversal/thumbs/forest.png">
+        <a-asset-item id="messageText" src="message.html"></a-asset-item>
       </a-assets>
       <a-link href="index.html" position="-3.5 1.5 -1.0" image="#thumbIndex"></a-link>
       <a-link href="egypt.html" position="0 1.5 -1.0" image="#thumbEgypt"></a-link>
