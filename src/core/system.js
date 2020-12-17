@@ -6,7 +6,10 @@ var parseProperties = schema.parseProperties;
 var parseProperty = schema.parseProperty;
 var processSchema = schema.process;
 var isSingleProp = schema.isSingleProperty;
+var stringifyProperties = schema.stringifyProperties;
+var stringifyProperty = schema.stringifyProperty;
 var styleParser = utils.styleParser;
+var objectPools = {};
 
 var systems = module.exports.systems = {};  // Keep track of registered systems.
 
@@ -33,9 +36,36 @@ var System = module.exports.System = function (sceneEl) {
   // Set reference to scene.
   this.el = sceneEl;
   this.sceneEl = sceneEl;
-
+  this.isSingleProperty = isSingleProp(this.schema);
+  this.isSinglePropertyObject =
+    this.isSingleProperty &&
+    isObject(parseProperty(undefined, this.schema)) &&
+    !(this.schema.default instanceof window.HTMLElement);
+  this.isObjectBased = !this.isSingleProperty || this.isSinglePropertyObject;
+  this.objectPool = objectPools[this.name];
+  this.attrName = this.name;
   // Set reference to matching component (if exists).
-  if (component) { component.Component.prototype.system = this; }
+  if (component) {
+    component.Component.prototype.system = this;
+  }
+  // Store component data from previous update call.
+  this.attrValue = undefined;
+  if (this.isObjectBased) {
+    this.nextData = this.objectPool.use();
+    // Drop any properties added by dynamic schemas in previous use
+    utils.objectPool.removeUnusedKeys(this.nextData, this.schema);
+    this.oldData = this.objectPool.use();
+    utils.objectPool.removeUnusedKeys(this.oldData, this.schema);
+    this.previousOldData = this.objectPool.use();
+    utils.objectPool.removeUnusedKeys(this.previousOldData, this.schema);
+    this.parsingAttrValue = this.objectPool.use();
+    utils.objectPool.removeUnusedKeys(this.parsingAttrValue, this.schema);
+  } else {
+    this.nextData = undefined;
+    this.oldData = undefined;
+    this.previousOldData = undefined;
+    this.parsingAttrValue = undefined;
+  }
 
   // Process system configuration.
   this.buildData();
@@ -59,7 +89,7 @@ System.prototype = {
    * Update handler. Called during scene attribute updates.
    * Systems can use this to dynamically update their state.
    */
-  update: function (oldData) { /* no-op */ },
+  update: function (prevData) { /* no-op */ },
 
   /**
    * Build data and call update handler.
@@ -115,7 +145,37 @@ System.prototype = {
   /**
    * Called to stop any dynamic behavior (e.g., animation, AI, events, physics).
    */
-  pause: function () { /* no-op */ }
+  pause: function () { /* no-op */ },
+  /**
+   * Parses each property based on property type.
+   * If component is single-property, then parses the single property value.
+   *
+   * @param {string} value - HTML attribute value.
+   * @param {boolean} silent - Suppress warning messages.
+   * @returns {object} Component data.
+   */
+  parse: function (value, silent) {
+    var schema = this.schema;
+    if (this.isSingleProperty) { return parseProperty(value, schema); }
+    return parseProperties(styleParser.parse(value), schema, true, this.name, silent);
+  },
+
+  /**
+   * Stringify properties if necessary.
+   *
+   * Only called from `Entity.setAttribute` for properties whose parsers accept a non-string
+   * value (e.g., selector, vec3 property types).
+   *
+   * @param {object} data - Complete component data.
+   * @returns {string}
+   */
+  stringify: function (data) {
+    var schema = this.schema;
+    if (typeof data === 'string') { return data; }
+    if (this.isSingleProperty) { return stringifyProperty(data, schema); }
+    data = stringifyProperties(data, schema);
+    return styleParser.stringify(data);
+  }
 };
 
 /**
@@ -149,8 +209,12 @@ module.exports.registerSystem = function (name, definition) {
   NewSystem.prototype.name = name;
   NewSystem.prototype.constructor = NewSystem;
   NewSystem.prototype.schema = utils.extend(processSchema(NewSystem.prototype.schema));
+  objectPools[name] = utils.objectPool.createPool();
   systems[name] = NewSystem;
 
   // Initialize systems for existing scenes
   for (i = 0; i < scenes.length; i++) { scenes[i].initSystem(name); }
 };
+function isObject (value) {
+  return value && value.constructor === Object && !(value instanceof window.HTMLElement);
+}
