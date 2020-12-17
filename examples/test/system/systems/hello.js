@@ -5,13 +5,15 @@
  */
 AFRAME.registerSystem('hello', {
   schema: {
-    count: {default: 1000},
-    random: {default: 0.1}
+    count: { default: 1000 },
+    random: { default: 0.1 }
   },
 
   update: function () {
     const data = this.data;
-    console.log('[system] update', data);
+    console.group('system');
+    console.trace('[system] update', data);
+    console.groupEnd('system');
   }
 });
 AFRAME.registerComponent('hello', {
@@ -22,6 +24,8 @@ AFRAME.registerComponent('hello', {
   },
   update: function () {
     const data = this.data;
-    console.log('[component] update', data);
+    console.group('component');
+    console.trace('[component] update', data);
+    console.groupEnd('component');
   }
 });
