@@ -209,7 +209,7 @@ suite('a-scene (without renderer)', function () {
       });
     });
 
-    test('adds AR mode state', function (done) {
+    helpers.getSkipCITest()('adds AR mode state', function (done) {
       var sceneEl = this.el;
       sceneEl.enterVR(true).then(function () {
         assert.notOk(sceneEl.is('vr-mode'));
