@@ -119,6 +119,9 @@ module.exports.Component = registerComponent('vr-mode-ui', {
         uiElement.parentNode.removeChild(uiElement);
       }
     });
+    this.enterVREl = undefined;
+    this.enterAREl = undefined;
+    this.orientationModalEl = undefined;
   },
 
   updateEnterInterfaces: function () {
