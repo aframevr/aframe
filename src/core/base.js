@@ -7,7 +7,7 @@ var stringifyProperty = schema.stringifyProperty;
 var extendProperties = schema.extendProperties;
 var styleParser = utils.styleParser;
 
-const baseProto = {
+module.exports.baseProto = {
   /**
    * Contains the type schema and defaults for the data values.
    * Data is coerced into the types of the values of the defaults.
@@ -189,7 +189,6 @@ const baseProto = {
 
 };
 
-module.exports.baseProto = baseProto;
 /**
 * Clone system/component data.
 * Clone only the properties that are plain objects while keeping a reference for the rest.
