@@ -183,7 +183,7 @@ const systemProto = {
   }
 
 };
-System.prototype = Object.assign(new base.Proto(), systemProto);
+System.prototype = Object.assign(Object.create(base.baseProto), systemProto);
 /**
  * Registers a system to A-Frame.
  *

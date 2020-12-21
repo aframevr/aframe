@@ -415,7 +415,7 @@ const componentProto = {
     this.attrValue = this.oldData = this.parsingAttrValue = undefined;
   }
 };
-Component.prototype = Object.assign(new base.Proto(), componentProto);
+Component.prototype = Object.assign(Object.create(base.baseProto), componentProto);
 
 function eventsBind (component, events) {
   var eventName;

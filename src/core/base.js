@@ -188,10 +188,9 @@ const baseProto = {
   }
 
 };
-module.exports.Proto = function () {
-  Object.assign(this, baseProto);
-};
 
+module.exports.Proto = Object.create(baseProto);
+module.exports.baseProto = baseProto;
 /**
 * Clone system/component data.
 * Clone only the properties that are plain objects while keeping a reference for the rest.
