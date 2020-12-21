@@ -100,7 +100,18 @@ module.exports.Proto = function () {
       data = stringifyProperties(data, schema);
       return styleParser.stringify(data);
     },
-
+/**
+   * Write cached attribute data to the entity DOM element.
+   *
+   * @param {boolean} isDefault - Whether component is a default component. Always flush for
+   *   default components.
+   */
+    flushToDOM: function (isDefault) {
+      var attrValue = isDefault ? this.data : this.attrValue;
+      if (attrValue === null || attrValue === undefined) { return; }
+      window.HTMLElement.prototype.setAttribute.call(this.el, this.attrName,
+                                                   this.stringify(attrValue));
+    },
   /**
    * Update the cache of the pre-parsed attribute value.
    *

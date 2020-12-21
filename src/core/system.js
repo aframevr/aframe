@@ -77,13 +77,21 @@ System.prototype = Object.assign(new base.Proto(), {
    *
    * @private
    */
-  updateProperties: function (attrValue) {
+ /**
+   * Apply new component data if data has changed (from setAttribute).
+   *
+   * @param {string} attrValue - HTML attribute value.
+   *        If undefined, use the cached attribute value and continue updating properties.
+   * @param {boolean} clobber - The previous component data is overwritten by the attrValue
+   * @private
+   */
+  updateProperties: function (attrValue, clobber) {
     // Parse the attribute value.
     if (attrValue !== null) {
       attrValue = this.parseAttrValueForCache(attrValue);
     }
     // Cache current attrValue for future updates. Updates `this.attrValue`.
-    this.updateCachedAttrValue(attrValue);
+    this.updateCachedAttrValue(attrValue, clobber);
     if (!Object.keys(schema).length) { return; }
     if (this.initialized) {
       this.updateSystem(attrValue);

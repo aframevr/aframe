@@ -94,24 +94,11 @@ Component.prototype = Object.assign(new base.Proto(), {
   remove: function () { /* no-op */ },
 
   /**
-   * Write cached attribute data to the entity DOM element.
-   *
-   * @param {boolean} isDefault - Whether component is a default component. Always flush for
-   *   default components.
-   */
-  flushToDOM: function (isDefault) {
-    var attrValue = isDefault ? this.data : this.attrValue;
-    if (attrValue === null || attrValue === undefined) { return; }
-    window.HTMLElement.prototype.setAttribute.call(this.el, this.attrName,
-                                                   this.stringify(attrValue));
-  },
-
-  /**
    * Apply new component data if data has changed (from setAttribute).
    *
    * @param {string} attrValue - HTML attribute value.
    *        If undefined, use the cached attribute value and continue updating properties.
-   * @param {boolean} clobber - The previous component data is overwritten by the atrrValue
+   * @param {boolean} clobber - The previous component data is overwritten by the attrValue
    */
   updateProperties: function (attrValue, clobber) {
     var el = this.el;
