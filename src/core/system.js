@@ -70,15 +70,10 @@ var System = module.exports.System = function (sceneEl) {
   this.updateProperties(this.sceneEl.getAttribute(this.name));
 };
 
-System.prototype = Object.assign(new base.Proto(), {
+const systemProto = {
 
   /**
-   * Build data and call update handler.
-   *
-   * @private
-   */
- /**
-   * Apply new component data if data has changed (from setAttribute).
+   * Apply new system data if data has changed (from setAttribute).
    *
    * @param {string} attrValue - HTML attribute value.
    *        If undefined, use the cached attribute value and continue updating properties.
@@ -185,7 +180,8 @@ System.prototype = Object.assign(new base.Proto(), {
     }
   }
 
-});
+};
+System.prototype = Object.assign(new base.Proto(), systemProto);
 /**
  * Registers a system to A-Frame.
  *

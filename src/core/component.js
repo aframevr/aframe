@@ -75,7 +75,7 @@ var Component = module.exports.Component = function (el, attrValue, id) {
   this.updateProperties(attrValue);
 };
 
-Component.prototype = Object.assign(new base.Proto(), {
+const componentProto = {
 
   /**
    * Map of event names to binded event handlers that will be lifecycle-handled.
@@ -410,7 +410,8 @@ Component.prototype = Object.assign(new base.Proto(), {
     this.objectPool.recycle(this.parsingAttrValue);
     this.attrValue = this.oldData = this.parsingAttrValue = undefined;
   }
-});
+};
+Component.prototype = Object.assign(new base.Proto(), componentProto);
 
 function eventsBind (component, events) {
   var eventName;
