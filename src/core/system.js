@@ -226,7 +226,6 @@ System.prototype = Object.assign(new base.Proto(), {
   }
 
 });
-console.log('System', System.prototype);
 /**
  * Registers a system to A-Frame.
  *

@@ -182,69 +182,8 @@ module.exports.Proto = function () {
         parsedValue = styleParser.parse(value, this.parsingAttrValue);
       }
       return parsedValue;
-    },
-
-  /**
-   * Apply new component data if data has changed (from setAttribute).
-   *
-   * @param {string} attrValue - HTML attribute value.
-   *        If undefined, use the cached attribute value and continue updating properties.
-   * @param {boolean} clobber - The previous component data is overwritten by the atrrValue
-   */
-    updateProperties: function (attrValue, clobber) {
-      var el = this.el;
-
-    // Just cache the attribute if the entity has not loaded
-    // Components are not initialized until the entity has loaded
-      if (!el.hasLoaded) {
-        this.updateCachedAttrValue(attrValue);
-        return;
-      }
-
-    // Parse the attribute value.
-    // Cache current attrValue for future updates. Updates `this.attrValue`.
-    // `null` means no value on purpose, do not set a default value, let mixins take over.
-      if (attrValue !== null) {
-        attrValue = this.parseAttrValueForCache(attrValue);
-      }
-
-    // Cache current attrValue for future updates.
-      this.updateCachedAttrValue(attrValue, clobber);
-
-      if (this.initialized) {
-        this.updateComponent(attrValue, clobber);
-        this.callUpdateHandler();
-      } else {
-        this.initComponent();
-      }
-    },
-  /**
-   * Reset value of a property to the property's default value.
-   * If single-prop component, reset value to component's default value.
-   *
-   * @param {string} propertyName - Name of property to reset.
-   */
-    resetProperty: function (propertyName) {
-      if (this.isObjectBased) {
-        if (!(propertyName in this.attrValue)) { return; }
-        delete this.attrValue[propertyName];
-        this.data[propertyName] = this.schema[propertyName].default;
-      } else {
-        this.attrValue = this.schema.default;
-        this.data = this.schema.default;
-      }
-      this.updateProperties(this.attrValue);
-    },
-
-  /**
-   * Release and free memory.
-   */
-    destroy: function () {
-      this.objectPool.recycle(this.attrValue);
-      this.objectPool.recycle(this.oldData);
-      this.objectPool.recycle(this.parsingAttrValue);
-      this.attrValue = this.oldData = this.parsingAttrValue = undefined;
     }
+
   });
 };
 
