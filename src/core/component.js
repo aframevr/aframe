@@ -3,7 +3,7 @@ var schema = require('./schema');
 var scenes = require('./scene/scenes');
 var systems = require('./system');
 var utils = require('../utils/');
-
+var base = require('./base');
 var components = module.exports.components = {};  // Keep track of registered components.
 var parseProperties = schema.parseProperties;
 var parseProperty = schema.parseProperty;
@@ -78,7 +78,7 @@ var Component = module.exports.Component = function (el, attrValue, id) {
   this.updateProperties(attrValue);
 };
 
-Component.prototype = {
+Component.prototype = Object.assign(new base.Proto(), {
   /**
    * Contains the type schema and defaults for the data values.
    * Data is coerced into the types of the values of the defaults.
@@ -149,20 +149,6 @@ Component.prototype = {
   remove: function () { /* no-op */ },
 
   /**
-   * Parses each property based on property type.
-   * If component is single-property, then parses the single property value.
-   *
-   * @param {string} value - HTML attribute value.
-   * @param {boolean} silent - Suppress warning messages.
-   * @returns {object} Component data.
-   */
-  parse: function (value, silent) {
-    var schema = this.schema;
-    if (this.isSingleProperty) { return parseProperty(value, schema); }
-    return parseProperties(styleParser.parse(value), schema, true, this.name, silent);
-  },
-
-  /**
    * Stringify properties if necessary.
    *
    * Only called from `Entity.setAttribute` for properties whose parsers accept a non-string
@@ -226,33 +212,6 @@ Component.prototype = {
     utils.objectPool.clearObject(this.attrValue);
     this.attrValue = extendProperties(this.attrValue, newAttrValue, this.isObjectBased);
     utils.objectPool.clearObject(tempObject);
-  },
-
-  /**
-   * Given an HTML attribute value parses the string based on the component schema.
-   * To avoid double parsings of strings into strings we store the original instead
-   * of the parsed one
-   *
-   * @param {string} value - HTML attribute value
-   */
-  parseAttrValueForCache: function (value) {
-    var parsedValue;
-    if (typeof value !== 'string') { return value; }
-    if (this.isSingleProperty) {
-      parsedValue = this.schema.parse(value);
-      /**
-       * To avoid bogus double parsings. Cached values will be parsed when building
-       * component data. For instance when parsing a src id to its url, we want to cache
-       * original string and not the parsed one (#monster -> models/monster.dae)
-       * so when building data we parse the expected value.
-       */
-      if (typeof parsedValue === 'string') { parsedValue = value; }
-    } else {
-      // Parse using the style parser to avoid double parsing of individual properties.
-      utils.objectPool.clearObject(this.parsingAttrValue);
-      parsedValue = styleParser.parse(value, this.parsingAttrValue);
-    }
-    return parsedValue;
   },
 
   /**
@@ -585,7 +544,7 @@ Component.prototype = {
     this.objectPool.recycle(this.parsingAttrValue);
     this.attrValue = this.oldData = this.parsingAttrValue = undefined;
   }
-};
+});
 
 function eventsBind (component, events) {
   var eventName;

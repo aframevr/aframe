@@ -1,7 +1,7 @@
 var components = require('./component');
 var schema = require('./schema');
 var utils = require('../utils/');
-
+var base = require('./base');
 var parseProperties = schema.parseProperties;
 var parseProperty = schema.parseProperty;
 var processSchema = schema.process;
@@ -69,11 +69,10 @@ var System = module.exports.System = function (sceneEl) {
   }
 
   // Process system configuration.
-  console.trace('here');
   this.updateProperties(this.sceneEl.getAttribute(this.name));
 };
 
-System.prototype = {
+System.prototype = Object.assign(new base.Proto(), {
   /**
    * Schema to configure system.
    */
@@ -90,6 +89,66 @@ System.prototype = {
    * Systems can use this to dynamically update their state.
    */
   update: function (prevData) { /* no-op */ },
+
+  /**
+   * Tick handler.
+   * Called on each tick of the scene render loop.
+   * Affected by play and pause.
+   *
+   * @param {number} time - Scene tick time.
+   * @param {number} timeDelta - Difference in current render time and previous render time.
+   */
+  tick: undefined,
+
+  /**
+   * Tock handler.
+   * Called on each tock of the scene render loop.
+   * Affected by play and pause.
+   *
+   * @param {number} time - Scene tick time.
+   * @param {number} timeDelta - Difference in current render time and previous render time.
+   */
+  tock: undefined,
+
+  /**
+   * Called to start any dynamic behavior (e.g., animation, AI, events, physics).
+   */
+  play: function () { /* no-op */ },
+
+  /**
+   * Called to stop any dynamic behavior (e.g., animation, AI, events, physics).
+   */
+  pause: function () { /* no-op */ },
+  /**
+   * Parses each property based on property type.
+   * If component is single-property, then parses the single property value.
+   *
+   * @param {string} value - HTML attribute value.
+   * @param {boolean} silent - Suppress warning messages.
+   * @returns {object} System data.
+   */
+  parse: function (value, silent) {
+    var schema = this.schema;
+    if (this.isSingleProperty) { return parseProperty(value, schema); }
+    return parseProperties(styleParser.parse(value), schema, true, this.name, silent);
+  },
+
+  /**
+   * Stringify properties if necessary.
+   *
+   * Only called from `Entity.setAttribute` for properties whose parsers accept a non-string
+   * value (e.g., selector, vec3 property types).
+   *
+   * @param {object} data - Complete system data.
+   * @returns {string}
+   */
+  stringify: function (data) {
+    var schema = this.schema;
+    if (typeof data === 'string') { return data; }
+    if (this.isSingleProperty) { return stringifyProperty(data, schema); }
+    data = stringifyProperties(data, schema);
+    return styleParser.stringify(data);
+  },
 
   /**
    * Build data and call update handler.
@@ -197,66 +256,6 @@ System.prototype = {
   },
 
   /**
-   * Tick handler.
-   * Called on each tick of the scene render loop.
-   * Affected by play and pause.
-   *
-   * @param {number} time - Scene tick time.
-   * @param {number} timeDelta - Difference in current render time and previous render time.
-   */
-  tick: undefined,
-
-  /**
-   * Tock handler.
-   * Called on each tock of the scene render loop.
-   * Affected by play and pause.
-   *
-   * @param {number} time - Scene tick time.
-   * @param {number} timeDelta - Difference in current render time and previous render time.
-   */
-  tock: undefined,
-
-  /**
-   * Called to start any dynamic behavior (e.g., animation, AI, events, physics).
-   */
-  play: function () { /* no-op */ },
-
-  /**
-   * Called to stop any dynamic behavior (e.g., animation, AI, events, physics).
-   */
-  pause: function () { /* no-op */ },
-  /**
-   * Parses each property based on property type.
-   * If component is single-property, then parses the single property value.
-   *
-   * @param {string} value - HTML attribute value.
-   * @param {boolean} silent - Suppress warning messages.
-   * @returns {object} System data.
-   */
-  parse: function (value, silent) {
-    var schema = this.schema;
-    if (this.isSingleProperty) { return parseProperty(value, schema); }
-    return parseProperties(styleParser.parse(value), schema, true, this.name, silent);
-  },
-
-  /**
-   * Stringify properties if necessary.
-   *
-   * Only called from `Entity.setAttribute` for properties whose parsers accept a non-string
-   * value (e.g., selector, vec3 property types).
-   *
-   * @param {object} data - Complete system data.
-   * @returns {string}
-   */
-  stringify: function (data) {
-    var schema = this.schema;
-    if (typeof data === 'string') { return data; }
-    if (this.isSingleProperty) { return stringifyProperty(data, schema); }
-    data = stringifyProperties(data, schema);
-    return styleParser.stringify(data);
-  },
-
-  /**
    * Update the cache of the pre-parsed attribute value.
    *
    * @param {string} value - New data.
@@ -303,35 +302,10 @@ System.prototype = {
     utils.objectPool.clearObject(this.attrValue);
     this.attrValue = extendProperties(this.attrValue, newAttrValue, this.isObjectBased);
     utils.objectPool.clearObject(tempObject);
-  },
-  /**
-   * Given an HTML attribute value parses the string based on the component schema.
-   * To avoid double parsings of strings into strings we store the original instead
-   * of the parsed one
-   *
-   * @param {string} value - HTML attribute value
-   */
-  parseAttrValueForCache: function (value) {
-    var parsedValue;
-    if (typeof value !== 'string') { return value; }
-    if (this.isSingleProperty) {
-      parsedValue = this.schema.parse(value);
-      /**
-       * To avoid bogus double parsings. Cached values will be parsed when building
-       * component data. For instance when parsing a src id to its url, we want to cache
-       * original string and not the parsed one (#monster -> models/monster.dae)
-       * so when building data we parse the expected value.
-       */
-      if (typeof parsedValue === 'string') { parsedValue = value; }
-    } else {
-      // Parse using the style parser to avoid double parsing of individual properties.
-      utils.objectPool.clearObject(this.parsingAttrValue);
-      parsedValue = styleParser.parse(value, this.parsingAttrValue);
-    }
-    return parsedValue;
   }
-};
 
+});
+console.log('System', System.prototype);
 /**
  * Registers a system to A-Frame.
  *
