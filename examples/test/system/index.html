@@ -11,13 +11,13 @@
 
 <body>
   <script>
-    setInterval(() => {
+    setTimeout(() => {
       document.querySelector('a-scene').setAttribute('hello', { count: Date.now() })
       document.querySelector('a-scene').setAttribute('hello', { random: Math.random() })
       document.querySelectorAll('a-entity[geometry]').forEach((el) => {
         el.setAttribute('hello', { count: Date.now() })
       })
-    }, 1000)
+    }, 3000)
     
   </script>
   <a-scene background="color: #111" stats>
