@@ -22,13 +22,6 @@ module.exports.Proto = function () {
     init: function () { /* no-op */ },
 
   /**
-   * Map of event names to binded event handlers that will be lifecycle-handled.
-   * Will be detached on pause / remove.
-   * Will be attached on play.
-   */
-    events: {},
-
-  /**
    * Update handler. Similar to attributeChangedCallback.
    * Called whenever component's data changes.
    * Also called on component initialization when the component receives initial data.
