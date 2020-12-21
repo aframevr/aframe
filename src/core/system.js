@@ -73,54 +73,6 @@ var System = module.exports.System = function (sceneEl) {
 System.prototype = Object.assign(new base.Proto(), {
 
   /**
-   * Update the cache of the pre-parsed attribute value.
-   *
-   * @param {string} value - New data.
-   * @param {boolean } clobber - Whether to wipe out and replace previous data.
-   */
-  updateCachedAttrValue: function (value) {
-    var newAttrValue;
-    var tempObject;
-    var property;
-
-    if (value === undefined) { return; }
-
-    // If null value is the new attribute value, make the attribute value falsy.
-    if (value === null) {
-      if (this.isObjectBased && this.attrValue) {
-        this.objectPool.recycle(this.attrValue);
-      }
-      this.attrValue = undefined;
-      return;
-    }
-
-    if (value instanceof Object && !(value instanceof window.HTMLElement)) {
-      // If value is an object, copy it to our pooled newAttrValue object to use to update
-      // the attrValue.
-      tempObject = this.objectPool.use();
-      newAttrValue = utils.extend(tempObject, value);
-    } else {
-      newAttrValue = this.parseAttrValueForCache(value);
-    }
-
-    // Merge new data with previous `attrValue` if updating and not clobbering.
-    if (this.isObjectBased && this.attrValue) {
-      for (property in this.attrValue) {
-        if (newAttrValue[property] === undefined) {
-          newAttrValue[property] = this.attrValue[property];
-        }
-      }
-    }
-
-    // Update attrValue.
-    if (this.isObjectBased && !this.attrValue) {
-      this.attrValue = this.objectPool.use();
-    }
-    utils.objectPool.clearObject(this.attrValue);
-    this.attrValue = extendProperties(this.attrValue, newAttrValue, this.isObjectBased);
-    utils.objectPool.clearObject(tempObject);
-  },
-  /**
    * Build data and call update handler.
    *
    * @private
