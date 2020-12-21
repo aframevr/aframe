@@ -6,8 +6,6 @@ var parseProperties = schema.parseProperties;
 var parseProperty = schema.parseProperty;
 var processSchema = schema.process;
 var isSingleProp = schema.isSingleProperty;
-var stringifyProperties = schema.stringifyProperties;
-var stringifyProperty = schema.stringifyProperty;
 var styleParser = utils.styleParser;
 var objectPools = {};
 
@@ -73,37 +71,6 @@ var System = module.exports.System = function (sceneEl) {
 };
 
 System.prototype = Object.assign(new base.Proto(), {
-
-  /**
-   * Parses each property based on property type.
-   * If component is single-property, then parses the single property value.
-   *
-   * @param {string} value - HTML attribute value.
-   * @param {boolean} silent - Suppress warning messages.
-   * @returns {object} System data.
-   */
-  parse: function (value, silent) {
-    var schema = this.schema;
-    if (this.isSingleProperty) { return parseProperty(value, schema); }
-    return parseProperties(styleParser.parse(value), schema, true, this.name, silent);
-  },
-
-  /**
-   * Stringify properties if necessary.
-   *
-   * Only called from `Entity.setAttribute` for properties whose parsers accept a non-string
-   * value (e.g., selector, vec3 property types).
-   *
-   * @param {object} data - Complete system data.
-   * @returns {string}
-   */
-  stringify: function (data) {
-    var schema = this.schema;
-    if (typeof data === 'string') { return data; }
-    if (this.isSingleProperty) { return stringifyProperty(data, schema); }
-    data = stringifyProperties(data, schema);
-    return styleParser.stringify(data);
-  },
 
   /**
    * Update the cache of the pre-parsed attribute value.

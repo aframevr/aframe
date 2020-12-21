@@ -9,9 +9,6 @@ var parseProperties = schema.parseProperties;
 var parseProperty = schema.parseProperty;
 var processSchema = schema.process;
 var isSingleProp = schema.isSingleProperty;
-var stringifyProperties = schema.stringifyProperties;
-var stringifyProperty = schema.stringifyProperty;
-var styleParser = utils.styleParser;
 var warn = utils.debug('core:component:warn');
 
 var aframeScript = document.currentScript;
@@ -95,23 +92,6 @@ Component.prototype = Object.assign(new base.Proto(), {
    * Components can use this to reset behavior on the entity.
    */
   remove: function () { /* no-op */ },
-
-  /**
-   * Stringify properties if necessary.
-   *
-   * Only called from `Entity.setAttribute` for properties whose parsers accept a non-string
-   * value (e.g., selector, vec3 property types).
-   *
-   * @param {object} data - Complete component data.
-   * @returns {string}
-   */
-  stringify: function (data) {
-    var schema = this.schema;
-    if (typeof data === 'string') { return data; }
-    if (this.isSingleProperty) { return stringifyProperty(data, schema); }
-    data = stringifyProperties(data, schema);
-    return styleParser.stringify(data);
-  },
 
   /**
    * Update the cache of the pre-parsed attribute value.
