@@ -6,6 +6,7 @@ var parseProperties = schema.parseProperties;
 var parseProperty = schema.parseProperty;
 var processSchema = schema.process;
 var isSingleProp = schema.isSingleProperty;
+var extendProperties = schema.extendProperties;
 var styleParser = utils.styleParser;
 var objectPools = {};
 
@@ -104,7 +105,6 @@ const systemProto = {
     // Initialize component.
     this.init();
     this.initialized = true;
-
     // Store current data as previous data for future updates.
     this.oldData = extendProperties(this.oldData, this.data, this.isObjectBased);
 
@@ -219,31 +219,6 @@ module.exports.registerSystem = function (name, definition) {
   // Initialize systems for existing scenes
   for (i = 0; i < scenes.length; i++) { scenes[i].initSystem(name); }
 };
-
-/**
-* Object extending with checking for single-property schema.
-*
-* @param dest - Destination object or value.
-* @param source - Source object or value
-* @param {boolean} isObjectBased - Whether values are objects.
-* @returns Overridden object or value.
-*/
-function extendProperties (dest, source, isObjectBased) {
-  var key;
-
-  if (isObjectBased && source && source.constructor === Object) {
-    for (key in source) {
-      if (source[key] === undefined) { continue; }
-      if (source[key] && source[key].constructor === Object) {
-        dest[key] = utils.clone(source[key]);
-      } else {
-        dest[key] = source[key];
-      }
-    }
-    return dest;
-  }
-  return source;
-}
 
 /**
 * Clone component data.
