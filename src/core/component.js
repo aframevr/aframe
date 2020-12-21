@@ -4,6 +4,9 @@ var scenes = require('./scene/scenes');
 var systems = require('./system');
 var utils = require('../utils/');
 var base = require('./base');
+var copyData = base.copyData;
+var isObject = base.isObject;
+var isObjectOrArray = base.isObjectOrArray;
 var components = module.exports.components = {};  // Keep track of registered components.
 var parseProperties = schema.parseProperties;
 var parseProperty = schema.parseProperty;
@@ -531,26 +534,6 @@ module.exports.registerComponent = function (name, definition) {
 };
 
 /**
-* Clone component data.
-* Clone only the properties that are plain objects while keeping a reference for the rest.
-*
-* @param data - Component data to clone.
-* @returns Cloned data.
-*/
-function copyData (dest, sourceData) {
-  var parsedProperty;
-  var key;
-  for (key in sourceData) {
-    if (sourceData[key] === undefined) { continue; }
-    parsedProperty = sourceData[key];
-    dest[key] = isObjectOrArray(parsedProperty)
-      ? utils.clone(parsedProperty)
-      : parsedProperty;
-  }
-  return dest;
-}
-
-/**
  * Checks if a component has defined a method that needs to run every frame.
  */
 function hasBehavior (component) {
@@ -596,11 +579,3 @@ function wrapPlay (playMethod) {
   };
 }
 
-function isObject (value) {
-  return value && value.constructor === Object && !(value instanceof window.HTMLElement);
-}
-
-function isObjectOrArray (value) {
-  return value && (value.constructor === Object || value.constructor === Array) &&
-         !(value instanceof window.HTMLElement);
-}

@@ -2,6 +2,8 @@ var components = require('./component');
 var schema = require('./schema');
 var utils = require('../utils/');
 var base = require('./base');
+var isObject = base.isObject;
+var copyData = base.copyData;
 var parseProperties = schema.parseProperties;
 var parseProperty = schema.parseProperty;
 var processSchema = schema.process;
@@ -219,32 +221,3 @@ module.exports.registerSystem = function (name, definition) {
   // Initialize systems for existing scenes
   for (i = 0; i < scenes.length; i++) { scenes[i].initSystem(name); }
 };
-
-/**
-* Clone component data.
-* Clone only the properties that are plain objects while keeping a reference for the rest.
-*
-* @param data - Component data to clone.
-* @returns Cloned data.
-*/
-function copyData (dest, sourceData) {
-  var parsedProperty;
-  var key;
-  for (key in sourceData) {
-    if (sourceData[key] === undefined) { continue; }
-    parsedProperty = sourceData[key];
-    dest[key] = isObjectOrArray(parsedProperty)
-      ? utils.clone(parsedProperty)
-      : parsedProperty;
-  }
-  return dest;
-}
-
-function isObject (value) {
-  return value && value.constructor === Object && !(value instanceof window.HTMLElement);
-}
-
-function isObjectOrArray (value) {
-  return value && (value.constructor === Object || value.constructor === Array) &&
-    !(value instanceof window.HTMLElement);
-}
