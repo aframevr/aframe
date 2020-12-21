@@ -189,7 +189,6 @@ const baseProto = {
 
 };
 
-module.exports.Proto = Object.create(baseProto);
 module.exports.baseProto = baseProto;
 /**
 * Clone system/component data.
