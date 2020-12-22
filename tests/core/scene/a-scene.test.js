@@ -155,6 +155,13 @@ suite('a-scene (without renderer)', function () {
         el: {object3D: {}},
         updateProjectionMatrix: function () {}
       };
+
+      // mock canvas
+      sceneEl.canvas = {
+        addEventListener: function () {},
+        removeEventListener: function () {},
+        requestFullscreen: function () {}
+      };
     });
 
     test('does not try to enter VR if already in VR', function (done) {
@@ -202,7 +209,7 @@ suite('a-scene (without renderer)', function () {
       });
     });
 
-    test('adds AR mode state', function (done) {
+    helpers.getSkipCITest()('adds AR mode state', function (done) {
       var sceneEl = this.el;
       sceneEl.enterVR(true).then(function () {
         assert.notOk(sceneEl.is('vr-mode'));
