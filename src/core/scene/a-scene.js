@@ -553,7 +553,7 @@ module.exports.AScene = registerElement('a-scene', {
             typeof value === 'string' &&
             value.length > 0 &&
             typeof utils.styleParser.parse(value) === 'string') {
-            const keyValue = {};
+            var keyValue = {};
             keyValue[value] = componentPropValue;
             system.updateProperties(keyValue);
           } else {
