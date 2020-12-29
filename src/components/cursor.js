@@ -83,6 +83,7 @@ module.exports.Component = registerComponent('cursor', {
 
   update: function (oldData) {
     if (this.data.rayOrigin === oldData.rayOrigin) { return; }
+    if (this.data.rayOrigin === "entity") { this.updateOriginAndDirection(); }
     this.updateMouseEventListeners();
   },
 
@@ -191,6 +192,16 @@ module.exports.Component = registerComponent('cursor', {
     canvas.addEventListener('touchmove', this.onMouseMove, false);
     el.setAttribute('raycaster', 'useWorldCoordinates', true);
     this.updateCanvasBounds();
+  },
+
+  updateOriginAndDirection: function () {
+    var rayCasterConfig = {
+      direction: new THREE.Vector3(),
+      origin: new THREE.Vector3(),
+    };
+    rayCasterConfig.direction.set(0,0,-1);
+    rayCasterConfig.origin.set(0,0,0);
+    this.el.setAttribute('raycaster', rayCasterConfig);
   },
 
   onMouseMove: (function () {
