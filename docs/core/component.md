@@ -178,6 +178,16 @@ schema: {type: 'string'}  // default: ''
 schema: {type: 'vec3'}  // default: {x: 0, y: 0, z: 0}
 ```
 
+#### Specifying Possible Values
+
+You can also provide an array of acceptable values to use:
+
+```
+  schema: {
+    rayOrigin: {default: 'entity', oneOf: ['mouse', 'entity']}
+  },
+```
+
 #### Custom Property Type
 
 We can also define our own property type by providing a `parse` and `stringify`
