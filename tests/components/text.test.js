@@ -37,14 +37,21 @@ suite('text', function () {
   });
 
   suite('multiple', function () {
-    test('can have multiple instances', () => {
+    test('can have multiple instances', (done) => {
       el.setAttribute('text__foo', {value: 'foo'});
-      el.setAttribute('text__bar', {value: 'bar'});
-      el.setAttribute('text__baz', {value: 'baz'});
-      assert.ok(el.getObject3D('text') instanceof THREE.Mesh);
-      assert.ok(el.getObject3D('text__foo') instanceof THREE.Mesh);
-      assert.ok(el.getObject3D('text__bar') instanceof THREE.Mesh);
-      assert.ok(el.getObject3D('text__baz') instanceof THREE.Mesh);
+      el.addEventListener('textfontset', evt => {
+        assert.ok(el.getObject3D('text') instanceof THREE.Mesh);
+        assert.ok(el.getObject3D('text__foo') instanceof THREE.Mesh);
+        el.setAttribute('text__bar', {value: 'foo'});
+        el.addEventListener('textfontset', evt => {
+          assert.ok(el.getObject3D('text__bar') instanceof THREE.Mesh);
+          el.setAttribute('text__baz', {value: 'baz'});
+          el.addEventListener('textfontset', evt => {
+            assert.ok(el.getObject3D('text__baz') instanceof THREE.Mesh);
+            done();
+          });
+        });
+      });
     });
   });
 
