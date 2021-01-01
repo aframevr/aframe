@@ -41,7 +41,7 @@ AFRAME.registerComponent('info-message', {
       '.a-info-message{border-radius: 10px; position: absolute; width: ' + this.data.width + 'px;' +
       'height: ' + this.data.height + 'px; background-color: white; border: 3px solid rgba(0,0,0,0.65);' +
       'bottom: 22px; left: 22px; color: rgb(51, 51, 51); padding: 20px 15px 0 15px;' +
-      'font-size: 11pt; line-height: 20pt;}' +
+      'font-size: 11pt; line-height: 20pt; z-index: 9999}' +
 
       '.a-info-message a{border-bottom: 1px solid rgba(53,196,232,.15); color: #1497b8;' +
       'position: relative; text-decoration: none; transition: .05s ease;}' +
