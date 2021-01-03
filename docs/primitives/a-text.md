@@ -42,6 +42,11 @@ Wraps the [text component][text].
 | wrap-pixels    | text.wrapPixels    |
 | z-offset       | text.zOffset       |
 
+## Usage Notes
+Text positioned behind the camera will not be visible by default. One solution is to rotate it by 180 degrees on the y-axis. This also solves the problem of text behind the camera being rendered backwards. 
+```html
+<a-text value="behind camera" position=" 0 0 2" rotation="0 180 0"></a-text>
+```
 ## Limitations
 
 To interact with the text via raycaster or cursor, we need to add geometry like a plane to the text.
