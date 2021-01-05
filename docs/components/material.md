@@ -189,6 +189,8 @@ For example:
 </a-scene>
 ```
 
+Notice: The previously available `sphericalEnvMap` property was removed because support no longer exists in Three.js ([PR](https://github.com/mrdoob/three.js/pull/19517)): we recommend users switch to `envMap` for environment reflections. 
+
 ### `flat`
 
 [basic]: https://threejs.org/docs/#api/materials/MeshBasicMaterial
