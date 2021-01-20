@@ -253,11 +253,18 @@ A-Frame caches textures so as to not push redundant textures to the GPU.
 
 ### Video Textures
 
+[startplayback]: https://aframe.io/aframe/examples/test/video/
+[videotestcode]: https://github.com/aframevr/aframe/blob/master/examples/test/video/index.html
+[videoplaycomponent]: https://github.com/aframevr/aframe/blob/master/examples/js/play-on-click.js
+
+
 Whether the video texture loops or autoplays depends on the video element used
 to create the texture. If we simply pass a URL instead of creating and passing
 a video element, then the texture will loop and autoplay by default. To specify
 otherwise, create a video element in the asset management system, and pass a
 selector for the `id` attribute (e.g., `#my-video`):
+
+Video autoplay policies are getting more and more strict and rules might vary accross browsers. Mandatory user gesture is now commonly enforced. For maximum compatibility, you can offer a button that the user can click to start [video playback][startplayback]. [Simple sample code][videotestcode] can be found in the docs. Pay particular attention to the [play-on-click component][videoplaycomponent]
 
 ```html
 <a-scene>
