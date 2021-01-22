@@ -62062,7 +62062,7 @@ module.exports.Component = registerComponent('inspector', {
    * <ctrl> + <alt> + i keyboard shortcut.
    */
   onKeydown: function (evt) {
-    var shortcutPressed = evt.keyCode === 73 && evt.ctrlKey && evt.altKey;
+    var shortcutPressed = evt.keyCode === 73 && (evt.ctrlKey && evt.altKey || evt.getModifierState('AltGraph'));
     if (!shortcutPressed) { return; }
     this.openInspector();
   },
@@ -71418,7 +71418,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 1.1.0 (Date 2021-01-11, Commit #60a23326)');
+console.log('A-Frame Version: 1.1.0 (Date 2021-01-22, Commit #9b15a622)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
