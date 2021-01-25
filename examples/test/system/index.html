@@ -6,19 +6,20 @@
   <title>Shadows</title>
   <meta name="description" content="Shadows - A-Frame">
   <script src="../../../dist/aframe-master.js"></script>
-  <script src="systems/hello.js"></script>
+  <script src="systems/syncColor.js"></script>
 </head>
 
 <body>
   <script>
     setTimeout(() => {
-      document.querySelector('a-scene').setAttribute('hello', { count: Date.now() })
-      document.querySelector('a-scene').setAttribute('hello', { random: Math.random() })
+      document.querySelector('a-scene').setAttribute('sync-color', { color1: '#900' })
+      document.querySelector('a-scene').setAttribute('sync-color', { color2: '#009' })
+      document.querySelector('a-scene').setAttribute('sync-color', 'interval', 50)
       document.querySelectorAll('a-entity[geometry]').forEach((el) => {
-        el.setAttribute('hello', { count: Date.now() })
+        el.setAttribute('sync-color', '')
       })
     }, 3000)
-    
+
   </script>
   <a-scene background="color: #111" stats>
     <!-- Meshes -->
