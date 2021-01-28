@@ -24,7 +24,7 @@ var systems = module.exports.systems = {};  // Keep track of registered systems.
  * For example, a physics component that creates a physics world that oversees
  * all entities with a physics or rigid body component.
  *
- * System and Component share the same baseProto as prototype.
+ * System and Component share the same base as prototype.
  *
  * @member {string} name - Name that system is registered under.
  * @member {Element} sceneEl - Handle to the scene element where system applies to.
@@ -181,7 +181,7 @@ const systemProto = {
   }
 
 };
-System.prototype = Object.assign(Object.create(base.baseProto), systemProto);
+System.prototype = Object.assign(Object.create(base.base), systemProto);
 /**
  * Registers a system to A-Frame.
  *

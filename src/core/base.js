@@ -6,8 +6,16 @@ var stringifyProperties = schema.stringifyProperties;
 var stringifyProperty = schema.stringifyProperty;
 var extendProperties = schema.extendProperties;
 var styleParser = utils.styleParser;
-
-module.exports.baseProto = {
+/**
+ * a base class for system and component definition.
+ *
+ * implement base method shared by system and component
+ *
+ *
+ * @member {string} name - Name that system is registered under.
+ * @member {Element} sceneEl - Handle to the scene element where system applies to.
+ */
+module.exports.base = {
   /**
    * Contains the type schema and defaults for the data values.
    * Data is coerced into the types of the values of the defaults.
