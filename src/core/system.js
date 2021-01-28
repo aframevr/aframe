@@ -24,7 +24,7 @@ var systems = module.exports.systems = {};  // Keep track of registered systems.
  * For example, a physics component that creates a physics world that oversees
  * all entities with a physics or rigid body component.
  *
- * TODO: System and Component share the same baseProto as prototype. Still missing some function than Component  (e.g., setAttribute behavior).
+ * System and Component share the same baseProto as prototype.
  *
  * @member {string} name - Name that system is registered under.
  * @member {Element} sceneEl - Handle to the scene element where system applies to.
