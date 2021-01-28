@@ -70,6 +70,7 @@ methods intended to be public API.
 | Method   | Description                                                              |
 | -------- | -------------                                                            |
 | init     | Called once when the system is initialized. Used to initialize.          |
+| update   | Called both when the system is initialized and whenever any of the system's properties is updated (e.g, via *setAttribute*). Used to modify the system on the fly.              |
 | pause    | Called when the scene pauses. Used to stop dynamic behavior.             |
 | play     | Called when the scene starts or resumes. Used to start dynamic behavior. |
 | tick     | If defined, will be called on every tick of the scene's render loop.     |
