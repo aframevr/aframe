@@ -33,7 +33,7 @@ rotation.
 
 ## Relative Rotation
 
-Child entities inherit from world-space rotations from parent entities.
+Child entities inherit world-space rotations from parent entities.
 Consider this scene:
 
 ```html
