@@ -65,6 +65,7 @@ module.exports.Component = registerComponent('generic-tracked-controller-control
     this.onButtonTouchStart = function (evt) { onButtonEvent(evt.detail.id, 'touchstart', self); };
     this.onButtonTouchEnd = function (evt) { onButtonEvent(evt.detail.id, 'touchend', self); };
     this.controllerPresent = false;
+    this.wasControllerConnected = false;
     this.lastControllerCheck = 0;
     this.rendererSystem = this.el.sceneEl.systems.renderer;
     this.bindMethods();
@@ -73,7 +74,7 @@ module.exports.Component = registerComponent('generic-tracked-controller-control
     // We must diable this component if there are more specialized controls components.
     this.el.addEventListener('controllerconnected', function (evt) {
       if (evt.detail.name === self.name) { return; }
-      self.controllerConnected = true;
+      self.wasControllerConnected = true;
       self.removeEventListeners();
       self.removeControllersUpdateListener();
     });
@@ -110,7 +111,7 @@ module.exports.Component = registerComponent('generic-tracked-controller-control
   },
 
   play: function () {
-    if (this.controllerConnected) { return; }
+    if (this.wasControllerConnected) { return; }
     this.checkIfControllerPresent();
     this.addControllersUpdateListener();
   },
