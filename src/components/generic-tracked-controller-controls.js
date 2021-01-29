@@ -127,7 +127,10 @@ module.exports.Component = registerComponent('generic-tracked-controller-control
 
     // Do nothing if tracked-controls already set.
     // Generic controls have the lowest precedence.
-    if (this.el.components['tracked-controls']) { return; }
+    if (this.el.components['tracked-controls']) {
+      this.removeEventListeners();
+      return;
+    }
     el.setAttribute('tracked-controls', {
       hand: data.hand,
       idPrefix: GAMEPAD_ID_PREFIX,
