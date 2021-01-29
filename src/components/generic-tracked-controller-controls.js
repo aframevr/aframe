@@ -39,7 +39,8 @@ module.exports.Component = registerComponent('generic-tracked-controller-control
     hand: {default: ''},  // This informs the degenerate arm model.
     defaultModel: {default: true},
     defaultModelColor: {default: 'gray'},
-    orientationOffset: {type: 'vec3'}
+    orientationOffset: {type: 'vec3'},
+    disabled: {default: false}
   },
 
   /**
@@ -64,9 +65,19 @@ module.exports.Component = registerComponent('generic-tracked-controller-control
     this.onButtonTouchStart = function (evt) { onButtonEvent(evt.detail.id, 'touchstart', self); };
     this.onButtonTouchEnd = function (evt) { onButtonEvent(evt.detail.id, 'touchend', self); };
     this.controllerPresent = false;
+    this.wasControllerConnected = false;
     this.lastControllerCheck = 0;
     this.rendererSystem = this.el.sceneEl.systems.renderer;
     this.bindMethods();
+
+    // generic-tracked-controller-controls has the lowest precedence.
+    // We must diable this component if there are more specialized controls components.
+    this.el.addEventListener('controllerconnected', function (evt) {
+      if (evt.detail.name === self.name) { return; }
+      self.wasControllerConnected = true;
+      self.removeEventListeners();
+      self.removeControllersUpdateListener();
+    });
   },
 
   addEventListeners: function () {
@@ -100,6 +111,7 @@ module.exports.Component = registerComponent('generic-tracked-controller-control
   },
 
   play: function () {
+    if (this.wasControllerConnected) { return; }
     this.checkIfControllerPresent();
     this.addControllersUpdateListener();
   },
@@ -112,6 +124,7 @@ module.exports.Component = registerComponent('generic-tracked-controller-control
   injectTrackedControls: function () {
     var el = this.el;
     var data = this.data;
+
     // Do nothing if tracked-controls already set.
     // Generic controls have the lowest precedence.
     if (this.el.components['tracked-controls']) {
