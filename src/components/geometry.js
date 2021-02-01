@@ -3,7 +3,7 @@ var geometryNames = require('../core/geometry').geometryNames;
 var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../lib/three');
 
-var dummyGeometry = new THREE.Geometry();
+var dummyGeometry = new THREE.BufferGeometry();
 
 /**
  * Geometry component. Combined with material component to make a mesh in 3D object.
