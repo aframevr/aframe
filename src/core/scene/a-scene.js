@@ -202,6 +202,7 @@ module.exports.AScene = registerElement('a-scene', {
      */
     detachedCallback: {
       value: function () {
+        var renderer = this.renderer;
         // Remove from scene index.
         var sceneIndex = scenes.indexOf(this);
         scenes.splice(sceneIndex, 1);
@@ -214,6 +215,12 @@ module.exports.AScene = registerElement('a-scene', {
         window.removeEventListener('vrdisplaypointerrestricted', this.pointerRestrictedBound);
         window.removeEventListener('vrdisplaypointerunrestricted', this.pointerUnrestrictedBound);
         window.removeEventListener('sessionend', this.resize);
+
+        renderer.setAnimationLoop(null);
+        renderer.forceContextLoss();
+        renderer.domElement = null;
+
+        disposeTHREEResources(this.object3D);
       }
     },
 
@@ -925,3 +932,25 @@ function setupCanvas (sceneEl) {
   }
 }
 module.exports.setupCanvas = setupCanvas;  // For testing.
+
+function disposeTHREEResources (object3D) {
+  if (!object3D) { return; }
+  disposeObject3DResources(object3D);
+
+  if (object3D.children && object3D.children.length) {
+    object3D.children.forEach(disposeTHREEResources);
+  }
+
+  function disposeObject3DResources (object3D) {
+    var geometry = object3D.geometry;
+    var material = object3D.material;
+    if (geometry && geometry.dispose) { geometry.dispose(); }
+    if (material) {
+      if (material.length) {
+        material.forEach(function (childMaterial) { if (childMaterial.dispose) { childMaterial.dispose(); } });
+      } else {
+        if (material.dispose) { material.dispose(); }
+      }
+    }
+  }
+}
