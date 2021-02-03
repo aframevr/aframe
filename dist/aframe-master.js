@@ -57443,6 +57443,9 @@ module.exports.Component = registerComponent('geometry', {
     } else {
       mesh = new THREE.Mesh();
       mesh.geometry = this.geometry;
+      if (!this.el.getAttribute('material')) {
+        this.el.setAttribute('material', {color: Math.random() * 0xffffff});
+      }
       el.setObject3D('mesh', mesh);
     }
   },
@@ -71509,7 +71512,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 1.1.0 (Date 2021-02-03, Commit #97be8159)');
+console.log('A-Frame Version: 1.1.0 (Date 2021-02-03, Commit #cc9a04f0)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
