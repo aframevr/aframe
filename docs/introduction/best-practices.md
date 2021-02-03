@@ -65,11 +65,9 @@ purpose of using A-Frame.
 [animation]: ../components/animation.md#direct-values-through-object3d-and-components
 [asm]: ../core/asset-management-system.md
 [hardware]: ./vr-headsets-and-webvr-browsers.md
-[merge]: https://www.npmjs.com/package/aframe-geometry-merger-component
 [stats]: ../components/stats.md
 [pool]: ../components/pool.md
 [background]: ../components/background.md
-[pool]
 [geometrymerger]: https://www.npmjs.com/package/aframe-geometry-merger-component
 
 
