@@ -45,6 +45,9 @@ module.exports.Component = registerComponent('geometry', {
     } else {
       mesh = new THREE.Mesh();
       mesh.geometry = this.geometry;
+      if (!this.el.getAttribute('material')) {
+        this.el.setAttribute('material', {color: Math.random() * 0xffffff});
+      }
       el.setObject3D('mesh', mesh);
     }
   },
