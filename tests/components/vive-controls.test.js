@@ -180,7 +180,7 @@ suite('vive-controls', function () {
   });
 
   suite('model', function () {
-    test.skip('loads', function (done) {
+    test.only('loads', function (done) {
       component.addEventListeners();
       el.addEventListener('model-loaded', function (evt) {
         assert.ok(component.buttonMeshes);
@@ -193,7 +193,7 @@ suite('vive-controls', function () {
     });
   });
 
-  suite.skip('button colors', function () {
+  suite.only('button colors', function () {
     test('has trigger at default color', function (done) {
       component.addEventListeners();
       el.addEventListener('model-loaded', function (evt) {
