@@ -34,6 +34,7 @@ setup(function () {
       isPresenting: function () { return true; },
       setDevice: function () {},
       setPoseTarget: function () {},
+      dispose: function () {},
       enabled: false
     },
     getContext: function () { return undefined; },
