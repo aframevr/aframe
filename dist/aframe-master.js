@@ -57443,8 +57443,13 @@ module.exports.Component = registerComponent('geometry', {
     } else {
       mesh = new THREE.Mesh();
       mesh.geometry = this.geometry;
+      // Default material if not defined on the entity.
       if (!this.el.getAttribute('material')) {
-        this.el.setAttribute('material', {color: Math.random() * 0xffffff});
+        mesh.material = new THREE.MeshStandardMaterial({
+          color: Math.random() * 0xFFFFFF,
+          metalness: 0,
+          roughness: 0.5
+        });
       }
       el.setObject3D('mesh', mesh);
     }
@@ -68966,6 +68971,7 @@ module.exports.AScene = registerElement('a-scene', {
         window.removeEventListener('vrdisplaypointerrestricted', this.pointerRestrictedBound);
         window.removeEventListener('vrdisplaypointerunrestricted', this.pointerUnrestrictedBound);
         window.removeEventListener('sessionend', this.resize);
+        this.renderer.xr.dispose();
       }
     },
 
@@ -71512,7 +71518,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 1.1.0 (Date 2021-02-03, Commit #cc9a04f0)');
+console.log('A-Frame Version: 1.1.0 (Date 2021-02-04, Commit #f1fc5e3e)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
