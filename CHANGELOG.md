@@ -1,3 +1,35 @@
+### 1.2.0 (Feb 5, 2021)
+
+WebXR immersive session and hand tracking fixes!
+
+[Sponsor](https://github.com/sponsors/dmarcos) A-Frame to help us move the 3D Web forward.
+
+You can also [buy a cool t-shirt](https://cottonbureau.com/products/fragments#/6821945/tee-men-standard-tee-vintage-black-tri-blend-s) 👕
+
+### Major Changes
+
+- Update to THREE r125 ([THREE.Geometry deprecated](https://github.com/mrdoob/three.js/wiki/Migration-Guide#r124--r125)) (@dmarcos)
+
+### Fixes
+
+- Fix hand tracking (https://github.com/aframevr/aframe/commit/97be8159d3769f4602e24ca870b754741f78777b) (@dmarcos)
+- Fix immersive mode in Chrome for Android and Microsoft Edge. (THREE r125)
+- Don't initialize text mesh until the font has loaded. This prevents the raycaster to intersect prematurely and emit spurious events (#4742) (@quantumalchemy @dmarcos)
+- Fix raycaster overriding line default color (#4743) (@GMartigny @dmarcos)
+- Make sure enter-vr / exit-vr events are emitted when entering fullscreen (#4740) (@stefanhuber @dmarcos)
+- Fix problem with wasd-controls when opening a contextual menu with right click while pressing WASD simultaneously. Camera movement doesn't stop when releasing keys (#4766) (@djoksimo @dmarcos)
+- Fix inspector toggle on US international keyboards (#4516) (@svenkonings @dmarcos)
+- Make sure generic controls have the lowest precedence when vendor specific ones are also defined (#4784) (@fordacious @dmarcos)
+- Fix tests (@dmarcos)
+
+### Deprecations
+
+- THREE r125 deprecates `THREE.Geometry`
+
+### Enhancements
+
+- Docs improvements (@tete-github @luics @KovacsGG @dmarcos)
+
 ### 1.1.0 (Dec 3, 2020)
 
 5 years of A-Frame! 🥳
