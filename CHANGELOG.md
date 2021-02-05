@@ -1,8 +1,8 @@
 ### 1.2.0 (Feb 5, 2021)
 
-WebXR immersive session and hand tracking fixes!
+WebXR immersive session and hand tracking fixes.
 
-[Sponsor](https://github.com/sponsors/dmarcos) A-Frame to help us move the 3D Web forward.
+[Sponsor](https://github.com/sponsors/dmarcos) A-Frame to help us move the 3D Web forward!
 
 You can also [buy a cool t-shirt](https://cottonbureau.com/products/fragments#/6821945/tee-men-standard-tee-vintage-black-tri-blend-s) 👕
 
