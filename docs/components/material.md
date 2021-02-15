@@ -587,6 +587,10 @@ And using from HTML markup:
 
 ***
 
+For an example with textures, [Remix this Texture Shader on Glitch](https://glitch.com/edit/#!/aframe-texture-shader)
+
+![textureShaderPreview](https://user-images.githubusercontent.com/165293/107857210-2f673580-6dea-11eb-8c7a-ab115d9dd67a.gif)
+
 For a more advanced example, [try Real-Time Vertex Displacement](https://glitch.com/edit/#!/aframe-displacement-registershader).
 
 ![b19320eb-802a-462a-afcd-3d0dd9480aee-861-000004c2a8504498](https://cloud.githubusercontent.com/assets/1848368/24825518/b52e5bf6-1bd4-11e7-8eb2-9a9c1ff82ce9.gif)
