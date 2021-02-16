@@ -31,7 +31,7 @@ module.exports.Component = register('background', {
   },
 
   tick () {
-    if (!this.data.auto && !this.needsEnvironmentUpdate) return;
+    if (!this.needsEnvironmentUpdate) return;
     const scene = this.el.object3D;
     const renderer = this.el.renderer;
     const camera = this.el.camera;
