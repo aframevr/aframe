@@ -25,6 +25,11 @@ module.exports.Component = register('background', {
       object3D.background = new THREE.Color(data.color);
     }
 
+    if (scene.environment && scene.environment !== this.cubeRenderTarget.texture) {
+      console.warn('Background will not overide predefined environment maps');
+      return;
+    }
+
     if (data.generateEnvironment) {
       scene.environment = this.cubeRenderTarget.texture;
     } else {
@@ -50,6 +55,9 @@ module.exports.Component = register('background', {
     if (data.transparent) {
       object3D.background = null;
       return;
+    }
+    if (object3D.environment === this.cubeRenderTarget.texture) {
+      object3D.environment = null;
     }
     object3D.background = COMPONENTS[this.name].schema.color.default;
   }
