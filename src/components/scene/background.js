@@ -8,33 +8,35 @@ module.exports.Component = register('background', {
     transparent: {default: false},
     generateEnvironment: {default: true}
   },
+  init: function () {
+    var cubeRenderTarget = new THREE.WebGLCubeRenderTarget(128, { format: THREE.RGBFormat, generateMipmaps: true, minFilter: THREE.LinearMipmapLinearFilter });
+    var cubeCamera = new THREE.CubeCamera(1, 100000, cubeRenderTarget);
+    this.cubeRenderTarget = cubeRenderTarget;
+    this.cubeCamera = cubeCamera;
+    this.needsEnvironmentUpdate = true;
+  },
   update: function () {
+    var scene = this.el.sceneEl.object3D;
     var data = this.data;
     var object3D = this.el.object3D;
     if (data.transparent) {
       object3D.background = null;
-      return;
+    } else {
+      object3D.background = new THREE.Color(data.color);
     }
-    object3D.background = new THREE.Color(data.color);
 
     if (data.generateEnvironment) {
-      const scene = this.el.sceneEl.object3D;
-      const cubeRenderTarget = new THREE.WebGLCubeRenderTarget(128, { format: THREE.RGBFormat, generateMipmaps: true, minFilter: THREE.LinearMipmapLinearFilter });
-      const cubeCamera = new THREE.CubeCamera(1, 100000, cubeRenderTarget);
-      this.cubeCamera = cubeCamera;
-      this.needsEnvironmentUpdate = true;
-      scene.environment = cubeRenderTarget.texture;
-      this.el.sceneEl.addEventListener('loaded', function () {
-        this.needsEnvironmentUpdate = true;
-      });
+      scene.environment = this.cubeRenderTarget.texture;
+    } else {
+      scene.environment = null;
     }
   },
 
-  tick () {
+  tick: function () {
     if (!this.needsEnvironmentUpdate) return;
-    const scene = this.el.object3D;
-    const renderer = this.el.renderer;
-    const camera = this.el.camera;
+    var scene = this.el.object3D;
+    var renderer = this.el.renderer;
+    var camera = this.el.camera;
 
     this.el.object3D.add(this.cubeCamera);
     this.cubeCamera.position.copy(camera.position);
