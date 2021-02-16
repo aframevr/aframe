@@ -5,7 +5,8 @@ var COMPONENTS = require('../../core/component').components;
 module.exports.Component = register('background', {
   schema: {
     color: {type: 'color', default: 'black'},
-    transparent: {default: false}
+    transparent: {default: false},
+    generateEnvironment: {default: true}
   },
   update: function () {
     var data = this.data;
@@ -15,6 +16,30 @@ module.exports.Component = register('background', {
       return;
     }
     object3D.background = new THREE.Color(data.color);
+
+    if (data.generateEnvironment) {
+      const scene = this.el.sceneEl.object3D;
+      const cubeRenderTarget = new THREE.WebGLCubeRenderTarget(128, { format: THREE.RGBFormat, generateMipmaps: true, minFilter: THREE.LinearMipmapLinearFilter });
+      const cubeCamera = new THREE.CubeCamera(1, 100000, cubeRenderTarget);
+      this.cubeCamera = cubeCamera;
+      this.needsEnvironmentUpdate = true;
+      scene.environment = cubeRenderTarget.texture;
+      this.el.sceneEl.addEventListener('loaded', function () {
+        this.needsEnvironmentUpdate = true;
+      });
+    }
+  },
+
+  tick () {
+    if (!this.data.auto && !this.needsEnvironmentUpdate) return;
+    const scene = this.el.object3D;
+    const renderer = this.el.renderer;
+    const camera = this.el.camera;
+
+    this.el.object3D.add(this.cubeCamera);
+    this.cubeCamera.position.copy(camera.position);
+    this.cubeCamera.update(renderer, scene);
+    this.needsEnvironmentUpdate = false;
   },
 
   remove: function () {
