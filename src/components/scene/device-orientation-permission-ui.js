@@ -1,4 +1,4 @@
-/* global DeviceOrientationEvent  */
+/* global DeviceOrientationEvent, location  */
 var registerComponent = require('../../core/component').registerComponent;
 var utils = require('../../utils/');
 var bind = utils.bind;
@@ -19,29 +19,59 @@ var DIALOG_OK_BUTTON_CLASS = 'a-dialog-ok-button';
  * UI for enabling device motion permission
  */
 module.exports.Component = registerComponent('device-orientation-permission-ui', {
-  schema: {enabled: {default: true}},
+  schema: {
+    enabled: {default: true},
+    deviceMotionMessage: {
+      default: 'This immersive website requires access to your device motion sensors.'
+    },
+    mobileDesktopMessage: {
+      default: 'Set your browser to request the mobile version of the site and reload the page to enjoy immersive mode.'
+    },
+    httpsMessage: {
+      default: 'Access this site over HTTPS to enter VR mode and grant access to the device sensors.'
+    },
+    denyButtonText: {default: 'Deny'},
+    allowButtonText: {default: 'Allow'},
+    cancelButtonText: {default: 'Cancel'}
+  },
 
   init: function () {
     var self = this;
 
     if (!this.data.enabled) { return; }
 
+    if (location.hostname !== 'localhost' &&
+        location.hostname !== '127.0.0.1' &&
+        location.protocol === 'http:') {
+      this.showHTTPAlert();
+    }
+
     // Show alert on iPad if Safari is on desktop mode.
-    if (utils.device.isMobileDeviceRequestingDesktopSite()) { this.showMobileDesktopModeAlert(); }
+    if (utils.device.isMobileDeviceRequestingDesktopSite()) {
+      this.showMobileDesktopModeAlert();
+      return;
+    }
 
     // Browser doesn't support or doesn't require permission to DeviceOrientationEvent API.
-    if (typeof DeviceOrientationEvent === 'undefined' || !DeviceOrientationEvent.requestPermission) { return; }
+    if (typeof DeviceOrientationEvent === 'undefined' || !DeviceOrientationEvent.requestPermission) {
+      this.permissionGranted = true;
+      return;
+    }
+
     this.onDeviceMotionDialogAllowClicked = bind(this.onDeviceMotionDialogAllowClicked, this);
     this.onDeviceMotionDialogDenyClicked = bind(this.onDeviceMotionDialogDenyClicked, this);
     // Show dialog only if permission has not yet been granted.
     DeviceOrientationEvent.requestPermission().catch(function () {
       self.devicePermissionDialogEl = createPermissionDialog(
-        'This immersive website requires access to your device motion sensors',
+        self.data.denyButtonText,
+        self.data.allowButtonText,
+        self.data.deviceMotionMessage,
         self.onDeviceMotionDialogAllowClicked,
         self.onDeviceMotionDialogDenyClicked);
       self.el.appendChild(self.devicePermissionDialogEl);
     }).then(function () {
       self.el.emit('deviceorientationpermissiongranted');
+      self.permissionGranted = true;
     });
   },
 
@@ -57,9 +87,19 @@ module.exports.Component = registerComponent('device-orientation-permission-ui',
   showMobileDesktopModeAlert: function () {
     var self = this;
     var safariIpadAlertEl = createAlertDialog(
-      'Request the mobile version of this site to enjoy it in immersive mode',
+      self.data.cancelButtonText,
+      self.data.mobileDesktopMessage,
       function () { self.el.removeChild(safariIpadAlertEl); });
     this.el.appendChild(safariIpadAlertEl);
+  },
+
+  showHTTPAlert: function () {
+    var self = this;
+    var httpAlertEl = createAlertDialog(
+      self.data.cancelButtonText,
+      self.data.httpsMessage,
+      function () { self.el.removeChild(httpAlertEl); });
+    this.el.appendChild(httpAlertEl);
   },
 
   /**
@@ -71,6 +111,7 @@ module.exports.Component = registerComponent('device-orientation-permission-ui',
     DeviceOrientationEvent.requestPermission().then(function (response) {
       if (response === 'granted') {
         self.el.emit('deviceorientationpermissiongranted');
+        self.permissionGranted = true;
       } else {
         self.el.emit('deviceorientationpermissionrejected');
       }
@@ -83,9 +124,12 @@ module.exports.Component = registerComponent('device-orientation-permission-ui',
  * Create a modal dialog that request users permission to access the Device Motion API.
  *
  * @param {function} onAllowClicked - click event handler
+ * @param {function} onDenyClicked - click event handler
+ *
  * @returns {Element} Wrapper <div>.
  */
-function createPermissionDialog (text, onAllowClicked, onDenyClicked) {
+function createPermissionDialog (
+  denyText, allowText, dialogText, onAllowClicked, onDenyClicked) {
   var buttonsContainer;
   var denyButton;
   var acceptButton;
@@ -97,13 +141,13 @@ function createPermissionDialog (text, onAllowClicked, onDenyClicked) {
   denyButton = document.createElement('button');
   denyButton.classList.add(DIALOG_BUTTON_CLASS, DIALOG_DENY_BUTTON_CLASS);
   denyButton.setAttribute(constants.AFRAME_INJECTED, '');
-  denyButton.innerHTML = 'Deny';
+  denyButton.innerHTML = denyText;
   buttonsContainer.appendChild(denyButton);
 
   acceptButton = document.createElement('button');
   acceptButton.classList.add(DIALOG_BUTTON_CLASS, DIALOG_ALLOW_BUTTON_CLASS);
   acceptButton.setAttribute(constants.AFRAME_INJECTED, '');
-  acceptButton.innerHTML = 'Allow';
+  acceptButton.innerHTML = allowText;
   buttonsContainer.appendChild(acceptButton);
 
   // Ask for sensor events to be used
@@ -117,10 +161,10 @@ function createPermissionDialog (text, onAllowClicked, onDenyClicked) {
     onDenyClicked();
   });
 
-  return createDialog(text, buttonsContainer);
+  return createDialog(dialogText, buttonsContainer);
 }
 
-function createAlertDialog (text, onOkClicked) {
+function createAlertDialog (closeText, dialogText, onOkClicked) {
   var buttonsContainer;
   var okButton;
 
@@ -131,7 +175,7 @@ function createAlertDialog (text, onOkClicked) {
   okButton = document.createElement('button');
   okButton.classList.add(DIALOG_BUTTON_CLASS, DIALOG_OK_BUTTON_CLASS);
   okButton.setAttribute(constants.AFRAME_INJECTED, '');
-  okButton.innerHTML = 'Ok';
+  okButton.innerHTML = closeText;
   buttonsContainer.appendChild(okButton);
 
   // Ask for sensor events to be used
@@ -140,7 +184,7 @@ function createAlertDialog (text, onOkClicked) {
     onOkClicked();
   });
 
-  return createDialog(text, buttonsContainer);
+  return createDialog(dialogText, buttonsContainer);
 }
 
 function createDialog (text, buttonsContainerEl) {

@@ -185,6 +185,7 @@ a-scene audio {
   -webkit-transition: background-color .05s ease;
   z-index: 9999;
   border-radius: 8px;
+  touch-action: manipulation; /* Prevent iOS double tap zoom on the button */
 }
 
 .a-enter-ar-button {
@@ -198,6 +199,10 @@ a-scene audio {
 .a-enter-vr-button:active,
 .a-enter-vr-button:hover {
   background-color: #ef2d5e;
+}
+
+.a-enter-vr-button.resethover {
+  background-color: rgba(0, 0, 0, 0.35);
 }
 
 [data-a-enter-vr-no-webvr] .a-enter-vr-button {
@@ -380,14 +385,14 @@ a-scene audio {
 }
 
 .a-dialog-allow-button {
-  background-color: #8ce3ba;
+  background-color: #00ceff;
 }
 
 .a-dialog-deny-button {
-  background-color: #ff4b8b;
+  background-color: #ff005b;
 }
 
 .a-dialog-ok-button {
-  background-color: #8ce3ba;
+  background-color: #00ceff;
   width: 100%;
 }

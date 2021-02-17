@@ -285,8 +285,11 @@ suite('Component', function () {
   suite('updateProperties', function () {
     var el;
 
-    setup(function () {
-      el = entityFactory();
+    setup(function (done) {
+      helpers.elFactory().then(_el => {
+        el = _el;
+        done();
+      });
       components.dummy = undefined;
     });
 
@@ -343,7 +346,7 @@ suite('Component', function () {
       }, 100);
     });
 
-    test('does not update for multi-prop if not changed', function (done) {
+    test('does not update for multi-prop if not changed', function () {
       var spy = this.sinon.spy();
 
       AFRAME.registerComponent('test', {
@@ -357,16 +360,13 @@ suite('Component', function () {
         }
       });
 
-      el.addEventListener('loaded', () => {
-        el.setAttribute('test', {foo: 'foo', bar: 'bar'});
-        el.setAttribute('test', {foo: 'foo', bar: 'bar'});
-        el.setAttribute('test', {foo: 'foo', bar: 'bar'});
-        assert.equal(spy.getCalls().length, 1);
-        done();
-      });
+      el.setAttribute('test', {foo: 'foo', bar: 'bar'});
+      el.setAttribute('test', {foo: 'foo', bar: 'bar'});
+      el.setAttribute('test', {foo: 'foo', bar: 'bar'});
+      assert.equal(spy.getCalls().length, 1);
     });
 
-    test('does not update for multi-prop if not changed using same object', function (done) {
+    test('does not update for multi-prop if not changed using same object', function () {
       var data = {foo: 'foo', bar: 'bar'};
       var spy = this.sinon.spy();
 
@@ -381,13 +381,10 @@ suite('Component', function () {
         }
       });
 
-      el.addEventListener('loaded', () => {
-        el.setAttribute('test', data);
-        el.setAttribute('test', data);
-        el.setAttribute('test', data);
-        assert.equal(spy.getCalls().length, 1);
-        done();
-      });
+      el.setAttribute('test', data);
+      el.setAttribute('test', data);
+      el.setAttribute('test', data);
+      assert.equal(spy.getCalls().length, 1);
     });
 
     test('does not emit componentchanged for single-prop if not changed', function (done) {
@@ -461,11 +458,9 @@ suite('Component', function () {
     });
 
     test('clones plain object schema default into data', function () {
-      var el;
       registerComponent('dummy', {
         schema: {type: 'vec3', default: {x: 1, y: 1, z: 1}}
       });
-      el = document.createElement('a-entity');
       el.hasLoaded = true;
       el.setAttribute('dummy', '2 2 2');
       el.components.dummy.updateProperties('');
@@ -474,7 +469,6 @@ suite('Component', function () {
     });
 
     test('does not clone properties from attrValue into data that are not plain objects', function () {
-      var el;
       registerComponent('dummy', {
         schema: {
           color: {default: 'blue'},
@@ -482,7 +476,6 @@ suite('Component', function () {
           el: {type: 'selector', default: 'body'}
         }
       });
-      el = document.createElement('a-entity');
       el.hasLoaded = true;
       el.setAttribute('dummy', '');
       assert.notOk(el.components.dummy.attrValue.el);
@@ -490,7 +483,6 @@ suite('Component', function () {
 
     test('does not clone props from attrValue into data that are not plain objects', function () {
       var attrValue;
-      var el;
       var data;
 
       registerComponent('dummy', {
@@ -501,7 +493,6 @@ suite('Component', function () {
         }
       });
 
-      el = document.createElement('a-entity');
       el.hasLoaded = true;
       el.setAttribute('dummy', '');
       assert.notOk(el.components.dummy.attrValue.el);
@@ -538,7 +529,6 @@ suite('Component', function () {
     });
 
     test('updates data when combining setAttribute and object3D manipulation', function () {
-      var el = document.createElement('a-entity');
       el.hasLoaded = true;
       el.setAttribute('position', '3 3 3');
       assert.equal(3, el.object3D.position.x);
@@ -588,9 +578,12 @@ suite('Component', function () {
 
   suite('third-party components', function () {
     var el;
-    setup(function () {
+    setup(function (done) {
       el = entityFactory();
       delete components.clone;
+      el.addEventListener('loaded', () => {
+        done();
+      });
     });
 
     test('can be registered', function () {
@@ -599,17 +592,13 @@ suite('Component', function () {
       assert.ok('clone' in components);
     });
 
-    test('can change behavior of entity', function (done) {
+    test('can change behavior of entity', function () {
       registerComponent('clone', CloneComponent);
-
-      el.addEventListener('loaded', function () {
-        assert.notOk('clone' in el.components);
-        assert.notOk(el.object3D.children.length);
-        el.setAttribute('clone', '');
-        assert.ok('clone' in el.components);
-        assert.equal(el.object3D.children[0].uuid, 'Bubble Fett');
-        done();
-      });
+      assert.notOk('clone' in el.components);
+      assert.notOk(el.object3D.children.length);
+      el.setAttribute('clone', '');
+      assert.ok('clone' in el.components);
+      assert.equal(el.object3D.children[0].uuid, 'Bubble Fett');
     });
 
     test('cannot be registered if it uses the character __ in the name', function () {

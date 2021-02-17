@@ -46,7 +46,7 @@ suite('laser-controls', function () {
       setTimeout(() => {
         var raycaster = el.getAttribute('raycaster');
         assert.equal(raycaster.origin.x, 0);
-        assert.equal(raycaster.origin.y, 0.0005);
+        assert.equal(raycaster.origin.y, 0.001);
         done();
       });
     });
@@ -59,11 +59,13 @@ suite('laser-controls', function () {
       });
     });
 
-    test('respects set line color', function (done) {
-      el.setAttribute('line', 'color', 'red');
+    test('respects set line color and opacity', function (done) {
+      el.setAttribute('raycaster', 'lineColor', 'red');
+      el.setAttribute('raycaster', 'lineOpacity', '0.5');
       el.emit('controllerconnected', {name: 'daydream-controls'});
       setTimeout(() => {
-        assert.equal(el.getAttribute('line').color, 'red');
+        assert.equal(el.getAttribute('raycaster').lineColor, 'red');
+        assert.equal(el.getAttribute('raycaster').lineOpacity, '0.5');
         done();
       });
     });

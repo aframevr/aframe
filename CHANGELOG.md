@@ -1,6 +1,177 @@
+### 1.2.0 (Feb 5, 2021)
+
+WebXR immersive session and hand tracking fixes.
+
+[Sponsor](https://github.com/sponsors/dmarcos) A-Frame to help us move the 3D Web forward!
+
+You can also [buy a cool t-shirt](https://cottonbureau.com/products/fragments#/6821945/tee-men-standard-tee-vintage-black-tri-blend-s) 👕
+
+### Major Changes
+
+- Update to THREE r125 ([THREE.Geometry deprecated](https://github.com/mrdoob/three.js/wiki/Migration-Guide#r124--r125)) (@dmarcos)
+
+### Fixes
+
+- Fix hand tracking (https://github.com/aframevr/aframe/commit/97be8159d3769f4602e24ca870b754741f78777b) (@dmarcos)
+- Fix immersive mode in Chrome for Android and Microsoft Edge. (THREE r125)
+- Don't initialize text mesh until the font has loaded. This prevents the raycaster to intersect prematurely and emit spurious events (#4742) (@quantumalchemy @dmarcos)
+- Fix raycaster overriding line default color (#4743) (@GMartigny @dmarcos)
+- Make sure enter-vr / exit-vr events are emitted when entering fullscreen (#4740) (@stefanhuber @dmarcos)
+- Fix problem with wasd-controls when opening a contextual menu with right click while pressing WASD simultaneously. Camera movement doesn't stop when releasing keys (#4766) (@djoksimo @dmarcos)
+- Fix inspector toggle on US international keyboards (#4516) (@svenkonings @dmarcos)
+- Make sure generic controls have the lowest precedence when vendor specific ones are also defined (#4784) (@fordacious @dmarcos)
+- Fix tests (@dmarcos)
+
+### Deprecations
+
+- THREE r125 deprecates `THREE.Geometry`
+
+### Enhancements
+
+- Docs improvements (@tete-github @luics @KovacsGG @dmarcos)
+
+### 1.1.0 (Dec 3, 2020)
+
+5 years of A-Frame! 🥳
+
+40 amazing A-Framers participated in this release. Thank you 👏
+
+AR, hand tracking, compositor layers, immersive navigation (Quest only), Quest 2 support and much more.
+
+[Buy an gorgeous t-shirt](https://cottonbureau.com/products/fragments) 👕 to support the project.
+
+### Major Changes
+
+* Support for [WebXR compositor layers API](https://immersive-web.github.io/layers/) @rcabanier @Artyom17 @dmarcos
+* Support for [WebXR DOM Overlays](https://immersive-web.github.io/dom-overlays/) support @klausw
+* Support for the [WebXR immersive navigation proposal](https://github.com/immersive-web/navigation) @arpu @Artyom17 @dmarcos
+* Support for the [WebXR hand tracking API proposal](https://github.com/immersive-web/webxr-hand-input/blob/master/explainer.md) (#4650) @machenmusik @dmarcos
+* Support for Quest 2 controllers @dmarcos
+* Update THREE to r123 @dmarcos
+
+### Fixes
+
+* Fix problem with Windows Mixed Reality controller falling to generic model @arpu
+* Fix incorrect values returned by the `axismove` event on Oculus Quest (#4472) @Sujoy-Ghosh
+* Fix `npm run dist` command when running in zsh @benallfree
+* Fix [wasd-controls](https://aframe.io/docs/1.0.0/components/wasd-controls.html#sidebar) easing to prevent sudden position jumps (#4241) @ntamas
+* Replace calls to `THREE: getWorld*` methods that don't know work in immersive mode (#4521) @NNskelly @dmarcos
+* Fix undetected controllers when using WebXR API @cabanier @Artyom17
+* Fix `selectstart` / `selectend` never detected by the [cursor component](https://aframe.io/docs/1.0.0/components/cursor.html#sidebar) @vincentfretin
+* Fix for duplicated [cursor component](https://aframe.io/docs/1.0.0/components/cursor.html#sidebar) events (#4494) @binzume
+* Listen to `sessiongranted` event only if WebXR is available @dmarcos
+* Bump `webvr-polyfill` to fix magic window mode in iOS 13 (#4554) @jwjordan @dax72 @NomisGnos @dmarcos
+* Fix Gear VR controller detection @vincentfretin
+* Fix spectator camera mode when entering VR mode (#4666) @broehl @dmarcos
+* Fix duplicated cursor component event in VR mode (#4494) @binzume @dmarcos
+* [Background component](https://aframe.io/docs/1.0.0/components/background.html#sidebar) can now be removed (#4676) @NVFedorov @dmarcos
+* Fix [screenshot](https://aframe.io/docs/1.0.0/components/screenshot.html#sidebar) component (#4685) @bknill @dmarcos
+* Add user gesture to start video playback in examples @dmarcos
+* Fix white stripe at the bottom of the screen when exiting VR mode in iOS (#4617) @jgutierro @dmarcos
+* Fix msdf shader compatibility with WebGL 1 devices (Safari iOS) @dmarcos
+* Fix for immersive navigation where the `sessiongranted` event was not captured @dmarcos
+* Move `raycaster` collision detection from `tick` to `tock` to prevent bogus collisions on first frame @dmarcos
+* Fix for camera pose not correctly restored when exiting VR mode @dmarcos
+* Make sure exit immersive logic runs when exiting AR mode @dmarcos
+* Add `vr-mode` state to `<a-scene>` when entering immersive mode with WebXR @dmarcos
+* Fix Valve Index controller button mappings @dmarcos
+
+### Enhancements
+
+* Pass high-performance to the WebGL context to prioritize rendering performance over power consumption @arpu
+* Docs improvements @rotoglup @richardjbaker @klausw @dmarcos @kfarr @majecty @AdaRoseCannon @ngokevin @sonnynomnom @lordbron @da4throux @danbuckland @vikohone @pixelistik @vincentfretin @stefanhuber
+* Code hygiene @Jamesgt @Shalwaban
+* Use new `THREE.WebGLRenderer` outputEncoding @arpu
+* Make msdf shader WebGL 2 compliant @arpu
+* Valve Index controller support @zach-capalbo
+* Cordova compatibility @benallfree
+* Change [look-controls](https://aframe.io/docs/1.0.0/components/look-controls.html#sidebar) `hmdEnable` property name to `magicWindowTrackingEnabled` @dmarcos
+* Improve hand tracking pinch gesture accuracy @cesmoak (#4691)
+* Improve error handling when entering immersive mode (#4660) @federico-camonapp @dmarcos
+* Make text of [device permission ui component](https://aframe.io/docs/1.0.0/components/device-orientation-permission-ui.html#sidebar) dialogs configurable @dmarcos
+* Add [look controls](https://aframe.io/docs/1.0.0/components/look-controls.html#sidebar) `mouseEnabled` property to enable / disable mouse input @dmarcos
+* Add [model viewer example](https://aframe.io/aframe/examples/showcase/model-viewer) with AR / VR and 2D mode compatibility @dmarcos
+* Add [user interface example](https://aframe.io/aframe/examples/showcase/ui/) that works in VR, desktop and mobile @dmarcos
+* Make [raycaster component](https://aframe.io/docs/1.0.0/components/raycaster.html#sidebar) line color configurable @dmarcos
+* Add info panel to examples @thedart76 @dmarcos to show instructions, controls and credit authors.
+
+### 1.0.4 (Feb 5, 2020)
+
+Bug fixes
+
+### Fixes
+
+* Reset `referenceSpace` and controllers list when entering / exiting VR (#4406) @AG-LucidWeb @Artyom17 @dmarcos
+* Fix WebXR buttons mapping for Oculus Go controller @dmarcos
+* Properly remove `selectstart` / `selectend` event listeners when XR session ends @DougReeder
+* Apply handedness orientation directly to the hands model (#4388) @dbradleyfl @dala00 @dmarcos
+* Set tracked-controls `armModel` default to false (#4405) @dmarcos
+* Set camera entity `matrixAutoupdate` to false only for the WebXR case (#4383) @liewol @dmarcos
+* Check if headset is connected when ignoring `mousedown` events (#4380) @AG-LucidWeb @dmarcos
+* Get rid of invalid character in TRHEE build (#4428) @kennardconsulting @dmarcos
+
+### Enhancements
+
+* Add dithering property in materials component (#4433) @Firepal
+* Add Magic Leap Controller Support @atarng-magicleap
+* New high poly, low poly and toon styles for `hand-controls` @arturitu
+* Listens to WebXR `selectstart` / `selectstart` and reemits as mousedown / mouseup. Simple screen input for AR experiences (fix #4407) @dmarcos
+* Use full hash in dependencies to comply with pnpm @pleku
+* Add color property to `hand-controls` @arturitu
+* Docs improvements @d2s @ChicagoDev @dirkk0 @omgitsraven @dmarcos
+* Add API to set WebXR far and near camera planes (#4387) @DougReeder
+
+
+### 1.0.3 (Dec 30, 2019)
+
+Bug fixes
+
+### Fixes
+
+* Add support for Gear VR controller over WebXR (@Artyom17, @dmarcos)
+* Add support for Oculus Go controller over WebXR (@Artyom17, @arpu, @dmarcos)
+* Fallback to a generic controller when a WebXR gamepad is not recognized (#4376) (@Artyom17, @dmarcos)
+* Match physical and virtual position of Quest and Rift S controllers (fix #4374) (@Artyom17, @dmarcos)
+* Consider initial device orientation for magic window tracking. Fix problem when experience loads in landscape orientation on Android devices (@dmarcos)
+* Listen to DOMContentLoaded if scene is not defined before updating the enter VR UI (#4373) (@mkungla, @dmarcos)
+
+### 1.0.2 (Dec 23, 2019)
+
+Bug fixes
+
+### Fixes
+
+* Track DeviceMotionControls yaw delta instead of absolute value to honor initial camera orientation (fix #4368) (@dmarcos)
+* Disable touchmove / mousemove tracking in VR mode. Pose is preserved when exiting VR (@dmarcos)
+* Hide Device Motion permission dialog on desktop requests from mobile devices. Only the alert about requesting mobile page is shown (fix #4369) (@dmarcos)
+* Reset camera rotation to 0 when entering VR to prevent collision between magic window and WebXR poses (fix #4371) (@karanganesan, @dmarcos)
+* Check if headset is connected before disabling mouse controls (fix #4370) (@KrisMerckx, @dmarcos)
+
+### 1.0.1 (Dec 20, 2019)
+
+Post 1.0.0 release bug fixes.
+
+### Fixes
+
+* Reintroduce a-asset-item logic to assign response type to `glTF` models automatically. It now ignores query parameters that made it fail before. (#4219) (@dmarcos)
+* Prevent zoom on enter `VR / AR buttons` when double tapping on touch screens (@dmarcos)
+* Apply style to reset the enter `AR / VR buttons` background on mouseleave. CSS Hover is sticky on mobile devices (@dmarcos)
+* Fix `magic window mode` in Daydream / ARCore Android devices. Use DeviceOrientationControls for tracking. (#4355) (@mako-lw, @dmarcos)
+* Honor model property in `laser-controls` (#4354) (@dala00, @dmarcos)
+* Reduce `video-sphere / photo-sphere` radius to prevent far plane clipping in VR mode on Android devices (#4365) (@AntoineLucidWeb, @dmarcos)
+
+### Enhancements
+
+* Improve visual design of `modal dialogs` (#4359) (@thedart76, @dmarcos)
+* Reinstate `WebXR` as the default code path for Oculus Browser. Oculus Browser 7.1 now ships the gamepad module (#4360) (@dmarcos)
+* Show `alert dialog` if the site is served over HTTP (#4357) (@brendanciccone, @thedart76, @mkungla, @dmarcos)
+* Improve text of desktop mode in mobile device `dialog`. Change Ok button text to Close (@dmarcos)
+
 ## 1.0.0 (Dec 13, 2019)
 
-WebXR final spec support
+WebXR final spec support!
+
+[Subscribe to the newsletter](https://aframe.io/subscribe/) for continuing updates.
 
 ### Major Changes
 - `WebXR` spec support (@klausw, @Artyom17, @dmarcos)
@@ -34,10 +205,10 @@ WebXR final spec support
 - Fix incorrect response type inference for glb/gltf files (#4219) (@Ely-S)
 - Fix WebVR deep-linking / navigation (#4199) (@Artyom17)
 - Restore render target to canvas to prevent freezes (@dmarcos)
-- Adjust `three-bmfont-text` to THREE r111 API changes (#4331) (@dmarcos) 
-- Don't consider Firefox Reality and Oculus Browser mobile / phone browsers (#4338) (@dmarcos) 
+- Adjust `three-bmfont-text` to THREE r111 API changes (#4331) (@dmarcos)
+- Don't consider Firefox Reality and Oculus Browser mobile / phone browsers (#4338) (@dmarcos)
 - `DracoLoader` Path set for THREE v108 (#4272) (@arpu)
-- Use glTF header to determine a-asset-item response type (#4228) (@Ely-S) 
+- Use glTF header to determine a-asset-item response type (#4228) (@Ely-S)
 - Remove `setTimeout` call in tick if not raycaster.showLine (#4192) (@ngokevin)
 - isMobileVR differentiates Samsung Internet for Gear VR from Samsung Internet for Android (#4188) (@DougReeder)
 - Apply handedness to Oculus Go controller (#4162) (@dmarcos)

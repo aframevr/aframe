@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Links</title>
+    <meta name="description" content="Links • A-Frame">
+    <script src="../../../dist/aframe-master.js"></script>
+    <script src="js/components/aframe-tooltip-component.js"></script>
+    <script src="js/components/camera-position.js"></script>
+    <script src="js/components/link-controls.js"></script>
+    <script src="https://unpkg.com/aframe-environment-component@1.2.0/dist/aframe-environment-component.min.js"></script>
+    <script src="../../js/info-message.js"></script>
+  </head>
+  <body>
+    <a-scene
+      fog="color: #241417; near: 0; far: 30;"
+      raycaster="far: 100; objects: [link];"
+      cursor="rayOrigin: mouse"
+      camera-position
+      environment="preset: forest"
+      info-message="htmlSrc: #messageText">
+      <a-assets>
+        <img id="thumbIndex" crossOrigin="anonymous" src="https://cdn.aframe.io/link-traversal/thumbs/index.png">
+        <img id="thumbJapan" crossOrigin="anonymous" src="https://cdn.aframe.io/link-traversal/thumbs/japan.png">
+        <img id="thumbEgypt" crossOrigin="anonymous" src="https://cdn.aframe.io/link-traversal/thumbs/egypt.png">
+        <a-asset-item id="messageText" src="message.html"></a-asset-item>
+      </a-assets>
+      <a-link href="index.html" position="-3.5 1.5 -1.0" image="#thumbIndex"></a-link>
+      <a-link href="japan.html" position="0 1.5 -1.0" image="#thumbJapan"></a-link>
+      <a-link href="egypt.html" position="3.5 1.5 -1.0" image="#thumbEgypt"></a-link>
+      <a-entity light="type: point; color: #f4f4f4; intensity: 0.4; distance: 0" position="0 2 0"></a-entity>
+      <a-entity id="leftHand" link-controls="hand: left"></a-entity>
+      <a-entity id="rightHand" link-controls="hand: right"></a-entity>
+    </a-scene>
+  </body>
+</html>

@@ -1,6 +1,8 @@
 /* global assert, setup, suite, test */
 var THREE = require('lib/three');
-var aAssets = require('core/a-assets');
+
+var inferResponseType = require('core/a-assets').inferResponseType;
+var getFileNameFromURL = require('core/a-assets').getFileNameFromURL;
 
 var IMG_SRC = '/base/tests/assets/test.png';
 var XHR_SRC = '/base/tests/assets/dummy/dummy.txt';
@@ -278,9 +280,9 @@ suite('a-asset-item', function () {
     document.body.appendChild(this.sceneEl);
   });
 
-  test('loads GLB from cache as arraybuffer without response-type attribute', function (done) {
+  test('loads from cache as arraybuffer without response-type attribute', function (done) {
     var assetItem = document.createElement('a-asset-item');
-    assetItem.setAttribute('src', XHR_SRC_GLB);
+    assetItem.setAttribute('src', XHR_SRC);
     assetItem.addEventListener('loaded', function (evt) {
       assert.ok(assetItem.data !== null);
       assert.ok(assetItem.data instanceof ArrayBuffer);
@@ -308,19 +310,45 @@ suite('a-asset-item', function () {
     assetItem.setAttribute('src', XHR_SRC_GLTF);
     assetItem.addEventListener('loaded', function (evt) {
       assert.ok(assetItem.data !== null);
-      assert.ok(assetItem.data instanceof ArrayBuffer);
+      assert.ok(typeof assetItem.data === 'string');
       done();
     });
     this.assetsEl.appendChild(assetItem);
     document.body.appendChild(this.sceneEl);
   });
 
-  suite('getArrayBuffer', function () {
-    test('getArrayBuffer returns correct array buffer', function () {
-      var arraybuffer = aAssets.getArrayBuffer('hi');
-      var charCodes = new Uint16Array(arraybuffer);
-      assert.equal(String.fromCharCode(charCodes[0]), 'h');
-      assert.equal(String.fromCharCode(charCodes[1]), 'i');
+  suite('inferResponseType', function () {
+    test('returns text as default', function () {
+      assert.equal(inferResponseType(XHR_SRC), 'text');
+    });
+
+    test('returns text for .gltf file', function () {
+      assert.equal(inferResponseType(XHR_SRC_GLTF), 'text');
+    });
+
+    test('returns arraybuffer for .glb file', function () {
+      assert.equal(inferResponseType(XHR_SRC_GLB), 'arraybuffer');
+    });
+
+    test('returns arraybuffer for .glb file with query string', function () {
+      assert.equal(inferResponseType(XHR_SRC_GLB + '?a=1'), 'arraybuffer');
+    });
+  });
+
+  suite('getFileNameFromURL', function () {
+    test('get file name from relative url', function () {
+      var url = 'my/path/relative.jpg';
+      assert.equal(getFileNameFromURL(url), 'relative.jpg');
+    });
+
+    test('get file name from absolute url', function () {
+      var url = 'https://aframe.io/my/path/absolute.jpg';
+      assert.equal(getFileNameFromURL(url), 'absolute.jpg');
+    });
+
+    test('get file name from url with query parameters', function () {
+      var url = 'https://cdn.glitch.com/test.jpg?1531238960521&test=yeah';
+      assert.equal(getFileNameFromURL(url), 'test.jpg');
     });
   });
 });

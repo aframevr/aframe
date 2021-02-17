@@ -1,13 +1,11 @@
 // Polyfill `Promise`.
 window.Promise = window.Promise || require('promise-polyfill');
 
-var isOculusBrowser = /(OculusBrowser)/i.test(window.navigator.userAgent);
-
 // WebVR polyfill
 // Check before the polyfill runs.
 window.hasNativeWebVRImplementation = !!window.navigator.getVRDisplays ||
                                       !!window.navigator.getVRDevices;
-window.hasNativeWebXRImplementation = !isOculusBrowser && navigator.xr !== undefined;
+window.hasNativeWebXRImplementation = navigator.xr !== undefined;
 
 // If native WebXR or WebVR are defined WebVRPolyfill does not initialize.
 if (!window.hasNativeWebXRImplementation && !window.hasNativeWebVRImplementation) {
@@ -19,7 +17,8 @@ if (!window.hasNativeWebXRImplementation && !window.hasNativeWebVRImplementation
   var polyfillConfig = {
     BUFFER_SCALE: bufferScale,
     CARDBOARD_UI_DISABLED: true,
-    ROTATE_INSTRUCTIONS_DISABLED: true
+    ROTATE_INSTRUCTIONS_DISABLED: true,
+    MOBILE_WAKE_LOCK: !!window.cordova
   };
   window.webvrpolyfill = new WebVRPolyfill(polyfillConfig);
 }
@@ -45,7 +44,7 @@ if (window.document.currentScript && window.document.currentScript.parentNode !=
 }
 
 // Error if not using a server.
-if (window.location.protocol === 'file:') {
+if (!window.cordova && window.location.protocol === 'file:') {
   error(
     'This HTML file is currently being served via the file:// protocol. ' +
     'Assets, textures, and models WILL NOT WORK due to cross-origin policy! ' +
@@ -91,8 +90,8 @@ require('./core/a-mixin');
 require('./extras/components/');
 require('./extras/primitives/');
 
-console.log('A-Frame Version: 1.0.0 (Date 2019-12-14, Commit #dc7d6174)');
-console.log('three Version (https://github.com/supermedium/three.js):',
+console.log('A-Frame Version: 1.2.0 (Date 2021-02-05, Commit #303e9de6)');
+console.log('THREE Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 

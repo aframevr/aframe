@@ -166,7 +166,7 @@ need to know the component's npm package name and the path:
 <html>
   <head>
     <title>360° Image Browser</title>
-    <script src="https://aframe.io/releases/1.0.0/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
     <script src="https://unpkg.com/aframe-template-component@3.x.x/dist/aframe-template-component.min.js"></script>
     <script src="https://unpkg.com/aframe-layout-component@4.x.x/dist/aframe-layout-component.min.js"></script>
     <script src="https://unpkg.com/aframe-event-set-component@5.x.x/dist/aframe-event-set-component.min.js"></script>
@@ -201,11 +201,11 @@ template component.
 [template]: https://github.com/supermedium/superframe/tree/master/components/template#aframe-template-component
 
 If we read the [template component's documentation][template], we see one way
-to define a template is via a script tag in `<a-assets>`. Let's make our link a
+to define a template is via a script tag in `<head>`. Let's make our link a
 template and give it a name using an `id`:
 
 ```html
-<a-assets>
+<head>
   <!-- ... -->
   <script id="plane" type="text/html">
     <a-entity class="link"
@@ -213,7 +213,7 @@ template and give it a name using an `id`:
       material="shader: flat; src: #cubes-thumb"
       sound="on: click; src: #click-sound"></a-entity>
   </script>
-</a-assets>
+</head>
 ```
 
 Then we can use the template to create multiple planes without much work:

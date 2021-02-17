@@ -5,10 +5,47 @@ var trackedControlsUtils = require('../utils/tracked-controls');
 var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
 var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
 var onButtonEvent = trackedControlsUtils.onButtonEvent;
+var isWebXRAvailable = require('../utils/').device.isWebXRAvailable;
 
-var GAMEPAD_ID_PREFIX = 'Oculus Go';
+var GAMEPAD_ID_WEBXR = 'oculus-go';
+var GAMEPAD_ID_WEBVR = 'Oculus Go';
 
 var OCULUS_GO_CONTROLLER_MODEL_URL = 'https://cdn.aframe.io/controllers/oculus/go/oculus-go-controller.gltf';
+
+// Prefix for Gen1 and Gen2 Oculus Touch Controllers.
+var GAMEPAD_ID_PREFIX = isWebXRAvailable ? GAMEPAD_ID_WEBXR : GAMEPAD_ID_WEBVR;
+
+/**
+ * Button indices:
+ * 0 - trackpad
+ * 1 - trigger
+ *
+ * Axis:
+ * 0 - trackpad x
+ * 1 - trackpad y
+ */
+var INPUT_MAPPING_WEBVR = {
+  axes: {trackpad: [0, 1]},
+  buttons: ['trackpad', 'trigger']
+};
+
+/**
+ * Button indices:
+ * 0 - trigger
+ * 1 - none
+ * 2 - touchpad
+ *
+ * Axis:
+ * 0 - touchpad x
+ * 1 - touchpad y
+ * Reference: https://github.com/immersive-web/webxr-input-profiles/blob/master/packages/registry/profiles/oculus/oculus-go.json
+ */
+var INPUT_MAPPING_WEBXR = {
+  axes: {touchpad: [0, 1]},
+  buttons: ['trigger', 'none', 'touchpad']
+};
+
+var INPUT_MAPPING = isWebXRAvailable ? INPUT_MAPPING_WEBXR : INPUT_MAPPING_WEBVR;
 
 /**
  * Oculus Go controls.
@@ -27,15 +64,7 @@ module.exports.Component = registerComponent('oculus-go-controls', {
     armModel: {default: true}
   },
 
-  /**
-   * Button IDs:
-   * 0 - trackpad
-   * 1 - trigger
-   */
-  mapping: {
-    axes: {trackpad: [0, 1]},
-    buttons: ['trackpad', 'trigger']
-  },
+  mapping: INPUT_MAPPING,
 
   bindMethods: function () {
     this.onModelLoaded = bind(this.onModelLoaded, this);
@@ -132,6 +161,7 @@ module.exports.Component = registerComponent('oculus-go-controls', {
     buttonMeshes = this.buttonMeshes = {};
     buttonMeshes.trigger = controllerObject3D.getObjectByName('oculus_go_button_trigger');
     buttonMeshes.trackpad = controllerObject3D.getObjectByName('oculus_go_touchpad');
+    buttonMeshes.touchpad = controllerObject3D.getObjectByName('oculus_go_touchpad');
   },
 
   onButtonChanged: function (evt) {

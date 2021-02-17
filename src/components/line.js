@@ -24,7 +24,7 @@ module.exports.Component = registerComponent('line', {
       visible: data.visible
     });
     geometry = this.geometry = new THREE.BufferGeometry();
-    geometry.addAttribute('position', new THREE.BufferAttribute(new Float32Array(2 * 3), 3));
+    geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(2 * 3), 3));
 
     this.rendererSystem.applyColorCorrection(material.color);
     this.line = new THREE.Line(geometry, material);

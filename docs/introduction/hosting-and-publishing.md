@@ -61,38 +61,6 @@ hosted and published for us (e.g., `ngokevin.neocities.org`):
 
 ![Neocities Editor](https://cloud.githubusercontent.com/assets/674727/25643399/704cffe0-2f54-11e7-8d32-868b51407f81.jpg)
 
-### Surge
-
-*"Static web publishing for Front-End Developers Simple, single-command web
-publishing. Publish HTML, CSS, and JS for free, without leaving the command
-line."*
-
-![Surge](https://cloud.githubusercontent.com/assets/674727/25644655/a0172784-2f5c-11e7-9e44-002d61d4d076.jpg)
-
-[Surge](https://surge.sh) is a tool to publish web sites with a single command
-from the command line. This is a great tool if you're comfortable with the
-command line.
-
-![Surge Usage](https://cloud.githubusercontent.com/assets/674727/25644695/e80f6ccc-2f5c-11e7-8442-7a963b9786ef.jpg)
-
-### GitHub Pages
-
-*"Websites for you and your projects.  Hosted directly from your GitHub
-repository. Just edit, push, and your changes are live."*
-
-[GitHub Pages](https://pages.github.com/) is a preferred way of publishing our
-project if our project is on GitHub. The easiest way is to go our project's
-GitHub **Settings**, scroll down to the **GitHub Pages** section, and set to
-publish **master branch**. This will publish the project at
-`https://<username>.github.io/<repositoryname>`.
-
-![GitHub](https://cloud.githubusercontent.com/assets/674727/25644905/5694c7c2-2f5e-11e7-8cde-9d4be7498850.jpg)
-
-Alternatively, we can set to publish the `gh-pages` branch if we don't want
-`master` changes to be published. Command line tools such as
-[`ghpages`](https://github.com/cvan/ghpages) can make that a one-command
-publish process.
-
 ## Hosting Assets
 
 We'll also go over hosting assets such as audio, textures, models, and video.
@@ -158,6 +126,10 @@ Below is a video of the workflow:
 
 <div style="position:relative;height:0;padding-bottom:56.25%"><iframe src="https://www.youtube.com/embed/_D_C_oSKp9Y?ecver=2" width="640" height="360" frameborder="0" style="position:absolute;width:100%;height:100%;left:0" allowfullscreen></iframe></div>
 
+Though ee can also host the model the same as we serve all of our other assets,
+and let the server and CDN handle it. If we want a special place to host them,
+S3 is another option.
+
 ## Sharing Our Project
 
 Once we've published our awesome project, we'll want to share it so other
@@ -212,7 +184,6 @@ include:
 - [WebVR Slack channel][slack-webvr].
 - [/r/WebVR subreddit][reddit-webvr].
 - Write a case study and tell us to feature on the [A-Frame Blog][blog].
-- [Featuring on Supermedium](https://www.supermedium.com/blog/webvr-guidelines)
 
 ## Embedding
 

@@ -15,11 +15,12 @@ module.exports.Shader = registerShader('sdf', {
   raw: true,
 
   vertexShader: [
-    'attribute vec2 uv;',
-    'attribute vec3 position;',
+    '#version 300 es',
+    'in vec2 uv;',
+    'in vec3 position;',
     'uniform mat4 projectionMatrix;',
     'uniform mat4 modelViewMatrix;',
-    'varying vec2 vUV;',
+    'out vec2 vUV;',
     'void main(void) {',
     '  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);',
     '  vUV = uv;',
@@ -27,16 +28,14 @@ module.exports.Shader = registerShader('sdf', {
   ].join('\n'),
 
   fragmentShader: [
-    '#ifdef GL_OES_standard_derivatives',
-    '#extension GL_OES_standard_derivatives: enable',
-    '#endif',
-
+    '#version 300 es',
     'precision highp float;',
     'uniform float alphaTest;',
     'uniform float opacity;',
     'uniform sampler2D map;',
     'uniform vec3 color;',
-    'varying vec2 vUV;',
+    'in vec2 vUV;',
+    'out vec4 fragColor;',
 
     '#ifdef GL_OES_standard_derivatives',
     '  float contour(float width, float value) {',
@@ -59,7 +58,7 @@ module.exports.Shader = registerShader('sdf', {
        // When we have derivatives and can get texel size for supersampling.
     '  #ifdef GL_OES_standard_derivatives',
     '    vec2 uv = vUV;',
-    '    vec4 texColor = texture2D(map, uv);',
+    '    vec4 texColor = texture(map, uv);',
     '    float dist = texColor.a;',
     '    float width = fwidth(dist);',
     '    float alpha = contour(dist, width);',
@@ -80,10 +79,10 @@ module.exports.Shader = registerShader('sdf', {
     '    if (isBigEnough <= BIG_ENOUGH) {',
     '      vec4 box = vec4 (uv - duv, uv + duv);',
     '      alpha = (alpha + 0.5 * (',
-    '        contour(texture2D(map, box.xy).a, width)',
-    '        + contour(texture2D(map, box.zw).a, width)',
-    '        + contour(texture2D(map, box.xw).a, width)',
-    '        + contour(texture2D(map, box.zy).a, width)',
+    '        contour(texture(map, box.xy).a, width)',
+    '        + contour(texture(map, box.zw).a, width)',
+    '        + contour(texture(map, box.xw).a, width)',
+    '        + contour(texture(map, box.zy).a, width)',
     '      )) / 3.0;',
     '    }',
 
@@ -92,7 +91,7 @@ module.exports.Shader = registerShader('sdf', {
 
     '  #else',
          // When we don't have derivatives, use approximations.
-    '    vec4 texColor = texture2D(map, vUV);',
+    '    vec4 texColor = texture(map, vUV);',
     '    float value = texColor.a;',
          // FIXME: if we understood font pixel dimensions, this could probably be improved
     '    float afwidth = (1.0 / 32.0) * (1.4142135623730951 / (2.0 * gl_FragCoord.w));',
@@ -106,7 +105,7 @@ module.exports.Shader = registerShader('sdf', {
     '    if (ratio < 1.0 && alpha <= DISCARD_ALPHA) { discard; return; }',
     '  #endif',
 
-    '  gl_FragColor = vec4(color, opacity * alpha);',
+    '  fragColor = vec4(color, opacity * alpha);',
     '}'
   ].join('\n')
 });

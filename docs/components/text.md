@@ -4,7 +4,10 @@ type: components
 layout: docs
 parent_section: components
 source_code: src/components/text.js
-examples: []
+examples:
+  - title: Stock Font Showcase
+    src: https://glitch.com/~aframe-text-fonts-demo
+
 ---
 
 The text component renders signed distance field (SDF) font text.
@@ -19,7 +22,7 @@ The text component renders signed distance field (SDF) font text.
 [three-bmfont-text]: https://github.com/Jam3/three-bmfont-text
 
 Note that rendering text in 3D is hard. In 2D web development, text is the most
-basic thing because the browser's renderer and layout engine handles
+basic thing because the browser's renderer and layout engine handle
 everything. In a 3D context, we don't have those luxuries. There are several
 other different ways to render text in A-Frame including:
 
@@ -170,7 +173,12 @@ the SDF font, DejaVu:
 
 To use non-ascii characters, you need to create your own custom font. The easiest way is to use [a web-based MSDF tool][msdf-bmfont-web]. Select your required character set and generate your own custom msdf font zip file.
 
-Once you download your custom msdf font zip file, extract it and rename `*.png` to `*-msdf.png`, then put both png and json files to your A-Frame directory.
+Here is an example of a French character set you can use:
+
+    ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.?!/:;,*§£$ø@+°-~#&²'{}[]|`\()=%*µ àâéèëêïîöôùüûÀÂÉÈËÊÏÎÖÔÜÛçÇ€
+
+Once you download your custom msdf font zip file, extract it, then put both png and json files to your A-Frame directory.
+From A-Frame 0.9.0 and above, you don't need to rename `*.png` to `*-msdf.png` anymore, A-Frame loads the image defined in the json file.
 
 Lastly, you should specify the character set used in your HTML by using `<meta>` tag to avoid text to be garbled. If your text is garbled, it is not rendered.
 
@@ -178,7 +186,7 @@ Lastly, you should specify the character set used in your HTML by using `<meta>`
 <html>
   <head>
     <meta charset="UTF-8">
-    <script src="https://aframe.io/releases/1.0.0/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
   </head>
   <body>
     <a-scene>

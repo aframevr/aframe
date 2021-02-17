@@ -46,7 +46,6 @@ Below are a few other A-Frame Glitches for starters:
 Below are a couple of A-Frame starter kits on other browser-based code
 editors. Both support remixing or forking:
 
-- [Mozilla Thimble &mdash; A-Frame](https://thimble.mozilla.org/en-US/user/ngokevin/864056)
 - [CodePen &mdash; A-Frame](https://codepen.io/mozvr/pen/BjygdO)
 
 ## Local Development
@@ -82,6 +81,7 @@ The boilerplate contains:
 We can grab the boilerplate in one of two ways:
 
 <a class="btn btn-download" href="https://github.com/aframevr/aframe-boilerplate/">Fork on GitHub</a>
+<br>(Note this is marked as 'discontinued', the Aframe version packaged with this is 0.5)
 
 <a class="btn btn-download" href="https://github.com/aframevr/aframe-boilerplate/archive/master.zip" download="aframe-boilerplate.zip">Download .ZIP<span></span></a>
 
@@ -92,14 +92,14 @@ CDN build:
 
 ```html
 <head>
-  <script src="https://aframe.io/releases/1.0.0/aframe.min.js"></script>
+  <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
 </head>
 ```
 
 If we want to serve it ourselves, we can download the JS build:
 
-<a id="builds-prod" class="btn btn-download" href="https://aframe.io/releases/1.0.0/aframe.min.js" download>Production Version <span>1.0.0</span></a> <em class="install-note">Minified</em>
-<a id="builds-dev" class="btn btn-download" href="https://aframe.io/releases/1.0.0/aframe.js" download>Development Version <span>1.0.0</span></a> <em class="install-note">Uncompressed with Source Maps</em>
+<a id="builds-prod" class="btn btn-download" href="https://aframe.io/releases/1.2.0/aframe.min.js" download>Production Version <span>1.2.0</span></a> <em class="install-note">Minified</em>
+<a id="builds-dev" class="btn btn-download" href="https://aframe.io/releases/1.2.0/aframe.js" download>Development Version <span>1.2.0</span></a> <em class="install-note">Uncompressed with Source Maps</em>
 
 ### Install from npm
 
@@ -124,3 +124,88 @@ A-Frame.  `angle` can initialize a scene template with a single command:
 ```sh
 npm install -g angle && angle initscene
 ```
+
+## Cordova Development
+
+A-Frame is compatible with Cordova apps. Currently, network access is required as A-Frame and its dependencies load assets from CDN sources.
+
+[Cordova A-Frame Showcase App (demo)](https://github.com/benallfree/cordova-aframe-showcase)
+
+### Installation
+
+Install the [cordova-plugin-xhr-local-file](https://github.com/benallfree/cordova-plugin-xhr-local-file) plugin. This is needed because
+Cordova runs from `file://`, and XHR requests to local `file://` assets (JSON fonts, 3D models, etc) will fail without this plugin.
+
+```bash
+cordova plugin add cordova-plugin-xhr-local-file
+```
+
+In your `index.html`, adjust as follows:
+
+```html
+<head>
+  <meta
+        http-equiv="Content-Security-Policy"
+        content="
+          default-src 
+            'self' 
+            data: 
+            gap: 
+            https://ssl.gstatic.com 
+            'unsafe-eval' 
+            https://cdn.aframe.io         <-- required
+            https://dpdb.webvr.rocks      <-- required
+            https://fonts.googleapis.com  <-- required
+            https://cdn.jsdelivr.net      <-- your choice, see below
+            ; 
+          style-src 
+            'self' 
+            'unsafe-inline'
+            ; 
+          media-src *; 
+          img-src 
+            'self' 
+            data:                         <-- required
+            content:                      <-- required
+            blob:                         <-- required
+            ;
+        "
+      />
+  ...
+  <script src="https://cdn.jsdelivr.net/npm/aframe@1.2.0/dist/aframe-master.min.js"></script>
+  <script id='my-scene' type="text/html">
+    ...your scene goes here...
+  </script>
+  <script>
+    document.addEventListener('deviceready', function() {
+      // After the 'deviceready' event, Cordova is ready for you to render your A-Frame scene.
+      document.getElementById('scene-root').innerHTML = document.getElementById('my-scene').innerHTML
+    })
+  </script>
+</head>
+<body>
+  <div id='scene-root'></div>
+  ...
+</body>
+```
+
+### Discussion
+
+
+#### deviceready
+The most important difference between a browser environment and a Cordova environment is waiting for the `deviceready` event
+before rendering your scene. 
+
+The sample above shows a pure DOM+JS approach, but you can also use a framework like React:
+
+```javascript
+document.addEventListener('deviceready', () => {
+  ReactDOM.render(<Root />, document.getElementById('root'))
+})
+```
+
+#### Layout
+
+Depending on your target device, you may find that A-Frame's default CSS causes certain buttons and controls to appear out of
+position or too close to the edge of the phone screen. Supply your own CSS overrides to adjust positioning to fit
+the target device.

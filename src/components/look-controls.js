@@ -1,8 +1,8 @@
+/* global DeviceOrientationEvent  */
 var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../lib/three');
 var utils = require('../utils/');
 var bind = utils.bind;
-var PolyfillControls = require('../utils').device.PolyfillControls;
 
 // To avoid recalculation at every mouse movement tick
 var PI_2 = Math.PI / 2;
@@ -15,32 +15,33 @@ module.exports.Component = registerComponent('look-controls', {
 
   schema: {
     enabled: {default: true},
-    hmdEnabled: {default: true},
+    magicWindowTrackingEnabled: {default: true},
     pointerLockEnabled: {default: false},
     reverseMouseDrag: {default: false},
     reverseTouchDrag: {default: false},
-    touchEnabled: {default: true}
+    touchEnabled: {default: true},
+    mouseEnabled: {default: true}
   },
 
   init: function () {
+    this.deltaYaw = 0;
     this.previousHMDPosition = new THREE.Vector3();
     this.hmdQuaternion = new THREE.Quaternion();
-    this.hmdEuler = new THREE.Euler();
+    this.magicWindowAbsoluteEuler = new THREE.Euler();
+    this.magicWindowDeltaEuler = new THREE.Euler();
     this.position = new THREE.Vector3();
-    // To save / restore camera pose
-    this.savedRotation = new THREE.Vector3();
-    this.savedPosition = new THREE.Vector3();
-    this.polyfillObject = new THREE.Object3D();
-    this.polyfillControls = new PolyfillControls(this.polyfillObject);
+    this.magicWindowObject = new THREE.Object3D();
     this.rotation = {};
     this.deltaRotation = {};
     this.savedPose = null;
     this.pointerLocked = false;
     this.setupMouseControls();
     this.bindMethods();
-    this.el.object3D.matrixAutoUpdate = false;
-    this.el.object3D.updateMatrix();
+    this.previousMouseEvent = {};
 
+    this.setupMagicWindowControls();
+
+    // To save / restore camera pose
     this.savedPose = {
       position: new THREE.Vector3(),
       rotation: new THREE.Euler()
@@ -48,6 +49,26 @@ module.exports.Component = registerComponent('look-controls', {
 
     // Call enter VR handler if the scene has entered VR before the event listeners attached.
     if (this.el.sceneEl.is('vr-mode')) { this.onEnterVR(); }
+  },
+
+  setupMagicWindowControls: function () {
+    var magicWindowControls;
+    var data = this.data;
+
+    // Only on mobile devices and only enabled if DeviceOrientation permission has been granted.
+    if (utils.device.isMobile()) {
+      magicWindowControls = this.magicWindowControls = new THREE.DeviceOrientationControls(this.magicWindowObject);
+      if (typeof DeviceOrientationEvent !== 'undefined' && DeviceOrientationEvent.requestPermission) {
+        magicWindowControls.enabled = false;
+        if (this.el.sceneEl.components['device-orientation-permission-ui'].permissionGranted) {
+          magicWindowControls.enabled = data.magicWindowTrackingEnabled;
+        } else {
+          this.el.sceneEl.addEventListener('deviceorientationpermissiongranted', function () {
+            magicWindowControls.enabled = data.magicWindowTrackingEnabled;
+          });
+        }
+      }
+    }
   },
 
   update: function (oldData) {
@@ -58,10 +79,15 @@ module.exports.Component = registerComponent('look-controls', {
       this.updateGrabCursor(data.enabled);
     }
 
-    // Reset pitch and yaw if disabling HMD.
-    if (oldData && !data.hmdEnabled && !oldData.hmdEnabled) {
-      this.pitchObject.rotation.set(0, 0, 0);
-      this.yawObject.rotation.set(0, 0, 0);
+    // Reset magic window eulers if tracking is disabled.
+    if (oldData && !data.magicWindowTrackingEnabled && oldData.magicWindowTrackingEnabled) {
+      this.magicWindowAbsoluteEuler.set(0, 0, 0);
+      this.magicWindowDeltaEuler.set(0, 0, 0);
+    }
+
+    // Pass on magic window tracking setting to magicWindowControls.
+    if (this.magicWindowControls) {
+      this.magicWindowControls.enabled = data.magicWindowTrackingEnabled;
     }
 
     if (oldData && !data.pointerLockEnabled !== oldData.pointerLockEnabled) {
@@ -187,36 +213,53 @@ module.exports.Component = registerComponent('look-controls', {
     var poseMatrix = new THREE.Matrix4();
 
     return function () {
-      var hmdEuler = this.hmdEuler;
       var object3D = this.el.object3D;
       var pitchObject = this.pitchObject;
       var yawObject = this.yawObject;
       var pose;
       var sceneEl = this.el.sceneEl;
 
-      // WebXR API updates applies headset pose to the object3D matrixWorld internally.
-      // Reflect values back on position, rotation, scale so setAttribute returns expected values.
-      if (sceneEl.is('vr-mode') && sceneEl.hasWebXR) {
-        pose = sceneEl.renderer.xr.getCameraPose();
-        if (pose) {
-          poseMatrix.elements = pose.transform.matrix;
-          poseMatrix.decompose(object3D.position, object3D.rotation, object3D.scale);
+      // In VR mode, THREE is in charge of updating the camera pose.
+      if (sceneEl.is('vr-mode') && sceneEl.checkHeadsetConnected()) {
+        // With WebXR THREE applies headset pose to the object3D matrixWorld internally.
+        // Reflect values back on position, rotation, scale for getAttribute to return the expected values.
+        if (sceneEl.hasWebXR) {
+          pose = sceneEl.renderer.xr.getCameraPose();
+          if (pose) {
+            poseMatrix.elements = pose.transform.matrix;
+            poseMatrix.decompose(object3D.position, object3D.rotation, object3D.scale);
+          }
         }
-      } else {
-        object3D.updateMatrix();
+        return;
       }
 
-      // In VR mode, THREE is in charge of updating the camera rotation.
-      if (sceneEl.is('vr-mode') && sceneEl.checkHeadsetConnected()) { return; }
-      // Calculate polyfilled HMD quaternion.
-      this.polyfillControls.update();
-      hmdEuler.setFromQuaternion(this.polyfillObject.quaternion, 'YXZ');
+      this.updateMagicWindowOrientation();
 
       // On mobile, do camera rotation with touch events and sensors.
-      object3D.rotation.x = hmdEuler.x + pitchObject.rotation.x;
-      object3D.rotation.y = hmdEuler.y + yawObject.rotation.y;
+      object3D.rotation.x = this.magicWindowDeltaEuler.x + pitchObject.rotation.x;
+      object3D.rotation.y = this.magicWindowDeltaEuler.y + yawObject.rotation.y;
+      object3D.rotation.z = this.magicWindowDeltaEuler.z;
     };
   })(),
+
+  updateMagicWindowOrientation: function () {
+    var magicWindowAbsoluteEuler = this.magicWindowAbsoluteEuler;
+    var magicWindowDeltaEuler = this.magicWindowDeltaEuler;
+    // Calculate magic window HMD quaternion.
+    if (this.magicWindowControls && this.magicWindowControls.enabled) {
+      this.magicWindowControls.update();
+      magicWindowAbsoluteEuler.setFromQuaternion(this.magicWindowObject.quaternion, 'YXZ');
+      if (!this.previousMagicWindowYaw && magicWindowAbsoluteEuler.y !== 0) {
+        this.previousMagicWindowYaw = magicWindowAbsoluteEuler.y;
+      }
+      if (this.previousMagicWindowYaw) {
+        magicWindowDeltaEuler.x = magicWindowAbsoluteEuler.x;
+        magicWindowDeltaEuler.y += magicWindowAbsoluteEuler.y - this.previousMagicWindowYaw;
+        magicWindowDeltaEuler.z = magicWindowAbsoluteEuler.z;
+        this.previousMagicWindowYaw = magicWindowAbsoluteEuler.y;
+      }
+    }
+  },
 
   /**
    * Translate mouse drag into rotation.
@@ -224,7 +267,7 @@ module.exports.Component = registerComponent('look-controls', {
    * Dragging up and down rotates the camera around the X-axis (yaw).
    * Dragging left and right rotates the camera around the Y-axis (pitch).
    */
-  onMouseMove: function (event) {
+  onMouseMove: function (evt) {
     var direction;
     var movementX;
     var movementY;
@@ -237,13 +280,14 @@ module.exports.Component = registerComponent('look-controls', {
 
     // Calculate delta.
     if (this.pointerLocked) {
-      movementX = event.movementX || event.mozMovementX || 0;
-      movementY = event.movementY || event.mozMovementY || 0;
+      movementX = evt.movementX || evt.mozMovementX || 0;
+      movementY = evt.movementY || evt.mozMovementY || 0;
     } else {
-      movementX = event.screenX - previousMouseEvent.screenX;
-      movementY = event.screenY - previousMouseEvent.screenY;
+      movementX = evt.screenX - previousMouseEvent.screenX;
+      movementY = evt.screenY - previousMouseEvent.screenY;
     }
-    this.previousMouseEvent = event;
+    this.previousMouseEvent.screenX = evt.screenX;
+    this.previousMouseEvent.screenY = evt.screenY;
 
     // Calculate rotation.
     direction = this.data.reverseMouseDrag ? 1 : -1;
@@ -256,15 +300,16 @@ module.exports.Component = registerComponent('look-controls', {
    * Register mouse down to detect mouse drag.
    */
   onMouseDown: function (evt) {
-    if (!this.data.enabled) { return; }
+    var sceneEl = this.el.sceneEl;
+    if (!this.data.enabled || !this.data.mouseEnabled || (sceneEl.is('vr-mode') && sceneEl.checkHeadsetConnected())) { return; }
     // Handle only primary button.
     if (evt.button !== 0) { return; }
 
-    var sceneEl = this.el.sceneEl;
     var canvasEl = sceneEl && sceneEl.canvas;
 
     this.mouseDown = true;
-    this.previousMouseEvent = evt;
+    this.previousMouseEvent.screenX = evt.screenX;
+    this.previousMouseEvent.screenY = evt.screenY;
     this.showGrabbingCursor();
 
     if (this.data.pointerLockEnabled && !this.pointerLocked) {
@@ -302,7 +347,9 @@ module.exports.Component = registerComponent('look-controls', {
    * Register touch down to detect touch drag.
    */
   onTouchStart: function (evt) {
-    if (evt.touches.length !== 1 || !this.data.touchEnabled) { return; }
+    if (evt.touches.length !== 1 ||
+        !this.data.touchEnabled ||
+        this.el.sceneEl.is('vr-mode')) { return; }
     this.touchStart = {
       x: evt.touches[0].pageX,
       y: evt.touches[0].pageY
@@ -343,10 +390,15 @@ module.exports.Component = registerComponent('look-controls', {
    * Save pose.
    */
   onEnterVR: function () {
-    if (!this.el.sceneEl.checkHeadsetConnected()) { return; }
+    var sceneEl = this.el.sceneEl;
+    if (!sceneEl.checkHeadsetConnected()) { return; }
     this.saveCameraPose();
     this.el.object3D.position.set(0, 0, 0);
-    this.el.object3D.updateMatrix();
+    this.el.object3D.rotation.set(0, 0, 0);
+    if (sceneEl.hasWebXR) {
+      this.el.object3D.matrixAutoUpdate = false;
+      this.el.object3D.updateMatrix();
+    }
   },
 
   /**
@@ -356,6 +408,7 @@ module.exports.Component = registerComponent('look-controls', {
     if (!this.el.sceneEl.checkHeadsetConnected()) { return; }
     this.restoreCameraPose();
     this.previousHMDPosition.set(0, 0, 0);
+    this.el.object3D.matrixAutoUpdate = true;
   },
 
   /**

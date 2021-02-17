@@ -73,6 +73,7 @@ depending on the material type applied.
 | vertexColors | Whether to use vertex or face colors to shade the material. Can be one of `none`, `vertex`, or `face`.                                            | none          |
 | visible      | Whether material is visible. Raycasters will ignore invisible materials.                                                                          | true          |
 | blending     | The blending mode for the material's RGB and Alpha sent to the WebGLRenderer. Can be one of `none`, `normal`, `additive`, `subtractive` or `multiply`.  | normal          |
+| dithering    | Whether material is dithered with noise. Removes banding from gradients like ones produced by lighting.                                           | true          |
 
 ## Events
 
@@ -252,11 +253,18 @@ A-Frame caches textures so as to not push redundant textures to the GPU.
 
 ### Video Textures
 
+[startplayback]: https://aframe.io/aframe/examples/test/video/
+[videotestcode]: https://github.com/aframevr/aframe/blob/master/examples/test/video/index.html
+[videoplaycomponent]: https://github.com/aframevr/aframe/blob/master/examples/js/play-on-click.js
+
+
 Whether the video texture loops or autoplays depends on the video element used
 to create the texture. If we simply pass a URL instead of creating and passing
 a video element, then the texture will loop and autoplay by default. To specify
 otherwise, create a video element in the asset management system, and pass a
 selector for the `id` attribute (e.g., `#my-video`):
+
+Video autoplay policies are getting more and more strict and rules might vary accross browsers. Mandatory user gesture is now commonly enforced. For maximum compatibility, you can offer a button that the user can click to start [video playback][startplayback]. [Simple sample code][videotestcode] can be found in the docs. Pay particular attention to the [play-on-click component][videoplaycomponent]
 
 ```html
 <a-scene>
@@ -362,7 +370,7 @@ Let's walk through an [example CodePen][example] with step-by-step commentary.
 As always, we need to include the A-Frame script.
 
 ```js
-<script src="https://aframe.io/releases/1.0.0/aframe.min.js"></script>
+<script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
 ```
 
 Next, we define any components and shaders we need after the A-Frame
@@ -578,6 +586,10 @@ And using from HTML markup:
 ![5093034e-97f2-40dc-8cb9-28ca75bfd75b-8043-00000dbc2e00268d](https://cloud.githubusercontent.com/assets/1848368/24825516/abb98abe-1bd4-11e7-8262-93d3efb6056f.gif)
 
 ***
+
+For an example with textures, [Remix this Texture Shader on Glitch](https://glitch.com/edit/#!/aframe-texture-shader)
+
+![textureShaderPreview](https://user-images.githubusercontent.com/165293/107857210-2f673580-6dea-11eb-8c7a-ab115d9dd67a.gif)
 
 For a more advanced example, [try Real-Time Vertex Displacement](https://glitch.com/edit/#!/aframe-displacement-registershader).
 

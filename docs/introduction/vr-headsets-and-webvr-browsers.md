@@ -43,13 +43,11 @@ are constrained to looking around and wiggling the controller.
 ### What Are Some Current Headsets?
 
 [HTC Vive]: https://www.vive.com/
-[Oculus Rift]: https://www.oculus.com/rift/
+[Oculus headsets]: https://www.oculus.com
 [Google Daydream]: https://vr.google.com/daydream/
 [Samsung GearVR]: http://www.samsung.com/global/galaxy/gear-vr/
 [Windows Mixed Reality]: https://developer.microsoft.com/en-us/windows/mixed-reality/
-[Oculus Go]: https://www.oculus.com/go
 [Vive Focus]: https://enterprise.vive.com/us/vivefocus/
-[Oculus Quest]: https://www.oculus.com/quest
 
 | Headset                 | Platform   | Positional Tracking | Controllers        | Controller Positional Tracking |
 |-------------------------|------------|---------------------|--------------------|--------------------------------|
@@ -61,6 +59,7 @@ are constrained to looking around and wiggling the controller.
 | [Oculus Go]             | Standalone | :x:                 | :white_check_mark: | :x:                            |
 | [Vive Focus]            | Standalone | :x:                 | :white_check_mark: | :x:                            |
 | [Oculus Quest]            | Standalone | :white_check_mark:  | :white_check_mark: | :white_check_mark:             |
+| [Oculus Quest 2]            | Standalone | :white_check_mark:  | :white_check_mark: | :white_check_mark:             |
 
 ## What is WebVR?
 

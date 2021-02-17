@@ -68,8 +68,9 @@ suite('a-entity', function () {
 
   test('emits `componentremoved` event when element itself has been removed', function (done) {
     el.setAttribute('geometry', 'primitive:plane');
-    el.addEventListener('componentremoved', function (event) {
+    el.addEventListener('componentremoved', function onComponentRemoved (event) {
       assert.equal(event.detail.name, 'geometry');
+      el.removeEventListener('componentremoved', onComponentRemoved);
       done();
     });
     el.removeAttribute('geometry');
@@ -1125,9 +1126,9 @@ suite('a-entity', function () {
       el.play();
       el.setAttribute('raycaster', '');
       component = el.components['raycaster'];
-      assert.notEqual(sceneEl.behaviors.tick.indexOf(component), -1);
+      assert.notEqual(sceneEl.behaviors.tock.indexOf(component), -1);
       el.removeAttribute('raycaster');
-      assert.equal(sceneEl.behaviors.tick.indexOf(component), -1);
+      assert.equal(sceneEl.behaviors.tock.indexOf(component), -1);
     });
 
     test('waits for component to initialize', function (done) {

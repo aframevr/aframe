@@ -22,16 +22,18 @@ handles hand animations and poses.
 ## Example
 
 ```html
-<a-entity id="leftHand" hand-controls="left"></a-entity>
-<a-entity id="rightHand" hand-controls="right"></a-entity>
+<a-entity id="leftHand" hand-controls="hand: left; handModelStyle: lowPoly; color: #ffcccc"></a-entity>
+<a-entity id="rightHand" hand-controls="hand: right; handModelStyle: lowPoly; color: #ffcccc"></a-entity>
 ```
 
-## Values
+## Properties
 
-| Value | Description                                      |
-|-------|--------------------------------------------------|
-| left  | The entity will track the left hand controller.  |
-| right | The entity will track the right hand controller. |
+| Property       | Description                                                                            | Default Value |
+|----------------|----------------------------------------------------------------------------------------|---------------|
+| color          | Color of hand material.                                                                | white         |
+| hand           | Associated controller. Can be `left` or `right`.                                       | left          |
+| handModelStyle | Style of the hand 3D model loaded. Can be `lowPoly`, `highPoly` or `toon`.             | lowPoly       |
+
 
 ## Events
 
@@ -50,5 +52,11 @@ handles hand animations and poses.
 
 ## Assets
 
-- [Left hand model](https://cdn.aframe.io/controllers/oculus-hands/v2/leftHand.json)
-- [Right hand model](https://cdn.aframe.io/controllers/oculus-hands/v2/rightHand.json)
+- [Left hand low poly model](https://cdn.aframe.io/controllers/hands/leftHandLow.glb)
+- [Right hand low poly model](https://cdn.aframe.io/controllers/hands/rightHandLow.glb)
+
+- [Left hand high poly model](https://cdn.aframe.io/controllers/hands/leftHandHigh.glb)
+- [Right hand high poly model](https://cdn.aframe.io/controllers/hands/rightHandHigh.glb)
+
+- [Left hand toon model](https://cdn.aframe.io/controllers/hands/leftHand.glb)
+- [Right hand toon model](https://cdn.aframe.io/controllers/hands/rightHand.glb)

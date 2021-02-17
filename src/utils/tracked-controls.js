@@ -36,8 +36,8 @@ module.exports.checkControllerPresentAndSetup = function (component, idPrefix, q
 
   // Update controller presence.
   if (isPresent) {
-    component.injectTrackedControls();
     component.addEventListeners();
+    component.injectTrackedControls(controller);
     el.emit('controllerconnected', {name: component.name, component: component});
   } else {
     component.removeEventListeners();
@@ -83,7 +83,9 @@ function isControllerPresentWebXR (component, id, queryObject) {
   controllers = trackedControlsSystem.controllers;
   if (!controllers || !controllers.length) { return false; }
 
-  return findMatchingControllerWebXR(controllers, id, queryObject.hand, queryObject.index);
+  return findMatchingControllerWebXR(
+    controllers, id,
+    queryObject.hand, queryObject.index, queryObject.iterateControllerProfiles, queryObject.handTracking);
 }
 
 module.exports.isControllerPresentWebVR = isControllerPresentWebVR;
@@ -138,6 +140,8 @@ function findMatchingControllerWebVR (controllers, filterIdExact, filterIdPrefix
     // NUM_HANDS matches for each controller number, instead of 1.
     if (filterHand && !controller.hand) {
       targetControllerMatch = NUM_HANDS * filterControllerIndex + ((filterHand === DEFAULT_HANDEDNESS) ? 0 : 1);
+    } else {
+      return controller;
     }
 
     // We are looking for the nth occurence of a matching controller
@@ -148,7 +152,7 @@ function findMatchingControllerWebVR (controllers, filterIdExact, filterIdPrefix
   return undefined;
 }
 
-function findMatchingControllerWebXR (controllers, idPrefix, handedness, index) {
+function findMatchingControllerWebXR (controllers, idPrefix, handedness, index, iterateProfiles, handTracking) {
   var i;
   var j;
   var controller;
@@ -158,9 +162,17 @@ function findMatchingControllerWebXR (controllers, idPrefix, handedness, index) 
   for (i = 0; i < controllers.length; i++) {
     controller = controllers[i];
     profiles = controller.profiles;
-    for (j = 0; j < profiles.length; j++) {
-      controllerMatch = profiles[j].startsWith(idPrefix);
-      if (controllerMatch) { break; }
+    if (handTracking) {
+      controllerMatch = controller.hand;
+    } else {
+      if (iterateProfiles) {
+        for (j = 0; j < profiles.length; j++) {
+          controllerMatch = profiles[j].startsWith(idPrefix);
+          if (controllerMatch) { break; }
+        }
+      } else {
+        controllerMatch = profiles.length > 0 && profiles[0].startsWith(idPrefix);
+      }
     }
     if (!controllerMatch) { continue; }
     // Vive controllers are assigned handedness at runtime and it might not be always available.

@@ -5,10 +5,39 @@
     <title>Videosphere</title>
     <meta name="description" content="Videosphere - A-Frame">
     <script src="../../../dist/aframe-master.js"></script>
+    <script src="../../js/play-on-click.js"></script>
+    <script src="../../js/hide-on-play.js"></script>
   </head>
   <body>
-    <a-scene stats>
-      <a-videosphere src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/t-197/walking_the_dog_360_video_short.webm"></a-videosphere>
+    <a-scene>
+      <a-assets>
+        <!--
+        SOURCE
+        Author: Bitmovin
+        URL:    https://bitmovin.com/demos/vr-360
+        -->
+        <video id="video" preload="auto"
+               src="https://bitmovin.com/player-content/playhouse-vr/progressive.mp4"
+               autoplay loop="true"
+               crossOrigin="anonymous"></video>
+      </a-assets>
+      <a-videosphere
+        rotation="0 -90 0"
+        src="#video"
+        visible="false"
+        play-on-click>
+      </a-videosphere>
+      <a-camera>
+        <a-entity
+          position="0 0 -1.5"
+          text="align: center;
+                width: 6;
+                wrapCount: 100;
+                color: black;
+                value: Click or tap to start video"
+          hide-on-play="#video">
+        </a-entity>
+      </a-camera>
     </a-scene>
   </body>
 </html>

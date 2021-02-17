@@ -50,6 +50,8 @@ module.exports.Component = registerComponent('raycaster', {
     objects: {default: ''},
     origin: {type: 'vec3'},
     showLine: {default: false},
+    lineColor: {default: 'white'},
+    lineOpacity: {default: 1},
     useWorldCoordinates: {default: false}
   },
 
@@ -184,7 +186,7 @@ module.exports.Component = registerComponent('raycaster', {
   /**
    * Check for intersections and cleared intersections on an interval.
    */
-  tick: function (time) {
+  tock: function (time) {
     var data = this.data;
     var prevCheckTime = this.prevCheckTime;
 
@@ -199,7 +201,7 @@ module.exports.Component = registerComponent('raycaster', {
   },
 
   /**
-   * Raycast for intersections and emit events for current and cleared inersections.
+   * Raycast for intersections and emit events for current and cleared intersections.
    */
   checkIntersections: function () {
     var clearedIntersectedEls = this.clearedIntersectedEls;
@@ -326,8 +328,8 @@ module.exports.Component = registerComponent('raycaster', {
         return;
       }
 
-      // Grab the position and rotation. (As a side effect, this updates el.object3D.matrixWorld.)
-      el.object3D.getWorldPosition(originVec3);
+      el.object3D.updateMatrixWorld();
+      originVec3.setFromMatrixPosition(el.object3D.matrixWorld);
 
       // If non-zero origin, translate the origin into world space.
       if (data.origin.x !== 0 || data.origin.y !== 0 || data.origin.z !== 0) {
@@ -376,6 +378,8 @@ module.exports.Component = registerComponent('raycaster', {
     // given by data.direction, then we apply a scalar to give it a length.
     this.lineData.start = data.origin;
     this.lineData.end = endVec3.copy(this.unitLineEndVec3).multiplyScalar(length);
+    this.lineData.color = data.lineColor;
+    this.lineData.opacity = data.lineOpacity;
     el.setAttribute('line', this.lineData);
   },
 
@@ -384,7 +388,7 @@ module.exports.Component = registerComponent('raycaster', {
    * Children are flattened by one level, removing the THREE.Group wrapper,
    * so that non-recursive raycasting remains useful.
    *
-   * Only push children defined as component attachemnts (e.g., setObject3D),
+   * Only push children defined as component attachements (e.g., setObject3D),
    * NOT actual children in the scene graph hierarchy.
    *
    * @param  {Array<Element>} els

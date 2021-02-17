@@ -1,0 +1,12 @@
+<p> AR mode relies on the <a href="https://www.w3.org/TR/webxr-ar-module-1/">WebXR Augmented Reality Module</a> proposal. Browser support is experimental and might vary accross vendors.</p>
+
+<p>
+<strong>Desktop:</strong> Mouse drag (rotate), Mouse wheel (zoom)<br>
+<strong>Mobile:</strong> Swipe (rotate), Pinch (zoom)<br>
+<strong>VR:</strong> Click and drag (rotate), Thumbstick (zoom)<br>
+</p>
+
+<p>
+Triceratops model by <a href="https://sketchfab.com/3d-models/triceratops-d16aabe33dc24f8ab37e3df50c068265">pxltiger</a><br>
+Reticle model by <a href="https://twitter.com/tojiro">Tojiro</a>
+</p>

@@ -26,7 +26,8 @@ suite('a-scene (without renderer)', function () {
       },
       exitPresent: function () {
         return Promise.resolve();
-      }
+      },
+      isPresenting: true
     });
     document.body.appendChild(el);
   });
@@ -61,7 +62,7 @@ suite('a-scene (without renderer)', function () {
   suite('attachedCallback', function () {
     test('initializes scene', function (done) {
       var sceneEl = this.el;
-      sceneEl.addEventListener('loaded', function () {
+      sceneEl.addEventListener('loaded', function onLoaded () {
         assert.ok(Object.keys(sceneEl.systems).length);
         assert.ok(this.behaviors.tick);
         assert.ok(this.behaviors.tock);
@@ -72,6 +73,7 @@ suite('a-scene (without renderer)', function () {
         assert.ok(sceneEl.hasAttribute('keyboard-shortcuts'));
         assert.ok(sceneEl.hasAttribute('screenshot'));
         assert.ok(sceneEl.hasAttribute('vr-mode-ui'));
+        sceneEl.removeEventListener('loaded', onLoaded);
         done();
       });
     });
@@ -83,10 +85,11 @@ suite('a-scene (without renderer)', function () {
       var sceneEl = this.el;
       var exitVRStub = this.sinon.stub(sceneEl, 'exitVR');
       event = new CustomEvent('vrdisplaydisconnect');
-      sceneEl.addEventListener('loaded', () => {
+      sceneEl.addEventListener('loaded', function onLoaded () {
         window.dispatchEvent(event);
         setTimeout(function () {
           assert.ok(exitVRStub.calledWith(true));
+          sceneEl.removeEventListener('loaded', onLoaded);
           done();
         });
       });
@@ -140,14 +143,28 @@ suite('a-scene (without renderer)', function () {
         xr: {
           getDevice: function () {},
           setDevice: function () {},
-          setPoseTarget: function () {}
+          setPoseTarget: function () {},
+          dispose: function () {}
         },
         getContext: function () { return undefined; },
-        setAnimationLoop: function () {}
+        setAnimationLoop: function () {},
+        setPixelRatio: function () {},
+        setSize: function () {},
+        render: function () {}
       };
 
       // mock camera
-      sceneEl.camera = {el: {object3D: {}}};
+      sceneEl.camera = {
+        el: {object3D: {}},
+        updateProjectionMatrix: function () {}
+      };
+
+      // mock canvas
+      sceneEl.canvas = {
+        addEventListener: function () {},
+        removeEventListener: function () {},
+        requestFullscreen: function () {}
+      };
     });
 
     test('does not try to enter VR if already in VR', function (done) {
@@ -191,6 +208,16 @@ suite('a-scene (without renderer)', function () {
       var sceneEl = this.el;
       sceneEl.enterVR().then(function () {
         assert.ok(sceneEl.is('vr-mode'));
+        done();
+      });
+    });
+
+    helpers.getSkipCITest()('adds AR mode state', function (done) {
+      var sceneEl = this.el;
+      if (!sceneEl.hasWebXR) { done(); }
+      sceneEl.enterVR(true).then(function () {
+        assert.notOk(sceneEl.is('vr-mode'));
+        assert.ok(sceneEl.is('ar-mode'));
         done();
       });
     });
@@ -241,9 +268,13 @@ suite('a-scene (without renderer)', function () {
         xr: {
           getDevice: function () {},
           setDevice: function () {},
-          setPoseTarget: function () {}
+          setPoseTarget: function () {},
+          dispose: function () {}
         },
-        setPixelRatio: function () {}
+        setAnimationLoop: function () {},
+        setPixelRatio: function () {},
+        setSize: function () {},
+        render: function () {}
       };
 
       sceneEl.addState('vr-mode');
@@ -253,7 +284,7 @@ suite('a-scene (without renderer)', function () {
       var sceneEl = this.el;
       sceneEl.removeState('vr-mode');
       sceneEl.exitVR().then(function (val) {
-        assert.equal(val, 'Not in VR.');
+        assert.equal(val, 'Not in immersive mode.');
         done();
       });
     });
@@ -326,7 +357,10 @@ suite('a-scene (without renderer)', function () {
         removeEventListener: function () {},
         end: function () { return Promise.resolve(); }
       };
-      sceneEl.renderer.xr = {setSession: function () {}};
+      sceneEl.renderer.xr = {
+        setSession: function () {},
+        dispose: function () {}
+      };
       sceneEl.hasWebXR = true;
       sceneEl.checkHeadsetConnected = function () { return true; };
       assert.ok(sceneEl.xrSession);
@@ -399,7 +433,6 @@ suite('a-scene (without renderer)', function () {
 
     setup(function () {
       sceneEl = this.el;
-      AScene.prototype.resize.restore();
       sceneEl.camera = { updateProjectionMatrix: function () {} };
       sceneEl.canvas = document.createElement('canvas');
       setSizeSpy = this.sinon.spy();
@@ -409,9 +442,12 @@ suite('a-scene (without renderer)', function () {
         xr: {
           isPresenting: function () { return true; },
           getDevice: function () { return {isPresenting: false}; },
-          setDevice: function () {}
+          setDevice: function () {},
+          dispose: function () {}
         },
-        setSize: setSizeSpy
+        setAnimationLoop: function () {},
+        setSize: setSizeSpy,
+        render: function () {}
       };
     });
 
@@ -612,13 +648,17 @@ helpers.getSkipCISuite()('a-scene (with renderer)', function () {
     var el;
     var self = this;
     AScene.prototype.setupRenderer.restore();
-    AScene.prototype.resize.restore();
     AScene.prototype.render.restore();
     el = self.el = document.createElement('a-scene');
     document.body.appendChild(el);
     el.addEventListener('renderstart', function () {
       done();
     });
+  });
+
+  teardown(function () {
+    this.sinon.stub(AScene.prototype, 'render');
+    this.sinon.stub(AScene.prototype, 'setupRenderer');
   });
 
   suite('detachedCallback', function () {
@@ -691,6 +731,10 @@ helpers.getSkipCISuite()('a-scene (with renderer)', function () {
     var scene = this.el;
     var Component = {el: {isPlaying: true}, tock: function () {}};
     this.sinon.spy(Component, 'tock');
+    scene.render = function () {
+      scene.time = 1;
+      if (scene.isPlaying) { scene.tock(1); }
+    };
     scene.addBehavior(Component);
     scene.addBehavior({el: {isPlaying: true}});
     scene.render();
