@@ -9,10 +9,8 @@ module.exports.Component = register('background', {
     generateEnvironment: {default: true}
   },
   init: function () {
-    var cubeRenderTarget = new THREE.WebGLCubeRenderTarget(128, { format: THREE.RGBFormat, generateMipmaps: true, minFilter: THREE.LinearMipmapLinearFilter });
-    var cubeCamera = new THREE.CubeCamera(1, 100000, cubeRenderTarget);
-    this.cubeRenderTarget = cubeRenderTarget;
-    this.cubeCamera = cubeCamera;
+    this.cubeRenderTarget = new THREE.WebGLCubeRenderTarget(128, { format: THREE.RGBFormat, generateMipmaps: true, minFilter: THREE.LinearMipmapLinearFilter });
+    this.cubeCamera = new THREE.CubeCamera(1, 100000, this.cubeRenderTarget);
     this.needsEnvironmentUpdate = true;
   },
   update: function () {
