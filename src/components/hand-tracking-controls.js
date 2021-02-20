@@ -1,11 +1,9 @@
-/* global THREE, XRRigidTransform, XRHand */
+/* global THREE, XRRigidTransform */
 var registerComponent = require('../core/component').registerComponent;
 var bind = require('../utils/bind');
 
 var trackedControlsUtils = require('../utils/tracked-controls');
 var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
-
-var JOINTS_NUMBER = 25;
 
 var LEFT_HAND_MODEL_URL = 'https://cdn.aframe.io/controllers/oculus-hands/unity/left.glb';
 var RIGHT_HAND_MODEL_URL = 'https://cdn.aframe.io/controllers/oculus-hands/unity/right.glb';
@@ -15,33 +13,58 @@ var BONE_PREFIX = {
   right: 'b_r_'
 };
 
-var BONE_MAPPING = [
+var JOINTS = [
   'wrist',
-  'thumb1',
-  'thumb2',
-  'thumb3',
-  'thumb_null',
-  null,
-  'index1',
-  'index2',
-  'index3',
-  'index_null',
-  null,
-  'middle1',
-  'middle2',
-  'middle3',
-  'middle_null',
-  null,
-  'ring1',
-  'ring2',
-  'ring3',
-  'ring_null',
-  'pinky0',
-  'pinky1',
-  'pinky2',
-  'pinky3',
-  'pinky_null'
+  'thumb-metacarpal',
+  'thumb-phalanx-proximal',
+  'thumb-phalanx-distal',
+  'thumb-tip',
+  'index-finger-metacarpal',
+  'index-finger-phalanx-proximal',
+  'index-finger-phalanx-intermediate',
+  'index-finger-phalanx-distal',
+  'index-finger-tip',
+  'middle-finger-metacarpal',
+  'middle-finger-phalanx-proximal',
+  'middle-finger-phalanx-intermediate',
+  'middle-finger-phalanx-distal',
+  'middle-finger-tip',
+  'ring-finger-metacarpal',
+  'ring-finger-phalanx-proximal',
+  'ring-finger-phalanx-intermediate',
+  'ring-finger-phalanx-distal',
+  'ring-finger-tip',
+  'pinky-finger-metacarpal',
+  'pinky-finger-phalanx-proximal',
+  'pinky-finger-phalanx-intermediate',
+  'pinky-finger-phalanx-distal',
+  'pinky-finger-tip'
 ];
+
+var BONE_MAPPING = {
+  'wrist': 'wrist',
+  'thumb-metacarpal': 'thumb1',
+  'thumb-phalanx-proximal': 'thumb2',
+  'thumb-phalanx-distal': 'thumb3',
+  'thumb-tip': 'thumb_null',
+  'index-finger-phalanx-proximal': 'index1',
+  'index-finger-phalanx-intermediate': 'index2',
+  'index-finger-phalanx-distal': 'index3',
+  'index-finger-tip': 'index_null',
+  'middle-finger-phalanx-proximal': 'middle1',
+  'middle-finger-phalanx-intermediate': 'middle2',
+  'middle-finger-phalanx-distal': 'middle3',
+  'middle-finger-tip': 'middle_null',
+  'ring-finger-phalanx-proximal': 'ring1',
+  'ring-finger-phalanx-intermediate': 'ring2',
+  'ring-finger-phalanx-distal': 'ring3',
+  'ring-finger-tip': 'ring_null',
+  'pinky-finger-metacarpal': 'pinky0',
+  'pinky-finger-phalanx-proximal': 'pinky1',
+  'pinky-finger-phalanx-intermediate': 'pinky2',
+  'pinky-finger-phalanx-distal': 'pinky3',
+  'pinky-finger-tip': 'pinky_null'
+};
 
 var PINCH_START_DISTANCE = 0.015;
 var PINCH_END_DISTANCE = 0.03;
@@ -147,19 +170,28 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
     }
   },
 
+  getBone: function (name) {
+    var bones = this.bones;
+    for (var i = 0; i < bones.length; i++) {
+      if (bones[i].name === name) { return bones[i]; }
+    }
+    return null;
+  },
+
   updateHandMeshModel: function () {
+    var frame = this.el.sceneEl.frame;
     var controller = this.el.components['tracked-controls'] && this.el.components['tracked-controls'].controller;
     var referenceSpace = this.referenceSpace;
+
     if (!controller || !this.mesh || !referenceSpace) { return; }
     this.mesh.visible = false;
-    for (var i = 0; i < controller.hand.length; i++) {
+    for (var inputjoint of controller.hand.values()) {
       var bone;
       var jointPose;
       var jointTransform;
-      if (!controller.hand[i]) { continue; }
-      jointPose = this.el.sceneEl.frame.getJointPose(controller.hand[i], referenceSpace);
-      if (BONE_MAPPING[i] == null) { continue; }
-      bone = this.getBone(BONE_PREFIX[this.data.hand] + BONE_MAPPING[i]);
+      jointPose = frame.getJointPose(inputjoint, referenceSpace);
+      if (!BONE_MAPPING[inputjoint.jointName]) { continue; }
+      bone = this.getBone(BONE_PREFIX[this.data.hand] + BONE_MAPPING[inputjoint.jointName]);
       if (bone != null && jointPose) {
         jointTransform = jointPose.transform;
         this.mesh.visible = true;
@@ -169,31 +201,25 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
     }
   },
 
-  getBone: function (name) {
-    var bones = this.bones;
-    for (var i = 0; i < bones.length; i++) {
-      if (bones[i].name === name) { return bones[i]; }
-    }
-    return null;
-  },
-
   updateHandDotsModel: function () {
     var frame = this.el.sceneEl.frame;
     var controller = this.el.components['tracked-controls'] && this.el.components['tracked-controls'].controller;
     var trackedControlsWebXR = this.el.components['tracked-controls-webxr'];
     var referenceSpace = trackedControlsWebXR.system.referenceSpace;
-    for (var i = 0; i < this.jointEls.length; ++i) {
-      var jointEl = this.jointEls[i];
-      jointEl.object3D.visible = !!controller.hand[i];
-      if (controller.hand[i]) {
-        var object3D = jointEl.object3D;
-        var pose = frame.getJointPose(controller.hand[i], referenceSpace);
-        jointEl.object3D.visible = !!pose;
-        if (!pose) { continue; }
-        object3D.matrix.elements = pose.transform.matrix;
-        object3D.matrix.decompose(object3D.position, object3D.rotation, object3D.scale);
-        jointEl.setAttribute('scale', {x: pose.radius, y: pose.radius, z: pose.radius});
-      }
+    var jointEl;
+    var object3D;
+    var jointPose;
+    var i = 0;
+
+    for (var inputjoint of controller.hand.values()) {
+      jointEl = this.jointEls[i++];
+      object3D = jointEl.object3D;
+      jointPose = frame.getJointPose(inputjoint, referenceSpace);
+      jointEl.object3D.visible = !!jointPose;
+      if (!jointPose) { continue; }
+      object3D.matrix.elements = jointPose.transform.matrix;
+      object3D.matrix.decompose(object3D.position, object3D.rotation, object3D.scale);
+      jointEl.setAttribute('scale', {x: jointPose.radius, y: jointPose.radius, z: jointPose.radius});
     }
   },
 
@@ -209,10 +235,12 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
       var controller = this.el.components['tracked-controls'] && this.el.components['tracked-controls'].controller;
       var trackedControlsWebXR = this.el.components['tracked-controls-webxr'];
       var referenceSpace = this.referenceSpace || trackedControlsWebXR.system.referenceSpace;
-      if (!controller.hand[XRHand.INDEX_PHALANX_TIP] ||
-          !controller.hand[XRHand.THUMB_PHALANX_TIP]) { return; }
-      var indexTipPose = frame.getJointPose(controller.hand[XRHand.INDEX_PHALANX_TIP], referenceSpace);
-      var thumbTipPose = frame.getJointPose(controller.hand[XRHand.THUMB_PHALANX_TIP], referenceSpace);
+      var indexTip = controller.hand.get('index-finger-tip');
+      var thumbTip = controller.hand.get('thumb-tip');
+      if (!indexTip ||
+          !thumbTip) { return; }
+      var indexTipPose = frame.getJointPose(indexTip, referenceSpace);
+      var thumbTipPose = frame.getJointPose(thumbTip, referenceSpace);
 
       if (!indexTipPose || !thumbTipPose) { return; }
 
@@ -275,11 +303,12 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
     controller = this.el.components['tracked-controls'] && this.el.components['tracked-controls'].controller;
     if (!this.el.getObject3D('mesh')) { return; }
     if (!controller || !controller.hand || !controller.hand[0]) {
-      this.el.removeObject3D('mesh');
+      this.el.getObject3D('mesh').visible = false;
     }
   },
 
   initDefaultModel: function () {
+    if (this.el.getObject3D('mesh')) { return; }
     if (this.data.modelStyle === 'dots') {
       this.initDotsModel();
     }
@@ -292,7 +321,7 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
   initDotsModel: function () {
      // Add models just once.
     if (this.jointEls.length !== 0) { return; }
-    for (var i = 0; i < JOINTS_NUMBER; ++i) {
+    for (var i = 0; i < JOINTS.length; ++i) {
       var jointEl = this.jointEl = document.createElement('a-entity');
       jointEl.setAttribute('geometry', {
         primitive: 'sphere',

@@ -5,7 +5,6 @@
     <title>Tracked Controls</title>
     <meta name="description" content="Tracked Controls – A-Frame">
     <script src="../../../dist/aframe-master.js"></script>
-    <script src="../../js/vendor/LegacyJSONLoader.js"></script>
     <script src="components/aabb-collider.js"></script>
     <script src="components/grab.js"></script>
     <script src="components/ground.js"></script>
@@ -13,7 +12,10 @@
     <script src="https://unpkg.com/aframe-event-set-component@4.0.1/dist/aframe-event-set-component.min.js"></script>
   </head>
   <body>
-    <a-scene cursor="rayOrigin: mouse" raycaster="objects: [cube]" fog="color: #bc483e; near: 0; far: 65;">
+    <a-scene
+      renderer="colorManagement: true;"
+      cursor="rayOrigin: mouse"
+      raycaster="objects: [cube]" fog="color: #bc483e; near: 0; far: 65;">
       <a-assets>
         <a-mixin id="cube"
                  event-set__grab="material.color: #FFEF4F"
@@ -26,6 +28,9 @@
                  event-set__mouseup="material.color: #F2E646"
                  geometry="primitive: box; height: 0.30; width: 0.30; depth: 0.30"
                  material="color: #EF2D5E;"></a-mixin>
+        <a-assets>
+           <a-asset-item id="ground" src="https://cdn.aframe.io/examples/tracked-controls/ground.glb"></a-asset-item>
+        </a-assets>
       </a-assets>
 
       <!-- A-Frame cubes -->
@@ -55,9 +60,9 @@
                   geometry="primitive: sphere; radius: 65;"
                   material="shader: skyGradient; colorTop: #353449; colorBottom: #BC483E; side: back"></a-entity>
          <a-entity ground></a-entity>
-         <a-entity light="type: point; color: #f4f4f4; intensity: 0.2; distance: 0" position="8 10 18"></a-entity>
-         <a-entity light="type: point; color: #f4f4f4; intensity: 0.6; distance: 0" position="-8 10 -18"></a-entity>
-         <a-entity light="type: ambient; color: #f4f4f4; intensity: 0.4;" position="-8 10 -18"></a-entity>
+         <a-entity light="type: point; color: #f4f4f4; intensity: 0.1; distance: 0" position="-2.5 1.2 2.2"></a-entity>
+         <a-entity light="type: point; color: #f4f4f4; intensity: 0.1; distance: 0" position="-20 -7 -40"></a-entity>
+         <a-entity light="type: ambient; color: #f4f4f4; intensity: 0.25;" position="-8 10 -18"></a-entity>
       </a-entity>
       <!-- Hands -->
       <a-entity hand-controls="hand: left; handModelStyle: lowPoly; color: #ffcccc" aabb-collider="objects: .cube;" grab></a-entity>

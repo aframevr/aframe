@@ -1,12 +1,11 @@
 var geometries = require('../core/geometry').geometries;
 var registerSystem = require('../core/system').registerSystem;
-var THREE = require('../lib/three');
 
 /**
  * System for geometry component.
  * Handle geometry caching.
  *
- * @member {object} cache - Mapping of stringified component data to THREE.Geometry objects.
+ * @member {object} cache - Mapping of stringified component data to THREE.BufferGeometry objects.
  * @member {object} cacheCount - Keep track of number of entities using a geometry to
  *         know whether to dispose on removal.
  */
@@ -103,7 +102,7 @@ function createGeometry (data) {
   if (!GeometryClass) { throw new Error('Unknown geometry `' + geometryType + '`'); }
 
   geometryInstance.init(data);
-  return toBufferGeometry(geometryInstance.geometry, data.buffer);
+  return geometryInstance.geometry;
 }
 
 /**
@@ -118,21 +117,4 @@ function decrementCacheCount (cacheCount, hash) {
  */
 function incrementCacheCount (cacheCount, hash) {
   cacheCount[hash] = cacheCount[hash] === undefined ? 1 : cacheCount[hash] + 1;
-}
-
-/**
- * Transform geometry to BufferGeometry if `doBuffer`.
- *
- * @param {object} geometry
- * @param {boolean} doBuffer
- * @returns {object} Geometry.
- */
-function toBufferGeometry (geometry, doBuffer) {
-  var bufferGeometry;
-  if (!doBuffer) { return geometry; }
-
-  bufferGeometry = new THREE.BufferGeometry().fromGeometry(geometry);
-  bufferGeometry.metadata = {type: geometry.type, parameters: geometry.parameters || {}};
-  geometry.dispose();  // Dispose no longer needed non-buffer geometry.
-  return bufferGeometry;
 }

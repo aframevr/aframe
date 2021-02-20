@@ -62,7 +62,7 @@ suite('a-scene (without renderer)', function () {
   suite('attachedCallback', function () {
     test('initializes scene', function (done) {
       var sceneEl = this.el;
-      sceneEl.addEventListener('loaded', function () {
+      sceneEl.addEventListener('loaded', function onLoaded () {
         assert.ok(Object.keys(sceneEl.systems).length);
         assert.ok(this.behaviors.tick);
         assert.ok(this.behaviors.tock);
@@ -73,6 +73,7 @@ suite('a-scene (without renderer)', function () {
         assert.ok(sceneEl.hasAttribute('keyboard-shortcuts'));
         assert.ok(sceneEl.hasAttribute('screenshot'));
         assert.ok(sceneEl.hasAttribute('vr-mode-ui'));
+        sceneEl.removeEventListener('loaded', onLoaded);
         done();
       });
     });
@@ -84,10 +85,11 @@ suite('a-scene (without renderer)', function () {
       var sceneEl = this.el;
       var exitVRStub = this.sinon.stub(sceneEl, 'exitVR');
       event = new CustomEvent('vrdisplaydisconnect');
-      sceneEl.addEventListener('loaded', () => {
+      sceneEl.addEventListener('loaded', function onLoaded () {
         window.dispatchEvent(event);
         setTimeout(function () {
           assert.ok(exitVRStub.calledWith(true));
+          sceneEl.removeEventListener('loaded', onLoaded);
           done();
         });
       });
@@ -141,7 +143,8 @@ suite('a-scene (without renderer)', function () {
         xr: {
           getDevice: function () {},
           setDevice: function () {},
-          setPoseTarget: function () {}
+          setPoseTarget: function () {},
+          dispose: function () {}
         },
         getContext: function () { return undefined; },
         setAnimationLoop: function () {},
@@ -211,6 +214,7 @@ suite('a-scene (without renderer)', function () {
 
     helpers.getSkipCITest()('adds AR mode state', function (done) {
       var sceneEl = this.el;
+      if (!sceneEl.hasWebXR) { done(); }
       sceneEl.enterVR(true).then(function () {
         assert.notOk(sceneEl.is('vr-mode'));
         assert.ok(sceneEl.is('ar-mode'));
@@ -264,7 +268,8 @@ suite('a-scene (without renderer)', function () {
         xr: {
           getDevice: function () {},
           setDevice: function () {},
-          setPoseTarget: function () {}
+          setPoseTarget: function () {},
+          dispose: function () {}
         },
         setAnimationLoop: function () {},
         setPixelRatio: function () {},
@@ -352,7 +357,10 @@ suite('a-scene (without renderer)', function () {
         removeEventListener: function () {},
         end: function () { return Promise.resolve(); }
       };
-      sceneEl.renderer.xr = {setSession: function () {}};
+      sceneEl.renderer.xr = {
+        setSession: function () {},
+        dispose: function () {}
+      };
       sceneEl.hasWebXR = true;
       sceneEl.checkHeadsetConnected = function () { return true; };
       assert.ok(sceneEl.xrSession);
@@ -434,7 +442,8 @@ suite('a-scene (without renderer)', function () {
         xr: {
           isPresenting: function () { return true; },
           getDevice: function () { return {isPresenting: false}; },
-          setDevice: function () {}
+          setDevice: function () {},
+          dispose: function () {}
         },
         setAnimationLoop: function () {},
         setSize: setSizeSpy,

@@ -10,6 +10,8 @@ suite('tracked-controls-webxr', function () {
   var thumb = {transform: {position: {x: 0, y: 0, z: 0}}};
   var indexPosition = new THREE.Vector3();
   var thumbPosition = new THREE.Vector3();
+  var thumbObj = {};
+  var indexObj = {};
 
   setup(function (done) {
     standingMatrix.identity();
@@ -22,15 +24,21 @@ suite('tracked-controls-webxr', function () {
         };
         el.sceneEl.hasWebXR = true;
         el.sceneEl.frame = {
-          getJointPose: function (fingerPose) {
-            return fingerPose;
+          getJointPose: function (joint, fingerPose) {
+            var transform = joint === thumbObj ? thumb : index;
+            return transform;
           }
         };
         system = el.sceneEl.systems['tracked-controls-webxr'];
         controller = {
           handedness: 'left',
           profiles: ['oculus-hand'],
-          hand: [index, thumb]
+          hand: {
+            get: function (joint) {
+              var jointObject = joint === 'thumb-tip' ? thumbObj : indexObj;
+              return jointObject;
+            }
+          }
         };
         system.controllers = [controller];
         el.setAttribute('hand-tracking-controls', {hand: 'left'});

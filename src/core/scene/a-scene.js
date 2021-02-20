@@ -214,6 +214,7 @@ module.exports.AScene = registerElement('a-scene', {
         window.removeEventListener('vrdisplaypointerrestricted', this.pointerRestrictedBound);
         window.removeEventListener('vrdisplaypointerunrestricted', this.pointerUnrestrictedBound);
         window.removeEventListener('sessionend', this.resize);
+        this.renderer.xr.dispose();
       }
     },
 

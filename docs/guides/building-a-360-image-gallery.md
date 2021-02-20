@@ -166,7 +166,7 @@ need to know the component's npm package name and the path:
 <html>
   <head>
     <title>360° Image Browser</title>
-    <script src="https://aframe.io/releases/1.1.0/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
     <script src="https://unpkg.com/aframe-template-component@3.x.x/dist/aframe-template-component.min.js"></script>
     <script src="https://unpkg.com/aframe-layout-component@4.x.x/dist/aframe-layout-component.min.js"></script>
     <script src="https://unpkg.com/aframe-event-set-component@5.x.x/dist/aframe-event-set-component.min.js"></script>

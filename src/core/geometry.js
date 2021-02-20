@@ -24,7 +24,7 @@ Geometry.prototype = {
    * Called during shader initialization and is only run once.
    */
   init: function (data) {
-    this.geometry = new THREE.Geometry();
+    this.geometry = new THREE.BufferGeometry();
     return this.geometry;
   },
 
