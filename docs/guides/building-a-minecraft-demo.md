@@ -456,9 +456,17 @@ document.querySelector('#blockHand').addEventListener(`click`, function (evt) {
   // Use the mixin to make it a voxel.
   newVoxelEl.setAttribute('mixin', 'voxel');
 
+  // Get normal of the face of intersection and scale it down a bit
+  var normal = evt.detail.intersection.face.normal;
+  normal.multiplyScalar(0.25);
+
+  // Get the position of the intersection and add our scaled normal
+  var position = evt.detail.intersection.point;
+  position.add(normal);
+
   // Set the position using intersection point. The `snap` component above which
   // is part of the mixin will snap it to the closest half meter.
-  newVoxelEl.setAttribute('position', evt.detail.intersection.point);
+  newVoxelEl.setAttribute('position', position);
 
   // Add to the scene with `appendChild`.
   this.appendChild(newVoxelEl);
