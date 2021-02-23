@@ -134,6 +134,8 @@ module.exports.Shader = registerShader('msdf', {
   raw: true,
 
   vertexShader: VERTEX_SHADER,
+  vertexShaderWebGL1: VERTEX_SHADER_WEBGL1,
 
-  fragmentShader: FRAGMENT_SHADER
+  fragmentShader: FRAGMENT_SHADER,
+  fragmentShaderWebGL1: FRAGMENT_SHADER_WEBGL1
 });

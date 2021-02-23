@@ -52,6 +52,18 @@ Shader.prototype = {
   init: function (data) {
     this.attributes = this.initVariables(data, 'attribute');
     this.uniforms = this.initVariables(data, 'uniform');
+
+    // msdf and sdf use webgl2 by default during initialization.  If we are using a WebGL1 renderer,
+    // this will error.  Therefore, switch to the WebGL1 shaders here for the shaders if we're
+    // using WebGL1.
+    if ((this.name === 'msdf' || this.name === 'sdf') &&
+        this.el.sceneEl &&
+        this.el.sceneEl.renderer &&
+        this.el.sceneEl.renderer.isWebGL1Renderer) {
+      this.vertexShader = this.vertexShaderWebGL1;
+      this.fragmentShader = this.fragmentShaderWebGL1;
+    }
+
     this.material = new (this.raw ? THREE.RawShaderMaterial : THREE.ShaderMaterial)({
       // attributes: this.attributes,
       uniforms: this.uniforms,
