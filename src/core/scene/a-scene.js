@@ -592,6 +592,9 @@ class AScene extends AEntity {
 
     this.maxCanvasSize = {height: 1920, width: 1920};
 
+    // By default, we are having 8Frame 1.1.0 run WebGL1 instead of vanilla Aframe-1.1.0's
+    // default behavior of using WebGL2.
+    let useWebGL2 = false;
     if (this.hasAttribute('renderer')) {
       rendererAttrString = this.getAttribute('renderer');
       rendererAttr = utils.styleParser.parse(rendererAttrString);
@@ -616,6 +619,13 @@ class AScene extends AEntity {
         rendererConfig.preserveDrawingBuffer = rendererAttr.preserveDrawingBuffer === 'true';
       }
 
+      if (rendererAttr.webgl2) {
+        // We only want to use WebGL2 if they explicitly specify 'renderer: "webgl2: true"' and
+        // their device is capable of webgl2 rendering.
+        const isWebGL2Available = !!document.createElement('canvas').getContext('webgl2');
+        useWebGL2 = rendererAttr.webgl2 === 'true' && isWebGL2Available;
+      }
+
       this.maxCanvasSize = {
         width: rendererAttr.maxCanvasWidth
           ? parseInt(rendererAttr.maxCanvasWidth)
@@ -626,7 +636,8 @@ class AScene extends AEntity {
       };
     }
 
-    renderer = this.renderer = new THREE.WebGLRenderer(rendererConfig);
+    renderer = this.renderer = useWebGL2
+      ? new THREE.WebGLRenderer(rendererConfig) : new THREE.WebGL1Renderer(rendererConfig);
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.sortObjects = false;
     if (this.camera) { renderer.xr.setPoseTarget(this.camera.el.object3D); }

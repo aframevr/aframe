@@ -23,6 +23,7 @@ module.exports.System = registerSystem('renderer', {
     colorManagement: {default: false},
     gammaOutput: {default: false},
     alpha: {default: true},
+    webgl2: {default: false},
     foveationLevel: {default: 1}
   },
 
