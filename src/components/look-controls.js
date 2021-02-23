@@ -60,13 +60,11 @@ module.exports.Component = registerComponent('look-controls', {
       magicWindowControls = this.magicWindowControls = new THREE.DeviceOrientationControls(this.magicWindowObject);
       if (typeof DeviceOrientationEvent !== 'undefined' && DeviceOrientationEvent.requestPermission) {
         magicWindowControls.enabled = false;
-        if (this.el.sceneEl.components['device-orientation-permission-ui'].permissionGranted) {
+        // we removed 'device-orientation-permission-ui' as a default enabled component.  This is
+        // a VR specific component.
+        this.el.sceneEl.addEventListener('deviceorientationpermissiongranted', function () {
           magicWindowControls.enabled = data.magicWindowTrackingEnabled;
-        } else {
-          this.el.sceneEl.addEventListener('deviceorientationpermissiongranted', function () {
-            magicWindowControls.enabled = data.magicWindowTrackingEnabled;
-          });
-        }
+        });
       }
     }
   },
