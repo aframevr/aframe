@@ -1,4 +1,4 @@
-/* global suite */
+/* global suite, test */
 
 /**
  * Add an event listener to be executed only once. Help when reusing entities across
@@ -92,5 +92,16 @@ module.exports.getSkipCISuite = function () {
     return suite.skip;
   } else {
     return suite;
+  }
+};
+
+/**
+ * Test that is only run locally and is skipped on CI.
+ */
+module.exports.getSkipCITest = function () {
+  if (window.__env__.TEST_ENV === 'ci') {
+    return test.skip;
+  } else {
+    return test;
   }
 };

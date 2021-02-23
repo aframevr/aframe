@@ -578,9 +578,12 @@ suite('Component', function () {
 
   suite('third-party components', function () {
     var el;
-    setup(function () {
+    setup(function (done) {
       el = entityFactory();
       delete components.clone;
+      el.addEventListener('loaded', () => {
+        done();
+      });
     });
 
     test('can be registered', function () {
@@ -589,17 +592,13 @@ suite('Component', function () {
       assert.ok('clone' in components);
     });
 
-    test('can change behavior of entity', function (done) {
+    test('can change behavior of entity', function () {
       registerComponent('clone', CloneComponent);
-
-      el.addEventListener('loaded', function () {
-        assert.notOk('clone' in el.components);
-        assert.notOk(el.object3D.children.length);
-        el.setAttribute('clone', '');
-        assert.ok('clone' in el.components);
-        assert.equal(el.object3D.children[0].uuid, 'Bubble Fett');
-        done();
-      });
+      assert.notOk('clone' in el.components);
+      assert.notOk(el.object3D.children.length);
+      el.setAttribute('clone', '');
+      assert.ok('clone' in el.components);
+      assert.equal(el.object3D.children[0].uuid, 'Bubble Fett');
     });
 
     test('cannot be registered if it uses the character __ in the name', function () {

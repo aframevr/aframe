@@ -68,8 +68,9 @@ suite('a-entity', function () {
 
   test('emits `componentremoved` event when element itself has been removed', function (done) {
     el.setAttribute('geometry', 'primitive:plane');
-    el.addEventListener('componentremoved', function (event) {
+    el.addEventListener('componentremoved', function onComponentRemoved (event) {
       assert.equal(event.detail.name, 'geometry');
+      el.removeEventListener('componentremoved', onComponentRemoved);
       done();
     });
     el.removeAttribute('geometry');

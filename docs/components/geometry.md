@@ -33,7 +33,6 @@ Every geometry type will have these properties:
 
 | Property  | Description                                                                                                                          | Default Value |
 |-----------|--------------------------------------------------------------------------------------------------------------------------------------|---------------|
-| buffer    | Transform geometry into a BufferGeometry to reduce memory usage at the cost of being harder to manipulate.                           | true          |
 | primitive | Name of a geometry (e.g., one of the geometries listed below). Determines the geometry type and what other properties are available. | box           |
 | skipCache | Disable retrieving the shared geometry object from the cache.                                                                        | false         |
 

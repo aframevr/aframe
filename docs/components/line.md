@@ -21,8 +21,8 @@ property, which is then used by the [laser-controls component][laser-controls].
 ## Example
 
 ```html
-<a-entity line="start: 0, 1, 0; end: 2 0 -5; color: red"
-          line__2="start: -2, 4, 5; end: 0 4 -3; color: green"></a-entity>
+<a-entity line="start: 0 1 0; end: 2 0 -5; color: red"
+          line__2="start: -2 4 5; end: 0 4 -3; color: green"></a-entity>
 ```
 
 Note an entity can have multiple lines. The line mesh is set as `line` or
@@ -37,8 +37,8 @@ console.log(el.getObject3D('line__2'));
 
 | Property | Description                   | Default Value |
 |----------|-------------------------------|---------------|
-| start    | Start point coordinate.       | 0, 0, 0       |
-| end      | End coordinate.               | 0, 0, 0       |
+| start    | Start point coordinate.       | 0 0 0       |
+| end      | End coordinate.               | 0 0 0       |
 | color    | Line color.                   | #74BEC1       |
 | opacity  | Line opacity.                 | 1             |
 | visible  | Whether the material visible. | true          |

@@ -38,6 +38,7 @@ module.exports.Component = registerComponent('wasd-controls', {
 
     // Bind methods and add event listeners.
     this.onBlur = bind(this.onBlur, this);
+    this.onContextMenu = bind(this.onContextMenu, this);
     this.onFocus = bind(this.onFocus, this);
     this.onKeyDown = bind(this.onKeyDown, this);
     this.onKeyUp = bind(this.onKeyUp, this);
@@ -152,6 +153,7 @@ module.exports.Component = registerComponent('wasd-controls', {
   })(),
 
   attachVisibilityEventListeners: function () {
+    window.oncontextmenu = this.onContextMenu;
     window.addEventListener('blur', this.onBlur);
     window.addEventListener('focus', this.onFocus);
     document.addEventListener('visibilitychange', this.onVisibilityChange);
@@ -171,6 +173,13 @@ module.exports.Component = registerComponent('wasd-controls', {
   removeKeyEventListeners: function () {
     window.removeEventListener('keydown', this.onKeyDown);
     window.removeEventListener('keyup', this.onKeyUp);
+  },
+
+  onContextMenu: function () {
+    var keys = Object.keys(this.keys);
+    for (var i = 0; i < keys.length; i++) {
+      delete this.keys[keys[i]];
+    }
   },
 
   onBlur: function () {

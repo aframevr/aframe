@@ -4,6 +4,7 @@ AFRAME.registerComponent('hide-on-play', {
   init: function () {
     this.onPlaying = this.onPlaying.bind(this);
     this.onPause = this.onPause.bind(this);
+    this.el.object3D.visible = !this.data.playing;
   },
   play: function () {
     if (this.data) {
@@ -18,9 +19,9 @@ AFRAME.registerComponent('hide-on-play', {
     }
   },
   onPlaying: function (evt) {
-    this.el.setAttribute('visible', false);
+    this.el.object3D.visible = false;
   },
   onPause: function (evt) {
-    this.el.setAttribute('visible', true);
+    this.el.object3D.visible = true;
   }
 });

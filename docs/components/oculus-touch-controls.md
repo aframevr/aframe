@@ -9,7 +9,7 @@ examples: []
 
 [trackedcontrols]: ./tracked-controls.md
 
-The oculus-touch-controls component interfaces with the Oculus Touch controllers. It
+The oculus-touch-controls component interfaces with the Oculus Touch controllers (Rift, Rift S, Oculus Quest 1 and 2). It
 wraps the [tracked-controls component][trackedcontrols] while adding button
 mappings, events, and a Touch controller model.
 

@@ -91,14 +91,11 @@ module.exports.Component = registerComponent('text', {
     this.shaderData = {};
     this.geometry = createTextGeometry();
     this.createOrUpdateMaterial();
-    this.mesh = new THREE.Mesh(this.geometry, this.material);
-    this.el.setObject3D(this.attrName, this.mesh);
   },
 
   update: function (oldData) {
     var data = this.data;
     var font = this.currentFont;
-
     if (textures[data.font]) {
       this.texture = textures[data.font];
     } else {
@@ -134,9 +131,7 @@ module.exports.Component = registerComponent('text', {
     this.material = null;
     this.texture.dispose();
     this.texture = null;
-    if (this.shaderObject) {
-      delete this.shaderObject;
-    }
+    if (this.shaderObject) { delete this.shaderObject; }
   },
 
   /**
@@ -201,7 +196,7 @@ module.exports.Component = registerComponent('text', {
     if (!data.font) { warn('No font specified. Using the default font.'); }
 
     // Make invisible during font swap.
-    this.mesh.visible = false;
+    if (this.mesh) { this.mesh.visible = false; }
 
     // Look up font URL to use, and perform cached load.
     fontSrc = this.lookupFont(data.font || DEFAULT_FONT) || data.font;
@@ -217,14 +212,7 @@ module.exports.Component = registerComponent('text', {
       if (!fontWidthFactors[fontSrc]) {
         font.widthFactor = fontWidthFactors[font] = computeFontWidthFactor(font);
       }
-
-      // Update geometry given font metrics.
-      self.updateGeometry(geometry, font);
-
-      // Set font and update layout.
       self.currentFont = font;
-      self.updateLayout();
-
       // Look up font image URL to use, and perform cached load.
       fontImgSrc = self.getFontImageSrc();
       cache.get(fontImgSrc, function () {
@@ -236,6 +224,11 @@ module.exports.Component = registerComponent('text', {
         texture.needsUpdate = true;
         textures[data.font] = texture;
         self.texture = texture;
+        self.initMesh();
+        self.currentFont = font;
+        // Update geometry given font metrics.
+        self.updateGeometry(geometry, font);
+        self.updateLayout();
         self.mesh.visible = true;
         el.emit('textfontset', {font: data.font, fontObj: font});
       }).catch(function (err) {
@@ -246,6 +239,12 @@ module.exports.Component = registerComponent('text', {
       error(err.message);
       error(err.stack);
     });
+  },
+
+  initMesh: function () {
+    if (this.mesh) { return; }
+    this.mesh = new THREE.Mesh(this.geometry, this.material);
+    this.el.setObject3D(this.attrName, this.mesh);
   },
 
   getFontImageSrc: function () {
@@ -279,7 +278,7 @@ module.exports.Component = registerComponent('text', {
     var x;
     var y;
 
-    if (!geometry.layout) { return; }
+    if (!mesh || !geometry.layout) { return; }
 
     // Determine width to use (defined width, geometry's width, or default width).
     geometryComponent = el.getAttribute('geometry');

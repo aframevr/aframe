@@ -21,6 +21,9 @@ navigator.getVRDisplays = function () {
 
 require('index');
 var AScene = require('core/scene/a-scene').AScene;
+// Make sure WebGL context is not created since Travix CT runs headless.
+// Stubs below failed once in a while due to asynchronous tesst setup / teardown.
+AScene.prototype.setupRenderer = function () {};
 
 setup(function () {
   this.sinon = sinon.sandbox.create();
@@ -34,6 +37,7 @@ setup(function () {
       isPresenting: function () { return true; },
       setDevice: function () {},
       setPoseTarget: function () {},
+      dispose: function () {},
       enabled: false
     },
     getContext: function () { return undefined; },
