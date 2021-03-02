@@ -64,8 +64,8 @@ different types of values.
 | startEvents   | Comma-separated list of events to listen to trigger a restart and play. Animation will not autoplay if specified. `startEvents` will **restart** the animation, use `pauseEvents` to resume it. If there are other animation components on the entity animating the same property, those animations will be automatically paused to not conflict. | null          |                         |
 | pauseEvents   | Comma-separated list of events to listen to trigger pause. Can be resumed with `resumeEvents`.                                                                                                                                                                                                                                                    | null          |                         |
 | resumeEvents  | Comma-separated list of events to listen to trigger resume after pausing.                                                                                                                                                                                                                                                                         | null          |                         |
-| autoplay      | Whether or not the animation should `autoplay`. Should be specified if the animation is defined for the [`animation-timeline` component][animationtimeline].                                                                                                                                                                                      | null          |                         |
-| enabled       | If disabled, animation will stop and startEvents will not trigger animation start.                                                                                                                                                                                                                                                                                                                        | true          |
+| autoplay      | Whether or not the animation should `autoplay`. Should be specified if the animation is defined for the [`animation-timeline` component][animationtimeline].                                                                                                                                                                                      | true      |                         |
+| enabled       | If disabled, animation will stop and startEvents will not trigger animation start.                                                                                                                                                                                                                                                                                                                        | true          ||
 
 ### Multiple Animations
 
@@ -111,6 +111,38 @@ Accessed as `el.components.animation.<MEMBER>`.
 |-----------|----------------------------|
 | animation | anime.js object.           |
 | config    | Config passed to anime.js. |
+
+### Controlling Animations using setAttribute
+
+Like any A-Frame component, the animation component can be configured from JavaScript by calling setAttribute() on an element.
+
+The second parameter can either be a string, or an object, detailing the properties to set.
+
+For example, either:
+
+```
+el.setAttribute('animation', 'property: rotation; from 0 0 0; to 0 180 0; dur: 1000');
+```
+
+or:
+
+```
+el.setAttribute('animation', {'property': 'rotation',
+                              'from': {'x' : 0, 'y' : 0, 'z': 0},
+                              'to': {'x' : 0, 'y' : 180, 'z': 0},
+                              'dur': 1000});
+```
+
+By default, the animation will begin playing immediately (autoplay is true by default).
+
+However, care should be taken when using the interface in this way.  If a finite (i.e. non-looping) animation is requested twice in a row, with identical parameters, the second animation will not play, and neither will it generate an animationcomplete event.
+
+This is because A-Frame sees the second request as a duplicate request for configuration already applied to the element, and so the second request never reaches the animation component.
+
+To ensure an animation is played, you can do either of the following:
+
+- explicitly remove any previous animation attribute using removeAttribute(), prior to calling setAttribute();
+- or start the animation using an event, rather than using autoplay (see the next section)
 
 ## Animating on Events
 
