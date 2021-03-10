@@ -147,22 +147,20 @@ We can use the `startEvents` property to animate upon events:
 
 [Remix the Animating on Events Glitch][eventsglitch].
 
-
-
 To start an animation by explicitly emitting an event, you can do the following:
 
 ```
-el.emit(`start-anim-001`, null, false);
+el.emit(`startanim001`, null, false);
 ```
 
-The "false" parameter ensures the event won't bubble up to parents, so that you can target the animation at just one particular element.  Full documentation [here](https://aframe.io/docs/1.2.0/core/entity.html#emit-name-detail-bubbles).
+The [third parameter of emit](https://aframe.io/docs/1.2.0/core/entity.html#emit-name-detail-bubbles) set to "false" parameter ensures the event won't bubble up to parents, so that you can target the animation at just one particular element.
 
 This assumes that an animation has already been configured to respond to that custom start event, for example like this:
 
 ```
 el.setAttribute(animation__001, {'property': position,
                                  'to': {x: 1, y: 1: z: 1},                                 
-                                 'startEvents': 'start-anim-001');
+                                 'startEvents': 'startanim001');
 ```
 
 (configuring startEvents on the animation automatically disables autoplay).
