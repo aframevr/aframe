@@ -53,7 +53,6 @@ The box primitive creates shapes such as boxes, cubes, or walls.
 | segments-depth                   | geometry.segmentsDepth                 | 1             |
 | segments-height                  | geometry.segmentsHeight                | 1             |
 | segments-width                   | geometry.segmentsWidth                 | 1             |
-| spherical-env-map                | material.sphericalEnvMap               | None          |
 | src                              | material.src                           | None          |
 | width                            | geometry.width                         | 1             |
 | wireframe                        | material.wireframe                     | false         |

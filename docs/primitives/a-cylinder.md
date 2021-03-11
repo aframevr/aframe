@@ -63,7 +63,6 @@ Also, we can create a tube by making the cylinder open-ended, which removes the 
 | roughness                        | material.roughness                     | 0.5           |
 | segments-height                  | geometry.segmentsHeight                | 18            |
 | segments-radial                  | geometry.segmentsRadial                | 36            |
-| spherical-env-map                | material.sphericalEnvMap               | None          |
 | src                              | material.src                           | None          |
 | theta-length                     | geometry.thetaLength                   | 360           |
 | theta-start                      | geometry.thetaStart                    | 0             |

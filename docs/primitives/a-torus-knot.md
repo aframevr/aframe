@@ -47,7 +47,6 @@ component with the type set to `torusKnot`.
 | roughness                        | material.roughness                     | 0.5           |
 | segments-radial                  | geometry.segmentsRadial                | 8             |
 | segments-tubular                 | geometry.segmentsTubular               | 100           |
-| spherical-env-map                | material.sphericalEnvMap               | None          |
 | src                              | material.src                           | None          |
 | width                            | material.width                         | 512           |
 | wireframe                        | material.wireframe                     | false         |

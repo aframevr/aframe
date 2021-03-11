@@ -50,7 +50,6 @@ The ring primitive creates a ring or disc shape.
 | roughness                        | material.roughness                     | 0.5           |
 | segments-phi                     | geometry.segmentsPhi                   | 10            |
 | segments-theta                   | geometry.segmentsTheta                 | 32            |
-| spherical-env-map                | material.sphericalEnvMap               | None          |
 | src                              | material.src                           | None          |
 | theta-length                     | geometry.thetaLength                   | 360           |
 | theta-start                      | geometry.thetaStart                    | 0             |

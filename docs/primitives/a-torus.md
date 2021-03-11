@@ -46,7 +46,6 @@ component with the type set to `torus`.
 | roughness                        | material.roughness                     | 0.5           |
 | segments-radial                  | geometry.segmentsRadial                | 36            |
 | segments-tubular                 | geometry.segmentsTubular               | 32            |
-| spherical-env-map                | material.sphericalEnvMap               | None          |
 | src                              | material.src                           | None          |
 | width                            | material.width                         | 512           |
 | wireframe                        | material.wireframe                     | false         |

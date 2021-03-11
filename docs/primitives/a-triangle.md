@@ -49,7 +49,6 @@ component with the type set to `triangle`.
 | normal-texture-repeat            | material.normalTextureRepeat           | 1 1           |
 | repeat                           | material.repeat                        | 1 1           |
 | roughness                        | material.roughness                     | 0.5           |
-| spherical-env-map                | material.sphericalEnvMap               | None          |
 | src                              | material.src                           | None          |
 | vertex-a                         | geometry.vertexA                       | 0  0.5 0   |
 | vertex-b                         | geometry.vertexB                       | -0.5 -0.5 0   |

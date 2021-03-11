@@ -78,18 +78,6 @@ suite('standard material', function () {
     });
   });
 
-  test('can use spherical env maps', function (done) {
-    var el = this.el;
-    var imageUrl = 'base/tests/assets/test.png';
-    el.setAttribute('material', 'sphericalEnvMap: url(' + imageUrl + ');');
-    assert.ok(el.components.material.shader.isLoadingEnvMap);
-    el.addEventListener('materialtextureloaded', function (evt) {
-      assert.equal(evt.detail.texture.mapping, THREE.SphericalReflectionMapping);
-      assert.equal(el.getObject3D('mesh').material.envMap, evt.detail.texture);
-      done();
-    });
-  });
-
   test('can use cube env maps', function (done) {
     var el = this.el;
     var imageUrl = 'base/tests/assets/test.png';

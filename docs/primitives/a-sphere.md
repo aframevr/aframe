@@ -43,7 +43,6 @@ The sphere primitive creates a spherical or polyhedron shapes. It wraps an entit
 | roughness                        | material.roughness                     | 0.5           |
 | segments-height                  | geometry.segmentsHeight                | 18            |
 | segments-width                   | geometry.segmentsWidth                 | 36            |
-| spherical-env-map                | material.sphericalEnvMap               | None          |
 | src                              | material.src                           | None          |
 | theta-length                     | geometry.thetaLength                   | 180           |
 | theta-start                      | geometry.thetaStart                    | 0             |

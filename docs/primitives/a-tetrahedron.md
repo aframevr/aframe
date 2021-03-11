@@ -38,7 +38,6 @@ source_code: src/extras/primitives/primitives/meshPrimitives.js
 | radius                           | geometry.radius                        | 1             |
 | repeat                           | material.repeat                        | 1 1           |
 | roughness                        | material.roughness                     | 0.5           |
-| spherical-env-map                | material.sphericalEnvMap               | None          |
 | src                              | material.src                           | None          |
 | width                            | material.width                         | 512           |
 | wireframe                        | material.wireframe                     | false         |
