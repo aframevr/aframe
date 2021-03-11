@@ -71551,7 +71551,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 1.2.0 (Date 2021-02-17, Commit #5a3ae789)');
+console.log('A-Frame Version: 1.2.0 (Date 2021-03-11, Commit #382296c6)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
@@ -72173,7 +72173,7 @@ module.exports.Shader = registerShader('standard', {
     if (sphericalEnvMap) {
       this.el.sceneEl.systems.material.loadTexture(sphericalEnvMap, {src: sphericalEnvMap}, function textureLoaded (texture) {
         self.isLoadingEnvMap = false;
-        texture.mapping = THREE.SphericalReflectionMapping;
+        texture.mapping = THREE.EquirectangularReflectionMapping;
         material.envMap = texture;
         utils.material.handleTextureEvents(self.el, texture);
         material.needsUpdate = true;
