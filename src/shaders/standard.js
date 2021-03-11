@@ -124,7 +124,7 @@ module.exports.Shader = registerShader('standard', {
     if (sphericalEnvMap) {
       this.el.sceneEl.systems.material.loadTexture(sphericalEnvMap, {src: sphericalEnvMap}, function textureLoaded (texture) {
         self.isLoadingEnvMap = false;
-        texture.mapping = THREE.SphericalReflectionMapping;
+        texture.mapping = THREE.EquirectangularReflectionMapping;
         material.envMap = texture;
         utils.material.handleTextureEvents(self.el, texture);
         material.needsUpdate = true;
