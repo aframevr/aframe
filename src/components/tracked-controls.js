@@ -22,7 +22,7 @@ module.exports.Component = registerComponent('tracked-controls', {
     // Arm model parameters when not 6DoF.
     armModel: {default: false},
     headElement: {type: 'selector'},
-    iterateControllerProfiles: {default: false}
+    iterateControllerProfiles: {default: true}
   },
 
   update: function () {

@@ -199,7 +199,8 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
 
   checkIfControllerPresent: function () {
     checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX, {
-      hand: this.data.hand
+      hand: this.data.hand,
+      iterateControllerProfiles: true
     });
   },
 
