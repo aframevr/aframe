@@ -62478,6 +62478,7 @@ module.exports.Component = registerComponent('screenshot', {
 
   getRenderTarget: function (width, height) {
     return new THREE.WebGLRenderTarget(width, height, {
+      encoding: THREE.sRGBEncoding,
       minFilter: THREE.LinearFilter,
       magFilter: THREE.LinearFilter,
       wrapS: THREE.ClampToEdgeWrapping,
@@ -71551,7 +71552,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 1.2.0 (Date 2021-03-11, Commit #382296c6)');
+console.log('A-Frame Version: 1.2.0 (Date 2021-03-15, Commit #65f02cc8)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
