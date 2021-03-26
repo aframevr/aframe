@@ -34,6 +34,15 @@
   <a href="https://aframe.io/subscribe/">Newsletter</a>
 </div>
 
+<h3 align="center">Special Sponsors</h3>
+<!--special start-->
+<p align="center">
+  <a href="https://planetvoodoo.org/" target="_blank">
+    <img width="260px" src="https://user-images.githubusercontent.com/39342/112698662-5d0eb800-8e47-11eb-9e37-ee74435f19f7.png" onload="this.width/=3;">
+  </a>
+</p>  
+<!--special end-->
+
 ## Examples
 
 <a href="https://supermedium.com/supercraft">
@@ -60,7 +69,8 @@
 ## Features
 
 :eyeglasses: **Virtual Reality Made Simple**: A-Frame handles the 3D and WebVR
-boilerplate required to get running across platforms including mobile, desktop,
+boilerplate required to get running across platforms including mobile, desktop,![d9RiNNBB Black](https://user-images.githubusercontent.com/39342/112698632-4f593280-8e47-11eb-868d-618337f50743.png)
+
 Vive, and Rift just by dropping in `<a-scene>`.
 
 :heart: **Declarative HTML**: HTML is easy to read and copy-and-paste. Since
