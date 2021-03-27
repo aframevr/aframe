@@ -69,9 +69,7 @@
 ## Features
 
 :eyeglasses: **Virtual Reality Made Simple**: A-Frame handles the 3D and WebVR
-boilerplate required to get running across platforms including mobile, desktop,![d9RiNNBB Black](https://user-images.githubusercontent.com/39342/112698632-4f593280-8e47-11eb-868d-618337f50743.png)
-
-Vive, and Rift just by dropping in `<a-scene>`.
+boilerplate required to get running across platforms including mobile, desktop, Vive, and Rift just by dropping in `<a-scene>`.
 
 :heart: **Declarative HTML**: HTML is easy to read and copy-and-paste. Since
 A-Frame can be used from HTML, A-Frame is accessible to everyone: web
