@@ -38,7 +38,7 @@
 <!--special start-->
 <p align="center">
   <a href="https://planetvoodoo.org/" target="_blank">
-    <img width="130px" src="https://user-images.githubusercontent.com/39342/112698662-5d0eb800-8e47-11eb-9e37-ee74435f19f7.png">
+    <img width="120px" src="https://user-images.githubusercontent.com/39342/112707090-da492580-8e65-11eb-88c5-be39f48544f6.jpg">
   </a>
 </p>  
 <!--special end-->
