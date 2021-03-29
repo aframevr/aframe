@@ -35,9 +35,9 @@ AFRAME.registerComponent('model-viewer', {
 
     this.onOrientationChange = this.onOrientationChange.bind(this);
 
+    this.initCameraRig();
     this.initEntities();
     this.initBackground();
-    this.initCameraRig();
 
     if (this.data.uploadUIEnabled) { this.initUploadInput(); }
 
@@ -212,6 +212,8 @@ AFRAME.registerComponent('model-viewer', {
       intensity: 1
     });
 
+    modelPivotEl.id = 'modelPivot';
+
     this.el.appendChild(sceneLightEl);
 
     reticleEl.setAttribute('gltf-model', '#reticle');
@@ -258,6 +260,7 @@ AFRAME.registerComponent('model-viewer', {
 
     this.containerEl.appendChild(titleEl);
 
+    lightEl.id = 'light';
     lightEl.setAttribute('position', '-2 4 2');
     lightEl.setAttribute('light', {
       type: 'directional',
@@ -276,6 +279,7 @@ AFRAME.registerComponent('model-viewer', {
     this.containerEl.appendChild(modelPivotEl);
 
     this.el.appendChild(containerEl);
+    this.el.appendChild(reticleEl);
   },
 
   onThumbstickMoved: function (evt) {
@@ -354,8 +358,11 @@ AFRAME.registerComponent('model-viewer', {
     this.cameraRigPosition = cameraRigEl.object3D.position.clone();
     this.cameraRigRotation = cameraRigEl.object3D.rotation.clone();
 
-    cameraRigEl.object3D.rotation.set(0, 0, 0);
-    cameraRigEl.object3D.position.set(0, 0, 2);
+    if (!this.el.sceneEl.is('ar-mode')) {
+      cameraRigEl.object3D.position.set(0, 0, 2);
+    } else {
+      cameraRigEl.object3D.position.set(0, 0, 0);
+    }
   },
 
   onExitVR: function () {
@@ -363,6 +370,8 @@ AFRAME.registerComponent('model-viewer', {
 
     cameraRigEl.object3D.position.copy(this.cameraRigPosition);
     cameraRigEl.object3D.rotation.copy(this.cameraRigRotation);
+
+    cameraRigEl.object3D.rotation.set(0, 0, 0);
   },
 
   onTouchMove: function (evt) {
