@@ -140,7 +140,8 @@ We can use the `startEvents` property to animate upon events:
   geometry="primitive: box"
   material="color: red"
   animation__mouseenter="property: components.material.material.color; type: color; to: blue; startEvents: mouseenter; dur: 500";
-  animation__mouseleave="property: components.material.material.color; type: color; to: red; startEvents: mouseleave; dur: 500";
+  animation__mouseleave="property: components.material.material.color; type: color; to: red; startEvents: mouseleave; dur: 500";>
+</a-entity>
 ```
 
 [eventsglitch]: https://glitch.com/edit/#!/aframe-animation-events?path=index.html:1:0
