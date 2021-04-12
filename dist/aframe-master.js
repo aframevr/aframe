@@ -57948,7 +57948,7 @@ function isViveController (trackedControls) {
   var isVive = controller && (controller.id && controller.id.indexOf('OpenVR ') === 0 ||
     (controller.profiles &&
      controller.profiles[0] &&
-     controller.profiles[0] === 'htc-vive-controller-mv'));
+     controller.profiles[0] === 'htc-vive'));
   return isVive;
 }
 
@@ -64687,7 +64687,7 @@ var VIVE_CONTROLLER_MODEL_OBJ_MTL = 'https://cdn.aframe.io/controllers/vive/vr_c
 
 var isWebXRAvailable = _dereq_('../utils/').device.isWebXRAvailable;
 
-var GAMEPAD_ID_WEBXR = 'htc-vive-controller-mv';
+var GAMEPAD_ID_WEBXR = 'htc-vive';
 var GAMEPAD_ID_WEBVR = 'OpenVR ';
 
 // Prefix for Gen1 and Gen2 Oculus Touch Controllers.
@@ -71552,7 +71552,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 1.2.0 (Date 2021-03-16, Commit #ccdc1065)');
+console.log('A-Frame Version: 1.2.0 (Date 2021-04-12, Commit #f6b3de9c)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
