@@ -13,7 +13,7 @@ var GAMEPAD_ID_PREFIX = 'hp';
 var GAMEPAD_ID_SUFFIX = '-mixed-reality';
 var GAMEPAD_ID_COMPOSITE = GAMEPAD_ID_PREFIX + GAMEPAD_ID_SUFFIX;
 
-var HP_MIXEDL_REALITY_MODEL_GLB_BASE_URL = 'https://cdn.aframe.io/controllers/hp-mixed-reality/';
+var HP_MIXEDL_REALITY_MODEL_GLB_BASE_URL = 'https://cdn.aframe.io/controllers/hp/mixed-reality/';
 
 /**
  * Button IDs:
@@ -57,10 +57,10 @@ module.exports.Component = registerComponent('hp-mixed-reality-controls', {
     this.controllerPresent = false;
     this.lastControllerCheck = 0;
     this.onButtonChanged = bind(this.onButtonChanged, this);
-    this.onButtonDown = function (evt) { onButtonEvent(evt.detail.id, 'down', self); };
-    this.onButtonUp = function (evt) { onButtonEvent(evt.detail.id, 'up', self); };
-    this.onButtonTouchEnd = function (evt) { onButtonEvent(evt.detail.id, 'touchend', self); };
-    this.onButtonTouchStart = function (evt) { onButtonEvent(evt.detail.id, 'touchstart', self); };
+    this.onButtonDown = function (evt) { onButtonEvent(evt.detail.id, 'down', self, self.data.hand); };
+    this.onButtonUp = function (evt) { onButtonEvent(evt.detail.id, 'up', self, self.data.hand); };
+    this.onButtonTouchEnd = function (evt) { onButtonEvent(evt.detail.id, 'touchend', self, self.data.hand); };
+    this.onButtonTouchStart = function (evt) { onButtonEvent(evt.detail.id, 'touchstart', self, self.data.hand); };
     this.previousButtonValues = {};
     this.rendererSystem = this.el.sceneEl.systems.renderer;
 
@@ -167,11 +167,7 @@ module.exports.Component = registerComponent('hp-mixed-reality-controls', {
     this.el.emit(button + 'changed', evt.detail.state);
   },
 
-  onModelLoaded: function (evt) {
-    var controllerObject3D = evt.detail.model;
-    // our glb scale is too large.
-    controllerObject3D.scale.set(0.01, 0.01, 0.01);
-  },
+  onModelLoaded: function (evt) {},
 
   onAxisMoved: function (evt) {
     emitIfAxesChanged(this, this.mapping.axes, evt);
