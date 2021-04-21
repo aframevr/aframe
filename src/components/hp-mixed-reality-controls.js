@@ -1,5 +1,6 @@
 var bind = require('../utils/bind');
 var registerComponent = require('../core/component').registerComponent;
+var THREE = require('../lib/three');
 
 var trackedControlsUtils = require('../utils/tracked-controls');
 var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
@@ -15,16 +16,19 @@ var GAMEPAD_ID_COMPOSITE = GAMEPAD_ID_PREFIX + GAMEPAD_ID_SUFFIX;
 
 var HP_MIXEDL_REALITY_MODEL_GLB_BASE_URL = 'https://cdn.aframe.io/controllers/hp/mixed-reality/';
 
+var HP_MIXED_REALITY_POSITION_OFFSET = {x: 0, y: 0, z: 0.06};
+var HP_MIXED_REALITY_ROTATION_OFFSET = {_x: Math.PI / 4, _y: 0, _z: 0, _order: 'XYZ'};
+
 /**
  * Button IDs:
  * 0 - trigger
  * 1 - grip
- * 2 - touchpad
- * 3 - menu (never dispatched on this layer)
+ * 3 - X / A
+ * 4 - Y / B
  *
  * Axis:
- * 0 - touchpad x axis
- * 1 - touchpad y axis
+ * 2 - joystick x axis
+ * 3 - joystick y axis
  */
 var INPUT_MAPPING_WEBXR = {
   left: {
@@ -38,10 +42,7 @@ var INPUT_MAPPING_WEBXR = {
 };
 
 /**
- * Magic Leap Controls
- * Interface with Magic Leap control and map Gamepad events to controller
- * buttons: trigger, grip, touchpad, and menu.
- * Load a controller model.
+ * HP Mixed Reality Controls
  */
 module.exports.Component = registerComponent('hp-mixed-reality-controls', {
   schema: {
@@ -150,9 +151,6 @@ module.exports.Component = registerComponent('hp-mixed-reality-controls', {
     this.checkIfControllerPresent();
   },
 
-  /**
-   * Rotate the trigger button based on how hard the trigger is pressed.
-   */
   onButtonChanged: function (evt) {
     var button = this.mapping[this.data.hand].buttons[evt.detail.id];
     var analogValue;
@@ -167,7 +165,20 @@ module.exports.Component = registerComponent('hp-mixed-reality-controls', {
     this.el.emit(button + 'changed', evt.detail.state);
   },
 
-  onModelLoaded: function (evt) {},
+  onModelLoaded: function (evt) {
+    var controllerObject3D = evt.detail.model;
+
+    if (!this.data.model) { return; }
+
+    controllerObject3D.position.copy(HP_MIXED_REALITY_POSITION_OFFSET);
+    controllerObject3D.rotation.copy(HP_MIXED_REALITY_ROTATION_OFFSET);
+
+    this.el.emit('controllermodelready', {
+      name: 'hp-mixed-reality-controls',
+      model: this.data.model,
+      rayOrigin: new THREE.Vector3(0, 0, 0)
+    });
+  },
 
   onAxisMoved: function (evt) {
     emitIfAxesChanged(this, this.mapping.axes, evt);
