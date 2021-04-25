@@ -10,9 +10,7 @@ var onButtonEvent = trackedControlsUtils.onButtonEvent;
 // See Profiles Registry:
 // https://github.com/immersive-web/webxr-input-profiles/tree/master/packages/registry
 // TODO: Add a more robust system for deriving gamepad name.
-var GAMEPAD_ID_PREFIX = 'hp';
-var GAMEPAD_ID_SUFFIX = '-mixed-reality';
-var GAMEPAD_ID_COMPOSITE = GAMEPAD_ID_PREFIX + GAMEPAD_ID_SUFFIX;
+var GAMEPAD_ID = 'hp-mixed-reality';
 
 var HP_MIXEDL_REALITY_MODEL_GLB_BASE_URL = 'https://cdn.aframe.io/controllers/hp/mixed-reality/';
 
@@ -117,7 +115,7 @@ module.exports.Component = registerComponent('hp-mixed-reality-controls', {
 
   checkIfControllerPresent: function () {
     var data = this.data;
-    checkControllerPresentAndSetup(this, GAMEPAD_ID_COMPOSITE,
+    checkControllerPresentAndSetup(this, GAMEPAD_ID,
                                    {index: this.controllerIndex, hand: data.hand});
   },
 
@@ -127,7 +125,7 @@ module.exports.Component = registerComponent('hp-mixed-reality-controls', {
 
     el.setAttribute('tracked-controls', {
       // TODO: verify expected behavior between reserved prefixes.
-      idPrefix: GAMEPAD_ID_COMPOSITE,
+      idPrefix: GAMEPAD_ID,
       hand: data.hand,
       controller: this.controllerIndex,
       orientationOffset: data.orientationOffset
@@ -182,10 +180,5 @@ module.exports.Component = registerComponent('hp-mixed-reality-controls', {
 
   onAxisMoved: function (evt) {
     emitIfAxesChanged(this, this.mapping.axes, evt);
-  },
-
-  updateModel: function (buttonName, evtName) {},
-
-  setButtonColor: function (buttonName, color) {}
-
+  }
 });
