@@ -42,7 +42,7 @@ module.exports = registerElement('a-assets', {
           loaded.push(new Promise(function (resolve, reject) {
             // Set in cache because we won't be needing to call three.js loader if we have.
             // a loaded media element.
-            THREE.Cache.files[imgEls[i].getAttribute('src')] = imgEl;
+            THREE.Cache.add(imgEls[i].getAttribute('src'), imgEl);
             imgEl.onload = resolve;
             imgEl.onerror = reject;
           }));
@@ -165,7 +165,7 @@ function mediaElementLoaded (el) {
         // Store video elements only. three.js loader is used for audio elements.
         // See assetParse too.
         if (el.tagName === 'VIDEO') {
-          THREE.Cache.files[el.getAttribute('src')] = el;
+          THREE.Cache.add(el.getAttribute('src'), el);
         }
         resolve();
       }
