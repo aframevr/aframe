@@ -66088,7 +66088,7 @@ module.exports = registerElement('a-assets', {
           loaded.push(new Promise(function (resolve, reject) {
             // Set in cache because we won't be needing to call three.js loader if we have.
             // a loaded media element.
-            THREE.Cache.files[imgEls[i].getAttribute('src')] = imgEl;
+            THREE.Cache.add(imgEls[i].getAttribute('src'), imgEl);
             imgEl.onload = resolve;
             imgEl.onerror = reject;
           }));
@@ -66211,7 +66211,7 @@ function mediaElementLoaded (el) {
         // Store video elements only. three.js loader is used for audio elements.
         // See assetParse too.
         if (el.tagName === 'VIDEO') {
-          THREE.Cache.files[el.getAttribute('src')] = el;
+          THREE.Cache.add(el.getAttribute('src'), el);
         }
         resolve();
       }
@@ -71749,7 +71749,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 1.2.0 (Date 2021-04-28, Commit #66e0c624)');
+console.log('A-Frame Version: 1.2.0 (Date 2021-05-24, Commit #bbd27c76)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
