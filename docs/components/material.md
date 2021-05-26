@@ -720,8 +720,10 @@ AFRAME.registerComponent('custom-material', {
   },
 
   init: function () {
-    this.material = this.el.getOrCreateObject3D('mesh').material = new THREE.ShaderMaterial({
+    this.el.addEventListener("loaded", e => { // when using gltf models use "model-loaded" instead
+      this.material = this.el.getObject3D('mesh').material = new THREE.ShaderMaterial({
       // ...
+      });
     });
   },
 
