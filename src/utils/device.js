@@ -120,7 +120,7 @@ module.exports.isMobile = isMobile;
  */
 function isTablet (mockUserAgent) {
   var userAgent = mockUserAgent || window.navigator.userAgent;
-  return /ipad|Nexus (7|9)|xoom|sch-i800|playbook|tablet|kindle/i.test(userAgent);
+  return /ipad|Nexus (7|9)|xoom|sch-i800|playbook|tablet|kindle|((?!.*mobile).*android)/i.test(userAgent);
 }
 module.exports.isTablet = isTablet;
 
