@@ -127,6 +127,8 @@ for [Don McCurdy's
 `aframe-physics-system`](https://github.com/donmccurdy/aframe-physics-system) and attach
 the physics components via HTML attributes:
 
+> :warning: **If you are using A-Frame 1.2.0**: [`aframe-physics-system`](https://github.com/donmccurdy/aframe-physics-system) may not work as expected with the latest version of A-Frame. Updates on the functionality of this physics system can be found on [this GitHub issue](https://github.com/n5ro/aframe-physics-system/issues/187).
+
 ```html
 <html>
   <head>
