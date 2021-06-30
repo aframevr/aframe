@@ -116,6 +116,72 @@ an A-Frame scene:
   which will skip `.setAttribute` and animate JS values directly. 
   For example, instead of `material.opacity`, 
   animate `components.material.material.opacity`.
+- Initialize all variables possible outside of your loops.
+  In this example:
+  ```js
+    var factor = this.data.speed / distance;
+    ['x', 'y', 'z'].forEach(function (axis) {
+      directionVec3[axis] *= factor * (timeDelta / 1000);
+    });
+  ```
+  each iteration of ['x','y','z'] recalculates `factor * (timeDelta / 1000)` 
+  - which is actually two calculations.  We can save the cost of six calculations
+  if we create a variable outside the loop:
+  ```js
+    var factor = this.data.speed / distance;
+    var millisecndDelta = factor * (timeDelta / 100);
+    ['x', 'y', 'z'].forEach(function (axis) {
+      directionVec3[axis] *= millisecondDelta;
+    });
+  ```
+- If you have a large switch statement, use a lookup table.
+
+Instead of:
+  ```js
+    var a = 0;
+    switch(x) {
+      case 1:
+        a = 100;
+      break;
+      
+      case 2:
+        a = 125;
+      break;
+      
+      case 3:
+        a = 130;
+      break;
+      
+      case 4:
+        a = 150;
+      break;
+      
+      // ...
+      // ...
+      // ...
+      // ...
+    }
+   ```
+   
+   use
+   ```js    
+    var lookup = {
+      1: 100,
+      2: 125,
+      3: 130,
+      4: 150,
+      
+      // ...
+      // ...
+      // ...
+      // ...
+    };
+    
+    var a = lookup[x];    
+  ```
+  The cost of an array lookup is much less than the cost of the switch evaluation.
+  
+  
 
 ### GPU Texture Preloading
 
