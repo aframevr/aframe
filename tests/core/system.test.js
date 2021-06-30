@@ -126,13 +126,24 @@ suite('System', function () {
 
     setTimeout(() => {
       system = sceneEl.systems.test;
-
-      sceneEl.setAttribute('test', {foo: 'foo', bar: 10});
+      // setting all properties
+      sceneEl.setAttribute('test', { foo: 'foo', bar: 10 });
       assert.equal(sceneEl.getAttribute('test').foo, 'foo');
       assert.equal(sceneEl.getAttribute('test').bar, 10);
       assert.equal(system.data.foo, 'foo');
       assert.equal(system.data.bar, 10);
-
+      // setting one property to test cache
+      sceneEl.setAttribute('test', { bar: 22 });
+      assert.equal(sceneEl.getAttribute('test').foo, 'foo');
+      assert.equal(sceneEl.getAttribute('test').bar, 22);
+      assert.equal(system.data.foo, 'foo');
+      assert.equal(system.data.bar, 22);
+      // setting one property with 3 arguments mode
+      sceneEl.setAttribute('test', 'foo', 'abc');
+      assert.equal(sceneEl.getAttribute('test').foo, 'abc');
+      assert.equal(sceneEl.getAttribute('test').bar, 22);
+      assert.equal(system.data.foo, 'abc');
+      assert.equal(system.data.bar, 22);
       delete AFRAME.systems.test;
       done();
     });

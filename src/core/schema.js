@@ -200,3 +200,31 @@ function stringifyProperty (value, propDefinition) {
   return propDefinition.stringify(value);
 }
 module.exports.stringifyProperty = stringifyProperty;
+
+/**
+* Object extending with checking for single-property schema.
+*
+* @param dest - Destination object or value.
+* @param source - Source object or value
+* @param {boolean} isObjectBased - Whether values are objects.
+* @returns Overridden object or value.
+*/
+function extendProperties (dest, source, isObjectBased) {
+  var key;
+  if (source === undefined) {
+    return dest;
+  }
+  if (isObjectBased && source.constructor === Object) {
+    for (key in source) {
+      if (source[key] === undefined) { continue; }
+      if (source[key] && source[key].constructor === Object) {
+        dest[key] = utils.clone(source[key]);
+      } else {
+        dest[key] = source[key];
+      }
+    }
+    return dest;
+  }
+  return source;
+}
+module.exports.extendProperties = extendProperties;
