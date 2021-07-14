@@ -48,7 +48,7 @@ module.exports.Component = registerComponent('look-controls', {
     };
 
     // Call enter VR handler if the scene has entered VR before the event listeners attached.
-    if (this.el.sceneEl.is('vr-mode')) { this.onEnterVR(); }
+    if (this.el.sceneEl.is('vr-mode') || this.el.sceneEl.is('ar-mode')) { this.onEnterVR(); }
   },
 
   setupMagicWindowControls: function () {
@@ -219,8 +219,8 @@ module.exports.Component = registerComponent('look-controls', {
       var pose;
       var sceneEl = this.el.sceneEl;
 
-      // In VR mode, THREE is in charge of updating the camera pose.
-      if (sceneEl.is('vr-mode') && sceneEl.checkHeadsetConnected()) {
+      // In VR or AR mode, THREE is in charge of updating the camera pose.
+      if ((sceneEl.is('vr-mode') || sceneEl.is('ar-mode')) && sceneEl.checkHeadsetConnected()) {
         // With WebXR THREE applies headset pose to the object3D matrixWorld internally.
         // Reflect values back on position, rotation, scale for getAttribute to return the expected values.
         if (sceneEl.hasWebXR) {
@@ -301,7 +301,7 @@ module.exports.Component = registerComponent('look-controls', {
    */
   onMouseDown: function (evt) {
     var sceneEl = this.el.sceneEl;
-    if (!this.data.enabled || !this.data.mouseEnabled || (sceneEl.is('vr-mode') && sceneEl.checkHeadsetConnected())) { return; }
+    if (!this.data.enabled || !this.data.mouseEnabled || ((sceneEl.is('vr-mode') || sceneEl.is('ar-mode')) && sceneEl.checkHeadsetConnected())) { return; }
     // Handle only primary button.
     if (evt.button !== 0) { return; }
 
@@ -349,7 +349,8 @@ module.exports.Component = registerComponent('look-controls', {
   onTouchStart: function (evt) {
     if (evt.touches.length !== 1 ||
         !this.data.touchEnabled ||
-        this.el.sceneEl.is('vr-mode')) { return; }
+        this.el.sceneEl.is('vr-mode') ||
+        this.el.sceneEl.is('ar-mode')) { return; }
     this.touchStart = {
       x: evt.touches[0].pageX,
       y: evt.touches[0].pageY
