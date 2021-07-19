@@ -6,7 +6,8 @@ module.exports.Component = register('background', {
   schema: {
     color: {type: 'color', default: 'black'},
     transparent: {default: false},
-    generateEnvironment: {default: true}
+    generateEnvironment: {default: true},
+    environmentUpdateFrequency: {default: 0}
   },
   init: function () {
     this.cubeRenderTarget = new THREE.WebGLCubeRenderTarget(128, { format: THREE.RGBFormat, generateMipmaps: true, minFilter: THREE.LinearMipmapLinearFilter });
@@ -33,16 +34,24 @@ module.exports.Component = register('background', {
     } else {
       scene.environment = null;
     }
+
+    if (this.updateInterval) {
+      clearInterval(this.updateInterval);
+    }
+    if (this.data.environmentUpdateFrequency > 0) {
+      this.updateInterval = setInterval(function () {
+        this.needsEnvironmentUpdate = true;
+      }.bind(this), this.data.environmentUpdateFrequency);
+    }
   },
 
   tick: function () {
     if (!this.needsEnvironmentUpdate) return;
     var scene = this.el.object3D;
     var renderer = this.el.renderer;
-    var camera = this.el.camera;
 
     this.el.object3D.add(this.cubeCamera);
-    this.cubeCamera.position.copy(camera.position);
+    this.cubeCamera.position.set(0, 1.6, 0);
     this.cubeCamera.update(renderer, scene);
     this.needsEnvironmentUpdate = false;
   },
