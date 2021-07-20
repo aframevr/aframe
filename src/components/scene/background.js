@@ -65,7 +65,9 @@ module.exports.Component = register('background', {
         lightEl.components.light.light.intensity = 0;
       } else {
         var intensity = self.sceneLightsMap.get(lightEl);
-        lightEl.components.light.light.intensity = intensity;
+        if (intensity !== undefined) {
+          lightEl.components.light.light.intensity = intensity;
+        }
       }
     });
 
@@ -77,30 +79,12 @@ module.exports.Component = register('background', {
     }
   },
   startLightProbe: function () {
-    var self = this;
     var data = this.data;
     var scene = this.el.sceneEl.object3D;
-
-    var sceneLights = Array.from(document.querySelectorAll(this.data.sceneLights));
-    sceneLights.forEach(function (lightEl) {
-      if (
-        lightEl === self.probeLight ||
-        lightEl === self.directionalLight
-      ) {
-        return;
-      }
-      var light = lightEl.getAttribute('light');
-      if (!light || light.intensity === undefined) {
-        return;
-      }
-      self.sceneLightsMap.set(lightEl, light.intensity);
-      lightEl.components.light.light.intensity = 0;
-    });
 
     if (data.generateEnvironment) {
       this.needsLightProbeUpdate = true;
       this.needsEnvironmentUpdate = true;
-      scene.environment = this.lightProbeTarget.texture;
     } else {
       scene.environment = null;
     }
@@ -172,7 +156,7 @@ module.exports.Component = register('background', {
         directionalLight.intensity = intensityScalar;
         directionalLight.position.copy(estimate.primaryLightDirection);
       } else {
-        console.log('light estimate not available');
+        console.log('light estimate not yet available');
       }
     }
 
@@ -196,13 +180,32 @@ module.exports.Component = register('background', {
 
       xrSession.requestLightProbe()
         .then(function (lightProbe) {
+          // It worked! So turn off the scene lights
+          var sceneLights = Array.from(document.querySelectorAll(self.data.sceneLights));
+          sceneLights.forEach(function (lightEl) {
+            if (
+              lightEl === self.probeLight ||
+              lightEl === self.directionalLight
+            ) {
+              return;
+            }
+            var light = lightEl.getAttribute('light');
+            if (!light || light.intensity === undefined) {
+              return;
+            }
+            self.sceneLightsMap.set(lightEl, light.intensity);
+            lightEl.components.light.light.intensity = 0;
+          });
+          scene.environment = self.lightProbeTarget.texture;
+
           self.xrLightProbe = lightProbe;
           lightProbe.addEventListener('reflectionchange', function onReflectionChanged () {
             self.needsEnvironmentUpdate = true;
           });
         })
         .catch(function (err) {
-          console.error(err);
+          console.warn('Lighting estimation not supported: ' + err.message);
+          console.warn('Are you missing: webxr="optionalFeatures: light-estimation;" from <a-scene>?');
         });
     }
 

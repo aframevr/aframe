@@ -23,10 +23,10 @@ reflect the environment this will provide a default reflective environment.
 
 ## Example
 
-The example below sets the background color to red.
+The example below sets the background color to red and use lighting estimation for AR.
 
 ```html
-<a-scene background="color: red"></a-scene>
+<a-scene webxr="optionalFeatures: light-estimation;" background="color: red"></a-scene>
 ```
 
 ## Properties
