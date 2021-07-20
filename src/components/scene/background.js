@@ -1,4 +1,4 @@
-/* global THREE, XRWebGLBinding */
+/* global THREE, XRWebGLBinding, Map */
 var register = require('../../core/component').registerComponent;
 var COMPONENTS = require('../../core/component').components;
 
@@ -8,10 +8,11 @@ module.exports.Component = register('background', {
     transparent: { default: false },
     generateEnvironment: { default: true },
     environmentUpdateFrequency: { default: 0 },
-    sceneLights: { type: 'selector' }
+    sceneLights: { default: 'a-light,[light]' }
   },
   init: function () {
     var self = this;
+
     this.cubeRenderTarget = new THREE.WebGLCubeRenderTarget(128, { format: THREE.RGBFormat, generateMipmaps: true, minFilter: THREE.LinearMipmapLinearFilter });
     this.lightProbeTarget = new THREE.WebGLCubeRenderTarget(16, { format: THREE.RGBFormat, generateMipmaps: false });
     this.cubeCamera = new THREE.CubeCamera(1, 100000, this.cubeRenderTarget);
@@ -43,16 +44,30 @@ module.exports.Component = register('background', {
 
     this.directionalLight = directionalLight;
     this.probeLight = probeLight;
+    this.sceneLightsMap = new Map();
   },
   stopLightProbe: function () {
+    var self = this;
     var data = this.data;
     var scene = this.el.sceneEl.object3D;
     this.xrLightProbe = null;
 
-    console.log('restarting ', this.data.sceneLights);
-
-    this.directionalLight.setAttribute('intensity', 0);
-    this.probeLight.setAttribute('intensity', 0);
+    var sceneLights = Array.from(document.querySelectorAll(this.data.sceneLights));
+    sceneLights.forEach(function (lightEl) {
+      var light = lightEl.getAttribute('light');
+      if (!light || light.intensity === undefined) {
+        return;
+      }
+      if (
+        lightEl === self.probeLight ||
+        lightEl === self.directionalLight
+      ) {
+        lightEl.components.light.light.intensity = 0;
+      } else {
+        var intensity = self.sceneLightsMap.get(lightEl);
+        lightEl.components.light.light.intensity = intensity;
+      }
+    });
 
     if (data.generateEnvironment) {
       scene.environment = this.cubeRenderTarget.texture;
@@ -62,10 +77,25 @@ module.exports.Component = register('background', {
     }
   },
   startLightProbe: function () {
+    var self = this;
     var data = this.data;
     var scene = this.el.sceneEl.object3D;
 
-    console.log('stopping ', this.data.sceneLights);
+    var sceneLights = Array.from(document.querySelectorAll(this.data.sceneLights));
+    sceneLights.forEach(function (lightEl) {
+      if (
+        lightEl === self.probeLight ||
+        lightEl === self.directionalLight
+      ) {
+        return;
+      }
+      var light = lightEl.getAttribute('light');
+      if (!light || light.intensity === undefined) {
+        return;
+      }
+      self.sceneLightsMap.set(lightEl, light.intensity);
+      lightEl.components.light.light.intensity = 0;
+    });
 
     if (data.generateEnvironment) {
       this.needsLightProbeUpdate = true;
