@@ -10,7 +10,6 @@ A light changes the lighting and shading of the scene.
 
 ## Examples
 
-
 ```html
 <!-- Red directional light shining from the top left. -->
 <a-light color="red" position="-1 1 0"></a-light>
@@ -20,6 +19,20 @@ A light changes the lighting and shading of the scene.
 
 <!-- Dim ambient lighting. -->
 <a-light type="ambient" color="#222"></a-light>
+
+<!-- Probe light using the #pisa environment map -->
+<a-assets>
+	<a-cubemap id="pisa">
+	<img src="https://threejs.org/examples/textures/cube/pisa/px.png">
+	<img src="https://threejs.org/examples/textures/cube/pisa/nx.png">
+	<img src="https://threejs.org/examples/textures/cube/pisa/py.png">
+	<img src="https://threejs.org/examples/textures/cube/pisa/ny.png">
+	<img src="https://threejs.org/examples/textures/cube/pisa/pz.png">
+	<img src="https://threejs.org/examples/textures/cube/pisa/nz.png">
+	</a-cubemap>
+</a-assets>
+
+<a-light type="probe" envMap="#pisa"></a-light>
 ```
 
 ## Attributes
@@ -30,6 +43,7 @@ A light changes the lighting and shading of the scene.
 | color        | light.color       | #fff          |
 | decay        | light.decay       | 1             |
 | distance     | light.distance    | 0.0           |
+| envmap       | light.envMap      | null          |
 | ground-color | light.groundColor | #fff          |
 | intensity    | light.intensity   | 1.0           |
 | penumbra     | light.penumbra    | 0.0           |
