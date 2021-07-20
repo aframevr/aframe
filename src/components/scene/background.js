@@ -8,8 +8,7 @@ module.exports.Component = register('background', {
     transparent: { default: false },
     generateEnvironment: { default: true },
     environmentUpdateFrequency: { default: 0 },
-    probeLightEl: { type: 'selector' },
-    directionalLightEl: { type: 'selector' }
+    sceneLights: { type: 'selector' }
   },
   init: function () {
     var self = this;
@@ -31,11 +30,29 @@ module.exports.Component = register('background', {
     this.el.sceneEl.addEventListener('exit-vr', function () {
       self.stopLightProbe();
     });
+
+    var directionalLight = document.createElement('a-light');
+    directionalLight.setAttribute('type', 'directional');
+    directionalLight.setAttribute('intensity', 0);
+    this.el.appendChild(directionalLight);
+
+    var probeLight = document.createElement('a-light');
+    probeLight.setAttribute('type', 'probe');
+    probeLight.setAttribute('intensity', 0);
+    this.el.appendChild(probeLight);
+
+    this.directionalLight = directionalLight;
+    this.probeLight = probeLight;
   },
   stopLightProbe: function () {
     var data = this.data;
     var scene = this.el.sceneEl.object3D;
     this.xrLightProbe = null;
+
+    console.log('restarting ', this.data.sceneLights);
+
+    this.directionalLight.setAttribute('intensity', 0);
+    this.probeLight.setAttribute('intensity', 0);
 
     if (data.generateEnvironment) {
       scene.environment = this.cubeRenderTarget.texture;
@@ -47,6 +64,8 @@ module.exports.Component = register('background', {
   startLightProbe: function () {
     var data = this.data;
     var scene = this.el.sceneEl.object3D;
+
+    console.log('stopping ', this.data.sceneLights);
 
     if (data.generateEnvironment) {
       this.needsLightProbeUpdate = true;
@@ -97,12 +116,10 @@ module.exports.Component = register('background', {
     var xrSession = renderer.xr.getSession();
     var frame = this.el.sceneEl.frame;
     var self = this;
-    var probeLightEl = this.data.probeLightEl;
-    var directionalLightEl = this.data.directionalLightEl;
 
     // Update Light Probe
     // source: view-source:https://storage.googleapis.com/chromium-webxr-test/r886480/proposals/lighting-estimation.html
-    if (frame && this.xrLightProbe && (probeLightEl || directionalLightEl)) {
+    if (frame && this.xrLightProbe) {
       var estimate = frame.getLightEstimate(this.xrLightProbe);
 
       if (estimate) {
@@ -112,22 +129,18 @@ module.exports.Component = register('background', {
               Math.max(estimate.primaryLightIntensity.y,
                 estimate.primaryLightIntensity.z)));
 
-        if (probeLightEl) {
-          var probeLight = probeLightEl.components.light.light;
-          probeLight.sh.fromArray(estimate.sphericalHarmonicsCoefficients);
-          probeLight.intensity = 1;
-        }
+        var probeLight = this.probeLight.components.light.light;
+        probeLight.sh.fromArray(estimate.sphericalHarmonicsCoefficients);
+        probeLight.intensity = 1;
 
-        if (directionalLightEl) {
-          var directionalLight = directionalLightEl.components.light.light;
-          directionalLight.color.setRGB(
-            estimate.primaryLightIntensity.x / intensityScalar,
-            estimate.primaryLightIntensity.y / intensityScalar,
-            estimate.primaryLightIntensity.z / intensityScalar);
+        var directionalLight = this.directionalLight.components.light.light;
+        directionalLight.color.setRGB(
+          estimate.primaryLightIntensity.x / intensityScalar,
+          estimate.primaryLightIntensity.y / intensityScalar,
+          estimate.primaryLightIntensity.z / intensityScalar);
 
-          directionalLight.intensity = intensityScalar;
-          directionalLight.position.copy(estimate.primaryLightDirection);
-        }
+        directionalLight.intensity = intensityScalar;
+        directionalLight.position.copy(estimate.primaryLightDirection);
       } else {
         console.log('light estimate not available');
       }

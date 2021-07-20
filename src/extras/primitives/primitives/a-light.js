@@ -15,6 +15,6 @@ registerPrimitive('a-light', {
     penumbra: 'light.penumbra',
     type: 'light.type',
     target: 'light.target',
-    envMap: 'light.envMap'
+    envmap: 'light.envMap'
   }
 });
