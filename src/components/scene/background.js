@@ -8,7 +8,8 @@ module.exports.Component = register('background', {
     transparent: { default: false },
     generateEnvironment: { default: true },
     environmentUpdateFrequency: { default: 0 },
-    sceneLights: { default: 'a-light,[light]' }
+    sceneLights: { default: 'a-light,[light]' },
+    directionalLight: { type: 'selector' }
   },
   init: function () {
     var self = this;
@@ -17,6 +18,7 @@ module.exports.Component = register('background', {
     this.lightProbeTarget = new THREE.WebGLCubeRenderTarget(16, { format: THREE.RGBFormat, generateMipmaps: false });
     this.cubeCamera = new THREE.CubeCamera(1, 100000, this.cubeRenderTarget);
     this.needsEnvironmentUpdate = true;
+    this.timeSinceUpdate = 0;
 
     this.el.sceneEl.addEventListener('enter-vr', function () {
       var renderer = self.el.renderer;
@@ -32,18 +34,6 @@ module.exports.Component = register('background', {
       self.stopLightProbe();
     });
 
-    var directionalLight = document.createElement('a-light');
-    directionalLight.setAttribute('type', 'directional');
-    directionalLight.setAttribute('intensity', 0);
-    this.el.appendChild(directionalLight);
-
-    var probeLight = document.createElement('a-light');
-    probeLight.setAttribute('type', 'probe');
-    probeLight.setAttribute('intensity', 0);
-    this.el.appendChild(probeLight);
-
-    this.directionalLight = directionalLight;
-    this.probeLight = probeLight;
     this.sceneLightsMap = new Map();
   },
   stopLightProbe: function () {
@@ -60,7 +50,7 @@ module.exports.Component = register('background', {
       }
       if (
         lightEl === self.probeLight ||
-        lightEl === self.directionalLight
+        lightEl === self.__ownDirectionalLight
       ) {
         lightEl.components.light.light.intensity = 0;
       } else {
@@ -78,6 +68,27 @@ module.exports.Component = register('background', {
       scene.environment = null;
     }
   },
+  setupLightsForLightingEstimation: function () {
+    // Make a directionalLight if required
+    if (this.data.directionalLight) {
+      this.directionalLight = this.data.directionalLight;
+    } else {
+      var directionalLight = this.__ownDirectionalLight || document.createElement('a-light');
+      directionalLight.setAttribute('type', 'directional');
+      directionalLight.setAttribute('intensity', 0);
+      this.el.appendChild(directionalLight);
+      this.directionalLight = directionalLight;
+      this.__ownDirectionalLight = directionalLight;
+    }
+
+    if (!this.probeLight) {
+      var probeLight = document.createElement('a-light');
+      probeLight.setAttribute('type', 'probe');
+      probeLight.setAttribute('intensity', 0);
+      this.el.appendChild(probeLight);
+      this.probeLight = probeLight;
+    }
+  },
   startLightProbe: function () {
     var data = this.data;
     var scene = this.el.sceneEl.object3D;
@@ -88,6 +99,49 @@ module.exports.Component = register('background', {
     } else {
       scene.environment = null;
     }
+  },
+  setupLightProbe: function () {
+    var scene = this.el.object3D;
+    var renderer = this.el.renderer;
+    var xrSession = renderer.xr.getSession();
+    var self = this;
+    var gl = renderer.getContext();
+
+    this.setupLightsForLightingEstimation();
+
+    this.glBinding = new XRWebGLBinding(xrSession, gl);
+    gl.getExtension('EXT_sRGB');
+    gl.getExtension('OES_texture_half_float');
+
+    xrSession.requestLightProbe()
+      .then(function (lightProbe) {
+        // It worked! So turn off the scene lights
+        var sceneLights = Array.from(document.querySelectorAll(self.data.sceneLights));
+        sceneLights.forEach(function (lightEl) {
+          if (
+            lightEl === self.probeLight ||
+            lightEl === self.__ownDirectionalLight
+          ) {
+            return;
+          }
+          var light = lightEl.getAttribute('light');
+          if (!light || light.intensity === undefined) {
+            return;
+          }
+          self.sceneLightsMap.set(lightEl, light.intensity);
+          lightEl.components.light.light.intensity = 0;
+        });
+        scene.environment = self.lightProbeTarget.texture;
+
+        self.xrLightProbe = lightProbe;
+        lightProbe.addEventListener('reflectionchange', function onReflectionChanged () {
+          self.needsEnvironmentUpdate = true;
+        });
+      })
+      .catch(function (err) {
+        console.warn('Lighting estimation not supported: ' + err.message);
+        console.warn('Are you missing: webxr="optionalFeatures: light-estimation;" from <a-scene>?');
+      });
   },
   update: function () {
     var scene = this.el.sceneEl.object3D;
@@ -113,23 +167,21 @@ module.exports.Component = register('background', {
     } else {
       scene.environment = null;
     }
-
-    if (this.updateInterval) {
-      clearInterval(this.updateInterval);
-    }
-    if (this.data.environmentUpdateFrequency > 0) {
-      this.updateInterval = setInterval(function () {
-        this.needsEnvironmentUpdate = true;
-      }.bind(this), this.data.environmentUpdateFrequency * 1000); // convert seconds to ms
-    }
   },
 
-  tick: function () {
+  tick: function (time, delta) {
     var scene = this.el.object3D;
     var renderer = this.el.renderer;
-    var xrSession = renderer.xr.getSession();
     var frame = this.el.sceneEl.frame;
-    var self = this;
+
+    this.timeSinceUpdate += delta;
+    if (
+      this.data.environmentUpdateFrequency > 0 && // should update in general?
+      this.timeSinceUpdate > (this.data.environmentUpdateFrequency * 1000) // should update this tick?
+    ) {
+      this.timeSinceUpdate = 0;
+      this.needsEnvironmentUpdate = true;
+    }
 
     // Update Light Probe
     // source: view-source:https://storage.googleapis.com/chromium-webxr-test/r886480/proposals/lighting-estimation.html
@@ -170,43 +222,8 @@ module.exports.Component = register('background', {
       if (!frame) {
         return;
       }
-
-      var gl = renderer.getContext();
-
       this.needsLightProbeUpdate = false;
-      this.glBinding = new XRWebGLBinding(xrSession, gl);
-      gl.getExtension('EXT_sRGB');
-      gl.getExtension('OES_texture_half_float');
-
-      xrSession.requestLightProbe()
-        .then(function (lightProbe) {
-          // It worked! So turn off the scene lights
-          var sceneLights = Array.from(document.querySelectorAll(self.data.sceneLights));
-          sceneLights.forEach(function (lightEl) {
-            if (
-              lightEl === self.probeLight ||
-              lightEl === self.directionalLight
-            ) {
-              return;
-            }
-            var light = lightEl.getAttribute('light');
-            if (!light || light.intensity === undefined) {
-              return;
-            }
-            self.sceneLightsMap.set(lightEl, light.intensity);
-            lightEl.components.light.light.intensity = 0;
-          });
-          scene.environment = self.lightProbeTarget.texture;
-
-          self.xrLightProbe = lightProbe;
-          lightProbe.addEventListener('reflectionchange', function onReflectionChanged () {
-            self.needsEnvironmentUpdate = true;
-          });
-        })
-        .catch(function (err) {
-          console.warn('Lighting estimation not supported: ' + err.message);
-          console.warn('Are you missing: webxr="optionalFeatures: light-estimation;" from <a-scene>?');
-        });
+      this.setupLightProbe();
     }
 
     if (this.xrLightProbe) {
