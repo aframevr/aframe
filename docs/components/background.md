@@ -13,19 +13,23 @@ frustum culling issues when `a-sky` is further than the far plane of the
 camera. There are no unexpected occlusions either with far objects that might
 be behind of the sphere geometry of `a-sky`.
 
-The background component will ensure that the environment is generate using WebXR
-Lighting estimation in Augmented Reality. It will turn off the scene lights and provide
-it's own lights when AR is entered and will restore them when AR is exited.
+The background component can also generate a default environment cube map for all
+materials, this is useful in case you find GLB models end up too dark or reflective
+materials don't look right because they are not reflecting the environment this
+will provide a default reflective environment.
+
+## Scene Lighting and Lighting Estimation
+
+The background component will ensure that an environment map is generated from your surroundings using WebXR
+Lighting estimation in Augmented Reality if it is available.
+
+It will also create lights to match the lighting of the real world. So you should turn off any scene lights when the user enters AR using the `hide-on-enter-ar` component.
 
 These lights are a `directional` and a `probe` light. If your scene makes use of shadows
 from a directional light you can provide this as the `directionalLight` property and it
 will control that light instead of making it's own one. Once the user leaves AR this
-light may have a different color and position than when they entered AR as it has been
+light may have a different color, intensity and position than when they entered AR as it has been
 altered by the lighting estimation.
-
-The background component can also generate a default environment cube map for all
-materials, if you find GLB models end up too dark or reflective materials don't
-reflect the environment this will provide a default reflective environment.
 
 ## Example
 
@@ -43,5 +47,4 @@ The example below sets the background color to red and use lighting estimation f
 | transparent                | Background is transparent. The color property is ignored. | false           |
 | generateEnvironment        | Whether to generate a default environment.                | true            |
 | environmentUpdateFrequency | How often to update the environment in seconds, 0 is off. | 0               |
-| sceneLights                | Query Selector for the lights to turn off when AR starts. | a-light,[light] |
 | directionalLight           | Use an existing light for the AR lighting                 | null            |

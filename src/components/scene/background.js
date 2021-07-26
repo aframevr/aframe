@@ -1,4 +1,4 @@
-/* global THREE, XRWebGLBinding, Map */
+/* global THREE, XRWebGLBinding */
 var register = require('../../core/component').registerComponent;
 var COMPONENTS = require('../../core/component').components;
 
@@ -8,7 +8,6 @@ module.exports.Component = register('background', {
     transparent: { default: false },
     generateEnvironment: { default: true },
     environmentUpdateFrequency: { default: 0 },
-    sceneLights: { default: 'a-light,[light]' },
     directionalLight: { type: 'selector' }
   },
   init: function () {
@@ -33,33 +32,16 @@ module.exports.Component = register('background', {
     this.el.sceneEl.addEventListener('exit-vr', function () {
       self.stopLightProbe();
     });
-
-    this.sceneLightsMap = new Map();
   },
   stopLightProbe: function () {
-    var self = this;
     var data = this.data;
     var scene = this.el.sceneEl.object3D;
     this.xrLightProbe = null;
 
-    var sceneLights = Array.from(document.querySelectorAll(this.data.sceneLights));
-    sceneLights.forEach(function (lightEl) {
-      var light = lightEl.getAttribute('light');
-      if (!light || light.intensity === undefined) {
-        return;
-      }
-      if (
-        lightEl === self.probeLight ||
-        lightEl === self.__ownDirectionalLight
-      ) {
-        lightEl.components.light.light.intensity = 0;
-      } else {
-        var intensity = self.sceneLightsMap.get(lightEl);
-        if (intensity !== undefined) {
-          lightEl.components.light.light.intensity = intensity;
-        }
-      }
-    });
+    this.probeLight.components.light.light.intensity = 0;
+    if (this.__ownDirectionalLight) {
+      this.__ownDirectionalLight.components.light.light.intensity = 0;
+    }
 
     if (data.generateEnvironment) {
       scene.environment = this.cubeRenderTarget.texture;
@@ -115,22 +97,6 @@ module.exports.Component = register('background', {
 
     xrSession.requestLightProbe()
       .then(function (lightProbe) {
-        // It worked! So turn off the scene lights
-        var sceneLights = Array.from(document.querySelectorAll(self.data.sceneLights));
-        sceneLights.forEach(function (lightEl) {
-          if (
-            lightEl === self.probeLight ||
-            lightEl === self.__ownDirectionalLight
-          ) {
-            return;
-          }
-          var light = lightEl.getAttribute('light');
-          if (!light || light.intensity === undefined) {
-            return;
-          }
-          self.sceneLightsMap.set(lightEl, light.intensity);
-          lightEl.components.light.light.intensity = 0;
-        });
         scene.environment = self.lightProbeTarget.texture;
 
         self.xrLightProbe = lightProbe;
