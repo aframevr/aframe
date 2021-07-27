@@ -9,6 +9,7 @@ require('./gltf-model');
 require('./hand-tracking-controls');
 require('./hand-controls');
 require('./hide-on-enter-ar');
+require('./ar-hit-test');
 require('./hp-mixed-reality-controls');
 require('./layer');
 require('./laser-controls');
