@@ -2,6 +2,26 @@
 var register = require('../../core/component').registerComponent;
 var COMPONENTS = require('../../core/component').components;
 
+// source: view-source:https://storage.googleapis.com/chromium-webxr-test/r886480/proposals/lighting-estimation.html
+function updateLights (estimate, probeLight, directionalLight) {
+  var intensityScalar =
+  Math.max(1.0,
+    Math.max(estimate.primaryLightIntensity.x,
+      Math.max(estimate.primaryLightIntensity.y,
+        estimate.primaryLightIntensity.z)));
+
+  probeLight.sh.fromArray(estimate.sphericalHarmonicsCoefficients);
+  probeLight.intensity = 1;
+
+  directionalLight.color.setRGB(
+    estimate.primaryLightIntensity.x / intensityScalar,
+    estimate.primaryLightIntensity.y / intensityScalar,
+    estimate.primaryLightIntensity.z / intensityScalar);
+
+  directionalLight.intensity = intensityScalar;
+  directionalLight.position.copy(estimate.primaryLightDirection);
+}
+
 module.exports.Component = register('background', {
   schema: {
     color: { type: 'color', default: 'black' },
@@ -39,8 +59,8 @@ module.exports.Component = register('background', {
     this.xrLightProbe = null;
 
     this.probeLight.components.light.light.intensity = 0;
-    if (this.__ownDirectionalLight) {
-      this.__ownDirectionalLight.components.light.light.intensity = 0;
+    if (this.ownDirectionalLight) {
+      this.ownDirectionalLight.components.light.light.intensity = 0;
     }
 
     if (data.generateEnvironment) {
@@ -55,12 +75,12 @@ module.exports.Component = register('background', {
     if (this.data.directionalLight) {
       this.directionalLight = this.data.directionalLight;
     } else {
-      var directionalLight = this.__ownDirectionalLight || document.createElement('a-light');
+      var directionalLight = this.ownDirectionalLight || document.createElement('a-light');
       directionalLight.setAttribute('type', 'directional');
       directionalLight.setAttribute('intensity', 0);
       this.el.appendChild(directionalLight);
       this.directionalLight = directionalLight;
-      this.__ownDirectionalLight = directionalLight;
+      this.ownDirectionalLight = directionalLight;
     }
 
     if (!this.probeLight) {
@@ -135,6 +155,18 @@ module.exports.Component = register('background', {
     }
   },
 
+  updateXRCubeMap: function () {
+    // Update Cube Map
+    var renderer = this.el.renderer;
+    var cubeMap = this.glBinding.getReflectionCubeMap(this.xrLightProbe);
+    if (cubeMap) {
+      var rendererProps = renderer.properties.get(this.lightProbeTarget.texture);
+      rendererProps.__webglTexture = cubeMap;
+    } else {
+      console.log('Cube map not available');
+    }
+  },
+
   tick: function (time, delta) {
     var scene = this.el.object3D;
     var renderer = this.el.renderer;
@@ -149,30 +181,15 @@ module.exports.Component = register('background', {
       this.needsEnvironmentUpdate = true;
     }
 
-    // Update Light Probe
-    // source: view-source:https://storage.googleapis.com/chromium-webxr-test/r886480/proposals/lighting-estimation.html
     if (frame && this.xrLightProbe) {
       var estimate = frame.getLightEstimate(this.xrLightProbe);
 
       if (estimate) {
-        var intensityScalar =
-          Math.max(1.0,
-            Math.max(estimate.primaryLightIntensity.x,
-              Math.max(estimate.primaryLightIntensity.y,
-                estimate.primaryLightIntensity.z)));
-
-        var probeLight = this.probeLight.components.light.light;
-        probeLight.sh.fromArray(estimate.sphericalHarmonicsCoefficients);
-        probeLight.intensity = 1;
-
-        var directionalLight = this.directionalLight.components.light.light;
-        directionalLight.color.setRGB(
-          estimate.primaryLightIntensity.x / intensityScalar,
-          estimate.primaryLightIntensity.y / intensityScalar,
-          estimate.primaryLightIntensity.z / intensityScalar);
-
-        directionalLight.intensity = intensityScalar;
-        directionalLight.position.copy(estimate.primaryLightDirection);
+        updateLights(
+          estimate,
+          this.probeLight.components.light.light,
+          this.directionalLight.components.light.light
+        );
       } else {
         console.log('light estimate not yet available');
       }
@@ -193,14 +210,7 @@ module.exports.Component = register('background', {
     }
 
     if (this.xrLightProbe) {
-      // Update Cube Map
-      var cubeMap = this.glBinding.getReflectionCubeMap(this.xrLightProbe);
-      if (cubeMap) {
-        var rendererProps = renderer.properties.get(this.lightProbeTarget.texture);
-        rendererProps.__webglTexture = cubeMap;
-      } else {
-        console.log('Cube map not available');
-      }
+      this.updateXRCubeMap();
     } else {
       this.el.object3D.add(this.cubeCamera);
       this.cubeCamera.position.set(0, 1.6, 0);
