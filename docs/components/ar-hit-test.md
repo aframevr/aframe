@@ -34,9 +34,11 @@ You can toggle this component's enabled state to not do any interactions until y
 
 ## Events
 
-| Event Name         | Description                                                  |
-|--------------------|--------------------------------------------------------------|
-| ar-hit-test-select | The user has stopped positioning the detail contains the latest position, orientation and inputSource that was used |
+| Event Name           | Description                                                  |
+|----------------------|--------------------------------------------------------------|
+| ar-hit-test-start    | The AR Hit Test system has managed start scanning            |
+| ar-hit-test-achieved | The AR Hit Test system has managed to find a surface to start hit testing on |
+| ar-hit-test-select   | The user has stopped positioning the detail contains the latest position, orientation and inputSource that was used |
 
 ## Assets
 
