@@ -162,9 +162,7 @@ module.exports.Component = register('background', {
     if (cubeMap) {
       var rendererProps = renderer.properties.get(this.lightProbeTarget.texture);
       rendererProps.__webglTexture = cubeMap;
-    } else {
-      console.log('Cube map not available');
-    }
+    } // else { cube map isn't available for this device }
   },
 
   tick: function (time, delta) {
@@ -190,9 +188,8 @@ module.exports.Component = register('background', {
           this.probeLight.components.light.light,
           this.directionalLight.components.light.light
         );
-      } else {
-        console.log('light estimate not yet available');
       }
+      // else { light estimate not yet available, it takes a few frames to start working }
     }
 
     if (!this.needsEnvironmentUpdate) {
