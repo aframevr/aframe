@@ -156,13 +156,13 @@ module.exports.Component = register('background', {
   },
 
   updateXRCubeMap: function () {
-    // Update Cube Map
+    // Update Cube Map, cubeMap maybe some unavailable on some hardware
     var renderer = this.el.renderer;
     var cubeMap = this.glBinding.getReflectionCubeMap(this.xrLightProbe);
     if (cubeMap) {
       var rendererProps = renderer.properties.get(this.lightProbeTarget.texture);
       rendererProps.__webglTexture = cubeMap;
-    } // else { cube map isn't available for this device }
+    }
   },
 
   tick: function (time, delta) {
@@ -180,6 +180,7 @@ module.exports.Component = register('background', {
     }
 
     if (frame && this.xrLightProbe) {
+      // light estimate may not yet be available, it takes a few frames to start working
       var estimate = frame.getLightEstimate(this.xrLightProbe);
 
       if (estimate) {
@@ -189,7 +190,6 @@ module.exports.Component = register('background', {
           this.directionalLight.components.light.light
         );
       }
-      // else { light estimate not yet available, it takes a few frames to start working }
     }
 
     if (!this.needsEnvironmentUpdate) {
