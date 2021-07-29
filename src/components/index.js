@@ -8,6 +8,7 @@ require('./generic-tracked-controller-controls');
 require('./gltf-model');
 require('./hand-tracking-controls');
 require('./hand-controls');
+require('./hide-on-enter-ar');
 require('./hp-mixed-reality-controls');
 require('./layer');
 require('./laser-controls');

@@ -1,11 +1,15 @@
 var bind = require('../utils/bind');
-var diff = require('../utils').diff;
+var utils = require('../utils');
+var diff = utils.diff;
 var debug = require('../utils/debug');
 var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../lib/three');
 
 var degToRad = THREE.Math.degToRad;
 var warn = debug('components:light:warn');
+var CubeLoader = new THREE.CubeTextureLoader();
+
+var probeCache = {};
 
 /**
  * Light component.
@@ -13,15 +17,16 @@ var warn = debug('components:light:warn');
 module.exports.Component = registerComponent('light', {
   schema: {
     angle: {default: 60, if: {type: ['spot']}},
-    color: {type: 'color'},
+    color: {type: 'color', if: {type: ['ambient', 'directional', 'hemisphere', 'point', 'spot']}},
+    envMap: {default: '', if: {type: ['probe']}},
     groundColor: {type: 'color', if: {type: ['hemisphere']}},
     decay: {default: 1, if: {type: ['point', 'spot']}},
     distance: {default: 0.0, min: 0, if: {type: ['point', 'spot']}},
-    intensity: {default: 1.0, min: 0, if: {type: ['ambient', 'directional', 'hemisphere', 'point', 'spot']}},
+    intensity: {default: 1.0, min: 0, if: {type: ['ambient', 'directional', 'hemisphere', 'point', 'spot', 'probe']}},
     penumbra: {default: 0, min: 0, max: 1, if: {type: ['spot']}},
     type: {
       default: 'directional',
-      oneOf: ['ambient', 'directional', 'hemisphere', 'point', 'spot'],
+      oneOf: ['ambient', 'directional', 'hemisphere', 'point', 'spot', 'probe'],
       schemaChange: true
     },
     target: {type: 'selector', if: {type: ['spot', 'directional']}},
@@ -104,6 +109,10 @@ module.exports.Component = registerComponent('light', {
             }
             break;
           }
+
+          case 'envMap':
+            this.updateProbeMap(data, light);
+            break;
 
           case 'castShadow':
           case 'shadowBias':
@@ -263,11 +272,45 @@ module.exports.Component = registerComponent('light', {
         return light;
       }
 
+      case 'probe': {
+        light = new THREE.LightProbe();
+        this.updateProbeMap(data, light);
+        return light;
+      }
+
       default: {
         warn('%s is not a valid light type. ' +
            'Choose from ambient, directional, hemisphere, point, spot.', type);
       }
     }
+  },
+
+  /**
+   * Generate the spherical harmonics for the LightProbe from a cube map
+   */
+  updateProbeMap: function (data, light) {
+    if (!data.envMap) {
+      // reset parameters if no map
+      light.copy(new THREE.LightProbe());
+    }
+
+    if (probeCache[data.envMap] instanceof window.Promise) {
+      probeCache[data.envMap].then(function (tempLightProbe) {
+        light.copy(tempLightProbe);
+      });
+    }
+    if (probeCache[data.envMap] instanceof THREE.LightProbe) {
+      light.copy(probeCache[data.envMap]);
+    }
+    probeCache[data.envMap] = new window.Promise(function (resolve) {
+      utils.srcLoader.validateCubemapSrc(data.envMap, function loadEnvMap (urls) {
+        CubeLoader.load(urls, function (cube) {
+          var tempLightProbe = THREE.LightProbeGenerator.fromCubeTexture(cube);
+          probeCache[data.envMap] = tempLightProbe;
+          light.copy(tempLightProbe);
+        });
+      });
+    });
   },
 
   onSetTarget: function (targetEl, light) {

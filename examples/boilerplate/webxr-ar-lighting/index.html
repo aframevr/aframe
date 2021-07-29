@@ -1,0 +1,105 @@
+<html>
+
+<head>
+    <script src="../../../dist/aframe-master.js"></script>
+	<script src="./ar-hit-test.js"></script>
+	<script src="https://unpkg.com/aframe-environment-component@1.2.0/dist/aframe-environment-component.min.js"></script>
+	<style>
+		body {
+			font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+		}
+
+
+		#dom-overlay {
+			overflow: hidden;
+			position: absolute;
+			pointer-events: none;
+			box-sizing: border-box;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			top: 0;
+			padding: 1em;
+		}
+
+		#dom-overlay>* {
+			pointer-events: auto;
+		}
+	</style>
+</head>
+
+<body>
+	<a-scene webxr="optionalFeatures: light-estimation, hit-test, dom-overlay; overlayElement:#dom-overlay;"
+		background="environmentUpdateFrequency:4;" ar-hit-test="target:#table;">
+		<a-camera position="0 1.6 2"></a-camera>
+
+		<a-assets>
+			<a-cubemap id="pisa">
+				<img src="https://threejs.org/examples/textures/cube/pisa/px.png" crossorigin="anonymous">
+				<img src="https://threejs.org/examples/textures/cube/pisa/nx.png" crossorigin="anonymous">
+				<img src="https://threejs.org/examples/textures/cube/pisa/py.png" crossorigin="anonymous">
+				<img src="https://threejs.org/examples/textures/cube/pisa/ny.png" crossorigin="anonymous">
+				<img src="https://threejs.org/examples/textures/cube/pisa/pz.png" crossorigin="anonymous">
+				<img src="https://threejs.org/examples/textures/cube/pisa/nz.png" crossorigin="anonymous">
+			</a-cubemap>
+
+			<!-- model by Snooze https://sketchfab.com/3d-models/low-poly-table-b940256ec5994e26a9e71289d1211b19 -->
+			<a-asset-item id="table-glb" src="../../assets/models/table.glb"></a-asset-item>
+		</a-assets>
+
+		<a-light type="directional"
+			light="castShadow:true;shadowMapHeight:1024;shadowMapWidth:1024;shadowCameraTop:2;shadowCameraBottom:-2;shadowCameraLeft:-2;shadowCameraRight:2;"
+			intensity="0.6" position="1 1 1"></a-light>
+		<a-light hide-on-enter-ar type="probe" envMap="#pisa"></a-light>
+
+		<a-entity hide-on-enter-ar id="table" shadow gltf-model="#table-glb" scale="0.7 0.7 0.7" position="0 0 -1">
+			<a-entity scale="0.3 0.3 0.3" position="0 1.05 0">
+				<a-cylinder shadow position="1 0.75 1" radius="0.5" height="1.5" color="#FFC65D"
+					material="roughness: 0.1; metalness: 0.2;"></a-cylinder>
+				<a-box shadow position="-1 0.5 1" rotation="0 45 0" color="#4CC3D9"
+					material="roughness: 0.1; metalness: 0.2;"></a-box>
+				<a-sphere shadow position="0 1.25 -1" radius="1.25" color="#FFFFFF"
+					material="roughness: 0; metalness: 0;"></a-sphere>
+				<a-torus-knot position="0 3 0" material="metalness: 1; roughness: 0.17"
+					geometry="radius: 0.45; radiusTubular: 0.09"
+					animation__rotate="easing: linear; from: 0 0 0; loop: true; property: rotation; to: 0 0 360; dur: 3000;">
+				</a-torus-knot>
+			</a-entity>
+		</a-entity>
+		<a-entity hide-on-enter-ar position="-5 0 0"
+			environment="lighting: none; skyType: gradient; skyColor: skyblue; preset: forest; shadow: true; lightPosition: 0 8.4 -0.2;">
+		</a-entity>
+	</a-scene>
+	<div id="dom-overlay">
+		<h1>Hello World!</h1>
+		<p id="dom-overlay-message"></p>
+	</div>
+	<script>
+		const sceneEl = document.querySelector('a-scene');
+		const message = document.getElementById('dom-overlay-message');
+
+		sceneEl.addEventListener('enter-vr', function () {
+			if (sceneEl.is('ar-mode')) {
+				message.textContent = '';
+
+				sceneEl.addEventListener('ar-hit-test-start', function () {
+					message.innerHTML = `Scanning environment, finding surface.`
+				}, { once: true });
+
+				sceneEl.addEventListener('ar-hit-test-achieved', function () {
+					message.innerHTML = `Select the location to place the furniture<br />By tapping on the screen or selecting with your controller.`
+				}, { once: true });
+
+				sceneEl.addEventListener('ar-hit-test-select', function () {
+					message.textContent = '';
+				}, { once: true });
+			}
+		});
+
+		sceneEl.addEventListener('exit-vr', function () {
+			message.textContent = '';
+		});
+	</script>
+</body>
+
+</html>
