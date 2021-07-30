@@ -123,6 +123,12 @@ module.exports.Component = register('ar-hit-test', {
         this.bboxMesh.visible = true;
 
         if (this.hasPosedOnce === true) {
+          this.el.emit('ar-hit-test-select-start', {
+            inputSource: inputSource,
+            position: this.bboxMesh.position,
+            orientation: this.bboxMesh.quaternion
+          });
+
           if (inputSource.profiles[0] === profileToSupport) {
             this.hitTest = transientHitTest;
           } else {
