@@ -3,7 +3,7 @@ var register = require('../../core/component').registerComponent;
 var COMPONENTS = require('../../core/component').components;
 
 // source: view-source:https://storage.googleapis.com/chromium-webxr-test/r886480/proposals/lighting-estimation.html
-function updateLights (estimate, probeLight, directionalLight) {
+function updateLights (estimate, probeLight, directionalLight, directionalLightPosition) {
   var intensityScalar =
   Math.max(1.0,
     Math.max(estimate.primaryLightIntensity.x,
@@ -19,7 +19,7 @@ function updateLights (estimate, probeLight, directionalLight) {
     estimate.primaryLightIntensity.z / intensityScalar);
 
   directionalLight.intensity = intensityScalar;
-  directionalLight.position.copy(estimate.primaryLightDirection);
+  directionalLightPosition.copy(estimate.primaryLightDirection);
 }
 
 module.exports.Component = register('background', {
@@ -196,7 +196,8 @@ module.exports.Component = register('background', {
         updateLights(
           estimate,
           this.probeLight.components.light.light,
-          this.directionalLight.components.light.light
+          this.directionalLight.components.light.light,
+          this.directionalLight.object3D.position
         );
       }
     }
