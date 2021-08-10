@@ -298,13 +298,15 @@ module.exports.Component = register('ar-hit-test', {
     this.makeBBox();
   },
   update: function () {
-    this.bboxNeedsUpdate = true;
-    this.data.target.object3D.layers.enable(CAM_LAYER);
-    this.data.target.object3D.traverse(function (child) {
-      child.layers.enable(CAM_LAYER);
-    });
-    this.data.target.removeEventListener('model-loaded', this.update);
-    this.data.target.addEventListener('model-loaded', this.update);
+    if (this.data.target) {
+      this.bboxNeedsUpdate = true;
+      this.data.target.object3D.layers.enable(CAM_LAYER);
+      this.data.target.object3D.traverse(function (child) {
+        child.layers.enable(CAM_LAYER);
+      });
+      this.data.target.removeEventListener('model-loaded', this.update);
+      this.data.target.addEventListener('model-loaded', this.update);
+    }
   },
   makeBBox: function () {
     var geometry = new THREE.PlaneGeometry(1, 1);
@@ -384,6 +386,8 @@ module.exports.Component = register('ar-hit-test', {
       }
 
       if (this.data.target) {
+        tempQuaternion.copy(this.data.target.object3D.quaternion);
+        this.data.target.object3D.quaternion.identity();
         this.bbox.setFromObject(this.data.target.object3D);
         this.bbox.getCenter(this.bboxMesh.position);
         this.bbox.getSize(this.bboxMesh.scale);
@@ -398,6 +402,8 @@ module.exports.Component = register('ar-hit-test', {
         this.bboxMesh.position.y -= this.bboxMesh.scale.y / 2;
         this.bboxOffset.copy(this.bboxMesh.position);
         this.bboxOffset.sub(this.data.target.object3D.position);
+        this.data.target.object3D.quaternion.copy(tempQuaternion);
+        this.bboxMesh.quaternion.copy(tempQuaternion);
       }
     }
 
