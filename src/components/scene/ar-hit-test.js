@@ -314,15 +314,15 @@ module.exports.Component = register('ar-hit-test', {
     geometry.rotateX(-Math.PI / 2);
     this.bbox = new THREE.Box3();
     this.bboxMesh = new THREE.Mesh(geometry, material);
-    this.bboxMesh.visible = false;
     this.el.setObject3D('ar-hit-test', this.bboxMesh);
+    this.bboxMesh.visible = false;
   },
   updateFootprint: function () {
     var renderer = this.el.sceneEl.renderer;
     var oldRenderTarget, oldBackground;
     this.bboxMesh.material.map = this.canvasTexture;
     this.bboxMesh.material.needsUpdate = true;
-    this.orthoCam.rotation.set(-Math.PI / 2, 0, 0);
+    this.orthoCam.rotation.set(-Math.PI / 2, 0, -Math.PI / 2);
     this.orthoCam.position.copy(this.bboxMesh.position);
     this.orthoCam.position.y -= this.bboxMesh.scale.y / 2;
     this.orthoCam.near = 0.1;

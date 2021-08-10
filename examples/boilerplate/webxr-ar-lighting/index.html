@@ -33,13 +33,11 @@
 	<a-scene
 		webxr="optionalFeatures:hit-test,light-estimation,dom-overlay,anchors; overlayElement:#dom-overlay;"
 		background="directionalLight:#dirlight;"
-		ar-hit-test="target:#table;footprintDepth:1;"
+		ar-hit-test="target:#table;"
 		shadow="type: pcfsoft">
 		<a-assets>
 			<!-- model by Snooze https://sketchfab.com/3d-models/low-poly-table-b940256ec5994e26a9e71289d1211b19 -->
-			<a-asset-item id="table-glb"
-				src="../../assets/models/table.glb">
-			</a-asset-item>
+			<a-asset-item id="table-glb" src="../../assets/models/table.glb"></a-asset-item>
 		</a-assets>
 
 		<a-light id="dirlight" intensity="0.5" light="castShadow:true;type:directional" position="1 1 1"></a-light>
@@ -48,8 +46,13 @@
 
 		<a-entity hide-on-enter-ar environment="lighting:none;shadow:true;"></a-entity>
 
-		<a-entity position="0 0.01 0" geometry="primitive:shadow-plane;" material="shader:shadow" shadow="cast:false"
-			ar-shadow-helper="target:#table;"></a-entity>
+		<a-entity
+			position="0 0.01 0"
+			geometry="primitive:shadow-plane;"
+			material="shader:shadow"
+			shadow="cast:false"
+			ar-shadow-helper="target:#table;"
+		></a-entity>
 
 		<a-entity hide-on-enter-ar id="table" shadow>
 			<a-entity gltf-model="#table-glb" scale="0.7 0.7 0.7" position="0 0 -2"></a-entity>
