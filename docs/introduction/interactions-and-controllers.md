@@ -499,14 +499,16 @@ For advanced examples on real applications, see the [paint-controls component
 for A-Painter][a-painter] or the [shoot-controls component for
 A-Blast][a-blast].
 
-## Listening for Button and Axis Events
+## Listening for Controller Events
 
-Controllers have many buttons and emit many events. For each button, every time
-a button is pressed down, released, or for some cases, even touched. And for
-each axis (e.g., trackpad, thumbstick), an event is emitted every time it is
-touched. To handle buttons, look for the event name in the respective
-controller component documentation pages at the event tables, then register
-event handlers how we want:
+Controllers may have many buttons, many axes, and may emit many events. The
+events defined by the controller, themselves built off of the basic events provided
+by the [tracked-controls component]((#tracked-controls-component)), provide the API
+contract through which the controller adds semantic actions to the component it
+belongs to. To handle events, we look for the event name in the controller
+component's documentation pages at the event tables, then register event handlers
+how we want. The event handlers work the same for custom controllers. Here are the
+events emitted by A-Frame's controller components:
 
 - [daydream-controls events](../components/daydream-controls.md#events)
 - [gearvr-controls events](../components/gearvr-controls.md#events)
