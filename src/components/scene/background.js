@@ -153,15 +153,6 @@ module.exports.Component = register('background', {
     } else {
       scene.environment = null;
     }
-
-    if (this.updateInterval) {
-      clearInterval(this.updateInterval);
-    }
-    if (this.data.environmentUpdateFrequency > 0) {
-      this.updateInterval = setInterval(function () {
-        this.needsEnvironmentUpdate = true;
-      }.bind(this), this.data.environmentUpdateFrequency);
-    }
   },
 
   updateXRCubeMap: function () {
