@@ -22,9 +22,11 @@ module.exports.System = registerSystem('webxr', {
     };
     this.sessionReferenceSpaceType = data.referenceSpaceType;
 
+    data.overlayElement.classList.remove('a-dom-overlay');
     if (data.overlayElement) {
       this.warnIfFeatureNotRequested('dom-overlay');
       this.sessionConfiguration.domOverlay = {root: data.overlayElement};
+      data.overlayElement.classList.add('a-dom-overlay');
     }
   },
 
