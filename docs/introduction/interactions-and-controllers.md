@@ -501,14 +501,13 @@ A-Blast][a-blast].
 
 ## Listening for Controller Events
 
-Controllers may have many buttons, many axes, and may emit many events. The
-events defined by the controller, themselves built off of the basic events provided
-by the [tracked-controls component]((#tracked-controls-component)), provide the API
-contract through which the controller adds semantic actions to the component it
-belongs to. To handle events, we look for the event name in the controller
-component's documentation pages at the event tables, then register event handlers
-how we want. The event handlers work the same for custom controllers. Here are the
-events emitted by A-Frame's controller components:
+The events emitted by the A-Frame and vendor specific controllers (e.g Quest,
+Index...) build on the base level events emitted by the
+[tracked-controls component]((#tracked-controls-component)) to the specific
+events of each controller. To handle these events, we look for the event name
+in the controller component's documentation pages at the event tables, then
+register event handlers how we want. Here are the events emitted by A-Frame's
+controller components:
 
 - [daydream-controls events](../components/daydream-controls.md#events)
 - [gearvr-controls events](../components/gearvr-controls.md#events)
