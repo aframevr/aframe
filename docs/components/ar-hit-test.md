@@ -30,7 +30,7 @@ You can toggle this component's enabled state to not do any interactions until y
 |----------------|--------------------------------------------------------------|---------------|
 | target         | The object to move around.                                   | null          |
 | enabled        | Whether to do hit-testing or not                             | true          |
-| map            | Image to use for the reticle                                 | ""            |
+| src            | Image to use for the reticle                                 | See: Assets   |
 | type           | 'footprint' or 'map' footprint is the shape of the model     | "footprint"   |
 | footprintDepth | Amount of the model used for the footprint, 1 is full height | 0.1           |
 

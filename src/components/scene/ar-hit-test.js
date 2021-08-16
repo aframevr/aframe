@@ -3,29 +3,29 @@ var arrowURL = 'data:image/webp;base64,UklGRkQHAABXRUJQVlA4WAoAAAAQAAAA/wEA/wEAQ
 var register = require('../../core/component').registerComponent;
 var THREE = require('../../lib/three');
 var CAM_LAYER = 21;
-var previousFrameAnchors = new Set();
-var anchorToObject3D = new Map();
-var hitTestCache;
-var tempVec3 = new THREE.Vector3();
-var tempQuaternion = new THREE.Quaternion();
-var fakePose = {
+
+var applyPose = (function () {
+  var tempQuaternion = new THREE.Quaternion();
+  var tempVec3 = new THREE.Vector3();
+  function applyPose (pose, object3D, offset) {
+    object3D.position.copy(pose.transform.position);
+    object3D.quaternion.copy(pose.transform.orientation);
+
+    tempVec3.copy(offset);
+    tempQuaternion.copy(pose.transform.orientation);
+    tempVec3.applyQuaternion(tempQuaternion);
+    object3D.position.sub(tempVec3);
+  }
+  return applyPose;
+}());
+
+applyPose.tempFakePose = {
   transform: {
     orientation: new THREE.Quaternion(),
     position: new THREE.Vector3()
   }
 };
-
-function applyPose (pose, object3D, offset) {
-  object3D.position.copy(pose.transform.position);
-  object3D.quaternion.copy(pose.transform.orientation);
-
-  tempVec3.copy(offset);
-  tempQuaternion.copy(pose.transform.orientation);
-  tempVec3.applyQuaternion(tempQuaternion);
-  object3D.position.sub(tempVec3);
-}
-
-function HitTest (renderer, options) {
+function HitTest (renderer, hitTestSourceDetails) {
   this.renderer = renderer;
   this.xrHitTestSource = null;
 
@@ -33,24 +33,27 @@ function HitTest (renderer, options) {
     this.xrHitTestSource = null;
   }.bind(this));
   renderer.xr.addEventListener('sessionstart', function () {
-    this.sessionStart(options);
+    this.sessionStart(hitTestSourceDetails);
   }.bind(this));
 
   if (this.renderer.xr.isPresenting) {
-    this.sessionStart(options);
+    this.sessionStart(hitTestSourceDetails);
   }
 }
 
-HitTest.prototype.sessionStart = function sessionStart (options) {
+HitTest.prototype.previousFrameAnchors = new Set();
+HitTest.prototype.anchorToObject3D = new Map();
+
+HitTest.prototype.sessionStart = function sessionStart (hitTestSourceDetails) {
   this.session = this.renderer.xr.getSession();
   try {
-    if (options.space) {
-      this.session.requestHitTestSource(options)
+    if (hitTestSourceDetails.space) {
+      this.session.requestHitTestSource(hitTestSourceDetails)
       .then(function (xrHitTestSource) {
         this.xrHitTestSource = xrHitTestSource;
       }.bind(this));
-    } else if (options.profile) {
-      this.session.requestHitTestSourceForTransientInput(options)
+    } else if (hitTestSourceDetails.profile) {
+      this.session.requestHitTestSourceForTransientInput(hitTestSourceDetails)
       .then(function (xrHitTestSource) {
         this.xrHitTestSource = xrHitTestSource;
         this.transient = true;
@@ -61,21 +64,22 @@ HitTest.prototype.sessionStart = function sessionStart (options) {
   }
 };
 
-HitTest.prototype.anchorFromLastHitTestResult = function (options) {
+HitTest.prototype.anchorFromLastHitTestResult = function (object3D, offset) {
   var hitTest = this.lastHitTest;
 
-  if (!hitTest) {
-    return;
-  }
+  if (!hitTest) { return; }
 
-  var object3D = options.object;
+  var object3DOptions = {
+    object3D: object3D,
+    offset: offset
+  };
 
-  Array.from(anchorToObject3D.entries())
+  Array.from(this.anchorToObject3D.entries())
   .forEach(function (entry) {
     var entryObject = entry[1].object;
     var anchor = entry[0];
     if (entryObject === object3D) {
-      anchorToObject3D.delete(anchor);
+      this.anchorToObject3D.delete(anchor);
       anchor.delete();
     }
   });
@@ -83,8 +87,8 @@ HitTest.prototype.anchorFromLastHitTestResult = function (options) {
   if (hitTest.createAnchor) {
     hitTest.createAnchor()
     .then(function (anchor) {
-      anchorToObject3D.set(anchor, options);
-    })
+      this.anchorToObject3D.set(anchor, object3DOptions);
+    }.bind(this))
     .catch(function (e) {
       console.warn('Cannot requestHitTestSource Are you missing: webxr="optionalFeatures: anchors;" from <a-scene>?');
     });
@@ -92,9 +96,7 @@ HitTest.prototype.anchorFromLastHitTestResult = function (options) {
 };
 
 HitTest.prototype.doHit = function doHit (frame) {
-  if (!this.renderer.xr.isPresenting) {
-    return;
-  }
+  if (!this.renderer.xr.isPresenting) { return; }
   var refSpace = this.renderer.xr.getReferenceSpace();
   var xrViewerPose = frame.getViewerPose(refSpace);
   var hitTestResults;
@@ -129,18 +131,21 @@ HitTest.prototype.doHit = function doHit (frame) {
 // static function
 HitTest.updateAnchorPoses = function (frame, refSpace) {
   // If tracked anchors isn't defined because it's not supported then just use the empty set
-  var trackedAnchors = frame.trackedAnchors || previousFrameAnchors;
+  var trackedAnchors = frame.trackedAnchors || HitTest.prototype.previousFrameAnchors;
 
-  previousFrameAnchors.forEach(function (anchor) {
+  HitTest.prototype.previousFrameAnchors.forEach(function (anchor) {
     // Handle anchor tracking loss - `anchor` was present
     // in the present frame but is no longer tracked.
     if (!trackedAnchors.has(anchor)) {
-      anchorToObject3D.delete(anchor);
+      HitTest.prototype.anchorToObject3D.delete(anchor);
     }
   });
 
   trackedAnchors.forEach(function (anchor) {
     var anchorPose;
+    var object3DOptions;
+    var offset;
+    var object3D;
 
     try {
       // Query most recent pose of the anchor relative to some reference space:
@@ -150,15 +155,17 @@ HitTest.updateAnchorPoses = function (frame, refSpace) {
     }
 
     if (anchorPose) {
-      var object3DOptions = anchorToObject3D.get(anchor);
-      var offset = object3DOptions.offset;
-      var object3D = object3DOptions.object;
+      object3DOptions = HitTest.prototype.anchorToObject3D.get(anchor);
+      offset = object3DOptions.offset;
+      object3D = object3DOptions.object;
 
       applyPose(anchorPose, object3D, offset);
     }
   });
 };
 
+var hitTestCache;
+var tempQuaternion = new THREE.Quaternion();
 module.exports.Component = register('ar-hit-test', {
   schema: {
     target: { type: 'selector' },
@@ -190,8 +197,8 @@ module.exports.Component = register('ar-hit-test', {
       color: 0x000000
     });
     this.canvas = document.createElement('canvas');
-    this.ctx = this.canvas.getContext('2d');
-    this.ctx.imageSmoothingEnabled = false;
+    this.context = this.canvas.getContext('2d');
+    this.context.imageSmoothingEnabled = false;
     this.canvas.width = 512;
     this.canvas.height = 512;
     this.canvasTexture = new THREE.CanvasTexture(this.canvas, {
@@ -208,9 +215,7 @@ module.exports.Component = register('ar-hit-test', {
       this.hasPosedOnce = false;
       this.bboxMesh.visible = true;
 
-      if (!hitTestCache) {
-        hitTestCache = new Map();
-      }
+      if (!hitTestCache) { hitTestCache = new Map(); }
 
       // Default to selecting through the face
       session.requestReferenceSpace('viewer')
@@ -231,9 +236,7 @@ module.exports.Component = register('ar-hit-test', {
       });
 
       session.addEventListener('selectstart', function (e) {
-        if (this.data.enabled !== true) {
-          return;
-        }
+        if (this.data.enabled !== true) { return; }
 
         var inputSource = e.inputSource;
 
@@ -276,16 +279,13 @@ module.exports.Component = register('ar-hit-test', {
 
           if (this.data.target) {
             object = this.data.target.object3D;
-            fakePose.transform.position.copy(this.bboxMesh.position);
-            fakePose.transform.orientation.copy(this.bboxMesh.quaternion);
-            applyPose(fakePose, object, this.bboxOffset);
+            applyPose.tempFakePose.transform.position.copy(this.bboxMesh.position);
+            applyPose.tempFakePose.transform.orientation.copy(this.bboxMesh.quaternion);
+            applyPose(applyPose.tempFakePose, object, this.bboxOffset);
             object.visible = true;
 
             // create an anchor attatched to the object
-            this.hitTest.anchorFromLastHitTestResult({
-              object: object,
-              offset: this.bboxOffset
-            });
+            this.hitTest.anchorFromLastHitTestResult(object, this.bboxOffset);
           }
         }
 
@@ -320,6 +320,7 @@ module.exports.Component = register('ar-hit-test', {
     this.bboxMesh.visible = false;
   },
   updateFootprint: function () {
+    var tempImageData;
     var renderer = this.el.sceneEl.renderer;
     var oldRenderTarget, oldBackground;
     this.bboxMesh.material.map = this.canvasTexture;
@@ -347,18 +348,18 @@ module.exports.Component = register('ar-hit-test', {
     renderer.setRenderTarget(oldRenderTarget);
     renderer.readRenderTargetPixels(this.textureTarget, 0, 0, 512, 512, this.imageDataArray);
 
-    this.ctx.putImageData(this.imageData, 0, 0);
-    this.ctx.shadowColor = 'white';
-    this.ctx.shadowBlur = 10;
-    this.ctx.drawImage(this.canvas, 0, 0);
-    var tempImageData = this.ctx.getImageData(0, 0, 512, 512);
+    this.context.putImageData(this.imageData, 0, 0);
+    this.context.shadowColor = 'white';
+    this.context.shadowBlur = 10;
+    this.context.drawImage(this.canvas, 0, 0);
+    tempImageData = this.context.getImageData(0, 0, 512, 512);
     for (var i = 0; i < 512 * 512; i++) {
       // if it's a little bit transparent but not opaque make it middle transparent
       if (tempImageData.data[ i * 4 + 3 ] !== 0 && tempImageData.data[ i * 4 + 3 ] !== 255) {
         tempImageData.data[ i * 4 + 3 ] = 128;
       }
     }
-    this.ctx.putImageData(tempImageData, 0, 0);
+    this.context.putImageData(tempImageData, 0, 0);
     this.canvasTexture.needsUpdate = true;
   },
   tick: function () {
