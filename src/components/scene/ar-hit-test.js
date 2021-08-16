@@ -25,6 +25,30 @@ applyPose.tempFakePose = {
     position: new THREE.Vector3()
   }
 };
+
+/**
+ * Class to handle hit-test from a single source
+ *
+ * For a normal space provide it as a space option
+ * new HitTest(renderer, {
+ *   space: viewerSpace
+ * });
+ *
+ * this is also useful for the targetRaySpace of an XRInputSource
+ *
+ * It can also describe a transient input source like so:
+ *
+ * var profileToSupport = 'generic-touchscreen';
+ * var transientHitTest = new HitTest(renderer, {
+ *   profile: profileToSupport
+ * });
+ *
+ * Where the profile matches an item in a type of controller, profiles matching 'generic-touchscreen'
+ * will always be a transient input and as of 08/2021 all transient inputs are 'generic-touchscreen'
+ *
+ * @param {WebGLRenderer} renderer THREE.JS Renderer
+ * @param {} hitTestSourceDetails The source information either as the information for a transient hit-test or a regular hit-test
+ */
 function HitTest (renderer, hitTestSourceDetails) {
   this.renderer = renderer;
   this.xrHitTestSource = null;
@@ -64,6 +88,14 @@ HitTest.prototype.sessionStart = function sessionStart (hitTestSourceDetails) {
   }
 };
 
+/**
+ * Turns the last hit test into an anchor, the provided Object3D will have it's
+ * position update to track the anchor.
+ *
+ * @param {Object3D} object3D object to track
+ * @param {Vector3} offset offset of the object from the origin that gets subtracted
+ * @returns
+ */
 HitTest.prototype.anchorFromLastHitTestResult = function (object3D, offset) {
   var hitTest = this.lastHitTest;
 
