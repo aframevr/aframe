@@ -39,6 +39,14 @@ module.exports.Component = register('background', {
     this.needsEnvironmentUpdate = true;
     this.timeSinceUpdate = 0;
 
+    // Update WebXR to support light-estimation
+    var webxrData = this.el.getAttribute('webxr');
+    var optionalFeaturesArray = webxrData.optionalFeatures;
+    if (!optionalFeaturesArray.includes('light-estimation')) {
+      optionalFeaturesArray.push('light-estimation');
+      this.el.setAttribute('webxr', webxrData);
+    }
+
     this.el.sceneEl.addEventListener('enter-vr', function () {
       var renderer = self.el.renderer;
       var session = renderer.xr.getSession();

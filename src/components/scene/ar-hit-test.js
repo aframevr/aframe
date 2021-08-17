@@ -189,7 +189,7 @@ HitTest.updateAnchorPoses = function (frame, refSpace) {
     if (anchorPose) {
       object3DOptions = HitTest.prototype.anchorToObject3D.get(anchor);
       offset = object3DOptions.offset;
-      object3D = object3DOptions.object;
+      object3D = object3DOptions.object3D;
 
       applyPose(anchorPose, object3D, offset);
     }
@@ -236,6 +236,18 @@ module.exports.Component = register('ar-hit-test', {
     this.canvasTexture = new THREE.CanvasTexture(this.canvas, {
       alpha: true
     });
+
+    // Update WebXR to support hit-test and anchors
+    var webxrData = this.el.getAttribute('webxr');
+    var optionalFeaturesArray = webxrData.optionalFeatures;
+    if (
+      !optionalFeaturesArray.includes('hit-test') ||
+      !optionalFeaturesArray.includes('anchors')
+    ) {
+      optionalFeaturesArray.push('hit-test');
+      optionalFeaturesArray.push('anchors');
+      this.el.setAttribute('webxr', webxrData);
+    }
 
     this.el.sceneEl.renderer.xr.addEventListener('sessionend', function () {
       this.hitTest = null;

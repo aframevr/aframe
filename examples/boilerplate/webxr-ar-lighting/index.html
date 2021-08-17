@@ -15,7 +15,7 @@
 
 <body>
 	<a-scene
-		webxr="optionalFeatures:hit-test,light-estimation,dom-overlay,anchors; overlayElement:#dom-overlay;"
+		webxr="overlayElement:#dom-overlay;"
 		background="directionalLight:#dirlight;"
 		ar-hit-test="target:#table;"
 		shadow="type: pcfsoft">
@@ -64,18 +64,18 @@
 		const message = document.getElementById('dom-overlay-message');
 
 		sceneEl.addEventListener('enter-vr', function () {
-			if (sceneEl.is('ar-mode')) {
+			if (this.is('ar-mode')) {
 				message.textContent = '';
 
-				sceneEl.addEventListener('ar-hit-test-start', function () {
+				this.addEventListener('ar-hit-test-start', function () {
 					message.innerHTML = `Scanning environment, finding surface.`
 				}, { once: true });
 
-				sceneEl.addEventListener('ar-hit-test-achieved', function () {
+				this.addEventListener('ar-hit-test-achieved', function () {
 					message.innerHTML = `Select the location to place the furniture<br />By tapping on the screen or selecting with your controller.`
 				}, { once: true });
 
-				sceneEl.addEventListener('ar-hit-test-select', function () {
+				this.addEventListener('ar-hit-test-select', function () {
 					message.textContent = '';
 				}, { once: true });
 			}
