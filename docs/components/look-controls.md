@@ -54,7 +54,7 @@ be left maintaining a wide array of flags.
 
 The component lives within a Browserify/Webpack context so you'll need to
 replace the `require` statements with A-Frame globals (e.g.,
-`AFRAME.registerComponent`, `window.THREE`), and get rid of the `module.exports`.
+`AFRAME.registerComponent`, `AFRAME.THREE`), and get rid of the `module.exports`.
 
 ## Caveats
 
