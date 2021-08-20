@@ -348,7 +348,6 @@ module.exports.Component = register('ar-hit-test', {
       this.data.target.object3D.traverse(function (child) {
         child.layers.enable(CAM_LAYER);
       });
-      this.data.target.removeEventListener('model-loaded', this.update);
       this.data.target.addEventListener('model-loaded', this.update);
     }
   },
