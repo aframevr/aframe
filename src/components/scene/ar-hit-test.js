@@ -84,6 +84,7 @@ HitTest.prototype.sessionStart = function sessionStart (hitTestSourceDetails) {
       }.bind(this));
     }
   } catch (e) {
+    console.warn(e.message);
     console.warn('Cannot requestHitTestSource Are you missing: webxr="optionalFeatures: hit-test;" from <a-scene>?');
   }
 };
@@ -122,7 +123,8 @@ HitTest.prototype.anchorFromLastHitTestResult = function (object3D, offset) {
       this.anchorToObject3D.set(anchor, object3DOptions);
     }.bind(this))
     .catch(function (e) {
-      console.warn('Cannot requestHitTestSource Are you missing: webxr="optionalFeatures: anchors;" from <a-scene>?');
+      console.warn(e.message);
+      console.warn('Cannot create anchor, are you missing: webxr="optionalFeatures: anchors;" from <a-scene>?');
     });
   }
 };
@@ -314,15 +316,11 @@ module.exports.Component = register('ar-hit-test', {
         var object;
 
         if (this.hasPosedOnce === true) {
-          this.el.emit('ar-hit-test-select', {
-            inputSource: inputSource,
-            position: this.bboxMesh.position,
-            orientation: this.bboxMesh.quaternion
-          });
           this.bboxMesh.visible = false;
 
-          if (this.data.target) {
-            object = this.data.target.object3D;
+          object = this.data.target.object3D;
+          // if we have a target with a 3D object then automatically generate an anchor for it.
+          if (this.data.target && object) {
             applyPose.tempFakePose.transform.position.copy(this.bboxMesh.position);
             applyPose.tempFakePose.transform.orientation.copy(this.bboxMesh.quaternion);
             applyPose(applyPose.tempFakePose, object, this.bboxOffset);
@@ -331,6 +329,12 @@ module.exports.Component = register('ar-hit-test', {
             // create an anchor attatched to the object
             this.hitTest.anchorFromLastHitTestResult(object, this.bboxOffset);
           }
+
+          this.el.emit('ar-hit-test-select', {
+            inputSource: inputSource,
+            position: this.bboxMesh.position,
+            orientation: this.bboxMesh.quaternion
+          });
         }
 
         this.hitTest = null;
@@ -343,12 +347,16 @@ module.exports.Component = register('ar-hit-test', {
   },
   update: function () {
     if (this.data.target) {
-      this.bboxNeedsUpdate = true;
-      this.data.target.object3D.layers.enable(CAM_LAYER);
-      this.data.target.object3D.traverse(function (child) {
-        child.layers.enable(CAM_LAYER);
-      });
-      this.data.target.addEventListener('model-loaded', this.update);
+      if (this.data.target.object3D) {
+        this.data.target.addEventListener('model-loaded', this.update);
+        this.bboxNeedsUpdate = true;
+        this.data.target.object3D.layers.enable(CAM_LAYER);
+        this.data.target.object3D.traverse(function (child) {
+          child.layers.enable(CAM_LAYER);
+        });
+      } else {
+        this.data.target.addEventListener('loaded', this.update, {once: true});
+      }
     }
   },
   makeBBox: function () {
@@ -429,7 +437,7 @@ module.exports.Component = register('ar-hit-test', {
         this.bboxMesh.material.needsUpdate = true;
       }
 
-      if (this.data.target) {
+      if (this.data.target && this.data.target.object3D) {
         tempQuaternion.copy(this.data.target.object3D.quaternion);
         this.data.target.object3D.quaternion.identity();
         this.bbox.setFromObject(this.data.target.object3D);
