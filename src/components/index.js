@@ -38,6 +38,7 @@ require('./vive-focus-controls');
 require('./wasd-controls');
 require('./windows-motion-controls');
 
+require('./scene/ar-hit-test');
 require('./scene/background');
 require('./scene/debug');
 require('./scene/device-orientation-permission-ui');
