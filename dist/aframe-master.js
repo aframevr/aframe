@@ -55810,11 +55810,20 @@ module.exports.Component = registerComponent('gltf-model', {
   schema: {type: 'model'},
 
   init: function () {
+    var self = this;
     var dracoLoader = this.system.getDRACOLoader();
+    var meshoptDecoder = this.system.getMeshoptDecoder();
     this.model = null;
     this.loader = new THREE.GLTFLoader();
     if (dracoLoader) {
       this.loader.setDRACOLoader(dracoLoader);
+    }
+    if (meshoptDecoder) {
+      this.ready = meshoptDecoder.then(function (meshoptDecoder) {
+        self.loader.setMeshoptDecoder(meshoptDecoder);
+      });
+    } else {
+      this.ready = Promise.resolve();
     }
   },
 
@@ -55827,15 +55836,17 @@ module.exports.Component = registerComponent('gltf-model', {
 
     this.remove();
 
-    this.loader.load(src, function gltfLoaded (gltfModel) {
-      self.model = gltfModel.scene || gltfModel.scenes[0];
-      self.model.animations = gltfModel.animations;
-      el.setObject3D('mesh', self.model);
-      el.emit('model-loaded', {format: 'gltf', model: self.model});
-    }, undefined /* onProgress */, function gltfFailed (error) {
-      var message = (error && error.message) ? error.message : 'Failed to load glTF model';
-      warn(message);
-      el.emit('model-error', {format: 'gltf', src: src});
+    this.ready.then(function () {
+      self.loader.load(src, function gltfLoaded (gltfModel) {
+        self.model = gltfModel.scene || gltfModel.scenes[0];
+        self.model.animations = gltfModel.animations;
+        el.setObject3D('mesh', self.model);
+        el.emit('model-loaded', {format: 'gltf', model: self.model});
+      }, undefined /* onProgress */, function gltfFailed (error) {
+        var message = (error && error.message) ? error.message : 'Failed to load glTF model';
+        warn(message);
+        el.emit('model-error', {format: 'gltf', src: src});
+      });
     });
   },
 
@@ -70784,7 +70795,7 @@ require('./core/a-mixin');
 require('./extras/components/');
 require('./extras/primitives/');
 
-console.log('A-Frame Version: 1.2.0 (Date 2021-08-25, Commit #d8123439)');
+console.log('A-Frame Version: 1.2.0 (Date 2021-08-25, Commit #b3c978bc)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
@@ -72013,6 +72024,17 @@ function incrementCacheCount (cacheCount, hash) {
 var registerSystem = require('../core/system').registerSystem;
 var THREE = require('../lib/three');
 
+function fetchScript (src) {
+  return new Promise(function (resolve, reject) {
+    var script = document.createElement('script');
+    document.body.appendChild(script);
+    script.onload = resolve;
+    script.onerror = reject;
+    script.async = true;
+    script.src = src;
+  });
+}
+
 /**
  * glTF model system.
  *
@@ -72020,28 +72042,38 @@ var THREE = require('../lib/three');
  * provided externally.
  *
  * @param {string} dracoDecoderPath - Base path from which to load Draco decoder library.
+ * @param {string} meshoptDecoderPath - Full path from which to load Meshopt decoder.
  */
 module.exports.System = registerSystem('gltf-model', {
   schema: {
-    dracoDecoderPath: {default: ''}
+    dracoDecoderPath: {default: ''},
+    meshoptDecoderPath: {default: ''}
   },
 
   init: function () {
-    var path = this.data.dracoDecoderPath;
-    this.dracoLoader = new THREE.DRACOLoader();
-    this.dracoLoader.setDecoderPath(path);
+    this.update();
   },
 
   update: function () {
-    var path;
-    if (this.dracoLoader) { return; }
-    path = this.data.dracoDecoderPath;
-    this.dracoLoader = new THREE.DRACOLoader();
-    this.dracoLoader.setDecoderPath(path);
+    var dracoDecoderPath = this.data.dracoDecoderPath;
+    var meshoptDecoderPath = this.data.meshoptDecoderPath;
+    if (!this.dracoLoader && dracoDecoderPath) {
+      this.dracoLoader = new THREE.DRACOLoader();
+      this.dracoLoader.setDecoderPath(dracoDecoderPath);
+    }
+    if (!this.meshoptDecoder && meshoptDecoderPath) {
+      this.meshoptDecoder = fetchScript(meshoptDecoderPath)
+        .then(function () { return window.MeshoptDecoder.ready; })
+        .then(function () { return window.MeshoptDecoder; });
+    }
   },
 
   getDRACOLoader: function () {
     return this.dracoLoader;
+  },
+
+  getMeshoptDecoder: function () {
+    return this.meshoptDecoder;
   }
 });
 
