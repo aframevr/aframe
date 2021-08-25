@@ -109,13 +109,13 @@ HitTest.prototype.anchorFromLastHitTestResult = function (object3D, offset) {
 
   Array.from(this.anchorToObject3D.entries())
   .forEach(function (entry) {
-    var entryObject = entry[1].object;
+    var entryObject = entry[1].object3D;
     var anchor = entry[0];
     if (entryObject === object3D) {
       this.anchorToObject3D.delete(anchor);
       anchor.delete();
     }
-  });
+  }.bind(this));
 
   if (hitTest.createAnchor) {
     hitTest.createAnchor()
@@ -259,7 +259,7 @@ module.exports.Component = register('ar-hit-test', {
       var renderer = this.el.sceneEl.renderer;
       var session = this.session = renderer.xr.getSession();
       this.hasPosedOnce = false;
-      this.bboxMesh.visible = true;
+      this.bboxMesh.visible = false;
 
       if (!hitTestCache) { hitTestCache = new Map(); }
 
@@ -307,7 +307,7 @@ module.exports.Component = register('ar-hit-test', {
       }.bind(this));
 
       session.addEventListener('selectend', function (e) {
-        if (this.data.enabled !== true) {
+        if (!this.hitTest || this.data.enabled !== true) {
           this.hitTest = null;
           return;
         }
