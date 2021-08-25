@@ -60412,13 +60412,13 @@ HitTest.prototype.anchorFromLastHitTestResult = function (object3D, offset) {
 
   Array.from(this.anchorToObject3D.entries())
   .forEach(function (entry) {
-    var entryObject = entry[1].object;
+    var entryObject = entry[1].object3D;
     var anchor = entry[0];
     if (entryObject === object3D) {
       this.anchorToObject3D.delete(anchor);
       anchor.delete();
     }
-  });
+  }.bind(this));
 
   if (hitTest.createAnchor) {
     hitTest.createAnchor()
@@ -60562,7 +60562,7 @@ module.exports.Component = register('ar-hit-test', {
       var renderer = this.el.sceneEl.renderer;
       var session = this.session = renderer.xr.getSession();
       this.hasPosedOnce = false;
-      this.bboxMesh.visible = true;
+      this.bboxMesh.visible = false;
 
       if (!hitTestCache) { hitTestCache = new Map(); }
 
@@ -60610,7 +60610,7 @@ module.exports.Component = register('ar-hit-test', {
       }.bind(this));
 
       session.addEventListener('selectend', function (e) {
-        if (this.data.enabled !== true) {
+        if (!this.hitTest || this.data.enabled !== true) {
           this.hitTest = null;
           return;
         }
@@ -70784,7 +70784,7 @@ require('./core/a-mixin');
 require('./extras/components/');
 require('./extras/primitives/');
 
-console.log('A-Frame Version: 1.2.0 (Date 2021-08-24, Commit #fdf6f620)');
+console.log('A-Frame Version: 1.2.0 (Date 2021-08-25, Commit #d8123439)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
