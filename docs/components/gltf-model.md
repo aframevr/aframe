@@ -104,35 +104,39 @@ If you want to use the animations from your glTF model, you can use the [animati
 <a-entity gltf-model="#monster" animation-mixer></a-entity>
 ```
 
-## Geometry compression with Draco
+## Using compression
 
 [draco]: https://google.github.io/draco/
+[meshopt]: https://github.com/zeux/meshoptimizer
 [gltf-pipeline]: https://github.com/AnalyticalGraphicsInc/gltf-pipeline
+[gltf-transform]: https://gltf-transform.donmccurdy.com/
+[gltfpack]: https://github.com/zeux/meshoptimizer/tree/master/gltf
+[github-pages-issue]: https://github.community/t/support-for-gzip-on-glb-3d-model-files/11004#M2962
 
-Geometry in a glTF model may be compressed using the [Draco library][draco].
-For models containing primarily geometry, with simple untextured materials or
-vertex colors, compression can often reduce file size by 90–95%. When the model
-contains other large data — like textures or animation, which Draco does not
-affect — file size savings will be less significant.
+glTF file size may be reduced using [Draco][draco] or [Meshopt][meshopt] compression. Neither of these affect textures, which should be compressed or resized by other methods. Furthermore, compression does not particularly affect framerate — if the model has too many triangles or draw calls, compression will not change that, and the model should be simplified using tools like [Blender][blender] or [gltfpack][gltfpack], instead.
 
-The tradeoff with any form of compression will be decoding time. Compressed
-models take less time to download and use less bandwidth, but cannot be rendered
-until they're decompressed. To avoid dropping frames in VR, delay the beginning
-of the experience until models are downloaded and decompressed.
+- **Draco:** Compression for geometry, often reducing geometry size by 90-95%. Requires some extra time to decompress on the device, but this occurs off the main thread in a Web Worker.
+- **Meshopt:** Compression for geometry, morph targets, and animation. If combined with additional lossless compression (like gzip) Meshopt may have similar compression ratios to Draco, with much faster decompression. _Note: Some web servers do not support gzip with `.glb` or `.gltf` files (see: [GitHub Pages][github-pages-issue])._
 
-To apply Draco compression to an existing glTF model, use
-[glTF-Pipeline][gltf-pipeline]. You'll also need to host the Draco decoder
-library with your scene and configure scene properties as explained below.
+To optimize an existing glTF model, use tools such as:
+
+- [Blender][blender]: Draco compression
+- [glTF-Pipeline][gltf-pipeline]: Draco compression
+- [glTF-Transform][gltf-transform]: Draco or Meshopt compression
+- [gltfpack][gltfpack]: Meshopt compression
+
+You'll also need to load a decoder library by configuring scene properties as explained below.
 
 ## Scene properties
 
 [draco-decoders]: https://github.com/mrdoob/three.js/tree/master/examples/js/libs/draco/gltf
+[meshopt-decoder]: https://github.com/zeux/meshoptimizer/tree/master/js
 
-When using glTF models compressed with Draco, you must host the Draco decoder
-library with your scene and configure the path to the decoder:
+When using glTF models compressed with Draco or Meshopt, you must configure the path to the necessary decoders:
 
 ```html
-<a-scene gltf-model="dracoDecoderPath: path/to/decoder/;">
+<a-scene gltf-model="dracoDecoderPath: path/to/decoder/;
+    meshoptDecoderPath: path/to/meshopt_decoder.js;">
   <a-entity gltf-model="url(pony.glb)"></a-entity>
 </a-scene>
 ```
@@ -140,19 +144,20 @@ library with your scene and configure the path to the decoder:
 | Property         | Description                                                                                                                                                                                           | Default Value                       |
 |------------------|--------------------------------------|----|
 | dracoDecoderPath | Path to the Draco decoder libraries. | '' |
+| meshoptDecoderPath | Path to the Meshopt decoder.       | '' |
 
-The decoder folder must contain three files:
+`dracoDecoderPath` path must be a folder containing three files:
 
-* `draco_decoder.js` — Emscripten-compiled decoder, compatible with any modern browser.
-* `draco_decoder.wasm` — WebAssembly decoder, compatible with newer browsers and devices.
+* `draco_decoder.js` — Emscripten-compiled decoder, compatible with old browsers like IE11.
+* `draco_decoder.wasm` — WebAssembly decoder, compatible with modern browsers.
 * `draco_wasm_wrapper.js` — JavaScript wrapper for the WASM decoder.
 
-All files are available from the three.js repository, under
+These files are available from the three.js repository, under
 [examples/js/libs/draco/gltf][draco-decoders]. The `gltf-model` component will
 automatically choose whether to use a WASM or JavaScript decoder, so both should
-be included.
+be included. A Google-hosted version of the Draco decoder libraries saves you from needing to include these libraries in your own project: set `https://www.gstatic.com/draco/v1/decoders/` as the value for `dracoDecoderPath`.
 
-A Google-hosted version of the Draco decoder libraries saves you from needing to include these libraries in your own project: set `https://www.gstatic.com/draco/v1/decoders/` as the value for `dracoDecoderPath`.
+`meshoptDecoderPath` path should be the complete file path (including filename) for a Meshopt decoder, typically named `meshopt_decoder.js`. Meshopt requires WebAssembly support. A CDN-hosted, versioned decoder is available at `https://unpkg.com/meshoptimizer@0.16.0/meshopt_decoder.js`, or you may download copies from the [meshoptimizer GitHub repository][meshopt-decoder].
 
 ## More Resources
 
