@@ -199,7 +199,6 @@ HitTest.updateAnchorPoses = function (frame, refSpace) {
 };
 
 var hitTestCache;
-var tempQuaternion = new THREE.Quaternion();
 module.exports.Component = register('ar-hit-test', {
   schema: {
     target: { type: 'selector' },
@@ -228,7 +227,8 @@ module.exports.Component = register('ar-hit-test', {
     this.orthoCam.layers.set(CAM_LAYER);
     this.textureTarget = new THREE.WebGLRenderTarget(512, 512, {});
     this.basicMaterial = new THREE.MeshBasicMaterial({
-      color: 0x000000
+      color: 0x000000,
+      side: THREE.DoubleSide
     });
     this.canvas = document.createElement('canvas');
     this.context = this.canvas.getContext('2d');
@@ -238,6 +238,7 @@ module.exports.Component = register('ar-hit-test', {
     this.canvasTexture = new THREE.CanvasTexture(this.canvas, {
       alpha: true
     });
+    this.canvasTexture.flipY = false;
 
     // Update WebXR to support hit-test and anchors
     var webxrData = this.el.getAttribute('webxr');
@@ -362,9 +363,11 @@ module.exports.Component = register('ar-hit-test', {
   makeBBox: function () {
     var geometry = new THREE.PlaneGeometry(1, 1);
     var material = new THREE.MeshBasicMaterial({
-      transparent: true
+      transparent: true,
+      color: 0xffffff
     });
     geometry.rotateX(-Math.PI / 2);
+    geometry.rotateY(-Math.PI / 2);
     this.bbox = new THREE.Box3();
     this.bboxMesh = new THREE.Mesh(geometry, material);
     this.el.setObject3D('ar-hit-test', this.bboxMesh);
@@ -382,10 +385,10 @@ module.exports.Component = register('ar-hit-test', {
     this.orthoCam.near = 0.1;
     this.orthoCam.far = this.orthoCam.near + (this.data.footprintDepth * this.bboxMesh.scale.y);
     this.orthoCam.position.y += this.orthoCam.far;
-    this.orthoCam.right = this.bboxMesh.scale.x / 2;
-    this.orthoCam.left = -this.bboxMesh.scale.x / 2;
-    this.orthoCam.top = this.bboxMesh.scale.z / 2;
-    this.orthoCam.bottom = -this.bboxMesh.scale.z / 2;
+    this.orthoCam.right = this.bboxMesh.scale.z / 2;
+    this.orthoCam.left = -this.bboxMesh.scale.z / 2;
+    this.orthoCam.top = this.bboxMesh.scale.x / 2;
+    this.orthoCam.bottom = -this.bboxMesh.scale.x / 2;
     this.orthoCam.updateProjectionMatrix();
 
     oldRenderTarget = renderer.getRenderTarget();
@@ -438,8 +441,6 @@ module.exports.Component = register('ar-hit-test', {
       }
 
       if (this.data.target && this.data.target.object3D) {
-        tempQuaternion.copy(this.data.target.object3D.quaternion);
-        this.data.target.object3D.quaternion.identity();
         this.bbox.setFromObject(this.data.target.object3D);
         this.bbox.getCenter(this.bboxMesh.position);
         this.bbox.getSize(this.bboxMesh.scale);
@@ -454,8 +455,6 @@ module.exports.Component = register('ar-hit-test', {
         this.bboxMesh.position.y -= this.bboxMesh.scale.y / 2;
         this.bboxOffset.copy(this.bboxMesh.position);
         this.bboxOffset.sub(this.data.target.object3D.position);
-        this.data.target.object3D.quaternion.copy(tempQuaternion);
-        this.bboxMesh.quaternion.copy(tempQuaternion);
       }
     }
 
