@@ -225,7 +225,7 @@ And get in touch with the maintainers!
 
 Get involved! Check out the [Contributing Guide](CONTRIBUTING.md) for how to get started.
 
-You can also support development by [buying a gorgeous A-Frame t-shirt with exclusive designs](https://teespring.com/stores/aframe)
+You can also support development by [buying a gorgeous A-Frame t-shirt with exclusive designs](https://cottonbureau.com/products/a-frame-og#/9479538/tee-men-standard-tee-vintage-black-tri-blend-s)
 
 ## License
 
