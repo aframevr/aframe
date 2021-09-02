@@ -296,8 +296,7 @@ element, we should define one in `<a-assets>`.
 
 ## Canvas Textures
 
-We can use a `<canvas>` as a texture source. The texture will automatically
-refresh itself as the canvas changes.
+We can use a `<canvas>` as a texture source. If the canvas if modified, you'll need to refresh the texture by using code that follows the example shown [here](https://github.com/aframevr/aframe/blob/master/examples/test/canvas-texture/components/canvas-updater.js).
 
 ```html
 <script>
