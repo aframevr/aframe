@@ -60382,24 +60382,30 @@ function HitTest (renderer, hitTestSourceDetails) {
 HitTest.prototype.previousFrameAnchors = new Set();
 HitTest.prototype.anchorToObject3D = new Map();
 
+function warnAboutHitTest (e) {
+  console.warn(e.message);
+  console.warn('Cannot requestHitTestSource Are you missing: webxr="optionalFeatures: hit-test;" from <a-scene>?');
+}
+
 HitTest.prototype.sessionStart = function sessionStart (hitTestSourceDetails) {
   this.session = this.renderer.xr.getSession();
-  try {
-    if (hitTestSourceDetails.space) {
-      this.session.requestHitTestSource(hitTestSourceDetails)
-      .then(function (xrHitTestSource) {
-        this.xrHitTestSource = xrHitTestSource;
-      }.bind(this));
-    } else if (hitTestSourceDetails.profile) {
-      this.session.requestHitTestSourceForTransientInput(hitTestSourceDetails)
-      .then(function (xrHitTestSource) {
-        this.xrHitTestSource = xrHitTestSource;
-        this.transient = true;
-      }.bind(this));
-    }
-  } catch (e) {
-    console.warn(e.message);
-    console.warn('Cannot requestHitTestSource Are you missing: webxr="optionalFeatures: hit-test;" from <a-scene>?');
+  if (!('requestHitTestSource' in this.session)) {
+    warnAboutHitTest({message: 'No requestHitTestSource on the session.'});
+    return;
+  }
+  if (hitTestSourceDetails.space) {
+    this.session.requestHitTestSource(hitTestSourceDetails)
+    .then(function (xrHitTestSource) {
+      this.xrHitTestSource = xrHitTestSource;
+    }.bind(this))
+    .catch(warnAboutHitTest);
+  } else if (hitTestSourceDetails.profile) {
+    this.session.requestHitTestSourceForTransientInput(hitTestSourceDetails)
+    .then(function (xrHitTestSource) {
+      this.xrHitTestSource = xrHitTestSource;
+      this.transient = true;
+    }.bind(this))
+    .catch(warnAboutHitTest);
   }
 };
 
@@ -70794,7 +70800,7 @@ require('./core/a-mixin');
 require('./extras/components/');
 require('./extras/primitives/');
 
-console.log('A-Frame Version: 1.2.0 (Date 2021-08-30, Commit #0926f52e)');
+console.log('A-Frame Version: 1.2.0 (Date 2021-09-06, Commit #52817034)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
