@@ -383,6 +383,7 @@ module.exports.Component = register('ar-hit-test', {
     var tempImageData;
     var renderer = this.el.sceneEl.renderer;
     var oldRenderTarget, oldBackground;
+    var isXREnabled = renderer.xr.enabled;
     this.bboxMesh.material.map = this.canvasTexture;
     this.bboxMesh.material.needsUpdate = true;
     this.orthoCam.rotation.set(-Math.PI / 2, 0, -Math.PI / 2);
@@ -399,12 +400,14 @@ module.exports.Component = register('ar-hit-test', {
 
     oldRenderTarget = renderer.getRenderTarget();
     renderer.setRenderTarget(this.textureTarget);
+    renderer.xr.enabled = false;
     oldBackground = this.el.object3D.background;
     this.el.object3D.overrideMaterial = this.basicMaterial;
     this.el.object3D.background = null;
     renderer.render(this.el.object3D, this.orthoCam);
     this.el.object3D.background = oldBackground;
     this.el.object3D.overrideMaterial = null;
+    renderer.xr.enabled = isXREnabled;
     renderer.setRenderTarget(oldRenderTarget);
     renderer.readRenderTargetPixels(this.textureTarget, 0, 0, 512, 512, this.imageDataArray);
 
