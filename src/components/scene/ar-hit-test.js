@@ -219,6 +219,13 @@ module.exports.Component = register('ar-hit-test', {
     },
     footprintDepth: {
       default: 0.1
+    },
+    mapSize: {
+      type: 'vec2',
+      default: {
+        x: 0.5,
+        y: 0.5
+      }
     }
   },
 
@@ -325,16 +332,19 @@ module.exports.Component = register('ar-hit-test', {
         if (this.hasPosedOnce === true) {
           this.bboxMesh.visible = false;
 
-          object = this.data.target.object3D;
           // if we have a target with a 3D object then automatically generate an anchor for it.
-          if (this.data.target && object) {
-            applyPose.tempFakePose.transform.position.copy(this.bboxMesh.position);
-            applyPose.tempFakePose.transform.orientation.copy(this.bboxMesh.quaternion);
-            applyPose(applyPose.tempFakePose, object, this.bboxOffset);
-            object.visible = true;
+          if (this.data.target) {
+            object = this.data.target.object3D;
 
-            // create an anchor attatched to the object
-            this.hitTest.anchorFromLastHitTestResult(object, this.bboxOffset);
+            if (object) {
+              applyPose.tempFakePose.transform.position.copy(this.bboxMesh.position);
+              applyPose.tempFakePose.transform.orientation.copy(this.bboxMesh.quaternion);
+              applyPose(applyPose.tempFakePose, object, this.bboxOffset);
+              object.visible = true;
+
+              // create an anchor attatched to the object
+              this.hitTest.anchorFromLastHitTestResult(object, this.bboxOffset);
+            }
           }
 
           this.el.emit('ar-hit-test-select', {
@@ -356,7 +366,6 @@ module.exports.Component = register('ar-hit-test', {
     if (this.data.target) {
       if (this.data.target.object3D) {
         this.data.target.addEventListener('model-loaded', this.update);
-        this.bboxNeedsUpdate = true;
         this.data.target.object3D.layers.enable(CAM_LAYER);
         this.data.target.object3D.traverse(function (child) {
           child.layers.enable(CAM_LAYER);
@@ -365,6 +374,7 @@ module.exports.Component = register('ar-hit-test', {
         this.data.target.addEventListener('loaded', this.update, {once: true});
       }
     }
+    this.bboxNeedsUpdate = true;
   },
   makeBBox: function () {
     var geometry = new THREE.PlaneGeometry(1, 1);
@@ -464,6 +474,8 @@ module.exports.Component = register('ar-hit-test', {
         this.bboxMesh.position.y -= this.bboxMesh.scale.y / 2;
         this.bboxOffset.copy(this.bboxMesh.position);
         this.bboxOffset.sub(this.data.target.object3D.position);
+      } else {
+        this.bboxMesh.scale.set(this.data.mapSize.x, 1, this.data.mapSize.y);
       }
     }
 
