@@ -57,7 +57,7 @@ complexity and characteristics of each individual application. To get the best
 use of resources, we will need deeper understanding about 3D graphics.  See
 [best performance practices and guidelines][bestpractices] to get started.
 
-## Why is my experiencing not entering VR or AR mode?
+## Why is my experience not entering VR or AR mode?
 
 [release]: https://github.com/aframevr/aframe/releases
 [webxr]: https://immersive-web.github.io/webxr/
