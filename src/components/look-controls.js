@@ -56,7 +56,7 @@ module.exports.Component = registerComponent('look-controls', {
     var data = this.data;
 
     // Only on mobile devices and only enabled if DeviceOrientation permission has been granted.
-    if (utils.device.isMobile()) {
+    if (utils.device.isMobile() || utils.device.isMobileDeviceRequestingDesktopSite()) {
       magicWindowControls = this.magicWindowControls = new THREE.DeviceOrientationControls(this.magicWindowObject);
       if (typeof DeviceOrientationEvent !== 'undefined' && DeviceOrientationEvent.requestPermission) {
         magicWindowControls.enabled = false;
