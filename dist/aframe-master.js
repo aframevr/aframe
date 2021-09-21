@@ -70797,7 +70797,7 @@ require('./core/a-mixin');
 require('./extras/components/');
 require('./extras/primitives/');
 
-console.log('A-Frame Version: 1.2.0 (Date 2021-09-21, Commit #58884601)');
+console.log('A-Frame Version: 1.2.0 (Date 2021-09-21, Commit #d27fd57e)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
@@ -72182,6 +72182,7 @@ var registerSystem = require('../core/system').registerSystem;
 var THREE = require('../lib/three');
 var utils = require('../utils/');
 var isHLS = require('../utils/material').isHLS;
+var setTextureProperties = require('../utils/material').setTextureProperties;
 
 var bind = utils.bind;
 var debug = utils.debug;
@@ -72494,37 +72495,6 @@ function loadImageTexture (src, data) {
               xhr.statusText);
       }
     );
-  }
-}
-
-/**
- * Set texture properties such as repeat and offset.
- *
- * @param {object} data - With keys like `repeat`.
- */
-function setTextureProperties (texture, data) {
-  var offset = data.offset || {x: 0, y: 0};
-  var repeat = data.repeat || {x: 1, y: 1};
-  var npot = data.npot || false;
-
-  // To support NPOT textures, wrap must be ClampToEdge (not Repeat),
-  // and filters must not use mipmaps (i.e. Nearest or Linear).
-  if (npot) {
-    texture.wrapS = THREE.ClampToEdgeWrapping;
-    texture.wrapT = THREE.ClampToEdgeWrapping;
-    texture.magFilter = THREE.LinearFilter;
-    texture.minFilter = THREE.LinearFilter;
-  }
-
-  // Don't bother setting repeat if it is 1/1. Power-of-two is required to repeat.
-  if (repeat.x !== 1 || repeat.y !== 1) {
-    texture.wrapS = THREE.RepeatWrapping;
-    texture.wrapT = THREE.RepeatWrapping;
-    texture.repeat.set(repeat.x, repeat.y);
-  }
-  // Don't bother setting offset if it is 0/0.
-  if (offset.x !== 0 || offset.y !== 0) {
-    texture.offset.set(offset.x, offset.y);
   }
 }
 
@@ -73793,6 +73763,37 @@ var COLOR_MAPS = new Set([
 ]);
 
 /**
+ * Set texture properties such as repeat and offset.
+ *
+ * @param {object} data - With keys like `repeat`.
+*/
+function setTextureProperties (texture, data) {
+  var offset = data.offset || {x: 0, y: 0};
+  var repeat = data.repeat || {x: 1, y: 1};
+  var npot = data.npot || false;
+  // To support NPOT textures, wrap must be ClampToEdge (not Repeat),
+  // and filters must not use mipmaps (i.e. Nearest or Linear).
+  if (npot) {
+    texture.wrapS = THREE.ClampToEdgeWrapping;
+    texture.wrapT = THREE.ClampToEdgeWrapping;
+    texture.magFilter = THREE.LinearFilter;
+    texture.minFilter = THREE.LinearFilter;
+  }
+
+  // Don't bother setting repeat if it is 1/1. Power-of-two is required to repeat.
+  if (repeat.x !== 1 || repeat.y !== 1) {
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.RepeatWrapping;
+    texture.repeat.set(repeat.x, repeat.y);
+  }
+  // Don't bother setting offset if it is 0/0.
+  if (offset.x !== 0 || offset.y !== 0) {
+    texture.offset.set(offset.x, offset.y);
+  }
+}
+module.exports.setTextureProperties = setTextureProperties;
+
+/**
  * Update `material` texture property (usually but not always `map`)
  * from `data` property (usually but not always `src`)
  *
@@ -73900,6 +73901,9 @@ module.exports.updateDistortionMap = function (longType, shader, data) {
     material[slot] = texture;
     if (texture && COLOR_MAPS.has(slot)) {
       rendererSystem.applyColorCorrection(texture);
+    }
+    if (texture) {
+      setTextureProperties(texture, data);
     }
     material.needsUpdate = true;
     handleTextureEvents(el, texture);
