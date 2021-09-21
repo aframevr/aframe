@@ -1,9 +1,9 @@
 ---
-title: hit-test
+title: ar-hit-test
 type: components
 layout: docs
 parent_section: components
-source_code: src/components/hit-test.js
+source_code: src/components/ar-hit-test.js
 examples: []
 ---
 
@@ -33,6 +33,7 @@ You can toggle this component's enabled state to not do any interactions until y
 | src            | Image to use for the reticle                                 | See: Assets   |
 | type           | 'footprint' or 'map' footprint is the shape of the model     | "footprint"   |
 | footprintDepth | Amount of the model used for the footprint, 1 is full height | 0.1           |
+| mapSize        | If no target is set then this is the size of the map         | 0.5 0.5       |
 
 ## Events
 
