@@ -58273,7 +58273,7 @@ module.exports.Component = registerComponent('look-controls', {
     var data = this.data;
 
     // Only on mobile devices and only enabled if DeviceOrientation permission has been granted.
-    if (utils.device.isMobile()) {
+    if (utils.device.isMobile() || utils.device.isMobileDeviceRequestingDesktopSite()) {
       magicWindowControls = this.magicWindowControls = new THREE.DeviceOrientationControls(this.magicWindowObject);
       if (typeof DeviceOrientationEvent !== 'undefined' && DeviceOrientationEvent.requestPermission) {
         magicWindowControls.enabled = false;
@@ -61073,9 +61073,6 @@ module.exports.Component = registerComponent('device-orientation-permission-ui',
     deviceMotionMessage: {
       default: 'This immersive website requires access to your device motion sensors.'
     },
-    mobileDesktopMessage: {
-      default: 'Set your browser to request the mobile version of the site and reload the page to enjoy immersive mode.'
-    },
     httpsMessage: {
       default: 'Access this site over HTTPS to enter VR mode and grant access to the device sensors.'
     },
@@ -61093,12 +61090,6 @@ module.exports.Component = registerComponent('device-orientation-permission-ui',
         location.hostname !== '127.0.0.1' &&
         location.protocol === 'http:') {
       this.showHTTPAlert();
-    }
-
-    // Show alert on iPad if Safari is on desktop mode.
-    if (utils.device.isMobileDeviceRequestingDesktopSite()) {
-      this.showMobileDesktopModeAlert();
-      return;
     }
 
     // Browser doesn't support or doesn't require permission to DeviceOrientationEvent API.
@@ -61131,15 +61122,6 @@ module.exports.Component = registerComponent('device-orientation-permission-ui',
 
   onDeviceMotionDialogDenyClicked: function () {
     this.remove();
-  },
-
-  showMobileDesktopModeAlert: function () {
-    var self = this;
-    var safariIpadAlertEl = createAlertDialog(
-      self.data.cancelButtonText,
-      self.data.mobileDesktopMessage,
-      function () { self.el.removeChild(safariIpadAlertEl); });
-    this.el.appendChild(safariIpadAlertEl);
   },
 
   showHTTPAlert: function () {
@@ -70803,7 +70785,7 @@ require('./core/a-mixin');
 require('./extras/components/');
 require('./extras/primitives/');
 
-console.log('A-Frame Version: 1.2.0 (Date 2021-09-06, Commit #cef3a0cc)');
+console.log('A-Frame Version: 1.2.0 (Date 2021-09-21, Commit #5a213379)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
