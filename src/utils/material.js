@@ -14,7 +14,7 @@ var COLOR_MAPS = new Set([
  *
  * @param {object} data - With keys like `repeat`.
 */
-module.exports.setTextureProperties = function (texture, data) {
+function setTextureProperties (texture, data) {
   var offset = data.offset || {x: 0, y: 0};
   var repeat = data.repeat || {x: 1, y: 1};
   var npot = data.npot || false;
@@ -37,7 +37,8 @@ module.exports.setTextureProperties = function (texture, data) {
   if (offset.x !== 0 || offset.y !== 0) {
     texture.offset.set(offset.x, offset.y);
   }
-};
+}
+module.exports.setTextureProperties = setTextureProperties;
 
 /**
  * Update `material` texture property (usually but not always `map`)
@@ -149,7 +150,7 @@ module.exports.updateDistortionMap = function (longType, shader, data) {
       rendererSystem.applyColorCorrection(texture);
     }
     if (texture) {
-      module.exports.setTextureProperties(texture, data);
+      setTextureProperties(texture, data);
     }
     material.needsUpdate = true;
     handleTextureEvents(el, texture);
