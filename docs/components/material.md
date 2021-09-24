@@ -270,7 +270,7 @@ Video autoplay policies are getting more and more strict and rules might vary ac
 <a-scene>
   <a-assets>
     <!-- No loop. -->
-    <video id="my-video" src="video.mp4" autoplay="true">
+    <video id="my-video" src="video.mp4" autoplay="true"></video>
   </a-assets>
 
   <a-entity geometry="primitive: box" material="src: #my-video"></a-entity>
