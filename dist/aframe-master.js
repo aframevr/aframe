@@ -54922,8 +54922,16 @@ module.exports.Component = registerComponent('cursor', {
       mouse.x = (left / bounds.width) * 2 - 1;
       mouse.y = -(top / bounds.height) * 2 + 1;
 
-      origin.setFromMatrixPosition(camera.matrixWorld);
-      direction.set(mouse.x, mouse.y, 0.5).unproject(camera).sub(origin).normalize();
+      if (camera && camera.isPerspectiveCamera) {
+        origin.setFromMatrixPosition(camera.matrixWorld);
+        direction.set(mouse.x, mouse.y, 0.5).unproject(camera).sub(origin).normalize();
+      } else if (camera && camera.isOrthographicCamera) {
+        origin.set(mouse.x, mouse.y, (camera.near + camera.far) / (camera.near - camera.far)).unproject(camera); // set origin in plane of camera
+        direction.set(0, 0, -1).transformDirection(camera.matrixWorld);
+      } else {
+        console.error('AFRAME.Raycaster: Unsupported camera type: ' + camera.type);
+      }
+
       this.el.setAttribute('raycaster', rayCasterConfig);
       if (evt.type === 'touchmove') { evt.preventDefault(); }
     };
@@ -70797,7 +70805,7 @@ require('./core/a-mixin');
 require('./extras/components/');
 require('./extras/primitives/');
 
-console.log('A-Frame Version: 1.2.0 (Date 2021-09-21, Commit #d27fd57e)');
+console.log('A-Frame Version: 1.2.0 (Date 2021-09-27, Commit #96292e86)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
