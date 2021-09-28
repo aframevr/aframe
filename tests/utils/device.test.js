@@ -8,6 +8,15 @@ suite('isTablet', function () {
     assert.ok(device.isTablet(nexus7));
     assert.ok(device.isTablet(nexus9));
   });
+
+  test('is true for Samsung tablets (eg Galaxy Tab 7)', function () {
+    const galaxyTab7Chrome = 'Mozilla/5.0 (Linux; Android 11; SM-T970) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.61 Safari/537.36';
+    const galaxTab7SamsungBrowser = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/15.0 Chrome/90.0.4430.210 Safari/537.36';
+
+    assert.ok(device.isTablet(galaxyTab7Chrome));
+    assert.ok(device.isTablet(galaxTab7SamsungBrowser));
+  });
+
 });
 
 suite('environment', function () {
