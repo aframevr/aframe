@@ -27,7 +27,7 @@
   &mdash;
   <a href="https://aframe.io/school/">School</a>
   &mdash;
-  <a href="https://aframe.io/slack-invite/">Slack</a>
+  <a href="https://aframevr.slack.com/join/shared_invite/zt-f6rne3ly-ekVaBU~Xu~fsZHXr56jacQ">Slack</a>
   &mdash;
   <a href="https://aframe.io/blog/">Blog</a>
   &mdash;
@@ -210,7 +210,7 @@ For questions and support, [ask on StackOverflow](https://stackoverflow.com/ques
 
 ## Stay in Touch
 
-- To hang out with the community, [join the A-Frame Slack](https://aframe.io/slack-invite/).
+- To hang out with the community, [join the A-Frame Slack](https://aframevr.slack.com/join/shared_invite/zt-f6rne3ly-ekVaBU~Xu~fsZHXr56jacQ).
 - [Follow `A Week of A-Frame` on the A-Frame blog](https://aframe.io/blog).
 - [Follow @aframevr on Twitter](https://twitter.com/aframevr).
 - [Subscribe to the Newsletter](https://aframe.io/subscribe/).
