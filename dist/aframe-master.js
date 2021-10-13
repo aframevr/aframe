@@ -24770,7 +24770,7 @@ module.exports = anime;
 				var layersCopy = layers.map(function (x) {
 					return x;
 				});
-				layersCopy.push(layersCopy);
+				layersCopy.push(session.renderState.layers[0]);
 				session.updateRenderState({
 					layers: layersCopy
 				});
@@ -24889,9 +24889,9 @@ module.exports = anime;
 					_currentDepthFar = cameraVR.far;
 				}
 
-				const parent = camera.parent;
 				const cameras = cameraVR.cameras;
 				var object = poseTarget || camera;
+				const parent = object.parent;
 				updateCamera(cameraVR, parent);
 
 				for (let i = 0; i < cameras.length; i++) {
@@ -54562,7 +54562,7 @@ module.exports={
     "present": "0.0.6",
     "promise-polyfill": "^3.1.0",
     "super-animejs": "^3.1.0",
-    "super-three": "^0.133.1",
+    "super-three": "^0.133.4",
     "three-bmfont-text": "dmarcos/three-bmfont-text#21d017046216e318362c48abd1a48bddfb6e0733",
     "webvr-polyfill": "^0.10.12"
   },
@@ -59099,38 +59099,25 @@ module.exports.Component = registerComponent('look-controls', {
    * Update orientation for mobile, mouse drag, and headset.
    * Mouse-drag only enabled if HMD is not active.
    */
-  updateOrientation: (function () {
-    var poseMatrix = new THREE.Matrix4();
+  updateOrientation: function () {
+    var object3D = this.el.object3D;
+    var pitchObject = this.pitchObject;
+    var yawObject = this.yawObject;
+    var sceneEl = this.el.sceneEl;
 
-    return function () {
-      var object3D = this.el.object3D;
-      var pitchObject = this.pitchObject;
-      var yawObject = this.yawObject;
-      var pose;
-      var sceneEl = this.el.sceneEl;
+    // In VR or AR mode, THREE is in charge of updating the camera pose.
+    if ((sceneEl.is('vr-mode') || sceneEl.is('ar-mode')) && sceneEl.checkHeadsetConnected()) {
+      // With WebXR THREE applies headset pose to the object3D internally.
+      return;
+    }
 
-      // In VR or AR mode, THREE is in charge of updating the camera pose.
-      if ((sceneEl.is('vr-mode') || sceneEl.is('ar-mode')) && sceneEl.checkHeadsetConnected()) {
-        // With WebXR THREE applies headset pose to the object3D matrixWorld internally.
-        // Reflect values back on position, rotation, scale for getAttribute to return the expected values.
-        if (sceneEl.hasWebXR) {
-          pose = sceneEl.renderer.xr.getCameraPose();
-          if (pose) {
-            poseMatrix.elements = pose.transform.matrix;
-            poseMatrix.decompose(object3D.position, object3D.rotation, object3D.scale);
-          }
-        }
-        return;
-      }
+    this.updateMagicWindowOrientation();
 
-      this.updateMagicWindowOrientation();
-
-      // On mobile, do camera rotation with touch events and sensors.
-      object3D.rotation.x = this.magicWindowDeltaEuler.x + pitchObject.rotation.x;
-      object3D.rotation.y = this.magicWindowDeltaEuler.y + yawObject.rotation.y;
-      object3D.rotation.z = this.magicWindowDeltaEuler.z;
-    };
-  })(),
+    // On mobile, do camera rotation with touch events and sensors.
+    object3D.rotation.x = this.magicWindowDeltaEuler.x + pitchObject.rotation.x;
+    object3D.rotation.y = this.magicWindowDeltaEuler.y + yawObject.rotation.y;
+    object3D.rotation.z = this.magicWindowDeltaEuler.z;
+  },
 
   updateMagicWindowOrientation: function () {
     var magicWindowAbsoluteEuler = this.magicWindowAbsoluteEuler;
@@ -71470,7 +71457,7 @@ require('./core/a-mixin');
 require('./extras/components/');
 require('./extras/primitives/');
 
-console.log('A-Frame Version: 1.2.0 (Date 2021-10-08, Commit #a080c221)');
+console.log('A-Frame Version: 1.2.0 (Date 2021-10-13, Commit #364ae4e9)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
