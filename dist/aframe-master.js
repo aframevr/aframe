@@ -24770,7 +24770,7 @@ module.exports = anime;
 				var layersCopy = layers.map(function (x) {
 					return x;
 				});
-				layersCopy.push(session.renderState.layers[0]);
+				layersCopy.unshift(session.renderState.layers[0]);
 				session.updateRenderState({
 					layers: layersCopy
 				});
@@ -54562,7 +54562,7 @@ module.exports={
     "present": "0.0.6",
     "promise-polyfill": "^3.1.0",
     "super-animejs": "^3.1.0",
-    "super-three": "^0.133.4",
+    "super-three": "^0.133.5",
     "three-bmfont-text": "dmarcos/three-bmfont-text#21d017046216e318362c48abd1a48bddfb6e0733",
     "webvr-polyfill": "^0.10.12"
   },
@@ -71457,7 +71457,7 @@ require('./core/a-mixin');
 require('./extras/components/');
 require('./extras/primitives/');
 
-console.log('A-Frame Version: 1.2.0 (Date 2021-10-13, Commit #364ae4e9)');
+console.log('A-Frame Version: 1.2.0 (Date 2021-10-14, Commit #1d4854dd)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
