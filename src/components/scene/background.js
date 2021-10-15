@@ -33,9 +33,10 @@ module.exports.Component = register('background', {
     var self = this;
 
     this.pmremGenerator = new THREE.PMREMGenerator(this.el.renderer);
+    this.pmremGenerator.compileCubemapShader();
     this.cubeRenderTarget = new THREE.WebGLCubeRenderTarget(256, { format: THREE.RGBFormat, generateMipmaps: true, minFilter: THREE.LinearMipmapLinearFilter });
     this.lightProbeTarget = new THREE.WebGLCubeRenderTarget(16, { format: THREE.RGBFormat, generateMipmaps: false });
-    this.cubeCamera = new THREE.CubeCamera(1, 100000, this.cubeRenderTarget);
+    this.cubeCamera = new THREE.CubeCamera(0.1, 1000, this.cubeRenderTarget);
     this.needsEnvironmentUpdate = true;
     this.timeSinceUpdate = 0;
 
@@ -147,15 +148,7 @@ module.exports.Component = register('background', {
       object3D.background = new THREE.Color(data.color);
     }
 
-    if (scene.environment &&
-      (scene.environment !== this.cubeRenderTarget.texture || scene.environment !== this.lightProbeTarget.texture)
-    ) {
-      console.warn('Background will not override user defined environment maps');
-      return;
-    }
-
     if (data.generateEnvironment) {
-      scene.environment = this.cubeRenderTarget.texture;
       this.needsEnvironmentUpdate = true;
     } else {
       scene.environment = null;
@@ -208,7 +201,6 @@ module.exports.Component = register('background', {
     if (this.xrLightProbe) {
       this.updateXRCubeMap();
     } else {
-      this.el.object3D.add(this.cubeCamera);
       this.cubeCamera.position.set(0, 1.6, 0);
       scene.environment = null;
       this.cubeCamera.update(renderer, scene);
@@ -227,9 +219,7 @@ module.exports.Component = register('background', {
       object3D.background = null;
       return;
     }
-    if (object3D.environment === this.cubeRenderTarget.texture) {
-      object3D.environment = null;
-    }
+    this.pmremGenerator.dispose();
     object3D.background = COMPONENTS[this.name].schema.color.default;
   }
 });
