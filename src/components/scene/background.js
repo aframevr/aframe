@@ -27,13 +27,13 @@ module.exports.Component = register('background', {
     color: { type: 'color', default: 'black' },
     transparent: { default: false },
     generateEnvironment: { default: true },
-    environmentUpdateFrequency: { default: 0 },
     directionalLight: { type: 'selector' }
   },
   init: function () {
     var self = this;
 
-    this.cubeRenderTarget = new THREE.WebGLCubeRenderTarget(128, { format: THREE.RGBFormat, generateMipmaps: true, minFilter: THREE.LinearMipmapLinearFilter });
+    this.pmremGenerator = new THREE.PMREMGenerator(this.el.renderer);
+    this.cubeRenderTarget = new THREE.WebGLCubeRenderTarget(256, { format: THREE.RGBFormat, generateMipmaps: true, minFilter: THREE.LinearMipmapLinearFilter });
     this.lightProbeTarget = new THREE.WebGLCubeRenderTarget(16, { format: THREE.RGBFormat, generateMipmaps: false });
     this.cubeCamera = new THREE.CubeCamera(1, 100000, this.cubeRenderTarget);
     this.needsEnvironmentUpdate = true;
@@ -72,7 +72,6 @@ module.exports.Component = register('background', {
     }
 
     if (data.generateEnvironment) {
-      scene.environment = this.cubeRenderTarget.texture;
       this.needsEnvironmentUpdate = true;
     } else {
       scene.environment = null;
@@ -173,19 +172,10 @@ module.exports.Component = register('background', {
     }
   },
 
-  tick: function (time, delta) {
+  tick: function () {
     var scene = this.el.object3D;
     var renderer = this.el.renderer;
     var frame = this.el.sceneEl.frame;
-
-    this.timeSinceUpdate += delta;
-    if (
-      this.data.environmentUpdateFrequency > 0 && // should update in general?
-      this.timeSinceUpdate > (this.data.environmentUpdateFrequency * 1000) // should update this tick?
-    ) {
-      this.timeSinceUpdate = 0;
-      this.needsEnvironmentUpdate = true;
-    }
 
     if (frame && this.xrLightProbe) {
       // light estimate may not yet be available, it takes a few frames to start working
@@ -220,7 +210,11 @@ module.exports.Component = register('background', {
     } else {
       this.el.object3D.add(this.cubeCamera);
       this.cubeCamera.position.set(0, 1.6, 0);
+      scene.environment = null;
       this.cubeCamera.update(renderer, scene);
+      scene.environment = this.pmremGenerator.fromCubemap(
+        this.cubeRenderTarget.texture
+      ).texture;
     }
 
     this.needsEnvironmentUpdate = false;
