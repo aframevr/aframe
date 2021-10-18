@@ -46,5 +46,4 @@ The example below sets the background color to red and use lighting estimation f
 | color                      | Color of the scene background.                            | black           |
 | transparent                | Background is transparent. The color property is ignored. | false           |
 | generateEnvironment        | Whether to generate a default environment.                | true            |
-| environmentUpdateFrequency | How often to update the environment in seconds, 0 is off. | 0               |
 | directionalLight           | Use an existing light for the AR lighting                 | null            |
