@@ -370,7 +370,7 @@ The `animation__fadeback` is interesting in that we start it once the
 that is emitted by animation component when an animation finishes. We
 effectively chained these animations!
 
-[Writing a Component]: ../core/writing-a-component.md
+[Writing a Component]: ../introduction/writing-a-component.md
 
 Wielding components, we were able to do a lot in a few dozen lines of HTML,
 working on VR across most headsets and browsers. Though the ecosystem has a lot
