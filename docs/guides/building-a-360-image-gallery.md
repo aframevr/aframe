@@ -309,7 +309,7 @@ the `setAttribute` calls. Notice that the event-set component can have
 [multiple instances][multiple]:
 
 ```html
-<script id="link" type="text/html">
+<script id="plane" type="text/html">
   <a-entity class="link"
     geometry="primitive: plane; height: 1; width: 1"
     material="shader: flat; src: ${thumb}"
