@@ -190,7 +190,7 @@ AFRAME.registerComponent('random-color', {
 });
 ```
 
-[js]: https://aframe.io/docs/1.2.0/guides/using-javascript-and-dom-apis.html
+[js]: https://aframe.io/docs/1.2.0/introduction/javascript-events-dom-apis.html
 
 For the random color component, we want to set a random color on the entity
 that this component is attached to. Components have a reference to the entity
