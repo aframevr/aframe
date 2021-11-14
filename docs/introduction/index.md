@@ -159,7 +159,7 @@ as Google, Microsoft, Oculus, and Samsung have made contributions to A-Frame.
 ## Off You Go!
 
 [Discord]: https://supermedium.com/discord
-[slack]: https://aframe.io/slack-invite/
+[slack]: https://aframevr.slack.com/join/shared_invite/zt-f6rne3ly-ekVaBU~Xu~fsZHXr56jacQ
 
 If it's your first time here, here's a plan for success for getting into
 A-Frame:
