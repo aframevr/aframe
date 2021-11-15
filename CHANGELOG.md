@@ -85,7 +85,7 @@ AR, hand tracking, compositor layers, immersive navigation (Quest only), Quest 2
 * Make msdf shader WebGL 2 compliant @arpu
 * Valve Index controller support @zach-capalbo
 * Cordova compatibility @benallfree
-* Change [look-controls](https://aframe.io/docs/1.0.0/components/look-controls.html#sidebar) `hmdEnable` property name to `magicWindowTrackingEnabled` @dmarcos
+* Change [look-controls](https://aframe.io/docs/1.0.0/components/look-controls.html#sidebar) `hmdEnabled` property name to `magicWindowTrackingEnabled` @dmarcos
 * Improve hand tracking pinch gesture accuracy @cesmoak (#4691)
 * Improve error handling when entering immersive mode (#4660) @federico-camonapp @dmarcos
 * Make text of [device permission ui component](https://aframe.io/docs/1.0.0/components/device-orientation-permission-ui.html#sidebar) dialogs configurable @dmarcos
