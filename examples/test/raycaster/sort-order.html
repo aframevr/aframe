@@ -21,11 +21,13 @@
 
 </script>
     <p>Demonstration of non-standard sort Order for raycast results.</p>
-    <p>Doesn't currently work because cursor.js has a (possibly unecessary *extra* filter for distance)</p>
-    <p>See cursor.js code around this comment.. // Ignore events further away than active intersection.</p>
+    <p>Red plane is furtherst awaty, but has highest priority for raycasting</p>
+    <p>Yellow plane is closest, but lowest priority for raycasting</p>
+    <p>Click on a shape, and the alert will tell you which one the raycaster picked</p>
+    <p>(we also skip depth testing, so that further away shapes are rendered always on-top)</p>
 
     <a-scene>
-      <a-entity camera cursor="rayOrigin:mouse" raycaster="objects:[raycastable]; sortOrder:priority"></a-entity>
+      <a-entity look-controls wasd-controls camera cursor="rayOrigin:mouse" raycaster="objects:[raycastable]; sortOrder:priority"></a-entity>
       <a-plane id="yellow" material = "color: #ff0" position = "0 0 -2" raycastable priority="-1" clickable></a-plane>
       <a-plane id="blue" material = "color: #00f; depthTest:false" position = "0 0 -3" raycastable clickable></a-plane>
       <a-plane id="green" material = "color: #0f0; depthTest:false" position = "0 0 -4" raycastable priority="4" clickable></a-plane>
