@@ -287,7 +287,6 @@ module.exports.Component = registerComponent('cursor', {
    * Handle intersection.
    */
   onIntersection: function (evt) {
-    var currentIntersection;
     var cursorEl = this.el;
     var index;
     var intersectedEl;
@@ -304,12 +303,8 @@ module.exports.Component = registerComponent('cursor', {
     // Already intersecting this entity.
     if (this.intersectedEl === intersectedEl) { return; }
 
-    // Ignore events further away than active intersection.
-    if (this.intersectedEl) {
-      currentIntersection = this.el.components.raycaster.getIntersection(this.intersectedEl);
-      if (currentIntersection && currentIntersection.distance <= intersection.distance) { return; }
-    }
-
+    // since the intersection is the 1st intersection reported by the raycaster,
+    // if it's not the current intersection, it should supercede it.
     // Unset current intersection.
     this.clearCurrentIntersection(true);
 

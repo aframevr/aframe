@@ -52,7 +52,8 @@ module.exports.Component = registerComponent('raycaster', {
     showLine: {default: false},
     lineColor: {default: 'white'},
     lineOpacity: {default: 1},
-    useWorldCoordinates: {default: false}
+    useWorldCoordinates: {default: false},
+    sortOrder: {type: 'string', default: null}
   },
 
   multiple: true,
@@ -226,6 +227,33 @@ module.exports.Component = registerComponent('raycaster', {
     this.updateOriginDirection();
     rawIntersections.length = 0;
     this.raycaster.intersectObjects(this.objects, true, rawIntersections);
+
+    // THREE raycaster returns elements closest to furthest.
+    // If a different sort order is required, sort the intersections based on the required order.
+    if (this.data.sortOrder) {
+      const orderAttribute = this.data.sortOrder;
+
+      rawIntersections.sort((a, b) => {
+        let priorityA = null;
+        let priorityB = null;
+        if (a.object.el) {
+          priorityA = a.object.el.getAttribute(orderAttribute);
+        }
+        if (b.object.el) {
+          priorityB = b.object.el.getAttribute(orderAttribute);
+        }
+
+        // note that we want to arrange the objects in *descending* priority
+        // order (highest priority first).
+        if (priorityA < priorityB) {
+          return 1;
+        }
+        if (priorityA > priorityB) {
+          return -1;
+        }
+        return 0;
+      });
+    }
 
     // Only keep intersections against objects that have a reference to an entity.
     intersections.length = 0;
