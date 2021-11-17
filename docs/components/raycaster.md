@@ -71,6 +71,7 @@ AFRAME.registerComponent('collider-check', {
 | objects             | Query selector to pick which objects to test for intersection. If not specified, all entities will be tested. Note that only objects attached via `.setObject3D` and their recursive children will be tested.                               | null          |
 | origin              | Vector3 coordinate of where the ray should originate from relative to the entity's origin.                                                                                                                     | 0, 0, 0       |
 | showLine            | Whether or not to display the raycaster visually with the [line component][line].                                                                                                                              | false         |
+| sortOrder | When the raycaster matches multiple objects, this allows control of the order in which the matches are returned.  Particularly useful for use with components like cursor and laser-controls, which build on raycaster and always act on the first object matched.<br />If no sortOrder is specified, the raycaster returns the objects in distance order, closest first.<br /><br />To sort the objects differently, specify an attribute on the objects whose value should be used as a sort order.  Objects will be sorted largest to smallest, with objects without an attribute treated as having value 0. | null |
 | useWorldCoordinates | Whether the raycaster origin and direction properties are specified in world coordinates.                                                                                                                      | false         |
 
 ## Events
@@ -103,11 +104,11 @@ The event detail contains intersection objects. They are returned straight from
 
 ## Members
 
-| Member         | Description                                                                                                      |
-|----------------|------------------------------------------------------------------------------------------------------------------|
-| intersectedEls | Entities currently intersecting the raycaster.                                                                   |
+| Member         | Description                                                  |
+| -------------- | ------------------------------------------------------------ |
+| intersectedEls | Entities currently intersecting the raycaster.  Ordered by distance from the ray origin, unless a different sortOrder was specified. |
 | objects        | three.js objects to test for intersections. Will be `scene.children` if `objects` property is not specified. |
-| raycaster      | three.js raycaster object.                                                                                       |
+| raycaster      | three.js raycaster object.                                   |
 
 ## Methods
 
@@ -217,3 +218,31 @@ intersecting any entity. By default, the `far` property defaults to 1000 meters
 meaning the line drawn will be 1000 meters long. When the raycaster intersects
 an object, the line will get truncated to the intersection point so it doesn't
 shoot straight through.
+
+## Controlling the Order
+
+In most applications, it makes sense for the raycaster to match the closest object to the ray origin.  However there are cases where you may want a different behavior.
+
+- If a raycaster is used to grab and manipulate objects, you may want the line to be rendered all the way to the grabbed object, even when that object passes behind another raycastable object.
+- If objects are rendered "always in front" (e.g. using depthTest=false on the material), you may want the raycaster to prioritize this item, so that the raycasting experience matches the user's visuals.
+
+Raycaster does provide access to all the matched points so it is possible to re-order within your application.  However various A-Frame components that build on top of raycaster, like cursor, laser-controls and line assume that they should act on the first raycast object returned.  So when using these components, it can be convenient to have the raycaster sort the matched objects on some different criterion.
+
+To implement this:
+
+- Define a custom attribute on all raycastable objects, and give each object a value indicating its priority.
+- Specify this attribute in the sortOrder property on the raycaster.
+
+For example:
+
+```
+<a-entity raycaster="objects: [raycastable];sortOrder: priority" cursor></a-entity>
+<a-entity id="box1" raycastable priority="10" geometry="primitive: box" position="1 0 0"></a-entity>
+<a-entity id="box2" raycastable geometry="primitive: box" position="2 0 0"></a-entity>
+<a-entity id="box3" raycastable priority="-1" geometry="primitive: box" position="3 0 0"></a-entity>
+```
+
+When a raycast crosses all three objects, box1 will always be returned first, then box 2 (no priority specified), and finally box 3 (negative priority).
+
+If two objects have the same sortOrder priority, they will be returned in the default order (closest first).
+

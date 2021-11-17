@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Raycaster</title>
+    <meta name="description" content="Raycaster Sort Order- A-Frame">
+    <script src="../../../dist/aframe-master.js"></script>
+  </head>
+  <body>
+
+<script>
+
+  AFRAME.registerComponent('clickable', {
+    init: function () {
+      this.el.addEventListener('click', function (evt) {
+        var el = evt.target;
+        alert(`clicked on ${el.id}`);
+      });
+    }
+  });
+
+</script>
+    <p>Demonstration of non-standard sort Order for raycast results.</p>
+    <p>Doesn't currently work because cursor.js has a (possibly unecessary *extra* filter for distance)</p>
+    <p>See cursor.js code around this comment.. // Ignore events further away than active intersection.</p>
+
+    <a-scene>
+      <a-entity camera cursor="rayOrigin:mouse" raycaster="objects:[raycastable]; sortOrder:priority"></a-entity>
+      <a-plane id="yellow" material = "color: #ff0" position = "0 0 -2" raycastable priority="-1" clickable></a-plane>
+      <a-plane id="blue" material = "color: #00f; depthTest:false" position = "0 0 -3" raycastable clickable></a-plane>
+      <a-plane id="green" material = "color: #0f0; depthTest:false" position = "0 0 -4" raycastable priority="4" clickable></a-plane>
+      <a-plane id="red" material = "color: #f00; depthTest:false" position = "0 0 -5" raycastable priority="5" clickable></a-plane>
+    </a-scene>
+
+  </body>
+</html>
