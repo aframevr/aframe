@@ -378,7 +378,6 @@ module.exports.AScene = registerElement('a-scene', {
             requestFullscreen(self.canvas);
           }
 
-          self.renderer.setAnimationLoop(self.render);
           self.resize();
           if (resolve) { resolve(); }
         }
