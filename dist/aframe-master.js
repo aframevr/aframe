@@ -69057,7 +69057,6 @@ module.exports.AScene = registerElement('a-scene', {
             requestFullscreen(self.canvas);
           }
 
-          self.renderer.setAnimationLoop(self.render);
           self.resize();
           if (resolve) { resolve(); }
         }
@@ -71441,7 +71440,7 @@ require('./core/a-mixin');
 require('./extras/components/');
 require('./extras/primitives/');
 
-console.log('A-Frame Version: 1.2.0 (Date 2021-10-18, Commit #b1b13381)');
+console.log('A-Frame Version: 1.2.0 (Date 2021-11-22, Commit #cf65f451)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
