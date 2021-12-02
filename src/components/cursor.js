@@ -303,8 +303,15 @@ module.exports.Component = registerComponent('cursor', {
     // Already intersecting this entity.
     if (this.intersectedEl === intersectedEl) { return; }
 
-    // since the intersection is the 1st intersection reported by the raycaster,
-    // if it's not the current intersection, it should supercede it.
+    // Ignore events that are lower priority than active intersection.
+    // Note that the intersected event only include new intersections - there may be
+    // a higher priority existing intersection.
+    // See: https://github.com/aframevr/aframe/issues/4974
+    if (this.intersectedEl) {
+      const topIntersection = this.el.components.raycaster.intersectedEls[0];
+      if (intersectedEl !== topIntersection) { return; }
+    }
+
     // Unset current intersection.
     this.clearCurrentIntersection(true);
 
