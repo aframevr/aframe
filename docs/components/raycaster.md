@@ -77,12 +77,12 @@ AFRAME.registerComponent('collider-check', {
 
 The raycaster component is useful because of the events it emits on entities. It will emit events on both the raycasting entity and the intersected entities.
 
-| Event Name                     | Description                                                                            |
-|--------------------------------|----------------------------------------------------------------------------------------|
-| raycaster-intersected          | Emitted on the intersected entity. Entity is intersecting with a raycaster. Event detail will contain `el`, the raycasting entity, and `intersection`, and `.getIntersection (el)` function which can be used to obtain current intersection data.            |
-| raycaster-intersected-cleared  | Emitted on the intersected entity. Entity is no longer intersecting with a raycaster. Event detail will contain `el`, the raycasting entity.  |
-| raycaster-intersection         | Emitted on the raycasting entity. Raycaster is intersecting with one or more entities. Event detail will contain `els`, an array with the intersected entities, and `intersections`, and `.getIntersection (el)` function which can be used to obtain current intersection data. |
-| raycaster-intersection-cleared | Emitted on the raycasting entity. Raycaster is no longer intersecting with one or more entities. Event detail will contain `clearedEls`, an array with the formerly intersected entities.  |
+| Event Name                     | Description                                                  |
+| ------------------------------ | ------------------------------------------------------------ |
+| raycaster-intersected          | Emitted on the intersected entity. Entity is intersecting with a raycaster. Event detail will contain `el`, the raycasting entity, and `intersection`, and `.getIntersection (el)` function which can be used to obtain current intersection data. |
+| raycaster-intersected-cleared  | Emitted on the intersected entity. Entity is no longer intersecting with a raycaster. Event detail will contain `el`, the raycasting entity. |
+| raycaster-intersection         | Emitted on the raycasting entity. Raycaster is intersecting with one or more entities. Event detail will contain `els`, an array with the newly intersected entities, and `intersections`, and `.getIntersection (el)` function which can be used to obtain current intersection data.  For access to a complete list of intersections (existing & new), see [Members intersectedEls][intersectedEls]. |
+| raycaster-intersection-cleared | Emitted on the raycasting entity. Raycaster is no longer intersecting with one or more entities. Event detail will contain `clearedEls`, an array with the formerly intersected entities. |
 
 ### Intersection Object
 
@@ -102,6 +102,7 @@ The event detail contains intersection objects. They are returned straight from
 | uv        | U,V coordinates at point of intersection                    |
 
 ## Members
+[intersectedEls]: raycaster.md#members
 
 | Member         | Description                                                                                                      |
 |----------------|------------------------------------------------------------------------------------------------------------------|
