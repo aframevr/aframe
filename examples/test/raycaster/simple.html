@@ -29,9 +29,10 @@
   });
 
 </script>
+    <p>The block should be green when the camera is looking at it, red when the camera is looking away</p>
 
     <a-scene>
-      <a-entity camera look-controls wasd-controls raycaster="recursive: false; interval: 1000"></a-entity>
+      <a-entity camera look-controls wasd-controls raycaster="interval: 100; objects: [raycast-blab]"></a-entity>
       <a-entity geometry="primitive: box" material="color: #000" position="0 0 -2" raycast-blab></a-entity>
     </a-scene>
 
