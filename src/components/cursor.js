@@ -134,6 +134,8 @@ module.exports.Component = registerComponent('cursor', {
       el.addEventListener(upEvent, self.onCursorUp);
     });
     el.addEventListener('raycaster-intersection', this.onIntersection);
+    el.addEventListener('raycaster-closest-entity-changed', this.onIntersection);
+
     el.addEventListener('raycaster-intersection-cleared', this.onIntersectionCleared);
 
     el.sceneEl.addEventListener('rendererresize', this.updateCanvasBounds);
