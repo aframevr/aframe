@@ -67660,7 +67660,7 @@ var Component = module.exports.Component = function (el, attrValue, id) {
   }
 
   // Last value passed to updateProperties.
-  this.throttledEmitComponentChanged = utils.throttle(function emitChange () {
+  this.throttledEmitComponentChanged = utils.throttleComponentChanged(function emitChange () {
     el.emit('componentchanged', self.evtDetail, false);
   }, 200);
   this.updateProperties(attrValue);
@@ -71453,7 +71453,7 @@ require('./core/a-mixin');
 require('./extras/components/');
 require('./extras/primitives/');
 
-console.log('A-Frame Version: 1.2.0 (Date 2021-12-11, Commit #981cb810)');
+console.log('A-Frame Version: 1.2.0 (Date 2021-12-19, Commit #795edfd6)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
@@ -74098,6 +74098,41 @@ module.exports.throttle = function (functionToThrottle, minimumInterval, optiona
     if (typeof lastTime === 'undefined' || (sinceLastTime >= minimumInterval)) {
       lastTime = time;
       functionToThrottle.apply(null, arguments);
+    }
+  };
+};
+
+/**
+ * Returns throttle function that gets called at most once every interval.
+ * If there are multiple calls in the last interval we call the function one additional
+ * time.
+ * It behaves like a throttle except for the very last call that gets deferred until the end of the interval.
+ *
+ * @param {function} functionToThrottle
+ * @param {number} minimumInterval - Minimal interval between calls (milliseconds).
+ * @param {object} optionalContext - If given, bind function to throttle to this context.
+ * @returns {function} Throttled function.
+ */
+module.exports.throttleComponentChanged = function (functionToThrottle, minimumInterval, optionalContext) {
+  var lastTime;
+  var deferTimer;
+  if (optionalContext) {
+    functionToThrottle = module.exports.bind(functionToThrottle, optionalContext);
+  }
+  return function () {
+    var time = Date.now();
+    var sinceLastTime = typeof lastTime === 'undefined' ? minimumInterval : time - lastTime;
+    var args = arguments;
+    if (typeof lastTime === 'undefined' || sinceLastTime >= minimumInterval) {
+      clearTimeout(deferTimer);
+      lastTime = time;
+      functionToThrottle.apply(null, args);
+    } else {
+      clearTimeout(deferTimer);
+      deferTimer = setTimeout(function () {
+        lastTime = Date.now();
+        functionToThrottle.apply(this, args);
+      }, minimumInterval - sinceLastTime);
     }
   };
 };
