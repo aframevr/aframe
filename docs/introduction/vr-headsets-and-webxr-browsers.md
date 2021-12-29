@@ -1,12 +1,12 @@
 ---
-title: "VR Headsets & WebVR Browsers"
+title: "VR Headsets & WebXR Browsers"
 type: introduction
 layout: docs
 parent_section: introduction
 order: 3
 ---
 
-[w3c]: https://w3c.github.io/webvr/
+[w3c]: https://immersive-web.github.io/webxr/
 
 <!--toc-->
 
@@ -43,7 +43,7 @@ are constrained to looking around and wiggling the controller.
 ### What Are Some Current Headsets?
 
 [HTC Vive]: https://www.vive.com/
-[Oculus headsets]: https://www.oculus.com
+[Oculus headsets]: https://www.oculus.com/
 [Google Daydream]: https://vr.google.com/daydream/
 [Samsung GearVR]: http://www.samsung.com/global/galaxy/gear-vr/
 [Windows Mixed Reality]: https://developer.microsoft.com/en-us/windows/mixed-reality/
@@ -61,15 +61,15 @@ are constrained to looking around and wiggling the controller.
 | [Oculus Quest]            | Standalone | :white_check_mark:  | :white_check_mark: | :white_check_mark:             |
 | [Oculus Quest 2]            | Standalone | :white_check_mark:  | :white_check_mark: | :white_check_mark:             |
 
-## What is WebVR?
+## What is WebXR?
 
-WebVR is a JavaScript API for creating immersive 3D, virtual reality
+WebXR is a JavaScript API for creating immersive 3D, virtual reality (and augmented reality)
 experiences in your browser. Or simply put, allows VR in the browser over the
 Web.
 
-A-Frame uses the WebVR API to gain access to VR headset sensor data (position,
+A-Frame uses the WebXR API to gain access to VR headset sensor data (position,
 orientation) to transform the camera and to render content directly to VR
-headsets. Note that WebVR, which provides data, should not be confused nor
+headsets. Note that WebXR, which provides data, should not be confused nor
 conflated with WebGL, which provides graphics and rendering.
 
 ## What Browsers Support VR?
@@ -79,7 +79,7 @@ Including [Supermedium](https://supermedium.com) and
 
 <iframe src="https://caniuse.com/#search=webxr" height="480px" width="100%"></iframe>
 
-## Where Does A-Frame Want to Take WebVR?
+## Where Does A-Frame Want to Take WebXR?
 
 A-Frame aims for highly immersive and interactive VR content with native-like
 performance. For this, A-Frame believes the minimum viable bar will trend
@@ -132,7 +132,7 @@ For general hardware recommendations (not requirements):
 
 ## Which Browsers Does A-Frame Support?
 
-A-Frame supports VR for any browser that implements the [WebVR
+A-Frame supports VR for any browser that implements the [WebXR
 specification][w3c], and flat 3D for most browsers. Large browser vendors are
 slowly moving to the WebXR specification, though it does not have much
 front-facing changes to A-Frame developers, involving mostly renaming of APIs.
@@ -145,11 +145,11 @@ front-facing changes to A-Frame developers, involving mostly renaming of APIs.
 - Chrome (WebXR under origin trials)
 - Exokit (experimental early support)
 
-[webvrpolyfill]: https://github.com/googlevr/webvr-polyfill
+[webxrpolyfill]: https://github.com/immersive-web/webxr-polyfill
 
-A-Frame supports most modern mobile browsers that don't have WebVR support
-through the [WebVR polyfill][webvrpolyfill]. Note that these browsers do not
-have official WebVR support, and we are using a polyfill; it is important to
+A-Frame supports most modern mobile browsers that don't have WebXR support
+through the [WebXR polyfill][webxrpolyfill]. Note that these browsers do not
+have official WebXR support, and we are using a polyfill; it is important to
 lower the expectations that these browsers will provide a quality experience
 and not have quirks:
 
