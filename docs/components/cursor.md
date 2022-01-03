@@ -88,8 +88,10 @@ AFRAME.registerComponent('cursor-listener', {
 | fuse               | Whether cursor is fuse-based.                                                                                                                      | false on desktop, true on mobile |
 | fuseTimeout        | How long to wait (in milliseconds) before triggering a fuse-based click event.                                                                     | 1500                             |
 | mouseCursorStylesEnabled | Whether to show pointer cursor in `rayOrigin: mouse` mode when hovering over entity.                                                               | true                             |
-| rayOrigin          | Where the intersection ray is cast from (i.e.,entity or mouse). `rayOrigin: mouse` is extremely useful for VR development on a mouse and keyboard. | entity
+| rayOrigin          | Where the intersection ray is cast from (i.e.,entity or mouse). `rayOrigin: mouse` is extremely useful for VR development on a mouse and keyboard. | entity|
 | upEvents           | Array of additional events on the entity to *listen* to for triggering `mouseup` (e.g., `trackpadup` for daydream-controls).                       | []                               |
+| canvas | Provides more control is scenarios where a scene is being rendered to multiple canvases.  When set to "auto" the cursor component always uses the main scene canvas.  When set to "user" the cursor component exposes a variable at `this.canvas` which the user can set to an alternative canvas. | auto |
+| camera | Provides more control is scenarios where a scene is being rendered by multiple cameras.  When set to "auto" the cursor component always uses the main scene camera.  When set to "user" the cursor component exposes a variable at `this.camera` which the user can set to an alternative camera. | auto |
 
 To further customize the cursor component, we configure the cursor's dependency
 component, [the raycaster component][raycaster].

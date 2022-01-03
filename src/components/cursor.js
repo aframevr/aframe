@@ -52,7 +52,9 @@ module.exports.Component = registerComponent('cursor', {
     fuseTimeout: {default: 1500, min: 0},
     mouseCursorStylesEnabled: {default: true},
     upEvents: {default: []},
-    rayOrigin: {default: 'entity', oneOf: ['mouse', 'entity']}
+    rayOrigin: {default: 'entity', oneOf: ['mouse', 'entity']},
+    canvas: {default: 'auto', oneOf: ['auto', 'user']},
+    camera: {default: 'auto', oneOf: ['auto', 'user']}
   },
 
   init: function () {
@@ -64,9 +66,18 @@ module.exports.Component = registerComponent('cursor', {
     this.canvasBounds = document.body.getBoundingClientRect();
     this.isCursorDown = false;
 
+    // expose camera and cursor to user if required.
+    if (this.data.camera === 'user') {
+      this.camera = this.el.sceneEl.camera;
+    }
+    if (this.data.canvas === 'user') {
+      this.canvas = this.el.sceneEl.canvas;
+      this.canvasBounds = this.canvas.getBoundingClientRect();
+    }
+
     // Debounce.
     this.updateCanvasBounds = utils.debounce(function updateCanvasBounds () {
-      self.canvasBounds = self.el.sceneEl.canvas.getBoundingClientRect();
+      self.canvasBounds = self.getCanvas().getBoundingClientRect();
     }, 500);
 
     this.eventDetail = {};
@@ -79,6 +90,12 @@ module.exports.Component = registerComponent('cursor', {
     this.onIntersectionCleared = bind(this.onIntersectionCleared, this);
     this.onMouseMove = bind(this.onMouseMove, this);
     this.onEnterVR = bind(this.onEnterVR, this);
+
+    // Variables used in raycasting.  One set of these needed per-cursor
+    // instance.
+    this.direction = new THREE.Vector3();
+    this.origin = new THREE.Vector3();
+    this.rayCasterConfig = {origin: this.origin, direction: this.direction};
   },
 
   update: function (oldData) {
@@ -110,7 +127,7 @@ module.exports.Component = registerComponent('cursor', {
     var self = this;
 
     function addCanvasListeners () {
-      canvas = el.sceneEl.canvas;
+      canvas = this.getCanvas();
       if (data.downEvents.length || data.upEvents.length) { return; }
       CANVAS_EVENTS.DOWN.forEach(function (downEvent) {
         canvas.addEventListener(downEvent, self.onCursorDown);
@@ -120,7 +137,7 @@ module.exports.Component = registerComponent('cursor', {
       });
     }
 
-    canvas = el.sceneEl.canvas;
+    canvas = this.getCanvas();
     if (canvas) {
       addCanvasListeners();
     } else {
@@ -152,7 +169,7 @@ module.exports.Component = registerComponent('cursor', {
     var el = this.el;
     var self = this;
 
-    canvas = el.sceneEl.canvas;
+    canvas = this.getCanvas();
     if (canvas && !data.downEvents.length && !data.upEvents.length) {
       CANVAS_EVENTS.DOWN.forEach(function (downEvent) {
         canvas.removeEventListener(downEvent, self.onCursorDown);
@@ -184,7 +201,7 @@ module.exports.Component = registerComponent('cursor', {
     var canvas;
     var el = this.el;
 
-    canvas = el.sceneEl.canvas;
+    canvas = this.getCanvas();
     canvas.removeEventListener('mousemove', this.onMouseMove);
     canvas.removeEventListener('touchmove', this.onMouseMove);
     el.setAttribute('raycaster', 'useWorldCoordinates', false);
@@ -196,14 +213,11 @@ module.exports.Component = registerComponent('cursor', {
   },
 
   onMouseMove: (function () {
-    var direction = new THREE.Vector3();
     var mouse = new THREE.Vector2();
-    var origin = new THREE.Vector3();
-    var rayCasterConfig = {origin: origin, direction: direction};
 
     return function (evt) {
       var bounds = this.canvasBounds;
-      var camera = this.el.sceneEl.camera;
+      var camera = this.getCamera();
       var left;
       var point;
       var top;
@@ -224,16 +238,16 @@ module.exports.Component = registerComponent('cursor', {
       mouse.y = -(top / bounds.height) * 2 + 1;
 
       if (camera && camera.isPerspectiveCamera) {
-        origin.setFromMatrixPosition(camera.matrixWorld);
-        direction.set(mouse.x, mouse.y, 0.5).unproject(camera).sub(origin).normalize();
+        this.origin.setFromMatrixPosition(camera.matrixWorld);
+        this.direction.set(mouse.x, mouse.y, 0.5).unproject(camera).sub(this.origin).normalize();
       } else if (camera && camera.isOrthographicCamera) {
-        origin.set(mouse.x, mouse.y, (camera.near + camera.far) / (camera.near - camera.far)).unproject(camera); // set origin in plane of camera
-        direction.set(0, 0, -1).transformDirection(camera.matrixWorld);
+        this.origin.set(mouse.x, mouse.y, (camera.near + camera.far) / (camera.near - camera.far)).unproject(camera); // set origin in plane of camera
+        this.direction.set(0, 0, -1).transformDirection(camera.matrixWorld);
       } else {
         console.error('AFRAME.Raycaster: Unsupported camera type: ' + camera.type);
       }
 
-      this.el.setAttribute('raycaster', rayCasterConfig);
+      this.el.setAttribute('raycaster', this.rayCasterConfig);
       if (evt.type === 'touchmove') { evt.preventDefault(); }
     };
   })(),
@@ -359,7 +373,7 @@ module.exports.Component = registerComponent('cursor', {
     this.twoWayEmit(EVENTS.MOUSEENTER);
 
     if (this.data.mouseCursorStylesEnabled && this.data.rayOrigin === 'mouse') {
-      this.el.sceneEl.canvas.classList.add(CANVAS_HOVER_CLASS);
+      this.getCanvas().classList.add(CANVAS_HOVER_CLASS);
     }
 
     // Begin fuse if necessary.
@@ -388,7 +402,7 @@ module.exports.Component = registerComponent('cursor', {
     this.twoWayEmit(EVENTS.MOUSELEAVE);
 
     if (this.data.mouseCursorStylesEnabled && this.data.rayOrigin === 'mouse') {
-      this.el.sceneEl.canvas.classList.remove(CANVAS_HOVER_CLASS);
+      this.getCanvas().classList.remove(CANVAS_HOVER_CLASS);
     }
 
     // Unset intersected entity (after emitting the event).
@@ -425,5 +439,21 @@ module.exports.Component = registerComponent('cursor', {
 
     this.intersectedEventDetail.intersection = intersection;
     intersectedEl.emit(evtName, this.intersectedEventDetail);
+  },
+
+  getCanvas: function () {
+    if (this.data.canvas === 'user') {
+      return this.canvas;
+    } else {
+      return this.el.sceneEl.canvas;
+    }
+  },
+
+  getCamera: function () {
+    if (this.data.camera === 'user') {
+      return this.camera;
+    } else {
+      return this.el.sceneEl.camera;
+    }
   }
 });
