@@ -67,10 +67,11 @@ module.exports.updateMapMaterialFromData = function (materialName, dataName, sha
     return;
   }
 
-  // Don't process if material src hasn't changed.
-  // if (src === shader.materialSrcs[materialName]) { return; }
-
   // Remember the new src for this texture (there may be multiple).
+  // Note that even if the material is unchanged, other attributes such as
+  // repeat and offset may have changed, so we need should update the material
+  // even if the src is unchanged.
+
   shader.materialSrcs[materialName] = src;
 
   // If the new material src is already a texture, just use it.
