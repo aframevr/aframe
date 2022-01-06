@@ -518,20 +518,24 @@ entityEl.addEventListener('click', (event) => {
 });
 ```
 
-2. By binding the function as you add the event listener.  You will also need to do the same when [removing the event listener.](#removing-an-event-listener-with-removeeventlistener)
+2. By defining your event listener within the events object of the component (this will also handling adding and removing the listener automatically)
+
+   See the explanation [here](../core/component.html#events).
+
+3. By binding the function as you add the event listener.  You will also need to do the same when [removing the event listener.](#removing-an-event-listener-with-removeeventlistener)
 
 ```entityEl.addEventListener('physicscollided', (event) => {
 entityEl.addEventListener('click', this.clickListener.bind(this));
 ```
 
-3. By creating another function, which is the bound version of the function.
+4. By creating another function, which is the bound version of the function.
 
-   ```
-   this.listeners = {
-     clickListener: this.clickListener.bind(this);
-   }
-   entityEl.addEventListener('click', this.listeners.clickListener);
-   ```
+```
+this.listeners = {
+    clickListener: this.clickListener.bind(this);
+}
+entityEl.addEventListener('click', this.listeners.clickListener);
+```
 
 ## Caveats
 
