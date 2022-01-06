@@ -502,6 +502,37 @@ entityEl.addEventListener('physicscollided', collisionHandler);
 entityEl.removeEventListener('physicscollided', collisionHandler);
 ```
 
+### Binding Event Listeners
+
+By default, event listeners do not have access to the component's `this`.  Instead, `this` will be bound to `window`, so you won't see errors if you reference `this` inside an event Listener, but you are likely to get unexpected results.
+
+In order for the component's `this` to be accessible inside an event listener, [it must be bound](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this).
+
+There are several ways you can do this:
+
+1. By using an arrow function to define the event listener.  Arrow functions automatically bind `this`.
+
+```entityEl.addEventListener('physicscollided', function (event) {
+entityEl.addEventListener('click', (event) => {
+  console.log(this.el.id);
+});
+```
+
+2. By binding the function as you add the event listener.  You will also need to do the same when [removing the event listener.](#removing-an-event-listener-with-removeeventlistener)
+
+```entityEl.addEventListener('physicscollided', (event) => {
+entityEl.addEventListener('click', this.clickListener.bind(this));
+```
+
+3. By creating another function, which is the bound version of the function.
+
+   ```
+   this.listeners = {
+     clickListener: this.clickListener.bind(this);
+   }
+   entityEl.addEventListener('click', this.listeners.clickListener);
+   ```
+
 ## Caveats
 
 [faq]: ./faq.md#why-is-the-html-not-updating-when-i-check-the-browser-inspector
