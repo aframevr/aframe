@@ -70442,7 +70442,7 @@ require('./core/a-mixin');
 require('./extras/components/');
 require('./extras/primitives/');
 
-console.log('A-Frame Version: 1.2.0 (Date 2022-01-04, Commit #20be9367)');
+console.log('A-Frame Version: 1.2.0 (Date 2022-01-04, Commit #cb3d32ea)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
@@ -73500,16 +73500,11 @@ module.exports.updateMapMaterialFromData = function (materialName, dataName, sha
     return;
   }
 
-
-  // If material src hasn't changed, just update properties, but don't
-  // reload the texture.
-  if (src === shader.materialSrcs[materialName] &&
-      material[materialName]) {
-    setTextureProperties(material[materialName], data);
-    return;    
-  }
-
   // Remember the new src for this texture (there may be multiple).
+  // Note that even if the material is unchanged, other attributes such as
+  // repeat and offset may have changed, so we need should update the material
+  // even if the src is unchanged.
+
   shader.materialSrcs[materialName] = src;
 
   // If the new material src is already a texture, just use it.
