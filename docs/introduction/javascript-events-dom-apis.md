@@ -504,7 +504,7 @@ entityEl.removeEventListener('physicscollided', collisionHandler);
 
 ### Binding Event Listeners
 
-By default, event listeners do not have access to the component's `this`.  Instead, `this` will be bound to `window`, so you won't see errors if you reference `this` inside an event Listener, but you are likely to get unexpected results.
+By default, [Javascript execution context rules](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this) binds `this` to the global context (`window`) for any independent function, meaning that these functions won't have access to the component's `this` by default.
 
 In order for the component's `this` to be accessible inside an event listener, [it must be bound](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this).
 
