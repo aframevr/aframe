@@ -54481,7 +54481,7 @@ module.exports.Component = registerComponent('cursor', {
     var el = this.el;
     var self = this;
 
-    function addCanvasListeners () {
+    const addCanvasListeners = () => {
       canvas = this.getCanvas();
       if (data.downEvents.length || data.upEvents.length) { return; }
       CANVAS_EVENTS.DOWN.forEach(function (downEvent) {
@@ -54490,7 +54490,7 @@ module.exports.Component = registerComponent('cursor', {
       CANVAS_EVENTS.UP.forEach(function (upEvent) {
         canvas.addEventListener(upEvent, self.onCursorUp);
       });
-    }
+    };
 
     canvas = this.getCanvas();
     if (canvas) {
@@ -70472,7 +70472,7 @@ require('./core/a-mixin');
 require('./extras/components/');
 require('./extras/primitives/');
 
-console.log('A-Frame Version: 1.2.0 (Date 2022-01-03, Commit #5da87494)');
+console.log('A-Frame Version: 1.2.0 (Date 2022-01-09, Commit #9b66031c)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
