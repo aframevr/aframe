@@ -126,7 +126,7 @@ module.exports.Component = registerComponent('cursor', {
     var el = this.el;
     var self = this;
 
-    function addCanvasListeners () {
+    const addCanvasListeners = () => {
       canvas = this.getCanvas();
       if (data.downEvents.length || data.upEvents.length) { return; }
       CANVAS_EVENTS.DOWN.forEach(function (downEvent) {
@@ -135,7 +135,7 @@ module.exports.Component = registerComponent('cursor', {
       CANVAS_EVENTS.UP.forEach(function (upEvent) {
         canvas.addEventListener(upEvent, self.onCursorUp);
       });
-    }
+    };
 
     canvas = this.getCanvas();
     if (canvas) {
