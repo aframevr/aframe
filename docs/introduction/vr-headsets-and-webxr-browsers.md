@@ -145,10 +145,10 @@ front-facing changes to A-Frame developers, involving mostly renaming of APIs.
 - Chrome (WebXR under origin trials)
 - Exokit (experimental early support)
 
-[webxrpolyfill]: https://github.com/immersive-web/webxr-polyfill
+[webvrpolyfill]: https://github.com/googlevr/webvr-polyfill
 
 A-Frame supports most modern mobile browsers that don't have WebXR support
-through the [WebXR polyfill][webxrpolyfill]. Note that these browsers do not
+through the [WebVR polyfill][webvrpolyfill]. Note that these browsers do not
 have official WebXR support, and we are using a polyfill; it is important to
 lower the expectations that these browsers will provide a quality experience
 and not have quirks:
