@@ -61847,7 +61847,7 @@ module.exports.Component = register('background', {
   schema: {
     color: { type: 'color', default: 'black' },
     transparent: { default: false },
-    generateEnvironment: { default: true },
+    generateEnvironment: { default: false },
     directionalLight: { type: 'selector' }
   },
   init: function () {
@@ -61858,7 +61858,7 @@ module.exports.Component = register('background', {
     this.cubeRenderTarget = new THREE.WebGLCubeRenderTarget(256, { format: THREE.RGBFormat, generateMipmaps: true, minFilter: THREE.LinearMipmapLinearFilter });
     this.lightProbeTarget = new THREE.WebGLCubeRenderTarget(16, { format: THREE.RGBFormat, generateMipmaps: false });
     this.cubeCamera = new THREE.CubeCamera(0.1, 1000, this.cubeRenderTarget);
-    this.needsEnvironmentUpdate = true;
+    this.needsEnvironmentUpdate = false;
     this.timeSinceUpdate = 0;
 
     // Update WebXR to support light-estimation
@@ -71790,7 +71790,7 @@ require('./core/a-mixin');
 require('./extras/components/');
 require('./extras/primitives/');
 
-console.log('A-Frame Version: 1.2.0 (Date 2022-01-10, Commit #25098a96)');
+console.log('A-Frame Version: 1.2.0 (Date 2022-01-14, Commit #8d9e8c98)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
