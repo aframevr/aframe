@@ -26,7 +26,7 @@ module.exports.Component = register('background', {
   schema: {
     color: { type: 'color', default: 'black' },
     transparent: { default: false },
-    generateEnvironment: { default: true },
+    generateEnvironment: { default: false },
     directionalLight: { type: 'selector' }
   },
   init: function () {
@@ -37,7 +37,7 @@ module.exports.Component = register('background', {
     this.cubeRenderTarget = new THREE.WebGLCubeRenderTarget(256, { format: THREE.RGBFormat, generateMipmaps: true, minFilter: THREE.LinearMipmapLinearFilter });
     this.lightProbeTarget = new THREE.WebGLCubeRenderTarget(16, { format: THREE.RGBFormat, generateMipmaps: false });
     this.cubeCamera = new THREE.CubeCamera(0.1, 1000, this.cubeRenderTarget);
-    this.needsEnvironmentUpdate = true;
+    this.needsEnvironmentUpdate = false;
     this.timeSinceUpdate = 0;
 
     // Update WebXR to support light-estimation
