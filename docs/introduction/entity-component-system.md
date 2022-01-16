@@ -348,16 +348,11 @@ to look at include:
 [blog]: https://aframe.io/blog/
 [homepage]: https://aframe.io/
 
-Until mid-2019, there was a weekly post on the [the blog][blog], "A week of A-Frame" which rounded up all the activity in the A-Frame
-community and ecosystem. The archives are still available, and include components that were released or updated during that time, although some of these may be somewhat outdated.
-
-The blog continues, but posts are no longer as frequent.
+The A-Frame Blog archives include details of components as they were released or updated, and can be a good place to find links to components.
 
 #### A-Frame Wiki
 
-The [A-Frame Wiki](https://aframe.wiki/) is a new (from mid-2021) community-driven initiative  that attempts to collect information about available A-Frame components in a single central place.
-
-It is very easy to register and add or edit information, and you are encouraged to do so, to help this resource to grow and become more useful.
+The [A-Frame Wiki](https://aframe.wiki/) is a useful community-driven initiative that collects information and tips about available A-Frame components. Everyone is encouraged to participate. It's very easy to add and edit information.
 
 ### Using a Community Component
 
