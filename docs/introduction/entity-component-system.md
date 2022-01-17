@@ -343,15 +343,16 @@ to look at include:
 - [A-Painter](https://github.com/aframevr/a-painter/)
 - [A-Blast](https://github.com/aframevr/a-blast/)
 
-#### *A Week of A-Frame*
+#### A-Frame Blog
 
 [blog]: https://aframe.io/blog/
 [homepage]: https://aframe.io/
 
-[Every week on the blog][blog], we round up all the activity in the A-Frame
-community and ecosystem. This includes featuring components that have been
-freshly released or updated. [The homepage of A-Frame][homepage] will usually
-have a link to the most recent *A Week of A-Frame* entry.
+The A-Frame Blog archives include details of components as they were released or updated, and can be a good place to find links to components.
+
+#### A-Frame Wiki
+
+The [A-Frame Wiki](https://aframe.wiki/) is a useful community-driven initiative that collects information and tips about available A-Frame components. Everyone is encouraged to participate. It's very easy to add and edit information.
 
 ### Using a Community Component
 
