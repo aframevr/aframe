@@ -124,8 +124,10 @@ components.
 
 Let's attach community physics components to primitives. We include the source
 for [Don McCurdy's
-`aframe-physics-system`](https://github.com/donmccurdy/aframe-physics-system) and attach
+`aframe-physics-system`](https://github.com/n5ro/aframe-physics-system) and attach
 the physics components via HTML attributes:
+
+> :warning: **If you are using A-Frame 1.2.0 or later**: [`aframe-physics-system`](https://github.com/donmccurdy/aframe-physics-system) and you're having issues make sure you're no longer using the now deprecated THREE.Geometry. More info on [this GitHub issue](https://github.com/n5ro/aframe-physics-system/issues/187).
 
 ```html
 <html>
