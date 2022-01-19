@@ -60,6 +60,8 @@ module.exports.Component = registerComponent('layer', {
 
     this.visibilityChanged = false;
     if (!this.layer) { return; }
+    if (type !== 'monocubemap' && type !== 'stereocubemap') { return; }
+
     if (!src.complete) {
       this.pendingCubeMapUpdate = true;
     } else {
@@ -72,7 +74,7 @@ module.exports.Component = registerComponent('layer', {
       this.loadingScreen = false;
     }
 
-    if (this.layer.layout === 'mono') {
+    if (type === 'monocubemap') {
       glayer = xrGLFactory.getSubImage(this.layer, frame);
       this.loadCubeMapImage(glayer.colorTexture, src, 0);
     } else {
