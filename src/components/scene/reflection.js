@@ -5,35 +5,75 @@ var COMPONENTS = require('../../core/component').components;
 // source: view-source:https://storage.googleapis.com/chromium-webxr-test/r886480/proposals/lighting-estimation.html
 function updateLights (estimate, probeLight, directionalLight, directionalLightPosition) {
   var intensityScalar =
-    Math.max(1.0,
-      Math.max(estimate.primaryLightIntensity.x,
-        Math.max(estimate.primaryLightIntensity.y,
-          estimate.primaryLightIntensity.z)));
+    Math.max(estimate.primaryLightIntensity.x,
+      Math.max(estimate.primaryLightIntensity.y,
+        estimate.primaryLightIntensity.z));
 
   probeLight.sh.fromArray(estimate.sphericalHarmonicsCoefficients);
   probeLight.intensity = 1;
 
-  directionalLight.color.setRGB(
-    estimate.primaryLightIntensity.x / intensityScalar,
-    estimate.primaryLightIntensity.y / intensityScalar,
-    estimate.primaryLightIntensity.z / intensityScalar);
+  if (directionalLight) {
+    directionalLight.color.setRGB(
+      estimate.primaryLightIntensity.x / intensityScalar,
+      estimate.primaryLightIntensity.y / intensityScalar,
+      estimate.primaryLightIntensity.z / intensityScalar);
 
-  directionalLight.intensity = intensityScalar;
-  directionalLightPosition.copy(estimate.primaryLightDirection);
+    directionalLight.intensity = intensityScalar;
+    directionalLightPosition.copy(estimate.primaryLightDirection);
+  }
+}
+
+function makeDebugOctogon () {
+  var geometry = new THREE.OctahedronBufferGeometry(0.5, 2);
+  var material = new THREE.ShaderMaterial({
+    side: THREE.BackSide,
+    blending: THREE.NormalBlending,
+    toneMapped: false,
+    uniforms: {
+      cubemap: {
+        type: 't',
+        value: undefined
+      }
+    },
+    vertexShader: `
+varying vec3 vWorldPosition;
+
+void main() {
+  //vec4 worldPosition = modelMatrix * vec4(position, 1.0);
+  vec4 worldPosition = vec4(position, 1.0);
+  vWorldPosition = vec3(worldPosition.z, worldPosition.y, worldPosition.x);
+
+  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+}
+    `,
+    fragmentShader: `
+uniform samplerCube cubemap;
+varying vec3 vWorldPosition;
+
+void main(){
+  vec3 normalizedVWorldPosition = normalize(vWorldPosition);
+  vec3 outcolor = textureCube(cubemap, normalizedVWorldPosition).rgb;
+
+  gl_FragColor = vec4(outcolor, 1.0);
+}
+    `
+  });
+
+  // mesh
+  var skyOcto = new THREE.Mesh(geometry, material);
+  return skyOcto;
 }
 
 module.exports.Component = register('reflection', {
   schema: {
-    directionalLight: { type: 'selector' }
+    directionalLight: { type: 'selector' },
+    debug: false
   },
   init: function () {
     var self = this;
-    this.cubeRenderTarget = new THREE.WebGLCubeRenderTarget(256, { generateMipmaps: true, minFilter: THREE.LinearMipmapLinearFilter });
-    this.lightProbeTarget = new THREE.WebGLCubeRenderTarget(16, { generateMipmaps: false });
+    this.cubeRenderTarget = new THREE.WebGLCubeRenderTarget(16, { generateMipmaps: false });
     this.cubeCamera = new THREE.CubeCamera(0.1, 1000, this.cubeRenderTarget);
     this.needsVREnvironmentUpdate = true;
-    this.timeSinceUpdate = 0;
-    this.updateXRCubeMap = this.updateXRCubeMap.bind(this);
 
     // Update WebXR to support light-estimation
     var webxrData = this.el.getAttribute('webxr');
@@ -43,23 +83,31 @@ module.exports.Component = register('reflection', {
       this.el.setAttribute('webxr', webxrData);
     }
 
-    this.el.sceneEl.addEventListener('enter-vr', function () {
+    this.el.addEventListener('enter-vr', function () {
       var renderer = self.el.renderer;
       var session = renderer.xr.getSession();
       if (
-        session.requestLightProbe && self.el.sceneEl.is('ar-mode')
+        session.requestLightProbe && self.el.is('ar-mode')
       ) {
         self.startLightProbe();
       }
     });
 
-    this.el.sceneEl.addEventListener('exit-vr', function () {
+    this.el.addEventListener('exit-vr', function () {
       self.stopLightProbe();
     });
+
+    this.debugMesh = makeDebugOctogon();
+    this.debugMesh.position.set(0, 2, -2);
+    this.el.object3D.add(this.debugMesh);
+
+    this.el.object3D.environment = this.cubeRenderTarget.texture;
   },
   stopLightProbe: function () {
     this.xrLightProbe = null;
-    this.probeLight.components.light.light.intensity = 0;
+    if (this.probeLight) {
+      this.probeLight.components.light.light.intensity = 0;
+    }
     this.needsVREnvironmentUpdate = true;
   },
   startLightProbe: function () {
@@ -86,7 +134,7 @@ module.exports.Component = register('reflection', {
     xrSession.requestLightProbe()
       .then(function (lightProbe) {
         self.xrLightProbe = lightProbe;
-        lightProbe.addEventListener('reflectionchange', self.updateXRCubeMap);
+        lightProbe.addEventListener('reflectionchange', self.updateXRCubeMap.bind(self));
       })
       .catch(function (err) {
         console.warn('Lighting estimation not supported: ' + err.message);
@@ -95,19 +143,17 @@ module.exports.Component = register('reflection', {
   },
   updateXRCubeMap: function () {
     // Update Cube Map, cubeMap maybe some unavailable on some hardware
-    var scene = this.el.object3D;
     var renderer = this.el.renderer;
     var cubeMap = this.glBinding.getReflectionCubeMap(this.xrLightProbe);
     if (cubeMap) {
-      var rendererProps = renderer.properties.get(this.lightProbeTarget.texture);
+      var rendererProps = renderer.properties.get(this.cubeRenderTarget.texture);
       rendererProps.__webglTexture = cubeMap;
-      scene.environment = this.lightProbeTarget.texture;
     }
   },
   tick: function () {
     var scene = this.el.object3D;
     var renderer = this.el.renderer;
-    var frame = this.el.sceneEl.frame;
+    var frame = this.el.frame;
 
     if (frame && this.xrLightProbe) {
       // light estimate may not yet be available, it takes a few frames to start working
@@ -117,8 +163,8 @@ module.exports.Component = register('reflection', {
         updateLights(
           estimate,
           this.probeLight.components.light.light,
-          this.data.directionalLight.components.light.light,
-          this.data.directionalLight.object3D.position
+          this.data.directionalLight && this.data.directionalLight.components.light.light,
+          this.data.directionalLight && this.data.directionalLight.object3D.position
         );
       }
     }
@@ -126,9 +172,8 @@ module.exports.Component = register('reflection', {
     if (this.needsVREnvironmentUpdate) {
       this.needsVREnvironmentUpdate = false;
       this.cubeCamera.position.set(0, 1.6, 0);
-      scene.environment = null;
       this.cubeCamera.update(renderer, scene);
-      scene.environment = this.cubeRenderTarget.texture;
+      this.debugMesh.material.uniforms.cubemap.value = this.cubeRenderTarget.texture;
     }
 
     if (this.needsLightProbeUpdate && frame) {
