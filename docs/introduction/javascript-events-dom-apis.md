@@ -510,13 +510,14 @@ In order for the component's `this` to be accessible inside an event listener, [
 
 There are several ways you can do this:
 
-1. By using an arrow function to define the event listener.  Arrow functions automatically bind `this`.
+1. By using an arrow function to define the event listener.  Arrow functions automatically bind `this`
 
-```entityEl.addEventListener('physicscollided', function (event) {
-entityEl.addEventListener('click', (event) => {
-  console.log(this.el.id);
+```
+this.el.addEventListener('physicscollided', (event) => {
+    console.log(this.el.id);
 });
 ```
+
 
 2. By defining your event listener within the events object of the component (this will also handling adding and removing the listener automatically)
 
