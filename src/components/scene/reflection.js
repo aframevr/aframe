@@ -66,8 +66,7 @@ void main(){
 
 module.exports.Component = register('reflection', {
   schema: {
-    directionalLight: { type: 'selector' },
-    debug: false
+    directionalLight: { type: 'selector' }
   },
   init: function () {
     var self = this;
