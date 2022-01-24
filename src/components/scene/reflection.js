@@ -147,6 +147,7 @@ module.exports.Component = register('reflection', {
     if (cubeMap) {
       var rendererProps = renderer.properties.get(this.cubeRenderTarget.texture);
       rendererProps.__webglTexture = cubeMap;
+      this.cubeRenderTarget.texture.needsPMREMUpdate = true;
     }
   },
   tick: function () {
