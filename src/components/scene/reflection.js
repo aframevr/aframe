@@ -23,47 +23,6 @@ function updateLights (estimate, probeLight, directionalLight, directionalLightP
   }
 }
 
-function makeDebugOctogon () {
-  var geometry = new THREE.OctahedronBufferGeometry(0.5, 2);
-  var material = new THREE.ShaderMaterial({
-    side: THREE.BackSide,
-    blending: THREE.NormalBlending,
-    toneMapped: false,
-    uniforms: {
-      cubemap: {
-        type: 't',
-        value: undefined
-      }
-    },
-    vertexShader: `
-varying vec3 vWorldPosition;
-
-void main() {
-  //vec4 worldPosition = modelMatrix * vec4(position, 1.0);
-  vec4 worldPosition = vec4(position, 1.0);
-  vWorldPosition = vec3(worldPosition.z, worldPosition.y, worldPosition.x);
-
-  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-}
-    `,
-    fragmentShader: `
-uniform samplerCube cubemap;
-varying vec3 vWorldPosition;
-
-void main(){
-  vec3 normalizedVWorldPosition = normalize(vWorldPosition);
-  vec3 outcolor = textureCube(cubemap, normalizedVWorldPosition).rgb;
-
-  gl_FragColor = vec4(outcolor, 1.0);
-}
-    `
-  });
-
-  // mesh
-  var skyOcto = new THREE.Mesh(geometry, material);
-  return skyOcto;
-}
-
 module.exports.Component = register('reflection', {
   schema: {
     directionalLight: { type: 'selector' }
@@ -95,10 +54,6 @@ module.exports.Component = register('reflection', {
     this.el.addEventListener('exit-vr', function () {
       self.stopLightProbe();
     });
-
-    this.debugMesh = makeDebugOctogon();
-    this.debugMesh.position.set(0, 2, -2);
-    this.el.object3D.add(this.debugMesh);
 
     this.el.object3D.environment = this.cubeRenderTarget.texture;
   },
@@ -173,7 +128,6 @@ module.exports.Component = register('reflection', {
       this.needsVREnvironmentUpdate = false;
       this.cubeCamera.position.set(0, 1.6, 0);
       this.cubeCamera.update(renderer, scene);
-      this.debugMesh.material.uniforms.cubemap.value = this.cubeRenderTarget.texture;
     }
 
     if (this.needsLightProbeUpdate && frame) {
