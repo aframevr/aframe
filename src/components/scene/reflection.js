@@ -1,6 +1,5 @@
 /* global THREE, XRWebGLBinding */
 var register = require('../../core/component').registerComponent;
-var COMPONENTS = require('../../core/component').components;
 
 // source: view-source:https://storage.googleapis.com/chromium-webxr-test/r886480/proposals/lighting-estimation.html
 function updateLights (estimate, probeLight, directionalLight, directionalLightPosition) {
@@ -29,8 +28,9 @@ module.exports.Component = register('reflection', {
   },
   init: function () {
     var self = this;
-    this.cubeRenderTarget = new THREE.WebGLCubeRenderTarget(16, { generateMipmaps: false });
+    this.cubeRenderTarget = new THREE.WebGLCubeRenderTarget(16);
     this.cubeCamera = new THREE.CubeCamera(0.1, 1000, this.cubeRenderTarget);
+    this.lightingEstimationTexture = (new THREE.WebGLCubeRenderTarget(16)).texture;
     this.needsVREnvironmentUpdate = true;
 
     // Update WebXR to support light-estimation
@@ -63,6 +63,7 @@ module.exports.Component = register('reflection', {
       this.probeLight.components.light.light.intensity = 0;
     }
     this.needsVREnvironmentUpdate = true;
+    this.el.object3D.environment = this.cubeRenderTarget.texture;
   },
   startLightProbe: function () {
     this.needsLightProbeUpdate = true;
@@ -79,6 +80,17 @@ module.exports.Component = register('reflection', {
       probeLight.setAttribute('intensity', 0);
       this.el.appendChild(probeLight);
       this.probeLight = probeLight;
+    }
+
+    // Ensure that we have any extensions needed to use the preferred cube map format.
+    switch (xrSession.preferredReflectionFormat) {
+      case 'srgba8':
+        gl.getExtension('EXT_sRGB');
+        break;
+
+      case 'rgba16f':
+        gl.getExtension('OES_texture_half_float');
+        break;
     }
 
     this.glBinding = new XRWebGLBinding(xrSession, gl);
@@ -100,9 +112,10 @@ module.exports.Component = register('reflection', {
     var renderer = this.el.renderer;
     var cubeMap = this.glBinding.getReflectionCubeMap(this.xrLightProbe);
     if (cubeMap) {
-      var rendererProps = renderer.properties.get(this.cubeRenderTarget.texture);
+      var rendererProps = renderer.properties.get(this.lightingEstimationTexture);
       rendererProps.__webglTexture = cubeMap;
-      this.cubeRenderTarget.texture.needsPMREMUpdate = true;
+      this.lightingEstimationTexture.needsPMREMUpdate = true;
+      this.el.object3D.environment = this.lightingEstimationTexture;
     }
   },
   tick: function () {
@@ -139,12 +152,7 @@ module.exports.Component = register('reflection', {
   },
 
   remove: function () {
-    var data = this.data;
-    var object3D = this.el.object3D;
-    if (data.transparent) {
-      object3D.background = null;
-      return;
-    }
-    object3D.background = COMPONENTS[this.name].schema.color.default;
+    this.el.object3D.environment = null;
+    this.removeChild(this.probeLight);
   }
 });

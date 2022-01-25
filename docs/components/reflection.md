@@ -7,10 +7,12 @@ source_code: src/components/reflection.js
 examples: []
 ---
 
-The reflection component can also generate a default environment cube map for all
+The reflection component generates a default environment cube map for all
 materials, this is useful in case you find GLB models end up too dark or reflective
 materials don't look right because they are not reflecting the environment this
 will provide a default reflective environment.
+
+![Left hand side has objects with no reflection, the objects on the right reflect the environment](https://user-images.githubusercontent.com/4225330/151032019-1f14a079-604a-4c5f-b377-ea30a4e2b098.png)
 
 ## Scene Lighting and Lighting Estimation
 
