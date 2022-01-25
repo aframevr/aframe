@@ -16,7 +16,8 @@
 <body>
 	<a-scene
 		webxr="overlayElement:#dom-overlay;"
-		background="directionalLight:#dirlight;"
+		background="color:skyblue;"
+		reflection="directionalLight:#dirlight;"
 		ar-hit-test="target:#table;"
 		shadow="type: pcfsoft">
 		<a-assets>
@@ -45,7 +46,7 @@
 					material="roughness: 0.1; metalness: 0.2;"></a-cylinder>
 				<a-box position="-1 0.5 1" rotation="0 45 0" color="#4CC3D9" material="roughness: 0.1; metalness: 0.2;">
 				</a-box>
-				<a-sphere position="0 1.25 -1" radius="1.25" color="#FFFFFF" material="roughness: 0; metalness: 0;">
+				<a-sphere position="0 1.25 -1" radius="1.25" color="#cccccc" material="roughness:0.5; metalness:0.1;">
 				</a-sphere>
 				<a-torus-knot position="0 3 0" material="metalness: 1; roughness: 0.17"
 					geometry="radius: 0.45; radiusTubular: 0.09"
