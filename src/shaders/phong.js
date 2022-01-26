@@ -6,54 +6,45 @@ var CubeLoader = new THREE.CubeTextureLoader();
 var texturePromises = {};
 
 /**
- * Standard (physically-based) shader using THREE.MeshStandardMaterial.
+ * Phong shader using THREE.MeshPhongMaterial.
  */
-module.exports.Shader = registerShader('standard', {
+module.exports.Shader = registerShader('phong', {
   schema: {
-    ambientOcclusionMap: {type: 'map'},
-    ambientOcclusionMapIntensity: {default: 1},
-    ambientOcclusionTextureOffset: {type: 'vec2'},
-    ambientOcclusionTextureRepeat: {type: 'vec2', default: {x: 1, y: 1}},
+    color: { type: 'color' },
+    emissive: { type: 'color', default: 'black' },
+    emissiveIntensity: { default: 1 },
+    specular: { type: 'color', default: '#111111' },
+    transparent: { default: false },
+    fog: { default: true },
+    offset: { type: 'vec2', default: { x: 0, y: 0 } },
+    repeat: { type: 'vec2', default: { x: 1, y: 1 } },
+    src: { type: 'map' },
+    envMap: { default: '' },
+    sphericalEnvMap: { type: 'map' },
+    shininess: { default: 30 },
+    flatShading: { default: false },
+    wireframe: { default: false },
+    wireframeLinewidth: { default: 2 },
+    combine: { oneOF: ['multiply', 'mix', 'add'], default: 'mix' },
+    reflectivity: { default: 0.9 },
+    refractionRatio: { default: 0.98 },
+    refract: { default: false },
 
-    color: {type: 'color'},
+    normalMap: { type: 'map' },
+    normalScale: { type: 'vec2', default: { x: 1, y: 1 } },
+    normalTextureOffset: { type: 'vec2' },
+    normalTextureRepeat: { type: 'vec2', default: { x: 1, y: 1 } },
 
-    displacementMap: {type: 'map'},
-    displacementScale: {default: 1},
-    displacementBias: {default: 0.5},
-    displacementTextureOffset: {type: 'vec2'},
-    displacementTextureRepeat: {type: 'vec2', default: {x: 1, y: 1}},
+    displacementMap: { type: 'map' },
+    displacementScale: { default: 1 },
+    displacementBias: { default: 0.5 },
+    displacementTextureOffset: { type: 'vec2' },
+    displacementTextureRepeat: { type: 'vec2', default: { x: 1, y: 1 } },
 
-    emissive: {type: 'color', default: '#000'},
-    emissiveIntensity: {default: 1},
-
-    envMap: {default: ''},
-
-    fog: {default: true},
-    height: {default: 256},
-
-    metalness: {default: 0.0, min: 0.0, max: 1.0},
-    metalnessMap: {type: 'map'},
-    metalnessTextureOffset: {type: 'vec2'},
-    metalnessTextureRepeat: {type: 'vec2', default: {x: 1, y: 1}},
-
-    normalMap: {type: 'map'},
-    normalScale: {type: 'vec2', default: {x: 1, y: 1}},
-    normalTextureOffset: {type: 'vec2'},
-    normalTextureRepeat: {type: 'vec2', default: {x: 1, y: 1}},
-
-    offset: {type: 'vec2', default: {x: 0, y: 0}},
-    repeat: {type: 'vec2', default: {x: 1, y: 1}},
-
-    roughness: {default: 0.5, min: 0.0, max: 1.0},
-    roughnessMap: {type: 'map'},
-    roughnessTextureOffset: {type: 'vec2'},
-    roughnessTextureRepeat: {type: 'vec2', default: {x: 1, y: 1}},
-
-    sphericalEnvMap: {type: 'map'},
-    src: {type: 'map'},
-    width: {default: 512},
-    wireframe: {default: false},
-    wireframeLinewidth: {default: 2}
+    bumpMap: { type: 'map' },
+    bumpMapScale: { default: 1 },
+    bumpTextureOffset: { type: 'vec2' },
+    bumpTextureRepeat: { type: 'vec2', default: { x: 1, y: 1 } }
   },
 
   /**
@@ -62,19 +53,12 @@ module.exports.Shader = registerShader('standard', {
    */
   init: function (data) {
     this.rendererSystem = this.el.sceneEl.systems.renderer;
-    this.materialData = {color: new THREE.Color(), emissive: new THREE.Color()};
+    this.materialData = { color: new THREE.Color(), specular: new THREE.Color(), emissive: new THREE.Color() };
+    this.textureSrc = null;
     getMaterialData(data, this.materialData);
     this.rendererSystem.applyColorCorrection(this.materialData.color);
-    this.rendererSystem.applyColorCorrection(this.materialData.emissive);
-    this.material = new THREE.MeshStandardMaterial(this.materialData);
-
+    this.material = new THREE.MeshPhongMaterial(this.materialData);
     utils.material.updateMap(this, data);
-    if (data.normalMap) { utils.material.updateDistortionMap('normal', this, data); }
-    if (data.displacementMap) { utils.material.updateDistortionMap('displacement', this, data); }
-    if (data.ambientOcclusionMap) { utils.material.updateDistortionMap('ambientOcclusion', this, data); }
-    if (data.metalnessMap) { utils.material.updateDistortionMap('metalness', this, data); }
-    if (data.roughnessMap) { utils.material.updateDistortionMap('roughness', this, data); }
-    this.updateEnvMap(data);
   },
 
   update: function (data) {
@@ -83,8 +67,7 @@ module.exports.Shader = registerShader('standard', {
     if (data.normalMap) { utils.material.updateDistortionMap('normal', this, data); }
     if (data.displacementMap) { utils.material.updateDistortionMap('displacement', this, data); }
     if (data.ambientOcclusionMap) { utils.material.updateDistortionMap('ambientOcclusion', this, data); }
-    if (data.metalnessMap) { utils.material.updateDistortionMap('metalness', this, data); }
-    if (data.roughnessMap) { utils.material.updateDistortionMap('roughness', this, data); }
+    if (data.bump) { utils.material.updateDistortionMap('bump', this, data); }
     this.updateEnvMap(data);
   },
 
@@ -92,16 +75,13 @@ module.exports.Shader = registerShader('standard', {
    * Updating existing material.
    *
    * @param {object} data - Material component data.
-   * @returns {object} Material.
    */
   updateMaterial: function (data) {
     var key;
-    var material = this.material;
     getMaterialData(data, this.materialData);
     this.rendererSystem.applyColorCorrection(this.materialData.color);
-    this.rendererSystem.applyColorCorrection(this.materialData.emissive);
     for (key in this.materialData) {
-      material[key] = this.materialData[key];
+      this.material[key] = this.materialData[key];
     }
   },
 
@@ -113,20 +93,32 @@ module.exports.Shader = registerShader('standard', {
     var material = this.material;
     var envMap = data.envMap;
     var sphericalEnvMap = data.sphericalEnvMap;
+    var refract = data.refract;
+    var sceneEl = this.el.sceneEl;
 
     // No envMap defined or already loading.
     if ((!envMap && !sphericalEnvMap) || this.isLoadingEnvMap) {
-      material.envMap = null;
+      Object.defineProperty(material, 'envMap', {
+        get: function () {
+          return sceneEl.object3D.environment;
+        },
+        set: function (value) {
+          delete this.envMap;
+          this.envMap = value;
+        }
+      });
       material.needsUpdate = true;
       return;
     }
     this.isLoadingEnvMap = true;
+    delete material.envMap;
 
     // if a spherical env map is defined then use it.
     if (sphericalEnvMap) {
-      this.el.sceneEl.systems.material.loadTexture(sphericalEnvMap, {src: sphericalEnvMap}, function textureLoaded (texture) {
+      this.el.sceneEl.systems.material.loadTexture(sphericalEnvMap, { src: sphericalEnvMap }, function textureLoaded (texture) {
         self.isLoadingEnvMap = false;
-        texture.mapping = THREE.EquirectangularReflectionMapping;
+        texture.mapping = refract ? THREE.EquirectangularRefractionMapping : THREE.EquirectangularReflectionMapping;
+
         material.envMap = texture;
         utils.material.handleTextureEvents(self.el, texture);
         material.needsUpdate = true;
@@ -152,6 +144,7 @@ module.exports.Shader = registerShader('standard', {
           // Texture loaded.
           self.isLoadingEnvMap = false;
           material.envMap = cube;
+          cube.mapping = refract ? THREE.CubeRefractionMapping : THREE.CubeReflectionMapping;
           utils.material.handleTextureEvents(self.el, cube);
           resolve(cube);
         });
@@ -169,18 +162,42 @@ module.exports.Shader = registerShader('standard', {
  */
 function getMaterialData (data, materialData) {
   materialData.color.set(data.color);
+  materialData.specular.set(data.emissive);
   materialData.emissive.set(data.emissive);
   materialData.emissiveIntensity = data.emissiveIntensity;
   materialData.fog = data.fog;
-  materialData.metalness = data.metalness;
-  materialData.roughness = data.roughness;
+  materialData.transparent = data.transparent;
   materialData.wireframe = data.wireframe;
   materialData.wireframeLinewidth = data.wireframeLinewidth;
+  materialData.shininess = data.shininess;
+  materialData.flatShading = data.flatShading;
+  materialData.wireframe = data.wireframe;
+  materialData.wireframeLinewidth = data.wireframeLinewidth;
+  materialData.reflectivity = data.reflectivity;
+  materialData.refractionRatio = data.refractionRatio;
 
-  if (data.normalMap) { materialData.normalScale = data.normalScale; }
+  switch (data.combine) {
+    case 'mix':
+      materialData.combine = THREE.MixOperation;
+      break;
+    case 'multiply':
+      materialData.combine = THREE.MultiplyOperation;
+      break;
+    case 'add':
+      materialData.combine = THREE.AddOperation;
+      break;
+  }
+
+  if (data.normalMap) {
+    materialData.normalScale = data.normalScale;
+  }
 
   if (data.ambientOcclusionMap) {
     materialData.aoMapIntensity = data.ambientOcclusionMapIntensity;
+  }
+
+  if (data.bumpMap) {
+    materialData.aoMapIntensity = data.bumpMapScale;
   }
 
   if (data.displacementMap) {
