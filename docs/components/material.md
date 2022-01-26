@@ -147,6 +147,30 @@ For example, for a tree bark material, as an estimation, we might set:
 </a-entity>
 ```
 
+#### Phong-Based Shading
+
+Phong shading is an inexpensive shader model which whilst less realistic than the
+standard material is better than flat shading.
+
+To use it set the shader to phong in the material:
+
+```html
+<a-torus-knot position="0 3 0" material="shader:phong; reflectivity: 0.9; shininess: 30;"
+  geometry="radius: 0.45; radiusTubular: 0.09">
+</a-torus-knot>
+```
+
+It has the following properties you can use:
+
+|  Name          | Description                                                                   | Default |
+|----------------|-------------------------------------------------------------------------------|---------|
+|specular        | This defines how shiny the material is and the color of its shine.            | #111111 |
+|shininess       | How shiny the specular highlight is; a higher value gives a sharper highlight | 30      |
+|transparent     | Whether the material is transparent                                           | false   |
+|combine         | How the environment map mixes with the material. "mix", "add" or "multiply"   | "mix"   |
+|reflectivity    | How much the environment map affects the surface                              | 0.9     |
+|refract         | Whether the defined envMap should refract                                     | false   |
+|refractionRatio | 1/refractive index of the material                                            | 0.98    |
 #### Distortion Maps
 
 There are three properties which give the illusion of complex geometry:

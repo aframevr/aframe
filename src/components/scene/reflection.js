@@ -138,9 +138,11 @@ module.exports.Component = register('reflection', {
     }
 
     if (this.needsVREnvironmentUpdate) {
+      scene.environment = null;
       this.needsVREnvironmentUpdate = false;
       this.cubeCamera.position.set(0, 1.6, 0);
       this.cubeCamera.update(renderer, scene);
+      this.el.object3D.environment = this.cubeRenderTarget.texture;
     }
 
     if (this.needsLightProbeUpdate && frame) {
