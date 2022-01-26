@@ -57,6 +57,7 @@ module.exports.Component = registerComponent('layer', {
     var xrGLFactory = this.xrGLFactory;
     var frame = this.el.sceneEl.frame;
     var src = this.data.src;
+    var type = this.data.type;
 
     this.visibilityChanged = false;
     if (!this.layer) { return; }
