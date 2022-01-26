@@ -6528,7 +6528,7 @@ module.exports = anime;
 },{}],57:[function(require,module,exports){
 /**
  * @license
- * Copyright 2010-2021 Three.js Authors
+ * Copyright 2010-2022 Three.js Authors
  * SPDX-License-Identifier: MIT
  */
 (function (global, factory) {
@@ -6537,7 +6537,7 @@ module.exports = anime;
 	(global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.THREE = {}));
 }(this, (function (exports) { 'use strict';
 
-	const REVISION = '136';
+	const REVISION = '137';
 	const MOUSE = {
 		LEFT: 0,
 		MIDDLE: 1,
@@ -6634,10 +6634,8 @@ module.exports = anime;
 	const HalfFloatType = 1016;
 	const UnsignedShort4444Type = 1017;
 	const UnsignedShort5551Type = 1018;
-	const UnsignedShort565Type = 1019;
 	const UnsignedInt248Type = 1020;
 	const AlphaFormat = 1021;
-	const RGBFormat = 1022;
 	const RGBAFormat = 1023;
 	const LuminanceFormat = 1024;
 	const LuminanceAlphaFormat = 1025;
@@ -6647,7 +6645,6 @@ module.exports = anime;
 	const RedIntegerFormat = 1029;
 	const RGFormat = 1030;
 	const RGIntegerFormat = 1031;
-	const RGBIntegerFormat = 1032;
 	const RGBAIntegerFormat = 1033;
 	const RGB_S3TC_DXT1_Format = 33776;
 	const RGBA_S3TC_DXT1_Format = 33777;
@@ -6675,20 +6672,6 @@ module.exports = anime;
 	const RGBA_ASTC_12x10_Format = 37820;
 	const RGBA_ASTC_12x12_Format = 37821;
 	const RGBA_BPTC_Format = 36492;
-	const SRGB8_ALPHA8_ASTC_4x4_Format = 37840;
-	const SRGB8_ALPHA8_ASTC_5x4_Format = 37841;
-	const SRGB8_ALPHA8_ASTC_5x5_Format = 37842;
-	const SRGB8_ALPHA8_ASTC_6x5_Format = 37843;
-	const SRGB8_ALPHA8_ASTC_6x6_Format = 37844;
-	const SRGB8_ALPHA8_ASTC_8x5_Format = 37845;
-	const SRGB8_ALPHA8_ASTC_8x6_Format = 37846;
-	const SRGB8_ALPHA8_ASTC_8x8_Format = 37847;
-	const SRGB8_ALPHA8_ASTC_10x5_Format = 37848;
-	const SRGB8_ALPHA8_ASTC_10x6_Format = 37849;
-	const SRGB8_ALPHA8_ASTC_10x8_Format = 37850;
-	const SRGB8_ALPHA8_ASTC_10x10_Format = 37851;
-	const SRGB8_ALPHA8_ASTC_12x10_Format = 37852;
-	const SRGB8_ALPHA8_ASTC_12x12_Format = 37853;
 	const LoopOnce = 2200;
 	const LoopRepeat = 2201;
 	const LoopPingPong = 2202;
@@ -6736,6 +6719,7 @@ module.exports = anime;
 	const StreamCopyUsage = 35042;
 	const GLSL1 = '100';
 	const GLSL3 = '300 es';
+	const _SRGBAFormat = 1035; // fallback for WebGL 1
 
 	/**
 	 * https://github.com/mrdoob/eventdispatcher.js/
@@ -7598,15 +7582,13 @@ module.exports = anime;
 
 	Matrix3.prototype.isMatrix3 = true;
 
-	function arrayMax(array) {
-		if (array.length === 0) return -Infinity;
-		let max = array[0];
-
-		for (let i = 1, l = array.length; i < l; ++i) {
-			if (array[i] > max) max = array[i];
+	function arrayNeedsUint32(array) {
+		// assumes larger values usually on last
+		for (let i = array.length - 1; i >= 0; --i) {
+			if (array[i] > 65535) return true;
 		}
 
-		return max;
+		return false;
 	}
 
 	const TYPED_ARRAYS = {
@@ -7628,6 +7610,549 @@ module.exports = anime;
 	function createElementNS(name) {
 		return document.createElementNS('http://www.w3.org/1999/xhtml', name);
 	}
+
+	const _colorKeywords = {
+		'aliceblue': 0xF0F8FF,
+		'antiquewhite': 0xFAEBD7,
+		'aqua': 0x00FFFF,
+		'aquamarine': 0x7FFFD4,
+		'azure': 0xF0FFFF,
+		'beige': 0xF5F5DC,
+		'bisque': 0xFFE4C4,
+		'black': 0x000000,
+		'blanchedalmond': 0xFFEBCD,
+		'blue': 0x0000FF,
+		'blueviolet': 0x8A2BE2,
+		'brown': 0xA52A2A,
+		'burlywood': 0xDEB887,
+		'cadetblue': 0x5F9EA0,
+		'chartreuse': 0x7FFF00,
+		'chocolate': 0xD2691E,
+		'coral': 0xFF7F50,
+		'cornflowerblue': 0x6495ED,
+		'cornsilk': 0xFFF8DC,
+		'crimson': 0xDC143C,
+		'cyan': 0x00FFFF,
+		'darkblue': 0x00008B,
+		'darkcyan': 0x008B8B,
+		'darkgoldenrod': 0xB8860B,
+		'darkgray': 0xA9A9A9,
+		'darkgreen': 0x006400,
+		'darkgrey': 0xA9A9A9,
+		'darkkhaki': 0xBDB76B,
+		'darkmagenta': 0x8B008B,
+		'darkolivegreen': 0x556B2F,
+		'darkorange': 0xFF8C00,
+		'darkorchid': 0x9932CC,
+		'darkred': 0x8B0000,
+		'darksalmon': 0xE9967A,
+		'darkseagreen': 0x8FBC8F,
+		'darkslateblue': 0x483D8B,
+		'darkslategray': 0x2F4F4F,
+		'darkslategrey': 0x2F4F4F,
+		'darkturquoise': 0x00CED1,
+		'darkviolet': 0x9400D3,
+		'deeppink': 0xFF1493,
+		'deepskyblue': 0x00BFFF,
+		'dimgray': 0x696969,
+		'dimgrey': 0x696969,
+		'dodgerblue': 0x1E90FF,
+		'firebrick': 0xB22222,
+		'floralwhite': 0xFFFAF0,
+		'forestgreen': 0x228B22,
+		'fuchsia': 0xFF00FF,
+		'gainsboro': 0xDCDCDC,
+		'ghostwhite': 0xF8F8FF,
+		'gold': 0xFFD700,
+		'goldenrod': 0xDAA520,
+		'gray': 0x808080,
+		'green': 0x008000,
+		'greenyellow': 0xADFF2F,
+		'grey': 0x808080,
+		'honeydew': 0xF0FFF0,
+		'hotpink': 0xFF69B4,
+		'indianred': 0xCD5C5C,
+		'indigo': 0x4B0082,
+		'ivory': 0xFFFFF0,
+		'khaki': 0xF0E68C,
+		'lavender': 0xE6E6FA,
+		'lavenderblush': 0xFFF0F5,
+		'lawngreen': 0x7CFC00,
+		'lemonchiffon': 0xFFFACD,
+		'lightblue': 0xADD8E6,
+		'lightcoral': 0xF08080,
+		'lightcyan': 0xE0FFFF,
+		'lightgoldenrodyellow': 0xFAFAD2,
+		'lightgray': 0xD3D3D3,
+		'lightgreen': 0x90EE90,
+		'lightgrey': 0xD3D3D3,
+		'lightpink': 0xFFB6C1,
+		'lightsalmon': 0xFFA07A,
+		'lightseagreen': 0x20B2AA,
+		'lightskyblue': 0x87CEFA,
+		'lightslategray': 0x778899,
+		'lightslategrey': 0x778899,
+		'lightsteelblue': 0xB0C4DE,
+		'lightyellow': 0xFFFFE0,
+		'lime': 0x00FF00,
+		'limegreen': 0x32CD32,
+		'linen': 0xFAF0E6,
+		'magenta': 0xFF00FF,
+		'maroon': 0x800000,
+		'mediumaquamarine': 0x66CDAA,
+		'mediumblue': 0x0000CD,
+		'mediumorchid': 0xBA55D3,
+		'mediumpurple': 0x9370DB,
+		'mediumseagreen': 0x3CB371,
+		'mediumslateblue': 0x7B68EE,
+		'mediumspringgreen': 0x00FA9A,
+		'mediumturquoise': 0x48D1CC,
+		'mediumvioletred': 0xC71585,
+		'midnightblue': 0x191970,
+		'mintcream': 0xF5FFFA,
+		'mistyrose': 0xFFE4E1,
+		'moccasin': 0xFFE4B5,
+		'navajowhite': 0xFFDEAD,
+		'navy': 0x000080,
+		'oldlace': 0xFDF5E6,
+		'olive': 0x808000,
+		'olivedrab': 0x6B8E23,
+		'orange': 0xFFA500,
+		'orangered': 0xFF4500,
+		'orchid': 0xDA70D6,
+		'palegoldenrod': 0xEEE8AA,
+		'palegreen': 0x98FB98,
+		'paleturquoise': 0xAFEEEE,
+		'palevioletred': 0xDB7093,
+		'papayawhip': 0xFFEFD5,
+		'peachpuff': 0xFFDAB9,
+		'peru': 0xCD853F,
+		'pink': 0xFFC0CB,
+		'plum': 0xDDA0DD,
+		'powderblue': 0xB0E0E6,
+		'purple': 0x800080,
+		'rebeccapurple': 0x663399,
+		'red': 0xFF0000,
+		'rosybrown': 0xBC8F8F,
+		'royalblue': 0x4169E1,
+		'saddlebrown': 0x8B4513,
+		'salmon': 0xFA8072,
+		'sandybrown': 0xF4A460,
+		'seagreen': 0x2E8B57,
+		'seashell': 0xFFF5EE,
+		'sienna': 0xA0522D,
+		'silver': 0xC0C0C0,
+		'skyblue': 0x87CEEB,
+		'slateblue': 0x6A5ACD,
+		'slategray': 0x708090,
+		'slategrey': 0x708090,
+		'snow': 0xFFFAFA,
+		'springgreen': 0x00FF7F,
+		'steelblue': 0x4682B4,
+		'tan': 0xD2B48C,
+		'teal': 0x008080,
+		'thistle': 0xD8BFD8,
+		'tomato': 0xFF6347,
+		'turquoise': 0x40E0D0,
+		'violet': 0xEE82EE,
+		'wheat': 0xF5DEB3,
+		'white': 0xFFFFFF,
+		'whitesmoke': 0xF5F5F5,
+		'yellow': 0xFFFF00,
+		'yellowgreen': 0x9ACD32
+	};
+	const _hslA = {
+		h: 0,
+		s: 0,
+		l: 0
+	};
+	const _hslB = {
+		h: 0,
+		s: 0,
+		l: 0
+	};
+
+	function hue2rgb(p, q, t) {
+		if (t < 0) t += 1;
+		if (t > 1) t -= 1;
+		if (t < 1 / 6) return p + (q - p) * 6 * t;
+		if (t < 1 / 2) return q;
+		if (t < 2 / 3) return p + (q - p) * 6 * (2 / 3 - t);
+		return p;
+	}
+
+	function SRGBToLinear(c) {
+		return c < 0.04045 ? c * 0.0773993808 : Math.pow(c * 0.9478672986 + 0.0521327014, 2.4);
+	}
+
+	function LinearToSRGB(c) {
+		return c < 0.0031308 ? c * 12.92 : 1.055 * Math.pow(c, 0.41666) - 0.055;
+	}
+
+	class Color {
+		constructor(r, g, b) {
+			if (g === undefined && b === undefined) {
+				// r is THREE.Color, hex or string
+				return this.set(r);
+			}
+
+			return this.setRGB(r, g, b);
+		}
+
+		set(value) {
+			if (value && value.isColor) {
+				this.copy(value);
+			} else if (typeof value === 'number') {
+				this.setHex(value);
+			} else if (typeof value === 'string') {
+				this.setStyle(value);
+			}
+
+			return this;
+		}
+
+		setScalar(scalar) {
+			this.r = scalar;
+			this.g = scalar;
+			this.b = scalar;
+			return this;
+		}
+
+		setHex(hex) {
+			hex = Math.floor(hex);
+			this.r = (hex >> 16 & 255) / 255;
+			this.g = (hex >> 8 & 255) / 255;
+			this.b = (hex & 255) / 255;
+			return this;
+		}
+
+		setRGB(r, g, b) {
+			this.r = r;
+			this.g = g;
+			this.b = b;
+			return this;
+		}
+
+		setHSL(h, s, l) {
+			// h,s,l ranges are in 0.0 - 1.0
+			h = euclideanModulo(h, 1);
+			s = clamp(s, 0, 1);
+			l = clamp(l, 0, 1);
+
+			if (s === 0) {
+				this.r = this.g = this.b = l;
+			} else {
+				const p = l <= 0.5 ? l * (1 + s) : l + s - l * s;
+				const q = 2 * l - p;
+				this.r = hue2rgb(q, p, h + 1 / 3);
+				this.g = hue2rgb(q, p, h);
+				this.b = hue2rgb(q, p, h - 1 / 3);
+			}
+
+			return this;
+		}
+
+		setStyle(style) {
+			function handleAlpha(string) {
+				if (string === undefined) return;
+
+				if (parseFloat(string) < 1) {
+					console.warn('THREE.Color: Alpha component of ' + style + ' will be ignored.');
+				}
+			}
+
+			let m;
+
+			if (m = /^((?:rgb|hsl)a?)\(([^\)]*)\)/.exec(style)) {
+				// rgb / hsl
+				let color;
+				const name = m[1];
+				const components = m[2];
+
+				switch (name) {
+					case 'rgb':
+					case 'rgba':
+						if (color = /^\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*(?:,\s*(\d*\.?\d+)\s*)?$/.exec(components)) {
+							// rgb(255,0,0) rgba(255,0,0,0.5)
+							this.r = Math.min(255, parseInt(color[1], 10)) / 255;
+							this.g = Math.min(255, parseInt(color[2], 10)) / 255;
+							this.b = Math.min(255, parseInt(color[3], 10)) / 255;
+							handleAlpha(color[4]);
+							return this;
+						}
+
+						if (color = /^\s*(\d+)\%\s*,\s*(\d+)\%\s*,\s*(\d+)\%\s*(?:,\s*(\d*\.?\d+)\s*)?$/.exec(components)) {
+							// rgb(100%,0%,0%) rgba(100%,0%,0%,0.5)
+							this.r = Math.min(100, parseInt(color[1], 10)) / 100;
+							this.g = Math.min(100, parseInt(color[2], 10)) / 100;
+							this.b = Math.min(100, parseInt(color[3], 10)) / 100;
+							handleAlpha(color[4]);
+							return this;
+						}
+
+						break;
+
+					case 'hsl':
+					case 'hsla':
+						if (color = /^\s*(\d*\.?\d+)\s*,\s*(\d+)\%\s*,\s*(\d+)\%\s*(?:,\s*(\d*\.?\d+)\s*)?$/.exec(components)) {
+							// hsl(120,50%,50%) hsla(120,50%,50%,0.5)
+							const h = parseFloat(color[1]) / 360;
+							const s = parseInt(color[2], 10) / 100;
+							const l = parseInt(color[3], 10) / 100;
+							handleAlpha(color[4]);
+							return this.setHSL(h, s, l);
+						}
+
+						break;
+				}
+			} else if (m = /^\#([A-Fa-f\d]+)$/.exec(style)) {
+				// hex color
+				const hex = m[1];
+				const size = hex.length;
+
+				if (size === 3) {
+					// #ff0
+					this.r = parseInt(hex.charAt(0) + hex.charAt(0), 16) / 255;
+					this.g = parseInt(hex.charAt(1) + hex.charAt(1), 16) / 255;
+					this.b = parseInt(hex.charAt(2) + hex.charAt(2), 16) / 255;
+					return this;
+				} else if (size === 6) {
+					// #ff0000
+					this.r = parseInt(hex.charAt(0) + hex.charAt(1), 16) / 255;
+					this.g = parseInt(hex.charAt(2) + hex.charAt(3), 16) / 255;
+					this.b = parseInt(hex.charAt(4) + hex.charAt(5), 16) / 255;
+					return this;
+				}
+			}
+
+			if (style && style.length > 0) {
+				return this.setColorName(style);
+			}
+
+			return this;
+		}
+
+		setColorName(style) {
+			// color keywords
+			const hex = _colorKeywords[style.toLowerCase()];
+
+			if (hex !== undefined) {
+				// red
+				this.setHex(hex);
+			} else {
+				// unknown color
+				console.warn('THREE.Color: Unknown color ' + style);
+			}
+
+			return this;
+		}
+
+		clone() {
+			return new this.constructor(this.r, this.g, this.b);
+		}
+
+		copy(color) {
+			this.r = color.r;
+			this.g = color.g;
+			this.b = color.b;
+			return this;
+		}
+
+		copySRGBToLinear(color) {
+			this.r = SRGBToLinear(color.r);
+			this.g = SRGBToLinear(color.g);
+			this.b = SRGBToLinear(color.b);
+			return this;
+		}
+
+		copyLinearToSRGB(color) {
+			this.r = LinearToSRGB(color.r);
+			this.g = LinearToSRGB(color.g);
+			this.b = LinearToSRGB(color.b);
+			return this;
+		}
+
+		convertSRGBToLinear() {
+			this.copySRGBToLinear(this);
+			return this;
+		}
+
+		convertLinearToSRGB() {
+			this.copyLinearToSRGB(this);
+			return this;
+		}
+
+		getHex() {
+			return this.r * 255 << 16 ^ this.g * 255 << 8 ^ this.b * 255 << 0;
+		}
+
+		getHexString() {
+			return ('000000' + this.getHex().toString(16)).slice(-6);
+		}
+
+		getHSL(target) {
+			// h,s,l ranges are in 0.0 - 1.0
+			const r = this.r,
+						g = this.g,
+						b = this.b;
+			const max = Math.max(r, g, b);
+			const min = Math.min(r, g, b);
+			let hue, saturation;
+			const lightness = (min + max) / 2.0;
+
+			if (min === max) {
+				hue = 0;
+				saturation = 0;
+			} else {
+				const delta = max - min;
+				saturation = lightness <= 0.5 ? delta / (max + min) : delta / (2 - max - min);
+
+				switch (max) {
+					case r:
+						hue = (g - b) / delta + (g < b ? 6 : 0);
+						break;
+
+					case g:
+						hue = (b - r) / delta + 2;
+						break;
+
+					case b:
+						hue = (r - g) / delta + 4;
+						break;
+				}
+
+				hue /= 6;
+			}
+
+			target.h = hue;
+			target.s = saturation;
+			target.l = lightness;
+			return target;
+		}
+
+		getStyle() {
+			return 'rgb(' + (this.r * 255 | 0) + ',' + (this.g * 255 | 0) + ',' + (this.b * 255 | 0) + ')';
+		}
+
+		offsetHSL(h, s, l) {
+			this.getHSL(_hslA);
+			_hslA.h += h;
+			_hslA.s += s;
+			_hslA.l += l;
+			this.setHSL(_hslA.h, _hslA.s, _hslA.l);
+			return this;
+		}
+
+		add(color) {
+			this.r += color.r;
+			this.g += color.g;
+			this.b += color.b;
+			return this;
+		}
+
+		addColors(color1, color2) {
+			this.r = color1.r + color2.r;
+			this.g = color1.g + color2.g;
+			this.b = color1.b + color2.b;
+			return this;
+		}
+
+		addScalar(s) {
+			this.r += s;
+			this.g += s;
+			this.b += s;
+			return this;
+		}
+
+		sub(color) {
+			this.r = Math.max(0, this.r - color.r);
+			this.g = Math.max(0, this.g - color.g);
+			this.b = Math.max(0, this.b - color.b);
+			return this;
+		}
+
+		multiply(color) {
+			this.r *= color.r;
+			this.g *= color.g;
+			this.b *= color.b;
+			return this;
+		}
+
+		multiplyScalar(s) {
+			this.r *= s;
+			this.g *= s;
+			this.b *= s;
+			return this;
+		}
+
+		lerp(color, alpha) {
+			this.r += (color.r - this.r) * alpha;
+			this.g += (color.g - this.g) * alpha;
+			this.b += (color.b - this.b) * alpha;
+			return this;
+		}
+
+		lerpColors(color1, color2, alpha) {
+			this.r = color1.r + (color2.r - color1.r) * alpha;
+			this.g = color1.g + (color2.g - color1.g) * alpha;
+			this.b = color1.b + (color2.b - color1.b) * alpha;
+			return this;
+		}
+
+		lerpHSL(color, alpha) {
+			this.getHSL(_hslA);
+			color.getHSL(_hslB);
+			const h = lerp(_hslA.h, _hslB.h, alpha);
+			const s = lerp(_hslA.s, _hslB.s, alpha);
+			const l = lerp(_hslA.l, _hslB.l, alpha);
+			this.setHSL(h, s, l);
+			return this;
+		}
+
+		equals(c) {
+			return c.r === this.r && c.g === this.g && c.b === this.b;
+		}
+
+		fromArray(array, offset = 0) {
+			this.r = array[offset];
+			this.g = array[offset + 1];
+			this.b = array[offset + 2];
+			return this;
+		}
+
+		toArray(array = [], offset = 0) {
+			array[offset] = this.r;
+			array[offset + 1] = this.g;
+			array[offset + 2] = this.b;
+			return array;
+		}
+
+		fromBufferAttribute(attribute, index) {
+			this.r = attribute.getX(index);
+			this.g = attribute.getY(index);
+			this.b = attribute.getZ(index);
+
+			if (attribute.normalized === true) {
+				// assuming Uint8Array
+				this.r /= 255;
+				this.g /= 255;
+				this.b /= 255;
+			}
+
+			return this;
+		}
+
+		toJSON() {
+			return this.getHex();
+		}
+
+	}
+
+	Color.NAMES = _colorKeywords;
+	Color.prototype.isColor = true;
+	Color.prototype.r = 1;
+	Color.prototype.g = 1;
+	Color.prototype.b = 1;
 
 	let _canvas;
 
@@ -7666,6 +8191,45 @@ module.exports = anime;
 				return canvas.toDataURL('image/jpeg', 0.6);
 			} else {
 				return canvas.toDataURL('image/png');
+			}
+		}
+
+		static sRGBToLinear(image) {
+			if (typeof HTMLImageElement !== 'undefined' && image instanceof HTMLImageElement || typeof HTMLCanvasElement !== 'undefined' && image instanceof HTMLCanvasElement || typeof ImageBitmap !== 'undefined' && image instanceof ImageBitmap) {
+				const canvas = createElementNS('canvas');
+				canvas.width = image.width;
+				canvas.height = image.height;
+				const context = canvas.getContext('2d');
+				context.drawImage(image, 0, 0, image.width, image.height);
+				const imageData = context.getImageData(0, 0, image.width, image.height);
+				const data = imageData.data;
+
+				for (let i = 0; i < data.length; i++) {
+					data[i] = SRGBToLinear(data[i] / 255) * 255;
+				}
+
+				context.putImageData(imageData, 0, 0);
+				return canvas;
+			} else if (image.data) {
+				const data = image.data.slice(0);
+
+				for (let i = 0; i < data.length; i++) {
+					if (data instanceof Uint8Array || data instanceof Uint8ClampedArray) {
+						data[i] = Math.floor(SRGBToLinear(data[i] / 255) * 255);
+					} else {
+						// assuming float
+						data[i] = SRGBToLinear(data[i]);
+					}
+				}
+
+				return {
+					data: data,
+					width: image.width,
+					height: image.height
+				};
+			} else {
+				console.warn('THREE.ImageUtils.sRGBToLinear(): Unsupported image type. No color space conversion applied.');
+				return image;
 			}
 		}
 
@@ -7711,7 +8275,9 @@ module.exports = anime;
 			this.userData = {};
 			this.version = 0;
 			this.onUpdate = null;
-			this.isRenderTargetTexture = false;
+			this.isRenderTargetTexture = false; // indicates whether a texture belongs to a render target or not
+
+			this.needsPMREMUpdate = false; // indicates whether this texture should be processed by PMREMGenerator or not (only relevant for render target textures)
 		}
 
 		updateMatrix() {
@@ -8474,10 +9040,9 @@ module.exports = anime;
 			this.height = source.height;
 			this.depth = source.depth;
 			this.viewport.copy(source.viewport);
-			this.texture = source.texture.clone();
-			this.texture.image = { ...this.texture.image
-			}; // See #20328.
+			this.texture = source.texture.clone(); // ensure image object is not shared, see #20328
 
+			this.texture.image = Object.assign({}, source.texture.image);
 			this.depthBuffer = source.depthBuffer;
 			this.stencilBuffer = source.stencilBuffer;
 			this.depthTexture = source.depthTexture;
@@ -9043,7 +9608,7 @@ module.exports = anime;
 		}
 
 		slerpQuaternions(qa, qb, t) {
-			this.copy(qa).slerp(qb, t);
+			return this.copy(qa).slerp(qb, t);
 		}
 
 		random() {
@@ -9724,9 +10289,9 @@ module.exports = anime;
 			return this;
 		}
 
-		setFromObject(object) {
+		setFromObject(object, precise = false) {
 			this.makeEmpty();
-			return this.expandByObject(object);
+			return this.expandByObject(object, precise);
 		}
 
 		clone() {
@@ -9776,28 +10341,38 @@ module.exports = anime;
 			return this;
 		}
 
-		expandByObject(object) {
+		expandByObject(object, precise = false) {
 			// Computes the world-axis-aligned bounding box of an object (including its children),
 			// accounting for both the object's, and children's, world transforms
 			object.updateWorldMatrix(false, false);
 			const geometry = object.geometry;
 
 			if (geometry !== undefined) {
-				if (geometry.boundingBox === null) {
-					geometry.computeBoundingBox();
+				if (precise && geometry.attributes != undefined && geometry.attributes.position !== undefined) {
+					const position = geometry.attributes.position;
+
+					for (let i = 0, l = position.count; i < l; i++) {
+						_vector$b.fromBufferAttribute(position, i).applyMatrix4(object.matrixWorld);
+
+						this.expandByPoint(_vector$b);
+					}
+				} else {
+					if (geometry.boundingBox === null) {
+						geometry.computeBoundingBox();
+					}
+
+					_box$3.copy(geometry.boundingBox);
+
+					_box$3.applyMatrix4(object.matrixWorld);
+
+					this.union(_box$3);
 				}
-
-				_box$3.copy(geometry.boundingBox);
-
-				_box$3.applyMatrix4(object.matrixWorld);
-
-				this.union(_box$3);
 			}
 
 			const children = object.children;
 
 			for (let i = 0, l = children.length; i < l; i++) {
-				this.expandByObject(children[i]);
+				this.expandByObject(children[i], precise);
 			}
 
 			return this;
@@ -12491,7 +13066,6 @@ module.exports = anime;
 			this.side = FrontSide;
 			this.vertexColors = false;
 			this.opacity = 1;
-			this.format = RGBAFormat;
 			this.transparent = false;
 			this.blendSrc = SrcAlphaFactor;
 			this.blendDst = OneMinusSrcAlphaFactor;
@@ -12515,6 +13089,7 @@ module.exports = anime;
 			this.clipShadows = false;
 			this.shadowSide = null;
 			this.colorWrite = true;
+			this.alphaWrite = true;
 			this.precision = null; // override the renderer's default precision for this material
 
 			this.polygonOffset = false;
@@ -12700,12 +13275,12 @@ module.exports = anime;
 			if (this.side !== FrontSide) data.side = this.side;
 			if (this.vertexColors) data.vertexColors = true;
 			if (this.opacity < 1) data.opacity = this.opacity;
-			if (this.format !== RGBAFormat) data.format = this.format;
 			if (this.transparent === true) data.transparent = this.transparent;
 			data.depthFunc = this.depthFunc;
 			data.depthTest = this.depthTest;
 			data.depthWrite = this.depthWrite;
 			data.colorWrite = this.colorWrite;
+			data.alphaWrite = this.alphaWrite;
 			data.stencilWrite = this.stencilWrite;
 			data.stencilWriteMask = this.stencilWriteMask;
 			data.stencilFunc = this.stencilFunc;
@@ -12769,7 +13344,6 @@ module.exports = anime;
 			this.side = source.side;
 			this.vertexColors = source.vertexColors;
 			this.opacity = source.opacity;
-			this.format = source.format;
 			this.transparent = source.transparent;
 			this.blendSrc = source.blendSrc;
 			this.blendDst = source.blendDst;
@@ -12805,6 +13379,7 @@ module.exports = anime;
 			this.clipShadows = source.clipShadows;
 			this.shadowSide = source.shadowSide;
 			this.colorWrite = source.colorWrite;
+			this.alphaWrite = source.alphaWrite;
 			this.precision = source.precision;
 			this.polygonOffset = source.polygonOffset;
 			this.polygonOffsetFactor = source.polygonOffsetFactor;
@@ -12832,549 +13407,6 @@ module.exports = anime;
 	}
 
 	Material.prototype.isMaterial = true;
-
-	const _colorKeywords = {
-		'aliceblue': 0xF0F8FF,
-		'antiquewhite': 0xFAEBD7,
-		'aqua': 0x00FFFF,
-		'aquamarine': 0x7FFFD4,
-		'azure': 0xF0FFFF,
-		'beige': 0xF5F5DC,
-		'bisque': 0xFFE4C4,
-		'black': 0x000000,
-		'blanchedalmond': 0xFFEBCD,
-		'blue': 0x0000FF,
-		'blueviolet': 0x8A2BE2,
-		'brown': 0xA52A2A,
-		'burlywood': 0xDEB887,
-		'cadetblue': 0x5F9EA0,
-		'chartreuse': 0x7FFF00,
-		'chocolate': 0xD2691E,
-		'coral': 0xFF7F50,
-		'cornflowerblue': 0x6495ED,
-		'cornsilk': 0xFFF8DC,
-		'crimson': 0xDC143C,
-		'cyan': 0x00FFFF,
-		'darkblue': 0x00008B,
-		'darkcyan': 0x008B8B,
-		'darkgoldenrod': 0xB8860B,
-		'darkgray': 0xA9A9A9,
-		'darkgreen': 0x006400,
-		'darkgrey': 0xA9A9A9,
-		'darkkhaki': 0xBDB76B,
-		'darkmagenta': 0x8B008B,
-		'darkolivegreen': 0x556B2F,
-		'darkorange': 0xFF8C00,
-		'darkorchid': 0x9932CC,
-		'darkred': 0x8B0000,
-		'darksalmon': 0xE9967A,
-		'darkseagreen': 0x8FBC8F,
-		'darkslateblue': 0x483D8B,
-		'darkslategray': 0x2F4F4F,
-		'darkslategrey': 0x2F4F4F,
-		'darkturquoise': 0x00CED1,
-		'darkviolet': 0x9400D3,
-		'deeppink': 0xFF1493,
-		'deepskyblue': 0x00BFFF,
-		'dimgray': 0x696969,
-		'dimgrey': 0x696969,
-		'dodgerblue': 0x1E90FF,
-		'firebrick': 0xB22222,
-		'floralwhite': 0xFFFAF0,
-		'forestgreen': 0x228B22,
-		'fuchsia': 0xFF00FF,
-		'gainsboro': 0xDCDCDC,
-		'ghostwhite': 0xF8F8FF,
-		'gold': 0xFFD700,
-		'goldenrod': 0xDAA520,
-		'gray': 0x808080,
-		'green': 0x008000,
-		'greenyellow': 0xADFF2F,
-		'grey': 0x808080,
-		'honeydew': 0xF0FFF0,
-		'hotpink': 0xFF69B4,
-		'indianred': 0xCD5C5C,
-		'indigo': 0x4B0082,
-		'ivory': 0xFFFFF0,
-		'khaki': 0xF0E68C,
-		'lavender': 0xE6E6FA,
-		'lavenderblush': 0xFFF0F5,
-		'lawngreen': 0x7CFC00,
-		'lemonchiffon': 0xFFFACD,
-		'lightblue': 0xADD8E6,
-		'lightcoral': 0xF08080,
-		'lightcyan': 0xE0FFFF,
-		'lightgoldenrodyellow': 0xFAFAD2,
-		'lightgray': 0xD3D3D3,
-		'lightgreen': 0x90EE90,
-		'lightgrey': 0xD3D3D3,
-		'lightpink': 0xFFB6C1,
-		'lightsalmon': 0xFFA07A,
-		'lightseagreen': 0x20B2AA,
-		'lightskyblue': 0x87CEFA,
-		'lightslategray': 0x778899,
-		'lightslategrey': 0x778899,
-		'lightsteelblue': 0xB0C4DE,
-		'lightyellow': 0xFFFFE0,
-		'lime': 0x00FF00,
-		'limegreen': 0x32CD32,
-		'linen': 0xFAF0E6,
-		'magenta': 0xFF00FF,
-		'maroon': 0x800000,
-		'mediumaquamarine': 0x66CDAA,
-		'mediumblue': 0x0000CD,
-		'mediumorchid': 0xBA55D3,
-		'mediumpurple': 0x9370DB,
-		'mediumseagreen': 0x3CB371,
-		'mediumslateblue': 0x7B68EE,
-		'mediumspringgreen': 0x00FA9A,
-		'mediumturquoise': 0x48D1CC,
-		'mediumvioletred': 0xC71585,
-		'midnightblue': 0x191970,
-		'mintcream': 0xF5FFFA,
-		'mistyrose': 0xFFE4E1,
-		'moccasin': 0xFFE4B5,
-		'navajowhite': 0xFFDEAD,
-		'navy': 0x000080,
-		'oldlace': 0xFDF5E6,
-		'olive': 0x808000,
-		'olivedrab': 0x6B8E23,
-		'orange': 0xFFA500,
-		'orangered': 0xFF4500,
-		'orchid': 0xDA70D6,
-		'palegoldenrod': 0xEEE8AA,
-		'palegreen': 0x98FB98,
-		'paleturquoise': 0xAFEEEE,
-		'palevioletred': 0xDB7093,
-		'papayawhip': 0xFFEFD5,
-		'peachpuff': 0xFFDAB9,
-		'peru': 0xCD853F,
-		'pink': 0xFFC0CB,
-		'plum': 0xDDA0DD,
-		'powderblue': 0xB0E0E6,
-		'purple': 0x800080,
-		'rebeccapurple': 0x663399,
-		'red': 0xFF0000,
-		'rosybrown': 0xBC8F8F,
-		'royalblue': 0x4169E1,
-		'saddlebrown': 0x8B4513,
-		'salmon': 0xFA8072,
-		'sandybrown': 0xF4A460,
-		'seagreen': 0x2E8B57,
-		'seashell': 0xFFF5EE,
-		'sienna': 0xA0522D,
-		'silver': 0xC0C0C0,
-		'skyblue': 0x87CEEB,
-		'slateblue': 0x6A5ACD,
-		'slategray': 0x708090,
-		'slategrey': 0x708090,
-		'snow': 0xFFFAFA,
-		'springgreen': 0x00FF7F,
-		'steelblue': 0x4682B4,
-		'tan': 0xD2B48C,
-		'teal': 0x008080,
-		'thistle': 0xD8BFD8,
-		'tomato': 0xFF6347,
-		'turquoise': 0x40E0D0,
-		'violet': 0xEE82EE,
-		'wheat': 0xF5DEB3,
-		'white': 0xFFFFFF,
-		'whitesmoke': 0xF5F5F5,
-		'yellow': 0xFFFF00,
-		'yellowgreen': 0x9ACD32
-	};
-	const _hslA = {
-		h: 0,
-		s: 0,
-		l: 0
-	};
-	const _hslB = {
-		h: 0,
-		s: 0,
-		l: 0
-	};
-
-	function hue2rgb(p, q, t) {
-		if (t < 0) t += 1;
-		if (t > 1) t -= 1;
-		if (t < 1 / 6) return p + (q - p) * 6 * t;
-		if (t < 1 / 2) return q;
-		if (t < 2 / 3) return p + (q - p) * 6 * (2 / 3 - t);
-		return p;
-	}
-
-	function SRGBToLinear(c) {
-		return c < 0.04045 ? c * 0.0773993808 : Math.pow(c * 0.9478672986 + 0.0521327014, 2.4);
-	}
-
-	function LinearToSRGB(c) {
-		return c < 0.0031308 ? c * 12.92 : 1.055 * Math.pow(c, 0.41666) - 0.055;
-	}
-
-	class Color {
-		constructor(r, g, b) {
-			if (g === undefined && b === undefined) {
-				// r is THREE.Color, hex or string
-				return this.set(r);
-			}
-
-			return this.setRGB(r, g, b);
-		}
-
-		set(value) {
-			if (value && value.isColor) {
-				this.copy(value);
-			} else if (typeof value === 'number') {
-				this.setHex(value);
-			} else if (typeof value === 'string') {
-				this.setStyle(value);
-			}
-
-			return this;
-		}
-
-		setScalar(scalar) {
-			this.r = scalar;
-			this.g = scalar;
-			this.b = scalar;
-			return this;
-		}
-
-		setHex(hex) {
-			hex = Math.floor(hex);
-			this.r = (hex >> 16 & 255) / 255;
-			this.g = (hex >> 8 & 255) / 255;
-			this.b = (hex & 255) / 255;
-			return this;
-		}
-
-		setRGB(r, g, b) {
-			this.r = r;
-			this.g = g;
-			this.b = b;
-			return this;
-		}
-
-		setHSL(h, s, l) {
-			// h,s,l ranges are in 0.0 - 1.0
-			h = euclideanModulo(h, 1);
-			s = clamp(s, 0, 1);
-			l = clamp(l, 0, 1);
-
-			if (s === 0) {
-				this.r = this.g = this.b = l;
-			} else {
-				const p = l <= 0.5 ? l * (1 + s) : l + s - l * s;
-				const q = 2 * l - p;
-				this.r = hue2rgb(q, p, h + 1 / 3);
-				this.g = hue2rgb(q, p, h);
-				this.b = hue2rgb(q, p, h - 1 / 3);
-			}
-
-			return this;
-		}
-
-		setStyle(style) {
-			function handleAlpha(string) {
-				if (string === undefined) return;
-
-				if (parseFloat(string) < 1) {
-					console.warn('THREE.Color: Alpha component of ' + style + ' will be ignored.');
-				}
-			}
-
-			let m;
-
-			if (m = /^((?:rgb|hsl)a?)\(([^\)]*)\)/.exec(style)) {
-				// rgb / hsl
-				let color;
-				const name = m[1];
-				const components = m[2];
-
-				switch (name) {
-					case 'rgb':
-					case 'rgba':
-						if (color = /^\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*(?:,\s*(\d*\.?\d+)\s*)?$/.exec(components)) {
-							// rgb(255,0,0) rgba(255,0,0,0.5)
-							this.r = Math.min(255, parseInt(color[1], 10)) / 255;
-							this.g = Math.min(255, parseInt(color[2], 10)) / 255;
-							this.b = Math.min(255, parseInt(color[3], 10)) / 255;
-							handleAlpha(color[4]);
-							return this;
-						}
-
-						if (color = /^\s*(\d+)\%\s*,\s*(\d+)\%\s*,\s*(\d+)\%\s*(?:,\s*(\d*\.?\d+)\s*)?$/.exec(components)) {
-							// rgb(100%,0%,0%) rgba(100%,0%,0%,0.5)
-							this.r = Math.min(100, parseInt(color[1], 10)) / 100;
-							this.g = Math.min(100, parseInt(color[2], 10)) / 100;
-							this.b = Math.min(100, parseInt(color[3], 10)) / 100;
-							handleAlpha(color[4]);
-							return this;
-						}
-
-						break;
-
-					case 'hsl':
-					case 'hsla':
-						if (color = /^\s*(\d*\.?\d+)\s*,\s*(\d+)\%\s*,\s*(\d+)\%\s*(?:,\s*(\d*\.?\d+)\s*)?$/.exec(components)) {
-							// hsl(120,50%,50%) hsla(120,50%,50%,0.5)
-							const h = parseFloat(color[1]) / 360;
-							const s = parseInt(color[2], 10) / 100;
-							const l = parseInt(color[3], 10) / 100;
-							handleAlpha(color[4]);
-							return this.setHSL(h, s, l);
-						}
-
-						break;
-				}
-			} else if (m = /^\#([A-Fa-f\d]+)$/.exec(style)) {
-				// hex color
-				const hex = m[1];
-				const size = hex.length;
-
-				if (size === 3) {
-					// #ff0
-					this.r = parseInt(hex.charAt(0) + hex.charAt(0), 16) / 255;
-					this.g = parseInt(hex.charAt(1) + hex.charAt(1), 16) / 255;
-					this.b = parseInt(hex.charAt(2) + hex.charAt(2), 16) / 255;
-					return this;
-				} else if (size === 6) {
-					// #ff0000
-					this.r = parseInt(hex.charAt(0) + hex.charAt(1), 16) / 255;
-					this.g = parseInt(hex.charAt(2) + hex.charAt(3), 16) / 255;
-					this.b = parseInt(hex.charAt(4) + hex.charAt(5), 16) / 255;
-					return this;
-				}
-			}
-
-			if (style && style.length > 0) {
-				return this.setColorName(style);
-			}
-
-			return this;
-		}
-
-		setColorName(style) {
-			// color keywords
-			const hex = _colorKeywords[style.toLowerCase()];
-
-			if (hex !== undefined) {
-				// red
-				this.setHex(hex);
-			} else {
-				// unknown color
-				console.warn('THREE.Color: Unknown color ' + style);
-			}
-
-			return this;
-		}
-
-		clone() {
-			return new this.constructor(this.r, this.g, this.b);
-		}
-
-		copy(color) {
-			this.r = color.r;
-			this.g = color.g;
-			this.b = color.b;
-			return this;
-		}
-
-		copySRGBToLinear(color) {
-			this.r = SRGBToLinear(color.r);
-			this.g = SRGBToLinear(color.g);
-			this.b = SRGBToLinear(color.b);
-			return this;
-		}
-
-		copyLinearToSRGB(color) {
-			this.r = LinearToSRGB(color.r);
-			this.g = LinearToSRGB(color.g);
-			this.b = LinearToSRGB(color.b);
-			return this;
-		}
-
-		convertSRGBToLinear() {
-			this.copySRGBToLinear(this);
-			return this;
-		}
-
-		convertLinearToSRGB() {
-			this.copyLinearToSRGB(this);
-			return this;
-		}
-
-		getHex() {
-			return this.r * 255 << 16 ^ this.g * 255 << 8 ^ this.b * 255 << 0;
-		}
-
-		getHexString() {
-			return ('000000' + this.getHex().toString(16)).slice(-6);
-		}
-
-		getHSL(target) {
-			// h,s,l ranges are in 0.0 - 1.0
-			const r = this.r,
-						g = this.g,
-						b = this.b;
-			const max = Math.max(r, g, b);
-			const min = Math.min(r, g, b);
-			let hue, saturation;
-			const lightness = (min + max) / 2.0;
-
-			if (min === max) {
-				hue = 0;
-				saturation = 0;
-			} else {
-				const delta = max - min;
-				saturation = lightness <= 0.5 ? delta / (max + min) : delta / (2 - max - min);
-
-				switch (max) {
-					case r:
-						hue = (g - b) / delta + (g < b ? 6 : 0);
-						break;
-
-					case g:
-						hue = (b - r) / delta + 2;
-						break;
-
-					case b:
-						hue = (r - g) / delta + 4;
-						break;
-				}
-
-				hue /= 6;
-			}
-
-			target.h = hue;
-			target.s = saturation;
-			target.l = lightness;
-			return target;
-		}
-
-		getStyle() {
-			return 'rgb(' + (this.r * 255 | 0) + ',' + (this.g * 255 | 0) + ',' + (this.b * 255 | 0) + ')';
-		}
-
-		offsetHSL(h, s, l) {
-			this.getHSL(_hslA);
-			_hslA.h += h;
-			_hslA.s += s;
-			_hslA.l += l;
-			this.setHSL(_hslA.h, _hslA.s, _hslA.l);
-			return this;
-		}
-
-		add(color) {
-			this.r += color.r;
-			this.g += color.g;
-			this.b += color.b;
-			return this;
-		}
-
-		addColors(color1, color2) {
-			this.r = color1.r + color2.r;
-			this.g = color1.g + color2.g;
-			this.b = color1.b + color2.b;
-			return this;
-		}
-
-		addScalar(s) {
-			this.r += s;
-			this.g += s;
-			this.b += s;
-			return this;
-		}
-
-		sub(color) {
-			this.r = Math.max(0, this.r - color.r);
-			this.g = Math.max(0, this.g - color.g);
-			this.b = Math.max(0, this.b - color.b);
-			return this;
-		}
-
-		multiply(color) {
-			this.r *= color.r;
-			this.g *= color.g;
-			this.b *= color.b;
-			return this;
-		}
-
-		multiplyScalar(s) {
-			this.r *= s;
-			this.g *= s;
-			this.b *= s;
-			return this;
-		}
-
-		lerp(color, alpha) {
-			this.r += (color.r - this.r) * alpha;
-			this.g += (color.g - this.g) * alpha;
-			this.b += (color.b - this.b) * alpha;
-			return this;
-		}
-
-		lerpColors(color1, color2, alpha) {
-			this.r = color1.r + (color2.r - color1.r) * alpha;
-			this.g = color1.g + (color2.g - color1.g) * alpha;
-			this.b = color1.b + (color2.b - color1.b) * alpha;
-			return this;
-		}
-
-		lerpHSL(color, alpha) {
-			this.getHSL(_hslA);
-			color.getHSL(_hslB);
-			const h = lerp(_hslA.h, _hslB.h, alpha);
-			const s = lerp(_hslA.s, _hslB.s, alpha);
-			const l = lerp(_hslA.l, _hslB.l, alpha);
-			this.setHSL(h, s, l);
-			return this;
-		}
-
-		equals(c) {
-			return c.r === this.r && c.g === this.g && c.b === this.b;
-		}
-
-		fromArray(array, offset = 0) {
-			this.r = array[offset];
-			this.g = array[offset + 1];
-			this.b = array[offset + 2];
-			return this;
-		}
-
-		toArray(array = [], offset = 0) {
-			array[offset] = this.r;
-			array[offset + 1] = this.g;
-			array[offset + 2] = this.b;
-			return array;
-		}
-
-		fromBufferAttribute(attribute, index) {
-			this.r = attribute.getX(index);
-			this.g = attribute.getY(index);
-			this.b = attribute.getZ(index);
-
-			if (attribute.normalized === true) {
-				// assuming Uint8Array
-				this.r /= 255;
-				this.g /= 255;
-				this.b /= 255;
-			}
-
-			return this;
-		}
-
-		toJSON() {
-			return this.getHex();
-		}
-
-	}
-
-	Color.NAMES = _colorKeywords;
-	Color.prototype.isColor = true;
-	Color.prototype.r = 1;
-	Color.prototype.g = 1;
-	Color.prototype.b = 1;
 
 	/**
 	 * parameters = {
@@ -13864,7 +13896,7 @@ module.exports = anime;
 
 		setIndex(index) {
 			if (Array.isArray(index)) {
-				this.index = new (arrayMax(index) > 65535 ? Uint32BufferAttribute : Uint16BufferAttribute)(index, 1);
+				this.index = new (arrayNeedsUint32(index) ? Uint32BufferAttribute : Uint16BufferAttribute)(index, 1);
 			} else {
 				this.index = index;
 			}
@@ -15539,6 +15571,7 @@ module.exports = anime;
 			renderer.render(scene, cameraNZ);
 			renderer.setRenderTarget(currentRenderTarget);
 			renderer.xr.enabled = currentXrEnabled;
+			renderTarget.texture.needsPMREMUpdate = true;
 		}
 
 	}
@@ -15582,7 +15615,6 @@ module.exports = anime;
 			this.texture.isRenderTargetTexture = true;
 			this.texture.generateMipmaps = options.generateMipmaps !== undefined ? options.generateMipmaps : false;
 			this.texture.minFilter = options.minFilter !== undefined ? options.minFilter : LinearFilter;
-			this.texture._needsFlipEnvMap = false;
 		}
 
 		fromEquirectangularTexture(renderer, texture) {
@@ -16200,15 +16232,15 @@ module.exports = anime;
 
 	var displacementmap_vertex = "#ifdef USE_DISPLACEMENTMAP\n\ttransformed += normalize( objectNormal ) * ( texture2D( displacementMap, vUv ).x * displacementScale + displacementBias );\n#endif";
 
-	var emissivemap_fragment = "#ifdef USE_EMISSIVEMAP\n\tvec4 emissiveColor = texture2D( emissiveMap, vUv );\n\temissiveColor.rgb = emissiveMapTexelToLinear( emissiveColor ).rgb;\n\ttotalEmissiveRadiance *= emissiveColor.rgb;\n#endif";
+	var emissivemap_fragment = "#ifdef USE_EMISSIVEMAP\n\tvec4 emissiveColor = texture2D( emissiveMap, vUv );\n\ttotalEmissiveRadiance *= emissiveColor.rgb;\n#endif";
 
 	var emissivemap_pars_fragment = "#ifdef USE_EMISSIVEMAP\n\tuniform sampler2D emissiveMap;\n#endif";
 
 	var encodings_fragment = "gl_FragColor = linearToOutputTexel( gl_FragColor );";
 
-	var encodings_pars_fragment = "vec4 LinearToLinear( in vec4 value ) {\n\treturn value;\n}\nvec4 sRGBToLinear( in vec4 value ) {\n\treturn vec4( mix( pow( value.rgb * 0.9478672986 + vec3( 0.0521327014 ), vec3( 2.4 ) ), value.rgb * 0.0773993808, vec3( lessThanEqual( value.rgb, vec3( 0.04045 ) ) ) ), value.a );\n}\nvec4 LinearTosRGB( in vec4 value ) {\n\treturn vec4( mix( pow( value.rgb, vec3( 0.41666 ) ) * 1.055 - vec3( 0.055 ), value.rgb * 12.92, vec3( lessThanEqual( value.rgb, vec3( 0.0031308 ) ) ) ), value.a );\n}";
+	var encodings_pars_fragment = "vec4 LinearToLinear( in vec4 value ) {\n\treturn value;\n}\nvec4 LinearTosRGB( in vec4 value ) {\n\treturn vec4( mix( pow( value.rgb, vec3( 0.41666 ) ) * 1.055 - vec3( 0.055 ), value.rgb * 12.92, vec3( lessThanEqual( value.rgb, vec3( 0.0031308 ) ) ) ), value.a );\n}";
 
-	var envmap_fragment = "#ifdef USE_ENVMAP\n\t#ifdef ENV_WORLDPOS\n\t\tvec3 cameraToFrag;\n\t\tif ( isOrthographic ) {\n\t\t\tcameraToFrag = normalize( vec3( - viewMatrix[ 0 ][ 2 ], - viewMatrix[ 1 ][ 2 ], - viewMatrix[ 2 ][ 2 ] ) );\n\t\t} else {\n\t\t\tcameraToFrag = normalize( vWorldPosition - cameraPosition );\n\t\t}\n\t\tvec3 worldNormal = inverseTransformDirection( normal, viewMatrix );\n\t\t#ifdef ENVMAP_MODE_REFLECTION\n\t\t\tvec3 reflectVec = reflect( cameraToFrag, worldNormal );\n\t\t#else\n\t\t\tvec3 reflectVec = refract( cameraToFrag, worldNormal, refractionRatio );\n\t\t#endif\n\t#else\n\t\tvec3 reflectVec = vReflect;\n\t#endif\n\t#ifdef ENVMAP_TYPE_CUBE\n\t\tvec4 envColor = textureCube( envMap, vec3( flipEnvMap * reflectVec.x, reflectVec.yz ) );\n\t\tenvColor = envMapTexelToLinear( envColor );\n\t#elif defined( ENVMAP_TYPE_CUBE_UV )\n\t\tvec4 envColor = textureCubeUV( envMap, reflectVec, 0.0 );\n\t#else\n\t\tvec4 envColor = vec4( 0.0 );\n\t#endif\n\t#ifdef ENVMAP_BLENDING_MULTIPLY\n\t\toutgoingLight = mix( outgoingLight, outgoingLight * envColor.xyz, specularStrength * reflectivity );\n\t#elif defined( ENVMAP_BLENDING_MIX )\n\t\toutgoingLight = mix( outgoingLight, envColor.xyz, specularStrength * reflectivity );\n\t#elif defined( ENVMAP_BLENDING_ADD )\n\t\toutgoingLight += envColor.xyz * specularStrength * reflectivity;\n\t#endif\n#endif";
+	var envmap_fragment = "#ifdef USE_ENVMAP\n\t#ifdef ENV_WORLDPOS\n\t\tvec3 cameraToFrag;\n\t\tif ( isOrthographic ) {\n\t\t\tcameraToFrag = normalize( vec3( - viewMatrix[ 0 ][ 2 ], - viewMatrix[ 1 ][ 2 ], - viewMatrix[ 2 ][ 2 ] ) );\n\t\t} else {\n\t\t\tcameraToFrag = normalize( vWorldPosition - cameraPosition );\n\t\t}\n\t\tvec3 worldNormal = inverseTransformDirection( normal, viewMatrix );\n\t\t#ifdef ENVMAP_MODE_REFLECTION\n\t\t\tvec3 reflectVec = reflect( cameraToFrag, worldNormal );\n\t\t#else\n\t\t\tvec3 reflectVec = refract( cameraToFrag, worldNormal, refractionRatio );\n\t\t#endif\n\t#else\n\t\tvec3 reflectVec = vReflect;\n\t#endif\n\t#ifdef ENVMAP_TYPE_CUBE\n\t\tvec4 envColor = textureCube( envMap, vec3( flipEnvMap * reflectVec.x, reflectVec.yz ) );\n\t#elif defined( ENVMAP_TYPE_CUBE_UV )\n\t\tvec4 envColor = textureCubeUV( envMap, reflectVec, 0.0 );\n\t#else\n\t\tvec4 envColor = vec4( 0.0 );\n\t#endif\n\t#ifdef ENVMAP_BLENDING_MULTIPLY\n\t\toutgoingLight = mix( outgoingLight, outgoingLight * envColor.xyz, specularStrength * reflectivity );\n\t#elif defined( ENVMAP_BLENDING_MIX )\n\t\toutgoingLight = mix( outgoingLight, envColor.xyz, specularStrength * reflectivity );\n\t#elif defined( ENVMAP_BLENDING_ADD )\n\t\toutgoingLight += envColor.xyz * specularStrength * reflectivity;\n\t#endif\n#endif";
 
 	var envmap_common_pars_fragment = "#ifdef USE_ENVMAP\n\tuniform float envMapIntensity;\n\tuniform float flipEnvMap;\n\t#ifdef ENVMAP_TYPE_CUBE\n\t\tuniform samplerCube envMap;\n\t#else\n\t\tuniform sampler2D envMap;\n\t#endif\n\t\n#endif";
 
@@ -16228,7 +16260,7 @@ module.exports = anime;
 
 	var gradientmap_pars_fragment = "#ifdef USE_GRADIENTMAP\n\tuniform sampler2D gradientMap;\n#endif\nvec3 getGradientIrradiance( vec3 normal, vec3 lightDirection ) {\n\tfloat dotNL = dot( normal, lightDirection );\n\tvec2 coord = vec2( dotNL * 0.5 + 0.5, 0.0 );\n\t#ifdef USE_GRADIENTMAP\n\t\treturn vec3( texture2D( gradientMap, coord ).r );\n\t#else\n\t\treturn ( coord.x < 0.7 ) ? vec3( 0.7 ) : vec3( 1.0 );\n\t#endif\n}";
 
-	var lightmap_fragment = "#ifdef USE_LIGHTMAP\n\tvec4 lightMapTexel = texture2D( lightMap, vUv2 );\n\tvec3 lightMapIrradiance = lightMapTexelToLinear( lightMapTexel ).rgb * lightMapIntensity;\n\t#ifndef PHYSICALLY_CORRECT_LIGHTS\n\t\tlightMapIrradiance *= PI;\n\t#endif\n\treflectedLight.indirectDiffuse += lightMapIrradiance;\n#endif";
+	var lightmap_fragment = "#ifdef USE_LIGHTMAP\n\tvec4 lightMapTexel = texture2D( lightMap, vUv2 );\n\tvec3 lightMapIrradiance = lightMapTexel.rgb * lightMapIntensity;\n\t#ifndef PHYSICALLY_CORRECT_LIGHTS\n\t\tlightMapIrradiance *= PI;\n\t#endif\n\treflectedLight.indirectDiffuse += lightMapIrradiance;\n#endif";
 
 	var lightmap_pars_fragment = "#ifdef USE_LIGHTMAP\n\tuniform sampler2D lightMap;\n\tuniform float lightMapIntensity;\n#endif";
 
@@ -16246,13 +16278,13 @@ module.exports = anime;
 
 	var lights_phong_pars_fragment = "varying vec3 vViewPosition;\nstruct BlinnPhongMaterial {\n\tvec3 diffuseColor;\n\tvec3 specularColor;\n\tfloat specularShininess;\n\tfloat specularStrength;\n};\nvoid RE_Direct_BlinnPhong( const in IncidentLight directLight, const in GeometricContext geometry, const in BlinnPhongMaterial material, inout ReflectedLight reflectedLight ) {\n\tfloat dotNL = saturate( dot( geometry.normal, directLight.direction ) );\n\tvec3 irradiance = dotNL * directLight.color;\n\treflectedLight.directDiffuse += irradiance * BRDF_Lambert( material.diffuseColor );\n\treflectedLight.directSpecular += irradiance * BRDF_BlinnPhong( directLight.direction, geometry.viewDir, geometry.normal, material.specularColor, material.specularShininess ) * material.specularStrength;\n}\nvoid RE_IndirectDiffuse_BlinnPhong( const in vec3 irradiance, const in GeometricContext geometry, const in BlinnPhongMaterial material, inout ReflectedLight reflectedLight ) {\n\treflectedLight.indirectDiffuse += irradiance * BRDF_Lambert( material.diffuseColor );\n}\n#define RE_Direct\t\t\t\tRE_Direct_BlinnPhong\n#define RE_IndirectDiffuse\t\tRE_IndirectDiffuse_BlinnPhong\n#define Material_LightProbeLOD( material )\t(0)";
 
-	var lights_physical_fragment = "PhysicalMaterial material;\nmaterial.diffuseColor = diffuseColor.rgb * ( 1.0 - metalnessFactor );\nvec3 dxy = max( abs( dFdx( geometryNormal ) ), abs( dFdy( geometryNormal ) ) );\nfloat geometryRoughness = max( max( dxy.x, dxy.y ), dxy.z );\nmaterial.roughness = max( roughnessFactor, 0.0525 );material.roughness += geometryRoughness;\nmaterial.roughness = min( material.roughness, 1.0 );\n#ifdef IOR\n\t#ifdef SPECULAR\n\t\tfloat specularIntensityFactor = specularIntensity;\n\t\tvec3 specularColorFactor = specularColor;\n\t\t#ifdef USE_SPECULARINTENSITYMAP\n\t\t\tspecularIntensityFactor *= texture2D( specularIntensityMap, vUv ).a;\n\t\t#endif\n\t\t#ifdef USE_SPECULARCOLORMAP\n\t\t\tspecularColorFactor *= specularColorMapTexelToLinear( texture2D( specularColorMap, vUv ) ).rgb;\n\t\t#endif\n\t\tmaterial.specularF90 = mix( specularIntensityFactor, 1.0, metalnessFactor );\n\t#else\n\t\tfloat specularIntensityFactor = 1.0;\n\t\tvec3 specularColorFactor = vec3( 1.0 );\n\t\tmaterial.specularF90 = 1.0;\n\t#endif\n\tmaterial.specularColor = mix( min( pow2( ( ior - 1.0 ) / ( ior + 1.0 ) ) * specularColorFactor, vec3( 1.0 ) ) * specularIntensityFactor, diffuseColor.rgb, metalnessFactor );\n#else\n\tmaterial.specularColor = mix( vec3( 0.04 ), diffuseColor.rgb, metalnessFactor );\n\tmaterial.specularF90 = 1.0;\n#endif\n#ifdef USE_CLEARCOAT\n\tmaterial.clearcoat = clearcoat;\n\tmaterial.clearcoatRoughness = clearcoatRoughness;\n\tmaterial.clearcoatF0 = vec3( 0.04 );\n\tmaterial.clearcoatF90 = 1.0;\n\t#ifdef USE_CLEARCOATMAP\n\t\tmaterial.clearcoat *= texture2D( clearcoatMap, vUv ).x;\n\t#endif\n\t#ifdef USE_CLEARCOAT_ROUGHNESSMAP\n\t\tmaterial.clearcoatRoughness *= texture2D( clearcoatRoughnessMap, vUv ).y;\n\t#endif\n\tmaterial.clearcoat = saturate( material.clearcoat );\tmaterial.clearcoatRoughness = max( material.clearcoatRoughness, 0.0525 );\n\tmaterial.clearcoatRoughness += geometryRoughness;\n\tmaterial.clearcoatRoughness = min( material.clearcoatRoughness, 1.0 );\n#endif\n#ifdef USE_SHEEN\n\tmaterial.sheenColor = sheenColor;\n\t#ifdef USE_SHEENCOLORMAP\n\t\tmaterial.sheenColor *= sheenColorMapTexelToLinear( texture2D( sheenColorMap, vUv ) ).rgb;\n\t#endif\n\tmaterial.sheenRoughness = clamp( sheenRoughness, 0.07, 1.0 );\n\t#ifdef USE_SHEENROUGHNESSMAP\n\t\tmaterial.sheenRoughness *= texture2D( sheenRoughnessMap, vUv ).a;\n\t#endif\n#endif";
+	var lights_physical_fragment = "PhysicalMaterial material;\nmaterial.diffuseColor = diffuseColor.rgb * ( 1.0 - metalnessFactor );\nvec3 dxy = max( abs( dFdx( geometryNormal ) ), abs( dFdy( geometryNormal ) ) );\nfloat geometryRoughness = max( max( dxy.x, dxy.y ), dxy.z );\nmaterial.roughness = max( roughnessFactor, 0.0525 );material.roughness += geometryRoughness;\nmaterial.roughness = min( material.roughness, 1.0 );\n#ifdef IOR\n\t#ifdef SPECULAR\n\t\tfloat specularIntensityFactor = specularIntensity;\n\t\tvec3 specularColorFactor = specularColor;\n\t\t#ifdef USE_SPECULARINTENSITYMAP\n\t\t\tspecularIntensityFactor *= texture2D( specularIntensityMap, vUv ).a;\n\t\t#endif\n\t\t#ifdef USE_SPECULARCOLORMAP\n\t\t\tspecularColorFactor *= texture2D( specularColorMap, vUv ).rgb;\n\t\t#endif\n\t\tmaterial.specularF90 = mix( specularIntensityFactor, 1.0, metalnessFactor );\n\t#else\n\t\tfloat specularIntensityFactor = 1.0;\n\t\tvec3 specularColorFactor = vec3( 1.0 );\n\t\tmaterial.specularF90 = 1.0;\n\t#endif\n\tmaterial.specularColor = mix( min( pow2( ( ior - 1.0 ) / ( ior + 1.0 ) ) * specularColorFactor, vec3( 1.0 ) ) * specularIntensityFactor, diffuseColor.rgb, metalnessFactor );\n#else\n\tmaterial.specularColor = mix( vec3( 0.04 ), diffuseColor.rgb, metalnessFactor );\n\tmaterial.specularF90 = 1.0;\n#endif\n#ifdef USE_CLEARCOAT\n\tmaterial.clearcoat = clearcoat;\n\tmaterial.clearcoatRoughness = clearcoatRoughness;\n\tmaterial.clearcoatF0 = vec3( 0.04 );\n\tmaterial.clearcoatF90 = 1.0;\n\t#ifdef USE_CLEARCOATMAP\n\t\tmaterial.clearcoat *= texture2D( clearcoatMap, vUv ).x;\n\t#endif\n\t#ifdef USE_CLEARCOAT_ROUGHNESSMAP\n\t\tmaterial.clearcoatRoughness *= texture2D( clearcoatRoughnessMap, vUv ).y;\n\t#endif\n\tmaterial.clearcoat = saturate( material.clearcoat );\tmaterial.clearcoatRoughness = max( material.clearcoatRoughness, 0.0525 );\n\tmaterial.clearcoatRoughness += geometryRoughness;\n\tmaterial.clearcoatRoughness = min( material.clearcoatRoughness, 1.0 );\n#endif\n#ifdef USE_SHEEN\n\tmaterial.sheenColor = sheenColor;\n\t#ifdef USE_SHEENCOLORMAP\n\t\tmaterial.sheenColor *= texture2D( sheenColorMap, vUv ).rgb;\n\t#endif\n\tmaterial.sheenRoughness = clamp( sheenRoughness, 0.07, 1.0 );\n\t#ifdef USE_SHEENROUGHNESSMAP\n\t\tmaterial.sheenRoughness *= texture2D( sheenRoughnessMap, vUv ).a;\n\t#endif\n#endif";
 
 	var lights_physical_pars_fragment = "struct PhysicalMaterial {\n\tvec3 diffuseColor;\n\tfloat roughness;\n\tvec3 specularColor;\n\tfloat specularF90;\n\t#ifdef USE_CLEARCOAT\n\t\tfloat clearcoat;\n\t\tfloat clearcoatRoughness;\n\t\tvec3 clearcoatF0;\n\t\tfloat clearcoatF90;\n\t#endif\n\t#ifdef USE_SHEEN\n\t\tvec3 sheenColor;\n\t\tfloat sheenRoughness;\n\t#endif\n};\nvec3 clearcoatSpecular = vec3( 0.0 );\nvec3 sheenSpecular = vec3( 0.0 );\nfloat IBLSheenBRDF( const in vec3 normal, const in vec3 viewDir, const in float roughness) {\n\tfloat dotNV = saturate( dot( normal, viewDir ) );\n\tfloat r2 = roughness * roughness;\n\tfloat a = roughness < 0.25 ? -339.2 * r2 + 161.4 * roughness - 25.9 : -8.48 * r2 + 14.3 * roughness - 9.95;\n\tfloat b = roughness < 0.25 ? 44.0 * r2 - 23.7 * roughness + 3.26 : 1.97 * r2 - 3.27 * roughness + 0.72;\n\tfloat DG = exp( a * dotNV + b ) + ( roughness < 0.25 ? 0.0 : 0.1 * ( roughness - 0.25 ) );\n\treturn saturate( DG * RECIPROCAL_PI );\n}\nvec2 DFGApprox( const in vec3 normal, const in vec3 viewDir, const in float roughness ) {\n\tfloat dotNV = saturate( dot( normal, viewDir ) );\n\tconst vec4 c0 = vec4( - 1, - 0.0275, - 0.572, 0.022 );\n\tconst vec4 c1 = vec4( 1, 0.0425, 1.04, - 0.04 );\n\tvec4 r = roughness * c0 + c1;\n\tfloat a004 = min( r.x * r.x, exp2( - 9.28 * dotNV ) ) * r.x + r.y;\n\tvec2 fab = vec2( - 1.04, 1.04 ) * a004 + r.zw;\n\treturn fab;\n}\nvec3 EnvironmentBRDF( const in vec3 normal, const in vec3 viewDir, const in vec3 specularColor, const in float specularF90, const in float roughness ) {\n\tvec2 fab = DFGApprox( normal, viewDir, roughness );\n\treturn specularColor * fab.x + specularF90 * fab.y;\n}\nvoid computeMultiscattering( const in vec3 normal, const in vec3 viewDir, const in vec3 specularColor, const in float specularF90, const in float roughness, inout vec3 singleScatter, inout vec3 multiScatter ) {\n\tvec2 fab = DFGApprox( normal, viewDir, roughness );\n\tvec3 FssEss = specularColor * fab.x + specularF90 * fab.y;\n\tfloat Ess = fab.x + fab.y;\n\tfloat Ems = 1.0 - Ess;\n\tvec3 Favg = specularColor + ( 1.0 - specularColor ) * 0.047619;\tvec3 Fms = FssEss * Favg / ( 1.0 - Ems * Favg );\n\tsingleScatter += FssEss;\n\tmultiScatter += Fms * Ems;\n}\n#if NUM_RECT_AREA_LIGHTS > 0\n\tvoid RE_Direct_RectArea_Physical( const in RectAreaLight rectAreaLight, const in GeometricContext geometry, const in PhysicalMaterial material, inout ReflectedLight reflectedLight ) {\n\t\tvec3 normal = geometry.normal;\n\t\tvec3 viewDir = geometry.viewDir;\n\t\tvec3 position = geometry.position;\n\t\tvec3 lightPos = rectAreaLight.position;\n\t\tvec3 halfWidth = rectAreaLight.halfWidth;\n\t\tvec3 halfHeight = rectAreaLight.halfHeight;\n\t\tvec3 lightColor = rectAreaLight.color;\n\t\tfloat roughness = material.roughness;\n\t\tvec3 rectCoords[ 4 ];\n\t\trectCoords[ 0 ] = lightPos + halfWidth - halfHeight;\t\trectCoords[ 1 ] = lightPos - halfWidth - halfHeight;\n\t\trectCoords[ 2 ] = lightPos - halfWidth + halfHeight;\n\t\trectCoords[ 3 ] = lightPos + halfWidth + halfHeight;\n\t\tvec2 uv = LTC_Uv( normal, viewDir, roughness );\n\t\tvec4 t1 = texture2D( ltc_1, uv );\n\t\tvec4 t2 = texture2D( ltc_2, uv );\n\t\tmat3 mInv = mat3(\n\t\t\tvec3( t1.x, 0, t1.y ),\n\t\t\tvec3(		0, 1,		0 ),\n\t\t\tvec3( t1.z, 0, t1.w )\n\t\t);\n\t\tvec3 fresnel = ( material.specularColor * t2.x + ( vec3( 1.0 ) - material.specularColor ) * t2.y );\n\t\treflectedLight.directSpecular += lightColor * fresnel * LTC_Evaluate( normal, viewDir, position, mInv, rectCoords );\n\t\treflectedLight.directDiffuse += lightColor * material.diffuseColor * LTC_Evaluate( normal, viewDir, position, mat3( 1.0 ), rectCoords );\n\t}\n#endif\nvoid RE_Direct_Physical( const in IncidentLight directLight, const in GeometricContext geometry, const in PhysicalMaterial material, inout ReflectedLight reflectedLight ) {\n\tfloat dotNL = saturate( dot( geometry.normal, directLight.direction ) );\n\tvec3 irradiance = dotNL * directLight.color;\n\t#ifdef USE_CLEARCOAT\n\t\tfloat dotNLcc = saturate( dot( geometry.clearcoatNormal, directLight.direction ) );\n\t\tvec3 ccIrradiance = dotNLcc * directLight.color;\n\t\tclearcoatSpecular += ccIrradiance * BRDF_GGX( directLight.direction, geometry.viewDir, geometry.clearcoatNormal, material.clearcoatF0, material.clearcoatF90, material.clearcoatRoughness );\n\t#endif\n\t#ifdef USE_SHEEN\n\t\tsheenSpecular += irradiance * BRDF_Sheen( directLight.direction, geometry.viewDir, geometry.normal, material.sheenColor, material.sheenRoughness );\n\t#endif\n\treflectedLight.directSpecular += irradiance * BRDF_GGX( directLight.direction, geometry.viewDir, geometry.normal, material.specularColor, material.specularF90, material.roughness );\n\treflectedLight.directDiffuse += irradiance * BRDF_Lambert( material.diffuseColor );\n}\nvoid RE_IndirectDiffuse_Physical( const in vec3 irradiance, const in GeometricContext geometry, const in PhysicalMaterial material, inout ReflectedLight reflectedLight ) {\n\treflectedLight.indirectDiffuse += irradiance * BRDF_Lambert( material.diffuseColor );\n}\nvoid RE_IndirectSpecular_Physical( const in vec3 radiance, const in vec3 irradiance, const in vec3 clearcoatRadiance, const in GeometricContext geometry, const in PhysicalMaterial material, inout ReflectedLight reflectedLight) {\n\t#ifdef USE_CLEARCOAT\n\t\tclearcoatSpecular += clearcoatRadiance * EnvironmentBRDF( geometry.clearcoatNormal, geometry.viewDir, material.clearcoatF0, material.clearcoatF90, material.clearcoatRoughness );\n\t#endif\n\t#ifdef USE_SHEEN\n\t\tsheenSpecular += irradiance * material.sheenColor * IBLSheenBRDF( geometry.normal, geometry.viewDir, material.sheenRoughness );\n\t#endif\n\tvec3 singleScattering = vec3( 0.0 );\n\tvec3 multiScattering = vec3( 0.0 );\n\tvec3 cosineWeightedIrradiance = irradiance * RECIPROCAL_PI;\n\tcomputeMultiscattering( geometry.normal, geometry.viewDir, material.specularColor, material.specularF90, material.roughness, singleScattering, multiScattering );\n\tvec3 diffuse = material.diffuseColor * ( 1.0 - ( singleScattering + multiScattering ) );\n\treflectedLight.indirectSpecular += radiance * singleScattering;\n\treflectedLight.indirectSpecular += multiScattering * cosineWeightedIrradiance;\n\treflectedLight.indirectDiffuse += diffuse * cosineWeightedIrradiance;\n}\n#define RE_Direct\t\t\t\tRE_Direct_Physical\n#define RE_Direct_RectArea\t\tRE_Direct_RectArea_Physical\n#define RE_IndirectDiffuse\t\tRE_IndirectDiffuse_Physical\n#define RE_IndirectSpecular\t\tRE_IndirectSpecular_Physical\nfloat computeSpecularOcclusion( const in float dotNV, const in float ambientOcclusion, const in float roughness ) {\n\treturn saturate( pow( dotNV + ambientOcclusion, exp2( - 16.0 * roughness - 1.0 ) ) - 1.0 + ambientOcclusion );\n}";
 
 	var lights_fragment_begin = "\nGeometricContext geometry;\ngeometry.position = - vViewPosition;\ngeometry.normal = normal;\ngeometry.viewDir = ( isOrthographic ) ? vec3( 0, 0, 1 ) : normalize( vViewPosition );\n#ifdef USE_CLEARCOAT\n\tgeometry.clearcoatNormal = clearcoatNormal;\n#endif\nIncidentLight directLight;\n#if ( NUM_POINT_LIGHTS > 0 ) && defined( RE_Direct )\n\tPointLight pointLight;\n\t#if defined( USE_SHADOWMAP ) && NUM_POINT_LIGHT_SHADOWS > 0\n\tPointLightShadow pointLightShadow;\n\t#endif\n\t#pragma unroll_loop_start\n\tfor ( int i = 0; i < NUM_POINT_LIGHTS; i ++ ) {\n\t\tpointLight = pointLights[ i ];\n\t\tgetPointLightInfo( pointLight, geometry, directLight );\n\t\t#if defined( USE_SHADOWMAP ) && ( UNROLLED_LOOP_INDEX < NUM_POINT_LIGHT_SHADOWS )\n\t\tpointLightShadow = pointLightShadows[ i ];\n\t\tdirectLight.color *= all( bvec2( directLight.visible, receiveShadow ) ) ? getPointShadow( pointShadowMap[ i ], pointLightShadow.shadowMapSize, pointLightShadow.shadowBias, pointLightShadow.shadowRadius, vPointShadowCoord[ i ], pointLightShadow.shadowCameraNear, pointLightShadow.shadowCameraFar ) : 1.0;\n\t\t#endif\n\t\tRE_Direct( directLight, geometry, material, reflectedLight );\n\t}\n\t#pragma unroll_loop_end\n#endif\n#if ( NUM_SPOT_LIGHTS > 0 ) && defined( RE_Direct )\n\tSpotLight spotLight;\n\t#if defined( USE_SHADOWMAP ) && NUM_SPOT_LIGHT_SHADOWS > 0\n\tSpotLightShadow spotLightShadow;\n\t#endif\n\t#pragma unroll_loop_start\n\tfor ( int i = 0; i < NUM_SPOT_LIGHTS; i ++ ) {\n\t\tspotLight = spotLights[ i ];\n\t\tgetSpotLightInfo( spotLight, geometry, directLight );\n\t\t#if defined( USE_SHADOWMAP ) && ( UNROLLED_LOOP_INDEX < NUM_SPOT_LIGHT_SHADOWS )\n\t\tspotLightShadow = spotLightShadows[ i ];\n\t\tdirectLight.color *= all( bvec2( directLight.visible, receiveShadow ) ) ? getShadow( spotShadowMap[ i ], spotLightShadow.shadowMapSize, spotLightShadow.shadowBias, spotLightShadow.shadowRadius, vSpotShadowCoord[ i ] ) : 1.0;\n\t\t#endif\n\t\tRE_Direct( directLight, geometry, material, reflectedLight );\n\t}\n\t#pragma unroll_loop_end\n#endif\n#if ( NUM_DIR_LIGHTS > 0 ) && defined( RE_Direct )\n\tDirectionalLight directionalLight;\n\t#if defined( USE_SHADOWMAP ) && NUM_DIR_LIGHT_SHADOWS > 0\n\tDirectionalLightShadow directionalLightShadow;\n\t#endif\n\t#pragma unroll_loop_start\n\tfor ( int i = 0; i < NUM_DIR_LIGHTS; i ++ ) {\n\t\tdirectionalLight = directionalLights[ i ];\n\t\tgetDirectionalLightInfo( directionalLight, geometry, directLight );\n\t\t#if defined( USE_SHADOWMAP ) && ( UNROLLED_LOOP_INDEX < NUM_DIR_LIGHT_SHADOWS )\n\t\tdirectionalLightShadow = directionalLightShadows[ i ];\n\t\tdirectLight.color *= all( bvec2( directLight.visible, receiveShadow ) ) ? getShadow( directionalShadowMap[ i ], directionalLightShadow.shadowMapSize, directionalLightShadow.shadowBias, directionalLightShadow.shadowRadius, vDirectionalShadowCoord[ i ] ) : 1.0;\n\t\t#endif\n\t\tRE_Direct( directLight, geometry, material, reflectedLight );\n\t}\n\t#pragma unroll_loop_end\n#endif\n#if ( NUM_RECT_AREA_LIGHTS > 0 ) && defined( RE_Direct_RectArea )\n\tRectAreaLight rectAreaLight;\n\t#pragma unroll_loop_start\n\tfor ( int i = 0; i < NUM_RECT_AREA_LIGHTS; i ++ ) {\n\t\trectAreaLight = rectAreaLights[ i ];\n\t\tRE_Direct_RectArea( rectAreaLight, geometry, material, reflectedLight );\n\t}\n\t#pragma unroll_loop_end\n#endif\n#if defined( RE_IndirectDiffuse )\n\tvec3 iblIrradiance = vec3( 0.0 );\n\tvec3 irradiance = getAmbientLightIrradiance( ambientLightColor );\n\tirradiance += getLightProbeIrradiance( lightProbe, geometry.normal );\n\t#if ( NUM_HEMI_LIGHTS > 0 )\n\t\t#pragma unroll_loop_start\n\t\tfor ( int i = 0; i < NUM_HEMI_LIGHTS; i ++ ) {\n\t\t\tirradiance += getHemisphereLightIrradiance( hemisphereLights[ i ], geometry.normal );\n\t\t}\n\t\t#pragma unroll_loop_end\n\t#endif\n#endif\n#if defined( RE_IndirectSpecular )\n\tvec3 radiance = vec3( 0.0 );\n\tvec3 clearcoatRadiance = vec3( 0.0 );\n#endif";
 
-	var lights_fragment_maps = "#if defined( RE_IndirectDiffuse )\n\t#ifdef USE_LIGHTMAP\n\t\tvec4 lightMapTexel = texture2D( lightMap, vUv2 );\n\t\tvec3 lightMapIrradiance = lightMapTexelToLinear( lightMapTexel ).rgb * lightMapIntensity;\n\t\t#ifndef PHYSICALLY_CORRECT_LIGHTS\n\t\t\tlightMapIrradiance *= PI;\n\t\t#endif\n\t\tirradiance += lightMapIrradiance;\n\t#endif\n\t#if defined( USE_ENVMAP ) && defined( STANDARD ) && defined( ENVMAP_TYPE_CUBE_UV )\n\t\tiblIrradiance += getIBLIrradiance( geometry.normal );\n\t#endif\n#endif\n#if defined( USE_ENVMAP ) && defined( RE_IndirectSpecular )\n\tradiance += getIBLRadiance( geometry.viewDir, geometry.normal, material.roughness );\n\t#ifdef USE_CLEARCOAT\n\t\tclearcoatRadiance += getIBLRadiance( geometry.viewDir, geometry.clearcoatNormal, material.clearcoatRoughness );\n\t#endif\n#endif";
+	var lights_fragment_maps = "#if defined( RE_IndirectDiffuse )\n\t#ifdef USE_LIGHTMAP\n\t\tvec4 lightMapTexel = texture2D( lightMap, vUv2 );\n\t\tvec3 lightMapIrradiance = lightMapTexel.rgb * lightMapIntensity;\n\t\t#ifndef PHYSICALLY_CORRECT_LIGHTS\n\t\t\tlightMapIrradiance *= PI;\n\t\t#endif\n\t\tirradiance += lightMapIrradiance;\n\t#endif\n\t#if defined( USE_ENVMAP ) && defined( STANDARD ) && defined( ENVMAP_TYPE_CUBE_UV )\n\t\tiblIrradiance += getIBLIrradiance( geometry.normal );\n\t#endif\n#endif\n#if defined( USE_ENVMAP ) && defined( RE_IndirectSpecular )\n\tradiance += getIBLRadiance( geometry.viewDir, geometry.normal, material.roughness );\n\t#ifdef USE_CLEARCOAT\n\t\tclearcoatRadiance += getIBLRadiance( geometry.viewDir, geometry.clearcoatNormal, material.clearcoatRoughness );\n\t#endif\n#endif";
 
 	var lights_fragment_end = "#if defined( RE_IndirectDiffuse )\n\tRE_IndirectDiffuse( irradiance, geometry, material, reflectedLight );\n#endif\n#if defined( RE_IndirectSpecular )\n\tRE_IndirectSpecular( radiance, iblIrradiance, clearcoatRadiance, geometry, material, reflectedLight );\n#endif";
 
@@ -16264,11 +16296,11 @@ module.exports = anime;
 
 	var logdepthbuf_vertex = "#ifdef USE_LOGDEPTHBUF\n\t#ifdef USE_LOGDEPTHBUF_EXT\n\t\tvFragDepth = 1.0 + gl_Position.w;\n\t\tvIsPerspective = float( isPerspectiveMatrix( projectionMatrix ) );\n\t#else\n\t\tif ( isPerspectiveMatrix( projectionMatrix ) ) {\n\t\t\tgl_Position.z = log2( max( EPSILON, gl_Position.w + 1.0 ) ) * logDepthBufFC - 1.0;\n\t\t\tgl_Position.z *= gl_Position.w;\n\t\t}\n\t#endif\n#endif";
 
-	var map_fragment = "#ifdef USE_MAP\n\tvec4 texelColor = texture2D( map, vUv );\n\ttexelColor = mapTexelToLinear( texelColor );\n\tdiffuseColor *= texelColor;\n#endif";
+	var map_fragment = "#ifdef USE_MAP\n\tvec4 sampledDiffuseColor = texture2D( map, vUv );\n\t#ifdef DECODE_VIDEO_TEXTURE\n\t\tsampledDiffuseColor = vec4( mix( pow( sampledDiffuseColor.rgb * 0.9478672986 + vec3( 0.0521327014 ), vec3( 2.4 ) ), sampledDiffuseColor.rgb * 0.0773993808, vec3( lessThanEqual( sampledDiffuseColor.rgb, vec3( 0.04045 ) ) ) ), sampledDiffuseColor.w );\n\t#endif\n\tdiffuseColor *= sampledDiffuseColor;\n#endif";
 
 	var map_pars_fragment = "#ifdef USE_MAP\n\tuniform sampler2D map;\n#endif";
 
-	var map_particle_fragment = "#if defined( USE_MAP ) || defined( USE_ALPHAMAP )\n\tvec2 uv = ( uvTransform * vec3( gl_PointCoord.x, 1.0 - gl_PointCoord.y, 1 ) ).xy;\n#endif\n#ifdef USE_MAP\n\tvec4 mapTexel = texture2D( map, uv );\n\tdiffuseColor *= mapTexelToLinear( mapTexel );\n#endif\n#ifdef USE_ALPHAMAP\n\tdiffuseColor.a *= texture2D( alphaMap, uv ).g;\n#endif";
+	var map_particle_fragment = "#if defined( USE_MAP ) || defined( USE_ALPHAMAP )\n\tvec2 uv = ( uvTransform * vec3( gl_PointCoord.x, 1.0 - gl_PointCoord.y, 1 ) ).xy;\n#endif\n#ifdef USE_MAP\n\tdiffuseColor *= texture2D( map, uv );\n#endif\n#ifdef USE_ALPHAMAP\n\tdiffuseColor.a *= texture2D( alphaMap, uv ).g;\n#endif";
 
 	var map_particle_pars_fragment = "#if defined( USE_MAP ) || defined( USE_ALPHAMAP )\n\tuniform mat3 uvTransform;\n#endif\n#ifdef USE_MAP\n\tuniform sampler2D map;\n#endif\n#ifdef USE_ALPHAMAP\n\tuniform sampler2D alphaMap;\n#endif";
 
@@ -16276,11 +16308,11 @@ module.exports = anime;
 
 	var metalnessmap_pars_fragment = "#ifdef USE_METALNESSMAP\n\tuniform sampler2D metalnessMap;\n#endif";
 
-	var morphnormal_vertex = "#ifdef USE_MORPHNORMALS\n\tobjectNormal *= morphTargetBaseInfluence;\n\t#ifdef MORPHTARGETS_TEXTURE\n\t\tfor ( int i = 0; i < MORPHTARGETS_COUNT; i ++ ) {\n\t\t\tif ( morphTargetInfluences[ i ] > 0.0 ) objectNormal += getMorph( gl_VertexID, i, 1, 2 ) * morphTargetInfluences[ i ];\n\t\t}\n\t#else\n\t\tobjectNormal += morphNormal0 * morphTargetInfluences[ 0 ];\n\t\tobjectNormal += morphNormal1 * morphTargetInfluences[ 1 ];\n\t\tobjectNormal += morphNormal2 * morphTargetInfluences[ 2 ];\n\t\tobjectNormal += morphNormal3 * morphTargetInfluences[ 3 ];\n\t#endif\n#endif";
+	var morphnormal_vertex = "#ifdef USE_MORPHNORMALS\n\tobjectNormal *= morphTargetBaseInfluence;\n\t#ifdef MORPHTARGETS_TEXTURE\n\t\tfor ( int i = 0; i < MORPHTARGETS_COUNT; i ++ ) {\n\t\t\tif ( morphTargetInfluences[ i ] != 0.0 ) objectNormal += getMorph( gl_VertexID, i, 1, 2 ) * morphTargetInfluences[ i ];\n\t\t}\n\t#else\n\t\tobjectNormal += morphNormal0 * morphTargetInfluences[ 0 ];\n\t\tobjectNormal += morphNormal1 * morphTargetInfluences[ 1 ];\n\t\tobjectNormal += morphNormal2 * morphTargetInfluences[ 2 ];\n\t\tobjectNormal += morphNormal3 * morphTargetInfluences[ 3 ];\n\t#endif\n#endif";
 
 	var morphtarget_pars_vertex = "#ifdef USE_MORPHTARGETS\n\tuniform float morphTargetBaseInfluence;\n\t#ifdef MORPHTARGETS_TEXTURE\n\t\tuniform float morphTargetInfluences[ MORPHTARGETS_COUNT ];\n\t\tuniform sampler2DArray morphTargetsTexture;\n\t\tuniform vec2 morphTargetsTextureSize;\n\t\tvec3 getMorph( const in int vertexIndex, const in int morphTargetIndex, const in int offset, const in int stride ) {\n\t\t\tfloat texelIndex = float( vertexIndex * stride + offset );\n\t\t\tfloat y = floor( texelIndex / morphTargetsTextureSize.x );\n\t\t\tfloat x = texelIndex - y * morphTargetsTextureSize.x;\n\t\t\tvec3 morphUV = vec3( ( x + 0.5 ) / morphTargetsTextureSize.x, y / morphTargetsTextureSize.y, morphTargetIndex );\n\t\t\treturn texture( morphTargetsTexture, morphUV ).xyz;\n\t\t}\n\t#else\n\t\t#ifndef USE_MORPHNORMALS\n\t\t\tuniform float morphTargetInfluences[ 8 ];\n\t\t#else\n\t\t\tuniform float morphTargetInfluences[ 4 ];\n\t\t#endif\n\t#endif\n#endif";
 
-	var morphtarget_vertex = "#ifdef USE_MORPHTARGETS\n\ttransformed *= morphTargetBaseInfluence;\n\t#ifdef MORPHTARGETS_TEXTURE\n\t\tfor ( int i = 0; i < MORPHTARGETS_COUNT; i ++ ) {\n\t\t\t#ifndef USE_MORPHNORMALS\n\t\t\t\tif ( morphTargetInfluences[ i ] > 0.0 ) transformed += getMorph( gl_VertexID, i, 0, 1 ) * morphTargetInfluences[ i ];\n\t\t\t#else\n\t\t\t\tif ( morphTargetInfluences[ i ] > 0.0 ) transformed += getMorph( gl_VertexID, i, 0, 2 ) * morphTargetInfluences[ i ];\n\t\t\t#endif\n\t\t}\n\t#else\n\t\ttransformed += morphTarget0 * morphTargetInfluences[ 0 ];\n\t\ttransformed += morphTarget1 * morphTargetInfluences[ 1 ];\n\t\ttransformed += morphTarget2 * morphTargetInfluences[ 2 ];\n\t\ttransformed += morphTarget3 * morphTargetInfluences[ 3 ];\n\t\t#ifndef USE_MORPHNORMALS\n\t\t\ttransformed += morphTarget4 * morphTargetInfluences[ 4 ];\n\t\t\ttransformed += morphTarget5 * morphTargetInfluences[ 5 ];\n\t\t\ttransformed += morphTarget6 * morphTargetInfluences[ 6 ];\n\t\t\ttransformed += morphTarget7 * morphTargetInfluences[ 7 ];\n\t\t#endif\n\t#endif\n#endif";
+	var morphtarget_vertex = "#ifdef USE_MORPHTARGETS\n\ttransformed *= morphTargetBaseInfluence;\n\t#ifdef MORPHTARGETS_TEXTURE\n\t\tfor ( int i = 0; i < MORPHTARGETS_COUNT; i ++ ) {\n\t\t\t#ifndef USE_MORPHNORMALS\n\t\t\t\tif ( morphTargetInfluences[ i ] != 0.0 ) transformed += getMorph( gl_VertexID, i, 0, 1 ) * morphTargetInfluences[ i ];\n\t\t\t#else\n\t\t\t\tif ( morphTargetInfluences[ i ] != 0.0 ) transformed += getMorph( gl_VertexID, i, 0, 2 ) * morphTargetInfluences[ i ];\n\t\t\t#endif\n\t\t}\n\t#else\n\t\ttransformed += morphTarget0 * morphTargetInfluences[ 0 ];\n\t\ttransformed += morphTarget1 * morphTargetInfluences[ 1 ];\n\t\ttransformed += morphTarget2 * morphTargetInfluences[ 2 ];\n\t\ttransformed += morphTarget3 * morphTargetInfluences[ 3 ];\n\t\t#ifndef USE_MORPHNORMALS\n\t\t\ttransformed += morphTarget4 * morphTargetInfluences[ 4 ];\n\t\t\ttransformed += morphTarget5 * morphTargetInfluences[ 5 ];\n\t\t\ttransformed += morphTarget6 * morphTargetInfluences[ 6 ];\n\t\t\ttransformed += morphTarget7 * morphTargetInfluences[ 7 ];\n\t\t#endif\n\t#endif\n#endif";
 
 	var normal_fragment_begin = "float faceDirection = gl_FrontFacing ? 1.0 : - 1.0;\n#ifdef FLAT_SHADED\n\tvec3 fdx = vec3( dFdx( vViewPosition.x ), dFdx( vViewPosition.y ), dFdx( vViewPosition.z ) );\n\tvec3 fdy = vec3( dFdy( vViewPosition.x ), dFdy( vViewPosition.y ), dFdy( vViewPosition.z ) );\n\tvec3 normal = normalize( cross( fdx, fdy ) );\n#else\n\tvec3 normal = normalize( vNormal );\n\t#ifdef DOUBLE_SIDED\n\t\tnormal = normal * faceDirection;\n\t#endif\n\t#ifdef USE_TANGENT\n\t\tvec3 tangent = normalize( vTangent );\n\t\tvec3 bitangent = normalize( vBitangent );\n\t\t#ifdef DOUBLE_SIDED\n\t\t\ttangent = tangent * faceDirection;\n\t\t\tbitangent = bitangent * faceDirection;\n\t\t#endif\n\t\t#if defined( TANGENTSPACE_NORMALMAP ) || defined( USE_CLEARCOAT_NORMALMAP )\n\t\t\tmat3 vTBN = mat3( tangent, bitangent, normal );\n\t\t#endif\n\t#endif\n#endif\nvec3 geometryNormal = normal;";
 
@@ -16342,7 +16374,7 @@ module.exports = anime;
 
 	var transmission_fragment = "#ifdef USE_TRANSMISSION\n\tfloat transmissionAlpha = 1.0;\n\tfloat transmissionFactor = transmission;\n\tfloat thicknessFactor = thickness;\n\t#ifdef USE_TRANSMISSIONMAP\n\t\ttransmissionFactor *= texture2D( transmissionMap, vUv ).r;\n\t#endif\n\t#ifdef USE_THICKNESSMAP\n\t\tthicknessFactor *= texture2D( thicknessMap, vUv ).g;\n\t#endif\n\tvec3 pos = vWorldPosition;\n\tvec3 v = normalize( cameraPosition - pos );\n\tvec3 n = inverseTransformDirection( normal, viewMatrix );\n\tvec4 transmission = getIBLVolumeRefraction(\n\t\tn, v, roughnessFactor, material.diffuseColor, material.specularColor, material.specularF90,\n\t\tpos, modelMatrix, viewMatrix, projectionMatrix, ior, thicknessFactor,\n\t\tattenuationColor, attenuationDistance );\n\ttotalDiffuse = mix( totalDiffuse, transmission.rgb, transmissionFactor );\n\ttransmissionAlpha = mix( transmissionAlpha, transmission.a, transmissionFactor );\n#endif";
 
-	var transmission_pars_fragment = "#ifdef USE_TRANSMISSION\n\tuniform float transmission;\n\tuniform float thickness;\n\tuniform float attenuationDistance;\n\tuniform vec3 attenuationColor;\n\t#ifdef USE_TRANSMISSIONMAP\n\t\tuniform sampler2D transmissionMap;\n\t#endif\n\t#ifdef USE_THICKNESSMAP\n\t\tuniform sampler2D thicknessMap;\n\t#endif\n\tuniform vec2 transmissionSamplerSize;\n\tuniform sampler2D transmissionSamplerMap;\n\tuniform mat4 modelMatrix;\n\tuniform mat4 projectionMatrix;\n\tvarying vec3 vWorldPosition;\n\tvec3 getVolumeTransmissionRay( vec3 n, vec3 v, float thickness, float ior, mat4 modelMatrix ) {\n\t\tvec3 refractionVector = refract( - v, normalize( n ), 1.0 / ior );\n\t\tvec3 modelScale;\n\t\tmodelScale.x = length( vec3( modelMatrix[ 0 ].xyz ) );\n\t\tmodelScale.y = length( vec3( modelMatrix[ 1 ].xyz ) );\n\t\tmodelScale.z = length( vec3( modelMatrix[ 2 ].xyz ) );\n\t\treturn normalize( refractionVector ) * thickness * modelScale;\n\t}\n\tfloat applyIorToRoughness( float roughness, float ior ) {\n\t\treturn roughness * clamp( ior * 2.0 - 2.0, 0.0, 1.0 );\n\t}\n\tvec4 getTransmissionSample( vec2 fragCoord, float roughness, float ior ) {\n\t\tfloat framebufferLod = log2( transmissionSamplerSize.x ) * applyIorToRoughness( roughness, ior );\n\t\t#ifdef TEXTURE_LOD_EXT\n\t\t\treturn texture2DLodEXT( transmissionSamplerMap, fragCoord.xy, framebufferLod );\n\t\t#else\n\t\t\treturn texture2D( transmissionSamplerMap, fragCoord.xy, framebufferLod );\n\t\t#endif\n\t}\n\tvec3 applyVolumeAttenuation( vec3 radiance, float transmissionDistance, vec3 attenuationColor, float attenuationDistance ) {\n\t\tif ( attenuationDistance == 0.0 ) {\n\t\t\treturn radiance;\n\t\t} else {\n\t\t\tvec3 attenuationCoefficient = -log( attenuationColor ) / attenuationDistance;\n\t\t\tvec3 transmittance = exp( - attenuationCoefficient * transmissionDistance );\t\t\treturn transmittance * radiance;\n\t\t}\n\t}\n\tvec4 getIBLVolumeRefraction( vec3 n, vec3 v, float roughness, vec3 diffuseColor, vec3 specularColor, float specularF90,\n\t\tvec3 position, mat4 modelMatrix, mat4 viewMatrix, mat4 projMatrix, float ior, float thickness,\n\t\tvec3 attenuationColor, float attenuationDistance ) {\n\t\tvec3 transmissionRay = getVolumeTransmissionRay( n, v, thickness, ior, modelMatrix );\n\t\tvec3 refractedRayExit = position + transmissionRay;\n\t\tvec4 ndcPos = projMatrix * viewMatrix * vec4( refractedRayExit, 1.0 );\n\t\tvec2 refractionCoords = ndcPos.xy / ndcPos.w;\n\t\trefractionCoords += 1.0;\n\t\trefractionCoords /= 2.0;\n\t\tvec4 transmittedLight = getTransmissionSample( refractionCoords, roughness, ior );\n\t\tvec3 attenuatedColor = applyVolumeAttenuation( transmittedLight.rgb, length( transmissionRay ), attenuationColor, attenuationDistance );\n\t\tvec3 F = EnvironmentBRDF( n, v, specularColor, specularF90, roughness );\n\t\treturn vec4( ( 1.0 - F ) * attenuatedColor * diffuseColor, transmittedLight.a );\n\t}\n#endif";
+	var transmission_pars_fragment = "#ifdef USE_TRANSMISSION\n\tuniform float transmission;\n\tuniform float thickness;\n\tuniform float attenuationDistance;\n\tuniform vec3 attenuationColor;\n\t#ifdef USE_TRANSMISSIONMAP\n\t\tuniform sampler2D transmissionMap;\n\t#endif\n\t#ifdef USE_THICKNESSMAP\n\t\tuniform sampler2D thicknessMap;\n\t#endif\n\tuniform vec2 transmissionSamplerSize;\n\tuniform sampler2D transmissionSamplerMap;\n\tuniform mat4 modelMatrix;\n\tuniform mat4 projectionMatrix;\n\tvarying vec3 vWorldPosition;\n\tvec3 getVolumeTransmissionRay( const in vec3 n, const in vec3 v, const in float thickness, const in float ior, const in mat4 modelMatrix ) {\n\t\tvec3 refractionVector = refract( - v, normalize( n ), 1.0 / ior );\n\t\tvec3 modelScale;\n\t\tmodelScale.x = length( vec3( modelMatrix[ 0 ].xyz ) );\n\t\tmodelScale.y = length( vec3( modelMatrix[ 1 ].xyz ) );\n\t\tmodelScale.z = length( vec3( modelMatrix[ 2 ].xyz ) );\n\t\treturn normalize( refractionVector ) * thickness * modelScale;\n\t}\n\tfloat applyIorToRoughness( const in float roughness, const in float ior ) {\n\t\treturn roughness * clamp( ior * 2.0 - 2.0, 0.0, 1.0 );\n\t}\n\tvec4 getTransmissionSample( const in vec2 fragCoord, const in float roughness, const in float ior ) {\n\t\tfloat framebufferLod = log2( transmissionSamplerSize.x ) * applyIorToRoughness( roughness, ior );\n\t\t#ifdef TEXTURE_LOD_EXT\n\t\t\treturn texture2DLodEXT( transmissionSamplerMap, fragCoord.xy, framebufferLod );\n\t\t#else\n\t\t\treturn texture2D( transmissionSamplerMap, fragCoord.xy, framebufferLod );\n\t\t#endif\n\t}\n\tvec3 applyVolumeAttenuation( const in vec3 radiance, const in float transmissionDistance, const in vec3 attenuationColor, const in float attenuationDistance ) {\n\t\tif ( attenuationDistance == 0.0 ) {\n\t\t\treturn radiance;\n\t\t} else {\n\t\t\tvec3 attenuationCoefficient = -log( attenuationColor ) / attenuationDistance;\n\t\t\tvec3 transmittance = exp( - attenuationCoefficient * transmissionDistance );\t\t\treturn transmittance * radiance;\n\t\t}\n\t}\n\tvec4 getIBLVolumeRefraction( const in vec3 n, const in vec3 v, const in float roughness, const in vec3 diffuseColor,\n\t\tconst in vec3 specularColor, const in float specularF90, const in vec3 position, const in mat4 modelMatrix,\n\t\tconst in mat4 viewMatrix, const in mat4 projMatrix, const in float ior, const in float thickness,\n\t\tconst in vec3 attenuationColor, const in float attenuationDistance ) {\n\t\tvec3 transmissionRay = getVolumeTransmissionRay( n, v, thickness, ior, modelMatrix );\n\t\tvec3 refractedRayExit = position + transmissionRay;\n\t\tvec4 ndcPos = projMatrix * viewMatrix * vec4( refractedRayExit, 1.0 );\n\t\tvec2 refractionCoords = ndcPos.xy / ndcPos.w;\n\t\trefractionCoords += 1.0;\n\t\trefractionCoords /= 2.0;\n\t\tvec4 transmittedLight = getTransmissionSample( refractionCoords, roughness, ior );\n\t\tvec3 attenuatedColor = applyVolumeAttenuation( transmittedLight.rgb, length( transmissionRay ), attenuationColor, attenuationDistance );\n\t\tvec3 F = EnvironmentBRDF( n, v, specularColor, specularF90, roughness );\n\t\treturn vec4( ( 1.0 - F ) * attenuatedColor * diffuseColor, transmittedLight.a );\n\t}\n#endif";
 
 	var uv_pars_fragment = "#if ( defined( USE_UV ) && ! defined( UVS_VERTEX_ONLY ) )\n\tvarying vec2 vUv;\n#endif";
 
@@ -16359,7 +16391,7 @@ module.exports = anime;
 	var worldpos_vertex = "#if defined( USE_ENVMAP ) || defined( DISTANCE ) || defined ( USE_SHADOWMAP ) || defined ( USE_TRANSMISSION )\n\tvec4 worldPosition = vec4( transformed, 1.0 );\n\t#ifdef USE_INSTANCING\n\t\tworldPosition = instanceMatrix * worldPosition;\n\t#endif\n\tworldPosition = modelMatrix * worldPosition;\n#endif";
 
 	const vertex$g = "varying vec2 vUv;\nuniform mat3 uvTransform;\nvoid main() {\n\tvUv = ( uvTransform * vec3( uv, 1 ) ).xy;\n\tgl_Position = vec4( position.xy, 1.0, 1.0 );\n}";
-	const fragment$g = "uniform sampler2D t2D;\nvarying vec2 vUv;\nvoid main() {\n\tvec4 texColor = texture2D( t2D, vUv );\n\tgl_FragColor = mapTexelToLinear( texColor );\n\t#include <tonemapping_fragment>\n\t#include <encodings_fragment>\n}";
+	const fragment$g = "uniform sampler2D t2D;\nvarying vec2 vUv;\nvoid main() {\n\tgl_FragColor = texture2D( t2D, vUv );\n\t#include <tonemapping_fragment>\n\t#include <encodings_fragment>\n}";
 
 	const vertex$f = "varying vec3 vWorldDirection;\n#include <common>\nvoid main() {\n\tvWorldDirection = transformDirection( position, modelMatrix );\n\t#include <begin_vertex>\n\t#include <project_vertex>\n\tgl_Position.z = gl_Position.w;\n}";
 	const fragment$f = "#include <envmap_common_pars_fragment>\nuniform float opacity;\nvarying vec3 vWorldDirection;\n#include <cube_uv_reflection_fragment>\nvoid main() {\n\tvec3 vReflect = vWorldDirection;\n\t#include <envmap_fragment>\n\tgl_FragColor = envColor;\n\tgl_FragColor.a *= opacity;\n\t#include <tonemapping_fragment>\n\t#include <encodings_fragment>\n}";
@@ -16371,19 +16403,19 @@ module.exports = anime;
 	const fragment$d = "#define DISTANCE\nuniform vec3 referencePosition;\nuniform float nearDistance;\nuniform float farDistance;\nvarying vec3 vWorldPosition;\n#include <common>\n#include <packing>\n#include <uv_pars_fragment>\n#include <map_pars_fragment>\n#include <alphamap_pars_fragment>\n#include <alphatest_pars_fragment>\n#include <clipping_planes_pars_fragment>\nvoid main () {\n\t#include <clipping_planes_fragment>\n\tvec4 diffuseColor = vec4( 1.0 );\n\t#include <map_fragment>\n\t#include <alphamap_fragment>\n\t#include <alphatest_fragment>\n\tfloat dist = length( vWorldPosition - referencePosition );\n\tdist = ( dist - nearDistance ) / ( farDistance - nearDistance );\n\tdist = saturate( dist );\n\tgl_FragColor = packDepthToRGBA( dist );\n}";
 
 	const vertex$c = "varying vec3 vWorldDirection;\n#include <common>\nvoid main() {\n\tvWorldDirection = transformDirection( position, modelMatrix );\n\t#include <begin_vertex>\n\t#include <project_vertex>\n}";
-	const fragment$c = "uniform sampler2D tEquirect;\nvarying vec3 vWorldDirection;\n#include <common>\nvoid main() {\n\tvec3 direction = normalize( vWorldDirection );\n\tvec2 sampleUV = equirectUv( direction );\n\tvec4 texColor = texture2D( tEquirect, sampleUV );\n\tgl_FragColor = mapTexelToLinear( texColor );\n\t#include <tonemapping_fragment>\n\t#include <encodings_fragment>\n}";
+	const fragment$c = "uniform sampler2D tEquirect;\nvarying vec3 vWorldDirection;\n#include <common>\nvoid main() {\n\tvec3 direction = normalize( vWorldDirection );\n\tvec2 sampleUV = equirectUv( direction );\n\tgl_FragColor = texture2D( tEquirect, sampleUV );\n\t#include <tonemapping_fragment>\n\t#include <encodings_fragment>\n}";
 
 	const vertex$b = "uniform float scale;\nattribute float lineDistance;\nvarying float vLineDistance;\n#include <common>\n#include <color_pars_vertex>\n#include <fog_pars_vertex>\n#include <morphtarget_pars_vertex>\n#include <logdepthbuf_pars_vertex>\n#include <clipping_planes_pars_vertex>\nvoid main() {\n\tvLineDistance = scale * lineDistance;\n\t#include <color_vertex>\n\t#include <begin_vertex>\n\t#include <morphtarget_vertex>\n\t#include <project_vertex>\n\t#include <logdepthbuf_vertex>\n\t#include <clipping_planes_vertex>\n\t#include <fog_vertex>\n}";
 	const fragment$b = "uniform vec3 diffuse;\nuniform float opacity;\nuniform float dashSize;\nuniform float totalSize;\nvarying float vLineDistance;\n#include <common>\n#include <color_pars_fragment>\n#include <fog_pars_fragment>\n#include <logdepthbuf_pars_fragment>\n#include <clipping_planes_pars_fragment>\nvoid main() {\n\t#include <clipping_planes_fragment>\n\tif ( mod( vLineDistance, totalSize ) > dashSize ) {\n\t\tdiscard;\n\t}\n\tvec3 outgoingLight = vec3( 0.0 );\n\tvec4 diffuseColor = vec4( diffuse, opacity );\n\t#include <logdepthbuf_fragment>\n\t#include <color_fragment>\n\toutgoingLight = diffuseColor.rgb;\n\t#include <output_fragment>\n\t#include <tonemapping_fragment>\n\t#include <encodings_fragment>\n\t#include <fog_fragment>\n\t#include <premultiplied_alpha_fragment>\n}";
 
 	const vertex$a = "#include <common>\n#include <uv_pars_vertex>\n#include <uv2_pars_vertex>\n#include <envmap_pars_vertex>\n#include <color_pars_vertex>\n#include <fog_pars_vertex>\n#include <morphtarget_pars_vertex>\n#include <skinning_pars_vertex>\n#include <logdepthbuf_pars_vertex>\n#include <clipping_planes_pars_vertex>\nvoid main() {\n\t#include <uv_vertex>\n\t#include <uv2_vertex>\n\t#include <color_vertex>\n\t#if defined ( USE_ENVMAP ) || defined ( USE_SKINNING )\n\t\t#include <beginnormal_vertex>\n\t\t#include <morphnormal_vertex>\n\t\t#include <skinbase_vertex>\n\t\t#include <skinnormal_vertex>\n\t\t#include <defaultnormal_vertex>\n\t#endif\n\t#include <begin_vertex>\n\t#include <morphtarget_vertex>\n\t#include <skinning_vertex>\n\t#include <project_vertex>\n\t#include <logdepthbuf_vertex>\n\t#include <clipping_planes_vertex>\n\t#include <worldpos_vertex>\n\t#include <envmap_vertex>\n\t#include <fog_vertex>\n}";
-	const fragment$a = "uniform vec3 diffuse;\nuniform float opacity;\n#ifndef FLAT_SHADED\n\tvarying vec3 vNormal;\n#endif\n#include <common>\n#include <dithering_pars_fragment>\n#include <color_pars_fragment>\n#include <uv_pars_fragment>\n#include <uv2_pars_fragment>\n#include <map_pars_fragment>\n#include <alphamap_pars_fragment>\n#include <alphatest_pars_fragment>\n#include <aomap_pars_fragment>\n#include <lightmap_pars_fragment>\n#include <envmap_common_pars_fragment>\n#include <envmap_pars_fragment>\n#include <cube_uv_reflection_fragment>\n#include <fog_pars_fragment>\n#include <specularmap_pars_fragment>\n#include <logdepthbuf_pars_fragment>\n#include <clipping_planes_pars_fragment>\nvoid main() {\n\t#include <clipping_planes_fragment>\n\tvec4 diffuseColor = vec4( diffuse, opacity );\n\t#include <logdepthbuf_fragment>\n\t#include <map_fragment>\n\t#include <color_fragment>\n\t#include <alphamap_fragment>\n\t#include <alphatest_fragment>\n\t#include <specularmap_fragment>\n\tReflectedLight reflectedLight = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );\n\t#ifdef USE_LIGHTMAP\n\t\tvec4 lightMapTexel= texture2D( lightMap, vUv2 );\n\t\treflectedLight.indirectDiffuse += lightMapTexelToLinear( lightMapTexel ).rgb * lightMapIntensity;\n\t#else\n\t\treflectedLight.indirectDiffuse += vec3( 1.0 );\n\t#endif\n\t#include <aomap_fragment>\n\treflectedLight.indirectDiffuse *= diffuseColor.rgb;\n\tvec3 outgoingLight = reflectedLight.indirectDiffuse;\n\t#include <envmap_fragment>\n\t#include <output_fragment>\n\t#include <tonemapping_fragment>\n\t#include <encodings_fragment>\n\t#include <fog_fragment>\n\t#include <premultiplied_alpha_fragment>\n\t#include <dithering_fragment>\n}";
+	const fragment$a = "uniform vec3 diffuse;\nuniform float opacity;\n#ifndef FLAT_SHADED\n\tvarying vec3 vNormal;\n#endif\n#include <common>\n#include <dithering_pars_fragment>\n#include <color_pars_fragment>\n#include <uv_pars_fragment>\n#include <uv2_pars_fragment>\n#include <map_pars_fragment>\n#include <alphamap_pars_fragment>\n#include <alphatest_pars_fragment>\n#include <aomap_pars_fragment>\n#include <lightmap_pars_fragment>\n#include <envmap_common_pars_fragment>\n#include <envmap_pars_fragment>\n#include <cube_uv_reflection_fragment>\n#include <fog_pars_fragment>\n#include <specularmap_pars_fragment>\n#include <logdepthbuf_pars_fragment>\n#include <clipping_planes_pars_fragment>\nvoid main() {\n\t#include <clipping_planes_fragment>\n\tvec4 diffuseColor = vec4( diffuse, opacity );\n\t#include <logdepthbuf_fragment>\n\t#include <map_fragment>\n\t#include <color_fragment>\n\t#include <alphamap_fragment>\n\t#include <alphatest_fragment>\n\t#include <specularmap_fragment>\n\tReflectedLight reflectedLight = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );\n\t#ifdef USE_LIGHTMAP\n\t\tvec4 lightMapTexel= texture2D( lightMap, vUv2 );\n\t\treflectedLight.indirectDiffuse += lightMapTexel.rgb * lightMapIntensity;\n\t#else\n\t\treflectedLight.indirectDiffuse += vec3( 1.0 );\n\t#endif\n\t#include <aomap_fragment>\n\treflectedLight.indirectDiffuse *= diffuseColor.rgb;\n\tvec3 outgoingLight = reflectedLight.indirectDiffuse;\n\t#include <envmap_fragment>\n\t#include <output_fragment>\n\t#include <tonemapping_fragment>\n\t#include <encodings_fragment>\n\t#include <fog_fragment>\n\t#include <premultiplied_alpha_fragment>\n\t#include <dithering_fragment>\n}";
 
 	const vertex$9 = "#define LAMBERT\nvarying vec3 vLightFront;\nvarying vec3 vIndirectFront;\n#ifdef DOUBLE_SIDED\n\tvarying vec3 vLightBack;\n\tvarying vec3 vIndirectBack;\n#endif\n#include <common>\n#include <uv_pars_vertex>\n#include <uv2_pars_vertex>\n#include <envmap_pars_vertex>\n#include <bsdfs>\n#include <lights_pars_begin>\n#include <color_pars_vertex>\n#include <fog_pars_vertex>\n#include <morphtarget_pars_vertex>\n#include <skinning_pars_vertex>\n#include <shadowmap_pars_vertex>\n#include <logdepthbuf_pars_vertex>\n#include <clipping_planes_pars_vertex>\nvoid main() {\n\t#include <uv_vertex>\n\t#include <uv2_vertex>\n\t#include <color_vertex>\n\t#include <beginnormal_vertex>\n\t#include <morphnormal_vertex>\n\t#include <skinbase_vertex>\n\t#include <skinnormal_vertex>\n\t#include <defaultnormal_vertex>\n\t#include <begin_vertex>\n\t#include <morphtarget_vertex>\n\t#include <skinning_vertex>\n\t#include <project_vertex>\n\t#include <logdepthbuf_vertex>\n\t#include <clipping_planes_vertex>\n\t#include <worldpos_vertex>\n\t#include <envmap_vertex>\n\t#include <lights_lambert_vertex>\n\t#include <shadowmap_vertex>\n\t#include <fog_vertex>\n}";
 	const fragment$9 = "uniform vec3 diffuse;\nuniform vec3 emissive;\nuniform float opacity;\nvarying vec3 vLightFront;\nvarying vec3 vIndirectFront;\n#ifdef DOUBLE_SIDED\n\tvarying vec3 vLightBack;\n\tvarying vec3 vIndirectBack;\n#endif\n#include <common>\n#include <packing>\n#include <dithering_pars_fragment>\n#include <color_pars_fragment>\n#include <uv_pars_fragment>\n#include <uv2_pars_fragment>\n#include <map_pars_fragment>\n#include <alphamap_pars_fragment>\n#include <alphatest_pars_fragment>\n#include <aomap_pars_fragment>\n#include <lightmap_pars_fragment>\n#include <emissivemap_pars_fragment>\n#include <envmap_common_pars_fragment>\n#include <envmap_pars_fragment>\n#include <cube_uv_reflection_fragment>\n#include <bsdfs>\n#include <lights_pars_begin>\n#include <fog_pars_fragment>\n#include <shadowmap_pars_fragment>\n#include <shadowmask_pars_fragment>\n#include <specularmap_pars_fragment>\n#include <logdepthbuf_pars_fragment>\n#include <clipping_planes_pars_fragment>\nvoid main() {\n\t#include <clipping_planes_fragment>\n\tvec4 diffuseColor = vec4( diffuse, opacity );\n\tReflectedLight reflectedLight = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );\n\tvec3 totalEmissiveRadiance = emissive;\n\t#include <logdepthbuf_fragment>\n\t#include <map_fragment>\n\t#include <color_fragment>\n\t#include <alphamap_fragment>\n\t#include <alphatest_fragment>\n\t#include <specularmap_fragment>\n\t#include <emissivemap_fragment>\n\t#ifdef DOUBLE_SIDED\n\t\treflectedLight.indirectDiffuse += ( gl_FrontFacing ) ? vIndirectFront : vIndirectBack;\n\t#else\n\t\treflectedLight.indirectDiffuse += vIndirectFront;\n\t#endif\n\t#include <lightmap_fragment>\n\treflectedLight.indirectDiffuse *= BRDF_Lambert( diffuseColor.rgb );\n\t#ifdef DOUBLE_SIDED\n\t\treflectedLight.directDiffuse = ( gl_FrontFacing ) ? vLightFront : vLightBack;\n\t#else\n\t\treflectedLight.directDiffuse = vLightFront;\n\t#endif\n\treflectedLight.directDiffuse *= BRDF_Lambert( diffuseColor.rgb ) * getShadowMask();\n\t#include <aomap_fragment>\n\tvec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + totalEmissiveRadiance;\n\t#include <envmap_fragment>\n\t#include <output_fragment>\n\t#include <tonemapping_fragment>\n\t#include <encodings_fragment>\n\t#include <fog_fragment>\n\t#include <premultiplied_alpha_fragment>\n\t#include <dithering_fragment>\n}";
 
 	const vertex$8 = "#define MATCAP\nvarying vec3 vViewPosition;\n#include <common>\n#include <uv_pars_vertex>\n#include <color_pars_vertex>\n#include <displacementmap_pars_vertex>\n#include <fog_pars_vertex>\n#include <normal_pars_vertex>\n#include <morphtarget_pars_vertex>\n#include <skinning_pars_vertex>\n#include <logdepthbuf_pars_vertex>\n#include <clipping_planes_pars_vertex>\nvoid main() {\n\t#include <uv_vertex>\n\t#include <color_vertex>\n\t#include <beginnormal_vertex>\n\t#include <morphnormal_vertex>\n\t#include <skinbase_vertex>\n\t#include <skinnormal_vertex>\n\t#include <defaultnormal_vertex>\n\t#include <normal_vertex>\n\t#include <begin_vertex>\n\t#include <morphtarget_vertex>\n\t#include <skinning_vertex>\n\t#include <displacementmap_vertex>\n\t#include <project_vertex>\n\t#include <logdepthbuf_vertex>\n\t#include <clipping_planes_vertex>\n\t#include <fog_vertex>\n\tvViewPosition = - mvPosition.xyz;\n}";
-	const fragment$8 = "#define MATCAP\nuniform vec3 diffuse;\nuniform float opacity;\nuniform sampler2D matcap;\nvarying vec3 vViewPosition;\n#include <common>\n#include <dithering_pars_fragment>\n#include <color_pars_fragment>\n#include <uv_pars_fragment>\n#include <map_pars_fragment>\n#include <alphamap_pars_fragment>\n#include <alphatest_pars_fragment>\n#include <fog_pars_fragment>\n#include <normal_pars_fragment>\n#include <bumpmap_pars_fragment>\n#include <normalmap_pars_fragment>\n#include <logdepthbuf_pars_fragment>\n#include <clipping_planes_pars_fragment>\nvoid main() {\n\t#include <clipping_planes_fragment>\n\tvec4 diffuseColor = vec4( diffuse, opacity );\n\t#include <logdepthbuf_fragment>\n\t#include <map_fragment>\n\t#include <color_fragment>\n\t#include <alphamap_fragment>\n\t#include <alphatest_fragment>\n\t#include <normal_fragment_begin>\n\t#include <normal_fragment_maps>\n\tvec3 viewDir = normalize( vViewPosition );\n\tvec3 x = normalize( vec3( viewDir.z, 0.0, - viewDir.x ) );\n\tvec3 y = cross( viewDir, x );\n\tvec2 uv = vec2( dot( x, normal ), dot( y, normal ) ) * 0.495 + 0.5;\n\t#ifdef USE_MATCAP\n\t\tvec4 matcapColor = texture2D( matcap, uv );\n\t\tmatcapColor = matcapTexelToLinear( matcapColor );\n\t#else\n\t\tvec4 matcapColor = vec4( 1.0 );\n\t#endif\n\tvec3 outgoingLight = diffuseColor.rgb * matcapColor.rgb;\n\t#include <output_fragment>\n\t#include <tonemapping_fragment>\n\t#include <encodings_fragment>\n\t#include <fog_fragment>\n\t#include <premultiplied_alpha_fragment>\n\t#include <dithering_fragment>\n}";
+	const fragment$8 = "#define MATCAP\nuniform vec3 diffuse;\nuniform float opacity;\nuniform sampler2D matcap;\nvarying vec3 vViewPosition;\n#include <common>\n#include <dithering_pars_fragment>\n#include <color_pars_fragment>\n#include <uv_pars_fragment>\n#include <map_pars_fragment>\n#include <alphamap_pars_fragment>\n#include <alphatest_pars_fragment>\n#include <fog_pars_fragment>\n#include <normal_pars_fragment>\n#include <bumpmap_pars_fragment>\n#include <normalmap_pars_fragment>\n#include <logdepthbuf_pars_fragment>\n#include <clipping_planes_pars_fragment>\nvoid main() {\n\t#include <clipping_planes_fragment>\n\tvec4 diffuseColor = vec4( diffuse, opacity );\n\t#include <logdepthbuf_fragment>\n\t#include <map_fragment>\n\t#include <color_fragment>\n\t#include <alphamap_fragment>\n\t#include <alphatest_fragment>\n\t#include <normal_fragment_begin>\n\t#include <normal_fragment_maps>\n\tvec3 viewDir = normalize( vViewPosition );\n\tvec3 x = normalize( vec3( viewDir.z, 0.0, - viewDir.x ) );\n\tvec3 y = cross( viewDir, x );\n\tvec2 uv = vec2( dot( x, normal ), dot( y, normal ) ) * 0.495 + 0.5;\n\t#ifdef USE_MATCAP\n\t\tvec4 matcapColor = texture2D( matcap, uv );\n\t#else\n\t\tvec4 matcapColor = vec4( vec3( mix( 0.2, 0.8, uv.y ) ), 1.0 );\n\t#endif\n\tvec3 outgoingLight = diffuseColor.rgb * matcapColor.rgb;\n\t#include <output_fragment>\n\t#include <tonemapping_fragment>\n\t#include <encodings_fragment>\n\t#include <fog_fragment>\n\t#include <premultiplied_alpha_fragment>\n\t#include <dithering_fragment>\n}";
 
 	const vertex$7 = "#define NORMAL\n#if defined( FLAT_SHADED ) || defined( USE_BUMPMAP ) || defined( TANGENTSPACE_NORMALMAP )\n\tvarying vec3 vViewPosition;\n#endif\n#include <common>\n#include <uv_pars_vertex>\n#include <displacementmap_pars_vertex>\n#include <normal_pars_vertex>\n#include <morphtarget_pars_vertex>\n#include <skinning_pars_vertex>\n#include <logdepthbuf_pars_vertex>\n#include <clipping_planes_pars_vertex>\nvoid main() {\n\t#include <uv_vertex>\n\t#include <beginnormal_vertex>\n\t#include <morphnormal_vertex>\n\t#include <skinbase_vertex>\n\t#include <skinnormal_vertex>\n\t#include <defaultnormal_vertex>\n\t#include <normal_vertex>\n\t#include <begin_vertex>\n\t#include <morphtarget_vertex>\n\t#include <skinning_vertex>\n\t#include <displacementmap_vertex>\n\t#include <project_vertex>\n\t#include <logdepthbuf_vertex>\n\t#include <clipping_planes_vertex>\n#if defined( FLAT_SHADED ) || defined( USE_BUMPMAP ) || defined( TANGENTSPACE_NORMALMAP )\n\tvViewPosition = - mvPosition.xyz;\n#endif\n}";
 	const fragment$7 = "#define NORMAL\nuniform float opacity;\n#if defined( FLAT_SHADED ) || defined( USE_BUMPMAP ) || defined( TANGENTSPACE_NORMALMAP )\n\tvarying vec3 vViewPosition;\n#endif\n#include <packing>\n#include <uv_pars_fragment>\n#include <normal_pars_fragment>\n#include <bumpmap_pars_fragment>\n#include <normalmap_pars_fragment>\n#include <logdepthbuf_pars_fragment>\n#include <clipping_planes_pars_fragment>\nvoid main() {\n\t#include <clipping_planes_fragment>\n\t#include <logdepthbuf_fragment>\n\t#include <normal_fragment_begin>\n\t#include <normal_fragment_maps>\n\tgl_FragColor = vec4( packNormalToRGB( normal ), opacity );\n}";
@@ -17031,7 +17063,7 @@ module.exports = anime;
 				value: null
 			},
 			sheenRoughness: {
-				value: 0
+				value: 1
 			},
 			sheenRoughnessMap: {
 				value: null
@@ -17061,7 +17093,7 @@ module.exports = anime;
 				value: new Color(0x000000)
 			},
 			specularIntensity: {
-				value: 0
+				value: 1
 			},
 			specularIntensityMap: {
 				value: null
@@ -17077,9 +17109,9 @@ module.exports = anime;
 		fragmentShader: ShaderChunk.meshphysical_frag
 	};
 
-	function WebGLBackground(renderer, cubemaps, state, objects, premultipliedAlpha) {
+	function WebGLBackground(renderer, cubemaps, state, objects, alpha, premultipliedAlpha) {
 		const clearColor = new Color(0x000000);
-		let clearAlpha = 0;
+		let clearAlpha = alpha === true ? 0 : 1;
 		let planeMesh;
 		let boxMesh;
 		let currentBackground = null;
@@ -17867,11 +17899,9 @@ module.exports = anime;
 						const image = texture.image;
 
 						if (image && image.height > 0) {
-							const currentRenderTarget = renderer.getRenderTarget();
 							const renderTarget = new WebGLCubeRenderTarget(image.height / 2);
 							renderTarget.fromEquirectangularTexture(renderer, texture);
 							cubemaps.set(texture, renderTarget);
-							renderer.setRenderTarget(currentRenderTarget);
 							texture.addEventListener('dispose', onTextureDispose);
 							return mapTextureMapping(renderTarget.texture, texture.mapping);
 						} else {
@@ -18027,10 +18057,6 @@ module.exports = anime;
 	// samples and exit early, but not recompile the shader.
 
 	const MAX_SAMPLES = 20;
-	const ENCODINGS = {
-		[LinearEncoding]: 0,
-		[sRGBEncoding]: 1
-	};
 
 	const _flatCamera = /*@__PURE__*/new OrthographicCamera();
 
@@ -18107,8 +18133,8 @@ module.exports = anime;
 		 */
 
 
-		fromEquirectangular(equirectangular) {
-			return this._fromTexture(equirectangular);
+		fromEquirectangular(equirectangular, renderTarget = null) {
+			return this._fromTexture(equirectangular, renderTarget);
 		}
 		/**
 		 * Generates a PMREM from an cubemap texture, which can be either LDR
@@ -18117,8 +18143,8 @@ module.exports = anime;
 		 */
 
 
-		fromCubemap(cubemap) {
-			return this._fromTexture(cubemap);
+		fromCubemap(cubemap, renderTarget = null) {
+			return this._fromTexture(cubemap, renderTarget);
 		}
 		/**
 		 * Pre-compiles the cubemap shader. You can get faster start-up by invoking this method during
@@ -18156,6 +18182,7 @@ module.exports = anime;
 		dispose() {
 			this._blurMaterial.dispose();
 
+			if (this._pingPongRenderTarget !== null) this._pingPongRenderTarget.dispose();
 			if (this._cubemapShader !== null) this._cubemapShader.dispose();
 			if (this._equirectShader !== null) this._equirectShader.dispose();
 
@@ -18166,8 +18193,6 @@ module.exports = anime;
 
 
 		_cleanup(outputTarget) {
-			this._pingPongRenderTarget.dispose();
-
 			this._renderer.setRenderTarget(_oldTarget);
 
 			outputTarget.scissorTest = false;
@@ -18175,10 +18200,10 @@ module.exports = anime;
 			_setViewport(outputTarget, 0, 0, outputTarget.width, outputTarget.height);
 		}
 
-		_fromTexture(texture) {
+		_fromTexture(texture, renderTarget) {
 			_oldTarget = this._renderer.getRenderTarget();
 
-			const cubeUVRenderTarget = this._allocateTargets(texture);
+			const cubeUVRenderTarget = renderTarget || this._allocateTargets(texture);
 
 			this._textureToCubeUV(texture, cubeUVRenderTarget);
 
@@ -18204,7 +18229,11 @@ module.exports = anime;
 			const cubeUVRenderTarget = _createRenderTarget(params);
 
 			cubeUVRenderTarget.depthBuffer = texture ? false : true;
-			this._pingPongRenderTarget = _createRenderTarget(params);
+
+			if (this._pingPongRenderTarget === null) {
+				this._pingPongRenderTarget = _createRenderTarget(params);
+			}
+
 			return cubeUVRenderTarget;
 		}
 
@@ -18250,10 +18279,10 @@ module.exports = anime;
 			for (let i = 0; i < 6; i++) {
 				const col = i % 3;
 
-				if (col == 0) {
+				if (col === 0) {
 					cubeCamera.up.set(0, upSign[i], 0);
 					cubeCamera.lookAt(forwardSign[i], 0, 0);
-				} else if (col == 1) {
+				} else if (col === 1) {
 					cubeCamera.up.set(0, 0, upSign[i]);
 					cubeCamera.lookAt(0, forwardSign[i], 0);
 				} else {
@@ -18279,24 +18308,18 @@ module.exports = anime;
 			scene.background = background;
 		}
 
-		_setEncoding(uniform, texture) {
-			if (this._renderer.capabilities.isWebGL2 === true && texture.format === RGBAFormat && texture.type === UnsignedByteType && texture.encoding === sRGBEncoding) {
-				uniform.value = ENCODINGS[LinearEncoding];
-			} else {
-				uniform.value = ENCODINGS[texture.encoding];
-			}
-		}
-
 		_textureToCubeUV(texture, cubeUVRenderTarget) {
 			const renderer = this._renderer;
 			const isCubeTexture = texture.mapping === CubeReflectionMapping || texture.mapping === CubeRefractionMapping;
 
 			if (isCubeTexture) {
-				if (this._cubemapShader == null) {
+				if (this._cubemapShader === null) {
 					this._cubemapShader = _getCubemapShader();
 				}
+
+				this._cubemapShader.uniforms.flipEnvMap.value = texture.isRenderTargetTexture === false ? -1 : 1;
 			} else {
-				if (this._equirectShader == null) {
+				if (this._equirectShader === null) {
 					this._equirectShader = _getEquirectShader();
 				}
 			}
@@ -18309,8 +18332,6 @@ module.exports = anime;
 			if (!isCubeTexture) {
 				uniforms['texelSize'].value.set(1.0 / texture.image.width, 1.0 / texture.image.height);
 			}
-
-			this._setEncoding(uniforms['inputEncoding'], texture);
 
 			_setViewport(cubeUVRenderTarget, 0, 0, 3 * SIZE_MAX, 2 * SIZE_MAX);
 
@@ -18378,7 +18399,7 @@ module.exports = anime;
 				const weight = Math.exp(-x * x / 2);
 				weights.push(weight);
 
-				if (i == 0) {
+				if (i === 0) {
 					sum += weight;
 				} else if (i < samples) {
 					sum += 2 * weight;
@@ -18427,7 +18448,7 @@ module.exports = anime;
 
 			if (i > LOD_MAX - LOD_MIN) {
 				sigma = EXTRA_LOD_SIGMA[i - LOD_MAX + LOD_MIN - 1];
-			} else if (i == 0) {
+			} else if (i === 0) {
 				sigma = 0;
 			}
 
@@ -18537,8 +18558,6 @@ module.exports = anime;
 			uniform float mipInt;
 			uniform vec3 poleAxis;
 
-			${_getEncodings()}
-
 			#define ENVMAP_TYPE_CUBE_UV
 			#include <cube_uv_reflection_fragment>
 
@@ -18602,9 +18621,6 @@ module.exports = anime;
 				},
 				'texelSize': {
 					value: texelSize
-				},
-				'inputEncoding': {
-					value: ENCODINGS[LinearEncoding]
 				}
 			},
 			vertexShader: _getCommonVertexShader(),
@@ -18620,8 +18636,6 @@ module.exports = anime;
 			uniform sampler2D envMap;
 			uniform vec2 texelSize;
 
-			${_getEncodings()}
-
 			#include <common>
 
 			void main() {
@@ -18633,13 +18647,13 @@ module.exports = anime;
 
 				vec2 f = fract( uv / texelSize - 0.5 );
 				uv -= f * texelSize;
-				vec3 tl = envMapTexelToLinear( texture2D ( envMap, uv ) ).rgb;
+				vec3 tl = texture2D ( envMap, uv ).rgb;
 				uv.x += texelSize.x;
-				vec3 tr = envMapTexelToLinear( texture2D ( envMap, uv ) ).rgb;
+				vec3 tr = texture2D ( envMap, uv ).rgb;
 				uv.y += texelSize.y;
-				vec3 br = envMapTexelToLinear( texture2D ( envMap, uv ) ).rgb;
+				vec3 br = texture2D ( envMap, uv ).rgb;
 				uv.x -= texelSize.x;
-				vec3 bl = envMapTexelToLinear( texture2D ( envMap, uv ) ).rgb;
+				vec3 bl = texture2D ( envMap, uv ).rgb;
 
 				vec3 tm = mix( tl, tr, f.x );
 				vec3 bm = mix( bl, br, f.x );
@@ -18661,8 +18675,8 @@ module.exports = anime;
 				'envMap': {
 					value: null
 				},
-				'inputEncoding': {
-					value: ENCODINGS[LinearEncoding]
+				'flipEnvMap': {
+					value: -1
 				}
 			},
 			vertexShader: _getCommonVertexShader(),
@@ -18673,15 +18687,15 @@ module.exports = anime;
 			precision mediump float;
 			precision mediump int;
 
+			uniform float flipEnvMap;
+
 			varying vec3 vOutputDirection;
 
 			uniform samplerCube envMap;
 
-			${_getEncodings()}
-
 			void main() {
 
-				gl_FragColor = envMapTexelToLinear( textureCube( envMap, vec3( - vOutputDirection.x, vOutputDirection.yz ) ) );
+				gl_FragColor = textureCube( envMap, vec3( flipEnvMap * vOutputDirection.x, vOutputDirection.yz ) );
 
 			}
 		`,
@@ -18756,66 +18770,40 @@ module.exports = anime;
 		);
 	}
 
-	function _getEncodings() {
-		return (
-			/* glsl */
-			`
-
-		uniform int inputEncoding;
-
-		#include <encodings_pars_fragment>
-
-		vec4 inputTexelToLinear( vec4 value ) {
-
-			if ( inputEncoding == 0 ) {
-
-				return value;
-
-			} else {
-
-				return sRGBToLinear( value );
-
-			}
-
-		}
-
-		vec4 envMapTexelToLinear( vec4 color ) {
-
-			return inputTexelToLinear( color );
-
-		}
-	`
-		);
-	}
-
 	function WebGLCubeUVMaps(renderer) {
 		let cubeUVmaps = new WeakMap();
 		let pmremGenerator = null;
 
 		function get(texture) {
-			if (texture && texture.isTexture && texture.isRenderTargetTexture === false) {
+			if (texture && texture.isTexture) {
 				const mapping = texture.mapping;
 				const isEquirectMap = mapping === EquirectangularReflectionMapping || mapping === EquirectangularRefractionMapping;
-				const isCubeMap = mapping === CubeReflectionMapping || mapping === CubeRefractionMapping;
+				const isCubeMap = mapping === CubeReflectionMapping || mapping === CubeRefractionMapping; // equirect/cube map to cubeUV conversion
 
 				if (isEquirectMap || isCubeMap) {
-					// equirect/cube map to cubeUV conversion
-					if (cubeUVmaps.has(texture)) {
-						return cubeUVmaps.get(texture).texture;
+					if (texture.isRenderTargetTexture && texture.needsPMREMUpdate === true) {
+						texture.needsPMREMUpdate = false;
+						let renderTarget = cubeUVmaps.get(texture);
+						if (pmremGenerator === null) pmremGenerator = new PMREMGenerator(renderer);
+						renderTarget = isEquirectMap ? pmremGenerator.fromEquirectangular(texture, renderTarget) : pmremGenerator.fromCubemap(texture, renderTarget);
+						cubeUVmaps.set(texture, renderTarget);
+						return renderTarget.texture;
 					} else {
-						const image = texture.image;
-
-						if (isEquirectMap && image && image.height > 0 || isCubeMap && image && isCubeTextureComplete(image)) {
-							const currentRenderTarget = renderer.getRenderTarget();
-							if (pmremGenerator === null) pmremGenerator = new PMREMGenerator(renderer);
-							const renderTarget = isEquirectMap ? pmremGenerator.fromEquirectangular(texture) : pmremGenerator.fromCubemap(texture);
-							cubeUVmaps.set(texture, renderTarget);
-							renderer.setRenderTarget(currentRenderTarget);
-							texture.addEventListener('dispose', onTextureDispose);
-							return renderTarget.texture;
+						if (cubeUVmaps.has(texture)) {
+							return cubeUVmaps.get(texture).texture;
 						} else {
-							// image not yet ready. try the conversion next frame
-							return null;
+							const image = texture.image;
+
+							if (isEquirectMap && image && image.height > 0 || isCubeMap && image && isCubeTextureComplete(image)) {
+								if (pmremGenerator === null) pmremGenerator = new PMREMGenerator(renderer);
+								const renderTarget = isEquirectMap ? pmremGenerator.fromEquirectangular(texture) : pmremGenerator.fromCubemap(texture);
+								cubeUVmaps.set(texture, renderTarget);
+								texture.addEventListener('dispose', onTextureDispose);
+								return renderTarget.texture;
+							} else {
+								// image not yet ready. try the conversion next frame
+								return null;
+							}
 						}
 					}
 				}
@@ -19019,7 +19007,7 @@ module.exports = anime;
 				}
 			}
 
-			const attribute = new (arrayMax(indices) > 65535 ? Uint32BufferAttribute : Uint16BufferAttribute)(indices, 1);
+			const attribute = new (arrayNeedsUint32(indices) ? Uint32BufferAttribute : Uint16BufferAttribute)(indices, 1);
 			attribute.version = version; // Updating index buffer in VAO now. See WebGLBindingStates
 			//
 
@@ -19276,6 +19264,14 @@ module.exports = anime;
 						size: new Vector2(width, height)
 					};
 					morphTextures.set(geometry, entry);
+
+					function disposeTexture() {
+						texture.dispose();
+						morphTextures.delete(geometry);
+						geometry.removeEventListener('dispose', disposeTexture);
+					}
+
+					geometry.addEventListener('dispose', disposeTexture);
 				} //
 
 
@@ -20298,11 +20294,6 @@ module.exports = anime;
 		return type.toUpperCase() + '\n\n' + errors + '\n\n' + addLineNumbers(gl.getShaderSource(shader));
 	}
 
-	function getTexelDecodingFunction(functionName, encoding) {
-		const components = getEncodingComponents(encoding);
-		return 'vec4 ' + functionName + '( vec4 value ) { return ' + components[0] + 'ToLinear' + components[1] + '; }';
-	}
-
 	function getTexelEncodingFunction(functionName, encoding) {
 		const components = getEncodingComponents(encoding);
 		return 'vec4 ' + functionName + '( vec4 value ) { return LinearTo' + components[0] + components[1] + '; }';
@@ -20548,9 +20539,9 @@ module.exports = anime;
 			}
 		} else {
 			prefixVertex = [generatePrecision(parameters), '#define SHADER_NAME ' + parameters.shaderName, customDefines, parameters.instancing ? '#define USE_INSTANCING' : '', parameters.instancingColor ? '#define USE_INSTANCING_COLOR' : '', parameters.supportsVertexTextures ? '#define VERTEX_TEXTURES' : '', '#define MAX_BONES ' + parameters.maxBones, parameters.useFog && parameters.fog ? '#define USE_FOG' : '', parameters.useFog && parameters.fogExp2 ? '#define FOG_EXP2' : '', parameters.map ? '#define USE_MAP' : '', parameters.envMap ? '#define USE_ENVMAP' : '', parameters.envMap ? '#define ' + envMapModeDefine : '', parameters.lightMap ? '#define USE_LIGHTMAP' : '', parameters.aoMap ? '#define USE_AOMAP' : '', parameters.emissiveMap ? '#define USE_EMISSIVEMAP' : '', parameters.bumpMap ? '#define USE_BUMPMAP' : '', parameters.normalMap ? '#define USE_NORMALMAP' : '', parameters.normalMap && parameters.objectSpaceNormalMap ? '#define OBJECTSPACE_NORMALMAP' : '', parameters.normalMap && parameters.tangentSpaceNormalMap ? '#define TANGENTSPACE_NORMALMAP' : '', parameters.clearcoatMap ? '#define USE_CLEARCOATMAP' : '', parameters.clearcoatRoughnessMap ? '#define USE_CLEARCOAT_ROUGHNESSMAP' : '', parameters.clearcoatNormalMap ? '#define USE_CLEARCOAT_NORMALMAP' : '', parameters.displacementMap && parameters.supportsVertexTextures ? '#define USE_DISPLACEMENTMAP' : '', parameters.specularMap ? '#define USE_SPECULARMAP' : '', parameters.specularIntensityMap ? '#define USE_SPECULARINTENSITYMAP' : '', parameters.specularColorMap ? '#define USE_SPECULARCOLORMAP' : '', parameters.roughnessMap ? '#define USE_ROUGHNESSMAP' : '', parameters.metalnessMap ? '#define USE_METALNESSMAP' : '', parameters.alphaMap ? '#define USE_ALPHAMAP' : '', parameters.transmission ? '#define USE_TRANSMISSION' : '', parameters.transmissionMap ? '#define USE_TRANSMISSIONMAP' : '', parameters.thicknessMap ? '#define USE_THICKNESSMAP' : '', parameters.sheenColorMap ? '#define USE_SHEENCOLORMAP' : '', parameters.sheenRoughnessMap ? '#define USE_SHEENROUGHNESSMAP' : '', parameters.vertexTangents ? '#define USE_TANGENT' : '', parameters.vertexColors ? '#define USE_COLOR' : '', parameters.vertexAlphas ? '#define USE_COLOR_ALPHA' : '', parameters.vertexUvs ? '#define USE_UV' : '', parameters.uvsVertexOnly ? '#define UVS_VERTEX_ONLY' : '', parameters.flatShading ? '#define FLAT_SHADED' : '', parameters.skinning ? '#define USE_SKINNING' : '', parameters.useVertexTexture ? '#define BONE_TEXTURE' : '', parameters.morphTargets ? '#define USE_MORPHTARGETS' : '', parameters.morphNormals && parameters.flatShading === false ? '#define USE_MORPHNORMALS' : '', parameters.morphTargets && parameters.isWebGL2 ? '#define MORPHTARGETS_TEXTURE' : '', parameters.morphTargets && parameters.isWebGL2 ? '#define MORPHTARGETS_COUNT ' + parameters.morphTargetsCount : '', parameters.doubleSided ? '#define DOUBLE_SIDED' : '', parameters.flipSided ? '#define FLIP_SIDED' : '', parameters.shadowMapEnabled ? '#define USE_SHADOWMAP' : '', parameters.shadowMapEnabled ? '#define ' + shadowMapTypeDefine : '', parameters.sizeAttenuation ? '#define USE_SIZEATTENUATION' : '', parameters.logarithmicDepthBuffer ? '#define USE_LOGDEPTHBUF' : '', parameters.logarithmicDepthBuffer && parameters.rendererExtensionFragDepth ? '#define USE_LOGDEPTHBUF_EXT' : '', 'uniform mat4 modelMatrix;', 'uniform mat4 modelViewMatrix;', 'uniform mat4 projectionMatrix;', 'uniform mat4 viewMatrix;', 'uniform mat3 normalMatrix;', 'uniform vec3 cameraPosition;', 'uniform bool isOrthographic;', '#ifdef USE_INSTANCING', '	attribute mat4 instanceMatrix;', '#endif', '#ifdef USE_INSTANCING_COLOR', '	attribute vec3 instanceColor;', '#endif', 'attribute vec3 position;', 'attribute vec3 normal;', 'attribute vec2 uv;', '#ifdef USE_TANGENT', '	attribute vec4 tangent;', '#endif', '#if defined( USE_COLOR_ALPHA )', '	attribute vec4 color;', '#elif defined( USE_COLOR )', '	attribute vec3 color;', '#endif', '#if ( defined( USE_MORPHTARGETS ) && ! defined( MORPHTARGETS_TEXTURE ) )', '	attribute vec3 morphTarget0;', '	attribute vec3 morphTarget1;', '	attribute vec3 morphTarget2;', '	attribute vec3 morphTarget3;', '	#ifdef USE_MORPHNORMALS', '		attribute vec3 morphNormal0;', '		attribute vec3 morphNormal1;', '		attribute vec3 morphNormal2;', '		attribute vec3 morphNormal3;', '	#else', '		attribute vec3 morphTarget4;', '		attribute vec3 morphTarget5;', '		attribute vec3 morphTarget6;', '		attribute vec3 morphTarget7;', '	#endif', '#endif', '#ifdef USE_SKINNING', '	attribute vec4 skinIndex;', '	attribute vec4 skinWeight;', '#endif', '\n'].filter(filterEmptyLine).join('\n');
-			prefixFragment = [customExtensions, generatePrecision(parameters), '#define SHADER_NAME ' + parameters.shaderName, customDefines, parameters.useFog && parameters.fog ? '#define USE_FOG' : '', parameters.useFog && parameters.fogExp2 ? '#define FOG_EXP2' : '', parameters.map ? '#define USE_MAP' : '', parameters.matcap ? '#define USE_MATCAP' : '', parameters.envMap ? '#define USE_ENVMAP' : '', parameters.envMap ? '#define ' + envMapTypeDefine : '', parameters.envMap ? '#define ' + envMapModeDefine : '', parameters.envMap ? '#define ' + envMapBlendingDefine : '', parameters.lightMap ? '#define USE_LIGHTMAP' : '', parameters.aoMap ? '#define USE_AOMAP' : '', parameters.emissiveMap ? '#define USE_EMISSIVEMAP' : '', parameters.bumpMap ? '#define USE_BUMPMAP' : '', parameters.normalMap ? '#define USE_NORMALMAP' : '', parameters.normalMap && parameters.objectSpaceNormalMap ? '#define OBJECTSPACE_NORMALMAP' : '', parameters.normalMap && parameters.tangentSpaceNormalMap ? '#define TANGENTSPACE_NORMALMAP' : '', parameters.clearcoat ? '#define USE_CLEARCOAT' : '', parameters.clearcoatMap ? '#define USE_CLEARCOATMAP' : '', parameters.clearcoatRoughnessMap ? '#define USE_CLEARCOAT_ROUGHNESSMAP' : '', parameters.clearcoatNormalMap ? '#define USE_CLEARCOAT_NORMALMAP' : '', parameters.specularMap ? '#define USE_SPECULARMAP' : '', parameters.specularIntensityMap ? '#define USE_SPECULARINTENSITYMAP' : '', parameters.specularColorMap ? '#define USE_SPECULARCOLORMAP' : '', parameters.roughnessMap ? '#define USE_ROUGHNESSMAP' : '', parameters.metalnessMap ? '#define USE_METALNESSMAP' : '', parameters.alphaMap ? '#define USE_ALPHAMAP' : '', parameters.alphaTest ? '#define USE_ALPHATEST' : '', parameters.sheen ? '#define USE_SHEEN' : '', parameters.sheenColorMap ? '#define USE_SHEENCOLORMAP' : '', parameters.sheenRoughnessMap ? '#define USE_SHEENROUGHNESSMAP' : '', parameters.transmission ? '#define USE_TRANSMISSION' : '', parameters.transmissionMap ? '#define USE_TRANSMISSIONMAP' : '', parameters.thicknessMap ? '#define USE_THICKNESSMAP' : '', parameters.vertexTangents ? '#define USE_TANGENT' : '', parameters.vertexColors || parameters.instancingColor ? '#define USE_COLOR' : '', parameters.vertexAlphas ? '#define USE_COLOR_ALPHA' : '', parameters.vertexUvs ? '#define USE_UV' : '', parameters.uvsVertexOnly ? '#define UVS_VERTEX_ONLY' : '', parameters.gradientMap ? '#define USE_GRADIENTMAP' : '', parameters.flatShading ? '#define FLAT_SHADED' : '', parameters.doubleSided ? '#define DOUBLE_SIDED' : '', parameters.flipSided ? '#define FLIP_SIDED' : '', parameters.shadowMapEnabled ? '#define USE_SHADOWMAP' : '', parameters.shadowMapEnabled ? '#define ' + shadowMapTypeDefine : '', parameters.premultipliedAlpha ? '#define PREMULTIPLIED_ALPHA' : '', parameters.physicallyCorrectLights ? '#define PHYSICALLY_CORRECT_LIGHTS' : '', parameters.logarithmicDepthBuffer ? '#define USE_LOGDEPTHBUF' : '', parameters.logarithmicDepthBuffer && parameters.rendererExtensionFragDepth ? '#define USE_LOGDEPTHBUF_EXT' : '', (parameters.extensionShaderTextureLOD || parameters.envMap) && parameters.rendererExtensionShaderTextureLod ? '#define TEXTURE_LOD_EXT' : '', 'uniform mat4 viewMatrix;', 'uniform vec3 cameraPosition;', 'uniform bool isOrthographic;', parameters.toneMapping !== NoToneMapping ? '#define TONE_MAPPING' : '', parameters.toneMapping !== NoToneMapping ? ShaderChunk['tonemapping_pars_fragment'] : '', // this code is required here because it is used by the toneMapping() function defined below
-			parameters.toneMapping !== NoToneMapping ? getToneMappingFunction('toneMapping', parameters.toneMapping) : '', parameters.dithering ? '#define DITHERING' : '', parameters.format === RGBFormat ? '#define OPAQUE' : '', ShaderChunk['encodings_pars_fragment'], // this code is required here because it is used by the various encoding/decoding function defined below
-			parameters.map ? getTexelDecodingFunction('mapTexelToLinear', parameters.mapEncoding) : '', parameters.matcap ? getTexelDecodingFunction('matcapTexelToLinear', parameters.matcapEncoding) : '', parameters.envMap ? getTexelDecodingFunction('envMapTexelToLinear', parameters.envMapEncoding) : '', parameters.emissiveMap ? getTexelDecodingFunction('emissiveMapTexelToLinear', parameters.emissiveMapEncoding) : '', parameters.specularColorMap ? getTexelDecodingFunction('specularColorMapTexelToLinear', parameters.specularColorMapEncoding) : '', parameters.sheenColorMap ? getTexelDecodingFunction('sheenColorMapTexelToLinear', parameters.sheenColorMapEncoding) : '', parameters.lightMap ? getTexelDecodingFunction('lightMapTexelToLinear', parameters.lightMapEncoding) : '', getTexelEncodingFunction('linearToOutputTexel', parameters.outputEncoding), parameters.depthPacking ? '#define DEPTH_PACKING ' + parameters.depthPacking : '', '\n'].filter(filterEmptyLine).join('\n');
+			prefixFragment = [customExtensions, generatePrecision(parameters), '#define SHADER_NAME ' + parameters.shaderName, customDefines, parameters.useFog && parameters.fog ? '#define USE_FOG' : '', parameters.useFog && parameters.fogExp2 ? '#define FOG_EXP2' : '', parameters.map ? '#define USE_MAP' : '', parameters.matcap ? '#define USE_MATCAP' : '', parameters.envMap ? '#define USE_ENVMAP' : '', parameters.envMap ? '#define ' + envMapTypeDefine : '', parameters.envMap ? '#define ' + envMapModeDefine : '', parameters.envMap ? '#define ' + envMapBlendingDefine : '', parameters.lightMap ? '#define USE_LIGHTMAP' : '', parameters.aoMap ? '#define USE_AOMAP' : '', parameters.emissiveMap ? '#define USE_EMISSIVEMAP' : '', parameters.bumpMap ? '#define USE_BUMPMAP' : '', parameters.normalMap ? '#define USE_NORMALMAP' : '', parameters.normalMap && parameters.objectSpaceNormalMap ? '#define OBJECTSPACE_NORMALMAP' : '', parameters.normalMap && parameters.tangentSpaceNormalMap ? '#define TANGENTSPACE_NORMALMAP' : '', parameters.clearcoat ? '#define USE_CLEARCOAT' : '', parameters.clearcoatMap ? '#define USE_CLEARCOATMAP' : '', parameters.clearcoatRoughnessMap ? '#define USE_CLEARCOAT_ROUGHNESSMAP' : '', parameters.clearcoatNormalMap ? '#define USE_CLEARCOAT_NORMALMAP' : '', parameters.specularMap ? '#define USE_SPECULARMAP' : '', parameters.specularIntensityMap ? '#define USE_SPECULARINTENSITYMAP' : '', parameters.specularColorMap ? '#define USE_SPECULARCOLORMAP' : '', parameters.roughnessMap ? '#define USE_ROUGHNESSMAP' : '', parameters.metalnessMap ? '#define USE_METALNESSMAP' : '', parameters.alphaMap ? '#define USE_ALPHAMAP' : '', parameters.alphaTest ? '#define USE_ALPHATEST' : '', parameters.sheen ? '#define USE_SHEEN' : '', parameters.sheenColorMap ? '#define USE_SHEENCOLORMAP' : '', parameters.sheenRoughnessMap ? '#define USE_SHEENROUGHNESSMAP' : '', parameters.transmission ? '#define USE_TRANSMISSION' : '', parameters.transmissionMap ? '#define USE_TRANSMISSIONMAP' : '', parameters.thicknessMap ? '#define USE_THICKNESSMAP' : '', parameters.decodeVideoTexture ? '#define DECODE_VIDEO_TEXTURE' : '', parameters.vertexTangents ? '#define USE_TANGENT' : '', parameters.vertexColors || parameters.instancingColor ? '#define USE_COLOR' : '', parameters.vertexAlphas ? '#define USE_COLOR_ALPHA' : '', parameters.vertexUvs ? '#define USE_UV' : '', parameters.uvsVertexOnly ? '#define UVS_VERTEX_ONLY' : '', parameters.gradientMap ? '#define USE_GRADIENTMAP' : '', parameters.flatShading ? '#define FLAT_SHADED' : '', parameters.doubleSided ? '#define DOUBLE_SIDED' : '', parameters.flipSided ? '#define FLIP_SIDED' : '', parameters.shadowMapEnabled ? '#define USE_SHADOWMAP' : '', parameters.shadowMapEnabled ? '#define ' + shadowMapTypeDefine : '', parameters.premultipliedAlpha ? '#define PREMULTIPLIED_ALPHA' : '', parameters.physicallyCorrectLights ? '#define PHYSICALLY_CORRECT_LIGHTS' : '', parameters.logarithmicDepthBuffer ? '#define USE_LOGDEPTHBUF' : '', parameters.logarithmicDepthBuffer && parameters.rendererExtensionFragDepth ? '#define USE_LOGDEPTHBUF_EXT' : '', (parameters.extensionShaderTextureLOD || parameters.envMap) && parameters.rendererExtensionShaderTextureLod ? '#define TEXTURE_LOD_EXT' : '', 'uniform mat4 viewMatrix;', 'uniform vec3 cameraPosition;', 'uniform bool isOrthographic;', parameters.toneMapping !== NoToneMapping ? '#define TONE_MAPPING' : '', parameters.toneMapping !== NoToneMapping ? ShaderChunk['tonemapping_pars_fragment'] : '', // this code is required here because it is used by the toneMapping() function defined below
+			parameters.toneMapping !== NoToneMapping ? getToneMappingFunction('toneMapping', parameters.toneMapping) : '', parameters.dithering ? '#define DITHERING' : '', parameters.alphaWrite ? '' : '#define OPAQUE', ShaderChunk['encodings_pars_fragment'], // this code is required here because it is used by the various encoding/decoding function defined below
+			getTexelEncodingFunction('linearToOutputTexel', parameters.outputEncoding), parameters.depthPacking ? '#define DEPTH_PACKING ' + parameters.depthPacking : '', '\n'].filter(filterEmptyLine).join('\n');
 		}
 
 		vertexShader = resolveIncludes(vertexShader);
@@ -20810,25 +20801,6 @@ module.exports = anime;
 			}
 		}
 
-		function getTextureEncodingFromMap(map) {
-			let encoding;
-
-			if (map && map.isTexture) {
-				encoding = map.encoding;
-			} else if (map && map.isWebGLRenderTarget) {
-				console.warn('THREE.WebGLPrograms.getTextureEncodingFromMap: don\'t use render targets as textures. Use their .texture property instead.');
-				encoding = map.texture.encoding;
-			} else {
-				encoding = LinearEncoding;
-			}
-
-			if (isWebGL2 && map && map.isTexture && map.format === RGBAFormat && map.type === UnsignedByteType && map.encoding === sRGBEncoding) {
-				encoding = LinearEncoding; // disable inline decode for sRGB textures in WebGL 2
-			}
-
-			return encoding;
-		}
-
 		function getParameters(material, lights, shadows, scene, object) {
 			const fog = scene.fog;
 			const environment = material.isMeshStandardMaterial ? scene.environment : null;
@@ -20881,24 +20853,20 @@ module.exports = anime;
 				instancing: object.isInstancedMesh === true,
 				instancingColor: object.isInstancedMesh === true && object.instanceColor !== null,
 				supportsVertexTextures: vertexTextures,
-				outputEncoding: currentRenderTarget !== null ? getTextureEncodingFromMap(currentRenderTarget.texture) : renderer.outputEncoding,
+				outputEncoding: currentRenderTarget === null ? renderer.outputEncoding : currentRenderTarget.isXRRenderTarget === true ? currentRenderTarget.texture.encoding : LinearEncoding,
 				map: !!material.map,
-				mapEncoding: getTextureEncodingFromMap(material.map),
 				matcap: !!material.matcap,
-				matcapEncoding: getTextureEncodingFromMap(material.matcap),
 				envMap: !!envMap,
 				envMapMode: envMap && envMap.mapping,
-				envMapEncoding: getTextureEncodingFromMap(envMap),
 				envMapCubeUV: !!envMap && (envMap.mapping === CubeUVReflectionMapping || envMap.mapping === CubeUVRefractionMapping),
 				lightMap: !!material.lightMap,
-				lightMapEncoding: getTextureEncodingFromMap(material.lightMap),
 				aoMap: !!material.aoMap,
 				emissiveMap: !!material.emissiveMap,
-				emissiveMapEncoding: getTextureEncodingFromMap(material.emissiveMap),
 				bumpMap: !!material.bumpMap,
 				normalMap: !!material.normalMap,
 				objectSpaceNormalMap: material.normalMapType === ObjectSpaceNormalMap,
 				tangentSpaceNormalMap: material.normalMapType === TangentSpaceNormalMap,
+				decodeVideoTexture: !!material.map && material.map.isVideoTexture === true && material.map.encoding === sRGBEncoding,
 				clearcoat: useClearcoat,
 				clearcoatMap: useClearcoat && !!material.clearcoatMap,
 				clearcoatRoughnessMap: useClearcoat && !!material.clearcoatRoughnessMap,
@@ -20909,13 +20877,12 @@ module.exports = anime;
 				specularMap: !!material.specularMap,
 				specularIntensityMap: !!material.specularIntensityMap,
 				specularColorMap: !!material.specularColorMap,
-				specularColorMapEncoding: getTextureEncodingFromMap(material.specularColorMap),
 				alphaMap: !!material.alphaMap,
 				alphaTest: useAlphaTest,
+				alphaWrite: material.alphaWrite || material.transparent,
 				gradientMap: !!material.gradientMap,
 				sheen: material.sheen > 0,
 				sheenColorMap: !!material.sheenColorMap,
-				sheenColorMapEncoding: getTextureEncodingFromMap(material.sheenColorMap),
 				sheenRoughnessMap: !!material.sheenRoughnessMap,
 				transmission: material.transmission > 0,
 				transmissionMap: !!material.transmissionMap,
@@ -20948,7 +20915,6 @@ module.exports = anime;
 				numSpotLightShadows: lights.spotShadowMap.length,
 				numClippingPlanes: clipping.numPlanes,
 				numClipIntersection: clipping.numIntersection,
-				format: material.format,
 				dithering: material.dithering,
 				shadowMapEnabled: renderer.shadowMap.enabled && shadows.length > 0,
 				shadowMapType: renderer.shadowMap.type,
@@ -21001,12 +20967,7 @@ module.exports = anime;
 		function getProgramCacheKeyParameters(array, parameters) {
 			array.push(parameters.precision);
 			array.push(parameters.outputEncoding);
-			array.push(parameters.mapEncoding);
-			array.push(parameters.matcapEncoding);
 			array.push(parameters.envMapMode);
-			array.push(parameters.envMapEncoding);
-			array.push(parameters.lightMapEncoding);
-			array.push(parameters.emissiveMapEncoding);
 			array.push(parameters.combine);
 			array.push(parameters.vertexUvs);
 			array.push(parameters.fogExp2);
@@ -21025,9 +20986,7 @@ module.exports = anime;
 			array.push(parameters.toneMapping);
 			array.push(parameters.numClippingPlanes);
 			array.push(parameters.numClipIntersection);
-			array.push(parameters.format);
-			array.push(parameters.specularColorMapEncoding);
-			array.push(parameters.sheenColorMapEncoding);
+			array.push(parameters.alphaWrite);
 		}
 
 		function getProgramCacheKeyBooleans(array, parameters) {
@@ -21091,6 +21050,7 @@ module.exports = anime;
 			if (parameters.sheen) _programLayers.enable(19);
 			if (parameters.sheenColorMap) _programLayers.enable(20);
 			if (parameters.sheenRoughnessMap) _programLayers.enable(21);
+			if (parameters.decodeVideoTexture) _programLayers.enable(22);
 			array.push(_programLayers.mask);
 		}
 
@@ -22404,6 +22364,8 @@ module.exports = anime;
 		const stencilBuffer = new StencilBuffer();
 		let enabledCapabilities = {};
 		let currentBoundFramebuffers = {};
+		let currentDrawbuffers = new WeakMap();
+		let defaultDrawbuffers = [];
 		let currentProgram = null;
 		let currentBlendingEnabled = false;
 		let currentBlending = null;
@@ -22504,6 +22466,51 @@ module.exports = anime;
 			return false;
 		}
 
+		function drawBuffers(renderTarget, framebuffer) {
+			let drawBuffers = defaultDrawbuffers;
+			let needsUpdate = false;
+
+			if (renderTarget) {
+				drawBuffers = currentDrawbuffers.get(framebuffer);
+
+				if (drawBuffers === undefined) {
+					drawBuffers = [];
+					currentDrawbuffers.set(framebuffer, drawBuffers);
+				}
+
+				if (renderTarget.isWebGLMultipleRenderTargets) {
+					const textures = renderTarget.texture;
+
+					if (drawBuffers.length !== textures.length || drawBuffers[0] !== gl.COLOR_ATTACHMENT0) {
+						for (let i = 0, il = textures.length; i < il; i++) {
+							drawBuffers[i] = gl.COLOR_ATTACHMENT0 + i;
+						}
+
+						drawBuffers.length = textures.length;
+						needsUpdate = true;
+					}
+				} else {
+					if (drawBuffers[0] !== gl.COLOR_ATTACHMENT0) {
+						drawBuffers[0] = gl.COLOR_ATTACHMENT0;
+						needsUpdate = true;
+					}
+				}
+			} else {
+				if (drawBuffers[0] !== gl.BACK) {
+					drawBuffers[0] = gl.BACK;
+					needsUpdate = true;
+				}
+			}
+
+			if (needsUpdate) {
+				if (capabilities.isWebGL2) {
+					gl.drawBuffers(drawBuffers);
+				} else {
+					extensions.get('WEBGL_draw_buffers').drawBuffersWEBGL(drawBuffers);
+				}
+			}
+		}
+
 		function useProgram(program) {
 			if (currentProgram !== program) {
 				gl.useProgram(program);
@@ -22580,7 +22587,7 @@ module.exports = anime;
 								break;
 
 							case SubtractiveBlending:
-								gl.blendFuncSeparate(gl.ZERO, gl.ZERO, gl.ONE_MINUS_SRC_COLOR, gl.ONE_MINUS_SRC_ALPHA);
+								gl.blendFuncSeparate(gl.ZERO, gl.ONE_MINUS_SRC_COLOR, gl.ZERO, gl.ONE);
 								break;
 
 							case MultiplyBlending:
@@ -22602,7 +22609,7 @@ module.exports = anime;
 								break;
 
 							case SubtractiveBlending:
-								gl.blendFunc(gl.ZERO, gl.ONE_MINUS_SRC_COLOR);
+								gl.blendFuncSeparate(gl.ZERO, gl.ONE_MINUS_SRC_COLOR, gl.ZERO, gl.ONE);
 								break;
 
 							case MultiplyBlending:
@@ -22897,6 +22904,8 @@ module.exports = anime;
 			currentTextureSlot = null;
 			currentBoundTextures = {};
 			currentBoundFramebuffers = {};
+			currentDrawbuffers = new WeakMap();
+			defaultDrawbuffers = [];
 			currentProgram = null;
 			currentBlendingEnabled = false;
 			currentBlending = null;
@@ -22928,6 +22937,7 @@ module.exports = anime;
 			enable: enable,
 			disable: disable,
 			bindFramebuffer: bindFramebuffer,
+			drawBuffers: drawBuffers,
 			useProgram: useProgram,
 			setBlending: setBlending,
 			setMaterial: setMaterial,
@@ -23033,7 +23043,7 @@ module.exports = anime;
 			_gl.generateMipmap(target);
 		}
 
-		function getInternalFormat(internalFormatName, glFormat, glType, encoding) {
+		function getInternalFormat(internalFormatName, glFormat, glType, encoding, isVideoTexture = false) {
 			if (isWebGL2 === false) return glFormat;
 
 			if (internalFormatName !== null) {
@@ -23049,19 +23059,21 @@ module.exports = anime;
 				if (glType === _gl.UNSIGNED_BYTE) internalFormat = _gl.R8;
 			}
 
-			if (glFormat === _gl.RGB) {
-				if (glType === _gl.FLOAT) internalFormat = _gl.RGB32F;
-				if (glType === _gl.HALF_FLOAT) internalFormat = _gl.RGB16F;
-				if (glType === _gl.UNSIGNED_BYTE) internalFormat = _gl.RGB8;
+			if (glFormat === _gl.RG) {
+				if (glType === _gl.FLOAT) internalFormat = _gl.RG32F;
+				if (glType === _gl.HALF_FLOAT) internalFormat = _gl.RG16F;
+				if (glType === _gl.UNSIGNED_BYTE) internalFormat = _gl.RG8;
 			}
 
 			if (glFormat === _gl.RGBA) {
 				if (glType === _gl.FLOAT) internalFormat = _gl.RGBA32F;
 				if (glType === _gl.HALF_FLOAT) internalFormat = _gl.RGBA16F;
-				if (glType === _gl.UNSIGNED_BYTE) internalFormat = encoding === sRGBEncoding ? _gl.SRGB8_ALPHA8 : _gl.RGBA8;
+				if (glType === _gl.UNSIGNED_BYTE) internalFormat = encoding === sRGBEncoding && isVideoTexture === false ? _gl.SRGB8_ALPHA8 : _gl.RGBA8;
+				if (glType === _gl.UNSIGNED_SHORT_4_4_4_4) internalFormat = _gl.RGBA4;
+				if (glType === _gl.UNSIGNED_SHORT_5_5_5_1) internalFormat = _gl.RGB5_A1;
 			}
 
-			if (internalFormat === _gl.R16F || internalFormat === _gl.R32F || internalFormat === _gl.RGBA16F || internalFormat === _gl.RGBA32F) {
+			if (internalFormat === _gl.R16F || internalFormat === _gl.R32F || internalFormat === _gl.RG16F || internalFormat === _gl.RG32F || internalFormat === _gl.RGBA16F || internalFormat === _gl.RGBA32F) {
 				extensions.get('EXT_color_buffer_float');
 			}
 
@@ -23334,11 +23346,12 @@ module.exports = anime;
 			_gl.pixelStorei(_gl.UNPACK_COLORSPACE_CONVERSION_WEBGL, _gl.NONE);
 
 			const needsPowerOfTwo = textureNeedsPowerOfTwo(texture) && isPowerOfTwo$1(texture.image) === false;
-			const image = resizeImage(texture.image, needsPowerOfTwo, false, maxTextureSize);
+			let image = resizeImage(texture.image, needsPowerOfTwo, false, maxTextureSize);
+			image = verifyColorSpace(texture, image);
 			const supportsMips = isPowerOfTwo$1(image) || isWebGL2,
-						glFormat = utils.convert(texture.format);
+						glFormat = utils.convert(texture.format, texture.encoding);
 			let glType = utils.convert(texture.type),
-					glInternalFormat = getInternalFormat(texture.internalFormat, glFormat, glType, texture.encoding);
+					glInternalFormat = getInternalFormat(texture.internalFormat, glFormat, glType, texture.encoding, texture.isVideoTexture);
 			setTextureParameters(textureType, texture, supportsMips);
 			let mipmap;
 			const mipmaps = texture.mipmaps;
@@ -23437,7 +23450,7 @@ module.exports = anime;
 				for (let i = 0, il = mipmaps.length; i < il; i++) {
 					mipmap = mipmaps[i];
 
-					if (texture.format !== RGBAFormat && texture.format !== RGBFormat) {
+					if (texture.format !== RGBAFormat) {
 						if (glFormat !== null) {
 							if (useTexStorage) {
 								state.compressedTexSubImage2D(_gl.TEXTURE_2D, i, 0, 0, mipmap.width, mipmap.height, glFormat, mipmap.data);
@@ -23547,11 +23560,13 @@ module.exports = anime;
 				} else {
 					cubeImage[i] = isDataTexture ? texture.image[i].image : texture.image[i];
 				}
+
+				cubeImage[i] = verifyColorSpace(texture, cubeImage[i]);
 			}
 
 			const image = cubeImage[0],
 						supportsMips = isPowerOfTwo$1(image) || isWebGL2,
-						glFormat = utils.convert(texture.format),
+						glFormat = utils.convert(texture.format, texture.encoding),
 						glType = utils.convert(texture.type),
 						glInternalFormat = getInternalFormat(texture.internalFormat, glFormat, glType, texture.encoding);
 			const useTexStorage = isWebGL2 && texture.isVideoTexture !== true;
@@ -23571,7 +23586,7 @@ module.exports = anime;
 					for (let j = 0; j < mipmaps.length; j++) {
 						const mipmap = mipmaps[j];
 
-						if (texture.format !== RGBAFormat && texture.format !== RGBFormat) {
+						if (texture.format !== RGBAFormat) {
 							if (glFormat !== null) {
 								if (useTexStorage) {
 									state.compressedTexSubImage2D(_gl.TEXTURE_CUBE_MAP_POSITIVE_X + i, j, 0, 0, mipmap.width, mipmap.height, glFormat, mipmap.data);
@@ -23651,7 +23666,7 @@ module.exports = anime;
 
 
 		function setupFrameBufferTexture(framebuffer, renderTarget, texture, attachment, textureTarget) {
-			const glFormat = utils.convert(texture.format);
+			const glFormat = utils.convert(texture.format, texture.encoding);
 			const glType = utils.convert(texture.type);
 			const glInternalFormat = getInternalFormat(texture.internalFormat, glFormat, glType, texture.encoding);
 			const renderTargetProperties = properties.get(renderTarget);
@@ -23720,7 +23735,7 @@ module.exports = anime;
 			} else {
 				// Use the first texture for MRT so far
 				const texture = renderTarget.isWebGLMultipleRenderTargets === true ? renderTarget.texture[0] : renderTarget.texture;
-				const glFormat = utils.convert(texture.format);
+				const glFormat = utils.convert(texture.format, texture.encoding);
 				const glType = utils.convert(texture.type);
 				const glInternalFormat = getInternalFormat(texture.internalFormat, glFormat, glType, texture.encoding);
 				const samples = getRenderTargetSamples(renderTarget);
@@ -23836,13 +23851,7 @@ module.exports = anime;
 			const isCube = renderTarget.isWebGLCubeRenderTarget === true;
 			const isMultipleRenderTargets = renderTarget.isWebGLMultipleRenderTargets === true;
 			const isRenderTarget3D = texture.isDataTexture3D || texture.isDataTexture2DArray;
-			const supportsMips = isPowerOfTwo$1(renderTarget) || isWebGL2; // Handles WebGL2 RGBFormat fallback - #18858
-
-			if (isWebGL2 && texture.format === RGBFormat && (texture.type === FloatType || texture.type === HalfFloatType)) {
-				texture.format = RGBAFormat;
-				console.warn('THREE.WebGLRenderer: Rendering to textures with RGB format is not supported. Using RGBA format instead.');
-			} // Setup framebuffer
-
+			const supportsMips = isPowerOfTwo$1(renderTarget) || isWebGL2; // Setup framebuffer
 
 			if (isCube) {
 				renderTargetProperties.__webglFramebuffer = [];
@@ -23875,7 +23884,7 @@ module.exports = anime;
 
 						_gl.bindRenderbuffer(_gl.RENDERBUFFER, renderTargetProperties.__webglColorRenderbuffer);
 
-						const glFormat = utils.convert(texture.format);
+						const glFormat = utils.convert(texture.format, texture.encoding);
 						const glType = utils.convert(texture.type);
 						const glInternalFormat = getInternalFormat(texture.internalFormat, glFormat, glType, texture.encoding);
 						const samples = getRenderTargetSamples(renderTarget);
@@ -24031,6 +24040,40 @@ module.exports = anime;
 
 				texture.update();
 			}
+		}
+
+		function verifyColorSpace(texture, image) {
+			const encoding = texture.encoding;
+			const format = texture.format;
+			const type = texture.type;
+			if (texture.isCompressedTexture === true || texture.isVideoTexture === true || texture.format === _SRGBAFormat) return image;
+
+			if (encoding !== LinearEncoding) {
+				// sRGB
+				if (encoding === sRGBEncoding) {
+					if (isWebGL2 === false) {
+						// in WebGL 1, try to use EXT_sRGB extension and unsized formats
+						if (extensions.has('EXT_sRGB') === true && format === RGBAFormat) {
+							texture.format = _SRGBAFormat; // it's not possible to generate mips in WebGL 1 with this extension
+
+							texture.minFilter = LinearFilter;
+							texture.generateMipmaps = false;
+						} else {
+							// slow fallback (CPU decode)
+							image = ImageUtils.sRGBToLinear(image);
+						}
+					} else {
+						// in WebGL 2 uncompressed textures can only be sRGB encoded if they have the RGBA8 format
+						if (format !== RGBAFormat || type !== UnsignedByteType) {
+							console.warn('THREE.WebGLTextures: sRGB encoded textures have to use RGBAFormat and UnsignedByteType.');
+						}
+					}
+				} else {
+					console.error('THREE.WebGLTextures: Unsupported texture encoding:', encoding);
+				}
+			}
+
+			return image;
 		} // backwards compatibility
 
 
@@ -24083,12 +24126,11 @@ module.exports = anime;
 	function WebGLUtils(gl, extensions, capabilities) {
 		const isWebGL2 = capabilities.isWebGL2;
 
-		function convert(p) {
+		function convert(p, encoding = null) {
 			let extension;
 			if (p === UnsignedByteType) return gl.UNSIGNED_BYTE;
 			if (p === UnsignedShort4444Type) return gl.UNSIGNED_SHORT_4_4_4_4;
 			if (p === UnsignedShort5551Type) return gl.UNSIGNED_SHORT_5_5_5_1;
-			if (p === UnsignedShort565Type) return gl.UNSIGNED_SHORT_5_6_5;
 			if (p === ByteType) return gl.BYTE;
 			if (p === ShortType) return gl.SHORT;
 			if (p === UnsignedShortType) return gl.UNSIGNED_SHORT;
@@ -24108,32 +24150,55 @@ module.exports = anime;
 			}
 
 			if (p === AlphaFormat) return gl.ALPHA;
-			if (p === RGBFormat) return gl.RGB;
 			if (p === RGBAFormat) return gl.RGBA;
 			if (p === LuminanceFormat) return gl.LUMINANCE;
 			if (p === LuminanceAlphaFormat) return gl.LUMINANCE_ALPHA;
 			if (p === DepthFormat) return gl.DEPTH_COMPONENT;
 			if (p === DepthStencilFormat) return gl.DEPTH_STENCIL;
-			if (p === RedFormat) return gl.RED; // WebGL2 formats.
+			if (p === RedFormat) return gl.RED; // WebGL 1 sRGB fallback
+
+			if (p === _SRGBAFormat) {
+				extension = extensions.get('EXT_sRGB');
+
+				if (extension !== null) {
+					return extension.SRGB_ALPHA_EXT;
+				} else {
+					return null;
+				}
+			} // WebGL2 formats.
+
 
 			if (p === RedIntegerFormat) return gl.RED_INTEGER;
 			if (p === RGFormat) return gl.RG;
 			if (p === RGIntegerFormat) return gl.RG_INTEGER;
-			if (p === RGBIntegerFormat) return gl.RGB_INTEGER;
-			if (p === RGBAIntegerFormat) return gl.RGBA_INTEGER;
+			if (p === RGBAIntegerFormat) return gl.RGBA_INTEGER; // S3TC
 
 			if (p === RGB_S3TC_DXT1_Format || p === RGBA_S3TC_DXT1_Format || p === RGBA_S3TC_DXT3_Format || p === RGBA_S3TC_DXT5_Format) {
-				extension = extensions.get('WEBGL_compressed_texture_s3tc');
+				if (encoding === sRGBEncoding) {
+					extension = extensions.get('WEBGL_compressed_texture_s3tc_srgb');
 
-				if (extension !== null) {
-					if (p === RGB_S3TC_DXT1_Format) return extension.COMPRESSED_RGB_S3TC_DXT1_EXT;
-					if (p === RGBA_S3TC_DXT1_Format) return extension.COMPRESSED_RGBA_S3TC_DXT1_EXT;
-					if (p === RGBA_S3TC_DXT3_Format) return extension.COMPRESSED_RGBA_S3TC_DXT3_EXT;
-					if (p === RGBA_S3TC_DXT5_Format) return extension.COMPRESSED_RGBA_S3TC_DXT5_EXT;
+					if (extension !== null) {
+						if (p === RGB_S3TC_DXT1_Format) return extension.COMPRESSED_SRGB_S3TC_DXT1_EXT;
+						if (p === RGBA_S3TC_DXT1_Format) return extension.COMPRESSED_SRGB_ALPHA_S3TC_DXT1_EXT;
+						if (p === RGBA_S3TC_DXT3_Format) return extension.COMPRESSED_SRGB_ALPHA_S3TC_DXT3_EXT;
+						if (p === RGBA_S3TC_DXT5_Format) return extension.COMPRESSED_SRGB_ALPHA_S3TC_DXT5_EXT;
+					} else {
+						return null;
+					}
 				} else {
-					return null;
+					extension = extensions.get('WEBGL_compressed_texture_s3tc');
+
+					if (extension !== null) {
+						if (p === RGB_S3TC_DXT1_Format) return extension.COMPRESSED_RGB_S3TC_DXT1_EXT;
+						if (p === RGBA_S3TC_DXT1_Format) return extension.COMPRESSED_RGBA_S3TC_DXT1_EXT;
+						if (p === RGBA_S3TC_DXT3_Format) return extension.COMPRESSED_RGBA_S3TC_DXT3_EXT;
+						if (p === RGBA_S3TC_DXT5_Format) return extension.COMPRESSED_RGBA_S3TC_DXT5_EXT;
+					} else {
+						return null;
+					}
 				}
-			}
+			} // PVRTC
+
 
 			if (p === RGB_PVRTC_4BPPV1_Format || p === RGB_PVRTC_2BPPV1_Format || p === RGBA_PVRTC_4BPPV1_Format || p === RGBA_PVRTC_2BPPV1_Format) {
 				extension = extensions.get('WEBGL_compressed_texture_pvrtc');
@@ -24146,7 +24211,8 @@ module.exports = anime;
 				} else {
 					return null;
 				}
-			}
+			} // ETC1
+
 
 			if (p === RGB_ETC1_Format) {
 				extension = extensions.get('WEBGL_compressed_texture_etc1');
@@ -24156,38 +24222,55 @@ module.exports = anime;
 				} else {
 					return null;
 				}
-			}
+			} // ETC2
+
 
 			if (p === RGB_ETC2_Format || p === RGBA_ETC2_EAC_Format) {
 				extension = extensions.get('WEBGL_compressed_texture_etc');
 
 				if (extension !== null) {
-					if (p === RGB_ETC2_Format) return extension.COMPRESSED_RGB8_ETC2;
-					if (p === RGBA_ETC2_EAC_Format) return extension.COMPRESSED_RGBA8_ETC2_EAC;
-				}
-			}
-
-			if (p === RGBA_ASTC_4x4_Format || p === RGBA_ASTC_5x4_Format || p === RGBA_ASTC_5x5_Format || p === RGBA_ASTC_6x5_Format || p === RGBA_ASTC_6x6_Format || p === RGBA_ASTC_8x5_Format || p === RGBA_ASTC_8x6_Format || p === RGBA_ASTC_8x8_Format || p === RGBA_ASTC_10x5_Format || p === RGBA_ASTC_10x6_Format || p === RGBA_ASTC_10x8_Format || p === RGBA_ASTC_10x10_Format || p === RGBA_ASTC_12x10_Format || p === RGBA_ASTC_12x12_Format || p === SRGB8_ALPHA8_ASTC_4x4_Format || p === SRGB8_ALPHA8_ASTC_5x4_Format || p === SRGB8_ALPHA8_ASTC_5x5_Format || p === SRGB8_ALPHA8_ASTC_6x5_Format || p === SRGB8_ALPHA8_ASTC_6x6_Format || p === SRGB8_ALPHA8_ASTC_8x5_Format || p === SRGB8_ALPHA8_ASTC_8x6_Format || p === SRGB8_ALPHA8_ASTC_8x8_Format || p === SRGB8_ALPHA8_ASTC_10x5_Format || p === SRGB8_ALPHA8_ASTC_10x6_Format || p === SRGB8_ALPHA8_ASTC_10x8_Format || p === SRGB8_ALPHA8_ASTC_10x10_Format || p === SRGB8_ALPHA8_ASTC_12x10_Format || p === SRGB8_ALPHA8_ASTC_12x12_Format) {
-				extension = extensions.get('WEBGL_compressed_texture_astc');
-
-				if (extension !== null) {
-					// TODO Complete?
-					return p;
+					if (p === RGB_ETC2_Format) return encoding === sRGBEncoding ? extension.COMPRESSED_SRGB8_ETC2 : extension.COMPRESSED_RGB8_ETC2;
+					if (p === RGBA_ETC2_EAC_Format) return encoding === sRGBEncoding ? extension.COMPRESSED_SRGB8_ALPHA8_ETC2_EAC : extension.COMPRESSED_RGBA8_ETC2_EAC;
 				} else {
 					return null;
 				}
-			}
+			} // ASTC
+
+
+			if (p === RGBA_ASTC_4x4_Format || p === RGBA_ASTC_5x4_Format || p === RGBA_ASTC_5x5_Format || p === RGBA_ASTC_6x5_Format || p === RGBA_ASTC_6x6_Format || p === RGBA_ASTC_8x5_Format || p === RGBA_ASTC_8x6_Format || p === RGBA_ASTC_8x8_Format || p === RGBA_ASTC_10x5_Format || p === RGBA_ASTC_10x6_Format || p === RGBA_ASTC_10x8_Format || p === RGBA_ASTC_10x10_Format || p === RGBA_ASTC_12x10_Format || p === RGBA_ASTC_12x12_Format) {
+				extension = extensions.get('WEBGL_compressed_texture_astc');
+
+				if (extension !== null) {
+					if (p === RGBA_ASTC_4x4_Format) return encoding === sRGBEncoding ? extension.COMPRESSED_SRGB8_ALPHA8_ASTC_4x4_KHR : extension.COMPRESSED_RGBA_ASTC_4x4_KHR;
+					if (p === RGBA_ASTC_5x4_Format) return encoding === sRGBEncoding ? extension.COMPRESSED_SRGB8_ALPHA8_ASTC_5x4_KHR : extension.COMPRESSED_RGBA_ASTC_5x4_KHR;
+					if (p === RGBA_ASTC_5x5_Format) return encoding === sRGBEncoding ? extension.COMPRESSED_SRGB8_ALPHA8_ASTC_5x5_KHR : extension.COMPRESSED_RGBA_ASTC_5x5_KHR;
+					if (p === RGBA_ASTC_6x5_Format) return encoding === sRGBEncoding ? extension.COMPRESSED_SRGB8_ALPHA8_ASTC_6x5_KHR : extension.COMPRESSED_RGBA_ASTC_6x5_KHR;
+					if (p === RGBA_ASTC_6x6_Format) return encoding === sRGBEncoding ? extension.COMPRESSED_SRGB8_ALPHA8_ASTC_6x6_KHR : extension.COMPRESSED_RGBA_ASTC_6x6_KHR;
+					if (p === RGBA_ASTC_8x5_Format) return encoding === sRGBEncoding ? extension.COMPRESSED_SRGB8_ALPHA8_ASTC_8x5_KHR : extension.COMPRESSED_RGBA_ASTC_8x5_KHR;
+					if (p === RGBA_ASTC_8x6_Format) return encoding === sRGBEncoding ? extension.COMPRESSED_SRGB8_ALPHA8_ASTC_8x6_KHR : extension.COMPRESSED_RGBA_ASTC_8x6_KHR;
+					if (p === RGBA_ASTC_8x8_Format) return encoding === sRGBEncoding ? extension.COMPRESSED_SRGB8_ALPHA8_ASTC_8x8_KHR : extension.COMPRESSED_RGBA_ASTC_8x8_KHR;
+					if (p === RGBA_ASTC_10x5_Format) return encoding === sRGBEncoding ? extension.COMPRESSED_SRGB8_ALPHA8_ASTC_10x5_KHR : extension.COMPRESSED_RGBA_ASTC_10x5_KHR;
+					if (p === RGBA_ASTC_10x6_Format) return encoding === sRGBEncoding ? extension.COMPRESSED_SRGB8_ALPHA8_ASTC_10x6_KHR : extension.COMPRESSED_RGBA_ASTC_10x6_KHR;
+					if (p === RGBA_ASTC_10x8_Format) return encoding === sRGBEncoding ? extension.COMPRESSED_SRGB8_ALPHA8_ASTC_10x8_KHR : extension.COMPRESSED_RGBA_ASTC_10x8_KHR;
+					if (p === RGBA_ASTC_10x10_Format) return encoding === sRGBEncoding ? extension.COMPRESSED_SRGB8_ALPHA8_ASTC_10x10_KHR : extension.COMPRESSED_RGBA_ASTC_10x10_KHR;
+					if (p === RGBA_ASTC_12x10_Format) return encoding === sRGBEncoding ? extension.COMPRESSED_SRGB8_ALPHA8_ASTC_12x10_KHR : extension.COMPRESSED_RGBA_ASTC_12x10_KHR;
+					if (p === RGBA_ASTC_12x12_Format) return encoding === sRGBEncoding ? extension.COMPRESSED_SRGB8_ALPHA8_ASTC_12x12_KHR : extension.COMPRESSED_RGBA_ASTC_12x12_KHR;
+				} else {
+					return null;
+				}
+			} // BPTC
+
 
 			if (p === RGBA_BPTC_Format) {
 				extension = extensions.get('EXT_texture_compression_bptc');
 
 				if (extension !== null) {
-					// TODO Complete?
-					return p;
+					if (p === RGBA_BPTC_Format) return encoding === sRGBEncoding ? extension.COMPRESSED_SRGB_ALPHA_BPTC_UNORM_EXT : extension.COMPRESSED_RGBA_BPTC_UNORM_EXT;
 				} else {
 					return null;
 				}
-			}
+			} //
+
 
 			if (p === UnsignedInt248Type) {
 				if (isWebGL2) return gl.UNSIGNED_INT_24_8;
@@ -25026,7 +25109,7 @@ module.exports = anime;
 						}
 
 						const projectionlayerInit = {
-							colorFormat: attributes.alpha || isMultisample ? gl.RGBA8 : gl.RGB8,
+							colorFormat: renderer.outputEncoding === sRGBEncoding ? gl.SRGB8_ALPHA8 : gl.RGBA8,
 							depthFormat: glDepthFormat,
 							scaleFactor: framebufferScaleFactor
 						};
@@ -25048,7 +25131,7 @@ module.exports = anime;
 							});
 						} else {
 							newRenderTarget = new WebGLRenderTarget(glProjLayer.textureWidth, glProjLayer.textureHeight, {
-								format: attributes.alpha ? RGBAFormat : RGBFormat,
+								format: RGBAFormat,
 								type: UnsignedByteType,
 								depthTexture: new DepthTexture(glProjLayer.textureWidth, glProjLayer.textureHeight, depthType, undefined, undefined, undefined, undefined, undefined, undefined, depthFormat),
 								stencilBuffer: attributes.stencil,
@@ -25056,8 +25139,10 @@ module.exports = anime;
 								encoding: renderer.outputEncoding
 							});
 						}
-					} // Set foveation to maximum.
+					}
 
+					newRenderTarget.isXRRenderTarget = true; // TODO Remove this when possible, see #23278
+					// Set foveation to maximum.
 
 					this.setFoveation(1.0);
 					referenceSpace = await session.requestReferenceSpace(referenceSpaceType);
@@ -25959,9 +26044,7 @@ module.exports = anime;
 
 		const _scissor = new Vector4(0, 0, _width, _height);
 
-		let _scissorTest = false; //
-
-		const _currentDrawBuffers = []; // frustum
+		let _scissorTest = false; // frustum
 
 		const _frustum = new Frustum(); // clipping
 
@@ -26004,7 +26087,7 @@ module.exports = anime;
 
 		try {
 			const contextAttributes = {
-				alpha: _alpha,
+				alpha: true,
 				depth: _depth,
 				stencil: _stencil,
 				antialias: _antialias,
@@ -26065,7 +26148,6 @@ module.exports = anime;
 			extensions.init(capabilities);
 			utils = new WebGLUtils(_gl, extensions, capabilities);
 			state = new WebGLState(_gl, extensions, capabilities);
-			_currentDrawBuffers[0] = _gl.BACK;
 			info = new WebGLInfo(_gl);
 			properties = new WebGLProperties();
 			textures = new WebGLTextures(_gl, extensions, state, properties, capabilities, utils, info);
@@ -26081,7 +26163,7 @@ module.exports = anime;
 			materials = new WebGLMaterials(properties);
 			renderLists = new WebGLRenderLists();
 			renderStates = new WebGLRenderStates(extensions, capabilities);
-			background = new WebGLBackground(_this, cubemaps, state, objects, _premultipliedAlpha);
+			background = new WebGLBackground(_this, cubemaps, state, objects, _alpha, _premultipliedAlpha);
 			shadowMap = new WebGLShadowMap(_this, objects, capabilities);
 			bufferRenderer = new WebGLBufferRenderer(_gl, extensions, info, capabilities);
 			indexedBufferRenderer = new WebGLIndexedBufferRenderer(_gl, extensions, info, capabilities);
@@ -26827,7 +26909,7 @@ module.exports = anime;
 			textures.resetTextureUnits();
 			const fog = scene.fog;
 			const environment = material.isMeshStandardMaterial ? scene.environment : null;
-			const encoding = _currentRenderTarget === null ? _this.outputEncoding : _currentRenderTarget.texture.encoding;
+			const encoding = _currentRenderTarget === null ? _this.outputEncoding : _currentRenderTarget.isXRRenderTarget === true ? _currentRenderTarget.texture.encoding : LinearEncoding;
 			const envMap = (material.isMeshStandardMaterial ? cubeuvmaps : cubemaps).get(material.envMap || environment);
 			const vertexAlphas = material.vertexColors === true && !!geometry.attributes.color && geometry.attributes.color.itemSize === 4;
 			const vertexTangents = !!material.normalMap && !!geometry.attributes.tangent;
@@ -27148,42 +27230,7 @@ module.exports = anime;
 			const framebufferBound = state.bindFramebuffer(_gl.FRAMEBUFFER, framebuffer);
 
 			if (framebufferBound && capabilities.drawBuffers && useDefaultFramebuffer) {
-				let needsUpdate = false;
-
-				if (renderTarget) {
-					if (renderTarget.isWebGLMultipleRenderTargets) {
-						const textures = renderTarget.texture;
-
-						if (_currentDrawBuffers.length !== textures.length || _currentDrawBuffers[0] !== _gl.COLOR_ATTACHMENT0) {
-							for (let i = 0, il = textures.length; i < il; i++) {
-								_currentDrawBuffers[i] = _gl.COLOR_ATTACHMENT0 + i;
-							}
-
-							_currentDrawBuffers.length = textures.length;
-							needsUpdate = true;
-						}
-					} else {
-						if (_currentDrawBuffers.length !== 1 || _currentDrawBuffers[0] !== _gl.COLOR_ATTACHMENT0) {
-							_currentDrawBuffers[0] = _gl.COLOR_ATTACHMENT0;
-							_currentDrawBuffers.length = 1;
-							needsUpdate = true;
-						}
-					}
-				} else {
-					if (_currentDrawBuffers.length !== 1 || _currentDrawBuffers[0] !== _gl.BACK) {
-						_currentDrawBuffers[0] = _gl.BACK;
-						_currentDrawBuffers.length = 1;
-						needsUpdate = true;
-					}
-				}
-
-				if (needsUpdate) {
-					if (capabilities.isWebGL2) {
-						_gl.drawBuffers(_currentDrawBuffers);
-					} else {
-						extensions.get('WEBGL_draw_buffers').drawBuffersWEBGL(_currentDrawBuffers);
-					}
-				}
+				state.drawBuffers(renderTarget, framebuffer);
 			}
 
 			state.viewport(_currentViewport);
@@ -28985,7 +29032,6 @@ module.exports = anime;
 	class VideoTexture extends Texture {
 		constructor(video, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy) {
 			super(video, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy);
-			this.format = format !== undefined ? format : RGBFormat;
 			this.minFilter = minFilter !== undefined ? minFilter : LinearFilter;
 			this.magFilter = magFilter !== undefined ? magFilter : LinearFilter;
 			this.generateMipmaps = false;
@@ -32301,7 +32347,7 @@ module.exports = anime;
 					const d = base + 1; // faces
 
 					indices.push(a, b, d);
-					indices.push(b, c, d);
+					indices.push(c, d, b);
 				}
 			} // build geometry
 
@@ -35325,7 +35371,10 @@ module.exports = anime;
 				headers: new Headers(this.requestHeader),
 				credentials: this.withCredentials ? 'include' : 'same-origin' // An abort controller could be added within a future PR
 
-			}); // start the fetch
+			}); // record states ( avoid data race )
+
+			const mimeType = this.mimeType;
+			const responseType = this.responseType; // start the fetch
 
 			fetch(req).then(response => {
 				if (response.status === 200 || response.status === 0) {
@@ -35383,7 +35432,7 @@ module.exports = anime;
 					throw Error(`fetch for "${response.url}" responded with ${response.status}: ${response.statusText}`);
 				}
 			}).then(response => {
-				switch (this.responseType) {
+				switch (responseType) {
 					case 'arraybuffer':
 						return response.arrayBuffer();
 
@@ -35393,14 +35442,24 @@ module.exports = anime;
 					case 'document':
 						return response.text().then(text => {
 							const parser = new DOMParser();
-							return parser.parseFromString(text, this.mimeType);
+							return parser.parseFromString(text, mimeType);
 						});
 
 					case 'json':
 						return response.json();
 
 					default:
-						return response.text();
+						if (mimeType === undefined) {
+							return response.text();
+						} else {
+							// sniff encoding
+							const re = /charset="?([^;"\s]*)"?/i;
+							const exec = re.exec(mimeType);
+							const label = exec && exec[1] ? exec[1].toLowerCase() : undefined;
+							const decoder = new TextDecoder(label);
+							return response.arrayBuffer().then(ab => decoder.decode(ab));
+						}
+
 				}
 			}).then(data => {
 				// Add to cache only on HTTP success, so that we do not cache
@@ -36450,12 +36509,12 @@ module.exports = anime;
 			if (json.side !== undefined) material.side = json.side;
 			if (json.shadowSide !== undefined) material.shadowSide = json.shadowSide;
 			if (json.opacity !== undefined) material.opacity = json.opacity;
-			if (json.format !== undefined) material.format = json.format;
 			if (json.transparent !== undefined) material.transparent = json.transparent;
 			if (json.alphaTest !== undefined) material.alphaTest = json.alphaTest;
 			if (json.depthTest !== undefined) material.depthTest = json.depthTest;
 			if (json.depthWrite !== undefined) material.depthWrite = json.depthWrite;
 			if (json.colorWrite !== undefined) material.colorWrite = json.colorWrite;
+			if (json.alphaWrite !== undefined) material.alphaWrite = json.alphaWrite;
 			if (json.stencilWrite !== undefined) material.stencilWrite = json.stencilWrite;
 			if (json.stencilWriteMask !== undefined) material.stencilWriteMask = json.stencilWriteMask;
 			if (json.stencilFunc !== undefined) material.stencilFunc = json.stencilFunc;
@@ -39797,6 +39856,7 @@ module.exports = anime;
 				let binding = bindingsByName[trackName];
 
 				if (binding !== undefined) {
+					++binding.referenceCount;
 					bindings[i] = binding;
 				} else {
 					binding = bindings[i];
@@ -43481,8 +43541,6 @@ module.exports = anime;
 	exports.RGBA_S3TC_DXT1_Format = RGBA_S3TC_DXT1_Format;
 	exports.RGBA_S3TC_DXT3_Format = RGBA_S3TC_DXT3_Format;
 	exports.RGBA_S3TC_DXT5_Format = RGBA_S3TC_DXT5_Format;
-	exports.RGBFormat = RGBFormat;
-	exports.RGBIntegerFormat = RGBIntegerFormat;
 	exports.RGB_ETC1_Format = RGB_ETC1_Format;
 	exports.RGB_ETC2_Format = RGB_ETC2_Format;
 	exports.RGB_PVRTC_2BPPV1_Format = RGB_PVRTC_2BPPV1_Format;
@@ -43502,20 +43560,6 @@ module.exports = anime;
 	exports.ReverseSubtractEquation = ReverseSubtractEquation;
 	exports.RingBufferGeometry = RingGeometry;
 	exports.RingGeometry = RingGeometry;
-	exports.SRGB8_ALPHA8_ASTC_10x10_Format = SRGB8_ALPHA8_ASTC_10x10_Format;
-	exports.SRGB8_ALPHA8_ASTC_10x5_Format = SRGB8_ALPHA8_ASTC_10x5_Format;
-	exports.SRGB8_ALPHA8_ASTC_10x6_Format = SRGB8_ALPHA8_ASTC_10x6_Format;
-	exports.SRGB8_ALPHA8_ASTC_10x8_Format = SRGB8_ALPHA8_ASTC_10x8_Format;
-	exports.SRGB8_ALPHA8_ASTC_12x10_Format = SRGB8_ALPHA8_ASTC_12x10_Format;
-	exports.SRGB8_ALPHA8_ASTC_12x12_Format = SRGB8_ALPHA8_ASTC_12x12_Format;
-	exports.SRGB8_ALPHA8_ASTC_4x4_Format = SRGB8_ALPHA8_ASTC_4x4_Format;
-	exports.SRGB8_ALPHA8_ASTC_5x4_Format = SRGB8_ALPHA8_ASTC_5x4_Format;
-	exports.SRGB8_ALPHA8_ASTC_5x5_Format = SRGB8_ALPHA8_ASTC_5x5_Format;
-	exports.SRGB8_ALPHA8_ASTC_6x5_Format = SRGB8_ALPHA8_ASTC_6x5_Format;
-	exports.SRGB8_ALPHA8_ASTC_6x6_Format = SRGB8_ALPHA8_ASTC_6x6_Format;
-	exports.SRGB8_ALPHA8_ASTC_8x5_Format = SRGB8_ALPHA8_ASTC_8x5_Format;
-	exports.SRGB8_ALPHA8_ASTC_8x6_Format = SRGB8_ALPHA8_ASTC_8x6_Format;
-	exports.SRGB8_ALPHA8_ASTC_8x8_Format = SRGB8_ALPHA8_ASTC_8x8_Format;
 	exports.Scene = Scene;
 	exports.SceneUtils = SceneUtils;
 	exports.ShaderChunk = ShaderChunk;
@@ -43589,7 +43633,6 @@ module.exports = anime;
 	exports.UnsignedIntType = UnsignedIntType;
 	exports.UnsignedShort4444Type = UnsignedShort4444Type;
 	exports.UnsignedShort5551Type = UnsignedShort5551Type;
-	exports.UnsignedShort565Type = UnsignedShort565Type;
 	exports.UnsignedShortType = UnsignedShortType;
 	exports.VSMShadowMap = VSMShadowMap;
 	exports.Vector2 = Vector2;
@@ -43615,6 +43658,7 @@ module.exports = anime;
 	exports.ZeroFactor = ZeroFactor;
 	exports.ZeroSlopeEnding = ZeroSlopeEnding;
 	exports.ZeroStencilOp = ZeroStencilOp;
+	exports._SRGBAFormat = _SRGBAFormat;
 	exports.sRGBEncoding = sRGBEncoding;
 
 	Object.defineProperty(exports, '__esModule', { value: true });
@@ -45756,7 +45800,7 @@ module.exports = anime;
 
 			const specularMapParsFragmentChunk = [ '#ifdef USE_SPECULARMAP', '	uniform sampler2D specularMap;', '#endif' ].join( '\n' );
 			const glossinessMapParsFragmentChunk = [ '#ifdef USE_GLOSSINESSMAP', '	uniform sampler2D glossinessMap;', '#endif' ].join( '\n' );
-			const specularMapFragmentChunk = [ 'vec3 specularFactor = specular;', '#ifdef USE_SPECULARMAP', '	vec4 texelSpecular = texture2D( specularMap, vUv );', '	texelSpecular = sRGBToLinear( texelSpecular );', '	// reads channel RGB, compatible with a glTF Specular-Glossiness (RGBA) texture', '	specularFactor *= texelSpecular.rgb;', '#endif' ].join( '\n' );
+			const specularMapFragmentChunk = [ 'vec3 specularFactor = specular;', '#ifdef USE_SPECULARMAP', '	vec4 texelSpecular = texture2D( specularMap, vUv );', '	// reads channel RGB, compatible with a glTF Specular-Glossiness (RGBA) texture', '	specularFactor *= texelSpecular.rgb;', '#endif' ].join( '\n' );
 			const glossinessMapFragmentChunk = [ 'float glossinessFactor = glossiness;', '#ifdef USE_GLOSSINESSMAP', '	vec4 texelGlossiness = texture2D( glossinessMap, vUv );', '	// reads channel A, compatible with a glTF Specular-Glossiness (RGBA) texture', '	glossinessFactor *= texelGlossiness.a;', '#endif' ].join( '\n' );
 			const lightPhysicalFragmentChunk = [ 'PhysicalMaterial material;', 'material.diffuseColor = diffuseColor.rgb * ( 1. - max( specularFactor.r, max( specularFactor.g, specularFactor.b ) ) );', 'vec3 dxy = max( abs( dFdx( geometryNormal ) ), abs( dFdy( geometryNormal ) ) );', 'float geometryRoughness = max( max( dxy.x, dxy.y ), dxy.z );', 'material.roughness = max( 1.0 - glossinessFactor, 0.0525 ); // 0.0525 corresponds to the base mip of a 256 cubemap.', 'material.roughness += geometryRoughness;', 'material.roughness = min( material.roughness, 1.0 );', 'material.specularColor = specularFactor;' ].join( '\n' );
 			const uniforms = {
@@ -46433,7 +46477,7 @@ module.exports = anime;
 			this.nodeNamesUsed = {}; // Use an THREE.ImageBitmapLoader if imageBitmaps are supported. Moves much of the
 			// expensive work of uploading a texture to the GPU off the main thread.
 
-			if ( typeof createImageBitmap !== 'undefined' && /Firefox|Safari/.test( navigator.userAgent ) === false ) {
+			if ( typeof createImageBitmap !== 'undefined' && /Firefox|^((?!chrome|android).)*safari/i.test( navigator.userAgent ) === false ) {
 
 				this.textureLoader = new THREE.ImageBitmapLoader( this.options.manager );
 
@@ -47311,8 +47355,8 @@ module.exports = anime;
 
 			} else {
 
-				materialParams.format = THREE.RGBFormat;
 				materialParams.transparent = false;
+				materialParams.alphaWrite = false;
 
 				if ( alphaMode === ALPHA_MODES.MASK ) {
 
@@ -48710,6 +48754,13 @@ module.exports = anime;
 				map.offset.copy( texParams.offset );
 				map.wrapS = scope.wrap;
 				map.wrapT = scope.wrap;
+
+				if ( mapType === 'map' || mapType === 'emissiveMap' ) {
+
+					map.encoding = THREE.sRGBEncoding;
+
+				}
+
 				params[ mapType ] = map;
 
 			}
@@ -48725,17 +48776,17 @@ module.exports = anime;
 					// Ns is material specular exponent
 					case 'kd':
 						// Diffuse color (color under white light) using RGB values
-						params.color = new THREE.Color().fromArray( value );
+						params.color = new THREE.Color().fromArray( value ).convertSRGBToLinear();
 						break;
 
 					case 'ks':
 						// Specular color (color when light is reflected from shiny surface) using RGB values
-						params.specular = new THREE.Color().fromArray( value );
+						params.specular = new THREE.Color().fromArray( value ).convertSRGBToLinear();
 						break;
 
 					case 'ke':
 						// Emissive using RGB values
-						params.emissive = new THREE.Color().fromArray( value );
+						params.emissive = new THREE.Color().fromArray( value ).convertSRGBToLinear();
 						break;
 
 					case 'map_kd':
@@ -54899,7 +54950,7 @@ module.exports={
     "present": "0.0.6",
     "promise-polyfill": "^3.1.0",
     "super-animejs": "^3.1.0",
-    "super-three": "^0.136.0",
+    "super-three": "^0.137.0",
     "three-bmfont-text": "dmarcos/three-bmfont-text#21d017046216e318362c48abd1a48bddfb6e0733",
     "webvr-polyfill": "^0.10.12"
   },
@@ -55608,7 +55659,7 @@ function isRawProperty (data) {
          data.property.startsWith(STRING_OBJECT3D);
 }
 
-},{"../core/component":135,"../lib/three":183,"../utils":210,"super-animejs":56}],76:[function(require,module,exports){
+},{"../core/component":136,"../lib/three":184,"../utils":211,"super-animejs":56}],76:[function(require,module,exports){
 var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../lib/three');
 
@@ -55700,7 +55751,7 @@ module.exports.Component = registerComponent('camera', {
   }
 });
 
-},{"../core/component":135,"../lib/three":183}],77:[function(require,module,exports){
+},{"../core/component":136,"../lib/three":184}],77:[function(require,module,exports){
 /* global THREE */
 var registerComponent = require('../core/component').registerComponent;
 var utils = require('../utils/');
@@ -56131,7 +56182,7 @@ module.exports.Component = registerComponent('cursor', {
   }
 });
 
-},{"../core/component":135,"../utils/":210}],78:[function(require,module,exports){
+},{"../core/component":136,"../utils/":211}],78:[function(require,module,exports){
 var registerComponent = require('../core/component').registerComponent;
 var bind = require('../utils/bind');
 
@@ -56338,7 +56389,7 @@ module.exports.Component = registerComponent('daydream-controls', {
   }
 });
 
-},{"../core/component":135,"../utils/":210,"../utils/bind":204,"../utils/tracked-controls":219}],79:[function(require,module,exports){
+},{"../core/component":136,"../utils/":211,"../utils/bind":205,"../utils/tracked-controls":220}],79:[function(require,module,exports){
 var registerComponent = require('../core/component').registerComponent;
 var bind = require('../utils/bind');
 
@@ -56544,7 +56595,7 @@ module.exports.Component = registerComponent('gearvr-controls', {
   }
 });
 
-},{"../core/component":135,"../utils/":210,"../utils/bind":204,"../utils/tracked-controls":219}],80:[function(require,module,exports){
+},{"../core/component":136,"../utils/":211,"../utils/bind":205,"../utils/tracked-controls":220}],80:[function(require,module,exports){
 var registerComponent = require('../core/component').registerComponent;
 var bind = require('../utils/bind');
 
@@ -56722,7 +56773,7 @@ module.exports.Component = registerComponent('generic-tracked-controller-control
   }
 });
 
-},{"../core/component":135,"../utils/bind":204,"../utils/tracked-controls":219}],81:[function(require,module,exports){
+},{"../core/component":136,"../utils/bind":205,"../utils/tracked-controls":220}],81:[function(require,module,exports){
 var geometries = require('../core/geometry').geometries;
 var geometryNames = require('../core/geometry').geometryNames;
 var registerComponent = require('../core/component').registerComponent;
@@ -56809,7 +56860,7 @@ module.exports.Component = registerComponent('geometry', {
   }
 });
 
-},{"../core/component":135,"../core/geometry":136,"../lib/three":183}],82:[function(require,module,exports){
+},{"../core/component":136,"../core/geometry":137,"../lib/three":184}],82:[function(require,module,exports){
 var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../lib/three');
 var utils = require('../utils/');
@@ -56868,7 +56919,7 @@ module.exports.Component = registerComponent('gltf-model', {
   }
 });
 
-},{"../core/component":135,"../lib/three":183,"../utils/":210}],83:[function(require,module,exports){
+},{"../core/component":136,"../lib/three":184,"../utils/":211}],83:[function(require,module,exports){
 /* global THREE */
 var registerComponent = require('../core/component').registerComponent;
 
@@ -57291,7 +57342,7 @@ function isViveController (trackedControls) {
   return isVive;
 }
 
-},{"../core/component":135}],84:[function(require,module,exports){
+},{"../core/component":136}],84:[function(require,module,exports){
 /* global THREE, XRRigidTransform */
 var registerComponent = require('../core/component').registerComponent;
 var bind = require('../utils/bind');
@@ -57651,7 +57702,7 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
 });
 
 
-},{"../core/component":135,"../utils/bind":204,"../utils/tracked-controls":219}],85:[function(require,module,exports){
+},{"../core/component":136,"../utils/bind":205,"../utils/tracked-controls":220}],85:[function(require,module,exports){
 var register = require('../core/component').registerComponent;
 
 module.exports.Component = register('hide-on-enter-ar', {
@@ -57668,7 +57719,7 @@ module.exports.Component = register('hide-on-enter-ar', {
   }
 });
 
-},{"../core/component":135}],86:[function(require,module,exports){
+},{"../core/component":136}],86:[function(require,module,exports){
 var bind = require('../utils/bind');
 var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../lib/three');
@@ -57854,7 +57905,7 @@ module.exports.Component = registerComponent('hp-mixed-reality-controls', {
   }
 });
 
-},{"../core/component":135,"../lib/three":183,"../utils/bind":204,"../utils/tracked-controls":219}],87:[function(require,module,exports){
+},{"../core/component":136,"../lib/three":184,"../utils/bind":205,"../utils/tracked-controls":220}],87:[function(require,module,exports){
 require('./animation');
 require('./camera');
 require('./cursor');
@@ -57904,11 +57955,12 @@ require('./scene/inspector');
 require('./scene/fog');
 require('./scene/keyboard-shortcuts');
 require('./scene/pool');
+require('./scene/reflection');
 require('./scene/screenshot');
 require('./scene/stats');
 require('./scene/vr-mode-ui');
 
-},{"./animation":75,"./camera":76,"./cursor":77,"./daydream-controls":78,"./gearvr-controls":79,"./generic-tracked-controller-controls":80,"./geometry":81,"./gltf-model":82,"./hand-controls":83,"./hand-tracking-controls":84,"./hide-on-enter-ar":85,"./hp-mixed-reality-controls":86,"./laser-controls":88,"./layer":89,"./light":90,"./line":91,"./link":92,"./look-controls":93,"./magicleap-controls":94,"./material":95,"./obj-model":96,"./oculus-go-controls":97,"./oculus-touch-controls":98,"./position":99,"./raycaster":100,"./rotation":101,"./scale":102,"./scene/ar-hit-test":103,"./scene/background":104,"./scene/debug":105,"./scene/device-orientation-permission-ui":106,"./scene/embedded":107,"./scene/fog":108,"./scene/inspector":109,"./scene/keyboard-shortcuts":110,"./scene/pool":111,"./scene/screenshot":112,"./scene/stats":113,"./scene/vr-mode-ui":114,"./shadow":115,"./sound":116,"./text":117,"./tracked-controls":120,"./tracked-controls-webvr":118,"./tracked-controls-webxr":119,"./valve-index-controls":121,"./visible":122,"./vive-controls":123,"./vive-focus-controls":124,"./wasd-controls":125,"./windows-motion-controls":126}],88:[function(require,module,exports){
+},{"./animation":75,"./camera":76,"./cursor":77,"./daydream-controls":78,"./gearvr-controls":79,"./generic-tracked-controller-controls":80,"./geometry":81,"./gltf-model":82,"./hand-controls":83,"./hand-tracking-controls":84,"./hide-on-enter-ar":85,"./hp-mixed-reality-controls":86,"./laser-controls":88,"./layer":89,"./light":90,"./line":91,"./link":92,"./look-controls":93,"./magicleap-controls":94,"./material":95,"./obj-model":96,"./oculus-go-controls":97,"./oculus-touch-controls":98,"./position":99,"./raycaster":100,"./rotation":101,"./scale":102,"./scene/ar-hit-test":103,"./scene/background":104,"./scene/debug":105,"./scene/device-orientation-permission-ui":106,"./scene/embedded":107,"./scene/fog":108,"./scene/inspector":109,"./scene/keyboard-shortcuts":110,"./scene/pool":111,"./scene/reflection":112,"./scene/screenshot":113,"./scene/stats":114,"./scene/vr-mode-ui":115,"./shadow":116,"./sound":117,"./text":118,"./tracked-controls":121,"./tracked-controls-webvr":119,"./tracked-controls-webxr":120,"./valve-index-controls":122,"./visible":123,"./vive-controls":124,"./vive-focus-controls":125,"./wasd-controls":126,"./windows-motion-controls":127}],88:[function(require,module,exports){
 var registerComponent = require('../core/component').registerComponent;
 var utils = require('../utils/');
 
@@ -58036,7 +58088,7 @@ registerComponent('laser-controls', {
   }
 });
 
-},{"../core/component":135,"../utils/":210}],89:[function(require,module,exports){
+},{"../core/component":136,"../utils/":211}],89:[function(require,module,exports){
 /* global THREE, XRRigidTransform, XRWebGLBinding */
 var registerComponent = require('../core/component').registerComponent;
 var utils = require('../utils/');
@@ -58092,14 +58144,16 @@ module.exports.Component = registerComponent('layer', {
   },
 
   loadCubeMapImages: function () {
-    var type = this.data.type;
     var glayer;
     var xrGLFactory = this.xrGLFactory;
     var frame = this.el.sceneEl.frame;
     var src = this.data.src;
+    var type = this.data.type;
 
     this.visibilityChanged = false;
     if (!this.layer) { return; }
+    if (type !== 'monocubemap' && type !== 'stereocubemap') { return; }
+
     if (!src.complete) {
       this.pendingCubeMapUpdate = true;
     } else {
@@ -58284,6 +58338,7 @@ module.exports.Component = registerComponent('layer', {
       height: this.data.height / 2 || this.texture.image.height / 1000,
       width: this.data.width / 2 || this.texture.image.width / 1000
     });
+    this.initLoadingScreenImages();
     sceneEl.renderer.xr.addLayer(this.layer);
   },
 
@@ -58398,7 +58453,7 @@ module.exports.Component = registerComponent('layer', {
       warn('The layer component requires WebXR and the layers API enabled');
       return;
     }
-    xrSession.requestReferenceSpace('local').then(this.onRequestedReferenceSpace);
+    xrSession.requestReferenceSpace('local-floor').then(this.onRequestedReferenceSpace);
     this.needsRedraw = true;
     this.layerEnabled = true;
     if (this.quadPanelEl) {
@@ -58444,7 +58499,7 @@ function blitTexture (gl, texture, subImage, textureEl) {
   gl.deleteFramebuffer(xrReadFramebuffer);
 }
 
-},{"../core/component":135,"../utils/":210}],90:[function(require,module,exports){
+},{"../core/component":136,"../utils/":211}],90:[function(require,module,exports){
 var bind = require('../utils/bind');
 var utils = require('../utils');
 var diff = utils.diff;
@@ -58776,7 +58831,7 @@ module.exports.Component = registerComponent('light', {
   }
 });
 
-},{"../core/component":135,"../lib/three":183,"../utils":210,"../utils/bind":204,"../utils/debug":206}],91:[function(require,module,exports){
+},{"../core/component":136,"../lib/three":184,"../utils":211,"../utils/bind":205,"../utils/debug":207}],91:[function(require,module,exports){
 /* global THREE */
 var registerComponent = require('../core/component').registerComponent;
 
@@ -58854,7 +58909,7 @@ function isEqualVec3 (a, b) {
   return (a.x === b.x && a.y === b.y && a.z === b.z);
 }
 
-},{"../core/component":135}],92:[function(require,module,exports){
+},{"../core/component":136}],92:[function(require,module,exports){
 var registerComponent = require('../core/component').registerComponent;
 var registerShader = require('../core/shader').registerShader;
 var THREE = require('../lib/three');
@@ -59226,7 +59281,7 @@ registerShader('portal', {
 });
 /* eslint-enable */
 
-},{"../core/component":135,"../core/shader":145,"../lib/three":183}],93:[function(require,module,exports){
+},{"../core/component":136,"../core/shader":146,"../lib/three":184}],93:[function(require,module,exports){
 /* global DeviceOrientationEvent  */
 var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../lib/three');
@@ -59700,7 +59755,7 @@ module.exports.Component = registerComponent('look-controls', {
   }
 });
 
-},{"../core/component":135,"../lib/three":183,"../utils/":210}],94:[function(require,module,exports){
+},{"../core/component":136,"../lib/three":184,"../utils/":211}],94:[function(require,module,exports){
 var bind = require('../utils/bind');
 var registerComponent = require('../core/component').registerComponent;
 
@@ -59880,7 +59935,7 @@ module.exports.Component = registerComponent('magicleap-controls', {
 
 });
 
-},{"../core/component":135,"../utils/bind":204,"../utils/tracked-controls":219}],95:[function(require,module,exports){
+},{"../core/component":136,"../utils/bind":205,"../utils/tracked-controls":220}],95:[function(require,module,exports){
 /* global Promise */
 var utils = require('../utils/');
 var component = require('../core/component');
@@ -60151,7 +60206,7 @@ function disposeMaterial (material, system) {
   system.unregisterMaterial(material);
 }
 
-},{"../core/component":135,"../core/shader":145,"../lib/three":183,"../utils/":210}],96:[function(require,module,exports){
+},{"../core/component":136,"../core/shader":146,"../lib/three":184,"../utils/":211}],96:[function(require,module,exports){
 var debug = require('../utils/debug');
 var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../lib/three');
@@ -60254,7 +60309,7 @@ module.exports.Component = registerComponent('obj-model', {
   }
 });
 
-},{"../core/component":135,"../lib/three":183,"../utils/debug":206}],97:[function(require,module,exports){
+},{"../core/component":136,"../lib/three":184,"../utils/debug":207}],97:[function(require,module,exports){
 var registerComponent = require('../core/component').registerComponent;
 var bind = require('../utils/bind');
 
@@ -60458,7 +60513,7 @@ module.exports.Component = registerComponent('oculus-go-controls', {
   }
 });
 
-},{"../core/component":135,"../utils/":210,"../utils/bind":204,"../utils/tracked-controls":219}],98:[function(require,module,exports){
+},{"../core/component":136,"../utils/":211,"../utils/bind":205,"../utils/tracked-controls":220}],98:[function(require,module,exports){
 var bind = require('../utils/bind');
 var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../lib/three');
@@ -60803,7 +60858,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   }
 });
 
-},{"../core/component":135,"../lib/three":183,"../utils/":210,"../utils/bind":204,"../utils/tracked-controls":219}],99:[function(require,module,exports){
+},{"../core/component":136,"../lib/three":184,"../utils/":211,"../utils/bind":205,"../utils/tracked-controls":220}],99:[function(require,module,exports){
 var registerComponent = require('../core/component').registerComponent;
 
 module.exports.Component = registerComponent('position', {
@@ -60821,7 +60876,7 @@ module.exports.Component = registerComponent('position', {
   }
 });
 
-},{"../core/component":135}],100:[function(require,module,exports){
+},{"../core/component":136}],100:[function(require,module,exports){
 /* global MutationObserver */
 
 var registerComponent = require('../core/component').registerComponent;
@@ -61271,7 +61326,7 @@ function copyArray (a, b) {
   }
 }
 
-},{"../core/component":135,"../lib/three":183,"../utils/":210}],101:[function(require,module,exports){
+},{"../core/component":136,"../lib/three":184,"../utils/":211}],101:[function(require,module,exports){
 var degToRad = require('../lib/three').Math.degToRad;
 var registerComponent = require('../core/component').registerComponent;
 
@@ -61294,7 +61349,7 @@ module.exports.Component = registerComponent('rotation', {
   }
 });
 
-},{"../core/component":135,"../lib/three":183}],102:[function(require,module,exports){
+},{"../core/component":136,"../lib/three":184}],102:[function(require,module,exports){
 var registerComponent = require('../core/component').registerComponent;
 
 // Avoids triggering a zero-determinant which makes object3D matrix non-invertible.
@@ -61321,7 +61376,7 @@ module.exports.Component = registerComponent('scale', {
   }
 });
 
-},{"../core/component":135}],103:[function(require,module,exports){
+},{"../core/component":136}],103:[function(require,module,exports){
 /* global ImageData, Map, Set */
 var arrowURL = 'data:image/webp;base64,UklGRkQHAABXRUJQVlA4WAoAAAAQAAAA/wEA/wEAQUxQSL0DAAARDzD/ERGCjrY9sYYFfgo6aa1kJ7K0w9Lo3AadLSVeFxevQwj5kuM8RfR/Atw/C0+ozB/oUBrloFZs6ElSW88j1KA4yExNWQaqRZquIDF0JYmlq0hAuUDTFu66tng3teW7pa3cQf1V1edvur54M/Slm6Wv3Gx9zw0MXlQLntcsBN6wkHjTQuYtC4W3LTw8mGRVG57TbAROtxHfZNhInGkjc5aNwtk2Hg6Mvki14k+NkZzCwQgCxalcAv3kddRTPI1DcUrXId1FLf1uHpzaQz4tquhZVLlKesbVpqKeTj0n0F5PpXDlFN9UqmhalL/ImuZFo6KmToWLoKlddMprqlS8cKovBvHo2kTiFV2LN4msaxKZl3QNiair8xYRdDWivIvXVXmbcMqJ51UebZuFXxZt6xd4laxtciqRtA3Cv0nU1t+kEUFbI8JvCa+tvkm3FDlO/W+OR99+kWEp/YYo+tYfTVnf/K8cE/F///3vv//993eeL+a+uvjawLcX3xjYvJotBFY3kVjTRGFtE+BU2AiMbiQyhpHMWEYeBozAH5qNBYRDB5KBCaTDBKKBAZTDBoKBDjwHAN5ABeCJBsAZcAAC0YHHxAYSMYBiYgGZWEA2MYFCbCCZGAAIANFEB+AnYgMQTDQAYSJ2AN5EBZAm4gDgTDgAeSIu4DGygTIRN1CMLOCZiACykQlg4jsAycgA8AO+BxCNdJyDkcbwRirDGXGnx8w+FDPrkM3MQ9JQZMYhiiwV/RDMtIM3U1/DmXHUo+IR2kSR2ToWkQ1NIn2qf2J8LCqJKiDUiSADHY3whirhdHgZ94HKaR97PhE+twEUJUFoAcgyTct8hfSxSkShASDKdMJ/ritKHwgyQ0sD4D/miCxU5SbhOOUDTnZpccCjYP/i0bZ/8bAgtVGEoGapWIQXyzKVKLwgNJFk2rtMIgoNRJlOZF7SNSSyUEeQmbxBFKEmtYjEe8S8zOZ1AkJVCmS88FJOtF40Ksg4oUaFiygk3C8qlTVNyl8UTevCUdAE2t14PfVqU1FPp57TopKeQZWromddTQp6QOfTOEQt/ZDuipZ11w/wOiqO8dRORcc6BQEkDQMClaHcn5wV9yLbxsNZNgpn2sicYSNxuo34Js1G4FQbnuNsOPa28PCWhcKbFjJvWEi8ZiHwqgXPcxbc5db33Cx95WboSzddX7yp+vyN0+eul7ZyN7Xlu64t3jVt4c5pc4JLV5EYupJE0xUknC4nOjVlmaYpyLit53HCQ0+ScnqceNcS5dzUkd0/CwMAVlA4IGADAAAQXwCdASoAAgACP8ne6Wy/tjCpqJ/IA/A5CWlu4XYBG/Pz8AfwD8APz//f3v8E1fuHZnxKYACtfuHZnxKYACrYTb5mOslhxu843ecbvON3nG7zjd3a0VCn7G1MABVxwH/Xd25gAK1+4dmfEpe2+PHhQaj75++riG6FuYACtfuHZnxKYACRrK3q9xO8Ss3uWKnMhs/rDF1hi6wxdYYusMXWGI5QRcCFDZog5OgqNlse1NDuz/UoFa/cOzPiUwAEsAOK4/nu5eZHK2tlXxJfNYlMABWv3Dsz4bvNJ5YA/LtxJ38SmAArX7h2Z8Sk5vdZUYv7mZPiUwAFa/cOzPh21s5OgZxf1mfEpemRyFr/rM+JS9noA/LtxJ38SmAAlUJIotzAASn6TjdhK+D3Dsz4dyvB7h2Z8O2tnJ0DOL+sz4lL2nKLT4lL/+iSLOocxq639w7M34MNZdm55uJ8v8ra2cpVZnxKTq2F3PN/cNksAfl24k7+JTAASqrD37h2Z7b1W+VtbOUqsz4lJ1bC7nm/uGyWAPy7cSd/EpgAJVVh79w7M9t6rfK2tnKVWZ8Sk6thdzzf3DZLAH5duJO/iUwAEqqw9+4dme29VvlbWzlKrM+JSdWwu55v7hslgD8u3EnfxKYACVVYe/cOzPbeq3ytrZylVme0kYJ8557FLerqFrzIbPrrf3DZLAH5duJO/iUvaVMS9BoaF4p7pSDFTP1XMyfElelrM0DOL+sz4eBJ13nV1OppBGPuKb4YzXQgq9uH19uS/0+JS9t9fr6ZUlQBelDG6GMgq97otb5QMPJwtKyBTbFp8Sl7b6/X0ykkawEOsgdiE6Fi0vb/Eve6xkwsmug0Z4nGNHQO8839bpTsjpz7SWIJxKagvd1QWMa6FYT1KEw3j4XDT6vJ9Xk+nyfT5Pq8n1eEmk5dinMM/9Fcfz4Z3Dsz3KD2dw7LxBRxKrqUUGQPH/7zxr1KIfNpLEJ0MZB2ITM/0Z2EFoh12NlXnEcpYcbvON3nG7zjd5xu84vfcNIAAP7+y8ceyzbVxkakPYY4lcr72fqOnDwipv+yxC71wAADBrjKnAAAAAAAAAAAAAAw7oNGHttqWONcoFN/2WIDc2pa6WVFtFYROlsaMaTXdcOjXHz93+YxAglKa4AAAAA=';
 var register = require('../../core/component').registerComponent;
@@ -61818,148 +61873,17 @@ module.exports.Component = register('ar-hit-test', {
   }
 });
 
-},{"../../core/component":135,"../../lib/three":183}],104:[function(require,module,exports){
-/* global THREE, XRWebGLBinding */
+},{"../../core/component":136,"../../lib/three":184}],104:[function(require,module,exports){
+/* global THREE */
 var register = require('../../core/component').registerComponent;
 var COMPONENTS = require('../../core/component').components;
-
-// source: view-source:https://storage.googleapis.com/chromium-webxr-test/r886480/proposals/lighting-estimation.html
-function updateLights (estimate, probeLight, directionalLight, directionalLightPosition) {
-  var intensityScalar =
-  Math.max(1.0,
-    Math.max(estimate.primaryLightIntensity.x,
-      Math.max(estimate.primaryLightIntensity.y,
-        estimate.primaryLightIntensity.z)));
-
-  probeLight.sh.fromArray(estimate.sphericalHarmonicsCoefficients);
-  probeLight.intensity = 1;
-
-  directionalLight.color.setRGB(
-    estimate.primaryLightIntensity.x / intensityScalar,
-    estimate.primaryLightIntensity.y / intensityScalar,
-    estimate.primaryLightIntensity.z / intensityScalar);
-
-  directionalLight.intensity = intensityScalar;
-  directionalLightPosition.copy(estimate.primaryLightDirection);
-}
 
 module.exports.Component = register('background', {
   schema: {
     color: { type: 'color', default: 'black' },
-    transparent: { default: false },
-    generateEnvironment: { default: false },
-    directionalLight: { type: 'selector' }
-  },
-  init: function () {
-    var self = this;
-
-    this.pmremGenerator = new THREE.PMREMGenerator(this.el.renderer);
-    this.pmremGenerator.compileCubemapShader();
-    this.cubeRenderTarget = new THREE.WebGLCubeRenderTarget(256, { format: THREE.RGBFormat, generateMipmaps: true, minFilter: THREE.LinearMipmapLinearFilter });
-    this.lightProbeTarget = new THREE.WebGLCubeRenderTarget(16, { format: THREE.RGBFormat, generateMipmaps: false });
-    this.cubeCamera = new THREE.CubeCamera(0.1, 1000, this.cubeRenderTarget);
-    this.needsEnvironmentUpdate = false;
-    this.timeSinceUpdate = 0;
-
-    // Update WebXR to support light-estimation
-    var webxrData = this.el.getAttribute('webxr');
-    var optionalFeaturesArray = webxrData.optionalFeatures;
-    if (!optionalFeaturesArray.includes('light-estimation')) {
-      optionalFeaturesArray.push('light-estimation');
-      this.el.setAttribute('webxr', webxrData);
-    }
-
-    this.el.sceneEl.addEventListener('enter-vr', function () {
-      var renderer = self.el.renderer;
-      var session = renderer.xr.getSession();
-      if (
-        session.requestLightProbe && self.el.sceneEl.is('ar-mode')
-      ) {
-        self.startLightProbe();
-      }
-    });
-
-    this.el.sceneEl.addEventListener('exit-vr', function () {
-      self.stopLightProbe();
-    });
-  },
-  stopLightProbe: function () {
-    var data = this.data;
-    var scene = this.el.sceneEl.object3D;
-    this.xrLightProbe = null;
-
-    this.probeLight.components.light.light.intensity = 0;
-    if (this.ownDirectionalLight) {
-      this.ownDirectionalLight.components.light.light.intensity = 0;
-    }
-
-    if (data.generateEnvironment) {
-      this.needsEnvironmentUpdate = true;
-    } else {
-      scene.environment = null;
-    }
-  },
-  setupLightsForLightingEstimation: function () {
-    // Make a directionalLight if required
-    if (this.data.directionalLight) {
-      this.directionalLight = this.data.directionalLight;
-    } else {
-      var directionalLight = this.ownDirectionalLight || document.createElement('a-light');
-      directionalLight.setAttribute('type', 'directional');
-      directionalLight.setAttribute('intensity', 0);
-      this.el.appendChild(directionalLight);
-      this.directionalLight = directionalLight;
-      this.ownDirectionalLight = directionalLight;
-    }
-
-    if (!this.probeLight) {
-      var probeLight = document.createElement('a-light');
-      probeLight.setAttribute('type', 'probe');
-      probeLight.setAttribute('intensity', 0);
-      this.el.appendChild(probeLight);
-      this.probeLight = probeLight;
-    }
-  },
-  startLightProbe: function () {
-    var data = this.data;
-    var scene = this.el.sceneEl.object3D;
-
-    if (data.generateEnvironment) {
-      this.needsLightProbeUpdate = true;
-      this.needsEnvironmentUpdate = true;
-    } else {
-      scene.environment = null;
-    }
-  },
-  setupLightProbe: function () {
-    var scene = this.el.object3D;
-    var renderer = this.el.renderer;
-    var xrSession = renderer.xr.getSession();
-    var self = this;
-    var gl = renderer.getContext();
-
-    this.setupLightsForLightingEstimation();
-
-    this.glBinding = new XRWebGLBinding(xrSession, gl);
-    gl.getExtension('EXT_sRGB');
-    gl.getExtension('OES_texture_half_float');
-
-    xrSession.requestLightProbe()
-      .then(function (lightProbe) {
-        scene.environment = self.lightProbeTarget.texture;
-
-        self.xrLightProbe = lightProbe;
-        lightProbe.addEventListener('reflectionchange', function onReflectionChanged () {
-          self.needsEnvironmentUpdate = true;
-        });
-      })
-      .catch(function (err) {
-        console.warn('Lighting estimation not supported: ' + err.message);
-        console.warn('Are you missing: webxr="optionalFeatures: light-estimation;" from <a-scene>?');
-      });
+    transparent: { default: false }
   },
   update: function () {
-    var scene = this.el.sceneEl.object3D;
     var data = this.data;
     var object3D = this.el.object3D;
 
@@ -61968,69 +61892,6 @@ module.exports.Component = register('background', {
     } else {
       object3D.background = new THREE.Color(data.color);
     }
-
-    if (data.generateEnvironment) {
-      this.needsEnvironmentUpdate = true;
-    } else {
-      scene.environment = null;
-    }
-  },
-
-  updateXRCubeMap: function () {
-    // Update Cube Map, cubeMap maybe some unavailable on some hardware
-    var renderer = this.el.renderer;
-    var cubeMap = this.glBinding.getReflectionCubeMap(this.xrLightProbe);
-    if (cubeMap) {
-      var rendererProps = renderer.properties.get(this.lightProbeTarget.texture);
-      rendererProps.__webglTexture = cubeMap;
-    }
-  },
-
-  tick: function () {
-    var scene = this.el.object3D;
-    var renderer = this.el.renderer;
-    var frame = this.el.sceneEl.frame;
-
-    if (frame && this.xrLightProbe) {
-      // light estimate may not yet be available, it takes a few frames to start working
-      var estimate = frame.getLightEstimate(this.xrLightProbe);
-
-      if (estimate) {
-        updateLights(
-          estimate,
-          this.probeLight.components.light.light,
-          this.directionalLight.components.light.light,
-          this.directionalLight.object3D.position
-        );
-      }
-    }
-
-    if (!this.needsEnvironmentUpdate) {
-      return;
-    }
-
-    if (this.needsLightProbeUpdate) {
-      // wait until the XR Session has started before trying to make
-      // the light probe
-      if (!frame) {
-        return;
-      }
-      this.needsLightProbeUpdate = false;
-      this.setupLightProbe();
-    }
-
-    if (this.xrLightProbe) {
-      this.updateXRCubeMap();
-    } else {
-      this.cubeCamera.position.set(0, 1.6, 0);
-      scene.environment = null;
-      this.cubeCamera.update(renderer, scene);
-      scene.environment = this.pmremGenerator.fromCubemap(
-        this.cubeRenderTarget.texture
-      ).texture;
-    }
-
-    this.needsEnvironmentUpdate = false;
   },
 
   remove: function () {
@@ -62040,19 +61901,18 @@ module.exports.Component = register('background', {
       object3D.background = null;
       return;
     }
-    this.pmremGenerator.dispose();
     object3D.background = COMPONENTS[this.name].schema.color.default;
   }
 });
 
-},{"../../core/component":135}],105:[function(require,module,exports){
+},{"../../core/component":136}],105:[function(require,module,exports){
 var register = require('../../core/component').registerComponent;
 
 module.exports.Component = register('debug', {
   schema: {default: true}
 });
 
-},{"../../core/component":135}],106:[function(require,module,exports){
+},{"../../core/component":136}],106:[function(require,module,exports){
 /* global DeviceOrientationEvent, location  */
 var registerComponent = require('../../core/component').registerComponent;
 var utils = require('../../utils/');
@@ -62253,7 +62113,7 @@ function createDialog (text, buttonsContainerEl) {
   return modalContainer;
 }
 
-},{"../../constants/":127,"../../core/component":135,"../../utils/":210}],107:[function(require,module,exports){
+},{"../../constants/":128,"../../core/component":136,"../../utils/":211}],107:[function(require,module,exports){
 var registerComponent = require('../../core/component').registerComponent;
 
 /**
@@ -62278,7 +62138,7 @@ module.exports.Component = registerComponent('embedded', {
 
 });
 
-},{"../../core/component":135}],108:[function(require,module,exports){
+},{"../../core/component":136}],108:[function(require,module,exports){
 var register = require('../../core/component').registerComponent;
 var THREE = require('../../lib/three');
 var debug = require('../../utils/debug');
@@ -62351,7 +62211,7 @@ function getFog (data) {
   return fog;
 }
 
-},{"../../core/component":135,"../../lib/three":183,"../../utils/debug":206}],109:[function(require,module,exports){
+},{"../../core/component":136,"../../lib/three":184,"../../utils/debug":207}],109:[function(require,module,exports){
 (function (process){
 /* global AFRAME */
 var AFRAME_INJECTED = require('../../constants').AFRAME_INJECTED;
@@ -62471,7 +62331,7 @@ module.exports.Component = registerComponent('inspector', {
 
 }).call(this,require('_process'))
 
-},{"../../../package":74,"../../constants":127,"../../core/component":135,"../../utils/":210,"_process":49}],110:[function(require,module,exports){
+},{"../../../package":74,"../../constants":128,"../../core/component":136,"../../utils/":211,"_process":49}],110:[function(require,module,exports){
 var registerComponent = require('../../core/component').registerComponent;
 var shouldCaptureKeyEvent = require('../../utils/').shouldCaptureKeyEvent;
 
@@ -62510,7 +62370,7 @@ module.exports.Component = registerComponent('keyboard-shortcuts', {
   }
 });
 
-},{"../../core/component":135,"../../utils/":210}],111:[function(require,module,exports){
+},{"../../core/component":136,"../../utils/":211}],111:[function(require,module,exports){
 var debug = require('../../utils/debug');
 var registerComponent = require('../../core/component').registerComponent;
 
@@ -62628,7 +62488,167 @@ module.exports.Component = registerComponent('pool', {
   }
 });
 
-},{"../../core/component":135,"../../utils/debug":206}],112:[function(require,module,exports){
+},{"../../core/component":136,"../../utils/debug":207}],112:[function(require,module,exports){
+/* global THREE, XRWebGLBinding */
+var register = require('../../core/component').registerComponent;
+
+// source: view-source:https://storage.googleapis.com/chromium-webxr-test/r886480/proposals/lighting-estimation.html
+function updateLights (estimate, probeLight, directionalLight, directionalLightPosition) {
+  var intensityScalar =
+    Math.max(estimate.primaryLightIntensity.x,
+      Math.max(estimate.primaryLightIntensity.y,
+        estimate.primaryLightIntensity.z));
+
+  probeLight.sh.fromArray(estimate.sphericalHarmonicsCoefficients);
+  probeLight.intensity = 1;
+
+  if (directionalLight) {
+    directionalLight.color.setRGB(
+      estimate.primaryLightIntensity.x / intensityScalar,
+      estimate.primaryLightIntensity.y / intensityScalar,
+      estimate.primaryLightIntensity.z / intensityScalar);
+
+    directionalLight.intensity = intensityScalar;
+    directionalLightPosition.copy(estimate.primaryLightDirection);
+  }
+}
+
+module.exports.Component = register('reflection', {
+  schema: {
+    directionalLight: { type: 'selector' }
+  },
+  init: function () {
+    var self = this;
+    this.cubeRenderTarget = new THREE.WebGLCubeRenderTarget(16);
+    this.cubeCamera = new THREE.CubeCamera(0.1, 1000, this.cubeRenderTarget);
+    this.lightingEstimationTexture = (new THREE.WebGLCubeRenderTarget(16)).texture;
+    this.needsVREnvironmentUpdate = true;
+
+    // Update WebXR to support light-estimation
+    var webxrData = this.el.getAttribute('webxr');
+    var optionalFeaturesArray = webxrData.optionalFeatures;
+    if (!optionalFeaturesArray.includes('light-estimation')) {
+      optionalFeaturesArray.push('light-estimation');
+      this.el.setAttribute('webxr', webxrData);
+    }
+
+    this.el.addEventListener('enter-vr', function () {
+      var renderer = self.el.renderer;
+      var session = renderer.xr.getSession();
+      if (
+        session.requestLightProbe && self.el.is('ar-mode')
+      ) {
+        self.startLightProbe();
+      }
+    });
+
+    this.el.addEventListener('exit-vr', function () {
+      self.stopLightProbe();
+    });
+
+    this.el.object3D.environment = this.cubeRenderTarget.texture;
+  },
+  stopLightProbe: function () {
+    this.xrLightProbe = null;
+    if (this.probeLight) {
+      this.probeLight.components.light.light.intensity = 0;
+    }
+    this.needsVREnvironmentUpdate = true;
+    this.el.object3D.environment = this.cubeRenderTarget.texture;
+  },
+  startLightProbe: function () {
+    this.needsLightProbeUpdate = true;
+  },
+  setupLightProbe: function () {
+    var renderer = this.el.renderer;
+    var xrSession = renderer.xr.getSession();
+    var self = this;
+    var gl = renderer.getContext();
+
+    if (!this.probeLight) {
+      var probeLight = document.createElement('a-light');
+      probeLight.setAttribute('type', 'probe');
+      probeLight.setAttribute('intensity', 0);
+      this.el.appendChild(probeLight);
+      this.probeLight = probeLight;
+    }
+
+    // Ensure that we have any extensions needed to use the preferred cube map format.
+    switch (xrSession.preferredReflectionFormat) {
+      case 'srgba8':
+        gl.getExtension('EXT_sRGB');
+        break;
+
+      case 'rgba16f':
+        gl.getExtension('OES_texture_half_float');
+        break;
+    }
+
+    this.glBinding = new XRWebGLBinding(xrSession, gl);
+    gl.getExtension('EXT_sRGB');
+    gl.getExtension('OES_texture_half_float');
+
+    xrSession.requestLightProbe()
+      .then(function (lightProbe) {
+        self.xrLightProbe = lightProbe;
+        lightProbe.addEventListener('reflectionchange', self.updateXRCubeMap.bind(self));
+      })
+      .catch(function (err) {
+        console.warn('Lighting estimation not supported: ' + err.message);
+        console.warn('Are you missing: webxr="optionalFeatures: light-estimation;" from <a-scene>?');
+      });
+  },
+  updateXRCubeMap: function () {
+    // Update Cube Map, cubeMap maybe some unavailable on some hardware
+    var renderer = this.el.renderer;
+    var cubeMap = this.glBinding.getReflectionCubeMap(this.xrLightProbe);
+    if (cubeMap) {
+      var rendererProps = renderer.properties.get(this.lightingEstimationTexture);
+      rendererProps.__webglTexture = cubeMap;
+      this.lightingEstimationTexture.needsPMREMUpdate = true;
+      this.el.object3D.environment = this.lightingEstimationTexture;
+    }
+  },
+  tick: function () {
+    var scene = this.el.object3D;
+    var renderer = this.el.renderer;
+    var frame = this.el.frame;
+
+    if (frame && this.xrLightProbe) {
+      // light estimate may not yet be available, it takes a few frames to start working
+      var estimate = frame.getLightEstimate(this.xrLightProbe);
+
+      if (estimate) {
+        updateLights(
+          estimate,
+          this.probeLight.components.light.light,
+          this.data.directionalLight && this.data.directionalLight.components.light.light,
+          this.data.directionalLight && this.data.directionalLight.object3D.position
+        );
+      }
+    }
+
+    if (this.needsVREnvironmentUpdate) {
+      this.needsVREnvironmentUpdate = false;
+      this.cubeCamera.position.set(0, 1.6, 0);
+      this.cubeCamera.update(renderer, scene);
+    }
+
+    if (this.needsLightProbeUpdate && frame) {
+      // wait until the XR Session has started before trying to make
+      // the light probe
+      this.setupLightProbe();
+      this.needsLightProbeUpdate = false;
+    }
+  },
+
+  remove: function () {
+    this.el.object3D.environment = null;
+    this.removeChild(this.probeLight);
+  }
+});
+
+},{"../../core/component":136}],113:[function(require,module,exports){
 /* global ImageData, URL */
 var registerComponent = require('../../core/component').registerComponent;
 var THREE = require('../../lib/three');
@@ -62902,7 +62922,7 @@ module.exports.Component = registerComponent('screenshot', {
   }
 });
 
-},{"../../core/component":135,"../../lib/three":183}],113:[function(require,module,exports){
+},{"../../core/component":136,"../../lib/three":184}],114:[function(require,module,exports){
 var registerComponent = require('../../core/component').registerComponent;
 var RStats = require('../../../vendor/rStats');
 var utils = require('../../utils');
@@ -62982,7 +63002,7 @@ function createStats (scene) {
   });
 }
 
-},{"../../../vendor/rStats":222,"../../../vendor/rStats.extras":221,"../../core/component":135,"../../lib/rStatsAframe":182,"../../utils":210}],114:[function(require,module,exports){
+},{"../../../vendor/rStats":223,"../../../vendor/rStats.extras":222,"../../core/component":136,"../../lib/rStatsAframe":183,"../../utils":211}],115:[function(require,module,exports){
 var registerComponent = require('../../core/component').registerComponent;
 var constants = require('../../constants/');
 var utils = require('../../utils/');
@@ -63253,7 +63273,7 @@ function applyStickyHoverFix (buttonEl) {
   });
 }
 
-},{"../../constants/":127,"../../core/component":135,"../../utils/":210}],115:[function(require,module,exports){
+},{"../../constants/":128,"../../core/component":136,"../../utils/":211}],116:[function(require,module,exports){
 var component = require('../core/component');
 var THREE = require('../lib/three');
 var bind = require('../utils/bind');
@@ -63307,7 +63327,7 @@ module.exports.Component = registerComponent('shadow', {
   }
 });
 
-},{"../core/component":135,"../lib/three":183,"../utils/bind":204}],116:[function(require,module,exports){
+},{"../core/component":136,"../lib/three":184,"../utils/bind":205}],117:[function(require,module,exports){
 var registerComponent = require('../core/component').registerComponent;
 var debug = require('../utils/debug');
 var THREE = require('../lib/three');
@@ -63558,7 +63578,7 @@ module.exports.Component = registerComponent('sound', {
   }
 });
 
-},{"../core/component":135,"../lib/three":183,"../utils/debug":206}],117:[function(require,module,exports){
+},{"../core/component":136,"../lib/three":184,"../utils/debug":207}],118:[function(require,module,exports){
 var createTextGeometry = require('three-bmfont-text');
 var loadBMFont = require('load-bmfont');
 
@@ -64042,7 +64062,7 @@ function PromiseCache () {
   };
 }
 
-},{"../core/component":135,"../core/shader":145,"../lib/three":183,"../utils/":210,"load-bmfont":37,"three-bmfont-text":64}],118:[function(require,module,exports){
+},{"../core/component":136,"../core/shader":146,"../lib/three":184,"../utils/":211,"load-bmfont":37,"three-bmfont-text":64}],119:[function(require,module,exports){
 var registerComponent = require('../core/component').registerComponent;
 var controllerUtils = require('../utils/tracked-controls');
 var DEFAULT_CAMERA_HEIGHT = require('../constants').DEFAULT_CAMERA_HEIGHT;
@@ -64379,7 +64399,7 @@ module.exports.Component = registerComponent('tracked-controls-webvr', {
   }
 });
 
-},{"../constants":127,"../core/component":135,"../lib/three":183,"../utils/tracked-controls":219}],119:[function(require,module,exports){
+},{"../constants":128,"../core/component":136,"../lib/three":184,"../utils/tracked-controls":220}],120:[function(require,module,exports){
 var controllerUtils = require('../utils/tracked-controls');
 var registerComponent = require('../core/component').registerComponent;
 
@@ -64603,7 +64623,7 @@ module.exports.Component = registerComponent('tracked-controls-webxr', {
   }
 });
 
-},{"../core/component":135,"../utils/tracked-controls":219}],120:[function(require,module,exports){
+},{"../core/component":136,"../utils/tracked-controls":220}],121:[function(require,module,exports){
 var registerComponent = require('../core/component').registerComponent;
 
 /**
@@ -64648,7 +64668,7 @@ module.exports.Component = registerComponent('tracked-controls', {
   }
 });
 
-},{"../core/component":135}],121:[function(require,module,exports){
+},{"../core/component":136}],122:[function(require,module,exports){
 var registerComponent = require('../core/component').registerComponent;
 var bind = require('../utils/bind');
 var THREE = require('../lib/three');
@@ -64897,7 +64917,7 @@ module.exports.Component = registerComponent('valve-index-controls', {
   }
 });
 
-},{"../core/component":135,"../lib/three":183,"../utils/":210,"../utils/bind":204,"../utils/tracked-controls":219}],122:[function(require,module,exports){
+},{"../core/component":136,"../lib/three":184,"../utils/":211,"../utils/bind":205,"../utils/tracked-controls":220}],123:[function(require,module,exports){
 var registerComponent = require('../core/component').registerComponent;
 
 /**
@@ -64911,7 +64931,7 @@ module.exports.Component = registerComponent('visible', {
   }
 });
 
-},{"../core/component":135}],123:[function(require,module,exports){
+},{"../core/component":136}],124:[function(require,module,exports){
 var registerComponent = require('../core/component').registerComponent;
 var bind = require('../utils/bind');
 
@@ -65172,7 +65192,7 @@ module.exports.Component = registerComponent('vive-controls', {
   }
 });
 
-},{"../core/component":135,"../utils/":210,"../utils/bind":204,"../utils/tracked-controls":219}],124:[function(require,module,exports){
+},{"../core/component":136,"../utils/":211,"../utils/bind":205,"../utils/tracked-controls":220}],125:[function(require,module,exports){
 var registerComponent = require('../core/component').registerComponent;
 var bind = require('../utils/bind');
 
@@ -65354,7 +65374,7 @@ module.exports.Component = registerComponent('vive-focus-controls', {
   }
 });
 
-},{"../core/component":135,"../utils/bind":204,"../utils/tracked-controls":219}],125:[function(require,module,exports){
+},{"../core/component":136,"../utils/bind":205,"../utils/tracked-controls":220}],126:[function(require,module,exports){
 var KEYCODE_TO_CODE = require('../constants').keyboardevent.KEYCODE_TO_CODE;
 var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../lib/three');
@@ -65575,7 +65595,7 @@ function isEmptyObject (keys) {
   return true;
 }
 
-},{"../constants":127,"../core/component":135,"../lib/three":183,"../utils/":210}],126:[function(require,module,exports){
+},{"../constants":128,"../core/component":136,"../lib/three":184,"../utils/":211}],127:[function(require,module,exports){
 /* global THREE */
 var registerComponent = require('../core/component').registerComponent;
 var bind = require('../utils/bind');
@@ -66061,7 +66081,7 @@ module.exports.Component = registerComponent('windows-motion-controls', {
   }
 });
 
-},{"../constants":127,"../core/component":135,"../utils/":210,"../utils/bind":204,"../utils/tracked-controls":219}],127:[function(require,module,exports){
+},{"../constants":128,"../core/component":136,"../utils/":211,"../utils/bind":205,"../utils/tracked-controls":220}],128:[function(require,module,exports){
 module.exports = {
   AFRAME_INJECTED: 'aframe-injected',
   DEFAULT_CAMERA_HEIGHT: 1.6,
@@ -66069,7 +66089,7 @@ module.exports = {
   keyboardevent: require('./keyboardevent')
 };
 
-},{"./keyboardevent":128}],128:[function(require,module,exports){
+},{"./keyboardevent":129}],129:[function(require,module,exports){
 module.exports = {
   // Tiny KeyboardEvent.code polyfill.
   KEYCODE_TO_CODE: {
@@ -66084,7 +66104,7 @@ module.exports = {
   }
 };
 
-},{}],129:[function(require,module,exports){
+},{}],130:[function(require,module,exports){
 var ANode = require('./a-node');
 var bind = require('../utils/bind');
 var debug = require('../utils/debug');
@@ -66364,7 +66384,7 @@ function getFileNameFromURL (url) {
 }
 module.exports.getFileNameFromURL = getFileNameFromURL;
 
-},{"../lib/three":183,"../utils/bind":204,"../utils/debug":206,"./a-node":133,"./a-register-element":134}],130:[function(require,module,exports){
+},{"../lib/three":184,"../utils/bind":205,"../utils/debug":207,"./a-node":134,"./a-register-element":135}],131:[function(require,module,exports){
 var debug = require('../utils/debug');
 var registerElement = require('./a-register-element').registerElement;
 
@@ -66414,7 +66434,7 @@ module.exports = registerElement('a-cubemap', {
   })
 });
 
-},{"../utils/debug":206,"./a-register-element":134}],131:[function(require,module,exports){
+},{"../utils/debug":207,"./a-register-element":135}],132:[function(require,module,exports){
 var ANode = require('./a-node');
 var COMPONENTS = require('./component').components;
 var registerElement = require('./a-register-element').registerElement;
@@ -67348,7 +67368,7 @@ function getRotation (entityEl) {
 AEntity = registerElement('a-entity', {prototype: proto});
 module.exports = AEntity;
 
-},{"../lib/three":183,"../utils/":210,"./a-node":133,"./a-register-element":134,"./component":135}],132:[function(require,module,exports){
+},{"../lib/three":184,"../utils/":211,"./a-node":134,"./a-register-element":135,"./component":136}],133:[function(require,module,exports){
 var ANode = require('./a-node');
 var registerElement = require('./a-register-element').registerElement;
 var components = require('./component').components;
@@ -67464,7 +67484,7 @@ module.exports = registerElement('a-mixin', {
   })
 });
 
-},{"../utils":210,"./a-node":133,"./a-register-element":134,"./component":135}],133:[function(require,module,exports){
+},{"../utils":211,"./a-node":134,"./a-register-element":135,"./component":136}],134:[function(require,module,exports){
 /* global CustomEvent */
 var registerElement = require('./a-register-element').registerElement;
 var isNode = require('./a-register-element').isNode;
@@ -67735,7 +67755,7 @@ module.exports = registerElement('a-node', {
   })
 });
 
-},{"../utils/":210,"./a-register-element":134}],134:[function(require,module,exports){
+},{"../utils/":211,"./a-register-element":135}],135:[function(require,module,exports){
 /*
   ------------------------------------------------------------
   ------------- WARNING WARNING WARNING WARNING --------------
@@ -67922,7 +67942,7 @@ function copyProperties (source, destination) {
 ANode = require('./a-node');
 AEntity = require('./a-entity');
 
-},{"./a-entity":131,"./a-node":133,"document-register-element":12}],135:[function(require,module,exports){
+},{"./a-entity":132,"./a-node":134,"document-register-element":12}],136:[function(require,module,exports){
 /* global Node */
 var schema = require('./schema');
 var scenes = require('./scene/scenes');
@@ -68727,7 +68747,7 @@ function isObjectOrArray (value) {
          !(value instanceof window.HTMLElement);
 }
 
-},{"../utils/":210,"./scene/scenes":142,"./schema":144,"./system":146}],136:[function(require,module,exports){
+},{"../utils/":211,"./scene/scenes":143,"./schema":145,"./system":147}],137:[function(require,module,exports){
 var schema = require('./schema');
 
 var processSchema = schema.process;
@@ -68801,7 +68821,7 @@ module.exports.registerGeometry = function (name, definition) {
   return NewGeometry;
 };
 
-},{"../lib/three":183,"./schema":144}],137:[function(require,module,exports){
+},{"../lib/three":184,"./schema":145}],138:[function(require,module,exports){
 var coordinates = require('../utils/coordinates');
 var debug = require('debug');
 
@@ -69026,7 +69046,7 @@ function isValidDefaultCoordinate (possibleCoordinates, dimensions) {
 }
 module.exports.isValidDefaultCoordinate = isValidDefaultCoordinate;
 
-},{"../utils/coordinates":205,"debug":8}],138:[function(require,module,exports){
+},{"../utils/coordinates":206,"debug":8}],139:[function(require,module,exports){
 /* global Promise, screen, CustomEvent */
 var initMetaTags = require('./metaTags').inject;
 var initWakelock = require('./wakelock');
@@ -69955,7 +69975,7 @@ function setupCanvas (sceneEl) {
 }
 module.exports.setupCanvas = setupCanvas;  // For testing.
 
-},{"../../lib/three":183,"../../utils/":210,"../../utils/ios-orientationchange-blank-bug":211,"../a-entity":131,"../a-node":133,"../a-register-element":134,"../system":146,"./loadingScreen":139,"./metaTags":140,"./postMessage":141,"./scenes":142,"./wakelock":143}],139:[function(require,module,exports){
+},{"../../lib/three":184,"../../utils/":211,"../../utils/ios-orientationchange-blank-bug":212,"../a-entity":132,"../a-node":134,"../a-register-element":135,"../system":147,"./loadingScreen":140,"./metaTags":141,"./postMessage":142,"./scenes":143,"./wakelock":144}],140:[function(require,module,exports){
 /* global THREE */
 var utils = require('../../utils/');
 var styleParser = utils.styleParser;
@@ -70049,7 +70069,7 @@ function setupTitle () {
   sceneEl.appendChild(titleEl);
 }
 
-},{"../../utils/":210}],140:[function(require,module,exports){
+},{"../../utils/":211}],141:[function(require,module,exports){
 var constants = require('../../constants/');
 var extend = require('../../utils').extend;
 
@@ -70130,7 +70150,7 @@ function createTag (tagObj) {
   return extend(meta, tagObj.attributes);
 }
 
-},{"../../constants/":127,"../../utils":210}],141:[function(require,module,exports){
+},{"../../constants/":128,"../../utils":211}],142:[function(require,module,exports){
 var bind = require('../../utils/bind');
 var isIframed = require('../../utils/').isIframed;
 
@@ -70163,13 +70183,13 @@ function postMessageAPIHandler (event) {
   }
 }
 
-},{"../../utils/":210,"../../utils/bind":204}],142:[function(require,module,exports){
+},{"../../utils/":211,"../../utils/bind":205}],143:[function(require,module,exports){
 /*
   Scene index for keeping track of created scenes.
 */
 module.exports = [];
 
-},{}],143:[function(require,module,exports){
+},{}],144:[function(require,module,exports){
 var Wakelock = require('../../../vendor/wakelock/wakelock');
 
 module.exports = function initWakelock (scene) {
@@ -70180,7 +70200,7 @@ module.exports = function initWakelock (scene) {
   scene.addEventListener('exit-vr', function () { wakelock.release(); });
 };
 
-},{"../../../vendor/wakelock/wakelock":225}],144:[function(require,module,exports){
+},{"../../../vendor/wakelock/wakelock":226}],145:[function(require,module,exports){
 var utils = require('../utils/');
 var PropertyTypes = require('./propertyTypes');
 
@@ -70384,7 +70404,7 @@ function stringifyProperty (value, propDefinition) {
 }
 module.exports.stringifyProperty = stringifyProperty;
 
-},{"../utils/":210,"./propertyTypes":137}],145:[function(require,module,exports){
+},{"../utils/":211,"./propertyTypes":138}],146:[function(require,module,exports){
 var schema = require('./schema');
 
 var processSchema = schema.process;
@@ -70573,7 +70593,7 @@ module.exports.registerShader = function (name, definition) {
   return NewShader;
 };
 
-},{"../lib/three":183,"../utils":210,"./schema":144}],146:[function(require,module,exports){
+},{"../lib/three":184,"../utils":211,"./schema":145}],147:[function(require,module,exports){
 var components = require('./component');
 var schema = require('./schema');
 var utils = require('../utils/');
@@ -70731,10 +70751,10 @@ module.exports.registerSystem = function (name, definition) {
   for (i = 0; i < scenes.length; i++) { scenes[i].initSystem(name); }
 };
 
-},{"../utils/":210,"./component":135,"./schema":144}],147:[function(require,module,exports){
+},{"../utils/":211,"./component":136,"./schema":145}],148:[function(require,module,exports){
 require('./pivot');
 
-},{"./pivot":148}],148:[function(require,module,exports){
+},{"./pivot":149}],149:[function(require,module,exports){
 var registerComponent = require('../../core/component').registerComponent;
 var THREE = require('../../lib/three');
 
@@ -70783,7 +70803,7 @@ registerComponent('pivot', {
   }
 });
 
-},{"../../core/component":135,"../../lib/three":183}],149:[function(require,module,exports){
+},{"../../core/component":136,"../../lib/three":184}],150:[function(require,module,exports){
 /**
  * Common mesh defaults, mappings, and transforms.
  */
@@ -70810,7 +70830,7 @@ module.exports = function getMeshMixin () {
   };
 };
 
-},{"../../core/component":135,"../../core/shader":145,"../../utils/":210}],150:[function(require,module,exports){
+},{"../../core/component":136,"../../core/shader":146,"../../utils/":211}],151:[function(require,module,exports){
 require('./primitives/a-camera');
 require('./primitives/a-cursor');
 require('./primitives/a-curvedimage');
@@ -70826,7 +70846,7 @@ require('./primitives/a-video');
 require('./primitives/a-videosphere');
 require('./primitives/meshPrimitives');
 
-},{"./primitives/a-camera":152,"./primitives/a-cursor":153,"./primitives/a-curvedimage":154,"./primitives/a-gltf-model":155,"./primitives/a-image":156,"./primitives/a-light":157,"./primitives/a-link":158,"./primitives/a-obj-model":159,"./primitives/a-sky":160,"./primitives/a-sound":161,"./primitives/a-text":162,"./primitives/a-video":163,"./primitives/a-videosphere":164,"./primitives/meshPrimitives":165}],151:[function(require,module,exports){
+},{"./primitives/a-camera":153,"./primitives/a-cursor":154,"./primitives/a-curvedimage":155,"./primitives/a-gltf-model":156,"./primitives/a-image":157,"./primitives/a-light":158,"./primitives/a-link":159,"./primitives/a-obj-model":160,"./primitives/a-sky":161,"./primitives/a-sound":162,"./primitives/a-text":163,"./primitives/a-video":164,"./primitives/a-videosphere":165,"./primitives/meshPrimitives":166}],152:[function(require,module,exports){
 var AEntity = require('../../core/a-entity');
 var components = require('../../core/component').components;
 var registerElement = require('../../core/a-register-element').registerElement;
@@ -71025,7 +71045,7 @@ function definePrimitive (tagName, defaultComponents, mappings) {
 }
 module.exports.definePrimitive = definePrimitive;
 
-},{"../../core/a-entity":131,"../../core/a-register-element":134,"../../core/component":135,"../../utils/":210}],152:[function(require,module,exports){
+},{"../../core/a-entity":132,"../../core/a-register-element":135,"../../core/component":136,"../../utils/":211}],153:[function(require,module,exports){
 var registerPrimitive = require('../primitives').registerPrimitive;
 
 registerPrimitive('a-camera', {
@@ -71049,7 +71069,7 @@ registerPrimitive('a-camera', {
   }
 });
 
-},{"../primitives":151}],153:[function(require,module,exports){
+},{"../primitives":152}],154:[function(require,module,exports){
 var getMeshMixin = require('../getMeshMixin');
 var registerPrimitive = require('../primitives').registerPrimitive;
 var utils = require('../../../utils/');
@@ -71084,7 +71104,7 @@ registerPrimitive('a-cursor', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":210,"../getMeshMixin":149,"../primitives":151}],154:[function(require,module,exports){
+},{"../../../utils/":211,"../getMeshMixin":150,"../primitives":152}],155:[function(require,module,exports){
 var getMeshMixin = require('../getMeshMixin');
 var registerPrimitive = require('../primitives').registerPrimitive;
 var utils = require('../../../utils/');
@@ -71121,7 +71141,7 @@ registerPrimitive('a-curvedimage', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":210,"../getMeshMixin":149,"../primitives":151}],155:[function(require,module,exports){
+},{"../../../utils/":211,"../getMeshMixin":150,"../primitives":152}],156:[function(require,module,exports){
 var registerPrimitive = require('../primitives').registerPrimitive;
 
 registerPrimitive('a-gltf-model', {
@@ -71130,7 +71150,7 @@ registerPrimitive('a-gltf-model', {
   }
 });
 
-},{"../primitives":151}],156:[function(require,module,exports){
+},{"../primitives":152}],157:[function(require,module,exports){
 var getMeshMixin = require('../getMeshMixin');
 var registerPrimitive = require('../primitives').registerPrimitive;
 var utils = require('../../../utils/');
@@ -71154,7 +71174,7 @@ registerPrimitive('a-image', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":210,"../getMeshMixin":149,"../primitives":151}],157:[function(require,module,exports){
+},{"../../../utils/":211,"../getMeshMixin":150,"../primitives":152}],158:[function(require,module,exports){
 var registerPrimitive = require('../primitives').registerPrimitive;
 
 registerPrimitive('a-light', {
@@ -71176,7 +71196,7 @@ registerPrimitive('a-light', {
   }
 });
 
-},{"../primitives":151}],158:[function(require,module,exports){
+},{"../primitives":152}],159:[function(require,module,exports){
 var registerPrimitive = require('../primitives').registerPrimitive;
 
 registerPrimitive('a-link', {
@@ -71193,7 +71213,7 @@ registerPrimitive('a-link', {
   }
 });
 
-},{"../primitives":151}],159:[function(require,module,exports){
+},{"../primitives":152}],160:[function(require,module,exports){
 var meshMixin = require('../getMeshMixin')();
 var registerPrimitive = require('../primitives').registerPrimitive;
 var utils = require('../../../utils/');
@@ -71209,7 +71229,7 @@ registerPrimitive('a-obj-model', utils.extendDeep({}, meshMixin, {
   }
 }));
 
-},{"../../../utils/":210,"../getMeshMixin":149,"../primitives":151}],160:[function(require,module,exports){
+},{"../../../utils/":211,"../getMeshMixin":150,"../primitives":152}],161:[function(require,module,exports){
 var getMeshMixin = require('../getMeshMixin');
 var registerPrimitive = require('../primitives').registerPrimitive;
 var utils = require('../../../utils/');
@@ -71235,7 +71255,7 @@ registerPrimitive('a-sky', utils.extendDeep({}, getMeshMixin(), {
   mappings: utils.extendDeep({}, meshPrimitives['a-sphere'].prototype.mappings)
 }));
 
-},{"../../../utils/":210,"../getMeshMixin":149,"../primitives":151,"./meshPrimitives":165}],161:[function(require,module,exports){
+},{"../../../utils/":211,"../getMeshMixin":150,"../primitives":152,"./meshPrimitives":166}],162:[function(require,module,exports){
 var registerPrimitive = require('../primitives').registerPrimitive;
 
 registerPrimitive('a-sound', {
@@ -71252,12 +71272,12 @@ registerPrimitive('a-sound', {
   }
 });
 
-},{"../primitives":151}],162:[function(require,module,exports){
+},{"../primitives":152}],163:[function(require,module,exports){
 // <a-text> using `definePrimitive` helper.
 var definePrimitive = require('../primitives').definePrimitive;
 definePrimitive('a-text', {text: {anchor: 'align', width: 5}});
 
-},{"../primitives":151}],163:[function(require,module,exports){
+},{"../primitives":152}],164:[function(require,module,exports){
 var getMeshMixin = require('../getMeshMixin');
 var registerPrimitive = require('../primitives').registerPrimitive;
 var utils = require('../../../utils/');
@@ -71281,7 +71301,7 @@ registerPrimitive('a-video', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":210,"../getMeshMixin":149,"../primitives":151}],164:[function(require,module,exports){
+},{"../../../utils/":211,"../getMeshMixin":150,"../primitives":152}],165:[function(require,module,exports){
 var getMeshMixin = require('../getMeshMixin');
 var registerPrimitive = require('../primitives').registerPrimitive;
 var utils = require('../../../utils/');
@@ -71310,7 +71330,7 @@ registerPrimitive('a-videosphere', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":210,"../getMeshMixin":149,"../primitives":151}],165:[function(require,module,exports){
+},{"../../../utils/":211,"../getMeshMixin":150,"../primitives":152}],166:[function(require,module,exports){
 /**
  * Automated mesh primitive registration.
  */
@@ -71350,7 +71370,7 @@ function unCamelCase (str) {
   return str.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
 }
 
-},{"../../../core/geometry":136,"../../../utils/":210,"../getMeshMixin":149,"../primitives":151}],166:[function(require,module,exports){
+},{"../../../core/geometry":137,"../../../utils/":211,"../getMeshMixin":150,"../primitives":152}],167:[function(require,module,exports){
 var registerGeometry = require('../core/geometry').registerGeometry;
 var THREE = require('../lib/three');
 
@@ -71371,7 +71391,7 @@ registerGeometry('box', {
   }
 });
 
-},{"../core/geometry":136,"../lib/three":183}],167:[function(require,module,exports){
+},{"../core/geometry":137,"../lib/three":184}],168:[function(require,module,exports){
 var registerGeometry = require('../core/geometry').registerGeometry;
 var THREE = require('../lib/three');
 
@@ -71391,7 +71411,7 @@ registerGeometry('circle', {
   }
 });
 
-},{"../core/geometry":136,"../lib/three":183}],168:[function(require,module,exports){
+},{"../core/geometry":137,"../lib/three":184}],169:[function(require,module,exports){
 var registerGeometry = require('../core/geometry').registerGeometry;
 var THREE = require('../lib/three');
 
@@ -71417,7 +71437,7 @@ registerGeometry('cone', {
   }
 });
 
-},{"../core/geometry":136,"../lib/three":183}],169:[function(require,module,exports){
+},{"../core/geometry":137,"../lib/three":184}],170:[function(require,module,exports){
 var registerGeometry = require('../core/geometry').registerGeometry;
 var THREE = require('../lib/three');
 
@@ -71441,7 +71461,7 @@ registerGeometry('cylinder', {
   }
 });
 
-},{"../core/geometry":136,"../lib/three":183}],170:[function(require,module,exports){
+},{"../core/geometry":137,"../lib/three":184}],171:[function(require,module,exports){
 var registerGeometry = require('../core/geometry').registerGeometry;
 var THREE = require('../lib/three');
 
@@ -71456,7 +71476,7 @@ registerGeometry('dodecahedron', {
   }
 });
 
-},{"../core/geometry":136,"../lib/three":183}],171:[function(require,module,exports){
+},{"../core/geometry":137,"../lib/three":184}],172:[function(require,module,exports){
 var registerGeometry = require('../core/geometry').registerGeometry;
 var THREE = require('../lib/three');
 
@@ -71471,7 +71491,7 @@ registerGeometry('icosahedron', {
   }
 });
 
-},{"../core/geometry":136,"../lib/three":183}],172:[function(require,module,exports){
+},{"../core/geometry":137,"../lib/three":184}],173:[function(require,module,exports){
 require('./box.js');
 require('./circle.js');
 require('./cone.js');
@@ -71487,7 +71507,7 @@ require('./torus.js');
 require('./torusKnot.js');
 require('./triangle.js');
 
-},{"./box.js":166,"./circle.js":167,"./cone.js":168,"./cylinder.js":169,"./dodecahedron.js":170,"./icosahedron.js":171,"./octahedron.js":173,"./plane.js":174,"./ring.js":175,"./sphere.js":176,"./tetrahedron.js":177,"./torus.js":178,"./torusKnot.js":179,"./triangle.js":180}],173:[function(require,module,exports){
+},{"./box.js":167,"./circle.js":168,"./cone.js":169,"./cylinder.js":170,"./dodecahedron.js":171,"./icosahedron.js":172,"./octahedron.js":174,"./plane.js":175,"./ring.js":176,"./sphere.js":177,"./tetrahedron.js":178,"./torus.js":179,"./torusKnot.js":180,"./triangle.js":181}],174:[function(require,module,exports){
 var registerGeometry = require('../core/geometry').registerGeometry;
 var THREE = require('../lib/three');
 
@@ -71502,7 +71522,7 @@ registerGeometry('octahedron', {
   }
 });
 
-},{"../core/geometry":136,"../lib/three":183}],174:[function(require,module,exports){
+},{"../core/geometry":137,"../lib/three":184}],175:[function(require,module,exports){
 var registerGeometry = require('../core/geometry').registerGeometry;
 var THREE = require('../lib/three');
 
@@ -71519,7 +71539,7 @@ registerGeometry('plane', {
   }
 });
 
-},{"../core/geometry":136,"../lib/three":183}],175:[function(require,module,exports){
+},{"../core/geometry":137,"../lib/three":184}],176:[function(require,module,exports){
 var registerGeometry = require('../core/geometry').registerGeometry;
 var THREE = require('../lib/three');
 
@@ -71542,7 +71562,7 @@ registerGeometry('ring', {
   }
 });
 
-},{"../core/geometry":136,"../lib/three":183}],176:[function(require,module,exports){
+},{"../core/geometry":137,"../lib/three":184}],177:[function(require,module,exports){
 var registerGeometry = require('../core/geometry').registerGeometry;
 var THREE = require('../lib/three');
 
@@ -71566,7 +71586,7 @@ registerGeometry('sphere', {
   }
 });
 
-},{"../core/geometry":136,"../lib/three":183}],177:[function(require,module,exports){
+},{"../core/geometry":137,"../lib/three":184}],178:[function(require,module,exports){
 var registerGeometry = require('../core/geometry').registerGeometry;
 var THREE = require('../lib/three');
 
@@ -71581,7 +71601,7 @@ registerGeometry('tetrahedron', {
   }
 });
 
-},{"../core/geometry":136,"../lib/three":183}],178:[function(require,module,exports){
+},{"../core/geometry":137,"../lib/three":184}],179:[function(require,module,exports){
 var registerGeometry = require('../core/geometry').registerGeometry;
 var THREE = require('../lib/three');
 
@@ -71603,7 +71623,7 @@ registerGeometry('torus', {
   }
 });
 
-},{"../core/geometry":136,"../lib/three":183}],179:[function(require,module,exports){
+},{"../core/geometry":137,"../lib/three":184}],180:[function(require,module,exports){
 var registerGeometry = require('../core/geometry').registerGeometry;
 var THREE = require('../lib/three');
 
@@ -71624,7 +71644,7 @@ registerGeometry('torusKnot', {
   }
 });
 
-},{"../core/geometry":136,"../lib/three":183}],180:[function(require,module,exports){
+},{"../core/geometry":137,"../lib/three":184}],181:[function(require,module,exports){
 var registerGeometry = require('../core/geometry').registerGeometry;
 var THREE = require('../lib/three');
 
@@ -71697,7 +71717,7 @@ registerGeometry('triangle', {
   }
 });
 
-},{"../core/geometry":136,"../lib/three":183}],181:[function(require,module,exports){
+},{"../core/geometry":137,"../lib/three":184}],182:[function(require,module,exports){
 // Polyfill `Promise`.
 window.Promise = window.Promise || require('promise-polyfill');
 
@@ -71790,7 +71810,7 @@ require('./core/a-mixin');
 require('./extras/components/');
 require('./extras/primitives/');
 
-console.log('A-Frame Version: 1.2.0 (Date 2022-01-18, Commit #d1d5012a)');
+console.log('A-Frame Version: 1.2.0 (Date 2022-01-26, Commit #ee848940)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
@@ -71823,7 +71843,7 @@ module.exports = window.AFRAME = {
   version: pkg.version
 };
 
-},{"../package":74,"../vendor/starts-with-polyfill":223,"./components/index":87,"./core/a-assets":129,"./core/a-cubemap":130,"./core/a-entity":131,"./core/a-mixin":132,"./core/a-node":133,"./core/a-register-element":134,"./core/component":135,"./core/geometry":136,"./core/scene/a-scene":138,"./core/scene/scenes":142,"./core/schema":144,"./core/shader":145,"./core/system":146,"./extras/components/":147,"./extras/primitives/":150,"./extras/primitives/getMeshMixin":149,"./extras/primitives/primitives":151,"./geometries/index":172,"./lib/three":183,"./shaders/index":185,"./style/aframe.css":191,"./style/rStats.css":192,"./systems/index":196,"./utils/":210,"./utils/isIOSOlderThan10":213,"custom-event-polyfill":7,"present":48,"promise-polyfill":50,"super-animejs":56,"webvr-polyfill":69}],182:[function(require,module,exports){
+},{"../package":74,"../vendor/starts-with-polyfill":224,"./components/index":87,"./core/a-assets":130,"./core/a-cubemap":131,"./core/a-entity":132,"./core/a-mixin":133,"./core/a-node":134,"./core/a-register-element":135,"./core/component":136,"./core/geometry":137,"./core/scene/a-scene":139,"./core/scene/scenes":143,"./core/schema":145,"./core/shader":146,"./core/system":147,"./extras/components/":148,"./extras/primitives/":151,"./extras/primitives/getMeshMixin":150,"./extras/primitives/primitives":152,"./geometries/index":173,"./lib/three":184,"./shaders/index":186,"./style/aframe.css":192,"./style/rStats.css":193,"./systems/index":197,"./utils/":211,"./utils/isIOSOlderThan10":214,"custom-event-polyfill":7,"present":48,"promise-polyfill":50,"super-animejs":56,"webvr-polyfill":69}],183:[function(require,module,exports){
 window.aframeStats = function (scene) {
   var _rS = null;
   var _scene = scene;
@@ -71880,7 +71900,7 @@ if (typeof module === 'object') {
   };
 }
 
-},{}],183:[function(require,module,exports){
+},{}],184:[function(require,module,exports){
 (function (global){
 var THREE = global.THREE = require('super-three');
 
@@ -71920,7 +71940,7 @@ module.exports = THREE;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"../../vendor/DeviceOrientationControls":220,"super-three":57,"super-three/examples/js/lights/LightProbeGenerator":58,"super-three/examples/js/loaders/DRACOLoader":59,"super-three/examples/js/loaders/GLTFLoader":60,"super-three/examples/js/loaders/MTLLoader":61,"super-three/examples/js/loaders/OBJLoader":62,"super-three/examples/js/utils/BufferGeometryUtils":63}],184:[function(require,module,exports){
+},{"../../vendor/DeviceOrientationControls":221,"super-three":57,"super-three/examples/js/lights/LightProbeGenerator":58,"super-three/examples/js/loaders/DRACOLoader":59,"super-three/examples/js/loaders/GLTFLoader":60,"super-three/examples/js/loaders/MTLLoader":61,"super-three/examples/js/loaders/OBJLoader":62,"super-three/examples/js/utils/BufferGeometryUtils":63}],185:[function(require,module,exports){
 var registerShader = require('../core/shader').registerShader;
 var THREE = require('../lib/three');
 var utils = require('../utils/');
@@ -71990,7 +72010,7 @@ function getMaterialData (data, materialData) {
   return materialData;
 }
 
-},{"../core/shader":145,"../lib/three":183,"../utils/":210}],185:[function(require,module,exports){
+},{"../core/shader":146,"../lib/three":184,"../utils/":211}],186:[function(require,module,exports){
 require('./flat');
 require('./standard');
 require('./sdf');
@@ -71998,7 +72018,7 @@ require('./msdf');
 require('./ios10hls');
 require('./shadow');
 
-},{"./flat":184,"./ios10hls":186,"./msdf":187,"./sdf":188,"./shadow":189,"./standard":190}],186:[function(require,module,exports){
+},{"./flat":185,"./ios10hls":187,"./msdf":188,"./sdf":189,"./shadow":190,"./standard":191}],187:[function(require,module,exports){
 var registerShader = require('../core/shader').registerShader;
 
 /**
@@ -72033,7 +72053,7 @@ module.exports.Shader = registerShader('ios10hls', {
 });
 
 
-},{"../core/shader":145}],187:[function(require,module,exports){
+},{"../core/shader":146}],188:[function(require,module,exports){
 var registerShader = require('../core/shader').registerShader;
 
 var isWebGL2AVailable = !!document.createElement('canvas').getContext('webgl2');
@@ -72174,7 +72194,7 @@ module.exports.Shader = registerShader('msdf', {
   fragmentShader: FRAGMENT_SHADER
 });
 
-},{"../core/shader":145}],188:[function(require,module,exports){
+},{"../core/shader":146}],189:[function(require,module,exports){
 var registerShader = require('../core/shader').registerShader;
 
 var isWebGL2AVailable = !!document.createElement('canvas').getContext('webgl2');
@@ -72393,7 +72413,7 @@ module.exports.Shader = registerShader('sdf', {
   fragmentShader: FRAGMENT_SHADER
 });
 
-},{"../core/shader":145}],189:[function(require,module,exports){
+},{"../core/shader":146}],190:[function(require,module,exports){
 var registerShader = require('../core/shader').registerShader;
 var THREE = require('../lib/three');
 
@@ -72424,7 +72444,7 @@ module.exports.Shader = registerShader('shadow', {
 });
 
 
-},{"../core/shader":145,"../lib/three":183}],190:[function(require,module,exports){
+},{"../core/shader":146,"../lib/three":184}],191:[function(require,module,exports){
 var registerShader = require('../core/shader').registerShader;
 var THREE = require('../lib/three');
 var utils = require('../utils/');
@@ -72616,11 +72636,11 @@ function getMaterialData (data, materialData) {
   return materialData;
 }
 
-},{"../core/shader":145,"../lib/three":183,"../utils/":210}],191:[function(require,module,exports){
+},{"../core/shader":146,"../lib/three":184,"../utils/":211}],192:[function(require,module,exports){
 var css = "html.a-fullscreen{bottom:0;left:0;position:fixed;right:0;top:0}html.a-fullscreen body{height:100%;margin:0;overflow:hidden;padding:0;width:100%}html.a-fullscreen .a-canvas{width:100%!important;height:100%!important;top:0!important;left:0!important;right:0!important;bottom:0!important;position:fixed!important}html:not(.a-fullscreen) .a-enter-ar,html:not(.a-fullscreen) .a-enter-vr{right:5px;bottom:5px}:-webkit-full-screen{background-color:transparent}.a-hidden{display:none!important}.a-canvas{height:100%;left:0;position:absolute;top:0;width:100%}.a-canvas.a-grab-cursor:hover{cursor:grab;cursor:-moz-grab;cursor:-webkit-grab}canvas.a-canvas.a-mouse-cursor-hover:hover{cursor:pointer}.a-inspector-loader{background-color:#ed3160;position:fixed;left:3px;top:3px;padding:6px 10px;color:#fff;text-decoration:none;font-size:12px;font-family:Roboto,sans-serif;text-align:center;z-index:99999;width:204px}@keyframes dots-1{from{opacity:0}25%{opacity:1}}@keyframes dots-2{from{opacity:0}50%{opacity:1}}@keyframes dots-3{from{opacity:0}75%{opacity:1}}@-webkit-keyframes dots-1{from{opacity:0}25%{opacity:1}}@-webkit-keyframes dots-2{from{opacity:0}50%{opacity:1}}@-webkit-keyframes dots-3{from{opacity:0}75%{opacity:1}}.a-inspector-loader .dots span{animation:dots-1 2s infinite steps(1);-webkit-animation:dots-1 2s infinite steps(1)}.a-inspector-loader .dots span:first-child+span{animation-name:dots-2;-webkit-animation-name:dots-2}.a-inspector-loader .dots span:first-child+span+span{animation-name:dots-3;-webkit-animation-name:dots-3}a-scene{display:block;position:relative;height:100%;width:100%}a-assets,a-scene audio,a-scene img,a-scene video{display:none}.a-enter-vr-modal,.a-orientation-modal{font-family:Consolas,Andale Mono,Courier New,monospace}.a-enter-vr-modal a{border-bottom:1px solid #fff;padding:2px 0;text-decoration:none;transition:.1s color ease-in}.a-enter-vr-modal a:hover{background-color:#fff;color:#111;padding:2px 4px;position:relative;left:-4px}.a-enter-ar,.a-enter-vr{font-family:sans-serif,monospace;font-size:13px;width:100%;font-weight:200;line-height:16px;position:absolute;right:20px;bottom:20px}.a-enter-ar{right:80px}.a-enter-vr-button,.a-enter-vr-modal,.a-enter-vr-modal a{color:#fff;user-select:none;outline:0}.a-enter-vr-button{background:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='108' height='62' viewBox='0 0 108 62'%3E%3Ctitle%3Eaframe-vrmode-noborder-reduced-tracking%3C/title%3E%3Cpath d='M68.81,21.56H64.23v8.27h4.58a4.13,4.13,0,0,0,3.1-1.09,4.2,4.2,0,0,0,1-3,4.24,4.24,0,0,0-1-3A4.05,4.05,0,0,0,68.81,21.56Z' fill='%23fff'/%3E%3Cpath d='M96,0H12A12,12,0,0,0,0,12V50A12,12,0,0,0,12,62H96a12,12,0,0,0,12-12V12A12,12,0,0,0,96,0ZM41.9,46H34L24,16h8l6,21.84,6-21.84H52Zm39.29,0H73.44L68.15,35.39H64.23V46H57V16H68.81q5.32,0,8.34,2.37a8,8,0,0,1,3,6.69,9.68,9.68,0,0,1-1.27,5.18,8.9,8.9,0,0,1-4,3.34l6.26,12.11Z' fill='%23fff'/%3E%3C/svg%3E\") 50% 50% no-repeat rgba(0,0,0,.35)}.a-enter-ar-button{background:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='108' height='62' viewBox='0 0 108 62'%3E%3Ctitle%3Eaframe-armode-noborder-reduced-tracking%3C/title%3E%3Cpath d='M96,0H12A12,12,0,0,0,0,12V50A12,12,0,0,0,12,62H96a12,12,0,0,0,12-12V12A12,12,0,0,0,96,0Zm8,50a8,8,0,0,1-8,8H12a8,8,0,0,1-8-8V12a8,8,0,0,1,8-8H96a8,8,0,0,1,8,8Z' fill='%23fff'/%3E%3Cpath d='M43.35,39.82H32.51L30.45,46H23.88L35,16h5.73L52,46H45.43Zm-9.17-5h7.5L37.91,23.58Z' fill='%23fff'/%3E%3Cpath d='M68.11,35H63.18V46H57V16H68.15q5.31,0,8.2,2.37a8.18,8.18,0,0,1,2.88,6.7,9.22,9.22,0,0,1-1.33,5.12,9.09,9.09,0,0,1-4,3.26l6.49,12.26V46H73.73Zm-4.93-5h5a5.09,5.09,0,0,0,3.6-1.18,4.21,4.21,0,0,0,1.28-3.27,4.56,4.56,0,0,0-1.2-3.34A5,5,0,0,0,68.15,21h-5Z' fill='%23fff'/%3E%3C/svg%3E\") 50% 50% no-repeat rgba(0,0,0,.2)}.a-enter-ar-button,.a-enter-vr-button{background-size:90% 90%;border:0;bottom:0;cursor:pointer;min-width:58px;min-height:34px;padding-right:0;padding-top:0;position:absolute;right:0;transition:background-color .05s ease;-webkit-transition:background-color .05s ease;z-index:9999;border-radius:8px;touch-action:manipulation}.a-enter-ar-button{background-size:100% 90%;margin-right:10px;border-radius:7px}.a-enter-ar-button:active,.a-enter-ar-button:hover,.a-enter-vr-button:active,.a-enter-vr-button:hover{background-color:#ef2d5e}.a-enter-vr-button.resethover{background-color:rgba(0,0,0,.35)}[data-a-enter-vr-no-webvr] .a-enter-vr-button{border-color:#666;opacity:.65}[data-a-enter-vr-no-webvr] .a-enter-vr-button:active,[data-a-enter-vr-no-webvr] .a-enter-vr-button:hover{background-color:rgba(0,0,0,.35);cursor:not-allowed}.a-enter-vr-modal{background-color:#666;border-radius:0;display:none;min-height:32px;margin-right:70px;padding:9px;width:280px;right:2%;position:absolute}.a-enter-vr-modal:after{border-bottom:10px solid transparent;border-left:10px solid #666;border-top:10px solid transparent;display:inline-block;content:'';position:absolute;right:-5px;top:5px;width:0;height:0}.a-enter-vr-modal a,.a-enter-vr-modal p{display:inline}.a-enter-vr-modal p{margin:0}.a-enter-vr-modal p:after{content:' '}[data-a-enter-vr-no-headset].a-enter-vr:hover .a-enter-vr-modal,[data-a-enter-vr-no-webvr].a-enter-vr:hover .a-enter-vr-modal{display:block}.a-orientation-modal{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%20version%3D%221.1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%2090%2090%22%20enable-background%3D%22new%200%200%2090%2090%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpolygon%20points%3D%220%2C0%200%2C0%200%2C0%20%22%3E%3C/polygon%3E%3Cg%3E%3Cpath%20d%3D%22M71.545%2C48.145h-31.98V20.743c0-2.627-2.138-4.765-4.765-4.765H18.456c-2.628%2C0-4.767%2C2.138-4.767%2C4.765v42.789%20%20%20c0%2C2.628%2C2.138%2C4.766%2C4.767%2C4.766h5.535v0.959c0%2C2.628%2C2.138%2C4.765%2C4.766%2C4.765h42.788c2.628%2C0%2C4.766-2.137%2C4.766-4.765V52.914%20%20%20C76.311%2C50.284%2C74.173%2C48.145%2C71.545%2C48.145z%20M18.455%2C16.935h16.344c2.1%2C0%2C3.808%2C1.708%2C3.808%2C3.808v27.401H37.25V22.636%20%20%20c0-0.264-0.215-0.478-0.479-0.478H16.482c-0.264%2C0-0.479%2C0.214-0.479%2C0.478v36.585c0%2C0.264%2C0.215%2C0.478%2C0.479%2C0.478h7.507v7.644%20%20%20h-5.534c-2.101%2C0-3.81-1.709-3.81-3.81V20.743C14.645%2C18.643%2C16.354%2C16.935%2C18.455%2C16.935z%20M16.96%2C23.116h19.331v25.031h-7.535%20%20%20c-2.628%2C0-4.766%2C2.139-4.766%2C4.768v5.828h-7.03V23.116z%20M71.545%2C73.064H28.757c-2.101%2C0-3.81-1.708-3.81-3.808V52.914%20%20%20c0-2.102%2C1.709-3.812%2C3.81-3.812h42.788c2.1%2C0%2C3.809%2C1.71%2C3.809%2C3.812v16.343C75.354%2C71.356%2C73.645%2C73.064%2C71.545%2C73.064z%22%3E%3C/path%3E%3Cpath%20d%3D%22M28.919%2C58.424c-1.466%2C0-2.659%2C1.193-2.659%2C2.66c0%2C1.466%2C1.193%2C2.658%2C2.659%2C2.658c1.468%2C0%2C2.662-1.192%2C2.662-2.658%20%20%20C31.581%2C59.617%2C30.387%2C58.424%2C28.919%2C58.424z%20M28.919%2C62.786c-0.939%2C0-1.703-0.764-1.703-1.702c0-0.939%2C0.764-1.704%2C1.703-1.704%20%20%20c0.94%2C0%2C1.705%2C0.765%2C1.705%2C1.704C30.623%2C62.022%2C29.858%2C62.786%2C28.919%2C62.786z%22%3E%3C/path%3E%3Cpath%20d%3D%22M69.654%2C50.461H33.069c-0.264%2C0-0.479%2C0.215-0.479%2C0.479v20.288c0%2C0.264%2C0.215%2C0.478%2C0.479%2C0.478h36.585%20%20%20c0.263%2C0%2C0.477-0.214%2C0.477-0.478V50.939C70.131%2C50.676%2C69.917%2C50.461%2C69.654%2C50.461z%20M69.174%2C51.417V70.75H33.548V51.417H69.174z%22%3E%3C/path%3E%3Cpath%20d%3D%22M45.201%2C30.296c6.651%2C0%2C12.233%2C5.351%2C12.551%2C11.977l-3.033-2.638c-0.193-0.165-0.507-0.142-0.675%2C0.048%20%20%20c-0.174%2C0.198-0.153%2C0.501%2C0.045%2C0.676l3.883%2C3.375c0.09%2C0.075%2C0.198%2C0.115%2C0.312%2C0.115c0.141%2C0%2C0.273-0.061%2C0.362-0.166%20%20%20l3.371-3.877c0.173-0.2%2C0.151-0.502-0.047-0.675c-0.194-0.166-0.508-0.144-0.676%2C0.048l-2.592%2C2.979%20%20%20c-0.18-3.417-1.629-6.605-4.099-9.001c-2.538-2.461-5.877-3.817-9.404-3.817c-0.264%2C0-0.479%2C0.215-0.479%2C0.479%20%20%20C44.72%2C30.083%2C44.936%2C30.296%2C45.201%2C30.296z%22%3E%3C/path%3E%3C/g%3E%3C/svg%3E) center/50% 50% no-repeat rgba(244,244,244,1);bottom:0;font-size:14px;font-weight:600;left:0;line-height:20px;right:0;position:fixed;top:0;z-index:9999999}.a-orientation-modal:after{color:#666;content:\"Insert phone into Cardboard holder.\";display:block;position:absolute;text-align:center;top:70%;transform:translateY(-70%);width:100%}.a-orientation-modal button{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%20version%3D%221.1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%20100%20100%22%20enable-background%3D%22new%200%200%20100%20100%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpath%20fill%3D%22%23000000%22%20d%3D%22M55.209%2C50l17.803-17.803c1.416-1.416%2C1.416-3.713%2C0-5.129c-1.416-1.417-3.713-1.417-5.129%2C0L50.08%2C44.872%20%20L32.278%2C27.069c-1.416-1.417-3.714-1.417-5.129%2C0c-1.417%2C1.416-1.417%2C3.713%2C0%2C5.129L44.951%2C50L27.149%2C67.803%20%20c-1.417%2C1.416-1.417%2C3.713%2C0%2C5.129c0.708%2C0.708%2C1.636%2C1.062%2C2.564%2C1.062c0.928%2C0%2C1.856-0.354%2C2.564-1.062L50.08%2C55.13l17.803%2C17.802%20%20c0.708%2C0.708%2C1.637%2C1.062%2C2.564%2C1.062s1.856-0.354%2C2.564-1.062c1.416-1.416%2C1.416-3.713%2C0-5.129L55.209%2C50z%22%3E%3C/path%3E%3C/svg%3E) no-repeat;border:none;height:50px;text-indent:-9999px;width:50px}.a-loader-title{background-color:rgba(0,0,0,.6);font-family:sans-serif,monospace;text-align:center;font-size:20px;height:50px;font-weight:300;line-height:50px;position:absolute;right:0;left:0;top:0;color:#fff}.a-modal{background:0 0/50% 50% rgba(0,0,0,.6);bottom:0;font-size:14px;font-weight:600;left:0;line-height:20px;right:0;position:fixed;top:0;z-index:9999999}.a-dialog{position:relative;left:50%;top:50%;transform:translate(-50%,-50%);z-index:199995;width:300px;height:200px;background-size:contain;background-color:#fff;font-family:sans-serif,monospace;font-size:20px;border-radius:3px;padding:6px}.a-dialog-text-container{width:100%;height:70%;align-self:flex-start;display:flex;justify-content:center;align-content:center;flex-direction:column}.a-dialog-text{display:inline-block;font-weight:400;font-size:14pt;margin:8px}.a-dialog-buttons-container{display:inline-flex;align-self:flex-end;width:100%;height:30%}.a-dialog-button{cursor:pointer;align-self:center;opacity:.9;height:80%;width:50%;font-size:12pt;margin:4px;border-radius:2px;text-align:center;border:none;display:inline-block;-webkit-transition:all .25s ease-in-out;transition:all .25s ease-in-out;box-shadow:0 1px 3px rgba(0,0,0,.1),0 1px 2px rgba(0,0,0,.2);user-select:none}.a-dialog-permission-button:hover{box-shadow:0 7px 14px rgba(0,0,0,.2),0 2px 2px rgba(0,0,0,.2)}.a-dialog-allow-button{background-color:#00ceff}.a-dialog-deny-button{background-color:#ff005b}.a-dialog-ok-button{background-color:#00ceff;width:100%}.a-dom-overlay:not(.a-no-style){overflow:hidden;position:absolute;pointer-events:none;box-sizing:border-box;bottom:0;left:0;right:0;top:0;padding:1em}.a-dom-overlay:not(.a-no-style)>*{pointer-events:auto}"; (require("browserify-css").createStyle(css, { "href": "src/style/aframe.css"})); module.exports = css;
-},{"browserify-css":4}],192:[function(require,module,exports){
-var css = ".rs-base{background-color:#333;color:#fafafa;border-radius:0;font:10px monospace;left:5px;line-height:1em;opacity:.85;overflow:hidden;padding:10px;position:fixed;top:5px;width:300px;z-index:10000}.rs-base div.hidden{display:none}.rs-base h1{color:#fff;cursor:pointer;font-size:1.4em;font-weight:300;margin:0 0 5px;padding:0}.rs-group{display:-webkit-box;display:-webkit-flex;display:flex;-webkit-flex-direction:column-reverse;flex-direction:column-reverse;margin-bottom:5px}.rs-group:last-child{margin-bottom:0}.rs-counter-base{align-items:center;display:-webkit-box;display:-webkit-flex;display:flex;height:10px;-webkit-justify-content:space-between;justify-content:space-between;margin:2px 0}.rs-counter-base.alarm{color:#b70000;text-shadow:0 0 0 #b70000,0 0 1px #fff,0 0 1px #fff,0 0 2px #fff,0 0 2px #fff,0 0 3px #fff,0 0 3px #fff,0 0 4px #fff,0 0 4px #fff}.rs-counter-id{font-weight:300;-webkit-box-ordinal-group:0;-webkit-order:0;order:0;width:54px}.rs-counter-value{font-weight:300;-webkit-box-ordinal-group:1;-webkit-order:1;order:1;text-align:right;width:35px}.rs-canvas{-webkit-box-ordinal-group:2;-webkit-order:2;order:2}@media (min-width:480px){.rs-base{left:20px;top:20px}}"; (require("browserify-css").createStyle(css, { "href": "src/style/rStats.css"})); module.exports = css;
 },{"browserify-css":4}],193:[function(require,module,exports){
+var css = ".rs-base{background-color:#333;color:#fafafa;border-radius:0;font:10px monospace;left:5px;line-height:1em;opacity:.85;overflow:hidden;padding:10px;position:fixed;top:5px;width:300px;z-index:10000}.rs-base div.hidden{display:none}.rs-base h1{color:#fff;cursor:pointer;font-size:1.4em;font-weight:300;margin:0 0 5px;padding:0}.rs-group{display:-webkit-box;display:-webkit-flex;display:flex;-webkit-flex-direction:column-reverse;flex-direction:column-reverse;margin-bottom:5px}.rs-group:last-child{margin-bottom:0}.rs-counter-base{align-items:center;display:-webkit-box;display:-webkit-flex;display:flex;height:10px;-webkit-justify-content:space-between;justify-content:space-between;margin:2px 0}.rs-counter-base.alarm{color:#b70000;text-shadow:0 0 0 #b70000,0 0 1px #fff,0 0 1px #fff,0 0 2px #fff,0 0 2px #fff,0 0 3px #fff,0 0 3px #fff,0 0 4px #fff,0 0 4px #fff}.rs-counter-id{font-weight:300;-webkit-box-ordinal-group:0;-webkit-order:0;order:0;width:54px}.rs-counter-value{font-weight:300;-webkit-box-ordinal-group:1;-webkit-order:1;order:1;text-align:right;width:35px}.rs-canvas{-webkit-box-ordinal-group:2;-webkit-order:2;order:2}@media (min-width:480px){.rs-base{left:20px;top:20px}}"; (require("browserify-css").createStyle(css, { "href": "src/style/rStats.css"})); module.exports = css;
+},{"browserify-css":4}],194:[function(require,module,exports){
 var constants = require('../constants/');
 var registerSystem = require('../core/system').registerSystem;
 
@@ -72893,7 +72913,7 @@ function removeDefaultCamera (sceneEl) {
   sceneEl.removeChild(defaultCamera);
 }
 
-},{"../constants/":127,"../core/system":146}],194:[function(require,module,exports){
+},{"../constants/":128,"../core/system":147}],195:[function(require,module,exports){
 var geometries = require('../core/geometry').geometries;
 var registerSystem = require('../core/system').registerSystem;
 
@@ -73015,7 +73035,7 @@ function incrementCacheCount (cacheCount, hash) {
   cacheCount[hash] = cacheCount[hash] === undefined ? 1 : cacheCount[hash] + 1;
 }
 
-},{"../core/geometry":136,"../core/system":146}],195:[function(require,module,exports){
+},{"../core/geometry":137,"../core/system":147}],196:[function(require,module,exports){
 var registerSystem = require('../core/system').registerSystem;
 var THREE = require('../lib/three');
 
@@ -73072,7 +73092,7 @@ module.exports.System = registerSystem('gltf-model', {
   }
 });
 
-},{"../core/system":146,"../lib/three":183}],196:[function(require,module,exports){
+},{"../core/system":147,"../lib/three":184}],197:[function(require,module,exports){
 require('./camera');
 require('./geometry');
 require('./gltf-model');
@@ -73084,7 +73104,7 @@ require('./tracked-controls-webvr');
 require('./tracked-controls-webxr');
 require('./webxr');
 
-},{"./camera":193,"./geometry":194,"./gltf-model":195,"./light":197,"./material":198,"./renderer":199,"./shadow":200,"./tracked-controls-webvr":201,"./tracked-controls-webxr":202,"./webxr":203}],197:[function(require,module,exports){
+},{"./camera":194,"./geometry":195,"./gltf-model":196,"./light":198,"./material":199,"./renderer":200,"./shadow":201,"./tracked-controls-webvr":202,"./tracked-controls-webxr":203,"./webxr":204}],198:[function(require,module,exports){
 var registerSystem = require('../core/system').registerSystem;
 var bind = require('../utils/bind');
 var constants = require('../constants/');
@@ -73170,7 +73190,7 @@ module.exports.System = registerSystem('light', {
   }
 });
 
-},{"../constants/":127,"../core/system":146,"../utils/bind":204}],198:[function(require,module,exports){
+},{"../constants/":128,"../core/system":147,"../utils/bind":205}],199:[function(require,module,exports){
 var registerSystem = require('../core/system').registerSystem;
 var THREE = require('../lib/three');
 var utils = require('../utils/');
@@ -73545,7 +73565,7 @@ function fixVideoAttributes (videoEl) {
   return videoEl;
 }
 
-},{"../core/system":146,"../lib/three":183,"../utils/":210,"../utils/material":214}],199:[function(require,module,exports){
+},{"../core/system":147,"../lib/three":184,"../utils/":211,"../utils/material":215}],200:[function(require,module,exports){
 var registerSystem = require('../core/system').registerSystem;
 var utils = require('../utils/');
 var THREE = require('../lib/three');
@@ -73607,7 +73627,7 @@ module.exports.System = registerSystem('renderer', {
   }
 });
 
-},{"../core/system":146,"../lib/three":183,"../utils/":210}],200:[function(require,module,exports){
+},{"../core/system":147,"../lib/three":184,"../utils/":211}],201:[function(require,module,exports){
 var registerSystem = require('../core/system').registerSystem;
 var THREE = require('../lib/three');
 
@@ -73662,7 +73682,7 @@ module.exports.System = registerSystem('shadow', {
   }
 });
 
-},{"../core/system":146,"../lib/three":183}],201:[function(require,module,exports){
+},{"../core/system":147,"../lib/three":184}],202:[function(require,module,exports){
 var registerSystem = require('../core/system').registerSystem;
 var utils = require('../utils');
 var isWebXRAvailable = utils.device.isWebXRAvailable;
@@ -73730,7 +73750,7 @@ module.exports.System = registerSystem('tracked-controls-webvr', {
   }
 });
 
-},{"../core/system":146,"../utils":210}],202:[function(require,module,exports){
+},{"../core/system":147,"../utils":211}],203:[function(require,module,exports){
 var registerSystem = require('../core/system').registerSystem;
 var utils = require('../utils');
 
@@ -73815,7 +73835,7 @@ module.exports.System = registerSystem('tracked-controls-webxr', {
   }
 });
 
-},{"../core/system":146,"../utils":210}],203:[function(require,module,exports){
+},{"../core/system":147,"../utils":211}],204:[function(require,module,exports){
 var registerSystem = require('../core/system').registerSystem;
 
 var utils = require('../utils/');
@@ -73875,7 +73895,7 @@ module.exports.System = registerSystem('webxr', {
   }
 });
 
-},{"../core/system":146,"../utils/":210}],204:[function(require,module,exports){
+},{"../core/system":147,"../utils/":211}],205:[function(require,module,exports){
 /**
  * Faster version of Function.prototype.bind
  * @param {Function} fn - Function to wrap.
@@ -73892,7 +73912,7 @@ module.exports = function bind (fn, ctx/* , arg1, arg2 */) {
   })(Array.prototype.slice.call(arguments, 2));
 };
 
-},{}],205:[function(require,module,exports){
+},{}],206:[function(require,module,exports){
 /* global THREE */
 var debug = require('./debug');
 var extend = require('object-assign');
@@ -74004,7 +74024,7 @@ module.exports.toVector3 = function (vec3) {
   return new THREE.Vector3(vec3.x, vec3.y, vec3.z);
 };
 
-},{"./debug":206,"object-assign":39}],206:[function(require,module,exports){
+},{"./debug":207,"object-assign":39}],207:[function(require,module,exports){
 (function (process){
 var debugLib = require('debug');
 var extend = require('object-assign');
@@ -74101,7 +74121,7 @@ module.exports = debug;
 
 }).call(this,require('_process'))
 
-},{"_process":49,"debug":8,"object-assign":39}],207:[function(require,module,exports){
+},{"_process":49,"debug":8,"object-assign":39}],208:[function(require,module,exports){
 (function (process){
 var error = require('debug')('device:error');
 
@@ -74294,7 +74314,7 @@ module.exports.isNodeEnvironment = !module.exports.isBrowserEnvironment;
 
 }).call(this,require('_process'))
 
-},{"_process":49,"debug":8}],208:[function(require,module,exports){
+},{"_process":49,"debug":8}],209:[function(require,module,exports){
 /**
  * Split a delimited component property string (e.g., `material.color`) to an object
  * containing `component` name and `property` name. If there is no delimiter, just return the
@@ -74356,7 +74376,7 @@ module.exports.setComponentProperty = function (el, name, value, delimiter) {
   el.setAttribute(name, value);
 };
 
-},{}],209:[function(require,module,exports){
+},{}],210:[function(require,module,exports){
 module.exports = function forceCanvasResizeSafariMobile (canvasEl) {
   var width = canvasEl.style.width;
   var height = canvasEl.style.height;
@@ -74372,7 +74392,7 @@ module.exports = function forceCanvasResizeSafariMobile (canvasEl) {
   }, 200);
 };
 
-},{}],210:[function(require,module,exports){
+},{}],211:[function(require,module,exports){
 /* global location */
 
 /* Centralized place to reference utilities since utils is exposed to the user. */
@@ -74737,7 +74757,7 @@ module.exports.findAllScenes = function (el) {
 // Must be at bottom to avoid circular dependency.
 module.exports.srcLoader = require('./src-loader');
 
-},{"./bind":204,"./coordinates":205,"./debug":206,"./device":207,"./entity":208,"./forceCanvasResizeSafariMobile":209,"./is-ie11":212,"./material":214,"./object-pool":215,"./split":216,"./src-loader":217,"./styleParser":218,"./tracked-controls":219,"deep-assign":10,"object-assign":39}],211:[function(require,module,exports){
+},{"./bind":205,"./coordinates":206,"./debug":207,"./device":208,"./entity":209,"./forceCanvasResizeSafariMobile":210,"./is-ie11":213,"./material":215,"./object-pool":216,"./split":217,"./src-loader":218,"./styleParser":219,"./tracked-controls":220,"deep-assign":10,"object-assign":39}],212:[function(require,module,exports){
 // Safari regression introduced in iOS 12 and remains in iOS 13.
 // https://stackoverflow.com/questions/62717621/white-space-at-page-bottom-after-device-rotation-in-ios-safari
 window.addEventListener('orientationchange', function () {
@@ -74752,7 +74772,7 @@ window.addEventListener('orientationchange', function () {
   }, 500);
 });
 
-},{}],212:[function(require,module,exports){
+},{}],213:[function(require,module,exports){
 // https://stackoverflow.com/a/17907562
 function getInternetExplorerVersion () {
   var version = -1;
@@ -74770,7 +74790,7 @@ function getInternetExplorerVersion () {
 
 module.exports = getInternetExplorerVersion() === 11;
 
-},{}],213:[function(require,module,exports){
+},{}],214:[function(require,module,exports){
 /**
  * Check if device is iOS and older than version 10.
  */
@@ -74778,7 +74798,7 @@ module.exports = function isIOSOlderThan10 (userAgent) {
   return /(iphone|ipod|ipad).*os.(7_|8_|9_)/i.test(userAgent);
 };
 
-},{}],214:[function(require,module,exports){
+},{}],215:[function(require,module,exports){
 var THREE = require('../lib/three');
 
 var HLS_MIMETYPES = ['application/x-mpegurl', 'application/vnd.apple.mpegurl'];
@@ -74988,7 +75008,7 @@ module.exports.isHLS = function (src, type) {
   return false;
 };
 
-},{"../lib/three":183}],215:[function(require,module,exports){
+},{"../lib/three":184}],216:[function(require,module,exports){
 /*
   Adapted deePool by Kyle Simpson.
   MIT License: http://getify.mit-license.org
@@ -75079,7 +75099,7 @@ function removeUnusedKeys (obj, schema) {
 }
 module.exports.removeUnusedKeys = removeUnusedKeys;
 
-},{}],216:[function(require,module,exports){
+},{}],217:[function(require,module,exports){
 /**
  * String split with cached result.
  */
@@ -75096,7 +75116,7 @@ module.exports.split = (function () {
   };
 })();
 
-},{}],217:[function(require,module,exports){
+},{}],218:[function(require,module,exports){
 /* global Image, XMLHttpRequest */
 var debug = require('./debug');
 
@@ -75255,7 +75275,7 @@ module.exports = {
   validateCubemapSrc: validateCubemapSrc
 };
 
-},{"./debug":206}],218:[function(require,module,exports){
+},{"./debug":207}],219:[function(require,module,exports){
 /**
  * Utils for parsing style-like strings (e.g., "primitive: box; width: 5; height: 4.5").
  * Some code adapted from `style-attr` (https://github.com/joshwnj/style-attr)
@@ -75408,7 +75428,7 @@ function styleStringify (obj) {
 
 function upperCase (str) { return str[1].toUpperCase(); }
 
-},{}],219:[function(require,module,exports){
+},{}],220:[function(require,module,exports){
 var DEFAULT_HANDEDNESS = require('../constants').DEFAULT_HANDEDNESS;
 var AXIS_LABELS = ['x', 'y', 'z', 'w'];
 var NUM_HANDS = 2;  // Number of hands in a pair. Should always be 2.
@@ -75650,7 +75670,7 @@ module.exports.onButtonEvent = function (id, evtName, component, hand) {
   }
 };
 
-},{"../constants":127}],220:[function(require,module,exports){
+},{"../constants":128}],221:[function(require,module,exports){
 /**
  * @author richt / http://richt.me
  * @author WestLangley / http://github.com/WestLangley
@@ -75763,7 +75783,7 @@ THREE.DeviceOrientationControls = function ( object ) {
 
 };
 
-},{}],221:[function(require,module,exports){
+},{}],222:[function(require,module,exports){
 window.glStats = function () {
 
     var _rS = null;
@@ -76024,7 +76044,7 @@ if (typeof module === 'object') {
   };
 }
 
-},{}],222:[function(require,module,exports){
+},{}],223:[function(require,module,exports){
 // performance.now() polyfill from https://gist.github.com/paulirish/5438650
 'use strict';
 
@@ -76479,7 +76499,7 @@ if (typeof module === 'object') {
   module.exports = window.rStats;
 }
 
-},{}],223:[function(require,module,exports){
+},{}],224:[function(require,module,exports){
 // https://stackoverflow.com/a/36213464
 if (!String.prototype.startsWith) {
     String.prototype.startsWith = function(searchString, position){
@@ -76488,7 +76508,7 @@ if (!String.prototype.startsWith) {
   };
 }
 
-},{}],224:[function(require,module,exports){
+},{}],225:[function(require,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -76550,7 +76570,7 @@ Util.isLandscapeMode = function() {
 
 module.exports = Util;
 
-},{}],225:[function(require,module,exports){
+},{}],226:[function(require,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -76626,6 +76646,6 @@ function getWakeLock() {
 
 module.exports = getWakeLock();
 
-},{"./util.js":224}]},{},[181])(181)
+},{"./util.js":225}]},{},[182])(182)
 });
 //# sourceMappingURL=aframe-master.js.map
