@@ -271,9 +271,7 @@ module.exports.Component = register('ar-hit-test', {
 
     this.el.sceneEl.renderer.xr.addEventListener('sessionstart', function () {
       // Don't request Hit Test unless AR (breaks WebXR Emulator)
-      if (!this.el.is('ar-mode')) {
-        return;
-      }
+      if (!this.el.is('ar-mode')) { return; }
 
       var renderer = this.el.sceneEl.renderer;
       var session = this.session = renderer.xr.getSession();
