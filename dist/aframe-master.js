@@ -61649,6 +61649,9 @@ module.exports.Component = register('ar-hit-test', {
     }.bind(this));
 
     this.el.sceneEl.renderer.xr.addEventListener('sessionstart', function () {
+      // Don't request Hit Test unless AR (breaks WebXR Emulator)
+      if (!this.el.is('ar-mode')) { return; }
+
       var renderer = this.el.sceneEl.renderer;
       var session = this.session = renderer.xr.getSession();
       this.hasPosedOnce = false;
@@ -71830,7 +71833,7 @@ require('./core/a-mixin');
 require('./extras/components/');
 require('./extras/primitives/');
 
-console.log('A-Frame Version: 1.2.0 (Date 2022-02-03, Commit #0dd84abe)');
+console.log('A-Frame Version: 1.2.0 (Date 2022-02-03, Commit #33d25a31)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
