@@ -1,3 +1,53 @@
+### 1.3.0 (Feb 4, 2022)
+
+Huge pile of fixes!
+
+[Sponsor](https://github.com/sponsors/dmarcos) A-Frame to help us move the 3D Web forward. 
+
+You can also [buy a cool t-shirt](https://cottonbureau.com/products/fragments#/6821945/tee-men-standard-tee-vintage-black-tri-blend-s) 👕 
+
+### Major Changes
+
+- Update to THREE r137 (@dmarcos)
+
+### Fixes
+
+- Don't try to use [hit test](https://www.w3.org/TR/webxr-hit-test-1/) in VR. API only available in AR mode (#5005) (@AdaRoseCannon)
+- Fix canvas size calculation on embedded mode (fix #4911) (@s-light)
+- Fix reference space for [WebXR Layers](https://www.w3.org/TR/webxrlayers-1/) (#4991)
+- Fix problem when material map doesn't reflect the `offset` and `repeat` properties set via `setAttribute` (#4985) (@diarmidmackenzie @arturitu)
+- More robust `componentchanged` event. We were skipping the last component state transition event during a component change burst if last modification happens within throttle interval. (fix #4972) (@diarmidmackenzie @dmarcos)
+- Emit `mouseenter`, `mouseleave`, `click` cursor events component when order of intersected entities changes (fix #4978) (@diarmidmackenzie @dmarcos)
+- Prevent render loop to start before the camera is ready (#4967) (@wtodd1)
+- Fix mouse based [cursor](https://aframe.io/docs/1.2.0/components/cursor.html#sidebar) entity intersection when used with ortographic camera (#4935) (@kfarr)
+- Fix wrapping on distortion maps (#4932) (@AdaRoseCannon)
+- Remove checks to prompt the user to switch to mobile mode on mobile browsers disguised as desktop (e.g: iPad) Browsers now ship with DeviceOrientationEvent API enabled. (fix #4798) (@PlumCantaloupe @dmarcos)
+- Adds support for glTF models compressed with EXT_meshopt_compression (#4910) (@donmccurdy)
+- Add missing dependency to fix [360 image gallery example fade animation](https://aframe.io/docs/1.2.0/guides/building-a-360-image-gallery.html#event-set-component-for-visual-feedback-on-hover) (#4896) (@vincentmi)
+- Fix hand model to accommodate changes in the hand tracking API implementation (66e0c624) (@dmarcos)
+- Fix hit-test logic on [model-viewer example](https://aframe.io/aframe/examples/showcase/model-viewer/) (db633024) (@dmarcos)
+- Fix SDF text shader for WebGL1 devices (fix #4827) (@Dirk-27)
+- Replace SphericalReflectionMapping (now deprecated in THREE) with EquirectangularReflectionMapping (fix #4818) ( @diarmidmackenzie)
+- Automatic generation of environment map (#4797) (@AdaRoseCannon)
+- Fix copy in device orientation permission dialog (#4794) (@antoninklopp)
+
+### Enhancements 
+
+- Add phong shader to [material component](https://aframe.io/docs/1.2.0/components/material.html#sidebar) (#5001) (@AdaRoseCannon)
+- Allow newer npm version in package.json (#4870) (@cwadrupldijjit)
+- Add support for [AR hit-test](https://www.w3.org/TR/webxr-hit-test-1/) for Augmented Reality headsets and handsets (#4892) (@AdaRoseCannon)
+- Add some default styling to [WebXR DOM-Overlay](https://aframe.io/docs/1.2.0/components/webxr.html#properties3_dom_overlay) (#4901) (@AdaRoseCannon)
+- Add some default styling to DOM-Overlay (#4901) (@AdaRoseCannon)
+- Integrate [WebXR background lighting estimation API](https://www.w3.org/TR/2021/WD-webxr-lighting-estimation-1-20210909/) and environment maps for AR scenes (#4890) (@AdaRoseCannon)
+- Use THREE.Cache API with a-assets.js (#4864) (@takahirox)
+- Add Reverb G2 Support (#4845) (@zach-capalbo)
+- Remove workaround to match Vive profile id with the one returned by Chrome. Chrome is now reporting the id matching the official WebXR profile (fix #4846) (@juliusikkala, @dmarcos)
+- Replace live-server by five-server (#4836) (@yandeu)
+- Add sRGB encoding to perspective screenshot (#4822) (@kfarr)
+- Add registerShader texture example (#4795) (@mordof)
+- Docs improvements (@epic-developer @jacob-willden @barthy-koeln @vincentfretin @RobinMglsk @a0m0rajab @kfarr @technobotanist @cao-jacky @schmelto @jlecordier @oneWaveAdrian @danbuckland @diarmidmackenzie @dmarcos)
+
+
 ### 1.2.0 (Feb 5, 2021)
 
 WebXR immersive session and hand tracking fixes.
