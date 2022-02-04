@@ -59,7 +59,7 @@ environment, place the camera, etc.
 ```html
 <html>
   <head>
-    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
   </head>
   <body>
     <a-scene>
@@ -127,12 +127,12 @@ for [Don McCurdy's
 `aframe-physics-system`](https://github.com/n5ro/aframe-physics-system) and attach
 the physics components via HTML attributes:
 
-> :warning: **If you are using A-Frame 1.2.0 or later**: [`aframe-physics-system`](https://github.com/donmccurdy/aframe-physics-system) and you're having issues make sure you're no longer using the now deprecated THREE.Geometry. More info on [this GitHub issue](https://github.com/n5ro/aframe-physics-system/issues/187).
+> :warning: **If you are using A-Frame 1.3.0 or later**: [`aframe-physics-system`](https://github.com/donmccurdy/aframe-physics-system) and you're having issues make sure you're no longer using the now deprecated THREE.Geometry. More info on [this GitHub issue](https://github.com/n5ro/aframe-physics-system/issues/187).
 
 ```html
 <html>
   <head>
-    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
     <script src="https://unpkg.com/aframe-physics-system@1.4.0/dist/aframe-physics-system.min.js"></script>
   </head>
   <body>

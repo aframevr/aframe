@@ -62,7 +62,7 @@ use of resources, we will need deeper understanding about 3D graphics.  See
 [release]: https://github.com/aframevr/aframe/releases
 [webxr]: https://immersive-web.github.io/webxr/
 
-If you are using A-Frame 1.2.0 or older you probably need to update to the [latest release][release]. Browsers are migrating to the [WebXR standard][webxr] and old versions might no longer work.
+If you are using A-Frame 1.3.0 or older you probably need to update to the [latest release][release]. Browsers are migrating to the [WebXR standard][webxr] and old versions might no longer work.
 
 You also have to serve your content over HTTPS. The WebXR API won't be available over HTTP.
 
