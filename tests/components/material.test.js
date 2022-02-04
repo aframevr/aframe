@@ -293,7 +293,8 @@ suite('material', function () {
       el.setAttribute('material', 'alphaTest: 0.0');
       assert.equal(el.getObject3D('mesh').material.version, oldMaterialVersion);
       el.setAttribute('material', 'alphaTest: 1.0');
-      assert.equal(el.getObject3D('mesh').material.version, oldMaterialVersion + 2);
+      // A-Frame sets needsUpdate twice and THREE one more internaly when setting alphaTest.
+      assert.equal(el.getObject3D('mesh').material.version, oldMaterialVersion + 3);
     });
   });
 
