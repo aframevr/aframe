@@ -47,7 +47,7 @@ AFRAME.registerComponent('draw-canvas-video-green-screen', {
       r = imageData.data[i]; // red level of pixel
       g = imageData.data[i + 1]; // green level of pixel
       // b = imageData.data[i + 2]; // blue level of pixel
-      if (g - r > 0.02) { // if green is 2% more than red then we set this pixel as transparent by setting the alpha=0
+      if (g - r > 0.08) { // if green is 2% more than red then we set this pixel as transparent by setting the alpha=0
         // imageData.data[i] = 0;      // red: you can use various colors, e.g. for video effects
         // imageData.data[i + 1] = 0; // green
         // imageData.data[i + 2] = 0; // blue
