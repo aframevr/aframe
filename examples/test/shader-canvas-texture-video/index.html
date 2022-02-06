@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    <meta charset="utf-8">
+    <title>Canvas Texture  with Video Custom shader</title>
+    <meta name="description" content="Canvas Texture with Video Custom shader - A-Frame">
+    <script src="../../../dist/aframe-master.js"></script>
+    <script src="./components/video-init-component.js"></script>
+    <script src="shaders/green-screen.js"></script>
+  </head>
+  <body>
+
+    <a-scene stats>
+      <a-assets>
+        <video id="camvideo" crossOrigin="anonymous"></video>
+      </a-assets>
+
+      <a-entity material="shader: green-screen; uMap: #camvideo"
+                geometry="primitive: plane; width: 160; height: 90"
+                position="0 60 -250" rotation="0 35 0"
+                video-init-component="videoDOM:#camvideo"
+      >
+      </a-entity>
+    </a-scene>
+  </body>
+</html>

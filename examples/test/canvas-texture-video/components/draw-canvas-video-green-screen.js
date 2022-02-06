@@ -3,9 +3,10 @@
 /**
  * Draw dynamic colorful rectangles.
  */
-AFRAME.registerComponent('draw-canvas-rectangles', {
+AFRAME.registerComponent('draw-canvas-video-green-screen', {
 
-  schema: {canvas: {type: 'selector'},
+  schema: {
+    canvas: {type: 'selector'},
     myvideo: {type: 'selector'}
   },
 
