@@ -6,7 +6,7 @@ AFRAME.registerShader('green-screen', {
 
     schema: {
         uMap: {type: 'map', is: 'uniform'},
-        gthreshold:{type: 'float', is: 'uniform', default:0.08}
+        greenThreshold:{type: 'float', is: 'uniform', default:0.08}
     },
 
     vertexShader: `varying vec2 vUv;
@@ -20,12 +20,12 @@ AFRAME.registerShader('green-screen', {
 
     fragmentShader: `varying vec2 vUv;
                      uniform sampler2D uMap;
-                     uniform float gthreshold;
+                     uniform float greenThreshold;
 
                      void main() {
                                   vec2 uv = vUv;
                                   vec4 tex1 = texture2D(uMap, uv * 1.0);
-                                   if (tex1.g - tex1.r > gthreshold)
+                                   if (tex1.g - tex1.r > greenThreshold)
                                       gl_FragColor = vec4(0,0,0,0);
                                    else
                                       gl_FragColor = vec4(tex1.r,tex1.g,tex1.b,1.0);
