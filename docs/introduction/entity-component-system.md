@@ -242,7 +242,7 @@ AFRAME.registerComponent('foo', {
   },
 
   remove: function () {
-    // Do something the component or its entity is detached.
+    // Do something when the component or its entity is detached.
   },
 
   tick: function (time, timeDelta) {
