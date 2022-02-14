@@ -159,8 +159,8 @@ The [third parameter of emit](https://aframe.io/docs/1.3.0/core/entity.html#emit
 This assumes that an animation has already been configured to respond to that custom start event, for example like this:
 
 ```
-el.setAttribute(animation__001, {'property': position,
-                                 'to': {x: 1, y: 1: z: 1},                                 
+el.setAttribute('animation__001', {'property': 'position',
+                                 'to': {x: 1, y: 1, z: 1},                                 
                                  'startEvents': 'startanim001');
 ```
 
