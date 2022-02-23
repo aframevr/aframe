@@ -48,13 +48,13 @@ configuration.
 See more examples to see configuration of alignments, anchors, baselines,
 scaling, and auto-sizing.
 
-[exampletext]: https://a-frobot.github.io/aframe/examples/test/text/index.html
+[exampletext]: https://aframevr.github.io/aframe/examples/test/text/index.html
 [codetext]: https://github.com/aframevr/aframe/blob/master/examples/test/text/index.html
-[exampleanchors]: https://a-frobot.github.io/aframe/examples/test/text/anchors.html
+[exampleanchors]: https://aframevr.github.io/aframe/examples/test/text/anchors.html
 [codeanchors]: https://github.com/aframevr/aframe/blob/master/examples/test/text/anchors.html
-[examplescenarios]: https://a-frobot.github.io/aframe/examples/test/text/scenarios.html
+[examplescenarios]: https://aframevr.github.io/aframe/examples/test/text/scenarios.html
 [codescenarios]: https://github.com/aframevr/aframe/blob/master/examples/test/text/scenarios.html
-[examplesizes]: https://a-frobot.github.io/aframe/examples/test/text/sizes.html
+[examplesizes]: https://aframevr.github.io/aframe/examples/test/text/sizes.html
 [codesizes]: https://github.com/aframevr/aframe/blob/master/examples/test/text/sizes.html
 
 - [Text Example][exampletext] ([code][codetext])
