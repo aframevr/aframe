@@ -13,11 +13,13 @@
                  rotation="0 45 0"></a-mixin>
         <a-mixin id="sphere" geometry="primitive: sphere"
                  material="color: blue"></a-mixin>
+        <a-mixin id="camera" camera="active: false"></a-mixin>
       </a-assets>
 
       <a-entity mixin="cube" position="-3.5 1 -4" material="color: yellow"></a-entity>
       <a-entity mixin="cube" position="0 1 -4"></a-entity>
       <a-entity mixin="cube" position="3.5 1 -4"></a-entity>
+      <a-entity mixin="camera"></a-entity>
     </a-scene>
   </body>
 </html>
