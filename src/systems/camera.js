@@ -43,7 +43,7 @@ module.exports.System = registerSystem('camera', {
     }
 
     // Search for initial user-defined camera.
-    cameraEls = sceneEl.querySelectorAll('a-camera, [camera]');
+    cameraEls = sceneEl.querySelectorAll('a-camera, :not(a-mixin)[camera]');
 
     // No user cameras, create default one.
     if (!cameraEls.length) {
