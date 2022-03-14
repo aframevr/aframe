@@ -71833,7 +71833,7 @@ require('./core/a-mixin');
 require('./extras/components/');
 require('./extras/primitives/');
 
-console.log('A-Frame Version: 1.3.0 (Date 2022-02-04, Commit #2c4509aa)');
+console.log('A-Frame Version: 1.3.0 (Date 2022-03-14, Commit #d780484d)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
@@ -72923,7 +72923,7 @@ module.exports.System = registerSystem('camera', {
     }
 
     // Search for initial user-defined camera.
-    cameraEls = sceneEl.querySelectorAll('a-camera, [camera]');
+    cameraEls = sceneEl.querySelectorAll('a-camera, :not(a-mixin)[camera]');
 
     // No user cameras, create default one.
     if (!cameraEls.length) {
@@ -73012,7 +73012,7 @@ module.exports.System = registerSystem('camera', {
   disableActiveCamera: function () {
     var cameraEls;
     var newActiveCameraEl;
-    cameraEls = this.sceneEl.querySelectorAll('[camera]');
+    cameraEls = this.sceneEl.querySelectorAll(':not(a-mixin)[camera]');
     newActiveCameraEl = cameraEls[cameraEls.length - 1];
     newActiveCameraEl.setAttribute('camera', 'active', true);
   },
@@ -73039,7 +73039,7 @@ module.exports.System = registerSystem('camera', {
     // Grab the default camera.
     var defaultCameraWrapper = sceneEl.querySelector('[' + DEFAULT_CAMERA_ATTR + ']');
     var defaultCameraEl = defaultCameraWrapper &&
-                          defaultCameraWrapper.querySelector('[camera]');
+                          defaultCameraWrapper.querySelector(':not(a-mixin)[camera]');
 
     // Remove default camera if new camera is not the default camera.
     if (newCameraEl !== defaultCameraEl) { removeDefaultCamera(sceneEl); }
@@ -73055,7 +73055,7 @@ module.exports.System = registerSystem('camera', {
     }
 
     // Disable other cameras in the scene
-    cameraEls = sceneEl.querySelectorAll('[camera]');
+    cameraEls = sceneEl.querySelectorAll(':not(a-mixin)[camera]');
     for (i = 0; i < cameraEls.length; i++) {
       cameraEl = cameraEls[i];
       if (!cameraEl.isEntity || newCameraEl === cameraEl) { continue; }
