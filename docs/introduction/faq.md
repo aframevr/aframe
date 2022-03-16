@@ -85,7 +85,7 @@ the same domain (directory) as your application.
 If you are trying to load a video, make sure the browser supports the video
 (i.e., encoding, framerate, size).
 
-Video autoplay policies are getting more and more strict and rules might vary accross browsers. Mandatory user gesture is now commonly enforced. For maximum compatibility, you can offer a button that the user can click to start [video playback][startplayback]. [Simple sample code][videotestcode] can be found in the docs. Pay particular attention to the [play-on-click component][videoplaycomponent]
+Video autoplay policies are getting more and more strict and rules might vary across browsers. Mandatory user gesture is now commonly enforced. For maximum compatibility, you can offer a button that the user can click to start [video playback][startplayback]. [Simple sample code][videotestcode] can be found in the docs. Pay particular attention to the [play-on-click component][videoplaycomponent]
 
 Read the [*Hosting and Publishing* guide](./hosting-and-publishing.md) for more
 information.
