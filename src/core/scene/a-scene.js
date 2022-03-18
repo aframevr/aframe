@@ -14,12 +14,13 @@ var initPostMessageAPI = require('./postMessage');
 
 var bind = utils.bind;
 var isIOS = utils.device.isIOS();
+var isIOS15 = utils.device.isIOS15();
 var isMobile = utils.device.isMobile();
 var isWebXRAvailable = utils.device.isWebXRAvailable;
 var registerElement = re.registerElement;
 var warn = utils.debug('core:a-scene:warn');
 
-if (isIOS) { require('../../utils/ios-orientationchange-blank-bug'); }
+if (isIOS && !isIOS15) { require('../../utils/ios-orientationchange-blank-bug'); }
 
 /**
  * Scene element, holds all entities.

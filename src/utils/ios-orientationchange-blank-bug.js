@@ -1,4 +1,4 @@
-// Safari regression introduced in iOS 12 and remains in iOS 13.
+// Safari regression introduced in iOS 12 and remains in iOS 13. This fix causes issues in iOS 15.
 // https://stackoverflow.com/questions/62717621/white-space-at-page-bottom-after-device-rotation-in-ios-safari
 window.addEventListener('orientationchange', function () {
   document.documentElement.style.height = `initial`;

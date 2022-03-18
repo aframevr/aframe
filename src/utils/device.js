@@ -129,6 +129,25 @@ function isIOS () {
 }
 module.exports.isIOS = isIOS;
 
+/*
+* Checks if device is running on iOS 15 or greater
+* @return {Boolean}
+*/
+function isIOS15 () {
+  var _isIOS15 = false;
+  if (isIOS()) {
+    var v = window.navigator.appVersion.match(/OS (\d+)_(\d+)_?(\d+)?/);
+    var parsedVersion = [
+      parseInt(v[1], 10),
+      parseInt(v[2], 10),
+      parseInt(v[3] || 0, 10),
+    ];
+    _isIOS15 = parsedVersion[0] >= 15;
+  }
+  return _isIOS15;
+}
+module.exports.isIOS15 = isIOS15;
+
 function isMobileDeviceRequestingDesktopSite () {
   return !isMobile() && !isMobileVR() && window.orientation !== undefined;
 }
