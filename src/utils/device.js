@@ -140,7 +140,7 @@ function isIOS15 () {
     var parsedVersion = [
       parseInt(v[1], 10),
       parseInt(v[2], 10),
-      parseInt(v[3] || 0, 10),
+      parseInt(v[3] || 0, 10)
     ];
     _isIOS15 = parsedVersion[0] >= 15;
   }
