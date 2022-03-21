@@ -64,7 +64,7 @@ purpose of using A-Frame.
 
 [animation]: ../components/animation.md#direct-values-through-object3d-and-components
 [asm]: ../core/asset-management-system.md
-[hardware]: ./vr-headsets-and-webvr-browsers.md
+[hardware]: ./vr-headsets-and-webxr-browsers.md
 [stats]: ../components/stats.md
 [pool]: ../components/pool.md
 [background]: ../components/background.md
