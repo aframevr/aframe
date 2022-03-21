@@ -15,7 +15,8 @@ module.exports.Shader = registerShader('flat', {
     src: {type: 'map'},
     width: {default: 512},
     wireframe: {default: false},
-    wireframeLinewidth: {default: 2}
+    wireframeLinewidth: {default: 2},
+    toneMapped: {default: true}
   },
 
   /**
@@ -63,6 +64,7 @@ function getMaterialData (data, materialData) {
   materialData.color.set(data.color);
   materialData.fog = data.fog;
   materialData.wireframe = data.wireframe;
+  materialData.toneMapped = data.toneMapped;
   materialData.wireframeLinewidth = data.wireframeLinewidth;
   return materialData;
 }

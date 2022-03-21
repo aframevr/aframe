@@ -16,6 +16,8 @@ module.exports.System = registerSystem('renderer', {
     maxCanvasWidth: {default: 1920},
     maxCanvasHeight: {default: 1920},
     physicallyCorrectLights: {default: false},
+    exposure: {default: 1, if: {type: ['ACESFilmic', 'Linear', 'Reinhard', 'Cineon']}},
+    toneMapping: {default: 'No', oneOf: ['No', 'ACESFilmic', 'Linear', 'Reinhard', 'Cineon']},
     precision: {default: 'high', oneOf: ['high', 'medium', 'low']},
     sortObjects: {default: false},
     colorManagement: {default: false},
@@ -31,6 +33,7 @@ module.exports.System = registerSystem('renderer', {
     var renderer = sceneEl.renderer;
     renderer.sortObjects = data.sortObjects;
     renderer.physicallyCorrectLights = data.physicallyCorrectLights;
+    renderer.toneMapping = THREE[this.data.toneMapping + 'ToneMapping'];
 
     if (data.colorManagement || data.gammaOutput) {
       renderer.outputEncoding = THREE.sRGBEncoding;
@@ -46,6 +49,13 @@ module.exports.System = registerSystem('renderer', {
     if (sceneEl.hasAttribute('logarithmicDepthBuffer')) {
       warn('Component `logarithmicDepthBuffer` is deprecated. Use `renderer="logarithmicDepthBuffer: true"` instead.');
     }
+  },
+
+  update: function () {
+    var data = this.data;
+    var sceneEl = this.el;
+    var renderer = sceneEl.renderer;
+    renderer.toneMappingExposure = data.exposure;
   },
 
   applyColorCorrection: function (colorOrTexture) {
