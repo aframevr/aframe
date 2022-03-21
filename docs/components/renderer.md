@@ -37,10 +37,12 @@ It also configures presentation attributes when entering WebVR/WebXR.
 | maxCanvasWidth          | Maximum canvas width. Uses the size multiplied by device pixel ratio. Does not limit canvas width if set to -1.                                | 1920            |
 | maxCanvasHeight         | Maximum canvas height. Behaves the same as maxCanvasWidth.                      | 1920          |
 | logarithmicDepthBuffer  | Whether to use a logarithmic depth buffer.                                      | auto          |
-| precision  |       Fragment shader [precision][precision] : low, medium or high.                                | high          |
+| precision               | Fragment shader [precision][precision] : low, medium or high.                   | high          |
 | alpha                   | Whether the canvas should contain an alpha buffer.                              | true          |
+| toneMapping             | Type of toneMapping to use, one of: 'no', 'ACESFilmic', 'linear', 'reinhard', 'cineon'  | 'no'          |
+| exposure                | When any toneMapping other than "no" is used this can be used to make the overall scene brighter or darker  | 1          |
 
-> **NOTE:** Once the scene is initialized, these properties may no longer be changed.
+> **NOTE:** Once the scene is initialized, none of these properties may no longer be changed apart from "exposure" and "toneMapping" which can be set dynamically.
 
 ### antialias
 
