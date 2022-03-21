@@ -71833,7 +71833,7 @@ require('./core/a-mixin');
 require('./extras/components/');
 require('./extras/primitives/');
 
-console.log('A-Frame Version: 1.3.0 (Date 2022-03-14, Commit #d780484d)');
+console.log('A-Frame Version: 1.3.0 (Date 2022-03-21, Commit #63263213)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
@@ -71981,7 +71981,8 @@ module.exports.Shader = registerShader('flat', {
     src: {type: 'map'},
     width: {default: 512},
     wireframe: {default: false},
-    wireframeLinewidth: {default: 2}
+    wireframeLinewidth: {default: 2},
+    toneMapped: {default: true}
   },
 
   /**
@@ -72029,6 +72030,7 @@ function getMaterialData (data, materialData) {
   materialData.color.set(data.color);
   materialData.fog = data.fog;
   materialData.wireframe = data.wireframe;
+  materialData.toneMapped = data.toneMapped;
   materialData.wireframeLinewidth = data.wireframeLinewidth;
   return materialData;
 }
@@ -73821,6 +73823,8 @@ module.exports.System = registerSystem('renderer', {
     maxCanvasWidth: {default: 1920},
     maxCanvasHeight: {default: 1920},
     physicallyCorrectLights: {default: false},
+    exposure: {default: 1, if: {toneMapping: ['ACESFilmic', 'linear', 'reinhard', 'cineon']}},
+    toneMapping: {default: 'no', oneOf: ['no', 'ACESFilmic', 'linear', 'reinhard', 'cineon']},
     precision: {default: 'high', oneOf: ['high', 'medium', 'low']},
     sortObjects: {default: false},
     colorManagement: {default: false},
@@ -73832,10 +73836,12 @@ module.exports.System = registerSystem('renderer', {
   init: function () {
     var data = this.data;
     var sceneEl = this.el;
+    var toneMappingName = this.data.toneMapping.charAt(0).toUpperCase() + this.data.toneMapping.slice(1);
     // This is the rendering engine, such as THREE.js so copy over any persistent properties from the rendering system.
     var renderer = sceneEl.renderer;
     renderer.sortObjects = data.sortObjects;
     renderer.physicallyCorrectLights = data.physicallyCorrectLights;
+    renderer.toneMapping = THREE[toneMappingName + 'ToneMapping'];
 
     if (data.colorManagement || data.gammaOutput) {
       renderer.outputEncoding = THREE.sRGBEncoding;
@@ -73851,6 +73857,15 @@ module.exports.System = registerSystem('renderer', {
     if (sceneEl.hasAttribute('logarithmicDepthBuffer')) {
       warn('Component `logarithmicDepthBuffer` is deprecated. Use `renderer="logarithmicDepthBuffer: true"` instead.');
     }
+  },
+
+  update: function () {
+    var data = this.data;
+    var sceneEl = this.el;
+    var renderer = sceneEl.renderer;
+    var toneMappingName = this.data.toneMapping.charAt(0).toUpperCase() + this.data.toneMapping.slice(1);
+    renderer.toneMapping = THREE[toneMappingName + 'ToneMapping'];
+    renderer.toneMappingExposure = data.exposure;
   },
 
   applyColorCorrection: function (colorOrTexture) {
