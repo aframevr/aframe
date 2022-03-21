@@ -238,6 +238,7 @@ such as images or videos. Set `shader` to `flat`:
 | height               | Height of video (in pixels), if defining a video texture.                                                                            | 360           |
 | repeat               | How many times a texture (defined by `src`) repeats in the X and Y direction.                                                        | 1 1           |
 | src                  | Image or video texture map. Can either be a selector to an `<img>` or `<video>`, or an inline URL.                                   | None          |
+| toneMapped           | Whether to ignore toneMapping, set to false you are using renderer.toneMapping and an element should appear to emit light.           | true          |
 | width                | Width of video (in pixels), if defining a video texture.                                                                             | 640           |
 | wireframe            | Whether to render just the geometry edges.                                                                                           | false         |
 | wireframeLinewidth   | Width in px of the rendered line.                                                                                                    | 2             |
