@@ -16,8 +16,8 @@ module.exports.System = registerSystem('renderer', {
     maxCanvasWidth: {default: 1920},
     maxCanvasHeight: {default: 1920},
     physicallyCorrectLights: {default: false},
-    exposure: {default: 1, if: {type: ['ACESFilmic', 'Linear', 'Reinhard', 'Cineon']}},
-    toneMapping: {default: 'No', oneOf: ['No', 'ACESFilmic', 'Linear', 'Reinhard', 'Cineon']},
+    exposure: {default: 1, if: {toneMapping: ['ACESFilmic', 'linear', 'reinhard', 'cineon']}},
+    toneMapping: {default: 'no', oneOf: ['no', 'ACESFilmic', 'linear', 'reinhard', 'cineon']},
     precision: {default: 'high', oneOf: ['high', 'medium', 'low']},
     sortObjects: {default: false},
     colorManagement: {default: false},
@@ -29,11 +29,12 @@ module.exports.System = registerSystem('renderer', {
   init: function () {
     var data = this.data;
     var sceneEl = this.el;
+    var toneMappingName = this.data.toneMapping.charAt(0).toUpperCase() + this.data.toneMapping.slice(1);
     // This is the rendering engine, such as THREE.js so copy over any persistent properties from the rendering system.
     var renderer = sceneEl.renderer;
     renderer.sortObjects = data.sortObjects;
     renderer.physicallyCorrectLights = data.physicallyCorrectLights;
-    renderer.toneMapping = THREE[this.data.toneMapping + 'ToneMapping'];
+    renderer.toneMapping = THREE[toneMappingName + 'ToneMapping'];
 
     if (data.colorManagement || data.gammaOutput) {
       renderer.outputEncoding = THREE.sRGBEncoding;
@@ -55,6 +56,8 @@ module.exports.System = registerSystem('renderer', {
     var data = this.data;
     var sceneEl = this.el;
     var renderer = sceneEl.renderer;
+    var toneMappingName = this.data.toneMapping.charAt(0).toUpperCase() + this.data.toneMapping.slice(1);
+    renderer.toneMapping = THREE[toneMappingName + 'ToneMapping'];
     renderer.toneMappingExposure = data.exposure;
   },
 
