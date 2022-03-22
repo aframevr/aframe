@@ -91,7 +91,13 @@ creating a child entity it targets. For example, pointing down its -Z axis:
 </a-light>
 ```
 
-Directional lights are the most efficient type for adding realtime shadows to a scene.
+Directional lights are the most efficient type for adding realtime shadows to a scene. You can use shadows like so:
+
+```html
+<a-light type="directional" light="castShadow:true;" position="1 1 1" intensity="0.5" shdadow-camera-auto="#objects"></a-light>
+```
+
+The `shdadow-camera-auto` configuration maps to `light.shadowCameraAuto` which tells the light to automatically update the shadow camera to be the minimum size and position to encompass the target elements. 
 
 ### Hemisphere
 
@@ -189,6 +195,7 @@ additional properties:
 |---------------------|-----------------|--------------------------------------------------------------------------------------------------------------------------------------------|---------------|
 | castShadow          |                 | Whether this light casts shadows on the scene.                                                                                             | false         |
 | shadowBias          |                 | Offset depth when deciding whether a surface is in shadow. Tiny adjustments here (in the order of +/-0.0001) may reduce artifacts in shadows. | 0             |
+| shadowCameraAuto    | `directional`   | Automatically configure the Bottom, Top, Left, Right, Near and Far of a directional light's shadow map, from an element                    |               |
 | shadowCameraBottom  | `directional`   | Bottom plane of shadow camera frustum.                                                                                                     | -5            |
 | shadowCameraFar     |                 | Far plane of shadow camera frustum.                                                                                                        | 500           |
 | shadowCameraFov     | `point`, `spot` | Shadow camera's FOV.                                                                                                                       | 50            |

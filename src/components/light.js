@@ -11,6 +11,23 @@ var CubeLoader = new THREE.CubeTextureLoader();
 
 var probeCache = {};
 
+function distanceOfPointFromPlane (positionOnPlane, planeNormal, p1) {
+  // the d value in the plane equation a*x + b*y + c*z=d
+  var d = planeNormal.dot(positionOnPlane);
+
+  // distance of point from plane
+  return (d - planeNormal.dot(p1)) / planeNormal.length();
+}
+
+function nearestPointInPlane (positionOnPlane, planeNormal, p1, out) {
+  var t = distanceOfPointFromPlane(positionOnPlane, planeNormal, p1);
+  // closest point on the plane
+  out.copy(planeNormal);
+  out.multiplyScalar(t);
+  out.add(p1);
+  return out;
+}
+
 /**
  * Light component.
  */
@@ -42,6 +59,7 @@ module.exports.Component = registerComponent('light', {
     shadowCameraBottom: {default: -5, if: {castShadow: true}},
     shadowCameraLeft: {default: -5, if: {castShadow: true}},
     shadowCameraVisible: {default: false, if: {castShadow: true}},
+    shadowCameraAuto: {default: '', if: {type: ['directional']}},
     shadowMapHeight: {default: 512, if: {castShadow: true}},
     shadowMapWidth: {default: 512, if: {castShadow: true}},
     shadowRadius: {default: 1, if: {castShadow: true}}
@@ -141,10 +159,58 @@ module.exports.Component = registerComponent('light', {
       return;
     }
 
+    if (data.shadowCameraAutoTarget) {
+      this.shadowCameraAutoTargetEls = Array.from(document.querySelectorAll(data.shadowCameraAutoTarget));
+    }
+
     // No light yet or light type has changed. Create and add light.
     this.setLight(this.data);
     this.updateShadow();
   },
+
+  tick: (function tickSetup () {
+    var bbox = new THREE.Box3();
+    var normal = new THREE.Vector3();
+    var cameraWorldPosition = new THREE.Vector3();
+    var tempMat = new THREE.Matrix4();
+    var sphere = new THREE.Sphere();
+    var tempVector = new THREE.Vector3();
+
+    return function tick () {
+      if (
+        this.data.type === 'directional' &&
+        this.light.shadow &&
+        this.light.shadow.camera instanceof THREE.OrthographicCamera &&
+        this.shadowCameraAutoTargetEls.length
+      ) {
+        var camera = this.light.shadow.camera;
+        camera.getWorldDirection(normal);
+        camera.getWorldPosition(cameraWorldPosition);
+        tempMat.copy(camera.matrixWorld);
+        tempMat.invert();
+
+        camera.near = 1;
+        camera.left = 100000;
+        camera.right = -100000;
+        camera.top = -100000;
+        camera.bottom = 100000;
+        this.shadowCameraAutoTargetEls.forEach(function (el) {
+          bbox.setFromObject(el.object3D);
+          bbox.getBoundingSphere(sphere);
+          var distanceToPlane = distanceOfPointFromPlane(cameraWorldPosition, normal, sphere.center);
+          var pointOnCameraPlane = nearestPointInPlane(cameraWorldPosition, normal, sphere.center, tempVector);
+
+          var pointInXYPlane = pointOnCameraPlane.applyMatrix4(tempMat);
+          camera.near = Math.min(-distanceToPlane - sphere.radius - 1, camera.near);
+          camera.left = Math.min(-sphere.radius + pointInXYPlane.x, camera.left);
+          camera.right = Math.max(sphere.radius + pointInXYPlane.x, camera.right);
+          camera.top = Math.max(sphere.radius + pointInXYPlane.y, camera.top);
+          camera.bottom = Math.min(-sphere.radius + pointInXYPlane.y, camera.bottom);
+        });
+        camera.updateProjectionMatrix();
+      }
+    };
+  }()),
 
   setLight: function (data) {
     var el = this.el;
