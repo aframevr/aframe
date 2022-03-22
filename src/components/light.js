@@ -59,7 +59,7 @@ module.exports.Component = registerComponent('light', {
     shadowCameraBottom: {default: -5, if: {castShadow: true}},
     shadowCameraLeft: {default: -5, if: {castShadow: true}},
     shadowCameraVisible: {default: false, if: {castShadow: true}},
-    shadowCameraAuto: {default: '', if: {type: ['directional']}},
+    shadowCameraAutomatic: {default: '', if: {type: ['directional']}},
     shadowMapHeight: {default: 512, if: {castShadow: true}},
     shadowMapWidth: {default: 512, if: {castShadow: true}},
     shadowRadius: {default: 1, if: {castShadow: true}}
@@ -151,11 +151,11 @@ module.exports.Component = registerComponent('light', {
             }
             break;
 
-          case 'shadowCameraAuto':
-            if (data.shadowCameraAuto) {
-              self.shadowCameraAutoEls = Array.from(document.querySelectorAll(data.shadowCameraAuto));
+          case 'shadowCameraAutomatic':
+            if (data.shadowCameraAutomatic) {
+              self.shadowCameraAutomaticEls = Array.from(document.querySelectorAll(data.shadowCameraAutomatic));
             } else {
-              self.shadowCameraAutoEls = [];
+              self.shadowCameraAutomaticEls = [];
             }
             break;
 
@@ -185,7 +185,7 @@ module.exports.Component = registerComponent('light', {
         this.data.type === 'directional' &&
         this.light.shadow &&
         this.light.shadow.camera instanceof THREE.OrthographicCamera &&
-        this.shadowCameraAutoEls.length
+        this.shadowCameraAutomaticEls.length
       ) {
         var camera = this.light.shadow.camera;
         camera.getWorldDirection(normal);
@@ -198,7 +198,7 @@ module.exports.Component = registerComponent('light', {
         camera.right = -100000;
         camera.top = -100000;
         camera.bottom = 100000;
-        this.shadowCameraAutoEls.forEach(function (el) {
+        this.shadowCameraAutomaticEls.forEach(function (el) {
           bbox.setFromObject(el.object3D);
           bbox.getBoundingSphere(sphere);
           var distanceToPlane = distanceOfPointFromPlane(cameraWorldPosition, normal, sphere.center);
@@ -239,10 +239,10 @@ module.exports.Component = registerComponent('light', {
         el.getObject3D('light-target').position.set(0, 0, -1);
       }
 
-      if (data.shadowCameraAuto) {
-        this.shadowCameraAutoEls = Array.from(document.querySelectorAll(data.shadowCameraAuto));
+      if (data.shadowCameraAutomatic) {
+        this.shadowCameraAutomaticEls = Array.from(document.querySelectorAll(data.shadowCameraAutomatic));
       } else {
-        this.shadowCameraAutoEls = [];
+        this.shadowCameraAutomaticEls = [];
       }
     }
   },
