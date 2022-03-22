@@ -100,6 +100,9 @@ These properties are available on top of the base material properties.
 
 | Property                      | Description                                                                                                                                     | Default Value |
 |-------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------|---------------|
+| alphaMap                      | Alpha map. Controls the opacity of the mesh. Can either be a selector to an `<img>`, or an inline URL.  Requires `transparent=true`. | None
+| alphaTextureRepeat            | How many times the alpha texture repeats in the X and Y direction               | 1 1 
+| alphaTextureOffset            | How the displacement texture is offset in the x y direction                     | 0 0
 | ambientOcclusionMap           | Ambient occlusion map. Used to add shadows to the mesh. Can either be a selector to an `<img>`, or an inline URL. Requires 2nd set of UVs (see below). | None          |
 | ambientOcclusionMapIntensity  | The intensity of the ambient occlusion map, a number between 0 and 1.                                                                           | 1             |
 | ambientOcclusionTextureRepeat | How many times the ambient occlusion texture repeats in the X and Y direction.                                                                  | 1 1           |
