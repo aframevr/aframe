@@ -116,9 +116,10 @@ module.exports = registerElement('a-node', {
         // Wait for children to load (if any), then load.
         children = this.getChildren();
         childrenLoaded = children.filter(childFilter).map(function (child) {
-          return new Promise(function waitForLoaded (resolve) {
+          return new Promise(function waitForLoaded (resolve, reject) {
             if (child.hasLoaded) { return resolve(); }
             child.addEventListener('loaded', resolve);
+            child.addEventListener('error', reject);
           });
         });
 
@@ -128,6 +129,13 @@ module.exports = registerElement('a-node', {
           self.emit('loaded', undefined, false);
         }).catch(function (err) {
           error('Failure loading node: ', err);
+
+          // Failed to load a node, but things won't get any better by waiting around.
+          // So get on with rendering the scene by signaling that this node has loaded.
+          // An "error" event has already been fired, so we don't need to fire another one.
+          warn('Rendering scene with errors on node: ', self);
+          self.hasLoaded = true;
+          self.emit('loaded', undefined, false);
         });
       },
       writable: true
