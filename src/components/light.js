@@ -129,7 +129,7 @@ module.exports.Component = registerComponent('light', {
           }
 
           case 'envMap':
-            this.updateProbeMap(data, light);
+            self.updateProbeMap(data, light);
             break;
 
           case 'castShadow':
@@ -151,16 +151,20 @@ module.exports.Component = registerComponent('light', {
             }
             break;
 
+          case 'shadowCameraAuto':
+            if (data.shadowCameraAuto) {
+              self.shadowCameraAutoEls = Array.from(document.querySelectorAll(data.shadowCameraAuto));
+            } else {
+              self.shadowCameraAutoEls = [];
+            }
+            break;
+
           default: {
             light[key] = value;
           }
         }
       });
       return;
-    }
-
-    if (data.shadowCameraAutoTarget) {
-      this.shadowCameraAutoTargetEls = Array.from(document.querySelectorAll(data.shadowCameraAutoTarget));
     }
 
     // No light yet or light type has changed. Create and add light.
@@ -181,7 +185,7 @@ module.exports.Component = registerComponent('light', {
         this.data.type === 'directional' &&
         this.light.shadow &&
         this.light.shadow.camera instanceof THREE.OrthographicCamera &&
-        this.shadowCameraAutoTargetEls.length
+        this.shadowCameraAutoEls.length
       ) {
         var camera = this.light.shadow.camera;
         camera.getWorldDirection(normal);
@@ -194,7 +198,7 @@ module.exports.Component = registerComponent('light', {
         camera.right = -100000;
         camera.top = -100000;
         camera.bottom = 100000;
-        this.shadowCameraAutoTargetEls.forEach(function (el) {
+        this.shadowCameraAutoEls.forEach(function (el) {
           bbox.setFromObject(el.object3D);
           bbox.getBoundingSphere(sphere);
           var distanceToPlane = distanceOfPointFromPlane(cameraWorldPosition, normal, sphere.center);
@@ -233,6 +237,12 @@ module.exports.Component = registerComponent('light', {
       if (data.type === 'spot') {
         el.setObject3D('light-target', this.defaultTarget);
         el.getObject3D('light-target').position.set(0, 0, -1);
+      }
+
+      if (data.shadowCameraAuto) {
+        this.shadowCameraAutoEls = Array.from(document.querySelectorAll(data.shadowCameraAuto));
+      } else {
+        this.shadowCameraAutoEls = [];
       }
     }
   },
