@@ -4,29 +4,13 @@ var diff = utils.diff;
 var debug = require('../utils/debug');
 var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../lib/three');
+var mathUtils = require('../utils/math');
 
 var degToRad = THREE.Math.degToRad;
 var warn = debug('components:light:warn');
 var CubeLoader = new THREE.CubeTextureLoader();
 
 var probeCache = {};
-
-function distanceOfPointFromPlane (positionOnPlane, planeNormal, p1) {
-  // the d value in the plane equation a*x + b*y + c*z=d
-  var d = planeNormal.dot(positionOnPlane);
-
-  // distance of point from plane
-  return (d - planeNormal.dot(p1)) / planeNormal.length();
-}
-
-function nearestPointInPlane (positionOnPlane, planeNormal, p1, out) {
-  var t = distanceOfPointFromPlane(positionOnPlane, planeNormal, p1);
-  // closest point on the plane
-  out.copy(planeNormal);
-  out.multiplyScalar(t);
-  out.add(p1);
-  return out;
-}
 
 /**
  * Light component.
@@ -172,7 +156,7 @@ module.exports.Component = registerComponent('light', {
     this.updateShadow();
   },
 
-  tick: (function tickSetup () {
+  tick: (function () {
     var bbox = new THREE.Box3();
     var normal = new THREE.Vector3();
     var cameraWorldPosition = new THREE.Vector3();
@@ -180,39 +164,39 @@ module.exports.Component = registerComponent('light', {
     var sphere = new THREE.Sphere();
     var tempVector = new THREE.Vector3();
 
-    return function tick () {
-      if (
+    return function () {
+      if (!(
         this.data.type === 'directional' &&
         this.light.shadow &&
         this.light.shadow.camera instanceof THREE.OrthographicCamera &&
         this.shadowCameraAutomaticEls.length
-      ) {
-        var camera = this.light.shadow.camera;
-        camera.getWorldDirection(normal);
-        camera.getWorldPosition(cameraWorldPosition);
-        tempMat.copy(camera.matrixWorld);
-        tempMat.invert();
+      )) return;
 
-        camera.near = 1;
-        camera.left = 100000;
-        camera.right = -100000;
-        camera.top = -100000;
-        camera.bottom = 100000;
-        this.shadowCameraAutomaticEls.forEach(function (el) {
-          bbox.setFromObject(el.object3D);
-          bbox.getBoundingSphere(sphere);
-          var distanceToPlane = distanceOfPointFromPlane(cameraWorldPosition, normal, sphere.center);
-          var pointOnCameraPlane = nearestPointInPlane(cameraWorldPosition, normal, sphere.center, tempVector);
+      var camera = this.light.shadow.camera;
+      camera.getWorldDirection(normal);
+      camera.getWorldPosition(cameraWorldPosition);
+      tempMat.copy(camera.matrixWorld);
+      tempMat.invert();
 
-          var pointInXYPlane = pointOnCameraPlane.applyMatrix4(tempMat);
-          camera.near = Math.min(-distanceToPlane - sphere.radius - 1, camera.near);
-          camera.left = Math.min(-sphere.radius + pointInXYPlane.x, camera.left);
-          camera.right = Math.max(sphere.radius + pointInXYPlane.x, camera.right);
-          camera.top = Math.max(sphere.radius + pointInXYPlane.y, camera.top);
-          camera.bottom = Math.min(-sphere.radius + pointInXYPlane.y, camera.bottom);
-        });
-        camera.updateProjectionMatrix();
-      }
+      camera.near = 1;
+      camera.left = 100000;
+      camera.right = -100000;
+      camera.top = -100000;
+      camera.bottom = 100000;
+      this.shadowCameraAutomaticEls.forEach(function (el) {
+        bbox.setFromObject(el.object3D);
+        bbox.getBoundingSphere(sphere);
+        var distanceToPlane = mathUtils.distanceOfPointFromPlane(cameraWorldPosition, normal, sphere.center);
+        var pointOnCameraPlane = mathUtils.nearestPointInPlane(cameraWorldPosition, normal, sphere.center, tempVector);
+
+        var pointInXYPlane = pointOnCameraPlane.applyMatrix4(tempMat);
+        camera.near = Math.min(-distanceToPlane - sphere.radius - 1, camera.near);
+        camera.left = Math.min(-sphere.radius + pointInXYPlane.x, camera.left);
+        camera.right = Math.max(sphere.radius + pointInXYPlane.x, camera.right);
+        camera.top = Math.max(sphere.radius + pointInXYPlane.y, camera.top);
+        camera.bottom = Math.min(-sphere.radius + pointInXYPlane.y, camera.bottom);
+      });
+      camera.updateProjectionMatrix();
     };
   }()),
 
