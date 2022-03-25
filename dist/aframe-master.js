@@ -56389,7 +56389,7 @@ module.exports.Component = registerComponent('daydream-controls', {
   }
 });
 
-},{"../core/component":136,"../utils/":212,"../utils/bind":206,"../utils/tracked-controls":221}],79:[function(require,module,exports){
+},{"../core/component":136,"../utils/":212,"../utils/bind":206,"../utils/tracked-controls":222}],79:[function(require,module,exports){
 var registerComponent = require('../core/component').registerComponent;
 var bind = require('../utils/bind');
 
@@ -56595,7 +56595,7 @@ module.exports.Component = registerComponent('gearvr-controls', {
   }
 });
 
-},{"../core/component":136,"../utils/":212,"../utils/bind":206,"../utils/tracked-controls":221}],80:[function(require,module,exports){
+},{"../core/component":136,"../utils/":212,"../utils/bind":206,"../utils/tracked-controls":222}],80:[function(require,module,exports){
 var registerComponent = require('../core/component').registerComponent;
 var bind = require('../utils/bind');
 
@@ -56773,7 +56773,7 @@ module.exports.Component = registerComponent('generic-tracked-controller-control
   }
 });
 
-},{"../core/component":136,"../utils/bind":206,"../utils/tracked-controls":221}],81:[function(require,module,exports){
+},{"../core/component":136,"../utils/bind":206,"../utils/tracked-controls":222}],81:[function(require,module,exports){
 var geometries = require('../core/geometry').geometries;
 var geometryNames = require('../core/geometry').geometryNames;
 var registerComponent = require('../core/component').registerComponent;
@@ -57702,7 +57702,7 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
 });
 
 
-},{"../core/component":136,"../utils/bind":206,"../utils/tracked-controls":221}],85:[function(require,module,exports){
+},{"../core/component":136,"../utils/bind":206,"../utils/tracked-controls":222}],85:[function(require,module,exports){
 var register = require('../core/component').registerComponent;
 
 module.exports.Component = register('hide-on-enter-ar', {
@@ -57905,7 +57905,7 @@ module.exports.Component = registerComponent('hp-mixed-reality-controls', {
   }
 });
 
-},{"../core/component":136,"../lib/three":184,"../utils/bind":206,"../utils/tracked-controls":221}],87:[function(require,module,exports){
+},{"../core/component":136,"../lib/three":184,"../utils/bind":206,"../utils/tracked-controls":222}],87:[function(require,module,exports){
 require('./animation');
 require('./camera');
 require('./cursor');
@@ -58506,6 +58506,7 @@ var diff = utils.diff;
 var debug = require('../utils/debug');
 var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../lib/three');
+var mathUtils = require('../utils/math');
 
 var degToRad = THREE.Math.degToRad;
 var warn = debug('components:light:warn');
@@ -58544,6 +58545,7 @@ module.exports.Component = registerComponent('light', {
     shadowCameraBottom: {default: -5, if: {castShadow: true}},
     shadowCameraLeft: {default: -5, if: {castShadow: true}},
     shadowCameraVisible: {default: false, if: {castShadow: true}},
+    shadowCameraAutomatic: {default: '', if: {type: ['directional']}},
     shadowMapHeight: {default: 512, if: {castShadow: true}},
     shadowMapWidth: {default: 512, if: {castShadow: true}},
     shadowRadius: {default: 1, if: {castShadow: true}}
@@ -58613,7 +58615,7 @@ module.exports.Component = registerComponent('light', {
           }
 
           case 'envMap':
-            this.updateProbeMap(data, light);
+            self.updateProbeMap(data, light);
             break;
 
           case 'castShadow':
@@ -58635,6 +58637,14 @@ module.exports.Component = registerComponent('light', {
             }
             break;
 
+          case 'shadowCameraAutomatic':
+            if (data.shadowCameraAutomatic) {
+              self.shadowCameraAutomaticEls = Array.from(document.querySelectorAll(data.shadowCameraAutomatic));
+            } else {
+              self.shadowCameraAutomaticEls = [];
+            }
+            break;
+
           default: {
             light[key] = value;
           }
@@ -58647,6 +58657,50 @@ module.exports.Component = registerComponent('light', {
     this.setLight(this.data);
     this.updateShadow();
   },
+
+  tick: (function () {
+    var bbox = new THREE.Box3();
+    var normal = new THREE.Vector3();
+    var cameraWorldPosition = new THREE.Vector3();
+    var tempMat = new THREE.Matrix4();
+    var sphere = new THREE.Sphere();
+    var tempVector = new THREE.Vector3();
+
+    return function () {
+      if (!(
+        this.data.type === 'directional' &&
+        this.light.shadow &&
+        this.light.shadow.camera instanceof THREE.OrthographicCamera &&
+        this.shadowCameraAutomaticEls.length
+      )) return;
+
+      var camera = this.light.shadow.camera;
+      camera.getWorldDirection(normal);
+      camera.getWorldPosition(cameraWorldPosition);
+      tempMat.copy(camera.matrixWorld);
+      tempMat.invert();
+
+      camera.near = 1;
+      camera.left = 100000;
+      camera.right = -100000;
+      camera.top = -100000;
+      camera.bottom = 100000;
+      this.shadowCameraAutomaticEls.forEach(function (el) {
+        bbox.setFromObject(el.object3D);
+        bbox.getBoundingSphere(sphere);
+        var distanceToPlane = mathUtils.distanceOfPointFromPlane(cameraWorldPosition, normal, sphere.center);
+        var pointOnCameraPlane = mathUtils.nearestPointInPlane(cameraWorldPosition, normal, sphere.center, tempVector);
+
+        var pointInXYPlane = pointOnCameraPlane.applyMatrix4(tempMat);
+        camera.near = Math.min(-distanceToPlane - sphere.radius - 1, camera.near);
+        camera.left = Math.min(-sphere.radius + pointInXYPlane.x, camera.left);
+        camera.right = Math.max(sphere.radius + pointInXYPlane.x, camera.right);
+        camera.top = Math.max(sphere.radius + pointInXYPlane.y, camera.top);
+        camera.bottom = Math.min(-sphere.radius + pointInXYPlane.y, camera.bottom);
+      });
+      camera.updateProjectionMatrix();
+    };
+  }()),
 
   setLight: function (data) {
     var el = this.el;
@@ -58669,6 +58723,12 @@ module.exports.Component = registerComponent('light', {
       if (data.type === 'spot') {
         el.setObject3D('light-target', this.defaultTarget);
         el.getObject3D('light-target').position.set(0, 0, -1);
+      }
+
+      if (data.shadowCameraAutomatic) {
+        this.shadowCameraAutomaticEls = Array.from(document.querySelectorAll(data.shadowCameraAutomatic));
+      } else {
+        this.shadowCameraAutomaticEls = [];
       }
     }
   },
@@ -58831,7 +58891,7 @@ module.exports.Component = registerComponent('light', {
   }
 });
 
-},{"../core/component":136,"../lib/three":184,"../utils":212,"../utils/bind":206,"../utils/debug":208}],91:[function(require,module,exports){
+},{"../core/component":136,"../lib/three":184,"../utils":212,"../utils/bind":206,"../utils/debug":208,"../utils/math":217}],91:[function(require,module,exports){
 /* global THREE */
 var registerComponent = require('../core/component').registerComponent;
 
@@ -59935,7 +59995,7 @@ module.exports.Component = registerComponent('magicleap-controls', {
 
 });
 
-},{"../core/component":136,"../utils/bind":206,"../utils/tracked-controls":221}],95:[function(require,module,exports){
+},{"../core/component":136,"../utils/bind":206,"../utils/tracked-controls":222}],95:[function(require,module,exports){
 /* global Promise */
 var utils = require('../utils/');
 var component = require('../core/component');
@@ -60513,7 +60573,7 @@ module.exports.Component = registerComponent('oculus-go-controls', {
   }
 });
 
-},{"../core/component":136,"../utils/":212,"../utils/bind":206,"../utils/tracked-controls":221}],98:[function(require,module,exports){
+},{"../core/component":136,"../utils/":212,"../utils/bind":206,"../utils/tracked-controls":222}],98:[function(require,module,exports){
 var bind = require('../utils/bind');
 var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../lib/three');
@@ -60858,7 +60918,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   }
 });
 
-},{"../core/component":136,"../lib/three":184,"../utils/":212,"../utils/bind":206,"../utils/tracked-controls":221}],99:[function(require,module,exports){
+},{"../core/component":136,"../lib/three":184,"../utils/":212,"../utils/bind":206,"../utils/tracked-controls":222}],99:[function(require,module,exports){
 var registerComponent = require('../core/component').registerComponent;
 
 module.exports.Component = registerComponent('position', {
@@ -63007,7 +63067,7 @@ function createStats (scene) {
   });
 }
 
-},{"../../../vendor/rStats":224,"../../../vendor/rStats.extras":223,"../../core/component":136,"../../lib/rStatsAframe":183,"../../utils":212}],115:[function(require,module,exports){
+},{"../../../vendor/rStats":225,"../../../vendor/rStats.extras":224,"../../core/component":136,"../../lib/rStatsAframe":183,"../../utils":212}],115:[function(require,module,exports){
 var registerComponent = require('../../core/component').registerComponent;
 var constants = require('../../constants/');
 var utils = require('../../utils/');
@@ -64404,7 +64464,7 @@ module.exports.Component = registerComponent('tracked-controls-webvr', {
   }
 });
 
-},{"../constants":128,"../core/component":136,"../lib/three":184,"../utils/tracked-controls":221}],120:[function(require,module,exports){
+},{"../constants":128,"../core/component":136,"../lib/three":184,"../utils/tracked-controls":222}],120:[function(require,module,exports){
 var controllerUtils = require('../utils/tracked-controls');
 var registerComponent = require('../core/component').registerComponent;
 
@@ -64628,7 +64688,7 @@ module.exports.Component = registerComponent('tracked-controls-webxr', {
   }
 });
 
-},{"../core/component":136,"../utils/tracked-controls":221}],121:[function(require,module,exports){
+},{"../core/component":136,"../utils/tracked-controls":222}],121:[function(require,module,exports){
 var registerComponent = require('../core/component').registerComponent;
 
 /**
@@ -64922,7 +64982,7 @@ module.exports.Component = registerComponent('valve-index-controls', {
   }
 });
 
-},{"../core/component":136,"../lib/three":184,"../utils/":212,"../utils/bind":206,"../utils/tracked-controls":221}],123:[function(require,module,exports){
+},{"../core/component":136,"../lib/three":184,"../utils/":212,"../utils/bind":206,"../utils/tracked-controls":222}],123:[function(require,module,exports){
 var registerComponent = require('../core/component').registerComponent;
 
 /**
@@ -65197,7 +65257,7 @@ module.exports.Component = registerComponent('vive-controls', {
   }
 });
 
-},{"../core/component":136,"../utils/":212,"../utils/bind":206,"../utils/tracked-controls":221}],125:[function(require,module,exports){
+},{"../core/component":136,"../utils/":212,"../utils/bind":206,"../utils/tracked-controls":222}],125:[function(require,module,exports){
 var registerComponent = require('../core/component').registerComponent;
 var bind = require('../utils/bind');
 
@@ -65379,7 +65439,7 @@ module.exports.Component = registerComponent('vive-focus-controls', {
   }
 });
 
-},{"../core/component":136,"../utils/bind":206,"../utils/tracked-controls":221}],126:[function(require,module,exports){
+},{"../core/component":136,"../utils/bind":206,"../utils/tracked-controls":222}],126:[function(require,module,exports){
 var KEYCODE_TO_CODE = require('../constants').keyboardevent.KEYCODE_TO_CODE;
 var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../lib/three');
@@ -66086,7 +66146,7 @@ module.exports.Component = registerComponent('windows-motion-controls', {
   }
 });
 
-},{"../constants":128,"../core/component":136,"../utils/":212,"../utils/bind":206,"../utils/tracked-controls":221}],128:[function(require,module,exports){
+},{"../constants":128,"../core/component":136,"../utils/":212,"../utils/bind":206,"../utils/tracked-controls":222}],128:[function(require,module,exports){
 module.exports = {
   AFRAME_INJECTED: 'aframe-injected',
   DEFAULT_CAMERA_HEIGHT: 1.6,
@@ -70223,7 +70283,7 @@ module.exports = function initWakelock (scene) {
   scene.addEventListener('exit-vr', function () { wakelock.release(); });
 };
 
-},{"../../../vendor/wakelock/wakelock":227}],145:[function(require,module,exports){
+},{"../../../vendor/wakelock/wakelock":228}],145:[function(require,module,exports){
 var utils = require('../utils/');
 var PropertyTypes = require('./propertyTypes');
 
@@ -71215,7 +71275,8 @@ registerPrimitive('a-light', {
     penumbra: 'light.penumbra',
     type: 'light.type',
     target: 'light.target',
-    envmap: 'light.envMap'
+    envmap: 'light.envMap',
+    'shadow-camera-automatic': 'light.shadowCameraAutomatic'
   }
 });
 
@@ -71833,7 +71894,7 @@ require('./core/a-mixin');
 require('./extras/components/');
 require('./extras/primitives/');
 
-console.log('A-Frame Version: 1.3.0 (Date 2022-03-21, Commit #63263213)');
+console.log('A-Frame Version: 1.3.0 (Date 2022-03-25, Commit #2fa8e45f)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
@@ -71866,7 +71927,7 @@ module.exports = window.AFRAME = {
   version: pkg.version
 };
 
-},{"../package":74,"../vendor/starts-with-polyfill":225,"./components/index":87,"./core/a-assets":130,"./core/a-cubemap":131,"./core/a-entity":132,"./core/a-mixin":133,"./core/a-node":134,"./core/a-register-element":135,"./core/component":136,"./core/geometry":137,"./core/scene/a-scene":139,"./core/scene/scenes":143,"./core/schema":145,"./core/shader":146,"./core/system":147,"./extras/components/":148,"./extras/primitives/":151,"./extras/primitives/getMeshMixin":150,"./extras/primitives/primitives":152,"./geometries/index":173,"./lib/three":184,"./shaders/index":186,"./style/aframe.css":193,"./style/rStats.css":194,"./systems/index":198,"./utils/":212,"./utils/isIOSOlderThan10":215,"custom-event-polyfill":7,"present":48,"promise-polyfill":50,"super-animejs":56,"webvr-polyfill":69}],183:[function(require,module,exports){
+},{"../package":74,"../vendor/starts-with-polyfill":226,"./components/index":87,"./core/a-assets":130,"./core/a-cubemap":131,"./core/a-entity":132,"./core/a-mixin":133,"./core/a-node":134,"./core/a-register-element":135,"./core/component":136,"./core/geometry":137,"./core/scene/a-scene":139,"./core/scene/scenes":143,"./core/schema":145,"./core/shader":146,"./core/system":147,"./extras/components/":148,"./extras/primitives/":151,"./extras/primitives/getMeshMixin":150,"./extras/primitives/primitives":152,"./geometries/index":173,"./lib/three":184,"./shaders/index":186,"./style/aframe.css":193,"./style/rStats.css":194,"./systems/index":198,"./utils/":212,"./utils/isIOSOlderThan10":215,"custom-event-polyfill":7,"present":48,"promise-polyfill":50,"super-animejs":56,"webvr-polyfill":69}],183:[function(require,module,exports){
 window.aframeStats = function (scene) {
   var _rS = null;
   var _scene = scene;
@@ -71963,7 +72024,7 @@ module.exports = THREE;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"../../vendor/DeviceOrientationControls":222,"super-three":57,"super-three/examples/js/lights/LightProbeGenerator":58,"super-three/examples/js/loaders/DRACOLoader":59,"super-three/examples/js/loaders/GLTFLoader":60,"super-three/examples/js/loaders/MTLLoader":61,"super-three/examples/js/loaders/OBJLoader":62,"super-three/examples/js/utils/BufferGeometryUtils":63}],185:[function(require,module,exports){
+},{"../../vendor/DeviceOrientationControls":223,"super-three":57,"super-three/examples/js/lights/LightProbeGenerator":58,"super-three/examples/js/loaders/DRACOLoader":59,"super-three/examples/js/loaders/GLTFLoader":60,"super-three/examples/js/loaders/MTLLoader":61,"super-three/examples/js/loaders/OBJLoader":62,"super-three/examples/js/utils/BufferGeometryUtils":63}],185:[function(require,module,exports){
 var registerShader = require('../core/shader').registerShader;
 var THREE = require('../lib/three');
 var utils = require('../utils/');
@@ -75009,7 +75070,7 @@ module.exports.findAllScenes = function (el) {
 // Must be at bottom to avoid circular dependency.
 module.exports.srcLoader = require('./src-loader');
 
-},{"./bind":206,"./coordinates":207,"./debug":208,"./device":209,"./entity":210,"./forceCanvasResizeSafariMobile":211,"./is-ie11":214,"./material":216,"./object-pool":217,"./split":218,"./src-loader":219,"./styleParser":220,"./tracked-controls":221,"deep-assign":10,"object-assign":39}],213:[function(require,module,exports){
+},{"./bind":206,"./coordinates":207,"./debug":208,"./device":209,"./entity":210,"./forceCanvasResizeSafariMobile":211,"./is-ie11":214,"./material":216,"./object-pool":218,"./split":219,"./src-loader":220,"./styleParser":221,"./tracked-controls":222,"deep-assign":10,"object-assign":39}],213:[function(require,module,exports){
 // Safari regression introduced in iOS 12 and remains in iOS 13.
 // https://stackoverflow.com/questions/62717621/white-space-at-page-bottom-after-device-rotation-in-ios-safari
 window.addEventListener('orientationchange', function () {
@@ -75261,6 +75322,42 @@ module.exports.isHLS = function (src, type) {
 };
 
 },{"../lib/three":184}],217:[function(require,module,exports){
+/**
+ * Find the disatance from a plane defined by a point on the plane and the normal of the plane to any point.
+ * @param {THREE.Vector3} positionOnPlane any point on the plane.
+ * @param {THREE.Vector3} planeNormal the normal of the plane
+ * @param {THREE.Vector3} pointToTest point to test
+ * @returns Number
+ */
+ function distanceOfPointFromPlane (positionOnPlane, planeNormal, pointToTest) {
+  // the d value in the plane equation a*x + b*y + c*z=d
+   var d = planeNormal.dot(positionOnPlane);
+
+  // distance of point from plane
+   return (d - planeNormal.dot(pointToTest)) / planeNormal.length();
+ }
+
+/**
+ * Find the point on a plane that lies closest to
+ * @param {THREE.Vector3} positionOnPlane any point on the plane.
+ * @param {THREE.Vector3} planeNormal the normal of the plane
+ * @param {THREE.Vector3} pointToTest point to test
+ * @param {THREE.Vector3} resultPoint where to store the result.
+ * @returns
+ */
+ function nearestPointInPlane (positionOnPlane, planeNormal, pointToTest, resultPoint) {
+   var t = distanceOfPointFromPlane(positionOnPlane, planeNormal, pointToTest);
+  // closest point on the plane
+   resultPoint.copy(planeNormal);
+   resultPoint.multiplyScalar(t);
+   resultPoint.add(pointToTest);
+   return resultPoint;
+ }
+
+ module.exports.distanceOfPointFromPlane = distanceOfPointFromPlane;
+ module.exports.nearestPointInPlane = nearestPointInPlane;
+
+},{}],218:[function(require,module,exports){
 /*
   Adapted deePool by Kyle Simpson.
   MIT License: http://getify.mit-license.org
@@ -75351,7 +75448,7 @@ function removeUnusedKeys (obj, schema) {
 }
 module.exports.removeUnusedKeys = removeUnusedKeys;
 
-},{}],218:[function(require,module,exports){
+},{}],219:[function(require,module,exports){
 /**
  * String split with cached result.
  */
@@ -75368,7 +75465,7 @@ module.exports.split = (function () {
   };
 })();
 
-},{}],219:[function(require,module,exports){
+},{}],220:[function(require,module,exports){
 /* global Image, XMLHttpRequest */
 var debug = require('./debug');
 
@@ -75527,7 +75624,7 @@ module.exports = {
   validateCubemapSrc: validateCubemapSrc
 };
 
-},{"./debug":208}],220:[function(require,module,exports){
+},{"./debug":208}],221:[function(require,module,exports){
 /**
  * Utils for parsing style-like strings (e.g., "primitive: box; width: 5; height: 4.5").
  * Some code adapted from `style-attr` (https://github.com/joshwnj/style-attr)
@@ -75680,7 +75777,7 @@ function styleStringify (obj) {
 
 function upperCase (str) { return str[1].toUpperCase(); }
 
-},{}],221:[function(require,module,exports){
+},{}],222:[function(require,module,exports){
 var DEFAULT_HANDEDNESS = require('../constants').DEFAULT_HANDEDNESS;
 var AXIS_LABELS = ['x', 'y', 'z', 'w'];
 var NUM_HANDS = 2;  // Number of hands in a pair. Should always be 2.
@@ -75922,7 +76019,7 @@ module.exports.onButtonEvent = function (id, evtName, component, hand) {
   }
 };
 
-},{"../constants":128}],222:[function(require,module,exports){
+},{"../constants":128}],223:[function(require,module,exports){
 /**
  * @author richt / http://richt.me
  * @author WestLangley / http://github.com/WestLangley
@@ -76035,7 +76132,7 @@ THREE.DeviceOrientationControls = function ( object ) {
 
 };
 
-},{}],223:[function(require,module,exports){
+},{}],224:[function(require,module,exports){
 window.glStats = function () {
 
     var _rS = null;
@@ -76296,7 +76393,7 @@ if (typeof module === 'object') {
   };
 }
 
-},{}],224:[function(require,module,exports){
+},{}],225:[function(require,module,exports){
 // performance.now() polyfill from https://gist.github.com/paulirish/5438650
 'use strict';
 
@@ -76751,7 +76848,7 @@ if (typeof module === 'object') {
   module.exports = window.rStats;
 }
 
-},{}],225:[function(require,module,exports){
+},{}],226:[function(require,module,exports){
 // https://stackoverflow.com/a/36213464
 if (!String.prototype.startsWith) {
     String.prototype.startsWith = function(searchString, position){
@@ -76760,7 +76857,7 @@ if (!String.prototype.startsWith) {
   };
 }
 
-},{}],226:[function(require,module,exports){
+},{}],227:[function(require,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -76822,7 +76919,7 @@ Util.isLandscapeMode = function() {
 
 module.exports = Util;
 
-},{}],227:[function(require,module,exports){
+},{}],228:[function(require,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -76898,6 +76995,6 @@ function getWakeLock() {
 
 module.exports = getWakeLock();
 
-},{"./util.js":226}]},{},[182])(182)
+},{"./util.js":227}]},{},[182])(182)
 });
 //# sourceMappingURL=aframe-master.js.map
