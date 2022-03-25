@@ -4,6 +4,7 @@ var diff = utils.diff;
 var debug = require('../utils/debug');
 var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../lib/three');
+var mathUtils = require('../utils/math');
 
 var degToRad = THREE.Math.degToRad;
 var warn = debug('components:light:warn');
@@ -42,6 +43,7 @@ module.exports.Component = registerComponent('light', {
     shadowCameraBottom: {default: -5, if: {castShadow: true}},
     shadowCameraLeft: {default: -5, if: {castShadow: true}},
     shadowCameraVisible: {default: false, if: {castShadow: true}},
+    shadowCameraAutomatic: {default: '', if: {type: ['directional']}},
     shadowMapHeight: {default: 512, if: {castShadow: true}},
     shadowMapWidth: {default: 512, if: {castShadow: true}},
     shadowRadius: {default: 1, if: {castShadow: true}}
@@ -111,7 +113,7 @@ module.exports.Component = registerComponent('light', {
           }
 
           case 'envMap':
-            this.updateProbeMap(data, light);
+            self.updateProbeMap(data, light);
             break;
 
           case 'castShadow':
@@ -133,6 +135,14 @@ module.exports.Component = registerComponent('light', {
             }
             break;
 
+          case 'shadowCameraAutomatic':
+            if (data.shadowCameraAutomatic) {
+              self.shadowCameraAutomaticEls = Array.from(document.querySelectorAll(data.shadowCameraAutomatic));
+            } else {
+              self.shadowCameraAutomaticEls = [];
+            }
+            break;
+
           default: {
             light[key] = value;
           }
@@ -145,6 +155,50 @@ module.exports.Component = registerComponent('light', {
     this.setLight(this.data);
     this.updateShadow();
   },
+
+  tick: (function () {
+    var bbox = new THREE.Box3();
+    var normal = new THREE.Vector3();
+    var cameraWorldPosition = new THREE.Vector3();
+    var tempMat = new THREE.Matrix4();
+    var sphere = new THREE.Sphere();
+    var tempVector = new THREE.Vector3();
+
+    return function () {
+      if (!(
+        this.data.type === 'directional' &&
+        this.light.shadow &&
+        this.light.shadow.camera instanceof THREE.OrthographicCamera &&
+        this.shadowCameraAutomaticEls.length
+      )) return;
+
+      var camera = this.light.shadow.camera;
+      camera.getWorldDirection(normal);
+      camera.getWorldPosition(cameraWorldPosition);
+      tempMat.copy(camera.matrixWorld);
+      tempMat.invert();
+
+      camera.near = 1;
+      camera.left = 100000;
+      camera.right = -100000;
+      camera.top = -100000;
+      camera.bottom = 100000;
+      this.shadowCameraAutomaticEls.forEach(function (el) {
+        bbox.setFromObject(el.object3D);
+        bbox.getBoundingSphere(sphere);
+        var distanceToPlane = mathUtils.distanceOfPointFromPlane(cameraWorldPosition, normal, sphere.center);
+        var pointOnCameraPlane = mathUtils.nearestPointInPlane(cameraWorldPosition, normal, sphere.center, tempVector);
+
+        var pointInXYPlane = pointOnCameraPlane.applyMatrix4(tempMat);
+        camera.near = Math.min(-distanceToPlane - sphere.radius - 1, camera.near);
+        camera.left = Math.min(-sphere.radius + pointInXYPlane.x, camera.left);
+        camera.right = Math.max(sphere.radius + pointInXYPlane.x, camera.right);
+        camera.top = Math.max(sphere.radius + pointInXYPlane.y, camera.top);
+        camera.bottom = Math.min(-sphere.radius + pointInXYPlane.y, camera.bottom);
+      });
+      camera.updateProjectionMatrix();
+    };
+  }()),
 
   setLight: function (data) {
     var el = this.el;
@@ -167,6 +221,12 @@ module.exports.Component = registerComponent('light', {
       if (data.type === 'spot') {
         el.setObject3D('light-target', this.defaultTarget);
         el.getObject3D('light-target').position.set(0, 0, -1);
+      }
+
+      if (data.shadowCameraAutomatic) {
+        this.shadowCameraAutomaticEls = Array.from(document.querySelectorAll(data.shadowCameraAutomatic));
+      } else {
+        this.shadowCameraAutomaticEls = [];
       }
     }
   },
