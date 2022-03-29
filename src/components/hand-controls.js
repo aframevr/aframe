@@ -211,6 +211,7 @@ module.exports.Component = registerComponent('hand-controls', {
         el.setAttribute('vive-controls', controlConfiguration);
         el.setAttribute('oculus-touch-controls', controlConfiguration);
         el.setAttribute('windows-motion-controls', controlConfiguration);
+        el.setAttribute('hp-mixed-reality-controls', controlConfiguration);
       });
     }
   },
@@ -415,6 +416,6 @@ function isViveController (trackedControls) {
   var isVive = controller && (controller.id && controller.id.indexOf('OpenVR ') === 0 ||
     (controller.profiles &&
      controller.profiles[0] &&
-     controller.profiles[0] === 'htc-vive-controller-mv'));
+     controller.profiles[0] === 'htc-vive'));
   return isVive;
 }

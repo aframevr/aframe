@@ -5,8 +5,8 @@ var bind = require('../utils/bind');
 var trackedControlsUtils = require('../utils/tracked-controls');
 var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
 
-var LEFT_HAND_MODEL_URL = 'https://cdn.aframe.io/controllers/oculus-hands/unity/left.glb';
-var RIGHT_HAND_MODEL_URL = 'https://cdn.aframe.io/controllers/oculus-hands/unity/right.glb';
+var LEFT_HAND_MODEL_URL = 'https://cdn.aframe.io/controllers/oculus-hands/v3/left.glb';
+var RIGHT_HAND_MODEL_URL = 'https://cdn.aframe.io/controllers/oculus-hands/v3/right.glb';
 
 var BONE_PREFIX = {
   left: 'b_l_',
@@ -47,14 +47,17 @@ var BONE_MAPPING = {
   'thumb-phalanx-proximal': 'thumb2',
   'thumb-phalanx-distal': 'thumb3',
   'thumb-tip': 'thumb_null',
+  'index-finger-metacarpal': 'index0',
   'index-finger-phalanx-proximal': 'index1',
   'index-finger-phalanx-intermediate': 'index2',
   'index-finger-phalanx-distal': 'index3',
   'index-finger-tip': 'index_null',
+  'middle-finger-metacarpal': 'middle0',
   'middle-finger-phalanx-proximal': 'middle1',
   'middle-finger-phalanx-intermediate': 'middle2',
   'middle-finger-phalanx-distal': 'middle3',
   'middle-finger-tip': 'middle_null',
+  'ring-finger-metacarpal': 'ring0',
   'ring-finger-phalanx-proximal': 'ring1',
   'ring-finger-phalanx-intermediate': 'ring2',
   'ring-finger-phalanx-distal': 'ring3',
@@ -341,7 +344,7 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
 
   onModelLoaded: function () {
     var mesh = this.mesh = this.el.getObject3D('mesh').children[0];
-    var skinnedMesh = this.skinnedMesh = mesh.children[24];
+    var skinnedMesh = this.skinnedMesh = mesh.children[30];
     if (!this.skinnedMesh) { return; }
     this.bones = skinnedMesh.skeleton.bones;
     this.el.removeObject3D('mesh');

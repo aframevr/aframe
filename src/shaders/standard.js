@@ -22,8 +22,10 @@ module.exports.Shader = registerShader('standard', {
     displacementBias: {default: 0.5},
     displacementTextureOffset: {type: 'vec2'},
     displacementTextureRepeat: {type: 'vec2', default: {x: 1, y: 1}},
+
     emissive: {type: 'color', default: '#000'},
     emissiveIntensity: {default: 1},
+
     envMap: {default: ''},
 
     fog: {default: true},
@@ -124,7 +126,7 @@ module.exports.Shader = registerShader('standard', {
     if (sphericalEnvMap) {
       this.el.sceneEl.systems.material.loadTexture(sphericalEnvMap, {src: sphericalEnvMap}, function textureLoaded (texture) {
         self.isLoadingEnvMap = false;
-        texture.mapping = THREE.SphericalReflectionMapping;
+        texture.mapping = THREE.EquirectangularReflectionMapping;
         material.envMap = texture;
         utils.material.handleTextureEvents(self.el, texture);
         material.needsUpdate = true;

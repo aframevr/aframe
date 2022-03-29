@@ -23,7 +23,7 @@ examples:
 The geometry component provides a basic shape for an entity. The `primitive`
 property defines the general shape. Geometric primitives, in computer graphics,
 are irreducible basic shapes. A material component is commonly defined to
-provide a appearance alongside the shape to create a complete mesh.
+provide an appearance alongside the shape to create a complete mesh.
 
 <!--toc-->
 
@@ -175,7 +175,7 @@ The octahedron geometry creates a polygon with eight equilateral triangular face
 
 | Property | Description                            | Default Value |
 |----------|----------------------------------------|---------------|
-| radius   | Radius (in meters) of the tetrahedron. | 1             |
+| radius   | Radius (in meters) of the octahedron. | 1             |
 
 ### `plane`
 

@@ -24,7 +24,8 @@ var EVENTS = {
   INTERSECT: 'raycaster-intersected',
   INTERSECTION: 'raycaster-intersection',
   INTERSECT_CLEAR: 'raycaster-intersected-cleared',
-  INTERSECTION_CLEAR: 'raycaster-intersection-cleared'
+  INTERSECTION_CLEAR: 'raycaster-intersection-cleared',
+  INTERSECTION_CLOSEST_ENTITY_CHANGED: 'raycaster-closest-entity-changed'
 };
 
 /**
@@ -274,6 +275,16 @@ module.exports.Component = registerComponent('raycaster', {
       this.intersectionDetail.els = newIntersectedEls;
       this.intersectionDetail.intersections = newIntersections;
       el.emit(EVENTS.INTERSECTION, this.intersectionDetail);
+    }
+
+    // Emit event when the closest intersected entity has changed.
+    if (prevIntersectedEls.length === 0 && intersections.length > 0 ||
+        prevIntersectedEls.length > 0 && intersections.length === 0 ||
+        (prevIntersectedEls.length && intersections.length &&
+        prevIntersectedEls[0] !== intersections[0].object.el)) {
+      this.intersectionDetail.els = this.intersectedEls;
+      this.intersectionDetail.intersections = intersections;
+      el.emit(EVENTS.INTERSECTION_CLOSEST_ENTITY_CHANGED, this.intersectionDetail);
     }
 
     // Update line length.

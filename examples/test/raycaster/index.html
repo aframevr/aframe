@@ -6,8 +6,7 @@
     <meta name="description" content="Raycaster - A-Frame">
     <script src="../../../dist/aframe-master.js"></script>
     <script src="components/intersect-color-change.js"></script>
-    <script src="components/entity-generator.js"></script>
-    <script src="components/raycaster-helper.js"></script>
+    <script src="components/entity-generator.js"></script>    
   </head>
   <body>
     <a-scene background="color: #ECECEC">
@@ -20,8 +19,8 @@
                              intersect-color-change></a-mixin>
         <a-mixin id="finger" geometry="primitive: box; height: 0.02; width: 0.02; depth: 0.5"
                              material="side: double"></a-mixin>
-        <a-mixin id="raycaster" raycaster="objects: [mixin~='box']; recursive: false"
-                                raycaster-helper material="opacity: 0.8"></a-mixin>
+        <a-mixin id="raycaster" raycaster="objects: [mixin~='box']; recursive: false; showLine: true; origin:0 0 0"
+                                material="opacity: 0.8"></a-mixin>
 
         <a-mixin id="color1" material="color: #0B88A8"></a-mixin>
         <a-mixin id="color2" material="color: #A6DC8C"></a-mixin>

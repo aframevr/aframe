@@ -15,7 +15,7 @@ be behind of the sphere geometry of `a-sky`.
 
 ## Example
 
-The example below sets the background color to red.
+The example below sets the background color to red and use lighting estimation for AR.
 
 ```html
 <a-scene background="color: red"></a-scene>
@@ -23,7 +23,7 @@ The example below sets the background color to red.
 
 ## Properties
 
-| Property    | Description                                               | Default Value |
-|-------------|-----------------------------------------------------------|---------------|
-| color       | Color of the scene background.                            | black         |
-| transparent | Background is transparent. The color property is ignored. | false         |
+| Property                   | Description                                               | Default Value   |
+|----------------------------|-----------------------------------------------------------|-----------------|
+| color                      | Color of the scene background.                            | black           |
+| transparent                | Background is transparent. The color property is ignored. | false           |

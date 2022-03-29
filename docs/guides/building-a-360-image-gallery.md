@@ -166,10 +166,12 @@ need to know the component's npm package name and the path:
 <html>
   <head>
     <title>360° Image Browser</title>
-    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
     <script src="https://unpkg.com/aframe-template-component@3.x.x/dist/aframe-template-component.min.js"></script>
     <script src="https://unpkg.com/aframe-layout-component@4.x.x/dist/aframe-layout-component.min.js"></script>
     <script src="https://unpkg.com/aframe-event-set-component@5.x.x/dist/aframe-event-set-component.min.js"></script>
+     <script src="https://unpkg.com/aframe-proxy-event-component@2.1.0/dist/aframe-proxy-event-component.min.jss"></script>
+    
   </head>
   <body>
     <a-scene>
@@ -307,7 +309,7 @@ the `setAttribute` calls. Notice that the event-set component can have
 [multiple instances][multiple]:
 
 ```html
-<script id="link" type="text/html">
+<script id="plane" type="text/html">
   <a-entity class="link"
     geometry="primitive: plane; height: 1; width: 1"
     material="shader: flat; src: ${thumb}"
@@ -368,7 +370,7 @@ The `animation__fadeback` is interesting in that we start it once the
 that is emitted by animation component when an animation finishes. We
 effectively chained these animations!
 
-[Writing a Component]: ../core/writing-a-component.md
+[Writing a Component]: ../introduction/writing-a-component.md
 
 Wielding components, we were able to do a lot in a few dozen lines of HTML,
 working on VR across most headsets and browsers. Though the ecosystem has a lot

@@ -396,3 +396,19 @@ a-scene audio {
   background-color: #00ceff;
   width: 100%;
 }
+
+.a-dom-overlay:not(.a-no-style) {
+  overflow: hidden;
+  position: absolute;
+  pointer-events: none;
+  box-sizing: border-box;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  top: 0;
+  padding: 1em;
+}
+
+.a-dom-overlay:not(.a-no-style)>* {
+  pointer-events: auto;
+}

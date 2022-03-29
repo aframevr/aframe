@@ -11,7 +11,7 @@ var VIVE_CONTROLLER_MODEL_OBJ_MTL = 'https://cdn.aframe.io/controllers/vive/vr_c
 
 var isWebXRAvailable = require('../utils/').device.isWebXRAvailable;
 
-var GAMEPAD_ID_WEBXR = 'htc-vive-controller-mv';
+var GAMEPAD_ID_WEBXR = 'htc-vive';
 var GAMEPAD_ID_WEBVR = 'OpenVR ';
 
 // Prefix for Gen1 and Gen2 Oculus Touch Controllers.

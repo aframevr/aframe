@@ -84,7 +84,7 @@ suite('standard material', function () {
     el.setAttribute('material', 'sphericalEnvMap: url(' + imageUrl + ');');
     assert.ok(el.components.material.shader.isLoadingEnvMap);
     el.addEventListener('materialtextureloaded', function (evt) {
-      assert.equal(evt.detail.texture.mapping, THREE.SphericalReflectionMapping);
+      assert.equal(evt.detail.texture.mapping, THREE.EquirectangularReflectionMapping);
       assert.equal(el.getObject3D('mesh').material.envMap, evt.detail.texture);
       done();
     });

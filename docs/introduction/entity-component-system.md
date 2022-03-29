@@ -343,15 +343,16 @@ to look at include:
 - [A-Painter](https://github.com/aframevr/a-painter/)
 - [A-Blast](https://github.com/aframevr/a-blast/)
 
-#### *A Week of A-Frame*
+#### A-Frame Blog
 
 [blog]: https://aframe.io/blog/
 [homepage]: https://aframe.io/
 
-[Every week on the blog][blog], we round up all the activity in the A-Frame
-community and ecosystem. This includes featuring components that have been
-freshly released or updated. [The homepage of A-Frame][homepage] will usually
-have a link to the most recent *A Week of A-Frame* entry.
+The A-Frame Blog archives include details of components as they were released or updated, and can be a good place to find links to components.
+
+#### A-Frame Wiki
+
+The [A-Frame Wiki](https://aframe.wiki/) is a useful community-driven initiative that collects information and tips about available A-Frame components. Everyone is encouraged to participate. It's very easy to add and edit information.
 
 ### Using a Community Component
 
@@ -418,7 +419,7 @@ Now we can include it into our HTML:
 ```html
 <html>
   <head>
-    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
     <script src="https://unpkg.com/aframe-particle-system-component@1.0.9/dist/aframe-particle-system-component.min.js"></script>
   </head>
   <body>
@@ -439,7 +440,7 @@ Now we can include it into our HTML:
 ```html
 <html>
   <head>
-    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
     <script src="https://unpkg.com/aframe-particle-system-component@1.0.9/dist/aframe-particle-system-component.min.js"></script>
   </head>
   <body>
@@ -463,11 +464,11 @@ Glitch][glitch].
 ```html
 <html>
   <head>
-    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
     <script src="https://unpkg.com/aframe-animation-component@3.2.1/dist/aframe-animation-component.min.js"></script>
     <script src="https://unpkg.com/aframe-particle-system-component@1.0.x/dist/aframe-particle-system-component.min.js"></script>
     <script src="https://unpkg.com/aframe-extras.ocean@%5E3.5.x/dist/aframe-extras.ocean.min.js"></script>
-    <script src="https://unpkg.com/aframe-gradient-sky@1.2.0/dist/gradientsky.min.js"></script>
+    <script src="https://unpkg.com/aframe-gradient-sky@1.3.0/dist/gradientsky.min.js"></script>
   </head>
   <body>
     <a-scene>

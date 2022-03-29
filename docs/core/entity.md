@@ -104,7 +104,7 @@ Whether the entity is active and playing. If we pause the entity , then
 
 ### `object3D`
 
-[object3d]: http://threejs.org/docs/#Reference/Core/Object3D
+[object3d]: https://threejs.org/docs/#api/en/core/Object3D
 
 `<a-entity>.object3D` is a reference to the entity's [three.js
 `Object3D`][object3d] representation. More specifically, `object3D` will be a

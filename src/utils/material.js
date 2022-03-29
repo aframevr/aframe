@@ -10,6 +10,37 @@ var COLOR_MAPS = new Set([
 ]);
 
 /**
+ * Set texture properties such as repeat and offset.
+ *
+ * @param {object} data - With keys like `repeat`.
+*/
+function setTextureProperties (texture, data) {
+  var offset = data.offset || {x: 0, y: 0};
+  var repeat = data.repeat || {x: 1, y: 1};
+  var npot = data.npot || false;
+  // To support NPOT textures, wrap must be ClampToEdge (not Repeat),
+  // and filters must not use mipmaps (i.e. Nearest or Linear).
+  if (npot) {
+    texture.wrapS = THREE.ClampToEdgeWrapping;
+    texture.wrapT = THREE.ClampToEdgeWrapping;
+    texture.magFilter = THREE.LinearFilter;
+    texture.minFilter = THREE.LinearFilter;
+  }
+
+  // Don't bother setting repeat if it is 1/1. Power-of-two is required to repeat.
+  if (repeat.x !== 1 || repeat.y !== 1) {
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.RepeatWrapping;
+    texture.repeat.set(repeat.x, repeat.y);
+  }
+  // Don't bother setting offset if it is 0/0.
+  if (offset.x !== 0 || offset.y !== 0) {
+    texture.offset.set(offset.x, offset.y);
+  }
+}
+module.exports.setTextureProperties = setTextureProperties;
+
+/**
  * Update `material` texture property (usually but not always `map`)
  * from `data` property (usually but not always `src`)
  *
@@ -36,8 +67,13 @@ module.exports.updateMapMaterialFromData = function (materialName, dataName, sha
     return;
   }
 
-  // Don't process if material src hasn't changed.
-  if (src === shader.materialSrcs[materialName]) { return; }
+  // If material src hasn't changed, and we already have a texture,
+  // just update properties, but don't reload the texture.
+  if (src === shader.materialSrcs[materialName] &&
+      material[materialName]) {
+    setTextureProperties(material[materialName], data);
+    return;
+  }
 
   // Remember the new src for this texture (there may be multiple).
   shader.materialSrcs[materialName] = src;
@@ -117,6 +153,9 @@ module.exports.updateDistortionMap = function (longType, shader, data) {
     material[slot] = texture;
     if (texture && COLOR_MAPS.has(slot)) {
       rendererSystem.applyColorCorrection(texture);
+    }
+    if (texture) {
+      setTextureProperties(texture, data);
     }
     material.needsUpdate = true;
     handleTextureEvents(el, texture);

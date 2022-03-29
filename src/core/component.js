@@ -72,7 +72,7 @@ var Component = module.exports.Component = function (el, attrValue, id) {
   }
 
   // Last value passed to updateProperties.
-  this.throttledEmitComponentChanged = utils.throttle(function emitChange () {
+  this.throttledEmitComponentChanged = utils.throttleComponentChanged(function emitChange () {
     el.emit('componentchanged', self.evtDetail, false);
   }, 200);
   this.updateProperties(attrValue);

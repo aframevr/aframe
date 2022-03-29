@@ -1,0 +1,91 @@
+<html>
+
+<head>
+	<script src="../../../build/aframe.js"></script>
+	<!-- <script src="../../../dist/aframe-master.js"></script> -->
+	<script src="ar-shadow-helper.js"></script>
+	<script src="https://unpkg.com/aframe-environment-component@1.3.1/dist/aframe-environment-component.min.js"></script>
+	<title>AFRame Total WebXR AR Demo</title>
+	<style>
+		body {
+			font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+		}
+	</style>
+</head>
+
+<body>
+	<a-scene
+		webxr="overlayElement:#dom-overlay;"
+		background="color:skyblue;"
+		reflection="directionalLight:#dirlight;"
+		ar-hit-test="target:#table;"
+		shadow="type: pcfsoft">
+		<a-assets>
+			<!-- model by Snooze https://sketchfab.com/3d-models/low-poly-table-b940256ec5994e26a9e71289d1211b19 -->
+			<a-asset-item id="table-glb" src="../../assets/models/table.glb"></a-asset-item>
+		</a-assets>
+
+		<a-light id="dirlight" intensity="0.5" light="castShadow:true;type:directional" position="1 1 1"></a-light>
+		<a-light hide-on-enter-ar intensity="0.5" light="type:hemisphere;color:yellow;groundColor:blue;"
+			position="1 1 1"></a-light>
+
+		<a-entity hide-on-enter-ar environment="lighting:none;shadow:true;"></a-entity>
+
+		<a-entity
+			position="0 0.01 0"
+			geometry="primitive:shadow-plane;"
+			material="shader:shadow"
+			shadow="cast:false"
+			ar-shadow-helper="target:#table;"
+		></a-entity>
+
+		<a-entity hide-on-enter-ar id="table" shadow>
+			<a-entity gltf-model="#table-glb" scale="0.7 0.7 0.7" position="0 0 -2"></a-entity>
+			<a-entity scale="0.2 0.2 0.2" position="0 0.7 -2">
+				<a-cylinder position="1 0.75 1" radius="0.5" height="1.5" color="#FFC65D"
+					material="roughness: 0.1; metalness: 0.2;"></a-cylinder>
+				<a-box position="-1 0.5 1" rotation="0 45 0" color="#4CC3D9" material="roughness: 0.1; metalness: 0.2;">
+				</a-box>
+				<a-sphere position="0 1.25 -1" radius="1.25" color="#cccccc" material="roughness:0.5; metalness:0.1;">
+				</a-sphere>
+				<a-torus-knot position="0 3 0" material="shader:phong; reflectivity: 0.9; shininess: 100;"
+					geometry="radius: 0.45; radiusTubular: 0.09"
+					animation__rotate="easing: linear; from: 0 0 0; loop: true; property: rotation; to: 0 0 360; dur: 3000;">
+				</a-torus-knot>
+			</a-entity>
+		</a-entity>
+	</a-scene>
+
+	<div id="dom-overlay">
+		<h1>Hello World!</h1>
+		<p id="dom-overlay-message"></p>
+	</div>
+	<script>
+		const sceneEl = document.querySelector('a-scene');
+		const message = document.getElementById('dom-overlay-message');
+
+		sceneEl.addEventListener('enter-vr', function () {
+			if (this.is('ar-mode')) {
+				message.textContent = '';
+
+				this.addEventListener('ar-hit-test-start', function () {
+					message.innerHTML = `Scanning environment, finding surface.`
+				}, { once: true });
+
+				this.addEventListener('ar-hit-test-achieved', function () {
+					message.innerHTML = `Select the location to place the furniture<br />By tapping on the screen or selecting with your controller.`
+				}, { once: true });
+
+				this.addEventListener('ar-hit-test-select', function () {
+					message.textContent = '';
+				}, { once: true });
+			}
+		});
+
+		sceneEl.addEventListener('exit-vr', function () {
+			message.textContent = '';
+		});
+	</script>
+</body>
+
+</html>

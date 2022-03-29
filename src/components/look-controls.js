@@ -48,7 +48,7 @@ module.exports.Component = registerComponent('look-controls', {
     };
 
     // Call enter VR handler if the scene has entered VR before the event listeners attached.
-    if (this.el.sceneEl.is('vr-mode')) { this.onEnterVR(); }
+    if (this.el.sceneEl.is('vr-mode') || this.el.sceneEl.is('ar-mode')) { this.onEnterVR(); }
   },
 
   setupMagicWindowControls: function () {
@@ -56,7 +56,7 @@ module.exports.Component = registerComponent('look-controls', {
     var data = this.data;
 
     // Only on mobile devices and only enabled if DeviceOrientation permission has been granted.
-    if (utils.device.isMobile()) {
+    if (utils.device.isMobile() || utils.device.isMobileDeviceRequestingDesktopSite()) {
       magicWindowControls = this.magicWindowControls = new THREE.DeviceOrientationControls(this.magicWindowObject);
       if (typeof DeviceOrientationEvent !== 'undefined' && DeviceOrientationEvent.requestPermission) {
         magicWindowControls.enabled = false;
@@ -209,38 +209,25 @@ module.exports.Component = registerComponent('look-controls', {
    * Update orientation for mobile, mouse drag, and headset.
    * Mouse-drag only enabled if HMD is not active.
    */
-  updateOrientation: (function () {
-    var poseMatrix = new THREE.Matrix4();
+  updateOrientation: function () {
+    var object3D = this.el.object3D;
+    var pitchObject = this.pitchObject;
+    var yawObject = this.yawObject;
+    var sceneEl = this.el.sceneEl;
 
-    return function () {
-      var object3D = this.el.object3D;
-      var pitchObject = this.pitchObject;
-      var yawObject = this.yawObject;
-      var pose;
-      var sceneEl = this.el.sceneEl;
+    // In VR or AR mode, THREE is in charge of updating the camera pose.
+    if ((sceneEl.is('vr-mode') || sceneEl.is('ar-mode')) && sceneEl.checkHeadsetConnected()) {
+      // With WebXR THREE applies headset pose to the object3D internally.
+      return;
+    }
 
-      // In VR mode, THREE is in charge of updating the camera pose.
-      if (sceneEl.is('vr-mode') && sceneEl.checkHeadsetConnected()) {
-        // With WebXR THREE applies headset pose to the object3D matrixWorld internally.
-        // Reflect values back on position, rotation, scale for getAttribute to return the expected values.
-        if (sceneEl.hasWebXR) {
-          pose = sceneEl.renderer.xr.getCameraPose();
-          if (pose) {
-            poseMatrix.elements = pose.transform.matrix;
-            poseMatrix.decompose(object3D.position, object3D.rotation, object3D.scale);
-          }
-        }
-        return;
-      }
+    this.updateMagicWindowOrientation();
 
-      this.updateMagicWindowOrientation();
-
-      // On mobile, do camera rotation with touch events and sensors.
-      object3D.rotation.x = this.magicWindowDeltaEuler.x + pitchObject.rotation.x;
-      object3D.rotation.y = this.magicWindowDeltaEuler.y + yawObject.rotation.y;
-      object3D.rotation.z = this.magicWindowDeltaEuler.z;
-    };
-  })(),
+    // On mobile, do camera rotation with touch events and sensors.
+    object3D.rotation.x = this.magicWindowDeltaEuler.x + pitchObject.rotation.x;
+    object3D.rotation.y = this.magicWindowDeltaEuler.y + yawObject.rotation.y;
+    object3D.rotation.z = this.magicWindowDeltaEuler.z;
+  },
 
   updateMagicWindowOrientation: function () {
     var magicWindowAbsoluteEuler = this.magicWindowAbsoluteEuler;
@@ -301,7 +288,7 @@ module.exports.Component = registerComponent('look-controls', {
    */
   onMouseDown: function (evt) {
     var sceneEl = this.el.sceneEl;
-    if (!this.data.enabled || !this.data.mouseEnabled || (sceneEl.is('vr-mode') && sceneEl.checkHeadsetConnected())) { return; }
+    if (!this.data.enabled || !this.data.mouseEnabled || ((sceneEl.is('vr-mode') || sceneEl.is('ar-mode')) && sceneEl.checkHeadsetConnected())) { return; }
     // Handle only primary button.
     if (evt.button !== 0) { return; }
 
@@ -349,7 +336,8 @@ module.exports.Component = registerComponent('look-controls', {
   onTouchStart: function (evt) {
     if (evt.touches.length !== 1 ||
         !this.data.touchEnabled ||
-        this.el.sceneEl.is('vr-mode')) { return; }
+        this.el.sceneEl.is('vr-mode') ||
+        this.el.sceneEl.is('ar-mode')) { return; }
     this.touchStart = {
       x: evt.touches[0].pageX,
       y: evt.touches[0].pageY
