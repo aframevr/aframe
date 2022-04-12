@@ -23,7 +23,7 @@ module.exports.Component = registerComponent('tracked-controls', {
     armModel: {default: false},
     headElement: {type: 'selector'},
     iterateControllerProfiles: {default: false},
-    space: {type: 'string', oneOf: ['targetRaySpace, gripSpace'], default: 'targetRaySpace'}
+    space: {type: 'string', oneOf: ['targetRaySpace', 'gripSpace'], default: 'targetRaySpace'}
   },
 
   update: function () {
