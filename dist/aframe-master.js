@@ -64483,7 +64483,8 @@ module.exports.Component = registerComponent('tracked-controls-webxr', {
     hand: {type: 'string', default: ''},
     handTrackingEnabled: {default: false},
     index: {type: 'int', default: -1},
-    iterateControllerProfiles: {default: false}
+    iterateControllerProfiles: {default: false},
+    space: {type: 'string', oneOf: ['targetRaySpace', 'gripSpace'], default: 'targetRaySpace'}
   },
 
   init: function () {
@@ -64542,7 +64543,7 @@ module.exports.Component = registerComponent('tracked-controls-webxr', {
     var frame = sceneEl.frame;
     if (!controller || !sceneEl.frame || !this.system.referenceSpace) { return; }
     if (!controller.hand) {
-      this.pose = frame.getPose(controller.targetRaySpace, this.system.referenceSpace);
+      this.pose = frame.getPose(controller[this.data.space], this.system.referenceSpace);
       this.updatePose();
       this.updateButtons();
     }
@@ -64713,7 +64714,8 @@ module.exports.Component = registerComponent('tracked-controls', {
     // Arm model parameters when not 6DoF.
     armModel: {default: false},
     headElement: {type: 'selector'},
-    iterateControllerProfiles: {default: false}
+    iterateControllerProfiles: {default: false},
+    space: {type: 'string', oneOf: ['targetRaySpace', 'gripSpace'], default: 'targetRaySpace'}
   },
 
   update: function () {
@@ -64725,7 +64727,8 @@ module.exports.Component = registerComponent('tracked-controls', {
         hand: data.hand,
         index: data.controller,
         iterateControllerProfiles: data.iterateControllerProfiles,
-        handTrackingEnabled: data.handTrackingEnabled
+        handTrackingEnabled: data.handTrackingEnabled,
+        space: data.space
       });
     } else {
       el.setAttribute('tracked-controls-webvr', data);
@@ -71894,7 +71897,7 @@ require('./core/a-mixin');
 require('./extras/components/');
 require('./extras/primitives/');
 
-console.log('A-Frame Version: 1.3.0 (Date 2022-03-25, Commit #2fa8e45f)');
+console.log('A-Frame Version: 1.3.0 (Date 2022-04-21, Commit #f5fbc2aa)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
