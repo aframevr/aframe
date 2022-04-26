@@ -214,5 +214,5 @@ module.exports.Shader = registerShader('sdf', {
   vertexShader: VERTEX_SHADER,
   vertexShaderWebGL1: VERTEX_SHADER_WEBGL1,
   fragmentShader: FRAGMENT_SHADER,
-  fragmentShaderWebGL1: FRAGMENT_SHADER_WEBGL1,
+  fragmentShaderWebGL1: FRAGMENT_SHADER_WEBGL1
 });
