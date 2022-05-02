@@ -33,6 +33,8 @@ module.exports.Component = registerComponent('wasd-controls', {
     // To keep track of the pressed keys.
     this.keys = {};
     this.easing = 1.1;
+	this.lastWSAxis = wsAxis;
+	this.lastADAxis = adAxis;
 
     this.velocity = new THREE.Vector3();
 
@@ -90,6 +92,16 @@ module.exports.Component = registerComponent('wasd-controls', {
 
     adAxis = data.adAxis;
     wsAxis = data.wsAxis;
+	
+	// If a control axis was changed, reset its old velocity
+	if (adAxis != this.lastADAxis) {
+		velocity[this.lastADAxis] = 0;		
+		this.lastADAxis = adAxis;
+	}
+	if (wsAxis != this.lastWSAxis) {
+		velocity[this.lastWSAxis] = 0;
+		this.lastWSAxis = wsAxis;
+	}
 
     // If FPS too low, reset velocity.
     if (delta > MAX_DELTA) {
@@ -97,6 +109,8 @@ module.exports.Component = registerComponent('wasd-controls', {
       velocity[wsAxis] = 0;
       return;
     }
+	
+
 
     // https://gamedev.stackexchange.com/questions/151383/frame-rate-independant-movement-with-acceleration
     var scaledEasing = Math.pow(1 / this.easing, delta * 60);
