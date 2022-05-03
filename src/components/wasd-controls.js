@@ -33,8 +33,6 @@ module.exports.Component = registerComponent('wasd-controls', {
     // To keep track of the pressed keys.
     this.keys = {};
     this.easing = 1.1;
-	this.lastWSAxis = this.data.wsAxis;
-	this.lastADAxis = this.data.adAxis;
 
     this.velocity = new THREE.Vector3();
 
@@ -65,6 +63,15 @@ module.exports.Component = registerComponent('wasd-controls', {
     // Get movement vector and translate position.
     el.object3D.position.add(this.getMovementVector(delta));
   },
+  
+  update: function (oldData) {
+    
+    // If a control axis was changed, reset its old axis' velocity
+	if (oldData.adAxis !== this.data.adAxis) 
+		{ this.velocity[oldData.adAxis] = 0; }
+	if (oldData.wsAxis !== this.data.wsAxis) 
+		{ this.velocity[oldData.wsAxis] = 0; }
+  },
 
   remove: function () {
     this.removeKeyEventListeners();
@@ -92,16 +99,6 @@ module.exports.Component = registerComponent('wasd-controls', {
 
     adAxis = data.adAxis;
     wsAxis = data.wsAxis;
-	
-	// If a control axis was changed, reset its old velocity
-	if (adAxis != this.lastADAxis) {
-		velocity[this.lastADAxis] = 0;		
-		this.lastADAxis = adAxis;
-	}
-	if (wsAxis != this.lastWSAxis) {
-		velocity[this.lastWSAxis] = 0;
-		this.lastWSAxis = wsAxis;
-	}
 
     // If FPS too low, reset velocity.
     if (delta > MAX_DELTA) {
