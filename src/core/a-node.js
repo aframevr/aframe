@@ -4,7 +4,6 @@ var isNode = require('./a-register-element').isNode;
 var utils = require('../utils/');
 
 var warn = utils.debug('core:a-node:warn');
-var error = utils.debug('core:a-node:error');
 
 /**
  * Base class for A-Frame that manages loading of objects.
@@ -123,18 +122,18 @@ module.exports = registerElement('a-node', {
           });
         });
 
-        Promise.all(childrenLoaded).then(function emitLoaded () {
+        Promise.allSettled(childrenLoaded).then(function emitLoaded (results) {
+          results.forEach(function checkResultForError (result) {
+            if (result.status === 'rejected') {
+              // An "error" event has already been fired by THRE.js loader,
+              // so we don't need to fire another one.
+              // A warning explaining teh consequences of the error is sufficient.
+              warn('Rendering scene with errors on node: ', result.reason.target);
+            }
+          });
+
           self.hasLoaded = true;
           if (cb) { cb(); }
-          self.emit('loaded', undefined, false);
-        }).catch(function (err) {
-          error('Failure loading node: ', err);
-
-          // Failed to load a node, but things won't get any better by waiting around.
-          // So get on with rendering the scene by signaling that this node has loaded.
-          // An "error" event has already been fired, so we don't need to fire another one.
-          warn('Rendering scene with errors on node: ', self);
-          self.hasLoaded = true;
           self.emit('loaded', undefined, false);
         });
       },
