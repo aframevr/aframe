@@ -12,6 +12,7 @@ var setComponentProperty = utils.entity.setComponentProperty;
 var splitCache = {};
 
 var TYPE_COLOR = 'color';
+var TYPE_POSITION = 'position';
 var PROP_POSITION = 'position';
 var PROP_ROTATION = 'rotation';
 var PROP_SCALE = 'scale';
@@ -268,6 +269,58 @@ module.exports.Component = registerComponent('animation', {
   },
 
   /**
+   * rawProperty: true and type: position;
+   */
+  updateConfigForRawPosition: function () {
+    var config = this.config;
+    var data = this.data;
+    var el = this.el;
+    var from;
+    var key;
+    var to;
+
+    if (this.waitComponentInitRawProperty(this.updateConfigForRawColor)) {
+      return;
+    }
+
+    // Parse coordinates.
+    from =
+      data.from !== ''
+        ? utils.coordinates.parse(data.from)
+        : el.object3D.position;
+    to = utils.coordinates.parse(data.to);
+
+    this.targetsArray.length = 0;
+    this.targetsArray.push(from);
+    config.targets = this.targetsArray;
+    for (key in to) {
+      config[key] = to[key];
+    }
+
+    config.update = (function () {
+      const lastValue = {};
+      return function (anim) {
+        let value;
+        value = anim.animatables[0].target;
+        // For animation timeline.
+        if (
+          value.x === lastValue.x &&
+          value.y === lastValue.y &&
+          value.z === lastValue.z
+        ) {
+          return;
+        }
+
+        lastValue.x = value.x;
+        lastValue.y = value.y;
+        lastValue.z = value.z;
+
+        el.object3D.position.set(value.x, value.y, value.z);
+      };
+    })();
+  },
+
+  /**
    * Stuff property into generic `property` key.
    */
   updateConfigForDefault: function () {
@@ -426,6 +479,8 @@ module.exports.Component = registerComponent('animation', {
     propType = getPropertyType(this.el, this.data.property);
     if (isRawProperty(this.data) && this.data.type === TYPE_COLOR) {
       this.updateConfigForRawColor();
+    } else if (isRawProperty(this.data) && this.data.type === TYPE_POSITION) {
+      this.updateConfigForRawPosition();
     } else if (propType === 'vec2' || propType === 'vec3' || propType === 'vec4') {
       this.updateConfigForVector();
     } else {
