@@ -65,12 +65,9 @@ module.exports.Component = registerComponent('wasd-controls', {
   },
   
   update: function (oldData) {
-    
-    // If a control axis was changed, reset its old axis' velocity
-	if (oldData.adAxis !== this.data.adAxis) 
-		{ this.velocity[oldData.adAxis] = 0; }
-	if (oldData.wsAxis !== this.data.wsAxis) 
-		{ this.velocity[oldData.wsAxis] = 0; }
+    // Reset velocity if axis have changed.
+    if (oldData.adAxis !== this.data.adAxis) { this.velocity[oldData.adAxis] = 0; }
+    if (oldData.wsAxis !== this.data.wsAxis) { this.velocity[oldData.wsAxis] = 0; }
   },
 
   remove: function () {
