@@ -6,7 +6,7 @@ var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../lib/three');
 var mathUtils = require('../utils/math');
 
-var degToRad = THREE.Math.degToRad;
+var degToRad = THREE.MathUtils.degToRad;
 var warn = debug('components:light:warn');
 var CubeLoader = new THREE.CubeTextureLoader();
 

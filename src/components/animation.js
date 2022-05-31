@@ -540,9 +540,9 @@ function getPropertyType (el, property) {
  * Convert object to radians.
  */
 function toRadians (obj) {
-  obj.x = THREE.Math.degToRad(obj.x);
-  obj.y = THREE.Math.degToRad(obj.y);
-  obj.z = THREE.Math.degToRad(obj.z);
+  obj.x = THREE.MathUtils.degToRad(obj.x);
+  obj.y = THREE.MathUtils.degToRad(obj.y);
+  obj.z = THREE.MathUtils.degToRad(obj.z);
 }
 
 function addEventListeners (el, eventNames, handler) {
@@ -582,7 +582,7 @@ function setRawProperty (el, path, value, type) {
   var targetValue;
 
   if (path.startsWith('object3D.rotation')) {
-    value = THREE.Math.degToRad(value);
+    value = THREE.MathUtils.degToRad(value);
   }
 
   // Walk.

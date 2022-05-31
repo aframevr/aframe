@@ -919,7 +919,7 @@ function isComponent (componentName) {
 }
 
 function getRotation (entityEl) {
-  var radToDeg = THREE.Math.radToDeg;
+  var radToDeg = THREE.MathUtils.radToDeg;
   var rotation = entityEl.object3D.rotation;
   var rotationObj = entityEl.rotationObj;
   rotationObj.x = radToDeg(rotation.x);

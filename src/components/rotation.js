@@ -1,4 +1,4 @@
-var degToRad = require('../lib/three').Math.degToRad;
+var degToRad = require('../lib/three').MathUtils.degToRad;
 var registerComponent = require('../core/component').registerComponent;
 
 module.exports.Component = registerComponent('rotation', {

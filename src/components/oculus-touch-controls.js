@@ -52,8 +52,8 @@ var OCULUS_TOUCH_CONFIG = isWebXRAvailable ? OCULUS_TOUCH_WEBXR : OCULUS_TOUCH_W
 
 var CONTROLLER_DEFAULT = 'oculus-touch';
 var CONTROLLER_PROPERTIES = {
-  'oculus-touch': OCULUS_TOUCH_CONFIG,
-  'oculus-touch-v2': {
+  'oculus-touch-xxx': OCULUS_TOUCH_CONFIG,
+  'oculus-touch': {
     left: {
       modelUrl: TOUCH_CONTROLLER_MODEL_BASE_URL + 'gen2-left.gltf',
       rayOrigin: {origin: {x: -0.01, y: 0, z: -0.02}, direction: {x: 0, y: -0.5, z: -1}},
@@ -67,7 +67,7 @@ var CONTROLLER_PROPERTIES = {
       modelPivotRotation: new THREE.Euler(0, 0, 0)
     }
   },
-  'oculus-touch-v3': {
+  'oculus-touch-kk': {
     left: {
       modelUrl: TOUCH_CONTROLLER_MODEL_BASE_URL + 'v3-left.glb',
       rayOrigin: {origin: {x: 0.015, y: 0.005, z: 0}, direction: {x: 0, y: 0, z: -1}},
