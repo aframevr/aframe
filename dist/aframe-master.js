@@ -59838,8 +59838,8 @@ var OCULUS_TOUCH_CONFIG = isWebXRAvailable ? OCULUS_TOUCH_WEBXR : OCULUS_TOUCH_W
 
 var CONTROLLER_DEFAULT = 'oculus-touch';
 var CONTROLLER_PROPERTIES = {
-  'oculus-touch-v2': OCULUS_TOUCH_CONFIG,
-  'oculus-touch': {
+  'oculus-touch': OCULUS_TOUCH_CONFIG,
+  'oculus-touch-v2': {
     left: {
       modelUrl: TOUCH_CONTROLLER_MODEL_BASE_URL + 'gen2-left.gltf',
       rayOrigin: {origin: {x: -0.01, y: 0, z: -0.02}, direction: {x: 0, y: -0.5, z: -1}},
@@ -71113,7 +71113,7 @@ require('./core/a-mixin');
 require('./extras/components/');
 require('./extras/primitives/');
 
-console.log('A-Frame Version: 1.3.0 (Date 2022-06-16, Commit #9e0110a4)');
+console.log('A-Frame Version: 1.3.0 (Date 2022-06-16, Commit #6da23e99)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
