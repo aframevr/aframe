@@ -81,7 +81,7 @@ el.setAttribute('rotation', {x: 15, y: 30, z: 90});
 
 Updates at the three.js level will still be reflected in A-Frame when doing
 `entityEl.getAttribute('rotation');`. When calling `.getAttribute('rotation')`,
-A-Frame will convert from radians and degrees and return a normal JavaScript
+A-Frame will convert from radians to degrees and return a normal JavaScript
 object with x/y/z properties.
 
 See also [reading position and rotation of the camera](./camera.md#reading-position-or-rotation-of-the-camera).
