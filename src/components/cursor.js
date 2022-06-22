@@ -52,8 +52,10 @@ module.exports.Component = registerComponent('cursor', {
     fuseTimeout: {default: 1500, min: 0},
     mouseCursorStylesEnabled: {default: true},
     upEvents: {default: []},
-    rayOrigin: {default: 'entity', oneOf: ['mouse', 'entity']}
+    rayOrigin: {default: 'entity', oneOf: ['mouse', 'entity', 'xrselect']}
   },
+
+  multiple: true,
 
   init: function () {
     var self = this;
@@ -223,7 +225,16 @@ module.exports.Component = registerComponent('cursor', {
       mouse.x = (left / bounds.width) * 2 - 1;
       mouse.y = -(top / bounds.height) * 2 + 1;
 
-      if (camera && camera.isPerspectiveCamera) {
+      if (this.data.rayOrigin === 'xrselect' && evt.type === 'selectstart') {
+        const frame = evt.frame;
+        const inputSource = evt.inputSource;
+        const referenceSpace = this.el.renderer.xr.getReferenceSpace();
+        const pose = frame.getPose(inputSource.targetRaySpace, referenceSpace);
+        const transform = pose.transform;
+        direction.set(0, 0, -1);
+        direction.applyQuaternion(transform.orientation);
+        origin.copy(transform.position);
+      } else if (camera && camera.isPerspectiveCamera) {
         origin.setFromMatrixPosition(camera.matrixWorld);
         direction.set(mouse.x, mouse.y, 0.5).unproject(camera).sub(origin).normalize();
       } else if (camera && camera.isOrthographicCamera) {
@@ -250,6 +261,24 @@ module.exports.Component = registerComponent('cursor', {
       evt.preventDefault();
     }
 
+    if (this.data.rayOrigin === 'xrselect' && evt.type === 'selectstart') {
+      this.onMouseMove(evt);
+      this.el.components.raycaster.checkIntersections();
+
+      // if something was tapped on don't do ar-hit-test things
+      if (
+        this.el.components.raycaster.intersectedEls.length &&
+        this.el.sceneEl.components['ar-hit-test'] !== undefined &&
+        this.el.sceneEl.components['ar-hit-test'].data.enabled
+      ) {
+        // Cancel the ar-hit-test behaviours and disable the ar-hit-test
+        this.el.sceneEl.components['ar-hit-test'].data.enabled = false;
+        this.el.sceneEl.components['ar-hit-test'].hitTest = null;
+        this.el.sceneEl.components['ar-hit-test'].bboxMesh.visible = false;
+        this.reenableARHitTest = true;
+      }
+    }
+
     this.twoWayEmit(EVENTS.MOUSEDOWN);
     this.cursorDownEl = this.intersectedEl;
   },
@@ -269,6 +298,11 @@ module.exports.Component = registerComponent('cursor', {
     var data = this.data;
     this.twoWayEmit(EVENTS.MOUSEUP);
 
+    if (this.reenableARHitTest === true) {
+      this.el.sceneEl.components['ar-hit-test'].data.enabled = true;
+      this.reenableARHitTest = undefined;
+    }
+
     // If intersected entity has changed since the cursorDown, still emit mouseUp on the
     // previously cursorUp entity.
     if (this.cursorDownEl && this.cursorDownEl !== this.intersectedEl) {
@@ -276,7 +310,7 @@ module.exports.Component = registerComponent('cursor', {
       this.cursorDownEl.emit(EVENTS.MOUSEUP, this.intersectedEventDetail);
     }
 
-    if ((!data.fuse || data.rayOrigin === 'mouse') &&
+    if ((!data.fuse || data.rayOrigin === 'mouse' || data.rayOrigin === 'xrselect') &&
         this.intersectedEl && this.cursorDownEl === this.intersectedEl) {
       this.twoWayEmit(EVENTS.CLICK);
     }
@@ -363,7 +397,7 @@ module.exports.Component = registerComponent('cursor', {
     }
 
     // Begin fuse if necessary.
-    if (data.fuseTimeout === 0 || !data.fuse) { return; }
+    if (data.fuseTimeout === 0 || !data.fuse || data.rayOrigin === 'xrselect') { return; }
     cursorEl.addState(STATES.FUSING);
     this.twoWayEmit(EVENTS.FUSING);
     this.fuseTimeout = setTimeout(function fuse () {
