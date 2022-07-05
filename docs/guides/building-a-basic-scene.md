@@ -23,7 +23,7 @@ Let's start by building a basic A-Frame scene. For this, we will need a basic
 understanding of HTML. We will learn how to:
 
 - Add 3D entities (i.e., objects) with [primitives][primitives]
-- Transform to transform entities in 3D space with position, rotation, scale
+- Transform entities in 3D space with position, rotation, scale
 - Add an environment
 - Add textures
 - Add basic interactivity using animations and events
