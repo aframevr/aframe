@@ -366,6 +366,11 @@ module.exports.Component = register('ar-hit-test', {
     this.makeBBox();
   },
   update: function () {
+    // If it is disabled it's cleaned up
+    if (this.data.enabled === false) {
+      this.hitTest = null;
+      this.bboxMesh.visible = false;
+    }
     if (this.data.target) {
       if (this.data.target.object3D) {
         this.data.target.addEventListener('model-loaded', this.update);

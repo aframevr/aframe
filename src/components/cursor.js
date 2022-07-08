@@ -65,6 +65,7 @@ module.exports.Component = registerComponent('cursor', {
     this.intersectedEl = null;
     this.canvasBounds = document.body.getBoundingClientRect();
     this.isCursorDown = false;
+    this.activeXRInput = null;
 
     // Debounce.
     this.updateCanvasBounds = utils.debounce(function updateCanvasBounds () {
@@ -86,6 +87,19 @@ module.exports.Component = registerComponent('cursor', {
   update: function (oldData) {
     if (this.data.rayOrigin === oldData.rayOrigin) { return; }
     this.updateMouseEventListeners();
+  },
+
+  tick: function () {
+    // Update on frame to allow someone to select and mousemove
+    var frame = this.el.sceneEl.frame;
+    var inputSource = this.activeXRInput;
+    if (this.data.rayOrigin === 'xrselect' && frame && inputSource) {
+      this.onMouseMove({
+        frame: frame,
+        inputSource: inputSource,
+        type: 'fakeselectevent'
+      });
+    }
   },
 
   play: function () {
@@ -210,6 +224,12 @@ module.exports.Component = registerComponent('cursor', {
       var point;
       var top;
 
+      var frame;
+      var inputSource;
+      var referenceSpace;
+      var pose;
+      var transform;
+
       camera.parent.updateMatrixWorld();
 
       // Calculate mouse position based on the canvas element
@@ -225,15 +245,18 @@ module.exports.Component = registerComponent('cursor', {
       mouse.x = (left / bounds.width) * 2 - 1;
       mouse.y = -(top / bounds.height) * 2 + 1;
 
-      if (this.data.rayOrigin === 'xrselect' && evt.type === 'selectstart') {
-        const frame = evt.frame;
-        const inputSource = evt.inputSource;
-        const referenceSpace = this.el.renderer.xr.getReferenceSpace();
-        const pose = frame.getPose(inputSource.targetRaySpace, referenceSpace);
-        const transform = pose.transform;
+      if (this.data.rayOrigin === 'xrselect' && (evt.type === 'selectstart' || evt.type === 'fakeselectevent')) {
+        frame = evt.frame;
+        inputSource = evt.inputSource;
+        referenceSpace = this.el.renderer.xr.getReferenceSpace();
+        pose = frame.getPose(inputSource.targetRaySpace, referenceSpace);
+        transform = pose.transform;
         direction.set(0, 0, -1);
         direction.applyQuaternion(transform.orientation);
         origin.copy(transform.position);
+      } else if (evt.type === 'fakeselectout') {
+        direction.set(0, 1, 0);
+        origin.set(0, 9999, 0);
       } else if (camera && camera.isPerspectiveCamera) {
         origin.setFromMatrixPosition(camera.matrixWorld);
         direction.set(mouse.x, mouse.y, 0.5).unproject(camera).sub(origin).normalize();
@@ -262,6 +285,7 @@ module.exports.Component = registerComponent('cursor', {
     }
 
     if (this.data.rayOrigin === 'xrselect' && evt.type === 'selectstart') {
+      this.activeXRInput = evt.inputSource;
       this.onMouseMove(evt);
       this.el.components.raycaster.checkIntersections();
 
@@ -269,12 +293,10 @@ module.exports.Component = registerComponent('cursor', {
       if (
         this.el.components.raycaster.intersectedEls.length &&
         this.el.sceneEl.components['ar-hit-test'] !== undefined &&
-        this.el.sceneEl.components['ar-hit-test'].data.enabled
+        this.el.sceneEl.getAttribute('ar-hit-test').enabled
       ) {
         // Cancel the ar-hit-test behaviours and disable the ar-hit-test
-        this.el.sceneEl.components['ar-hit-test'].data.enabled = false;
-        this.el.sceneEl.components['ar-hit-test'].hitTest = null;
-        this.el.sceneEl.components['ar-hit-test'].bboxMesh.visible = false;
+        this.el.sceneEl.setAttribute('ar-hit-test', 'enabled', false);
         this.reenableARHitTest = true;
       }
     }
@@ -299,7 +321,7 @@ module.exports.Component = registerComponent('cursor', {
     this.twoWayEmit(EVENTS.MOUSEUP);
 
     if (this.reenableARHitTest === true) {
-      this.el.sceneEl.components['ar-hit-test'].data.enabled = true;
+      this.el.sceneEl.setAttribute('ar-hit-test', 'enabled', true);
       this.reenableARHitTest = undefined;
     }
 
@@ -315,6 +337,14 @@ module.exports.Component = registerComponent('cursor', {
       this.twoWayEmit(EVENTS.CLICK);
     }
 
+    // if the current xr input stops selecting then make the ray caster point somewhere else
+    if (data.rayOrigin === 'xrselect' && this.activeXRInput === evt.inputSource) {
+      this.onMouseMove({
+        type: 'fakeselectout'
+      });
+    }
+
+    this.activeXRInput = null;
     this.cursorDownEl = null;
     if (evt.type === 'touchend') { evt.preventDefault(); }
   },
@@ -397,7 +427,7 @@ module.exports.Component = registerComponent('cursor', {
     }
 
     // Begin fuse if necessary.
-    if (data.fuseTimeout === 0 || !data.fuse || data.rayOrigin === 'xrselect') { return; }
+    if (data.fuseTimeout === 0 || !data.fuse || data.rayOrigin === 'xrselect' || data.rayOrigin === 'mouse') { return; }
     cursorEl.addState(STATES.FUSING);
     this.twoWayEmit(EVENTS.FUSING);
     this.fuseTimeout = setTimeout(function fuse () {
