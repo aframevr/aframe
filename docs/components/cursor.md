@@ -88,7 +88,7 @@ AFRAME.registerComponent('cursor-listener', {
 | fuse               | Whether cursor is fuse-based.                                                                                                                      | false on desktop, true on mobile |
 | fuseTimeout        | How long to wait (in milliseconds) before triggering a fuse-based click event.                                                                     | 1500                             |
 | mouseCursorStylesEnabled | Whether to show pointer cursor in `rayOrigin: mouse` mode when hovering over entity.                                                               | true                             |
-| rayOrigin          | Where the intersection ray is cast from (i.e.,entity or mouse). `rayOrigin: mouse` is extremely useful for VR development on a mouse and keyboard. | entity
+| rayOrigin          | Where the intersection ray is cast from (i.e. xrselect ,entity or mouse). `rayOrigin: mouse` is extremely useful for VR development on a mouse and keyboard. | entity
 | upEvents           | Array of additional events on the entity to *listen* to for triggering `mouseup` (e.g., `trackpadup` for daydream-controls).                       | []                               |
 
 To further customize the cursor component, we configure the cursor's dependency
@@ -183,3 +183,16 @@ pick up event with the `begin` attribute:
 
 To play with an example of a cursor with visual feedback, check out the [Cursor
 with Visual Feedback example on CodePen][cursor-codepen].
+
+## XR Select Cursor
+
+When an XR `"selectstart"` event happens the raycaster picks an element based upon it's current location.
+This works for handheld AR, and headmounted VR and AR. This works well with the mouse `rayOrigin` too.
+
+```html
+<a-scene
+  cursor__mouse="rayOrigin: mouse"
+  cursor__xrselect="rayOrigin: xrselect"
+  raycaster="objects:#objects *;"
+>
+```
