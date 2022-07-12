@@ -285,6 +285,13 @@ module.exports.Component = registerComponent('cursor', {
     }
 
     if (this.data.rayOrigin === 'xrselect' && evt.type === 'selectstart') {
+      // The controller is one that needs to be rendered by the environment
+      // the cursor behaviour should be handled by the developer
+      if (
+        (evt.inputSource.targetRayMode === 'tracked-pointer') &&
+        (this.el.sceneEl.xrSession.environmentBlendMode === 'opaque')
+      ) { return; }
+
       this.activeXRInput = evt.inputSource;
       this.onMouseMove(evt);
       this.el.components.raycaster.checkIntersections();
@@ -314,6 +321,13 @@ module.exports.Component = registerComponent('cursor', {
    */
   onCursorUp: function (evt) {
     if (!this.isCursorDown) { return; }
+
+    // If there is no activeInput being pressed or it is not
+    // the last pressed input then ignore it
+    if (
+      data.rayOrigin === 'xrselect' &&
+      this.activeXRInput !== evt.inputSource
+    ) { return; }
 
     this.isCursorDown = false;
 
