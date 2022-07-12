@@ -320,6 +320,8 @@ module.exports.Component = registerComponent('cursor', {
    *   in case user mousedowned one entity, dragged to another, and mouseupped.
    */
   onCursorUp: function (evt) {
+    var data = this.data;
+
     if (!this.isCursorDown) { return; }
 
     // If there is no activeInput being pressed or it is not
@@ -330,9 +332,7 @@ module.exports.Component = registerComponent('cursor', {
     ) { return; }
 
     this.isCursorDown = false;
-
-    var data = this.data;
-    this.twoWayEmit(EVENTS.MOUSEUP, evt);
+    this.twoWayEmit(EVENTS.MOUSEUP);
 
     if (this.reenableARHitTest === true) {
       this.el.sceneEl.setAttribute('ar-hit-test', 'enabled', true);
