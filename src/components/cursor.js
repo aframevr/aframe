@@ -388,6 +388,7 @@ module.exports.Component = registerComponent('cursor', {
    * Handle intersection cleared.
    */
   onIntersectionCleared: function (evt) {
+    if (evt.target !== evt.currentTarget) return;
     var clearedEls = evt.detail.clearedEls;
     // Check if the current intersection has ended
     if (clearedEls.indexOf(this.intersectedEl) === -1) { return; }
