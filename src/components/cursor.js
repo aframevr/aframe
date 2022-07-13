@@ -353,6 +353,8 @@ module.exports.Component = registerComponent('cursor', {
    * Handle intersection.
    */
   onIntersection: function (evt) {
+    if (evt.target !== evt.currentTarget) return;
+
     var currentIntersection;
     var cursorEl = this.el;
     var index;
