@@ -12,10 +12,10 @@ suite('device-orientation-permission-ui', function () {
         requestPermission: function () { return Promise.reject(); }
       };
       el.addEventListener('deviceorientationpermissiongranted', function () {
-        assert.fail('Received permissions granted too soon.');
+        assert.fail('Received permissiongranted too soon.');
       });
       el.addEventListener('deviceorientationpermissionrejected', function () {
-        assert.fail('Received permissions rejected too soon.');
+        assert.fail('Received permissionrejected too soon.');
       });
       el.addEventListener('loaded', function () {
         done();
