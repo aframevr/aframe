@@ -430,6 +430,7 @@ that attaches the clicking laser to VR tracked controllers.  Like the
 ```html
 <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
 <script src="https://unpkg.com/aframe-teleport-controls@0.3.x/dist/aframe-teleport-controls.min.js"></script>
+<script src="https://unpkg.com/aframe-controller-cursor-component@0.2.x/dist/aframe-controller-cursor-component.min.js></script>
 
 <!-- ... -->
 
