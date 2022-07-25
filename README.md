@@ -73,7 +73,7 @@ boilerplate required to get running across platforms including mobile, desktop, 
 
 :heart: **Declarative HTML**: HTML is easy to read and copy-and-paste. Since
 A-Frame can be used from HTML, A-Frame is accessible to everyone: web
-developers, VR enthusiasts, educators, artists, makers, kids.
+developers, VR enthusiasts, educators, artists, makers, and kids.
 
 :electric_plug: **Entity-Component Architecture**: A-Frame is a powerful
 framework on top of three.js, providing a declarative, composable, reusable
@@ -88,15 +88,15 @@ interactive WebVR experiences.
 
 :globe_with_meridians: **Cross-Platform**: Build VR applications for Vive,
 Rift, Daydream, GearVR, and Cardboard. Don't have a headset or controllers? No
-problem! A-Frame still works on standard desktop and smartphones.
+problem! A-Frame still works on standard desktops and smartphones.
 
 :mag: **Visual Inspector**: A-Frame provides a built-in visual 3D inspector
-with a workflow similar to a browser's developer tools and interface similar to
+with a workflow similar to a browser's developer tools and interfaces similar to
 Unity. Open up any A-Frame scene and hit `<ctrl> + <alt> + i`.
 
 :runner: **Features**: Hit the ground running with A-Frame's built-in
 components such as geometries, materials, lights, animations, models,
-raycasters, shadows, positional audio, tracked controllers. Get even further
+raycasters, shadows, positional audio, and tracked controllers. Get even further
 with community components such as particle systems, physics, multiuser, oceans,
 mountains, speech recognition, or teleportation!
 
