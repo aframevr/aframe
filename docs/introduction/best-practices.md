@@ -99,8 +99,7 @@ unnecessary geometry, use the **[background component][background]** instead of 
 - To avoid overhead on `.setAttribute`, update `position`, `rotation`, `scale`, and `visible` using at the three.js
   level (`el.object3D.position`, `el.object3D.rotation`, `el.object3D.scale`,
   `el.object3D.visible`).
-- To pre-generate and reuse entities, use the **[pool component][pool]** if you need to create, remove and re-create many entities of the same type. This
-  avoids the cost of creating entities on the fly and reduces garbage collection.
+- To pre-generate and reuse entities (if you need to create, remove and re-create many entities of the same type), use the **[pool component][pool]** to avoid creating entities on the fly and reduce garbage collection.
 
 Some tips for special techniques: 
 
