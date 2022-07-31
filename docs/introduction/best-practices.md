@@ -71,51 +71,49 @@ purpose of using A-Frame.
 [geometrymerger]: https://www.npmjs.com/package/aframe-geometry-merger-component
 
 
-Performance is critical in VR. A high framerate must be maintained in order for
-people to feel comfortable. Here are some ways to help improve performance of
-an A-Frame scene:
+Performance is critical in VR. People feel comfortable when you maintain a high frame rate.
 
-- Use [recommended hardware specifications][hardware].
-- Use the **[stats component][stats]** to keep an eye on various metrics (FPS,
-  vertex and face count, geometry and material count, draw calls, number of
-  entities). We want to maximize FPS and minimize everything else.
+Check out the [recommended hardware specifications][hardware]. Generally, the fewer number of entities and lights in the scene, the better.
+
+Note that the **[stats component][stats]** provides various metrics (FPS, vertex and face count, geometry and material count, draw calls, number of entities). 
+We want to maximize FPS and minimize everything else.
+
+Some general tips to improve the performance of an A-Frame scene:
+
 - Limit draw calls as much as possible. Each geometry, object, model without
-  optimization is generally a draw call. Rule of thumb, try to keep under 300
-  maximum. [Merge][geometrymerger] together all static meshes if possible. You
-  can use [geometry-merger][geometrymerger] and then make use a three.js
-  material with vertex colors enabled. three.js geometries keep data such as
-  color, uvs per vertex that can be used to maintain and manipulate geometries
+  optimization is a draw call. As a rule of thumb, try to keep under 300
+  maximum.
+- Use [geometry-merger][geometrymerger] to merge all static meshes if possible and then make use a three.js
+  material with vertex colors enabled. three.js geometries keep data (e.g. color, uvs per vertex, etc.) to maintain and manipulate geometries
   post-merge.
-- Make use of the **[asset management system][asm]** to browser cache and
-  preload assets.
-- If using models, look to bake your lights into textures rather than relying
-  on real-time lighting and shadows.
-- Generally, the fewer number of entities and lights in the scene, the better.
-- Make sure your textures' resolutions are sized to powers of two (e.g.,
-  256x256, 512x1024) in order to avoid the renderer having to resize the
+- Use the **[asset management system][asm]** for browser caching and
+  asset preloading.
+- Ensure your textures' resolutions are sized to powers of two (e.g.,
+  256x256, 512x1024) to avoid the renderer having to resize the
   texture during runtime.
 - Limit the number of faces and vertices on models.
-- Some further techniques include geometry instancing, [geometry
-  merging][geometrymerger], level of detail (LOD).
+- Use common 3D and game industry performance techniques (e.g., geometry
+  merging, geometry instancing, level of detail, object pooling)
+- To define a solid color as the scene background and to prevent the creation of
+unnecessary geometry, use the **[background component][background]** instead of `a-sky`.
+- To avoid overhead on `.setAttribute`, update `position`, `rotation`, `scale`, and `visible` using at the three.js
+  level (`el.object3D.position`, `el.object3D.rotation`, `el.object3D.scale`,
+  `el.object3D.visible`).
+- To pre-generate and reuse entities, use the **[pool component][pool]** if you need to create, remove and re-create many entities of the same type. This
+  avoids the cost of creating entities on the fly and reduces garbage collection.
+
+Some tips for special techniques: 
+
 - When using raycasters or colliders, select which entities are to be raycasted
   against rather than raycasting against every object in the scene.
 - When adding continuously running behaviors, use A-Frame component `tick`
   handlers to hook into the global render loop. Use utilities such as
   `AFRAME.utils.throttleTick` to limit the number of times the `tick` handler
   is run if appropriate.
-- Use the **[background component][background]** instead of `a-sky` to define a
-  solid color as the scene background. This prevents the creation of
-  unnecessary geometry.
-- Update `position`, `rotation`, `scale`, and `visible` using at the three.js
-  level (`el.object3D.position`, `el.object3D.rotation`, `el.object3D.scale`,
-  `el.object3D.visible`) to avoid overhead on `.setAttribute`.
-- If you need to create, remove and re-create many entities of the same type,
-  use the **[pool component][pool]** to pre-generate and reuse entities. This
-  avoids the cost of creating entities on the fly and reduces garbage collection.
+- If using models, avoid real-time lighting and shadows, try to bake your lights into textures.
 - When using the animation component, [animate values directly][animation] 
   which will skip `.setAttribute` and animate JS values directly. 
-  For example, instead of `material.opacity`, 
-  animate `components.material.material.opacity`.
+  For example, animate `components.material.material.opacity` instead of `material.opacity`.
 
 ### GPU Texture Preloading
 
