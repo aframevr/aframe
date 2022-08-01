@@ -136,10 +136,10 @@ and fly around to peek under the hood!
 
 [augmented reality]: https://github.com/jeromeetienne/AR.js#augmented-reality-for-the-web-in-less-than-10-lines-of-html
 [environment]: https://github.com/supermedium/aframe-environment-component
-[multiuser]: https://github.com/haydenjameslee/networked-aframe
-[oceans]: https://github.com/donmccurdy/aframe-extras/tree/master/src/primitives
+[multiuser]: https://github.com/networked-aframe/networked-aframe
+[oceans]: https://github.com/n5ro/aframe-extras/tree/master/src/primitives
 [particle systems]: https://github.com/IdeaSpaceVR/aframe-particle-system-component
-[physics]: https://github.com/donmccurdy/aframe-physics-system
+[physics]: https://github.com/n5ro/aframe-physics-system
 [state]: https://npmjs.com/package/aframe-state-component
 [super hands]: https://github.com/wmurphyrd/aframe-super-hands-component
 [teleportation]: https://github.com/fernandojsg/aframe-teleport-controls
