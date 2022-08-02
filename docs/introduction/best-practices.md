@@ -100,9 +100,6 @@ unnecessary geometry, do not use `a-sky` but the **[background component][backgr
   level (`el.object3D.position`, `el.object3D.rotation`, `el.object3D.scale`,
   `el.object3D.visible`).
 - To pre-generate and reuse entities (if you need to create, remove and re-create many entities of the same type), use the **[pool component][pool]** to avoid creating entities on the fly and reduce garbage collection.
-
-Some tips for special techniques: 
-
 - When using raycasters or colliders, select which entities are to be raycasted
   against rather than raycasting against every object in the scene.
 - When adding continuously running behaviors, use A-Frame component `tick`
