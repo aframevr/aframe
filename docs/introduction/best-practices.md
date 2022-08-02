@@ -71,11 +71,11 @@ purpose of using A-Frame.
 [geometrymerger]: https://www.npmjs.com/package/aframe-geometry-merger-component
 
 
-Performance is critical in VR. People feel comfortable when you maintain a high frame rate.
+Performance is critical in VR. For the best user experience, you **must** maintain a high frame rate.
 
-Check out the [recommended hardware specifications][hardware]. Generally, the fewer number of entities and lights in the scene, the better.
+Use the [recommended hardware specifications][hardware]. Generally, the fewer entities and lights in the scene, the better.
 
-Note that the **[stats component][stats]** provides various metrics (FPS, vertex and face count, geometry and material count, draw calls, number of entities). 
+Use the **[stats component][stats]** for various metrics (FPS, vertex and face count, geometry and material count, draw calls, number of entities). 
 We want to maximize FPS and minimize everything else.
 
 Some general tips to improve the performance of an A-Frame scene:
@@ -95,7 +95,7 @@ Some general tips to improve the performance of an A-Frame scene:
 - Use common 3D and game industry performance techniques (e.g., geometry
   merging, geometry instancing, level of detail, object pooling)
 - To define a solid color as the scene background and to prevent the creation of
-unnecessary geometry, use the **[background component][background]** instead of `a-sky`.
+unnecessary geometry, do not use `a-sky` but the **[background component][background]**.
 - To avoid overhead on `.setAttribute`, update `position`, `rotation`, `scale`, and `visible` using at the three.js
   level (`el.object3D.position`, `el.object3D.rotation`, `el.object3D.scale`,
   `el.object3D.visible`).
