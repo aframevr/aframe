@@ -52,7 +52,10 @@ module.exports.Component = registerComponent('device-orientation-permission-ui',
     this.onDeviceMotionDialogAllowClicked = bind(this.onDeviceMotionDialogAllowClicked, this);
     this.onDeviceMotionDialogDenyClicked = bind(this.onDeviceMotionDialogDenyClicked, this);
     // Show dialog only if permission has not yet been granted.
-    DeviceOrientationEvent.requestPermission().catch(function () {
+    DeviceOrientationEvent.requestPermission().then(function () {
+      self.el.emit('deviceorientationpermissiongranted');
+      self.permissionGranted = true;
+    }).catch(function () {
       self.devicePermissionDialogEl = createPermissionDialog(
         self.data.denyButtonText,
         self.data.allowButtonText,
@@ -60,9 +63,6 @@ module.exports.Component = registerComponent('device-orientation-permission-ui',
         self.onDeviceMotionDialogAllowClicked,
         self.onDeviceMotionDialogDenyClicked);
       self.el.appendChild(self.devicePermissionDialogEl);
-    }).then(function () {
-      self.el.emit('deviceorientationpermissiongranted');
-      self.permissionGranted = true;
     });
   },
 

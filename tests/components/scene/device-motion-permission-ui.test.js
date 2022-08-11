@@ -11,7 +11,15 @@ suite('device-orientation-permission-ui', function () {
       window.DeviceOrientationEvent = {
         requestPermission: function () { return Promise.reject(); }
       };
-      el.addEventListener('loaded', function () { done(); });
+      el.addEventListener('deviceorientationpermissiongranted', function () {
+        assert.fail('Received permissiongranted too soon.');
+      });
+      el.addEventListener('deviceorientationpermissionrejected', function () {
+        assert.fail('Received permissionrejected too soon.');
+      });
+      el.addEventListener('loaded', function () {
+        done();
+      });
     });
 
     test('appends permission dialog', function (done) {
