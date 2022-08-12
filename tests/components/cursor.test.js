@@ -1,4 +1,4 @@
-/* global assert, process, setup, suite, test, CustomEvent */
+/* global assert, process, setup, suite, test, CustomEvent, MouseEvent */
 var entityFactory = require('../helpers').entityFactory;
 var once = require('../helpers').once;
 
@@ -472,6 +472,44 @@ suite('cursor', function () {
       assert.isFalse(cursorEmitSpy.calledWith('mouseup'));
       el.sceneEl.canvas.dispatchEvent(upEvt);
       assert.isTrue(cursorEmitSpy.calledWith('mouseup'));
+    });
+  });
+
+  suite('cursor event detail contains original events', function () {
+    test('original mousedown event', function (done) {
+      component.intersection = intersection;
+      component.intersectedEl = intersectedEl;
+      const mouseDown = new MouseEvent('mousedown');
+      once(el, 'mousedown', function (e) {
+        assert.equal(e.detail.originalEvent, mouseDown);
+        done();
+      });
+      component.onCursorDown(mouseDown);
+    });
+
+    test('original mouseup event', function (done) {
+      component.intersection = intersection;
+      component.intersectedEl = intersectedEl;
+      const mouseUp = new MouseEvent('mouseup');
+      once(el, 'mouseup', function (e) {
+        assert.equal(e.detail.originalEvent, mouseUp);
+        done();
+      });
+      component.isCursorDown = true;
+      component.onCursorUp(mouseUp);
+    });
+
+    test('original mouseup event on click', function (done) {
+      component.intersection = intersection;
+      component.intersectedEl = intersectedEl;
+      component.cursorDownEl = intersectedEl;
+      const mouseUp = new MouseEvent('mouseup');
+      once(el, 'click', function (e) {
+        assert.equal(e.detail.originalEvent, mouseUp);
+        done();
+      });
+      component.isCursorDown = true;
+      component.onCursorUp(mouseUp);
     });
   });
 });

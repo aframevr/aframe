@@ -301,7 +301,7 @@ module.exports.Component = registerComponent('cursor', {
       }
     }
 
-    this.twoWayEmit(EVENTS.MOUSEDOWN);
+    this.twoWayEmit(EVENTS.MOUSEDOWN, evt);
     this.cursorDownEl = this.intersectedEl;
   },
 
@@ -318,7 +318,7 @@ module.exports.Component = registerComponent('cursor', {
     this.isCursorDown = false;
 
     var data = this.data;
-    this.twoWayEmit(EVENTS.MOUSEUP);
+    this.twoWayEmit(EVENTS.MOUSEUP, evt);
 
     if (this.reenableARHitTest === true) {
       this.el.sceneEl.setAttribute('ar-hit-test', 'enabled', true);
@@ -334,7 +334,7 @@ module.exports.Component = registerComponent('cursor', {
 
     if ((!data.fuse || data.rayOrigin === 'mouse' || data.rayOrigin === 'xrselect') &&
         this.intersectedEl && this.cursorDownEl === this.intersectedEl) {
-      this.twoWayEmit(EVENTS.CLICK);
+      this.twoWayEmit(EVENTS.CLICK, evt);
     }
 
     // if the current xr input stops selecting then make the ray caster point somewhere else
@@ -475,7 +475,7 @@ module.exports.Component = registerComponent('cursor', {
   /**
    * Helper to emit on both the cursor and the intersected entity (if exists).
    */
-  twoWayEmit: function (evtName) {
+  twoWayEmit: function (evtName, originalEvent) {
     var el = this.el;
     var intersectedEl = this.intersectedEl;
     var intersection;
@@ -483,11 +483,17 @@ module.exports.Component = registerComponent('cursor', {
     intersection = this.el.components.raycaster.getIntersection(intersectedEl);
     this.eventDetail.intersectedEl = intersectedEl;
     this.eventDetail.intersection = intersection;
+    if (originalEvent) {
+      this.eventDetail.originalEvent = originalEvent;
+    }
     el.emit(evtName, this.eventDetail);
 
     if (!intersectedEl) { return; }
 
     this.intersectedEventDetail.intersection = intersection;
+    if (originalEvent) {
+      this.intersectedEventDetail.originalEvent = originalEvent;
+    }
     intersectedEl.emit(evtName, this.intersectedEventDetail);
   }
 });
