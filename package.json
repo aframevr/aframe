@@ -69,7 +69,7 @@
     "glob": "^7.1.1",
     "husky": "^0.11.7",
     "istanbul": "^0.4.5",
-    "jsdom": "^9.11.0",
+    "jsdom": "^20.0.0",
     "karma": "^6.4.0",
     "karma-browserify": "^8.1.0",
     "karma-chai-shallow-deep-equal": "0.0.4",
