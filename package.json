@@ -66,7 +66,7 @@
     "exorcist": "^0.4.0",
     "ghpages": "0.0.8",
     "git-rev": "^0.2.1",
-    "glob": "^7.1.1",
+    "glob": "^8.0.3",
     "husky": "^0.11.7",
     "istanbul": "^0.4.5",
     "jsdom": "^20.0.0",
@@ -94,7 +94,7 @@
     "snazzy": "^5.0.0",
     "too-wordy": "ngokevin/too-wordy",
     "uglifyjs": "^2.4.10",
-    "write-good": "^0.9.1"
+    "write-good": "^1.0.8"
   },
   "link": true,
   "browserify": {
