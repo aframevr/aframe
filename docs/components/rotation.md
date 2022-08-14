@@ -67,9 +67,9 @@ needing to create an object to set rotation:
 ```js
 // With three.js
 el.object3D.rotation.set(
-  THREE.Math.degToRad(15),
-  THREE.Math.degToRad(30),
-  THREE.Math.degToRad(90)
+  THREE.MathUtils.degToRad(15),
+  THREE.MathUtils.degToRad(30),
+  THREE.MathUtils.degToRad(90)
 );
 el.object3D.rotation.x += Math.PI;
 
