@@ -120,10 +120,10 @@ glTF file size may be reduced using [Draco][draco] or [Meshopt][meshopt] compres
 
 To optimize an existing glTF model, use tools such as:
 
-- [Blender][blender]: Draco compression
-- [glTF-Pipeline][gltf-pipeline]: Draco compression
-- [glTF-Transform][gltf-transform]: Draco or Meshopt compression
-- [gltfpack][gltfpack]: Meshopt compression
+- [Blender][blender] for Draco compression
+- [glTF-Pipeline][gltf-pipeline] for Draco compression
+- [glTF-Transform][gltf-transform] for Draco or Meshopt compression
+- [gltfpack][gltfpack] for Meshopt compression
 
 You'll also need to load a decoder library by configuring scene properties as explained below.
 
