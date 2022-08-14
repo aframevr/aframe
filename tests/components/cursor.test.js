@@ -237,7 +237,7 @@ suite('cursor', function () {
       var nearerIntersectedEl = document.createElement('a-entity');
       var furtherIntersectedEl = document.createElement('a-entity');
 
-      this.sinon.stub(el.components.raycaster, 'getIntersection', function (el) {
+      this.sinon.replace(el.components.raycaster, 'getIntersection', function (el) {
         switch (el) {
           case intersectedEl: return intersection1;
           case nearerIntersectedEl: return intersection2;
@@ -279,7 +279,7 @@ suite('cursor', function () {
       once(prevIntersectedEl, 'mouseleave', function (evt) {
         done();
       });
-      this.sinon.stub(el.components.raycaster, 'getIntersection', function (el) {
+      this.sinon.replace(el.components.raycaster, 'getIntersection', function (el) {
         return el === intersectedEl ? intersection : prevIntersection;
       });
       el.emit('raycaster-intersection', {

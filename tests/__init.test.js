@@ -26,7 +26,7 @@ var AScene = require('core/scene/a-scene').AScene;
 AScene.prototype.setupRenderer = function () {};
 
 setup(function () {
-  this.sinon = sinon.sandbox.create();
+  this.sinon = sinon.createSandbox();
   // Stubs to not create a WebGL context since Travis CI runs headless.
   this.sinon.stub(AScene.prototype, 'render');
   this.sinon.stub(AScene.prototype, 'setupRenderer');

@@ -10,7 +10,7 @@ suite('material', function () {
 
   setup(function (done) {
     el = entityFactory();
-    this.sinon = sinon.sandbox.create();
+    this.sinon = sinon.createSandbox();
     el.setAttribute('geometry', '');
     el.setAttribute('material', 'shader: flat');
     if (el.hasLoaded) { done(); }
