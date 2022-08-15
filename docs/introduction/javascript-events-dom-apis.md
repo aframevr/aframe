@@ -400,7 +400,7 @@ entityEl.object3D.position.x += 5;
 entityEl.object3D.position.multiplyScalar(5);
 
 // Examples for rotation.
-entityEl.object3D.rotation.y = THREE.Math.degToRad(45);
+entityEl.object3D.rotation.y = THREE.MathUtils.degToRad(45);
 entityEl.object3D.rotation.divideScalar(2);
 
 // Examples for scale.
