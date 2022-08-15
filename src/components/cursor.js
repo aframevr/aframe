@@ -1,4 +1,4 @@
-/* global THREE */
+/* global THREE, MouseEvent, TouchEvent */
 var registerComponent = require('../core/component').registerComponent;
 var utils = require('../utils/');
 
@@ -480,20 +480,24 @@ module.exports.Component = registerComponent('cursor', {
     var intersectedEl = this.intersectedEl;
     var intersection;
 
+    function addOriginalEvent (detail, evt) {
+      if (originalEvent instanceof MouseEvent) {
+        detail.mouseEvent = originalEvent;
+      } else if (originalEvent instanceof TouchEvent) {
+        detail.touchEvent = originalEvent;
+      }
+    }
+
     intersection = this.el.components.raycaster.getIntersection(intersectedEl);
     this.eventDetail.intersectedEl = intersectedEl;
     this.eventDetail.intersection = intersection;
-    if (originalEvent) {
-      this.eventDetail.originalEvent = originalEvent;
-    }
+    addOriginalEvent(this.eventDetail, originalEvent);
     el.emit(evtName, this.eventDetail);
 
     if (!intersectedEl) { return; }
 
     this.intersectedEventDetail.intersection = intersection;
-    if (originalEvent) {
-      this.intersectedEventDetail.originalEvent = originalEvent;
-    }
+    addOriginalEvent(this.intersectedEventDetail, originalEvent);
     intersectedEl.emit(evtName, this.intersectedEventDetail);
   }
 });

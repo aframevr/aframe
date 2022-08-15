@@ -125,14 +125,14 @@ this.el.addEventListener('click', function (evt) {
 
 Events emitted on the cursor entity also include event detail `intersectedEl`, which provides a reference to the intersected entity.
 
-#### originalEvent
+#### mouseEvent and touchEvent
 
-Where the trigger for a cursor event is a [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) or [TouchEvent](https://developer.mozilla.org/en-US/docs/Web/API/TouchEvent), event detail `originalEvent` provides a reference to that event.
+Where the trigger for a cursor event is a [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) or [TouchEvent](https://developer.mozilla.org/en-US/docs/Web/API/TouchEvent), event detail `mouseEvent` or `touchEvent` provides a reference to that event.
 
-These events provide a wealth of additional detail about the event, as detailed in the APIs linked above.  Among other things, they indicate:
+These events provide a wealth of additional detail about the event, as detailed in the APIs linked above.  Among other things, they can indicate:
 
 - which mouse button was used
-- information about the state of the mouse buttons, and relevant keys shuch as Shift, Ctrl etc. at the time of the mouse event.
+- information about the state of the mouse buttons (or multi-touch for touch events), and relevant keys shuch as Shift, Ctrl etc. at the time of the mouse or touch event.
 - the screen co-ordinates where the event occured.
 
 This information can be used by applications to handle cursor events differently, depending on this information (e.g. different handling of left click & right click).
@@ -141,16 +141,16 @@ For example:
 
 ```
 this.el.addEventListener('click', function (evt) {
-  if (!evt.detail.originalEvent || evt.detail.originalEvent.button === 0) {
-    console.log("left button clicked");
+  if (!evt.detail.mouseEvent || evt.detail.mouseEvent.button === 0) {
+    console.log("left button clicked (or touch event / no information)");
   
-  } else if (evt.detail.originalEvent.button === 2) {
+  } else if (evt.detail.mouseEvent.button === 2) {
     console.log("right button clicked"); 
   }
 });
 ```
 
-Event detail `originalEvent` is not always present.  It is not present on `mousenter`, `mouseleave` and `fusing` events, and it is not present on a `click` event that has been triggered by a fuse timeout rather than a mouse click or touch event.
+At most one of  `mouseEvent` or `touchEvent` will be present on a cursor event, and sometimes neither will.  Neither will be present on `mousenter`, `mouseleave` and `fusing` events, nor on a `click` event that has been triggered by a fuse timeout rather than a mouse click or touch event.
 
 ## States
 

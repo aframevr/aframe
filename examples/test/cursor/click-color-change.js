@@ -13,7 +13,7 @@ AFRAME.registerComponent('click-color-change', {
   },
 
   click (event) {
-    const mouseEvent = event.detail.originalEvent;
+    const mouseEvent = event.detail.mouseEvent;
 
     if (!mouseEvent) return;
 

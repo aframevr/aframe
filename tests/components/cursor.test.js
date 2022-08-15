@@ -1,4 +1,4 @@
-/* global assert, process, setup, suite, test, CustomEvent, MouseEvent */
+/* global assert, process, setup, suite, test, CustomEvent, MouseEvent, TouchEvent */
 var entityFactory = require('../helpers').entityFactory;
 var once = require('../helpers').once;
 
@@ -475,13 +475,13 @@ suite('cursor', function () {
     });
   });
 
-  suite('cursor event detail contains original events', function () {
+  suite('cursor event detail contains original mouse & touch events', function () {
     test('original mousedown event', function (done) {
       component.intersection = intersection;
       component.intersectedEl = intersectedEl;
       const mouseDown = new MouseEvent('mousedown');
       once(el, 'mousedown', function (e) {
-        assert.equal(e.detail.originalEvent, mouseDown);
+        assert.equal(e.detail.mouseEvent, mouseDown);
         done();
       });
       component.onCursorDown(mouseDown);
@@ -492,7 +492,7 @@ suite('cursor', function () {
       component.intersectedEl = intersectedEl;
       const mouseUp = new MouseEvent('mouseup');
       once(el, 'mouseup', function (e) {
-        assert.equal(e.detail.originalEvent, mouseUp);
+        assert.equal(e.detail.mouseEvent, mouseUp);
         done();
       });
       component.isCursorDown = true;
@@ -505,11 +505,47 @@ suite('cursor', function () {
       component.cursorDownEl = intersectedEl;
       const mouseUp = new MouseEvent('mouseup');
       once(el, 'click', function (e) {
-        assert.equal(e.detail.originalEvent, mouseUp);
+        assert.equal(e.detail.mouseEvent, mouseUp);
         done();
       });
       component.isCursorDown = true;
       component.onCursorUp(mouseUp);
+    });
+
+    test('original touchstart event', function (done) {
+      component.intersection = intersection;
+      component.intersectedEl = intersectedEl;
+      const touchStart = new TouchEvent('touchstart');
+      once(el, 'mousedown', function (e) {
+        assert.equal(e.detail.touchEvent, touchStart);
+        done();
+      });
+      component.onCursorDown(touchStart);
+    });
+
+    test('original touchend event', function (done) {
+      component.intersection = intersection;
+      component.intersectedEl = intersectedEl;
+      const touchEnd = new TouchEvent('touchend');
+      once(el, 'mouseup', function (e) {
+        assert.equal(e.detail.touchEvent, touchEnd);
+        done();
+      });
+      component.isCursorDown = true;
+      component.onCursorUp(touchEnd);
+    });
+
+    test('original touchend event on click', function (done) {
+      component.intersection = intersection;
+      component.intersectedEl = intersectedEl;
+      component.cursorDownEl = intersectedEl;
+      const touchEnd = new TouchEvent('touchend');
+      once(el, 'click', function (e) {
+        assert.equal(e.detail.touchEvent, touchEnd);
+        done();
+      });
+      component.isCursorDown = true;
+      component.onCursorUp(touchEnd);
     });
   });
 });
