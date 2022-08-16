@@ -55,7 +55,7 @@
     "browserify": "^13.1.0",
     "browserify-css": "^0.8.4",
     "browserify-derequire": "^0.9.4",
-    "browserify-istanbul": "^2.0.0",
+    "browserify-istanbul": "^3.0.1",
     "budo": "^9.2.0",
     "chai": "^4.3.6",
     "chai-shallow-deep-equal": "^1.4.0",
