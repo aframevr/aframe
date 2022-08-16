@@ -57,3 +57,8 @@ jobs:
 
       - name: Check Docs
         run: npm run test:docs
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          directory: ./tests/coverage
