@@ -53947,7 +53947,7 @@ module.exports.Component = registerComponent('camera', {
 });
 
 },{"../core/component":114,"../lib/three":162}],55:[function(require,module,exports){
-/* global THREE */
+/* global THREE, MouseEvent, TouchEvent */
 var registerComponent = require('../core/component').registerComponent;
 var utils = require('../utils/');
 
@@ -54250,7 +54250,7 @@ module.exports.Component = registerComponent('cursor', {
       }
     }
 
-    this.twoWayEmit(EVENTS.MOUSEDOWN);
+    this.twoWayEmit(EVENTS.MOUSEDOWN, evt);
     this.cursorDownEl = this.intersectedEl;
   },
 
@@ -54267,7 +54267,7 @@ module.exports.Component = registerComponent('cursor', {
     this.isCursorDown = false;
 
     var data = this.data;
-    this.twoWayEmit(EVENTS.MOUSEUP);
+    this.twoWayEmit(EVENTS.MOUSEUP, evt);
 
     if (this.reenableARHitTest === true) {
       this.el.sceneEl.setAttribute('ar-hit-test', 'enabled', true);
@@ -54283,7 +54283,7 @@ module.exports.Component = registerComponent('cursor', {
 
     if ((!data.fuse || data.rayOrigin === 'mouse' || data.rayOrigin === 'xrselect') &&
         this.intersectedEl && this.cursorDownEl === this.intersectedEl) {
-      this.twoWayEmit(EVENTS.CLICK);
+      this.twoWayEmit(EVENTS.CLICK, evt);
     }
 
     // if the current xr input stops selecting then make the ray caster point somewhere else
@@ -54424,19 +54424,29 @@ module.exports.Component = registerComponent('cursor', {
   /**
    * Helper to emit on both the cursor and the intersected entity (if exists).
    */
-  twoWayEmit: function (evtName) {
+  twoWayEmit: function (evtName, originalEvent) {
     var el = this.el;
     var intersectedEl = this.intersectedEl;
     var intersection;
 
+    function addOriginalEvent (detail, evt) {
+      if (originalEvent instanceof MouseEvent) {
+        detail.mouseEvent = originalEvent;
+      } else if (originalEvent instanceof TouchEvent) {
+        detail.touchEvent = originalEvent;
+      }
+    }
+
     intersection = this.el.components.raycaster.getIntersection(intersectedEl);
     this.eventDetail.intersectedEl = intersectedEl;
     this.eventDetail.intersection = intersection;
+    addOriginalEvent(this.eventDetail, originalEvent);
     el.emit(evtName, this.eventDetail);
 
     if (!intersectedEl) { return; }
 
     this.intersectedEventDetail.intersection = intersection;
+    addOriginalEvent(this.intersectedEventDetail, originalEvent);
     intersectedEl.emit(evtName, this.intersectedEventDetail);
   }
 });
@@ -70167,7 +70177,7 @@ require('./core/a-mixin');
 require('./extras/components/');
 require('./extras/primitives/');
 
-console.log('A-Frame Version: 1.3.0 (Date 2022-08-17, Commit #bacaabd3)');
+console.log('A-Frame Version: 1.3.0 (Date 2022-08-17, Commit #0fe1f286)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
