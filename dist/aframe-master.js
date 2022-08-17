@@ -53109,7 +53109,6 @@ module.exports={
   "scripts": {
     "browserify": "browserify src/index.js -s 'AFRAME' -p browserify-derequire",
     "build": "shx mkdir -p build/ && npm run browserify -- --debug -t [ envify --INSPECTOR_VERSION dev ] -o build/aframe.js",
-    "codecov": "codecov",
     "dev": "npm run build && cross-env INSPECTOR_VERSION=dev node ./scripts/budo -t envify",
     "dist": "node scripts/updateVersionLog.js && npm run dist:min && npm run dist:max",
     "dist:max": "npm run browserify -s -- --debug | exorcist dist/aframe-master.js.map > dist/aframe-master.js",
@@ -53162,7 +53161,6 @@ module.exports={
     "chai": "^4.3.6",
     "chai-shallow-deep-equal": "^1.4.0",
     "chalk": "^1.1.3",
-    "codecov": "^1.0.1",
     "cross-env": "^5.0.1",
     "envify": "^3.4.1",
     "exorcist": "^0.4.0",
@@ -53185,7 +53183,6 @@ module.exports={
     "markserv": "github:sukima/markserv#feature/fix-broken-websoketio-link",
     "minifyify": "^7.3.3",
     "mocha": "^10.0.0",
-    "mozilla-download": "^1.1.1",
     "replace-in-file": "^2.5.3",
     "semistandard": "^9.0.0",
     "shelljs": "^0.7.7",
@@ -70170,7 +70167,7 @@ require('./core/a-mixin');
 require('./extras/components/');
 require('./extras/primitives/');
 
-console.log('A-Frame Version: 1.3.0 (Date 2022-08-17, Commit #8d9d5cb5)');
+console.log('A-Frame Version: 1.3.0 (Date 2022-08-17, Commit #bacaabd3)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
