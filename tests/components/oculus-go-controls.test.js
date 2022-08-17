@@ -101,9 +101,9 @@ suite('oculus-go-controls', function () {
       // Remove the controllers and verify that everything is cleaned up correctly. We do this
       // by resetting the spy methods so we are certain only the remove is called.
       controllerSystem.controllers = [];
-      injectTrackedControlsSpy.reset();
-      addEventListenersSpy.reset();
-      removeEventListenersSpy.reset();
+      injectTrackedControlsSpy.resetHistory();
+      addEventListenersSpy.resetHistory();
+      removeEventListenersSpy.resetHistory();
 
       component.checkIfControllerPresent();
 
