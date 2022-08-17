@@ -1,6 +1,6 @@
 /* global assert, process, setup, suite, test */
 var helpers = require('../helpers');
-var degToRad = require('index').THREE.Math.degToRad;
+var degToRad = require('index').THREE.MathUtils.degToRad;
 
 /**
  * Most geometry tests will disable BufferGeometries in order to assert on geometry types and
