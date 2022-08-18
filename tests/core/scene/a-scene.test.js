@@ -596,6 +596,19 @@ suite('a-scene (without renderer)', function () {
       assert.equal(sceneEl.getAttribute('test'), 'system');
     });
 
+    test('can setAttribute on dynamically created scene', function () {
+      AFRAME.registerComponent('test', {schema: {default: 'component'}});
+      AFRAME.registerSystem('test', {schema: {default: 'system'}});
+
+      var sceneEl = document.createElement('a-scene');
+
+      sceneEl.setAttribute('test', 'manual');
+      assert.equal(sceneEl.getAttribute('test'), 'manual');
+
+      sceneEl.initSystem('test');
+      assert.equal(sceneEl.getAttribute('test'), 'manual');
+    });
+
     test('does not initialize component on setAttribute', function (done) {
       var sceneEl = document.createElement('a-scene');
       var stub = sinon.stub();
