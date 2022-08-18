@@ -332,7 +332,7 @@ module.exports.Component = registerComponent('cursor', {
     ) { return; }
 
     this.isCursorDown = false;
-    this.twoWayEmit(EVENTS.MOUSEUP);
+    this.twoWayEmit(EVENTS.MOUSEUP, evt);
 
     if (this.reenableARHitTest === true) {
       this.el.sceneEl.setAttribute('ar-hit-test', 'enabled', true);
