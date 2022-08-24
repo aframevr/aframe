@@ -13,8 +13,10 @@ module.exports.Component = registerComponent('gltf-model', {
     var self = this;
     var dracoLoader = this.system.getDRACOLoader();
     var meshoptDecoder = this.system.getMeshoptDecoder();
+
     this.model = null;
     this.loader = new THREE.GLTFLoader();
+    var ktxLoader = this.system.getKTX2Loader().detectSupport(this.el.sceneEl.renderer);
     if (dracoLoader) {
       this.loader.setDRACOLoader(dracoLoader);
     }
@@ -22,6 +24,8 @@ module.exports.Component = registerComponent('gltf-model', {
       this.ready = meshoptDecoder.then(function (meshoptDecoder) {
         self.loader.setMeshoptDecoder(meshoptDecoder);
       });
+    } if (ktxLoader) {
+      this.loader.setKTX2Loader(ktxLoader);
     } else {
       this.ready = Promise.resolve();
     }
