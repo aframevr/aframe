@@ -13,7 +13,7 @@ module.exports.Component = registerComponent('gltf-model', {
     var self = this;
     var dracoLoader = this.system.getDRACOLoader();
     var meshoptDecoder = this.system.getMeshoptDecoder();
-    var ktxLoader = this.system.getKTX2Loader().detectSupport(this.el.sceneEl.renderer);
+    var ktxLoader = this.system.getKTX2Loader();
     this.model = null;
     this.loader = new THREE.GLTFLoader();
     if (dracoLoader) {
