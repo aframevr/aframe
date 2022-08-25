@@ -145,7 +145,7 @@ When using glTF models compressed with Draco, KTX2 or Meshopt, you must configur
 | Property         | Description                                                                                                                                                                                           | Default Value                       |
 |------------------|--------------------------------------|----|
 | dracoDecoderPath | Path to the Draco decoder libraries. | '' |
-| ktx2TranscoderPath | Path to the Draco decoder libraries. | '' |
+| ktx2TranscoderPath | Path to the KTX2 transcoder libraries. | '' |
 | meshoptDecoderPath | Path to the Meshopt decoder.       | '' |
 
 `dracoDecoderPath` path must be a folder containing three files:
