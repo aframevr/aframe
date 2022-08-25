@@ -164,8 +164,7 @@ be included. A Google-hosted version of the Draco decoder libraries saves you fr
     basis_transcoder.js — JavaScript wrapper for the WebAssembly transcoder.
     basis_transcoder.wasm — WebAssembly transcoder.
 
-These files are available from the three.js repository, under
-[examples/js/libs/basis][basis].
+These files are available from the three.js repository in [`/examples/js/libs/basis`](https://github.com/mrdoob/three.js/tree/master/examples/js/libs/basis).
 
 
 `meshoptDecoderPath` path should be the complete file path (including filename) for a Meshopt decoder, typically named `meshopt_decoder.js`. Meshopt requires WebAssembly support. A CDN-hosted, versioned decoder is available at `https://unpkg.com/meshoptimizer@0.16.0/meshopt_decoder.js`, or you may download copies from the [meshoptimizer GitHub repository][meshopt-decoder].
