@@ -23,10 +23,11 @@ module.exports.Component = registerComponent('gltf-model', {
       this.ready = meshoptDecoder.then(function (meshoptDecoder) {
         self.loader.setMeshoptDecoder(meshoptDecoder);
       });
-    } if (ktxLoader) {
-      this.loader.setKTX2Loader(ktxLoader);
     } else {
       this.ready = Promise.resolve();
+    }
+    if (ktxLoader) {
+      this.loader.setKTX2Loader(ktxLoader);
     }
   },
 

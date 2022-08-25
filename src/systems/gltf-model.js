@@ -43,7 +43,7 @@ module.exports.System = registerSystem('gltf-model', {
     }
     if (!this.ktx2Loader && basisTranscoderPath) {
       this.ktx2Loader = new THREE.KTX2Loader();
-      this.ktx2Loader.setTranscoderPath(basisTranscoderPath);
+      this.ktx2Loader.setTranscoderPath(basisTranscoderPath).detectSupport( this.el.renderer );
     }
     if (!this.meshoptDecoder && meshoptDecoderPath) {
       this.meshoptDecoder = fetchScript(meshoptDecoderPath)
