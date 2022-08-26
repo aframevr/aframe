@@ -23971,8 +23971,13 @@ module.exports = anime;
 			/* Stub */
 		};
 	}
-
-	Object.assign(WebVRManager.prototype, EventDispatcher.prototype);
+                                        
+	Object.assign(WebVRManager.prototype,{
+        addEventListener: EventDispatcher.prototype['addEventListener'],
+        hasEventListener: EventDispatcher.prototype['hasEventListener'],
+        removeEventListener: EventDispatcher.prototype['removeEventListener'],
+        dispatchEvent: EventDispatcher.prototype['dispatchEvent']
+    });                          
 
 	const _moveEvent = {
 		type: 'move'
@@ -25831,7 +25836,7 @@ module.exports = anime;
 
 			if (xr.enabled === true && xr.isPresenting === true) {
 				if (xr.cameraAutoUpdate === true) xr.updateCamera(camera);
-				camera = xr.getCamera(); // use XR camera for rendering
+				camera = xr.getCamera(camera); // use XR camera for rendering
 			} //
 
 
