@@ -274,7 +274,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   },
 
   onButtonChanged: function (evt) {
-    // move the button models
+    // move the button meshes
     if (this.isV3) {
       this.onButtonChangedV3(evt);
     } else {
@@ -368,9 +368,9 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
       if (node.type !== 'Mesh') return;
       let originalMaterial = node.material;
       this.buttonMeshes[button].naturalColor = originalMaterial.color;
-      node.material = new THREE.MeshStandardMaterial(); // {color: originalMaterial.color}
+      node.material = new THREE.MeshStandardMaterial();
 
-      // preserve details. (not iterable, so we have to use Object.keys.)
+      // preserve details; not iterable, so we have to use Object.keys()
       Object.keys(originalMaterial).forEach(key => {
         if (originalMaterial[key] !== node.material[key]) {
           // because A-Frame uses the same single material object for all material nodes, it also uses the
@@ -458,7 +458,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     for (let axis in evt.detail) {
       this.buttonObjects.thumbstick.rotation[this.axisMap[axis]] =
         this.buttonRanges.thumbstick.originalRotation[this.axisMap[axis]] -
-        (Math.PI * 1 / 8) *
+        (Math.PI / 8) *
         evt.detail[axis] *
         (axis === 'y' || this.data.hand === 'right' ? -1 : 1);
     }
@@ -477,9 +477,10 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   updateButtonModel: function (buttonName, evtName) {
     var button;
     var color = (evtName === 'up' || evtName === 'touchend') ? this.buttonMeshes[buttonName].naturalColor || this.data.buttonColor : evtName === 'touchstart' ? this.data.buttonTouchColor : this.data.buttonHighlightColor;
+    var buttonMeshes = this.buttonMeshes;
 
-    if (this.buttonMeshes && this.buttonMeshes[buttonName]) {
-      button = this.buttonMeshes[buttonName];
+    if (buttonMeshes && buttonMeshes[buttonName]) {
+      button = buttonMeshes[buttonName];
       button.material.color.set(color);
       this.rendererSystem.applyColorCorrection(button.material.color);
     }
