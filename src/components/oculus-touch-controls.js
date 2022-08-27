@@ -172,7 +172,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     this.previousButtonValues = {};
     this.rendererSystem = this.el.sceneEl.systems.renderer;
     this.bindMethods();
-    this.triggerEuler = new THREE.Euler;
+    this.triggerEuler = new THREE.Euler();
   },
 
   addEventListeners: function () {
@@ -275,10 +275,9 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
 
   onButtonChanged: function (evt) {
     // move the button models
-    if (this.isV3) { 
+    if (this.isV3) {
       this.onButtonChangedV3(evt);
-    }
-    else {  
+    } else {
       var button = this.mapping[this.data.hand].buttons[evt.detail.id];
       var buttonMeshes = this.buttonMeshes;
       var analogValue;
@@ -300,7 +299,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     this.el.emit(button + 'changed', evt.detail.state);
   },
 
-  clickButtons: ['xbutton','ybutton','abutton','bbutton','thumbstick'],
+  clickButtons: ['xbutton', 'ybutton', 'abutton', 'bbutton', 'thumbstick'],
   onButtonChangedV3: function (evt) {
     var button = this.mapping[this.data.hand].buttons[evt.detail.id];
     var buttonObjects = this.buttonObjects;
@@ -309,22 +308,19 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
 
     analogValue = evt.detail.state.value;
     analogValue *= this.data.hand === 'left' ? -1 : 1;
-    
+
     if (button === 'trigger') {
       this.triggerEuler.copy(this.buttonRanges.trigger.min.rotation);
       this.triggerEuler.x += analogValue * this.buttonRanges.trigger.diff.x;
       this.triggerEuler.y += analogValue * this.buttonRanges.trigger.diff.y;
       this.triggerEuler.z += analogValue * this.buttonRanges.trigger.diff.z;
       buttonObjects.trigger.setRotationFromEuler(this.triggerEuler);
-    }
-    else if (button === 'grip') {
+    } else if (button === 'grip') {
       buttonObjects.grip.position.x = buttonObjects.grip.minX + analogValue * 0.004;
+    } else if (this.clickButtons.includes(button)) {
+      buttonObjects[button].position.y = analogValue === 0 ? this.buttonRanges[button].unpressedY : this.buttonRanges[button].pressedY;
     }
-    else if (this.clickButtons.includes(button)) {
-      buttonObjects[button].position.y = analogValue === 0 ? 
-        this.buttonRanges[button].unpressedY : this.buttonRanges[button].pressedY;
-    }
-  },  
+  },
 
   onModelLoaded: function (evt) {
     if (this.isV3) {
@@ -352,7 +348,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
       this.multiMeshFix(button);
     }
 
-    this.applyOffset(evt.detail.model)
+    this.applyOffset(evt.detail.model);
 
     this.el.emit('controllermodelready', {
       name: 'oculus-touch-controls',
@@ -360,16 +356,16 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
       rayOrigin: this.displayModel[this.data.hand].rayOrigin
     });
   },
-  
-  applyOffset(model) {
+
+  applyOffset (model) {
     model.position.copy(this.displayModel[this.data.hand].modelPivotOffset);
     model.rotation.copy(this.displayModel[this.data.hand].modelPivotRotation);
   },
-  
-  multiMeshFix(button) {
+
+  multiMeshFix (button) {
     if (!this.buttonMeshes[button]) return;
     this.buttonMeshes[button].traverse((node) => {
-      if (node.type != "Mesh") return;
+      if (node.type !== 'Mesh') return;
       let originalMaterial = node.material;
       this.buttonMeshes[button].naturalColor = originalMaterial.color;
       node.material = new THREE.MeshStandardMaterial(); // {color: originalMaterial.color}
@@ -380,37 +376,37 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
           // because A-Frame uses the same single material object for all material nodes, it also uses the
           // same color. This means they use the same color object--we have to break that link. Other links
           // likely also exist, but they don't matter to us, because color is the only one we change.
-          node.material[key] = key !== 'color' ? originalMaterial[key] :  originalMaterial[key].clone();
+          node.material[key] = key !== 'color' ? originalMaterial[key] : originalMaterial[key].clone();
         }
-      })
+      });
       originalMaterial.dispose();
-    })
+    });
   },
 
-  onModelLoadedV3(evt) {
+  onModelLoadedV3 (evt) {
     let controllerObject3D = this.controllerObject3D = evt.detail.model;
-    
+
     if (!this.data.model) { return; }
-    
-    let buttonObjects = this.buttonObjects = {},
-        buttonMeshes = this.buttonMeshes = {},
-        buttonRanges = this.buttonRanges = {};
-    
+
+    let buttonObjects = this.buttonObjects = {};
+    let buttonMeshes = this.buttonMeshes = {};
+    let buttonRanges = this.buttonRanges = {};
+
     buttonMeshes.grip = controllerObject3D.getObjectByName('squeeze');
     buttonObjects.grip = controllerObject3D.getObjectByName('xr_standard_squeeze_pressed_value');
     buttonRanges.grip = {
       min: controllerObject3D.getObjectByName('xr_standard_squeeze_pressed_min'),
-      max: controllerObject3D.getObjectByName('xr_standard_squeeze_pressed_max'),
-    }
+      max: controllerObject3D.getObjectByName('xr_standard_squeeze_pressed_max')
+    };
     buttonObjects.grip.minX = buttonObjects.grip.position.x;
-    
+
     buttonMeshes.thumbstick = controllerObject3D.getObjectByName('thumbstick');
     buttonObjects.thumbstick = controllerObject3D.getObjectByName('xr_standard_thumbstick_pressed_value');
     buttonRanges.thumbstick = {
       min: controllerObject3D.getObjectByName('xr_standard_thumbstick_pressed_min'),
       max: controllerObject3D.getObjectByName('xr_standard_thumbstick_pressed_max'),
-      originalRotation: this.buttonObjects.thumbstick.rotation.clone(),
-    }
+      originalRotation: this.buttonObjects.thumbstick.rotation.clone()
+    };
     buttonRanges.thumbstick.pressedY = buttonObjects.thumbstick.position.y;
     buttonRanges.thumbstick.unpressedY =
       buttonRanges.thumbstick.pressedY + Math.abs(buttonRanges.thumbstick.max.position.y) - Math.abs(buttonRanges.thumbstick.min.position.y);
@@ -419,57 +415,57 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     buttonObjects.trigger = controllerObject3D.getObjectByName('xr_standard_trigger_pressed_value');
     buttonRanges.trigger = {
       min: controllerObject3D.getObjectByName('xr_standard_trigger_pressed_min'),
-      max: controllerObject3D.getObjectByName('xr_standard_trigger_pressed_max'),
-    }
+      max: controllerObject3D.getObjectByName('xr_standard_trigger_pressed_max')
+    };
     buttonRanges.trigger.diff = {
       x: Math.abs(buttonRanges.trigger.max.rotation.x) - Math.abs(buttonRanges.trigger.min.rotation.x),
       y: Math.abs(buttonRanges.trigger.max.rotation.y) - Math.abs(buttonRanges.trigger.min.rotation.y),
-      z: Math.abs(buttonRanges.trigger.max.rotation.z) - Math.abs(buttonRanges.trigger.min.rotation.z),      
-    }
-    
-    let btn1 = this.data.hand === 'left' ? 'x' : 'a',
-        btn2 = this.data.hand === 'left' ? 'y' : 'b' ;
-    
-    buttonMeshes[btn1+"button"] = controllerObject3D.getObjectByName(btn1+'_button');
-    buttonObjects[btn1+"button"] = controllerObject3D.getObjectByName(btn1+'_button_pressed_value');
-    buttonRanges[btn1+"button"] = {
-      min: controllerObject3D.getObjectByName(btn1+'_button_pressed_min'),
-      max: controllerObject3D.getObjectByName(btn1+'_button_pressed_max'),
-    }
+      z: Math.abs(buttonRanges.trigger.max.rotation.z) - Math.abs(buttonRanges.trigger.min.rotation.z)
+    };
 
-    buttonMeshes[btn2+"button"] = controllerObject3D.getObjectByName(btn2+'_button');
-    buttonObjects[btn2+"button"] = controllerObject3D.getObjectByName(btn2+'_button_pressed_value');
-    buttonRanges[btn2+"button"] = {
-      min: controllerObject3D.getObjectByName(btn2+'_button_pressed_min'),
-      max: controllerObject3D.getObjectByName(btn2+'_button_pressed_max'),
-    }    
-    
-    buttonRanges[btn1+"button"].unpressedY = buttonObjects[btn1+"button"].position.y;
-    buttonRanges[btn1+"button"].pressedY = 
-      buttonRanges[btn1+"button"].unpressedY + Math.abs(buttonRanges[btn1+"button"].max.position.y) - Math.abs(buttonRanges[btn1+"button"].min.position.y); 
-    
-    buttonRanges[btn2+"button"].unpressedY = buttonObjects[btn2+"button"].position.y;
-    buttonRanges[btn2+"button"].pressedY = 
-      buttonRanges[btn2+"button"].unpressedY - Math.abs(buttonRanges[btn2+"button"].max.position.y) + Math.abs(buttonRanges[btn2+"button"].min.position.y); 
+    let btn1 = this.data.hand === 'left' ? 'x' : 'a';
+    let btn2 = this.data.hand === 'left' ? 'y' : 'b';
+
+    buttonMeshes[btn1 + 'button'] = controllerObject3D.getObjectByName(btn1 + '_button');
+    buttonObjects[btn1 + 'button'] = controllerObject3D.getObjectByName(btn1 + '_button_pressed_value');
+    buttonRanges[btn1 + 'button'] = {
+      min: controllerObject3D.getObjectByName(btn1 + '_button_pressed_min'),
+      max: controllerObject3D.getObjectByName(btn1 + '_button_pressed_max')
+    };
+
+    buttonMeshes[btn2 + 'button'] = controllerObject3D.getObjectByName(btn2 + '_button');
+    buttonObjects[btn2 + 'button'] = controllerObject3D.getObjectByName(btn2 + '_button_pressed_value');
+    buttonRanges[btn2 + 'button'] = {
+      min: controllerObject3D.getObjectByName(btn2 + '_button_pressed_min'),
+      max: controllerObject3D.getObjectByName(btn2 + '_button_pressed_max')
+    };
+
+    buttonRanges[btn1 + 'button'].unpressedY = buttonObjects[btn1 + 'button'].position.y;
+    buttonRanges[btn1 + 'button'].pressedY =
+      buttonRanges[btn1 + 'button'].unpressedY + Math.abs(buttonRanges[btn1 + 'button'].max.position.y) - Math.abs(buttonRanges[btn1 + 'button'].min.position.y);
+
+    buttonRanges[btn2 + 'button'].unpressedY = buttonObjects[btn2 + 'button'].position.y;
+    buttonRanges[btn2 + 'button'].pressedY =
+      buttonRanges[btn2 + 'button'].unpressedY - Math.abs(buttonRanges[btn2 + 'button'].max.position.y) + Math.abs(buttonRanges[btn2 + 'button'].min.position.y);
   },
-  
+
   onAxisMoved: function (evt) {
     emitIfAxesChanged(this, this.mapping[this.data.hand].axes, evt);
   },
-  
-  onThumbstickMoved: function(evt) {
-    if (!this.isV3 || !this.buttonMeshes || !this.buttonMeshes.thumbstick) {return;}
+
+  onThumbstickMoved: function (evt) {
+    if (!this.isV3 || !this.buttonMeshes || !this.buttonMeshes.thumbstick) { return; }
     for (let axis in evt.detail) {
-      this.buttonObjects.thumbstick.rotation[this.axisMap[axis]] = 
-        this.buttonRanges.thumbstick.originalRotation[this.axisMap[axis]] - 
-        (Math.PI*1/8) *
-        evt.detail[axis] * 
+      this.buttonObjects.thumbstick.rotation[this.axisMap[axis]] =
+        this.buttonRanges.thumbstick.originalRotation[this.axisMap[axis]] -
+        (Math.PI * 1 / 8) *
+        evt.detail[axis] *
         (axis === 'y' || this.data.hand === 'right' ? -1 : 1);
     }
   },
   axisMap: {
     y: 'x',
-    x: 'z',
+    x: 'z'
   },
 
   updateModel: function (buttonName, evtName) {
@@ -481,11 +477,11 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   updateButtonModel: function (buttonName, evtName) {
     var button;
     var color = (evtName === 'up' || evtName === 'touchend') ? this.buttonMeshes[buttonName].naturalColor || this.data.buttonColor : evtName === 'touchstart' ? this.data.buttonTouchColor : this.data.buttonHighlightColor;
-    
+
     if (this.buttonMeshes && this.buttonMeshes[buttonName]) {
       button = this.buttonMeshes[buttonName];
       button.material.color.set(color);
       this.rendererSystem.applyColorCorrection(button.material.color);
     }
-  },
+  }
 });
