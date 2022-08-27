@@ -153,6 +153,8 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   mapping: INPUT_MAPPING,
 
   bindMethods: function () {
+    this.onButtonChanged = bind(this.onButtonChanged, this);
+    this.onThumbstickMoved = bind(this.onThumbstickMoved, this);
     this.onModelLoaded = bind(this.onModelLoaded, this);
     this.onControllersUpdate = bind(this.onControllersUpdate, this);
     this.checkIfControllerPresent = bind(this.checkIfControllerPresent, this);
@@ -161,7 +163,6 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
 
   init: function () {
     var self = this;
-    this.onButtonChanged = bind(this.onButtonChanged, this);
     this.onButtonDown = function (evt) { onButtonEvent(evt.detail.id, 'down', self, self.data.hand); };
     this.onButtonUp = function (evt) { onButtonEvent(evt.detail.id, 'up', self, self.data.hand); };
     this.onButtonTouchStart = function (evt) { onButtonEvent(evt.detail.id, 'touchstart', self, self.data.hand); };
@@ -171,6 +172,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     this.previousButtonValues = {};
     this.rendererSystem = this.el.sceneEl.systems.renderer;
     this.bindMethods();
+    this.triggerEuler = new THREE.Euler;
   },
 
   addEventListeners: function () {
@@ -182,6 +184,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     el.addEventListener('touchend', this.onButtonTouchEnd);
     el.addEventListener('axismove', this.onAxisMoved);
     el.addEventListener('model-loaded', this.onModelLoaded);
+    el.addEventListener('thumbstickmoved', this.onThumbstickMoved);
     this.controllerEventsActive = true;
   },
 
@@ -194,6 +197,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     el.removeEventListener('touchend', this.onButtonTouchEnd);
     el.removeEventListener('axismove', this.onAxisMoved);
     el.removeEventListener('model-loaded', this.onModelLoaded);
+    el.removeEventListener('thumbstickmoved', this.onThumbstickMoved);
     this.controllerEventsActive = false;
   },
 
@@ -220,18 +224,17 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     if (!data.model) { return; }
     // Set the controller display model based on the data passed in.
     this.displayModel = CONTROLLER_PROPERTIES[data.controllerType] || CONTROLLER_PROPERTIES[CONTROLLER_DEFAULT];
-    // If the developer is asking for auto-detection, see if the displayName can be retrieved to identify the specific unit.
-    // This only works for WebVR currently.
+    // If the developer is asking for auto-detection, use the retrieved displayName to identify the specific unit.
     if (data.controllerType === 'auto') {
       var trackedControlsSystem = this.el.sceneEl.systems['tracked-controls-webvr'];
-      // WebVR
       if (trackedControlsSystem && trackedControlsSystem.vrDisplay) {
+        // WebVR
         var displayName = trackedControlsSystem.vrDisplay.displayName;
-        // The Oculus Quest uses the updated generation 2 inside-out tracked controllers so update the displayModel.
         if (/^Oculus Quest$/.test(displayName)) {
           this.displayModel = CONTROLLER_PROPERTIES['oculus-touch-v2'];
         }
-      } else { // WebXR
+      } else {
+        // WebXR
         controllerId = CONTROLLER_DEFAULT;
         controllerId = controller.profiles.indexOf('oculus-touch-v2') !== -1 ? 'oculus-touch-v2' : controllerId;
         controllerId = controller.profiles.indexOf('oculus-touch-v3') !== -1 ? 'oculus-touch-v3' : controllerId;
@@ -239,6 +242,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
       }
     }
     var modelUrl = this.displayModel[data.hand].modelUrl;
+    this.isV3 = this.displayModel === CONTROLLER_PROPERTIES['oculus-touch-v3'];
     this.el.setAttribute('gltf-model', modelUrl);
   },
 
@@ -270,48 +274,85 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   },
 
   onButtonChanged: function (evt) {
-    var button = this.mapping[this.data.hand].buttons[evt.detail.id];
-    var buttonMeshes = this.buttonMeshes;
-    var analogValue;
-    if (!button) { return; }
+    // move the button models
+    if (this.isV3) { 
+      this.onButtonChangedV3(evt);
+    }
+    else {  
+      var button = this.mapping[this.data.hand].buttons[evt.detail.id];
+      var buttonMeshes = this.buttonMeshes;
+      var analogValue;
+      if (!button) { return; }
 
-    if (button === 'trigger' || button === 'grip') { analogValue = evt.detail.state.value; }
+      if (button === 'trigger' || button === 'grip') { analogValue = evt.detail.state.value; }
 
-    // Update trigger and/or grip meshes, if any.
-    if (buttonMeshes) {
-      if (button === 'trigger' && buttonMeshes.trigger) {
-        buttonMeshes.trigger.rotation.x = this.originalXRotationTrigger - analogValue * (Math.PI / 26);
-      }
-      if (button === 'grip' && buttonMeshes.grip) {
-        buttonMeshes.grip.position.x = this.originalXPositionGrip + (this.data.hand === 'left' ? -1 : 1) * analogValue * 0.004;
+      if (buttonMeshes) {
+        if (button === 'trigger' && buttonMeshes.trigger) {
+          buttonMeshes.trigger.rotation.x = this.originalXRotationTrigger - analogValue * (Math.PI / 26);
+        }
+        if (button === 'grip' && buttonMeshes.grip) {
+          analogValue *= this.data.hand === 'left' ? -1 : 1;
+          buttonMeshes.grip.position.x = this.originalXPositionGrip + analogValue * 0.004;
+        }
       }
     }
-
     // Pass along changed event with button state, using the buttom mapping for convenience.
     this.el.emit(button + 'changed', evt.detail.state);
   },
 
+  clickButtons: ['xbutton','ybutton','abutton','bbutton','thumbstick'],
+  onButtonChangedV3: function (evt) {
+    var button = this.mapping[this.data.hand].buttons[evt.detail.id];
+    var buttonObjects = this.buttonObjects;
+    var analogValue;
+    if (!button) { return; }
+
+    analogValue = evt.detail.state.value;
+    analogValue *= this.data.hand === 'left' ? -1 : 1;
+    
+    if (button === 'trigger') {
+      this.triggerEuler.copy(this.buttonRanges.trigger.min.rotation);
+      this.triggerEuler.x += analogValue * this.buttonRanges.trigger.diff.x;
+      this.triggerEuler.y += analogValue * this.buttonRanges.trigger.diff.y;
+      this.triggerEuler.z += analogValue * this.buttonRanges.trigger.diff.z;
+      buttonObjects.trigger.setRotationFromEuler(this.triggerEuler);
+    }
+    else if (button === 'grip') {
+      buttonObjects.grip.position.x = buttonObjects.grip.minX + analogValue * 0.004;
+    }
+    else if (this.clickButtons.includes(button)) {
+      buttonObjects[button].position.y = analogValue === 0 ? 
+        this.buttonRanges[button].unpressedY : this.buttonRanges[button].pressedY;
+    }
+  },  
+
   onModelLoaded: function (evt) {
-    var controllerObject3D = this.controllerObject3D = evt.detail.model;
-    var buttonMeshes;
+    if (this.isV3) {
+      this.onModelLoadedV3(evt);
+    } else {
+      var controllerObject3D = this.controllerObject3D = evt.detail.model;
+      var buttonMeshes;
 
-    if (!this.data.model) { return; }
+      if (!this.data.model) { return; }
 
-    buttonMeshes = this.buttonMeshes = {};
+      buttonMeshes = this.buttonMeshes = {};
 
-    buttonMeshes.grip = controllerObject3D.getObjectByName('buttonHand');
-    this.originalXPositionGrip = buttonMeshes.grip && buttonMeshes.grip.position.x;
-    buttonMeshes.thumbstick = controllerObject3D.getObjectByName('stick');
-    buttonMeshes.trigger = controllerObject3D.getObjectByName('buttonTrigger');
-    this.originalXRotationTrigger = buttonMeshes.trigger && buttonMeshes.trigger.rotation.x;
-    buttonMeshes.xbutton = controllerObject3D.getObjectByName('buttonX');
-    buttonMeshes.abutton = controllerObject3D.getObjectByName('buttonA');
-    buttonMeshes.ybutton = controllerObject3D.getObjectByName('buttonY');
-    buttonMeshes.bbutton = controllerObject3D.getObjectByName('buttonB');
+      buttonMeshes.grip = controllerObject3D.getObjectByName('buttonHand');
+      this.originalXPositionGrip = buttonMeshes.grip && buttonMeshes.grip.position.x;
+      buttonMeshes.trigger = controllerObject3D.getObjectByName('buttonTrigger');
+      this.originalXRotationTrigger = buttonMeshes.trigger && buttonMeshes.trigger.rotation.x;
+      buttonMeshes.thumbstick = controllerObject3D.getObjectByName('stick');
+      buttonMeshes.xbutton = controllerObject3D.getObjectByName('buttonX');
+      buttonMeshes.abutton = controllerObject3D.getObjectByName('buttonA');
+      buttonMeshes.ybutton = controllerObject3D.getObjectByName('buttonY');
+      buttonMeshes.bbutton = controllerObject3D.getObjectByName('buttonB');
+    }
 
-    // Offset pivot point
-    controllerObject3D.position.copy(this.displayModel[this.data.hand].modelPivotOffset);
-    controllerObject3D.rotation.copy(this.displayModel[this.data.hand].modelPivotRotation);
+    for (let button in this.buttonMeshes) {
+      this.multiMeshFix(button);
+    }
+
+    this.applyOffset(evt.detail.model)
 
     this.el.emit('controllermodelready', {
       name: 'oculus-touch-controls',
@@ -319,25 +360,132 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
       rayOrigin: this.displayModel[this.data.hand].rayOrigin
     });
   },
+  
+  applyOffset(model) {
+    model.position.copy(this.displayModel[this.data.hand].modelPivotOffset);
+    model.rotation.copy(this.displayModel[this.data.hand].modelPivotRotation);
+  },
+  
+  multiMeshFix(button) {
+    if (!this.buttonMeshes[button]) return;
+    this.buttonMeshes[button].traverse((node) => {
+      if (node.type != "Mesh") return;
+      let originalMaterial = node.material;
+      this.buttonMeshes[button].naturalColor = originalMaterial.color;
+      node.material = new THREE.MeshStandardMaterial(); // {color: originalMaterial.color}
 
+      // preserve details. (not iterable, so we have to use Object.keys.)
+      Object.keys(originalMaterial).forEach(key => {
+        if (originalMaterial[key] !== node.material[key]) {
+          // because A-Frame uses the same single material object for all material nodes, it also uses the
+          // same color. This means they use the same color object--we have to break that link. Other links
+          // likely also exist, but they don't matter to us, because color is the only one we change.
+          node.material[key] = key !== 'color' ? originalMaterial[key] :  originalMaterial[key].clone();
+        }
+      })
+      originalMaterial.dispose();
+    })
+  },
+
+  onModelLoadedV3(evt) {
+    let controllerObject3D = this.controllerObject3D = evt.detail.model;
+    
+    if (!this.data.model) { return; }
+    
+    let buttonObjects = this.buttonObjects = {},
+        buttonMeshes = this.buttonMeshes = {},
+        buttonRanges = this.buttonRanges = {};
+    
+    buttonMeshes.grip = controllerObject3D.getObjectByName('squeeze');
+    buttonObjects.grip = controllerObject3D.getObjectByName('xr_standard_squeeze_pressed_value');
+    buttonRanges.grip = {
+      min: controllerObject3D.getObjectByName('xr_standard_squeeze_pressed_min'),
+      max: controllerObject3D.getObjectByName('xr_standard_squeeze_pressed_max'),
+    }
+    buttonObjects.grip.minX = buttonObjects.grip.position.x;
+    
+    buttonMeshes.thumbstick = controllerObject3D.getObjectByName('thumbstick');
+    buttonObjects.thumbstick = controllerObject3D.getObjectByName('xr_standard_thumbstick_pressed_value');
+    buttonRanges.thumbstick = {
+      min: controllerObject3D.getObjectByName('xr_standard_thumbstick_pressed_min'),
+      max: controllerObject3D.getObjectByName('xr_standard_thumbstick_pressed_max'),
+      originalRotation: this.buttonObjects.thumbstick.rotation.clone(),
+    }
+    buttonRanges.thumbstick.pressedY = buttonObjects.thumbstick.position.y;
+    buttonRanges.thumbstick.unpressedY =
+      buttonRanges.thumbstick.pressedY + Math.abs(buttonRanges.thumbstick.max.position.y) - Math.abs(buttonRanges.thumbstick.min.position.y);
+
+    buttonMeshes.trigger = controllerObject3D.getObjectByName('trigger');
+    buttonObjects.trigger = controllerObject3D.getObjectByName('xr_standard_trigger_pressed_value');
+    buttonRanges.trigger = {
+      min: controllerObject3D.getObjectByName('xr_standard_trigger_pressed_min'),
+      max: controllerObject3D.getObjectByName('xr_standard_trigger_pressed_max'),
+    }
+    buttonRanges.trigger.diff = {
+      x: Math.abs(buttonRanges.trigger.max.rotation.x) - Math.abs(buttonRanges.trigger.min.rotation.x),
+      y: Math.abs(buttonRanges.trigger.max.rotation.y) - Math.abs(buttonRanges.trigger.min.rotation.y),
+      z: Math.abs(buttonRanges.trigger.max.rotation.z) - Math.abs(buttonRanges.trigger.min.rotation.z),      
+    }
+    
+    let btn1 = this.data.hand === 'left' ? 'x' : 'a',
+        btn2 = this.data.hand === 'left' ? 'y' : 'b' ;
+    
+    buttonMeshes[btn1+"button"] = controllerObject3D.getObjectByName(btn1+'_button');
+    buttonObjects[btn1+"button"] = controllerObject3D.getObjectByName(btn1+'_button_pressed_value');
+    buttonRanges[btn1+"button"] = {
+      min: controllerObject3D.getObjectByName(btn1+'_button_pressed_min'),
+      max: controllerObject3D.getObjectByName(btn1+'_button_pressed_max'),
+    }
+
+    buttonMeshes[btn2+"button"] = controllerObject3D.getObjectByName(btn2+'_button');
+    buttonObjects[btn2+"button"] = controllerObject3D.getObjectByName(btn2+'_button_pressed_value');
+    buttonRanges[btn2+"button"] = {
+      min: controllerObject3D.getObjectByName(btn2+'_button_pressed_min'),
+      max: controllerObject3D.getObjectByName(btn2+'_button_pressed_max'),
+    }    
+    
+    buttonRanges[btn1+"button"].unpressedY = buttonObjects[btn1+"button"].position.y;
+    buttonRanges[btn1+"button"].pressedY = 
+      buttonRanges[btn1+"button"].unpressedY + Math.abs(buttonRanges[btn1+"button"].max.position.y) - Math.abs(buttonRanges[btn1+"button"].min.position.y); 
+    
+    buttonRanges[btn2+"button"].unpressedY = buttonObjects[btn2+"button"].position.y;
+    buttonRanges[btn2+"button"].pressedY = 
+      buttonRanges[btn2+"button"].unpressedY - Math.abs(buttonRanges[btn2+"button"].max.position.y) + Math.abs(buttonRanges[btn2+"button"].min.position.y); 
+  },
+  
   onAxisMoved: function (evt) {
     emitIfAxesChanged(this, this.mapping[this.data.hand].axes, evt);
   },
-
-  updateModel: function (buttonName, evtName) {
-    if (!this.data.model) { return; }
-    this.updateButtonModel(buttonName, evtName);
+  
+  onThumbstickMoved: function(evt) {
+    if (!this.isV3 || !this.buttonMeshes || !this.buttonMeshes.thumbstick) {return;}
+    for (let axis in evt.detail) {
+      this.buttonObjects.thumbstick.rotation[this.axisMap[axis]] = 
+        this.buttonRanges.thumbstick.originalRotation[this.axisMap[axis]] - 
+        (Math.PI*1/8) *
+        evt.detail[axis] * 
+        (axis === 'y' || this.data.hand === 'right' ? -1 : 1);
+    }
+  },
+  axisMap: {
+    y: 'x',
+    x: 'z',
   },
 
-  updateButtonModel: function (buttonName, state) {
+  updateModel: function (buttonName, evtName) {
+    if (this.data.model) {
+      this.updateButtonModel(buttonName, evtName);
+    }
+  },
+
+  updateButtonModel: function (buttonName, evtName) {
     var button;
-    var color = (state === 'up' || state === 'touchend') ? this.data.buttonColor : state === 'touchstart' ? this.data.buttonTouchColor : this.data.buttonHighlightColor;
-    var buttonMeshes = this.buttonMeshes;
-    if (!this.data.model) { return; }
-    if (buttonMeshes && buttonMeshes[buttonName]) {
-      button = buttonMeshes[buttonName];
+    var color = (evtName === 'up' || evtName === 'touchend') ? this.buttonMeshes[buttonName].naturalColor || this.data.buttonColor : evtName === 'touchstart' ? this.data.buttonTouchColor : this.data.buttonHighlightColor;
+    
+    if (this.buttonMeshes && this.buttonMeshes[buttonName]) {
+      button = this.buttonMeshes[buttonName];
       button.material.color.set(color);
       this.rendererSystem.applyColorCorrection(button.material.color);
     }
-  }
+  },
 });
