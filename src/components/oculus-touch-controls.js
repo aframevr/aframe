@@ -366,20 +366,10 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     if (!this.buttonMeshes[button]) return;
     this.buttonMeshes[button].traverse((node) => {
       if (node.type !== 'Mesh') return;
-      var originalMaterial = node.material;
-      this.buttonMeshes[button].naturalColor = originalMaterial.color;
-      node.material = new THREE.MeshStandardMaterial();
-
-      // preserve details; not iterable, so we have to use Object.keys()
-      Object.keys(originalMaterial).forEach(key => {
-        if (originalMaterial[key] !== node.material[key]) {
-          // because A-Frame uses the same single material object for all material nodes, it also uses the
-          // same color. This means they use the same color object--we have to break that link. Other links
-          // likely also exist, but they don't matter to us, because color is the only one we change.
-          node.material[key] = key !== 'color' ? originalMaterial[key] : originalMaterial[key].clone();
-        }
-      });
-      originalMaterial.dispose();
+      let newMaterial = node.material.clone();
+      this.buttonMeshes[button].naturalColor = node.material.color;
+      node.material.dispose();
+      node.material = newMaterial;
     });
   },
 
