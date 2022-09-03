@@ -136,7 +136,7 @@ When using glTF models compressed with Draco, KTX2 or Meshopt, you must configur
 
 ```html
 <a-scene gltf-model="dracoDecoderPath: path/to/decoder/;
-    ktx2TranscoderPath: path/to/transcoder/;
+    basisTranscoderPath: path/to/transcoder/;
     meshoptDecoderPath: path/to/meshopt_decoder.js;">
   <a-entity gltf-model="url(pony.glb)"></a-entity>
 </a-scene>
@@ -145,7 +145,7 @@ When using glTF models compressed with Draco, KTX2 or Meshopt, you must configur
 | Property         | Description                                                                                                                                                                                           | Default Value                       |
 |------------------|--------------------------------------|----|
 | dracoDecoderPath | Path to the Draco decoder libraries. | '' |
-| ktx2TranscoderPath | Path to the KTX2 transcoder libraries. | '' |
+| basisTranscoderPath | Path to the basis/KTX2 transcoder libraries. | '' |
 | meshoptDecoderPath | Path to the Meshopt decoder.       | '' |
 
 `dracoDecoderPath` path must be a folder containing three files:
@@ -159,7 +159,7 @@ These files are available from the three.js repository, under
 automatically choose whether to use a WASM or JavaScript decoder, so both should
 be included. A Google-hosted version of the Draco decoder libraries saves you from needing to include these libraries in your own project: set `https://www.gstatic.com/draco/v1/decoders/` as the value for `dracoDecoderPath`.
 
-`ktx2TranscoderPath` path must be a folder containing two files:
+`basisTranscoderPath` path must be a folder containing two files:
 
     basis_transcoder.js — JavaScript wrapper for the WebAssembly transcoder.
     basis_transcoder.wasm — WebAssembly transcoder.
