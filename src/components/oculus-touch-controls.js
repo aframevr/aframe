@@ -242,7 +242,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
       }
     }
     var modelUrl = this.displayModel[data.hand].modelUrl;
-    this.isV3 = this.displayModel === CONTROLLER_PROPERTIES['oculus-touch-v3'];
+    this.isOculusTouchV3 = this.displayModel === CONTROLLER_PROPERTIES['oculus-touch-v3'];
     this.el.setAttribute('gltf-model', modelUrl);
   },
 
@@ -275,7 +275,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
 
   onButtonChanged: function (evt) {
     // move the button meshes
-    if (this.isV3) {
+    if (this.isOculusTouchV3) {
       this.onButtonChangedV3(evt);
     } else {
       var button = this.mapping[this.data.hand].buttons[evt.detail.id];
@@ -323,8 +323,8 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   },
 
   onModelLoaded: function (evt) {
-    if (this.isV3) {
-      this.onModelLoadedV3(evt);
+    if (this.isOculusTouchV3) {
+      this.onOculusTouchV3ModelLoaded(evt);
     } else {
       var controllerObject3D = this.controllerObject3D = evt.detail.model;
       var buttonMeshes;
@@ -364,16 +364,17 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
 
   multiMeshFix: function (button) {
     if (!this.buttonMeshes[button]) return;
-    this.buttonMeshes[button].traverse((node) => {
+    var self = this;
+    this.buttonMeshes[button].traverse(function (node) {
       if (node.type !== 'Mesh') return;
       let newMaterial = node.material.clone();
-      this.buttonMeshes[button].naturalColor = node.material.color;
+      self.buttonMeshes[button].naturalColor = node.material.color;
       node.material.dispose();
       node.material = newMaterial;
     });
   },
 
-  onModelLoadedV3: function (evt) {
+  onOculusTouchV3ModelLoaded: function (evt) {
     var controllerObject3D = this.controllerObject3D = evt.detail.model;
 
     if (!this.data.model) { return; }
@@ -446,7 +447,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   },
 
   onThumbstickMoved: function (evt) {
-    if (!this.isV3 || !this.buttonMeshes || !this.buttonMeshes.thumbstick) { return; }
+    if (!this.isOculusTouchV3 || !this.buttonMeshes || !this.buttonMeshes.thumbstick) { return; }
     for (var axis in evt.detail) {
       this.buttonObjects.thumbstick.rotation[this.axisMap[axis]] =
         this.buttonRanges.thumbstick.originalRotation[this.axisMap[axis]] -
