@@ -293,6 +293,7 @@ module.exports.AScene = registerElement('a-scene', {
 
         // Has VR.
         if (this.checkHeadsetConnected() || this.isMobile) {
+          var rendererSystem = self.getAttribute('renderer');
           vrManager.enabled = true;
 
           if (this.hasWebXR) {
@@ -309,7 +310,9 @@ module.exports.AScene = registerElement('a-scene', {
                 function requestSuccess (xrSession) {
                   self.xrSession = xrSession;
                   vrManager.layersEnabled = xrInit.requiredFeatures.indexOf('layers') !== -1;
-                  vrManager.setSession(xrSession);
+                  vrManager.setSession(xrSession).then(function () {
+                    vrManager.setFoveation(rendererSystem.foveationLevel);
+                  });
                   xrSession.addEventListener('end', self.exitVRBound);
                   enterVRSuccess(resolve);
                 },
@@ -328,10 +331,8 @@ module.exports.AScene = registerElement('a-scene', {
               enterVRSuccess();
               return Promise.resolve();
             }
-            var rendererSystem = this.getAttribute('renderer');
             var presentationAttributes = {
-              highRefreshRate: rendererSystem.highRefreshRate,
-              foveationLevel: rendererSystem.foveationLevel
+              highRefreshRate: rendererSystem.highRefreshRate
             };
 
             return vrDisplay.requestPresent([{
