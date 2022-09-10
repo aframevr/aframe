@@ -146,6 +146,7 @@ suite('a-scene (without renderer)', function () {
           setPoseTarget: function () {},
           dispose: function () {}
         },
+        dispose: function () {},
         getContext: function () { return undefined; },
         setAnimationLoop: function () {},
         setPixelRatio: function () {},
@@ -271,6 +272,7 @@ suite('a-scene (without renderer)', function () {
           setPoseTarget: function () {},
           dispose: function () {}
         },
+        dispose: function () {},
         setAnimationLoop: function () {},
         setPixelRatio: function () {},
         setSize: function () {},
@@ -445,6 +447,7 @@ suite('a-scene (without renderer)', function () {
           setDevice: function () {},
           dispose: function () {}
         },
+        dispose: function () {},
         setAnimationLoop: function () {},
         setSize: setSizeSpy,
         render: function () {}

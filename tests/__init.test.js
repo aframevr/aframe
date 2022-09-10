@@ -41,6 +41,7 @@ setup(function () {
       dispose: function () {},
       enabled: false
     },
+    dispose: function () {},
     getContext: function () { return undefined; },
     setAnimationLoop: function () {},
     setSize: function () {},
