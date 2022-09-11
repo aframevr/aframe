@@ -346,7 +346,9 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     }
 
     for (var button in this.buttonMeshes) {
-      cloneMaterialToTHREE(this.buttonMeshes[button]);
+      if (this.buttonMeshes[button]) {
+        cloneMaterialToTHREE(this.buttonMeshes[button]);
+      }
     }
 
     this.applyOffset(evt.detail.model);
@@ -467,12 +469,12 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   }
 });
 
-/*
-  A-Frame's material component makes a single unified shared material for all meshes.
-  In order to be able to color individual buttons, we need to give each sub-mesh its own
-  THREE material. Without this, changing the color on any individual button mesh changes
-  the color on every button mesh.
-*/
+/**
+ * A-Frame's material component makes a single unified shared material for all meshes.
+ * In order to be able to color individual buttons, we need to give each sub-mesh its own
+ * THREE material. Without this, changing the color on any individual button mesh changes
+ * the color on every button mesh.
+ */
 
 function cloneMaterialToTHREE (object3d) {
   object3d.traverse(function (node) {
