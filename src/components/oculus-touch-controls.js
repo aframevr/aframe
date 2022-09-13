@@ -470,7 +470,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
 });
 
 /**
- * A-Frame's material component makes a single unified shared material for all meshes.
+ * A-Frame's material component makes a single unified shared material for all child meshes.
  * In order to be able to color individual buttons, we need to give each sub-mesh its own
  * THREE material. Without this, changing the color on any individual button mesh changes
  * the color on every button mesh.
