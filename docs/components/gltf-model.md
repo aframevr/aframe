@@ -132,10 +132,11 @@ You'll also need to load a decoder library by configuring scene properties as ex
 [draco-decoders]: https://github.com/mrdoob/three.js/tree/master/examples/js/libs/draco/gltf
 [meshopt-decoder]: https://github.com/zeux/meshoptimizer/tree/master/js
 
-When using glTF models compressed with Draco or Meshopt, you must configure the path to the necessary decoders:
+When using glTF models compressed with Draco, KTX2 or Meshopt, you must configure the path to the necessary decoders:
 
 ```html
 <a-scene gltf-model="dracoDecoderPath: path/to/decoder/;
+    basisTranscoderPath: path/to/transcoder/;
     meshoptDecoderPath: path/to/meshopt_decoder.js;">
   <a-entity gltf-model="url(pony.glb)"></a-entity>
 </a-scene>
@@ -144,6 +145,7 @@ When using glTF models compressed with Draco or Meshopt, you must configure the 
 | Property         | Description                                                                                                                                                                                           | Default Value                       |
 |------------------|--------------------------------------|----|
 | dracoDecoderPath | Path to the Draco decoder libraries. | '' |
+| basisTranscoderPath | Path to the basis/KTX2 transcoder libraries. | '' |
 | meshoptDecoderPath | Path to the Meshopt decoder.       | '' |
 
 `dracoDecoderPath` path must be a folder containing three files:
@@ -156,6 +158,14 @@ These files are available from the three.js repository, under
 [examples/js/libs/draco/gltf][draco-decoders]. The `gltf-model` component will
 automatically choose whether to use a WASM or JavaScript decoder, so both should
 be included. A Google-hosted version of the Draco decoder libraries saves you from needing to include these libraries in your own project: set `https://www.gstatic.com/draco/v1/decoders/` as the value for `dracoDecoderPath`.
+
+`basisTranscoderPath` path must be a folder containing two files:
+
+    basis_transcoder.js — JavaScript wrapper for the WebAssembly transcoder.
+    basis_transcoder.wasm — WebAssembly transcoder.
+
+These files are available from the three.js repository in [`/examples/js/libs/basis`](https://github.com/mrdoob/three.js/tree/master/examples/js/libs/basis).
+
 
 `meshoptDecoderPath` path should be the complete file path (including filename) for a Meshopt decoder, typically named `meshopt_decoder.js`. Meshopt requires WebAssembly support. A CDN-hosted, versioned decoder is available at `https://unpkg.com/meshoptimizer@0.16.0/meshopt_decoder.js`, or you may download copies from the [meshoptimizer GitHub repository][meshopt-decoder].
 

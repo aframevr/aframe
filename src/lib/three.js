@@ -22,13 +22,16 @@ if (THREE.Cache) {
 require('../../vendor/DeviceOrientationControls'); // THREE.DeviceOrientationControls
 require('super-three/examples/js/loaders/DRACOLoader');  // THREE.DRACOLoader
 require('super-three/examples/js/loaders/GLTFLoader');  // THREE.GLTFLoader
+require('super-three/examples/js/loaders/KTX2Loader');  // THREE.KTX2Loader
 require('super-three/examples/js/loaders/OBJLoader');  // THREE.OBJLoader
 require('super-three/examples/js/loaders/MTLLoader');  // THREE.MTLLoader
 require('super-three/examples/js/utils/BufferGeometryUtils');  // THREE.BufferGeometryUtils
 require('super-three/examples/js/lights/LightProbeGenerator'); // THREE.LightProbeGenerator
+require('super-three/examples/js/utils/WorkerPool'); // WorkerPool used by KTX2Loader
 
 THREE.DRACOLoader.prototype.crossOrigin = 'anonymous';
 THREE.GLTFLoader.prototype.crossOrigin = 'anonymous';
+THREE.KTX2Loader.prototype.crossOrigin = 'anonymous';
 THREE.MTLLoader.prototype.crossOrigin = 'anonymous';
 THREE.OBJLoader.prototype.crossOrigin = 'anonymous';
 
