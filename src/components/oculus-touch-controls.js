@@ -458,7 +458,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   updateButtonModel: function (buttonName, evtName) {
     // update the button mesh colors
     var button;
-    var color = (evtName === 'up' || evtName === 'touchend') ? this.buttonMeshes[buttonName].naturalColor || this.data.buttonColor : evtName === 'touchstart' ? this.data.buttonTouchColor : this.data.buttonHighlightColor;
+    var color = (evtName === 'up' || evtName === 'touchend') ? this.buttonMeshes[buttonName].originalColor || this.data.buttonColor : evtName === 'touchstart' ? this.data.buttonTouchColor : this.data.buttonHighlightColor;
     var buttonMeshes = this.buttonMeshes;
 
     if (buttonMeshes && buttonMeshes[buttonName]) {
@@ -480,7 +480,7 @@ function cloneMaterialToTHREE (object3d) {
   object3d.traverse(function (node) {
     if (node.type !== 'Mesh') return;
     let newMaterial = node.material.clone();
-    object3d.naturalColor = node.material.color;
+    object3d.originalColor = node.material.color;
     node.material.dispose();
     node.material = newMaterial;
   });
