@@ -455,10 +455,10 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     this.updateButtonModel(buttonName, evtName);
   },
 
-  updateButtonModel: function (buttonName, evtName) {
+  updateButtonModel: function (buttonName, state) {
     // update the button mesh colors
     var button;
-    var color = (evtName === 'up' || evtName === 'touchend') ? this.buttonMeshes[buttonName].originalColor || this.data.buttonColor : evtName === 'touchstart' ? this.data.buttonTouchColor : this.data.buttonHighlightColor;
+    var color = (state === 'up' || state === 'touchend') ? this.buttonMeshes[buttonName].originalColor || this.data.buttonColor : state === 'touchstart' ? this.data.buttonTouchColor : this.data.buttonHighlightColor;
     var buttonMeshes = this.buttonMeshes;
 
     if (buttonMeshes && buttonMeshes[buttonName]) {
