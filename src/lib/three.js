@@ -1,4 +1,4 @@
-var THREE = global.THREE = require('super-three');
+var THREE = require('./three.module.js').default;
 
 // Allow cross-origin images to be loaded.
 
@@ -17,17 +17,6 @@ if (THREE.ImageLoader) {
 if (THREE.Cache) {
   THREE.Cache.enabled = true;
 }
-
-// TODO: Eventually include these only if they are needed by a component.
-require('../../vendor/DeviceOrientationControls'); // THREE.DeviceOrientationControls
-require('super-three/examples/js/loaders/DRACOLoader');  // THREE.DRACOLoader
-require('super-three/examples/js/loaders/GLTFLoader');  // THREE.GLTFLoader
-require('super-three/examples/js/loaders/KTX2Loader');  // THREE.KTX2Loader
-require('super-three/examples/js/loaders/OBJLoader');  // THREE.OBJLoader
-require('super-three/examples/js/loaders/MTLLoader');  // THREE.MTLLoader
-require('super-three/examples/js/utils/BufferGeometryUtils');  // THREE.BufferGeometryUtils
-require('super-three/examples/js/lights/LightProbeGenerator'); // THREE.LightProbeGenerator
-require('super-three/examples/js/utils/WorkerPool'); // WorkerPool used by KTX2Loader
 
 THREE.DRACOLoader.prototype.crossOrigin = 'anonymous';
 THREE.GLTFLoader.prototype.crossOrigin = 'anonymous';

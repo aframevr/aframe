@@ -1,5 +1,7 @@
 // Karma configuration.
+var path = require('path');
 var glob = require('glob');
+var webpackConfiguration = require("../webpack.config.js");
 
 // Define test files.
 var FILES = [
@@ -14,15 +16,20 @@ if (process.env.TEST_FILE) {
     }
   });
 } else {
-  FILES.push('tests/**/*.test.js');
+  glob.sync('tests/**/*.test.js').forEach(function (filename) {
+    FILES.push(filename);
+  });
 }
+
+// add 'src' to be able to resolve require('utils/tracked-controls') for
+// example in the tests
+webpackConfiguration.resolve.modules = ['src', 'node_modules'];
+// webpack will create a lot of files, use build directory instead of dist
+webpackConfiguration.output.path = path.resolve(__dirname, '../build');
 
 var karmaConf = {
   basePath: '../',
-  browserify: {
-    debug: true,
-    paths: ['src']
-  },
+  webpack: webpackConfiguration,
   browsers: ['Firefox', 'Chrome'],
   customLaunchers: {
     ChromeTravis: {
@@ -38,28 +45,19 @@ var karmaConf = {
     'TEST_ENV'
   ],
   files: FILES,
-  frameworks: ['mocha', 'sinon-chai', 'chai-shallow-deep-equal', 'browserify'],
+  frameworks: ['mocha', 'sinon-chai', 'chai-shallow-deep-equal', 'webpack'],
   preprocessors: {
-    'tests/**/*.js': ['browserify', 'env']
+    'tests/**/*.js': ['webpack', 'env']
   },
   reporters: ['mocha']
 };
 
 // Configuration for code coverage reporting.
 if (process.env.TEST_ENV === 'ci') {
-  Object.assign(karmaConf.browserify, {
-    transform: [
-      [
-        'browserify-istanbul', {
-          instrumenterConfig: {
-            embedSource: true
-          },
-          defaultIgnore: true,
-          ignore: ['**/node_modules/**', '**/tests/**', '**/vendor/**', '**/*.css']
-        }
-      ]
-    ]
-  });
+  // modify the babel-loader rule
+  karmaConf.webpack.module.rules[0].use.options = {
+    plugins: [['istanbul', { 'exclude': ['**/node_modules/**', '**/tests/**', '**/vendor/**', '**/*.css'] }]]
+  };
   karmaConf.coverageReporter = {
     dir: 'tests/coverage',
     includeAllSources: true,
@@ -69,7 +67,6 @@ if (process.env.TEST_ENV === 'ci') {
     ]
   };
   karmaConf.reporters.push('coverage');
-  karmaConf.preprocessors['src/**/*.js'] = ['coverage'];
   karmaConf.browsers = ['Firefox', 'ChromeTravis'];
 }
 

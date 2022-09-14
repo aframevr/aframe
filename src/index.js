@@ -99,7 +99,7 @@ module.exports = window.AFRAME = {
   AComponent: require('./core/component').Component,
   AEntity: AEntity,
   ANode: ANode,
-  ANIME: require('super-animejs'),
+  ANIME: require('super-animejs').default,
   AScene: AScene,
   components: components,
   coreComponents: Object.keys(components),

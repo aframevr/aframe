@@ -5,12 +5,10 @@
   "homepage": "https://aframe.io/",
   "main": "dist/aframe-master.js",
   "scripts": {
-    "browserify": "browserify src/index.js -s 'AFRAME' -p browserify-derequire",
-    "build": "shx mkdir -p build/ && npm run browserify -- --debug -t [ envify --INSPECTOR_VERSION dev ] -o build/aframe.js",
-    "dev": "npm run build && cross-env INSPECTOR_VERSION=dev node ./scripts/budo -t envify",
-    "dist": "node scripts/updateVersionLog.js && npm run dist:min",
-    "dist:max": "npm run browserify -s -- --debug | exorcist dist/aframe-master.js.map > dist/aframe-master.js",
-    "dist:min": "npm run dist:max && terser dist/aframe-master.js -c --source-map 'content=dist/aframe-master.js.map,url=aframe-master.min.js.map' -o dist/aframe-master.min.js",
+    "dev": "cross-env INSPECTOR_VERSION=dev webpack serve",
+    "dist": "node scripts/updateVersionLog.js && npm run dist:min && npm run dist:max",
+    "dist:max": "webpack --config webpack.config.js",
+    "dist:min": "webpack --config webpack.prod.config.js",
     "docs": "markserv --dir docs --port 9001",
     "preghpages": "node ./scripts/preghpages.js",
     "ghpages": "ghpages -p gh-pages/",
@@ -20,7 +18,7 @@
     "prepush": "node scripts/testOnlyCheck.js",
     "prerelease": "node scripts/release.js 1.2.0 1.3.0",
     "start": "npm run dev",
-    "start:https": "cross-env SSL=true npm run dev",
+    "start:https": "npm run dev -- --server-type https",
     "test": "karma start ./tests/karma.conf.js",
     "test:docs": "node scripts/docsLint.js",
     "test:firefox": "npm test -- --browsers Firefox",
@@ -37,6 +35,7 @@
     "vendor/**/*"
   ],
   "dependencies": {
+    "buffer": "^6.0.3",
     "custom-event-polyfill": "^1.0.6",
     "debug": "ngokevin/debug#noTimestamp",
     "deep-assign": "^2.0.0",
@@ -51,25 +50,20 @@
     "webvr-polyfill": "^0.10.12"
   },
   "devDependencies": {
-    "browserify": "^17.0.0",
-    "browserify-css": "^0.15.0",
-    "browserify-derequire": "^1.1.1",
-    "browserify-istanbul": "^3.0.1",
-    "budo": "^11.8.4",
+    "@babel/core": "^7.17.10",
+    "babel-loader": "^8.2.5",
+    "babel-plugin-istanbul": "^6.1.1",
     "chai": "^4.3.6",
     "chai-shallow-deep-equal": "^1.4.0",
     "chalk": "^1.1.3",
     "cross-env": "^7.0.3",
-    "envify": "^4.1.0",
-    "exorcist": "^2.0.0",
+    "css-loader": "^6.7.1",
     "ghpages": "0.0.8",
     "git-rev": "^0.2.1",
     "glob": "^8.0.3",
     "husky": "^0.11.7",
-    "istanbul": "^0.4.5",
     "jsdom": "^20.0.0",
     "karma": "^6.4.0",
-    "karma-browserify": "^8.1.0",
     "karma-chai-shallow-deep-equal": "0.0.4",
     "karma-chrome-launcher": "^3.1.1",
     "karma-coverage": "^2.2.0",
@@ -78,6 +72,7 @@
     "karma-mocha": "^2.0.1",
     "karma-mocha-reporter": "^2.2.5",
     "karma-sinon-chai": "^2.0.2",
+    "karma-webpack": "^5.0.0",
     "markserv": "github:sukima/markserv#feature/fix-broken-websoketio-link",
     "mocha": "^10.0.0",
     "replace-in-file": "^2.5.3",
@@ -87,17 +82,15 @@
     "sinon": "<12.0.0",
     "sinon-chai": "^3.7.0",
     "snazzy": "^5.0.0",
-    "terser": "^5.15.0",
+    "style-loader": "^3.3.1",
     "too-wordy": "ngokevin/too-wordy",
+    "webpack": "^5.73.0",
+    "webpack-cli": "^4.10.0",
+    "webpack-dev-server": "^4.11.0",
+    "webpack-merge": "^5.8.0",
     "write-good": "^1.0.8"
   },
   "link": true,
-  "browserify": {
-    "transform": [
-      "browserify-css",
-      "envify"
-    ]
-  },
   "semistandard": {
     "ignore": [
       "build/**",
@@ -120,9 +113,6 @@
     "web-components",
     "webvr"
   ],
-  "browserify-css": {
-    "minify": true
-  },
   "engines": {
     "node": ">= 4.6.0",
     "npm": ">= 2.15.9"
