@@ -1,4 +1,4 @@
-var anime = require('super-animejs');
+var anime = require('super-animejs').default;
 var components = require('../core/component').components;
 var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../lib/three');

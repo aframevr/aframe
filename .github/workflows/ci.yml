@@ -45,14 +45,8 @@ jobs:
         with:
           run: npm run test:chrome -- --single-run
 
-#      - name: Test node
-#        run: npm run test:node
-
       - name: Check Lint
         run: npm run lint
-
-      - name: Check Build
-        run: npm run build
 
       - name: Check Build Minified
         run: npm run dist
