@@ -125,9 +125,9 @@ module.exports = registerElement('a-node', {
         Promise.allSettled(childrenLoaded).then(function emitLoaded (results) {
           results.forEach(function checkResultForError (result) {
             if (result.status === 'rejected') {
-              // An "error" event has already been fired by THRE.js loader,
+              // An "error" event has already been fired by THREE.js loader,
               // so we don't need to fire another one.
-              // A warning explaining teh consequences of the error is sufficient.
+              // A warning explaining the consequences of the error is sufficient.
               warn('Rendering scene with errors on node: ', result.reason.target);
             }
           });
