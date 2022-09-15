@@ -227,14 +227,13 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     // If the developer is asking for auto-detection, use the retrieved displayName to identify the specific unit.
     if (data.controllerType === 'auto') {
       var trackedControlsSystem = this.el.sceneEl.systems['tracked-controls-webvr'];
+      // WebVR
       if (trackedControlsSystem && trackedControlsSystem.vrDisplay) {
-        // WebVR
         var displayName = trackedControlsSystem.vrDisplay.displayName;
         if (/^Oculus Quest$/.test(displayName)) {
           this.displayModel = CONTROLLER_PROPERTIES['oculus-touch-v2'];
         }
-      } else {
-        // WebXR
+      } else { // WebXR
         controllerId = CONTROLLER_DEFAULT;
         controllerId = controller.profiles.indexOf('oculus-touch-v2') !== -1 ? 'oculus-touch-v2' : controllerId;
         controllerId = controller.profiles.indexOf('oculus-touch-v3') !== -1 ? 'oculus-touch-v3' : controllerId;
