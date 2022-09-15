@@ -346,7 +346,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
 
     for (var button in this.buttonMeshes) {
       if (this.buttonMeshes[button]) {
-        cloneMeshMaterials(this.buttonMeshes[button]);
+        cloneMeshMaterial(this.buttonMeshes[button]);
       }
     }
 
@@ -472,7 +472,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
  * Some of the controller models share the same material for different parts (buttons, triggers...).
  * In order to change their color independently we have to create separate materials.
  */
-function cloneMeshMaterials (object3d) {
+function cloneMeshMaterial (object3d) {
   object3d.traverse(function (node) {
     if (node.type !== 'Mesh') return;
     let newMaterial = node.material.clone();
