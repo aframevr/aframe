@@ -225,6 +225,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     // Set the controller display model based on the data passed in.
     this.displayModel = CONTROLLER_PROPERTIES[data.controllerType] || CONTROLLER_PROPERTIES[CONTROLLER_DEFAULT];
     // If the developer is asking for auto-detection, use the retrieved displayName to identify the specific unit.
+    // This only works for WebVR currently.
     if (data.controllerType === 'auto') {
       var trackedControlsSystem = this.el.sceneEl.systems['tracked-controls-webvr'];
       // WebVR
