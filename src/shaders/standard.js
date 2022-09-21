@@ -41,6 +41,10 @@ module.exports.Shader = registerShader('standard', {
     normalTextureOffset: {type: 'vec2'},
     normalTextureRepeat: {type: 'vec2', default: {x: 1, y: 1}},
 
+    alphaMap: {type: 'map'},
+    alphaTextureOffset: {type: 'vec2'},
+    alphaTextureRepeat: {type: 'vec2', default: {x: 1, y: 1}},
+
     offset: {type: 'vec2', default: {x: 0, y: 0}},
     repeat: {type: 'vec2', default: {x: 1, y: 1}},
 
@@ -74,6 +78,7 @@ module.exports.Shader = registerShader('standard', {
     if (data.ambientOcclusionMap) { utils.material.updateDistortionMap('ambientOcclusion', this, data); }
     if (data.metalnessMap) { utils.material.updateDistortionMap('metalness', this, data); }
     if (data.roughnessMap) { utils.material.updateDistortionMap('roughness', this, data); }
+    if (data.alphaMap) { utils.material.updateDistortionMap('alpha', this, data); }
     this.updateEnvMap(data);
   },
 
@@ -85,6 +90,7 @@ module.exports.Shader = registerShader('standard', {
     if (data.ambientOcclusionMap) { utils.material.updateDistortionMap('ambientOcclusion', this, data); }
     if (data.metalnessMap) { utils.material.updateDistortionMap('metalness', this, data); }
     if (data.roughnessMap) { utils.material.updateDistortionMap('roughness', this, data); }
+    if (data.alphaMap) { utils.material.updateDistortionMap('alpha', this, data); }
     this.updateEnvMap(data);
   },
 
