@@ -22,6 +22,21 @@ var warn = utils.debug('core:a-scene:warn');
 if (isIOS) { require('../../utils/ios-orientationchange-blank-bug'); }
 
 /**
+ * Create a Promise that resolves once the DOM content is loaded.
+ *
+ * @returns {Promise}
+ */
+function waitForDOMContentLoaded () {
+  if (document.readyState !== 'loading') {
+    return Promise.resolve(null);
+  } else {
+    return new Promise(function (resolve) {
+      document.addEventListener('DOMContentLoaded', resolve);
+    });
+  }
+}
+
+/**
  * Scene element, holds all entities.
  *
  * @member {array} behaviors - Component instances that have registered themselves to be
@@ -134,7 +149,11 @@ module.exports.AScene = registerElement('a-scene', {
           self.attachedCallbackPostCamera();
         });
 
-        this.initSystems();
+        // Some systems use querySelectorAll so we need to be sure the DOM content is loaded.
+        // For example the camera system is using querySelectorAll to check for user defined
+        // camera before injecting a default camera, but it fails to find the camera if the
+        // querySelectorAll is executed before DOMContentLoaded.
+        waitForDOMContentLoaded().then(this.initSystems.bind(this));
 
         // WebXR Immersive navigation handler.
         if (this.hasWebXR && navigator.xr && navigator.xr.addEventListener) {
