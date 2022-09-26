@@ -1,4 +1,4 @@
-/* global AFRAME, assert, CustomEvent, process, sinon, setup, suite, teardown, test, THREE */
+/* global AFRAME, assert, CustomEvent, process, screen, sinon, setup, suite, teardown, test, THREE */
 var AScene = require('core/scene/a-scene').AScene;
 var components = require('core/component').components;
 var scenes = require('core/scene/scenes');
@@ -188,9 +188,12 @@ suite('a-scene (without renderer)', function () {
     });
 
     test('calls requestPresent on mobile', function (done) {
+      // Fake the lock method otherwise we get "screen.orientation.lock() is not available on this device."
+      this.sinon.stub(screen.orientation, 'lock');
       var sceneEl = this.el;
       sceneEl.isMobile = true;
       sceneEl.enterVR().then(function () {
+        assert.ok(screen.orientation.lock.called);
         assert.ok(sceneEl.renderer.xr.enabled);
         done();
       });
@@ -302,6 +305,7 @@ suite('a-scene (without renderer)', function () {
     });
 
     test('calls exitPresent on mobile', function (done) {
+      this.sinon.stub(screen.orientation, 'lock');
       var sceneEl = this.el;
       sceneEl.isMobile = true;
       sceneEl.exitVR().then(function () {
