@@ -8,7 +8,7 @@ suite('oculus-touch-controls', function () {
   setup(function (done) {
     el = this.el = entityFactory();
     el.setAttribute('oculus-touch-controls', '');
-    el.addEventListener('loaded', function () {
+    var callback = function () {
       component = el.components['oculus-touch-controls'];
       // Initially no controllers are present
       component.controllers = [];
@@ -20,7 +20,9 @@ suite('oculus-touch-controls', function () {
         pose: {}
       }];
       done();
-    });
+    };
+    if (el.hasLoaded) { callback(); }
+    el.addEventListener('loaded', callback);
   });
 
   suite('checkIfControllerPresent', function () {
