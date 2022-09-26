@@ -9,7 +9,7 @@ var XHR_SRC = '/base/tests/assets/dummy/dummy.txt';
 var XHR_SRC_GLTF = '/base/tests/assets/dummy/dummy.gltf';
 var XHR_SRC_GLB = '/base/tests/assets/dummy/dummy.glb';
 
-suite.skip('a-assets', function () {
+suite('a-assets', function () {
   setup(function () {
     var el = this.el = document.createElement('a-assets');
     var scene = this.scene = document.createElement('a-scene');
@@ -105,7 +105,7 @@ suite.skip('a-assets', function () {
     document.body.appendChild(scene);
   });
 
-  test('calls load when timing out', function (done) {
+  test.skip('calls load when timing out', function (done) {
     var el = this.el;
     var scene = this.scene;
     var img = document.createElement('img');
@@ -125,7 +125,7 @@ suite.skip('a-assets', function () {
   });
 
   suite('fixUpMediaElement', function () {
-    test('recreates media elements with crossorigin if necessary', function (done) {
+    test.skip('recreates media elements with crossorigin if necessary', function (done) {
       var el = this.el;
       var scene = this.scene;
       var img = document.createElement('img');
@@ -162,7 +162,7 @@ suite.skip('a-assets', function () {
       document.body.appendChild(scene);
     });
 
-    test('does not recreate media element if not crossorigin', function (done) {
+    test.skip('does not recreate media element if not crossorigin', function (done) {
       var el = this.el;
       var scene = this.scene;
       var img = document.createElement('img');
@@ -182,7 +182,7 @@ suite.skip('a-assets', function () {
       document.body.appendChild(scene);
     });
 
-    test('does not recreate media element if crossorigin already set', function (done) {
+    test.skip('does not recreate media element if crossorigin already set', function (done) {
       var el = this.el;
       var scene = this.scene;
       var img = document.createElement('img');
@@ -221,7 +221,7 @@ suite.skip('a-assets', function () {
   });
 });
 
-suite.skip('a-asset-item', function () {
+suite('a-asset-item', function () {
   setup(function () {
     var el = this.assetsEl = document.createElement('a-assets');
     var scene = this.sceneEl = document.createElement('a-scene');
@@ -241,7 +241,7 @@ suite.skip('a-asset-item', function () {
     document.body.appendChild(this.sceneEl);
   });
 
-  test('emits error event', function (done) {
+  test.skip('emits error event', function (done) {
     var assetItem = document.createElement('a-asset-item');
     assetItem.setAttribute('src', 'doesntexist');
     assetItem.addEventListener('error', function (evt) {
