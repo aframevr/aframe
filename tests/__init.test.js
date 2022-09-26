@@ -52,6 +52,21 @@ setup(function () {
   };
 });
 
+// Ensure that uncaught exceptions between tests result in the tests failing.
+// This works around an issue with mocha / karma-mocha, see
+// https://github.com/karma-runner/karma-mocha/issues/227
+var pendingError = null;
+var pendingErrorNotice = null;
+
+window.addEventListener('error', event => {
+  pendingError = event.error;
+  pendingErrorNotice = 'An uncaught exception was thrown between tests';
+});
+window.addEventListener('unhandledrejection', event => {
+  pendingError = event.reason;
+  pendingErrorNotice = 'An uncaught promise rejection occurred between tests';
+});
+
 teardown(function (done) {
   // Clean up any attached elements.
   var attachedEls = ['canvas', 'a-assets', 'a-scene'];
@@ -67,4 +82,9 @@ teardown(function (done) {
   setTimeout(function () {
     done();
   });
+
+  if (pendingError) {
+    console.error(pendingErrorNotice);
+    throw pendingError;
+  }
 });
