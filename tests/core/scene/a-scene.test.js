@@ -273,6 +273,7 @@ suite('a-scene (without renderer)', function () {
           dispose: function () {}
         },
         dispose: function () {},
+        getContext: function () { return undefined; },
         setAnimationLoop: function () {},
         setPixelRatio: function () {},
         setSize: function () {},
