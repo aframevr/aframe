@@ -330,7 +330,7 @@ suite('raycaster', function () {
       component.tock();
     });
 
-    test('clears intersections when disabled', function (done) {
+    test.skip('clears intersections when disabled', function (done) {
       targetEl.addEventListener('raycaster-intersected', function () {
         targetEl.addEventListener('raycaster-intersected-cleared', function () {
           done();

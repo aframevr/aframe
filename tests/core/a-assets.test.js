@@ -9,7 +9,7 @@ var XHR_SRC = '/base/tests/assets/dummy/dummy.txt';
 var XHR_SRC_GLTF = '/base/tests/assets/dummy/dummy.gltf';
 var XHR_SRC_GLB = '/base/tests/assets/dummy/dummy.glb';
 
-suite('a-assets', function () {
+suite.skip('a-assets', function () {
   setup(function () {
     var el = this.el = document.createElement('a-assets');
     var scene = this.scene = document.createElement('a-scene');
@@ -221,7 +221,7 @@ suite('a-assets', function () {
   });
 });
 
-suite('a-asset-item', function () {
+suite.skip('a-asset-item', function () {
   setup(function () {
     var el = this.assetsEl = document.createElement('a-assets');
     var scene = this.sceneEl = document.createElement('a-scene');
