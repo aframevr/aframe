@@ -319,6 +319,7 @@ suite('a-scene (without renderer)', function () {
       sceneEl.renderer.xr.enabled = true;
       sceneEl.isMobile = false;
       this.sinon.stub(sceneEl, 'checkHeadsetConnected').returns(false);
+      this.sinon.stub(sceneEl.canvas, 'requestFullscreen');
       sceneEl.exitVR().then(function () {
         assert.ok(sceneEl.renderer.xr.enabled);
         done();
