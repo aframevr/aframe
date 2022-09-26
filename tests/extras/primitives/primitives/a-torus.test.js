@@ -21,7 +21,7 @@ suite('a-torus', function () {
     assert.equal(this.torusEl.getAttribute('geometry').primitive, 'torus');
   });
 
-  test('can set torus properties', function () {
+  test('can set torus properties', function (done) {
     var geometry;
     var torusEl = this.torusEl;
     torusEl.setAttribute('segments-tubular', '100');
@@ -34,6 +34,7 @@ suite('a-torus', function () {
       assert.equal(geometry.segmentsTubular, 100);
       assert.equal(geometry.radius, 2);
       assert.equal(geometry.radiusTubular, 0.1);
+      done();
     });
   });
 });
