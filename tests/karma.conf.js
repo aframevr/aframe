@@ -16,6 +16,10 @@ if (process.env.TEST_FILE) {
     }
   });
 } else {
+// This global pattern produces some test failures
+//  FILES.push('tests/**/*.test.js');
+// Using those patterns will change the tests execution order and all tests
+// pass...
   FILES.push('tests/components/**/*.test.js');
   FILES.push('tests/core/**/*.test.js');
   FILES.push('tests/extras/**/*.test.js');
