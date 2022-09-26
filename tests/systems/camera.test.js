@@ -2,6 +2,8 @@
 var constants = require('constants/');
 var entityFactory = require('../helpers').entityFactory;
 
+var IMG_SRC = '/base/tests/assets/test.png';
+
 suite('camera system', function () {
   var sceneEl;
 
@@ -30,14 +32,14 @@ suite('camera system', function () {
 
   test('uses defined camera if defined', function (done) {
     var assetsEl;
-    var imgEl;  // Image that will never load.
+    var imgEl;
     var cameraEl;
     var sceneEl;
 
     // Create assets.
     assetsEl = document.createElement('a-assets');
     imgEl = document.createElement('img');
-    imgEl.setAttribute('src', 'neverloadlalala5.gif');
+    imgEl.setAttribute('src', IMG_SRC);
     assetsEl.appendChild(imgEl);
 
     // Create scene.
