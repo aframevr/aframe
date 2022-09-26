@@ -1138,7 +1138,7 @@ suite('a-entity', function () {
 
       box.setAttribute('geometry', {primitive: 'box'});
       component = box.components.geometry;
-      removeSpy = this.sinon.replace(component, 'remove', () => {});
+      removeSpy = this.sinon.replace(component, 'remove', this.sinon.fake(() => {}));
 
       box.removeComponent('geometry');
       assert.notOk(removeSpy.called);

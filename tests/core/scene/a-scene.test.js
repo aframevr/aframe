@@ -498,7 +498,7 @@ suite('a-scene (without renderer)', function () {
       var event;
       var requestPointerLockSpy;
 
-      requestPointerLockSpy = this.sinon.spy(sceneEl.canvas, 'requestPointerLock');
+      requestPointerLockSpy = this.sinon.replace(sceneEl.canvas, 'requestPointerLock', sinon.fake(() => {}));
       event = new CustomEvent('vrdisplaypointerrestricted');
 
       sceneEl.addEventListener('loaded', () => {
@@ -519,7 +519,7 @@ suite('a-scene (without renderer)', function () {
 
       event = new CustomEvent('vrdisplaypointerunrestricted');
 
-      this.sinon.stub(sceneEl, 'getPointerLockElement', function () {
+      this.sinon.replace(sceneEl, 'getPointerLockElement', function () {
         return sceneEl.canvas;
       });
 
@@ -541,7 +541,7 @@ suite('a-scene (without renderer)', function () {
 
       event = new CustomEvent('vrdisplaypointerunrestricted');
 
-      this.sinon.stub(sceneEl, 'getPointerLockElement', function () {
+      this.sinon.replace(sceneEl, 'getPointerLockElement', function () {
         // Mock that pointerlock is taken by the page itself,
         // independently of the a-scene handler for vrdisplaypointerrestricted event
         return document.createElement('canvas');
@@ -562,10 +562,10 @@ suite('a-scene (without renderer)', function () {
       var requestPointerLockSpy;
 
       exitPointerLockSpy = this.sinon.spy(document, 'exitPointerLock');
-      requestPointerLockSpy = this.sinon.spy(sceneEl.canvas, 'requestPointerLock');
+      requestPointerLockSpy = this.sinon.replace(sceneEl.canvas, 'requestPointerLock', sinon.fake(() => {}));
       event = new CustomEvent('vrdisplaypointerrestricted');
 
-      this.sinon.stub(sceneEl, 'getPointerLockElement', function () {
+      this.sinon.replace(sceneEl, 'getPointerLockElement', function () {
         // Mock that pointerlock is taken by the page itself,
         // independently of the a-scene handler for vrdisplaypointerrestricted event
         return document.createElement('canvas');
