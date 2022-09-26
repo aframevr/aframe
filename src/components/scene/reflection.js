@@ -32,7 +32,6 @@ module.exports.Component = register('reflection', {
     this.cubeCamera = new THREE.CubeCamera(0.1, 1000, this.cubeRenderTarget);
     this.lightingEstimationTexture = (new THREE.WebGLCubeRenderTarget(16)).texture;
     this.needsVREnvironmentUpdate = true;
-    this.probeLight = null;
 
     // Update WebXR to support light-estimation
     var webxrData = this.el.getAttribute('webxr');
@@ -158,7 +157,6 @@ module.exports.Component = register('reflection', {
     this.el.object3D.environment = null;
     if (this.probeLight) {
       this.el.removeChild(this.probeLight);
-      this.probeLight = null;
     }
   }
 });

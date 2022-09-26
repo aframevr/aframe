@@ -17,6 +17,5 @@ suite('reflection', function () {
     assert.isNull(sceneEl.object3D.environment);
     sceneEl.setAttribute('reflection', {directionalLight: '#dirlight'});
     assert.isNotNull(sceneEl.object3D.environment);
-    assert.isNull(sceneEl.components.reflection.probeLight);
   });
 });
