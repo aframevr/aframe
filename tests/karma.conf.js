@@ -18,14 +18,13 @@ if (process.env.TEST_FILE) {
 } else {
 // This global pattern produces some test failures
 //  FILES.push('tests/**/*.test.js');
-// Using those patterns will change the tests execution order and all tests
-// pass...
-  FILES.push('tests/components/**/*.test.js');
-  FILES.push('tests/core/**/*.test.js');
-  FILES.push('tests/extras/**/*.test.js');
-  FILES.push('tests/shaders/**/*.test.js');
-  FILES.push('tests/systems/**/*.test.js');
-  FILES.push('tests/utils/**/*.test.js');
+// Using a pattern for each folder will change the tests execution order and
+// all tests pass...
+  var excluded_folders = ['assets', 'coverage', 'node'];
+  glob.sync('tests/*/').forEach(function (dirname) {
+    if (excluded_folders.indexOf(dirname) !== -1) return;
+    FILES.push(dirname + '**/*.test.js');
+  });
 }
 
 // add 'src' to be able to resolve require('utils/tracked-controls') for
