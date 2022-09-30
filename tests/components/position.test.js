@@ -5,6 +5,7 @@ suite('position', function () {
   setup(function (done) {
     var el = this.el = entityFactory();
     el.setAttribute('position', '');
+    if (el.hasLoaded) { done(); }
     el.addEventListener('loaded', function () {
       done();
     });

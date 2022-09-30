@@ -5,7 +5,7 @@ suite('daydream-controls', function () {
   setup(function (done) {
     var el = this.el = entityFactory();
     el.setAttribute('daydream-controls', 'hand: right'); // to ensure index = 0
-    el.addEventListener('loaded', function () {
+    var callback = function () {
       var component = el.components['daydream-controls'];
       component.controllersWhenPresent = [{
         id: 'Daydream Controller',
@@ -17,7 +17,9 @@ suite('daydream-controls', function () {
       }];
       el.parentEl.renderer.xr.getStandingMatrix = function () {};
       done();
-    });
+    };
+    if (el.hasLoaded) { callback(); }
+    el.addEventListener('loaded', callback);
   });
 
   suite('checkIfControllerPresent', function () {

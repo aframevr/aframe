@@ -6,6 +6,7 @@ suite('rotation', function () {
   setup(function (done) {
     var el = this.el = entityFactory();
     el.setAttribute('rotation', '');
+    if (el.hasLoaded) { done(); }
     el.addEventListener('loaded', function () {
       done();
     });

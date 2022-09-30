@@ -59,7 +59,7 @@ module.exports = registerElement('a-assets', {
         }
 
         // Trigger loaded for scene to start rendering.
-        Promise.all(loaded).then(bind(this.load, this));
+        Promise.allSettled(loaded).then(bind(this.load, this));
 
         // Timeout to start loading anyways.
         timeout = parseInt(this.getAttribute('timeout'), 10) || 3000;
