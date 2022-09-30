@@ -273,7 +273,7 @@ suite('a-asset-item', function () {
       assert.ok(evt.detail.xhr !== undefined);
       // ATTENTION! This evt.stopPropagation() is very important. Without it
       // the test will pass but will silently reduces the number of
-      // tests run from 1121 to 559!      
+      // tests run from 1121 to 559!
       evt.stopPropagation();
       done();
     });
