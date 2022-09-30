@@ -64,6 +64,12 @@ module.exports.Component = registerComponent('wasd-controls', {
     el.object3D.position.add(this.getMovementVector(delta));
   },
 
+  update: function (oldData) {
+    // Reset velocity if axis have changed.
+    if (oldData.adAxis !== this.data.adAxis) { this.velocity[oldData.adAxis] = 0; }
+    if (oldData.wsAxis !== this.data.wsAxis) { this.velocity[oldData.wsAxis] = 0; }
+  },
+
   remove: function () {
     this.removeKeyEventListeners();
     this.removeVisibilityEventListeners();
@@ -146,7 +152,7 @@ module.exports.Component = registerComponent('wasd-controls', {
       xRotation = this.data.fly ? rotation.x : 0;
 
       // Transform direction relative to heading.
-      rotationEuler.set(THREE.Math.degToRad(xRotation), THREE.Math.degToRad(rotation.y), 0);
+      rotationEuler.set(THREE.MathUtils.degToRad(xRotation), THREE.MathUtils.degToRad(rotation.y), 0);
       directionVector.applyEuler(rotationEuler);
       return directionVector;
     };

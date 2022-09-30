@@ -31,7 +31,7 @@ It also configures presentation attributes when entering WebVR/WebXR.
 | antialias               | Whether to perform antialiasing. If `auto`, antialiasing is disabled on mobile. | auto          |
 | colorManagement         | Whether to use a color-managed linear workflow.                                 | false         |
 | highRefreshRate         | Toggles 72hz mode on Oculus Browser. Defaults to 60hz.                          | false         |
-| foveationLevel          | Enables foveation in VR to improve perf. 0 none, 1 low, 2 medium, 3 high        | 0             |
+| foveationLevel          | Amount of foveation used in VR to improve perf, from 0 (min) to 1 (max).        | 1             |
 | sortObjects             | Whether to sort objects before rendering.                                       | false         |
 | physicallyCorrectLights | Whether to use physically-correct light attenuation.                            | false         |
 | maxCanvasWidth          | Maximum canvas width. Uses the size multiplied by device pixel ratio. Does not limit canvas width if set to -1.                                | 1920            |
@@ -69,9 +69,9 @@ Browser in Oculus Go and switches rendering from 60hz to 72hz.
 
 ### foveationLevel
 
-Sets the level of requested foveation which renders fewer pixels around the edges of the viewport
-when in stereo rendering mode on certain systems. This is currently supported by the Oculus Browser
-on the Oculus Go with values ranging from 0 (none) to 3 (high). 
+Controls the amount of foveation which renders fewer pixels near the edges of the user's field of view
+when in stereo rendering mode on certain systems. The value should be in the range of 0 to 1, where
+0 is the minimum and 1 the maximum amount of foveation. This is currently supported by the Oculus Browser.
 
 ### sortObjects
 

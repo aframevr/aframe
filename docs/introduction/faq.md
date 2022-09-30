@@ -299,7 +299,7 @@ including:
 
 ## Which headsets, browsers, devices, and platforms does A-Frame support?
 
-[deviceplatform]: ./vr-headsets-and-webvr-browsers.md
+[deviceplatform]: ./vr-headsets-and-webxr-browsers.md
 
 Most of them. Read *[VR Headsets and WebVR Browsers][deviceplatform]* for more
 information.

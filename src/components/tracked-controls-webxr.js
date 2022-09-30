@@ -16,7 +16,8 @@ module.exports.Component = registerComponent('tracked-controls-webxr', {
     hand: {type: 'string', default: ''},
     handTrackingEnabled: {default: false},
     index: {type: 'int', default: -1},
-    iterateControllerProfiles: {default: false}
+    iterateControllerProfiles: {default: false},
+    space: {type: 'string', oneOf: ['targetRaySpace', 'gripSpace'], default: 'targetRaySpace'}
   },
 
   init: function () {
@@ -75,7 +76,7 @@ module.exports.Component = registerComponent('tracked-controls-webxr', {
     var frame = sceneEl.frame;
     if (!controller || !sceneEl.frame || !this.system.referenceSpace) { return; }
     if (!controller.hand) {
-      this.pose = frame.getPose(controller.targetRaySpace, this.system.referenceSpace);
+      this.pose = frame.getPose(controller[this.data.space], this.system.referenceSpace);
       this.updatePose();
       this.updateButtons();
     }

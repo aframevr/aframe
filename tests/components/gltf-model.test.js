@@ -71,7 +71,7 @@ suite('gltf-model', function () {
       animations: animations
     };
 
-    this.sinon.stub(THREE, 'GLTFLoader', function MockGLTFLoader () {
+    this.sinon.replace(THREE, 'GLTFLoader', function MockGLTFLoader () {
       this.load = function (url, onLoad) {
         process.nextTick(onLoad.bind(null, gltfMock));
       };

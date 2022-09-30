@@ -5,7 +5,6 @@
 <p align="center"><b>A web framework for building virtual reality experiences.</b></p>
 
 <p align="center">
-  <a href="https://travis-ci.org/aframevr/aframe"><img src="https://img.shields.io/travis/aframevr/aframe.svg?style=flat-square" alt="Build Status"></a>
   <a href="https://codecov.io/gh/aframevr/aframe">
     <img src="https://codecov.io/gh/aframevr/aframe/branch/master/graph/badge.svg" alt="Coverage Status">
   </a>
@@ -33,15 +32,6 @@
   &mdash;
   <a href="https://aframe.io/subscribe/">Newsletter</a>
 </div>
-
-<h3 align="center">Special Sponsors</h3>
-<!--special start-->
-<p align="center">
-  <a href="https://planetvoodoo.org/" target="_blank">
-    <img width="120px" src="https://user-images.githubusercontent.com/39342/112707090-da492580-8e65-11eb-88c5-be39f48544f6.jpg">
-  </a>
-</p>  
-<!--special end-->
 
 ## Examples
 

@@ -48,7 +48,7 @@ var Component = module.exports.Component = function (el, attrValue, id) {
   this.el.components[this.attrName] = this;
   this.objectPool = objectPools[this.name];
 
-  const events = this.events;
+  var events = this.events;
   this.events = {};
   eventsBind(this, events);
 

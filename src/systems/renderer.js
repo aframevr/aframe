@@ -23,7 +23,7 @@ module.exports.System = registerSystem('renderer', {
     colorManagement: {default: false},
     gammaOutput: {default: false},
     alpha: {default: true},
-    foveationLevel: {default: 0}
+    foveationLevel: {default: 1}
   },
 
   init: function () {
@@ -59,6 +59,7 @@ module.exports.System = registerSystem('renderer', {
     var toneMappingName = this.data.toneMapping.charAt(0).toUpperCase() + this.data.toneMapping.slice(1);
     renderer.toneMapping = THREE[toneMappingName + 'ToneMapping'];
     renderer.toneMappingExposure = data.exposure;
+    renderer.xr.setFoveation(data.foveationLevel);
   },
 
   applyColorCorrection: function (colorOrTexture) {

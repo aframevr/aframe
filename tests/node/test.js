@@ -7,7 +7,7 @@ const jsdom = require('jsdom');
 
 suite('node acceptance tests', function () {
   setup(function () {
-    let _window = global.window = jsdom.jsdom().defaultView;
+    let _window = global.window = new jsdom.JSDOM().window;
     global.navigator = _window.navigator;
     global.document = _window.document;
     global.screen = {};

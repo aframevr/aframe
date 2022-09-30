@@ -91,7 +91,13 @@ creating a child entity it targets. For example, pointing down its -Z axis:
 </a-light>
 ```
 
-Directional lights are the most efficient type for adding realtime shadows to a scene.
+Directional lights are the most efficient type for adding realtime shadows to a scene. You can use shadows like so:
+
+```html
+<a-light type="directional" light="castShadow:true;" position="1 1 1" intensity="0.5" shdadow-camera-automatic="#objects"></a-light>
+```
+
+The `shdadow-camera-automatic` configuration maps to `light.shadowCameraAutomatic` which tells the light to automatically update the shadow camera to be the minimum size and position to encompass the target elements. 
 
 ### Hemisphere
 
@@ -185,20 +191,21 @@ is very helpful to **[use the A-Frame Inspector to configure shadows][inspector]
 Light types that support shadows (`point`, `spot`, and `directional`) include
 additional properties:
 
-| Property            | Light type      | Description                                                                                                                                | Default Value |
-|---------------------|-----------------|--------------------------------------------------------------------------------------------------------------------------------------------|---------------|
-| castShadow          |                 | Whether this light casts shadows on the scene.                                                                                             | false         |
-| shadowBias          |                 | Offset depth when deciding whether a surface is in shadow. Tiny adjustments here (in the order of +/-0.0001) may reduce artifacts in shadows. | 0             |
-| shadowCameraBottom  | `directional`   | Bottom plane of shadow camera frustum.                                                                                                     | -5            |
-| shadowCameraFar     |                 | Far plane of shadow camera frustum.                                                                                                        | 500           |
-| shadowCameraFov     | `point`, `spot` | Shadow camera's FOV.                                                                                                                       | 50            |
-| shadowCameraLeft    | `directional`   | Left plane of shadow camera frustum.                                                                                                       | -5            |
-| shadowCameraNear    |                 | Near plane of shadow camera frustum.                                                                                                       | 0.5           |
-| shadowCameraRight   | `directional`   | Right plane of shadow camera frustum.                                                                                                      | 5             |
-| shadowCameraTop     | `directional`   | Top plane of shadow camera frustum.                                                                                                        | 5             |
-| shadowCameraVisible |                 | Displays a visual aid showing the shadow camera's position and frustum. This is the light's view of the scene, used to project shadows.    | false         |
-| shadowMapHeight     |                 | Shadow map's vertical resolution. Larger shadow maps display more crisp shadows, at the cost of performance.                               | 512           |
-| shadowMapWidth      |                 | Shadow map's horizontal resolution.                                                                                                        | 512           |
+| Property              | Light type      | Description                                                                                                                                | Default Value |
+|-----------------------|-----------------|--------------------------------------------------------------------------------------------------------------------------------------------|---------------|
+| castShadow            |                 | Whether this light casts shadows on the scene.                                                                                             | false         |
+| shadowBias            |                 | Offset depth when deciding whether a surface is in shadow. Tiny adjustments here (in the order of +/-0.0001) may reduce artifacts in shadows. | 0             |
+| shadowCameraAutomatic | `directional`   | Automatically configure the Bottom, Top, Left, Right and Near of a directional light's shadow map, from an element                         |               |
+| shadowCameraBottom    | `directional`   | Bottom plane of shadow camera frustum.                                                                                                     | -5            |
+| shadowCameraFar       |                 | Far plane of shadow camera frustum.                                                                                                        | 500           |
+| shadowCameraFov       | `point`, `spot` | Shadow camera's FOV.                                                                                                                       | 50            |
+| shadowCameraLeft      | `directional`   | Left plane of shadow camera frustum.                                                                                                       | -5            |
+| shadowCameraNear      |                 | Near plane of shadow camera frustum.                                                                                                       | 0.5           |
+| shadowCameraRight     | `directional`   | Right plane of shadow camera frustum.                                                                                                      | 5             |
+| shadowCameraTop       | `directional`   | Top plane of shadow camera frustum.                                                                                                        | 5             |
+| shadowCameraVisible   |                 | Displays a visual aid showing the shadow camera's position and frustum. This is the light's view of the scene, used to project shadows.    | false         |
+| shadowMapHeight       |                 | Shadow map's vertical resolution. Larger shadow maps display more crisp shadows, at the cost of performance.                               | 512           |
+| shadowMapWidth        |                 | Shadow map's horizontal resolution.                                                                                                        | 512           |
 
 ### Adding Real-Time Shadows
 

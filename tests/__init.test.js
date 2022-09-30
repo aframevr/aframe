@@ -1,4 +1,4 @@
-/* global AFRAME, sinon, setup, teardown */
+/* global sinon, setup, teardown */
 
 /**
  * __init.test.js is run before every test case.
@@ -19,14 +19,15 @@ navigator.getVRDisplays = function () {
   return Promise.resolve([mockVRDisplay]);
 };
 
-require('index');
+const AFRAME = require('index');
 var AScene = require('core/scene/a-scene').AScene;
 // Make sure WebGL context is not created since Travix CT runs headless.
 // Stubs below failed once in a while due to asynchronous tesst setup / teardown.
 AScene.prototype.setupRenderer = function () {};
 
 setup(function () {
-  this.sinon = sinon.sandbox.create();
+  window.AFRAME = AFRAME;
+  this.sinon = sinon.createSandbox();
   // Stubs to not create a WebGL context since Travis CI runs headless.
   this.sinon.stub(AScene.prototype, 'render');
   this.sinon.stub(AScene.prototype, 'setupRenderer');
@@ -36,10 +37,12 @@ setup(function () {
       getDevice: function () { return {requestPresent: function () {}}; },
       isPresenting: function () { return true; },
       setDevice: function () {},
+      setFoveation: function () {},
       setPoseTarget: function () {},
       dispose: function () {},
       enabled: false
     },
+    dispose: function () {},
     getContext: function () { return undefined; },
     setAnimationLoop: function () {},
     setSize: function () {},

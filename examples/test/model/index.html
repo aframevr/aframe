@@ -7,16 +7,20 @@
     <script src="../../../dist/aframe-master.js"></script>
   </head>
   <body>
-    <a-scene background="color: #FAFAFA" renderer="colorManagement: true;" stats>
+    <a-scene gltf-model="basisTranscoderPath:https://cdn.jsdelivr.net/npm/super-three@0.141.0/examples/js/libs/basis/;" background="color: #FAFAFA" renderer="colorManagement: true;" stats>
       <a-assets>
         <a-asset-item id="crate-obj" src="../../assets/models/crate/crate.obj"></a-asset-item>
         <a-asset-item id="crate-mtl" src="../../assets/models/crate/crate.mtl"></a-asset-item>
         <a-asset-item id="brainstem" src="https://cdn.aframe.io/test-models/models/glTF-2.0/brainstem/BrainStem.gltf"></a-asset-item>
+        <a-asset-item id="putter-grip" src="https://cdn.glitch.global/f43e6264-95fc-43e8-8049-dc53b985b1e3/grip-compressed.glb?v=1661368839319"></a-asset-item>
       </a-assets>
 
       <a-entity position="0 0 -12">
         <a-entity gltf-model="#brainstem" position="-2 -1 5" scale="3 3 3"></a-entity>
         <a-text value="glTF" color="#000000" position="-2 -2 6" scale="1.5 1.5 1.5"></a-text>
+
+        <a-entity gltf-model="#putter-grip" position="2.5 1.65 5" scale="2.75 3 3" rotation="0 90 0"></a-entity>
+        <a-text value="glTF\nw/ KTX2 texture" color="#000000" position=".75 1.25 5" scale="1.5 1.5 1.5"></a-text>
 
         <a-entity obj-model="obj: #crate-obj; mtl: #crate-mtl" position="5 0 5"></a-entity>
         <a-entity obj-model="obj: #crate-obj; mtl: #crate-mtl" position="5 2 5"></a-entity>
