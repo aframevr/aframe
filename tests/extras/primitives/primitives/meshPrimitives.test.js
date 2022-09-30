@@ -43,8 +43,8 @@ suite('meshPrimitives', function () {
         assert.equal(el.getAttribute('material').color, 'red');
         assert.equal(el.getAttribute('material').side, 'back');
         assert.equal(el.getAttribute('geometry').depth, 5);
+        done();
       });
-      done();
     });
   });
 

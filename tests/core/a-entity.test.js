@@ -966,18 +966,30 @@ suite('a-entity', function () {
     });
 
     test('initializes defined dependency component with HTML', function (done) {
+      var count = 0;
       delete components.root;
       registerComponent('root', {
-        dependencies: ['dependency']
+        dependencies: ['dependency'],
+        init: function () {
+          count++;
+          if (count === 2) {
+            delete components.root;
+            delete components.dependency;
+            done();
+          }
+        }
       });
 
       registerComponent('dependency', {
         schema: {foo: {type: 'string'}},
         init: function () {
           assert.equal(this.data.foo, 'bar');
-          delete components.root;
-          delete components.dependency;
-          done();
+          count++;
+          if (count === 2) {
+            delete components.root;
+            delete components.dependency;
+            done();
+          }
         }
       });
 
@@ -985,14 +997,18 @@ suite('a-entity', function () {
     });
 
     test('initializes defined dependency component with null data w/ HTML', function (done) {
+      var count = 0;
       delete components.root;
       registerComponent('root', {
         dependencies: ['dependency'],
         init: function () {
           assert.equal(this.el.components.dependency.data.foo, 'bar');
-          delete components.root;
-          delete components.dependency;
-          done();
+          count++;
+          if (count === 2) {
+            delete components.root;
+            delete components.dependency;
+            done();
+          }
         }
       });
 
@@ -1000,6 +1016,12 @@ suite('a-entity', function () {
         schema: {foo: {default: 'bar'}},
         init: function () {
           assert.equal(this.data.foo, 'bar');
+          count++;
+          if (count === 2) {
+            delete components.root;
+            delete components.dependency;
+            done();
+          }
         }
       });
 
@@ -1138,7 +1160,7 @@ suite('a-entity', function () {
 
       box.setAttribute('geometry', {primitive: 'box'});
       component = box.components.geometry;
-      removeSpy = this.sinon.replace(component, 'remove', () => {});
+      removeSpy = this.sinon.replace(component, 'remove', this.sinon.fake(() => {}));
 
       box.removeComponent('geometry');
       assert.notOk(removeSpy.called);

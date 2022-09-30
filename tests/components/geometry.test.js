@@ -12,6 +12,7 @@ suite('geometry', function () {
   setup(function (done) {
     el = helpers.entityFactory();
     el.setAttribute('geometry', 'buffer: false; primitive: box;');
+    if (el.hasLoaded) { done(); }
     el.addEventListener('loaded', function () {
       done();
     });

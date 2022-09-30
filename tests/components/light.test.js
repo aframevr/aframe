@@ -6,6 +6,7 @@ suite('light', function () {
   setup(function (done) {
     var el = this.el = entityFactory();
     el.setAttribute('light', '');
+    if (el.hasLoaded) { done(); }
     el.addEventListener('loaded', function () {
       done();
     });

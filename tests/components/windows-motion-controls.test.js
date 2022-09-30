@@ -20,12 +20,14 @@ suite('windows-motion-controls', function () {
   setup(function (done) {
     el = this.el = entityFactory();
     el.setAttribute('windows-motion-controls', '');
-    el.addEventListener('loaded', function () {
+    var callback = function () {
       component = el.components['windows-motion-controls'];
       // Stub so we don't actually make calls to load the meshes from the remote CDN in every test.
       component.loadModel = function () { };
       done();
-    });
+    };
+    if (el.hasLoaded) { callback(); }
+    el.addEventListener('loaded', callback);
   });
 
   suite('checkIfControllerPresent', function () {

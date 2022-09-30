@@ -17,11 +17,11 @@ suite('shadow component', function () {
       });
       el.setAttribute('shadow', {});
       mesh = new THREE.Mesh(
-        new THREE.Sphere(2),
+        new THREE.SphereGeometry(2),
         new THREE.MeshBasicMaterial({color: 0xffff00})
       );
       meshWithMaterialArray = new THREE.Mesh(
-        new THREE.Sphere(2),
+        new THREE.SphereGeometry(2),
         [new THREE.MeshBasicMaterial({color: 0xffff00}),
           new THREE.MeshBasicMaterial({color: 0xffff00})]
       );
