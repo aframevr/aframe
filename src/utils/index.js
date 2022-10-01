@@ -359,5 +359,20 @@ module.exports.findAllScenes = function (el) {
   return matchingElements;
 };
 
+/**
+ * Create a Promise that resolves once the DOM content is loaded.
+ *
+ * @returns {Promise}
+ */
+module.exports.waitForDOMContentLoaded = function () {
+  if (document.readyState !== 'loading') {
+    return Promise.resolve(null);
+  } else {
+    return new Promise(function (resolve) {
+      document.addEventListener('DOMContentLoaded', resolve);
+    });
+  }
+};
+
 // Must be at bottom to avoid circular dependency.
 module.exports.srcLoader = require('./src-loader');
