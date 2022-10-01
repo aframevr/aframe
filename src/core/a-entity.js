@@ -73,19 +73,21 @@ var proto = Object.create(ANode.prototype, {
       // Don't .load() scene on attachedCallback.
       if (this.isScene) { return; }
 
-      // Gracefully not error when outside of <a-scene> (e.g., tests).
-      if (!sceneEl) {
-        this.load();
-        return;
-      }
+      utils.waitForDOMContentLoaded().then(function () {
+        // Gracefully not error when outside of <a-scene> (e.g., tests).
+        if (!sceneEl) {
+          self.load();
+          return;
+        }
 
-      // Wait for asset management system to finish before loading.
-      assetsEl = sceneEl.querySelector('a-assets');
-      if (assetsEl && !assetsEl.hasLoaded) {
-        assetsEl.addEventListener('loaded', function () { self.load(); });
-        return;
-      }
-      this.load();
+        // Wait for asset management system to finish before loading.
+        assetsEl = sceneEl.querySelector('a-assets');
+        if (assetsEl && !assetsEl.hasLoaded) {
+          assetsEl.addEventListener('loaded', function () { self.load(); });
+          return;
+        }
+        self.load();
+      });
     }
   },
 
