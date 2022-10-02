@@ -18,6 +18,7 @@ require('document-register-element');
 var ANode;  // Must declare before AEntity. Initialized at the bottom.
 var AEntity;
 var knownTags = module.exports.knownTags = {};
+var utils = require('../utils/');
 
 function addTagName (tagName) {
   knownTags[tagName.toLowerCase()] = true;
@@ -55,6 +56,23 @@ module.exports.registerElement = function (tagName, obj) {
   // Wrap if element inherits from `AEntity`.
   if (isAEntity) {
     newObj = wrapAEntityMethods(obj.prototype);
+    // Some systems initialized from a-scene attachedCallback use querySelectorAll so we
+    // need to be sure the DOM content is loaded. The same applies to component initialization,
+    // waiting for DOMContentLoaded before calling attachedCallback will ensure
+    // that any querySelector in component init method works properly.
+    // For example the camera system is using querySelectorAll to check for user defined
+    // camera before injecting a default camera, but it fails to find the camera if the
+    // querySelectorAll is executed before DOMContentLoaded.
+    var wrappedAttachedCallback = newObj.attachedCallback.value;
+    newObj.attachedCallback = {
+      value: function wrappedMethod () {
+        var self = this;
+        utils.waitForDOMContentLoaded().then(function () {
+          return wrappedAttachedCallback.apply(self);
+        });
+      },
+      writable: window.debug
+    };
     newObj = {prototype: Object.create(proto, newObj)};
   }
 

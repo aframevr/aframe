@@ -134,11 +134,7 @@ module.exports.AScene = registerElement('a-scene', {
           self.attachedCallbackPostCamera();
         });
 
-        // Some systems use querySelectorAll so we need to be sure the DOM content is loaded.
-        // For example the camera system is using querySelectorAll to check for user defined
-        // camera before injecting a default camera, but it fails to find the camera if the
-        // querySelectorAll is executed before DOMContentLoaded.
-        utils.waitForDOMContentLoaded().then(this.initSystems.bind(this));
+        this.initSystems();
 
         // WebXR Immersive navigation handler.
         if (this.hasWebXR && navigator.xr && navigator.xr.addEventListener) {
