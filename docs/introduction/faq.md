@@ -194,7 +194,6 @@ For 360&deg; images, search for [equirectangular images on Flickr][flickr].
 
 For 3D models, check out:
 
-- [Google Blocks](https://vr.google.com/objects)
 - [Sketchfab](https://sketchfab.com)
 - [Clara.io](http://clara.io)
 - [Archive3D](http://archive3d.net)
