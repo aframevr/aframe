@@ -40,6 +40,8 @@ scene.
 | far        | Camera frustum far clipping plane.                                                                                                                                                                                                                                                  | 10000         |
 | fov        | Field of view (in degrees).                                                                                                                                                                                                                                                         | 80            |
 | near       | Camera frustum near clipping plane.                                                                                                                                                                                                                                                 | 0.005         |
+| position       | The position of the camera                                                                                                                                                                                                                                                         | 0 1.6 0           |
+| rotation       | The rotation of the camera                                                                                                                                                                                                                                                         | 0 0 0            |
 | spectator  | Whether the camera is used to render a third-person view of the scene on the 2D display while in VR mode.                                                                                                                                                                                       | false         |
 | zoom       | Zoom factor of the camera.                                                                                                                                                                                                                                                          | 1             |
 
@@ -53,6 +55,15 @@ If a camera is not specified, A-Frame will inject a default camera:
 
 If a camera is specified (e.g., our own `<a-camera>` or `<a-entity camera>`),
 then the default camera will not be added.
+
+## Roatating the Camera
+If you define the `rotation` keyword, you can specify w way the camera starting point is turned 
+
+```html
+<a-entity camera="active: true" look-controls wasd-controls position="0 1.6 0" rotation=”0 180 0” data-aframe-default-camera></a-entity>
+```
+
+If a `rotation` not specified. Then the defualt roatation will be used `rotation=”0 0 0”`
 
 ## VR Behavior
 
