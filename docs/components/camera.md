@@ -57,7 +57,7 @@ If a camera is specified (e.g., our own `<a-camera>` or `<a-entity camera>`),
 then the default camera will not be added.
 
 ## Roatating the Camera
-If you define the `rotation` keyword, you can specify w way the camera starting point is turned 
+If you define the `rotation` keyword, you can specify wich way the camera starting point is focused on 
 
 ```html
 <a-entity camera="active: true" look-controls wasd-controls position="0 1.6 0" rotation=”0 180 0” data-aframe-default-camera></a-entity>
