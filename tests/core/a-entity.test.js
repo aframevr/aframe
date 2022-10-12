@@ -1,6 +1,6 @@
 /* global AFRAME, assert, process, sinon, setup, suite, teardown, test, HTMLElement */
-var AEntity = require('core/a-entity');
-var ANode = require('core/a-node');
+var AEntity = require('core/a-entity').AEntity;
+var ANode = require('core/a-node').ANode;
 var extend = require('utils').extend;
 var registerComponent = require('core/component').registerComponent;
 var components = require('core/component').components;
@@ -194,10 +194,14 @@ suite('a-entity', function () {
         done();
       });
 
+      assetsEl.addEventListener('loaded', function () {
+        assert.ok(assetsEl.hasLoaded);
+        assert.notOk(el.hasLoaded);
+      });
+
       sceneEl.appendChild(assetsEl);
       sceneEl.appendChild(el);
       document.body.appendChild(sceneEl);
-      ANode.prototype.load.call(assetsEl);
     });
   });
 

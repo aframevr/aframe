@@ -1,10 +1,9 @@
-var ANode = require('./a-node');
+/* global customElements */
+var ANode = require('./a-node').ANode;
 var COMPONENTS = require('./component').components;
-var registerElement = require('./a-register-element').registerElement;
 var THREE = require('../lib/three');
 var utils = require('../utils/');
 
-var AEntity;
 var debug = utils.debug('core:a-entity:debug');
 var warn = utils.debug('core:a-entity:warn');
 
@@ -23,102 +22,110 @@ var ONCE = {once: true};
  * @member {array} states
  * @member {boolean} isPlaying - false if dynamic behavior of the entity is paused.
  */
-var proto = Object.create(ANode.prototype, {
-  createdCallback: {
-    value: function () {
-      this.components = {};
-      // To avoid double initializations and infinite loops.
-      this.initializingComponents = {};
-      this.componentsToUpdate = {};
-      this.isEntity = true;
-      this.isPlaying = false;
-      this.object3D = new THREE.Group();
-      this.object3D.el = this;
-      this.object3DMap = {};
-      this.parentEl = null;
-      this.rotationObj = {};
-      this.states = [];
-    }
-  },
+class AEntity extends ANode {
+  constructor () {
+    super();
+    this.components = {};
+    // To avoid double initializations and infinite loops.
+    this.initializingComponents = {};
+    this.componentsToUpdate = {};
+    this.isEntity = true;
+    this.isPlaying = false;
+    this.object3D = new THREE.Group();
+    this.object3D.el = this;
+    this.object3DMap = {};
+    this.parentEl = null;
+    this.rotationObj = {};
+    this.states = [];
+  }
 
   /**
    * Handle changes coming from the browser DOM inspector.
    */
-  attributeChangedCallback: {
-    value: function (attr, oldVal, newVal) {
-      var component = this.components[attr];
-      // If the empty string is passed by the component initialization
-      // logic we ignore the component update.
-      if (component && component.justInitialized && newVal === '') {
-        delete component.justInitialized;
-        return;
-      }
-      // When a component is removed after calling el.removeAttribute('material')
-      if (!component && newVal === null) { return; }
-      this.setEntityAttribute(attr, oldVal, newVal);
+  attributeChangedCallback (attr, oldVal, newVal) {
+    var component = this.components[attr];
+
+    super.attributeChangedCallback();
+    // If the empty string is passed by the component initialization
+    // logic we ignore the component update.
+    if (component && component.justInitialized && newVal === '') {
+      delete component.justInitialized;
+      return;
     }
-  },
+    // When a component is removed after calling el.removeAttribute('material')
+    if (!component && newVal === null) { return; }
+    this.setEntityAttribute(attr, oldVal, newVal);
+  }
 
   /**
-   * Add to parent, load, play.
-   */
-  attachedCallback: {
-    value: function () {
-      var assetsEl;  // Asset management system element.
-      var sceneEl = this.sceneEl;
-      var self = this;  // Component.
-
-      this.addToParent();
-
-      // Don't .load() scene on attachedCallback.
-      if (this.isScene) { return; }
-
-      // Gracefully not error when outside of <a-scene> (e.g., tests).
-      if (!sceneEl) {
-        this.load();
-        return;
-      }
-
-      // Wait for asset management system to finish before loading.
-      assetsEl = sceneEl.querySelector('a-assets');
-      if (assetsEl && !assetsEl.hasLoaded) {
-        assetsEl.addEventListener('loaded', function () { self.load(); });
-        return;
-      }
-      this.load();
+  * Add to parent, load, play.
+  */
+  connectedCallback () {
+    // Defer if DOM is not ready.
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', this.connectedCallback.bind(this));
+      return;
     }
-  },
+
+    AEntity.prototype.doConnectedCallback.call(this);
+  }
+
+  doConnectedCallback () {
+    var self = this;  // Component.
+    var assetsEl;  // Asset management system element.
+    var sceneEl;
+
+    // ANode method.
+    super.connectedCallback();
+
+    sceneEl = this.sceneEl;
+
+    this.addToParent();
+
+    // Don't .load() scene on attachedCallback.
+    if (this.isScene) { return; }
+
+    // Gracefully not error when outside of <a-scene> (e.g., tests).
+    if (!sceneEl) {
+      this.load();
+      return;
+    }
+
+    // Wait for asset management system to finish before loading.
+    assetsEl = sceneEl.querySelector('a-assets');
+    if (assetsEl && !assetsEl.hasLoaded) {
+      assetsEl.addEventListener('loaded', function () { self.load(); });
+      return;
+    }
+    this.load();
+  }
 
   /**
    * Tell parent to remove this element's object3D from its object3D.
    * Do not call on scene element because that will cause a call to document.body.remove().
    */
-  detachedCallback: {
-    value: function () {
-      var componentName;
+  disconnectedCallback () {
+    var componentName;
 
-      if (!this.parentEl) { return; }
+    if (!this.parentEl) { return; }
 
-      // Remove components.
-      for (componentName in this.components) {
-        this.removeComponent(componentName, false);
-      }
-
-      if (this.isScene) { return; }
-
-      this.removeFromParent();
-      ANode.prototype.detachedCallback.call(this);
-
-      // Remove cyclic reference.
-      this.object3D.el = null;
+    // Remove components.
+    for (componentName in this.components) {
+      this.removeComponent(componentName, false);
     }
-  },
 
-  getObject3D: {
-    value: function (type) {
-      return this.object3DMap[type];
-    }
-  },
+    if (this.isScene) { return; }
+
+    this.removeFromParent();
+    super.disconnectedCallback();
+
+    // Remove cyclic reference.
+    this.object3D.el = null;
+  }
+
+  getObject3D (type) {
+    return this.object3DMap[type];
+  }
 
   /**
    * Set a THREE.Object3D into the map.
@@ -126,52 +133,48 @@ var proto = Object.create(ANode.prototype, {
    * @param {string} type - Developer-set name of the type of object, will be unique per type.
    * @param {object} obj - A THREE.Object3D.
    */
-  setObject3D: {
-    value: function (type, obj) {
-      var oldObj;
-      var self = this;
+  setObject3D (type, obj) {
+    var oldObj;
+    var self = this;
 
-      if (!(obj instanceof THREE.Object3D)) {
-        throw new Error(
-          '`Entity.setObject3D` was called with an object that was not an instance of ' +
-          'THREE.Object3D.'
-        );
-      }
-
-      // Remove existing object of the type.
-      oldObj = this.getObject3D(type);
-      if (oldObj) { this.object3D.remove(oldObj); }
-
-      // Set references to A-Frame entity.
-      obj.el = this;
-      if (obj.children.length) {
-        obj.traverse(function bindEl (child) {
-          child.el = self;
-        });
-      }
-
-      // Add.
-      this.object3D.add(obj);
-      this.object3DMap[type] = obj;
-      this.emit('object3dset', {object: obj, type: type});
+    if (!(obj instanceof THREE.Object3D)) {
+      throw new Error(
+        '`Entity.setObject3D` was called with an object that was not an instance of ' +
+        'THREE.Object3D.'
+      );
     }
-  },
+
+    // Remove existing object of the type.
+    oldObj = this.getObject3D(type);
+    if (oldObj) { this.object3D.remove(oldObj); }
+
+    // Set references to A-Frame entity.
+    obj.el = this;
+    if (obj.children.length) {
+      obj.traverse(function bindEl (child) {
+        child.el = self;
+      });
+    }
+
+    // Add.
+    this.object3D.add(obj);
+    this.object3DMap[type] = obj;
+    this.emit('object3dset', {object: obj, type: type});
+  }
 
   /**
    * Remove object from scene and entity object3D map.
    */
-  removeObject3D: {
-    value: function (type) {
-      var obj = this.getObject3D(type);
-      if (!obj) {
-        warn('Tried to remove `Object3D` of type:', type, 'which was not defined.');
-        return;
-      }
-      this.object3D.remove(obj);
-      delete this.object3DMap[type];
-      this.emit('object3dremove', {type: type});
+  removeObject3D (type) {
+    var obj = this.getObject3D(type);
+    if (!obj) {
+      warn('Tried to remove `Object3D` of type:', type, 'which was not defined.');
+      return;
     }
-  },
+    this.object3D.remove(obj);
+    delete this.object3DMap[type];
+    this.emit('object3dremove', {type: type});
+  }
 
   /**
    * Gets or creates an object3D of a given type.
@@ -180,112 +183,97 @@ var proto = Object.create(ANode.prototype, {
    * @param {string} Constructor - Constructor to use to create the object3D if needed.
    * @returns {object}
    */
-  getOrCreateObject3D: {
-    value: function (type, Constructor) {
-      var object3D = this.getObject3D(type);
-      if (!object3D && Constructor) {
-        object3D = new Constructor();
-        this.setObject3D(type, object3D);
-      }
-      warn('`getOrCreateObject3D` has been deprecated. Use `setObject3D()` ' +
-           'and `object3dset` event instead.');
-      return object3D;
+  getOrCreateObject3D (type, Constructor) {
+    var object3D = this.getObject3D(type);
+    if (!object3D && Constructor) {
+      object3D = new Constructor();
+      this.setObject3D(type, object3D);
     }
-  },
+    warn('`getOrCreateObject3D` has been deprecated. Use `setObject3D()` ' +
+         'and `object3dset` event instead.');
+    return object3D;
+  }
 
   /**
    * Add child entity.
    *
    * @param {Element} el - Child entity.
    */
-  add: {
-    value: function (el) {
-      if (!el.object3D) {
-        throw new Error("Trying to add an element that doesn't have an `object3D`");
-      }
-      this.object3D.add(el.object3D);
-      this.emit('child-attached', {el: el});
+  add (el) {
+    if (!el.object3D) {
+      throw new Error("Trying to add an element that doesn't have an `object3D`");
     }
-  },
+    this.object3D.add(el.object3D);
+    this.emit('child-attached', {el: el});
+  }
 
   /**
    * Tell parentNode to add this entity to itself.
    */
-  addToParent: {
-    value: function () {
-      var parentNode = this.parentEl = this.parentNode;
+  addToParent () {
+    var parentNode = this.parentEl = this.parentNode;
 
-      // `!parentNode` check primarily for unit tests.
-      if (!parentNode || !parentNode.add || this.attachedToParent) { return; }
+    // `!parentNode` check primarily for unit tests.
+    if (!parentNode || !parentNode.add || this.attachedToParent) { return; }
 
-      parentNode.add(this);
-      this.attachedToParent = true;  // To prevent multiple attachments to same parent.
-    }
-  },
+    parentNode.add(this);
+    this.attachedToParent = true;  // To prevent multiple attachments to same parent.
+  }
 
   /**
    * Tell parentNode to remove this entity from itself.
    */
-  removeFromParent: {
-    value: function () {
-      var parentEl = this.parentEl;
-      this.parentEl.remove(this);
-      this.attachedToParent = false;
-      this.parentEl = null;
-      parentEl.emit('child-detached', {el: this});
-    }
-  },
+  removeFromParent () {
+    var parentEl = this.parentEl;
+    this.parentEl.remove(this);
+    this.attachedToParent = false;
+    this.parentEl = null;
+    parentEl.emit('child-detached', {el: this});
+  }
 
-  load: {
-    value: function () {
-      var self = this;
+  load () {
+    var self = this;
 
-      if (this.hasLoaded || !this.parentEl) { return; }
+    if (this.hasLoaded || !this.parentEl) { return; }
 
-      ANode.prototype.load.call(this, function entityLoadCallback () {
-        // Check if entity was detached while it was waiting to load.
-        if (!self.parentEl) { return; }
+    super.load.call(this, function entityLoadCallback () {
+      // Check if entity was detached while it was waiting to load.
+      if (!self.parentEl) { return; }
 
-        self.updateComponents();
-        if (self.isScene || self.parentEl.isPlaying) { self.play(); }
-      });
-    },
-    writable: window.debug
-  },
+      self.updateComponents();
+      if (self.isScene || self.parentEl.isPlaying) { self.play(); }
+    });
+  }
 
   /**
    * Remove child entity.
    *
    * @param {Element} el - Child entity.
    */
-  remove: {
-    value: function (el) {
-      if (el) {
-        this.object3D.remove(el.object3D);
-      } else {
-        this.parentNode.removeChild(this);
-      }
+  remove (el) {
+    if (el) {
+      this.object3D.remove(el.object3D);
+    } else {
+      this.parentNode.removeChild(this);
     }
-  },
+  }
 
   /**
    * @returns {array} Direct children that are entities.
    */
-  getChildEntities: {
-    value: function () {
-      var children = this.children;
-      var childEntities = [];
+  getChildEntities () {
+    var children = this.children;
+    var childEntities = [];
 
-      for (var i = 0; i < children.length; i++) {
-        var child = children[i];
-        if (child instanceof AEntity) {
-          childEntities.push(child);
-        }
+    for (var i = 0; i < children.length; i++) {
+      var child = children[i];
+      if (child instanceof AEntity) {
+        childEntities.push(child);
       }
-
-      return childEntities;
     }
-  },
+
+    return childEntities;
+  }
 
   /**
    * Initialize component.
@@ -294,120 +282,112 @@ var proto = Object.create(ANode.prototype, {
    * @param {object} data - Component data
    * @param {boolean} isDependency - True if the component is a dependency.
    */
-  initComponent: {
-    value: function (attrName, data, isDependency) {
-      var component;
-      var componentId;
-      var componentInfo;
-      var componentName;
-      var isComponentDefined;
+  initComponent (attrName, data, isDependency) {
+    var component;
+    var componentId;
+    var componentInfo;
+    var componentName;
+    var isComponentDefined;
 
-      componentInfo = utils.split(attrName, MULTIPLE_COMPONENT_DELIMITER);
-      componentName = componentInfo[0];
-      componentId = componentInfo.length > 2
-        ? componentInfo.slice(1).join('__')
-        : componentInfo[1];
+    componentInfo = utils.split(attrName, MULTIPLE_COMPONENT_DELIMITER);
+    componentName = componentInfo[0];
+    componentId = componentInfo.length > 2
+      ? componentInfo.slice(1).join('__')
+      : componentInfo[1];
 
-      // Not a registered component.
-      if (!COMPONENTS[componentName]) { return; }
+    // Not a registered component.
+    if (!COMPONENTS[componentName]) { return; }
 
-      // Component is not a dependency and is undefined.
-      // If a component is a dependency, then it is okay to have no data.
-      isComponentDefined = checkComponentDefined(this, attrName) ||
-                           data !== undefined;
-      if (!isComponentDefined && !isDependency) { return; }
+    // Component is not a dependency and is undefined.
+    // If a component is a dependency, then it is okay to have no data.
+    isComponentDefined = checkComponentDefined(this, attrName) ||
+                         data !== undefined;
+    if (!isComponentDefined && !isDependency) { return; }
 
-      // Component already initialized.
-      if (attrName in this.components) { return; }
+    // Component already initialized.
+    if (attrName in this.components) { return; }
 
-      // Initialize dependencies first
-      this.initComponentDependencies(componentName);
+    // Initialize dependencies first
+    this.initComponentDependencies(componentName);
 
-      // If component name has an id we check component type multiplic
-      if (componentId && !COMPONENTS[componentName].multiple) {
-        throw new Error('Trying to initialize multiple ' +
-                        'components of type `' + componentName +
-                        '`. There can only be one component of this type per entity.');
-      }
-      component = new COMPONENTS[componentName].Component(this, data, componentId);
-      if (this.isPlaying) { component.play(); }
+    // If component name has an id we check component type multiplic
+    if (componentId && !COMPONENTS[componentName].multiple) {
+      throw new Error('Trying to initialize multiple ' +
+                      'components of type `' + componentName +
+                      '`. There can only be one component of this type per entity.');
+    }
+    component = new COMPONENTS[componentName].Component(this, data, componentId);
+    if (this.isPlaying) { component.play(); }
 
-      // Components are reflected in the DOM as attributes but the state is not shown
-      // hence we set the attribute to empty string.
-      // The flag justInitialized is for attributeChangedCallback to not overwrite
-      // the component with the empty string.
-      if (!this.hasAttribute(attrName)) {
-        component.justInitialized = true;
-        window.HTMLElement.prototype.setAttribute.call(this, attrName, '');
-      }
+    // Components are reflected in the DOM as attributes but the state is not shown
+    // hence we set the attribute to empty string.
+    // The flag justInitialized is for attributeChangedCallback to not overwrite
+    // the component with the empty string.
+    if (!this.hasAttribute(attrName)) {
+      component.justInitialized = true;
+      window.HTMLElement.prototype.setAttribute.call(this, attrName, '');
+    }
 
-      debug('Component initialized: %s', attrName);
-    },
-    writable: window.debug
-  },
+    debug('Component initialized: %s', attrName);
+  }
 
   /**
    * Initialize dependencies of a component.
    *
    * @param {string} name - Root component name.
    */
-  initComponentDependencies: {
-    value: function (name) {
-      var self = this;
-      var component = COMPONENTS[name];
-      var dependencies;
-      var i;
+  initComponentDependencies (name) {
+    var self = this;
+    var component = COMPONENTS[name];
+    var dependencies;
+    var i;
 
-      // Not a component.
-      if (!component) { return; }
+    // Not a component.
+    if (!component) { return; }
 
-      // No dependencies.
-      dependencies = COMPONENTS[name].dependencies;
+    // No dependencies.
+    dependencies = COMPONENTS[name].dependencies;
 
-      if (!dependencies) { return; }
+    if (!dependencies) { return; }
 
-      // Initialize dependencies.
-      for (i = 0; i < dependencies.length; i++) {
-        // Call getAttribute to initialize the data from the DOM.
-        self.initComponent(
-          dependencies[i],
-          window.HTMLElement.prototype.getAttribute.call(self, dependencies[i]) || undefined,
-          true
-        );
-      }
+    // Initialize dependencies.
+    for (i = 0; i < dependencies.length; i++) {
+      // Call getAttribute to initialize the data from the DOM.
+      self.initComponent(
+        dependencies[i],
+        window.HTMLElement.prototype.getAttribute.call(self, dependencies[i]) || undefined,
+        true
+      );
     }
-  },
+  }
 
-  removeComponent: {
-    value: function (name, destroy) {
-      var component;
+  removeComponent (name, destroy) {
+    var component;
 
-      component = this.components[name];
-      if (!component) { return; }
+    component = this.components[name];
+    if (!component) { return; }
 
-      // Wait for component to initialize.
-      if (!component.initialized) {
-        this.addEventListener('componentinitialized', function tryRemoveLater (evt) {
-          if (evt.detail.name !== name) { return; }
-          this.removeComponent(name, destroy);
-          this.removeEventListener('componentinitialized', tryRemoveLater);
-        });
-        return;
-      }
+    // Wait for component to initialize.
+    if (!component.initialized) {
+      this.addEventListener('componentinitialized', function tryRemoveLater (evt) {
+        if (evt.detail.name !== name) { return; }
+        this.removeComponent(name, destroy);
+        this.removeEventListener('componentinitialized', tryRemoveLater);
+      });
+      return;
+    }
 
-      component.pause();
-      component.remove();
+    component.pause();
+    component.remove();
 
-      // Keep component attached to entity in case of just full entity detach.
-      if (destroy) {
-        component.destroy();
-        delete this.components[name];
-      }
+    // Keep component attached to entity in case of just full entity detach.
+    if (destroy) {
+      component.destroy();
+      delete this.components[name];
+    }
 
-      this.emit('componentremoved', component.evtDetail, false);
-    },
-    writable: window.debug
-  },
+    this.emit('componentremoved', component.evtDetail, false);
+  }
 
   /**
    * Initialize or update all components.
@@ -417,55 +397,52 @@ var proto = Object.create(ANode.prototype, {
    * @member {function} getExtraComponents - Can be implemented to include component data
    *   from other sources (e.g., implemented by primitives).
    */
-  updateComponents: {
-    value: function () {
-      var data;
-      var extraComponents;
-      var i;
-      var name;
-      var componentsToUpdate = this.componentsToUpdate;
+  updateComponents () {
+    var data;
+    var extraComponents;
+    var i;
+    var name;
+    var componentsToUpdate = this.componentsToUpdate;
 
-      if (!this.hasLoaded) { return; }
+    if (!this.hasLoaded) { return; }
 
-      // Gather mixin-defined components.
-      for (i = 0; i < this.mixinEls.length; i++) {
-        for (name in this.mixinEls[i].componentCache) {
-          if (isComponent(name)) { componentsToUpdate[name] = true; }
-        }
-      }
-
-      // Gather from extra initial component data if defined (e.g., primitives).
-      if (this.getExtraComponents) {
-        extraComponents = this.getExtraComponents();
-        for (name in extraComponents) {
-          if (isComponent(name)) { componentsToUpdate[name] = true; }
-        }
-      }
-
-      // Gather entity-defined components.
-      for (i = 0; i < this.attributes.length; ++i) {
-        name = this.attributes[i].name;
-        if (OBJECT3D_COMPONENTS.indexOf(name) !== -1) { continue; }
+    // Gather mixin-defined components.
+    for (i = 0; i < this.mixinEls.length; i++) {
+      for (name in this.mixinEls[i].componentCache) {
         if (isComponent(name)) { componentsToUpdate[name] = true; }
       }
+    }
 
-      // object3D components first (position, rotation, scale, visible).
-      for (i = 0; i < OBJECT3D_COMPONENTS.length; i++) {
-        name = OBJECT3D_COMPONENTS[i];
-        if (!this.hasAttribute(name)) { continue; }
-        this.updateComponent(name, this.getDOMAttribute(name));
+    // Gather from extra initial component data if defined (e.g., primitives).
+    if (this.getExtraComponents) {
+      extraComponents = this.getExtraComponents();
+      for (name in extraComponents) {
+        if (isComponent(name)) { componentsToUpdate[name] = true; }
       }
+    }
 
-      // Initialize or update rest of components.
-      for (name in componentsToUpdate) {
-        data = mergeComponentData(this.getDOMAttribute(name),
-                                  extraComponents && extraComponents[name]);
-        this.updateComponent(name, data);
-        delete componentsToUpdate[name];
-      }
-    },
-    writable: window.debug
-  },
+    // Gather entity-defined components.
+    for (i = 0; i < this.attributes.length; ++i) {
+      name = this.attributes[i].name;
+      if (OBJECT3D_COMPONENTS.indexOf(name) !== -1) { continue; }
+      if (isComponent(name)) { componentsToUpdate[name] = true; }
+    }
+
+    // object3D components first (position, rotation, scale, visible).
+    for (i = 0; i < OBJECT3D_COMPONENTS.length; i++) {
+      name = OBJECT3D_COMPONENTS[i];
+      if (!this.hasAttribute(name)) { continue; }
+      this.updateComponent(name, this.getDOMAttribute(name));
+    }
+
+    // Initialize or update rest of components.
+    for (name in componentsToUpdate) {
+      data = mergeComponentData(this.getDOMAttribute(name),
+                                extraComponents && extraComponents[name]);
+      this.updateComponent(name, data);
+      delete componentsToUpdate[name];
+    }
+  }
 
   /**
    * Initialize, update, or remove a single component.
@@ -476,25 +453,23 @@ var proto = Object.create(ANode.prototype, {
    * @param {object} attrValue - Value of the DOM attribute.
    * @param {boolean} clobber - If new attrValue completely replaces previous properties.
    */
-  updateComponent: {
-    value: function (attr, attrValue, clobber) {
-      var component = this.components[attr];
+  updateComponent (attr, attrValue, clobber) {
+    var component = this.components[attr];
 
-      if (component) {
-        // Remove component.
-        if (attrValue === null && !checkComponentDefined(this, attr)) {
-          this.removeComponent(attr, true);
-          return;
-        }
-        // Component already initialized. Update component.
-        component.updateProperties(attrValue, clobber);
+    if (component) {
+      // Remove component.
+      if (attrValue === null && !checkComponentDefined(this, attr)) {
+        this.removeComponent(attr, true);
         return;
       }
-
-      // Component not yet initialized. Initialize component.
-      this.initComponent(attr, attrValue, false);
+      // Component already initialized. Update component.
+      component.updateProperties(attrValue, clobber);
+      return;
     }
-  },
+
+    // Component not yet initialized. Initialize component.
+    this.initComponent(attr, attrValue, false);
+  }
 
   /**
    * If `attr` is a component name, detach the component from the entity.
@@ -504,80 +479,72 @@ var proto = Object.create(ANode.prototype, {
    * @param {string} attr - Attribute name, which could also be a component name.
    * @param {string} propertyName - Component prop name, if resetting an individual prop.
    */
-  removeAttribute: {
-    value: function (attr, propertyName) {
-      var component = this.components[attr];
+  removeAttribute (attr, propertyName) {
+    var component = this.components[attr];
 
-      // Remove component.
-      if (component && propertyName === undefined) {
-        this.removeComponent(attr, true);
-      }
-
-      // Reset component property value.
-      if (component && propertyName !== undefined) {
-        component.resetProperty(propertyName);
-        return;
-      }
-
-      // Remove mixins.
-      if (attr === 'mixin') {
-        this.mixinUpdate('');
-      }
-
-      window.HTMLElement.prototype.removeAttribute.call(this, attr);
+    // Remove component.
+    if (component && propertyName === undefined) {
+      this.removeComponent(attr, true);
     }
-  },
+
+    // Reset component property value.
+    if (component && propertyName !== undefined) {
+      component.resetProperty(propertyName);
+      return;
+    }
+
+    // Remove mixins.
+    if (attr === 'mixin') {
+      this.mixinUpdate('');
+    }
+
+    window.HTMLElement.prototype.removeAttribute.call(this, attr);
+  }
 
   /**
    * Start dynamic behavior associated with entity such as dynamic components and animations.
    * Tell all children entities to also play.
    */
-  play: {
-    value: function () {
-      var entities;
-      var i;
-      var key;
+  play () {
+    var entities;
+    var i;
+    var key;
 
-      // Already playing.
-      if (this.isPlaying || !this.hasLoaded) { return; }
-      this.isPlaying = true;
+    // Already playing.
+    if (this.isPlaying || !this.hasLoaded) { return; }
+    this.isPlaying = true;
 
-      // Wake up all components.
-      for (key in this.components) { this.components[key].play(); }
+    // Wake up all components.
+    for (key in this.components) { this.components[key].play(); }
 
-      // Tell all child entities to play.
-      entities = this.getChildEntities();
-      for (i = 0; i < entities.length; i++) { entities[i].play(); }
+    // Tell all child entities to play.
+    entities = this.getChildEntities();
+    for (i = 0; i < entities.length; i++) { entities[i].play(); }
 
-      this.emit('play');
-    },
-    writable: true
-  },
+    this.emit('play');
+  }
 
   /**
    * Pause dynamic behavior associated with entity such as dynamic components and animations.
    * Tell all children entities to also pause.
    */
-  pause: {
-    value: function () {
-      var entities;
-      var i;
-      var key;
+  pause () {
+    var entities;
+    var i;
+    var key;
 
-      if (!this.isPlaying) { return; }
-      this.isPlaying = false;
+    if (!this.isPlaying) { return; }
+    this.isPlaying = false;
 
-      // Sleep all components.
-      for (key in this.components) { this.components[key].pause(); }
+    // Sleep all components.
+    for (key in this.components) { this.components[key].pause(); }
 
-      // Tell all child entities to pause.
-      entities = this.getChildEntities();
-      for (i = 0; i < entities.length; i++) { entities[i].pause(); }
+    // Tell all child entities to pause.
+    entities = this.getChildEntities();
+    for (i = 0; i < entities.length; i++) { entities[i].pause(); }
 
-      this.emit('pause');
-    },
-    writable: true
-  },
+    this.emit('pause');
+  }
 
   /**
    * Deals with updates on entity-specific attributes (i.e., components and mixins).
@@ -586,82 +553,76 @@ var proto = Object.create(ANode.prototype, {
    * @param {string} oldVal
    * @param {string|object} newVal
    */
-  setEntityAttribute: {
-    value: function (attr, oldVal, newVal) {
-      if (COMPONENTS[attr] || this.components[attr]) {
-        this.updateComponent(attr, newVal);
-        return;
-      }
-      if (attr === 'mixin') {
-        // Ignore if `<a-node>` code is just updating computed mixin in the DOM.
-        if (newVal === this.computedMixinStr) { return; }
-        this.mixinUpdate(newVal, oldVal);
-      }
+  setEntityAttribute (attr, oldVal, newVal) {
+    if (COMPONENTS[attr] || this.components[attr]) {
+      this.updateComponent(attr, newVal);
+      return;
     }
-  },
+    if (attr === 'mixin') {
+      // Ignore if `<a-node>` code is just updating computed mixin in the DOM.
+      if (newVal === this.computedMixinStr) { return; }
+      this.mixinUpdate(newVal, oldVal);
+    }
+  }
 
   /**
    * When mixins updated, trigger init or optimized-update of relevant components.
    */
-  mixinUpdate: {
-    value: (function () {
-      var componentsUpdated = [];
+  mixinUpdate (newMixins, oldMixins) {
+    var componentsUpdated = AEntity.componentsUpdated;
 
-      return function (newMixins, oldMixins) {
-        var component;
-        var mixinEl;
-        var mixinIds;
-        var i;
-        var self = this;
+    var component;
+    var mixinEl;
+    var mixinIds;
+    var i;
+    var self = this;
 
-        if (!this.hasLoaded) {
-          this.addEventListener('loaded', function () {
-            self.mixinUpdate(newMixins, oldMixins);
-          }, ONCE);
-          return;
+    if (!this.hasLoaded) {
+      this.addEventListener('loaded', function () {
+        self.mixinUpdate(newMixins, oldMixins);
+      }, ONCE);
+      return;
+    }
+
+    oldMixins = oldMixins || this.getAttribute('mixin');
+    mixinIds = this.updateMixins(newMixins, oldMixins);
+
+    // Loop over current mixins.
+    componentsUpdated.length = 0;
+    for (i = 0; i < this.mixinEls.length; i++) {
+      for (component in this.mixinEls[i].componentCache) {
+        if (componentsUpdated.indexOf(component) === -1) {
+          if (this.components[component]) {
+            // Update. Just rebuild data.
+            this.components[component].handleMixinUpdate();
+          } else {
+            // Init. buildData will gather mixin values.
+            this.initComponent(component, null);
+          }
+          componentsUpdated.push(component);
         }
+      }
+    }
 
-        oldMixins = oldMixins || this.getAttribute('mixin');
-        mixinIds = this.updateMixins(newMixins, oldMixins);
-
-        // Loop over current mixins.
-        componentsUpdated.length = 0;
-        for (i = 0; i < this.mixinEls.length; i++) {
-          for (component in this.mixinEls[i].componentCache) {
-            if (componentsUpdated.indexOf(component) === -1) {
-              if (this.components[component]) {
-                // Update. Just rebuild data.
-                this.components[component].handleMixinUpdate();
-              } else {
-                // Init. buildData will gather mixin values.
-                this.initComponent(component, null);
-              }
-              componentsUpdated.push(component);
+    // Loop over old mixins to call for data rebuild.
+    for (i = 0; i < mixinIds.oldMixinIds.length; i++) {
+      mixinEl = document.getElementById(mixinIds.oldMixinIds[i]);
+      if (!mixinEl) { continue; }
+      for (component in mixinEl.componentCache) {
+        if (componentsUpdated.indexOf(component) === -1) {
+          if (this.components[component]) {
+            if (this.getDOMAttribute(component)) {
+              // Update component if explicitly defined.
+              this.components[component].handleMixinUpdate();
+            } else {
+              // Remove component if not explicitly defined.
+              this.removeComponent(component, true);
             }
           }
         }
-
-        // Loop over old mixins to call for data rebuild.
-        for (i = 0; i < mixinIds.oldMixinIds.length; i++) {
-          mixinEl = document.getElementById(mixinIds.oldMixinIds[i]);
-          if (!mixinEl) { continue; }
-          for (component in mixinEl.componentCache) {
-            if (componentsUpdated.indexOf(component) === -1) {
-              if (this.components[component]) {
-                if (this.getDOMAttribute(component)) {
-                  // Update component if explicitly defined.
-                  this.components[component].handleMixinUpdate();
-                } else {
-                  // Remove component if not explicitly defined.
-                  this.removeComponent(component, true);
-                }
-              }
-            }
-          }
-        }
-      };
-    })()
-  },
+      }
+    }
+  }
 
   /**
    * setAttribute can:
@@ -677,90 +638,83 @@ var proto = Object.create(ANode.prototype, {
    * @param {*|bool} arg2 - If arg1 is a property name, this should be a value. Otherwise,
    *   it is a boolean indicating whether to clobber previous values (defaults to false).
    */
-  setAttribute: {
-    value: (function () {
-      var singlePropUpdate = {};
+  setAttribute (attrName, arg1, arg2) {
+    var singlePropUpdate = AEntity.singlePropUpdate;
 
-      return function (attrName, arg1, arg2) {
-        var newAttrValue;
-        var clobber;
-        var componentName;
-        var delimiterIndex;
-        var isDebugMode;
-        var key;
+    var newAttrValue;
+    var clobber;
+    var componentName;
+    var delimiterIndex;
+    var isDebugMode;
+    var key;
 
-        delimiterIndex = attrName.indexOf(MULTIPLE_COMPONENT_DELIMITER);
-        componentName = delimiterIndex > 0 ? attrName.substring(0, delimiterIndex) : attrName;
+    delimiterIndex = attrName.indexOf(MULTIPLE_COMPONENT_DELIMITER);
+    componentName = delimiterIndex > 0 ? attrName.substring(0, delimiterIndex) : attrName;
 
-        // Not a component. Normal set attribute.
-        if (!COMPONENTS[componentName]) {
-          if (attrName === 'mixin') { this.mixinUpdate(arg1); }
-          ANode.prototype.setAttribute.call(this, attrName, arg1);
-          return;
-        }
+    // Not a component. Normal set attribute.
+    if (!COMPONENTS[componentName]) {
+      if (attrName === 'mixin') { this.mixinUpdate(arg1); }
+      super.setAttribute.call(this, attrName, arg1);
+      return;
+    }
 
-        // Initialize component first if not yet initialized.
-        if (!this.components[attrName] && this.hasAttribute(attrName)) {
-          this.updateComponent(
-            attrName,
-            window.HTMLElement.prototype.getAttribute.call(this, attrName));
-        }
+    // Initialize component first if not yet initialized.
+    if (!this.components[attrName] && this.hasAttribute(attrName)) {
+      this.updateComponent(
+        attrName,
+        window.HTMLElement.prototype.getAttribute.call(this, attrName));
+    }
 
-        // Determine new attributes from the arguments
-        if (typeof arg2 !== 'undefined' &&
-            typeof arg1 === 'string' &&
-            arg1.length > 0 &&
-            typeof utils.styleParser.parse(arg1) === 'string') {
-          // Update a single property of a multi-property component
-          for (key in singlePropUpdate) { delete singlePropUpdate[key]; }
-          newAttrValue = singlePropUpdate;
-          newAttrValue[arg1] = arg2;
-          clobber = false;
-        } else {
-          // Update with a value, object, or CSS-style property string, with the possiblity
-          // of clobbering previous values.
-          newAttrValue = arg1;
-          clobber = (arg2 === true);
-        }
+    // Determine new attributes from the arguments
+    if (typeof arg2 !== 'undefined' &&
+        typeof arg1 === 'string' &&
+        arg1.length > 0 &&
+        typeof utils.styleParser.parse(arg1) === 'string') {
+      // Update a single property of a multi-property component
+      for (key in singlePropUpdate) { delete singlePropUpdate[key]; }
+      newAttrValue = singlePropUpdate;
+      newAttrValue[arg1] = arg2;
+      clobber = false;
+    } else {
+      // Update with a value, object, or CSS-style property string, with the possiblity
+      // of clobbering previous values.
+      newAttrValue = arg1;
+      clobber = (arg2 === true);
+    }
 
-        // Update component
-        this.updateComponent(attrName, newAttrValue, clobber);
+    // Update component
+    this.updateComponent(attrName, newAttrValue, clobber);
 
-        // In debug mode, write component data up to the DOM.
-        isDebugMode = this.sceneEl && this.sceneEl.getAttribute('debug');
-        if (isDebugMode) { this.components[attrName].flushToDOM(); }
-      };
-    })(),
-    writable: window.debug
-  },
+    // In debug mode, write component data up to the DOM.
+    isDebugMode = this.sceneEl && this.sceneEl.getAttribute('debug');
+    if (isDebugMode) { this.components[attrName].flushToDOM(); }
+  }
 
   /**
    * Reflect component data in the DOM (as seen from the browser DOM Inspector).
    *
    * @param {bool} recursive - Also flushToDOM on the children.
    **/
-  flushToDOM: {
-    value: function (recursive) {
-      var components = this.components;
-      var child;
-      var children = this.children;
-      var i;
-      var key;
+  flushToDOM (recursive) {
+    var components = this.components;
+    var child;
+    var children = this.children;
+    var i;
+    var key;
 
-      // Flush entity's components to DOM.
-      for (key in components) {
-        components[key].flushToDOM();
-      }
-
-      // Recurse.
-      if (!recursive) { return; }
-      for (i = 0; i < children.length; ++i) {
-        child = children[i];
-        if (!child.flushToDOM) { continue; }
-        child.flushToDOM(recursive);
-      }
+    // Flush entity's components to DOM.
+    for (key in components) {
+      components[key].flushToDOM();
     }
-  },
+
+    // Recurse.
+    if (!recursive) { return; }
+    for (i = 0; i < children.length; ++i) {
+      child = children[i];
+      if (!child.flushToDOM) { continue; }
+      child.flushToDOM(recursive);
+    }
+  }
 
   /**
    * If `attr` is a component, returns ALL component data including applied mixins and
@@ -771,20 +725,17 @@ var proto = Object.create(ANode.prototype, {
    * @param {string} attr
    * @returns {object|string} Object if component, else string.
    */
-  getAttribute: {
-    value: function (attr) {
-      // If component, return component data.
-      var component;
-      if (attr === 'position') { return this.object3D.position; }
-      if (attr === 'rotation') { return getRotation(this); }
-      if (attr === 'scale') { return this.object3D.scale; }
-      if (attr === 'visible') { return this.object3D.visible; }
-      component = this.components[attr];
-      if (component) { return component.data; }
-      return window.HTMLElement.prototype.getAttribute.call(this, attr);
-    },
-    writable: window.debug
-  },
+  getAttribute (attr) {
+    // If component, return component data.
+    var component;
+    if (attr === 'position') { return this.object3D.position; }
+    if (attr === 'rotation') { return getRotation(this); }
+    if (attr === 'scale') { return this.object3D.scale; }
+    if (attr === 'visible') { return this.object3D.visible; }
+    component = this.components[attr];
+    if (component) { return component.data; }
+    return window.HTMLElement.prototype.getAttribute.call(this, attr);
+  }
 
   /**
    * If `attr` is a component, returns JUST the component data defined on the entity.
@@ -796,68 +747,55 @@ var proto = Object.create(ANode.prototype, {
    * @param {string} attr
    * @returns {object|string} Object if component, else string.
    */
-  getDOMAttribute: {
-    value: function (attr) {
-      // If cached value exists, return partial component data.
-      var component = this.components[attr];
-      if (component) { return component.attrValue; }
-      return window.HTMLElement.prototype.getAttribute.call(this, attr);
-    },
-    writable: window.debug
-  },
+  getDOMAttribute (attr) {
+    // If cached value exists, return partial component data.
+    var component = this.components[attr];
+    if (component) { return component.attrValue; }
+    return window.HTMLElement.prototype.getAttribute.call(this, attr);
+  }
 
-  addState: {
-    value: function (state) {
-      if (this.is(state)) { return; }
-      this.states.push(state);
-      this.emit('stateadded', state);
-    }
-  },
+  addState (state) {
+    if (this.is(state)) { return; }
+    this.states.push(state);
+    this.emit('stateadded', state);
+  }
 
-  removeState: {
-    value: function (state) {
-      var stateIndex = this.states.indexOf(state);
-      if (stateIndex === -1) { return; }
-      this.states.splice(stateIndex, 1);
-      this.emit('stateremoved', state);
-    }
-  },
+  removeState (state) {
+    var stateIndex = this.states.indexOf(state);
+    if (stateIndex === -1) { return; }
+    this.states.splice(stateIndex, 1);
+    this.emit('stateremoved', state);
+  }
 
   /**
    * Checks if the element is in a given state. e.g. el.is('alive');
    * @type {string} state - Name of the state we want to check
    */
-  is: {
-    value: function (state) {
-      return this.states.indexOf(state) !== -1;
-    }
-  },
+  is (state) {
+    return this.states.indexOf(state) !== -1;
+  }
 
   /**
    * Open Inspector to this entity.
    */
-  inspect: {
-    value: function () {
-      this.sceneEl.components.inspector.openInspector(this);
-    }
-  },
+  inspect () {
+    this.sceneEl.components.inspector.openInspector(this);
+  }
 
   /**
    * Clean up memory and return memory to object pools.
    */
-  destroy: {
-    value: function () {
-      var key;
-      if (this.parentNode) {
-        warn('Entity can only be destroyed if detached from scenegraph.');
-        return;
-      }
-      for (key in this.components) {
-        this.components[key].destroy();
-      }
+  destroy () {
+    var key;
+    if (this.parentNode) {
+      warn('Entity can only be destroyed if detached from scenegraph.');
+      return;
+    }
+    for (key in this.components) {
+      this.components[key].destroy();
     }
   }
-});
+}
 
 /**
  * Check if a component is *defined* for an entity, including defaults and mixins.
@@ -928,5 +866,9 @@ function getRotation (entityEl) {
   return rotationObj;
 }
 
-AEntity = registerElement('a-entity', {prototype: proto});
-module.exports = AEntity;
+AEntity.componentsUpdated = [];
+AEntity.singlePropUpdate = {};
+
+customElements.define('a-entity', AEntity);
+
+module.exports.AEntity = AEntity;

@@ -1,6 +1,8 @@
 // Polyfill `Promise`.
 window.Promise = window.Promise || require('promise-polyfill');
 
+require('@ungap/custom-elements');
+
 // WebVR polyfill
 // Check before the polyfill runs.
 window.hasNativeWebVRImplementation = !!window.navigator.getVRDisplays ||
@@ -79,8 +81,8 @@ require('./components/index'); // Register standard components.
 require('./geometries/index'); // Register standard geometries.
 require('./shaders/index'); // Register standard shaders.
 require('./systems/index'); // Register standard systems.
-var ANode = require('./core/a-node');
-var AEntity = require('./core/a-entity'); // Depends on ANode and core components.
+var ANode = require('./core/a-node').ANode;
+var AEntity = require('./core/a-entity').AEntity; // Depends on ANode and core components.
 
 require('./core/a-assets');
 require('./core/a-cubemap');
@@ -105,7 +107,6 @@ module.exports = window.AFRAME = {
   coreComponents: Object.keys(components),
   geometries: require('./core/geometry').geometries,
   registerComponent: registerComponent,
-  registerElement: require('./core/a-register-element').registerElement,
   registerGeometry: registerGeometry,
   registerPrimitive: registerPrimitive,
   registerShader: registerShader,
