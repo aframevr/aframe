@@ -17,6 +17,7 @@ var GAMEPAD_ID_PREFIX = isWebXRAvailable ? GAMEPAD_ID_WEBXR : GAMEPAD_ID_WEBVR;
 
 // First generation model URL.
 var TOUCH_CONTROLLER_MODEL_BASE_URL = 'https://cdn.aframe.io/controllers/oculus/oculus-touch-controller-';
+var META_CONTROLLER_MODEL_BASE_URL = 'https://cdn.aframe.io/controllers/meta/';
 
 var OCULUS_TOUCH_WEBVR = {
   left: {
@@ -79,6 +80,20 @@ var CONTROLLER_PROPERTIES = {
       rayOrigin: {origin: {x: -0.015, y: 0.005, z: 0}, direction: {x: 0, y: 0, z: -1}},
       modelPivotOffset: new THREE.Vector3(-0.01, -0.01, 0.05),
       modelPivotRotation: new THREE.Euler(Math.PI / 4, 0, 0)
+    }
+  },
+  'meta-quest-touch-pro': {
+    left: {
+      modelUrl: META_CONTROLLER_MODEL_BASE_URL + 'quest-touch-pro-left.glb',
+      rayOrigin: {origin: {x: 0.015, y: 0.005, z: 0}, direction: {x: 0, y: 0, z: -1}},
+      modelPivotOffset: new THREE.Vector3(0, 0, 0),
+      modelPivotRotation: new THREE.Euler(0, 0, 0)
+    },
+    right: {
+      modelUrl: META_CONTROLLER_MODEL_BASE_URL + 'quest-touch-pro-right.glb',
+      rayOrigin: {origin: {x: -0.015, y: 0.005, z: 0}, direction: {x: 0, y: 0, z: -1}},
+      modelPivotOffset: new THREE.Vector3(0, 0, 0),
+      modelPivotRotation: new THREE.Euler(0, 0, 0)
     }
   }
 };
