@@ -17,7 +17,7 @@ module.exports.Component = registerComponent('tracked-controls-webxr', {
     handTrackingEnabled: {default: false},
     index: {type: 'int', default: -1},
     iterateControllerProfiles: {default: false},
-    space: {type: 'string', oneOf: ['targetRaySpace', 'gripSpace'], default: 'targetRaySpace'}
+    space: {type: 'string', oneOf: ['targetRaySpace', 'gripSpace'], default: 'gripSpace'}
   },
 
   init: function () {
