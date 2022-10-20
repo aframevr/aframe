@@ -276,7 +276,8 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
       id: id,
       hand: data.hand,
       orientationOffset: data.orientationOffset,
-      handTrackingEnabled: false
+      handTrackingEnabled: false,
+      iterateControllerProfiles: true
     });
     this.loadModel(controller);
   },
