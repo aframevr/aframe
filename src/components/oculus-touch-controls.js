@@ -17,6 +17,7 @@ var GAMEPAD_ID_PREFIX = isWebXRAvailable ? GAMEPAD_ID_WEBXR : GAMEPAD_ID_WEBVR;
 
 // First generation model URL.
 var TOUCH_CONTROLLER_MODEL_BASE_URL = 'https://cdn.aframe.io/controllers/oculus/oculus-touch-controller-';
+var META_CONTROLLER_MODEL_BASE_URL = 'https://cdn.aframe.io/controllers/meta/';
 
 var OCULUS_TOUCH_WEBVR = {
   left: {
@@ -79,6 +80,20 @@ var CONTROLLER_PROPERTIES = {
       rayOrigin: {origin: {x: -0.015, y: 0.005, z: 0}, direction: {x: 0, y: 0, z: -1}},
       modelPivotOffset: new THREE.Vector3(-0.01, -0.01, 0.05),
       modelPivotRotation: new THREE.Euler(Math.PI / 4, 0, 0)
+    }
+  },
+  'meta-quest-touch-pro': {
+    left: {
+      modelUrl: META_CONTROLLER_MODEL_BASE_URL + 'quest-touch-pro-left.glb',
+      rayOrigin: {origin: {x: 0.015, y: 0.005, z: 0}, direction: {x: 0, y: 0, z: -1}},
+      modelPivotOffset: new THREE.Vector3(0, 0, 0),
+      modelPivotRotation: new THREE.Euler(0, 0, 0)
+    },
+    right: {
+      modelUrl: META_CONTROLLER_MODEL_BASE_URL + 'quest-touch-pro-right.glb',
+      rayOrigin: {origin: {x: -0.015, y: 0.005, z: 0}, direction: {x: 0, y: 0, z: -1}},
+      modelPivotOffset: new THREE.Vector3(0, 0, 0),
+      modelPivotRotation: new THREE.Euler(0, 0, 0)
     }
   }
 };
@@ -203,7 +218,8 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
 
   checkIfControllerPresent: function () {
     checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX, {
-      hand: this.data.hand
+      hand: this.data.hand,
+      iterateControllerProfiles: true
     });
   },
 
@@ -236,8 +252,13 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
         }
       } else { // WebXR
         controllerId = CONTROLLER_DEFAULT;
-        controllerId = controller.profiles.indexOf('oculus-touch-v2') !== -1 ? 'oculus-touch-v2' : controllerId;
-        controllerId = controller.profiles.indexOf('oculus-touch-v3') !== -1 ? 'oculus-touch-v3' : controllerId;
+        var controllersPropertiesIds = Object.keys(CONTROLLER_PROPERTIES);
+        for (var i = 0; i < controller.profiles.length; i++) {
+          if (controllersPropertiesIds.indexOf(controller.profiles[i]) !== -1) {
+            controllerId = controller.profiles[i];
+            break;
+          }
+        }
         this.displayModel = CONTROLLER_PROPERTIES[controllerId];
       }
     }
@@ -255,7 +276,8 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
       id: id,
       hand: data.hand,
       orientationOffset: data.orientationOffset,
-      handTrackingEnabled: false
+      handTrackingEnabled: false,
+      iterateControllerProfiles: true
     });
     this.loadModel(controller);
   },
