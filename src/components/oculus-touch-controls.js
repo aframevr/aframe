@@ -251,8 +251,14 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
         }
       } else { // WebXR
         controllerId = CONTROLLER_DEFAULT;
-        controllerId = controller.profiles.indexOf('oculus-touch-v2') !== -1 ? 'oculus-touch-v2' : controllerId;
-        controllerId = controller.profiles.indexOf('oculus-touch-v3') !== -1 ? 'oculus-touch-v3' : controllerId;
+        var controllersPropertiesIds = Object.keys(CONTROLLER_PROPERTIES);
+        for (var i = 0; i < controllersPropertiesIds.length; i++) {
+          var controllerPropertyId = controllersPropertiesIds[i];
+          if (controller.profiles.indexOf(controllerPropertyId)) {
+            controllerId = controllerPropertyId;
+            break;
+          }
+        }
         this.displayModel = CONTROLLER_PROPERTIES[controllerId];
       }
     }
