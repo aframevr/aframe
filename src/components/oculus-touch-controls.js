@@ -218,7 +218,8 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
 
   checkIfControllerPresent: function () {
     checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX, {
-      hand: this.data.hand
+      hand: this.data.hand,
+      iterateControllerProfiles: true
     });
   },
 
@@ -252,10 +253,9 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
       } else { // WebXR
         controllerId = CONTROLLER_DEFAULT;
         var controllersPropertiesIds = Object.keys(CONTROLLER_PROPERTIES);
-        for (var i = 0; i < controllersPropertiesIds.length; i++) {
-          var controllerPropertyId = controllersPropertiesIds[i];
-          if (controller.profiles.indexOf(controllerPropertyId)) {
-            controllerId = controllerPropertyId;
+        for (var i = 0; i < controller.profiles.length; i++) {
+          if (controllersPropertiesIds.indexOf(controller.profiles[i]) !== -1) {
+            controllerId = controller.profiles[i];
             break;
           }
         }
