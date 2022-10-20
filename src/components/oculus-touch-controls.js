@@ -251,19 +251,14 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
         }
       } else { // WebXR
         controllerId = CONTROLLER_DEFAULT;
-        var controllersPropertiesIds = Object.keys(CONTROLLER_PROPERTIES);
-        for (var i = 0; i < controllersPropertiesIds.length; i++) {
-          var controllerPropertyId = controllersPropertiesIds[i];
-          if (controller.profiles.indexOf(controllerPropertyId)) {
-            controllerId = controllerPropertyId;
-            break;
-          }
-        }
+        controllerId = controller.profiles.indexOf('oculus-touch-v2') !== -1 ? 'oculus-touch-v2' : controllerId;
+        controllerId = controller.profiles.indexOf('oculus-touch-v3') !== -1 ? 'oculus-touch-v3' : controllerId;
+        controllerId = controller.profiles.indexOf('meta-quest-touch-pro') !== -1 ? 'meta-quest-touch-pro' : controllerId;
         this.displayModel = CONTROLLER_PROPERTIES[controllerId];
       }
     }
     var modelUrl = this.displayModel[data.hand].modelUrl;
-    this.isOculusTouchV3 = this.displayModel === CONTROLLER_PROPERTIES['oculus-touch-v3'];
+    this.isOculusTouchV3 = this.displayModel === CONTROLLER_PROPERTIES['oculus-touch-v3'] || this.displayModel === CONTROLLER_PROPERTIES['meta-quest-touch-pro'];
     this.el.setAttribute('gltf-model', modelUrl);
   },
 

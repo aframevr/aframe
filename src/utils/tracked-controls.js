@@ -171,7 +171,11 @@ function findMatchingControllerWebXR (controllers, idPrefix, handedness, index, 
           if (controllerMatch) { break; }
         }
       } else {
-        controllerMatch = profiles.length > 0 && profiles[0].startsWith(idPrefix);
+        if (idPrefix === 'oculus-touch') {
+          controllerMatch = profiles.length > 0 && (profiles[0].startsWith(idPrefix) || profiles[0].startsWith('meta-quest-touch'));
+        } else {
+          controllerMatch = profiles.length > 0 && profiles[0].startsWith(idPrefix);
+        }
       }
     }
     if (!controllerMatch) { continue; }
