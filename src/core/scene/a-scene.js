@@ -551,7 +551,12 @@ module.exports.AScene = registerElement('a-scene', {
           system.updateProperties(value);
           return;
         }
-        AEntity.prototype.setAttribute.call(this, attr, value, componentPropValue);
+        if (this.systemNames.length) {
+          AEntity.prototype.setAttribute.call(this, attr, value, componentPropValue);
+        } else {
+          // system registration isn't completed yet, so just set as a regular node
+          ANode.prototype.setAttribute.call(this, attr, value);
+        }
       }
     },
 
