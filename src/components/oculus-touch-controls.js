@@ -71,27 +71,39 @@ var CONTROLLER_PROPERTIES = {
   'oculus-touch-v3': {
     left: {
       modelUrl: TOUCH_CONTROLLER_MODEL_BASE_URL + 'v3-left.glb',
-      rayOrigin: {origin: {x: 0.015, y: 0.005, z: 0}, direction: {x: 0, y: 0, z: -1}},
-      modelPivotOffset: new THREE.Vector3(0.01, -0.01, 0.05),
-      modelPivotRotation: new THREE.Euler(Math.PI / 4, 0, 0)
+      rayOrigin: {
+        origin: {x: 0.0065, y: -0.0186, z: -0.05},
+        direction: {x: 0.12394785839500175, y: -0.5944043672340157, z: -0.7945567170519814}
+      },
+      modelPivotOffset: new THREE.Vector3(0, 0, 0),
+      modelPivotRotation: new THREE.Euler(0, 0, 0)
     },
     right: {
       modelUrl: TOUCH_CONTROLLER_MODEL_BASE_URL + 'v3-right.glb',
-      rayOrigin: {origin: {x: -0.015, y: 0.005, z: 0}, direction: {x: 0, y: 0, z: -1}},
-      modelPivotOffset: new THREE.Vector3(-0.01, -0.01, 0.05),
-      modelPivotRotation: new THREE.Euler(Math.PI / 4, 0, 0)
+      rayOrigin: {
+        origin: {x: -0.0065, y: -0.0186, z: -0.05},
+        direction: {x: -0.12394785839500175, y: -0.5944043672340157, z: -0.7945567170519814}
+      },
+      modelPivotOffset: new THREE.Vector3(0, 0, 0),
+      modelPivotRotation: new THREE.Euler(0, 0, 0)
     }
   },
   'meta-quest-touch-pro': {
     left: {
       modelUrl: META_CONTROLLER_MODEL_BASE_URL + 'quest-touch-pro-left.glb',
-      rayOrigin: {origin: {x: 0.015, y: 0.005, z: 0}, direction: {x: 0, y: 0, z: -1}},
+      rayOrigin: {
+        origin: {x: 0.0065, y: -0.0186, z: -0.05},
+        direction: {x: 0.12394785839500175, y: -0.5944043672340157, z: -0.7945567170519814}
+      },
       modelPivotOffset: new THREE.Vector3(0, 0, 0),
       modelPivotRotation: new THREE.Euler(0, 0, 0)
     },
     right: {
       modelUrl: META_CONTROLLER_MODEL_BASE_URL + 'quest-touch-pro-right.glb',
-      rayOrigin: {origin: {x: -0.015, y: 0.005, z: 0}, direction: {x: 0, y: 0, z: -1}},
+      rayOrigin: {
+        origin: {x: -0.0065, y: -0.0186, z: -0.05},
+        direction: {x: -0.12394785839500175, y: -0.5944043672340157, z: -0.7945567170519814}
+      },
       modelPivotOffset: new THREE.Vector3(0, 0, 0),
       modelPivotRotation: new THREE.Euler(0, 0, 0)
     }
