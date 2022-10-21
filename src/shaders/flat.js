@@ -30,7 +30,6 @@ module.exports.Shader = registerShader('flat', {
     getMaterialData(data, this.materialData);
     this.rendererSystem.applyColorCorrection(this.materialData.color);
     this.material = new THREE.MeshBasicMaterial(this.materialData);
-    utils.material.updateMap(this, data);
   },
 
   update: function (data) {
