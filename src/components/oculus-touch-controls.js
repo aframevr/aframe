@@ -72,14 +72,14 @@ var CONTROLLER_PROPERTIES = {
     left: {
       modelUrl: TOUCH_CONTROLLER_MODEL_BASE_URL + 'v3-left.glb',
       rayOrigin: {origin: {x: 0.015, y: 0.005, z: 0}, direction: {x: 0, y: 0, z: -1}},
-      modelPivotOffset: new THREE.Vector3(0.01, -0.01, 0.05),
-      modelPivotRotation: new THREE.Euler(Math.PI / 4, 0, 0)
+      modelPivotOffset: new THREE.Vector3(0, 0, 0),
+      modelPivotRotation: new THREE.Euler(0, 0, 0)
     },
     right: {
       modelUrl: TOUCH_CONTROLLER_MODEL_BASE_URL + 'v3-right.glb',
       rayOrigin: {origin: {x: -0.015, y: 0.005, z: 0}, direction: {x: 0, y: 0, z: -1}},
-      modelPivotOffset: new THREE.Vector3(-0.01, -0.01, 0.05),
-      modelPivotRotation: new THREE.Euler(Math.PI / 4, 0, 0)
+      modelPivotOffset: new THREE.Vector3(0, 0, 0),
+      modelPivotRotation: new THREE.Euler(0, 0, 0)
     }
   },
   'meta-quest-touch-pro': {
