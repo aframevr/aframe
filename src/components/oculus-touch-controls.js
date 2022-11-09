@@ -313,7 +313,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     if (!button) { return; }
     // move the button meshes
     if (this.isOculusTouchV3) {
-      this.onButtonChangedV3(button, evt);
+      this.onButtonChangedV3(evt);
     } else {
       var buttonMeshes = this.buttonMeshes;
       var analogValue;
@@ -335,7 +335,8 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   },
 
   clickButtons: ['xbutton', 'ybutton', 'abutton', 'bbutton', 'thumbstick'],
-  onButtonChangedV3: function (button, evt) {
+  onButtonChangedV3: function (evt) {
+    var button = this.mapping[this.data.hand].buttons[evt.detail.id];
     var buttonObjects = this.buttonObjects;
     var analogValue;
 
