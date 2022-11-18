@@ -214,8 +214,6 @@ AFRAME.registerComponent('foo', {
 
 ### `AFRAME.utils.throttleLeadingAndTrailing (function, minimumInterval [, optionalContext])`
 
-[lodash]: https://lodash.com/docs/#throttle
-
 Returns a throttled function that is called at most once every `minimumInterval` milliseconds, but ensures that the very last call of a burst gets deferred until the end of the interval.  This is useful when an event is used to trigger synchronization of state, and there is a need to converge to the correct final state following a burst of events.
 
 Example use cases:
