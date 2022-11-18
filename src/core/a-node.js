@@ -2,21 +2,6 @@
 var utils = require('../utils/');
 
 var warn = utils.debug('core:a-node:warn');
-var error = utils.debug('core:a-node:error');
-
-var knownTags = {
-  'a-scene': true,
-  'a-assets': true,
-  'a-assets-items': true,
-  'a-cubemap': true,
-  'a-mixin': true,
-  'a-node': true,
-  'a-entity': true
-};
-
-function isNode (node) {
-  return node.tagName.toLowerCase() in knownTags || node.isNode;
-}
 
 var knownTags = {
   'a-scene': true,
@@ -140,7 +125,7 @@ class ANode extends HTMLElement {
       return new Promise(function waitForLoaded (resolve, reject) {
         if (child.hasLoaded) { return resolve(); }
         child.addEventListener('loaded', resolve);
-            child.addEventListener('error', reject);
+        child.addEventListener('error', reject);
       });
     });
 
