@@ -17,6 +17,7 @@ var GAMEPAD_ID_PREFIX = isWebXRAvailable ? GAMEPAD_ID_WEBXR : GAMEPAD_ID_WEBVR;
 
 // First generation model URL.
 var TOUCH_CONTROLLER_MODEL_BASE_URL = 'https://cdn.aframe.io/controllers/oculus/oculus-touch-controller-';
+var META_CONTROLLER_MODEL_BASE_URL = 'https://cdn.aframe.io/controllers/meta/';
 
 var OCULUS_TOUCH_WEBVR = {
   left: {
@@ -70,15 +71,41 @@ var CONTROLLER_PROPERTIES = {
   'oculus-touch-v3': {
     left: {
       modelUrl: TOUCH_CONTROLLER_MODEL_BASE_URL + 'v3-left.glb',
-      rayOrigin: {origin: {x: 0.015, y: 0.005, z: 0}, direction: {x: 0, y: 0, z: -1}},
-      modelPivotOffset: new THREE.Vector3(0.01, -0.01, 0.05),
-      modelPivotRotation: new THREE.Euler(Math.PI / 4, 0, 0)
+      rayOrigin: {
+        origin: {x: 0.0065, y: -0.0186, z: -0.05},
+        direction: {x: 0.12394785839500175, y: -0.5944043672340157, z: -0.7945567170519814}
+      },
+      modelPivotOffset: new THREE.Vector3(0, 0, 0),
+      modelPivotRotation: new THREE.Euler(0, 0, 0)
     },
     right: {
       modelUrl: TOUCH_CONTROLLER_MODEL_BASE_URL + 'v3-right.glb',
-      rayOrigin: {origin: {x: -0.015, y: 0.005, z: 0}, direction: {x: 0, y: 0, z: -1}},
-      modelPivotOffset: new THREE.Vector3(-0.01, -0.01, 0.05),
-      modelPivotRotation: new THREE.Euler(Math.PI / 4, 0, 0)
+      rayOrigin: {
+        origin: {x: -0.0065, y: -0.0186, z: -0.05},
+        direction: {x: -0.12394785839500175, y: -0.5944043672340157, z: -0.7945567170519814}
+      },
+      modelPivotOffset: new THREE.Vector3(0, 0, 0),
+      modelPivotRotation: new THREE.Euler(0, 0, 0)
+    }
+  },
+  'meta-quest-touch-pro': {
+    left: {
+      modelUrl: META_CONTROLLER_MODEL_BASE_URL + 'quest-touch-pro-left.glb',
+      rayOrigin: {
+        origin: {x: 0.0065, y: -0.0186, z: -0.05},
+        direction: {x: 0.12394785839500175, y: -0.5944043672340157, z: -0.7945567170519814}
+      },
+      modelPivotOffset: new THREE.Vector3(0, 0, 0),
+      modelPivotRotation: new THREE.Euler(0, 0, 0)
+    },
+    right: {
+      modelUrl: META_CONTROLLER_MODEL_BASE_URL + 'quest-touch-pro-right.glb',
+      rayOrigin: {
+        origin: {x: -0.0065, y: -0.0186, z: -0.05},
+        direction: {x: -0.12394785839500175, y: -0.5944043672340157, z: -0.7945567170519814}
+      },
+      modelPivotOffset: new THREE.Vector3(0, 0, 0),
+      modelPivotRotation: new THREE.Euler(0, 0, 0)
     }
   }
 };
@@ -203,7 +230,8 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
 
   checkIfControllerPresent: function () {
     checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX, {
-      hand: this.data.hand
+      hand: this.data.hand,
+      iterateControllerProfiles: true
     });
   },
 
@@ -236,8 +264,13 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
         }
       } else { // WebXR
         controllerId = CONTROLLER_DEFAULT;
-        controllerId = controller.profiles.indexOf('oculus-touch-v2') !== -1 ? 'oculus-touch-v2' : controllerId;
-        controllerId = controller.profiles.indexOf('oculus-touch-v3') !== -1 ? 'oculus-touch-v3' : controllerId;
+        var controllersPropertiesIds = Object.keys(CONTROLLER_PROPERTIES);
+        for (var i = 0; i < controller.profiles.length; i++) {
+          if (controllersPropertiesIds.indexOf(controller.profiles[i]) !== -1) {
+            controllerId = controller.profiles[i];
+            break;
+          }
+        }
         this.displayModel = CONTROLLER_PROPERTIES[controllerId];
       }
     }
@@ -255,7 +288,9 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
       id: id,
       hand: data.hand,
       orientationOffset: data.orientationOffset,
-      handTrackingEnabled: false
+      handTrackingEnabled: false,
+      iterateControllerProfiles: true,
+      space: 'gripSpace'
     });
     this.loadModel(controller);
   },
@@ -274,14 +309,14 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   },
 
   onButtonChanged: function (evt) {
+    var button = this.mapping[this.data.hand].buttons[evt.detail.id];
+    if (!button) { return; }
     // move the button meshes
     if (this.isOculusTouchV3) {
       this.onButtonChangedV3(evt);
     } else {
-      var button = this.mapping[this.data.hand].buttons[evt.detail.id];
       var buttonMeshes = this.buttonMeshes;
       var analogValue;
-      if (!button) { return; }
 
       if (button === 'trigger' || button === 'grip') { analogValue = evt.detail.state.value; }
 
@@ -304,7 +339,6 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     var button = this.mapping[this.data.hand].buttons[evt.detail.id];
     var buttonObjects = this.buttonObjects;
     var analogValue;
-    if (!button) { return; }
 
     analogValue = evt.detail.state.value;
     analogValue *= this.data.hand === 'left' ? -1 : 1;
