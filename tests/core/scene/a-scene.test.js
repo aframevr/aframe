@@ -162,6 +162,10 @@ suite('a-scene (without renderer)', function () {
 
       // mock canvas
       sceneEl.canvas = {
+        classList: {
+          add: function () {},
+          remove: function () {}
+        },
         addEventListener: function () {},
         removeEventListener: function () {},
         requestFullscreen: function () {}
