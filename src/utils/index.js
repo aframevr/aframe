@@ -107,12 +107,6 @@ module.exports.throttleLeadingAndTrailing = function (functionToThrottle, minimu
 };
 
 /**
- * Identical to throttleLeadingAndTrailing.
- * Exists for back-compatibility with 1.3.0.
- */
-module.exports.throttleComponentChanged = module.exports.throttleLeadingAndTrailing;
-
-/**
  * Returns throttle function that gets called at most once every interval.
  * Uses the time/timeDelta timestamps provided by the global render loop for better perf.
  *
