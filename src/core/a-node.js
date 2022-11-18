@@ -141,6 +141,7 @@ class ANode extends HTMLElement {
 
       self.hasLoaded = true;
       if (cb) { cb(); }
+      self.setupMutationObserver();
       self.emit('loaded', undefined, false);
     });
   }
