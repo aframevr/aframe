@@ -19,7 +19,7 @@ enable both `WebVR` and `Gamepad Extensions` experiments in `chrome://flags`
 and relaunch the browser.
 
 Then, open your web app, enter VR mode and place the phone inside the headset.
-It can occassionally take a few seconds before the controller can be used.
+It can occasionally take a few seconds before the controller can be used.
 
 ## Example
 

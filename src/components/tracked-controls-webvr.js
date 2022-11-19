@@ -198,9 +198,9 @@ module.exports.Component = registerComponent('tracked-controls-webvr', {
       object3D.matrix.decompose(object3D.position, object3D.quaternion, object3D.scale);
     }
 
-    object3D.rotateX(this.data.orientationOffset.x * THREE.Math.DEG2RAD);
-    object3D.rotateY(this.data.orientationOffset.y * THREE.Math.DEG2RAD);
-    object3D.rotateZ(this.data.orientationOffset.z * THREE.Math.DEG2RAD);
+    object3D.rotateX(this.data.orientationOffset.x * THREE.MathUtils.DEG2RAD);
+    object3D.rotateY(this.data.orientationOffset.y * THREE.MathUtils.DEG2RAD);
+    object3D.rotateZ(this.data.orientationOffset.z * THREE.MathUtils.DEG2RAD);
   },
 
   /**

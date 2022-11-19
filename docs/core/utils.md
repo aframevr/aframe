@@ -212,6 +212,20 @@ AFRAME.registerComponent('foo', {
 });
 ```
 
+### `AFRAME.utils.throttleLeadingAndTrailing (function, minimumInterval [, optionalContext])`
+
+Returns a throttled function that is called at most once every `minimumInterval` milliseconds, but ensures that the very last call of a burst gets deferred until the end of the interval.  This is useful when an event is used to trigger synchronization of state, and there is a need to converge to the correct final state following a burst of events.
+
+Example use cases:
+
+ * synchronizing state based on the componentchanged event
+ * following a mouse pointer using the mousemove event
+ * integrating with [THREE.TransformControls](https://threejs.org/docs/#examples/en/controls/TransformControls), via the objectChange event.
+
+A context such as `this` can be provided to handle function binding for convenience. 
+
+The same as [lodash's`throttle`][lodash], with `leading` and `trailing` options both set to `true`
+
 ## Miscellaneous
 
 ### `AFRAME.utils.getUrlParameter (name)`

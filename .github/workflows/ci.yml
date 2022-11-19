@@ -1,0 +1,60 @@
+name: Test Cases
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+permissions:
+  contents: read
+jobs:
+  test:
+    name: Test Cases
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: ['16.x']
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - name: Use Node.js ${{ matrix['node-version'] }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix['node-version'] }}
+# Enabling the cache reduces the "Install dependencies" step by 1m30,
+# but you need package-lock.json in the repo.
+#          cache: 'npm'
+#          cache-dependency-path: 'package-lock.json'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Test Cases Using Firefox
+        uses: GabrielBB/xvfb-action@v1
+        env:
+          TEST_ENV: ci
+        with:
+          run: npm run test:firefox -- --single-run
+
+      - name: Test Cases Using Chrome
+        uses: GabrielBB/xvfb-action@v1
+        env:
+          TEST_ENV: ci
+        with:
+          run: npm run test:chrome -- --single-run
+
+      - name: Check Lint
+        run: npm run lint
+
+      - name: Check Build Minified
+        run: npm run dist
+
+      - name: Check Docs
+        run: npm run test:docs
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          directory: ./tests/coverage

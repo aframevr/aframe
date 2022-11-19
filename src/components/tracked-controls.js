@@ -22,7 +22,8 @@ module.exports.Component = registerComponent('tracked-controls', {
     // Arm model parameters when not 6DoF.
     armModel: {default: false},
     headElement: {type: 'selector'},
-    iterateControllerProfiles: {default: false}
+    iterateControllerProfiles: {default: false},
+    space: {type: 'string', oneOf: ['targetRaySpace', 'gripSpace'], default: 'targetRaySpace'}
   },
 
   update: function () {
@@ -34,7 +35,8 @@ module.exports.Component = registerComponent('tracked-controls', {
         hand: data.hand,
         index: data.controller,
         iterateControllerProfiles: data.iterateControllerProfiles,
-        handTrackingEnabled: data.handTrackingEnabled
+        handTrackingEnabled: data.handTrackingEnabled,
+        space: data.space
       });
     } else {
       el.setAttribute('tracked-controls-webvr', data);

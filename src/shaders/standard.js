@@ -67,14 +67,6 @@ module.exports.Shader = registerShader('standard', {
     this.rendererSystem.applyColorCorrection(this.materialData.color);
     this.rendererSystem.applyColorCorrection(this.materialData.emissive);
     this.material = new THREE.MeshStandardMaterial(this.materialData);
-
-    utils.material.updateMap(this, data);
-    if (data.normalMap) { utils.material.updateDistortionMap('normal', this, data); }
-    if (data.displacementMap) { utils.material.updateDistortionMap('displacement', this, data); }
-    if (data.ambientOcclusionMap) { utils.material.updateDistortionMap('ambientOcclusion', this, data); }
-    if (data.metalnessMap) { utils.material.updateDistortionMap('metalness', this, data); }
-    if (data.roughnessMap) { utils.material.updateDistortionMap('roughness', this, data); }
-    this.updateEnvMap(data);
   },
 
   update: function (data) {

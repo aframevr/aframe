@@ -5,7 +5,7 @@ suite('gearvr-controls', function () {
   setup(function (done) {
     var el = this.el = entityFactory();
     el.setAttribute('gearvr-controls', 'hand: right');  // To ensure index is 0.
-    el.addEventListener('loaded', function () {
+    var callback = function () {
       var component = el.components['gearvr-controls'];
       component.controllersWhenPresent = [{
         id: 'Gear VR Controller',
@@ -20,7 +20,9 @@ suite('gearvr-controls', function () {
       }];
       el.parentEl.renderer.xr.getStandingMatrix = function () {};
       done();
-    });
+    };
+    if (el.hasLoaded) { callback(); }
+    el.addEventListener('loaded', callback);
   });
 
   suite('checkIfControllerPresent', function () {

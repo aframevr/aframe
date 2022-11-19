@@ -310,7 +310,7 @@ suite('raycaster', function () {
           assert.notEqual(component.clearedIntersectedEls.indexOf(targetEl), -1);
           raycasterEl.removeEventListener('raycaster-intersection-cleared', cb);
           done();
-        });
+        }, {once: true});
         component.tock();
       });
       component.tock();
@@ -324,7 +324,7 @@ suite('raycaster', function () {
         targetEl.addEventListener('raycaster-intersected-cleared', function (evt) {
           assert.equal(evt.detail.el, raycasterEl);
           done();
-        });
+        }, {once: true});
         component.tock();
       });
       component.tock();
@@ -334,14 +334,14 @@ suite('raycaster', function () {
       targetEl.addEventListener('raycaster-intersected', function () {
         targetEl.addEventListener('raycaster-intersected-cleared', function () {
           done();
-        });
+        }, {once: true});
         assert.equal(component.intersectedEls.length, 2);
         assert.equal(component.clearedIntersectedEls.length, 0);
         el.setAttribute('raycaster', 'enabled', false);
         assert.equal(component.intersectedEls.length, 0);
         assert.equal(component.intersections.length, 0);
         assert.equal(component.clearedIntersectedEls.length, 2);
-      });
+      }, {once: true});
       component.tock();
     });
 
@@ -349,7 +349,7 @@ suite('raycaster', function () {
       targetEl.addEventListener('raycaster-intersected', function () {
         el.addEventListener('raycaster-intersection-cleared', function () {
           done();
-        });
+        }, {once: true});
         el.setAttribute('raycaster', 'enabled', false);
       });
       component.tock();

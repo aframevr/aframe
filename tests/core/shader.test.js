@@ -9,11 +9,8 @@ suite('shader', function () {
 
   setup(function (done) {
     el = entityFactory();
-    if (el.hasLoaded) {
-      done();
-    } else {
-      el.addEventListener('loaded', function () { done(); });
-    }
+    if (el.hasLoaded) { done(); }
+    el.addEventListener('loaded', function () { done(); });
   });
 
   teardown(function () {
@@ -107,11 +104,10 @@ suite('shader data binding', function () {
     updateSpy = this.sinon.spy(shader.prototype, 'update');
 
     el = entityFactory();
-    if (el.hasLoaded) {
+    if (el.hasLoaded) { done(); }
+    el.addEventListener('loaded', function () {
       done();
-    } else {
-      el.addEventListener('loaded', function () { done(); });
-    }
+    });
   });
 
   teardown(function () {

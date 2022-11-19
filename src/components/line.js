@@ -66,7 +66,7 @@ module.exports.Component = registerComponent('line', {
   },
 
   remove: function () {
-    this.el.removeObject3D('line', this.line);
+    this.el.removeObject3D(this.attrName, this.line);
   }
 });
 

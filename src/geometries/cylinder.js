@@ -1,7 +1,7 @@
 var registerGeometry = require('../core/geometry').registerGeometry;
 var THREE = require('../lib/three');
 
-var degToRad = THREE.Math.degToRad;
+var degToRad = THREE.MathUtils.degToRad;
 
 registerGeometry('cylinder', {
   schema: {

@@ -12,7 +12,7 @@ suite('renderer', function () {
     sceneEl.addEventListener('loaded', function () {
       // Verify the properties which are part of the renderer system schema.
       var rendererSystem = sceneEl.getAttribute('renderer');
-      assert.strictEqual(rendererSystem.foveationLevel, 0);
+      assert.strictEqual(rendererSystem.foveationLevel, 1);
       assert.strictEqual(rendererSystem.highRefreshRate, false);
       assert.strictEqual(rendererSystem.physicallyCorrectLights, false);
       assert.strictEqual(rendererSystem.sortObjects, false);
@@ -71,10 +71,10 @@ suite('renderer', function () {
 
   test('change renderer foveationLevel', function (done) {
     var sceneEl = createScene();
-    sceneEl.setAttribute('renderer', 'foveationLevel: 2');
+    sceneEl.setAttribute('renderer', 'foveationLevel: 0.5');
     sceneEl.addEventListener('loaded', function () {
       var rendererSystem = sceneEl.getAttribute('renderer');
-      assert.strictEqual(rendererSystem.foveationLevel, 2);
+      assert.strictEqual(rendererSystem.foveationLevel, 0.5);
       done();
     });
     document.body.appendChild(sceneEl);

@@ -1,6 +1,6 @@
 /* global AFRAME, assert, process, sinon, setup, suite, teardown, test, HTMLElement */
-var AEntity = require('core/a-entity');
-var ANode = require('core/a-node');
+var AEntity = require('core/a-entity').AEntity;
+var ANode = require('core/a-node').ANode;
 var extend = require('utils').extend;
 var registerComponent = require('core/component').registerComponent;
 var components = require('core/component').components;
@@ -194,10 +194,14 @@ suite('a-entity', function () {
         done();
       });
 
+      assetsEl.addEventListener('loaded', function () {
+        assert.ok(assetsEl.hasLoaded);
+        assert.notOk(el.hasLoaded);
+      });
+
       sceneEl.appendChild(assetsEl);
       sceneEl.appendChild(el);
       document.body.appendChild(sceneEl);
-      ANode.prototype.load.call(assetsEl);
     });
   });
 
@@ -930,7 +934,7 @@ suite('a-entity', function () {
 
     test('does not initialized non-registered component', function () {
       var nativeSetAttribute = HTMLElement.prototype.setAttribute;
-      this.sinon.stub(el, 'setAttribute', nativeSetAttribute);
+      this.sinon.replace(el, 'setAttribute', nativeSetAttribute);
       el.setAttribute('fake-component', 'color: #F0F;');
       el.initComponent('fake-component');
       assert.notOk(el.components.fakeComponent);
@@ -966,18 +970,30 @@ suite('a-entity', function () {
     });
 
     test('initializes defined dependency component with HTML', function (done) {
+      var count = 0;
       delete components.root;
       registerComponent('root', {
-        dependencies: ['dependency']
+        dependencies: ['dependency'],
+        init: function () {
+          count++;
+          if (count === 2) {
+            delete components.root;
+            delete components.dependency;
+            done();
+          }
+        }
       });
 
       registerComponent('dependency', {
         schema: {foo: {type: 'string'}},
         init: function () {
           assert.equal(this.data.foo, 'bar');
-          delete components.root;
-          delete components.dependency;
-          done();
+          count++;
+          if (count === 2) {
+            delete components.root;
+            delete components.dependency;
+            done();
+          }
         }
       });
 
@@ -985,14 +1001,18 @@ suite('a-entity', function () {
     });
 
     test('initializes defined dependency component with null data w/ HTML', function (done) {
+      var count = 0;
       delete components.root;
       registerComponent('root', {
         dependencies: ['dependency'],
         init: function () {
           assert.equal(this.el.components.dependency.data.foo, 'bar');
-          delete components.root;
-          delete components.dependency;
-          done();
+          count++;
+          if (count === 2) {
+            delete components.root;
+            delete components.dependency;
+            done();
+          }
         }
       });
 
@@ -1000,6 +1020,12 @@ suite('a-entity', function () {
         schema: {foo: {default: 'bar'}},
         init: function () {
           assert.equal(this.data.foo, 'bar');
+          count++;
+          if (count === 2) {
+            delete components.root;
+            delete components.dependency;
+            done();
+          }
         }
       });
 
@@ -1050,8 +1076,8 @@ suite('a-entity', function () {
       var materialAttribute = 'color: #F0F; transparent: true';
       var nativeSetAttribute = HTMLElement.prototype.setAttribute;
       var nativeGetAttribute = HTMLElement.prototype.getAttribute;
-      this.sinon.stub(el, 'setAttribute', nativeSetAttribute);
-      this.sinon.stub(el, 'getAttribute', nativeGetAttribute);
+      this.sinon.replace(el, 'setAttribute', nativeSetAttribute);
+      this.sinon.replace(el, 'getAttribute', nativeGetAttribute);
       el.setAttribute('material', materialAttribute);
       el.initComponent('material', '', true);
       assert.equal(el.getAttribute('material'), materialAttribute);
@@ -1138,7 +1164,7 @@ suite('a-entity', function () {
 
       box.setAttribute('geometry', {primitive: 'box'});
       component = box.components.geometry;
-      removeSpy = this.sinon.stub(component, 'remove', () => {});
+      removeSpy = this.sinon.replace(component, 'remove', this.sinon.fake(() => {}));
 
       box.removeComponent('geometry');
       assert.notOk(removeSpy.called);

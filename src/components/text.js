@@ -220,6 +220,10 @@ module.exports.Component = registerComponent('text', {
       }).then(function (image) {
         // Make mesh visible and apply font image as texture.
         var texture = self.texture;
+        // The component may have been removed at this point and texture will
+        // be null. This happens mainly while executing the tests,
+        // in this case we just return.
+        if (!texture) return;
         texture.image = image;
         texture.needsUpdate = true;
         textures[data.font] = texture;

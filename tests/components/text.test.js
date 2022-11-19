@@ -7,7 +7,7 @@ suite('text', function () {
   var el;
 
   setup(function (done) {
-    this.sinon.stub(Component.prototype, 'lookupFont', function (key) {
+    this.sinon.replace(Component.prototype, 'lookupFont', function (key) {
       return {
         default: '/base/tests/assets/test.fnt?foo',
         mozillavr: '/base/tests/assets/test.fnt?bar',

@@ -783,7 +783,9 @@ suite('Component', function () {
       components.dummy = undefined;
       var el = this.el = entityFactory();
       if (el.hasLoaded) { done(); }
-      el.addEventListener('loaded', function () { done(); });
+      el.addEventListener('loaded', function () {
+        done();
+      });
     });
 
     test('init is called once if the init routine sets the component', function () {
@@ -808,7 +810,9 @@ suite('Component', function () {
       components.dummy = undefined;
       var el = this.el = entityFactory();
       if (el.hasLoaded) { done(); }
-      el.addEventListener('loaded', function () { done(); });
+      el.addEventListener('loaded', function () {
+        done();
+      });
     });
 
     test('not called if component data does not change', function () {

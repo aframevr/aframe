@@ -5,7 +5,7 @@ suite('oculus-go-controls', function () {
   setup(function (done) {
     var el = this.el = entityFactory();
     el.setAttribute('oculus-go-controls', 'hand: right');  // To ensure index is 0.
-    el.addEventListener('loaded', function () {
+    var callback = function () {
       var component = el.components['oculus-go-controls'];
       // Initially no controllers are present
       component.controllers = [];
@@ -23,7 +23,9 @@ suite('oculus-go-controls', function () {
       }];
       el.parentEl.renderer.xr.getStandingMatrix = function () {};
       done();
-    });
+    };
+    if (el.hasLoaded) { callback(); }
+    el.addEventListener('loaded', callback);
   });
 
   suite('checkIfControllerPresent', function () {
@@ -101,9 +103,9 @@ suite('oculus-go-controls', function () {
       // Remove the controllers and verify that everything is cleaned up correctly. We do this
       // by resetting the spy methods so we are certain only the remove is called.
       controllerSystem.controllers = [];
-      injectTrackedControlsSpy.reset();
-      addEventListenersSpy.reset();
-      removeEventListenersSpy.reset();
+      injectTrackedControlsSpy.resetHistory();
+      addEventListenersSpy.resetHistory();
+      removeEventListenersSpy.resetHistory();
 
       component.checkIfControllerPresent();
 

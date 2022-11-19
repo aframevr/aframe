@@ -85,7 +85,7 @@ the same domain (directory) as your application.
 If you are trying to load a video, make sure the browser supports the video
 (i.e., encoding, framerate, size).
 
-Video autoplay policies are getting more and more strict and rules might vary accross browsers. Mandatory user gesture is now commonly enforced. For maximum compatibility, you can offer a button that the user can click to start [video playback][startplayback]. [Simple sample code][videotestcode] can be found in the docs. Pay particular attention to the [play-on-click component][videoplaycomponent]
+Video autoplay policies are getting more and more strict and rules might vary across browsers. Mandatory user gesture is now commonly enforced. For maximum compatibility, you can offer a button that the user can click to start [video playback][startplayback]. [Simple sample code][videotestcode] can be found in the docs. Pay particular attention to the [play-on-click component][videoplaycomponent]
 
 Read the [*Hosting and Publishing* guide](./hosting-and-publishing.md) for more
 information.
@@ -194,7 +194,6 @@ For 360&deg; images, search for [equirectangular images on Flickr][flickr].
 
 For 3D models, check out:
 
-- [Google Blocks](https://vr.google.com/objects)
 - [Sketchfab](https://sketchfab.com)
 - [Clara.io](http://clara.io)
 - [Archive3D](http://archive3d.net)
@@ -299,7 +298,7 @@ including:
 
 ## Which headsets, browsers, devices, and platforms does A-Frame support?
 
-[deviceplatform]: ./vr-headsets-and-webvr-browsers.md
+[deviceplatform]: ./vr-headsets-and-webxr-browsers.md
 
 Most of them. Read *[VR Headsets and WebVR Browsers][deviceplatform]* for more
 information.
@@ -341,3 +340,6 @@ Phones with Adreno 300 series GPUs are notoriously problematic. Set [renderer pr
 [New browser policies](https://www.w3.org/TR/orientation-event/#dom-deviceorientationevent-requestpermission) require sites to prompt the user for permission before getting access to DeviceMotionEvents. [Starting with iOS 13](https://webkit.org/blog/9674/new-webkit-features-in-safari-13/) DeviceMotionEvents are only available for pages served over `https`. Other browsers will also apply same policies and restrictions. A-Frame now [incorporates customizable UI](https://aframe.io/docs/1.0.0/components/device-orientation-permission-ui.html#sidebar) to request the necessary permissions to the user. Make sure to update to [A-Frame latest version](https://github.com/aframevr/aframe/releases)
 
 
+## Can I use A-Frame offline or self hosted?
+
+Using A-Frame online sometimes is not possible or inconvenient, like for instance when traveling or during public events with poor Internet connectivity. A-Frame is mostly self-contained so including the build (aframe.min.js) in your project will be sufficient in many cases. Some specific parts are lazy loaded and only fetched when used. This is for example the case of the fonts for the text component and the 3D models for controllers. In order to make an A-Frame build work either offline or without relying on A-Frame hosting infrastructure (typically cdn.aframe.io), you can monitor network requests on your browser console. This will show precisely what assets are being loaded and thus as required for your specific experience. Fonts can be found via FONT_BASE_URL in the whereas controllers via MODEL_URLS. Both can be modified in the source and included in your own [custom build](https://github.com/aframevr/aframe#generating-builds)

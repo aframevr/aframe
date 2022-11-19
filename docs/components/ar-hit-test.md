@@ -3,7 +3,7 @@ title: ar-hit-test
 type: components
 layout: docs
 parent_section: components
-source_code: src/components/ar-hit-test.js
+source_code: src/components/scene/ar-hit-test.js
 examples: []
 ---
 

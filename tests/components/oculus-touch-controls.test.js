@@ -8,7 +8,7 @@ suite('oculus-touch-controls', function () {
   setup(function (done) {
     el = this.el = entityFactory();
     el.setAttribute('oculus-touch-controls', '');
-    el.addEventListener('loaded', function () {
+    var callback = function () {
       component = el.components['oculus-touch-controls'];
       // Initially no controllers are present
       component.controllers = [];
@@ -20,7 +20,9 @@ suite('oculus-touch-controls', function () {
         pose: {}
       }];
       done();
-    });
+    };
+    if (el.hasLoaded) { callback(); }
+    el.addEventListener('loaded', callback);
   });
 
   suite('checkIfControllerPresent', function () {
@@ -99,9 +101,9 @@ suite('oculus-touch-controls', function () {
       // Remove the controllers and verify that everything is cleaned up correctly. We do this
       // by resetting the spy methods so we are certain only the remove is called.
       controllerSystem.controllers = [];
-      injectTrackedControlsSpy.reset();
-      addEventListenersSpy.reset();
-      removeEventListenersSpy.reset();
+      injectTrackedControlsSpy.resetHistory();
+      addEventListenersSpy.resetHistory();
+      removeEventListenersSpy.resetHistory();
 
       component.checkIfControllerPresent();
 

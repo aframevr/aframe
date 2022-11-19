@@ -71,7 +71,7 @@ module.exports.Component = registerComponent('screenshot', {
         side: THREE.DoubleSide
       });
       self.quad = new THREE.Mesh(
-        new THREE.PlaneBufferGeometry(1, 1),
+        new THREE.PlaneGeometry(1, 1),
         self.material
       );
       self.quad.visible = false;

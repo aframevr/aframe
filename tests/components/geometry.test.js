@@ -1,6 +1,6 @@
 /* global assert, process, setup, suite, test */
 var helpers = require('../helpers');
-var degToRad = require('index').THREE.Math.degToRad;
+var degToRad = require('index').THREE.MathUtils.degToRad;
 
 /**
  * Most geometry tests will disable BufferGeometries in order to assert on geometry types and
@@ -12,6 +12,7 @@ suite('geometry', function () {
   setup(function (done) {
     el = helpers.entityFactory();
     el.setAttribute('geometry', 'buffer: false; primitive: box;');
+    if (el.hasLoaded) { done(); }
     el.addEventListener('loaded', function () {
       done();
     });

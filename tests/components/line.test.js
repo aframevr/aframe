@@ -4,15 +4,23 @@ var entityFactory = require('../helpers').entityFactory;
 suite('line', function () {
   var el;
   var component;
+  var componentSuffix;
 
   setup(function (done) {
+    var count = 0;
     el = this.el = entityFactory();
     el.setAttribute('line', '');
+    el.setAttribute('line__suffix', '');
     if (el.hasLoaded) { done(); }
     el.addEventListener('componentinitialized', function (evt) {
-      if (evt.detail.name !== 'line') { return; }
+      if (evt.detail.name !== 'line' &&
+          evt.detail.name !== 'line__suffix') { return; }
       component = el.components.line;
-      done();
+      componentSuffix = el.components.line__suffix;
+      count++;
+      if (count >= 2) {
+        done();
+      }
     });
   });
 
@@ -86,6 +94,17 @@ suite('line', function () {
       var material = component.material;
 
       assert.equal(material.color.getHexString(), 'ff99aa');
+    });
+
+    test('Line with __suffix component name', function () {
+      el.setAttribute('line__suffix', {start: '1 2 3', end: '4 5 6'});
+      var positionArray = componentSuffix.geometry.attributes.position.array;
+      assert.equal(positionArray[0], 1);
+      assert.equal(positionArray[1], 2);
+      assert.equal(positionArray[2], 3);
+      assert.equal(positionArray[3], 4);
+      assert.equal(positionArray[4], 5);
+      assert.equal(positionArray[5], 6);
     });
   });
 });
