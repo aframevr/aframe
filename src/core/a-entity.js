@@ -369,13 +369,13 @@ class AEntity extends ANode {
 
     // Wait for component to initialize.
     if (!component.initialized) {
-        component.pendingRemoval = true;
+      component.pendingRemoval = true;
       this.addEventListener('componentinitialized', function tryRemoveLater (evt) {
         if (evt.detail.name !== name) { return; }
-          if (component.pendingRemoval) {
+        if (component.pendingRemoval) {
           this.removeComponent(name, destroy);
-            component.pendingRemoval = false;
-          }
+          component.pendingRemoval = false;
+        }
         this.removeEventListener('componentinitialized', tryRemoveLater);
       });
       return;
@@ -469,13 +469,13 @@ class AEntity extends ANode {
       // Component initialization already started. Update component.
       component.updateProperties(attrValue, clobber);
 
-        // Component has been initialized, but is pending removal
-        if (component.pendingRemoval) {
-          // This new update should cancel any pending removal, and reinstate the attribute
-          // (which will have been removed, synchronously, when the component removal was initiated)
-          window.HTMLElement.prototype.setAttribute.call(this, attr, '');
-          component.pendingRemoval = false;
-        }
+      // Component has been initialized, but is pending removal
+      if (component.pendingRemoval) {
+        // This new update should cancel any pending removal, and reinstate the attribute
+        // (which will have been removed, synchronously, when the component removal was initiated)
+        window.HTMLElement.prototype.setAttribute.call(this, attr, '');
+        component.pendingRemoval = false;
+      }
       return;
     }
 
