@@ -85,7 +85,7 @@ module.exports.Component = registerComponent('screenshot', {
 
   getRenderTarget: function (width, height) {
     return new THREE.WebGLRenderTarget(width, height, {
-      encoding: THREE.sRGBEncoding,
+      encoding: this.el.sceneEl.renderer.outputEncoding,
       minFilter: THREE.LinearFilter,
       magFilter: THREE.LinearFilter,
       wrapS: THREE.ClampToEdgeWrapping,
