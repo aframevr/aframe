@@ -1693,3 +1693,27 @@ suite('a-entity component dependency management', function () {
     });
   });
 });
+
+suite('a-entity attribute operations prior to adding to DOM', function () {
+  var scene;
+  setup(function (done) {
+    this.TestComponent = registerComponent('test', TestComponent);
+    scene = document.createElement('a-scene');
+    document.body.appendChild(scene);
+    scene.addEventListener('loaded', () => {
+      done();
+    });
+  });
+
+  test('Add component before element added to DOM', function () {
+    var TestComponent = this.TestComponent.prototype;
+    this.sinon.spy(TestComponent, 'init');
+    const el = document.createElement('a-entity');
+    el.setAttribute('test', '');
+    sinon.assert.notCalled(TestComponent.init);
+    el.addEventListener('loaded', function () {
+      sinon.assert.called(TestComponent.init);
+    });
+    scene.appendChild(el);
+  });
+});
