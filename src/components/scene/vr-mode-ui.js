@@ -18,6 +18,7 @@ module.exports.Component = registerComponent('vr-mode-ui', {
 
   schema: {
     enabled: {default: true},
+    cardboardModeEnabled: {default: false},
     enterVRButton: {default: ''},
     enterARButton: {default: ''}
   },
@@ -133,7 +134,8 @@ module.exports.Component = registerComponent('vr-mode-ui', {
   toggleEnterVRButtonIfNeeded: function () {
     var sceneEl = this.el;
     if (!this.enterVREl) { return; }
-    if (sceneEl.is('vr-mode')) {
+    if (sceneEl.is('vr-mode') ||
+       (sceneEl.isMobile && !this.data.cardboardModeEnabled && !utils.device.checkVRSupport())) {
       this.enterVREl.classList.add(HIDDEN_CLASS);
     } else {
       this.enterVREl.classList.remove(HIDDEN_CLASS);

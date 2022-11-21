@@ -91,6 +91,9 @@ module.exports.checkHeadsetConnected = checkHeadsetConnected;
 function checkARSupport () { return supportsARSession; }
 module.exports.checkARSupport = checkARSupport;
 
+function checkVRSupport () { return supportsVRSession; }
+module.exports.checkVRSupport = checkVRSupport;
+
 /**
  * Checks if browser is mobile and not stand-alone dedicated vr device.
  * @return {Boolean} True if mobile browser detected.
