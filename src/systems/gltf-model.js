@@ -15,7 +15,7 @@ function fetchScript (src) {
 /**
  * glTF model system.
  *
- * Configures glTF loading options. Models using glTF compression require that a Draco decoder be
+ * Configures glTF loading options. Models using glTF compression require that a decoder be
  * provided externally.
  *
  * @param {string} dracoDecoderPath - Base path from which to load Draco decoder library.
@@ -26,7 +26,7 @@ module.exports.System = registerSystem('gltf-model', {
   schema: {
     dracoDecoderPath: {default: 'https://www.gstatic.com/draco/versioned/decoders/1.5.5/'},
     basisTranscoderPath: {default: ''},
-    meshoptDecoderPath: {default: ''}
+    meshoptDecoderPath: {default: 'https://unpkg.com/meshoptimizer@0.18.0/meshopt_decoder.js'}
   },
 
   init: function () {

@@ -146,7 +146,7 @@ When using glTF models compressed with Draco, KTX2 or Meshopt, you must configur
 |------------------|--------------------------------------|----|
 | dracoDecoderPath | Path to the Draco decoder libraries. | 'https://www.gstatic.com/draco/versioned/decoders/1.5.5/' |
 | basisTranscoderPath | Path to the basis/KTX2 transcoder libraries. | '' |
-| meshoptDecoderPath | Path to the Meshopt decoder.       | '' |
+| meshoptDecoderPath | Path to the Meshopt decoder.       | 'https://unpkg.com/meshoptimizer@0.18.0/meshopt_decoder.js' |
 
 `dracoDecoderPath` path must be a folder containing three files:
 
@@ -167,7 +167,7 @@ be included.
 These files are available from the three.js repository in [`/examples/js/libs/basis`](https://github.com/mrdoob/three.js/tree/master/examples/js/libs/basis).
 
 
-`meshoptDecoderPath` path should be the complete file path (including filename) for a Meshopt decoder, typically named `meshopt_decoder.js`. Meshopt requires WebAssembly support. A CDN-hosted, versioned decoder is available at `https://unpkg.com/meshoptimizer@0.16.0/meshopt_decoder.js`, or you may download copies from the [meshoptimizer GitHub repository][meshopt-decoder].
+`meshoptDecoderPath` path should be the complete file path (including filename) for a Meshopt decoder, typically named `meshopt_decoder.js`. Meshopt requires WebAssembly support. A CDN-hosted, versioned decoder is available at `https://unpkg.com/meshoptimizer@0.18.0/meshopt_decoder.js`, or you may download copies from the [meshoptimizer GitHub repository][meshopt-decoder].
 
 ## More Resources
 
