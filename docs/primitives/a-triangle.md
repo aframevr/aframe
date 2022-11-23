@@ -6,8 +6,7 @@ parent_section: primitives
 source_code: src/extras/primitives/primitives/meshPrimitives.js
 ---
 
-The triangle primitive creates triangle surfaces using the [geometry][geometry]
-component with the type set to `triangle`.
+The triangle primitive creates a triangle surface using the [geometry component] with type set to `triangle`.
 
 ## Example
 
@@ -66,4 +65,4 @@ To make a triangle parallel to the ground, rotate it around the X-axis:
 <a-triangle rotation="-90 0 0"></a-triangle>
 ```
 
-[geometry]: ../components/geometry.md
+[geometry component]: ../components/geometry.md/#triangle
