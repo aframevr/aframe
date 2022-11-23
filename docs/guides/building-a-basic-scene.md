@@ -288,9 +288,13 @@ necessary.
 
 To use the asset management system for an image texture:
 
+- To use a local texture file, select the Assets folder.
+- Upload an asset.
+- Select the asset and copy the URL.
 - Add `<a-assets>` to the scene.
 - Define the texture as an `<img>` under `<a-assets>`.
 - Give the `<img>` an HTML ID (e.g., `id="boxTexture"`).
+- Set the image source to the asset URL (e.g., src="URL")
 - Reference the asset using the ID in DOM selector format (`src="#boxTexture"`).
 
 ```html
@@ -599,13 +603,14 @@ by suffixing the attribute name with `__<ID>`:
 Audio is important for providing immersion and presence in VR. Even adding
 simple white noise in the background goes a long way. We recommend having some
 audio for every scene. One way would be to add an `<audio>` element to our
-HTML (preferably under `<a-assets>`) to play an audio file:
+HTML (preferably under `<a-assets>`) to play an audio file. Then in the `<scene>` element, 
+reference the audio id and add an on-click event to play the audio when the scene is clicked.:
 
 ```html
-<a-scene>
+<a-scene cursor="rayOrigin: mouse" sound="src: #background; on: click; loop: true;">
   <a-assets>
-    <audio src="https://cdn.aframe.io/basic-guide/audio/backgroundnoise.wav" autoplay
-      preload></audio>
+    <audio id ="#background" src="https://cdn.aframe.io/basic-guide/audio/backgroundnoise.wav">
+    </audio>
   </a-assets>
 
   <!-- ... -->
