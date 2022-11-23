@@ -177,6 +177,18 @@ The octahedron geometry creates a polygon with eight equilateral triangular face
 |----------|----------------------------------------|---------------|
 | radius   | Radius (in meters) of the octahedron. | 1             |
 
+### `icosahedron`
+
+The icosahedron geometry creates a polygon with twenty equilateral triangular faces.
+
+```html
+<a-entity geometry="primitive: icosahedron"></a-entity>
+```
+
+| Property | Description                            | Default Value |
+|----------|----------------------------------------|---------------|
+| radius   | Radius (in meters) of the icosahedron. | 1             |
+
 ### `plane`
 
 The plane geometry creates a flat surface. Because planes are flat, A-Frame
