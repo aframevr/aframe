@@ -8,8 +8,7 @@ source_code: src/extras/primitives/primitives/meshPrimitives.js
 
 [geometry]: ../components/geometry.md
 
-The plane primitive creates flat surfaces using the [geometry][geometry]
-component with the type set to `plane`.
+The plane primitive creates a flat surface using the [geometry component] with type set to `plane`.
 
 ## Example
 
@@ -67,3 +66,5 @@ rotate it around the X-axis:
 ```html
 <a-plane rotation="-90 0 0"></a-plane>
 ```
+
+[geometry component]: ../components/geometry.md/#plane
