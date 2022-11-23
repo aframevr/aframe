@@ -6,6 +6,8 @@ parent_section: primitives
 source_code: src/extras/primitives/primitives/meshPrimitives.js
 ---
 
+The tetrahedron primitive creates a polygon with four triangular faces using the [geometry component] with type set to `tetrahedron`.
+  
 ## Example
 
 ```html
@@ -43,3 +45,5 @@ source_code: src/extras/primitives/primitives/meshPrimitives.js
 | width                            | material.width                         | 512           |
 | wireframe                        | material.wireframe                     | false         |
 | wireframe-linewidth              | material.wireframeLinewidth            | 2             |
+  
+[geometry component]: ../components/geometry.md/#tetrahedron
