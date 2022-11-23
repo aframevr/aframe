@@ -5,7 +5,8 @@ layout: docs
 parent_section: primitives
 source_code: src/extras/primitives/primitives/meshPrimitives.js
 ---
-
+The octahedron primitive creates a polygon with eight equilateral triangular faces using the [geometry component] with type set to `octahedron`.
+  
 ## Example
 
 ```html
@@ -43,3 +44,5 @@ source_code: src/extras/primitives/primitives/meshPrimitives.js
 | width                            | material.width                         | 512           |
 | wireframe                        | material.wireframe                     | false         |
 | wireframe-linewidth              | material.wireframeLinewidth            | 2             |
+  
+[geometry component]: ../components/geometry.md/#octahedron
