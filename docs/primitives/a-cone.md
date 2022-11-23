@@ -6,7 +6,7 @@ parent_section: primitives
 source_code: src/extras/primitives/primitives/meshPrimitives.js
 ---
 
-The cone primitive creates a cone shape.
+The cone primitive creates a cone using the [geometry component] with type set to `cone`.
 
 ## Example
 
@@ -59,3 +59,5 @@ The cone primitive creates a cone shape.
 | width                            | material.width                         | 512           |
 | wireframe                        | material.wireframe                     | false         |
 | wireframe-linewidth              | material.wireframeLinewidth            | 2             |
+  
+[geometry component]: ../components/geometry.md/#cone
