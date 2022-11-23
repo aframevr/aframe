@@ -6,10 +6,7 @@ parent_section: primitives
 source_code: src/extras/primitives/primitives/meshPrimitives.js
 ---
 
-[geometry]: ../components/geometry.md
-
-The torus primitive creates donut or tube shapes using the [geometry][geometry]
-component with the type set to `torus`.
+The torus primitive creates a donut or curved tube shape using the [geometry component] with type set to `torus`.
 
 ## Example
 
@@ -51,3 +48,5 @@ component with the type set to `torus`.
 | width                            | material.width                         | 512           |
 | wireframe                        | material.wireframe                     | false         |
 | wireframe-linewidth              | material.wireframeLinewidth            | 2             |
+  
+[geometry component]: ../components/geometry.md/#torus
