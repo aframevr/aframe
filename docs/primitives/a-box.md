@@ -9,7 +9,7 @@ section_order: 5
 source_code: src/extras/primitives/primitives/meshPrimitives.js
 ---
 
-The box primitive creates shapes such as boxes, cubes, or walls.
+The box primitive creates a quadrilateral using the [geometry component] with type set to `box`.
 
 ## Example
 
@@ -58,3 +58,5 @@ The box primitive creates shapes such as boxes, cubes, or walls.
 | width                            | geometry.width                         | 1             |
 | wireframe                        | material.wireframe                     | false         |
 | wireframe-linewidth              | material.wireframeLinewidth            | 2             |
+  
+[geometry component]: ../components/geometry.md/#box
