@@ -6,7 +6,7 @@ parent_section: primitives
 source_code: src/extras/primitives/primitives/meshPrimitives.js
 ---
 
-The cylinder primitive is used to create tubes and curved surfaces.
+The cylinder primitive creates a tube or a curved surface using the [geometry component] with type set to `cylinder`.
 
 ## Examples
 
@@ -70,3 +70,5 @@ Also, we can create a tube by making the cylinder open-ended, which removes the 
 | width                            | material.width                         | 512           |
 | wireframe                        | material.wireframe                     | false         |
 | wireframe-linewidth              | material.wireframeLinewidth            | 2             |
+  
+[geometry component]: ../components/geometry.md/#cylinder
