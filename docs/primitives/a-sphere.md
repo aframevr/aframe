@@ -6,7 +6,7 @@ parent_section: primitives
 source_code: src/extras/primitives/primitives/meshPrimitives.js
 ---
 
-The sphere primitive creates a spherical or polyhedron shapes. It wraps an entity that prescribes the [geometry component](../components/geometry.md) with its geometric primitive set to `sphere`.
+The sphere primitive creates a sphere, polyhedron shape or an abstract shape using the [geometry component] with type set to `sphere`.
 
 ## Example
 
@@ -50,3 +50,5 @@ The sphere primitive creates a spherical or polyhedron shapes. It wraps an entit
 | width                            | material.width                         | 512           |
 | wireframe                        | material.wireframe                     | false         |
 | wireframe-linewidth              | material.wireframeLinewidth            | 2             |
+  
+[geometry component]: ../components/geometry.md/#sphere
