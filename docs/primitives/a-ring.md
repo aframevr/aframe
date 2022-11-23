@@ -6,7 +6,7 @@ parent_section: primitives
 source_code: src/extras/primitives/primitives/meshPrimitives.js
 ---
 
-The ring primitive creates a ring or disc shape.
+The ring primitive creates a ring or disc shape using the [geometry component] with type set to `ring`.
 
 ## Example
 
@@ -57,3 +57,5 @@ The ring primitive creates a ring or disc shape.
 | width                            | material.width                         | 512           |
 | wireframe                        | material.wireframe                     | false         |
 | wireframe-linewidth              | material.wireframeLinewidth            | 2             |
+  
+[geometry component]: ../components/geometry.md/#ring
