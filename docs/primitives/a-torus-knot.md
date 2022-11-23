@@ -6,10 +6,7 @@ parent_section: primitives
 source_code: src/extras/primitives/primitives/meshPrimitives.js
 ---
 
-[geometry]: ../components/geometry.md
-
-The torus knot primitive creates pretzel shapes using the [geometry][geometry]
-component with the type set to `torusKnot`.
+The torus-knot primitive creates a pretzel shape using the [geometry component] with type set to `torusKnot`.
 
 ## Example
 
@@ -52,3 +49,5 @@ component with the type set to `torusKnot`.
 | width                            | material.width                         | 512           |
 | wireframe                        | material.wireframe                     | false         |
 | wireframe-linewidth              | material.wireframeLinewidth            | 2             |
+  
+[geometry component]: ../components/geometry.md/#torusKnot
