@@ -6,8 +6,7 @@ parent_section: primitives
 source_code: src/extras/primitives/primitives/meshPrimitives.js
 ---
 
-The circle primitive creates circles surfaces using the [geometry][geometry]
-component with the type set to `circle`.
+The circle primitive creates a flat two-dimensional circle using the [geometry component] with type set to `circle`.
 
 ## Example
 
@@ -67,4 +66,4 @@ To make a circle parallel to the ground, rotate it around the X-axis:
 <a-circle rotation="-90 0 0"></a-circle>
 ```
 
-[geometry]: ../components/geometry.md
+[geometry component]: ../components/geometry.md/#circle
