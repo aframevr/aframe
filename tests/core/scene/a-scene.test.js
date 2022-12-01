@@ -136,7 +136,15 @@ suite('a-scene (without renderer)', function () {
       var sceneEl = this.el;
 
       // Stub canvas.
-      sceneEl.canvas = document.createElement('canvas');
+      sceneEl.canvas = {
+        addEventListener: function () {},
+        removeEventListener: function () {},
+        requestFullscreen: function () {},
+        classList: {
+          add: function () {},
+          remove: function () {}
+        }
+      };
 
       // Stub renderer.
       sceneEl.renderer = {
@@ -158,13 +166,6 @@ suite('a-scene (without renderer)', function () {
       sceneEl.camera = {
         el: {object3D: {}},
         updateProjectionMatrix: function () {}
-      };
-
-      // mock canvas
-      sceneEl.canvas = {
-        addEventListener: function () {},
-        removeEventListener: function () {},
-        requestFullscreen: function () {}
       };
     });
 
