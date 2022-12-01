@@ -31,19 +31,19 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Test Cases Using Firefox
-        uses: GabrielBB/xvfb-action@v1
-        env:
-          TEST_ENV: ci
-        with:
-          run: npm run test:firefox -- --single-run
-
       - name: Test Cases Using Chrome
         uses: GabrielBB/xvfb-action@v1
         env:
           TEST_ENV: ci
         with:
           run: npm run test:chrome -- --single-run
+
+      - name: Test Cases Using Firefox
+        uses: GabrielBB/xvfb-action@v1
+        env:
+          TEST_ENV: ci
+        with:
+          run: npm run test:firefox -- --single-run
 
       - name: Check Lint
         run: npm run lint
