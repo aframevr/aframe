@@ -32,6 +32,10 @@ html:not(.a-fullscreen) .a-enter-ar {
   bottom: 5px;
 }
 
+html:not(.a-fullscreen) .a-enter-ar {
+  right: 60px;
+}
+
 /* In chrome mobile the user agent stylesheet set it to white  */
 :-webkit-full-screen {
   background-color: transparent;

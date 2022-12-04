@@ -144,7 +144,7 @@ When using glTF models compressed with Draco, KTX2 or Meshopt, you must configur
 
 | Property         | Description                                                                                                                                                                                           | Default Value                       |
 |------------------|--------------------------------------|----|
-| dracoDecoderPath | Path to the Draco decoder libraries. | '' |
+| dracoDecoderPath | Path to the Draco decoder libraries. | 'https://www.gstatic.com/draco/versioned/decoders/1.5.5/' |
 | basisTranscoderPath | Path to the basis/KTX2 transcoder libraries. | '' |
 | meshoptDecoderPath | Path to the Meshopt decoder.       | '' |
 
@@ -157,7 +157,7 @@ When using glTF models compressed with Draco, KTX2 or Meshopt, you must configur
 These files are available from the three.js repository, under
 [examples/js/libs/draco/gltf][draco-decoders]. The `gltf-model` component will
 automatically choose whether to use a WASM or JavaScript decoder, so both should
-be included. A Google-hosted version of the Draco decoder libraries saves you from needing to include these libraries in your own project: set `https://www.gstatic.com/draco/v1/decoders/` as the value for `dracoDecoderPath`.
+be included.
 
 `basisTranscoderPath` path must be a folder containing two files:
 

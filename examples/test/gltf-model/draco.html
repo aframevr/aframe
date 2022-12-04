@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>glTF Model Draco</title>
+    <meta name="description" content="glTF Model Draco - A-Frame">
+    <script src="../../../dist/aframe-master.js"></script>
+  </head>
+  <body>
+    <a-scene stats background="color: gray">
+      <a-assets>
+        <a-asset-item id="cesiumTruck" src="https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/CesiumMilkTruck/glTF-Draco/CesiumMilkTruck.gltf"></a-asset-item>
+      </a-assets>
+      <a-entity position="0 0 -5" rotation="0 45 0" gltf-model="#cesiumTruck"></a-entity>
+    </a-scene>
+  </body>
+</html>
