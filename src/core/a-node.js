@@ -2,7 +2,6 @@
 var utils = require('../utils/');
 
 var warn = utils.debug('core:a-node:warn');
-var error = utils.debug('core:a-node:error');
 
 var knownTags = {
   'a-scene': true,
@@ -123,20 +122,27 @@ class ANode extends HTMLElement {
     // Wait for children to load (if any), then load.
     children = this.getChildren();
     childrenLoaded = children.filter(childFilter).map(function (child) {
-      return new Promise(function waitForLoaded (resolve) {
+      return new Promise(function waitForLoaded (resolve, reject) {
         if (child.hasLoaded) { return resolve(); }
         child.addEventListener('loaded', resolve);
+        child.addEventListener('error', reject);
       });
     });
 
-    Promise.all(childrenLoaded).then(function emitLoaded () {
+    Promise.allSettled(childrenLoaded).then(function emitLoaded (results) {
+      results.forEach(function checkResultForError (result) {
+        if (result.status === 'rejected') {
+          // An "error" event has already been fired by THREE.js loader,
+          // so we don't need to fire another one.
+          // A warning explaining the consequences of the error is sufficient.
+          warn('Rendering scene with errors on node: ', result.reason.target);
+        }
+      });
+
       self.hasLoaded = true;
       if (cb) { cb(); }
       self.setupMutationObserver();
-
       self.emit('loaded', undefined, false);
-    }).catch(function (err) {
-      error('Failure loading node: ', err);
     });
   }
 
