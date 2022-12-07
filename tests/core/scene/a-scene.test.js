@@ -182,6 +182,7 @@ suite('a-scene (without renderer)', function () {
     test('calls requestPresent if headset connected', function (done) {
       var sceneEl = this.el;
       this.sinon.stub(sceneEl, 'checkHeadsetConnected').returns(true);
+      window.hasNativeWebVRImplementation = false;
       sceneEl.enterVR().then(function () {
         assert.ok(sceneEl.renderer.xr.enabled);
         done();
@@ -203,6 +204,7 @@ suite('a-scene (without renderer)', function () {
     test('does not call requestPresent if flat desktop', function (done) {
       var sceneEl = this.el;
       this.sinon.stub(sceneEl, 'checkHeadsetConnected').returns(false);
+      window.hasNativeWebVRImplementation = false;
       sceneEl.enterVR().then(function () {
         assert.notOk(sceneEl.renderer.xr.enabled);
         done();
@@ -248,6 +250,7 @@ suite('a-scene (without renderer)', function () {
       }
 
       this.sinon.stub(sceneEl, 'checkHeadsetConnected').returns(false);
+      window.hasNativeWebVRImplementation = false;
       sceneEl.enterVR().then(function () {
         assert.ok(fullscreenSpy.called);
         done();
