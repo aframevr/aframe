@@ -5,13 +5,8 @@ var bind = require('../utils/bind');
 var trackedControlsUtils = require('../utils/tracked-controls');
 var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
 
-var LEFT_HAND_MODEL_URL = 'https://cdn.aframe.io/controllers/oculus-hands/v3/left.glb';
-var RIGHT_HAND_MODEL_URL = 'https://cdn.aframe.io/controllers/oculus-hands/v3/right.glb';
-
-var BONE_PREFIX = {
-  left: 'b_l_',
-  right: 'b_r_'
-};
+var LEFT_HAND_MODEL_URL = 'https://cdn.aframe.io/controllers/oculus-hands/v4/left.glb';
+var RIGHT_HAND_MODEL_URL = 'https://cdn.aframe.io/controllers/oculus-hands/v4/right.glb';
 
 var JOINTS = [
   'wrist',
@@ -40,34 +35,6 @@ var JOINTS = [
   'pinky-finger-phalanx-distal',
   'pinky-finger-tip'
 ];
-
-var BONE_MAPPING = {
-  'wrist': 'wrist',
-  'thumb-metacarpal': 'thumb1',
-  'thumb-phalanx-proximal': 'thumb2',
-  'thumb-phalanx-distal': 'thumb3',
-  'thumb-tip': 'thumb_null',
-  'index-finger-metacarpal': 'index0',
-  'index-finger-phalanx-proximal': 'index1',
-  'index-finger-phalanx-intermediate': 'index2',
-  'index-finger-phalanx-distal': 'index3',
-  'index-finger-tip': 'index_null',
-  'middle-finger-metacarpal': 'middle0',
-  'middle-finger-phalanx-proximal': 'middle1',
-  'middle-finger-phalanx-intermediate': 'middle2',
-  'middle-finger-phalanx-distal': 'middle3',
-  'middle-finger-tip': 'middle_null',
-  'ring-finger-metacarpal': 'ring0',
-  'ring-finger-phalanx-proximal': 'ring1',
-  'ring-finger-phalanx-intermediate': 'ring2',
-  'ring-finger-phalanx-distal': 'ring3',
-  'ring-finger-tip': 'ring_null',
-  'pinky-finger-metacarpal': 'pinky0',
-  'pinky-finger-phalanx-proximal': 'pinky1',
-  'pinky-finger-phalanx-intermediate': 'pinky2',
-  'pinky-finger-phalanx-distal': 'pinky3',
-  'pinky-finger-tip': 'pinky_null'
-};
 
 var PINCH_START_DISTANCE = 0.015;
 var PINCH_END_DISTANCE = 0.03;
@@ -193,13 +160,12 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
       var jointPose;
       var jointTransform;
       jointPose = frame.getJointPose(inputjoint, referenceSpace);
-      if (!BONE_MAPPING[inputjoint.jointName]) { continue; }
-      bone = this.getBone(BONE_PREFIX[this.data.hand] + BONE_MAPPING[inputjoint.jointName]);
+      bone = this.getBone(inputjoint.jointName);
       if (bone != null && jointPose) {
         jointTransform = jointPose.transform;
         this.mesh.visible = true;
-        bone.position.copy(jointTransform.position).multiplyScalar(100);
-        bone.quaternion.set(jointTransform.orientation.x, jointTransform.orientation.y, jointTransform.orientation.z, jointTransform.orientation.w);
+        bone.position.copy(jointTransform.position);
+        bone.quaternion.copy(jointTransform.orientation);
       }
     }
   },
@@ -344,7 +310,7 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
 
   onModelLoaded: function () {
     var mesh = this.mesh = this.el.getObject3D('mesh').children[0];
-    var skinnedMesh = this.skinnedMesh = mesh.children[30];
+    var skinnedMesh = this.skinnedMesh = mesh.getObjectByProperty('type', 'SkinnedMesh');
     if (!this.skinnedMesh) { return; }
     this.bones = skinnedMesh.skeleton.bones;
     this.el.removeObject3D('mesh');
