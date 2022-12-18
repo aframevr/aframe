@@ -769,6 +769,7 @@ class AEntity extends ANode {
     if (attr === 'rotation') { return getRotation(this); }
     if (attr === 'scale') { return this.object3D.scale; }
     if (attr === 'visible') { return this.object3D.visible; }
+    if (attr === 'attached') { return this.attachedToScene; }
     component = this.components[attr];
     if (component) { return component.data; }
     return window.HTMLElement.prototype.getAttribute.call(this, attr);

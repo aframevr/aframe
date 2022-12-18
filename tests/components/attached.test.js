@@ -40,5 +40,14 @@ suite('attached', function () {
       assert.equal(el.object3D.parent, alternateParent);
       assert.ok(el.attachedToScene);
     });
+
+    test('getAttribute is affected by changes made direct to entity', function () {
+      el.setAttribute('attached', true);
+      assert.ok(el.getAttribute('attached'));
+      el.detachFromScene();
+      assert.notOk(el.getAttribute('attached'));
+      el.attachToScene();
+      assert.ok(el.getAttribute('attached'));
+    });
   });
 });
