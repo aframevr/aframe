@@ -37,6 +37,11 @@ class AEntity extends ANode {
     this.parentEl = null;
     this.rotationObj = {};
     this.states = [];
+    this.attachedToParent = false;
+    // tracks attach to / detach from THREE.js Scene graph (independent of DOM attachment)
+    this.attachedToScene = true;
+    // Used to preserve object3D's parent when detached from THREE.js scene graph
+    this.object3DParent = null;
   }
 
   /**
@@ -203,7 +208,13 @@ class AEntity extends ANode {
     if (!el.object3D) {
       throw new Error("Trying to add an element that doesn't have an `object3D`");
     }
-    this.object3D.add(el.object3D);
+    if (el.attachedToScene) {
+      this.object3D.add(el.object3D);
+    } else {
+      // store off parent, for a later call to 'attachToScene()'
+      el.object3DParent = this.object3D;
+    }
+
     this.emit('child-attached', {el: el});
   }
 
@@ -253,8 +264,34 @@ class AEntity extends ANode {
   remove (el) {
     if (el) {
       this.object3D.remove(el.object3D);
+      el.object3DParent = null;
     } else {
       this.parentNode.removeChild(this);
+    }
+  }
+
+  /**
+   * Attach el to THREE.js scene graph
+   */
+  attachToScene () {
+    this.attachedToScene = true;
+
+    if (this.attachedToParent) {
+      if (!this.object3DParent) {
+        this.object3DParent = this.parentNode.object3D;
+      }
+      this.object3DParent.add(this.object3D);
+    }
+  }
+
+  /**
+   * Detach el from THREE.js scene graph
+   */
+  detachFromScene () {
+    this.attachedToScene = false;
+    this.object3DParent = this.object3D.parent;
+    if (this.object3DParent) {
+      this.object3DParent.remove(this.object3D);
     }
   }
 
