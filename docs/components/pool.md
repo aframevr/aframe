@@ -7,6 +7,8 @@ source_code: src/components/scene/pool.js
 examples: []
 ---
 
+[attached]: ./attached.md
+
 The pool component allows for [object
 pooling](https://en.wikipedia.org/wiki/Object_pool_pattern). This gives us a
 reusable pool of entities to avoid creating and destroying the same kind of
@@ -15,7 +17,7 @@ entities in dynamic scenes. Object pooling helps reduce garbage collection pause
 Note that entities requested from the pool are paused by default and you need 
 to call `.play()` in order to activate their components' tick functions.
 
-For performance reasons, unused entities in the pool are [detached from the THREE.js scene](attached).
+For performance reasons, unused entities in the pool are [detached from the THREE.js scene][attached].
 
 ## Example
 

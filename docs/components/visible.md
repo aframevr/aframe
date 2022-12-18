@@ -6,6 +6,7 @@ parent_section: components
 source_code: src/components/visible.js
 examples: []
 ---
+[attached]: ./attached.md
 
 The visible component determines whether to render an entity. If set to
 `false`, then the entity will not be visible nor drawn.
@@ -17,7 +18,7 @@ so it can still iuinteract with raycasters, be checked for collisions etc.
 
 When you want an entity or group of entities to have no interactions at all, it 
 is usually preferable (for performance reasons) to detach them from the THREE.js scene
-entirely by toggling the [`attached`](attached) component.
+entirely by toggling the [`attached`][attached] component.
 
 
 ## Example
@@ -35,7 +36,7 @@ entirely by toggling the [`attached`](attached) component.
 
 ## Updating Visibility
 
-[update]: ../introduction/javascript-events-and-dom-apis.md#updating-a-component-with-setattribute
+[update]: ../introduction/javascript-events-dom-apis.md#updating-a-component-with-setattribute-
 
 It is slightly faster to update visibility at the three.js level versus [via
 `.setAttribute`][update].

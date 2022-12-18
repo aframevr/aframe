@@ -7,15 +7,20 @@ source_code: src/components/attached.js
 examples: []
 ---
 
+[visible]: ./visible.md
+[pool]: ./pool.md
+[attach]: ../core/entity.md#attachtoscene-
+[detach]: ../core/entity.md#detachfromscene-
+
 The attached component determines whether an entity is attached to the THREE.js scene graph at all.
 
 All entities are attached by default.  Detaching an entity from the scene means that the entity and its descendants will have no interactions in the 3D scene at all: it is not rendered, it will not interact with raycasters.
 
-This is similar to the [visible](visible) component, but places even more limitations on the entity.
+This is similar to the [visible][visible] component, but places even more limitations on the entity.
 
 Invisible entities are not rendered, but their position in space is still updated every frame, and they can interact with raycasters, be checked for collisions etc.
 
-In contrast, when an entity is detached from the scene, by setting `attached="false"`, even these interactions do not occur, which will improve performance even further vs. just making an entity invisible.  For example, entity pools implemented by the [pool](pool) component detach entities in the pool when they are not in use.
+In contrast, when an entity is detached from the scene, by setting `attached="false"`, even these interactions do not occur, which will improve performance even further vs. just making an entity invisible.  For example, entity pools implemented by the [pool][pool] component detach entities in the pool when they are not in use.
 
 It's a common pattern to create container entities that contain an entire group of entities that you can flip on an off with `attached`.
 
@@ -36,7 +41,7 @@ It's a common pattern to create container entities that contain an entire group 
 
 ## Updating Attachment
 
-It is slightly faster to control attachment to the THREE.js scene using direct calls to [`attachToScene()`](../core/entity#attachtoscene) and [`detachFromScene()`](../core/entity#detachfromscene):
+It is slightly faster to control attachment to the THREE.js scene using direct calls to [`attachToScene()`][attach] and [`detachFromScene()`][detach]:
 
 ```js
 // direct use of entity interface

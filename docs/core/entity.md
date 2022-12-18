@@ -170,16 +170,21 @@ entity.is('selected');  // >> true
 
 ### `attachToScene ()`
 
+[detach]: #detachfromscene-
+
 `attachToScene` can be used to re-attach an entity to the THREE.js scene that has been detached 
 using `detachFromScene`.
 
-See [`detachFromScene`](#detachfromscene) for more explanation.
+See [`detachFromScene`][detach] for more explanation.
 
 ### `destroy ()`
 
 Clean up memory related to the entity such as clearing all components and their data.
 
 ### `detachFromScene ()`
+
+[pool]: ../components/pool.md
+[attached]: ../components/attached.md
 
 `detachFromScene` will detach the element from the THREE.js scene, typically for performance reasons.
 Detaching an entity from the scene means that the entity and its descendants will have no interactions
@@ -189,9 +194,9 @@ The main reason for detaching an entity from the scene, rather than destroying i
 - to maintain state on the entity
 - for performance reasons, as it is typically faster to re-attach an entity to the scene, than to recreate it and all its descendants.
 
-For performance reasons, entity pools implemented by the [pool](pool) component detach entities in the pool when they are not in use.
+For performance reasons, entity pools implemented by the [pool][pool] component detach entities in the pool when they are not in use.
 
-Attachment to the THREE.js scene can also be controlled through the [attached](attached) component.
+Attachment to the THREE.js scene can also be controlled through the [attached][attached] component.
 
 
 ### `emit (name, detail, bubbles)`
