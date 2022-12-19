@@ -210,6 +210,7 @@ class AEntity extends ANode {
     }
     if (el.attachedToScene) {
       this.object3D.add(el.object3D);
+      el.emit('attached-to-scene');
     } else {
       // store off parent, for a later call to 'attachToScene()'
       el.object3DParent = this.object3D;
@@ -281,6 +282,7 @@ class AEntity extends ANode {
         this.object3DParent = this.parentNode.object3D;
       }
       this.object3DParent.add(this.object3D);
+      this.emit('attached-to-scene');
     }
   }
 
@@ -292,6 +294,7 @@ class AEntity extends ANode {
     this.object3DParent = this.object3D.parent;
     if (this.object3DParent) {
       this.object3DParent.remove(this.object3D);
+      this.emit('detached-from-scene');
     }
   }
 

@@ -118,6 +118,44 @@ suite('raycaster', function () {
       sceneEl.appendChild(el2);
       sceneEl.appendChild(el3);
     });
+
+    test('Objects not attached to scene are not whitelisted', function (done) {
+      var el2 = document.createElement('a-entity');
+      var el3 = document.createElement('a-entity');
+      el2.setAttribute('class', 'clickable');
+      el2.setAttribute('geometry', 'primitive: box');
+      el3.setAttribute('class', 'clickable');
+      el3.setAttribute('geometry', 'primitive: box');
+      el3.detachFromScene();
+      el3.addEventListener('loaded', function () {
+        el.setAttribute('raycaster', 'objects', '.clickable');
+        component.tock();
+        assert.equal(component.objects.length, 1);
+        assert.equal(component.objects[0], el2.object3D.children[0]);
+        assert.equal(el2, el2.object3D.children[0].el);
+        done();
+      });
+      sceneEl.appendChild(el2);
+      sceneEl.appendChild(el3);
+    });
+
+    test('Objects with parent not attached to scene are not whitelisted', function (done) {
+      var el2 = document.createElement('a-entity');
+      var el3 = document.createElement('a-entity');
+      el2.setAttribute('class', 'clickable');
+      el2.setAttribute('geometry', 'primitive: box');
+      el3.setAttribute('class', 'clickable');
+      el3.setAttribute('geometry', 'primitive: box');
+      el2.detachFromScene();
+      el3.addEventListener('loaded', function () {
+        el.setAttribute('raycaster', 'objects', '.clickable');
+        component.tock();
+        assert.equal(component.objects.length, 0);
+        done();
+      });
+      sceneEl.appendChild(el2);
+      el2.appendChild(el3);
+    });
   });
 
   suite('tock', function () {
@@ -213,6 +251,18 @@ suite('raycaster', function () {
       component.tock();
       assert.equal(component.dirty, false);
       sceneEl.emit('object3dremove');
+      assert.equal(component.dirty, true);
+    });
+
+    test('refresh objects when attachToScene() or detachFromScene() is called', function () {
+      el.setAttribute('raycaster', {objects: '[ray-target]'});
+      component.tock();
+      assert.equal(component.dirty, false);
+      sceneEl.emit('attached-to-scene');
+      assert.equal(component.dirty, true);
+      component.tock();
+      assert.equal(component.dirty, false);
+      sceneEl.emit('detached-from-scene');
       assert.equal(component.dirty, true);
     });
   });

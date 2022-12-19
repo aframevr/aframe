@@ -168,9 +168,10 @@ entity.addState('selected');
 entity.is('selected');  // >> true
 ```
 
-### `attachToScene ()`
-
+[attach]: #attachtoscene-
 [detach]: #detachfromscene-
+
+### `attachToScene ()`
 
 `attachToScene` can be used to re-attach an entity to the THREE.js scene that has been detached 
 using `detachFromScene`.
@@ -479,6 +480,8 @@ entity.is('selected');  // >> false
 |----------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | child-attached       | A child entity was attached to the entity.                                                                                                                                                                             |
 | child-detached       | A child entity was detached from the entity.                                                                                                                                                                           |
+| attached-to-scene    | The entity was attached to the THREE.js scene.  This occurs on initial entity creation, and following subsequent calls to [`attachToScene()`][attach]                                                                                                                                                             |
+| detached-from-scene  | The entity was detached from the THREE.js scene.  This occurs a call to to [`detachFromScene()`][detach] (unless the call is made durign entity creation, prior to the entity being attached to the THREE.js scene).                                                                                                                                                                             |
 | componentchanged     | One of the entity's components was modified. This event is throttled. Do not use this for reading position and rotation changes, rather [use a tick handler](../camera.md#reading-position-or-rotation-of-the-camera). |
 | componentinitialized | One of the entity's components was initialized.                                                                                                                                                                        |
 | componentremoved     | One of the entity's components was removed.                                                                                                                                                                            |

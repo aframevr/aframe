@@ -31,7 +31,7 @@ suite('attached', function () {
     });
 
     test('Non-default object3D parent maintained when detached & re-attached', function () {
-      const alternateParent = new THREE.Group();
+      var alternateParent = new THREE.Group();
       alternateParent.add(el.object3D);
       el.setAttribute('attached', false);
       assert.equal(el.object3D.parent, null);
