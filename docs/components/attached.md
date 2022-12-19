@@ -9,8 +9,6 @@ examples: []
 
 [visible]: ./visible.md
 [pool]: ./pool.md
-[attach]: ../core/entity.md#attachtoscene-
-[detach]: ../core/entity.md#detachfromscene-
 
 The attached component determines whether an entity is attached to the THREE.js scene graph at all.
 
@@ -41,7 +39,7 @@ It's a common pattern to create container entities that contain an entire group 
 
 ## Updating Attachment
 
-It is slightly faster to control attachment to the THREE.js scene using direct calls to [`attachToScene()`][attach] and [`detachFromScene()`][detach]:
+It is slightly faster to control attachment to the THREE.js scene using direct calls to [`attachToScene()`](../core/entity.md#attachtoscene-) and [`detachFromScene()`](../core/entity.md#detachfromscene-):
 
 ```js
 // direct use of entity interface
