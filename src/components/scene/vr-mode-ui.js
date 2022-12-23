@@ -138,6 +138,7 @@ module.exports.Component = registerComponent('vr-mode-ui', {
        (sceneEl.isMobile && !this.data.cardboardModeEnabled && !utils.device.checkVRSupport())) {
       this.enterVREl.classList.add(HIDDEN_CLASS);
     } else {
+      if (!utils.device.checkVRSupport()) { this.enterVREl.classList.add('fullscreen'); }
       this.enterVREl.classList.remove(HIDDEN_CLASS);
     }
   },
@@ -185,8 +186,7 @@ function createEnterVRButton (onClick) {
   vrButton = document.createElement('button');
   vrButton.className = ENTER_VR_BTN_CLASS;
   vrButton.setAttribute('title',
-    'Enter VR mode with a headset or fullscreen mode on a desktop. ' +
-    'Visit https://webvr.rocks or https://webvr.info for more information.');
+    'Enter VR mode with a headset or fullscreen without');
   vrButton.setAttribute(constants.AFRAME_INJECTED, '');
   if (utils.device.isMobile()) { applyStickyHoverFix(vrButton); }
   // Insert elements.
@@ -217,8 +217,7 @@ function createEnterARButton (onClick) {
   arButton = document.createElement('button');
   arButton.className = ENTER_AR_BTN_CLASS;
   arButton.setAttribute('title',
-    'Enter AR mode with a headset or handheld device. ' +
-    'Visit https://webvr.rocks or https://webvr.info for more information.');
+    'Enter AR mode with a headset or handheld device.');
   arButton.setAttribute(constants.AFRAME_INJECTED, '');
   if (utils.device.isMobile()) { applyStickyHoverFix(arButton); }
   // Insert elements.
