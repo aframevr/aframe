@@ -5,7 +5,7 @@
   "homepage": "https://aframe.io/",
   "main": "dist/aframe-master.js",
   "scripts": {
-    "dev": "cross-env INSPECTOR_VERSION=dev webpack serve",
+    "dev": "cross-env INSPECTOR_VERSION=dev webpack serve --port 8080",
     "dist": "node scripts/updateVersionLog.js && npm run dist:min && npm run dist:max",
     "dist:max": "webpack --config webpack.config.js",
     "dist:min": "webpack --config webpack.prod.config.js",
