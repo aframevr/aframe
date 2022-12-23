@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <script src="../../../dist/aframe-master.js"></script>
   <script src="../../js/info-message.js"></script>
-  <script src="https://unpkg.com/aframe-extras@3.3.0/dist/aframe-extras.min.js"></script>
+  <script src="animation-mixer.js"></script>
   <script src="ar-shadows.js"></script>
   <script src="model-viewer.js"></script>
   <script src="background-gradient.js"></script>
@@ -17,7 +17,7 @@
   renderer="colorManagement: true;"
   info-message="htmlSrc: #messageText"
   model-viewer="gltfModel: #triceratops; title: Triceratops">
-  <a-assets>
+  <a-assets timeout="10000">
     <!--
       Model source: https://sketchfab.com/3d-models/triceratops-d16aabe33dc24f8ab37e3df50c068265
       Model author: https://sketchfab.com/VapTor
