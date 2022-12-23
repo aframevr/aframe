@@ -168,9 +168,37 @@ entity.addState('selected');
 entity.is('selected');  // >> true
 ```
 
+[attach]: #attachtoscene-
+[detach]: #detachfromscene-
+
+### `attachToScene ()`
+
+`attachToScene` can be used to re-attach an entity to the THREE.js scene that has been detached 
+using `detachFromScene`.
+
+See [`detachFromScene`][detach] for more explanation.
+
 ### `destroy ()`
 
 Clean up memory related to the entity such as clearing all components and their data.
+
+### `detachFromScene ()`
+
+[pool]: ../components/pool.md
+[attached]: ../components/attached.md
+
+`detachFromScene` will detach the element from the THREE.js scene, typically for performance reasons.
+Detaching an entity from the scene means that the entity and its descendants will have no interactions
+in the 3D scene at all: it is not rendered, it will not interact with raycasters.
+
+The main reason for detaching an entity from the scene, rather than destroying it are:
+- to maintain state on the entity
+- for performance reasons, as it is typically faster to re-attach an entity to the scene, than to recreate it and all its descendants.
+
+For performance reasons, entity pools implemented by the [pool][pool] component detach entities in the pool when they are not in use.
+
+Attachment to the THREE.js scene can also be controlled through the [attached][attached] component.
+
 
 ### `emit (name, detail, bubbles)`
 
@@ -452,6 +480,8 @@ entity.is('selected');  // >> false
 |----------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | child-attached       | A child entity was attached to the entity.                                                                                                                                                                             |
 | child-detached       | A child entity was detached from the entity.                                                                                                                                                                           |
+| attached-to-scene    | The entity was attached to the THREE.js scene.  This occurs on initial entity creation, and following subsequent calls to [`attachToScene()`][attach]                                                                                                                                                             |
+| detached-from-scene  | The entity was detached from the THREE.js scene.  This occurs a call to to [`detachFromScene()`][detach] (unless the call is made durign entity creation, prior to the entity being attached to the THREE.js scene).                                                                                                                                                                             |
 | componentchanged     | One of the entity's components was modified. This event is throttled. Do not use this for reading position and rotation changes, rather [use a tick handler](../camera.md#reading-position-or-rotation-of-the-camera). |
 | componentinitialized | One of the entity's components was initialized.                                                                                                                                                                        |
 | componentremoved     | One of the entity's components was removed.                                                                                                                                                                            |

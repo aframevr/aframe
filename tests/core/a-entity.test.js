@@ -1585,6 +1585,73 @@ suite('a-entity component lifecycle management', function () {
       assert.ok(destroySpy.callCount);
     });
   });
+
+  suite('attach / detach to / from scene', function () {
+    test('emits attached-to-scene event when attached to THREE.js scene', function (done) {
+      const el2 = document.createElement('a-entity');
+      el2.object3D = new THREE.Mesh();
+      el2.addEventListener('attached-to-scene', function (event) {
+        assert.equal(event.target, el2);
+        el2.addEventListener('loaded', function () {
+          done();
+        });
+      });
+      el.appendChild(el2);
+    });
+
+    test('attached-to-scene event is delayed when entity detached from scene during creation', function (done) {
+      const el2 = document.createElement('a-entity');
+      var detachEventReceived = false;
+      el2.object3D = new THREE.Mesh();
+
+      const detachListener = function (event) {
+        detachEventReceived = true;
+      };
+      el2.addEventListener('detached-from-scene', detachListener);
+      el2.addEventListener('loaded', function () {
+        el2.addEventListener('attached-to-scene', function (event) {
+          // no detached-from-scene event received, as entity was never attached.
+          assert.notOk(detachEventReceived);
+          assert.equal(event.target, el2);
+          el2.removeEventListener('detached-from-scene', detachListener);
+          done();
+        });
+        el2.attachToScene();
+      });
+      el2.detachFromScene();
+      el.appendChild(el2);
+    });
+
+    test('emits detached-from-scene event when detached from THREE.js scene', function (done) {
+      const el2 = document.createElement('a-entity');
+      el2.object3D = new THREE.Mesh();
+      el2.addEventListener('attached-to-scene', function (event) {
+        assert.equal(event.target, el2);
+        el2.addEventListener('detached-from-scene', function (event) {
+          assert.equal(event.target, el2);
+          done();
+        });
+        el2.detachFromScene();
+      });
+      el.appendChild(el2);
+    });
+
+    test('detachment from scene after entity loaded', function (done) {
+      const el2 = document.createElement('a-entity');
+      el2.object3D = new THREE.Mesh();
+      el2.addEventListener('attached-to-scene', function (event) {
+        assert.equal(event.target, el2);
+        el2.addEventListener('loaded', function (event) {
+          el2.addEventListener('detached-from-scene', function (event) {
+            assert.equal(event.target, el2);
+            done();
+          });
+          el2.detachFromScene();
+        });
+      });
+      el.appendChild(el2);
+    });
+  });
 });
 
 suite('a-entity component dependency management', function () {

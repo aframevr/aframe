@@ -27,5 +27,12 @@ suite('visible', function () {
       el.setAttribute('visible', false);
       assert.notOk(el.object3D.visible);
     });
+
+    test('getAttribute is affected by changes to Object3D.visible', function () {
+      el.setAttribute('visible', true);
+      assert.ok(el.getAttribute('visible'));
+      el.object3D.visible = false;
+      assert.notOk(el.getAttribute('visible'));
+    });
   });
 });

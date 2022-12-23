@@ -1,4 +1,5 @@
 require('./animation');
+require('./attached');
 require('./camera');
 require('./cursor');
 require('./daydream-controls');
