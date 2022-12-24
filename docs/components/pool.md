@@ -15,6 +15,8 @@ entities in dynamic scenes. Object pooling helps reduce garbage collection pause
 Note that entities requested from the pool are paused by default and you need 
 to call `.play()` in order to activate their components' tick functions.
 
+For performance reasons, unused entities in the pool are detached from the THREE.js scene graph, which means that they are not rendered, their matrices are not updated, and they are excluded from raycasting.
+
 ## Example
 
 For example, we may have a game with enemy entities that we want to reuse.
