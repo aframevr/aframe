@@ -154,12 +154,16 @@ module.exports.Component = registerComponent('raycaster', {
     this.observer.observe(this.el.sceneEl, OBSERVER_CONFIG);
     this.el.sceneEl.addEventListener('object3dset', this.setDirty);
     this.el.sceneEl.addEventListener('object3dremove', this.setDirty);
+    this.el.sceneEl.addEventListener('attached-to-scene', this.setDirty);
+    this.el.sceneEl.addEventListener('detached-from-scene', this.setDirty);
   },
 
   removeEventListeners: function () {
     this.observer.disconnect();
     this.el.sceneEl.removeEventListener('object3dset', this.setDirty);
     this.el.sceneEl.removeEventListener('object3dremove', this.setDirty);
+    this.el.sceneEl.removeEventListener('attached-to-scene', this.setDirty);
+    this.el.sceneEl.removeEventListener('detached-from-scene', this.setDirty);
   },
 
   /**

@@ -103,7 +103,7 @@ module.exports.Component = registerComponent('pool', {
     this.usedEls.push(el);
     if (el.object3DParent) {
       el.object3DParent.add(el.object3D);
-      this.updateRaycasters();
+      el.emit('attached-to-scene');
     }
     el.object3D.visible = true;
     return el;
@@ -122,17 +122,9 @@ module.exports.Component = registerComponent('pool', {
     this.availableEls.push(el);
     el.object3DParent = el.object3D.parent;
     el.object3D.parent.remove(el.object3D);
-    this.updateRaycasters();
+    el.emit('detached-from-scene');
     el.object3D.visible = false;
     el.pause();
     return el;
-  },
-
-  updateRaycasters () {
-    var raycasterEls = document.querySelectorAll('[raycaster]');
-
-    raycasterEls.forEach(function (el) {
-      el.components['raycaster'].setDirty();
-    });
   }
 });
