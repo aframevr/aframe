@@ -135,7 +135,7 @@ module.exports.Component = registerComponent('vr-mode-ui', {
     var sceneEl = this.el;
     if (!this.enterVREl) { return; }
     if (sceneEl.is('vr-mode') ||
-       (sceneEl.isMobile && !this.data.cardboardModeEnabled && !utils.device.checkVRSupport())) {
+       ((sceneEl.isMobile || utils.device.isMobileDeviceRequestingDesktopSite()) && !this.data.cardboardModeEnabled && !utils.device.checkVRSupport())) {
       this.enterVREl.classList.add(HIDDEN_CLASS);
     } else {
       if (!utils.device.checkVRSupport()) { this.enterVREl.classList.add('fullscreen'); }
