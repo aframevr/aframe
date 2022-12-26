@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- Origin Trial Token, feature = WebVR (For Chrome M59+), origin = https://aframe.io, expires = 2017-07-28 -->
+  <meta http-equiv="origin-trial" data-feature="WebVR (For Chrome M59+)" data-expires="2017-07-28" content="ArFv1ZeTwzkhjNE00uAE+XtiQB41fwqG/TqlFMLrepd9sforQSvQE/tgfIbUMYNuNre4QR1k4/z8xp2mV3dbhwwAAABeeyJvcmlnaW4iOiJodHRwczovL2FmcmFtZS5pbzo0NDMiLCJmZWF0dXJlIjoiV2ViVlIxLjEiLCJleHBpcnkiOjE1MDEyMTcwMDIsImlzU3ViZG9tYWluIjp0cnVlfQ==">
+    <meta charset="utf-8">
+    <title>Cursor</title>
+    <meta name="description" content="Cursor - A-Frame">
+    <script src="../../../dist/aframe-master.min.js"></script>
+    <script src="./click-color-change.js"></script>
+  </head>
+  <body>
+    <div style='position: absolute; left: 30%; top: 10%; z-index: 1'>
+        <p>Example to show differential handling of different mouse buttons on cursor events.</p>
+        <p>Click on cube to change color:
+            <ul>
+                <li>Left button to toggle red</li>
+                <li>Middle button to toggle green</li>
+                <li>Right button to toggle blue</li>
+            </ul>
+        </p>
+    </div>
+    <a-scene background="color: #FBE0D8">
+      
+      <a-entity id="mouseCursor" cursor="rayOrigin: mouse" raycaster="objects: .intersectable"></a-entity>
+
+      <a-entity position="0 1 -3">
+        <a-box color="black"
+               click-color-change
+               class="intersectable">
+        </a-box>
+      </a-entity>
+    </a-scene>
+  </body>
+</html>

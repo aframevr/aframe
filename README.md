@@ -5,7 +5,6 @@
 <p align="center"><b>A web framework for building virtual reality experiences.</b></p>
 
 <p align="center">
-  <a href="https://travis-ci.org/aframevr/aframe"><img src="https://img.shields.io/travis/aframevr/aframe.svg?style=flat-square" alt="Build Status"></a>
   <a href="https://codecov.io/gh/aframevr/aframe">
     <img src="https://codecov.io/gh/aframevr/aframe/branch/master/graph/badge.svg" alt="Coverage Status">
   </a>
@@ -33,15 +32,6 @@
   &mdash;
   <a href="https://aframe.io/subscribe/">Newsletter</a>
 </div>
-
-<h3 align="center">Special Sponsors</h3>
-<!--special start-->
-<p align="center">
-  <a href="https://planetvoodoo.org/" target="_blank">
-    <img width="120px" src="https://user-images.githubusercontent.com/39342/112707090-da492580-8e65-11eb-88c5-be39f48544f6.jpg">
-  </a>
-</p>  
-<!--special end-->
 
 ## Examples
 
@@ -112,7 +102,7 @@ and publishing now, remix the starter example on:
 ```html
 <html>
   <head>
-    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
   </head>
   <body>
     <a-scene>
@@ -127,7 +117,7 @@ and publishing now, remix the starter example on:
 ```
 
 With A-Frame's [entity-component
-architecture](https://aframe.io/docs/1.3.0/introduction/entity-component-system.html), we can drop in community
+architecture](https://aframe.io/docs/1.4.0/introduction/entity-component-system.html), we can drop in community
 components from the ecosystem (e.g., ocean, physics) and plug them into our
 objects straight from HTML:
 
@@ -136,10 +126,10 @@ objects straight from HTML:
 ```html
 <html>
   <head>
-    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
     <script src="https://unpkg.com/aframe-particle-system-component@1.0.x/dist/aframe-particle-system-component.min.js"></script>
     <script src="https://unpkg.com/aframe-extras.ocean@%5E3.5.x/dist/aframe-extras.ocean.min.js"></script>
-    <script src="https://unpkg.com/aframe-gradient-sky@1.3.0/dist/gradientsky.min.js"></script>
+    <script src="https://unpkg.com/aframe-gradient-sky@1.4.0/dist/gradientsky.min.js"></script>
   </head>
   <body>
     <a-scene>
@@ -167,11 +157,11 @@ objects straight from HTML:
 
 ### Builds
 
-To use the latest stable build of A-Frame, include [`aframe.min.js`](https://aframe.io/releases/1.3.0/aframe.min.js):
+To use the latest stable build of A-Frame, include [`aframe.min.js`](https://aframe.io/releases/1.4.0/aframe.min.js):
 
 ```js
 <head>
-  <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+  <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
 </head>
 ```
 
