@@ -404,7 +404,6 @@ class AScene extends AEntity {
         // Capture promise to avoid errors.
         this.xrSession.end().then(function () {}, function () {});
         this.xrSession = undefined;
-        vrManager.setSession(null);
       } else {
         if (vrDisplay.isPresenting) {
           return vrDisplay.exitPresent().then(exitVRSuccess, exitVRFailure);
