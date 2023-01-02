@@ -57,8 +57,7 @@ Also, we can create a tube by making the cylinder open-ended, which removes the 
 | normal-texture-offset            | material.normalTextureOffset           | 0 0           |
 | normal-texture-repeat            | material.normalTextureRepeat           | 1 1           |
 | open-ended                       | geometry.openEnded                     | false         |
-| radius-bottom                    | geometry.radiusBottom                  | 1             |
-| radius-top                       | geometry.radiusTop                     | 0.8           |
+| radius                           | geometry.radius                        | 1             |
 | repeat                           | material.repeat                        | 1 1           |
 | roughness                        | material.roughness                     | 0.5           |
 | segments-height                  | geometry.segmentsHeight                | 18            |
