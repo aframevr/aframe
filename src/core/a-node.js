@@ -140,8 +140,8 @@ class ANode extends HTMLElement {
       });
 
       self.hasLoaded = true;
-      if (cb) { cb(); }
       self.setupMutationObserver();
+      if (cb) { cb(); }
       self.emit('loaded', undefined, false);
     });
   }
@@ -151,7 +151,7 @@ class ANode extends HTMLElement {
    * for attributes defined statically via observedAttributes.
    * One can assign any arbitrary components to an A-Frame entity
    * hence we can't know the list of attributes beforehand.
-   * This function setup a mutation observer to keep track of the entiy attribute changes
+   * This function setup a mutation observer to keep track of the entity attribute changes
    * in the DOM and update components accordingly.
    */
   setupMutationObserver () {
