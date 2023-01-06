@@ -40,13 +40,13 @@ suite('a-torus', function () {
   });
 
   test('can set torus properties when creating in JavaScript', function (done) {
-    var el = helpers.entityFactory();
+    var scene = document.querySelector('a-scene');
     var geometry;
     var torusEl = document.createElement('a-torus');
     torusEl.setAttribute('segments-tubular', '100');
     torusEl.setAttribute('radius', '2');
     torusEl.setAttribute('radius-tubular', '0.1');
-    el.sceneEl.appendChild(torusEl);
+    scene.appendChild(torusEl);
 
     process.nextTick(function () {
       geometry = torusEl.getAttribute('geometry');
@@ -59,10 +59,10 @@ suite('a-torus', function () {
   });
 
   test('can set torus properties after creation when creating in JavaScript', function (done) {
-    var el = helpers.entityFactory();
+    var scene = document.querySelector('a-scene');
     var geometry;
     var torusEl = document.createElement('a-torus');
-    el.sceneEl.appendChild(torusEl);
+    scene.appendChild(torusEl);
     torusEl.setAttribute('segments-tubular', '100');
     torusEl.setAttribute('radius', '2');
     torusEl.setAttribute('radius-tubular', '0.1');
@@ -78,11 +78,11 @@ suite('a-torus', function () {
   });
 
   test('can set torus properties via an additional component', function (done) {
-    var el = helpers.entityFactory();
+    var scene = document.querySelector('a-scene');
     var geometry;
     var torusEl = document.createElement('a-torus');
     torusEl.setAttribute('test', '');
-    el.sceneEl.appendChild(torusEl);
+    scene.appendChild(torusEl);
     registerComponent('test', {
       init () {
         this.el.setAttribute('segments-tubular', '100');
