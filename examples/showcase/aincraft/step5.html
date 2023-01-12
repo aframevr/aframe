@@ -4,10 +4,8 @@
     <title>Aincraft</title>
     <meta name="description" content="Aincraft">
     <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/aframe-blink-controls/dist/aframe-blink-controls.min.js"></script>
     <script src="./components/random-color.js"></script>
     <script src="./components/snap.js"></script>
-    <script src="./components/intersection-spawn.js"></script>
   </head>
   <a-scene>
     <a-assets>
@@ -24,19 +22,11 @@
 
     <a-sky id="background" src="#skyTexture" theta-length="90" radius="30"></a-sky>
 
-    <!-- Hands -->
-    <a-entity id="teleHand"
-              hand-controls="hand: left"
-              blink-controls></a-entity>
-    <a-entity id="blockHand"
-              hand-controls="hand: right"
-              laser-controls
-              intersection-spawn="event: click; mixin: voxel"></a-entity>
-
-    <!-- Camera -->
-    <a-camera>
-      <a-cursor intersection-spawn="event: click; mixin: voxel"></a-cursor>
-    </a-camera>
-
+    <a-entity mixin="voxel" position="-1 0 -2"></a-entity>
+    <a-entity mixin="voxel" position="0 0 -2"></a-entity>
+    <a-entity mixin="voxel" position="0 1 -2"
+              animation="property: rotation; to: 0 360 0; loop: true"></a-entity>
+    <a-entity mixin="voxel" position="1 0 -2"></a-entity>
+    
   </a-scene>
 </html>
