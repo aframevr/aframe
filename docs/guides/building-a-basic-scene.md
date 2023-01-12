@@ -11,7 +11,7 @@ image:
   src: https://user-images.githubusercontent.com/674727/29746371-b7906dcc-8a8c-11e7-8ef4-3f7e4d224ce7.jpg
 examples:
   - title: Basic Guide with Environment
-    src: https://aframe.io/examples/showcase/basic-scene/
+    src: https://github.com/aframevr/aframe/tree/master/examples/showcase/basic-scene/index.html
 ---
 
 [primitives]: ../primitives/
