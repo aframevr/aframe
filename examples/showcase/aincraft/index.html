@@ -5,9 +5,9 @@
     <meta name="description" content="Aincraft">
     <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/aframe-blink-controls/dist/aframe-blink-controls.min.js"></script>
-    <script src="./components/random-color.js"></script>
-    <script src="./components/snap.js"></script>
-    <script src="./components/intersection-spawn.js"></script>
+    <script src="components/random-color.js"></script>
+    <script src="components/snap.js"></script>
+    <script src="components/intersection-spawn.js"></script>
   </head>
   <a-scene>
     <a-assets>
@@ -27,7 +27,7 @@
     <!-- Hands -->
     <a-entity id="teleHand"
               hand-controls="hand: left"
-              blink-controls></a-entity>
+              blink-controls="collisionEntities: [mixin='voxel'], #ground"></a-entity>
     <a-entity id="blockHand"
               hand-controls="hand: right"
               laser-controls
