@@ -453,7 +453,7 @@ Now we can include it into our HTML:
 
 ### Using jsdelivr for CDN
 
-[ jsdelivr ]: https://www.jsdelivr.com/
+[jsdelivr]: https://www.jsdelivr.com/
 
 [JSDELIVR][jsdelivr] is an alternative CDN to unpkg.  One benefit of JSDELIVR is that it can download files from GitHub as well as NPM.
 
