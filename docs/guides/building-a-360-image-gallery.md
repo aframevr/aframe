@@ -32,7 +32,7 @@ for an easy example that has a lot of demand as an early use case on the Web.
 
 ## Skeleton
 
-This is the starting point for our scene. We can also remix the [Glitch][glitch].
+This is the starting point for our scene.
 
 ```html
 <a-scene>
