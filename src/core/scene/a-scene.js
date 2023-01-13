@@ -301,6 +301,19 @@ class AScene extends AEntity {
               vrManager.setSession(xrSession).then(function () {
                 vrManager.setFoveation(rendererSystem.foveationLevel);
               });
+              const rates = xrSession.supportedFrameRates;
+              if (rates && xrSession.updateTargetFrameRate) {
+                let targetRate;
+                if (rates.includes(90)) {
+                  targetRate = rendererSystem.highRefreshRate ? 90 : 72;
+                } else {
+                  targetRate = rendererSystem.highRefreshRate ? 72 : 60;
+                }
+                xrSession.updateTargetFrameRate(targetRate).catch(function (error) {
+                  console.warn('failed to set target frame rate of ' + targetRate + '. Error info: ' + error);
+                });
+              }
+
               xrSession.addEventListener('end', self.exitVRBound);
               enterVRSuccess(resolve);
             },
