@@ -3,7 +3,7 @@ var THREE = require('../lib/three');
 
 /**
  * Camera component.
- * Pairs along with camera system to handle tracking the active camera.
+ * Pairs along with the camera system to handle tracking the active camera.
  */
 module.exports.Component = registerComponent('camera', {
   schema: {
