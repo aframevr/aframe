@@ -517,9 +517,3 @@ Rift), we can view the [demo][live-demo] in VR within the browser.
 
 [webxr]: https://immersiveweb.dev/
 
-[demorecorded]: https://supermedium.com/superframe/scenes/aincraft/?avatar-recording=recording.json
-
-If we want to view what the experience looks like when used in VR from our
-desktop or mobile device, [check out the demo with pre-recorded VR motion
-capture and gestures][demorecorded].
-
