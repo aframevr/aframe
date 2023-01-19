@@ -6,11 +6,11 @@ parent_section: guides
 order: 10
 examples:
   - title: Aincraft
-    src: https://github.com/aframevr/aframe/tree/master/examples/showcase/aincraft/ 
+    src: https://github.com/aframevr/aframe/tree/master/examples/docs/aincraft/ 
 ---
 
-[source-code]: https://github.com/aframevr/aframe/tree/master/examples/showcase/aincraft/
-[live-demo]: https://aframe.io/examples/showcase/aincraft/
+[source-code]: https://github.com/aframevr/aframe/tree/master/examples/docs/aincraft/
+[live-demo]: https://aframe.io/examples/docs/aincraft/
 
 > View the [source code][source-code], or try out [the demo][live-demo]
 
@@ -53,7 +53,7 @@ our assets, and create a thin cylinder entity pointing to that texture:
 </a-scene>
 ```
 
-See a live version [here](https://aframe.io/examples/showcase/aincraft/step1.html)
+See a live version [here](https://aframe.io/examples/docs/aincraft/step1.html)
 
 ### Preloading Assets
 
@@ -84,7 +84,7 @@ Let's move our ground texture to `<a-assets>` to be preloaded using an
 </a-scene>
 ```
 
-See a live version [here](https://aframe.io/examples/showcase/aincraft/step2.html)
+See a live version [here](https://aframe.io/examples/docs/aincraft/step2.html)
 
 ## Adding a Background
 
@@ -123,7 +123,7 @@ to match the ground:
 </a-scene>
 ```
 
-See a live version [here](https://aframe.io/examples/showcase/aincraft/step3.html)
+See a live version [here](https://aframe.io/examples/docs/aincraft/step3.html)
 
 ## Adding Voxels
 
@@ -255,7 +255,7 @@ and include it before the scene:
 </a-scene>
 ```
 
-See a live version [here](https://aframe.io/examples/showcase/aincraft/step4.html)
+See a live version [here](https://aframe.io/examples/docs/aincraft/step4.html)
 
 Components can be plugged into any entity without having to create or extend a
 class like we'd have to in traditional inheritance. If we wanted to attach it
@@ -277,7 +277,7 @@ modular and reusable!
 
 ### Snap Component
 
-[snap]: https://github.com/aframevr/aframe/tree/master/examples/showcase/aincraft/components/snap.js
+[snap]: https://github.com/aframevr/aframe/tree/master/examples/docs/aincraft/components/snap.js
 
 We'll have a `snap` component to snap our boxes to a grid so they aren't
 overlapping. We won't get into the details of how this component is
@@ -345,7 +345,7 @@ And we've added voxels using that mixin:
 <a-entity mixin="voxel" position="1 0 -2"></a-entity>
 ```
 
-See a live version [here](https://aframe.io/examples/showcase/aincraft/step5.html)
+See a live version [here](https://aframe.io/examples/docs/aincraft/step5.html)
 
 Next, we'll be creating voxels dynamically through interaction using tracked
 controllers. Let's start adding our hands to the application.
@@ -470,7 +470,7 @@ document.querySelector('#blockHand').addEventListener(`click`, function (evt) {
 });
 ```
 
-[intersection-spawn]: https://github.com/aframevr/aframe/tree/master/examples/showcase/aincraft/components/intersection-spawn.js
+[intersection-spawn]: https://github.com/aframevr/aframe/tree/master/examples/docs/aincraft/components/intersection-spawn.js
 
 To generalize creating entities from an intersection event, we've created an
 `intersection-spawn` component that can be configured with any event and list
