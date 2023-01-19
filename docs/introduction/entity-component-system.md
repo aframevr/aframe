@@ -463,7 +463,7 @@ You can convert GitHub URLs to  JSDELIVR URLs using this link: https://www.jsdel
 
 ### Example
 
-[community-example]: https://aframe.io/examples/showcase/community-components
+[community-example]: https://aframe.io/examples/docs/community-components
 
 ![Community Components Example](https://cloud.githubusercontent.com/assets/674727/25502318/0f76ceec-2b4b-11e7-9829-cb3784b20dc1.gif)
 
