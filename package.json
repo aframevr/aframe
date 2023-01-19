@@ -110,8 +110,11 @@
     "rift",
     "vive",
     "vr",
+    "quest",
+    "meta",
     "web-components",
-    "webvr"
+    "webvr",
+    "webxr"
   ],
   "engines": {
     "node": ">= 4.6.0",

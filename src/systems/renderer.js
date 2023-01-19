@@ -70,5 +70,21 @@ module.exports.System = registerSystem('renderer', {
     } else if (colorOrTexture.isTexture) {
       colorOrTexture.encoding = THREE.sRGBEncoding;
     }
+  },
+
+  setWebXRFrameRate: function (xrSession) {
+    var data = this.data;
+    var rates = xrSession.supportedFrameRates;
+    if (rates && xrSession.updateTargetFrameRate) {
+      let targetRate;
+      if (rates.includes(90)) {
+        targetRate = data.highRefreshRate ? 90 : 72;
+      } else {
+        targetRate = data.highRefreshRate ? 72 : 60;
+      }
+      xrSession.updateTargetFrameRate(targetRate).catch(function (error) {
+        console.warn('failed to set target frame rate of ' + targetRate + '. Error info: ' + error);
+      });
+    }
   }
 });
