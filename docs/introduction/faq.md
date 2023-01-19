@@ -126,7 +126,7 @@ Mobile and desktop browsers have been tightening the video autoplay policies to 
 -[Firefox](https://hacks.mozilla.org/2019/02/firefox-66-to-block-automatically-playing-audible-video-and-audio/)
 
 [video-playback-example]: https://aframe.io/aframe/examples/test/video/
-[video-playback-code]: https://github.com/mayognaise/aframe-html-shader/
+[video-playback-code]: https://github.com/aframevr/aframe/blob/master/examples/test/video/index.html
 
 There's an [A-Frame example that includes the necessary logic][video-playback-example] to request the user clicking or tapping to start video playback. [The source code is also available][video-playback-code]
 

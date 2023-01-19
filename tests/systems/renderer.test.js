@@ -1,4 +1,4 @@
-/* global assert, suite, test, THREE */
+/* global assert, suite, test, setup, teardown, THREE */
 
 suite('renderer', function () {
   function createScene () {
@@ -78,5 +78,115 @@ suite('renderer', function () {
       done();
     });
     document.body.appendChild(sceneEl);
+  });
+
+  suite('Set WebXR Frame Rates', function () {
+    var xrTargetFrameRate;
+    var xrSession;
+    var oldConsoleWarn;
+    var warnings = [];
+
+    // Stub XR Session.
+    setup(function () {
+      xrTargetFrameRate = 0;
+      xrSession = {
+        supportedFrameRates: [60, 72],
+        updateTargetFrameRate: function (rate) {
+          xrTargetFrameRate = rate;
+          return new Promise(function (resolve) {
+            resolve();
+          });
+        }
+      };
+      // Stub warnings.
+      oldConsoleWarn = console.warn;
+      console.warn = function (message) {
+        warnings.push(message);
+      };
+    });
+
+    test('set WebXR frame rate when supported by browser (default, Quest 1)', function (done) {
+      var sceneEl = createScene();
+      sceneEl.setAttribute('renderer', '');
+      sceneEl.addEventListener('loaded', function () {
+        var rendererSystem = sceneEl.systems.renderer;
+        xrTargetFrameRate = 0;
+        rendererSystem.setWebXRFrameRate(xrSession);
+        assert.strictEqual(xrTargetFrameRate, 60);
+        done();
+      });
+      document.body.appendChild(sceneEl);
+    });
+
+    test('set WebXR frame rate when supported by browser (high, Quest 1)', function (done) {
+      var sceneEl = createScene();
+      sceneEl.setAttribute('renderer', 'highRefreshRate: true');
+      sceneEl.addEventListener('loaded', function () {
+        var rendererSystem = sceneEl.systems.renderer;
+        xrTargetFrameRate = 0;
+        rendererSystem.setWebXRFrameRate(xrSession);
+        assert.strictEqual(xrTargetFrameRate, 72);
+        done();
+      });
+      document.body.appendChild(sceneEl);
+    });
+
+    test('set WebXR frame rate when supported by browser (default, Quest 2 / Pro)', function (done) {
+      xrSession.supportedFrameRates = [60, 72, 90, 120];
+      var sceneEl = createScene();
+      sceneEl.setAttribute('renderer', '');
+      sceneEl.addEventListener('loaded', function () {
+        var rendererSystem = sceneEl.systems.renderer;
+        xrTargetFrameRate = 0;
+        rendererSystem.setWebXRFrameRate(xrSession);
+        assert.strictEqual(xrTargetFrameRate, 72);
+        done();
+      });
+      document.body.appendChild(sceneEl);
+    });
+
+    test('set WebXR frame rate when supported by browser (high, Quest 2 / Pro)', function (done) {
+      xrSession.supportedFrameRates = [60, 72, 90, 120];
+      var sceneEl = createScene();
+      sceneEl.setAttribute('renderer', 'highRefreshRate: true');
+      sceneEl.addEventListener('loaded', function () {
+        var rendererSystem = sceneEl.systems.renderer;
+        xrTargetFrameRate = 0;
+        rendererSystem.setWebXRFrameRate(xrSession);
+        assert.strictEqual(xrTargetFrameRate, 90);
+        done();
+      });
+      document.body.appendChild(sceneEl);
+    });
+
+    test('set WebXR frame rate fails', function (done) {
+      xrSession.updateTargetFrameRate = function (rate) {
+        return new Promise(function (resolve, reject) {
+          reject();
+        });
+      };
+
+      var sceneEl = createScene();
+      sceneEl.setAttribute('renderer', 'highRefreshRate: true');
+      sceneEl.addEventListener('loaded', function () {
+        assert.strictEqual(warnings.length, 0);
+        var rendererSystem = sceneEl.systems.renderer;
+        xrTargetFrameRate = 0;
+        rendererSystem.setWebXRFrameRate(xrSession);
+
+        // warning generated asynchronously, so use zero-length
+        // timeout to queue checking until after warning is generated.
+        setTimeout(function () {
+          assert.strictEqual(xrTargetFrameRate, 0);
+          assert.strictEqual(warnings.length, 1);
+          done();
+        }, 0);
+      });
+      document.body.appendChild(sceneEl);
+    });
+
+    teardown(function () {
+      console.warn = oldConsoleWarn;
+    });
   });
 });
