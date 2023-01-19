@@ -6,10 +6,10 @@ parent_section: guides
 order: 3
 examples:
   - title: 360&deg; Image Gallery
-    src: https://github.com/aframevr/aframe/tree/master/examples/showcase/360-gallery/index.html
+    src: https://github.com/aframevr/aframe/tree/master/examples/docs/360-gallery/index.html
 ---
 
-[live-example]: https://aframe.io/examples/showcase/360-gallery/
+[live-example]: https://aframe.io/examples/docs/360-gallery/
 
 ![360&deg; Image Viewer](/images/docs/360-image-viewer.png)
 
