@@ -509,8 +509,9 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
  */
 function cloneMeshMaterial (object3d) {
   object3d.traverse(function (node) {
+    var newMaterial;
     if (node.type !== 'Mesh') return;
-    let newMaterial = node.material.clone();
+    newMaterial = node.material.clone();
     object3d.originalColor = node.material.color;
     node.material.dispose();
     node.material = newMaterial;

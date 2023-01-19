@@ -6,17 +6,16 @@ parent_section: guides
 order: 10
 examples:
   - title: Aincraft
-    src: https://glitch.com/edit/#!/aframe-aincraft?path=index.html
+    src: https://github.com/aframevr/aframe/tree/master/examples/showcase/aincraft/ 
 ---
 
-[github]: https://github.com/supermedium/superframe/tree/csstricks/scenes/aincraft/
-[glitch]: https://glitch.com/~aframe-aincraft/
-[glitchdemo]: https://aframe-aincraft.glitch.me
+[source-code]: https://github.com/aframevr/aframe/tree/master/examples/showcase/aincraft/
+[live-demo]: https://aframe.io/examples/showcase/aincraft/
 
-> [Remix this example on Glitch][glitch]. Or [view the demo][glitchdemo].
+> View the [source code][source-code], or try out [the demo][live-demo]
 
 Let's build a basic Minecraft (voxel builder) demo that targets room scale VR
-with controllers (e.g., Vive, Rift). The example will be minimally usable on
+with controllers (e.g., Quest, Vive, Rift). The example will be minimally usable on
 mobile and desktop.
 
 <!--toc-->
@@ -40,13 +39,11 @@ We'll start off with this skeleton HTML:
 adding a ground. We'll be using `<a-cylinder>` to better work with the
 raycasters our controllers will be using. The cylinder will have a radius of 30
 meters to match the radius of the sky we'll add later. Note that A-Frame units
-are in meters to match the real-world units returned from the WebVR API.
+are in meters to match the real-world units returned from the WebXR API.
 
 The texture of the ground we'll be using is hosted at
 `https://cdn.aframe.io/a-painter/images/floor.jpg"`. We'll add the texture to
 our assets, and create a thin cylinder entity pointing to that texture:
-
-<p data-height="265" data-theme-id="dark" data-slug-hash="MpbXXe" data-default-tab="html,result" data-user="mozvr" data-embed-version="2" data-pen-title="Minecraft VR Demo (Part 1)" data-preview="true" data-editable="true" class="codepen">See the Pen <a href="http://codepen.io/mozvr/pen/MpbXXe/">Minecraft VR Demo (Part 1)</a> by mozvr (<a href="http://codepen.io/mozvr">@mozvr</a>) on <a href="http://codepen.io">CodePen</a>.</p>
 
 ```html
 <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
@@ -55,6 +52,8 @@ our assets, and create a thin cylinder entity pointing to that texture:
   <a-cylinder id="ground" src="https://cdn.aframe.io/a-painter/images/floor.jpg" radius="32" height="0.1"></a-cylinder>
 </a-scene>
 ```
+
+See a live version [here](https://aframe.io/examples/showcase/aincraft/step1.html)
 
 ### Preloading Assets
 
@@ -73,8 +72,6 @@ selector (e.g., `#myTexture`).
 Let's move our ground texture to `<a-assets>` to be preloaded using an
 `<img>` element:
 
-<p data-height="265" data-theme-id="dark" data-slug-hash="LWbrBQ" data-default-tab="html,result" data-user="mozvr" data-embed-version="2" data-pen-title="Minecraft VR Demo (Part 2: Preloading Texture)" data-preview="true" data-editable="true" class="codepen">See the Pen <a href="http://codepen.io/mozvr/pen/LWbrBQ/">Minecraft VR Demo (Part 2: Preloading Texture)</a> by mozvr (<a href="http://codepen.io/mozvr">@mozvr</a>) on <a href="http://codepen.io">CodePen</a>.</p>
-
 ```html
 <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
 
@@ -86,6 +83,8 @@ Let's move our ground texture to `<a-assets>` to be preloaded using an
   <a-cylinder id="ground" src="#groundTexture" radius="32" height="0.1"></a-cylinder>
 </a-scene>
 ```
+
+See a live version [here](https://aframe.io/examples/showcase/aincraft/step2.html)
 
 ## Adding a Background
 
@@ -109,8 +108,6 @@ The image texture we are using covers semi-sphere so we'll chop our sphere in
 half with `theta-length="90"`, and we'll give our sphere a radius of 30 meters
 to match the ground:
 
-<p data-height="265" data-theme-id="dark" data-slug-hash="PpbaBL" data-default-tab="html,result" data-user="mozvr" data-embed-version="2" data-pen-title="Minecraft VR Demo (Part 3: Adding a Background)" data-preview="true" data-editable="true" class="codepen">See the Pen <a href="http://codepen.io/mozvr/pen/PpbaBL/">Minecraft VR Demo (Part 3: Adding a Background)</a> by mozvr (<a href="http://codepen.io/mozvr">@mozvr</a>) on <a href="http://codepen.io">CodePen</a>.</p>
-
 ```html
 <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
 
@@ -125,6 +122,8 @@ to match the ground:
   <a-sky id="background" src="#skyTexture" theta-length="90" radius="30"></a-sky>
 </a-scene>
 ```
+
+See a live version [here](https://aframe.io/examples/showcase/aincraft/step3.html)
 
 ## Adding Voxels
 
@@ -196,9 +195,9 @@ For the random color component, we want to set a random color on the entity
 that this component is attached to. Components have a reference to the entity
 with `this.el` from the handler methods. And to change the color with
 JavaScript, we change the material component's color property using
-`.setAttribute()`. A-Frame enhances the behavior of several DOM APIs a bit, but the APIs mostly mirror
-vanilla web development. [Read more about using JavaScript and DOM APIs with
-A-Frame][js].
+`.setAttribute()`. A-Frame enhances the behavior of several DOM APIs a bit, but
+the APIs mostly mirror vanilla web development. [Read more about using JavaScript
+and DOM APIs with A-Frame][js].
 
 We'll also add the `material` component to the list of components that should
 initialize before this one, just so our material isn't overwritten.
@@ -234,8 +233,6 @@ Take our box entity from earlier, we attach the `random-color` HTML attribute
 to plug in the `random-color` component. We'll save the component as a JS file
 and include it before the scene:
 
-<p data-height="265" data-theme-id="dark" data-slug-hash="ryWKqy" data-default-tab="html,result" data-user="mozvr" data-embed-version="2" data-pen-title="Minecraft VR Demo (Part 4: Random Color Component)" data-preview="true" data-editable="true" class="codepen">See the Pen <a href="http://codepen.io/mozvr/pen/ryWKqy/">Minecraft VR Demo (Part 4: Random Color Component)</a> by mozvr (<a href="http://codepen.io/mozvr">@mozvr</a>) on <a href="http://codepen.io">CodePen</a>.</p>
-
 ```html
 <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
 <script src="components/random-color.js"></script>
@@ -258,6 +255,8 @@ and include it before the scene:
 </a-scene>
 ```
 
+See a live version [here](https://aframe.io/examples/showcase/aincraft/step4.html)
+
 Components can be plugged into any entity without having to create or extend a
 class like we'd have to in traditional inheritance. If we wanted to attach it
 to say, `<a-sphere>` or `<a-obj-model>`, we could!
@@ -268,21 +267,22 @@ to say, `<a-sphere>` or `<a-obj-model>`, we could!
 <a-obj-model src="model.obj" random-color></a-obj-model>
 ```
 
-[registry]: https://aframe.io/registry/
+[directory]: https://aframe.wiki/en/#!pages/component-directory.md
 
-if we wanted to share this component for other people to use, we could too.  We
-curate from many handy components from the ecosystem at [the A-Frame
-Registry][registry], similar to the Unity Asset Store. If we developed our
-application using components, all our code is inherently modular and reusable!
+if we wanted to share this component for other people to use, we could too.
+There is a community-maintained [Component Directory][directory] that lists
+many handy components from the ecosystem, similar to the Unity Asset Store.
+If we developed our application using components, all our code is inherently
+modular and reusable!
 
 ### Snap Component
 
-[snap]: https://github.com/supermedium/superframe/blob/csstricks/scenes/aincraft/components/snap.js
+[snap]: https://github.com/aframevr/aframe/tree/master/examples/showcase/aincraft/components/snap.js
 
 We'll have a `snap` component to snap our boxes to a grid so they aren't
 overlapping. We won't get into the details of how this component is
 implemented, but you can check out [the snap component's source
-code](https://cdn.jsdelivr.net/gh/supermedium/superframe@dae06f2d832e4d305ec7da830fb09a6079af4790/scenes/aincraft/components/snap.js)
+code][snap]
 (20 lines of JavaScript).
 
 We attach the snap component to our box so that it snaps to every half meter,
@@ -306,8 +306,6 @@ to describe all the voxels in our scene.
 We can create [a mixin][mixin] to define a reusable bundle of components.
 Instead of `<a-entity>`, which adds an object to the scene, we'll describe it
 using `<a-mixin>` which can be reused to create voxels like a prefab:
-
-<p data-height="265" data-theme-id="dark" data-slug-hash="OpbEaY" data-default-tab="html,result" data-user="mozvr" data-embed-version="2" data-pen-title="Minecraft VR Demo (Part 5: Mixins)" data-preview="true" data-editable="true" class="codepen">See the Pen <a href="http://codepen.io/mozvr/pen/OpbEaY/">Minecraft VR Demo (Part 5: Mixins)</a> by mozvr (<a href="http://codepen.io/mozvr">@mozvr</a>) on <a href="http://codepen.io">CodePen</a>.</p>
 
 ```html
 <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
@@ -347,6 +345,8 @@ And we've added voxels using that mixin:
 <a-entity mixin="voxel" position="1 0 -2"></a-entity>
 ```
 
+See a live version [here](https://aframe.io/examples/showcase/aincraft/step5.html)
+
 Next, we'll be creating voxels dynamically through interaction using tracked
 controllers. Let's start adding our hands to the application.
 
@@ -382,17 +382,14 @@ teleport to the end of the arc. Before, we wrote our own A-Frame components.
 But we can also use open source components already made from the community
 and just use them straight from HTML!
 
-[aframe-teleport-controls]: https://github.com/fernandojsg/aframe-teleport-controls/
-[@fernandojsg]: https://twitter.com/fernandojsg/
-
-For teleportation, there's a [teleport-controls
-component][aframe-teleport-controls] by @fernandojsg. Following the README, we
-add the component via a `<script>` tag and just set the `teleport-controls`
-component on the controller on the entity:
+[blink-controls]: https://github.com/fernandojsg/aframe-teleport-controls/
+For teleportation, there's a component called [blink-controls][blink-controls].
+Following the README, we add the component via a `<script>` tag and just set
+the `blink-controls` component on the controller on the entity:
 
 ```html
 <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
-<script src="https://unpkg.com/aframe-teleport-controls@0.3.x/dist/aframe-teleport-controls.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/aframe-blink-controls/dist/aframe-blink-controls.min.js"></script>
 
 <!-- ... -->
 
@@ -400,22 +397,22 @@ component on the controller on the entity:
 <a-entity id="blockHand" hand-controls="hand: right"></a-entity>
 ```
 
-Then we'll configure the `teleport-controls` component to use an arc `type` of
-teleportation. By default, `teleport-controls` will only teleport on the
+Then we'll configure the `blink-controls` component to use an arc `type` of
+teleportation. By default, `blink-controls` will only teleport on the
 ground, but we can specify with `collisionEntities` to teleport on the blocks
 *and* the ground using selectors. These properties are part of the API that the
-`teleport-controls` component was created with:
+`blink-controls` component was created with:
 
 ```html
-<a-entity id="teleHand" hand-controls="hand: left" teleport-controls="type: parabolic; collisionEntities: [mixin='voxel'], #ground"></a-entity>
+<a-entity id="teleHand" hand-controls="hand: left" blink-controls="collisionEntities: [mixin='voxel'], #ground"></a-entity>
 ```
 
 That's it! **One script tag and one HTML attribute and we can teleport**.  For
-more cool components, check out the [A-Frame Registry][registry].
+more cool components, check out the [A-Frame Component Directory][directory].
 
 ### Adding Voxel Spawner to the Right Hand
 
-In WebVR, the ability to click on objects isn't built-in as it is in 2D
+In WebXR, the ability to click on objects isn't built-in as it is in 2D
 applications. We have to provide that ourselves. Fortunately, A-Frame has many
 components to handle interaction. A common method for cursor-like clicking in
 VR is to use a raycaster, a laser that shoots out and returns objects that it
@@ -424,12 +421,12 @@ interaction events and checking the raycaster for intersections.
 
 A-Frame provides `laser-controls` component for controller laser interaction
 that attaches the clicking laser to VR tracked controllers.  Like the
-`teleport-controls` component, we include the script tag and attach the
+`blink-controls` component, we include the script tag and attach the
 `laser-controls` component. This time to the right hand:
 
 ```html
 <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
-<script src="https://unpkg.com/aframe-teleport-controls@0.3.x/dist/aframe-teleport-controls.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/aframe-blink-controls/dist/aframe-blink-controls.min.js"></script>
 
 <!-- ... -->
 
@@ -473,7 +470,7 @@ document.querySelector('#blockHand').addEventListener(`click`, function (evt) {
 });
 ```
 
-[intersection-spawn]: https://github.com/supermedium/superframe/blob/csstricks/scenes/aincraft/components/intersection-spawn.js
+[intersection-spawn]: https://github.com/aframevr/aframe/tree/master/examples/showcase/aincraft/components/intersection-spawn.js
 
 To generalize creating entities from an intersection event, we've created an
 `intersection-spawn` component that can be configured with any event and list
@@ -507,23 +504,16 @@ blocks on mobile and desktop, without changing a thing about the component!
 
 ## Try It Out!
 
-> [Read the source code on GitHub][github].
+> [Read the source code on GitHub][source-code].
+>
+> [Try out the live version][live-demo]
 
-On desktop, we can drag and click to spawn blocks. On mobile, we can pan the
-device around and tap to spawn blocks. If we have a VR headset (e.g., HTC Vive,
-Oculus Rift + Touch), we can grab a [WebVR-enabled browser][rocks] and [head
-over to the demo][demo]. Try it in VR by plugging in an HTC Vive or Oculus Rift
-and [using a WebVR-enabled browser][rocks].
+On desktop, we can drag to move the view and click to spawn blocks.  We can
+also move using WASD.
 
-[demo]: https://supermedium.com/superframe/scenes/aincraft/
-[rocks]: https://webvr.rocks
+On mobile, we can pan the device around and tap to spawn blocks. If we have
+a VR headset with a [WebXR-capable browser][webxr] (e.g., Meta Quest, HTC Vive, Oculus
+Rift), we can view the [demo][live-demo] in VR within the browser.
 
-<p data-height="265" data-theme-id="dark" data-slug-hash="OpbwMJ" data-default-tab="html,result" data-user="mozvr" data-embed-version="2" data-pen-title="Minecraft VR Demo (Final)" data-preview="true" data-editable="true" class="codepen">See the Pen <a href="http://codepen.io/mozvr/pen/OpbwMJ/">Minecraft VR Demo (Final)</a> by mozvr (<a href="http://codepen.io/mozvr">@mozvr</a>) on <a href="http://codepen.io">CodePen</a>.</p>
+[webxr]: https://immersiveweb.dev/
 
-[demorecorded]: https://supermedium.com/superframe/scenes/aincraft/?avatar-recording=recording.json
-
-If we want to view what the experience looks like when used in VR from our
-desktop or mobile device, [check out the demo with pre-recorded VR motion
-capture and gestures][demorecorded].
-
-<script async src="https://production-assets.codepen.io/assets/embed/ei.js"></script>
