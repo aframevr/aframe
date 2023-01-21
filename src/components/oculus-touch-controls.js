@@ -340,6 +340,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     var buttonObjects = this.buttonObjects;
     var analogValue;
 
+    if (!buttonObjects) { return; }
     analogValue = evt.detail.state.value;
     analogValue *= this.data.hand === 'left' ? -1 : 1;
 
@@ -491,11 +492,13 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
 
   updateButtonModel: function (buttonName, state) {
     // update the button mesh colors
-    var button;
-    var color = (state === 'up' || state === 'touchend') ? this.buttonMeshes[buttonName].originalColor || this.data.buttonColor : state === 'touchstart' ? this.data.buttonTouchColor : this.data.buttonHighlightColor;
     var buttonMeshes = this.buttonMeshes;
+    var button;
+    var color;
 
-    if (buttonMeshes && buttonMeshes[buttonName]) {
+    if (!buttonMeshes) { return; }
+    if (buttonMeshes[buttonName]) {
+      color = (state === 'up' || state === 'touchend') ? buttonMeshes[buttonName].originalColor || this.data.buttonColor : state === 'touchstart' ? this.data.buttonTouchColor : this.data.buttonHighlightColor;
       button = buttonMeshes[buttonName];
       button.material.color.set(color);
       this.rendererSystem.applyColorCorrection(button.material.color);
