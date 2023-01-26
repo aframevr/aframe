@@ -309,25 +309,24 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   },
 
   onButtonChanged: function (evt) {
+    var buttonMeshes = this.buttonMeshes;
     var button = this.mapping[this.data.hand].buttons[evt.detail.id];
     if (!button) { return; }
+    if (!buttonMeshes) { return; }
     // move the button meshes
     if (this.isOculusTouchV3) {
       this.onButtonChangedV3(evt);
     } else {
-      var buttonMeshes = this.buttonMeshes;
       var analogValue;
 
       if (button === 'trigger' || button === 'grip') { analogValue = evt.detail.state.value; }
 
-      if (buttonMeshes) {
-        if (button === 'trigger' && buttonMeshes.trigger) {
-          buttonMeshes.trigger.rotation.x = this.originalXRotationTrigger - analogValue * (Math.PI / 26);
-        }
-        if (button === 'grip' && buttonMeshes.grip) {
-          analogValue *= this.data.hand === 'left' ? -1 : 1;
-          buttonMeshes.grip.position.x = this.originalXPositionGrip + analogValue * 0.004;
-        }
+      if (button === 'trigger' && buttonMeshes.trigger) {
+        buttonMeshes.trigger.rotation.x = this.originalXRotationTrigger - analogValue * (Math.PI / 26);
+      }
+      if (button === 'grip' && buttonMeshes.grip) {
+        analogValue *= this.data.hand === 'left' ? -1 : 1;
+        buttonMeshes.grip.position.x = this.originalXPositionGrip + analogValue * 0.004;
       }
     }
     // Pass along changed event with button state, using the buttom mapping for convenience.
@@ -340,7 +339,6 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     var buttonObjects = this.buttonObjects;
     var analogValue;
 
-    if (!buttonObjects) { return; }
     analogValue = evt.detail.state.value;
     analogValue *= this.data.hand === 'left' ? -1 : 1;
 
