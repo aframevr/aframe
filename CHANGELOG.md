@@ -1,3 +1,64 @@
+### 1.4.0 (Dec 26, 2022)
+
+A-Frame moved to custom elements V1, Oculus Quest Pro support, and tons of fixes and improvements in both A-Frame core and inspector 👏 
+
+28 A-Framers contributed to this one! You're awesome 🙇 
+
+[Sponsor](https://github.com/sponsors/dmarcos) A-Frame to help us move the 3D Web forward. 
+
+You can also [buy a cool t-shirt](https://cottonbureau.com/p/SX82KC/shirt/a-frame-og#/9479538/tee-men-standard-tee-vintage-black-tri-blend-s) 👕 
+
+### Major Changes
+
+- Move A-Frame to [Custom Elements V1](https://developer.mozilla.org/en-US/docs/Web/API/Window/customElements) API from the now deprecated [Custom Elements V0](https://chromestatus.com/feature/4642138092470272) (fix #4262) (#5136) (@dmarcos)
+- Move build system from Browserify to Webpack adding support for ESM (#5116) (@vincentfretin) 
+- Update to THREE r147 (@dmarcos @AdaRoseCannon @vincentfretin)
+
+### Deprecations
+
+- Cardboard mode is now disabled by default as a first step towards deprecation. Magic window is now the fallback on mobile when native WebXR API is not available (fix #4814) (@dmarcos)
+
+### Enhancements 
+
+- Add support for Meta Quest Touch Pro controllers (fix #5138) (#5139) (@felixtrz @cabanier @dmarcos)
+- Replace `targetRaySpace` with `gripSpace to position WebXR tracked controllers (#88e8db12) (@felixtrz @dmarcos)
+- Add support for KTX2 texture compression in [gltf-model component](https://aframe.io/docs/1.3.0/components/gltf-model.html#sidebar)  (#5101) (@jameskane05)
+- Add a default for Draco decoder URL for the [gltf model component](https://aframe.io/docs/1.3.0/components/gltf-model.html#sidebar) (#5156) (@kfarr)
+- Hide fullscreen button in desktop mode on iPad. Safari doesn't seem to support fullscreen mode. (fix #4841) (#5191)
+- Detach inactive pool entities from THREE Scene avoiding unnecessary matrix updates and raycaster checks / hits (#5188) (@diarmidmackenzie)  
+- Add support for WebXR [foveation level](https://aframe.io/docs/1.3.0/components/renderer.html#foveationlevel). Only WebVR API was previously supported (fix #5108) (#5110) (@mrxz)
+- Events emitted on a cursor entity also pass original [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) and [TouchEvent](https://developer.mozilla.org/en-US/docs/Web/API/TouchEvent) events when applies.
+- Update unit test stack and fix test suite (#5091) (@vincentfretin)
+- Display fullscreen button when AR / VR mode are not available (#ce23027d) (@dmarcos)
+- Add `xrselect` option to [rayOrigin](https://aframe.io/docs/1.3.0/components/cursor.html#properties_rayorigin) property in cursor component so it can be used in a WebXR AR context (#5065) (@AdaRoseCannon)
+- `tracked-controls-webxr` reference space is now configurable (#5040) (@msub2)
+- New `light` component property to enable directional lights to track objects and update shadows automatically (#5025) (@AdaRoseCannon)
+- New `toneMapped` property on renderer system. Flat materials can now opt out of tone mapping to look like light emitting surfaces. (#5029) (@AdaRoseCannon)
+- Update hand tracking model (fix #5185) (@dmarcos @vincentfretin)
+- Factor out and document `throttleLeadingAndTrailing` (#5151) (@diarmidmackenzie)
+- Docs improvements (@nikolas @dirkk0 @JGrotex @Kershawj @juunini @andrejsmelnikovs @csxiaoyaojianxian @Kirshach @diarmidmackenzie @Chabloz @vincentfretin @karunstha @janarthnk @Utopiah @daniel-schroeder-dev @Descent098 @oroju1)
+
+### Bug fixes
+
+- Fix `triggerchanged` event not firing with Oculus Quest 2 controllers (#5149) (@msub2)
+- Fix issue of loading screen displayed indefinitely (#5033) (@diarmidmackenzie)  
+- Remove duplicated update shader logic (#6858ed66) (@dmarcos)
+- Fix ray positioning for Oculus Quest 2 controllers (#5141) (@felixtrz)
+- Fix reflection component removal (#5125) (@vincentfretin)
+- Fix Quest 1 controller ray positioning (fix #5183) (#5190) (@vincentfretin)
+- Set default dev port to 8080. Oculus OS / Browser now block port 9000 and it's no longer usable (#0f508ad2) (@dmarcos)
+- Fix Oculus Quest 2 controller button animation and highlights (fix #5067) (#5103) (@kylebakerio)
+- Stop render loop when `a-scene` is removed from the DOM (#5112) (@vincentfretin)
+- Fix Github CI (#5092) (@vincentfretin)
+- Don't emit `granted` events if `DeviceOrientationEvent` permission is not granted (#5079) (@diarmidmackenzie)
+- Fix removal of components with the name pattern `component-name__sufix`. Used on [multiple instances of a single component](https://aframe.io/docs/1.3.0/core/component.html#multiple) (fix #5080) (#5081) (@diarmidmackenzie)
+- Exclude `a-mixins` when camera system tries to retrieve camera entities (fix #5023) (@mattrossman)
+- Reset `wasd-controls` velocity when axis properties change (#5050) (@vulture-boy)
+- Match [screenshot component](https://aframe.io/docs/1.3.0/components/screenshot.html) and scene encoding (#5157) (@diarmidmackenzie)
+- Fix VR/AR buttons positioning in embedded mode (fix #5158) (@dmarcos)
+- Remove examples warning messages (fix #5184) (@dmarcos @vincentfretin)
+
+
 ### 1.3.0 (Feb 4, 2022)
 
 Huge pile of fixes!

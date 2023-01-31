@@ -1,8 +1,8 @@
 /* global AFRAME */
 AFRAME.registerComponent('camera-position', {
   schema: {
-    mobile: {type: 'vec3', default: '0 1.6 3'},
-    desktop: {type: 'vec3', default: '0 1.6 2'}
+    mobile: {type: 'vec3', default: {x: 0, y: 1.6, z: 3}},
+    desktop: {type: 'vec3', default: {x: 0, y: 1.6, z: 2}}
   },
   init: function () {
     this.onCameraSetActive = this.onCameraSetActive.bind(this);

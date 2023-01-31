@@ -293,17 +293,25 @@ AFRAME.registerComponent('log', {
     var data = this.data;
     var el = this.el;
 
-    // `event` updated. Remove the previous event listener if it exists.
-    if (oldData.event && data.event !== oldData.event) {
-      el.removeEventListener(oldData.event, this.eventHandlerFn);
+    // `event` updated.
+    if (data.event !== oldData.event) {
+
+      // Remove the previous event listener, if it exists.
+      if (oldData.event) {
+        el.removeEventListener(oldData.event, this.eventHandlerFn);
+      }
+
+      // Add listener for new event, if it exists.
+      if (data.event) {
+        el.addEventListener(data.event, this.eventHandlerFn);
+      }
     }
 
-    if (data.event) {
-      el.addEventListener(data.event, this.eventHandlerFn);
-    } else {
+    if (!data.event) {
       console.log(data.message);
     }
   }
+  
 });
 ```
 

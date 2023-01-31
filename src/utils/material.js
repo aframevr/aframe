@@ -42,7 +42,7 @@ module.exports.setTextureProperties = setTextureProperties;
 
 /**
  * Update `material` texture property (usually but not always `map`)
- * from `data` property (usually but not always `src`)
+ * from `data` property (usually but not always `src`).
  *
  * @param {object} shader - A-Frame shader instance.
  * @param {object} data

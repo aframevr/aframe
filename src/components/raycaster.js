@@ -409,13 +409,23 @@ module.exports.Component = registerComponent('raycaster', {
     var key;
     var i;
     var objects = this.objects;
+    var scene = this.el.sceneEl.object3D;
+
+    function isAttachedToScene (object) {
+      if (object.parent) {
+        return isAttachedToScene(object.parent);
+      } else {
+        return (object === scene);
+      }
+    }
 
     // Push meshes and other attachments onto list of objects to intersect.
     objects.length = 0;
     for (i = 0; i < els.length; i++) {
-      if (els[i].isEntity && els[i].object3D) {
-        for (key in els[i].object3DMap) {
-          objects.push(els[i].getObject3D(key));
+      var el = els[i];
+      if (el.isEntity && el.object3D && isAttachedToScene(el.object3D)) {
+        for (key in el.object3DMap) {
+          objects.push(el.getObject3D(key));
         }
       }
     }

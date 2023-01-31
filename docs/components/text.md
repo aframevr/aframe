@@ -48,13 +48,13 @@ configuration.
 See more examples to see configuration of alignments, anchors, baselines,
 scaling, and auto-sizing.
 
-[exampletext]: https://a-frobot.github.io/aframe/examples/test/text/index.html
+[exampletext]: https://aframe.io/aframe/examples/test/text/index.html
 [codetext]: https://github.com/aframevr/aframe/blob/master/examples/test/text/index.html
-[exampleanchors]: https://a-frobot.github.io/aframe/examples/test/text/anchors.html
+[exampleanchors]: https://aframe.io/aframe/examples/test/text/anchors.html
 [codeanchors]: https://github.com/aframevr/aframe/blob/master/examples/test/text/anchors.html
-[examplescenarios]: https://a-frobot.github.io/aframe/examples/test/text/scenarios.html
+[examplescenarios]: https://aframe.io/aframe/examples/test/text/scenarios.html
 [codescenarios]: https://github.com/aframevr/aframe/blob/master/examples/test/text/scenarios.html
-[examplesizes]: https://a-frobot.github.io/aframe/examples/test/text/sizes.html
+[examplesizes]: https://aframe.io/aframe/examples/test/text/sizes.html
 [codesizes]: https://github.com/aframevr/aframe/blob/master/examples/test/text/sizes.html
 
 - [Text Example][exampletext] ([code][codetext])
@@ -186,7 +186,7 @@ Lastly, you should specify the character set used in your HTML by using `<meta>`
 <html>
   <head>
     <meta charset="UTF-8">
-    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
   </head>
   <body>
     <a-scene>

@@ -23,7 +23,7 @@ Let's start by building a basic A-Frame scene. For this, we will need a basic
 understanding of HTML. We will learn how to:
 
 - Add 3D entities (i.e., objects) with [primitives][primitives]
-- Transform to transform entities in 3D space with position, rotation, scale
+- Transform entities in 3D space with position, rotation, scale
 - Add an environment
 - Add textures
 - Add basic interactivity using animations and events
@@ -40,7 +40,7 @@ We start out with a minimal HTML structure:
 ```html
 <html>
   <head>
-    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
   </head>
   <body>
     <a-scene>
@@ -228,7 +228,7 @@ First, include the environment component using a script tag after A-Frame:
 
 ```html
 <head>
-  <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+  <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
   <script src="https://unpkg.com/aframe-environment-component/dist/aframe-environment-component.min.js"></script>
 </head>
 ```

@@ -140,7 +140,7 @@ suite('animation', function () {
       component.tick(0, 1);
       assert.equal(el.object3D.position.x, 0);
       component.tick(0, 500);
-      assert.equal(THREE.Math.degToRad(component.config.targets.aframeProperty),
+      assert.equal(THREE.MathUtils.degToRad(component.config.targets.aframeProperty),
                    el.object3D.rotation.x);
     });
   });
@@ -231,9 +231,9 @@ suite('animation', function () {
       });
       component.tick(0, 1);
       component.tick(0, 1000);
-      assert.equal(el.object3D.rotation.x, THREE.Math.degToRad(30));
-      assert.equal(el.object3D.rotation.y, THREE.Math.degToRad(60));
-      assert.equal(el.object3D.rotation.z, THREE.Math.degToRad(90));
+      assert.equal(el.object3D.rotation.x, THREE.MathUtils.degToRad(30));
+      assert.equal(el.object3D.rotation.y, THREE.MathUtils.degToRad(60));
+      assert.equal(el.object3D.rotation.z, THREE.MathUtils.degToRad(90));
     });
 
     test('can animate vec3 single-property custom component', function () {

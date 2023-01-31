@@ -71,7 +71,7 @@ module.exports.Component = registerComponent('screenshot', {
         side: THREE.DoubleSide
       });
       self.quad = new THREE.Mesh(
-        new THREE.PlaneBufferGeometry(1, 1),
+        new THREE.PlaneGeometry(1, 1),
         self.material
       );
       self.quad.visible = false;
@@ -85,7 +85,7 @@ module.exports.Component = registerComponent('screenshot', {
 
   getRenderTarget: function (width, height) {
     return new THREE.WebGLRenderTarget(width, height, {
-      encoding: THREE.sRGBEncoding,
+      encoding: this.el.sceneEl.renderer.outputEncoding,
       minFilter: THREE.LinearFilter,
       magFilter: THREE.LinearFilter,
       wrapS: THREE.ClampToEdgeWrapping,

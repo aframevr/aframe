@@ -34,7 +34,11 @@ suite('vr-mode-ui', function () {
   test('hides on enter VR', function () {
     var scene = this.el;
     // mock camera
-    scene.camera = {el: {object3D: {}}};
+    scene.camera = {
+      el: {object3D: {}},
+      updateProjectionMatrix: function () {}
+    };
+    window.hasNativeWebVRImplementation = false;
     scene.enterVR();
     UI_CLASSES.forEach(function (uiClass) {
       assert.ok(scene.querySelector(uiClass).className.indexOf('a-hidden'));
@@ -48,6 +52,7 @@ suite('vr-mode-ui', function () {
       el: {object3D: {}, getAttribute: function () { return {spectator: false}; }},
       updateProjectionMatrix: function () {}
     };
+    window.hasNativeWebVRImplementation = false;
     scene.enterVR();
     scene.exitVR();
 

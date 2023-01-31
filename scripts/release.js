@@ -15,11 +15,11 @@ if (!prevVersion || !nextVersion) {
 let distMin;
 let distMax;
 if (process.env.FOR_RELEASE) {
-  distMin = pkg.scripts['dist:min'].replace(/-master/g, '');
-  distMax = pkg.scripts['dist:max'].replace(/-master/g, '');
+  distMin = `${pkg.scripts['dist:min']} --output-filename aframe.min.js`;
+  distMax = `${pkg.scripts['dist:max']} --output-filename aframe.js`;
 } else {
-  distMin = pkg.scripts['dist:min'].replace(/master/g, `v${nextVersion}`);
-  distMax = pkg.scripts['dist:max'].replace(/master/g, `v${nextVersion}`);
+  distMin = `${pkg.scripts['dist:min']} --output-filename aframe-v${nextVersion}.min.js`;
+  distMax = `${pkg.scripts['dist:max']} --output-filename aframe-v${nextVersion}.js`;
 }
 
 execSync(distMin, {stdio: 'inherit'});

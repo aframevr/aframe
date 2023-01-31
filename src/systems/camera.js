@@ -43,7 +43,7 @@ module.exports.System = registerSystem('camera', {
     }
 
     // Search for initial user-defined camera.
-    cameraEls = sceneEl.querySelectorAll('a-camera, [camera]');
+    cameraEls = sceneEl.querySelectorAll('a-camera, :not(a-mixin)[camera]');
 
     // No user cameras, create default one.
     if (!cameraEls.length) {
@@ -132,7 +132,7 @@ module.exports.System = registerSystem('camera', {
   disableActiveCamera: function () {
     var cameraEls;
     var newActiveCameraEl;
-    cameraEls = this.sceneEl.querySelectorAll('[camera]');
+    cameraEls = this.sceneEl.querySelectorAll(':not(a-mixin)[camera]');
     newActiveCameraEl = cameraEls[cameraEls.length - 1];
     newActiveCameraEl.setAttribute('camera', 'active', true);
   },
@@ -159,7 +159,7 @@ module.exports.System = registerSystem('camera', {
     // Grab the default camera.
     var defaultCameraWrapper = sceneEl.querySelector('[' + DEFAULT_CAMERA_ATTR + ']');
     var defaultCameraEl = defaultCameraWrapper &&
-                          defaultCameraWrapper.querySelector('[camera]');
+                          defaultCameraWrapper.querySelector(':not(a-mixin)[camera]');
 
     // Remove default camera if new camera is not the default camera.
     if (newCameraEl !== defaultCameraEl) { removeDefaultCamera(sceneEl); }
@@ -175,7 +175,7 @@ module.exports.System = registerSystem('camera', {
     }
 
     // Disable other cameras in the scene
-    cameraEls = sceneEl.querySelectorAll('[camera]');
+    cameraEls = sceneEl.querySelectorAll(':not(a-mixin)[camera]');
     for (i = 0; i < cameraEls.length; i++) {
       cameraEl = cameraEls[i];
       if (!cameraEl.isEntity || newCameraEl === cameraEl) { continue; }

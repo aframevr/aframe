@@ -177,6 +177,18 @@ The octahedron geometry creates a polygon with eight equilateral triangular face
 |----------|----------------------------------------|---------------|
 | radius   | Radius (in meters) of the octahedron. | 1             |
 
+### `icosahedron`
+
+The icosahedron geometry creates a polygon with twenty equilateral triangular faces.
+
+```html
+<a-entity geometry="primitive: icosahedron"></a-entity>
+```
+
+| Property | Description                            | Default Value |
+|----------|----------------------------------------|---------------|
+| radius   | Radius (in meters) of the icosahedron. | 1             |
+
 ### `plane`
 
 The plane geometry creates a flat surface. Because planes are flat, A-Frame
@@ -346,17 +358,16 @@ AFRAME.registerGeometry('example', {
   },
 
   init: function (data) {
-    var geometry = new THREE.Geometry();
-    geometry.vertices = data.vertices.map(function (vertex) {
-        var points = vertex.split(' ').map(function(x){return parseInt(x);});
-        return new THREE.Vector3(points[0], points[1], points[2]);
-    });
-    geometry.computeBoundingBox();
-    geometry.faces.push(new THREE.Face3(0, 1, 2));
-    geometry.mergeVertices();
-    geometry.computeFaceNormals();
-    geometry.computeVertexNormals();
-    this.geometry = geometry;
+    var geometry = new THREE.BufferGeometry();
+     const pointsArray = new Array();
+     data.vertices.map(function (vertex) {
+     var points = vertex.split(' ').map(function(x){return parseInt(x);});
+     pointsArray.push(new THREE.Vector3(points[0], points[1], points[2]));
+     });
+     geometry.setFromPoints(pointsArray);
+     geometry.computeBoundingBox();
+     geometry.computeVertexNormals();
+     this.geometry = geometry;
   }
 });
 ```

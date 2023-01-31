@@ -1,4 +1,4 @@
-/* global AFRAME, assert, CustomEvent, process, sinon, setup, suite, teardown, test, THREE */
+/* global AFRAME, assert, CustomEvent, process, screen, sinon, setup, suite, teardown, test, THREE */
 var AScene = require('core/scene/a-scene').AScene;
 var components = require('core/component').components;
 var scenes = require('core/scene/scenes');
@@ -136,7 +136,15 @@ suite('a-scene (without renderer)', function () {
       var sceneEl = this.el;
 
       // Stub canvas.
-      sceneEl.canvas = document.createElement('canvas');
+      sceneEl.canvas = {
+        addEventListener: function () {},
+        removeEventListener: function () {},
+        requestFullscreen: function () {},
+        classList: {
+          add: function () {},
+          remove: function () {}
+        }
+      };
 
       // Stub renderer.
       sceneEl.renderer = {
@@ -146,6 +154,7 @@ suite('a-scene (without renderer)', function () {
           setPoseTarget: function () {},
           dispose: function () {}
         },
+        dispose: function () {},
         getContext: function () { return undefined; },
         setAnimationLoop: function () {},
         setPixelRatio: function () {},
@@ -157,13 +166,6 @@ suite('a-scene (without renderer)', function () {
       sceneEl.camera = {
         el: {object3D: {}},
         updateProjectionMatrix: function () {}
-      };
-
-      // mock canvas
-      sceneEl.canvas = {
-        addEventListener: function () {},
-        removeEventListener: function () {},
-        requestFullscreen: function () {}
       };
     });
 
@@ -180,6 +182,7 @@ suite('a-scene (without renderer)', function () {
     test('calls requestPresent if headset connected', function (done) {
       var sceneEl = this.el;
       this.sinon.stub(sceneEl, 'checkHeadsetConnected').returns(true);
+      window.hasNativeWebVRImplementation = false;
       sceneEl.enterVR().then(function () {
         assert.ok(sceneEl.renderer.xr.enabled);
         done();
@@ -187,9 +190,12 @@ suite('a-scene (without renderer)', function () {
     });
 
     test('calls requestPresent on mobile', function (done) {
+      // Fake the lock method otherwise we get "screen.orientation.lock() is not available on this device."
+      this.sinon.stub(screen.orientation, 'lock');
       var sceneEl = this.el;
       sceneEl.isMobile = true;
       sceneEl.enterVR().then(function () {
+        assert.ok(screen.orientation.lock.called);
         assert.ok(sceneEl.renderer.xr.enabled);
         done();
       });
@@ -198,6 +204,7 @@ suite('a-scene (without renderer)', function () {
     test('does not call requestPresent if flat desktop', function (done) {
       var sceneEl = this.el;
       this.sinon.stub(sceneEl, 'checkHeadsetConnected').returns(false);
+      window.hasNativeWebVRImplementation = false;
       sceneEl.enterVR().then(function () {
         assert.notOk(sceneEl.renderer.xr.enabled);
         done();
@@ -243,6 +250,7 @@ suite('a-scene (without renderer)', function () {
       }
 
       this.sinon.stub(sceneEl, 'checkHeadsetConnected').returns(false);
+      window.hasNativeWebVRImplementation = false;
       sceneEl.enterVR().then(function () {
         assert.ok(fullscreenSpy.called);
         done();
@@ -271,6 +279,8 @@ suite('a-scene (without renderer)', function () {
           setPoseTarget: function () {},
           dispose: function () {}
         },
+        dispose: function () {},
+        getContext: function () { return undefined; },
         setAnimationLoop: function () {},
         setPixelRatio: function () {},
         setSize: function () {},
@@ -299,6 +309,7 @@ suite('a-scene (without renderer)', function () {
     });
 
     test('calls exitPresent on mobile', function (done) {
+      this.sinon.stub(screen.orientation, 'lock');
       var sceneEl = this.el;
       sceneEl.isMobile = true;
       sceneEl.exitVR().then(function () {
@@ -312,6 +323,7 @@ suite('a-scene (without renderer)', function () {
       sceneEl.renderer.xr.enabled = true;
       sceneEl.isMobile = false;
       this.sinon.stub(sceneEl, 'checkHeadsetConnected').returns(false);
+      this.sinon.stub(sceneEl.canvas, 'requestFullscreen');
       sceneEl.exitVR().then(function () {
         assert.ok(sceneEl.renderer.xr.enabled);
         done();
@@ -445,6 +457,7 @@ suite('a-scene (without renderer)', function () {
           setDevice: function () {},
           dispose: function () {}
         },
+        dispose: function () {},
         setAnimationLoop: function () {},
         setSize: setSizeSpy,
         render: function () {}
@@ -495,7 +508,7 @@ suite('a-scene (without renderer)', function () {
       var event;
       var requestPointerLockSpy;
 
-      requestPointerLockSpy = this.sinon.spy(sceneEl.canvas, 'requestPointerLock');
+      requestPointerLockSpy = this.sinon.replace(sceneEl.canvas, 'requestPointerLock', sinon.fake(() => {}));
       event = new CustomEvent('vrdisplaypointerrestricted');
 
       sceneEl.addEventListener('loaded', () => {
@@ -516,7 +529,7 @@ suite('a-scene (without renderer)', function () {
 
       event = new CustomEvent('vrdisplaypointerunrestricted');
 
-      this.sinon.stub(sceneEl, 'getPointerLockElement', function () {
+      this.sinon.replace(sceneEl, 'getPointerLockElement', function () {
         return sceneEl.canvas;
       });
 
@@ -538,7 +551,7 @@ suite('a-scene (without renderer)', function () {
 
       event = new CustomEvent('vrdisplaypointerunrestricted');
 
-      this.sinon.stub(sceneEl, 'getPointerLockElement', function () {
+      this.sinon.replace(sceneEl, 'getPointerLockElement', function () {
         // Mock that pointerlock is taken by the page itself,
         // independently of the a-scene handler for vrdisplaypointerrestricted event
         return document.createElement('canvas');
@@ -559,10 +572,10 @@ suite('a-scene (without renderer)', function () {
       var requestPointerLockSpy;
 
       exitPointerLockSpy = this.sinon.spy(document, 'exitPointerLock');
-      requestPointerLockSpy = this.sinon.spy(sceneEl.canvas, 'requestPointerLock');
+      requestPointerLockSpy = this.sinon.replace(sceneEl.canvas, 'requestPointerLock', sinon.fake(() => {}));
       event = new CustomEvent('vrdisplaypointerrestricted');
 
-      this.sinon.stub(sceneEl, 'getPointerLockElement', function () {
+      this.sinon.replace(sceneEl, 'getPointerLockElement', function () {
         // Mock that pointerlock is taken by the page itself,
         // independently of the a-scene handler for vrdisplaypointerrestricted event
         return document.createElement('canvas');

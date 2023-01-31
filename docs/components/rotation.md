@@ -67,9 +67,9 @@ needing to create an object to set rotation:
 ```js
 // With three.js
 el.object3D.rotation.set(
-  THREE.Math.degToRad(15),
-  THREE.Math.degToRad(30),
-  THREE.Math.degToRad(90)
+  THREE.MathUtils.degToRad(15),
+  THREE.MathUtils.degToRad(30),
+  THREE.MathUtils.degToRad(90)
 );
 el.object3D.rotation.x += Math.PI;
 
@@ -81,7 +81,7 @@ el.setAttribute('rotation', {x: 15, y: 30, z: 90});
 
 Updates at the three.js level will still be reflected in A-Frame when doing
 `entityEl.getAttribute('rotation');`. When calling `.getAttribute('rotation')`,
-A-Frame will convert from radians and degrees and return a normal JavaScript
+A-Frame will convert from radians to degrees and return a normal JavaScript
 object with x/y/z properties.
 
 See also [reading position and rotation of the camera](./camera.md#reading-position-or-rotation-of-the-camera).

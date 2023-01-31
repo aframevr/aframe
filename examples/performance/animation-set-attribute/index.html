@@ -29,7 +29,7 @@
               fanEl.setAttribute('mixin', 'spinAnimation');
               for (let i = 0; i < numRows; ++i) {
                 let rowEl = document.createElement('a-entity');
-                rowEl.object3D.rotation.z = THREE.Math.degToRad(i * (180 / numRows));
+                rowEl.object3D.rotation.z = THREE.MathUtils.degToRad(i * (180 / numRows));
                 for (let j = 0; j < numBalls; ++j) {
                   let offset = ballInitX + 3 * j;
                   if (offset === 0) { continue; }

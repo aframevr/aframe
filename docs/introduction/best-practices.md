@@ -64,7 +64,7 @@ purpose of using A-Frame.
 
 [animation]: ../components/animation.md#direct-values-through-object3d-and-components
 [asm]: ../core/asset-management-system.md
-[hardware]: ./vr-headsets-and-webvr-browsers.md
+[hardware]: ./vr-headsets-and-webxr-browsers.md
 [stats]: ../components/stats.md
 [pool]: ../components/pool.md
 [background]: ../components/background.md
@@ -106,7 +106,7 @@ an A-Frame scene:
 - Use the **[background component][background]** instead of `a-sky` to define a
   solid color as the scene background. This prevents the creation of
   unnecessary geometry.
-- Update `position`, `rotation`, `scale`, and `visible` using at the three.js
+- Update `position`, `rotation`, `scale`, and `visible` at the three.js
   level (`el.object3D.position`, `el.object3D.rotation`, `el.object3D.scale`,
   `el.object3D.visible`) to avoid overhead on `.setAttribute`.
 - If you need to create, remove and re-create many entities of the same type,

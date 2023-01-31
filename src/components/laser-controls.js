@@ -26,7 +26,7 @@ registerComponent('laser-controls', {
     el.setAttribute('vive-controls', controlsConfiguration);
     el.setAttribute('vive-focus-controls', controlsConfiguration);
     el.setAttribute('windows-motion-controls', controlsConfiguration);
-    el.setAttribute('generic-tracked-controller-controls', controlsConfiguration);
+    el.setAttribute('generic-tracked-controller-controls', {hand: controlsConfiguration.hand});
 
     // Wait for controller to connect, or have a valid pointing pose, before creating ray
     el.addEventListener('controllerconnected', createRay);

@@ -1,13 +1,13 @@
 /* global assert, process, setup, suite, test */
-const entityFactory = require('../helpers').entityFactory;
+var elFactory = require('../helpers').elFactory;
 
 suite('tracked-controls', function () {
   var el;
 
   setup(function (done) {
-    el = entityFactory();
-    setTimeout(() => {
-      el.sceneEl.addEventListener('loaded', function () { done(); });
+    elFactory().then(_el => {
+      el = _el;
+      done();
     });
   });
 

@@ -48,7 +48,7 @@ var Component = module.exports.Component = function (el, attrValue, id) {
   this.el.components[this.attrName] = this;
   this.objectPool = objectPools[this.name];
 
-  const events = this.events;
+  var events = this.events;
   this.events = {};
   eventsBind(this, events);
 
@@ -72,7 +72,10 @@ var Component = module.exports.Component = function (el, attrValue, id) {
   }
 
   // Last value passed to updateProperties.
-  this.throttledEmitComponentChanged = utils.throttleComponentChanged(function emitChange () {
+  // This type of throttle ensures that when a burst of changes occurs, the final change to the
+  // component always triggers an event (so a consumer of this event will end up reading the correct
+  // final state, following a burst of changes).
+  this.throttledEmitComponentChanged = utils.throttleLeadingAndTrailing(function emitChange () {
     el.emit('componentchanged', self.evtDetail, false);
   }, 200);
   this.updateProperties(attrValue);
