@@ -37,9 +37,13 @@ setup(function () {
       getDevice: function () { return {requestPresent: function () {}}; },
       isPresenting: function () { return true; },
       setDevice: function () {},
+      setSession: function () {
+        return Promise.resolve();
+      },
       setFoveation: function () {},
       setPoseTarget: function () {},
       dispose: function () {},
+      setReferenceSpaceType: function () {},
       enabled: false
     },
     dispose: function () {},
