@@ -42,6 +42,10 @@ xrSession.end = function () {
  *  - reset xrSession to undefined
  */
 suite('a-scene (without renderer) - WebXR', function () {
+  // Some browsers (e.g. Firefox as of Feb 2023) don't support WebXR.
+  // For these browsers, skip these tests.
+  if (!navigator.xr) return;
+
   setup(function (done) {
     var el = this.el = document.createElement('a-scene');
     el.hasWebXR = true;
