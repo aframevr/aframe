@@ -94,10 +94,10 @@ creating a child entity it targets. For example, pointing down its -Z axis:
 Directional lights are the most efficient type for adding realtime shadows to a scene. You can use shadows like so:
 
 ```html
-<a-light type="directional" light="castShadow:true;" position="1 1 1" intensity="0.5" shdadow-camera-automatic="#objects"></a-light>
+<a-light type="directional" light="castShadow:true;" position="1 1 1" intensity="0.5" shadow-camera-automatic="#objects"></a-light>
 ```
 
-The `shdadow-camera-automatic` configuration maps to `light.shadowCameraAutomatic` which tells the light to automatically update the shadow camera to be the minimum size and position to encompass the target elements. 
+The `shadow-camera-automatic` configuration maps to `light.shadowCameraAutomatic` which tells the light to automatically update the shadow camera to be the minimum size and position to encompass the target elements. 
 
 ### Hemisphere
 
