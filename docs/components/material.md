@@ -90,6 +90,9 @@ A-Frame ships with a couple of built-in materials.
 ### `standard`
 
 [threestandardmaterial]: https://threejs.org/docs/#api/materials/MeshStandardMaterial
+[a-cubemap]: ../primitives/a-cubemap.md
+
+[envMaps]: #environment-maps
 
 The `standard` material is the default material. It uses the physically-based
 [THREE.MeshStandardMaterial][threestandardmaterial].
@@ -113,7 +116,7 @@ These properties are available on top of the base material properties.
 | emissive                      | The color of the emissive lighting component. Used to make objects produce light even without other lighting in the scene.                      | #000          |
 | emissiveIntensity             | Intensity of the emissive lighting component.                                                                                                   | 1             |
 | height                        | Height of video (in pixels), if defining a video texture.                                                                                       | 360           |
-| envMap                        | Environment cubemap texture for reflections. Can be a selector to <a-cubemap> or a comma-separated list of URLs.                                | None          |
+| envMap                        | Environment cubemap texture for reflections. Can be a selector to [<a-cubemap>][a-cubemap] or a comma-separated list of URLs.  See [below][envMaps] for more detail.| None          |
 | fog                           | Whether or not material is affected by [fog][fog].                                                                                              | true          |
 | metalness                     | How metallic the material is from `0` to `1`.                                                                                                   | 0             |
 | normalMap                     | Normal map. Used to add the illusion of complex detail. Can either be a selector to an `<img>`, or an inline URL.                               | None          |
@@ -216,6 +219,22 @@ For example:
   <a-entity geometry="primitive: box" material="envMap: #sky; roughness: 0"></a-entity>
 </a-scene>
 ```
+
+Alternatively, you can include the URLs for the cubemap images directly in the material component like this:
+
+```html
+<a-entity geometry="primitive: box"
+          material="envMap: url(right.png),
+                            url(left.png), 
+                            url(top.png), 
+                            url(bottom.png),
+                            url(front.png),
+                            url(back.png);
+                    roughness: 0">
+</a-entity>
+```
+
+
 
 ### `flat`
 
