@@ -1,4 +1,4 @@
-/* global assert, process, suite, test */
+/* global assert, process, setup, suite, test */
 suite('a-cubemap', function () {
   suite('valid cubemap', function () {
     // Due to limitations in karma / mocha, this test does not perfectly simulate
@@ -12,9 +12,18 @@ suite('a-cubemap', function () {
     //
     // This means we have no way to create a Unit Test that reproduces the problems
     // observed in issue #5230.
-    test('is a valid cubemap usable as an envMap', function (done) {
-      document.body.innerHTML = `
-      <a-scene>
+    setup(function (done) {
+      var sceneEl = this.sceneEl = document.createElement('a-scene');
+      document.body.appendChild(sceneEl);
+      if (sceneEl.hasLoaded) { done(); }
+      sceneEl.addEventListener('loaded', function () {
+        done();
+      });
+    });
+
+    test('a valid cubemap is usable as an envMap', function (done) {
+      var sceneEl = this.sceneEl;
+      sceneEl.innerHTML = `
         <a-assets>
           <a-cubemap id="reflection">
             <img src="base/tests/assets/test.png">
@@ -29,10 +38,9 @@ suite('a-cubemap', function () {
         <!-- Sphere with reflection. -->
         <a-sphere position="0 1 -2"
                   material="envMap:#reflection">
-        </a-sphere>
-      </a-scene>`;
+        </a-sphere>`;
 
-      document.body.addEventListener('materialtextureloaded', function () {
+      sceneEl.addEventListener('materialtextureloaded', function () {
         const sphere = document.querySelector('a-sphere');
         const material = sphere.components.material.material;
         assert.isDefined(material.envMap);
@@ -41,8 +49,8 @@ suite('a-cubemap', function () {
     });
 
     test('cubemap images can be specified directly in envMap property', function (done) {
-      document.body.innerHTML = `
-      <a-scene>
+      var sceneEl = this.sceneEl;
+      sceneEl.innerHTML = `
         <a-sphere position="0 1 -2"
                   material="envMap:url(base/tests/assets/test.png),
                                    url(base/tests/assets/test.png),
@@ -50,10 +58,9 @@ suite('a-cubemap', function () {
                                    url(base/tests/assets/test.png),
                                    url(base/tests/assets/test.png),
                                    url(base/tests/assets/test.png)">
-        </a-sphere>
-      </a-scene>`;
+        </a-sphere>`;
 
-      document.body.addEventListener('materialtextureloaded', function () {
+      sceneEl.addEventListener('materialtextureloaded', function () {
         const sphere = document.querySelector('a-sphere');
         const material = sphere.components.material.material;
         assert.isDefined(material.envMap);
