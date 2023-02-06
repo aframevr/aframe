@@ -1,14 +1,17 @@
 /* global assert, process, suite, test */
 suite('a-cubemap', function () {
   suite('valid cubemap', function () {
-    // This test is problematic - it runs against A-Frame 1.4.1 successfully
-    // even though a-cubemap doesn't run on A-Frame 1.4.1 in production.
-    // In production, when validate() is invoked in a-cubemap, the children
-    // have not yet been created, and cubemap validation fails.
-
-    // I've not yet been able to reproduce that problem with a Unit Test,
-    // presumably due to subtle differences in sequences when loading a page
-    // vs adding to the body innerHTML.
+    // Due to limitations in karma / mocha, this test does not perfectly simulate
+    // loading of a scene containing an a-cubemap.
+    //
+    // Specifically: in production the a-cubemap is created while the document.readyState is "loading"
+    // and at this point the cubemap does not have children.
+    // In karma / mocha tests, the document.readyState is already set to "complete" before
+    // tests start to run, and we don't have any means of changing that, or simulating the
+    // DOMContentLoaded event.
+    //
+    // This means we have no way to create a Unit Test that reproduces the problems
+    // observed in issue #5230.
     test('is a valid cubemap usable as an envMap', function (done) {
       document.body.innerHTML = `
       <a-scene>
