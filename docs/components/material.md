@@ -191,6 +191,8 @@ There are three properties which give the illusion of complex geometry:
 
 #### Environment Maps
 
+[cubemap]: ../primitives/a-cubemap.md
+
 The `envMap` and `sphericalEnvMap` properties define what environment
 the material reflects. The clarity of the environment reflection depends
 on the `metalness`, and `roughness` properties.
@@ -198,7 +200,7 @@ on the `metalness`, and `roughness` properties.
 The `sphericalEnvMap` property takes a single spherical mapped
 texture. Of the kind you would assign to a `<a-sky>`.
 
-Unlike textures, the `envMap` property takes a cubemap, six images put together
+Unlike textures, the `envMap` property takes a [cubemap][cubemap], six images put together
 to form a cube. The cubemap wraps around the mesh and applied as a texture.
 
 For example:
