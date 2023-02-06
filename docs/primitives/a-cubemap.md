@@ -3,7 +3,7 @@ title: <a-cubemap>
 type: primitives
 layout: docs
 parent_section: primitives
-source_code: src/extras/primitives/primitives/a-image.js
+source_code: src/core/a-cubemap.js
 ---
 
 [material]: ../components/material.md#environment-maps
