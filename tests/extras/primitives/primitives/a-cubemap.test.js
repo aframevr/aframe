@@ -39,5 +39,26 @@ suite('a-cubemap', function () {
         done();
       });
     });
+
+    test('cubemap images can be specified directly in envMap property', function (done) {
+      document.body.innerHTML = `
+      <a-scene>
+        <a-sphere position="0 1 -2"
+                  material="envMap:url(base/tests/assets/test.png),
+                                   url(base/tests/assets/test.png),
+                                   url(base/tests/assets/test.png),
+                                   url(base/tests/assets/test.png),
+                                   url(base/tests/assets/test.png),
+                                   url(base/tests/assets/test.png)">
+        </a-sphere>
+      </a-scene>`;
+
+      document.body.addEventListener('materialtextureloaded', function () {
+        const sphere = document.querySelector('a-sphere');
+        const material = sphere.components.material.material;
+        assert.isDefined(material.envMap);
+        done();
+      });
+    });
   });
 });
