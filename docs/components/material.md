@@ -58,22 +58,22 @@ Here is an example of using an example custom material:
 The material component has some base properties. More properties are available
 depending on the material type applied.
 
-| Property     | Description                                                                                                                                       | Default Value |
-|--------------|---------------------------------------------------------------------------------------------------------------------------------------------------|---------------|
-| alphaTest    | Alpha test threshold for transparency.                                                                                                            | 0             |
-| depthTest    | Whether depth testing is enabled when rendering the material.                                                                                     | true          |
-| flatShading  | Use `THREE.FlatShading` rather than `THREE.StandardShading`.                                                                                      | false         |
-| npot         | Use settings for non-power-of-two (NPOT) texture.                                                                                                 | false         |
-| offset       | Texture offset to be used.                                                                                                                        | {x: 0, y: 0}  |
-| opacity      | Extent of transparency. If the `transparent` property is not `true`, then the material will remain opaque and `opacity` will only affect color.   | 1.0           |
-| repeat       | Texture repeat to be used.                                                                                                                        | {x: 1, y: 1}  |
+| Property     | Description                                                                                                                                              | Default Value |
+|--------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|---------------|
+| alphaTest    | Alpha test threshold for transparency.                                                                                                                   | 0             |
+| depthTest    | Whether depth testing is enabled when rendering the material.                                                                                            | true          |
+| flatShading  | Use `THREE.FlatShading` rather than `THREE.StandardShading`.                                                                                             | false         |
+| npot         | Use settings for non-power-of-two (NPOT) texture.                                                                                                        | false         |
+| offset       | Texture offset to be used.                                                                                                                               | {x: 0, y: 0}  |
+| opacity      | Extent of transparency. If the `transparent` property is not `true`, then the material will remain opaque and `opacity` will only affect color.          | 1.0           |
+| repeat       | Texture repeat to be used.                                                                                                                               | {x: 1, y: 1}  |
 | shader       | Which material to use. Defaults to the [standard material][standard]. Can be set to the [flat material][flat] or to a registered custom shader material. | standard      |
-| side         | Which sides of the mesh to render. Can be one of `front`, `back`, or `double`.                                                                    | front         |
-| transparent  | Whether material is transparent. Transparent entities are rendered after non-transparent entities.                                                | false         |
-| vertexColors | Whether to use vertex or face colors to shade the material. Can be one of `none`, `vertex`, or `face`.                                            | none          |
-| visible      | Whether material is visible. Raycasters will ignore invisible materials.                                                                          | true          |
-| blending     | The blending mode for the material's RGB and Alpha sent to the WebGLRenderer. Can be one of `none`, `normal`, `additive`, `subtractive` or `multiply`.  | normal          |
-| dithering    | Whether material is dithered with noise. Removes banding from gradients like ones produced by lighting.                                           | true          |
+| side         | Which sides of the mesh to render. Can be one of `front`, `back`, or `double`.                                                                           | front         |
+| transparent  | Whether material is transparent. Transparent entities are rendered after non-transparent entities.                                                       | false         |
+| vertexColors | Whether to use vertex or face colors to shade the material. Can be one of `none`, `vertex`, or `face`.                                                   | none          |
+| visible      | Whether material is visible. Raycasters will ignore invisible materials.                                                                                 | true          |
+| blending     | The blending mode for the material's RGB and Alpha sent to the WebGLRenderer. Can be one of `none`, `normal`, `additive`, `subtractive` or `multiply`.   | normal        |
+| dithering    | Whether material is dithered with noise. Removes banding from gradients like ones produced by lighting.                                                  | true          |
 
 ## Events
 
@@ -236,8 +236,6 @@ Alternatively, you can include the URLs for the cubemap images directly in the m
 </a-entity>
 ```
 
-
-
 ### `flat`
 
 [basic]: https://threejs.org/docs/#api/materials/MeshBasicMaterial
@@ -252,17 +250,17 @@ such as images or videos. Set `shader` to `flat`:
 
 #### Properties
 
-| Property             | Description                                                                                                                          | Default Value |
-|-----------|-------------------------------------------------------------------------------------------------------------------------------------------------|---------------|
-| color                | Base diffuse color.                                                                                                                  | #fff          |
-| fog                  | Whether or not material is affected by [fog][fog].                                                                                   | true          |
-| height               | Height of video (in pixels), if defining a video texture.                                                                            | 360           |
-| repeat               | How many times a texture (defined by `src`) repeats in the X and Y direction.                                                        | 1 1           |
-| src                  | Image or video texture map. Can either be a selector to an `<img>` or `<video>`, or an inline URL.                                   | None          |
-| toneMapped           | Whether to ignore toneMapping, set to false you are using renderer.toneMapping and an element should appear to emit light.           | true          |
-| width                | Width of video (in pixels), if defining a video texture.                                                                             | 640           |
-| wireframe            | Whether to render just the geometry edges.                                                                                           | false         |
-| wireframeLinewidth   | Width in px of the rendered line.                                                                                                    | 2             |
+| Property           | Description                                                                                                                | Default Value |
+|--------------------|----------------------------------------------------------------------------------------------------------------------------|---------------|
+| color              | Base diffuse color.                                                                                                        | #fff          |
+| fog                | Whether or not material is affected by [fog][fog].                                                                         | true          |
+| height             | Height of video (in pixels), if defining a video texture.                                                                  | 360           |
+| repeat             | How many times a texture (defined by `src`) repeats in the X and Y direction.                                              | 1 1           |
+| src                | Image or video texture map. Can either be a selector to an `<img>` or `<video>`, or an inline URL.                         | None          |
+| toneMapped         | Whether to ignore toneMapping, set to false you are using renderer.toneMapping and an element should appear to emit light. | true          |
+| width              | Width of video (in pixels), if defining a video texture.                                                                   | 640           |
+| wireframe          | Whether to render just the geometry edges.                                                                                 | false         |
+| wireframeLinewidth | Width in px of the rendered line.                                                                                          | 2             |
 
 ## Textures
 

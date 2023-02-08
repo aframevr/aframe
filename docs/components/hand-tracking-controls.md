@@ -20,10 +20,10 @@ Use `hand-tracking-controls` to integrate [hand tracked input][webxrhandinput] i
 
 ## Properties
 
-| Property       | Description                                                                            | Default Value |
-|----------------|----------------------------------------------------------------------------------------|---------------|
-| hand                 | The hand that will be tracked (i.e., right, left). | left                 |
-| modelColor          | Color of hand material.                                                                | white         |
+| Property   | Description                                        | Default Value |
+|------------|----------------------------------------------------|---------------|
+| hand       | The hand that will be tracked (i.e., right, left). | left          |
+| modelColor | Color of hand material.                            | white         |
 | modelStyle           | Mesh representing the hand or dots matching the joints        | mesh
 
 ## Events

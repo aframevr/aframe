@@ -142,11 +142,11 @@ When using glTF models compressed with Draco, KTX2 or Meshopt, you must configur
 </a-scene>
 ```
 
-| Property         | Description                                                                                                                                                                                           | Default Value                       |
-|------------------|--------------------------------------|----|
-| dracoDecoderPath | Path to the Draco decoder libraries. | 'https://www.gstatic.com/draco/versioned/decoders/1.5.5/' |
-| basisTranscoderPath | Path to the basis/KTX2 transcoder libraries. | '' |
-| meshoptDecoderPath | Path to the Meshopt decoder.       | '' |
+| Property            | Description                                  | Default Value                                             |
+|---------------------|----------------------------------------------|-----------------------------------------------------------|
+| dracoDecoderPath    | Path to the Draco decoder libraries.         | 'https://www.gstatic.com/draco/versioned/decoders/1.5.5/' |
+| basisTranscoderPath | Path to the basis/KTX2 transcoder libraries. | ''                                                        |
+| meshoptDecoderPath  | Path to the Meshopt decoder.                 | ''                                                        |
 
 `dracoDecoderPath` path must be a folder containing three files:
 

@@ -17,7 +17,6 @@ examples:
    src: https://glitch.com/edit/#!/ex-2c-animating-shapes?path=index.html:1:0
  - title: Animating Shapes with Components
    src: https://glitch.com/edit/#!/ex-2d-animating-shapes-with-components?path=index.html:1:0
-
 ---
 
 The geometry component provides a basic shape for an entity. The `primitive`
@@ -27,9 +26,7 @@ provide an appearance alongside the shape to create a complete mesh.
 
 <!--toc-->
 
-## Base Properties
-
-Every geometry type will have these properties:
+## Properties
 
 | Property  | Description                                                                                                                          | Default Value |
 |-----------|--------------------------------------------------------------------------------------------------------------------------------------|---------------|

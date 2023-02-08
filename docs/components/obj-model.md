@@ -29,10 +29,10 @@ We can load an .OBJ model by pointing to assets that specify the path to an .OBJ
 
 ## Properties
 
-| Property   | Description                                                                                                                                                       |
-| ---------- | -------------------------------------------------------------------------------------------                                                                       |
-| obj        | Selector to an `<a-asset-item>` pointing to a .OBJ file or an inline path to a .OBJ file.                                                                         |
-| mtl        | Selector to an `<a-asset-item>` pointing to a .MTL file or an inline path to a .MTL file. Optional if you wish to use the [material component][material] instead. |
+| Property | Description                                                                                                                                                       |
+|----------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| obj      | Selector to an `<a-asset-item>` pointing to a .OBJ file or an inline path to a .OBJ file.                                                                         |
+| mtl      | Selector to an `<a-asset-item>` pointing to a .MTL file or an inline path to a .MTL file. Optional if you wish to use the [material component][material] instead. |
 
 ## Events
 

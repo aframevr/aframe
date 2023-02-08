@@ -37,8 +37,8 @@ console.log(el.getObject3D('line__2'));
 
 | Property | Description                   | Default Value |
 |----------|-------------------------------|---------------|
-| start    | Start point coordinate.       | 0 0 0       |
-| end      | End coordinate.               | 0 0 0       |
+| start    | Start point coordinate.       | 0 0 0         |
+| end      | End coordinate.               | 0 0 0         |
 | color    | Line color.                   | #74BEC1       |
 | opacity  | Line opacity.                 | 1             |
 | visible  | Whether the material visible. | true          |

@@ -43,8 +43,8 @@ The shadow system exposes scene-level properties for configuring the renderer
 for shadows. These are set on `<a-scene>` (e.g., `<a-scene shadow="autoUpdate:
   false">`).
 
-| Property           | Description                                                                                                                                                                                           | Default Value                       |
-|--------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------|
-| enabled            | Whether to disable shadows globally, even if there is a shadow component and a light with `castShadow: true` enabled.                                                                                 | true                                |
-| autoUpdate         | Whether to dynamically update the shadow map every frame. Disable and manually update by setting `renderer.shadowMap.needsUpdate = true` for best performance. Calculating shadow maps is expensive. | true                                |
-| type               | Shadow type. One of `pcf`, `basic`, `pcfsoft`.                                                                                                                                                        | `pcf` (percentage closer filtering) |
+| Property   | Description                                                                                                                                                                                          | Default Value                       |
+|------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------|
+| enabled    | Whether to disable shadows globally, even if there is a shadow component and a light with `castShadow: true` enabled.                                                                                | true                                |
+| autoUpdate | Whether to dynamically update the shadow map every frame. Disable and manually update by setting `renderer.shadowMap.needsUpdate = true` for best performance. Calculating shadow maps is expensive. | true                                |
+| type       | Shadow type. One of `pcf`, `basic`, `pcfsoft`.                                                                                                                                                       | `pcf` (percentage closer filtering) |

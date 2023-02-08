@@ -54,16 +54,16 @@ so using idPrefix for Vive / OpenVR controllers is recommended.
 
 ## Events
 
-| Event Name    | Description                                                                                                                                                                       |
-|---------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| controllerconnected    | Controller connected and set up.          |
-| controllerdisconnected | Controller disconnected.               |
+| Event Name             | Description                                                                                                                                                                       |
+|------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| controllerconnected    | Controller connected and set up.                                                                                                                                                  |
+| controllerdisconnected | Controller disconnected.                                                                                                                                                          |
 | axismove               | Axis changed (e.g., for thumbstick, touchpad). Contains `axis` and `axesChanged` in the event detail. `axis` is an array of values from `-1.0` (left, down) to `1.0` (right, up). |
-| buttonchanged          | Any touch or press of a button fires this.                                                                                                                                         |
+| buttonchanged          | Any touch or press of a button fires this.                                                                                                                                        |
 | buttondown             | Button pressed.                                                                                                                                                                   |
-| buttonup               | Button released.                                                                                                                                                                   |
+| buttonup               | Button released.                                                                                                                                                                  |
 | touchstart             | Touch sensitive button touched.                                                                                                                                                   |
-| touchend               | Touch sensitive button released.                                                                                                                                                   |
+| touchend               | Touch sensitive button released.                                                                                                                                                  |
 
 ### More Resources
 

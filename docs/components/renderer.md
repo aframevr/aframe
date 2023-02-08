@@ -70,9 +70,9 @@ This requires support for  `supportedFrameRates` and `updateTargetFrameRate` as 
 
 Frame rates used are as follows:
 
-| Device capabilities                                          | Default Frame Rate | High Frame Rate |
-| ------------------------------------------------------------ | ------------------ | --------------- |
-| Device supports 90Hz refresh rate (e.g. Quest 2, Quest Pro)  | 72 Hz              | 90 Hz           |
+| Device capabilities                                               | Default Frame Rate | High Frame Rate |
+|-------------------------------------------------------------------|--------------------|-----------------|
+| Device supports 90Hz refresh rate (e.g. Quest 2, Quest Pro)       | 72 Hz              | 90 Hz           |
 | Device does not support 90Hz refresh rate (e.g. Oculus Go, Quest) | 60Hz               | 72Hz            |
 
 ### foveationLevel
