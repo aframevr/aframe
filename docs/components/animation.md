@@ -43,7 +43,7 @@ different types of values.
 
 <!--toc-->
 
-### Properties
+## Properties
 
 | Property      | Description                                                                                                                                                                                                                                                                                                                                       | Default Value | Values                  |
 |---------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------|-------------------------|
@@ -65,7 +65,7 @@ different types of values.
 | autoplay      | Whether or not the animation should `autoplay`. Should be specified if the animation is defined for the [`animation-timeline` component][animationtimeline].                                                                                                                                                                                      | true          |                         |
 | enabled       | If disabled, animation will stop and startEvents will not trigger animation start.                                                                                                                                                                                                                                                                                                                        | true          |
 
-### Multiple Animations
+## Multiple Animations
 
 The component's base name is `animation`. We can attach multiple animations to
 one entity by name-spacing the component with double underscores (`__`):
@@ -76,7 +76,7 @@ one entity by name-spacing the component with double underscores (`__`):
           animation__color="property: material.color"></a-entity>
 ```
 
-### Easings
+## Easings
 
 Easings define the accelerations and speed throughout the cycle of the
 animation.
@@ -93,7 +93,7 @@ animation.
 | easeInBack    | easeOutBack    | easeInOutBack    |        |
 | easeInElastic | easeOutElastic | easeInOutElastic |        |
 
-### Events
+## Events
 
 | Property                | Description                                                            |
 | --------                | -----------                                                            |
@@ -101,7 +101,7 @@ animation.
 | animationcomplete       | Animation completed. Event detail contains `name` of animation.        |
 | animationcomplete__<id> | Animation completed if animation has an ID (e.g., `animation__click`). |
 
-### Members
+## Members
 
 Accessed as `el.components.animation.<MEMBER>`.
 
@@ -110,7 +110,7 @@ Accessed as `el.components.animation.<MEMBER>`.
 | animation | anime.js object.           |
 | config    | Config passed to anime.js. |
 
-### Controlling Animations using setAttribute
+## Controlling Animations using setAttribute
 
 Like any A-Frame component, the animation component can be configured from JavaScript by calling [setAttribute()]( https://aframe.io/docs/1.4.0/introduction/javascript-events-dom-apis.html#updating-a-component-with-setattribute) on an element.
 
