@@ -4,7 +4,6 @@ type: components
 layout: docs
 parent_section: components
 source_code: src/components/vive-focus-controls.js
-
 examples: []
 ---
 

@@ -4,6 +4,7 @@ type: components
 layout: docs
 parent_section: components
 source_code: src/components/scene/device-orientation-permission-ui.js
+examples: []
 ---
 
 Starting with Safari on iOS 13 browsers require sites to be served over `https` and request user permission to access DeviceOrientation events. This component presents a permission dialog for the user to grant or deny access.

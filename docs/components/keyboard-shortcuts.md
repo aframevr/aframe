@@ -4,6 +4,7 @@ type: components
 layout: docs
 parent_section: components
 source_code: src/components/scene/keyboard-shortcuts.js
+examples: []
 ---
 
 [scene]: ../core/scene.md

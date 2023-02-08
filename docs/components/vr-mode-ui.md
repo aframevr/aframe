@@ -4,6 +4,7 @@ type: components
 layout: docs
 parent_section: components
 source_code: src/components/scene/vr-mode-ui.js
+examples: []
 ---
 
 The vr-mode-ui component allows disabling of UI such as an Enter VR button, compatibility
