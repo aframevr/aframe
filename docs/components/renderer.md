@@ -106,7 +106,9 @@ large differences of scale and distance.
 
 ### Precision
 
-Set precision in fragment shaders. Main use is to address issues in older hardware / drivers. Adreno 300 series GPU based phones are [particularly problematic](https://github.com/mrdoob/three.js/issues/14137). You can set to `mediump` as a workaround. It will improve performance, in mobile in particular but be aware that might cause visual artifacts in shaders / textures.
+Set precision in fragment shaders. Main use is to address issues in older hardware / drivers. Adreno 300 series GPU based phones are [particularly problematic](https://github.com/mrdoob/three.js/issues/14137). You can set to `mediump` as a workaround. It will improve performance, in mobile in particular but be aware that might cause visual artifacts in shaders / textures. 
+
+> **NOTE:** Reportedly, some Android models (e.g. Huawei p30 lite, Samsung Galaxy 7, 6 and A5) show up faulty rendering of lighting / shadows when precision is set to `medium`, but work properly with precision set to `high`. So, possibly a device-specific precision setting might come in useful for broadest device support.
 
 ### alpha
 
