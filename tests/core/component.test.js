@@ -833,10 +833,23 @@ suite('Component', function () {
         schema: {list: {default: ['a']}}
       });
       var component = new TestComponent(this.el);
+      assert.deepEqual(component.data.list, ['a']);
       component.update = updateStub;
       component.updateProperties({list: ['b']});
       component.updateProperties({list: ['b']});
       sinon.assert.calledOnce(updateStub);
+      assert.deepEqual(component.data.list, ['b']);
+    });
+
+    test('supports array property in single property schema', function () {
+      registerComponent('dummy', {
+        schema: {
+          schema: {default: ['a']}
+        }
+      });
+      var el = document.createElement('a-entity');
+      el.setAttribute('dummy', ['b']);
+      assert.deepEqual(el.components.dummy.data, ['b']);
     });
 
     test('emit componentchanged when update calls setAttribute', function (done) {
