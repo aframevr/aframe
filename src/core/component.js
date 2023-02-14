@@ -204,7 +204,9 @@ Component.prototype = {
       return;
     }
 
-    if (value instanceof Object && !(value instanceof window.HTMLElement)) {
+    if ((value instanceof Object) &&
+        !(value instanceof Array) &&
+        !(value instanceof window.HTMLElement)) {
       // If value is an object, copy it to our pooled newAttrValue object to use to update
       // the attrValue.
       tempObject = this.objectPool.use();
