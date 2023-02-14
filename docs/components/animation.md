@@ -1,5 +1,5 @@
 ---
-title: Animation
+title: animation
 type: components
 layout: docs
 parent_section: components
