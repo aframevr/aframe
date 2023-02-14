@@ -920,6 +920,37 @@ suite('Component', function () {
       component.updateProperties({list: ['b']});
       component.updateProperties({list: ['b']});
       sinon.assert.calledOnce(updateStub);
+      assert.deepEqual(component.data.list, ['b']);
+    });
+
+    test('supports array property on entity creation', function (done) {
+      entityFactory();
+      registerComponent('dummy', {
+        schema: { list: {type: 'array', default: ['a']} }
+      });
+      var scene = document.querySelector('a-scene');
+      var el2 = document.createElement('a-entity');
+      el2.setAttribute('dummy', { list: ['b', 'c', 'd'] });
+      el2.addEventListener('componentinitialized', evt => {
+        assert.deepEqual(el2.components.dummy.data.list, ['b', 'c', 'd']);
+        done();
+      });
+      scene.appendChild(el2);
+    });
+
+    test('supports array property in single property schema on entity creation', function (done) {
+      entityFactory();
+      registerComponent('dummy', {
+        schema: {type: 'array', default: ['a']}
+      });
+      var scene = document.querySelector('a-scene');
+      var el2 = document.createElement('a-entity');
+      el2.setAttribute('dummy', ['b', 'c', 'd']);
+      el2.addEventListener('componentinitialized', () => {
+        assert.deepEqual(el2.components.dummy.data, ['b', 'c', 'd']);
+        done();
+      });
+      scene.appendChild(el2);
     });
 
     test('emit componentchanged when update calls setAttribute', function (done) {
