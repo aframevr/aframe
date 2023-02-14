@@ -841,15 +841,34 @@ suite('Component', function () {
       assert.deepEqual(component.data.list, ['b']);
     });
 
-    test('supports array property in single property schema', function () {
+    test('supports array property on entity creation', function (done) {
+      entityFactory();
       registerComponent('dummy', {
-        schema: {
-          schema: {default: ['a']}
-        }
+        schema: { list: {type: 'array', default: ['a']} }
       });
-      var el = document.createElement('a-entity');
-      el.setAttribute('dummy', ['b']);
-      assert.deepEqual(el.components.dummy.data, ['b']);
+      var scene = document.querySelector('a-scene');
+      var el2 = document.createElement('a-entity');
+      el2.setAttribute('dummy', { list: ['b', 'c', 'd'] });
+      el2.addEventListener('componentinitialized', evt => {
+        assert.deepEqual(el2.components.dummy.data.list, ['b', 'c', 'd']);
+        done();
+      });
+      scene.appendChild(el2);
+    });
+
+    test('supports array property in single property schema on entity creation', function (done) {
+      entityFactory();
+      registerComponent('dummy', {
+        schema: {type: 'array', default: ['a']}
+      });
+      var scene = document.querySelector('a-scene');
+      var el2 = document.createElement('a-entity');
+      el2.setAttribute('dummy', ['b', 'c', 'd']);
+      el2.addEventListener('componentinitialized', () => {
+        assert.deepEqual(el2.components.dummy.data, ['b', 'c', 'd']);
+        done();
+      });
+      scene.appendChild(el2);
     });
 
     test('emit componentchanged when update calls setAttribute', function (done) {
