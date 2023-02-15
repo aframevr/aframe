@@ -594,37 +594,6 @@ by suffixing the attribute name with `__<ID>`:
   animation__mouseleave="property: scale; to: 2 2 2; dur: 300; startEvents: mouseleave"></a-box>
 ```
 
-## Adding Audio
-
-Audio is important for providing immersion and presence in VR. Even adding
-simple white noise in the background goes a long way. We recommend having some
-audio for every scene. One way would be to add an `<audio>` element to our
-HTML (preferably under `<a-assets>`) to play an audio file:
-
-```html
-<a-scene>
-  <a-assets>
-    <audio src="https://cdn.aframe.io/basic-guide/audio/backgroundnoise.wav" autoplay
-      preload></audio>
-  </a-assets>
-
-  <!-- ... -->
-</a-scene>
-```
-
-Or we can add positional audio using `<a-sound>`. This makes the sound get
-louder as we approach it and get softer as we distance from it. We could place
-the sound in our scene using `position`.
-
-```html
-<a-scene>
-  <!-- ... -->
-  <a-sound src="https://cdn.aframe.io/basic-guide/audio/backgroundnoise.wav" autoplay="true"
-    position="-3 1 -4"></a-sound>
-  <!-- ... -->
-</a-scene>
-```
-
 ## Adding Text
 
 [text]: ../components/text.md
