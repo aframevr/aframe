@@ -9,9 +9,9 @@ AFRAME.registerComponent('model-viewer', {
     var el = this.el;
 
     el.setAttribute('renderer', {colorManagement: true});
+    el.setAttribute('raycaster', {objects: '.raycastable'});
     el.setAttribute('cursor', {rayOrigin: 'mouse', fuse: false});
     el.setAttribute('webxr', {optionalFeatures: 'hit-test, local-floor, light-estimation, anchors'});
-    el.setAttribute('raycaster', {objects: '.raycastable'});
     el.setAttribute('background', '');
 
     this.onModelLoaded = this.onModelLoaded.bind(this);
@@ -242,7 +242,7 @@ AFRAME.registerComponent('model-viewer', {
 
     arShadowEl.setAttribute('rotation', '-90 0 0');
     arShadowEl.setAttribute('geometry', 'primitive: plane; width: 30.0; height: 30.0');
-    arShadowEl.setAttribute('shadow', 'recieve: true');
+    arShadowEl.setAttribute('shadow', 'receive: true');
     arShadowEl.setAttribute('ar-shadows', 'opacity: 0.2');
     arShadowEl.setAttribute('visible', 'false');
 

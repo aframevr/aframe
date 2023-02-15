@@ -62,7 +62,7 @@ use of resources, we will need deeper understanding about 3D graphics.  See
 [release]: https://github.com/aframevr/aframe/releases
 [webxr]: https://immersive-web.github.io/webxr/
 
-If you are using A-Frame 1.3.0 or older you probably need to update to the [latest release][release]. Browsers are migrating to the [WebXR standard][webxr] and old versions might no longer work.
+If you are using A-Frame 1.4.0 or older you probably need to update to the [latest release][release]. Browsers are migrating to the [WebXR standard][webxr] and old versions might no longer work.
 
 You also have to serve your content over HTTPS. The WebXR API won't be available over HTTP.
 
@@ -126,7 +126,7 @@ Mobile and desktop browsers have been tightening the video autoplay policies to 
 -[Firefox](https://hacks.mozilla.org/2019/02/firefox-66-to-block-automatically-playing-audible-video-and-audio/)
 
 [video-playback-example]: https://aframe.io/aframe/examples/test/video/
-[video-playback-code]: https://github.com/mayognaise/aframe-html-shader/
+[video-playback-code]: https://github.com/aframevr/aframe/blob/master/examples/test/video/index.html
 
 There's an [A-Frame example that includes the necessary logic][video-playback-example] to request the user clicking or tapping to start video playback. [The source code is also available][video-playback-code]
 

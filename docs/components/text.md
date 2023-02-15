@@ -186,7 +186,7 @@ Lastly, you should specify the character set used in your HTML by using `<meta>`
 <html>
   <head>
     <meta charset="UTF-8">
-    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
   </head>
   <body>
     <a-scene>

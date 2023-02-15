@@ -1,11 +1,11 @@
 {
   "name": "aframe",
-  "version": "1.3.0",
+  "version": "1.4.1",
   "description": "A web framework for building virtual reality experiences.",
   "homepage": "https://aframe.io/",
   "main": "dist/aframe-master.js",
   "scripts": {
-    "dev": "cross-env INSPECTOR_VERSION=dev webpack serve",
+    "dev": "cross-env INSPECTOR_VERSION=dev webpack serve --port 8080",
     "dist": "node scripts/updateVersionLog.js && npm run dist:min && npm run dist:max",
     "dist:max": "webpack --config webpack.config.js",
     "dist:min": "webpack --config webpack.prod.config.js",
@@ -16,7 +16,7 @@
     "lint:fix": "semistandard --fix",
     "precommit": "npm run lint",
     "prepush": "node scripts/testOnlyCheck.js",
-    "prerelease": "node scripts/release.js 1.2.0 1.3.0",
+    "prerelease": "node scripts/release.js 1.4.0 1.4.1",
     "start": "npm run dev",
     "start:https": "npm run dev -- --server-type https",
     "test": "karma start ./tests/karma.conf.js",
@@ -45,7 +45,7 @@
     "present": "0.0.6",
     "promise-polyfill": "^3.1.0",
     "super-animejs": "^3.1.0",
-    "super-three": "^0.144.0",
+    "super-three": "^0.147.1",
     "three-bmfont-text": "dmarcos/three-bmfont-text#21d017046216e318362c48abd1a48bddfb6e0733",
     "webvr-polyfill": "^0.10.12"
   },
@@ -110,8 +110,11 @@
     "rift",
     "vive",
     "vr",
+    "quest",
+    "meta",
     "web-components",
-    "webvr"
+    "webvr",
+    "webxr"
   ],
   "engines": {
     "node": ">= 4.6.0",

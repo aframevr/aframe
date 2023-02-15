@@ -385,10 +385,10 @@ module.exports.Component = registerComponent('layer', {
 
 function blitTexture (gl, texture, subImage, textureEl) {
   var xrReadFramebuffer = gl.createFramebuffer();
-  let x1offset = subImage.viewport.x;
-  let y1offset = subImage.viewport.y;
-  let x2offset = subImage.viewport.x + subImage.viewport.width;
-  let y2offset = subImage.viewport.y + subImage.viewport.height;
+  var x1offset = subImage.viewport.x;
+  var y1offset = subImage.viewport.y;
+  var x2offset = subImage.viewport.x + subImage.viewport.width;
+  var y2offset = subImage.viewport.y + subImage.viewport.height;
 
   // Update video texture.
   if (textureEl.tagName === 'VIDEO') {

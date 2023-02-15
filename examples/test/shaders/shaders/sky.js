@@ -6,7 +6,7 @@ AFRAME.registerShader('sky', {
     reileigh: { type: 'number', default: 1, min: 0, max: 4, is: 'uniform' },
     mieCoefficient: { type: 'number', default: 0.005, min: 0, max: 0.1, is: 'uniform' },
     mieDirectionalG: { type: 'number', default: 0.8, min: 0, max: 1, is: 'uniform' },
-    sunPosition: { type: 'vec3', default: '0 0 -1', is: 'uniform' }
+    sunPosition: { type: 'vec3', default: {x: 0, y: 0, z: -1}, is: 'uniform' }
   },
 
   vertexShader: [

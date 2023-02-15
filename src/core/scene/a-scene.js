@@ -116,7 +116,7 @@ class AScene extends AEntity {
     this.pointerRestrictedBound = function () { self.pointerRestricted(); };
     this.pointerUnrestrictedBound = function () { self.pointerUnrestricted(); };
 
-    if (!isWebXRAvailable) {
+    if (!self.hasWebXR) {
       // Exit VR on `vrdisplaydeactivate` (e.g. taking off Rift headset).
       window.addEventListener('vrdisplaydeactivate', this.exitVRBound);
 
@@ -301,6 +301,7 @@ class AScene extends AEntity {
               vrManager.setSession(xrSession).then(function () {
                 vrManager.setFoveation(rendererSystem.foveationLevel);
               });
+              self.systems.renderer.setWebXRFrameRate(xrSession);
               xrSession.addEventListener('end', self.exitVRBound);
               enterVRSuccess(resolve);
             },
@@ -354,7 +355,7 @@ class AScene extends AEntity {
       }
       self.emit('enter-vr', {target: self});
       // Lock to landscape orientation on mobile.
-      if (!isWebXRAvailable && self.isMobile && screen.orientation && screen.orientation.lock) {
+      if (!self.hasWebXR && self.isMobile && screen.orientation && screen.orientation.lock) {
         screen.orientation.lock('landscape');
       }
       self.addFullScreenStyles();
@@ -404,7 +405,6 @@ class AScene extends AEntity {
         // Capture promise to avoid errors.
         this.xrSession.end().then(function () {}, function () {});
         this.xrSession = undefined;
-        vrManager.setSession(null);
       } else {
         if (vrDisplay.isPresenting) {
           return vrDisplay.exitPresent().then(exitVRSuccess, exitVRFailure);
