@@ -510,7 +510,12 @@ Later, when we use this component via HTML, the syntax will look like:
 
 Let's create our three.js box mesh from the `.init()`, and we'll later let the
 `.update()` handler handle all the property updates. To create a box in
-three.js, we'll create a [`THREE.BoxBufferGeometry`][threegeometry],
+three.js, we'll create a [`THREE.BoxBufferGeometry`][threegeometry].
+See the [three.js manual](https://threejs.org/manual/#en/custom-buffergeometry) to
+learn about creating a `BufferGeometry`.  The less-performant `Geometry` classes are not
+available in recent versions of three.js nor A-Frame.
+
+We'll also need a
 [`THREE.MeshStandardMaterial`][threematerial], and finally a
 [`THREE.Mesh`][mesh]. Then we set the mesh on our entity to add the mesh to the
 three.js scene graph [using `.setObject3D(name, object)`][setobject3d]:

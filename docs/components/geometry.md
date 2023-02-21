@@ -319,7 +319,12 @@ the `material` component.
 ## Register a Custom Geometry
 
 We can register our own geometries using `AFRAME.registerGeometry` and creating
-an object that is an instance of [`THREE.Geometry`][three-geometry]. A-Frame
+an object that is an instance of [`THREE.BufferGeometry`][three-geometry].
+(Recent versions of three.js rename this to `Geometry`, which used to refer
+to unbuffered geometries.)
+See the [three.js manual](https://github.com/DougReeder/aframe/pull/new/buffer-geometry)
+to learn about creating a custom `BufferGeometry`.
+A-Frame
 registers all built-in geometries using this API. Here is how A-Frame registers
 the `box` geometry:
 

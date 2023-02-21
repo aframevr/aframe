@@ -127,7 +127,7 @@ for [Don McCurdy's
 `aframe-physics-system`](https://github.com/n5ro/aframe-physics-system) and attach
 the physics components via HTML attributes:
 
-> :warning: **If you are using A-Frame 1.4.0 or later**: [`aframe-physics-system`](https://github.com/donmccurdy/aframe-physics-system) and you're having issues make sure you're no longer using the now deprecated THREE.Geometry. More info on [this GitHub issue](https://github.com/n5ro/aframe-physics-system/issues/187).
+> :warning: **If you are using A-Frame 1.4.0 or later**: [`aframe-physics-system`](https://github.com/donmccurdy/aframe-physics-system) and you're having issues make sure you're using THREE.BufferGeometry, not  the now-deprecated THREE.Geometry. (Recent versions of three.js rename BufferGeometry to just Geometry, confusingly.) More info on [this GitHub issue](https://github.com/n5ro/aframe-physics-system/issues/187).
 
 ```html
 <html>
