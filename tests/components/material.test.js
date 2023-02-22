@@ -301,20 +301,21 @@ suite('material', function () {
   suite('vertexColor', function () {
     test('defaults to no color', function () {
       assert.equal(el.getAttribute('material').vertexColors, 'none');
-      assert.equal(el.components.material.material.vertexColors, THREE.NoColors);
+      assert.equal(el.components.material.material.vertexColors, false);
     });
 
     test('can set to vertex color', function () {
       var oldMaterialVersion = el.getObject3D('mesh').material.version;
       el.setAttribute('material', 'vertexColors', 'vertex');
-      assert.equal(el.components.material.material.vertexColors, THREE.VertexColors);
+      assert.equal(el.components.material.material.vertexColors, true);
       assert.equal(el.components.material.material.version, oldMaterialVersion + 2);
     });
 
     test('can set to face color', function () {
+      // Note, this value is deprecated and generates a warning when used.
       var oldMaterialVersion = el.getObject3D('mesh').material.version;
       el.setAttribute('material', 'vertexColors', 'face');
-      assert.equal(el.components.material.material.vertexColors, THREE.FaceColors);
+      assert.equal(el.components.material.material.vertexColors, false);
       assert.equal(el.components.material.material.version, oldMaterialVersion + 2);
     });
   });

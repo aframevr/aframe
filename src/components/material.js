@@ -29,7 +29,7 @@ module.exports.Component = registerComponent('material', {
     shader: {default: 'standard', oneOf: shaderNames, schemaChange: true},
     side: {default: 'front', oneOf: ['front', 'back', 'double']},
     transparent: {default: false},
-    vertexColors: {type: 'string', default: 'none', oneOf: ['face', 'vertex']},
+    vertexColors: {type: 'string', default: 'none', oneOf: ['vertex', 'none']},
     visible: {default: true},
     blending: {default: 'normal', oneOf: ['none', 'normal', 'additive', 'subtractive', 'multiply']},
     dithering: {default: true}
@@ -217,18 +217,19 @@ function parseSide (side) {
 }
 
 /**
- * Return a three.js constant determining vertex coloring.
+ * Return an appropriate three.js for vertex coloring.
  */
 function parseVertexColors (coloring) {
   switch (coloring) {
     case 'face': {
-      return THREE.FaceColors;
+      console.warn('Face coloring is deprecated, as it is not supported on THREE.BufferGeometry');
+      return false;
     }
     case 'vertex': {
-      return THREE.VertexColors;
+      return true;
     }
     default: {
-      return THREE.NoColors;
+      return false;
     }
   }
 }
