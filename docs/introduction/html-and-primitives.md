@@ -127,7 +127,11 @@ for [Don McCurdy's
 `aframe-physics-system`](https://github.com/n5ro/aframe-physics-system) and attach
 the physics components via HTML attributes:
 
-> :warning: **If you are using A-Frame 1.4.0 or later**: [`aframe-physics-system`](https://github.com/donmccurdy/aframe-physics-system) and you're having issues make sure you're no longer using the now deprecated THREE.Geometry. More info on [this GitHub issue](https://github.com/n5ro/aframe-physics-system/issues/187).
+> :warning: **If you are using A-Frame 1.4.0 or later**: [`aframe-physics-system`](https://github.com/donmccurdy/aframe-physics-system)
+> and you're having issues, make sure you're using THREE.BufferGeometry, not  the
+> [now-deprecated THREE.Geometry](https://discourse.threejs.org/t/three-geometry-will-be-removed-from-core-with-r125/22401).
+> Recent versions of three.js rename generators such as PlaneBufferGeometry to just [PlaneGeometry](https://threejs.org/docs/#api/en/geometries/PlaneGeometry),
+> but support the old name as an alias. More info on [this GitHub issue](https://github.com/n5ro/aframe-physics-system/issues/187).
 
 ```html
 <html>
