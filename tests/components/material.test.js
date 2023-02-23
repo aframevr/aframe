@@ -306,7 +306,7 @@ suite('material', function () {
 
     test('can set to vertex color', function () {
       var oldMaterialVersion = el.getObject3D('mesh').material.version;
-      // Note, this property is deprecated and generates a warning when used.
+      // This property is deprecated and generates a warning when used.
       el.setAttribute('material', 'vertexColors', 'vertex');
       assert.equal(el.components.material.material.vertexColors, true);
       assert.equal(el.components.material.material.version, oldMaterialVersion + 2);
@@ -314,7 +314,7 @@ suite('material', function () {
 
     test('can set to face color', function () {
       var oldMaterialVersion = el.getObject3D('mesh').material.version;
-      // Note, this property is deprecated and generates a warning when used.
+      // This property is deprecated and generates a warning when used.
       el.setAttribute('material', 'vertexColors', 'face');
       assert.equal(el.components.material.material.vertexColors, false);
       assert.equal(el.components.material.material.version, oldMaterialVersion + 2);
