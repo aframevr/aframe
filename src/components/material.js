@@ -29,7 +29,6 @@ module.exports.Component = registerComponent('material', {
     shader: {default: 'standard', oneOf: shaderNames, schemaChange: true},
     side: {default: 'front', oneOf: ['front', 'back', 'double']},
     transparent: {default: false},
-    vertexColors: {type: 'string', default: 'none', oneOf: ['vertex', 'none']},
     vertexColorsEnabled: {default: false},
     visible: {default: true},
     blending: {default: 'normal', oneOf: ['none', 'normal', 'additive', 'subtractive', 'multiply']},
@@ -136,7 +135,7 @@ module.exports.Component = registerComponent('material', {
     material.flatShading = data.flatShading;
     material.side = parseSide(data.side);
     material.transparent = data.transparent !== false || data.opacity < 1.0;
-    material.vertexColors = data.vertexColorsEnabled || parseVertexColors(data.vertexColors);
+    material.vertexColors = data.vertexColorsEnabled;
     material.visible = data.visible;
     material.blending = parseBlending(data.blending);
     material.dithering = data.dithering;
@@ -146,7 +145,6 @@ module.exports.Component = registerComponent('material', {
     if (oldDataHasKeys &&
         (oldData.alphaTest !== data.alphaTest ||
          oldData.side !== data.side ||
-         oldData.vertexColors !== data.vertexColors ||
          oldData.vertexColorsEnabled !== data.vertexColorsEnabled)) {
       material.needsUpdate = true;
     }
@@ -214,28 +212,6 @@ function parseSide (side) {
     default: {
       // Including case `front`.
       return THREE.FrontSide;
-    }
-  }
-}
-
-/**
- * Return an appropriate three.js for vertex coloring.
- */
-function parseVertexColors (coloring) {
-  switch (coloring) {
-    case 'face': {
-      console.warn('The vertexColors property is deprecated as of A-Frame 1.4.1 and will be removed in a future release.');
-      console.warn('Use vertexColorEnabled instead.');
-      console.warn('Face coloring is deprecated, as it is not supported on THREE.BufferGeometry');
-      return false;
-    }
-    case 'vertex': {
-      console.warn('The vertexColors property is deprecated as of A-Frame 1.4.1 and will be removed in a future release.');
-      console.warn('Use vertexColorEnabled instead.');
-      return true;
-    }
-    default: {
-      return false;
     }
   }
 }
