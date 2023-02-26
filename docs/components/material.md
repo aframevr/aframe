@@ -70,7 +70,7 @@ depending on the material type applied.
 | shader       | Which material to use. Defaults to the [standard material][standard]. Can be set to the [flat material][flat] or to a registered custom shader material. | standard      |
 | side         | Which sides of the mesh to render. Can be one of `front`, `back`, or `double`.                                                                    | front         |
 | transparent  | Whether material is transparent. Transparent entities are rendered after non-transparent entities.                                                | false         |
-| vertexColors | Whether to use vertex or face colors to shade the material. Can be one of `none`, `vertex`, or `face`.                                            | none          |
+| vertexColorsEnabled | Whether to use vertex colors to shade the material.                                             | false        |
 | visible      | Whether material is visible. Raycasters will ignore invisible materials.                                                                          | true          |
 | blending     | The blending mode for the material's RGB and Alpha sent to the WebGLRenderer. Can be one of `none`, `normal`, `additive`, `subtractive` or `multiply`.  | normal          |
 | dithering    | Whether material is dithered with noise. Removes banding from gradients like ones produced by lighting.                                           | true          |
