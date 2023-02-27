@@ -52,6 +52,10 @@ class AAssets extends ANode {
         // Set in cache because we won't be needing to call three.js loader if we have.
         // a loaded media element.
         THREE.Cache.add(imgEls[i].getAttribute('src'), imgEl);
+        if (imgEl.complete) {
+          resolve();
+          return;
+        }
         imgEl.onload = resolve;
         imgEl.onerror = reject;
       }));
