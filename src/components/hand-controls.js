@@ -206,7 +206,7 @@ module.exports.Component = registerComponent('hand-controls', {
         var handMaterial = mesh.children[1].material;
         handMaterial.color = new THREE.Color(handColor);
         mesh.position.set(0, 0, 0);
-        mesh.rotation.set(0, 0, handModelOrientation);
+        mesh.rotation.set(-Math.PI / 2, 0, handModelOrientation);
         el.setAttribute('magicleap-controls', controlConfiguration);
         el.setAttribute('vive-controls', controlConfiguration);
         el.setAttribute('oculus-touch-controls', controlConfiguration);
