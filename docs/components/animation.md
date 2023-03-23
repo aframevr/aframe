@@ -161,7 +161,7 @@ This assumes that an animation has already been configured to respond to that cu
 ```
 el.setAttribute('animation__001', {'property': 'position',
                                  'to': {x: 1, y: 1, z: 1},                                 
-                                 'startEvents': 'startanim001');
+                                 'startEvents': 'startanim001'});
 ```
 
 (configuring startEvents on the animation automatically disables autoplay).
