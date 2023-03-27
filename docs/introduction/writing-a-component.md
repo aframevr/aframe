@@ -504,13 +504,19 @@ Later, when we use this component via HTML, the syntax will look like:
 ### Creating the Box Mesh
 
 [mesh]: https://threejs.org/docs/index.html#Reference/Objects/Mesh
-[threegeometry]: https://threejs.org/docs/index.html#Reference/Geometries/BoxBufferGeometry
+[threegeometry]: https://threejs.org/docs/index.html#Reference/Geometries/BoxGeometry
 [threematerial]: https://threejs.org/docs/index.html#Reference/Materials/MeshStandardMaterial
 [setobject3d]: ./developing-with-threejs.md#setting-an-object3d-on-an-entity
 
 Let's create our three.js box mesh from the `.init()`, and we'll later let the
 `.update()` handler handle all the property updates. To create a box in
-three.js, we'll create a [`THREE.BoxBufferGeometry`][threegeometry],
+three.js, we'll create a [`THREE.BoxGeometry`][threegeometry].
+Generators such as `BoxGeometry` now create a BufferGeometry.
+See the [three.js manual](https://threejs.org/manual/#en/custom-buffergeometry) to
+learn about creating a custom `BufferGeometry`.  (The less-performant `Geometry` class is not
+available in recent versions of three.js nor A-Frame.)
+
+We'll also need a
 [`THREE.MeshStandardMaterial`][threematerial], and finally a
 [`THREE.Mesh`][mesh]. Then we set the mesh on our entity to add the mesh to the
 three.js scene graph [using `.setObject3D(name, object)`][setobject3d]:
@@ -532,7 +538,7 @@ AFRAME.registerComponent('box', {
     var el = this.el;
 
     // Create geometry.
-    this.geometry = new THREE.BoxBufferGeometry(data.width, data.height, data.depth);
+    this.geometry = new THREE.BoxGeometry(data.width, data.height, data.depth);
 
     // Create material.
     this.material = new THREE.MeshStandardMaterial({color: data.color});
@@ -564,7 +570,7 @@ AFRAME.registerComponent('box', {
   init: function () {
     var data = this.data;
     var el = this.el;
-    this.geometry = new THREE.BoxBufferGeometry(data.width, data.height, data.depth);
+    this.geometry = new THREE.BoxGeometry(data.width, data.height, data.depth);
     this.material = new THREE.MeshStandardMaterial({color: data.color});
     this.mesh = new THREE.Mesh(this.geometry, this.material);
     el.setObject3D('mesh', this.mesh);
@@ -585,7 +591,7 @@ AFRAME.registerComponent('box', {
     if (data.width !== oldData.width ||
         data.height !== oldData.height ||
         data.depth !== oldData.depth) {
-      el.getObject3D('mesh').geometry = new THREE.BoxBufferGeometry(data.width, data.height,
+      el.getObject3D('mesh').geometry = new THREE.BoxGeometry(data.width, data.height,
                                                                     data.depth);
     }
 

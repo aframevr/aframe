@@ -198,7 +198,10 @@ module.exports.Component = registerComponent('hand-controls', {
       var handmodelUrl = MODEL_URLS[handModelStyle + hand.charAt(0).toUpperCase() + hand.slice(1)];
       this.loader.load(handmodelUrl, function (gltf) {
         var mesh = gltf.scene.children[0];
-        var handModelOrientation = hand === 'left' ? Math.PI / 2 : -Math.PI / 2;
+        var handModelOrientationZ = hand === 'left' ? Math.PI / 2 : -Math.PI / 2;
+        // The WebXR standard defines the grip space such that a cylinder held in a closed hand points
+        // along the Z axis. The models currently have such a cylinder point along the X-Axis.
+        var handModelOrientationX = el.sceneEl.hasWebXR ? -Math.PI / 2 : 0;
         mesh.mixer = new THREE.AnimationMixer(mesh);
         self.clips = gltf.animations;
         el.setObject3D('mesh', mesh);
@@ -206,7 +209,7 @@ module.exports.Component = registerComponent('hand-controls', {
         var handMaterial = mesh.children[1].material;
         handMaterial.color = new THREE.Color(handColor);
         mesh.position.set(0, 0, 0);
-        mesh.rotation.set(0, 0, handModelOrientation);
+        mesh.rotation.set(handModelOrientationX, 0, handModelOrientationZ);
         el.setAttribute('magicleap-controls', controlConfiguration);
         el.setAttribute('vive-controls', controlConfiguration);
         el.setAttribute('oculus-touch-controls', controlConfiguration);

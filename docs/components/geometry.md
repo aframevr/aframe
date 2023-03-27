@@ -319,7 +319,12 @@ the `material` component.
 ## Register a Custom Geometry
 
 We can register our own geometries using `AFRAME.registerGeometry` and creating
-an object that is an instance of [`THREE.Geometry`][three-geometry]. A-Frame
+an object that is an instance of [`THREE.BufferGeometry`][three-geometry].
+Recent versions of three.js rename generators such as PlaneBufferGeometry to just
+[PlaneGeometry](https://threejs.org/docs/#api/en/geometries/PlaneGeometry),
+but support the old name as an alias. See the three.js manual to learn about creating a
+[custom `BufferGeometry`](https://threejs.org/manual/#en/custom-buffergeometry).
+A-Frame
 registers all built-in geometries using this API. Here is how A-Frame registers
 the `box` geometry:
 
@@ -381,4 +386,4 @@ We can then use that custom geometry in HTML:
 [cd]: https://en.wikipedia.org/wiki/Compact_disc
 [component-schema]: ../core/component.md#schema
 [prisms-wiki]: https://en.wikipedia.org/wiki/Prism_%28geometry%29
-[three-geometry]: https://threejs.org/docs/#api/core/Geometry
+[three-geometry]: https://threejs.org/docs/#api/en/core/BufferGeometry

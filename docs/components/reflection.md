@@ -19,7 +19,7 @@ will provide a default reflective environment.
 The reflection component will generate an environment map from your surroundings using WebXR
 Lighting estimation in Augmented Reality if it is available.
 
-During this it will also take control of your scene's main directional light to ensure it's direction and color matches that of the rest of the environemnt. This works really well for your scene's shadows.
+During this it will also take control of your scene's main directional light to ensure it's direction and color matches that of the rest of the environment. This works really well for your scene's shadows.
 It will also create a probe light to match the lighting of the real world.
 So you should turn off any additional global scene lights, such as other directional lights, hemisphere lights or ambient lights, when the user enters AR. You can do this with the `hide-on-enter-ar` component.
 
