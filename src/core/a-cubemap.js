@@ -11,10 +11,29 @@ class ACubeMap extends HTMLElement {
   /**
    * Calculates this.srcs.
    */
+
   constructor (self) {
     self = super(self);
-    self.srcs = self.validate();
     return self;
+  }
+
+  onReadyStateChange () {
+    if (document.readyState === 'complete') {
+      this.doConnectedCallback();
+    }
+  }
+
+  connectedCallback () {
+    // Defer if DOM is not ready.
+    if (document.readyState !== 'complete') {
+      document.addEventListener('readystatechange', this.onReadyStateChange.bind(this));
+      return;
+    }
+    ACubeMap.prototype.doConnectedCallback.call(this);
+  }
+
+  doConnectedCallback () {
+    this.srcs = this.validate();
   }
 
   /**

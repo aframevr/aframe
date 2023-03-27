@@ -102,9 +102,9 @@ module.exports.Component = registerComponent('raycaster', {
     if (data.showLine &&
         (data.far !== oldData.far || data.origin !== oldData.origin ||
          data.direction !== oldData.direction || !oldData.showLine)) {
-      // Calculate unit vector for line direction. Can be multiplied via scalar to performantly
-      // adjust line length.
-      this.unitLineEndVec3.copy(data.origin).add(data.direction).normalize();
+      // Calculate unit vector for line direction. Can be multiplied via scalar and added
+      // to orign to adjust line length.
+      this.unitLineEndVec3.copy(data.direction).normalize();
       this.drawLine();
     }
 
@@ -386,9 +386,10 @@ module.exports.Component = registerComponent('raycaster', {
     }
 
     // Update the length of the line if given. `unitLineEndVec3` is the direction
-    // given by data.direction, then we apply a scalar to give it a length.
+    // given by data.direction, then we apply a scalar to give it a length and the
+    // origin point to offset it.
     this.lineData.start = data.origin;
-    this.lineData.end = endVec3.copy(this.unitLineEndVec3).multiplyScalar(length);
+    this.lineData.end = endVec3.copy(this.unitLineEndVec3).multiplyScalar(length).add(data.origin);
     this.lineData.color = data.lineColor;
     this.lineData.opacity = data.lineOpacity;
     el.setAttribute('line', this.lineData);

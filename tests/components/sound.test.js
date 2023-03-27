@@ -7,8 +7,6 @@ suite('sound', function () {
     var el = this.el = entityFactory();
     THREE.Cache.files = {};
     setTimeout(() => {
-      el.sceneEl.addEventListener('loaded', function () { done(); });
-
       el.setAttribute('sound', {
         autoplay: true,
         src: 'url(mysoundfile.mp3)',
@@ -19,6 +17,9 @@ suite('sound', function () {
         rolloffFactor: 4,
         poolSize: 3
       });
+
+      if (el.sceneEl.hasLoaded) { done(); }
+      el.sceneEl.addEventListener('loaded', function () { done(); });
     });
   });
 

@@ -24,7 +24,7 @@ function fetchScript (src) {
  */
 module.exports.System = registerSystem('gltf-model', {
   schema: {
-    dracoDecoderPath: {default: 'https://www.gstatic.com/draco/versioned/decoders/1.5.5/'},
+    dracoDecoderPath: {default: 'https://www.gstatic.com/draco/versioned/decoders/1.5.6/'},
     basisTranscoderPath: {default: ''},
     meshoptDecoderPath: {default: ''}
   },

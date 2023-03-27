@@ -1,4 +1,4 @@
-/* global AFRAME, assert, CustomEvent, process, screen, sinon, setup, suite, teardown, test, THREE */
+/* global AFRAME, assert, CustomEvent, process, screen, sinon, setup, suite, teardown, test, THREE, EventTarget */
 var AScene = require('core/scene/a-scene').AScene;
 var components = require('core/component').components;
 var scenes = require('core/scene/scenes');
@@ -8,6 +8,498 @@ var systems = require('core/system').systems;
 var helpers = require('../../helpers');
 var utils = require('index').utils;
 
+var xrSession = new EventTarget();
+xrSession.requestReferenceSpace = function () {
+  return Promise.resolve();
+};
+xrSession.end = function () {
+  return Promise.resolve();
+};
+
+/**
+ * Tests in this suite should not involve WebGL contexts or renderer.
+ * They operate with the assumption that attachedCallback is stubbed.
+ *
+ * Add tests that involve the renderer to the suite at the bottom that is meant
+ * to only be run locally since WebGL contexts break CI due to the headless
+ * environment.
+ *
+ * These tests run simulating a device that supports the WebXR APIs.
+ * They are based on an original set of tests for devices that supported the WebVR API
+ * (which are retained below)
+ *
+ * The tests are broadly similar, with the exception of these tests, which
+ * do not seem to be relevant for WebXR, and have been removed:
+ *  - tells A-Frame about entering VR if now presenting
+ *  - tells A-Frame about exiting VR if no longer presenting
+ *  - requests pointerlock when restricted
+ *  - exits pointerlock when unrestricted
+ *  - does not exit pointerlock when unrestricted on different locked element
+ *  - update existing pointerlock target when restricted
+ *
+ * One test from the original WebVR suite, which actually tested WebXR has been moved to this
+ * suite:
+ *  - reset xrSession to undefined
+ */
+suite('a-scene (without renderer) - WebXR', function () {
+  // Some browsers (e.g. Firefox as of Feb 2023) don't support WebXR.
+  // For these browsers, skip these tests.
+  if (!navigator.xr) return;
+
+  setup(function (done) {
+    var el = this.el = document.createElement('a-scene');
+    el.hasWebXR = true;
+    el.addEventListener('nodeready', function () { done(); });
+    this.sinon.stub(utils.device, 'getVRDisplay').returns({
+      requestPresent: function () {
+        return Promise.resolve();
+      },
+      exitPresent: function () {
+        return Promise.resolve();
+      },
+      isPresenting: true
+    });
+    this.sinon.stub(navigator.xr, 'requestSession').returns(Promise.resolve(xrSession));
+    document.body.appendChild(el);
+  });
+
+  teardown(function () {
+    document.body.removeChild(this.el);
+  });
+
+  suite('createdCallback', function () {
+    var sceneEl;
+    setup(function () {
+      sceneEl = document.createElement('a-scene');
+    });
+
+    test('initializes scene object', function () {
+      assert.equal(sceneEl.object3D.type, 'Scene');
+    });
+
+    test('does not initialize systems', function () {
+      assert.notOk(Object.keys(sceneEl.systems).length);
+    });
+
+    test('does not initialize renderer', function () {
+      sceneEl = document.createElement('a-scene');
+      // Mock renderer.
+      assert.ok(sceneEl.renderer);
+      // Mock renderer is not a real WebGLRenderer.
+      assert.notOk(sceneEl.renderer instanceof THREE.WebGLRenderer);
+    });
+  });
+
+  suite('attachedCallback', function () {
+    test('initializes scene', function (done) {
+      var sceneEl = this.el;
+      sceneEl.addEventListener('loaded', function onLoaded () {
+        assert.ok(Object.keys(sceneEl.systems).length);
+        assert.ok(this.behaviors.tick);
+        assert.ok(this.behaviors.tock);
+        assert.equal(sceneEl.hasLoaded, true, 'Has loaded');
+        assert.equal(sceneEl.renderTarget, null);
+        // Default components.
+        assert.ok(sceneEl.hasAttribute('inspector'));
+        assert.ok(sceneEl.hasAttribute('keyboard-shortcuts'));
+        assert.ok(sceneEl.hasAttribute('screenshot'));
+        assert.ok(sceneEl.hasAttribute('vr-mode-ui'));
+        sceneEl.removeEventListener('loaded', onLoaded);
+        done();
+      });
+    });
+  });
+
+  suite('vrdisplaydisconnect', function () {
+    test('tells A-Frame about entering VR when the headset is disconnected', function (done) {
+      var event;
+      var sceneEl = this.el;
+      var exitVRStub = this.sinon.stub(xrSession, 'end').returns(Promise.resolve());
+      event = new CustomEvent('end');
+      sceneEl.addEventListener('loaded', function onLoaded () {
+        xrSession.dispatchEvent(event);
+        setTimeout(function () {
+          assert.ok(exitVRStub.calledWith());
+          sceneEl.removeEventListener('loaded', onLoaded);
+          done();
+        });
+      });
+    });
+  });
+
+  suite('enterVR', function () {
+    setup(function () {
+      var sceneEl = this.el;
+
+      // Stub canvas.
+      sceneEl.canvas = {
+        addEventListener: function () {},
+        removeEventListener: function () {},
+        requestFullscreen: function () {},
+        classList: {
+          add: function () {},
+          remove: function () {}
+        }
+      };
+
+      // Stub renderer.
+      sceneEl.renderer = {
+        xr: {
+          getDevice: function () {},
+          setDevice: function () {},
+          setPoseTarget: function () {},
+          dispose: function () {},
+          setReferenceSpaceType: function () {},
+          setSession: function () {
+            return Promise.resolve();
+          },
+          setFoveation: function () {}
+        },
+        dispose: function () {},
+        getContext: function () { return undefined; },
+        setAnimationLoop: function () {},
+        setPixelRatio: function () {},
+        setSize: function () {},
+        render: function () {}
+      };
+
+      // mock camera
+      sceneEl.camera = {
+        el: {object3D: {}},
+        updateProjectionMatrix: function () {}
+      };
+    });
+
+    test('does not try to enter VR if already in VR', function (done) {
+      var sceneEl = this.el;
+      sceneEl.addState('vr-mode');
+      sceneEl.enterVR().then(function (val) {
+        assert.equal(val, 'Already in VR.');
+        assert.notOk(sceneEl.renderer.xr.enabled);
+        done();
+      });
+    });
+
+    test('calls requestPresent if headset connected', function (done) {
+      var sceneEl = this.el;
+      this.sinon.stub(sceneEl, 'checkHeadsetConnected').returns(true);
+      window.hasNativeWebVRImplementation = false;
+      sceneEl.enterVR().then(function () {
+        assert.ok(sceneEl.renderer.xr.enabled);
+        done();
+      });
+    });
+
+    test('calls requestPresent on mobile', function (done) {
+      var sceneEl = this.el;
+      sceneEl.isMobile = true;
+      sceneEl.enterVR().then(function () {
+        assert.ok(sceneEl.renderer.xr.enabled);
+        done();
+      });
+    });
+
+    test('does not call requestPresent if flat desktop', function (done) {
+      var sceneEl = this.el;
+      this.sinon.stub(sceneEl, 'checkHeadsetConnected').returns(false);
+      window.hasNativeWebVRImplementation = false;
+      sceneEl.enterVR().then(function () {
+        assert.notOk(sceneEl.renderer.xr.enabled);
+        done();
+      });
+    });
+
+    test('adds VR mode state', function (done) {
+      var sceneEl = this.el;
+      sceneEl.enterVR().then(function () {
+        assert.ok(sceneEl.is('vr-mode'));
+        done();
+      });
+    });
+
+    helpers.getSkipCITest()('adds AR mode state', function (done) {
+      var sceneEl = this.el;
+      if (!sceneEl.hasWebXR) { done(); }
+      sceneEl.enterVR(true).then(function () {
+        assert.notOk(sceneEl.is('vr-mode'));
+        assert.ok(sceneEl.is('ar-mode'));
+        done();
+      });
+    });
+
+    test('adds fullscreen styles', function (done) {
+      var sceneEl = this.el;
+      sceneEl.enterVR().then(function () {
+        assert.ok(document.documentElement.classList.contains('a-fullscreen'));
+        done();
+      });
+    });
+
+    test('requests fullscreen on flat desktop', function (done) {
+      var sceneEl = this.el;
+      var fullscreenSpy;
+
+      if (sceneEl.canvas.requestFullscreen) {
+        fullscreenSpy = this.sinon.spy(sceneEl.canvas, 'requestFullscreen');
+      } else if (sceneEl.canvas.mozRequestFullScreen) {
+        fullscreenSpy = this.sinon.spy(sceneEl.canvas, 'mozRequestFullScreen');
+      } else if (sceneEl.canvas.webkitRequestFullScreen) {
+        fullscreenSpy = this.sinon.spy(sceneEl.canvas, 'webkitRequestFullscreen');
+      }
+
+      this.sinon.stub(sceneEl, 'checkHeadsetConnected').returns(false);
+      window.hasNativeWebVRImplementation = false;
+      sceneEl.enterVR().then(function () {
+        assert.ok(fullscreenSpy.called);
+        done();
+      });
+    });
+
+    test('emits enter-vr', function (done) {
+      var sceneEl = this.el;
+      sceneEl.addEventListener('enter-vr', function () { done(); });
+      sceneEl.enterVR();
+    });
+  });
+
+  suite('exitVR', function () {
+    setup(function () {
+      var sceneEl = this.el;
+
+      // Stub canvas.
+      sceneEl.canvas = document.createElement('canvas');
+
+      // Stub renderer.
+      sceneEl.renderer = {
+        xr: {
+          getDevice: function () {},
+          setDevice: function () {},
+          setPoseTarget: function () {},
+          dispose: function () {},
+          setReferenceSpaceType: function () {},
+          setSession: function () {
+            return Promise.resolve();
+          },
+          setFoveation: function () {}
+        },
+        dispose: function () {},
+        getContext: function () { return undefined; },
+        setAnimationLoop: function () {},
+        setPixelRatio: function () {},
+        setSize: function () {},
+        render: function () {}
+      };
+
+      sceneEl.addState('vr-mode');
+      sceneEl.xrSession = xrSession;
+    });
+
+    test('does not try to exit VR if not in VR', function (done) {
+      var sceneEl = this.el;
+      sceneEl.removeState('vr-mode');
+      sceneEl.exitVR().then(function (val) {
+        assert.equal(val, 'Not in immersive mode.');
+        done();
+      });
+    });
+
+    test('calls exitPresent if headset connected', function (done) {
+      var sceneEl = this.el;
+      this.sinon.stub(sceneEl, 'checkHeadsetConnected').returns(true);
+      sceneEl.exitVR().then(function () {
+        assert.notOk(sceneEl.renderer.xr.enabled);
+        done();
+      });
+    });
+
+    test('calls exitPresent on mobile', function (done) {
+      this.sinon.stub(screen.orientation, 'lock');
+      var sceneEl = this.el;
+      sceneEl.isMobile = true;
+      sceneEl.exitVR().then(function () {
+        assert.notOk(sceneEl.renderer.xr.enabled);
+        done();
+      });
+    });
+
+    test('does not call exitPresent on desktop without a headset', function (done) {
+      var sceneEl = this.el;
+      sceneEl.renderer.xr.enabled = true;
+      sceneEl.isMobile = false;
+      this.sinon.stub(sceneEl, 'checkHeadsetConnected').returns(false);
+      this.sinon.stub(sceneEl.canvas, 'requestFullscreen');
+      sceneEl.exitVR().then(function () {
+        assert.ok(sceneEl.renderer.xr.enabled);
+        done();
+      });
+    });
+
+    test('removes VR mode state', function (done) {
+      var sceneEl = this.el;
+      sceneEl.exitVR().then(function () {
+        assert.notOk(sceneEl.is('vr-mode'));
+        done();
+      });
+    });
+
+    test('removes fullscreen styles if embedded', function (done) {
+      var sceneEl = this.el;
+      sceneEl.setAttribute('embedded', 'true');
+      document.documentElement.classList.add('a-fullscreen');
+      sceneEl.exitVR().then(function () {
+        assert.notOk(document.documentElement.classList.contains('a-fullscreen'));
+        done();
+      });
+    });
+
+    test('does not remove fullscreen styles if not embedded', function (done) {
+      var sceneEl = this.el;
+      document.documentElement.classList.add('a-fullscreen');
+      sceneEl.exitVR().then(function () {
+        assert.ok(document.documentElement.classList.contains('a-fullscreen'));
+        done();
+      });
+    });
+
+    test('emits exit-vr', function (done) {
+      var sceneEl = this.el;
+      sceneEl.addEventListener('exit-vr', function () { done(); });
+      sceneEl.exitVR();
+    });
+
+    test('reset xrSession to undefined', function () {
+      var sceneEl = this.el;
+      sceneEl.xrSession = {
+        removeEventListener: function () {},
+        end: function () { return Promise.resolve(); }
+      };
+      sceneEl.renderer.xr = {
+        setSession: function () {},
+        dispose: function () {}
+      };
+      sceneEl.hasWebXR = true;
+      sceneEl.checkHeadsetConnected = function () { return true; };
+      assert.ok(sceneEl.xrSession);
+      sceneEl.exitVR();
+      assert.notOk(sceneEl.xrSession);
+    });
+  });
+
+  suite('tick', function () {
+    test('calls component ticks', function () {
+      var sceneEl = this.el;
+      var el = document.createElement('a-entity');
+      var spy = this.sinon.spy();
+      AFRAME.registerComponent('test', {
+        tick: function () { spy(); }
+      });
+      el.isPlaying = true;
+      sceneEl.addBehavior(new AFRAME.components.test.Component(el));
+      sceneEl.addBehavior(new AFRAME.components.test.Component(el));
+      sceneEl.addBehavior({el: {isPlaying: true}});
+      sceneEl.tick();
+      assert.equal(spy.getCalls().length, 2);
+    });
+
+    test('calls system ticks', function () {
+      var sceneEl = this.el;
+      var spy = this.sinon.spy();
+      AFRAME.registerSystem('test', {
+        tick: function () { spy(); }
+      });
+      AFRAME.registerSystem('foo', {});
+      sceneEl.tick();
+      assert.equal(spy.getCalls().length, 1);
+      delete AFRAME.systems.foo;
+    });
+  });
+
+  suite('tock', function () {
+    test('calls component tocks', function () {
+      var sceneEl = this.el;
+      var el = document.createElement('a-entity');
+      var spy = this.sinon.spy();
+      AFRAME.registerComponent('test', {
+        tock: function () { spy(); }
+      });
+      el.isPlaying = true;
+      sceneEl.addBehavior(new AFRAME.components.test.Component(el));
+      sceneEl.addBehavior(new AFRAME.components.test.Component(el));
+      sceneEl.addBehavior({el: {isPlaying: true}, tick: () => {}});
+      sceneEl.tock();
+      assert.equal(spy.getCalls().length, 2);
+    });
+
+    test('calls system tocks', function () {
+      var sceneEl = this.el;
+      var spy = this.sinon.spy();
+      AFRAME.registerSystem('test', {
+        tock: function () { spy(); }
+      });
+      AFRAME.registerSystem('foo', {});
+      sceneEl.tock();
+      assert.equal(spy.getCalls().length, 1);
+      delete AFRAME.systems.foo;
+    });
+  });
+
+  suite('resize', function () {
+    var sceneEl;
+    var setSizeSpy;
+
+    setup(function () {
+      sceneEl = this.el;
+      sceneEl.camera = { updateProjectionMatrix: function () {} };
+      sceneEl.canvas = document.createElement('canvas');
+      setSizeSpy = this.sinon.spy();
+
+      // Stub renderer.
+      sceneEl.renderer = {
+        xr: {
+          isPresenting: function () { return true; },
+          getDevice: function () { return {isPresenting: false}; },
+          setDevice: function () {},
+          dispose: function () {}
+        },
+        dispose: function () {},
+        setAnimationLoop: function () {},
+        setSize: setSizeSpy,
+        render: function () {}
+      };
+    });
+
+    test('resize renderer when not in vr mode', function () {
+      sceneEl.resize();
+      assert.ok(setSizeSpy.called);
+    });
+
+    test('resize renderer when in vr mode in fullscreen presentation (desktop, no headset)', function () {
+      sceneEl.renderer.xr.enabled = false;
+      sceneEl.addState('vr-mode');
+      sceneEl.resize();
+      assert.ok(setSizeSpy.called);
+    });
+
+    test('does not resize renderer when in vr mode on mobile', function () {
+      sceneEl.isMobile = true;
+      sceneEl.addState('vr-mode');
+
+      sceneEl.resize();
+
+      assert.notOk(setSizeSpy.called);
+    });
+
+    test('does not resize renderer when in vr mode and presenting in a headset', function () {
+      sceneEl.renderer.xr.getDevice = function () { return {isPresenting: true}; };
+      sceneEl.renderer.xr.enabled = true;
+      sceneEl.addState('vr-mode');
+      sceneEl.resize();
+
+      assert.notOk(setSizeSpy.called);
+    });
+  });
+});
+
 /**
  * Tests in this suite should not involve WebGL contexts or renderer.
  * They operate with the assumption that attachedCallback is stubbed.
@@ -16,7 +508,7 @@ var utils = require('index').utils;
  * to only be run locally since WebGL contexts break CI due to the headless
  * environment.
  */
-suite('a-scene (without renderer)', function () {
+suite('a-scene (without renderer) - WebVR', function () {
   setup(function (done) {
     var el = this.el = document.createElement('a-scene');
     el.addEventListener('nodeready', function () { done(); });
@@ -361,23 +853,6 @@ suite('a-scene (without renderer)', function () {
       var sceneEl = this.el;
       sceneEl.addEventListener('exit-vr', function () { done(); });
       sceneEl.exitVR();
-    });
-
-    test('reset xrSession to undefined', function () {
-      var sceneEl = this.el;
-      sceneEl.xrSession = {
-        removeEventListener: function () {},
-        end: function () { return Promise.resolve(); }
-      };
-      sceneEl.renderer.xr = {
-        setSession: function () {},
-        dispose: function () {}
-      };
-      sceneEl.hasWebXR = true;
-      sceneEl.checkHeadsetConnected = function () { return true; };
-      assert.ok(sceneEl.xrSession);
-      sceneEl.exitVR();
-      assert.notOk(sceneEl.xrSession);
     });
   });
 

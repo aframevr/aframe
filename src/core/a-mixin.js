@@ -18,8 +18,8 @@ class AMixin extends ANode {
 
   connectedCallback () {
     // Defer if DOM is not ready.
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', this.connectedCallback.bind(this));
+    if (document.readyState !== 'complete') {
+      document.addEventListener('readystatechange', this.onReadyStateChange.bind(this));
       return;
     }
 

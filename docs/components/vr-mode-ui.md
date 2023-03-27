@@ -19,10 +19,11 @@ to the [`<a-scene>` element][scene]. If we wish to simply toggle the UI, use CSS
 ## Properties
 
 | Property      | Description                                                         | Default Value |
-|---------------|---------------------------------------------------------------------|---------------|
-| enabled       | Whether or not to display UI related to entering VR.                | true          |
-| enterVRButton | Selector to a custom VR button. On click, the button will enter VR. | ''            |
-| enterARButton | Selector to a custom AR button. On click, the button will enter AR. | ''            |
+|-----------------------|---------------------------------------------------------------------|---------------|
+| cardboardModeEnabled  | Enables the now deprecated cardboard mode.                          | false         |
+| enabled               | Whether or not to display UI related to entering VR.                | true          |
+| enterVRButton         | Selector to a custom VR button. On click, the button will enter VR. | ''            |
+| enterARButton         | Selector to a custom AR button. On click, the button will enter AR. | ''            |
 
 ### Specifying a Custom Enter VR Button
 
