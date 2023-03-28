@@ -451,27 +451,37 @@ Now we can include it into our HTML:
 </html>
 ```
 
+### Using jsdelivr for CDN
+
+[jsdelivr]: https://www.jsdelivr.com/
+
+[JSDELIVR][jsdelivr] is an alternative CDN to unpkg.  One benefit of JSDELIVR is that it can download files from GitHub as well as NPM.
+
+You can convert unpkg URLs to  JSDELIVR URLs using this link: https://www.jsdelivr.com/unpkg
+
+You can convert GitHub URLs to  JSDELIVR URLs using this link: https://www.jsdelivr.com/github
+
 ### Example
 
-[glitch]: http://glitch.com/~aframe-registry
+[community-example]: https://aframe.io/examples/docs/community-components
 
-![Registry Example](https://cloud.githubusercontent.com/assets/674727/25502318/0f76ceec-2b4b-11e7-9829-cb3784b20dc1.gif)
+![Community Components Example](https://cloud.githubusercontent.com/assets/674727/25502318/0f76ceec-2b4b-11e7-9829-cb3784b20dc1.gif)
 
 Below is a complete example of using various community components from the
-Registry and using the unpkg CDN. We can [remix or check out this example on
-Glitch][glitch].
+Registry and using the JSDELIVR CDN.  This example can also be viewed in the [A-Frame Examples][community-example].
 
 ```html
 <html>
   <head>
-    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
-    <script src="https://unpkg.com/aframe-animation-component@3.2.1/dist/aframe-animation-component.min.js"></script>
-    <script src="https://unpkg.com/aframe-particle-system-component@1.0.x/dist/aframe-particle-system-component.min.js"></script>
-    <script src="https://unpkg.com/aframe-extras.ocean@%5E3.5.x/dist/aframe-extras.ocean.min.js"></script>
-    <script src="https://unpkg.com/aframe-gradient-sky@1.4.0/dist/gradientsky.min.js"></script>
+    <title>Community Components Example</title>
+    <meta name="description" content="Community Components Example">
+    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>  
+    <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-particle-system-component@a5a8449/dist/aframe-particle-system-component.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/aframe-simple-sun-sky@^1.2.2/simple-sun-sky.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@d5f3f8/dist/aframe-extras.min.js"></script>
   </head>
   <body>
-    <a-scene>
+    <a-scene> 
       <a-entity id="rain" particle-system="preset: rain; color: #24CAFF; particleCount: 5000"></a-entity>
 
       <a-entity id="sphere" geometry="primitive: sphere"
@@ -483,11 +493,9 @@ Glitch][glitch].
       <a-entity id="ocean" ocean="density: 20; width: 50; depth: 50; speed: 4"
                 material="color: #9CE3F9; opacity: 0.75; metalness: 0; roughness: 1"
                 rotation="-90 0 0"></a-entity>
-
-      <a-entity id="sky" geometry="primitive: sphere; radius: 5000"
-                material="shader: gradient; topColor: 235 235 245; bottomColor: 185 185 210"
-                scale="-1 1 1"></a-entity>
-
+      
+      <a-simple-sun-sky sun-position="1 0.4 0"></a-simple-sun-sky>
+      
       <a-entity id="light" light="type: ambient; color: #888"></a-entity>
     </a-scene>
   </body>

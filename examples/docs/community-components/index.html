@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Community Components Example</title>
+    <meta name="description" content="Community Components Example">
+    <!-- If running this example without a local copy of A-Frame, replace this next line with:
+    <script src="https://aframe.io/releases/<release_number>/aframe.min.js"></script>
+    -->
+    <script src="../../../dist/aframe-master.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-particle-system-component@a5a8449/dist/aframe-particle-system-component.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/aframe-simple-sun-sky@^1.2.2/simple-sun-sky.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@d5f3f8/dist/aframe-extras.min.js"></script>
+  </head>
+  <body>
+    <a-scene> 
+      <a-entity id="rain" particle-system="preset: rain; color: #24CAFF; particleCount: 5000"></a-entity>
+
+      <a-entity id="sphere" geometry="primitive: sphere"
+                material="color: #EFEFEF; shader: flat"
+                position="0 0.15 -5"
+                light="type: point; intensity: 5"
+                animation="property: position; easing: easeInOutQuad; dir: alternate; dur: 1000; to: 0 -0.10 -5; loop: true"></a-entity>
+
+      <a-entity id="ocean" ocean="density: 20; width: 50; depth: 50; speed: 4"
+                material="color: #9CE3F9; opacity: 0.75; metalness: 0; roughness: 1"
+                rotation="-90 0 0"></a-entity>
+      
+      <a-simple-sun-sky sun-position="1 0.4 0"></a-simple-sun-sky>
+      
+      <a-entity id="light" light="type: ambient; color: #888"></a-entity>
+    </a-scene>
+  </body>
+</html>
