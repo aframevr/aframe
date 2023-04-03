@@ -35,10 +35,10 @@ both build on top of the raycaster component.
 ## Example
 
 ```html
-<a-entity id="player" collider-check>
-  <a-entity raycaster="objects: .collidable" position="0 -0.9 0" rotation="90 0 0"></a-entity>
+<a-entity id="player" >
+  <a-entity collider-check raycaster="objects: .collidable; showLine:true;" position="0 1 0"></a-entity>
 </a-entity>
-<a-entity class="collidable" geometry="primitive: box" position="1 0 0"></a-entity>
+<a-entity class="collidable" geometry="primitive: box"  position="0 1 -3"></a-entity>
 ```
 
 Whenever an entity adds or removes the class `collidable`, the raycaster will
