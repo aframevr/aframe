@@ -86,10 +86,12 @@ AFRAME.registerComponent('foo', {
   schema: {},
   init: function () {},
   update: function () {},
+  load: function () {},
+  play: function () {},
+  pause: function () {},
   tick: function () {},
   remove: function () {},
-  pause: function () {},
-  play: function () {}
+  events: {}
 });
 ```
 
@@ -237,15 +239,18 @@ the data to modify the entity. The handlers will usually interact with the
 
 ### Overview of Methods
 
+A table of component lifecycle handlers:
+
 | Method       | Description                                                                                                                                                                                                               |
 |--------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | init         | Called once when the component is initialized. Used to set up initial state and instantiate variables.                                                                                                                    |
 | update       | Called both when the component is initialized and whenever any of the component's properties is updated (e.g, via *setAttribute*). Used to modify the entity.                                                             |
+| load         | Called only once whenever the scene or entity plays, after the `.init`. Similar to the `.play` handler, but only called once on the first time. Usually used when we want to initialize things in the component but only after the scene has loaded because the component depends on other things in the scene.                                                                                   |
+| play         | Called whenever the scene or entity plays, after the `.init` handler. Used to resume behavior out of a scene or entity pause (e.g., developer tools were opened or entity was requested from an object pool).                                                                                          |
+| pause        | Called whenever the scene or entity pauses. Also called when the component is removed from the entity or when the entity is detached from the scene. Used to pause any dynamic behavior. |
 | remove       | Called when the component is removed from the entity (e.g., via *removeAttribute*) or when the entity is detached from the scene. Used to undo all previous modifications to the entity.                                  |
 | tick         | Called on each render loop or tick of the scene. Used for continuous changes or checks.                                                                                                                                   |
-| tock         | Called on each render loop or tick of the scene after the scene has rendererd. Used for post processing effects or other logic that needs to happen after the scene has been drawn.                                                                                                                                   |
-| play         | Called whenever the scene or entity plays to add any background or dynamic behavior. Also called once when the component is initialized. Used to start or resume behavior.                                                |
-| pause        | Called whenever the scene or entity pauses to remove any background or dynamic behavior. Also called when the component is removed from the entity or when the entity is detached from the scene. Used to pause behavior. |
+| tock         | Called on each render loop or tick of the scene after the scene has rendererd. Used for post processing effects or other logic that needs to happen after the scene has been drawn.                                       |
 | updateSchema | Called whenever any of the component's properties is updated. Can be used to dynamically modify the schema.                                                                                                               |
 
 ### Component Prototype Properties
@@ -339,6 +344,71 @@ AFRAME.registerComponent('visible', {
 });
 ```
 
+### `.load ()`
+
+`.load ()` is called when the scene (or in turn, the entity) loads. If the
+scene has already loaded when attached, it will be called after component
+initialization. The entity can call a component's `load` handler **once**:
+
+- When the scene has loaded, after the `init` and `update` handlers are called.
+- If the scene has already loaded, still called after the `init` and `update`
+  handlers are called.
+
+We often want to use the `load` as an alternative to the `init` handler but
+when we depend on other things having initialized in the scene or require that
+the scene is already running. For example, we want to run a query selector on
+another entity on the scene which may not be possible while the scene is still
+setting up. Or we want to wait until parent 3D transforms get applied to the
+child so that position, rotation, and scale world space read-outs are accurate.
+
+### `.play ()`
+
+`.play ()` is called when the entity or scene resumes. The entity can call
+a component's `play` handler:
+
+- When the component is first attached, after the `update` handler is called.
+- When the entity was paused but then resumed with `Entity.play ()`.
+- When the scene was paused but then resumed with `Scene.play ()`.
+
+For example, a sound component might want to resume sound if it was previously
+paused:
+
+```js
+AFRAME.registerComponent('sound', {
+  // ...
+  play: function () {
+    if (this.isSoundPlaying) {
+      this.playSound();
+    }
+  }
+  // ...
+});
+```
+
+### `.pause ()`
+
+`.pause ()` is called when the entity or scene pauses. The entity can call a
+component's `pause` handler:
+
+- Before the component is removed, before the `remove` handler is called.
+- When the entity is paused with `Entity.pause ()`.
+- When the scene is paused with `Scene.pause ()` (e.g., the Inspector is opened).
+
+[sound]: ../components/sound.md
+
+For example, the [sound component][sound] will pause the sound and remove an
+event listener that would have played a sound on an event:
+
+```js
+AFRAME.registerComponent('sound', {
+  // ...
+  pause: function () {
+    this.pauseSound();
+  }
+  // ...
+});
+```
+
 ### `.remove ()`
 
 `.remove ()` is called whenever the component is detached from the entity. An
@@ -411,63 +481,6 @@ AFRAME.registerComponent('tracked-controls', {
 Identical to the tick method but invoked after the scene has rendered.
 
 The `tock` handler is used to run logic that needs access to the drawn scene before it's pushed into the headset like postprocessing effects.
-
-### `.pause ()`
-
-`.pause ()` is called when the entity or scene pauses. The entity can call a
-component's `pause` handler:
-
-- Before the component is removed, before the `remove` handler is called.
-- When the entity is paused with `Entity.pause ()`.
-- When the scene is paused with `Scene.pause ()` (e.g., the Inspector is opened).
-
-The `pause` handler is often used to:
-
-- Remove event listeners.
-- Remove any chances of dynamic behavior.
-
-[sound]: ../components/sound.md
-
-For example, the [sound component][sound] will pause the sound and remove an
-event listener that would have played a sound on an event:
-
-```js
-AFRAME.registerComponent('sound', {
-  // ...
-  pause: function () {
-    this.pauseSound();
-    this.removeEventListener();
-  }
-  // ...
-});
-```
-
-### `.play ()`
-
-`.play ()` is called when the entity or scene resumes. The entity can call
-a component's `play` handler:
-
-- When the component is first attached, after the `update` handler is called.
-- When the entity was paused but then resumed with `Entity.play ()`.
-- When the scene was paused but then resumed with `Scene.play ()`.
-
-The `play` handler is often use to:
-
-- Add event listeners.
-
-For example, the [sound component][sound] will play the sound and update the
-event listener that would play a sound on an event:
-
-```js
-AFRAME.registerComponent('sound', {
-  // ...
-  play: function () {
-    if (this.data.autoplay) { this.playSound(); }
-    this.updateEventListener();
-  }
-  // ...
-});
-```
 
 ### `.updateSchema (data)`
 
