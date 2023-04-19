@@ -730,7 +730,7 @@ function copyData (dest, sourceData) {
 * Object extending with checking for single-property schema.
 *
 * @param dest - Destination object or value.
-* @param source - Source object or value
+* @param source - Source object or value.
 * @param {boolean} isObjectBased - Whether values are objects.
 * @returns Overridden object or value.
 */
