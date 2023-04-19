@@ -234,7 +234,7 @@ Component.prototype = {
   /**
    * Given an HTML attribute value parses the string based on the component schema.
    * To avoid double parsings of strings into strings we store the original instead
-   * of the parsed one
+   * of the parsed one.
    *
    * @param {string} value - HTML attribute value
    */
