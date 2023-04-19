@@ -452,7 +452,7 @@ Component.prototype = {
    *
    * Some components might want to mutate their schema based on certain properties.
    * e.g., Material component changes its schema based on `shader` to account for different
-   * uniforms
+   * uniforms.
    *
    * @param {object} schemaAddon - Schema chunk that extend base schema.
    */
