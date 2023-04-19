@@ -23,7 +23,7 @@ var propertyToThreeMapping = {
  * Shader class definition.
  *
  * Shaders extend the material component API so you can create your own library
- * of customized materials
+ * of customized materials.
  *
  */
 var Shader = module.exports.Shader = function () {};
