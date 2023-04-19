@@ -236,7 +236,7 @@ Component.prototype = {
    * To avoid double parsings of strings into strings we store the original instead
    * of the parsed one.
    *
-   * @param {string} value - HTML attribute value
+   * @param {string} value - HTML attribute value.
    */
   parseAttrValueForCache: function (value) {
     var parsedValue;
