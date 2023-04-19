@@ -276,7 +276,7 @@ Component.prototype = {
    *
    * @param {string} attrValue - HTML attribute value.
    *        If undefined, use the cached attribute value and continue updating properties.
-   * @param {boolean} clobber - The previous component data is overwritten by the atrrValue
+   * @param {boolean} clobber - The previous component data is overwritten by the atrrValue.
    */
   updateProperties: function (attrValue, clobber) {
     var el = this.el;
