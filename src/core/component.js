@@ -479,7 +479,7 @@ Component.prototype = {
    * @param {object} newData - Element new data.
    * @param {boolean} clobber - The previous data is completely replaced by the new one.
    * @param {boolean} silent - Suppress warning messages.
-   * @return {object} The component data
+   * @return {object} The component data.
    */
   buildData: function (newData, clobber, silent) {
     var componentDefined;
