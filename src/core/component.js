@@ -40,11 +40,6 @@ var Component = module.exports.Component = function (el, attrValue, id) {
   this.attrName = this.name + (id ? '__' + id : '');
   this.evtDetail = {id: this.id, name: this.name};
   this.initialized = false;
-  this.isSingleProperty = isSingleProp(this.schema);
-  this.isSinglePropertyObject = this.isSingleProperty &&
-                                isObject(parseProperty(undefined, this.schema)) &&
-                                !(this.schema.default instanceof window.HTMLElement);
-  this.isObjectBased = !this.isSingleProperty || this.isSinglePropertyObject;
   this.el.components[this.attrName] = this;
   this.objectPool = objectPools[this.name];
 
@@ -519,7 +514,6 @@ Component.prototype = {
       data = previousData instanceof Object
         ? copyData(nextData, previousData)
         : nextData;
-
       // Apply defaults.
       for (key in schema) {
         defaultValue = schema[key].default;
@@ -615,6 +609,7 @@ module.exports.registerComponent = function (name, definition) {
   var proto = {};
   var schema;
   var schemaIsSingleProp;
+  var isSinglePropertyObject;
 
   // Warning if component is statically registered after the scene.
   if (document.currentScript && document.currentScript !== aframeScript) {
@@ -676,8 +671,12 @@ module.exports.registerComponent = function (name, definition) {
 
   schema = utils.extend(processSchema(NewComponent.prototype.schema,
                                       NewComponent.prototype.name));
-  schemaIsSingleProp = isSingleProp(NewComponent.prototype.schema);
+  NewComponent.prototype.isSingleProperty = schemaIsSingleProp = isSingleProp(NewComponent.prototype.schema);
+  NewComponent.prototype.isSinglePropertyObject = isSinglePropertyObject = schemaIsSingleProp &&
+                                                  isObject(parseProperty(undefined, schema)) &&
+                                                  !(schema.default instanceof window.HTMLElement);
 
+  NewComponent.prototype.isObjectBased = !schemaIsSingleProp || isSinglePropertyObject;
   // Keep track of keys that may potentially change the schema.
   if (!schemaIsSingleProp) {
     NewComponent.prototype.schemaChangeKeys = [];
@@ -694,7 +693,9 @@ module.exports.registerComponent = function (name, definition) {
   components[name] = {
     Component: NewComponent,
     dependencies: NewComponent.prototype.dependencies,
-    isSingleProp: schemaIsSingleProp,
+    isSingleProperty: NewComponent.prototype.isSingleProperty,
+    isSinglePropertyObject: NewComponent.prototype.isSinglePropertyObject,
+    isObjectBased: NewComponent.prototype.isObjectBased,
     multiple: NewComponent.prototype.multiple,
     name: name,
     parse: NewComponent.prototype.parse,
