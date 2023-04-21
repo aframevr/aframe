@@ -25904,9 +25904,6 @@ var Component = module.exports.Component = function (el, attrValue, id) {
     name: this.name
   };
   this.initialized = false;
-  this.isSingleProperty = isSingleProp(this.schema);
-  this.isSinglePropertyObject = this.isSingleProperty && isObject(parseProperty(undefined, this.schema)) && !(this.schema.default instanceof window.HTMLElement);
-  this.isObjectBased = !this.isSingleProperty || this.isSinglePropertyObject;
   this.el.components[this.attrName] = this;
   this.objectPool = objectPools[this.name];
   var events = this.events;
@@ -26374,7 +26371,6 @@ Component.prototype = {
 
       // Clone default value if object so components don't share object
       data = previousData instanceof Object ? copyData(nextData, previousData) : nextData;
-
       // Apply defaults.
       for (key in schema) {
         defaultValue = schema[key].default;
@@ -26469,6 +26465,7 @@ module.exports.registerComponent = function (name, definition) {
   var proto = {};
   var schema;
   var schemaIsSingleProp;
+  var isSinglePropertyObject;
 
   // Warning if component is statically registered after the scene.
   if (document.currentScript && document.currentScript !== aframeScript) {
@@ -26518,8 +26515,9 @@ module.exports.registerComponent = function (name, definition) {
   NewComponent.prototype.play = wrapPlay(NewComponent.prototype.play);
   NewComponent.prototype.pause = wrapPause(NewComponent.prototype.pause);
   schema = utils.extend(processSchema(NewComponent.prototype.schema, NewComponent.prototype.name));
-  schemaIsSingleProp = isSingleProp(NewComponent.prototype.schema);
-
+  NewComponent.prototype.isSingleProperty = schemaIsSingleProp = isSingleProp(NewComponent.prototype.schema);
+  NewComponent.prototype.isSinglePropertyObject = isSinglePropertyObject = schemaIsSingleProp && isObject(parseProperty(undefined, schema)) && !(schema.default instanceof window.HTMLElement);
+  NewComponent.prototype.isObjectBased = !schemaIsSingleProp || isSinglePropertyObject;
   // Keep track of keys that may potentially change the schema.
   if (!schemaIsSingleProp) {
     NewComponent.prototype.schemaChangeKeys = [];
@@ -26535,7 +26533,9 @@ module.exports.registerComponent = function (name, definition) {
   components[name] = {
     Component: NewComponent,
     dependencies: NewComponent.prototype.dependencies,
-    isSingleProp: schemaIsSingleProp,
+    isSingleProperty: NewComponent.prototype.isSingleProperty,
+    isSinglePropertyObject: NewComponent.prototype.isSinglePropertyObject,
+    isObjectBased: NewComponent.prototype.isObjectBased,
     multiple: NewComponent.prototype.multiple,
     name: name,
     parse: NewComponent.prototype.parse,
@@ -30219,7 +30219,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.4.1 (Date 2023-04-19, Commit #29d9b64d)');
+console.log('A-Frame Version: 1.4.1 (Date 2023-04-21, Commit #2a6acf93)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
