@@ -14201,14 +14201,17 @@ module.exports.Component = registerComponent('hand-controls', {
       var handmodelUrl = MODEL_URLS[handModelStyle + hand.charAt(0).toUpperCase() + hand.slice(1)];
       this.loader.load(handmodelUrl, function (gltf) {
         var mesh = gltf.scene.children[0];
-        var handModelOrientation = hand === 'left' ? Math.PI / 2 : -Math.PI / 2;
+        var handModelOrientationZ = hand === 'left' ? Math.PI / 2 : -Math.PI / 2;
+        // The WebXR standard defines the grip space such that a cylinder held in a closed hand points
+        // along the Z axis. The models currently have such a cylinder point along the X-Axis.
+        var handModelOrientationX = el.sceneEl.hasWebXR ? -Math.PI / 2 : 0;
         mesh.mixer = new THREE.AnimationMixer(mesh);
         self.clips = gltf.animations;
         el.setObject3D('mesh', mesh);
         var handMaterial = mesh.children[1].material;
         handMaterial.color = new THREE.Color(handColor);
         mesh.position.set(0, 0, 0);
-        mesh.rotation.set(0, 0, handModelOrientation);
+        mesh.rotation.set(handModelOrientationX, 0, handModelOrientationZ);
         el.setAttribute('magicleap-controls', controlConfiguration);
         el.setAttribute('vive-controls', controlConfiguration);
         el.setAttribute('oculus-touch-controls', controlConfiguration);
@@ -15604,10 +15607,10 @@ module.exports.Component = registerComponent('layer', {
 });
 function blitTexture(gl, texture, subImage, textureEl) {
   var xrReadFramebuffer = gl.createFramebuffer();
-  let x1offset = subImage.viewport.x;
-  let y1offset = subImage.viewport.y;
-  let x2offset = subImage.viewport.x + subImage.viewport.width;
-  let y2offset = subImage.viewport.y + subImage.viewport.height;
+  var x1offset = subImage.viewport.x;
+  var y1offset = subImage.viewport.y;
+  var x2offset = subImage.viewport.x + subImage.viewport.width;
+  var y2offset = subImage.viewport.y + subImage.viewport.height;
 
   // Update video texture.
   if (textureEl.tagName === 'VIDEO') {
@@ -17338,10 +17341,8 @@ module.exports.Component = registerComponent('material', {
     transparent: {
       default: false
     },
-    vertexColors: {
-      type: 'string',
-      default: 'none',
-      oneOf: ['face', 'vertex']
+    vertexColorsEnabled: {
+      default: false
     },
     visible: {
       default: true
@@ -17450,7 +17451,7 @@ module.exports.Component = registerComponent('material', {
     material.flatShading = data.flatShading;
     material.side = parseSide(data.side);
     material.transparent = data.transparent !== false || data.opacity < 1.0;
-    material.vertexColors = parseVertexColors(data.vertexColors);
+    material.vertexColors = data.vertexColorsEnabled;
     material.visible = data.visible;
     material.blending = parseBlending(data.blending);
     material.dithering = data.dithering;
@@ -17459,7 +17460,7 @@ module.exports.Component = registerComponent('material', {
     for (oldDataHasKeys in oldData) {
       break;
     }
-    if (oldDataHasKeys && (oldData.alphaTest !== data.alphaTest || oldData.side !== data.side || oldData.vertexColors !== data.vertexColors)) {
+    if (oldDataHasKeys && (oldData.alphaTest !== data.alphaTest || oldData.side !== data.side || oldData.vertexColorsEnabled !== data.vertexColorsEnabled)) {
       material.needsUpdate = true;
     }
   },
@@ -17531,26 +17532,6 @@ function parseSide(side) {
       {
         // Including case `front`.
         return THREE.FrontSide;
-      }
-  }
-}
-
-/**
- * Return a three.js constant determining vertex coloring.
- */
-function parseVertexColors(coloring) {
-  switch (coloring) {
-    case 'face':
-      {
-        return THREE.FaceColors;
-      }
-    case 'vertex':
-      {
-        return THREE.VertexColors;
-      }
-    default:
-      {
-        return THREE.NoColors;
       }
   }
 }
@@ -18411,6 +18392,9 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     var button = this.mapping[this.data.hand].buttons[evt.detail.id];
     var buttonObjects = this.buttonObjects;
     var analogValue;
+    if (!buttonObjects) {
+      return;
+    }
     analogValue = evt.detail.state.value;
     analogValue *= this.data.hand === 'left' ? -1 : 1;
     if (button === 'trigger') {
@@ -18539,10 +18523,14 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   },
   updateButtonModel: function (buttonName, state) {
     // update the button mesh colors
-    var button;
-    var color = state === 'up' || state === 'touchend' ? this.buttonMeshes[buttonName].originalColor || this.data.buttonColor : state === 'touchstart' ? this.data.buttonTouchColor : this.data.buttonHighlightColor;
     var buttonMeshes = this.buttonMeshes;
-    if (buttonMeshes && buttonMeshes[buttonName]) {
+    var button;
+    var color;
+    if (!buttonMeshes) {
+      return;
+    }
+    if (buttonMeshes[buttonName]) {
+      color = state === 'up' || state === 'touchend' ? buttonMeshes[buttonName].originalColor || this.data.buttonColor : state === 'touchstart' ? this.data.buttonTouchColor : this.data.buttonHighlightColor;
       button = buttonMeshes[buttonName];
       button.material.color.set(color);
       this.rendererSystem.applyColorCorrection(button.material.color);
@@ -18556,8 +18544,9 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
  */
 function cloneMeshMaterial(object3d) {
   object3d.traverse(function (node) {
+    var newMaterial;
     if (node.type !== 'Mesh') return;
-    let newMaterial = node.material.clone();
+    newMaterial = node.material.clone();
     object3d.originalColor = node.material.color;
     node.material.dispose();
     node.material = newMaterial;
@@ -18730,9 +18719,9 @@ module.exports.Component = registerComponent('raycaster', {
 
     // Draw line.
     if (data.showLine && (data.far !== oldData.far || data.origin !== oldData.origin || data.direction !== oldData.direction || !oldData.showLine)) {
-      // Calculate unit vector for line direction. Can be multiplied via scalar to performantly
-      // adjust line length.
-      this.unitLineEndVec3.copy(data.origin).add(data.direction).normalize();
+      // Calculate unit vector for line direction. Can be multiplied via scalar and added
+      // to orign to adjust line length.
+      this.unitLineEndVec3.copy(data.direction).normalize();
       this.drawLine();
     }
     if (!data.showLine && oldData.showLine) {
@@ -18994,9 +18983,10 @@ module.exports.Component = registerComponent('raycaster', {
     }
 
     // Update the length of the line if given. `unitLineEndVec3` is the direction
-    // given by data.direction, then we apply a scalar to give it a length.
+    // given by data.direction, then we apply a scalar to give it a length and the
+    // origin point to offset it.
     this.lineData.start = data.origin;
-    this.lineData.end = endVec3.copy(this.unitLineEndVec3).multiplyScalar(length);
+    this.lineData.end = endVec3.copy(this.unitLineEndVec3).multiplyScalar(length).add(data.origin);
     this.lineData.color = data.lineColor;
     this.lineData.opacity = data.lineOpacity;
     el.setAttribute('line', this.lineData);
@@ -24180,8 +24170,8 @@ class AAssets extends ANode {
   }
   connectedCallback() {
     // Defer if DOM is not ready.
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', this.connectedCallback.bind(this));
+    if (document.readyState !== 'complete') {
+      document.addEventListener('readystatechange', this.onReadyStateChange.bind(this));
       return;
     }
     this.doConnectedCallback();
@@ -24208,6 +24198,10 @@ class AAssets extends ANode {
         // Set in cache because we won't be needing to call three.js loader if we have.
         // a loaded media element.
         THREE.Cache.add(imgEls[i].getAttribute('src'), imgEl);
+        if (imgEl.complete) {
+          resolve();
+          return;
+        }
         imgEl.onload = resolve;
         imgEl.onerror = reject;
       }));
@@ -24461,10 +24455,26 @@ class ACubeMap extends HTMLElement {
   /**
    * Calculates this.srcs.
    */
+
   constructor(self) {
     self = super(self);
-    self.srcs = self.validate();
     return self;
+  }
+  onReadyStateChange() {
+    if (document.readyState === 'complete') {
+      this.doConnectedCallback();
+    }
+  }
+  connectedCallback() {
+    // Defer if DOM is not ready.
+    if (document.readyState !== 'complete') {
+      document.addEventListener('readystatechange', this.onReadyStateChange.bind(this));
+      return;
+    }
+    ACubeMap.prototype.doConnectedCallback.call(this);
+  }
+  doConnectedCallback() {
+    this.srcs = this.validate();
   }
 
   /**
@@ -24519,7 +24529,7 @@ var ONCE = {
  *
  * @member {object} components - entity's currently initialized components.
  * @member {object} object3D - three.js object.
- * @member {array} states
+ * @member {array} states.
  * @member {boolean} isPlaying - false if dynamic behavior of the entity is paused.
  */
 class AEntity extends ANode {
@@ -24563,8 +24573,8 @@ class AEntity extends ANode {
   */
   connectedCallback() {
     // Defer if DOM is not ready.
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', this.connectedCallback.bind(this));
+    if (document.readyState !== 'complete') {
+      document.addEventListener('readystatechange', this.onReadyStateChange.bind(this));
       return;
     }
     AEntity.prototype.doConnectedCallback.call(this);
@@ -25444,8 +25454,8 @@ class AMixin extends ANode {
   }
   connectedCallback() {
     // Defer if DOM is not ready.
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', this.connectedCallback.bind(this));
+    if (document.readyState !== 'complete') {
+      document.addEventListener('readystatechange', this.onReadyStateChange.bind(this));
       return;
     }
     this.doConnectedCallback();
@@ -25573,10 +25583,15 @@ class ANode extends HTMLElement {
     this.isNode = true;
     this.mixinEls = [];
   }
+  onReadyStateChange() {
+    if (document.readyState === 'complete') {
+      this.doConnectedCallback();
+    }
+  }
   connectedCallback() {
     // Defer if DOM is not ready.
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', this.connectedCallback.bind(this));
+    if (document.readyState !== 'complete') {
+      document.addEventListener('readystatechange', this.onReadyStateChange.bind(this));
       return;
     }
     ANode.prototype.doConnectedCallback.call(this);
@@ -25681,10 +25696,10 @@ class ANode extends HTMLElement {
         }
       });
       self.hasLoaded = true;
+      self.setupMutationObserver();
       if (cb) {
         cb();
       }
-      self.setupMutationObserver();
       self.emit('loaded', undefined, false);
     });
   }
@@ -25694,7 +25709,7 @@ class ANode extends HTMLElement {
    * for attributes defined statically via observedAttributes.
    * One can assign any arbitrary components to an A-Frame entity
    * hence we can't know the list of attributes beforehand.
-   * This function setup a mutation observer to keep track of the entiy attribute changes
+   * This function setup a mutation observer to keep track of the entity attribute changes
    * in the DOM and update components accordingly.
    */
   setupMutationObserver() {
@@ -25889,9 +25904,6 @@ var Component = module.exports.Component = function (el, attrValue, id) {
     name: this.name
   };
   this.initialized = false;
-  this.isSingleProperty = isSingleProp(this.schema);
-  this.isSinglePropertyObject = this.isSingleProperty && isObject(parseProperty(undefined, this.schema)) && !(this.schema.default instanceof window.HTMLElement);
-  this.isObjectBased = !this.isSingleProperty || this.isSinglePropertyObject;
   this.el.components[this.attrName] = this;
   this.objectPool = objectPools[this.name];
   var events = this.events;
@@ -26072,9 +26084,9 @@ Component.prototype = {
   /**
    * Given an HTML attribute value parses the string based on the component schema.
    * To avoid double parsings of strings into strings we store the original instead
-   * of the parsed one
+   * of the parsed one.
    *
-   * @param {string} value - HTML attribute value
+   * @param {string} value - HTML attribute value.
    */
   parseAttrValueForCache: function (value) {
     var parsedValue;
@@ -26117,7 +26129,7 @@ Component.prototype = {
    *
    * @param {string} attrValue - HTML attribute value.
    *        If undefined, use the cached attribute value and continue updating properties.
-   * @param {boolean} clobber - The previous component data is overwritten by the atrrValue
+   * @param {boolean} clobber - The previous component data is overwritten by the atrrValue.
    */
   updateProperties: function (attrValue, clobber) {
     var el = this.el;
@@ -26298,7 +26310,7 @@ Component.prototype = {
    *
    * Some components might want to mutate their schema based on certain properties.
    * e.g., Material component changes its schema based on `shader` to account for different
-   * uniforms
+   * uniforms.
    *
    * @param {object} schemaAddon - Schema chunk that extend base schema.
    */
@@ -26324,7 +26336,7 @@ Component.prototype = {
    * @param {object} newData - Element new data.
    * @param {boolean} clobber - The previous data is completely replaced by the new one.
    * @param {boolean} silent - Suppress warning messages.
-   * @return {object} The component data
+   * @return {object} The component data.
    */
   buildData: function (newData, clobber, silent) {
     var componentDefined;
@@ -26359,7 +26371,6 @@ Component.prototype = {
 
       // Clone default value if object so components don't share object
       data = previousData instanceof Object ? copyData(nextData, previousData) : nextData;
-
       // Apply defaults.
       for (key in schema) {
         defaultValue = schema[key].default;
@@ -26454,6 +26465,7 @@ module.exports.registerComponent = function (name, definition) {
   var proto = {};
   var schema;
   var schemaIsSingleProp;
+  var isSinglePropertyObject;
 
   // Warning if component is statically registered after the scene.
   if (document.currentScript && document.currentScript !== aframeScript) {
@@ -26503,8 +26515,9 @@ module.exports.registerComponent = function (name, definition) {
   NewComponent.prototype.play = wrapPlay(NewComponent.prototype.play);
   NewComponent.prototype.pause = wrapPause(NewComponent.prototype.pause);
   schema = utils.extend(processSchema(NewComponent.prototype.schema, NewComponent.prototype.name));
-  schemaIsSingleProp = isSingleProp(NewComponent.prototype.schema);
-
+  NewComponent.prototype.isSingleProperty = schemaIsSingleProp = isSingleProp(NewComponent.prototype.schema);
+  NewComponent.prototype.isSinglePropertyObject = isSinglePropertyObject = schemaIsSingleProp && isObject(parseProperty(undefined, schema)) && !(schema.default instanceof window.HTMLElement);
+  NewComponent.prototype.isObjectBased = !schemaIsSingleProp || isSinglePropertyObject;
   // Keep track of keys that may potentially change the schema.
   if (!schemaIsSingleProp) {
     NewComponent.prototype.schemaChangeKeys = [];
@@ -26520,7 +26533,9 @@ module.exports.registerComponent = function (name, definition) {
   components[name] = {
     Component: NewComponent,
     dependencies: NewComponent.prototype.dependencies,
-    isSingleProp: schemaIsSingleProp,
+    isSingleProperty: NewComponent.prototype.isSingleProperty,
+    isSinglePropertyObject: NewComponent.prototype.isSinglePropertyObject,
+    isObjectBased: NewComponent.prototype.isObjectBased,
     multiple: NewComponent.prototype.multiple,
     name: name,
     parse: NewComponent.prototype.parse,
@@ -26556,7 +26571,7 @@ function copyData(dest, sourceData) {
 * Object extending with checking for single-property schema.
 *
 * @param dest - Destination object or value.
-* @param source - Source object or value
+* @param source - Source object or value.
 * @param {boolean} isObjectBased - Whether values are objects.
 * @returns Overridden object or value.
 */
@@ -27087,8 +27102,8 @@ class AScene extends AEntity {
   }
   connectedCallback() {
     // Defer if DOM is not ready.
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', this.connectedCallback.bind(this));
+    if (document.readyState !== 'complete') {
+      document.addEventListener('readystatechange', this.onReadyStateChange.bind(this));
       return;
     }
     this.doConnectedCallback();
@@ -27137,7 +27152,7 @@ class AScene extends AEntity {
     this.pointerUnrestrictedBound = function () {
       self.pointerUnrestricted();
     };
-    if (!isWebXRAvailable) {
+    if (!self.hasWebXR) {
       // Exit VR on `vrdisplaydeactivate` (e.g. taking off Rift headset).
       window.addEventListener('vrdisplaydeactivate', this.exitVRBound);
 
@@ -27321,6 +27336,7 @@ class AScene extends AEntity {
             vrManager.setSession(xrSession).then(function () {
               vrManager.setFoveation(rendererSystem.foveationLevel);
             });
+            self.systems.renderer.setWebXRFrameRate(xrSession);
             xrSession.addEventListener('end', self.exitVRBound);
             enterVRSuccess(resolve);
           }, function requestFail(error) {
@@ -27375,7 +27391,7 @@ class AScene extends AEntity {
         target: self
       });
       // Lock to landscape orientation on mobile.
-      if (!isWebXRAvailable && self.isMobile && screen.orientation && screen.orientation.lock) {
+      if (!self.hasWebXR && self.isMobile && screen.orientation && screen.orientation.lock) {
         screen.orientation.lock('landscape');
       }
       self.addFullScreenStyles();
@@ -27427,7 +27443,6 @@ class AScene extends AEntity {
         // Capture promise to avoid errors.
         this.xrSession.end().then(function () {}, function () {});
         this.xrSession = undefined;
-        vrManager.setSession(null);
       } else {
         if (vrDisplay.isPresenting) {
           return vrDisplay.exitPresent().then(exitVRSuccess, exitVRFailure);
@@ -28451,7 +28466,7 @@ var propertyToThreeMapping = {
  * Shader class definition.
  *
  * Shaders extend the material component API so you can create your own library
- * of customized materials
+ * of customized materials.
  *
  */
 var Shader = module.exports.Shader = function () {};
@@ -30204,7 +30219,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.4.0 (Date 2022-12-26, Commit #60a324a2)');
+console.log('A-Frame Version: 1.4.2 (Date 2023-04-22, Commit #4e521f1f)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
@@ -31770,7 +31785,7 @@ function fetchScript(src) {
 module.exports.System = registerSystem('gltf-model', {
   schema: {
     dracoDecoderPath: {
-      default: 'https://www.gstatic.com/draco/versioned/decoders/1.5.5/'
+      default: 'https://www.gstatic.com/draco/versioned/decoders/1.5.6/'
     },
     basisTranscoderPath: {
       default: ''
@@ -32395,6 +32410,21 @@ module.exports.System = registerSystem('renderer', {
       colorOrTexture.convertSRGBToLinear();
     } else if (colorOrTexture.isTexture) {
       colorOrTexture.encoding = THREE.sRGBEncoding;
+    }
+  },
+  setWebXRFrameRate: function (xrSession) {
+    var data = this.data;
+    var rates = xrSession.supportedFrameRates;
+    if (rates && xrSession.updateTargetFrameRate) {
+      let targetRate;
+      if (rates.includes(90)) {
+        targetRate = data.highRefreshRate ? 90 : 72;
+      } else {
+        targetRate = data.highRefreshRate ? 72 : 60;
+      }
+      xrSession.updateTargetFrameRate(targetRate).catch(function (error) {
+        console.warn('failed to set target frame rate of ' + targetRate + '. Error info: ' + error);
+      });
     }
   }
 });
@@ -35728,24 +35758,19 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
 
 
 var stylesInDOM = [];
-
 function getIndexByIdentifier(identifier) {
   var result = -1;
-
   for (var i = 0; i < stylesInDOM.length; i++) {
     if (stylesInDOM[i].identifier === identifier) {
       result = i;
       break;
     }
   }
-
   return result;
 }
-
 function modulesToDom(list, options) {
   var idCountMap = {};
   var identifiers = [];
-
   for (var i = 0; i < list.length; i++) {
     var item = list[i];
     var id = options.base ? item[0] + options.base : item[0];
@@ -35760,7 +35785,6 @@ function modulesToDom(list, options) {
       supports: item[4],
       layer: item[5]
     };
-
     if (indexByIdentifier !== -1) {
       stylesInDOM[indexByIdentifier].references++;
       stylesInDOM[indexByIdentifier].updater(obj);
@@ -35773,59 +35797,45 @@ function modulesToDom(list, options) {
         references: 1
       });
     }
-
     identifiers.push(identifier);
   }
-
   return identifiers;
 }
-
 function addElementStyle(obj, options) {
   var api = options.domAPI(options);
   api.update(obj);
-
   var updater = function updater(newObj) {
     if (newObj) {
       if (newObj.css === obj.css && newObj.media === obj.media && newObj.sourceMap === obj.sourceMap && newObj.supports === obj.supports && newObj.layer === obj.layer) {
         return;
       }
-
       api.update(obj = newObj);
     } else {
       api.remove();
     }
   };
-
   return updater;
 }
-
 module.exports = function (list, options) {
   options = options || {};
   list = list || [];
   var lastIdentifiers = modulesToDom(list, options);
   return function update(newList) {
     newList = newList || [];
-
     for (var i = 0; i < lastIdentifiers.length; i++) {
       var identifier = lastIdentifiers[i];
       var index = getIndexByIdentifier(identifier);
       stylesInDOM[index].references--;
     }
-
     var newLastIdentifiers = modulesToDom(newList, options);
-
     for (var _i = 0; _i < lastIdentifiers.length; _i++) {
       var _identifier = lastIdentifiers[_i];
-
       var _index = getIndexByIdentifier(_identifier);
-
       if (stylesInDOM[_index].references === 0) {
         stylesInDOM[_index].updater();
-
         stylesInDOM.splice(_index, 1);
       }
     }
-
     lastIdentifiers = newLastIdentifiers;
   };
 };
@@ -35842,12 +35852,13 @@ module.exports = function (list, options) {
 
 
 var memo = {};
-/* istanbul ignore next  */
 
+/* istanbul ignore next  */
 function getTarget(target) {
   if (typeof memo[target] === "undefined") {
-    var styleTarget = document.querySelector(target); // Special case to return head of iframe instead of iframe itself
+    var styleTarget = document.querySelector(target);
 
+    // Special case to return head of iframe instead of iframe itself
     if (window.HTMLIFrameElement && styleTarget instanceof window.HTMLIFrameElement) {
       try {
         // This will throw an exception if access to iframe is blocked
@@ -35858,25 +35869,19 @@ function getTarget(target) {
         styleTarget = null;
       }
     }
-
     memo[target] = styleTarget;
   }
-
   return memo[target];
 }
+
 /* istanbul ignore next  */
-
-
 function insertBySelector(insert, style) {
   var target = getTarget(insert);
-
   if (!target) {
     throw new Error("Couldn't find a style target. This probably means that the value for the 'insert' parameter is invalid.");
   }
-
   target.appendChild(style);
 }
-
 module.exports = insertBySelector;
 
 /***/ }),
@@ -35897,7 +35902,6 @@ function insertStyleElement(options) {
   options.insert(element, options.options);
   return element;
 }
-
 module.exports = insertStyleElement;
 
 /***/ }),
@@ -35914,12 +35918,10 @@ module.exports = insertStyleElement;
 /* istanbul ignore next  */
 function setAttributesWithoutAttributes(styleElement) {
   var nonce =  true ? __webpack_require__.nc : 0;
-
   if (nonce) {
     styleElement.setAttribute("nonce", nonce);
   }
 }
-
 module.exports = setAttributesWithoutAttributes;
 
 /***/ }),
@@ -35936,59 +35938,51 @@ module.exports = setAttributesWithoutAttributes;
 /* istanbul ignore next  */
 function apply(styleElement, options, obj) {
   var css = "";
-
   if (obj.supports) {
     css += "@supports (".concat(obj.supports, ") {");
   }
-
   if (obj.media) {
     css += "@media ".concat(obj.media, " {");
   }
-
   var needLayer = typeof obj.layer !== "undefined";
-
   if (needLayer) {
     css += "@layer".concat(obj.layer.length > 0 ? " ".concat(obj.layer) : "", " {");
   }
-
   css += obj.css;
-
   if (needLayer) {
     css += "}";
   }
-
   if (obj.media) {
     css += "}";
   }
-
   if (obj.supports) {
     css += "}";
   }
-
   var sourceMap = obj.sourceMap;
-
   if (sourceMap && typeof btoa !== "undefined") {
     css += "\n/*# sourceMappingURL=data:application/json;base64,".concat(btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))), " */");
-  } // For old IE
+  }
 
+  // For old IE
   /* istanbul ignore if  */
-
-
   options.styleTagTransform(css, styleElement, options.options);
 }
-
 function removeStyleElement(styleElement) {
   // istanbul ignore if
   if (styleElement.parentNode === null) {
     return false;
   }
-
   styleElement.parentNode.removeChild(styleElement);
 }
+
 /* istanbul ignore next  */
-
-
 function domAPI(options) {
+  if (typeof document === "undefined") {
+    return {
+      update: function update() {},
+      remove: function remove() {}
+    };
+  }
   var styleElement = options.insertStyleElement(options);
   return {
     update: function update(obj) {
@@ -35999,7 +35993,6 @@ function domAPI(options) {
     }
   };
 }
-
 module.exports = domAPI;
 
 /***/ }),
@@ -36021,11 +36014,9 @@ function styleTagTransform(css, styleElement) {
     while (styleElement.firstChild) {
       styleElement.removeChild(styleElement.firstChild);
     }
-
     styleElement.appendChild(document.createTextNode(css));
   }
 }
-
 module.exports = styleTagTransform;
 
 /***/ }),
@@ -37576,7 +37567,7 @@ function onSessionEvent(event){const controllerIndex=controllerInputSources.inde
 renderer.setRenderTarget(initialRenderTarget);glBaseLayer=null;glProjLayer=null;glBinding=null;session=null;newRenderTarget=null;//
 animation.stop();scope.isPresenting=false;scope.dispatchEvent({type:'sessionend'});}this.setFramebufferScaleFactor=function(value){framebufferScaleFactor=value;if(scope.isPresenting===true){console.warn('THREE.WebXRManager: Cannot change framebuffer scale while presenting.');}};this.setReferenceSpaceType=function(value){referenceSpaceType=value;if(scope.isPresenting===true){console.warn('THREE.WebXRManager: Cannot change reference space type while presenting.');}};this.getReferenceSpace=function(){return customReferenceSpace||referenceSpace;};this.setReferenceSpace=function(space){customReferenceSpace=space;};this.getBaseLayer=function(){return glProjLayer!==null?glProjLayer:glBaseLayer;};this.getBinding=function(){return glBinding;};this.getFrame=function(){return xrFrame;};this.getSession=function(){return session;};this.setSession=async function(value){session=value;if(session!==null){initialRenderTarget=renderer.getRenderTarget();session.addEventListener('select',onSessionEvent);session.addEventListener('selectstart',onSessionEvent);session.addEventListener('selectend',onSessionEvent);session.addEventListener('squeeze',onSessionEvent);session.addEventListener('squeezestart',onSessionEvent);session.addEventListener('squeezeend',onSessionEvent);session.addEventListener('end',onSessionEnd);session.addEventListener('inputsourceschange',onInputSourcesChange);if(attributes.xrCompatible!==true){await gl.makeXRCompatible();}if(session.renderState.layers===undefined||renderer.capabilities.isWebGL2===false){const layerInit={antialias:session.renderState.layers===undefined?attributes.antialias:true,alpha:attributes.alpha,depth:attributes.depth,stencil:attributes.stencil,framebufferScaleFactor:framebufferScaleFactor};glBaseLayer=new XRWebGLLayer(session,gl,layerInit);session.updateRenderState({baseLayer:glBaseLayer});newRenderTarget=new WebGLRenderTarget(glBaseLayer.framebufferWidth,glBaseLayer.framebufferHeight,{format:RGBAFormat,type:UnsignedByteType,encoding:renderer.outputEncoding,stencilBuffer:attributes.stencil});}else{let depthFormat=null;let depthType=null;let glDepthFormat=null;if(attributes.depth){glDepthFormat=attributes.stencil?35056:33190;depthFormat=attributes.stencil?DepthStencilFormat:DepthFormat;depthType=attributes.stencil?UnsignedInt248Type:UnsignedIntType;}const projectionlayerInit={colorFormat:32856,depthFormat:glDepthFormat,scaleFactor:framebufferScaleFactor};glBinding=new XRWebGLBinding(session,gl);glProjLayer=glBinding.createProjectionLayer(projectionlayerInit);session.updateRenderState({layers:[glProjLayer]});newRenderTarget=new WebGLRenderTarget(glProjLayer.textureWidth,glProjLayer.textureHeight,{format:RGBAFormat,type:UnsignedByteType,depthTexture:new DepthTexture(glProjLayer.textureWidth,glProjLayer.textureHeight,depthType,undefined,undefined,undefined,undefined,undefined,undefined,depthFormat),stencilBuffer:attributes.stencil,encoding:renderer.outputEncoding,samples:attributes.antialias?4:0});const renderTargetProperties=renderer.properties.get(newRenderTarget);renderTargetProperties.__ignoreDepthValues=glProjLayer.ignoreDepthValues;}newRenderTarget.isXRRenderTarget=true;// TODO Remove this when possible, see #23278
 // Set foveation to maximum.
-this.setFoveation(1.0);customReferenceSpace=null;referenceSpace=await session.requestReferenceSpace(referenceSpaceType);animation.setContext(session);animation.start();scope.isPresenting=true;scope.dispatchEvent({type:'sessionstart'});}};this.addLayer=function(layer){if(!window.XRWebGLBinding||!this.layersEnabled||!session){return;}layers.push(layer);this.updateLayers();};this.removeLayer=function(layer){if(!window.XRWebGLBinding||!this.layersEnabled||!session){return;}layers.splice(layers.indexOf(layer),1);this.updateLayers();};this.updateLayers=function(){var layersCopy=layers.map(function(x){return x;});layersCopy.unshift(session.renderState.layers[0]);session.updateRenderState({layers:layersCopy});};function onInputSourcesChange(event){// Notify disconnected
+this.setFoveation(1.0);customReferenceSpace=null;referenceSpace=await session.requestReferenceSpace(referenceSpaceType);animation.setContext(session);animation.start();scope.isPresenting=true;scope.dispatchEvent({type:'sessionstart'});}};this.addLayer=function(layer){if(!window.XRWebGLBinding||!this.layersEnabled||!session){return;}layers.push(layer);this.updateLayers();};this.removeLayer=function(layer){layers.splice(layers.indexOf(layer),1);if(!window.XRWebGLBinding||!this.layersEnabled||!session){return;}this.updateLayers();};this.updateLayers=function(){var layersCopy=layers.map(function(x){return x;});layersCopy.unshift(session.renderState.layers[0]);session.updateRenderState({layers:layersCopy});};function onInputSourcesChange(event){// Notify disconnected
 for(let i=0;i<event.removed.length;i++){const inputSource=event.removed[i];const index=controllerInputSources.indexOf(inputSource);if(index>=0){controllerInputSources[index]=null;controllers[index].disconnect(inputSource);}}// Notify connected
 for(let i=0;i<event.added.length;i++){const inputSource=event.added[i];let controllerIndex=controllerInputSources.indexOf(inputSource);if(controllerIndex===-1){// Assign input source a controller that currently has no input source
 for(let i=0;i<controllers.length;i++){if(i>=controllerInputSources.length){controllerInputSources.push(inputSource);controllerIndex=i;break;}else if(controllerInputSources[i]===null){controllerInputSources[i]=inputSource;controllerIndex=i;break;}}// If all controllers do currently receive input we ignore new ones
@@ -45537,7 +45528,7 @@ class WorkerPool {
 /***/ ((module) => {
 
 "use strict";
-module.exports = JSON.parse('{"name":"aframe","version":"1.4.0","description":"A web framework for building virtual reality experiences.","homepage":"https://aframe.io/","main":"dist/aframe-master.js","scripts":{"dev":"cross-env INSPECTOR_VERSION=dev webpack serve --port 8080","dist":"node scripts/updateVersionLog.js && npm run dist:min && npm run dist:max","dist:max":"webpack --config webpack.config.js","dist:min":"webpack --config webpack.prod.config.js","docs":"markserv --dir docs --port 9001","preghpages":"node ./scripts/preghpages.js","ghpages":"ghpages -p gh-pages/","lint":"semistandard -v | snazzy","lint:fix":"semistandard --fix","precommit":"npm run lint","prepush":"node scripts/testOnlyCheck.js","prerelease":"node scripts/release.js 1.3.0 1.4.0","start":"npm run dev","start:https":"npm run dev -- --server-type https","test":"karma start ./tests/karma.conf.js","test:docs":"node scripts/docsLint.js","test:firefox":"npm test -- --browsers Firefox","test:chrome":"npm test -- --browsers Chrome","test:nobrowser":"NO_BROWSER=true npm test","test:node":"mocha --ui tdd tests/node"},"repository":"aframevr/aframe","license":"MIT","files":["dist/*","docs/**/*","src/**/*","vendor/**/*"],"dependencies":{"buffer":"^6.0.3","custom-event-polyfill":"^1.0.6","debug":"ngokevin/debug#noTimestamp","deep-assign":"^2.0.0","@ungap/custom-elements":"^1.1.0","load-bmfont":"^1.2.3","object-assign":"^4.0.1","present":"0.0.6","promise-polyfill":"^3.1.0","super-animejs":"^3.1.0","super-three":"^0.147.0","three-bmfont-text":"dmarcos/three-bmfont-text#21d017046216e318362c48abd1a48bddfb6e0733","webvr-polyfill":"^0.10.12"},"devDependencies":{"@babel/core":"^7.17.10","babel-loader":"^8.2.5","babel-plugin-istanbul":"^6.1.1","chai":"^4.3.6","chai-shallow-deep-equal":"^1.4.0","chalk":"^1.1.3","cross-env":"^7.0.3","css-loader":"^6.7.1","ghpages":"0.0.8","git-rev":"^0.2.1","glob":"^8.0.3","husky":"^0.11.7","jsdom":"^20.0.0","karma":"^6.4.0","karma-chai-shallow-deep-equal":"0.0.4","karma-chrome-launcher":"^3.1.1","karma-coverage":"^2.2.0","karma-env-preprocessor":"^0.1.1","karma-firefox-launcher":"^2.1.2","karma-mocha":"^2.0.1","karma-mocha-reporter":"^2.2.5","karma-sinon-chai":"^2.0.2","karma-webpack":"^5.0.0","markserv":"github:sukima/markserv#feature/fix-broken-websoketio-link","mocha":"^10.0.0","replace-in-file":"^2.5.3","semistandard":"^9.0.0","shelljs":"^0.7.7","shx":"^0.2.2","sinon":"<12.0.0","sinon-chai":"^3.7.0","snazzy":"^5.0.0","style-loader":"^3.3.1","too-wordy":"ngokevin/too-wordy","webpack":"^5.73.0","webpack-cli":"^4.10.0","webpack-dev-server":"^4.11.0","webpack-merge":"^5.8.0","write-good":"^1.0.8"},"link":true,"semistandard":{"ignore":["build/**","dist/**","examples/**/shaders/*.js","**/vendor/**"]},"keywords":["3d","aframe","cardboard","components","oculus","three","three.js","rift","vive","vr","web-components","webvr"],"engines":{"node":">= 4.6.0","npm":">= 2.15.9"}}');
+module.exports = JSON.parse('{"name":"aframe","version":"1.4.2","description":"A web framework for building virtual reality experiences.","homepage":"https://aframe.io/","main":"dist/aframe-master.js","scripts":{"dev":"cross-env INSPECTOR_VERSION=dev webpack serve --port 8080","dist":"node scripts/updateVersionLog.js && npm run dist:min && npm run dist:max","dist:max":"webpack --config webpack.config.js","dist:min":"webpack --config webpack.prod.config.js","docs":"markserv --dir docs --port 9001","preghpages":"node ./scripts/preghpages.js","ghpages":"ghpages -p gh-pages/","lint":"semistandard -v | snazzy","lint:fix":"semistandard --fix","precommit":"npm run lint","prepush":"node scripts/testOnlyCheck.js","prerelease":"node scripts/release.js 1.4.1 1.4.2","start":"npm run dev","start:https":"npm run dev -- --server-type https","test":"karma start ./tests/karma.conf.js","test:docs":"node scripts/docsLint.js","test:firefox":"npm test -- --browsers Firefox","test:chrome":"npm test -- --browsers Chrome","test:nobrowser":"NO_BROWSER=true npm test","test:node":"mocha --ui tdd tests/node"},"repository":"aframevr/aframe","license":"MIT","files":["dist/*","docs/**/*","src/**/*","vendor/**/*"],"dependencies":{"buffer":"^6.0.3","custom-event-polyfill":"^1.0.6","debug":"ngokevin/debug#noTimestamp","deep-assign":"^2.0.0","@ungap/custom-elements":"^1.1.0","load-bmfont":"^1.2.3","object-assign":"^4.0.1","present":"0.0.6","promise-polyfill":"^3.1.0","super-animejs":"^3.1.0","super-three":"^0.147.1","three-bmfont-text":"dmarcos/three-bmfont-text#21d017046216e318362c48abd1a48bddfb6e0733","webvr-polyfill":"^0.10.12"},"devDependencies":{"@babel/core":"^7.17.10","babel-loader":"^8.2.5","babel-plugin-istanbul":"^6.1.1","chai":"^4.3.6","chai-shallow-deep-equal":"^1.4.0","chalk":"^1.1.3","cross-env":"^7.0.3","css-loader":"^6.7.1","ghpages":"0.0.8","git-rev":"^0.2.1","glob":"^8.0.3","husky":"^0.11.7","jsdom":"^20.0.0","karma":"^6.4.0","karma-chai-shallow-deep-equal":"0.0.4","karma-chrome-launcher":"^3.1.1","karma-coverage":"^2.2.0","karma-env-preprocessor":"^0.1.1","karma-firefox-launcher":"^2.1.2","karma-mocha":"^2.0.1","karma-mocha-reporter":"^2.2.5","karma-sinon-chai":"^2.0.2","karma-webpack":"^5.0.0","markserv":"github:sukima/markserv#feature/fix-broken-websoketio-link","mocha":"^10.0.0","replace-in-file":"^2.5.3","semistandard":"^9.0.0","shelljs":"^0.7.7","shx":"^0.2.2","sinon":"<12.0.0","sinon-chai":"^3.7.0","snazzy":"^5.0.0","style-loader":"^3.3.1","too-wordy":"ngokevin/too-wordy","webpack":"^5.73.0","webpack-cli":"^4.10.0","webpack-dev-server":"^4.11.0","webpack-merge":"^5.8.0","write-good":"^1.0.8"},"link":true,"semistandard":{"ignore":["build/**","dist/**","examples/**/shaders/*.js","**/vendor/**"]},"keywords":["3d","aframe","cardboard","components","oculus","three","three.js","rift","vive","vr","quest","meta","web-components","webvr","webxr"],"engines":{"node":">= 4.6.0","npm":">= 2.15.9"}}');
 
 /***/ })
 
