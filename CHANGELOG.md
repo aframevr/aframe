@@ -1,3 +1,31 @@
+### 1.4.2 (Apr 22, 2023)
+
+### Bug fixes
+
+- Fix issue when Quest 2 touch buttons are pressed before model has loaded (#5212, #5220) (@vincentfretin @mikemainguy)
+- Fix orientation of hand tracking models (fix #4848) (@DougReeder)
+- Fix problem with <a-assets> where image load quickly before the onload listener is attached. Manifests in particular for browser cached images (fix #5251) (@tomfelder94)
+- Fix loading order when A-Frame is used along defer and modules script tags (fix #5228) (@wmurphyrd)
+- Fix raycaster visual appearance when origin is not 0,0,0 (fix https://github.com/aframevr/aframe/issues/4882) (https://github.com/aframevr/aframe/pull/4884) (@Clicky02)
+- Fix problem when adding a single property component via mixin (#5273) (@kfarr @dmarcos)
+- Fix exception when trying to reference this pointer inside callback. (https://github.com/aframevr/aframe/pull/5221) (@diarmidmackenzie)
+Change vertexColors property name to vertexColorsEnabled and make it a boolean to match THREE API  (https://github.com/aframevr/aframe/pull/5250) (@diarmidmackenzie)
+
+### Enhancements
+
+- Add WebXR unit tests (https://github.com/aframevr/aframe/pull/5227) (@diarmidmackenzie)
+Expose low / high refresh rates options for WebXR devices (https://github.com/aframevr/aframe/pull/5217) (@diarmidmackenzie)
+- Docs improvements (@Srile @DougReeder @foobar404 @stefan-langenmaier @vincentfretin @diarmidmackenzie @dmarcos)
+
+
+### 1.4.1 (Jan 6, 2023)
+
+### Bug fixes
+
+- Fix error when exiting immersive mode (fix https://github.com/aframevr/aframe/issues/5137)(https://github.com/aframevr/aframe/pull/5198) (@vincentfretin)
+- Fix issue reentering immersive mode when using compositor layers (fix #5197) (https://github.com/supermedium/three.js/pull/9) (@vincentfretin)
+
+
 ### 1.4.0 (Dec 26, 2022)
 
 A-Frame moved to custom elements V1, Oculus Quest Pro support, and tons of fixes and improvements in both A-Frame core and inspector 👏 
