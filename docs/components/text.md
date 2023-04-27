@@ -292,7 +292,7 @@ A-Frame, below are links to some background reading:
 
 [mattdesl]: http://slides.com/mattdeslauriers/hacking-with-three-js#/7
 [parris]: https://www.eventbrite.com/engineering/its-2015-and-drawing-text-is-still-hard-webgl-threejs/
-[valve]: http://www.valvesoftware.com/publications/2007/SIGGRAPH2007_AlphaTestedMagnification.pdf
+[valve]: https://steamcdn-a.akamaihd.net/apps/valve/2007/SIGGRAPH2007_AlphaTestedMagnification.pdf
 
 - [`three-bmfont-text` documentation][three-bmfont-text]
 - [*Hacking with three.js*][mattdesl]
