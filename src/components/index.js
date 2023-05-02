@@ -21,6 +21,7 @@ require('./material');
 require('./obj-model');
 require('./oculus-go-controls');
 require('./oculus-touch-controls');
+require('./pico-controls');
 require('./position');
 require('./raycaster');
 require('./rotation');
