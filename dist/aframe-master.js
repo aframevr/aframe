@@ -14215,6 +14215,7 @@ module.exports.Component = registerComponent('hand-controls', {
         el.setAttribute('magicleap-controls', controlConfiguration);
         el.setAttribute('vive-controls', controlConfiguration);
         el.setAttribute('oculus-touch-controls', controlConfiguration);
+        el.setAttribute('pico-controls', controlConfiguration);
         el.setAttribute('windows-motion-controls', controlConfiguration);
         el.setAttribute('hp-mixed-reality-controls', controlConfiguration);
       });
@@ -15000,6 +15001,7 @@ __webpack_require__(/*! ./material */ "./src/components/material.js");
 __webpack_require__(/*! ./obj-model */ "./src/components/obj-model.js");
 __webpack_require__(/*! ./oculus-go-controls */ "./src/components/oculus-go-controls.js");
 __webpack_require__(/*! ./oculus-touch-controls */ "./src/components/oculus-touch-controls.js");
+__webpack_require__(/*! ./pico-controls */ "./src/components/pico-controls.js");
 __webpack_require__(/*! ./position */ "./src/components/position.js");
 __webpack_require__(/*! ./raycaster */ "./src/components/raycaster.js");
 __webpack_require__(/*! ./rotation */ "./src/components/rotation.js");
@@ -15070,6 +15072,7 @@ registerComponent('laser-controls', {
     el.setAttribute('magicleap-controls', controlsConfiguration);
     el.setAttribute('oculus-go-controls', controlsConfiguration);
     el.setAttribute('oculus-touch-controls', controlsConfiguration);
+    el.setAttribute('pico-controls', controlsConfiguration);
     el.setAttribute('valve-index-controls', controlsConfiguration);
     el.setAttribute('vive-controls', controlsConfiguration);
     el.setAttribute('vive-focus-controls', controlsConfiguration);
@@ -18552,6 +18555,190 @@ function cloneMeshMaterial(object3d) {
     node.material = newMaterial;
   });
 }
+
+/***/ }),
+
+/***/ "./src/components/pico-controls.js":
+/*!*****************************************!*\
+  !*** ./src/components/pico-controls.js ***!
+  \*****************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var bind = __webpack_require__(/*! ../utils/bind */ "./src/utils/bind.js");
+var registerComponent = (__webpack_require__(/*! ../core/component */ "./src/core/component.js").registerComponent);
+var THREE = __webpack_require__(/*! ../lib/three */ "./src/lib/three.js");
+var trackedControlsUtils = __webpack_require__(/*! ../utils/tracked-controls */ "./src/utils/tracked-controls.js");
+var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
+var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
+var onButtonEvent = trackedControlsUtils.onButtonEvent;
+
+// See Profiles Registry:
+// https://github.com/immersive-web/webxr-input-profiles/tree/master/packages/registry
+// TODO: Add a more robust system for deriving gamepad name.
+var GAMEPAD_ID = 'pico-4';
+var PICO_MODEL_GLB_BASE_URL = 'https://cdn.aframe.io/controllers/pico/pico4/';
+
+/**
+ * Button IDs:
+ * 0 - trigger
+ * 1 - grip
+ * 3 - X / A
+ * 4 - Y / B
+ *
+ * Axis:
+ * 2 - joystick x axis
+ * 3 - joystick y axis
+ */
+var INPUT_MAPPING_WEBXR = {
+  left: {
+    axes: {
+      touchpad: [2, 3]
+    },
+    buttons: ['trigger', 'squeeze', 'none', 'thumbstick', 'xbutton', 'ybutton']
+  },
+  right: {
+    axes: {
+      touchpad: [2, 3]
+    },
+    buttons: ['trigger', 'squeeze', 'none', 'thumbstick', 'abutton', 'bbutton']
+  }
+};
+
+/**
+ * Pico Controls
+ */
+module.exports.Component = registerComponent('pico-controls', {
+  schema: {
+    hand: {
+      default: 'none'
+    },
+    model: {
+      default: true
+    },
+    orientationOffset: {
+      type: 'vec3'
+    }
+  },
+  mapping: INPUT_MAPPING_WEBXR,
+  init: function () {
+    var self = this;
+    this.onButtonChanged = bind(this.onButtonChanged, this);
+    this.onButtonDown = function (evt) {
+      onButtonEvent(evt.detail.id, 'down', self, self.data.hand);
+    };
+    this.onButtonUp = function (evt) {
+      onButtonEvent(evt.detail.id, 'up', self, self.data.hand);
+    };
+    this.onButtonTouchEnd = function (evt) {
+      onButtonEvent(evt.detail.id, 'touchend', self, self.data.hand);
+    };
+    this.onButtonTouchStart = function (evt) {
+      onButtonEvent(evt.detail.id, 'touchstart', self, self.data.hand);
+    };
+    this.bindMethods();
+  },
+  update: function () {
+    var data = this.data;
+    this.controllerIndex = data.hand === 'right' ? 0 : data.hand === 'left' ? 1 : 2;
+  },
+  play: function () {
+    this.checkIfControllerPresent();
+    this.addControllersUpdateListener();
+  },
+  pause: function () {
+    this.removeEventListeners();
+    this.removeControllersUpdateListener();
+  },
+  bindMethods: function () {
+    this.onModelLoaded = bind(this.onModelLoaded, this);
+    this.onControllersUpdate = bind(this.onControllersUpdate, this);
+    this.checkIfControllerPresent = bind(this.checkIfControllerPresent, this);
+    this.removeControllersUpdateListener = bind(this.removeControllersUpdateListener, this);
+    this.onAxisMoved = bind(this.onAxisMoved, this);
+  },
+  addEventListeners: function () {
+    var el = this.el;
+    el.addEventListener('buttonchanged', this.onButtonChanged);
+    el.addEventListener('buttondown', this.onButtonDown);
+    el.addEventListener('buttonup', this.onButtonUp);
+    el.addEventListener('touchstart', this.onButtonTouchStart);
+    el.addEventListener('touchend', this.onButtonTouchEnd);
+    el.addEventListener('axismove', this.onAxisMoved);
+    el.addEventListener('model-loaded', this.onModelLoaded);
+    this.controllerEventsActive = true;
+  },
+  removeEventListeners: function () {
+    var el = this.el;
+    el.removeEventListener('buttonchanged', this.onButtonChanged);
+    el.removeEventListener('buttondown', this.onButtonDown);
+    el.removeEventListener('buttonup', this.onButtonUp);
+    el.removeEventListener('touchstart', this.onButtonTouchStart);
+    el.removeEventListener('touchend', this.onButtonTouchEnd);
+    el.removeEventListener('axismove', this.onAxisMoved);
+    el.removeEventListener('model-loaded', this.onModelLoaded);
+    this.controllerEventsActive = false;
+  },
+  checkIfControllerPresent: function () {
+    var data = this.data;
+    checkControllerPresentAndSetup(this, GAMEPAD_ID, {
+      index: this.controllerIndex,
+      hand: data.hand
+    });
+  },
+  injectTrackedControls: function () {
+    var el = this.el;
+    var data = this.data;
+    el.setAttribute('tracked-controls', {
+      // TODO: verify expected behavior between reserved prefixes.
+      idPrefix: GAMEPAD_ID,
+      hand: data.hand,
+      controller: this.controllerIndex,
+      orientationOffset: data.orientationOffset
+    });
+    // Load model.
+    if (!this.data.model) {
+      return;
+    }
+    this.el.setAttribute('gltf-model', PICO_MODEL_GLB_BASE_URL + this.data.hand + '.glb');
+  },
+  addControllersUpdateListener: function () {
+    this.el.sceneEl.addEventListener('controllersupdated', this.onControllersUpdate, false);
+  },
+  removeControllersUpdateListener: function () {
+    this.el.sceneEl.removeEventListener('controllersupdated', this.onControllersUpdate, false);
+  },
+  onControllersUpdate: function () {
+    // Note that due to gamepadconnected event propagation issues, we don't rely on events.
+    this.checkIfControllerPresent();
+  },
+  onButtonChanged: function (evt) {
+    var button = this.mapping[this.data.hand].buttons[evt.detail.id];
+    var analogValue;
+    if (!button) {
+      return;
+    }
+    if (button === 'trigger') {
+      analogValue = evt.detail.state.value;
+      console.log('analog value of trigger press: ' + analogValue);
+    }
+
+    // Pass along changed event with button state, using button mapping for convenience.
+    this.el.emit(button + 'changed', evt.detail.state);
+  },
+  onModelLoaded: function (evt) {
+    if (!this.data.model) {
+      return;
+    }
+    this.el.emit('controllermodelready', {
+      name: 'pico-controls',
+      model: this.data.model,
+      rayOrigin: new THREE.Vector3(0, 0, 0)
+    });
+  },
+  onAxisMoved: function (evt) {
+    emitIfAxesChanged(this, this.mapping.axes, evt);
+  }
+});
 
 /***/ }),
 
@@ -30219,7 +30406,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.4.2 (Date 2023-04-22, Commit #4e521f1f)');
+console.log('A-Frame Version: 1.4.2 (Date 2023-05-04, Commit #d980c319)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
