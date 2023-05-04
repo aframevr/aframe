@@ -22,6 +22,7 @@ registerComponent('laser-controls', {
     el.setAttribute('magicleap-controls', controlsConfiguration);
     el.setAttribute('oculus-go-controls', controlsConfiguration);
     el.setAttribute('oculus-touch-controls', controlsConfiguration);
+    el.setAttribute('pico-controls', controlsConfiguration);
     el.setAttribute('valve-index-controls', controlsConfiguration);
     el.setAttribute('vive-controls', controlsConfiguration);
     el.setAttribute('vive-focus-controls', controlsConfiguration);
