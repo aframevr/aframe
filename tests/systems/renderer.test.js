@@ -16,10 +16,11 @@ suite('renderer', function () {
       assert.strictEqual(rendererSystem.highRefreshRate, false);
       assert.strictEqual(rendererSystem.physicallyCorrectLights, false);
       assert.strictEqual(rendererSystem.sortObjects, false);
+      assert.strictEqual(rendererSystem.colorManagement, true);
 
       // Verify properties that are transferred from the renderer system to the rendering engine.
       var renderingEngine = sceneEl.renderer;
-      assert.notOk(renderingEngine.outputEncoding);
+      assert.strictEqual(renderingEngine.outputColorSpace, THREE.SRGBColorSpace);
       assert.notOk(renderingEngine.sortObjects);
       assert.strictEqual(renderingEngine.physicallyCorrectLights, false);
       done();
@@ -29,10 +30,10 @@ suite('renderer', function () {
 
   test('change renderer colorManagement', function (done) {
     var sceneEl = createScene();
-    sceneEl.setAttribute('renderer', 'colorManagement: true;');
+    sceneEl.setAttribute('renderer', 'colorManagement: false;');
     sceneEl.addEventListener('loaded', function () {
-      assert.ok(sceneEl.renderer.outputEncoding);
-      assert.equal(sceneEl.renderer.outputEncoding, THREE.sRGBEncoding);
+      assert.ok(sceneEl.renderer.outputColorSpace);
+      assert.equal(sceneEl.renderer.outputColorSpace, THREE.LinearSRGBColorSpace);
       done();
     });
     document.body.appendChild(sceneEl);

@@ -85,7 +85,7 @@ module.exports.Component = registerComponent('screenshot', {
 
   getRenderTarget: function (width, height) {
     return new THREE.WebGLRenderTarget(width, height, {
-      encoding: this.el.sceneEl.renderer.outputEncoding,
+      colorSpace: this.el.sceneEl.renderer.outputColorSpace,
       minFilter: THREE.LinearFilter,
       magFilter: THREE.LinearFilter,
       wrapS: THREE.ClampToEdgeWrapping,
@@ -153,7 +153,7 @@ module.exports.Component = registerComponent('screenshot', {
           format: THREE.RGBFormat,
           generateMipmaps: true,
           minFilter: THREE.LinearMipmapLinearFilter,
-          encoding: THREE.sRGBEncoding
+          colorSpace: THREE.SRGBColorSpace
         });
       // Create cube camera and copy position from scene camera.
       cubeCamera = new THREE.CubeCamera(el.camera.near, el.camera.far, cubeRenderTarget);

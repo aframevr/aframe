@@ -67,7 +67,6 @@ module.exports.Component = registerComponent('generic-tracked-controller-control
     this.controllerPresent = false;
     this.wasControllerConnected = false;
     this.lastControllerCheck = 0;
-    this.rendererSystem = this.el.sceneEl.systems.renderer;
     this.bindMethods();
 
     // generic-tracked-controller-controls has the lowest precedence.
