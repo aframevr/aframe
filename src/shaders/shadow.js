@@ -16,7 +16,6 @@ module.exports.Shader = registerShader('shadow', {
    * Adds a reference from the scene to this entity as the camera.
    */
   init: function (data) {
-    this.rendererSystem = this.el.sceneEl.systems.renderer;
     this.material = new THREE.ShadowMaterial();
   },
 

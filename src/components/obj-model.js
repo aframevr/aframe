@@ -64,9 +64,7 @@ module.exports.Component = registerComponent('obj-model', {
           self.model.traverse(function (object) {
             if (object.isMesh) {
               var material = object.material;
-              if (material.color) rendererSystem.applyColorCorrection(material.color);
               if (material.map) rendererSystem.applyColorCorrection(material.map);
-              if (material.emissive) rendererSystem.applyColorCorrection(material.emissive);
               if (material.emissiveMap) rendererSystem.applyColorCorrection(material.emissiveMap);
             }
           });

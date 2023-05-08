@@ -61,7 +61,6 @@ module.exports.Component = registerComponent('hp-mixed-reality-controls', {
     this.onButtonTouchEnd = function (evt) { onButtonEvent(evt.detail.id, 'touchend', self, self.data.hand); };
     this.onButtonTouchStart = function (evt) { onButtonEvent(evt.detail.id, 'touchstart', self, self.data.hand); };
     this.previousButtonValues = {};
-    this.rendererSystem = this.el.sceneEl.systems.renderer;
 
     this.bindMethods();
   },

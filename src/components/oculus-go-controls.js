@@ -83,7 +83,6 @@ module.exports.Component = registerComponent('oculus-go-controls', {
     this.onButtonTouchEnd = function (evt) { onButtonEvent(evt.detail.id, 'touchend', self); };
     this.controllerPresent = false;
     this.lastControllerCheck = 0;
-    this.rendererSystem = this.el.sceneEl.systems.renderer;
     this.bindMethods();
   },
 
@@ -197,6 +196,5 @@ module.exports.Component = registerComponent('oculus-go-controls', {
     }
     button = buttonMeshes[buttonName];
     button.material.color.set(color);
-    this.rendererSystem.applyColorCorrection(button.material.color);
   }
 });

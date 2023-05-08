@@ -73,7 +73,6 @@ module.exports.Component = registerComponent('valve-index-controls', {
     this.onButtonTouchEnd = function (evt) { onButtonEvent(evt.detail.id, 'touchend', self); };
     this.onButtonTouchStart = function (evt) { onButtonEvent(evt.detail.id, 'touchstart', self); };
     this.previousButtonValues = {};
-    this.rendererSystem = this.el.sceneEl.systems.renderer;
 
     this.bindMethods();
   },

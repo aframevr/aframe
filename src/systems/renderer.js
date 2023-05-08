@@ -20,8 +20,7 @@ module.exports.System = registerSystem('renderer', {
     toneMapping: {default: 'no', oneOf: ['no', 'ACESFilmic', 'linear', 'reinhard', 'cineon']},
     precision: {default: 'high', oneOf: ['high', 'medium', 'low']},
     sortObjects: {default: false},
-    colorManagement: {default: false},
-    gammaOutput: {default: false},
+    colorManagement: {default: true},
     alpha: {default: true},
     foveationLevel: {default: 1}
   },
@@ -36,12 +35,8 @@ module.exports.System = registerSystem('renderer', {
     renderer.physicallyCorrectLights = data.physicallyCorrectLights;
     renderer.toneMapping = THREE[toneMappingName + 'ToneMapping'];
 
-    if (data.colorManagement || data.gammaOutput) {
-      renderer.outputEncoding = THREE.sRGBEncoding;
-      if (data.gammaOutput) {
-        warn('Property `gammaOutput` is deprecated. Use `renderer="colorManagement: true;"` instead.');
-      }
-    }
+    THREE.ColorManagement.enabled = data.colorManagement;
+    renderer.outputColorSpace = data.colorManagement ? THREE.SRGBColorSpace : THREE.LinearSRGBColorSpace;
 
     if (sceneEl.hasAttribute('antialias')) {
       warn('Component `antialias` is deprecated. Use `renderer="antialias: true"` instead.');
@@ -62,13 +57,11 @@ module.exports.System = registerSystem('renderer', {
     renderer.xr.setFoveation(data.foveationLevel);
   },
 
-  applyColorCorrection: function (colorOrTexture) {
-    if (!this.data.colorManagement || !colorOrTexture) {
+  applyColorCorrection: function (texture) {
+    if (!this.data.colorManagement || !texture) {
       return;
-    } else if (colorOrTexture.isColor) {
-      colorOrTexture.convertSRGBToLinear();
-    } else if (colorOrTexture.isTexture) {
-      colorOrTexture.encoding = THREE.sRGBEncoding;
+    } else if (texture.isTexture) {
+      texture.colorSpace = THREE.SRGBColorSpace;
     }
   },
 

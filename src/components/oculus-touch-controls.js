@@ -197,7 +197,6 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     this.controllerPresent = false;
     this.lastControllerCheck = 0;
     this.previousButtonValues = {};
-    this.rendererSystem = this.el.sceneEl.systems.renderer;
     this.bindMethods();
     this.triggerEuler = new THREE.Euler();
   },
@@ -501,7 +500,6 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
       color = (state === 'up' || state === 'touchend') ? buttonMeshes[buttonName].originalColor || this.data.buttonColor : state === 'touchstart' ? this.data.buttonTouchColor : this.data.buttonHighlightColor;
       button = buttonMeshes[buttonName];
       button.material.color.set(color);
-      this.rendererSystem.applyColorCorrection(button.material.color);
     }
   }
 });
