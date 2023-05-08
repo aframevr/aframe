@@ -13675,7 +13675,6 @@ module.exports.Component = registerComponent('generic-tracked-controller-control
     this.controllerPresent = false;
     this.wasControllerConnected = false;
     this.lastControllerCheck = 0;
-    this.rendererSystem = this.el.sceneEl.systems.renderer;
     this.bindMethods();
 
     // generic-tracked-controller-controls has the lowest precedence.
@@ -14860,7 +14859,6 @@ module.exports.Component = registerComponent('hp-mixed-reality-controls', {
       onButtonEvent(evt.detail.id, 'touchstart', self, self.data.hand);
     };
     this.previousButtonValues = {};
-    this.rendererSystem = this.el.sceneEl.systems.renderer;
     this.bindMethods();
   },
   update: function () {
@@ -15813,7 +15811,6 @@ module.exports.Component = registerComponent('light', {
     var el = this.el;
     this.light = null;
     this.defaultTarget = null;
-    this.rendererSystem = this.el.sceneEl.systems.renderer;
     this.system.registerLight(el);
   },
   /**
@@ -15823,7 +15820,6 @@ module.exports.Component = registerComponent('light', {
     var data = this.data;
     var diffData = diff(data, oldData);
     var light = this.light;
-    var rendererSystem = this.rendererSystem;
     var self = this;
 
     // Existing light.
@@ -15836,13 +15832,11 @@ module.exports.Component = registerComponent('light', {
           case 'color':
             {
               light.color.set(value);
-              rendererSystem.applyColorCorrection(light.color);
               break;
             }
           case 'groundColor':
             {
               light.groundColor.set(value);
-              rendererSystem.applyColorCorrection(light.groundColor);
               break;
             }
           case 'angle':
@@ -16020,12 +16014,10 @@ module.exports.Component = registerComponent('light', {
   getLight: function (data) {
     var angle = data.angle;
     var color = new THREE.Color(data.color);
-    this.rendererSystem.applyColorCorrection(color);
     color = color.getHex();
     var decay = data.decay;
     var distance = data.distance;
     var groundColor = new THREE.Color(data.groundColor);
-    this.rendererSystem.applyColorCorrection(groundColor);
     groundColor = groundColor.getHex();
     var intensity = data.intensity;
     var type = data.type;
@@ -16168,7 +16160,6 @@ module.exports.Component = registerComponent('line', {
     var data = this.data;
     var geometry;
     var material;
-    this.rendererSystem = this.el.sceneEl.systems.renderer;
     material = this.material = new THREE.LineBasicMaterial({
       color: data.color,
       opacity: data.opacity,
@@ -16177,7 +16168,6 @@ module.exports.Component = registerComponent('line', {
     });
     geometry = this.geometry = new THREE.BufferGeometry();
     geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(2 * 3), 3));
-    this.rendererSystem.applyColorCorrection(material.color);
     this.line = new THREE.Line(geometry, material);
     this.el.setObject3D(this.attrName, this.line);
   },
@@ -16206,7 +16196,6 @@ module.exports.Component = registerComponent('line', {
       geometry.computeBoundingSphere();
     }
     material.color.setStyle(data.color);
-    this.rendererSystem.applyColorCorrection(material.color);
     material.opacity = data.opacity;
     material.transparent = data.opacity < 1;
     material.visible = data.visible;
@@ -17162,7 +17151,6 @@ module.exports.Component = registerComponent('magicleap-controls', {
       onButtonEvent(evt.detail.id, 'touchstart', self);
     };
     this.previousButtonValues = {};
-    this.rendererSystem = this.el.sceneEl.systems.renderer;
     this.bindMethods();
   },
   update: function () {
@@ -17655,9 +17643,7 @@ module.exports.Component = registerComponent('obj-model', {
           self.model.traverse(function (object) {
             if (object.isMesh) {
               var material = object.material;
-              if (material.color) rendererSystem.applyColorCorrection(material.color);
               if (material.map) rendererSystem.applyColorCorrection(material.map);
-              if (material.emissive) rendererSystem.applyColorCorrection(material.emissive);
               if (material.emissiveMap) rendererSystem.applyColorCorrection(material.emissiveMap);
             }
           });
@@ -17814,7 +17800,6 @@ module.exports.Component = registerComponent('oculus-go-controls', {
     };
     this.controllerPresent = false;
     this.lastControllerCheck = 0;
-    this.rendererSystem = this.el.sceneEl.systems.renderer;
     this.bindMethods();
   },
   addEventListeners: function () {
@@ -17922,7 +17907,6 @@ module.exports.Component = registerComponent('oculus-go-controls', {
     }
     button = buttonMeshes[buttonName];
     button.material.color.set(color);
-    this.rendererSystem.applyColorCorrection(button.material.color);
   }
 });
 
@@ -18261,7 +18245,6 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     this.controllerPresent = false;
     this.lastControllerCheck = 0;
     this.previousButtonValues = {};
-    this.rendererSystem = this.el.sceneEl.systems.renderer;
     this.bindMethods();
     this.triggerEuler = new THREE.Euler();
   },
@@ -18536,7 +18519,6 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
       color = state === 'up' || state === 'touchend' ? buttonMeshes[buttonName].originalColor || this.data.buttonColor : state === 'touchstart' ? this.data.buttonTouchColor : this.data.buttonHighlightColor;
       button = buttonMeshes[buttonName];
       button.material.color.set(color);
-      this.rendererSystem.applyColorCorrection(button.material.color);
     }
   }
 });
@@ -20667,7 +20649,7 @@ module.exports.Component = registerComponent('screenshot', {
   },
   getRenderTarget: function (width, height) {
     return new THREE.WebGLRenderTarget(width, height, {
-      encoding: this.el.sceneEl.renderer.outputEncoding,
+      colorSpace: this.el.sceneEl.renderer.outputColorSpace,
       minFilter: THREE.LinearFilter,
       magFilter: THREE.LinearFilter,
       wrapS: THREE.ClampToEdgeWrapping,
@@ -20734,7 +20716,7 @@ module.exports.Component = registerComponent('screenshot', {
         format: THREE.RGBFormat,
         generateMipmaps: true,
         minFilter: THREE.LinearMipmapLinearFilter,
-        encoding: THREE.sRGBEncoding
+        colorSpace: THREE.SRGBColorSpace
       });
       // Create cube camera and copy position from scene camera.
       cubeCamera = new THREE.CubeCamera(el.camera.near, el.camera.far, cubeRenderTarget);
@@ -22920,7 +22902,6 @@ module.exports.Component = registerComponent('valve-index-controls', {
       onButtonEvent(evt.detail.id, 'touchstart', self);
     };
     this.previousButtonValues = {};
-    this.rendererSystem = this.el.sceneEl.systems.renderer;
     this.bindMethods();
   },
   play: function () {
@@ -23213,7 +23194,6 @@ module.exports.Component = registerComponent('vive-controls', {
       onButtonEvent(evt.detail.id, 'touchstart', self);
     };
     this.previousButtonValues = {};
-    this.rendererSystem = this.el.sceneEl.systems.renderer;
     this.bindMethods();
   },
   update: function () {
@@ -23369,7 +23349,6 @@ module.exports.Component = registerComponent('vive-controls', {
   },
   setButtonColor: function (buttonName, color) {
     var buttonMeshes = this.buttonMeshes;
-    var rendererSystem = this.rendererSystem;
     if (!buttonMeshes) {
       return;
     }
@@ -23378,12 +23357,9 @@ module.exports.Component = registerComponent('vive-controls', {
     if (buttonName === 'grip') {
       buttonMeshes.grip.left.material.color.set(color);
       buttonMeshes.grip.right.material.color.set(color);
-      rendererSystem.applyColorCorrection(buttonMeshes.grip.left.material.color);
-      rendererSystem.applyColorCorrection(buttonMeshes.grip.right.material.color);
       return;
     }
     buttonMeshes[buttonName].material.color.set(color);
-    rendererSystem.applyColorCorrection(buttonMeshes[buttonName].material.color);
   }
 });
 
@@ -30406,7 +30382,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.4.2 (Date 2023-05-05, Commit #701477de)');
+console.log('A-Frame Version: 1.4.2 (Date 2023-05-08, Commit #a6e1e3b4)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
@@ -30631,13 +30607,11 @@ module.exports.Shader = registerShader('flat', {
    * Adds a reference from the scene to this entity as the camera.
    */
   init: function (data) {
-    this.rendererSystem = this.el.sceneEl.systems.renderer;
     this.materialData = {
       color: new THREE.Color()
     };
     this.textureSrc = null;
     getMaterialData(data, this.materialData);
-    this.rendererSystem.applyColorCorrection(this.materialData.color);
     this.material = new THREE.MeshBasicMaterial(this.materialData);
   },
   update: function (data) {
@@ -30652,7 +30626,6 @@ module.exports.Shader = registerShader('flat', {
   updateMaterial: function (data) {
     var key;
     getMaterialData(data, this.materialData);
-    this.rendererSystem.applyColorCorrection(this.materialData.color);
     for (key in this.materialData) {
       this.material[key] = this.materialData[key];
     }
@@ -30932,7 +30905,6 @@ module.exports.Shader = registerShader('phong', {
    * Adds a reference from the scene to this entity as the camera.
    */
   init: function (data) {
-    this.rendererSystem = this.el.sceneEl.systems.renderer;
     this.materialData = {
       color: new THREE.Color(),
       specular: new THREE.Color(),
@@ -30940,7 +30912,6 @@ module.exports.Shader = registerShader('phong', {
     };
     this.textureSrc = null;
     getMaterialData(data, this.materialData);
-    this.rendererSystem.applyColorCorrection(this.materialData.color);
     this.material = new THREE.MeshPhongMaterial(this.materialData);
     utils.material.updateMap(this, data);
   },
@@ -30969,7 +30940,6 @@ module.exports.Shader = registerShader('phong', {
   updateMaterial: function (data) {
     var key;
     getMaterialData(data, this.materialData);
-    this.rendererSystem.applyColorCorrection(this.materialData.color);
     for (key in this.materialData) {
       this.material[key] = this.materialData[key];
     }
@@ -31209,7 +31179,6 @@ module.exports.Shader = registerShader('shadow', {
    * Adds a reference from the scene to this entity as the camera.
    */
   init: function (data) {
-    this.rendererSystem = this.el.sceneEl.systems.renderer;
     this.material = new THREE.ShadowMaterial();
   },
   update: function (data) {
@@ -31383,14 +31352,11 @@ module.exports.Shader = registerShader('standard', {
    * Adds a reference from the scene to this entity as the camera.
    */
   init: function (data) {
-    this.rendererSystem = this.el.sceneEl.systems.renderer;
     this.materialData = {
       color: new THREE.Color(),
       emissive: new THREE.Color()
     };
     getMaterialData(data, this.materialData);
-    this.rendererSystem.applyColorCorrection(this.materialData.color);
-    this.rendererSystem.applyColorCorrection(this.materialData.emissive);
     this.material = new THREE.MeshStandardMaterial(this.materialData);
   },
   update: function (data) {
@@ -31423,8 +31389,6 @@ module.exports.Shader = registerShader('standard', {
     var key;
     var material = this.material;
     getMaterialData(data, this.materialData);
-    this.rendererSystem.applyColorCorrection(this.materialData.color);
-    this.rendererSystem.applyColorCorrection(this.materialData.emissive);
     for (key in this.materialData) {
       material[key] = this.materialData[key];
     }
@@ -32547,10 +32511,7 @@ module.exports.System = registerSystem('renderer', {
       default: false
     },
     colorManagement: {
-      default: false
-    },
-    gammaOutput: {
-      default: false
+      default: true
     },
     alpha: {
       default: true
@@ -32568,12 +32529,8 @@ module.exports.System = registerSystem('renderer', {
     renderer.sortObjects = data.sortObjects;
     renderer.physicallyCorrectLights = data.physicallyCorrectLights;
     renderer.toneMapping = THREE[toneMappingName + 'ToneMapping'];
-    if (data.colorManagement || data.gammaOutput) {
-      renderer.outputEncoding = THREE.sRGBEncoding;
-      if (data.gammaOutput) {
-        warn('Property `gammaOutput` is deprecated. Use `renderer="colorManagement: true;"` instead.');
-      }
-    }
+    THREE.ColorManagement.enabled = data.colorManagement;
+    renderer.outputColorSpace = data.colorManagement ? THREE.SRGBColorSpace : THREE.LinearSRGBColorSpace;
     if (sceneEl.hasAttribute('antialias')) {
       warn('Component `antialias` is deprecated. Use `renderer="antialias: true"` instead.');
     }
@@ -32590,13 +32547,11 @@ module.exports.System = registerSystem('renderer', {
     renderer.toneMappingExposure = data.exposure;
     renderer.xr.setFoveation(data.foveationLevel);
   },
-  applyColorCorrection: function (colorOrTexture) {
-    if (!this.data.colorManagement || !colorOrTexture) {
+  applyColorCorrection: function (texture) {
+    if (!this.data.colorManagement || !texture) {
       return;
-    } else if (colorOrTexture.isColor) {
-      colorOrTexture.convertSRGBToLinear();
-    } else if (colorOrTexture.isTexture) {
-      colorOrTexture.encoding = THREE.sRGBEncoding;
+    } else if (texture.isTexture) {
+      texture.colorSpace = THREE.SRGBColorSpace;
     }
   },
   setWebXRFrameRate: function (xrSession) {
