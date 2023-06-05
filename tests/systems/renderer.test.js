@@ -22,7 +22,7 @@ suite('renderer', function () {
       var renderingEngine = sceneEl.renderer;
       assert.strictEqual(renderingEngine.outputColorSpace, THREE.SRGBColorSpace);
       assert.notOk(renderingEngine.sortObjects);
-      assert.strictEqual(renderingEngine.physicallyCorrectLights, false);
+      assert.strictEqual(renderingEngine.useLegacyLights, true);
       done();
     });
     document.body.appendChild(sceneEl);
@@ -53,7 +53,7 @@ suite('renderer', function () {
     var sceneEl = createScene();
     sceneEl.setAttribute('renderer', 'physicallyCorrectLights: true;');
     sceneEl.addEventListener('loaded', function () {
-      assert.ok(sceneEl.renderer.physicallyCorrectLights);
+      assert.notOk(sceneEl.renderer.useLegacyLights);
       done();
     });
     document.body.appendChild(sceneEl);
