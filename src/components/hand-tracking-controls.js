@@ -96,7 +96,7 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
     if (!xrSession) { return; }
     var referenceSpaceType = self.el.sceneEl.systems.webxr.sessionReferenceSpaceType;
     xrSession.requestReferenceSpace(referenceSpaceType).then(function (referenceSpace) {
-      self.referenceSpace = referenceSpace.getOffsetReferenceSpace(new XRRigidTransform({x: 0, y: 1.5, z: 0}));
+      self.referenceSpace = referenceSpace;
     }).catch(function (error) {
       self.el.sceneEl.systems.webxr.warnIfFeatureNotRequested(referenceSpaceType, 'tracked-controls-webxr uses reference space ' + referenceSpaceType);
       throw error;
@@ -221,24 +221,20 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
       if (distance < PINCH_START_DISTANCE && this.isPinched === false) {
         this.isPinched = true;
         this.pinchEventDetail.position.copy(indexTipPosition).lerp(thumbTipPosition, PINCH_POSITION_INTERPOLATION);
-        this.pinchEventDetail.position.y += 1.5;
         this.el.emit('pinchstarted', this.pinchEventDetail);
       }
 
       if (distance > PINCH_END_DISTANCE && this.isPinched === true) {
         this.isPinched = false;
         this.pinchEventDetail.position.copy(indexTipPosition).lerp(thumbTipPosition, PINCH_POSITION_INTERPOLATION);
-        this.pinchEventDetail.position.y += 1.5;
         this.el.emit('pinchended', this.pinchEventDetail);
       }
 
       if (this.isPinched) {
         this.pinchEventDetail.position.copy(indexTipPosition).lerp(thumbTipPosition, PINCH_POSITION_INTERPOLATION);
-        this.pinchEventDetail.position.y += 1.5;
         this.el.emit('pinchmoved', this.pinchEventDetail);
       }
 
-      indexTipPosition.y += 1.5;
     };
   })(),
 
@@ -314,7 +310,7 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
     if (!this.skinnedMesh) { return; }
     this.bones = skinnedMesh.skeleton.bones;
     this.el.removeObject3D('mesh');
-    mesh.position.set(0, 1.5, 0);
+    mesh.position.set(0, 0, 0);
     mesh.rotation.set(0, 0, 0);
     skinnedMesh.frustumCulled = false;
     skinnedMesh.material = new THREE.MeshStandardMaterial({skinning: true, color: this.data.modelColor});
