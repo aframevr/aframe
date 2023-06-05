@@ -6,8 +6,10 @@ suite('tracked-controls-webxr', function () {
   var el;
   var system;
   var standingMatrix = new THREE.Matrix4();
-  var index = {transform: {position: {x: 0, y: 0, z: 0}}};
-  var thumb = {transform: {position: {x: 0, y: 0, z: 0}}};
+  var indexMatrix = new THREE.Matrix4();
+  var thumbMatrix = new THREE.Matrix4();
+  var THUMB_TIP_INDEX = 4;
+  var INDEX_TIP_INDEX = 9;
   var indexPosition = new THREE.Vector3();
   var thumbPosition = new THREE.Vector3();
   var thumbObj = {};
@@ -18,15 +20,15 @@ suite('tracked-controls-webxr', function () {
     el = entityFactory();
     setTimeout(() => {
       el.sceneEl.addEventListener('loaded', function () {
-        window.XRHand = {
-          INDEX_PHALANX_TIP: 0,
-          THUMB_PHALANX_TIP: 1
-        };
         el.sceneEl.hasWebXR = true;
         el.sceneEl.frame = {
-          getJointPose: function (joint, fingerPose) {
-            var transform = joint === thumbObj ? thumb : index;
-            return transform;
+          fillPoses: function (joints, referenceSpace, array) {
+            thumbMatrix.toArray(array, 16 * THUMB_TIP_INDEX);
+            indexMatrix.toArray(array, 16 * INDEX_TIP_INDEX);
+            return true;
+          },
+          fillJointRadii: function () {
+            return true;
           }
         };
         system = el.sceneEl.systems['tracked-controls-webxr'];
@@ -37,11 +39,18 @@ suite('tracked-controls-webxr', function () {
             get: function (joint) {
               var jointObject = joint === 'thumb-tip' ? thumbObj : indexObj;
               return jointObject;
+            },
+            values: function () {
+              return [
+                { jointName: 'thumb-tip' },
+                { jointName: 'index-finger-tip' }
+              ];
             }
           }
         };
         system.controllers = [controller];
         el.setAttribute('hand-tracking-controls', {hand: 'left'});
+        el.components['hand-tracking-controls'].referenceSpace = {};
         done();
       });
     });
@@ -60,13 +69,12 @@ suite('tracked-controls-webxr', function () {
     test('pinchstarted', function () {
       const emitSpy = sinon.spy(el, 'emit');
       el.setAttribute('hand-tracking-controls', {hand: 'left'});
+      el.components['hand-tracking-controls'].tick();
       el.components['hand-tracking-controls'].checkIfControllerPresent();
       el.components['hand-tracking-controls'].detectPinch();
       assert.equal(emitSpy.getCalls()[0].args[0], 'pinchstarted');
-      indexPosition.copy(index.transform.position);
-      indexPosition.y += 1.5;
-      thumbPosition.copy(thumb.transform.position);
-      thumbPosition.y += 1.5;
+      indexPosition.setFromMatrixPosition(indexMatrix);
+      thumbPosition.setFromMatrixPosition(thumbMatrix);
       const indexThumbDistance = indexPosition.distanceTo(thumbPosition);
       assert.isAtMost(emitSpy.getCalls()[0].args[1].position.distanceTo(indexPosition), indexThumbDistance);
       assert.isAtMost(emitSpy.getCalls()[0].args[1].position.distanceTo(thumbPosition), indexThumbDistance);
@@ -77,14 +85,12 @@ suite('tracked-controls-webxr', function () {
       el.setAttribute('hand-tracking-controls', {hand: 'left'});
       el.components['hand-tracking-controls'].checkIfControllerPresent();
       el.components['hand-tracking-controls'].isPinched = true;
-      thumb.transform.position.z = 10;
-      thumbPosition.copy(thumb.transform.position);
+      thumbMatrix.setPosition(0, 0, 10);
+      el.components['hand-tracking-controls'].tick();
       el.components['hand-tracking-controls'].detectPinch();
       assert.equal(emitSpy.getCalls()[0].args[0], 'pinchended');
-      indexPosition.copy(index.transform.position);
-      indexPosition.y += 1.5;
-      thumbPosition.copy(thumb.transform.position);
-      thumbPosition.y += 1.5;
+      indexPosition.setFromMatrixPosition(indexMatrix);
+      thumbPosition.setFromMatrixPosition(thumbMatrix);
       const indexThumbDistance = indexPosition.distanceTo(thumbPosition);
       assert.isAtMost(emitSpy.getCalls()[0].args[1].position.distanceTo(indexPosition), indexThumbDistance);
       assert.isAtMost(emitSpy.getCalls()[0].args[1].position.distanceTo(thumbPosition), indexThumbDistance);
