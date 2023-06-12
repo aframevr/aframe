@@ -29,7 +29,7 @@ It also configures presentation attributes when entering WebVR/WebXR.
 | Property                | Description                                                                     | Default Value |
 |-------------------------|---------------------------------------------------------------------------------|---------------|
 | antialias               | Whether to perform antialiasing. If `auto`, antialiasing is disabled on mobile. | auto          |
-| colorManagement         | Whether to use a color-managed linear workflow.                                 | false         |
+| colorManagement         | Whether to use a color-managed linear workflow.                                 | true          |
 | highRefreshRate         | Increases frame rate from the default (for browsers that support control of frame rate). | false         |
 | foveationLevel          | Amount of foveation used in VR to improve perf, from 0 (min) to 1 (max).        | 1             |
 | sortObjects             | Whether to sort objects before rendering.                                       | false         |
