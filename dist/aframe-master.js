@@ -14435,7 +14435,7 @@ function isViveController(trackedControls) {
   \**************************************************/
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-/* global THREE, XRRigidTransform */
+/* global THREE */
 var registerComponent = (__webpack_require__(/*! ../core/component */ "./src/core/component.js").registerComponent);
 var bind = __webpack_require__(/*! ../utils/bind */ "./src/utils/bind.js");
 var trackedControlsUtils = __webpack_require__(/*! ../utils/tracked-controls */ "./src/utils/tracked-controls.js");
@@ -14443,6 +14443,8 @@ var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresent
 var LEFT_HAND_MODEL_URL = 'https://cdn.aframe.io/controllers/oculus-hands/v4/left.glb';
 var RIGHT_HAND_MODEL_URL = 'https://cdn.aframe.io/controllers/oculus-hands/v4/right.glb';
 var JOINTS = ['wrist', 'thumb-metacarpal', 'thumb-phalanx-proximal', 'thumb-phalanx-distal', 'thumb-tip', 'index-finger-metacarpal', 'index-finger-phalanx-proximal', 'index-finger-phalanx-intermediate', 'index-finger-phalanx-distal', 'index-finger-tip', 'middle-finger-metacarpal', 'middle-finger-phalanx-proximal', 'middle-finger-phalanx-intermediate', 'middle-finger-phalanx-distal', 'middle-finger-tip', 'ring-finger-metacarpal', 'ring-finger-phalanx-proximal', 'ring-finger-phalanx-intermediate', 'ring-finger-phalanx-distal', 'ring-finger-tip', 'pinky-finger-metacarpal', 'pinky-finger-phalanx-proximal', 'pinky-finger-phalanx-intermediate', 'pinky-finger-phalanx-distal', 'pinky-finger-tip'];
+var THUMB_TIP_INDEX = 4;
+var INDEX_TIP_INDEX = 9;
 var PINCH_START_DISTANCE = 0.015;
 var PINCH_END_DISTANCE = 0.03;
 var PINCH_POSITION_INTERPOLATION = 0.5;
@@ -14496,6 +14498,9 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
       position: new THREE.Vector3()
     };
     this.indexTipPosition = new THREE.Vector3();
+    this.hasPoses = false;
+    this.jointPoses = new Float32Array(16 * JOINTS.length);
+    this.jointRadii = new Float32Array(JOINTS.length);
     this.bindMethods();
     this.updateReferenceSpace = this.updateReferenceSpace.bind(this);
     this.el.sceneEl.addEventListener('enter-vr', this.updateReferenceSpace);
@@ -14510,11 +14515,7 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
     }
     var referenceSpaceType = self.el.sceneEl.systems.webxr.sessionReferenceSpaceType;
     xrSession.requestReferenceSpace(referenceSpaceType).then(function (referenceSpace) {
-      self.referenceSpace = referenceSpace.getOffsetReferenceSpace(new XRRigidTransform({
-        x: 0,
-        y: 1.5,
-        z: 0
-      }));
+      self.referenceSpace = referenceSpace;
     }).catch(function (error) {
       self.el.sceneEl.systems.webxr.warnIfFeatureNotRequested(referenceSpaceType, 'tracked-controls-webxr uses reference space ' + referenceSpaceType);
       throw error;
@@ -14538,15 +14539,16 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
     var controller = this.el.components['tracked-controls'] && this.el.components['tracked-controls'].controller;
     var frame = sceneEl.frame;
     var trackedControlsWebXR = this.el.components['tracked-controls-webxr'];
-    if (!controller || !frame || !trackedControlsWebXR) {
+    var referenceSpace = this.referenceSpace;
+    if (!controller || !frame || !referenceSpace || !trackedControlsWebXR) {
       return;
     }
+    this.hasPoses = false;
     if (controller.hand) {
       this.el.object3D.position.set(0, 0, 0);
       this.el.object3D.rotation.set(0, 0, 0);
-      if (frame.getJointPose) {
-        this.updateHandModel();
-      }
+      this.hasPoses = frame.fillPoses(controller.hand.values(), referenceSpace, this.jointPoses) && frame.fillJointRadii(controller.hand.values(), this.jointRadii);
+      this.updateHandModel();
       this.detectGesture();
     }
   },
@@ -14568,50 +14570,49 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
     return null;
   },
   updateHandMeshModel: function () {
-    var frame = this.el.sceneEl.frame;
-    var controller = this.el.components['tracked-controls'] && this.el.components['tracked-controls'].controller;
-    var referenceSpace = this.referenceSpace;
-    if (!controller || !this.mesh || !referenceSpace) {
-      return;
-    }
-    this.mesh.visible = false;
-    for (var inputjoint of controller.hand.values()) {
-      var bone;
-      var jointPose;
-      var jointTransform;
-      jointPose = frame.getJointPose(inputjoint, referenceSpace);
-      bone = this.getBone(inputjoint.jointName);
-      if (bone != null && jointPose) {
-        jointTransform = jointPose.transform;
-        this.mesh.visible = true;
-        bone.position.copy(jointTransform.position);
-        bone.quaternion.copy(jointTransform.orientation);
+    var jointPose = new THREE.Matrix4();
+    return function () {
+      var jointPoses = this.jointPoses;
+      var controller = this.el.components['tracked-controls'] && this.el.components['tracked-controls'].controller;
+      var i = 0;
+      if (!controller || !this.mesh) {
+        return;
       }
-    }
-  },
+      this.mesh.visible = false;
+      if (!this.hasPoses) {
+        return;
+      }
+      for (var inputjoint of controller.hand.values()) {
+        var bone = this.getBone(inputjoint.jointName);
+        if (bone != null) {
+          this.mesh.visible = true;
+          jointPose.fromArray(jointPoses, i * 16);
+          bone.position.setFromMatrixPosition(jointPose);
+          bone.quaternion.setFromRotationMatrix(jointPose);
+        }
+        i++;
+      }
+    };
+  }(),
   updateHandDotsModel: function () {
-    var frame = this.el.sceneEl.frame;
+    var jointPoses = this.jointPoses;
+    var jointRadii = this.jointRadii;
     var controller = this.el.components['tracked-controls'] && this.el.components['tracked-controls'].controller;
-    var trackedControlsWebXR = this.el.components['tracked-controls-webxr'];
-    var referenceSpace = trackedControlsWebXR.system.referenceSpace;
     var jointEl;
     var object3D;
-    var jointPose;
-    var i = 0;
-    for (var inputjoint of controller.hand.values()) {
-      jointEl = this.jointEls[i++];
+    for (var i = 0; i < controller.hand.size; i++) {
+      jointEl = this.jointEls[i];
       object3D = jointEl.object3D;
-      jointPose = frame.getJointPose(inputjoint, referenceSpace);
-      jointEl.object3D.visible = !!jointPose;
-      if (!jointPose) {
+      jointEl.object3D.visible = this.hasPoses;
+      if (!this.hasPoses) {
         continue;
       }
-      object3D.matrix.elements = jointPose.transform.matrix;
+      object3D.matrix.fromArray(jointPoses, i * 16);
       object3D.matrix.decompose(object3D.position, object3D.rotation, object3D.scale);
       jointEl.setAttribute('scale', {
-        x: jointPose.radius,
-        y: jointPose.radius,
-        z: jointPose.radius
+        x: jointRadii[i],
+        y: jointRadii[i],
+        z: jointRadii[i]
       });
     }
   },
@@ -14620,43 +14621,29 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
   },
   detectPinch: function () {
     var thumbTipPosition = new THREE.Vector3();
+    var jointPose = new THREE.Matrix4();
     return function () {
-      var frame = this.el.sceneEl.frame;
       var indexTipPosition = this.indexTipPosition;
-      var controller = this.el.components['tracked-controls'] && this.el.components['tracked-controls'].controller;
-      var trackedControlsWebXR = this.el.components['tracked-controls-webxr'];
-      var referenceSpace = this.referenceSpace || trackedControlsWebXR.system.referenceSpace;
-      var indexTip = controller.hand.get('index-finger-tip');
-      var thumbTip = controller.hand.get('thumb-tip');
-      if (!indexTip || !thumbTip) {
+      if (!this.hasPoses) {
         return;
       }
-      var indexTipPose = frame.getJointPose(indexTip, referenceSpace);
-      var thumbTipPose = frame.getJointPose(thumbTip, referenceSpace);
-      if (!indexTipPose || !thumbTipPose) {
-        return;
-      }
-      thumbTipPosition.copy(thumbTipPose.transform.position);
-      indexTipPosition.copy(indexTipPose.transform.position);
+      thumbTipPosition.setFromMatrixPosition(jointPose.fromArray(this.jointPoses, THUMB_TIP_INDEX * 16));
+      indexTipPosition.setFromMatrixPosition(jointPose.fromArray(this.jointPoses, INDEX_TIP_INDEX * 16));
       var distance = indexTipPosition.distanceTo(thumbTipPosition);
       if (distance < PINCH_START_DISTANCE && this.isPinched === false) {
         this.isPinched = true;
         this.pinchEventDetail.position.copy(indexTipPosition).lerp(thumbTipPosition, PINCH_POSITION_INTERPOLATION);
-        this.pinchEventDetail.position.y += 1.5;
         this.el.emit('pinchstarted', this.pinchEventDetail);
       }
       if (distance > PINCH_END_DISTANCE && this.isPinched === true) {
         this.isPinched = false;
         this.pinchEventDetail.position.copy(indexTipPosition).lerp(thumbTipPosition, PINCH_POSITION_INTERPOLATION);
-        this.pinchEventDetail.position.y += 1.5;
         this.el.emit('pinchended', this.pinchEventDetail);
       }
       if (this.isPinched) {
         this.pinchEventDetail.position.copy(indexTipPosition).lerp(thumbTipPosition, PINCH_POSITION_INTERPOLATION);
-        this.pinchEventDetail.position.y += 1.5;
         this.el.emit('pinchmoved', this.pinchEventDetail);
       }
-      indexTipPosition.y += 1.5;
     };
   }(),
   pause: function () {
@@ -14732,7 +14719,7 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
     }
     this.bones = skinnedMesh.skeleton.bones;
     this.el.removeObject3D('mesh');
-    mesh.position.set(0, 1.5, 0);
+    mesh.position.set(0, 0, 0);
     mesh.rotation.set(0, 0, 0);
     skinnedMesh.frustumCulled = false;
     skinnedMesh.material = new THREE.MeshStandardMaterial({
@@ -30382,7 +30369,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.4.2 (Date 2023-05-08, Commit #a6e1e3b4)');
+console.log('A-Frame Version: 1.4.2 (Date 2023-06-14, Commit #0272f921)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
