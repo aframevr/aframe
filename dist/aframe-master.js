@@ -14029,8 +14029,6 @@ module.exports.Component = registerComponent('hand-controls', {
   init: function () {
     var self = this;
     var el = this.el;
-    // Current pose.
-    this.gesture = ANIMATIONS.open;
     // Active buttons populated by events provided by the attached controls.
     this.pressedButtons = {};
     this.touchedButtons = {};
@@ -14367,34 +14365,36 @@ module.exports.Component = registerComponent('hand-controls', {
       return;
     }
 
-    // Stop all current animations.
-    mesh.mixer.stopAllAction();
-
     // Grab clip action.
     clip = this.getClip(gesture);
     toAction = mesh.mixer.clipAction(clip);
+
+    // Reverse from gesture to no gesture.
+    if (reverse) {
+      toAction.paused = false;
+      toAction.timeScale = -1;
+      return;
+    }
     toAction.clampWhenFinished = true;
-    toAction.loop = THREE.LoopRepeat;
+    toAction.loop = THREE.LoopOnce;
     toAction.repetitions = 0;
-    toAction.timeScale = reverse ? -1 : 1;
-    toAction.time = reverse ? clip.duration : 0;
+    toAction.timeScale = 1;
+    toAction.time = 0;
     toAction.weight = 1;
 
-    // No gesture to gesture or gesture to no gesture.
-    if (!lastGesture || gesture === lastGesture) {
-      // Stop all current animations.
-      mesh.mixer.stopAllAction();
+    // No gesture to gesture.
+    if (!lastGesture) {
       // Play animation.
+      mesh.mixer.stopAllAction();
       toAction.play();
       return;
     }
 
     // Animate or crossfade from gesture to gesture.
     clip = this.getClip(lastGesture);
-    fromAction = mesh.mixer.clipAction(clip);
-    fromAction.weight = 0.15;
-    fromAction.play();
+    toAction.reset();
     toAction.play();
+    fromAction = mesh.mixer.clipAction(clip);
     fromAction.crossFadeTo(toAction, 0.15, true);
   }
 });
@@ -30369,7 +30369,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.4.2 (Date 2023-06-14, Commit #43526920)');
+console.log('A-Frame Version: 1.4.2 (Date 2023-06-14, Commit #f52ec24b)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
