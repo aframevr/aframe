@@ -292,7 +292,25 @@ module.exports.Component = register('ar-hit-test', {
         this.el.emit('ar-hit-test-start');
       }.bind(this));
 
-      // These are transient inputs so need to be handled seperately
+      var arHitTestComp = this;
+      this.el.sceneEl.addEventListener('controllersupdated', function () {
+        var sceneEl = this;
+        var inputSources = sceneEl.xrSession.inputSources;
+        for (var i = 0; i < inputSources.length; ++i) {
+          if (inputSources[i].targetRayMode === 'tracked-pointer') {
+            arHitTestComp.hitTest = new HitTest(renderer, {
+              space: inputSources[i].targetRaySpace
+            });
+            hitTestCache.set(inputSources[i].targetRaySpace, arHitTestComp.hitTest);
+
+            sceneEl.emit('ar-hit-test-start');
+
+            break;   // only uses first tracked controller
+          }
+        }
+      });
+
+      // These are transient inputs so need to be handled separately
       var profileToSupport = 'generic-touchscreen';
       var transientHitTest = new HitTest(renderer, {
         profile: profileToSupport
@@ -449,7 +467,7 @@ module.exports.Component = register('ar-hit-test', {
     var renderer = this.el.sceneEl.renderer;
 
     if (frame) {
-      // if we are in XR then update the positions of the objects attatched to anchors
+      // if we are in XR then update the positions of the objects attached to anchors
       HitTest.updateAnchorPoses(frame, renderer.xr.getReferenceSpace());
     }
     if (this.bboxNeedsUpdate) {
