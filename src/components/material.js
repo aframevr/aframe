@@ -32,7 +32,8 @@ module.exports.Component = registerComponent('material', {
     vertexColorsEnabled: {default: false},
     visible: {default: true},
     blending: {default: 'normal', oneOf: ['none', 'normal', 'additive', 'subtractive', 'multiply']},
-    dithering: {default: true}
+    dithering: {default: true},
+    anisotropy: {default: 0, min: 0}
   },
 
   init: function () {
