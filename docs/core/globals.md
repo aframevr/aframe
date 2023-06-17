@@ -48,7 +48,6 @@ global. This same interface is also exposed if requiring with CommonJS
 | Property                     | Description                                  |
 | ----------                   | -------------                                |
 | AFRAME                       | The object described above.                  |
-| hasNativeWebVRImplementation | Whether the client has native WebVR support. |
 
 ## Requiring `AFRAME` in a Node.js Environment
 

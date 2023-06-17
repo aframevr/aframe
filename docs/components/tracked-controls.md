@@ -40,7 +40,6 @@ so using idPrefix for Vive / OpenVR controllers is recommended.
 
 | Property          | Description                                                                              | Default Value    |
 |-------------------|------------------------------------------------------------------------------------------|------------------|
-| armModel          | Whether the arm model is used for positional data if absent.                             | true             |
 | autoHide          | Whether to toggle visibility automatically when controller is connected or disconnected. | true             |
 | controller        | Index of the controller in array returned by the Gamepad API.                            | 0                |
 | id                | Selects the controller from the Gamepad API using exact match.                           |                  |

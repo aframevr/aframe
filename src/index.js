@@ -1,25 +1,3 @@
-// WebVR polyfill
-// Check before the polyfill runs.
-window.hasNativeWebVRImplementation = !!window.navigator.getVRDisplays ||
-                                      !!window.navigator.getVRDevices;
-window.hasNativeWebXRImplementation = navigator.xr !== undefined;
-
-// If native WebXR or WebVR are defined WebVRPolyfill does not initialize.
-if (!window.hasNativeWebXRImplementation && !window.hasNativeWebVRImplementation) {
-  var isIOSOlderThan10 = require('./utils/isIOSOlderThan10');
-  // Workaround for iOS Safari canvas sizing issues in stereo (webvr-polyfill/issues/102).
-  // Only for iOS on versions older than 10.
-  var bufferScale = isIOSOlderThan10(window.navigator.userAgent) ? 1 / window.devicePixelRatio : 1;
-  var WebVRPolyfill = require('webvr-polyfill');
-  var polyfillConfig = {
-    BUFFER_SCALE: bufferScale,
-    CARDBOARD_UI_DISABLED: true,
-    ROTATE_INSTRUCTIONS_DISABLED: true,
-    MOBILE_WAKE_LOCK: !!window.cordova
-  };
-  window.webvrpolyfill = new WebVRPolyfill(polyfillConfig);
-}
-
 var utils = require('./utils/');
 var debug = utils.debug;
 var error = debug('A-Frame:error');
@@ -80,7 +58,6 @@ require('./extras/primitives/');
 console.log('A-Frame Version: 1.5.0 (Date 2024-02-23, Commit #dd3913c4)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
-console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
 module.exports = window.AFRAME = {
   AComponent: require('./core/component').Component,
