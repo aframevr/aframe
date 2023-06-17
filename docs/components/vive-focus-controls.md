@@ -30,7 +30,6 @@ and/or pressed buttons (trackpad, trigger).
 
 | Property             | Description                                        | Default              |
 |----------------------|----------------------------------------------------|----------------------|
-| armModel             | Whether the arm model is used for positional data. | true                 |
 | buttonTouchedColor   | Button colors when touched (Trackpad only).        | #777777              |
 | buttonHighlightColor | Button colors when pressed and active.             | #FFFFFF              |
 | hand                 | The hand that will be tracked (e.g., right, left). |                      |

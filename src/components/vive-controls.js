@@ -9,26 +9,8 @@ var AFRAME_CDN_ROOT = require('../constants').AFRAME_CDN_ROOT;
 var VIVE_CONTROLLER_MODEL_OBJ_URL = AFRAME_CDN_ROOT + 'controllers/vive/vr_controller_vive.obj';
 var VIVE_CONTROLLER_MODEL_OBJ_MTL = AFRAME_CDN_ROOT + 'controllers/vive/vr_controller_vive.mtl';
 
-var isWebXRAvailable = require('../utils/').device.isWebXRAvailable;
-
-var GAMEPAD_ID_WEBXR = 'htc-vive';
-var GAMEPAD_ID_WEBVR = 'OpenVR ';
-
-// Prefix for HTC Vive Controllers.
-var GAMEPAD_ID_PREFIX = isWebXRAvailable ? GAMEPAD_ID_WEBXR : GAMEPAD_ID_WEBVR;
-
-/**
- * Button IDs:
- * 0 - trackpad
- * 1 - trigger (intensity value from 0.5 to 1)
- * 2 - grip
- * 3 - menu (dispatch but better for menu options)
- * 4 - system (never dispatched on this layer)
- */
-var INPUT_MAPPING_WEBVR = {
-  axes: {trackpad: [0, 1]},
-  buttons: ['trackpad', 'trigger', 'grip', 'menu', 'system']
-};
+// Prefix for HTC Vive controllers.
+var GAMEPAD_ID_PREFIX = 'htc-vive';
 
 /**
  * Button IDs:
@@ -43,12 +25,10 @@ var INPUT_MAPPING_WEBVR = {
  * 1 - touchpad y axis
  * Reference: https://github.com/immersive-web/webxr-input-profiles/blob/master/packages/registry/profiles/htc/htc-vive.json
  */
-var INPUT_MAPPING_WEBXR = {
+var INPUT_MAPPING = {
   axes: {touchpad: [0, 1]},
   buttons: ['trigger', 'grip', 'touchpad', 'none']
 };
-
-var INPUT_MAPPING = isWebXRAvailable ? INPUT_MAPPING_WEBXR : INPUT_MAPPING_WEBVR;
 
 /**
  * Vive controls.

@@ -6,35 +6,15 @@ var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresent
 var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
 var onButtonEvent = trackedControlsUtils.onButtonEvent;
 
-var isWebXRAvailable = require('../utils/').device.isWebXRAvailable;
-
-var GAMEPAD_ID_WEBXR = 'oculus-touch';
-var GAMEPAD_ID_WEBVR = 'Oculus Touch';
-
 // Prefix for Gen1 and Gen2 Oculus Touch Controllers.
-var GAMEPAD_ID_PREFIX = isWebXRAvailable ? GAMEPAD_ID_WEBXR : GAMEPAD_ID_WEBVR;
+var GAMEPAD_ID_PREFIX = 'oculus-touch';
 
 // First generation model URL.
 var AFRAME_CDN_ROOT = require('../constants').AFRAME_CDN_ROOT;
 var TOUCH_CONTROLLER_MODEL_BASE_URL = AFRAME_CDN_ROOT + 'controllers/oculus/oculus-touch-controller-';
 var META_CONTROLLER_MODEL_BASE_URL = AFRAME_CDN_ROOT + 'controllers/meta/';
 
-var OCULUS_TOUCH_WEBVR = {
-  left: {
-    modelUrl: TOUCH_CONTROLLER_MODEL_BASE_URL + 'left.gltf',
-    rayOrigin: {origin: {x: 0.008, y: -0.01, z: 0}, direction: {x: 0, y: -0.8, z: -1}},
-    modelPivotOffset: new THREE.Vector3(-0.005, 0.003, -0.055),
-    modelPivotRotation: new THREE.Euler(0, 0, 0)
-  },
-  right: {
-    modelUrl: TOUCH_CONTROLLER_MODEL_BASE_URL + 'right.gltf',
-    rayOrigin: {origin: {x: -0.008, y: -0.01, z: 0}, direction: {x: 0, y: -0.8, z: -1}},
-    modelPivotOffset: new THREE.Vector3(0.005, 0.003, -0.055),
-    modelPivotRotation: new THREE.Euler(0, 0, 0)
-  }
-};
-
-var OCULUS_TOUCH_WEBXR = {
+var OCULUS_TOUCH_CONFIG = {
   left: {
     modelUrl: TOUCH_CONTROLLER_MODEL_BASE_URL + 'left.gltf',
     rayOrigin: {origin: {x: 0.002, y: -0.005, z: -0.03}, direction: {x: 0, y: -0.8, z: -1}},
@@ -48,8 +28,6 @@ var OCULUS_TOUCH_WEBXR = {
     modelPivotRotation: new THREE.Euler(Math.PI / 4.5, 0, 0)
   }
 };
-
-var OCULUS_TOUCH_CONFIG = isWebXRAvailable ? OCULUS_TOUCH_WEBXR : OCULUS_TOUCH_WEBVR;
 
 var CONTROLLER_DEFAULT = 'oculus-touch';
 var CONTROLLER_PROPERTIES = {
@@ -130,44 +108,7 @@ var CONTROLLER_PROPERTIES = {
   }
 };
 
-/**
- * Button indices:
- * 0 - thumbstick (which has separate axismove / thumbstickmoved events)
- * 1 - trigger (with analog value, which goes up to 1)
- * 2 - grip (with analog value, which goes up to 1)
- * 3 - X (left) or A (right)
- * 4 - Y (left) or B (right)
- * 5 - surface (touch only)
- */
-var INPUT_MAPPING_WEBVR = {
-  left: {
-    axes: {thumbstick: [0, 1]},
-    buttons: ['thumbstick', 'trigger', 'grip', 'xbutton', 'ybutton', 'surface']
-  },
-  right: {
-    axes: {thumbstick: [0, 1]},
-    buttons: ['thumbstick', 'trigger', 'grip', 'abutton', 'bbutton', 'surface']
-  }
-};
-
-/**
- * Button indices:
- * 0 - trigger
- * 1 - grip
- * 2 - none
- * 3 - thumbstick
- * 4 - X or A button
- * 5 - Y or B button
- * 6 - surface
- *
- * Axis:
- * 0 - none
- * 1 - none
- * 2 - thumbstick
- * 3 - thumbstick
- * Reference: https://github.com/immersive-web/webxr-input-profiles/blob/master/packages/registry/profiles/oculus/oculus-touch.json
- */
-var INPUT_MAPPING_WEBXR = {
+var INPUT_MAPPING = {
   left: {
     axes: {thumbstick: [2, 3]},
     buttons: ['trigger', 'grip', 'none', 'thumbstick', 'xbutton', 'ybutton', 'surface']
@@ -177,8 +118,6 @@ var INPUT_MAPPING_WEBXR = {
     buttons: ['trigger', 'grip', 'none', 'thumbstick', 'abutton', 'bbutton', 'surface']
   }
 };
-
-var INPUT_MAPPING = isWebXRAvailable ? INPUT_MAPPING_WEBXR : INPUT_MAPPING_WEBVR;
 
 /**
  * Oculus Touch controls.
@@ -280,26 +219,16 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     // Set the controller display model based on the data passed in.
     this.displayModel = CONTROLLER_PROPERTIES[data.controllerType] || CONTROLLER_PROPERTIES[CONTROLLER_DEFAULT];
     // If the developer is asking for auto-detection, use the retrieved displayName to identify the specific unit.
-    // This only works for WebVR currently.
     if (data.controllerType === 'auto') {
-      var trackedControlsSystem = this.el.sceneEl.systems['tracked-controls-webvr'];
-      // WebVR
-      if (trackedControlsSystem && trackedControlsSystem.vrDisplay) {
-        var displayName = trackedControlsSystem.vrDisplay.displayName;
-        if (/^Oculus Quest$/.test(displayName)) {
-          this.displayModel = CONTROLLER_PROPERTIES['oculus-touch-v2'];
+      controllerId = CONTROLLER_DEFAULT;
+      var controllersPropertiesIds = Object.keys(CONTROLLER_PROPERTIES);
+      for (var i = 0; i < controller.profiles.length; i++) {
+        if (controllersPropertiesIds.indexOf(controller.profiles[i]) !== -1) {
+          controllerId = controller.profiles[i];
+          break;
         }
-      } else { // WebXR
-        controllerId = CONTROLLER_DEFAULT;
-        var controllersPropertiesIds = Object.keys(CONTROLLER_PROPERTIES);
-        for (var i = 0; i < controller.profiles.length; i++) {
-          if (controllersPropertiesIds.indexOf(controller.profiles[i]) !== -1) {
-            controllerId = controller.profiles[i];
-            break;
-          }
-        }
-        this.displayModel = CONTROLLER_PROPERTIES[controllerId];
       }
+      this.displayModel = CONTROLLER_PROPERTIES[controllerId];
     }
     var modelUrl = this.displayModel[data.hand].modelUrl;
     this.isTouchV3orPROorPlus =
@@ -311,9 +240,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
 
   injectTrackedControls: function (controller) {
     var data = this.data;
-    var webXRId = GAMEPAD_ID_WEBXR;
-    var webVRId = data.hand === 'right' ? 'Oculus Touch (Right)' : 'Oculus Touch (Left)';
-    var id = isWebXRAvailable ? webXRId : webVRId;
+    var id = GAMEPAD_ID_PREFIX;
     this.el.setAttribute('tracked-controls', {
       id: id,
       hand: data.hand,

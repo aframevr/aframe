@@ -19,16 +19,11 @@ module.exports.Component = registerComponent('tracked-controls', {
     idPrefix: {type: 'string', default: ''},
     handTrackingEnabled: {default: false},
     orientationOffset: {type: 'vec3'},
-    // Arm model parameters when not 6DoF.
-    armModel: {default: false},
-    headElement: {type: 'selector'},
     iterateControllerProfiles: {default: false},
     space: {type: 'string', oneOf: ['targetRaySpace', 'gripSpace'], default: 'targetRaySpace'}
   },
 
-  // Run after both tracked-controls-webvr and tracked-controls-webxr to allow other components
-  // to be after either without having to list them both.
-  after: ['tracked-controls-webvr', 'tracked-controls-webxr'],
+  after: ['tracked-controls-webxr'],
 
   update: function () {
     var data = this.data;
@@ -42,8 +37,6 @@ module.exports.Component = registerComponent('tracked-controls', {
         handTrackingEnabled: data.handTrackingEnabled,
         space: data.space
       });
-    } else {
-      el.setAttribute('tracked-controls-webvr', data);
     }
   }
 });
