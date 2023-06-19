@@ -30332,7 +30332,7 @@ if (window.document.currentScript && window.document.currentScript.parentNode !=
 
 // Error if not using a server.
 if (!window.cordova && window.location.protocol === 'file:') {
-  error('This HTML file is currently being served via the file:// protocol. ' + 'Assets, textures, and models WILL NOT WORK due to cross-origin policy! ' + 'Please use a local or hosted server: ' + 'https://aframe.io/docs/0.5.0/introduction/getting-started.html#using-a-local-server.');
+  error('This HTML file is currently being served via the file:// protocol. ' + 'Assets, textures, and models WILL NOT WORK due to cross-origin policy! ' + 'Please use a local or hosted server: ' + 'https://aframe.io/docs/1.4.0/introduction/installation.html#use-a-local-server.');
 }
 __webpack_require__(/*! present */ "./node_modules/present/lib/present-browser.js"); // Polyfill `performance.now()`.
 
