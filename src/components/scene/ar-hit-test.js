@@ -96,7 +96,7 @@ HitTest.prototype.sessionStart = function sessionStart (hitTestSourceDetails) {
 };
 
 /**
- * Turns the last hit test into an anchor, the provided Object3D will have it's
+ * Turns the last hit test into an anchor, the provided Object3D will have its
  * position update to track the anchor.
  *
  * @param {Object3D} object3D object to track
@@ -290,17 +290,20 @@ module.exports.Component = register('ar-hit-test', {
         this.el.emit('ar-hit-test-start');
       }.bind(this));
 
+      // If a tracked controller is available, selects via that instead of the headset
       var arHitTestComp = this;
       this.el.sceneEl.addEventListener('controllersupdated', function () {
         var sceneEl = this;
-        var inputSources = sceneEl.xrSession.inputSources;
+        var inputSources = sceneEl.xrSession && sceneEl.xrSession.inputSources;
+        if (!inputSources) { return; }
         for (var i = 0; i < inputSources.length; ++i) {
           if (inputSources[i].targetRayMode === 'tracked-pointer') {
             arHitTestComp.hitTest = new HitTest(renderer, {
               space: inputSources[i].targetRaySpace
             });
+            hitTestCache.set(inputSources[i], arHitTestComp.hitTest);
 
-            if (arHitTestComp.viewerHitTest) {
+            if (arHitTestComp.viewerHitTest && typeof arHitTestComp.viewerHitTest.cancel === 'function') {
               arHitTestComp.viewerHitTest.cancel();
               arHitTestComp.viewerHitTest = null;
             }
@@ -365,7 +368,7 @@ module.exports.Component = register('ar-hit-test', {
               applyPose(applyPose.tempFakePose, object, this.bboxOffset);
               object.visible = true;
 
-              // create an anchor attatched to the object
+              // create an anchor attached to the object
               this.hitTest.anchorFromLastHitTestResult(object, this.bboxOffset);
             }
           }
