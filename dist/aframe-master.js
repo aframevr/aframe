@@ -30332,7 +30332,7 @@ if (window.document.currentScript && window.document.currentScript.parentNode !=
 
 // Error if not using a server.
 if (!window.cordova && window.location.protocol === 'file:') {
-  error('This HTML file is currently being served via the file:// protocol. ' + 'Assets, textures, and models WILL NOT WORK due to cross-origin policy! ' + 'Please use a local or hosted server: ' + 'https://aframe.io/docs/0.5.0/introduction/getting-started.html#using-a-local-server.');
+  error('This HTML file is currently being served via the file:// protocol. ' + 'Assets, textures, and models WILL NOT WORK due to cross-origin policy! ' + 'Please use a local or hosted server: ' + 'https://aframe.io/docs/1.4.0/introduction/installation.html#use-a-local-server.');
 }
 __webpack_require__(/*! present */ "./node_modules/present/lib/present-browser.js"); // Polyfill `performance.now()`.
 
@@ -30369,7 +30369,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.4.2 (Date 2023-06-14, Commit #f52ec24b)');
+console.log('A-Frame Version: 1.4.2 (Date 2023-06-20, Commit #bb89c200)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
