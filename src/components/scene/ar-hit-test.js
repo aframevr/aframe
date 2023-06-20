@@ -283,11 +283,9 @@ module.exports.Component = register('ar-hit-test', {
       // Default to selecting through the face
       session.requestReferenceSpace('viewer')
       .then(function (viewerSpace) {
-        this.hitTest = new HitTest(renderer, {
+        this.viewerHitTest = this.hitTest = new HitTest(renderer, {
           space: viewerSpace
         });
-
-        hitTestCache.set(viewerSpace, this.hitTest);
 
         this.el.emit('ar-hit-test-start');
       }.bind(this));
@@ -301,7 +299,11 @@ module.exports.Component = register('ar-hit-test', {
             arHitTestComp.hitTest = new HitTest(renderer, {
               space: inputSources[i].targetRaySpace
             });
-            hitTestCache.set(inputSources[i].targetRaySpace, arHitTestComp.hitTest);
+
+            if (arHitTestComp.viewerHitTest) {
+              arHitTestComp.viewerHitTest.cancel();
+              arHitTestComp.viewerHitTest = null;
+            }
 
             sceneEl.emit('ar-hit-test-start');
 
