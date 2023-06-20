@@ -17331,6 +17331,10 @@ module.exports.Component = registerComponent('material', {
     },
     dithering: {
       default: true
+    },
+    anisotropy: {
+      default: 0,
+      min: 0
     }
   },
   init: function () {
@@ -30369,7 +30373,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.4.2 (Date 2023-06-20, Commit #bb89c200)');
+console.log('A-Frame Version: 1.4.2 (Date 2023-06-20, Commit #93b500ef)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
@@ -32494,6 +32498,9 @@ module.exports.System = registerSystem('renderer', {
       default: 'high',
       oneOf: ['high', 'medium', 'low']
     },
+    anisotropy: {
+      default: 1
+    },
     sortObjects: {
       default: false
     },
@@ -32516,6 +32523,7 @@ module.exports.System = registerSystem('renderer', {
     renderer.sortObjects = data.sortObjects;
     renderer.useLegacyLights = !data.physicallyCorrectLights;
     renderer.toneMapping = THREE[toneMappingName + 'ToneMapping'];
+    THREE.Texture.DEFAULT_ANISOTROPY = data.anisotropy;
     THREE.ColorManagement.enabled = data.colorManagement;
     renderer.outputColorSpace = data.colorManagement ? THREE.SRGBColorSpace : THREE.LinearSRGBColorSpace;
     if (sceneEl.hasAttribute('antialias')) {
@@ -33884,6 +33892,7 @@ function setTextureProperties(texture, data) {
     y: 1
   };
   var npot = data.npot || false;
+  var anisotropy = data.anisotropy || 0;
   // To support NPOT textures, wrap must be ClampToEdge (not Repeat),
   // and filters must not use mipmaps (i.e. Nearest or Linear).
   if (npot) {
@@ -33902,6 +33911,11 @@ function setTextureProperties(texture, data) {
   // Don't bother setting offset if it is 0/0.
   if (offset.x !== 0 || offset.y !== 0) {
     texture.offset.set(offset.x, offset.y);
+  }
+
+  // Only set anisotropy if it isn't 0, which indicates that the default value should be used.
+  if (anisotropy !== 0) {
+    texture.anisotropy = anisotropy;
   }
 }
 module.exports.setTextureProperties = setTextureProperties;
@@ -33954,7 +33968,8 @@ module.exports.updateMapMaterialFromData = function (materialName, dataName, sha
       src: src,
       repeat: data.repeat,
       offset: data.offset,
-      npot: data.npot
+      npot: data.npot,
+      anisotropy: data.anisotropy
     }, checkSetMap);
   }
   function checkSetMap(texture) {
