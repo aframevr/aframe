@@ -308,8 +308,6 @@ module.exports.Component = register('ar-hit-test', {
               arHitTestComp.viewerHitTest = null;
             }
 
-            sceneEl.emit('ar-hit-test-start');
-
             break;   // only uses first tracked controller
           }
         }
@@ -378,9 +376,9 @@ module.exports.Component = register('ar-hit-test', {
             position: this.bboxMesh.position,
             orientation: this.bboxMesh.quaternion
           });
-        }
 
-        this.hitTest = null;
+          this.hitTest = null;
+        }
       }.bind(this));
     }.bind(this));
 
