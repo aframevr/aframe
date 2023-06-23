@@ -20,7 +20,9 @@ module.exports.Component = registerComponent('vr-mode-ui', {
     enabled: {default: true},
     cardboardModeEnabled: {default: false},
     enterVRButton: {default: ''},
-    enterARButton: {default: ''}
+    enterVREnabled: {default: true},
+    enterARButton: {default: ''},
+    enterAREnabled: {default: false}
   },
 
   init: function () {
@@ -91,21 +93,26 @@ module.exports.Component = registerComponent('vr-mode-ui', {
     if (this.enterVREl || this.enterAREl || this.orientationModalEl) { return; }
 
     // Add UI if enabled and not already present.
-    if (data.enterVRButton) {
-      // Custom button.
-      this.enterVREl = document.querySelector(data.enterVRButton);
-      this.enterVREl.addEventListener('click', this.onEnterVRButtonClick);
-    } else {
-      this.enterVREl = createEnterVRButton(this.onEnterVRButtonClick);
-      sceneEl.appendChild(this.enterVREl);
+    if (!this.enterVREL && data.enterVREnabled) {
+      if (data.enterVRButton) {
+        // Custom button.
+        this.enterVREl = document.querySelector(data.enterVRButton);
+        this.enterVREl.addEventListener('click', this.onEnterVRButtonClick);
+      } else {
+        this.enterVREl = createEnterVRButton(this.onEnterVRButtonClick);
+        sceneEl.appendChild(this.enterVREl);
+      }
     }
-    if (data.enterARButton) {
-      // Custom button.
-      this.enterAREl = document.querySelector(data.enterARButton);
-      this.enterAREl.addEventListener('click', this.onEnterARButtonClick);
-    } else {
-      this.enterAREl = createEnterARButton(this.onEnterARButtonClick);
-      sceneEl.appendChild(this.enterAREl);
+
+    if (!this.enterVREL && data.enterAREnabled) {
+      if (data.enterARButton) {
+        // Custom button.
+        this.enterAREl = document.querySelector(data.enterARButton);
+        this.enterAREl.addEventListener('click', this.onEnterARButtonClick);
+      } else {
+        this.enterAREl = createEnterARButton(this.onEnterARButtonClick);
+        sceneEl.appendChild(this.enterAREl);
+      }
     }
 
     this.orientationModalEl = createOrientationModal(this.onModalClick);
