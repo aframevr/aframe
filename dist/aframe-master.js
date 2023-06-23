@@ -20945,8 +20945,14 @@ module.exports.Component = registerComponent('vr-mode-ui', {
     enterVRButton: {
       default: ''
     },
+    enterVREnabled: {
+      default: true
+    },
     enterARButton: {
       default: ''
+    },
+    enterAREnabled: {
+      default: false
     }
   },
   init: function () {
@@ -21011,21 +21017,25 @@ module.exports.Component = registerComponent('vr-mode-ui', {
     }
 
     // Add UI if enabled and not already present.
-    if (data.enterVRButton) {
-      // Custom button.
-      this.enterVREl = document.querySelector(data.enterVRButton);
-      this.enterVREl.addEventListener('click', this.onEnterVRButtonClick);
-    } else {
-      this.enterVREl = createEnterVRButton(this.onEnterVRButtonClick);
-      sceneEl.appendChild(this.enterVREl);
+    if (!this.enterVREL && data.enterVREnabled) {
+      if (data.enterVRButton) {
+        // Custom button.
+        this.enterVREl = document.querySelector(data.enterVRButton);
+        this.enterVREl.addEventListener('click', this.onEnterVRButtonClick);
+      } else {
+        this.enterVREl = createEnterVRButton(this.onEnterVRButtonClick);
+        sceneEl.appendChild(this.enterVREl);
+      }
     }
-    if (data.enterARButton) {
-      // Custom button.
-      this.enterAREl = document.querySelector(data.enterARButton);
-      this.enterAREl.addEventListener('click', this.onEnterARButtonClick);
-    } else {
-      this.enterAREl = createEnterARButton(this.onEnterARButtonClick);
-      sceneEl.appendChild(this.enterAREl);
+    if (!this.enterVREL && data.enterAREnabled) {
+      if (data.enterARButton) {
+        // Custom button.
+        this.enterAREl = document.querySelector(data.enterARButton);
+        this.enterAREl.addEventListener('click', this.onEnterARButtonClick);
+      } else {
+        this.enterAREl = createEnterARButton(this.onEnterARButtonClick);
+        sceneEl.appendChild(this.enterAREl);
+      }
     }
     this.orientationModalEl = createOrientationModal(this.onModalClick);
     sceneEl.appendChild(this.orientationModalEl);
@@ -30373,7 +30383,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.4.2 (Date 2023-06-20, Commit #93b500ef)');
+console.log('A-Frame Version: 1.4.2 (Date 2023-06-23, Commit #00ecb9d8)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
