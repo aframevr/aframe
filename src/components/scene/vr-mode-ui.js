@@ -93,7 +93,7 @@ module.exports.Component = registerComponent('vr-mode-ui', {
     if (this.enterVREl || this.enterAREl || this.orientationModalEl) { return; }
 
     // Add UI if enabled and not already present.
-    if (!this.enterVREL && data.enterVREnabled) {
+    if (!this.enterVREl && data.enterVREnabled) {
       if (data.enterVRButton) {
         // Custom button.
         this.enterVREl = document.querySelector(data.enterVRButton);
@@ -104,7 +104,7 @@ module.exports.Component = registerComponent('vr-mode-ui', {
       }
     }
 
-    if (!this.enterVREL && data.enterAREnabled) {
+    if (!this.enterAREl && data.enterAREnabled) {
       if (data.enterARButton) {
         // Custom button.
         this.enterAREl = document.querySelector(data.enterARButton);
