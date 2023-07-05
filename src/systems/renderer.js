@@ -19,6 +19,7 @@ module.exports.System = registerSystem('renderer', {
     exposure: {default: 1, if: {toneMapping: ['ACESFilmic', 'linear', 'reinhard', 'cineon']}},
     toneMapping: {default: 'no', oneOf: ['no', 'ACESFilmic', 'linear', 'reinhard', 'cineon']},
     precision: {default: 'high', oneOf: ['high', 'medium', 'low']},
+    anisotropy: {default: 1},
     sortObjects: {default: false},
     colorManagement: {default: true},
     alpha: {default: true},
@@ -34,6 +35,7 @@ module.exports.System = registerSystem('renderer', {
     renderer.sortObjects = data.sortObjects;
     renderer.useLegacyLights = !data.physicallyCorrectLights;
     renderer.toneMapping = THREE[toneMappingName + 'ToneMapping'];
+    THREE.Texture.DEFAULT_ANISOTROPY = data.anisotropy;
 
     THREE.ColorManagement.enabled = data.colorManagement;
     renderer.outputColorSpace = data.colorManagement ? THREE.SRGBColorSpace : THREE.LinearSRGBColorSpace;

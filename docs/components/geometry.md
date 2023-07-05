@@ -25,6 +25,9 @@ property defines the general shape. Geometric primitives, in computer graphics,
 are irreducible basic shapes. A material component is commonly defined to
 provide an appearance alongside the shape to create a complete mesh.
 
+Overview of available geometries:
+![all-available-a-frame-geometries](https://github.com/aframevr/aframe/assets/57718207/38e649bb-23c3-4a16-b0a2-cc34c33c1cca)
+
 <!--toc-->
 
 ## Base Properties

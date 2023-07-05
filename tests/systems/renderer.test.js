@@ -17,12 +17,14 @@ suite('renderer', function () {
       assert.strictEqual(rendererSystem.physicallyCorrectLights, false);
       assert.strictEqual(rendererSystem.sortObjects, false);
       assert.strictEqual(rendererSystem.colorManagement, true);
+      assert.strictEqual(rendererSystem.anisotropy, 1);
 
       // Verify properties that are transferred from the renderer system to the rendering engine.
       var renderingEngine = sceneEl.renderer;
       assert.strictEqual(renderingEngine.outputColorSpace, THREE.SRGBColorSpace);
       assert.notOk(renderingEngine.sortObjects);
       assert.strictEqual(renderingEngine.useLegacyLights, true);
+      assert.strictEqual(THREE.Texture.DEFAULT_ANISOTROPY, 1);
       done();
     });
     document.body.appendChild(sceneEl);
@@ -76,6 +78,22 @@ suite('renderer', function () {
     sceneEl.addEventListener('loaded', function () {
       var rendererSystem = sceneEl.getAttribute('renderer');
       assert.strictEqual(rendererSystem.foveationLevel, 0.5);
+      done();
+    });
+    document.body.appendChild(sceneEl);
+  });
+
+  test('change renderer anisotropy', function (done) {
+    var sceneEl = createScene();
+    sceneEl.setAttribute('renderer', 'anisotropy: 16');
+    sceneEl.addEventListener('loaded', function () {
+      var rendererSystem = sceneEl.getAttribute('renderer');
+      assert.strictEqual(rendererSystem.anisotropy, 16);
+      assert.strictEqual(THREE.Texture.DEFAULT_ANISOTROPY, 16);
+
+      // verify that textures inherit it
+      var texture = new THREE.Texture();
+      assert.strictEqual(texture.anisotropy, 16);
       done();
     });
     document.body.appendChild(sceneEl);

@@ -344,4 +344,32 @@ suite('material', function () {
       assert.equal(el.components.material.material.blending, THREE.MultiplyBlending);
     });
   });
+
+  suite('anisotropy', function () {
+    test('defaults to THREE.Texture.DEFAULT_ANISOTROPY', function (done) {
+      var imageUrl = 'base/tests/assets/test.png';
+      el.setAttribute('material', '');
+      assert.notOk(el.components.material.material.texture);
+      el.setAttribute('material', 'src: url(' + imageUrl + ')');
+      el.addEventListener('materialtextureloaded', function (evt) {
+        var loadedTexture = evt.detail.texture;
+        assert.ok(el.components.material.material.map === loadedTexture);
+        assert.strictEqual(loadedTexture.anisotropy, THREE.Texture.DEFAULT_ANISOTROPY);
+        done();
+      });
+    });
+
+    test('can set specific anisotropic filtering sample rate', function (done) {
+      var imageUrl = 'base/tests/assets/test.png';
+      el.setAttribute('material', '');
+      assert.notOk(el.components.material.material.texture);
+      el.setAttribute('material', 'src: url(' + imageUrl + '); anisotropy: 8');
+      el.addEventListener('materialtextureloaded', function (evt) {
+        var loadedTexture = evt.detail.texture;
+        assert.ok(el.components.material.material.map === loadedTexture);
+        assert.strictEqual(loadedTexture.anisotropy, 8);
+        done();
+      });
+    });
+  });
 });
