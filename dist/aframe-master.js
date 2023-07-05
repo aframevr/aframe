@@ -3148,65 +3148,6 @@ module.exports = function (dtype) {
 
 /***/ }),
 
-/***/ "./node_modules/flatten-vertex-data/index.js":
-/*!***************************************************!*\
-  !*** ./node_modules/flatten-vertex-data/index.js ***!
-  \***************************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-/*eslint new-cap:0*/
-var dtype = __webpack_require__(/*! dtype */ "./node_modules/dtype/index.js");
-module.exports = flattenVertexData;
-function flattenVertexData(data, output, offset) {
-  if (!data) throw new TypeError('must specify data as first parameter');
-  offset = +(offset || 0) | 0;
-  if (Array.isArray(data) && data[0] && typeof data[0][0] === 'number') {
-    var dim = data[0].length;
-    var length = data.length * dim;
-    var i, j, k, l;
-
-    // no output specified, create a new typed array
-    if (!output || typeof output === 'string') {
-      output = new (dtype(output || 'float32'))(length + offset);
-    }
-    var dstLength = output.length - offset;
-    if (length !== dstLength) {
-      throw new Error('source length ' + length + ' (' + dim + 'x' + data.length + ')' + ' does not match destination length ' + dstLength);
-    }
-    for (i = 0, k = offset; i < data.length; i++) {
-      for (j = 0; j < dim; j++) {
-        output[k++] = data[i][j] === null ? NaN : data[i][j];
-      }
-    }
-  } else {
-    if (!output || typeof output === 'string') {
-      // no output, create a new one
-      var Ctor = dtype(output || 'float32');
-
-      // handle arrays separately due to possible nulls
-      if (Array.isArray(data) || output === 'array') {
-        output = new Ctor(data.length + offset);
-        for (i = 0, k = offset, l = output.length; k < l; k++, i++) {
-          output[k] = data[i] === null ? NaN : data[i];
-        }
-      } else {
-        if (offset === 0) {
-          output = new Ctor(data);
-        } else {
-          output = new Ctor(data.length + offset);
-          output.set(data, offset);
-        }
-      }
-    } else {
-      // store output in existing array
-      output.set(data, offset);
-    }
-  }
-  return output;
-}
-
-/***/ }),
-
 /***/ "./node_modules/global/window.js":
 /*!***************************************!*\
   !*** ./node_modules/global/window.js ***!
@@ -3307,42 +3248,6 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
   for (; eLen > 0; buffer[offset + i] = e & 0xff, i += d, e /= 256, eLen -= 8) {}
   buffer[offset + i - d] |= s * 128;
 };
-
-/***/ }),
-
-/***/ "./node_modules/inherits/inherits_browser.js":
-/*!***************************************************!*\
-  !*** ./node_modules/inherits/inherits_browser.js ***!
-  \***************************************************/
-/***/ ((module) => {
-
-if (typeof Object.create === 'function') {
-  // implementation from standard node.js 'util' module
-  module.exports = function inherits(ctor, superCtor) {
-    if (superCtor) {
-      ctor.super_ = superCtor;
-      ctor.prototype = Object.create(superCtor.prototype, {
-        constructor: {
-          value: ctor,
-          enumerable: false,
-          writable: true,
-          configurable: true
-        }
-      });
-    }
-  };
-} else {
-  // old school shim for old browsers
-  module.exports = function inherits(ctor, superCtor) {
-    if (superCtor) {
-      ctor.super_ = superCtor;
-      var TempCtor = function () {};
-      TempCtor.prototype = superCtor.prototype;
-      ctor.prototype = new TempCtor();
-      ctor.prototype.constructor = ctor;
-    }
-  };
-}
 
 /***/ }),
 
@@ -6208,10 +6113,7 @@ anime.random = function (min, max) {
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 var createLayout = __webpack_require__(/*! layout-bmfont-text */ "./node_modules/layout-bmfont-text/index.js");
-var inherits = __webpack_require__(/*! inherits */ "./node_modules/inherits/inherits_browser.js");
 var createIndices = __webpack_require__(/*! quad-indices */ "./node_modules/quad-indices/index.js");
-var buffer = __webpack_require__(/*! three-buffer-vertex-data */ "./node_modules/three-buffer-vertex-data/index.js");
-var assign = __webpack_require__(/*! object-assign */ "./node_modules/object-assign/index.js");
 var vertices = __webpack_require__(/*! ./lib/vertices */ "./node_modules/three-bmfont-text/lib/vertices.js");
 var utils = __webpack_require__(/*! ./lib/utils */ "./node_modules/three-bmfont-text/lib/utils.js");
 module.exports = function createTextGeometry(opt) {
@@ -6228,7 +6130,7 @@ class TextGeometry extends THREE.BufferGeometry {
 
     // use these as default values for any subsequent
     // calls to update()
-    this._opt = assign({}, opt);
+    this._opt = Object.assign({}, opt);
 
     // also do an initial setup...
     if (opt) this.update(opt);
@@ -6241,7 +6143,7 @@ class TextGeometry extends THREE.BufferGeometry {
     }
 
     // use constructor defaults
-    opt = assign({}, this._opt, opt);
+    opt = Object.assign({}, this._opt, opt);
     if (!opt.font) {
       throw new TypeError('must specify a { font } in options');
     }
@@ -6269,25 +6171,33 @@ class TextGeometry extends THREE.BufferGeometry {
     // get common vertex data
     var positions = vertices.positions(glyphs);
     var uvs = vertices.uvs(glyphs, texWidth, texHeight, flipY);
-    var indices = createIndices({
+    var indices = createIndices([], {
       clockwise: true,
       type: 'uint16',
       count: glyphs.length
     });
 
     // update vertex data
-    buffer.index(this, indices, 1, 'uint16');
-    buffer.attr(this, 'position', positions, 2);
-    buffer.attr(this, 'uv', uvs, 2);
+    this.setIndex(indices);
+    this.setAttribute('position', new THREE.BufferAttribute(positions, 2));
+    this.setAttribute('uv', new THREE.BufferAttribute(uvs, 2));
 
     // update multipage data
     if (!opt.multipage && 'page' in this.attributes) {
       // disable multipage rendering
       this.removeAttribute('page');
     } else if (opt.multipage) {
-      var pages = vertices.pages(glyphs);
       // enable multipage rendering
-      buffer.attr(this, 'page', pages, 1);
+      var pages = vertices.pages(glyphs);
+      this.setAttribute('page', new THREE.BufferAttribute(pages, 1));
+    }
+
+    // recompute bounding box and sphere, if present
+    if (this.boundingBox !== null) {
+      this.computeBoundingBox();
+    }
+    if (this.boundingSphere !== null) {
+      this.computeBoundingSphere();
     }
   }
   computeBoundingSphere() {
@@ -6449,65 +6359,6 @@ module.exports.positions = function positions(glyphs) {
   });
   return positions;
 };
-
-/***/ }),
-
-/***/ "./node_modules/three-buffer-vertex-data/index.js":
-/*!********************************************************!*\
-  !*** ./node_modules/three-buffer-vertex-data/index.js ***!
-  \********************************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-var flatten = __webpack_require__(/*! flatten-vertex-data */ "./node_modules/flatten-vertex-data/index.js");
-var warned = false;
-module.exports.attr = setAttribute;
-module.exports.index = setIndex;
-function setIndex(geometry, data, itemSize, dtype) {
-  if (typeof itemSize !== 'number') itemSize = 1;
-  if (typeof dtype !== 'string') dtype = 'uint16';
-  var isR69 = !geometry.index && typeof geometry.setIndex !== 'function';
-  var attrib = isR69 ? geometry.getAttribute('index') : geometry.index;
-  var newAttrib = updateAttribute(attrib, data, itemSize, dtype);
-  if (newAttrib) {
-    if (isR69) geometry.addAttribute('index', newAttrib);else geometry.index = newAttrib;
-  }
-}
-function setAttribute(geometry, key, data, itemSize, dtype) {
-  if (typeof itemSize !== 'number') itemSize = 3;
-  if (typeof dtype !== 'string') dtype = 'float32';
-  if (Array.isArray(data) && Array.isArray(data[0]) && data[0].length !== itemSize) {
-    throw new Error('Nested vertex array has unexpected size; expected ' + itemSize + ' but found ' + data[0].length);
-  }
-  var attrib = geometry.getAttribute(key);
-  var newAttrib = updateAttribute(attrib, data, itemSize, dtype);
-  geometry.setAttribute(key, newAttrib);
-}
-function updateAttribute(attrib, data, itemSize, dtype) {
-  data = data || [];
-
-  // create a new array with desired type
-  data = flatten(data, dtype);
-  attrib = new THREE.BufferAttribute(data, itemSize);
-  attrib.itemSize = itemSize;
-  attrib.needsUpdate = true;
-  return attrib;
-}
-
-// Test whether the attribute needs to be re-created,
-// returns false if we can re-use it as-is.
-function rebuildAttribute(attrib, data, itemSize) {
-  if (attrib.itemSize !== itemSize) return true;
-  if (!attrib.array) return true;
-  var attribLength = attrib.array.length;
-  if (Array.isArray(data) && Array.isArray(data[0])) {
-    // [ [ x, y, z ] ]
-    return attribLength !== data.length * itemSize;
-  } else {
-    // [ x, y, z ]
-    return attribLength !== data.length;
-  }
-  return false;
-}
 
 /***/ }),
 
@@ -30383,7 +30234,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.4.2 (Date 2023-07-03, Commit #cde83e05)');
+console.log('A-Frame Version: 1.4.2 (Date 2023-07-05, Commit #e8b7e43f)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
@@ -45868,7 +45719,7 @@ class WorkerPool {
 /***/ ((module) => {
 
 "use strict";
-module.exports = JSON.parse('{"name":"aframe","version":"1.4.2","description":"A web framework for building virtual reality experiences.","homepage":"https://aframe.io/","main":"dist/aframe-master.js","scripts":{"dev":"cross-env INSPECTOR_VERSION=dev webpack serve --port 8080","dist":"node scripts/updateVersionLog.js && npm run dist:min && npm run dist:max","dist:max":"webpack --config webpack.config.js","dist:min":"webpack --config webpack.prod.config.js","docs":"markserv --dir docs --port 9001","preghpages":"node ./scripts/preghpages.js","ghpages":"ghpages -p gh-pages/","lint":"semistandard -v | snazzy","lint:fix":"semistandard --fix","precommit":"npm run lint","prepush":"node scripts/testOnlyCheck.js","prerelease":"node scripts/release.js 1.4.1 1.4.2","start":"npm run dev","start:https":"npm run dev -- --server-type https","test":"karma start ./tests/karma.conf.js","test:docs":"node scripts/docsLint.js","test:firefox":"npm test -- --browsers Firefox","test:chrome":"npm test -- --browsers Chrome","test:nobrowser":"NO_BROWSER=true npm test","test:node":"mocha --ui tdd tests/node"},"repository":"aframevr/aframe","license":"MIT","files":["dist/*","docs/**/*","src/**/*","vendor/**/*"],"dependencies":{"buffer":"^6.0.3","custom-event-polyfill":"^1.0.6","debug":"ngokevin/debug#noTimestamp","deep-assign":"^2.0.0","@ungap/custom-elements":"^1.1.0","load-bmfont":"^1.2.3","object-assign":"^4.0.1","present":"0.0.6","promise-polyfill":"^3.1.0","super-animejs":"^3.1.0","super-three":"^0.154.0","three-bmfont-text":"dmarcos/three-bmfont-text#21d017046216e318362c48abd1a48bddfb6e0733","webvr-polyfill":"^0.10.12"},"devDependencies":{"@babel/core":"^7.17.10","babel-loader":"^8.2.5","babel-plugin-istanbul":"^6.1.1","chai":"^4.3.6","chai-shallow-deep-equal":"^1.4.0","chalk":"^1.1.3","cross-env":"^7.0.3","css-loader":"^6.7.1","ghpages":"0.0.8","git-rev":"^0.2.1","glob":"^8.0.3","husky":"^0.11.7","jsdom":"^20.0.0","karma":"^6.4.0","karma-chai-shallow-deep-equal":"0.0.4","karma-chrome-launcher":"^3.1.1","karma-coverage":"^2.2.0","karma-env-preprocessor":"^0.1.1","karma-firefox-launcher":"^2.1.2","karma-mocha":"^2.0.1","karma-mocha-reporter":"^2.2.5","karma-sinon-chai":"^2.0.2","karma-webpack":"^5.0.0","markserv":"github:sukima/markserv#feature/fix-broken-websoketio-link","mocha":"^10.0.0","replace-in-file":"^2.5.3","semistandard":"^9.0.0","shelljs":"^0.7.7","shx":"^0.2.2","sinon":"<12.0.0","sinon-chai":"^3.7.0","snazzy":"^5.0.0","style-loader":"^3.3.1","too-wordy":"ngokevin/too-wordy","webpack":"^5.73.0","webpack-cli":"^4.10.0","webpack-dev-server":"^4.11.0","webpack-merge":"^5.8.0","write-good":"^1.0.8"},"link":true,"semistandard":{"ignore":["build/**","dist/**","examples/**/shaders/*.js","**/vendor/**"]},"keywords":["3d","aframe","cardboard","components","oculus","three","three.js","rift","vive","vr","quest","meta","web-components","webvr","webxr"],"engines":{"node":">= 4.6.0","npm":">= 2.15.9"}}');
+module.exports = JSON.parse('{"name":"aframe","version":"1.4.2","description":"A web framework for building virtual reality experiences.","homepage":"https://aframe.io/","main":"dist/aframe-master.js","scripts":{"dev":"cross-env INSPECTOR_VERSION=dev webpack serve --port 8080","dist":"node scripts/updateVersionLog.js && npm run dist:min && npm run dist:max","dist:max":"webpack --config webpack.config.js","dist:min":"webpack --config webpack.prod.config.js","docs":"markserv --dir docs --port 9001","preghpages":"node ./scripts/preghpages.js","ghpages":"ghpages -p gh-pages/","lint":"semistandard -v | snazzy","lint:fix":"semistandard --fix","precommit":"npm run lint","prepush":"node scripts/testOnlyCheck.js","prerelease":"node scripts/release.js 1.4.1 1.4.2","start":"npm run dev","start:https":"npm run dev -- --server-type https","test":"karma start ./tests/karma.conf.js","test:docs":"node scripts/docsLint.js","test:firefox":"npm test -- --browsers Firefox","test:chrome":"npm test -- --browsers Chrome","test:nobrowser":"NO_BROWSER=true npm test","test:node":"mocha --ui tdd tests/node"},"repository":"aframevr/aframe","license":"MIT","files":["dist/*","docs/**/*","src/**/*","vendor/**/*"],"dependencies":{"buffer":"^6.0.3","custom-event-polyfill":"^1.0.6","debug":"ngokevin/debug#noTimestamp","deep-assign":"^2.0.0","@ungap/custom-elements":"^1.1.0","load-bmfont":"^1.2.3","object-assign":"^4.0.1","present":"0.0.6","promise-polyfill":"^3.1.0","super-animejs":"^3.1.0","super-three":"^0.154.0","three-bmfont-text":"dmarcos/three-bmfont-text#eed4878795be9b3e38cf6aec6b903f56acd1f695","webvr-polyfill":"^0.10.12"},"devDependencies":{"@babel/core":"^7.17.10","babel-loader":"^8.2.5","babel-plugin-istanbul":"^6.1.1","chai":"^4.3.6","chai-shallow-deep-equal":"^1.4.0","chalk":"^1.1.3","cross-env":"^7.0.3","css-loader":"^6.7.1","ghpages":"0.0.8","git-rev":"^0.2.1","glob":"^8.0.3","husky":"^0.11.7","jsdom":"^20.0.0","karma":"^6.4.0","karma-chai-shallow-deep-equal":"0.0.4","karma-chrome-launcher":"^3.1.1","karma-coverage":"^2.2.0","karma-env-preprocessor":"^0.1.1","karma-firefox-launcher":"^2.1.2","karma-mocha":"^2.0.1","karma-mocha-reporter":"^2.2.5","karma-sinon-chai":"^2.0.2","karma-webpack":"^5.0.0","markserv":"github:sukima/markserv#feature/fix-broken-websoketio-link","mocha":"^10.0.0","replace-in-file":"^2.5.3","semistandard":"^9.0.0","shelljs":"^0.7.7","shx":"^0.2.2","sinon":"<12.0.0","sinon-chai":"^3.7.0","snazzy":"^5.0.0","style-loader":"^3.3.1","too-wordy":"ngokevin/too-wordy","webpack":"^5.73.0","webpack-cli":"^4.10.0","webpack-dev-server":"^4.11.0","webpack-merge":"^5.8.0","write-good":"^1.0.8"},"link":true,"semistandard":{"ignore":["build/**","dist/**","examples/**/shaders/*.js","**/vendor/**"]},"keywords":["3d","aframe","cardboard","components","oculus","three","three.js","rift","vive","vr","quest","meta","web-components","webvr","webxr"],"engines":{"node":">= 4.6.0","npm":">= 2.15.9"}}');
 
 /***/ })
 
