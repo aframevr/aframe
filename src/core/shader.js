@@ -45,6 +45,8 @@ Shader.prototype = {
       'gl_FragColor = vec4(1.0, 0.0, 1.0, 1.0);' +
     '}',
 
+  glslVersion: null,
+
   /**
    * Init handler. Similar to attachedCallback.
    * Called during shader initialization and is only run once.
@@ -56,7 +58,8 @@ Shader.prototype = {
       // attributes: this.attributes,
       uniforms: this.uniforms,
       vertexShader: this.vertexShader,
-      fragmentShader: this.fragmentShader
+      fragmentShader: this.fragmentShader,
+      glslVersion: this.glslVersion
     });
     return this.material;
   },
