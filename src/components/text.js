@@ -16,7 +16,8 @@ var DEFAULT_WIDTH = 1;
 // @bryik set anisotropy to 16. Improves look of large amounts of text when viewed from angle.
 var MAX_ANISOTROPY = 16;
 
-var FONT_BASE_URL = 'https://cdn.aframe.io/fonts/';
+var AFRAME_CDN_ROOT = require('../constants').AFRAME_CDN_ROOT;
+var FONT_BASE_URL = AFRAME_CDN_ROOT + 'fonts/';
 var FONTS = {
   aileronsemibold: FONT_BASE_URL + 'Aileron-Semibold.fnt',
   dejavu: FONT_BASE_URL + 'DejaVu-sdf.fnt',

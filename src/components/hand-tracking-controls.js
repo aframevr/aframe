@@ -5,8 +5,9 @@ var bind = require('../utils/bind');
 var trackedControlsUtils = require('../utils/tracked-controls');
 var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
 
-var LEFT_HAND_MODEL_URL = 'https://cdn.aframe.io/controllers/oculus-hands/v4/left.glb';
-var RIGHT_HAND_MODEL_URL = 'https://cdn.aframe.io/controllers/oculus-hands/v4/right.glb';
+var AFRAME_CDN_ROOT = require('../constants').AFRAME_CDN_ROOT;
+var LEFT_HAND_MODEL_URL = AFRAME_CDN_ROOT + 'controllers/oculus-hands/v4/left.glb';
+var RIGHT_HAND_MODEL_URL = AFRAME_CDN_ROOT + 'controllers/oculus-hands/v4/right.glb';
 
 var JOINTS = [
   'wrist',
