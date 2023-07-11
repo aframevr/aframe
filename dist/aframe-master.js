@@ -30234,7 +30234,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.4.2 (Date 2023-07-06, Commit #d74c46ff)');
+console.log('A-Frame Version: 1.4.2 (Date 2023-07-11, Commit #2f241f14)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
@@ -30874,7 +30874,7 @@ module.exports.Shader = registerShader('phong', {
  */
 function getMaterialData(data, materialData) {
   materialData.color.set(data.color);
-  materialData.specular.set(data.emissive);
+  materialData.specular.set(data.specular);
   materialData.emissive.set(data.emissive);
   materialData.emissiveIntensity = data.emissiveIntensity;
   materialData.fog = data.fog;
