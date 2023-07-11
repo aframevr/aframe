@@ -159,7 +159,7 @@ module.exports.Shader = registerShader('phong', {
  */
 function getMaterialData (data, materialData) {
   materialData.color.set(data.color);
-  materialData.specular.set(data.emissive);
+  materialData.specular.set(data.specular);
   materialData.emissive.set(data.emissive);
   materialData.emissiveIntensity = data.emissiveIntensity;
   materialData.fog = data.fog;
