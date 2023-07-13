@@ -24275,17 +24275,7 @@ class AAssetItem extends ANode {
     fileLoader.setResponseType(this.getAttribute('response-type') || inferResponseType(src));
     fileLoader.load(src, function handleOnLoad(response) {
       self.data = response;
-      /*
-        Workaround for a Chrome bug. If another XHR is sent to the same url before the
-        previous one closes, the second request never finishes.
-        setTimeout finishes the first request and lets the logic triggered by load open
-        subsequent requests.
-        setTimeout can be removed once the fix for the bug below ships:
-        https://bugs.chromium.org/p/chromium/issues/detail?id=633696&q=component%3ABlink%3ENetwork%3EXHR%20&colspec=ID%20Pri%20M%20Stars%20ReleaseBlock%20Component%20Status%20Owner%20Summary%20OS%20Modified
-      */
-      setTimeout(function load() {
-        ANode.prototype.load.call(self);
-      });
+      ANode.prototype.load.call(self);
     }, function handleOnProgress(xhr) {
       self.emit('progress', {
         loadedBytes: xhr.loaded,
@@ -30234,7 +30224,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.4.2 (Date 2023-07-11, Commit #2f241f14)');
+console.log('A-Frame Version: 1.4.2 (Date 2023-07-13, Commit #aacacadd)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
