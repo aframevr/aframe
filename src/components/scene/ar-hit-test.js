@@ -202,6 +202,7 @@ HitTest.updateAnchorPoses = function (frame, refSpace) {
       console.error('while updating anchor poses:', e);
     }
   });
+  HitTest.prototype.previousFrameAnchors = trackedAnchors;
 };
 
 var hitTestCache;
