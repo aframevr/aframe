@@ -164,10 +164,11 @@ be included.
     basis_transcoder.js — JavaScript wrapper for the WebAssembly transcoder.
     basis_transcoder.wasm — WebAssembly transcoder.
 
-These files are available from the three.js repository in [`/examples/js/libs/basis`](https://github.com/mrdoob/three.js/tree/master/examples/js/libs/basis).
+These files are available from the three.js repository in [`/examples/jsm/libs/basis`](https://github.com/mrdoob/three.js/tree/dev/examples/jsm/libs/basis).
+You can use a CDN like this: `basisTranscoderPath:https://cdn.jsdelivr.net/npm/three@0.154.0/examples/jsm/libs/basis/;`
 
 
-`meshoptDecoderPath` path should be the complete file path (including filename) for a Meshopt decoder, typically named `meshopt_decoder.js`. Meshopt requires WebAssembly support. A CDN-hosted, versioned decoder is available at `https://unpkg.com/meshoptimizer@0.16.0/meshopt_decoder.js`, or you may download copies from the [meshoptimizer GitHub repository][meshopt-decoder].
+`meshoptDecoderPath` path should be the complete file path (including filename) for a Meshopt decoder, typically named `meshopt_decoder.js`. Meshopt requires WebAssembly support. A CDN-hosted, versioned decoder is available at `https://unpkg.com/meshoptimizer@0.19.0/meshopt_decoder.js`, or you may download copies from the [meshoptimizer GitHub repository][meshopt-decoder].
 
 ## More Resources
 

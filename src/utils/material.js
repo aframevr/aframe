@@ -18,6 +18,7 @@ function setTextureProperties (texture, data) {
   var offset = data.offset || {x: 0, y: 0};
   var repeat = data.repeat || {x: 1, y: 1};
   var npot = data.npot || false;
+  var anisotropy = data.anisotropy || 0;
   // To support NPOT textures, wrap must be ClampToEdge (not Repeat),
   // and filters must not use mipmaps (i.e. Nearest or Linear).
   if (npot) {
@@ -36,6 +37,11 @@ function setTextureProperties (texture, data) {
   // Don't bother setting offset if it is 0/0.
   if (offset.x !== 0 || offset.y !== 0) {
     texture.offset.set(offset.x, offset.y);
+  }
+
+  // Only set anisotropy if it isn't 0, which indicates that the default value should be used.
+  if (anisotropy !== 0) {
+    texture.anisotropy = anisotropy;
   }
 }
 module.exports.setTextureProperties = setTextureProperties;
@@ -83,7 +89,7 @@ module.exports.updateMapMaterialFromData = function (materialName, dataName, sha
     // Load texture for the new material src.
     // (And check if we should still use it once available in callback.)
     el.sceneEl.systems.material.loadTexture(src,
-      {src: src, repeat: data.repeat, offset: data.offset, npot: data.npot},
+      {src: src, repeat: data.repeat, offset: data.offset, npot: data.npot, anisotropy: data.anisotropy},
       checkSetMap);
   }
 

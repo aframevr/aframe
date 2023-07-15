@@ -97,6 +97,14 @@ suite('text', function () {
       }
     });
 
+    test('recomputes bounding sphere on geometry update', function () {
+      component.geometry.boundingSphere = new THREE.Sphere();
+      assert.equal(component.geometry.boundingSphere.radius, -1);
+
+      el.setAttribute('text', 'value', 'foobar');
+      assert.ok(component.geometry.boundingSphere.radius > 0);
+    });
+
     test('updates geometry with align', function () {
       var updateGeometrySpy = this.sinon.spy(component.geometry, 'update');
       el.setAttribute('text', 'align', 'right');
