@@ -1,5 +1,4 @@
 var registerShader = require('../core/shader').registerShader;
-var THREE = require('../lib/three');
 
 var VERTEX_SHADER = [
   'in vec2 uv;',
