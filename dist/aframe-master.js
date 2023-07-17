@@ -12988,7 +12988,8 @@ var trackedControlsUtils = __webpack_require__(/*! ../utils/tracked-controls */ 
 var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
 var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
 var onButtonEvent = trackedControlsUtils.onButtonEvent;
-var DAYDREAM_CONTROLLER_MODEL_BASE_URL = 'https://cdn.aframe.io/controllers/google/';
+var AFRAME_CDN_ROOT = (__webpack_require__(/*! ../constants */ "./src/constants/index.js").AFRAME_CDN_ROOT);
+var DAYDREAM_CONTROLLER_MODEL_BASE_URL = AFRAME_CDN_ROOT + 'controllers/google/';
 var DAYDREAM_CONTROLLER_MODEL_OBJ_URL = DAYDREAM_CONTROLLER_MODEL_BASE_URL + 'vr_controller_daydream.obj';
 var DAYDREAM_CONTROLLER_MODEL_OBJ_MTL = DAYDREAM_CONTROLLER_MODEL_BASE_URL + 'vr_controller_daydream.mtl';
 var isWebXRAvailable = (__webpack_require__(/*! ../utils/ */ "./src/utils/index.js").device.isWebXRAvailable);
@@ -13219,7 +13220,8 @@ var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresent
 var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
 var onButtonEvent = trackedControlsUtils.onButtonEvent;
 var isWebXRAvailable = (__webpack_require__(/*! ../utils/ */ "./src/utils/index.js").device.isWebXRAvailable);
-var GEARVR_CONTROLLER_MODEL_BASE_URL = 'https://cdn.aframe.io/controllers/samsung/';
+var AFRAME_CDN_ROOT = (__webpack_require__(/*! ../constants */ "./src/constants/index.js").AFRAME_CDN_ROOT);
+var GEARVR_CONTROLLER_MODEL_BASE_URL = AFRAME_CDN_ROOT + 'controllers/samsung/';
 var GEARVR_CONTROLLER_MODEL_OBJ_URL = GEARVR_CONTROLLER_MODEL_BASE_URL + 'gear_vr_controller.obj';
 var GEARVR_CONTROLLER_MODEL_OBJ_MTL = GEARVR_CONTROLLER_MODEL_BASE_URL + 'gear_vr_controller.mtl';
 var GAMEPAD_ID_WEBXR = 'samsung-gearvr';
@@ -13816,15 +13818,15 @@ module.exports.Component = registerComponent('gltf-model', {
 
 /* global THREE */
 var registerComponent = (__webpack_require__(/*! ../core/component */ "./src/core/component.js").registerComponent);
-
+var AFRAME_CDN_ROOT = (__webpack_require__(/*! ../constants */ "./src/constants/index.js").AFRAME_CDN_ROOT);
 // Found at https://github.com/aframevr/assets.
 var MODEL_URLS = {
-  toonLeft: 'https://cdn.aframe.io/controllers/hands/leftHand.glb',
-  toonRight: 'https://cdn.aframe.io/controllers/hands/rightHand.glb',
-  lowPolyLeft: 'https://cdn.aframe.io/controllers/hands/leftHandLow.glb',
-  lowPolyRight: 'https://cdn.aframe.io/controllers/hands/rightHandLow.glb',
-  highPolyLeft: 'https://cdn.aframe.io/controllers/hands/leftHandHigh.glb',
-  highPolyRight: 'https://cdn.aframe.io/controllers/hands/rightHandHigh.glb'
+  toonLeft: AFRAME_CDN_ROOT + 'controllers/hands/leftHand.glb',
+  toonRight: AFRAME_CDN_ROOT + 'controllers/hands/rightHand.glb',
+  lowPolyLeft: AFRAME_CDN_ROOT + 'controllers/hands/leftHandLow.glb',
+  lowPolyRight: AFRAME_CDN_ROOT + 'controllers/hands/rightHandLow.glb',
+  highPolyLeft: AFRAME_CDN_ROOT + 'controllers/hands/leftHandHigh.glb',
+  highPolyRight: AFRAME_CDN_ROOT + 'controllers/hands/rightHandHigh.glb'
 };
 
 // Poses.
@@ -14291,8 +14293,9 @@ var registerComponent = (__webpack_require__(/*! ../core/component */ "./src/cor
 var bind = __webpack_require__(/*! ../utils/bind */ "./src/utils/bind.js");
 var trackedControlsUtils = __webpack_require__(/*! ../utils/tracked-controls */ "./src/utils/tracked-controls.js");
 var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
-var LEFT_HAND_MODEL_URL = 'https://cdn.aframe.io/controllers/oculus-hands/v4/left.glb';
-var RIGHT_HAND_MODEL_URL = 'https://cdn.aframe.io/controllers/oculus-hands/v4/right.glb';
+var AFRAME_CDN_ROOT = (__webpack_require__(/*! ../constants */ "./src/constants/index.js").AFRAME_CDN_ROOT);
+var LEFT_HAND_MODEL_URL = AFRAME_CDN_ROOT + 'controllers/oculus-hands/v4/left.glb';
+var RIGHT_HAND_MODEL_URL = AFRAME_CDN_ROOT + 'controllers/oculus-hands/v4/right.glb';
 var JOINTS = ['wrist', 'thumb-metacarpal', 'thumb-phalanx-proximal', 'thumb-phalanx-distal', 'thumb-tip', 'index-finger-metacarpal', 'index-finger-phalanx-proximal', 'index-finger-phalanx-intermediate', 'index-finger-phalanx-distal', 'index-finger-tip', 'middle-finger-metacarpal', 'middle-finger-phalanx-proximal', 'middle-finger-phalanx-intermediate', 'middle-finger-phalanx-distal', 'middle-finger-tip', 'ring-finger-metacarpal', 'ring-finger-phalanx-proximal', 'ring-finger-phalanx-intermediate', 'ring-finger-phalanx-distal', 'ring-finger-tip', 'pinky-finger-metacarpal', 'pinky-finger-phalanx-proximal', 'pinky-finger-phalanx-intermediate', 'pinky-finger-phalanx-distal', 'pinky-finger-tip'];
 var THUMB_TIP_INDEX = 4;
 var INDEX_TIP_INDEX = 9;
@@ -14624,7 +14627,8 @@ var onButtonEvent = trackedControlsUtils.onButtonEvent;
 // https://github.com/immersive-web/webxr-input-profiles/tree/master/packages/registry
 // TODO: Add a more robust system for deriving gamepad name.
 var GAMEPAD_ID = 'hp-mixed-reality';
-var HP_MIXEDL_REALITY_MODEL_GLB_BASE_URL = 'https://cdn.aframe.io/controllers/hp/mixed-reality/';
+var AFRAME_CDN_ROOT = (__webpack_require__(/*! ../constants */ "./src/constants/index.js").AFRAME_CDN_ROOT);
+var HP_MIXEDL_REALITY_MODEL_GLB_BASE_URL = AFRAME_CDN_ROOT + 'controllers/hp/mixed-reality/';
 var HP_MIXED_REALITY_POSITION_OFFSET = {
   x: 0,
   y: 0,
@@ -16932,7 +16936,8 @@ var onButtonEvent = trackedControlsUtils.onButtonEvent;
 var GAMEPAD_ID_PREFIX = 'magicleap';
 var GAMEPAD_ID_SUFFIX = '-one';
 var GAMEPAD_ID_COMPOSITE = GAMEPAD_ID_PREFIX + GAMEPAD_ID_SUFFIX;
-var MAGICLEAP_CONTROLLER_MODEL_GLB_URL = 'https://cdn.aframe.io/controllers/magicleap/magicleap-one-controller.glb';
+var AFRAME_CDN_ROOT = (__webpack_require__(/*! ../constants */ "./src/constants/index.js").AFRAME_CDN_ROOT);
+var MAGICLEAP_CONTROLLER_MODEL_GLB_URL = AFRAME_CDN_ROOT + 'controllers/magicleap/magicleap-one-controller.glb';
 
 /**
  * Button IDs:
@@ -17543,7 +17548,8 @@ var onButtonEvent = trackedControlsUtils.onButtonEvent;
 var isWebXRAvailable = (__webpack_require__(/*! ../utils/ */ "./src/utils/index.js").device.isWebXRAvailable);
 var GAMEPAD_ID_WEBXR = 'oculus-go';
 var GAMEPAD_ID_WEBVR = 'Oculus Go';
-var OCULUS_GO_CONTROLLER_MODEL_URL = 'https://cdn.aframe.io/controllers/oculus/go/oculus-go-controller.gltf';
+var AFRAME_CDN_ROOT = (__webpack_require__(/*! ../constants */ "./src/constants/index.js").AFRAME_CDN_ROOT);
+var OCULUS_GO_CONTROLLER_MODEL_URL = AFRAME_CDN_ROOT + 'controllers/oculus/go/oculus-go-controller.gltf';
 
 // Prefix for Gen1 and Gen2 Oculus Touch Controllers.
 var GAMEPAD_ID_PREFIX = isWebXRAvailable ? GAMEPAD_ID_WEBXR : GAMEPAD_ID_WEBVR;
@@ -17775,8 +17781,9 @@ var GAMEPAD_ID_WEBVR = 'Oculus Touch';
 var GAMEPAD_ID_PREFIX = isWebXRAvailable ? GAMEPAD_ID_WEBXR : GAMEPAD_ID_WEBVR;
 
 // First generation model URL.
-var TOUCH_CONTROLLER_MODEL_BASE_URL = 'https://cdn.aframe.io/controllers/oculus/oculus-touch-controller-';
-var META_CONTROLLER_MODEL_BASE_URL = 'https://cdn.aframe.io/controllers/meta/';
+var AFRAME_CDN_ROOT = (__webpack_require__(/*! ../constants */ "./src/constants/index.js").AFRAME_CDN_ROOT);
+var TOUCH_CONTROLLER_MODEL_BASE_URL = AFRAME_CDN_ROOT + 'controllers/oculus/oculus-touch-controller-';
+var META_CONTROLLER_MODEL_BASE_URL = AFRAME_CDN_ROOT + 'controllers/meta/';
 var OCULUS_TOUCH_WEBVR = {
   left: {
     modelUrl: TOUCH_CONTROLLER_MODEL_BASE_URL + 'left.gltf',
@@ -18400,7 +18407,8 @@ var onButtonEvent = trackedControlsUtils.onButtonEvent;
 // https://github.com/immersive-web/webxr-input-profiles/tree/master/packages/registry
 // TODO: Add a more robust system for deriving gamepad name.
 var GAMEPAD_ID = 'pico-4';
-var PICO_MODEL_GLB_BASE_URL = 'https://cdn.aframe.io/controllers/pico/pico4/';
+var AFRAME_CDN_ROOT = (__webpack_require__(/*! ../constants */ "./src/constants/index.js").AFRAME_CDN_ROOT);
+var PICO_MODEL_GLB_BASE_URL = AFRAME_CDN_ROOT + 'controllers/pico/pico4/';
 
 /**
  * Button IDs:
@@ -21398,7 +21406,8 @@ var DEFAULT_WIDTH = 1;
 
 // @bryik set anisotropy to 16. Improves look of large amounts of text when viewed from angle.
 var MAX_ANISOTROPY = 16;
-var FONT_BASE_URL = 'https://cdn.aframe.io/fonts/';
+var AFRAME_CDN_ROOT = (__webpack_require__(/*! ../constants */ "./src/constants/index.js").AFRAME_CDN_ROOT);
+var FONT_BASE_URL = AFRAME_CDN_ROOT + 'fonts/';
 var FONTS = {
   aileronsemibold: FONT_BASE_URL + 'Aileron-Semibold.fnt',
   dejavu: FONT_BASE_URL + 'DejaVu-sdf.fnt',
@@ -22640,7 +22649,8 @@ var trackedControlsUtils = __webpack_require__(/*! ../utils/tracked-controls */ 
 var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
 var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
 var onButtonEvent = trackedControlsUtils.onButtonEvent;
-var INDEX_CONTROLLER_MODEL_BASE_URL = 'https://cdn.aframe.io/controllers/valve/index/valve-index-';
+var AFRAME_CDN_ROOT = (__webpack_require__(/*! ../constants */ "./src/constants/index.js").AFRAME_CDN_ROOT);
+var INDEX_CONTROLLER_MODEL_BASE_URL = AFRAME_CDN_ROOT + 'controllers/valve/index/valve-index-';
 var INDEX_CONTROLLER_MODEL_URL = {
   left: INDEX_CONTROLLER_MODEL_BASE_URL + 'left.glb',
   right: INDEX_CONTROLLER_MODEL_BASE_URL + 'right.glb'
@@ -22954,8 +22964,9 @@ var trackedControlsUtils = __webpack_require__(/*! ../utils/tracked-controls */ 
 var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
 var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
 var onButtonEvent = trackedControlsUtils.onButtonEvent;
-var VIVE_CONTROLLER_MODEL_OBJ_URL = 'https://cdn.aframe.io/controllers/vive/vr_controller_vive.obj';
-var VIVE_CONTROLLER_MODEL_OBJ_MTL = 'https://cdn.aframe.io/controllers/vive/vr_controller_vive.mtl';
+var AFRAME_CDN_ROOT = (__webpack_require__(/*! ../constants */ "./src/constants/index.js").AFRAME_CDN_ROOT);
+var VIVE_CONTROLLER_MODEL_OBJ_URL = AFRAME_CDN_ROOT + 'controllers/vive/vr_controller_vive.obj';
+var VIVE_CONTROLLER_MODEL_OBJ_MTL = AFRAME_CDN_ROOT + 'controllers/vive/vr_controller_vive.mtl';
 var isWebXRAvailable = (__webpack_require__(/*! ../utils/ */ "./src/utils/index.js").device.isWebXRAvailable);
 var GAMEPAD_ID_WEBXR = 'htc-vive';
 var GAMEPAD_ID_WEBVR = 'OpenVR ';
@@ -23230,7 +23241,8 @@ var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresent
 var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
 var onButtonEvent = trackedControlsUtils.onButtonEvent;
 var GAMEPAD_ID_PREFIX = 'HTC Vive Focus';
-var VIVE_FOCUS_CONTROLLER_MODEL_URL = 'https://cdn.aframe.io/controllers/vive/focus-controller/focus-controller.gltf';
+var AFRAME_CDN_ROOT = (__webpack_require__(/*! ../constants */ "./src/constants/index.js").AFRAME_CDN_ROOT);
+var VIVE_FOCUS_CONTROLLER_MODEL_URL = AFRAME_CDN_ROOT + 'controllers/vive/focus-controller/focus-controller.gltf';
 
 /**
  * Vive Focus controls.
@@ -23685,7 +23697,8 @@ var utils = __webpack_require__(/*! ../utils/ */ "./src/utils/index.js");
 var debug = utils.debug('components:windows-motion-controls:debug');
 var warn = utils.debug('components:windows-motion-controls:warn');
 var DEFAULT_HANDEDNESS = (__webpack_require__(/*! ../constants */ "./src/constants/index.js").DEFAULT_HANDEDNESS);
-var MODEL_BASE_URL = 'https://cdn.aframe.io/controllers/microsoft/';
+var AFRAME_CDN_ROOT = (__webpack_require__(/*! ../constants */ "./src/constants/index.js").AFRAME_CDN_ROOT);
+var MODEL_BASE_URL = AFRAME_CDN_ROOT + 'controllers/microsoft/';
 var MODEL_FILENAMES = {
   left: 'left.glb',
   right: 'right.glb',
@@ -24129,6 +24142,7 @@ module.exports.Component = registerComponent('windows-motion-controls', {
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 module.exports = {
+  AFRAME_CDN_ROOT: window.AFRAME_CDN_ROOT || 'https://cdn.aframe.io/',
   AFRAME_INJECTED: 'aframe-injected',
   DEFAULT_CAMERA_HEIGHT: 1.6,
   DEFAULT_HANDEDNESS: 'right',
@@ -30224,7 +30238,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.4.2 (Date 2023-07-13, Commit #aacacadd)');
+console.log('A-Frame Version: 1.4.2 (Date 2023-07-17, Commit #3246f0cb)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
