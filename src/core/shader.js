@@ -50,8 +50,9 @@ Shader.prototype = {
    * Called during shader initialization and is only run once.
    */
   init: function (data) {
-    if( this.raw )
+    if (this.raw) {
       console.warn('RAW shaders enforced to GLSL3.');
+    }
 
     this.attributes = this.initVariables(data, 'attribute');
     this.uniforms = this.initVariables(data, 'uniform');
