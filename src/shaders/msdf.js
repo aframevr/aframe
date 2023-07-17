@@ -72,5 +72,5 @@ module.exports.Shader = registerShader('msdf', {
 
   vertexShader: VERTEX_SHADER,
 
-  fragmentShader: FRAGMENT_SHADER,
+  fragmentShader: FRAGMENT_SHADER
 });

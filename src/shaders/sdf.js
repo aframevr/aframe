@@ -110,5 +110,5 @@ module.exports.Shader = registerShader('sdf', {
 
   vertexShader: VERTEX_SHADER,
 
-  fragmentShader: FRAGMENT_SHADER,
+  fragmentShader: FRAGMENT_SHADER
 });
