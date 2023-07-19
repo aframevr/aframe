@@ -1,6 +1,7 @@
 var registerSystem = require('../core/system').registerSystem;
 var utils = require('../utils/');
 var THREE = require('../lib/three');
+var {aframeSortTransparentDefault, aframeSortTransparentSpatial} = require('../core/scene/sortFunctions');
 
 var debug = utils.debug;
 var warn = debug('components:renderer:warn');
@@ -32,7 +33,7 @@ module.exports.System = registerSystem('renderer', {
     var toneMappingName = this.data.toneMapping.charAt(0).toUpperCase() + this.data.toneMapping.slice(1);
     // This is the rendering engine, such as THREE.js so copy over any persistent properties from the rendering system.
     var renderer = sceneEl.renderer;
-    renderer.sortObjects = data.sortObjects;
+
     renderer.useLegacyLights = !data.physicallyCorrectLights;
     renderer.toneMapping = THREE[toneMappingName + 'ToneMapping'];
     THREE.Texture.DEFAULT_ANISOTROPY = data.anisotropy;
@@ -57,6 +58,15 @@ module.exports.System = registerSystem('renderer', {
     renderer.toneMapping = THREE[toneMappingName + 'ToneMapping'];
     renderer.toneMappingExposure = data.exposure;
     renderer.xr.setFoveation(data.foveationLevel);
+
+    if (data.sortObjects) {
+      warn('`sortObjects` property is deprecated. Use `renderer="sortTransparentObjects: true"` instead.');
+    }
+    if (data.sortTransparentObjects) {
+      renderer.setTransparentSort(aframeSortTransparentSpatial);
+    } else {
+      renderer.setTransparentSort(aframeSortTransparentDefault);
+    }
   },
 
   applyColorCorrection: function (texture) {
