@@ -15,7 +15,7 @@ suite('renderer', function () {
       assert.strictEqual(rendererSystem.foveationLevel, 1);
       assert.strictEqual(rendererSystem.highRefreshRate, false);
       assert.strictEqual(rendererSystem.physicallyCorrectLights, false);
-      assert.strictEqual(rendererSystem.sortObjects, false);
+      assert.strictEqual(rendererSystem.sortTransparentObjects, false);
       assert.strictEqual(rendererSystem.colorManagement, true);
       assert.strictEqual(rendererSystem.anisotropy, 1);
 
@@ -41,11 +41,40 @@ suite('renderer', function () {
     document.body.appendChild(sceneEl);
   });
 
-  test('change renderer sortObjects', function (done) {
+  test('change renderer sortTransparentObjects', function (done) {
     var sceneEl = createScene();
-    sceneEl.setAttribute('renderer', 'sortObjects: true;');
+
+    var sortFunction;
+    sceneEl.renderer.setTransparentSort = function (s) { sortFunction = s; };
+    var sortObjects = [
+      { name: 'a', z: 1 },
+      { name: 'b', z: 2 }
+    ];
+    sceneEl.setAttribute('renderer', 'sortTransparentObjects: true;');
     sceneEl.addEventListener('loaded', function () {
-      assert.ok(sceneEl.renderer.sortObjects);
+      // sorted transparent objects are sorted far to near (i.e. large z to small z)
+      sortObjects.sort(sortFunction);
+      assert.equal(sortObjects[0].name, 'b');
+      assert.equal(sortObjects[1].name, 'a');
+      done();
+    });
+    document.body.appendChild(sceneEl);
+  });
+
+  test('default renderer sortTransparentObjects', function (done) {
+    var sceneEl = createScene();
+
+    var sortFunction;
+    sceneEl.renderer.setTransparentSort = function (s) { sortFunction = s; };
+    var sortObjects = [
+      { name: 'a', z: 1 },
+      { name: 'b', z: 2 }
+    ];
+    sceneEl.addEventListener('loaded', function () {
+      sortObjects.sort(sortFunction);
+      // if transparent objects are not sorted they should remain in their original order
+      assert.equal(sortObjects[0].name, 'a');
+      assert.equal(sortObjects[1].name, 'b');
       done();
     });
     document.body.appendChild(sceneEl);

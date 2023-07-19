@@ -21,7 +21,7 @@ module.exports.System = registerSystem('renderer', {
     toneMapping: {default: 'no', oneOf: ['no', 'ACESFilmic', 'linear', 'reinhard', 'cineon']},
     precision: {default: 'high', oneOf: ['high', 'medium', 'low']},
     anisotropy: {default: 1},
-    sortObjects: {default: false},
+    sortTransparentObjects: {default: false},
     colorManagement: {default: true},
     alpha: {default: true},
     foveationLevel: {default: 1}
