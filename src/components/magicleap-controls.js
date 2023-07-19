@@ -12,8 +12,8 @@ var onButtonEvent = trackedControlsUtils.onButtonEvent;
 var GAMEPAD_ID_PREFIX = 'magicleap';
 var GAMEPAD_ID_SUFFIX = '-one';
 var GAMEPAD_ID_COMPOSITE = GAMEPAD_ID_PREFIX + GAMEPAD_ID_SUFFIX;
-
-var MAGICLEAP_CONTROLLER_MODEL_GLB_URL = 'https://cdn.aframe.io/controllers/magicleap/magicleap-one-controller.glb';
+var AFRAME_CDN_ROOT = require('../constants').AFRAME_CDN_ROOT;
+var MAGICLEAP_CONTROLLER_MODEL_GLB_URL = AFRAME_CDN_ROOT + 'controllers/magicleap/magicleap-one-controller.glb';
 
 /**
  * Button IDs:

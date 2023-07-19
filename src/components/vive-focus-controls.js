@@ -8,7 +8,8 @@ var onButtonEvent = trackedControlsUtils.onButtonEvent;
 
 var GAMEPAD_ID_PREFIX = 'HTC Vive Focus';
 
-var VIVE_FOCUS_CONTROLLER_MODEL_URL = 'https://cdn.aframe.io/controllers/vive/focus-controller/focus-controller.gltf';
+var AFRAME_CDN_ROOT = require('../constants').AFRAME_CDN_ROOT;
+var VIVE_FOCUS_CONTROLLER_MODEL_URL = AFRAME_CDN_ROOT + 'controllers/vive/focus-controller/focus-controller.gltf';
 
 /**
  * Vive Focus controls.

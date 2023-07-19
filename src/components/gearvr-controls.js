@@ -7,7 +7,8 @@ var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
 var onButtonEvent = trackedControlsUtils.onButtonEvent;
 var isWebXRAvailable = require('../utils/').device.isWebXRAvailable;
 
-var GEARVR_CONTROLLER_MODEL_BASE_URL = 'https://cdn.aframe.io/controllers/samsung/';
+var AFRAME_CDN_ROOT = require('../constants').AFRAME_CDN_ROOT;
+var GEARVR_CONTROLLER_MODEL_BASE_URL = AFRAME_CDN_ROOT + 'controllers/samsung/';
 var GEARVR_CONTROLLER_MODEL_OBJ_URL = GEARVR_CONTROLLER_MODEL_BASE_URL + 'gear_vr_controller.obj';
 var GEARVR_CONTROLLER_MODEL_OBJ_MTL = GEARVR_CONTROLLER_MODEL_BASE_URL + 'gear_vr_controller.mtl';
 
