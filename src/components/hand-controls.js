@@ -204,9 +204,10 @@ module.exports.Component = registerComponent('hand-controls', {
         mesh.mixer = new THREE.AnimationMixer(mesh);
         self.clips = gltf.animations;
         el.setObject3D('mesh', mesh);
-
-        var handMaterial = mesh.children[0].material;
-        handMaterial.color = new THREE.Color(handColor);
+        mesh.traverse(function (object) {
+          if (!object.isMesh) { return; }
+          object.material.color = new THREE.Color(handColor);
+        });
         mesh.position.set(0, 0, 0);
         mesh.rotation.set(handModelOrientationX, 0, handModelOrientationZ);
         el.setAttribute('magicleap-controls', controlConfiguration);
