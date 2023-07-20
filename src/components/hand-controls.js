@@ -205,9 +205,8 @@ module.exports.Component = registerComponent('hand-controls', {
         self.clips = gltf.animations;
         el.setObject3D('mesh', mesh);
         mesh.traverse(function (object) {
-          if (object.isMesh) {
-            object.material.color = new THREE.Color(handColor);
-          }
+          if (!object.isMesh) { return; }
+          object.material.color = new THREE.Color(handColor);
         });
         mesh.position.set(0, 0, 0);
         mesh.rotation.set(handModelOrientationX, 0, handModelOrientationZ);
