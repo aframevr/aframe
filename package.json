@@ -12,8 +12,8 @@
     "docs": "markserv --dir docs --port 9001",
     "preghpages": "node ./scripts/preghpages.js",
     "ghpages": "ghpages -p gh-pages/",
-    "lint": "semistandard -v | snazzy",
-    "lint:fix": "semistandard --fix",
+    "lint": "standardx -v | snazzy",
+    "lint:fix": "standardx --fix",
     "precommit": "npm run lint",
     "prepush": "node scripts/testOnlyCheck.js",
     "prerelease": "node scripts/release.js 1.4.1 1.4.2",
@@ -76,12 +76,12 @@
     "markserv": "github:sukima/markserv#feature/fix-broken-websoketio-link",
     "mocha": "^10.0.0",
     "replace-in-file": "^2.5.3",
-    "semistandard": "^9.0.0",
     "shelljs": "^0.7.7",
     "shx": "^0.2.2",
     "sinon": "<12.0.0",
     "sinon-chai": "^3.7.0",
     "snazzy": "^5.0.0",
+    "standardx": "^7.0.0",
     "style-loader": "^3.3.1",
     "too-wordy": "ngokevin/too-wordy",
     "webpack": "^5.73.0",
@@ -91,7 +91,7 @@
     "write-good": "^1.0.8"
   },
   "link": true,
-  "semistandard": {
+  "standardx": {
     "ignore": [
       "build/**",
       "dist/**",
