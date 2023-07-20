@@ -1,0 +1,61 @@
+{
+  "extends": ["semistandard", "standard-jsx"],
+  "parserOptions": {
+    "ecmaVersion": 12
+  },
+  "rules": {
+    "no-var": "off",
+    "object-curly-spacing": "off",
+    "object-curly-newline": "off",
+    "object-shorthand": "off",
+    "no-unused-vars": "off",
+    "no-use-before-define": "off",
+    "no-useless-return": "off",
+    "indent": "off",
+    "dot-notation": "off",
+    "prefer-const": "off",
+    "no-multi-spaces": "off",
+    "no-multiple-empty-lines": "off",
+    "prefer-promise-reject-errors": "off",
+    "quote-props": "off",
+    "quotes": "off",
+    "array-bracket-spacing": "off",
+    "no-mixed-operators": "off",
+    "computed-property-spacing": "off",
+    "prefer-regex-literals": "off",
+    "valid-typeof": "off",
+    "array-callback-return": "off",
+    "no-unused-expressions": "off",
+    "spaced-comment": "off",
+    "no-unreachable-loop": "off"
+  },
+  "overrides": [
+    {
+      "files": ["./src/**/*.js"],
+      
+      "parserOptions": {
+        "sourceType": "script",
+        "ecmaVersion": 5
+      }
+    },
+    {
+      "files": ["./src/core/**/*.js"],
+      "parserOptions": {
+        "ecmaVersion": 6
+      }
+    },
+    {
+      "files": ["./src/extras/**/*.js"],
+      "parserOptions": {
+        "ecmaVersion": 6
+      }
+    },
+    {
+      "files": ["./src/lib/**/*.js"],
+      "parserOptions": {
+        "sourceType": "module",
+        "ecmaVersion": 12
+      }
+    }
+  ]
+}

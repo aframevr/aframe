@@ -187,7 +187,7 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
       if (!controller || !this.mesh) { return; }
       this.mesh.visible = false;
       if (!this.hasPoses) { return; }
-      for (var inputjoint of controller.hand.values()) {
+      controller.hand.values().forEach(function (inputjoint) {
         var bone = this.getBone(inputjoint.jointName);
         if (bone != null) {
           this.mesh.visible = true;
@@ -196,7 +196,7 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
           bone.quaternion.setFromRotationMatrix(jointPose);
         }
         i++;
-      }
+      });
     };
   })(),
 
