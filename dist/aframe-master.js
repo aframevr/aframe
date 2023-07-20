@@ -14058,8 +14058,12 @@ module.exports.Component = registerComponent('hand-controls', {
         mesh.mixer = new THREE.AnimationMixer(mesh);
         self.clips = gltf.animations;
         el.setObject3D('mesh', mesh);
-        var handMaterial = mesh.children[0].material;
-        handMaterial.color = new THREE.Color(handColor);
+        mesh.traverse(function (object) {
+          if (!object.isMesh) {
+            return;
+          }
+          object.material.color = new THREE.Color(handColor);
+        });
         mesh.position.set(0, 0, 0);
         mesh.rotation.set(handModelOrientationX, 0, handModelOrientationZ);
         el.setAttribute('magicleap-controls', controlConfiguration);
@@ -30239,7 +30243,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.4.2 (Date 2023-07-18, Commit #c185a2b5)');
+console.log('A-Frame Version: 1.4.2 (Date 2023-07-20, Commit #d4c1b871)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
