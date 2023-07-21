@@ -348,7 +348,7 @@ Using A-Frame online sometimes is not possible or inconvenient, like for instanc
 
 [sortTransparentObjects]: ../components/renderer.md#sorttransparentobjects
 
-In may cases, the order in which objects is rendered doesn't matter much - most scenes will look the same whatever order the objects are rendered in - but there are a few cases where sorting is important:
+In many cases, the order in which objects is rendered doesn't matter much - most scenes will look the same whatever order the objects are rendered in - but there are a few cases where sorting is important:
 
 - for transparent objects, it's typically better to render objects furthest to nearest (although some cases are more complex and require [more sophisticated approaches](https://threejs.org/manual/?q=transp[#en/transparency)).  However, when the camera and/or objects are moving, this can result in undesirable visual effects when objects switch in terms of their relative distance from the camera
 - for performance reasons, it's typically desirable to render objects nearest to furthest, so that GPU doesn't spend time drawing pixels that end up being drawn over.
