@@ -10,9 +10,6 @@ var utils = require('../../utils/');
 var AEntity = require('../a-entity').AEntity;
 var ANode = require('../a-node').ANode;
 var initPostMessageAPI = require('./postMessage');
-var sortFunctions = require('./sortFunctions');
-var aframeSortOpaqueDefault = sortFunctions.aframeSortOpaqueDefault;
-var aframeSortTransparentDefault = sortFunctions.aframeSortTransparentDefault;
 
 var bind = utils.bind;
 var isIOS = utils.device.isIOS();
@@ -625,9 +622,6 @@ class AScene extends AEntity {
 
     renderer = this.renderer = new THREE.WebGLRenderer(rendererConfig);
     renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.sortObjects = true;
-    renderer.setOpaqueSort(aframeSortOpaqueDefault);
-    renderer.setTransparentSort(aframeSortTransparentDefault);
 
     if (this.camera) { renderer.xr.setPoseTarget(this.camera.el.object3D); }
     this.addEventListener('camera-set-active', function () {

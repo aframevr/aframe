@@ -2,8 +2,6 @@ var registerSystem = require('../core/system').registerSystem;
 var utils = require('../utils/');
 var THREE = require('../lib/three');
 var sortFunctions = require('../core/scene/sortFunctions');
-var aframeSortTransparentDefault = sortFunctions.aframeSortTransparentDefault;
-var aframeSortTransparentSpatial = sortFunctions.aframeSortTransparentSpatial;
 
 var debug = utils.debug;
 var warn = debug('components:renderer:warn');
@@ -50,6 +48,10 @@ module.exports.System = registerSystem('renderer', {
     if (sceneEl.hasAttribute('logarithmicDepthBuffer')) {
       warn('Component `logarithmicDepthBuffer` is deprecated. Use `renderer="logarithmicDepthBuffer: true"` instead.');
     }
+
+    // These properties are always the same, regardless of rendered oonfiguration
+    renderer.sortObjects = true;
+    renderer.setOpaqueSort(sortFunctions.aframeSortOpaqueDefault);
   },
 
   update: function () {
@@ -65,9 +67,9 @@ module.exports.System = registerSystem('renderer', {
       warn('`sortObjects` property is deprecated. Use `renderer="sortTransparentObjects: true"` instead.');
     }
     if (data.sortTransparentObjects) {
-      renderer.setTransparentSort(aframeSortTransparentSpatial);
+      renderer.setTransparentSort(sortFunctions.aframeSortTransparentSpatial);
     } else {
-      renderer.setTransparentSort(aframeSortTransparentDefault);
+      renderer.setTransparentSort(sortFunctions.aframeSortTransparentDefault);
     }
   },
 

@@ -1,5 +1,7 @@
 /* global assert, suite, test, setup, teardown, THREE */
-var {aframeSortTransparentDefault, aframeSortTransparentSpatial} = require('core/scene/sortFunctions');
+var {aframeSortOpaqueDefault,
+     aframeSortTransparentDefault,
+     aframeSortTransparentSpatial} = require('core/scene/sortFunctions');
 
 suite('renderer', function () {
   function createScene () {
@@ -10,6 +12,8 @@ suite('renderer', function () {
 
   test('default initialization', function (done) {
     var sceneEl = createScene();
+    var sortFunction;
+    sceneEl.renderer.setOpaqueSort = function (s) { sortFunction = s; };
     sceneEl.addEventListener('loaded', function () {
       // Verify the properties which are part of the renderer system schema.
       var rendererSystem = sceneEl.getAttribute('renderer');
@@ -23,8 +27,11 @@ suite('renderer', function () {
       // Verify properties that are transferred from the renderer system to the rendering engine.
       var renderingEngine = sceneEl.renderer;
       assert.strictEqual(renderingEngine.outputColorSpace, THREE.SRGBColorSpace);
+      assert.ok(renderingEngine.sortObjects);
+      assert.strictEqual(sortFunction, aframeSortOpaqueDefault);
       assert.strictEqual(renderingEngine.useLegacyLights, true);
       assert.strictEqual(THREE.Texture.DEFAULT_ANISOTROPY, 1);
+
       done();
     });
     document.body.appendChild(sceneEl);
@@ -48,7 +55,7 @@ suite('renderer', function () {
     sceneEl.renderer.setTransparentSort = function (s) { sortFunction = s; };
     sceneEl.setAttribute('renderer', 'sortTransparentObjects: true;');
     sceneEl.addEventListener('loaded', function () {
-      assert.equal(sortFunction, aframeSortTransparentSpatial);
+      assert.strictEqual(sortFunction, aframeSortTransparentSpatial);
       done();
     });
     document.body.appendChild(sceneEl);
@@ -60,7 +67,7 @@ suite('renderer', function () {
     var sortFunction;
     sceneEl.renderer.setTransparentSort = function (s) { sortFunction = s; };
     sceneEl.addEventListener('loaded', function () {
-      assert.equal(sortFunction, aframeSortTransparentDefault);
+      assert.strictEqual(sortFunction, aframeSortTransparentDefault);
       done();
     });
     document.body.appendChild(sceneEl);
