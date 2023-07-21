@@ -1,4 +1,5 @@
 /* global assert, suite, test, setup, teardown, THREE */
+var {aframeSortTransparentDefault, aframeSortTransparentSpatial} = require('../../src/core/scene/sortFunctions');
 
 suite('renderer', function () {
   function createScene () {
@@ -22,7 +23,6 @@ suite('renderer', function () {
       // Verify properties that are transferred from the renderer system to the rendering engine.
       var renderingEngine = sceneEl.renderer;
       assert.strictEqual(renderingEngine.outputColorSpace, THREE.SRGBColorSpace);
-      assert.notOk(renderingEngine.sortObjects);
       assert.strictEqual(renderingEngine.useLegacyLights, true);
       assert.strictEqual(THREE.Texture.DEFAULT_ANISOTROPY, 1);
       done();
@@ -46,16 +46,9 @@ suite('renderer', function () {
 
     var sortFunction;
     sceneEl.renderer.setTransparentSort = function (s) { sortFunction = s; };
-    var sortObjects = [
-      { name: 'a', z: 1 },
-      { name: 'b', z: 2 }
-    ];
     sceneEl.setAttribute('renderer', 'sortTransparentObjects: true;');
     sceneEl.addEventListener('loaded', function () {
-      // sorted transparent objects are sorted far to near (i.e. large z to small z)
-      sortObjects.sort(sortFunction);
-      assert.equal(sortObjects[0].name, 'b');
-      assert.equal(sortObjects[1].name, 'a');
+      assert.equal(sortFunction, aframeSortTransparentSpatial);
       done();
     });
     document.body.appendChild(sceneEl);
@@ -66,15 +59,8 @@ suite('renderer', function () {
 
     var sortFunction;
     sceneEl.renderer.setTransparentSort = function (s) { sortFunction = s; };
-    var sortObjects = [
-      { name: 'a', z: 1 },
-      { name: 'b', z: 2 }
-    ];
     sceneEl.addEventListener('loaded', function () {
-      sortObjects.sort(sortFunction);
-      // if transparent objects are not sorted they should remain in their original order
-      assert.equal(sortObjects[0].name, 'a');
-      assert.equal(sortObjects[1].name, 'b');
+      assert.equal(sortFunction, aframeSortTransparentDefault);
       done();
     });
     document.body.appendChild(sceneEl);
