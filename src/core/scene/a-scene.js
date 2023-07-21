@@ -10,7 +10,9 @@ var utils = require('../../utils/');
 var AEntity = require('../a-entity').AEntity;
 var ANode = require('../a-node').ANode;
 var initPostMessageAPI = require('./postMessage');
-var {aframeSortOpaqueDefault, aframeSortTransparentDefault} = require('./sortFunctions');
+var sortFunctions = require('./sortFunctions');
+var aframeSortOpaqueDefault = sortFunctions.aframeSortOpaqueDefault;
+var aframeSortTransparentDefault = sortFunctions.aframeSortTransparentDefault;
 
 var bind = utils.bind;
 var isIOS = utils.device.isIOS();
