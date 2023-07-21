@@ -43,7 +43,7 @@ It also configures presentation attributes when entering WebVR/WebXR.
 | exposure                | When any toneMapping other than "no" is used this can be used to make the overall scene brighter or darker  | 1          |
 | anisotropy              | Default anisotropic filtering sample rate to use for textures                   | 1             |
 
-> **NOTE:** Once the scene is initialized, none of these properties may no longer be changed apart from "exposure" and "toneMapping" which can be set dynamically.
+> **NOTE:** Once the scene is initialized, none of these properties may no longer be changed apart from "exposure", "toneMapping", and "sortTransparentObjects" which can be set dynamically.
 
 ### antialias
 
