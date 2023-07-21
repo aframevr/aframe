@@ -50,7 +50,7 @@ function aframeSortTransparentSpatial (a, b) {
 }
 
 module.exports = {
-  aframeSortOpaqueDefault,
-  aframeSortTransparentDefault,
-  aframeSortTransparentSpatial
+  aframeSortOpaqueDefault: aframeSortOpaqueDefault,
+  aframeSortTransparentDefault: aframeSortTransparentDefault,
+  aframeSortTransparentSpatial: aframeSortTransparentSpatial
 };
