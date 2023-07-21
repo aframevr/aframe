@@ -82,20 +82,21 @@ Controls the amount of foveation which renders fewer pixels near the edges of th
 when in stereo rendering mode on certain systems. The value should be in the range of 0 to 1, where
 0 is the minimum and 1 the maximum amount of foveation. This is currently supported by the Oculus Browser.
 
+
+
 ### sortTransparentObjects
 
-In may cases, the order in which objects is rendered doesn't matter much, but there are a few cases where sorting is important:
+[sorting]: ../introduction/faq.md#what-order-does-a-frame-render-objects-in
 
-- for transparent objects, it's typically better to render objects furthest to nearest (although some cases are more complex and require [more sophisticated approaches](https://threejs.org/manual/?q=transp[#en/transparency)).  However, when the camera and/or objects are moving, this can result in undesirable visual effects when objects switch in terms of their relative distance from the camera
-- for performance reasons, it's typically desirable to render objects nearest to furthest, so that GPU doesn't spend time drawing pixels that end up being drawn over.
-- for AR "hider material" used to hide parts of the scene to create the appearance of occlusion by real-world objects, it's typically necessary to render these before the rest of the scene.
+Sorting is used to attempt to properly render objects that have some degree of transparency.
+Due to various limitations, proper transparency often requires some amount of careful setup.
+By default, transparent objects are not sorted, and the order of elements in the DOM determines order of
+rendering. Re-ordering DOM elements provides one way of forcing a consistent behavior, whereas
+use of `renderer="sortObjects: true"` may cause unwanted changes as the camera moves.
 
-By default, A-Frame sorts objects as follows:
+Some more background on how A-Frame sorts objects for rendering can be found [here][sorting]
 
-- for all objects, if [`renderOrder`](https://threejs.org/docs/index.html?q=object3D#api/en/core/Object3D.renderOrder) is set on the Object3D or a Group that it is a member of, the specified order will be respected
-- otherwise, opaque objects are rendered furthest to nearest, and transparent objects are rendered in the order they appear in the THREE.js Object tree (in most cases, this is the same as the order they appear in the DOM)
 
-If `sortTransparentObjects` is set to `true` then transparent objects are sorted furthest to nearest (although `renderOrder` is still respected first, where specified).  This typically gives better rendering of transparent objects, but may also lead to unwanted changes as the camera or objects move around.
 
 ### physicallyCorrectLights
 
