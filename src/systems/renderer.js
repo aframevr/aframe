@@ -1,7 +1,8 @@
 var registerSystem = require('../core/system').registerSystem;
 var utils = require('../utils/');
 var THREE = require('../lib/three');
-var {aframeSortTransparentDefault, aframeSortTransparentSpatial} = require('../core/scene/sortFunctions');
+var aframeSortTransparentDefault = require('../core/scene/sortFunctions').aframeSortTransparentDefault;
+var aframeSortTransparentSpatial = require('../core/scene/sortFunctions').aframeSortTransparentSpatial;
 
 var debug = utils.debug;
 var warn = debug('components:renderer:warn');
