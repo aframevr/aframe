@@ -1,5 +1,5 @@
 /* global assert, suite, test, setup, teardown, THREE */
-var {aframeSortTransparentDefault, aframeSortTransparentSpatial} = require('../../src/core/scene/sortFunctions');
+var {aframeSortTransparentDefault, aframeSortTransparentSpatial} = require('core/scene/sortFunctions');
 
 suite('renderer', function () {
   function createScene () {
