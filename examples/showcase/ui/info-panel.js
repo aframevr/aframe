@@ -4,7 +4,7 @@ AFRAME.registerComponent('info-panel', {
     var buttonEls = document.querySelectorAll('.menu-button');
     var fadeBackgroundEl = this.fadeBackgroundEl = document.querySelector('#fadeBackground');
 
-    this.movieImageEl;
+    this.movieImageEl = null;
     this.movieTitleEl = document.querySelector('#movieTitle');
     this.movieDescriptionEl = document.querySelector('#movieDescription');
 

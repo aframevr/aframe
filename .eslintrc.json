@@ -11,7 +11,6 @@
     "no-mixed-operators": "off",
     "no-multi-spaces": "off",
     "no-unreachable-loop": "off",
-    "no-unused-expressions": "off",
     "no-unused-vars": "off",
     "no-use-before-define": "off",
     "no-useless-return": "off",
