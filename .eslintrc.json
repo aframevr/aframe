@@ -32,7 +32,6 @@
     "quote-props": "off",
 
     /* These rules still to be reviewed */
-    "array-bracket-spacing": "off",
     "array-callback-return": "off"
   },
   "overrides": [
