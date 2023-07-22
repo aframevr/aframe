@@ -39,13 +39,13 @@
       }
     },
     {
-      "files": ["./src/core/**/*.js"],
+      "files": ["./src/core/**/a-*.js"],
       "parserOptions": {
         "ecmaVersion": 6
       }
     },
     {
-      "files": ["./src/extras/**/*.js"],
+      "files": ["./src/extras/primitives/primitives.js"],
       "parserOptions": {
         "ecmaVersion": 6
       }
