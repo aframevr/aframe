@@ -10,15 +10,14 @@
     "prefer-const": "off",
     "prefer-regex-literals": "off",
 
-
     /* These rules are compatible with ES5
        However they involve non-trivial code changes
        Therefore need more careful review before adopting */ 
+    "array-callback-return": "off",
     "no-mixed-operators": "off",
     "no-unreachable-loop": "off",
     "no-useless-return": "off",
     "prefer-promise-reject-errors": "off",
-    
 
     /* These rules are compatible with ES5
        However they involve large-scale changes to the codebase, so
@@ -29,10 +28,7 @@
     "no-multi-spaces": "off",
     "no-unused-vars": "off",
     "object-curly-spacing": "off",
-    "quote-props": "off",
-
-    /* These rules still to be reviewed */
-    "array-callback-return": "off"
+    "quote-props": "off"
   },
   "overrides": [
     {
