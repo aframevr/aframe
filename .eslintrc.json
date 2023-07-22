@@ -6,7 +6,6 @@
   "rules": {
     "array-bracket-spacing": "off",
     "array-callback-return": "off",
-    "computed-property-spacing": "off",
     "dot-notation": "off",
     "indent": "off",
     "no-mixed-operators": "off",
