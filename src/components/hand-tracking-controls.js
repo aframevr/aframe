@@ -341,4 +341,3 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
     this.el.setObject3D('mesh', mesh);
   }
 });
-

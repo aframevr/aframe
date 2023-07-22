@@ -97,4 +97,3 @@ suite('tracked-controls-webxr', function () {
     });
   });
 });
-

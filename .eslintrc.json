@@ -10,7 +10,6 @@
     "indent": "off",
     "no-mixed-operators": "off",
     "no-multi-spaces": "off",
-    "no-multiple-empty-lines": "off",
     "no-unreachable-loop": "off",
     "no-unused-expressions": "off",
     "no-unused-vars": "off",

@@ -25,4 +25,3 @@ module.exports.Shader = registerShader('shadow', {
     this.material.transparent = data.transparent;
   }
 });
-

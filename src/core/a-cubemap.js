@@ -61,4 +61,3 @@ class ACubeMap extends HTMLElement {
 }
 
 customElements.define('a-cubemap', ACubeMap);
-
