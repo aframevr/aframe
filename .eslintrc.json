@@ -12,7 +12,7 @@
     "no-multi-spaces": "off",
     "no-unreachable-loop": "off",
     "no-unused-vars": "off",
-    "no-use-before-define": "off",
+    
     "no-useless-return": "off",
     "no-var": "off",
     "object-curly-newline": "off",

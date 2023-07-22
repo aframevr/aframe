@@ -124,7 +124,8 @@ suite('utils.objects', function () {
     });
 
     test('can compare the same object with self reference', function () {
-      var objA = {x: 0, y: 0, z: 0, self: objA};
+      var objA = {x: 0, y: 0, z: 0};
+      objA.self = objA;
       assert.ok(deepEqual(objA, objA));
     });
 

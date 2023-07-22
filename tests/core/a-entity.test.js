@@ -24,7 +24,7 @@ var TestComponent = {
 };
 
 suite('a-entity', function () {
-  var el = el;
+  var el;
 
   setup(function (done) {
     elFactory().then(_el => {
