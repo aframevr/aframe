@@ -1194,7 +1194,7 @@ suite('registerComponent warnings', function () {
     setTimeout(() => {
       sceneEl = el.sceneEl;
       script = document.createElement('script');
-      script.innerHTML = `AFRAME.registerComponent('testorder', {});`;
+      script.innerHTML = 'AFRAME.registerComponent(\'testorder\', {});';
       done();
     });
   });
