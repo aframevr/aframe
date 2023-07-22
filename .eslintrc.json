@@ -20,7 +20,6 @@
     "prefer-promise-reject-errors": "off",
     "prefer-regex-literals": "off",
     "quote-props": "off",
-    "spaced-comment": "off",
     "valid-typeof": "off"
   },
   "overrides": [
