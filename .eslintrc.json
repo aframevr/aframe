@@ -19,8 +19,7 @@
     "prefer-const": "off",
     "prefer-promise-reject-errors": "off",
     "prefer-regex-literals": "off",
-    "quote-props": "off",
-    "valid-typeof": "off"
+    "quote-props": "off"
   },
   "overrides": [
     {

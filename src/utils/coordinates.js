@@ -11,7 +11,6 @@ var COORDINATE_KEYS = ['x', 'y', 'z', 'w'];
 var regex = /^\s*((-?\d*\.{0,1}\d+(e-?\d+)?)\s+){2,3}(-?\d*\.{0,1}\d+(e-?\d+)?)\s*$/;
 module.exports.regex = regex;
 
-var OBJECT = 'object';
 var whitespaceRegex = /\s+/g;
 
 /**
@@ -46,7 +45,7 @@ function parse (value, defaultVec) {
   }
 
   if (value === null || value === undefined) {
-    return typeof defaultVec === OBJECT ? extend({}, defaultVec) : defaultVec;
+    return typeof defaultVec === 'object' ?   extend({}, defaultVec) : defaultVec;
   }
 
   coordinate = value.trim().split(whitespaceRegex);
@@ -74,7 +73,7 @@ module.exports.parse = parse;
  */
 function stringify (data) {
   var str;
-  if (typeof data !== OBJECT) { return data; }
+  if (typeof data !== 'object') { return data; }
   str = data.x + ' ' + data.y;
   if (data.z != null) { str += ' ' + data.z; }
   if (data.w != null) { str += ' ' + data.w; }
