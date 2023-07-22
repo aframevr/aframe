@@ -153,8 +153,7 @@ suite('standard geometries', function () {
 
   test('icosahedron', function () {
     var geometry;
-    el.setAttribute('geometry', {
-      buffer: false, primitive: 'icosahedron', detail: 0, radius: 5});
+    el.setAttribute('geometry', {buffer: false, primitive: 'icosahedron', detail: 0, radius: 5});
 
     geometry = el.getObject3D('mesh').geometry;
     assert.equal(geometry.type, 'IcosahedronGeometry');
@@ -174,8 +173,7 @@ suite('standard geometries', function () {
 
   test('ring', function () {
     var geometry;
-    el.setAttribute('geometry', {
-      buffer: false, primitive: 'ring', radiusInner: 1, radiusOuter: 2, segmentsTheta: 3});
+    el.setAttribute('geometry', {buffer: false, primitive: 'ring', radiusInner: 1, radiusOuter: 2, segmentsTheta: 3});
 
     geometry = el.getObject3D('mesh').geometry;
     assert.equal(geometry.type, 'RingGeometry');
