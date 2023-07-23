@@ -19,7 +19,7 @@
         </a-mixin>
         <a-mixin id="cylinder"
                  geometry="primitive: cylinder; radius: 0.2; height: .5;
-                           segmentsRadial: 50; segmentsHeight: 50:
+                           segmentsRadial: 50; segmentsHeight: 50;
                            openEnded: true; thetaStart: 0; thetaLength: 360">
         </a-mixin>
         <a-mixin id="ring"
@@ -84,9 +84,9 @@
       <a-entity position="-2.5 0 1">
         <a-entity mixin="column">
           <a-entity mixin="column-light"></a-entity>
-          <a-entity mixin="object-on-column color box spin" animation__spin="to: 360 360 0"></a-entity>
-          <a-entity mixin="object-on-column color box spin" position=".18 1.2 .1" animation__spin="to: 360 360 0"></a-entity>
-          <a-entity mixin="object-on-column color box spin" position="-.18 1.2 -.2" animation__spin="to: 360 360 0"></a-entity>
+          <a-entity mixin="object-on-column color box spin" animation__spin="to: 360"></a-entity>
+          <a-entity mixin="object-on-column color box spin" position=".18 1.2 .1" animation__spin="to: 360"></a-entity>
+          <a-entity mixin="object-on-column color box spin" position="-.18 1.2 -.2" animation__spin="to: 360"></a-entity>
         </a-entity>
         <a-entity mixin="column-bottom"></a-entity>
       </a-entity>

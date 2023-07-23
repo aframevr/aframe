@@ -16,7 +16,7 @@
     </style>
   </head>
   <body>
-    <a-scene backround="color: #FBE0D8" embedded="true">
+    <a-scene background="color: #FBE0D8" embedded="true">
       <a-assets>
         <audio id="blip1" src="../../showcase/anime-UI/audio/321103__nsstudios__blip1.wav"></audio>
         <audio id="blip2" src="../../showcase/anime-UI/audio/321104__nsstudios__blip2.wav"></audio>
@@ -32,7 +32,7 @@
         <a-mixin id="sphere" geometry="primitive: sphere"></a-mixin>
       </a-assets>
 
-      <a-entity cursor="rayOrigin: mouse; objects: .intersectable; far: 30"></a-entity>
+      <a-entity cursor="rayOrigin: mouse" raycaster="objects: .intersectable; far: 30"></a-entity>
 
       <a-camera position="0 .6 4"></a-camera>
 
@@ -46,6 +46,7 @@
       <a-entity position="0 1 1">
         <a-entity id="invisibleCube"
                   mixin="cube"
+                  class="intersectable"
                   material="color: grey; opacity: 0.3; transparent: true"
                   scale="1 1 0.1"
                   animation="startEvents: click; property: rotation; to: 0 360 0; easing: linear; dur: 2000">
@@ -64,6 +65,7 @@
 
       <a-entity position="1 1 0">
         <a-entity mixin="yellow cube"
+                  class="intersectable"
                   sound__1="on: click; src: #shot; poolSize: 6"
                   sound__2="src: #blip2; autoplay: true"
                   animation="startEvents: click; property: scale; to: 1.2 1.2 1.2; easing: linear; dur: 200">

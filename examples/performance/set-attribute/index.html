@@ -44,9 +44,11 @@
   </head>
   <body>
     <a-scene>
-      <a-mixin id="foo" dummy__1="foo: 1"></a-mixin>
-      <a-mixin id="bar" dummy__1="foo: 2"></a-mixin>
-      <a-mixin id="baz" dummy__1="foo: 3"></a-mixin>
+      <a-assets>
+        <a-mixin id="foo" dummy__1="foo: 1"></a-mixin>
+        <a-mixin id="bar" dummy__1="foo: 2"></a-mixin>
+        <a-mixin id="baz" dummy__1="foo: 3"></a-mixin>
+      </a-assets>
 
       <a-entity mixin="foo bar baz" dummy__1="a: false; b: false; c: false; d: false; e: false; f: false; g: false" set-attribute-test></a-entity>
     </a-scene>
