@@ -6,26 +6,9 @@
     <meta name="description" content="Anime UI — A-Frame">
     <script src="../../../dist/aframe-master.js"></script>
     <script src="https://unpkg.com/aframe-event-set-component@4.2.1/dist/aframe-event-set-component.min.js"></script>
-    <script>
-      AFRAME.registerComponent('hide-in-ar-mode', {
-        // Set this object invisible while in AR mode.
-        // TODO: could this be replaced with bind="visible: !ar-mode"
-        // with https://www.npmjs.com/package/aframe-state-component ?
-        init: function () {
-          this.el.sceneEl.addEventListener('enter-vr', (ev) => {
-            if (this.el.sceneEl.is('ar-mode')) {
-              this.el.setAttribute('visible', false);
-            }
-          });
-          this.el.sceneEl.addEventListener('exit-vr', (ev) => {
-            this.el.setAttribute('visible', true);
-          });
-        }
-      })
-    </script>
   </head>
   <body>
-    <a-scene renderer="colorManagement: true;">
+    <a-scene renderer="colorManagement: true;" vr-mode-ui="enterAREnabled: true">
       <a-assets>
         <a-asset-item id="engine" src="models/engine.glb"></a-asset-item>
         <a-mixin id="image" geometry="height: 2; width: 2"></a-mixin>
@@ -53,11 +36,11 @@
         <a-camera position="0 0 0" near="0.1"></a-camera>
       </a-entity>
 
-      <a-entity position="0 0 -3" hide-in-ar-mode>
+      <a-entity position="0 0 -3" hide-on-enter-ar>
         <a-gltf-model src="#engine" rotation="90 0 0" scale="18 18 18"></a-gltf-model>
       </a-entity>
 
-      <a-entity id="wall-lights" position="-7.25 1.5 2.9" rotation="0 90 0" scale="1.25 1.25 1.25">
+      <a-entity id="wall-lights" position="-7.25 1.5 2.9" rotation="0 90 0" scale="1.25 1.25 1.25" hide-on-enter-ar>
         <a-entity position="0 0 0" scale="0.05 0.05 0.05">
           <a-plane mixin="delayVisible" width="1" height="4" shader="flat" color="#B4E2F8" event-set__loaded="_delay: 350"></a-plane>
           <a-plane width="6" height="4" color="#586266" opacity="0.6" position="0 0 -.01"></a-plane>
