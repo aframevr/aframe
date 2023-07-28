@@ -1,6 +1,6 @@
 /* global assert, process, suite, test, setup */
 
-var {aframeSortOpaqueDefault, aframeSortTransparentDefault, aframeSortTransparentSpatial} = require('core/scene/sortFunctions');
+var {sortOpaqueDefault, sortTransparentDefault, sortTransparentSpatial} = require('core/scene/sortFunctions');
 
 suite('sortFunctions', function () {
   var objects;
@@ -34,47 +34,47 @@ suite('sortFunctions', function () {
   }
 
   test('Opaque sort sorts front-to-back', function () {
-    objects.sort(aframeSortOpaqueDefault);
+    objects.sort(sortOpaqueDefault);
     checkOrder(objects, ['a', 'c', 'b']);
   });
 
   test('Opaque sort respects renderOrder', function () {
-    objectsRenderOrder.sort(aframeSortOpaqueDefault);
+    objectsRenderOrder.sort(sortOpaqueDefault);
     checkOrder(objectsRenderOrder, ['c', 'b', 'a']);
   });
 
   test('Opaque sort respects groupOrder, then renderOrder', function () {
-    objectsGroupOrder.sort(aframeSortOpaqueDefault);
+    objectsGroupOrder.sort(sortOpaqueDefault);
     checkOrder(objectsGroupOrder, ['b', 'a', 'c']);
   });
 
   test('Transparent default sort sorts in DOM order', function () {
-    objects.sort(aframeSortTransparentDefault);
+    objects.sort(sortTransparentDefault);
     checkOrder(objects, ['a', 'b', 'c']);
   });
 
   test('Transparent default sort respects renderOrder', function () {
-    objectsRenderOrder.sort(aframeSortTransparentDefault);
+    objectsRenderOrder.sort(sortTransparentDefault);
     checkOrder(objectsRenderOrder, ['c', 'b', 'a']);
   });
 
   test('Transparent default sort respects groupOrder, then renderOrder', function () {
-    objectsGroupOrder.sort(aframeSortTransparentDefault);
+    objectsGroupOrder.sort(sortTransparentDefault);
     checkOrder(objectsGroupOrder, ['b', 'a', 'c']);
   });
 
   test('Transparent spatial sort sorts back-to-front', function () {
-    objects.sort(aframeSortTransparentSpatial);
+    objects.sort(sortTransparentSpatial);
     checkOrder(objects, ['b', 'c', 'a']);
   });
 
   test('Transparent spatial sort respects renderOrder', function () {
-    objectsRenderOrder.sort(aframeSortTransparentSpatial);
+    objectsRenderOrder.sort(sortTransparentSpatial);
     checkOrder(objectsRenderOrder, ['c', 'b', 'a']);
   });
 
   test('Transparent spatial sort respects groupOrder, then renderOrder', function () {
-    objectsGroupOrder.sort(aframeSortTransparentSpatial);
+    objectsGroupOrder.sort(sortTransparentSpatial);
     checkOrder(objectsGroupOrder, ['b', 'a', 'c']);
   });
 });

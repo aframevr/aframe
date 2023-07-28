@@ -51,7 +51,7 @@ module.exports.System = registerSystem('renderer', {
 
     // These properties are always the same, regardless of rendered oonfiguration
     renderer.sortObjects = true;
-    renderer.setOpaqueSort(sortFunctions.aframeSortOpaqueDefault);
+    renderer.setOpaqueSort(sortFunctions.sortOpaqueDefault);
   },
 
   update: function () {
@@ -67,9 +67,9 @@ module.exports.System = registerSystem('renderer', {
       warn('`sortObjects` property is deprecated. Use `renderer="sortTransparentObjects: true"` instead.');
     }
     if (data.sortTransparentObjects) {
-      renderer.setTransparentSort(sortFunctions.aframeSortTransparentSpatial);
+      renderer.setTransparentSort(sortFunctions.sortTransparentSpatial);
     } else {
-      renderer.setTransparentSort(sortFunctions.aframeSortTransparentDefault);
+      renderer.setTransparentSort(sortFunctions.sortTransparentDefault);
     }
   },
 

@@ -8,7 +8,7 @@
 // - sort front-to-back by z-depth from camera (this should minimize overdraw)
 // - otherwise leave objects in default order (object tree order)
 
-function aframeSortOpaqueDefault (a, b) {
+function sortOpaqueDefault (a, b) {
   if (a.groupOrder !== b.groupOrder) {
     return a.groupOrder - b.groupOrder;
   } else if (a.renderOrder !== b.renderOrder) {
@@ -23,7 +23,7 @@ function aframeSortOpaqueDefault (a, b) {
 // Default sort for transparent objects:
 // - respect groupOrder & renderOrder settings
 // - otherwise leave objects in default order (object tree order)
-function aframeSortTransparentDefault (a, b) {
+function sortTransparentDefault (a, b) {
   if (a.groupOrder !== b.groupOrder) {
     return a.groupOrder - b.groupOrder;
   } else if (a.renderOrder !== b.renderOrder) {
@@ -37,7 +37,7 @@ function aframeSortTransparentDefault (a, b) {
 // - respect groupOrder & renderOrder settings
 // - sort back-to-front by z-depth from camera
 // - otherwise leave objects in default order (object tree order)
-function aframeSortTransparentSpatial (a, b) {
+function sortTransparentSpatial (a, b) {
   if (a.groupOrder !== b.groupOrder) {
     return a.groupOrder - b.groupOrder;
   } else if (a.renderOrder !== b.renderOrder) {
@@ -50,7 +50,7 @@ function aframeSortTransparentSpatial (a, b) {
 }
 
 module.exports = {
-  aframeSortOpaqueDefault: aframeSortOpaqueDefault,
-  aframeSortTransparentDefault: aframeSortTransparentDefault,
-  aframeSortTransparentSpatial: aframeSortTransparentSpatial
+  sortOpaqueDefault: sortOpaqueDefault,
+  sortTransparentDefault: sortTransparentDefault,
+  sortTransparentSpatial: sortTransparentSpatial
 };

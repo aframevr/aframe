@@ -1,7 +1,7 @@
 /* global assert, suite, test, setup, teardown, THREE */
-var {aframeSortOpaqueDefault,
-     aframeSortTransparentDefault,
-     aframeSortTransparentSpatial} = require('core/scene/sortFunctions');
+var {sortOpaqueDefault,
+     sortTransparentDefault,
+     sortTransparentSpatial} = require('core/scene/sortFunctions');
 
 suite('renderer', function () {
   function createScene () {
@@ -28,7 +28,7 @@ suite('renderer', function () {
       var renderingEngine = sceneEl.renderer;
       assert.strictEqual(renderingEngine.outputColorSpace, THREE.SRGBColorSpace);
       assert.ok(renderingEngine.sortObjects);
-      assert.strictEqual(sortFunction, aframeSortOpaqueDefault);
+      assert.strictEqual(sortFunction, sortOpaqueDefault);
       assert.strictEqual(renderingEngine.useLegacyLights, true);
       assert.strictEqual(THREE.Texture.DEFAULT_ANISOTROPY, 1);
 
@@ -55,7 +55,7 @@ suite('renderer', function () {
     sceneEl.renderer.setTransparentSort = function (s) { sortFunction = s; };
     sceneEl.setAttribute('renderer', 'sortTransparentObjects: true;');
     sceneEl.addEventListener('loaded', function () {
-      assert.strictEqual(sortFunction, aframeSortTransparentSpatial);
+      assert.strictEqual(sortFunction, sortTransparentSpatial);
       done();
     });
     document.body.appendChild(sceneEl);
@@ -67,7 +67,7 @@ suite('renderer', function () {
     var sortFunction;
     sceneEl.renderer.setTransparentSort = function (s) { sortFunction = s; };
     sceneEl.addEventListener('loaded', function () {
-      assert.strictEqual(sortFunction, aframeSortTransparentDefault);
+      assert.strictEqual(sortFunction, sortTransparentDefault);
       done();
     });
     document.body.appendChild(sceneEl);
