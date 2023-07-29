@@ -1,7 +1,6 @@
 var registerSystem = require('../core/system').registerSystem;
 var utils = require('../utils/');
 var THREE = require('../lib/three');
-var sortFunctions = require('../core/scene/sortFunctions');
 
 var debug = utils.debug;
 var warn = debug('components:renderer:warn');
@@ -51,7 +50,7 @@ module.exports.System = registerSystem('renderer', {
 
     // These properties are always the same, regardless of rendered oonfiguration
     renderer.sortObjects = true;
-    renderer.setOpaqueSort(sortFunctions.sortOpaqueDefault);
+    renderer.setOpaqueSort(sortOpaqueDefault);
   },
 
   update: function () {
@@ -67,9 +66,9 @@ module.exports.System = registerSystem('renderer', {
       warn('`sortObjects` property is deprecated. Use `renderer="sortTransparentObjects: true"` instead.');
     }
     if (data.sortTransparentObjects) {
-      renderer.setTransparentSort(sortFunctions.sortTransparentSpatial);
+      renderer.setTransparentSort(sortTransparentSpatial);
     } else {
-      renderer.setTransparentSort(sortFunctions.sortTransparentDefault);
+      renderer.setTransparentSort(sortTransparentDefault);
     }
   },
 
@@ -97,3 +96,59 @@ module.exports.System = registerSystem('renderer', {
     }
   }
 });
+
+// Custom A-Frame sort functions.
+// Variations of Three.js default sort orders here:
+// https://github.com/mrdoob/three.js/blob/ebbaecf9acacf259ea9abdcba7b6fb25cfcea2ab/src/renderers/webgl/WebGLRenderLists.js#L1
+// See: https://github.com/aframevr/aframe/issues/5332
+
+// Default sort for opaque objects:
+// - respect groupOrder & renderOrder settings
+// - sort front-to-back by z-depth from camera (this should minimize overdraw)
+// - otherwise leave objects in default order (object tree order)
+
+function sortOpaqueDefault (a, b) {
+  if (a.groupOrder !== b.groupOrder) {
+    return a.groupOrder - b.groupOrder;
+  } else if (a.renderOrder !== b.renderOrder) {
+    return a.renderOrder - b.renderOrder;
+  } else if (a.z !== b.z) {
+    return a.z - b.z;
+  } else {
+    return 0;
+  }
+}
+
+// Default sort for transparent objects:
+// - respect groupOrder & renderOrder settings
+// - otherwise leave objects in default order (object tree order)
+function sortTransparentDefault (a, b) {
+  if (a.groupOrder !== b.groupOrder) {
+    return a.groupOrder - b.groupOrder;
+  } else if (a.renderOrder !== b.renderOrder) {
+    return a.renderOrder - b.renderOrder;
+  } else {
+    return 0;
+  }
+}
+
+// Spatial sort for transparent objects:
+// - respect groupOrder & renderOrder settings
+// - sort back-to-front by z-depth from camera
+// - otherwise leave objects in default order (object tree order)
+function sortTransparentSpatial (a, b) {
+  if (a.groupOrder !== b.groupOrder) {
+    return a.groupOrder - b.groupOrder;
+  } else if (a.renderOrder !== b.renderOrder) {
+    return a.renderOrder - b.renderOrder;
+  } else if (a.z !== b.z) {
+    return b.z - a.z;
+  } else {
+    return 0;
+  }
+}
+
+// exports needed for Unit Tests
+module.exports.sortOpaqueDefault = sortOpaqueDefault;
+module.exports.sortTransparentDefault = sortTransparentDefault;
+module.exports.sortTransparentSpatial = sortTransparentSpatial;
