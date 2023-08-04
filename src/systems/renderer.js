@@ -50,7 +50,7 @@ module.exports.System = registerSystem('renderer', {
 
     // These properties are always the same, regardless of rendered oonfiguration
     renderer.sortObjects = true;
-    renderer.setOpaqueSort(sortOpaqueDefault);
+    renderer.setOpaqueSort(sortSpatialFrontToBack);
   },
 
   update: function () {
@@ -66,9 +66,9 @@ module.exports.System = registerSystem('renderer', {
       warn('`sortObjects` property is deprecated. Use `renderer="sortTransparentObjects: true"` instead.');
     }
     if (data.sortTransparentObjects) {
-      renderer.setTransparentSort(sortTransparentSpatial);
+      renderer.setTransparentSort(sortSpatialBackToFront);
     } else {
-      renderer.setTransparentSort(sortTransparentDefault);
+      renderer.setTransparentSort(sortRenderOrderOnly);
     }
   },
 
@@ -107,7 +107,7 @@ module.exports.System = registerSystem('renderer', {
 // - sort front-to-back by z-depth from camera (this should minimize overdraw)
 // - otherwise leave objects in default order (object tree order)
 
-function sortOpaqueDefault (a, b) {
+function sortSpatialFrontToBack (a, b) {
   if (a.groupOrder !== b.groupOrder) {
     return a.groupOrder - b.groupOrder;
   } else if (a.renderOrder !== b.renderOrder) {
@@ -122,7 +122,7 @@ function sortOpaqueDefault (a, b) {
 // Default sort for transparent objects:
 // - respect groupOrder & renderOrder settings
 // - otherwise leave objects in default order (object tree order)
-function sortTransparentDefault (a, b) {
+function sortRenderOrderOnly (a, b) {
   if (a.groupOrder !== b.groupOrder) {
     return a.groupOrder - b.groupOrder;
   } else if (a.renderOrder !== b.renderOrder) {
@@ -136,7 +136,7 @@ function sortTransparentDefault (a, b) {
 // - respect groupOrder & renderOrder settings
 // - sort back-to-front by z-depth from camera
 // - otherwise leave objects in default order (object tree order)
-function sortTransparentSpatial (a, b) {
+function sortSpatialBackToFront (a, b) {
   if (a.groupOrder !== b.groupOrder) {
     return a.groupOrder - b.groupOrder;
   } else if (a.renderOrder !== b.renderOrder) {
@@ -149,6 +149,6 @@ function sortTransparentSpatial (a, b) {
 }
 
 // exports needed for Unit Tests
-module.exports.sortOpaqueDefault = sortOpaqueDefault;
-module.exports.sortTransparentDefault = sortTransparentDefault;
-module.exports.sortTransparentSpatial = sortTransparentSpatial;
+module.exports.sortSpatialFrontToBack = sortSpatialFrontToBack;
+module.exports.sortRenderOrderOnly = sortRenderOrderOnly;
+module.exports.sortSpatialBackToFront = sortSpatialBackToFront;
