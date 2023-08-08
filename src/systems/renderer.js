@@ -112,10 +112,8 @@ function sortFrontToBack (a, b) {
     return a.groupOrder - b.groupOrder;
   } else if (a.renderOrder !== b.renderOrder) {
     return a.renderOrder - b.renderOrder;
-  } else if (a.z !== b.z) {
-    return a.z - b.z;
   } else {
-    return 0;
+    return a.z - b.z;
   }
 }
 
@@ -125,10 +123,8 @@ function sortFrontToBack (a, b) {
 function sortRenderOrderOnly (a, b) {
   if (a.groupOrder !== b.groupOrder) {
     return a.groupOrder - b.groupOrder;
-  } else if (a.renderOrder !== b.renderOrder) {
-    return a.renderOrder - b.renderOrder;
   } else {
-    return 0;
+    return a.renderOrder - b.renderOrder;
   }
 }
 
@@ -141,10 +137,8 @@ function sortBackToFront (a, b) {
     return a.groupOrder - b.groupOrder;
   } else if (a.renderOrder !== b.renderOrder) {
     return a.renderOrder - b.renderOrder;
-  } else if (a.z !== b.z) {
-    return b.z - a.z;
   } else {
-    return 0;
+    return b.z - a.z;
   }
 }
 
