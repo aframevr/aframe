@@ -1,7 +1,7 @@
 /* global assert, suite, test, setup, teardown, THREE */
-var {sortSpatialFrontToBack,
+var {sortFrontToBack,
      sortRenderOrderOnly,
-     sortSpatialBackToFront} = require('systems/renderer');
+     sortBackToFront} = require('systems/renderer');
 
 suite('renderer', function () {
   function createScene () {
@@ -28,7 +28,7 @@ suite('renderer', function () {
       var renderingEngine = sceneEl.renderer;
       assert.strictEqual(renderingEngine.outputColorSpace, THREE.SRGBColorSpace);
       assert.ok(renderingEngine.sortObjects);
-      assert.strictEqual(sortFunction, sortSpatialFrontToBack);
+      assert.strictEqual(sortFunction, sortFrontToBack);
       assert.strictEqual(renderingEngine.useLegacyLights, true);
       assert.strictEqual(THREE.Texture.DEFAULT_ANISOTROPY, 1);
 
@@ -55,7 +55,7 @@ suite('renderer', function () {
     sceneEl.renderer.setTransparentSort = function (s) { sortFunction = s; };
     sceneEl.setAttribute('renderer', 'sortTransparentObjects: true;');
     sceneEl.addEventListener('loaded', function () {
-      assert.strictEqual(sortFunction, sortSpatialBackToFront);
+      assert.strictEqual(sortFunction, sortBackToFront);
       done();
     });
     document.body.appendChild(sceneEl);
@@ -263,17 +263,17 @@ suite('renderer', function () {
     }
 
     test('Opaque sort sorts front-to-back', function () {
-      objects.sort(sortSpatialFrontToBack);
+      objects.sort(sortFrontToBack);
       checkOrder(objects, ['a', 'c', 'b']);
     });
 
     test('Opaque sort respects renderOrder', function () {
-      objectsRenderOrder.sort(sortSpatialFrontToBack);
+      objectsRenderOrder.sort(sortFrontToBack);
       checkOrder(objectsRenderOrder, ['c', 'b', 'a']);
     });
 
     test('Opaque sort respects groupOrder, then renderOrder', function () {
-      objectsGroupOrder.sort(sortSpatialFrontToBack);
+      objectsGroupOrder.sort(sortFrontToBack);
       checkOrder(objectsGroupOrder, ['b', 'a', 'c']);
     });
 
@@ -293,17 +293,17 @@ suite('renderer', function () {
     });
 
     test('Transparent spatial sort sorts back-to-front', function () {
-      objects.sort(sortSpatialBackToFront);
+      objects.sort(sortBackToFront);
       checkOrder(objects, ['b', 'c', 'a']);
     });
 
     test('Transparent spatial sort respects renderOrder', function () {
-      objectsRenderOrder.sort(sortSpatialBackToFront);
+      objectsRenderOrder.sort(sortBackToFront);
       checkOrder(objectsRenderOrder, ['c', 'b', 'a']);
     });
 
     test('Transparent spatial sort respects groupOrder, then renderOrder', function () {
-      objectsGroupOrder.sort(sortSpatialBackToFront);
+      objectsGroupOrder.sort(sortBackToFront);
       checkOrder(objectsGroupOrder, ['b', 'a', 'c']);
     });
   });

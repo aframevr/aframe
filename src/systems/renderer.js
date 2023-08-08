@@ -50,7 +50,7 @@ module.exports.System = registerSystem('renderer', {
 
     // These properties are always the same, regardless of rendered oonfiguration
     renderer.sortObjects = true;
-    renderer.setOpaqueSort(sortSpatialFrontToBack);
+    renderer.setOpaqueSort(sortFrontToBack);
   },
 
   update: function () {
@@ -66,7 +66,7 @@ module.exports.System = registerSystem('renderer', {
       warn('`sortObjects` property is deprecated. Use `renderer="sortTransparentObjects: true"` instead.');
     }
     if (data.sortTransparentObjects) {
-      renderer.setTransparentSort(sortSpatialBackToFront);
+      renderer.setTransparentSort(sortBackToFront);
     } else {
       renderer.setTransparentSort(sortRenderOrderOnly);
     }
@@ -107,7 +107,7 @@ module.exports.System = registerSystem('renderer', {
 // - sort front-to-back by z-depth from camera (this should minimize overdraw)
 // - otherwise leave objects in default order (object tree order)
 
-function sortSpatialFrontToBack (a, b) {
+function sortFrontToBack (a, b) {
   if (a.groupOrder !== b.groupOrder) {
     return a.groupOrder - b.groupOrder;
   } else if (a.renderOrder !== b.renderOrder) {
@@ -136,7 +136,7 @@ function sortRenderOrderOnly (a, b) {
 // - respect groupOrder & renderOrder settings
 // - sort back-to-front by z-depth from camera
 // - otherwise leave objects in default order (object tree order)
-function sortSpatialBackToFront (a, b) {
+function sortBackToFront (a, b) {
   if (a.groupOrder !== b.groupOrder) {
     return a.groupOrder - b.groupOrder;
   } else if (a.renderOrder !== b.renderOrder) {
@@ -149,6 +149,6 @@ function sortSpatialBackToFront (a, b) {
 }
 
 // exports needed for Unit Tests
-module.exports.sortSpatialFrontToBack = sortSpatialFrontToBack;
+module.exports.sortFrontToBack = sortFrontToBack;
 module.exports.sortRenderOrderOnly = sortRenderOrderOnly;
-module.exports.sortSpatialBackToFront = sortSpatialBackToFront;
+module.exports.sortBackToFront = sortBackToFront;
