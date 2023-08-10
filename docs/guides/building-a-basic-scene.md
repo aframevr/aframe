@@ -14,7 +14,7 @@ examples:
     src: https://glitch.com/edit/#!/aframe-basic-guide-with-environment?path=index.html
 ---
 
-[primitives]: ../primitives/
+[primitives]: ../introduction/html-and-primitives.md
 [position]: ../components/position.md
 [rotation]: ../components/rotation.md
 [scale]: ../components/scale.md
