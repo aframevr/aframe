@@ -110,22 +110,21 @@ module.exports.System = registerSystem('renderer', {
 function sortFrontToBack (a, b) {
   if (a.groupOrder !== b.groupOrder) {
     return a.groupOrder - b.groupOrder;
-  } else if (a.renderOrder !== b.renderOrder) {
+  } 
+  if (a.renderOrder !== b.renderOrder) {
     return a.renderOrder - b.renderOrder;
-  } else {
-    return a.z - b.z;
-  }
+  } 
+  return a.z - b.z;
 }
 
 // Default sort for transparent objects:
 // - respect groupOrder & renderOrder settings
 // - otherwise leave objects in default order (object tree order)
 function sortRenderOrderOnly (a, b) {
-  if (a.groupOrder !== b.groupOrder) {
+  if (a.groupOrder !== b.groupOrder) { 
     return a.groupOrder - b.groupOrder;
-  } else {
-    return a.renderOrder - b.renderOrder;
-  }
+  } 
+  return a.renderOrder - b.renderOrder;
 }
 
 // Spatial sort for transparent objects:
@@ -135,11 +134,11 @@ function sortRenderOrderOnly (a, b) {
 function sortBackToFront (a, b) {
   if (a.groupOrder !== b.groupOrder) {
     return a.groupOrder - b.groupOrder;
-  } else if (a.renderOrder !== b.renderOrder) {
-    return a.renderOrder - b.renderOrder;
-  } else {
-    return b.z - a.z;
   }
+  if (a.renderOrder !== b.renderOrder) {
+    return a.renderOrder - b.renderOrder;
+  } 
+  return b.z - a.z;
 }
 
 // exports needed for Unit Tests
