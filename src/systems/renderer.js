@@ -110,10 +110,10 @@ module.exports.System = registerSystem('renderer', {
 function sortFrontToBack (a, b) {
   if (a.groupOrder !== b.groupOrder) {
     return a.groupOrder - b.groupOrder;
-  } 
+  }
   if (a.renderOrder !== b.renderOrder) {
     return a.renderOrder - b.renderOrder;
-  } 
+  }
   return a.z - b.z;
 }
 
@@ -121,9 +121,9 @@ function sortFrontToBack (a, b) {
 // - respect groupOrder & renderOrder settings
 // - otherwise leave objects in default order (object tree order)
 function sortRenderOrderOnly (a, b) {
-  if (a.groupOrder !== b.groupOrder) { 
+  if (a.groupOrder !== b.groupOrder) {
     return a.groupOrder - b.groupOrder;
-  } 
+  }
   return a.renderOrder - b.renderOrder;
 }
 
@@ -137,7 +137,7 @@ function sortBackToFront (a, b) {
   }
   if (a.renderOrder !== b.renderOrder) {
     return a.renderOrder - b.renderOrder;
-  } 
+  }
   return b.z - a.z;
 }
 
