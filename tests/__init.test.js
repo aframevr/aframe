@@ -46,10 +46,12 @@ setup(function () {
     },
     dispose: function () {},
     getContext: function () { return undefined; },
-    setAnimationLoop: function () {},
-    setSize: function () {},
-    setPixelRatio: function () {},
     render: function () {},
+    setAnimationLoop: function () {},
+    setOpaqueSort: function () {},
+    setPixelRatio: function () {},
+    setSize: function () {},
+    setTransparentSort: function () {},
     shadowMap: {enabled: false}
   };
 });

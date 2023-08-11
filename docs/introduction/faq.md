@@ -343,3 +343,21 @@ Phones with Adreno 300 series GPUs are notoriously problematic. Set [renderer pr
 ## Can I use A-Frame offline or self hosted?
 
 Using A-Frame online sometimes is not possible or inconvenient, like for instance when traveling or during public events with poor Internet connectivity. A-Frame is mostly self-contained so including the build (aframe.min.js) in your project will be sufficient in many cases. Some specific parts are lazy loaded and only fetched when used. This is for example the case of the fonts for the text component and the 3D models for controllers. In order to make an A-Frame build work either offline or without relying on A-Frame hosting infrastructure (typically cdn.aframe.io), you can monitor network requests on your browser console. This will show precisely what assets are being loaded and thus as required for your specific experience. Fonts can be found via FONT_BASE_URL in the whereas controllers via MODEL_URLS. Both can be modified in the source and included in your own [custom build](https://github.com/aframevr/aframe#generating-builds)
+
+## What order does A-Frame render objects in?
+
+[sortTransparentObjects]: ../components/renderer.md#sorttransparentobjects
+
+In many cases, the order in which objects is rendered doesn't matter much - most scenes will look the same whatever order the objects are rendered in - but there are a few cases where sorting is important:
+
+- for transparent objects, it's typically better to render objects furthest to nearest (although some cases are more complex and require [more sophisticated approaches](https://threejs.org/manual/?q=transp[#en/transparency)).  However, when the camera and/or objects are moving, this can result in undesirable visual effects when objects switch in terms of their relative distance from the camera
+- for performance reasons, it's typically desirable to render objects nearest to furthest, so that GPU doesn't spend time drawing pixels that end up being drawn over.
+- for AR "hider material" used to hide parts of the scene to create the appearance of occlusion by real-world objects, it's typically necessary to render these before the rest of the scene.
+
+By default, A-Frame sorts objects as follows:
+
+- for all objects, if [`renderOrder`](https://threejs.org/docs/index.html?q=object3D#api/en/core/Object3D.renderOrder) is set on the Object3D or a Group that it is a member of, the specified order will be respected
+- otherwise, opaque objects are rendered furthest to nearest, and transparent objects are rendered in the order they appear in the THREE.js Object tree (in most cases, this is the same as the order they appear in the DOM)
+
+The `renderer` system has a [`sortTransparentObjects`][sortTransparentObjects] property, which can be used to render transparent objects furthest to nearest, rather than in DOM order.
+

@@ -20,7 +20,7 @@ module.exports.System = registerSystem('renderer', {
     toneMapping: {default: 'no', oneOf: ['no', 'ACESFilmic', 'linear', 'reinhard', 'cineon']},
     precision: {default: 'high', oneOf: ['high', 'medium', 'low']},
     anisotropy: {default: 1},
-    sortObjects: {default: false},
+    sortTransparentObjects: {default: false},
     colorManagement: {default: true},
     alpha: {default: true},
     foveationLevel: {default: 1}
@@ -32,7 +32,7 @@ module.exports.System = registerSystem('renderer', {
     var toneMappingName = this.data.toneMapping.charAt(0).toUpperCase() + this.data.toneMapping.slice(1);
     // This is the rendering engine, such as THREE.js so copy over any persistent properties from the rendering system.
     var renderer = sceneEl.renderer;
-    renderer.sortObjects = data.sortObjects;
+
     renderer.useLegacyLights = !data.physicallyCorrectLights;
     renderer.toneMapping = THREE[toneMappingName + 'ToneMapping'];
     THREE.Texture.DEFAULT_ANISOTROPY = data.anisotropy;
@@ -47,6 +47,10 @@ module.exports.System = registerSystem('renderer', {
     if (sceneEl.hasAttribute('logarithmicDepthBuffer')) {
       warn('Component `logarithmicDepthBuffer` is deprecated. Use `renderer="logarithmicDepthBuffer: true"` instead.');
     }
+
+    // These properties are always the same, regardless of rendered oonfiguration
+    renderer.sortObjects = true;
+    renderer.setOpaqueSort(sortFrontToBack);
   },
 
   update: function () {
@@ -57,6 +61,15 @@ module.exports.System = registerSystem('renderer', {
     renderer.toneMapping = THREE[toneMappingName + 'ToneMapping'];
     renderer.toneMappingExposure = data.exposure;
     renderer.xr.setFoveation(data.foveationLevel);
+
+    if (data.sortObjects) {
+      warn('`sortObjects` property is deprecated. Use `renderer="sortTransparentObjects: true"` instead.');
+    }
+    if (data.sortTransparentObjects) {
+      renderer.setTransparentSort(sortBackToFront);
+    } else {
+      renderer.setTransparentSort(sortRenderOrderOnly);
+    }
   },
 
   applyColorCorrection: function (texture) {
@@ -83,3 +96,52 @@ module.exports.System = registerSystem('renderer', {
     }
   }
 });
+
+// Custom A-Frame sort functions.
+// Variations of Three.js default sort orders here:
+// https://github.com/mrdoob/three.js/blob/ebbaecf9acacf259ea9abdcba7b6fb25cfcea2ab/src/renderers/webgl/WebGLRenderLists.js#L1
+// See: https://github.com/aframevr/aframe/issues/5332
+
+// Default sort for opaque objects:
+// - respect groupOrder & renderOrder settings
+// - sort front-to-back by z-depth from camera (this should minimize overdraw)
+// - otherwise leave objects in default order (object tree order)
+
+function sortFrontToBack (a, b) {
+  if (a.groupOrder !== b.groupOrder) {
+    return a.groupOrder - b.groupOrder;
+  } 
+  if (a.renderOrder !== b.renderOrder) {
+    return a.renderOrder - b.renderOrder;
+  } 
+  return a.z - b.z;
+}
+
+// Default sort for transparent objects:
+// - respect groupOrder & renderOrder settings
+// - otherwise leave objects in default order (object tree order)
+function sortRenderOrderOnly (a, b) {
+  if (a.groupOrder !== b.groupOrder) { 
+    return a.groupOrder - b.groupOrder;
+  } 
+  return a.renderOrder - b.renderOrder;
+}
+
+// Spatial sort for transparent objects:
+// - respect groupOrder & renderOrder settings
+// - sort back-to-front by z-depth from camera
+// - otherwise leave objects in default order (object tree order)
+function sortBackToFront (a, b) {
+  if (a.groupOrder !== b.groupOrder) {
+    return a.groupOrder - b.groupOrder;
+  }
+  if (a.renderOrder !== b.renderOrder) {
+    return a.renderOrder - b.renderOrder;
+  } 
+  return b.z - a.z;
+}
+
+// exports needed for Unit Tests
+module.exports.sortFrontToBack = sortFrontToBack;
+module.exports.sortRenderOrderOnly = sortRenderOrderOnly;
+module.exports.sortBackToFront = sortBackToFront;
