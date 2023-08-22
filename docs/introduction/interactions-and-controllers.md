@@ -302,7 +302,7 @@ component by:
   'OpenVR'})`. tracked-controls will then connect to the appropriate Gamepad
   object to provide pose and events for the entity.
 - Abstracting the events provided by tracked-controls. tracked-controls events are
-  low-level; it'd difficult for us to tell which buttons were pressed based
+  low-level; it'd be difficult for us to tell which buttons were pressed based
   off of those events alone because we'd have to know the button mappings beforehand.
   Controller components can know the mappings beforehand for their respective
   controllers and provide more semantic events such as `triggerdown` or `xbuttonup`.
