@@ -17971,6 +17971,42 @@ var CONTROLLER_PROPERTIES = {
       modelPivotOffset: new THREE.Vector3(0, 0, 0),
       modelPivotRotation: new THREE.Euler(0, 0, 0)
     }
+  },
+  'meta-quest-touch-plus': {
+    left: {
+      modelUrl: META_CONTROLLER_MODEL_BASE_URL + 'quest-touch-plus-left.glb',
+      rayOrigin: {
+        origin: {
+          x: 0.0065,
+          y: -0.0186,
+          z: -0.05
+        },
+        direction: {
+          x: 0.12394785839500175,
+          y: -0.5944043672340157,
+          z: -0.7945567170519814
+        }
+      },
+      modelPivotOffset: new THREE.Vector3(0, 0, 0),
+      modelPivotRotation: new THREE.Euler(0, 0, 0)
+    },
+    right: {
+      modelUrl: META_CONTROLLER_MODEL_BASE_URL + 'quest-touch-plus-right.glb',
+      rayOrigin: {
+        origin: {
+          x: -0.0065,
+          y: -0.0186,
+          z: -0.05
+        },
+        direction: {
+          x: -0.12394785839500175,
+          y: -0.5944043672340157,
+          z: -0.7945567170519814
+        }
+      },
+      modelPivotOffset: new THREE.Vector3(0, 0, 0),
+      modelPivotRotation: new THREE.Euler(0, 0, 0)
+    }
   }
 };
 
@@ -30242,7 +30278,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.4.2 (Date 2023-09-13, Commit #dfe9e9fb)');
+console.log('A-Frame Version: 1.4.2 (Date 2023-10-02, Commit #f1543990)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
