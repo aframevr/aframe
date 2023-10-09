@@ -295,7 +295,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
       }
     }
     var modelUrl = this.displayModel[data.hand].modelUrl;
-    this.isOculusTouchV3 = this.displayModel === CONTROLLER_PROPERTIES['oculus-touch-v3'];
+    this.isTouchV3orPlus = this.displayModel === CONTROLLER_PROPERTIES['oculus-touch-v3'] || this.displayModel === CONTROLLER_PROPERTIES['meta-quest-touch-plus'];
     this.el.setAttribute('gltf-model', modelUrl);
   },
 
@@ -332,8 +332,8 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     var button = this.mapping[this.data.hand].buttons[evt.detail.id];
     if (!button) { return; }
     // move the button meshes
-    if (this.isOculusTouchV3) {
-      this.onButtonChangedV3(evt);
+    if (this.isTouchV3orPlus) {
+      this.onButtonChangedV3orPlus(evt);
     } else {
       var buttonMeshes = this.buttonMeshes;
       var analogValue;
@@ -355,11 +355,10 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   },
 
   clickButtons: ['xbutton', 'ybutton', 'abutton', 'bbutton', 'thumbstick'],
-  onButtonChangedV3: function (evt) {
+  onButtonChangedV3orPlus: function (evt) {
     var button = this.mapping[this.data.hand].buttons[evt.detail.id];
     var buttonObjects = this.buttonObjects;
     var analogValue;
-
     if (!buttonObjects) { return; }
     analogValue = evt.detail.state.value;
     analogValue *= this.data.hand === 'left' ? -1 : 1;
@@ -379,8 +378,8 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
 
   onModelLoaded: function (evt) {
     if (!this.data.model) { return; }
-    if (this.isOculusTouchV3) {
-      this.onOculusTouchV3ModelLoaded(evt);
+    if (this.isTouchV3orPlus) {
+      this.onTouchV3orPlusModelLoaded(evt);
     } else {
       // All oculus headset controller models prior to the Quest 2 (i.e., Oculus Touch V3)
       // used a consistent format that is handled here
@@ -420,7 +419,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     model.rotation.copy(this.displayModel[this.data.hand].modelPivotRotation);
   },
 
-  onOculusTouchV3ModelLoaded: function (evt) {
+  onTouchV3orPlusModelLoaded: function (evt) {
     var controllerObject3D = this.controllerObject3D = evt.detail.model;
 
     var buttonObjects = this.buttonObjects = {};
@@ -491,7 +490,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   },
 
   onThumbstickMoved: function (evt) {
-    if (!this.isOculusTouchV3 || !this.buttonMeshes || !this.buttonMeshes.thumbstick) { return; }
+    if (!this.isTouchV3orPlus || !this.buttonMeshes || !this.buttonMeshes.thumbstick) { return; }
     for (var axis in evt.detail) {
       this.buttonObjects.thumbstick.rotation[this.axisMap[axis]] =
         this.buttonRanges.thumbstick.originalRotation[this.axisMap[axis]] -
