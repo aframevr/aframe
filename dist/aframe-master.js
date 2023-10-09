@@ -18207,7 +18207,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
       }
     }
     var modelUrl = this.displayModel[data.hand].modelUrl;
-    this.isOculusTouchV3 = this.displayModel === CONTROLLER_PROPERTIES['oculus-touch-v3'];
+    this.isTouchV3orPlus = this.displayModel === CONTROLLER_PROPERTIES['oculus-touch-v3'] || this.displayModel === CONTROLLER_PROPERTIES['meta-quest-touch-plus'];
     this.el.setAttribute('gltf-model', modelUrl);
   },
   injectTrackedControls: function (controller) {
@@ -18241,8 +18241,8 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
       return;
     }
     // move the button meshes
-    if (this.isOculusTouchV3) {
-      this.onButtonChangedV3(evt);
+    if (this.isTouchV3orPlus) {
+      this.onButtonChangedV3orPlus(evt);
     } else {
       var buttonMeshes = this.buttonMeshes;
       var analogValue;
@@ -18263,7 +18263,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     this.el.emit(button + 'changed', evt.detail.state);
   },
   clickButtons: ['xbutton', 'ybutton', 'abutton', 'bbutton', 'thumbstick'],
-  onButtonChangedV3: function (evt) {
+  onButtonChangedV3orPlus: function (evt) {
     var button = this.mapping[this.data.hand].buttons[evt.detail.id];
     var buttonObjects = this.buttonObjects;
     var analogValue;
@@ -18288,8 +18288,8 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     if (!this.data.model) {
       return;
     }
-    if (this.isOculusTouchV3) {
-      this.onOculusTouchV3ModelLoaded(evt);
+    if (this.isTouchV3orPlus) {
+      this.onTouchV3orPlusModelLoaded(evt);
     } else {
       // All oculus headset controller models prior to the Quest 2 (i.e., Oculus Touch V3)
       // used a consistent format that is handled here
@@ -18322,7 +18322,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     model.position.copy(this.displayModel[this.data.hand].modelPivotOffset);
     model.rotation.copy(this.displayModel[this.data.hand].modelPivotRotation);
   },
-  onOculusTouchV3ModelLoaded: function (evt) {
+  onTouchV3orPlusModelLoaded: function (evt) {
     var controllerObject3D = this.controllerObject3D = evt.detail.model;
     var buttonObjects = this.buttonObjects = {};
     var buttonMeshes = this.buttonMeshes = {};
@@ -18379,7 +18379,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     emitIfAxesChanged(this, this.mapping[this.data.hand].axes, evt);
   },
   onThumbstickMoved: function (evt) {
-    if (!this.isOculusTouchV3 || !this.buttonMeshes || !this.buttonMeshes.thumbstick) {
+    if (!this.isTouchV3orPlus || !this.buttonMeshes || !this.buttonMeshes.thumbstick) {
       return;
     }
     for (var axis in evt.detail) {
@@ -30278,7 +30278,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.4.2 (Date 2023-10-02, Commit #f1543990)');
+console.log('A-Frame Version: 1.4.2 (Date 2023-10-09, Commit #bf299abd)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
