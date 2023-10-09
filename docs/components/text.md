@@ -241,7 +241,7 @@ geometry component's `width`, do not specify a `width` for the text component:
 
 ```html
 <a-entity
-  geometry="primitive: plane; width: 4; height: auto"
+  geometry="primitive: plane; width: 4; height: 0"
   material="color: blue"
   text="value: This text will be 4 units wide."></a-entity>
 ```
@@ -249,14 +249,14 @@ geometry component's `width`, do not specify a `width` for the text component:
 #### Scaling Geometry to Fit Text
 
 To have the geometry automatically scale with the text, set the geometry
-component's `width` and `height` properties to `auto`, and set the text
+component's `width` and `height` properties to `0`, and set the text
 component's `width` as desired. In this example, the plane's `width` will be
 set to 4 units, and its `height` will be set to match the actual height of the
 text:
 
 ```html
 <a-entity
-  geometry="primitive: plane; height: auto; width: auto"
+  geometry="primitive: plane; height: 0; width: 0"
   material="color: blue"
   text="width: 4; value: This text will be 4 units wide."></a-entity>
 ```
