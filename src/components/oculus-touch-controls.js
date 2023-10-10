@@ -295,7 +295,10 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
       }
     }
     var modelUrl = this.displayModel[data.hand].modelUrl;
-    this.isTouchV3orPlus = this.displayModel === CONTROLLER_PROPERTIES['oculus-touch-v3'] || this.displayModel === CONTROLLER_PROPERTIES['meta-quest-touch-plus'];
+    this.isTouchV3orPROorPlus =
+      this.displayModel === CONTROLLER_PROPERTIES['oculus-touch-v3'] ||
+      this.displayModel === CONTROLLER_PROPERTIES['meta-quest-touch-pro'] ||
+      this.displayModel === CONTROLLER_PROPERTIES['meta-quest-touch-plus'];
     this.el.setAttribute('gltf-model', modelUrl);
   },
 
@@ -332,8 +335,8 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     var button = this.mapping[this.data.hand].buttons[evt.detail.id];
     if (!button) { return; }
     // move the button meshes
-    if (this.isTouchV3orPlus) {
-      this.onButtonChangedV3orPlus(evt);
+    if (this.isTouchV3orPROorPlus) {
+      this.onButtonChangedV3orPROorPlus(evt);
     } else {
       var buttonMeshes = this.buttonMeshes;
       var analogValue;
@@ -354,32 +357,29 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     this.el.emit(button + 'changed', evt.detail.state);
   },
 
-  clickButtons: ['xbutton', 'ybutton', 'abutton', 'bbutton', 'thumbstick'],
-  onButtonChangedV3orPlus: function (evt) {
+  onButtonChangedV3orPROorPlus: function (evt) {
     var button = this.mapping[this.data.hand].buttons[evt.detail.id];
     var buttonObjects = this.buttonObjects;
     var analogValue;
     if (!buttonObjects) { return; }
     analogValue = evt.detail.state.value;
-    analogValue *= this.data.hand === 'left' ? -1 : 1;
+    buttonObjects[button].quaternion.slerpQuaternions(
+      this.buttonRanges[button].min.quaternion,
+      this.buttonRanges[button].max.quaternion,
+      analogValue
+    );
 
-    if (button === 'trigger') {
-      this.triggerEuler.copy(this.buttonRanges.trigger.min.rotation);
-      this.triggerEuler.x += analogValue * this.buttonRanges.trigger.diff.x;
-      this.triggerEuler.y += analogValue * this.buttonRanges.trigger.diff.y;
-      this.triggerEuler.z += analogValue * this.buttonRanges.trigger.diff.z;
-      buttonObjects.trigger.setRotationFromEuler(this.triggerEuler);
-    } else if (button === 'grip') {
-      buttonObjects.grip.position.x = buttonObjects.grip.minX + analogValue * 0.004;
-    } else if (this.clickButtons.includes(button)) {
-      buttonObjects[button].position.y = analogValue === 0 ? this.buttonRanges[button].unpressedY : this.buttonRanges[button].pressedY;
-    }
+    buttonObjects[button].position.lerpVectors(
+      this.buttonRanges[button].min.position,
+      this.buttonRanges[button].max.position,
+      analogValue
+    );
   },
 
   onModelLoaded: function (evt) {
     if (!this.data.model) { return; }
-    if (this.isTouchV3orPlus) {
-      this.onTouchV3orPlusModelLoaded(evt);
+    if (this.isTouchV3orPROorPlus) {
+      this.onTouchV3orPROorPlusModelLoaded(evt);
     } else {
       // All oculus headset controller models prior to the Quest 2 (i.e., Oculus Touch V3)
       // used a consistent format that is handled here
@@ -419,7 +419,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     model.rotation.copy(this.displayModel[this.data.hand].modelPivotRotation);
   },
 
-  onTouchV3orPlusModelLoaded: function (evt) {
+  onTouchV3orPROorPlusModelLoaded: function (evt) {
     var controllerObject3D = this.controllerObject3D = evt.detail.model;
 
     var buttonObjects = this.buttonObjects = {};
@@ -438,12 +438,20 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     buttonObjects.thumbstick = controllerObject3D.getObjectByName('xr_standard_thumbstick_pressed_value');
     buttonRanges.thumbstick = {
       min: controllerObject3D.getObjectByName('xr_standard_thumbstick_pressed_min'),
-      max: controllerObject3D.getObjectByName('xr_standard_thumbstick_pressed_max'),
-      originalRotation: this.buttonObjects.thumbstick.rotation.clone()
+      max: controllerObject3D.getObjectByName('xr_standard_thumbstick_pressed_max')
     };
-    buttonRanges.thumbstick.pressedY = buttonObjects.thumbstick.position.y;
-    buttonRanges.thumbstick.unpressedY =
-      buttonRanges.thumbstick.pressedY + Math.abs(buttonRanges.thumbstick.max.position.y) - Math.abs(buttonRanges.thumbstick.min.position.y);
+
+    buttonObjects.thumbstickXAxis = controllerObject3D.getObjectByName('xr_standard_thumbstick_xaxis_pressed_value');
+    buttonRanges.thumbstickXAxis = {
+      min: controllerObject3D.getObjectByName('xr_standard_thumbstick_xaxis_pressed_min'),
+      max: controllerObject3D.getObjectByName('xr_standard_thumbstick_xaxis_pressed_max')
+    };
+
+    buttonObjects.thumbstickYAxis = controllerObject3D.getObjectByName('xr_standard_thumbstick_yaxis_pressed_value');
+    buttonRanges.thumbstickYAxis = {
+      min: controllerObject3D.getObjectByName('xr_standard_thumbstick_yaxis_pressed_min'),
+      max: controllerObject3D.getObjectByName('xr_standard_thumbstick_yaxis_pressed_max')
+    };
 
     buttonMeshes.trigger = controllerObject3D.getObjectByName('trigger');
     buttonObjects.trigger = controllerObject3D.getObjectByName('xr_standard_trigger_pressed_value');
@@ -475,14 +483,6 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
       min: controllerObject3D.getObjectByName(button2 + '_button_pressed_min'),
       max: controllerObject3D.getObjectByName(button2 + '_button_pressed_max')
     };
-
-    buttonRanges[button1id].unpressedY = buttonObjects[button1id].position.y;
-    buttonRanges[button1id].pressedY =
-      buttonRanges[button1id].unpressedY + Math.abs(buttonRanges[button1id].max.position.y) - Math.abs(buttonRanges[button1id].min.position.y);
-
-    buttonRanges[button2id].unpressedY = buttonObjects[button2id].position.y;
-    buttonRanges[button2id].pressedY =
-      buttonRanges[button2id].unpressedY - Math.abs(buttonRanges[button2id].max.position.y) + Math.abs(buttonRanges[button2id].min.position.y);
   },
 
   onAxisMoved: function (evt) {
@@ -490,7 +490,11 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   },
 
   onThumbstickMoved: function (evt) {
-    if (!this.isTouchV3orPlus || !this.buttonMeshes || !this.buttonMeshes.thumbstick) { return; }
+    if (!this.buttonMeshes || !this.buttonMeshes.thumbstick) { return; }
+    if (this.isTouchV3orPROorPlus) {
+      this.updateThumbstickTouchV3orPROorPlus(evt);
+      return;
+    }
     for (var axis in evt.detail) {
       this.buttonObjects.thumbstick.rotation[this.axisMap[axis]] =
         this.buttonRanges.thumbstick.originalRotation[this.axisMap[axis]] -
@@ -502,6 +506,22 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   axisMap: {
     y: 'x',
     x: 'z'
+  },
+
+  updateThumbstickTouchV3orPROorPlus: function (evt) {
+    var normalizedXAxis = (evt.detail.x + 1.0) / 2.0;
+    this.buttonObjects.thumbstickXAxis.quaternion.slerpQuaternions(
+      this.buttonRanges.thumbstickXAxis.min.quaternion,
+      this.buttonRanges.thumbstickXAxis.max.quaternion,
+      normalizedXAxis
+    );
+
+    var normalizedYAxis = (evt.detail.y + 1.0) / 2.0;
+    this.buttonObjects.thumbstickYAxis.quaternion.slerpQuaternions(
+      this.buttonRanges.thumbstickYAxis.min.quaternion,
+      this.buttonRanges.thumbstickYAxis.max.quaternion,
+      normalizedYAxis
+    );
   },
 
   updateModel: function (buttonName, evtName) {
