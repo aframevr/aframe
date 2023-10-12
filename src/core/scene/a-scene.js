@@ -1,23 +1,25 @@
 /* global Promise, screen, CustomEvent */
-var initMetaTags = require('./metaTags').inject;
-var initWakelock = require('./wakelock');
-var loadingScreen = require('./loadingScreen');
-var scenes = require('./scenes');
-var systems = require('../system').systems;
-var THREE = require('../../lib/three');
-var utils = require('../../utils/');
+var initMetaTags = require("./metaTags").inject;
+var initWakelock = require("./wakelock");
+var loadingScreen = require("./loadingScreen");
+var scenes = require("./scenes");
+var systems = require("../system").systems;
+var THREE = require("../../lib/three");
+var utils = require("../../utils/");
 // Require after.
-var AEntity = require('../a-entity').AEntity;
-var ANode = require('../a-node').ANode;
-var initPostMessageAPI = require('./postMessage');
+var AEntity = require("../a-entity").AEntity;
+var ANode = require("../a-node").ANode;
+var initPostMessageAPI = require("./postMessage");
 
 var bind = utils.bind;
 var isIOS = utils.device.isIOS();
 var isMobile = utils.device.isMobile();
 var isWebXRAvailable = utils.device.isWebXRAvailable;
-var warn = utils.debug('core:a-scene:warn');
+var warn = utils.debug("core:a-scene:warn");
 
-if (isIOS) { require('../../utils/ios-orientationchange-blank-bug'); }
+if (isIOS) {
+  require("../../utils/ios-orientationchange-blank-bug");
+}
 
 /**
  * Scene element, holds all entities.
@@ -36,7 +38,7 @@ if (isIOS) { require('../../utils/ios-orientationchange-blank-bug'); }
  */
 
 class AScene extends AEntity {
-  constructor () {
+  constructor() {
     var self;
     super();
     self = this;
@@ -49,7 +51,9 @@ class AScene extends AEntity {
     self.object3D = new THREE.Scene();
     self.object3D.onAfterRender = function (renderer, scene, camera) {
       // THREE may swap the camera used for the rendering if in VR, so we pass it to tock
-      if (self.isPlaying) { self.tock(self.time, self.delta, camera); }
+      if (self.isPlaying) {
+        self.tock(self.time, self.delta, camera);
+      }
     };
     self.resize = bind(self.resize, self);
     self.render = bind(self.render, self);
@@ -57,40 +61,43 @@ class AScene extends AEntity {
     self.systemNames = [];
     self.time = self.delta = 0;
 
-    self.behaviors = {tick: [], tock: []};
+    self.behaviors = { tick: [], tock: [] };
     self.hasLoaded = false;
     self.isPlaying = false;
     self.originalHTML = self.innerHTML;
   }
 
-  addFullScreenStyles () {
-    document.documentElement.classList.add('a-fullscreen');
+  addFullScreenStyles() {
+    document.documentElement.classList.add("a-fullscreen");
   }
 
-  removeFullScreenStyles () {
-    document.documentElement.classList.remove('a-fullscreen');
+  removeFullScreenStyles() {
+    document.documentElement.classList.remove("a-fullscreen");
   }
 
-  connectedCallback () {
+  connectedCallback() {
     // Defer if DOM is not ready.
-    if (document.readyState !== 'complete') {
-      document.addEventListener('readystatechange', this.onReadyStateChange.bind(this));
+    if (document.readyState !== "complete") {
+      document.addEventListener(
+        "readystatechange",
+        this.onReadyStateChange.bind(this)
+      );
       return;
     }
 
     this.doConnectedCallback();
   }
 
-  doConnectedCallback () {
+  doConnectedCallback() {
     var self = this;
-    var embedded = this.hasAttribute('embedded');
+    var embedded = this.hasAttribute("embedded");
 
     // Default components.
-    this.setAttribute('inspector', '');
-    this.setAttribute('keyboard-shortcuts', '');
-    this.setAttribute('screenshot', '');
-    this.setAttribute('vr-mode-ui', '');
-    this.setAttribute('device-orientation-permission-ui', '');
+    this.setAttribute("inspector", "");
+    this.setAttribute("keyboard-shortcuts", "");
+    this.setAttribute("screenshot", "");
+    this.setAttribute("vr-mode-ui", "");
+    this.setAttribute("device-orientation-permission-ui", "");
     super.connectedCallback();
 
     // Renderer initialization
@@ -99,7 +106,9 @@ class AScene extends AEntity {
     loadingScreen.setup(this, getCanvasSize);
 
     this.resize();
-    if (!embedded) { this.addFullScreenStyles(); }
+    if (!embedded) {
+      this.addFullScreenStyles();
+    }
     initPostMessageAPI(this);
 
     initMetaTags(this);
@@ -107,35 +116,53 @@ class AScene extends AEntity {
 
     // Handler to exit VR (e.g., Oculus Browser back button).
     this.onVRPresentChangeBound = bind(this.onVRPresentChange, this);
-    window.addEventListener('vrdisplaypresentchange', this.onVRPresentChangeBound);
+    window.addEventListener(
+      "vrdisplaypresentchange",
+      this.onVRPresentChangeBound
+    );
 
     // Bind functions.
-    this.enterVRBound = function () { self.enterVR(); };
-    this.exitVRBound = function () { self.exitVR(); };
-    this.exitVRTrueBound = function () { self.exitVR(true); };
-    this.pointerRestrictedBound = function () { self.pointerRestricted(); };
-    this.pointerUnrestrictedBound = function () { self.pointerUnrestricted(); };
+    this.enterVRBound = function () {
+      self.enterVR();
+    };
+    this.exitVRBound = function () {
+      self.exitVR();
+    };
+    this.exitVRTrueBound = function () {
+      self.exitVR(true);
+    };
+    this.pointerRestrictedBound = function () {
+      self.pointerRestricted();
+    };
+    this.pointerUnrestrictedBound = function () {
+      self.pointerUnrestricted();
+    };
 
     if (!self.hasWebXR) {
       // Exit VR on `vrdisplaydeactivate` (e.g. taking off Rift headset).
-      window.addEventListener('vrdisplaydeactivate', this.exitVRBound);
+      window.addEventListener("vrdisplaydeactivate", this.exitVRBound);
 
       // Exit VR on `vrdisplaydisconnect` (e.g. unplugging Rift headset).
-      window.addEventListener('vrdisplaydisconnect', this.exitVRTrueBound);
+      window.addEventListener("vrdisplaydisconnect", this.exitVRTrueBound);
 
       // Register for mouse restricted events while in VR
       // (e.g. mouse no longer available on desktop 2D view)
-      window.addEventListener('vrdisplaypointerrestricted', this.pointerRestrictedBound);
+      window.addEventListener(
+        "vrdisplaypointerrestricted",
+        this.pointerRestrictedBound
+      );
 
       // Register for mouse unrestricted events while in VR
       // (e.g. mouse once again available on desktop 2D view)
-      window.addEventListener('vrdisplaypointerunrestricted',
-                              this.pointerUnrestrictedBound);
+      window.addEventListener(
+        "vrdisplaypointerunrestricted",
+        this.pointerUnrestrictedBound
+      );
     }
 
-    window.addEventListener('sessionend', this.resize);
+    window.addEventListener("sessionend", this.resize);
     // Camera set up by camera system.
-    this.addEventListener('cameraready', function () {
+    this.addEventListener("cameraready", function () {
       self.attachedCallbackPostCamera();
     });
 
@@ -143,16 +170,18 @@ class AScene extends AEntity {
 
     // WebXR Immersive navigation handler.
     if (this.hasWebXR && navigator.xr && navigator.xr.addEventListener) {
-      navigator.xr.addEventListener('sessiongranted', function () { self.enterVR(); });
+      navigator.xr.addEventListener("sessiongranted", function () {
+        self.enterVR();
+      });
     }
   }
 
-  attachedCallbackPostCamera () {
+  attachedCallbackPostCamera() {
     var resize;
     var self = this;
 
-    window.addEventListener('load', resize);
-    window.addEventListener('resize', function () {
+    window.addEventListener("load", resize);
+    window.addEventListener("resize", function () {
       // Workaround for a Webkit bug (https://bugs.webkit.org/show_bug.cgi?id=170595)
       // where the window does not contain the correct viewport size
       // after an orientation change. The window size is correct if the operation
@@ -173,14 +202,16 @@ class AScene extends AEntity {
   /**
    * Initialize all systems.
    */
-  initSystems () {
+  initSystems() {
     var name;
 
     // Initialize camera system first.
-    this.initSystem('camera');
+    this.initSystem("camera");
 
     for (name in systems) {
-      if (name === 'camera') { continue; }
+      if (name === "camera") {
+        continue;
+      }
       this.initSystem(name);
     }
   }
@@ -188,8 +219,10 @@ class AScene extends AEntity {
   /**
    * Initialize a system.
    */
-  initSystem (name) {
-    if (this.systems[name]) { return; }
+  initSystem(name) {
+    if (this.systems[name]) {
+      return;
+    }
     this.systems[name] = new systems[name](this);
     this.systemNames.push(name);
   }
@@ -197,21 +230,30 @@ class AScene extends AEntity {
   /**
    * Shut down scene on detach.
    */
-  disconnectedCallback () {
+  disconnectedCallback() {
     // Remove from scene index.
     var sceneIndex = scenes.indexOf(this);
     super.disconnectedCallback();
 
     scenes.splice(sceneIndex, 1);
 
-    window.removeEventListener('vrdisplaypresentchange', this.onVRPresentChangeBound);
-    window.removeEventListener('vrdisplayactivate', this.enterVRBound);
-    window.removeEventListener('vrdisplaydeactivate', this.exitVRBound);
-    window.removeEventListener('vrdisplayconnect', this.enterVRBound);
-    window.removeEventListener('vrdisplaydisconnect', this.exitVRTrueBound);
-    window.removeEventListener('vrdisplaypointerrestricted', this.pointerRestrictedBound);
-    window.removeEventListener('vrdisplaypointerunrestricted', this.pointerUnrestrictedBound);
-    window.removeEventListener('sessionend', this.resize);
+    window.removeEventListener(
+      "vrdisplaypresentchange",
+      this.onVRPresentChangeBound
+    );
+    window.removeEventListener("vrdisplayactivate", this.enterVRBound);
+    window.removeEventListener("vrdisplaydeactivate", this.exitVRBound);
+    window.removeEventListener("vrdisplayconnect", this.enterVRBound);
+    window.removeEventListener("vrdisplaydisconnect", this.exitVRTrueBound);
+    window.removeEventListener(
+      "vrdisplaypointerrestricted",
+      this.pointerRestrictedBound
+    );
+    window.removeEventListener(
+      "vrdisplaypointerunrestricted",
+      this.pointerUnrestrictedBound
+    );
+    window.removeEventListener("sessionend", this.resize);
     this.renderer.dispose();
   }
 
@@ -220,14 +262,16 @@ class AScene extends AEntity {
    *
    * @param {object} behavior - A component.
    */
-  addBehavior (behavior) {
+  addBehavior(behavior) {
     var behaviorArr;
     var behaviors = this.behaviors;
     var behaviorType;
 
     // Check if behavior has tick and/or tock and add the behavior to the appropriate list.
     for (behaviorType in behaviors) {
-      if (!behavior[behaviorType]) { continue; }
+      if (!behavior[behaviorType]) {
+        continue;
+      }
       behaviorArr = this.behaviors[behaviorType];
       if (behaviorArr.indexOf(behavior) === -1) {
         behaviorArr.push(behavior);
@@ -238,25 +282,26 @@ class AScene extends AEntity {
   /**
    * For tests.
    */
-  getPointerLockElement () {
+  getPointerLockElement() {
     return document.pointerLockElement;
   }
 
   /**
    * For tests.
    */
-  checkHeadsetConnected () {
+  checkHeadsetConnected() {
     return utils.device.checkHeadsetConnected();
   }
 
-  enterAR () {
+  enterAR() {
     var errorMessage;
     if (!this.hasWebXR) {
-      errorMessage = 'Failed to enter AR mode, WebXR not supported.';
+      errorMessage = "Failed to enter AR mode, WebXR not supported.";
       throw new Error(errorMessage);
     }
     if (!utils.device.checkARSupport()) {
-      errorMessage = 'Failed to enter AR, WebXR immersive-ar mode not supported in your browser or device.';
+      errorMessage =
+        "Failed to enter AR, WebXR immersive-ar mode not supported in your browser or device.";
       throw new Error(errorMessage);
     }
     return this.enterVR(true);
@@ -270,64 +315,72 @@ class AScene extends AEntity {
    * @param {bool?} useAR - if true, try immersive-ar mode
    * @returns {Promise}
    */
-  enterVR (useAR) {
+  enterVR(useAR) {
     var self = this;
     var vrDisplay;
     var vrManager = self.renderer.xr;
     var xrInit;
 
     // Don't enter VR if already in VR.
-    if (this.is('vr-mode')) { return Promise.resolve('Already in VR.'); }
+    if (this.is("vr-mode")) {
+      return Promise.resolve("Already in VR.");
+    }
 
     // Has VR.
     if (this.checkHeadsetConnected() || this.isMobile) {
-      var rendererSystem = self.getAttribute('renderer');
+      var rendererSystem = self.getAttribute("renderer");
       vrManager.enabled = true;
 
       if (this.hasWebXR) {
         // XR API.
         if (this.xrSession) {
-          this.xrSession.removeEventListener('end', this.exitVRBound);
+          this.xrSession.removeEventListener("end", this.exitVRBound);
         }
         var refspace = this.sceneEl.systems.webxr.sessionReferenceSpaceType;
         vrManager.setReferenceSpaceType(refspace);
-        var xrMode = useAR ? 'immersive-ar' : 'immersive-vr';
+        var xrMode = useAR ? "immersive-ar" : "immersive-vr";
         xrInit = this.sceneEl.systems.webxr.sessionConfiguration;
         return new Promise(function (resolve, reject) {
           navigator.xr.requestSession(xrMode, xrInit).then(
-            function requestSuccess (xrSession) {
+            function requestSuccess(xrSession) {
               self.xrSession = xrSession;
-              vrManager.layersEnabled = xrInit.requiredFeatures.indexOf('layers') !== -1;
+              vrManager.layersEnabled =
+                xrInit.requiredFeatures.indexOf("layers") !== -1;
               vrManager.setSession(xrSession).then(function () {
                 vrManager.setFoveation(rendererSystem.foveationLevel);
               });
               self.systems.renderer.setWebXRFrameRate(xrSession);
-              xrSession.addEventListener('end', self.exitVRBound);
+              xrSession.addEventListener("end", self.exitVRBound);
               enterVRSuccess(resolve);
             },
-            function requestFail (error) {
-              var useAR = xrMode === 'immersive-ar';
-              var mode = useAR ? 'AR' : 'VR';
-              throw new Error('Failed to enter ' + mode + ' mode (`requestSession`) ' + error);
+            function requestFail(error) {
+              var useAR = xrMode === "immersive-ar";
+              var mode = useAR ? "AR" : "VR";
+              throw new Error(
+                "Failed to enter " + mode + " mode (`requestSession`) " + error
+              );
             }
           );
         });
       } else {
         vrDisplay = utils.device.getVRDisplay();
         vrManager.setDevice(vrDisplay);
-        if (vrDisplay.isPresenting &&
-            !window.hasNativeWebVRImplementation) {
+        if (vrDisplay.isPresenting && !window.hasNativeWebVRImplementation) {
           enterVRSuccess();
           return Promise.resolve();
         }
         var presentationAttributes = {
-          highRefreshRate: rendererSystem.highRefreshRate
+          highRefreshRate: rendererSystem.highRefreshRate,
         };
 
-        return vrDisplay.requestPresent([{
-          source: this.canvas,
-          attributes: presentationAttributes
-        }]).then(enterVRSuccess, enterVRFailure);
+        return vrDisplay
+          .requestPresent([
+            {
+              source: this.canvas,
+              attributes: presentationAttributes,
+            },
+          ])
+          .then(enterVRSuccess, enterVRFailure);
       }
     }
 
@@ -336,27 +389,37 @@ class AScene extends AEntity {
     return Promise.resolve();
 
     // Callback that happens on enter VR success or enter fullscreen (any API).
-    function enterVRSuccess (resolve) {
+    function enterVRSuccess(resolve) {
       // vrdisplaypresentchange fires only once when the first requestPresent is completed;
       // the first requestPresent could be called from ondisplayactivate and there is no way
       // to setup everything from there. Thus, we need to emulate another vrdisplaypresentchange
       // for the actual requestPresent. Need to make sure there are no issues with firing the
       // vrdisplaypresentchange multiple times.
       var event;
-      if (window.hasNativeWebVRImplementation && !window.hasNativeWebXRImplementation) {
-        event = new CustomEvent('vrdisplaypresentchange', {detail: {display: utils.device.getVRDisplay()}});
+      if (
+        window.hasNativeWebVRImplementation &&
+        !window.hasNativeWebXRImplementation
+      ) {
+        event = new CustomEvent("vrdisplaypresentchange", {
+          detail: { display: utils.device.getVRDisplay() },
+        });
         window.dispatchEvent(event);
       }
 
       if (useAR) {
-        self.addState('ar-mode');
+        self.addState("ar-mode");
       } else {
-        self.addState('vr-mode');
+        self.addState("vr-mode");
       }
-      self.emit('enter-vr', {target: self});
+      self.emit("enter-vr", { target: self });
       // Lock to landscape orientation on mobile.
-      if (!self.hasWebXR && self.isMobile && screen.orientation && screen.orientation.lock) {
-        screen.orientation.lock('landscape');
+      if (
+        !self.hasWebXR &&
+        self.isMobile &&
+        screen.orientation &&
+        screen.orientation.lock
+      ) {
+        screen.orientation.lock("landscape");
       }
       self.addFullScreenStyles();
 
@@ -369,41 +432,50 @@ class AScene extends AEntity {
       }
 
       self.resize();
-      if (resolve) { resolve(); }
+      if (resolve) {
+        resolve();
+      }
     }
 
-    function enterVRFailure (err) {
-      self.removeState('vr-mode');
+    function enterVRFailure(err) {
+      self.removeState("vr-mode");
       if (err && err.message) {
-        throw new Error('Failed to enter VR mode (`requestPresent`): ' + err.message);
+        throw new Error(
+          "Failed to enter VR mode (`requestPresent`): " + err.message
+        );
       } else {
-        throw new Error('Failed to enter VR mode (`requestPresent`).');
+        throw new Error("Failed to enter VR mode (`requestPresent`).");
       }
     }
   }
 
-   /**
+  /**
    * Call `exitPresent` if WebVR / WebXR or WebVR polyfill.
    * Handle events, states, fullscreen styles.
    *
    * @returns {Promise}
    */
-  exitVR () {
+  exitVR() {
     var self = this;
     var vrDisplay;
     var vrManager = this.renderer.xr;
 
     // Don't exit VR if not in VR.
-    if (!this.is('vr-mode') && !this.is('ar-mode')) { return Promise.resolve('Not in immersive mode.'); }
+    if (!this.is("vr-mode") && !this.is("ar-mode")) {
+      return Promise.resolve("Not in immersive mode.");
+    }
 
     // Handle exiting VR if not yet already and in a headset or polyfill.
     if (this.checkHeadsetConnected() || this.isMobile) {
       vrManager.enabled = false;
       vrDisplay = utils.device.getVRDisplay();
       if (this.hasWebXR) {
-        this.xrSession.removeEventListener('end', this.exitVRBound);
+        this.xrSession.removeEventListener("end", this.exitVRBound);
         // Capture promise to avoid errors.
-        this.xrSession.end().then(function () {}, function () {});
+        this.xrSession.end().then(
+          function () {},
+          function () {}
+        );
         this.xrSession = undefined;
       } else {
         if (vrDisplay.isPresenting) {
@@ -419,35 +491,45 @@ class AScene extends AEntity {
 
     return Promise.resolve();
 
-    function exitVRSuccess () {
-      self.removeState('vr-mode');
-      self.removeState('ar-mode');
+    function exitVRSuccess() {
+      self.removeState("vr-mode");
+      self.removeState("ar-mode");
       // Lock to landscape orientation on mobile.
       if (self.isMobile && screen.orientation && screen.orientation.unlock) {
         screen.orientation.unlock();
       }
       // Exiting VR in embedded mode, no longer need fullscreen styles.
-      if (self.hasAttribute('embedded')) { self.removeFullScreenStyles(); }
+      if (self.hasAttribute("embedded")) {
+        self.removeFullScreenStyles();
+      }
 
       self.resize();
-      if (self.isIOS) { utils.forceCanvasResizeSafariMobile(self.canvas); }
+      if (self.isIOS) {
+        utils.forceCanvasResizeSafariMobile(self.canvas);
+      }
       self.renderer.setPixelRatio(window.devicePixelRatio);
-      self.emit('exit-vr', {target: self});
+      self.emit("exit-vr", { target: self });
     }
 
-    function exitVRFailure (err) {
+    function exitVRFailure(err) {
       if (err && err.message) {
-        throw new Error('Failed to exit VR mode (`exitPresent`): ' + err.message);
+        throw new Error(
+          "Failed to exit VR mode (`exitPresent`): " + err.message
+        );
       } else {
-        throw new Error('Failed to exit VR mode (`exitPresent`).');
+        throw new Error("Failed to exit VR mode (`exitPresent`).");
       }
     }
   }
 
-  pointerRestricted () {
+  pointerRestricted() {
     if (this.canvas) {
       var pointerLockElement = this.getPointerLockElement();
-      if (pointerLockElement && pointerLockElement !== this.canvas && document.exitPointerLock) {
+      if (
+        pointerLockElement &&
+        pointerLockElement !== this.canvas &&
+        document.exitPointerLock
+      ) {
         // Recreate pointer lock on the canvas, if taken on another element.
         document.exitPointerLock();
       }
@@ -458,9 +540,13 @@ class AScene extends AEntity {
     }
   }
 
-  pointerUnrestricted () {
+  pointerUnrestricted() {
     var pointerLockElement = this.getPointerLockElement();
-    if (pointerLockElement && pointerLockElement === this.canvas && document.exitPointerLock) {
+    if (
+      pointerLockElement &&
+      pointerLockElement === this.canvas &&
+      document.exitPointerLock
+    ) {
       document.exitPointerLock();
     }
   }
@@ -469,7 +555,7 @@ class AScene extends AEntity {
    * Handle `vrdisplaypresentchange` event for exiting VR through other means than
    * `<ESC>` key. For example, GearVR back button on Oculus Browser.
    */
-  onVRPresentChange (evt) {
+  onVRPresentChange(evt) {
     // Polyfill places display inside the detail property
     var display = evt.display || evt.detail.display;
     // Entering VR.
@@ -485,9 +571,11 @@ class AScene extends AEntity {
    * Wraps Entity.getAttribute to take into account for systems.
    * If system exists, then return system data rather than possible component data.
    */
-  getAttribute (attr) {
+  getAttribute(attr) {
     var system = this.systems[attr];
-    if (system) { return system.data; }
+    if (system) {
+      return system.data;
+    }
     return AEntity.prototype.getAttribute.call(this, attr);
   }
 
@@ -495,8 +583,8 @@ class AScene extends AEntity {
    * `getAttribute` used to be `getDOMAttribute` and `getComputedAttribute` used to be
    * what `getAttribute` is now. Now legacy code.
    */
-  getComputedAttribut (attr) {
-    warn('`getComputedAttribute` is deprecated. Use `getAttribute` instead.');
+  getComputedAttribut(attr) {
+    warn("`getComputedAttribute` is deprecated. Use `getAttribute` instead.");
     this.getAttribute(attr);
   }
 
@@ -504,9 +592,11 @@ class AScene extends AEntity {
    * Wraps Entity.getDOMAttribute to take into account for systems.
    * If system exists, then return system data rather than possible component data.
    */
-  getDOMAttribute (attr) {
+  getDOMAttribute(attr) {
     var system = this.systems[attr];
-    if (system) { return system.data; }
+    if (system) {
+      return system.data;
+    }
     return AEntity.prototype.getDOMAttribute.call(this, attr);
   }
 
@@ -515,7 +605,7 @@ class AScene extends AEntity {
    * If system exists, then skip component initialization checks and do a normal
    * setAttribute.
    */
-  setAttribute (attr, value, componentPropValue) {
+  setAttribute(attr, value, componentPropValue) {
     var system = this.systems[attr];
     if (system) {
       ANode.prototype.setAttribute.call(this, attr, value);
@@ -528,7 +618,7 @@ class AScene extends AEntity {
   /**
    * @param {object} behavior - A component.
    */
-  removeBehavior (behavior) {
+  removeBehavior(behavior) {
     var behaviorArr;
     var behaviorType;
     var behaviors = this.behaviors;
@@ -537,14 +627,18 @@ class AScene extends AEntity {
     // Check if behavior has tick and/or tock and remove the behavior from the appropriate
     // array.
     for (behaviorType in behaviors) {
-      if (!behavior[behaviorType]) { continue; }
+      if (!behavior[behaviorType]) {
+        continue;
+      }
       behaviorArr = this.behaviors[behaviorType];
       index = behaviorArr.indexOf(behavior);
-      if (index !== -1) { behaviorArr.splice(index, 1); }
+      if (index !== -1) {
+        behaviorArr.splice(index, 1);
+      }
     }
   }
 
-  resize () {
+  resize() {
     var camera = this.camera;
     var canvas = this.canvas;
     var embedded;
@@ -558,22 +652,31 @@ class AScene extends AEntity {
     // the getEyeParameters function of the WebVR API. These dimensions are independent of
     // the window size, therefore should not be overwritten with the window's width and
     // height, // except when in fullscreen mode.
-    if (!camera || !canvas || (this.is('vr-mode') && (this.isMobile || isVRPresenting))) {
+    if (
+      !camera ||
+      !canvas ||
+      (this.is("vr-mode") && (this.isMobile || isVRPresenting))
+    ) {
       return;
     }
 
     // Update camera.
-    embedded = this.getAttribute('embedded') && !this.is('vr-mode');
-    size = getCanvasSize(canvas, embedded, this.maxCanvasSize, this.is('vr-mode'));
+    embedded = this.getAttribute("embedded") && !this.is("vr-mode");
+    size = getCanvasSize(
+      canvas,
+      embedded,
+      this.maxCanvasSize,
+      this.is("vr-mode")
+    );
     camera.aspect = size.width / size.height;
     camera.updateProjectionMatrix();
 
     // Notify renderer of size change.
     this.renderer.setSize(size.width, size.height, false);
-    this.emit('rendererresize', null, false);
+    this.emit("rendererresize", null, false);
   }
 
-  setupRenderer () {
+  setupRenderer() {
     var self = this;
     var renderer;
     var rendererAttr;
@@ -585,29 +688,33 @@ class AScene extends AEntity {
       antialias: !isMobile,
       canvas: this.canvas,
       logarithmicDepthBuffer: false,
-      powerPreference: 'high-performance'
+      powerPreference: "high-performance",
     };
 
-    this.maxCanvasSize = {height: 1920, width: 1920};
+    this.maxCanvasSize = { height: 1920, width: 1920 };
 
-    if (this.hasAttribute('renderer')) {
-      rendererAttrString = this.getAttribute('renderer');
+    if (this.hasAttribute("renderer")) {
+      rendererAttrString = this.getAttribute("renderer");
       rendererAttr = utils.styleParser.parse(rendererAttrString);
 
       if (rendererAttr.precision) {
-        rendererConfig.precision = rendererAttr.precision + 'p';
+        rendererConfig.precision = rendererAttr.precision + "p";
       }
 
-      if (rendererAttr.antialias && rendererAttr.antialias !== 'auto') {
-        rendererConfig.antialias = rendererAttr.antialias === 'true';
+      if (rendererAttr.antialias && rendererAttr.antialias !== "auto") {
+        rendererConfig.antialias = rendererAttr.antialias === "true";
       }
 
-      if (rendererAttr.logarithmicDepthBuffer && rendererAttr.logarithmicDepthBuffer !== 'auto') {
-        rendererConfig.logarithmicDepthBuffer = rendererAttr.logarithmicDepthBuffer === 'true';
+      if (
+        rendererAttr.logarithmicDepthBuffer &&
+        rendererAttr.logarithmicDepthBuffer !== "auto"
+      ) {
+        rendererConfig.logarithmicDepthBuffer =
+          rendererAttr.logarithmicDepthBuffer === "true";
       }
 
       if (rendererAttr.alpha) {
-        rendererConfig.alpha = rendererAttr.alpha === 'true';
+        rendererConfig.alpha = rendererAttr.alpha === "true";
       }
 
       this.maxCanvasSize = {
@@ -616,24 +723,42 @@ class AScene extends AEntity {
           : this.maxCanvasSize.width,
         height: rendererAttr.maxCanvasHeight
           ? parseInt(rendererAttr.maxCanvasHeight)
-          : this.maxCanvasSize.height
+          : this.maxCanvasSize.height,
       };
     }
+
+    // [INTERATICA-BEGIN]
+    // we added next line to pass canvas and context created by g-map lib as configuration for the 3js renderer
+    rendererConfig = this.appendRendererCustomConfig(rendererConfig);
+    // [INTERATICA-END]
 
     renderer = this.renderer = new THREE.WebGLRenderer(rendererConfig);
     renderer.setPixelRatio(window.devicePixelRatio);
 
-    if (this.camera) { renderer.xr.setPoseTarget(this.camera.el.object3D); }
-    this.addEventListener('camera-set-active', function () {
+    if (this.camera) {
+      renderer.xr.setPoseTarget(this.camera.el.object3D);
+    }
+    this.addEventListener("camera-set-active", function () {
       renderer.xr.setPoseTarget(self.camera.el.object3D);
     });
   }
+
+  // [INTERATICA-BEGIN]
+  rendererCustomConfig;
+  // we added above line to set externally the renderer custom configuration. And below line is called before AFrame creates the renderer
+  appendRendererCustomConfig(rendererConfig) {
+    return {
+      ...rendererConfig,
+      ...this.rendererCustomConfig,
+    };
+  }
+  // [INTERATICA-END]
 
   /**
    * Handler attached to elements to help scene know when to kick off.
    * Scene waits for all entities to load.
    */
-  play () {
+  play() {
     var self = this;
     var sceneEl = this;
 
@@ -642,18 +767,22 @@ class AScene extends AEntity {
       return;
     }
 
-    this.addEventListener('loaded', function () {
+    this.addEventListener("loaded", function () {
       var renderer = this.renderer;
       var vrDisplay;
       var vrManager = this.renderer.xr;
-      AEntity.prototype.play.call(this);  // .play() *before* render.
+      AEntity.prototype.play.call(this); // .play() *before* render.
 
-      if (sceneEl.renderStarted) { return; }
+      if (sceneEl.renderStarted) {
+        return;
+      }
       sceneEl.resize();
 
       // Kick off render loop.
       if (sceneEl.renderer) {
-        if (window.performance) { window.performance.mark('render-started'); }
+        if (window.performance) {
+          window.performance.mark("render-started");
+        }
         loadingScreen.remove();
         vrDisplay = utils.device.getVRDisplay();
         if (vrDisplay && vrDisplay.isPresenting) {
@@ -661,9 +790,13 @@ class AScene extends AEntity {
           vrManager.enabled = true;
           sceneEl.enterVR();
         }
-        renderer.setAnimationLoop(this.render);
+        // [INTERATICA-BEGIN]
+        // we commented next line because the render cycle depends on the webgl update of the g-map lib
+        // renderer.setAnimationLoop(this.render);
+        // TODO we still need to check if the next 2 lines below require changes
+        // [INTERATICA-END]
         sceneEl.renderStarted = true;
-        sceneEl.emit('renderstart');
+        sceneEl.emit("renderstart");
       }
     });
 
@@ -677,8 +810,10 @@ class AScene extends AEntity {
    * Wrap `updateComponent` to not initialize the component if the component has a system
    * (aframevr/aframe#2365).
    */
-  updateComponent (componentName) {
-    if (componentName in systems) { return; }
+  updateComponent(componentName) {
+    if (componentName in systems) {
+      return;
+    }
     AEntity.prototype.updateComponent.apply(this, arguments);
   }
 
@@ -687,19 +822,23 @@ class AScene extends AEntity {
    * Abstracted to a different function to facilitate unit testing (`scene.tick()`) without
    * needing to render.
    */
-  tick (time, timeDelta) {
+  tick(time, timeDelta) {
     var i;
     var systems = this.systems;
 
     // Components.
     for (i = 0; i < this.behaviors.tick.length; i++) {
-      if (!this.behaviors.tick[i].el.isPlaying) { continue; }
+      if (!this.behaviors.tick[i].el.isPlaying) {
+        continue;
+      }
       this.behaviors.tick[i].tick(time, timeDelta);
     }
 
     // Systems.
     for (i = 0; i < this.systemNames.length; i++) {
-      if (!systems[this.systemNames[i]].tick) { continue; }
+      if (!systems[this.systemNames[i]].tick) {
+        continue;
+      }
       systems[this.systemNames[i]].tick(time, timeDelta);
     }
   }
@@ -709,19 +848,23 @@ class AScene extends AEntity {
    * Abstracted to a different function to facilitate unit testing (`scene.tock()`) without
    * needing to render.
    */
-  tock (time, timeDelta, camera) {
+  tock(time, timeDelta, camera) {
     var i;
     var systems = this.systems;
 
     // Components.
     for (i = 0; i < this.behaviors.tock.length; i++) {
-      if (!this.behaviors.tock[i].el.isPlaying) { continue; }
+      if (!this.behaviors.tock[i].el.isPlaying) {
+        continue;
+      }
       this.behaviors.tock[i].tock(time, timeDelta, camera);
     }
 
     // Systems.
     for (i = 0; i < this.systemNames.length; i++) {
-      if (!systems[this.systemNames[i]].tock) { continue; }
+      if (!systems[this.systemNames[i]].tock) {
+        continue;
+      }
       systems[this.systemNames[i]].tock(time, timeDelta, camera);
     }
   }
@@ -733,22 +876,27 @@ class AScene extends AEntity {
    * Updates behaviors.
    * Renders with request animation frame.
    */
-  render (time, frame) {
+  render(time, frame) {
     var renderer = this.renderer;
 
     this.frame = frame;
     this.delta = this.clock.getDelta() * 1000;
     this.time = this.clock.elapsedTime * 1000;
 
-    if (this.isPlaying) { this.tick(this.time, this.delta); }
+    if (this.isPlaying) {
+      this.tick(this.time, this.delta);
+    }
     var savedBackground = null;
-    if (this.is('ar-mode')) {
+    if (this.is("ar-mode")) {
       // In AR mode, don't render the default background. Hide it, then
       // restore it again after rendering.
       savedBackground = this.object3D.background;
       this.object3D.background = null;
     }
-    renderer.render(this.object3D, this.camera);
+    // [INTERATICA-BEGIN]
+    // we commented next line because the render cycle depends on the webgl update of the g-map lib
+    // renderer.render(this.object3D, this.camera);
+    // [INTERATICA-END]
     if (savedBackground) {
       this.object3D.background = savedBackground;
     }
@@ -762,7 +910,7 @@ class AScene extends AEntity {
  * @param {object} maxSize - Max size parameters (width and height).
  * @returns {object} Width and height.
  */
-function constrainSizeTo (size, maxSize) {
+function constrainSizeTo(size, maxSize) {
   var aspectRatio;
   var pixelRatio = window.devicePixelRatio;
 
@@ -770,27 +918,29 @@ function constrainSizeTo (size, maxSize) {
     return size;
   }
 
-  if (size.width * pixelRatio < maxSize.width &&
-    size.height * pixelRatio < maxSize.height) {
+  if (
+    size.width * pixelRatio < maxSize.width &&
+    size.height * pixelRatio < maxSize.height
+  ) {
     return size;
   }
 
   aspectRatio = size.width / size.height;
 
-  if ((size.width * pixelRatio) > maxSize.width && maxSize.width !== -1) {
+  if (size.width * pixelRatio > maxSize.width && maxSize.width !== -1) {
     size.width = Math.round(maxSize.width / pixelRatio);
     size.height = Math.round(maxSize.width / aspectRatio / pixelRatio);
   }
 
-  if ((size.height * pixelRatio) > maxSize.height && maxSize.height !== -1) {
+  if (size.height * pixelRatio > maxSize.height && maxSize.height !== -1) {
     size.height = Math.round(maxSize.height / pixelRatio);
-    size.width = Math.round(maxSize.height * aspectRatio / pixelRatio);
+    size.width = Math.round((maxSize.height * aspectRatio) / pixelRatio);
   }
 
   return size;
 }
 
-window.customElements.define('a-scene', AScene);
+window.customElements.define("a-scene", AScene);
 
 /**
  * Return the canvas size where the scene will be rendered.
@@ -803,13 +953,15 @@ window.customElements.define('a-scene', AScene);
  * @param {object} max - Max size parameters
  * @param {boolean} isVR - If in VR
  */
-function getCanvasSize (canvasEl, embedded, maxSize, isVR) {
-  if (!canvasEl.parentElement) { return {height: 0, width: 0}; }
+function getCanvasSize(canvasEl, embedded, maxSize, isVR) {
+  if (!canvasEl.parentElement) {
+    return { height: 0, width: 0 };
+  }
   if (embedded) {
     var size;
     size = {
       height: canvasEl.parentElement.offsetHeight,
-      width: canvasEl.parentElement.offsetWidth
+      width: canvasEl.parentElement.offsetWidth,
     };
     return constrainSizeTo(size, maxSize);
   }
@@ -825,9 +977,12 @@ function getCanvasSize (canvasEl, embedded, maxSize, isVR) {
  * @param {boolean} isVR - If in VR.
  * @returns {object} Width and height.
  */
-function getMaxSize (maxSize, isVR) {
+function getMaxSize(maxSize, isVR) {
   var size;
-  size = {height: document.body.offsetHeight, width: document.body.offsetWidth};
+  size = {
+    height: document.body.offsetHeight,
+    width: document.body.offsetWidth,
+  };
   if (isVR) {
     return size;
   } else {
@@ -835,22 +990,24 @@ function getMaxSize (maxSize, isVR) {
   }
 }
 
-function requestFullscreen (canvas) {
+function requestFullscreen(canvas) {
   var requestFullscreen =
     canvas.requestFullscreen ||
     canvas.webkitRequestFullscreen ||
-    canvas.mozRequestFullScreen ||  // The capitalized `S` is not a typo.
+    canvas.mozRequestFullScreen || // The capitalized `S` is not a typo.
     canvas.msRequestFullscreen;
   // Hide navigation buttons on Android.
-  requestFullscreen.apply(canvas, [{navigationUI: 'hide'}]);
+  requestFullscreen.apply(canvas, [{ navigationUI: "hide" }]);
 }
 
-function exitFullscreen () {
+function exitFullscreen() {
   var fullscreenEl =
     document.fullscreenElement ||
     document.webkitFullscreenElement ||
     document.mozFullScreenElement;
-  if (!fullscreenEl) { return; }
+  if (!fullscreenEl) {
+    return;
+  }
   if (document.exitFullscreen) {
     document.exitFullscreen();
   } else if (document.mozCancelFullScreen) {
@@ -860,37 +1017,45 @@ function exitFullscreen () {
   }
 }
 
-function setupCanvas (sceneEl) {
+function setupCanvas(sceneEl) {
   var canvasEl;
 
-  canvasEl = document.createElement('canvas');
-  canvasEl.classList.add('a-canvas');
+  // [INTERATICA-BEGIN]
+  // canvasEl = document.createElement('canvas');
+  // we changed above line with the below line, so AFrame uses the canvas created by g-map lib
+  canvasEl = document.getElementsByTagName("canvas")[0];
+  // [INTERATICA-END]
+  canvasEl.classList.add("a-canvas");
   // Mark canvas as provided/injected by A-Frame.
   canvasEl.dataset.aframeCanvas = true;
   sceneEl.appendChild(canvasEl);
 
-  document.addEventListener('fullscreenchange', onFullScreenChange);
-  document.addEventListener('mozfullscreenchange', onFullScreenChange);
-  document.addEventListener('webkitfullscreenchange', onFullScreenChange);
-  document.addEventListener('MSFullscreenChange', onFullScreenChange);
+  document.addEventListener("fullscreenchange", onFullScreenChange);
+  document.addEventListener("mozfullscreenchange", onFullScreenChange);
+  document.addEventListener("webkitfullscreenchange", onFullScreenChange);
+  document.addEventListener("MSFullscreenChange", onFullScreenChange);
 
   // Prevent overscroll on mobile.
-  canvasEl.addEventListener('touchmove', function (event) { event.preventDefault(); });
+  canvasEl.addEventListener("touchmove", function (event) {
+    event.preventDefault();
+  });
 
   // Set canvas on scene.
   sceneEl.canvas = canvasEl;
-  sceneEl.emit('render-target-loaded', {target: canvasEl});
+  sceneEl.emit("render-target-loaded", { target: canvasEl });
   // For unknown reasons a synchronous resize does not work on desktop when
   // entering/exiting fullscreen.
   setTimeout(bind(sceneEl.resize, sceneEl), 0);
 
-  function onFullScreenChange () {
+  function onFullScreenChange() {
     var fullscreenEl =
       document.fullscreenElement ||
       document.mozFullScreenElement ||
       document.webkitFullscreenElement;
     // No fullscren element === exit fullscreen
-    if (!fullscreenEl) { sceneEl.exitVR(); }
+    if (!fullscreenEl) {
+      sceneEl.exitVR();
+    }
     document.activeElement.blur();
     document.body.focus();
   }
