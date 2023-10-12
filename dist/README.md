@@ -1,17 +1,3 @@
-## Changes from the original library
-
-In order to use this library with g-maps library with webgl option, we changed from aframe next points:
-
-- instead of create a canvas, find the available canvas
-- don't renderer the scene/entities. This is handled outside, inside a function that executes when the g-maps ondraw triggers.
-- added public option to force configuration into the THREE.WebGLRenderer.
-
-Note: you could find changes with between the annotations "[INTERATICA-BEGIN]" & "[INTERATICA-END]".
-
-Interatica Team
-
----
-
 ## A-Frame Builds
 
 To include these builds, you can download and serve them locally.
