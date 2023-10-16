@@ -8,7 +8,7 @@ script below from the [jsdelivr CDN](https://www.jsdelivr.com/):
 ```html
 <html>
   <head>
-    <script src="https://cdn.jsdelivr.net/gh/aframevr/aframe@4ed6627397d632f6bdf8845e8862adb72c5b1684/dist/aframe-master.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/aframevr/aframe@73bc7c7e22cc049e0a11f179327a958e862fd80a/dist/aframe-master.min.js"></script>
   </head>
   <body>
     <a-scene>
