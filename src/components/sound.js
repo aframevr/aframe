@@ -12,6 +12,8 @@ module.exports.Component = registerComponent('sound', {
     autoplay: {default: false},
     distanceModel: {default: 'inverse', oneOf: ['linear', 'inverse', 'exponential']},
     loop: {default: false},
+    loopStart: {default: 0},
+    loopEnd: {default: 0},
     maxDistance: {default: 10000},
     on: {default: ''},
     poolSize: {default: 1},
@@ -59,6 +61,8 @@ module.exports.Component = registerComponent('sound', {
         sound.setRolloffFactor(data.rolloffFactor);
       }
       sound.setLoop(data.loop);
+      sound.setLoopStart(data.loopStart);
+      sound.setLoopEnd(data.loopEnd);
       sound.setVolume(data.volume);
       sound.isPaused = false;
     }
