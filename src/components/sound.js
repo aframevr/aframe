@@ -32,6 +32,7 @@ module.exports.Component = registerComponent('sound', {
     this.pool = new THREE.Group();
     this.loaded = false;
     this.mustPlay = false;
+    this.processSound = undefined; // Saved callback for the mustPlay mechanic
 
     // Don't pass evt because playSound takes a function as parameter.
     this.playSoundBound = function () { self.playSound(); };
@@ -80,7 +81,7 @@ module.exports.Component = registerComponent('sound', {
 
         // Remove this key from cache, otherwise we can't play it again
         THREE.Cache.remove(data.src);
-        if (self.data.autoplay || self.mustPlay) { self.playSound(); }
+        if (self.data.autoplay || self.mustPlay) { self.playSound(this.processSound); }
         self.el.emit('sound-loaded', self.evtDetail, false);
       });
     }
@@ -208,6 +209,9 @@ module.exports.Component = registerComponent('sound', {
     if (!this.loaded) {
       warn('Sound not loaded yet. It will be played once it finished loading');
       this.mustPlay = true;
+      if(processSound){
+        this.processSound = processSound;
+      }
       return;
     }
 
@@ -231,6 +235,7 @@ module.exports.Component = registerComponent('sound', {
     }
 
     this.mustPlay = false;
+    this.processSound = undefined;
   },
 
   /**
