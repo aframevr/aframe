@@ -34,7 +34,6 @@ module.exports.Component = registerComponent('sound', {
     this.pool = new THREE.Group();
     this.loaded = false;
     this.mustPlay = false;
-    this.processSound = undefined; // Saved callback for the mustPlay mechanic
 
     // Don't pass evt because playSound takes a function as parameter.
     this.playSoundBound = function () { self.playSound(); };
@@ -67,7 +66,9 @@ module.exports.Component = registerComponent('sound', {
       if(data.loopStart != 0 && data.loopEnd == 0){ 
         sound.setLoopEnd(sound.buffer.duration);
       }
-      else sound.setLoopEnd(data.loopEnd);
+      else {
+        sound.setLoopEnd(data.loopEnd);
+      }
 
       sound.setVolume(data.volume);
       sound.isPaused = false;
@@ -219,9 +220,7 @@ module.exports.Component = registerComponent('sound', {
     if (!this.loaded) {
       warn('Sound not loaded yet. It will be played once it finished loading');
       this.mustPlay = true;
-      if(processSound){
-        this.processSound = processSound;
-      }
+      this.processSound = processSound;
       return;
     }
 
