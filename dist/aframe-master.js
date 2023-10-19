@@ -21585,6 +21585,7 @@ module.exports.Component = registerComponent('text', {
     this.shaderData = {};
     this.geometry = createTextGeometry();
     this.createOrUpdateMaterial();
+    this.explicitGeoDimensionsChecked = false;
   },
   update: function (oldData) {
     var data = this.data;
@@ -21798,10 +21799,15 @@ module.exports.Component = registerComponent('text', {
     // Update geometry dimensions to match text layout if width and height are set to 0.
     // For example, scales a plane to fit text.
     if (geometryComponent && geometryComponent.primitive === 'plane') {
-      if (!geometryComponent.width) {
+      if (!this.explicitGeoDimensionsChecked) {
+        this.explicitGeoDimensionsChecked = true;
+        this.hasExplicitGeoWidth = !!geometryComponent.width;
+        this.hasExplicitGeoHeight = !!geometryComponent.height;
+      }
+      if (!this.hasExplicitGeoWidth) {
         el.setAttribute('geometry', 'width', width);
       }
-      if (!geometryComponent.height) {
+      if (!this.hasExplicitGeoHeight) {
         el.setAttribute('geometry', 'height', height);
       }
     }
@@ -30280,7 +30286,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.4.2 (Date 2023-10-16, Commit #49c56b88)');
+console.log('A-Frame Version: 1.4.2 (Date 2023-10-19, Commit #d8ade4f5)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
