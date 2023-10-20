@@ -27715,6 +27715,9 @@ class AScene extends AEntity {
       if (rendererAttr.alpha) {
         rendererConfig.alpha = rendererAttr.alpha === 'true';
       }
+      if (rendererAttr.multiviewStereo) {
+        rendererConfig.multiviewStereo = rendererAttr.multiviewStereo === 'true';
+      }
       this.maxCanvasSize = {
         width: rendererAttr.maxCanvasWidth ? parseInt(rendererAttr.maxCanvasWidth) : this.maxCanvasSize.width,
         height: rendererAttr.maxCanvasHeight ? parseInt(rendererAttr.maxCanvasHeight) : this.maxCanvasSize.height
@@ -30286,7 +30289,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.4.2 (Date 2023-10-20, Commit #ff410384)');
+console.log('A-Frame Version: 1.4.2 (Date 2023-10-20, Commit #875cbda1)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
@@ -32359,6 +32362,9 @@ module.exports.System = registerSystem('renderer', {
     },
     maxCanvasHeight: {
       default: 1920
+    },
+    multiviewStereo: {
+      default: false
     },
     physicallyCorrectLights: {
       default: false
