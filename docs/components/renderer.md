@@ -36,6 +36,7 @@ It also configures presentation attributes when entering WebVR/WebXR.
 | physicallyCorrectLights | Whether to use physically-correct light attenuation.                            | false         |
 | maxCanvasWidth          | Maximum canvas width. Uses the size multiplied by device pixel ratio. Does not limit canvas width if set to -1.                                | 1920            |
 | maxCanvasHeight         | Maximum canvas height. Behaves the same as maxCanvasWidth.                      | 1920          |
+| multiviewStereo         | Enables the use of the OCULUS_multiview extension.                              | false         |
 | logarithmicDepthBuffer  | Whether to use a logarithmic depth buffer.                                      | auto          |
 | precision               | Fragment shader [precision][precision] : low, medium or high.                   | high          |
 | alpha                   | Whether the canvas should contain an alpha buffer.                              | true          |
@@ -83,7 +84,6 @@ when in stereo rendering mode on certain systems. The value should be in the ran
 0 is the minimum and 1 the maximum amount of foveation. This is currently supported by the Oculus Browser.
 
 
-
 ### sortTransparentObjects
 
 [sorting]: ../introduction/faq.md#what-order-does-a-frame-render-objects-in
@@ -95,7 +95,6 @@ rendering. Re-ordering DOM elements provides one way of forcing a consistent beh
 use of `renderer="sortObjects: true"` may cause unwanted changes as the camera moves.
 
 Some more background on how A-Frame sorts objects for rendering can be found [here][sorting]
-
 
 
 ### physicallyCorrectLights
@@ -120,3 +119,7 @@ Set precision in fragment shaders. Main use is to address issues in older hardwa
 ### alpha
 
 Whether the canvas should contain an alpha buffer. If this is true the renderer will have a transparent backbuffer and the canvas can be composited with the rest of the webpage. [See here for more info.](https://webglfundamentals.org/webgl/lessons/webgl-and-alpha.html)
+
+### multiviewStereo 
+
+Performance improvement for applications that are CPU limited and draw count bound. Most experiences will get a free perf gain from this extension at not visual cost but there are limitations to consider. multiview builds on the multisampled render to texture extension that discards the frame buffer if there are other texture operations during rendering. Problem outlined in https://github.com/KhronosGroup/WebGL/issues/2912. Until browsers and drivers allow more control of when multisample is resolved we have a workaround with some drawbacks. As a temporary solution when enabling multiview the upload of texture data is deferred until the rendering of the main scene has ended, adding one extra frame of latency to texture uploads. Scenarios affected are for example skeletal meshes that upload bone textures with TexImage. With the workadound in place all bone animations will lag by one frame. Another issue is rendering mirror reflexions or rendering another view in the middle of the scene. The logic would have to move to the beginning of the frame to make sure it's not interrupted by the multiview frame. Because of the limitations this flag is disabled by default so developers can address any issues before enabling.

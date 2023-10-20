@@ -610,6 +610,10 @@ class AScene extends AEntity {
         rendererConfig.alpha = rendererAttr.alpha === 'true';
       }
 
+      if (rendererAttr.multiviewStereo) {
+        rendererConfig.multiviewStereo = rendererAttr.multiviewStereo === 'true';
+      }
+
       this.maxCanvasSize = {
         width: rendererAttr.maxCanvasWidth
           ? parseInt(rendererAttr.maxCanvasWidth)
