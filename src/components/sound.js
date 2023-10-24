@@ -63,10 +63,9 @@ module.exports.Component = registerComponent('sound', {
       sound.setLoopStart(data.loopStart);
 
       // With a loop start specified without a specified loop end, the end of the loop should be the end of the file
-      if(data.loopStart != 0 && data.loopEnd == 0){ 
+      if (data.loopStart !== 0 && data.loopEnd === 0) {
         sound.setLoopEnd(sound.buffer.duration);
-      }
-      else {
+      } else {
         sound.setLoopEnd(data.loopEnd);
       }
 
