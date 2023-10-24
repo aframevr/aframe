@@ -4,7 +4,7 @@ var registerComponent = require('../../core/component').registerComponent;
  * Component to embed an a-frame scene within the layout of a 2D page.
  */
 module.exports.Component = registerComponent('embedded', {
-  dependencies: ['vr-mode-ui'],
+  dependencies: ['xr-mode-ui'],
 
   schema: {default: true},
 

@@ -1,5 +1,5 @@
 ---
-title: vr-mode-ui
+title: xr-mode-ui
 type: components
 layout: docs
 parent_section: components
@@ -23,9 +23,12 @@ to the [`<a-scene>` element][scene]. If we wish to simply toggle the UI, use CSS
 | cardboardModeEnabled  | Enables the now deprecated cardboard mode.                          | false         |
 | enabled               | Whether or not to display UI related to entering VR.                | true          |
 | enterVRButton         | Selector to a custom VR button. On click, the button will enter VR. | ''            |
-| enterVREnabled        | If the VR button is displayed when applicable                       | true          |
+| enterVREnabled        | If the VR button is displayed when applicable                       | false         |
 | enterARButton         | Selector to a custom AR button. On click, the button will enter AR. | ''            |
 | enterAREnabled        | If the AR button is displayed when applicable                       | false         |
+| enterXRButton         | Selector to a custom AR button. On click, the button will enter AR. | ''            |
+| enterXREnabled        | If the AR button is displayed when applicable                       | true          |
+| XRMode                | Mode that the site enters when clicking the XR button (ar or vr).   | vr            |
 
 ### Specifying a Custom Enter VR Button
 

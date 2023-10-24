@@ -51,4 +51,4 @@ require('./scene/pool');
 require('./scene/reflection');
 require('./scene/screenshot');
 require('./scene/stats');
-require('./scene/vr-mode-ui');
+require('./scene/xr-mode-ui');
