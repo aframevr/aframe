@@ -2,9 +2,9 @@
 var entityFactory = require('../../helpers').entityFactory;
 var utils = require('index').utils;
 
-var UI_CLASSES = ['.a-orientation-modal', '.a-enter-vr-button'];
+var UI_CLASSES = ['.a-orientation-modal', '.a-enter-xr-button'];
 
-suite('vr-mode-ui', function () {
+suite.only('xr-mode-ui', function () {
   setup(function (done) {
     this.entityEl = entityFactory();
     var el = this.el = this.entityEl.parentNode;
@@ -25,7 +25,7 @@ suite('vr-mode-ui', function () {
 
   test('can disable UI', function () {
     var scene = this.el;
-    scene.setAttribute('vr-mode-ui', 'enabled', false);
+    scene.setAttribute('xr-mode-ui', 'enabled', false);
     UI_CLASSES.forEach(function (uiClass) {
       assert.notOk(scene.querySelector(uiClass));
     });
@@ -57,7 +57,7 @@ suite('vr-mode-ui', function () {
     scene.exitVR();
 
     process.nextTick(function () {
-      assert.equal(scene.querySelector('.a-enter-vr-button').className.indexOf('a-hidden'),
+      assert.equal(scene.querySelector('.a-enter-xr-button').className.indexOf('a-hidden'),
                    -1);
       done();
     });

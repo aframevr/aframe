@@ -154,7 +154,7 @@ module.exports.Component = registerComponent('xr-mode-ui', {
   },
 
   remove: function () {
-    [this.enterVREl, this.enterAREl, this.orientationModalEl].forEach(function (uiElement) {
+    [this.enterVREl, this.enterAREl, this.enterXREl, this.orientationModalEl].forEach(function (uiElement) {
       if (uiElement && uiElement.parentNode) {
         uiElement.parentNode.removeChild(uiElement);
       }
