@@ -20978,7 +20978,7 @@ module.exports.Component = registerComponent('xr-mode-ui', {
     this.updateEnterInterfaces();
   },
   remove: function () {
-    [this.enterVREl, this.enterAREl, this.orientationModalEl].forEach(function (uiElement) {
+    [this.enterVREl, this.enterAREl, this.enterXREl, this.orientationModalEl].forEach(function (uiElement) {
       if (uiElement && uiElement.parentNode) {
         uiElement.parentNode.removeChild(uiElement);
       }
@@ -30397,7 +30397,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.4.2 (Date 2023-10-24, Commit #c8487d3e)');
+console.log('A-Frame Version: 1.4.2 (Date 2023-10-24, Commit #df113728)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
