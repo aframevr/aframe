@@ -4,7 +4,7 @@ var utils = require('index').utils;
 
 var UI_CLASSES = ['.a-orientation-modal', '.a-enter-xr-button'];
 
-suite.only('xr-mode-ui', function () {
+suite('xr-mode-ui', function () {
   setup(function (done) {
     this.entityEl = entityFactory();
     var el = this.el = this.entityEl.parentNode;
