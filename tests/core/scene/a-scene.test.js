@@ -103,7 +103,7 @@ suite('a-scene (without renderer) - WebXR', function () {
         assert.ok(sceneEl.hasAttribute('inspector'));
         assert.ok(sceneEl.hasAttribute('keyboard-shortcuts'));
         assert.ok(sceneEl.hasAttribute('screenshot'));
-        assert.ok(sceneEl.hasAttribute('vr-mode-ui'));
+        assert.ok(sceneEl.hasAttribute('xr-mode-ui'));
         sceneEl.removeEventListener('loaded', onLoaded);
         done();
       });
@@ -564,7 +564,7 @@ suite('a-scene (without renderer) - WebVR', function () {
         assert.ok(sceneEl.hasAttribute('inspector'));
         assert.ok(sceneEl.hasAttribute('keyboard-shortcuts'));
         assert.ok(sceneEl.hasAttribute('screenshot'));
-        assert.ok(sceneEl.hasAttribute('vr-mode-ui'));
+        assert.ok(sceneEl.hasAttribute('xr-mode-ui'));
         sceneEl.removeEventListener('loaded', onLoaded);
         done();
       });
