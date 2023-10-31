@@ -97,6 +97,22 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
     this.el.sceneEl.addEventListener('exit-vr', this.updateReferenceSpace);
   },
 
+  update: function () {
+    this.updateModelColor();
+  },
+
+  updateModelColor: function () {
+    var jointEls = this.jointEls;
+    var skinnedMesh = this.skinnedMesh;
+    if (skinnedMesh) {
+      this.skinnedMesh.material.color.set(this.data.modelColor);
+    }
+
+    for (var i = 0; i < jointEls.lenght; i++) {
+      jointEls[i].setAttribute('material', 'color', this.data.modelColor);
+    }
+  },
+
   updateReferenceSpace: function () {
     var self = this;
     var xrSession = this.el.sceneEl.xrSession;

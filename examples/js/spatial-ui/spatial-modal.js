@@ -12,12 +12,14 @@ AFRAME.registerComponent('spatial-modal', {
     color: {type: 'color', default: '#fff'},
     width: {default: 1, min: 0},
     height: {default: 1, min: 0},
+    roundCorners: {default: true},
     src: {type: 'map'}
   },
 
   init: function () {
     var data = this.data;
-    var geometry = this.geometry = SPATIAL.utils.generatePlaneGeometryIndexed(data.width, data.height, 0.05, 22);
+    var borderRadius = data.roundCorners ? 0.05 : 0.01;
+    var geometry = this.geometry = SPATIAL.utils.generatePlaneGeometryIndexed(data.width, data.height, borderRadius, 22);
     var material = this.material = new THREE.MeshPhysicalMaterial({
       roughness: 0.6,
       transmission: 1,
@@ -27,5 +29,9 @@ AFRAME.registerComponent('spatial-modal', {
 
     this.plane = new THREE.Mesh(geometry, material);
     this.el.setObject3D('mesh', this.plane);
+  },
+
+  update: function () {
+    this.material.color.set(this.data.color);
   }
 });

@@ -13,12 +13,14 @@ AFRAME.registerComponent('spatial-hero-image', {
     width: {default: 1, min: 0},
     height: {default: 1, min: 0},
     focused: {default: true},
+    roundCorners: {default: true},
     src: {type: 'map'}
   },
 
   init: function () {
     var data = this.data;
-    var geometry = this.geometry = SPATIAL.utils.generatePlaneGeometryIndexed(data.width, data.height, 0.05, 22);
+    var borderRadius = data.roundCorners ? 0.05 : 0.01;
+    var geometry = this.geometry = SPATIAL.utils.generatePlaneGeometryIndexed(data.width, data.height, borderRadius, 22);
     var material = this.material = new THREE.MeshBasicMaterial({color: new THREE.Color(data.color)});
     this.el.sceneEl.systems.material.loadTexture(data.src, {src: data.src}, function textureLoaded (texture) {
       material.map = texture;

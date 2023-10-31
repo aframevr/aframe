@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Hand Tracking Grab Controls • A-Frame</title>
+    <meta name="description" content="Hand Tracking Grab Controls • A-Frame">
+    <script src="../../dist/aframe-master.js"></script>
+    <script src="../../js/spatial-ui/spatial-utils.js"></script>
+    <script src="../../js/spatial-ui/spatial-modal.js"></script>
+    <script src="../../js/spatial-ui/spatial-hero-image.js"></script>
+    <script src="../../js/info-message.js"></script>
+    <script src="https://unpkg.com/aframe-environment-component@1.3.0/dist/aframe-environment-component.min.js"></script>
+    <script src="hover.js"></script>
+  </head>
+  <body>
+    <a-scene
+      environment
+      obb-collider="showColliders: false"
+      info-message="htmlSrc: #messageText">
+      <a-assets>
+        <a-asset-item id="messageText" src="message.html"></a-asset-item>
+        <img id="ubuntu" src="./images/ubuntu-desktop.png" />
+      </a-assets>
+      <a-entity camera position="0 1.5 0" look-controls wasd-controls></a-entity>
+      <a-entity position="0 1.6 -1" grabbable hover>
+        <a-entity spatial-modal="width: 1.81; height: 1.035; roundCorners: false">
+          <a-entity spatial-hero-image="src: #ubuntu; width: 1.775; height: 1; roundCorners: false" position="0 0 0.001"></a-entity>
+        </a-entity>
+      </a-entity>
+      <a-entity id="rightHand" hand-tracking-grab-controls="hand: right"></a-entity>
+      <a-entity id="leftHand" hand-tracking-grab-controls="hand: left"></a-entity>
+    </a-scene>
+  </body>
+</html>

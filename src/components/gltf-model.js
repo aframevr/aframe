@@ -44,6 +44,9 @@ module.exports.Component = registerComponent('gltf-model', {
       self.loader.load(src, function gltfLoaded (gltfModel) {
         self.model = gltfModel.scene || gltfModel.scenes[0];
         self.model.animations = gltfModel.animations;
+
+        self.centerModel();
+
         el.setObject3D('mesh', self.model);
         el.emit('model-loaded', {format: 'gltf', model: self.model});
       }, undefined /* onProgress */, function gltfFailed (error) {
@@ -52,6 +55,16 @@ module.exports.Component = registerComponent('gltf-model', {
         el.emit('model-error', {format: 'gltf', src: src});
       });
     });
+  },
+
+  centerModel: function () {
+    var model = this.model;
+    var box = new THREE.Box3().setFromObject(model);
+    var center = box.getCenter(new THREE.Vector3());
+
+    model.position.x += (model.position.x - center.x);
+    model.position.y += (model.position.y - center.y);
+    model.position.z += (model.position.z - center.z);
   },
 
   remove: function () {
