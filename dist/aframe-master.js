@@ -13785,6 +13785,7 @@ module.exports.Component = registerComponent('gltf-model', {
       self.loader.load(src, function gltfLoaded(gltfModel) {
         self.model = gltfModel.scene || gltfModel.scenes[0];
         self.model.animations = gltfModel.animations;
+        self.centerModel();
         el.setObject3D('mesh', self.model);
         el.emit('model-loaded', {
           format: 'gltf',
@@ -13800,11 +13801,34 @@ module.exports.Component = registerComponent('gltf-model', {
       });
     });
   },
+  centerModel: function () {
+    var model = this.model;
+    var box = new THREE.Box3().setFromObject(model);
+    var center = box.getCenter(new THREE.Vector3());
+    model.position.x += model.position.x - center.x;
+    model.position.y += model.position.y - center.y;
+    model.position.z += model.position.z - center.z;
+  },
   remove: function () {
     if (!this.model) {
       return;
     }
     this.el.removeObject3D('mesh');
+  }
+});
+
+/***/ }),
+
+/***/ "./src/components/grabbable.js":
+/*!*************************************!*\
+  !*** ./src/components/grabbable.js ***!
+  \*************************************/
+/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
+
+var registerComponent = (__webpack_require__(/*! ../core/component */ "./src/core/component.js").registerComponent);
+registerComponent('grabbable', {
+  init: function () {
+    this.el.setAttribute('obb-collider', '');
   }
 });
 
@@ -14364,6 +14388,19 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
     this.el.sceneEl.addEventListener('enter-vr', this.updateReferenceSpace);
     this.el.sceneEl.addEventListener('exit-vr', this.updateReferenceSpace);
   },
+  update: function () {
+    this.updateModelColor();
+  },
+  updateModelColor: function () {
+    var jointEls = this.jointEls;
+    var skinnedMesh = this.skinnedMesh;
+    if (skinnedMesh) {
+      this.skinnedMesh.material.color.set(this.data.modelColor);
+    }
+    for (var i = 0; i < jointEls.lenght; i++) {
+      jointEls[i].setAttribute('material', 'color', this.data.modelColor);
+    }
+  },
   updateReferenceSpace: function () {
     var self = this;
     var xrSession = this.el.sceneEl.xrSession;
@@ -14585,6 +14622,209 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
       color: this.data.modelColor
     });
     this.el.setObject3D('mesh', mesh);
+  }
+});
+
+/***/ }),
+
+/***/ "./src/components/hand-tracking-grab-controls.js":
+/*!*******************************************************!*\
+  !*** ./src/components/hand-tracking-grab-controls.js ***!
+  \*******************************************************/
+/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
+
+var registerComponent = (__webpack_require__(/*! ../core/component */ "./src/core/component.js").registerComponent);
+var THREE = __webpack_require__(/*! ../lib/three */ "./src/lib/three.js");
+registerComponent('hand-tracking-grab-controls', {
+  schema: {
+    hand: {
+      default: 'right',
+      oneOf: ['left', 'right']
+    },
+    color: {
+      type: 'color',
+      default: 'white'
+    },
+    hoverColor: {
+      type: 'color',
+      default: '#538df1'
+    },
+    hoverEnabled: {
+      default: false
+    }
+  },
+  init: function () {
+    var el = this.el;
+    var data = this.data;
+    var trackedObject3DVariable;
+    if (data.hand === 'right') {
+      trackedObject3DVariable = 'components.hand-tracking-controls.bones.3';
+    } else {
+      trackedObject3DVariable = 'components.hand-tracking-controls.bones.21';
+    }
+    el.setAttribute('hand-tracking-controls', {
+      hand: data.hand
+    });
+    el.setAttribute('obb-collider', {
+      trackedObject3D: trackedObject3DVariable,
+      size: 0.04
+    });
+    this.auxMatrix = new THREE.Matrix4();
+    this.auxQuaternion = new THREE.Quaternion();
+    this.auxQuaternion2 = new THREE.Quaternion();
+    this.auxVector = new THREE.Vector3();
+    this.auxVector2 = new THREE.Vector3();
+    this.grabbingObjectPosition = new THREE.Vector3();
+    this.grabbedObjectPosition = new THREE.Vector3();
+    this.grabbedObjectPositionDelta = new THREE.Vector3();
+    this.grabDeltaPosition = new THREE.Vector3();
+    this.grabInitialRotation = new THREE.Quaternion();
+    this.onCollisionStarted = this.onCollisionStarted.bind(this);
+    this.el.addEventListener('obbcollisionstarted', this.onCollisionStarted);
+    this.onCollisionEnded = this.onCollisionEnded.bind(this);
+    this.el.addEventListener('obbcollisionended', this.onCollisionEnded);
+    this.onPinchStarted = this.onPinchStarted.bind(this);
+    this.el.addEventListener('pinchstarted', this.onPinchStarted);
+    this.onPinchEnded = this.onPinchEnded.bind(this);
+    this.el.addEventListener('pinchended', this.onPinchEnded);
+  },
+  transferEntityOwnership: function () {
+    var grabbingElComponent;
+    var grabbingEls = this.el.sceneEl.querySelectorAll('[hand-tracking-grab-controls]');
+    for (var i = 0; i < grabbingEls.length; ++i) {
+      grabbingElComponent = grabbingEls[i].components['hand-tracking-grab-controls'];
+      if (grabbingElComponent === this) {
+        continue;
+      }
+      if (this.collidedEl && this.collidedEl === grabbingElComponent.grabbedEl) {
+        grabbingElComponent.releaseGrabbedEntity();
+      }
+    }
+    return false;
+  },
+  onCollisionStarted: function (evt) {
+    var withEl = evt.detail.withEl;
+    if (this.collidedEl) {
+      return;
+    }
+    if (!withEl.getAttribute('grabbable')) {
+      return;
+    }
+    this.collidedEl = withEl;
+    this.grabbingObject3D = evt.detail.trackedObject3D;
+    if (this.data.hoverEnabled) {
+      this.el.setAttribute('hand-tracking-controls', 'modelColor', this.data.hoverColor);
+    }
+  },
+  onCollisionEnded: function () {
+    if (this.grabbedEl) {
+      return;
+    }
+    this.collidedEl = undefined;
+    this.grabbingObject3D = undefined;
+    if (this.data.hoverEnabled) {
+      this.el.setAttribute('hand-tracking-controls', 'modelColor', this.data.color);
+    }
+  },
+  onPinchStarted: function () {
+    if (!this.collidedEl) {
+      return;
+    }
+    this.transferEntityOwnership();
+    this.grabbedEl = this.collidedEl;
+    this.grab();
+  },
+  onPinchEnded: function () {
+    this.releaseGrabbedEntity();
+  },
+  releaseGrabbedEntity: function () {
+    var grabbedEl = this.grabbedEl;
+    if (!grabbedEl) {
+      return;
+    }
+    grabbedEl.object3D.updateMatrixWorld = this.originalUpdateMatrixWorld;
+    grabbedEl.object3D.matrixAutoUpdate = true;
+    grabbedEl.object3D.matrixWorldAutoUpdate = true;
+    grabbedEl.object3D.matrixWorld.decompose(this.auxVector, this.auxQuaternion, this.auxVector2);
+    grabbedEl.object3D.position.copy(this.auxVector);
+    grabbedEl.object3D.quaternion.copy(this.auxQuaternion);
+    this.grabbedEl = undefined;
+  },
+  grab: function () {
+    var grabbingObject3D = this.grabbingObject3D;
+    var grabbedEl = this.grabbedEl;
+    var grabbingObjectWorldPosition;
+    var grabedObjectWorldPosition;
+    grabbingObjectWorldPosition = grabbingObject3D.getWorldPosition(this.grabbingObjectPosition);
+    grabedObjectWorldPosition = grabbedEl.object3D.getWorldPosition(this.grabbedObjectPosition);
+    this.grabDeltaPosition.copy(grabedObjectWorldPosition).sub(grabbingObjectWorldPosition);
+    this.grabInitialRotation.copy(grabbingObject3D.getWorldQuaternion(this.auxQuaternion).invert());
+    this.originalUpdateMatrixWorld = grabbedEl.object3D.updateMatrixWorld;
+    grabbedEl.object3D.updateMatrixWorld = function () {/* no op */};
+    grabbedEl.object3D.updateMatrixWorldChildren = function (force) {
+      var children = this.children;
+      for (var i = 0, l = children.length; i < l; i++) {
+        var child = children[i];
+        if (child.matrixWorldAutoUpdate === true || force === true) {
+          child.updateMatrixWorld(true);
+        }
+      }
+    };
+    grabbedEl.object3D.matrixAutoUpdate = false;
+    grabbedEl.object3D.matrixWorldAutoUpdate = false;
+  },
+  tock: function () {
+    var auxMatrix = this.auxMatrix;
+    var auxVector = this.auxVector;
+    var auxQuaternion = this.auxQuaternion;
+    var auxQuaternion2 = this.auxQuaternion2;
+    var grabbedObject3D;
+    var grabbingObject3D = this.grabbingObject3D;
+    var grabbedEl = this.grabbedEl;
+    if (!grabbedEl) {
+      return;
+    }
+
+    // We have to compose 4 transformations.
+    // Both grabbing and grabbed entities position and rotation.
+
+    // 1. Move grabbed  entity to grabbing entity position.
+    // 2. Apply the rotation delta (substract initial rotation) of the grabbing entity position.
+    // 3. Translate grabbed entity to the original position: distance betweeen grabbed and grabbing entities at collision time.
+    // 4. Apply grabbed entity rotation.
+    // 5. Preserve original scale.
+
+    // Store grabbed entity local rotation.
+    grabbedObject3D = grabbedEl.object3D;
+    grabbedObject3D.getWorldQuaternion(auxQuaternion2);
+
+    // Reset grabbed entity matrix.
+    grabbedObject3D.matrixWorld.identity();
+
+    // 1.
+    auxMatrix.identity();
+    auxMatrix.makeTranslation(grabbingObject3D.getWorldPosition(auxVector));
+    grabbedObject3D.matrixWorld.multiply(auxMatrix);
+
+    // 2.
+    auxMatrix.identity();
+    auxMatrix.makeRotationFromQuaternion(grabbingObject3D.getWorldQuaternion(auxQuaternion).multiply(this.grabInitialRotation));
+    grabbedObject3D.matrixWorld.multiply(auxMatrix);
+
+    // 3.
+    auxMatrix.identity();
+    auxMatrix.makeTranslation(this.grabDeltaPosition);
+    grabbedObject3D.matrixWorld.multiply(auxMatrix);
+
+    // 4.
+    auxMatrix.identity();
+    auxMatrix.makeRotationFromQuaternion(auxQuaternion2);
+    grabbedObject3D.matrixWorld.multiply(auxMatrix);
+
+    // 5.
+    auxMatrix.makeScale(grabbedEl.object3D.scale.x, grabbedEl.object3D.scale.y, grabbedEl.object3D.scale.z);
+    grabbedObject3D.matrixWorld.multiply(auxMatrix);
+    grabbedObject3D.updateMatrixWorldChildren();
   }
 });
 
@@ -14830,7 +15070,9 @@ __webpack_require__(/*! ./gearvr-controls */ "./src/components/gearvr-controls.j
 __webpack_require__(/*! ./geometry */ "./src/components/geometry.js");
 __webpack_require__(/*! ./generic-tracked-controller-controls */ "./src/components/generic-tracked-controller-controls.js");
 __webpack_require__(/*! ./gltf-model */ "./src/components/gltf-model.js");
+__webpack_require__(/*! ./grabbable */ "./src/components/grabbable.js");
 __webpack_require__(/*! ./hand-tracking-controls */ "./src/components/hand-tracking-controls.js");
+__webpack_require__(/*! ./hand-tracking-grab-controls */ "./src/components/hand-tracking-grab-controls.js");
 __webpack_require__(/*! ./hand-controls */ "./src/components/hand-controls.js");
 __webpack_require__(/*! ./hide-on-enter-ar */ "./src/components/hide-on-enter-ar.js");
 __webpack_require__(/*! ./hp-mixed-reality-controls */ "./src/components/hp-mixed-reality-controls.js");
@@ -14842,6 +15084,7 @@ __webpack_require__(/*! ./link */ "./src/components/link.js");
 __webpack_require__(/*! ./look-controls */ "./src/components/look-controls.js");
 __webpack_require__(/*! ./magicleap-controls */ "./src/components/magicleap-controls.js");
 __webpack_require__(/*! ./material */ "./src/components/material.js");
+__webpack_require__(/*! ./obb-collider */ "./src/components/obb-collider.js");
 __webpack_require__(/*! ./obj-model */ "./src/components/obj-model.js");
 __webpack_require__(/*! ./oculus-go-controls */ "./src/components/oculus-go-controls.js");
 __webpack_require__(/*! ./oculus-touch-controls */ "./src/components/oculus-touch-controls.js");
@@ -17417,6 +17660,173 @@ function disposeMaterial(material, system) {
   material.dispose();
   system.unregisterMaterial(material);
 }
+
+/***/ }),
+
+/***/ "./src/components/obb-collider.js":
+/*!****************************************!*\
+  !*** ./src/components/obb-collider.js ***!
+  \****************************************/
+/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
+
+var registerComponent = (__webpack_require__(/*! ../core/component */ "./src/core/component.js").registerComponent);
+var THREE = __webpack_require__(/*! ../lib/three */ "./src/lib/three.js");
+registerComponent('obb-collider', {
+  schema: {
+    size: {
+      default: 0
+    },
+    trackedObject3D: {
+      default: ''
+    }
+  },
+  init: function () {
+    this.auxEuler = new THREE.Euler();
+    this.boundingBox = new THREE.Box3();
+    this.boundingBoxSize = new THREE.Vector3();
+    this.updateCollider = this.updateCollider.bind(this);
+    this.updateBoundingBox = this.updateBoundingBox.bind(this);
+    this.el.addEventListener('model-loaded', this.updateCollider);
+    this.updateCollider();
+    this.system.addCollider(this.el);
+  },
+  remove: function () {
+    this.system.removeCollider(this.el);
+  },
+  update: function () {
+    if (this.data.trackedObject3D) {
+      this.trackedObject3DPath = this.data.trackedObject3D.split('.');
+    }
+  },
+  updateCollider: function () {
+    var el = this.el;
+    var boundingBoxSize = this.boundingBoxSize;
+    var aabb = this.aabb = this.aabb || new THREE.OBB();
+    this.obb = this.obb || new THREE.OBB();
+
+    // Defer if entity has not yet loaded.
+    if (!el.hasLoaded) {
+      el.addEventListener('loaded', this.updateCollider);
+      return;
+    }
+    this.updateBoundingBox();
+    aabb.halfSize.copy(boundingBoxSize).multiplyScalar(0.5);
+    if (this.el.sceneEl.systems['obb-collider'].data.showColliders) {
+      this.showCollider();
+    }
+  },
+  showCollider: function () {
+    this.updateColliderMesh();
+    this.renderColliderMesh.visible = true;
+  },
+  updateColliderMesh: function () {
+    var renderColliderMesh = this.renderColliderMesh;
+    var boundingBoxSize = this.boundingBoxSize;
+    if (!renderColliderMesh) {
+      this.initColliderMesh();
+      return;
+    }
+
+    // Destroy current geometry.
+    renderColliderMesh.geometry.dispose();
+    renderColliderMesh.geometry = new THREE.BoxGeometry(boundingBoxSize.x, boundingBoxSize.y, boundingBoxSize.z);
+  },
+  hideCollider: function () {
+    if (!this.renderColliderMesh) {
+      return;
+    }
+    this.renderColliderMesh.visible = false;
+  },
+  initColliderMesh: function () {
+    var boundingBoxSize;
+    var renderColliderGeometry;
+    var renderColliderMesh;
+    boundingBoxSize = this.boundingBoxSize;
+    renderColliderGeometry = this.renderColliderGeometry = new THREE.BoxGeometry(boundingBoxSize.x, boundingBoxSize.y, boundingBoxSize.z);
+    renderColliderMesh = this.renderColliderMesh = new THREE.Mesh(renderColliderGeometry, new THREE.MeshLambertMaterial({
+      color: 0x00ff00,
+      side: THREE.DoubleSide
+    }));
+    renderColliderMesh.matrixAutoUpdate = false;
+    renderColliderMesh.matrixWorldAutoUpdate = false;
+    // THREE scene forces matrix world update even if matrixWorldAutoUpdate set to false.
+    renderColliderMesh.updateMatrixWorld = function () {/* no op */};
+    this.el.sceneEl.object3D.add(renderColliderMesh);
+  },
+  updateBoundingBox: function () {
+    var auxEuler = this.auxEuler;
+    var boundingBox = this.boundingBox;
+    var size = this.data.size;
+    var trackedObject3D = this.trackedObject3D || this.el.object3D;
+    var boundingBoxSize = this.boundingBoxSize;
+
+    // user defined size takes precedence.
+    if (size) {
+      this.boundingBoxSize.x = size;
+      this.boundingBoxSize.y = size;
+      this.boundingBoxSize.z = size;
+      return;
+    }
+
+    // Bounding box is created axis-aligned AABB.
+    // If there's any local rotation the box will be bigger than expected.
+    // It undoes the local entity rotation and then restores so box has the expected size.
+    auxEuler.copy(trackedObject3D.rotation);
+    trackedObject3D.rotation.set(0, 0, 0);
+    trackedObject3D.updateMatrixWorld(true);
+    boundingBox.setFromObject(trackedObject3D, true);
+    boundingBox.getSize(boundingBoxSize);
+
+    // Restore rotation.
+    this.el.object3D.rotation.copy(auxEuler);
+  },
+  checkTrackedObject: function () {
+    var trackedObject3DPath = this.trackedObject3DPath;
+    var trackedObject3D;
+    if (trackedObject3DPath && trackedObject3DPath.length && !this.trackedObject3D) {
+      trackedObject3D = this.el;
+      for (var i = 0; i < trackedObject3DPath.length; i++) {
+        trackedObject3D = trackedObject3D[trackedObject3DPath[i]];
+        if (!trackedObject3D) {
+          break;
+        }
+      }
+      if (trackedObject3D) {
+        this.trackedObject3D = trackedObject3D;
+        this.updateCollider();
+      }
+    }
+    return this.trackedObject3D;
+  },
+  tick: function () {
+    var auxPosition = new THREE.Vector3();
+    var auxScale = new THREE.Vector3();
+    var auxQuaternion = new THREE.Quaternion();
+    var auxMatrix = new THREE.Matrix4();
+    return function () {
+      var obb = this.obb;
+      var renderColliderMesh = this.renderColliderMesh;
+      var trackedObject3D = this.checkTrackedObject() || this.el.object3D;
+      if (!trackedObject3D) {
+        return;
+      }
+      trackedObject3D.updateMatrix();
+      trackedObject3D.updateMatrixWorld();
+      trackedObject3D.matrixWorld.decompose(auxPosition, auxQuaternion, auxScale);
+      // reset scale, keep position and rotation
+      auxScale.set(1, 1, 1);
+      auxMatrix.compose(auxPosition, auxQuaternion, auxScale);
+      // Update OBB visual representation.
+      if (renderColliderMesh) {
+        renderColliderMesh.matrixWorld.copy(auxMatrix);
+      }
+
+      // Reset OBB with AABB and apply entity matrix. applyMatrix4 changes OBB internal state.
+      obb.copy(this.aabb);
+      obb.applyMatrix4(auxMatrix);
+    };
+  }()
+});
 
 /***/ }),
 
@@ -30397,7 +30807,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.4.2 (Date 2023-10-24, Commit #df113728)');
+console.log('A-Frame Version: 1.4.2 (Date 2023-11-01, Commit #b42b51d1)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
@@ -30535,10 +30945,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var super_three_examples_jsm_loaders_DRACOLoader__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! super-three/examples/jsm/loaders/DRACOLoader */ "./node_modules/super-three/examples/jsm/loaders/DRACOLoader.js");
 /* harmony import */ var super_three_examples_jsm_loaders_GLTFLoader__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! super-three/examples/jsm/loaders/GLTFLoader */ "./node_modules/super-three/examples/jsm/loaders/GLTFLoader.js");
 /* harmony import */ var super_three_examples_jsm_loaders_KTX2Loader__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! super-three/examples/jsm/loaders/KTX2Loader */ "./node_modules/super-three/examples/jsm/loaders/KTX2Loader.js");
+/* harmony import */ var super_three_addons_math_OBB_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! super-three/addons/math/OBB.js */ "./node_modules/super-three/examples/jsm/math/OBB.js");
 /* harmony import */ var super_three_examples_jsm_loaders_OBJLoader__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! super-three/examples/jsm/loaders/OBJLoader */ "./node_modules/super-three/examples/jsm/loaders/OBJLoader.js");
 /* harmony import */ var super_three_examples_jsm_loaders_MTLLoader__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! super-three/examples/jsm/loaders/MTLLoader */ "./node_modules/super-three/examples/jsm/loaders/MTLLoader.js");
-/* harmony import */ var super_three_examples_jsm_utils_BufferGeometryUtils__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! super-three/examples/jsm/utils/BufferGeometryUtils */ "./node_modules/super-three/examples/jsm/utils/BufferGeometryUtils.js");
-/* harmony import */ var super_three_examples_jsm_lights_LightProbeGenerator__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! super-three/examples/jsm/lights/LightProbeGenerator */ "./node_modules/super-three/examples/jsm/lights/LightProbeGenerator.js");
+/* harmony import */ var super_three_examples_jsm_utils_BufferGeometryUtils__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! super-three/examples/jsm/utils/BufferGeometryUtils */ "./node_modules/super-three/examples/jsm/utils/BufferGeometryUtils.js");
+/* harmony import */ var super_three_examples_jsm_lights_LightProbeGenerator__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! super-three/examples/jsm/lights/LightProbeGenerator */ "./node_modules/super-three/examples/jsm/lights/LightProbeGenerator.js");
+
 
 
 
@@ -30557,8 +30969,9 @@ THREE.GLTFLoader = super_three_examples_jsm_loaders_GLTFLoader__WEBPACK_IMPORTED
 THREE.KTX2Loader = super_three_examples_jsm_loaders_KTX2Loader__WEBPACK_IMPORTED_MODULE_3__.KTX2Loader;
 THREE.OBJLoader = super_three_examples_jsm_loaders_OBJLoader__WEBPACK_IMPORTED_MODULE_4__.OBJLoader;
 THREE.MTLLoader = super_three_examples_jsm_loaders_MTLLoader__WEBPACK_IMPORTED_MODULE_5__.MTLLoader;
-THREE.BufferGeometryUtils = super_three_examples_jsm_utils_BufferGeometryUtils__WEBPACK_IMPORTED_MODULE_6__;
-THREE.LightProbeGenerator = super_three_examples_jsm_lights_LightProbeGenerator__WEBPACK_IMPORTED_MODULE_7__.LightProbeGenerator;
+THREE.OBB = super_three_addons_math_OBB_js__WEBPACK_IMPORTED_MODULE_6__.OBB;
+THREE.BufferGeometryUtils = super_three_examples_jsm_utils_BufferGeometryUtils__WEBPACK_IMPORTED_MODULE_7__;
+THREE.LightProbeGenerator = super_three_examples_jsm_lights_LightProbeGenerator__WEBPACK_IMPORTED_MODULE_8__.LightProbeGenerator;
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (THREE);
 
 /***/ }),
@@ -31973,6 +32386,7 @@ __webpack_require__(/*! ./geometry */ "./src/systems/geometry.js");
 __webpack_require__(/*! ./gltf-model */ "./src/systems/gltf-model.js");
 __webpack_require__(/*! ./light */ "./src/systems/light.js");
 __webpack_require__(/*! ./material */ "./src/systems/material.js");
+__webpack_require__(/*! ./obb-collider */ "./src/systems/obb-collider.js");
 __webpack_require__(/*! ./renderer */ "./src/systems/renderer.js");
 __webpack_require__(/*! ./shadow */ "./src/systems/shadow.js");
 __webpack_require__(/*! ./tracked-controls-webvr */ "./src/systems/tracked-controls-webvr.js");
@@ -32434,6 +32848,153 @@ function fixVideoAttributes(videoEl) {
   videoEl.setAttribute('webkit-playsinline', '');
   return videoEl;
 }
+
+/***/ }),
+
+/***/ "./src/systems/obb-collider.js":
+/*!*************************************!*\
+  !*** ./src/systems/obb-collider.js ***!
+  \*************************************/
+/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
+
+var registerSystem = (__webpack_require__(/*! ../core/system */ "./src/core/system.js").registerSystem);
+registerSystem('obb-collider', {
+  schema: {
+    showColliders: {
+      default: false
+    }
+  },
+  init: function () {
+    this.collisions = [];
+    this.colliderEls = [];
+  },
+  addCollider: function (colliderEl) {
+    this.colliderEls.push(colliderEl);
+    if (this.data.showColliders) {
+      colliderEl.components['obb-collider'].showCollider();
+    } else {
+      colliderEl.components['obb-collider'].hideCollider();
+    }
+    this.tick = this.detectCollisions;
+  },
+  removeCollider: function (colliderEl) {
+    var colliderEls = this.colliderEls;
+    var elIndex = colliderEls.indexOf(colliderEl);
+    colliderEl.hideCollider();
+    if (elIndex > -1) {
+      colliderEls.splice(elIndex, 1);
+    }
+    if (colliderEls.length === 0) {
+      this.tick = undefined;
+    }
+  },
+  registerCollision: function (componentA, componentB) {
+    var collisions = this.collisions;
+    var existingCollision = false;
+    var boundingBoxA = componentA.obb;
+    var boundingBoxB = componentB.obb;
+    var collisionMeshA = componentA.renderColliderMesh;
+    var collisionMeshB = componentB.renderColliderMesh;
+    if (collisionMeshA) {
+      collisionMeshA.material.color.set(0xff0000);
+    }
+    if (collisionMeshB) {
+      collisionMeshB.material.color.set(0xff0000);
+    }
+    for (var i = 0; i < collisions.length; i++) {
+      if (collisions[i].componentA.obb === boundingBoxA && collisions[i].componentB.obb === boundingBoxB || collisions[i].componentA.obb === boundingBoxB && collisions[i].componentB.obb === boundingBoxA) {
+        existingCollision = true;
+        collisions[i].detected = true;
+        break;
+      }
+    }
+    if (!existingCollision) {
+      collisions.push({
+        componentA: componentA,
+        componentB: componentB,
+        detected: true
+      });
+      componentA.el.emit('obbcollisionstarted', {
+        trackedObject3D: componentA.trackedObject3D,
+        withEl: componentB.el
+      });
+      componentB.el.emit('obbcollisionstarted', {
+        trackedObject3D: componentB.trackedObject3D,
+        withEl: componentA.el
+      });
+    }
+  },
+  resetCollisions: function () {
+    var collisions = this.collisions;
+    for (var i = 0; i < collisions.length; i++) {
+      collisions[i].detected = false;
+    }
+  },
+  clearCollisions: function () {
+    var collisions = this.collisions;
+    var detectedCollisions = [];
+    var componentA;
+    var componentB;
+    var collisionMeshA;
+    var collisionMeshB;
+    for (var i = 0; i < collisions.length; i++) {
+      if (!collisions[i].detected) {
+        componentA = collisions[i].componentA;
+        componentB = collisions[i].componentB;
+        collisionMeshA = componentA.renderColliderMesh;
+        collisionMeshB = componentB.renderColliderMesh;
+        if (collisionMeshA) {
+          collisionMeshA.material.color.set(0x00ff00);
+        }
+        componentA.el.emit('obbcollisionended', {
+          trackedObject3D: this.trackedObject3D,
+          withEl: componentB.el
+        });
+        if (collisionMeshB) {
+          collisionMeshB.material.color.set(0x00ff00);
+        }
+        componentB.el.emit('obbcollisionended', {
+          trackedObject3D: this.trackedObject3D,
+          withEl: componentA.el
+        });
+      } else {
+        detectedCollisions.push(collisions[i]);
+      }
+    }
+    this.collisions = detectedCollisions;
+  },
+  detectCollisions: function () {
+    var boxA;
+    var boxB;
+    var componentA;
+    var componentB;
+    var colliderEls = this.colliderEls;
+    if (colliderEls.length < 2) {
+      return;
+    }
+    this.resetCollisions();
+    for (var i = 0; i < colliderEls.length; i++) {
+      componentA = colliderEls[i].components['obb-collider'];
+      boxA = colliderEls[i].components['obb-collider'].obb;
+      // ignore bounding box with 0 volume.
+      if (boxA.halfSize.x === 0 || boxA.halfSize.y === 0 || boxA.halfSize.z === 0) {
+        continue;
+      }
+      for (var j = i + 1; j < colliderEls.length; j++) {
+        componentB = colliderEls[j].components['obb-collider'];
+        boxB = componentB.obb;
+        // ignore bounding box with 0 volume.
+        if (boxB.halfSize.x === 0 || boxB.halfSize.y === 0 || boxB.halfSize.z === 0) {
+          continue;
+        }
+        if (boxA.intersectsOBB(boxB)) {
+          this.registerCollision(componentA, componentB);
+        }
+      }
+    }
+    this.clearCollisions();
+  }
+});
 
 /***/ }),
 
@@ -45045,6 +45606,349 @@ class OBJLoader extends three__WEBPACK_IMPORTED_MODULE_0__.Loader {
     return container;
   }
 }
+
+
+/***/ }),
+
+/***/ "./node_modules/super-three/examples/jsm/math/OBB.js":
+/*!***********************************************************!*\
+  !*** ./node_modules/super-three/examples/jsm/math/OBB.js ***!
+  \***********************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "OBB": () => (/* binding */ OBB)
+/* harmony export */ });
+/* harmony import */ var three__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three */ "./node_modules/super-three/build/three.module.js");
+
+
+// module scope helper variables
+
+const a = {
+  c: null,
+  // center
+  u: [new three__WEBPACK_IMPORTED_MODULE_0__.Vector3(), new three__WEBPACK_IMPORTED_MODULE_0__.Vector3(), new three__WEBPACK_IMPORTED_MODULE_0__.Vector3()],
+  // basis vectors
+  e: [] // half width
+};
+
+const b = {
+  c: null,
+  // center
+  u: [new three__WEBPACK_IMPORTED_MODULE_0__.Vector3(), new three__WEBPACK_IMPORTED_MODULE_0__.Vector3(), new three__WEBPACK_IMPORTED_MODULE_0__.Vector3()],
+  // basis vectors
+  e: [] // half width
+};
+
+const R = [[], [], []];
+const AbsR = [[], [], []];
+const t = [];
+const xAxis = new three__WEBPACK_IMPORTED_MODULE_0__.Vector3();
+const yAxis = new three__WEBPACK_IMPORTED_MODULE_0__.Vector3();
+const zAxis = new three__WEBPACK_IMPORTED_MODULE_0__.Vector3();
+const v1 = new three__WEBPACK_IMPORTED_MODULE_0__.Vector3();
+const size = new three__WEBPACK_IMPORTED_MODULE_0__.Vector3();
+const closestPoint = new three__WEBPACK_IMPORTED_MODULE_0__.Vector3();
+const rotationMatrix = new three__WEBPACK_IMPORTED_MODULE_0__.Matrix3();
+const aabb = new three__WEBPACK_IMPORTED_MODULE_0__.Box3();
+const matrix = new three__WEBPACK_IMPORTED_MODULE_0__.Matrix4();
+const inverse = new three__WEBPACK_IMPORTED_MODULE_0__.Matrix4();
+const localRay = new three__WEBPACK_IMPORTED_MODULE_0__.Ray();
+
+// OBB
+
+class OBB {
+  constructor(center = new three__WEBPACK_IMPORTED_MODULE_0__.Vector3(), halfSize = new three__WEBPACK_IMPORTED_MODULE_0__.Vector3(), rotation = new three__WEBPACK_IMPORTED_MODULE_0__.Matrix3()) {
+    this.center = center;
+    this.halfSize = halfSize;
+    this.rotation = rotation;
+  }
+  set(center, halfSize, rotation) {
+    this.center = center;
+    this.halfSize = halfSize;
+    this.rotation = rotation;
+    return this;
+  }
+  copy(obb) {
+    this.center.copy(obb.center);
+    this.halfSize.copy(obb.halfSize);
+    this.rotation.copy(obb.rotation);
+    return this;
+  }
+  clone() {
+    return new this.constructor().copy(this);
+  }
+  getSize(result) {
+    return result.copy(this.halfSize).multiplyScalar(2);
+  }
+
+  /**
+  * Reference: Closest Point on OBB to Point in Real-Time Collision Detection
+  * by Christer Ericson (chapter 5.1.4)
+  */
+  clampPoint(point, result) {
+    const halfSize = this.halfSize;
+    v1.subVectors(point, this.center);
+    this.rotation.extractBasis(xAxis, yAxis, zAxis);
+
+    // start at the center position of the OBB
+
+    result.copy(this.center);
+
+    // project the target onto the OBB axes and walk towards that point
+
+    const x = three__WEBPACK_IMPORTED_MODULE_0__.MathUtils.clamp(v1.dot(xAxis), -halfSize.x, halfSize.x);
+    result.add(xAxis.multiplyScalar(x));
+    const y = three__WEBPACK_IMPORTED_MODULE_0__.MathUtils.clamp(v1.dot(yAxis), -halfSize.y, halfSize.y);
+    result.add(yAxis.multiplyScalar(y));
+    const z = three__WEBPACK_IMPORTED_MODULE_0__.MathUtils.clamp(v1.dot(zAxis), -halfSize.z, halfSize.z);
+    result.add(zAxis.multiplyScalar(z));
+    return result;
+  }
+  containsPoint(point) {
+    v1.subVectors(point, this.center);
+    this.rotation.extractBasis(xAxis, yAxis, zAxis);
+
+    // project v1 onto each axis and check if these points lie inside the OBB
+
+    return Math.abs(v1.dot(xAxis)) <= this.halfSize.x && Math.abs(v1.dot(yAxis)) <= this.halfSize.y && Math.abs(v1.dot(zAxis)) <= this.halfSize.z;
+  }
+  intersectsBox3(box3) {
+    return this.intersectsOBB(obb.fromBox3(box3));
+  }
+  intersectsSphere(sphere) {
+    // find the point on the OBB closest to the sphere center
+
+    this.clampPoint(sphere.center, closestPoint);
+
+    // if that point is inside the sphere, the OBB and sphere intersect
+
+    return closestPoint.distanceToSquared(sphere.center) <= sphere.radius * sphere.radius;
+  }
+
+  /**
+  * Reference: OBB-OBB Intersection in Real-Time Collision Detection
+  * by Christer Ericson (chapter 4.4.1)
+  *
+  */
+  intersectsOBB(obb, epsilon = Number.EPSILON) {
+    // prepare data structures (the code uses the same nomenclature like the reference)
+
+    a.c = this.center;
+    a.e[0] = this.halfSize.x;
+    a.e[1] = this.halfSize.y;
+    a.e[2] = this.halfSize.z;
+    this.rotation.extractBasis(a.u[0], a.u[1], a.u[2]);
+    b.c = obb.center;
+    b.e[0] = obb.halfSize.x;
+    b.e[1] = obb.halfSize.y;
+    b.e[2] = obb.halfSize.z;
+    obb.rotation.extractBasis(b.u[0], b.u[1], b.u[2]);
+
+    // compute rotation matrix expressing b in a's coordinate frame
+
+    for (let i = 0; i < 3; i++) {
+      for (let j = 0; j < 3; j++) {
+        R[i][j] = a.u[i].dot(b.u[j]);
+      }
+    }
+
+    // compute translation vector
+
+    v1.subVectors(b.c, a.c);
+
+    // bring translation into a's coordinate frame
+
+    t[0] = v1.dot(a.u[0]);
+    t[1] = v1.dot(a.u[1]);
+    t[2] = v1.dot(a.u[2]);
+
+    // compute common subexpressions. Add in an epsilon term to
+    // counteract arithmetic errors when two edges are parallel and
+    // their cross product is (near) null
+
+    for (let i = 0; i < 3; i++) {
+      for (let j = 0; j < 3; j++) {
+        AbsR[i][j] = Math.abs(R[i][j]) + epsilon;
+      }
+    }
+    let ra, rb;
+
+    // test axes L = A0, L = A1, L = A2
+
+    for (let i = 0; i < 3; i++) {
+      ra = a.e[i];
+      rb = b.e[0] * AbsR[i][0] + b.e[1] * AbsR[i][1] + b.e[2] * AbsR[i][2];
+      if (Math.abs(t[i]) > ra + rb) return false;
+    }
+
+    // test axes L = B0, L = B1, L = B2
+
+    for (let i = 0; i < 3; i++) {
+      ra = a.e[0] * AbsR[0][i] + a.e[1] * AbsR[1][i] + a.e[2] * AbsR[2][i];
+      rb = b.e[i];
+      if (Math.abs(t[0] * R[0][i] + t[1] * R[1][i] + t[2] * R[2][i]) > ra + rb) return false;
+    }
+
+    // test axis L = A0 x B0
+
+    ra = a.e[1] * AbsR[2][0] + a.e[2] * AbsR[1][0];
+    rb = b.e[1] * AbsR[0][2] + b.e[2] * AbsR[0][1];
+    if (Math.abs(t[2] * R[1][0] - t[1] * R[2][0]) > ra + rb) return false;
+
+    // test axis L = A0 x B1
+
+    ra = a.e[1] * AbsR[2][1] + a.e[2] * AbsR[1][1];
+    rb = b.e[0] * AbsR[0][2] + b.e[2] * AbsR[0][0];
+    if (Math.abs(t[2] * R[1][1] - t[1] * R[2][1]) > ra + rb) return false;
+
+    // test axis L = A0 x B2
+
+    ra = a.e[1] * AbsR[2][2] + a.e[2] * AbsR[1][2];
+    rb = b.e[0] * AbsR[0][1] + b.e[1] * AbsR[0][0];
+    if (Math.abs(t[2] * R[1][2] - t[1] * R[2][2]) > ra + rb) return false;
+
+    // test axis L = A1 x B0
+
+    ra = a.e[0] * AbsR[2][0] + a.e[2] * AbsR[0][0];
+    rb = b.e[1] * AbsR[1][2] + b.e[2] * AbsR[1][1];
+    if (Math.abs(t[0] * R[2][0] - t[2] * R[0][0]) > ra + rb) return false;
+
+    // test axis L = A1 x B1
+
+    ra = a.e[0] * AbsR[2][1] + a.e[2] * AbsR[0][1];
+    rb = b.e[0] * AbsR[1][2] + b.e[2] * AbsR[1][0];
+    if (Math.abs(t[0] * R[2][1] - t[2] * R[0][1]) > ra + rb) return false;
+
+    // test axis L = A1 x B2
+
+    ra = a.e[0] * AbsR[2][2] + a.e[2] * AbsR[0][2];
+    rb = b.e[0] * AbsR[1][1] + b.e[1] * AbsR[1][0];
+    if (Math.abs(t[0] * R[2][2] - t[2] * R[0][2]) > ra + rb) return false;
+
+    // test axis L = A2 x B0
+
+    ra = a.e[0] * AbsR[1][0] + a.e[1] * AbsR[0][0];
+    rb = b.e[1] * AbsR[2][2] + b.e[2] * AbsR[2][1];
+    if (Math.abs(t[1] * R[0][0] - t[0] * R[1][0]) > ra + rb) return false;
+
+    // test axis L = A2 x B1
+
+    ra = a.e[0] * AbsR[1][1] + a.e[1] * AbsR[0][1];
+    rb = b.e[0] * AbsR[2][2] + b.e[2] * AbsR[2][0];
+    if (Math.abs(t[1] * R[0][1] - t[0] * R[1][1]) > ra + rb) return false;
+
+    // test axis L = A2 x B2
+
+    ra = a.e[0] * AbsR[1][2] + a.e[1] * AbsR[0][2];
+    rb = b.e[0] * AbsR[2][1] + b.e[1] * AbsR[2][0];
+    if (Math.abs(t[1] * R[0][2] - t[0] * R[1][2]) > ra + rb) return false;
+
+    // since no separating axis is found, the OBBs must be intersecting
+
+    return true;
+  }
+
+  /**
+  * Reference: Testing Box Against Plane in Real-Time Collision Detection
+  * by Christer Ericson (chapter 5.2.3)
+  */
+  intersectsPlane(plane) {
+    this.rotation.extractBasis(xAxis, yAxis, zAxis);
+
+    // compute the projection interval radius of this OBB onto L(t) = this->center + t * p.normal;
+
+    const r = this.halfSize.x * Math.abs(plane.normal.dot(xAxis)) + this.halfSize.y * Math.abs(plane.normal.dot(yAxis)) + this.halfSize.z * Math.abs(plane.normal.dot(zAxis));
+
+    // compute distance of the OBB's center from the plane
+
+    const d = plane.normal.dot(this.center) - plane.constant;
+
+    // Intersection occurs when distance d falls within [-r,+r] interval
+
+    return Math.abs(d) <= r;
+  }
+
+  /**
+  * Performs a ray/OBB intersection test and stores the intersection point
+  * to the given 3D vector. If no intersection is detected, *null* is returned.
+  */
+  intersectRay(ray, result) {
+    // the idea is to perform the intersection test in the local space
+    // of the OBB.
+
+    this.getSize(size);
+    aabb.setFromCenterAndSize(v1.set(0, 0, 0), size);
+
+    // create a 4x4 transformation matrix
+
+    matrix.setFromMatrix3(this.rotation);
+    matrix.setPosition(this.center);
+
+    // transform ray to the local space of the OBB
+
+    inverse.copy(matrix).invert();
+    localRay.copy(ray).applyMatrix4(inverse);
+
+    // perform ray <-> AABB intersection test
+
+    if (localRay.intersectBox(aabb, result)) {
+      // transform the intersection point back to world space
+
+      return result.applyMatrix4(matrix);
+    } else {
+      return null;
+    }
+  }
+
+  /**
+  * Performs a ray/OBB intersection test. Returns either true or false if
+  * there is a intersection or not.
+  */
+  intersectsRay(ray) {
+    return this.intersectRay(ray, v1) !== null;
+  }
+  fromBox3(box3) {
+    box3.getCenter(this.center);
+    box3.getSize(this.halfSize).multiplyScalar(0.5);
+    this.rotation.identity();
+    return this;
+  }
+  equals(obb) {
+    return obb.center.equals(this.center) && obb.halfSize.equals(this.halfSize) && obb.rotation.equals(this.rotation);
+  }
+  applyMatrix4(matrix) {
+    const e = matrix.elements;
+    let sx = v1.set(e[0], e[1], e[2]).length();
+    const sy = v1.set(e[4], e[5], e[6]).length();
+    const sz = v1.set(e[8], e[9], e[10]).length();
+    const det = matrix.determinant();
+    if (det < 0) sx = -sx;
+    rotationMatrix.setFromMatrix4(matrix);
+    const invSX = 1 / sx;
+    const invSY = 1 / sy;
+    const invSZ = 1 / sz;
+    rotationMatrix.elements[0] *= invSX;
+    rotationMatrix.elements[1] *= invSX;
+    rotationMatrix.elements[2] *= invSX;
+    rotationMatrix.elements[3] *= invSY;
+    rotationMatrix.elements[4] *= invSY;
+    rotationMatrix.elements[5] *= invSY;
+    rotationMatrix.elements[6] *= invSZ;
+    rotationMatrix.elements[7] *= invSZ;
+    rotationMatrix.elements[8] *= invSZ;
+    this.rotation.multiply(rotationMatrix);
+    this.halfSize.x *= sx;
+    this.halfSize.y *= sy;
+    this.halfSize.z *= sz;
+    v1.setFromMatrixPosition(matrix);
+    this.center.add(v1);
+    return this;
+  }
+}
+const obb = new OBB();
 
 
 /***/ }),
