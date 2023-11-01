@@ -89,7 +89,7 @@ AFRAME.registerComponent('cursor-listener', {
 | fuseTimeout        | How long to wait (in milliseconds) before triggering a fuse-based click event.                                                                     | 1500                             |
 | mouseCursorStylesEnabled | Whether to show pointer cursor in `rayOrigin: mouse` mode when hovering over entity.                                                               | true                             |
 | rayOrigin          | Where the intersection ray is cast from (i.e. xrselect ,entity or mouse). `rayOrigin: mouse` is extremely useful for VR development on a mouse and keyboard. | entity
-| upEvents           | Array of additional events on the entity to *listen* to for triggering `mouseup` (e.g., `trackpadup` for daydream-controls).                       | []                               |
+| upEvents           | Array of additional events on the entity to *listen* to for triggering `mouseup`.                       | []                               |
 
 To further customize the cursor component, we configure the cursor's dependency
 component, [the raycaster component][raycaster].
@@ -143,9 +143,9 @@ For example:
 this.el.addEventListener('click', function (evt) {
   if (!evt.detail.mouseEvent || evt.detail.mouseEvent.button === 0) {
     console.log("left button clicked (or touch event / no information)");
-  
+
   } else if (evt.detail.mouseEvent.button === 2) {
-    console.log("right button clicked"); 
+    console.log("right button clicked");
   }
 });
 ```

@@ -75,7 +75,7 @@ clicking directly on the entity using a raycaster.
 We'll first go over gaze-based interactions. Gaze-based interactions rely on
 rotating our heads and looking at objects to interact with them. This type of
 interaction is for headsets without a controller. Even with a rotation-only
-controller (Daydream, GearVR, Oculus Go), the interaction is still similar. Since A-Frame
+controller (Oculus Go), the interaction is still similar. Since A-Frame
 provides mouse-drag controls by default, gaze-based can sort of be used on
 desktop to preview the interaction by dragging the camera rotation.
 
@@ -262,7 +262,7 @@ interact with objects with their hands.
 
 A-Frame provides components for controllers across the spectrum as supported by
 their respective WebVR browsers through the [Gamepad Web API][gamepad]. There
-are components for Vive, Oculus Touch, Daydream, GearVR and Oculus Go controllers.
+are components for Vive, Oculus Touch, Meta Quest and Oculus Go controllers.
 
 To inspect the Gamepad object for poking around or to get the Gamepad ID, we
 can call `navigator.getGamepads()` in the browser console. This will return a
@@ -313,7 +313,7 @@ component by:
 The controller components following are only activated if they detect the
 controller is found and seen as connected in the Gamepad API.
 
-### Adding 3DoF Controllers (daydream-controls, gearvr-controls, oculus-go-controls)
+### Adding 3DoF Controllers (oculus-go-controls)
 
 [dof]: http://www.roadtovr.com/introduction-positional-tracking-degrees-freedom-dof/
 
@@ -325,28 +325,8 @@ degrees of freedom for VR][dof].
 
 The 3DoF controller components provide rotational tracking, a default model
 matching the real-life hardware, and events to abstract the button mappings.
-The controllers for Google Daydream, Samsung GearVR and Oculus Go have 3DoF, and both
+The controllers for Oculus Go have 3DoF, and both
 support only one controller for one hand.
-
-[daydreamcomponent]: ../components/daydream-controls.md
-
-To add a controller for Google Daydream, use the [daydream-controls
-component][daydreamcomponent]. Then try it out on Chrome for Android on a
-Daydream smartphone:
-
-```html
-<a-entity daydream-controls></a-entity>
-```
-
-[gearvrcomponent]: ../components/gearvr-controls.md
-
-To add a controller for Samsung GearVR, use the [gearvr-controls
-component][gearvrcomponent]. Then try it out on Oculus Carmel or Samsung
-Internet on a smartphone with GearVR:
-
-```html
-<a-entity gearvr-controls></a-entity>
-```
 
 [oculusgocomponent]: ../components/oculus-go-controls.md
 
@@ -431,7 +411,7 @@ To add the hand-controls component:
 ```
 
 Unfortunately, there is not yet a 3DoF controller component that abstracts well
-all the types of 3DoF controllers (i.e., Daydream, GearVR). We could create a
+all the types of 3DoF controllers (i.e., Oculus Go). We could create a
 custom controller that works with both controllers. It would be fairly easy to
 cover since 3DoF controllers do not offer much potential for interaction (i.e.,
 only rotational tracking with a touchpad).
@@ -453,8 +433,7 @@ to understand how to do a custom controller without having to do everything
 from scratch:
 
 - The tracked-controls component will provide pose and events
-- The vive-controls, oculus-touch-controls, daydream-controls, or
-  gearvr-controls components provide button mappings controller-specific events
+- The vive-controls, oculus-touch-controls... components provide button mappings and controller-specific events
 - Our custom controller component will build on all of the above, plus
   overriding the model, animations, visual feedback, states, etc.,
 
@@ -482,8 +461,6 @@ AFRAME.registerComponent('custom-controls', {
     // Build on top of controller components.
     el.setAttribute('vive-controls', controlConfiguration);
     el.setAttribute('oculus-touch-controls', controlConfiguration);
-    el.setAttribute('daydream-controls', controlConfiguration);
-    el.setAttribute('gearvr-controls', controlConfiguration);
     el.setAttribute('windows-motion-controls', controlConfiguration);
 
     // Set a model.
@@ -508,8 +485,6 @@ touched. To handle buttons, look for the event name in the respective
 controller component documentation pages at the event tables, then register
 event handlers how we want:
 
-- [daydream-controls events](../components/daydream-controls.md#events)
-- [gearvr-controls events](../components/gearvr-controls.md#events)
 - [hand-controls events](../components/hand-controls.md#events)
 - [oculus-touch-controls events](../components/oculus-touch-controls.md#events)
 - [vive-controls events](../components/vive-controls.md#events)

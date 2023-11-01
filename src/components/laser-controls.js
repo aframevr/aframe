@@ -16,7 +16,6 @@ registerComponent('laser-controls', {
     var controlsConfiguration = {hand: data.hand, model: data.model};
 
     // Set all controller models.
-    el.setAttribute('daydream-controls', controlsConfiguration);
     el.setAttribute('gearvr-controls', controlsConfiguration);
     el.setAttribute('hp-mixed-reality-controls', controlsConfiguration);
     el.setAttribute('magicleap-controls', controlsConfiguration);
@@ -75,15 +74,6 @@ registerComponent('laser-controls', {
   },
 
   config: {
-    'daydream-controls': {
-      cursor: {downEvents: ['trackpaddown', 'triggerdown'], upEvents: ['trackpadup', 'triggerup']}
-    },
-
-    'gearvr-controls': {
-      cursor: {downEvents: ['triggerdown'], upEvents: ['triggerup']},
-      raycaster: {origin: {x: 0, y: 0.0010, z: 0}}
-    },
-
     'generic-tracked-controller-controls': {
       cursor: {downEvents: ['triggerdown'], upEvents: ['triggerup']}
     },

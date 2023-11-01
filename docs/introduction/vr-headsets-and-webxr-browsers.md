@@ -44,8 +44,6 @@ are constrained to looking around and wiggling the controller.
 
 [HTC Vive]: https://www.vive.com/
 [Oculus headsets]: https://www.oculus.com/
-[Google Daydream]: https://vr.google.com/daydream/
-[Samsung GearVR]: http://www.samsung.com/global/galaxy/gear-vr/
 [Windows Mixed Reality]: https://developer.microsoft.com/en-us/windows/mixed-reality/
 [Vive Focus]: https://enterprise.vive.com/us/vivefocus/
 
@@ -53,13 +51,12 @@ are constrained to looking around and wiggling the controller.
 |-------------------------|------------|---------------------|--------------------|--------------------------------|
 | [HTC Vive]              | PC         | :white_check_mark:  | :white_check_mark: | :white_check_mark:             |
 | [Oculus Rift]           | PC         | :white_check_mark:  | :white_check_mark: | :white_check_mark:             |
-| [Google Daydream]       | Android    | :x:                 | :white_check_mark: | :x:                            |
-| [Samsung GearVR]        | Android    | :x:                 | :white_check_mark: | :x:                            |
 | [Windows Mixed Reality] | PC         | :white_check_mark:  | :white_check_mark: | :white_check_mark:             |
 | [Oculus Go]             | Standalone | :x:                 | :white_check_mark: | :x:                            |
 | [Vive Focus]            | Standalone | :x:                 | :white_check_mark: | :x:                            |
 | [Oculus Quest]            | Standalone | :white_check_mark:  | :white_check_mark: | :white_check_mark:             |
 | [Oculus Quest 2]            | Standalone | :white_check_mark:  | :white_check_mark: | :white_check_mark:             |
+| [Oculus Quest 3]            | Standalone | :white_check_mark:  | :white_check_mark: | :white_check_mark:             |
 
 ## What is WebXR?
 
@@ -119,9 +116,10 @@ supports include:
 - HTC Vive
 - Oculus Rift
 - Oculus Quest
+- Oculus Quest 2
+- Oculus Quest 3
 - Oculus Go
-- Google Daydream
-- Samsung GearVR
+- Valve Index
 - Vive Focus
 
 For general hardware recommendations (not requirements):

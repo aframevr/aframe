@@ -67,9 +67,9 @@ be an easy yet powerful way to develop VR content. As an [independent open
 source project][github], A-Frame has grown to be one of the [largest VR
 communities][community].
 
-A-Frame supports most VR headsets such as Vive, Rift, Windows Mixed Reality,
-Daydream, GearVR, Cardboard, Oculus Go, and can even be used for augmented
-reality.  Although A-Frame supports the whole spectrum, A-Frame aims to define
+A-Frame supports most VR headsets such as Vive, Rift, Windows Mixed Reality, Cardboard,
+Oculus Go, and can even be used for augmented reality.
+Although A-Frame supports the whole spectrum, A-Frame aims to define
 fully immersive interactive VR experiences that go beyond basic 360&deg;
 content, making full use of positional tracking and controllers.
 
@@ -111,7 +111,7 @@ developers have unlimited access to JavaScript, DOM APIs, three.js, WebVR, and
 WebGL.
 
 :globe_with_meridians: **Cross-Platform VR**: Build VR applications for Vive,
-Rift, Windows Mixed Reality, Daydream, GearVR, and Cardboard with support for
+Rift, Meta Quest, Windows Mixed Reality, and Cardboard with support for
 all respective controllers. Don't have a headset or controllers? No problem!
 A-Frame still works on standard desktop and smartphones.
 

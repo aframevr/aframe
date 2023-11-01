@@ -10,18 +10,16 @@ examples: []
 [handcontrols]: ./hand-controls.md
 [oculustouchcontrols]: ./oculus-touch-controls.md
 [vivecontrols]: ./vive-controls.md
-[daydreamcontrols]: ./daydream-controls.md
 [windowsmotioncontrols]: ./windows-motion-controls.md
 
 The tracked-controls component interfaces with tracked controllers.
 tracked-controls uses the Gamepad API to handle tracked controllers, and is
 abstracted by the [hand-controls component][handcontrols] as well as the
 [vive-controls][vivecontrols], [oculus-touch-controls][oculustouchcontrols],
-[windows-motion-controls][windowsmotioncontrols], and [daydream-controls][daydreamcontrols]
-components. This component elects the appropriate controller, applies pose to
-the entity, observes buttons state and emits appropriate events.  For non-6DOF controllers
-such as [daydream-controls][daydreamcontrols], a primitive arm model is used to emulate
-positional data.
+[windows-motion-controls][windowsmotioncontrols] components.
+This component elects the appropriate controller, applies pose to
+the entity, observes buttons state and emits appropriate events.  For non-6DOF controllers,
+a primitive arm model is used to emulate positional data.
 
 tracked-controls sets two components that handles different Web API versions for VR:
 

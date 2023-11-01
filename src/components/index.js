@@ -1,8 +1,7 @@
 require('./animation');
+require('./anchored');
 require('./camera');
 require('./cursor');
-require('./daydream-controls');
-require('./gearvr-controls');
 require('./geometry');
 require('./generic-tracked-controller-controls');
 require('./gltf-model');
