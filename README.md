@@ -58,26 +58,25 @@
 
 ## Features
 
-:eyeglasses: **Virtual Reality Made Simple**: A-Frame handles the 3D and WebVR
-boilerplate required to get running across platforms including mobile, desktop, Vive, and Rift just by dropping in `<a-scene>`.
+:eyeglasses: **Virtual Reality Made Simple**: A-Frame handles the 3D and WebXR
+boilerplate required to get running across platforms including mobile, desktop, and all headsets (compatible with a WebXR capable browser) just by dropping in `<a-scene>`.
 
 :heart: **Declarative HTML**: HTML is easy to read and copy-and-paste. Since
 A-Frame can be used from HTML, A-Frame is accessible to everyone: web
-developers, VR enthusiasts, educators, artists, makers, kids.
+developers, VR and AR enthusiasts, educators, artists, makers, kids.
 
 :electric_plug: **Entity-Component Architecture**: A-Frame is a powerful
 framework on top of three.js, providing a declarative, composable, reusable
 entity-component structure for three.js. While A-Frame can be used from HTML,
-developers have unlimited access to JavaScript, DOM APIs, three.js, WebVR, and
+developers have unlimited access to JavaScript, DOM APIs, three.js, WebXR, and
 WebGL.
 
 :zap: **Performance**: A-Frame is a thin framework on top of three.js.
 Although A-Frame uses the DOM, A-Frame does not touch the browser layout
 engine. Performance is a top priority, being battle-tested on highly
-interactive WebVR experiences.
+interactive WebXR experiences.
 
-:globe_with_meridians: **Cross-Platform**: Build VR applications for Vive,
-Rift, Daydream, GearVR, and Cardboard. Don't have a headset or controllers? No
+:globe_with_meridians: **Cross-Platform**: Build VR and AR applications for any headset compatible with a WebXR capable browser. Don't have a headset or controllers? No
 problem! A-Frame still works on standard desktop and smartphones.
 
 :mag: **Visual Inspector**: A-Frame provides a built-in visual 3D inspector
@@ -94,7 +93,7 @@ mountains, speech recognition, or teleportation!
 
 ### Example
 
-Build VR scenes in the browser with just a few lines of HTML! To start playing
+Build VR and AR scenes in the browser with just a few lines of HTML! To start playing
 and publishing now, remix the starter example on:
 
 [![Remix](https://cloud.githubusercontent.com/assets/674727/24572421/688f7fc0-162d-11e7-8a35-b02bc050c043.jpg)](https://glitch.com/~aframe) [![Fork](https://user-images.githubusercontent.com/39342/52831020-d42dcb80-3087-11e9-833f-2d6191c69eb9.png)](https://repl.it/@dmarcos/aframe)
