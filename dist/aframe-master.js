@@ -13934,7 +13934,7 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
     if (skinnedMesh) {
       this.skinnedMesh.material.color.set(this.data.modelColor);
     }
-    for (var i = 0; i < jointEls.lenght; i++) {
+    for (var i = 0; i < jointEls.length; i++) {
       jointEls[i].setAttribute('material', 'color', this.data.modelColor);
     }
   },
@@ -30322,7 +30322,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.4.2 (Date 2023-11-01, Commit #77c291ec)');
+console.log('A-Frame Version: 1.4.2 (Date 2023-11-02, Commit #25159b1b)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
