@@ -108,7 +108,7 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
       this.skinnedMesh.material.color.set(this.data.modelColor);
     }
 
-    for (var i = 0; i < jointEls.lenght; i++) {
+    for (var i = 0; i < jointEls.length; i++) {
       jointEls[i].setAttribute('material', 'color', this.data.modelColor);
     }
   },
