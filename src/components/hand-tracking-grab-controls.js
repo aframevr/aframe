@@ -136,7 +136,7 @@ registerComponent('hand-tracking-grab-controls', {
     grabbedEl.object3D.matrixWorldAutoUpdate = false;
   },
 
-  tock: function () {
+  tick: function () {
     var auxMatrix = this.auxMatrix;
     var auxVector = this.auxVector;
     var auxQuaternion = this.auxQuaternion;
