@@ -11,7 +11,7 @@ examples: []
 
 Collision system using Oriented Bounding Boxes based on [`THREE.OBB`][obb].
 
-It checks collision accross all entities with the abb-collider component. It emits events when bounding boxes start and stop intersecting.
+It checks collision accross all entities with the obb-collider component. It emits events when bounding boxes start and stop intersecting.
 
 ## Example
 
