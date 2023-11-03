@@ -270,6 +270,12 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     var controllerId;
 
     if (!data.model) { return; }
+    // If model has been already loaded
+    if (this.controllerObject3D) {
+      this.el.setObject3D('mesh', this.controllerObject3D);
+      return;
+    }
+
     // Set the controller display model based on the data passed in.
     this.displayModel = CONTROLLER_PROPERTIES[data.controllerType] || CONTROLLER_PROPERTIES[CONTROLLER_DEFAULT];
     // If the developer is asking for auto-detection, use the retrieved displayName to identify the specific unit.

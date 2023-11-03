@@ -477,6 +477,7 @@ module.exports.Component = registerComponent('windows-motion-controls', {
 
   setModelVisibility: function (visible) {
     var model = this.el.getObject3D('mesh');
+    if (!this.controllerPresent) { return; }
     visible = visible !== undefined ? visible : this.modelVisible;
     this.modelVisible = visible;
     if (!model) { return; }

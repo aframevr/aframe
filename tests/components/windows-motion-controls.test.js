@@ -514,6 +514,7 @@ suite('windows-motion-controls', function () {
       var component = el.components['windows-motion-controls'];
       var model = new THREE.Object3D();
       model.visible = false;
+      component.controllerPresent = true;
       el.setObject3D('mesh', model);
       component.setModelVisibility(true);
       assert.ok(model.visible);
@@ -523,6 +524,7 @@ suite('windows-motion-controls', function () {
       var component = el.components['windows-motion-controls'];
       var model = new THREE.Object3D();
       model.visible = true;
+      component.controllerPresent = true;
       el.setObject3D('mesh', model);
       component.setModelVisibility(false);
       assert.notOk(model.visible);

@@ -1,4 +1,4 @@
-/* global THREE */
+/* global THREE, XRHand */
 var registerComponent = require('../core/component').registerComponent;
 var bind = require('../utils/bind');
 
@@ -184,7 +184,6 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
       var jointPoses = this.jointPoses;
       var controller = this.el.components['tracked-controls'] && this.el.components['tracked-controls'].controller;
       var i = 0;
-
       if (!controller || !this.mesh) { return; }
       this.mesh.visible = false;
       if (!this.hasPoses) { return; }
@@ -263,10 +262,18 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
     var el = this.el;
     var data = this.data;
     el.setAttribute('tracked-controls', {
+      id: '',
       hand: data.hand,
       iterateControllerProfiles: true,
       handTrackingEnabled: true
     });
+
+    if (this.mesh) {
+      if (this.mesh !== el.getObject3D('mesh')) {
+        el.setObject3D('mesh', this.mesh);
+      }
+      return;
+    }
     this.initDefaultModel();
   },
 
@@ -279,22 +286,23 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
   },
 
   onControllersUpdate: function () {
+    var el = this.el;
     var controller;
     this.checkIfControllerPresent();
-    controller = this.el.components['tracked-controls'] && this.el.components['tracked-controls'].controller;
-    if (!this.el.getObject3D('mesh')) { return; }
-    if (!controller || !controller.hand || !controller.hand[0]) {
-      this.el.getObject3D('mesh').visible = false;
+    controller = el.components['tracked-controls'] && el.components['tracked-controls'].controller;
+    if (!this.mesh) { return; }
+    if (controller && controller.hand && (controller.hand instanceof XRHand)) {
+      el.setObject3D('mesh', this.mesh);
     }
   },
 
   initDefaultModel: function () {
-    if (this.el.getObject3D('mesh')) { return; }
-    if (this.data.modelStyle === 'dots') {
+    var data = this.data;
+    if (data.modelStyle === 'dots') {
       this.initDotsModel();
     }
 
-    if (this.data.modelStyle === 'mesh') {
+    if (data.modelStyle === 'mesh') {
       this.initMeshHandModel();
     }
   },

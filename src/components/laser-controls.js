@@ -16,7 +16,6 @@ registerComponent('laser-controls', {
     var controlsConfiguration = {hand: data.hand, model: data.model};
 
     // Set all controller models.
-    el.setAttribute('gearvr-controls', controlsConfiguration);
     el.setAttribute('hp-mixed-reality-controls', controlsConfiguration);
     el.setAttribute('magicleap-controls', controlsConfiguration);
     el.setAttribute('oculus-go-controls', controlsConfiguration);
@@ -68,7 +67,9 @@ registerComponent('laser-controls', {
       }, controllerConfig.cursor));
     }
 
-    function hideRay () {
+    function hideRay (evt) {
+      var controllerConfig = config[evt.detail.name];
+      if (!controllerConfig) { return; }
       el.setAttribute('raycaster', 'showLine', false);
     }
   },
