@@ -13068,7 +13068,7 @@ module.exports.Component = registerComponent('generic-tracked-controller-control
     this.bindMethods();
 
     // generic-tracked-controller-controls has the lowest precedence.
-    // We must diable this component if there are more specialized controls components.
+    // Disable this component if there are more specialized controls components.
     this.el.addEventListener('controllerconnected', function (evt) {
       if (evt.detail.name === self.name) {
         return;
@@ -13145,6 +13145,9 @@ module.exports.Component = registerComponent('generic-tracked-controller-control
     this.el.sceneEl.removeEventListener('controllersupdated', this.onControllersUpdate, false);
   },
   onControllersUpdate: function () {
+    if (!this.wasControllerConnected) {
+      return;
+    }
     this.checkIfControllerPresent();
   },
   onButtonChanged: function (evt) {
@@ -13166,6 +13169,22 @@ module.exports.Component = registerComponent('generic-tracked-controller-control
       color: this.data.color
     });
     this.el.appendChild(modelEl);
+    this.el.emit('controllermodelready', {
+      name: 'generic-tracked-controller-controls',
+      model: this.modelEl,
+      rayOrigin: {
+        origin: {
+          x: 0,
+          y: 0,
+          z: -0.01
+        },
+        direction: {
+          x: 0,
+          y: 0,
+          z: -1
+        }
+      }
+    });
   }
 });
 
@@ -13853,7 +13872,7 @@ function isViveController(trackedControls) {
   \**************************************************/
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-/* global THREE */
+/* global THREE, XRHand */
 var registerComponent = (__webpack_require__(/*! ../core/component */ "./src/core/component.js").registerComponent);
 var bind = __webpack_require__(/*! ../utils/bind */ "./src/utils/bind.js");
 var trackedControlsUtils = __webpack_require__(/*! ../utils/tracked-controls */ "./src/utils/tracked-controls.js");
@@ -14086,10 +14105,17 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
     var el = this.el;
     var data = this.data;
     el.setAttribute('tracked-controls', {
+      id: '',
       hand: data.hand,
       iterateControllerProfiles: true,
       handTrackingEnabled: true
     });
+    if (this.mesh) {
+      if (this.mesh !== el.getObject3D('mesh')) {
+        el.setObject3D('mesh', this.mesh);
+      }
+      return;
+    }
     this.initDefaultModel();
   },
   addControllersUpdateListener: function () {
@@ -14099,24 +14125,23 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
     this.el.sceneEl.removeEventListener('controllersupdated', this.onControllersUpdate, false);
   },
   onControllersUpdate: function () {
+    var el = this.el;
     var controller;
     this.checkIfControllerPresent();
-    controller = this.el.components['tracked-controls'] && this.el.components['tracked-controls'].controller;
-    if (!this.el.getObject3D('mesh')) {
+    controller = el.components['tracked-controls'] && el.components['tracked-controls'].controller;
+    if (!this.mesh) {
       return;
     }
-    if (!controller || !controller.hand || !controller.hand[0]) {
-      this.el.getObject3D('mesh').visible = false;
+    if (controller && controller.hand && controller.hand instanceof XRHand) {
+      el.setObject3D('mesh', this.mesh);
     }
   },
   initDefaultModel: function () {
-    if (this.el.getObject3D('mesh')) {
-      return;
-    }
-    if (this.data.modelStyle === 'dots') {
+    var data = this.data;
+    if (data.modelStyle === 'dots') {
       this.initDotsModel();
     }
-    if (this.data.modelStyle === 'mesh') {
+    if (data.modelStyle === 'mesh') {
       this.initMeshHandModel();
     }
   },
@@ -14688,7 +14713,6 @@ registerComponent('laser-controls', {
     };
 
     // Set all controller models.
-    el.setAttribute('gearvr-controls', controlsConfiguration);
     el.setAttribute('hp-mixed-reality-controls', controlsConfiguration);
     el.setAttribute('magicleap-controls', controlsConfiguration);
     el.setAttribute('oculus-go-controls', controlsConfiguration);
@@ -14740,7 +14764,11 @@ registerComponent('laser-controls', {
         fuse: false
       }, controllerConfig.cursor));
     }
-    function hideRay() {
+    function hideRay(evt) {
+      var controllerConfig = config[evt.detail.name];
+      if (!controllerConfig) {
+        return;
+      }
       el.setAttribute('raycaster', 'showLine', false);
     }
   },
@@ -18106,6 +18134,12 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     if (!data.model) {
       return;
     }
+    // If model has been already loaded
+    if (this.controllerObject3D) {
+      this.el.setObject3D('mesh', this.controllerObject3D);
+      return;
+    }
+
     // Set the controller display model based on the data passed in.
     this.displayModel = CONTROLLER_PROPERTIES[data.controllerType] || CONTROLLER_PROPERTIES[CONTROLLER_DEFAULT];
     // If the developer is asking for auto-detection, use the retrieved displayName to identify the specific unit.
@@ -24205,6 +24239,9 @@ module.exports.Component = registerComponent('windows-motion-controls', {
   },
   setModelVisibility: function (visible) {
     var model = this.el.getObject3D('mesh');
+    if (!this.controllerPresent) {
+      return;
+    }
     visible = visible !== undefined ? visible : this.modelVisible;
     this.modelVisible = visible;
     if (!model) {
@@ -30322,7 +30359,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.4.2 (Date 2023-11-02, Commit #25159b1b)');
+console.log('A-Frame Version: 1.4.2 (Date 2023-11-03, Commit #37c6b2e0)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
