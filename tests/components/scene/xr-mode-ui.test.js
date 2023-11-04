@@ -2,7 +2,7 @@
 var entityFactory = require('../../helpers').entityFactory;
 var utils = require('index').utils;
 
-var UI_CLASSES = ['.a-orientation-modal', '.a-enter-xr-button'];
+var UI_CLASSES = ['.a-orientation-modal', '.a-enter-vr-button'];
 
 suite('xr-mode-ui', function () {
   setup(function (done) {
@@ -57,7 +57,7 @@ suite('xr-mode-ui', function () {
     scene.exitVR();
 
     process.nextTick(function () {
-      assert.equal(scene.querySelector('.a-enter-xr-button').className.indexOf('a-hidden'),
+      assert.equal(scene.querySelector('.a-enter-vr-button').className.indexOf('a-hidden'),
                    -1);
       done();
     });
