@@ -19,7 +19,6 @@ Cardboard), and 6 DoF (Vive, Oculus Touch). If desired, we can get a consistent 
 across all VR platforms with a single line of HTML.
 
 [oculus-touch-controls]: ./oculus-touch-controls.md
-[tracked-controls]: ./tracked-controls.md
 [vive-controls]: ./vive-controls.md
 [windows-motion-controls]: ./windows-motion-controls.md
 
@@ -29,7 +28,6 @@ the hood, laser-controls sets all of the tracked controller components:
 
 - [vive-controls]
 - [oculus-touch-controls]
-- [gearvr-controls]
 - [windows-motion-controls]
 
 [cursor]: ./cursor.md
