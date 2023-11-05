@@ -1,7 +1,9 @@
 /* global assert, suite, test, setup, teardown, THREE */
-var {sortFrontToBack,
+var {
+sortFrontToBack,
      sortRenderOrderOnly,
-     sortBackToFront} = require('systems/renderer');
+     sortBackToFront
+} = require('systems/renderer');
 
 suite('renderer', function () {
   function createScene () {

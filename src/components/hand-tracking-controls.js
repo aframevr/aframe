@@ -183,7 +183,6 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
     return function () {
       var jointPoses = this.jointPoses;
       var controller = this.el.components['tracked-controls'] && this.el.components['tracked-controls'].controller;
-      var i = 0;
       if (!controller || !this.mesh) { return; }
       this.mesh.visible = false;
       if (!this.hasPoses) { return; }
