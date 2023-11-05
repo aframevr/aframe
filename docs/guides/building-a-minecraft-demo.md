@@ -382,26 +382,28 @@ teleport to the end of the arc. Before, we wrote our own A-Frame components.
 But we can also use open source components already made from the community
 and just use them straight from HTML!
 
-[blink-controls]: https://github.com/fernandojsg/aframe-teleport-controls/
-For teleportation, there's a component called [blink-controls][blink-controls].
-Following the README, we add the component via a `<script>` tag and just set
-the `blink-controls` component on the controller on the entity:
+Even though we haven't explicity defined one, our scene has an implicit camera 
+component from which the user views the scene. Since teleporting is going to be
+moving this camera along with the player, we'll need to make it explicit and 
+part of the player:
 
 ```html
-<script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/aframe-blink-controls/dist/aframe-blink-controls.min.js"></script>
-
-<!-- ... -->
-
-<a-entity id="teleHand" hand-controls="hand: left" teleport-controls></a-entity>
-<a-entity id="blockHand" hand-controls="hand: right"></a-entity>
+<a-entity id="player">
+  <a-entity id="teleHand" hand-controls="hand: left"></a-entity>
+  <a-entity id="blockHand" hand-controls="hand: right"></a-entity>
+  <a-camera></a-camera>
+</a-entity>
 ```
 
-Then we'll configure the `blink-controls` component to use an arc `type` of
-teleportation. By default, `blink-controls` will only teleport on the
-ground, but we can specify with `collisionEntities` to teleport on the blocks
-*and* the ground using selectors. These properties are part of the API that the
-`blink-controls` component was created with:
+[blink-controls]: https://github.com/jure/aframe-blink-controls
+For teleportation, there's a component called [blink-controls][blink-controls].
+Following the README, we add the component via a `<script>` tag and just set
+the `blink-controls` component on the controller on the entity.
+
+By default, `blink-controls` will only teleport on the ground, but we can 
+specify with `collisionEntities` to teleport on the blocks *and* the ground 
+using selectors. This property is part of the API that the`blink-controls` 
+component was created with:
 
 ```html
 <a-entity id="teleHand" hand-controls="hand: left" blink-controls="collisionEntities: [mixin='voxel'], #ground"></a-entity>
@@ -425,15 +427,8 @@ that attaches the clicking laser to VR tracked controllers.  Like the
 `laser-controls` component. This time to the right hand:
 
 ```html
-<script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/aframe-blink-controls/dist/aframe-blink-controls.min.js"></script>
-
-<!-- ... -->
-
-<a-entity id="teleHand" hand-controls="hand: left" teleport-controls="type: parabolic; collisionEntities: [mixin='voxel'], #ground"></a-entity>
 <a-entity id="blockHand" hand-controls="hand: right" laser-controls></a-entity>
 ```
-
 
 Now when we pull the trigger button on the tracked controllers,
 `laser-controls` will emit a `click` event on both the controller and the
