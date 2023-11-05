@@ -35,11 +35,13 @@
       <a-entity id="blockHand"
                 hand-controls="hand: right"
                 laser-controls
+                raycaster="near: 0.5"
                 intersection-spawn="event: click; mixin: voxel"></a-entity>
 
       <!-- Camera -->
       <a-camera>
-        <a-cursor intersection-spawn="event: click; mixin: voxel"></a-cursor>
+        <!-- Uncomment the line below to place blocks on desktop or mobile -->
+        <!-- <a-cursor intersection-spawn="event: click; mixin: voxel"></a-cursor> -->
       </a-camera>
     </a-entity>
   </a-scene>
