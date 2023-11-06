@@ -376,18 +376,20 @@ and placing blocks.
 
 ### Adding Teleportation to the Left Hand
 
-We'll plug in teleportation capabilities to the left hand such that we hold a
-button to show an arc coming out of the controller, and let go of the button to
-teleport to the end of the arc. Before, we wrote our own A-Frame components.
-But we can also use open source components already made from the community
-and just use them straight from HTML!
+We'll plug in teleportation capabilities to the left hand such that we push a
+thumbstick to show an arc coming out of the controller, and let go of the
+thumbstick to teleport to the end of the arc. Before, we wrote our own A-Frame
+components. But we can also use open source components already made from the
+community and just use them straight from HTML!
 
-Even though we haven't explicity defined one, our scene has an implicit camera 
-component from which the user views the scene. Since teleporting is going to be
-moving this camera along with the player, we'll need to make it explicit and 
-part of the player:
-
+To enable this, let's first define a `player` entity that wraps the controllers 
+and the camera:
+ 
 ```html
+<script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+
+<!-- ... -->
+
 <a-entity id="player">
   <a-entity id="teleHand" hand-controls="hand: left"></a-entity>
   <a-entity id="blockHand" hand-controls="hand: right"></a-entity>
