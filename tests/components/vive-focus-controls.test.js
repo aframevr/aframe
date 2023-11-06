@@ -153,7 +153,7 @@ suite('vive-focus-controls', function () {
   });
 
   suite('buttonchanged', function () {
-    [ { button: 'trackpad', id: 0 },
+    [{ button: 'trackpad', id: 0 },
       { button: 'trigger', id: 1 }
     ].forEach(function (buttonDescription) {
       test('if we get buttonchanged for button ' + buttonDescription.id + ', emit ' + buttonDescription.button + 'changed', function (done) {

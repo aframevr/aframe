@@ -128,7 +128,7 @@ module.exports.Component = registerComponent('pool', {
     return el;
   },
 
-  updateRaycasters () {
+  updateRaycasters: function () {
     var raycasterEls = document.querySelectorAll('[raycaster]');
 
     raycasterEls.forEach(function (el) {

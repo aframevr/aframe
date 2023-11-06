@@ -143,7 +143,7 @@ suite('vive-controls', function () {
 
   suite('buttonchanged', function () {
     // Generate 3 tests for each button. Verify that it fires up/down/changed for all remapped buttons.
-    [ { button: 'trackpad', id: 0 },
+    [{ button: 'trackpad', id: 0 },
       { button: 'trigger', id: 1 },
       { button: 'grip', id: 2 },
       { button: 'menu', id: 3 },

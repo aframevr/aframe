@@ -51,7 +51,7 @@ pages.forEach(function checkPage (pagePath) {
   }
 
   // Unused defined links: `[page]: ../page.md -> [*][page]`
-  let referenceRegex = new RegExp(`\\[\(\.\*\)\?\\]: \.\*`, 'g');
+  let referenceRegex = new RegExp('\\[\(\.\*\)\?\\]: \.\*', 'g');
   match = referenceRegex.exec(content);
   while (match !== null) {
     referencingRegex = new RegExp(`\\[${match[1]}\\]`, 'g');

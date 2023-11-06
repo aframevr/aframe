@@ -85,7 +85,7 @@ module.exports.System = registerSystem('renderer', {
     var data = this.data;
     var rates = xrSession.supportedFrameRates;
     if (rates && xrSession.updateTargetFrameRate) {
-      let targetRate;
+      var targetRate;
       if (rates.includes(90)) {
         targetRate = data.highRefreshRate ? 90 : 72;
       } else {

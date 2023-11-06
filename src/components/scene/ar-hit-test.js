@@ -436,8 +436,8 @@ module.exports.Component = register('ar-hit-test', {
     tempImageData = this.context.getImageData(0, 0, 512, 512);
     for (var i = 0; i < 512 * 512; i++) {
       // if it's a little bit transparent but not opaque make it middle transparent
-      if (tempImageData.data[ i * 4 + 3 ] !== 0 && tempImageData.data[ i * 4 + 3 ] !== 255) {
-        tempImageData.data[ i * 4 + 3 ] = 128;
+      if (tempImageData.data[i * 4 + 3] !== 0 && tempImageData.data[i * 4 + 3] !== 255) {
+        tempImageData.data[i * 4 + 3] = 128;
       }
     }
     this.context.putImageData(tempImageData, 0, 0);

@@ -27,4 +27,3 @@ suite('tracked-controls', function () {
     assert.notOk(el.components['tracked-controls-webxr']);
   });
 });
-

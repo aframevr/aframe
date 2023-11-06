@@ -12,8 +12,8 @@
     "docs": "markserv --dir docs --port 9001",
     "preghpages": "node ./scripts/preghpages.js",
     "ghpages": "ghpages -p gh-pages/",
-    "lint": "semistandard -v | snazzy",
-    "lint:fix": "semistandard --fix",
+    "lint": "standardx -v | snazzy",
+    "lint:fix": "standardx --fix",
     "precommit": "npm run lint",
     "prepush": "node scripts/testOnlyCheck.js",
     "prerelease": "node scripts/release.js 1.4.1 1.4.2",
@@ -35,11 +35,11 @@
     "vendor/**/*"
   ],
   "dependencies": {
+    "@ungap/custom-elements": "^1.1.0",
     "buffer": "^6.0.3",
     "custom-event-polyfill": "^1.0.6",
     "debug": "ngokevin/debug#noTimestamp",
     "deep-assign": "^2.0.0",
-    "@ungap/custom-elements": "^1.1.0",
     "load-bmfont": "^1.2.3",
     "object-assign": "^4.0.1",
     "present": "0.0.6",
@@ -58,6 +58,9 @@
     "chalk": "^1.1.3",
     "cross-env": "^7.0.3",
     "css-loader": "^6.7.1",
+    "eslint": "^8.45.0",
+    "eslint-config-semistandard": "^17.0.0",
+    "eslint-config-standard-jsx": "^11.0.0",
     "ghpages": "0.0.8",
     "git-rev": "^0.2.1",
     "glob": "^8.0.3",
@@ -76,12 +79,12 @@
     "markserv": "github:sukima/markserv#feature/fix-broken-websoketio-link",
     "mocha": "^10.0.0",
     "replace-in-file": "^2.5.3",
-    "semistandard": "^9.0.0",
     "shelljs": "^0.7.7",
     "shx": "^0.2.2",
     "sinon": "<12.0.0",
     "sinon-chai": "^3.7.0",
     "snazzy": "^5.0.0",
+    "standardx": "^7.0.0",
     "style-loader": "^3.3.1",
     "too-wordy": "ngokevin/too-wordy",
     "webpack": "^5.73.0",
@@ -91,7 +94,7 @@
     "write-good": "^1.0.8"
   },
   "link": true,
-  "semistandard": {
+  "standardx": {
     "ignore": [
       "build/**",
       "dist/**",

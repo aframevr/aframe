@@ -30,4 +30,3 @@ module.exports.Shader = registerShader('ios10hls', {
     '}'
   ].join('\n')
 });
-

@@ -183,11 +183,12 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
     return function () {
       var jointPoses = this.jointPoses;
       var controller = this.el.components['tracked-controls'] && this.el.components['tracked-controls'].controller;
-      var i = 0;
       if (!controller || !this.mesh) { return; }
       this.mesh.visible = false;
       if (!this.hasPoses) { return; }
-      for (var inputjoint of controller.hand.values()) {
+      var inputjoints = controller.hand.values();
+      for (var i = 0; i < inputjoints.length; i++) {
+        var inputjoint = inputjoints[i];
         var bone = this.getBone(inputjoint.jointName);
         if (bone != null) {
           this.mesh.visible = true;
@@ -341,4 +342,3 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
     this.el.setObject3D('mesh', mesh);
   }
 });
-

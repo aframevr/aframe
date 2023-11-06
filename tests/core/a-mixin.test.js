@@ -218,4 +218,3 @@ suite('a-mixin (detached)', function () {
     });
   });
 });
-
