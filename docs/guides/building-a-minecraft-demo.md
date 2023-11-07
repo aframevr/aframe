@@ -400,7 +400,20 @@ and the camera:
 [blink-controls]: https://github.com/jure/aframe-blink-controls
 For teleportation, there's a component called [blink-controls][blink-controls].
 Following the README, we add the component via a `<script>` tag and just set
-the `blink-controls` component on the controller on the entity.
+the `blink-controls` component on the controller on the entity:
+
+```html
+<script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/aframe-blink-controls/dist/aframe-blink-controls.min.js"></script>
+
+<!-- ... -->
+
+<a-entity id="player">
+  <a-entity id="teleHand" hand-controls="hand: left"></a-entity>
+  <a-entity id="blockHand" hand-controls="hand: right"></a-entity>
+  <a-camera></a-camera>
+</a-entity>
+```
 
 By default, `blink-controls` will only teleport on the ground, but we can 
 specify with `collisionEntities` to teleport on the blocks *and* the ground 
@@ -429,8 +442,15 @@ that attaches the clicking laser to VR tracked controllers.  Like the
 `laser-controls` component. This time to the right hand:
 
 ```html
+<script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/aframe-blink-controls/dist/aframe-blink-controls.min.js"></script>
+
+<!-- ... -->
+
+<a-entity id="teleHand" hand-controls="hand: left" blink-controls="collisionEntities: [mixin='voxel'], #ground"></a-entity>
 <a-entity id="blockHand" hand-controls="hand: right" laser-controls></a-entity>
 ```
+
 
 Now when we pull the trigger button on the tracked controllers,
 `laser-controls` will emit a `click` event on both the controller and the
