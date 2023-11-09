@@ -76,9 +76,13 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
 
   init: function () {
     var sceneEl = this.el.sceneEl;
-    var webXROptionalAttributes = sceneEl.getAttribute('webxr').optionalFeatures;
-    webXROptionalAttributes.push('hand-tracking');
-    sceneEl.setAttribute('webxr', {optionalFeatures: webXROptionalAttributes});
+    var webxrData = sceneEl.getAttribute('webxr');
+    var optionalFeaturesArray = webxrData.optionalFeatures;
+    if (optionalFeaturesArray.indexOf('hand-tracking') === -1) {
+      optionalFeaturesArray.push('hand-tracking');
+      sceneEl.setAttribute('webxr', webxrData);
+    }
+
     this.onModelLoaded = this.onModelLoaded.bind(this);
     this.jointEls = [];
     this.controllerPresent = false;

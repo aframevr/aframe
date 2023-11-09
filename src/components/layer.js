@@ -21,9 +21,13 @@ module.exports.Component = registerComponent('layer', {
     this.bindMethods();
     this.needsRedraw = false;
     this.frameBuffer = gl.createFramebuffer();
-    var requiredFeatures = this.el.sceneEl.getAttribute('webxr').requiredFeatures;
-    requiredFeatures.push('layers');
-    this.el.sceneEl.getAttribute('webxr', 'requiredFeatures', requiredFeatures);
+
+    var webxrData = this.el.sceneEl.getAttribute('webxr');
+    var requiredFeaturesArray = webxrData.optionalFeatures;
+    if (requiredFeaturesArray.indexOf('layers') === -1) {
+      requiredFeaturesArray.push('laters');
+      this.el.sceneEl.setAttribute('webxr', webxrData);
+    }
     this.el.sceneEl.addEventListener('enter-vr', this.onEnterVR);
     this.el.sceneEl.addEventListener('exit-vr', this.onExitVR);
   },
