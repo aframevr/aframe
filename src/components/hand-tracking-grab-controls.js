@@ -46,6 +46,9 @@ registerComponent('hand-tracking-grab-controls', {
 
     this.onPinchEnded = this.onPinchEnded.bind(this);
     this.el.addEventListener('pinchended', this.onPinchEnded);
+
+    this.onPinchMoved = this.onPinchMoved.bind(this);
+    this.el.addEventListener('pinchmoved', this.onPinchMoved);
   },
 
   transferEntityOwnership: function () {
@@ -54,7 +57,7 @@ registerComponent('hand-tracking-grab-controls', {
     for (var i = 0; i < grabbingEls.length; ++i) {
       grabbingElComponent = grabbingEls[i].components['hand-tracking-grab-controls'];
       if (grabbingElComponent === this) { continue; }
-      if (this.collidedEl && this.collidedEl === grabbingElComponent.grabbedEl) {
+      if (this.grabbedEl && this.grabbedEl === grabbingElComponent.grabbedEl) {
         grabbingElComponent.releaseGrabbedEntity();
       }
     }
@@ -73,23 +76,29 @@ registerComponent('hand-tracking-grab-controls', {
   },
 
   onCollisionEnded: function () {
-    if (this.grabbedEl) { return; }
     this.collidedEl = undefined;
+    if (this.grabbedEl) { return; }
     this.grabbingObject3D = undefined;
     if (this.data.hoverEnabled) {
       this.el.setAttribute('hand-tracking-controls', 'modelColor', this.data.color);
     }
   },
 
-  onPinchStarted: function () {
+  onPinchStarted: function (evt) {
     if (!this.collidedEl) { return; }
-    this.transferEntityOwnership();
+    this.pinchPosition = evt.detail.position;
+    this.wristRotation = evt.detail.wristRotation;
     this.grabbedEl = this.collidedEl;
+    this.transferEntityOwnership();
     this.grab();
   },
 
   onPinchEnded: function () {
     this.releaseGrabbedEntity();
+  },
+
+  onPinchMoved: function (evt) {
+    this.wristRotation = evt.detail.wristRotation;
   },
 
   releaseGrabbedEntity: function () {
@@ -104,20 +113,18 @@ registerComponent('hand-tracking-grab-controls', {
     grabbedEl.object3D.position.copy(this.auxVector);
     grabbedEl.object3D.quaternion.copy(this.auxQuaternion);
 
+    this.el.emit('grabended', {grabbedEl: grabbedEl});
     this.grabbedEl = undefined;
   },
 
   grab: function () {
-    var grabbingObject3D = this.grabbingObject3D;
     var grabbedEl = this.grabbedEl;
-    var grabbingObjectWorldPosition;
     var grabedObjectWorldPosition;
 
-    grabbingObjectWorldPosition = grabbingObject3D.getWorldPosition(this.grabbingObjectPosition);
     grabedObjectWorldPosition = grabbedEl.object3D.getWorldPosition(this.grabbedObjectPosition);
 
-    this.grabDeltaPosition.copy(grabedObjectWorldPosition).sub(grabbingObjectWorldPosition);
-    this.grabInitialRotation.copy(grabbingObject3D.getWorldQuaternion(this.auxQuaternion).invert());
+    this.grabDeltaPosition.copy(grabedObjectWorldPosition).sub(this.pinchPosition);
+    this.grabInitialRotation.copy(this.auxQuaternion.copy(this.wristRotation).invert());
 
     this.originalUpdateMatrixWorld = grabbedEl.object3D.updateMatrixWorld;
     grabbedEl.object3D.updateMatrixWorld = function () { /* no op */ };
@@ -134,16 +141,16 @@ registerComponent('hand-tracking-grab-controls', {
     };
     grabbedEl.object3D.matrixAutoUpdate = false;
     grabbedEl.object3D.matrixWorldAutoUpdate = false;
+
+    this.el.emit('grabstarted', {grabbedEl: grabbedEl});
   },
 
   tock: function () {
     var auxMatrix = this.auxMatrix;
-    var auxVector = this.auxVector;
     var auxQuaternion = this.auxQuaternion;
     var auxQuaternion2 = this.auxQuaternion2;
 
     var grabbedObject3D;
-    var grabbingObject3D = this.grabbingObject3D;
     var grabbedEl = this.grabbedEl;
 
     if (!grabbedEl) { return; }
@@ -151,8 +158,8 @@ registerComponent('hand-tracking-grab-controls', {
     // We have to compose 4 transformations.
     // Both grabbing and grabbed entities position and rotation.
 
-    // 1. Move grabbed  entity to grabbing entity position.
-    // 2. Apply the rotation delta (substract initial rotation) of the grabbing entity position.
+    // 1. Move grabbed entity to the pinch position (middle point between index and thumb)
+    // 2. Apply the rotation delta (substract initial rotation) of the grabbing entity position (wrist).
     // 3. Translate grabbed entity to the original position: distance betweeen grabbed and grabbing entities at collision time.
     // 4. Apply grabbed entity rotation.
     // 5. Preserve original scale.
@@ -166,12 +173,12 @@ registerComponent('hand-tracking-grab-controls', {
 
     // 1.
     auxMatrix.identity();
-    auxMatrix.makeTranslation(grabbingObject3D.getWorldPosition(auxVector));
+    auxMatrix.makeTranslation(this.pinchPosition);
     grabbedObject3D.matrixWorld.multiply(auxMatrix);
 
     // 2.
     auxMatrix.identity();
-    auxMatrix.makeRotationFromQuaternion(grabbingObject3D.getWorldQuaternion(auxQuaternion).multiply(this.grabInitialRotation));
+    auxMatrix.makeRotationFromQuaternion(auxQuaternion.copy(this.wristRotation).multiply(this.grabInitialRotation));
     grabbedObject3D.matrixWorld.multiply(auxMatrix);
 
     // 3.
