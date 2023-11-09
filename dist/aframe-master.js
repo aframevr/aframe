@@ -14166,6 +14166,7 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
   updateHandMeshModel: function () {
     var jointPose = new THREE.Matrix4();
     return function () {
+      var i = 0;
       var jointPoses = this.jointPoses;
       var controller = this.el.components['tracked-controls'] && this.el.components['tracked-controls'].controller;
       if (!controller || !this.mesh) {
@@ -14175,9 +14176,7 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
       if (!this.hasPoses) {
         return;
       }
-      var inputjoints = controller.hand.values();
-      for (var i = 0; i < inputjoints.length; i++) {
-        var inputjoint = inputjoints[i];
+      for (var inputjoint of controller.hand.values()) {
         var bone = this.getBone(inputjoint.jointName);
         if (bone != null) {
           this.mesh.visible = true;
@@ -30433,7 +30432,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.4.2 (Date 2023-11-09, Commit #8cb7226c)');
+console.log('A-Frame Version: 1.4.2 (Date 2023-11-09, Commit #36a53e7c)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
