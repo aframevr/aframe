@@ -37,12 +37,12 @@ var JOINTS = [
   'pinky-finger-tip'
 ];
 
+var WRIST_INDEX = 0;
 var THUMB_TIP_INDEX = 4;
 var INDEX_TIP_INDEX = 9;
 
 var PINCH_START_DISTANCE = 0.015;
-var PINCH_END_DISTANCE = 0.03;
-var PINCH_POSITION_INTERPOLATION = 0.5;
+var PINCH_END_PERCENTAGE = 0.1;
 
 /**
  * Controls for hand tracking
@@ -87,7 +87,10 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
     this.jointEls = [];
     this.controllerPresent = false;
     this.isPinched = false;
-    this.pinchEventDetail = {position: new THREE.Vector3()};
+    this.pinchEventDetail = {
+      position: new THREE.Vector3(),
+      wristRotation: new THREE.Quaternion()
+    };
     this.indexTipPosition = new THREE.Vector3();
 
     this.hasPoses = false;
@@ -232,28 +235,31 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
     var jointPose = new THREE.Matrix4();
     return function () {
       var indexTipPosition = this.indexTipPosition;
+      var pinchEventDetail = this.pinchEventDetail;
       if (!this.hasPoses) { return; }
 
       thumbTipPosition.setFromMatrixPosition(jointPose.fromArray(this.jointPoses, THUMB_TIP_INDEX * 16));
       indexTipPosition.setFromMatrixPosition(jointPose.fromArray(this.jointPoses, INDEX_TIP_INDEX * 16));
+      pinchEventDetail.wristRotation.setFromRotationMatrix(jointPose.fromArray(this.jointPoses, WRIST_INDEX * 16));
 
       var distance = indexTipPosition.distanceTo(thumbTipPosition);
 
       if (distance < PINCH_START_DISTANCE && this.isPinched === false) {
         this.isPinched = true;
-        this.pinchEventDetail.position.copy(indexTipPosition).lerp(thumbTipPosition, PINCH_POSITION_INTERPOLATION);
-        this.el.emit('pinchstarted', this.pinchEventDetail);
+        this.pinchDistance = distance;
+        pinchEventDetail.position.copy(indexTipPosition).add(thumbTipPosition).multiplyScalar(0.5);
+        this.el.emit('pinchstarted', pinchEventDetail);
       }
 
-      if (distance > PINCH_END_DISTANCE && this.isPinched === true) {
+      if (distance > (this.pinchDistance + this.pinchDistance * PINCH_END_PERCENTAGE) && this.isPinched === true) {
         this.isPinched = false;
-        this.pinchEventDetail.position.copy(indexTipPosition).lerp(thumbTipPosition, PINCH_POSITION_INTERPOLATION);
-        this.el.emit('pinchended', this.pinchEventDetail);
+        pinchEventDetail.position.copy(indexTipPosition).add(thumbTipPosition).multiplyScalar(0.5);
+        this.el.emit('pinchended', pinchEventDetail);
       }
 
       if (this.isPinched) {
-        this.pinchEventDetail.position.copy(indexTipPosition).lerp(thumbTipPosition, PINCH_POSITION_INTERPOLATION);
-        this.el.emit('pinchmoved', this.pinchEventDetail);
+        pinchEventDetail.position.copy(indexTipPosition).add(thumbTipPosition).multiplyScalar(0.5);
+        this.el.emit('pinchmoved', pinchEventDetail);
       }
     };
   })(),
