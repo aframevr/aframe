@@ -188,14 +188,13 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
   updateHandMeshModel: (function () {
     var jointPose = new THREE.Matrix4();
     return function () {
+      var i = 0;
       var jointPoses = this.jointPoses;
       var controller = this.el.components['tracked-controls'] && this.el.components['tracked-controls'].controller;
       if (!controller || !this.mesh) { return; }
       this.mesh.visible = false;
       if (!this.hasPoses) { return; }
-      var inputjoints = controller.hand.values();
-      for (var i = 0; i < inputjoints.length; i++) {
-        var inputjoint = inputjoints[i];
+      for (var inputjoint of controller.hand.values()) {
         var bone = this.getBone(inputjoint.jointName);
         if (bone != null) {
           this.mesh.visible = true;
