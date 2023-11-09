@@ -11714,6 +11714,147 @@ function extend() {
 
 /***/ }),
 
+/***/ "./src/components/anchored.js":
+/*!************************************!*\
+  !*** ./src/components/anchored.js ***!
+  \************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+/* global XRRigidTransform, localStorage */
+var registerComponent = (__webpack_require__(/*! ../core/component */ "./src/core/component.js").registerComponent);
+var utils = __webpack_require__(/*! ../utils/ */ "./src/utils/index.js");
+var warn = utils.debug('components:anchored:warn');
+
+/**
+ * Anchored component.
+ * Feature only available in browsers that implement the WebXR anchors module.
+ * Once anchored the entity remains to a fixed position in real-world space.
+ * If the anchor is persistent, the anchor positioned remains across sessions or until the browser data is cleared.
+ */
+module.exports.Component = registerComponent('anchored', {
+  schema: {
+    persistent: {
+      default: false
+    }
+  },
+  init: function () {
+    var webxrData = this.el.sceneEl.getAttribute('webxr');
+    var optionalFeaturesArray = webxrData.optionalFeatures;
+    if (optionalFeaturesArray.indexOf('anchors') === -1) {
+      optionalFeaturesArray.push('anchors');
+      this.el.sceneEl.setAttribute('webxr', webxrData);
+    }
+    this.requestPersistentAnchorPending = this.data.persistent;
+  },
+  tick: function () {
+    var sceneEl = this.el.sceneEl;
+    var xrManager = sceneEl.renderer.xr;
+    var frame;
+    var refSpace;
+    var pose;
+    var object3D = this.el.object3D;
+    if (!sceneEl.is('ar-mode') && !sceneEl.is('vr-mode')) {
+      return;
+    }
+    if (!this.anchor && this.data.persistent && this.requestPersistentAnchorPending) {
+      this.restorePersistentAnchor();
+    }
+    if (!this.anchor) {
+      return;
+    }
+    frame = sceneEl.frame;
+    refSpace = xrManager.getReferenceSpace();
+    pose = frame.getPose(this.anchor.anchorSpace, refSpace);
+    object3D.matrix.elements = pose.transform.matrix;
+    object3D.matrix.decompose(object3D.position, object3D.rotation, object3D.scale);
+  },
+  createAnchor: async function createAnchor(position, quaternion) {
+    var sceneEl = this.el.sceneEl;
+    var xrManager = sceneEl.renderer.xr;
+    var frame;
+    var referenceSpace;
+    var anchorPose;
+    var anchor;
+    if (!anchorsSupported(sceneEl)) {
+      warn('This browser doesn\'t support the WebXR anchors module');
+      return;
+    }
+    if (this.anchor) {
+      this.deleteAnchor();
+    }
+    frame = sceneEl.frame;
+    referenceSpace = xrManager.getReferenceSpace();
+    anchorPose = new XRRigidTransform({
+      x: position.x,
+      y: position.y,
+      z: position.z
+    }, {
+      x: quaternion.x,
+      y: quaternion.y,
+      z: quaternion.z,
+      w: quaternion.w
+    });
+    anchor = await frame.createAnchor(anchorPose, referenceSpace);
+    if (this.data.persistent) {
+      if (this.el.id) {
+        this.persistentHandle = await anchor.requestPersistentHandle();
+        localStorage.setItem(this.el.id, this.persistentHandle);
+      } else {
+        warn('The anchor won\'t be persisted because the entity has no assigned id.');
+      }
+    }
+    sceneEl.object3D.attach(this.el.object3D);
+    this.anchor = anchor;
+  },
+  restorePersistentAnchor: async function restorePersistentAnchor() {
+    var xrManager = this.el.sceneEl.renderer.xr;
+    var session = xrManager.getSession();
+    var persistentAnchors = session.persistentAnchors;
+    var storedPersistentHandle;
+    this.requestPersistentAnchorPending = false;
+    if (!this.el.id) {
+      warn('The entity associated to the persistent anchor cannot be retrieved because it doesn\'t have an assigned id.');
+      return;
+    }
+    if (persistentAnchors.length) {
+      storedPersistentHandle = localStorage.getItem(this.el.id);
+      for (var i = 0; i < persistentAnchors.length; ++i) {
+        if (storedPersistentHandle !== persistentAnchors[i]) {
+          continue;
+        }
+        this.anchor = await session.restorePersistentAnchor(persistentAnchors[i]);
+        this.persistentHandle = persistentAnchors[i];
+        break;
+      }
+    } else {
+      this.requestPersistentAnchorPending = true;
+    }
+  },
+  deleteAnchor: function () {
+    var xrManager;
+    var session;
+    var anchor = this.anchor;
+    if (!anchor) {
+      return;
+    }
+    xrManager = this.el.sceneEl.renderer.xr;
+    session = xrManager.getSession();
+    anchor.delete();
+    this.el.sceneEl.object3D.add(this.el.object3D);
+    if (this.persistentHandle) {
+      session.deletePersistentAnchor(this.persistentHandle);
+    }
+    this.anchor = undefined;
+  }
+});
+function anchorsSupported(sceneEl) {
+  var xrManager = sceneEl.renderer.xr;
+  var session = xrManager.getSession();
+  return session && session.restorePersistentAnchor;
+}
+
+/***/ }),
+
 /***/ "./src/components/animation.js":
 /*!*************************************!*\
   !*** ./src/components/animation.js ***!
@@ -13881,11 +14022,11 @@ var AFRAME_CDN_ROOT = (__webpack_require__(/*! ../constants */ "./src/constants/
 var LEFT_HAND_MODEL_URL = AFRAME_CDN_ROOT + 'controllers/oculus-hands/v4/left.glb';
 var RIGHT_HAND_MODEL_URL = AFRAME_CDN_ROOT + 'controllers/oculus-hands/v4/right.glb';
 var JOINTS = ['wrist', 'thumb-metacarpal', 'thumb-phalanx-proximal', 'thumb-phalanx-distal', 'thumb-tip', 'index-finger-metacarpal', 'index-finger-phalanx-proximal', 'index-finger-phalanx-intermediate', 'index-finger-phalanx-distal', 'index-finger-tip', 'middle-finger-metacarpal', 'middle-finger-phalanx-proximal', 'middle-finger-phalanx-intermediate', 'middle-finger-phalanx-distal', 'middle-finger-tip', 'ring-finger-metacarpal', 'ring-finger-phalanx-proximal', 'ring-finger-phalanx-intermediate', 'ring-finger-phalanx-distal', 'ring-finger-tip', 'pinky-finger-metacarpal', 'pinky-finger-phalanx-proximal', 'pinky-finger-phalanx-intermediate', 'pinky-finger-phalanx-distal', 'pinky-finger-tip'];
+var WRIST_INDEX = 0;
 var THUMB_TIP_INDEX = 4;
 var INDEX_TIP_INDEX = 9;
 var PINCH_START_DISTANCE = 0.015;
-var PINCH_END_DISTANCE = 0.03;
-var PINCH_POSITION_INTERPOLATION = 0.5;
+var PINCH_END_PERCENTAGE = 0.1;
 
 /**
  * Controls for hand tracking
@@ -13923,17 +14064,19 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
   },
   init: function () {
     var sceneEl = this.el.sceneEl;
-    var webXROptionalAttributes = sceneEl.getAttribute('webxr').optionalFeatures;
-    webXROptionalAttributes.push('hand-tracking');
-    sceneEl.setAttribute('webxr', {
-      optionalFeatures: webXROptionalAttributes
-    });
+    var webxrData = sceneEl.getAttribute('webxr');
+    var optionalFeaturesArray = webxrData.optionalFeatures;
+    if (optionalFeaturesArray.indexOf('hand-tracking') === -1) {
+      optionalFeaturesArray.push('hand-tracking');
+      sceneEl.setAttribute('webxr', webxrData);
+    }
     this.onModelLoaded = this.onModelLoaded.bind(this);
     this.jointEls = [];
     this.controllerPresent = false;
     this.isPinched = false;
     this.pinchEventDetail = {
-      position: new THREE.Vector3()
+      position: new THREE.Vector3(),
+      wristRotation: new THREE.Quaternion()
     };
     this.indexTipPosition = new THREE.Vector3();
     this.hasPoses = false;
@@ -14076,25 +14219,28 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
     var jointPose = new THREE.Matrix4();
     return function () {
       var indexTipPosition = this.indexTipPosition;
+      var pinchEventDetail = this.pinchEventDetail;
       if (!this.hasPoses) {
         return;
       }
       thumbTipPosition.setFromMatrixPosition(jointPose.fromArray(this.jointPoses, THUMB_TIP_INDEX * 16));
       indexTipPosition.setFromMatrixPosition(jointPose.fromArray(this.jointPoses, INDEX_TIP_INDEX * 16));
+      pinchEventDetail.wristRotation.setFromRotationMatrix(jointPose.fromArray(this.jointPoses, WRIST_INDEX * 16));
       var distance = indexTipPosition.distanceTo(thumbTipPosition);
       if (distance < PINCH_START_DISTANCE && this.isPinched === false) {
         this.isPinched = true;
-        this.pinchEventDetail.position.copy(indexTipPosition).lerp(thumbTipPosition, PINCH_POSITION_INTERPOLATION);
-        this.el.emit('pinchstarted', this.pinchEventDetail);
+        this.pinchDistance = distance;
+        pinchEventDetail.position.copy(indexTipPosition).add(thumbTipPosition).multiplyScalar(0.5);
+        this.el.emit('pinchstarted', pinchEventDetail);
       }
-      if (distance > PINCH_END_DISTANCE && this.isPinched === true) {
+      if (distance > this.pinchDistance + this.pinchDistance * PINCH_END_PERCENTAGE && this.isPinched === true) {
         this.isPinched = false;
-        this.pinchEventDetail.position.copy(indexTipPosition).lerp(thumbTipPosition, PINCH_POSITION_INTERPOLATION);
-        this.el.emit('pinchended', this.pinchEventDetail);
+        pinchEventDetail.position.copy(indexTipPosition).add(thumbTipPosition).multiplyScalar(0.5);
+        this.el.emit('pinchended', pinchEventDetail);
       }
       if (this.isPinched) {
-        this.pinchEventDetail.position.copy(indexTipPosition).lerp(thumbTipPosition, PINCH_POSITION_INTERPOLATION);
-        this.el.emit('pinchmoved', this.pinchEventDetail);
+        pinchEventDetail.position.copy(indexTipPosition).add(thumbTipPosition).multiplyScalar(0.5);
+        this.el.emit('pinchmoved', pinchEventDetail);
       }
     };
   }(),
@@ -14250,6 +14396,8 @@ registerComponent('hand-tracking-grab-controls', {
     this.el.addEventListener('pinchstarted', this.onPinchStarted);
     this.onPinchEnded = this.onPinchEnded.bind(this);
     this.el.addEventListener('pinchended', this.onPinchEnded);
+    this.onPinchMoved = this.onPinchMoved.bind(this);
+    this.el.addEventListener('pinchmoved', this.onPinchMoved);
   },
   transferEntityOwnership: function () {
     var grabbingElComponent;
@@ -14259,7 +14407,7 @@ registerComponent('hand-tracking-grab-controls', {
       if (grabbingElComponent === this) {
         continue;
       }
-      if (this.collidedEl && this.collidedEl === grabbingElComponent.grabbedEl) {
+      if (this.grabbedEl && this.grabbedEl === grabbingElComponent.grabbedEl) {
         grabbingElComponent.releaseGrabbedEntity();
       }
     }
@@ -14280,25 +14428,30 @@ registerComponent('hand-tracking-grab-controls', {
     }
   },
   onCollisionEnded: function () {
+    this.collidedEl = undefined;
     if (this.grabbedEl) {
       return;
     }
-    this.collidedEl = undefined;
     this.grabbingObject3D = undefined;
     if (this.data.hoverEnabled) {
       this.el.setAttribute('hand-tracking-controls', 'modelColor', this.data.color);
     }
   },
-  onPinchStarted: function () {
+  onPinchStarted: function (evt) {
     if (!this.collidedEl) {
       return;
     }
-    this.transferEntityOwnership();
+    this.pinchPosition = evt.detail.position;
+    this.wristRotation = evt.detail.wristRotation;
     this.grabbedEl = this.collidedEl;
+    this.transferEntityOwnership();
     this.grab();
   },
   onPinchEnded: function () {
     this.releaseGrabbedEntity();
+  },
+  onPinchMoved: function (evt) {
+    this.wristRotation = evt.detail.wristRotation;
   },
   releaseGrabbedEntity: function () {
     var grabbedEl = this.grabbedEl;
@@ -14311,17 +14464,17 @@ registerComponent('hand-tracking-grab-controls', {
     grabbedEl.object3D.matrixWorld.decompose(this.auxVector, this.auxQuaternion, this.auxVector2);
     grabbedEl.object3D.position.copy(this.auxVector);
     grabbedEl.object3D.quaternion.copy(this.auxQuaternion);
+    this.el.emit('grabended', {
+      grabbedEl: grabbedEl
+    });
     this.grabbedEl = undefined;
   },
   grab: function () {
-    var grabbingObject3D = this.grabbingObject3D;
     var grabbedEl = this.grabbedEl;
-    var grabbingObjectWorldPosition;
     var grabedObjectWorldPosition;
-    grabbingObjectWorldPosition = grabbingObject3D.getWorldPosition(this.grabbingObjectPosition);
     grabedObjectWorldPosition = grabbedEl.object3D.getWorldPosition(this.grabbedObjectPosition);
-    this.grabDeltaPosition.copy(grabedObjectWorldPosition).sub(grabbingObjectWorldPosition);
-    this.grabInitialRotation.copy(grabbingObject3D.getWorldQuaternion(this.auxQuaternion).invert());
+    this.grabDeltaPosition.copy(grabedObjectWorldPosition).sub(this.pinchPosition);
+    this.grabInitialRotation.copy(this.auxQuaternion.copy(this.wristRotation).invert());
     this.originalUpdateMatrixWorld = grabbedEl.object3D.updateMatrixWorld;
     grabbedEl.object3D.updateMatrixWorld = function () {/* no op */};
     grabbedEl.object3D.updateMatrixWorldChildren = function (force) {
@@ -14335,14 +14488,15 @@ registerComponent('hand-tracking-grab-controls', {
     };
     grabbedEl.object3D.matrixAutoUpdate = false;
     grabbedEl.object3D.matrixWorldAutoUpdate = false;
+    this.el.emit('grabstarted', {
+      grabbedEl: grabbedEl
+    });
   },
   tock: function () {
     var auxMatrix = this.auxMatrix;
-    var auxVector = this.auxVector;
     var auxQuaternion = this.auxQuaternion;
     var auxQuaternion2 = this.auxQuaternion2;
     var grabbedObject3D;
-    var grabbingObject3D = this.grabbingObject3D;
     var grabbedEl = this.grabbedEl;
     if (!grabbedEl) {
       return;
@@ -14351,8 +14505,8 @@ registerComponent('hand-tracking-grab-controls', {
     // We have to compose 4 transformations.
     // Both grabbing and grabbed entities position and rotation.
 
-    // 1. Move grabbed  entity to grabbing entity position.
-    // 2. Apply the rotation delta (substract initial rotation) of the grabbing entity position.
+    // 1. Move grabbed entity to the pinch position (middle point between index and thumb)
+    // 2. Apply the rotation delta (substract initial rotation) of the grabbing entity position (wrist).
     // 3. Translate grabbed entity to the original position: distance betweeen grabbed and grabbing entities at collision time.
     // 4. Apply grabbed entity rotation.
     // 5. Preserve original scale.
@@ -14366,12 +14520,12 @@ registerComponent('hand-tracking-grab-controls', {
 
     // 1.
     auxMatrix.identity();
-    auxMatrix.makeTranslation(grabbingObject3D.getWorldPosition(auxVector));
+    auxMatrix.makeTranslation(this.pinchPosition);
     grabbedObject3D.matrixWorld.multiply(auxMatrix);
 
     // 2.
     auxMatrix.identity();
-    auxMatrix.makeRotationFromQuaternion(grabbingObject3D.getWorldQuaternion(auxQuaternion).multiply(this.grabInitialRotation));
+    auxMatrix.makeRotationFromQuaternion(auxQuaternion.copy(this.wristRotation).multiply(this.grabInitialRotation));
     grabbedObject3D.matrixWorld.multiply(auxMatrix);
 
     // 3.
@@ -14626,6 +14780,7 @@ module.exports.Component = registerComponent('hp-mixed-reality-controls', {
 /***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
 
 __webpack_require__(/*! ./animation */ "./src/components/animation.js");
+__webpack_require__(/*! ./anchored */ "./src/components/anchored.js");
 __webpack_require__(/*! ./camera */ "./src/components/camera.js");
 __webpack_require__(/*! ./cursor */ "./src/components/cursor.js");
 __webpack_require__(/*! ./geometry */ "./src/components/geometry.js");
@@ -14893,9 +15048,12 @@ module.exports.Component = registerComponent('layer', {
     this.bindMethods();
     this.needsRedraw = false;
     this.frameBuffer = gl.createFramebuffer();
-    var requiredFeatures = this.el.sceneEl.getAttribute('webxr').requiredFeatures;
-    requiredFeatures.push('layers');
-    this.el.sceneEl.getAttribute('webxr', 'requiredFeatures', requiredFeatures);
+    var webxrData = this.el.sceneEl.getAttribute('webxr');
+    var requiredFeaturesArray = webxrData.optionalFeatures;
+    if (requiredFeaturesArray.indexOf('layers') === -1) {
+      requiredFeaturesArray.push('laters');
+      this.el.sceneEl.setAttribute('webxr', webxrData);
+    }
     this.el.sceneEl.addEventListener('enter-vr', this.onEnterVR);
     this.el.sceneEl.addEventListener('exit-vr', this.onExitVR);
   },
@@ -30275,7 +30433,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.4.2 (Date 2023-11-06, Commit #2c97ce96)');
+console.log('A-Frame Version: 1.4.2 (Date 2023-11-09, Commit #da1ad3c4)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
