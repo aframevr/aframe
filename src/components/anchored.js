@@ -131,4 +131,3 @@ function anchorsSupported (sceneEl) {
   var session = xrManager.getSession();
   return (session && session.restorePersistentAnchor);
 }
-
