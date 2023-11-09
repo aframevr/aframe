@@ -1,4 +1,5 @@
 require('./animation');
+require('./anchored');
 require('./camera');
 require('./cursor');
 require('./geometry');
