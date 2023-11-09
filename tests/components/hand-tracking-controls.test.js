@@ -86,6 +86,7 @@ suite('tracked-controls-webxr', function () {
       el.components['hand-tracking-controls'].checkIfControllerPresent();
       el.components['hand-tracking-controls'].isPinched = true;
       thumbMatrix.setPosition(0, 0, 10);
+      el.components['hand-tracking-controls'].pinchDistance = 1;
       el.components['hand-tracking-controls'].tick();
       el.components['hand-tracking-controls'].detectPinch();
       assert.equal(emitSpy.getCalls()[0].args[0], 'pinchended');
