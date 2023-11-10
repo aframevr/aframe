@@ -1,4 +1,4 @@
-/* global XRRigidTransform, localStorage */
+/* global THREE, XRRigidTransform, localStorage */
 var registerComponent = require('../core/component').registerComponent;
 var utils = require('../utils/');
 var warn = utils.debug('components:anchored:warn');
@@ -15,14 +15,24 @@ module.exports.Component = registerComponent('anchored', {
   },
 
   init: function () {
-    var webxrData = this.el.sceneEl.getAttribute('webxr');
+    var sceneEl = this.el.sceneEl;
+    var webxrData = sceneEl.getAttribute('webxr');
     var optionalFeaturesArray = webxrData.optionalFeatures;
     if (optionalFeaturesArray.indexOf('anchors') === -1) {
       optionalFeaturesArray.push('anchors');
       this.el.sceneEl.setAttribute('webxr', webxrData);
     }
 
+    this.auxQuaternion = new THREE.Quaternion();
+
+    this.onEnterVR = this.onEnterVR.bind(this);
+    this.el.sceneEl.addEventListener('enter-vr', this.onEnterVR);
+  },
+
+  onEnterVR: function () {
+    this.anchor = undefined;
     this.requestPersistentAnchorPending = this.data.persistent;
+    this.requestAnchorPending = !this.data.persistent;
   },
 
   tick: function () {
@@ -34,7 +44,8 @@ module.exports.Component = registerComponent('anchored', {
     var object3D = this.el.object3D;
 
     if ((!sceneEl.is('ar-mode') && !sceneEl.is('vr-mode'))) { return; }
-    if (!this.anchor && this.data.persistent && this.requestPersistentAnchorPending) { this.restorePersistentAnchor(); }
+    if (!this.anchor && this.requestPersistentAnchorPending) { this.restorePersistentAnchor(); }
+    if (!this.anchor && this.requestAnchorPending) { this.createAnchor(); }
     if (!this.anchor) { return; }
 
     frame = sceneEl.frame;
@@ -52,6 +63,10 @@ module.exports.Component = registerComponent('anchored', {
     var referenceSpace;
     var anchorPose;
     var anchor;
+    var object3D = this.el.object3D;
+
+    position = position || object3D.position;
+    quaternion = quaternion || this.auxQuaternion.setFromEuler(object3D.rotation);
 
     if (!anchorsSupported(sceneEl)) {
       warn('This browser doesn\'t support the WebXR anchors module');
@@ -74,6 +89,8 @@ module.exports.Component = registerComponent('anchored', {
         z: quaternion.z,
         w: quaternion.w
       });
+
+    this.requestAnchorPending = false;
     anchor = await frame.createAnchor(anchorPose, referenceSpace);
     if (this.data.persistent) {
       if (this.el.id) {
@@ -95,16 +112,18 @@ module.exports.Component = registerComponent('anchored', {
     this.requestPersistentAnchorPending = false;
     if (!this.el.id) {
       warn('The entity associated to the persistent anchor cannot be retrieved because it doesn\'t have an assigned id.');
+      this.requestAnchorPending = true;
       return;
     }
-    if (persistentAnchors.length) {
+    if (persistentAnchors) {
       storedPersistentHandle = localStorage.getItem(this.el.id);
       for (var i = 0; i < persistentAnchors.length; ++i) {
         if (storedPersistentHandle !== persistentAnchors[i]) { continue; }
         this.anchor = await session.restorePersistentAnchor(persistentAnchors[i]);
-        this.persistentHandle = persistentAnchors[i];
+        if (this.anchor) { this.persistentHandle = persistentAnchors[i]; }
         break;
       }
+      if (!this.anchor) { this.requestAnchorPending = true; }
     } else {
       this.requestPersistentAnchorPending = true;
     }
