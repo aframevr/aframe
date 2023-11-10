@@ -11,7 +11,7 @@ examples: []
 
 It requires a browser supporting the [WebXR Anchors module][webxranchors].
 
-Fix any entity to a position and rotation in the real world. Apply the anchored component to an entity and call the method `el.components.createAnchor(position, quaternion)` to anchor it to a position and rotation corresponding to real world coordinates.
+Fix any entity to a position and rotation in the real world. Apply the anchored component to an entity and call the method `el.components.createAnchor(position, quaternion)` to anchor it to a position and rotation corresponding to real world coordinates. If `creatorAnchor` is not called the entity is anchored to its initial position and rotation. The anchoring only applies when in immersive mode.
 
 
 ## Example
