@@ -62,7 +62,7 @@
       }
     },
     {
-      /* This module uses ES8 async / await due to WebXR Anchor Module integration */
+      /* This module uses ES6 for…of loops, and so is parsed as ES6 to avoid errors. */
       "files": ["./src/components/hand-tracking-controls.js"],
       "parserOptions": {
         "ecmaVersion": 6
