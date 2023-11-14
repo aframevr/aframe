@@ -376,13 +376,28 @@ and placing blocks.
 
 ### Adding Teleportation to the Left Hand
 
-We'll plug in teleportation capabilities to the left hand such that we hold a
-button to show an arc coming out of the controller, and let go of the button to
-teleport to the end of the arc. Before, we wrote our own A-Frame components.
-But we can also use open source components already made from the community
-and just use them straight from HTML!
+We'll plug in teleportation capabilities to the left hand such that we push a
+thumbstick to show an arc coming out of the controller, and let go of the
+thumbstick to teleport to the end of the arc. Before, we wrote our own A-Frame
+components. But we can also use open source components already made from the
+community and just use them straight from HTML!
 
-[blink-controls]: https://github.com/fernandojsg/aframe-teleport-controls/
+To enable this, let's first define a `player` entity that wraps the controllers 
+and the camera:
+ 
+```html
+<script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+
+<!-- ... -->
+
+<a-entity id="player">
+  <a-entity id="teleHand" hand-controls="hand: left"></a-entity>
+  <a-entity id="blockHand" hand-controls="hand: right"></a-entity>
+  <a-camera></a-camera>
+</a-entity>
+```
+
+[blink-controls]: https://github.com/jure/aframe-blink-controls
 For teleportation, there's a component called [blink-controls][blink-controls].
 Following the README, we add the component via a `<script>` tag and just set
 the `blink-controls` component on the controller on the entity:
@@ -393,15 +408,17 @@ the `blink-controls` component on the controller on the entity:
 
 <!-- ... -->
 
-<a-entity id="teleHand" hand-controls="hand: left" teleport-controls></a-entity>
-<a-entity id="blockHand" hand-controls="hand: right"></a-entity>
+<a-entity id="player">
+  <a-entity id="teleHand" hand-controls="hand: left"></a-entity>
+  <a-entity id="blockHand" hand-controls="hand: right"></a-entity>
+  <a-camera></a-camera>
+</a-entity>
 ```
 
-Then we'll configure the `blink-controls` component to use an arc `type` of
-teleportation. By default, `blink-controls` will only teleport on the
-ground, but we can specify with `collisionEntities` to teleport on the blocks
-*and* the ground using selectors. These properties are part of the API that the
-`blink-controls` component was created with:
+By default, `blink-controls` will only teleport on the ground, but we can 
+specify with `collisionEntities` to teleport on the blocks *and* the ground 
+using selectors. This property is part of the API that the`blink-controls` 
+component was created with:
 
 ```html
 <a-entity id="teleHand" hand-controls="hand: left" blink-controls="collisionEntities: [mixin='voxel'], #ground"></a-entity>
@@ -430,7 +447,7 @@ that attaches the clicking laser to VR tracked controllers.  Like the
 
 <!-- ... -->
 
-<a-entity id="teleHand" hand-controls="hand: left" teleport-controls="type: parabolic; collisionEntities: [mixin='voxel'], #ground"></a-entity>
+<a-entity id="teleHand" hand-controls="hand: left" blink-controls="collisionEntities: [mixin='voxel'], #ground"></a-entity>
 <a-entity id="blockHand" hand-controls="hand: right" laser-controls></a-entity>
 ```
 
@@ -477,10 +494,11 @@ To generalize creating entities from an intersection event, we've created an
 of properties. We won't go into the detail of the implementation, but you can
 [check out the simple `intersection-spawn` component source code on
 GitHub][intersection-spawn]. We attach `intersection-spawn` capabilities to the
-right hand:
+right hand, and it's also a good idea to give the raycaster a half-meter buffer  
+to prevent voxels from spawning right at the controller:
 
 ```html
-<a-entity id="blockHand" hand-controls="hand: right" laser-controls intersection-spawn="event: click; mixin: voxel"></a-entity>
+<a-entity id="blockHand" hand-controls="hand: right" laser-controls raycaster="near: 0.5" intersection-spawn="event: click; mixin: voxel"></a-entity>
 ```
 
 Now when we click, we spawn voxels!
@@ -495,8 +513,7 @@ component with the gaze-based `cursor` component so that we can also spawn
 blocks on mobile and desktop, without changing a thing about the component!
 
 ```html
-<a-entity id="blockHand" hand-controls="hand: right" laser-controls intersection-spawn="event: click; mixin: voxel"></a-entity>
-
+<a-entity id="blockHand" hand-controls="hand: right" laser-controls raycaster="near: 0.5" intersection-spawn="event: click; mixin: voxel"></a-entity>
 <a-camera>
   <a-cursor intersection-spawn="event: click; mixin: voxel"></a-cursor>
 </a-camera>
