@@ -5,7 +5,8 @@ registerComponent('obb-collider', {
   schema: {
     size: {default: 0},
     trackedObject3D: {default: ''},
-    minimumColliderDimension: {default: 0.02}
+    minimumColliderDimension: {default: 0.02},
+    centerModel: {default: false}
   },
 
   init: function () {
@@ -15,9 +16,11 @@ registerComponent('obb-collider', {
     this.boundingBox = new THREE.Box3();
     this.boundingBoxSize = new THREE.Vector3();
     this.updateCollider = this.updateCollider.bind(this);
+
+    this.onModelLoaded = this.onModelLoaded.bind(this);
     this.updateBoundingBox = this.updateBoundingBox.bind(this);
 
-    this.el.addEventListener('model-loaded', this.updateCollider);
+    this.el.addEventListener('model-loaded', this.onModelLoaded);
     this.updateCollider();
     this.system.addCollider(this.el);
   },
@@ -30,6 +33,27 @@ registerComponent('obb-collider', {
     if (this.data.trackedObject3D) {
       this.trackedObject3DPath = this.data.trackedObject3D.split('.');
     }
+  },
+
+  onModelLoaded: function () {
+    if (this.data.centerModel) { this.centerModel(); }
+    this.updateCollider();
+  },
+
+  centerModel: function () {
+    var el = this.el;
+    var model = el.components['gltf-model'] && el.components['gltf-model'].model;
+    var box;
+    var center;
+
+    if (!model) { return; }
+    this.el.removeObject3D('mesh');
+    box = new THREE.Box3().setFromObject(model);
+    center = box.getCenter(new THREE.Vector3());
+    model.position.x += (model.position.x - center.x);
+    model.position.y += (model.position.y - center.y);
+    model.position.z += (model.position.z - center.z);
+    this.el.setObject3D('mesh', model);
   },
 
   updateCollider: function () {

@@ -31,6 +31,9 @@ Set `showColliders` to `true` on the scene to render colliders for debugging pur
 |------------------|----------------------------------------------------------------------------------------|---------------|
 | size             | Force collider to a specific size                                                      | 0 0 0         |
 | trackedObject3D  | Variable path to the object3D used to calculate the collider. el.object3D by default   | ''            |
+| minimumColliderDimension  | Minimum dimension size for the collider. Not practical if too small. e.g planes or small models   | 0.02            |
+| centerModel  | Centers the model before calculating the bounding box and corresponding collider.  | false            |
+
 
 ## Events
 
