@@ -6,9 +6,10 @@ parent_section: components
 source_code: src/components/scene/xr-mode-ui.js
 ---
 
-The xr-mode-ui component allows disabling of UI such as an Enter VR button, compatibility
+The xr-mode-ui component allows configuring and disabling of UI such as the enter VR / AR button, compatibility
 modal, and orientation modal for mobile. The xr-mode-ui component applies only
 to the [`<a-scene>` element][scene]. If we wish to simply toggle the UI, use CSS instead.
+
 
 ## Example
 
@@ -26,9 +27,7 @@ to the [`<a-scene>` element][scene]. If we wish to simply toggle the UI, use CSS
 | enterVREnabled        | If the VR button is displayed when applicable                       | false         |
 | enterARButton         | Selector to a custom AR button. On click, the button will enter AR. | ''            |
 | enterAREnabled        | If the AR button is displayed when applicable                       | false         |
-| enterXRButton         | Selector to a custom AR button. On click, the button will enter AR. | ''            |
-| enterXREnabled        | If the AR button is displayed when applicable                       | true          |
-| XRMode                | Mode that the site enters when clicking the XR button (ar or vr).   | vr            |
+| XRMode                | If the AR, VR button or both will be displayed.                     | ar, vr, xr    |
 
 ### Specifying a Custom Enter VR Button
 
