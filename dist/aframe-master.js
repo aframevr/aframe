@@ -13503,7 +13503,6 @@ module.exports.Component = registerComponent('gltf-model', {
       self.loader.load(src, function gltfLoaded(gltfModel) {
         self.model = gltfModel.scene || gltfModel.scenes[0];
         self.model.animations = gltfModel.animations;
-        self.centerModel();
         el.setObject3D('mesh', self.model);
         el.emit('model-loaded', {
           format: 'gltf',
@@ -13518,14 +13517,6 @@ module.exports.Component = registerComponent('gltf-model', {
         });
       });
     });
-  },
-  centerModel: function () {
-    var model = this.model;
-    var box = new THREE.Box3().setFromObject(model);
-    var center = box.getCenter(new THREE.Vector3());
-    model.position.x += model.position.x - center.x;
-    model.position.y += model.position.y - center.y;
-    model.position.z += model.position.z - center.z;
   },
   remove: function () {
     if (!this.model) {
@@ -13546,7 +13537,7 @@ module.exports.Component = registerComponent('gltf-model', {
 var registerComponent = (__webpack_require__(/*! ../core/component */ "./src/core/component.js").registerComponent);
 registerComponent('grabbable', {
   init: function () {
-    this.el.setAttribute('obb-collider', '');
+    this.el.setAttribute('obb-collider', 'centerModel: true');
   }
 });
 
@@ -17400,15 +17391,23 @@ registerComponent('obb-collider', {
     },
     trackedObject3D: {
       default: ''
+    },
+    minimumColliderDimension: {
+      default: 0.02
+    },
+    centerModel: {
+      default: false
     }
   },
   init: function () {
+    this.previousScale = new THREE.Vector3();
     this.auxEuler = new THREE.Euler();
     this.boundingBox = new THREE.Box3();
     this.boundingBoxSize = new THREE.Vector3();
     this.updateCollider = this.updateCollider.bind(this);
+    this.onModelLoaded = this.onModelLoaded.bind(this);
     this.updateBoundingBox = this.updateBoundingBox.bind(this);
-    this.el.addEventListener('model-loaded', this.updateCollider);
+    this.el.addEventListener('model-loaded', this.onModelLoaded);
     this.updateCollider();
     this.system.addCollider(this.el);
   },
@@ -17419,6 +17418,28 @@ registerComponent('obb-collider', {
     if (this.data.trackedObject3D) {
       this.trackedObject3DPath = this.data.trackedObject3D.split('.');
     }
+  },
+  onModelLoaded: function () {
+    if (this.data.centerModel) {
+      this.centerModel();
+    }
+    this.updateCollider();
+  },
+  centerModel: function () {
+    var el = this.el;
+    var model = el.components['gltf-model'] && el.components['gltf-model'].model;
+    var box;
+    var center;
+    if (!model) {
+      return;
+    }
+    this.el.removeObject3D('mesh');
+    box = new THREE.Box3().setFromObject(model);
+    center = box.getCenter(new THREE.Vector3());
+    model.position.x += model.position.x - center.x;
+    model.position.y += model.position.y - center.y;
+    model.position.z += model.position.z - center.z;
+    this.el.setObject3D('mesh', model);
   },
   updateCollider: function () {
     var el = this.el;
@@ -17481,6 +17502,7 @@ registerComponent('obb-collider', {
     var size = this.data.size;
     var trackedObject3D = this.trackedObject3D || this.el.object3D;
     var boundingBoxSize = this.boundingBoxSize;
+    var minimumColliderDimension = this.data.minimumColliderDimension;
 
     // user defined size takes precedence.
     if (size) {
@@ -17489,6 +17511,7 @@ registerComponent('obb-collider', {
       this.boundingBoxSize.z = size;
       return;
     }
+    this.previousScale.copy(trackedObject3D.scale);
 
     // Bounding box is created axis-aligned AABB.
     // If there's any local rotation the box will be bigger than expected.
@@ -17498,6 +17521,9 @@ registerComponent('obb-collider', {
     trackedObject3D.updateMatrixWorld(true);
     boundingBox.setFromObject(trackedObject3D, true);
     boundingBox.getSize(boundingBoxSize);
+    boundingBoxSize.x = boundingBoxSize.x < minimumColliderDimension ? minimumColliderDimension : boundingBoxSize.x;
+    boundingBoxSize.y = boundingBoxSize.y < minimumColliderDimension ? minimumColliderDimension : boundingBoxSize.y;
+    boundingBoxSize.z = boundingBoxSize.z < minimumColliderDimension ? minimumColliderDimension : boundingBoxSize.z;
 
     // Restore rotation.
     this.el.object3D.rotation.copy(auxEuler);
@@ -17531,6 +17557,11 @@ registerComponent('obb-collider', {
       var trackedObject3D = this.checkTrackedObject() || this.el.object3D;
       if (!trackedObject3D) {
         return;
+      }
+
+      // Recalculate collider if scale has changed.
+      if (trackedObject3D.scale.x !== this.previousScale.x || trackedObject3D.scale.y !== this.previousScale.y || trackedObject3D.scale.z !== this.previousScale.z) {
+        this.updateCollider();
       }
       trackedObject3D.updateMatrix();
       trackedObject3D.updateMatrixWorld();
@@ -30453,7 +30484,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.4.2 (Date 2023-11-10, Commit #4fdcb0cd)');
+console.log('A-Frame Version: 1.4.2 (Date 2023-11-14, Commit #bb9fb4bd)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
