@@ -308,7 +308,7 @@ class AScene extends AEntity {
             function requestFail (error) {
               var useAR = xrMode === 'immersive-ar';
               var mode = useAR ? 'AR' : 'VR';
-              throw new Error('Failed to enter ' + mode + ' mode (`requestSession`) ' + error);
+              reject(new Error('Failed to enter ' + mode + ' mode (`requestSession`)', { cause: error }));
             }
           );
         });
