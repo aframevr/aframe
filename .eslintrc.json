@@ -55,6 +55,13 @@
       }
     },
     {
+      /* This module uses ES6 */
+      "files": ["./src/components/scene/real-world-meshing.js"],
+      "parserOptions": {
+        "ecmaVersion": 6
+      }
+    },
+    {
       /* This module uses ES8 async / await due to WebXR Anchor Module integration */
       "files": ["./src/components/anchored.js"],
       "parserOptions": {

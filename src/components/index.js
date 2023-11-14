@@ -50,6 +50,7 @@ require('./scene/inspector');
 require('./scene/fog');
 require('./scene/keyboard-shortcuts');
 require('./scene/pool');
+require('./scene/real-world-meshing');
 require('./scene/reflection');
 require('./scene/screenshot');
 require('./scene/stats');
