@@ -4,7 +4,8 @@ var THREE = require('../lib/three');
 registerComponent('obb-collider', {
   schema: {
     size: {default: 0},
-    trackedObject3D: {default: ''}
+    trackedObject3D: {default: ''},
+    minimumColliderDimension: {default: 0.02}
   },
 
   init: function () {
@@ -95,6 +96,7 @@ registerComponent('obb-collider', {
     var size = this.data.size;
     var trackedObject3D = this.trackedObject3D || this.el.object3D;
     var boundingBoxSize = this.boundingBoxSize;
+    var minimumColliderDimension = this.data.minimumColliderDimension;
 
     // user defined size takes precedence.
     if (size) {
@@ -115,6 +117,10 @@ registerComponent('obb-collider', {
     trackedObject3D.updateMatrixWorld(true);
     boundingBox.setFromObject(trackedObject3D, true);
     boundingBox.getSize(boundingBoxSize);
+
+    boundingBoxSize.x = boundingBoxSize.x < minimumColliderDimension ? minimumColliderDimension : boundingBoxSize.x;
+    boundingBoxSize.y = boundingBoxSize.y < minimumColliderDimension ? minimumColliderDimension : boundingBoxSize.y;
+    boundingBoxSize.z = boundingBoxSize.z < minimumColliderDimension ? minimumColliderDimension : boundingBoxSize.z;
 
     // Restore rotation.
     this.el.object3D.rotation.copy(auxEuler);
