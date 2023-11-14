@@ -27832,7 +27832,9 @@ class AScene extends AEntity {
           }, function requestFail(error) {
             var useAR = xrMode === 'immersive-ar';
             var mode = useAR ? 'AR' : 'VR';
-            throw new Error('Failed to enter ' + mode + ' mode (`requestSession`) ' + error);
+            reject(new Error('Failed to enter ' + mode + ' mode (`requestSession`)', {
+              cause: error
+            }));
           });
         });
       } else {
@@ -30712,7 +30714,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.4.2 (Date 2023-11-14, Commit #37648787)');
+console.log('A-Frame Version: 1.4.2 (Date 2023-11-14, Commit #e96e30e0)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
