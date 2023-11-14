@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- Origin Trial Token, feature = WebVR (For Chrome M59+), origin = https://aframe.io, expires = 2017-07-28 -->
+  <meta http-equiv="origin-trial" data-feature="WebVR (For Chrome M59+)" data-expires="2017-07-28" content="ArFv1ZeTwzkhjNE00uAE+XtiQB41fwqG/TqlFMLrepd9sforQSvQE/tgfIbUMYNuNre4QR1k4/z8xp2mV3dbhwwAAABeeyJvcmlnaW4iOiJodHRwczovL2FmcmFtZS5pbzo0NDMiLCJmZWF0dXJlIjoiV2ViVlIxLjEiLCJleHBpcnkiOjE1MDEyMTcwMDIsImlzU3ViZG9tYWluIjp0cnVlfQ==">
+    <title>Multiview Extension Performance Test - A-Frame</title>
+    <meta name="description" content="">
+    <script src="../../../dist/aframe-master.min.js"></script>
+    <script src="fps-counter-component.js"></script> 
+    <script src="cubes-generator.js"></script>
+  </head>
+  <style>
+    body {
+      color: #cccccc;
+      font-family: Monospace;
+      font-size: 13px;
+      text-align: center;
+      margin: 0px;
+      overflow: hidden;
+    }
+
+    #info {
+      background-color: #000;
+      position: absolute;
+      top: 0px;
+      width: 100%;
+      padding: 5px;
+      z-index: 9999;
+    }
+    #info a {
+      color: #fff;
+    }
+  </style>
+  <body>
+    <a-scene cubes-generator button>
+      <a-entity camera wasd-controls look-controls>
+        <a-entity position="0 0 -1.1" geometry="primitive: plane; width: 0.16; height: 0.1;" material="color: white; shader: flat"></a-entity>
+        <a-entity position="0 0 -1" fps-counter></a-entity>
+      </a-entity>
+    </a-scene>
+  </body>
+  <script src="button.js"></script>
+</html>
+

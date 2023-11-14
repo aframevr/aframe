@@ -164,7 +164,7 @@ AFRAME.registerComponent('model-viewer', {
     rightHandEl.setAttribute('line', {color: '#118A7E'});
 
     leftHandEl.setAttribute('rotation', '0 90 0');
-    leftHandEl.setAttribute('laser-controls', {hand: 'right'});
+    leftHandEl.setAttribute('laser-controls', {hand: 'left'});
     leftHandEl.setAttribute('raycaster', {objects: '.raycastable'});
     leftHandEl.setAttribute('line', {color: '#118A7E'});
 

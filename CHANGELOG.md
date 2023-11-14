@@ -1,3 +1,51 @@
+### 1.5.0 (Nov 14, 2023)
+
+Multiview extension, Spatial computing UIs, Mixed Reality features, Hand manipulation interactions, Quest 3 support and much more!
+
+### Bug fixes
+
+- Use renderer.physicallyCorrectLights instead of the now deprecated renderer.useLegacyLights (fix #5293) (@mrx)
+- Fix `hand-controls` animations (#5300)
+- Fix outdated link in error message (#5313) (fix #5275) (@kolson25)
+- Fix visibility of controller in model-viewer example (#5317) (@DougReeder)
+- Fix typo in phong shader properties (#5334) (@nightgryphon)
+- Adapt shaders to new THREE API (#5328) (@nightgryphon)
+- Traverse meshes instead of using a hardcoded index (#5340) (@diarmidmackenzie)
+- Fix examples miscellaneous errors (#5343) (@mrxz)
+- Fix back plane resizing when text component changes (#5357) (fix #2764) (@brycethomas)
+- Fix switching back and forth from hands to controller input (fix #5373) (@floe, @dmarcos)
+
+### Enhancements
+
+- Update to THREE r158 (@felixtrz, @dmarcos) (fix #5369)
+- Add `hand-tracking-grab-controls` component to make any entity manipulable with hands (@dmarcos)
+- Add support for WebXR Mesh and Planes Module (real-world-meshing component) (@dmarcos)
+- Add support for WebXR Anchors Module (anchored component) (@dmarcos)
+- Add support OVR_multiview extension (@felixtrz)
+- Add support for Quest 3 controllers (@dmarcos, @felixtrz)
+- New `obb-collider` implementing oriented bounding box colliders (@dmarcos)
+- Improve hand-trackin-controls pinch logic (@dmarcos)
+- Add `anisotropy` option to material and renderer (#5309) (@mrxz)
+- Linter improvements (#5342) (@diarmidmackenzie)
+- Add `loopStart` and `loopEnd` properties to sound component to play loops (#5364) (@JonathannJacobs)
+- Improve sorting / rendering order (#5332) (@diarmidmackenzie, @mrxz)
+- Redesign enter immersive mode UI (@vincentfretin, @msub2, @diarmidmackenzie, @thedart76, @dmarcos)
+- Replace the use of `getJointPose` with `fillPoses` and `fillJointRadii` in hand-tracking-controls to avoid memory allocations (#5298) (@mrs)
+- Handle conversion from sRGB to Linear-sRGB implicitly instead of calling `applyColorCorrection` (#5210) (@mrxz, @vincentfretin)
+- Add Pico 4 headset controllers support (#5281) (@felixtrz)
+- Update URL to basis encoder (#5329) (@vincentfretin)
+- Add Spatial Computing UI example (#7ea40c13) (@dmarcos)
+- Remove workaround for an old Chrome bug in the context of `a-assets` (#5335) (@mrxz)
+- Unit tests improvements (@mrxz, @dmarcos)
+- Consolidate references to the CDN URL in a global variable (#5333) (@diarmidmackenzie)
+- Docs improvements (@luc122c, @donmccurdy, @turbotimon, @lainshiHenry, @Rhys-Alexander, @vincentfretin, @dmarcos)
+
+### Deprecations
+
+- `vr-mode-ui` component renamed to `xr-mode-ui` (@dmarcos)
+- GearVR and Daydream support (@vincentfretin, @dmarcos)
+
+
 ### 1.4.2 (Apr 22, 2023)
 
 ### Bug fixes
@@ -28,32 +76,32 @@ Expose low / high refresh rates options for WebXR devices (https://github.com/af
 
 ### 1.4.0 (Dec 26, 2022)
 
-A-Frame moved to custom elements V1, Oculus Quest Pro support, and tons of fixes and improvements in both A-Frame core and inspector 👏 
+A-Frame moved to custom elements V1, Oculus Quest Pro support, and tons of fixes and improvements in both A-Frame core and inspector 👏
 
-28 A-Framers contributed to this one! You're awesome 🙇 
+28 A-Framers contributed to this one! You're awesome 🙇
 
-[Sponsor](https://github.com/sponsors/dmarcos) A-Frame to help us move the 3D Web forward. 
+[Sponsor](https://github.com/sponsors/dmarcos) A-Frame to help us move the 3D Web forward.
 
-You can also [buy a cool t-shirt](https://cottonbureau.com/p/SX82KC/shirt/a-frame-og#/9479538/tee-men-standard-tee-vintage-black-tri-blend-s) 👕 
+You can also [buy a cool t-shirt](https://cottonbureau.com/p/SX82KC/shirt/a-frame-og#/9479538/tee-men-standard-tee-vintage-black-tri-blend-s) 👕
 
 ### Major Changes
 
 - Move A-Frame to [Custom Elements V1](https://developer.mozilla.org/en-US/docs/Web/API/Window/customElements) API from the now deprecated [Custom Elements V0](https://chromestatus.com/feature/4642138092470272) (fix #4262) (#5136) (@dmarcos)
-- Move build system from Browserify to Webpack adding support for ESM (#5116) (@vincentfretin) 
+- Move build system from Browserify to Webpack adding support for ESM (#5116) (@vincentfretin)
 - Update to THREE r147 (@dmarcos @AdaRoseCannon @vincentfretin)
 
 ### Deprecations
 
 - Cardboard mode is now disabled by default as a first step towards deprecation. Magic window is now the fallback on mobile when native WebXR API is not available (fix #4814) (@dmarcos)
 
-### Enhancements 
+### Enhancements
 
 - Add support for Meta Quest Touch Pro controllers (fix #5138) (#5139) (@felixtrz @cabanier @dmarcos)
 - Replace `targetRaySpace` with `gripSpace to position WebXR tracked controllers (#88e8db12) (@felixtrz @dmarcos)
 - Add support for KTX2 texture compression in [gltf-model component](https://aframe.io/docs/1.3.0/components/gltf-model.html#sidebar)  (#5101) (@jameskane05)
 - Add a default for Draco decoder URL for the [gltf model component](https://aframe.io/docs/1.3.0/components/gltf-model.html#sidebar) (#5156) (@kfarr)
 - Hide fullscreen button in desktop mode on iPad. Safari doesn't seem to support fullscreen mode. (fix #4841) (#5191)
-- Detach inactive pool entities from THREE Scene avoiding unnecessary matrix updates and raycaster checks / hits (#5188) (@diarmidmackenzie)  
+- Detach inactive pool entities from THREE Scene avoiding unnecessary matrix updates and raycaster checks / hits (#5188) (@diarmidmackenzie)
 - Add support for WebXR [foveation level](https://aframe.io/docs/1.3.0/components/renderer.html#foveationlevel). Only WebVR API was previously supported (fix #5108) (#5110) (@mrxz)
 - Events emitted on a cursor entity also pass original [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent) and [TouchEvent](https://developer.mozilla.org/en-US/docs/Web/API/TouchEvent) events when applies.
 - Update unit test stack and fix test suite (#5091) (@vincentfretin)
@@ -69,7 +117,7 @@ You can also [buy a cool t-shirt](https://cottonbureau.com/p/SX82KC/shirt/a-fram
 ### Bug fixes
 
 - Fix `triggerchanged` event not firing with Oculus Quest 2 controllers (#5149) (@msub2)
-- Fix issue of loading screen displayed indefinitely (#5033) (@diarmidmackenzie)  
+- Fix issue of loading screen displayed indefinitely (#5033) (@diarmidmackenzie)
 - Remove duplicated update shader logic (#6858ed66) (@dmarcos)
 - Fix ray positioning for Oculus Quest 2 controllers (#5141) (@felixtrz)
 - Fix reflection component removal (#5125) (@vincentfretin)
@@ -91,9 +139,9 @@ You can also [buy a cool t-shirt](https://cottonbureau.com/p/SX82KC/shirt/a-fram
 
 Huge pile of fixes!
 
-[Sponsor](https://github.com/sponsors/dmarcos) A-Frame to help us move the 3D Web forward. 
+[Sponsor](https://github.com/sponsors/dmarcos) A-Frame to help us move the 3D Web forward.
 
-You can also [buy a cool t-shirt](https://cottonbureau.com/products/fragments#/6821945/tee-men-standard-tee-vintage-black-tri-blend-s) 👕 
+You can also [buy a cool t-shirt](https://cottonbureau.com/products/fragments#/6821945/tee-men-standard-tee-vintage-black-tri-blend-s) 👕
 
 ### Major Changes
 
@@ -120,7 +168,7 @@ You can also [buy a cool t-shirt](https://cottonbureau.com/products/fragments#/6
 - Automatic generation of environment map (#4797) (@AdaRoseCannon)
 - Fix copy in device orientation permission dialog (#4794) (@antoninklopp)
 
-### Enhancements 
+### Enhancements
 
 - Add phong shader to [material component](https://aframe.io/docs/1.2.0/components/material.html#sidebar) (#5001) (@AdaRoseCannon)
 - Allow newer npm version in package.json (#4870) (@cwadrupldijjit)
