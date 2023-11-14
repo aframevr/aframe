@@ -42,11 +42,10 @@ module.exports.Component = register('reflection', {
     }
 
     this.el.addEventListener('enter-vr', function () {
+      if (!self.el.is('ar-mode')) { return; }
       var renderer = self.el.renderer;
       var session = renderer.xr.getSession();
-      if (
-        session.requestLightProbe && self.el.is('ar-mode')
-      ) {
+      if (session.requestLightProbe) {
         self.startLightProbe();
       }
     });
