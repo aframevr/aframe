@@ -8,6 +8,7 @@ registerComponent('obb-collider', {
   },
 
   init: function () {
+    this.previousScale = new THREE.Vector3();
     this.auxEuler = new THREE.Euler();
 
     this.boundingBox = new THREE.Box3();
@@ -103,6 +104,8 @@ registerComponent('obb-collider', {
       return;
     }
 
+    this.previousScale.copy(trackedObject3D.scale);
+
     // Bounding box is created axis-aligned AABB.
     // If there's any local rotation the box will be bigger than expected.
     // It undoes the local entity rotation and then restores so box has the expected size.
@@ -149,6 +152,13 @@ registerComponent('obb-collider', {
       var trackedObject3D = this.checkTrackedObject() || this.el.object3D;
 
       if (!trackedObject3D) { return; }
+
+      // Recalculate collider if scale has changed.
+      if (trackedObject3D.scale.x !== this.previousScale.x ||
+          trackedObject3D.scale.y !== this.previousScale.y ||
+          trackedObject3D.scale.z !== this.previousScale.z) {
+        this.updateCollider();
+      }
 
       trackedObject3D.updateMatrix();
       trackedObject3D.updateMatrixWorld();
