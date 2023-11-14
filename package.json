@@ -16,7 +16,7 @@
     "lint:fix": "standardx --fix",
     "precommit": "npm run lint",
     "prepush": "node scripts/testOnlyCheck.js",
-    "prerelease": "node scripts/release.js 1.4.1 1.4.2",
+    "prerelease": "node scripts/release.js 1.4.2 1.5.0",
     "start": "npm run dev",
     "start:https": "npm run dev -- --server-type https",
     "test": "karma start ./tests/karma.conf.js",
