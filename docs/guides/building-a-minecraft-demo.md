@@ -25,7 +25,7 @@ mobile and desktop.
 We'll start off with this skeleton HTML:
 
 ```html
-<script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+<script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
 
 <body>
   <a-scene>
@@ -46,7 +46,7 @@ The texture of the ground we'll be using is hosted at
 our assets, and create a thin cylinder entity pointing to that texture:
 
 ```html
-<script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+<script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
 
 <a-scene>
   <a-cylinder id="ground" src="https://cdn.aframe.io/a-painter/images/floor.jpg" radius="32" height="0.1"></a-cylinder>
@@ -57,7 +57,7 @@ See a live version [here](https://aframe.io/examples/docs/aincraft/step1.html)
 
 ### Preloading Assets
 
-[assets]: https://aframe.io/docs/1.4.0/core/asset-management-system.html
+[assets]: https://aframe.io/docs/1.5.0/core/asset-management-system.html
 
 Specifying a URL via the `src` attribute will load the texture at runtime.
 Since network requests can negatively impact render performance, we can
@@ -73,7 +73,7 @@ Let's move our ground texture to `<a-assets>` to be preloaded using an
 `<img>` element:
 
 ```html
-<script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+<script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
 
 <a-scene>
   <a-assets>
@@ -88,7 +88,7 @@ See a live version [here](https://aframe.io/examples/docs/aincraft/step2.html)
 
 ## Adding a Background
 
-[a-sky]: https://aframe.io/docs/1.4.0/primitives/a-sky.html
+[a-sky]: https://aframe.io/docs/1.5.0/primitives/a-sky.html
 [flickr]: https://www.flickr.com/groups/equirectangular/
 
 [gradient]: https://github.com/zcanter/aframe-gradient-sky
@@ -109,7 +109,7 @@ half with `theta-length="90"`, and we'll give our sphere a radius of 30 meters
 to match the ground:
 
 ```html
-<script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+<script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
 
 <a-scene>
   <a-assets>
@@ -139,15 +139,15 @@ from scratch.
 
 ### Entity-Component Pattern
 
-[entity]: https://aframe.io/docs/1.4.0/core/entity.html
+[entity]: https://aframe.io/docs/1.5.0/core/entity.html
 
 Every single object in an A-Frame scene is [`<a-entity>`][entity], which by itself
 doesn't do anything, like an empty `<div>`. We plug in components (**not to be
 confused with Web or React Components**) to that entity to provide with
 appearance, behavior , and logic.
 
-[geometry]: https://aframe.io/docs/1.4.0/components/geometry.html
-[material]: https://aframe.io/docs/1.4.0/components/material.html
+[geometry]: https://aframe.io/docs/1.5.0/components/geometry.html
+[material]: https://aframe.io/docs/1.5.0/components/material.html
 
 For a box, we attach and configure A-Frame's basic [geometry] and [material]
 components. Components are represented as HTML attributes, and component
@@ -189,7 +189,7 @@ AFRAME.registerComponent('random-color', {
 });
 ```
 
-[js]: https://aframe.io/docs/1.4.0/introduction/javascript-events-dom-apis.html
+[js]: https://aframe.io/docs/1.5.0/introduction/javascript-events-dom-apis.html
 
 For the random color component, we want to set a random color on the entity
 that this component is attached to. Components have a reference to the entity
@@ -234,7 +234,7 @@ to plug in the `random-color` component. We'll save the component as a JS file
 and include it before the scene:
 
 ```html
-<script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+<script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
 <script src="components/random-color.js"></script>
 
 <a-scene>
@@ -301,14 +301,14 @@ to describe all the voxels in our scene.
 
 ### Mixins
 
-[mixin]: https://aframe.io/docs/1.4.0/core/mixins.html
+[mixin]: https://aframe.io/docs/1.5.0/core/mixins.html
 
 We can create [a mixin][mixin] to define a reusable bundle of components.
 Instead of `<a-entity>`, which adds an object to the scene, we'll describe it
 using `<a-mixin>` which can be reused to create voxels like a prefab:
 
 ```html
-<script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+<script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
 <script src="components/random-color.js"></script>
 <script src="components/snap.js"></script>
 
@@ -386,7 +386,7 @@ To enable this, let's first define a `player` entity that wraps the controllers
 and the camera:
  
 ```html
-<script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+<script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
 
 <!-- ... -->
 
@@ -403,7 +403,7 @@ Following the README, we add the component via a `<script>` tag and just set
 the `blink-controls` component on the controller on the entity:
 
 ```html
-<script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+<script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/aframe-blink-controls/dist/aframe-blink-controls.min.js"></script>
 
 <!-- ... -->
@@ -442,7 +442,7 @@ that attaches the clicking laser to VR tracked controllers.  Like the
 `laser-controls` component. This time to the right hand:
 
 ```html
-<script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+<script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/aframe-blink-controls/dist/aframe-blink-controls.min.js"></script>
 
 <!-- ... -->

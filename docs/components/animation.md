@@ -114,7 +114,7 @@ Accessed as `el.components.animation.<MEMBER>`.
 
 ### Controlling Animations using setAttribute
 
-Like any A-Frame component, the animation component can be configured from JavaScript by calling [setAttribute()]( https://aframe.io/docs/1.4.0/introduction/javascript-events-dom-apis.html#updating-a-component-with-setattribute) on an element.
+Like any A-Frame component, the animation component can be configured from JavaScript by calling [setAttribute()]( https://aframe.io/docs/1.5.0/introduction/javascript-events-dom-apis.html#updating-a-component-with-setattribute) on an element.
 
 By default, the animation will begin playing immediately (autoplay is true by default).
 
@@ -154,7 +154,7 @@ To start an animation by explicitly emitting an event, you can do the following:
 el.emit(`startanim001`, null, false);
 ```
 
-The [third parameter of emit](https://aframe.io/docs/1.4.0/core/entity.html#emit-name-detail-bubbles) set to "false" parameter ensures the event won't bubble up to parents, so that you can target the animation at just one particular element.
+The [third parameter of emit](https://aframe.io/docs/1.5.0/core/entity.html#emit-name-detail-bubbles) set to "false" parameter ensures the event won't bubble up to parents, so that you can target the animation at just one particular element.
 
 This assumes that an animation has already been configured to respond to that custom start event, for example like this:
 

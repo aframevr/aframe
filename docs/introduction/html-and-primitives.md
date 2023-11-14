@@ -59,7 +59,7 @@ environment, place the camera, etc.
 ```html
 <html>
   <head>
-    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
   </head>
   <body>
     <a-scene>
@@ -127,7 +127,7 @@ for [Don McCurdy's
 `aframe-physics-system`](https://github.com/n5ro/aframe-physics-system) and attach
 the physics components via HTML attributes:
 
-> :warning: **If you are using A-Frame 1.4.0 or later**: [`aframe-physics-system`](https://github.com/donmccurdy/aframe-physics-system)
+> :warning: **If you are using A-Frame 1.5.0 or later**: [`aframe-physics-system`](https://github.com/donmccurdy/aframe-physics-system)
 > and you're having issues, make sure you're using THREE.BufferGeometry, not  the
 > [now-deprecated THREE.Geometry](https://discourse.threejs.org/t/three-geometry-will-be-removed-from-core-with-r125/22401).
 > Recent versions of three.js rename generators such as PlaneBufferGeometry to just [PlaneGeometry](https://threejs.org/docs/#api/en/geometries/PlaneGeometry),
@@ -136,8 +136,8 @@ the physics components via HTML attributes:
 ```html
 <html>
   <head>
-    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
-    <script src="https://unpkg.com/aframe-physics-system@1.4.0/dist/aframe-physics-system.min.js"></script>
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <script src="https://unpkg.com/aframe-physics-system@1.5.0/dist/aframe-physics-system.min.js"></script>
   </head>
   <body>
     <a-scene physics>
