@@ -15061,9 +15061,9 @@ module.exports.Component = registerComponent('layer', {
     this.needsRedraw = false;
     this.frameBuffer = gl.createFramebuffer();
     var webxrData = this.el.sceneEl.getAttribute('webxr');
-    var requiredFeaturesArray = webxrData.optionalFeatures;
+    var requiredFeaturesArray = webxrData.requiredFeatures;
     if (requiredFeaturesArray.indexOf('layers') === -1) {
-      requiredFeaturesArray.push('laters');
+      requiredFeaturesArray.push('layers');
       this.el.sceneEl.setAttribute('webxr', webxrData);
     }
     this.el.sceneEl.addEventListener('enter-vr', this.onEnterVR);
@@ -18436,7 +18436,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     var button = this.mapping[this.data.hand].buttons[evt.detail.id];
     var buttonObjects = this.buttonObjects;
     var analogValue;
-    if (!buttonObjects) {
+    if (!buttonObjects || !buttonObjects[button]) {
       return;
     }
     analogValue = evt.detail.state.value;
@@ -30714,7 +30714,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.5.0 (Date 2023-11-14, Commit #6c7dbc72)');
+console.log('A-Frame Version: 1.5.0 (Date 2023-11-15, Commit #da8dc146)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
