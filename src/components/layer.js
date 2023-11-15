@@ -23,9 +23,9 @@ module.exports.Component = registerComponent('layer', {
     this.frameBuffer = gl.createFramebuffer();
 
     var webxrData = this.el.sceneEl.getAttribute('webxr');
-    var requiredFeaturesArray = webxrData.optionalFeatures;
+    var requiredFeaturesArray = webxrData.requiredFeatures;
     if (requiredFeaturesArray.indexOf('layers') === -1) {
-      requiredFeaturesArray.push('laters');
+      requiredFeaturesArray.push('layers');
       this.el.sceneEl.setAttribute('webxr', webxrData);
     }
     this.el.sceneEl.addEventListener('enter-vr', this.onEnterVR);
