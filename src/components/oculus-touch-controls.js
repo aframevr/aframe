@@ -367,7 +367,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     var button = this.mapping[this.data.hand].buttons[evt.detail.id];
     var buttonObjects = this.buttonObjects;
     var analogValue;
-    if (!buttonObjects) { return; }
+    if (!buttonObjects || !buttonObjects[button]) { return; }
     analogValue = evt.detail.state.value;
     buttonObjects[button].quaternion.slerpQuaternions(
       this.buttonRanges[button].min.quaternion,
