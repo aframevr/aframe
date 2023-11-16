@@ -23,7 +23,7 @@ registerSystem('obb-collider', {
   removeCollider: function (colliderEl) {
     var colliderEls = this.colliderEls;
     var elIndex = colliderEls.indexOf(colliderEl);
-    colliderEl.hideCollider();
+    colliderEl.components['obb-collider'].hideCollider();
     if (elIndex > -1) { colliderEls.splice(elIndex, 1); }
     if (colliderEls.length === 0) { this.tick = undefined; }
   },
