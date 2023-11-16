@@ -96,7 +96,7 @@ HitTest.prototype.sessionStart = function sessionStart (hitTestSourceDetails) {
 };
 
 /**
- * Turns the last hit test into an anchor, the provided Object3D will have it's
+ * Turns the last hit test into an anchor, the provided Object3D will have its
  * position update to track the anchor.
  *
  * @param {Object3D} object3D object to track
@@ -190,18 +190,19 @@ HitTest.updateAnchorPoses = function (frame, refSpace) {
     try {
       // Query most recent pose of the anchor relative to some reference space:
       anchorPose = frame.getPose(anchor.anchorSpace, refSpace);
+
+      if (anchorPose) {
+        object3DOptions = HitTest.prototype.anchorToObject3D.get(anchor);
+        offset = object3DOptions.offset;
+        object3D = object3DOptions.object3D;
+
+        applyPose(anchorPose, object3D, offset);
+      }
     } catch (e) {
-      // This will fail if the anchor has been deleted that frame
-    }
-
-    if (anchorPose) {
-      object3DOptions = HitTest.prototype.anchorToObject3D.get(anchor);
-      offset = object3DOptions.offset;
-      object3D = object3DOptions.object3D;
-
-      applyPose(anchorPose, object3D, offset);
+      console.error('while updating anchor poses:', e);
     }
   });
+  HitTest.prototype.previousFrameAnchors = trackedAnchors;
 };
 
 var hitTestCache;
@@ -283,16 +284,37 @@ module.exports.Component = register('ar-hit-test', {
       // Default to selecting through the face
       session.requestReferenceSpace('viewer')
       .then(function (viewerSpace) {
-        this.hitTest = new HitTest(renderer, {
+        this.viewerHitTest = this.hitTest = new HitTest(renderer, {
           space: viewerSpace
         });
-
-        hitTestCache.set(viewerSpace, this.hitTest);
 
         this.el.emit('ar-hit-test-start');
       }.bind(this));
 
-      // These are transient inputs so need to be handled seperately
+      // If a tracked controller is available, selects via that instead of the headset
+      var arHitTestComp = this;
+      this.el.sceneEl.addEventListener('controllersupdated', function () {
+        var sceneEl = this;
+        var inputSources = sceneEl.xrSession && sceneEl.xrSession.inputSources;
+        if (!inputSources) { return; }
+        for (var i = 0; i < inputSources.length; ++i) {
+          if (inputSources[i].targetRayMode === 'tracked-pointer') {
+            arHitTestComp.hitTest = new HitTest(renderer, {
+              space: inputSources[i].targetRaySpace
+            });
+            hitTestCache.set(inputSources[i], arHitTestComp.hitTest);
+
+            if (arHitTestComp.viewerHitTest && typeof arHitTestComp.viewerHitTest.cancel === 'function') {
+              arHitTestComp.viewerHitTest.cancel();
+              arHitTestComp.viewerHitTest = null;
+            }
+
+            break;   // only uses first tracked controller
+          }
+        }
+      });
+
+      // These are transient inputs so need to be handled separately
       var profileToSupport = 'generic-touchscreen';
       var transientHitTest = new HitTest(renderer, {
         profile: profileToSupport
@@ -345,7 +367,7 @@ module.exports.Component = register('ar-hit-test', {
               applyPose(applyPose.tempFakePose, object, this.bboxOffset);
               object.visible = true;
 
-              // create an anchor attatched to the object
+              // create an anchor attached to the object
               this.hitTest.anchorFromLastHitTestResult(object, this.bboxOffset);
             }
           }
@@ -355,9 +377,9 @@ module.exports.Component = register('ar-hit-test', {
             position: this.bboxMesh.position,
             orientation: this.bboxMesh.quaternion
           });
-        }
 
-        this.hitTest = null;
+          this.hitTest = null;
+        }
       }.bind(this));
     }.bind(this));
 
@@ -449,7 +471,7 @@ module.exports.Component = register('ar-hit-test', {
     var renderer = this.el.sceneEl.renderer;
 
     if (frame) {
-      // if we are in XR then update the positions of the objects attatched to anchors
+      // if we are in XR then update the positions of the objects attached to anchors
       HitTest.updateAnchorPoses(frame, renderer.xr.getReferenceSpace());
     }
     if (this.bboxNeedsUpdate) {
