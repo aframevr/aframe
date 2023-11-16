@@ -196,9 +196,9 @@ HitTest.updateAnchorPoses = function (frame, refSpace) {
 
     if (anchorPose) {
       object3DOptions = HitTest.prototype.anchorToObject3D.get(anchor);
+      if (!object3DOptions) { return; }
       offset = object3DOptions.offset;
       object3D = object3DOptions.object3D;
-
       applyPose(anchorPose, object3D, offset);
     }
   });
@@ -365,6 +365,7 @@ module.exports.Component = register('ar-hit-test', {
     this.update = this.update.bind(this);
     this.makeBBox();
   },
+
   update: function () {
     // If it is disabled it's cleaned up
     if (this.data.enabled === false) {
@@ -384,6 +385,7 @@ module.exports.Component = register('ar-hit-test', {
     }
     this.bboxNeedsUpdate = true;
   },
+
   makeBBox: function () {
     var geometry = new THREE.PlaneGeometry(1, 1);
     var material = new THREE.MeshBasicMaterial({
@@ -397,6 +399,7 @@ module.exports.Component = register('ar-hit-test', {
     this.el.setObject3D('ar-hit-test', this.bboxMesh);
     this.bboxMesh.visible = false;
   },
+
   updateFootprint: function () {
     var tempImageData;
     var renderer = this.el.sceneEl.renderer;
