@@ -19532,6 +19532,9 @@ HitTest.updateAnchorPoses = function (frame, refSpace) {
     }
     if (anchorPose) {
       object3DOptions = HitTest.prototype.anchorToObject3D.get(anchor);
+      if (!object3DOptions) {
+        return;
+      }
       offset = object3DOptions.offset;
       object3D = object3DOptions.object3D;
       applyPose(anchorPose, object3D, offset);
@@ -30717,7 +30720,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.5.0 (Date 2023-11-16, Commit #75d50926)');
+console.log('A-Frame Version: 1.5.0 (Date 2023-11-16, Commit #abab0a7d)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
