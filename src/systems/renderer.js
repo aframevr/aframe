@@ -34,7 +34,9 @@ module.exports.System = registerSystem('renderer', {
     // This is the rendering engine, such as THREE.js so copy over any persistent properties from the rendering system.
     var renderer = sceneEl.renderer;
 
-    renderer.useLegacyLights = !data.physicallyCorrectLights;
+    if (!data.physicallyCorrectLights) {
+      renderer.useLegacyLights = !data.physicallyCorrectLights;
+    }
     renderer.toneMapping = THREE[toneMappingName + 'ToneMapping'];
     THREE.Texture.DEFAULT_ANISOTROPY = data.anisotropy;
 
