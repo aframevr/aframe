@@ -55,7 +55,7 @@ Shader.prototype = {
     this.material = new (this.raw ? THREE.RawShaderMaterial : THREE.ShaderMaterial)({
       // attributes: this.attributes,
       uniforms: this.uniforms,
-      glslVersion: this.raw ? THREE.GLSL3 : undefined,
+      glslVersion: this.raw ? THREE.GLSL3 : null,
       vertexShader: this.vertexShader,
       fragmentShader: this.fragmentShader
     });
