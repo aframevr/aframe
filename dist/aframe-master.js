@@ -30719,7 +30719,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.5.0 (Date 2023-11-17, Commit #6dbba054)');
+console.log('A-Frame Version: 1.5.0 (Date 2023-11-17, Commit #d43ce42d)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
@@ -32986,7 +32986,9 @@ module.exports.System = registerSystem('renderer', {
     var toneMappingName = this.data.toneMapping.charAt(0).toUpperCase() + this.data.toneMapping.slice(1);
     // This is the rendering engine, such as THREE.js so copy over any persistent properties from the rendering system.
     var renderer = sceneEl.renderer;
-    renderer.useLegacyLights = !data.physicallyCorrectLights;
+    if (!data.physicallyCorrectLights) {
+      renderer.useLegacyLights = !data.physicallyCorrectLights;
+    }
     renderer.toneMapping = THREE[toneMappingName + 'ToneMapping'];
     THREE.Texture.DEFAULT_ANISOTROPY = data.anisotropy;
     THREE.ColorManagement.enabled = data.colorManagement;
