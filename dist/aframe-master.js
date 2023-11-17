@@ -14338,7 +14338,6 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
     mesh.rotation.set(0, 0, 0);
     skinnedMesh.frustumCulled = false;
     skinnedMesh.material = new THREE.MeshStandardMaterial({
-      skinning: true,
       color: this.data.modelColor
     });
     this.el.setObject3D('mesh', mesh);
@@ -30720,7 +30719,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.5.0 (Date 2023-11-16, Commit #abab0a7d)');
+console.log('A-Frame Version: 1.5.0 (Date 2023-11-17, Commit #dac50c57)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
