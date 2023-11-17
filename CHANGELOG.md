@@ -4,7 +4,7 @@ Multiview extension, Spatial computing UIs, Mixed Reality features, Hand manipul
 
 ### Bug fixes
 
-- Use renderer.physicallyCorrectLights instead of the now deprecated renderer.useLegacyLights (fix #5293) (@mrx)
+- Use renderer.useLegacyLights instead of the deprecated renderer.physicallyCorrectLights in three r150, but keep the physicallyCorrectLights property name for the renderer system for backward compatibility (fix #5293) (@mrx)
 - Fix `hand-controls` animations (#5300)
 - Fix outdated link in error message (#5313) (fix #5275) (@kolson25)
 - Fix visibility of controller in model-viewer example (#5317) (@DougReeder)
