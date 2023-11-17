@@ -28987,7 +28987,7 @@ Shader.prototype = {
     this.material = new (this.raw ? THREE.RawShaderMaterial : THREE.ShaderMaterial)({
       // attributes: this.attributes,
       uniforms: this.uniforms,
-      glslVersion: this.raw ? THREE.GLSL3 : undefined,
+      glslVersion: this.raw ? THREE.GLSL3 : null,
       vertexShader: this.vertexShader,
       fragmentShader: this.fragmentShader
     });
@@ -30719,7 +30719,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.5.0 (Date 2023-11-17, Commit #dac50c57)');
+console.log('A-Frame Version: 1.5.0 (Date 2023-11-17, Commit #6dbba054)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
