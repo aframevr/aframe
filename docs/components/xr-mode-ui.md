@@ -27,7 +27,7 @@ to the [`<a-scene>` element][scene]. If we wish to simply toggle the UI, use CSS
 | enterVREnabled        | If the VR button is displayed when applicable                       | false         |
 | enterARButton         | Selector to a custom AR button. On click, the button will enter AR. | ''            |
 | enterAREnabled        | If the AR button is displayed when applicable                       | false         |
-| XRMode                | If the AR, VR button or both will be displayed.                     | ar, vr, xr    |
+| XRMode                | If the AR, VR button or both will be displayed.  One of 'ar', 'vr' or 'xr'.| vr            |
 
 ### Specifying a Custom Enter VR Button
 
