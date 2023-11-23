@@ -404,7 +404,7 @@ class AEntity extends ANode {
     var name;
     var componentsToUpdate = this.componentsToUpdate;
 
-    if (!this.hasLoaded) { return; }
+    if (!this.hasLoaded && !this.sceneEl) { return; }
 
     // Gather mixin-defined components.
     for (i = 0; i < this.mixinEls.length; i++) {
@@ -511,7 +511,7 @@ class AEntity extends ANode {
     var key;
 
     // Already playing.
-    if (this.isPlaying || !this.hasLoaded) { return; }
+    if (this.isPlaying || (!this.hasLoaded && !this.sceneEl)) { return; }
     this.isPlaying = true;
 
     // Wake up all components.

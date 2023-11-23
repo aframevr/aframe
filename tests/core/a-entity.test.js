@@ -121,6 +121,27 @@ suite('a-entity', function () {
     }
   });
 
+  test('entity has not loaded until all components have loaded', function (done) {
+    const parentEl = el;
+    const el2 = document.createElement('a-entity');
+    registerComponent('test', {
+      schema: {array: {type: 'array'}},
+      init: function () {
+        assert.notOk(this.el.hasLoaded);
+        this.el.addEventListener('loaded', function () {
+          assert.ok(el2.components.geometry);
+          assert.ok(el2.components.material);
+          assert.ok(el2.components.test);
+          done();
+        });
+      }
+    });
+    el2.setAttribute('geometry', 'primitive:plane');
+    el2.setAttribute('test', '');
+    el2.setAttribute('material', 'color:blue');
+    parentEl.appendChild(el2);
+  });
+
   suite('attachedCallback', function () {
     test('initializes 3D object', function (done) {
       elFactory().then(el => {
@@ -169,7 +190,7 @@ suite('a-entity', function () {
       this.sinon.spy(AEntity.prototype, 'play');
 
       el2.addEventListener('play', function () {
-        assert.ok(el2.hasLoaded);
+        assert.ok(!el2.hasLoaded && el2.sceneEl);
         sinon.assert.called(AEntity.prototype.play);
         done();
       });

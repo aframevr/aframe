@@ -9,9 +9,6 @@ suite('line', function () {
   setup(function (done) {
     var count = 0;
     el = this.el = entityFactory();
-    el.setAttribute('line', '');
-    el.setAttribute('line__suffix', '');
-    if (el.hasLoaded) { done(); }
     el.addEventListener('componentinitialized', function (evt) {
       if (evt.detail.name !== 'line' &&
           evt.detail.name !== 'line__suffix') { return; }
@@ -22,6 +19,8 @@ suite('line', function () {
         done();
       }
     });
+    el.setAttribute('line', '');
+    el.setAttribute('line__suffix', '');
   });
 
   suite('init', function () {

@@ -145,9 +145,9 @@ class ANode extends HTMLElement {
         }
       });
 
-      self.hasLoaded = true;
       self.setupMutationObserver();
       if (cb) { cb(); }
+      self.hasLoaded = true;
       self.emit('loaded', undefined, false);
     });
   }

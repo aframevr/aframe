@@ -278,7 +278,7 @@ Component.prototype = {
 
     // Just cache the attribute if the entity has not loaded
     // Components are not initialized until the entity has loaded
-    if (!el.hasLoaded) {
+    if (!el.hasLoaded && !el.sceneEl) {
       this.updateCachedAttrValue(attrValue);
       return;
     }

@@ -17,7 +17,7 @@ suite('vive-controls', function () {
       controlsSystem = el.sceneEl.systems['tracked-controls-webvr'];
       done();
     });
-    el.setAttribute('vive-controls', 'hand: right; model: false');  // To ensure index = 0.
+    el.setAttribute('vive-controls', 'hand: right; model: true');  // To ensure index = 0.
   });
 
   suite('checkIfControllerPresent', function () {
