@@ -25416,7 +25416,7 @@ class AEntity extends ANode {
     var i;
     var name;
     var componentsToUpdate = this.componentsToUpdate;
-    if (!this.hasLoaded) {
+    if (!this.hasLoaded && !this.sceneEl) {
       return;
     }
 
@@ -25532,7 +25532,7 @@ class AEntity extends ANode {
     var key;
 
     // Already playing.
-    if (this.isPlaying || !this.hasLoaded) {
+    if (this.isPlaying || !this.hasLoaded && !this.sceneEl) {
       return;
     }
     this.isPlaying = true;
@@ -26190,11 +26190,11 @@ class ANode extends HTMLElement {
           warn('Rendering scene with errors on node: ', result.reason.target);
         }
       });
-      self.hasLoaded = true;
       self.setupMutationObserver();
       if (cb) {
         cb();
       }
+      self.hasLoaded = true;
       self.emit('loaded', undefined, false);
     });
   }
@@ -26631,7 +26631,7 @@ Component.prototype = {
 
     // Just cache the attribute if the entity has not loaded
     // Components are not initialized until the entity has loaded
-    if (!el.hasLoaded) {
+    if (!el.hasLoaded && !el.sceneEl) {
       this.updateCachedAttrValue(attrValue);
       return;
     }
@@ -30719,7 +30719,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.5.0 (Date 2023-11-17, Commit #d43ce42d)');
+console.log('A-Frame Version: 1.5.0 (Date 2023-11-23, Commit #924dc00e)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
