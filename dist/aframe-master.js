@@ -17400,7 +17400,7 @@ registerComponent('obb-collider', {
     }
   },
   init: function () {
-    this.previousScale = new THREE.Vector3();
+    this.previousScale = new THREE.Vector3().copy(this.el.object3D.scale);
     this.auxEuler = new THREE.Euler();
     this.boundingBox = new THREE.Box3();
     this.boundingBoxSize = new THREE.Vector3();
@@ -17497,37 +17497,51 @@ registerComponent('obb-collider', {
     this.el.sceneEl.object3D.add(renderColliderMesh);
   },
   updateBoundingBox: function () {
-    var auxEuler = this.auxEuler;
-    var boundingBox = this.boundingBox;
-    var size = this.data.size;
-    var trackedObject3D = this.trackedObject3D || this.el.object3D;
-    var boundingBoxSize = this.boundingBoxSize;
-    var minimumColliderDimension = this.data.minimumColliderDimension;
+    var auxPosition = new THREE.Vector3();
+    var auxScale = new THREE.Vector3();
+    var auxQuaternion = new THREE.Quaternion();
+    var identityQuaternion = new THREE.Quaternion();
+    var auxMatrix = new THREE.Matrix4();
+    return function () {
+      var auxEuler = this.auxEuler;
+      var boundingBox = this.boundingBox;
+      var size = this.data.size;
+      var trackedObject3D = this.trackedObject3D || this.el.object3D;
+      var boundingBoxSize = this.boundingBoxSize;
+      var minimumColliderDimension = this.data.minimumColliderDimension;
 
-    // user defined size takes precedence.
-    if (size) {
-      this.boundingBoxSize.x = size;
-      this.boundingBoxSize.y = size;
-      this.boundingBoxSize.z = size;
-      return;
-    }
-    this.previousScale.copy(trackedObject3D.scale);
+      // user defined size takes precedence.
+      if (size) {
+        this.boundingBoxSize.x = size;
+        this.boundingBoxSize.y = size;
+        this.boundingBoxSize.z = size;
+        return;
+      }
 
-    // Bounding box is created axis-aligned AABB.
-    // If there's any local rotation the box will be bigger than expected.
-    // It undoes the local entity rotation and then restores so box has the expected size.
-    auxEuler.copy(trackedObject3D.rotation);
-    trackedObject3D.rotation.set(0, 0, 0);
-    trackedObject3D.updateMatrixWorld(true);
-    boundingBox.setFromObject(trackedObject3D, true);
-    boundingBox.getSize(boundingBoxSize);
-    boundingBoxSize.x = boundingBoxSize.x < minimumColliderDimension ? minimumColliderDimension : boundingBoxSize.x;
-    boundingBoxSize.y = boundingBoxSize.y < minimumColliderDimension ? minimumColliderDimension : boundingBoxSize.y;
-    boundingBoxSize.z = boundingBoxSize.z < minimumColliderDimension ? minimumColliderDimension : boundingBoxSize.z;
+      // Bounding box is created axis-aligned AABB.
+      // If there's any rotation the box will have the wrong size.
+      // It undoes the local entity rotation and then restores so box has the expected size.
+      // We also undo the parent world rotation.
+      auxEuler.copy(trackedObject3D.rotation);
+      trackedObject3D.rotation.set(0, 0, 0);
+      trackedObject3D.parent.matrixWorld.decompose(auxPosition, auxQuaternion, auxScale);
+      auxMatrix.compose(auxPosition, identityQuaternion, auxScale);
+      trackedObject3D.parent.matrixWorld.copy(auxMatrix);
 
-    // Restore rotation.
-    this.el.object3D.rotation.copy(auxEuler);
-  },
+      // Calculate bounding box size.
+      boundingBox.setFromObject(trackedObject3D, true);
+      boundingBox.getSize(boundingBoxSize);
+
+      // Enforce minimum dimensions.
+      boundingBoxSize.x = boundingBoxSize.x < minimumColliderDimension ? minimumColliderDimension : boundingBoxSize.x;
+      boundingBoxSize.y = boundingBoxSize.y < minimumColliderDimension ? minimumColliderDimension : boundingBoxSize.y;
+      boundingBoxSize.z = boundingBoxSize.z < minimumColliderDimension ? minimumColliderDimension : boundingBoxSize.z;
+
+      // Restore rotations.
+      trackedObject3D.parent.matrixWorld.compose(auxPosition, auxQuaternion, auxScale);
+      this.el.object3D.rotation.copy(auxEuler);
+    };
+  }(),
   checkTrackedObject: function () {
     var trackedObject3DPath = this.trackedObject3DPath;
     var trackedObject3D;
@@ -17558,14 +17572,16 @@ registerComponent('obb-collider', {
       if (!trackedObject3D) {
         return;
       }
+      trackedObject3D.updateMatrix();
+      trackedObject3D.updateMatrixWorld(true);
+      trackedObject3D.matrixWorld.decompose(auxPosition, auxQuaternion, auxScale);
 
       // Recalculate collider if scale has changed.
-      if (trackedObject3D.scale.x !== this.previousScale.x || trackedObject3D.scale.y !== this.previousScale.y || trackedObject3D.scale.z !== this.previousScale.z) {
+      if (Math.abs(auxScale.x - this.previousScale.x) > 0.0001 || Math.abs(auxScale.y - this.previousScale.y) > 0.0001 || Math.abs(auxScale.z - this.previousScale.z) > 0.0001) {
         this.updateCollider();
       }
-      trackedObject3D.updateMatrix();
-      trackedObject3D.updateMatrixWorld();
-      trackedObject3D.matrixWorld.decompose(auxPosition, auxQuaternion, auxScale);
+      this.previousScale.copy(auxScale);
+
       // reset scale, keep position and rotation
       auxScale.set(1, 1, 1);
       auxMatrix.compose(auxPosition, auxQuaternion, auxScale);
@@ -30719,7 +30735,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.5.0 (Date 2023-11-23, Commit #924dc00e)');
+console.log('A-Frame Version: 1.5.0 (Date 2023-11-26, Commit #5da7166e)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
