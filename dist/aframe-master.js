@@ -14028,6 +14028,7 @@ function isViveController(trackedControls) {
 /* global THREE, XRHand */
 var registerComponent = (__webpack_require__(/*! ../core/component */ "./src/core/component.js").registerComponent);
 var bind = __webpack_require__(/*! ../utils/bind */ "./src/utils/bind.js");
+var AEntity = (__webpack_require__(/*! ../core/a-entity */ "./src/core/a-entity.js").AEntity);
 var trackedControlsUtils = __webpack_require__(/*! ../utils/tracked-controls */ "./src/utils/tracked-controls.js");
 var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
 var AFRAME_CDN_ROOT = (__webpack_require__(/*! ../constants */ "./src/constants/index.js").AFRAME_CDN_ROOT);
@@ -14083,6 +14084,7 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
       sceneEl.setAttribute('webxr', webxrData);
     }
     this.onModelLoaded = this.onModelLoaded.bind(this);
+    this.onChildAttached = this.onChildAttached.bind(this);
     this.jointEls = [];
     this.controllerPresent = false;
     this.isPinched = false;
@@ -14098,6 +14100,10 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
     this.updateReferenceSpace = this.updateReferenceSpace.bind(this);
     this.el.sceneEl.addEventListener('enter-vr', this.updateReferenceSpace);
     this.el.sceneEl.addEventListener('exit-vr', this.updateReferenceSpace);
+    this.el.addEventListener('child-attached', this.onChildAttached);
+  },
+  onChildAttached: function (evt) {
+    this.addChildEntity(evt.detail.el);
   },
   update: function () {
     this.updateModelColor();
@@ -14156,8 +14162,21 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
       this.hasPoses = frame.fillPoses(controller.hand.values(), referenceSpace, this.jointPoses) && frame.fillJointRadii(controller.hand.values(), this.jointRadii);
       this.updateHandModel();
       this.detectGesture();
+      this.updateWristObject();
     }
   },
+  updateWristObject: function () {
+    var jointPose = new THREE.Matrix4();
+    return function () {
+      var wristObject3D = this.wristObject3D;
+      if (!wristObject3D) {
+        return;
+      }
+      jointPose.fromArray(this.jointPoses, WRIST_INDEX * 16);
+      wristObject3D.position.setFromMatrixPosition(jointPose);
+      wristObject3D.quaternion.setFromRotationMatrix(jointPose);
+    };
+  }(),
   updateHandModel: function () {
     if (this.data.modelStyle === 'dots') {
       this.updateHandDotsModel();
@@ -14340,7 +14359,25 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
     skinnedMesh.material = new THREE.MeshStandardMaterial({
       color: this.data.modelColor
     });
+    this.setupChildrenEntities();
     this.el.setObject3D('mesh', mesh);
+  },
+  setupChildrenEntities: function () {
+    var childrenEls = this.el.children;
+    this.wristObject3D = new THREE.Object3D();
+    for (var i = 0; i < childrenEls.length; ++i) {
+      if (!(childrenEls[i] instanceof AEntity)) {
+        continue;
+      }
+      this.addChildEntity(childrenEls[i]);
+    }
+    this.el.sceneEl.object3D.add(this.wristObject3D);
+  },
+  addChildEntity: function (childEl) {
+    if (!(childEl instanceof AEntity)) {
+      return;
+    }
+    this.wristObject3D.add(childEl.object3D);
   }
 });
 
@@ -30735,7 +30772,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.5.0 (Date 2023-11-26, Commit #5da7166e)');
+console.log('A-Frame Version: 1.5.0 (Date 2023-11-27, Commit #874fced2)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
