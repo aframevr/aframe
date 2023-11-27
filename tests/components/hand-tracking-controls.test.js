@@ -65,6 +65,22 @@ suite('tracked-controls-webxr', function () {
     });
   });
 
+  suite('children entities', function () {
+    test('attached to the wrist joint', function (done) {
+      var boxEl = document.createElement('a-box');
+      el.setAttribute('hand-tracking-controls', {hand: 'left'});
+      el.components['hand-tracking-controls'].checkIfControllerPresent();
+      el.addEventListener('model-loaded', function () {
+        assert.ok(el.components['hand-tracking-controls'].wristObject3D);
+        el.appendChild(boxEl);
+      });
+      el.addEventListener('child-attached', function () {
+        assert.equal(boxEl.object3D.parent, el.components['hand-tracking-controls'].wristObject3D);
+        done();
+      });
+    });
+  });
+
   suite('emit events', function () {
     test('pinchstarted', function () {
       const emitSpy = sinon.spy(el, 'emit');

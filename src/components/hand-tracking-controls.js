@@ -2,6 +2,8 @@
 var registerComponent = require('../core/component').registerComponent;
 var bind = require('../utils/bind');
 
+var AEntity = require('../core/a-entity').AEntity;
+
 var trackedControlsUtils = require('../utils/tracked-controls');
 var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
 
@@ -84,6 +86,7 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
     }
 
     this.onModelLoaded = this.onModelLoaded.bind(this);
+    this.onChildAttached = this.onChildAttached.bind(this);
     this.jointEls = [];
     this.controllerPresent = false;
     this.isPinched = false;
@@ -102,6 +105,11 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
     this.updateReferenceSpace = this.updateReferenceSpace.bind(this);
     this.el.sceneEl.addEventListener('enter-vr', this.updateReferenceSpace);
     this.el.sceneEl.addEventListener('exit-vr', this.updateReferenceSpace);
+    this.el.addEventListener('child-attached', this.onChildAttached);
+  },
+
+  onChildAttached: function (evt) {
+    this.addChildEntity(evt.detail.el);
   },
 
   update: function () {
@@ -164,8 +172,20 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
 
       this.updateHandModel();
       this.detectGesture();
+      this.updateWristObject();
     }
   },
+
+  updateWristObject: (function () {
+    var jointPose = new THREE.Matrix4();
+    return function () {
+      var wristObject3D = this.wristObject3D;
+      if (!wristObject3D) { return; }
+      jointPose.fromArray(this.jointPoses, WRIST_INDEX * 16);
+      wristObject3D.position.setFromMatrixPosition(jointPose);
+      wristObject3D.quaternion.setFromRotationMatrix(jointPose);
+    };
+  })(),
 
   updateHandModel: function () {
     if (this.data.modelStyle === 'dots') {
@@ -348,6 +368,22 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
     mesh.rotation.set(0, 0, 0);
     skinnedMesh.frustumCulled = false;
     skinnedMesh.material = new THREE.MeshStandardMaterial({color: this.data.modelColor});
+    this.setupChildrenEntities();
     this.el.setObject3D('mesh', mesh);
+  },
+
+  setupChildrenEntities: function () {
+    var childrenEls = this.el.children;
+    this.wristObject3D = new THREE.Object3D();
+    for (var i = 0; i < childrenEls.length; ++i) {
+      if (!(childrenEls[i] instanceof AEntity)) { continue; }
+      this.addChildEntity(childrenEls[i]);
+    }
+    this.el.sceneEl.object3D.add(this.wristObject3D);
+  },
+
+  addChildEntity: function (childEl) {
+    if (!(childEl instanceof AEntity)) { return; }
+    this.wristObject3D.add(childEl.object3D);
   }
 });
