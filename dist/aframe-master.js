@@ -30772,7 +30772,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.5.0 (Date 2023-11-27, Commit #874fced2)');
+console.log('A-Frame Version: 1.5.0 (Date 2023-12-01, Commit #78ca91e8)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
@@ -33186,17 +33186,12 @@ module.exports.System = registerSystem('shadow', {
     var sceneEl = this.sceneEl;
     var data = this.data;
     this.shadowMapEnabled = false;
-    if (!sceneEl.renderer) {
-      return;
-    } // For tests.
-
     sceneEl.renderer.shadowMap.type = SHADOW_MAP_TYPE_MAP[data.type];
     sceneEl.renderer.shadowMap.autoUpdate = data.autoUpdate;
-    this.setShadowMapEnabled(this.shadowMapEnabled);
   },
   update: function (prevData) {
     if (prevData.enabled !== this.data.enabled) {
-      this.setShadowMapEnabled(this.data.enabled);
+      this.setShadowMapEnabled(this.shadowMapEnabled);
     }
   },
   /**
@@ -33204,13 +33199,31 @@ module.exports.System = registerSystem('shadow', {
    * @param {boolean} enabled
    */
   setShadowMapEnabled: function (enabled) {
+    var sceneEl = this.sceneEl;
     var renderer = this.sceneEl.renderer;
-    this.shadowMapEnabled = this.data.enabled && enabled;
-    if (renderer) {
-      renderer.shadowMap.enabled = this.shadowMapEnabled;
+    this.shadowMapEnabled = enabled;
+    var newEnabledState = this.data.enabled && this.shadowMapEnabled;
+    if (renderer && newEnabledState !== renderer.shadowMap.enabled) {
+      renderer.shadowMap.enabled = newEnabledState;
+
+      // Materials must be updated for the change to take effect.
+      updateAllMaterials(sceneEl);
     }
   }
 });
+function updateAllMaterials(sceneEl) {
+  if (!sceneEl.hasLoaded) {
+    return;
+  }
+  sceneEl.object3D.traverse(function (node) {
+    if (node.material) {
+      var materials = Array.isArray(node.material) ? node.material : [node.material];
+      for (var i = 0; i < materials.length; i++) {
+        materials[i].needsUpdate = true;
+      }
+    }
+  });
+}
 
 /***/ }),
 
