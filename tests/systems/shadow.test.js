@@ -7,12 +7,12 @@ suite('shadow system', function () {
   });
 
   suite('init', function () {
-    test('enabled by default', function (done) {
+    test('shadowMap disabled by default', function (done) {
       var el = this.el;
       this.el.addEventListener('loaded', function () {
         var sceneEl = el.sceneEl;
         var renderer = sceneEl.renderer;
-        assert.ok(renderer.shadowMap.enabled);
+        assert.notOk(renderer.shadowMap.enabled);
         done();
       });
     });
@@ -31,6 +31,43 @@ suite('shadow system', function () {
       });
 
       document.body.appendChild(div);
+    });
+
+    test('shadwMap automatically enables', function (done) {
+      var el = this.el;
+      el.setAttribute('shadow', 'receive: false');
+      el.addEventListener('loaded', function () {
+        var renderer = el.sceneEl.renderer;
+        assert.ok(renderer.shadowMap.enabled);
+        done();
+      });
+    });
+  });
+
+  suite('enabled', function () {
+    test('shadowMap remains disabled when system is explicitly disabled', function (done) {
+      var el = this.el;
+      el.setAttribute('shadow', 'receive: false');
+      el.sceneEl.setAttribute('shadow', 'enabled: false');
+      el.addEventListener('loaded', function () {
+        var renderer = el.sceneEl.renderer;
+        assert.notOk(renderer.shadowMap.enabled);
+        done();
+      });
+    });
+
+    test('shadowMap enables when system is (re)enabled', function (done) {
+      var el = this.el;
+      el.setAttribute('shadow', 'receive: false');
+      el.sceneEl.setAttribute('shadow', 'enabled: false');
+      el.addEventListener('loaded', function () {
+        var renderer = el.sceneEl.renderer;
+        assert.notOk(renderer.shadowMap.enabled);
+
+        el.sceneEl.setAttribute('shadow', 'enabled: true');
+        assert.ok(renderer.shadowMap.enabled);
+        done();
+      });
     });
   });
 
