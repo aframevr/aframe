@@ -14101,6 +14101,7 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
     this.el.sceneEl.addEventListener('enter-vr', this.updateReferenceSpace);
     this.el.sceneEl.addEventListener('exit-vr', this.updateReferenceSpace);
     this.el.addEventListener('child-attached', this.onChildAttached);
+    this.el.object3D.visible = false;
   },
   onChildAttached: function (evt) {
     this.addChildEntity(evt.detail.el);
@@ -14321,6 +14322,7 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
     if (data.modelStyle === 'mesh') {
       this.initMeshHandModel();
     }
+    this.el.object3D.visible = true;
   },
   initDotsModel: function () {
     // Add models just once.
@@ -30772,7 +30774,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.5.0 (Date 2023-12-01, Commit #78ca91e8)');
+console.log('A-Frame Version: 1.5.0 (Date 2023-12-01, Commit #dbdb9dac)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
