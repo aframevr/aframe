@@ -106,6 +106,8 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
     this.el.sceneEl.addEventListener('enter-vr', this.updateReferenceSpace);
     this.el.sceneEl.addEventListener('exit-vr', this.updateReferenceSpace);
     this.el.addEventListener('child-attached', this.onChildAttached);
+
+    this.el.object3D.visible = false;
   },
 
   onChildAttached: function (evt) {
@@ -335,6 +337,8 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
     if (data.modelStyle === 'mesh') {
       this.initMeshHandModel();
     }
+
+    this.el.object3D.visible = true;
   },
 
   initDotsModel: function () {
