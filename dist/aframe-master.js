@@ -14083,6 +14083,8 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
       optionalFeaturesArray.push('hand-tracking');
       sceneEl.setAttribute('webxr', webxrData);
     }
+    this.wristObject3D = new THREE.Object3D();
+    this.el.sceneEl.object3D.add(this.wristObject3D);
     this.onModelLoaded = this.onModelLoaded.bind(this);
     this.onChildAttached = this.onChildAttached.bind(this);
     this.jointEls = [];
@@ -14366,14 +14368,12 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
   },
   setupChildrenEntities: function () {
     var childrenEls = this.el.children;
-    this.wristObject3D = new THREE.Object3D();
     for (var i = 0; i < childrenEls.length; ++i) {
       if (!(childrenEls[i] instanceof AEntity)) {
         continue;
       }
       this.addChildEntity(childrenEls[i]);
     }
-    this.el.sceneEl.object3D.add(this.wristObject3D);
   },
   addChildEntity: function (childEl) {
     if (!(childEl instanceof AEntity)) {
@@ -30774,7 +30774,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.5.0 (Date 2023-12-01, Commit #dbdb9dac)');
+console.log('A-Frame Version: 1.5.0 (Date 2023-12-04, Commit #12d550c6)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
