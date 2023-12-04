@@ -85,6 +85,9 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
       sceneEl.setAttribute('webxr', webxrData);
     }
 
+    this.wristObject3D = new THREE.Object3D();
+    this.el.sceneEl.object3D.add(this.wristObject3D);
+
     this.onModelLoaded = this.onModelLoaded.bind(this);
     this.onChildAttached = this.onChildAttached.bind(this);
     this.jointEls = [];
@@ -378,12 +381,10 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
 
   setupChildrenEntities: function () {
     var childrenEls = this.el.children;
-    this.wristObject3D = new THREE.Object3D();
     for (var i = 0; i < childrenEls.length; ++i) {
       if (!(childrenEls[i] instanceof AEntity)) { continue; }
       this.addChildEntity(childrenEls[i]);
     }
-    this.el.sceneEl.object3D.add(this.wristObject3D);
   },
 
   addChildEntity: function (childEl) {
