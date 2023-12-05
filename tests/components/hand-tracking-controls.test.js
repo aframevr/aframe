@@ -69,15 +69,13 @@ suite('tracked-controls-webxr', function () {
     test('attached to the wrist joint', function (done) {
       var boxEl = document.createElement('a-box');
       el.addEventListener('child-attached', function () {
+        assert.ok(el.components['hand-tracking-controls'].wristObject3D);
         assert.equal(boxEl.object3D.parent, el.components['hand-tracking-controls'].wristObject3D);
         done();
       });
-      el.addEventListener('model-loaded', function () {
-        assert.ok(el.components['hand-tracking-controls'].wristObject3D);
-        el.appendChild(boxEl);
-      });
       el.setAttribute('hand-tracking-controls', {hand: 'left'});
       el.components['hand-tracking-controls'].checkIfControllerPresent();
+      el.appendChild(boxEl);
     });
   });
 
