@@ -14621,6 +14621,29 @@ module.exports.Component = register('hide-on-enter-ar', {
 
 /***/ }),
 
+/***/ "./src/components/hide-on-enter-vr.js":
+/*!********************************************!*\
+  !*** ./src/components/hide-on-enter-vr.js ***!
+  \********************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var register = (__webpack_require__(/*! ../core/component */ "./src/core/component.js").registerComponent);
+module.exports.Component = register('hide-on-enter-vr', {
+  init: function () {
+    var self = this;
+    this.el.sceneEl.addEventListener('enter-vr', function () {
+      if (self.el.sceneEl.is('vr-mode')) {
+        self.el.object3D.visible = false;
+      }
+    });
+    this.el.sceneEl.addEventListener('exit-vr', function () {
+      self.el.object3D.visible = true;
+    });
+  }
+});
+
+/***/ }),
+
 /***/ "./src/components/hp-mixed-reality-controls.js":
 /*!*****************************************************!*\
   !*** ./src/components/hp-mixed-reality-controls.js ***!
@@ -14842,6 +14865,7 @@ __webpack_require__(/*! ./hand-tracking-controls */ "./src/components/hand-track
 __webpack_require__(/*! ./hand-tracking-grab-controls */ "./src/components/hand-tracking-grab-controls.js");
 __webpack_require__(/*! ./hand-controls */ "./src/components/hand-controls.js");
 __webpack_require__(/*! ./hide-on-enter-ar */ "./src/components/hide-on-enter-ar.js");
+__webpack_require__(/*! ./hide-on-enter-vr */ "./src/components/hide-on-enter-vr.js");
 __webpack_require__(/*! ./hp-mixed-reality-controls */ "./src/components/hp-mixed-reality-controls.js");
 __webpack_require__(/*! ./layer */ "./src/components/layer.js");
 __webpack_require__(/*! ./laser-controls */ "./src/components/laser-controls.js");
@@ -30776,7 +30800,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.5.0 (Date 2023-12-06, Commit #1208ae22)');
+console.log('A-Frame Version: 1.5.0 (Date 2023-12-06, Commit #9e644def)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
