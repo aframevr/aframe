@@ -14104,6 +14104,7 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
     this.el.sceneEl.addEventListener('exit-vr', this.updateReferenceSpace);
     this.el.addEventListener('child-attached', this.onChildAttached);
     this.el.object3D.visible = false;
+    this.wristObject3D.visible = false;
   },
   onChildAttached: function (evt) {
     this.addChildEntity(evt.detail.el);
@@ -14325,6 +14326,7 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
       this.initMeshHandModel();
     }
     this.el.object3D.visible = true;
+    this.wristObject3D.visible = true;
   },
   initDotsModel: function () {
     // Add models just once.
@@ -29042,7 +29044,7 @@ Shader.prototype = {
     this.material = new (this.raw ? THREE.RawShaderMaterial : THREE.ShaderMaterial)({
       // attributes: this.attributes,
       uniforms: this.uniforms,
-      glslVersion: this.raw ? THREE.GLSL3 : null,
+      glslVersion: this.raw || this.glsl3 ? THREE.GLSL3 : null,
       vertexShader: this.vertexShader,
       fragmentShader: this.fragmentShader
     });
@@ -30774,7 +30776,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.5.0 (Date 2023-12-04, Commit #12d550c6)');
+console.log('A-Frame Version: 1.5.0 (Date 2023-12-06, Commit #1208ae22)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
