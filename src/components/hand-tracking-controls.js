@@ -111,6 +111,7 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
     this.el.addEventListener('child-attached', this.onChildAttached);
 
     this.el.object3D.visible = false;
+    this.wristObject3D.visible = false;
   },
 
   onChildAttached: function (evt) {
@@ -342,6 +343,7 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
     }
 
     this.el.object3D.visible = true;
+    this.wristObject3D.visible = true;
   },
 
   initDotsModel: function () {
