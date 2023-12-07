@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Hand Menu (Mixed Reality) • A-Frame</title>
+    <meta name="description" content="Hand Menu (Mixed Reality) • A-Frame">
+    <script src="../../../dist/aframe-master.js"></script>
+    <script src="../../js/info-message.js"></script>
+    <script src="https://unpkg.com/aframe-environment-component@1.3.0/dist/aframe-environment-component.min.js"></script>
+    <script src="time.js"></script>
+    <script src="button.js"></script>
+    <script src="hand-menu.js"></script>
+    <script src="hand-menu-button.js"></script>
+    <script src="https://cdn.aframe.io/examples/mixed-reality/watch/shaders/grid-shader.js"></script>
+    <script src="https://cdn.aframe.io/examples/mixed-reality/watch/shaders/starry-night-shader.js"></script>
+  </head>
+  <body>
+    <a-scene
+      button
+      obb-collider="showColliders: false"
+      renderer="colorManagement: true; sortTransparentObjects: true"
+      xr-mode-ui="XRMode: xr"
+      info-message="htmlSrc: #messageText; startOpened: true">
+      <a-assets  timeout="10000">
+        <!-- Model by Socksthecat https://sketchfab.com/3d-models/character-accessory-watch-d2a883db37184592b5ea0ce4cbd2a286 -->
+        <a-asset-item id="watch"
+          src="https://cdn.aframe.io/examples/mixed-reality/watch/models/watch.glb"
+          response-type="arraybuffer" crossorigin="anonymous"></a-asset-item>
+        <a-asset-item id="messageText" src="message.html"></a-asset-item>
+        <img crossorigin="anonymous" id="infoButton" src="https://cdn.aframe.io/examples/mixed-reality/watch/images/info-button.png" />
+        <img crossorigin="anonymous" id="infoButtonHover" src="https://cdn.aframe.io/examples/mixed-reality/watch/images/info-button-hover.png" />
+
+        <img crossorigin="anonymous" id="cubeButton" src="https://cdn.aframe.io/examples/mixed-reality/watch/images/cube-button.png" />
+        <img crossorigin="anonymous" id="cubeButtonHover" src="https://cdn.aframe.io/examples/mixed-reality/watch/images/cube-button-hover.png" />
+
+        <img crossorigin="anonymous" id="cylinderButton" src="https://cdn.aframe.io/examples/mixed-reality/watch/images/cylinder-button.png" />
+        <img crossorigin="anonymous" id="cylinderButtonHover" src="https://cdn.aframe.io/examples/mixed-reality/watch/images/cylinder-button-hover.png" />
+
+        <img crossorigin="anonymous" id="planeButton" src="https://cdn.aframe.io/examples/mixed-reality/watch/images/plane-button.png" />
+        <img crossorigin="anonymous" id="planeButtonHover" src="https://cdn.aframe.io/examples/mixed-reality/watch/images/plane-button-hover.png" />
+
+        <img crossorigin="anonymous" id="sphereButton" src="https://cdn.aframe.io/examples/mixed-reality/watch/images/sphere-button.png" />
+        <img crossorigin="anonymous" id="sphereButtonHover" src="https://cdn.aframe.io/examples/mixed-reality/watch/images/sphere-button-hover.png" />
+
+        <img crossorigin="anonymous" id="watchDisplayHover" src="https://cdn.aframe.io/examples/mixed-reality/watch/images/watch-display-hover.png" />
+
+        <img crossorigin="anonymous" id="palmButton" src="https://cdn.aframe.io/examples/mixed-reality/watch/images/palm-button.png" />
+        <img crossorigin="anonymous" id="palmButtonHover" src="https://cdn.aframe.io/examples/mixed-reality/watch/images/palm-button-hover.png" />
+        <a-mixin
+          id="cube"
+          geometry="primitive: box; width: 0.15; height: 0.15; depth: 0.15"
+          material="color: #4CC3D9"
+          grabbable></a-mixin>
+        <a-mixin id="sphere"
+          geometry="primitive: sphere; radius: 0.12"
+          material="color: #EF2D5E"
+          grabbable></a-mixin>
+        <a-mixin
+          id="plane"
+          rotation="90 0 0"
+          geometry="primitive: plane; width: 0.45; height: 0.45"
+          material="side: double; color: #7BC8A4"
+          grabbable></a-mixin>
+        <a-mixin
+          id="cylinder"
+          geometry="primitive: cylinder; radius: 0.075; height: 0.2"
+          material="color: #FFC65D"
+          grabbable></a-mixin>
+      </a-assets>
+
+      <!-- Sky and ground only render in VR -->
+      <a-entity
+        hide-on-enter-ar
+        geometry="primitive: sphere; radius: 500"
+        material="shader: starry-night; side: back">
+      </a-entity>
+      <a-entity
+        hide-on-enter-ar
+        rotation="90 0 0"
+        position="0 0 0"
+        geometry="primitive: plane; width: 100; height: 100; segmentsHeight: 2, segmentsWidth: 2;"
+        material="shader: grid; transparent: true; side: double;">
+      </a-entity>
+      <!-- Only renders in 2D. An empty scene when the page loads not very interesting -->
+      <a-entity look-controls>
+        <a-entity
+          hide-on-enter-ar
+          hide-on-enter-vr
+          gltf-model="#watch"
+          position="0 1.6 -2.5"
+          scale="2 2 2"
+          rotation="0 -90 -90"
+          animation="property: position; from: 0 1.7 -2.5; to: 0 1.5 -2.5; dur: 6000; dir: alternate; loop: true;"obb-collider="centerModel: true">
+            <a-entity
+              time
+              text="align: center"
+              rotation="-90 90 0"
+              position="-0.491 0.058 0.015">
+            </a-entity>
+        </a-entity>
+      </a-entity>
+
+      <!-- Your hands -->
+      <a-entity id="rightHand" hand-tracking-grab-controls="hand: right"></a-entity>
+      <a-entity id="leftHand" hand-tracking-grab-controls="hand: left" hand-menu></a-entity>
+    </a-scene>
+    <style>
+      .a-info-message {font-size: 10pt; line-height: 15pt}
+    </style>
+  </body>
+</html>
+
