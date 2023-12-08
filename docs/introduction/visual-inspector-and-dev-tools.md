@@ -181,7 +181,7 @@ with the Vive and go off somewhere else to develop with the recording, leaving
 the Vive free for the other developers to use or take recordings.
 
 5. **Requests for recordings**: Perhaps we don't have a Vive or Rift handy but our
-colleague or friend does.  Give them a link to our web application maybe via
+colleague or friend does.  Give them a link to our web application maybe via [tunnelmole](https://tunnelmole.com) or
 [ngrok](https://ngrok.io) (isn't the Web awesome?), have them take a recording,
 and send it to us! Now we're unblocked from developing.
 
@@ -305,53 +305,73 @@ two sets of keyboards and mice on our desk space.
 A Synergy Basic license costs $19, but it is well worth it if we are developing
 with multiple computers.
 
+### Tunnelmole
+
+![Tunnelmole](https://raw.githubusercontent.com/robbie-cahill/tunnelmole-client/main/docs/tunnelmole-example.png)
+
+[Tunnelmole](https://github.com/robbie-cahill/tunnelmole-client) is an open source tunneling tool.
+
+To get started with Tunnelmole:
+
+1. Install Tunnelmole:
+   - For Linux, Mac, and Windows Subsystem for Linux (WSL), run the following command in your terminal:
+     ```
+     curl -O https://install.tunnelmole.com/xD345/install && sudo bash install
+     ```
+   - For Windows without WSL, [download tmole.exe](https://tunnelmole.com/downloads/tmole.exe) and place it in your system [PATH](https://www.wikihow.com/Change-the-PATH-Environment-Variable-on-Windows).
+
+2. Ensure you have a local development server running (for example, `python -m http.server 8080` if you're using Python 3).
+
+3. Run Tunnelmole to start the tunnel:
+   ```
+   tmole 8080
+   ```
+   You'll see something like:
+   ```
+   ➜  ~ tmole 8080
+   http://bvdo5f-ip-49-183-170-144.tunnelmole.net is forwarding to localhost:8080
+   https://bvdo5f-ip-49-183-170-144.tunnelmole.net is forwarding to localhost:8080
+   ```
+
+With Tunnelmole, you can immediately share the provided URLs. To use a more memorable URL, you can either purchase a subscription for the hosted service or self host your own [Tunnelmole Service](https://github.com/robbie-cahill/tunnelmole-service)
+
 ### ngrok
 
 ![ngrok](https://cloud.githubusercontent.com/assets/674727/25640652/38effdcc-2f45-11e7-99a9-c98bd694e79c.jpg)
 
-[ngrok](https://ngrok.io) lets us easily expose a local development server for
-other computers to access, even through firewalls or NAT networks. The steps
-are to:
+ngrok, a popular closed source tunneling tool, also allows you to expose a local development server to other computers, even through firewalls or NAT networks. Follow these steps to use ngrok:
 
-1. Download ngrok
-2. Open the command line and head to the same directory ngrok was downloaded to
-3. Have a local development server running (e.g., `python -m SimpleHTTPServer 8080`)
-4. Run `./ngrok http <PORT>` (e.g., `./ngrok http 8080`)
-5. An ngrok instance will spin up and provide a URL that the other computer can
-access from its browser (e.g., `https://abcdef123456.ngrok.io`)
+1. Download ngrok from [ngrok.io](https://ngrok.io).
+2. Open your command line and navigate to the directory where ngrok was downloaded.
+3. Have your local development server running (e.g., `python -m http.server 8080` for Python 3).
+4. Initiate ngrok with the command `./ngrok http <PORT>` (e.g., `./ngrok http 8080`).
+5. ngrok will spin up and provide a URL for remote access (e.g., `https://abcdef123456.ngrok.io`).
 
-ngrok is most ergonomic if we get a premium account and reserve our own
-domains to get easy-to-remember URLs. Otherwise, the URL is randomized each
-time and very hard to type. The Basic license provides 3 reserved domains for
-$5/mo, and the Pro license provides 2 simultaneous instances for $8.25/mo. [See
-ngrok pricing details](https://ngrok.com/product#pricing).
-
-With reserved domains, we can reserve a URL like `https://abc.ngrok.io`. Note
-`abc` is just an example, and it is currently taken. Then every time we start
-ngrok, we pass the domain:
+If you opt for a premium account, ngrok can provide reserved domains for memorable URLs. For example, reserve a URL like `https://abc.ngrok.io` (where `abc` is a placeholder for your chosen subdomain).
 
 ```
 ./ngrok http --subdomain=abc 8080
 ```
 
-Every time we start ngrok, we can reliably use the same URL. To make it even
-simpler, we could add a Bash alias:
+Use the same URL consistently by starting ngrok with the same subdomain. For convenience, create a Bash alias:
 
 ```
 alias ngrok="~/path/to/ngrok http --subdomain=abc"
 ```
 
-And use it simply from the command line from anywhere:
+Then run the alias from anywhere in your command line:
 
 ```
 ngrok 8080
 ```
 
-Alternatively, we could have both computers connected on the same local
-network, and use `ipconfig` or `ifconfig` to point one computer to the other
-using the local IP address (e.g., `http://192.168.1.135:8000`). But that can
-disrupt workflow because we have to run commands to get the local IP address,
-the local IP address often changes, and it's hard to remember and type the IP.
+Additionally, if both computers are on the same local network, you can use one computer to connect to the other via the local IP address (like `http://192.168.1.135:8080`). However, local IPs can be less stable and are often harder to remember.
+
+[See ngrok pricing details](https://ngrok.com/product#pricing) for more information on their premium accounts.
+
+---
+
+When mentioning either tool in documentation, ensure to adapt the instructions to the environment and workflow specific to the project or setup to ensure the best fit for the users' needs.
 
 ### Motion Capture
 
