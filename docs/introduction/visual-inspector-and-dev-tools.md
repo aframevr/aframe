@@ -316,7 +316,7 @@ To get started with Tunnelmole:
 1. Install Tunnelmole:
    - For Linux, Mac, and Windows Subsystem for Linux (WSL), run the following command in your terminal:
      ```
-     curl -O https://install.tunnelmole.com/xD345/install && sudo bash install
+     curl -O https://install.tunnelmole.com/x3586/install && sudo bash install
      ```
    - For Windows without WSL, [download tmole.exe](https://tunnelmole.com/downloads/tmole.exe) and place it in your system [PATH](https://www.wikihow.com/Change-the-PATH-Environment-Variable-on-Windows).
 
