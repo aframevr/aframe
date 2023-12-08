@@ -307,8 +307,6 @@ with multiple computers.
 
 ### Tunnelmole
 
-![Tunnelmole](https://raw.githubusercontent.com/robbie-cahill/tunnelmole-client/main/docs/tunnelmole-example.png)
-
 [Tunnelmole](https://github.com/robbie-cahill/tunnelmole-client) is an open source tunneling tool.
 
 To get started with Tunnelmole:
