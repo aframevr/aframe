@@ -307,7 +307,7 @@ with multiple computers.
 
 ### Tunnelmole
 
-[Tunnelmole](https://github.com/robbie-cahill/tunnelmole-client) is an open source tunneling tool.
+[Tunnelmole](https://github.com/robbie-cahill/tunnelmole-client) is an open source tunnelling tool.
 
 To get started with Tunnelmole:
 
