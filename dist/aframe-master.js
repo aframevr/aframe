@@ -12269,11 +12269,6 @@ module.exports.Component = registerComponent('animation', {
         var lastValue = {};
         return function (anim) {
           var value = anim.animatables[0].target;
-          if (data.property === PROP_SCALE) {
-            value.x = Math.max(0.0001, value.x);
-            value.y = Math.max(0.0001, value.y);
-            value.z = Math.max(0.0001, value.z);
-          }
 
           // For animation timeline.
           if (value.x === lastValue.x && value.y === lastValue.y && value.z === lastValue.z) {
@@ -19399,9 +19394,6 @@ module.exports.Component = registerComponent('rotation', {
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 var registerComponent = (__webpack_require__(/*! ../core/component */ "./src/core/component.js").registerComponent);
-
-// Avoids triggering a zero-determinant which makes object3D matrix non-invertible.
-var zeroScale = 0.00001;
 module.exports.Component = registerComponent('scale', {
   schema: {
     type: 'vec3',
@@ -19414,10 +19406,7 @@ module.exports.Component = registerComponent('scale', {
   update: function () {
     var data = this.data;
     var object3D = this.el.object3D;
-    var x = data.x === 0 ? zeroScale : data.x;
-    var y = data.y === 0 ? zeroScale : data.y;
-    var z = data.z === 0 ? zeroScale : data.z;
-    object3D.scale.set(x, y, z);
+    object3D.scale.set(data.x, data.y, data.z);
   },
   remove: function () {
     // Pretty much for mixins.
@@ -30800,7 +30789,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.5.0 (Date 2023-12-06, Commit #9e644def)');
+console.log('A-Frame Version: 1.5.0 (Date 2023-12-09, Commit #ee7ec30b)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
