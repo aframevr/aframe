@@ -376,12 +376,6 @@ module.exports.Component = registerComponent('animation', {
         return function (anim) {
           var value = anim.animatables[0].target;
 
-          if (data.property === PROP_SCALE) {
-            value.x = Math.max(0.0001, value.x);
-            value.y = Math.max(0.0001, value.y);
-            value.z = Math.max(0.0001, value.z);
-          }
-
           // For animation timeline.
           if (value.x === lastValue.x &&
               value.y === lastValue.y &&
