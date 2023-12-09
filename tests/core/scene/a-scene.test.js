@@ -443,6 +443,69 @@ suite('a-scene (without renderer) - WebXR', function () {
     });
   });
 
+  suite('removeBehavior', function () {
+    var sceneEl;
+    var behaviorOne, behaviorTwo, behaviorThree;
+    var spy;
+
+    setup(function () {
+      sceneEl = this.el;
+      var el = document.createElement('a-entity');
+      el.isPlaying = true;
+      spy = this.sinon.spy();
+
+      behaviorOne = { el: el, tick: () => spy(1), tock: () => spy(1) };
+      behaviorTwo = { el: el, tick: () => spy(2), tock: () => spy(2) };
+      behaviorThree = { el: el, tick: () => spy(3), tock: () => spy(3) };
+      sceneEl.addBehavior(behaviorOne);
+      sceneEl.addBehavior(behaviorTwo);
+      sceneEl.addBehavior(behaviorThree);
+    });
+
+    ['tick', 'tock'].forEach(behaviorType => {
+      test('handle deletion outside ' + behaviorType, function () {
+        sceneEl.removeBehavior(behaviorTwo);
+
+        sceneEl[behaviorType]();
+
+        assert.deepEqual(spy.args, [[1], [3]]);
+      });
+
+      test('handle deletion during ' + behaviorType, function () {
+        behaviorTwo[behaviorType] = function () {
+          spy(2);
+          sceneEl.removeBehavior(behaviorTwo);
+        };
+
+        sceneEl[behaviorType]();
+
+        assert.deepEqual(spy.args, [[1], [2], [3]]);
+      });
+
+      test('handle deletion of upcoming behavior during ' + behaviorType, function () {
+        behaviorTwo[behaviorType] = function () {
+          spy(2);
+          sceneEl.removeBehavior(behaviorThree);
+        };
+
+        sceneEl[behaviorType]();
+
+        assert.deepEqual(spy.args, [[1], [2]]);
+      });
+
+      test('handle deletion of previous behavior during ' + behaviorType, function () {
+        behaviorTwo[behaviorType] = function () {
+          spy(2);
+          sceneEl.removeBehavior(behaviorOne);
+        };
+
+        sceneEl[behaviorType]();
+
+        assert.deepEqual(spy.args, [[1], [2], [3]]);
+      });
+    });
+  });
+
   suite('resize', function () {
     var sceneEl;
     var setSizeSpy;
