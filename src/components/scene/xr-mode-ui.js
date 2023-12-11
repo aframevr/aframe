@@ -150,6 +150,7 @@ module.exports.Component = registerComponent('xr-mode-ui', {
     } else {
       if (!utils.device.checkVRSupport()) { this.enterVREl.classList.add('fullscreen'); }
       this.enterVREl.classList.remove(HIDDEN_CLASS);
+      sceneEl.enterVR(false, true);
     }
   },
 
@@ -161,6 +162,7 @@ module.exports.Component = registerComponent('xr-mode-ui', {
       this.enterAREl.classList.add(HIDDEN_CLASS);
     } else {
       this.enterAREl.classList.remove(HIDDEN_CLASS);
+      sceneEl.enterVR(true, true);
     }
   },
 
