@@ -1,26 +1,33 @@
 var registerShader = require('../core/shader').registerShader;
+var THREE = require('../lib/three');
 
 var VERTEX_SHADER = [
-  'in vec2 uv;',
-  'in vec3 position;',
-  'uniform mat4 projectionMatrix;',
-  'uniform mat4 modelViewMatrix;',
+  '#include <common>',
+  '#include <fog_pars_vertex>',
+  '#include <logdepthbuf_pars_vertex>',
+
   'out vec2 vUV;',
+
   'void main(void) {',
-  '  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);',
   '  vUV = uv;',
+  '  #include <begin_vertex>',
+  '  #include <project_vertex>',
+  '  #include <logdepthbuf_vertex>',
+  '  #include <fog_vertex>',
   '}'
 ].join('\n');
 
 var FRAGMENT_SHADER = [
-  'precision highp float;',
+  '#include <common>',
+  '#include <fog_pars_fragment>',
+  '#include <logdepthbuf_pars_fragment>',
+
   'uniform bool negate;',
   'uniform float alphaTest;',
   'uniform float opacity;',
   'uniform sampler2D map;',
   'uniform vec3 color;',
   'in vec2 vUV;',
-  'out vec4 fragColor;',
 
   'float median(float r, float g, float b) {',
   '  return max(min(r, g), min(max(r, g), b));',
@@ -50,7 +57,12 @@ var FRAGMENT_SHADER = [
 
   '  // Do modified alpha test.',
   '  if (alpha < alphaTest * MODIFIED_ALPHATEST) { discard; return; }',
-  '  fragColor = vec4(color.xyz, alpha * opacity);',
+  '  gl_FragColor = vec4(color.xyz, alpha * opacity);',
+
+  '  #include <logdepthbuf_fragment>',
+  '  #include <tonemapping_fragment>',
+  '  #include <colorspace_fragment>',
+  '  #include <fog_fragment>',
   '}'
 ].join('\n');
 
@@ -67,9 +79,21 @@ module.exports.Shader = registerShader('msdf', {
     opacity: {type: 'number', is: 'uniform', default: 1.0}
   },
 
-  raw: true,
-
   vertexShader: VERTEX_SHADER,
 
-  fragmentShader: FRAGMENT_SHADER
+  fragmentShader: FRAGMENT_SHADER,
+
+  init: function (data) {
+    this.uniforms = THREE.UniformsUtils.merge([
+      THREE.UniformsLib.fog,
+      this.initVariables(data, 'uniform')
+    ]);
+    this.material = new THREE.ShaderMaterial({
+      uniforms: this.uniforms,
+      vertexShader: this.vertexShader,
+      fragmentShader: this.fragmentShader,
+      fog: true
+    });
+    return this.material;
+  }
 });
