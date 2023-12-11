@@ -30789,7 +30789,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.5.0 (Date 2023-12-09, Commit #ee7ec30b)');
+console.log('A-Frame Version: 1.5.0 (Date 2023-12-11, Commit #a2504198)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
@@ -31113,13 +31113,14 @@ module.exports.Shader = registerShader('ios10hls', {
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 var registerShader = (__webpack_require__(/*! ../core/shader */ "./src/core/shader.js").registerShader);
-var VERTEX_SHADER = ['in vec2 uv;', 'in vec3 position;', 'uniform mat4 projectionMatrix;', 'uniform mat4 modelViewMatrix;', 'out vec2 vUV;', 'void main(void) {', '  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);', '  vUV = uv;', '}'].join('\n');
-var FRAGMENT_SHADER = ['precision highp float;', 'uniform bool negate;', 'uniform float alphaTest;', 'uniform float opacity;', 'uniform sampler2D map;', 'uniform vec3 color;', 'in vec2 vUV;', 'out vec4 fragColor;', 'float median(float r, float g, float b) {', '  return max(min(r, g), min(max(r, g), b));', '}',
+var THREE = __webpack_require__(/*! ../lib/three */ "./src/lib/three.js");
+var VERTEX_SHADER = ['#include <common>', '#include <fog_pars_vertex>', '#include <logdepthbuf_pars_vertex>', 'out vec2 vUV;', 'void main(void) {', '  vUV = uv;', '  #include <begin_vertex>', '  #include <project_vertex>', '  #include <logdepthbuf_vertex>', '  #include <fog_vertex>', '}'].join('\n');
+var FRAGMENT_SHADER = ['#include <common>', '#include <fog_pars_fragment>', '#include <logdepthbuf_pars_fragment>', 'uniform bool negate;', 'uniform float alphaTest;', 'uniform float opacity;', 'uniform sampler2D map;', 'uniform vec3 color;', 'in vec2 vUV;', 'float median(float r, float g, float b) {', '  return max(min(r, g), min(max(r, g), b));', '}',
 // FIXME: Experimentally determined constants.
 '#define BIG_ENOUGH 0.001', '#define MODIFIED_ALPHATEST (0.02 * isBigEnough / BIG_ENOUGH)', 'void main() {', '  vec3 sampleColor = texture(map, vUV).rgb;', '  if (negate) { sampleColor = 1.0 - sampleColor; }', '  float sigDist = median(sampleColor.r, sampleColor.g, sampleColor.b) - 0.5;', '  float alpha = clamp(sigDist / fwidth(sigDist) + 0.5, 0.0, 1.0);', '  float dscale = 0.353505;', '  vec2 duv = dscale * (dFdx(vUV) + dFdy(vUV));', '  float isBigEnough = max(abs(duv.x), abs(duv.y));',
 // When texel is too small, blend raw alpha value rather than supersampling.
 // FIXME: Experimentally determined constant.
-'  // Do modified alpha test.', '  if (isBigEnough > BIG_ENOUGH) {', '    float ratio = BIG_ENOUGH / isBigEnough;', '    alpha = ratio * alpha + (1.0 - ratio) * (sigDist + 0.5);', '  }', '  // Do modified alpha test.', '  if (alpha < alphaTest * MODIFIED_ALPHATEST) { discard; return; }', '  fragColor = vec4(color.xyz, alpha * opacity);', '}'].join('\n');
+'  // Do modified alpha test.', '  if (isBigEnough > BIG_ENOUGH) {', '    float ratio = BIG_ENOUGH / isBigEnough;', '    alpha = ratio * alpha + (1.0 - ratio) * (sigDist + 0.5);', '  }', '  // Do modified alpha test.', '  if (alpha < alphaTest * MODIFIED_ALPHATEST) { discard; return; }', '  gl_FragColor = vec4(color.xyz, alpha * opacity);', '  #include <logdepthbuf_fragment>', '  #include <tonemapping_fragment>', '  #include <colorspace_fragment>', '  #include <fog_fragment>', '}'].join('\n');
 
 /**
  * Multi-channel signed distance field.
@@ -31152,9 +31153,18 @@ module.exports.Shader = registerShader('msdf', {
       default: 1.0
     }
   },
-  raw: true,
   vertexShader: VERTEX_SHADER,
-  fragmentShader: FRAGMENT_SHADER
+  fragmentShader: FRAGMENT_SHADER,
+  init: function (data) {
+    this.uniforms = THREE.UniformsUtils.merge([THREE.UniformsLib.fog, this.initVariables(data, 'uniform')]);
+    this.material = new THREE.ShaderMaterial({
+      uniforms: this.uniforms,
+      vertexShader: this.vertexShader,
+      fragmentShader: this.fragmentShader,
+      fog: true
+    });
+    return this.material;
+  }
 });
 
 /***/ }),
@@ -31471,27 +31481,19 @@ function getMaterialData(data, materialData) {
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 var registerShader = (__webpack_require__(/*! ../core/shader */ "./src/core/shader.js").registerShader);
-var VERTEX_SHADER = ['in vec2 uv;', 'in vec3 position;', 'uniform mat4 projectionMatrix;', 'uniform mat4 modelViewMatrix;', 'out vec2 vUV;', 'void main(void) {', '  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);', '  vUV = uv;', '}'].join('\n');
-var FRAGMENT_SHADER = ['precision highp float;', 'uniform float alphaTest;', 'uniform float opacity;', 'uniform sampler2D map;', 'uniform vec3 color;', 'in vec2 vUV;', 'out vec4 fragColor;', '#ifdef GL_OES_standard_derivatives', '  float contour(float width, float value) {', '    return smoothstep(0.5 - value, 0.5 + value, width);', '  }', '#else', '  float aastep(float value, float afwidth) {', '    return smoothstep(0.5 - afwidth, 0.5 + afwidth, value);', '  }', '#endif',
+var THREE = __webpack_require__(/*! ../lib/three */ "./src/lib/three.js");
+var VERTEX_SHADER = ['#include <common>', '#include <fog_pars_vertex>', '#include <logdepthbuf_pars_vertex>', 'out vec2 vUV;', 'void main(void) {', '  vUV = uv;', '  #include <begin_vertex>', '  #include <project_vertex>', '  #include <logdepthbuf_vertex>', '  #include <fog_vertex>', '}'].join('\n');
+var FRAGMENT_SHADER = ['#include <common>', '#include <fog_pars_fragment>', '#include <logdepthbuf_pars_fragment>', 'uniform float alphaTest;', 'uniform float opacity;', 'uniform sampler2D map;', 'uniform vec3 color;', 'in vec2 vUV;', 'float contour(float width, float value) {', '  return smoothstep(0.5 - value, 0.5 + value, width);', '}',
 // FIXME: Experimentally determined constants.
-'#define BIG_ENOUGH 0.001', '#define MODIFIED_ALPHATEST (0.02 * isBigEnough / BIG_ENOUGH)', '#define ALL_SMOOTH 0.4', '#define ALL_ROUGH 0.02', '#define DISCARD_ALPHA (alphaTest / (2.2 - 1.2 * ratio))', 'void main() {',
-// When we have derivatives and can get texel size for supersampling.
-'  #ifdef GL_OES_standard_derivatives', '    vec2 uv = vUV;', '    vec4 texColor = texture(map, uv);', '    float dist = texColor.a;', '    float width = fwidth(dist);', '    float alpha = contour(dist, width);', '    float dscale = 0.353505;', '    vec2 duv = dscale * (dFdx(uv) + dFdy(uv));', '    float isBigEnough = max(abs(duv.x), abs(duv.y));',
+'#define BIG_ENOUGH 0.001', '#define MODIFIED_ALPHATEST (0.02 * isBigEnough / BIG_ENOUGH)', 'void main() {', '  vec2 uv = vUV;', '  vec4 texColor = texture(map, uv);', '  float dist = texColor.a;', '  float width = fwidth(dist);', '  float alpha = contour(dist, width);', '  float dscale = 0.353505;', '  vec2 duv = dscale * (dFdx(uv) + dFdy(uv));', '  float isBigEnough = max(abs(duv.x), abs(duv.y));',
 // When texel is too small, blend raw alpha value rather than supersampling.
 // FIXME: experimentally determined constant
-'    if (isBigEnough > BIG_ENOUGH) {', '      float ratio = BIG_ENOUGH / isBigEnough;', '      alpha = ratio * alpha + (1.0 - ratio) * dist;', '    }',
+'  if (isBigEnough > BIG_ENOUGH) {', '    float ratio = BIG_ENOUGH / isBigEnough;', '    alpha = ratio * alpha + (1.0 - ratio) * dist;', '  }',
 // Otherwise do weighted supersampling.
 // FIXME: why this weighting?
-'    if (isBigEnough <= BIG_ENOUGH) {', '      vec4 box = vec4 (uv - duv, uv + duv);', '      alpha = (alpha + 0.5 * (', '        contour(texture(map, box.xy).a, width)', '        + contour(texture(map, box.zw).a, width)', '        + contour(texture(map, box.xw).a, width)', '        + contour(texture(map, box.zy).a, width)', '      )) / 3.0;', '    }',
+'  if (isBigEnough <= BIG_ENOUGH) {', '    vec4 box = vec4 (uv - duv, uv + duv);', '    alpha = (alpha + 0.5 * (', '      contour(texture(map, box.xy).a, width)', '      + contour(texture(map, box.zw).a, width)', '      + contour(texture(map, box.xw).a, width)', '      + contour(texture(map, box.zy).a, width)', '    )) / 3.0;', '  }',
 // Do modified alpha test.
-'    if (alpha < alphaTest * MODIFIED_ALPHATEST) { discard; return; }', '  #else',
-// When we don't have derivatives, use approximations.
-'    vec4 texColor = texture(map, vUV);', '    float value = texColor.a;',
-// FIXME: if we understood font pixel dimensions, this could probably be improved
-'    float afwidth = (1.0 / 32.0) * (1.4142135623730951 / (2.0 * gl_FragCoord.w));', '    float alpha = aastep(value, afwidth);',
-// Use gl_FragCoord.w to guess when we should blend.
-// FIXME: If we understood font pixel dimensions, this could probably be improved.
-'    float ratio = (gl_FragCoord.w >= ALL_SMOOTH) ? 1.0 : (gl_FragCoord.w < ALL_ROUGH) ? 0.0 : (gl_FragCoord.w - ALL_ROUGH) / (ALL_SMOOTH - ALL_ROUGH);', '    if (alpha < alphaTest) { if (ratio >= 1.0) { discard; return; } alpha = 0.0; }', '    alpha = alpha * ratio + (1.0 - ratio) * value;', '    if (ratio < 1.0 && alpha <= DISCARD_ALPHA) { discard; return; }', '  #endif', '  fragColor = vec4(color, opacity * alpha);', '}'].join('\n');
+'  if (alpha < alphaTest * MODIFIED_ALPHATEST) { discard; return; }', '  gl_FragColor = vec4(color, opacity * alpha);', '  #include <logdepthbuf_fragment>', '  #include <tonemapping_fragment>', '  #include <colorspace_fragment>', '  #include <fog_fragment>', '}'].join('\n');
 
 /**
  * Signed distance field.
@@ -31519,9 +31521,18 @@ module.exports.Shader = registerShader('sdf', {
       default: 1.0
     }
   },
-  raw: true,
   vertexShader: VERTEX_SHADER,
-  fragmentShader: FRAGMENT_SHADER
+  fragmentShader: FRAGMENT_SHADER,
+  init: function (data) {
+    this.uniforms = THREE.UniformsUtils.merge([THREE.UniformsLib.fog, this.initVariables(data, 'uniform')]);
+    this.material = new THREE.ShaderMaterial({
+      uniforms: this.uniforms,
+      vertexShader: this.vertexShader,
+      fragmentShader: this.fragmentShader,
+      fog: true
+    });
+    return this.material;
+  }
 });
 
 /***/ }),
