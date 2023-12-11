@@ -278,7 +278,6 @@ class AScene extends AEntity {
 
     // Don't enter VR if already in VR.
     if (navigator.xr.offerSession === undefined) { return Promise.resolve('OfferSession is not supported.'); }
-    if (this.is('has-offer-session')) { return Promise.resolve('Already has offerSession.'); }
     if (this.is('vr-mode')) { return Promise.resolve('Already in VR.'); }
 
     // Has VR.
@@ -297,13 +296,9 @@ class AScene extends AEntity {
         xrInit = this.sceneEl.systems.webxr.sessionConfiguration;
         return new Promise(function (resolve, reject) {
           var requestFunction = useOfferSession ? navigator.xr.offerSession.bind(navigator.xr) : navigator.xr.requestSession.bind(navigator.xr);
-          if (useOfferSession) {
-            self.addState('has-offer-session');
-          }
           requestFunction(xrMode, xrInit).then(
             function requestSuccess (xrSession) {
               self.xrSession = xrSession;
-              self.removeState('has-offer-session');
 
               vrManager.layersEnabled = xrInit.requiredFeatures.indexOf('layers') !== -1;
               vrManager.setSession(xrSession).then(function () {
@@ -314,7 +309,6 @@ class AScene extends AEntity {
               enterVRSuccess(resolve);
             },
             function requestFail (error) {
-              self.removeState('has-offer-session');
               var useAR = xrMode === 'immersive-ar';
               var mode = useAR ? 'AR' : 'VR';
               reject(new Error('Failed to enter ' + mode + ' mode (`requestSession`)', { cause: error }));

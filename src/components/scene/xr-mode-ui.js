@@ -120,8 +120,6 @@ module.exports.Component = registerComponent('xr-mode-ui', {
 
     this.orientationModalEl = createOrientationModal(this.onModalClick);
     sceneEl.appendChild(this.orientationModalEl);
-
-    this.updateEnterInterfaces();
   },
 
   remove: function () {
