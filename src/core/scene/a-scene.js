@@ -297,9 +297,9 @@ class AScene extends AEntity {
         var xrMode = useAR ? 'immersive-ar' : 'immersive-vr';
         xrInit = this.sceneEl.systems.webxr.sessionConfiguration;
         return new Promise(function (resolve, reject) {
-          var requestFunction = useOfferSession ? navigator.xr.offerSession.bind(navigator.xr) : navigator.xr.requestSession.bind(navigator.xr);
+          var requestSession = useOfferSession ? navigator.xr.offerSession.bind(navigator.xr) : navigator.xr.requestSession.bind(navigator.xr);
           self.usedOfferSession |= useOfferSession;
-          requestFunction(xrMode, xrInit).then(
+          requestSession(xrMode, xrInit).then(
             function requestSuccess (xrSession) {
               self.xrSession = xrSession;
               self.usedOfferSession = false;
