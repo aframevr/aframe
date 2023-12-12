@@ -56,6 +56,7 @@ class AScene extends AEntity {
     self.systems = {};
     self.systemNames = [];
     self.time = self.delta = 0;
+    self.usedOfferSession = false;
 
     self.behaviors = {tick: [], tock: []};
     self.hasLoaded = false;
@@ -270,13 +271,15 @@ class AScene extends AEntity {
    * @param {bool?} useAR - if true, try immersive-ar mode
    * @returns {Promise}
    */
-  enterVR (useAR) {
+  enterVR (useAR, useOfferSession) {
     var self = this;
     var vrDisplay;
     var vrManager = self.renderer.xr;
     var xrInit;
 
     // Don't enter VR if already in VR.
+    if (useOfferSession && (!navigator.xr || !navigator.xr.offerSession)) { return Promise.resolve('OfferSession is not supported.'); }
+    if (self.usedOfferSession && useOfferSession) { return Promise.resolve('OfferSession was already called.'); }
     if (this.is('vr-mode')) { return Promise.resolve('Already in VR.'); }
 
     // Has VR.
@@ -294,9 +297,16 @@ class AScene extends AEntity {
         var xrMode = useAR ? 'immersive-ar' : 'immersive-vr';
         xrInit = this.sceneEl.systems.webxr.sessionConfiguration;
         return new Promise(function (resolve, reject) {
-          navigator.xr.requestSession(xrMode, xrInit).then(
+          var requestSession = useOfferSession ? navigator.xr.offerSession.bind(navigator.xr) : navigator.xr.requestSession.bind(navigator.xr);
+          self.usedOfferSession |= useOfferSession;
+          requestSession(xrMode, xrInit).then(
             function requestSuccess (xrSession) {
               self.xrSession = xrSession;
+
+              if (useOfferSession) {
+                self.usedOfferSession = false;
+              }
+
               vrManager.layersEnabled = xrInit.requiredFeatures.indexOf('layers') !== -1;
               vrManager.setSession(xrSession).then(function () {
                 vrManager.setFoveation(rendererSystem.foveationLevel);
