@@ -279,7 +279,7 @@ class AScene extends AEntity {
 
     // Don't enter VR if already in VR.
     if (useOfferSession && navigator.xr.offerSession === undefined) { return Promise.resolve('OfferSession is not supported.'); }
-    if (self.usedOfferSession) { return Promise.resolve('OfferSession was already called.'); }
+    if (self.usedOfferSession && useOfferSession) { return Promise.resolve('OfferSession was already called.'); }
     if (this.is('vr-mode')) { return Promise.resolve('Already in VR.'); }
 
     // Has VR.
@@ -302,7 +302,10 @@ class AScene extends AEntity {
           requestSession(xrMode, xrInit).then(
             function requestSuccess (xrSession) {
               self.xrSession = xrSession;
-              self.usedOfferSession = false;
+
+              if (useOfferSession) {
+                self.usedOfferSession = false;
+              }
 
               vrManager.layersEnabled = xrInit.requiredFeatures.indexOf('layers') !== -1;
               vrManager.setSession(xrSession).then(function () {
