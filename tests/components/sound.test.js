@@ -176,6 +176,23 @@ suite('sound', function () {
       assert.ok(sound.play.called);
     });
 
+    test('plays sound and calls processSound callback when not loaded', function (done) {
+      var el = this.el;
+      var processSoundStub = sinon.stub();
+
+      el.setAttribute('sound', 'src', 'url(base/tests/assets/test.ogg)');
+      el.components.sound.playSound(processSoundStub);
+      assert.notOk(el.components.sound.isPlaying);
+      assert.ok(el.components.sound.mustPlay);
+
+      el.addEventListener('sound-loaded', function () {
+        assert.ok(el.components.sound.isPlaying);
+        assert.notOk(el.components.sound.mustPlay);
+        assert.ok(processSoundStub.calledOnce);
+        done();
+      });
+    });
+
     test('plays sound if sound already playing when changing src', function (done) {
       var el = this.el;
       var playSoundStub = el.components.sound.playSound = sinon.stub();

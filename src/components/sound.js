@@ -91,7 +91,7 @@ module.exports.Component = registerComponent('sound', {
 
         // Remove this key from cache, otherwise we can't play it again
         THREE.Cache.remove(data.src);
-        if (self.data.autoplay || self.mustPlay) { self.playSound(this.processSound); }
+        if (self.data.autoplay || self.mustPlay) { self.playSound(self.processSound); }
         self.el.emit('sound-loaded', self.evtDetail, false);
       });
     }
