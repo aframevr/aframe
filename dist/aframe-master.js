@@ -21766,7 +21766,7 @@ module.exports.Component = registerComponent('sound', {
         // Remove this key from cache, otherwise we can't play it again
         THREE.Cache.remove(data.src);
         if (self.data.autoplay || self.mustPlay) {
-          self.playSound(this.processSound);
+          self.playSound(self.processSound);
         }
         self.el.emit('sound-loaded', self.evtDetail, false);
       });
@@ -30803,7 +30803,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.5.0 (Date 2023-12-12, Commit #fc54fe9a)');
+console.log('A-Frame Version: 1.5.0 (Date 2023-12-15, Commit #68828580)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
