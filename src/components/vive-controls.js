@@ -199,7 +199,7 @@ module.exports.Component = registerComponent('vive-controls', {
     var controllerObject3D = evt.detail.model;
     var self = this;
 
-    if (!this.data.model) { return; }
+    if (evt.target !== this.el || !this.data.model) { return; }
 
     // Store button meshes object to be able to change their colors.
     buttonMeshes = this.buttonMeshes = {};
