@@ -156,7 +156,7 @@ module.exports.Component = registerComponent('oculus-go-controls', {
     var controllerObject3D = evt.detail.model;
     var buttonMeshes;
 
-    if (!this.data.model) { return; }
+    if (evt.target !== this.el || !this.data.model) { return; }
     buttonMeshes = this.buttonMeshes = {};
     buttonMeshes.trigger = controllerObject3D.getObjectByName('oculus_go_button_trigger');
     buttonMeshes.trackpad = controllerObject3D.getObjectByName('oculus_go_touchpad');

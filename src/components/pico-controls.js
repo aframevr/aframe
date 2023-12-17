@@ -154,7 +154,7 @@ module.exports.Component = registerComponent('pico-controls', {
   },
 
   onModelLoaded: function (evt) {
-    if (!this.data.model) { return; }
+    if (evt.target !== this.el || !this.data.model) { return; }
 
     this.el.emit('controllermodelready', {
       name: 'pico-controls',

@@ -276,6 +276,8 @@ module.exports.Component = registerComponent('windows-motion-controls', {
     var mesh;
     var meshInfo;
 
+    if (evt.target !== this.el) { return; }
+
     debug('Processing model');
 
     // Reset the caches

@@ -126,7 +126,7 @@ module.exports.Component = registerComponent('vive-focus-controls', {
     var controllerObject3D = evt.detail.model;
     var buttonMeshes;
 
-    if (!this.data.model) { return; }
+    if (evt.target !== this.el || !this.data.model) { return; }
     buttonMeshes = this.buttonMeshes = {};
     buttonMeshes.trigger = controllerObject3D.getObjectByName('BumperKey');
     buttonMeshes.triggerPressed = controllerObject3D.getObjectByName('BumperKey_Press');

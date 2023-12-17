@@ -383,7 +383,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   },
 
   onModelLoaded: function (evt) {
-    if (!this.data.model) { return; }
+    if (evt.target !== this.el || !this.data.model) { return; }
     if (this.isTouchV3orPROorPlus) {
       this.onTouchV3orPROorPlusModelLoaded(evt);
     } else {
