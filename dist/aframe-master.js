@@ -30806,7 +30806,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.5.0 (Date 2023-12-17, Commit #e0f03721)');
+console.log('A-Frame Version: 1.5.0 (Date 2023-12-17, Commit #e86d107a)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
@@ -30903,28 +30903,10 @@ if (true) {
 
 var THREE = (__webpack_require__(/*! ./three.module.js */ "./src/lib/three.module.js")["default"]);
 
-// Allow cross-origin images to be loaded.
-
-// This should not be on `THREE.Loader` nor `THREE.ImageUtils`.
-// Must be on `THREE.TextureLoader`.
-if (THREE.TextureLoader) {
-  THREE.TextureLoader.prototype.crossOrigin = 'anonymous';
-}
-
-// This is for images loaded from the model loaders.
-if (THREE.ImageLoader) {
-  THREE.ImageLoader.prototype.crossOrigin = 'anonymous';
-}
-
 // In-memory caching for XHRs (for images, audio files, textures, etc.).
 if (THREE.Cache) {
   THREE.Cache.enabled = true;
 }
-THREE.DRACOLoader.prototype.crossOrigin = 'anonymous';
-THREE.GLTFLoader.prototype.crossOrigin = 'anonymous';
-THREE.KTX2Loader.prototype.crossOrigin = 'anonymous';
-THREE.MTLLoader.prototype.crossOrigin = 'anonymous';
-THREE.OBJLoader.prototype.crossOrigin = 'anonymous';
 module.exports = THREE;
 
 /***/ }),
@@ -30958,8 +30940,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-var objectAssign = __webpack_require__(/*! object-assign */ "./node_modules/object-assign/index.js");
-var THREE = window.THREE = objectAssign({}, super_three__WEBPACK_IMPORTED_MODULE_0__);
+var THREE = window.THREE = super_three__WEBPACK_IMPORTED_MODULE_0__;
 
 // TODO: Eventually include these only if they are needed by a component.
 __webpack_require__(/*! ../../vendor/DeviceOrientationControls */ "./vendor/DeviceOrientationControls.js"); // THREE.DeviceOrientationControls
