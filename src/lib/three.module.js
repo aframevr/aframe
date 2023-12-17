@@ -8,8 +8,7 @@ import { MTLLoader } from 'super-three/examples/jsm/loaders/MTLLoader';
 import * as BufferGeometryUtils from 'super-three/examples/jsm/utils/BufferGeometryUtils';
 import { LightProbeGenerator } from 'super-three/examples/jsm/lights/LightProbeGenerator';
 
-var objectAssign = require('object-assign');
-var THREE = window.THREE = objectAssign({}, SUPER_THREE);
+var THREE = window.THREE = SUPER_THREE;
 
 // TODO: Eventually include these only if they are needed by a component.
 require('../../vendor/DeviceOrientationControls'); // THREE.DeviceOrientationControls
