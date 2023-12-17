@@ -17956,7 +17956,7 @@ module.exports.Component = registerComponent('oculus-go-controls', {
   onModelLoaded: function (evt) {
     var controllerObject3D = evt.detail.model;
     var buttonMeshes;
-    if (!this.data.model) {
+    if (evt.target !== this.el || !this.data.model) {
       return;
     }
     buttonMeshes = this.buttonMeshes = {};
@@ -18519,7 +18519,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     buttonObjects[button].position.lerpVectors(this.buttonRanges[button].min.position, this.buttonRanges[button].max.position, analogValue);
   },
   onModelLoaded: function (evt) {
-    if (!this.data.model) {
+    if (evt.target !== this.el || !this.data.model) {
       return;
     }
     if (this.isTouchV3orPROorPlus) {
@@ -18845,7 +18845,7 @@ module.exports.Component = registerComponent('pico-controls', {
     this.el.emit(button + 'changed', evt.detail.state);
   },
   onModelLoaded: function (evt) {
-    if (!this.data.model) {
+    if (evt.target !== this.el || !this.data.model) {
       return;
     }
     this.el.emit('controllermodelready', {
@@ -23418,7 +23418,7 @@ module.exports.Component = registerComponent('valve-index-controls', {
     var buttonMeshes;
     var controllerObject3D = evt.detail.model;
     var self = this;
-    if (!this.data.model) {
+    if (evt.target !== this.el || !this.data.model) {
       return;
     }
 
@@ -23713,7 +23713,7 @@ module.exports.Component = registerComponent('vive-controls', {
     var buttonMeshes;
     var controllerObject3D = evt.detail.model;
     var self = this;
-    if (!this.data.model) {
+    if (evt.target !== this.el || !this.data.model) {
       return;
     }
 
@@ -23918,7 +23918,7 @@ module.exports.Component = registerComponent('vive-focus-controls', {
   onModelLoaded: function (evt) {
     var controllerObject3D = evt.detail.model;
     var buttonMeshes;
-    if (!this.data.model) {
+    if (evt.target !== this.el || !this.data.model) {
       return;
     }
     buttonMeshes = this.buttonMeshes = {};
@@ -24495,6 +24495,9 @@ module.exports.Component = registerComponent('windows-motion-controls', {
     var meshName;
     var mesh;
     var meshInfo;
+    if (evt.target !== this.el) {
+      return;
+    }
     debug('Processing model');
 
     // Reset the caches
@@ -30803,7 +30806,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.5.0 (Date 2023-12-15, Commit #68828580)');
+console.log('A-Frame Version: 1.5.0 (Date 2023-12-17, Commit #e0f03721)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
