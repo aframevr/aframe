@@ -8,7 +8,6 @@ suite('fog', function () {
     var self = this;
 
     el.addEventListener('loaded', function () {
-      self.updateMaterialsSpy = self.sinon.spy(el.systems.material, 'updateMaterials');
       // Stub scene load to avoid WebGL code.
       el.hasLoaded = true;
       el.setAttribute('fog', '');
@@ -26,10 +25,6 @@ suite('fog', function () {
   suite('update', function () {
     test('creates fog', function () {
       assert.ok(this.el.object3D.fog);
-    });
-
-    test('triggers material update when adding fog', function () {
-      assert.ok(this.updateMaterialsSpy.called);
     });
 
     test('updates fog', function () {
@@ -67,16 +62,7 @@ suite('fog', function () {
     test('removes fog when detaching fog', function () {
       var el = this.el;
       el.removeAttribute('fog');
-      assert.equal(el.object3D.fog.far, 0);
-      assert.equal(el.object3D.fog.near, 0.1);
-    });
-
-    test('removes exp. fog when detaching fog', function () {
-      var el = this.el;
-      el.setAttribute('fog', 'type: exponential');
-      el.removeAttribute('fog');
-      assert.equal(el.object3D.fog.far, 0);
-      assert.equal(el.object3D.fog.near, 0.1);
+      assert.equal(el.object3D.fog, null);
     });
   });
 });

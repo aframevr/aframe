@@ -223,16 +223,6 @@ module.exports.System = registerSystem('material', {
   },
 
   /**
-   * Trigger update to all registered materials.
-   */
-  updateMaterials: function (material) {
-    var materials = this.materials;
-    Object.keys(materials).forEach(function (uuid) {
-      materials[uuid].needsUpdate = true;
-    });
-  },
-
-  /**
    * Track textures used by material components, so that they can be safely
    * disposed when no longer in use. Textures must be registered here, and not
    * through registerMaterial(), because textures may not be attached at the
