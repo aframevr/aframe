@@ -67,16 +67,7 @@ suite('fog', function () {
     test('removes fog when detaching fog', function () {
       var el = this.el;
       el.removeAttribute('fog');
-      assert.equal(el.object3D.fog.far, 0);
-      assert.equal(el.object3D.fog.near, 0.1);
-    });
-
-    test('removes exp. fog when detaching fog', function () {
-      var el = this.el;
-      el.setAttribute('fog', 'type: exponential');
-      el.removeAttribute('fog');
-      assert.equal(el.object3D.fog.far, 0);
-      assert.equal(el.object3D.fog.near, 0.1);
+      assert.equal(el.object3D.fog, null);
     });
   });
 });

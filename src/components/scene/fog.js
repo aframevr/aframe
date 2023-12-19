@@ -46,10 +46,12 @@ module.exports.Component = register('fog', {
    * Remove fog on remove (callback).
    */
   remove: function () {
+    var el = this.el;
     var fog = this.el.object3D.fog;
     if (!fog) { return; }
-    fog.far = 0;
-    fog.near = 0.1;
+
+    el.object3D.fog = null;
+    el.systems.material.updateMaterials();
   }
 });
 
