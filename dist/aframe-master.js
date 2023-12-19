@@ -20216,7 +20216,6 @@ module.exports.Component = register('fog', {
     // (Re)create fog if fog doesn't exist or fog type changed.
     if (!fog || data.type !== fog.name) {
       el.object3D.fog = getFog(data);
-      el.systems.material.updateMaterials();
       return;
     }
 
@@ -20233,12 +20232,12 @@ module.exports.Component = register('fog', {
    * Remove fog on remove (callback).
    */
   remove: function () {
+    var el = this.el;
     var fog = this.el.object3D.fog;
     if (!fog) {
       return;
     }
-    fog.far = 0;
-    fog.near = 0.1;
+    el.object3D.fog = null;
   }
 });
 
@@ -30806,7 +30805,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.5.0 (Date 2023-12-17, Commit #e86d107a)');
+console.log('A-Frame Version: 1.5.0 (Date 2023-12-19, Commit #8e4f387e)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
@@ -32697,15 +32696,6 @@ module.exports.System = registerSystem('material', {
       if (textureCounts[material[mapName].uuid] <= 0) {
         material[mapName].dispose();
       }
-    });
-  },
-  /**
-   * Trigger update to all registered materials.
-   */
-  updateMaterials: function (material) {
-    var materials = this.materials;
-    Object.keys(materials).forEach(function (uuid) {
-      materials[uuid].needsUpdate = true;
     });
   },
   /**
