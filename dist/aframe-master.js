@@ -19897,7 +19897,6 @@ module.exports.Component = register('ar-hit-test', {
 
 /* global THREE */
 var register = (__webpack_require__(/*! ../../core/component */ "./src/core/component.js").registerComponent);
-var COMPONENTS = (__webpack_require__(/*! ../../core/component */ "./src/core/component.js").components);
 module.exports.Component = register('background', {
   schema: {
     color: {
@@ -19918,13 +19917,8 @@ module.exports.Component = register('background', {
     }
   },
   remove: function () {
-    var data = this.data;
     var object3D = this.el.object3D;
-    if (data.transparent) {
-      object3D.background = null;
-      return;
-    }
-    object3D.background = COMPONENTS[this.name].schema.color.default;
+    object3D.background = null;
   }
 });
 
@@ -30805,7 +30799,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.5.0 (Date 2023-12-19, Commit #8e4f387e)');
+console.log('A-Frame Version: 1.5.0 (Date 2023-12-19, Commit #fce5b6a3)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
