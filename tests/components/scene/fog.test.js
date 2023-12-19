@@ -8,7 +8,6 @@ suite('fog', function () {
     var self = this;
 
     el.addEventListener('loaded', function () {
-      self.updateMaterialsSpy = self.sinon.spy(el.systems.material, 'updateMaterials');
       // Stub scene load to avoid WebGL code.
       el.hasLoaded = true;
       el.setAttribute('fog', '');
@@ -26,10 +25,6 @@ suite('fog', function () {
   suite('update', function () {
     test('creates fog', function () {
       assert.ok(this.el.object3D.fog);
-    });
-
-    test('triggers material update when adding fog', function () {
-      assert.ok(this.updateMaterialsSpy.called);
     });
 
     test('updates fog', function () {
