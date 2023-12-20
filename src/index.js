@@ -62,8 +62,6 @@ if (utils.device.isBrowserEnvironment) {
   require('./style/rStats.css');
 }
 
-// Required before `AEntity` so that all components are registered.
-var AScene = require('./core/scene/a-scene').AScene;
 var components = require('./core/component').components;
 var registerComponent = require('./core/component').registerComponent;
 var registerGeometry = require('./core/geometry').registerGeometry;
@@ -81,8 +79,16 @@ require('./components/index'); // Register standard components.
 require('./geometries/index'); // Register standard geometries.
 require('./shaders/index'); // Register standard shaders.
 require('./systems/index'); // Register standard systems.
+// Required before `AEntity` so that all components are registered.
+var AScene = require('./core/scene/a-scene').AScene;
 var ANode = require('./core/a-node').ANode;
 var AEntity = require('./core/a-entity').AEntity; // Depends on ANode and core components.
+setTimeout(function () {
+  if (window.AFRAME_ASYNC) {
+    return;
+  }
+  AEntity.ready();
+}, 0);
 
 require('./core/a-assets');
 require('./core/a-cubemap');
@@ -106,6 +112,7 @@ module.exports = window.AFRAME = {
   components: components,
   coreComponents: Object.keys(components),
   geometries: require('./core/geometry').geometries,
+  ready: AEntity.ready.bind(AEntity),
   registerComponent: registerComponent,
   registerGeometry: registerGeometry,
   registerPrimitive: registerPrimitive,

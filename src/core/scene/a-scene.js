@@ -191,6 +191,7 @@ class AScene extends AEntity {
    */
   initSystem (name) {
     if (this.systems[name]) { return; }
+    if (!systems[name]) { return; }
     this.systems[name] = new systems[name](this);
     this.systemNames.push(name);
   }

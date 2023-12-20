@@ -11,6 +11,17 @@ var MULTIPLE_COMPONENT_DELIMITER = '__';
 var OBJECT3D_COMPONENTS = ['position', 'rotation', 'scale', 'visible'];
 var ONCE = {once: true};
 
+var _resolveReadyPromise;
+var isReady = false;
+var isReadyPromise = new Promise(function (resolve) {
+  _resolveReadyPromise = resolve;
+});
+
+function ready () {
+  isReady = true;
+  _resolveReadyPromise();
+}
+
 /**
  * Entity is a container object that components are plugged into to comprise everything in
  * the scene. In A-Frame, they inherently have position, rotation, and scale.
@@ -67,6 +78,12 @@ class AEntity extends ANode {
       return;
     }
 
+    if (!isReady) {
+      isReadyPromise.then(
+        AEntity.prototype.doConnectedCallback.bind(this)
+      );
+      return;
+    }
     AEntity.prototype.doConnectedCallback.call(this);
   }
 
@@ -868,6 +885,7 @@ function getRotation (entityEl) {
 
 AEntity.componentsUpdated = [];
 AEntity.singlePropUpdate = {};
+AEntity.ready = ready;
 
 customElements.define('a-entity', AEntity);
 
