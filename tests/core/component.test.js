@@ -543,6 +543,72 @@ suite('Component', function () {
       assert.equal(3, el.object3D.position.y);
       assert.equal(3, el.object3D.position.z);
     });
+
+    test('calls updateSchema when initializing component', function () {
+      let updateSchemaSpy = this.sinon.spy();
+      registerComponent('dummy', {
+        schema: {
+          type: {default: 'plane', schemaChange: true}
+        },
+        updateSchema: function () {
+          updateSchemaSpy();
+        }
+      });
+      el.hasLoaded = true;
+      el.setAttribute('dummy', {});
+      assert.ok(updateSchemaSpy.calledOnce);
+    });
+
+    test('updates schema when property with schemaChange is changed', function () {
+      let updateSchemaSpy = this.sinon.spy();
+      registerComponent('dummy', {
+        schema: {
+          type: {default: 'plane', schemaChange: true},
+          color: {default: 'blue'}
+        },
+        updateSchema: function () {
+          updateSchemaSpy();
+        }
+      });
+      el.hasLoaded = true;
+      el.setAttribute('dummy', {});
+      el.setAttribute('dummy', {type: 'box'});
+      assert.ok(updateSchemaSpy.calledTwice);
+    });
+
+    test('does not update schema when no property with schemaChange is changed', function () {
+      let updateSchemaSpy = this.sinon.spy();
+      registerComponent('dummy', {
+        schema: {
+          type: {default: 'plane', schemaChange: true},
+          color: {default: 'blue'}
+        },
+        updateSchema: function () {
+          updateSchemaSpy();
+        }
+      });
+      el.hasLoaded = true;
+      el.setAttribute('dummy', {});
+      el.setAttribute('dummy', {color: 'red'});
+      assert.ok(updateSchemaSpy.calledOnce);
+    });
+
+    test('ignores invalid properties when checking if schema needs to be updated', function () {
+      let updateSchemaSpy = this.sinon.spy();
+      registerComponent('dummy', {
+        schema: {
+          type: {default: 'plane', schemaChange: true},
+          color: {default: 'blue'}
+        },
+        updateSchema: function () {
+          updateSchemaSpy();
+        }
+      });
+      el.hasLoaded = true;
+      el.setAttribute('dummy', {});
+      el.setAttribute('dummy', {invalidProperty: 'should be ignored', color: 'red'});
+      assert.ok(updateSchemaSpy.calledOnce);
+    });
   });
 
   suite('resetProperty', function () {
