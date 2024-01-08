@@ -26788,7 +26788,7 @@ Component.prototype = {
     // Check if we need to update schema.
     if (this.schemaChangeKeys.length) {
       for (key in attrValue) {
-        if (this.schema[key].schemaChange) {
+        if (key in this.schema && this.schema[key].schemaChange) {
           mayNeedSchemaUpdate = true;
           break;
         }
@@ -30799,7 +30799,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.5.0 (Date 2023-12-22, Commit #f06bcb69)');
+console.log('A-Frame Version: 1.5.0 (Date 2024-01-08, Commit #14208031)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
