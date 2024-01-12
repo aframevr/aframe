@@ -6,8 +6,7 @@ parent_section: components
 source_code: src/components/scene/xr-mode-ui.js
 ---
 
-The xr-mode-ui component allows configuring and disabling of UI such as the enter VR / AR button, compatibility
-modal, and orientation modal for mobile. The xr-mode-ui component applies only
+The xr-mode-ui component configures or disables the enter VR and AR buttons. Buttons only display if the browser supports the corresponding modes (AR or VR). The xr-mode-ui component applies only
 to the [`<a-scene>` element][scene]. If we wish to simply toggle the UI, use CSS instead.
 
 ## Example
