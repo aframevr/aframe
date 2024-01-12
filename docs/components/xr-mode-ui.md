@@ -6,10 +6,8 @@ parent_section: components
 source_code: src/components/scene/xr-mode-ui.js
 ---
 
-The xr-mode-ui component allows configuring and disabling of UI such as the enter VR / AR button, compatibility
-modal, and orientation modal for mobile. The xr-mode-ui component applies only
+The xr-mode-ui component configures or disables the enter VR and AR buttons. Buttons only display if the browser supports the corresponding modes (AR or VR). The xr-mode-ui component applies only
 to the [`<a-scene>` element][scene]. If we wish to simply toggle the UI, use CSS instead.
-
 
 ## Example
 
@@ -19,22 +17,22 @@ to the [`<a-scene>` element][scene]. If we wish to simply toggle the UI, use CSS
 
 ## Properties
 
-| Property      | Description                                                         | Default Value |
-|-----------------------|---------------------------------------------------------------------|---------------|
-| cardboardModeEnabled  | Enables the now deprecated cardboard mode.                          | false         |
-| enabled               | Whether or not to display UI related to entering VR.                | true          |
-| enterVRButton         | Selector to a custom VR button. On click, the button will enter VR. | ''            |
-| enterVREnabled        | If the VR button is displayed when applicable                       | false         |
-| enterARButton         | Selector to a custom AR button. On click, the button will enter AR. | ''            |
-| enterAREnabled        | If the AR button is displayed when applicable                       | false         |
-| XRMode                | If the AR, VR button or both will be displayed.  One of 'ar', 'vr' or 'xr'.| vr            |
+| Property | Description | Default Value |
+| - | - | - |
+| cardboardModeEnabled | Enables the now deprecated cardboard mode. | false |
+| enabled | Whether or not to display UI related to entering VR. | true |
+| enterVRButton | Selector to a custom VR button. On click, the button will enter VR. | '' |
+| enterVREnabled | If the VR button is displayed when applicable.| true |
+| enterARButton | Selector to a custom AR button. On click, the button will enter AR. | '' |
+| enterAREnabled | If the AR button is displayed when applicable. | true |
+| XRMode | If the AR button, VR button, or both buttons will be displayed. | vr |
 
-### Specifying a Custom Enter VR Button
+### Specifying Custom Enter VR and AR Buttons
 
 ```html
 <a-scene
-  xr-mode-ui="enterVRButton: #myEnterVRButton; enterARButton: #myEnterARButton">
-  <!-- Style the button with images or whatever. -->
+  xr-mode-ui="enterVRButton: #myEnterVRButton; enterARButton: #myEnterARButton; XRMode: xr;">
+  <!-- Style the button with images and/or custom CSS. -->
   <a id="myEnterVRButton" href="#"></a>
   <a id="myEnterARButton" href="#"></a>
 </a-scene>
