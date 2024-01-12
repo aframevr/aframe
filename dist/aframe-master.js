@@ -20842,7 +20842,9 @@ module.exports.Component = register('reflection', {
       }
     });
     this.el.addEventListener('exit-vr', function () {
-      self.stopLightProbe();
+      if (self.xrLightProbe) {
+        self.stopLightProbe();
+      }
     });
     this.el.object3D.environment = this.cubeRenderTarget.texture;
   },
@@ -30799,7 +30801,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.5.0 (Date 2024-01-08, Commit #14208031)');
+console.log('A-Frame Version: 1.5.0 (Date 2024-01-12, Commit #1691837a)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
