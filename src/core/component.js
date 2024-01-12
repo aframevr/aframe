@@ -364,7 +364,7 @@ Component.prototype = {
     // Check if we need to update schema.
     if (this.schemaChangeKeys.length) {
       for (key in attrValue) {
-        if (this.schema[key].schemaChange) {
+        if (key in this.schema && this.schema[key].schemaChange) {
           mayNeedSchemaUpdate = true;
           break;
         }

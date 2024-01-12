@@ -12,7 +12,7 @@
     </head>
   <body>
     <a-scene
-      real-world-meshing="filter: table; meshesEnabled: false; planeMixin: xrplane"
+      real-world-meshing="filterLabels: table; meshesEnabled: false; planeMixin: xrplane"
       obb-collider="showColliders: false"
       renderer="colorManagement: true;"
       xr-mode-ui="XRMode: ar"
@@ -24,7 +24,7 @@
           * author: Rosnandie Yikie (https://sketchfab.com/rosnandie.yikie) -->
         <a-asset-item id="coffee"
           src="https://cdn.aframe.io/examples/mixed-reality/real-world-meshing/models/coffee.glb"
-          response-type="arraybuffer" crossorigin="anonymous"></a-asset-item>
+          response-type="arraybuffer"></a-asset-item>
         <a-asset-item id="messageText" src="message.html"></a-asset-item>
         <a-mixin
           id="xrplane"

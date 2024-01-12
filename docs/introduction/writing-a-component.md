@@ -688,7 +688,7 @@ scene uptime as `time` and time since the last frame as `timeDelta` into the
 far the entity should travel towards the target this frame, given the speed.
 
 To calculate the direction the entity should head in, we subtract the entity's
-position vector from the target entity's direction vector. We have access to
+position vector from the target entity's position vector. We have access to
 the entities' three.js objects via `.object3D`, and from there the position
 vector `.position`. We store the direction vector in the `this.directionVec3`
 we previously allocated in the `init()` handler.
