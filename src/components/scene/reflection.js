@@ -51,7 +51,7 @@ module.exports.Component = register('reflection', {
     });
 
     this.el.addEventListener('exit-vr', function () {
-      self.stopLightProbe();
+      if (self.xrLightProbe) { self.stopLightProbe(); }
     });
 
     this.el.object3D.environment = this.cubeRenderTarget.texture;
