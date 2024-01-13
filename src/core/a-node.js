@@ -145,9 +145,14 @@ class ANode extends HTMLElement {
         }
       });
 
+      self.isLoading = true;
       self.setupMutationObserver();
       if (cb) { cb(); }
+      self.isLoading = false;
       self.hasLoaded = true;
+      // loaded-private is an event analog to loaded that gives A-Frame an opportunity to manage internal
+      // affairs before the publicly loaded event fires and corresponding handlers executed.
+      self.emit('loaded-private', undefined, false);
       self.emit('loaded', undefined, false);
     });
   }
@@ -223,6 +228,10 @@ class ANode extends HTMLElement {
       this.computedMixinStr = this.computedMixinStr.trim();
       window.HTMLElement.prototype.setAttribute.call(this, 'mixin',
                                                      this.computedMixinStr);
+    }
+
+    if (newMixinIds.length === 0) {
+      window.HTMLElement.prototype.removeAttribute.call(this, 'mixin');
     }
 
     return mixinIds;

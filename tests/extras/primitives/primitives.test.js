@@ -1,6 +1,7 @@
 /* global AFRAME, assert, suite, test, THREE */
 var helpers = require('../../helpers');
 var registerPrimitive = require('extras/primitives/primitives').registerPrimitive;
+var registerComponent = require('index').registerComponent;
 var primitives = require('extras/primitives/primitives').primitives;
 
 var primitiveId = 0;
@@ -337,6 +338,31 @@ suite('registerPrimitive (using innerHTML)', function () {
     }, function preCreation (sceneEl) {
       helpers.mixinFactory('bar', {material: 'color: orange'}, sceneEl);
     });
+  });
+
+  test('handles primitive created and updated in init method', function (done) {
+    var el = helpers.entityFactory();
+    registerPrimitive('my-panel', {
+      defaultComponents: {
+        geometry: { primitive: 'plane' },
+        scale: {x: 0.2, y: 0.2, z: 1.0},
+        position: {x: 0, y: 1.5, z: -2}
+      }
+    });
+    registerComponent('place-panel', {
+      init: function () {
+        var panel = document.createElement('my-panel');
+        this.el.appendChild(panel);
+        panel.setAttribute('scale', {x: 0.2});
+      }
+    });
+    var panelEl = document.createElement('my-panel');
+    panelEl.setAttribute('place-panel', '');
+    panelEl.addEventListener('loaded', function () {
+      assert.equal(panelEl.object3D.scale.x, 0.2);
+      done();
+    });
+    el.sceneEl.appendChild(panelEl);
   });
 
   test('resolves mapping collisions', function (done) {

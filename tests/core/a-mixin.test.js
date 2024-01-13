@@ -1,5 +1,6 @@
 /* global assert, setup, suite, test */
 var helpers = require('../helpers');
+var registerComponent = require('index').registerComponent;
 
 suite('a-mixin', function () {
   var assetsEl;
@@ -77,6 +78,30 @@ suite('a-mixin', function () {
           done();
         });
       });
+    });
+
+    test('can remove mixin in component init method', function (done) {
+      var mixinEl = document.createElement('a-mixin');
+      var testEl = document.createElement('a-entity');
+      mixinEl.setAttribute('id', 'red');
+      mixinEl.setAttribute('material', 'color: red');
+      assetsEl.appendChild(mixinEl);
+
+      registerComponent('delete-mixin', {
+        init: function () {
+          this.el.removeAttribute('mixin');
+        }
+      });
+
+      testEl.setAttribute('mixin', 'red');
+      testEl.setAttribute('geometry', {primitive: 'box'});
+      testEl.setAttribute('delete-mixin', '');
+      testEl.addEventListener('loaded', function () {
+        assert.equal(testEl.getAttribute('mixin'), null);
+        assert.equal(testEl.getAttribute('material'), '');
+        done();
+      });
+      el.sceneEl.appendChild(testEl);
     });
 
     test('allows mixin to define mixin pre-attach', done => {
