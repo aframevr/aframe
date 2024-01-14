@@ -126,29 +126,16 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
   updateModelMaterial: function () {
     var jointEls = this.jointEls;
     var skinnedMesh = this.skinnedMesh;
+    var transparent = !(this.data.modelOpacity === 1.0);
     if (skinnedMesh) {
       this.skinnedMesh.material.color.set(this.data.modelColor);
-
-      if (!(this.data.modelOpacity === 1.0)){
-        this.skinnedMesh.material.transparent.set(true);
-      }
-      else{
-        this.skinnedMesh.material.transparent.set(false);
-      }
-      
+      this.skinnedMesh.material.transparent.set(transparent);
       this.skinnedMesh.material.opacity.set(this.data.modelOpacity);
     }
 
     for (var i = 0; i < jointEls.length; i++) {
       jointEls[i].setAttribute('material', 'color', this.data.modelColor);
-
-      if (!(this.data.modelOpacity === 1.0)){
-        jointEls[i].setAttribute('material', 'transparent', true);     
-      }
-      else{
-        jointEls[i].setAttribute('material', 'transparent', false);     
-      }
-
+      jointEls[i].setAttribute('material', 'transparent', transparent);     
       jointEls[i].setAttribute('material', 'opacity', this.data.modelOpacity);           
     }
   },
