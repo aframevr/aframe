@@ -24,6 +24,7 @@ Use `hand-tracking-controls` to integrate [hand tracked input][webxrhandinput] i
 |----------------|----------------------------------------------------------------------------------------|---------------|
 | hand                 | The hand that will be tracked (i.e., right, left). | left                 |
 | modelColor          | Color of hand material.                                                                | white         |
+| modelOpacity         | Opacity of the hand material.                                   | 1.0          |
 | modelStyle           | Mesh representing the hand or dots matching the joints        | mesh
 
 ## Events
