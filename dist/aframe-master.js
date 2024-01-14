@@ -14051,6 +14051,9 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
     },
     modelColor: {
       default: 'white'
+    },
+    modelOpacity: {
+      default: 1.0
     }
   },
   bindMethods: function () {
@@ -14105,16 +14108,21 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
     this.addChildEntity(evt.detail.el);
   },
   update: function () {
-    this.updateModelColor();
+    this.updateModelMaterial();
   },
-  updateModelColor: function () {
+  updateModelMaterial: function () {
     var jointEls = this.jointEls;
     var skinnedMesh = this.skinnedMesh;
+    var transparent = !(this.data.modelOpacity === 1.0);
     if (skinnedMesh) {
       this.skinnedMesh.material.color.set(this.data.modelColor);
+      this.skinnedMesh.material.transparent.set(transparent);
+      this.skinnedMesh.material.opacity.set(this.data.modelOpacity);
     }
     for (var i = 0; i < jointEls.length; i++) {
       jointEls[i].setAttribute('material', 'color', this.data.modelColor);
+      jointEls[i].setAttribute('material', 'transparent', transparent);
+      jointEls[i].setAttribute('material', 'opacity', this.data.modelOpacity);
     }
   },
   updateReferenceSpace: function () {
@@ -30801,7 +30809,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.5.0 (Date 2024-01-12, Commit #1691837a)');
+console.log('A-Frame Version: 1.5.0 (Date 2024-01-14, Commit #0bd3f5ca)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
