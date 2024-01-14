@@ -135,8 +135,8 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
 
     for (var i = 0; i < jointEls.length; i++) {
       jointEls[i].setAttribute('material', 'color', this.data.modelColor);
-      jointEls[i].setAttribute('material', 'transparent', transparent);     
-      jointEls[i].setAttribute('material', 'opacity', this.data.modelOpacity);           
+      jointEls[i].setAttribute('material', 'transparent', transparent);
+      jointEls[i].setAttribute('material', 'opacity', this.data.modelOpacity);
     }
   },
 
