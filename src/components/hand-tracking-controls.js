@@ -361,7 +361,11 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
         primitive: 'sphere',
         radius: 1.0
       });
-      jointEl.setAttribute('material', {color: this.data.modelColor});
+      jointEl.setAttribute('material', {
+      color: this.data.modelColor,
+      transparent: !(this.data.modelOpacity === 1.0),
+      opacity: this.data.modelOpacity
+      });
       jointEl.object3D.visible = false;
       this.el.appendChild(jointEl);
       this.jointEls.push(jointEl);
@@ -382,7 +386,11 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
     mesh.position.set(0, 0, 0);
     mesh.rotation.set(0, 0, 0);
     skinnedMesh.frustumCulled = false;
-    skinnedMesh.material = new THREE.MeshStandardMaterial({color: this.data.modelColor});
+    skinnedMesh.material = new THREE.MeshStandardMaterial( {
+    color: this.data.modelColor,
+    transparent: !(this.data.modelOpacity === 1.0),
+    opacity: this.data.modelOpacity
+    });
     this.setupChildrenEntities();
     this.el.setObject3D('mesh', mesh);
   },
