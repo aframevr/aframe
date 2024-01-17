@@ -129,7 +129,7 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
     var transparent = !(this.data.modelOpacity === 1.0);
     if (skinnedMesh) {
       this.skinnedMesh.material.color.set(this.data.modelColor);
-      this.skinnedMesh.material.transparent.set(transparent);
+      this.skinnedMesh.material.transparent = transparent;
       this.skinnedMesh.material.opacity.set(this.data.modelOpacity);
     }
 
