@@ -129,14 +129,16 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
     var transparent = !(this.data.modelOpacity === 1.0);
     if (skinnedMesh) {
       this.skinnedMesh.material.color.set(this.data.modelColor);
-      this.skinnedMesh.material.transparent.set(transparent);
-      this.skinnedMesh.material.opacity.set(this.data.modelOpacity);
+      this.skinnedMesh.material.transparent = transparent;
+      this.skinnedMesh.material.opacity = this.data.modelOpacity;
     }
 
     for (var i = 0; i < jointEls.length; i++) {
-      jointEls[i].setAttribute('material', 'color', this.data.modelColor);
-      jointEls[i].setAttribute('material', 'transparent', transparent);
-      jointEls[i].setAttribute('material', 'opacity', this.data.modelOpacity);
+      jointEls[i].setAttribute('material', {
+        color: this.data.modelColor,
+        transparent: transparent,
+        opacity: this.data.modelOpacity
+      });
     }
   },
 
@@ -361,11 +363,11 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
         primitive: 'sphere',
         radius: 1.0
       });
-      jointEl.setAttribute('material', {color: this.data.modelColor});
       jointEl.object3D.visible = false;
       this.el.appendChild(jointEl);
       this.jointEls.push(jointEl);
     }
+    this.updateModelMaterial();
   },
 
   initMeshHandModel: function () {
@@ -382,7 +384,8 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
     mesh.position.set(0, 0, 0);
     mesh.rotation.set(0, 0, 0);
     skinnedMesh.frustumCulled = false;
-    skinnedMesh.material = new THREE.MeshStandardMaterial({color: this.data.modelColor});
+    skinnedMesh.material = new THREE.MeshStandardMaterial();
+    this.updateModelMaterial();
     this.setupChildrenEntities();
     this.el.setObject3D('mesh', mesh);
   },
