@@ -130,7 +130,7 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
     if (skinnedMesh) {
       this.skinnedMesh.material.color.set(this.data.modelColor);
       this.skinnedMesh.material.transparent = transparent;
-      this.skinnedMesh.material.opacity.set(this.data.modelOpacity);
+      this.skinnedMesh.material.opacity = this.data.modelOpacity;
     }
 
     for (var i = 0; i < jointEls.length; i++) {
