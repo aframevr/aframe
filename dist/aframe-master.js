@@ -14116,13 +14116,15 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
     var transparent = !(this.data.modelOpacity === 1.0);
     if (skinnedMesh) {
       this.skinnedMesh.material.color.set(this.data.modelColor);
-      this.skinnedMesh.material.transparent.set(transparent);
-      this.skinnedMesh.material.opacity.set(this.data.modelOpacity);
+      this.skinnedMesh.material.transparent = transparent;
+      this.skinnedMesh.material.opacity = this.data.modelOpacity;
     }
     for (var i = 0; i < jointEls.length; i++) {
-      jointEls[i].setAttribute('material', 'color', this.data.modelColor);
-      jointEls[i].setAttribute('material', 'transparent', transparent);
-      jointEls[i].setAttribute('material', 'opacity', this.data.modelOpacity);
+      jointEls[i].setAttribute('material', {
+        color: this.data.modelColor,
+        transparent: transparent,
+        opacity: this.data.modelOpacity
+      });
     }
   },
   updateReferenceSpace: function () {
@@ -14342,13 +14344,11 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
         primitive: 'sphere',
         radius: 1.0
       });
-      jointEl.setAttribute('material', {
-        color: this.data.modelColor
-      });
       jointEl.object3D.visible = false;
       this.el.appendChild(jointEl);
       this.jointEls.push(jointEl);
     }
+    this.updateModelMaterial();
   },
   initMeshHandModel: function () {
     var modelURL = this.data.hand === 'left' ? LEFT_HAND_MODEL_URL : RIGHT_HAND_MODEL_URL;
@@ -14365,9 +14365,8 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
     mesh.position.set(0, 0, 0);
     mesh.rotation.set(0, 0, 0);
     skinnedMesh.frustumCulled = false;
-    skinnedMesh.material = new THREE.MeshStandardMaterial({
-      color: this.data.modelColor
-    });
+    skinnedMesh.material = new THREE.MeshStandardMaterial();
+    this.updateModelMaterial();
     this.setupChildrenEntities();
     this.el.setObject3D('mesh', mesh);
   },
@@ -30809,7 +30808,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.5.0 (Date 2024-01-14, Commit #2f5222b4)');
+console.log('A-Frame Version: 1.5.0 (Date 2024-01-17, Commit #06f16855)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
