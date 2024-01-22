@@ -98,6 +98,10 @@ registerComponent('laser-controls', {
       raycaster: {origin: {x: 0, y: 0, z: 0}}
     },
 
+    'pico-controls': {
+      cursor: {downEvents: ['triggerdown'], upEvents: ['triggerup']}
+    },
+
     'valve-index-controls': {
       cursor: {downEvents: ['triggerdown'], upEvents: ['triggerup']}
     },
