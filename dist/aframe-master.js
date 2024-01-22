@@ -15058,6 +15058,12 @@ registerComponent('laser-controls', {
         }
       }
     },
+    'pico-controls': {
+      cursor: {
+        downEvents: ['triggerdown'],
+        upEvents: ['triggerup']
+      }
+    },
     'valve-index-controls': {
       cursor: {
         downEvents: ['triggerdown'],
@@ -30808,7 +30814,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.5.0 (Date 2024-01-17, Commit #06f16855)');
+console.log('A-Frame Version: 1.5.0 (Date 2024-01-22, Commit #9f22df28)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
