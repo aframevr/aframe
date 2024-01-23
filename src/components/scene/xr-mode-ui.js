@@ -18,7 +18,7 @@ module.exports.Component = registerComponent('xr-mode-ui', {
   dependencies: ['canvas'],
 
   schema: {
-    enabled: {default: true},
+    enabled: {default: false},
     cardboardModeEnabled: {default: false},
     enterVRButton: {default: ''},
     enterVREnabled: {default: true},

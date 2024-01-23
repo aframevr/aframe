@@ -23,9 +23,7 @@ return /******/ (() => { // webpackBootstrap
 
   var attributesObserver = function (whenDefined, MutationObserver) {
     var attributeChanged = function attributeChanged(records) {
-      for (var i = 0, length = records.length; i < length; i++) {
-        dispatch(records[i]);
-      }
+      for (var i = 0, length = records.length; i < length; i++) dispatch(records[i]);
     };
     var dispatch = function dispatch(_ref) {
       var target = _ref.target,
@@ -208,9 +206,7 @@ return /******/ (() => { // webpackBootstrap
   var qsaObserver = function (options) {
     var live = new WeakMap$1();
     var drop = function drop(elements) {
-      for (var i = 0, length = elements.length; i < length; i++) {
-        live["delete"](elements[i]);
-      }
+      for (var i = 0, length = elements.length; i < length; i++) live["delete"](elements[i]);
     };
     var flush = function flush() {
       var records = observer.takeRecords();
@@ -245,9 +241,7 @@ return /******/ (() => { // webpackBootstrap
     };
     var parse = function parse(elements) {
       var connected = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
-      for (var i = 0, length = elements.length; i < length; i++) {
-        notifier(elements[i], connected);
-      }
+      for (var i = 0, length = elements.length; i < length; i++) notifier(elements[i], connected);
     };
     var query = options.query;
     var root = options.root || document$2;
@@ -287,15 +281,18 @@ return /******/ (() => { // webpackBootstrap
   var expando = function expando(element) {
     var key = keys(element);
     var value = [];
+    var ignore = new Set$1();
     var length = key.length;
     for (var i = 0; i < length; i++) {
       value[i] = element[key[i]];
-      delete element[key[i]];
+      try {
+        delete element[key[i]];
+      } catch (SafariTP) {
+        ignore.add(i);
+      }
     }
     return function () {
-      for (var _i = 0; _i < length; _i++) {
-        element[key[_i]] = value[_i];
-      }
+      for (var _i = 0; _i < length; _i++) ignore.has(_i) || (element[key[_i]] = value[_i]);
     };
   };
   if (legacy) {
@@ -348,41 +345,32 @@ return /******/ (() => { // webpackBootstrap
       return defined.get(name).$;
     };
     var augment = attributesObserver(whenDefined, MutationObserver$1);
-    defineProperty(self, 'customElements', {
-      configurable: true,
-      value: {
-        define: function define(is, Class) {
-          if (registry.has(is)) throw new Error("the name \"".concat(is, "\" has already been used with this registry"));
-          classes.set(Class, is);
-          prototypes.set(is, Class.prototype);
-          registry.set(is, Class);
-          query.push(is);
-          whenDefined(is).then(function () {
-            parse(document$1.querySelectorAll(is));
-          });
-          defined.get(is)._(Class);
-        },
-        get: function get(is) {
-          return registry.get(is);
-        },
-        whenDefined: whenDefined
-      }
-    });
+    self.customElements = {
+      define: function define(is, Class) {
+        if (registry.has(is)) throw new Error("the name \"".concat(is, "\" has already been used with this registry"));
+        classes.set(Class, is);
+        prototypes.set(is, Class.prototype);
+        registry.set(is, Class);
+        query.push(is);
+        whenDefined(is).then(function () {
+          parse(document$1.querySelectorAll(is));
+        });
+        defined.get(is)._(Class);
+      },
+      get: function get(is) {
+        return registry.get(is);
+      },
+      whenDefined: whenDefined
+    };
     defineProperty(HTMLBuiltIn.prototype = HTMLElement.prototype, 'constructor', {
       value: HTMLBuiltIn
     });
-    defineProperty(self, 'HTMLElement', {
-      configurable: true,
-      value: HTMLBuiltIn
-    });
-    defineProperty(document$1, 'createElement', {
-      configurable: true,
-      value: function value(name, options) {
-        var is = options && options.is;
-        var Class = is ? registry.get(is) : registry.get(name);
-        return Class ? new Class() : createElement.call(document$1, name);
-      }
-    });
+    self.HTMLElement = HTMLBuiltIn;
+    document$1.createElement = function (name, options) {
+      var is = options && options.is;
+      var Class = is ? registry.get(is) : registry.get(name);
+      return Class ? new Class() : createElement.call(document$1, name);
+    };
     // in case ShadowDOM is used through a polyfill, to avoid issues
     // with builtin extends within shadow roots
     if (!('isConnected' in Node.prototype)) defineProperty(Node.prototype, 'isConnected', {
@@ -392,37 +380,34 @@ return /******/ (() => { // webpackBootstrap
       }
     });
   } else {
-    legacy = !self.customElements.get('extends-li');
+    legacy = !self.customElements.get('extends-br');
     if (legacy) {
       try {
-        var LI = function LI() {
-          return self.Reflect.construct(HTMLLIElement, [], LI);
+        var BR = function BR() {
+          return self.Reflect.construct(HTMLBRElement, [], BR);
         };
-        LI.prototype = HTMLLIElement.prototype;
-        var is = 'extends-li';
-        self.customElements.define('extends-li', LI, {
-          'extends': 'li'
+        BR.prototype = HTMLLIElement.prototype;
+        var is = 'extends-br';
+        self.customElements.define('extends-br', BR, {
+          'extends': 'br'
         });
-        legacy = document$1.createElement('li', {
+        legacy = document$1.createElement('br', {
           is: is
         }).outerHTML.indexOf(is) < 0;
         var _self$customElements = self.customElements,
           get = _self$customElements.get,
           _whenDefined = _self$customElements.whenDefined;
-        defineProperty(self.customElements, 'whenDefined', {
-          configurable: true,
-          value: function value(is) {
-            var _this = this;
-            return _whenDefined.call(this, is).then(function (Class) {
-              return Class || get.call(_this, is);
-            });
-          }
-        });
+        self.customElements.whenDefined = function (is) {
+          var _this = this;
+          return _whenDefined.call(this, is).then(function (Class) {
+            return Class || get.call(_this, is);
+          });
+        };
       } catch (o_O) {}
     }
   }
   if (legacy) {
-    var parseShadow = function parseShadow(element) {
+    var _parseShadow = function _parseShadow(element) {
       var root = shadowRoots.get(element);
       _parse(root.querySelectorAll(this), element.isConnected);
     };
@@ -473,7 +458,7 @@ return /******/ (() => { // webpackBootstrap
         handle: function handle(element, connected) {
           if (shadowRoots.has(element)) {
             if (connected) shadows.add(element);else shadows["delete"](element);
-            if (_query.length) parseShadow.call(_query, element);
+            if (_query.length) _parseShadow.call(_query, element);
           }
         }
       }),
@@ -525,75 +510,60 @@ return /******/ (() => { // webpackBootstrap
         value: HTMLBuiltIn
       });
     });
-    defineProperty(document$1, 'createElement', {
-      configurable: true,
-      value: function value(name, options) {
-        var is = options && options.is;
-        if (is) {
-          var Class = _registry.get(is);
-          if (Class && _classes.get(Class).tag === name) return new Class();
-        }
-        var element = _createElement.call(document$1, name);
-        if (is) element.setAttribute('is', is);
-        return element;
+    document$1.createElement = function (name, options) {
+      var is = options && options.is;
+      if (is) {
+        var Class = _registry.get(is);
+        if (Class && _classes.get(Class).tag === name) return new Class();
       }
-    });
-    defineProperty(customElements, 'get', {
-      configurable: true,
-      value: getCE
-    });
-    defineProperty(customElements, 'whenDefined', {
-      configurable: true,
-      value: _whenDefined2
-    });
-    defineProperty(customElements, 'upgrade', {
-      configurable: true,
-      value: function value(element) {
-        var is = element.getAttribute('is');
-        if (is) {
-          var _constructor = _registry.get(is);
-          if (_constructor) {
-            _augment(setPrototypeOf(element, _constructor.prototype), is);
-            // apparently unnecessary because this is handled by qsa observer
-            // if (element.isConnected && element.connectedCallback)
-            //   element.connectedCallback();
-            return;
-          }
+      var element = _createElement.call(document$1, name);
+      if (is) element.setAttribute('is', is);
+      return element;
+    };
+    customElements.get = getCE;
+    customElements.whenDefined = _whenDefined2;
+    customElements.upgrade = function (element) {
+      var is = element.getAttribute('is');
+      if (is) {
+        var _constructor = _registry.get(is);
+        if (_constructor) {
+          _augment(setPrototypeOf(element, _constructor.prototype), is);
+          // apparently unnecessary because this is handled by qsa observer
+          // if (element.isConnected && element.connectedCallback)
+          //   element.connectedCallback();
+          return;
         }
-        upgrade.call(customElements, element);
       }
-    });
-    defineProperty(customElements, 'define', {
-      configurable: true,
-      value: function value(is, Class, options) {
-        if (getCE(is)) throw new Error("'".concat(is, "' has already been defined as a custom element"));
-        var selector;
-        var tag = options && options["extends"];
-        _classes.set(Class, tag ? {
-          is: is,
-          tag: tag
-        } : {
-          is: '',
-          tag: is
-        });
+      upgrade.call(customElements, element);
+    };
+    customElements.define = function (is, Class, options) {
+      if (getCE(is)) throw new Error("'".concat(is, "' has already been defined as a custom element"));
+      var selector;
+      var tag = options && options["extends"];
+      _classes.set(Class, tag ? {
+        is: is,
+        tag: tag
+      } : {
+        is: '',
+        tag: is
+      });
+      if (tag) {
+        selector = "".concat(tag, "[is=\"").concat(is, "\"]");
+        _prototypes.set(selector, Class.prototype);
+        _registry.set(is, Class);
+        _query.push(selector);
+      } else {
+        define.apply(customElements, arguments);
+        shadowed.push(selector = is);
+      }
+      _whenDefined2(is).then(function () {
         if (tag) {
-          selector = "".concat(tag, "[is=\"").concat(is, "\"]");
-          _prototypes.set(selector, Class.prototype);
-          _registry.set(is, Class);
-          _query.push(selector);
-        } else {
-          define.apply(customElements, arguments);
-          shadowed.push(selector = is);
-        }
-        _whenDefined2(is).then(function () {
-          if (tag) {
-            _parse(document$1.querySelectorAll(selector));
-            shadows.forEach(parseShadow, [selector]);
-          } else parseShadowed(document$1.querySelectorAll(selector));
-        });
-        _defined.get(is)._(Class);
-      }
-    });
+          _parse(document$1.querySelectorAll(selector));
+          shadows.forEach(_parseShadow, [selector]);
+        } else parseShadowed(document$1.querySelectorAll(selector));
+      });
+      _defined.get(is)._(Class);
+    };
   }
 })();
 
@@ -1051,7 +1021,6 @@ function SlowBuffer(length) {
 Buffer.isBuffer = function isBuffer(b) {
   return b != null && b._isBuffer === true && b !== Buffer.prototype; // so Buffer.isBuffer(Buffer.prototype) will be false
 };
-
 Buffer.compare = function compare(a, b) {
   if (isInstance(a, Uint8Array)) a = Buffer.from(a, a.offset, a.byteLength);
   if (isInstance(b, Uint8Array)) b = Buffer.from(b, b.offset, b.byteLength);
@@ -1162,7 +1131,6 @@ function byteLength(string, encoding) {
         if (loweredCase) {
           return mustMatch ? -1 : utf8ToBytes(string).length; // assume utf8
         }
-
         encoding = ('' + encoding).toLowerCase();
         loweredCase = true;
     }
@@ -4886,7 +4854,6 @@ var penner = function () {
     [0.600, 0.040, 0.980, 0.335], /* inCirc */
     [0.600, -0.280, 0.735, 0.045], /* inBack */
     elastic /* inElastic */],
-
     Out: [[0.250, 0.460, 0.450, 0.940], /* outQuad */
     [0.215, 0.610, 0.355, 1.000], /* outCubic */
     [0.165, 0.840, 0.440, 1.000], /* outQuart */
@@ -4900,7 +4867,6 @@ var penner = function () {
         return 1 - elastic(a, p)(1 - t);
       };
     } /* outElastic */],
-
     InOut: [[0.455, 0.030, 0.515, 0.955], /* inOutQuad */
     [0.645, 0.045, 0.355, 1.000], /* inOutCubic */
     [0.770, 0.000, 0.175, 1.000], /* inOutQuart */
@@ -4915,7 +4881,6 @@ var penner = function () {
       };
     } /* inOutElastic */]
   };
-
   var eases = {
     linear: [0.250, 0.250, 0.750, 0.750]
   };
@@ -15250,7 +15215,6 @@ module.exports.Component = registerComponent('layer', {
       // x pixel count in dest
       cubeFaceSize // y pixel count in dest
       );
-
       tempCanvasContext.restore();
       if (callback) {
         callback();
@@ -17788,7 +17752,7 @@ var trackedControlsUtils = __webpack_require__(/*! ../utils/tracked-controls */ 
 var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
 var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
 var onButtonEvent = trackedControlsUtils.onButtonEvent;
-var isWebXRAvailable = (__webpack_require__(/*! ../utils/ */ "./src/utils/index.js").device.isWebXRAvailable);
+var isWebXRAvailable = (__webpack_require__(/*! ../utils/ */ "./src/utils/index.js").device).isWebXRAvailable;
 var GAMEPAD_ID_WEBXR = 'oculus-go';
 var GAMEPAD_ID_WEBVR = 'Oculus Go';
 var AFRAME_CDN_ROOT = (__webpack_require__(/*! ../constants */ "./src/constants/index.js").AFRAME_CDN_ROOT);
@@ -18016,7 +17980,7 @@ var trackedControlsUtils = __webpack_require__(/*! ../utils/tracked-controls */ 
 var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
 var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
 var onButtonEvent = trackedControlsUtils.onButtonEvent;
-var isWebXRAvailable = (__webpack_require__(/*! ../utils/ */ "./src/utils/index.js").device.isWebXRAvailable);
+var isWebXRAvailable = (__webpack_require__(/*! ../utils/ */ "./src/utils/index.js").device).isWebXRAvailable;
 var GAMEPAD_ID_WEBXR = 'oculus-touch';
 var GAMEPAD_ID_WEBVR = 'Oculus Touch';
 
@@ -19364,7 +19328,7 @@ function copyArray(a, b) {
   \************************************/
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-var degToRad = (__webpack_require__(/*! ../lib/three */ "./src/lib/three.js").MathUtils.degToRad);
+var degToRad = (__webpack_require__(/*! ../lib/three */ "./src/lib/three.js").MathUtils).degToRad;
 var registerComponent = (__webpack_require__(/*! ../core/component */ "./src/core/component.js").registerComponent);
 module.exports.Component = registerComponent('rotation', {
   schema: {
@@ -19972,7 +19936,7 @@ var DIALOG_OK_BUTTON_CLASS = 'a-dialog-ok-button';
 module.exports.Component = registerComponent('device-orientation-permission-ui', {
   schema: {
     enabled: {
-      default: true
+      default: false
     },
     deviceMotionMessage: {
       default: 'This immersive website requires access to your device motion sensors.'
@@ -21310,7 +21274,7 @@ module.exports.Component = registerComponent('xr-mode-ui', {
   dependencies: ['canvas'],
   schema: {
     enabled: {
-      default: true
+      default: false
     },
     cardboardModeEnabled: {
       default: false
@@ -23201,7 +23165,7 @@ var INDEX_CONTROLLER_MODEL_URL = {
   right: INDEX_CONTROLLER_MODEL_BASE_URL + 'right.glb'
 };
 var GAMEPAD_ID_PREFIX = 'valve';
-var isWebXRAvailable = (__webpack_require__(/*! ../utils/ */ "./src/utils/index.js").device.isWebXRAvailable);
+var isWebXRAvailable = (__webpack_require__(/*! ../utils/ */ "./src/utils/index.js").device).isWebXRAvailable;
 var INDEX_CONTROLLER_POSITION_OFFSET_WEBVR = {
   left: {
     x: -0.00023692678902063457,
@@ -23512,7 +23476,7 @@ var onButtonEvent = trackedControlsUtils.onButtonEvent;
 var AFRAME_CDN_ROOT = (__webpack_require__(/*! ../constants */ "./src/constants/index.js").AFRAME_CDN_ROOT);
 var VIVE_CONTROLLER_MODEL_OBJ_URL = AFRAME_CDN_ROOT + 'controllers/vive/vr_controller_vive.obj';
 var VIVE_CONTROLLER_MODEL_OBJ_MTL = AFRAME_CDN_ROOT + 'controllers/vive/vr_controller_vive.mtl';
-var isWebXRAvailable = (__webpack_require__(/*! ../utils/ */ "./src/utils/index.js").device.isWebXRAvailable);
+var isWebXRAvailable = (__webpack_require__(/*! ../utils/ */ "./src/utils/index.js").device).isWebXRAvailable;
 var GAMEPAD_ID_WEBXR = 'htc-vive';
 var GAMEPAD_ID_WEBVR = 'OpenVR ';
 
@@ -23980,7 +23944,7 @@ module.exports.Component = registerComponent('vive-focus-controls', {
   \*****************************************/
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-var KEYCODE_TO_CODE = (__webpack_require__(/*! ../constants */ "./src/constants/index.js").keyboardevent.KEYCODE_TO_CODE);
+var KEYCODE_TO_CODE = (__webpack_require__(/*! ../constants */ "./src/constants/index.js").keyboardevent).KEYCODE_TO_CODE;
 var registerComponent = (__webpack_require__(/*! ../core/component */ "./src/core/component.js").registerComponent);
 var THREE = __webpack_require__(/*! ../lib/three */ "./src/lib/three.js");
 var utils = __webpack_require__(/*! ../utils/ */ "./src/utils/index.js");
@@ -24249,7 +24213,7 @@ var MODEL_FILENAMES = {
   right: 'right.glb',
   default: 'universal.glb'
 };
-var isWebXRAvailable = (__webpack_require__(/*! ../utils/ */ "./src/utils/index.js").device.isWebXRAvailable);
+var isWebXRAvailable = (__webpack_require__(/*! ../utils/ */ "./src/utils/index.js").device).isWebXRAvailable;
 var GAMEPAD_ID_WEBXR = 'windows-mixed-reality';
 var GAMEPAD_ID_WEBVR = 'Spatial Controller (Spatial Interaction Source) ';
 var GAMEPAD_ID_PATTERN = /([0-9a-zA-Z]+-[0-9a-zA-Z]+)$/;
@@ -29092,7 +29056,6 @@ Shader.prototype = {
         value: undefined // Let updateVariables handle setting these.
       };
     }
-
     return variables;
   },
   /**
@@ -30803,7 +30766,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.5.0 (Date 2023-12-12, Commit #fc54fe9a)');
+console.log('A-Frame Version: 1.5.0 (Date 2024-01-23, Commit #fb6863e5)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
@@ -35563,7 +35526,6 @@ THREE.DeviceOrientationControls = function (object) {
       quaternion.multiply(q0.setFromAxisAngle(zee, -orient)); // adjust for screen orientation
     };
   }();
-
   this.connect = function () {
     onScreenOrientationChangeEvent();
     window.addEventListener('orientationchange', onScreenOrientationChangeEvent, false);
@@ -35784,7 +35746,6 @@ window.BrowserStats = function () {
     var i = Math.floor(Math.log(v) / log1024);
     return Math.round(v * precision / Math.pow(1024, i)) / precision; // + ' ' + sizes[i];
   }
-
   function _update() {
     _usedJSHeapSize = _size(performance.memory.usedJSHeapSize);
     _totalJSHeapSize = _size(performance.memory.totalJSHeapSize);
@@ -36181,7 +36142,6 @@ window.rStats = function rStats(settings) {
     console.log( _base.clientHeight );
     }*/
   }
-
   _init();
   return function (id) {
     if (id) return _perf(id);
@@ -36383,7 +36343,412 @@ var ___CSS_LOADER_URL_REPLACEMENT_2___ = _node_modules_css_loader_dist_runtime_g
 var ___CSS_LOADER_URL_REPLACEMENT_3___ = _node_modules_css_loader_dist_runtime_getUrl_js__WEBPACK_IMPORTED_MODULE_2___default()(___CSS_LOADER_URL_IMPORT_3___);
 var ___CSS_LOADER_URL_REPLACEMENT_4___ = _node_modules_css_loader_dist_runtime_getUrl_js__WEBPACK_IMPORTED_MODULE_2___default()(___CSS_LOADER_URL_IMPORT_4___);
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "/* .a-fullscreen means not embedded. */\nhtml.a-fullscreen {\n  bottom: 0;\n  left: 0;\n  position: fixed;\n  right: 0;\n  top: 0;\n}\n\nhtml.a-fullscreen body {\n  height: 100%;\n  margin: 0;\n  overflow: hidden;\n  padding: 0;\n  width: 100%;\n}\n\n/* Class is removed when doing <a-scene embedded>. */\nhtml.a-fullscreen .a-canvas {\n  width: 100% !important;\n  height: 100% !important;\n  top: 0 !important;\n  left: 0 !important;\n  right: 0 !important;\n  bottom: 0 !important;\n  position: fixed !important;\n}\n\nhtml:not(.a-fullscreen) .a-enter-vr,\nhtml:not(.a-fullscreen) .a-enter-ar {\n  right: 5px;\n  bottom: 5px;\n}\n\nhtml:not(.a-fullscreen) .a-enter-ar {\n  right: 60px;\n}\n\n/* In chrome mobile the user agent stylesheet set it to white  */\n:-webkit-full-screen {\n  background-color: transparent;\n}\n\n.a-hidden {\n  display: none !important;\n}\n\n.a-canvas {\n  height: 100%;\n  left: 0;\n  position: absolute;\n  top: 0;\n  width: 100%;\n}\n\n.a-canvas.a-grab-cursor:hover {\n  cursor: grab;\n  cursor: -moz-grab;\n  cursor: -webkit-grab;\n}\n\ncanvas.a-canvas.a-mouse-cursor-hover:hover {\n  cursor: pointer;\n}\n\n.a-inspector-loader {\n  background-color: #ed3160;\n  position: fixed;\n  left: 3px;\n  top: 3px;\n  padding: 6px 10px;\n  color: #fff;\n  text-decoration: none;\n  font-size: 12px;\n  font-family: Roboto,sans-serif;\n  text-align: center;\n  z-index: 99999;\n  width: 204px;\n}\n\n/* Inspector loader animation */\n@keyframes dots-1 { from { opacity: 0; } 25% { opacity: 1; } }\n@keyframes dots-2 { from { opacity: 0; } 50% { opacity: 1; } }\n@keyframes dots-3 { from { opacity: 0; } 75% { opacity: 1; } }\n@-webkit-keyframes dots-1 { from { opacity: 0; } 25% { opacity: 1; } }\n@-webkit-keyframes dots-2 { from { opacity: 0; } 50% { opacity: 1; } }\n@-webkit-keyframes dots-3 { from { opacity: 0; } 75% { opacity: 1; } }\n\n.a-inspector-loader .dots span {\n  animation: dots-1 2s infinite steps(1);\n  -webkit-animation: dots-1 2s infinite steps(1);\n}\n\n.a-inspector-loader .dots span:first-child + span {\n  animation-name: dots-2;\n  -webkit-animation-name: dots-2;\n}\n\n.a-inspector-loader .dots span:first-child + span + span {\n  animation-name: dots-3;\n  -webkit-animation-name: dots-3;\n}\n\na-scene {\n  display: block;\n  position: relative;\n  height: 100%;\n  width: 100%;\n}\n\na-assets,\na-scene video,\na-scene img,\na-scene audio {\n  display: none;\n}\n\n.a-enter-vr-modal,\n.a-orientation-modal {\n  font-family: Consolas, Andale Mono, Courier New, monospace;\n}\n\n.a-enter-vr-modal a {\n  border-bottom: 1px solid #fff;\n  padding: 2px 0;\n  text-decoration: none;\n  transition: .1s color ease-in;\n}\n\n.a-enter-vr-modal a:hover {\n  background-color: #fff;\n  color: #111;\n  padding: 2px 4px;\n  position: relative;\n  left: -4px;\n}\n\n.a-enter-vr,\n.a-enter-ar {\n  font-family: sans-serif, monospace;\n  font-size: 13px;\n  width: 100%;\n  font-weight: 200;\n  line-height: 16px;\n  position: absolute;\n  right: 20px;\n  bottom: 20px;\n}\n\n.a-enter-ar.xr {\n  right: 90px;\n}\n\n.a-enter-vr-button,\n.a-enter-vr-modal,\n.a-enter-vr-modal a {\n  color: #fff;\n  user-select: none;\n  outline: none;\n}\n\n.a-enter-vr-button {\n  background: rgba(0, 0, 0, 0.35) url(" + ___CSS_LOADER_URL_REPLACEMENT_0___ + ") 50% 50% no-repeat;\n}\n\n.a-enter-ar-button {\n  background: rgba(0, 0, 0, 0.20) url(" + ___CSS_LOADER_URL_REPLACEMENT_1___ + ") 50% 50% no-repeat;\n}\n\n.a-enter-vr.fullscreen .a-enter-vr-button {\n  background-image: url(" + ___CSS_LOADER_URL_REPLACEMENT_2___ + ");\n}\n\n.a-enter-vr-button,\n.a-enter-ar-button {\n  background-size: 90% 90%;\n  border: 0;\n  bottom: 0;\n  cursor: pointer;\n  min-width: 58px;\n  min-height: 34px;\n  /* 1.74418604651 */\n  /*\n    In order to keep the aspect ratio when resizing\n    padding-top percentages are relative to the containing block's width.\n    http://stackoverflow.com/questions/12121090/responsively-change-div-size-keeping-aspect-ratio\n  */\n  padding-right: 0;\n  padding-top: 0;\n  position: absolute;\n  right: 0;\n  transition: background-color .05s ease;\n  -webkit-transition: background-color .05s ease;\n  z-index: 9999;\n  border-radius: 8px;\n  touch-action: manipulation; /* Prevent iOS double tap zoom on the button */\n}\n\n.a-enter-ar-button {\n  background-size: 100% 90%;\n  border-radius: 7px;\n}\n\n.a-enter-ar-button:active,\n.a-enter-ar-button:hover,\n.a-enter-vr-button:active,\n.a-enter-vr-button:hover {\n  background-color: #ef2d5e;\n}\n\n.a-enter-vr-button.resethover {\n  background-color: rgba(0, 0, 0, 0.35);\n}\n\n.a-enter-vr-modal {\n  background-color: #666;\n  border-radius: 0;\n  display: none;\n  min-height: 32px;\n  margin-right: 70px;\n  padding: 9px;\n  width: 280px;\n  right: 2%;\n  position: absolute;\n}\n\n.a-enter-vr-modal:after {\n  border-bottom: 10px solid transparent;\n  border-left: 10px solid #666;\n  border-top: 10px solid transparent;\n  display: inline-block;\n  content: '';\n  position: absolute;\n  right: -5px;\n  top: 5px;\n  width: 0;\n  height: 0;\n}\n\n.a-enter-vr-modal p,\n.a-enter-vr-modal a {\n  display: inline;\n}\n\n.a-enter-vr-modal p {\n  margin: 0;\n}\n\n.a-enter-vr-modal p:after {\n  content: ' ';\n}\n\n.a-orientation-modal {\n  background: rgba(244, 244, 244, 1) url(" + ___CSS_LOADER_URL_REPLACEMENT_3___ + ") center no-repeat;\n  background-size: 50% 50%;\n  bottom: 0;\n  font-size: 14px;\n  font-weight: 600;\n  left: 0;\n  line-height: 20px;\n  right: 0;\n  position: fixed;\n  top: 0;\n  z-index: 9999999;\n}\n\n.a-orientation-modal:after {\n  color: #666;\n  content: \"Insert phone into Cardboard holder.\";\n  display: block;\n  position: absolute;\n  text-align: center;\n  top: 70%;\n  transform: translateY(-70%);\n  width: 100%;\n}\n\n.a-orientation-modal button {\n  background: url(" + ___CSS_LOADER_URL_REPLACEMENT_4___ + ") no-repeat;\n  border: none;\n  height: 50px;\n  text-indent: -9999px;\n  width: 50px;\n}\n\n.a-loader-title {\n  background-color: rgba(0, 0, 0, 0.6);\n  font-family: sans-serif, monospace;\n  text-align: center;\n  font-size: 20px;\n  height: 50px;\n  font-weight: 300;\n  line-height: 50px;\n  position: absolute;\n  right: 0px;\n  left: 0px;\n  top: 0px;\n  color: white;\n}\n\n.a-modal {\n  position: absolute;\n  background: rgba(0, 0, 0, 0.60);\n  background-size: 50% 50%;\n  bottom: 0;\n  font-size: 14px;\n  font-weight: 600;\n  left: 0;\n  line-height: 20px;\n  right: 0;\n  position: fixed;\n  top: 0;\n  z-index: 9999999;\n}\n\n.a-dialog {\n  position: relative;\n  left: 50%;\n  top: 50%;\n  transform: translate(-50%, -50%);\n  z-index: 199995;\n  width: 300px;\n  height: 200px;\n  background-size: contain;\n  background-color: white;\n  font-family: sans-serif, monospace;\n  font-size: 20px;\n  border-radius: 3px;\n  padding: 6px;\n}\n\n.a-dialog-text-container {\n  width: 100%;\n  height: 70%;\n  align-self: flex-start;\n  display: flex;\n  justify-content: center;\n  align-content: center;\n  flex-direction: column;\n}\n\n.a-dialog-text {\n  display: inline-block;\n  font-weight: normal;\n  font-size: 14pt;\n  margin: 8px;\n}\n\n.a-dialog-buttons-container {\n  display: inline-flex;\n  align-self: flex-end;\n  width: 100%;\n  height: 30%;\n}\n\n.a-dialog-button {\n  cursor: pointer;\n  align-self: center;\n  opacity: 0.9;\n  height: 80%;\n  width: 50%;\n  font-size: 12pt;\n  margin: 4px;\n  border-radius: 2px;\n  text-align:center;\n  border: none;\n  display: inline-block;\n  -webkit-transition: all 0.25s ease-in-out;\n  transition: all 0.25s ease-in-out;\n  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.10), 0 1px 2px rgba(0, 0, 0, 0.20);\n  user-select: none;\n}\n\n.a-dialog-permission-button:hover {\n  box-shadow: 0 7px 14px rgba(0,0,0,0.20), 0 2px 2px rgba(0,0,0,0.20);\n}\n\n.a-dialog-allow-button {\n  background-color: #00ceff;\n}\n\n.a-dialog-deny-button {\n  background-color: #ff005b;\n}\n\n.a-dialog-ok-button {\n  background-color: #00ceff;\n  width: 100%;\n}\n\n.a-dom-overlay:not(.a-no-style) {\n  overflow: hidden;\n  position: absolute;\n  pointer-events: none;\n  box-sizing: border-box;\n  bottom: 0;\n  left: 0;\n  right: 0;\n  top: 0;\n  padding: 1em;\n}\n\n.a-dom-overlay:not(.a-no-style)>* {\n  pointer-events: auto;\n}\n", "",{"version":3,"sources":["webpack://./src/style/aframe.css"],"names":[],"mappings":"AAAA,sCAAsC;AACtC;EACE,SAAS;EACT,OAAO;EACP,eAAe;EACf,QAAQ;EACR,MAAM;AACR;;AAEA;EACE,YAAY;EACZ,SAAS;EACT,gBAAgB;EAChB,UAAU;EACV,WAAW;AACb;;AAEA,oDAAoD;AACpD;EACE,sBAAsB;EACtB,uBAAuB;EACvB,iBAAiB;EACjB,kBAAkB;EAClB,mBAAmB;EACnB,oBAAoB;EACpB,0BAA0B;AAC5B;;AAEA;;EAEE,UAAU;EACV,WAAW;AACb;;AAEA;EACE,WAAW;AACb;;AAEA,gEAAgE;AAChE;EACE,6BAA6B;AAC/B;;AAEA;EACE,wBAAwB;AAC1B;;AAEA;EACE,YAAY;EACZ,OAAO;EACP,kBAAkB;EAClB,MAAM;EACN,WAAW;AACb;;AAEA;EACE,YAAY;EACZ,iBAAiB;EACjB,oBAAoB;AACtB;;AAEA;EACE,eAAe;AACjB;;AAEA;EACE,yBAAyB;EACzB,eAAe;EACf,SAAS;EACT,QAAQ;EACR,iBAAiB;EACjB,WAAW;EACX,qBAAqB;EACrB,eAAe;EACf,8BAA8B;EAC9B,kBAAkB;EAClB,cAAc;EACd,YAAY;AACd;;AAEA,+BAA+B;AAC/B,oBAAoB,OAAO,UAAU,EAAE,EAAE,MAAM,UAAU,EAAE,EAAE;AAC7D,oBAAoB,OAAO,UAAU,EAAE,EAAE,MAAM,UAAU,EAAE,EAAE;AAC7D,oBAAoB,OAAO,UAAU,EAAE,EAAE,MAAM,UAAU,EAAE,EAAE;AAC7D,4BAA4B,OAAO,UAAU,EAAE,EAAE,MAAM,UAAU,EAAE,EAAE;AACrE,4BAA4B,OAAO,UAAU,EAAE,EAAE,MAAM,UAAU,EAAE,EAAE;AACrE,4BAA4B,OAAO,UAAU,EAAE,EAAE,MAAM,UAAU,EAAE,EAAE;;AAErE;EACE,sCAAsC;EACtC,8CAA8C;AAChD;;AAEA;EACE,sBAAsB;EACtB,8BAA8B;AAChC;;AAEA;EACE,sBAAsB;EACtB,8BAA8B;AAChC;;AAEA;EACE,cAAc;EACd,kBAAkB;EAClB,YAAY;EACZ,WAAW;AACb;;AAEA;;;;EAIE,aAAa;AACf;;AAEA;;EAEE,0DAA0D;AAC5D;;AAEA;EACE,6BAA6B;EAC7B,cAAc;EACd,qBAAqB;EACrB,6BAA6B;AAC/B;;AAEA;EACE,sBAAsB;EACtB,WAAW;EACX,gBAAgB;EAChB,kBAAkB;EAClB,UAAU;AACZ;;AAEA;;EAEE,kCAAkC;EAClC,eAAe;EACf,WAAW;EACX,gBAAgB;EAChB,iBAAiB;EACjB,kBAAkB;EAClB,WAAW;EACX,YAAY;AACd;;AAEA;EACE,WAAW;AACb;;AAEA;;;EAGE,WAAW;EACX,iBAAiB;EACjB,aAAa;AACf;;AAEA;EACE,yFAA4qB;AAC9qB;;AAEA;EACE,yFAAkzB;AACpzB;;AAEA;EACE,yDAA2qK;AAC7qK;;AAEA;;EAEE,wBAAwB;EACxB,SAAS;EACT,SAAS;EACT,eAAe;EACf,eAAe;EACf,gBAAgB;EAChB,kBAAkB;EAClB;;;;GAIC;EACD,gBAAgB;EAChB,cAAc;EACd,kBAAkB;EAClB,QAAQ;EACR,sCAAsC;EACtC,8CAA8C;EAC9C,aAAa;EACb,kBAAkB;EAClB,0BAA0B,EAAE,8CAA8C;AAC5E;;AAEA;EACE,yBAAyB;EACzB,kBAAkB;AACpB;;AAEA;;;;EAIE,yBAAyB;AAC3B;;AAEA;EACE,qCAAqC;AACvC;;AAEA;EACE,sBAAsB;EACtB,gBAAgB;EAChB,aAAa;EACb,gBAAgB;EAChB,kBAAkB;EAClB,YAAY;EACZ,YAAY;EACZ,SAAS;EACT,kBAAkB;AACpB;;AAEA;EACE,qCAAqC;EACrC,4BAA4B;EAC5B,kCAAkC;EAClC,qBAAqB;EACrB,WAAW;EACX,kBAAkB;EAClB,WAAW;EACX,QAAQ;EACR,QAAQ;EACR,SAAS;AACX;;AAEA;;EAEE,eAAe;AACjB;;AAEA;EACE,SAAS;AACX;;AAEA;EACE,YAAY;AACd;;AAEA;EACE,2FAAivF;EACjvF,wBAAwB;EACxB,SAAS;EACT,eAAe;EACf,gBAAgB;EAChB,OAAO;EACP,iBAAiB;EACjB,QAAQ;EACR,eAAe;EACf,MAAM;EACN,gBAAgB;AAClB;;AAEA;EACE,WAAW;EACX,8CAA8C;EAC9C,cAAc;EACd,kBAAkB;EAClB,kBAAkB;EAClB,QAAQ;EACR,2BAA2B;EAC3B,WAAW;AACb;;AAEA;EACE,6DAA25B;EAC35B,YAAY;EACZ,YAAY;EACZ,oBAAoB;EACpB,WAAW;AACb;;AAEA;EACE,oCAAoC;EACpC,kCAAkC;EAClC,kBAAkB;EAClB,eAAe;EACf,YAAY;EACZ,gBAAgB;EAChB,iBAAiB;EACjB,kBAAkB;EAClB,UAAU;EACV,SAAS;EACT,QAAQ;EACR,YAAY;AACd;;AAEA;EACE,kBAAkB;EAClB,+BAA+B;EAC/B,wBAAwB;EACxB,SAAS;EACT,eAAe;EACf,gBAAgB;EAChB,OAAO;EACP,iBAAiB;EACjB,QAAQ;EACR,eAAe;EACf,MAAM;EACN,gBAAgB;AAClB;;AAEA;EACE,kBAAkB;EAClB,SAAS;EACT,QAAQ;EACR,gCAAgC;EAChC,eAAe;EACf,YAAY;EACZ,aAAa;EACb,wBAAwB;EACxB,uBAAuB;EACvB,kCAAkC;EAClC,eAAe;EACf,kBAAkB;EAClB,YAAY;AACd;;AAEA;EACE,WAAW;EACX,WAAW;EACX,sBAAsB;EACtB,aAAa;EACb,uBAAuB;EACvB,qBAAqB;EACrB,sBAAsB;AACxB;;AAEA;EACE,qBAAqB;EACrB,mBAAmB;EACnB,eAAe;EACf,WAAW;AACb;;AAEA;EACE,oBAAoB;EACpB,oBAAoB;EACpB,WAAW;EACX,WAAW;AACb;;AAEA;EACE,eAAe;EACf,kBAAkB;EAClB,YAAY;EACZ,WAAW;EACX,UAAU;EACV,eAAe;EACf,WAAW;EACX,kBAAkB;EAClB,iBAAiB;EACjB,YAAY;EACZ,qBAAqB;EACrB,yCAAyC;EACzC,iCAAiC;EACjC,wEAAwE;EACxE,iBAAiB;AACnB;;AAEA;EACE,mEAAmE;AACrE;;AAEA;EACE,yBAAyB;AAC3B;;AAEA;EACE,yBAAyB;AAC3B;;AAEA;EACE,yBAAyB;EACzB,WAAW;AACb;;AAEA;EACE,gBAAgB;EAChB,kBAAkB;EAClB,oBAAoB;EACpB,sBAAsB;EACtB,SAAS;EACT,OAAO;EACP,QAAQ;EACR,MAAM;EACN,YAAY;AACd;;AAEA;EACE,oBAAoB;AACtB","sourcesContent":["/* .a-fullscreen means not embedded. */\nhtml.a-fullscreen {\n  bottom: 0;\n  left: 0;\n  position: fixed;\n  right: 0;\n  top: 0;\n}\n\nhtml.a-fullscreen body {\n  height: 100%;\n  margin: 0;\n  overflow: hidden;\n  padding: 0;\n  width: 100%;\n}\n\n/* Class is removed when doing <a-scene embedded>. */\nhtml.a-fullscreen .a-canvas {\n  width: 100% !important;\n  height: 100% !important;\n  top: 0 !important;\n  left: 0 !important;\n  right: 0 !important;\n  bottom: 0 !important;\n  position: fixed !important;\n}\n\nhtml:not(.a-fullscreen) .a-enter-vr,\nhtml:not(.a-fullscreen) .a-enter-ar {\n  right: 5px;\n  bottom: 5px;\n}\n\nhtml:not(.a-fullscreen) .a-enter-ar {\n  right: 60px;\n}\n\n/* In chrome mobile the user agent stylesheet set it to white  */\n:-webkit-full-screen {\n  background-color: transparent;\n}\n\n.a-hidden {\n  display: none !important;\n}\n\n.a-canvas {\n  height: 100%;\n  left: 0;\n  position: absolute;\n  top: 0;\n  width: 100%;\n}\n\n.a-canvas.a-grab-cursor:hover {\n  cursor: grab;\n  cursor: -moz-grab;\n  cursor: -webkit-grab;\n}\n\ncanvas.a-canvas.a-mouse-cursor-hover:hover {\n  cursor: pointer;\n}\n\n.a-inspector-loader {\n  background-color: #ed3160;\n  position: fixed;\n  left: 3px;\n  top: 3px;\n  padding: 6px 10px;\n  color: #fff;\n  text-decoration: none;\n  font-size: 12px;\n  font-family: Roboto,sans-serif;\n  text-align: center;\n  z-index: 99999;\n  width: 204px;\n}\n\n/* Inspector loader animation */\n@keyframes dots-1 { from { opacity: 0; } 25% { opacity: 1; } }\n@keyframes dots-2 { from { opacity: 0; } 50% { opacity: 1; } }\n@keyframes dots-3 { from { opacity: 0; } 75% { opacity: 1; } }\n@-webkit-keyframes dots-1 { from { opacity: 0; } 25% { opacity: 1; } }\n@-webkit-keyframes dots-2 { from { opacity: 0; } 50% { opacity: 1; } }\n@-webkit-keyframes dots-3 { from { opacity: 0; } 75% { opacity: 1; } }\n\n.a-inspector-loader .dots span {\n  animation: dots-1 2s infinite steps(1);\n  -webkit-animation: dots-1 2s infinite steps(1);\n}\n\n.a-inspector-loader .dots span:first-child + span {\n  animation-name: dots-2;\n  -webkit-animation-name: dots-2;\n}\n\n.a-inspector-loader .dots span:first-child + span + span {\n  animation-name: dots-3;\n  -webkit-animation-name: dots-3;\n}\n\na-scene {\n  display: block;\n  position: relative;\n  height: 100%;\n  width: 100%;\n}\n\na-assets,\na-scene video,\na-scene img,\na-scene audio {\n  display: none;\n}\n\n.a-enter-vr-modal,\n.a-orientation-modal {\n  font-family: Consolas, Andale Mono, Courier New, monospace;\n}\n\n.a-enter-vr-modal a {\n  border-bottom: 1px solid #fff;\n  padding: 2px 0;\n  text-decoration: none;\n  transition: .1s color ease-in;\n}\n\n.a-enter-vr-modal a:hover {\n  background-color: #fff;\n  color: #111;\n  padding: 2px 4px;\n  position: relative;\n  left: -4px;\n}\n\n.a-enter-vr,\n.a-enter-ar {\n  font-family: sans-serif, monospace;\n  font-size: 13px;\n  width: 100%;\n  font-weight: 200;\n  line-height: 16px;\n  position: absolute;\n  right: 20px;\n  bottom: 20px;\n}\n\n.a-enter-ar.xr {\n  right: 90px;\n}\n\n.a-enter-vr-button,\n.a-enter-vr-modal,\n.a-enter-vr-modal a {\n  color: #fff;\n  user-select: none;\n  outline: none;\n}\n\n.a-enter-vr-button {\n  background: rgba(0, 0, 0, 0.35) url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='108' height='62' viewBox='0 0 108 62'%3E%3Ctitle%3Eaframe-vrmode-noborder-reduced-tracking%3C/title%3E%3Cpath d='M68.81,21.56H64.23v8.27h4.58a4.13,4.13,0,0,0,3.1-1.09,4.2,4.2,0,0,0,1-3,4.24,4.24,0,0,0-1-3A4.05,4.05,0,0,0,68.81,21.56Z' fill='%23fff'/%3E%3Cpath d='M96,0H12A12,12,0,0,0,0,12V50A12,12,0,0,0,12,62H96a12,12,0,0,0,12-12V12A12,12,0,0,0,96,0ZM41.9,46H34L24,16h8l6,21.84,6-21.84H52Zm39.29,0H73.44L68.15,35.39H64.23V46H57V16H68.81q5.32,0,8.34,2.37a8,8,0,0,1,3,6.69,9.68,9.68,0,0,1-1.27,5.18,8.9,8.9,0,0,1-4,3.34l6.26,12.11Z' fill='%23fff'/%3E%3C/svg%3E\") 50% 50% no-repeat;\n}\n\n.a-enter-ar-button {\n  background: rgba(0, 0, 0, 0.20) url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='108' height='62' viewBox='0 0 108 62'%3E%3Ctitle%3Eaframe-armode-noborder-reduced-tracking%3C/title%3E%3Cpath d='M96,0H12A12,12,0,0,0,0,12V50A12,12,0,0,0,12,62H96a12,12,0,0,0,12-12V12A12,12,0,0,0,96,0Zm8,50a8,8,0,0,1-8,8H12a8,8,0,0,1-8-8V12a8,8,0,0,1,8-8H96a8,8,0,0,1,8,8Z' fill='%23fff'/%3E%3Cpath d='M43.35,39.82H32.51L30.45,46H23.88L35,16h5.73L52,46H45.43Zm-9.17-5h7.5L37.91,23.58Z' fill='%23fff'/%3E%3Cpath d='M68.11,35H63.18V46H57V16H68.15q5.31,0,8.2,2.37a8.18,8.18,0,0,1,2.88,6.7,9.22,9.22,0,0,1-1.33,5.12,9.09,9.09,0,0,1-4,3.26l6.49,12.26V46H73.73Zm-4.93-5h5a5.09,5.09,0,0,0,3.6-1.18,4.21,4.21,0,0,0,1.28-3.27,4.56,4.56,0,0,0-1.2-3.34A5,5,0,0,0,68.15,21h-5Z' fill='%23fff'/%3E%3C/svg%3E\") 50% 50% no-repeat;\n}\n\n.a-enter-vr.fullscreen .a-enter-vr-button {\n  background-image: url(\"data:image/svg+xml,%3C%3Fxml version='1.0' encoding='UTF-8' standalone='no'%3F%3E%3Csvg width='108' height='62' viewBox='0 0 108 62' version='1.1' id='svg320' sodipodi:docname='fullscreen-aframe.svg' xml:space='preserve' inkscape:version='1.2.1 (9c6d41e  2022-07-14)' xmlns:inkscape='http://www.inkscape.org/namespaces/inkscape' xmlns:sodipodi='http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd' xmlns='http://www.w3.org/2000/svg' xmlns:svg='http://www.w3.org/2000/svg' xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns%23' xmlns:cc='http://creativecommons.org/ns%23' xmlns:dc='http://purl.org/dc/elements/1.1/'%3E%3Cdefs id='defs324' /%3E%3Csodipodi:namedview id='namedview322' pagecolor='%23ffffff' bordercolor='%23000000' borderopacity='0.25' inkscape:showpageshadow='2' inkscape:pageopacity='0.0' inkscape:pagecheckerboard='0' inkscape:deskcolor='%23d1d1d1' showgrid='false' inkscape:zoom='3.8064516' inkscape:cx='91.423729' inkscape:cy='-1.4449153' inkscape:window-width='1440' inkscape:window-height='847' inkscape:window-x='32' inkscape:window-y='25' inkscape:window-maximized='0' inkscape:current-layer='svg320' /%3E%3Ctitle id='title312'%3Eaframe-armode-noborder-reduced-tracking%3C/title%3E%3Cpath d='M96 0H12A12 12 0 0 0 0 12V50A12 12 0 0 0 12 62H96a12 12 0 0 0 12-12V12A12 12 0 0 0 96 0Zm8 50a8 8 0 0 1-8 8H12a8 8 0 0 1-8-8V12a8 8 0 0 1 8-8H96a8 8 0 0 1 8 8Z' fill='%23fff' id='path314' style='fill:%23ffffff' /%3E%3Cg id='g356' transform='translate(-206.61017 -232.61864)'%3E%3C/g%3E%3Cg id='g358' transform='translate(-206.61017 -232.61864)'%3E%3C/g%3E%3Cg id='g360' transform='translate(-206.61017 -232.61864)'%3E%3C/g%3E%3Cg id='g362' transform='translate(-206.61017 -232.61864)'%3E%3C/g%3E%3Cg id='g364' transform='translate(-206.61017 -232.61864)'%3E%3C/g%3E%3Cg id='g366' transform='translate(-206.61017 -232.61864)'%3E%3C/g%3E%3Cg id='g368' transform='translate(-206.61017 -232.61864)'%3E%3C/g%3E%3Cg id='g370' transform='translate(-206.61017 -232.61864)'%3E%3C/g%3E%3Cg id='g372' transform='translate(-206.61017 -232.61864)'%3E%3C/g%3E%3Cg id='g374' transform='translate(-206.61017 -232.61864)'%3E%3C/g%3E%3Cg id='g376' transform='translate(-206.61017 -232.61864)'%3E%3C/g%3E%3Cg id='g378' transform='translate(-206.61017 -232.61864)'%3E%3C/g%3E%3Cg id='g380' transform='translate(-206.61017 -232.61864)'%3E%3C/g%3E%3Cg id='g382' transform='translate(-206.61017 -232.61864)'%3E%3C/g%3E%3Cg id='g384' transform='translate(-206.61017 -232.61864)'%3E%3C/g%3E%3Cmetadata id='metadata561'%3E%3Crdf:RDF%3E%3Ccc:Work rdf:about=''%3E%3Cdc:title%3Eaframe-armode-noborder-reduced-tracking%3C/dc:title%3E%3C/cc:Work%3E%3C/rdf:RDF%3E%3C/metadata%3E%3Cpath d='m 98.168511 40.083649 c 0 -1.303681 -0.998788 -2.358041 -2.239389 -2.358041 -1.230088 0.0031 -2.240892 1.05436 -2.240892 2.358041 v 4.881296 l -9.041661 -9.041662 c -0.874129 -0.875631 -2.288954 -0.875631 -3.16308 0 -0.874129 0.874126 -0.874129 2.293459 0 3.167585 l 8.995101 8.992101 h -4.858767 c -1.323206 0.0031 -2.389583 1.004796 -2.389583 2.239386 0 1.237598 1.066377 2.237888 2.389583 2.237888 h 10.154599 c 1.323206 0 2.388082 -0.998789 2.392587 -2.237888 -0.0044 -0.03305 -0.009 -0.05858 -0.0134 -0.09161 0.0046 -0.04207 0.0134 -0.08712 0.0134 -0.13066 V 40.085172 h -1.52e-4' id='path596' style='fill:%23ffffff%3Bstroke-width:1.50194' /%3E%3Cpath d='m 23.091002 35.921781 -9.026643 9.041662 v -4.881296 c 0 -1.303681 -1.009302 -2.355037 -2.242393 -2.358041 -1.237598 0 -2.237888 1.05436 -2.237888 2.358041 l -0.0031 10.016421 c 0 0.04356 0.01211 0.08862 0.0015 0.130659 -0.0031 0.03153 -0.009 0.05709 -0.01211 0.09161 0.0031 1.239099 1.069379 2.237888 2.391085 2.237888 h 10.156101 c 1.320202 0 2.388079 -1.000291 2.388079 -2.237888 0 -1.234591 -1.067877 -2.236383 -2.388079 -2.239387 h -4.858767 l 8.995101 -8.9921 c 0.871126 -0.874127 0.871126 -2.293459 0 -3.167586 -0.875628 -0.877132 -2.291957 -0.877132 -3.169087 -1.52e-4' id='path598' style='fill:%23ffffff%3Bstroke-width:1.50194' /%3E%3Cpath d='m 84.649572 25.978033 9.041662 -9.041664 v 4.881298 c 0 1.299176 1.010806 2.350532 2.240891 2.355037 1.240601 0 2.23939 -1.055861 2.23939 -2.355037 V 11.798242 c 0 -0.04356 -0.009 -0.08862 -0.0134 -0.127671 0.0044 -0.03153 0.009 -0.06157 0.0134 -0.09313 -0.0044 -1.240598 -1.069379 -2.2393873 -2.391085 -2.2393873 h -10.1546 c -1.323205 0 -2.38958 0.9987893 -2.38958 2.2393873 0 1.233091 1.066375 2.237887 2.38958 2.240891 h 4.858768 l -8.995102 8.9921 c -0.874129 0.872625 -0.874129 2.288954 0 3.161578 0.874127 0.880137 2.288951 0.880137 3.16308 1.5e-4' id='path600' style='fill:%23ffffff%3Bstroke-width:1.50194' /%3E%3Cpath d='m 17.264988 13.822853 h 4.857265 c 1.320202 -0.0031 2.388079 -1.0078 2.388079 -2.240889 0 -1.240601 -1.067877 -2.2393893 -2.388079 -2.2393893 H 11.967654 c -1.321707 0 -2.388082 0.9987883 -2.391085 2.2393893 0.0031 0.03153 0.009 0.06157 0.01211 0.09313 -0.0031 0.03905 -0.0015 0.08262 -0.0015 0.127671 l 0.0031 10.020926 c 0 1.299176 1.00029 2.355038 2.237887 2.355038 1.233092 -0.0044 2.242393 -1.055862 2.242393 -2.355038 v -4.881295 l 9.026644 9.041661 c 0.877132 0.878635 2.293459 0.878635 3.169087 0 0.871125 -0.872624 0.871125 -2.288953 0 -3.161577 l -8.995282 -8.993616' id='path602' style='fill:%23ffffff%3Bstroke-width:1.50194' /%3E%3C/svg%3E\");\n}\n\n.a-enter-vr-button,\n.a-enter-ar-button {\n  background-size: 90% 90%;\n  border: 0;\n  bottom: 0;\n  cursor: pointer;\n  min-width: 58px;\n  min-height: 34px;\n  /* 1.74418604651 */\n  /*\n    In order to keep the aspect ratio when resizing\n    padding-top percentages are relative to the containing block's width.\n    http://stackoverflow.com/questions/12121090/responsively-change-div-size-keeping-aspect-ratio\n  */\n  padding-right: 0;\n  padding-top: 0;\n  position: absolute;\n  right: 0;\n  transition: background-color .05s ease;\n  -webkit-transition: background-color .05s ease;\n  z-index: 9999;\n  border-radius: 8px;\n  touch-action: manipulation; /* Prevent iOS double tap zoom on the button */\n}\n\n.a-enter-ar-button {\n  background-size: 100% 90%;\n  border-radius: 7px;\n}\n\n.a-enter-ar-button:active,\n.a-enter-ar-button:hover,\n.a-enter-vr-button:active,\n.a-enter-vr-button:hover {\n  background-color: #ef2d5e;\n}\n\n.a-enter-vr-button.resethover {\n  background-color: rgba(0, 0, 0, 0.35);\n}\n\n.a-enter-vr-modal {\n  background-color: #666;\n  border-radius: 0;\n  display: none;\n  min-height: 32px;\n  margin-right: 70px;\n  padding: 9px;\n  width: 280px;\n  right: 2%;\n  position: absolute;\n}\n\n.a-enter-vr-modal:after {\n  border-bottom: 10px solid transparent;\n  border-left: 10px solid #666;\n  border-top: 10px solid transparent;\n  display: inline-block;\n  content: '';\n  position: absolute;\n  right: -5px;\n  top: 5px;\n  width: 0;\n  height: 0;\n}\n\n.a-enter-vr-modal p,\n.a-enter-vr-modal a {\n  display: inline;\n}\n\n.a-enter-vr-modal p {\n  margin: 0;\n}\n\n.a-enter-vr-modal p:after {\n  content: ' ';\n}\n\n.a-orientation-modal {\n  background: rgba(244, 244, 244, 1) url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%20version%3D%221.1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%2090%2090%22%20enable-background%3D%22new%200%200%2090%2090%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpolygon%20points%3D%220%2C0%200%2C0%200%2C0%20%22%3E%3C/polygon%3E%3Cg%3E%3Cpath%20d%3D%22M71.545%2C48.145h-31.98V20.743c0-2.627-2.138-4.765-4.765-4.765H18.456c-2.628%2C0-4.767%2C2.138-4.767%2C4.765v42.789%20%20%20c0%2C2.628%2C2.138%2C4.766%2C4.767%2C4.766h5.535v0.959c0%2C2.628%2C2.138%2C4.765%2C4.766%2C4.765h42.788c2.628%2C0%2C4.766-2.137%2C4.766-4.765V52.914%20%20%20C76.311%2C50.284%2C74.173%2C48.145%2C71.545%2C48.145z%20M18.455%2C16.935h16.344c2.1%2C0%2C3.808%2C1.708%2C3.808%2C3.808v27.401H37.25V22.636%20%20%20c0-0.264-0.215-0.478-0.479-0.478H16.482c-0.264%2C0-0.479%2C0.214-0.479%2C0.478v36.585c0%2C0.264%2C0.215%2C0.478%2C0.479%2C0.478h7.507v7.644%20%20%20h-5.534c-2.101%2C0-3.81-1.709-3.81-3.81V20.743C14.645%2C18.643%2C16.354%2C16.935%2C18.455%2C16.935z%20M16.96%2C23.116h19.331v25.031h-7.535%20%20%20c-2.628%2C0-4.766%2C2.139-4.766%2C4.768v5.828h-7.03V23.116z%20M71.545%2C73.064H28.757c-2.101%2C0-3.81-1.708-3.81-3.808V52.914%20%20%20c0-2.102%2C1.709-3.812%2C3.81-3.812h42.788c2.1%2C0%2C3.809%2C1.71%2C3.809%2C3.812v16.343C75.354%2C71.356%2C73.645%2C73.064%2C71.545%2C73.064z%22%3E%3C/path%3E%3Cpath%20d%3D%22M28.919%2C58.424c-1.466%2C0-2.659%2C1.193-2.659%2C2.66c0%2C1.466%2C1.193%2C2.658%2C2.659%2C2.658c1.468%2C0%2C2.662-1.192%2C2.662-2.658%20%20%20C31.581%2C59.617%2C30.387%2C58.424%2C28.919%2C58.424z%20M28.919%2C62.786c-0.939%2C0-1.703-0.764-1.703-1.702c0-0.939%2C0.764-1.704%2C1.703-1.704%20%20%20c0.94%2C0%2C1.705%2C0.765%2C1.705%2C1.704C30.623%2C62.022%2C29.858%2C62.786%2C28.919%2C62.786z%22%3E%3C/path%3E%3Cpath%20d%3D%22M69.654%2C50.461H33.069c-0.264%2C0-0.479%2C0.215-0.479%2C0.479v20.288c0%2C0.264%2C0.215%2C0.478%2C0.479%2C0.478h36.585%20%20%20c0.263%2C0%2C0.477-0.214%2C0.477-0.478V50.939C70.131%2C50.676%2C69.917%2C50.461%2C69.654%2C50.461z%20M69.174%2C51.417V70.75H33.548V51.417H69.174z%22%3E%3C/path%3E%3Cpath%20d%3D%22M45.201%2C30.296c6.651%2C0%2C12.233%2C5.351%2C12.551%2C11.977l-3.033-2.638c-0.193-0.165-0.507-0.142-0.675%2C0.048%20%20%20c-0.174%2C0.198-0.153%2C0.501%2C0.045%2C0.676l3.883%2C3.375c0.09%2C0.075%2C0.198%2C0.115%2C0.312%2C0.115c0.141%2C0%2C0.273-0.061%2C0.362-0.166%20%20%20l3.371-3.877c0.173-0.2%2C0.151-0.502-0.047-0.675c-0.194-0.166-0.508-0.144-0.676%2C0.048l-2.592%2C2.979%20%20%20c-0.18-3.417-1.629-6.605-4.099-9.001c-2.538-2.461-5.877-3.817-9.404-3.817c-0.264%2C0-0.479%2C0.215-0.479%2C0.479%20%20%20C44.72%2C30.083%2C44.936%2C30.296%2C45.201%2C30.296z%22%3E%3C/path%3E%3C/g%3E%3C/svg%3E) center no-repeat;\n  background-size: 50% 50%;\n  bottom: 0;\n  font-size: 14px;\n  font-weight: 600;\n  left: 0;\n  line-height: 20px;\n  right: 0;\n  position: fixed;\n  top: 0;\n  z-index: 9999999;\n}\n\n.a-orientation-modal:after {\n  color: #666;\n  content: \"Insert phone into Cardboard holder.\";\n  display: block;\n  position: absolute;\n  text-align: center;\n  top: 70%;\n  transform: translateY(-70%);\n  width: 100%;\n}\n\n.a-orientation-modal button {\n  background: url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%20version%3D%221.1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%20100%20100%22%20enable-background%3D%22new%200%200%20100%20100%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpath%20fill%3D%22%23000000%22%20d%3D%22M55.209%2C50l17.803-17.803c1.416-1.416%2C1.416-3.713%2C0-5.129c-1.416-1.417-3.713-1.417-5.129%2C0L50.08%2C44.872%20%20L32.278%2C27.069c-1.416-1.417-3.714-1.417-5.129%2C0c-1.417%2C1.416-1.417%2C3.713%2C0%2C5.129L44.951%2C50L27.149%2C67.803%20%20c-1.417%2C1.416-1.417%2C3.713%2C0%2C5.129c0.708%2C0.708%2C1.636%2C1.062%2C2.564%2C1.062c0.928%2C0%2C1.856-0.354%2C2.564-1.062L50.08%2C55.13l17.803%2C17.802%20%20c0.708%2C0.708%2C1.637%2C1.062%2C2.564%2C1.062s1.856-0.354%2C2.564-1.062c1.416-1.416%2C1.416-3.713%2C0-5.129L55.209%2C50z%22%3E%3C/path%3E%3C/svg%3E) no-repeat;\n  border: none;\n  height: 50px;\n  text-indent: -9999px;\n  width: 50px;\n}\n\n.a-loader-title {\n  background-color: rgba(0, 0, 0, 0.6);\n  font-family: sans-serif, monospace;\n  text-align: center;\n  font-size: 20px;\n  height: 50px;\n  font-weight: 300;\n  line-height: 50px;\n  position: absolute;\n  right: 0px;\n  left: 0px;\n  top: 0px;\n  color: white;\n}\n\n.a-modal {\n  position: absolute;\n  background: rgba(0, 0, 0, 0.60);\n  background-size: 50% 50%;\n  bottom: 0;\n  font-size: 14px;\n  font-weight: 600;\n  left: 0;\n  line-height: 20px;\n  right: 0;\n  position: fixed;\n  top: 0;\n  z-index: 9999999;\n}\n\n.a-dialog {\n  position: relative;\n  left: 50%;\n  top: 50%;\n  transform: translate(-50%, -50%);\n  z-index: 199995;\n  width: 300px;\n  height: 200px;\n  background-size: contain;\n  background-color: white;\n  font-family: sans-serif, monospace;\n  font-size: 20px;\n  border-radius: 3px;\n  padding: 6px;\n}\n\n.a-dialog-text-container {\n  width: 100%;\n  height: 70%;\n  align-self: flex-start;\n  display: flex;\n  justify-content: center;\n  align-content: center;\n  flex-direction: column;\n}\n\n.a-dialog-text {\n  display: inline-block;\n  font-weight: normal;\n  font-size: 14pt;\n  margin: 8px;\n}\n\n.a-dialog-buttons-container {\n  display: inline-flex;\n  align-self: flex-end;\n  width: 100%;\n  height: 30%;\n}\n\n.a-dialog-button {\n  cursor: pointer;\n  align-self: center;\n  opacity: 0.9;\n  height: 80%;\n  width: 50%;\n  font-size: 12pt;\n  margin: 4px;\n  border-radius: 2px;\n  text-align:center;\n  border: none;\n  display: inline-block;\n  -webkit-transition: all 0.25s ease-in-out;\n  transition: all 0.25s ease-in-out;\n  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.10), 0 1px 2px rgba(0, 0, 0, 0.20);\n  user-select: none;\n}\n\n.a-dialog-permission-button:hover {\n  box-shadow: 0 7px 14px rgba(0,0,0,0.20), 0 2px 2px rgba(0,0,0,0.20);\n}\n\n.a-dialog-allow-button {\n  background-color: #00ceff;\n}\n\n.a-dialog-deny-button {\n  background-color: #ff005b;\n}\n\n.a-dialog-ok-button {\n  background-color: #00ceff;\n  width: 100%;\n}\n\n.a-dom-overlay:not(.a-no-style) {\n  overflow: hidden;\n  position: absolute;\n  pointer-events: none;\n  box-sizing: border-box;\n  bottom: 0;\n  left: 0;\n  right: 0;\n  top: 0;\n  padding: 1em;\n}\n\n.a-dom-overlay:not(.a-no-style)>* {\n  pointer-events: auto;\n}\n"],"sourceRoot":""}]);
+___CSS_LOADER_EXPORT___.push([module.id, `/* .a-fullscreen means not embedded. */
+html.a-fullscreen {
+  bottom: 0;
+  left: 0;
+  position: fixed;
+  right: 0;
+  top: 0;
+}
+
+html.a-fullscreen body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  padding: 0;
+  width: 100%;
+}
+
+/* Class is removed when doing <a-scene embedded>. */
+html.a-fullscreen .a-canvas {
+  width: 100% !important;
+  height: 100% !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  position: fixed !important;
+}
+
+html:not(.a-fullscreen) .a-enter-vr,
+html:not(.a-fullscreen) .a-enter-ar {
+  right: 5px;
+  bottom: 5px;
+}
+
+html:not(.a-fullscreen) .a-enter-ar {
+  right: 60px;
+}
+
+/* In chrome mobile the user agent stylesheet set it to white  */
+:-webkit-full-screen {
+  background-color: transparent;
+}
+
+.a-hidden {
+  display: none !important;
+}
+
+.a-canvas {
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+
+.a-canvas.a-grab-cursor:hover {
+  cursor: grab;
+  cursor: -moz-grab;
+  cursor: -webkit-grab;
+}
+
+canvas.a-canvas.a-mouse-cursor-hover:hover {
+  cursor: pointer;
+}
+
+.a-inspector-loader {
+  background-color: #ed3160;
+  position: fixed;
+  left: 3px;
+  top: 3px;
+  padding: 6px 10px;
+  color: #fff;
+  text-decoration: none;
+  font-size: 12px;
+  font-family: Roboto,sans-serif;
+  text-align: center;
+  z-index: 99999;
+  width: 204px;
+}
+
+/* Inspector loader animation */
+@keyframes dots-1 { from { opacity: 0; } 25% { opacity: 1; } }
+@keyframes dots-2 { from { opacity: 0; } 50% { opacity: 1; } }
+@keyframes dots-3 { from { opacity: 0; } 75% { opacity: 1; } }
+@-webkit-keyframes dots-1 { from { opacity: 0; } 25% { opacity: 1; } }
+@-webkit-keyframes dots-2 { from { opacity: 0; } 50% { opacity: 1; } }
+@-webkit-keyframes dots-3 { from { opacity: 0; } 75% { opacity: 1; } }
+
+.a-inspector-loader .dots span {
+  animation: dots-1 2s infinite steps(1);
+  -webkit-animation: dots-1 2s infinite steps(1);
+}
+
+.a-inspector-loader .dots span:first-child + span {
+  animation-name: dots-2;
+  -webkit-animation-name: dots-2;
+}
+
+.a-inspector-loader .dots span:first-child + span + span {
+  animation-name: dots-3;
+  -webkit-animation-name: dots-3;
+}
+
+a-scene {
+  display: block;
+  position: relative;
+  height: 100%;
+  width: 100%;
+}
+
+a-assets,
+a-scene video,
+a-scene img,
+a-scene audio {
+  display: none;
+}
+
+.a-enter-vr-modal,
+.a-orientation-modal {
+  font-family: Consolas, Andale Mono, Courier New, monospace;
+}
+
+.a-enter-vr-modal a {
+  border-bottom: 1px solid #fff;
+  padding: 2px 0;
+  text-decoration: none;
+  transition: .1s color ease-in;
+}
+
+.a-enter-vr-modal a:hover {
+  background-color: #fff;
+  color: #111;
+  padding: 2px 4px;
+  position: relative;
+  left: -4px;
+}
+
+.a-enter-vr,
+.a-enter-ar {
+  font-family: sans-serif, monospace;
+  font-size: 13px;
+  width: 100%;
+  font-weight: 200;
+  line-height: 16px;
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+}
+
+.a-enter-ar.xr {
+  right: 90px;
+}
+
+.a-enter-vr-button,
+.a-enter-vr-modal,
+.a-enter-vr-modal a {
+  color: #fff;
+  user-select: none;
+  outline: none;
+}
+
+.a-enter-vr-button {
+  background: rgba(0, 0, 0, 0.35) url(${___CSS_LOADER_URL_REPLACEMENT_0___}) 50% 50% no-repeat;
+}
+
+.a-enter-ar-button {
+  background: rgba(0, 0, 0, 0.20) url(${___CSS_LOADER_URL_REPLACEMENT_1___}) 50% 50% no-repeat;
+}
+
+.a-enter-vr.fullscreen .a-enter-vr-button {
+  background-image: url(${___CSS_LOADER_URL_REPLACEMENT_2___});
+}
+
+.a-enter-vr-button,
+.a-enter-ar-button {
+  background-size: 90% 90%;
+  border: 0;
+  bottom: 0;
+  cursor: pointer;
+  min-width: 58px;
+  min-height: 34px;
+  /* 1.74418604651 */
+  /*
+    In order to keep the aspect ratio when resizing
+    padding-top percentages are relative to the containing block's width.
+    http://stackoverflow.com/questions/12121090/responsively-change-div-size-keeping-aspect-ratio
+  */
+  padding-right: 0;
+  padding-top: 0;
+  position: absolute;
+  right: 0;
+  transition: background-color .05s ease;
+  -webkit-transition: background-color .05s ease;
+  z-index: 9999;
+  border-radius: 8px;
+  touch-action: manipulation; /* Prevent iOS double tap zoom on the button */
+}
+
+.a-enter-ar-button {
+  background-size: 100% 90%;
+  border-radius: 7px;
+}
+
+.a-enter-ar-button:active,
+.a-enter-ar-button:hover,
+.a-enter-vr-button:active,
+.a-enter-vr-button:hover {
+  background-color: #ef2d5e;
+}
+
+.a-enter-vr-button.resethover {
+  background-color: rgba(0, 0, 0, 0.35);
+}
+
+.a-enter-vr-modal {
+  background-color: #666;
+  border-radius: 0;
+  display: none;
+  min-height: 32px;
+  margin-right: 70px;
+  padding: 9px;
+  width: 280px;
+  right: 2%;
+  position: absolute;
+}
+
+.a-enter-vr-modal:after {
+  border-bottom: 10px solid transparent;
+  border-left: 10px solid #666;
+  border-top: 10px solid transparent;
+  display: inline-block;
+  content: '';
+  position: absolute;
+  right: -5px;
+  top: 5px;
+  width: 0;
+  height: 0;
+}
+
+.a-enter-vr-modal p,
+.a-enter-vr-modal a {
+  display: inline;
+}
+
+.a-enter-vr-modal p {
+  margin: 0;
+}
+
+.a-enter-vr-modal p:after {
+  content: ' ';
+}
+
+.a-orientation-modal {
+  background: rgba(244, 244, 244, 1) url(${___CSS_LOADER_URL_REPLACEMENT_3___}) center no-repeat;
+  background-size: 50% 50%;
+  bottom: 0;
+  font-size: 14px;
+  font-weight: 600;
+  left: 0;
+  line-height: 20px;
+  right: 0;
+  position: fixed;
+  top: 0;
+  z-index: 9999999;
+}
+
+.a-orientation-modal:after {
+  color: #666;
+  content: "Insert phone into Cardboard holder.";
+  display: block;
+  position: absolute;
+  text-align: center;
+  top: 70%;
+  transform: translateY(-70%);
+  width: 100%;
+}
+
+.a-orientation-modal button {
+  background: url(${___CSS_LOADER_URL_REPLACEMENT_4___}) no-repeat;
+  border: none;
+  height: 50px;
+  text-indent: -9999px;
+  width: 50px;
+}
+
+.a-loader-title {
+  background-color: rgba(0, 0, 0, 0.6);
+  font-family: sans-serif, monospace;
+  text-align: center;
+  font-size: 20px;
+  height: 50px;
+  font-weight: 300;
+  line-height: 50px;
+  position: absolute;
+  right: 0px;
+  left: 0px;
+  top: 0px;
+  color: white;
+}
+
+.a-modal {
+  position: absolute;
+  background: rgba(0, 0, 0, 0.60);
+  background-size: 50% 50%;
+  bottom: 0;
+  font-size: 14px;
+  font-weight: 600;
+  left: 0;
+  line-height: 20px;
+  right: 0;
+  position: fixed;
+  top: 0;
+  z-index: 9999999;
+}
+
+.a-dialog {
+  position: relative;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 199995;
+  width: 300px;
+  height: 200px;
+  background-size: contain;
+  background-color: white;
+  font-family: sans-serif, monospace;
+  font-size: 20px;
+  border-radius: 3px;
+  padding: 6px;
+}
+
+.a-dialog-text-container {
+  width: 100%;
+  height: 70%;
+  align-self: flex-start;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  flex-direction: column;
+}
+
+.a-dialog-text {
+  display: inline-block;
+  font-weight: normal;
+  font-size: 14pt;
+  margin: 8px;
+}
+
+.a-dialog-buttons-container {
+  display: inline-flex;
+  align-self: flex-end;
+  width: 100%;
+  height: 30%;
+}
+
+.a-dialog-button {
+  cursor: pointer;
+  align-self: center;
+  opacity: 0.9;
+  height: 80%;
+  width: 50%;
+  font-size: 12pt;
+  margin: 4px;
+  border-radius: 2px;
+  text-align:center;
+  border: none;
+  display: inline-block;
+  -webkit-transition: all 0.25s ease-in-out;
+  transition: all 0.25s ease-in-out;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.10), 0 1px 2px rgba(0, 0, 0, 0.20);
+  user-select: none;
+}
+
+.a-dialog-permission-button:hover {
+  box-shadow: 0 7px 14px rgba(0,0,0,0.20), 0 2px 2px rgba(0,0,0,0.20);
+}
+
+.a-dialog-allow-button {
+  background-color: #00ceff;
+}
+
+.a-dialog-deny-button {
+  background-color: #ff005b;
+}
+
+.a-dialog-ok-button {
+  background-color: #00ceff;
+  width: 100%;
+}
+
+.a-dom-overlay:not(.a-no-style) {
+  overflow: hidden;
+  position: absolute;
+  pointer-events: none;
+  box-sizing: border-box;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  top: 0;
+  padding: 1em;
+}
+
+.a-dom-overlay:not(.a-no-style)>* {
+  pointer-events: auto;
+}
+`, "",{"version":3,"sources":["webpack://./src/style/aframe.css"],"names":[],"mappings":"AAAA,sCAAsC;AACtC;EACE,SAAS;EACT,OAAO;EACP,eAAe;EACf,QAAQ;EACR,MAAM;AACR;;AAEA;EACE,YAAY;EACZ,SAAS;EACT,gBAAgB;EAChB,UAAU;EACV,WAAW;AACb;;AAEA,oDAAoD;AACpD;EACE,sBAAsB;EACtB,uBAAuB;EACvB,iBAAiB;EACjB,kBAAkB;EAClB,mBAAmB;EACnB,oBAAoB;EACpB,0BAA0B;AAC5B;;AAEA;;EAEE,UAAU;EACV,WAAW;AACb;;AAEA;EACE,WAAW;AACb;;AAEA,gEAAgE;AAChE;EACE,6BAA6B;AAC/B;;AAEA;EACE,wBAAwB;AAC1B;;AAEA;EACE,YAAY;EACZ,OAAO;EACP,kBAAkB;EAClB,MAAM;EACN,WAAW;AACb;;AAEA;EACE,YAAY;EACZ,iBAAiB;EACjB,oBAAoB;AACtB;;AAEA;EACE,eAAe;AACjB;;AAEA;EACE,yBAAyB;EACzB,eAAe;EACf,SAAS;EACT,QAAQ;EACR,iBAAiB;EACjB,WAAW;EACX,qBAAqB;EACrB,eAAe;EACf,8BAA8B;EAC9B,kBAAkB;EAClB,cAAc;EACd,YAAY;AACd;;AAEA,+BAA+B;AAC/B,oBAAoB,OAAO,UAAU,EAAE,EAAE,MAAM,UAAU,EAAE,EAAE;AAC7D,oBAAoB,OAAO,UAAU,EAAE,EAAE,MAAM,UAAU,EAAE,EAAE;AAC7D,oBAAoB,OAAO,UAAU,EAAE,EAAE,MAAM,UAAU,EAAE,EAAE;AAC7D,4BAA4B,OAAO,UAAU,EAAE,EAAE,MAAM,UAAU,EAAE,EAAE;AACrE,4BAA4B,OAAO,UAAU,EAAE,EAAE,MAAM,UAAU,EAAE,EAAE;AACrE,4BAA4B,OAAO,UAAU,EAAE,EAAE,MAAM,UAAU,EAAE,EAAE;;AAErE;EACE,sCAAsC;EACtC,8CAA8C;AAChD;;AAEA;EACE,sBAAsB;EACtB,8BAA8B;AAChC;;AAEA;EACE,sBAAsB;EACtB,8BAA8B;AAChC;;AAEA;EACE,cAAc;EACd,kBAAkB;EAClB,YAAY;EACZ,WAAW;AACb;;AAEA;;;;EAIE,aAAa;AACf;;AAEA;;EAEE,0DAA0D;AAC5D;;AAEA;EACE,6BAA6B;EAC7B,cAAc;EACd,qBAAqB;EACrB,6BAA6B;AAC/B;;AAEA;EACE,sBAAsB;EACtB,WAAW;EACX,gBAAgB;EAChB,kBAAkB;EAClB,UAAU;AACZ;;AAEA;;EAEE,kCAAkC;EAClC,eAAe;EACf,WAAW;EACX,gBAAgB;EAChB,iBAAiB;EACjB,kBAAkB;EAClB,WAAW;EACX,YAAY;AACd;;AAEA;EACE,WAAW;AACb;;AAEA;;;EAGE,WAAW;EACX,iBAAiB;EACjB,aAAa;AACf;;AAEA;EACE,yFAA4qB;AAC9qB;;AAEA;EACE,yFAAkzB;AACpzB;;AAEA;EACE,yDAA2qK;AAC7qK;;AAEA;;EAEE,wBAAwB;EACxB,SAAS;EACT,SAAS;EACT,eAAe;EACf,eAAe;EACf,gBAAgB;EAChB,kBAAkB;EAClB;;;;GAIC;EACD,gBAAgB;EAChB,cAAc;EACd,kBAAkB;EAClB,QAAQ;EACR,sCAAsC;EACtC,8CAA8C;EAC9C,aAAa;EACb,kBAAkB;EAClB,0BAA0B,EAAE,8CAA8C;AAC5E;;AAEA;EACE,yBAAyB;EACzB,kBAAkB;AACpB;;AAEA;;;;EAIE,yBAAyB;AAC3B;;AAEA;EACE,qCAAqC;AACvC;;AAEA;EACE,sBAAsB;EACtB,gBAAgB;EAChB,aAAa;EACb,gBAAgB;EAChB,kBAAkB;EAClB,YAAY;EACZ,YAAY;EACZ,SAAS;EACT,kBAAkB;AACpB;;AAEA;EACE,qCAAqC;EACrC,4BAA4B;EAC5B,kCAAkC;EAClC,qBAAqB;EACrB,WAAW;EACX,kBAAkB;EAClB,WAAW;EACX,QAAQ;EACR,QAAQ;EACR,SAAS;AACX;;AAEA;;EAEE,eAAe;AACjB;;AAEA;EACE,SAAS;AACX;;AAEA;EACE,YAAY;AACd;;AAEA;EACE,2FAAivF;EACjvF,wBAAwB;EACxB,SAAS;EACT,eAAe;EACf,gBAAgB;EAChB,OAAO;EACP,iBAAiB;EACjB,QAAQ;EACR,eAAe;EACf,MAAM;EACN,gBAAgB;AAClB;;AAEA;EACE,WAAW;EACX,8CAA8C;EAC9C,cAAc;EACd,kBAAkB;EAClB,kBAAkB;EAClB,QAAQ;EACR,2BAA2B;EAC3B,WAAW;AACb;;AAEA;EACE,6DAA25B;EAC35B,YAAY;EACZ,YAAY;EACZ,oBAAoB;EACpB,WAAW;AACb;;AAEA;EACE,oCAAoC;EACpC,kCAAkC;EAClC,kBAAkB;EAClB,eAAe;EACf,YAAY;EACZ,gBAAgB;EAChB,iBAAiB;EACjB,kBAAkB;EAClB,UAAU;EACV,SAAS;EACT,QAAQ;EACR,YAAY;AACd;;AAEA;EACE,kBAAkB;EAClB,+BAA+B;EAC/B,wBAAwB;EACxB,SAAS;EACT,eAAe;EACf,gBAAgB;EAChB,OAAO;EACP,iBAAiB;EACjB,QAAQ;EACR,eAAe;EACf,MAAM;EACN,gBAAgB;AAClB;;AAEA;EACE,kBAAkB;EAClB,SAAS;EACT,QAAQ;EACR,gCAAgC;EAChC,eAAe;EACf,YAAY;EACZ,aAAa;EACb,wBAAwB;EACxB,uBAAuB;EACvB,kCAAkC;EAClC,eAAe;EACf,kBAAkB;EAClB,YAAY;AACd;;AAEA;EACE,WAAW;EACX,WAAW;EACX,sBAAsB;EACtB,aAAa;EACb,uBAAuB;EACvB,qBAAqB;EACrB,sBAAsB;AACxB;;AAEA;EACE,qBAAqB;EACrB,mBAAmB;EACnB,eAAe;EACf,WAAW;AACb;;AAEA;EACE,oBAAoB;EACpB,oBAAoB;EACpB,WAAW;EACX,WAAW;AACb;;AAEA;EACE,eAAe;EACf,kBAAkB;EAClB,YAAY;EACZ,WAAW;EACX,UAAU;EACV,eAAe;EACf,WAAW;EACX,kBAAkB;EAClB,iBAAiB;EACjB,YAAY;EACZ,qBAAqB;EACrB,yCAAyC;EACzC,iCAAiC;EACjC,wEAAwE;EACxE,iBAAiB;AACnB;;AAEA;EACE,mEAAmE;AACrE;;AAEA;EACE,yBAAyB;AAC3B;;AAEA;EACE,yBAAyB;AAC3B;;AAEA;EACE,yBAAyB;EACzB,WAAW;AACb;;AAEA;EACE,gBAAgB;EAChB,kBAAkB;EAClB,oBAAoB;EACpB,sBAAsB;EACtB,SAAS;EACT,OAAO;EACP,QAAQ;EACR,MAAM;EACN,YAAY;AACd;;AAEA;EACE,oBAAoB;AACtB","sourcesContent":["/* .a-fullscreen means not embedded. */\nhtml.a-fullscreen {\n  bottom: 0;\n  left: 0;\n  position: fixed;\n  right: 0;\n  top: 0;\n}\n\nhtml.a-fullscreen body {\n  height: 100%;\n  margin: 0;\n  overflow: hidden;\n  padding: 0;\n  width: 100%;\n}\n\n/* Class is removed when doing <a-scene embedded>. */\nhtml.a-fullscreen .a-canvas {\n  width: 100% !important;\n  height: 100% !important;\n  top: 0 !important;\n  left: 0 !important;\n  right: 0 !important;\n  bottom: 0 !important;\n  position: fixed !important;\n}\n\nhtml:not(.a-fullscreen) .a-enter-vr,\nhtml:not(.a-fullscreen) .a-enter-ar {\n  right: 5px;\n  bottom: 5px;\n}\n\nhtml:not(.a-fullscreen) .a-enter-ar {\n  right: 60px;\n}\n\n/* In chrome mobile the user agent stylesheet set it to white  */\n:-webkit-full-screen {\n  background-color: transparent;\n}\n\n.a-hidden {\n  display: none !important;\n}\n\n.a-canvas {\n  height: 100%;\n  left: 0;\n  position: absolute;\n  top: 0;\n  width: 100%;\n}\n\n.a-canvas.a-grab-cursor:hover {\n  cursor: grab;\n  cursor: -moz-grab;\n  cursor: -webkit-grab;\n}\n\ncanvas.a-canvas.a-mouse-cursor-hover:hover {\n  cursor: pointer;\n}\n\n.a-inspector-loader {\n  background-color: #ed3160;\n  position: fixed;\n  left: 3px;\n  top: 3px;\n  padding: 6px 10px;\n  color: #fff;\n  text-decoration: none;\n  font-size: 12px;\n  font-family: Roboto,sans-serif;\n  text-align: center;\n  z-index: 99999;\n  width: 204px;\n}\n\n/* Inspector loader animation */\n@keyframes dots-1 { from { opacity: 0; } 25% { opacity: 1; } }\n@keyframes dots-2 { from { opacity: 0; } 50% { opacity: 1; } }\n@keyframes dots-3 { from { opacity: 0; } 75% { opacity: 1; } }\n@-webkit-keyframes dots-1 { from { opacity: 0; } 25% { opacity: 1; } }\n@-webkit-keyframes dots-2 { from { opacity: 0; } 50% { opacity: 1; } }\n@-webkit-keyframes dots-3 { from { opacity: 0; } 75% { opacity: 1; } }\n\n.a-inspector-loader .dots span {\n  animation: dots-1 2s infinite steps(1);\n  -webkit-animation: dots-1 2s infinite steps(1);\n}\n\n.a-inspector-loader .dots span:first-child + span {\n  animation-name: dots-2;\n  -webkit-animation-name: dots-2;\n}\n\n.a-inspector-loader .dots span:first-child + span + span {\n  animation-name: dots-3;\n  -webkit-animation-name: dots-3;\n}\n\na-scene {\n  display: block;\n  position: relative;\n  height: 100%;\n  width: 100%;\n}\n\na-assets,\na-scene video,\na-scene img,\na-scene audio {\n  display: none;\n}\n\n.a-enter-vr-modal,\n.a-orientation-modal {\n  font-family: Consolas, Andale Mono, Courier New, monospace;\n}\n\n.a-enter-vr-modal a {\n  border-bottom: 1px solid #fff;\n  padding: 2px 0;\n  text-decoration: none;\n  transition: .1s color ease-in;\n}\n\n.a-enter-vr-modal a:hover {\n  background-color: #fff;\n  color: #111;\n  padding: 2px 4px;\n  position: relative;\n  left: -4px;\n}\n\n.a-enter-vr,\n.a-enter-ar {\n  font-family: sans-serif, monospace;\n  font-size: 13px;\n  width: 100%;\n  font-weight: 200;\n  line-height: 16px;\n  position: absolute;\n  right: 20px;\n  bottom: 20px;\n}\n\n.a-enter-ar.xr {\n  right: 90px;\n}\n\n.a-enter-vr-button,\n.a-enter-vr-modal,\n.a-enter-vr-modal a {\n  color: #fff;\n  user-select: none;\n  outline: none;\n}\n\n.a-enter-vr-button {\n  background: rgba(0, 0, 0, 0.35) url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='108' height='62' viewBox='0 0 108 62'%3E%3Ctitle%3Eaframe-vrmode-noborder-reduced-tracking%3C/title%3E%3Cpath d='M68.81,21.56H64.23v8.27h4.58a4.13,4.13,0,0,0,3.1-1.09,4.2,4.2,0,0,0,1-3,4.24,4.24,0,0,0-1-3A4.05,4.05,0,0,0,68.81,21.56Z' fill='%23fff'/%3E%3Cpath d='M96,0H12A12,12,0,0,0,0,12V50A12,12,0,0,0,12,62H96a12,12,0,0,0,12-12V12A12,12,0,0,0,96,0ZM41.9,46H34L24,16h8l6,21.84,6-21.84H52Zm39.29,0H73.44L68.15,35.39H64.23V46H57V16H68.81q5.32,0,8.34,2.37a8,8,0,0,1,3,6.69,9.68,9.68,0,0,1-1.27,5.18,8.9,8.9,0,0,1-4,3.34l6.26,12.11Z' fill='%23fff'/%3E%3C/svg%3E\") 50% 50% no-repeat;\n}\n\n.a-enter-ar-button {\n  background: rgba(0, 0, 0, 0.20) url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='108' height='62' viewBox='0 0 108 62'%3E%3Ctitle%3Eaframe-armode-noborder-reduced-tracking%3C/title%3E%3Cpath d='M96,0H12A12,12,0,0,0,0,12V50A12,12,0,0,0,12,62H96a12,12,0,0,0,12-12V12A12,12,0,0,0,96,0Zm8,50a8,8,0,0,1-8,8H12a8,8,0,0,1-8-8V12a8,8,0,0,1,8-8H96a8,8,0,0,1,8,8Z' fill='%23fff'/%3E%3Cpath d='M43.35,39.82H32.51L30.45,46H23.88L35,16h5.73L52,46H45.43Zm-9.17-5h7.5L37.91,23.58Z' fill='%23fff'/%3E%3Cpath d='M68.11,35H63.18V46H57V16H68.15q5.31,0,8.2,2.37a8.18,8.18,0,0,1,2.88,6.7,9.22,9.22,0,0,1-1.33,5.12,9.09,9.09,0,0,1-4,3.26l6.49,12.26V46H73.73Zm-4.93-5h5a5.09,5.09,0,0,0,3.6-1.18,4.21,4.21,0,0,0,1.28-3.27,4.56,4.56,0,0,0-1.2-3.34A5,5,0,0,0,68.15,21h-5Z' fill='%23fff'/%3E%3C/svg%3E\") 50% 50% no-repeat;\n}\n\n.a-enter-vr.fullscreen .a-enter-vr-button {\n  background-image: url(\"data:image/svg+xml,%3C%3Fxml version='1.0' encoding='UTF-8' standalone='no'%3F%3E%3Csvg width='108' height='62' viewBox='0 0 108 62' version='1.1' id='svg320' sodipodi:docname='fullscreen-aframe.svg' xml:space='preserve' inkscape:version='1.2.1 (9c6d41e  2022-07-14)' xmlns:inkscape='http://www.inkscape.org/namespaces/inkscape' xmlns:sodipodi='http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd' xmlns='http://www.w3.org/2000/svg' xmlns:svg='http://www.w3.org/2000/svg' xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns%23' xmlns:cc='http://creativecommons.org/ns%23' xmlns:dc='http://purl.org/dc/elements/1.1/'%3E%3Cdefs id='defs324' /%3E%3Csodipodi:namedview id='namedview322' pagecolor='%23ffffff' bordercolor='%23000000' borderopacity='0.25' inkscape:showpageshadow='2' inkscape:pageopacity='0.0' inkscape:pagecheckerboard='0' inkscape:deskcolor='%23d1d1d1' showgrid='false' inkscape:zoom='3.8064516' inkscape:cx='91.423729' inkscape:cy='-1.4449153' inkscape:window-width='1440' inkscape:window-height='847' inkscape:window-x='32' inkscape:window-y='25' inkscape:window-maximized='0' inkscape:current-layer='svg320' /%3E%3Ctitle id='title312'%3Eaframe-armode-noborder-reduced-tracking%3C/title%3E%3Cpath d='M96 0H12A12 12 0 0 0 0 12V50A12 12 0 0 0 12 62H96a12 12 0 0 0 12-12V12A12 12 0 0 0 96 0Zm8 50a8 8 0 0 1-8 8H12a8 8 0 0 1-8-8V12a8 8 0 0 1 8-8H96a8 8 0 0 1 8 8Z' fill='%23fff' id='path314' style='fill:%23ffffff' /%3E%3Cg id='g356' transform='translate(-206.61017 -232.61864)'%3E%3C/g%3E%3Cg id='g358' transform='translate(-206.61017 -232.61864)'%3E%3C/g%3E%3Cg id='g360' transform='translate(-206.61017 -232.61864)'%3E%3C/g%3E%3Cg id='g362' transform='translate(-206.61017 -232.61864)'%3E%3C/g%3E%3Cg id='g364' transform='translate(-206.61017 -232.61864)'%3E%3C/g%3E%3Cg id='g366' transform='translate(-206.61017 -232.61864)'%3E%3C/g%3E%3Cg id='g368' transform='translate(-206.61017 -232.61864)'%3E%3C/g%3E%3Cg id='g370' transform='translate(-206.61017 -232.61864)'%3E%3C/g%3E%3Cg id='g372' transform='translate(-206.61017 -232.61864)'%3E%3C/g%3E%3Cg id='g374' transform='translate(-206.61017 -232.61864)'%3E%3C/g%3E%3Cg id='g376' transform='translate(-206.61017 -232.61864)'%3E%3C/g%3E%3Cg id='g378' transform='translate(-206.61017 -232.61864)'%3E%3C/g%3E%3Cg id='g380' transform='translate(-206.61017 -232.61864)'%3E%3C/g%3E%3Cg id='g382' transform='translate(-206.61017 -232.61864)'%3E%3C/g%3E%3Cg id='g384' transform='translate(-206.61017 -232.61864)'%3E%3C/g%3E%3Cmetadata id='metadata561'%3E%3Crdf:RDF%3E%3Ccc:Work rdf:about=''%3E%3Cdc:title%3Eaframe-armode-noborder-reduced-tracking%3C/dc:title%3E%3C/cc:Work%3E%3C/rdf:RDF%3E%3C/metadata%3E%3Cpath d='m 98.168511 40.083649 c 0 -1.303681 -0.998788 -2.358041 -2.239389 -2.358041 -1.230088 0.0031 -2.240892 1.05436 -2.240892 2.358041 v 4.881296 l -9.041661 -9.041662 c -0.874129 -0.875631 -2.288954 -0.875631 -3.16308 0 -0.874129 0.874126 -0.874129 2.293459 0 3.167585 l 8.995101 8.992101 h -4.858767 c -1.323206 0.0031 -2.389583 1.004796 -2.389583 2.239386 0 1.237598 1.066377 2.237888 2.389583 2.237888 h 10.154599 c 1.323206 0 2.388082 -0.998789 2.392587 -2.237888 -0.0044 -0.03305 -0.009 -0.05858 -0.0134 -0.09161 0.0046 -0.04207 0.0134 -0.08712 0.0134 -0.13066 V 40.085172 h -1.52e-4' id='path596' style='fill:%23ffffff%3Bstroke-width:1.50194' /%3E%3Cpath d='m 23.091002 35.921781 -9.026643 9.041662 v -4.881296 c 0 -1.303681 -1.009302 -2.355037 -2.242393 -2.358041 -1.237598 0 -2.237888 1.05436 -2.237888 2.358041 l -0.0031 10.016421 c 0 0.04356 0.01211 0.08862 0.0015 0.130659 -0.0031 0.03153 -0.009 0.05709 -0.01211 0.09161 0.0031 1.239099 1.069379 2.237888 2.391085 2.237888 h 10.156101 c 1.320202 0 2.388079 -1.000291 2.388079 -2.237888 0 -1.234591 -1.067877 -2.236383 -2.388079 -2.239387 h -4.858767 l 8.995101 -8.9921 c 0.871126 -0.874127 0.871126 -2.293459 0 -3.167586 -0.875628 -0.877132 -2.291957 -0.877132 -3.169087 -1.52e-4' id='path598' style='fill:%23ffffff%3Bstroke-width:1.50194' /%3E%3Cpath d='m 84.649572 25.978033 9.041662 -9.041664 v 4.881298 c 0 1.299176 1.010806 2.350532 2.240891 2.355037 1.240601 0 2.23939 -1.055861 2.23939 -2.355037 V 11.798242 c 0 -0.04356 -0.009 -0.08862 -0.0134 -0.127671 0.0044 -0.03153 0.009 -0.06157 0.0134 -0.09313 -0.0044 -1.240598 -1.069379 -2.2393873 -2.391085 -2.2393873 h -10.1546 c -1.323205 0 -2.38958 0.9987893 -2.38958 2.2393873 0 1.233091 1.066375 2.237887 2.38958 2.240891 h 4.858768 l -8.995102 8.9921 c -0.874129 0.872625 -0.874129 2.288954 0 3.161578 0.874127 0.880137 2.288951 0.880137 3.16308 1.5e-4' id='path600' style='fill:%23ffffff%3Bstroke-width:1.50194' /%3E%3Cpath d='m 17.264988 13.822853 h 4.857265 c 1.320202 -0.0031 2.388079 -1.0078 2.388079 -2.240889 0 -1.240601 -1.067877 -2.2393893 -2.388079 -2.2393893 H 11.967654 c -1.321707 0 -2.388082 0.9987883 -2.391085 2.2393893 0.0031 0.03153 0.009 0.06157 0.01211 0.09313 -0.0031 0.03905 -0.0015 0.08262 -0.0015 0.127671 l 0.0031 10.020926 c 0 1.299176 1.00029 2.355038 2.237887 2.355038 1.233092 -0.0044 2.242393 -1.055862 2.242393 -2.355038 v -4.881295 l 9.026644 9.041661 c 0.877132 0.878635 2.293459 0.878635 3.169087 0 0.871125 -0.872624 0.871125 -2.288953 0 -3.161577 l -8.995282 -8.993616' id='path602' style='fill:%23ffffff%3Bstroke-width:1.50194' /%3E%3C/svg%3E\");\n}\n\n.a-enter-vr-button,\n.a-enter-ar-button {\n  background-size: 90% 90%;\n  border: 0;\n  bottom: 0;\n  cursor: pointer;\n  min-width: 58px;\n  min-height: 34px;\n  /* 1.74418604651 */\n  /*\n    In order to keep the aspect ratio when resizing\n    padding-top percentages are relative to the containing block's width.\n    http://stackoverflow.com/questions/12121090/responsively-change-div-size-keeping-aspect-ratio\n  */\n  padding-right: 0;\n  padding-top: 0;\n  position: absolute;\n  right: 0;\n  transition: background-color .05s ease;\n  -webkit-transition: background-color .05s ease;\n  z-index: 9999;\n  border-radius: 8px;\n  touch-action: manipulation; /* Prevent iOS double tap zoom on the button */\n}\n\n.a-enter-ar-button {\n  background-size: 100% 90%;\n  border-radius: 7px;\n}\n\n.a-enter-ar-button:active,\n.a-enter-ar-button:hover,\n.a-enter-vr-button:active,\n.a-enter-vr-button:hover {\n  background-color: #ef2d5e;\n}\n\n.a-enter-vr-button.resethover {\n  background-color: rgba(0, 0, 0, 0.35);\n}\n\n.a-enter-vr-modal {\n  background-color: #666;\n  border-radius: 0;\n  display: none;\n  min-height: 32px;\n  margin-right: 70px;\n  padding: 9px;\n  width: 280px;\n  right: 2%;\n  position: absolute;\n}\n\n.a-enter-vr-modal:after {\n  border-bottom: 10px solid transparent;\n  border-left: 10px solid #666;\n  border-top: 10px solid transparent;\n  display: inline-block;\n  content: '';\n  position: absolute;\n  right: -5px;\n  top: 5px;\n  width: 0;\n  height: 0;\n}\n\n.a-enter-vr-modal p,\n.a-enter-vr-modal a {\n  display: inline;\n}\n\n.a-enter-vr-modal p {\n  margin: 0;\n}\n\n.a-enter-vr-modal p:after {\n  content: ' ';\n}\n\n.a-orientation-modal {\n  background: rgba(244, 244, 244, 1) url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%20version%3D%221.1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%2090%2090%22%20enable-background%3D%22new%200%200%2090%2090%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpolygon%20points%3D%220%2C0%200%2C0%200%2C0%20%22%3E%3C/polygon%3E%3Cg%3E%3Cpath%20d%3D%22M71.545%2C48.145h-31.98V20.743c0-2.627-2.138-4.765-4.765-4.765H18.456c-2.628%2C0-4.767%2C2.138-4.767%2C4.765v42.789%20%20%20c0%2C2.628%2C2.138%2C4.766%2C4.767%2C4.766h5.535v0.959c0%2C2.628%2C2.138%2C4.765%2C4.766%2C4.765h42.788c2.628%2C0%2C4.766-2.137%2C4.766-4.765V52.914%20%20%20C76.311%2C50.284%2C74.173%2C48.145%2C71.545%2C48.145z%20M18.455%2C16.935h16.344c2.1%2C0%2C3.808%2C1.708%2C3.808%2C3.808v27.401H37.25V22.636%20%20%20c0-0.264-0.215-0.478-0.479-0.478H16.482c-0.264%2C0-0.479%2C0.214-0.479%2C0.478v36.585c0%2C0.264%2C0.215%2C0.478%2C0.479%2C0.478h7.507v7.644%20%20%20h-5.534c-2.101%2C0-3.81-1.709-3.81-3.81V20.743C14.645%2C18.643%2C16.354%2C16.935%2C18.455%2C16.935z%20M16.96%2C23.116h19.331v25.031h-7.535%20%20%20c-2.628%2C0-4.766%2C2.139-4.766%2C4.768v5.828h-7.03V23.116z%20M71.545%2C73.064H28.757c-2.101%2C0-3.81-1.708-3.81-3.808V52.914%20%20%20c0-2.102%2C1.709-3.812%2C3.81-3.812h42.788c2.1%2C0%2C3.809%2C1.71%2C3.809%2C3.812v16.343C75.354%2C71.356%2C73.645%2C73.064%2C71.545%2C73.064z%22%3E%3C/path%3E%3Cpath%20d%3D%22M28.919%2C58.424c-1.466%2C0-2.659%2C1.193-2.659%2C2.66c0%2C1.466%2C1.193%2C2.658%2C2.659%2C2.658c1.468%2C0%2C2.662-1.192%2C2.662-2.658%20%20%20C31.581%2C59.617%2C30.387%2C58.424%2C28.919%2C58.424z%20M28.919%2C62.786c-0.939%2C0-1.703-0.764-1.703-1.702c0-0.939%2C0.764-1.704%2C1.703-1.704%20%20%20c0.94%2C0%2C1.705%2C0.765%2C1.705%2C1.704C30.623%2C62.022%2C29.858%2C62.786%2C28.919%2C62.786z%22%3E%3C/path%3E%3Cpath%20d%3D%22M69.654%2C50.461H33.069c-0.264%2C0-0.479%2C0.215-0.479%2C0.479v20.288c0%2C0.264%2C0.215%2C0.478%2C0.479%2C0.478h36.585%20%20%20c0.263%2C0%2C0.477-0.214%2C0.477-0.478V50.939C70.131%2C50.676%2C69.917%2C50.461%2C69.654%2C50.461z%20M69.174%2C51.417V70.75H33.548V51.417H69.174z%22%3E%3C/path%3E%3Cpath%20d%3D%22M45.201%2C30.296c6.651%2C0%2C12.233%2C5.351%2C12.551%2C11.977l-3.033-2.638c-0.193-0.165-0.507-0.142-0.675%2C0.048%20%20%20c-0.174%2C0.198-0.153%2C0.501%2C0.045%2C0.676l3.883%2C3.375c0.09%2C0.075%2C0.198%2C0.115%2C0.312%2C0.115c0.141%2C0%2C0.273-0.061%2C0.362-0.166%20%20%20l3.371-3.877c0.173-0.2%2C0.151-0.502-0.047-0.675c-0.194-0.166-0.508-0.144-0.676%2C0.048l-2.592%2C2.979%20%20%20c-0.18-3.417-1.629-6.605-4.099-9.001c-2.538-2.461-5.877-3.817-9.404-3.817c-0.264%2C0-0.479%2C0.215-0.479%2C0.479%20%20%20C44.72%2C30.083%2C44.936%2C30.296%2C45.201%2C30.296z%22%3E%3C/path%3E%3C/g%3E%3C/svg%3E) center no-repeat;\n  background-size: 50% 50%;\n  bottom: 0;\n  font-size: 14px;\n  font-weight: 600;\n  left: 0;\n  line-height: 20px;\n  right: 0;\n  position: fixed;\n  top: 0;\n  z-index: 9999999;\n}\n\n.a-orientation-modal:after {\n  color: #666;\n  content: \"Insert phone into Cardboard holder.\";\n  display: block;\n  position: absolute;\n  text-align: center;\n  top: 70%;\n  transform: translateY(-70%);\n  width: 100%;\n}\n\n.a-orientation-modal button {\n  background: url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%20version%3D%221.1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%20100%20100%22%20enable-background%3D%22new%200%200%20100%20100%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpath%20fill%3D%22%23000000%22%20d%3D%22M55.209%2C50l17.803-17.803c1.416-1.416%2C1.416-3.713%2C0-5.129c-1.416-1.417-3.713-1.417-5.129%2C0L50.08%2C44.872%20%20L32.278%2C27.069c-1.416-1.417-3.714-1.417-5.129%2C0c-1.417%2C1.416-1.417%2C3.713%2C0%2C5.129L44.951%2C50L27.149%2C67.803%20%20c-1.417%2C1.416-1.417%2C3.713%2C0%2C5.129c0.708%2C0.708%2C1.636%2C1.062%2C2.564%2C1.062c0.928%2C0%2C1.856-0.354%2C2.564-1.062L50.08%2C55.13l17.803%2C17.802%20%20c0.708%2C0.708%2C1.637%2C1.062%2C2.564%2C1.062s1.856-0.354%2C2.564-1.062c1.416-1.416%2C1.416-3.713%2C0-5.129L55.209%2C50z%22%3E%3C/path%3E%3C/svg%3E) no-repeat;\n  border: none;\n  height: 50px;\n  text-indent: -9999px;\n  width: 50px;\n}\n\n.a-loader-title {\n  background-color: rgba(0, 0, 0, 0.6);\n  font-family: sans-serif, monospace;\n  text-align: center;\n  font-size: 20px;\n  height: 50px;\n  font-weight: 300;\n  line-height: 50px;\n  position: absolute;\n  right: 0px;\n  left: 0px;\n  top: 0px;\n  color: white;\n}\n\n.a-modal {\n  position: absolute;\n  background: rgba(0, 0, 0, 0.60);\n  background-size: 50% 50%;\n  bottom: 0;\n  font-size: 14px;\n  font-weight: 600;\n  left: 0;\n  line-height: 20px;\n  right: 0;\n  position: fixed;\n  top: 0;\n  z-index: 9999999;\n}\n\n.a-dialog {\n  position: relative;\n  left: 50%;\n  top: 50%;\n  transform: translate(-50%, -50%);\n  z-index: 199995;\n  width: 300px;\n  height: 200px;\n  background-size: contain;\n  background-color: white;\n  font-family: sans-serif, monospace;\n  font-size: 20px;\n  border-radius: 3px;\n  padding: 6px;\n}\n\n.a-dialog-text-container {\n  width: 100%;\n  height: 70%;\n  align-self: flex-start;\n  display: flex;\n  justify-content: center;\n  align-content: center;\n  flex-direction: column;\n}\n\n.a-dialog-text {\n  display: inline-block;\n  font-weight: normal;\n  font-size: 14pt;\n  margin: 8px;\n}\n\n.a-dialog-buttons-container {\n  display: inline-flex;\n  align-self: flex-end;\n  width: 100%;\n  height: 30%;\n}\n\n.a-dialog-button {\n  cursor: pointer;\n  align-self: center;\n  opacity: 0.9;\n  height: 80%;\n  width: 50%;\n  font-size: 12pt;\n  margin: 4px;\n  border-radius: 2px;\n  text-align:center;\n  border: none;\n  display: inline-block;\n  -webkit-transition: all 0.25s ease-in-out;\n  transition: all 0.25s ease-in-out;\n  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.10), 0 1px 2px rgba(0, 0, 0, 0.20);\n  user-select: none;\n}\n\n.a-dialog-permission-button:hover {\n  box-shadow: 0 7px 14px rgba(0,0,0,0.20), 0 2px 2px rgba(0,0,0,0.20);\n}\n\n.a-dialog-allow-button {\n  background-color: #00ceff;\n}\n\n.a-dialog-deny-button {\n  background-color: #ff005b;\n}\n\n.a-dialog-ok-button {\n  background-color: #00ceff;\n  width: 100%;\n}\n\n.a-dom-overlay:not(.a-no-style) {\n  overflow: hidden;\n  position: absolute;\n  pointer-events: none;\n  box-sizing: border-box;\n  bottom: 0;\n  left: 0;\n  right: 0;\n  top: 0;\n  padding: 1em;\n}\n\n.a-dom-overlay:not(.a-no-style)>* {\n  pointer-events: auto;\n}\n"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -36410,7 +36775,102 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ".rs-base {\n  background-color: #333;\n  color: #fafafa;\n  border-radius: 0;\n  font: 10px monospace;\n  left: 5px;\n  line-height: 1em;\n  opacity: 0.85;\n  overflow: hidden;\n  padding: 10px;\n  position: fixed;\n  top: 5px;\n  width: 300px;\n  z-index: 10000;\n}\n\n.rs-base div.hidden {\n  display: none;\n}\n\n.rs-base h1 {\n  color: #fff;\n  cursor: pointer;\n  font-size: 1.4em;\n  font-weight: 300;\n  margin: 0 0 5px;\n  padding: 0;\n}\n\n.rs-group {\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-flex-direction: column-reverse;\n  flex-direction: column-reverse;\n  margin-bottom: 5px;\n}\n\n.rs-group:last-child {\n  margin-bottom: 0;\n}\n\n.rs-counter-base {\n  align-items: center;\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: flex;\n  height: 10px;\n  -webkit-justify-content: space-between;\n  justify-content: space-between;\n  margin: 2px 0;\n}\n\n.rs-counter-base.alarm {\n  color: #b70000;\n  text-shadow: 0 0 0 #b70000,\n               0 0 1px #fff,\n               0 0 1px #fff,\n               0 0 2px #fff,\n               0 0 2px #fff,\n               0 0 3px #fff,\n               0 0 3px #fff,\n               0 0 4px #fff,\n               0 0 4px #fff;\n}\n\n.rs-counter-id {\n  font-weight: 300;\n  -webkit-box-ordinal-group: 0;\n  -webkit-order: 0;\n  order: 0;\n  width: 54px;\n}\n\n.rs-counter-value {\n  font-weight: 300;\n  -webkit-box-ordinal-group: 1;\n  -webkit-order: 1;\n  order: 1;\n  text-align: right;\n  width: 35px;\n}\n\n.rs-canvas {\n  -webkit-box-ordinal-group: 2;\n  -webkit-order: 2;\n  order: 2;\n}\n\n@media (min-width: 480px) {\n  .rs-base {\n    left: 20px;\n    top: 20px;\n  }\n}\n", "",{"version":3,"sources":["webpack://./src/style/rStats.css"],"names":[],"mappings":"AAAA;EACE,sBAAsB;EACtB,cAAc;EACd,gBAAgB;EAChB,oBAAoB;EACpB,SAAS;EACT,gBAAgB;EAChB,aAAa;EACb,gBAAgB;EAChB,aAAa;EACb,eAAe;EACf,QAAQ;EACR,YAAY;EACZ,cAAc;AAChB;;AAEA;EACE,aAAa;AACf;;AAEA;EACE,WAAW;EACX,eAAe;EACf,gBAAgB;EAChB,gBAAgB;EAChB,eAAe;EACf,UAAU;AACZ;;AAEA;EACE,oBAAoB;EACpB,qBAAqB;EACrB,aAAa;EACb,sCAAsC;EACtC,8BAA8B;EAC9B,kBAAkB;AACpB;;AAEA;EACE,gBAAgB;AAClB;;AAEA;EACE,mBAAmB;EACnB,oBAAoB;EACpB,qBAAqB;EACrB,aAAa;EACb,YAAY;EACZ,sCAAsC;EACtC,8BAA8B;EAC9B,aAAa;AACf;;AAEA;EACE,cAAc;EACd;;;;;;;;2BAQyB;AAC3B;;AAEA;EACE,gBAAgB;EAChB,4BAA4B;EAC5B,gBAAgB;EAChB,QAAQ;EACR,WAAW;AACb;;AAEA;EACE,gBAAgB;EAChB,4BAA4B;EAC5B,gBAAgB;EAChB,QAAQ;EACR,iBAAiB;EACjB,WAAW;AACb;;AAEA;EACE,4BAA4B;EAC5B,gBAAgB;EAChB,QAAQ;AACV;;AAEA;EACE;IACE,UAAU;IACV,SAAS;EACX;AACF","sourcesContent":[".rs-base {\n  background-color: #333;\n  color: #fafafa;\n  border-radius: 0;\n  font: 10px monospace;\n  left: 5px;\n  line-height: 1em;\n  opacity: 0.85;\n  overflow: hidden;\n  padding: 10px;\n  position: fixed;\n  top: 5px;\n  width: 300px;\n  z-index: 10000;\n}\n\n.rs-base div.hidden {\n  display: none;\n}\n\n.rs-base h1 {\n  color: #fff;\n  cursor: pointer;\n  font-size: 1.4em;\n  font-weight: 300;\n  margin: 0 0 5px;\n  padding: 0;\n}\n\n.rs-group {\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-flex-direction: column-reverse;\n  flex-direction: column-reverse;\n  margin-bottom: 5px;\n}\n\n.rs-group:last-child {\n  margin-bottom: 0;\n}\n\n.rs-counter-base {\n  align-items: center;\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: flex;\n  height: 10px;\n  -webkit-justify-content: space-between;\n  justify-content: space-between;\n  margin: 2px 0;\n}\n\n.rs-counter-base.alarm {\n  color: #b70000;\n  text-shadow: 0 0 0 #b70000,\n               0 0 1px #fff,\n               0 0 1px #fff,\n               0 0 2px #fff,\n               0 0 2px #fff,\n               0 0 3px #fff,\n               0 0 3px #fff,\n               0 0 4px #fff,\n               0 0 4px #fff;\n}\n\n.rs-counter-id {\n  font-weight: 300;\n  -webkit-box-ordinal-group: 0;\n  -webkit-order: 0;\n  order: 0;\n  width: 54px;\n}\n\n.rs-counter-value {\n  font-weight: 300;\n  -webkit-box-ordinal-group: 1;\n  -webkit-order: 1;\n  order: 1;\n  text-align: right;\n  width: 35px;\n}\n\n.rs-canvas {\n  -webkit-box-ordinal-group: 2;\n  -webkit-order: 2;\n  order: 2;\n}\n\n@media (min-width: 480px) {\n  .rs-base {\n    left: 20px;\n    top: 20px;\n  }\n}\n"],"sourceRoot":""}]);
+___CSS_LOADER_EXPORT___.push([module.id, `.rs-base {
+  background-color: #333;
+  color: #fafafa;
+  border-radius: 0;
+  font: 10px monospace;
+  left: 5px;
+  line-height: 1em;
+  opacity: 0.85;
+  overflow: hidden;
+  padding: 10px;
+  position: fixed;
+  top: 5px;
+  width: 300px;
+  z-index: 10000;
+}
+
+.rs-base div.hidden {
+  display: none;
+}
+
+.rs-base h1 {
+  color: #fff;
+  cursor: pointer;
+  font-size: 1.4em;
+  font-weight: 300;
+  margin: 0 0 5px;
+  padding: 0;
+}
+
+.rs-group {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-direction: column-reverse;
+  flex-direction: column-reverse;
+  margin-bottom: 5px;
+}
+
+.rs-group:last-child {
+  margin-bottom: 0;
+}
+
+.rs-counter-base {
+  align-items: center;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: flex;
+  height: 10px;
+  -webkit-justify-content: space-between;
+  justify-content: space-between;
+  margin: 2px 0;
+}
+
+.rs-counter-base.alarm {
+  color: #b70000;
+  text-shadow: 0 0 0 #b70000,
+               0 0 1px #fff,
+               0 0 1px #fff,
+               0 0 2px #fff,
+               0 0 2px #fff,
+               0 0 3px #fff,
+               0 0 3px #fff,
+               0 0 4px #fff,
+               0 0 4px #fff;
+}
+
+.rs-counter-id {
+  font-weight: 300;
+  -webkit-box-ordinal-group: 0;
+  -webkit-order: 0;
+  order: 0;
+  width: 54px;
+}
+
+.rs-counter-value {
+  font-weight: 300;
+  -webkit-box-ordinal-group: 1;
+  -webkit-order: 1;
+  order: 1;
+  text-align: right;
+  width: 35px;
+}
+
+.rs-canvas {
+  -webkit-box-ordinal-group: 2;
+  -webkit-order: 2;
+  order: 2;
+}
+
+@media (min-width: 480px) {
+  .rs-base {
+    left: 20px;
+    top: 20px;
+  }
+}
+`, "",{"version":3,"sources":["webpack://./src/style/rStats.css"],"names":[],"mappings":"AAAA;EACE,sBAAsB;EACtB,cAAc;EACd,gBAAgB;EAChB,oBAAoB;EACpB,SAAS;EACT,gBAAgB;EAChB,aAAa;EACb,gBAAgB;EAChB,aAAa;EACb,eAAe;EACf,QAAQ;EACR,YAAY;EACZ,cAAc;AAChB;;AAEA;EACE,aAAa;AACf;;AAEA;EACE,WAAW;EACX,eAAe;EACf,gBAAgB;EAChB,gBAAgB;EAChB,eAAe;EACf,UAAU;AACZ;;AAEA;EACE,oBAAoB;EACpB,qBAAqB;EACrB,aAAa;EACb,sCAAsC;EACtC,8BAA8B;EAC9B,kBAAkB;AACpB;;AAEA;EACE,gBAAgB;AAClB;;AAEA;EACE,mBAAmB;EACnB,oBAAoB;EACpB,qBAAqB;EACrB,aAAa;EACb,YAAY;EACZ,sCAAsC;EACtC,8BAA8B;EAC9B,aAAa;AACf;;AAEA;EACE,cAAc;EACd;;;;;;;;2BAQyB;AAC3B;;AAEA;EACE,gBAAgB;EAChB,4BAA4B;EAC5B,gBAAgB;EAChB,QAAQ;EACR,WAAW;AACb;;AAEA;EACE,gBAAgB;EAChB,4BAA4B;EAC5B,gBAAgB;EAChB,QAAQ;EACR,iBAAiB;EACjB,WAAW;AACb;;AAEA;EACE,4BAA4B;EAC5B,gBAAgB;EAChB,QAAQ;AACV;;AAEA;EACE;IACE,UAAU;IACV,SAAS;EACX;AACF","sourcesContent":[".rs-base {\n  background-color: #333;\n  color: #fafafa;\n  border-radius: 0;\n  font: 10px monospace;\n  left: 5px;\n  line-height: 1em;\n  opacity: 0.85;\n  overflow: hidden;\n  padding: 10px;\n  position: fixed;\n  top: 5px;\n  width: 300px;\n  z-index: 10000;\n}\n\n.rs-base div.hidden {\n  display: none;\n}\n\n.rs-base h1 {\n  color: #fff;\n  cursor: pointer;\n  font-size: 1.4em;\n  font-weight: 300;\n  margin: 0 0 5px;\n  padding: 0;\n}\n\n.rs-group {\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-flex-direction: column-reverse;\n  flex-direction: column-reverse;\n  margin-bottom: 5px;\n}\n\n.rs-group:last-child {\n  margin-bottom: 0;\n}\n\n.rs-counter-base {\n  align-items: center;\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: flex;\n  height: 10px;\n  -webkit-justify-content: space-between;\n  justify-content: space-between;\n  margin: 2px 0;\n}\n\n.rs-counter-base.alarm {\n  color: #b70000;\n  text-shadow: 0 0 0 #b70000,\n               0 0 1px #fff,\n               0 0 1px #fff,\n               0 0 2px #fff,\n               0 0 2px #fff,\n               0 0 3px #fff,\n               0 0 3px #fff,\n               0 0 4px #fff,\n               0 0 4px #fff;\n}\n\n.rs-counter-id {\n  font-weight: 300;\n  -webkit-box-ordinal-group: 0;\n  -webkit-order: 0;\n  order: 0;\n  width: 54px;\n}\n\n.rs-counter-value {\n  font-weight: 300;\n  -webkit-box-ordinal-group: 1;\n  -webkit-order: 1;\n  order: 1;\n  text-align: right;\n  width: 35px;\n}\n\n.rs-canvas {\n  -webkit-box-ordinal-group: 2;\n  -webkit-order: 2;\n  order: 2;\n}\n\n@media (min-width: 480px) {\n  .rs-base {\n    left: 20px;\n    top: 20px;\n  }\n}\n"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -36864,420 +37324,420 @@ module.exports = "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/200
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "ACESFilmicToneMapping": () => (/* binding */ ACESFilmicToneMapping),
-/* harmony export */   "AddEquation": () => (/* binding */ AddEquation),
-/* harmony export */   "AddOperation": () => (/* binding */ AddOperation),
-/* harmony export */   "AdditiveAnimationBlendMode": () => (/* binding */ AdditiveAnimationBlendMode),
-/* harmony export */   "AdditiveBlending": () => (/* binding */ AdditiveBlending),
-/* harmony export */   "AlphaFormat": () => (/* binding */ AlphaFormat),
-/* harmony export */   "AlwaysCompare": () => (/* binding */ AlwaysCompare),
-/* harmony export */   "AlwaysDepth": () => (/* binding */ AlwaysDepth),
-/* harmony export */   "AlwaysStencilFunc": () => (/* binding */ AlwaysStencilFunc),
-/* harmony export */   "AmbientLight": () => (/* binding */ AmbientLight),
-/* harmony export */   "AnimationAction": () => (/* binding */ AnimationAction),
-/* harmony export */   "AnimationClip": () => (/* binding */ AnimationClip),
-/* harmony export */   "AnimationLoader": () => (/* binding */ AnimationLoader),
-/* harmony export */   "AnimationMixer": () => (/* binding */ AnimationMixer),
-/* harmony export */   "AnimationObjectGroup": () => (/* binding */ AnimationObjectGroup),
-/* harmony export */   "AnimationUtils": () => (/* binding */ AnimationUtils),
-/* harmony export */   "ArcCurve": () => (/* binding */ ArcCurve),
-/* harmony export */   "ArrayCamera": () => (/* binding */ ArrayCamera),
-/* harmony export */   "ArrowHelper": () => (/* binding */ ArrowHelper),
-/* harmony export */   "AttachedBindMode": () => (/* binding */ AttachedBindMode),
-/* harmony export */   "Audio": () => (/* binding */ Audio),
-/* harmony export */   "AudioAnalyser": () => (/* binding */ AudioAnalyser),
-/* harmony export */   "AudioContext": () => (/* binding */ AudioContext),
-/* harmony export */   "AudioListener": () => (/* binding */ AudioListener),
-/* harmony export */   "AudioLoader": () => (/* binding */ AudioLoader),
-/* harmony export */   "AxesHelper": () => (/* binding */ AxesHelper),
-/* harmony export */   "BackSide": () => (/* binding */ BackSide),
-/* harmony export */   "BasicDepthPacking": () => (/* binding */ BasicDepthPacking),
-/* harmony export */   "BasicShadowMap": () => (/* binding */ BasicShadowMap),
-/* harmony export */   "Bone": () => (/* binding */ Bone),
-/* harmony export */   "BooleanKeyframeTrack": () => (/* binding */ BooleanKeyframeTrack),
-/* harmony export */   "Box2": () => (/* binding */ Box2),
-/* harmony export */   "Box3": () => (/* binding */ Box3),
-/* harmony export */   "Box3Helper": () => (/* binding */ Box3Helper),
-/* harmony export */   "BoxGeometry": () => (/* binding */ BoxGeometry),
-/* harmony export */   "BoxHelper": () => (/* binding */ BoxHelper),
-/* harmony export */   "BufferAttribute": () => (/* binding */ BufferAttribute),
-/* harmony export */   "BufferGeometry": () => (/* binding */ BufferGeometry),
-/* harmony export */   "BufferGeometryLoader": () => (/* binding */ BufferGeometryLoader),
-/* harmony export */   "ByteType": () => (/* binding */ ByteType),
-/* harmony export */   "Cache": () => (/* binding */ Cache),
-/* harmony export */   "Camera": () => (/* binding */ Camera),
-/* harmony export */   "CameraHelper": () => (/* binding */ CameraHelper),
-/* harmony export */   "CanvasTexture": () => (/* binding */ CanvasTexture),
-/* harmony export */   "CapsuleGeometry": () => (/* binding */ CapsuleGeometry),
-/* harmony export */   "CatmullRomCurve3": () => (/* binding */ CatmullRomCurve3),
-/* harmony export */   "CineonToneMapping": () => (/* binding */ CineonToneMapping),
-/* harmony export */   "CircleGeometry": () => (/* binding */ CircleGeometry),
-/* harmony export */   "ClampToEdgeWrapping": () => (/* binding */ ClampToEdgeWrapping),
-/* harmony export */   "Clock": () => (/* binding */ Clock),
-/* harmony export */   "Color": () => (/* binding */ Color),
-/* harmony export */   "ColorKeyframeTrack": () => (/* binding */ ColorKeyframeTrack),
-/* harmony export */   "ColorManagement": () => (/* binding */ ColorManagement),
-/* harmony export */   "CompressedArrayTexture": () => (/* binding */ CompressedArrayTexture),
-/* harmony export */   "CompressedCubeTexture": () => (/* binding */ CompressedCubeTexture),
-/* harmony export */   "CompressedTexture": () => (/* binding */ CompressedTexture),
-/* harmony export */   "CompressedTextureLoader": () => (/* binding */ CompressedTextureLoader),
-/* harmony export */   "ConeGeometry": () => (/* binding */ ConeGeometry),
-/* harmony export */   "ConstantAlphaFactor": () => (/* binding */ ConstantAlphaFactor),
-/* harmony export */   "ConstantColorFactor": () => (/* binding */ ConstantColorFactor),
-/* harmony export */   "CubeCamera": () => (/* binding */ CubeCamera),
-/* harmony export */   "CubeReflectionMapping": () => (/* binding */ CubeReflectionMapping),
-/* harmony export */   "CubeRefractionMapping": () => (/* binding */ CubeRefractionMapping),
-/* harmony export */   "CubeTexture": () => (/* binding */ CubeTexture),
-/* harmony export */   "CubeTextureLoader": () => (/* binding */ CubeTextureLoader),
-/* harmony export */   "CubeUVReflectionMapping": () => (/* binding */ CubeUVReflectionMapping),
-/* harmony export */   "CubicBezierCurve": () => (/* binding */ CubicBezierCurve),
-/* harmony export */   "CubicBezierCurve3": () => (/* binding */ CubicBezierCurve3),
-/* harmony export */   "CubicInterpolant": () => (/* binding */ CubicInterpolant),
-/* harmony export */   "CullFaceBack": () => (/* binding */ CullFaceBack),
-/* harmony export */   "CullFaceFront": () => (/* binding */ CullFaceFront),
-/* harmony export */   "CullFaceFrontBack": () => (/* binding */ CullFaceFrontBack),
-/* harmony export */   "CullFaceNone": () => (/* binding */ CullFaceNone),
-/* harmony export */   "Curve": () => (/* binding */ Curve),
-/* harmony export */   "CurvePath": () => (/* binding */ CurvePath),
-/* harmony export */   "CustomBlending": () => (/* binding */ CustomBlending),
-/* harmony export */   "CustomToneMapping": () => (/* binding */ CustomToneMapping),
-/* harmony export */   "CylinderGeometry": () => (/* binding */ CylinderGeometry),
-/* harmony export */   "Cylindrical": () => (/* binding */ Cylindrical),
-/* harmony export */   "Data3DTexture": () => (/* binding */ Data3DTexture),
-/* harmony export */   "DataArrayTexture": () => (/* binding */ DataArrayTexture),
-/* harmony export */   "DataTexture": () => (/* binding */ DataTexture),
-/* harmony export */   "DataTextureLoader": () => (/* binding */ DataTextureLoader),
-/* harmony export */   "DataUtils": () => (/* binding */ DataUtils),
-/* harmony export */   "DecrementStencilOp": () => (/* binding */ DecrementStencilOp),
-/* harmony export */   "DecrementWrapStencilOp": () => (/* binding */ DecrementWrapStencilOp),
-/* harmony export */   "DefaultLoadingManager": () => (/* binding */ DefaultLoadingManager),
-/* harmony export */   "DepthFormat": () => (/* binding */ DepthFormat),
-/* harmony export */   "DepthStencilFormat": () => (/* binding */ DepthStencilFormat),
-/* harmony export */   "DepthTexture": () => (/* binding */ DepthTexture),
-/* harmony export */   "DetachedBindMode": () => (/* binding */ DetachedBindMode),
-/* harmony export */   "DirectionalLight": () => (/* binding */ DirectionalLight),
-/* harmony export */   "DirectionalLightHelper": () => (/* binding */ DirectionalLightHelper),
-/* harmony export */   "DiscreteInterpolant": () => (/* binding */ DiscreteInterpolant),
-/* harmony export */   "DisplayP3ColorSpace": () => (/* binding */ DisplayP3ColorSpace),
-/* harmony export */   "DodecahedronGeometry": () => (/* binding */ DodecahedronGeometry),
-/* harmony export */   "DoubleSide": () => (/* binding */ DoubleSide),
-/* harmony export */   "DstAlphaFactor": () => (/* binding */ DstAlphaFactor),
-/* harmony export */   "DstColorFactor": () => (/* binding */ DstColorFactor),
-/* harmony export */   "DynamicCopyUsage": () => (/* binding */ DynamicCopyUsage),
-/* harmony export */   "DynamicDrawUsage": () => (/* binding */ DynamicDrawUsage),
-/* harmony export */   "DynamicReadUsage": () => (/* binding */ DynamicReadUsage),
-/* harmony export */   "EdgesGeometry": () => (/* binding */ EdgesGeometry),
-/* harmony export */   "EllipseCurve": () => (/* binding */ EllipseCurve),
-/* harmony export */   "EqualCompare": () => (/* binding */ EqualCompare),
-/* harmony export */   "EqualDepth": () => (/* binding */ EqualDepth),
-/* harmony export */   "EqualStencilFunc": () => (/* binding */ EqualStencilFunc),
-/* harmony export */   "EquirectangularReflectionMapping": () => (/* binding */ EquirectangularReflectionMapping),
-/* harmony export */   "EquirectangularRefractionMapping": () => (/* binding */ EquirectangularRefractionMapping),
-/* harmony export */   "Euler": () => (/* binding */ Euler),
-/* harmony export */   "EventDispatcher": () => (/* binding */ EventDispatcher),
-/* harmony export */   "ExtrudeGeometry": () => (/* binding */ ExtrudeGeometry),
-/* harmony export */   "FileLoader": () => (/* binding */ FileLoader),
-/* harmony export */   "Float16BufferAttribute": () => (/* binding */ Float16BufferAttribute),
-/* harmony export */   "Float32BufferAttribute": () => (/* binding */ Float32BufferAttribute),
-/* harmony export */   "Float64BufferAttribute": () => (/* binding */ Float64BufferAttribute),
-/* harmony export */   "FloatType": () => (/* binding */ FloatType),
-/* harmony export */   "Fog": () => (/* binding */ Fog),
-/* harmony export */   "FogExp2": () => (/* binding */ FogExp2),
-/* harmony export */   "FramebufferTexture": () => (/* binding */ FramebufferTexture),
-/* harmony export */   "FrontSide": () => (/* binding */ FrontSide),
-/* harmony export */   "Frustum": () => (/* binding */ Frustum),
-/* harmony export */   "GLBufferAttribute": () => (/* binding */ GLBufferAttribute),
-/* harmony export */   "GLSL1": () => (/* binding */ GLSL1),
-/* harmony export */   "GLSL3": () => (/* binding */ GLSL3),
-/* harmony export */   "GreaterCompare": () => (/* binding */ GreaterCompare),
-/* harmony export */   "GreaterDepth": () => (/* binding */ GreaterDepth),
-/* harmony export */   "GreaterEqualCompare": () => (/* binding */ GreaterEqualCompare),
-/* harmony export */   "GreaterEqualDepth": () => (/* binding */ GreaterEqualDepth),
-/* harmony export */   "GreaterEqualStencilFunc": () => (/* binding */ GreaterEqualStencilFunc),
-/* harmony export */   "GreaterStencilFunc": () => (/* binding */ GreaterStencilFunc),
-/* harmony export */   "GridHelper": () => (/* binding */ GridHelper),
-/* harmony export */   "Group": () => (/* binding */ Group),
-/* harmony export */   "HalfFloatType": () => (/* binding */ HalfFloatType),
-/* harmony export */   "HemisphereLight": () => (/* binding */ HemisphereLight),
-/* harmony export */   "HemisphereLightHelper": () => (/* binding */ HemisphereLightHelper),
-/* harmony export */   "IcosahedronGeometry": () => (/* binding */ IcosahedronGeometry),
-/* harmony export */   "ImageBitmapLoader": () => (/* binding */ ImageBitmapLoader),
-/* harmony export */   "ImageLoader": () => (/* binding */ ImageLoader),
-/* harmony export */   "ImageUtils": () => (/* binding */ ImageUtils),
-/* harmony export */   "IncrementStencilOp": () => (/* binding */ IncrementStencilOp),
-/* harmony export */   "IncrementWrapStencilOp": () => (/* binding */ IncrementWrapStencilOp),
-/* harmony export */   "InstancedBufferAttribute": () => (/* binding */ InstancedBufferAttribute),
-/* harmony export */   "InstancedBufferGeometry": () => (/* binding */ InstancedBufferGeometry),
-/* harmony export */   "InstancedInterleavedBuffer": () => (/* binding */ InstancedInterleavedBuffer),
-/* harmony export */   "InstancedMesh": () => (/* binding */ InstancedMesh),
-/* harmony export */   "Int16BufferAttribute": () => (/* binding */ Int16BufferAttribute),
-/* harmony export */   "Int32BufferAttribute": () => (/* binding */ Int32BufferAttribute),
-/* harmony export */   "Int8BufferAttribute": () => (/* binding */ Int8BufferAttribute),
-/* harmony export */   "IntType": () => (/* binding */ IntType),
-/* harmony export */   "InterleavedBuffer": () => (/* binding */ InterleavedBuffer),
-/* harmony export */   "InterleavedBufferAttribute": () => (/* binding */ InterleavedBufferAttribute),
-/* harmony export */   "Interpolant": () => (/* binding */ Interpolant),
-/* harmony export */   "InterpolateDiscrete": () => (/* binding */ InterpolateDiscrete),
-/* harmony export */   "InterpolateLinear": () => (/* binding */ InterpolateLinear),
-/* harmony export */   "InterpolateSmooth": () => (/* binding */ InterpolateSmooth),
-/* harmony export */   "InvertStencilOp": () => (/* binding */ InvertStencilOp),
-/* harmony export */   "KeepStencilOp": () => (/* binding */ KeepStencilOp),
-/* harmony export */   "KeyframeTrack": () => (/* binding */ KeyframeTrack),
-/* harmony export */   "LOD": () => (/* binding */ LOD),
-/* harmony export */   "LatheGeometry": () => (/* binding */ LatheGeometry),
-/* harmony export */   "Layers": () => (/* binding */ Layers),
-/* harmony export */   "LessCompare": () => (/* binding */ LessCompare),
-/* harmony export */   "LessDepth": () => (/* binding */ LessDepth),
-/* harmony export */   "LessEqualCompare": () => (/* binding */ LessEqualCompare),
-/* harmony export */   "LessEqualDepth": () => (/* binding */ LessEqualDepth),
-/* harmony export */   "LessEqualStencilFunc": () => (/* binding */ LessEqualStencilFunc),
-/* harmony export */   "LessStencilFunc": () => (/* binding */ LessStencilFunc),
-/* harmony export */   "Light": () => (/* binding */ Light),
-/* harmony export */   "LightProbe": () => (/* binding */ LightProbe),
-/* harmony export */   "Line": () => (/* binding */ Line),
-/* harmony export */   "Line3": () => (/* binding */ Line3),
-/* harmony export */   "LineBasicMaterial": () => (/* binding */ LineBasicMaterial),
-/* harmony export */   "LineCurve": () => (/* binding */ LineCurve),
-/* harmony export */   "LineCurve3": () => (/* binding */ LineCurve3),
-/* harmony export */   "LineDashedMaterial": () => (/* binding */ LineDashedMaterial),
-/* harmony export */   "LineLoop": () => (/* binding */ LineLoop),
-/* harmony export */   "LineSegments": () => (/* binding */ LineSegments),
-/* harmony export */   "LinearDisplayP3ColorSpace": () => (/* binding */ LinearDisplayP3ColorSpace),
-/* harmony export */   "LinearEncoding": () => (/* binding */ LinearEncoding),
-/* harmony export */   "LinearFilter": () => (/* binding */ LinearFilter),
-/* harmony export */   "LinearInterpolant": () => (/* binding */ LinearInterpolant),
-/* harmony export */   "LinearMipMapLinearFilter": () => (/* binding */ LinearMipMapLinearFilter),
-/* harmony export */   "LinearMipMapNearestFilter": () => (/* binding */ LinearMipMapNearestFilter),
-/* harmony export */   "LinearMipmapLinearFilter": () => (/* binding */ LinearMipmapLinearFilter),
-/* harmony export */   "LinearMipmapNearestFilter": () => (/* binding */ LinearMipmapNearestFilter),
-/* harmony export */   "LinearSRGBColorSpace": () => (/* binding */ LinearSRGBColorSpace),
-/* harmony export */   "LinearToneMapping": () => (/* binding */ LinearToneMapping),
-/* harmony export */   "LinearTransfer": () => (/* binding */ LinearTransfer),
-/* harmony export */   "Loader": () => (/* binding */ Loader),
-/* harmony export */   "LoaderUtils": () => (/* binding */ LoaderUtils),
-/* harmony export */   "LoadingManager": () => (/* binding */ LoadingManager),
-/* harmony export */   "LoopOnce": () => (/* binding */ LoopOnce),
-/* harmony export */   "LoopPingPong": () => (/* binding */ LoopPingPong),
-/* harmony export */   "LoopRepeat": () => (/* binding */ LoopRepeat),
-/* harmony export */   "LuminanceAlphaFormat": () => (/* binding */ LuminanceAlphaFormat),
-/* harmony export */   "LuminanceFormat": () => (/* binding */ LuminanceFormat),
-/* harmony export */   "MOUSE": () => (/* binding */ MOUSE),
-/* harmony export */   "Material": () => (/* binding */ Material),
-/* harmony export */   "MaterialLoader": () => (/* binding */ MaterialLoader),
-/* harmony export */   "MathUtils": () => (/* binding */ MathUtils),
-/* harmony export */   "Matrix3": () => (/* binding */ Matrix3),
-/* harmony export */   "Matrix4": () => (/* binding */ Matrix4),
-/* harmony export */   "MaxEquation": () => (/* binding */ MaxEquation),
-/* harmony export */   "Mesh": () => (/* binding */ Mesh),
-/* harmony export */   "MeshBasicMaterial": () => (/* binding */ MeshBasicMaterial),
-/* harmony export */   "MeshDepthMaterial": () => (/* binding */ MeshDepthMaterial),
-/* harmony export */   "MeshDistanceMaterial": () => (/* binding */ MeshDistanceMaterial),
-/* harmony export */   "MeshLambertMaterial": () => (/* binding */ MeshLambertMaterial),
-/* harmony export */   "MeshMatcapMaterial": () => (/* binding */ MeshMatcapMaterial),
-/* harmony export */   "MeshNormalMaterial": () => (/* binding */ MeshNormalMaterial),
-/* harmony export */   "MeshPhongMaterial": () => (/* binding */ MeshPhongMaterial),
-/* harmony export */   "MeshPhysicalMaterial": () => (/* binding */ MeshPhysicalMaterial),
-/* harmony export */   "MeshStandardMaterial": () => (/* binding */ MeshStandardMaterial),
-/* harmony export */   "MeshToonMaterial": () => (/* binding */ MeshToonMaterial),
-/* harmony export */   "MinEquation": () => (/* binding */ MinEquation),
-/* harmony export */   "MirroredRepeatWrapping": () => (/* binding */ MirroredRepeatWrapping),
-/* harmony export */   "MixOperation": () => (/* binding */ MixOperation),
-/* harmony export */   "MultiplyBlending": () => (/* binding */ MultiplyBlending),
-/* harmony export */   "MultiplyOperation": () => (/* binding */ MultiplyOperation),
-/* harmony export */   "NearestFilter": () => (/* binding */ NearestFilter),
-/* harmony export */   "NearestMipMapLinearFilter": () => (/* binding */ NearestMipMapLinearFilter),
-/* harmony export */   "NearestMipMapNearestFilter": () => (/* binding */ NearestMipMapNearestFilter),
-/* harmony export */   "NearestMipmapLinearFilter": () => (/* binding */ NearestMipmapLinearFilter),
-/* harmony export */   "NearestMipmapNearestFilter": () => (/* binding */ NearestMipmapNearestFilter),
-/* harmony export */   "NeverCompare": () => (/* binding */ NeverCompare),
-/* harmony export */   "NeverDepth": () => (/* binding */ NeverDepth),
-/* harmony export */   "NeverStencilFunc": () => (/* binding */ NeverStencilFunc),
-/* harmony export */   "NoBlending": () => (/* binding */ NoBlending),
-/* harmony export */   "NoColorSpace": () => (/* binding */ NoColorSpace),
-/* harmony export */   "NoToneMapping": () => (/* binding */ NoToneMapping),
-/* harmony export */   "NormalAnimationBlendMode": () => (/* binding */ NormalAnimationBlendMode),
-/* harmony export */   "NormalBlending": () => (/* binding */ NormalBlending),
-/* harmony export */   "NotEqualCompare": () => (/* binding */ NotEqualCompare),
-/* harmony export */   "NotEqualDepth": () => (/* binding */ NotEqualDepth),
-/* harmony export */   "NotEqualStencilFunc": () => (/* binding */ NotEqualStencilFunc),
-/* harmony export */   "NumberKeyframeTrack": () => (/* binding */ NumberKeyframeTrack),
-/* harmony export */   "Object3D": () => (/* binding */ Object3D),
-/* harmony export */   "ObjectLoader": () => (/* binding */ ObjectLoader),
-/* harmony export */   "ObjectSpaceNormalMap": () => (/* binding */ ObjectSpaceNormalMap),
-/* harmony export */   "OctahedronGeometry": () => (/* binding */ OctahedronGeometry),
-/* harmony export */   "OneFactor": () => (/* binding */ OneFactor),
-/* harmony export */   "OneMinusConstantAlphaFactor": () => (/* binding */ OneMinusConstantAlphaFactor),
-/* harmony export */   "OneMinusConstantColorFactor": () => (/* binding */ OneMinusConstantColorFactor),
-/* harmony export */   "OneMinusDstAlphaFactor": () => (/* binding */ OneMinusDstAlphaFactor),
-/* harmony export */   "OneMinusDstColorFactor": () => (/* binding */ OneMinusDstColorFactor),
-/* harmony export */   "OneMinusSrcAlphaFactor": () => (/* binding */ OneMinusSrcAlphaFactor),
-/* harmony export */   "OneMinusSrcColorFactor": () => (/* binding */ OneMinusSrcColorFactor),
-/* harmony export */   "OrthographicCamera": () => (/* binding */ OrthographicCamera),
-/* harmony export */   "P3Primaries": () => (/* binding */ P3Primaries),
-/* harmony export */   "PCFShadowMap": () => (/* binding */ PCFShadowMap),
-/* harmony export */   "PCFSoftShadowMap": () => (/* binding */ PCFSoftShadowMap),
-/* harmony export */   "PMREMGenerator": () => (/* binding */ PMREMGenerator),
-/* harmony export */   "Path": () => (/* binding */ Path),
-/* harmony export */   "PerspectiveCamera": () => (/* binding */ PerspectiveCamera),
-/* harmony export */   "Plane": () => (/* binding */ Plane),
-/* harmony export */   "PlaneGeometry": () => (/* binding */ PlaneGeometry),
-/* harmony export */   "PlaneHelper": () => (/* binding */ PlaneHelper),
-/* harmony export */   "PointLight": () => (/* binding */ PointLight),
-/* harmony export */   "PointLightHelper": () => (/* binding */ PointLightHelper),
-/* harmony export */   "Points": () => (/* binding */ Points),
-/* harmony export */   "PointsMaterial": () => (/* binding */ PointsMaterial),
-/* harmony export */   "PolarGridHelper": () => (/* binding */ PolarGridHelper),
-/* harmony export */   "PolyhedronGeometry": () => (/* binding */ PolyhedronGeometry),
-/* harmony export */   "PositionalAudio": () => (/* binding */ PositionalAudio),
-/* harmony export */   "PropertyBinding": () => (/* binding */ PropertyBinding),
-/* harmony export */   "PropertyMixer": () => (/* binding */ PropertyMixer),
-/* harmony export */   "QuadraticBezierCurve": () => (/* binding */ QuadraticBezierCurve),
-/* harmony export */   "QuadraticBezierCurve3": () => (/* binding */ QuadraticBezierCurve3),
-/* harmony export */   "Quaternion": () => (/* binding */ Quaternion),
-/* harmony export */   "QuaternionKeyframeTrack": () => (/* binding */ QuaternionKeyframeTrack),
-/* harmony export */   "QuaternionLinearInterpolant": () => (/* binding */ QuaternionLinearInterpolant),
-/* harmony export */   "RED_GREEN_RGTC2_Format": () => (/* binding */ RED_GREEN_RGTC2_Format),
-/* harmony export */   "RED_RGTC1_Format": () => (/* binding */ RED_RGTC1_Format),
-/* harmony export */   "REVISION": () => (/* binding */ REVISION),
-/* harmony export */   "RGBADepthPacking": () => (/* binding */ RGBADepthPacking),
-/* harmony export */   "RGBAFormat": () => (/* binding */ RGBAFormat),
-/* harmony export */   "RGBAIntegerFormat": () => (/* binding */ RGBAIntegerFormat),
-/* harmony export */   "RGBA_ASTC_10x10_Format": () => (/* binding */ RGBA_ASTC_10x10_Format),
-/* harmony export */   "RGBA_ASTC_10x5_Format": () => (/* binding */ RGBA_ASTC_10x5_Format),
-/* harmony export */   "RGBA_ASTC_10x6_Format": () => (/* binding */ RGBA_ASTC_10x6_Format),
-/* harmony export */   "RGBA_ASTC_10x8_Format": () => (/* binding */ RGBA_ASTC_10x8_Format),
-/* harmony export */   "RGBA_ASTC_12x10_Format": () => (/* binding */ RGBA_ASTC_12x10_Format),
-/* harmony export */   "RGBA_ASTC_12x12_Format": () => (/* binding */ RGBA_ASTC_12x12_Format),
-/* harmony export */   "RGBA_ASTC_4x4_Format": () => (/* binding */ RGBA_ASTC_4x4_Format),
-/* harmony export */   "RGBA_ASTC_5x4_Format": () => (/* binding */ RGBA_ASTC_5x4_Format),
-/* harmony export */   "RGBA_ASTC_5x5_Format": () => (/* binding */ RGBA_ASTC_5x5_Format),
-/* harmony export */   "RGBA_ASTC_6x5_Format": () => (/* binding */ RGBA_ASTC_6x5_Format),
-/* harmony export */   "RGBA_ASTC_6x6_Format": () => (/* binding */ RGBA_ASTC_6x6_Format),
-/* harmony export */   "RGBA_ASTC_8x5_Format": () => (/* binding */ RGBA_ASTC_8x5_Format),
-/* harmony export */   "RGBA_ASTC_8x6_Format": () => (/* binding */ RGBA_ASTC_8x6_Format),
-/* harmony export */   "RGBA_ASTC_8x8_Format": () => (/* binding */ RGBA_ASTC_8x8_Format),
-/* harmony export */   "RGBA_BPTC_Format": () => (/* binding */ RGBA_BPTC_Format),
-/* harmony export */   "RGBA_ETC2_EAC_Format": () => (/* binding */ RGBA_ETC2_EAC_Format),
-/* harmony export */   "RGBA_PVRTC_2BPPV1_Format": () => (/* binding */ RGBA_PVRTC_2BPPV1_Format),
-/* harmony export */   "RGBA_PVRTC_4BPPV1_Format": () => (/* binding */ RGBA_PVRTC_4BPPV1_Format),
-/* harmony export */   "RGBA_S3TC_DXT1_Format": () => (/* binding */ RGBA_S3TC_DXT1_Format),
-/* harmony export */   "RGBA_S3TC_DXT3_Format": () => (/* binding */ RGBA_S3TC_DXT3_Format),
-/* harmony export */   "RGBA_S3TC_DXT5_Format": () => (/* binding */ RGBA_S3TC_DXT5_Format),
-/* harmony export */   "RGB_BPTC_SIGNED_Format": () => (/* binding */ RGB_BPTC_SIGNED_Format),
-/* harmony export */   "RGB_BPTC_UNSIGNED_Format": () => (/* binding */ RGB_BPTC_UNSIGNED_Format),
-/* harmony export */   "RGB_ETC1_Format": () => (/* binding */ RGB_ETC1_Format),
-/* harmony export */   "RGB_ETC2_Format": () => (/* binding */ RGB_ETC2_Format),
-/* harmony export */   "RGB_PVRTC_2BPPV1_Format": () => (/* binding */ RGB_PVRTC_2BPPV1_Format),
-/* harmony export */   "RGB_PVRTC_4BPPV1_Format": () => (/* binding */ RGB_PVRTC_4BPPV1_Format),
-/* harmony export */   "RGB_S3TC_DXT1_Format": () => (/* binding */ RGB_S3TC_DXT1_Format),
-/* harmony export */   "RGFormat": () => (/* binding */ RGFormat),
-/* harmony export */   "RGIntegerFormat": () => (/* binding */ RGIntegerFormat),
-/* harmony export */   "RawShaderMaterial": () => (/* binding */ RawShaderMaterial),
-/* harmony export */   "Ray": () => (/* binding */ Ray),
-/* harmony export */   "Raycaster": () => (/* binding */ Raycaster),
-/* harmony export */   "Rec709Primaries": () => (/* binding */ Rec709Primaries),
-/* harmony export */   "RectAreaLight": () => (/* binding */ RectAreaLight),
-/* harmony export */   "RedFormat": () => (/* binding */ RedFormat),
-/* harmony export */   "RedIntegerFormat": () => (/* binding */ RedIntegerFormat),
-/* harmony export */   "ReinhardToneMapping": () => (/* binding */ ReinhardToneMapping),
-/* harmony export */   "RenderTarget": () => (/* binding */ RenderTarget),
-/* harmony export */   "RepeatWrapping": () => (/* binding */ RepeatWrapping),
-/* harmony export */   "ReplaceStencilOp": () => (/* binding */ ReplaceStencilOp),
-/* harmony export */   "ReverseSubtractEquation": () => (/* binding */ ReverseSubtractEquation),
-/* harmony export */   "RingGeometry": () => (/* binding */ RingGeometry),
-/* harmony export */   "SIGNED_RED_GREEN_RGTC2_Format": () => (/* binding */ SIGNED_RED_GREEN_RGTC2_Format),
-/* harmony export */   "SIGNED_RED_RGTC1_Format": () => (/* binding */ SIGNED_RED_RGTC1_Format),
-/* harmony export */   "SRGBColorSpace": () => (/* binding */ SRGBColorSpace),
-/* harmony export */   "SRGBTransfer": () => (/* binding */ SRGBTransfer),
-/* harmony export */   "Scene": () => (/* binding */ Scene),
-/* harmony export */   "ShaderChunk": () => (/* binding */ ShaderChunk),
-/* harmony export */   "ShaderLib": () => (/* binding */ ShaderLib),
-/* harmony export */   "ShaderMaterial": () => (/* binding */ ShaderMaterial),
-/* harmony export */   "ShadowMaterial": () => (/* binding */ ShadowMaterial),
-/* harmony export */   "Shape": () => (/* binding */ Shape),
-/* harmony export */   "ShapeGeometry": () => (/* binding */ ShapeGeometry),
-/* harmony export */   "ShapePath": () => (/* binding */ ShapePath),
-/* harmony export */   "ShapeUtils": () => (/* binding */ ShapeUtils),
-/* harmony export */   "ShortType": () => (/* binding */ ShortType),
-/* harmony export */   "Skeleton": () => (/* binding */ Skeleton),
-/* harmony export */   "SkeletonHelper": () => (/* binding */ SkeletonHelper),
-/* harmony export */   "SkinnedMesh": () => (/* binding */ SkinnedMesh),
-/* harmony export */   "Source": () => (/* binding */ Source),
-/* harmony export */   "Sphere": () => (/* binding */ Sphere),
-/* harmony export */   "SphereGeometry": () => (/* binding */ SphereGeometry),
-/* harmony export */   "Spherical": () => (/* binding */ Spherical),
-/* harmony export */   "SphericalHarmonics3": () => (/* binding */ SphericalHarmonics3),
-/* harmony export */   "SplineCurve": () => (/* binding */ SplineCurve),
-/* harmony export */   "SpotLight": () => (/* binding */ SpotLight),
-/* harmony export */   "SpotLightHelper": () => (/* binding */ SpotLightHelper),
-/* harmony export */   "Sprite": () => (/* binding */ Sprite),
-/* harmony export */   "SpriteMaterial": () => (/* binding */ SpriteMaterial),
-/* harmony export */   "SrcAlphaFactor": () => (/* binding */ SrcAlphaFactor),
-/* harmony export */   "SrcAlphaSaturateFactor": () => (/* binding */ SrcAlphaSaturateFactor),
-/* harmony export */   "SrcColorFactor": () => (/* binding */ SrcColorFactor),
-/* harmony export */   "StaticCopyUsage": () => (/* binding */ StaticCopyUsage),
-/* harmony export */   "StaticDrawUsage": () => (/* binding */ StaticDrawUsage),
-/* harmony export */   "StaticReadUsage": () => (/* binding */ StaticReadUsage),
-/* harmony export */   "StereoCamera": () => (/* binding */ StereoCamera),
-/* harmony export */   "StreamCopyUsage": () => (/* binding */ StreamCopyUsage),
-/* harmony export */   "StreamDrawUsage": () => (/* binding */ StreamDrawUsage),
-/* harmony export */   "StreamReadUsage": () => (/* binding */ StreamReadUsage),
-/* harmony export */   "StringKeyframeTrack": () => (/* binding */ StringKeyframeTrack),
-/* harmony export */   "SubtractEquation": () => (/* binding */ SubtractEquation),
-/* harmony export */   "SubtractiveBlending": () => (/* binding */ SubtractiveBlending),
-/* harmony export */   "TOUCH": () => (/* binding */ TOUCH),
-/* harmony export */   "TangentSpaceNormalMap": () => (/* binding */ TangentSpaceNormalMap),
-/* harmony export */   "TetrahedronGeometry": () => (/* binding */ TetrahedronGeometry),
-/* harmony export */   "Texture": () => (/* binding */ Texture),
-/* harmony export */   "TextureLoader": () => (/* binding */ TextureLoader),
-/* harmony export */   "TorusGeometry": () => (/* binding */ TorusGeometry),
-/* harmony export */   "TorusKnotGeometry": () => (/* binding */ TorusKnotGeometry),
-/* harmony export */   "Triangle": () => (/* binding */ Triangle),
-/* harmony export */   "TriangleFanDrawMode": () => (/* binding */ TriangleFanDrawMode),
-/* harmony export */   "TriangleStripDrawMode": () => (/* binding */ TriangleStripDrawMode),
-/* harmony export */   "TrianglesDrawMode": () => (/* binding */ TrianglesDrawMode),
-/* harmony export */   "TubeGeometry": () => (/* binding */ TubeGeometry),
-/* harmony export */   "TwoPassDoubleSide": () => (/* binding */ TwoPassDoubleSide),
-/* harmony export */   "UVMapping": () => (/* binding */ UVMapping),
-/* harmony export */   "Uint16BufferAttribute": () => (/* binding */ Uint16BufferAttribute),
-/* harmony export */   "Uint32BufferAttribute": () => (/* binding */ Uint32BufferAttribute),
-/* harmony export */   "Uint8BufferAttribute": () => (/* binding */ Uint8BufferAttribute),
-/* harmony export */   "Uint8ClampedBufferAttribute": () => (/* binding */ Uint8ClampedBufferAttribute),
-/* harmony export */   "Uniform": () => (/* binding */ Uniform),
-/* harmony export */   "UniformsGroup": () => (/* binding */ UniformsGroup),
-/* harmony export */   "UniformsLib": () => (/* binding */ UniformsLib),
-/* harmony export */   "UniformsUtils": () => (/* binding */ UniformsUtils),
-/* harmony export */   "UnsignedByteType": () => (/* binding */ UnsignedByteType),
-/* harmony export */   "UnsignedInt248Type": () => (/* binding */ UnsignedInt248Type),
-/* harmony export */   "UnsignedIntType": () => (/* binding */ UnsignedIntType),
-/* harmony export */   "UnsignedShort4444Type": () => (/* binding */ UnsignedShort4444Type),
-/* harmony export */   "UnsignedShort5551Type": () => (/* binding */ UnsignedShort5551Type),
-/* harmony export */   "UnsignedShortType": () => (/* binding */ UnsignedShortType),
-/* harmony export */   "VSMShadowMap": () => (/* binding */ VSMShadowMap),
-/* harmony export */   "Vector2": () => (/* binding */ Vector2),
-/* harmony export */   "Vector3": () => (/* binding */ Vector3),
-/* harmony export */   "Vector4": () => (/* binding */ Vector4),
-/* harmony export */   "VectorKeyframeTrack": () => (/* binding */ VectorKeyframeTrack),
-/* harmony export */   "VideoTexture": () => (/* binding */ VideoTexture),
-/* harmony export */   "WebGL1Renderer": () => (/* binding */ WebGL1Renderer),
-/* harmony export */   "WebGL3DRenderTarget": () => (/* binding */ WebGL3DRenderTarget),
-/* harmony export */   "WebGLArrayRenderTarget": () => (/* binding */ WebGLArrayRenderTarget),
-/* harmony export */   "WebGLCoordinateSystem": () => (/* binding */ WebGLCoordinateSystem),
-/* harmony export */   "WebGLCubeRenderTarget": () => (/* binding */ WebGLCubeRenderTarget),
-/* harmony export */   "WebGLMultipleRenderTargets": () => (/* binding */ WebGLMultipleRenderTargets),
-/* harmony export */   "WebGLRenderTarget": () => (/* binding */ WebGLRenderTarget),
-/* harmony export */   "WebGLRenderer": () => (/* binding */ WebGLRenderer),
-/* harmony export */   "WebGLUtils": () => (/* binding */ WebGLUtils),
-/* harmony export */   "WebGPUCoordinateSystem": () => (/* binding */ WebGPUCoordinateSystem),
-/* harmony export */   "WireframeGeometry": () => (/* binding */ WireframeGeometry),
-/* harmony export */   "WrapAroundEnding": () => (/* binding */ WrapAroundEnding),
-/* harmony export */   "ZeroCurvatureEnding": () => (/* binding */ ZeroCurvatureEnding),
-/* harmony export */   "ZeroFactor": () => (/* binding */ ZeroFactor),
-/* harmony export */   "ZeroSlopeEnding": () => (/* binding */ ZeroSlopeEnding),
-/* harmony export */   "ZeroStencilOp": () => (/* binding */ ZeroStencilOp),
-/* harmony export */   "_SRGBAFormat": () => (/* binding */ _SRGBAFormat),
-/* harmony export */   "createCanvasElement": () => (/* binding */ createCanvasElement),
-/* harmony export */   "sRGBEncoding": () => (/* binding */ sRGBEncoding)
+/* harmony export */   ACESFilmicToneMapping: () => (/* binding */ ACESFilmicToneMapping),
+/* harmony export */   AddEquation: () => (/* binding */ AddEquation),
+/* harmony export */   AddOperation: () => (/* binding */ AddOperation),
+/* harmony export */   AdditiveAnimationBlendMode: () => (/* binding */ AdditiveAnimationBlendMode),
+/* harmony export */   AdditiveBlending: () => (/* binding */ AdditiveBlending),
+/* harmony export */   AlphaFormat: () => (/* binding */ AlphaFormat),
+/* harmony export */   AlwaysCompare: () => (/* binding */ AlwaysCompare),
+/* harmony export */   AlwaysDepth: () => (/* binding */ AlwaysDepth),
+/* harmony export */   AlwaysStencilFunc: () => (/* binding */ AlwaysStencilFunc),
+/* harmony export */   AmbientLight: () => (/* binding */ AmbientLight),
+/* harmony export */   AnimationAction: () => (/* binding */ AnimationAction),
+/* harmony export */   AnimationClip: () => (/* binding */ AnimationClip),
+/* harmony export */   AnimationLoader: () => (/* binding */ AnimationLoader),
+/* harmony export */   AnimationMixer: () => (/* binding */ AnimationMixer),
+/* harmony export */   AnimationObjectGroup: () => (/* binding */ AnimationObjectGroup),
+/* harmony export */   AnimationUtils: () => (/* binding */ AnimationUtils),
+/* harmony export */   ArcCurve: () => (/* binding */ ArcCurve),
+/* harmony export */   ArrayCamera: () => (/* binding */ ArrayCamera),
+/* harmony export */   ArrowHelper: () => (/* binding */ ArrowHelper),
+/* harmony export */   AttachedBindMode: () => (/* binding */ AttachedBindMode),
+/* harmony export */   Audio: () => (/* binding */ Audio),
+/* harmony export */   AudioAnalyser: () => (/* binding */ AudioAnalyser),
+/* harmony export */   AudioContext: () => (/* binding */ AudioContext),
+/* harmony export */   AudioListener: () => (/* binding */ AudioListener),
+/* harmony export */   AudioLoader: () => (/* binding */ AudioLoader),
+/* harmony export */   AxesHelper: () => (/* binding */ AxesHelper),
+/* harmony export */   BackSide: () => (/* binding */ BackSide),
+/* harmony export */   BasicDepthPacking: () => (/* binding */ BasicDepthPacking),
+/* harmony export */   BasicShadowMap: () => (/* binding */ BasicShadowMap),
+/* harmony export */   Bone: () => (/* binding */ Bone),
+/* harmony export */   BooleanKeyframeTrack: () => (/* binding */ BooleanKeyframeTrack),
+/* harmony export */   Box2: () => (/* binding */ Box2),
+/* harmony export */   Box3: () => (/* binding */ Box3),
+/* harmony export */   Box3Helper: () => (/* binding */ Box3Helper),
+/* harmony export */   BoxGeometry: () => (/* binding */ BoxGeometry),
+/* harmony export */   BoxHelper: () => (/* binding */ BoxHelper),
+/* harmony export */   BufferAttribute: () => (/* binding */ BufferAttribute),
+/* harmony export */   BufferGeometry: () => (/* binding */ BufferGeometry),
+/* harmony export */   BufferGeometryLoader: () => (/* binding */ BufferGeometryLoader),
+/* harmony export */   ByteType: () => (/* binding */ ByteType),
+/* harmony export */   Cache: () => (/* binding */ Cache),
+/* harmony export */   Camera: () => (/* binding */ Camera),
+/* harmony export */   CameraHelper: () => (/* binding */ CameraHelper),
+/* harmony export */   CanvasTexture: () => (/* binding */ CanvasTexture),
+/* harmony export */   CapsuleGeometry: () => (/* binding */ CapsuleGeometry),
+/* harmony export */   CatmullRomCurve3: () => (/* binding */ CatmullRomCurve3),
+/* harmony export */   CineonToneMapping: () => (/* binding */ CineonToneMapping),
+/* harmony export */   CircleGeometry: () => (/* binding */ CircleGeometry),
+/* harmony export */   ClampToEdgeWrapping: () => (/* binding */ ClampToEdgeWrapping),
+/* harmony export */   Clock: () => (/* binding */ Clock),
+/* harmony export */   Color: () => (/* binding */ Color),
+/* harmony export */   ColorKeyframeTrack: () => (/* binding */ ColorKeyframeTrack),
+/* harmony export */   ColorManagement: () => (/* binding */ ColorManagement),
+/* harmony export */   CompressedArrayTexture: () => (/* binding */ CompressedArrayTexture),
+/* harmony export */   CompressedCubeTexture: () => (/* binding */ CompressedCubeTexture),
+/* harmony export */   CompressedTexture: () => (/* binding */ CompressedTexture),
+/* harmony export */   CompressedTextureLoader: () => (/* binding */ CompressedTextureLoader),
+/* harmony export */   ConeGeometry: () => (/* binding */ ConeGeometry),
+/* harmony export */   ConstantAlphaFactor: () => (/* binding */ ConstantAlphaFactor),
+/* harmony export */   ConstantColorFactor: () => (/* binding */ ConstantColorFactor),
+/* harmony export */   CubeCamera: () => (/* binding */ CubeCamera),
+/* harmony export */   CubeReflectionMapping: () => (/* binding */ CubeReflectionMapping),
+/* harmony export */   CubeRefractionMapping: () => (/* binding */ CubeRefractionMapping),
+/* harmony export */   CubeTexture: () => (/* binding */ CubeTexture),
+/* harmony export */   CubeTextureLoader: () => (/* binding */ CubeTextureLoader),
+/* harmony export */   CubeUVReflectionMapping: () => (/* binding */ CubeUVReflectionMapping),
+/* harmony export */   CubicBezierCurve: () => (/* binding */ CubicBezierCurve),
+/* harmony export */   CubicBezierCurve3: () => (/* binding */ CubicBezierCurve3),
+/* harmony export */   CubicInterpolant: () => (/* binding */ CubicInterpolant),
+/* harmony export */   CullFaceBack: () => (/* binding */ CullFaceBack),
+/* harmony export */   CullFaceFront: () => (/* binding */ CullFaceFront),
+/* harmony export */   CullFaceFrontBack: () => (/* binding */ CullFaceFrontBack),
+/* harmony export */   CullFaceNone: () => (/* binding */ CullFaceNone),
+/* harmony export */   Curve: () => (/* binding */ Curve),
+/* harmony export */   CurvePath: () => (/* binding */ CurvePath),
+/* harmony export */   CustomBlending: () => (/* binding */ CustomBlending),
+/* harmony export */   CustomToneMapping: () => (/* binding */ CustomToneMapping),
+/* harmony export */   CylinderGeometry: () => (/* binding */ CylinderGeometry),
+/* harmony export */   Cylindrical: () => (/* binding */ Cylindrical),
+/* harmony export */   Data3DTexture: () => (/* binding */ Data3DTexture),
+/* harmony export */   DataArrayTexture: () => (/* binding */ DataArrayTexture),
+/* harmony export */   DataTexture: () => (/* binding */ DataTexture),
+/* harmony export */   DataTextureLoader: () => (/* binding */ DataTextureLoader),
+/* harmony export */   DataUtils: () => (/* binding */ DataUtils),
+/* harmony export */   DecrementStencilOp: () => (/* binding */ DecrementStencilOp),
+/* harmony export */   DecrementWrapStencilOp: () => (/* binding */ DecrementWrapStencilOp),
+/* harmony export */   DefaultLoadingManager: () => (/* binding */ DefaultLoadingManager),
+/* harmony export */   DepthFormat: () => (/* binding */ DepthFormat),
+/* harmony export */   DepthStencilFormat: () => (/* binding */ DepthStencilFormat),
+/* harmony export */   DepthTexture: () => (/* binding */ DepthTexture),
+/* harmony export */   DetachedBindMode: () => (/* binding */ DetachedBindMode),
+/* harmony export */   DirectionalLight: () => (/* binding */ DirectionalLight),
+/* harmony export */   DirectionalLightHelper: () => (/* binding */ DirectionalLightHelper),
+/* harmony export */   DiscreteInterpolant: () => (/* binding */ DiscreteInterpolant),
+/* harmony export */   DisplayP3ColorSpace: () => (/* binding */ DisplayP3ColorSpace),
+/* harmony export */   DodecahedronGeometry: () => (/* binding */ DodecahedronGeometry),
+/* harmony export */   DoubleSide: () => (/* binding */ DoubleSide),
+/* harmony export */   DstAlphaFactor: () => (/* binding */ DstAlphaFactor),
+/* harmony export */   DstColorFactor: () => (/* binding */ DstColorFactor),
+/* harmony export */   DynamicCopyUsage: () => (/* binding */ DynamicCopyUsage),
+/* harmony export */   DynamicDrawUsage: () => (/* binding */ DynamicDrawUsage),
+/* harmony export */   DynamicReadUsage: () => (/* binding */ DynamicReadUsage),
+/* harmony export */   EdgesGeometry: () => (/* binding */ EdgesGeometry),
+/* harmony export */   EllipseCurve: () => (/* binding */ EllipseCurve),
+/* harmony export */   EqualCompare: () => (/* binding */ EqualCompare),
+/* harmony export */   EqualDepth: () => (/* binding */ EqualDepth),
+/* harmony export */   EqualStencilFunc: () => (/* binding */ EqualStencilFunc),
+/* harmony export */   EquirectangularReflectionMapping: () => (/* binding */ EquirectangularReflectionMapping),
+/* harmony export */   EquirectangularRefractionMapping: () => (/* binding */ EquirectangularRefractionMapping),
+/* harmony export */   Euler: () => (/* binding */ Euler),
+/* harmony export */   EventDispatcher: () => (/* binding */ EventDispatcher),
+/* harmony export */   ExtrudeGeometry: () => (/* binding */ ExtrudeGeometry),
+/* harmony export */   FileLoader: () => (/* binding */ FileLoader),
+/* harmony export */   Float16BufferAttribute: () => (/* binding */ Float16BufferAttribute),
+/* harmony export */   Float32BufferAttribute: () => (/* binding */ Float32BufferAttribute),
+/* harmony export */   Float64BufferAttribute: () => (/* binding */ Float64BufferAttribute),
+/* harmony export */   FloatType: () => (/* binding */ FloatType),
+/* harmony export */   Fog: () => (/* binding */ Fog),
+/* harmony export */   FogExp2: () => (/* binding */ FogExp2),
+/* harmony export */   FramebufferTexture: () => (/* binding */ FramebufferTexture),
+/* harmony export */   FrontSide: () => (/* binding */ FrontSide),
+/* harmony export */   Frustum: () => (/* binding */ Frustum),
+/* harmony export */   GLBufferAttribute: () => (/* binding */ GLBufferAttribute),
+/* harmony export */   GLSL1: () => (/* binding */ GLSL1),
+/* harmony export */   GLSL3: () => (/* binding */ GLSL3),
+/* harmony export */   GreaterCompare: () => (/* binding */ GreaterCompare),
+/* harmony export */   GreaterDepth: () => (/* binding */ GreaterDepth),
+/* harmony export */   GreaterEqualCompare: () => (/* binding */ GreaterEqualCompare),
+/* harmony export */   GreaterEqualDepth: () => (/* binding */ GreaterEqualDepth),
+/* harmony export */   GreaterEqualStencilFunc: () => (/* binding */ GreaterEqualStencilFunc),
+/* harmony export */   GreaterStencilFunc: () => (/* binding */ GreaterStencilFunc),
+/* harmony export */   GridHelper: () => (/* binding */ GridHelper),
+/* harmony export */   Group: () => (/* binding */ Group),
+/* harmony export */   HalfFloatType: () => (/* binding */ HalfFloatType),
+/* harmony export */   HemisphereLight: () => (/* binding */ HemisphereLight),
+/* harmony export */   HemisphereLightHelper: () => (/* binding */ HemisphereLightHelper),
+/* harmony export */   IcosahedronGeometry: () => (/* binding */ IcosahedronGeometry),
+/* harmony export */   ImageBitmapLoader: () => (/* binding */ ImageBitmapLoader),
+/* harmony export */   ImageLoader: () => (/* binding */ ImageLoader),
+/* harmony export */   ImageUtils: () => (/* binding */ ImageUtils),
+/* harmony export */   IncrementStencilOp: () => (/* binding */ IncrementStencilOp),
+/* harmony export */   IncrementWrapStencilOp: () => (/* binding */ IncrementWrapStencilOp),
+/* harmony export */   InstancedBufferAttribute: () => (/* binding */ InstancedBufferAttribute),
+/* harmony export */   InstancedBufferGeometry: () => (/* binding */ InstancedBufferGeometry),
+/* harmony export */   InstancedInterleavedBuffer: () => (/* binding */ InstancedInterleavedBuffer),
+/* harmony export */   InstancedMesh: () => (/* binding */ InstancedMesh),
+/* harmony export */   Int16BufferAttribute: () => (/* binding */ Int16BufferAttribute),
+/* harmony export */   Int32BufferAttribute: () => (/* binding */ Int32BufferAttribute),
+/* harmony export */   Int8BufferAttribute: () => (/* binding */ Int8BufferAttribute),
+/* harmony export */   IntType: () => (/* binding */ IntType),
+/* harmony export */   InterleavedBuffer: () => (/* binding */ InterleavedBuffer),
+/* harmony export */   InterleavedBufferAttribute: () => (/* binding */ InterleavedBufferAttribute),
+/* harmony export */   Interpolant: () => (/* binding */ Interpolant),
+/* harmony export */   InterpolateDiscrete: () => (/* binding */ InterpolateDiscrete),
+/* harmony export */   InterpolateLinear: () => (/* binding */ InterpolateLinear),
+/* harmony export */   InterpolateSmooth: () => (/* binding */ InterpolateSmooth),
+/* harmony export */   InvertStencilOp: () => (/* binding */ InvertStencilOp),
+/* harmony export */   KeepStencilOp: () => (/* binding */ KeepStencilOp),
+/* harmony export */   KeyframeTrack: () => (/* binding */ KeyframeTrack),
+/* harmony export */   LOD: () => (/* binding */ LOD),
+/* harmony export */   LatheGeometry: () => (/* binding */ LatheGeometry),
+/* harmony export */   Layers: () => (/* binding */ Layers),
+/* harmony export */   LessCompare: () => (/* binding */ LessCompare),
+/* harmony export */   LessDepth: () => (/* binding */ LessDepth),
+/* harmony export */   LessEqualCompare: () => (/* binding */ LessEqualCompare),
+/* harmony export */   LessEqualDepth: () => (/* binding */ LessEqualDepth),
+/* harmony export */   LessEqualStencilFunc: () => (/* binding */ LessEqualStencilFunc),
+/* harmony export */   LessStencilFunc: () => (/* binding */ LessStencilFunc),
+/* harmony export */   Light: () => (/* binding */ Light),
+/* harmony export */   LightProbe: () => (/* binding */ LightProbe),
+/* harmony export */   Line: () => (/* binding */ Line),
+/* harmony export */   Line3: () => (/* binding */ Line3),
+/* harmony export */   LineBasicMaterial: () => (/* binding */ LineBasicMaterial),
+/* harmony export */   LineCurve: () => (/* binding */ LineCurve),
+/* harmony export */   LineCurve3: () => (/* binding */ LineCurve3),
+/* harmony export */   LineDashedMaterial: () => (/* binding */ LineDashedMaterial),
+/* harmony export */   LineLoop: () => (/* binding */ LineLoop),
+/* harmony export */   LineSegments: () => (/* binding */ LineSegments),
+/* harmony export */   LinearDisplayP3ColorSpace: () => (/* binding */ LinearDisplayP3ColorSpace),
+/* harmony export */   LinearEncoding: () => (/* binding */ LinearEncoding),
+/* harmony export */   LinearFilter: () => (/* binding */ LinearFilter),
+/* harmony export */   LinearInterpolant: () => (/* binding */ LinearInterpolant),
+/* harmony export */   LinearMipMapLinearFilter: () => (/* binding */ LinearMipMapLinearFilter),
+/* harmony export */   LinearMipMapNearestFilter: () => (/* binding */ LinearMipMapNearestFilter),
+/* harmony export */   LinearMipmapLinearFilter: () => (/* binding */ LinearMipmapLinearFilter),
+/* harmony export */   LinearMipmapNearestFilter: () => (/* binding */ LinearMipmapNearestFilter),
+/* harmony export */   LinearSRGBColorSpace: () => (/* binding */ LinearSRGBColorSpace),
+/* harmony export */   LinearToneMapping: () => (/* binding */ LinearToneMapping),
+/* harmony export */   LinearTransfer: () => (/* binding */ LinearTransfer),
+/* harmony export */   Loader: () => (/* binding */ Loader),
+/* harmony export */   LoaderUtils: () => (/* binding */ LoaderUtils),
+/* harmony export */   LoadingManager: () => (/* binding */ LoadingManager),
+/* harmony export */   LoopOnce: () => (/* binding */ LoopOnce),
+/* harmony export */   LoopPingPong: () => (/* binding */ LoopPingPong),
+/* harmony export */   LoopRepeat: () => (/* binding */ LoopRepeat),
+/* harmony export */   LuminanceAlphaFormat: () => (/* binding */ LuminanceAlphaFormat),
+/* harmony export */   LuminanceFormat: () => (/* binding */ LuminanceFormat),
+/* harmony export */   MOUSE: () => (/* binding */ MOUSE),
+/* harmony export */   Material: () => (/* binding */ Material),
+/* harmony export */   MaterialLoader: () => (/* binding */ MaterialLoader),
+/* harmony export */   MathUtils: () => (/* binding */ MathUtils),
+/* harmony export */   Matrix3: () => (/* binding */ Matrix3),
+/* harmony export */   Matrix4: () => (/* binding */ Matrix4),
+/* harmony export */   MaxEquation: () => (/* binding */ MaxEquation),
+/* harmony export */   Mesh: () => (/* binding */ Mesh),
+/* harmony export */   MeshBasicMaterial: () => (/* binding */ MeshBasicMaterial),
+/* harmony export */   MeshDepthMaterial: () => (/* binding */ MeshDepthMaterial),
+/* harmony export */   MeshDistanceMaterial: () => (/* binding */ MeshDistanceMaterial),
+/* harmony export */   MeshLambertMaterial: () => (/* binding */ MeshLambertMaterial),
+/* harmony export */   MeshMatcapMaterial: () => (/* binding */ MeshMatcapMaterial),
+/* harmony export */   MeshNormalMaterial: () => (/* binding */ MeshNormalMaterial),
+/* harmony export */   MeshPhongMaterial: () => (/* binding */ MeshPhongMaterial),
+/* harmony export */   MeshPhysicalMaterial: () => (/* binding */ MeshPhysicalMaterial),
+/* harmony export */   MeshStandardMaterial: () => (/* binding */ MeshStandardMaterial),
+/* harmony export */   MeshToonMaterial: () => (/* binding */ MeshToonMaterial),
+/* harmony export */   MinEquation: () => (/* binding */ MinEquation),
+/* harmony export */   MirroredRepeatWrapping: () => (/* binding */ MirroredRepeatWrapping),
+/* harmony export */   MixOperation: () => (/* binding */ MixOperation),
+/* harmony export */   MultiplyBlending: () => (/* binding */ MultiplyBlending),
+/* harmony export */   MultiplyOperation: () => (/* binding */ MultiplyOperation),
+/* harmony export */   NearestFilter: () => (/* binding */ NearestFilter),
+/* harmony export */   NearestMipMapLinearFilter: () => (/* binding */ NearestMipMapLinearFilter),
+/* harmony export */   NearestMipMapNearestFilter: () => (/* binding */ NearestMipMapNearestFilter),
+/* harmony export */   NearestMipmapLinearFilter: () => (/* binding */ NearestMipmapLinearFilter),
+/* harmony export */   NearestMipmapNearestFilter: () => (/* binding */ NearestMipmapNearestFilter),
+/* harmony export */   NeverCompare: () => (/* binding */ NeverCompare),
+/* harmony export */   NeverDepth: () => (/* binding */ NeverDepth),
+/* harmony export */   NeverStencilFunc: () => (/* binding */ NeverStencilFunc),
+/* harmony export */   NoBlending: () => (/* binding */ NoBlending),
+/* harmony export */   NoColorSpace: () => (/* binding */ NoColorSpace),
+/* harmony export */   NoToneMapping: () => (/* binding */ NoToneMapping),
+/* harmony export */   NormalAnimationBlendMode: () => (/* binding */ NormalAnimationBlendMode),
+/* harmony export */   NormalBlending: () => (/* binding */ NormalBlending),
+/* harmony export */   NotEqualCompare: () => (/* binding */ NotEqualCompare),
+/* harmony export */   NotEqualDepth: () => (/* binding */ NotEqualDepth),
+/* harmony export */   NotEqualStencilFunc: () => (/* binding */ NotEqualStencilFunc),
+/* harmony export */   NumberKeyframeTrack: () => (/* binding */ NumberKeyframeTrack),
+/* harmony export */   Object3D: () => (/* binding */ Object3D),
+/* harmony export */   ObjectLoader: () => (/* binding */ ObjectLoader),
+/* harmony export */   ObjectSpaceNormalMap: () => (/* binding */ ObjectSpaceNormalMap),
+/* harmony export */   OctahedronGeometry: () => (/* binding */ OctahedronGeometry),
+/* harmony export */   OneFactor: () => (/* binding */ OneFactor),
+/* harmony export */   OneMinusConstantAlphaFactor: () => (/* binding */ OneMinusConstantAlphaFactor),
+/* harmony export */   OneMinusConstantColorFactor: () => (/* binding */ OneMinusConstantColorFactor),
+/* harmony export */   OneMinusDstAlphaFactor: () => (/* binding */ OneMinusDstAlphaFactor),
+/* harmony export */   OneMinusDstColorFactor: () => (/* binding */ OneMinusDstColorFactor),
+/* harmony export */   OneMinusSrcAlphaFactor: () => (/* binding */ OneMinusSrcAlphaFactor),
+/* harmony export */   OneMinusSrcColorFactor: () => (/* binding */ OneMinusSrcColorFactor),
+/* harmony export */   OrthographicCamera: () => (/* binding */ OrthographicCamera),
+/* harmony export */   P3Primaries: () => (/* binding */ P3Primaries),
+/* harmony export */   PCFShadowMap: () => (/* binding */ PCFShadowMap),
+/* harmony export */   PCFSoftShadowMap: () => (/* binding */ PCFSoftShadowMap),
+/* harmony export */   PMREMGenerator: () => (/* binding */ PMREMGenerator),
+/* harmony export */   Path: () => (/* binding */ Path),
+/* harmony export */   PerspectiveCamera: () => (/* binding */ PerspectiveCamera),
+/* harmony export */   Plane: () => (/* binding */ Plane),
+/* harmony export */   PlaneGeometry: () => (/* binding */ PlaneGeometry),
+/* harmony export */   PlaneHelper: () => (/* binding */ PlaneHelper),
+/* harmony export */   PointLight: () => (/* binding */ PointLight),
+/* harmony export */   PointLightHelper: () => (/* binding */ PointLightHelper),
+/* harmony export */   Points: () => (/* binding */ Points),
+/* harmony export */   PointsMaterial: () => (/* binding */ PointsMaterial),
+/* harmony export */   PolarGridHelper: () => (/* binding */ PolarGridHelper),
+/* harmony export */   PolyhedronGeometry: () => (/* binding */ PolyhedronGeometry),
+/* harmony export */   PositionalAudio: () => (/* binding */ PositionalAudio),
+/* harmony export */   PropertyBinding: () => (/* binding */ PropertyBinding),
+/* harmony export */   PropertyMixer: () => (/* binding */ PropertyMixer),
+/* harmony export */   QuadraticBezierCurve: () => (/* binding */ QuadraticBezierCurve),
+/* harmony export */   QuadraticBezierCurve3: () => (/* binding */ QuadraticBezierCurve3),
+/* harmony export */   Quaternion: () => (/* binding */ Quaternion),
+/* harmony export */   QuaternionKeyframeTrack: () => (/* binding */ QuaternionKeyframeTrack),
+/* harmony export */   QuaternionLinearInterpolant: () => (/* binding */ QuaternionLinearInterpolant),
+/* harmony export */   RED_GREEN_RGTC2_Format: () => (/* binding */ RED_GREEN_RGTC2_Format),
+/* harmony export */   RED_RGTC1_Format: () => (/* binding */ RED_RGTC1_Format),
+/* harmony export */   REVISION: () => (/* binding */ REVISION),
+/* harmony export */   RGBADepthPacking: () => (/* binding */ RGBADepthPacking),
+/* harmony export */   RGBAFormat: () => (/* binding */ RGBAFormat),
+/* harmony export */   RGBAIntegerFormat: () => (/* binding */ RGBAIntegerFormat),
+/* harmony export */   RGBA_ASTC_10x10_Format: () => (/* binding */ RGBA_ASTC_10x10_Format),
+/* harmony export */   RGBA_ASTC_10x5_Format: () => (/* binding */ RGBA_ASTC_10x5_Format),
+/* harmony export */   RGBA_ASTC_10x6_Format: () => (/* binding */ RGBA_ASTC_10x6_Format),
+/* harmony export */   RGBA_ASTC_10x8_Format: () => (/* binding */ RGBA_ASTC_10x8_Format),
+/* harmony export */   RGBA_ASTC_12x10_Format: () => (/* binding */ RGBA_ASTC_12x10_Format),
+/* harmony export */   RGBA_ASTC_12x12_Format: () => (/* binding */ RGBA_ASTC_12x12_Format),
+/* harmony export */   RGBA_ASTC_4x4_Format: () => (/* binding */ RGBA_ASTC_4x4_Format),
+/* harmony export */   RGBA_ASTC_5x4_Format: () => (/* binding */ RGBA_ASTC_5x4_Format),
+/* harmony export */   RGBA_ASTC_5x5_Format: () => (/* binding */ RGBA_ASTC_5x5_Format),
+/* harmony export */   RGBA_ASTC_6x5_Format: () => (/* binding */ RGBA_ASTC_6x5_Format),
+/* harmony export */   RGBA_ASTC_6x6_Format: () => (/* binding */ RGBA_ASTC_6x6_Format),
+/* harmony export */   RGBA_ASTC_8x5_Format: () => (/* binding */ RGBA_ASTC_8x5_Format),
+/* harmony export */   RGBA_ASTC_8x6_Format: () => (/* binding */ RGBA_ASTC_8x6_Format),
+/* harmony export */   RGBA_ASTC_8x8_Format: () => (/* binding */ RGBA_ASTC_8x8_Format),
+/* harmony export */   RGBA_BPTC_Format: () => (/* binding */ RGBA_BPTC_Format),
+/* harmony export */   RGBA_ETC2_EAC_Format: () => (/* binding */ RGBA_ETC2_EAC_Format),
+/* harmony export */   RGBA_PVRTC_2BPPV1_Format: () => (/* binding */ RGBA_PVRTC_2BPPV1_Format),
+/* harmony export */   RGBA_PVRTC_4BPPV1_Format: () => (/* binding */ RGBA_PVRTC_4BPPV1_Format),
+/* harmony export */   RGBA_S3TC_DXT1_Format: () => (/* binding */ RGBA_S3TC_DXT1_Format),
+/* harmony export */   RGBA_S3TC_DXT3_Format: () => (/* binding */ RGBA_S3TC_DXT3_Format),
+/* harmony export */   RGBA_S3TC_DXT5_Format: () => (/* binding */ RGBA_S3TC_DXT5_Format),
+/* harmony export */   RGB_BPTC_SIGNED_Format: () => (/* binding */ RGB_BPTC_SIGNED_Format),
+/* harmony export */   RGB_BPTC_UNSIGNED_Format: () => (/* binding */ RGB_BPTC_UNSIGNED_Format),
+/* harmony export */   RGB_ETC1_Format: () => (/* binding */ RGB_ETC1_Format),
+/* harmony export */   RGB_ETC2_Format: () => (/* binding */ RGB_ETC2_Format),
+/* harmony export */   RGB_PVRTC_2BPPV1_Format: () => (/* binding */ RGB_PVRTC_2BPPV1_Format),
+/* harmony export */   RGB_PVRTC_4BPPV1_Format: () => (/* binding */ RGB_PVRTC_4BPPV1_Format),
+/* harmony export */   RGB_S3TC_DXT1_Format: () => (/* binding */ RGB_S3TC_DXT1_Format),
+/* harmony export */   RGFormat: () => (/* binding */ RGFormat),
+/* harmony export */   RGIntegerFormat: () => (/* binding */ RGIntegerFormat),
+/* harmony export */   RawShaderMaterial: () => (/* binding */ RawShaderMaterial),
+/* harmony export */   Ray: () => (/* binding */ Ray),
+/* harmony export */   Raycaster: () => (/* binding */ Raycaster),
+/* harmony export */   Rec709Primaries: () => (/* binding */ Rec709Primaries),
+/* harmony export */   RectAreaLight: () => (/* binding */ RectAreaLight),
+/* harmony export */   RedFormat: () => (/* binding */ RedFormat),
+/* harmony export */   RedIntegerFormat: () => (/* binding */ RedIntegerFormat),
+/* harmony export */   ReinhardToneMapping: () => (/* binding */ ReinhardToneMapping),
+/* harmony export */   RenderTarget: () => (/* binding */ RenderTarget),
+/* harmony export */   RepeatWrapping: () => (/* binding */ RepeatWrapping),
+/* harmony export */   ReplaceStencilOp: () => (/* binding */ ReplaceStencilOp),
+/* harmony export */   ReverseSubtractEquation: () => (/* binding */ ReverseSubtractEquation),
+/* harmony export */   RingGeometry: () => (/* binding */ RingGeometry),
+/* harmony export */   SIGNED_RED_GREEN_RGTC2_Format: () => (/* binding */ SIGNED_RED_GREEN_RGTC2_Format),
+/* harmony export */   SIGNED_RED_RGTC1_Format: () => (/* binding */ SIGNED_RED_RGTC1_Format),
+/* harmony export */   SRGBColorSpace: () => (/* binding */ SRGBColorSpace),
+/* harmony export */   SRGBTransfer: () => (/* binding */ SRGBTransfer),
+/* harmony export */   Scene: () => (/* binding */ Scene),
+/* harmony export */   ShaderChunk: () => (/* binding */ ShaderChunk),
+/* harmony export */   ShaderLib: () => (/* binding */ ShaderLib),
+/* harmony export */   ShaderMaterial: () => (/* binding */ ShaderMaterial),
+/* harmony export */   ShadowMaterial: () => (/* binding */ ShadowMaterial),
+/* harmony export */   Shape: () => (/* binding */ Shape),
+/* harmony export */   ShapeGeometry: () => (/* binding */ ShapeGeometry),
+/* harmony export */   ShapePath: () => (/* binding */ ShapePath),
+/* harmony export */   ShapeUtils: () => (/* binding */ ShapeUtils),
+/* harmony export */   ShortType: () => (/* binding */ ShortType),
+/* harmony export */   Skeleton: () => (/* binding */ Skeleton),
+/* harmony export */   SkeletonHelper: () => (/* binding */ SkeletonHelper),
+/* harmony export */   SkinnedMesh: () => (/* binding */ SkinnedMesh),
+/* harmony export */   Source: () => (/* binding */ Source),
+/* harmony export */   Sphere: () => (/* binding */ Sphere),
+/* harmony export */   SphereGeometry: () => (/* binding */ SphereGeometry),
+/* harmony export */   Spherical: () => (/* binding */ Spherical),
+/* harmony export */   SphericalHarmonics3: () => (/* binding */ SphericalHarmonics3),
+/* harmony export */   SplineCurve: () => (/* binding */ SplineCurve),
+/* harmony export */   SpotLight: () => (/* binding */ SpotLight),
+/* harmony export */   SpotLightHelper: () => (/* binding */ SpotLightHelper),
+/* harmony export */   Sprite: () => (/* binding */ Sprite),
+/* harmony export */   SpriteMaterial: () => (/* binding */ SpriteMaterial),
+/* harmony export */   SrcAlphaFactor: () => (/* binding */ SrcAlphaFactor),
+/* harmony export */   SrcAlphaSaturateFactor: () => (/* binding */ SrcAlphaSaturateFactor),
+/* harmony export */   SrcColorFactor: () => (/* binding */ SrcColorFactor),
+/* harmony export */   StaticCopyUsage: () => (/* binding */ StaticCopyUsage),
+/* harmony export */   StaticDrawUsage: () => (/* binding */ StaticDrawUsage),
+/* harmony export */   StaticReadUsage: () => (/* binding */ StaticReadUsage),
+/* harmony export */   StereoCamera: () => (/* binding */ StereoCamera),
+/* harmony export */   StreamCopyUsage: () => (/* binding */ StreamCopyUsage),
+/* harmony export */   StreamDrawUsage: () => (/* binding */ StreamDrawUsage),
+/* harmony export */   StreamReadUsage: () => (/* binding */ StreamReadUsage),
+/* harmony export */   StringKeyframeTrack: () => (/* binding */ StringKeyframeTrack),
+/* harmony export */   SubtractEquation: () => (/* binding */ SubtractEquation),
+/* harmony export */   SubtractiveBlending: () => (/* binding */ SubtractiveBlending),
+/* harmony export */   TOUCH: () => (/* binding */ TOUCH),
+/* harmony export */   TangentSpaceNormalMap: () => (/* binding */ TangentSpaceNormalMap),
+/* harmony export */   TetrahedronGeometry: () => (/* binding */ TetrahedronGeometry),
+/* harmony export */   Texture: () => (/* binding */ Texture),
+/* harmony export */   TextureLoader: () => (/* binding */ TextureLoader),
+/* harmony export */   TorusGeometry: () => (/* binding */ TorusGeometry),
+/* harmony export */   TorusKnotGeometry: () => (/* binding */ TorusKnotGeometry),
+/* harmony export */   Triangle: () => (/* binding */ Triangle),
+/* harmony export */   TriangleFanDrawMode: () => (/* binding */ TriangleFanDrawMode),
+/* harmony export */   TriangleStripDrawMode: () => (/* binding */ TriangleStripDrawMode),
+/* harmony export */   TrianglesDrawMode: () => (/* binding */ TrianglesDrawMode),
+/* harmony export */   TubeGeometry: () => (/* binding */ TubeGeometry),
+/* harmony export */   TwoPassDoubleSide: () => (/* binding */ TwoPassDoubleSide),
+/* harmony export */   UVMapping: () => (/* binding */ UVMapping),
+/* harmony export */   Uint16BufferAttribute: () => (/* binding */ Uint16BufferAttribute),
+/* harmony export */   Uint32BufferAttribute: () => (/* binding */ Uint32BufferAttribute),
+/* harmony export */   Uint8BufferAttribute: () => (/* binding */ Uint8BufferAttribute),
+/* harmony export */   Uint8ClampedBufferAttribute: () => (/* binding */ Uint8ClampedBufferAttribute),
+/* harmony export */   Uniform: () => (/* binding */ Uniform),
+/* harmony export */   UniformsGroup: () => (/* binding */ UniformsGroup),
+/* harmony export */   UniformsLib: () => (/* binding */ UniformsLib),
+/* harmony export */   UniformsUtils: () => (/* binding */ UniformsUtils),
+/* harmony export */   UnsignedByteType: () => (/* binding */ UnsignedByteType),
+/* harmony export */   UnsignedInt248Type: () => (/* binding */ UnsignedInt248Type),
+/* harmony export */   UnsignedIntType: () => (/* binding */ UnsignedIntType),
+/* harmony export */   UnsignedShort4444Type: () => (/* binding */ UnsignedShort4444Type),
+/* harmony export */   UnsignedShort5551Type: () => (/* binding */ UnsignedShort5551Type),
+/* harmony export */   UnsignedShortType: () => (/* binding */ UnsignedShortType),
+/* harmony export */   VSMShadowMap: () => (/* binding */ VSMShadowMap),
+/* harmony export */   Vector2: () => (/* binding */ Vector2),
+/* harmony export */   Vector3: () => (/* binding */ Vector3),
+/* harmony export */   Vector4: () => (/* binding */ Vector4),
+/* harmony export */   VectorKeyframeTrack: () => (/* binding */ VectorKeyframeTrack),
+/* harmony export */   VideoTexture: () => (/* binding */ VideoTexture),
+/* harmony export */   WebGL1Renderer: () => (/* binding */ WebGL1Renderer),
+/* harmony export */   WebGL3DRenderTarget: () => (/* binding */ WebGL3DRenderTarget),
+/* harmony export */   WebGLArrayRenderTarget: () => (/* binding */ WebGLArrayRenderTarget),
+/* harmony export */   WebGLCoordinateSystem: () => (/* binding */ WebGLCoordinateSystem),
+/* harmony export */   WebGLCubeRenderTarget: () => (/* binding */ WebGLCubeRenderTarget),
+/* harmony export */   WebGLMultipleRenderTargets: () => (/* binding */ WebGLMultipleRenderTargets),
+/* harmony export */   WebGLRenderTarget: () => (/* binding */ WebGLRenderTarget),
+/* harmony export */   WebGLRenderer: () => (/* binding */ WebGLRenderer),
+/* harmony export */   WebGLUtils: () => (/* binding */ WebGLUtils),
+/* harmony export */   WebGPUCoordinateSystem: () => (/* binding */ WebGPUCoordinateSystem),
+/* harmony export */   WireframeGeometry: () => (/* binding */ WireframeGeometry),
+/* harmony export */   WrapAroundEnding: () => (/* binding */ WrapAroundEnding),
+/* harmony export */   ZeroCurvatureEnding: () => (/* binding */ ZeroCurvatureEnding),
+/* harmony export */   ZeroFactor: () => (/* binding */ ZeroFactor),
+/* harmony export */   ZeroSlopeEnding: () => (/* binding */ ZeroSlopeEnding),
+/* harmony export */   ZeroStencilOp: () => (/* binding */ ZeroStencilOp),
+/* harmony export */   _SRGBAFormat: () => (/* binding */ _SRGBAFormat),
+/* harmony export */   createCanvasElement: () => (/* binding */ createCanvasElement),
+/* harmony export */   sRGBEncoding: () => (/* binding */ sRGBEncoding)
 /* harmony export */ });
 /**
  * @license
@@ -37962,7 +38422,7 @@ const STANDARD_DEVIATIONS=3;const blurMesh=new Mesh(this._lodPlanes[lodOut],blur
 				gl_FragColor = textureCube( envMap, vec3( flipEnvMap * vOutputDirection.x, vOutputDirection.yz ) );
 
 			}
-		`,blending:NoBlending,depthTest:false,depthWrite:false});}function _getCommonVertexShader(){return(/* glsl */`
+		`,blending:NoBlending,depthTest:false,depthWrite:false});}function _getCommonVertexShader(){return/* glsl */`
 
 		precision mediump float;
 		precision mediump int;
@@ -38017,7 +38477,7 @@ const STANDARD_DEVIATIONS=3;const blurMesh=new Mesh(this._lodPlanes[lodOut],blur
 			gl_Position = vec4( position, 1.0 );
 
 		}
-	`);}function WebGLCubeUVMaps(renderer){let cubeUVmaps=new WeakMap();let pmremGenerator=null;function get(texture){if(texture&&texture.isTexture){const mapping=texture.mapping;const isEquirectMap=mapping===EquirectangularReflectionMapping||mapping===EquirectangularRefractionMapping;const isCubeMap=mapping===CubeReflectionMapping||mapping===CubeRefractionMapping;// equirect/cube map to cubeUV conversion
+	`;}function WebGLCubeUVMaps(renderer){let cubeUVmaps=new WeakMap();let pmremGenerator=null;function get(texture){if(texture&&texture.isTexture){const mapping=texture.mapping;const isEquirectMap=mapping===EquirectangularReflectionMapping||mapping===EquirectangularRefractionMapping;const isCubeMap=mapping===CubeReflectionMapping||mapping===CubeRefractionMapping;// equirect/cube map to cubeUV conversion
 if(isEquirectMap||isCubeMap){if(texture.isRenderTargetTexture&&texture.needsPMREMUpdate===true){texture.needsPMREMUpdate=false;let renderTarget=cubeUVmaps.get(texture);if(pmremGenerator===null)pmremGenerator=new PMREMGenerator(renderer);renderTarget=isEquirectMap?pmremGenerator.fromEquirectangular(texture,renderTarget):pmremGenerator.fromCubemap(texture,renderTarget);cubeUVmaps.set(texture,renderTarget);return renderTarget.texture;}else{if(cubeUVmaps.has(texture)){return cubeUVmaps.get(texture).texture;}else{const image=texture.image;if(isEquirectMap&&image&&image.height>0||isCubeMap&&image&&isCubeTextureComplete(image)){if(pmremGenerator===null)pmremGenerator=new PMREMGenerator(renderer);const renderTarget=isEquirectMap?pmremGenerator.fromEquirectangular(texture):pmremGenerator.fromCubemap(texture);cubeUVmaps.set(texture,renderTarget);texture.addEventListener('dispose',onTextureDispose);return renderTarget.texture;}else{// image not yet ready. try the conversion next frame
 return null;}}}}}return texture;}function isCubeTextureComplete(image){let count=0;const length=6;for(let i=0;i<length;i++){if(image[i]!==undefined)count++;}return count===length;}function onTextureDispose(event){const texture=event.target;texture.removeEventListener('dispose',onTextureDispose);const cubemapUV=cubeUVmaps.get(texture);if(cubemapUV!==undefined){cubeUVmaps.delete(texture);cubemapUV.dispose();}}function dispose(){cubeUVmaps=new WeakMap();if(pmremGenerator!==null){pmremGenerator.dispose();pmremGenerator=null;}}return{get:get,dispose:dispose};}function WebGLExtensions(gl){const extensions={};function getExtension(name){if(extensions[name]!==undefined){return extensions[name];}let extension;switch(name){case'WEBGL_depth_texture':extension=gl.getExtension('WEBGL_depth_texture')||gl.getExtension('MOZ_WEBGL_depth_texture')||gl.getExtension('WEBKIT_WEBGL_depth_texture');break;case'EXT_texture_filter_anisotropic':extension=gl.getExtension('EXT_texture_filter_anisotropic')||gl.getExtension('MOZ_EXT_texture_filter_anisotropic')||gl.getExtension('WEBKIT_EXT_texture_filter_anisotropic');break;case'WEBGL_compressed_texture_s3tc':extension=gl.getExtension('WEBGL_compressed_texture_s3tc')||gl.getExtension('MOZ_WEBGL_compressed_texture_s3tc')||gl.getExtension('WEBKIT_WEBGL_compressed_texture_s3tc');break;case'WEBGL_compressed_texture_pvrtc':extension=gl.getExtension('WEBGL_compressed_texture_pvrtc')||gl.getExtension('WEBKIT_WEBGL_compressed_texture_pvrtc');break;default:extension=gl.getExtension(name);}extensions[name]=extension;return extension;}return{has:function(name){return getExtension(name)!==null;},init:function(capabilities){if(capabilities.isWebGL2){getExtension('EXT_color_buffer_float');}else{getExtension('WEBGL_depth_texture');getExtension('OES_texture_float');getExtension('OES_texture_half_float');getExtension('OES_texture_half_float_linear');getExtension('OES_standard_derivatives');getExtension('OES_element_index_uint');getExtension('OES_vertex_array_object');getExtension('ANGLE_instanced_arrays');}getExtension('OES_texture_float_linear');getExtension('EXT_color_buffer_half_float');getExtension('WEBGL_multisampled_render_to_texture');},get:function(name){const extension=getExtension(name);if(extension===null){console.warn('THREE.WebGLRenderer: '+name+' extension not supported.');}return extension;}};}function WebGLGeometries(gl,attributes,info,bindingStates){const geometries={};const wireframeAttributes=new WeakMap();function onGeometryDispose(event){const geometry=event.target;if(geometry.index!==null){attributes.remove(geometry.index);}for(const name in geometry.attributes){attributes.remove(geometry.attributes[name]);}for(const name in geometry.morphAttributes){const array=geometry.morphAttributes[name];for(let i=0,l=array.length;i<l;i++){attributes.remove(array[i]);}}geometry.removeEventListener('dispose',onGeometryDispose);delete geometries[geometry.id];const attribute=wireframeAttributes.get(geometry);if(attribute){attributes.remove(attribute);wireframeAttributes.delete(geometry);}bindingStates.releaseStatesOfGeometry(geometry);if(geometry.isInstancedBufferGeometry===true){delete geometry._maxInstanceCount;}//
 info.memory.geometries--;}function get(object,geometry){if(geometries[geometry.id]===true)return geometry;geometry.addEventListener('dispose',onGeometryDispose);geometries[geometry.id]=true;info.memory.geometries++;return geometry;}function update(geometry){const geometryAttributes=geometry.attributes;// Updating index buffer in VAO now. See WebGLBindingStates.
@@ -39853,253 +40313,253 @@ return shapes;}}if(typeof __THREE_DEVTOOLS__!=='undefined'){__THREE_DEVTOOLS__.d
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "KHR_DF_CHANNEL_RGBSDA_ALPHA": () => (/* binding */ Q),
-/* harmony export */   "KHR_DF_CHANNEL_RGBSDA_BLUE": () => (/* binding */ q),
-/* harmony export */   "KHR_DF_CHANNEL_RGBSDA_DEPTH": () => (/* binding */ J),
-/* harmony export */   "KHR_DF_CHANNEL_RGBSDA_GREEN": () => (/* binding */ Y),
-/* harmony export */   "KHR_DF_CHANNEL_RGBSDA_RED": () => (/* binding */ R),
-/* harmony export */   "KHR_DF_CHANNEL_RGBSDA_STENCIL": () => (/* binding */ G),
-/* harmony export */   "KHR_DF_FLAG_ALPHA_PREMULTIPLIED": () => (/* binding */ p),
-/* harmony export */   "KHR_DF_FLAG_ALPHA_STRAIGHT": () => (/* binding */ _),
-/* harmony export */   "KHR_DF_KHR_DESCRIPTORTYPE_BASICFORMAT": () => (/* binding */ s),
-/* harmony export */   "KHR_DF_MODEL_ASTC": () => (/* binding */ c),
-/* harmony export */   "KHR_DF_MODEL_ETC1": () => (/* binding */ f),
-/* harmony export */   "KHR_DF_MODEL_ETC1S": () => (/* binding */ h),
-/* harmony export */   "KHR_DF_MODEL_ETC2": () => (/* binding */ U),
-/* harmony export */   "KHR_DF_MODEL_RGBSDA": () => (/* binding */ l),
-/* harmony export */   "KHR_DF_MODEL_UNSPECIFIED": () => (/* binding */ o),
-/* harmony export */   "KHR_DF_PRIMARIES_ACES": () => (/* binding */ W),
-/* harmony export */   "KHR_DF_PRIMARIES_ACESCC": () => (/* binding */ N),
-/* harmony export */   "KHR_DF_PRIMARIES_ADOBERGB": () => (/* binding */ j),
-/* harmony export */   "KHR_DF_PRIMARIES_BT2020": () => (/* binding */ z),
-/* harmony export */   "KHR_DF_PRIMARIES_BT601_EBU": () => (/* binding */ P),
-/* harmony export */   "KHR_DF_PRIMARIES_BT601_SMPTE": () => (/* binding */ C),
-/* harmony export */   "KHR_DF_PRIMARIES_BT709": () => (/* binding */ F),
-/* harmony export */   "KHR_DF_PRIMARIES_CIEXYZ": () => (/* binding */ M),
-/* harmony export */   "KHR_DF_PRIMARIES_DISPLAYP3": () => (/* binding */ X),
-/* harmony export */   "KHR_DF_PRIMARIES_NTSC1953": () => (/* binding */ H),
-/* harmony export */   "KHR_DF_PRIMARIES_PAL525": () => (/* binding */ K),
-/* harmony export */   "KHR_DF_PRIMARIES_UNSPECIFIED": () => (/* binding */ E),
-/* harmony export */   "KHR_DF_SAMPLE_DATATYPE_EXPONENT": () => (/* binding */ tt),
-/* harmony export */   "KHR_DF_SAMPLE_DATATYPE_FLOAT": () => (/* binding */ Z),
-/* harmony export */   "KHR_DF_SAMPLE_DATATYPE_LINEAR": () => (/* binding */ et),
-/* harmony export */   "KHR_DF_SAMPLE_DATATYPE_SIGNED": () => (/* binding */ $),
-/* harmony export */   "KHR_DF_TRANSFER_ACESCC": () => (/* binding */ O),
-/* harmony export */   "KHR_DF_TRANSFER_ACESCCT": () => (/* binding */ T),
-/* harmony export */   "KHR_DF_TRANSFER_ADOBERGB": () => (/* binding */ V),
-/* harmony export */   "KHR_DF_TRANSFER_BT1886": () => (/* binding */ w),
-/* harmony export */   "KHR_DF_TRANSFER_DCIP3": () => (/* binding */ k),
-/* harmony export */   "KHR_DF_TRANSFER_HLG_EOTF": () => (/* binding */ B),
-/* harmony export */   "KHR_DF_TRANSFER_HLG_OETF": () => (/* binding */ D),
-/* harmony export */   "KHR_DF_TRANSFER_ITU": () => (/* binding */ u),
-/* harmony export */   "KHR_DF_TRANSFER_LINEAR": () => (/* binding */ y),
-/* harmony export */   "KHR_DF_TRANSFER_NTSC": () => (/* binding */ b),
-/* harmony export */   "KHR_DF_TRANSFER_PAL625_EOTF": () => (/* binding */ S),
-/* harmony export */   "KHR_DF_TRANSFER_PAL_OETF": () => (/* binding */ v),
-/* harmony export */   "KHR_DF_TRANSFER_PQ_EOTF": () => (/* binding */ L),
-/* harmony export */   "KHR_DF_TRANSFER_PQ_OETF": () => (/* binding */ A),
-/* harmony export */   "KHR_DF_TRANSFER_SLOG": () => (/* binding */ d),
-/* harmony export */   "KHR_DF_TRANSFER_SLOG2": () => (/* binding */ m),
-/* harmony export */   "KHR_DF_TRANSFER_SRGB": () => (/* binding */ x),
-/* harmony export */   "KHR_DF_TRANSFER_ST240": () => (/* binding */ I),
-/* harmony export */   "KHR_DF_TRANSFER_UNSPECIFIED": () => (/* binding */ g),
-/* harmony export */   "KHR_DF_VENDORID_KHRONOS": () => (/* binding */ a),
-/* harmony export */   "KHR_DF_VERSION": () => (/* binding */ r),
-/* harmony export */   "KHR_SUPERCOMPRESSION_BASISLZ": () => (/* binding */ e),
-/* harmony export */   "KHR_SUPERCOMPRESSION_NONE": () => (/* binding */ t),
-/* harmony export */   "KHR_SUPERCOMPRESSION_ZLIB": () => (/* binding */ i),
-/* harmony export */   "KHR_SUPERCOMPRESSION_ZSTD": () => (/* binding */ n),
-/* harmony export */   "KTX2Container": () => (/* binding */ Si),
-/* harmony export */   "VK_FORMAT_A1R5G5B5_UNORM_PACK16": () => (/* binding */ Ut),
-/* harmony export */   "VK_FORMAT_A2B10G10R10_SINT_PACK32": () => (/* binding */ qt),
-/* harmony export */   "VK_FORMAT_A2B10G10R10_SNORM_PACK32": () => (/* binding */ Rt),
-/* harmony export */   "VK_FORMAT_A2B10G10R10_UINT_PACK32": () => (/* binding */ Yt),
-/* harmony export */   "VK_FORMAT_A2B10G10R10_UNORM_PACK32": () => (/* binding */ jt),
-/* harmony export */   "VK_FORMAT_A2R10G10B10_SINT_PACK32": () => (/* binding */ Xt),
-/* harmony export */   "VK_FORMAT_A2R10G10B10_SNORM_PACK32": () => (/* binding */ Ht),
-/* harmony export */   "VK_FORMAT_A2R10G10B10_UINT_PACK32": () => (/* binding */ Kt),
-/* harmony export */   "VK_FORMAT_A2R10G10B10_UNORM_PACK32": () => (/* binding */ Nt),
-/* harmony export */   "VK_FORMAT_A4B4G4R4_UNORM_PACK16_EXT": () => (/* binding */ vi),
-/* harmony export */   "VK_FORMAT_A4R4G4B4_UNORM_PACK16_EXT": () => (/* binding */ ki),
-/* harmony export */   "VK_FORMAT_ASTC_10x10_SFLOAT_BLOCK_EXT": () => (/* binding */ Bi),
-/* harmony export */   "VK_FORMAT_ASTC_10x10_SRGB_BLOCK": () => (/* binding */ Xn),
-/* harmony export */   "VK_FORMAT_ASTC_10x10_UNORM_BLOCK": () => (/* binding */ Kn),
-/* harmony export */   "VK_FORMAT_ASTC_10x5_SFLOAT_BLOCK_EXT": () => (/* binding */ mi),
-/* harmony export */   "VK_FORMAT_ASTC_10x5_SRGB_BLOCK": () => (/* binding */ zn),
-/* harmony export */   "VK_FORMAT_ASTC_10x5_UNORM_BLOCK": () => (/* binding */ Cn),
-/* harmony export */   "VK_FORMAT_ASTC_10x6_SFLOAT_BLOCK_EXT": () => (/* binding */ wi),
-/* harmony export */   "VK_FORMAT_ASTC_10x6_SRGB_BLOCK": () => (/* binding */ Wn),
-/* harmony export */   "VK_FORMAT_ASTC_10x6_UNORM_BLOCK": () => (/* binding */ Mn),
-/* harmony export */   "VK_FORMAT_ASTC_10x8_SFLOAT_BLOCK_EXT": () => (/* binding */ Di),
-/* harmony export */   "VK_FORMAT_ASTC_10x8_SRGB_BLOCK": () => (/* binding */ Hn),
-/* harmony export */   "VK_FORMAT_ASTC_10x8_UNORM_BLOCK": () => (/* binding */ Nn),
-/* harmony export */   "VK_FORMAT_ASTC_12x10_SFLOAT_BLOCK_EXT": () => (/* binding */ Li),
-/* harmony export */   "VK_FORMAT_ASTC_12x10_SRGB_BLOCK": () => (/* binding */ Rn),
-/* harmony export */   "VK_FORMAT_ASTC_12x10_UNORM_BLOCK": () => (/* binding */ jn),
-/* harmony export */   "VK_FORMAT_ASTC_12x12_SFLOAT_BLOCK_EXT": () => (/* binding */ Ai),
-/* harmony export */   "VK_FORMAT_ASTC_12x12_SRGB_BLOCK": () => (/* binding */ qn),
-/* harmony export */   "VK_FORMAT_ASTC_12x12_UNORM_BLOCK": () => (/* binding */ Yn),
-/* harmony export */   "VK_FORMAT_ASTC_4x4_SFLOAT_BLOCK_EXT": () => (/* binding */ _i),
-/* harmony export */   "VK_FORMAT_ASTC_4x4_SRGB_BLOCK": () => (/* binding */ wn),
-/* harmony export */   "VK_FORMAT_ASTC_4x4_UNORM_BLOCK": () => (/* binding */ mn),
-/* harmony export */   "VK_FORMAT_ASTC_5x4_SFLOAT_BLOCK_EXT": () => (/* binding */ pi),
-/* harmony export */   "VK_FORMAT_ASTC_5x4_SRGB_BLOCK": () => (/* binding */ Bn),
-/* harmony export */   "VK_FORMAT_ASTC_5x4_UNORM_BLOCK": () => (/* binding */ Dn),
-/* harmony export */   "VK_FORMAT_ASTC_5x5_SFLOAT_BLOCK_EXT": () => (/* binding */ gi),
-/* harmony export */   "VK_FORMAT_ASTC_5x5_SRGB_BLOCK": () => (/* binding */ An),
-/* harmony export */   "VK_FORMAT_ASTC_5x5_UNORM_BLOCK": () => (/* binding */ Ln),
-/* harmony export */   "VK_FORMAT_ASTC_6x5_SFLOAT_BLOCK_EXT": () => (/* binding */ yi),
-/* harmony export */   "VK_FORMAT_ASTC_6x5_SRGB_BLOCK": () => (/* binding */ vn),
-/* harmony export */   "VK_FORMAT_ASTC_6x5_UNORM_BLOCK": () => (/* binding */ kn),
-/* harmony export */   "VK_FORMAT_ASTC_6x6_SFLOAT_BLOCK_EXT": () => (/* binding */ xi),
-/* harmony export */   "VK_FORMAT_ASTC_6x6_SRGB_BLOCK": () => (/* binding */ In),
-/* harmony export */   "VK_FORMAT_ASTC_6x6_UNORM_BLOCK": () => (/* binding */ Sn),
-/* harmony export */   "VK_FORMAT_ASTC_8x5_SFLOAT_BLOCK_EXT": () => (/* binding */ ui),
-/* harmony export */   "VK_FORMAT_ASTC_8x5_SRGB_BLOCK": () => (/* binding */ Tn),
-/* harmony export */   "VK_FORMAT_ASTC_8x5_UNORM_BLOCK": () => (/* binding */ On),
-/* harmony export */   "VK_FORMAT_ASTC_8x6_SFLOAT_BLOCK_EXT": () => (/* binding */ bi),
-/* harmony export */   "VK_FORMAT_ASTC_8x6_SRGB_BLOCK": () => (/* binding */ En),
-/* harmony export */   "VK_FORMAT_ASTC_8x6_UNORM_BLOCK": () => (/* binding */ Vn),
-/* harmony export */   "VK_FORMAT_ASTC_8x8_SFLOAT_BLOCK_EXT": () => (/* binding */ di),
-/* harmony export */   "VK_FORMAT_ASTC_8x8_SRGB_BLOCK": () => (/* binding */ Pn),
-/* harmony export */   "VK_FORMAT_ASTC_8x8_UNORM_BLOCK": () => (/* binding */ Fn),
-/* harmony export */   "VK_FORMAT_B10G11R11_UFLOAT_PACK32": () => (/* binding */ Me),
-/* harmony export */   "VK_FORMAT_B10X6G10X6R10X6G10X6_422_UNORM_4PACK16": () => (/* binding */ $n),
-/* harmony export */   "VK_FORMAT_B12X4G12X4R12X4G12X4_422_UNORM_4PACK16": () => (/* binding */ si),
-/* harmony export */   "VK_FORMAT_B4G4R4A4_UNORM_PACK16": () => (/* binding */ at),
-/* harmony export */   "VK_FORMAT_B5G5R5A1_UNORM_PACK16": () => (/* binding */ ft),
-/* harmony export */   "VK_FORMAT_B5G6R5_UNORM_PACK16": () => (/* binding */ ot),
-/* harmony export */   "VK_FORMAT_B8G8R8A8_SINT": () => (/* binding */ Mt),
-/* harmony export */   "VK_FORMAT_B8G8R8A8_SNORM": () => (/* binding */ Ct),
-/* harmony export */   "VK_FORMAT_B8G8R8A8_SRGB": () => (/* binding */ Wt),
-/* harmony export */   "VK_FORMAT_B8G8R8A8_UINT": () => (/* binding */ zt),
-/* harmony export */   "VK_FORMAT_B8G8R8A8_UNORM": () => (/* binding */ Pt),
-/* harmony export */   "VK_FORMAT_B8G8R8_SINT": () => (/* binding */ St),
-/* harmony export */   "VK_FORMAT_B8G8R8_SNORM": () => (/* binding */ kt),
-/* harmony export */   "VK_FORMAT_B8G8R8_SRGB": () => (/* binding */ It),
-/* harmony export */   "VK_FORMAT_B8G8R8_UINT": () => (/* binding */ vt),
-/* harmony export */   "VK_FORMAT_B8G8R8_UNORM": () => (/* binding */ At),
-/* harmony export */   "VK_FORMAT_BC1_RGBA_SRGB_BLOCK": () => (/* binding */ Qe),
-/* harmony export */   "VK_FORMAT_BC1_RGBA_UNORM_BLOCK": () => (/* binding */ Je),
-/* harmony export */   "VK_FORMAT_BC1_RGB_SRGB_BLOCK": () => (/* binding */ Ge),
-/* harmony export */   "VK_FORMAT_BC1_RGB_UNORM_BLOCK": () => (/* binding */ qe),
-/* harmony export */   "VK_FORMAT_BC2_SRGB_BLOCK": () => (/* binding */ $e),
-/* harmony export */   "VK_FORMAT_BC2_UNORM_BLOCK": () => (/* binding */ Ze),
-/* harmony export */   "VK_FORMAT_BC3_SRGB_BLOCK": () => (/* binding */ en),
-/* harmony export */   "VK_FORMAT_BC3_UNORM_BLOCK": () => (/* binding */ tn),
-/* harmony export */   "VK_FORMAT_BC4_SNORM_BLOCK": () => (/* binding */ sn),
-/* harmony export */   "VK_FORMAT_BC4_UNORM_BLOCK": () => (/* binding */ nn),
-/* harmony export */   "VK_FORMAT_BC5_SNORM_BLOCK": () => (/* binding */ rn),
-/* harmony export */   "VK_FORMAT_BC5_UNORM_BLOCK": () => (/* binding */ an),
-/* harmony export */   "VK_FORMAT_BC6H_SFLOAT_BLOCK": () => (/* binding */ ln),
-/* harmony export */   "VK_FORMAT_BC6H_UFLOAT_BLOCK": () => (/* binding */ on),
-/* harmony export */   "VK_FORMAT_BC7_SRGB_BLOCK": () => (/* binding */ Un),
-/* harmony export */   "VK_FORMAT_BC7_UNORM_BLOCK": () => (/* binding */ fn),
-/* harmony export */   "VK_FORMAT_D16_UNORM": () => (/* binding */ Ne),
-/* harmony export */   "VK_FORMAT_D16_UNORM_S8_UINT": () => (/* binding */ je),
-/* harmony export */   "VK_FORMAT_D24_UNORM_S8_UINT": () => (/* binding */ Re),
-/* harmony export */   "VK_FORMAT_D32_SFLOAT": () => (/* binding */ Ke),
-/* harmony export */   "VK_FORMAT_D32_SFLOAT_S8_UINT": () => (/* binding */ Ye),
-/* harmony export */   "VK_FORMAT_E5B9G9R9_UFLOAT_PACK32": () => (/* binding */ We),
-/* harmony export */   "VK_FORMAT_EAC_R11G11_SNORM_BLOCK": () => (/* binding */ dn),
-/* harmony export */   "VK_FORMAT_EAC_R11G11_UNORM_BLOCK": () => (/* binding */ bn),
-/* harmony export */   "VK_FORMAT_EAC_R11_SNORM_BLOCK": () => (/* binding */ un),
-/* harmony export */   "VK_FORMAT_EAC_R11_UNORM_BLOCK": () => (/* binding */ xn),
-/* harmony export */   "VK_FORMAT_ETC2_R8G8B8A1_SRGB_BLOCK": () => (/* binding */ pn),
-/* harmony export */   "VK_FORMAT_ETC2_R8G8B8A1_UNORM_BLOCK": () => (/* binding */ _n),
-/* harmony export */   "VK_FORMAT_ETC2_R8G8B8A8_SRGB_BLOCK": () => (/* binding */ yn),
-/* harmony export */   "VK_FORMAT_ETC2_R8G8B8A8_UNORM_BLOCK": () => (/* binding */ gn),
-/* harmony export */   "VK_FORMAT_ETC2_R8G8B8_SRGB_BLOCK": () => (/* binding */ hn),
-/* harmony export */   "VK_FORMAT_ETC2_R8G8B8_UNORM_BLOCK": () => (/* binding */ cn),
-/* harmony export */   "VK_FORMAT_G10X6B10X6G10X6R10X6_422_UNORM_4PACK16": () => (/* binding */ Zn),
-/* harmony export */   "VK_FORMAT_G12X4B12X4G12X4R12X4_422_UNORM_4PACK16": () => (/* binding */ ii),
-/* harmony export */   "VK_FORMAT_PVRTC1_2BPP_SRGB_BLOCK_IMG": () => (/* binding */ fi),
-/* harmony export */   "VK_FORMAT_PVRTC1_2BPP_UNORM_BLOCK_IMG": () => (/* binding */ ai),
-/* harmony export */   "VK_FORMAT_PVRTC1_4BPP_SRGB_BLOCK_IMG": () => (/* binding */ Ui),
-/* harmony export */   "VK_FORMAT_PVRTC1_4BPP_UNORM_BLOCK_IMG": () => (/* binding */ ri),
-/* harmony export */   "VK_FORMAT_PVRTC2_2BPP_SRGB_BLOCK_IMG": () => (/* binding */ ci),
-/* harmony export */   "VK_FORMAT_PVRTC2_2BPP_UNORM_BLOCK_IMG": () => (/* binding */ oi),
-/* harmony export */   "VK_FORMAT_PVRTC2_4BPP_SRGB_BLOCK_IMG": () => (/* binding */ hi),
-/* harmony export */   "VK_FORMAT_PVRTC2_4BPP_UNORM_BLOCK_IMG": () => (/* binding */ li),
-/* harmony export */   "VK_FORMAT_R10X6G10X6B10X6A10X6_UNORM_4PACK16": () => (/* binding */ Qn),
-/* harmony export */   "VK_FORMAT_R10X6G10X6_UNORM_2PACK16": () => (/* binding */ Jn),
-/* harmony export */   "VK_FORMAT_R10X6_UNORM_PACK16": () => (/* binding */ Gn),
-/* harmony export */   "VK_FORMAT_R12X4G12X4B12X4A12X4_UNORM_4PACK16": () => (/* binding */ ni),
-/* harmony export */   "VK_FORMAT_R12X4G12X4_UNORM_2PACK16": () => (/* binding */ ei),
-/* harmony export */   "VK_FORMAT_R12X4_UNORM_PACK16": () => (/* binding */ ti),
-/* harmony export */   "VK_FORMAT_R16G16B16A16_SFLOAT": () => (/* binding */ pe),
-/* harmony export */   "VK_FORMAT_R16G16B16A16_SINT": () => (/* binding */ _e),
-/* harmony export */   "VK_FORMAT_R16G16B16A16_SNORM": () => (/* binding */ ce),
-/* harmony export */   "VK_FORMAT_R16G16B16A16_UINT": () => (/* binding */ he),
-/* harmony export */   "VK_FORMAT_R16G16B16A16_UNORM": () => (/* binding */ Ue),
-/* harmony export */   "VK_FORMAT_R16G16B16_SFLOAT": () => (/* binding */ fe),
-/* harmony export */   "VK_FORMAT_R16G16B16_SINT": () => (/* binding */ le),
-/* harmony export */   "VK_FORMAT_R16G16B16_SNORM": () => (/* binding */ re),
-/* harmony export */   "VK_FORMAT_R16G16B16_UINT": () => (/* binding */ oe),
-/* harmony export */   "VK_FORMAT_R16G16B16_UNORM": () => (/* binding */ ae),
-/* harmony export */   "VK_FORMAT_R16G16_SFLOAT": () => (/* binding */ se),
-/* harmony export */   "VK_FORMAT_R16G16_SINT": () => (/* binding */ ie),
-/* harmony export */   "VK_FORMAT_R16G16_SNORM": () => (/* binding */ ee),
-/* harmony export */   "VK_FORMAT_R16G16_UINT": () => (/* binding */ ne),
-/* harmony export */   "VK_FORMAT_R16G16_UNORM": () => (/* binding */ te),
-/* harmony export */   "VK_FORMAT_R16_SFLOAT": () => (/* binding */ $t),
-/* harmony export */   "VK_FORMAT_R16_SINT": () => (/* binding */ Zt),
-/* harmony export */   "VK_FORMAT_R16_SNORM": () => (/* binding */ Jt),
-/* harmony export */   "VK_FORMAT_R16_UINT": () => (/* binding */ Qt),
-/* harmony export */   "VK_FORMAT_R16_UNORM": () => (/* binding */ Gt),
-/* harmony export */   "VK_FORMAT_R32G32B32A32_SFLOAT": () => (/* binding */ Ae),
-/* harmony export */   "VK_FORMAT_R32G32B32A32_SINT": () => (/* binding */ Le),
-/* harmony export */   "VK_FORMAT_R32G32B32A32_UINT": () => (/* binding */ Be),
-/* harmony export */   "VK_FORMAT_R32G32B32_SFLOAT": () => (/* binding */ De),
-/* harmony export */   "VK_FORMAT_R32G32B32_SINT": () => (/* binding */ we),
-/* harmony export */   "VK_FORMAT_R32G32B32_UINT": () => (/* binding */ me),
-/* harmony export */   "VK_FORMAT_R32G32_SFLOAT": () => (/* binding */ de),
-/* harmony export */   "VK_FORMAT_R32G32_SINT": () => (/* binding */ be),
-/* harmony export */   "VK_FORMAT_R32G32_UINT": () => (/* binding */ ue),
-/* harmony export */   "VK_FORMAT_R32_SFLOAT": () => (/* binding */ xe),
-/* harmony export */   "VK_FORMAT_R32_SINT": () => (/* binding */ ye),
-/* harmony export */   "VK_FORMAT_R32_UINT": () => (/* binding */ ge),
-/* harmony export */   "VK_FORMAT_R4G4B4A4_UNORM_PACK16": () => (/* binding */ st),
-/* harmony export */   "VK_FORMAT_R4G4_UNORM_PACK8": () => (/* binding */ it),
-/* harmony export */   "VK_FORMAT_R5G5B5A1_UNORM_PACK16": () => (/* binding */ lt),
-/* harmony export */   "VK_FORMAT_R5G6B5_UNORM_PACK16": () => (/* binding */ rt),
-/* harmony export */   "VK_FORMAT_R64G64B64A64_SFLOAT": () => (/* binding */ ze),
-/* harmony export */   "VK_FORMAT_R64G64B64A64_SINT": () => (/* binding */ Ce),
-/* harmony export */   "VK_FORMAT_R64G64B64A64_UINT": () => (/* binding */ Pe),
-/* harmony export */   "VK_FORMAT_R64G64B64_SFLOAT": () => (/* binding */ Fe),
-/* harmony export */   "VK_FORMAT_R64G64B64_SINT": () => (/* binding */ Ee),
-/* harmony export */   "VK_FORMAT_R64G64B64_UINT": () => (/* binding */ Ve),
-/* harmony export */   "VK_FORMAT_R64G64_SFLOAT": () => (/* binding */ Te),
-/* harmony export */   "VK_FORMAT_R64G64_SINT": () => (/* binding */ Oe),
-/* harmony export */   "VK_FORMAT_R64G64_UINT": () => (/* binding */ Ie),
-/* harmony export */   "VK_FORMAT_R64_SFLOAT": () => (/* binding */ Se),
-/* harmony export */   "VK_FORMAT_R64_SINT": () => (/* binding */ ve),
-/* harmony export */   "VK_FORMAT_R64_UINT": () => (/* binding */ ke),
-/* harmony export */   "VK_FORMAT_R8G8B8A8_SINT": () => (/* binding */ Et),
-/* harmony export */   "VK_FORMAT_R8G8B8A8_SNORM": () => (/* binding */ Tt),
-/* harmony export */   "VK_FORMAT_R8G8B8A8_SRGB": () => (/* binding */ Ft),
-/* harmony export */   "VK_FORMAT_R8G8B8A8_UINT": () => (/* binding */ Vt),
-/* harmony export */   "VK_FORMAT_R8G8B8A8_UNORM": () => (/* binding */ Ot),
-/* harmony export */   "VK_FORMAT_R8G8B8_SINT": () => (/* binding */ Bt),
-/* harmony export */   "VK_FORMAT_R8G8B8_SNORM": () => (/* binding */ wt),
-/* harmony export */   "VK_FORMAT_R8G8B8_SRGB": () => (/* binding */ Lt),
-/* harmony export */   "VK_FORMAT_R8G8B8_UINT": () => (/* binding */ Dt),
-/* harmony export */   "VK_FORMAT_R8G8B8_UNORM": () => (/* binding */ mt),
-/* harmony export */   "VK_FORMAT_R8G8_SINT": () => (/* binding */ bt),
-/* harmony export */   "VK_FORMAT_R8G8_SNORM": () => (/* binding */ xt),
-/* harmony export */   "VK_FORMAT_R8G8_SRGB": () => (/* binding */ dt),
-/* harmony export */   "VK_FORMAT_R8G8_UINT": () => (/* binding */ ut),
-/* harmony export */   "VK_FORMAT_R8G8_UNORM": () => (/* binding */ yt),
-/* harmony export */   "VK_FORMAT_R8_SINT": () => (/* binding */ pt),
-/* harmony export */   "VK_FORMAT_R8_SNORM": () => (/* binding */ ht),
-/* harmony export */   "VK_FORMAT_R8_SRGB": () => (/* binding */ gt),
-/* harmony export */   "VK_FORMAT_R8_UINT": () => (/* binding */ _t),
-/* harmony export */   "VK_FORMAT_R8_UNORM": () => (/* binding */ ct),
-/* harmony export */   "VK_FORMAT_S8_UINT": () => (/* binding */ Xe),
-/* harmony export */   "VK_FORMAT_UNDEFINED": () => (/* binding */ nt),
-/* harmony export */   "VK_FORMAT_X8_D24_UNORM_PACK32": () => (/* binding */ He),
-/* harmony export */   "read": () => (/* binding */ Pi),
-/* harmony export */   "write": () => (/* binding */ Mi)
+/* harmony export */   KHR_DF_CHANNEL_RGBSDA_ALPHA: () => (/* binding */ Q),
+/* harmony export */   KHR_DF_CHANNEL_RGBSDA_BLUE: () => (/* binding */ q),
+/* harmony export */   KHR_DF_CHANNEL_RGBSDA_DEPTH: () => (/* binding */ J),
+/* harmony export */   KHR_DF_CHANNEL_RGBSDA_GREEN: () => (/* binding */ Y),
+/* harmony export */   KHR_DF_CHANNEL_RGBSDA_RED: () => (/* binding */ R),
+/* harmony export */   KHR_DF_CHANNEL_RGBSDA_STENCIL: () => (/* binding */ G),
+/* harmony export */   KHR_DF_FLAG_ALPHA_PREMULTIPLIED: () => (/* binding */ p),
+/* harmony export */   KHR_DF_FLAG_ALPHA_STRAIGHT: () => (/* binding */ _),
+/* harmony export */   KHR_DF_KHR_DESCRIPTORTYPE_BASICFORMAT: () => (/* binding */ s),
+/* harmony export */   KHR_DF_MODEL_ASTC: () => (/* binding */ c),
+/* harmony export */   KHR_DF_MODEL_ETC1: () => (/* binding */ f),
+/* harmony export */   KHR_DF_MODEL_ETC1S: () => (/* binding */ h),
+/* harmony export */   KHR_DF_MODEL_ETC2: () => (/* binding */ U),
+/* harmony export */   KHR_DF_MODEL_RGBSDA: () => (/* binding */ l),
+/* harmony export */   KHR_DF_MODEL_UNSPECIFIED: () => (/* binding */ o),
+/* harmony export */   KHR_DF_PRIMARIES_ACES: () => (/* binding */ W),
+/* harmony export */   KHR_DF_PRIMARIES_ACESCC: () => (/* binding */ N),
+/* harmony export */   KHR_DF_PRIMARIES_ADOBERGB: () => (/* binding */ j),
+/* harmony export */   KHR_DF_PRIMARIES_BT2020: () => (/* binding */ z),
+/* harmony export */   KHR_DF_PRIMARIES_BT601_EBU: () => (/* binding */ P),
+/* harmony export */   KHR_DF_PRIMARIES_BT601_SMPTE: () => (/* binding */ C),
+/* harmony export */   KHR_DF_PRIMARIES_BT709: () => (/* binding */ F),
+/* harmony export */   KHR_DF_PRIMARIES_CIEXYZ: () => (/* binding */ M),
+/* harmony export */   KHR_DF_PRIMARIES_DISPLAYP3: () => (/* binding */ X),
+/* harmony export */   KHR_DF_PRIMARIES_NTSC1953: () => (/* binding */ H),
+/* harmony export */   KHR_DF_PRIMARIES_PAL525: () => (/* binding */ K),
+/* harmony export */   KHR_DF_PRIMARIES_UNSPECIFIED: () => (/* binding */ E),
+/* harmony export */   KHR_DF_SAMPLE_DATATYPE_EXPONENT: () => (/* binding */ tt),
+/* harmony export */   KHR_DF_SAMPLE_DATATYPE_FLOAT: () => (/* binding */ Z),
+/* harmony export */   KHR_DF_SAMPLE_DATATYPE_LINEAR: () => (/* binding */ et),
+/* harmony export */   KHR_DF_SAMPLE_DATATYPE_SIGNED: () => (/* binding */ $),
+/* harmony export */   KHR_DF_TRANSFER_ACESCC: () => (/* binding */ O),
+/* harmony export */   KHR_DF_TRANSFER_ACESCCT: () => (/* binding */ T),
+/* harmony export */   KHR_DF_TRANSFER_ADOBERGB: () => (/* binding */ V),
+/* harmony export */   KHR_DF_TRANSFER_BT1886: () => (/* binding */ w),
+/* harmony export */   KHR_DF_TRANSFER_DCIP3: () => (/* binding */ k),
+/* harmony export */   KHR_DF_TRANSFER_HLG_EOTF: () => (/* binding */ B),
+/* harmony export */   KHR_DF_TRANSFER_HLG_OETF: () => (/* binding */ D),
+/* harmony export */   KHR_DF_TRANSFER_ITU: () => (/* binding */ u),
+/* harmony export */   KHR_DF_TRANSFER_LINEAR: () => (/* binding */ y),
+/* harmony export */   KHR_DF_TRANSFER_NTSC: () => (/* binding */ b),
+/* harmony export */   KHR_DF_TRANSFER_PAL625_EOTF: () => (/* binding */ S),
+/* harmony export */   KHR_DF_TRANSFER_PAL_OETF: () => (/* binding */ v),
+/* harmony export */   KHR_DF_TRANSFER_PQ_EOTF: () => (/* binding */ L),
+/* harmony export */   KHR_DF_TRANSFER_PQ_OETF: () => (/* binding */ A),
+/* harmony export */   KHR_DF_TRANSFER_SLOG: () => (/* binding */ d),
+/* harmony export */   KHR_DF_TRANSFER_SLOG2: () => (/* binding */ m),
+/* harmony export */   KHR_DF_TRANSFER_SRGB: () => (/* binding */ x),
+/* harmony export */   KHR_DF_TRANSFER_ST240: () => (/* binding */ I),
+/* harmony export */   KHR_DF_TRANSFER_UNSPECIFIED: () => (/* binding */ g),
+/* harmony export */   KHR_DF_VENDORID_KHRONOS: () => (/* binding */ a),
+/* harmony export */   KHR_DF_VERSION: () => (/* binding */ r),
+/* harmony export */   KHR_SUPERCOMPRESSION_BASISLZ: () => (/* binding */ e),
+/* harmony export */   KHR_SUPERCOMPRESSION_NONE: () => (/* binding */ t),
+/* harmony export */   KHR_SUPERCOMPRESSION_ZLIB: () => (/* binding */ i),
+/* harmony export */   KHR_SUPERCOMPRESSION_ZSTD: () => (/* binding */ n),
+/* harmony export */   KTX2Container: () => (/* binding */ Si),
+/* harmony export */   VK_FORMAT_A1R5G5B5_UNORM_PACK16: () => (/* binding */ Ut),
+/* harmony export */   VK_FORMAT_A2B10G10R10_SINT_PACK32: () => (/* binding */ qt),
+/* harmony export */   VK_FORMAT_A2B10G10R10_SNORM_PACK32: () => (/* binding */ Rt),
+/* harmony export */   VK_FORMAT_A2B10G10R10_UINT_PACK32: () => (/* binding */ Yt),
+/* harmony export */   VK_FORMAT_A2B10G10R10_UNORM_PACK32: () => (/* binding */ jt),
+/* harmony export */   VK_FORMAT_A2R10G10B10_SINT_PACK32: () => (/* binding */ Xt),
+/* harmony export */   VK_FORMAT_A2R10G10B10_SNORM_PACK32: () => (/* binding */ Ht),
+/* harmony export */   VK_FORMAT_A2R10G10B10_UINT_PACK32: () => (/* binding */ Kt),
+/* harmony export */   VK_FORMAT_A2R10G10B10_UNORM_PACK32: () => (/* binding */ Nt),
+/* harmony export */   VK_FORMAT_A4B4G4R4_UNORM_PACK16_EXT: () => (/* binding */ vi),
+/* harmony export */   VK_FORMAT_A4R4G4B4_UNORM_PACK16_EXT: () => (/* binding */ ki),
+/* harmony export */   VK_FORMAT_ASTC_10x10_SFLOAT_BLOCK_EXT: () => (/* binding */ Bi),
+/* harmony export */   VK_FORMAT_ASTC_10x10_SRGB_BLOCK: () => (/* binding */ Xn),
+/* harmony export */   VK_FORMAT_ASTC_10x10_UNORM_BLOCK: () => (/* binding */ Kn),
+/* harmony export */   VK_FORMAT_ASTC_10x5_SFLOAT_BLOCK_EXT: () => (/* binding */ mi),
+/* harmony export */   VK_FORMAT_ASTC_10x5_SRGB_BLOCK: () => (/* binding */ zn),
+/* harmony export */   VK_FORMAT_ASTC_10x5_UNORM_BLOCK: () => (/* binding */ Cn),
+/* harmony export */   VK_FORMAT_ASTC_10x6_SFLOAT_BLOCK_EXT: () => (/* binding */ wi),
+/* harmony export */   VK_FORMAT_ASTC_10x6_SRGB_BLOCK: () => (/* binding */ Wn),
+/* harmony export */   VK_FORMAT_ASTC_10x6_UNORM_BLOCK: () => (/* binding */ Mn),
+/* harmony export */   VK_FORMAT_ASTC_10x8_SFLOAT_BLOCK_EXT: () => (/* binding */ Di),
+/* harmony export */   VK_FORMAT_ASTC_10x8_SRGB_BLOCK: () => (/* binding */ Hn),
+/* harmony export */   VK_FORMAT_ASTC_10x8_UNORM_BLOCK: () => (/* binding */ Nn),
+/* harmony export */   VK_FORMAT_ASTC_12x10_SFLOAT_BLOCK_EXT: () => (/* binding */ Li),
+/* harmony export */   VK_FORMAT_ASTC_12x10_SRGB_BLOCK: () => (/* binding */ Rn),
+/* harmony export */   VK_FORMAT_ASTC_12x10_UNORM_BLOCK: () => (/* binding */ jn),
+/* harmony export */   VK_FORMAT_ASTC_12x12_SFLOAT_BLOCK_EXT: () => (/* binding */ Ai),
+/* harmony export */   VK_FORMAT_ASTC_12x12_SRGB_BLOCK: () => (/* binding */ qn),
+/* harmony export */   VK_FORMAT_ASTC_12x12_UNORM_BLOCK: () => (/* binding */ Yn),
+/* harmony export */   VK_FORMAT_ASTC_4x4_SFLOAT_BLOCK_EXT: () => (/* binding */ _i),
+/* harmony export */   VK_FORMAT_ASTC_4x4_SRGB_BLOCK: () => (/* binding */ wn),
+/* harmony export */   VK_FORMAT_ASTC_4x4_UNORM_BLOCK: () => (/* binding */ mn),
+/* harmony export */   VK_FORMAT_ASTC_5x4_SFLOAT_BLOCK_EXT: () => (/* binding */ pi),
+/* harmony export */   VK_FORMAT_ASTC_5x4_SRGB_BLOCK: () => (/* binding */ Bn),
+/* harmony export */   VK_FORMAT_ASTC_5x4_UNORM_BLOCK: () => (/* binding */ Dn),
+/* harmony export */   VK_FORMAT_ASTC_5x5_SFLOAT_BLOCK_EXT: () => (/* binding */ gi),
+/* harmony export */   VK_FORMAT_ASTC_5x5_SRGB_BLOCK: () => (/* binding */ An),
+/* harmony export */   VK_FORMAT_ASTC_5x5_UNORM_BLOCK: () => (/* binding */ Ln),
+/* harmony export */   VK_FORMAT_ASTC_6x5_SFLOAT_BLOCK_EXT: () => (/* binding */ yi),
+/* harmony export */   VK_FORMAT_ASTC_6x5_SRGB_BLOCK: () => (/* binding */ vn),
+/* harmony export */   VK_FORMAT_ASTC_6x5_UNORM_BLOCK: () => (/* binding */ kn),
+/* harmony export */   VK_FORMAT_ASTC_6x6_SFLOAT_BLOCK_EXT: () => (/* binding */ xi),
+/* harmony export */   VK_FORMAT_ASTC_6x6_SRGB_BLOCK: () => (/* binding */ In),
+/* harmony export */   VK_FORMAT_ASTC_6x6_UNORM_BLOCK: () => (/* binding */ Sn),
+/* harmony export */   VK_FORMAT_ASTC_8x5_SFLOAT_BLOCK_EXT: () => (/* binding */ ui),
+/* harmony export */   VK_FORMAT_ASTC_8x5_SRGB_BLOCK: () => (/* binding */ Tn),
+/* harmony export */   VK_FORMAT_ASTC_8x5_UNORM_BLOCK: () => (/* binding */ On),
+/* harmony export */   VK_FORMAT_ASTC_8x6_SFLOAT_BLOCK_EXT: () => (/* binding */ bi),
+/* harmony export */   VK_FORMAT_ASTC_8x6_SRGB_BLOCK: () => (/* binding */ En),
+/* harmony export */   VK_FORMAT_ASTC_8x6_UNORM_BLOCK: () => (/* binding */ Vn),
+/* harmony export */   VK_FORMAT_ASTC_8x8_SFLOAT_BLOCK_EXT: () => (/* binding */ di),
+/* harmony export */   VK_FORMAT_ASTC_8x8_SRGB_BLOCK: () => (/* binding */ Pn),
+/* harmony export */   VK_FORMAT_ASTC_8x8_UNORM_BLOCK: () => (/* binding */ Fn),
+/* harmony export */   VK_FORMAT_B10G11R11_UFLOAT_PACK32: () => (/* binding */ Me),
+/* harmony export */   VK_FORMAT_B10X6G10X6R10X6G10X6_422_UNORM_4PACK16: () => (/* binding */ $n),
+/* harmony export */   VK_FORMAT_B12X4G12X4R12X4G12X4_422_UNORM_4PACK16: () => (/* binding */ si),
+/* harmony export */   VK_FORMAT_B4G4R4A4_UNORM_PACK16: () => (/* binding */ at),
+/* harmony export */   VK_FORMAT_B5G5R5A1_UNORM_PACK16: () => (/* binding */ ft),
+/* harmony export */   VK_FORMAT_B5G6R5_UNORM_PACK16: () => (/* binding */ ot),
+/* harmony export */   VK_FORMAT_B8G8R8A8_SINT: () => (/* binding */ Mt),
+/* harmony export */   VK_FORMAT_B8G8R8A8_SNORM: () => (/* binding */ Ct),
+/* harmony export */   VK_FORMAT_B8G8R8A8_SRGB: () => (/* binding */ Wt),
+/* harmony export */   VK_FORMAT_B8G8R8A8_UINT: () => (/* binding */ zt),
+/* harmony export */   VK_FORMAT_B8G8R8A8_UNORM: () => (/* binding */ Pt),
+/* harmony export */   VK_FORMAT_B8G8R8_SINT: () => (/* binding */ St),
+/* harmony export */   VK_FORMAT_B8G8R8_SNORM: () => (/* binding */ kt),
+/* harmony export */   VK_FORMAT_B8G8R8_SRGB: () => (/* binding */ It),
+/* harmony export */   VK_FORMAT_B8G8R8_UINT: () => (/* binding */ vt),
+/* harmony export */   VK_FORMAT_B8G8R8_UNORM: () => (/* binding */ At),
+/* harmony export */   VK_FORMAT_BC1_RGBA_SRGB_BLOCK: () => (/* binding */ Qe),
+/* harmony export */   VK_FORMAT_BC1_RGBA_UNORM_BLOCK: () => (/* binding */ Je),
+/* harmony export */   VK_FORMAT_BC1_RGB_SRGB_BLOCK: () => (/* binding */ Ge),
+/* harmony export */   VK_FORMAT_BC1_RGB_UNORM_BLOCK: () => (/* binding */ qe),
+/* harmony export */   VK_FORMAT_BC2_SRGB_BLOCK: () => (/* binding */ $e),
+/* harmony export */   VK_FORMAT_BC2_UNORM_BLOCK: () => (/* binding */ Ze),
+/* harmony export */   VK_FORMAT_BC3_SRGB_BLOCK: () => (/* binding */ en),
+/* harmony export */   VK_FORMAT_BC3_UNORM_BLOCK: () => (/* binding */ tn),
+/* harmony export */   VK_FORMAT_BC4_SNORM_BLOCK: () => (/* binding */ sn),
+/* harmony export */   VK_FORMAT_BC4_UNORM_BLOCK: () => (/* binding */ nn),
+/* harmony export */   VK_FORMAT_BC5_SNORM_BLOCK: () => (/* binding */ rn),
+/* harmony export */   VK_FORMAT_BC5_UNORM_BLOCK: () => (/* binding */ an),
+/* harmony export */   VK_FORMAT_BC6H_SFLOAT_BLOCK: () => (/* binding */ ln),
+/* harmony export */   VK_FORMAT_BC6H_UFLOAT_BLOCK: () => (/* binding */ on),
+/* harmony export */   VK_FORMAT_BC7_SRGB_BLOCK: () => (/* binding */ Un),
+/* harmony export */   VK_FORMAT_BC7_UNORM_BLOCK: () => (/* binding */ fn),
+/* harmony export */   VK_FORMAT_D16_UNORM: () => (/* binding */ Ne),
+/* harmony export */   VK_FORMAT_D16_UNORM_S8_UINT: () => (/* binding */ je),
+/* harmony export */   VK_FORMAT_D24_UNORM_S8_UINT: () => (/* binding */ Re),
+/* harmony export */   VK_FORMAT_D32_SFLOAT: () => (/* binding */ Ke),
+/* harmony export */   VK_FORMAT_D32_SFLOAT_S8_UINT: () => (/* binding */ Ye),
+/* harmony export */   VK_FORMAT_E5B9G9R9_UFLOAT_PACK32: () => (/* binding */ We),
+/* harmony export */   VK_FORMAT_EAC_R11G11_SNORM_BLOCK: () => (/* binding */ dn),
+/* harmony export */   VK_FORMAT_EAC_R11G11_UNORM_BLOCK: () => (/* binding */ bn),
+/* harmony export */   VK_FORMAT_EAC_R11_SNORM_BLOCK: () => (/* binding */ un),
+/* harmony export */   VK_FORMAT_EAC_R11_UNORM_BLOCK: () => (/* binding */ xn),
+/* harmony export */   VK_FORMAT_ETC2_R8G8B8A1_SRGB_BLOCK: () => (/* binding */ pn),
+/* harmony export */   VK_FORMAT_ETC2_R8G8B8A1_UNORM_BLOCK: () => (/* binding */ _n),
+/* harmony export */   VK_FORMAT_ETC2_R8G8B8A8_SRGB_BLOCK: () => (/* binding */ yn),
+/* harmony export */   VK_FORMAT_ETC2_R8G8B8A8_UNORM_BLOCK: () => (/* binding */ gn),
+/* harmony export */   VK_FORMAT_ETC2_R8G8B8_SRGB_BLOCK: () => (/* binding */ hn),
+/* harmony export */   VK_FORMAT_ETC2_R8G8B8_UNORM_BLOCK: () => (/* binding */ cn),
+/* harmony export */   VK_FORMAT_G10X6B10X6G10X6R10X6_422_UNORM_4PACK16: () => (/* binding */ Zn),
+/* harmony export */   VK_FORMAT_G12X4B12X4G12X4R12X4_422_UNORM_4PACK16: () => (/* binding */ ii),
+/* harmony export */   VK_FORMAT_PVRTC1_2BPP_SRGB_BLOCK_IMG: () => (/* binding */ fi),
+/* harmony export */   VK_FORMAT_PVRTC1_2BPP_UNORM_BLOCK_IMG: () => (/* binding */ ai),
+/* harmony export */   VK_FORMAT_PVRTC1_4BPP_SRGB_BLOCK_IMG: () => (/* binding */ Ui),
+/* harmony export */   VK_FORMAT_PVRTC1_4BPP_UNORM_BLOCK_IMG: () => (/* binding */ ri),
+/* harmony export */   VK_FORMAT_PVRTC2_2BPP_SRGB_BLOCK_IMG: () => (/* binding */ ci),
+/* harmony export */   VK_FORMAT_PVRTC2_2BPP_UNORM_BLOCK_IMG: () => (/* binding */ oi),
+/* harmony export */   VK_FORMAT_PVRTC2_4BPP_SRGB_BLOCK_IMG: () => (/* binding */ hi),
+/* harmony export */   VK_FORMAT_PVRTC2_4BPP_UNORM_BLOCK_IMG: () => (/* binding */ li),
+/* harmony export */   VK_FORMAT_R10X6G10X6B10X6A10X6_UNORM_4PACK16: () => (/* binding */ Qn),
+/* harmony export */   VK_FORMAT_R10X6G10X6_UNORM_2PACK16: () => (/* binding */ Jn),
+/* harmony export */   VK_FORMAT_R10X6_UNORM_PACK16: () => (/* binding */ Gn),
+/* harmony export */   VK_FORMAT_R12X4G12X4B12X4A12X4_UNORM_4PACK16: () => (/* binding */ ni),
+/* harmony export */   VK_FORMAT_R12X4G12X4_UNORM_2PACK16: () => (/* binding */ ei),
+/* harmony export */   VK_FORMAT_R12X4_UNORM_PACK16: () => (/* binding */ ti),
+/* harmony export */   VK_FORMAT_R16G16B16A16_SFLOAT: () => (/* binding */ pe),
+/* harmony export */   VK_FORMAT_R16G16B16A16_SINT: () => (/* binding */ _e),
+/* harmony export */   VK_FORMAT_R16G16B16A16_SNORM: () => (/* binding */ ce),
+/* harmony export */   VK_FORMAT_R16G16B16A16_UINT: () => (/* binding */ he),
+/* harmony export */   VK_FORMAT_R16G16B16A16_UNORM: () => (/* binding */ Ue),
+/* harmony export */   VK_FORMAT_R16G16B16_SFLOAT: () => (/* binding */ fe),
+/* harmony export */   VK_FORMAT_R16G16B16_SINT: () => (/* binding */ le),
+/* harmony export */   VK_FORMAT_R16G16B16_SNORM: () => (/* binding */ re),
+/* harmony export */   VK_FORMAT_R16G16B16_UINT: () => (/* binding */ oe),
+/* harmony export */   VK_FORMAT_R16G16B16_UNORM: () => (/* binding */ ae),
+/* harmony export */   VK_FORMAT_R16G16_SFLOAT: () => (/* binding */ se),
+/* harmony export */   VK_FORMAT_R16G16_SINT: () => (/* binding */ ie),
+/* harmony export */   VK_FORMAT_R16G16_SNORM: () => (/* binding */ ee),
+/* harmony export */   VK_FORMAT_R16G16_UINT: () => (/* binding */ ne),
+/* harmony export */   VK_FORMAT_R16G16_UNORM: () => (/* binding */ te),
+/* harmony export */   VK_FORMAT_R16_SFLOAT: () => (/* binding */ $t),
+/* harmony export */   VK_FORMAT_R16_SINT: () => (/* binding */ Zt),
+/* harmony export */   VK_FORMAT_R16_SNORM: () => (/* binding */ Jt),
+/* harmony export */   VK_FORMAT_R16_UINT: () => (/* binding */ Qt),
+/* harmony export */   VK_FORMAT_R16_UNORM: () => (/* binding */ Gt),
+/* harmony export */   VK_FORMAT_R32G32B32A32_SFLOAT: () => (/* binding */ Ae),
+/* harmony export */   VK_FORMAT_R32G32B32A32_SINT: () => (/* binding */ Le),
+/* harmony export */   VK_FORMAT_R32G32B32A32_UINT: () => (/* binding */ Be),
+/* harmony export */   VK_FORMAT_R32G32B32_SFLOAT: () => (/* binding */ De),
+/* harmony export */   VK_FORMAT_R32G32B32_SINT: () => (/* binding */ we),
+/* harmony export */   VK_FORMAT_R32G32B32_UINT: () => (/* binding */ me),
+/* harmony export */   VK_FORMAT_R32G32_SFLOAT: () => (/* binding */ de),
+/* harmony export */   VK_FORMAT_R32G32_SINT: () => (/* binding */ be),
+/* harmony export */   VK_FORMAT_R32G32_UINT: () => (/* binding */ ue),
+/* harmony export */   VK_FORMAT_R32_SFLOAT: () => (/* binding */ xe),
+/* harmony export */   VK_FORMAT_R32_SINT: () => (/* binding */ ye),
+/* harmony export */   VK_FORMAT_R32_UINT: () => (/* binding */ ge),
+/* harmony export */   VK_FORMAT_R4G4B4A4_UNORM_PACK16: () => (/* binding */ st),
+/* harmony export */   VK_FORMAT_R4G4_UNORM_PACK8: () => (/* binding */ it),
+/* harmony export */   VK_FORMAT_R5G5B5A1_UNORM_PACK16: () => (/* binding */ lt),
+/* harmony export */   VK_FORMAT_R5G6B5_UNORM_PACK16: () => (/* binding */ rt),
+/* harmony export */   VK_FORMAT_R64G64B64A64_SFLOAT: () => (/* binding */ ze),
+/* harmony export */   VK_FORMAT_R64G64B64A64_SINT: () => (/* binding */ Ce),
+/* harmony export */   VK_FORMAT_R64G64B64A64_UINT: () => (/* binding */ Pe),
+/* harmony export */   VK_FORMAT_R64G64B64_SFLOAT: () => (/* binding */ Fe),
+/* harmony export */   VK_FORMAT_R64G64B64_SINT: () => (/* binding */ Ee),
+/* harmony export */   VK_FORMAT_R64G64B64_UINT: () => (/* binding */ Ve),
+/* harmony export */   VK_FORMAT_R64G64_SFLOAT: () => (/* binding */ Te),
+/* harmony export */   VK_FORMAT_R64G64_SINT: () => (/* binding */ Oe),
+/* harmony export */   VK_FORMAT_R64G64_UINT: () => (/* binding */ Ie),
+/* harmony export */   VK_FORMAT_R64_SFLOAT: () => (/* binding */ Se),
+/* harmony export */   VK_FORMAT_R64_SINT: () => (/* binding */ ve),
+/* harmony export */   VK_FORMAT_R64_UINT: () => (/* binding */ ke),
+/* harmony export */   VK_FORMAT_R8G8B8A8_SINT: () => (/* binding */ Et),
+/* harmony export */   VK_FORMAT_R8G8B8A8_SNORM: () => (/* binding */ Tt),
+/* harmony export */   VK_FORMAT_R8G8B8A8_SRGB: () => (/* binding */ Ft),
+/* harmony export */   VK_FORMAT_R8G8B8A8_UINT: () => (/* binding */ Vt),
+/* harmony export */   VK_FORMAT_R8G8B8A8_UNORM: () => (/* binding */ Ot),
+/* harmony export */   VK_FORMAT_R8G8B8_SINT: () => (/* binding */ Bt),
+/* harmony export */   VK_FORMAT_R8G8B8_SNORM: () => (/* binding */ wt),
+/* harmony export */   VK_FORMAT_R8G8B8_SRGB: () => (/* binding */ Lt),
+/* harmony export */   VK_FORMAT_R8G8B8_UINT: () => (/* binding */ Dt),
+/* harmony export */   VK_FORMAT_R8G8B8_UNORM: () => (/* binding */ mt),
+/* harmony export */   VK_FORMAT_R8G8_SINT: () => (/* binding */ bt),
+/* harmony export */   VK_FORMAT_R8G8_SNORM: () => (/* binding */ xt),
+/* harmony export */   VK_FORMAT_R8G8_SRGB: () => (/* binding */ dt),
+/* harmony export */   VK_FORMAT_R8G8_UINT: () => (/* binding */ ut),
+/* harmony export */   VK_FORMAT_R8G8_UNORM: () => (/* binding */ yt),
+/* harmony export */   VK_FORMAT_R8_SINT: () => (/* binding */ pt),
+/* harmony export */   VK_FORMAT_R8_SNORM: () => (/* binding */ ht),
+/* harmony export */   VK_FORMAT_R8_SRGB: () => (/* binding */ gt),
+/* harmony export */   VK_FORMAT_R8_UINT: () => (/* binding */ _t),
+/* harmony export */   VK_FORMAT_R8_UNORM: () => (/* binding */ ct),
+/* harmony export */   VK_FORMAT_S8_UINT: () => (/* binding */ Xe),
+/* harmony export */   VK_FORMAT_UNDEFINED: () => (/* binding */ nt),
+/* harmony export */   VK_FORMAT_X8_D24_UNORM_PACK32: () => (/* binding */ He),
+/* harmony export */   read: () => (/* binding */ Pi),
+/* harmony export */   write: () => (/* binding */ Mi)
 /* harmony export */ });
 /* provided dependency */ var Buffer = __webpack_require__(/*! buffer */ "./node_modules/buffer/index.js")["Buffer"];
 const t = 0,
@@ -40583,7 +41043,7 @@ function Mi(t, e = {}) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "ZSTDDecoder": () => (/* binding */ Q)
+/* harmony export */   ZSTDDecoder: () => (/* binding */ Q)
 /* harmony export */ });
 /* provided dependency */ var Buffer = __webpack_require__(/*! buffer */ "./node_modules/buffer/index.js")["Buffer"];
 let A, I, B;
@@ -40626,7 +41086,7 @@ const C = "AGFzbQEAAAABpQEVYAF/AX9gAn9/AGADf39/AX9gBX9/f39/AX9gAX8AYAJ/fwF/YAR/f
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "LightProbeGenerator": () => (/* binding */ LightProbeGenerator)
+/* harmony export */   LightProbeGenerator: () => (/* binding */ LightProbeGenerator)
 /* harmony export */ });
 /* harmony import */ var three__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three */ "./node_modules/super-three/build/three.module.js");
 
@@ -40846,7 +41306,7 @@ function convertColorToLinear(color, colorSpace) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "DRACOLoader": () => (/* binding */ DRACOLoader)
+/* harmony export */   DRACOLoader: () => (/* binding */ DRACOLoader)
 /* harmony export */ });
 /* harmony import */ var three__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three */ "./node_modules/super-three/build/three.module.js");
 
@@ -41111,7 +41571,6 @@ function DRACOWorker() {
           };
           DracoDecoderModule(decoderConfig); // eslint-disable-line no-undef
         });
-
         break;
       case 'decode':
         const buffer = message.buffer;
@@ -41258,7 +41717,7 @@ function DRACOWorker() {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "GLTFLoader": () => (/* binding */ GLTFLoader)
+/* harmony export */   GLTFLoader: () => (/* binding */ GLTFLoader)
 /* harmony export */ });
 /* harmony import */ var three__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three */ "./node_modules/super-three/build/three.module.js");
 /* harmony import */ var _utils_BufferGeometryUtils_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/BufferGeometryUtils.js */ "./node_modules/super-three/examples/jsm/utils/BufferGeometryUtils.js");
@@ -44071,7 +44530,7 @@ function addPrimitiveAttributes(geometry, primitiveDef, parser) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "KTX2Loader": () => (/* binding */ KTX2Loader)
+/* harmony export */   KTX2Loader: () => (/* binding */ KTX2Loader)
 /* harmony export */ });
 /* harmony import */ var three__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three */ "./node_modules/super-three/build/three.module.js");
 /* harmony import */ var _utils_WorkerPool_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/WorkerPool.js */ "./node_modules/super-three/examples/jsm/utils/WorkerPool.js");
@@ -44698,7 +45157,7 @@ function parseColorSpace(container) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "MTLLoader": () => (/* binding */ MTLLoader)
+/* harmony export */   MTLLoader: () => (/* binding */ MTLLoader)
 /* harmony export */ });
 /* harmony import */ var three__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three */ "./node_modules/super-three/build/three.module.js");
 
@@ -45030,13 +45489,11 @@ class MaterialCreator {
       texParams.scale.set(parseFloat(items[pos + 1]), parseFloat(items[pos + 2]));
       items.splice(pos, 4); // we expect 3 parameters here!
     }
-
     pos = items.indexOf('-o');
     if (pos >= 0) {
       texParams.offset.set(parseFloat(items[pos + 1]), parseFloat(items[pos + 2]));
       items.splice(pos, 4); // we expect 3 parameters here!
     }
-
     texParams.url = items.join(' ').trim();
     return texParams;
   }
@@ -45065,7 +45522,7 @@ class MaterialCreator {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "OBJLoader": () => (/* binding */ OBJLoader)
+/* harmony export */   OBJLoader: () => (/* binding */ OBJLoader)
 /* harmony export */ });
 /* harmony import */ var three__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three */ "./node_modules/super-three/build/three.module.js");
 
@@ -45646,7 +46103,7 @@ class OBJLoader extends three__WEBPACK_IMPORTED_MODULE_0__.Loader {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "OBB": () => (/* binding */ OBB)
+/* harmony export */   OBB: () => (/* binding */ OBB)
 /* harmony export */ });
 /* harmony import */ var three__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three */ "./node_modules/super-three/build/three.module.js");
 
@@ -45660,7 +46117,6 @@ const a = {
   // basis vectors
   e: [] // half width
 };
-
 const b = {
   c: null,
   // center
@@ -45668,7 +46124,6 @@ const b = {
   // basis vectors
   e: [] // half width
 };
-
 const R = [[], [], []];
 const AbsR = [[], [], []];
 const t = [];
@@ -45989,21 +46444,21 @@ const obb = new OBB();
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "computeMikkTSpaceTangents": () => (/* binding */ computeMikkTSpaceTangents),
-/* harmony export */   "computeMorphedAttributes": () => (/* binding */ computeMorphedAttributes),
-/* harmony export */   "deepCloneAttribute": () => (/* binding */ deepCloneAttribute),
-/* harmony export */   "deinterleaveAttribute": () => (/* binding */ deinterleaveAttribute),
-/* harmony export */   "deinterleaveGeometry": () => (/* binding */ deinterleaveGeometry),
-/* harmony export */   "estimateBytesUsed": () => (/* binding */ estimateBytesUsed),
-/* harmony export */   "interleaveAttributes": () => (/* binding */ interleaveAttributes),
-/* harmony export */   "mergeAttributes": () => (/* binding */ mergeAttributes),
-/* harmony export */   "mergeBufferAttributes": () => (/* binding */ mergeBufferAttributes),
-/* harmony export */   "mergeBufferGeometries": () => (/* binding */ mergeBufferGeometries),
-/* harmony export */   "mergeGeometries": () => (/* binding */ mergeGeometries),
-/* harmony export */   "mergeGroups": () => (/* binding */ mergeGroups),
-/* harmony export */   "mergeVertices": () => (/* binding */ mergeVertices),
-/* harmony export */   "toCreasedNormals": () => (/* binding */ toCreasedNormals),
-/* harmony export */   "toTrianglesDrawMode": () => (/* binding */ toTrianglesDrawMode)
+/* harmony export */   computeMikkTSpaceTangents: () => (/* binding */ computeMikkTSpaceTangents),
+/* harmony export */   computeMorphedAttributes: () => (/* binding */ computeMorphedAttributes),
+/* harmony export */   deepCloneAttribute: () => (/* binding */ deepCloneAttribute),
+/* harmony export */   deinterleaveAttribute: () => (/* binding */ deinterleaveAttribute),
+/* harmony export */   deinterleaveGeometry: () => (/* binding */ deinterleaveGeometry),
+/* harmony export */   estimateBytesUsed: () => (/* binding */ estimateBytesUsed),
+/* harmony export */   interleaveAttributes: () => (/* binding */ interleaveAttributes),
+/* harmony export */   mergeAttributes: () => (/* binding */ mergeAttributes),
+/* harmony export */   mergeBufferAttributes: () => (/* binding */ mergeBufferAttributes),
+/* harmony export */   mergeBufferGeometries: () => (/* binding */ mergeBufferGeometries),
+/* harmony export */   mergeGeometries: () => (/* binding */ mergeGeometries),
+/* harmony export */   mergeGroups: () => (/* binding */ mergeGroups),
+/* harmony export */   mergeVertices: () => (/* binding */ mergeVertices),
+/* harmony export */   toCreasedNormals: () => (/* binding */ toCreasedNormals),
+/* harmony export */   toTrianglesDrawMode: () => (/* binding */ toTrianglesDrawMode)
 /* harmony export */ });
 /* harmony import */ var three__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three */ "./node_modules/super-three/build/three.module.js");
 
@@ -46858,7 +47313,7 @@ function mergeBufferAttributes(attributes) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "WorkerPool": () => (/* binding */ WorkerPool)
+/* harmony export */   WorkerPool: () => (/* binding */ WorkerPool)
 /* harmony export */ });
 /**
  * @author Deepkolos / https://github.com/deepkolos

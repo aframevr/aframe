@@ -20,7 +20,7 @@ var DIALOG_OK_BUTTON_CLASS = 'a-dialog-ok-button';
  */
 module.exports.Component = registerComponent('device-orientation-permission-ui', {
   schema: {
-    enabled: {default: true},
+    enabled: {default: false},
     deviceMotionMessage: {
       default: 'This immersive website requires access to your device motion sensors.'
     },
