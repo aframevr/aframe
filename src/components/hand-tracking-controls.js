@@ -194,7 +194,7 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
     var jointPose = new THREE.Matrix4();
     return function () {
       var wristObject3D = this.wristObject3D;
-      if (!wristObject3D) { return; }
+      if (!wristObject3D || !this.hasPoses) { return; }
       jointPose.fromArray(this.jointPoses, WRIST_INDEX * 16);
       wristObject3D.position.setFromMatrixPosition(jointPose);
       wristObject3D.quaternion.setFromRotationMatrix(jointPose);
