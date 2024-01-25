@@ -9,7 +9,7 @@ module.exports = merge(commonConfiguration, {
     libraryTarget: 'umd',
     path: path.resolve(__dirname, 'dist'),
     publicPath: '/dist/',
-    filename: '8aframe-master.min.js'
+    filename: 'aframe-master.min.js'
   },
   mode: 'production',
   optimization: {
