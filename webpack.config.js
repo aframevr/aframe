@@ -13,7 +13,7 @@ module.exports = {
   devtool: 'source-map',
   mode: 'development',
   devServer: {
-    port: process.env.PORT || 8080,
+    port: process.env.PORT || 9000,
     hot: false,
     liveReload: true,
     static: {
