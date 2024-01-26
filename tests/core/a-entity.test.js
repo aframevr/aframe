@@ -144,37 +144,20 @@ suite('a-entity', function () {
 
   test('update method is called only once', function (done) {
     var triggerEl = document.createElement('a-entity');
-    var component = registerComponent('dummy2', {
-      schema: {
-        greeting: {default: 'Hello'},
-        name: {default: 'John Doe'}
-      },
-      init: function () {
-        this.el.setAttribute('text', {
-          color: 'black',
-          width: 4,
-          align: 'center',
-          value: `${this.data.greeting}, ${this.data.name}`
-        });
-      },
-      update: function () {}
-    });
 
     registerComponent('trigger', {
-      schema: {array: {type: 'array'}},
       init: function () {
-        var template = document.createElement('div');
-        template.innerHTML = '<a-entity material="color: red" position="0 1.5 -2" dummy2="greeting: Welcome; name: Guest"></a-entity>';
-        var childEl = template.childNodes[0];
+        var childEl = document.createElement('a-entity');
+        childEl.setAttributeNS(null, 'visible', 'false');
         childEl.addEventListener('loaded', function () {
           sinon.assert.calledOnce(updateSpy);
           done();
         });
         this.el.sceneEl.appendChild(childEl);
-        childEl.setAttribute('dummy2', {name: 'Visitor'});
+        childEl.setAttribute('visible', true);
       }
     });
-    var updateSpy = sinon.spy(component.prototype, 'update');
+    var updateSpy = sinon.spy(components.visible.Component.prototype, 'update');
     triggerEl.setAttribute('trigger', '');
     el.sceneEl.appendChild(triggerEl);
   });

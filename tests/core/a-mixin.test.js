@@ -80,7 +80,7 @@ suite('a-mixin', function () {
       });
     });
 
-    test('can remove mixin in component init method', function (done) {
+    test('allows mixin to be removed during component init', function (done) {
       var mixinEl = document.createElement('a-mixin');
       var testEl = document.createElement('a-entity');
       mixinEl.setAttribute('id', 'red');
@@ -94,7 +94,6 @@ suite('a-mixin', function () {
       });
 
       testEl.setAttribute('mixin', 'red');
-      testEl.setAttribute('geometry', {primitive: 'box'});
       testEl.setAttribute('delete-mixin', '');
       testEl.addEventListener('loaded', function () {
         assert.equal(testEl.getAttribute('mixin'), null);

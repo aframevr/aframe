@@ -342,27 +342,27 @@ suite('registerPrimitive (using innerHTML)', function () {
 
   test('handles primitive created and updated in init method', function (done) {
     var el = helpers.entityFactory();
-    registerPrimitive('my-panel', {
+    var tagName = 'a-test-' + primitiveId++;
+    registerPrimitive(tagName, {
       defaultComponents: {
-        geometry: { primitive: 'plane' },
-        scale: {x: 0.2, y: 0.2, z: 1.0},
-        position: {x: 0, y: 1.5, z: -2}
+        scale: {x: 0.2, y: 0.2, z: 0.2}
       }
     });
-    registerComponent('place-panel', {
+
+    registerComponent('create-and-update-primitive', {
       init: function () {
-        var panel = document.createElement('my-panel');
-        this.el.appendChild(panel);
-        panel.setAttribute('scale', {x: 0.2});
+        var primitiveEl = document.createElement(tagName);
+        this.el.appendChild(primitiveEl);
+        primitiveEl.setAttribute('scale', {y: 0.2});
+        primitiveEl.addEventListener('loaded', function () {
+          assert.equal(primitiveEl.object3D.scale.x, 0.2);
+          done();
+        });
       }
     });
-    var panelEl = document.createElement('my-panel');
-    panelEl.setAttribute('place-panel', '');
-    panelEl.addEventListener('loaded', function () {
-      assert.equal(panelEl.object3D.scale.x, 0.2);
-      done();
-    });
-    el.sceneEl.appendChild(panelEl);
+
+    el.setAttribute('create-and-update-primitive', '');
+    el.sceneEl.appendChild(el);
   });
 
   test('resolves mapping collisions', function (done) {
