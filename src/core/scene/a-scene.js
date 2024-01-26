@@ -598,7 +598,7 @@ class AScene extends AEntity {
       powerPreference: 'high-performance'
     };
 
-    this.maxCanvasSize = {height: 1920, width: 1920};
+    this.maxCanvasSize = {height: -1, width: -1};
 
     if (this.hasAttribute('renderer')) {
       rendererAttrString = this.getAttribute('renderer');
