@@ -28222,8 +28222,8 @@ class AScene extends AEntity {
       powerPreference: 'high-performance'
     };
     this.maxCanvasSize = {
-      height: 1920,
-      width: 1920
+      height: -1,
+      width: -1
     };
     if (this.hasAttribute('renderer')) {
       rendererAttrString = this.getAttribute('renderer');
@@ -30814,7 +30814,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.5.0 (Date 2024-01-26, Commit #a1fe33c6)');
+console.log('A-Frame Version: 1.5.0 (Date 2024-01-26, Commit #c5bab4cd)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
@@ -33017,10 +33017,10 @@ module.exports.System = registerSystem('renderer', {
       oneOf: ['true', 'false', 'auto']
     },
     maxCanvasWidth: {
-      default: 1920
+      default: -1
     },
     maxCanvasHeight: {
-      default: 1920
+      default: -1
     },
     multiviewStereo: {
       default: false
