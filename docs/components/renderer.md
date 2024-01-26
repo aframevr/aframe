@@ -34,8 +34,8 @@ It also configures presentation attributes when entering WebVR/WebXR.
 | foveationLevel          | Amount of foveation used in VR to improve perf, from 0 (min) to 1 (max).        | 1             |
 | sortTransparentObjects | Whether to sort transparent objects (far to near) before rendering | false |
 | physicallyCorrectLights | Whether to use physically-correct light attenuation.                            | false         |
-| maxCanvasWidth          | Maximum canvas width. Uses the size multiplied by device pixel ratio. Does not limit canvas width if set to -1.                                | 1920            |
-| maxCanvasHeight         | Maximum canvas height. Behaves the same as maxCanvasWidth.                      | 1920          |
+| maxCanvasWidth          | Maximum canvas width. Uses the size multiplied by device pixel ratio. Does not limit canvas width if set to -1.                                | -1            |
+| maxCanvasHeight         | Maximum canvas height. Behaves the same as maxCanvasWidth.                      | -1          |
 | multiviewStereo         | Enables the use of the OCULUS_multiview extension.                              | false         |
 | logarithmicDepthBuffer  | Whether to use a logarithmic depth buffer.                                      | auto          |
 | precision               | Fragment shader [precision][precision] : low, medium or high.                   | high          |
