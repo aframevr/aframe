@@ -404,7 +404,7 @@ class AEntity extends ANode {
     var name;
     var componentsToUpdate = this.componentsToUpdate;
 
-    if (!this.hasLoaded && !this.sceneEl) { return; }
+    if (!this.hasLoaded && !this.isLoading) { return; }
 
     // Gather mixin-defined components.
     for (i = 0; i < this.mixinEls.length; i++) {
@@ -511,7 +511,7 @@ class AEntity extends ANode {
     var key;
 
     // Already playing.
-    if (this.isPlaying || (!this.hasLoaded && !this.sceneEl)) { return; }
+    if (this.isPlaying || (!this.hasLoaded && !this.isLoading)) { return; }
     this.isPlaying = true;
 
     // Wake up all components.
@@ -568,7 +568,7 @@ class AEntity extends ANode {
   /**
    * When mixins updated, trigger init or optimized-update of relevant components.
    */
-  mixinUpdate (newMixins, oldMixins) {
+  mixinUpdate (newMixins, oldMixins, deferred) {
     var componentsUpdated = AEntity.componentsUpdated;
 
     var component;
@@ -577,14 +577,15 @@ class AEntity extends ANode {
     var i;
     var self = this;
 
+    if (!deferred) { oldMixins = oldMixins || this.getAttribute('mixin'); }
+
     if (!this.hasLoaded) {
-      this.addEventListener('loaded', function () {
-        self.mixinUpdate(newMixins, oldMixins);
+      this.addEventListener('loaded-private', function () {
+        self.mixinUpdate(newMixins, oldMixins, true);
       }, ONCE);
       return;
     }
 
-    oldMixins = oldMixins || this.getAttribute('mixin');
     mixinIds = this.updateMixins(newMixins, oldMixins);
 
     // Loop over current mixins.

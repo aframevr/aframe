@@ -142,6 +142,26 @@ suite('a-entity', function () {
     parentEl.appendChild(el2);
   });
 
+  test('update method is called only once', function (done) {
+    var triggerEl = document.createElement('a-entity');
+
+    registerComponent('trigger', {
+      init: function () {
+        var childEl = document.createElement('a-entity');
+        childEl.setAttributeNS(null, 'visible', 'false');
+        childEl.addEventListener('loaded', function () {
+          sinon.assert.calledOnce(updateSpy);
+          done();
+        });
+        this.el.sceneEl.appendChild(childEl);
+        childEl.setAttribute('visible', true);
+      }
+    });
+    var updateSpy = sinon.spy(components.visible.Component.prototype, 'update');
+    triggerEl.setAttribute('trigger', '');
+    el.sceneEl.appendChild(triggerEl);
+  });
+
   suite('attachedCallback', function () {
     test('initializes 3D object', function (done) {
       elFactory().then(el => {
