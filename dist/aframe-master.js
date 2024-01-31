@@ -25499,7 +25499,7 @@ class AEntity extends ANode {
     var i;
     var name;
     var componentsToUpdate = this.componentsToUpdate;
-    if (!this.hasLoaded && !this.sceneEl) {
+    if (!this.hasLoaded && !this.isLoading) {
       return;
     }
 
@@ -25615,7 +25615,7 @@ class AEntity extends ANode {
     var key;
 
     // Already playing.
-    if (this.isPlaying || !this.hasLoaded && !this.sceneEl) {
+    if (this.isPlaying || !this.hasLoaded && !this.isLoading) {
       return;
     }
     this.isPlaying = true;
@@ -25683,20 +25683,22 @@ class AEntity extends ANode {
   /**
    * When mixins updated, trigger init or optimized-update of relevant components.
    */
-  mixinUpdate(newMixins, oldMixins) {
+  mixinUpdate(newMixins, oldMixins, deferred) {
     var componentsUpdated = AEntity.componentsUpdated;
     var component;
     var mixinEl;
     var mixinIds;
     var i;
     var self = this;
+    if (!deferred) {
+      oldMixins = oldMixins || this.getAttribute('mixin');
+    }
     if (!this.hasLoaded) {
-      this.addEventListener('loaded', function () {
-        self.mixinUpdate(newMixins, oldMixins);
+      this.addEventListener('loaded-private', function () {
+        self.mixinUpdate(newMixins, oldMixins, true);
       }, ONCE);
       return;
     }
-    oldMixins = oldMixins || this.getAttribute('mixin');
     mixinIds = this.updateMixins(newMixins, oldMixins);
 
     // Loop over current mixins.
@@ -26273,11 +26275,16 @@ class ANode extends HTMLElement {
           warn('Rendering scene with errors on node: ', result.reason.target);
         }
       });
+      self.isLoading = true;
       self.setupMutationObserver();
       if (cb) {
         cb();
       }
+      self.isLoading = false;
       self.hasLoaded = true;
+      // loaded-private is an event analog to loaded that gives A-Frame an opportunity to manage internal
+      // affairs before the publicly loaded event fires and corresponding handlers executed.
+      self.emit('loaded-private', undefined, false);
       self.emit('loaded', undefined, false);
     });
   }
@@ -26351,6 +26358,9 @@ class ANode extends HTMLElement {
     if (this.computedMixinStr) {
       this.computedMixinStr = this.computedMixinStr.trim();
       window.HTMLElement.prototype.setAttribute.call(this, 'mixin', this.computedMixinStr);
+    }
+    if (newMixinIds.length === 0) {
+      window.HTMLElement.prototype.removeAttribute.call(this, 'mixin');
     }
     return mixinIds;
   }
@@ -26714,7 +26724,7 @@ Component.prototype = {
 
     // Just cache the attribute if the entity has not loaded
     // Components are not initialized until the entity has loaded
-    if (!el.hasLoaded && !el.sceneEl) {
+    if (!el.hasLoaded && !el.isLoading) {
       this.updateCachedAttrValue(attrValue);
       return;
     }
@@ -30814,7 +30824,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.5.0 (Date 2024-01-26, Commit #c5bab4cd)');
+console.log('A-Frame Version: 1.5.0 (Date 2024-01-31, Commit #d9d12590)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
