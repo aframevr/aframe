@@ -51,7 +51,6 @@ module.exports.Component = registerComponent('screenshot', {
   },
 
   init: function () {
-    
   },
 
   setup: function () {
@@ -79,7 +78,7 @@ module.exports.Component = registerComponent('screenshot', {
       self.onKeyDown = self.onKeyDown.bind(self);
     }  
   },
-
+  
   getRenderTarget: function (width, height) {
     return new THREE.WebGLRenderTarget(width, height, {
       colorSpace: this.el.sceneEl.renderer.outputColorSpace,
