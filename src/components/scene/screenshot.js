@@ -51,36 +51,32 @@ module.exports.Component = registerComponent('screenshot', {
   },
 
   init: function () {
+    this.setupDone = false
+  },
+
+  setup: function () {
     var el = this.el;
     var self = this;
-
-    if (el.renderer) {
-      setup();
-    } else {
-      el.addEventListener('render-target-loaded', setup);
-    }
-
-    function setup () {
-      var gl = el.renderer.getContext();
-      if (!gl) { return; }
-      self.cubeMapSize = gl.getParameter(gl.MAX_CUBE_MAP_TEXTURE_SIZE);
-      self.material = new THREE.RawShaderMaterial({
-        uniforms: {map: {type: 't', value: null}},
-        vertexShader: VERTEX_SHADER,
-        fragmentShader: FRAGMENT_SHADER,
-        side: THREE.DoubleSide
-      });
-      self.quad = new THREE.Mesh(
-        new THREE.PlaneGeometry(1, 1),
-        self.material
-      );
-      self.quad.visible = false;
-      self.camera = new THREE.OrthographicCamera(-1 / 2, 1 / 2, 1 / 2, -1 / 2, -10000, 10000);
-      self.canvas = document.createElement('canvas');
-      self.ctx = self.canvas.getContext('2d');
-      el.object3D.add(self.quad);
-      self.onKeyDown = self.onKeyDown.bind(self);
-    }
+    var gl = el.renderer.getContext();
+    if (!gl) { return; }
+    self.cubeMapSize = gl.getParameter(gl.MAX_CUBE_MAP_TEXTURE_SIZE);
+    self.material = new THREE.RawShaderMaterial({
+      uniforms: {map: {type: 't', value: null}},
+      vertexShader: VERTEX_SHADER,
+      fragmentShader: FRAGMENT_SHADER,
+      side: THREE.DoubleSide
+    });
+    self.quad = new THREE.Mesh(
+      new THREE.PlaneGeometry(1, 1),
+      self.material
+    );
+    self.quad.visible = false;
+    self.camera = new THREE.OrthographicCamera(-1 / 2, 1 / 2, 1 / 2, -1 / 2, -10000, 10000);
+    self.canvas = document.createElement('canvas');
+    self.ctx = self.canvas.getContext('2d');
+    el.object3D.add(self.quad);
+    self.onKeyDown = self.onKeyDown.bind(self);
+    self.setupDone = true;
   },
 
   getRenderTarget: function (width, height) {
@@ -178,6 +174,9 @@ module.exports.Component = registerComponent('screenshot', {
    * Maintained for backwards compatibility.
    */
   capture: function (projection) {
+    if (!this.setupDone) {
+      this.setup()
+    }
     var isVREnabled = this.el.renderer.xr.enabled;
     var renderer = this.el.renderer;
     var params;
