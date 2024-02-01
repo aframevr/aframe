@@ -51,7 +51,7 @@ module.exports.Component = registerComponent('screenshot', {
   },
 
   init: function () {
-    this.setupDone = false
+    this.setupDone = false;
   },
 
   setup: function () {
@@ -175,7 +175,7 @@ module.exports.Component = registerComponent('screenshot', {
    */
   capture: function (projection) {
     if (!this.setupDone) {
-      this.setup()
+      this.setup();
     }
     var isVREnabled = this.el.renderer.xr.enabled;
     var renderer = this.el.renderer;
