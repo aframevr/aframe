@@ -76,7 +76,7 @@ module.exports.Component = registerComponent('screenshot', {
       self.ctx = self.canvas.getContext('2d');
       el.object3D.add(self.quad);
       self.onKeyDown = self.onKeyDown.bind(self);
-    }  
+    }
   },
   
   getRenderTarget: function (width, height) {
