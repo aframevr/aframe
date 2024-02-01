@@ -49,7 +49,7 @@ module.exports.Component = registerComponent('screenshot', {
     height: {default: 2048},
     camera: {type: 'selector'}
   },
-  
+
   setup: function () {
     var el = this.el;
     if (this.canvas) { return; }
@@ -69,9 +69,9 @@ module.exports.Component = registerComponent('screenshot', {
     this.quad.visible = false;
     this.camera = new THREE.OrthographicCamera(-1 / 2, 1 / 2, 1 / 2, -1 / 2, -10000, 10000);
     this.canvas = document.createElement('canvas');
-    this.ctx = self.canvas.getContext('2d');
-    el.object3D.add(self.quad);
-    this.onKeyDown = self.onKeyDown.bind(this);
+    this.ctx = this.canvas.getContext('2d');
+    el.object3D.add(this.quad);
+    this.onKeyDown = this.onKeyDown.bind(this);
   },
 
   getRenderTarget: function (width, height) {
