@@ -20985,39 +20985,34 @@ module.exports.Component = registerComponent('screenshot', {
       type: 'selector'
     }
   },
-  init: function () {
+  setup: function () {
     var el = this.el;
-    var self = this;
-    if (el.renderer) {
-      setup();
-    } else {
-      el.addEventListener('render-target-loaded', setup);
+    if (this.canvas) {
+      return;
     }
-    function setup() {
-      var gl = el.renderer.getContext();
-      if (!gl) {
-        return;
-      }
-      self.cubeMapSize = gl.getParameter(gl.MAX_CUBE_MAP_TEXTURE_SIZE);
-      self.material = new THREE.RawShaderMaterial({
-        uniforms: {
-          map: {
-            type: 't',
-            value: null
-          }
-        },
-        vertexShader: VERTEX_SHADER,
-        fragmentShader: FRAGMENT_SHADER,
-        side: THREE.DoubleSide
-      });
-      self.quad = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), self.material);
-      self.quad.visible = false;
-      self.camera = new THREE.OrthographicCamera(-1 / 2, 1 / 2, 1 / 2, -1 / 2, -10000, 10000);
-      self.canvas = document.createElement('canvas');
-      self.ctx = self.canvas.getContext('2d');
-      el.object3D.add(self.quad);
-      self.onKeyDown = self.onKeyDown.bind(self);
+    var gl = el.renderer.getContext();
+    if (!gl) {
+      return;
     }
+    this.cubeMapSize = gl.getParameter(gl.MAX_CUBE_MAP_TEXTURE_SIZE);
+    this.material = new THREE.RawShaderMaterial({
+      uniforms: {
+        map: {
+          type: 't',
+          value: null
+        }
+      },
+      vertexShader: VERTEX_SHADER,
+      fragmentShader: FRAGMENT_SHADER,
+      side: THREE.DoubleSide
+    });
+    this.quad = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), this.material);
+    this.quad.visible = false;
+    this.camera = new THREE.OrthographicCamera(-1 / 2, 1 / 2, 1 / 2, -1 / 2, -10000, 10000);
+    this.canvas = document.createElement('canvas');
+    this.ctx = this.canvas.getContext('2d');
+    el.object3D.add(this.quad);
+    this.onKeyDown = this.onKeyDown.bind(this);
   },
   getRenderTarget: function (width, height) {
     return new THREE.WebGLRenderTarget(width, height, {
@@ -21118,6 +21113,7 @@ module.exports.Component = registerComponent('screenshot', {
     var isVREnabled = this.el.renderer.xr.enabled;
     var renderer = this.el.renderer;
     var params;
+    this.setup();
     // Disable VR.
     renderer.xr.enabled = false;
     params = this.setCapture(projection);
@@ -30824,7 +30820,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.5.0 (Date 2024-01-31, Commit #a3805692)');
+console.log('A-Frame Version: 1.5.0 (Date 2024-02-02, Commit #e489e5ac)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
