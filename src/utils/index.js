@@ -4,7 +4,6 @@
 var debug = require('./debug');
 var deepAssign = require('deep-assign');
 var device = require('./device');
-var objectAssign = require('object-assign');
 var objectPool = require('./object-pool');
 
 var warn = debug('utils:warn');
@@ -158,7 +157,7 @@ module.exports.debounce = function (func, wait, immediate) {
  * @param  {object} dest - The object to which properties will be copied.
  * @param  {...object} source - The object(s) from which properties will be copied.
  */
-module.exports.extend = objectAssign;
+module.exports.extend = Object.assign;
 module.exports.extendDeep = deepAssign;
 
 module.exports.clone = function (obj) {
