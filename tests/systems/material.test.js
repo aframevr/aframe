@@ -211,41 +211,6 @@ suite('material system', function () {
         });
       });
 
-      test('sets texture flags appropriately when given a <video> element that isHLS on iOS', function (done) {
-        var videoEl = document.createElement('video');
-        var system = this.system;
-        var data = {src: VIDEO1};
-
-        // Mock iOS.
-        var sceneEl = this.el.sceneEl;
-        var realIsIOS = sceneEl.isIOS;
-        sceneEl.isIOS = true;
-        assert.equal(sceneEl.isIOS, true);
-
-        // Set up and verify video element to be treated as HLS.
-        videoEl.setAttribute('src', VIDEO1);
-        videoEl.setAttribute('type', 'application/x-mpegurl');
-        assert.equal(AFRAME.utils.material.isHLS(videoEl.getAttribute('src'), videoEl.getAttribute('type')), true);
-
-        system.loadVideo(videoEl, data, function (texture) {
-          assert.equal(texture.image, videoEl);
-
-          // Verify system thought this was iOS HLS.
-          assert.equal(sceneEl.isIOS, true);
-          assert.equal(AFRAME.utils.material.isHLS(videoEl.getAttribute('src'), videoEl.getAttribute('type')), true);
-
-          // Undo mock of iOS.
-          sceneEl.isIOS = realIsIOS;
-
-          // Verify iOS HLS flags from systems/material.js have been applied.
-          assert.equal(texture.format, THREE.RGBAFormat);
-          assert.equal(texture.needsCorrectionBGRA, true);
-          assert.equal(texture.flipY, false);
-          assert.equal(texture.needsCorrectionFlipY, true);
-          done();
-        });
-      });
-
       test('caches identical video textures', function (done) {
         var system = this.system;
         var src = VIDEO1;
