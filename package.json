@@ -35,7 +35,6 @@
     "vendor/**/*"
   ],
   "dependencies": {
-    "@ungap/custom-elements": "^1.1.0",
     "buffer": "^6.0.3",
     "debug": "ngokevin/debug#noTimestamp",
     "deep-assign": "^2.0.0",
