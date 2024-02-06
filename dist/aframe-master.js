@@ -30820,7 +30820,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.5.0 (Date 2024-02-02, Commit #e489e5ac)');
+console.log('A-Frame Version: 1.5.0 (Date 2024-02-06, Commit #74b2a211)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
@@ -31083,38 +31083,7 @@ __webpack_require__(/*! ./standard */ "./src/shaders/standard.js");
 __webpack_require__(/*! ./phong */ "./src/shaders/phong.js");
 __webpack_require__(/*! ./sdf */ "./src/shaders/sdf.js");
 __webpack_require__(/*! ./msdf */ "./src/shaders/msdf.js");
-__webpack_require__(/*! ./ios10hls */ "./src/shaders/ios10hls.js");
 __webpack_require__(/*! ./shadow */ "./src/shaders/shadow.js");
-
-/***/ }),
-
-/***/ "./src/shaders/ios10hls.js":
-/*!*********************************!*\
-  !*** ./src/shaders/ios10hls.js ***!
-  \*********************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-var registerShader = (__webpack_require__(/*! ../core/shader */ "./src/core/shader.js").registerShader);
-
-/**
- * Custom shader for iOS 10 HTTP Live Streaming (HLS).
- * For more information on HLS, see https://datatracker.ietf.org/doc/draft-pantos-http-live-streaming/
- */
-module.exports.Shader = registerShader('ios10hls', {
-  schema: {
-    src: {
-      type: 'map',
-      is: 'uniform'
-    },
-    opacity: {
-      type: 'number',
-      is: 'uniform',
-      default: 1
-    }
-  },
-  vertexShader: ['varying vec2 vUV;', 'void main(void) {', '  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);', '  vUV = uv;', '}'].join('\n'),
-  fragmentShader: ['uniform sampler2D src;', 'uniform float opacity;', 'varying vec2 vUV;', 'void main() {', '  vec2 offset = vec2(0, 0);', '  vec2 repeat = vec2(1, 1);', '  vec4 color = texture2D(src, vec2(vUV.x / repeat.x + offset.x, (1.0 - vUV.y) / repeat.y + offset.y)).bgra;', '  gl_FragColor = vec4(color.rgb, opacity);', '}'].join('\n')
-});
 
 /***/ }),
 
@@ -32507,7 +32476,6 @@ module.exports.System = registerSystem('light', {
 var registerSystem = (__webpack_require__(/*! ../core/system */ "./src/core/system.js").registerSystem);
 var THREE = __webpack_require__(/*! ../lib/three */ "./src/lib/three.js");
 var utils = __webpack_require__(/*! ../utils/ */ "./src/utils/index.js");
-var isHLS = (__webpack_require__(/*! ../utils/material */ "./src/utils/material.js").isHLS);
 var setTextureProperties = (__webpack_require__(/*! ../utils/material */ "./src/utils/material.js").setTextureProperties);
 var bind = utils.bind;
 var debug = utils.debug;
@@ -32652,16 +32620,6 @@ module.exports.System = registerSystem('material', {
     texture = new THREE.VideoTexture(videoEl);
     texture.minFilter = THREE.LinearFilter;
     setTextureProperties(texture, data);
-
-    // If iOS and video is HLS, do some hacks.
-    if (this.sceneEl.isIOS && isHLS(videoEl.src || videoEl.getAttribute('src'), videoEl.type || videoEl.getAttribute('type'))) {
-      // Actually BGRA. Tell shader to correct later.
-      texture.format = THREE.RGBAFormat;
-      texture.needsCorrectionBGRA = true;
-      // Apparently needed for HLS. Tell shader to correct later.
-      texture.flipY = false;
-      texture.needsCorrectionFlipY = true;
-    }
 
     // Cache as promise to be consistent with image texture caching.
     videoTextureResult = {
@@ -34498,7 +34456,6 @@ module.exports = function isIOSOlderThan10(userAgent) {
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 var THREE = __webpack_require__(/*! ../lib/three */ "./src/lib/three.js");
-var HLS_MIMETYPES = ['application/x-mpegurl', 'application/vnd.apple.mpegurl'];
 var COLOR_MAPS = new Set(['emissiveMap', 'envMap', 'map', 'specularMap']);
 
 /**
@@ -34696,14 +34653,6 @@ function handleTextureEvents(el, texture) {
     return;
   }
   texture.image.addEventListener('loadeddata', function emitVideoTextureLoadedDataAll() {
-    // Check to see if we need to use iOS 10 HLS shader.
-    // Only override the shader if it is stock shader that we know doesn't correct.
-    if (!el.components || !el.components.material) {
-      return;
-    }
-    if (texture.needsCorrectionBGRA && texture.needsCorrectionFlipY && ['standard', 'flat'].indexOf(el.components.material.data.shader) !== -1) {
-      el.setAttribute('material', 'shader', 'ios10hls');
-    }
     el.emit('materialvideoloadeddata', {
       src: texture.image,
       texture: texture
@@ -34718,22 +34667,6 @@ function handleTextureEvents(el, texture) {
   });
 }
 module.exports.handleTextureEvents = handleTextureEvents;
-
-/**
- * Given video element src and type, guess whether stream is HLS.
- *
- * @param {string} src - src from video element (generally URL to content).
- * @param {string} type - type from video element (generally MIME type if present).
- */
-module.exports.isHLS = function (src, type) {
-  if (type && HLS_MIMETYPES.includes(type.toLowerCase())) {
-    return true;
-  }
-  if (src && src.toLowerCase().indexOf('.m3u8') > 0) {
-    return true;
-  }
-  return false;
-};
 
 /***/ }),
 
