@@ -11,594 +11,6 @@
 return /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./node_modules/@ungap/custom-elements/index.js":
-/*!******************************************************!*\
-  !*** ./node_modules/@ungap/custom-elements/index.js ***!
-  \******************************************************/
-/***/ (() => {
-
-/*! (c) Andrea Giammarchi @webreflection ISC */
-(function () {
-  'use strict';
-
-  var attributesObserver = function (whenDefined, MutationObserver) {
-    var attributeChanged = function attributeChanged(records) {
-      for (var i = 0, length = records.length; i < length; i++) {
-        dispatch(records[i]);
-      }
-    };
-    var dispatch = function dispatch(_ref) {
-      var target = _ref.target,
-        attributeName = _ref.attributeName,
-        oldValue = _ref.oldValue;
-      target.attributeChangedCallback(attributeName, oldValue, target.getAttribute(attributeName));
-    };
-    return function (target, is) {
-      var attributeFilter = target.constructor.observedAttributes;
-      if (attributeFilter) {
-        whenDefined(is).then(function () {
-          new MutationObserver(attributeChanged).observe(target, {
-            attributes: true,
-            attributeOldValue: true,
-            attributeFilter: attributeFilter
-          });
-          for (var i = 0, length = attributeFilter.length; i < length; i++) {
-            if (target.hasAttribute(attributeFilter[i])) dispatch({
-              target: target,
-              attributeName: attributeFilter[i],
-              oldValue: null
-            });
-          }
-        });
-      }
-      return target;
-    };
-  };
-  function _unsupportedIterableToArray(o, minLen) {
-    if (!o) return;
-    if (typeof o === "string") return _arrayLikeToArray(o, minLen);
-    var n = Object.prototype.toString.call(o).slice(8, -1);
-    if (n === "Object" && o.constructor) n = o.constructor.name;
-    if (n === "Map" || n === "Set") return Array.from(o);
-    if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
-  }
-  function _arrayLikeToArray(arr, len) {
-    if (len == null || len > arr.length) len = arr.length;
-    for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i];
-    return arr2;
-  }
-  function _createForOfIteratorHelper(o, allowArrayLike) {
-    var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"];
-    if (!it) {
-      if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") {
-        if (it) o = it;
-        var i = 0;
-        var F = function () {};
-        return {
-          s: F,
-          n: function () {
-            if (i >= o.length) return {
-              done: true
-            };
-            return {
-              done: false,
-              value: o[i++]
-            };
-          },
-          e: function (e) {
-            throw e;
-          },
-          f: F
-        };
-      }
-      throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
-    }
-    var normalCompletion = true,
-      didErr = false,
-      err;
-    return {
-      s: function () {
-        it = it.call(o);
-      },
-      n: function () {
-        var step = it.next();
-        normalCompletion = step.done;
-        return step;
-      },
-      e: function (e) {
-        didErr = true;
-        err = e;
-      },
-      f: function () {
-        try {
-          if (!normalCompletion && it.return != null) it.return();
-        } finally {
-          if (didErr) throw err;
-        }
-      }
-    };
-  }
-
-  /*! (c) Andrea Giammarchi - ISC */
-  var TRUE = true,
-    FALSE = false,
-    QSA$1 = 'querySelectorAll';
-
-  /**
-   * Start observing a generic document or root element.
-   * @param {(node:Element, connected:boolean) => void} callback triggered per each dis/connected element
-   * @param {Document|Element} [root=document] by default, the global document to observe
-   * @param {Function} [MO=MutationObserver] by default, the global MutationObserver
-   * @param {string[]} [query=['*']] the selectors to use within nodes
-   * @returns {MutationObserver}
-   */
-  var notify = function notify(callback) {
-    var root = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : document;
-    var MO = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : MutationObserver;
-    var query = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : ['*'];
-    var loop = function loop(nodes, selectors, added, removed, connected, pass) {
-      var _iterator = _createForOfIteratorHelper(nodes),
-        _step;
-      try {
-        for (_iterator.s(); !(_step = _iterator.n()).done;) {
-          var node = _step.value;
-          if (pass || QSA$1 in node) {
-            if (connected) {
-              if (!added.has(node)) {
-                added.add(node);
-                removed["delete"](node);
-                callback(node, connected);
-              }
-            } else if (!removed.has(node)) {
-              removed.add(node);
-              added["delete"](node);
-              callback(node, connected);
-            }
-            if (!pass) loop(node[QSA$1](selectors), selectors, added, removed, connected, TRUE);
-          }
-        }
-      } catch (err) {
-        _iterator.e(err);
-      } finally {
-        _iterator.f();
-      }
-    };
-    var mo = new MO(function (records) {
-      if (query.length) {
-        var selectors = query.join(',');
-        var added = new Set(),
-          removed = new Set();
-        var _iterator2 = _createForOfIteratorHelper(records),
-          _step2;
-        try {
-          for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
-            var _step2$value = _step2.value,
-              addedNodes = _step2$value.addedNodes,
-              removedNodes = _step2$value.removedNodes;
-            loop(removedNodes, selectors, added, removed, FALSE, FALSE);
-            loop(addedNodes, selectors, added, removed, TRUE, FALSE);
-          }
-        } catch (err) {
-          _iterator2.e(err);
-        } finally {
-          _iterator2.f();
-        }
-      }
-    });
-    var observe = mo.observe;
-    (mo.observe = function (node) {
-      return observe.call(mo, node, {
-        subtree: TRUE,
-        childList: TRUE
-      });
-    })(root);
-    return mo;
-  };
-  var QSA = 'querySelectorAll';
-  var _self$1 = self,
-    document$2 = _self$1.document,
-    Element$1 = _self$1.Element,
-    MutationObserver$2 = _self$1.MutationObserver,
-    Set$2 = _self$1.Set,
-    WeakMap$1 = _self$1.WeakMap;
-  var elements = function elements(element) {
-    return QSA in element;
-  };
-  var filter = [].filter;
-  var qsaObserver = function (options) {
-    var live = new WeakMap$1();
-    var drop = function drop(elements) {
-      for (var i = 0, length = elements.length; i < length; i++) {
-        live["delete"](elements[i]);
-      }
-    };
-    var flush = function flush() {
-      var records = observer.takeRecords();
-      for (var i = 0, length = records.length; i < length; i++) {
-        parse(filter.call(records[i].removedNodes, elements), false);
-        parse(filter.call(records[i].addedNodes, elements), true);
-      }
-    };
-    var matches = function matches(element) {
-      return element.matches || element.webkitMatchesSelector || element.msMatchesSelector;
-    };
-    var notifier = function notifier(element, connected) {
-      var selectors;
-      if (connected) {
-        for (var q, m = matches(element), i = 0, length = query.length; i < length; i++) {
-          if (m.call(element, q = query[i])) {
-            if (!live.has(element)) live.set(element, new Set$2());
-            selectors = live.get(element);
-            if (!selectors.has(q)) {
-              selectors.add(q);
-              options.handle(element, connected, q);
-            }
-          }
-        }
-      } else if (live.has(element)) {
-        selectors = live.get(element);
-        live["delete"](element);
-        selectors.forEach(function (q) {
-          options.handle(element, connected, q);
-        });
-      }
-    };
-    var parse = function parse(elements) {
-      var connected = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
-      for (var i = 0, length = elements.length; i < length; i++) {
-        notifier(elements[i], connected);
-      }
-    };
-    var query = options.query;
-    var root = options.root || document$2;
-    var observer = notify(notifier, root, MutationObserver$2, query);
-    var attachShadow = Element$1.prototype.attachShadow;
-    if (attachShadow) Element$1.prototype.attachShadow = function (init) {
-      var shadowRoot = attachShadow.call(this, init);
-      observer.observe(shadowRoot);
-      return shadowRoot;
-    };
-    if (query.length) parse(root[QSA](query));
-    return {
-      drop: drop,
-      flush: flush,
-      observer: observer,
-      parse: parse
-    };
-  };
-  var _self = self,
-    document$1 = _self.document,
-    Map = _self.Map,
-    MutationObserver$1 = _self.MutationObserver,
-    Object$1 = _self.Object,
-    Set$1 = _self.Set,
-    WeakMap = _self.WeakMap,
-    Element = _self.Element,
-    HTMLElement = _self.HTMLElement,
-    Node = _self.Node,
-    Error = _self.Error,
-    TypeError$1 = _self.TypeError,
-    Reflect = _self.Reflect;
-  var defineProperty = Object$1.defineProperty,
-    keys = Object$1.keys,
-    getOwnPropertyNames = Object$1.getOwnPropertyNames,
-    setPrototypeOf = Object$1.setPrototypeOf;
-  var legacy = !self.customElements;
-  var expando = function expando(element) {
-    var key = keys(element);
-    var value = [];
-    var length = key.length;
-    for (var i = 0; i < length; i++) {
-      value[i] = element[key[i]];
-      delete element[key[i]];
-    }
-    return function () {
-      for (var _i = 0; _i < length; _i++) {
-        element[key[_i]] = value[_i];
-      }
-    };
-  };
-  if (legacy) {
-    var HTMLBuiltIn = function HTMLBuiltIn() {
-      var constructor = this.constructor;
-      if (!classes.has(constructor)) throw new TypeError$1('Illegal constructor');
-      var is = classes.get(constructor);
-      if (override) return augment(override, is);
-      var element = createElement.call(document$1, is);
-      return augment(setPrototypeOf(element, constructor.prototype), is);
-    };
-    var createElement = document$1.createElement;
-    var classes = new Map();
-    var defined = new Map();
-    var prototypes = new Map();
-    var registry = new Map();
-    var query = [];
-    var handle = function handle(element, connected, selector) {
-      var proto = prototypes.get(selector);
-      if (connected && !proto.isPrototypeOf(element)) {
-        var redefine = expando(element);
-        override = setPrototypeOf(element, proto);
-        try {
-          new proto.constructor();
-        } finally {
-          override = null;
-          redefine();
-        }
-      }
-      var method = "".concat(connected ? '' : 'dis', "connectedCallback");
-      if (method in proto) element[method]();
-    };
-    var _qsaObserver = qsaObserver({
-        query: query,
-        handle: handle
-      }),
-      parse = _qsaObserver.parse;
-    var override = null;
-    var whenDefined = function whenDefined(name) {
-      if (!defined.has(name)) {
-        var _,
-          $ = new Promise(function ($) {
-            _ = $;
-          });
-        defined.set(name, {
-          $: $,
-          _: _
-        });
-      }
-      return defined.get(name).$;
-    };
-    var augment = attributesObserver(whenDefined, MutationObserver$1);
-    defineProperty(self, 'customElements', {
-      configurable: true,
-      value: {
-        define: function define(is, Class) {
-          if (registry.has(is)) throw new Error("the name \"".concat(is, "\" has already been used with this registry"));
-          classes.set(Class, is);
-          prototypes.set(is, Class.prototype);
-          registry.set(is, Class);
-          query.push(is);
-          whenDefined(is).then(function () {
-            parse(document$1.querySelectorAll(is));
-          });
-          defined.get(is)._(Class);
-        },
-        get: function get(is) {
-          return registry.get(is);
-        },
-        whenDefined: whenDefined
-      }
-    });
-    defineProperty(HTMLBuiltIn.prototype = HTMLElement.prototype, 'constructor', {
-      value: HTMLBuiltIn
-    });
-    defineProperty(self, 'HTMLElement', {
-      configurable: true,
-      value: HTMLBuiltIn
-    });
-    defineProperty(document$1, 'createElement', {
-      configurable: true,
-      value: function value(name, options) {
-        var is = options && options.is;
-        var Class = is ? registry.get(is) : registry.get(name);
-        return Class ? new Class() : createElement.call(document$1, name);
-      }
-    });
-    // in case ShadowDOM is used through a polyfill, to avoid issues
-    // with builtin extends within shadow roots
-    if (!('isConnected' in Node.prototype)) defineProperty(Node.prototype, 'isConnected', {
-      configurable: true,
-      get: function get() {
-        return !(this.ownerDocument.compareDocumentPosition(this) & this.DOCUMENT_POSITION_DISCONNECTED);
-      }
-    });
-  } else {
-    legacy = !self.customElements.get('extends-li');
-    if (legacy) {
-      try {
-        var LI = function LI() {
-          return self.Reflect.construct(HTMLLIElement, [], LI);
-        };
-        LI.prototype = HTMLLIElement.prototype;
-        var is = 'extends-li';
-        self.customElements.define('extends-li', LI, {
-          'extends': 'li'
-        });
-        legacy = document$1.createElement('li', {
-          is: is
-        }).outerHTML.indexOf(is) < 0;
-        var _self$customElements = self.customElements,
-          get = _self$customElements.get,
-          _whenDefined = _self$customElements.whenDefined;
-        defineProperty(self.customElements, 'whenDefined', {
-          configurable: true,
-          value: function value(is) {
-            var _this = this;
-            return _whenDefined.call(this, is).then(function (Class) {
-              return Class || get.call(_this, is);
-            });
-          }
-        });
-      } catch (o_O) {}
-    }
-  }
-  if (legacy) {
-    var parseShadow = function parseShadow(element) {
-      var root = shadowRoots.get(element);
-      _parse(root.querySelectorAll(this), element.isConnected);
-    };
-    var customElements = self.customElements;
-    var _createElement = document$1.createElement;
-    var define = customElements.define,
-      _get = customElements.get,
-      upgrade = customElements.upgrade;
-    var _ref = Reflect || {
-        construct: function construct(HTMLElement) {
-          return HTMLElement.call(this);
-        }
-      },
-      construct = _ref.construct;
-    var shadowRoots = new WeakMap();
-    var shadows = new Set$1();
-    var _classes = new Map();
-    var _defined = new Map();
-    var _prototypes = new Map();
-    var _registry = new Map();
-    var shadowed = [];
-    var _query = [];
-    var getCE = function getCE(is) {
-      return _registry.get(is) || _get.call(customElements, is);
-    };
-    var _handle = function _handle(element, connected, selector) {
-      var proto = _prototypes.get(selector);
-      if (connected && !proto.isPrototypeOf(element)) {
-        var redefine = expando(element);
-        _override = setPrototypeOf(element, proto);
-        try {
-          new proto.constructor();
-        } finally {
-          _override = null;
-          redefine();
-        }
-      }
-      var method = "".concat(connected ? '' : 'dis', "connectedCallback");
-      if (method in proto) element[method]();
-    };
-    var _qsaObserver2 = qsaObserver({
-        query: _query,
-        handle: _handle
-      }),
-      _parse = _qsaObserver2.parse;
-    var _qsaObserver3 = qsaObserver({
-        query: shadowed,
-        handle: function handle(element, connected) {
-          if (shadowRoots.has(element)) {
-            if (connected) shadows.add(element);else shadows["delete"](element);
-            if (_query.length) parseShadow.call(_query, element);
-          }
-        }
-      }),
-      parseShadowed = _qsaObserver3.parse;
-    // qsaObserver also patches attachShadow
-    // be sure this runs *after* that
-    var attachShadow = Element.prototype.attachShadow;
-    if (attachShadow) Element.prototype.attachShadow = function (init) {
-      var root = attachShadow.call(this, init);
-      shadowRoots.set(this, root);
-      return root;
-    };
-    var _whenDefined2 = function _whenDefined2(name) {
-      if (!_defined.has(name)) {
-        var _,
-          $ = new Promise(function ($) {
-            _ = $;
-          });
-        _defined.set(name, {
-          $: $,
-          _: _
-        });
-      }
-      return _defined.get(name).$;
-    };
-    var _augment = attributesObserver(_whenDefined2, MutationObserver$1);
-    var _override = null;
-    getOwnPropertyNames(self).filter(function (k) {
-      return /^HTML.*Element$/.test(k);
-    }).forEach(function (k) {
-      var HTMLElement = self[k];
-      function HTMLBuiltIn() {
-        var constructor = this.constructor;
-        if (!_classes.has(constructor)) throw new TypeError$1('Illegal constructor');
-        var _classes$get = _classes.get(constructor),
-          is = _classes$get.is,
-          tag = _classes$get.tag;
-        if (is) {
-          if (_override) return _augment(_override, is);
-          var element = _createElement.call(document$1, tag);
-          element.setAttribute('is', is);
-          return _augment(setPrototypeOf(element, constructor.prototype), is);
-        } else return construct.call(this, HTMLElement, [], constructor);
-      }
-      defineProperty(HTMLBuiltIn.prototype = HTMLElement.prototype, 'constructor', {
-        value: HTMLBuiltIn
-      });
-      defineProperty(self, k, {
-        value: HTMLBuiltIn
-      });
-    });
-    defineProperty(document$1, 'createElement', {
-      configurable: true,
-      value: function value(name, options) {
-        var is = options && options.is;
-        if (is) {
-          var Class = _registry.get(is);
-          if (Class && _classes.get(Class).tag === name) return new Class();
-        }
-        var element = _createElement.call(document$1, name);
-        if (is) element.setAttribute('is', is);
-        return element;
-      }
-    });
-    defineProperty(customElements, 'get', {
-      configurable: true,
-      value: getCE
-    });
-    defineProperty(customElements, 'whenDefined', {
-      configurable: true,
-      value: _whenDefined2
-    });
-    defineProperty(customElements, 'upgrade', {
-      configurable: true,
-      value: function value(element) {
-        var is = element.getAttribute('is');
-        if (is) {
-          var _constructor = _registry.get(is);
-          if (_constructor) {
-            _augment(setPrototypeOf(element, _constructor.prototype), is);
-            // apparently unnecessary because this is handled by qsa observer
-            // if (element.isConnected && element.connectedCallback)
-            //   element.connectedCallback();
-            return;
-          }
-        }
-        upgrade.call(customElements, element);
-      }
-    });
-    defineProperty(customElements, 'define', {
-      configurable: true,
-      value: function value(is, Class, options) {
-        if (getCE(is)) throw new Error("'".concat(is, "' has already been defined as a custom element"));
-        var selector;
-        var tag = options && options["extends"];
-        _classes.set(Class, tag ? {
-          is: is,
-          tag: tag
-        } : {
-          is: '',
-          tag: is
-        });
-        if (tag) {
-          selector = "".concat(tag, "[is=\"").concat(is, "\"]");
-          _prototypes.set(selector, Class.prototype);
-          _registry.set(is, Class);
-          _query.push(selector);
-        } else {
-          define.apply(customElements, arguments);
-          shadowed.push(selector = is);
-        }
-        _whenDefined2(is).then(function () {
-          if (tag) {
-            _parse(document$1.querySelectorAll(selector));
-            shadows.forEach(parseShadow, [selector]);
-          } else parseShadowed(document$1.querySelectorAll(selector));
-        });
-        _defined.get(is)._(Class);
-      }
-    });
-  }
-})();
-
-/***/ }),
-
 /***/ "./node_modules/an-array/index.js":
 /*!****************************************!*\
   !*** ./node_modules/an-array/index.js ***!
@@ -2663,62 +2075,6 @@ module.exports = function (item) {
 
 /***/ }),
 
-/***/ "./node_modules/custom-event-polyfill/polyfill.js":
-/*!********************************************************!*\
-  !*** ./node_modules/custom-event-polyfill/polyfill.js ***!
-  \********************************************************/
-/***/ (() => {
-
-// Polyfill for creating CustomEvents on IE9/10/11
-
-// code pulled from:
-// https://github.com/d4tocchini/customevent-polyfill
-// https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent#Polyfill
-
-(function () {
-  if (typeof window === 'undefined') {
-    return;
-  }
-  try {
-    var ce = new window.CustomEvent('test', {
-      cancelable: true
-    });
-    ce.preventDefault();
-    if (ce.defaultPrevented !== true) {
-      // IE has problems with .preventDefault() on custom events
-      // http://stackoverflow.com/questions/23349191
-      throw new Error('Could not prevent default');
-    }
-  } catch (e) {
-    var CustomEvent = function (event, params) {
-      var evt, origPrevent;
-      params = params || {};
-      params.bubbles = !!params.bubbles;
-      params.cancelable = !!params.cancelable;
-      evt = document.createEvent('CustomEvent');
-      evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
-      origPrevent = evt.preventDefault;
-      evt.preventDefault = function () {
-        origPrevent.call(this);
-        try {
-          Object.defineProperty(this, 'defaultPrevented', {
-            get: function () {
-              return true;
-            }
-          });
-        } catch (e) {
-          this.defaultPrevented = true;
-        }
-      };
-      return evt;
-    };
-    CustomEvent.prototype = window.Event.prototype;
-    window.CustomEvent = CustomEvent; // expose definition to window
-  }
-})();
-
-/***/ }),
-
 /***/ "./node_modules/debug/browser.js":
 /*!***************************************!*\
   !*** ./node_modules/debug/browser.js ***!
@@ -3668,97 +3024,6 @@ module.exports = function (buf) {
 
 /***/ }),
 
-/***/ "./node_modules/object-assign/index.js":
-/*!*********************************************!*\
-  !*** ./node_modules/object-assign/index.js ***!
-  \*********************************************/
-/***/ ((module) => {
-
-"use strict";
-/*
-object-assign
-(c) Sindre Sorhus
-@license MIT
-*/
-
-
-
-/* eslint-disable no-unused-vars */
-var getOwnPropertySymbols = Object.getOwnPropertySymbols;
-var hasOwnProperty = Object.prototype.hasOwnProperty;
-var propIsEnumerable = Object.prototype.propertyIsEnumerable;
-function toObject(val) {
-  if (val === null || val === undefined) {
-    throw new TypeError('Object.assign cannot be called with null or undefined');
-  }
-  return Object(val);
-}
-function shouldUseNative() {
-  try {
-    if (!Object.assign) {
-      return false;
-    }
-
-    // Detect buggy property enumeration order in older V8 versions.
-
-    // https://bugs.chromium.org/p/v8/issues/detail?id=4118
-    var test1 = new String('abc'); // eslint-disable-line no-new-wrappers
-    test1[5] = 'de';
-    if (Object.getOwnPropertyNames(test1)[0] === '5') {
-      return false;
-    }
-
-    // https://bugs.chromium.org/p/v8/issues/detail?id=3056
-    var test2 = {};
-    for (var i = 0; i < 10; i++) {
-      test2['_' + String.fromCharCode(i)] = i;
-    }
-    var order2 = Object.getOwnPropertyNames(test2).map(function (n) {
-      return test2[n];
-    });
-    if (order2.join('') !== '0123456789') {
-      return false;
-    }
-
-    // https://bugs.chromium.org/p/v8/issues/detail?id=3056
-    var test3 = {};
-    'abcdefghijklmnopqrst'.split('').forEach(function (letter) {
-      test3[letter] = letter;
-    });
-    if (Object.keys(Object.assign({}, test3)).join('') !== 'abcdefghijklmnopqrst') {
-      return false;
-    }
-    return true;
-  } catch (err) {
-    // We don't expect any of the above to throw, but better to be safe.
-    return false;
-  }
-}
-module.exports = shouldUseNative() ? Object.assign : function (target, source) {
-  var from;
-  var to = toObject(target);
-  var symbols;
-  for (var s = 1; s < arguments.length; s++) {
-    from = Object(arguments[s]);
-    for (var key in from) {
-      if (hasOwnProperty.call(from, key)) {
-        to[key] = from[key];
-      }
-    }
-    if (getOwnPropertySymbols) {
-      symbols = getOwnPropertySymbols(from);
-      for (var i = 0; i < symbols.length; i++) {
-        if (propIsEnumerable.call(from, symbols[i])) {
-          to[symbols[i]] = from[symbols[i]];
-        }
-      }
-    }
-  }
-  return to;
-};
-
-/***/ }),
-
 /***/ "./node_modules/parse-bmfont-ascii/index.js":
 /*!**************************************************!*\
   !*** ./node_modules/parse-bmfont-ascii/index.js ***!
@@ -4138,41 +3403,6 @@ module.exports = function (headers) {
 
 /***/ }),
 
-/***/ "./node_modules/present/lib/present-browser.js":
-/*!*****************************************************!*\
-  !*** ./node_modules/present/lib/present-browser.js ***!
-  \*****************************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-var performance = __webpack_require__.g.performance || {};
-var present = function () {
-  var names = ['now', 'webkitNow', 'msNow', 'mozNow', 'oNow'];
-  while (names.length) {
-    var name = names.shift();
-    if (name in performance) {
-      return performance[name].bind(performance);
-    }
-  }
-  var dateNow = Date.now || function () {
-    return new Date().getTime();
-  };
-  var navigationStart = (performance.timing || {}).navigationStart || dateNow();
-  return function () {
-    return dateNow() - navigationStart;
-  };
-}();
-present.performanceNow = performance.now;
-present.noConflict = function () {
-  performance.now = present.performanceNow;
-};
-present.conflict = function () {
-  performance.now = present;
-};
-present.conflict();
-module.exports = present;
-
-/***/ }),
-
 /***/ "./node_modules/process/browser.js":
 /*!*****************************************!*\
   !*** ./node_modules/process/browser.js ***!
@@ -4354,197 +3584,6 @@ process.chdir = function (dir) {
 process.umask = function () {
   return 0;
 };
-
-/***/ }),
-
-/***/ "./node_modules/promise-polyfill/Promise.js":
-/*!**************************************************!*\
-  !*** ./node_modules/promise-polyfill/Promise.js ***!
-  \**************************************************/
-/***/ (function(module) {
-
-(function (root) {
-  // Store setTimeout reference so promise-polyfill will be unaffected by
-  // other code modifying setTimeout (like sinon.useFakeTimers())
-  var setTimeoutFunc = setTimeout;
-
-  // Use polyfill for setImmediate for performance gains
-  var asap = typeof setImmediate === 'function' && setImmediate || function (fn) {
-    setTimeoutFunc(fn, 1);
-  };
-
-  // Polyfill for Function.prototype.bind
-  function bind(fn, thisArg) {
-    return function () {
-      fn.apply(thisArg, arguments);
-    };
-  }
-  var isArray = Array.isArray || function (value) {
-    return Object.prototype.toString.call(value) === "[object Array]";
-  };
-  function Promise(fn) {
-    if (typeof this !== 'object') throw new TypeError('Promises must be constructed via new');
-    if (typeof fn !== 'function') throw new TypeError('not a function');
-    this._state = null;
-    this._value = null;
-    this._deferreds = [];
-    doResolve(fn, bind(resolve, this), bind(reject, this));
-  }
-  function handle(deferred) {
-    var me = this;
-    if (this._state === null) {
-      this._deferreds.push(deferred);
-      return;
-    }
-    asap(function () {
-      var cb = me._state ? deferred.onFulfilled : deferred.onRejected;
-      if (cb === null) {
-        (me._state ? deferred.resolve : deferred.reject)(me._value);
-        return;
-      }
-      var ret;
-      try {
-        ret = cb(me._value);
-      } catch (e) {
-        deferred.reject(e);
-        return;
-      }
-      deferred.resolve(ret);
-    });
-  }
-  function resolve(newValue) {
-    try {
-      //Promise Resolution Procedure: https://github.com/promises-aplus/promises-spec#the-promise-resolution-procedure
-      if (newValue === this) throw new TypeError('A promise cannot be resolved with itself.');
-      if (newValue && (typeof newValue === 'object' || typeof newValue === 'function')) {
-        var then = newValue.then;
-        if (typeof then === 'function') {
-          doResolve(bind(then, newValue), bind(resolve, this), bind(reject, this));
-          return;
-        }
-      }
-      this._state = true;
-      this._value = newValue;
-      finale.call(this);
-    } catch (e) {
-      reject.call(this, e);
-    }
-  }
-  function reject(newValue) {
-    this._state = false;
-    this._value = newValue;
-    finale.call(this);
-  }
-  function finale() {
-    for (var i = 0, len = this._deferreds.length; i < len; i++) {
-      handle.call(this, this._deferreds[i]);
-    }
-    this._deferreds = null;
-  }
-  function Handler(onFulfilled, onRejected, resolve, reject) {
-    this.onFulfilled = typeof onFulfilled === 'function' ? onFulfilled : null;
-    this.onRejected = typeof onRejected === 'function' ? onRejected : null;
-    this.resolve = resolve;
-    this.reject = reject;
-  }
-
-  /**
-   * Take a potentially misbehaving resolver function and make sure
-   * onFulfilled and onRejected are only called once.
-   *
-   * Makes no guarantees about asynchrony.
-   */
-  function doResolve(fn, onFulfilled, onRejected) {
-    var done = false;
-    try {
-      fn(function (value) {
-        if (done) return;
-        done = true;
-        onFulfilled(value);
-      }, function (reason) {
-        if (done) return;
-        done = true;
-        onRejected(reason);
-      });
-    } catch (ex) {
-      if (done) return;
-      done = true;
-      onRejected(ex);
-    }
-  }
-  Promise.prototype['catch'] = function (onRejected) {
-    return this.then(null, onRejected);
-  };
-  Promise.prototype.then = function (onFulfilled, onRejected) {
-    var me = this;
-    return new Promise(function (resolve, reject) {
-      handle.call(me, new Handler(onFulfilled, onRejected, resolve, reject));
-    });
-  };
-  Promise.all = function () {
-    var args = Array.prototype.slice.call(arguments.length === 1 && isArray(arguments[0]) ? arguments[0] : arguments);
-    return new Promise(function (resolve, reject) {
-      if (args.length === 0) return resolve([]);
-      var remaining = args.length;
-      function res(i, val) {
-        try {
-          if (val && (typeof val === 'object' || typeof val === 'function')) {
-            var then = val.then;
-            if (typeof then === 'function') {
-              then.call(val, function (val) {
-                res(i, val);
-              }, reject);
-              return;
-            }
-          }
-          args[i] = val;
-          if (--remaining === 0) {
-            resolve(args);
-          }
-        } catch (ex) {
-          reject(ex);
-        }
-      }
-      for (var i = 0; i < args.length; i++) {
-        res(i, args[i]);
-      }
-    });
-  };
-  Promise.resolve = function (value) {
-    if (value && typeof value === 'object' && value.constructor === Promise) {
-      return value;
-    }
-    return new Promise(function (resolve) {
-      resolve(value);
-    });
-  };
-  Promise.reject = function (value) {
-    return new Promise(function (resolve, reject) {
-      reject(value);
-    });
-  };
-  Promise.race = function (values) {
-    return new Promise(function (resolve, reject) {
-      for (var i = 0, len = values.length; i < len; i++) {
-        values[i].then(resolve, reject);
-      }
-    });
-  };
-
-  /**
-   * Set the immediate function to execute callbacks
-   * @param fn {function} Function to execute
-   * @private
-   */
-  Promise._setImmediateFn = function _setImmediateFn(fn) {
-    asap = fn;
-  };
-  if ( true && module.exports) {
-    module.exports = Promise;
-  } else if (!root.Promise) {
-    root.Promise = Promise;
-  }
-})(this);
 
 /***/ }),
 
@@ -30743,10 +29782,6 @@ registerGeometry('triangle', {
   \**********************/
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-// Polyfill `Promise`.
-window.Promise = window.Promise || __webpack_require__(/*! promise-polyfill */ "./node_modules/promise-polyfill/Promise.js");
-__webpack_require__(/*! @ungap/custom-elements */ "./node_modules/@ungap/custom-elements/index.js");
-
 // WebVR polyfill
 // Check before the polyfill runs.
 window.hasNativeWebVRImplementation = !!window.navigator.getVRDisplays || !!window.navigator.getVRDevices;
@@ -30769,12 +29804,6 @@ if (!window.hasNativeWebXRImplementation && !window.hasNativeWebVRImplementation
 }
 var utils = __webpack_require__(/*! ./utils/ */ "./src/utils/index.js");
 var debug = utils.debug;
-if (utils.isIE11) {
-  // Polyfill `CustomEvent`.
-  __webpack_require__(/*! custom-event-polyfill */ "./node_modules/custom-event-polyfill/polyfill.js");
-  // Polyfill String.startsWith.
-  __webpack_require__(/*! ../vendor/starts-with-polyfill */ "./vendor/starts-with-polyfill.js");
-}
 var error = debug('A-Frame:error');
 var warn = debug('A-Frame:warn');
 if (window.document.currentScript && window.document.currentScript.parentNode !== window.document.head && !window.debug) {
@@ -30785,7 +29814,6 @@ if (window.document.currentScript && window.document.currentScript.parentNode !=
 if (!window.cordova && window.location.protocol === 'file:') {
   error('This HTML file is currently being served via the file:// protocol. ' + 'Assets, textures, and models WILL NOT WORK due to cross-origin policy! ' + 'Please use a local or hosted server: ' + 'https://aframe.io/docs/1.4.0/introduction/installation.html#use-a-local-server.');
 }
-__webpack_require__(/*! present */ "./node_modules/present/lib/present-browser.js"); // Polyfill `performance.now()`.
 
 // CSS.
 if (utils.device.isBrowserEnvironment) {
@@ -30820,7 +29848,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.5.0 (Date 2024-02-06, Commit #74b2a211)');
+console.log('A-Frame Version: 1.5.0 (Date 2024-02-07, Commit #5d3f4493)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
@@ -33486,7 +32514,6 @@ module.exports = function bind(fn, ctx /* , arg1, arg2 */) {
 
 /* global THREE */
 var debug = __webpack_require__(/*! ./debug */ "./src/utils/debug.js");
-var extend = __webpack_require__(/*! object-assign */ "./node_modules/object-assign/index.js");
 var warn = debug('utils:coordinates:warn');
 
 // Order of coordinates parsed by coordinates.parse.
@@ -33535,7 +32562,7 @@ function parse(value, defaultVec) {
     return value;
   }
   if (value === null || value === undefined) {
-    return typeof defaultVec === 'object' ? extend({}, defaultVec) : defaultVec;
+    return typeof defaultVec === 'object' ? Object.assign({}, defaultVec) : defaultVec;
   }
   coordinate = value.trim().split(whitespaceRegex);
   vec = {};
@@ -33613,7 +32640,6 @@ module.exports.toVector3 = function (vec3) {
 
 /* provided dependency */ var process = __webpack_require__(/*! process/browser */ "./node_modules/process/browser.js");
 var debugLib = __webpack_require__(/*! debug */ "./node_modules/debug/browser.js");
-var extend = __webpack_require__(/*! object-assign */ "./node_modules/object-assign/index.js");
 var settings = {
   colors: {
     debug: 'gray',
@@ -33633,7 +32659,7 @@ var debug = function (namespace) {
   d.color = getDebugNamespaceColor(namespace);
   return d;
 };
-extend(debug, debugLib);
+Object.assign(debug, debugLib);
 
 /**
  * Returns the type of the namespace (e.g., `error`, `warn`).
@@ -34016,7 +33042,6 @@ module.exports = function forceCanvasResizeSafariMobile(canvasEl) {
 var debug = __webpack_require__(/*! ./debug */ "./src/utils/debug.js");
 var deepAssign = __webpack_require__(/*! deep-assign */ "./node_modules/deep-assign/index.js");
 var device = __webpack_require__(/*! ./device */ "./src/utils/device.js");
-var objectAssign = __webpack_require__(/*! object-assign */ "./node_modules/object-assign/index.js");
 var objectPool = __webpack_require__(/*! ./object-pool */ "./src/utils/object-pool.js");
 var warn = debug('utils:warn');
 module.exports.bind = __webpack_require__(/*! ./bind */ "./src/utils/bind.js");
@@ -34025,7 +33050,6 @@ module.exports.debug = debug;
 module.exports.device = device;
 module.exports.entity = __webpack_require__(/*! ./entity */ "./src/utils/entity.js");
 module.exports.forceCanvasResizeSafariMobile = __webpack_require__(/*! ./forceCanvasResizeSafariMobile */ "./src/utils/forceCanvasResizeSafariMobile.js");
-module.exports.isIE11 = __webpack_require__(/*! ./is-ie11 */ "./src/utils/is-ie11.js");
 module.exports.material = __webpack_require__(/*! ./material */ "./src/utils/material.js");
 module.exports.objectPool = objectPool;
 module.exports.split = __webpack_require__(/*! ./split */ "./src/utils/split.js").split;
@@ -34168,7 +33192,7 @@ module.exports.debounce = function (func, wait, immediate) {
  * @param  {object} dest - The object to which properties will be copied.
  * @param  {...object} source - The object(s) from which properties will be copied.
  */
-module.exports.extend = objectAssign;
+module.exports.extend = Object.assign;
 module.exports.extendDeep = deepAssign;
 module.exports.clone = function (obj) {
   return JSON.parse(JSON.stringify(obj));
@@ -34403,34 +33427,6 @@ window.addEventListener('orientationchange', function () {
     }, 500);
   }, 500);
 });
-
-/***/ }),
-
-/***/ "./src/utils/is-ie11.js":
-/*!******************************!*\
-  !*** ./src/utils/is-ie11.js ***!
-  \******************************/
-/***/ ((module) => {
-
-// https://stackoverflow.com/a/17907562
-function getInternetExplorerVersion() {
-  var version = -1;
-  var userAgent = navigator.userAgent;
-  var re;
-  if (navigator.appName === 'Microsoft Internet Explorer') {
-    re = new RegExp('MSIE ([0-9]{1,}[\\.0-9]{0,})');
-    if (re.exec(userAgent) != null) {
-      version = parseFloat(RegExp.$1);
-    }
-  } else if (navigator.appName === 'Netscape') {
-    re = new RegExp('Trident/.*rv:([0-9]{1,}[\\.0-9]{0,})');
-    if (re.exec(userAgent) != null) {
-      version = parseFloat(RegExp.$1);
-    }
-  }
-  return version;
-}
-module.exports = getInternetExplorerVersion() === 11;
 
 /***/ }),
 
@@ -36115,22 +35111,6 @@ window.rStats = function rStats(settings) {
 };
 if (true) {
   module.exports = window.rStats;
-}
-
-/***/ }),
-
-/***/ "./vendor/starts-with-polyfill.js":
-/*!****************************************!*\
-  !*** ./vendor/starts-with-polyfill.js ***!
-  \****************************************/
-/***/ (() => {
-
-// https://stackoverflow.com/a/36213464
-if (!String.prototype.startsWith) {
-  String.prototype.startsWith = function (searchString, position) {
-    position = position || 0;
-    return this.substr(position, searchString.length) === searchString;
-  };
 }
 
 /***/ }),
@@ -47025,7 +46005,7 @@ class WorkerPool {
 /***/ ((module) => {
 
 "use strict";
-module.exports = JSON.parse('{"name":"aframe","version":"1.5.0","description":"A web framework for building virtual reality experiences.","homepage":"https://aframe.io/","main":"dist/aframe-master.js","scripts":{"dev":"cross-env INSPECTOR_VERSION=dev webpack serve --port 8080","dist":"node scripts/updateVersionLog.js && npm run dist:min && npm run dist:max","dist:max":"webpack --config webpack.config.js","dist:min":"webpack --config webpack.prod.config.js","docs":"markserv --dir docs --port 9001","preghpages":"node ./scripts/preghpages.js","ghpages":"ghpages -p gh-pages/","lint":"standardx -v | snazzy","lint:fix":"standardx --fix","precommit":"npm run lint","prepush":"node scripts/testOnlyCheck.js","prerelease":"node scripts/release.js 1.4.0 1.5.0","start":"npm run dev","start:https":"npm run dev -- --server-type https","test":"karma start ./tests/karma.conf.js","test:docs":"node scripts/docsLint.js","test:firefox":"npm test -- --browsers Firefox","test:chrome":"npm test -- --browsers Chrome","test:nobrowser":"NO_BROWSER=true npm test","test:node":"mocha --ui tdd tests/node"},"repository":"aframevr/aframe","license":"MIT","files":["dist/*","docs/**/*","src/**/*","vendor/**/*"],"dependencies":{"@ungap/custom-elements":"^1.1.0","buffer":"^6.0.3","custom-event-polyfill":"^1.0.6","debug":"ngokevin/debug#noTimestamp","deep-assign":"^2.0.0","load-bmfont":"^1.2.3","object-assign":"^4.0.1","present":"0.0.6","promise-polyfill":"^3.1.0","super-animejs":"^3.1.0","super-three":"0.161.0","three-bmfont-text":"dmarcos/three-bmfont-text#eed4878795be9b3e38cf6aec6b903f56acd1f695","webvr-polyfill":"^0.10.12"},"devDependencies":{"@babel/core":"^7.17.10","babel-loader":"^8.2.5","babel-plugin-istanbul":"^6.1.1","chai":"^4.3.6","chai-shallow-deep-equal":"^1.4.0","chalk":"^1.1.3","cross-env":"^7.0.3","css-loader":"^6.7.1","eslint":"^8.45.0","eslint-config-semistandard":"^17.0.0","eslint-config-standard-jsx":"^11.0.0","ghpages":"0.0.8","git-rev":"^0.2.1","glob":"^8.0.3","husky":"^0.11.7","jsdom":"^20.0.0","karma":"^6.4.0","karma-chai-shallow-deep-equal":"0.0.4","karma-chrome-launcher":"^3.1.1","karma-coverage":"^2.2.0","karma-env-preprocessor":"^0.1.1","karma-firefox-launcher":"^2.1.2","karma-mocha":"^2.0.1","karma-mocha-reporter":"^2.2.5","karma-sinon-chai":"^2.0.2","karma-webpack":"^5.0.0","markserv":"github:sukima/markserv#feature/fix-broken-websoketio-link","mocha":"^10.0.0","replace-in-file":"^2.5.3","shelljs":"^0.7.7","shx":"^0.2.2","sinon":"<12.0.0","sinon-chai":"^3.7.0","snazzy":"^5.0.0","standardx":"^7.0.0","style-loader":"^3.3.1","too-wordy":"ngokevin/too-wordy","webpack":"^5.73.0","webpack-cli":"^4.10.0","webpack-dev-server":"^4.11.0","webpack-merge":"^5.8.0","write-good":"^1.0.8"},"link":true,"standardx":{"ignore":["build/**","dist/**","examples/**/shaders/*.js","**/vendor/**"]},"keywords":["3d","aframe","cardboard","components","oculus","three","three.js","rift","vive","vr","quest","meta","web-components","webvr","webxr"],"engines":{"node":">= 4.6.0","npm":">= 2.15.9"}}');
+module.exports = JSON.parse('{"name":"aframe","version":"1.5.0","description":"A web framework for building virtual reality experiences.","homepage":"https://aframe.io/","main":"dist/aframe-master.js","scripts":{"dev":"cross-env INSPECTOR_VERSION=dev webpack serve --port 8080","dist":"node scripts/updateVersionLog.js && npm run dist:min && npm run dist:max","dist:max":"webpack --config webpack.config.js","dist:min":"webpack --config webpack.prod.config.js","docs":"markserv --dir docs --port 9001","preghpages":"node ./scripts/preghpages.js","ghpages":"ghpages -p gh-pages/","lint":"standardx -v | snazzy","lint:fix":"standardx --fix","precommit":"npm run lint","prepush":"node scripts/testOnlyCheck.js","prerelease":"node scripts/release.js 1.4.0 1.5.0","start":"npm run dev","start:https":"npm run dev -- --server-type https","test":"karma start ./tests/karma.conf.js","test:docs":"node scripts/docsLint.js","test:firefox":"npm test -- --browsers Firefox","test:chrome":"npm test -- --browsers Chrome","test:nobrowser":"NO_BROWSER=true npm test","test:node":"mocha --ui tdd tests/node"},"repository":"aframevr/aframe","license":"MIT","files":["dist/*","docs/**/*","src/**/*","vendor/**/*"],"dependencies":{"buffer":"^6.0.3","debug":"ngokevin/debug#noTimestamp","deep-assign":"^2.0.0","load-bmfont":"^1.2.3","super-animejs":"^3.1.0","super-three":"0.161.0","three-bmfont-text":"dmarcos/three-bmfont-text#eed4878795be9b3e38cf6aec6b903f56acd1f695","webvr-polyfill":"^0.10.12"},"devDependencies":{"@babel/core":"^7.17.10","babel-loader":"^8.2.5","babel-plugin-istanbul":"^6.1.1","chai":"^4.3.6","chai-shallow-deep-equal":"^1.4.0","chalk":"^1.1.3","cross-env":"^7.0.3","css-loader":"^6.7.1","eslint":"^8.45.0","eslint-config-semistandard":"^17.0.0","eslint-config-standard-jsx":"^11.0.0","ghpages":"0.0.8","git-rev":"^0.2.1","glob":"^8.0.3","husky":"^0.11.7","jsdom":"^20.0.0","karma":"^6.4.0","karma-chai-shallow-deep-equal":"0.0.4","karma-chrome-launcher":"^3.1.1","karma-coverage":"^2.2.0","karma-env-preprocessor":"^0.1.1","karma-firefox-launcher":"^2.1.2","karma-mocha":"^2.0.1","karma-mocha-reporter":"^2.2.5","karma-sinon-chai":"^2.0.2","karma-webpack":"^5.0.0","markserv":"github:sukima/markserv#feature/fix-broken-websoketio-link","mocha":"^10.0.0","replace-in-file":"^2.5.3","shelljs":"^0.7.7","shx":"^0.2.2","sinon":"<12.0.0","sinon-chai":"^3.7.0","snazzy":"^5.0.0","standardx":"^7.0.0","style-loader":"^3.3.1","too-wordy":"ngokevin/too-wordy","webpack":"^5.73.0","webpack-cli":"^4.10.0","webpack-dev-server":"^4.11.0","webpack-merge":"^5.8.0","write-good":"^1.0.8"},"link":true,"standardx":{"ignore":["build/**","dist/**","examples/**/shaders/*.js","**/vendor/**"]},"keywords":["3d","aframe","cardboard","components","oculus","three","three.js","rift","vive","vr","quest","meta","web-components","webvr","webxr"],"engines":{"node":">= 4.6.0","npm":">= 2.15.9"}}');
 
 /***/ })
 
