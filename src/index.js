@@ -1,8 +1,3 @@
-// Polyfill `Promise`.
-window.Promise = window.Promise || require('promise-polyfill');
-
-require('@ungap/custom-elements');
-
 // WebVR polyfill
 // Check before the polyfill runs.
 window.hasNativeWebVRImplementation = !!window.navigator.getVRDisplays ||
@@ -27,14 +22,6 @@ if (!window.hasNativeWebXRImplementation && !window.hasNativeWebVRImplementation
 
 var utils = require('./utils/');
 var debug = utils.debug;
-
-if (utils.isIE11) {
-  // Polyfill `CustomEvent`.
-  require('custom-event-polyfill');
-  // Polyfill String.startsWith.
-  require('../vendor/starts-with-polyfill');
-}
-
 var error = debug('A-Frame:error');
 var warn = debug('A-Frame:warn');
 
@@ -53,8 +40,6 @@ if (!window.cordova && window.location.protocol === 'file:') {
     'Please use a local or hosted server: ' +
     'https://aframe.io/docs/1.4.0/introduction/installation.html#use-a-local-server.');
 }
-
-require('present'); // Polyfill `performance.now()`.
 
 // CSS.
 if (utils.device.isBrowserEnvironment) {
