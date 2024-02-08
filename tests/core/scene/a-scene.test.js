@@ -511,6 +511,7 @@ suite('a-scene (without renderer) - WebXR', function () {
 suite('a-scene (without renderer) - WebVR', function () {
   setup(function (done) {
     var el = this.el = document.createElement('a-scene');
+    el.hasWebXR = false;
     el.addEventListener('nodeready', function () { done(); });
     this.sinon.stub(utils.device, 'getVRDisplay').returns({
       requestPresent: function () {

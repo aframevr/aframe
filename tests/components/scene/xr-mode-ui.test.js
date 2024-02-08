@@ -1,6 +1,5 @@
 /* global assert, process, setup, suite, test */
 var entityFactory = require('../../helpers').entityFactory;
-var utils = require('index').utils;
 
 var UI_CLASSES = ['.a-orientation-modal', '.a-enter-vr-button'];
 
@@ -8,11 +7,6 @@ suite('xr-mode-ui', function () {
   setup(function (done) {
     this.entityEl = entityFactory();
     var el = this.el = this.entityEl.parentNode;
-    this.sinon.stub(utils.device, 'getVRDisplay').returns({
-      requestPresent: function () {
-        return Promise.resolve();
-      }
-    });
     el.addEventListener('loaded', function () { done(); });
   });
 
@@ -38,7 +32,6 @@ suite('xr-mode-ui', function () {
       el: {object3D: {}},
       updateProjectionMatrix: function () {}
     };
-    window.hasNativeWebVRImplementation = false;
     scene.enterVR();
     UI_CLASSES.forEach(function (uiClass) {
       assert.ok(scene.querySelector(uiClass).className.indexOf('a-hidden'));
@@ -52,7 +45,6 @@ suite('xr-mode-ui', function () {
       el: {object3D: {}, getAttribute: function () { return {spectator: false}; }},
       updateProjectionMatrix: function () {}
     };
-    window.hasNativeWebVRImplementation = false;
     scene.enterVR();
     scene.exitVR();
 

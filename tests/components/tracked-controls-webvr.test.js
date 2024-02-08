@@ -13,6 +13,7 @@ suite('tracked-controls-webvr', function () {
   setup(function (done) {
     standingMatrix.identity();
     el = entityFactory();
+    el.sceneEl.hasWebXR = false;
     setTimeout(() => {
       el.setAttribute('position', '');
       el.setAttribute('tracked-controls', '');
