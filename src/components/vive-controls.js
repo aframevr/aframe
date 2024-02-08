@@ -41,8 +41,7 @@ module.exports.Component = registerComponent('vive-controls', {
     hand: {default: 'left'},
     buttonColor: {type: 'color', default: '#FAFAFA'},  // Off-white.
     buttonHighlightColor: {type: 'color', default: '#22D1EE'},  // Light blue.
-    model: {default: true},
-    orientationOffset: {type: 'vec3'}
+    model: {default: true}
   },
 
   after: ['tracked-controls'],
@@ -129,8 +128,7 @@ module.exports.Component = registerComponent('vive-controls', {
     el.setAttribute('tracked-controls', {
       idPrefix: GAMEPAD_ID_PREFIX,
       hand: data.hand,
-      controller: this.controllerIndex,
-      orientationOffset: data.orientationOffset
+      controller: this.controllerIndex
     });
 
     // Load model.

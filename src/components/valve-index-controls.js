@@ -36,8 +36,7 @@ module.exports.Component = registerComponent('valve-index-controls', {
     hand: {default: 'left'},
     buttonColor: {type: 'color', default: '#FAFAFA'},  // Off-white.
     buttonHighlightColor: {type: 'color', default: '#22D1EE'},  // Light blue.
-    model: {default: true},
-    orientationOffset: {type: 'vec3'}
+    model: {default: true}
   },
 
   after: ['tracked-controls'],
@@ -127,8 +126,7 @@ module.exports.Component = registerComponent('valve-index-controls', {
       idPrefix: GAMEPAD_ID_PREFIX,
       // Hand IDs: 1 = right, 0 = left, 2 = anything else.
       controller: data.hand === 'right' ? 1 : data.hand === 'left' ? 0 : 2,
-      hand: data.hand,
-      orientationOffset: data.orientationOffset
+      hand: data.hand
     });
 
     this.loadModel();

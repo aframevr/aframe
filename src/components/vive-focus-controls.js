@@ -33,8 +33,7 @@ module.exports.Component = registerComponent('vive-focus-controls', {
     hand: {default: ''},  // This informs the degenerate arm model.
     buttonTouchedColor: {type: 'color', default: '#BBBBBB'},
     buttonHighlightColor: {type: 'color', default: '#7A7A7A'},
-    model: {default: true},
-    orientationOffset: {type: 'vec3'}
+    model: {default: true}
   },
 
   after: ['tracked-controls'],
@@ -106,8 +105,7 @@ module.exports.Component = registerComponent('vive-focus-controls', {
     var el = this.el;
     var data = this.data;
     el.setAttribute('tracked-controls', {
-      idPrefix: GAMEPAD_ID_PREFIX,
-      orientationOffset: data.orientationOffset
+      idPrefix: GAMEPAD_ID_PREFIX
     });
     if (!this.data.model) { return; }
     this.el.setAttribute('gltf-model', VIVE_FOCUS_CONTROLLER_MODEL_URL);

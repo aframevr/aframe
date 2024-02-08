@@ -39,8 +39,7 @@ var INPUT_MAPPING_WEBXR = {
 module.exports.Component = registerComponent('magicleap-controls', {
   schema: {
     hand: {default: 'none'},
-    model: {default: true},
-    orientationOffset: {type: 'vec3'}
+    model: {default: true}
   },
 
   mapping: INPUT_MAPPING_WEBXR,
@@ -120,8 +119,7 @@ module.exports.Component = registerComponent('magicleap-controls', {
       // TODO: verify expected behavior between reserved prefixes.
       idPrefix: GAMEPAD_ID_COMPOSITE,
       hand: data.hand,
-      controller: this.controllerIndex,
-      orientationOffset: data.orientationOffset
+      controller: this.controllerIndex
     });
 
     // Load model.

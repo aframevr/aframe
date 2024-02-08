@@ -18,7 +18,6 @@ module.exports.Component = registerComponent('tracked-controls', {
     hand: {type: 'string', default: ''},
     idPrefix: {type: 'string', default: ''},
     handTrackingEnabled: {default: false},
-    orientationOffset: {type: 'vec3'},
     iterateControllerProfiles: {default: false},
     space: {type: 'string', oneOf: ['targetRaySpace', 'gripSpace'], default: 'targetRaySpace'}
   },

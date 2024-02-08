@@ -132,8 +132,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     buttonTouchColor: {type: 'color', default: '#8AB'},
     buttonHighlightColor: {type: 'color', default: '#2DF'},  // Light blue.
     model: {default: true},
-    controllerType: {default: 'auto', oneOf: ['auto', 'oculus-touch', 'oculus-touch-v2', 'oculus-touch-v3']},
-    orientationOffset: {type: 'vec3', default: {x: 43, y: 0, z: 0}}
+    controllerType: {default: 'auto', oneOf: ['auto', 'oculus-touch', 'oculus-touch-v2', 'oculus-touch-v3']}
   },
 
   after: ['tracked-controls'],
@@ -244,7 +243,6 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     this.el.setAttribute('tracked-controls', {
       id: id,
       hand: data.hand,
-      orientationOffset: data.orientationOffset,
       handTrackingEnabled: false,
       iterateControllerProfiles: true,
       space: 'gripSpace'
