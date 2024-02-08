@@ -1,6 +1,4 @@
-var DEFAULT_HANDEDNESS = require('../constants').DEFAULT_HANDEDNESS;
 var AXIS_LABELS = ['x', 'y', 'z', 'w'];
-var NUM_HANDS = 2;  // Number of hands in a pair. Should always be 2.
 
 /**
  * Called on controller component `.play` handlers.

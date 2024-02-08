@@ -46,7 +46,6 @@ so using idPrefix for Vive / OpenVR controllers is recommended.
 | idPrefix          | Selects the controller from the Gamepad API using prefix match.                          |                  |
 | headElement       | Head element for arm model if needed (if not active camera).                             |                  |
 | hand              | Which hand to use, if arm model is needed.  (left negates X)                             | right            |
-| orientationOffset | Offset to apply to model orientation.                                                    | x: 0, y: 0, z: 0 |
 | space             | Specifies whether to use targetRayspace or gripSpace to determine controller pose.       | targetRaySpace   |
 
 ## Events

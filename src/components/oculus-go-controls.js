@@ -39,8 +39,7 @@ module.exports.Component = registerComponent('oculus-go-controls', {
     buttonColor: {type: 'color', default: '#FFFFFF'},
     buttonTouchedColor: {type: 'color', default: '#BBBBBB'},
     buttonHighlightColor: {type: 'color', default: '#7A7A7A'},
-    model: {default: true},
-    orientationOffset: {type: 'vec3'}
+    model: {default: true}
   },
 
   mapping: INPUT_MAPPING,
@@ -109,8 +108,7 @@ module.exports.Component = registerComponent('oculus-go-controls', {
     var data = this.data;
     el.setAttribute('tracked-controls', {
       hand: data.hand,
-      idPrefix: GAMEPAD_ID_PREFIX,
-      orientationOffset: data.orientationOffset
+      idPrefix: GAMEPAD_ID_PREFIX
     });
     if (!this.data.model) { return; }
     this.el.setAttribute('gltf-model', OCULUS_GO_CONTROLLER_MODEL_URL);
