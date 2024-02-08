@@ -93,6 +93,21 @@ suite('material', function () {
       });
     });
 
+    test('updates texture when repeat changes', function (done) {
+      var imageUrl = 'base/tests/assets/test.png';
+      el.setAttribute('material', '');
+      assert.notOk(el.components.material.material.texture);
+      el.setAttribute('material', 'src: url(' + imageUrl + ')');
+      el.addEventListener('materialtextureloaded', function (evt) {
+        var loadedTexture = evt.detail.texture;
+        assert.ok(el.components.material.material.map === loadedTexture);
+        var version = loadedTexture.version;
+        el.setAttribute('material', 'repeat', '2 2');
+        assert.ok(el.components.material.material.map.version > version);
+        done();
+      });
+    });
+
     test('removes texture when src attribute removed', function (done) {
       var imageUrl = 'base/tests/assets/test.png';
       el.setAttribute('material', '');

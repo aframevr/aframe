@@ -16,30 +16,40 @@ function setTextureProperties (texture, data) {
   var offset = data.offset || {x: 0, y: 0};
   var repeat = data.repeat || {x: 1, y: 1};
   var npot = data.npot || false;
-  var anisotropy = data.anisotropy || 0;
+  var anisotropy = data.anisotropy || THREE.Texture.DEFAULT_ANISOTROPY;
+  var wrapS = texture.wrapS;
+  var wrapT = texture.wrapT;
+  var magFilter = texture.magFilter;
+  var minFilter = texture.minFilter;
+
   // To support NPOT textures, wrap must be ClampToEdge (not Repeat),
   // and filters must not use mipmaps (i.e. Nearest or Linear).
   if (npot) {
-    texture.wrapS = THREE.ClampToEdgeWrapping;
-    texture.wrapT = THREE.ClampToEdgeWrapping;
-    texture.magFilter = THREE.LinearFilter;
-    texture.minFilter = THREE.LinearFilter;
+    wrapS = THREE.ClampToEdgeWrapping;
+    wrapT = THREE.ClampToEdgeWrapping;
+    magFilter = THREE.LinearFilter;
+    minFilter = THREE.LinearFilter;
   }
 
-  // Don't bother setting repeat if it is 1/1. Power-of-two is required to repeat.
+  // Set wrap mode to repeat only if repeat isn't 1/1. Power-of-two is required to repeat.
   if (repeat.x !== 1 || repeat.y !== 1) {
-    texture.wrapS = THREE.RepeatWrapping;
-    texture.wrapT = THREE.RepeatWrapping;
-    texture.repeat.set(repeat.x, repeat.y);
-  }
-  // Don't bother setting offset if it is 0/0.
-  if (offset.x !== 0 || offset.y !== 0) {
-    texture.offset.set(offset.x, offset.y);
+    wrapS = THREE.RepeatWrapping;
+    wrapT = THREE.RepeatWrapping;
   }
 
-  // Only set anisotropy if it isn't 0, which indicates that the default value should be used.
-  if (anisotropy !== 0) {
+  // Apply texture properties
+  texture.offset.set(offset.x, offset.y);
+  texture.repeat.set(repeat.x, repeat.y);
+
+  if (texture.wrapS !== wrapS || texture.wrapT !== wrapT ||
+      texture.magFilter !== magFilter || texture.minFilter !== minFilter ||
+      texture.anisotropy !== anisotropy) {
+    texture.wrapS = wrapS;
+    texture.wrapT = wrapT;
+    texture.magFilter = magFilter;
+    texture.minFilter = minFilter;
     texture.anisotropy = anisotropy;
+    texture.needsUpdate = true;
   }
 }
 module.exports.setTextureProperties = setTextureProperties;
