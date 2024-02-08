@@ -127,43 +127,15 @@ module.exports.updateMap = function (shader, data) {
 module.exports.updateDistortionMap = function (longType, shader, data) {
   var shortType = longType;
   if (longType === 'ambientOcclusion') { shortType = 'ao'; }
-  var el = shader.el;
-  var material = shader.material;
-  var rendererSystem = el.sceneEl.systems.renderer;
-  var src = data[longType + 'Map'];
+
   var info = {};
-  info.src = src;
+  info.src = data[longType + 'Map'];
 
   // Pass through the repeat and offset to be handled by the material loader.
   info.offset = data[longType + 'TextureOffset'];
   info.repeat = data[longType + 'TextureRepeat'];
   info.wrap = data[longType + 'TextureWrap'];
-
-  if (src) {
-    if (src === shader[longType + 'TextureSrc']) { return; }
-
-    // Texture added or changed.
-    shader[longType + 'TextureSrc'] = src;
-    el.sceneEl.systems.material.loadTexture(src, info, setMap);
-    return;
-  }
-
-  // Texture removed.
-  if (!material.map) { return; }
-  setMap(null);
-
-  function setMap (texture) {
-    var slot = shortType + 'Map';
-    material[slot] = texture;
-    if (texture && COLOR_MAPS.has(slot)) {
-      rendererSystem.applyColorCorrection(texture);
-    }
-    if (texture) {
-      setTextureProperties(texture, data);
-    }
-    material.needsUpdate = true;
-    handleTextureEvents(el, texture);
-  }
+  return module.exports.updateMapMaterialFromData(shortType + 'Map', 'src', shader, info);
 };
 
 /**
