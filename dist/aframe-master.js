@@ -29848,7 +29848,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.5.0 (Date 2024-02-07, Commit #5d3f4493)');
+console.log('A-Frame Version: 1.5.0 (Date 2024-02-09, Commit #580d94a9)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
@@ -30060,7 +30060,6 @@ module.exports.Shader = registerShader('flat', {
     this.materialData = {
       color: new THREE.Color()
     };
-    this.textureSrc = null;
     getMaterialData(data, this.materialData);
     this.material = new THREE.MeshBasicMaterial(this.materialData);
   },
@@ -30329,26 +30328,16 @@ module.exports.Shader = registerShader('phong', {
       specular: new THREE.Color(),
       emissive: new THREE.Color()
     };
-    this.textureSrc = null;
     getMaterialData(data, this.materialData);
     this.material = new THREE.MeshPhongMaterial(this.materialData);
-    utils.material.updateMap(this, data);
   },
   update: function (data) {
     this.updateMaterial(data);
     utils.material.updateMap(this, data);
-    if (data.normalMap) {
-      utils.material.updateDistortionMap('normal', this, data);
-    }
-    if (data.displacementMap) {
-      utils.material.updateDistortionMap('displacement', this, data);
-    }
-    if (data.ambientOcclusionMap) {
-      utils.material.updateDistortionMap('ambientOcclusion', this, data);
-    }
-    if (data.bump) {
-      utils.material.updateDistortionMap('bump', this, data);
-    }
+    utils.material.updateDistortionMap('normal', this, data);
+    utils.material.updateDistortionMap('displacement', this, data);
+    utils.material.updateDistortionMap('ambientOcclusion', this, data);
+    utils.material.updateDistortionMap('bump', this, data);
     this.updateEnvMap(data);
   },
   /**
@@ -30758,21 +30747,11 @@ module.exports.Shader = registerShader('standard', {
   update: function (data) {
     this.updateMaterial(data);
     utils.material.updateMap(this, data);
-    if (data.normalMap) {
-      utils.material.updateDistortionMap('normal', this, data);
-    }
-    if (data.displacementMap) {
-      utils.material.updateDistortionMap('displacement', this, data);
-    }
-    if (data.ambientOcclusionMap) {
-      utils.material.updateDistortionMap('ambientOcclusion', this, data);
-    }
-    if (data.metalnessMap) {
-      utils.material.updateDistortionMap('metalness', this, data);
-    }
-    if (data.roughnessMap) {
-      utils.material.updateDistortionMap('roughness', this, data);
-    }
+    utils.material.updateDistortionMap('normal', this, data);
+    utils.material.updateDistortionMap('displacement', this, data);
+    utils.material.updateDistortionMap('ambientOcclusion', this, data);
+    utils.material.updateDistortionMap('metalness', this, data);
+    utils.material.updateDistortionMap('roughness', this, data);
     this.updateEnvMap(data);
   },
   /**
@@ -33469,30 +33448,37 @@ function setTextureProperties(texture, data) {
     y: 1
   };
   var npot = data.npot || false;
-  var anisotropy = data.anisotropy || 0;
+  var anisotropy = data.anisotropy || THREE.Texture.DEFAULT_ANISOTROPY;
+  var wrapS = texture.wrapS;
+  var wrapT = texture.wrapT;
+  var magFilter = texture.magFilter;
+  var minFilter = texture.minFilter;
+
   // To support NPOT textures, wrap must be ClampToEdge (not Repeat),
   // and filters must not use mipmaps (i.e. Nearest or Linear).
   if (npot) {
-    texture.wrapS = THREE.ClampToEdgeWrapping;
-    texture.wrapT = THREE.ClampToEdgeWrapping;
-    texture.magFilter = THREE.LinearFilter;
-    texture.minFilter = THREE.LinearFilter;
+    wrapS = THREE.ClampToEdgeWrapping;
+    wrapT = THREE.ClampToEdgeWrapping;
+    magFilter = THREE.LinearFilter;
+    minFilter = THREE.LinearFilter;
   }
 
-  // Don't bother setting repeat if it is 1/1. Power-of-two is required to repeat.
+  // Set wrap mode to repeat only if repeat isn't 1/1. Power-of-two is required to repeat.
   if (repeat.x !== 1 || repeat.y !== 1) {
-    texture.wrapS = THREE.RepeatWrapping;
-    texture.wrapT = THREE.RepeatWrapping;
-    texture.repeat.set(repeat.x, repeat.y);
-  }
-  // Don't bother setting offset if it is 0/0.
-  if (offset.x !== 0 || offset.y !== 0) {
-    texture.offset.set(offset.x, offset.y);
+    wrapS = THREE.RepeatWrapping;
+    wrapT = THREE.RepeatWrapping;
   }
 
-  // Only set anisotropy if it isn't 0, which indicates that the default value should be used.
-  if (anisotropy !== 0) {
+  // Apply texture properties
+  texture.offset.set(offset.x, offset.y);
+  texture.repeat.set(repeat.x, repeat.y);
+  if (texture.wrapS !== wrapS || texture.wrapT !== wrapT || texture.magFilter !== magFilter || texture.minFilter !== minFilter || texture.anisotropy !== anisotropy) {
+    texture.wrapS = wrapS;
+    texture.wrapT = wrapT;
+    texture.magFilter = magFilter;
+    texture.minFilter = minFilter;
     texture.anisotropy = anisotropy;
+    texture.needsUpdate = true;
   }
 }
 module.exports.setTextureProperties = setTextureProperties;
@@ -33588,45 +33574,14 @@ module.exports.updateDistortionMap = function (longType, shader, data) {
   if (longType === 'ambientOcclusion') {
     shortType = 'ao';
   }
-  var el = shader.el;
-  var material = shader.material;
-  var rendererSystem = el.sceneEl.systems.renderer;
-  var src = data[longType + 'Map'];
   var info = {};
-  info.src = src;
+  info.src = data[longType + 'Map'];
 
   // Pass through the repeat and offset to be handled by the material loader.
   info.offset = data[longType + 'TextureOffset'];
   info.repeat = data[longType + 'TextureRepeat'];
   info.wrap = data[longType + 'TextureWrap'];
-  if (src) {
-    if (src === shader[longType + 'TextureSrc']) {
-      return;
-    }
-
-    // Texture added or changed.
-    shader[longType + 'TextureSrc'] = src;
-    el.sceneEl.systems.material.loadTexture(src, info, setMap);
-    return;
-  }
-
-  // Texture removed.
-  if (!material.map) {
-    return;
-  }
-  setMap(null);
-  function setMap(texture) {
-    var slot = shortType + 'Map';
-    material[slot] = texture;
-    if (texture && COLOR_MAPS.has(slot)) {
-      rendererSystem.applyColorCorrection(texture);
-    }
-    if (texture) {
-      setTextureProperties(texture, data);
-    }
-    material.needsUpdate = true;
-    handleTextureEvents(el, texture);
-  }
+  return module.exports.updateMapMaterialFromData(shortType + 'Map', 'src', shader, info);
 };
 
 /**
