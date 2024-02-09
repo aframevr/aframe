@@ -1,4 +1,7 @@
 var THREE = require('../lib/three');
+var srcLoader = require('./src-loader');
+var debug = require('./debug');
+var warn = debug('utils:material:warn');
 
 var COLOR_MAPS = new Set([
   'emissiveMap',
@@ -146,6 +149,74 @@ module.exports.updateDistortionMap = function (longType, shader, data) {
   info.repeat = data[longType + 'TextureRepeat'];
   info.wrap = data[longType + 'TextureWrap'];
   return module.exports.updateMapMaterialFromData(shortType + 'Map', 'src', shader, info);
+};
+
+// Cache env map results as promises
+var envMapPromises = {};
+
+/**
+ * Updates the material's environment map providing reflections or refractions.
+ *
+ * @param {object} shader - A-Frame shader instance
+ * @param {object} data
+ */
+module.exports.updateEnvMap = function (shader, data) {
+  var material = shader.material;
+  var el = shader.el;
+  var materialName = 'envMap';
+  var src = data.envMap;
+  var sphericalEnvMap = data.sphericalEnvMap;
+  var refract = data.refract;
+
+  if (sphericalEnvMap) {
+    src = sphericalEnvMap;
+    warn('`sphericalEnvMap` property is deprecated, using spherical map as equirectangular map instead. ' +
+      'Use `envMap` property with a CubeMap or Equirectangular image instead.');
+  }
+
+  if (!shader.materialSrcs) { shader.materialSrcs = {}; }
+
+  // EnvMap has been removed
+  if (!src) {
+    // Forget the prior material src.
+    delete shader.materialSrcs[materialName];
+    material.envMap = null;
+    material.needsUpdate = true;
+    return;
+  }
+
+  // Remember the new src for this env map.
+  shader.materialSrcs[materialName] = src;
+
+  // Env map is already loading. Wait on promise.
+  if (envMapPromises[src]) {
+    envMapPromises[src].then(checkSetMap);
+    return;
+  }
+
+  // First time loading this env map.
+  envMapPromises[src] = new Promise(function (resolve) {
+    srcLoader.validateEnvMapSrc(src, function loadCubeMap (srcs) {
+      el.sceneEl.systems.material.loadCubeMapTexture(srcs, function (texture) {
+        texture.mapping = refract ? THREE.CubeRefractionMapping : THREE.CubeReflectionMapping;
+        checkSetMap(texture);
+        resolve(texture);
+      });
+    }, function loadEquirectMap (src) {
+      el.sceneEl.systems.material.loadTexture(src, {src: src}, function (texture) {
+        texture.mapping = refract ? THREE.EquirectangularRefractionMapping : THREE.EquirectangularReflectionMapping;
+        checkSetMap(texture);
+        resolve(texture);
+      });
+    });
+  });
+
+  function checkSetMap (texture) {
+    if (shader.materialSrcs[materialName] !== src) { return; }
+    material.envMap = texture;
+    material.needsUpdate = true;
+    handleTextureEvents(el, texture);
+  }
 };
 
 /**

@@ -70,6 +70,39 @@ module.exports.System = registerSystem('material', {
   },
 
   /**
+   * Load the six individual sides and construct a cube texture, then call back.
+   *
+   * @param {Array} srcs - Array of six texture URLs or elements.
+   * @param {function} cb - Callback to pass cube texture to.
+   */
+  loadCubeMapTexture: function (srcs, cb) {
+    var self = this;
+    var loaded = 0;
+    var cube = new THREE.CubeTexture();
+    cube.colorSpace = THREE.SRGBColorSpace;
+
+    function loadSide (index) {
+      self.loadTexture(srcs[index], {src: srcs[index]}, function (texture) {
+        cube.images[index] = texture.image;
+        loaded++;
+        if (loaded === 6) {
+          cube.needsUpdate = true;
+          cb(cube);
+        }
+      });
+    }
+
+    if (srcs.length !== 6) {
+      warn('Cube map texture requires exactly 6 sources, got only %s sources', srcs.length);
+      return;
+    }
+
+    for (var i = 0; i < srcs.length; i++) {
+      loadSide(i);
+    }
+  },
+
+  /**
    * High-level function for loading image textures (THREE.Texture).
    *
    * @param {Element|string} src - Texture source.

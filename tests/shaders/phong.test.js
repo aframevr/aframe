@@ -2,13 +2,12 @@
 var entityFactory = require('../helpers').entityFactory;
 var THREE = require('index').THREE;
 
-var VIDEO = 'base/tests/assets/test.mp4';
-
-suite('standard material', function () {
+suite('phong material', function () {
   setup(function (done) {
     var el = this.el = entityFactory();
+    el.sceneEl.systems.material.clearTextureCache();
     el.setAttribute('geometry', '');
-    el.setAttribute('material', {shader: 'standard'});
+    el.setAttribute('material', {shader: 'phong'});
     if (el.hasLoaded) { done(); }
     el.addEventListener('loaded', function () {
       done();
@@ -78,12 +77,26 @@ suite('standard material', function () {
     });
   });
 
+  test('can use bump maps', function (done) {
+    var el = this.el;
+    var imageUrl = 'base/tests/assets/test.png';
+    assert.isNull(el.getObject3D('mesh').material.bumpMap);
+    el.setAttribute('material', {
+      bumpMapScale: 0.4,
+      bumpMap: `url(${imageUrl})`
+    });
+    assert.equal(el.getObject3D('mesh').material.bumpScale, 0.4);
+    el.addEventListener('materialtextureloaded', function (evt) {
+      assert.equal(el.getObject3D('mesh').material.bumpMap, evt.detail.texture);
+      done();
+    });
+  });
+
   [
     { dataName: 'normalMap', materialName: 'normalMap' },
     { dataName: 'displacementMap', materialName: 'displacementMap' },
     { dataName: 'ambientOcclusionMap', materialName: 'aoMap' },
-    { dataName: 'metalnessMap', materialName: 'metalnessMap' },
-    { dataName: 'roughnessMap', materialName: 'roughnessMap' }
+    { dataName: 'bumpMap', materialName: 'bumpMap' }
   ].forEach(function (names) {
       test(`can unset ${names.dataName}`, function (done) {
         var el = this.el;
@@ -132,33 +145,28 @@ suite('standard material', function () {
     });
   });
 
+  test('can use equirectangular env maps for refraction', function (done) {
+    var el = this.el;
+    var imageUrl = 'base/tests/assets/test2.png';
+    el.setAttribute('material', 'envMap: url(' + imageUrl + '); refract: true');
+    el.addEventListener('materialtextureloaded', function (evt) {
+      assert.equal(evt.detail.texture.mapping, THREE.EquirectangularRefractionMapping);
+      assert.equal(el.getObject3D('mesh').material.envMap, evt.detail.texture);
+      done();
+    });
+  });
+
+  test('falls back to scene.environment for envMap', function () {
+    var el = this.el;
+    el.sceneEl.object3D.environment = new THREE.CubeTexture();
+    assert.equal(el.getObject3D('mesh').material.envMap, el.sceneEl.object3D.environment);
+  });
+
   test('can use wireframes', function () {
     var el = this.el;
     assert.notOk(el.getObject3D('mesh').material.wireframe);
     el.setAttribute('material', 'wireframe', true);
     assert.ok(el.getObject3D('mesh').material.wireframe);
     assert.equal(el.getObject3D('mesh').material.wireframeLinewidth, 2);
-  });
-
-  test('can use video textures with selector', function (done) {
-    var el = this.el;
-    var videoEl = document.createElement('video');
-    videoEl.setAttribute('src', VIDEO);
-    videoEl.setAttribute('id', 'video');
-    el.sceneEl.appendChild(videoEl);
-    el.addEventListener('materialtextureloaded', () => {
-      assert.equal(el.components.material.material.map.image, videoEl);
-      done();
-    });
-    el.setAttribute('material', 'src', '#video');
-  });
-
-  test('can use video textures with inline URL', function (done) {
-    var el = this.el;
-    el.addEventListener('materialtextureloaded', () => {
-      assert.equal(el.components.material.material.map.image.getAttribute('src'), VIDEO);
-      done();
-    });
-    el.setAttribute('material', 'src', VIDEO);
   });
 });
