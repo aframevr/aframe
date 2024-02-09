@@ -24061,7 +24061,7 @@ var debug = __webpack_require__(/*! ../utils/debug */ "./src/utils/debug.js");
 var warn = debug('core:cubemap:warn');
 
 /**
- * Cubemap element that handles validation and exposes list of URLs.
+ * Cubemap element that handles validation and exposes list of six image sources (URL or <img>).
  * Does not listen to updates.
  */
 class ACubeMap extends HTMLElement {
@@ -24092,10 +24092,9 @@ class ACubeMap extends HTMLElement {
 
   /**
    * Checks for exactly six elements with [src].
-   * Does not check explicitly for <img>s in case user does not want
-   * prefetching.
+   * When <img>s are used they will be prefetched.
    *
-   * @returns {Array|null} - six URLs if valid, else null.
+   * @returns {Array|null} - six URLs or <img> elements if valid, else null.
    */
   validate() {
     var elements = this.querySelectorAll('[src]');
@@ -24103,7 +24102,11 @@ class ACubeMap extends HTMLElement {
     var srcs = [];
     if (elements.length === 6) {
       for (i = 0; i < elements.length; i++) {
-        srcs.push(elements[i].getAttribute('src'));
+        if (elements[i].tagName === 'IMG') {
+          srcs.push(elements[i]);
+        } else {
+          srcs.push(elements[i].getAttribute('src'));
+        }
       }
       return srcs;
     }
@@ -26368,7 +26371,7 @@ var error = debug('core:propertyTypes:warn');
 var warn = debug('core:propertyTypes:warn');
 var propertyTypes = module.exports.propertyTypes = {};
 var nonCharRegex = /[,> .[\]:]/;
-var urlRegex = /\url\((.+)\)/;
+var urlRegex = /url\((.+)\)/;
 
 // Built-in property types.
 registerPropertyType('audio', '', assetParse);
@@ -29848,7 +29851,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.5.0 (Date 2024-02-09, Commit #580d94a9)');
+console.log('A-Frame Version: 1.5.0 (Date 2024-02-09, Commit #e0dddcd3)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
@@ -30186,8 +30189,6 @@ module.exports.Shader = registerShader('msdf', {
 var registerShader = (__webpack_require__(/*! ../core/shader */ "./src/core/shader.js").registerShader);
 var THREE = __webpack_require__(/*! ../lib/three */ "./src/lib/three.js");
 var utils = __webpack_require__(/*! ../utils/ */ "./src/utils/index.js");
-var CubeLoader = new THREE.CubeTextureLoader();
-var texturePromises = {};
 
 /**
  * Phong shader using THREE.MeshPhongMaterial.
@@ -30330,6 +30331,16 @@ module.exports.Shader = registerShader('phong', {
     };
     getMaterialData(data, this.materialData);
     this.material = new THREE.MeshPhongMaterial(this.materialData);
+    var sceneEl = this.el.sceneEl;
+    // Fallback to scene environment when no envMap is defined (matching behaviour of standard material)
+    Object.defineProperty(this.material, 'envMap', {
+      get: function () {
+        return this._envMap || sceneEl.object3D.environment;
+      },
+      set: function (value) {
+        this._envMap = value;
+      }
+    });
   },
   update: function (data) {
     this.updateMaterial(data);
@@ -30338,7 +30349,7 @@ module.exports.Shader = registerShader('phong', {
     utils.material.updateDistortionMap('displacement', this, data);
     utils.material.updateDistortionMap('ambientOcclusion', this, data);
     utils.material.updateDistortionMap('bump', this, data);
-    this.updateEnvMap(data);
+    utils.material.updateEnvMap(this, data);
   },
   /**
    * Updating existing material.
@@ -30351,73 +30362,6 @@ module.exports.Shader = registerShader('phong', {
     for (key in this.materialData) {
       this.material[key] = this.materialData[key];
     }
-  },
-  /**
-   * Handle environment cubemap. Textures are cached in texturePromises.
-   */
-  updateEnvMap: function (data) {
-    var self = this;
-    var material = this.material;
-    var envMap = data.envMap;
-    var sphericalEnvMap = data.sphericalEnvMap;
-    var refract = data.refract;
-    var sceneEl = this.el.sceneEl;
-
-    // No envMap defined or already loading.
-    if (!envMap && !sphericalEnvMap || this.isLoadingEnvMap) {
-      Object.defineProperty(material, 'envMap', {
-        get: function () {
-          return sceneEl.object3D.environment;
-        },
-        set: function (value) {
-          delete this.envMap;
-          this.envMap = value;
-        }
-      });
-      material.needsUpdate = true;
-      return;
-    }
-    this.isLoadingEnvMap = true;
-    delete material.envMap;
-
-    // if a spherical env map is defined then use it.
-    if (sphericalEnvMap) {
-      this.el.sceneEl.systems.material.loadTexture(sphericalEnvMap, {
-        src: sphericalEnvMap
-      }, function textureLoaded(texture) {
-        self.isLoadingEnvMap = false;
-        texture.mapping = refract ? THREE.EquirectangularRefractionMapping : THREE.EquirectangularReflectionMapping;
-        material.envMap = texture;
-        utils.material.handleTextureEvents(self.el, texture);
-        material.needsUpdate = true;
-      });
-      return;
-    }
-
-    // Another material is already loading this texture. Wait on promise.
-    if (texturePromises[envMap]) {
-      texturePromises[envMap].then(function (cube) {
-        self.isLoadingEnvMap = false;
-        material.envMap = cube;
-        utils.material.handleTextureEvents(self.el, cube);
-        material.needsUpdate = true;
-      });
-      return;
-    }
-
-    // Material is first to load this texture. Load and resolve texture.
-    texturePromises[envMap] = new Promise(function (resolve) {
-      utils.srcLoader.validateCubemapSrc(envMap, function loadEnvMap(urls) {
-        CubeLoader.load(urls, function (cube) {
-          // Texture loaded.
-          self.isLoadingEnvMap = false;
-          material.envMap = cube;
-          cube.mapping = refract ? THREE.CubeRefractionMapping : THREE.CubeReflectionMapping;
-          utils.material.handleTextureEvents(self.el, cube);
-          resolve(cube);
-        });
-      });
-    });
   }
 });
 
@@ -30461,7 +30405,7 @@ function getMaterialData(data, materialData) {
     materialData.aoMapIntensity = data.ambientOcclusionMapIntensity;
   }
   if (data.bumpMap) {
-    materialData.aoMapIntensity = data.bumpMapScale;
+    materialData.bumpScale = data.bumpMapScale;
   }
   if (data.displacementMap) {
     materialData.displacementScale = data.displacementScale;
@@ -30584,8 +30528,6 @@ module.exports.Shader = registerShader('shadow', {
 var registerShader = (__webpack_require__(/*! ../core/shader */ "./src/core/shader.js").registerShader);
 var THREE = __webpack_require__(/*! ../lib/three */ "./src/lib/three.js");
 var utils = __webpack_require__(/*! ../utils/ */ "./src/utils/index.js");
-var CubeLoader = new THREE.CubeTextureLoader();
-var texturePromises = {};
 
 /**
  * Standard (physically-based) shader using THREE.MeshStandardMaterial.
@@ -30752,7 +30694,7 @@ module.exports.Shader = registerShader('standard', {
     utils.material.updateDistortionMap('ambientOcclusion', this, data);
     utils.material.updateDistortionMap('metalness', this, data);
     utils.material.updateDistortionMap('roughness', this, data);
-    this.updateEnvMap(data);
+    utils.material.updateEnvMap(this, data);
   },
   /**
    * Updating existing material.
@@ -30767,61 +30709,6 @@ module.exports.Shader = registerShader('standard', {
     for (key in this.materialData) {
       material[key] = this.materialData[key];
     }
-  },
-  /**
-   * Handle environment cubemap. Textures are cached in texturePromises.
-   */
-  updateEnvMap: function (data) {
-    var self = this;
-    var material = this.material;
-    var envMap = data.envMap;
-    var sphericalEnvMap = data.sphericalEnvMap;
-
-    // No envMap defined or already loading.
-    if (!envMap && !sphericalEnvMap || this.isLoadingEnvMap) {
-      material.envMap = null;
-      material.needsUpdate = true;
-      return;
-    }
-    this.isLoadingEnvMap = true;
-
-    // if a spherical env map is defined then use it.
-    if (sphericalEnvMap) {
-      this.el.sceneEl.systems.material.loadTexture(sphericalEnvMap, {
-        src: sphericalEnvMap
-      }, function textureLoaded(texture) {
-        self.isLoadingEnvMap = false;
-        texture.mapping = THREE.EquirectangularReflectionMapping;
-        material.envMap = texture;
-        utils.material.handleTextureEvents(self.el, texture);
-        material.needsUpdate = true;
-      });
-      return;
-    }
-
-    // Another material is already loading this texture. Wait on promise.
-    if (texturePromises[envMap]) {
-      texturePromises[envMap].then(function (cube) {
-        self.isLoadingEnvMap = false;
-        material.envMap = cube;
-        utils.material.handleTextureEvents(self.el, cube);
-        material.needsUpdate = true;
-      });
-      return;
-    }
-
-    // Material is first to load this texture. Load and resolve texture.
-    texturePromises[envMap] = new Promise(function (resolve) {
-      utils.srcLoader.validateCubemapSrc(envMap, function loadEnvMap(urls) {
-        CubeLoader.load(urls, function (cube) {
-          // Texture loaded.
-          self.isLoadingEnvMap = false;
-          material.envMap = cube;
-          utils.material.handleTextureEvents(self.el, cube);
-          resolve(cube);
-        });
-      });
-    });
   }
 });
 
@@ -31543,6 +31430,37 @@ module.exports.System = registerSystem('material', {
     }
     function loadVideoCb(src) {
       self.loadVideo(src, data, cb);
+    }
+  },
+  /**
+   * Load the six individual sides and construct a cube texture, then call back.
+   *
+   * @param {Array} srcs - Array of six texture URLs or elements.
+   * @param {function} cb - Callback to pass cube texture to.
+   */
+  loadCubeMapTexture: function (srcs, cb) {
+    var self = this;
+    var loaded = 0;
+    var cube = new THREE.CubeTexture();
+    cube.colorSpace = THREE.SRGBColorSpace;
+    function loadSide(index) {
+      self.loadTexture(srcs[index], {
+        src: srcs[index]
+      }, function (texture) {
+        cube.images[index] = texture.image;
+        loaded++;
+        if (loaded === 6) {
+          cube.needsUpdate = true;
+          cb(cube);
+        }
+      });
+    }
+    if (srcs.length !== 6) {
+      warn('Cube map texture requires exactly 6 sources, got only %s sources', srcs.length);
+      return;
+    }
+    for (var i = 0; i < srcs.length; i++) {
+      loadSide(i);
     }
   },
   /**
@@ -33431,6 +33349,9 @@ module.exports = function isIOSOlderThan10(userAgent) {
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 var THREE = __webpack_require__(/*! ../lib/three */ "./src/lib/three.js");
+var srcLoader = __webpack_require__(/*! ./src-loader */ "./src/utils/src-loader.js");
+var debug = __webpack_require__(/*! ./debug */ "./src/utils/debug.js");
+var warn = debug('utils:material:warn');
 var COLOR_MAPS = new Set(['emissiveMap', 'envMap', 'map', 'specularMap']);
 
 /**
@@ -33582,6 +33503,76 @@ module.exports.updateDistortionMap = function (longType, shader, data) {
   info.repeat = data[longType + 'TextureRepeat'];
   info.wrap = data[longType + 'TextureWrap'];
   return module.exports.updateMapMaterialFromData(shortType + 'Map', 'src', shader, info);
+};
+
+// Cache env map results as promises
+var envMapPromises = {};
+
+/**
+ * Updates the material's environment map providing reflections or refractions.
+ *
+ * @param {object} shader - A-Frame shader instance
+ * @param {object} data
+ */
+module.exports.updateEnvMap = function (shader, data) {
+  var material = shader.material;
+  var el = shader.el;
+  var materialName = 'envMap';
+  var src = data.envMap;
+  var sphericalEnvMap = data.sphericalEnvMap;
+  var refract = data.refract;
+  if (sphericalEnvMap) {
+    src = sphericalEnvMap;
+    warn('`sphericalEnvMap` property is deprecated, using spherical map as equirectangular map instead. ' + 'Use `envMap` property with a CubeMap or Equirectangular image instead.');
+  }
+  if (!shader.materialSrcs) {
+    shader.materialSrcs = {};
+  }
+
+  // EnvMap has been removed
+  if (!src) {
+    // Forget the prior material src.
+    delete shader.materialSrcs[materialName];
+    material.envMap = null;
+    material.needsUpdate = true;
+    return;
+  }
+
+  // Remember the new src for this env map.
+  shader.materialSrcs[materialName] = src;
+
+  // Env map is already loading. Wait on promise.
+  if (envMapPromises[src]) {
+    envMapPromises[src].then(checkSetMap);
+    return;
+  }
+
+  // First time loading this env map.
+  envMapPromises[src] = new Promise(function (resolve) {
+    srcLoader.validateEnvMapSrc(src, function loadCubeMap(srcs) {
+      el.sceneEl.systems.material.loadCubeMapTexture(srcs, function (texture) {
+        texture.mapping = refract ? THREE.CubeRefractionMapping : THREE.CubeReflectionMapping;
+        checkSetMap(texture);
+        resolve(texture);
+      });
+    }, function loadEquirectMap(src) {
+      el.sceneEl.systems.material.loadTexture(src, {
+        src: src
+      }, function (texture) {
+        texture.mapping = refract ? THREE.EquirectangularRefractionMapping : THREE.EquirectangularReflectionMapping;
+        checkSetMap(texture);
+        resolve(texture);
+      });
+    });
+  });
+  function checkSetMap(texture) {
+    if (shader.materialSrcs[materialName] !== src) {
+      return;
+    }
+    material.envMap = texture;
+    material.needsUpdate = true;
+    handleTextureEvents(el, texture);
+  }
 };
 
 /**
@@ -33818,51 +33809,84 @@ function validateSrc(src, isImageCb, isVideoCb) {
 }
 
 /**
+ * Validates either six images as a cubemap or one image as an Equirectangular image.
+ *
+ * @param {string} src - A selector, image URL or comma-separated image URLs. Image URLS
+          must be wrapped by `url()`.
+ * @param {*} isCubemapCb - callback if src is a cubemap.
+ * @param {*} isEquirectCb - callback is src is a singular equirectangular image.
+ */
+function validateEnvMapSrc(src, isCubemapCb, isEquirectCb) {
+  var el;
+  var cubemapSrcRegex = '';
+  var i;
+  var urls;
+  var validatedUrls = [];
+  if (typeof src === 'string') {
+    for (i = 0; i < 5; i++) {
+      cubemapSrcRegex += '(url\\((?:[^\\)]+)\\),\\s*)';
+    }
+    cubemapSrcRegex += '(url\\((?:[^\\)]+)\\)\\s*)';
+    urls = src.match(new RegExp(cubemapSrcRegex));
+
+    // `src` is a comma-separated list of URLs.
+    // In this case, re-use validateSrc for each side of the cube.
+    function isImageCb(url) {
+      validatedUrls.push(url);
+      if (validatedUrls.length === 6) {
+        isCubemapCb(validatedUrls);
+      }
+    }
+    if (urls) {
+      for (i = 1; i < 7; i++) {
+        validateSrc(parseUrl(urls[i]), isImageCb);
+      }
+      return;
+    }
+
+    // Single URL src
+    if (!src.startsWith('#')) {
+      var parsedSrc = parseUrl(src);
+      if (parsedSrc) {
+        validateSrc(parsedSrc, isEquirectCb);
+      } else {
+        validateSrc(src, isEquirectCb);
+      }
+      return;
+    }
+  }
+
+  // `src` is either an element or a query selector to an element (<a-cubemap> or <img>).
+  if (src.tagName) {
+    el = src;
+  } else {
+    el = validateAndGetQuerySelector(src);
+  }
+  if (!el) {
+    return;
+  }
+  if (el.tagName === 'A-CUBEMAP' && el.srcs) {
+    return isCubemapCb(el.srcs);
+  }
+  if (el.tagName === 'IMG') {
+    return isEquirectCb(el);
+  }
+  // Else if el is not a valid element, either <a-cubemap> or <img>.
+  warn('Selector "%s" does not point to <a-cubemap> or <img>', src);
+}
+
+/**
  * Validates six images as a cubemap, either as selector or comma-separated
  * URLs.
  *
  * @param {string} src - A selector or comma-separated image URLs. Image URLs
           must be wrapped by `url()`.
- * @param {string} src - A selector or comma-separated image URLs. Image URLs
-          must be wrapped by `url()`.
+ * @param {function} cb - callback if src is a cubemap.
  */
 function validateCubemapSrc(src, cb) {
-  var aCubemap;
-  var cubemapSrcRegex = '';
-  var i;
-  var urls;
-  var validatedUrls = [];
-  for (i = 0; i < 5; i++) {
-    cubemapSrcRegex += '(url\\((?:[^\\)]+)\\),\\s*)';
-  }
-  cubemapSrcRegex += '(url\\((?:[^\\)]+)\\)\\s*)';
-  urls = src.match(new RegExp(cubemapSrcRegex));
-
-  // `src` is a comma-separated list of URLs.
-  // In this case, re-use validateSrc for each side of the cube.
-  function isImageCb(url) {
-    validatedUrls.push(url);
-    if (validatedUrls.length === 6) {
-      cb(validatedUrls);
-    }
-  }
-  if (urls) {
-    for (i = 1; i < 7; i++) {
-      validateSrc(parseUrl(urls[i]), isImageCb);
-    }
-    return;
-  }
-
-  // `src` is a query selector to <a-cubemap> containing six $([src])s.
-  aCubemap = validateAndGetQuerySelector(src);
-  if (!aCubemap) {
-    return;
-  }
-  if (aCubemap.tagName === 'A-CUBEMAP' && aCubemap.srcs) {
-    return cb(aCubemap.srcs);
-  }
-  // Else if aCubeMap is not a <a-cubemap>.
-  warn('Selector "%s" does not point to <a-cubemap>', src);
+  return validateEnvMapSrc(src, cb, function isEquirectCb() {
+    warn('Expected cubemap but got image');
+  });
 }
 
 /**
@@ -33871,7 +33895,7 @@ function validateCubemapSrc(src, cb) {
  * @return {string} The parsed src, if parseable.
  */
 function parseUrl(src) {
-  var parsedSrc = src.match(/\url\((.+)\)/);
+  var parsedSrc = src.match(/url\((.+)\)/);
   if (!parsedSrc) {
     return;
   }
@@ -33951,7 +33975,8 @@ function validateAndGetQuerySelector(selector) {
 module.exports = {
   parseUrl: parseUrl,
   validateSrc: validateSrc,
-  validateCubemapSrc: validateCubemapSrc
+  validateCubemapSrc: validateCubemapSrc,
+  validateEnvMapSrc: validateEnvMapSrc
 };
 
 /***/ }),
