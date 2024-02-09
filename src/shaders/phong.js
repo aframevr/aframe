@@ -53,19 +53,17 @@ module.exports.Shader = registerShader('phong', {
    */
   init: function (data) {
     this.materialData = { color: new THREE.Color(), specular: new THREE.Color(), emissive: new THREE.Color() };
-    this.textureSrc = null;
     getMaterialData(data, this.materialData);
     this.material = new THREE.MeshPhongMaterial(this.materialData);
-    utils.material.updateMap(this, data);
   },
 
   update: function (data) {
     this.updateMaterial(data);
     utils.material.updateMap(this, data);
-    if (data.normalMap) { utils.material.updateDistortionMap('normal', this, data); }
-    if (data.displacementMap) { utils.material.updateDistortionMap('displacement', this, data); }
-    if (data.ambientOcclusionMap) { utils.material.updateDistortionMap('ambientOcclusion', this, data); }
-    if (data.bump) { utils.material.updateDistortionMap('bump', this, data); }
+    utils.material.updateDistortionMap('normal', this, data);
+    utils.material.updateDistortionMap('displacement', this, data);
+    utils.material.updateDistortionMap('ambientOcclusion', this, data);
+    utils.material.updateDistortionMap('bump', this, data);
     this.updateEnvMap(data);
   },
 

@@ -78,6 +78,27 @@ suite('standard material', function () {
     });
   });
 
+  [
+    { dataName: 'normalMap', materialName: 'normalMap' },
+    { dataName: 'displacementMap', materialName: 'displacementMap' },
+    { dataName: 'ambientOcclusionMap', materialName: 'aoMap' },
+    { dataName: 'metalnessMap', materialName: 'metalnessMap' },
+    { dataName: 'roughnessMap', materialName: 'roughnessMap' }
+  ].forEach(function (names) {
+      test(`can unset ${names.dataName}`, function (done) {
+        var el = this.el;
+        var imageUrl = 'base/tests/assets/test.png';
+        assert.isNull(el.getObject3D('mesh').material[names.materialName]);
+        el.setAttribute('material', names.dataName, `url(${imageUrl})`);
+        el.addEventListener('materialtextureloaded', function (evt) {
+          assert.equal(el.getObject3D('mesh').material[names.materialName], evt.detail.texture);
+          el.setAttribute('material', names.dataName, '');
+          assert.isNull(el.getObject3D('mesh').material[names.materialName]);
+          done();
+        });
+      });
+  });
+
   test('can use spherical env maps', function (done) {
     var el = this.el;
     var imageUrl = 'base/tests/assets/test.png';
