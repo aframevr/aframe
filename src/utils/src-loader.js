@@ -25,50 +25,84 @@ function validateSrc (src, isImageCb, isVideoCb) {
 }
 
 /**
- * Validates six images as a cubemap, either as selector or comma-separated
- * URLs.
+ * Validates either six images as a cubemap or one image as an Equirectangular image.
  *
- * @param {string} src - A selector or comma-separated image URLs. Image URLs
+ * @param {string} src - A selector, image URL or comma-separated image URLs. Image URLS
           must be wrapped by `url()`.
- * @param {string} src - A selector or comma-separated image URLs. Image URLs
-          must be wrapped by `url()`.
+ * @param {*} isCubemapCb - callback if src is a cubemap.
+ * @param {*} isEquirectCb - callback is src is a singular equirectangular image.
  */
-function validateCubemapSrc (src, cb) {
-  var aCubemap;
+function validateEnvMapSrc (src, isCubemapCb, isEquirectCb) {
+  var el;
   var cubemapSrcRegex = '';
   var i;
   var urls;
   var validatedUrls = [];
 
-  for (i = 0; i < 5; i++) {
-    cubemapSrcRegex += '(url\\((?:[^\\)]+)\\),\\s*)';
-  }
-  cubemapSrcRegex += '(url\\((?:[^\\)]+)\\)\\s*)';
-  urls = src.match(new RegExp(cubemapSrcRegex));
+  if (typeof src === 'string') {
+    for (i = 0; i < 5; i++) {
+      cubemapSrcRegex += '(url\\((?:[^\\)]+)\\),\\s*)';
+    }
+    cubemapSrcRegex += '(url\\((?:[^\\)]+)\\)\\s*)';
+    urls = src.match(new RegExp(cubemapSrcRegex));
 
-  // `src` is a comma-separated list of URLs.
-  // In this case, re-use validateSrc for each side of the cube.
-  function isImageCb (url) {
-    validatedUrls.push(url);
-    if (validatedUrls.length === 6) {
-      cb(validatedUrls);
+    // `src` is a comma-separated list of URLs.
+    // In this case, re-use validateSrc for each side of the cube.
+    function isImageCb (url) {
+      validatedUrls.push(url);
+      if (validatedUrls.length === 6) {
+        isCubemapCb(validatedUrls);
+      }
+    }
+    if (urls) {
+      for (i = 1; i < 7; i++) {
+        validateSrc(parseUrl(urls[i]), isImageCb);
+      }
+      return;
+    }
+
+    // Single URL src
+    if (!src.startsWith('#')) {
+      var parsedSrc = parseUrl(src);
+      if (parsedSrc) {
+        validateSrc(parsedSrc, isEquirectCb);
+      } else {
+        validateSrc(src, isEquirectCb);
+      }
+      return;
     }
   }
-  if (urls) {
-    for (i = 1; i < 7; i++) {
-      validateSrc(parseUrl(urls[i]), isImageCb);
-    }
-    return;
+
+  // `src` is either an element or a query selector to an element (<a-cubemap> or <img>).
+  if (src.tagName) {
+    el = src;
+  } else {
+    el = validateAndGetQuerySelector(src);
   }
 
-  // `src` is a query selector to <a-cubemap> containing six $([src])s.
-  aCubemap = validateAndGetQuerySelector(src);
-  if (!aCubemap) { return; }
-  if (aCubemap.tagName === 'A-CUBEMAP' && aCubemap.srcs) {
-    return cb(aCubemap.srcs);
+  if (!el) { return; }
+  if (el.tagName === 'A-CUBEMAP' && el.srcs) {
+    return isCubemapCb(el.srcs);
   }
-  // Else if aCubeMap is not a <a-cubemap>.
-  warn('Selector "%s" does not point to <a-cubemap>', src);
+  if (el.tagName === 'IMG') {
+    return isEquirectCb(el);
+  }
+  // Else if el is not a valid element, either <a-cubemap> or <img>.
+  warn('Selector "%s" does not point to <a-cubemap> or <img>', src);
+}
+
+/**
+ * Validates six images as a cubemap, either as selector or comma-separated
+ * URLs.
+ *
+ * @param {string} src - A selector or comma-separated image URLs. Image URLs
+          must be wrapped by `url()`.
+ * @param {function} cb - callback if src is a cubemap.
+ */
+function validateCubemapSrc (src, cb) {
+  return validateEnvMapSrc(src, cb, function isEquirectCb () {
+    warn('Expected cubemap but got image');
+  });
 }
 
 /**
@@ -77,7 +111,7 @@ function validateCubemapSrc (src, cb) {
  * @return {string} The parsed src, if parseable.
  */
 function parseUrl (src) {
-  var parsedSrc = src.match(/\url\((.+)\)/);
+  var parsedSrc = src.match(/url\((.+)\)/);
   if (!parsedSrc) { return; }
   return parsedSrc[1];
 }
@@ -153,5 +187,6 @@ function validateAndGetQuerySelector (selector) {
 module.exports = {
   parseUrl: parseUrl,
   validateSrc: validateSrc,
-  validateCubemapSrc: validateCubemapSrc
+  validateCubemapSrc: validateCubemapSrc,
+  validateEnvMapSrc: validateEnvMapSrc
 };

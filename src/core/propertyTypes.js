@@ -6,7 +6,7 @@ var warn = debug('core:propertyTypes:warn');
 
 var propertyTypes = module.exports.propertyTypes = {};
 var nonCharRegex = /[,> .[\]:]/;
-var urlRegex = /\url\((.+)\)/;
+var urlRegex = /url\((.+)\)/;
 
 // Built-in property types.
 registerPropertyType('audio', '', assetParse);
