@@ -1,3 +1,4 @@
+/* global HTMLCanvasElement, HTMLImageElement, HTMLVideoElement */
 var THREE = require('../lib/three');
 var srcLoader = require('./src-loader');
 var debug = require('./debug');
@@ -14,7 +15,7 @@ var COLOR_MAPS = new Set([
  * Set texture properties such as repeat and offset.
  *
  * @param {object} data - With keys like `repeat`.
-*/
+ */
 function setTextureProperties (texture, data) {
   var offset = data.offset || {x: 0, y: 0};
   var repeat = data.repeat || {x: 1, y: 1};
@@ -79,7 +80,7 @@ module.exports.updateMapMaterialFromData = function (materialName, dataName, sha
   if (!src) {
     // Forget the prior material src.
     delete shader.materialSrcs[materialName];
-    // Remove the texture.
+    // Remove the texture from the material.
     setMap(null);
     return;
   }
@@ -97,24 +98,55 @@ module.exports.updateMapMaterialFromData = function (materialName, dataName, sha
 
   // If the new material src is already a texture, just use it.
   if (src instanceof THREE.Texture) { setMap(src); } else {
-    // Load texture for the new material src.
+    // Load texture source for the new material src.
     // (And check if we should still use it once available in callback.)
-    el.sceneEl.systems.material.loadTexture(src,
-      {src: src, repeat: data.repeat, offset: data.offset, npot: data.npot, anisotropy: data.anisotropy},
-      checkSetMap);
+    el.sceneEl.systems.material.loadTextureSource(src, updateTexture);
   }
 
-  function checkSetMap (texture) {
+  function updateTexture (source) {
     // If the source has been changed, don't use loaded texture.
     if (shader.materialSrcs[materialName] !== src) { return; }
+
+    var texture = material[materialName];
+
+    // Handle removal or texture type change
+    if (texture && (source === null || !isCompatibleTexture(texture, source))) {
+      texture = null;
+    }
+
+    // Create texture if needed
+    if (!texture && source) {
+      texture = createCompatibleTexture(source);
+    }
+
+    // Update texture source and properties
+    if (texture) {
+      if (texture.source !== source) {
+        texture.source = source;
+        texture.needsUpdate = true;
+      }
+      if (COLOR_MAPS.has(materialName)) {
+        rendererSystem.applyColorCorrection(texture);
+      }
+      setTextureProperties(texture, data);
+    }
+
+    // Set map property on the material
     setMap(texture);
   }
 
   function setMap (texture) {
-    material[materialName] = texture;
-    if (texture && COLOR_MAPS.has(materialName)) {
-      rendererSystem.applyColorCorrection(texture);
+    // Nothing to do if texture is the same
+    if (material[materialName] === texture) {
+      return;
     }
+
+    // Dispose old texture if present
+    if (material[materialName]) {
+      material[materialName].dispose();
+    }
+
+    material[materialName] = texture;
     material.needsUpdate = true;
     handleTextureEvents(el, texture);
   }
@@ -233,12 +265,59 @@ function handleTextureEvents (el, texture) {
   // Video events.
   if (!texture.image || texture.image.tagName !== 'VIDEO') { return; }
 
-  texture.image.addEventListener('loadeddata', function emitVideoTextureLoadedDataAll () {
+  texture.image.addEventListener('loadeddata', emitVideoTextureLoadedDataAll);
+  texture.image.addEventListener('ended', emitVideoTextureEndedAll);
+  function emitVideoTextureLoadedDataAll () {
     el.emit('materialvideoloadeddata', {src: texture.image, texture: texture});
-  });
-  texture.image.addEventListener('ended', function emitVideoTextureEndedAll () {
+  }
+  function emitVideoTextureEndedAll () {
     // Works for non-looping videos only.
     el.emit('materialvideoended', {src: texture.image, texture: texture});
+  }
+
+  // Video source can outlive texture, so cleanup event listeners when texture is disposed
+  texture.addEventListener('dispose', function cleanupListeners () {
+    texture.image.removeEventListener('loadeddata', emitVideoTextureLoadedDataAll);
+    texture.image.removeEventListener('ended', emitVideoTextureEndedAll);
   });
 }
 module.exports.handleTextureEvents = handleTextureEvents;
+
+/**
+ * Checks if a given texture type is compatible with a given source.
+ *
+ * @param {THREE.Texture} texture - The texture to check compatibility with
+ * @param {THREE.Source} source - The source to check compatibility with
+ * @returns {boolean} True if the texture is compatible with the source, false otherwise
+ */
+function isCompatibleTexture (texture, source) {
+  if (source.data instanceof HTMLCanvasElement) {
+    return texture.isCanvasTexture;
+  }
+
+  if (source.data instanceof HTMLVideoElement) {
+    // VideoTexture can't have its source changed after initial user
+    return texture.isVideoTexture && texture.source === source;
+  }
+
+  return texture.isTexture && !texture.isCanvasTexture && !texture.isVideoTexture;
+}
+module.exports.isCompatibleTexture = isCompatibleTexture;
+
+function createCompatibleTexture (source) {
+  var texture;
+
+  if (source.data instanceof HTMLCanvasElement) {
+    texture = new THREE.CanvasTexture();
+  } else if (source.data instanceof HTMLVideoElement) {
+    // Pass underlying video to constructor to ensure requestVideoFrameCallback is setup
+    texture = new THREE.VideoTexture(source.data);
+  } else {
+    texture = new THREE.Texture();
+  }
+
+  texture.source = source;
+  texture.needsUpdate = true;
+  return texture;
+}
+module.exports.createCompatibleTexture = createCompatibleTexture;

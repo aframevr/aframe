@@ -78,8 +78,11 @@ module.exports.System = registerSystem('renderer', {
   applyColorCorrection: function (texture) {
     if (!this.data.colorManagement || !texture) {
       return;
-    } else if (texture.isTexture) {
+    }
+
+    if (texture.isTexture && texture.colorSpace !== THREE.SRGBColorSpace) {
       texture.colorSpace = THREE.SRGBColorSpace;
+      texture.needsUpdate = true;
     }
   },
 

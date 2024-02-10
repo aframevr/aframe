@@ -5,7 +5,7 @@ var THREE = require('index').THREE;
 suite('phong material', function () {
   setup(function (done) {
     var el = this.el = entityFactory();
-    el.sceneEl.systems.material.clearTextureCache();
+    el.sceneEl.systems.material.clearTextureSourceCache();
     el.setAttribute('geometry', '');
     el.setAttribute('material', {shader: 'phong'});
     if (el.hasLoaded) { done(); }
