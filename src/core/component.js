@@ -578,9 +578,11 @@ Component.prototype = {
    */
   destroy: function () {
     this.objectPool.recycle(this.attrValue);
+    this.objectPool.recycle(this.nextData);
     this.objectPool.recycle(this.oldData);
+    this.objectPool.recycle(this.previousOldData);
     this.objectPool.recycle(this.parsingAttrValue);
-    this.attrValue = this.oldData = this.parsingAttrValue = undefined;
+    this.nextData = this.attrValue = this.oldData = this.previousOldData = this.parsingAttrValue = undefined;
   }
 };
 
