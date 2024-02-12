@@ -278,7 +278,7 @@ class AEntity extends ANode {
   /**
    * Initialize component.
    *
-   * @param {string} attrName - Attribute name asociated to the component.
+   * @param {string} attrName - Attribute name associated to the component.
    * @param {object} data - Component data
    * @param {boolean} isDependency - True if the component is a dependency.
    */

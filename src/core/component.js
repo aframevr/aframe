@@ -19,6 +19,7 @@ var upperCaseRegExp = new RegExp('[A-Z]+');
 
 // Object pools by component, created upon registration.
 var objectPools = {};
+var emptyInitialOldData = Object.freeze({});
 
 /**
  * Component class definition.
@@ -223,7 +224,7 @@ Component.prototype = {
     }
     utils.objectPool.clearObject(this.attrValue);
     this.attrValue = extendProperties(this.attrValue, newAttrValue, this.isObjectBased);
-    utils.objectPool.clearObject(tempObject);
+    this.objectPool.recycle(tempObject);
   },
 
   /**
@@ -271,7 +272,7 @@ Component.prototype = {
    *
    * @param {string} attrValue - HTML attribute value.
    *        If undefined, use the cached attribute value and continue updating properties.
-   * @param {boolean} clobber - The previous component data is overwritten by the atrrValue.
+   * @param {boolean} clobber - The previous component data is overwritten by the attrValue.
    */
   updateProperties: function (attrValue, clobber) {
     var el = this.el;
@@ -324,9 +325,8 @@ Component.prototype = {
 
     // For oldData, pass empty object to multiple-prop schemas or object single-prop schema.
     // Pass undefined to rest of types.
-    initialOldData = this.isObjectBased ? this.objectPool.use() : undefined;
+    initialOldData = this.isObjectBased ? emptyInitialOldData : undefined;
     this.update(initialOldData);
-    if (this.isObjectBased) { this.objectPool.recycle(initialOldData); }
 
     // Play the component if the entity is playing.
     if (el.isPlaying) { this.play(); }
