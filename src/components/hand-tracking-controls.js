@@ -1,6 +1,5 @@
 /* global THREE, XRHand */
 var registerComponent = require('../core/component').registerComponent;
-var bind = require('../utils/bind');
 
 var AEntity = require('../core/a-entity').AEntity;
 
@@ -58,9 +57,9 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
   },
 
   bindMethods: function () {
-    this.onControllersUpdate = bind(this.onControllersUpdate, this);
-    this.checkIfControllerPresent = bind(this.checkIfControllerPresent, this);
-    this.removeControllersUpdateListener = bind(this.removeControllersUpdateListener, this);
+    this.onControllersUpdate = this.onControllersUpdate.bind(this);
+    this.checkIfControllerPresent = this.checkIfControllerPresent.bind(this);
+    this.removeControllersUpdateListener = this.removeControllersUpdateListener.bind(this);
   },
 
   addEventListeners: function () {

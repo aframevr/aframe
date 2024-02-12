@@ -1,7 +1,6 @@
 var registerComponent = require('../../core/component').registerComponent;
 var constants = require('../../constants/');
 var utils = require('../../utils/');
-var bind = utils.bind;
 
 var ENTER_VR_CLASS = 'a-enter-vr';
 var ENTER_AR_CLASS = 'a-enter-ar';
@@ -57,11 +56,11 @@ module.exports.Component = registerComponent('xr-mode-ui', {
   },
 
   bindMethods: function () {
-    this.onEnterVRButtonClick = bind(this.onEnterVRButtonClick, this);
-    this.onEnterARButtonClick = bind(this.onEnterARButtonClick, this);
-    this.onModalClick = bind(this.onModalClick, this);
-    this.toggleOrientationModalIfNeeded = bind(this.toggleOrientationModalIfNeeded, this);
-    this.updateEnterInterfaces = bind(this.updateEnterInterfaces, this);
+    this.onEnterVRButtonClick = this.onEnterVRButtonClick.bind(this);
+    this.onEnterARButtonClick = this.onEnterARButtonClick.bind(this);
+    this.onModalClick = this.onModalClick.bind(this);
+    this.toggleOrientationModalIfNeeded = this.toggleOrientationModalIfNeeded.bind(this);
+    this.updateEnterInterfaces = this.updateEnterInterfaces.bind(this);
   },
 
   /**

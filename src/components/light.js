@@ -1,4 +1,3 @@
-var bind = require('../utils/bind');
 var utils = require('../utils');
 var diff = utils.diff;
 var debug = require('../utils/debug');
@@ -102,7 +101,7 @@ module.exports.Component = registerComponent('light', {
               if (value.hasLoaded) {
                 self.onSetTarget(value, light);
               } else {
-                value.addEventListener('loaded', bind(self.onSetTarget, self, value, light));
+                value.addEventListener('loaded', self.onSetTarget.bind(self, value, light));
               }
             }
             break;
@@ -299,7 +298,7 @@ module.exports.Component = registerComponent('light', {
           if (target.hasLoaded) {
             this.onSetTarget(target, light);
           } else {
-            target.addEventListener('loaded', bind(this.onSetTarget, this, target, light));
+            target.addEventListener('loaded', this.onSetTarget.bind(this, target, light));
           }
         }
         return light;
@@ -320,7 +319,7 @@ module.exports.Component = registerComponent('light', {
           if (target.hasLoaded) {
             this.onSetTarget(target, light);
           } else {
-            target.addEventListener('loaded', bind(this.onSetTarget, this, target, light));
+            target.addEventListener('loaded', this.onSetTarget.bind(this, target, light));
           }
         }
         return light;

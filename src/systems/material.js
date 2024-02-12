@@ -3,7 +3,6 @@ var THREE = require('../lib/three');
 var utils = require('../utils/');
 var setTextureProperties = require('../utils/material').setTextureProperties;
 
-var bind = utils.bind;
 var debug = utils.debug;
 var error = debug('components:texture:error');
 var TextureLoader = new THREE.TextureLoader();
@@ -31,7 +30,7 @@ module.exports.System = registerSystem('material', {
 
     this.sceneEl.addEventListener(
       'materialtextureloaded',
-      bind(this.onMaterialTextureLoaded, this)
+      this.onMaterialTextureLoaded.bind(this)
     );
   },
 
