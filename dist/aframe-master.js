@@ -24412,7 +24412,7 @@ class AEntity extends ANode {
   /**
    * Initialize component.
    *
-   * @param {string} attrName - Attribute name asociated to the component.
+   * @param {string} attrName - Attribute name associated to the component.
    * @param {object} data - Component data
    * @param {boolean} isDependency - True if the component is a dependency.
    */
@@ -25506,6 +25506,7 @@ var upperCaseRegExp = new RegExp('[A-Z]+');
 
 // Object pools by component, created upon registration.
 var objectPools = {};
+var emptyInitialOldData = Object.freeze({});
 
 /**
  * Component class definition.
@@ -25705,7 +25706,7 @@ Component.prototype = {
     }
     utils.objectPool.clearObject(this.attrValue);
     this.attrValue = extendProperties(this.attrValue, newAttrValue, this.isObjectBased);
-    utils.objectPool.clearObject(tempObject);
+    this.objectPool.recycle(tempObject);
   },
   /**
    * Given an HTML attribute value parses the string based on the component schema.
@@ -25755,7 +25756,7 @@ Component.prototype = {
    *
    * @param {string} attrValue - HTML attribute value.
    *        If undefined, use the cached attribute value and continue updating properties.
-   * @param {boolean} clobber - The previous component data is overwritten by the atrrValue.
+   * @param {boolean} clobber - The previous component data is overwritten by the attrValue.
    */
   updateProperties: function (attrValue, clobber) {
     var el = this.el;
@@ -25810,11 +25811,8 @@ Component.prototype = {
 
     // For oldData, pass empty object to multiple-prop schemas or object single-prop schema.
     // Pass undefined to rest of types.
-    initialOldData = this.isObjectBased ? this.objectPool.use() : undefined;
+    initialOldData = this.isObjectBased ? emptyInitialOldData : undefined;
     this.update(initialOldData);
-    if (this.isObjectBased) {
-      this.objectPool.recycle(initialOldData);
-    }
 
     // Play the component if the entity is playing.
     if (el.isPlaying) {
@@ -29853,7 +29851,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.5.0 (Date 2024-02-12, Commit #6b49fb58)');
+console.log('A-Frame Version: 1.5.0 (Date 2024-02-12, Commit #90c69364)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
