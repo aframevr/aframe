@@ -26061,9 +26061,11 @@ Component.prototype = {
    */
   destroy: function () {
     this.objectPool.recycle(this.attrValue);
+    this.objectPool.recycle(this.nextData);
     this.objectPool.recycle(this.oldData);
+    this.objectPool.recycle(this.previousOldData);
     this.objectPool.recycle(this.parsingAttrValue);
-    this.attrValue = this.oldData = this.parsingAttrValue = undefined;
+    this.nextData = this.attrValue = this.oldData = this.previousOldData = this.parsingAttrValue = undefined;
   }
 };
 function eventsBind(component, events) {
@@ -29851,7 +29853,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.5.0 (Date 2024-02-09, Commit #e0dddcd3)');
+console.log('A-Frame Version: 1.5.0 (Date 2024-02-12, Commit #6b49fb58)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
