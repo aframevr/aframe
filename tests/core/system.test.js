@@ -1,7 +1,6 @@
 /* global AFRAME, assert, process, suite, test, setup */
-var components = require('core/component').components;
-var systems = require('core/system').systems;
-var registerSystem = require('core/system').registerSystem;
+import { components } from 'core/component.js';
+import { registerSystem, systems } from 'core/system.js';
 
 var TestSystem = {
   init: function () {},

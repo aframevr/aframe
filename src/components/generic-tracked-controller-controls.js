@@ -1,9 +1,5 @@
-var registerComponent = require('../core/component').registerComponent;
-
-var trackedControlsUtils = require('../utils/tracked-controls');
-var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
-var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
-var onButtonEvent = trackedControlsUtils.onButtonEvent;
+import { registerComponent } from '../core/component.js';
+import { checkControllerPresentAndSetup, emitIfAxesChanged, onButtonEvent } from '../utils/tracked-controls.js';
 
 var GAMEPAD_ID_PREFIX = 'generic';
 
@@ -33,7 +29,7 @@ var INPUT_MAPPING = {
  * controller buttons: trackpad, trigger
  * Load a controller model and highlight the pressed buttons.
  */
-module.exports.Component = registerComponent('generic-tracked-controller-controls', {
+export var Component = registerComponent('generic-tracked-controller-controls', {
   schema: {
     hand: {default: ''},  // This informs the degenerate arm model.
     defaultModel: {default: true},

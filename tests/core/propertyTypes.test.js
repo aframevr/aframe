@@ -1,5 +1,5 @@
 /* global assert, setup, suite, teardown, test */
-var PropertyTypes = require('core/propertyTypes');
+import * as PropertyTypes from 'core/propertyTypes.js';
 
 var isValidDefaultCoordinate = PropertyTypes.isValidDefaultCoordinate;
 var isValidDefaultValue = PropertyTypes.isValidDefaultValue;

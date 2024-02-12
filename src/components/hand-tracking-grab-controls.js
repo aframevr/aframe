@@ -1,5 +1,5 @@
-var registerComponent = require('../core/component').registerComponent;
-var THREE = require('../lib/three');
+import { registerComponent } from '../core/component.js';
+import THREE from '../lib/three.js';
 
 registerComponent('hand-tracking-grab-controls', {
   schema: {

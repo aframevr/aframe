@@ -1,7 +1,7 @@
  /* global Event, assert, process, setup, suite, test */
+import * as helpers from '../helpers.js';
 
 var CANVAS_GRAB_CLASS = 'a-grab-cursor';
-var helpers = require('../helpers');
 
 suite('look-controls', function () {
   setup(function (done) {

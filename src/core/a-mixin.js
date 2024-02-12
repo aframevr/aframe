@@ -1,8 +1,8 @@
 /* global customElements */
-var ANode = require('./a-node').ANode;
-var components = require('./component').components;
-var utils = require('../utils');
-var styleParser = utils.styleParser;
+import { ANode } from './a-node.js';
+import { components } from './component.js';
+import * as utils from '../utils/index.js';
+import * as styleParser from '../utils/styleParser.js';
 
 var MULTIPLE_COMPONENT_DELIMITER = '__';
 

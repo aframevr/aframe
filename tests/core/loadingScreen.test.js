@@ -1,5 +1,5 @@
 /* global assert, process, suite, teardown, test */
-var helpers = require('../helpers');
+import * as helpers from '../helpers.js';
 
 helpers.getSkipCISuite()('loadingScreen', function () {
   suite('setup', function () {

@@ -1,5 +1,5 @@
 /* global assert, process, setup, sinon, suite, test */
-var entityFactory = require('../helpers').entityFactory;
+import { entityFactory } from '../helpers.js';
 
 suite('meta-touch-controls', function () {
   var el;

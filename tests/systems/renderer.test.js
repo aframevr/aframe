@@ -1,13 +1,10 @@
 /* global assert, suite, test, setup, teardown, THREE */
-var {
-sortFrontToBack,
-     sortRenderOrderOnly,
-     sortBackToFront
-} = require('systems/renderer');
+import { sortFrontToBack, sortRenderOrderOnly, sortBackToFront } from 'systems/renderer.js';
 
 suite('renderer', function () {
+  var sceneEl;
   function createScene () {
-    var sceneEl = this.sceneEl = document.createElement('a-scene');
+    sceneEl = document.createElement('a-scene');
     sceneEl.time = 0;
     return sceneEl;
   }

@@ -1,7 +1,7 @@
 /* global DeviceOrientationEvent  */
-var registerComponent = require('../core/component').registerComponent;
-var THREE = require('../lib/three');
-var utils = require('../utils/');
+import THREE from '../lib/three.js';
+import { registerComponent } from '../core/component.js';
+import * as utils from '../utils/index.js';
 
 // To avoid recalculation at every mouse movement tick
 var PI_2 = Math.PI / 2;
@@ -9,7 +9,7 @@ var PI_2 = Math.PI / 2;
 /**
  * look-controls. Update entity pose, factoring mouse, touch.
  */
-module.exports.Component = registerComponent('look-controls', {
+export var Component = registerComponent('look-controls', {
   dependencies: ['position', 'rotation'],
 
   schema: {

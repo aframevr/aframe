@@ -1,6 +1,6 @@
 /* global THREE, XRRigidTransform, localStorage */
-var registerComponent = require('../core/component').registerComponent;
-var utils = require('../utils/');
+import { registerComponent } from '../core/component.js';
+import * as utils from '../utils/index.js';
 var warn = utils.debug('components:anchored:warn');
 
 /**
@@ -9,7 +9,7 @@ var warn = utils.debug('components:anchored:warn');
  * Once anchored the entity remains to a fixed position in real-world space.
  * If the anchor is persistent, the anchor positioned remains across sessions or until the browser data is cleared.
  */
-module.exports.Component = registerComponent('anchored', {
+export var Component = registerComponent('anchored', {
   schema: {
     persistent: {default: false}
   },

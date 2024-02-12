@@ -5,60 +5,67 @@
  */
 window.debug = true;
 
-navigator.xr = navigator.xr || {};
-navigator.xr.isSessionSupported = function (_sessionType) { return Promise.resolve(true); };
-navigator.xr.requestSession = function (_mode) {
-  const xrSession = new EventTarget();
-  xrSession.supportedFrameRates = [90];
-  xrSession.requestReferenceSpace = function () { return Promise.resolve(); };
-  return Promise.resolve(xrSession);
-};
-
 /* WebXR Stub */
-navigator.xr = navigator.xr || {};
+if (!navigator.xr) {
+  navigator.xr = {};
+}
 navigator.xr.isSessionSupported = function (_sessionType) { return Promise.resolve(true); };
 navigator.xr.requestSession = function (_mode) {
   const xrSession = new EventTarget();
   xrSession.supportedFrameRates = [90];
   xrSession.requestReferenceSpace = function () { return Promise.resolve(); };
+  xrSession.end = function () { return Promise.resolve(); };
   return Promise.resolve(xrSession);
 };
 
-const AFRAME = require('index');
-var AScene = require('core/scene/a-scene').AScene;
-// Make sure WebGL context is not created since CI runs headless.
-// Stubs below failed once in a while due to asynchronous test setup / teardown.
-AScene.prototype.setupRenderer = function () {};
+var AFRAME, AScene;
+var loadPromise = Promise.allSettled([
+  import('index.js'),
+  import('core/scene/a-scene.js')
+]).then(function (results) {
+  AFRAME = results[0].value.default;
+  AScene = results[1].value.AScene;
 
-setup(function () {
-  window.AFRAME = AFRAME;
-  this.sinon = sinon.createSandbox();
-  // Stubs to not create a WebGL context since CI runs headless.
-  this.sinon.stub(AScene.prototype, 'render');
-  this.sinon.stub(AScene.prototype, 'setupRenderer');
-  // Mock renderer.
-  AScene.prototype.renderer = {
-    xr: {
-      getDevice: function () { return {requestPresent: function () {}}; },
-      isPresenting: function () { return true; },
-      setDevice: function () {},
-      setSession: function () { return Promise.resolve(); },
-      setFoveation: function () {},
-      setPoseTarget: function () {},
+  // Make sure WebGL context is not created since CI runs headless.
+  // Stubs below failed once in a while due to asynchronous test setup / teardown.
+  AScene.prototype.setupRenderer = function () {};
+});
+
+setup(function (done) {
+  loadPromise.then(() => {
+    // Mock renderer.
+    AScene.prototype.renderer = {
+      xr: {
+        getDevice: function () { return {requestPresent: function () {}}; },
+        isPresenting: function () { return true; },
+        setDevice: function () {},
+        setSession: function () { return Promise.resolve(); },
+        setFoveation: function () {},
+        setPoseTarget: function () {},
+        dispose: function () {},
+        setReferenceSpaceType: function () {},
+        enabled: false
+      },
       dispose: function () {},
-      setReferenceSpaceType: function () {},
-      enabled: false
-    },
-    dispose: function () {},
-    getContext: function () { return undefined; },
-    render: function () {},
-    setAnimationLoop: function () {},
-    setOpaqueSort: function () {},
-    setPixelRatio: function () {},
-    setSize: function () {},
-    setTransparentSort: function () {},
-    shadowMap: {enabled: false}
-  };
+      getContext: function () { return undefined; },
+      render: function () {},
+      setAnimationLoop: function () {},
+      setOpaqueSort: function () {},
+      setPixelRatio: function () {},
+      setSize: function () {},
+      setTransparentSort: function () {},
+      shadowMap: {enabled: false}
+    };
+
+    this.sinon = sinon.createSandbox();
+    // Stubs to not create a WebGL context since CI runs headless.
+    this.sinon.stub(AScene.prototype, 'render');
+    this.sinon.stub(AScene.prototype, 'setupRenderer');
+
+    window.AFRAME = AFRAME;
+
+    done();
+  });
 });
 
 // Ensure that uncaught exceptions between tests result in the tests failing.

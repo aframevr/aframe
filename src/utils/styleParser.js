@@ -12,14 +12,14 @@ var DASH_REGEX = /-([a-z])/g;
  * @param {object} obj - Reused object for object pooling.
  * @returns {object} Property data.
  */
-module.exports.parse = function (value, obj) {
+export function parse (value, obj) {
   var parsedData;
   if (typeof value !== 'string') { return value; }
   parsedData = styleParse(value, obj);
   // The style parser returns an object { "" : "test"} when fed a string
   if (parsedData['']) { return value; }
   return parsedData;
-};
+}
 
 /**
  * Serialize an object of properties into a style-like string.
@@ -27,10 +27,10 @@ module.exports.parse = function (value, obj) {
  * @param {object} data - Property data.
  * @returns {string}
  */
-module.exports.stringify = function (data) {
+export function stringify (data) {
   if (typeof data === 'string') { return data; }
   return styleStringify(data);
-};
+}
 
 /**
  * Converts string from hyphen to camelCase.
@@ -38,10 +38,9 @@ module.exports.stringify = function (data) {
  * @param {string} str - String to camelCase.
  * @return {string} CamelCased string.
  */
-function toCamelCase (str) {
+export function toCamelCase (str) {
   return str.replace(DASH_REGEX, upperCase);
 }
-module.exports.toCamelCase = toCamelCase;
 
 /**
  * Split a string into chunks matching `<key>: <value>`

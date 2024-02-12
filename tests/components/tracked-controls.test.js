@@ -1,5 +1,5 @@
 /* global assert, process, setup, suite, test, THREE */
-const entityFactory = require('../helpers').entityFactory;
+import { entityFactory } from '../helpers.js';
 
 suite('tracked-controls', function () {
   var component;

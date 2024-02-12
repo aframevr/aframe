@@ -1,8 +1,8 @@
-var registerComponent = require('../../core/component').registerComponent;
-var RStats = require('../../../vendor/rStats');
-var utils = require('../../utils');
-require('../../../vendor/rStats.extras');
-require('../../lib/rStatsAframe');
+import { registerComponent } from '../../core/component.js';
+import RStats from '../../../vendor/rStats.js';
+import * as utils from '../../utils/index.js';
+import '../../../vendor/rStats.extras.js';
+import '../../lib/rStatsAframe.js';
 
 var AFrameStats = window.aframeStats;
 var HIDDEN_CLASS = 'a-hidden';
@@ -11,7 +11,7 @@ var ThreeStats = window.threeStats;
 /**
  * Stats appended to document.body by RStats.
  */
-module.exports.Component = registerComponent('stats', {
+export var Component = registerComponent('stats', {
   schema: {default: true},
 
   sceneOnly: true,

@@ -1,7 +1,7 @@
-var KEYCODE_TO_CODE = require('../constants').keyboardevent.KEYCODE_TO_CODE;
-var registerComponent = require('../core/component').registerComponent;
-var THREE = require('../lib/three');
-var utils = require('../utils/');
+import THREE from '../lib/three.js';
+import { KEYCODE_TO_CODE } from '../constants/keyboardevent.js';
+import { registerComponent } from '../core/component.js';
+import * as utils from '../utils/index.js';
 
 var shouldCaptureKeyEvent = utils.shouldCaptureKeyEvent;
 
@@ -15,7 +15,7 @@ var KEYS = [
 /**
  * WASD component to control entities using WASD keys.
  */
-module.exports.Component = registerComponent('wasd-controls', {
+export var Component = registerComponent('wasd-controls', {
   schema: {
     acceleration: {default: 65},
     adAxis: {default: 'x', oneOf: ['x', 'y', 'z']},

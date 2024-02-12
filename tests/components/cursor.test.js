@@ -1,6 +1,5 @@
 /* global assert, process, setup, suite, test, CustomEvent, MouseEvent, TouchEvent */
-var entityFactory = require('../helpers').entityFactory;
-var once = require('../helpers').once;
+import { entityFactory, once } from '../helpers.js';
 const touchEventSupported = (typeof TouchEvent !== 'undefined');
 
 suite('cursor', function () {

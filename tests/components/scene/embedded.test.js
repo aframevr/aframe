@@ -1,5 +1,5 @@
 /* global assert, process, setup, suite, test */
-var entityFactory = require('../../helpers').entityFactory;
+import { entityFactory } from '../../helpers.js';
 
 var SCENE_FULLSCREEN_CLASS = 'a-fullscreen';
 

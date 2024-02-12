@@ -1,13 +1,13 @@
-var createTextGeometry = require('three-bmfont-text');
-var loadBMFont = require('load-bmfont');
+import createTextGeometry from 'three-bmfont-text';
+import loadBMFont from 'load-bmfont';
 
-var registerComponent = require('../core/component').registerComponent;
-var coreShader = require('../core/shader');
-var THREE = require('../lib/three');
-var utils = require('../utils/');
+import { registerComponent } from '../core/component.js';
+import { shaders } from '../core/shader.js';
+import THREE from '../lib/three.js';
+import * as utils from '../utils/index.js';
+import { AFRAME_CDN_ROOT } from '../constants/index.js';
 
 var error = utils.debug('components:text:error');
-var shaders = coreShader.shaders;
 var warn = utils.debug('components:text:warn');
 
 // 1 to match other A-Frame default widths.
@@ -16,9 +16,8 @@ var DEFAULT_WIDTH = 1;
 // @bryik set anisotropy to 16. Improves look of large amounts of text when viewed from angle.
 var MAX_ANISOTROPY = 16;
 
-var AFRAME_CDN_ROOT = require('../constants').AFRAME_CDN_ROOT;
 var FONT_BASE_URL = AFRAME_CDN_ROOT + 'fonts/';
-var FONTS = {
+export var FONTS = {
   aileronsemibold: FONT_BASE_URL + 'Aileron-Semibold.fnt',
   dejavu: FONT_BASE_URL + 'DejaVu-sdf.fnt',
   exo2bold: FONT_BASE_URL + 'Exo2Bold.fnt',
@@ -31,7 +30,6 @@ var FONTS = {
 };
 var MSDF_FONTS = ['roboto'];
 var DEFAULT_FONT = 'roboto';
-module.exports.FONTS = FONTS;
 
 var cache = new PromiseCache();
 var fontWidthFactors = {};
@@ -47,7 +45,7 @@ var protocolRe = /^\w+:/;
  * All the stock fonts are for the `sdf` registered shader, an improved version of jam3's
  * original `sdf` shader.
  */
-module.exports.Component = registerComponent('text', {
+export var Component = registerComponent('text', {
   multiple: true,
 
   schema: {

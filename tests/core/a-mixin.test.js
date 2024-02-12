@@ -1,7 +1,6 @@
 /* global assert, setup, suite, test */
-var helpers = require('../helpers');
-var components = require('index').components;
-var registerComponent = require('index').registerComponent;
+import * as helpers from '../helpers.js';
+import { components, registerComponent } from 'core/component.js';
 
 suite('a-mixin', function () {
   var assetsEl;

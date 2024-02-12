@@ -1,4 +1,4 @@
-var registerPrimitive = require('../primitives').registerPrimitive;
+import { registerPrimitive } from '../primitives.js';
 
 registerPrimitive('a-sound', {
   defaultComponents: {

@@ -1,7 +1,7 @@
 /* global THREE */
-var registerComponent = require('../core/component').registerComponent;
+import { registerComponent } from '../core/component.js';
 
-module.exports.Component = registerComponent('line', {
+export var Component = registerComponent('line', {
   schema: {
     start: {type: 'vec3', default: {x: 0, y: 0, z: 0}},
     end: {type: 'vec3', default: {x: 0, y: 0, z: 0}},

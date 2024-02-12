@@ -1,8 +1,8 @@
 /* global customElements */
-var ANode = require('./a-node').ANode;
-var COMPONENTS = require('./component').components;
-var THREE = require('../lib/three');
-var utils = require('../utils/');
+import THREE from '../lib/three.js';
+import { ANode } from './a-node.js';
+import { components as COMPONENTS } from './component.js';
+import * as utils from '../utils/index.js';
 
 var debug = utils.debug('core:a-entity:debug');
 var warn = utils.debug('core:a-entity:warn');
@@ -22,7 +22,7 @@ var ONCE = {once: true};
  * @member {array} states.
  * @member {boolean} isPlaying - false if dynamic behavior of the entity is paused.
  */
-class AEntity extends ANode {
+export class AEntity extends ANode {
   constructor () {
     super();
     this.components = {};
@@ -858,5 +858,3 @@ AEntity.componentsUpdated = [];
 AEntity.singlePropUpdate = {};
 
 customElements.define('a-entity', AEntity);
-
-module.exports.AEntity = AEntity;

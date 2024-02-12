@@ -1,5 +1,5 @@
 /* global THREE, assert, process, setup, suite, test */
-var entityFactory = require('../helpers').entityFactory;
+import { entityFactory } from '../helpers.js';
 
 suite('line', function () {
   var el;

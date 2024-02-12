@@ -1,5 +1,5 @@
 /* global assert, process, setup, suite, test */
-var entityFactory = require('../helpers').entityFactory;
+import { entityFactory } from '../helpers.js';
 
 suite('laser-controls', function () {
   var el;

@@ -1,6 +1,6 @@
 /* global THREE */
-var AFRAME_INJECTED = require('../../constants').AFRAME_INJECTED;
-var utils = require('../../utils/');
+import { AFRAME_INJECTED } from '../../constants/index.js';
+import * as utils from '../../utils/index.js';
 var styleParser = utils.styleParser;
 
 var sceneEl;
@@ -10,7 +10,7 @@ var getSceneCanvasSize;
 var ATTR_NAME = 'loading-screen';
 var LOADER_TITLE_CLASS = 'a-loader-title';
 
-module.exports.setup = function setup (el, getCanvasSize) {
+export function setup (el, getCanvasSize) {
   sceneEl = el;
   getSceneCanvasSize = getCanvasSize;
   var loaderAttribute = sceneEl.hasAttribute(ATTR_NAME) ? styleParser.parse(sceneEl.getAttribute(ATTR_NAME)) : undefined;
@@ -66,14 +66,14 @@ module.exports.setup = function setup (el, getCanvasSize) {
     window.addEventListener('resize', function () { resize(camera); });
     sceneEl.renderer.setAnimationLoop(render);
   }, 200);
-};
+}
 
-module.exports.remove = function remove () {
+export function remove () {
   window.removeEventListener('resize', resize);
   if (!titleEl) { return; }
   // Hide title.
   titleEl.style.display = 'none';
-};
+}
 
 function resize (camera) {
   var embedded = sceneEl.hasAttribute('embedded');

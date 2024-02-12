@@ -1,8 +1,6 @@
 /* global assert, setup, suite, test */
-var THREE = require('lib/three');
-
-var inferResponseType = require('core/a-assets').inferResponseType;
-var getFileNameFromURL = require('core/a-assets').getFileNameFromURL;
+import THREE from 'lib/three.js';
+import { inferResponseType, getFileNameFromURL } from 'core/a-assets.js';
 
 var IMG_SRC = '/base/tests/assets/test.png';
 var XHR_SRC = '/base/tests/assets/dummy/dummy.txt';

@@ -1,12 +1,8 @@
-var registerComponent = require('../core/component').registerComponent;
-var THREE = require('../lib/three');
+import { registerComponent } from '../core/component.js';
+import THREE from '../lib/three.js';
+import { AFRAME_CDN_ROOT } from '../constants/index.js';
+import { checkControllerPresentAndSetup, emitIfAxesChanged, onButtonEvent } from '../utils/tracked-controls.js';
 
-var trackedControlsUtils = require('../utils/tracked-controls');
-var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
-var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
-var onButtonEvent = trackedControlsUtils.onButtonEvent;
-
-var AFRAME_CDN_ROOT = require('../constants').AFRAME_CDN_ROOT;
 var INDEX_CONTROLLER_MODEL_BASE_URL = AFRAME_CDN_ROOT + 'controllers/valve/index/valve-index-';
 var INDEX_CONTROLLER_MODEL_URL = {
   left: INDEX_CONTROLLER_MODEL_BASE_URL + 'left.glb',
@@ -31,7 +27,7 @@ var INDEX_CONTROLLER_POSITION_OFFSET = {
  * trackpad, trigger, grip, menu, system
  * Load a controller model and highlight the pressed buttons.
  */
-module.exports.Component = registerComponent('valve-index-controls', {
+export var Component = registerComponent('valve-index-controls', {
   schema: {
     hand: {default: 'left'},
     buttonColor: {type: 'color', default: '#FAFAFA'},  // Off-white.

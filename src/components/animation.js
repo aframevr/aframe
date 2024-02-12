@@ -1,8 +1,7 @@
-var anime = require('super-animejs').default;
-var components = require('../core/component').components;
-var registerComponent = require('../core/component').registerComponent;
-var THREE = require('../lib/three');
-var utils = require('../utils');
+import THREE from '../lib/three.js';
+import anime from 'super-animejs';
+import { registerComponent, components } from '../core/component.js';
+import * as utils from '../utils/index.js';
 
 var colorHelperFrom = new THREE.Color();
 var colorHelperTo = new THREE.Color();
@@ -39,7 +38,7 @@ var STRING_OBJECT3D = 'object3D';
  * @member {object} animation - anime.js instance.
  * @member {boolean} animationIsPlaying - Control if animation is playing.
  */
-module.exports.Component = registerComponent('animation', {
+export var Component = registerComponent('animation', {
   schema: {
     autoplay: {default: true},
     delay: {default: 0},

@@ -4,7 +4,11 @@ var TerserPlugin = require('terser-webpack-plugin');
 module.exports = {
   extends: ['webpack.config.js'],
   output: {
-    library: 'AFRAME',
+    library: {
+      name: 'AFRAME',
+      type: 'var',
+      export: 'default'
+    },
     libraryTarget: 'umd',
     path: path.resolve(__dirname, 'dist'),
     publicPath: '/dist/',

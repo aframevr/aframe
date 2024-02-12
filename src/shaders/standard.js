@@ -1,11 +1,11 @@
-var registerShader = require('../core/shader').registerShader;
-var THREE = require('../lib/three');
-var utils = require('../utils/');
+import THREE from '../lib/three.js';
+import { registerShader } from '../core/shader.js';
+import * as utils from '../utils/index.js';
 
 /**
  * Standard (physically-based) shader using THREE.MeshStandardMaterial.
  */
-module.exports.Shader = registerShader('standard', {
+export var Shader = registerShader('standard', {
   schema: {
     ambientOcclusionMap: {type: 'map'},
     ambientOcclusionMapIntensity: {default: 1},

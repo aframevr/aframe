@@ -1,6 +1,6 @@
 /* global assert, process, setup, suite, test */
-var entityFactory = require('../helpers').entityFactory;
-var THREE = require('index').THREE;
+import { entityFactory } from '../helpers.js';
+import THREE from 'lib/three.js';
 
 suite('light', function () {
   setup(function (done) {

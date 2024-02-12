@@ -1,6 +1,6 @@
-var registerComponent = require('../core/component').registerComponent;
-var registerShader = require('../core/shader').registerShader;
-var THREE = require('../lib/three');
+import THREE from '../lib/three.js';
+import { registerComponent } from '../core/component.js';
+import { registerShader } from '../core/shader.js';
 var DEFAULT_PREVIEW_DISTANCE = 15.0;
 
 /**
@@ -8,7 +8,7 @@ var DEFAULT_PREVIEW_DISTANCE = 15.0;
  *
  * @member {object} hiddenEls - Store the hidden elements during peek mode.
  */
-module.exports.Component = registerComponent('link', {
+export var Component = registerComponent('link', {
   schema: {
     backgroundColor: {default: 'red', type: 'color'},
     borderColor: {default: 'white', type: 'color'},

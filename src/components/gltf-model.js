@@ -1,12 +1,12 @@
-var registerComponent = require('../core/component').registerComponent;
-var THREE = require('../lib/three');
-var utils = require('../utils/');
+import THREE from '../lib/three.js';
+import { registerComponent } from '../core/component.js';
+import * as utils from '../utils/index.js';
 var warn = utils.debug('components:gltf-model:warn');
 
 /**
  * glTF model loader.
  */
-module.exports.Component = registerComponent('gltf-model', {
+export var Component = registerComponent('gltf-model', {
   schema: {type: 'model'},
 
   init: function () {

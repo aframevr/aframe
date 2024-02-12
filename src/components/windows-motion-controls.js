@@ -1,19 +1,12 @@
 /* global THREE */
-var registerComponent = require('../core/component').registerComponent;
-
-var trackedControlsUtils = require('../utils/tracked-controls');
-var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
-var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
-var onButtonEvent = trackedControlsUtils.onButtonEvent;
-
-var utils = require('../utils/');
+import { registerComponent } from '../core/component.js';
+import * as utils from '../utils/index.js';
+import { DEFAULT_HANDEDNESS, AFRAME_CDN_ROOT } from '../constants/index.js';
+import { checkControllerPresentAndSetup, emitIfAxesChanged, onButtonEvent } from '../utils/tracked-controls.js';
 
 var debug = utils.debug('components:windows-motion-controls:debug');
 var warn = utils.debug('components:windows-motion-controls:warn');
 
-var DEFAULT_HANDEDNESS = require('../constants').DEFAULT_HANDEDNESS;
-
-var AFRAME_CDN_ROOT = require('../constants').AFRAME_CDN_ROOT;
 var MODEL_BASE_URL = AFRAME_CDN_ROOT + 'controllers/microsoft/';
 var MODEL_FILENAMES = { left: 'left.glb', right: 'right.glb', default: 'universal.glb' };
 
@@ -52,7 +45,7 @@ var INPUT_MAPPING = {
  * controller buttons: trackpad, trigger, grip, menu, thumbstick
  * Load a controller model and transform the pressed buttons.
  */
-module.exports.Component = registerComponent('windows-motion-controls', {
+export var Component = registerComponent('windows-motion-controls', {
   schema: {
     hand: {default: DEFAULT_HANDEDNESS},
     // It is possible to have multiple pairs of controllers attached (a pair has both left and right).

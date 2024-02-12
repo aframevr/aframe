@@ -1,5 +1,5 @@
 /* global assert, process, setup, suite, teardown, test */
-var entityFactory = require('../helpers').entityFactory;
+import { entityFactory } from '../helpers.js';
 
 suite('geometry system', function () {
   setup(function (done) {

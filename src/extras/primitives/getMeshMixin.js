@@ -1,9 +1,9 @@
 /**
  * Common mesh defaults, mappings, and transforms.
  */
-var components = require('../../core/component').components;
-var shaders = require('../../core/shader').shaders;
-var utils = require('../../utils/');
+import { components } from '../../core/component.js';
+import { shaders } from '../../core/shader.js';
+import * as utils from '../../utils/index.js';
 
 var materialMappings = {};
 Object.keys(components.material.schema).forEach(addMapping);
@@ -17,9 +17,9 @@ function addMapping (prop) {
   materialMappings[htmlAttrName] = 'material.' + prop;
 }
 
-module.exports = function getMeshMixin () {
+export default function getMeshMixin () {
   return {
     defaultComponents: {material: {}},
     mappings: utils.extend({}, materialMappings)
   };
-};
+}

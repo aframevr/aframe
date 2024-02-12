@@ -1,12 +1,9 @@
 /* global THREE, XRHand */
-var registerComponent = require('../core/component').registerComponent;
+import { registerComponent } from '../core/component.js';
+import { AEntity } from '../core/a-entity.js';
+import { checkControllerPresentAndSetup } from '../utils/tracked-controls.js';
+import { AFRAME_CDN_ROOT } from '../constants/index.js';
 
-var AEntity = require('../core/a-entity').AEntity;
-
-var trackedControlsUtils = require('../utils/tracked-controls');
-var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
-
-var AFRAME_CDN_ROOT = require('../constants').AFRAME_CDN_ROOT;
 var LEFT_HAND_MODEL_URL = AFRAME_CDN_ROOT + 'controllers/oculus-hands/v4/left.glb';
 var RIGHT_HAND_MODEL_URL = AFRAME_CDN_ROOT + 'controllers/oculus-hands/v4/right.glb';
 
@@ -48,7 +45,7 @@ var PINCH_END_DISTANCE = 0.02;
 /**
  * Controls for hand tracking
  */
-module.exports.Component = registerComponent('hand-tracking-controls', {
+export var Component = registerComponent('hand-tracking-controls', {
   schema: {
     hand: {default: 'right', oneOf: ['left', 'right']},
     modelStyle: {default: 'mesh', oneOf: ['dots', 'mesh']},

@@ -1,8 +1,8 @@
 /* global assert, setup, suite, test */
-var helpers = require('../../helpers');
-var initMetaTags = require('core/scene/metaTags').inject;
-var metaTags = require('core/scene/metaTags');
-var constants = require('constants/');
+import * as helpers from '../../helpers.js';
+import { inject as initMetaTags } from 'core/scene/metaTags.js';
+import * as metaTags from 'core/scene/metaTags.js';
+import * as constants from 'constants/index.js';
 
 suite('metaTags', function () {
   setup(function (done) {

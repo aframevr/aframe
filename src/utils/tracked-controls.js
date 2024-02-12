@@ -10,7 +10,7 @@ var AXIS_LABELS = ['x', 'y', 'z', 'w'];
  * @param {object} idPrefix - Prefix to match in gamepad id if any.
  * @param {object} queryObject - Map of values to match.
  */
-module.exports.checkControllerPresentAndSetup = function (component, idPrefix, queryObject) {
+export function checkControllerPresentAndSetup (component, idPrefix, queryObject) {
   var el = component.el;
   var controller;
   var isControllerPresent = isControllerPresentWebXR;
@@ -33,13 +33,13 @@ module.exports.checkControllerPresentAndSetup = function (component, idPrefix, q
     component.removeEventListeners();
     el.emit('controllerdisconnected', {name: component.name, component: component});
   }
-};
+}
 
 /**
  *
  * @param {object} component - Tracked controls component.
  */
-function isControllerPresentWebXR (component, id, queryObject) {
+export function isControllerPresentWebXR (component, id, queryObject) {
   var controllers;
   var sceneEl = component.el.sceneEl;
   var trackedControlsSystem = sceneEl && sceneEl.systems['tracked-controls'];
@@ -53,9 +53,7 @@ function isControllerPresentWebXR (component, id, queryObject) {
     queryObject.hand, queryObject.index, queryObject.iterateControllerProfiles, queryObject.handTracking);
 }
 
-module.exports.isControllerPresentWebXR = isControllerPresentWebXR;
-
-function findMatchingControllerWebXR (controllers, idPrefix, handedness, index, iterateProfiles, handTracking) {
+export function findMatchingControllerWebXR (controllers, idPrefix, handedness, index, iterateProfiles, handTracking) {
   var i;
   var j;
   var controller;
@@ -89,8 +87,6 @@ function findMatchingControllerWebXR (controllers, idPrefix, handedness, index, 
   return undefined;
 }
 
-module.exports.findMatchingControllerWebXR = findMatchingControllerWebXR;
-
 /**
  * Emit specific `moved` event(s) if axes changed based on original axismove event.
  *
@@ -98,7 +94,7 @@ module.exports.findMatchingControllerWebXR = findMatchingControllerWebXR;
  * @param {array} axesMapping - For example `{thumbstick: [0, 1]}`.
  * @param {object} evt - Event to process.
  */
-module.exports.emitIfAxesChanged = function (component, axesMapping, evt) {
+export function emitIfAxesChanged (component, axesMapping, evt) {
   var axes;
   var buttonType;
   var changed;
@@ -122,7 +118,7 @@ module.exports.emitIfAxesChanged = function (component, axesMapping, evt) {
     }
     component.el.emit(buttonType + 'moved', detail);
   }
-};
+}
 
 /**
  * Handle a button event and reemits the events.
@@ -132,11 +128,11 @@ module.exports.emitIfAxesChanged = function (component, axesMapping, evt) {
  * @param {object} component - reference to the component
  * @param {string} hand - handedness of the controller: left or right.
  */
-module.exports.onButtonEvent = function (id, evtName, component, hand) {
+export function onButtonEvent (id, evtName, component, hand) {
   var mapping = hand ? component.mapping[hand] : component.mapping;
   var buttonName = mapping.buttons[id];
   component.el.emit(buttonName + evtName);
   if (component.updateModel) {
     component.updateModel(buttonName, evtName);
   }
-};
+}

@@ -1,7 +1,7 @@
 /* global HTMLCanvasElement, HTMLImageElement, HTMLVideoElement */
-var THREE = require('../lib/three');
-var srcLoader = require('./src-loader');
-var debug = require('./debug');
+import THREE from '../lib/three.js';
+import * as srcLoader from './src-loader.js';
+import debug from './debug.js';
 var warn = debug('utils:material:warn');
 
 var COLOR_MAPS = new Set([
@@ -16,7 +16,7 @@ var COLOR_MAPS = new Set([
  *
  * @param {object} data - With keys like `repeat`.
  */
-function setTextureProperties (texture, data) {
+export function setTextureProperties (texture, data) {
   var offset = data.offset || {x: 0, y: 0};
   var repeat = data.repeat || {x: 1, y: 1};
   var npot = data.npot || false;
@@ -56,7 +56,6 @@ function setTextureProperties (texture, data) {
     texture.needsUpdate = true;
   }
 }
-module.exports.setTextureProperties = setTextureProperties;
 
 /**
  * Update `material` texture property (usually but not always `map`)
@@ -65,7 +64,7 @@ module.exports.setTextureProperties = setTextureProperties;
  * @param {object} shader - A-Frame shader instance.
  * @param {object} data
  */
-module.exports.updateMapMaterialFromData = function (materialName, dataName, shader, data) {
+export function updateMapMaterialFromData (materialName, dataName, shader, data) {
   var el = shader.el;
   var material = shader.material;
   var rendererSystem = el.sceneEl.systems.renderer;
@@ -150,7 +149,7 @@ module.exports.updateMapMaterialFromData = function (materialName, dataName, sha
     material.needsUpdate = true;
     handleTextureEvents(el, texture);
   }
-};
+}
 
 /**
  * Update `material.map` given `data.src`. For standard and flat shaders.
@@ -158,9 +157,9 @@ module.exports.updateMapMaterialFromData = function (materialName, dataName, sha
  * @param {object} shader - A-Frame shader instance.
  * @param {object} data
  */
-module.exports.updateMap = function (shader, data) {
-  return module.exports.updateMapMaterialFromData('map', 'src', shader, data);
-};
+export function updateMap (shader, data) {
+  return updateMapMaterialFromData('map', 'src', shader, data);
+}
 
 /**
  * Updates the material's maps which give the illusion of extra geometry.
@@ -169,7 +168,7 @@ module.exports.updateMap = function (shader, data) {
  * @param {object} shader - A-Frame shader instance
  * @param {object} data
  */
-module.exports.updateDistortionMap = function (longType, shader, data) {
+export function updateDistortionMap (longType, shader, data) {
   var shortType = longType;
   if (longType === 'ambientOcclusion') { shortType = 'ao'; }
 
@@ -180,8 +179,8 @@ module.exports.updateDistortionMap = function (longType, shader, data) {
   info.offset = data[longType + 'TextureOffset'];
   info.repeat = data[longType + 'TextureRepeat'];
   info.wrap = data[longType + 'TextureWrap'];
-  return module.exports.updateMapMaterialFromData(shortType + 'Map', 'src', shader, info);
-};
+  return updateMapMaterialFromData(shortType + 'Map', 'src', shader, info);
+}
 
 // Cache env map results as promises
 var envMapPromises = {};
@@ -192,7 +191,7 @@ var envMapPromises = {};
  * @param {object} shader - A-Frame shader instance
  * @param {object} data
  */
-module.exports.updateEnvMap = function (shader, data) {
+export function updateEnvMap (shader, data) {
   var material = shader.material;
   var el = shader.el;
   var materialName = 'envMap';
@@ -249,7 +248,7 @@ module.exports.updateEnvMap = function (shader, data) {
     material.needsUpdate = true;
     handleTextureEvents(el, texture);
   }
-};
+}
 
 /**
  * Emit event on entities on texture-related events.
@@ -257,7 +256,7 @@ module.exports.updateEnvMap = function (shader, data) {
  * @param {Element} el - Entity.
  * @param {object} texture - three.js Texture.
  */
-function handleTextureEvents (el, texture) {
+export function handleTextureEvents (el, texture) {
   if (!texture) { return; }
 
   el.emit('materialtextureloaded', {src: texture.image, texture: texture});
@@ -281,7 +280,6 @@ function handleTextureEvents (el, texture) {
     texture.image.removeEventListener('ended', emitVideoTextureEndedAll);
   });
 }
-module.exports.handleTextureEvents = handleTextureEvents;
 
 /**
  * Checks if a given texture type is compatible with a given source.
@@ -290,7 +288,7 @@ module.exports.handleTextureEvents = handleTextureEvents;
  * @param {THREE.Source} source - The source to check compatibility with
  * @returns {boolean} True if the texture is compatible with the source, false otherwise
  */
-function isCompatibleTexture (texture, source) {
+export function isCompatibleTexture (texture, source) {
   if (texture.source !== source) {
     return false;
   }
@@ -305,9 +303,8 @@ function isCompatibleTexture (texture, source) {
 
   return texture.isTexture && !texture.isCanvasTexture && !texture.isVideoTexture;
 }
-module.exports.isCompatibleTexture = isCompatibleTexture;
 
-function createCompatibleTexture (source) {
+export function createCompatibleTexture (source) {
   var texture;
 
   if (source.data instanceof HTMLCanvasElement) {
@@ -323,4 +320,3 @@ function createCompatibleTexture (source) {
   texture.needsUpdate = true;
   return texture;
 }
-module.exports.createCompatibleTexture = createCompatibleTexture;

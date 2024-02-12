@@ -1,5 +1,5 @@
-var registerComponent = require('../core/component').registerComponent;
-var utils = require('../utils/');
+import { registerComponent } from '../core/component.js';
+import * as utils from '../utils/index.js';
 
 registerComponent('laser-controls', {
   schema: {

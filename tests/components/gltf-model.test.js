@@ -1,6 +1,6 @@
 /* global assert, process, setup, suite, test */
-var entityFactory = require('../helpers').entityFactory;
-var THREE = require('index').THREE;
+import { entityFactory } from '../helpers.js';
+import THREE from 'lib/three.js';
 
 var SRC = '/base/tests/assets/box/Box.gltf';
 var SRC_NO_DEFAULT_SCENE = '/base/tests/assets/box/Box_no_default_scene.gltf';

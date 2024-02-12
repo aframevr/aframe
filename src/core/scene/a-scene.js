@@ -1,23 +1,25 @@
 /* global Promise, customElements, screen, CustomEvent */
-var initMetaTags = require('./metaTags').inject;
-var initWakelock = require('./wakelock');
-var loadingScreen = require('./loadingScreen');
-var scenes = require('./scenes');
-var systems = require('../system').systems;
-var components = require('../component').components;
-var THREE = require('../../lib/three');
-var utils = require('../../utils/');
-var warn = utils.debug('core:a-scene:warn');
+import THREE from '../../lib/three.js';
+import { inject as initMetaTags } from './metaTags.js';
+import { initWakelock } from './wakelock.js';
+import * as loadingScreen from './loadingScreen.js';
+import scenes from './scenes.js';
+import { systems } from '../system.js';
+import { components } from '../component.js';
+import * as utils from '../../utils/index.js';
+
 // Require after.
-var AEntity = require('../a-entity').AEntity;
-var ANode = require('../a-node').ANode;
-var initPostMessageAPI = require('./postMessage');
+import { AEntity } from '../a-entity.js';
+import { ANode } from '../a-node.js';
+import { initPostMessageAPI } from './postMessage.js';
+
+import '../../utils/ios-orientationchange-blank-bug.js';
+
+var warn = utils.debug('core:a-scene:warn');
 
 var isIOS = utils.device.isIOS();
 var isMobile = utils.device.isMobile();
 var isWebXRAvailable = utils.device.isWebXRAvailable;
-
-if (isIOS) { require('../../utils/ios-orientationchange-blank-bug'); }
 
 /**
  * Scene element, holds all entities.
@@ -35,7 +37,7 @@ if (isIOS) { require('../../utils/ios-orientationchange-blank-bug'); }
  * @member {number} time
  */
 
-class AScene extends AEntity {
+export class AScene extends AEntity {
   constructor () {
     var self;
     super();
@@ -696,7 +698,7 @@ class AScene extends AEntity {
  * @param {object} components - The components to order
  * @param {array} array - Optional array to use as output
  */
-function determineComponentBehaviorOrder (components, array) {
+export function determineComponentBehaviorOrder (components, array) {
   var graph = {};
   var i;
   var key;
@@ -761,8 +763,6 @@ function determineComponentBehaviorOrder (components, array) {
   }
   return result;
 }
-
-module.exports.determineComponentBehaviorOrder = determineComponentBehaviorOrder;
 
 /**
  * Return size constrained to maxSize - maintaining aspect ratio.
@@ -869,7 +869,7 @@ function exitFullscreen () {
   }
 }
 
-function setupCanvas (sceneEl) {
+export function setupCanvas (sceneEl) {
   var canvasEl;
 
   canvasEl = document.createElement('canvas');
@@ -904,6 +904,3 @@ function setupCanvas (sceneEl) {
     document.body.focus();
   }
 }
-
-module.exports.setupCanvas = setupCanvas;
-module.exports.AScene = AScene;

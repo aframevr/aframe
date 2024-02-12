@@ -1,5 +1,5 @@
-var debug = require('../../utils/debug');
-var registerComponent = require('../../core/component').registerComponent;
+import { debug } from '../../utils/index.js';
+import { registerComponent } from '../../core/component.js';
 
 var warn = debug('components:pool:warn');
 
@@ -11,7 +11,7 @@ var warn = debug('components:pool:warn');
  * @member {array} availableEls - Available entities in the pool.
  * @member {array} usedEls - Entities of the pool in use.
  */
-module.exports.Component = registerComponent('pool', {
+export var Component = registerComponent('pool', {
   schema: {
     container: {default: ''},
     mixin: {default: ''},

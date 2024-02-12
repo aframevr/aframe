@@ -1,6 +1,6 @@
 /* global assert, suite, setup, test, Image */
-var srcLoader = require('utils/src-loader');
-var entityFactory = require('../helpers').entityFactory;
+import * as srcLoader from 'utils/src-loader.js';
+import { entityFactory } from '../helpers.js';
 
 suite('utils.src-loader', function () {
   suite('validateEnvMapSrc', function () {

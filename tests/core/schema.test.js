@@ -1,13 +1,6 @@
 /* global assert, suite, test */
-var Schema = require('core/schema');
-var propertyTypes = require('core/propertyTypes').propertyTypes;
-var registerPropertyType = require('core/propertyTypes').registerPropertyType;
-
-var isSingleProperty = Schema.isSingleProperty;
-var parseProperties = Schema.parseProperties;
-var parseProperty = Schema.parseProperty;
-var processSchema = Schema.process;
-var stringifyProperty = Schema.stringifyProperty;
+import { isSingleProperty, parseProperties, parseProperty, process as processSchema, stringifyProperty } from 'core/schema.js';
+import { propertyTypes, registerPropertyType } from 'core/propertyTypes.js';
 
 suite('schema', function () {
   suite('isSingleProperty', function () {

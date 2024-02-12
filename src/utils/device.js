@@ -1,13 +1,10 @@
-var error = require('debug')('device:error');
+import debug from './debug.js';
+var error = debug('device:error');
 
 var supportsVRSession = false;
 var supportsARSession = false;
 
-/**
- * Oculus Browser 7 doesn't support the WebXR gamepads module.
- * We fallback to WebVR API and will hotfix when implementation is complete.
- */
-var isWebXRAvailable = module.exports.isWebXRAvailable = navigator.xr !== undefined;
+export var isWebXRAvailable = navigator.xr !== undefined;
 
 // Support both WebVR and WebXR APIs.
 if (isWebXRAvailable) {
@@ -57,22 +54,19 @@ if (isWebXRAvailable) {
 /**
  * Determine if a headset is connected.
  */
-function checkHeadsetConnected () {
+export function checkHeadsetConnected () {
   return supportsVRSession || supportsARSession;
 }
-module.exports.checkHeadsetConnected = checkHeadsetConnected;
 
-function checkARSupport () { return supportsARSession; }
-module.exports.checkARSupport = checkARSupport;
+export function checkARSupport () { return supportsARSession; }
 
-function checkVRSupport () { return supportsVRSession; }
-module.exports.checkVRSupport = checkVRSupport;
+export function checkVRSupport () { return supportsVRSession; }
 
 /**
  * Checks if browser is mobile and not stand-alone dedicated vr device.
  * @return {Boolean} True if mobile browser detected.
  */
-var isMobile = (function () {
+export var isMobile = (function () {
   var _isMobile = false;
   (function (a) {
     // eslint-disable-next-line no-useless-escape
@@ -89,13 +83,12 @@ var isMobile = (function () {
 
   return function () { return _isMobile; };
 })();
-module.exports.isMobile = isMobile;
 
 /**
  *  Detect tablet devices.
  *  @param {string} mockUserAgent - Allow passing a mock user agent for testing.
  */
-function isTablet (mockUserAgent) {
+export function isTablet (mockUserAgent) {
   var userAgent = mockUserAgent || window.navigator.userAgent;
 
   var isTablet = /Nexus (7|9)|xoom|sch-i800|playbook|tablet|kindle/i.test(userAgent);
@@ -103,7 +96,6 @@ function isTablet (mockUserAgent) {
   // Additional check for iPad or MacIntel with touch capabilities and not an MSStream device
   return isTablet || isIpad();
 }
-module.exports.isTablet = isTablet;
 
 /**
  *  Detect ipad devices.
@@ -111,19 +103,18 @@ module.exports.isTablet = isTablet;
  *  @param {string} mockDevicePlatform - Allow passing a mock device platform for testing.
  *  @param {string} mockDeviceTouchPoints - Allow passing a mock device touch points for testing.
 */
-function isIpad (mockUserAgent, mockDevicePlatform, mockDeviceTouchPoints) {
+export function isIpad (mockUserAgent, mockDevicePlatform, mockDeviceTouchPoints) {
   var userAgent = mockUserAgent || window.navigator.userAgent;
   var platform = mockDevicePlatform || window.navigator.platform;
   var maxTouchPoints = mockDeviceTouchPoints || window.navigator.maxTouchPoints || 0;
 
   return ((platform === 'iPad' || platform === 'MacIntel') && maxTouchPoints > 0 && /Macintosh|Intel|iPad|ipad/i.test(userAgent) && !window.MSStream);
 }
-module.exports.isIpad = isIpad;
 
 /**
  *  Detect Apple Vision Pro devices.
-*/
-function isAppleVisionPro () {
+ */
+export function isAppleVisionPro () {
   // Safari for Apple Vision Pro presents itself as a desktop browser.
   var isMacintosh = navigator.userAgent.includes('Macintosh');
   // Discriminates between a "real" desktop browser and Safari for Vision Pro.
@@ -132,56 +123,49 @@ function isAppleVisionPro () {
   // This will no longer work once WebXR ships in iOS / iPad OS.
   return isMacintosh && hasFiveTouchPoints && isWebXRAvailable;
 }
-module.exports.isAppleVisionPro = isAppleVisionPro;
 
-function isIOS () {
+export function isIOS () {
   return /iPad|iPhone|iPod/.test(window.navigator.platform);
 }
-module.exports.isIOS = isIOS;
 
-function isMobileDeviceRequestingDesktopSite () {
+export function isMobileDeviceRequestingDesktopSite () {
   return !isMobile() && !isMobileVR() && window.orientation !== undefined;
 }
-module.exports.isMobileDeviceRequestingDesktopSite = isMobileDeviceRequestingDesktopSite;
 
 /**
  *  Detect Oculus Browser (standalone headset)
  */
-function isOculusBrowser () {
+export function isOculusBrowser () {
   return /(OculusBrowser)/i.test(window.navigator.userAgent);
 }
-module.exports.isOculusBrowser = isOculusBrowser;
 
 /**
  *  Detect Firefox Reality (standalone headset)
  */
-function isFirefoxReality () {
+export function isFirefoxReality () {
   return /(Mobile VR)/i.test(window.navigator.userAgent);
 }
-module.exports.isFirefoxReality = isFirefoxReality;
 
 /**
  *  Detect browsers in Stand-Alone headsets
  */
-function isMobileVR () {
+export function isMobileVR () {
   return isOculusBrowser() || isFirefoxReality() || isAppleVisionPro();
 }
-module.exports.isMobileVR = isMobileVR;
 
-function isR7 () {
+export function isR7 () {
   return /R7 Build/.test(window.navigator.userAgent);
 }
-module.exports.isR7 = isR7;
 
 /**
  * Checks mobile device orientation.
  * @return {Boolean} True if landscape orientation.
  */
-module.exports.isLandscape = function () {
+export function isLandscape () {
   var orientation = window.orientation;
   if (isR7()) { orientation += 90; }
   return orientation === 90 || orientation === -90;
-};
+}
 
 /**
  * Check if running in a browser or spoofed browser (bundler).
@@ -190,9 +174,9 @@ module.exports.isLandscape = function () {
  * `window` is mocked in node.
  * `process` is also mocked by webpack running with karma, but has custom properties like process.browser.
  */
-module.exports.isBrowserEnvironment = typeof process === 'undefined' || process.browser === true;
+export var isBrowserEnvironment = typeof process === 'undefined' || process.browser === true;
 
 /**
  * Check if running in node on the server.
  */
-module.exports.isNodeEnvironment = !module.exports.isBrowserEnvironment;
+export var isNodeEnvironment = !isBrowserEnvironment;

@@ -1,6 +1,6 @@
 /* global assert, process, setup, suite, test, sinon */
-var constants = require('constants/');
-var entityFactory = require('../helpers').entityFactory;
+import * as constants from 'constants/index.js';
+import { entityFactory } from '../helpers.js';
 
 var IMG_SRC = '/base/tests/assets/test.png';
 

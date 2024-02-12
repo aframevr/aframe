@@ -1,7 +1,7 @@
 /* global assert, process, setup, suite, test, sinon, AFRAME */
-var entityFactory = require('../helpers').entityFactory;
-var shaders = require('core/shader').shaders;
-var THREE = require('index').THREE;
+import { entityFactory } from '../helpers.js';
+import { shaders } from 'core/shader.js';
+import THREE from 'lib/three.js';
 
 var IMG_SRC = '/base/tests/assets/test.png';
 

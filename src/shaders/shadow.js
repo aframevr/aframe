@@ -1,10 +1,10 @@
-var registerShader = require('../core/shader').registerShader;
-var THREE = require('../lib/three');
+import THREE from '../lib/three.js';
+import { registerShader } from '../core/shader.js';
 
 /**
  * Flat shader using THREE.ShadowMaterial.
  */
-module.exports.Shader = registerShader('shadow', {
+export var Shader = registerShader('shadow', {
   schema: {
     opacity: {default: 0.5},
     transparent: {default: true},

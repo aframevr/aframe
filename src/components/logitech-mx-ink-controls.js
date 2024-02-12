@@ -1,16 +1,12 @@
-var registerComponent = require('../core/component').registerComponent;
-var THREE = require('../lib/three');
-
-var trackedControlsUtils = require('../utils/tracked-controls');
-var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
-var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
-var onButtonEvent = trackedControlsUtils.onButtonEvent;
+import THREE from '../lib/three.js';
+import { registerComponent } from '../core/component.js';
+import { AFRAME_CDN_ROOT } from '../constants/index.js';
+import { checkControllerPresentAndSetup, emitIfAxesChanged, onButtonEvent } from '../utils/tracked-controls.js';
 
 // See Profiles Registry:
 // https://github.com/immersive-web/webxr-input-profiles/tree/master/packages/registry
 // TODO: Add a more robust system for deriving gamepad name.
 var GAMEPAD_ID = 'logitech-mx-ink';
-var AFRAME_CDN_ROOT = require('../constants').AFRAME_CDN_ROOT;
 var LOGITECH_MX_INK_MODEL_GLB_BASE_URL = AFRAME_CDN_ROOT + 'controllers/logitech/';
 
 /**
@@ -34,7 +30,7 @@ var INPUT_MAPPING_WEBXR = {
 /**
  * Logitech MX Ink Controls
  */
-module.exports.Component = registerComponent('logitech-mx-ink-controls', {
+export var Component = registerComponent('logitech-mx-ink-controls', {
   schema: {
     hand: {default: 'left'},
     model: {default: true},

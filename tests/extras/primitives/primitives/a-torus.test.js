@@ -1,6 +1,6 @@
 /* global assert, suite, test, setup */
-var helpers = require('../../../helpers');
-var registerComponent = require('core/component').registerComponent;
+import * as helpers from '../../../helpers.js';
+import { registerComponent } from 'core/component.js';
 
 suite('a-torus', function () {
   setup(function (done) {

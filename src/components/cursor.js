@@ -1,6 +1,6 @@
 /* global THREE, MouseEvent, TouchEvent */
-var registerComponent = require('../core/component').registerComponent;
-var utils = require('../utils/');
+import { registerComponent } from '../core/component.js';
+import * as utils from '../utils/index.js';
 
 var EVENTS = {
   CLICK: 'click',
@@ -41,7 +41,7 @@ var CANVAS_HOVER_CLASS = 'a-mouse-cursor-hover';
  * @member {Element} intersectedEl - Currently-intersected entity. Used to keep track to
  *         emit events when unintersecting.
  */
-module.exports.Component = registerComponent('cursor', {
+export var Component = registerComponent('cursor', {
   dependencies: ['raycaster'],
 
   schema: {

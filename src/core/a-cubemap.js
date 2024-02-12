@@ -1,5 +1,5 @@
 /* global customElements, HTMLElement */
-var debug = require('../utils/debug');
+import { debug } from '../utils/index.js';
 
 var warn = debug('core:cubemap:warn');
 

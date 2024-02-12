@@ -1,10 +1,10 @@
 /* global Node */
-var schema = require('./schema');
-var scenes = require('./scene/scenes');
-var systems = require('./system');
-var utils = require('../utils/');
+import * as schema from './schema.js';
+import scenes from './scene/scenes.js';
+import * as systems from './system.js';
+import * as utils from '../utils/index.js';
 
-var components = module.exports.components = {}; // Keep track of registered components.
+export var components = {}; // Keep track of registered components.
 var parseProperty = schema.parseProperty;
 var processSchema = schema.process;
 var isSingleProp = schema.isSingleProperty;
@@ -48,7 +48,7 @@ var attrValueProxyHandler = {
  * @member {string} attrValue - Value of the corresponding HTML attribute.
  * @member {string} id - Optional id for differentiating multiple instances on the same entity.
  */
-var Component = module.exports.Component = function (el, attrValue, id) {
+export var Component = function (el, attrValue, id) {
   var self = this;
 
   // If component is sceneOnly check the entity is the scene element
@@ -598,9 +598,7 @@ function eventsBind (component, events) {
 }
 
 // For testing.
-if (window.debug) {
-  var registrationOrderWarnings = module.exports.registrationOrderWarnings = {};
-}
+export var registrationOrderWarnings = {};
 
 /**
  * Register a component to A-Frame.
@@ -609,7 +607,7 @@ if (window.debug) {
  * @param {object} definition - Component schema and lifecycle method handlers.
  * @returns {object} Component.
  */
-module.exports.registerComponent = function (name, definition) {
+export function registerComponent (name, definition) {
   var NewComponent;
   var proto = {};
   var schema;
@@ -702,7 +700,7 @@ module.exports.registerComponent = function (name, definition) {
   }
 
   return NewComponent;
-};
+}
 
 /**
  * Checks if a component has defined a method that needs to run every frame.

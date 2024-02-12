@@ -1,5 +1,5 @@
 /* global assert, process, setup, suite, test, AFRAME, THREE */
-var entityFactory = require('../helpers').entityFactory;
+import { entityFactory } from '../helpers.js';
 
 var IMAGE1 = 'base/tests/assets/test.png';
 var IMAGE2 = 'base/tests/assets/test2.png';

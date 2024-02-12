@@ -1,8 +1,8 @@
 /* global assert, suite, test, setup */
-var helpers = require('../../../helpers');
-var geometryNames = require('core/geometry').geometryNames;
-var primitives = require('extras/primitives/primitives/meshPrimitives');
-var utils = require('utils/');
+import * as helpers from '../../../helpers.js';
+import { geometryNames } from 'core/geometry.js';
+import primitives from 'extras/primitives/primitives/meshPrimitives.js';
+import * as utils from 'utils/index.js';
 
 suite('meshPrimitives', function () {
   setup(function createScene (done) {

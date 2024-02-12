@@ -1,5 +1,5 @@
-var geometries = require('../core/geometry').geometries;
-var registerSystem = require('../core/system').registerSystem;
+import { geometries } from '../core/geometry.js';
+import { registerSystem } from '../core/system.js';
 
 /**
  * System for geometry component.
@@ -9,7 +9,7 @@ var registerSystem = require('../core/system').registerSystem;
  * @member {object} cacheCount - Keep track of number of entities using a geometry to
  *         know whether to dispose on removal.
  */
-module.exports.System = registerSystem('geometry', {
+export var System = registerSystem('geometry', {
   init: function () {
     this.cache = {};
     this.cacheCount = {};
