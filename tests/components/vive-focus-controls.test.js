@@ -208,7 +208,7 @@ suite('vive-focus-controls', function () {
       // Verify that the function which applies arm model is not called when disabled.
       sinon.assert.notCalled(applyArmModelSpy);
 
-      // Additionally verify that no other offets have been applied.
+      // Additionally verify that no other offsets have been applied.
       assert.strictEqual(el.object3D.position.x, 0);
       assert.strictEqual(el.object3D.position.y, 0);
       assert.strictEqual(el.object3D.position.z, 0);

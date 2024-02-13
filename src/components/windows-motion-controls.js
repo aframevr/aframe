@@ -262,7 +262,7 @@ module.exports.Component = registerComponent('windows-motion-controls', {
   },
 
   loadModel: function (url) {
-    // The model is loaded by the gltf-model compoent when this attribute is initially set,
+    // The model is loaded by the gltf-model component when this attribute is initially set,
     // removed and re-loaded if the given url changes.
     this.el.setAttribute('gltf-model', 'url(' + url + ')');
   },

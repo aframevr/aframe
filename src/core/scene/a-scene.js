@@ -25,7 +25,7 @@ if (isIOS) { require('../../utils/ios-orientationchange-blank-bug'); }
            updated on every tick.
  * @member {object} camera - three.js Camera object.
  * @member {object} canvas
- * @member {bool} isScene - Differentiates as scene entity as opposed to other entites.
+ * @member {bool} isScene - Differentiates as scene entity as opposed to other entities.
  * @member {bool} isMobile - Whether browser is mobile (via UA detection).
  * @member {object} object3D - Root three.js Scene object.
  * @member {object} renderer
@@ -902,7 +902,7 @@ function setupCanvas (sceneEl) {
       document.fullscreenElement ||
       document.mozFullScreenElement ||
       document.webkitFullscreenElement;
-    // No fullscren element === exit fullscreen
+    // No fullscreen element === exit fullscreen
     if (!fullscreenEl) { sceneEl.exitVR(); }
     document.activeElement.blur();
     document.body.focus();

@@ -310,7 +310,7 @@ class AEntity extends ANode {
     // Initialize dependencies first
     this.initComponentDependencies(componentName);
 
-    // If component name has an id we check component type multiplic
+    // If component name has an id we check component type multiplicity.
     if (componentId && !COMPONENTS[componentName].multiple) {
       throw new Error('Trying to initialize multiple ' +
                       'components of type `' + componentName +
@@ -677,7 +677,7 @@ class AEntity extends ANode {
       newAttrValue[arg1] = arg2;
       clobber = false;
     } else {
-      // Update with a value, object, or CSS-style property string, with the possiblity
+      // Update with a value, object, or CSS-style property string, with the possibility
       // of clobbering previous values.
       newAttrValue = arg1;
       clobber = (arg2 === true);
@@ -845,7 +845,7 @@ function mergeComponentData (attrValue, extraData) {
     return utils.extend(extraData, utils.styleParser.parse(attrValue || {}));
   }
 
-  // Return data, precendence to the defined value.
+  // Return data, precedence to the defined value.
   return attrValue || extraData;
 }
 

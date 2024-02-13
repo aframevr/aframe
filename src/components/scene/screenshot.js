@@ -34,14 +34,14 @@ var FRAGMENT_SHADER = [
 ].join('\n');
 
 /**
- * Component to take screenshots of the scene using a keboard shortcut (alt+s).
+ * Component to take screenshots of the scene using a keyboard shortcut (alt+s).
  * It can be configured to either take 360&deg; captures (`equirectangular`)
  * or regular screenshots (`projection`)
  *
  * This is based on https://github.com/spite/THREE.CubemapToEquirectangular
  * To capture an equirectangular projection of the scene a THREE.CubeCamera is used
  * The cube map produced by the CubeCamera is projected on a quad and then rendered to
- * WebGLRenderTarget with an ortographic camera.
+ * WebGLRenderTarget with an orthographic camera.
  */
 module.exports.Component = registerComponent('screenshot', {
   schema: {
@@ -216,7 +216,7 @@ module.exports.Component = registerComponent('screenshot', {
     renderer.setRenderTarget(output);
     renderer.render(el.object3D, camera);
     renderer.autoClear = autoClear;
-    // Read image pizels back.
+    // Read image pixels back.
     renderer.readRenderTargetPixels(output, 0, 0, size.width, size.height, pixels);
     renderer.setRenderTarget(null);
     if (projection === 'perspective') {

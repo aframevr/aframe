@@ -33,7 +33,7 @@ suite('shadow system', function () {
       document.body.appendChild(div);
     });
 
-    test('shadwMap automatically enables', function (done) {
+    test('shadowMap automatically enables', function (done) {
       var el = this.el;
       el.setAttribute('shadow', 'receive: false');
       el.addEventListener('loaded', function () {

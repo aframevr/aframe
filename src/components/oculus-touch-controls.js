@@ -358,7 +358,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
         }
       }
     }
-    // Pass along changed event with button state, using the buttom mapping for convenience.
+    // Pass along changed event with button state, using the button mapping for convenience.
     this.el.emit(button + 'changed', evt.detail.state);
   },
 

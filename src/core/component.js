@@ -92,7 +92,7 @@ Component.prototype = {
   init: function () { /* no-op */ },
 
   /**
-   * Map of event names to binded event handlers that will be lifecycle-handled.
+   * Map of event names to bound event handlers that will be lifecycle-handled.
    * Will be detached on pause / remove.
    * Will be attached on play.
    */
@@ -495,7 +495,7 @@ Component.prototype = {
 
     if (this.isObjectBased) { utils.objectPool.clearObject(nextData); }
 
-    // 1. Gather default values (lowest precendence).
+    // 1. Gather default values (lowest precedence).
     if (this.isSingleProperty) {
       if (this.isObjectBased) {
         // If object-based single-prop, then copy over the data to our pooled object.
@@ -532,7 +532,7 @@ Component.prototype = {
       data = extendProperties(data, mixinData, this.isObjectBased);
     }
 
-    // 3. Gather attribute values (highest precendence).
+    // 3. Gather attribute values (highest precedence).
     if (componentDefined) {
       if (this.isSingleProperty) {
         // If object-based, copy the value to not modify the original.

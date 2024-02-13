@@ -106,7 +106,7 @@ function createGeometry (data) {
 }
 
 /**
- * Decreate count of entity using a geometry.
+ * Decrease count of entity using a geometry.
  */
 function decrementCacheCount (cacheCount, hash) {
   cacheCount[hash]--;

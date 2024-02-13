@@ -165,7 +165,7 @@ module.exports.Component = registerComponent('tracked-controls-webxr', {
   },
 
   /**
-   * Determine whether a button press has occured and emit events as appropriate.
+   * Determine whether a button press has occurred and emit events as appropriate.
    *
    * @param {string} id - ID of the button to check.
    * @param {object} buttonState - State of the button to check.
@@ -185,7 +185,7 @@ module.exports.Component = registerComponent('tracked-controls-webxr', {
   },
 
   /**
-   * Determine whether a button touch has occured and emit events as appropriate.
+   * Determine whether a button touch has occurred and emit events as appropriate.
    *
    * @param {string} id - ID of the button to check.
    * @param {object} buttonState - State of the button to check.

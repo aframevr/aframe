@@ -5,7 +5,7 @@ var THREE = require('../../lib/three');
 /**
  * Real World Meshing.
  *
- * Create entities with meshes corresponding to 3D surfaces detected in user's enviornment.
+ * Create entities with meshes corresponding to 3D surfaces detected in user's environment.
  * It requires a browser with support for the WebXR Mesh and Plane detection modules.
  *
  */

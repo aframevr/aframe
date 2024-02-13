@@ -102,7 +102,7 @@ suite('sound', function () {
       el.pause();
 
       // Currently we're calling stop when the component is paused as we reset
-      // the state on `play` instad of resuming it
+      // the state on `play` instead of resuming it
       assert.notOk(sound.pause.called);
       assert.ok(sound.stop.called);
     });

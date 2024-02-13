@@ -247,7 +247,7 @@ suite('material', function () {
       assert.equal(el.getObject3D('mesh').material.side, THREE.DoubleSide);
     });
 
-    test('sets material.needsUpdate true if side switchs from/to double', function () {
+    test('sets material.needsUpdate true if side switches from/to double', function () {
       var oldMaterialVersion = el.getObject3D('mesh').material.version;
       el.setAttribute('material', 'side: front');
       assert.equal(el.getObject3D('mesh').material.version, oldMaterialVersion);
@@ -308,7 +308,7 @@ suite('material', function () {
       el.setAttribute('material', 'alphaTest: 0.0');
       assert.equal(el.getObject3D('mesh').material.version, oldMaterialVersion);
       el.setAttribute('material', 'alphaTest: 1.0');
-      // A-Frame sets needsUpdate twice and THREE one more internaly when setting alphaTest.
+      // A-Frame sets needsUpdate twice and THREE one more internally when setting alphaTest.
       assert.equal(el.getObject3D('mesh').material.version, oldMaterialVersion + 3);
     });
   });
@@ -349,7 +349,7 @@ suite('material', function () {
       assert.equal(el.components.material.material.blending, THREE.AdditiveBlending);
     });
 
-    test('can set to subtractibv', function () {
+    test('can set to subtractive', function () {
       el.setAttribute('material', 'blending', 'subtractive');
       assert.equal(el.components.material.material.blending, THREE.SubtractiveBlending);
     });
