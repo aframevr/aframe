@@ -8,7 +8,10 @@ var objectPool = require('./object-pool');
 
 var warn = debug('utils:warn');
 
-module.exports.bind = require('./bind');
+/** @deprecated */
+module.exports.bind = function (fn) {
+  return fn.bind.apply(fn, Array.prototype.slice.call(arguments, 1));
+};
 module.exports.coordinates = require('./coordinates');
 module.exports.debug = debug;
 module.exports.device = device;
@@ -50,7 +53,7 @@ module.exports.isMobile = function () {
 module.exports.throttle = function (functionToThrottle, minimumInterval, optionalContext) {
   var lastTime;
   if (optionalContext) {
-    functionToThrottle = module.exports.bind(functionToThrottle, optionalContext);
+    functionToThrottle = functionToThrottle.bind(optionalContext);
   }
   return function () {
     var time = Date.now();
@@ -84,7 +87,7 @@ module.exports.throttleLeadingAndTrailing = function (functionToThrottle, minimu
   var lastTime;
   var deferTimer;
   if (optionalContext) {
-    functionToThrottle = module.exports.bind(functionToThrottle, optionalContext);
+    functionToThrottle = functionToThrottle.bind(optionalContext);
   }
   return function () {
     var time = Date.now();
@@ -116,7 +119,7 @@ module.exports.throttleLeadingAndTrailing = function (functionToThrottle, minimu
 module.exports.throttleTick = function (functionToThrottle, minimumInterval, optionalContext) {
   var lastTime;
   if (optionalContext) {
-    functionToThrottle = module.exports.bind(functionToThrottle, optionalContext);
+    functionToThrottle = functionToThrottle.bind(optionalContext);
   }
   return function (time, delta) {
     var sinceLastTime = typeof lastTime === 'undefined' ? delta : time - lastTime;

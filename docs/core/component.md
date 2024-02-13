@@ -287,7 +287,7 @@ AFRAME.registerComponent('cursor', {
     // Set up initial state and variables.
     this.intersection = null;
     // Bind methods.
-    this.onIntersection = AFRAME.utils.bind(this.onIntersection, this);
+    this.onIntersection = this.onIntersection.bind(this);
     // Attach event listener.
     this.el.addEventListener('raycaster-intersection', this.onIntersection);
   }

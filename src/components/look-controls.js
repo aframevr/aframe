@@ -2,7 +2,6 @@
 var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../lib/three');
 var utils = require('../utils/');
-var bind = utils.bind;
 
 // To avoid recalculation at every mouse movement tick
 var PI_2 = Math.PI / 2;
@@ -118,16 +117,16 @@ module.exports.Component = registerComponent('look-controls', {
   },
 
   bindMethods: function () {
-    this.onMouseDown = bind(this.onMouseDown, this);
-    this.onMouseMove = bind(this.onMouseMove, this);
-    this.onMouseUp = bind(this.onMouseUp, this);
-    this.onTouchStart = bind(this.onTouchStart, this);
-    this.onTouchMove = bind(this.onTouchMove, this);
-    this.onTouchEnd = bind(this.onTouchEnd, this);
-    this.onEnterVR = bind(this.onEnterVR, this);
-    this.onExitVR = bind(this.onExitVR, this);
-    this.onPointerLockChange = bind(this.onPointerLockChange, this);
-    this.onPointerLockError = bind(this.onPointerLockError, this);
+    this.onMouseDown = this.onMouseDown.bind(this);
+    this.onMouseMove = this.onMouseMove.bind(this);
+    this.onMouseUp = this.onMouseUp.bind(this);
+    this.onTouchStart = this.onTouchStart.bind(this);
+    this.onTouchMove = this.onTouchMove.bind(this);
+    this.onTouchEnd = this.onTouchEnd.bind(this);
+    this.onEnterVR = this.onEnterVR.bind(this);
+    this.onExitVR = this.onExitVR.bind(this);
+    this.onPointerLockChange = this.onPointerLockChange.bind(this);
+    this.onPointerLockError = this.onPointerLockError.bind(this);
   },
 
  /**
@@ -150,7 +149,7 @@ module.exports.Component = registerComponent('look-controls', {
 
     // Wait for canvas to load.
     if (!canvasEl) {
-      sceneEl.addEventListener('render-target-loaded', bind(this.addEventListeners, this));
+      sceneEl.addEventListener('render-target-loaded', this.addEventListeners.bind(this));
       return;
     }
 

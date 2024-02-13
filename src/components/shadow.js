@@ -1,6 +1,5 @@
 var component = require('../core/component');
 var THREE = require('../lib/three');
-var bind = require('../utils/bind');
 var registerComponent = component.registerComponent;
 
 /**
@@ -16,7 +15,7 @@ module.exports.Component = registerComponent('shadow', {
   },
 
   init: function () {
-    this.onMeshChanged = bind(this.update, this);
+    this.onMeshChanged = this.update.bind(this);
     this.el.addEventListener('object3dset', this.onMeshChanged);
     this.system.setShadowMapEnabled(true);
   },

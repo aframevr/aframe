@@ -1,6 +1,5 @@
 /* global customElements */
 var ANode = require('./a-node').ANode;
-var bind = require('../utils/bind');
 var debug = require('../utils/debug');
 var THREE = require('../lib/three');
 
@@ -72,7 +71,7 @@ class AAssets extends ANode {
     }
 
     // Trigger loaded for scene to start rendering.
-    Promise.allSettled(loaded).then(bind(this.load, this));
+    Promise.allSettled(loaded).then(this.load.bind(this));
 
     // Timeout to start loading anyways.
     timeout = parseInt(this.getAttribute('timeout'), 10) || 3000;

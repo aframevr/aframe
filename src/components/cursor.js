@@ -2,8 +2,6 @@
 var registerComponent = require('../core/component').registerComponent;
 var utils = require('../utils/');
 
-var bind = utils.bind;
-
 var EVENTS = {
   CLICK: 'click',
   FUSING: 'fusing',
@@ -76,12 +74,12 @@ module.exports.Component = registerComponent('cursor', {
     this.intersectedEventDetail = {cursorEl: this.el};
 
     // Bind methods.
-    this.onCursorDown = bind(this.onCursorDown, this);
-    this.onCursorUp = bind(this.onCursorUp, this);
-    this.onIntersection = bind(this.onIntersection, this);
-    this.onIntersectionCleared = bind(this.onIntersectionCleared, this);
-    this.onMouseMove = bind(this.onMouseMove, this);
-    this.onEnterVR = bind(this.onEnterVR, this);
+    this.onCursorDown = this.onCursorDown.bind(this);
+    this.onCursorUp = this.onCursorUp.bind(this);
+    this.onIntersection = this.onIntersection.bind(this);
+    this.onIntersectionCleared = this.onIntersectionCleared.bind(this);
+    this.onMouseMove = this.onMouseMove.bind(this);
+    this.onEnterVR = this.onEnterVR.bind(this);
   },
 
   update: function (oldData) {

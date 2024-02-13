@@ -11,7 +11,6 @@ var AEntity = require('../a-entity').AEntity;
 var ANode = require('../a-node').ANode;
 var initPostMessageAPI = require('./postMessage');
 
-var bind = utils.bind;
 var isIOS = utils.device.isIOS();
 var isMobile = utils.device.isMobile();
 var isWebXRAvailable = utils.device.isWebXRAvailable;
@@ -51,8 +50,8 @@ class AScene extends AEntity {
       // THREE may swap the camera used for the rendering if in VR, so we pass it to tock
       if (self.isPlaying) { self.tock(self.time, self.delta, camera); }
     };
-    self.resize = bind(self.resize, self);
-    self.render = bind(self.render, self);
+    self.resize = self.resize.bind(self);
+    self.render = self.render.bind(self);
     self.systems = {};
     self.systemNames = [];
     self.time = self.delta = 0;
@@ -107,7 +106,7 @@ class AScene extends AEntity {
     initWakelock(this);
 
     // Handler to exit VR (e.g., Oculus Browser back button).
-    this.onVRPresentChangeBound = bind(this.onVRPresentChange, this);
+    this.onVRPresentChangeBound = this.onVRPresentChange.bind(this);
     window.addEventListener('vrdisplaypresentchange', this.onVRPresentChangeBound);
 
     // Bind functions.
@@ -896,7 +895,7 @@ function setupCanvas (sceneEl) {
   sceneEl.emit('render-target-loaded', {target: canvasEl});
   // For unknown reasons a synchronous resize does not work on desktop when
   // entering/exiting fullscreen.
-  setTimeout(bind(sceneEl.resize, sceneEl), 0);
+  setTimeout(sceneEl.resize.bind(sceneEl), 0);
 
   function onFullScreenChange () {
     var fullscreenEl =
