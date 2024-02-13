@@ -11673,7 +11673,6 @@ module.exports.Component = registerComponent('camera', {
 /* global THREE, MouseEvent, TouchEvent */
 var registerComponent = (__webpack_require__(/*! ../core/component */ "./src/core/component.js").registerComponent);
 var utils = __webpack_require__(/*! ../utils/ */ "./src/utils/index.js");
-var bind = utils.bind;
 var EVENTS = {
   CLICK: 'click',
   FUSING: 'fusing',
@@ -11753,12 +11752,12 @@ module.exports.Component = registerComponent('cursor', {
     };
 
     // Bind methods.
-    this.onCursorDown = bind(this.onCursorDown, this);
-    this.onCursorUp = bind(this.onCursorUp, this);
-    this.onIntersection = bind(this.onIntersection, this);
-    this.onIntersectionCleared = bind(this.onIntersectionCleared, this);
-    this.onMouseMove = bind(this.onMouseMove, this);
-    this.onEnterVR = bind(this.onEnterVR, this);
+    this.onCursorDown = this.onCursorDown.bind(this);
+    this.onCursorUp = this.onCursorUp.bind(this);
+    this.onIntersection = this.onIntersection.bind(this);
+    this.onIntersectionCleared = this.onIntersectionCleared.bind(this);
+    this.onMouseMove = this.onMouseMove.bind(this);
+    this.onEnterVR = this.onEnterVR.bind(this);
   },
   update: function (oldData) {
     if (this.data.rayOrigin === oldData.rayOrigin) {
@@ -12179,7 +12178,6 @@ module.exports.Component = registerComponent('cursor', {
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 var registerComponent = (__webpack_require__(/*! ../core/component */ "./src/core/component.js").registerComponent);
-var bind = __webpack_require__(/*! ../utils/bind */ "./src/utils/bind.js");
 var trackedControlsUtils = __webpack_require__(/*! ../utils/tracked-controls */ "./src/utils/tracked-controls.js");
 var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
 var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
@@ -12238,14 +12236,14 @@ module.exports.Component = registerComponent('generic-tracked-controller-control
    */
   mapping: INPUT_MAPPING,
   bindMethods: function () {
-    this.onControllersUpdate = bind(this.onControllersUpdate, this);
-    this.checkIfControllerPresent = bind(this.checkIfControllerPresent, this);
-    this.removeControllersUpdateListener = bind(this.removeControllersUpdateListener, this);
-    this.onAxisMoved = bind(this.onAxisMoved, this);
+    this.onControllersUpdate = this.onControllersUpdate.bind(this);
+    this.checkIfControllerPresent = this.checkIfControllerPresent.bind(this);
+    this.removeControllersUpdateListener = this.removeControllersUpdateListener.bind(this);
+    this.onAxisMoved = this.onAxisMoved.bind(this);
   },
   init: function () {
     var self = this;
-    this.onButtonChanged = bind(this.onButtonChanged, this);
+    this.onButtonChanged = this.onButtonChanged.bind(this);
     this.onButtonDown = function (evt) {
       onButtonEvent(evt.detail.id, 'down', self);
     };
@@ -13061,7 +13059,6 @@ function isViveController(trackedControls) {
 
 /* global THREE, XRHand */
 var registerComponent = (__webpack_require__(/*! ../core/component */ "./src/core/component.js").registerComponent);
-var bind = __webpack_require__(/*! ../utils/bind */ "./src/utils/bind.js");
 var AEntity = (__webpack_require__(/*! ../core/a-entity */ "./src/core/a-entity.js").AEntity);
 var trackedControlsUtils = __webpack_require__(/*! ../utils/tracked-controls */ "./src/utils/tracked-controls.js");
 var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
@@ -13096,9 +13093,9 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
     }
   },
   bindMethods: function () {
-    this.onControllersUpdate = bind(this.onControllersUpdate, this);
-    this.checkIfControllerPresent = bind(this.checkIfControllerPresent, this);
-    this.removeControllersUpdateListener = bind(this.removeControllersUpdateListener, this);
+    this.onControllersUpdate = this.onControllersUpdate.bind(this);
+    this.checkIfControllerPresent = this.checkIfControllerPresent.bind(this);
+    this.removeControllersUpdateListener = this.removeControllersUpdateListener.bind(this);
   },
   addEventListeners: function () {
     this.el.addEventListener('model-loaded', this.onModelLoaded);
@@ -13691,7 +13688,6 @@ module.exports.Component = register('hide-on-enter-vr', {
   \*****************************************************/
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-var bind = __webpack_require__(/*! ../utils/bind */ "./src/utils/bind.js");
 var registerComponent = (__webpack_require__(/*! ../core/component */ "./src/core/component.js").registerComponent);
 var THREE = __webpack_require__(/*! ../lib/three */ "./src/lib/three.js");
 var trackedControlsUtils = __webpack_require__(/*! ../utils/tracked-controls */ "./src/utils/tracked-controls.js");
@@ -13763,7 +13759,7 @@ module.exports.Component = registerComponent('hp-mixed-reality-controls', {
     var self = this;
     this.controllerPresent = false;
     this.lastControllerCheck = 0;
-    this.onButtonChanged = bind(this.onButtonChanged, this);
+    this.onButtonChanged = this.onButtonChanged.bind(this);
     this.onButtonDown = function (evt) {
       onButtonEvent(evt.detail.id, 'down', self, self.data.hand);
     };
@@ -13792,11 +13788,11 @@ module.exports.Component = registerComponent('hp-mixed-reality-controls', {
     this.removeControllersUpdateListener();
   },
   bindMethods: function () {
-    this.onModelLoaded = bind(this.onModelLoaded, this);
-    this.onControllersUpdate = bind(this.onControllersUpdate, this);
-    this.checkIfControllerPresent = bind(this.checkIfControllerPresent, this);
-    this.removeControllersUpdateListener = bind(this.removeControllersUpdateListener, this);
-    this.onAxisMoved = bind(this.onAxisMoved, this);
+    this.onModelLoaded = this.onModelLoaded.bind(this);
+    this.onControllersUpdate = this.onControllersUpdate.bind(this);
+    this.checkIfControllerPresent = this.checkIfControllerPresent.bind(this);
+    this.removeControllersUpdateListener = this.removeControllersUpdateListener.bind(this);
+    this.onAxisMoved = this.onAxisMoved.bind(this);
   },
   addEventListeners: function () {
     var el = this.el;
@@ -14552,7 +14548,6 @@ function blitTexture(gl, texture, subImage, textureEl) {
   \*********************************/
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-var bind = __webpack_require__(/*! ../utils/bind */ "./src/utils/bind.js");
 var utils = __webpack_require__(/*! ../utils */ "./src/utils/index.js");
 var diff = utils.diff;
 var debug = __webpack_require__(/*! ../utils/debug */ "./src/utils/debug.js");
@@ -14770,7 +14765,7 @@ module.exports.Component = registerComponent('light', {
                 if (value.hasLoaded) {
                   self.onSetTarget(value, light);
                 } else {
-                  value.addEventListener('loaded', bind(self.onSetTarget, self, value, light));
+                  value.addEventListener('loaded', self.onSetTarget.bind(self, value, light));
                 }
               }
               break;
@@ -14950,7 +14945,7 @@ module.exports.Component = registerComponent('light', {
             if (target.hasLoaded) {
               this.onSetTarget(target, light);
             } else {
-              target.addEventListener('loaded', bind(this.onSetTarget, this, target, light));
+              target.addEventListener('loaded', this.onSetTarget.bind(this, target, light));
             }
           }
           return light;
@@ -14971,7 +14966,7 @@ module.exports.Component = registerComponent('light', {
             if (target.hasLoaded) {
               this.onSetTarget(target, light);
             } else {
-              target.addEventListener('loaded', bind(this.onSetTarget, this, target, light));
+              target.addEventListener('loaded', this.onSetTarget.bind(this, target, light));
             }
           }
           return light;
@@ -15520,7 +15515,6 @@ registerShader('portal', {
 var registerComponent = (__webpack_require__(/*! ../core/component */ "./src/core/component.js").registerComponent);
 var THREE = __webpack_require__(/*! ../lib/three */ "./src/lib/three.js");
 var utils = __webpack_require__(/*! ../utils/ */ "./src/utils/index.js");
-var bind = utils.bind;
 
 // To avoid recalculation at every mouse movement tick
 var PI_2 = Math.PI / 2;
@@ -15649,16 +15643,16 @@ module.exports.Component = registerComponent('look-controls', {
     }
   },
   bindMethods: function () {
-    this.onMouseDown = bind(this.onMouseDown, this);
-    this.onMouseMove = bind(this.onMouseMove, this);
-    this.onMouseUp = bind(this.onMouseUp, this);
-    this.onTouchStart = bind(this.onTouchStart, this);
-    this.onTouchMove = bind(this.onTouchMove, this);
-    this.onTouchEnd = bind(this.onTouchEnd, this);
-    this.onEnterVR = bind(this.onEnterVR, this);
-    this.onExitVR = bind(this.onExitVR, this);
-    this.onPointerLockChange = bind(this.onPointerLockChange, this);
-    this.onPointerLockError = bind(this.onPointerLockError, this);
+    this.onMouseDown = this.onMouseDown.bind(this);
+    this.onMouseMove = this.onMouseMove.bind(this);
+    this.onMouseUp = this.onMouseUp.bind(this);
+    this.onTouchStart = this.onTouchStart.bind(this);
+    this.onTouchMove = this.onTouchMove.bind(this);
+    this.onTouchEnd = this.onTouchEnd.bind(this);
+    this.onEnterVR = this.onEnterVR.bind(this);
+    this.onExitVR = this.onExitVR.bind(this);
+    this.onPointerLockChange = this.onPointerLockChange.bind(this);
+    this.onPointerLockError = this.onPointerLockError.bind(this);
   },
   /**
    * Set up states and Object3Ds needed to store rotation data.
@@ -15679,7 +15673,7 @@ module.exports.Component = registerComponent('look-controls', {
 
     // Wait for canvas to load.
     if (!canvasEl) {
-      sceneEl.addEventListener('render-target-loaded', bind(this.addEventListeners, this));
+      sceneEl.addEventListener('render-target-loaded', this.addEventListeners.bind(this));
       return;
     }
 
@@ -15995,7 +15989,6 @@ module.exports.Component = registerComponent('look-controls', {
   \**********************************************/
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-var bind = __webpack_require__(/*! ../utils/bind */ "./src/utils/bind.js");
 var registerComponent = (__webpack_require__(/*! ../core/component */ "./src/core/component.js").registerComponent);
 var trackedControlsUtils = __webpack_require__(/*! ../utils/tracked-controls */ "./src/utils/tracked-controls.js");
 var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
@@ -16052,7 +16045,7 @@ module.exports.Component = registerComponent('magicleap-controls', {
     var self = this;
     this.controllerPresent = false;
     this.lastControllerCheck = 0;
-    this.onButtonChanged = bind(this.onButtonChanged, this);
+    this.onButtonChanged = this.onButtonChanged.bind(this);
     this.onButtonDown = function (evt) {
       onButtonEvent(evt.detail.id, 'down', self);
     };
@@ -16081,11 +16074,11 @@ module.exports.Component = registerComponent('magicleap-controls', {
     this.removeControllersUpdateListener();
   },
   bindMethods: function () {
-    this.onModelLoaded = bind(this.onModelLoaded, this);
-    this.onControllersUpdate = bind(this.onControllersUpdate, this);
-    this.checkIfControllerPresent = bind(this.checkIfControllerPresent, this);
-    this.removeControllersUpdateListener = bind(this.removeControllersUpdateListener, this);
-    this.onAxisMoved = bind(this.onAxisMoved, this);
+    this.onModelLoaded = this.onModelLoaded.bind(this);
+    this.onControllersUpdate = this.onControllersUpdate.bind(this);
+    this.checkIfControllerPresent = this.checkIfControllerPresent.bind(this);
+    this.removeControllersUpdateListener = this.removeControllersUpdateListener.bind(this);
+    this.onAxisMoved = this.onAxisMoved.bind(this);
   },
   addEventListeners: function () {
     var el = this.el;
@@ -16835,7 +16828,6 @@ module.exports.Component = registerComponent('obj-model', {
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 var registerComponent = (__webpack_require__(/*! ../core/component */ "./src/core/component.js").registerComponent);
-var bind = __webpack_require__(/*! ../utils/bind */ "./src/utils/bind.js");
 var trackedControlsUtils = __webpack_require__(/*! ../utils/tracked-controls */ "./src/utils/tracked-controls.js");
 var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
 var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
@@ -16920,15 +16912,15 @@ module.exports.Component = registerComponent('oculus-go-controls', {
   },
   mapping: INPUT_MAPPING,
   bindMethods: function () {
-    this.onModelLoaded = bind(this.onModelLoaded, this);
-    this.onControllersUpdate = bind(this.onControllersUpdate, this);
-    this.checkIfControllerPresent = bind(this.checkIfControllerPresent, this);
-    this.removeControllersUpdateListener = bind(this.removeControllersUpdateListener, this);
-    this.onAxisMoved = bind(this.onAxisMoved, this);
+    this.onModelLoaded = this.onModelLoaded.bind(this);
+    this.onControllersUpdate = this.onControllersUpdate.bind(this);
+    this.checkIfControllerPresent = this.checkIfControllerPresent.bind(this);
+    this.removeControllersUpdateListener = this.removeControllersUpdateListener.bind(this);
+    this.onAxisMoved = this.onAxisMoved.bind(this);
   },
   init: function () {
     var self = this;
-    this.onButtonChanged = bind(this.onButtonChanged, this);
+    this.onButtonChanged = this.onButtonChanged.bind(this);
     this.onButtonDown = function (evt) {
       onButtonEvent(evt.detail.id, 'down', self);
     };
@@ -17061,7 +17053,6 @@ module.exports.Component = registerComponent('oculus-go-controls', {
   \*************************************************/
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-var bind = __webpack_require__(/*! ../utils/bind */ "./src/utils/bind.js");
 var registerComponent = (__webpack_require__(/*! ../core/component */ "./src/core/component.js").registerComponent);
 var THREE = __webpack_require__(/*! ../lib/three */ "./src/lib/three.js");
 var trackedControlsUtils = __webpack_require__(/*! ../utils/tracked-controls */ "./src/utils/tracked-controls.js");
@@ -17401,12 +17392,12 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   },
   mapping: INPUT_MAPPING,
   bindMethods: function () {
-    this.onButtonChanged = bind(this.onButtonChanged, this);
-    this.onThumbstickMoved = bind(this.onThumbstickMoved, this);
-    this.onModelLoaded = bind(this.onModelLoaded, this);
-    this.onControllersUpdate = bind(this.onControllersUpdate, this);
-    this.checkIfControllerPresent = bind(this.checkIfControllerPresent, this);
-    this.onAxisMoved = bind(this.onAxisMoved, this);
+    this.onButtonChanged = this.onButtonChanged.bind(this);
+    this.onThumbstickMoved = this.onThumbstickMoved.bind(this);
+    this.onModelLoaded = this.onModelLoaded.bind(this);
+    this.onControllersUpdate = this.onControllersUpdate.bind(this);
+    this.checkIfControllerPresent = this.checkIfControllerPresent.bind(this);
+    this.onAxisMoved = this.onAxisMoved.bind(this);
   },
   init: function () {
     var self = this;
@@ -17734,7 +17725,6 @@ function cloneMeshMaterial(object3d) {
   \*****************************************/
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-var bind = __webpack_require__(/*! ../utils/bind */ "./src/utils/bind.js");
 var registerComponent = (__webpack_require__(/*! ../core/component */ "./src/core/component.js").registerComponent);
 var THREE = __webpack_require__(/*! ../lib/three */ "./src/lib/three.js");
 var trackedControlsUtils = __webpack_require__(/*! ../utils/tracked-controls */ "./src/utils/tracked-controls.js");
@@ -17793,7 +17783,7 @@ module.exports.Component = registerComponent('pico-controls', {
   mapping: INPUT_MAPPING_WEBXR,
   init: function () {
     var self = this;
-    this.onButtonChanged = bind(this.onButtonChanged, this);
+    this.onButtonChanged = this.onButtonChanged.bind(this);
     this.onButtonDown = function (evt) {
       onButtonEvent(evt.detail.id, 'down', self, self.data.hand);
     };
@@ -17821,11 +17811,11 @@ module.exports.Component = registerComponent('pico-controls', {
     this.removeControllersUpdateListener();
   },
   bindMethods: function () {
-    this.onModelLoaded = bind(this.onModelLoaded, this);
-    this.onControllersUpdate = bind(this.onControllersUpdate, this);
-    this.checkIfControllerPresent = bind(this.checkIfControllerPresent, this);
-    this.removeControllersUpdateListener = bind(this.removeControllersUpdateListener, this);
-    this.onAxisMoved = bind(this.onAxisMoved, this);
+    this.onModelLoaded = this.onModelLoaded.bind(this);
+    this.onControllersUpdate = this.onControllersUpdate.bind(this);
+    this.checkIfControllerPresent = this.checkIfControllerPresent.bind(this);
+    this.removeControllersUpdateListener = this.removeControllersUpdateListener.bind(this);
+    this.onAxisMoved = this.onAxisMoved.bind(this);
   },
   addEventListeners: function () {
     var el = this.el;
@@ -18999,8 +18989,6 @@ module.exports.Component = register('debug', {
 
 /* global DeviceOrientationEvent, location  */
 var registerComponent = (__webpack_require__(/*! ../../core/component */ "./src/core/component.js").registerComponent);
-var utils = __webpack_require__(/*! ../../utils/ */ "./src/utils/index.js");
-var bind = utils.bind;
 var constants = __webpack_require__(/*! ../../constants/ */ "./src/constants/index.js");
 var MODAL_CLASS = 'a-modal';
 var DIALOG_CLASS = 'a-dialog';
@@ -19050,8 +19038,8 @@ module.exports.Component = registerComponent('device-orientation-permission-ui',
       this.permissionGranted = true;
       return;
     }
-    this.onDeviceMotionDialogAllowClicked = bind(this.onDeviceMotionDialogAllowClicked, this);
-    this.onDeviceMotionDialogDenyClicked = bind(this.onDeviceMotionDialogDenyClicked, this);
+    this.onDeviceMotionDialogAllowClicked = this.onDeviceMotionDialogAllowClicked.bind(this);
+    this.onDeviceMotionDialogDenyClicked = this.onDeviceMotionDialogDenyClicked.bind(this);
     // Show dialog only if permission has not yet been granted.
     DeviceOrientationEvent.requestPermission().then(function () {
       self.el.emit('deviceorientationpermissiongranted');
@@ -20253,7 +20241,6 @@ var utils = __webpack_require__(/*! ../../utils */ "./src/utils/index.js");
 __webpack_require__(/*! ../../../vendor/rStats.extras */ "./vendor/rStats.extras.js");
 __webpack_require__(/*! ../../lib/rStatsAframe */ "./src/lib/rStatsAframe.js");
 var AFrameStats = window.aframeStats;
-var bind = utils.bind;
 var HIDDEN_CLASS = 'a-hidden';
 var ThreeStats = window.threeStats;
 
@@ -20271,8 +20258,8 @@ module.exports.Component = registerComponent('stats', {
     }
     this.stats = createStats(scene);
     this.statsEl = document.querySelector('.rs-base');
-    this.hideBound = bind(this.hide, this);
-    this.showBound = bind(this.show, this);
+    this.hideBound = this.hide.bind(this);
+    this.showBound = this.show.bind(this);
     scene.addEventListener('enter-vr', this.hideBound);
     scene.addEventListener('exit-vr', this.showBound);
   },
@@ -20338,7 +20325,6 @@ function createStats(scene) {
 var registerComponent = (__webpack_require__(/*! ../../core/component */ "./src/core/component.js").registerComponent);
 var constants = __webpack_require__(/*! ../../constants/ */ "./src/constants/index.js");
 var utils = __webpack_require__(/*! ../../utils/ */ "./src/utils/index.js");
-var bind = utils.bind;
 var ENTER_VR_CLASS = 'a-enter-vr';
 var ENTER_AR_CLASS = 'a-enter-ar';
 var ENTER_VR_BTN_CLASS = 'a-enter-vr-button';
@@ -20402,11 +20388,11 @@ module.exports.Component = registerComponent('xr-mode-ui', {
     window.addEventListener('orientationchange', this.toggleOrientationModalIfNeeded);
   },
   bindMethods: function () {
-    this.onEnterVRButtonClick = bind(this.onEnterVRButtonClick, this);
-    this.onEnterARButtonClick = bind(this.onEnterARButtonClick, this);
-    this.onModalClick = bind(this.onModalClick, this);
-    this.toggleOrientationModalIfNeeded = bind(this.toggleOrientationModalIfNeeded, this);
-    this.updateEnterInterfaces = bind(this.updateEnterInterfaces, this);
+    this.onEnterVRButtonClick = this.onEnterVRButtonClick.bind(this);
+    this.onEnterARButtonClick = this.onEnterARButtonClick.bind(this);
+    this.onModalClick = this.onModalClick.bind(this);
+    this.toggleOrientationModalIfNeeded = this.toggleOrientationModalIfNeeded.bind(this);
+    this.updateEnterInterfaces = this.updateEnterInterfaces.bind(this);
   },
   /**
    * Exit VR when modal clicked.
@@ -20633,7 +20619,6 @@ function applyStickyHoverFix(buttonEl) {
 
 var component = __webpack_require__(/*! ../core/component */ "./src/core/component.js");
 var THREE = __webpack_require__(/*! ../lib/three */ "./src/lib/three.js");
-var bind = __webpack_require__(/*! ../utils/bind */ "./src/utils/bind.js");
 var registerComponent = component.registerComponent;
 
 /**
@@ -20652,7 +20637,7 @@ module.exports.Component = registerComponent('shadow', {
     }
   },
   init: function () {
-    this.onMeshChanged = bind(this.update, this);
+    this.onMeshChanged = this.update.bind(this);
     this.el.addEventListener('object3dset', this.onMeshChanged);
     this.system.setShadowMapEnabled(true);
   },
@@ -22231,7 +22216,6 @@ module.exports.Component = registerComponent('tracked-controls', {
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 var registerComponent = (__webpack_require__(/*! ../core/component */ "./src/core/component.js").registerComponent);
-var bind = __webpack_require__(/*! ../utils/bind */ "./src/utils/bind.js");
 var THREE = __webpack_require__(/*! ../lib/three */ "./src/lib/three.js");
 var trackedControlsUtils = __webpack_require__(/*! ../utils/tracked-controls */ "./src/utils/tracked-controls.js");
 var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
@@ -22338,7 +22322,7 @@ module.exports.Component = registerComponent('valve-index-controls', {
     var self = this;
     this.controllerPresent = false;
     this.lastControllerCheck = 0;
-    this.onButtonChanged = bind(this.onButtonChanged, this);
+    this.onButtonChanged = this.onButtonChanged.bind(this);
     this.onButtonDown = function (evt) {
       onButtonEvent(evt.detail.id, 'down', self);
     };
@@ -22363,11 +22347,11 @@ module.exports.Component = registerComponent('valve-index-controls', {
     this.removeControllersUpdateListener();
   },
   bindMethods: function () {
-    this.onModelLoaded = bind(this.onModelLoaded, this);
-    this.onControllersUpdate = bind(this.onControllersUpdate, this);
-    this.checkIfControllerPresent = bind(this.checkIfControllerPresent, this);
-    this.removeControllersUpdateListener = bind(this.removeControllersUpdateListener, this);
-    this.onAxisMoved = bind(this.onAxisMoved, this);
+    this.onModelLoaded = this.onModelLoaded.bind(this);
+    this.onControllersUpdate = this.onControllersUpdate.bind(this);
+    this.checkIfControllerPresent = this.checkIfControllerPresent.bind(this);
+    this.removeControllersUpdateListener = this.removeControllersUpdateListener.bind(this);
+    this.onAxisMoved = this.onAxisMoved.bind(this);
   },
   addEventListeners: function () {
     var el = this.el;
@@ -22547,7 +22531,6 @@ module.exports.Component = registerComponent('visible', {
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 var registerComponent = (__webpack_require__(/*! ../core/component */ "./src/core/component.js").registerComponent);
-var bind = __webpack_require__(/*! ../utils/bind */ "./src/utils/bind.js");
 var trackedControlsUtils = __webpack_require__(/*! ../utils/tracked-controls */ "./src/utils/tracked-controls.js");
 var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
 var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
@@ -22631,7 +22614,7 @@ module.exports.Component = registerComponent('vive-controls', {
     var self = this;
     this.controllerPresent = false;
     this.lastControllerCheck = 0;
-    this.onButtonChanged = bind(this.onButtonChanged, this);
+    this.onButtonChanged = this.onButtonChanged.bind(this);
     this.onButtonDown = function (evt) {
       onButtonEvent(evt.detail.id, 'down', self);
     };
@@ -22660,11 +22643,11 @@ module.exports.Component = registerComponent('vive-controls', {
     this.removeControllersUpdateListener();
   },
   bindMethods: function () {
-    this.onModelLoaded = bind(this.onModelLoaded, this);
-    this.onControllersUpdate = bind(this.onControllersUpdate, this);
-    this.checkIfControllerPresent = bind(this.checkIfControllerPresent, this);
-    this.removeControllersUpdateListener = bind(this.removeControllersUpdateListener, this);
-    this.onAxisMoved = bind(this.onAxisMoved, this);
+    this.onModelLoaded = this.onModelLoaded.bind(this);
+    this.onControllersUpdate = this.onControllersUpdate.bind(this);
+    this.checkIfControllerPresent = this.checkIfControllerPresent.bind(this);
+    this.removeControllersUpdateListener = this.removeControllersUpdateListener.bind(this);
+    this.onAxisMoved = this.onAxisMoved.bind(this);
   },
   addEventListeners: function () {
     var el = this.el;
@@ -22823,7 +22806,6 @@ module.exports.Component = registerComponent('vive-controls', {
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 var registerComponent = (__webpack_require__(/*! ../core/component */ "./src/core/component.js").registerComponent);
-var bind = __webpack_require__(/*! ../utils/bind */ "./src/utils/bind.js");
 var trackedControlsUtils = __webpack_require__(/*! ../utils/tracked-controls */ "./src/utils/tracked-controls.js");
 var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
 var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
@@ -22874,15 +22856,15 @@ module.exports.Component = registerComponent('vive-focus-controls', {
     buttons: ['trackpad', 'trigger']
   },
   bindMethods: function () {
-    this.onModelLoaded = bind(this.onModelLoaded, this);
-    this.onControllersUpdate = bind(this.onControllersUpdate, this);
-    this.checkIfControllerPresent = bind(this.checkIfControllerPresent, this);
-    this.removeControllersUpdateListener = bind(this.removeControllersUpdateListener, this);
-    this.onAxisMoved = bind(this.onAxisMoved, this);
+    this.onModelLoaded = this.onModelLoaded.bind(this);
+    this.onControllersUpdate = this.onControllersUpdate.bind(this);
+    this.checkIfControllerPresent = this.checkIfControllerPresent.bind(this);
+    this.removeControllersUpdateListener = this.removeControllersUpdateListener.bind(this);
+    this.onAxisMoved = this.onAxisMoved.bind(this);
   },
   init: function () {
     var self = this;
-    this.onButtonChanged = bind(this.onButtonChanged, this);
+    this.onButtonChanged = this.onButtonChanged.bind(this);
     this.onButtonDown = function (evt) {
       onButtonEvent(evt.detail.id, 'down', self);
     };
@@ -23027,7 +23009,6 @@ var KEYCODE_TO_CODE = (__webpack_require__(/*! ../constants */ "./src/constants/
 var registerComponent = (__webpack_require__(/*! ../core/component */ "./src/core/component.js").registerComponent);
 var THREE = __webpack_require__(/*! ../lib/three */ "./src/lib/three.js");
 var utils = __webpack_require__(/*! ../utils/ */ "./src/utils/index.js");
-var bind = utils.bind;
 var shouldCaptureKeyEvent = utils.shouldCaptureKeyEvent;
 var CLAMP_VELOCITY = 0.00001;
 var MAX_DELTA = 0.2;
@@ -23075,12 +23056,12 @@ module.exports.Component = registerComponent('wasd-controls', {
     this.velocity = new THREE.Vector3();
 
     // Bind methods and add event listeners.
-    this.onBlur = bind(this.onBlur, this);
-    this.onContextMenu = bind(this.onContextMenu, this);
-    this.onFocus = bind(this.onFocus, this);
-    this.onKeyDown = bind(this.onKeyDown, this);
-    this.onKeyUp = bind(this.onKeyUp, this);
-    this.onVisibilityChange = bind(this.onVisibilityChange, this);
+    this.onBlur = this.onBlur.bind(this);
+    this.onContextMenu = this.onContextMenu.bind(this);
+    this.onFocus = this.onFocus.bind(this);
+    this.onKeyDown = this.onKeyDown.bind(this);
+    this.onKeyUp = this.onKeyUp.bind(this);
+    this.onVisibilityChange = this.onVisibilityChange.bind(this);
     this.attachVisibilityEventListeners();
   },
   tick: function (time, delta) {
@@ -23276,7 +23257,6 @@ function isEmptyObject(keys) {
 
 /* global THREE */
 var registerComponent = (__webpack_require__(/*! ../core/component */ "./src/core/component.js").registerComponent);
-var bind = __webpack_require__(/*! ../utils/bind */ "./src/utils/bind.js");
 var trackedControlsUtils = __webpack_require__(/*! ../utils/tracked-controls */ "./src/utils/tracked-controls.js");
 var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
 var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
@@ -23374,16 +23354,16 @@ module.exports.Component = registerComponent('windows-motion-controls', {
   },
   mapping: INPUT_MAPPING,
   bindMethods: function () {
-    this.onModelError = bind(this.onModelError, this);
-    this.onModelLoaded = bind(this.onModelLoaded, this);
-    this.onControllersUpdate = bind(this.onControllersUpdate, this);
-    this.checkIfControllerPresent = bind(this.checkIfControllerPresent, this);
-    this.onAxisMoved = bind(this.onAxisMoved, this);
+    this.onModelError = this.onModelError.bind(this);
+    this.onModelLoaded = this.onModelLoaded.bind(this);
+    this.onControllersUpdate = this.onControllersUpdate.bind(this);
+    this.checkIfControllerPresent = this.checkIfControllerPresent.bind(this);
+    this.onAxisMoved = this.onAxisMoved.bind(this);
   },
   init: function () {
     var self = this;
     var el = this.el;
-    this.onButtonChanged = bind(this.onButtonChanged, this);
+    this.onButtonChanged = this.onButtonChanged.bind(this);
     this.onButtonDown = function (evt) {
       onButtonEvent(evt.detail.id, 'down', self);
     };
@@ -23775,7 +23755,6 @@ module.exports = {
 
 /* global customElements */
 var ANode = (__webpack_require__(/*! ./a-node */ "./src/core/a-node.js").ANode);
-var bind = __webpack_require__(/*! ../utils/bind */ "./src/utils/bind.js");
 var debug = __webpack_require__(/*! ../utils/debug */ "./src/utils/debug.js");
 var THREE = __webpack_require__(/*! ../lib/three */ "./src/lib/three.js");
 var fileLoader = new THREE.FileLoader();
@@ -23841,7 +23820,7 @@ class AAssets extends ANode {
     }
 
     // Trigger loaded for scene to start rendering.
-    Promise.allSettled(loaded).then(bind(this.load, this));
+    Promise.allSettled(loaded).then(this.load.bind(this));
 
     // Timeout to start loading anyways.
     timeout = parseInt(this.getAttribute('timeout'), 10) || 3000;
@@ -26664,7 +26643,6 @@ var utils = __webpack_require__(/*! ../../utils/ */ "./src/utils/index.js");
 var AEntity = (__webpack_require__(/*! ../a-entity */ "./src/core/a-entity.js").AEntity);
 var ANode = (__webpack_require__(/*! ../a-node */ "./src/core/a-node.js").ANode);
 var initPostMessageAPI = __webpack_require__(/*! ./postMessage */ "./src/core/scene/postMessage.js");
-var bind = utils.bind;
 var isIOS = utils.device.isIOS();
 var isMobile = utils.device.isMobile();
 var isWebXRAvailable = utils.device.isWebXRAvailable;
@@ -26707,8 +26685,8 @@ class AScene extends AEntity {
         self.tock(self.time, self.delta, camera);
       }
     };
-    self.resize = bind(self.resize, self);
-    self.render = bind(self.render, self);
+    self.resize = self.resize.bind(self);
+    self.render = self.render.bind(self);
     self.systems = {};
     self.systemNames = [];
     self.time = self.delta = 0;
@@ -26760,7 +26738,7 @@ class AScene extends AEntity {
     initWakelock(this);
 
     // Handler to exit VR (e.g., Oculus Browser back button).
-    this.onVRPresentChangeBound = bind(this.onVRPresentChange, this);
+    this.onVRPresentChangeBound = this.onVRPresentChange.bind(this);
     window.addEventListener('vrdisplaypresentchange', this.onVRPresentChangeBound);
 
     // Bind functions.
@@ -27569,7 +27547,7 @@ function setupCanvas(sceneEl) {
   });
   // For unknown reasons a synchronous resize does not work on desktop when
   // entering/exiting fullscreen.
-  setTimeout(bind(sceneEl.resize, sceneEl), 0);
+  setTimeout(sceneEl.resize.bind(sceneEl), 0);
   function onFullScreenChange() {
     var fullscreenEl = document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement;
     // No fullscren element === exit fullscreen
@@ -27794,7 +27772,6 @@ function createTag(tagObj) {
   \***************************************/
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-var bind = __webpack_require__(/*! ../../utils/bind */ "./src/utils/bind.js");
 var isIframed = (__webpack_require__(/*! ../../utils/ */ "./src/utils/index.js").isIframed);
 
 /**
@@ -27807,7 +27784,7 @@ module.exports = function initPostMessageAPI(scene) {
     return;
   }
   // postMessage API handler
-  window.addEventListener('message', bind(postMessageAPIHandler, scene));
+  window.addEventListener('message', postMessageAPIHandler.bind(scene));
 };
 function postMessageAPIHandler(event) {
   var scene = this;
@@ -29851,7 +29828,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.5.0 (Date 2024-02-12, Commit #90c69364)');
+console.log('A-Frame Version: 1.5.0 (Date 2024-02-13, Commit #bc3461ec)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
@@ -31270,7 +31247,6 @@ __webpack_require__(/*! ./webxr */ "./src/systems/webxr.js");
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 var registerSystem = (__webpack_require__(/*! ../core/system */ "./src/core/system.js").registerSystem);
-var bind = __webpack_require__(/*! ../utils/bind */ "./src/utils/bind.js");
 var constants = __webpack_require__(/*! ../constants/ */ "./src/constants/index.js");
 var DEFAULT_LIGHT_ATTR = 'data-aframe-default-light';
 
@@ -31295,7 +31271,7 @@ module.exports.System = registerSystem('light', {
     // Wait for all entities to fully load before checking for existence of lights.
     // Since entities wait for <a-assets> to load, any lights attaching to the scene
     // will do so asynchronously.
-    this.sceneEl.addEventListener('loaded', bind(this.setupDefaultLights, this));
+    this.sceneEl.addEventListener('loaded', this.setupDefaultLights.bind(this));
   },
   /**
    * Notify scene that light has been added and to remove the default.
@@ -31371,7 +31347,6 @@ var registerSystem = (__webpack_require__(/*! ../core/system */ "./src/core/syst
 var THREE = __webpack_require__(/*! ../lib/three */ "./src/lib/three.js");
 var utils = __webpack_require__(/*! ../utils/ */ "./src/utils/index.js");
 var setTextureProperties = (__webpack_require__(/*! ../utils/material */ "./src/utils/material.js").setTextureProperties);
-var bind = utils.bind;
 var debug = utils.debug;
 var error = debug('components:texture:error');
 var TextureLoader = new THREE.TextureLoader();
@@ -31395,7 +31370,7 @@ module.exports.System = registerSystem('material', {
     this.materials = {};
     this.textureCounts = {};
     this.textureCache = {};
-    this.sceneEl.addEventListener('materialtextureloaded', bind(this.onMaterialTextureLoaded, this));
+    this.sceneEl.addEventListener('materialtextureloaded', this.onMaterialTextureLoaded.bind(this));
   },
   clearTextureCache: function () {
     this.textureCache = {};
@@ -32379,30 +32354,6 @@ module.exports.System = registerSystem('webxr', {
 
 /***/ }),
 
-/***/ "./src/utils/bind.js":
-/*!***************************!*\
-  !*** ./src/utils/bind.js ***!
-  \***************************/
-/***/ ((module) => {
-
-/**
- * Faster version of Function.prototype.bind
- * @param {Function} fn - Function to wrap.
- * @param {Object} ctx - What to bind as context.
- * @param {...*} arguments - Arguments to pass through.
- */
-module.exports = function bind(fn, ctx /* , arg1, arg2 */) {
-  return function (prependedArgs) {
-    return function bound() {
-      // Concat the bound function arguments with those passed to original bind
-      var args = prependedArgs.concat(Array.prototype.slice.call(arguments, 0));
-      return fn.apply(ctx, args);
-    };
-  }(Array.prototype.slice.call(arguments, 2));
-};
-
-/***/ }),
-
 /***/ "./src/utils/coordinates.js":
 /*!**********************************!*\
   !*** ./src/utils/coordinates.js ***!
@@ -32941,7 +32892,11 @@ var deepAssign = __webpack_require__(/*! deep-assign */ "./node_modules/deep-ass
 var device = __webpack_require__(/*! ./device */ "./src/utils/device.js");
 var objectPool = __webpack_require__(/*! ./object-pool */ "./src/utils/object-pool.js");
 var warn = debug('utils:warn');
-module.exports.bind = __webpack_require__(/*! ./bind */ "./src/utils/bind.js");
+
+/** @deprecated */
+module.exports.bind = function (fn) {
+  return fn.bind.apply(fn, Array.prototype.slice.call(arguments, 1));
+};
 module.exports.coordinates = __webpack_require__(/*! ./coordinates */ "./src/utils/coordinates.js");
 module.exports.debug = debug;
 module.exports.device = device;
@@ -32982,7 +32937,7 @@ module.exports.isMobile = function () {
 module.exports.throttle = function (functionToThrottle, minimumInterval, optionalContext) {
   var lastTime;
   if (optionalContext) {
-    functionToThrottle = module.exports.bind(functionToThrottle, optionalContext);
+    functionToThrottle = functionToThrottle.bind(optionalContext);
   }
   return function () {
     var time = Date.now();
@@ -33016,7 +32971,7 @@ module.exports.throttleLeadingAndTrailing = function (functionToThrottle, minimu
   var lastTime;
   var deferTimer;
   if (optionalContext) {
-    functionToThrottle = module.exports.bind(functionToThrottle, optionalContext);
+    functionToThrottle = functionToThrottle.bind(optionalContext);
   }
   return function () {
     var time = Date.now();
@@ -33048,7 +33003,7 @@ module.exports.throttleLeadingAndTrailing = function (functionToThrottle, minimu
 module.exports.throttleTick = function (functionToThrottle, minimumInterval, optionalContext) {
   var lastTime;
   if (optionalContext) {
-    functionToThrottle = module.exports.bind(functionToThrottle, optionalContext);
+    functionToThrottle = functionToThrottle.bind(optionalContext);
   }
   return function (time, delta) {
     var sinceLastTime = typeof lastTime === 'undefined' ? delta : time - lastTime;
