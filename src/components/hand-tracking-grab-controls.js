@@ -119,11 +119,11 @@ registerComponent('hand-tracking-grab-controls', {
 
   grab: function () {
     var grabbedEl = this.grabbedEl;
-    var grabedObjectWorldPosition;
+    var grabbedObjectWorldPosition;
 
-    grabedObjectWorldPosition = grabbedEl.object3D.getWorldPosition(this.grabbedObjectPosition);
+    grabbedObjectWorldPosition = grabbedEl.object3D.getWorldPosition(this.grabbedObjectPosition);
 
-    this.grabDeltaPosition.copy(grabedObjectWorldPosition).sub(this.pinchPosition);
+    this.grabDeltaPosition.copy(grabbedObjectWorldPosition).sub(this.pinchPosition);
     this.grabInitialRotation.copy(this.auxQuaternion.copy(this.wristRotation).invert());
 
     this.originalUpdateMatrixWorld = grabbedEl.object3D.updateMatrixWorld;
@@ -159,8 +159,8 @@ registerComponent('hand-tracking-grab-controls', {
     // Both grabbing and grabbed entities position and rotation.
 
     // 1. Move grabbed entity to the pinch position (middle point between index and thumb)
-    // 2. Apply the rotation delta (substract initial rotation) of the grabbing entity position (wrist).
-    // 3. Translate grabbed entity to the original position: distance betweeen grabbed and grabbing entities at collision time.
+    // 2. Apply the rotation delta (subtract initial rotation) of the grabbing entity position (wrist).
+    // 3. Translate grabbed entity to the original position: distance between grabbed and grabbing entities at collision time.
     // 4. Apply grabbed entity rotation.
     // 5. Preserve original scale.
 

@@ -11,7 +11,7 @@ var onButtonEvent = trackedControlsUtils.onButtonEvent;
 // TODO: Add a more robust system for deriving gamepad name.
 var GAMEPAD_ID = 'hp-mixed-reality';
 var AFRAME_CDN_ROOT = require('../constants').AFRAME_CDN_ROOT;
-var HP_MIXEDL_REALITY_MODEL_GLB_BASE_URL = AFRAME_CDN_ROOT + 'controllers/hp/mixed-reality/';
+var HP_MIXED_REALITY_MODEL_GLB_BASE_URL = AFRAME_CDN_ROOT + 'controllers/hp/mixed-reality/';
 
 var HP_MIXED_REALITY_POSITION_OFFSET = {x: 0, y: 0, z: 0.06};
 var HP_MIXED_REALITY_ROTATION_OFFSET = {_x: Math.PI / 4, _y: 0, _z: 0, _order: 'XYZ'};
@@ -131,7 +131,7 @@ module.exports.Component = registerComponent('hp-mixed-reality-controls', {
 
     // Load model.
     if (!this.data.model) { return; }
-    this.el.setAttribute('gltf-model', HP_MIXEDL_REALITY_MODEL_GLB_BASE_URL + this.data.hand + '.glb');
+    this.el.setAttribute('gltf-model', HP_MIXED_REALITY_MODEL_GLB_BASE_URL + this.data.hand + '.glb');
   },
 
   addControllersUpdateListener: function () {

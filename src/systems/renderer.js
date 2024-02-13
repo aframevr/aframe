@@ -51,7 +51,7 @@ module.exports.System = registerSystem('renderer', {
       warn('Component `logarithmicDepthBuffer` is deprecated. Use `renderer="logarithmicDepthBuffer: true"` instead.');
     }
 
-    // These properties are always the same, regardless of rendered oonfiguration
+    // These properties are always the same, regardless of rendered configuration
     renderer.sortObjects = true;
     renderer.setOpaqueSort(sortFrontToBack);
   },

@@ -182,7 +182,7 @@ AFRAME.registerComponent('hand-menu', {
   },
 
   onPinchStarted: (function () {
-    var auxMaxtrix = new THREE.Matrix4();
+    var auxMatrix = new THREE.Matrix4();
     var auxQuaternion = new THREE.Quaternion();
     return function (evt) {
       if (!this.handHoveringEl || this.opened) { return; }
@@ -191,7 +191,7 @@ AFRAME.registerComponent('hand-menu', {
       this.menuEl.emit('open');
       function lookAtVector (sourcePoint, destPoint) {
         return auxQuaternion.setFromRotationMatrix(
-            auxMaxtrix.identity()
+            auxMatrix.identity()
             .lookAt(sourcePoint, destPoint, new THREE.Vector3(0, 1, 0)));
       }
 

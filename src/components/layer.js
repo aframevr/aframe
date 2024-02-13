@@ -179,7 +179,7 @@ module.exports.Component = registerComponent('layer', {
     var gl = this.el.sceneEl.renderer.getContext();
     var cubefaceTextures;
 
-    // dont flip the pixels as we load them into the texture buffer.
+    // don't flip the pixels as we load them into the texture buffer.
     // TEXTURE_CUBE_MAP expects the Y to be flipped for the faces and it already
     // is flipped in our texture image.
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);

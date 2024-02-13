@@ -292,7 +292,7 @@ module.exports.Component = register('ar-hit-test', {
         this.el.emit('ar-hit-test-start');
       }.bind(this));
 
-      // These are transient inputs so need to be handled seperately
+      // These are transient inputs so need to be handled separately
       var profileToSupport = 'generic-touchscreen';
       var transientHitTest = new HitTest(renderer, {
         profile: profileToSupport
@@ -345,7 +345,7 @@ module.exports.Component = register('ar-hit-test', {
               applyPose(applyPose.tempFakePose, object, this.bboxOffset);
               object.visible = true;
 
-              // create an anchor attatched to the object
+              // create an anchor attached to the object
               this.hitTest.anchorFromLastHitTestResult(object, this.bboxOffset);
             }
           }
@@ -452,7 +452,7 @@ module.exports.Component = register('ar-hit-test', {
     var renderer = this.el.sceneEl.renderer;
 
     if (frame) {
-      // if we are in XR then update the positions of the objects attatched to anchors
+      // if we are in XR then update the positions of the objects attached to anchors
       HitTest.updateAnchorPoses(frame, renderer.xr.getReferenceSpace());
     }
     if (this.bboxNeedsUpdate) {

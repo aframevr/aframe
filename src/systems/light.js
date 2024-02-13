@@ -52,7 +52,7 @@ module.exports.System = registerSystem('light', {
   },
 
   /**
-   * Prescibe default lights to the scene.
+   * Prescribe default lights to the scene.
    * Does so by injecting markup such that this state is not invisible.
    * These lights are removed if the user adds any lights.
    */

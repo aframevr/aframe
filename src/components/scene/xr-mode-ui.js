@@ -11,7 +11,7 @@ var HIDDEN_CLASS = 'a-hidden';
 var ORIENTATION_MODAL_CLASS = 'a-orientation-modal';
 
 /**
- * UI for Aentering VR mode.
+ * UI for entering VR mode.
  */
 module.exports.Component = registerComponent('xr-mode-ui', {
   dependencies: ['canvas'],

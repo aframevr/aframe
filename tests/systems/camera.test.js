@@ -59,7 +59,7 @@ suite('camera system', function () {
     document.body.appendChild(sceneEl);
 
     // Trigger scene load through assets. Camera will be waiting for assets.
-    // Add `setTimeout` to mimic asynchrony of asset loading.
+    // Add `setTimeout` to mimic asynchronicity of asset loading.
     setTimeout(function () { assetsEl.load(); });
   });
 

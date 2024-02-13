@@ -47,7 +47,7 @@ suite('windows-motion-controls', function () {
       assert.notOk(injectTrackedControlsSpy.called, 'injectTrackedControls not called');
       assert.notOk(addEventListenersSpy.called, 'addEventListeners not called');
       assert.ok(removeEventListenersSpy.called, 'removeEventListeners called');
-      assert.strictEqual(component.controllerPresent, false, 'contollers not present');
+      assert.strictEqual(component.controllerPresent, false, 'controllers not present');
     });
 
     test('does not call removeEventListeners multiple times', function () {
@@ -64,7 +64,7 @@ suite('windows-motion-controls', function () {
       assert.notOk(injectTrackedControlsSpy.called, 'injectTrackedControls not called');
       assert.notOk(addEventListenersSpy.called, 'addEventListeners not called');
       assert.notOk(removeEventListenersSpy.called, 'removeEventListeners not called');
-      assert.strictEqual(component.controllerPresent, false, 'contollers not present');
+      assert.strictEqual(component.controllerPresent, false, 'controllers not present');
     });
 
     test('attach events if controller is newly present', function () {

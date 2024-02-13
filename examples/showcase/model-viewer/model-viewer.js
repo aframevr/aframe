@@ -203,7 +203,7 @@ AFRAME.registerComponent('model-viewer', {
     var arShadowEl = this.arShadowEl = document.createElement('a-entity');
     // The title / legend displayed above the model.
     var titleEl = this.titleEl = document.createElement('a-entity');
-    // Scene ligthing.
+    // Scene lighting.
     var lightEl = this.lightEl = document.createElement('a-entity');
     var sceneLightEl = this.sceneLightEl = document.createElement('a-entity');
 

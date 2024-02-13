@@ -459,7 +459,7 @@ module.exports.Component = registerComponent('cursor', {
     // Clear fuseTimeout.
     clearTimeout(this.fuseTimeout);
 
-    // Set intersection to another raycasted element if any.
+    // Set intersection to another raycast element if any.
     if (ignoreRemaining === true) { return; }
     intersections = this.el.components.raycaster.intersections;
     if (intersections.length === 0) { return; }

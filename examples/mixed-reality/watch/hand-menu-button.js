@@ -96,7 +96,7 @@ AFRAME.registerComponent('hand-menu-button', {
 });
 
 /*
-   User's hand can collide with multiple buttons simulatenously but only want one in a hovered state.
+   User's hand can collide with multiple buttons simultaneously but only want one in a hovered state.
    This system keeps track of all the collided buttons, keeping just the closest to the hand in a hovered state.
 */
 AFRAME.registerSystem('hand-menu-button', {

@@ -216,7 +216,7 @@ module.exports.Component = registerComponent('valve-index-controls', {
     controllerObject3D.rotation.copy(INDEX_CONTROLLER_ROTATION_OFFSET[this.data.hand]);
 
     this.el.emit('controllermodelready', {
-      name: 'valve-index-controlls',
+      name: 'valve-index-controls',
       model: this.data.model,
       rayOrigin: new THREE.Vector3(0, 0, 0)
     });
