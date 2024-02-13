@@ -11256,8 +11256,8 @@ module.exports.Component = registerComponent('animation', {
         value = anim.animatables[0].target.aframeProperty;
 
         // Need to do a last value check for animation timeline since all the tweening
-        // begins simultaenously even if the value has not changed. Also better for perf
-        // anyways.
+        // begins simultaneously even if the value has not changed. Also better for perf
+        // anyway.
         if (value === lastValue) {
           return;
         }
@@ -12125,7 +12125,7 @@ module.exports.Component = registerComponent('cursor', {
     // Clear fuseTimeout.
     clearTimeout(this.fuseTimeout);
 
-    // Set intersection to another raycasted element if any.
+    // Set intersection to another raycast element if any.
     if (ignoreRemaining === true) {
       return;
     }
@@ -13560,9 +13560,9 @@ registerComponent('hand-tracking-grab-controls', {
   },
   grab: function () {
     var grabbedEl = this.grabbedEl;
-    var grabedObjectWorldPosition;
-    grabedObjectWorldPosition = grabbedEl.object3D.getWorldPosition(this.grabbedObjectPosition);
-    this.grabDeltaPosition.copy(grabedObjectWorldPosition).sub(this.pinchPosition);
+    var grabbedObjectWorldPosition;
+    grabbedObjectWorldPosition = grabbedEl.object3D.getWorldPosition(this.grabbedObjectPosition);
+    this.grabDeltaPosition.copy(grabbedObjectWorldPosition).sub(this.pinchPosition);
     this.grabInitialRotation.copy(this.auxQuaternion.copy(this.wristRotation).invert());
     this.originalUpdateMatrixWorld = grabbedEl.object3D.updateMatrixWorld;
     grabbedEl.object3D.updateMatrixWorld = function () {/* no op */};
@@ -13595,8 +13595,8 @@ registerComponent('hand-tracking-grab-controls', {
     // Both grabbing and grabbed entities position and rotation.
 
     // 1. Move grabbed entity to the pinch position (middle point between index and thumb)
-    // 2. Apply the rotation delta (substract initial rotation) of the grabbing entity position (wrist).
-    // 3. Translate grabbed entity to the original position: distance betweeen grabbed and grabbing entities at collision time.
+    // 2. Apply the rotation delta (subtract initial rotation) of the grabbing entity position (wrist).
+    // 3. Translate grabbed entity to the original position: distance between grabbed and grabbing entities at collision time.
     // 4. Apply grabbed entity rotation.
     // 5. Preserve original scale.
 
@@ -13700,7 +13700,7 @@ var onButtonEvent = trackedControlsUtils.onButtonEvent;
 // TODO: Add a more robust system for deriving gamepad name.
 var GAMEPAD_ID = 'hp-mixed-reality';
 var AFRAME_CDN_ROOT = (__webpack_require__(/*! ../constants */ "./src/constants/index.js").AFRAME_CDN_ROOT);
-var HP_MIXEDL_REALITY_MODEL_GLB_BASE_URL = AFRAME_CDN_ROOT + 'controllers/hp/mixed-reality/';
+var HP_MIXED_REALITY_MODEL_GLB_BASE_URL = AFRAME_CDN_ROOT + 'controllers/hp/mixed-reality/';
 var HP_MIXED_REALITY_POSITION_OFFSET = {
   x: 0,
   y: 0,
@@ -13838,7 +13838,7 @@ module.exports.Component = registerComponent('hp-mixed-reality-controls', {
     if (!this.data.model) {
       return;
     }
-    this.el.setAttribute('gltf-model', HP_MIXEDL_REALITY_MODEL_GLB_BASE_URL + this.data.hand + '.glb');
+    this.el.setAttribute('gltf-model', HP_MIXED_REALITY_MODEL_GLB_BASE_URL + this.data.hand + '.glb');
   },
   addControllersUpdateListener: function () {
     this.el.sceneEl.addEventListener('controllersupdated', this.onControllersUpdate, false);
@@ -14324,7 +14324,7 @@ module.exports.Component = registerComponent('layer', {
     var gl = this.el.sceneEl.renderer.getContext();
     var cubefaceTextures;
 
-    // dont flip the pixels as we load them into the texture buffer.
+    // don't flip the pixels as we load them into the texture buffer.
     // TEXTURE_CUBE_MAP expects the Y to be flipped for the faces and it already
     // is flipped in our texture image.
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
@@ -15324,7 +15324,7 @@ module.exports.Component = registerComponent('link', {
   },
   /**
    * 1. Swap plane that represents portal with sphere with a hole when the camera is close
-   * so user can peek inside portal. Sphere is rendered on oposite side of portal
+   * so user can peek inside portal. Sphere is rendered on opposite side of portal
    * from where user enters.
    * 2. Place the url/title above or inside portal depending on distance to camera.
    * 3. Face portal to camera when far away from user.
@@ -15384,7 +15384,7 @@ module.exports.Component = registerComponent('link', {
           this.semiSphereEl.setAttribute('visible', true);
           this.peekCameraPortalOrientation = cameraPortalOrientation;
         } else {
-          // Calculate wich side the camera is approaching the camera (back / front).
+          // Calculate which side the camera is approaching the camera (back / front).
           // Adjust text orientation based on camera position.
           if (cameraPortalOrientation <= 0.0) {
             textEl.setAttribute('rotation', '0 180 0');
@@ -15873,7 +15873,7 @@ module.exports.Component = registerComponent('look-controls', {
     }
     deltaY = 2 * Math.PI * (evt.touches[0].pageX - this.touchStart.x) / canvas.clientWidth;
     direction = this.data.reverseTouchDrag ? 1 : -1;
-    // Limit touch orientaion to to yaw (y axis).
+    // Limit touch orientation to to yaw (y axis).
     yawObject.rotation.y -= deltaY * 0.5 * direction;
     this.touchStart = {
       x: evt.touches[0].pageX,
@@ -17547,7 +17547,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
         }
       }
     }
-    // Pass along changed event with button state, using the buttom mapping for convenience.
+    // Pass along changed event with button state, using the button mapping for convenience.
     this.el.emit(button + 'changed', evt.detail.state);
   },
   onButtonChangedV3orPROorPlus: function (evt) {
@@ -18068,7 +18068,7 @@ module.exports.Component = registerComponent('raycaster', {
     // Draw line.
     if (data.showLine && (data.far !== oldData.far || data.origin !== oldData.origin || data.direction !== oldData.direction || !oldData.showLine)) {
       // Calculate unit vector for line direction. Can be multiplied via scalar and added
-      // to orign to adjust line length.
+      // to origin to adjust line length.
       this.unitLineEndVec3.copy(data.direction).normalize();
       this.drawLine();
     }
@@ -18344,7 +18344,7 @@ module.exports.Component = registerComponent('raycaster', {
    * Children are flattened by one level, removing the THREE.Group wrapper,
    * so that non-recursive raycasting remains useful.
    *
-   * Only push children defined as component attachements (e.g., setObject3D),
+   * Only push children defined as component attachments (e.g., setObject3D),
    * NOT actual children in the scene graph hierarchy.
    *
    * @param  {Array<Element>} els
@@ -18735,7 +18735,7 @@ module.exports.Component = register('ar-hit-test', {
         this.el.emit('ar-hit-test-start');
       }.bind(this));
 
-      // These are transient inputs so need to be handled seperately
+      // These are transient inputs so need to be handled separately
       var profileToSupport = 'generic-touchscreen';
       var transientHitTest = new HitTest(renderer, {
         profile: profileToSupport
@@ -18781,7 +18781,7 @@ module.exports.Component = register('ar-hit-test', {
               applyPose(applyPose.tempFakePose, object, this.bboxOffset);
               object.visible = true;
 
-              // create an anchor attatched to the object
+              // create an anchor attached to the object
               this.hitTest.anchorFromLastHitTestResult(object, this.bboxOffset);
             }
           }
@@ -18881,7 +18881,7 @@ module.exports.Component = register('ar-hit-test', {
     var frame = this.el.sceneEl.frame;
     var renderer = this.el.sceneEl.renderer;
     if (frame) {
-      // if we are in XR then update the positions of the objects attatched to anchors
+      // if we are in XR then update the positions of the objects attached to anchors
       HitTest.updateAnchorPoses(frame, renderer.xr.getReferenceSpace());
     }
     if (this.bboxNeedsUpdate) {
@@ -19617,7 +19617,7 @@ var THREE = __webpack_require__(/*! ../../lib/three */ "./src/lib/three.js");
 /**
  * Real World Meshing.
  *
- * Create entities with meshes corresponding to 3D surfaces detected in user's enviornment.
+ * Create entities with meshes corresponding to 3D surfaces detected in user's environment.
  * It requires a browser with support for the WebXR Mesh and Plane detection modules.
  *
  */
@@ -19991,14 +19991,14 @@ var VERTEX_SHADER = ['attribute vec3 position;', 'attribute vec2 uv;', 'uniform 
 var FRAGMENT_SHADER = ['precision mediump float;', 'uniform samplerCube map;', 'varying vec2 vUv;', '#define M_PI 3.141592653589793238462643383279', 'void main() {', '  vec2 uv = vUv;', '  float longitude = uv.x * 2. * M_PI - M_PI + M_PI / 2.;', '  float latitude = uv.y * M_PI;', '  vec3 dir = vec3(', '    - sin( longitude ) * sin( latitude ),', '    cos( latitude ),', '    - cos( longitude ) * sin( latitude )', '  );', '  normalize( dir );', '  gl_FragColor = vec4( textureCube( map, dir ).rgb, 1.0 );', '}'].join('\n');
 
 /**
- * Component to take screenshots of the scene using a keboard shortcut (alt+s).
+ * Component to take screenshots of the scene using a keyboard shortcut (alt+s).
  * It can be configured to either take 360&deg; captures (`equirectangular`)
  * or regular screenshots (`projection`)
  *
  * This is based on https://github.com/spite/THREE.CubemapToEquirectangular
  * To capture an equirectangular projection of the scene a THREE.CubeCamera is used
  * The cube map produced by the CubeCamera is projected on a quad and then rendered to
- * WebGLRenderTarget with an ortographic camera.
+ * WebGLRenderTarget with an orthographic camera.
  */
 module.exports.Component = registerComponent('screenshot', {
   schema: {
@@ -20182,7 +20182,7 @@ module.exports.Component = registerComponent('screenshot', {
     renderer.setRenderTarget(output);
     renderer.render(el.object3D, camera);
     renderer.autoClear = autoClear;
-    // Read image pizels back.
+    // Read image pixels back.
     renderer.readRenderTargetPixels(output, 0, 0, size.width, size.height, pixels);
     renderer.setRenderTarget(null);
     if (projection === 'perspective') {
@@ -20333,7 +20333,7 @@ var HIDDEN_CLASS = 'a-hidden';
 var ORIENTATION_MODAL_CLASS = 'a-orientation-modal';
 
 /**
- * UI for Aentering VR mode.
+ * UI for entering VR mode.
  */
 module.exports.Component = registerComponent('xr-mode-ui', {
   dependencies: ['canvas'],
@@ -21820,7 +21820,7 @@ module.exports.Component = registerComponent('tracked-controls-webvr', {
     return true;
   },
   /**
-   * Determine whether a button press has occured and emit events as appropriate.
+   * Determine whether a button press has occurred and emit events as appropriate.
    *
    * @param {string} id - ID of the button to check.
    * @param {object} buttonState - State of the button to check.
@@ -21840,7 +21840,7 @@ module.exports.Component = registerComponent('tracked-controls-webvr', {
     return true;
   },
   /**
-   * Determine whether a button touch has occured and emit events as appropriate.
+   * Determine whether a button touch has occurred and emit events as appropriate.
    *
    * @param {string} id - ID of the button to check.
    * @param {object} buttonState - State of the button to check.
@@ -22069,7 +22069,7 @@ module.exports.Component = registerComponent('tracked-controls-webxr', {
     return true;
   },
   /**
-   * Determine whether a button press has occured and emit events as appropriate.
+   * Determine whether a button press has occurred and emit events as appropriate.
    *
    * @param {string} id - ID of the button to check.
    * @param {object} buttonState - State of the button to check.
@@ -22089,7 +22089,7 @@ module.exports.Component = registerComponent('tracked-controls-webxr', {
     return true;
   },
   /**
-   * Determine whether a button touch has occured and emit events as appropriate.
+   * Determine whether a button touch has occurred and emit events as appropriate.
    *
    * @param {string} id - ID of the button to check.
    * @param {object} buttonState - State of the button to check.
@@ -22470,7 +22470,7 @@ module.exports.Component = registerComponent('valve-index-controls', {
     controllerObject3D.position.copy(INDEX_CONTROLLER_POSITION_OFFSET[this.data.hand]);
     controllerObject3D.rotation.copy(INDEX_CONTROLLER_ROTATION_OFFSET[this.data.hand]);
     this.el.emit('controllermodelready', {
-      name: 'valve-index-controlls',
+      name: 'valve-index-controls',
       model: this.data.model,
       rayOrigin: new THREE.Vector3(0, 0, 0)
     });
@@ -23507,7 +23507,7 @@ module.exports.Component = registerComponent('windows-motion-controls', {
     }
   },
   loadModel: function (url) {
-    // The model is loaded by the gltf-model compoent when this attribute is initially set,
+    // The model is loaded by the gltf-model component when this attribute is initially set,
     // removed and re-loaded if the given url changes.
     this.el.setAttribute('gltf-model', 'url(' + url + ')');
   },
@@ -24425,7 +24425,7 @@ class AEntity extends ANode {
     // Initialize dependencies first
     this.initComponentDependencies(componentName);
 
-    // If component name has an id we check component type multiplic
+    // If component name has an id we check component type multiplicity.
     if (componentId && !COMPONENTS[componentName].multiple) {
       throw new Error('Trying to initialize multiple ' + 'components of type `' + componentName + '`. There can only be one component of this type per entity.');
     }
@@ -24806,7 +24806,7 @@ class AEntity extends ANode {
       newAttrValue[arg1] = arg2;
       clobber = false;
     } else {
-      // Update with a value, object, or CSS-style property string, with the possiblity
+      // Update with a value, object, or CSS-style property string, with the possibility
       // of clobbering previous values.
       newAttrValue = arg1;
       clobber = arg2 === true;
@@ -24999,7 +24999,7 @@ function mergeComponentData(attrValue, extraData) {
     return utils.extend(extraData, utils.styleParser.parse(attrValue || {}));
   }
 
-  // Return data, precendence to the defined value.
+  // Return data, precedence to the defined value.
   return attrValue || extraData;
 }
 function isComponent(componentName) {
@@ -25557,7 +25557,7 @@ Component.prototype = {
    */
   init: function () {/* no-op */},
   /**
-   * Map of event names to binded event handlers that will be lifecycle-handled.
+   * Map of event names to bound event handlers that will be lifecycle-handled.
    * Will be detached on pause / remove.
    * Will be attached on play.
    */
@@ -25959,7 +25959,7 @@ Component.prototype = {
       utils.objectPool.clearObject(nextData);
     }
 
-    // 1. Gather default values (lowest precendence).
+    // 1. Gather default values (lowest precedence).
     if (this.isSingleProperty) {
       if (this.isObjectBased) {
         // If object-based single-prop, then copy over the data to our pooled object.
@@ -25994,7 +25994,7 @@ Component.prototype = {
       data = extendProperties(data, mixinData, this.isObjectBased);
     }
 
-    // 3. Gather attribute values (highest precendence).
+    // 3. Gather attribute values (highest precedence).
     if (componentDefined) {
       if (this.isSingleProperty) {
         // If object-based, copy the value to not modify the original.
@@ -26658,7 +26658,7 @@ if (isIOS) {
            updated on every tick.
  * @member {object} camera - three.js Camera object.
  * @member {object} canvas
- * @member {bool} isScene - Differentiates as scene entity as opposed to other entites.
+ * @member {bool} isScene - Differentiates as scene entity as opposed to other entities.
  * @member {bool} isMobile - Whether browser is mobile (via UA detection).
  * @member {object} object3D - Root three.js Scene object.
  * @member {object} renderer
@@ -27550,7 +27550,7 @@ function setupCanvas(sceneEl) {
   setTimeout(sceneEl.resize.bind(sceneEl), 0);
   function onFullScreenChange() {
     var fullscreenEl = document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement;
-    // No fullscren element === exit fullscreen
+    // No fullscreen element === exit fullscreen
     if (!fullscreenEl) {
       sceneEl.exitVR();
     }
@@ -28045,7 +28045,7 @@ function stringifyProperty(value, propDefinition) {
   if (typeof value !== 'object') {
     return value;
   }
-  // if there's no schema for the property we use standar JSON stringify
+  // if there's no schema for the property we use standard JSON stringify
   if (!propDefinition || value === null) {
     return JSON.stringify(value);
   }
@@ -29828,7 +29828,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.5.0 (Date 2024-02-13, Commit #bc3461ec)');
+console.log('A-Frame Version: 1.5.0 (Date 2024-02-13, Commit #e62e8008)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
@@ -31128,7 +31128,7 @@ function createGeometry(data) {
 }
 
 /**
- * Decreate count of entity using a geometry.
+ * Decrease count of entity using a geometry.
  */
 function decrementCacheCount(cacheCount, hash) {
   cacheCount[hash]--;
@@ -31298,7 +31298,7 @@ module.exports.System = registerSystem('light', {
     this.defaultLights = false;
   },
   /**
-   * Prescibe default lights to the scene.
+   * Prescribe default lights to the scene.
    * Does so by injecting markup such that this state is not invisible.
    * These lights are removed if the user adds any lights.
    */
@@ -31942,7 +31942,7 @@ module.exports.System = registerSystem('renderer', {
       warn('Component `logarithmicDepthBuffer` is deprecated. Use `renderer="logarithmicDepthBuffer: true"` instead.');
     }
 
-    // These properties are always the same, regardless of rendered oonfiguration
+    // These properties are always the same, regardless of rendered configuration
     renderer.sortObjects = true;
     renderer.setOpaqueSort(sortFrontToBack);
   },
@@ -33574,7 +33574,7 @@ module.exports.handleTextureEvents = handleTextureEvents;
 /***/ ((module) => {
 
 /**
- * Find the disatance from a plane defined by a point on the plane and the normal of the plane to any point.
+ * Find the distance from a plane defined by a point on the plane and the normal of the plane to any point.
  * @param {THREE.Vector3} positionOnPlane any point on the plane.
  * @param {THREE.Vector3} planeNormal the normal of the plane
  * @param {THREE.Vector3} pointToTest point to test
@@ -34234,7 +34234,7 @@ module.exports.isControllerPresentWebXR = isControllerPresentWebXR;
 function findMatchingControllerWebVR(controllers, filterIdExact, filterIdPrefix, filterHand, filterControllerIndex) {
   var controller;
   var i;
-  var matchingControllerOccurence = 0;
+  var matchingControllerOccurrence = 0;
   var targetControllerMatch = filterControllerIndex >= 0 ? filterControllerIndex : 0;
   for (i = 0; i < controllers.length; i++) {
     controller = controllers[i];
@@ -34262,12 +34262,12 @@ function findMatchingControllerWebVR(controllers, filterIdExact, filterIdPrefix,
       return controller;
     }
 
-    // We are looking for the nth occurence of a matching controller
+    // We are looking for the nth occurrence of a matching controller
     // (n equals targetControllerMatch).
-    if (matchingControllerOccurence === targetControllerMatch) {
+    if (matchingControllerOccurrence === targetControllerMatch) {
       return controller;
     }
-    ++matchingControllerOccurence;
+    ++matchingControllerOccurrence;
   }
   return undefined;
 }
@@ -34317,7 +34317,7 @@ module.exports.findMatchingControllerWebVR = findMatchingControllerWebVR;
 module.exports.findMatchingControllerWebXR = findMatchingControllerWebXR;
 
 /**
- * Emit specific `moved` event(s) if axes changed based on original axismoved event.
+ * Emit specific `moved` event(s) if axes changed based on original axismove event.
  *
  * @param {object} component - Controller component in use.
  * @param {array} axesMapping - For example `{thumbstick: [0, 1]}`.
