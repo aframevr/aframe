@@ -548,7 +548,7 @@ Component.prototype = {
       if (this.isSingleProperty) { return parseProperty(data, schema); }
     }
 
-    return parseProperties(data, schema, undefined, this.name, silent);
+    return parseProperties(data, schema, false, this.name, silent);
   },
 
   /**
