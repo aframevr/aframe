@@ -83,7 +83,7 @@ System.prototype = {
     if (isSingleProp(schema)) {
       this.data = parseProperty(rawData, schema);
     } else {
-      this.data = parseProperties(styleParser.parse(rawData) || {}, schema);
+      this.data = parseProperties(styleParser.parse(rawData) || {}, schema, false, this.name);
     }
   },
 
