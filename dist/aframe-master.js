@@ -26011,7 +26011,7 @@ Component.prototype = {
         return parseProperty(data, schema);
       }
     }
-    return parseProperties(data, schema, undefined, this.name, silent);
+    return parseProperties(data, schema, false, this.name, silent);
   },
   /**
    * Attach events from component-defined events map.
@@ -28337,7 +28337,7 @@ System.prototype = {
     if (isSingleProp(schema)) {
       this.data = parseProperty(rawData, schema);
     } else {
-      this.data = parseProperties(styleParser.parse(rawData) || {}, schema);
+      this.data = parseProperties(styleParser.parse(rawData) || {}, schema, false, this.name);
     }
   },
   /**
@@ -29828,7 +29828,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.5.0 (Date 2024-02-13, Commit #e62e8008)');
+console.log('A-Frame Version: 1.5.0 (Date 2024-02-14, Commit #58c960e4)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
