@@ -1,27 +1,25 @@
+var split = require('./split').split;
+
 /**
  * Split a delimited component property string (e.g., `material.color`) to an object
  * containing `component` name and `property` name. If there is no delimiter, just return the
  * string back.
  *
- * Cache arrays from splitting strings via delimiter to save on memory.
+ * Uses the caching split implementation `AFRAME.utils.split`
  *
  * @param {string} str - e.g., `material.opacity`.
  * @param {string} delimiter - e.g., `.`.
  * @returns {array} e.g., `['material', 'opacity']`.
  */
-var propertyPathCache = {};
 function getComponentPropertyPath (str, delimiter) {
   delimiter = delimiter || '.';
-  if (!propertyPathCache[delimiter]) { propertyPathCache[delimiter] = {}; }
-  if (str.indexOf(delimiter) !== -1) {
-    propertyPathCache[delimiter][str] = str.split(delimiter);
-  } else {
-    propertyPathCache[delimiter][str] = str;
+  var parts = split(str, delimiter);
+  if (parts.length === 1) {
+    return parts[0];
   }
-  return propertyPathCache[delimiter][str];
+  return parts;
 }
 module.exports.getComponentPropertyPath = getComponentPropertyPath;
-module.exports.propertyPathCache = propertyPathCache;
 
 /**
  * Get component property using encoded component name + component property name with a
