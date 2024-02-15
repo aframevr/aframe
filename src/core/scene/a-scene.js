@@ -14,7 +14,6 @@ var initPostMessageAPI = require('./postMessage');
 var isIOS = utils.device.isIOS();
 var isMobile = utils.device.isMobile();
 var isWebXRAvailable = utils.device.isWebXRAvailable;
-var warn = utils.debug('core:a-scene:warn');
 
 if (isIOS) { require('../../utils/ios-orientationchange-blank-bug'); }
 
@@ -498,15 +497,6 @@ class AScene extends AEntity {
     var system = this.systems[attr];
     if (system) { return system.data; }
     return AEntity.prototype.getAttribute.call(this, attr);
-  }
-
-  /**
-   * `getAttribute` used to be `getDOMAttribute` and `getComputedAttribute` used to be
-   * what `getAttribute` is now. Now legacy code.
-   */
-  getComputedAttribut (attr) {
-    warn('`getComputedAttribute` is deprecated. Use `getAttribute` instead.');
-    this.getAttribute(attr);
   }
 
   /**
