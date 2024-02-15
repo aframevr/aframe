@@ -26,6 +26,8 @@ module.exports.Component = registerComponent('xr-mode-ui', {
     XRMode: {default: 'vr', oneOf: ['vr', 'ar', 'xr']}
   },
 
+  sceneOnly: true,
+
   init: function () {
     var self = this;
     var sceneEl = this.el;

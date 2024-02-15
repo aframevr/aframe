@@ -6,6 +6,7 @@ module.exports.Component = register('background', {
     color: { type: 'color', default: 'black' },
     transparent: { default: false }
   },
+  sceneOnly: true,
   update: function () {
     var data = this.data;
     var object3D = this.el.object3D;

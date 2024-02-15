@@ -310,6 +310,11 @@ class AEntity extends ANode {
     // Initialize dependencies first
     this.initComponentDependencies(componentName);
 
+    // If component is sceneOnly check the entity is the scene element
+    if (!this.isScene && COMPONENTS[componentName].sceneOnly) {
+      throw new Error('Component `' + componentName + '` can only be applied to <a-scene>');
+    }
+
     // If component name has an id we check component type multiplicity.
     if (componentId && !COMPONENTS[componentName].multiple) {
       throw new Error('Trying to initialize multiple ' +

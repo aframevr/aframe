@@ -14,6 +14,8 @@ var ThreeStats = window.threeStats;
 module.exports.Component = registerComponent('stats', {
   schema: {default: true},
 
+  sceneOnly: true,
+
   init: function () {
     var scene = this.el;
 

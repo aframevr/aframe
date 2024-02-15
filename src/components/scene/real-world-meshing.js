@@ -18,6 +18,8 @@ module.exports.Component = register('real-world-meshing', {
     planeMixin: {default: ''}
   },
 
+  sceneOnly: true,
+
   init: function () {
     var webxrData = this.el.getAttribute('webxr');
     var requiredFeaturesArray = webxrData.requiredFeatures;

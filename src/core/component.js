@@ -699,6 +699,7 @@ module.exports.registerComponent = function (name, definition) {
     isSinglePropertyObject: NewComponent.prototype.isSinglePropertyObject,
     isObjectBased: NewComponent.prototype.isObjectBased,
     multiple: NewComponent.prototype.multiple,
+    sceneOnly: NewComponent.prototype.sceneOnly,
     name: name,
     parse: NewComponent.prototype.parse,
     parseAttrValueForCache: NewComponent.prototype.parseAttrValueForCache,

@@ -7,6 +7,8 @@ module.exports.Component = registerComponent('keyboard-shortcuts', {
     exitVR: {default: true}
   },
 
+  sceneOnly: true,
+
   init: function () {
     this.onKeyup = this.onKeyup.bind(this);
   },
