@@ -584,6 +584,22 @@ AFRAME.registerComponent('foo', {
 });
 ```
 
+### `sceneOnly`
+
+The `sceneOnly` flag indicates if a component can only be applied to the scene
+entity. Since `sceneOnly` is set to `false` by default, the component can be added
+to any entity. For example, any entity could have a geometry component.
+
+But if a component has `sceneOnly` set to `true`, then the component can only be
+applied to `<a-scene>`:
+
+```js
+AFRAME.registerComponent('foo', {
+  sceneOnly: true,
+  // ...
+});
+```
+
 ### `events`
 
 The `events` object allows for conveniently defining event handlers that get

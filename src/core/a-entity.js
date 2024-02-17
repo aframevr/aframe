@@ -310,12 +310,7 @@ class AEntity extends ANode {
     // Initialize dependencies first
     this.initComponentDependencies(componentName);
 
-    // If component name has an id we check component type multiplicity.
-    if (componentId && !COMPONENTS[componentName].multiple) {
-      throw new Error('Trying to initialize multiple ' +
-                      'components of type `' + componentName +
-                      '`. There can only be one component of this type per entity.');
-    }
+    // Initialize component
     component = new COMPONENTS[componentName].Component(this, data, componentId);
     if (this.isPlaying) { component.play(); }
 

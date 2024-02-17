@@ -50,6 +50,8 @@ module.exports.Component = registerComponent('screenshot', {
     camera: {type: 'selector'}
   },
 
+  sceneOnly: true,
+
   setup: function () {
     var el = this.el;
     if (this.canvas) { return; }

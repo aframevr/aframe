@@ -25,6 +25,8 @@ module.exports.Component = registerComponent('inspector', {
     url: {default: INSPECTOR_URL}
   },
 
+  sceneOnly: true,
+
   init: function () {
     this.firstPlay = true;
     this.onKeydown = this.onKeydown.bind(this);

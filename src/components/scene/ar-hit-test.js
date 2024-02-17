@@ -229,6 +229,8 @@ module.exports.Component = register('ar-hit-test', {
     }
   },
 
+  sceneOnly: true,
+
   init: function () {
     this.hitTest = null;
     this.imageDataArray = new Uint8ClampedArray(512 * 512 * 4);

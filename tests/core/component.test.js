@@ -642,6 +642,65 @@ suite('Component', function () {
     });
   });
 
+  suite('sceneOnly components', function () {
+    var el;
+    var TestComponent;
+    setup(function () {
+      el = entityFactory();
+      delete components.test;
+      TestComponent = registerComponent('test', { sceneOnly: true });
+    });
+
+    test('allows instantiating sceneOnly component on scene element', function () {
+      el.sceneEl.setAttribute('test', '');
+      assert.ok(el.sceneEl.components['test']);
+    });
+
+    test('throws error when instantiating sceneOnly component on entities', function () {
+      try {
+        el.setAttribute('test', '');
+        assert.fail();
+      } catch (e) {
+        assert.equal(e.message, 'Component `test` can only be applied to <a-scene>');
+      }
+      assert.notOk(el.components['test']);
+    });
+  });
+
+  suite('multiple components', function () {
+    var el;
+    setup(function () {
+      el = entityFactory();
+      delete components.test;
+    });
+
+    test('allows multiple instances on element with ids when component has multiple flag', function () {
+      var TestComponent = registerComponent('test', { multiple: true });
+      var first = new TestComponent(el, 'data', 'first');
+      var second = new TestComponent(el, 'data', 'second');
+      assert.notOk(el.components['test']);
+      assert.equal(el.components['test__first'], first);
+      assert.equal(el.components['test__second'], second);
+    });
+
+    test('allows instance without id even when component has multiple flag', function () {
+      var TestComponent = registerComponent('test', { multiple: true });
+      var component = new TestComponent(el, 'data', '');
+      assert.equal(el.components['test'], component);
+    });
+
+    test('throws error when instantiating with id when component does not have multiple flag', function () {
+      var TestComponent = registerComponent('test', { multiple: false });
+      try {
+        var component = new TestComponent(el, 'data', 'some-id');
+        assert.fail();
+      } catch (e) {
+        assert.equal(e.message, 'Trying to initialize multiple components of type `test`. ' +
+                                'There can only be one component of this type per entity.');
+      }
+    });
+  });
+
   suite('third-party components', function () {
     var el;
     setup(function (done) {

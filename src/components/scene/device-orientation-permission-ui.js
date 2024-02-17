@@ -30,6 +30,8 @@ module.exports.Component = registerComponent('device-orientation-permission-ui',
     cancelButtonText: {default: 'Cancel'}
   },
 
+  sceneOnly: true,
+
   init: function () {
     var self = this;
 
