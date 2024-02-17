@@ -7,7 +7,7 @@ source_code: src/components/scene/real-world-meshing.js
 examples: []
 ---
 
-Set this component on the scene element to render meshes corresponding to 3D surfaces detected in user's enviornment: this includes planes and meshes corresponding to floor, ceiling, walls and other objects. Each plane or meshes comes with a label indicating the type of surface or object.
+Set this component on the scene element to render meshes corresponding to 3D surfaces detected in user's environment: this includes planes and meshes corresponding to floor, ceiling, walls and other objects. Each plane or meshes comes with a label indicating the type of surface or object.
 
 This component requires a browser with support for the [WebXR Mesh Detection Module]([object
 pooling](https://en.wikipedia.org/wiki/Object_pool_pattern) and the [WebXR Plane Detection Module](https://immersive-web.github.io/real-world-geometry/plane-detection.html). The system / headset used might require additional scene setup by the use like setting up floor, walls, ceiling or labeling furniture in the space.
