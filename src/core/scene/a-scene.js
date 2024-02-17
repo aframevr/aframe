@@ -4,8 +4,10 @@ var initWakelock = require('./wakelock');
 var loadingScreen = require('./loadingScreen');
 var scenes = require('./scenes');
 var systems = require('../system').systems;
+var components = require('../component').components;
 var THREE = require('../../lib/three');
 var utils = require('../../utils/');
+var solveOrder = require('../../utils/order').solveOrder;
 // Require after.
 var AEntity = require('../a-entity').AEntity;
 var ANode = require('../a-node').ANode;
@@ -56,7 +58,8 @@ class AScene extends AEntity {
     self.time = self.delta = 0;
     self.usedOfferSession = false;
 
-    self.behaviors = {tick: [], tock: []};
+    self.componentOrder = [];
+    self.behaviors = {};
     self.hasLoaded = false;
     self.isPlaying = false;
     self.originalHTML = self.innerHTML;
@@ -129,6 +132,12 @@ class AScene extends AEntity {
     });
 
     this.initSystems();
+    // Compute component order
+    this.componentOrder = solveOrder(components, this.componentOrder);
+    this.addEventListener('componentregistered', function () {
+      // Recompute order
+      this.componentOrder = solveOrder(components, this.componentOrder);
+    });
 
     // WebXR Immersive navigation handler.
     if (this.hasWebXR && navigator.xr && navigator.xr.addEventListener) {
@@ -210,16 +219,32 @@ class AScene extends AEntity {
    * @param {object} behavior - A component.
    */
   addBehavior (behavior) {
-    var behaviorArr;
-    var behaviors = this.behaviors;
+    var behaviorSet;
+    var behaviors = this.behaviors[behavior.name];
     var behaviorType;
+
+    if (!behaviors) {
+      behaviors = this.behaviors[behavior.name] = {
+        tick: { inUse: false, array: [], markedForRemoval: [] },
+        tock: { inUse: false, array: [], markedForRemoval: [] }
+      };
+    }
 
     // Check if behavior has tick and/or tock and add the behavior to the appropriate list.
     for (behaviorType in behaviors) {
       if (!behavior[behaviorType]) { continue; }
-      behaviorArr = this.behaviors[behaviorType];
-      if (behaviorArr.indexOf(behavior) === -1) {
-        behaviorArr.push(behavior);
+      behaviorSet = behaviors[behaviorType];
+
+      // In case the behaviorSet is in use, make sure this behavior isn't on the removal list.
+      if (behaviorSet.inUse) {
+        var index = behaviorSet.markedForRemoval.indexOf(behavior);
+        if (index !== -1) {
+          behaviorSet.markedForRemoval.splice(index, 1);
+        }
+      }
+      // Add behavior to the set
+      if (behaviorSet.array.indexOf(behavior) === -1) {
+        behaviorSet.array.push(behavior);
       }
     }
   }
@@ -522,18 +547,30 @@ class AScene extends AEntity {
    * @param {object} behavior - A component.
    */
   removeBehavior (behavior) {
-    var behaviorArr;
+    var behaviorSet;
     var behaviorType;
-    var behaviors = this.behaviors;
+    var behaviors = this.behaviors[behavior.name];
     var index;
 
     // Check if behavior has tick and/or tock and remove the behavior from the appropriate
     // array.
     for (behaviorType in behaviors) {
       if (!behavior[behaviorType]) { continue; }
-      behaviorArr = this.behaviors[behaviorType];
-      index = behaviorArr.indexOf(behavior);
-      if (index !== -1) { behaviorArr.splice(index, 1); }
+      behaviorSet = behaviors[behaviorType];
+      index = behaviorSet.array.indexOf(behavior);
+      if (index !== -1) {
+        // Check if the behavior can safely be removed.
+        if (behaviorSet.inUse) {
+          // Set is in use, so only mark for removal.
+          if (behaviorSet.markedForRemoval.indexOf(behavior) === -1) {
+            behaviorSet.markedForRemoval.push(behavior);
+          }
+        } else {
+          // Swap and remove from the end
+          behaviorSet.array[index] = behaviorSet.array[behaviorSet.array.length - 1];
+          behaviorSet.array.pop();
+        }
+      }
     }
   }
 
@@ -689,9 +726,23 @@ class AScene extends AEntity {
     var systems = this.systems;
 
     // Components.
-    for (i = 0; i < this.behaviors.tick.length; i++) {
-      if (!this.behaviors.tick[i].el.isPlaying) { continue; }
-      this.behaviors.tick[i].tick(time, timeDelta);
+    for (var c = 0; c < this.componentOrder.length; c++) {
+      var behaviors = this.behaviors[this.componentOrder[c]];
+      if (!behaviors) { continue; }
+      var behaviorSet = behaviors.tick;
+
+      behaviorSet.inUse = true;
+      for (i = 0; i < behaviorSet.array.length; i++) {
+        if (!behaviorSet.array[i].el.isPlaying) { continue; }
+        behaviorSet.array[i].tick(time, timeDelta);
+      }
+      behaviorSet.inUse = false;
+
+      // Clean up any behaviors marked for removal
+      for (i = 0; i < behaviorSet.markedForRemoval.length; i++) {
+        this.removeBehavior(behaviorSet.markedForRemoval[i]);
+      }
+      behaviorSet.markedForRemoval.length = 0;
     }
 
     // Systems.
@@ -711,9 +762,23 @@ class AScene extends AEntity {
     var systems = this.systems;
 
     // Components.
-    for (i = 0; i < this.behaviors.tock.length; i++) {
-      if (!this.behaviors.tock[i].el.isPlaying) { continue; }
-      this.behaviors.tock[i].tock(time, timeDelta, camera);
+    for (var c = 0; c < this.componentOrder.length; c++) {
+      var behaviors = this.behaviors[this.componentOrder[c]];
+      if (!behaviors) { continue; }
+      var behaviorSet = behaviors.tock;
+
+      behaviorSet.inUse = true;
+      for (i = 0; i < behaviorSet.array.length; i++) {
+        if (!behaviorSet.array[i].el.isPlaying) { continue; }
+        behaviorSet.array[i].tock(time, timeDelta);
+      }
+      behaviorSet.inUse = false;
+
+      // Clean up any behaviors marked for removal
+      for (i = 0; i < behaviorSet.markedForRemoval.length; i++) {
+        this.removeBehavior(behaviorSet.markedForRemoval[i]);
+      }
+      behaviorSet.markedForRemoval.length = 0;
     }
 
     // Systems.

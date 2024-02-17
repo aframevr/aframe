@@ -53,6 +53,8 @@ module.exports.Component = registerComponent('cursor', {
     rayOrigin: {default: 'entity', oneOf: ['mouse', 'entity', 'xrselect']}
   },
 
+  after: ['tracked-controls'],
+
   multiple: true,
 
   init: function () {
