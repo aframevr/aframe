@@ -29828,7 +29828,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.5.0 (Date 2024-02-14, Commit #58c960e4)');
+console.log('A-Frame Version: 1.5.0 (Date 2024-02-17, Commit #32f53702)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
@@ -32788,34 +32788,30 @@ module.exports.isNodeEnvironment = !module.exports.isBrowserEnvironment;
 /*!*****************************!*\
   !*** ./src/utils/entity.js ***!
   \*****************************/
-/***/ ((module) => {
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var split = (__webpack_require__(/*! ./split */ "./src/utils/split.js").split);
 
 /**
  * Split a delimited component property string (e.g., `material.color`) to an object
  * containing `component` name and `property` name. If there is no delimiter, just return the
  * string back.
  *
- * Cache arrays from splitting strings via delimiter to save on memory.
+ * Uses the caching split implementation `AFRAME.utils.split`
  *
  * @param {string} str - e.g., `material.opacity`.
  * @param {string} delimiter - e.g., `.`.
  * @returns {array} e.g., `['material', 'opacity']`.
  */
-var propertyPathCache = {};
 function getComponentPropertyPath(str, delimiter) {
   delimiter = delimiter || '.';
-  if (!propertyPathCache[delimiter]) {
-    propertyPathCache[delimiter] = {};
+  var parts = split(str, delimiter);
+  if (parts.length === 1) {
+    return parts[0];
   }
-  if (str.indexOf(delimiter) !== -1) {
-    propertyPathCache[delimiter][str] = str.split(delimiter);
-  } else {
-    propertyPathCache[delimiter][str] = str;
-  }
-  return propertyPathCache[delimiter][str];
+  return parts;
 }
 module.exports.getComponentPropertyPath = getComponentPropertyPath;
-module.exports.propertyPathCache = propertyPathCache;
 
 /**
  * Get component property using encoded component name + component property name with a
