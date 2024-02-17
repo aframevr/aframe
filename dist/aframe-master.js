@@ -26646,7 +26646,6 @@ var initPostMessageAPI = __webpack_require__(/*! ./postMessage */ "./src/core/sc
 var isIOS = utils.device.isIOS();
 var isMobile = utils.device.isMobile();
 var isWebXRAvailable = utils.device.isWebXRAvailable;
-var warn = utils.debug('core:a-scene:warn');
 if (isIOS) {
   __webpack_require__(/*! ../../utils/ios-orientationchange-blank-bug */ "./src/utils/ios-orientationchange-blank-bug.js");
 }
@@ -27146,15 +27145,6 @@ class AScene extends AEntity {
       return system.data;
     }
     return AEntity.prototype.getAttribute.call(this, attr);
-  }
-
-  /**
-   * `getAttribute` used to be `getDOMAttribute` and `getComputedAttribute` used to be
-   * what `getAttribute` is now. Now legacy code.
-   */
-  getComputedAttribut(attr) {
-    warn('`getComputedAttribute` is deprecated. Use `getAttribute` instead.');
-    this.getAttribute(attr);
   }
 
   /**
@@ -29828,7 +29818,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.5.0 (Date 2024-02-17, Commit #32f53702)');
+console.log('A-Frame Version: 1.5.0 (Date 2024-02-17, Commit #e3a8f561)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
