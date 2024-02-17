@@ -36,6 +36,19 @@ var emptyInitialOldData = Object.freeze({});
  */
 var Component = module.exports.Component = function (el, attrValue, id) {
   var self = this;
+
+  // If component is sceneOnly check the entity is the scene element
+  if (this.sceneOnly && !el.isScene) {
+    throw new Error('Component `' + this.name + '` can only be applied to <a-scene>');
+  }
+
+  // If component name has an id we check component type multiplicity.
+  if (id && !this.multiple) {
+    throw new Error('Trying to initialize multiple ' +
+                    'components of type `' + this.name +
+                    '`. There can only be one component of this type per entity.');
+  }
+
   this.el = el;
   this.id = id;
   this.attrName = this.name + (id ? '__' + id : '');
