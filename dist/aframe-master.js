@@ -18680,6 +18680,7 @@ module.exports.Component = register('ar-hit-test', {
       }
     }
   },
+  sceneOnly: true,
   init: function () {
     this.hitTest = null;
     this.imageDataArray = new Uint8ClampedArray(512 * 512 * 4);
@@ -18949,6 +18950,7 @@ module.exports.Component = register('background', {
       default: false
     }
   },
+  sceneOnly: true,
   update: function () {
     var data = this.data;
     var object3D = this.el.object3D;
@@ -18976,7 +18978,8 @@ var register = (__webpack_require__(/*! ../../core/component */ "./src/core/comp
 module.exports.Component = register('debug', {
   schema: {
     default: true
-  }
+  },
+  sceneOnly: true
 });
 
 /***/ }),
@@ -19024,6 +19027,7 @@ module.exports.Component = registerComponent('device-orientation-permission-ui',
       default: 'Cancel'
     }
   },
+  sceneOnly: true,
   init: function () {
     var self = this;
     if (!this.data.enabled) {
@@ -19182,6 +19186,7 @@ module.exports.Component = registerComponent('embedded', {
   schema: {
     default: true
   },
+  sceneOnly: true,
   update: function () {
     var sceneEl = this.el;
     var enterVREl = sceneEl.querySelector('.a-enter-vr');
@@ -19238,14 +19243,11 @@ module.exports.Component = register('fog', {
       oneOf: ['linear', 'exponential']
     }
   },
+  sceneOnly: true,
   update: function () {
     var data = this.data;
     var el = this.el;
     var fog = this.el.object3D.fog;
-    if (!el.isScene) {
-      warn('Fog component can only be applied to <a-scene>');
-      return;
-    }
 
     // (Re)create fog if fog doesn't exist or fog type changed.
     if (!fog || data.type !== fog.name) {
@@ -19326,6 +19328,7 @@ module.exports.Component = registerComponent('inspector', {
       default: INSPECTOR_URL
     }
   },
+  sceneOnly: true,
   init: function () {
     this.firstPlay = true;
     this.onKeydown = this.onKeydown.bind(this);
@@ -19430,6 +19433,7 @@ module.exports.Component = registerComponent('keyboard-shortcuts', {
       default: true
     }
   },
+  sceneOnly: true,
   init: function () {
     this.onKeyup = this.onKeyup.bind(this);
   },
@@ -19494,6 +19498,7 @@ module.exports.Component = registerComponent('pool', {
       default: false
     }
   },
+  sceneOnly: true,
   multiple: true,
   initPool: function () {
     var i;
@@ -19639,6 +19644,7 @@ module.exports.Component = register('real-world-meshing', {
       default: ''
     }
   },
+  sceneOnly: true,
   init: function () {
     var webxrData = this.el.getAttribute('webxr');
     var requiredFeaturesArray = webxrData.requiredFeatures;
@@ -19857,6 +19863,7 @@ module.exports.Component = register('reflection', {
       type: 'selector'
     }
   },
+  sceneOnly: true,
   init: function () {
     var self = this;
     this.cubeRenderTarget = new THREE.WebGLCubeRenderTarget(16);
@@ -20012,6 +20019,7 @@ module.exports.Component = registerComponent('screenshot', {
       type: 'selector'
     }
   },
+  sceneOnly: true,
   setup: function () {
     var el = this.el;
     if (this.canvas) {
@@ -20251,6 +20259,7 @@ module.exports.Component = registerComponent('stats', {
   schema: {
     default: true
   },
+  sceneOnly: true,
   init: function () {
     var scene = this.el;
     if (utils.getUrlParameter('stats') === 'false') {
@@ -20361,6 +20370,7 @@ module.exports.Component = registerComponent('xr-mode-ui', {
       oneOf: ['vr', 'ar', 'xr']
     }
   },
+  sceneOnly: true,
   init: function () {
     var self = this;
     var sceneEl = this.el;
@@ -24425,10 +24435,7 @@ class AEntity extends ANode {
     // Initialize dependencies first
     this.initComponentDependencies(componentName);
 
-    // If component name has an id we check component type multiplicity.
-    if (componentId && !COMPONENTS[componentName].multiple) {
-      throw new Error('Trying to initialize multiple ' + 'components of type `' + componentName + '`. There can only be one component of this type per entity.');
-    }
+    // Initialize component
     component = new COMPONENTS[componentName].Component(this, data, componentId);
     if (this.isPlaying) {
       component.play();
@@ -25502,6 +25509,16 @@ var emptyInitialOldData = Object.freeze({});
  */
 var Component = module.exports.Component = function (el, attrValue, id) {
   var self = this;
+
+  // If component is sceneOnly check the entity is the scene element
+  if (this.sceneOnly && !el.isScene) {
+    throw new Error('Component `' + this.name + '` can only be applied to <a-scene>');
+  }
+
+  // If component name has an id we check component type multiplicity.
+  if (id && !this.multiple) {
+    throw new Error('Trying to initialize multiple ' + 'components of type `' + this.name + '`. There can only be one component of this type per entity.');
+  }
   this.el = el;
   this.id = id;
   this.attrName = this.name + (id ? '__' + id : '');
@@ -26142,6 +26159,7 @@ module.exports.registerComponent = function (name, definition) {
     isSinglePropertyObject: NewComponent.prototype.isSinglePropertyObject,
     isObjectBased: NewComponent.prototype.isObjectBased,
     multiple: NewComponent.prototype.multiple,
+    sceneOnly: NewComponent.prototype.sceneOnly,
     name: name,
     parse: NewComponent.prototype.parse,
     parseAttrValueForCache: NewComponent.prototype.parseAttrValueForCache,
@@ -29818,7 +29836,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.5.0 (Date 2024-02-17, Commit #e3a8f561)');
+console.log('A-Frame Version: 1.5.0 (Date 2024-02-17, Commit #807b1de7)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
