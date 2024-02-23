@@ -1,10 +1,11 @@
-/* global sinon, setup, teardown */
+/* global EventTarget, sinon, setup, teardown */
 
 /**
  * __init.test.js is run before every test case.
  */
 window.debug = true;
 
+/* WebVR Stub */
 navigator.getVRDisplays = function () {
   var resolvePromise = Promise.resolve();
   var mockVRDisplay = {
@@ -19,6 +20,16 @@ navigator.getVRDisplays = function () {
   return Promise.resolve([mockVRDisplay]);
 };
 
+/* WebXR Stub */
+navigator.xr = navigator.xr || {};
+navigator.xr.isSessionSupported = function (_sessionType) { return Promise.resolve(true); };
+navigator.xr.requestSession = function (_mode) {
+  const xrSession = new EventTarget();
+  xrSession.supportedFrameRates = [90];
+  xrSession.requestReferenceSpace = function () { return Promise.resolve(); };
+  return Promise.resolve(xrSession);
+};
+
 const AFRAME = require('index');
 var AScene = require('core/scene/a-scene').AScene;
 // Make sure WebGL context is not created since CI runs headless.
@@ -28,7 +39,7 @@ AScene.prototype.setupRenderer = function () {};
 setup(function () {
   window.AFRAME = AFRAME;
   this.sinon = sinon.createSandbox();
-  // Stubs to not create a WebGL context since Travis CI runs headless.
+  // Stubs to not create a WebGL context since CI runs headless.
   this.sinon.stub(AScene.prototype, 'render');
   this.sinon.stub(AScene.prototype, 'setupRenderer');
   // Mock renderer.
