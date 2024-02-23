@@ -22559,7 +22559,7 @@ var isWebXRAvailable = (__webpack_require__(/*! ../utils/ */ "./src/utils/index.
 var GAMEPAD_ID_WEBXR = 'htc-vive';
 var GAMEPAD_ID_WEBVR = 'OpenVR ';
 
-// Prefix for Gen1 and Gen2 Oculus Touch Controllers.
+// Prefix for HTC Vive Controllers.
 var GAMEPAD_ID_PREFIX = isWebXRAvailable ? GAMEPAD_ID_WEBXR : GAMEPAD_ID_WEBVR;
 
 /**
@@ -22592,16 +22592,16 @@ var INPUT_MAPPING_WEBVR = {
  */
 var INPUT_MAPPING_WEBXR = {
   axes: {
-    thumbstick: [0, 1]
+    touchpad: [0, 1]
   },
-  buttons: ['trigger', 'grip', 'trackpad', 'none', 'menu']
+  buttons: ['trigger', 'grip', 'touchpad', 'none']
 };
 var INPUT_MAPPING = isWebXRAvailable ? INPUT_MAPPING_WEBXR : INPUT_MAPPING_WEBVR;
 
 /**
  * Vive controls.
  * Interface with Vive controllers and map Gamepad events to controller buttons:
- * trackpad, trigger, grip, menu, system
+ * touchpad, trigger, grip, menu, system
  * Load a controller model and highlight the pressed buttons.
  */
 module.exports.Component = registerComponent('vive-controls', {
@@ -22769,6 +22769,7 @@ module.exports.Component = registerComponent('vive-controls', {
     buttonMeshes.menu = controllerObject3D.getObjectByName('menubutton');
     buttonMeshes.system = controllerObject3D.getObjectByName('systembutton');
     buttonMeshes.trackpad = controllerObject3D.getObjectByName('touchpad');
+    buttonMeshes.touchpad = controllerObject3D.getObjectByName('touchpad');
     buttonMeshes.trigger = controllerObject3D.getObjectByName('trigger');
 
     // Set default colors.
@@ -22827,9 +22828,40 @@ var trackedControlsUtils = __webpack_require__(/*! ../utils/tracked-controls */ 
 var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
 var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
 var onButtonEvent = trackedControlsUtils.onButtonEvent;
-var GAMEPAD_ID_PREFIX = 'HTC Vive Focus';
 var AFRAME_CDN_ROOT = (__webpack_require__(/*! ../constants */ "./src/constants/index.js").AFRAME_CDN_ROOT);
 var VIVE_FOCUS_CONTROLLER_MODEL_URL = AFRAME_CDN_ROOT + 'controllers/vive/focus-controller/focus-controller.gltf';
+var isWebXRAvailable = (__webpack_require__(/*! ../utils/ */ "./src/utils/index.js").device.isWebXRAvailable);
+var GAMEPAD_ID_WEBXR = 'htc-vive-focus';
+var GAMEPAD_ID_WEBVR = 'HTC Vive Focus ';
+
+// Prefix for HTC Vive Focus Controllers.
+var GAMEPAD_ID_PREFIX = isWebXRAvailable ? GAMEPAD_ID_WEBXR : GAMEPAD_ID_WEBVR;
+
+/**
+ * Button IDs:
+ * 0 - trackpad
+ * 1 - trigger
+ */
+var INPUT_MAPPING_WEBVR = {
+  axes: {
+    trackpad: [0, 1]
+  },
+  buttons: ['trackpad', 'trigger']
+};
+
+/**
+ * Button IDs:
+ * 0 - trigger
+ * 2 - touchpad
+ * 4 - menu
+ */
+var INPUT_MAPPING_WEBXR = {
+  axes: {
+    touchpad: [0, 1]
+  },
+  buttons: ['trigger', 'none', 'touchpad', 'none', 'menu']
+};
+var INPUT_MAPPING = isWebXRAvailable ? INPUT_MAPPING_WEBXR : INPUT_MAPPING_WEBVR;
 
 /**
  * Vive Focus controls.
@@ -22861,17 +22893,7 @@ module.exports.Component = registerComponent('vive-focus-controls', {
       default: true
     }
   },
-  /**
-   * Button IDs:
-   * 0 - trackpad
-   * 1 - trigger
-   */
-  mapping: {
-    axes: {
-      trackpad: [0, 1]
-    },
-    buttons: ['trackpad', 'trigger']
-  },
+  mapping: INPUT_MAPPING,
   bindMethods: function () {
     this.onModelLoaded = this.onModelLoaded.bind(this);
     this.onControllersUpdate = this.onControllersUpdate.bind(this);
@@ -29839,7 +29861,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.5.0 (Date 2024-02-20, Commit #fecd166c)');
+console.log('A-Frame Version: 1.5.0 (Date 2024-02-23, Commit #dd3913c4)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
@@ -32484,7 +32506,7 @@ var supportsARSession = false;
  * Oculus Browser 7 doesn't support the WebXR gamepads module.
  * We fallback to WebVR API and will hotfix when implementation is complete.
  */
-var isWebXRAvailable = module.exports.isWebXRAvailable = !window.debug && navigator.xr !== undefined;
+var isWebXRAvailable = module.exports.isWebXRAvailable = navigator.xr !== undefined;
 
 // Catch vrdisplayactivate early to ensure we can enter VR mode after the scene loads.
 window.addEventListener('vrdisplayactivate', function (evt) {
