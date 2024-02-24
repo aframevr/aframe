@@ -68,5 +68,5 @@ jobs:
           directory: ./tests/coverage
 
       - name: Refresh Docs
-        # if: github.event_name == 'push' && startsWith(github.ref, 'refs/heads/master') && contains(github.event.head_commit.added, 'docs/')
+        if: github.event_name == 'push' && github.event.paths contains 'docs/'
         run: curl https://afbot.b-bowler13.workers.dev/refreshDocs
