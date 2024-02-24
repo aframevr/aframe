@@ -66,3 +66,7 @@ jobs:
         uses: codecov/codecov-action@v3
         with:
           directory: ./tests/coverage
+
+      - name: Refresh Docs
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/heads/master') && contains(github.event.head_commit.added, 'docs/')
+        run: curl https://afbot.b-bowler13.workers.dev/refreshDocs
