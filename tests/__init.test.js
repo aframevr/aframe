@@ -82,7 +82,7 @@ window.addEventListener('unhandledrejection', event => {
   pendingErrorNotice = 'An uncaught promise rejection occurred between tests';
 });
 
-teardown(function (done) {
+teardown(function () {
   // Clean up any attached elements.
   var attachedEls = ['canvas', 'a-assets', 'a-scene'];
   var els = document.querySelectorAll(attachedEls.join(','));
@@ -92,11 +92,6 @@ teardown(function (done) {
   this.sinon.restore();
   delete AFRAME.components.test;
   delete AFRAME.systems.test;
-
-  // Allow detachedCallbacks to clean themselves up.
-  setTimeout(function () {
-    done();
-  });
 
   if (pendingError) {
     console.error(pendingErrorNotice);
