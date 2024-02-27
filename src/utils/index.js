@@ -89,20 +89,30 @@ module.exports.throttleLeadingAndTrailing = function (functionToThrottle, minimu
   if (optionalContext) {
     functionToThrottle = functionToThrottle.bind(optionalContext);
   }
+  var args;
+  var timerExpired = function () {
+    // Reached end of interval, call function
+    lastTime = Date.now();
+    functionToThrottle.apply(this, args);
+    deferTimer = undefined;
+  };
+
   return function () {
     var time = Date.now();
     var sinceLastTime = typeof lastTime === 'undefined' ? minimumInterval : time - lastTime;
-    var args = arguments;
-    if (typeof lastTime === 'undefined' || sinceLastTime >= minimumInterval) {
+    if (sinceLastTime >= minimumInterval) {
+      // Outside of minimum interval, call throttled function.
+      // Clear any pending timer as timeout imprecisions could otherwise cause two calls
+      // for the same interval.
       clearTimeout(deferTimer);
+      deferTimer = undefined;
       lastTime = time;
-      functionToThrottle.apply(null, args);
+      functionToThrottle.apply(null, arguments);
     } else {
-      clearTimeout(deferTimer);
-      deferTimer = setTimeout(function () {
-        lastTime = Date.now();
-        functionToThrottle.apply(this, args);
-      }, minimumInterval - sinceLastTime);
+      // Inside minimum interval, create timer if needed.
+      deferTimer = deferTimer || setTimeout(timerExpired, minimumInterval - sinceLastTime);
+      // Update args for when timer expires.
+      args = arguments;
     }
   };
 };
