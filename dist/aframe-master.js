@@ -26441,9 +26441,8 @@ registerPropertyType('vec4', {
  * @param {function} [stringify=defaultStringify] - Stringify to DOM function.
  */
 function registerPropertyType(type, defaultValue, parse, stringify) {
-  if ('type' in propertyTypes) {
-    error('Property type ' + type + ' is already registered.');
-    return;
+  if (type in propertyTypes) {
+    throw new Error('Property type ' + type + ' is already registered.');
   }
   propertyTypes[type] = {
     default: defaultValue,
@@ -29861,7 +29860,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.5.0 (Date 2024-02-23, Commit #dd3913c4)');
+console.log('A-Frame Version: 1.5.0 (Date 2024-02-27, Commit #233a29c4)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
