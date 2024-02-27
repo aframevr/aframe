@@ -30,12 +30,10 @@ and/or pressed buttons (trackpad, trigger).
 
 | Property             | Description                                        | Default              |
 |----------------------|----------------------------------------------------|----------------------|
-| armModel             | Whether the arm model is used for positional data. | true                 |
 | buttonTouchedColor   | Button colors when touched (Trackpad only).        | #777777              |
 | buttonHighlightColor | Button colors when pressed and active.             | #FFFFFF              |
 | hand                 | The hand that will be tracked (e.g., right, left). |                      |
 | model                | Whether the Vive Focus controller model is loaded. | true                 |
-| orientationOffset    | Offset to apply to model orientation.              | x: 0, y: 0, z: 0     |
 
 ## Events
 

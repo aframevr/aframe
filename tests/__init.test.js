@@ -5,19 +5,13 @@
  */
 window.debug = true;
 
-/* WebVR Stub */
-navigator.getVRDisplays = function () {
-  var resolvePromise = Promise.resolve();
-  var mockVRDisplay = {
-    cancelAnimationFrame: function (h) { return window.cancelAnimationFrame(1); },
-    capabilities: {},
-    exitPresent: resolvePromise,
-    getPose: function () { return { orientation: null, position: null }; },
-    requestAnimationFrame: function () { return 1; },
-    requestPresent: resolvePromise,
-    submitFrame: function () { return; }
-  };
-  return Promise.resolve([mockVRDisplay]);
+navigator.xr = navigator.xr || {};
+navigator.xr.isSessionSupported = function (_sessionType) { return Promise.resolve(true); };
+navigator.xr.requestSession = function (_mode) {
+  const xrSession = new EventTarget();
+  xrSession.supportedFrameRates = [90];
+  xrSession.requestReferenceSpace = function () { return Promise.resolve(); };
+  return Promise.resolve(xrSession);
 };
 
 /* WebXR Stub */
