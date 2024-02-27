@@ -38,9 +38,8 @@ registerPropertyType('vec4', {x: 0, y: 0, z: 0, w: 1}, vecParse, coordinates.str
  * @param {function} [stringify=defaultStringify] - Stringify to DOM function.
  */
 function registerPropertyType (type, defaultValue, parse, stringify) {
-  if ('type' in propertyTypes) {
-    error('Property type ' + type + ' is already registered.');
-    return;
+  if (type in propertyTypes) {
+    throw new Error('Property type ' + type + ' is already registered.');
   }
 
   propertyTypes[type] = {
