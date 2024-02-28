@@ -18,18 +18,8 @@ class AMixin extends ANode {
     this.isMixin = true;
   }
 
-  connectedCallback () {
-    // Defer if DOM is not ready.
-    if (document.readyState !== 'complete') {
-      document.addEventListener('readystatechange', this.onReadyStateChange.bind(this));
-      return;
-    }
-
-    this.doConnectedCallback();
-  }
-
   doConnectedCallback () {
-    super.connectedCallback();
+    super.doConnectedCallback();
 
     this.sceneEl = this.closestScene();
     this.id = this.getAttribute('id');

@@ -57,26 +57,13 @@ class AEntity extends ANode {
     this.setEntityAttribute(attr, oldVal, newVal);
   }
 
-  /**
-  * Add to parent, load, play.
-  */
-  connectedCallback () {
-    // Defer if DOM is not ready.
-    if (document.readyState !== 'complete') {
-      document.addEventListener('readystatechange', this.onReadyStateChange.bind(this));
-      return;
-    }
-
-    AEntity.prototype.doConnectedCallback.call(this);
-  }
-
   doConnectedCallback () {
     var self = this;  // Component.
     var assetsEl;  // Asset management system element.
     var sceneEl;
 
     // ANode method.
-    super.connectedCallback();
+    super.doConnectedCallback();
 
     sceneEl = this.sceneEl;
 

@@ -1,6 +1,7 @@
 var components = require('./component');
 var schema = require('./schema');
 var utils = require('../utils/');
+var ready = require('./readyState');
 
 var parseProperties = schema.parseProperties;
 var parseProperty = schema.parseProperty;
@@ -152,5 +153,7 @@ module.exports.registerSystem = function (name, definition) {
   systems[name] = NewSystem;
 
   // Initialize systems for existing scenes
-  for (i = 0; i < scenes.length; i++) { scenes[i].initSystem(name); }
+  if (ready.canInitializeElements) {
+    for (i = 0; i < scenes.length; i++) { scenes[i].initSystem(name); }
+  }
 };

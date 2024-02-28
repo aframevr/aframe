@@ -59,6 +59,7 @@ var shaders = require('./core/shader').shaders;
 var systems = require('./core/system').systems;
 // Exports THREE to window so three.js can be used without alteration.
 var THREE = window.THREE = require('./lib/three');
+var readyState = require('./core/readyState');
 
 var pkg = require('../package');
 
@@ -82,6 +83,11 @@ console.log('THREE Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
+// Wait for ready state, unless user asynchronously initializes A-Frame.
+if (!window.AFRAME_ASYNC) {
+  readyState.waitForDocumentReadyState();
+}
+
 module.exports = window.AFRAME = {
   AComponent: require('./core/component').Component,
   AEntity: AEntity,
@@ -104,6 +110,7 @@ module.exports = window.AFRAME = {
   schema: require('./core/schema'),
   shaders: shaders,
   systems: systems,
+  emitReady: readyState.emitReady,
   THREE: THREE,
   utils: utils,
   version: pkg.version
