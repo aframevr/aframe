@@ -226,6 +226,23 @@ suite('registerPrimitive (using innerHTML)', function () {
     });
   });
 
+  test('applies mappings to mixin attributes', function (done) {
+    AFRAME.registerComponent('test', {
+      schema: {default: 'foo'}
+    });
+    primitiveFactory({
+      defaultComponents: {
+        material: {color: 'blue'}
+      },
+      mappings: {foo: 'material.color'}
+    }, 'mixin="bar"', function postCreation (el) {
+      assert.equal(el.getAttribute('material').color, 'purple');
+      done();
+    }, function preCreation (sceneEl) {
+      helpers.mixinFactory('bar', {foo: 'purple'}, sceneEl);
+    });
+  });
+
   test('handles mapping to a single-property component', function (done) {
     primitiveFactory({
       mappings: {
