@@ -1,5 +1,7 @@
 /* global AFRAME, assert, CustomEvent, process, screen, sinon, setup, suite, teardown, test, THREE, EventTarget */
 var AScene = require('core/scene/a-scene').AScene;
+var AEntity = require('core/a-entity').AEntity;
+var ANode = require('core/a-node').ANode;
 var components = require('core/component').components;
 var scenes = require('core/scene/scenes');
 var setupCanvas = require('core/scene/a-scene').setupCanvas;
@@ -496,6 +498,84 @@ suite('a-scene (without renderer) - WebXR', function () {
       sceneEl.resize();
 
       assert.notOk(setSizeSpy.called);
+    });
+  });
+
+  suite('setAttribute', function () {
+    var sceneEl;
+    setup(function (done) {
+      sceneEl = this.el;
+      sceneEl.addEventListener('loaded', function () {
+        done();
+      });
+    });
+
+    test('can set a component with a string', function () {
+      sceneEl.setAttribute('fog', 'type: exponential; density: 0.75');
+      var fog = sceneEl.getAttribute('fog');
+      assert.equal(fog.type, 'exponential');
+      assert.equal(fog.density, 0.75);
+    });
+
+    test('can set a component with an object', function () {
+      var value = {type: 'exponential', density: 0.75};
+      sceneEl.setAttribute('fog', value);
+      var fog = sceneEl.getAttribute('fog');
+      assert.equal(fog.type, 'exponential');
+      assert.equal(fog.density, 0.75);
+    });
+
+    test('can clobber component attributes with an object and flag', function () {
+      sceneEl.setAttribute('fog', 'type: exponential; density: 0.75');
+      sceneEl.setAttribute('fog', {type: 'exponential'}, true);
+      var fog = sceneEl.getAttribute('fog');
+      assert.equal(fog.type, 'exponential');
+      assert.equal(fog.density, 0.00025);
+      assert.equal(sceneEl.getDOMAttribute('fog').density, undefined);
+    });
+
+    test('can set a single component via a single attribute', function () {
+      sceneEl.setAttribute('fog', 'type', 'exponential');
+      assert.equal(sceneEl.getAttribute('fog').type, 'exponential');
+    });
+
+    test('can set system attribute with a string', function () {
+      sceneEl.setAttribute('renderer', 'anisotropy: 4; toneMapping: ACESFilmic');
+      assert.equal(sceneEl.getAttribute('renderer').anisotropy, 4);
+      assert.equal(sceneEl.getAttribute('renderer').toneMapping, 'ACESFilmic');
+    });
+
+    test('can set system attribute with an object', function () {
+      sceneEl.setAttribute('renderer', {anisotropy: 4, toneMapping: 'ACESFilmic'});
+      assert.equal(sceneEl.getAttribute('renderer').anisotropy, 4);
+      assert.equal(sceneEl.getAttribute('renderer').toneMapping, 'ACESFilmic');
+    });
+
+    test('can set system attribute value before system initializes', function () {
+      delete sceneEl.systems['renderer'];
+      sceneEl.setAttribute('renderer', 'anisotropy: 4');
+      assert.equal(sceneEl.getAttribute('renderer'), 'anisotropy: 4');
+      sceneEl.initSystem('renderer');
+      assert.equal(sceneEl.getAttribute('renderer').anisotropy, 4);
+    });
+
+    test('calls a-entity setAttribute for non-systems (component)', function () {
+      var spy = this.sinon.spy(AEntity.prototype, 'setAttribute');
+      sceneEl.setAttribute('fog', 'type', 'exponential');
+      assert.ok(spy.calledOnce);
+    });
+
+    test('calls a-entity setAttribute for non-systems (HTML attribute)', function () {
+      var spy = this.sinon.spy(AEntity.prototype, 'setAttribute');
+      sceneEl.setAttribute('data-custom-attr', 'value');
+      assert.ok(spy.calledOnce);
+    });
+
+    test('calls a-node setAttribute for systems', function () {
+      var spy = this.sinon.spy(ANode.prototype, 'setAttribute');
+      sceneEl.setAttribute('renderer', 'anisotropy: 4');
+      assert.ok(spy.calledOnce);
+      assert.equal(sceneEl.getAttribute('renderer').anisotropy, 4);
     });
   });
 });
