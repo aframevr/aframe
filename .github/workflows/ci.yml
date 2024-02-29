@@ -70,4 +70,4 @@ jobs:
       - name: Refresh Docs
         run: |
           PR_NUMBER="${{ github.event.pull_request.number }}"
-          curl https://afbot.b-bowler13.workers.dev/refreshDocs/${PR_NUMBER}
+          curl https://afbot.b-bowler13.workers.dev/refreshDocs?pr_number=${PR_NUMBER}"
