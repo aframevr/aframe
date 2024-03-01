@@ -367,6 +367,11 @@ Component.prototype = {
       if (this.isObjectBased) {
         parseProperty(attrValue, this.schema);
       }
+      // Assets need parsing otherwise #asset-id will not be converted in url for this.data (ex gltf-model)
+      if (this.schema.parse.name === 'assetParse') {
+        this.data = parseProperty(attrValue, this.schema);
+        return;
+      }
       // Single-property (already parsed).
       this.data = attrValue;
       return;
