@@ -37,9 +37,7 @@ module.exports.Component = registerComponent('device-orientation-permission-ui',
 
     if (!this.data.enabled) { return; }
 
-    if (location.hostname !== 'localhost' &&
-        location.hostname !== '127.0.0.1' &&
-        location.protocol === 'http:') {
+    if (!window.isSecureContext) {
       this.showHTTPAlert();
     }
 
