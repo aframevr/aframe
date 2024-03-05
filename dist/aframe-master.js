@@ -19040,7 +19040,7 @@ module.exports.Component = registerComponent('device-orientation-permission-ui',
     if (!this.data.enabled) {
       return;
     }
-    if (location.hostname !== 'localhost' && location.hostname !== '127.0.0.1' && location.protocol === 'http:') {
+    if (!window.isSecureContext) {
       this.showHTTPAlert();
     }
 
@@ -29860,7 +29860,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.5.0 (Date 2024-02-29, Commit #3b08cb9d)');
+console.log('A-Frame Version: 1.5.0 (Date 2024-03-05, Commit #9347a59e)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
