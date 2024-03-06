@@ -515,10 +515,15 @@ class AScene extends AEntity {
    * setAttribute.
    */
   setAttribute (attr, value, componentPropValue) {
-    var system = this.systems[attr];
-    if (system) {
+    // Check if system exists (i.e. is registered).
+    if (systems[attr]) {
       ANode.prototype.setAttribute.call(this, attr, value);
-      system.updateProperties(value);
+
+      // Update system instance, if initialized on the scene.
+      var system = this.systems[attr];
+      if (system) {
+        system.updateProperties(value);
+      }
       return;
     }
     AEntity.prototype.setAttribute.call(this, attr, value, componentPropValue);
