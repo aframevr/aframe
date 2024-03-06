@@ -27211,10 +27211,15 @@ class AScene extends AEntity {
    * setAttribute.
    */
   setAttribute(attr, value, componentPropValue) {
-    var system = this.systems[attr];
-    if (system) {
+    // Check if system exists (i.e. is registered).
+    if (systems[attr]) {
       ANode.prototype.setAttribute.call(this, attr, value);
-      system.updateProperties(value);
+
+      // Update system instance, if initialized on the scene.
+      var system = this.systems[attr];
+      if (system) {
+        system.updateProperties(value);
+      }
       return;
     }
     AEntity.prototype.setAttribute.call(this, attr, value, componentPropValue);
@@ -29860,7 +29865,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.5.0 (Date 2024-03-05, Commit #9347a59e)');
+console.log('A-Frame Version: 1.5.0 (Date 2024-03-06, Commit #0623abc4)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
