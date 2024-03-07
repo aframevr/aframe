@@ -97,7 +97,7 @@ suite('a-mixin', function () {
       testEl.setAttribute('delete-mixin', '');
       testEl.addEventListener('loaded', function () {
         assert.equal(testEl.getAttribute('mixin'), null);
-        assert.equal(testEl.getAttribute('material'), '');
+        assert.equal(testEl.getAttribute('material'), null);
         done();
       });
       el.sceneEl.appendChild(testEl);
