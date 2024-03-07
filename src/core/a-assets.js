@@ -36,6 +36,7 @@ class AAssets extends ANode {
     var imgEl;
     var imgEls;
     var timeout;
+    var children;
 
     super.connectedCallback();
 
@@ -70,14 +71,32 @@ class AAssets extends ANode {
       loaded.push(mediaElementLoaded(mediaEl));
     }
 
+    // Wait for <a-asset-item>s
+    children = this.getChildren();
+    children.forEach(function (child) {
+      if (!child.isAssetItem || !child.hasAttribute('src')) { return; }
+
+      loaded.push(new Promise(function waitForLoaded (resolve, reject) {
+        if (child.hasLoaded) { return resolve(); }
+        child.addEventListener('loaded', resolve);
+        child.addEventListener('error', reject);
+      }));
+    });
+
     // Trigger loaded for scene to start rendering.
-    Promise.allSettled(loaded).then(this.load.bind(this));
+    Promise.allSettled(loaded).then(function () {
+      // Make sure the timeout didn't occur.
+      if (self.timeout === null) { return; }
+      self.load();
+    });
 
     // Timeout to start loading anyways.
     timeout = parseInt(this.getAttribute('timeout'), 10) || 3000;
     this.timeout = setTimeout(function () {
+      // Make sure the loading didn't complete.
       if (self.hasLoaded) { return; }
-      warn('Asset loading timed out in ', timeout, 'ms');
+      warn('Asset loading timed out in', timeout, 'ms');
+      self.timeout = null;
       self.emit('timeout');
       self.load();
     }, timeout);
@@ -89,9 +108,8 @@ class AAssets extends ANode {
   }
 
   load () {
-    super.load.call(this, null, function waitOnFilter (el) {
-      return el.isAssetItem && el.hasAttribute('src');
-    });
+    // Filter out all children, as waiting already took place in doConnectedCallback.
+    super.load.call(this, null, function () { return false; });
   }
 }
 
