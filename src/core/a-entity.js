@@ -379,6 +379,10 @@ class AEntity extends ANode {
     if (destroy) {
       component.destroy();
       delete this.components[name];
+      // Remove attribute from DOM, if still present
+      if (this.hasAttribute(name)) {
+        window.HTMLElement.prototype.removeAttribute.call(this, name);
+      }
     }
 
     this.emit('componentremoved', component.evtDetail, false);
