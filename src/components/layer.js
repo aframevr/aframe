@@ -211,7 +211,7 @@ module.exports.Component = registerComponent('layer', {
   },
 
   tick: function () {
-    if (!this.el.sceneEl.xrSession) { return; }
+    if (!this.el.sceneEl.xrSession || !this.el.sceneEl.renderer.xr.isPresenting) { return; }
     if (!this.layer && this.el.sceneEl.is('vr-mode')) { this.initLayer(); }
     this.updateTransform();
     if (this.data.src.complete && (this.pendingCubeMapUpdate || this.loadingScreen || this.visibilityChanged)) { this.loadCubeMapImages(); }
@@ -367,7 +367,6 @@ module.exports.Component = registerComponent('layer', {
       return;
     }
     xrSession.requestReferenceSpace('local-floor').then(this.onRequestedReferenceSpace);
-    this.needsRedraw = true;
     this.layerEnabled = true;
     if (this.quadPanelEl) {
       this.quadPanelEl.object3D.visible = false;
