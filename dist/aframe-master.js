@@ -14497,7 +14497,6 @@ module.exports.Component = registerComponent('layer', {
       return;
     }
     xrSession.requestReferenceSpace('local-floor').then(this.onRequestedReferenceSpace);
-    this.needsRedraw = true;
     this.layerEnabled = true;
     if (this.quadPanelEl) {
       this.quadPanelEl.object3D.visible = false;
@@ -27018,17 +27017,17 @@ class AScene extends AEntity {
           var requestSession = useOfferSession ? navigator.xr.offerSession.bind(navigator.xr) : navigator.xr.requestSession.bind(navigator.xr);
           self.usedOfferSession |= useOfferSession;
           requestSession(xrMode, xrInit).then(function requestSuccess(xrSession) {
-            self.xrSession = xrSession;
             if (useOfferSession) {
               self.usedOfferSession = false;
             }
             vrManager.layersEnabled = xrInit.requiredFeatures.indexOf('layers') !== -1;
             vrManager.setSession(xrSession).then(function () {
               vrManager.setFoveation(rendererSystem.foveationLevel);
+              self.xrSession = xrSession;
+              self.systems.renderer.setWebXRFrameRate(xrSession);
+              xrSession.addEventListener('end', self.exitVRBound);
+              enterVRSuccess(resolve);
             });
-            self.systems.renderer.setWebXRFrameRate(xrSession);
-            xrSession.addEventListener('end', self.exitVRBound);
-            enterVRSuccess(resolve);
           }, function requestFail(error) {
             var useAR = xrMode === 'immersive-ar';
             var mode = useAR ? 'AR' : 'VR';
@@ -29894,7 +29893,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.5.0 (Date 2024-03-07, Commit #264da50b)');
+console.log('A-Frame Version: 1.5.0 (Date 2024-03-08, Commit #77af3898)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
