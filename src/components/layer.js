@@ -367,7 +367,6 @@ module.exports.Component = registerComponent('layer', {
       return;
     }
     xrSession.requestReferenceSpace('local-floor').then(this.onRequestedReferenceSpace);
-    this.needsRedraw = true;
     this.layerEnabled = true;
     if (this.quadPanelEl) {
       this.quadPanelEl.object3D.visible = false;
