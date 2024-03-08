@@ -299,8 +299,6 @@ class AScene extends AEntity {
           self.usedOfferSession |= useOfferSession;
           requestSession(xrMode, xrInit).then(
             function requestSuccess (xrSession) {
-              self.xrSession = xrSession;
-
               if (useOfferSession) {
                 self.usedOfferSession = false;
               }
@@ -308,10 +306,11 @@ class AScene extends AEntity {
               vrManager.layersEnabled = xrInit.requiredFeatures.indexOf('layers') !== -1;
               vrManager.setSession(xrSession).then(function () {
                 vrManager.setFoveation(rendererSystem.foveationLevel);
+                self.xrSession = xrSession;
+                self.systems.renderer.setWebXRFrameRate(xrSession);
+                xrSession.addEventListener('end', self.exitVRBound);
+                enterVRSuccess(resolve);
               });
-              self.systems.renderer.setWebXRFrameRate(xrSession);
-              xrSession.addEventListener('end', self.exitVRBound);
-              enterVRSuccess(resolve);
             },
             function requestFail (error) {
               var useAR = xrMode === 'immersive-ar';

@@ -211,7 +211,7 @@ module.exports.Component = registerComponent('layer', {
   },
 
   tick: function () {
-    if (!this.el.sceneEl.xrSession || !this.el.sceneEl.renderer.xr.isPresenting) { return; }
+    if (!this.el.sceneEl.xrSession) { return; }
     if (!this.layer && this.el.sceneEl.is('vr-mode')) { this.initLayer(); }
     this.updateTransform();
     if (this.data.src.complete && (this.pendingCubeMapUpdate || this.loadingScreen || this.visibilityChanged)) { this.loadCubeMapImages(); }
