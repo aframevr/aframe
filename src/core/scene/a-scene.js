@@ -136,7 +136,7 @@ class AScene extends AEntity {
     this.componentOrder = solveOrder(components, this.componentOrder);
     this.addEventListener('componentregistered', function () {
       // Recompute order
-      this.componentOrder = solveOrder(components, this.componentOrder);
+      self.componentOrder = solveOrder(components, self.componentOrder);
     });
 
     // WebXR Immersive navigation handler.

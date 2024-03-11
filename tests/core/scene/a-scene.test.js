@@ -97,6 +97,17 @@ suite('a-scene (without renderer) - WebXR', function () {
       assert.ok(sceneEl.hasAttribute('screenshot'));
       assert.ok(sceneEl.hasAttribute('xr-mode-ui'));
     });
+
+    test('recomputes component order upon component registration', function () {
+      var sceneEl = this.el;
+      var componentCount = sceneEl.componentOrder.length;
+
+      assert.ok(componentCount > 0);
+      assert.notIncludeMembers(sceneEl.componentOrder, ['test']);
+      registerComponent('test', {});
+      assert.equal(sceneEl.componentOrder.length, componentCount + 1);
+      assert.includeMembers(sceneEl.componentOrder, ['test']);
+    });
   });
 
   suite('vrdisplaydisconnect', function () {
@@ -523,11 +534,8 @@ suite('a-scene (without renderer) - WebXR', function () {
 
   suite('setAttribute', function () {
     var sceneEl;
-    setup(function (done) {
+    setup(function () {
       sceneEl = this.el;
-      sceneEl.addEventListener('loaded', function () {
-        done();
-      });
     });
 
     test('can set a component with a string', function () {
