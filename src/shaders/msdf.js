@@ -83,10 +83,10 @@ module.exports.Shader = registerShader('msdf', {
 
   fragmentShader: FRAGMENT_SHADER,
 
-  init: function (data) {
+  init: function () {
     this.uniforms = THREE.UniformsUtils.merge([
       THREE.UniformsLib.fog,
-      this.initVariables(data, 'uniform')
+      this.initUniforms()
     ]);
     this.material = new THREE.ShaderMaterial({
       uniforms: this.uniforms,
