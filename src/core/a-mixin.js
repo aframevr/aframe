@@ -8,11 +8,13 @@ var MULTIPLE_COMPONENT_DELIMITER = '__';
 /**
  * @member {object} componentCache - Cache of pre-parsed values. An object where the keys
  *         are component names and the values are already parsed by the component.
+ * @member {object} rawAttributeCache - Cache of the raw attribute values.
  */
 class AMixin extends ANode {
   constructor () {
     super();
     this.componentCache = {};
+    this.rawAttributeCache = {};
     this.isMixin = true;
   }
 
@@ -60,10 +62,11 @@ class AMixin extends ANode {
     // Get component data.
     componentName = utils.split(attr, MULTIPLE_COMPONENT_DELIMITER)[0];
     component = components[componentName];
-    if (!component) { return; }
     if (value === undefined) {
       value = window.HTMLElement.prototype.getAttribute.call(this, attr);
     }
+    this.rawAttributeCache[attr] = value;
+    if (!component) { return; }
     this.componentCache[attr] = component.parseAttrValueForCache(value);
   }
 
