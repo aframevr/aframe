@@ -25107,11 +25107,13 @@ var MULTIPLE_COMPONENT_DELIMITER = '__';
 /**
  * @member {object} componentCache - Cache of pre-parsed values. An object where the keys
  *         are component names and the values are already parsed by the component.
+ * @member {object} rawAttributeCache - Cache of the raw attribute values.
  */
 class AMixin extends ANode {
   constructor() {
     super();
     this.componentCache = {};
+    this.rawAttributeCache = {};
     this.isMixin = true;
   }
   connectedCallback() {
@@ -25154,11 +25156,12 @@ class AMixin extends ANode {
     // Get component data.
     componentName = utils.split(attr, MULTIPLE_COMPONENT_DELIMITER)[0];
     component = components[componentName];
-    if (!component) {
-      return;
-    }
     if (value === undefined) {
       value = window.HTMLElement.prototype.getAttribute.call(this, attr);
+    }
+    this.rawAttributeCache[attr] = value;
+    if (!component) {
+      return;
     }
     this.componentCache[attr] = component.parseAttrValueForCache(value);
   }
@@ -25432,7 +25435,7 @@ class ANode extends HTMLElement {
     this.computedMixinStr = '';
     this.mixinEls.length = 0;
     for (i = 0; i < newMixinIds.length; i++) {
-      this.registerMixin(document.getElementById(newMixinIds[i]));
+      this.registerMixin(newMixinIds[i]);
     }
 
     // Update DOM. Keep track of `computedMixinStr` to not recurse back here after
@@ -25450,13 +25453,15 @@ class ANode extends HTMLElement {
   /**
    * From mixin ID, add mixin element to `mixinEls`.
    *
-   * @param {Element} mixinEl
+   * @param {string} mixinId - ID of the mixin to register.
    */
-  registerMixin(mixinEl) {
+  registerMixin(mixinId) {
     var compositedMixinIds;
     var i;
     var mixin;
+    var mixinEl = document.getElementById(mixinId);
     if (!mixinEl) {
+      warn('No mixin was found with id `%s`', mixinId);
       return;
     }
 
@@ -25465,7 +25470,7 @@ class ANode extends HTMLElement {
     if (mixin) {
       compositedMixinIds = utils.split(mixin.trim(), /\s+/);
       for (i = 0; i < compositedMixinIds.length; i++) {
-        this.registerMixin(document.getElementById(compositedMixinIds[i]));
+        this.registerMixin(compositedMixinIds[i]);
       }
     }
 
@@ -25479,6 +25484,12 @@ class ANode extends HTMLElement {
     }
     window.HTMLElement.prototype.setAttribute.call(this, attr, newValue);
   }
+
+  /**
+   * Removes the mixin element from `mixinEls`.
+   *
+   * @param {string} mixinId - ID of the mixin to remove.
+   */
   unregisterMixin(mixinId) {
     var i;
     var mixinEls = this.mixinEls;
@@ -28660,7 +28671,6 @@ module.exports.registerPrimitive = function registerPrimitive(name, definition) 
       var i;
       var mapping;
       var mixins;
-      var path;
       var self = this;
 
       // Gather component data from default components.
@@ -28669,12 +28679,27 @@ module.exports.registerPrimitive = function registerPrimitive(name, definition) 
       // Factor in mixins to overwrite default components.
       mixins = this.getAttribute('mixin');
       if (mixins) {
-        mixins = mixins.trim().split(' ');
+        mixins = utils.split(mixins.trim(), /\s+/);
         mixins.forEach(function applyMixin(mixinId) {
-          var mixinComponents = self.sceneEl.querySelector('#' + mixinId).componentCache;
-          Object.keys(mixinComponents).forEach(function setComponent(name) {
-            data[name] = extend(data[name], mixinComponents[name]);
-          });
+          var mixinEl = document.getElementById(mixinId);
+          if (!mixinEl) {
+            return;
+          }
+          var rawAttributeCache = mixinEl.rawAttributeCache;
+          var mixinComponents = mixinEl.componentCache;
+          for (var name in rawAttributeCache) {
+            // Check if the attribute matches a mapping.
+            mapping = self.mappings[name];
+            if (mapping) {
+              applyMapping(mapping, rawAttributeCache[name], data);
+              return;
+            }
+
+            // Check if the attribute belongs to a component.
+            if (name in mixinComponents) {
+              data[name] = extend(data[name], mixinComponents[name]);
+            }
+          }
         });
       }
 
@@ -28683,14 +28708,7 @@ module.exports.registerPrimitive = function registerPrimitive(name, definition) 
         attr = this.attributes[i];
         mapping = this.mappings[attr.name];
         if (mapping) {
-          path = utils.entity.getComponentPropertyPath(mapping);
-          if (path.constructor === Array) {
-            data[path[0]] = data[path[0]] || {};
-            data[path[0]][path[1]] = attr.value.trim();
-          } else {
-            data[path] = attr.value.trim();
-          }
-          continue;
+          applyMapping(mapping, attr.value, data);
         }
       }
       return data;
@@ -28751,6 +28769,23 @@ module.exports.registerPrimitive = function registerPrimitive(name, definition) 
   primitives[name] = primitiveClass;
   return primitiveClass;
 };
+
+/**
+ * Sets the relevant property based on the mapping property path.
+ *
+ * @param {string} mapping - The mapped property path.
+ * @param {string} attrValue - The (raw) attribute value.
+ * @param {object} data - The data object to apply the mapping to.
+ */
+function applyMapping(mapping, attrValue, data) {
+  var path = utils.entity.getComponentPropertyPath(mapping);
+  if (path.constructor === Array) {
+    data[path[0]] = data[path[0]] || {};
+    data[path[0]][path[1]] = attrValue.trim();
+  } else {
+    data[path] = attrValue.trim();
+  }
+}
 
 /**
  * Add component mappings using schema.
@@ -29887,7 +29922,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.5.0 (Date 2024-03-14, Commit #c90f6138)');
+console.log('A-Frame Version: 1.5.0 (Date 2024-03-14, Commit #aef95373)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
