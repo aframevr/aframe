@@ -20170,6 +20170,7 @@ module.exports.Component = registerComponent('screenshot', {
   getCanvas: function (projection) {
     var isVREnabled = this.el.renderer.xr.enabled;
     var renderer = this.el.renderer;
+    this.setup();
     // Disable VR.
     var params = this.setCapture(projection);
     renderer.xr.enabled = false;
@@ -29886,7 +29887,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.5.0 (Date 2024-03-12, Commit #d94bf472)');
+console.log('A-Frame Version: 1.5.0 (Date 2024-03-14, Commit #c90f6138)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
