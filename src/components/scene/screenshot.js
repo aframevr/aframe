@@ -191,6 +191,7 @@ module.exports.Component = registerComponent('screenshot', {
   getCanvas: function (projection) {
     var isVREnabled = this.el.renderer.xr.enabled;
     var renderer = this.el.renderer;
+    this.setup();
     // Disable VR.
     var params = this.setCapture(projection);
     renderer.xr.enabled = false;
