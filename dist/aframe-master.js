@@ -23809,14 +23809,6 @@ class AAssets extends ANode {
     this.fileLoader = fileLoader;
     this.timeout = null;
   }
-  connectedCallback() {
-    // Defer if DOM is not ready.
-    if (document.readyState !== 'complete') {
-      document.addEventListener('readystatechange', this.onReadyStateChange.bind(this));
-      return;
-    }
-    this.doConnectedCallback();
-  }
   doConnectedCallback() {
     var self = this;
     var i;
@@ -23827,7 +23819,7 @@ class AAssets extends ANode {
     var imgEls;
     var timeout;
     var children;
-    super.connectedCallback();
+    super.doConnectedCallback();
     if (!this.parentNode.isScene) {
       throw new Error('<a-assets> must be a child of a <a-scene>.');
     }
@@ -24226,25 +24218,13 @@ class AEntity extends ANode {
     }
     this.setEntityAttribute(attr, oldVal, newVal);
   }
-
-  /**
-  * Add to parent, load, play.
-  */
-  connectedCallback() {
-    // Defer if DOM is not ready.
-    if (document.readyState !== 'complete') {
-      document.addEventListener('readystatechange', this.onReadyStateChange.bind(this));
-      return;
-    }
-    AEntity.prototype.doConnectedCallback.call(this);
-  }
   doConnectedCallback() {
     var self = this; // Component.
     var assetsEl; // Asset management system element.
     var sceneEl;
 
     // ANode method.
-    super.connectedCallback();
+    super.doConnectedCallback();
     sceneEl = this.sceneEl;
     this.addToParent();
 
@@ -25116,16 +25096,8 @@ class AMixin extends ANode {
     this.rawAttributeCache = {};
     this.isMixin = true;
   }
-  connectedCallback() {
-    // Defer if DOM is not ready.
-    if (document.readyState !== 'complete') {
-      document.addEventListener('readystatechange', this.onReadyStateChange.bind(this));
-      return;
-    }
-    this.doConnectedCallback();
-  }
   doConnectedCallback() {
-    super.connectedCallback();
+    super.doConnectedCallback();
     this.sceneEl = this.closestScene();
     this.id = this.getAttribute('id');
     this.cacheAttributes();
@@ -25220,6 +25192,7 @@ customElements.define('a-mixin', AMixin);
 
 /* global customElements, CustomEvent, HTMLElement, MutationObserver */
 var utils = __webpack_require__(/*! ../utils/ */ "./src/utils/index.js");
+var readyState = __webpack_require__(/*! ./readyState */ "./src/core/readyState.js");
 var warn = utils.debug('core:a-node:warn');
 var knownTags = {
   'a-scene': true,
@@ -25248,18 +25221,13 @@ class ANode extends HTMLElement {
     this.isNode = true;
     this.mixinEls = [];
   }
-  onReadyStateChange() {
-    if (document.readyState === 'complete') {
-      this.doConnectedCallback();
-    }
-  }
   connectedCallback() {
-    // Defer if DOM is not ready.
-    if (document.readyState !== 'complete') {
-      document.addEventListener('readystatechange', this.onReadyStateChange.bind(this));
+    // Defer if not ready to initialize.
+    if (!readyState.canInitializeElements) {
+      document.addEventListener('aframeready', this.connectedCallback.bind(this));
       return;
     }
-    ANode.prototype.doConnectedCallback.call(this);
+    this.doConnectedCallback();
   }
   doConnectedCallback() {
     var mixins;
@@ -26711,6 +26679,53 @@ module.exports.isValidDefaultCoordinate = isValidDefaultCoordinate;
 
 /***/ }),
 
+/***/ "./src/core/readyState.js":
+/*!********************************!*\
+  !*** ./src/core/readyState.js ***!
+  \********************************/
+/***/ ((module) => {
+
+/* global CustomEvent */
+
+/**
+ * Flag indicating if A-Frame can initialize the scene or should wait.
+ */
+module.exports.canInitializeElements = false;
+
+/**
+ * Waits for the document to be ready.
+ */
+function waitForDocumentReadyState() {
+  if (document.readyState === 'complete') {
+    emitReady();
+    return;
+  }
+  document.addEventListener('readystatechange', function onReadyStateChange() {
+    if (document.readyState !== 'complete') {
+      return;
+    }
+    document.removeEventListener('readystatechange', onReadyStateChange);
+    emitReady();
+  });
+}
+module.exports.waitForDocumentReadyState = waitForDocumentReadyState;
+
+/**
+ * Signals A-Frame that everything is ready to initialize.
+ */
+function emitReady() {
+  if (module.exports.canInitializeElements) {
+    return;
+  }
+  module.exports.canInitializeElements = true;
+  setTimeout(function () {
+    document.dispatchEvent(new CustomEvent('aframeready'));
+  });
+}
+module.exports.emitReady = emitReady;
+
+/***/ }),
+
 /***/ "./src/core/scene/a-scene.js":
 /*!***********************************!*\
   !*** ./src/core/scene/a-scene.js ***!
@@ -26790,14 +26805,6 @@ class AScene extends AEntity {
   removeFullScreenStyles() {
     document.documentElement.classList.remove('a-fullscreen');
   }
-  connectedCallback() {
-    // Defer if DOM is not ready.
-    if (document.readyState !== 'complete') {
-      document.addEventListener('readystatechange', this.onReadyStateChange.bind(this));
-      return;
-    }
-    this.doConnectedCallback();
-  }
   doConnectedCallback() {
     var self = this;
     var embedded = this.hasAttribute('embedded');
@@ -26808,7 +26815,7 @@ class AScene extends AEntity {
     this.setAttribute('screenshot', '');
     this.setAttribute('xr-mode-ui', '');
     this.setAttribute('device-orientation-permission-ui', '');
-    super.connectedCallback();
+    super.doConnectedCallback();
 
     // Renderer initialization
     setupCanvas(this);
@@ -28326,6 +28333,7 @@ module.exports.registerShader = function (name, definition) {
 var components = __webpack_require__(/*! ./component */ "./src/core/component.js");
 var schema = __webpack_require__(/*! ./schema */ "./src/core/schema.js");
 var utils = __webpack_require__(/*! ../utils/ */ "./src/utils/index.js");
+var ready = __webpack_require__(/*! ./readyState */ "./src/core/readyState.js");
 var parseProperties = schema.parseProperties;
 var parseProperty = schema.parseProperty;
 var processSchema = schema.process;
@@ -28471,8 +28479,10 @@ module.exports.registerSystem = function (name, definition) {
   systems[name] = NewSystem;
 
   // Initialize systems for existing scenes
-  for (i = 0; i < scenes.length; i++) {
-    scenes[i].initSystem(name);
+  if (ready.canInitializeElements) {
+    for (i = 0; i < scenes.length; i++) {
+      scenes[i].initSystem(name);
+    }
   }
 };
 
@@ -29907,6 +29917,7 @@ var shaders = (__webpack_require__(/*! ./core/shader */ "./src/core/shader.js").
 var systems = (__webpack_require__(/*! ./core/system */ "./src/core/system.js").systems);
 // Exports THREE to window so three.js can be used without alteration.
 var THREE = window.THREE = __webpack_require__(/*! ./lib/three */ "./src/lib/three.js");
+var readyState = __webpack_require__(/*! ./core/readyState */ "./src/core/readyState.js");
 var pkg = __webpack_require__(/*! ../package */ "./package.json");
 __webpack_require__(/*! ./components/index */ "./src/components/index.js"); // Register standard components.
 __webpack_require__(/*! ./geometries/index */ "./src/geometries/index.js"); // Register standard geometries.
@@ -29922,9 +29933,14 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.5.0 (Date 2024-03-14, Commit #aef95373)');
+console.log('A-Frame Version: 1.5.0 (Date 2024-03-15, Commit #4a89bb6e)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
+
+// Wait for ready state, unless user asynchronously initializes A-Frame.
+if (!window.AFRAME_ASYNC) {
+  readyState.waitForDocumentReadyState();
+}
 module.exports = window.AFRAME = {
   AComponent: (__webpack_require__(/*! ./core/component */ "./src/core/component.js").Component),
   AEntity: AEntity,
@@ -29947,6 +29963,7 @@ module.exports = window.AFRAME = {
   schema: __webpack_require__(/*! ./core/schema */ "./src/core/schema.js"),
   shaders: shaders,
   systems: systems,
+  emitReady: readyState.emitReady,
   THREE: THREE,
   utils: utils,
   version: pkg.version
