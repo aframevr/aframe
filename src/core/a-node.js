@@ -1,5 +1,6 @@
 /* global customElements, CustomEvent, HTMLElement, MutationObserver */
 var utils = require('../utils/');
+var readyState = require('./readyState');
 
 var warn = utils.debug('core:a-node:warn');
 
@@ -32,19 +33,13 @@ class ANode extends HTMLElement {
     this.mixinEls = [];
   }
 
-  onReadyStateChange () {
-    if (document.readyState === 'complete') {
-      this.doConnectedCallback();
-    }
-  }
-
   connectedCallback () {
-    // Defer if DOM is not ready.
-    if (document.readyState !== 'complete') {
-      document.addEventListener('readystatechange', this.onReadyStateChange.bind(this));
+    // Defer if not ready to initialize.
+    if (!readyState.canInitializeElements) {
+      document.addEventListener('aframeready', this.connectedCallback.bind(this));
       return;
     }
-    ANode.prototype.doConnectedCallback.call(this);
+    this.doConnectedCallback();
   }
 
   doConnectedCallback () {

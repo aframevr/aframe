@@ -70,16 +70,6 @@ class AScene extends AEntity {
     document.documentElement.classList.remove('a-fullscreen');
   }
 
-  connectedCallback () {
-    // Defer if DOM is not ready.
-    if (document.readyState !== 'complete') {
-      document.addEventListener('readystatechange', this.onReadyStateChange.bind(this));
-      return;
-    }
-
-    this.doConnectedCallback();
-  }
-
   doConnectedCallback () {
     var self = this;
     var embedded = this.hasAttribute('embedded');
@@ -90,7 +80,7 @@ class AScene extends AEntity {
     this.setAttribute('screenshot', '');
     this.setAttribute('xr-mode-ui', '');
     this.setAttribute('device-orientation-permission-ui', '');
-    super.connectedCallback();
+    super.doConnectedCallback();
 
     // Renderer initialization
     setupCanvas(this);

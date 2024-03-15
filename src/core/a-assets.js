@@ -17,16 +17,6 @@ class AAssets extends ANode {
     this.timeout = null;
   }
 
-  connectedCallback () {
-    // Defer if DOM is not ready.
-    if (document.readyState !== 'complete') {
-      document.addEventListener('readystatechange', this.onReadyStateChange.bind(this));
-      return;
-    }
-
-    this.doConnectedCallback();
-  }
-
   doConnectedCallback () {
     var self = this;
     var i;
@@ -38,7 +28,7 @@ class AAssets extends ANode {
     var timeout;
     var children;
 
-    super.connectedCallback();
+    super.doConnectedCallback();
 
     if (!this.parentNode.isScene) {
       throw new Error('<a-assets> must be a child of a <a-scene>.');
