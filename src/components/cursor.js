@@ -64,6 +64,7 @@ module.exports.Component = registerComponent('cursor', {
     this.canvasBounds = document.body.getBoundingClientRect();
     this.isCursorDown = false;
     this.activeXRInput = null;
+    this.mouseAvailable = true;
 
     // Debounce.
     this.updateCanvasBounds = utils.debounce(function updateCanvasBounds () {
@@ -228,6 +229,7 @@ module.exports.Component = registerComponent('cursor', {
       var pose;
       var transform;
 
+      this.mouseAvailable = true;
       camera.parent.updateMatrixWorld();
 
       // Calculate mouse position based on the canvas element
@@ -274,6 +276,7 @@ module.exports.Component = registerComponent('cursor', {
    * Trigger mousedown and keep track of the mousedowned entity.
    */
   onCursorDown: function (evt) {
+    this.mouseAvailable = true;
     this.isCursorDown = true;
     // Raycast again for touch.
     if (this.data.rayOrigin === 'mouse' && evt.type === 'touchstart') {
@@ -311,6 +314,7 @@ module.exports.Component = registerComponent('cursor', {
    *   in case user mousedowned one entity, dragged to another, and mouseupped.
    */
   onCursorUp: function (evt) {
+    this.mouseAvailable = true;
     if (!this.isCursorDown) { return; }
 
     this.isCursorDown = false;
@@ -391,6 +395,7 @@ module.exports.Component = registerComponent('cursor', {
   },
 
   onEnterVR: function () {
+    this.mouseAvailable = false;
     this.clearCurrentIntersection(true);
     var xrSession = this.el.sceneEl.xrSession;
     var self = this;
@@ -408,6 +413,9 @@ module.exports.Component = registerComponent('cursor', {
     var cursorEl = this.el;
     var data = this.data;
     var self = this;
+
+    // mouse not available for use as rayOrigin (e.g. in VR w/o mouse)
+    if (this.data.rayOrigin === 'mouse' && !this.mouseAvailable) { return; }
 
     // Already intersecting.
     if (this.intersectedEl === intersectedEl) { return; }
