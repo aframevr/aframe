@@ -53,7 +53,7 @@ different types of values.
 | isRawProperty | Flag to animate an arbitrary object property outside of A-Frame components for better performance. If set to true, for example, we can set `property` to like `components.material.material.opacity`. If `property` starts with `components` or `object3D`, this will be inferred to `true`.                                                      | false         |                         |
 | from          | Initial value at start of animation. If not specified, the current property value of the entity will be used (will be sampled on each animation start). It is best to specify a `from` value when possible for stability.                                                                                                                         | null          |                         |
 | to            | Target value at end of animation.                                                                                                                                                                                                                                                                                                                 | null          |                         |
-| type          | Right now only supports `color` for tweening `isRawProperty` color XYZ/RGB vector  values.                                                                                                                                                                                                                                                        | ''            |                         |
+| type          | Right now only supports `color` or `position`. `color` is used for tweening `isRawProperty` color XYZ/RGB vector values and `position` is used for tweening `isRawProperty` position vec3.                                                                                                                                                                                                                                                        | ''            |                         |
 | delay         | How long (milliseconds) to wait before starting.                                                                                                                                                                                                                                                                                                  | 0             |                         |
 | dir           | Which dir to go from `from` to `to`.                                                                                                                                                                                                                                                                                                              | normal        | alternate, reverse      |
 | dur           | How long (milliseconds) each cycle of the animation is.                                                                                                                                                                                                                                                                                           | 1000          |                         |
@@ -211,6 +211,10 @@ frame, we can animate the opacity value directly with `property:
 components.material.material.opacity`. We use a dot-delimited path to walk the
 object tree to find the value we want to animate, and the animation process
 under the hood reduces down to changing a number.
+
+We can animate three.js full vec3 position directly at once, but we'll need to specify `type:
+position`. We can do
+`property: object3D.position; type: position; to: 1 1 1;`.
 
 #### Direct Color Values
 
