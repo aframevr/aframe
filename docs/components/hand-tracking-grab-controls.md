@@ -33,7 +33,7 @@ For debugging purposes you can make the colliders visible as below:
 | Property       | Description                                                                            | Default Value |
 |----------------|----------------------------------------------------------------------------------------|---------------|
 | hand           | The hand that will be tracked (i.e., right, left).                                     | left          |
-| handColor      | The color of the hand model.                                                           | white         |
+| color          | The color of the hand model.                                                           | white         |
 | hoverColor     | Hand color when hand intersects a grabbable entity bounding box.                       | #538df1       |
 | hoverEnabled   | If the hand model changes color when intersecting a grabbable entity.                  | false         |
 
