@@ -212,7 +212,7 @@ module.exports.Component = registerComponent('layer', {
 
   tick: function () {
     if (!this.el.sceneEl.xrSession) { return; }
-    if (!this.layer && this.el.sceneEl.is('vr-mode')) { this.initLayer(); }
+    if (!this.layer && (this.el.sceneEl.is('vr-mode') || this.el.sceneEl.is('ar-mode'))) { this.initLayer(); }
     this.updateTransform();
     if (this.data.src.complete && (this.pendingCubeMapUpdate || this.loadingScreen || this.visibilityChanged)) { this.loadCubeMapImages(); }
     if (!this.needsRedraw && !this.layer.needsRedraw && !this.textureIsVideo) { return; }
