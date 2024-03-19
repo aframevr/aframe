@@ -14348,7 +14348,7 @@ module.exports.Component = registerComponent('layer', {
     if (!this.el.sceneEl.xrSession) {
       return;
     }
-    if (!this.layer && this.el.sceneEl.is('vr-mode')) {
+    if (!this.layer && (this.el.sceneEl.is('vr-mode') || this.el.sceneEl.is('ar-mode'))) {
       this.initLayer();
     }
     this.updateTransform();
@@ -29933,7 +29933,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.5.0 (Date 2024-03-18, Commit #fe238e77)');
+console.log('A-Frame Version: 1.5.0 (Date 2024-03-19, Commit #bb1e7a4e)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
