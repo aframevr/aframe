@@ -1,3 +1,4 @@
+require('./ai-model');
 require('./animation');
 require('./anchored');
 require('./camera');

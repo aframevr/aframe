@@ -1,5 +1,6 @@
 var path = require('path');
 var webpack = require('webpack');
+var NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 
 module.exports = {
   entry: './src/index.js',
@@ -29,11 +30,32 @@ module.exports = {
     new webpack.ProvidePlugin({
       process: 'process/browser',
       Buffer: ['buffer', 'Buffer']
-    })
+    }),
+    new webpack.NormalModuleReplacementPlugin(/node:/, (resource) => {
+      resource.request = resource.request.replace(/^node:/, '');
+    }),
+    new NodePolyfillPlugin()
   ],
   resolve: {
     alias: {
       three: 'super-three'
+    },
+    fallback: {
+      // fixes proxy-agent dependencies
+      crypto: false,
+      net: false,
+      dns: false,
+      tls: false,
+      assert: false,
+      http: false,
+      https: false,
+      // fixes next-i18next dependencies
+      path: false,
+      fs: false,
+      // fixes mapbox dependencies
+      events: false,
+      // fixes sentry dependencies
+      process: false
     }
   },
   module: {
