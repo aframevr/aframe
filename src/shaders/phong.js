@@ -32,6 +32,9 @@ module.exports.Shader = registerShader('phong', {
     normalTextureOffset: { type: 'vec2' },
     normalTextureRepeat: { type: 'vec2', default: { x: 1, y: 1 } },
 
+    ambientOcclusionMap: {type: 'map'},
+    ambientOcclusionMapIntensity: {default: 1},
+
     displacementMap: { type: 'map' },
     displacementScale: { default: 1 },
     displacementBias: { default: 0.5 },

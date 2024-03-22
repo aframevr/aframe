@@ -62,12 +62,16 @@ suite('material', function () {
       assert.ok(texture2.dispose.called);
     });
 
-    test('disposes texture when removing texture', function () {
-      var material = el.getObject3D('mesh').material;
-      var texture1 = {uuid: 'tex1', isTexture: true, dispose: sinon.spy()};
-      material.map = texture1;
-      el.setAttribute('material', 'map', '');
-      assert.ok(texture1.dispose.called);
+    test('disposes texture when removing texture', function (done) {
+      var imageUrl = 'base/tests/assets/test.png';
+      el.setAttribute('material', 'src: url(' + imageUrl + ')');
+      el.addEventListener('materialtextureloaded', function (evt) {
+        var loadedTexture = evt.detail.texture;
+        var disposeSpy = sinon.spy(loadedTexture, 'dispose');
+        el.setAttribute('material', 'src', '');
+        assert.ok(disposeSpy.called);
+        done();
+      });
     });
 
     test('defaults to standard material', function () {

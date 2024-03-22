@@ -82,6 +82,7 @@ function processPropertyDefinition (propDefinition, componentName) {
   isCustomType = !!propDefinition.parse;
   propDefinition.parse = propDefinition.parse || propType.parse;
   propDefinition.stringify = propDefinition.stringify || propType.stringify;
+  propDefinition.equals = propDefinition.equals || propType.equals;
 
   // Fill in type name.
   propDefinition.type = typeName;
@@ -151,15 +152,19 @@ module.exports.parseProperties = (function () {
 
 /**
  * Deserialize a single property.
+ *
+ * @param {any} value - The value to parse.
+ * @param {object} propDefinition - The single property schema for the property.
+ * @param {any} target - Optional target value to parse into (reuse).
  */
-function parseProperty (value, propDefinition) {
+function parseProperty (value, propDefinition, target) {
   // Use default value if value is falsy.
   if (value === undefined || value === null || value === '') {
     value = propDefinition.default;
     if (Array.isArray(value)) { value = value.slice(); }
   }
   // Invoke property type parser.
-  return propDefinition.parse(value, propDefinition.default);
+  return propDefinition.parse(value, propDefinition.default, target);
 }
 module.exports.parseProperty = parseProperty;
 

@@ -10,7 +10,7 @@ var urlRegex = /url\((.+)\)/;
 
 // Built-in property types.
 registerPropertyType('audio', '', assetParse);
-registerPropertyType('array', [], arrayParse, arrayStringify);
+registerPropertyType('array', [], arrayParse, arrayStringify, arrayEquals);
 registerPropertyType('asset', '', assetParse);
 registerPropertyType('boolean', false, boolParse);
 registerPropertyType('color', '#FFF', defaultParse, defaultStringify);
@@ -23,9 +23,9 @@ registerPropertyType('selectorAll', null, selectorAllParse, selectorAllStringify
 registerPropertyType('src', '', srcParse);
 registerPropertyType('string', '', defaultParse, defaultStringify);
 registerPropertyType('time', 0, intParse);
-registerPropertyType('vec2', {x: 0, y: 0}, vecParse, coordinates.stringify);
-registerPropertyType('vec3', {x: 0, y: 0, z: 0}, vecParse, coordinates.stringify);
-registerPropertyType('vec4', {x: 0, y: 0, z: 0, w: 1}, vecParse, coordinates.stringify);
+registerPropertyType('vec2', {x: 0, y: 0}, vecParse, coordinates.stringify, coordinates.equals);
+registerPropertyType('vec3', {x: 0, y: 0, z: 0}, vecParse, coordinates.stringify, coordinates.equals);
+registerPropertyType('vec4', {x: 0, y: 0, z: 0, w: 1}, vecParse, coordinates.stringify, coordinates.equals);
 
 /**
  * Register a parser for re-use such that when someone uses `type` in the schema,
@@ -36,8 +36,9 @@ registerPropertyType('vec4', {x: 0, y: 0, z: 0, w: 1}, vecParse, coordinates.str
  *   Default value to use if component does not define default value.
  * @param {function} [parse=defaultParse] - Parse string function.
  * @param {function} [stringify=defaultStringify] - Stringify to DOM function.
+ * @param {function} [equals=defaultEquals] - Equality comparator.
  */
-function registerPropertyType (type, defaultValue, parse, stringify) {
+function registerPropertyType (type, defaultValue, parse, stringify, equals) {
   if (type in propertyTypes) {
     throw new Error('Property type ' + type + ' is already registered.');
   }
@@ -45,7 +46,8 @@ function registerPropertyType (type, defaultValue, parse, stringify) {
   propertyTypes[type] = {
     default: defaultValue,
     parse: parse || defaultParse,
-    stringify: stringify || defaultStringify
+    stringify: stringify || defaultStringify,
+    equals: equals || defaultEquals
   };
 }
 module.exports.registerPropertyType = registerPropertyType;
@@ -59,6 +61,25 @@ function arrayParse (value) {
 
 function arrayStringify (value) {
   return value.join(', ');
+}
+
+function arrayEquals (a, b) {
+  if (!Array.isArray(a) || !Array.isArray(b)) {
+    return a === b;
+  }
+
+  if (a.length !== b.length) {
+    return false;
+  }
+
+  for (var i = 0; i < a.length; i++) {
+    // FIXME: Deep-equals for objects?
+    if (a[i] !== b[i]) {
+      return false;
+    }
+  }
+
+  return true;
 }
 
 /**
@@ -106,6 +127,10 @@ function defaultParse (value) {
 function defaultStringify (value) {
   if (value === null) { return 'null'; }
   return value.toString();
+}
+
+function defaultEquals (a, b) {
+  return a === b;
 }
 
 function boolParse (value) {
@@ -158,8 +183,8 @@ function srcParse (value) {
   return assetParse(value);
 }
 
-function vecParse (value) {
-  return coordinates.parse(value, this.default);
+function vecParse (value, defaultValue, target) {
+  return coordinates.parse(value, defaultValue, target);
 }
 
 /**
