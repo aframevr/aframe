@@ -57,6 +57,7 @@ class AScene extends AEntity {
     self.usedOfferSession = false;
 
     self.behaviors = {tick: [], tock: []};
+    self.behaviorIterators = {tick: -1, tock: -1};
     self.hasLoaded = false;
     self.isPlaying = false;
     self.originalHTML = self.innerHTML;
@@ -533,7 +534,12 @@ class AScene extends AEntity {
       if (!behavior[behaviorType]) { continue; }
       behaviorArr = this.behaviors[behaviorType];
       index = behaviorArr.indexOf(behavior);
-      if (index !== -1) { behaviorArr.splice(index, 1); }
+      if (index !== -1) {
+        if (index <= this.behaviorIterators[behaviorType]) {
+          this.behaviorIterators[behaviorType]--;
+        }
+        behaviorArr.splice(index, 1);
+      }
     }
   }
 
@@ -686,13 +692,15 @@ class AScene extends AEntity {
    */
   tick (time, timeDelta) {
     var i;
+    var it = this.behaviorIterators;
     var systems = this.systems;
 
     // Components.
-    for (i = 0; i < this.behaviors.tick.length; i++) {
-      if (!this.behaviors.tick[i].el.isPlaying) { continue; }
-      this.behaviors.tick[i].tick(time, timeDelta);
+    for (it.tick = 0; it.tick < this.behaviors.tick.length; it.tick++) {
+      if (!this.behaviors.tick[it.tick].el.isPlaying) { continue; }
+      this.behaviors.tick[it.tick].tick(time, timeDelta);
     }
+    it.tick = -1;
 
     // Systems.
     for (i = 0; i < this.systemNames.length; i++) {
@@ -708,13 +716,15 @@ class AScene extends AEntity {
    */
   tock (time, timeDelta, camera) {
     var i;
+    var it = this.behaviorIterators;
     var systems = this.systems;
 
     // Components.
-    for (i = 0; i < this.behaviors.tock.length; i++) {
-      if (!this.behaviors.tock[i].el.isPlaying) { continue; }
-      this.behaviors.tock[i].tock(time, timeDelta, camera);
+    for (it.tock = 0; it.tock < this.behaviors.tock.length; it.tock++) {
+      if (!this.behaviors.tock[it.tock].el.isPlaying) { continue; }
+      this.behaviors.tock[it.tock].tock(time, timeDelta, camera);
     }
+    it.tock = -1;
 
     // Systems.
     for (i = 0; i < this.systemNames.length; i++) {
