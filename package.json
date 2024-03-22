@@ -82,9 +82,9 @@
     "standardx": "^7.0.0",
     "style-loader": "^3.3.4",
     "too-wordy": "ngokevin/too-wordy",
-    "webpack": "^5.90.3",
+    "webpack": "^5.91.0",
     "webpack-cli": "^5.1.4",
-    "webpack-dev-server": "^5.0.2",
+    "webpack-dev-server": "^5.0.4",
     "write-good": "^1.0.8"
   },
   "link": true,
