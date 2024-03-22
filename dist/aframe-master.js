@@ -25082,6 +25082,7 @@ module.exports.AEntity = AEntity;
 var ANode = (__webpack_require__(/*! ./a-node */ "./src/core/a-node.js").ANode);
 var components = (__webpack_require__(/*! ./component */ "./src/core/component.js").components);
 var utils = __webpack_require__(/*! ../utils */ "./src/utils/index.js");
+var styleParser = utils.styleParser;
 var MULTIPLE_COMPONENT_DELIMITER = '__';
 
 /**
@@ -25135,7 +25136,33 @@ class AMixin extends ANode {
     if (!component) {
       return;
     }
-    this.componentCache[attr] = component.parseAttrValueForCache(value);
+    this.componentCache[attr] = this.parseComponentAttrValue(component, value);
+  }
+
+  /**
+   * Given an HTML attribute value parses the string based on the component schema.
+   * To avoid double parsing of strings when mixed into the actual component,
+   * we store the original instead of the parsed one.
+   *
+   * @param {object} component - The component to parse for.
+   * @param {string} attrValue - HTML attribute value.
+   */
+  parseComponentAttrValue(component, attrValue) {
+    var parsedValue;
+    if (typeof attrValue !== 'string') {
+      return attrValue;
+    }
+    if (component.isSingleProperty) {
+      parsedValue = component.schema.parse(attrValue);
+      if (typeof parsedValue === 'string') {
+        parsedValue = attrValue;
+      }
+    } else {
+      // Use style parser as the values will be parsed once mixed in.
+      // Furthermore parsing might fail with dynamic schema's.
+      parsedValue = styleParser.parse(attrValue);
+    }
+    return parsedValue;
   }
 
   /**
@@ -25516,7 +25543,6 @@ var scenes = __webpack_require__(/*! ./scene/scenes */ "./src/core/scene/scenes.
 var systems = __webpack_require__(/*! ./system */ "./src/core/system.js");
 var utils = __webpack_require__(/*! ../utils/ */ "./src/utils/index.js");
 var components = module.exports.components = {}; // Keep track of registered components.
-var parseProperties = schema.parseProperties;
 var parseProperty = schema.parseProperty;
 var processSchema = schema.process;
 var isSingleProp = schema.isSingleProperty;
@@ -25530,6 +25556,22 @@ var upperCaseRegExp = new RegExp('[A-Z]+');
 // Object pools by component, created upon registration.
 var objectPools = {};
 var emptyInitialOldData = Object.freeze({});
+var encounteredUnknownProperties = [];
+
+// Handler translating get/set into getComputedPropertyValue and recomputeProperty.
+var attrValueProxyHandler = {
+  get: function (target, prop) {
+    return target.getComputedPropertyValue(prop);
+  },
+  set: function (target, prop, newValue) {
+    if (prop in target.schema) {
+      target.recomputeProperty(prop, newValue);
+    } else if (newValue !== undefined) {
+      target.handleUnknownProperty(prop, newValue);
+    }
+    return true;
+  }
+};
 
 /**
  * Component class definition.
@@ -25541,8 +25583,7 @@ var emptyInitialOldData = Object.freeze({});
  *
  * @member {object} el - Reference to the entity element.
  * @member {string} attrValue - Value of the corresponding HTML attribute.
- * @member {object} data - Component data populated by parsing the
- *         mapped attribute of the component plus applying defaults and mixins.
+ * @member {string} id - Optional id for differentiating multiple instances on the same entity.
  */
 var Component = module.exports.Component = function (el, attrValue, id) {
   var self = this;
@@ -25570,24 +25611,24 @@ var Component = module.exports.Component = function (el, attrValue, id) {
   this.events = {};
   eventsBind(this, events);
 
-  // Store component data from previous update call.
+  // Allocate data and oldData.
   this.attrValue = undefined;
   if (this.isObjectBased) {
-    this.nextData = this.objectPool.use();
+    this.data = this.objectPool.use();
     // Drop any properties added by dynamic schemas in previous use
-    utils.objectPool.removeUnusedKeys(this.nextData, this.schema);
+    utils.objectPool.removeUnusedKeys(this.data, this.schema);
     this.oldData = this.objectPool.use();
     utils.objectPool.removeUnusedKeys(this.oldData, this.schema);
-    this.previousOldData = this.objectPool.use();
-    utils.objectPool.removeUnusedKeys(this.previousOldData, this.schema);
-    this.parsingAttrValue = this.objectPool.use();
-    utils.objectPool.removeUnusedKeys(this.parsingAttrValue, this.schema);
+    this.attrValueProxy = new Proxy(this, attrValueProxyHandler);
   } else {
-    this.nextData = undefined;
+    this.data = undefined;
     this.oldData = undefined;
-    this.previousOldData = undefined;
-    this.parsingAttrValue = undefined;
+    this.attrValueProxy = undefined;
   }
+
+  // Dynamic schema requires special handling of unknown properties to avoid false-positives.
+  this.deferUnknownPropertyWarnings = !!this.updateSchema;
+  this.silenceUnknownPropertyWarnings = false;
 
   // Last value passed to updateProperties.
   // This type of throttle ensures that when a burst of changes occurs, the final change to the
@@ -25596,7 +25637,9 @@ var Component = module.exports.Component = function (el, attrValue, id) {
   this.throttledEmitComponentChanged = utils.throttleLeadingAndTrailing(function emitChange() {
     el.emit('componentchanged', self.evtDetail, false);
   }, 200);
-  this.updateProperties(attrValue);
+
+  // Initial call to updateProperties, force clobber to trigger an initial computation of all properties.
+  this.updateProperties(attrValue, true);
 };
 Component.prototype = {
   /**
@@ -25624,6 +25667,13 @@ Component.prototype = {
    * @param {object} prevData - Previous attributes of the component.
    */
   update: function (prevData) {/* no-op */},
+  /**
+   * Update schema handler. Allows the component to dynamically change its schema.
+   * Called whenever a property marked as schemaChange changes.
+   * Also called on initialization when the component receives initial data.
+   *
+   * @param {object} data - The data causing the schema change
+   */
   updateSchema: undefined,
   /**
    * Tick handler.
@@ -25659,21 +25709,6 @@ Component.prototype = {
    */
   remove: function () {/* no-op */},
   /**
-   * Parses each property based on property type.
-   * If component is single-property, then parses the single property value.
-   *
-   * @param {string} value - HTML attribute value.
-   * @param {boolean} silent - Suppress warning messages.
-   * @returns {object} Component data.
-   */
-  parse: function (value, silent) {
-    var schema = this.schema;
-    if (this.isSingleProperty) {
-      return parseProperty(value, schema);
-    }
-    return parseProperties(styleParser.parse(value), schema, true, this.name, silent);
-  },
-  /**
    * Stringify properties if necessary.
    *
    * Only called from `Entity.setAttribute` for properties whose parsers accept a non-string
@@ -25692,84 +25727,6 @@ Component.prototype = {
     }
     data = stringifyProperties(data, schema);
     return styleParser.stringify(data);
-  },
-  /**
-   * Update the cache of the pre-parsed attribute value.
-   *
-   * @param {string} value - New data.
-   * @param {boolean } clobber - Whether to wipe out and replace previous data.
-   */
-  updateCachedAttrValue: function (value, clobber) {
-    var newAttrValue;
-    var tempObject;
-    var property;
-    if (value === undefined) {
-      return;
-    }
-
-    // If null value is the new attribute value, make the attribute value falsy.
-    if (value === null) {
-      if (this.isObjectBased && this.attrValue) {
-        this.objectPool.recycle(this.attrValue);
-      }
-      this.attrValue = undefined;
-      return;
-    }
-    if (value instanceof Object && !(value instanceof window.HTMLElement)) {
-      // If value is an object, copy it to our pooled newAttrValue object to use to update
-      // the attrValue.
-      tempObject = this.objectPool.use();
-      newAttrValue = utils.extend(tempObject, value);
-    } else {
-      newAttrValue = this.parseAttrValueForCache(value);
-    }
-
-    // Merge new data with previous `attrValue` if updating and not clobbering.
-    if (this.isObjectBased && !clobber && this.attrValue) {
-      for (property in this.attrValue) {
-        if (newAttrValue[property] === undefined) {
-          newAttrValue[property] = this.attrValue[property];
-        }
-      }
-    }
-
-    // Update attrValue.
-    if (this.isObjectBased && !this.attrValue) {
-      this.attrValue = this.objectPool.use();
-    }
-    utils.objectPool.clearObject(this.attrValue);
-    this.attrValue = extendProperties(this.attrValue, newAttrValue, this.isObjectBased);
-    this.objectPool.recycle(tempObject);
-  },
-  /**
-   * Given an HTML attribute value parses the string based on the component schema.
-   * To avoid double parsings of strings into strings we store the original instead
-   * of the parsed one.
-   *
-   * @param {string} value - HTML attribute value.
-   */
-  parseAttrValueForCache: function (value) {
-    var parsedValue;
-    if (typeof value !== 'string') {
-      return value;
-    }
-    if (this.isSingleProperty) {
-      parsedValue = this.schema.parse(value);
-      /**
-       * To avoid bogus double parsings. Cached values will be parsed when building
-       * component data. For instance when parsing a src id to its url, we want to cache
-       * original string and not the parsed one (#monster -> models/monster.dae)
-       * so when building data we parse the expected value.
-       */
-      if (typeof parsedValue === 'string') {
-        parsedValue = value;
-      }
-    } else {
-      // Parse using the style parser to avoid double parsing of individual properties.
-      utils.objectPool.clearObject(this.parsingAttrValue);
-      parsedValue = styleParser.parse(value, this.parsingAttrValue);
-    }
-    return parsedValue;
   },
   /**
    * Write cached attribute data to the entity DOM element.
@@ -25794,24 +25751,15 @@ Component.prototype = {
   updateProperties: function (attrValue, clobber) {
     var el = this.el;
 
+    // Update data
+    this.updateData(attrValue, clobber);
+
     // Just cache the attribute if the entity has not loaded
     // Components are not initialized until the entity has loaded
     if (!el.hasLoaded && !el.isLoading) {
-      this.updateCachedAttrValue(attrValue);
       return;
     }
-
-    // Parse the attribute value.
-    // Cache current attrValue for future updates. Updates `this.attrValue`.
-    // `null` means no value on purpose, do not set a default value, let mixins take over.
-    if (attrValue !== null) {
-      attrValue = this.parseAttrValueForCache(attrValue);
-    }
-
-    // Cache current attrValue for future updates.
-    this.updateCachedAttrValue(attrValue, clobber);
     if (this.initialized) {
-      this.updateComponent(attrValue, clobber);
       this.callUpdateHandler();
     } else {
       this.initComponent();
@@ -25821,13 +25769,7 @@ Component.prototype = {
     var el = this.el;
     var initialOldData;
 
-    // Build data.
-    if (this.updateSchema) {
-      this.updateSchema(this.buildData(this.attrValue, false, true));
-    }
-    this.data = this.buildData(this.attrValue);
-
-    // Component is being already initialized.
+    // Component is already being initialized.
     if (el.initializingComponents[this.name]) {
       return;
     }
@@ -25839,12 +25781,12 @@ Component.prototype = {
     this.initialized = true;
     delete el.initializingComponents[this.name];
 
-    // Store current data as previous data for future updates.
-    this.oldData = extendProperties(this.oldData, this.data, this.isObjectBased);
-
     // For oldData, pass empty object to multiple-prop schemas or object single-prop schema.
     // Pass undefined to rest of types.
     initialOldData = this.isObjectBased ? emptyInitialOldData : undefined;
+    // Unset dataChanged before calling update, as update might (indirectly) trigger a change
+    this.dataChanged = false;
+    this.storeOldData();
     this.update(initialOldData);
 
     // Play the component if the entity is playing.
@@ -25854,93 +25796,81 @@ Component.prototype = {
     el.emit('componentinitialized', this.evtDetail, false);
   },
   /**
-   * @param attrValue - Passed argument from setAttribute.
+   * @param {string|object} attrValue - Passed argument from setAttribute.
+   * @param {bool} clobber - Whether or not to overwrite previous data by the attrValue.
    */
-  updateComponent: function (attrValue, clobber) {
-    var key;
-    var mayNeedSchemaUpdate;
+  updateData: function (attrValue, clobber) {
+    // Single property (including object based single property)
+    if (this.isSingleProperty) {
+      this.recomputeProperty(undefined, attrValue);
+      return;
+    }
+
+    // Multi-property
     if (clobber) {
       // Clobber. Rebuild.
-      if (this.updateSchema) {
-        this.updateSchema(this.buildData(this.attrValue, true, true));
-      }
-      this.data = this.buildData(this.attrValue, true, false);
-      return;
+      utils.objectPool.clearObject(this.attrValue);
+      this.recomputeData(attrValue);
+      // Quirk: always update schema when clobbering, even if there are no schemaChange properties in schema.
+      this.schemaChangeRequired = !!this.updateSchema;
+    } else if (typeof attrValue === 'string') {
+      // AttrValue is a style string, parse it into the attrValueProxy object
+      styleParser.parse(attrValue, this.attrValueProxy);
+    } else {
+      // AttrValue is an object, apply it to the attrValueProxy object
+      utils.extend(this.attrValueProxy, attrValue);
     }
 
-    // Apply new value to this.data in place since direct update.
-    if (this.isSingleProperty) {
-      if (this.isObjectBased) {
-        parseProperty(attrValue, this.schema);
+    // Update schema if needed
+    this.updateSchemaIfNeeded(attrValue);
+  },
+  updateSchemaIfNeeded: function (attrValue) {
+    if (!this.schemaChangeRequired || !this.updateSchema) {
+      // Log any pending unknown property warning
+      for (var i = 0; i < encounteredUnknownProperties.length; i++) {
+        warn('Unknown property `' + encounteredUnknownProperties[i] + '` for component `' + this.name + '`.');
       }
-      // Single-property (already parsed).
-      this.data = attrValue;
+      encounteredUnknownProperties.length = 0;
       return;
     }
-    parseProperties(attrValue, this.schema, true, this.name);
-
-    // Check if we need to update schema.
-    if (this.schemaChangeKeys.length) {
-      for (key in attrValue) {
-        if (key in this.schema && this.schema[key].schemaChange) {
-          mayNeedSchemaUpdate = true;
-          break;
-        }
-      }
-    }
-    if (mayNeedSchemaUpdate) {
-      // Rebuild data if need schema update.
-      if (this.updateSchema) {
-        this.updateSchema(this.buildData(this.attrValue, true, true));
-      }
-      this.data = this.buildData(this.attrValue, true, false);
-      return;
-    }
-
-    // Normal update.
-    for (key in attrValue) {
-      if (attrValue[key] === undefined) {
-        continue;
-      }
-      this.data[key] = attrValue[key];
-    }
+    encounteredUnknownProperties.length = 0;
+    this.updateSchema(this.data);
+    utils.objectPool.removeUnusedKeys(this.data, this.schema);
+    this.silenceUnknownPropertyWarnings = true;
+    this.recomputeData(attrValue);
+    this.silenceUnknownPropertyWarnings = false;
+    this.schemaChangeRequired = false;
   },
   /**
    * Check if component should fire update and fire update lifecycle handler.
    */
   callUpdateHandler: function () {
-    var hasComponentChanged;
-
-    // Store the previous old data before we calculate the new oldData.
-    if (this.previousOldData instanceof Object) {
-      utils.objectPool.clearObject(this.previousOldData);
-    }
-    if (this.isObjectBased) {
-      copyData(this.previousOldData, this.oldData);
-    } else {
-      this.previousOldData = this.oldData;
-    }
-    hasComponentChanged = !utils.deepEqual(this.oldData, this.data);
-
     // Don't update if properties haven't changed.
     // Always update rotation, position, scale.
-    if (!this.isPositionRotationScale && !hasComponentChanged) {
+    if (!this.isPositionRotationScale && !this.dataChanged) {
       return;
     }
 
-    // Store current data as previous data for future updates.
-    // Reuse `this.oldData` object to try not to allocate another one.
-    if (this.oldData instanceof Object) {
-      utils.objectPool.clearObject(this.oldData);
-    }
-    this.oldData = extendProperties(this.oldData, this.data, this.isObjectBased);
+    // Unset dataChanged before calling update, as update might (indirectly) trigger a change
+    this.dataChanged = false;
 
-    // Update component with the previous old data.
-    this.update(this.previousOldData);
+    // Flag oldData in use while inside `update()`
+    var oldData = this.oldData;
+    this.oldDataInUse = true;
+    this.update(oldData);
+    if (oldData !== this.oldData) {
+      // Recursive update replaced oldData, so clean up our copy.
+      this.objectPool.recycle(oldData);
+    }
+    this.oldDataInUse = false;
+
+    // Update oldData to match current data state for next update
+    this.storeOldData();
     this.throttledEmitComponentChanged();
   },
   handleMixinUpdate: function () {
-    this.data = this.buildData(this.attrValue);
+    this.recomputeData();
+    this.updateSchemaIfNeeded();
     this.callUpdateHandler();
   },
   /**
@@ -25950,17 +25880,23 @@ Component.prototype = {
    * @param {string} propertyName - Name of property to reset.
    */
   resetProperty: function (propertyName) {
-    if (this.isObjectBased) {
-      if (!(propertyName in this.attrValue)) {
-        return;
-      }
-      delete this.attrValue[propertyName];
-      this.data[propertyName] = this.schema[propertyName].default;
-    } else {
-      this.attrValue = this.schema.default;
-      this.data = this.schema.default;
+    if (!this.isSingleProperty && !(propertyName in this.schema)) {
+      return;
     }
-    this.updateProperties(this.attrValue);
+
+    // Reset attrValue for single- and multi-property components
+    if (propertyName) {
+      this.attrValue[propertyName] = undefined;
+    } else {
+      // Return attrValue for object based single property components
+      if (this.isObjectBased) {
+        this.objectPool.recycle(this.attrValue);
+      }
+      this.attrValue = undefined;
+    }
+    this.recomputeProperty(propertyName, undefined);
+    this.updateSchemaIfNeeded();
+    this.callUpdateHandler();
   },
   /**
    * Extend schema of component given a partial schema.
@@ -25980,92 +25916,174 @@ Component.prototype = {
     this.schema = processSchema(extendedSchema);
     this.el.emit('schemachanged', this.evtDetail);
   },
-  /**
-   * Build component data from the current state of the entity.data.
-   *
-   * Precedence:
-   * 1. Defaults data
-   * 2. Mixin data.
-   * 3. Attribute data.
-   *
-   * Finally coerce the data to the types of the defaults.
-   *
-   * @param {object} newData - Element new data.
-   * @param {boolean} clobber - The previous data is completely replaced by the new one.
-   * @param {boolean} silent - Suppress warning messages.
-   * @return {object} The component data.
-   */
-  buildData: function (newData, clobber, silent) {
-    var componentDefined;
-    var data;
-    var defaultValue;
-    var key;
-    var mixinData;
-    var nextData = this.nextData;
-    var schema = this.schema;
-    var i;
+  getComputedPropertyValue: function (key) {
     var mixinEls = this.el.mixinEls;
-    var previousData;
 
-    // Whether component has a defined value. For arrays, treat empty as not defined.
-    componentDefined = newData && newData.constructor === Array ? newData.length : newData !== undefined && newData !== null;
-    if (this.isObjectBased) {
-      utils.objectPool.clearObject(nextData);
+    // Defined as attribute on entity
+    var attrValue = this.attrValue && key ? this.attrValue[key] : this.attrValue;
+    if (attrValue !== undefined) {
+      return attrValue;
     }
 
-    // 1. Gather default values (lowest precedence).
-    if (this.isSingleProperty) {
-      if (this.isObjectBased) {
-        // If object-based single-prop, then copy over the data to our pooled object.
-        data = copyData(nextData, schema.default);
-      } else {
-        // If is plain single-prop, copy by value the default.
-        data = isObjectOrArray(schema.default) ? utils.clone(schema.default) : schema.default;
-      }
-    } else {
-      // Preserve previously set properties if clobber not enabled.
-      previousData = !clobber && this.attrValue;
-
-      // Clone default value if object so components don't share object
-      data = previousData instanceof Object ? copyData(nextData, previousData) : nextData;
-      // Apply defaults.
-      for (key in schema) {
-        defaultValue = schema[key].default;
-        if (data[key] !== undefined) {
-          continue;
-        }
-        // Clone default value if object so components don't share object
-        data[key] = isObjectOrArray(defaultValue) ? utils.clone(defaultValue) : defaultValue;
-      }
-    }
-
-    // 2. Gather mixin values.
-    for (i = 0; i < mixinEls.length; i++) {
-      mixinData = mixinEls[i].getAttribute(this.attrName);
-      if (!mixinData) {
+    // Inherited from mixin
+    for (var i = mixinEls.length - 1; i >= 0; i--) {
+      var mixinData = mixinEls[i].getAttribute(this.attrName);
+      if (mixinData === null || key && !(key in mixinData)) {
         continue;
       }
-      data = extendProperties(data, mixinData, this.isObjectBased);
+      return key ? mixinData[key] : mixinData;
     }
 
-    // 3. Gather attribute values (highest precedence).
-    if (componentDefined) {
-      if (this.isSingleProperty) {
-        // If object-based, copy the value to not modify the original.
-        if (isObject(newData)) {
-          copyData(this.parsingAttrValue, newData);
-          return parseProperty(this.parsingAttrValue, schema);
-        }
-        return parseProperty(newData, schema);
+    // Schema default
+    var schemaDefault = key ? this.schema[key].default : this.schema.default;
+    return schemaDefault;
+  },
+  recomputeProperty: function (key, newValue) {
+    var propertySchema = key ? this.schema[key] : this.schema;
+    if (newValue !== undefined && newValue !== null) {
+      // Initialize attrValue ad-hoc as it's the return value of getDOMAttribute
+      // and is expected to be undefined until a property has been set.
+      if (this.attrValue === undefined && this.isObjectBased) {
+        this.attrValue = this.objectPool.use();
       }
-      data = extendProperties(data, newData, this.isObjectBased);
-    } else {
-      // Parse and coerce using the schema.
-      if (this.isSingleProperty) {
-        return parseProperty(data, schema);
+
+      // Parse the new value into attrValue (re-using objects where possible)
+      var newAttrValue = key ? this.attrValue[key] : this.attrValue;
+      newAttrValue = parseProperty(newValue, propertySchema, newAttrValue);
+      // In case the output is a string, store the unparsed value (no double parsing and helps inspector)
+      if (typeof newAttrValue === 'string') {
+        // Quirk: empty strings aren't considered values for single-property schemas
+        newAttrValue = newValue === '' ? undefined : newValue;
+      }
+      // Update attrValue with new, possibly parsed, value.
+      if (key) {
+        this.attrValue[key] = newAttrValue;
+      } else {
+        this.attrValue = newAttrValue;
       }
     }
-    return parseProperties(data, schema, false, this.name, silent);
+
+    // Quirk: recursive updates keep this.oldData in use, meaning oldData isn't up-to-date yet.
+    // Before the first change to data is made, provision a new oldData and update it.
+    // Cleanup of orphaned oldData objects is handled in callUpdateHandler.
+    if (this.oldDataInUse) {
+      this.oldData = this.objectPool.use();
+      utils.objectPool.removeUnusedKeys(this.oldData, this.schema);
+      this.storeOldData();
+      this.oldDataInUse = false;
+    }
+    var oldComputedValue = key ? this.oldData[key] : this.oldData;
+    var targetValue = key ? this.data[key] : this.data;
+    var newComputedValue = parseProperty(this.getComputedPropertyValue(key), propertySchema, targetValue);
+    // Quirk: Single-property arrays DO NOT share references, while arrays in multi-property components do.
+    if (propertySchema.type === 'array' && !key) {
+      newComputedValue = utils.clone(newComputedValue);
+    }
+
+    // Check if the resulting (parsed) value differs from before
+    if (!propertySchema.equals(newComputedValue, oldComputedValue)) {
+      this.dataChanged = true;
+
+      // Mark schema change required
+      if (propertySchema.schemaChange) {
+        this.schemaChangeRequired = true;
+      }
+    }
+
+    // Update data with the newly computed value.
+    if (key) {
+      this.data[key] = newComputedValue;
+    } else {
+      this.data = newComputedValue;
+    }
+    return newComputedValue;
+  },
+  handleUnknownProperty: function (key, newValue) {
+    // Persist the raw value on attrValue
+    if (this.attrValue === undefined) {
+      this.attrValue = this.objectPool.use();
+    }
+    this.attrValue[key] = newValue;
+
+    // Handle warning the user about the unknown property.
+    // Since a component might have a dynamic schema, the warning might be
+    // silenced or deferred to avoid false-positives.
+    if (!this.silenceUnknownPropertyWarnings) {
+      // Not silenced, so either deferred or logged.
+      if (this.deferUnknownPropertyWarnings) {
+        encounteredUnknownProperties.push(key);
+      } else if (!this.silenceUnknownPropertyWarnings) {
+        warn('Unknown property `' + key + '` for component `' + this.name + '`.');
+      }
+    }
+  },
+  /**
+   * Updates oldData to the current state of data taking care to
+   * copy and clone objects where necessary.
+   */
+  storeOldData: function () {
+    // Non object based single properties
+    if (!this.isObjectBased) {
+      this.oldData = this.data;
+      return;
+    }
+
+    // Object based single property
+    if (this.isSingleProperty) {
+      this.oldData = parseProperty(this.data, this.schema, this.oldData);
+      return;
+    }
+
+    // Object based
+    var key;
+    for (key in this.schema) {
+      if (this.data[key] === undefined) {
+        continue;
+      }
+      if (this.data[key] && typeof this.data[key] === 'object') {
+        this.oldData[key] = parseProperty(this.data[key], this.schema[key], this.oldData[key]);
+      } else {
+        this.oldData[key] = this.data[key];
+      }
+    }
+  },
+  /**
+   * Triggers a recompute of the data object.
+   *
+   * @param {string|object} attrValue - Optional additional data updates
+   */
+  recomputeData: function (attrValue) {
+    var key;
+    if (this.isSingleProperty) {
+      this.recomputeProperty(undefined, attrValue);
+      return;
+    }
+    if (attrValue && typeof attrValue === 'object') {
+      for (key in this.schema) {
+        this.attrValueProxy[key] = attrValue[key];
+      }
+    } else {
+      for (key in this.schema) {
+        this.attrValueProxy[key] = undefined;
+      }
+    }
+    if (typeof attrValue === 'string') {
+      // AttrValue is a style string, parse it into the attrValueProxy object
+      styleParser.parse(attrValue, this.attrValueProxy);
+    }
+
+    // Report any unknown properties
+    for (key in this.attrValue) {
+      if (this.attrValue[key] === undefined) {
+        continue;
+      }
+      if (encounteredUnknownProperties.indexOf(key) === -1) {
+        continue;
+      }
+      if (!(key in this.schema)) {
+        warn('Unknown property `' + key + '` for component `' + this.name + '`.');
+      }
+    }
   },
   /**
    * Attach events from component-defined events map.
@@ -26092,11 +26110,9 @@ Component.prototype = {
    */
   destroy: function () {
     this.objectPool.recycle(this.attrValue);
-    this.objectPool.recycle(this.nextData);
+    this.objectPool.recycle(this.data);
     this.objectPool.recycle(this.oldData);
-    this.objectPool.recycle(this.previousOldData);
-    this.objectPool.recycle(this.parsingAttrValue);
-    this.nextData = this.attrValue = this.oldData = this.previousOldData = this.parsingAttrValue = undefined;
+    this.attrValue = this.data = this.oldData = this.attrValueProxy = undefined;
   }
 };
 function eventsBind(component, events) {
@@ -26120,11 +26136,9 @@ if (window.debug) {
  */
 module.exports.registerComponent = function (name, definition) {
   var NewComponent;
-  var propertyName;
   var proto = {};
   var schema;
   var schemaIsSingleProp;
-  var isSinglePropertyObject;
 
   // Warning if component is statically registered after the scene.
   if (document.currentScript && document.currentScript !== aframeScript) {
@@ -26175,17 +26189,7 @@ module.exports.registerComponent = function (name, definition) {
   NewComponent.prototype.pause = wrapPause(NewComponent.prototype.pause);
   schema = utils.extend(processSchema(NewComponent.prototype.schema, NewComponent.prototype.name));
   NewComponent.prototype.isSingleProperty = schemaIsSingleProp = isSingleProp(NewComponent.prototype.schema);
-  NewComponent.prototype.isSinglePropertyObject = isSinglePropertyObject = schemaIsSingleProp && isObject(parseProperty(undefined, schema)) && !(schema.default instanceof window.HTMLElement);
-  NewComponent.prototype.isObjectBased = !schemaIsSingleProp || isSinglePropertyObject;
-  // Keep track of keys that may potentially change the schema.
-  if (!schemaIsSingleProp) {
-    NewComponent.prototype.schemaChangeKeys = [];
-    for (propertyName in schema) {
-      if (schema[propertyName].schemaChange) {
-        NewComponent.prototype.schemaChangeKeys.push(propertyName);
-      }
-    }
-  }
+  NewComponent.prototype.isObjectBased = !schemaIsSingleProp || schemaIsSingleProp && (isObject(schema.default) || isObject(parseProperty(undefined, schema)));
 
   // Create object pool for class of components.
   objectPools[name] = utils.objectPool.createPool();
@@ -26193,65 +26197,15 @@ module.exports.registerComponent = function (name, definition) {
     Component: NewComponent,
     dependencies: NewComponent.prototype.dependencies,
     isSingleProperty: NewComponent.prototype.isSingleProperty,
-    isSinglePropertyObject: NewComponent.prototype.isSinglePropertyObject,
     isObjectBased: NewComponent.prototype.isObjectBased,
     multiple: NewComponent.prototype.multiple,
     sceneOnly: NewComponent.prototype.sceneOnly,
     name: name,
-    parse: NewComponent.prototype.parse,
-    parseAttrValueForCache: NewComponent.prototype.parseAttrValueForCache,
     schema: schema,
-    stringify: NewComponent.prototype.stringify,
-    type: NewComponent.prototype.type
+    stringify: NewComponent.prototype.stringify
   };
   return NewComponent;
 };
-
-/**
-* Clone component data.
-* Clone only the properties that are plain objects while keeping a reference for the rest.
-*
-* @param data - Component data to clone.
-* @returns Cloned data.
-*/
-function copyData(dest, sourceData) {
-  var parsedProperty;
-  var key;
-  for (key in sourceData) {
-    if (sourceData[key] === undefined) {
-      continue;
-    }
-    parsedProperty = sourceData[key];
-    dest[key] = isObjectOrArray(parsedProperty) ? utils.clone(parsedProperty) : parsedProperty;
-  }
-  return dest;
-}
-
-/**
-* Object extending with checking for single-property schema.
-*
-* @param dest - Destination object or value.
-* @param source - Source object or value.
-* @param {boolean} isObjectBased - Whether values are objects.
-* @returns Overridden object or value.
-*/
-function extendProperties(dest, source, isObjectBased) {
-  var key;
-  if (isObjectBased && source.constructor === Object) {
-    for (key in source) {
-      if (source[key] === undefined) {
-        continue;
-      }
-      if (source[key] && source[key].constructor === Object) {
-        dest[key] = utils.clone(source[key]);
-      } else {
-        dest[key] = source[key];
-      }
-    }
-    return dest;
-  }
-  return source;
-}
 
 /**
  * Checks if a component has defined a method that needs to run every frame.
@@ -26308,9 +26262,6 @@ function wrapPlay(playMethod) {
 }
 function isObject(value) {
   return value && value.constructor === Object && !(value instanceof window.HTMLElement);
-}
-function isObjectOrArray(value) {
-  return value && (value.constructor === Object || value.constructor === Array) && !(value instanceof window.HTMLElement);
 }
 
 /***/ }),
@@ -26409,7 +26360,7 @@ var urlRegex = /url\((.+)\)/;
 
 // Built-in property types.
 registerPropertyType('audio', '', assetParse);
-registerPropertyType('array', [], arrayParse, arrayStringify);
+registerPropertyType('array', [], arrayParse, arrayStringify, arrayEquals);
 registerPropertyType('asset', '', assetParse);
 registerPropertyType('boolean', false, boolParse);
 registerPropertyType('color', '#FFF', defaultParse, defaultStringify);
@@ -26425,18 +26376,18 @@ registerPropertyType('time', 0, intParse);
 registerPropertyType('vec2', {
   x: 0,
   y: 0
-}, vecParse, coordinates.stringify);
+}, vecParse, coordinates.stringify, coordinates.equals);
 registerPropertyType('vec3', {
   x: 0,
   y: 0,
   z: 0
-}, vecParse, coordinates.stringify);
+}, vecParse, coordinates.stringify, coordinates.equals);
 registerPropertyType('vec4', {
   x: 0,
   y: 0,
   z: 0,
   w: 1
-}, vecParse, coordinates.stringify);
+}, vecParse, coordinates.stringify, coordinates.equals);
 
 /**
  * Register a parser for re-use such that when someone uses `type` in the schema,
@@ -26447,15 +26398,17 @@ registerPropertyType('vec4', {
  *   Default value to use if component does not define default value.
  * @param {function} [parse=defaultParse] - Parse string function.
  * @param {function} [stringify=defaultStringify] - Stringify to DOM function.
+ * @param {function} [equals=defaultEquals] - Equality comparator.
  */
-function registerPropertyType(type, defaultValue, parse, stringify) {
+function registerPropertyType(type, defaultValue, parse, stringify, equals) {
   if (type in propertyTypes) {
     throw new Error('Property type ' + type + ' is already registered.');
   }
   propertyTypes[type] = {
     default: defaultValue,
     parse: parse || defaultParse,
-    stringify: stringify || defaultStringify
+    stringify: stringify || defaultStringify,
+    equals: equals || defaultEquals
   };
 }
 module.exports.registerPropertyType = registerPropertyType;
@@ -26473,6 +26426,21 @@ function arrayParse(value) {
 }
 function arrayStringify(value) {
   return value.join(', ');
+}
+function arrayEquals(a, b) {
+  if (!Array.isArray(a) || !Array.isArray(b)) {
+    return a === b;
+  }
+  if (a.length !== b.length) {
+    return false;
+  }
+  for (var i = 0; i < a.length; i++) {
+    // FIXME: Deep-equals for objects?
+    if (a[i] !== b[i]) {
+      return false;
+    }
+  }
+  return true;
 }
 
 /**
@@ -26525,6 +26493,9 @@ function defaultStringify(value) {
   }
   return value.toString();
 }
+function defaultEquals(a, b) {
+  return a === b;
+}
 function boolParse(value) {
   return value !== 'false' && value !== false;
 }
@@ -26575,8 +26546,8 @@ function srcParse(value) {
   warn('`src` property type is deprecated. Use `asset` instead.');
   return assetParse(value);
 }
-function vecParse(value) {
-  return coordinates.parse(value, this.default);
+function vecParse(value, defaultValue, target) {
+  return coordinates.parse(value, defaultValue, target);
 }
 
 /**
@@ -28017,6 +27988,7 @@ function processPropertyDefinition(propDefinition, componentName) {
   isCustomType = !!propDefinition.parse;
   propDefinition.parse = propDefinition.parse || propType.parse;
   propDefinition.stringify = propDefinition.stringify || propType.stringify;
+  propDefinition.equals = propDefinition.equals || propType.equals;
 
   // Fill in type name.
   propDefinition.type = typeName;
@@ -28084,8 +28056,12 @@ module.exports.parseProperties = function () {
 
 /**
  * Deserialize a single property.
+ *
+ * @param {any} value - The value to parse.
+ * @param {object} propDefinition - The single property schema for the property.
+ * @param {any} target - Optional target value to parse into (reuse).
  */
-function parseProperty(value, propDefinition) {
+function parseProperty(value, propDefinition, target) {
   // Use default value if value is falsy.
   if (value === undefined || value === null || value === '') {
     value = propDefinition.default;
@@ -28094,7 +28070,7 @@ function parseProperty(value, propDefinition) {
     }
   }
   // Invoke property type parser.
-  return propDefinition.parse(value, propDefinition.default);
+  return propDefinition.parse(value, propDefinition.default, target);
 }
 module.exports.parseProperty = parseProperty;
 
@@ -29933,7 +29909,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.5.0 (Date 2024-03-19, Commit #bb1e7a4e)');
+console.log('A-Frame Version: 1.5.0 (Date 2024-03-22, Commit #db5c85d1)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -30370,6 +30346,12 @@ module.exports.Shader = registerShader('phong', {
         x: 1,
         y: 1
       }
+    },
+    ambientOcclusionMap: {
+      type: 'map'
+    },
+    ambientOcclusionMapIntensity: {
+      default: 1
     },
     displacementMap: {
       type: 'map'
@@ -32371,15 +32353,16 @@ var whitespaceRegex = /\s+/g;
  * Example: "3 10 -5" to {x: 3, y: 10, z: -5}.
  *
  * @param {string} val - An "x y z" string.
- * @param {string} defaults - fallback value.
+ * @param {string} defaultVec - fallback value.
+ * @param {object} target - Optional target object for coordinates.
  * @returns {object} An object with keys [x, y, z].
  */
-function parse(value, defaultVec) {
+function parse(value, defaultVec, target) {
   var coordinate;
   var defaultVal;
   var key;
   var i;
-  var vec;
+  var vec = target && typeof target === 'object' ? target : {};
   var x;
   var y;
   var z;
@@ -32390,24 +32373,23 @@ function parse(value, defaultVec) {
     z = value.z === undefined ? defaultVec && defaultVec.z : value.z;
     w = value.w === undefined ? defaultVec && defaultVec.w : value.w;
     if (x !== undefined && x !== null) {
-      value.x = parseIfString(x);
+      vec.x = parseIfString(x);
     }
     if (y !== undefined && y !== null) {
-      value.y = parseIfString(y);
+      vec.y = parseIfString(y);
     }
     if (z !== undefined && z !== null) {
-      value.z = parseIfString(z);
+      vec.z = parseIfString(z);
     }
     if (w !== undefined && w !== null) {
-      value.w = parseIfString(w);
+      vec.w = parseIfString(w);
     }
-    return value;
+    return vec;
   }
   if (value === null || value === undefined) {
-    return typeof defaultVec === 'object' ? Object.assign({}, defaultVec) : defaultVec;
+    return typeof defaultVec === 'object' ? Object.assign(vec, defaultVec) : defaultVec;
   }
   coordinate = value.trim().split(whitespaceRegex);
-  vec = {};
   for (i = 0; i < COORDINATE_KEYS.length; i++) {
     key = COORDINATE_KEYS[i];
     if (coordinate[i]) {
@@ -32446,6 +32428,21 @@ function stringify(data) {
   return str;
 }
 module.exports.stringify = stringify;
+
+/**
+ * Compares the values of two coordinates to check equality.
+ *
+ * @param {object|string} a - An object with keys [x y z].
+ * @param {object|string} b - An object with keys [x y z].
+ * @returns {boolean} True if both coordinates are equal, false otherwise
+ */
+function equals(a, b) {
+  if (typeof a !== 'object' || typeof b !== 'object') {
+    return a === b;
+  }
+  return a.x === b.x && a.y === b.y && a.z === b.z && a.w === b.w;
+}
+module.exports.equals = equals;
 
 /**
  * @returns {bool}
@@ -34033,7 +34030,7 @@ module.exports.parse = function (value, obj) {
   if (parsedData['']) {
     return value;
   }
-  return transformKeysToCamelCase(parsedData);
+  return parsedData;
 };
 
 /**
@@ -34059,28 +34056,6 @@ function toCamelCase(str) {
   return str.replace(DASH_REGEX, upperCase);
 }
 module.exports.toCamelCase = toCamelCase;
-
-/**
- * Converts object's keys from hyphens to camelCase (e.g., `max-value` to
- * `maxValue`).
- *
- * @param {object} obj - The object to camelCase keys.
- * @return {object} The object with keys camelCased.
- */
-function transformKeysToCamelCase(obj) {
-  var camelKey;
-  var key;
-  for (key in obj) {
-    camelKey = toCamelCase(key);
-    if (key === camelKey) {
-      continue;
-    }
-    obj[camelKey] = obj[key];
-    delete obj[key];
-  }
-  return obj;
-}
-module.exports.transformKeysToCamelCase = transformKeysToCamelCase;
 
 /**
  * Split a string into chunks matching `<key>: <value>`
@@ -34139,7 +34114,7 @@ function styleParse(str, obj) {
     pos = item.indexOf(':');
     key = item.substr(0, pos).trim();
     val = item.substr(pos + 1).trim();
-    obj[key] = val;
+    obj[toCamelCase(key)] = val;
   }
   return obj;
 }
