@@ -16755,12 +16755,12 @@ module.exports.Component = registerComponent('obj-model', {
     this.loadObj(data.obj, data.mtl);
   },
   remove: function () {
-    if (!this.model) {
-      return;
-    }
     this.resetMesh();
   },
   resetMesh: function () {
+    if (!this.model) {
+      return;
+    }
     this.el.removeObject3D('mesh');
   },
   loadObj: function (objUrl, mtlUrl) {
@@ -29909,7 +29909,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.5.0 (Date 2024-03-22, Commit #db5c85d1)');
+console.log('A-Frame Version: 1.5.0 (Date 2024-03-23, Commit #ede20aec)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
