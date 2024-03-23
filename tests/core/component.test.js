@@ -874,6 +874,18 @@ suite('Component', function () {
       assert.equal(el.getAttribute('dummy').color, 'green');
       sinon.assert.calledOnce(initCanaryStub);
     });
+
+    test('initializes numeric single-property with default value', function () {
+      var el = this.el;
+      registerComponent('dummy', {
+        schema: {type: 'number', default: 10},
+        init: function () {
+          assert.equal(this.data, 10);
+        }
+      });
+      el.setAttribute('dummy', '');
+      assert.equal(el.getAttribute('dummy'), 10);
+    });
   });
 
   suite('update', function () {
@@ -1041,6 +1053,24 @@ suite('Component', function () {
       });
       el.setAttribute('dummy', 'color: red');
       assert.equal(el.getAttribute('dummy').color, 'green');
+    });
+
+    test('parses asset property type in single property components', function () {
+      var el = this.el;
+      var assetsEl = el.sceneEl.querySelector('a-assets');
+      var assetItemEl = document.createElement('a-asset-item');
+      assetItemEl.setAttribute('id', 'model');
+      assetItemEl.setAttribute('src', 'url-to-model');
+      assetsEl.appendChild(assetItemEl);
+
+      registerComponent('dummy', {
+        schema: {type: 'asset'}
+      });
+
+      el.setAttribute('dummy', '');
+      assert.equal(el.getAttribute('dummy'), '');
+      el.setAttribute('dummy', '#model');
+      assert.equal(el.getAttribute('dummy'), 'url-to-model');
     });
   });
 
