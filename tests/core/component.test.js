@@ -874,6 +874,18 @@ suite('Component', function () {
       assert.equal(el.getAttribute('dummy').color, 'green');
       sinon.assert.calledOnce(initCanaryStub);
     });
+
+    test('initializes numeric single-property with default value', function () {
+      var el = this.el;
+      registerComponent('dummy', {
+        schema: {type: 'number', default: 10},
+        init: function () {
+          assert.equal(this.data, 10);
+        }
+      });
+      el.setAttribute('dummy', '');
+      assert.equal(el.getAttribute('dummy'), 10);
+    });
   });
 
   suite('update', function () {
@@ -908,6 +920,37 @@ suite('Component', function () {
       component.updateProperties({list: ['b']});
       component.updateProperties({list: ['b']});
       sinon.assert.calledOnce(updateStub);
+      assert.deepEqual(component.data.list, ['b']);
+    });
+
+    test('supports array property on entity creation', function (done) {
+      entityFactory();
+      registerComponent('dummy', {
+        schema: { list: {type: 'array', default: ['a']} }
+      });
+      var scene = document.querySelector('a-scene');
+      var el2 = document.createElement('a-entity');
+      el2.setAttribute('dummy', { list: ['b', 'c', 'd'] });
+      el2.addEventListener('componentinitialized', evt => {
+        assert.deepEqual(el2.components.dummy.data.list, ['b', 'c', 'd']);
+        done();
+      });
+      scene.appendChild(el2);
+    });
+
+    test('supports array property in single property schema on entity creation', function (done) {
+      entityFactory();
+      registerComponent('dummy', {
+        schema: {type: 'array', default: ['a']}
+      });
+      var scene = document.querySelector('a-scene');
+      var el2 = document.createElement('a-entity');
+      el2.setAttribute('dummy', ['b', 'c', 'd']);
+      el2.addEventListener('componentinitialized', () => {
+        assert.deepEqual(el2.components.dummy.data, ['b', 'c', 'd']);
+        done();
+      });
+      scene.appendChild(el2);
     });
 
     test('emit componentchanged when update calls setAttribute', function (done) {
@@ -1041,6 +1084,24 @@ suite('Component', function () {
       });
       el.setAttribute('dummy', 'color: red');
       assert.equal(el.getAttribute('dummy').color, 'green');
+    });
+
+    test('parses asset property type in single property components', function () {
+      var el = this.el;
+      var assetsEl = el.sceneEl.querySelector('a-assets');
+      var assetItemEl = document.createElement('a-asset-item');
+      assetItemEl.setAttribute('id', 'model');
+      assetItemEl.setAttribute('src', 'url-to-model');
+      assetsEl.appendChild(assetItemEl);
+
+      registerComponent('dummy', {
+        schema: {type: 'asset'}
+      });
+
+      el.setAttribute('dummy', '');
+      assert.equal(el.getAttribute('dummy'), '');
+      el.setAttribute('dummy', '#model');
+      assert.equal(el.getAttribute('dummy'), 'url-to-model');
     });
   });
 
