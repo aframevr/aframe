@@ -8,6 +8,20 @@ suite('isTablet', function () {
     assert.ok(device.isTablet(nexus7));
     assert.ok(device.isTablet(nexus9));
   });
+
+  test('is true for iPad', function () {
+    var iPadUserAgent = 'Mozilla/5.0 (iPad; CPU OS 11_0 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A5341f Safari/604.1';
+    var platform = 'iPad';
+    var maxTouchPoints = 5; // Assuming iPad has touch points
+    assert.ok(device.isTablet(iPadUserAgent, platform, maxTouchPoints));
+  });
+
+  test('is true for MacIntel with touch capabilities', function () {
+    var macUserAgent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.2 Safari/605.1.15';
+    var platform = 'MacIntel';
+    var maxTouchPoints = 5; // Simulate a Mac with touch capabilities
+    assert.ok(device.isTablet(macUserAgent, platform, maxTouchPoints));
+  });
 });
 
 suite('environment', function () {
