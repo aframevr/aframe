@@ -124,10 +124,10 @@ module.exports.isMobile = isMobile;
 function isTablet (mockUserAgent) {
   var userAgent = mockUserAgent || window.navigator.userAgent;
 
-  var isTablet = /ipad|Nexus (7|9)|xoom|sch-i800|playbook|tablet|kindle/i.test(userAgent);
+  var _isTablet = /ipad|Nexus (7|9)|xoom|sch-i800|playbook|tablet|kindle/i.test(userAgent);
 
   // Additional check for iPad or MacIntel with touch capabilities and not an MSStream device
-  return isTablet || isIpad();
+  return _isTablet || isIpad();
 }
 module.exports.isTablet = isTablet;
 
