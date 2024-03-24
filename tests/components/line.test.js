@@ -1,4 +1,4 @@
-/* global assert, process, setup, suite, test */
+/* global THREE, assert, process, setup, suite, test */
 var entityFactory = require('../helpers').entityFactory;
 
 suite('line', function () {
@@ -104,6 +104,23 @@ suite('line', function () {
       assert.equal(positionArray[3], 4);
       assert.equal(positionArray[4], 5);
       assert.equal(positionArray[5], 6);
+    });
+  });
+
+  suite('update', function () {
+    test('points can be updated with the same instance', function () {
+      var start = new THREE.Vector3(1, 2, 3);
+      el.setAttribute('line', {start: start});
+      var updateSpy = this.sinon.spy(el.components.line, 'update');
+
+      var data = el.getAttribute('line');
+      assert.shallowDeepEqual(data.start, {x: 1, y: 2, z: 3});
+
+      start.x += 10;
+      el.setAttribute('line', {start: start});
+
+      assert.shallowDeepEqual(data.start, {x: 11, y: 2, z: 3});
+      assert.ok(updateSpy.calledOnce);
     });
   });
 });
