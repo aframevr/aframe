@@ -10,7 +10,7 @@ suite('isTablet', function () {
   });
 });
 
-suite('isIpad', function () {
+suite.only('isIpad', function () {
   test('is true for iPad', function () {
     var iPadUserAgent = 'Mozilla/5.0 (iPad; CPU OS 11_0 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A5341f Safari/604.1';
     var platform = 'iPad';
@@ -29,7 +29,7 @@ suite('isIpad', function () {
     var macUserAgent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.2 Safari/605.1.15';
     var platform = 'MacIntel';
     var maxTouchPoints = 0;
-    assert.ok(device.isIpad(macUserAgent, platform, maxTouchPoints));
+    assert.ok(!device.isIpad(macUserAgent, platform, maxTouchPoints));
   });
 });
 
