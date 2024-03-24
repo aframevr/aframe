@@ -123,7 +123,16 @@ module.exports.isMobile = isMobile;
  */
 function isTablet (mockUserAgent) {
   var userAgent = mockUserAgent || window.navigator.userAgent;
-  return /ipad|Nexus (7|9)|xoom|sch-i800|playbook|tablet|kindle/i.test(userAgent);
+  var platform = window.navigator.platform;
+  var maxTouchPoints = window.navigator.maxTouchPoints || 0;
+
+  var isTabletUA = /ipad|Nexus (7|9)|xoom|sch-i800|playbook|tablet|kindle/i.test(userAgent);
+
+  // Additional check for iPad or MacIntel with touch capabilities and not an MSStream device
+  var isTouchDevice = platform === 'iPad' ||
+                      (platform === 'MacIntel' && maxTouchPoints > 0 && !window.MSStream);
+
+  return isTabletUA || isTouchDevice;
 }
 module.exports.isTablet = isTablet;
 
