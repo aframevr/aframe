@@ -145,6 +145,7 @@ function isIpad (mockUserAgent, mockDevicePlatform, mockDeviceTouchPoints) {
   return platform === 'iPad' || (platform === 'MacIntel' && maxTouchPoints > 0 && /Macintosh|Intel|iPad/i.test(userAgent) && !window.MSStream);
 }
 module.exports.isIpad = isIpad;
+
 function isIOS () {
   return /iPad|iPhone|iPod/.test(window.navigator.platform);
 }
