@@ -11732,6 +11732,7 @@ module.exports.Component = registerComponent('cursor', {
       oneOf: ['mouse', 'entity', 'xrselect']
     }
   },
+  after: ['tracked-controls'],
   multiple: true,
   init: function () {
     var self = this;
@@ -12229,6 +12230,7 @@ module.exports.Component = registerComponent('generic-tracked-controller-control
       default: false
     }
   },
+  after: ['tracked-controls'],
   /**
    * Button IDs:
    * 0 - trackpad
@@ -12644,6 +12646,7 @@ module.exports.Component = registerComponent('hand-controls', {
       oneOf: ['lowPoly', 'highPoly', 'toon']
     }
   },
+  after: ['tracked-controls'],
   init: function () {
     var self = this;
     var el = this.el;
@@ -13092,6 +13095,7 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
       default: 1.0
     }
   },
+  after: ['tracked-controls'],
   bindMethods: function () {
     this.onControllersUpdate = this.onControllersUpdate.bind(this);
     this.checkIfControllerPresent = this.checkIfControllerPresent.bind(this);
@@ -17396,6 +17400,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
       }
     }
   },
+  after: ['tracked-controls'],
   mapping: INPUT_MAPPING,
   bindMethods: function () {
     this.onButtonChanged = this.onButtonChanged.bind(this);
@@ -22206,6 +22211,9 @@ module.exports.Component = registerComponent('tracked-controls', {
       default: 'targetRaySpace'
     }
   },
+  // Run after both tracked-controls-webvr and tracked-controls-webxr to allow other components
+  // to be after either without having to list them both.
+  after: ['tracked-controls-webvr', 'tracked-controls-webxr'],
   update: function () {
     var data = this.data;
     var el = this.el;
@@ -22328,6 +22336,7 @@ module.exports.Component = registerComponent('valve-index-controls', {
       type: 'vec3'
     }
   },
+  after: ['tracked-controls'],
   mapping: {
     axes: {
       trackpad: [0, 1],
@@ -22626,6 +22635,7 @@ module.exports.Component = registerComponent('vive-controls', {
       type: 'vec3'
     }
   },
+  after: ['tracked-controls'],
   mapping: INPUT_MAPPING,
   init: function () {
     var self = this;
@@ -22893,6 +22903,7 @@ module.exports.Component = registerComponent('vive-focus-controls', {
       default: true
     }
   },
+  after: ['tracked-controls'],
   mapping: INPUT_MAPPING,
   bindMethods: function () {
     this.onModelLoaded = this.onModelLoaded.bind(this);
@@ -23088,6 +23099,7 @@ module.exports.Component = registerComponent('wasd-controls', {
       default: false
     }
   },
+  after: ['look-controls'],
   init: function () {
     // To keep track of the pressed keys.
     this.keys = {};
@@ -23391,6 +23403,7 @@ module.exports.Component = registerComponent('windows-motion-controls', {
       default: true
     }
   },
+  after: ['tracked-controls'],
   mapping: INPUT_MAPPING,
   bindMethods: function () {
     this.onModelError = this.onModelError.bind(this);
@@ -26196,6 +26209,8 @@ module.exports.registerComponent = function (name, definition) {
   components[name] = {
     Component: NewComponent,
     dependencies: NewComponent.prototype.dependencies,
+    before: NewComponent.prototype.before,
+    after: NewComponent.prototype.after,
     isSingleProperty: NewComponent.prototype.isSingleProperty,
     isObjectBased: NewComponent.prototype.isObjectBased,
     multiple: NewComponent.prototype.multiple,
@@ -26204,6 +26219,13 @@ module.exports.registerComponent = function (name, definition) {
     schema: schema,
     stringify: NewComponent.prototype.stringify
   };
+
+  // Notify all scenes
+  for (var i = 0; i < scenes.length; i++) {
+    scenes[i].emit('componentregistered', {
+      name: name
+    }, false);
+  }
   return NewComponent;
 };
 
@@ -26709,8 +26731,10 @@ var initWakelock = __webpack_require__(/*! ./wakelock */ "./src/core/scene/wakel
 var loadingScreen = __webpack_require__(/*! ./loadingScreen */ "./src/core/scene/loadingScreen.js");
 var scenes = __webpack_require__(/*! ./scenes */ "./src/core/scene/scenes.js");
 var systems = (__webpack_require__(/*! ../system */ "./src/core/system.js").systems);
+var components = (__webpack_require__(/*! ../component */ "./src/core/component.js").components);
 var THREE = __webpack_require__(/*! ../../lib/three */ "./src/lib/three.js");
 var utils = __webpack_require__(/*! ../../utils/ */ "./src/utils/index.js");
+var warn = utils.debug('core:a-scene:warn');
 // Require after.
 var AEntity = (__webpack_require__(/*! ../a-entity */ "./src/core/a-entity.js").AEntity);
 var ANode = (__webpack_require__(/*! ../a-node */ "./src/core/a-node.js").ANode);
@@ -26762,10 +26786,8 @@ class AScene extends AEntity {
     self.systemNames = [];
     self.time = self.delta = 0;
     self.usedOfferSession = false;
-    self.behaviors = {
-      tick: [],
-      tock: []
-    };
+    self.componentOrder = [];
+    self.behaviors = {};
     self.hasLoaded = false;
     self.isPlaying = false;
     self.originalHTML = self.innerHTML;
@@ -26841,6 +26863,12 @@ class AScene extends AEntity {
       self.attachedCallbackPostCamera();
     });
     this.initSystems();
+    // Compute component order
+    this.componentOrder = determineComponentBehaviorOrder(components, this.componentOrder);
+    this.addEventListener('componentregistered', function () {
+      // Recompute order
+      self.componentOrder = determineComponentBehaviorOrder(components, self.componentOrder);
+    });
 
     // WebXR Immersive navigation handler.
     if (this.hasWebXR && navigator.xr && navigator.xr.addEventListener) {
@@ -26923,18 +26951,41 @@ class AScene extends AEntity {
    * @param {object} behavior - A component.
    */
   addBehavior(behavior) {
-    var behaviorArr;
-    var behaviors = this.behaviors;
+    var behaviorSet;
+    var behaviors = this.behaviors[behavior.name];
     var behaviorType;
+    if (!behaviors) {
+      behaviors = this.behaviors[behavior.name] = {
+        tick: {
+          inUse: false,
+          array: [],
+          markedForRemoval: []
+        },
+        tock: {
+          inUse: false,
+          array: [],
+          markedForRemoval: []
+        }
+      };
+    }
 
     // Check if behavior has tick and/or tock and add the behavior to the appropriate list.
     for (behaviorType in behaviors) {
       if (!behavior[behaviorType]) {
         continue;
       }
-      behaviorArr = this.behaviors[behaviorType];
-      if (behaviorArr.indexOf(behavior) === -1) {
-        behaviorArr.push(behavior);
+      behaviorSet = behaviors[behaviorType];
+
+      // In case the behaviorSet is in use, make sure this behavior isn't on the removal list.
+      if (behaviorSet.inUse) {
+        var index = behaviorSet.markedForRemoval.indexOf(behavior);
+        if (index !== -1) {
+          behaviorSet.markedForRemoval.splice(index, 1);
+        }
+      }
+      // Add behavior to the set
+      if (behaviorSet.array.indexOf(behavior) === -1) {
+        behaviorSet.array.push(behavior);
       }
     }
   }
@@ -27247,9 +27298,9 @@ class AScene extends AEntity {
    * @param {object} behavior - A component.
    */
   removeBehavior(behavior) {
-    var behaviorArr;
+    var behaviorSet;
     var behaviorType;
-    var behaviors = this.behaviors;
+    var behaviors = this.behaviors[behavior.name];
     var index;
 
     // Check if behavior has tick and/or tock and remove the behavior from the appropriate
@@ -27258,10 +27309,20 @@ class AScene extends AEntity {
       if (!behavior[behaviorType]) {
         continue;
       }
-      behaviorArr = this.behaviors[behaviorType];
-      index = behaviorArr.indexOf(behavior);
+      behaviorSet = behaviors[behaviorType];
+      index = behaviorSet.array.indexOf(behavior);
       if (index !== -1) {
-        behaviorArr.splice(index, 1);
+        // Check if the behavior can safely be removed.
+        if (behaviorSet.inUse) {
+          // Set is in use, so only mark for removal.
+          if (behaviorSet.markedForRemoval.indexOf(behavior) === -1) {
+            behaviorSet.markedForRemoval.push(behavior);
+          }
+        } else {
+          // Swap and remove from the end
+          behaviorSet.array[index] = behaviorSet.array[behaviorSet.array.length - 1];
+          behaviorSet.array.pop();
+        }
       }
     }
   }
@@ -27410,12 +27471,7 @@ class AScene extends AEntity {
     var systems = this.systems;
 
     // Components.
-    for (i = 0; i < this.behaviors.tick.length; i++) {
-      if (!this.behaviors.tick[i].el.isPlaying) {
-        continue;
-      }
-      this.behaviors.tick[i].tick(time, timeDelta);
-    }
+    this.callComponentBehaviors('tick', time, timeDelta);
 
     // Systems.
     for (i = 0; i < this.systemNames.length; i++) {
@@ -27436,12 +27492,7 @@ class AScene extends AEntity {
     var systems = this.systems;
 
     // Components.
-    for (i = 0; i < this.behaviors.tock.length; i++) {
-      if (!this.behaviors.tock[i].el.isPlaying) {
-        continue;
-      }
-      this.behaviors.tock[i].tock(time, timeDelta, camera);
-    }
+    this.callComponentBehaviors('tock', time, timeDelta);
 
     // Systems.
     for (i = 0; i < this.systemNames.length; i++) {
@@ -27479,7 +27530,104 @@ class AScene extends AEntity {
       this.object3D.background = savedBackground;
     }
   }
+  callComponentBehaviors(behavior, time, timeDelta) {
+    var i;
+    for (var c = 0; c < this.componentOrder.length; c++) {
+      var behaviors = this.behaviors[this.componentOrder[c]];
+      if (!behaviors) {
+        continue;
+      }
+      var behaviorSet = behaviors[behavior];
+      behaviorSet.inUse = true;
+      for (i = 0; i < behaviorSet.array.length; i++) {
+        if (!behaviorSet.array[i].el.isPlaying) {
+          continue;
+        }
+        behaviorSet.array[i][behavior](time, timeDelta);
+      }
+      behaviorSet.inUse = false;
+
+      // Clean up any behaviors marked for removal
+      for (i = 0; i < behaviorSet.markedForRemoval.length; i++) {
+        this.removeBehavior(behaviorSet.markedForRemoval[i]);
+      }
+      behaviorSet.markedForRemoval.length = 0;
+    }
+  }
 }
+
+/**
+ * Derives an ordering from the components, taking any before and after
+ * constraints into account.
+ *
+ * @param {object} components - The components to order
+ * @param {array} array - Optional array to use as output
+ */
+function determineComponentBehaviorOrder(components, array) {
+  var graph = {};
+  var i;
+  var key;
+  var result = array || [];
+  result.length = 0;
+
+  // Construct graph nodes for each element
+  for (key in components) {
+    var element = components[key];
+    if (element === undefined) {
+      continue;
+    }
+    var before = element.before ? element.before.slice(0) : [];
+    var after = element.after ? element.after.slice(0) : [];
+    graph[key] = {
+      before: before,
+      after: after,
+      visited: false,
+      done: false
+    };
+  }
+
+  // Normalize to after constraints, warn about missing nodes
+  for (key in graph) {
+    for (i = 0; i < graph[key].before.length; i++) {
+      var beforeName = graph[key].before[i];
+      if (!(beforeName in graph)) {
+        warn('Invalid ordering constraint, no component named `' + beforeName + '` referenced by `' + key + '`');
+        continue;
+      }
+      graph[beforeName].after.push(key);
+    }
+  }
+
+  // Perform topological depth-first search
+  // https://en.wikipedia.org/wiki/Topological_sorting#Depth-first_search
+  function visit(name) {
+    if (!(name in graph) || graph[name].done) {
+      return;
+    }
+    if (graph[name].visited) {
+      warn('Cycle detected, ignoring one or more before/after constraints. ' + 'The resulting order might be incorrect');
+      return;
+    }
+    graph[name].visited = true;
+    for (var i = 0; i < graph[name].after.length; i++) {
+      var afterName = graph[name].after[i];
+      if (!(afterName in graph)) {
+        warn('Invalid before/after constraint, no component named `' + afterName + '` referenced in `' + name + '`');
+      }
+      visit(afterName);
+    }
+    graph[name].done = true;
+    result.push(name);
+  }
+  for (key in graph) {
+    if (graph[key].done) {
+      continue;
+    }
+    visit(key);
+  }
+  return result;
+}
+module.exports.determineComponentBehaviorOrder = determineComponentBehaviorOrder;
 
 /**
  * Return size constrained to maxSize - maintaining aspect ratio.
@@ -29909,7 +30057,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.5.0 (Date 2024-03-23, Commit #ede20aec)');
+console.log('A-Frame Version: 1.5.0 (Date 2024-03-28, Commit #c7736c40)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
