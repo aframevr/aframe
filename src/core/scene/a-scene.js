@@ -7,7 +7,7 @@ var systems = require('../system').systems;
 var components = require('../component').components;
 var THREE = require('../../lib/three');
 var utils = require('../../utils/');
-var solveOrder = require('../../utils/order').solveOrder;
+var warn = utils.debug('core:a-scene:warn');
 // Require after.
 var AEntity = require('../a-entity').AEntity;
 var ANode = require('../a-node').ANode;
@@ -133,10 +133,10 @@ class AScene extends AEntity {
 
     this.initSystems();
     // Compute component order
-    this.componentOrder = solveOrder(components, this.componentOrder);
+    this.componentOrder = determineComponentBehaviorOrder(components, this.componentOrder);
     this.addEventListener('componentregistered', function () {
       // Recompute order
-      self.componentOrder = solveOrder(components, self.componentOrder);
+      self.componentOrder = determineComponentBehaviorOrder(components, self.componentOrder);
     });
 
     // WebXR Immersive navigation handler.
@@ -726,24 +726,7 @@ class AScene extends AEntity {
     var systems = this.systems;
 
     // Components.
-    for (var c = 0; c < this.componentOrder.length; c++) {
-      var behaviors = this.behaviors[this.componentOrder[c]];
-      if (!behaviors) { continue; }
-      var behaviorSet = behaviors.tick;
-
-      behaviorSet.inUse = true;
-      for (i = 0; i < behaviorSet.array.length; i++) {
-        if (!behaviorSet.array[i].el.isPlaying) { continue; }
-        behaviorSet.array[i].tick(time, timeDelta);
-      }
-      behaviorSet.inUse = false;
-
-      // Clean up any behaviors marked for removal
-      for (i = 0; i < behaviorSet.markedForRemoval.length; i++) {
-        this.removeBehavior(behaviorSet.markedForRemoval[i]);
-      }
-      behaviorSet.markedForRemoval.length = 0;
-    }
+    this.callComponentBehaviors('tick', time, timeDelta);
 
     // Systems.
     for (i = 0; i < this.systemNames.length; i++) {
@@ -762,24 +745,7 @@ class AScene extends AEntity {
     var systems = this.systems;
 
     // Components.
-    for (var c = 0; c < this.componentOrder.length; c++) {
-      var behaviors = this.behaviors[this.componentOrder[c]];
-      if (!behaviors) { continue; }
-      var behaviorSet = behaviors.tock;
-
-      behaviorSet.inUse = true;
-      for (i = 0; i < behaviorSet.array.length; i++) {
-        if (!behaviorSet.array[i].el.isPlaying) { continue; }
-        behaviorSet.array[i].tock(time, timeDelta);
-      }
-      behaviorSet.inUse = false;
-
-      // Clean up any behaviors marked for removal
-      for (i = 0; i < behaviorSet.markedForRemoval.length; i++) {
-        this.removeBehavior(behaviorSet.markedForRemoval[i]);
-      }
-      behaviorSet.markedForRemoval.length = 0;
-    }
+    this.callComponentBehaviors('tock', time, timeDelta);
 
     // Systems.
     for (i = 0; i < this.systemNames.length; i++) {
@@ -815,7 +781,105 @@ class AScene extends AEntity {
       this.object3D.background = savedBackground;
     }
   }
+
+  callComponentBehaviors (behavior, time, timeDelta) {
+    var i;
+
+    for (var c = 0; c < this.componentOrder.length; c++) {
+      var behaviors = this.behaviors[this.componentOrder[c]];
+      if (!behaviors) { continue; }
+      var behaviorSet = behaviors[behavior];
+
+      behaviorSet.inUse = true;
+      for (i = 0; i < behaviorSet.array.length; i++) {
+        if (!behaviorSet.array[i].el.isPlaying) { continue; }
+        behaviorSet.array[i][behavior](time, timeDelta);
+      }
+      behaviorSet.inUse = false;
+
+      // Clean up any behaviors marked for removal
+      for (i = 0; i < behaviorSet.markedForRemoval.length; i++) {
+        this.removeBehavior(behaviorSet.markedForRemoval[i]);
+      }
+      behaviorSet.markedForRemoval.length = 0;
+    }
+  }
 }
+
+/**
+ * Derives an ordering from the components, taking any before and after
+ * constraints into account.
+ *
+ * @param {object} components - The components to order
+ * @param {array} array - Optional array to use as output
+ */
+function determineComponentBehaviorOrder (components, array) {
+  var graph = {};
+  var i;
+  var key;
+  var result = array || [];
+  result.length = 0;
+
+  // Construct graph nodes for each element
+  for (key in components) {
+    var element = components[key];
+    if (element === undefined) { continue; }
+    var before = element.before ? element.before.slice(0) : [];
+    var after = element.after ? element.after.slice(0) : [];
+    graph[key] = { before: before, after: after, visited: false, done: false };
+  }
+
+  // Normalize to after constraints, warn about missing nodes
+  for (key in graph) {
+    for (i = 0; i < graph[key].before.length; i++) {
+      var beforeName = graph[key].before[i];
+      if (!(beforeName in graph)) {
+        warn('Invalid ordering constraint, no component named `' + beforeName + '` referenced by `' + key + '`');
+        continue;
+      }
+
+      graph[beforeName].after.push(key);
+    }
+  }
+
+  // Perform topological depth-first search
+  // https://en.wikipedia.org/wiki/Topological_sorting#Depth-first_search
+  function visit (name) {
+    if (!(name in graph) || graph[name].done) {
+      return;
+    }
+
+    if (graph[name].visited) {
+      warn('Cycle detected, ignoring one or more before/after constraints. ' +
+        'The resulting order might be incorrect');
+      return;
+    }
+
+    graph[name].visited = true;
+
+    for (var i = 0; i < graph[name].after.length; i++) {
+      var afterName = graph[name].after[i];
+      if (!(afterName in graph)) {
+        warn('Invalid before/after constraint, no component named `' +
+            afterName + '` referenced in `' + name + '`');
+      }
+      visit(afterName);
+    }
+
+    graph[name].done = true;
+    result.push(name);
+  }
+
+  for (key in graph) {
+    if (graph[key].done) {
+      continue;
+    }
+    visit(key);
+  }
+  return result;
+}
+
+module.exports.determineComponentBehaviorOrder = determineComponentBehaviorOrder;
 
 /**
  * Return size constrained to maxSize - maintaining aspect ratio.
