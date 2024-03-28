@@ -42,6 +42,8 @@ module.exports.Component = registerComponent('generic-tracked-controller-control
     disabled: {default: false}
   },
 
+  after: ['tracked-controls'],
+
   /**
    * Button IDs:
    * 0 - trackpad

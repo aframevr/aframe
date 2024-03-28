@@ -6,6 +6,8 @@
 * Updates its position to move along the controller.
 */
 AFRAME.registerComponent('grab', {
+  after: ['tracked-controls-webxr'],
+  before: ['aabb-collider'],
   init: function () {
     this.GRABBED_STATE = 'grabbed';
     // Bind event handlers
@@ -67,6 +69,7 @@ AFRAME.registerComponent('grab', {
       y: position.y + this.deltaPosition.y,
       z: position.z + this.deltaPosition.z
     });
+    hitEl.object3D.updateMatrixWorld();
   },
 
   updateDelta: function () {

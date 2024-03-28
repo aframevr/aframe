@@ -55,6 +55,8 @@ module.exports.Component = registerComponent('hand-controls', {
     handModelStyle: {default: 'lowPoly', oneOf: ['lowPoly', 'highPoly', 'toon']}
   },
 
+  after: ['tracked-controls'],
+
   init: function () {
     var self = this;
     var el = this.el;

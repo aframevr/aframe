@@ -27,6 +27,7 @@ module.exports.Component = registerComponent('wasd-controls', {
     wsEnabled: {default: true},
     wsInverted: {default: false}
   },
+  after: ['look-controls'],
 
   init: function () {
     // To keep track of the pressed keys.

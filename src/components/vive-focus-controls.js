@@ -55,6 +55,8 @@ module.exports.Component = registerComponent('vive-focus-controls', {
     armModel: {default: true}
   },
 
+  after: ['tracked-controls'],
+
   mapping: INPUT_MAPPING,
 
   bindMethods: function () {

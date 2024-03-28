@@ -694,6 +694,8 @@ module.exports.registerComponent = function (name, definition) {
   components[name] = {
     Component: NewComponent,
     dependencies: NewComponent.prototype.dependencies,
+    before: NewComponent.prototype.before,
+    after: NewComponent.prototype.after,
     isSingleProperty: NewComponent.prototype.isSingleProperty,
     isObjectBased: NewComponent.prototype.isObjectBased,
     multiple: NewComponent.prototype.multiple,
@@ -702,6 +704,12 @@ module.exports.registerComponent = function (name, definition) {
     schema: schema,
     stringify: NewComponent.prototype.stringify
   };
+
+  // Notify all scenes
+  for (var i = 0; i < scenes.length; i++) {
+    scenes[i].emit('componentregistered', {name: name}, false);
+  }
+
   return NewComponent;
 };
 
