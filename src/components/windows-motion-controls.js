@@ -99,6 +99,8 @@ module.exports.Component = registerComponent('windows-motion-controls', {
     hideDisconnected: {default: true}
   },
 
+  after: ['tracked-controls'],
+
   mapping: INPUT_MAPPING,
 
   bindMethods: function () {

@@ -65,6 +65,8 @@ module.exports.Component = registerComponent('vive-controls', {
     orientationOffset: {type: 'vec3'}
   },
 
+  after: ['tracked-controls'],
+
   mapping: INPUT_MAPPING,
 
   init: function () {

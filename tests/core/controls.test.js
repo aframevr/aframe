@@ -108,6 +108,8 @@ suite('position controls on camera with WASD controls (integration unit test)', 
     var keydownEvent;
     var position;
 
+    // Remove look-controls as it overrides the rotation during its tick.
+    el.removeAttribute('look-controls');
     el.setAttribute('rotation', '0 90 0');
     position = el.getAttribute('position').clone();
     keydownEvent = new Event('keydown');

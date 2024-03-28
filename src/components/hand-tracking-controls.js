@@ -56,6 +56,8 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
     modelOpacity: {default: 1.0}
   },
 
+  after: ['tracked-controls'],
+
   bindMethods: function () {
     this.onControllersUpdate = this.onControllersUpdate.bind(this);
     this.checkIfControllerPresent = this.checkIfControllerPresent.bind(this);

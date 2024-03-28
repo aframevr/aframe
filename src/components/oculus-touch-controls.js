@@ -197,6 +197,8 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     orientationOffset: {type: 'vec3', default: {x: 43, y: 0, z: 0}}
   },
 
+  after: ['tracked-controls'],
+
   mapping: INPUT_MAPPING,
 
   bindMethods: function () {

@@ -26,6 +26,10 @@ module.exports.Component = registerComponent('tracked-controls', {
     space: {type: 'string', oneOf: ['targetRaySpace', 'gripSpace'], default: 'targetRaySpace'}
   },
 
+  // Run after both tracked-controls-webvr and tracked-controls-webxr to allow other components
+  // to be after either without having to list them both.
+  after: ['tracked-controls-webvr', 'tracked-controls-webxr'],
+
   update: function () {
     var data = this.data;
     var el = this.el;

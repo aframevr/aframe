@@ -55,6 +55,8 @@ module.exports.Component = registerComponent('valve-index-controls', {
     orientationOffset: {type: 'vec3'}
   },
 
+  after: ['tracked-controls'],
+
   mapping: {
     axes: {
       trackpad: [0, 1],
