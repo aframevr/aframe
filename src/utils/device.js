@@ -124,7 +124,7 @@ module.exports.isMobile = isMobile;
 function isTablet (mockUserAgent) {
   var userAgent = mockUserAgent || window.navigator.userAgent;
 
-  var _isTablet = /ipad|Nexus (7|9)|xoom|sch-i800|playbook|tablet|kindle/i.test(userAgent);
+  var _isTablet = /Nexus (7|9)|xoom|sch-i800|playbook|tablet|kindle/i.test(userAgent);
 
   // Additional check for iPad or MacIntel with touch capabilities and not an MSStream device
   return _isTablet || isIpad();
@@ -142,7 +142,7 @@ function isIpad (mockUserAgent, mockDevicePlatform, mockDeviceTouchPoints) {
   var platform = mockDevicePlatform || window.navigator.platform;
   var maxTouchPoints = mockDeviceTouchPoints || window.navigator.maxTouchPoints || 0;
 
-  return platform === 'iPad' || (platform === 'MacIntel' && maxTouchPoints > 0 && /Macintosh|Intel|iPad/i.test(userAgent) && !window.MSStream);
+  return ((platform === 'iPad' || platform === 'MacIntel') && maxTouchPoints > 0 && /Macintosh|Intel|iPad|ipad/i.test(userAgent) && !window.MSStream);
 }
 module.exports.isIpad = isIpad;
 

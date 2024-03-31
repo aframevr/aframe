@@ -15,7 +15,7 @@ suite('isIpad', function () {
     var iPadUserAgent = 'Mozilla/5.0 (iPad; CPU OS 11_0 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A5341f Safari/604.1';
     var platform = 'iPad';
     var maxTouchPoints = 5;
-    assert.ok(device.isTablet(iPadUserAgent, platform, maxTouchPoints));
+    assert.ok(device.isIpad(iPadUserAgent, platform, maxTouchPoints));
   });
 
   test('is true for MacIntel with touch capabilities', function () {
