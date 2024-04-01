@@ -30057,7 +30057,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.5.0 (Date 2024-03-28, Commit #c7736c40)');
+console.log('A-Frame Version: 1.5.0 (Date 2024-04-01, Commit #a6ec4172)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -32855,9 +32855,26 @@ module.exports.isMobile = isMobile;
  */
 function isTablet(mockUserAgent) {
   var userAgent = mockUserAgent || window.navigator.userAgent;
-  return /ipad|Nexus (7|9)|xoom|sch-i800|playbook|tablet|kindle/i.test(userAgent);
+  var isTablet = /Nexus (7|9)|xoom|sch-i800|playbook|tablet|kindle/i.test(userAgent);
+
+  // Additional check for iPad or MacIntel with touch capabilities and not an MSStream device
+  return isTablet || isIpad();
 }
 module.exports.isTablet = isTablet;
+
+/**
+ *  Detect ipad devices.
+ *  @param {string} mockUserAgent - Allow passing a mock user agent for testing.
+ *  @param {string} mockDevicePlatform - Allow passing a mock device platform for testing.
+ *  @param {string} mockDeviceTouchPoints - Allow passing a mock device touch points for testing.
+*/
+function isIpad(mockUserAgent, mockDevicePlatform, mockDeviceTouchPoints) {
+  var userAgent = mockUserAgent || window.navigator.userAgent;
+  var platform = mockDevicePlatform || window.navigator.platform;
+  var maxTouchPoints = mockDeviceTouchPoints || window.navigator.maxTouchPoints || 0;
+  return (platform === 'iPad' || platform === 'MacIntel') && maxTouchPoints > 0 && /Macintosh|Intel|iPad|ipad/i.test(userAgent) && !window.MSStream;
+}
+module.exports.isIpad = isIpad;
 function isIOS() {
   return /iPad|iPhone|iPod/.test(window.navigator.platform);
 }
