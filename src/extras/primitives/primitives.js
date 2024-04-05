@@ -70,7 +70,6 @@ module.exports.registerPrimitive = function registerPrimitive (name, definition)
       var i;
       var mapping;
       var mixins;
-      var path;
       var self = this;
 
       // Gather component data from default components.
@@ -79,12 +78,25 @@ module.exports.registerPrimitive = function registerPrimitive (name, definition)
       // Factor in mixins to overwrite default components.
       mixins = this.getAttribute('mixin');
       if (mixins) {
-        mixins = mixins.trim().split(' ');
+        mixins = utils.split(mixins.trim(), /\s+/);
         mixins.forEach(function applyMixin (mixinId) {
-          var mixinComponents = self.sceneEl.querySelector('#' + mixinId).componentCache;
-          Object.keys(mixinComponents).forEach(function setComponent (name) {
-            data[name] = extend(data[name], mixinComponents[name]);
-          });
+          var mixinEl = document.getElementById(mixinId);
+          if (!mixinEl) { return; }
+          var rawAttributeCache = mixinEl.rawAttributeCache;
+          var mixinComponents = mixinEl.componentCache;
+          for (var name in rawAttributeCache) {
+            // Check if the attribute matches a mapping.
+            mapping = self.mappings[name];
+            if (mapping) {
+              applyMapping(mapping, rawAttributeCache[name], data);
+              return;
+            }
+
+            // Check if the attribute belongs to a component.
+            if (name in mixinComponents) {
+              data[name] = extend(data[name], mixinComponents[name]);
+            }
+          }
         });
       }
 
@@ -93,14 +105,7 @@ module.exports.registerPrimitive = function registerPrimitive (name, definition)
         attr = this.attributes[i];
         mapping = this.mappings[attr.name];
         if (mapping) {
-          path = utils.entity.getComponentPropertyPath(mapping);
-          if (path.constructor === Array) {
-            data[path[0]] = data[path[0]] || {};
-            data[path[0]][path[1]] = attr.value.trim();
-          } else {
-            data[path] = attr.value.trim();
-          }
-          continue;
+          applyMapping(mapping, attr.value, data);
         }
       }
 
@@ -168,6 +173,23 @@ module.exports.registerPrimitive = function registerPrimitive (name, definition)
   primitives[name] = primitiveClass;
   return primitiveClass;
 };
+
+/**
+ * Sets the relevant property based on the mapping property path.
+ *
+ * @param {string} mapping - The mapped property path.
+ * @param {string} attrValue - The (raw) attribute value.
+ * @param {object} data - The data object to apply the mapping to.
+ */
+function applyMapping (mapping, attrValue, data) {
+  var path = utils.entity.getComponentPropertyPath(mapping);
+  if (path.constructor === Array) {
+    data[path[0]] = data[path[0]] || {};
+    data[path[0]][path[1]] = attrValue.trim();
+  } else {
+    data[path] = attrValue.trim();
+  }
+}
 
 /**
  * Add component mappings using schema.

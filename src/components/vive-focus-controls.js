@@ -1,15 +1,43 @@
 var registerComponent = require('../core/component').registerComponent;
-var bind = require('../utils/bind');
 
 var trackedControlsUtils = require('../utils/tracked-controls');
 var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
 var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
 var onButtonEvent = trackedControlsUtils.onButtonEvent;
 
-var GAMEPAD_ID_PREFIX = 'HTC Vive Focus';
-
 var AFRAME_CDN_ROOT = require('../constants').AFRAME_CDN_ROOT;
 var VIVE_FOCUS_CONTROLLER_MODEL_URL = AFRAME_CDN_ROOT + 'controllers/vive/focus-controller/focus-controller.gltf';
+
+var isWebXRAvailable = require('../utils/').device.isWebXRAvailable;
+
+var GAMEPAD_ID_WEBXR = 'htc-vive-focus';
+var GAMEPAD_ID_WEBVR = 'HTC Vive Focus ';
+
+// Prefix for HTC Vive Focus Controllers.
+var GAMEPAD_ID_PREFIX = isWebXRAvailable ? GAMEPAD_ID_WEBXR : GAMEPAD_ID_WEBVR;
+
+/**
+ * Button IDs:
+ * 0 - trackpad
+ * 1 - trigger
+ */
+var INPUT_MAPPING_WEBVR = {
+  axes: {trackpad: [0, 1]},
+  buttons: ['trackpad', 'trigger']
+};
+
+/**
+ * Button IDs:
+ * 0 - trigger
+ * 2 - touchpad
+ * 4 - menu
+ */
+var INPUT_MAPPING_WEBXR = {
+  axes: {touchpad: [0, 1]},
+  buttons: ['trigger', 'none', 'touchpad', 'none', 'menu']
+};
+
+var INPUT_MAPPING = isWebXRAvailable ? INPUT_MAPPING_WEBXR : INPUT_MAPPING_WEBVR;
 
 /**
  * Vive Focus controls.
@@ -27,27 +55,21 @@ module.exports.Component = registerComponent('vive-focus-controls', {
     armModel: {default: true}
   },
 
-  /**
-   * Button IDs:
-   * 0 - trackpad
-   * 1 - trigger
-   */
-  mapping: {
-    axes: {trackpad: [0, 1]},
-    buttons: ['trackpad', 'trigger']
-  },
+  after: ['tracked-controls'],
+
+  mapping: INPUT_MAPPING,
 
   bindMethods: function () {
-    this.onModelLoaded = bind(this.onModelLoaded, this);
-    this.onControllersUpdate = bind(this.onControllersUpdate, this);
-    this.checkIfControllerPresent = bind(this.checkIfControllerPresent, this);
-    this.removeControllersUpdateListener = bind(this.removeControllersUpdateListener, this);
-    this.onAxisMoved = bind(this.onAxisMoved, this);
+    this.onModelLoaded = this.onModelLoaded.bind(this);
+    this.onControllersUpdate = this.onControllersUpdate.bind(this);
+    this.checkIfControllerPresent = this.checkIfControllerPresent.bind(this);
+    this.removeControllersUpdateListener = this.removeControllersUpdateListener.bind(this);
+    this.onAxisMoved = this.onAxisMoved.bind(this);
   },
 
   init: function () {
     var self = this;
-    this.onButtonChanged = bind(this.onButtonChanged, this);
+    this.onButtonChanged = this.onButtonChanged.bind(this);
     this.onButtonDown = function (evt) { onButtonEvent(evt.detail.id, 'down', self); };
     this.onButtonUp = function (evt) { onButtonEvent(evt.detail.id, 'up', self); };
     this.onButtonTouchStart = function (evt) { onButtonEvent(evt.detail.id, 'touchstart', self); };

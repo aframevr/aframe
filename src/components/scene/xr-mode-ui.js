@@ -1,7 +1,6 @@
 var registerComponent = require('../../core/component').registerComponent;
 var constants = require('../../constants/');
 var utils = require('../../utils/');
-var bind = utils.bind;
 
 var ENTER_VR_CLASS = 'a-enter-vr';
 var ENTER_AR_CLASS = 'a-enter-ar';
@@ -12,7 +11,7 @@ var HIDDEN_CLASS = 'a-hidden';
 var ORIENTATION_MODAL_CLASS = 'a-orientation-modal';
 
 /**
- * UI for Aentering VR mode.
+ * UI for entering VR mode.
  */
 module.exports.Component = registerComponent('xr-mode-ui', {
   dependencies: ['canvas'],
@@ -26,6 +25,8 @@ module.exports.Component = registerComponent('xr-mode-ui', {
     enterAREnabled: {default: true},
     XRMode: {default: 'vr', oneOf: ['vr', 'ar', 'xr']}
   },
+
+  sceneOnly: true,
 
   init: function () {
     var self = this;
@@ -57,11 +58,11 @@ module.exports.Component = registerComponent('xr-mode-ui', {
   },
 
   bindMethods: function () {
-    this.onEnterVRButtonClick = bind(this.onEnterVRButtonClick, this);
-    this.onEnterARButtonClick = bind(this.onEnterARButtonClick, this);
-    this.onModalClick = bind(this.onModalClick, this);
-    this.toggleOrientationModalIfNeeded = bind(this.toggleOrientationModalIfNeeded, this);
-    this.updateEnterInterfaces = bind(this.updateEnterInterfaces, this);
+    this.onEnterVRButtonClick = this.onEnterVRButtonClick.bind(this);
+    this.onEnterARButtonClick = this.onEnterARButtonClick.bind(this);
+    this.onModalClick = this.onModalClick.bind(this);
+    this.toggleOrientationModalIfNeeded = this.toggleOrientationModalIfNeeded.bind(this);
+    this.updateEnterInterfaces = this.updateEnterInterfaces.bind(this);
   },
 
   /**

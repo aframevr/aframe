@@ -10,7 +10,7 @@ examples:
 ---
 
 [source-code]: https://github.com/aframevr/aframe/tree/master/examples/docs/aincraft/
-[live-demo]: https://aframe.io/examples/docs/aincraft/
+[live-demo]: https://aframe.io/aframe/examples/docs/aincraft/
 
 > View the [source code][source-code], or try out [the demo][live-demo]
 
@@ -53,7 +53,7 @@ our assets, and create a thin cylinder entity pointing to that texture:
 </a-scene>
 ```
 
-See a live version [here](https://aframe.io/examples/docs/aincraft/step1.html)
+See a live version [here](https://aframe.io/aframe/examples/docs/aincraft/step1.html)
 
 ### Preloading Assets
 
@@ -84,7 +84,7 @@ Let's move our ground texture to `<a-assets>` to be preloaded using an
 </a-scene>
 ```
 
-See a live version [here](https://aframe.io/examples/docs/aincraft/step2.html)
+See a live version [here](https://aframe.io/aframe/examples/docs/aincraft/step2.html)
 
 ## Adding a Background
 
@@ -123,7 +123,7 @@ to match the ground:
 </a-scene>
 ```
 
-See a live version [here](https://aframe.io/examples/docs/aincraft/step3.html)
+See a live version [here](https://aframe.io/aframe/examples/docs/aincraft/step3.html)
 
 ## Adding Voxels
 
@@ -255,7 +255,7 @@ and include it before the scene:
 </a-scene>
 ```
 
-See a live version [here](https://aframe.io/examples/docs/aincraft/step4.html)
+See a live version [here](https://aframe.io/aframe/examples/docs/aincraft/step4.html)
 
 Components can be plugged into any entity without having to create or extend a
 class like we'd have to in traditional inheritance. If we wanted to attach it
@@ -345,7 +345,7 @@ And we've added voxels using that mixin:
 <a-entity mixin="voxel" position="1 0 -2"></a-entity>
 ```
 
-See a live version [here](https://aframe.io/examples/docs/aincraft/step5.html)
+See a live version [here](https://aframe.io/aframe/examples/docs/aincraft/step5.html)
 
 Next, we'll be creating voxels dynamically through interaction using tracked
 controllers. Let's start adding our hands to the application.

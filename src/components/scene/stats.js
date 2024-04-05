@@ -5,7 +5,6 @@ require('../../../vendor/rStats.extras');
 require('../../lib/rStatsAframe');
 
 var AFrameStats = window.aframeStats;
-var bind = utils.bind;
 var HIDDEN_CLASS = 'a-hidden';
 var ThreeStats = window.threeStats;
 
@@ -15,6 +14,8 @@ var ThreeStats = window.threeStats;
 module.exports.Component = registerComponent('stats', {
   schema: {default: true},
 
+  sceneOnly: true,
+
   init: function () {
     var scene = this.el;
 
@@ -23,8 +24,8 @@ module.exports.Component = registerComponent('stats', {
     this.stats = createStats(scene);
     this.statsEl = document.querySelector('.rs-base');
 
-    this.hideBound = bind(this.hide, this);
-    this.showBound = bind(this.show, this);
+    this.hideBound = this.hide.bind(this);
+    this.showBound = this.show.bind(this);
 
     scene.addEventListener('enter-vr', this.hideBound);
     scene.addEventListener('exit-vr', this.showBound);

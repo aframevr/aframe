@@ -81,6 +81,15 @@ suite('propertyTypes', function () {
       assert.ok('mytype' in propertyTypes);
       assert.equal(propertyTypes.mytype.default, 5);
     });
+
+    test('rejects duplicate type names', function () {
+      assert.notOk('duplicate' in propertyTypes);
+      register('duplicate', 'first');
+      assert.equal(propertyTypes.duplicate.default, 'first');
+      assert.throws(function () {
+        register('duplicate', 'second');
+      }, 'Property type duplicate is already registered.');
+    });
   });
 
   suite('int', function () {

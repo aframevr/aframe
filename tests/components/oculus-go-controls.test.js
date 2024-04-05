@@ -11,17 +11,9 @@ suite('oculus-go-controls', function () {
       component.controllers = [];
       // Our Mock data for enabling the controllers.
       component.controllersWhenPresent = [{
-        id: 'Oculus Go Controller',
-        index: 0,
-        hand: 'right',
-        axes: [0, 0],
-        buttons: [
-          {value: 0, pressed: false, touched: false},
-          {value: 0, pressed: false, touched: false}
-        ],
-        pose: {orientation: [1, 0, 0, 0], position: null}
+        profiles: ['oculus-go'],
+        handedness: 'right'
       }];
-      el.parentEl.renderer.xr.getStandingMatrix = function () {};
       done();
     };
     if (el.hasLoaded) { callback(); }
@@ -37,7 +29,7 @@ suite('oculus-go-controls', function () {
 
     setup(function (done) {
       component = this.el.components['oculus-go-controls'];
-      controllerSystem = this.el.sceneEl.systems['tracked-controls-webvr'];
+      controllerSystem = this.el.sceneEl.systems['tracked-controls-webxr'];
       addEventListenersSpy = sinon.spy(component, 'addEventListeners');
       injectTrackedControlsSpy = sinon.spy(component, 'injectTrackedControls');
       removeEventListenersSpy = sinon.spy(component, 'removeEventListeners');
@@ -117,14 +109,14 @@ suite('oculus-go-controls', function () {
   });
 
   suite('axismove', function () {
-    test('emits trackpadmoved on axismove', function (done) {
+    test('emits touchpadmoved on axismove', function (done) {
       var el = this.el;
       setupTestControllers(el);
 
       // Configure the event state for which we'll use the axis state for verification.
       const eventState = {axis: [0.1, 0.2], changed: [true, false]};
 
-      el.addEventListener('trackpadmoved', function (evt) {
+      el.addEventListener('touchpadmoved', function (evt) {
         assert.equal(evt.detail.x, eventState.axis[0]);
         assert.equal(evt.detail.y, eventState.axis[1]);
         done();
@@ -133,13 +125,13 @@ suite('oculus-go-controls', function () {
       el.emit('axismove', eventState);
     });
 
-    test('does not emit trackpadmoved on axismove with no changes', function (done) {
+    test('does not emit touchpadmoved on axismove with no changes', function (done) {
       var el = this.el;
       setupTestControllers(el);
 
       // Fail purposely.
-      el.addEventListener('trackpadmoved', function (evt) {
-        assert.fail('trackpadmoved was called when there was no change.');
+      el.addEventListener('touchpadmoved', function (evt) {
+        assert.fail('touchpadmoved was called when there was no change.');
       });
 
       el.emit('axismove', {axis: [0.1, 0.2], changed: [false, false]});
@@ -148,8 +140,8 @@ suite('oculus-go-controls', function () {
   });
 
   suite('buttonchanged', function () {
-    [{ button: 'trackpad', id: 0 },
-      { button: 'trigger', id: 1 }
+    [{ button: 'trigger', id: 0 },
+      { button: 'touchpad', id: 2 }
     ].forEach(function (buttonDescription) {
       test('if we get buttonchanged for button ' + buttonDescription.id + ', emit ' + buttonDescription.button + 'changed', function (done) {
         var el = this.el;
@@ -190,61 +182,6 @@ suite('oculus-go-controls', function () {
     });
   });
 
-  suite('armModel', function () {
-    test('does not apply armModel if armModel disabled', function () {
-      var el = this.el;
-      el.setAttribute('oculus-go-controls', 'armModel', false);
-      setupTestControllers(el);
-
-      var trackedControls = el.components['tracked-controls-webvr'];
-      var applyArmModelSpy = sinon.spy(trackedControls, 'applyArmModel');
-      trackedControls.tick();
-
-      // Verify that the function which applies arm model is not called when disabled.
-      sinon.assert.notCalled(applyArmModelSpy);
-
-      // Additionally verify that no other offets have been applied.
-      assert.strictEqual(el.object3D.position.x, 0);
-      assert.strictEqual(el.object3D.position.y, 0);
-      assert.strictEqual(el.object3D.position.z, 0);
-    });
-
-    test('applies armModel if armModel enabled', function () {
-      var el = this.el;
-      el.setAttribute('oculus-go-controls', 'armModel', true);
-      setupTestControllers(el);
-
-      var trackedControls = el.components['tracked-controls-webvr'];
-      var applyArmModelSpy = sinon.spy(trackedControls, 'applyArmModel');
-      trackedControls.tick();
-
-      // Verify that the function which applies arm model is called.
-      sinon.assert.calledOnce(applyArmModelSpy);
-    });
-
-    test('verifies armModel position is applied for the right hand', function () {
-      var el = this.el;
-      el.setAttribute('oculus-go-controls', 'armModel', true);
-      setupTestControllers(el);
-
-      var trackedControls = el.components['tracked-controls-webvr'];
-      trackedControls.tick();
-      assert.ok(el.object3D.position.x > 0);
-    });
-
-    test('verifies armModel position is applied for the left hand', function () {
-      var el = this.el;
-      el.setAttribute('oculus-go-controls', 'armModel', true);
-      el.setAttribute('oculus-go-controls', 'hand', 'left');
-      el.components['oculus-go-controls'].controllersWhenPresent[0].hand = 'left';
-      setupTestControllers(el);
-
-      var trackedControls = el.components['tracked-controls-webvr'];
-      trackedControls.tick();
-      assert.ok(el.object3D.position.x < 0);
-    });
-  });
-
   /**
    * Establishes the baseline set of controllers needed for the tests to run.
    *
@@ -252,7 +189,7 @@ suite('oculus-go-controls', function () {
    */
   function setupTestControllers (el) {
     var component = el.components['oculus-go-controls'];
-    el.sceneEl.systems['tracked-controls-webvr'].controllers = component.controllersWhenPresent;
+    el.sceneEl.systems['tracked-controls-webxr'].controllers = component.controllersWhenPresent;
     component.checkIfControllerPresent();
   }
 });

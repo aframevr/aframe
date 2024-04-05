@@ -57,26 +57,13 @@ class AEntity extends ANode {
     this.setEntityAttribute(attr, oldVal, newVal);
   }
 
-  /**
-  * Add to parent, load, play.
-  */
-  connectedCallback () {
-    // Defer if DOM is not ready.
-    if (document.readyState !== 'complete') {
-      document.addEventListener('readystatechange', this.onReadyStateChange.bind(this));
-      return;
-    }
-
-    AEntity.prototype.doConnectedCallback.call(this);
-  }
-
   doConnectedCallback () {
     var self = this;  // Component.
     var assetsEl;  // Asset management system element.
     var sceneEl;
 
     // ANode method.
-    super.connectedCallback();
+    super.doConnectedCallback();
 
     sceneEl = this.sceneEl;
 
@@ -278,7 +265,7 @@ class AEntity extends ANode {
   /**
    * Initialize component.
    *
-   * @param {string} attrName - Attribute name asociated to the component.
+   * @param {string} attrName - Attribute name associated to the component.
    * @param {object} data - Component data
    * @param {boolean} isDependency - True if the component is a dependency.
    */
@@ -310,12 +297,7 @@ class AEntity extends ANode {
     // Initialize dependencies first
     this.initComponentDependencies(componentName);
 
-    // If component name has an id we check component type multiplic
-    if (componentId && !COMPONENTS[componentName].multiple) {
-      throw new Error('Trying to initialize multiple ' +
-                      'components of type `' + componentName +
-                      '`. There can only be one component of this type per entity.');
-    }
+    // Initialize component
     component = new COMPONENTS[componentName].Component(this, data, componentId);
     if (this.isPlaying) { component.play(); }
 
@@ -384,6 +366,10 @@ class AEntity extends ANode {
     if (destroy) {
       component.destroy();
       delete this.components[name];
+      // Remove attribute from DOM, if still present
+      if (this.hasAttribute(name)) {
+        window.HTMLElement.prototype.removeAttribute.call(this, name);
+      }
     }
 
     this.emit('componentremoved', component.evtDetail, false);
@@ -677,7 +663,7 @@ class AEntity extends ANode {
       newAttrValue[arg1] = arg2;
       clobber = false;
     } else {
-      // Update with a value, object, or CSS-style property string, with the possiblity
+      // Update with a value, object, or CSS-style property string, with the possibility
       // of clobbering previous values.
       newAttrValue = arg1;
       clobber = (arg2 === true);
@@ -845,7 +831,7 @@ function mergeComponentData (attrValue, extraData) {
     return utils.extend(extraData, utils.styleParser.parse(attrValue || {}));
   }
 
-  // Return data, precendence to the defined value.
+  // Return data, precedence to the defined value.
   return attrValue || extraData;
 }
 

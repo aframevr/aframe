@@ -5,7 +5,6 @@ suite('fog', function () {
   setup(function (done) {
     this.entityEl = entityFactory();
     var el = this.el = this.entityEl.parentNode;
-    var self = this;
 
     el.addEventListener('loaded', function () {
       // Stub scene load to avoid WebGL code.
@@ -18,8 +17,14 @@ suite('fog', function () {
 
   test('does not set fog for entities', function () {
     var entityEl = this.entityEl;
-    entityEl.setAttribute('fog', '');
+    try {
+      entityEl.setAttribute('fog', '');
+      assert.fail();
+    } catch (e) {
+      assert.equal(e.message, 'Component `fog` can only be applied to <a-scene>');
+    }
     assert.notOk(entityEl.object3D.fog);
+    assert.notOk(entityEl.components['fog']);
   });
 
   suite('update', function () {

@@ -1,5 +1,4 @@
 var registerComponent = require('../core/component').registerComponent;
-var bind = require('../utils/bind');
 
 var trackedControlsUtils = require('../utils/tracked-controls');
 var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
@@ -15,7 +14,7 @@ var isWebXRAvailable = require('../utils/').device.isWebXRAvailable;
 var GAMEPAD_ID_WEBXR = 'htc-vive';
 var GAMEPAD_ID_WEBVR = 'OpenVR ';
 
-// Prefix for Gen1 and Gen2 Oculus Touch Controllers.
+// Prefix for HTC Vive Controllers.
 var GAMEPAD_ID_PREFIX = isWebXRAvailable ? GAMEPAD_ID_WEBXR : GAMEPAD_ID_WEBVR;
 
 /**
@@ -45,8 +44,8 @@ var INPUT_MAPPING_WEBVR = {
  * Reference: https://github.com/immersive-web/webxr-input-profiles/blob/master/packages/registry/profiles/htc/htc-vive.json
  */
 var INPUT_MAPPING_WEBXR = {
-  axes: {thumbstick: [0, 1]},
-  buttons: ['trigger', 'grip', 'trackpad', 'none', 'menu']
+  axes: {touchpad: [0, 1]},
+  buttons: ['trigger', 'grip', 'touchpad', 'none']
 };
 
 var INPUT_MAPPING = isWebXRAvailable ? INPUT_MAPPING_WEBXR : INPUT_MAPPING_WEBVR;
@@ -54,7 +53,7 @@ var INPUT_MAPPING = isWebXRAvailable ? INPUT_MAPPING_WEBXR : INPUT_MAPPING_WEBVR
 /**
  * Vive controls.
  * Interface with Vive controllers and map Gamepad events to controller buttons:
- * trackpad, trigger, grip, menu, system
+ * touchpad, trigger, grip, menu, system
  * Load a controller model and highlight the pressed buttons.
  */
 module.exports.Component = registerComponent('vive-controls', {
@@ -66,13 +65,15 @@ module.exports.Component = registerComponent('vive-controls', {
     orientationOffset: {type: 'vec3'}
   },
 
+  after: ['tracked-controls'],
+
   mapping: INPUT_MAPPING,
 
   init: function () {
     var self = this;
     this.controllerPresent = false;
     this.lastControllerCheck = 0;
-    this.onButtonChanged = bind(this.onButtonChanged, this);
+    this.onButtonChanged = this.onButtonChanged.bind(this);
     this.onButtonDown = function (evt) { onButtonEvent(evt.detail.id, 'down', self); };
     this.onButtonUp = function (evt) { onButtonEvent(evt.detail.id, 'up', self); };
     this.onButtonTouchEnd = function (evt) { onButtonEvent(evt.detail.id, 'touchend', self); };
@@ -98,11 +99,11 @@ module.exports.Component = registerComponent('vive-controls', {
   },
 
   bindMethods: function () {
-    this.onModelLoaded = bind(this.onModelLoaded, this);
-    this.onControllersUpdate = bind(this.onControllersUpdate, this);
-    this.checkIfControllerPresent = bind(this.checkIfControllerPresent, this);
-    this.removeControllersUpdateListener = bind(this.removeControllersUpdateListener, this);
-    this.onAxisMoved = bind(this.onAxisMoved, this);
+    this.onModelLoaded = this.onModelLoaded.bind(this);
+    this.onControllersUpdate = this.onControllersUpdate.bind(this);
+    this.checkIfControllerPresent = this.checkIfControllerPresent.bind(this);
+    this.removeControllersUpdateListener = this.removeControllersUpdateListener.bind(this);
+    this.onAxisMoved = this.onAxisMoved.bind(this);
   },
 
   addEventListeners: function () {
@@ -210,6 +211,7 @@ module.exports.Component = registerComponent('vive-controls', {
     buttonMeshes.menu = controllerObject3D.getObjectByName('menubutton');
     buttonMeshes.system = controllerObject3D.getObjectByName('systembutton');
     buttonMeshes.trackpad = controllerObject3D.getObjectByName('touchpad');
+    buttonMeshes.touchpad = controllerObject3D.getObjectByName('touchpad');
     buttonMeshes.trigger = controllerObject3D.getObjectByName('trigger');
 
     // Set default colors.

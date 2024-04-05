@@ -287,7 +287,7 @@ AFRAME.registerComponent('cursor', {
     // Set up initial state and variables.
     this.intersection = null;
     // Bind methods.
-    this.onIntersection = AFRAME.utils.bind(this.onIntersection, this);
+    this.onIntersection = this.onIntersection.bind(this);
     // Attach event listener.
     this.el.addEventListener('raycaster-intersection', this.onIntersection);
   }
@@ -581,6 +581,22 @@ AFRAME.registerComponent('foo', {
     // An object3D will be set using `foo__bar` as the key.
     this.el.setObject3D(this.attrName, new THREE.Mesh());
   }
+});
+```
+
+### `sceneOnly`
+
+The `sceneOnly` flag indicates if a component can only be applied to the scene
+entity. Since `sceneOnly` is set to `false` by default, the component can be added
+to any entity. For example, any entity could have a geometry component.
+
+But if a component has `sceneOnly` set to `true`, then the component can only be
+applied to `<a-scene>`:
+
+```js
+AFRAME.registerComponent('foo', {
+  sceneOnly: true,
+  // ...
 });
 ```
 

@@ -8,6 +8,8 @@ module.exports.Component = registerComponent('embedded', {
 
   schema: {default: true},
 
+  sceneOnly: true,
+
   update: function () {
     var sceneEl = this.el;
     var enterVREl = sceneEl.querySelector('.a-enter-vr');

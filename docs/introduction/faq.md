@@ -344,6 +344,39 @@ Phones with Adreno 300 series GPUs are notoriously problematic. Set [renderer pr
 
 Using A-Frame online sometimes is not possible or inconvenient, like for instance when traveling or during public events with poor Internet connectivity. A-Frame is mostly self-contained so including the build (aframe.min.js) in your project will be sufficient in many cases. Some specific parts are lazy loaded and only fetched when used. This is for example the case of the fonts for the text component and the 3D models for controllers. In order to make an A-Frame build work either offline or without relying on A-Frame hosting infrastructure (typically cdn.aframe.io), you can monitor network requests on your browser console. This will show precisely what assets are being loaded and thus as required for your specific experience. Fonts can be found via FONT_BASE_URL in the whereas controllers via MODEL_URLS. Both can be modified in the source and included in your own [custom build](https://github.com/aframevr/aframe#generating-builds)
 
+## Can I load A-Frame as an ES module?
+
+You can load A-Frame as an ES module using a [side effect import](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import#import_a_module_for_its_side_effects_only). A-Frame will then initialize any `<a-scene>` in the document. It's still important to register any components or systems you need before this happens:
+
+```HTML
+<head>
+  <script type="importmap">
+    {
+        "imports": {
+            "aframe": "https://aframe.io/releases/1.5.0/aframe.min.js",
+        }
+    }
+  </script>
+  <script type="module">
+    import 'aframe';
+    AFRAME.registerComponent('my-component', {
+      ...
+    });
+  </script>
+</head>
+```
+
+If it's not possible to register everything synchronously to importing A-Frame, you can set the `window.AFRAME_ASYNC` flag. This prevents A-Frame from initializing `<a-scene>` tags, until you give a ready signal by calling `window.AFRAME.emitReady()`. Note that this flag must be set before importing A-Frame, as shown in the following example:
+
+```JS
+window.AFRAME_ASYNC = true;
+await import('aframe');
+
+// Asynchronously register components/systems
+
+window.AFRAME.ready();
+```
+
 ## What order does A-Frame render objects in?
 
 [sortTransparentObjects]: ../components/renderer.md#sorttransparentobjects

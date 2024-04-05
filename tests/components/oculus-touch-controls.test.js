@@ -14,10 +14,8 @@ suite('oculus-touch-controls', function () {
       component.controllers = [];
       // Our Mock data for enabling the controllers.
       component.controllersWhenPresent = [{
-        id: 'Oculus Touch',
-        index: 0,
-        hand: 'left',
-        pose: {}
+        profiles: ['oculus-touch'],
+        handedness: 'left'
       }];
       done();
     };
@@ -34,7 +32,7 @@ suite('oculus-touch-controls', function () {
 
     setup(function (done) {
       component = this.el.components['oculus-touch-controls'];
-      controllerSystem = this.el.sceneEl.systems['tracked-controls-webvr'];
+      controllerSystem = this.el.sceneEl.systems['tracked-controls-webxr'];
       controllerSystem.vrDisplay = true;
       addEventListenersSpy = sinon.spy(component, 'addEventListeners');
       injectTrackedControlsSpy = sinon.spy(component, 'injectTrackedControls');
@@ -118,7 +116,7 @@ suite('oculus-touch-controls', function () {
     var controllerSystem;
 
     setup(function (done) {
-      controllerSystem = this.el.sceneEl.systems['tracked-controls-webvr'];
+      controllerSystem = this.el.sceneEl.systems['tracked-controls-webxr'];
       controllerSystem.controllers = component.controllersWhenPresent;
       controllerSystem.vrDisplay = true;
       done();
@@ -128,11 +126,11 @@ suite('oculus-touch-controls', function () {
       // Do the check.
       component.checkIfControllerPresent();
       // Set up the event details.
-      const eventDetails = {axis: [0.1, 0.2], changed: [true, false]};
+      const eventDetails = {axis: [0.1, 0.2, 0.3, 0.4], changed: [false, false, true, false]};
       // Install event handler listening for thumbstickmoved.
       this.el.addEventListener('thumbstickmoved', function (evt) {
-        assert.equal(evt.detail.x, eventDetails.axis[0]);
-        assert.equal(evt.detail.y, eventDetails.axis[1]);
+        assert.equal(evt.detail.x, eventDetails.axis[2]);
+        assert.equal(evt.detail.y, eventDetails.axis[3]);
         done();
       });
       // Emit axismove.
@@ -147,15 +145,14 @@ suite('oculus-touch-controls', function () {
         assert.fail('thumbstickmoved should not be called');
       });
       // Emit axismove with no changes.
-      this.el.emit('axismove', {axis: [0.1, 0.2], changed: [false, false]});
+      this.el.emit('axismove', {axis: [0.1, 0.2, 0.3, 0.4], changed: [false, false, false, false]});
       setTimeout(() => { done(); });
     });
   });
 
   suite('buttonchanged', function () {
     test('can emit triggerchanged', function (done) {
-      el.sceneEl.systems['tracked-controls-webvr'].controllers = component.controllersWhenPresent;
-      el.sceneEl.systems['tracked-controls-webvr'].vrDisplay = true;
+      el.sceneEl.systems['tracked-controls-webxr'].controllers = component.controllersWhenPresent;
       // Do the check.
       component.checkIfControllerPresent();
       // Prepare the event details
@@ -166,7 +163,7 @@ suite('oculus-touch-controls', function () {
         done();
       });
       // Emit buttonchanged.
-      el.emit('buttonchanged', {id: 1, state: eventState});
+      el.emit('buttonchanged', {id: 0, state: eventState});
     });
   });
 });

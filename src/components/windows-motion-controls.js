@@ -1,6 +1,5 @@
 /* global THREE */
 var registerComponent = require('../core/component').registerComponent;
-var bind = require('../utils/bind');
 
 var trackedControlsUtils = require('../utils/tracked-controls');
 var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
@@ -100,20 +99,22 @@ module.exports.Component = registerComponent('windows-motion-controls', {
     hideDisconnected: {default: true}
   },
 
+  after: ['tracked-controls'],
+
   mapping: INPUT_MAPPING,
 
   bindMethods: function () {
-    this.onModelError = bind(this.onModelError, this);
-    this.onModelLoaded = bind(this.onModelLoaded, this);
-    this.onControllersUpdate = bind(this.onControllersUpdate, this);
-    this.checkIfControllerPresent = bind(this.checkIfControllerPresent, this);
-    this.onAxisMoved = bind(this.onAxisMoved, this);
+    this.onModelError = this.onModelError.bind(this);
+    this.onModelLoaded = this.onModelLoaded.bind(this);
+    this.onControllersUpdate = this.onControllersUpdate.bind(this);
+    this.checkIfControllerPresent = this.checkIfControllerPresent.bind(this);
+    this.onAxisMoved = this.onAxisMoved.bind(this);
   },
 
   init: function () {
     var self = this;
     var el = this.el;
-    this.onButtonChanged = bind(this.onButtonChanged, this);
+    this.onButtonChanged = this.onButtonChanged.bind(this);
     this.onButtonDown = function (evt) { onButtonEvent(evt.detail.id, 'down', self); };
     this.onButtonUp = function (evt) { onButtonEvent(evt.detail.id, 'up', self); };
     this.onButtonTouchStart = function (evt) { onButtonEvent(evt.detail.id, 'touchstart', self); };
@@ -263,7 +264,7 @@ module.exports.Component = registerComponent('windows-motion-controls', {
   },
 
   loadModel: function (url) {
-    // The model is loaded by the gltf-model compoent when this attribute is initially set,
+    // The model is loaded by the gltf-model component when this attribute is initially set,
     // removed and re-loaded if the given url changes.
     this.el.setAttribute('gltf-model', 'url(' + url + ')');
   },

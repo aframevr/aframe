@@ -4,18 +4,18 @@ var initWakelock = require('./wakelock');
 var loadingScreen = require('./loadingScreen');
 var scenes = require('./scenes');
 var systems = require('../system').systems;
+var components = require('../component').components;
 var THREE = require('../../lib/three');
 var utils = require('../../utils/');
+var warn = utils.debug('core:a-scene:warn');
 // Require after.
 var AEntity = require('../a-entity').AEntity;
 var ANode = require('../a-node').ANode;
 var initPostMessageAPI = require('./postMessage');
 
-var bind = utils.bind;
 var isIOS = utils.device.isIOS();
 var isMobile = utils.device.isMobile();
 var isWebXRAvailable = utils.device.isWebXRAvailable;
-var warn = utils.debug('core:a-scene:warn');
 
 if (isIOS) { require('../../utils/ios-orientationchange-blank-bug'); }
 
@@ -26,7 +26,7 @@ if (isIOS) { require('../../utils/ios-orientationchange-blank-bug'); }
            updated on every tick.
  * @member {object} camera - three.js Camera object.
  * @member {object} canvas
- * @member {bool} isScene - Differentiates as scene entity as opposed to other entites.
+ * @member {bool} isScene - Differentiates as scene entity as opposed to other entities.
  * @member {bool} isMobile - Whether browser is mobile (via UA detection).
  * @member {object} object3D - Root three.js Scene object.
  * @member {object} renderer
@@ -51,14 +51,15 @@ class AScene extends AEntity {
       // THREE may swap the camera used for the rendering if in VR, so we pass it to tock
       if (self.isPlaying) { self.tock(self.time, self.delta, camera); }
     };
-    self.resize = bind(self.resize, self);
-    self.render = bind(self.render, self);
+    self.resize = self.resize.bind(self);
+    self.render = self.render.bind(self);
     self.systems = {};
     self.systemNames = [];
     self.time = self.delta = 0;
     self.usedOfferSession = false;
 
-    self.behaviors = {tick: [], tock: []};
+    self.componentOrder = [];
+    self.behaviors = {};
     self.hasLoaded = false;
     self.isPlaying = false;
     self.originalHTML = self.innerHTML;
@@ -72,16 +73,6 @@ class AScene extends AEntity {
     document.documentElement.classList.remove('a-fullscreen');
   }
 
-  connectedCallback () {
-    // Defer if DOM is not ready.
-    if (document.readyState !== 'complete') {
-      document.addEventListener('readystatechange', this.onReadyStateChange.bind(this));
-      return;
-    }
-
-    this.doConnectedCallback();
-  }
-
   doConnectedCallback () {
     var self = this;
     var embedded = this.hasAttribute('embedded');
@@ -92,7 +83,7 @@ class AScene extends AEntity {
     this.setAttribute('screenshot', '');
     this.setAttribute('xr-mode-ui', '');
     this.setAttribute('device-orientation-permission-ui', '');
-    super.connectedCallback();
+    super.doConnectedCallback();
 
     // Renderer initialization
     setupCanvas(this);
@@ -107,7 +98,7 @@ class AScene extends AEntity {
     initWakelock(this);
 
     // Handler to exit VR (e.g., Oculus Browser back button).
-    this.onVRPresentChangeBound = bind(this.onVRPresentChange, this);
+    this.onVRPresentChangeBound = this.onVRPresentChange.bind(this);
     window.addEventListener('vrdisplaypresentchange', this.onVRPresentChangeBound);
 
     // Bind functions.
@@ -141,6 +132,12 @@ class AScene extends AEntity {
     });
 
     this.initSystems();
+    // Compute component order
+    this.componentOrder = determineComponentBehaviorOrder(components, this.componentOrder);
+    this.addEventListener('componentregistered', function () {
+      // Recompute order
+      self.componentOrder = determineComponentBehaviorOrder(components, self.componentOrder);
+    });
 
     // WebXR Immersive navigation handler.
     if (this.hasWebXR && navigator.xr && navigator.xr.addEventListener) {
@@ -222,16 +219,32 @@ class AScene extends AEntity {
    * @param {object} behavior - A component.
    */
   addBehavior (behavior) {
-    var behaviorArr;
-    var behaviors = this.behaviors;
+    var behaviorSet;
+    var behaviors = this.behaviors[behavior.name];
     var behaviorType;
+
+    if (!behaviors) {
+      behaviors = this.behaviors[behavior.name] = {
+        tick: { inUse: false, array: [], markedForRemoval: [] },
+        tock: { inUse: false, array: [], markedForRemoval: [] }
+      };
+    }
 
     // Check if behavior has tick and/or tock and add the behavior to the appropriate list.
     for (behaviorType in behaviors) {
       if (!behavior[behaviorType]) { continue; }
-      behaviorArr = this.behaviors[behaviorType];
-      if (behaviorArr.indexOf(behavior) === -1) {
-        behaviorArr.push(behavior);
+      behaviorSet = behaviors[behaviorType];
+
+      // In case the behaviorSet is in use, make sure this behavior isn't on the removal list.
+      if (behaviorSet.inUse) {
+        var index = behaviorSet.markedForRemoval.indexOf(behavior);
+        if (index !== -1) {
+          behaviorSet.markedForRemoval.splice(index, 1);
+        }
+      }
+      // Add behavior to the set
+      if (behaviorSet.array.indexOf(behavior) === -1) {
+        behaviorSet.array.push(behavior);
       }
     }
   }
@@ -301,8 +314,6 @@ class AScene extends AEntity {
           self.usedOfferSession |= useOfferSession;
           requestSession(xrMode, xrInit).then(
             function requestSuccess (xrSession) {
-              self.xrSession = xrSession;
-
               if (useOfferSession) {
                 self.usedOfferSession = false;
               }
@@ -310,10 +321,11 @@ class AScene extends AEntity {
               vrManager.layersEnabled = xrInit.requiredFeatures.indexOf('layers') !== -1;
               vrManager.setSession(xrSession).then(function () {
                 vrManager.setFoveation(rendererSystem.foveationLevel);
+                self.xrSession = xrSession;
+                self.systems.renderer.setWebXRFrameRate(xrSession);
+                xrSession.addEventListener('end', self.exitVRBound);
+                enterVRSuccess(resolve);
               });
-              self.systems.renderer.setWebXRFrameRate(xrSession);
-              xrSession.addEventListener('end', self.exitVRBound);
-              enterVRSuccess(resolve);
             },
             function requestFail (error) {
               var useAR = xrMode === 'immersive-ar';
@@ -502,15 +514,6 @@ class AScene extends AEntity {
   }
 
   /**
-   * `getAttribute` used to be `getDOMAttribute` and `getComputedAttribute` used to be
-   * what `getAttribute` is now. Now legacy code.
-   */
-  getComputedAttribut (attr) {
-    warn('`getComputedAttribute` is deprecated. Use `getAttribute` instead.');
-    this.getAttribute(attr);
-  }
-
-  /**
    * Wraps Entity.getDOMAttribute to take into account for systems.
    * If system exists, then return system data rather than possible component data.
    */
@@ -526,10 +529,15 @@ class AScene extends AEntity {
    * setAttribute.
    */
   setAttribute (attr, value, componentPropValue) {
-    var system = this.systems[attr];
-    if (system) {
+    // Check if system exists (i.e. is registered).
+    if (systems[attr]) {
       ANode.prototype.setAttribute.call(this, attr, value);
-      system.updateProperties(value);
+
+      // Update system instance, if initialized on the scene.
+      var system = this.systems[attr];
+      if (system) {
+        system.updateProperties(value);
+      }
       return;
     }
     AEntity.prototype.setAttribute.call(this, attr, value, componentPropValue);
@@ -539,18 +547,30 @@ class AScene extends AEntity {
    * @param {object} behavior - A component.
    */
   removeBehavior (behavior) {
-    var behaviorArr;
+    var behaviorSet;
     var behaviorType;
-    var behaviors = this.behaviors;
+    var behaviors = this.behaviors[behavior.name];
     var index;
 
     // Check if behavior has tick and/or tock and remove the behavior from the appropriate
     // array.
     for (behaviorType in behaviors) {
       if (!behavior[behaviorType]) { continue; }
-      behaviorArr = this.behaviors[behaviorType];
-      index = behaviorArr.indexOf(behavior);
-      if (index !== -1) { behaviorArr.splice(index, 1); }
+      behaviorSet = behaviors[behaviorType];
+      index = behaviorSet.array.indexOf(behavior);
+      if (index !== -1) {
+        // Check if the behavior can safely be removed.
+        if (behaviorSet.inUse) {
+          // Set is in use, so only mark for removal.
+          if (behaviorSet.markedForRemoval.indexOf(behavior) === -1) {
+            behaviorSet.markedForRemoval.push(behavior);
+          }
+        } else {
+          // Swap and remove from the end
+          behaviorSet.array[index] = behaviorSet.array[behaviorSet.array.length - 1];
+          behaviorSet.array.pop();
+        }
+      }
     }
   }
 
@@ -706,10 +726,7 @@ class AScene extends AEntity {
     var systems = this.systems;
 
     // Components.
-    for (i = 0; i < this.behaviors.tick.length; i++) {
-      if (!this.behaviors.tick[i].el.isPlaying) { continue; }
-      this.behaviors.tick[i].tick(time, timeDelta);
-    }
+    this.callComponentBehaviors('tick', time, timeDelta);
 
     // Systems.
     for (i = 0; i < this.systemNames.length; i++) {
@@ -728,10 +745,7 @@ class AScene extends AEntity {
     var systems = this.systems;
 
     // Components.
-    for (i = 0; i < this.behaviors.tock.length; i++) {
-      if (!this.behaviors.tock[i].el.isPlaying) { continue; }
-      this.behaviors.tock[i].tock(time, timeDelta, camera);
-    }
+    this.callComponentBehaviors('tock', time, timeDelta);
 
     // Systems.
     for (i = 0; i < this.systemNames.length; i++) {
@@ -767,7 +781,105 @@ class AScene extends AEntity {
       this.object3D.background = savedBackground;
     }
   }
+
+  callComponentBehaviors (behavior, time, timeDelta) {
+    var i;
+
+    for (var c = 0; c < this.componentOrder.length; c++) {
+      var behaviors = this.behaviors[this.componentOrder[c]];
+      if (!behaviors) { continue; }
+      var behaviorSet = behaviors[behavior];
+
+      behaviorSet.inUse = true;
+      for (i = 0; i < behaviorSet.array.length; i++) {
+        if (!behaviorSet.array[i].el.isPlaying) { continue; }
+        behaviorSet.array[i][behavior](time, timeDelta);
+      }
+      behaviorSet.inUse = false;
+
+      // Clean up any behaviors marked for removal
+      for (i = 0; i < behaviorSet.markedForRemoval.length; i++) {
+        this.removeBehavior(behaviorSet.markedForRemoval[i]);
+      }
+      behaviorSet.markedForRemoval.length = 0;
+    }
+  }
 }
+
+/**
+ * Derives an ordering from the components, taking any before and after
+ * constraints into account.
+ *
+ * @param {object} components - The components to order
+ * @param {array} array - Optional array to use as output
+ */
+function determineComponentBehaviorOrder (components, array) {
+  var graph = {};
+  var i;
+  var key;
+  var result = array || [];
+  result.length = 0;
+
+  // Construct graph nodes for each element
+  for (key in components) {
+    var element = components[key];
+    if (element === undefined) { continue; }
+    var before = element.before ? element.before.slice(0) : [];
+    var after = element.after ? element.after.slice(0) : [];
+    graph[key] = { before: before, after: after, visited: false, done: false };
+  }
+
+  // Normalize to after constraints, warn about missing nodes
+  for (key in graph) {
+    for (i = 0; i < graph[key].before.length; i++) {
+      var beforeName = graph[key].before[i];
+      if (!(beforeName in graph)) {
+        warn('Invalid ordering constraint, no component named `' + beforeName + '` referenced by `' + key + '`');
+        continue;
+      }
+
+      graph[beforeName].after.push(key);
+    }
+  }
+
+  // Perform topological depth-first search
+  // https://en.wikipedia.org/wiki/Topological_sorting#Depth-first_search
+  function visit (name) {
+    if (!(name in graph) || graph[name].done) {
+      return;
+    }
+
+    if (graph[name].visited) {
+      warn('Cycle detected, ignoring one or more before/after constraints. ' +
+        'The resulting order might be incorrect');
+      return;
+    }
+
+    graph[name].visited = true;
+
+    for (var i = 0; i < graph[name].after.length; i++) {
+      var afterName = graph[name].after[i];
+      if (!(afterName in graph)) {
+        warn('Invalid before/after constraint, no component named `' +
+            afterName + '` referenced in `' + name + '`');
+      }
+      visit(afterName);
+    }
+
+    graph[name].done = true;
+    result.push(name);
+  }
+
+  for (key in graph) {
+    if (graph[key].done) {
+      continue;
+    }
+    visit(key);
+  }
+  return result;
+}
+
+module.exports.determineComponentBehaviorOrder = determineComponentBehaviorOrder;
 
 /**
  * Return size constrained to maxSize - maintaining aspect ratio.
@@ -896,14 +1008,14 @@ function setupCanvas (sceneEl) {
   sceneEl.emit('render-target-loaded', {target: canvasEl});
   // For unknown reasons a synchronous resize does not work on desktop when
   // entering/exiting fullscreen.
-  setTimeout(bind(sceneEl.resize, sceneEl), 0);
+  setTimeout(sceneEl.resize.bind(sceneEl), 0);
 
   function onFullScreenChange () {
     var fullscreenEl =
       document.fullscreenElement ||
       document.mozFullScreenElement ||
       document.webkitFullscreenElement;
-    // No fullscren element === exit fullscreen
+    // No fullscreen element === exit fullscreen
     if (!fullscreenEl) { sceneEl.exitVR(); }
     document.activeElement.blur();
     document.body.focus();

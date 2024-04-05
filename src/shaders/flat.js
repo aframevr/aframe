@@ -25,7 +25,6 @@ module.exports.Shader = registerShader('flat', {
    */
   init: function (data) {
     this.materialData = {color: new THREE.Color()};
-    this.textureSrc = null;
     getMaterialData(data, this.materialData);
     this.material = new THREE.MeshBasicMaterial(this.materialData);
   },

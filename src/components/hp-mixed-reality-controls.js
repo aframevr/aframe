@@ -1,4 +1,3 @@
-var bind = require('../utils/bind');
 var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../lib/three');
 
@@ -12,7 +11,7 @@ var onButtonEvent = trackedControlsUtils.onButtonEvent;
 // TODO: Add a more robust system for deriving gamepad name.
 var GAMEPAD_ID = 'hp-mixed-reality';
 var AFRAME_CDN_ROOT = require('../constants').AFRAME_CDN_ROOT;
-var HP_MIXEDL_REALITY_MODEL_GLB_BASE_URL = AFRAME_CDN_ROOT + 'controllers/hp/mixed-reality/';
+var HP_MIXED_REALITY_MODEL_GLB_BASE_URL = AFRAME_CDN_ROOT + 'controllers/hp/mixed-reality/';
 
 var HP_MIXED_REALITY_POSITION_OFFSET = {x: 0, y: 0, z: 0.06};
 var HP_MIXED_REALITY_ROTATION_OFFSET = {_x: Math.PI / 4, _y: 0, _z: 0, _order: 'XYZ'};
@@ -55,7 +54,7 @@ module.exports.Component = registerComponent('hp-mixed-reality-controls', {
     var self = this;
     this.controllerPresent = false;
     this.lastControllerCheck = 0;
-    this.onButtonChanged = bind(this.onButtonChanged, this);
+    this.onButtonChanged = this.onButtonChanged.bind(this);
     this.onButtonDown = function (evt) { onButtonEvent(evt.detail.id, 'down', self, self.data.hand); };
     this.onButtonUp = function (evt) { onButtonEvent(evt.detail.id, 'up', self, self.data.hand); };
     this.onButtonTouchEnd = function (evt) { onButtonEvent(evt.detail.id, 'touchend', self, self.data.hand); };
@@ -81,11 +80,11 @@ module.exports.Component = registerComponent('hp-mixed-reality-controls', {
   },
 
   bindMethods: function () {
-    this.onModelLoaded = bind(this.onModelLoaded, this);
-    this.onControllersUpdate = bind(this.onControllersUpdate, this);
-    this.checkIfControllerPresent = bind(this.checkIfControllerPresent, this);
-    this.removeControllersUpdateListener = bind(this.removeControllersUpdateListener, this);
-    this.onAxisMoved = bind(this.onAxisMoved, this);
+    this.onModelLoaded = this.onModelLoaded.bind(this);
+    this.onControllersUpdate = this.onControllersUpdate.bind(this);
+    this.checkIfControllerPresent = this.checkIfControllerPresent.bind(this);
+    this.removeControllersUpdateListener = this.removeControllersUpdateListener.bind(this);
+    this.onAxisMoved = this.onAxisMoved.bind(this);
   },
 
   addEventListeners: function () {
@@ -132,7 +131,7 @@ module.exports.Component = registerComponent('hp-mixed-reality-controls', {
 
     // Load model.
     if (!this.data.model) { return; }
-    this.el.setAttribute('gltf-model', HP_MIXEDL_REALITY_MODEL_GLB_BASE_URL + this.data.hand + '.glb');
+    this.el.setAttribute('gltf-model', HP_MIXED_REALITY_MODEL_GLB_BASE_URL + this.data.hand + '.glb');
   },
 
   addControllersUpdateListener: function () {

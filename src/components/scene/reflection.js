@@ -26,6 +26,7 @@ module.exports.Component = register('reflection', {
   schema: {
     directionalLight: { type: 'selector' }
   },
+  sceneOnly: true,
   init: function () {
     var self = this;
     this.cubeRenderTarget = new THREE.WebGLCubeRenderTarget(16);

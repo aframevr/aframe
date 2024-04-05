@@ -17,15 +17,12 @@ module.exports.Component = register('fog', {
     type: {default: 'linear', oneOf: ['linear', 'exponential']}
   },
 
+  sceneOnly: true,
+
   update: function () {
     var data = this.data;
     var el = this.el;
     var fog = this.el.object3D.fog;
-
-    if (!el.isScene) {
-      warn('Fog component can only be applied to <a-scene>');
-      return;
-    }
 
     // (Re)create fog if fog doesn't exist or fog type changed.
     if (!fog || data.type !== fog.name) {

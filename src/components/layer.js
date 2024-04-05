@@ -179,7 +179,7 @@ module.exports.Component = registerComponent('layer', {
     var gl = this.el.sceneEl.renderer.getContext();
     var cubefaceTextures;
 
-    // dont flip the pixels as we load them into the texture buffer.
+    // don't flip the pixels as we load them into the texture buffer.
     // TEXTURE_CUBE_MAP expects the Y to be flipped for the faces and it already
     // is flipped in our texture image.
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
@@ -212,7 +212,7 @@ module.exports.Component = registerComponent('layer', {
 
   tick: function () {
     if (!this.el.sceneEl.xrSession) { return; }
-    if (!this.layer && this.el.sceneEl.is('vr-mode')) { this.initLayer(); }
+    if (!this.layer && (this.el.sceneEl.is('vr-mode') || this.el.sceneEl.is('ar-mode'))) { this.initLayer(); }
     this.updateTransform();
     if (this.data.src.complete && (this.pendingCubeMapUpdate || this.loadingScreen || this.visibilityChanged)) { this.loadCubeMapImages(); }
     if (!this.needsRedraw && !this.layer.needsRedraw && !this.textureIsVideo) { return; }
@@ -367,7 +367,6 @@ module.exports.Component = registerComponent('layer', {
       return;
     }
     xrSession.requestReferenceSpace('local-floor').then(this.onRequestedReferenceSpace);
-    this.needsRedraw = true;
     this.layerEnabled = true;
     if (this.quadPanelEl) {
       this.quadPanelEl.object3D.visible = false;

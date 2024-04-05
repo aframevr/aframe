@@ -19,6 +19,8 @@ module.exports.Component = registerComponent('pool', {
     dynamic: {default: false}
   },
 
+  sceneOnly: true,
+
   multiple: true,
 
   initPool: function () {

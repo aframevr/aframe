@@ -1,4 +1,3 @@
-var bind = require('../utils/bind');
 var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../lib/three');
 
@@ -198,15 +197,17 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     orientationOffset: {type: 'vec3', default: {x: 43, y: 0, z: 0}}
   },
 
+  after: ['tracked-controls'],
+
   mapping: INPUT_MAPPING,
 
   bindMethods: function () {
-    this.onButtonChanged = bind(this.onButtonChanged, this);
-    this.onThumbstickMoved = bind(this.onThumbstickMoved, this);
-    this.onModelLoaded = bind(this.onModelLoaded, this);
-    this.onControllersUpdate = bind(this.onControllersUpdate, this);
-    this.checkIfControllerPresent = bind(this.checkIfControllerPresent, this);
-    this.onAxisMoved = bind(this.onAxisMoved, this);
+    this.onButtonChanged = this.onButtonChanged.bind(this);
+    this.onThumbstickMoved = this.onThumbstickMoved.bind(this);
+    this.onModelLoaded = this.onModelLoaded.bind(this);
+    this.onControllersUpdate = this.onControllersUpdate.bind(this);
+    this.checkIfControllerPresent = this.checkIfControllerPresent.bind(this);
+    this.onAxisMoved = this.onAxisMoved.bind(this);
   },
 
   init: function () {
@@ -359,7 +360,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
         }
       }
     }
-    // Pass along changed event with button state, using the buttom mapping for convenience.
+    // Pass along changed event with button state, using the button mapping for convenience.
     this.el.emit(button + 'changed', evt.detail.state);
   },
 

@@ -118,7 +118,7 @@ function findMatchingControllerWebVR (controllers, filterIdExact, filterIdPrefix
                                  filterControllerIndex) {
   var controller;
   var i;
-  var matchingControllerOccurence = 0;
+  var matchingControllerOccurrence = 0;
   var targetControllerMatch = filterControllerIndex >= 0 ? filterControllerIndex : 0;
 
   for (i = 0; i < controllers.length; i++) {
@@ -144,10 +144,10 @@ function findMatchingControllerWebVR (controllers, filterIdExact, filterIdPrefix
       return controller;
     }
 
-    // We are looking for the nth occurence of a matching controller
+    // We are looking for the nth occurrence of a matching controller
     // (n equals targetControllerMatch).
-    if (matchingControllerOccurence === targetControllerMatch) { return controller; }
-    ++matchingControllerOccurence;
+    if (matchingControllerOccurrence === targetControllerMatch) { return controller; }
+    ++matchingControllerOccurrence;
   }
   return undefined;
 }
@@ -190,7 +190,7 @@ module.exports.findMatchingControllerWebVR = findMatchingControllerWebVR;
 module.exports.findMatchingControllerWebXR = findMatchingControllerWebXR;
 
 /**
- * Emit specific `moved` event(s) if axes changed based on original axismoved event.
+ * Emit specific `moved` event(s) if axes changed based on original axismove event.
  *
  * @param {object} component - Controller component in use.
  * @param {array} axesMapping - For example `{thumbstick: [0, 1]}`.

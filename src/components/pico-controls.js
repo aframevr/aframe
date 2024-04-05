@@ -1,4 +1,3 @@
-var bind = require('../utils/bind');
 var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../lib/three');
 
@@ -50,7 +49,7 @@ module.exports.Component = registerComponent('pico-controls', {
 
   init: function () {
     var self = this;
-    this.onButtonChanged = bind(this.onButtonChanged, this);
+    this.onButtonChanged = this.onButtonChanged.bind(this);
     this.onButtonDown = function (evt) { onButtonEvent(evt.detail.id, 'down', self, self.data.hand); };
     this.onButtonUp = function (evt) { onButtonEvent(evt.detail.id, 'up', self, self.data.hand); };
     this.onButtonTouchEnd = function (evt) { onButtonEvent(evt.detail.id, 'touchend', self, self.data.hand); };
@@ -74,11 +73,11 @@ module.exports.Component = registerComponent('pico-controls', {
   },
 
   bindMethods: function () {
-    this.onModelLoaded = bind(this.onModelLoaded, this);
-    this.onControllersUpdate = bind(this.onControllersUpdate, this);
-    this.checkIfControllerPresent = bind(this.checkIfControllerPresent, this);
-    this.removeControllersUpdateListener = bind(this.removeControllersUpdateListener, this);
-    this.onAxisMoved = bind(this.onAxisMoved, this);
+    this.onModelLoaded = this.onModelLoaded.bind(this);
+    this.onControllersUpdate = this.onControllersUpdate.bind(this);
+    this.checkIfControllerPresent = this.checkIfControllerPresent.bind(this);
+    this.removeControllersUpdateListener = this.removeControllersUpdateListener.bind(this);
+    this.onAxisMoved = this.onAxisMoved.bind(this);
   },
 
   addEventListeners: function () {

@@ -1,10 +1,11 @@
-/* global sinon, setup, teardown */
+/* global EventTarget, sinon, setup, teardown */
 
 /**
  * __init.test.js is run before every test case.
  */
 window.debug = true;
 
+/* WebVR Stub */
 navigator.getVRDisplays = function () {
   var resolvePromise = Promise.resolve();
   var mockVRDisplay = {
@@ -19,16 +20,26 @@ navigator.getVRDisplays = function () {
   return Promise.resolve([mockVRDisplay]);
 };
 
+/* WebXR Stub */
+navigator.xr = navigator.xr || {};
+navigator.xr.isSessionSupported = function (_sessionType) { return Promise.resolve(true); };
+navigator.xr.requestSession = function (_mode) {
+  const xrSession = new EventTarget();
+  xrSession.supportedFrameRates = [90];
+  xrSession.requestReferenceSpace = function () { return Promise.resolve(); };
+  return Promise.resolve(xrSession);
+};
+
 const AFRAME = require('index');
 var AScene = require('core/scene/a-scene').AScene;
-// Make sure WebGL context is not created since Travix CT runs headless.
-// Stubs below failed once in a while due to asynchronous tesst setup / teardown.
+// Make sure WebGL context is not created since CI runs headless.
+// Stubs below failed once in a while due to asynchronous test setup / teardown.
 AScene.prototype.setupRenderer = function () {};
 
 setup(function () {
   window.AFRAME = AFRAME;
   this.sinon = sinon.createSandbox();
-  // Stubs to not create a WebGL context since Travis CI runs headless.
+  // Stubs to not create a WebGL context since CI runs headless.
   this.sinon.stub(AScene.prototype, 'render');
   this.sinon.stub(AScene.prototype, 'setupRenderer');
   // Mock renderer.
@@ -71,7 +82,7 @@ window.addEventListener('unhandledrejection', event => {
   pendingErrorNotice = 'An uncaught promise rejection occurred between tests';
 });
 
-teardown(function (done) {
+teardown(function () {
   // Clean up any attached elements.
   var attachedEls = ['canvas', 'a-assets', 'a-scene'];
   var els = document.querySelectorAll(attachedEls.join(','));
@@ -81,11 +92,6 @@ teardown(function (done) {
   this.sinon.restore();
   delete AFRAME.components.test;
   delete AFRAME.systems.test;
-
-  // Allow detachedCallbacks to clean themselves up.
-  setTimeout(function () {
-    done();
-  });
 
   if (pendingError) {
     console.error(pendingErrorNotice);

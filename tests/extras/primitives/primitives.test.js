@@ -226,6 +226,23 @@ suite('registerPrimitive (using innerHTML)', function () {
     });
   });
 
+  test('applies mappings to mixin attributes', function (done) {
+    AFRAME.registerComponent('test', {
+      schema: {default: 'foo'}
+    });
+    primitiveFactory({
+      defaultComponents: {
+        material: {color: 'blue'}
+      },
+      mappings: {foo: 'material.color'}
+    }, 'mixin="bar"', function postCreation (el) {
+      assert.equal(el.getAttribute('material').color, 'purple');
+      done();
+    }, function preCreation (sceneEl) {
+      helpers.mixinFactory('bar', {foo: 'purple'}, sceneEl);
+    });
+  });
+
   test('handles mapping to a single-property component', function (done) {
     primitiveFactory({
       mappings: {
@@ -338,31 +355,6 @@ suite('registerPrimitive (using innerHTML)', function () {
     }, function preCreation (sceneEl) {
       helpers.mixinFactory('bar', {material: 'color: orange'}, sceneEl);
     });
-  });
-
-  test('handles primitive created and updated in init method', function (done) {
-    var el = helpers.entityFactory();
-    var tagName = 'a-test-' + primitiveId++;
-    registerPrimitive(tagName, {
-      defaultComponents: {
-        scale: {x: 0.2, y: 0.2, z: 0.2}
-      }
-    });
-
-    registerComponent('create-and-update-primitive', {
-      init: function () {
-        var primitiveEl = document.createElement(tagName);
-        this.el.appendChild(primitiveEl);
-        primitiveEl.setAttribute('scale', {y: 0.2});
-        primitiveEl.addEventListener('loaded', function () {
-          assert.equal(primitiveEl.object3D.scale.x, 0.2);
-          done();
-        });
-      }
-    });
-
-    el.setAttribute('create-and-update-primitive', '');
-    el.sceneEl.appendChild(el);
   });
 
   test('resolves mapping collisions', function (done) {

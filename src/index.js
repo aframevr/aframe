@@ -1,8 +1,3 @@
-// Polyfill `Promise`.
-window.Promise = window.Promise || require('promise-polyfill');
-
-require('@ungap/custom-elements');
-
 // WebVR polyfill
 // Check before the polyfill runs.
 window.hasNativeWebVRImplementation = !!window.navigator.getVRDisplays ||
@@ -27,14 +22,6 @@ if (!window.hasNativeWebXRImplementation && !window.hasNativeWebVRImplementation
 
 var utils = require('./utils/');
 var debug = utils.debug;
-
-if (utils.isIE11) {
-  // Polyfill `CustomEvent`.
-  require('custom-event-polyfill');
-  // Polyfill String.startsWith.
-  require('../vendor/starts-with-polyfill');
-}
-
 var error = debug('A-Frame:error');
 var warn = debug('A-Frame:warn');
 
@@ -54,8 +41,6 @@ if (!window.cordova && window.location.protocol === 'file:') {
     'https://aframe.io/docs/1.4.0/introduction/installation.html#use-a-local-server.');
 }
 
-require('present'); // Polyfill `performance.now()`.
-
 // CSS.
 if (utils.device.isBrowserEnvironment) {
   require('./style/aframe.css');
@@ -74,6 +59,7 @@ var shaders = require('./core/shader').shaders;
 var systems = require('./core/system').systems;
 // Exports THREE to window so three.js can be used without alteration.
 var THREE = window.THREE = require('./lib/three');
+var readyState = require('./core/readyState');
 
 var pkg = require('../package');
 
@@ -92,10 +78,15 @@ require('./core/a-mixin');
 require('./extras/components/');
 require('./extras/primitives/');
 
-console.log('A-Frame Version: 1.5.0 (Date 2024-01-31, Commit #d9d12590)');
+console.log('A-Frame Version: 1.5.0 (Date 2024-04-01, Commit #e0804548)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
+
+// Wait for ready state, unless user asynchronously initializes A-Frame.
+if (!window.AFRAME_ASYNC) {
+  readyState.waitForDocumentReadyState();
+}
 
 module.exports = window.AFRAME = {
   AComponent: require('./core/component').Component,
@@ -119,6 +110,7 @@ module.exports = window.AFRAME = {
   schema: require('./core/schema'),
   shaders: shaders,
   systems: systems,
+  emitReady: readyState.emitReady,
   THREE: THREE,
   utils: utils,
   version: pkg.version

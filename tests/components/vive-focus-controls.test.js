@@ -8,17 +8,9 @@ suite('vive-focus-controls', function () {
     el.addEventListener('loaded', function () {
       var component = el.components['vive-focus-controls'];
       component.controllersWhenPresent = [{
-        id: 'HTC Vive Focus Controller',
-        index: 0,
-        hand: 'right',
-        axes: [0, 0],
-        buttons: [
-          {value: 0, pressed: false, touched: false},
-          {value: 0, pressed: false, touched: false}
-        ],
-        pose: {orientation: [1, 0, 0, 0], position: null}
+        profiles: ['htc-vive-focus'],
+        handedness: 'right'
       }];
-      el.parentEl.renderer.xr.getStandingMatrix = function () {};
       done();
     });
   });
@@ -30,7 +22,7 @@ suite('vive-focus-controls', function () {
       var addEventListenersSpy = sinon.spy(component, 'addEventListeners');
       var injectTrackedControlsSpy = sinon.spy(component, 'injectTrackedControls');
 
-      el.sceneEl.systems['tracked-controls-webvr'].controllers = [];
+      el.sceneEl.systems['tracked-controls-webxr'].controllers = [];
 
       component.controllerPresent = false;
 
@@ -48,7 +40,7 @@ suite('vive-focus-controls', function () {
       var injectTrackedControlsSpy = sinon.spy(component, 'injectTrackedControls');
       var removeEventListenersSpy = sinon.spy(component, 'removeEventListeners');
 
-      el.sceneEl.systems['tracked-controls-webvr'].controllers = [];
+      el.sceneEl.systems['tracked-controls-webxr'].controllers = [];
 
       component.controllerEventsActive = false;
       component.controllerPresent = false;
@@ -68,7 +60,7 @@ suite('vive-focus-controls', function () {
       var injectTrackedControlsSpy = sinon.spy(component, 'injectTrackedControls');
       var removeEventListenersSpy = sinon.spy(component, 'removeEventListeners');
 
-      el.sceneEl.systems['tracked-controls-webvr'].controllers = component.controllersWhenPresent;
+      el.sceneEl.systems['tracked-controls-webxr'].controllers = component.controllersWhenPresent;
 
       component.controllerPresent = false;
 
@@ -87,7 +79,7 @@ suite('vive-focus-controls', function () {
       var injectTrackedControlsSpy = sinon.spy(component, 'injectTrackedControls');
       var removeEventListenersSpy = sinon.spy(component, 'removeEventListeners');
 
-      el.sceneEl.systems['tracked-controls-webvr'].controllers = component.controllersWhenPresent;
+      el.sceneEl.systems['tracked-controls-webxr'].controllers = component.controllersWhenPresent;
 
       component.controllerEventsActive = true;
       component.controllerPresent = true;
@@ -107,7 +99,7 @@ suite('vive-focus-controls', function () {
       var injectTrackedControlsSpy = sinon.spy(component, 'injectTrackedControls');
       var removeEventListenersSpy = sinon.spy(component, 'removeEventListeners');
 
-      el.sceneEl.systems['tracked-controls-webvr'].controllers = [];
+      el.sceneEl.systems['tracked-controls-webxr'].controllers = [];
 
       component.controllerEventsActive = true;
       component.controllerPresent = true;
@@ -122,14 +114,14 @@ suite('vive-focus-controls', function () {
   });
 
   suite('axismove', function () {
-    test('emits trackpadmoved on axismove', function (done) {
+    test('emits touchpadmoved on axismove', function (done) {
       var el = this.el;
       setupTestControllers(el);
 
       // Configure the event state for which we'll use the axis state for verification.
       const eventState = {axis: [0.1, 0.2], changed: [true, false]};
 
-      el.addEventListener('trackpadmoved', function (evt) {
+      el.addEventListener('touchpadmoved', function (evt) {
         assert.equal(evt.detail.x, eventState.axis[0]);
         assert.equal(evt.detail.y, eventState.axis[1]);
         done();
@@ -138,13 +130,13 @@ suite('vive-focus-controls', function () {
       el.emit('axismove', eventState);
     });
 
-    test('does not emit trackpadmoved on axismove with no changes', function (done) {
+    test('does not emit touchpadmoved on axismove with no changes', function (done) {
       var el = this.el;
       setupTestControllers(el);
 
       // Fail purposely.
-      el.addEventListener('trackpadmoved', function (evt) {
-        assert.fail('trackpadmoved was called when there was no change.');
+      el.addEventListener('touchpadmoved', function (evt) {
+        assert.fail('touchpadmoved was called when there was no change.');
       });
 
       el.emit('axismove', {axis: [0.1, 0.2], changed: [false, false]});
@@ -153,8 +145,9 @@ suite('vive-focus-controls', function () {
   });
 
   suite('buttonchanged', function () {
-    [{ button: 'trackpad', id: 0 },
-      { button: 'trigger', id: 1 }
+    [{ button: 'trigger', id: 0 },
+      { button: 'touchpad', id: 2 },
+      { button: 'menu', id: 4 }
     ].forEach(function (buttonDescription) {
       test('if we get buttonchanged for button ' + buttonDescription.id + ', emit ' + buttonDescription.button + 'changed', function (done) {
         var el = this.el;
@@ -195,61 +188,6 @@ suite('vive-focus-controls', function () {
     });
   });
 
-  suite('armModel', function () {
-    test('does not apply armModel if armModel disabled', function () {
-      var el = this.el;
-      el.setAttribute('vive-focus-controls', 'armModel', false);
-      setupTestControllers(el);
-
-      var trackedControls = el.components['tracked-controls-webvr'];
-      var applyArmModelSpy = sinon.spy(trackedControls, 'applyArmModel');
-      trackedControls.tick();
-
-      // Verify that the function which applies arm model is not called when disabled.
-      sinon.assert.notCalled(applyArmModelSpy);
-
-      // Additionally verify that no other offets have been applied.
-      assert.strictEqual(el.object3D.position.x, 0);
-      assert.strictEqual(el.object3D.position.y, 0);
-      assert.strictEqual(el.object3D.position.z, 0);
-    });
-
-    test('applies armModel if armModel enabled', function () {
-      var el = this.el;
-      el.setAttribute('vive-focus-controls', 'armModel', true);
-      setupTestControllers(el);
-
-      var trackedControls = el.components['tracked-controls-webvr'];
-      var applyArmModelSpy = sinon.spy(trackedControls, 'applyArmModel');
-      trackedControls.tick();
-
-      // Verify that the function which applies arm model is called.
-      sinon.assert.calledOnce(applyArmModelSpy);
-    });
-
-    test('verifies armModel position is applied for the right hand', function () {
-      var el = this.el;
-      el.setAttribute('vive-focus-controls', 'armModel', true);
-      setupTestControllers(el);
-
-      var trackedControls = el.components['tracked-controls-webvr'];
-      trackedControls.tick();
-      assert.ok(el.object3D.position.x > 0);
-    });
-
-    test('verifies armModel position is applied for the left hand', function () {
-      var el = this.el;
-      el.setAttribute('vive-focus-controls', 'armModel', true);
-      el.setAttribute('vive-focus-controls', 'hand', 'left');
-      el.components['vive-focus-controls'].controllersWhenPresent[0].hand = 'left';
-      setupTestControllers(el);
-
-      var trackedControls = el.components['tracked-controls-webvr'];
-      trackedControls.tick();
-      assert.ok(el.object3D.position.x < 0);
-    });
-  });
-
   /**
    * Establishes the baseline set of controllers needed for the tests to run.
    *
@@ -257,7 +195,7 @@ suite('vive-focus-controls', function () {
    */
   function setupTestControllers (el) {
     var component = el.components['vive-focus-controls'];
-    el.sceneEl.systems['tracked-controls-webvr'].controllers = component.controllersWhenPresent;
+    el.sceneEl.systems['tracked-controls-webxr'].controllers = component.controllersWhenPresent;
     component.checkIfControllerPresent();
   }
 });

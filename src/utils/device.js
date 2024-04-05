@@ -8,7 +8,7 @@ var supportsARSession = false;
  * Oculus Browser 7 doesn't support the WebXR gamepads module.
  * We fallback to WebVR API and will hotfix when implementation is complete.
  */
-var isWebXRAvailable = module.exports.isWebXRAvailable = !window.debug && navigator.xr !== undefined;
+var isWebXRAvailable = module.exports.isWebXRAvailable = navigator.xr !== undefined;
 
 // Catch vrdisplayactivate early to ensure we can enter VR mode after the scene loads.
 window.addEventListener('vrdisplayactivate', function (evt) {
@@ -123,9 +123,28 @@ module.exports.isMobile = isMobile;
  */
 function isTablet (mockUserAgent) {
   var userAgent = mockUserAgent || window.navigator.userAgent;
-  return /ipad|Nexus (7|9)|xoom|sch-i800|playbook|tablet|kindle/i.test(userAgent);
+
+  var isTablet = /Nexus (7|9)|xoom|sch-i800|playbook|tablet|kindle/i.test(userAgent);
+
+  // Additional check for iPad or MacIntel with touch capabilities and not an MSStream device
+  return isTablet || isIpad();
 }
 module.exports.isTablet = isTablet;
+
+/**
+ *  Detect ipad devices.
+ *  @param {string} mockUserAgent - Allow passing a mock user agent for testing.
+ *  @param {string} mockDevicePlatform - Allow passing a mock device platform for testing.
+ *  @param {string} mockDeviceTouchPoints - Allow passing a mock device touch points for testing.
+*/
+function isIpad (mockUserAgent, mockDevicePlatform, mockDeviceTouchPoints) {
+  var userAgent = mockUserAgent || window.navigator.userAgent;
+  var platform = mockDevicePlatform || window.navigator.platform;
+  var maxTouchPoints = mockDeviceTouchPoints || window.navigator.maxTouchPoints || 0;
+
+  return ((platform === 'iPad' || platform === 'MacIntel') && maxTouchPoints > 0 && /Macintosh|Intel|iPad|ipad/i.test(userAgent) && !window.MSStream);
+}
+module.exports.isIpad = isIpad;
 
 function isIOS () {
   return /iPad|iPhone|iPod/.test(window.navigator.platform);
