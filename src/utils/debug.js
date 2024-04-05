@@ -1,4 +1,4 @@
-var debugLib = require('debug');
+var debug = require('debug');
 
 var settings = {
   colors: {
@@ -10,18 +10,46 @@ var settings = {
 };
 
 /**
- * Monkeypatches `debug` so we can colorize error/warning messages.
+ * Overwrite `debug` so we can colorize error/warning messages  and remove Time Diff
  *
- * (See issue: https://github.com/visionmedia/debug/issues/137)
+ * (See issue: https://github.com/debug-js/debug/issues/582#issuecomment-1755718739)
  */
-var debug = function (namespace) {
-  var d = debugLib(namespace);
+debug.formatArgs = formatArgs;
 
-  d.color = getDebugNamespaceColor(namespace);
+function formatArgs(args) {
+  args[0] =
+    (this.useColors ? '%c' : '') +
+    this.namespace +
+    (this.useColors ? ' %c' : ' ') +
+    args[0] +
+    (this.useColors ? '%c ' : ' ');
 
-  return d;
-};
-Object.assign(debug, debugLib);
+  if (!this.useColors) {
+    return;
+  }
+  this.color = getDebugNamespaceColor(this.namespace);
+  const c = 'color: ' + this.color;
+  args.splice(1, 0, c, 'color: inherit');
+
+  // The final "%c" is somewhat tricky, because there could be other
+  // arguments passed either before or after the %c, so we need to
+  // figure out the correct index to insert the CSS into
+  let index = 0;
+  let lastC = 0;
+  args[0].replace(/%[a-zA-Z%]/g, (match) => {
+    if (match === '%%') {
+      return;
+    }
+    index++;
+    if (match === '%c') {
+      // We only are interested in the *last* %c
+      // (the user may have provided their own)
+      lastC = index;
+    }
+  });
+
+  args.splice(lastC, 0, c);
+}
 
 /**
  * Returns the type of the namespace (e.g., `error`, `warn`).
