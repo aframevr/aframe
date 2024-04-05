@@ -24,6 +24,7 @@ module.exports.System = registerSystem('renderer', {
     sortTransparentObjects: {default: false},
     colorManagement: {default: true},
     alpha: {default: true},
+    stencil: {default: false},
     foveationLevel: {default: 1}
   },
 

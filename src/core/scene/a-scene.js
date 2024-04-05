@@ -640,6 +640,10 @@ class AScene extends AEntity {
         rendererConfig.alpha = rendererAttr.alpha === 'true';
       }
 
+      if (rendererAttr.stencil) {
+        rendererConfig.stencil = rendererAttr.stencil === 'true';
+      }
+
       if (rendererAttr.multiviewStereo) {
         rendererConfig.multiviewStereo = rendererAttr.multiviewStereo === 'true';
       }
