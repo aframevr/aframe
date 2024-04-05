@@ -27386,6 +27386,9 @@ class AScene extends AEntity {
       if (rendererAttr.alpha) {
         rendererConfig.alpha = rendererAttr.alpha === 'true';
       }
+      if (rendererAttr.stencil) {
+        rendererConfig.stencil = rendererAttr.stencil === 'true';
+      }
       if (rendererAttr.multiviewStereo) {
         rendererConfig.multiviewStereo = rendererAttr.multiviewStereo === 'true';
       }
@@ -30057,7 +30060,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.5.0 (Date 2024-04-01, Commit #e0804548)');
+console.log('A-Frame Version: 1.5.0 (Date 2024-04-05, Commit #863c0e6a)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -32039,6 +32042,9 @@ module.exports.System = registerSystem('renderer', {
     },
     alpha: {
       default: true
+    },
+    stencil: {
+      default: false
     },
     foveationLevel: {
       default: 1
