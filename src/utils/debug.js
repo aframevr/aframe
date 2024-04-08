@@ -16,7 +16,7 @@ var settings = {
  */
 debug.formatArgs = formatArgs;
 
-function formatArgs(args) {
+function formatArgs (args) {
   args[0] =
     (this.useColors ? '%c' : '') +
     this.namespace +
