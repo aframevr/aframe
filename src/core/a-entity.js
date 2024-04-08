@@ -32,6 +32,7 @@ class AEntity extends ANode {
     this.isEntity = true;
     this.isPlaying = false;
     this.object3D = new THREE.Group();
+    this.object3D.rotation.order = 'YXZ';
     this.object3D.el = this;
     this.object3DMap = {};
     this.parentEl = null;
