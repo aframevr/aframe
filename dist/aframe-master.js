@@ -18429,8 +18429,7 @@ module.exports.Component = registerComponent('rotation', {
   update: function () {
     var data = this.data;
     var object3D = this.el.object3D;
-    object3D.rotation.set(degToRad(data.x), degToRad(data.y), degToRad(data.z));
-    object3D.rotation.order = 'YXZ';
+    object3D.rotation.set(degToRad(data.x), degToRad(data.y), degToRad(data.z), 'YXZ');
   },
   remove: function () {
     // Pretty much for mixins.
@@ -24206,6 +24205,7 @@ class AEntity extends ANode {
     this.isEntity = true;
     this.isPlaying = false;
     this.object3D = new THREE.Group();
+    this.object3D.rotation.order = 'YXZ';
     this.object3D.el = this;
     this.object3DMap = {};
     this.parentEl = null;
@@ -30060,7 +30060,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.5.0 (Date 2024-04-05, Commit #863c0e6a)');
+console.log('A-Frame Version: 1.5.0 (Date 2024-04-08, Commit #763b3fe7)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
