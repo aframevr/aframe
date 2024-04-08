@@ -129,10 +129,10 @@ module.exports.Component = registerComponent('cursor', {
       canvas = el.sceneEl.canvas;
       if (data.downEvents.length || data.upEvents.length) { return; }
       CANVAS_EVENTS.DOWN.forEach(function (downEvent) {
-        canvas.addEventListener(downEvent, self.onCursorDown);
+        canvas.addEventListener(downEvent, self.onCursorDown, {passive: false});
       });
       CANVAS_EVENTS.UP.forEach(function (upEvent) {
-        canvas.addEventListener(upEvent, self.onCursorUp);
+        canvas.addEventListener(upEvent, self.onCursorUp, {passive: false});
       });
     }
 
@@ -205,8 +205,8 @@ module.exports.Component = registerComponent('cursor', {
     canvas.removeEventListener('touchmove', this.onMouseMove);
     el.setAttribute('raycaster', 'useWorldCoordinates', false);
     if (this.data.rayOrigin !== 'mouse') { return; }
-    canvas.addEventListener('mousemove', this.onMouseMove, false);
-    canvas.addEventListener('touchmove', this.onMouseMove, false);
+    canvas.addEventListener('mousemove', this.onMouseMove);
+    canvas.addEventListener('touchmove', this.onMouseMove, {passive: false});
     el.setAttribute('raycaster', 'useWorldCoordinates', true);
     this.updateCanvasBounds();
   },

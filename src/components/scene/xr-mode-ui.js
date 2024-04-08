@@ -277,8 +277,8 @@ function createOrientationModal (onClick) {
 function applyStickyHoverFix (buttonEl) {
   buttonEl.addEventListener('touchstart', function () {
     buttonEl.classList.remove('resethover');
-  });
+  }, {passive: true});
   buttonEl.addEventListener('touchend', function () {
     buttonEl.classList.add('resethover');
-  });
+  }, {passive: true});
 }

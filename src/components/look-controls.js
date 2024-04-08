@@ -159,9 +159,9 @@ module.exports.Component = registerComponent('look-controls', {
     window.addEventListener('mouseup', this.onMouseUp, false);
 
     // Touch events.
-    canvasEl.addEventListener('touchstart', this.onTouchStart);
-    window.addEventListener('touchmove', this.onTouchMove);
-    window.addEventListener('touchend', this.onTouchEnd);
+    canvasEl.addEventListener('touchstart', this.onTouchStart, {passive: true});
+    window.addEventListener('touchmove', this.onTouchMove, {passive: true});
+    window.addEventListener('touchend', this.onTouchEnd, {passive: true});
 
     // sceneEl events.
     sceneEl.addEventListener('enter-vr', this.onEnterVR);
