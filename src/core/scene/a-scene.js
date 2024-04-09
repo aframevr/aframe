@@ -796,7 +796,7 @@ class AScene extends AEntity {
 
       behaviorSet.inUse = true;
       for (i = 0; i < behaviorSet.array.length; i++) {
-        if (!behaviorSet.array[i].el.isPlaying) { continue; }
+        if (!behaviorSet.array[i].isPlaying) { continue; }
         behaviorSet.array[i][behavior](time, timeDelta);
       }
       behaviorSet.inUse = false;
