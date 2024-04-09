@@ -11,6 +11,8 @@ AFRAME.registerComponent('pressable', {
   },
 
   tick: function () {
+    // this.data may be undefined when the pressable component is removed
+    if (!this.data) return;
     var handEls = this.handEls;
     var handEl;
     var distance;
