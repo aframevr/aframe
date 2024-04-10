@@ -3,7 +3,7 @@ AFRAME.registerComponent('button', {
   schema: {
     label: {default: 'label'},
     width: {default: 0.50},
-    toggable: {default: false}
+    toggleable: {default: false}
   },
   init: function () {
     var el = this.el;
