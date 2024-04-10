@@ -343,6 +343,8 @@ suite('a-scene (without renderer) - WebXR', function () {
       AFRAME.registerComponent('test', {
         tick: function () { spy(); }
       });
+      el.sceneEl = sceneEl;
+      el.hasLoaded = true;
       el.isPlaying = true;
       sceneEl.addBehavior(new AFRAME.components.test.Component(el));
       sceneEl.addBehavior(new AFRAME.components.test.Component(el));
@@ -372,6 +374,8 @@ suite('a-scene (without renderer) - WebXR', function () {
       AFRAME.registerComponent('test', {
         tock: function () { spy(); }
       });
+      el.sceneEl = sceneEl;
+      el.hasLoaded = true;
       el.isPlaying = true;
       sceneEl.addBehavior(new AFRAME.components.test.Component(el));
       sceneEl.addBehavior(new AFRAME.components.test.Component(el));
@@ -400,14 +404,12 @@ suite('a-scene (without renderer) - WebXR', function () {
 
     setup(function () {
       sceneEl = this.el;
-      var el = document.createElement('a-entity');
-      el.isPlaying = true;
       AFRAME.registerComponent('test', {});
       spy = this.sinon.spy();
 
-      behaviorOne = { name: 'test', el: el, tick: () => spy(1), tock: () => spy(1) };
-      behaviorTwo = { name: 'test', el: el, tick: () => spy(2), tock: () => spy(2) };
-      behaviorThree = { name: 'test', el: el, tick: () => spy(3), tock: () => spy(3) };
+      behaviorOne = { name: 'test', isPlaying: true, tick: () => spy(1), tock: () => spy(1) };
+      behaviorTwo = { name: 'test', isPlaying: true, tick: () => spy(2), tock: () => spy(2) };
+      behaviorThree = { name: 'test', isPlaying: true, tick: () => spy(3), tock: () => spy(3) };
       sceneEl.addBehavior(behaviorOne);
       sceneEl.addBehavior(behaviorTwo);
       sceneEl.addBehavior(behaviorThree);
@@ -960,6 +962,8 @@ suite('a-scene (without renderer) - WebVR', function () {
       AFRAME.registerComponent('test', {
         tick: function () { spy(); }
       });
+      el.sceneEl = sceneEl;
+      el.hasLoaded = true;
       el.isPlaying = true;
       sceneEl.addBehavior(new AFRAME.components.test.Component(el));
       sceneEl.addBehavior(new AFRAME.components.test.Component(el));
@@ -989,6 +993,8 @@ suite('a-scene (without renderer) - WebVR', function () {
       AFRAME.registerComponent('test', {
         tock: function () { spy(); }
       });
+      el.sceneEl = sceneEl;
+      el.hasLoaded = true;
       el.isPlaying = true;
       sceneEl.addBehavior(new AFRAME.components.test.Component(el));
       sceneEl.addBehavior(new AFRAME.components.test.Component(el));
@@ -1295,10 +1301,10 @@ helpers.getSkipCISuite()('a-scene (with renderer)', function () {
   test('calls tick behaviors', function () {
     var scene = this.el;
     registerComponent('test', {});
-    var Component = {name: 'test', el: {isPlaying: true}, tick: function () {}};
+    var Component = {name: 'test', isPlaying: true, tick: function () {}};
     this.sinon.spy(Component, 'tick');
     scene.addBehavior(Component);
-    scene.addBehavior({name: 'dummy', el: {isPlaying: true}});
+    scene.addBehavior({name: 'dummy', isPlaying: true});
     scene.render();
     sinon.assert.called(Component.tick);
     sinon.assert.calledWith(Component.tick, scene.time);
@@ -1307,14 +1313,14 @@ helpers.getSkipCISuite()('a-scene (with renderer)', function () {
   test('calls tock behaviors', function () {
     var scene = this.el;
     registerComponent('test', {});
-    var Component = {name: 'test', el: {isPlaying: true}, tock: function () {}};
+    var Component = {name: 'test', isPlaying: true, tock: function () {}};
     this.sinon.spy(Component, 'tock');
     scene.render = function () {
       scene.time = 1;
       if (scene.isPlaying) { scene.tock(1); }
     };
     scene.addBehavior(Component);
-    scene.addBehavior({el: {isPlaying: true}});
+    scene.addBehavior({isPlaying: true});
     scene.render();
     sinon.assert.called(Component.tock);
     sinon.assert.calledWith(Component.tock, scene.time);
