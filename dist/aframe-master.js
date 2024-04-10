@@ -27823,7 +27823,7 @@ class AScene extends AEntity {
       var behaviorSet = behaviors[behavior];
       behaviorSet.inUse = true;
       for (i = 0; i < behaviorSet.array.length; i++) {
-        if (!behaviorSet.array[i].el.isPlaying) {
+        if (!behaviorSet.array[i].isPlaying) {
           continue;
         }
         behaviorSet.array[i][behavior](time, timeDelta);
@@ -30340,7 +30340,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.5.0 (Date 2024-04-09, Commit #e65ea4e4)');
+console.log('A-Frame Version: 1.5.0 (Date 2024-04-10, Commit #d8ef6575)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
