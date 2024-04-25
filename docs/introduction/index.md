@@ -181,3 +181,22 @@ it on the [newsletter](https://aframe.io/subscribe/) and the
 
 And it really helps to have a dig into the fundamentals on JavaScript and
 [three.js](https://threejs.org/). Have fun!
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio - Página de A-Frame</title>
+</head>
+<body>
+    <h1>Página de A-Frame</h1>
+    <p>Bienvenido a mi página de A-Frame. Por favor, elige una de las siguientes opciones:</p>
+    <ul>
+        <li><a href="scene1.html">Ejemplo 1</a></li>
+        <li><a href="scene2.html">Ejemplo 2</a></li>
+        <li><a href="scene3.html">Ejemplo 3</a></li>
+        <li><a href="scene4.html">Ejemplo 4</a></li>
+        <li><a href="scene5.html">Ejemplo 5</a></li>
+    </ul>
+</body>
+</html>
