@@ -22,10 +22,10 @@ The `grabbable` component makes any entity hand grababble.
 <a-box grabbable></a-box>
 ```
 
-For debugging purposes you can make the colliders visible as below:
+For debugging purposes you can make the colliders visible, changing color when a collision is detected, as shown below:
 
 ```html
-<a-scene obb-collider="showColliders: false"></a-scene>
+<a-scene obb-collider="showColliders: true"></a-scene>
 ```
 
 ## Properties
