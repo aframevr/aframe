@@ -26242,7 +26242,8 @@ Component.prototype = {
 
       // Parse the new value into attrValue (re-using objects where possible)
       var newAttrValue = key ? this.attrValue[key] : this.attrValue;
-      newAttrValue = parseProperty(newValue, propertySchema, newAttrValue);
+      // Some property types (like selectors) depend on external state (e.g. DOM) during parsing and can't be cached.
+      newAttrValue = propertySchema.isCacheable ? parseProperty(newValue, propertySchema, newAttrValue) : newValue;
       // In case the output is a string, store the unparsed value (no double parsing and helps inspector)
       if (typeof newAttrValue === 'string') {
         // Quirk: empty strings aren't considered values for single-property schemas
@@ -26654,7 +26655,6 @@ module.exports.registerGeometry = function (name, definition) {
 
 var coordinates = __webpack_require__(/*! ../utils/coordinates */ "./src/utils/coordinates.js");
 var debug = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
-var error = debug('core:propertyTypes:warn');
 var warn = debug('core:propertyTypes:warn');
 var propertyTypes = module.exports.propertyTypes = {};
 var nonCharRegex = /[,> .[\]:]/;
@@ -26665,15 +26665,15 @@ registerPropertyType('audio', '', assetParse);
 registerPropertyType('array', [], arrayParse, arrayStringify, arrayEquals);
 registerPropertyType('asset', '', assetParse);
 registerPropertyType('boolean', false, boolParse);
-registerPropertyType('color', '#FFF', defaultParse, defaultStringify);
+registerPropertyType('color', '#FFF');
 registerPropertyType('int', 0, intParse);
 registerPropertyType('number', 0, numberParse);
 registerPropertyType('map', '', assetParse);
 registerPropertyType('model', '', assetParse);
-registerPropertyType('selector', null, selectorParse, selectorStringify);
-registerPropertyType('selectorAll', null, selectorAllParse, selectorAllStringify);
+registerPropertyType('selector', null, selectorParse, selectorStringify, defaultEquals, false);
+registerPropertyType('selectorAll', null, selectorAllParse, selectorAllStringify, arrayEquals, false);
 registerPropertyType('src', '', srcParse);
-registerPropertyType('string', '', defaultParse, defaultStringify);
+registerPropertyType('string', '');
 registerPropertyType('time', 0, intParse);
 registerPropertyType('vec2', {
   x: 0,
@@ -26701,8 +26701,9 @@ registerPropertyType('vec4', {
  * @param {function} [parse=defaultParse] - Parse string function.
  * @param {function} [stringify=defaultStringify] - Stringify to DOM function.
  * @param {function} [equals=defaultEquals] - Equality comparator.
+ * @param {boolean} [cachable=false] - Whether or not the parsed value of a property can be cached.
  */
-function registerPropertyType(type, defaultValue, parse, stringify, equals) {
+function registerPropertyType(type, defaultValue, parse, stringify, equals, cacheable) {
   if (type in propertyTypes) {
     throw new Error('Property type ' + type + ' is already registered.');
   }
@@ -26710,7 +26711,8 @@ function registerPropertyType(type, defaultValue, parse, stringify, equals) {
     default: defaultValue,
     parse: parse || defaultParse,
     stringify: stringify || defaultStringify,
-    equals: equals || defaultEquals
+    equals: equals || defaultEquals,
+    isCacheable: cacheable !== false
   };
 }
 module.exports.registerPropertyType = registerPropertyType;
@@ -28420,6 +28422,7 @@ function processPropertyDefinition(propDefinition, componentName) {
   propDefinition.parse = propDefinition.parse || propType.parse;
   propDefinition.stringify = propDefinition.stringify || propType.stringify;
   propDefinition.equals = propDefinition.equals || propType.equals;
+  propDefinition.isCacheable = propDefinition.isCacheable === true || propType.isCacheable;
 
   // Fill in type name.
   propDefinition.type = typeName;
@@ -30340,7 +30343,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.5.0 (Date 2024-04-25, Commit #c4f491bb)');
+console.log('A-Frame Version: 1.5.0 (Date 2024-05-03, Commit #9fe641ce)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
