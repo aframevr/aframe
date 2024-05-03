@@ -455,6 +455,33 @@ suite('a-entity', function () {
       assert.notOk(geometry.width);
     });
 
+    test('do not cache properties with non-cacheable types', function () {
+      el.setAttribute('light', { target: '#some-element' });
+      assert.deepEqual(el.components.light.attrValue, {target: '#some-element'});
+
+      const light = el.getAttribute('light');
+      assert.notOk(light.target);
+    });
+
+    test('non-cacheable selectors are parsed at component initialization', function (done) {
+      const newEl = document.createElement('a-entity');
+      newEl.setAttribute('light', { target: '#target-element' });
+
+      // Light refers to target that doesn't exist yet.
+      assert.deepEqual(newEl.components.light.attrValue, {target: '#target-element'});
+      assert.notOk(newEl.getAttribute('light').target);
+
+      // Setup target element.
+      el.id = 'target-element';
+      el.appendChild(newEl);
+
+      newEl.addEventListener('loaded', function () {
+        assert.deepEqual(newEl.components.light.attrValue, {target: '#target-element'});
+        assert.strictEqual(newEl.getAttribute('light').target, el);
+        done();
+      });
+    });
+
     test('parses individual properties when passing object', function (done) {
       AFRAME.registerComponent('foo', {
         schema: {

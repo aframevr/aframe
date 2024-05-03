@@ -1,7 +1,6 @@
 var coordinates = require('../utils/coordinates');
 var debug = require('debug');
 
-var error = debug('core:propertyTypes:warn');
 var warn = debug('core:propertyTypes:warn');
 
 var propertyTypes = module.exports.propertyTypes = {};
@@ -13,15 +12,15 @@ registerPropertyType('audio', '', assetParse);
 registerPropertyType('array', [], arrayParse, arrayStringify, arrayEquals);
 registerPropertyType('asset', '', assetParse);
 registerPropertyType('boolean', false, boolParse);
-registerPropertyType('color', '#FFF', defaultParse, defaultStringify);
+registerPropertyType('color', '#FFF');
 registerPropertyType('int', 0, intParse);
 registerPropertyType('number', 0, numberParse);
 registerPropertyType('map', '', assetParse);
 registerPropertyType('model', '', assetParse);
-registerPropertyType('selector', null, selectorParse, selectorStringify);
-registerPropertyType('selectorAll', null, selectorAllParse, selectorAllStringify);
+registerPropertyType('selector', null, selectorParse, selectorStringify, defaultEquals, false);
+registerPropertyType('selectorAll', null, selectorAllParse, selectorAllStringify, arrayEquals, false);
 registerPropertyType('src', '', srcParse);
-registerPropertyType('string', '', defaultParse, defaultStringify);
+registerPropertyType('string', '');
 registerPropertyType('time', 0, intParse);
 registerPropertyType('vec2', {x: 0, y: 0}, vecParse, coordinates.stringify, coordinates.equals);
 registerPropertyType('vec3', {x: 0, y: 0, z: 0}, vecParse, coordinates.stringify, coordinates.equals);
@@ -37,8 +36,9 @@ registerPropertyType('vec4', {x: 0, y: 0, z: 0, w: 1}, vecParse, coordinates.str
  * @param {function} [parse=defaultParse] - Parse string function.
  * @param {function} [stringify=defaultStringify] - Stringify to DOM function.
  * @param {function} [equals=defaultEquals] - Equality comparator.
+ * @param {boolean} [cachable=false] - Whether or not the parsed value of a property can be cached.
  */
-function registerPropertyType (type, defaultValue, parse, stringify, equals) {
+function registerPropertyType (type, defaultValue, parse, stringify, equals, cacheable) {
   if (type in propertyTypes) {
     throw new Error('Property type ' + type + ' is already registered.');
   }
@@ -47,7 +47,8 @@ function registerPropertyType (type, defaultValue, parse, stringify, equals) {
     default: defaultValue,
     parse: parse || defaultParse,
     stringify: stringify || defaultStringify,
-    equals: equals || defaultEquals
+    equals: equals || defaultEquals,
+    isCacheable: cacheable !== false
   };
 }
 module.exports.registerPropertyType = registerPropertyType;

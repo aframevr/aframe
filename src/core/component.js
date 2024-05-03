@@ -426,7 +426,8 @@ Component.prototype = {
 
       // Parse the new value into attrValue (re-using objects where possible)
       var newAttrValue = key ? this.attrValue[key] : this.attrValue;
-      newAttrValue = parseProperty(newValue, propertySchema, newAttrValue);
+      // Some property types (like selectors) depend on external state (e.g. DOM) during parsing and can't be cached.
+      newAttrValue = propertySchema.isCacheable ? parseProperty(newValue, propertySchema, newAttrValue) : newValue;
       // In case the output is a string, store the unparsed value (no double parsing and helps inspector)
       if (typeof newAttrValue === 'string') {
         // Quirk: empty strings aren't considered values for single-property schemas

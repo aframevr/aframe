@@ -83,6 +83,7 @@ function processPropertyDefinition (propDefinition, componentName) {
   propDefinition.parse = propDefinition.parse || propType.parse;
   propDefinition.stringify = propDefinition.stringify || propType.stringify;
   propDefinition.equals = propDefinition.equals || propType.equals;
+  propDefinition.isCacheable = propDefinition.isCacheable === true || propType.isCacheable;
 
   // Fill in type name.
   propDefinition.type = typeName;
