@@ -30,11 +30,6 @@ module.exports = {
       Buffer: ['buffer', 'Buffer']
     })
   ],
-  resolve: {
-    alias: {
-      three: 'super-three'
-    }
-  },
   module: {
     rules: [
       {
