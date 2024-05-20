@@ -201,7 +201,7 @@ module.exports.isLandscape = function () {
  * `require` and `module.exports` are mocked in browser by bundlers.
  * `window` is mocked in node.
  */
-module.exports.isBrowserEnvironment = typeof process === 'undefined';
+module.exports.isBrowserEnvironment = typeof process === 'undefined' || process.browser === true;
 
 /**
  * Check if running in node on the server.
