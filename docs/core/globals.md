@@ -52,13 +52,14 @@ global. This same interface is also exposed if requiring with CommonJS
 
 ## Requiring `AFRAME` in a Node.js Environment
 
-It is possible to run A-Frame in [Node.js](https://nodejs.org/en/about) to get access to its globals. The only catch is we need to supply a browser `window` mock since Node.js lacks a `window` object. A-Frame is tested with [jsdom](https://github.com/jsdom/jsdom), although any JavaScript-based browser implementation should work.
+It is possible to run A-Frame in [Node.js](https://nodejs.org/en/about) to get access to its globals. The only catch is we need to supply a browser `window` mock since Node.js lacks a `window` object. You can do that with [jsdom-global](https://www.npmjs.com/package/jsdom-global), and you also need to mock `customElements`.
 
 ```js
-const jsdom = require("jsdom");
-global.window = new jsdom.JSDOM().window;
+const cleanup = require('jsdom-global')();
+global.customElements = { define: function () {} };
 var aframe = require('aframe/src');
 console.log(aframe.version);
+cleanup();
 ```
 
-Although A-Frame can load in Node.js, A-Frame isn't (yet) able to run any simulations at run time.
+You can't use jsdom to run tests with aframe components because `customElements` api is missing. A-Frame is using karma to open a real browser to run the tests.
