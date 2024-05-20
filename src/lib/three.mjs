@@ -8,7 +8,7 @@ import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader.js';
 import * as BufferGeometryUtils from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { LightProbeGenerator } from 'three/examples/jsm/lights/LightProbeGenerator.js';
 
-var THREE = window.THREE = { ...SUPER_THREE };
+var THREE = { ...SUPER_THREE };
 THREE.DRACOLoader = DRACOLoader;
 THREE.GLTFLoader = GLTFLoader;
 THREE.KTX2Loader = KTX2Loader;
