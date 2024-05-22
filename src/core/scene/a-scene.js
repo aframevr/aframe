@@ -1,4 +1,4 @@
-/* global Promise, screen, CustomEvent */
+/* global Promise, customElements, screen, CustomEvent */
 var initMetaTags = require('./metaTags').inject;
 var initWakelock = require('./wakelock');
 var loadingScreen = require('./loadingScreen');
@@ -920,7 +920,7 @@ function constrainSizeTo (size, maxSize) {
   return size;
 }
 
-window.customElements.define('a-scene', AScene);
+customElements.define('a-scene', AScene);
 
 /**
  * Return the canvas size where the scene will be rendered.
