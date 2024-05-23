@@ -1,10 +1,89 @@
+### 1.6.0 (May 23, 2024)
+
+Tons of bug fixes. Memory management and performance improvements. API to control tick / tock execution order.
+
+### Bug fixes
+
+- Update wrist object position and rotation only when joint poses are available (#5438) (@mrxz)
+- Fix issue when checking schema properties when a schema changes (#5426) (@mrxz)
+- Set correct default value for `scene.background` when the background component is removed (#5417) (@mrxz)
+- Fix fog removal from scene (#5418) (@mrxz)
+- Fix Chrome non-passive violation warnings for touchmove and touchstart event handlers (#5511) (@mrxz, @mitchallen)
+- Fix bug when loading models on child entities of controllers (#5415) (@mrxz)
+- Fix bug in handling `processSound `callback when sound hadn't loaded yet (#5414) (@mrxz)
+- Fix misspelled variable names after using a spell checker (#5462) (@mrxz)
+- Fix problem when a shader that declares itself as glsl3 has its version ignored (bbe74f52) (@dmarcos)
+- Fix problem when checking for duplicate names of property types (#5475) (@mrxz)
+- Fix problem when adding children entities to a `hand-tracking-controls` entity before the hand model has loaded (12d550c6) (@dmarcos)
+- Hide `hand-tracking-controls` entity when there's no hand tracking available (dbdb9dac) (@dmarcos)
+- Fix issues when applying mixins to primitives (#5483) (@mrxz)
+- Fix issue when a component is not removed from the DOM via mixin removal / update (#5492) (@mrxz)
+- Fix timing issue when initializing XR Layers (#5489) (@zjm-meta)
+- Fix problem where scene doesn't wait / timeout on `a-asset-items` (#5491) (@mrxz)
+- Fix bug when using `setAttribute` on `a-scene` if a system has not yet initialized (#5482) (@mrxz)
+- Fix broken parser cache of `getComponentPropertyPath` (#5467) (@mrxz)
+- Fix issue when shadowMaps are always enabled. Make sure it's only enabled when there's a shadow component present (#5399) (@mrxz)
+- Fix issue when children of an entity with `hand-tracking-controls` don't follow the hand (874fced2) (@dmarcos)
+- Fix ES modules support on node (#5522) (@vincentfretin)
+- Make rotation axis order is consistent when using `setAttribute` and modifying object3D directly (#5513) (@mrxz)
+- Fix issue when calculating the size of the bounding box of an `obb-collider` (5da7166e) (@dmarcos)
+- Fix issue when the el.hasLoaded flag can be true but not all components have initialized (924dc00e) (@dmarcos)
+- Fix issue when trying to remove a mesh before model was loaded in `obj-mode`l component (#5499) (@Elettrotecnica)
+- Use `renderer.useLegacyLights` instead of the deprecated `renderer.physicallyCorrectLights` in THREE (#5389) (@vincentfretin)
+- Set correct default value for `glslVersion` for non-raw shaders (#5388) (@mrxz)
+- Remove "skinning: true" option when instanciating a THREE.MeshStandardMaterial object. Property deprecated in THREE (#5386) (@avdynut)
+- Fix issue when tracking an unexisting  AR Hitest anchor (@hi-liang, @dmarcos) (bcc4bc2cae2b3) (fix #5314)
+- Fix issue when layers are not initialized in AR mode (bb1e7a4e) (@dmarcos)
+- Fix issue when removing unexisting light probe after exiting vr mode (#5429) (fix #5384) (@Elettrotecnica)
+- Fix issue when removing an obb-collider (957237d) (fix #5385)
+- Fix typo when requesting layers on the WebXR requiredFeatures list (f7e56a8f) (@dmarcos)
+- Fix issue when trying to animate a non existing button on the controller (da8dc146) (@dmarcos)
+
+### Performance
+
+- Improve unit tests execution time (#5477) (@mrxz)
+- Recycle nextData and `previousOldData` objects when a component is destroyed preventing memory leaks (#5458) (@mrxz)
+- Improve pooling and recycling of internal component objects. Better memory management (#5459) (@mrxz)
+- Reduce memory allocations on component update logic (#5474) (@mrxz)
+- Improve throttleLeadingAndTrailing implementation to prevent unnecessary allocations (#5476) (@mrxz)
+
+### Enhancements
+
+- Introduce before/after component API to control tick / tock execution order (#5478) (@mrxz)
+- Bump to THREE r164 (@dmarcos)
+- Remove maximum canvas size (#5440) (@mrxz)
+- Cache THREE.Source instead of THREE.Textures (#5449) (@mrxz)
+- Introduce a sceneOnly flag for components that only apply to the `a-scene` element (#5465) (@mrxz)
+- Switch unit tests from WebVR to WebXR (#5452) (@mrxz)
+- Move back debug dependency from fork to upstream (#5508) (@arpu)
+- Introduce stencil property in the renderer system (#5509) (@mrxz)
+- Improve iPad detection logic to include iPad Pro (#5502) (@Drkjr92)
+- Remove unnecessary attribute properties and special handling of is: "attribute" in shader component (#5310) (@mrxz)
+- Improve async loading of aframe library and interoperation with ES module (#5481) (@mrxz)
+- Improve system warning messages when setting an unknown property (#5463) (@mrxz)
+- Use native bind method instead of custom implementation. Performance benefits of custom one no longer exist (#5461) (@mrxz)
+- Add Pico4 controllers support to `laser-controls` component (#5435) (@IamTonio)
+- Add hand model opacity to `hand-tracking-controls` (#5431) (@ehammons11)
+- Postpone screenshot component offscreen canvas setup until a screenshot is taken (#5442) (@arpu)
+- Update GitHub CI to use node 20.x (#5479) (@vincentfretin)
+- Use window.isSecureContext instead of manually checking URL for http/localhost/127.0.0.1 (#5487) (@mrxz)
+- Remove deprecated `getComputedAttribut` method (#5466) (@mrxz)
+- Remove unnecessary crossOrigin configuration for THREE loaders (#5416) (@mrxz)
+- Add support for `navigator.xr.offerSession` WebXR spec (#5410) (@cabanier)
+- Add support for fog, toneMapping, colorSpace conversion and logarithmicDepthBuffer to the msdf shader used in the text component (#5409) (@mrxz)
+- Remove minimum scale value. THREE handles zero scale gracefully (#5404) (@mrxz)
+- Add `hide-on-enter-vr` component analog to `hide-on-enter-ar` (9e644def) (@dmarcos)
+- Remove iOS 10 specific HLS workaround (#5450) (@mrxz)
+- Remove outdated polyfills that were needed just for IE11 (#5448) (@mrxz)
+- Docs improvements (@diarmidmackenzie, @Samu01Tech, @thepelkus-too, @Omegahed, stefanhuber, @ctrlw, @vincentfretin, @jgbarah)
+
 ### 1.5.0 (Nov 14, 2023)
 
 Multiview extension, Spatial computing UIs, Mixed Reality features, Hand manipulation interactions, Quest 3 support and much more!
 
 ### Bug fixes
 
-- Use renderer.physicallyCorrectLights instead of the now deprecated renderer.useLegacyLights (fix #5293) (@mrx)
+- Use renderer.useLegacyLights instead of the deprecated renderer.physicallyCorrectLights in three r150, but keep the physicallyCorrectLights property name for the renderer system for backward compatibility (fix #5293) (@mrx)
 - Fix `hand-controls` animations (#5300)
 - Fix outdated link in error message (#5313) (fix #5275) (@kolson25)
 - Fix visibility of controller in model-viewer example (#5317) (@DougReeder)

@@ -3,7 +3,7 @@ AFRAME.registerComponent('button', {
   schema: {
     label: {default: 'label'},
     width: {default: 0.11},
-    toggable: {default: false}
+    toggleable: {default: false}
   },
   init: function () {
     var el = this.el;
@@ -58,7 +58,7 @@ AFRAME.registerComponent('button', {
     var el = this.el;
     el.setAttribute('material', {color: 'green'});
     el.emit('click');
-    if (this.data.togabble) {
+    if (this.data.toggleable) {
       if (el.is('pressed')) {
         el.removeState('pressed');
       } else {

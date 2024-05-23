@@ -19,7 +19,7 @@
   renderer="colorManagement: true;"
   info-message="htmlSrc: #messageText"
   model-viewer="gltfModel: #triceratops; title: Triceratops"
-  vr-mode-ui="enterAREnabled: true">
+  xr-mode-ui="XRMode: xr">
   <a-assets timeout="10000">
     <!--
       Model source: https://sketchfab.com/3d-models/triceratops-d16aabe33dc24f8ab37e3df50c068265
@@ -28,7 +28,7 @@
     -->
     <a-asset-item id="triceratops"
       src="https://cdn.aframe.io/examples/ar/models/triceratops/scene.gltf"
-      response-type="arraybuffer" crossorigin="anonymous"></a-asset-item>
+      response-type="arraybuffer"></a-asset-item>
 
     <img id="shadow" src="shadow.png"></img>
     <a-asset-item id="messageText" src="message.html"></a-asset-item>
