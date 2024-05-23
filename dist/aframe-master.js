@@ -11900,10 +11900,14 @@ module.exports.Component = registerComponent('cursor', {
         return;
       }
       CANVAS_EVENTS.DOWN.forEach(function (downEvent) {
-        canvas.addEventListener(downEvent, self.onCursorDown);
+        canvas.addEventListener(downEvent, self.onCursorDown, {
+          passive: false
+        });
       });
       CANVAS_EVENTS.UP.forEach(function (upEvent) {
-        canvas.addEventListener(upEvent, self.onCursorUp);
+        canvas.addEventListener(upEvent, self.onCursorUp, {
+          passive: false
+        });
       });
     }
     canvas = el.sceneEl.canvas;
@@ -11967,8 +11971,10 @@ module.exports.Component = registerComponent('cursor', {
     if (this.data.rayOrigin !== 'mouse') {
       return;
     }
-    canvas.addEventListener('mousemove', this.onMouseMove, false);
-    canvas.addEventListener('touchmove', this.onMouseMove, false);
+    canvas.addEventListener('mousemove', this.onMouseMove);
+    canvas.addEventListener('touchmove', this.onMouseMove, {
+      passive: false
+    });
     el.setAttribute('raycaster', 'useWorldCoordinates', true);
     this.updateCanvasBounds();
   },
@@ -15781,9 +15787,15 @@ module.exports.Component = registerComponent('look-controls', {
     window.addEventListener('mouseup', this.onMouseUp, false);
 
     // Touch events.
-    canvasEl.addEventListener('touchstart', this.onTouchStart);
-    window.addEventListener('touchmove', this.onTouchMove);
-    window.addEventListener('touchend', this.onTouchEnd);
+    canvasEl.addEventListener('touchstart', this.onTouchStart, {
+      passive: true
+    });
+    window.addEventListener('touchmove', this.onTouchMove, {
+      passive: true
+    });
+    window.addEventListener('touchend', this.onTouchEnd, {
+      passive: true
+    });
 
     // sceneEl events.
     sceneEl.addEventListener('enter-vr', this.onEnterVR);
@@ -20719,9 +20731,13 @@ function createOrientationModal(onClick) {
 function applyStickyHoverFix(buttonEl) {
   buttonEl.addEventListener('touchstart', function () {
     buttonEl.classList.remove('resethover');
+  }, {
+    passive: true
   });
   buttonEl.addEventListener('touchend', function () {
     buttonEl.classList.add('resethover');
+  }, {
+    passive: true
   });
 }
 
@@ -27845,6 +27861,8 @@ function setupCanvas(sceneEl) {
   // Prevent overscroll on mobile.
   canvasEl.addEventListener('touchmove', function (event) {
     event.preventDefault();
+  }, {
+    passive: false
   });
 
   // Set canvas on scene.
@@ -30158,7 +30176,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.5.0 (Date 2024-05-22, Commit #7ac47c06)');
+console.log('A-Frame Version: 1.5.0 (Date 2024-05-23, Commit #d83d7d70)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', THREE.REVISION);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
