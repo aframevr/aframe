@@ -1005,7 +1005,7 @@ function setupCanvas (sceneEl) {
   document.addEventListener('MSFullscreenChange', onFullScreenChange);
 
   // Prevent overscroll on mobile.
-  canvasEl.addEventListener('touchmove', function (event) { event.preventDefault(); });
+  canvasEl.addEventListener('touchmove', function (event) { event.preventDefault(); }, {passive: false});
 
   // Set canvas on scene.
   sceneEl.canvas = canvasEl;
