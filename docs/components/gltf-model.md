@@ -129,7 +129,7 @@ You'll also need to load a decoder library by configuring scene properties as ex
 
 ## Scene properties
 
-[draco-decoders]: https://github.com/mrdoob/three.js/tree/master/examples/js/libs/draco/gltf
+[draco-decoders]: https://github.com/mrdoob/three.js/tree/master/examples/jsm/libs/draco/gltf
 [meshopt-decoder]: https://github.com/zeux/meshoptimizer/tree/master/js
 
 When using glTF models compressed with Draco, KTX2 or Meshopt, you must configure the path to the necessary decoders:
@@ -144,7 +144,7 @@ When using glTF models compressed with Draco, KTX2 or Meshopt, you must configur
 
 | Property         | Description                                                                                                                                                                                           | Default Value                       |
 |------------------|--------------------------------------|----|
-| dracoDecoderPath | Path to the Draco decoder libraries. | 'https://www.gstatic.com/draco/versioned/decoders/1.5.6/' |
+| dracoDecoderPath | Path to the Draco decoder libraries. | 'https://www.gstatic.com/draco/versioned/decoders/1.5.7/' |
 | basisTranscoderPath | Path to the basis/KTX2 transcoder libraries. | '' |
 | meshoptDecoderPath | Path to the Meshopt decoder.       | '' |
 
@@ -155,9 +155,10 @@ When using glTF models compressed with Draco, KTX2 or Meshopt, you must configur
 * `draco_wasm_wrapper.js` — JavaScript wrapper for the WASM decoder.
 
 These files are available from the three.js repository, under
-[examples/js/libs/draco/gltf][draco-decoders]. The `gltf-model` component will
-automatically choose whether to use a WASM or JavaScript decoder, so both should
-be included.
+[examples/jsm/libs/draco/gltf][draco-decoders], but a more recent version may
+exist in the [draco repository](https://github.com/google/draco/releases).
+The `gltf-model` component will automatically choose whether to use a WASM or JavaScript
+decoder, so both should be included.
 
 `basisTranscoderPath` path must be a folder containing two files:
 
