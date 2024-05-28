@@ -25752,7 +25752,6 @@ var Component = module.exports.Component = function (el, attrValue, id) {
 
   // Dynamic schema requires special handling of unknown properties to avoid false-positives.
   this.deferUnknownPropertyWarnings = !!this.updateSchema;
-  this.silenceUnknownPropertyWarnings = false;
 
   // Last value passed to updateProperties.
   // This type of throttle ensures that when a burst of changes occurs, the final change to the
@@ -25949,21 +25948,32 @@ Component.prototype = {
     this.updateSchemaIfNeeded(attrValue);
   },
   updateSchemaIfNeeded: function (attrValue) {
-    if (!this.schemaChangeRequired || !this.updateSchema) {
-      // Log any pending unknown property warning
-      for (var i = 0; i < encounteredUnknownProperties.length; i++) {
-        warn('Unknown property `' + encounteredUnknownProperties[i] + '` for component `' + this.name + '`.');
-      }
+    if (this.schemaChangeRequired && this.updateSchema) {
       encounteredUnknownProperties.length = 0;
-      return;
+      this.updateSchema(this.data);
+      utils.objectPool.removeUnusedKeys(this.data, this.schema);
+      this.recomputeData(attrValue);
+      this.schemaChangeRequired = false;
+
+      // Report any excess properties not valid in the updated schema
+      for (var key in this.attrValue) {
+        if (this.attrValue[key] === undefined) {
+          continue;
+        }
+        if (encounteredUnknownProperties.indexOf(key) !== -1) {
+          continue;
+        }
+        if (!(key in this.schema)) {
+          warn('Unknown property `' + key + '` for component `' + this.name + '`.');
+        }
+      }
+    }
+
+    // Log any pending unknown property warning
+    for (var i = 0; i < encounteredUnknownProperties.length; i++) {
+      warn('Unknown property `' + encounteredUnknownProperties[i] + '` for component `' + this.name + '`.');
     }
     encounteredUnknownProperties.length = 0;
-    this.updateSchema(this.data);
-    utils.objectPool.removeUnusedKeys(this.data, this.schema);
-    this.silenceUnknownPropertyWarnings = true;
-    this.recomputeData(attrValue);
-    this.silenceUnknownPropertyWarnings = false;
-    this.schemaChangeRequired = false;
   },
   /**
    * Check if component should fire update and fire update lifecycle handler.
@@ -26133,13 +26143,10 @@ Component.prototype = {
     // Handle warning the user about the unknown property.
     // Since a component might have a dynamic schema, the warning might be
     // silenced or deferred to avoid false-positives.
-    if (!this.silenceUnknownPropertyWarnings) {
-      // Not silenced, so either deferred or logged.
-      if (this.deferUnknownPropertyWarnings) {
-        encounteredUnknownProperties.push(key);
-      } else if (!this.silenceUnknownPropertyWarnings) {
-        warn('Unknown property `' + key + '` for component `' + this.name + '`.');
-      }
+    if (this.deferUnknownPropertyWarnings) {
+      encounteredUnknownProperties.push(key);
+    } else if (!this.silenceUnknownPropertyWarnings) {
+      warn('Unknown property `' + key + '` for component `' + this.name + '`.');
     }
   },
   /**
@@ -26183,31 +26190,14 @@ Component.prototype = {
       this.recomputeProperty(undefined, attrValue);
       return;
     }
-    if (attrValue && typeof attrValue === 'object') {
-      for (key in this.schema) {
-        this.attrValueProxy[key] = attrValue[key];
-      }
-    } else {
-      for (key in this.schema) {
-        this.attrValueProxy[key] = undefined;
-      }
+    for (key in this.schema) {
+      this.attrValueProxy[key] = undefined;
     }
-    if (typeof attrValue === 'string') {
+    if (attrValue && typeof attrValue === 'object') {
+      utils.extend(this.attrValueProxy, attrValue);
+    } else if (typeof attrValue === 'string') {
       // AttrValue is a style string, parse it into the attrValueProxy object
       styleParser.parse(attrValue, this.attrValueProxy);
-    }
-
-    // Report any unknown properties
-    for (key in this.attrValue) {
-      if (this.attrValue[key] === undefined) {
-        continue;
-      }
-      if (encounteredUnknownProperties.indexOf(key) === -1) {
-        continue;
-      }
-      if (!(key in this.schema)) {
-        warn('Unknown property `' + key + '` for component `' + this.name + '`.');
-      }
     }
   },
   /**
@@ -30176,7 +30166,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.6.0 (Date 2024-05-28, Commit #4ecbc512)');
+console.log('A-Frame Version: 1.6.0 (Date 2024-05-28, Commit #48da89a4)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', THREE.REVISION);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
