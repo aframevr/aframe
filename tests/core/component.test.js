@@ -1,6 +1,7 @@
 /* global AFRAME, assert, process, suite, teardown, test, setup, sinon, HTMLElement, HTMLHeadElement */
 var Component = require('core/component');
 var components = require('index').components;
+var debug = require('utils').debug;
 
 var helpers = require('../helpers');
 var registerComponent = require('index').registerComponent;
@@ -1347,6 +1348,207 @@ suite('Component', function () {
           done();
         });
       });
+    });
+  });
+
+  suite('unknown property warnings', function () {
+    let el;
+    let debugSpy;
+
+    setup(function (done) {
+      registerComponent('test', {
+        schema: {
+          known: { type: 'string' }
+        }
+      });
+      registerComponent('test-dynamic', {
+        schema: {
+          known: { type: 'string', schemaChange: true }
+        },
+        updateSchema: function (data) {
+          if (data.known === 'new') {
+            this.extendSchema({
+              new: { type: 'boolean' }
+            });
+          } else {
+            this.extendSchema({
+              old: { type: 'boolean' }
+            });
+          }
+        }
+      });
+
+      helpers.elFactory().then(_el => {
+        el = _el;
+        done();
+      });
+      // Use the formatArgs method to observe logged warnings.
+      debugSpy = sinon.stub(debug, 'formatArgs');
+    });
+
+    teardown(function () {
+      debugSpy.restore();
+      delete components['test-dynamic'];
+    });
+
+    test('unknown prop in component init (style-string)', function () {
+      el.setAttribute('test', 'known: value; unknown: 2');
+      assert.ok(debugSpy.calledOnceWith(['Unknown property `unknown` for component `test`.']));
+    });
+
+    test('unknown prop in component init (object)', function () {
+      el.setAttribute('test', { known: 'value', unknown: 2 });
+      assert.ok(debugSpy.calledOnceWith(['Unknown property `unknown` for component `test`.']));
+    });
+
+    test('unknown prop in component update (style-string)', function () {
+      el.setAttribute('test', '');
+      assert.ok(debugSpy.notCalled);
+
+      el.setAttribute('test', 'known: value; unknown: 2');
+      assert.ok(debugSpy.calledOnceWith(['Unknown property `unknown` for component `test`.']));
+    });
+
+    test('unknown prop in component update (object)', function () {
+      el.setAttribute('test', {});
+      assert.ok(debugSpy.notCalled);
+
+      el.setAttribute('test', { known: 'value', unknown: 2 });
+      assert.ok(debugSpy.calledOnceWith(['Unknown property `unknown` for component `test`.']));
+    });
+
+    test('unknown prop in dynamic component init (style-string)', function () {
+      el.setAttribute('test-dynamic', 'known: value; unknown: 2');
+      assert.ok(debugSpy.calledOnceWith(['Unknown property `unknown` for component `test-dynamic`.']));
+    });
+
+    test('unknown prop in dynamic component init (object)', function () {
+      el.setAttribute('test-dynamic', { known: 'value', unknown: 2 });
+      assert.ok(debugSpy.calledOnceWith(['Unknown property `unknown` for component `test-dynamic`.']));
+    });
+
+    test('unknown prop in dynamic component update (style-string, including schemaChange prop)', function () {
+      el.setAttribute('test-dynamic', '');
+      assert.ok(debugSpy.notCalled);
+
+      el.setAttribute('test-dynamic', 'known: value; unknown: 2');
+      assert.ok(debugSpy.calledOnceWith(['Unknown property `unknown` for component `test-dynamic`.']));
+    });
+
+    test('unknown prop in dynamic component update (object, including schemaChange prop)', function () {
+      el.setAttribute('test-dynamic', {});
+      assert.ok(debugSpy.notCalled);
+
+      el.setAttribute('test-dynamic', { known: 'value', unknown: 2 });
+      assert.ok(debugSpy.calledOnceWith(['Unknown property `unknown` for component `test-dynamic`.']));
+    });
+
+    test('unknown prop in dynamic component update (style-string, excluding schemaChange prop)', function () {
+      el.setAttribute('test-dynamic', '');
+      assert.ok(debugSpy.notCalled);
+
+      el.setAttribute('test-dynamic', 'unknown: 2');
+      assert.ok(debugSpy.calledOnceWith(['Unknown property `unknown` for component `test-dynamic`.']));
+    });
+
+    test('unknown prop in dynamic component update (object, excluding schemaChange prop)', function () {
+      el.setAttribute('test-dynamic', {});
+      assert.ok(debugSpy.notCalled);
+
+      el.setAttribute('test-dynamic', { unknown: 2 });
+      assert.ok(debugSpy.calledOnceWith(['Unknown property `unknown` for component `test-dynamic`.']));
+    });
+
+    test('not yet known prop in dynamic component update (style-string)', function () {
+      el.setAttribute('test-dynamic', '');
+      assert.ok(debugSpy.notCalled);
+
+      el.setAttribute('test-dynamic', 'known: new; new: true');
+      assert.ok(debugSpy.notCalled);
+    });
+
+    test('not yet known prop in dynamic component update (object)', function () {
+      el.setAttribute('test-dynamic', {});
+      assert.ok(debugSpy.notCalled);
+
+      el.setAttribute('test-dynamic', { known: 'new', new: true });
+      assert.ok(debugSpy.notCalled);
+    });
+
+    test('previously known prop in dynamic component update (style-string)', function () {
+      el.setAttribute('test-dynamic', '');
+      assert.ok(debugSpy.notCalled);
+
+      el.setAttribute('test-dynamic', 'known: new; old: true');
+      assert.ok(debugSpy.calledOnceWith(['Unknown property `old` for component `test-dynamic`.']));
+    });
+
+    test('previously known prop in dynamic component update (object)', function () {
+      el.setAttribute('test-dynamic', {});
+      assert.ok(debugSpy.notCalled);
+
+      el.setAttribute('test-dynamic', { known: 'new', old: true });
+      assert.ok(debugSpy.calledOnceWith(['Unknown property `old` for component `test-dynamic`.']));
+    });
+
+    test('previously known prop in dynamic component update (style-string)', function () {
+      el.setAttribute('test-dynamic', '');
+      assert.ok(debugSpy.notCalled);
+
+      el.setAttribute('test-dynamic', 'known: new; old: true');
+      assert.ok(debugSpy.calledOnceWith(['Unknown property `old` for component `test-dynamic`.']));
+    });
+
+    test('previously known prop in dynamic component update (object)', function () {
+      el.setAttribute('test-dynamic', {});
+      assert.ok(debugSpy.notCalled);
+
+      el.setAttribute('test-dynamic', { known: 'new', old: true });
+      assert.ok(debugSpy.calledOnceWith(['Unknown property `old` for component `test-dynamic`.']));
+    });
+
+    test('previously known and set prop in dynamic component update (style-string)', function () {
+      el.setAttribute('test-dynamic', 'old: true');
+      assert.ok(debugSpy.notCalled);
+
+      // Schema change should trigger warning for pre-existing excess properties
+      el.setAttribute('test-dynamic', 'known: new;');
+      assert.ok(debugSpy.calledOnceWith(['Unknown property `old` for component `test-dynamic`.']));
+
+      // No additional schema change, so no additional warnings
+      el.setAttribute('test-dynamic', 'known: new');
+      assert.ok(debugSpy.calledOnce);
+    });
+
+    test('previously known and set prop in dynamic component update (object)', function () {
+      el.setAttribute('test-dynamic', { old: true });
+      assert.ok(debugSpy.notCalled);
+
+      // Schema change should trigger warning for pre-existing excess properties
+      el.setAttribute('test-dynamic', { known: 'new' });
+      assert.ok(debugSpy.calledOnceWith(['Unknown property `old` for component `test-dynamic`.']));
+
+      // No additional schema change, so no additional warnings
+      el.setAttribute('test-dynamic', { known: 'new' });
+      assert.ok(debugSpy.calledOnce);
+    });
+
+    test('previously known and set prop in dynamic component update (style-string, clobber)', function () {
+      el.setAttribute('test-dynamic', 'old: true');
+      assert.ok(debugSpy.notCalled);
+
+      // Clobbering should not cause any warnings
+      el.setAttribute('test-dynamic', 'known: new;', true);
+      assert.ok(debugSpy.notCalled);
+    });
+
+    test('previously known and set prop in dynamic component update (object, clobber)', function () {
+      el.setAttribute('test-dynamic', { old: true });
+      assert.ok(debugSpy.notCalled);
+
+      // Clobbering should not cause any warnings
+      el.setAttribute('test-dynamic', { known: 'new' }, true);
+      assert.ok(debugSpy.notCalled);
     });
   });
 });
