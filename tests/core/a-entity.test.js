@@ -553,7 +553,7 @@ suite('a-entity', function () {
 
     test('updates DOM attributes of a multiple component', function () {
       var soundAttrValue;
-      var soundStr = 'autoplay: true; src: url(mysoundfile.mp3)';
+      var soundStr = 'src: url(mysoundfile.mp3); autoplay: true';
       el.setAttribute('sound__1', {'src': 'url(mysoundfile.mp3)', autoplay: true});
       soundAttrValue = HTMLElement.prototype.getAttribute.call(el, 'sound__1');
       assert.equal(soundAttrValue, '');
