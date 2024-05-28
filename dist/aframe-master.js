@@ -30176,7 +30176,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.6.0 (Date 2024-05-23, Commit #e6c47761)');
+console.log('A-Frame Version: 1.6.0 (Date 2024-05-28, Commit #4ecbc512)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', THREE.REVISION);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -31493,7 +31493,7 @@ function fetchScript(src) {
 module.exports.System = registerSystem('gltf-model', {
   schema: {
     dracoDecoderPath: {
-      default: 'https://www.gstatic.com/draco/versioned/decoders/1.5.6/'
+      default: 'https://www.gstatic.com/draco/versioned/decoders/1.5.7/'
     },
     basisTranscoderPath: {
       default: ''
