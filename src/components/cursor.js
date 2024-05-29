@@ -194,6 +194,16 @@ module.exports.Component = registerComponent('cursor', {
     el.sceneEl.removeEventListener('enter-vr', this.onEnterVR);
     window.removeEventListener('resize', this.updateCanvasBounds);
     window.removeEventListener('scroll', this.updateCanvasBounds);
+
+    var xrSession = el.sceneEl.xrSession;
+    if (xrSession) {
+      WEBXR_EVENTS.DOWN.forEach(function (downEvent) {
+        xrSession.removeEventListener(downEvent, self.onCursorDown);
+      });
+      WEBXR_EVENTS.UP.forEach(function (upEvent) {
+        xrSession.removeEventListener(upEvent, self.onCursorUp);
+      });
+    }
   },
 
   updateMouseEventListeners: function () {
