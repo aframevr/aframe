@@ -248,7 +248,7 @@ module.exports.Component = registerComponent('cursor', {
       if (this.data.rayOrigin === 'xrselect' && (evt.type === 'selectstart' || evt.type === 'fakeselectevent')) {
         frame = evt.frame;
         inputSource = evt.inputSource;
-        referenceSpace = this.el.renderer.xr.getReferenceSpace();
+        referenceSpace = this.el.sceneEl.renderer.xr.getReferenceSpace();
         pose = frame.getPose(inputSource.targetRaySpace, referenceSpace);
         transform = pose.transform;
         direction.set(0, 0, -1);
