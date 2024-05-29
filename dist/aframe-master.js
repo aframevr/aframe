@@ -30166,7 +30166,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.6.0 (Date 2024-05-28, Commit #48da89a4)');
+console.log('A-Frame Version: 1.6.0 (Date 2024-05-29, Commit #b005a664)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', THREE.REVISION);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -33859,12 +33859,14 @@ module.exports.handleTextureEvents = handleTextureEvents;
  * @returns {boolean} True if the texture is compatible with the source, false otherwise
  */
 function isCompatibleTexture(texture, source) {
+  if (texture.source !== source) {
+    return false;
+  }
   if (source.data instanceof HTMLCanvasElement) {
     return texture.isCanvasTexture;
   }
   if (source.data instanceof HTMLVideoElement) {
-    // VideoTexture can't have its source changed after initial user
-    return texture.isVideoTexture && texture.source === source;
+    return texture.isVideoTexture;
   }
   return texture.isTexture && !texture.isCanvasTexture && !texture.isVideoTexture;
 }
