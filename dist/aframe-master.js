@@ -30166,7 +30166,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.6.0 (Date 2024-05-29, Commit #b005a664)');
+console.log('A-Frame Version: 1.6.0 (Date 2024-05-30, Commit #e045cafc)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', THREE.REVISION);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -31738,7 +31738,7 @@ module.exports.System = registerSystem('material', {
     cube.colorSpace = THREE.SRGBColorSpace;
     function loadSide(index) {
       self.loadTextureSource(srcs[index], function (source) {
-        cube.images[index] = source;
+        cube.images[index] = source.data;
         loaded++;
         if (loaded === 6) {
           cube.needsUpdate = true;
