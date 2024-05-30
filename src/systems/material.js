@@ -90,7 +90,7 @@ module.exports.System = registerSystem('material', {
 
     function loadSide (index) {
       self.loadTextureSource(srcs[index], function (source) {
-        cube.images[index] = source;
+        cube.images[index] = source.data;
         loaded++;
         if (loaded === 6) {
           cube.needsUpdate = true;
