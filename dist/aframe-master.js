@@ -2081,6 +2081,7 @@ module.exports = function (item) {
   \*******************************************/
 /***/ ((module, exports, __webpack_require__) => {
 
+/* provided dependency */ var process = __webpack_require__(/*! process/browser */ "./node_modules/process/browser.js");
 /* eslint-env browser */
 
 /**
@@ -3678,6 +3679,190 @@ module.exports = function (headers) {
     }
   }
   return result;
+};
+
+/***/ }),
+
+/***/ "./node_modules/process/browser.js":
+/*!*****************************************!*\
+  !*** ./node_modules/process/browser.js ***!
+  \*****************************************/
+/***/ ((module) => {
+
+// shim for using process in browser
+var process = module.exports = {};
+
+// cached from whatever global is present so that test runners that stub it
+// don't break things.  But we need to wrap it in a try catch in case it is
+// wrapped in strict mode code which doesn't define any globals.  It's inside a
+// function because try/catches deoptimize in certain engines.
+
+var cachedSetTimeout;
+var cachedClearTimeout;
+function defaultSetTimout() {
+  throw new Error('setTimeout has not been defined');
+}
+function defaultClearTimeout() {
+  throw new Error('clearTimeout has not been defined');
+}
+(function () {
+  try {
+    if (typeof setTimeout === 'function') {
+      cachedSetTimeout = setTimeout;
+    } else {
+      cachedSetTimeout = defaultSetTimout;
+    }
+  } catch (e) {
+    cachedSetTimeout = defaultSetTimout;
+  }
+  try {
+    if (typeof clearTimeout === 'function') {
+      cachedClearTimeout = clearTimeout;
+    } else {
+      cachedClearTimeout = defaultClearTimeout;
+    }
+  } catch (e) {
+    cachedClearTimeout = defaultClearTimeout;
+  }
+})();
+function runTimeout(fun) {
+  if (cachedSetTimeout === setTimeout) {
+    //normal enviroments in sane situations
+    return setTimeout(fun, 0);
+  }
+  // if setTimeout wasn't available but was latter defined
+  if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+    cachedSetTimeout = setTimeout;
+    return setTimeout(fun, 0);
+  }
+  try {
+    // when when somebody has screwed with setTimeout but no I.E. maddness
+    return cachedSetTimeout(fun, 0);
+  } catch (e) {
+    try {
+      // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+      return cachedSetTimeout.call(null, fun, 0);
+    } catch (e) {
+      // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+      return cachedSetTimeout.call(this, fun, 0);
+    }
+  }
+}
+function runClearTimeout(marker) {
+  if (cachedClearTimeout === clearTimeout) {
+    //normal enviroments in sane situations
+    return clearTimeout(marker);
+  }
+  // if clearTimeout wasn't available but was latter defined
+  if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+    cachedClearTimeout = clearTimeout;
+    return clearTimeout(marker);
+  }
+  try {
+    // when when somebody has screwed with setTimeout but no I.E. maddness
+    return cachedClearTimeout(marker);
+  } catch (e) {
+    try {
+      // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+      return cachedClearTimeout.call(null, marker);
+    } catch (e) {
+      // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+      // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+      return cachedClearTimeout.call(this, marker);
+    }
+  }
+}
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+function cleanUpNextTick() {
+  if (!draining || !currentQueue) {
+    return;
+  }
+  draining = false;
+  if (currentQueue.length) {
+    queue = currentQueue.concat(queue);
+  } else {
+    queueIndex = -1;
+  }
+  if (queue.length) {
+    drainQueue();
+  }
+}
+function drainQueue() {
+  if (draining) {
+    return;
+  }
+  var timeout = runTimeout(cleanUpNextTick);
+  draining = true;
+  var len = queue.length;
+  while (len) {
+    currentQueue = queue;
+    queue = [];
+    while (++queueIndex < len) {
+      if (currentQueue) {
+        currentQueue[queueIndex].run();
+      }
+    }
+    queueIndex = -1;
+    len = queue.length;
+  }
+  currentQueue = null;
+  draining = false;
+  runClearTimeout(timeout);
+}
+process.nextTick = function (fun) {
+  var args = new Array(arguments.length - 1);
+  if (arguments.length > 1) {
+    for (var i = 1; i < arguments.length; i++) {
+      args[i - 1] = arguments[i];
+    }
+  }
+  queue.push(new Item(fun, args));
+  if (queue.length === 1 && !draining) {
+    runTimeout(drainQueue);
+  }
+};
+
+// v8 likes predictible objects
+function Item(fun, array) {
+  this.fun = fun;
+  this.array = array;
+}
+Item.prototype.run = function () {
+  this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
+function noop() {}
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+process.prependListener = noop;
+process.prependOnceListener = noop;
+process.listeners = function (name) {
+  return [];
+};
+process.binding = function (name) {
+  throw new Error('process.binding is not supported');
+};
+process.cwd = function () {
+  return '/';
+};
+process.chdir = function (dir) {
+  throw new Error('process.chdir is not supported');
+};
+process.umask = function () {
+  return 0;
 };
 
 /***/ }),
@@ -19419,7 +19604,7 @@ function getFog(data) {
   \*******************************************/
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-/* global AFRAME, INSPECTOR_VERSION */
+/* global AFRAME */
 var AFRAME_INJECTED = (__webpack_require__(/*! ../../constants */ "./src/constants/index.js").AFRAME_INJECTED);
 var pkg = __webpack_require__(/*! ../../../package */ "./package.json");
 var registerComponent = (__webpack_require__(/*! ../../core/component */ "./src/core/component.js").registerComponent);
@@ -26828,7 +27013,7 @@ module.exports.emitReady = emitReady;
   \***********************************/
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-/* global Promise, customElements, screen, CustomEvent */
+/* global Promise, screen, CustomEvent */
 var initMetaTags = (__webpack_require__(/*! ./metaTags */ "./src/core/scene/metaTags.js").inject);
 var initWakelock = __webpack_require__(/*! ./wakelock */ "./src/core/scene/wakelock.js");
 var loadingScreen = __webpack_require__(/*! ./loadingScreen */ "./src/core/scene/loadingScreen.js");
@@ -27762,7 +27947,7 @@ function constrainSizeTo(size, maxSize) {
   }
   return size;
 }
-customElements.define('a-scene', AScene);
+window.customElements.define('a-scene', AScene);
 
 /**
  * Return the canvas size where the scene will be rendered.
@@ -30166,8 +30351,8 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.6.0 (Date 2024-06-03, Commit #99844828)');
-console.log('THREE Version (https://github.com/supermedium/three.js):', THREE.REVISION);
+console.log('A-Frame Version: 1.6.0 (Date 2024-06-04, Commit #b98d2f17)');
+console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
 // Wait for ready state, unless user asynchronously initializes A-Frame.
@@ -30267,16 +30452,58 @@ if (true) {
   \**************************/
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-var THREE = (__webpack_require__(/*! ./three.mjs */ "./src/lib/three.mjs")["default"]);
-// TODO: Eventually include these only if they are needed by a component.
-__webpack_require__.g.THREE = THREE;
-__webpack_require__(/*! ../../vendor/DeviceOrientationControls */ "./vendor/DeviceOrientationControls.js");
+var THREE = (__webpack_require__(/*! ./three.module.js */ "./src/lib/three.module.js")["default"]);
 
 // In-memory caching for XHRs (for images, audio files, textures, etc.).
 if (THREE.Cache) {
   THREE.Cache.enabled = true;
 }
 module.exports = THREE;
+
+/***/ }),
+
+/***/ "./src/lib/three.module.js":
+/*!*********************************!*\
+  !*** ./src/lib/three.module.js ***!
+  \*********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var super_three__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! super-three */ "./node_modules/super-three/build/three.module.js");
+/* harmony import */ var super_three_examples_jsm_loaders_DRACOLoader__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! super-three/examples/jsm/loaders/DRACOLoader */ "./node_modules/super-three/examples/jsm/loaders/DRACOLoader.js");
+/* harmony import */ var super_three_examples_jsm_loaders_GLTFLoader__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! super-three/examples/jsm/loaders/GLTFLoader */ "./node_modules/super-three/examples/jsm/loaders/GLTFLoader.js");
+/* harmony import */ var super_three_examples_jsm_loaders_KTX2Loader__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! super-three/examples/jsm/loaders/KTX2Loader */ "./node_modules/super-three/examples/jsm/loaders/KTX2Loader.js");
+/* harmony import */ var super_three_addons_math_OBB_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! super-three/addons/math/OBB.js */ "./node_modules/super-three/examples/jsm/math/OBB.js");
+/* harmony import */ var super_three_examples_jsm_loaders_OBJLoader__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! super-three/examples/jsm/loaders/OBJLoader */ "./node_modules/super-three/examples/jsm/loaders/OBJLoader.js");
+/* harmony import */ var super_three_examples_jsm_loaders_MTLLoader__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! super-three/examples/jsm/loaders/MTLLoader */ "./node_modules/super-three/examples/jsm/loaders/MTLLoader.js");
+/* harmony import */ var super_three_examples_jsm_utils_BufferGeometryUtils__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! super-three/examples/jsm/utils/BufferGeometryUtils */ "./node_modules/super-three/examples/jsm/utils/BufferGeometryUtils.js");
+/* harmony import */ var super_three_examples_jsm_lights_LightProbeGenerator__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! super-three/examples/jsm/lights/LightProbeGenerator */ "./node_modules/super-three/examples/jsm/lights/LightProbeGenerator.js");
+
+
+
+
+
+
+
+
+
+var THREE = window.THREE = super_three__WEBPACK_IMPORTED_MODULE_0__;
+
+// TODO: Eventually include these only if they are needed by a component.
+__webpack_require__(/*! ../../vendor/DeviceOrientationControls */ "./vendor/DeviceOrientationControls.js"); // THREE.DeviceOrientationControls
+THREE.DRACOLoader = super_three_examples_jsm_loaders_DRACOLoader__WEBPACK_IMPORTED_MODULE_1__.DRACOLoader;
+THREE.GLTFLoader = super_three_examples_jsm_loaders_GLTFLoader__WEBPACK_IMPORTED_MODULE_2__.GLTFLoader;
+THREE.KTX2Loader = super_three_examples_jsm_loaders_KTX2Loader__WEBPACK_IMPORTED_MODULE_3__.KTX2Loader;
+THREE.OBJLoader = super_three_examples_jsm_loaders_OBJLoader__WEBPACK_IMPORTED_MODULE_4__.OBJLoader;
+THREE.MTLLoader = super_three_examples_jsm_loaders_MTLLoader__WEBPACK_IMPORTED_MODULE_5__.MTLLoader;
+THREE.OBB = super_three_addons_math_OBB_js__WEBPACK_IMPORTED_MODULE_6__.OBB;
+THREE.BufferGeometryUtils = super_three_examples_jsm_utils_BufferGeometryUtils__WEBPACK_IMPORTED_MODULE_7__;
+THREE.LightProbeGenerator = super_three_examples_jsm_lights_LightProbeGenerator__WEBPACK_IMPORTED_MODULE_8__.LightProbeGenerator;
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (THREE);
 
 /***/ }),
 
@@ -32695,8 +32922,8 @@ module.exports.toVector3 = function (vec3) {
   \****************************/
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
+/* provided dependency */ var process = __webpack_require__(/*! process/browser */ "./node_modules/process/browser.js");
 var debug = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
-var isBrowserEnvironment = (__webpack_require__(/*! ./device */ "./src/utils/device.js").isBrowserEnvironment);
 var settings = {
   colors: {
     debug: 'gray',
@@ -32798,7 +33025,7 @@ if (ls && (parseInt(ls.logs, 10) || ls.logs === 'true')) {
 } else {
   debug.enable('*:error,*:info,*:warn');
 }
-if (isBrowserEnvironment) {
+if (process.browser) {
   window.logs = debug;
 }
 module.exports = debug;
@@ -32811,6 +33038,7 @@ module.exports = debug;
   \*****************************/
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
+/* provided dependency */ var process = __webpack_require__(/*! process/browser */ "./node_modules/process/browser.js");
 var error = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js")('device:error');
 var vrDisplay;
 var supportsVRSession = false;
@@ -33020,9 +33248,9 @@ module.exports.isLandscape = function () {
  * We need to check a node api that isn't mocked on either side.
  * `require` and `module.exports` are mocked in browser by bundlers.
  * `window` is mocked in node.
- * `process` is also mocked by webpack running with karma, but has custom properties like process.browser.
+ * `process` is also mocked by browserify, but has custom properties.
  */
-module.exports.isBrowserEnvironment = typeof process === 'undefined' || process.browser === true;
+module.exports.isBrowserEnvironment = !!(!process || process.browser);
 
 /**
  * Check if running in node on the server.
@@ -35992,10 +36220,10 @@ module.exports = "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/200
 
 /***/ }),
 
-/***/ "./node_modules/three/build/three.module.js":
-/*!**************************************************!*\
-  !*** ./node_modules/three/build/three.module.js ***!
-  \**************************************************/
+/***/ "./node_modules/super-three/build/three.module.js":
+/*!********************************************************!*\
+  !*** ./node_modules/super-three/build/three.module.js ***!
+  \********************************************************/
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -39082,10 +39310,10 @@ constructor(width=1,height=1,count=1,options={}){console.warn('THREE.WebGLMultip
 
 /***/ }),
 
-/***/ "./node_modules/three/examples/jsm/libs/ktx-parse.module.js":
-/*!******************************************************************!*\
-  !*** ./node_modules/three/examples/jsm/libs/ktx-parse.module.js ***!
-  \******************************************************************/
+/***/ "./node_modules/super-three/examples/jsm/libs/ktx-parse.module.js":
+/*!************************************************************************!*\
+  !*** ./node_modules/super-three/examples/jsm/libs/ktx-parse.module.js ***!
+  \************************************************************************/
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -39812,10 +40040,10 @@ function Mi(t, e = {}) {
 
 /***/ }),
 
-/***/ "./node_modules/three/examples/jsm/libs/zstddec.module.js":
-/*!****************************************************************!*\
-  !*** ./node_modules/three/examples/jsm/libs/zstddec.module.js ***!
-  \****************************************************************/
+/***/ "./node_modules/super-three/examples/jsm/libs/zstddec.module.js":
+/*!**********************************************************************!*\
+  !*** ./node_modules/super-three/examples/jsm/libs/zstddec.module.js ***!
+  \**********************************************************************/
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -39855,10 +40083,10 @@ const C = "AGFzbQEAAAABpQEVYAF/AX9gAn9/AGADf39/AX9gBX9/f39/AX9gAX8AYAJ/fwF/YAR/f
 
 /***/ }),
 
-/***/ "./node_modules/three/examples/jsm/lights/LightProbeGenerator.js":
-/*!***********************************************************************!*\
-  !*** ./node_modules/three/examples/jsm/lights/LightProbeGenerator.js ***!
-  \***********************************************************************/
+/***/ "./node_modules/super-three/examples/jsm/lights/LightProbeGenerator.js":
+/*!*****************************************************************************!*\
+  !*** ./node_modules/super-three/examples/jsm/lights/LightProbeGenerator.js ***!
+  \*****************************************************************************/
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -39866,7 +40094,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "LightProbeGenerator": () => (/* binding */ LightProbeGenerator)
 /* harmony export */ });
-/* harmony import */ var three__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
+/* harmony import */ var three__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three */ "./node_modules/super-three/build/three.module.js");
 
 class LightProbeGenerator {
   // https://www.ppsloan.org/publications/StupidSH36.pdf
@@ -40075,10 +40303,10 @@ function convertColorToLinear(color, colorSpace) {
 
 /***/ }),
 
-/***/ "./node_modules/three/examples/jsm/loaders/DRACOLoader.js":
-/*!****************************************************************!*\
-  !*** ./node_modules/three/examples/jsm/loaders/DRACOLoader.js ***!
-  \****************************************************************/
+/***/ "./node_modules/super-three/examples/jsm/loaders/DRACOLoader.js":
+/*!**********************************************************************!*\
+  !*** ./node_modules/super-three/examples/jsm/loaders/DRACOLoader.js ***!
+  \**********************************************************************/
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -40086,7 +40314,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "DRACOLoader": () => (/* binding */ DRACOLoader)
 /* harmony export */ });
-/* harmony import */ var three__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
+/* harmony import */ var three__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three */ "./node_modules/super-three/build/three.module.js");
 
 const _taskCache = new WeakMap();
 class DRACOLoader extends three__WEBPACK_IMPORTED_MODULE_0__.Loader {
@@ -40487,10 +40715,10 @@ function DRACOWorker() {
 
 /***/ }),
 
-/***/ "./node_modules/three/examples/jsm/loaders/GLTFLoader.js":
-/*!***************************************************************!*\
-  !*** ./node_modules/three/examples/jsm/loaders/GLTFLoader.js ***!
-  \***************************************************************/
+/***/ "./node_modules/super-three/examples/jsm/loaders/GLTFLoader.js":
+/*!*********************************************************************!*\
+  !*** ./node_modules/super-three/examples/jsm/loaders/GLTFLoader.js ***!
+  \*********************************************************************/
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -40498,8 +40726,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "GLTFLoader": () => (/* binding */ GLTFLoader)
 /* harmony export */ });
-/* harmony import */ var three__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
-/* harmony import */ var _utils_BufferGeometryUtils_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/BufferGeometryUtils.js */ "./node_modules/three/examples/jsm/utils/BufferGeometryUtils.js");
+/* harmony import */ var three__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three */ "./node_modules/super-three/build/three.module.js");
+/* harmony import */ var _utils_BufferGeometryUtils_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/BufferGeometryUtils.js */ "./node_modules/super-three/examples/jsm/utils/BufferGeometryUtils.js");
 
 
 class GLTFLoader extends three__WEBPACK_IMPORTED_MODULE_0__.Loader {
@@ -43378,10 +43606,10 @@ function addPrimitiveAttributes(geometry, primitiveDef, parser) {
 
 /***/ }),
 
-/***/ "./node_modules/three/examples/jsm/loaders/KTX2Loader.js":
-/*!***************************************************************!*\
-  !*** ./node_modules/three/examples/jsm/loaders/KTX2Loader.js ***!
-  \***************************************************************/
+/***/ "./node_modules/super-three/examples/jsm/loaders/KTX2Loader.js":
+/*!*********************************************************************!*\
+  !*** ./node_modules/super-three/examples/jsm/loaders/KTX2Loader.js ***!
+  \*********************************************************************/
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -43389,10 +43617,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "KTX2Loader": () => (/* binding */ KTX2Loader)
 /* harmony export */ });
-/* harmony import */ var three__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
-/* harmony import */ var _utils_WorkerPool_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/WorkerPool.js */ "./node_modules/three/examples/jsm/utils/WorkerPool.js");
-/* harmony import */ var _libs_ktx_parse_module_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../libs/ktx-parse.module.js */ "./node_modules/three/examples/jsm/libs/ktx-parse.module.js");
-/* harmony import */ var _libs_zstddec_module_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../libs/zstddec.module.js */ "./node_modules/three/examples/jsm/libs/zstddec.module.js");
+/* harmony import */ var three__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three */ "./node_modules/super-three/build/three.module.js");
+/* harmony import */ var _utils_WorkerPool_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/WorkerPool.js */ "./node_modules/super-three/examples/jsm/utils/WorkerPool.js");
+/* harmony import */ var _libs_ktx_parse_module_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../libs/ktx-parse.module.js */ "./node_modules/super-three/examples/jsm/libs/ktx-parse.module.js");
+/* harmony import */ var _libs_zstddec_module_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../libs/zstddec.module.js */ "./node_modules/super-three/examples/jsm/libs/zstddec.module.js");
 /**
  * Loader for KTX 2.0 GPU Texture containers.
  *
@@ -44012,10 +44240,10 @@ function parseColorSpace(container) {
 
 /***/ }),
 
-/***/ "./node_modules/three/examples/jsm/loaders/MTLLoader.js":
-/*!**************************************************************!*\
-  !*** ./node_modules/three/examples/jsm/loaders/MTLLoader.js ***!
-  \**************************************************************/
+/***/ "./node_modules/super-three/examples/jsm/loaders/MTLLoader.js":
+/*!********************************************************************!*\
+  !*** ./node_modules/super-three/examples/jsm/loaders/MTLLoader.js ***!
+  \********************************************************************/
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -44023,7 +44251,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "MTLLoader": () => (/* binding */ MTLLoader)
 /* harmony export */ });
-/* harmony import */ var three__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
+/* harmony import */ var three__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three */ "./node_modules/super-three/build/three.module.js");
 
 
 /**
@@ -44379,10 +44607,10 @@ class MaterialCreator {
 
 /***/ }),
 
-/***/ "./node_modules/three/examples/jsm/loaders/OBJLoader.js":
-/*!**************************************************************!*\
-  !*** ./node_modules/three/examples/jsm/loaders/OBJLoader.js ***!
-  \**************************************************************/
+/***/ "./node_modules/super-three/examples/jsm/loaders/OBJLoader.js":
+/*!********************************************************************!*\
+  !*** ./node_modules/super-three/examples/jsm/loaders/OBJLoader.js ***!
+  \********************************************************************/
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -44390,7 +44618,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "OBJLoader": () => (/* binding */ OBJLoader)
 /* harmony export */ });
-/* harmony import */ var three__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
+/* harmony import */ var three__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three */ "./node_modules/super-three/build/three.module.js");
 
 
 // o object_name | g group_name
@@ -44960,10 +45188,10 @@ class OBJLoader extends three__WEBPACK_IMPORTED_MODULE_0__.Loader {
 
 /***/ }),
 
-/***/ "./node_modules/three/examples/jsm/math/OBB.js":
-/*!*****************************************************!*\
-  !*** ./node_modules/three/examples/jsm/math/OBB.js ***!
-  \*****************************************************/
+/***/ "./node_modules/super-three/examples/jsm/math/OBB.js":
+/*!***********************************************************!*\
+  !*** ./node_modules/super-three/examples/jsm/math/OBB.js ***!
+  \***********************************************************/
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -44971,7 +45199,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "OBB": () => (/* binding */ OBB)
 /* harmony export */ });
-/* harmony import */ var three__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
+/* harmony import */ var three__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three */ "./node_modules/super-three/build/three.module.js");
 
 
 // module scope helper variables
@@ -45303,10 +45531,10 @@ const obb = new OBB();
 
 /***/ }),
 
-/***/ "./node_modules/three/examples/jsm/utils/BufferGeometryUtils.js":
-/*!**********************************************************************!*\
-  !*** ./node_modules/three/examples/jsm/utils/BufferGeometryUtils.js ***!
-  \**********************************************************************/
+/***/ "./node_modules/super-three/examples/jsm/utils/BufferGeometryUtils.js":
+/*!****************************************************************************!*\
+  !*** ./node_modules/super-three/examples/jsm/utils/BufferGeometryUtils.js ***!
+  \****************************************************************************/
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -45326,7 +45554,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "toCreasedNormals": () => (/* binding */ toCreasedNormals),
 /* harmony export */   "toTrianglesDrawMode": () => (/* binding */ toTrianglesDrawMode)
 /* harmony export */ });
-/* harmony import */ var three__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
+/* harmony import */ var three__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three */ "./node_modules/super-three/build/three.module.js");
 
 function computeMikkTSpaceTangents(geometry, MikkTSpace, negateSign = true) {
   if (!MikkTSpace || !MikkTSpace.isReady) {
@@ -46173,10 +46401,10 @@ function toCreasedNormals(geometry, creaseAngle = Math.PI / 3 /* 60 degrees */) 
 
 /***/ }),
 
-/***/ "./node_modules/three/examples/jsm/utils/WorkerPool.js":
-/*!*************************************************************!*\
-  !*** ./node_modules/three/examples/jsm/utils/WorkerPool.js ***!
-  \*************************************************************/
+/***/ "./node_modules/super-three/examples/jsm/utils/WorkerPool.js":
+/*!*******************************************************************!*\
+  !*** ./node_modules/super-three/examples/jsm/utils/WorkerPool.js ***!
+  \*******************************************************************/
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -46256,51 +46484,6 @@ class WorkerPool {
 
 /***/ }),
 
-/***/ "./src/lib/three.mjs":
-/*!***************************!*\
-  !*** ./src/lib/three.mjs ***!
-  \***************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var three__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
-/* harmony import */ var three_examples_jsm_loaders_DRACOLoader_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! three/examples/jsm/loaders/DRACOLoader.js */ "./node_modules/three/examples/jsm/loaders/DRACOLoader.js");
-/* harmony import */ var three_examples_jsm_loaders_GLTFLoader_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! three/examples/jsm/loaders/GLTFLoader.js */ "./node_modules/three/examples/jsm/loaders/GLTFLoader.js");
-/* harmony import */ var three_examples_jsm_loaders_KTX2Loader_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! three/examples/jsm/loaders/KTX2Loader.js */ "./node_modules/three/examples/jsm/loaders/KTX2Loader.js");
-/* harmony import */ var three_addons_math_OBB_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! three/addons/math/OBB.js */ "./node_modules/three/examples/jsm/math/OBB.js");
-/* harmony import */ var three_examples_jsm_loaders_OBJLoader_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! three/examples/jsm/loaders/OBJLoader.js */ "./node_modules/three/examples/jsm/loaders/OBJLoader.js");
-/* harmony import */ var three_examples_jsm_loaders_MTLLoader_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! three/examples/jsm/loaders/MTLLoader.js */ "./node_modules/three/examples/jsm/loaders/MTLLoader.js");
-/* harmony import */ var three_examples_jsm_utils_BufferGeometryUtils_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! three/examples/jsm/utils/BufferGeometryUtils.js */ "./node_modules/three/examples/jsm/utils/BufferGeometryUtils.js");
-/* harmony import */ var three_examples_jsm_lights_LightProbeGenerator_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! three/examples/jsm/lights/LightProbeGenerator.js */ "./node_modules/three/examples/jsm/lights/LightProbeGenerator.js");
-
-
-
-
-
-
-
-
-
-
-var THREE = { ...three__WEBPACK_IMPORTED_MODULE_0__ };
-THREE.DRACOLoader = three_examples_jsm_loaders_DRACOLoader_js__WEBPACK_IMPORTED_MODULE_1__.DRACOLoader;
-THREE.GLTFLoader = three_examples_jsm_loaders_GLTFLoader_js__WEBPACK_IMPORTED_MODULE_2__.GLTFLoader;
-THREE.KTX2Loader = three_examples_jsm_loaders_KTX2Loader_js__WEBPACK_IMPORTED_MODULE_3__.KTX2Loader;
-THREE.OBJLoader = three_examples_jsm_loaders_OBJLoader_js__WEBPACK_IMPORTED_MODULE_4__.OBJLoader;
-THREE.MTLLoader = three_examples_jsm_loaders_MTLLoader_js__WEBPACK_IMPORTED_MODULE_5__.MTLLoader;
-THREE.OBB = three_addons_math_OBB_js__WEBPACK_IMPORTED_MODULE_6__.OBB;
-THREE.BufferGeometryUtils = three_examples_jsm_utils_BufferGeometryUtils_js__WEBPACK_IMPORTED_MODULE_7__;
-THREE.LightProbeGenerator = three_examples_jsm_lights_LightProbeGenerator_js__WEBPACK_IMPORTED_MODULE_8__.LightProbeGenerator;
-
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (THREE);
-
-
-/***/ }),
-
 /***/ "./package.json":
 /*!**********************!*\
   !*** ./package.json ***!
@@ -46308,7 +46491,7 @@ THREE.LightProbeGenerator = three_examples_jsm_lights_LightProbeGenerator_js__WE
 /***/ ((module) => {
 
 "use strict";
-module.exports = JSON.parse('{"name":"aframe","version":"1.6.0","description":"A web framework for building virtual reality experiences.","homepage":"https://aframe.io/","main":"dist/aframe-master.js","scripts":{"dev":"cross-env INSPECTOR_VERSION=dev webpack serve --port 8080","dist":"node scripts/updateVersionLog.js && npm run dist:min && npm run dist:max","dist:max":"webpack --config webpack.config.js","dist:min":"webpack --config webpack.prod.config.js","docs":"markserv --dir docs --port 9001","preghpages":"node ./scripts/preghpages.js","ghpages":"ghpages -p gh-pages/","lint":"standardx -v | snazzy","lint:fix":"standardx --fix","precommit":"npm run lint","prepush":"node scripts/testOnlyCheck.js","prerelease":"node scripts/release.js 1.5.0 1.6.0","start":"npm run dev","start:https":"npm run dev -- --server-type https","test":"karma start ./tests/karma.conf.js","test:docs":"node scripts/docsLint.js","test:firefox":"npm test -- --browsers Firefox","test:chrome":"npm test -- --browsers Chrome","test:nobrowser":"NO_BROWSER=true npm test","test:node":"node --experimental-require-module ./node_modules/mocha/bin/mocha --ui tdd tests/node"},"repository":"aframevr/aframe","license":"MIT","files":["dist/*","docs/**/*","src/**/*","vendor/**/*"],"dependencies":{"buffer":"^6.0.3","debug":"^4.3.4","deep-assign":"^2.0.0","load-bmfont":"^1.2.3","super-animejs":"^3.1.0","three":"npm:super-three@0.165.0","three-bmfont-text":"dmarcos/three-bmfont-text#eed4878795be9b3e38cf6aec6b903f56acd1f695","webvr-polyfill":"^0.10.12"},"devDependencies":{"@babel/core":"^7.17.10","babel-loader":"^8.2.5","babel-plugin-istanbul":"^6.1.1","chai":"^4.3.6","chai-shallow-deep-equal":"^1.4.0","chalk":"^1.1.3","cross-env":"^7.0.3","css-loader":"^6.7.1","eslint":"^8.45.0","eslint-config-semistandard":"^17.0.0","eslint-config-standard-jsx":"^11.0.0","ghpages":"0.0.8","git-rev":"^0.2.1","glob":"^8.0.3","husky":"^0.11.7","jsdom":"^24.0.0","jsdom-global":"^3.0.2","karma":"^6.4.0","karma-chai-shallow-deep-equal":"0.0.4","karma-chrome-launcher":"^3.1.1","karma-coverage":"^2.2.0","karma-env-preprocessor":"^0.1.1","karma-firefox-launcher":"^2.1.2","karma-mocha":"^2.0.1","karma-mocha-reporter":"^2.2.5","karma-sinon-chai":"^2.0.2","karma-webpack":"^5.0.0","markserv":"github:sukima/markserv#feature/fix-broken-websoketio-link","mocha":"^10.0.0","replace-in-file":"^2.5.3","shelljs":"^0.7.7","shx":"^0.2.2","sinon":"<12.0.0","sinon-chai":"^3.7.0","snazzy":"^5.0.0","standardx":"^7.0.0","style-loader":"^3.3.1","too-wordy":"ngokevin/too-wordy","webpack":"^5.73.0","webpack-cli":"^4.10.0","webpack-dev-server":"^4.11.0","webpack-merge":"^5.8.0","write-good":"^1.0.8"},"link":true,"standardx":{"ignore":["build/**","dist/**","examples/**/shaders/*.js","**/vendor/**"]},"keywords":["3d","aframe","cardboard","components","oculus","three","three.js","rift","vive","vr","quest","meta","web-components","webvr","webxr"],"engines":{"node":">= 4.6.0","npm":">= 2.15.9"}}');
+module.exports = JSON.parse('{"name":"aframe","version":"1.6.0","description":"A web framework for building virtual reality experiences.","homepage":"https://aframe.io/","main":"dist/aframe-master.js","scripts":{"dev":"cross-env INSPECTOR_VERSION=dev webpack serve --port 8080","dist":"node scripts/updateVersionLog.js && npm run dist:min && npm run dist:max","dist:max":"webpack --config webpack.config.js","dist:min":"webpack --config webpack.prod.config.js","docs":"markserv --dir docs --port 9001","preghpages":"node ./scripts/preghpages.js","ghpages":"ghpages -p gh-pages/","lint":"standardx -v | snazzy","lint:fix":"standardx --fix","precommit":"npm run lint","prepush":"node scripts/testOnlyCheck.js","prerelease":"node scripts/release.js 1.5.0 1.6.0","start":"npm run dev","start:https":"npm run dev -- --server-type https","test":"karma start ./tests/karma.conf.js","test:docs":"node scripts/docsLint.js","test:firefox":"npm test -- --browsers Firefox","test:chrome":"npm test -- --browsers Chrome","test:nobrowser":"NO_BROWSER=true npm test","test:node":"mocha --ui tdd tests/node"},"repository":"aframevr/aframe","license":"MIT","files":["dist/*","docs/**/*","src/**/*","vendor/**/*"],"dependencies":{"buffer":"^6.0.3","debug":"^4.3.4","deep-assign":"^2.0.0","load-bmfont":"^1.2.3","super-animejs":"^3.1.0","super-three":"0.165.0","three-bmfont-text":"dmarcos/three-bmfont-text#eed4878795be9b3e38cf6aec6b903f56acd1f695","webvr-polyfill":"^0.10.12"},"devDependencies":{"@babel/core":"^7.17.10","babel-loader":"^8.2.5","babel-plugin-istanbul":"^6.1.1","chai":"^4.3.6","chai-shallow-deep-equal":"^1.4.0","chalk":"^1.1.3","cross-env":"^7.0.3","css-loader":"^6.7.1","eslint":"^8.45.0","eslint-config-semistandard":"^17.0.0","eslint-config-standard-jsx":"^11.0.0","ghpages":"0.0.8","git-rev":"^0.2.1","glob":"^8.0.3","husky":"^0.11.7","jsdom":"^20.0.0","karma":"^6.4.0","karma-chai-shallow-deep-equal":"0.0.4","karma-chrome-launcher":"^3.1.1","karma-coverage":"^2.2.0","karma-env-preprocessor":"^0.1.1","karma-firefox-launcher":"^2.1.2","karma-mocha":"^2.0.1","karma-mocha-reporter":"^2.2.5","karma-sinon-chai":"^2.0.2","karma-webpack":"^5.0.0","markserv":"github:sukima/markserv#feature/fix-broken-websoketio-link","mocha":"^10.0.0","replace-in-file":"^2.5.3","shelljs":"^0.7.7","shx":"^0.2.2","sinon":"<12.0.0","sinon-chai":"^3.7.0","snazzy":"^5.0.0","standardx":"^7.0.0","style-loader":"^3.3.1","too-wordy":"ngokevin/too-wordy","webpack":"^5.73.0","webpack-cli":"^4.10.0","webpack-dev-server":"^4.11.0","webpack-merge":"^5.8.0","write-good":"^1.0.8"},"link":true,"standardx":{"ignore":["build/**","dist/**","examples/**/shaders/*.js","**/vendor/**"]},"keywords":["3d","aframe","cardboard","components","oculus","three","three.js","rift","vive","vr","quest","meta","web-components","webvr","webxr"],"engines":{"node":">= 4.6.0","npm":">= 2.15.9"}}');
 
 /***/ })
 
