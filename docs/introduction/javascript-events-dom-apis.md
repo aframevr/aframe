@@ -1,4 +1,4 @@
--
+---
 title: JavaScript, Events, DOM APIs
 type: introduction
 layout: docs
