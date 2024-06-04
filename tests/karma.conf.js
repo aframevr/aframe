@@ -1,8 +1,7 @@
 // Karma configuration.
 var path = require('path');
 var glob = require('glob');
-var webpack = require('webpack');
-var webpackConfiguration = require('../webpack.config.js');
+var webpackConfiguration = require("../webpack.config.js");
 
 // Define test files.
 var FILES = [
@@ -30,13 +29,7 @@ if (process.env.TEST_FILE) {
 
 // add 'src' to be able to resolve require('utils/tracked-controls') for
 // example in the tests
-if (!webpackConfiguration.resolve) {
-  webpackConfiguration.resolve = {};
-}
 webpackConfiguration.resolve.modules = ['src', 'node_modules'];
-webpackConfiguration.plugins.push(new webpack.ProvidePlugin({
-  process: 'process/browser'
-}));
 // webpack will create a lot of files, use build directory instead of dist
 webpackConfiguration.output.path = path.resolve(__dirname, '../build');
 

@@ -200,9 +200,9 @@ module.exports.isLandscape = function () {
  * We need to check a node api that isn't mocked on either side.
  * `require` and `module.exports` are mocked in browser by bundlers.
  * `window` is mocked in node.
- * `process` is also mocked by webpack running with karma, but has custom properties like process.browser.
+ * `process` is also mocked by browserify, but has custom properties.
  */
-module.exports.isBrowserEnvironment = typeof process === 'undefined' || process.browser === true;
+module.exports.isBrowserEnvironment = !!(!process || process.browser);
 
 /**
  * Check if running in node on the server.
