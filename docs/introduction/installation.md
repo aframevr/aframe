@@ -66,23 +66,6 @@ the local URL and port which the server is running on (e.g.,
 protocol which does not provide a domain; absolute and relative URLs may not
 work.
 
-### Download the Boilerplate on GitHub
-
-[ghpages]: https://pages.github.com/
-
-The boilerplate contains:
-
-- A simple HTML file that links to the [current version of A-Frame](#builds-prod)
-- An optional local development server
-- An easy deployment workflow for [GitHub Pages][ghpages] to share with the world
-
-We can grab the boilerplate in one of two ways:
-
-<a class="btn btn-download" href="https://github.com/aframevr/aframe-boilerplate/">Fork on GitHub</a>
-<br>(Note this is marked as 'discontinued', the Aframe version packaged with this is 0.5)
-
-<a class="btn btn-download" href="https://github.com/aframevr/aframe-boilerplate/archive/master.zip" download="aframe-boilerplate.zip">Download .ZIP<span></span></a>
-
 ### Include the JS Build
 
 To include A-Frame in an HTML file, we drop a `<script>` tag pointing to the
