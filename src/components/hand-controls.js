@@ -218,6 +218,16 @@ module.exports.Component = registerComponent('hand-controls', {
         el.setAttribute('pico-controls', controlConfiguration);
         el.setAttribute('windows-motion-controls', controlConfiguration);
         el.setAttribute('hp-mixed-reality-controls', controlConfiguration);
+
+        // Pico4, at least on Wolvic, needs a different rotation
+        // offset for the hand model. Pico Browser claims to use
+        // oculus controllers instead; will load oculus-touch-controls
+        // and does not require this adjustment.
+        el.addEventListener('controllerconnected', function (evt) {
+          if (evt.detail.name === 'pico-controls') {
+            mesh.rotation.x += Math.PI / 4;
+          }
+        }, {once: true});
       });
     }
   },

@@ -120,6 +120,7 @@ module.exports.Component = registerComponent('pico-controls', {
       controller: this.controllerIndex,
       orientationOffset: data.orientationOffset
     });
+
     // Load model.
     if (!this.data.model) { return; }
     this.el.setAttribute('gltf-model', PICO_MODEL_GLB_BASE_URL + this.data.hand + '.glb');
