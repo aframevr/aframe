@@ -1,7 +1,4 @@
-var THREE = require('./three.mjs').default;
-// TODO: Eventually include these only if they are needed by a component.
-global.THREE = THREE;
-require('../../vendor/DeviceOrientationControls');
+var THREE = require('./three.module.js').default;
 
 // In-memory caching for XHRs (for images, audio files, textures, etc.).
 if (THREE.Cache) {

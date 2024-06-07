@@ -291,13 +291,16 @@ module.exports.handleTextureEvents = handleTextureEvents;
  * @returns {boolean} True if the texture is compatible with the source, false otherwise
  */
 function isCompatibleTexture (texture, source) {
+  if (texture.source !== source) {
+    return false;
+  }
+
   if (source.data instanceof HTMLCanvasElement) {
     return texture.isCanvasTexture;
   }
 
   if (source.data instanceof HTMLVideoElement) {
-    // VideoTexture can't have its source changed after initial user
-    return texture.isVideoTexture && texture.source === source;
+    return texture.isVideoTexture;
   }
 
   return texture.isTexture && !texture.isCanvasTexture && !texture.isVideoTexture;

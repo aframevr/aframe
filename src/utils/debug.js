@@ -1,5 +1,4 @@
 var debug = require('debug');
-var isBrowserEnvironment = require('./device').isBrowserEnvironment;
 
 var settings = {
   colors: {
@@ -115,6 +114,6 @@ if (ls && (parseInt(ls.logs, 10) || ls.logs === 'true')) {
   debug.enable('*:error,*:info,*:warn');
 }
 
-if (isBrowserEnvironment) { window.logs = debug; }
+if (process.browser) { window.logs = debug; }
 
 module.exports = debug;
