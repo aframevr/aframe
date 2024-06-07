@@ -87,6 +87,13 @@ module.exports.Component = registerComponent('cursor', {
   update: function (oldData) {
     if (this.data.rayOrigin === oldData.rayOrigin) { return; }
     this.updateMouseEventListeners();
+    // Update the WebXR event listeners if needed
+    if (this.data.rayOrigin === 'xrselect') {
+      this.addWebXREventListeners();
+    }
+    if (oldData.rayOrigin === 'xrselect') {
+      this.removeWebXREventListeners();
+    }
   },
 
   tick: function () {
@@ -195,15 +202,7 @@ module.exports.Component = registerComponent('cursor', {
     window.removeEventListener('resize', this.updateCanvasBounds);
     window.removeEventListener('scroll', this.updateCanvasBounds);
 
-    var xrSession = el.sceneEl.xrSession;
-    if (xrSession) {
-      WEBXR_EVENTS.DOWN.forEach(function (downEvent) {
-        xrSession.removeEventListener(downEvent, self.onCursorDown);
-      });
-      WEBXR_EVENTS.UP.forEach(function (upEvent) {
-        xrSession.removeEventListener(upEvent, self.onCursorUp);
-      });
-    }
+    this.removeWebXREventListeners();
   },
 
   updateMouseEventListeners: function () {
@@ -219,6 +218,32 @@ module.exports.Component = registerComponent('cursor', {
     canvas.addEventListener('touchmove', this.onMouseMove, {passive: false});
     el.setAttribute('raycaster', 'useWorldCoordinates', true);
     this.updateCanvasBounds();
+  },
+
+  addWebXREventListeners: function () {
+    var self = this;
+    var xrSession = this.el.sceneEl.xrSession;
+    if (xrSession) {
+      WEBXR_EVENTS.DOWN.forEach(function (downEvent) {
+        xrSession.addEventListener(downEvent, self.onCursorDown);
+      });
+      WEBXR_EVENTS.UP.forEach(function (upEvent) {
+        xrSession.addEventListener(upEvent, self.onCursorUp);
+      });
+    }
+  },
+
+  removeWebXREventListeners: function () {
+    var self = this;
+    var xrSession = this.el.sceneEl.xrSession;
+    if (xrSession) {
+      WEBXR_EVENTS.DOWN.forEach(function (downEvent) {
+        xrSession.removeEventListener(downEvent, self.onCursorDown);
+      });
+      WEBXR_EVENTS.UP.forEach(function (upEvent) {
+        xrSession.removeEventListener(upEvent, self.onCursorUp);
+      });
+    }
   },
 
   onMouseMove: (function () {
@@ -404,16 +429,9 @@ module.exports.Component = registerComponent('cursor', {
 
   onEnterVR: function () {
     this.clearCurrentIntersection(true);
-    var xrSession = this.el.sceneEl.xrSession;
-    var self = this;
-    if (!xrSession) { return; }
-    if (this.data.rayOrigin === 'mouse') { return; }
-    WEBXR_EVENTS.DOWN.forEach(function (downEvent) {
-      xrSession.addEventListener(downEvent, self.onCursorDown);
-    });
-    WEBXR_EVENTS.UP.forEach(function (upEvent) {
-      xrSession.addEventListener(upEvent, self.onCursorUp);
-    });
+    if (this.data.rayOrigin === 'xrselect') {
+    this.addWebXREventListeners();
+    }
   },
 
   setIntersection: function (intersectedEl, intersection) {
