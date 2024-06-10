@@ -430,7 +430,7 @@ module.exports.Component = registerComponent('cursor', {
   onEnterVR: function () {
     this.clearCurrentIntersection(true);
     if (this.data.rayOrigin === 'xrselect') {
-    this.addWebXREventListeners();
+      this.addWebXREventListeners();
     }
   },
 
