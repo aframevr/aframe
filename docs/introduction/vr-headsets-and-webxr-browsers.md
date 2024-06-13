@@ -46,6 +46,7 @@ are constrained to looking around and wiggling the controller.
 [Oculus headsets]: https://www.oculus.com/
 [Windows Mixed Reality]: https://developer.microsoft.com/en-us/windows/mixed-reality/
 [Vive Focus]: https://enterprise.vive.com/us/vivefocus/
+[Apple]: https://www.apple.com/apple-vision-pro/
 
 | Headset                 | Platform   | Positional Tracking | Controllers        | Controller Positional Tracking |
 |-------------------------|------------|---------------------|--------------------|--------------------------------|
@@ -57,6 +58,7 @@ are constrained to looking around and wiggling the controller.
 | [Oculus Quest]            | Standalone | :white_check_mark:  | :white_check_mark: | :white_check_mark:             |
 | [Oculus Quest 2]            | Standalone | :white_check_mark:  | :white_check_mark: | :white_check_mark:             |
 | [Oculus Quest 3]            | Standalone | :white_check_mark:  | :white_check_mark: | :white_check_mark:             |
+| [Apple Vision Pro]            | VisionOS 2 > | :white_check_mark:  | :white_check_mark: | :white_check_mark:             |
 
 ## What is WebXR?
 
@@ -105,7 +107,7 @@ A-Frame supports include:
 
 Some other platforms that have been shown to work with A-Frame include:
 
-- Augmented reality (AR) on AR headsets (e.g., Magic Leap, HoloLens)
+- Augmented reality (AR) on AR headsets (e.g., Magic Leap, HoloLens, Apple Vision Pro)
 - Augmented reality (AR) on mobile (i.e., magic window, ARKit, ARCore)
 
 ## Which VR Headsets Does A-Frame Support?
@@ -121,11 +123,13 @@ supports include:
 - Oculus Go
 - Valve Index
 - Vive Focus
+- Apple Vison Pro
 
 For general hardware recommendations (not requirements):
 
 - [Oculus Rift Hardware Recommendations](https://www.oculus.com/en-us/oculus-ready-pcs/)
 - [HTC Vive Hardware Recommendations](https://www.vive.com/us/ready/)
+- [Apple Vision Pro Hardware Recommendations](https://www.apple.com/apple-vision-pro/)
 - For smartphones, an iPhone 6 for iOS and at least a Galaxy S6 for Android
 
 ## Which Browsers Does A-Frame Support?
@@ -152,6 +156,7 @@ lower the expectations that these browsers will provide a quality experience
 and not have quirks:
 
 - Safari for iOS
+- Safari for VisonOS 2
 - Chrome for Android
 - Firefox for iOS
 - Samsung Internet
