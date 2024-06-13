@@ -67,7 +67,7 @@ be an easy yet powerful way to develop VR content. As an [independent open
 source project][github], A-Frame has grown to be one of the [largest VR
 communities][community].
 
-A-Frame supports most VR headsets such as Vive, Rift, Windows Mixed Reality, Cardboard,
+A-Frame supports most VR headsets such as Apple Vision Pro, Vive, Rift, Windows Mixed Reality, Cardboard,
 Oculus Go, and can even be used for augmented reality.
 Although A-Frame supports the whole spectrum, A-Frame aims to define
 fully immersive interactive VR experiences that go beyond basic 360&deg;
@@ -181,3 +181,10 @@ it on the [newsletter](https://aframe.io/subscribe/) and the
 
 And it really helps to have a dig into the fundamentals on JavaScript and
 [three.js](https://threejs.org/). Have fun!
+
+For Apple Vision Pro info see 
+- [Apple Developer Documentation](https://webkit.org/blog/15421/try-out-your-website-in-the-spatial-web/)
+- [WWDC24 Sessions and Highlights](https://developer.apple.com/videos/play/wwdc2024/10066/)
+- [Join the Apple Developer forums](https://forums.developer.apple.com/forums/tags/webxr)
+
+
