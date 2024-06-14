@@ -58,7 +58,7 @@ are constrained to looking around and wiggling the controller.
 | [Oculus Quest]            | Standalone | :white_check_mark:  | :white_check_mark: | :white_check_mark:             |
 | [Oculus Quest 2]            | Standalone | :white_check_mark:  | :white_check_mark: | :white_check_mark:             |
 | [Oculus Quest 3]            | Standalone | :white_check_mark:  | :white_check_mark: | :white_check_mark:             |
-| [Apple Vision Pro]            | VisionOS 2 > | :white_check_mark:  | :white_check_mark: | :white_check_mark:             |
+| [Apple Vision Pro]            | Standalone | :white_check_mark:  | :white_check_mark: | :white_check_mark:             |
 
 ## What is WebXR?
 
@@ -107,7 +107,7 @@ A-Frame supports include:
 
 Some other platforms that have been shown to work with A-Frame include:
 
-- Augmented reality (AR) on AR headsets (e.g., Magic Leap, HoloLens, Apple Vision Pro)
+- Augmented reality (AR) on AR headsets (e.g., Magic Leap, HoloLens)
 - Augmented reality (AR) on mobile (i.e., magic window, ARKit, ARCore)
 
 ## Which VR Headsets Does A-Frame Support?
