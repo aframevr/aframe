@@ -123,7 +123,7 @@ supports include:
 - Oculus Go
 - Valve Index
 - Vive Focus
-- Apple Vison Pro
+- Apple Vision Pro
 
 For general hardware recommendations (not requirements):
 
