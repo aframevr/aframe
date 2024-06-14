@@ -42,21 +42,27 @@ are constrained to looking around and wiggling the controller.
 
 ### What Are Some Current Headsets?
 
+[Apple Vision Pro]: https://www.apple.com/apple-vision-pro/
 [HTC Vive]: https://www.vive.com/
-[Oculus headsets]: https://www.oculus.com/
-[Windows Mixed Reality]: https://developer.microsoft.com/en-us/windows/mixed-reality/
 [Vive Focus]: https://enterprise.vive.com/us/vivefocus/
+[Meta Quest 2]: https://www.meta.com/quest/
+[Meta Quest 3]: https://www.meta.com/quest/
+[Meta Quest Pro]: https://www.meta.com/quest/
+[Vive Focus]: https://www.vive.com/us/product/vive-focus3/overview/
+[Valve Index]: https://store.steampowered.com/valveindex
+[Windows Mixed Reality]: https://learn.microsoft.com/en-us/windows/mixed-reality/enthusiast-guide/
 
-| Headset                 | Platform   | Positional Tracking | Controllers        | Controller Positional Tracking |
-|-------------------------|------------|---------------------|--------------------|--------------------------------|
-| [HTC Vive]              | PC         | :white_check_mark:  | :white_check_mark: | :white_check_mark:             |
-| [Oculus Rift]           | PC         | :white_check_mark:  | :white_check_mark: | :white_check_mark:             |
-| [Windows Mixed Reality] | PC         | :white_check_mark:  | :white_check_mark: | :white_check_mark:             |
-| [Oculus Go]             | Standalone | :x:                 | :white_check_mark: | :x:                            |
-| [Vive Focus]            | Standalone | :x:                 | :white_check_mark: | :x:                            |
-| [Oculus Quest]            | Standalone | :white_check_mark:  | :white_check_mark: | :white_check_mark:             |
-| [Oculus Quest 2]            | Standalone | :white_check_mark:  | :white_check_mark: | :white_check_mark:             |
-| [Oculus Quest 3]            | Standalone | :white_check_mark:  | :white_check_mark: | :white_check_mark:             |
+| Headset                 | Platform   | Positional Tracking | Controllers        | Controller Positional Tracking | Hand Tracking                  |
+|-------------------------|------------|---------------------|--------------------|--------------------------------|--------------------------------|
+| [HTC Vive]              | PC         | :white_check_mark:  | :white_check_mark: | :white_check_mark:             |                                |
+| [Oculus Rift]           | PC         | :white_check_mark:  | :white_check_mark: | :white_check_mark:             |                                |
+| [Windows Mixed Reality] | PC         | :white_check_mark:  | :white_check_mark: | :white_check_mark:             |                                |
+| [Vive Focus]            | Standalone | :x:                 | :white_check_mark: | :x:                            |                                |
+| [Valve Index]           | Standalone | :x:                 | :white_check_mark: | :x:                            |                                |
+| [Meta Quest 2]          | Standalone | :white_check_mark:  | :white_check_mark: | :white_check_mark:             | :white_check_mark:             |
+| [Meta Quest 3]          | Standalone | :white_check_mark:  | :white_check_mark: | :white_check_mark:             | :white_check_mark:             |
+| [Meta Quest Pro]        | Standalone | :white_check_mark:  | :white_check_mark: | :white_check_mark:             | :white_check_mark:             |
+| [Apple Vision Pro]      | Standalone | :white_check_mark:  |                    | :white_check_mark:             | :white_check_mark:             |
 
 ## What is WebXR?
 
@@ -115,12 +121,14 @@ supports include:
 
 - HTC Vive
 - Oculus Rift
-- Oculus Quest
-- Oculus Quest 2
-- Oculus Quest 3
+- Meta Quest
+- Meta Quest 2
+- Meta Quest 3
+- Meta Quest Pro
 - Oculus Go
 - Valve Index
 - Vive Focus
+- Apple Vision Pro
 
 For general hardware recommendations (not requirements):
 
