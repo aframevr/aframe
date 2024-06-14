@@ -181,9 +181,4 @@ it on the [newsletter](https://aframe.io/subscribe/) and the
 And it really helps to have a dig into the fundamentals on JavaScript and
 [three.js](https://threejs.org/). Have fun!
 
-For Apple Vision Pro info see 
-- [Apple Developer Documentation](https://webkit.org/blog/15421/try-out-your-website-in-the-spatial-web/)
-- [WWDC24 Sessions and Highlights](https://developer.apple.com/videos/play/wwdc2024/10066/)
-- [Join the Apple Developer forums](https://forums.developer.apple.com/forums/tags/webxr)
-
 
