@@ -180,5 +180,3 @@ it on the [newsletter](https://aframe.io/subscribe/) and the
 
 And it really helps to have a dig into the fundamentals on JavaScript and
 [three.js](https://threejs.org/). Have fun!
-
-
