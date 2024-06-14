@@ -121,9 +121,10 @@ supports include:
 
 - HTC Vive
 - Oculus Rift
-- Oculus Quest
-- Oculus Quest 2
-- Oculus Quest 3
+- Meta Quest
+- Meta Quest 2
+- Meta Quest 3
+- Meta Quest Pro
 - Oculus Go
 - Valve Index
 - Vive Focus
