@@ -67,8 +67,7 @@ be an easy yet powerful way to develop VR content. As an [independent open
 source project][github], A-Frame has grown to be one of the [largest VR
 communities][community].
 
-A-Frame supports most VR headsets such as Apple Vision Pro, Vive, Rift, Windows Mixed Reality, Cardboard,
-Oculus Go, and can even be used for augmented reality.
+A-Frame supports most VR and AR devices such as Meta Quest, Apple Vision Pro, PICO lineup, Lynx-R1 or Valve Index 
 Although A-Frame supports the whole spectrum, A-Frame aims to define
 fully immersive interactive VR experiences that go beyond basic 360&deg;
 content, making full use of positional tracking and controllers.
