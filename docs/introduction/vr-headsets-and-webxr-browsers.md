@@ -129,7 +129,6 @@ For general hardware recommendations (not requirements):
 
 - [Oculus Rift Hardware Recommendations](https://www.oculus.com/en-us/oculus-ready-pcs/)
 - [HTC Vive Hardware Recommendations](https://www.vive.com/us/ready/)
-- [Apple Vision Pro Hardware Recommendations](https://www.apple.com/apple-vision-pro/)
 - For smartphones, an iPhone 6 for iOS and at least a Galaxy S6 for Android
 
 ## Which Browsers Does A-Frame Support?
