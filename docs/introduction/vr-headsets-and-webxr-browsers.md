@@ -156,7 +156,6 @@ lower the expectations that these browsers will provide a quality experience
 and not have quirks:
 
 - Safari for iOS
-- Safari for VisonOS 2
 - Chrome for Android
 - Firefox for iOS
 - Samsung Internet
