@@ -131,7 +131,9 @@ module.exports.Component = registerComponent('raycaster', {
 
     if (oldData.enabled && !data.enabled) { this.clearAllIntersections(); }
 
-    this.setDirty();
+    if (data.objects !== oldData.objects) {
+      this.setDirty();
+    }
   },
 
   play: function () {
