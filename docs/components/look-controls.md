@@ -34,7 +34,7 @@ component](camera.md).
 | touchEnabled     | Whether to use touch controls in magic window mode.              | true          |
 | mouseEnabled     | Whether to use mouse to move the camera in 2D mode.              | true          |
 | pointerLockEnabled | Whether to hide the cursor using the [Pointer Lock API][pointer-lock-api]. | false |
-| magicWindowTrackingEnabled | Whether gyroscope camera tracking is enabled on mobile devices. | true |
+| magicWindowTrackingEnabled | Whether gyroscope camera tracking is enabled on mobile devices. | false |
 
 ## Customizing look-controls
 
