@@ -8,18 +8,18 @@ var nonCharRegex = /[,> .[\]:]/;
 var urlRegex = /url\((.+)\)/;
 
 // Built-in property types.
-registerPropertyType('audio', '', assetParse);
+registerPropertyType('audio', '', assetParse, assetStringify);
 registerPropertyType('array', [], arrayParse, arrayStringify, arrayEquals);
-registerPropertyType('asset', '', assetParse);
+registerPropertyType('asset', '', assetParse, assetStringify);
 registerPropertyType('boolean', false, boolParse);
 registerPropertyType('color', '#FFF');
 registerPropertyType('int', 0, intParse);
 registerPropertyType('number', 0, numberParse);
-registerPropertyType('map', '', assetParse);
-registerPropertyType('model', '', assetParse);
+registerPropertyType('map', '', assetParse, assetStringify);
+registerPropertyType('model', '', assetParse, assetStringify);
 registerPropertyType('selector', null, selectorParse, selectorStringify, defaultEquals, false);
 registerPropertyType('selectorAll', null, selectorAllParse, selectorAllStringify, arrayEquals, false);
-registerPropertyType('src', '', srcParse);
+registerPropertyType('src', '', srcParse, assetStringify);
 registerPropertyType('string', '');
 registerPropertyType('time', 0, intParse);
 registerPropertyType('vec2', {x: 0, y: 0}, vecParse, coordinates.stringify, coordinates.equals);
@@ -119,6 +119,19 @@ function assetParse (value) {
 
   // Non-wrapped url().
   return value;
+}
+
+function assetStringify (value) {
+  if (value.getAttribute) {
+    var id = value.getAttribute('id');
+    if (id) {
+      return '#' + value.getAttribute('id');
+    }
+    // HTMLElement without id can not be stringified, as there is no string assetParse
+    // could convert back to this exact element, using the src attribute instead.
+    return value.getAttribute('src');
+  }
+  return defaultStringify(value);
 }
 
 function defaultParse (value) {

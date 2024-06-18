@@ -9,6 +9,7 @@ var register = PropertyTypes.registerPropertyType;
 suite('propertyTypes', function () {
   suite('asset', function () {
     var parse = propertyTypes.asset.parse;
+    var stringify = propertyTypes.asset.stringify;
 
     setup(function () {
       var el = this.el = document.createElement('div');
@@ -51,6 +52,18 @@ suite('propertyTypes', function () {
       video.setAttribute('id', 'foo');
       this.el.appendChild(video);
       assert.equal(parse('#foo'), video);
+    });
+
+    test('stringifies to id', function () {
+      var video = document.createElement('video');
+      video.setAttribute('id', 'foo');
+      assert.equal(stringify(video), '#foo');
+    });
+
+    test('stringifies to src if no id available', function () {
+      var video = document.createElement('video');
+      video.setAttribute('src', '/some-url');
+      assert.equal(stringify(video), '/some-url');
     });
   });
 
