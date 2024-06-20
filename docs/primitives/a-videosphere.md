@@ -42,8 +42,6 @@ document.querySelector("#antarctica").components.material.material.map.image.pla
 
 ## Attributes
 
-Note that the videosphere primitive inherits [common attributes](./common-attributes.md).
-
 | Attribute       | Component Mapping       | Default Value |
 |-----------------|-------------------------|---------------|
 | autoplay        | `<video>`.autoplay      | true          |
