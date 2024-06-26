@@ -40,7 +40,6 @@ AFRAME.registerComponent('coffee-spawner', {
     var sceneEl = this.el.sceneEl;
     var saucerEl = document.createElement('a-entity');
     var cupEl = document.createElement('a-entity');
-    var wristRotation = evt.detail.wristRotation;
     var animateScale = function (evt) {
       evt.target.setAttribute('animation', {
         property: 'scale',
