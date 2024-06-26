@@ -9,7 +9,7 @@ examples:
     src: https://github.com/aframevr/aframe/tree/master/examples/docs/360-gallery/index.html
 ---
 
-[live-example]: https://aframe.io/examples/docs/360-gallery/
+[live-example]: https://aframe.io/aframe/examples/docs/360-gallery/
 
 ![360&deg; Image Viewer](/images/docs/360-image-viewer.png)
 
