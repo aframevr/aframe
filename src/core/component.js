@@ -358,7 +358,7 @@ Component.prototype = {
 
   /**
    * Reset value of a property to the property's default value.
-   * If single property component, reset value to component's default value.
+   * If single-property component, reset value to component's default value.
    *
    * @param {string} propertyName - Name of property to reset.
    */
