@@ -112,8 +112,28 @@ module.exports.Component = registerComponent('hand-controls', {
     mesh.mixer.update(delta / 1000);
   },
 
-  onControllerConnected: function () {
-    this.el.object3D.visible = true;
+  onControllerConnected: function (evt) {
+    var el = this.el;
+    var hand = this.data.hand;
+    var mesh = this.el.getObject3D('mesh');
+
+    el.object3D.visible = true;
+
+    var handModelOrientationZ = hand === 'left' ? Math.PI / 2 : -Math.PI / 2;
+    // The WebXR standard defines the grip space such that a cylinder held in a closed hand points
+    // along the Z axis. The models currently have such a cylinder point along the X-Axis.
+    var handModelOrientationX = el.sceneEl.hasWebXR ? -Math.PI / 2 : 0;
+
+    // Pico4, at least on Wolvic, needs a different rotation offset
+    // for the hand model. Pico Browser claims to use oculus
+    // controllers instead; will load oculus-touch-controls and does
+    // not require this adjustment.
+    if (evt.detail.name === 'pico-controls') {
+      handModelOrientationX += Math.PI / 4;
+    }
+
+    mesh.position.set(0, 0, 0);
+    mesh.rotation.set(handModelOrientationX, 0, handModelOrientationZ);
   },
 
   onControllerDisconnected: function () {
@@ -199,10 +219,6 @@ module.exports.Component = registerComponent('hand-controls', {
       var handmodelUrl = MODEL_URLS[handModelStyle + hand.charAt(0).toUpperCase() + hand.slice(1)];
       this.loader.load(handmodelUrl, function (gltf) {
         var mesh = gltf.scene.children[0];
-        var handModelOrientationZ = hand === 'left' ? Math.PI / 2 : -Math.PI / 2;
-        // The WebXR standard defines the grip space such that a cylinder held in a closed hand points
-        // along the Z axis. The models currently have such a cylinder point along the X-Axis.
-        var handModelOrientationX = el.sceneEl.hasWebXR ? -Math.PI / 2 : 0;
         mesh.mixer = new THREE.AnimationMixer(mesh);
         self.clips = gltf.animations;
         el.setObject3D('mesh', mesh);
@@ -210,8 +226,6 @@ module.exports.Component = registerComponent('hand-controls', {
           if (!object.isMesh) { return; }
           object.material.color = new THREE.Color(handColor);
         });
-        mesh.position.set(0, 0, 0);
-        mesh.rotation.set(handModelOrientationX, 0, handModelOrientationZ);
         el.setAttribute('magicleap-controls', controlConfiguration);
         el.setAttribute('vive-controls', controlConfiguration);
         el.setAttribute('oculus-touch-controls', controlConfiguration);
