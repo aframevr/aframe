@@ -1149,6 +1149,19 @@ suite('Component', function () {
       el.components.dummy.flushToDOM();
       assert.equal(HTMLElement.prototype.getAttribute.call(el, 'dummy'), 'isDurrr: false');
     });
+
+    test('omits cleared properties', function () {
+      var el = document.createElement('a-entity');
+      registerComponent('dummy', {
+        schema: {name: {type: 'string'}}
+      });
+      el.setAttribute('dummy', 'name', 'John');
+      el.components.dummy.flushToDOM();
+      assert.equal(HTMLElement.prototype.getAttribute.call(el, 'dummy'), 'name: John');
+      el.setAttribute('dummy', 'name', '');
+      el.components.dummy.flushToDOM();
+      assert.equal(HTMLElement.prototype.getAttribute.call(el, 'dummy'), '');
+    });
   });
 
   suite('play', function () {
