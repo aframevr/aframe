@@ -18390,7 +18390,9 @@ module.exports.Component = registerComponent('raycaster', {
     if (oldData.enabled && !data.enabled) {
       this.clearAllIntersections();
     }
-    this.setDirty();
+    if (data.objects !== oldData.objects) {
+      this.setDirty();
+    }
   },
   play: function () {
     this.addEventListeners();
@@ -26194,7 +26196,7 @@ Component.prototype = {
   },
   /**
    * Reset value of a property to the property's default value.
-   * If single-prop component, reset value to component's default value.
+   * If single property component, reset value to component's default value.
    *
    * @param {string} propertyName - Name of property to reset.
    */
@@ -26667,18 +26669,18 @@ var nonCharRegex = /[,> .[\]:]/;
 var urlRegex = /url\((.+)\)/;
 
 // Built-in property types.
-registerPropertyType('audio', '', assetParse);
+registerPropertyType('audio', '', assetParse, assetStringify);
 registerPropertyType('array', [], arrayParse, arrayStringify, arrayEquals);
-registerPropertyType('asset', '', assetParse);
+registerPropertyType('asset', '', assetParse, assetStringify);
 registerPropertyType('boolean', false, boolParse);
 registerPropertyType('color', '#FFF');
 registerPropertyType('int', 0, intParse);
 registerPropertyType('number', 0, numberParse);
-registerPropertyType('map', '', assetParse);
-registerPropertyType('model', '', assetParse);
+registerPropertyType('map', '', assetParse, assetStringify);
+registerPropertyType('model', '', assetParse, assetStringify);
 registerPropertyType('selector', null, selectorParse, selectorStringify, defaultEquals, false);
 registerPropertyType('selectorAll', null, selectorAllParse, selectorAllStringify, arrayEquals, false);
-registerPropertyType('src', '', srcParse);
+registerPropertyType('src', '', srcParse, assetStringify);
 registerPropertyType('string', '');
 registerPropertyType('time', 0, intParse);
 registerPropertyType('vec2', {
@@ -26793,6 +26795,18 @@ function assetParse(value) {
 
   // Non-wrapped url().
   return value;
+}
+function assetStringify(value) {
+  if (value.getAttribute) {
+    var id = value.getAttribute('id');
+    if (id) {
+      return '#' + value.getAttribute('id');
+    }
+    // HTMLElement without id can not be stringified, as there is no string assetParse
+    // could convert back to this exact element, using the src attribute instead.
+    return value.getAttribute('src');
+  }
+  return defaultStringify(value);
 }
 function defaultParse(value) {
   return value;
@@ -30351,7 +30365,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.6.0 (Date 2024-06-04, Commit #b98d2f17)');
+console.log('A-Frame Version: 1.6.0 (Date 2024-06-27, Commit #53cc6b0b)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
