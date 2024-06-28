@@ -187,7 +187,9 @@ module.exports.stringifyProperties = function (propData, schema) {
       value = stringifyProperty(propValue, propDefinition);
       if (!propDefinition) { warn('Unknown component property: ' + propName); }
     }
-    stringifiedData[propName] = value;
+    if (value !== undefined) {
+      stringifiedData[propName] = value;
+    }
   }
   return stringifiedData;
 };
