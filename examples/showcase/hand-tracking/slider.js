@@ -7,7 +7,7 @@ AFRAME.registerComponent('slider', {
   init: function () {
     var trackEl = this.trackEl = document.createElement('a-entity');
     this.localPosition = new THREE.Vector3();
-    this.onPinchedMoved = this.onPinchedMoved.bind(this);
+    this.onPinchMoved = this.onPinchMoved.bind(this);
 
     trackEl.setAttribute('geometry', {
       primitive: 'box',
@@ -46,10 +46,10 @@ AFRAME.registerComponent('slider', {
 
     this.el.appendChild(pickerEl);
 
-    pickerEl.addEventListener('pinchedmoved', this.onPinchedMoved);
+    pickerEl.addEventListener('pinchmoved', this.onPinchMoved);
   },
 
-  onPinchedMoved: function (evt) {
+  onPinchMoved: function (evt) {
     var el = this.el;
     var evtDetail = this.evtDetail;
     var halfWidth = this.data.width / 2;
