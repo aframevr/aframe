@@ -41,7 +41,7 @@ It also configures presentation attributes when entering WebVR/WebXR.
 | precision               | Fragment shader [precision][precision] : low, medium or high.                   | high          |
 | alpha                   | Whether the canvas should contain an alpha buffer.                              | true          |
 | stencil                 | Whether the canvas should contain a stencil buffer.                             | false         |
-| toneMapping             | Type of toneMapping to use, one of: 'no', 'ACESFilmic', 'linear', 'reinhard', 'cineon'  | 'no'          |
+| toneMapping             | Type of toneMapping to use, one of: 'no', 'ACESFilmic', 'linear', 'reinhard', 'cineon', 'AgX', 'neutral'  | 'no'          |
 | exposure                | When any toneMapping other than "no" is used this can be used to make the overall scene brighter or darker  | 1          |
 | anisotropy              | Default anisotropic filtering sample rate to use for textures                   | 1             |
 
