@@ -9,6 +9,8 @@ examples:
    src: https://glitch.com/edit/#!/aframe-animation-events?path=index.html:1:0
  - title: Generated Animations
    src: https://glitch.com/~aframe-shooting-stars
+ - title: Animating on Custom Events
+   src: https://glitch.com/~aframe-custom-event-emitted-animation
 ---
 
 [animationtimeline]: https://www.npmjs.com/package/aframe-animation-timeline-component
