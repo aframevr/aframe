@@ -1,9 +1,8 @@
 var path = require('path');
-var merge = require('webpack-merge').merge;
-var commonConfiguration = require('./webpack.config.js');
 var TerserPlugin = require('terser-webpack-plugin');
 
-module.exports = merge(commonConfiguration, {
+module.exports = {
+  extends: ['webpack.config.js'],
   output: {
     library: 'AFRAME',
     libraryTarget: 'umd',
@@ -28,4 +27,4 @@ module.exports = merge(commonConfiguration, {
       })
     ]
   }
-});
+};
