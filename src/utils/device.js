@@ -146,6 +146,19 @@ function isIpad (mockUserAgent, mockDevicePlatform, mockDeviceTouchPoints) {
 }
 module.exports.isIpad = isIpad;
 
+/**
+ *  Detect Apple Vision Pro devices.
+*/
+function isAppleVisionPro () {
+  // Safari for Apple Vision Pro presents itself as a desktop browser.
+  var isMacintosh = navigator.userAgent.includes('Macintosh');
+  // Discriminates between a "real" desktop browser and Safari for Vision Pro.
+  // Note: need to check for posible false positives on iPhones / iPads.
+  var hasFiveTouchPoints = navigator.maxTouchPoints === 5;
+  return isMacintosh && hasFiveTouchPoints;
+}
+module.exports.isAppleVisionPro = isAppleVisionPro;
+
 function isIOS () {
   return /iPad|iPhone|iPod/.test(window.navigator.platform);
 }
@@ -176,7 +189,7 @@ module.exports.isFirefoxReality = isFirefoxReality;
  *  Detect browsers in Stand-Alone headsets
  */
 function isMobileVR () {
-  return isOculusBrowser() || isFirefoxReality();
+  return isOculusBrowser() || isFirefoxReality() || isAppleVisionPro();
 }
 module.exports.isMobileVR = isMobileVR;
 
