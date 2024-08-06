@@ -27729,10 +27729,13 @@ class AScene extends AEntity {
         self.resize();
       }
     });
-    this.play();
+    const onPlay = () => {
+      this.play();
 
-    // Add to scene index.
-    scenes.push(this);
+      // Add to scene index.
+      scenes.push(this);
+    };
+    window.XR ? onPlay() : window.addEventListener('xrloaded', onPlay);
   }
 
   /**
@@ -30766,7 +30769,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.5.0 (Date 2024-01-23, Commit #fb6863e5)');
+console.log('A-Frame Version: 1.5.0 (Date 2024-08-06, Commit #80e4b39a)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 module.exports = window.AFRAME = {
