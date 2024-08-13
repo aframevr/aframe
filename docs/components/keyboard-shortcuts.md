@@ -14,7 +14,7 @@ keyboard-shortcuts component applies only to the [`<a-scene>` element][scene].
 ## Example
 
 ```html
-<a-scene keyboard-shortcuts="enterVR: false"></a-scene>
+<a-scene keyboard-shortcuts="enterVR: false; exitVR: false;"></a-scene>
 ```
 
 ## Properties
@@ -22,3 +22,4 @@ keyboard-shortcuts component applies only to the [`<a-scene>` element][scene].
 | Property    | Description                                           | Default Value |
 |-------------|-------------------------------------------------------|---------------|
 | enterVR     | Enables the shortcut to press 'F' to enter VR.        | true          |
+| exitVR      | Enables the shortcut to press 'Escape' to exit VR.    | true          |
