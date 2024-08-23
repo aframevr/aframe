@@ -411,7 +411,7 @@ For the particle system component, the CDN link we found earlier (at time of
 writing) was:
 
 ```
-https://unpkg.com/aframe-particle-system-component@1.0.9/dist/aframe-particle-system-component.min.js
+https://unpkg.com/@c-frame/aframe-particle-system-component@1.1.x/dist/aframe-particle-system-component.min.js
 ```
 
 Now we can include it into our HTML:
@@ -420,7 +420,7 @@ Now we can include it into our HTML:
 <html>
   <head>
     <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
-    <script src="https://unpkg.com/aframe-particle-system-component@1.0.9/dist/aframe-particle-system-component.min.js"></script>
+    <script src="https://unpkg.com/@c-frame/aframe-particle-system-component@1.1.x/dist/aframe-particle-system-component.min.js"></script>
   </head>
   <body>
     <a-scene>
@@ -441,7 +441,7 @@ Now we can include it into our HTML:
 <html>
   <head>
     <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
-    <script src="https://unpkg.com/aframe-particle-system-component@1.0.9/dist/aframe-particle-system-component.min.js"></script>
+    <script src="https://unpkg.com/@c-frame/aframe-particle-system-component@1.1.x/dist/aframe-particle-system-component.min.js"></script>
   </head>
   <body>
     <a-scene>
@@ -476,9 +476,9 @@ Registry and using the JSDELIVR CDN.  This example can also be viewed in the [A-
     <title>Community Components Example</title>
     <meta name="description" content="Community Components Example">
     <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>  
-    <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-particle-system-component@a5a8449/dist/aframe-particle-system-component.js"></script>
+    <script src="https://unpkg.com/@c-frame/aframe-particle-system-component@1.1.x/dist/aframe-particle-system-component.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/aframe-simple-sun-sky@^1.2.2/simple-sun-sky.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@d5f3f8/dist/aframe-extras.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.5.0/dist/aframe-extras.min.js"></script>
   </head>
   <body>
     <a-scene> 
