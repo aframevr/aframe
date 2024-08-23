@@ -138,7 +138,7 @@ hovering:
 
 ```html
 <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
-<script src="https://unpkg.com/aframe-event-set-component@3.0.3/dist/aframe-event-set-component.min.js"></script>
+<script src="https://unpkg.com/aframe-event-set-component@5.x.x/dist/aframe-event-set-component.min.js"></script>
 <body>
   <a-scene>
     <a-box position="-1 0.5 -3" rotation="0 45 0" color="#4CC3D9"
@@ -158,7 +158,7 @@ over:
 
 ```html
 <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
-<script src="https://unpkg.com/aframe-event-set-component@3.0.3/dist/aframe-event-set-component.min.js"></script>
+<script src="https://unpkg.com/aframe-event-set-component@5.x.x/dist/aframe-event-set-component.min.js"></script>
 <body>
   <a-scene>
     <a-cylinder position="1 0.75 -3" radius="0.5" height="1.5" color="#FFC65D"
@@ -181,7 +181,7 @@ properties using A-Frame component dot syntax (i.e.,
 
 ```html
 <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
-<script src="https://unpkg.com/aframe-event-set-component@3.0.3/dist/aframe-event-set-component.min.js"></script>
+<script src="https://unpkg.com/aframe-event-set-component@5.x.x/dist/aframe-event-set-component.min.js"></script>
 <body>
   <a-scene>
     <a-plane position="0 0 -4" rotation="-90 0 0" width="4" height="4" color="#7BC8A4"
