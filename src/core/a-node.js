@@ -1,4 +1,4 @@
-/* global customElements, CustomEvent, HTMLElement, MutationObserver */
+/* global customElements, CustomEvent,  HTMLElement, MutationObserver */
 var utils = require('../utils/');
 var readyState = require('./readyState');
 
