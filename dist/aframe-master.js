@@ -25523,7 +25523,7 @@ customElements.define('a-mixin', AMixin);
   \****************************/
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-/* global customElements, CustomEvent, HTMLElement, MutationObserver */
+/* global customElements, CustomEvent, HTMLElement,  MutationObserver */
 var utils = __webpack_require__(/*! ../utils/ */ "./src/utils/index.js");
 var readyState = __webpack_require__(/*! ./readyState */ "./src/core/readyState.js");
 var warn = utils.debug('core:a-node:warn');
@@ -30361,7 +30361,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.6.0 (Date 2024-08-29, Commit #71c5dcc2)');
+console.log('A-Frame Version: 1.6.0 (Date 2024-08-29, Commit #8c8d0e19)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
