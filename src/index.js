@@ -80,7 +80,7 @@ require('./extras/primitives/');
 
 console.log('A-Frame Version: 1.6.0 (Date 2024-08-29, Commit #8c8d0e19)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
-            pkg.dependencies['super-three']);
+            THREE.REVISION);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
 // Wait for ready state, unless user asynchronously initializes A-Frame.

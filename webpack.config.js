@@ -22,20 +22,14 @@ module.exports = {
   },
   plugins: [
     new webpack.DefinePlugin({
-      'process.env.INSPECTOR_VERSION': JSON.stringify(
+      INSPECTOR_VERSION: JSON.stringify(
         process.env.INSPECTOR_VERSION
       )
     }),
     new webpack.ProvidePlugin({
-      process: 'process/browser',
       Buffer: ['buffer', 'Buffer']
     })
   ],
-  resolve: {
-    alias: {
-      three: 'super-three'
-    }
-  },
   module: {
     rules: [
       {
