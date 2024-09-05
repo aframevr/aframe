@@ -406,8 +406,8 @@ Touch controllers by:
 To add the hand-controls component:
 
 ```html
-<a-entity hand-controls="left"></a-entity>
-<a-entity hand-controls="right"></a-entity>
+<a-entity hand-controls="hand: left"></a-entity>
+<a-entity hand-controls="hand: right"></a-entity>
 ```
 
 Unfortunately, there is not yet a 3DoF controller component that abstracts well
