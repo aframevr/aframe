@@ -181,9 +181,9 @@ AFRAME.registerPrimitive('a-box', extendDeep({}, meshMixin, {
 }));
 ```
 
-[aframe-extras]: https://github.com/donmccurdy/aframe-extras
+[aframe-extras]: https://github.com/c-frame/aframe-extras
 
-For example, Don McCurdy's [`aframe-extras`][aframe-extras] package includes an
+For example, [`aframe-extras`][aframe-extras] package includes an
 `<a-ocean>` primitive that wraps his `ocean` component. Here is the definition
 for `<a-ocean>`.
 

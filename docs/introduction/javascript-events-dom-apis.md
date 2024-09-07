@@ -321,7 +321,7 @@ entityEl.setAttribute('geometry', {
 });
 ```
 
-[physics]: https://github.com/donmccurdy/aframe-physics-system
+[physics]: https://github.com/c-frame/aframe-physics-system
 
 Or adding [the community physics component][physics]:
 
