@@ -137,7 +137,7 @@ and fly around to peek under the hood!
 [environment]: https://github.com/supermedium/aframe-environment-component
 [multiuser]: https://github.com/networked-aframe/networked-aframe
 [oceans]: https://github.com/n5ro/aframe-extras/tree/master/src/primitives
-[particle systems]: https://github.com/IdeaSpaceVR/aframe-particle-system-component
+[particle systems]: https://github.com/c-frame/aframe-particle-system-component
 [physics]: https://github.com/n5ro/aframe-physics-system
 [state]: https://npmjs.com/package/aframe-state-component
 [super hands]: https://github.com/wmurphyrd/aframe-super-hands-component
