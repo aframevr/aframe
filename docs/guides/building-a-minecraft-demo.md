@@ -91,7 +91,7 @@ See a live version [here](https://aframe.io/aframe/examples/docs/aincraft/step2.
 [a-sky]: https://aframe.io/docs/1.6.0/primitives/a-sky.html
 [flickr]: https://www.flickr.com/groups/equirectangular/
 
-[gradient]: https://github.com/zcanter/aframe-gradient-sky
+[gradient]: https://github.com/mrxz/fern-aframe-components/tree/main/sky-background
 
 Let's add a 360&deg; background to our `<a-scene>` with the [`<a-sky>`
 element][a-sky]. `<a-sky>` is a large 3D sphere with a material mapped on the
