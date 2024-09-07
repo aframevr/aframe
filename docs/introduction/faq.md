@@ -233,7 +233,7 @@ This depends on what devices you plan to support and how you allow users to
 navigate your scene. For most VR experiences, follow best practices and only
 move the camera proportionately to the user's motion.
 
-[teleport]: https://github.com/fernandojsg/aframe-teleport-controls
+[teleport]: https://github.com/jure/aframe-blink-controls
 
 Don't block the camera if the user steps forward in a room-scale VR space. For
 most VR applications it's better to do locomotion with methods such as using
