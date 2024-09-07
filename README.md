@@ -128,7 +128,7 @@ objects straight from HTML:
     <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
     <script src="https://unpkg.com/@c-frame/aframe-particle-system-component@1.2.x/dist/aframe-particle-system-component.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.5.0/dist/aframe-extras.min.js"></script>
-    <script src="https://unpkg.com/aframe-gradient-sky@1.0.4/dist/gradientsky.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@fern-solutions/aframe-sky-background/dist/sky-background.umd.min.js"></script>
   </head>
   <body>
     <a-scene>
@@ -144,9 +144,7 @@ objects straight from HTML:
                 material="color: #9CE3F9; opacity: 0.75; metalness: 0; roughness: 1"
                 rotation="-90 0 0"></a-entity>
 
-      <a-entity id="sky" geometry="primitive: sphere; radius: 5000"
-                material="shader: gradient; topColor: 235 235 245; bottomColor: 185 185 210"
-                scale="-1 1 1"></a-entity>
+      <a-sky-background top-color="#EBEBF5" bottom-color="#B9B9D2"></a-sky-background>
 
       <a-entity id="light" light="type: ambient; color: #888"></a-entity>
     </a-scene>
