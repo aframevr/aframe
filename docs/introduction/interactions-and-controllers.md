@@ -589,8 +589,8 @@ The [documentation for super-hands][superhandsdocs] and
 
 ### Other Examples
 
-[aframe-extras]: https://github.com/donmccurdy/aframe-extras
-[aframe-physics]: https://github.com/donmccurdy/aframe-physics-system
+[aframe-extras]: https://github.com/c-frame/aframe-extras
+[aframe-physics]: https://github.com/c-frame/aframe-physics-system
 
 Other examples to look at include:
 

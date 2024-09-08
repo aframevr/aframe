@@ -166,12 +166,6 @@ component][whygltf].
 [Wavefront (`.obj`)][obj] is also a well-known format but has some limitations
 like the lack of animation and vertex color support.
 
-There are also components in the ecosystem for loading other formats:
-
-- [`.PLY` models](https://github.com/donmccurdy/aframe-extras/blob/master/src/loaders/ply-model.js)
-- [three.js `.JSON` Object](https://github.com/donmccurdy/aframe-extras/blob/master/src/loaders/json-model.js)
-- [three.js `.JSON` Scene](https://github.com/donmccurdy/aframe-extras/blob/master/src/loaders/object-model.js)
-
 Below are a couple basic examples for using models:
 
 - [Model Example 1](https://aframe.io/aframe/examples/test/model/)
@@ -233,7 +227,7 @@ This depends on what devices you plan to support and how you allow users to
 navigate your scene. For most VR experiences, follow best practices and only
 move the camera proportionately to the user's motion.
 
-[teleport]: https://github.com/fernandojsg/aframe-teleport-controls
+[teleport]: https://github.com/jure/aframe-blink-controls
 
 Don't block the camera if the user steps forward in a room-scale VR space. For
 most VR applications it's better to do locomotion with methods such as using
@@ -241,7 +235,7 @@ most VR applications it's better to do locomotion with methods such as using
 of the way or not require much movement, or explore more creative ways of
 moving users through the world.
 
-[physics]: https://github.com/donmccurdy/aframe-physics-system
+[physics]: https://github.com/c-frame/aframe-physics-system
 
 For non-VR desktop experiences with a gamepad or keyboard controls or for VR
 scenes where the camera is inside a vehicle, you can add a [physics
