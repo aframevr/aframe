@@ -27894,6 +27894,7 @@ module.exports.AScene = AScene;
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 /* global THREE */
+var AFRAME_INJECTED = (__webpack_require__(/*! ../../constants */ "./src/constants/index.js").AFRAME_INJECTED);
 var utils = __webpack_require__(/*! ../../utils/ */ "./src/utils/index.js");
 var styleParser = utils.styleParser;
 var sceneEl;
@@ -27985,6 +27986,7 @@ function setupTitle() {
   titleEl.className = LOADER_TITLE_CLASS;
   titleEl.innerHTML = document.title;
   titleEl.style.display = 'none';
+  titleEl.setAttribute(AFRAME_INJECTED, '');
   sceneEl.appendChild(titleEl);
 }
 
@@ -30176,7 +30178,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.6.0 (Date 2024-09-05, Commit #fedde6b5)');
+console.log('A-Frame Version: 1.6.0 (Date 2024-09-08, Commit #4766f4db)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', THREE.REVISION);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
