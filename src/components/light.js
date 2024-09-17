@@ -20,7 +20,7 @@ module.exports.Component = registerComponent('light', {
     color: {type: 'color', if: {type: ['ambient', 'directional', 'hemisphere', 'point', 'spot']}},
     envMap: {default: '', if: {type: ['probe']}},
     groundColor: {type: 'color', if: {type: ['hemisphere']}},
-    decay: {default: 1, if: {type: ['point', 'spot']}},
+    decay: {default: 2, if: {type: ['point', 'spot']}},
     distance: {default: 0.0, min: 0, if: {type: ['point', 'spot']}},
     intensity: {default: 1.0, min: 0, if: {type: ['ambient', 'directional', 'hemisphere', 'point', 'spot', 'probe']}},
     penumbra: {default: 0, min: 0, max: 1, if: {type: ['spot']}},
@@ -281,7 +281,11 @@ module.exports.Component = registerComponent('light', {
     var distance = data.distance;
     var groundColor = new THREE.Color(data.groundColor);
     groundColor = groundColor.getHex();
-    var intensity = data.intensity;
+    // WebGLRenderer.useLegacyLights has been removed in THREE r165
+    // Lights intensity had an implicit scaleFactor of PI now removed.
+    // It's reintroduced here since it's easier to think about integers vs multiples of PI.
+    var intensityScaleFactor = Math.PI;
+    var intensity = data.intensity * intensityScaleFactor;
     var type = data.type;
     var target = data.target;
     var light = null;

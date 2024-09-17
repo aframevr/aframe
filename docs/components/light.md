@@ -97,7 +97,7 @@ Directional lights are the most efficient type for adding realtime shadows to a 
 <a-light type="directional" light="castShadow:true;" position="1 1 1" intensity="0.5" shadow-camera-automatic="#objects"></a-light>
 ```
 
-The `shadow-camera-automatic` configuration maps to `light.shadowCameraAutomatic` which tells the light to automatically update the shadow camera to be the minimum size and position to encompass the target elements. 
+The `shadow-camera-automatic` configuration maps to `light.shadowCameraAutomatic` which tells the light to automatically update the shadow camera to be the minimum size and position to encompass the target elements.
 
 ### Hemisphere
 
@@ -129,7 +129,7 @@ lit.
 
 | Property    | Description                                                                                                | Default Value |
 |-------------|------------------------------------------------------------------------------------------------------------|---------------|
-| decay       | Amount the light dims along the distance of the light.                                                     | 1.0           |
+| decay       | Amount the light dims along the distance of the light.                                                     | 2.0           |
 | distance    | Distance where intensity becomes 0. If `distance` is `0`, then the point light does not decay with distance. | 0.0           |
 
 ### Spot
