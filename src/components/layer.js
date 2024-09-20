@@ -335,6 +335,7 @@ module.exports.Component = registerComponent('layer', {
   draw: function () {
     var sceneEl = this.el.sceneEl;
     var gl = this.el.sceneEl.renderer.getContext();
+    if (!this.texture) { return; }
     var glayer = this.xrGLFactory.getSubImage(this.layer, sceneEl.frame);
     var texture = sceneEl.renderer.properties.get(this.texture).__webglTexture;
     var previousFrameBuffer = gl.getParameter(gl.FRAMEBUFFER_BINDING);
