@@ -64,7 +64,7 @@ module.exports.System = registerSystem('tracked-controls-webvr', {
         this.el.emit('controllersupdated', undefined, false);
       }
     } catch (e) {
-      console.warn('can\'t update controller list:', e);
+      console.warn('A-Frame requires additional permissions to list the gamepads. If this is running in an IFRAME, you need to add `gamepads` to the `allow` attribute. If this is running as the top-level page, the HTTP `Permissions-Policy` header must not exclude this origin in the `gamepad` directive.', e);
     }
   }
 });
