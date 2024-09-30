@@ -65,7 +65,11 @@ module.exports.System = registerSystem('tracked-controls-webvr', {
       }
     } catch (e) {
       if (e.name === 'SecurityError') {
-        console.warn('A-Frame requires additional permissions to list the gamepads. If this is running in an IFRAME, you need to add `gamepads` to the `allow` attribute. If this is running as the top-level page, the HTTP `Permissions-Policy` header must not exclude this origin in the `gamepad` directive.', e);
+        if (window.self === window.top) {
+          console.warn('A-Frame requires additional permissions to list the gamepads. The HTTP `Permissions-Policy` header must not exclude this origin in the `gamepad` directive.', e);
+        } else {
+          console.warn('A-Frame requires additional permissions to list the gamepads. The iframe `allow` attribute must not block this origin.', e);
+        }
       } else {
         console.error('Can\'t update controller list:', e);
       }
