@@ -41,26 +41,38 @@ module.exports.System = registerSystem('tracked-controls-webvr', {
    * Update controller list.
    */
   updateControllerList: function () {
-    var controllers = this.controllers;
-    var gamepad;
-    var gamepads;
-    var i;
-    var prevCount;
+    try {
+      var controllers = this.controllers;
+      var gamepad;
+      var gamepads;
+      var i;
+      var prevCount;
 
-    gamepads = navigator.getGamepads && navigator.getGamepads();
-    if (!gamepads) { return; }
+      gamepads = navigator.getGamepads && navigator.getGamepads();
+      if (!gamepads) { return; }
 
-    prevCount = controllers.length;
-    controllers.length = 0;
-    for (i = 0; i < gamepads.length; ++i) {
-      gamepad = gamepads[i];
-      if (gamepad && gamepad.pose) {
-        controllers.push(gamepad);
+      prevCount = controllers.length;
+      controllers.length = 0;
+      for (i = 0; i < gamepads.length; ++i) {
+        gamepad = gamepads[i];
+        if (gamepad && gamepad.pose) {
+          controllers.push(gamepad);
+        }
       }
-    }
 
-    if (controllers.length !== prevCount) {
-      this.el.emit('controllersupdated', undefined, false);
+      if (controllers.length !== prevCount) {
+        this.el.emit('controllersupdated', undefined, false);
+      }
+    } catch (e) {
+      if (e.name === 'SecurityError') {
+        if (window.self === window.top) {
+          console.warn('The HTTP `Permissions-Policy` header must not block this origin in the `gamepad` directive, to allow A-Frame to list the gamepads.', e);
+        } else {
+          console.warn('The iframe `allow` attribute must not block the origin of this A-Frame app, to allow A-Frame to list the gamepads.', e);
+        }
+      } else {
+        console.error('Can\'t update controller list:', e);
+      }
     }
   }
 });
