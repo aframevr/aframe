@@ -37,6 +37,8 @@ module.exports.System = registerSystem('tracked-controls-webvr', {
     }
   },
 
+  permissionsWarningDisplayed: false,
+
   /**
    * Update controller list.
    */
@@ -65,10 +67,13 @@ module.exports.System = registerSystem('tracked-controls-webvr', {
       }
     } catch (e) {
       if (e.name === 'SecurityError') {
-        if (window.self === window.top) {
-          console.warn('The HTTP `Permissions-Policy` header must not block this origin in the `gamepad` directive, to allow A-Frame to list the gamepads.', e);
-        } else {
-          console.warn('The iframe `allow` attribute must not block the origin of this A-Frame app, to allow A-Frame to list the gamepads.', e);
+        if (!this.permissionsWarningDisplayed) {
+          this.permissionsWarningDisplayed = true;
+          if (window.self === window.top) {
+            console.warn('The HTTP `Permissions-Policy` header must not block this origin in the `gamepad` directive, to allow A-Frame to list the gamepads.', e);
+          } else {
+            console.warn('The iframe `allow` attribute must not block the origin of this A-Frame app, to allow A-Frame to list the gamepads.', e);
+          }
         }
       } else {
         console.error('Can\'t update controller list:', e);
