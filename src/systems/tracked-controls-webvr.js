@@ -50,6 +50,7 @@ module.exports.System = registerSystem('tracked-controls-webvr', {
       var i;
       var prevCount;
 
+      if (!this.el.is('vr-mode')) { return; }
       gamepads = navigator.getGamepads && navigator.getGamepads();
       if (!gamepads) { return; }
 
