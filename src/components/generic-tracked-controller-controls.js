@@ -38,7 +38,6 @@ module.exports.Component = registerComponent('generic-tracked-controller-control
     hand: {default: ''},  // This informs the degenerate arm model.
     defaultModel: {default: true},
     defaultModelColor: {default: 'gray'},
-    orientationOffset: {type: 'vec3'},
     disabled: {default: false}
   },
 
@@ -134,7 +133,6 @@ module.exports.Component = registerComponent('generic-tracked-controller-control
     el.setAttribute('tracked-controls', {
       hand: data.hand,
       idPrefix: GAMEPAD_ID_PREFIX,
-      orientationOffset: data.orientationOffset,
       iterateControllerProfiles: true
     });
     if (!this.data.defaultModel) { return; }

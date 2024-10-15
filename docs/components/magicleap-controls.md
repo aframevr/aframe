@@ -31,7 +31,6 @@ mappings, events, and Magic Leap controller model/
 |----------------------|----------------------------------------------------|----------------------|
 | hand                 | The hand that will be tracked (e.g., right, left). |                      |
 | model                | Whether the Magic Leap controller model is loaded. | true                 |
-| orientationOffset    | Offset to apply to model orientation.              | x: 0, y: 0, z: 0     |
 
 ## Events
 

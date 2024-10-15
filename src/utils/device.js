@@ -1,6 +1,5 @@
 var error = require('debug')('device:error');
 
-var vrDisplay;
 var supportsVRSession = false;
 var supportsARSession = false;
 
@@ -9,20 +8,6 @@ var supportsARSession = false;
  * We fallback to WebVR API and will hotfix when implementation is complete.
  */
 var isWebXRAvailable = module.exports.isWebXRAvailable = navigator.xr !== undefined;
-
-// Catch vrdisplayactivate early to ensure we can enter VR mode after the scene loads.
-window.addEventListener('vrdisplayactivate', function (evt) {
-  var canvasEl;
-  // WebXR takes priority if available.
-  if (isWebXRAvailable) { return; }
-  canvasEl = document.createElement('canvas');
-  vrDisplay = evt.display;
-  // We need to make sure the canvas has a WebGL context associated with it.
-  // Otherwise, the requestPresent could be denied.
-  canvasEl.getContext('webgl', {});
-  // Request present immediately. a-scene will be allowed to enter VR without user gesture.
-  vrDisplay.requestPresent([{source: canvasEl}]).then(function () {}, function () {});
-});
 
 // Support both WebVR and WebXR APIs.
 if (isWebXRAvailable) {
@@ -67,24 +52,13 @@ if (isWebXRAvailable) {
   } else {
     error('WebXR has neither isSessionSupported or supportsSession?!');
   }
-} else {
-  if (navigator.getVRDisplays) {
-    navigator.getVRDisplays().then(function (displays) {
-      var sceneEl = document.querySelector('a-scene');
-      vrDisplay = displays.length && displays[0];
-      if (sceneEl) { sceneEl.emit('displayconnected', {vrDisplay: vrDisplay}); }
-    });
-  }
 }
 
-function getVRDisplay () { return vrDisplay; }
-module.exports.getVRDisplay = getVRDisplay;
-
 /**
- * Determine if a headset is connected by checking if a vrDisplay is available.
+ * Determine if a headset is connected.
  */
 function checkHeadsetConnected () {
-  return supportsVRSession || supportsARSession || !!getVRDisplay();
+  return supportsVRSession || supportsARSession;
 }
 module.exports.checkHeadsetConnected = checkHeadsetConnected;
 
