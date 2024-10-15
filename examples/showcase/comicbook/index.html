@@ -30,8 +30,8 @@
       </a-assets>
       <a-entity
         layer="src: #page1; height: 3; width: 1.9505"></a-entity>
-      <a-entity oculus-touch-controls="hand: left" page-controls></a-entity>
-      <a-entity oculus-touch-controls="hand: right" page-controls></a-entity>
+      <a-entity id="leftHand" laser-controls="hand: left" raycaster="objects: .raycastable" page-controls></a-entity>
+      <a-entity id="rightHand" laser-controls="hand: right" raycaster="objects: .raycastable" line="color: #118A7E" page-controls></a-entity>
     </a-scene>
   </body>
 </html>
