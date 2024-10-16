@@ -17,6 +17,7 @@ require('./laser-controls');
 require('./light');
 require('./line');
 require('./link');
+require('./logitech-mx-ink-controls');
 require('./look-controls');
 require('./magicleap-controls');
 require('./material');
