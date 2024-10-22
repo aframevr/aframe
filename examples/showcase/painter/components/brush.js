@@ -14,14 +14,17 @@ AFRAME.registerComponent('brush', {
     this.painting = false;
     this.stroke = null;
     this.buttonsDown = 0;
+    this.touches = 0;
+
+    this.onTouchStarted = this.onTouchStarted.bind(this);
+    el.addEventListener('tiptouchstart', this.onTouchStarted);
+    this.onTouchEnded = this.onTouchEnded.bind(this);
+    el.addEventListener('tiptouchend', this.onTouchEnded);
 
     this.onButtonDown = this.onButtonDown.bind(this);
     el.addEventListener('buttondown', this.onButtonDown);
-    el.addEventListener('touchstart', this.onButtonDown);
-
     this.onButtonUp = this.onButtonUp.bind(this);
     el.addEventListener('buttonup', this.onButtonUp);
-    el.addEventListener('touchend', this.onButtonUp);
 
     this.onControllerConnected = this.onControllerConnected.bind(this);
     el.addEventListener('controllerconnected', this.onControllerConnected);
@@ -33,6 +36,19 @@ AFRAME.registerComponent('brush', {
   onControllerConnected: function (evt) {
     this.hand = evt.target.getAttribute(evt.detail.name).hand;
     this.controllerName = evt.detail.name;
+  },
+
+  onTouchStarted: function (evt) {
+    if (!this.data.enabled) { return; }
+    this.startNewStroke();
+    this.painting = true;
+  },
+
+  onTouchEnded: function (evt) {
+    if (!this.data.enabled) { return; }
+    if (!this.painting) { return; }
+    this.stroke = null;
+    this.painting = false;
   },
 
   onButtonDown: function () {

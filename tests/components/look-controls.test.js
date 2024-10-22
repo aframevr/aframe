@@ -100,6 +100,7 @@ suite('look-controls', function () {
       lookControlsComponent.hasPositionalTracking = true;
       cameraEl.setAttribute('look-controls', {userHeight: 0});
       cameraEl.setAttribute('position', '3 3 3');
+      sceneEl.xrSession = {addEventListener: function () {}};
       sceneEl.emit('enter-vr');
       assert.shallowDeepEqual(lookControlsComponent.savedPose.position,
                               {x: 3.0, y: 3.0, z: 3.0});
@@ -112,6 +113,7 @@ suite('look-controls', function () {
       var cameraEl = sceneEl.camera.el;
       cameraEl.components['look-controls'].hasPositionalTracking = true;
       cameraEl.setAttribute('position', {x: 6, y: 6, z: 6});
+      sceneEl.xrSession = {addEventListener: function () {}};
       sceneEl.emit('enter-vr');
       cameraEl.setAttribute('position', {x: 9, y: 9, z: 9});
       assert.shallowDeepEqual(cameraEl.getAttribute('position'), {x: 9, y: 9, z: 9});

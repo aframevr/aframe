@@ -144,6 +144,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     this.onThumbstickMoved = this.onThumbstickMoved.bind(this);
     this.onModelLoaded = this.onModelLoaded.bind(this);
     this.onControllersUpdate = this.onControllersUpdate.bind(this);
+    this.onControllerDisconnected = this.onControllerDisconnected.bind(this);
     this.checkIfControllerPresent = this.checkIfControllerPresent.bind(this);
     this.onAxisMoved = this.onAxisMoved.bind(this);
   },
@@ -155,7 +156,6 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     this.onButtonTouchStart = function (evt) { onButtonEvent(evt.detail.id, 'touchstart', self, self.data.hand); };
     this.onButtonTouchEnd = function (evt) { onButtonEvent(evt.detail.id, 'touchend', self, self.data.hand); };
     this.controllerPresent = false;
-    this.lastControllerCheck = 0;
     this.previousButtonValues = {};
     this.bindMethods();
     this.triggerEuler = new THREE.Euler();
@@ -207,11 +207,11 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   loadModel: function (controller) {
     var data = this.data;
     var controllerId;
-
     if (!data.model) { return; }
     // If model has been already loaded
     if (this.controllerObject3D) {
       this.el.setObject3D('mesh', this.controllerObject3D);
+      this.controllerObject3D.visible = true;
       return;
     }
 
@@ -252,10 +252,17 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
 
   addControllersUpdateListener: function () {
     this.el.sceneEl.addEventListener('controllersupdated', this.onControllersUpdate, false);
+    this.el.addEventListener('controllerdisconnected', this.onControllerDisconnected);
   },
 
   removeControllersUpdateListener: function () {
     this.el.sceneEl.removeEventListener('controllersupdated', this.onControllersUpdate, false);
+    this.el.removeEventListener('controllerdisconnected', this.onControllerDisconnected);
+  },
+
+  onControllerDisconnected: function () {
+    if (!this.controllerObject3D) { return; }
+    this.controllerObject3D.visible = false;
   },
 
   onControllersUpdate: function () {

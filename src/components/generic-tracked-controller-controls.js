@@ -66,7 +66,6 @@ module.exports.Component = registerComponent('generic-tracked-controller-control
     this.onButtonTouchEnd = function (evt) { onButtonEvent(evt.detail.id, 'touchend', self); };
     this.controllerPresent = false;
     this.wasControllerConnected = false;
-    this.lastControllerCheck = 0;
     this.bindMethods();
 
     // generic-tracked-controller-controls has the lowest precedence.

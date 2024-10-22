@@ -51,7 +51,6 @@ module.exports.Component = registerComponent('vive-controls', {
   init: function () {
     var self = this;
     this.controllerPresent = false;
-    this.lastControllerCheck = 0;
     this.onButtonChanged = this.onButtonChanged.bind(this);
     this.onButtonDown = function (evt) { onButtonEvent(evt.detail.id, 'down', self); };
     this.onButtonUp = function (evt) { onButtonEvent(evt.detail.id, 'up', self); };

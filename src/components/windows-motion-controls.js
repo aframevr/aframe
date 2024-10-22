@@ -85,7 +85,6 @@ module.exports.Component = registerComponent('windows-motion-controls', {
     this.onControllerConnected = function () { self.setModelVisibility(true); };
     this.onControllerDisconnected = function () { self.setModelVisibility(false); };
     this.controllerPresent = false;
-    this.lastControllerCheck = 0;
     this.previousButtonValues = {};
     this.bindMethods();
 

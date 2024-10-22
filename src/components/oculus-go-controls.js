@@ -60,7 +60,6 @@ module.exports.Component = registerComponent('oculus-go-controls', {
     this.onButtonTouchStart = function (evt) { onButtonEvent(evt.detail.id, 'touchstart', self); };
     this.onButtonTouchEnd = function (evt) { onButtonEvent(evt.detail.id, 'touchend', self); };
     this.controllerPresent = false;
-    this.lastControllerCheck = 0;
     this.bindMethods();
   },
 

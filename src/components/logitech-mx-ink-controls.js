@@ -117,8 +117,14 @@ module.exports.Component = registerComponent('logitech-mx-ink-controls', {
       orientationOffset: data.orientationOffset,
       space: 'gripSpace'
     });
-    // Load model.
+    this.loadModel();
+  },
+
+  loadModel: function () {
     if (!this.data.model) { return; }
+    if (this.controllerObject3D) {
+      this.controllerObject3D.visible = this.el.sceneEl.is('vr-mode');
+    }
     this.el.setAttribute('gltf-model', LOGITECH_MX_INK_MODEL_GLB_BASE_URL + 'logitech-mx-ink.glb');
   },
 
@@ -158,8 +164,10 @@ module.exports.Component = registerComponent('logitech-mx-ink-controls', {
       rayOrigin: new THREE.Vector3(0, 0, 0)
     });
 
+    this.controllerObject3D = this.el.getObject3D('mesh');
+
     if (this.el.sceneEl.is('ar-mode')) {
-      this.el.getObject3D('mesh').visible = false;
+      this.controllerObject3D.visible = false;
     }
   },
 

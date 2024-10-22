@@ -144,6 +144,7 @@ suite('a-scene (without renderer) - WebXR', function () {
       var sceneEl = this.el;
       this.sinon.stub(sceneEl, 'checkHeadsetConnected').returns(false);
       this.sinon.stub(sceneEl.canvas, 'requestFullscreen');
+      sceneEl.xrSession = {addEventListener: function () {}};
       sceneEl.enterVR().then(function () {
         assert.notOk(sceneEl.renderer.xr.enabled);
         done();
@@ -152,6 +153,7 @@ suite('a-scene (without renderer) - WebXR', function () {
 
     test('adds VR mode state', function (done) {
       var sceneEl = this.el;
+      sceneEl.xrSession = {removeEventListener: function () {}};
       sceneEl.enterVR().then(function () {
         assert.ok(sceneEl.is('vr-mode'));
         done();
@@ -162,6 +164,7 @@ suite('a-scene (without renderer) - WebXR', function () {
       var sceneEl = this.el;
       if (!sceneEl.hasWebXR) { done(); }
       sceneEl.removeState('vr-mode');
+      sceneEl.xrSession = {removeEventListener: function () {}};
       sceneEl.enterVR(true).then(function () {
         assert.notOk(sceneEl.is('vr-mode'));
         assert.ok(sceneEl.is('ar-mode'));
@@ -171,6 +174,7 @@ suite('a-scene (without renderer) - WebXR', function () {
 
     test('adds fullscreen styles', function (done) {
       var sceneEl = this.el;
+      sceneEl.xrSession = {removeEventListener: function () {}};
       sceneEl.enterVR().then(function () {
         assert.ok(document.documentElement.classList.contains('a-fullscreen'));
         done();
@@ -182,6 +186,7 @@ suite('a-scene (without renderer) - WebXR', function () {
       var fullscreenSpy = this.sinon.stub(sceneEl.canvas, 'requestFullscreen');
 
       this.sinon.stub(sceneEl, 'checkHeadsetConnected').returns(false);
+      sceneEl.xrSession = {addEventListener: function () {}};
       sceneEl.enterVR().then(function () {
         assert.ok(fullscreenSpy.called);
         done();
@@ -191,6 +196,7 @@ suite('a-scene (without renderer) - WebXR', function () {
     test('emits enter-vr', function (done) {
       var sceneEl = this.el;
       sceneEl.addEventListener('enter-vr', function () { done(); });
+      sceneEl.xrSession = {removeEventListener: function () {}};
       sceneEl.enterVR();
     });
   });
@@ -239,6 +245,10 @@ suite('a-scene (without renderer) - WebXR', function () {
     test('calls exitPresent if headset connected', function (done) {
       var sceneEl = this.el;
       this.sinon.stub(sceneEl, 'checkHeadsetConnected').returns(true);
+      sceneEl.xrSession = {
+        removeEventListener: function () {},
+        end: function () { return Promise.resolve(); }
+      };
       sceneEl.exitVR().then(function () {
         assert.notOk(sceneEl.renderer.xr.enabled);
         done();
@@ -249,6 +259,10 @@ suite('a-scene (without renderer) - WebXR', function () {
       this.sinon.stub(screen.orientation, 'lock');
       var sceneEl = this.el;
       sceneEl.isMobile = true;
+      sceneEl.xrSession = {
+        removeEventListener: function () {},
+        end: function () { return Promise.resolve(); }
+      };
       sceneEl.exitVR().then(function () {
         assert.notOk(sceneEl.renderer.xr.enabled);
         done();
@@ -261,6 +275,7 @@ suite('a-scene (without renderer) - WebXR', function () {
       sceneEl.isMobile = false;
       this.sinon.stub(sceneEl, 'checkHeadsetConnected').returns(false);
       this.sinon.stub(sceneEl.canvas, 'requestFullscreen');
+      sceneEl.xrSession = {removeEventListener: function () {}};
       sceneEl.exitVR().then(function () {
         assert.ok(sceneEl.renderer.xr.enabled);
         done();
@@ -269,6 +284,10 @@ suite('a-scene (without renderer) - WebXR', function () {
 
     test('removes VR mode state', function (done) {
       var sceneEl = this.el;
+      sceneEl.xrSession = {
+        removeEventListener: function () {},
+        end: function () { return Promise.resolve(); }
+      };
       sceneEl.exitVR().then(function () {
         assert.notOk(sceneEl.is('vr-mode'));
         done();
@@ -297,6 +316,10 @@ suite('a-scene (without renderer) - WebXR', function () {
     test('emits exit-vr', function (done) {
       var sceneEl = this.el;
       sceneEl.addEventListener('exit-vr', function () { done(); });
+      sceneEl.xrSession = {
+        removeEventListener: function () {},
+        end: function () { return Promise.resolve(); }
+      };
       sceneEl.exitVR();
     });
 
