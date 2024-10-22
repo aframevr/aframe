@@ -17,9 +17,11 @@ AFRAME.registerComponent('brush', {
 
     this.onButtonDown = this.onButtonDown.bind(this);
     el.addEventListener('buttondown', this.onButtonDown);
+    el.addEventListener('touchstart', this.onButtonDown);
 
     this.onButtonUp = this.onButtonUp.bind(this);
     el.addEventListener('buttonup', this.onButtonUp);
+    el.addEventListener('touchend', this.onButtonUp);
 
     this.onControllerConnected = this.onControllerConnected.bind(this);
     el.addEventListener('controllerconnected', this.onControllerConnected);
