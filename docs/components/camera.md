@@ -69,7 +69,7 @@ When the `active` property gets toggled, the component will notify the camera sy
 to change the current camera used by the renderer:
 
 ```js
-var secondCameraEl = document.querySelector('#second-camera');
+const secondCameraEl = document.querySelector('#second-camera');
 secondCameraEl.setAttribute('camera', 'active', true);
 ```
 
@@ -126,8 +126,8 @@ AFRAME.registerComponent('rotation-reader', {
    * vector or euler and not re-create on every tick to save memory.
    */
   tick: (function () {
-    var position = new THREE.Vector3();
-    var quaternion = new THREE.Quaternion();
+    const position = new THREE.Vector3();
+    const quaternion = new THREE.Quaternion();
 
     return function () {
       this.el.object3D.getWorldPosition(position);
