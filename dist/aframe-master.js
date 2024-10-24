@@ -7405,7 +7405,6 @@ module.exports.Component = registerComponent('generic-tracked-controller-control
     };
     this.controllerPresent = false;
     this.wasControllerConnected = false;
-    this.lastControllerCheck = 0;
     this.bindMethods();
 
     // generic-tracked-controller-controls has the lowest precedence.
@@ -8285,7 +8284,6 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
     this.el.sceneEl.addEventListener('enter-vr', this.updateReferenceSpace);
     this.el.sceneEl.addEventListener('exit-vr', this.updateReferenceSpace);
     this.el.addEventListener('child-attached', this.onChildAttached);
-    this.el.object3D.visible = false;
     this.wristObject3D.visible = false;
   },
   onChildAttached: function (evt) {
@@ -8903,7 +8901,6 @@ module.exports.Component = registerComponent('hp-mixed-reality-controls', {
   init: function () {
     var self = this;
     this.controllerPresent = false;
-    this.lastControllerCheck = 0;
     this.onButtonChanged = this.onButtonChanged.bind(this);
     this.onButtonDown = function (evt) {
       onButtonEvent(evt.detail.id, 'down', self, self.data.hand);
@@ -10775,9 +10772,14 @@ module.exports.Component = registerComponent('logitech-mx-ink-controls', {
       orientationOffset: data.orientationOffset,
       space: 'gripSpace'
     });
-    // Load model.
+    this.loadModel();
+  },
+  loadModel: function () {
     if (!this.data.model) {
       return;
+    }
+    if (this.controllerObject3D) {
+      this.controllerObject3D.visible = this.el.sceneEl.is('vr-mode');
     }
     this.el.setAttribute('gltf-model', LOGITECH_MX_INK_MODEL_GLB_BASE_URL + 'logitech-mx-ink.glb');
   },
@@ -10814,8 +10816,9 @@ module.exports.Component = registerComponent('logitech-mx-ink-controls', {
       model: this.data.model,
       rayOrigin: new THREE.Vector3(0, 0, 0)
     });
+    this.controllerObject3D = this.el.getObject3D('mesh');
     if (this.el.sceneEl.is('ar-mode')) {
-      this.el.getObject3D('mesh').visible = false;
+      this.controllerObject3D.visible = false;
     }
   },
   onAxisMoved: function (evt) {
@@ -11367,7 +11370,6 @@ module.exports.Component = registerComponent('magicleap-controls', {
   init: function () {
     var self = this;
     this.controllerPresent = false;
-    this.lastControllerCheck = 0;
     this.onButtonChanged = this.onButtonChanged.bind(this);
     this.onButtonDown = function (evt) {
       onButtonEvent(evt.detail.id, 'down', self);
@@ -12237,7 +12239,6 @@ module.exports.Component = registerComponent('oculus-go-controls', {
       onButtonEvent(evt.detail.id, 'touchend', self);
     };
     this.controllerPresent = false;
-    this.lastControllerCheck = 0;
     this.bindMethods();
   },
   addEventListeners: function () {
@@ -12607,6 +12608,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     this.onThumbstickMoved = this.onThumbstickMoved.bind(this);
     this.onModelLoaded = this.onModelLoaded.bind(this);
     this.onControllersUpdate = this.onControllersUpdate.bind(this);
+    this.onControllerDisconnected = this.onControllerDisconnected.bind(this);
     this.checkIfControllerPresent = this.checkIfControllerPresent.bind(this);
     this.onAxisMoved = this.onAxisMoved.bind(this);
   },
@@ -12625,7 +12627,6 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
       onButtonEvent(evt.detail.id, 'touchend', self, self.data.hand);
     };
     this.controllerPresent = false;
-    this.lastControllerCheck = 0;
     this.previousButtonValues = {};
     this.bindMethods();
     this.triggerEuler = new THREE.Euler();
@@ -12677,6 +12678,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     // If model has been already loaded
     if (this.controllerObject3D) {
       this.el.setObject3D('mesh', this.controllerObject3D);
+      this.controllerObject3D.visible = true;
       return;
     }
 
@@ -12712,9 +12714,17 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   },
   addControllersUpdateListener: function () {
     this.el.sceneEl.addEventListener('controllersupdated', this.onControllersUpdate, false);
+    this.el.addEventListener('controllerdisconnected', this.onControllerDisconnected);
   },
   removeControllersUpdateListener: function () {
     this.el.sceneEl.removeEventListener('controllersupdated', this.onControllersUpdate, false);
+    this.el.removeEventListener('controllerdisconnected', this.onControllerDisconnected);
+  },
+  onControllerDisconnected: function () {
+    if (!this.controllerObject3D) {
+      return;
+    }
+    this.controllerObject3D.visible = false;
   },
   onControllersUpdate: function () {
     // Note that due to gamepadconnected event propagation issues, we don't rely on events.
@@ -17125,7 +17135,6 @@ module.exports.Component = registerComponent('valve-index-controls', {
   init: function () {
     var self = this;
     this.controllerPresent = false;
-    this.lastControllerCheck = 0;
     this.onButtonChanged = this.onButtonChanged.bind(this);
     this.onButtonDown = function (evt) {
       onButtonEvent(evt.detail.id, 'down', self);
@@ -17395,7 +17404,6 @@ module.exports.Component = registerComponent('vive-controls', {
   init: function () {
     var self = this;
     this.controllerPresent = false;
-    this.lastControllerCheck = 0;
     this.onButtonChanged = this.onButtonChanged.bind(this);
     this.onButtonDown = function (evt) {
       onButtonEvent(evt.detail.id, 'down', self);
@@ -17660,7 +17668,6 @@ module.exports.Component = registerComponent('vive-focus-controls', {
       onButtonEvent(evt.detail.id, 'touchend', self);
     };
     this.controllerPresent = false;
-    this.lastControllerCheck = 0;
     this.bindMethods();
   },
   addEventListeners: function () {
@@ -18134,7 +18141,6 @@ module.exports.Component = registerComponent('windows-motion-controls', {
       self.setModelVisibility(false);
     };
     this.controllerPresent = false;
-    this.lastControllerCheck = 0;
     this.previousButtonValues = {};
     this.bindMethods();
 
@@ -24615,7 +24621,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.6.0 (Date 2024-10-22, Commit #aa18abd9)');
+console.log('A-Frame Version: 1.6.0 (Date 2024-10-24, Commit #b92c12fb)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', THREE.REVISION);
 
 // Wait for ready state, unless user asynchronously initializes A-Frame.
@@ -26773,75 +26779,31 @@ var utils = __webpack_require__(/*! ../utils */ "./src/utils/index.js");
 module.exports.System = registerSystem('tracked-controls-webxr', {
   init: function () {
     this.controllers = [];
-    this.oldControllers = [];
-    this.oldControllersLength = 0;
-    this.throttledUpdateControllerList = utils.throttle(this.updateControllerList, 500, this);
-    this.updateReferenceSpace = this.updateReferenceSpace.bind(this);
-    this.el.addEventListener('enter-vr', this.updateReferenceSpace);
-    this.el.addEventListener('exit-vr', this.updateReferenceSpace);
+    this.onInputSourcesChange = this.onInputSourcesChange.bind(this);
+    this.onEnterVR = this.onEnterVR.bind(this);
+    this.el.addEventListener('enter-vr', this.onEnterVR);
+    this.onExitVR = this.onExitVR.bind(this);
+    this.el.addEventListener('exit-vr', this.onExitVR);
   },
-  tick: function () {
-    this.throttledUpdateControllerList();
+  onEnterVR: function () {
+    this.el.xrSession.addEventListener('inputsourceschange', this.onInputSourcesChange);
   },
-  updateReferenceSpace: function () {
+  onExitVR: function () {
+    this.referenceSpace = undefined;
+    this.controllers = [];
+    this.el.emit('controllersupdated', undefined, false);
+  },
+  onInputSourcesChange: function () {
     var self = this;
     var xrSession = this.el.xrSession;
-    if (!xrSession) {
-      this.referenceSpace = undefined;
-      this.controllers = [];
-      if (this.oldControllersLength > 0) {
-        this.oldControllersLength = 0;
-        this.el.emit('controllersupdated', undefined, false);
-      }
-      return;
-    }
-    var refspace = self.el.sceneEl.systems.webxr.sessionReferenceSpaceType;
+    var refspace = this.el.sceneEl.systems.webxr.sessionReferenceSpaceType;
     xrSession.requestReferenceSpace(refspace).then(function (referenceSpace) {
       self.referenceSpace = referenceSpace;
     }).catch(function (err) {
       self.el.sceneEl.systems.webxr.warnIfFeatureNotRequested(refspace, 'tracked-controls-webxr uses reference space "' + refspace + '".');
       throw err;
     });
-  },
-  updateControllerList: function () {
-    var xrSession = this.el.xrSession;
-    var oldControllers = this.oldControllers;
-    var i;
-    if (!xrSession) {
-      if (this.oldControllersLength === 0) {
-        return;
-      }
-      // Broadcast that we now have zero controllers connected if there is
-      // no session
-      this.oldControllersLength = 0;
-      this.controllers = [];
-      this.el.emit('controllersupdated', undefined, false);
-      return;
-    }
-    if (!xrSession.inputSources) {
-      return;
-    }
     this.controllers = xrSession.inputSources;
-    if (this.oldControllersLength === this.controllers.length) {
-      var equal = true;
-      for (i = 0; i < this.controllers.length; ++i) {
-        if (this.controllers[i] === oldControllers[i] && this.controllers[i].gamepad === oldControllers[i].gamepad) {
-          continue;
-        }
-        equal = false;
-        break;
-      }
-      if (equal) {
-        return;
-      }
-    }
-
-    // Store reference to current controllers
-    oldControllers.length = 0;
-    for (i = 0; i < this.controllers.length; i++) {
-      oldControllers.push(this.controllers[i]);
-    }
-    this.oldControllersLength = this.controllers.length;
     this.el.emit('controllersupdated', undefined, false);
   }
 });
