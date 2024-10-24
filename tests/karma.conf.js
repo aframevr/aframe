@@ -33,7 +33,7 @@ if (process.env.TEST_FILE) {
 if (!webpackConfiguration.resolve) {
   webpackConfiguration.resolve = {};
 }
-webpackConfiguration.resolve.modules = ['src', 'node_modules'];
+webpackConfiguration.resolve.modules = [path.resolve(__dirname, '../src'), 'node_modules'];
 webpackConfiguration.plugins.push(new webpack.ProvidePlugin({
   process: 'process/browser'
 }));
