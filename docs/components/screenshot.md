@@ -36,7 +36,7 @@ keyboard.
 
 ## Methods
 
-To take a screenshot programatically and get a canvas, call `getCanvas()`:
+To take a screenshot programmatically and get a canvas, call `getCanvas()`:
 
 ```js
 // `screenshot.projection` property can be `equirectangular` or `perspective`.
