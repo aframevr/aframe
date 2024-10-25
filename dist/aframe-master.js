@@ -8369,6 +8369,8 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
     };
   }(),
   updateHandModel: function () {
+    this.wristObject3D.visible = true;
+    this.el.object3D.visible = true;
     if (this.data.modelStyle === 'dots') {
       this.updateHandDotsModel();
     }
@@ -10758,6 +10760,10 @@ module.exports.Component = registerComponent('logitech-mx-ink-controls', {
   },
   checkIfControllerPresent: function () {
     var data = this.data;
+    var controllerObject3D = this.controllerObject3D;
+    if (controllerObject3D) {
+      controllerObject3D.visible = false;
+    }
     checkControllerPresentAndSetup(this, GAMEPAD_ID, {
       hand: this.data.hand,
       iterateControllerProfiles: true
@@ -10766,20 +10772,26 @@ module.exports.Component = registerComponent('logitech-mx-ink-controls', {
   injectTrackedControls: function () {
     var el = this.el;
     var data = this.data;
+    var id = GAMEPAD_ID;
     el.setAttribute('tracked-controls', {
+      id: id,
       hand: data.hand,
-      idPrefix: GAMEPAD_ID,
+      handTrackingEnabled: false,
+      iterateControllerProfiles: true,
       orientationOffset: data.orientationOffset,
       space: 'gripSpace'
     });
     this.loadModel();
   },
   loadModel: function () {
+    var controllerObject3D = this.controllerObject3D;
     if (!this.data.model) {
       return;
     }
-    if (this.controllerObject3D) {
-      this.controllerObject3D.visible = this.el.sceneEl.is('vr-mode');
+    if (controllerObject3D) {
+      controllerObject3D.visible = this.el.sceneEl.is('vr-mode');
+      this.el.setObject3D('mesh', controllerObject3D);
+      return;
     }
     this.el.setAttribute('gltf-model', LOGITECH_MX_INK_MODEL_GLB_BASE_URL + 'logitech-mx-ink.glb');
   },
@@ -10790,7 +10802,6 @@ module.exports.Component = registerComponent('logitech-mx-ink-controls', {
     this.el.sceneEl.removeEventListener('controllersupdated', this.onControllersUpdate, false);
   },
   onControllersUpdate: function () {
-    // Note that due to gamepadconnected event propagation issues, we don't rely on events.
     this.checkIfControllerPresent();
   },
   onButtonChanged: function (evt) {
@@ -10817,9 +10828,7 @@ module.exports.Component = registerComponent('logitech-mx-ink-controls', {
       rayOrigin: new THREE.Vector3(0, 0, 0)
     });
     this.controllerObject3D = this.el.getObject3D('mesh');
-    if (this.el.sceneEl.is('ar-mode')) {
-      this.controllerObject3D.visible = false;
-    }
+    this.controllerObject3D.visible = this.el.sceneEl.is('vr-mode');
   },
   onAxisMoved: function (evt) {
     emitIfAxesChanged(this, this.mapping.axes, evt);
@@ -12608,7 +12617,6 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     this.onThumbstickMoved = this.onThumbstickMoved.bind(this);
     this.onModelLoaded = this.onModelLoaded.bind(this);
     this.onControllersUpdate = this.onControllersUpdate.bind(this);
-    this.onControllerDisconnected = this.onControllerDisconnected.bind(this);
     this.checkIfControllerPresent = this.checkIfControllerPresent.bind(this);
     this.onAxisMoved = this.onAxisMoved.bind(this);
   },
@@ -12656,6 +12664,10 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     this.controllerEventsActive = false;
   },
   checkIfControllerPresent: function () {
+    var controllerObject3D = this.controllerObject3D;
+    if (controllerObject3D) {
+      controllerObject3D.visible = false;
+    }
     checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX, {
       hand: this.data.hand,
       iterateControllerProfiles: true
@@ -12675,10 +12687,11 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     if (!data.model) {
       return;
     }
+
     // If model has been already loaded
     if (this.controllerObject3D) {
-      this.el.setObject3D('mesh', this.controllerObject3D);
       this.controllerObject3D.visible = true;
+      this.el.setObject3D('mesh', this.controllerObject3D);
       return;
     }
 
@@ -12714,20 +12727,11 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   },
   addControllersUpdateListener: function () {
     this.el.sceneEl.addEventListener('controllersupdated', this.onControllersUpdate, false);
-    this.el.addEventListener('controllerdisconnected', this.onControllerDisconnected);
   },
   removeControllersUpdateListener: function () {
     this.el.sceneEl.removeEventListener('controllersupdated', this.onControllersUpdate, false);
-    this.el.removeEventListener('controllerdisconnected', this.onControllerDisconnected);
-  },
-  onControllerDisconnected: function () {
-    if (!this.controllerObject3D) {
-      return;
-    }
-    this.controllerObject3D.visible = false;
   },
   onControllersUpdate: function () {
-    // Note that due to gamepadconnected event propagation issues, we don't rely on events.
     this.checkIfControllerPresent();
   },
   onButtonChanged: function (evt) {
@@ -16757,6 +16761,9 @@ module.exports.Component = registerComponent('tracked-controls-webxr', {
       type: 'string',
       default: ''
     },
+    autoHide: {
+      default: true
+    },
     hand: {
       type: 'string',
       default: ''
@@ -16778,7 +16785,6 @@ module.exports.Component = registerComponent('tracked-controls-webxr', {
     }
   },
   init: function () {
-    this.updateController = this.updateController.bind(this);
     this.buttonEventDetails = {};
     this.buttonStates = this.el.components['tracked-controls'].buttonStates = {};
     this.axis = this.el.components['tracked-controls'].axis = [0, 0, 0];
@@ -16787,6 +16793,7 @@ module.exports.Component = registerComponent('tracked-controls-webxr', {
       axis: this.axis,
       changed: this.changedAxes
     };
+    this.updateController = this.updateController.bind(this);
   },
   update: function () {
     this.updateController();
@@ -16816,14 +16823,14 @@ module.exports.Component = registerComponent('tracked-controls-webxr', {
     this.controller = controllerUtils.findMatchingControllerWebXR(this.system.controllers, this.data.id, this.data.hand, this.data.index, this.data.iterateControllerProfiles, this.data.handTrackingEnabled);
     // Legacy handle to the controller for old components.
     this.el.components['tracked-controls'].controller = this.controller;
-    if (this.data.autoHide) {
-      this.el.object3D.visible = !!this.controller;
-    }
   },
   tick: function () {
     var sceneEl = this.el.sceneEl;
     var controller = this.controller;
     var frame = sceneEl.frame;
+    if (this.data.autoHide) {
+      this.el.object3D.visible = !!controller;
+    }
     if (!controller || !sceneEl.frame || !this.system.referenceSpace) {
       return;
     }
@@ -17038,16 +17045,14 @@ module.exports.Component = registerComponent('tracked-controls', {
   update: function () {
     var data = this.data;
     var el = this.el;
-    if (el.sceneEl.hasWebXR) {
-      el.setAttribute('tracked-controls-webxr', {
-        id: data.id,
-        hand: data.hand,
-        index: data.controller,
-        iterateControllerProfiles: data.iterateControllerProfiles,
-        handTrackingEnabled: data.handTrackingEnabled,
-        space: data.space
-      });
-    }
+    el.setAttribute('tracked-controls-webxr', {
+      id: data.id,
+      hand: data.hand,
+      index: data.controller,
+      iterateControllerProfiles: data.iterateControllerProfiles,
+      handTrackingEnabled: data.handTrackingEnabled,
+      space: data.space
+    });
   }
 });
 
@@ -24621,7 +24626,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.6.0 (Date 2024-10-24, Commit #b92c12fb)');
+console.log('A-Frame Version: 1.6.0 (Date 2024-10-25, Commit #fa0cc748)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', THREE.REVISION);
 
 // Wait for ready state, unless user asynchronously initializes A-Frame.
