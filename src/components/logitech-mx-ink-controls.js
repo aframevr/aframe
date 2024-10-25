@@ -102,6 +102,8 @@ module.exports.Component = registerComponent('logitech-mx-ink-controls', {
 
   checkIfControllerPresent: function () {
     var data = this.data;
+    var controllerObject3D = this.controllerObject3D;
+    if (controllerObject3D) { controllerObject3D.visible = false; }
     checkControllerPresentAndSetup(this, GAMEPAD_ID, {
       hand: this.data.hand,
       iterateControllerProfiles: true
@@ -111,9 +113,12 @@ module.exports.Component = registerComponent('logitech-mx-ink-controls', {
   injectTrackedControls: function () {
     var el = this.el;
     var data = this.data;
+    var id = GAMEPAD_ID;
     el.setAttribute('tracked-controls', {
+      id: id,
       hand: data.hand,
-      idPrefix: GAMEPAD_ID,
+      handTrackingEnabled: false,
+      iterateControllerProfiles: true,
       orientationOffset: data.orientationOffset,
       space: 'gripSpace'
     });
@@ -121,9 +126,12 @@ module.exports.Component = registerComponent('logitech-mx-ink-controls', {
   },
 
   loadModel: function () {
+    var controllerObject3D = this.controllerObject3D;
     if (!this.data.model) { return; }
-    if (this.controllerObject3D) {
-      this.controllerObject3D.visible = this.el.sceneEl.is('vr-mode');
+    if (controllerObject3D) {
+      controllerObject3D.visible = this.el.sceneEl.is('vr-mode');
+      this.el.setObject3D('mesh', controllerObject3D);
+      return;
     }
     this.el.setAttribute('gltf-model', LOGITECH_MX_INK_MODEL_GLB_BASE_URL + 'logitech-mx-ink.glb');
   },
@@ -137,7 +145,6 @@ module.exports.Component = registerComponent('logitech-mx-ink-controls', {
   },
 
   onControllersUpdate: function () {
-    // Note that due to gamepadconnected event propagation issues, we don't rely on events.
     this.checkIfControllerPresent();
   },
 
@@ -165,10 +172,7 @@ module.exports.Component = registerComponent('logitech-mx-ink-controls', {
     });
 
     this.controllerObject3D = this.el.getObject3D('mesh');
-
-    if (this.el.sceneEl.is('ar-mode')) {
-      this.controllerObject3D.visible = false;
-    }
+    this.controllerObject3D.visible = this.el.sceneEl.is('vr-mode');
   },
 
   onAxisMoved: function (evt) {

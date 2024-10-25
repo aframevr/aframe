@@ -144,7 +144,6 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     this.onThumbstickMoved = this.onThumbstickMoved.bind(this);
     this.onModelLoaded = this.onModelLoaded.bind(this);
     this.onControllersUpdate = this.onControllersUpdate.bind(this);
-    this.onControllerDisconnected = this.onControllerDisconnected.bind(this);
     this.checkIfControllerPresent = this.checkIfControllerPresent.bind(this);
     this.onAxisMoved = this.onAxisMoved.bind(this);
   },
@@ -188,6 +187,8 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   },
 
   checkIfControllerPresent: function () {
+    var controllerObject3D = this.controllerObject3D;
+    if (controllerObject3D) { controllerObject3D.visible = false; }
     checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX, {
       hand: this.data.hand,
       iterateControllerProfiles: true
@@ -208,10 +209,11 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     var data = this.data;
     var controllerId;
     if (!data.model) { return; }
+
     // If model has been already loaded
     if (this.controllerObject3D) {
-      this.el.setObject3D('mesh', this.controllerObject3D);
       this.controllerObject3D.visible = true;
+      this.el.setObject3D('mesh', this.controllerObject3D);
       return;
     }
 
@@ -252,21 +254,13 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
 
   addControllersUpdateListener: function () {
     this.el.sceneEl.addEventListener('controllersupdated', this.onControllersUpdate, false);
-    this.el.addEventListener('controllerdisconnected', this.onControllerDisconnected);
   },
 
   removeControllersUpdateListener: function () {
     this.el.sceneEl.removeEventListener('controllersupdated', this.onControllersUpdate, false);
-    this.el.removeEventListener('controllerdisconnected', this.onControllerDisconnected);
-  },
-
-  onControllerDisconnected: function () {
-    if (!this.controllerObject3D) { return; }
-    this.controllerObject3D.visible = false;
   },
 
   onControllersUpdate: function () {
-    // Note that due to gamepadconnected event propagation issues, we don't rely on events.
     this.checkIfControllerPresent();
   },
 

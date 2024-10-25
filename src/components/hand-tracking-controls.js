@@ -202,6 +202,9 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
   })(),
 
   updateHandModel: function () {
+    this.wristObject3D.visible = true;
+    this.el.object3D.visible = true;
+
     if (this.data.modelStyle === 'dots') {
       this.updateHandDotsModel();
     }

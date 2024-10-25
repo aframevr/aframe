@@ -36,6 +36,7 @@ AFRAME.registerComponent('brush', {
   onControllerConnected: function (evt) {
     this.hand = evt.target.getAttribute(evt.detail.name).hand;
     this.controllerName = evt.detail.name;
+    this.controllerJustConnected = true;
   },
 
   onTouchStarted: function (evt) {
@@ -74,6 +75,13 @@ AFRAME.registerComponent('brush', {
 
     return function tick (time, delta) {
       if (!this.painting || !this.stroke) { return; }
+      // Skips first frame when a controller have just connected.
+      // It prevents using the last position of the previous controller as part of the stroke.
+      // This can happen when there's a controller switch. e.g From pen to touch controller or viceversa
+      if (this.controllerJustConnected) {
+        this.controllerJustConnected = false;
+        return;
+      }
       this.el.object3D.matrixWorld.decompose(position, rotation, scale);
       var pointerPosition = this.getPointerPosition(position, rotation);
       this.stroke.addPoint(position, rotation, pointerPosition);

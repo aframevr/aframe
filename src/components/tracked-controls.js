@@ -27,15 +27,13 @@ module.exports.Component = registerComponent('tracked-controls', {
   update: function () {
     var data = this.data;
     var el = this.el;
-    if (el.sceneEl.hasWebXR) {
-      el.setAttribute('tracked-controls-webxr', {
-        id: data.id,
-        hand: data.hand,
-        index: data.controller,
-        iterateControllerProfiles: data.iterateControllerProfiles,
-        handTrackingEnabled: data.handTrackingEnabled,
-        space: data.space
-      });
-    }
+    el.setAttribute('tracked-controls-webxr', {
+      id: data.id,
+      hand: data.hand,
+      index: data.controller,
+      iterateControllerProfiles: data.iterateControllerProfiles,
+      handTrackingEnabled: data.handTrackingEnabled,
+      space: data.space
+    });
   }
 });

@@ -13,6 +13,7 @@ var EVENTS = {
 module.exports.Component = registerComponent('tracked-controls-webxr', {
   schema: {
     id: {type: 'string', default: ''},
+    autoHide: {default: true},
     hand: {type: 'string', default: ''},
     handTrackingEnabled: {default: false},
     index: {type: 'int', default: -1},
@@ -21,12 +22,13 @@ module.exports.Component = registerComponent('tracked-controls-webxr', {
   },
 
   init: function () {
-    this.updateController = this.updateController.bind(this);
     this.buttonEventDetails = {};
     this.buttonStates = this.el.components['tracked-controls'].buttonStates = {};
     this.axis = this.el.components['tracked-controls'].axis = [0, 0, 0];
     this.changedAxes = [];
     this.axisMoveEventDetail = {axis: this.axis, changed: this.changedAxes};
+
+    this.updateController = this.updateController.bind(this);
   },
 
   update: function () {
@@ -67,13 +69,13 @@ module.exports.Component = registerComponent('tracked-controls-webxr', {
     );
     // Legacy handle to the controller for old components.
     this.el.components['tracked-controls'].controller = this.controller;
-    if (this.data.autoHide) { this.el.object3D.visible = !!this.controller; }
   },
 
   tick: function () {
     var sceneEl = this.el.sceneEl;
     var controller = this.controller;
     var frame = sceneEl.frame;
+    if (this.data.autoHide) { this.el.object3D.visible = !!controller; }
     if (!controller || !sceneEl.frame || !this.system.referenceSpace) { return; }
     if (!controller.hand) {
       this.pose = frame.getPose(controller[this.data.space], this.system.referenceSpace);
