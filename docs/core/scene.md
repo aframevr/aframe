@@ -79,6 +79,7 @@ before kicking off the render loop.
 | exit-vr      | User has exited VR and headset stopped presenting content.  |
 | loaded       | All nodes have loaded.                             |
 | renderstart | Render loop has started.            |
+| camera-set-active | The camera is created, initialized and available on the sceneEl |
 
 ## Scene Components
 
