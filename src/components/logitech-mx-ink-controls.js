@@ -119,8 +119,7 @@ module.exports.Component = registerComponent('logitech-mx-ink-controls', {
       hand: data.hand,
       handTrackingEnabled: false,
       iterateControllerProfiles: true,
-      orientationOffset: data.orientationOffset,
-      space: 'gripSpace'
+      orientationOffset: data.orientationOffset
     });
     this.loadModel();
   },

@@ -42,7 +42,7 @@ module.exports.checkControllerPresentAndSetup = function (component, idPrefix, q
 function isControllerPresentWebXR (component, id, queryObject) {
   var controllers;
   var sceneEl = component.el.sceneEl;
-  var trackedControlsSystem = sceneEl && sceneEl.systems['tracked-controls-webxr'];
+  var trackedControlsSystem = sceneEl && sceneEl.systems['tracked-controls'];
   if (!trackedControlsSystem) { return false; }
 
   controllers = trackedControlsSystem.controllers;

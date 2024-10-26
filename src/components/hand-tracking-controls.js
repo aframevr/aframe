@@ -173,7 +173,7 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
     var sceneEl = this.el.sceneEl;
     var controller = this.el.components['tracked-controls'] && this.el.components['tracked-controls'].controller;
     var frame = sceneEl.frame;
-    var trackedControlsWebXR = this.el.components['tracked-controls-webxr'];
+    var trackedControlsWebXR = this.el.components['tracked-controls'];
     var referenceSpace = this.referenceSpace;
     if (!controller || !frame || !referenceSpace || !trackedControlsWebXR) { return; }
     this.hasPoses = false;

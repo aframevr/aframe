@@ -29,7 +29,7 @@ suite('oculus-go-controls', function () {
 
     setup(function (done) {
       component = this.el.components['oculus-go-controls'];
-      controllerSystem = this.el.sceneEl.systems['tracked-controls-webxr'];
+      controllerSystem = this.el.sceneEl.systems['tracked-controls'];
       addEventListenersSpy = sinon.spy(component, 'addEventListeners');
       injectTrackedControlsSpy = sinon.spy(component, 'injectTrackedControls');
       removeEventListenersSpy = sinon.spy(component, 'removeEventListeners');
@@ -189,7 +189,7 @@ suite('oculus-go-controls', function () {
    */
   function setupTestControllers (el) {
     var component = el.components['oculus-go-controls'];
-    el.sceneEl.systems['tracked-controls-webxr'].controllers = component.controllersWhenPresent;
+    el.sceneEl.systems['tracked-controls'].controllers = component.controllersWhenPresent;
     component.checkIfControllerPresent();
   }
 });

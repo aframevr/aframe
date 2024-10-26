@@ -34,7 +34,6 @@ require('./shadow');
 require('./sound');
 require('./text');
 require('./tracked-controls');
-require('./tracked-controls-webxr');
 require('./visible');
 require('./valve-index-controls');
 require('./vive-controls');

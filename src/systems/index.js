@@ -6,5 +6,5 @@ require('./material');
 require('./obb-collider');
 require('./renderer');
 require('./shadow');
-require('./tracked-controls-webxr');
+require('./tracked-controls');
 require('./webxr');

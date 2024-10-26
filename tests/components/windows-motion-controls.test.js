@@ -73,7 +73,7 @@ suite('windows-motion-controls', function () {
       var removeEventListenersSpy = this.sinon.spy(component, 'removeEventListeners');
 
       // Mock isControllerPresent to return true.
-      el.sceneEl.systems['tracked-controls-webxr'].controllers = createMotionControllersList(MOCKS.HAND_DEFAULT);
+      el.sceneEl.systems['tracked-controls'].controllers = createMotionControllersList(MOCKS.HAND_DEFAULT);
 
       // delete our previously created mock, so component behaves as if it's never
       // checked for controller presence previously.
@@ -89,7 +89,7 @@ suite('windows-motion-controls', function () {
 
     test('does not detect presence of controller with unknown device ID', function () {
       // Mock isControllerPresent to return true.
-      el.sceneEl.systems['tracked-controls-webxr'].controllers = [
+      el.sceneEl.systems['tracked-controls'].controllers = [
         {profiles: ['unknown'], handedness: MOCKS.HAND_LEFT}
       ];
 
@@ -105,7 +105,7 @@ suite('windows-motion-controls', function () {
     test('does not detect presence of controller with wrong hand', function () {
       // Mock isControllerPresent to return false.
       component.data.hand = MOCKS.HAND_RIGHT;
-      el.sceneEl.systems['tracked-controls-webxr'].controllers = createMotionControllersList(MOCKS.HAND_LEFT);
+      el.sceneEl.systems['tracked-controls'].controllers = createMotionControllersList(MOCKS.HAND_LEFT);
 
       // delete our previously created mock, so component behaves as if it's never
       // checked for controller presence previously.
@@ -120,7 +120,7 @@ suite('windows-motion-controls', function () {
       component.data.hand = MOCKS.HAND_RIGHT;
 
       // Mock isControllerPresent to return false.
-      el.sceneEl.systems['tracked-controls-webxr'].controllers = createMotionControllersList(MOCKS.HAND_DEFAULT);
+      el.sceneEl.systems['tracked-controls'].controllers = createMotionControllersList(MOCKS.HAND_DEFAULT);
 
       // delete our previously created mock, so component behaves as if it's never
       // checked for controller presence previously.
@@ -135,7 +135,7 @@ suite('windows-motion-controls', function () {
       component.data.hand = MOCKS.HAND_RIGHT;
 
       // Mock isControllerPresent to return false.
-      el.sceneEl.systems['tracked-controls-webxr'].controllers = createMotionControllersList(MOCKS.HAND_UNHANDED);
+      el.sceneEl.systems['tracked-controls'].controllers = createMotionControllersList(MOCKS.HAND_UNHANDED);
 
       // delete our previously created mock, so component behaves as if it's never
       // checked for controller presence previously.
@@ -150,7 +150,7 @@ suite('windows-motion-controls', function () {
       component.data.hand = MOCKS.HAND_LEFT;
 
       // Mock isControllerPresent to return false.
-      el.sceneEl.systems['tracked-controls-webxr'].controllers = createMotionControllersList(MOCKS.HAND_UNHANDED, MOCKS.HAND_UNHANDED);
+      el.sceneEl.systems['tracked-controls'].controllers = createMotionControllersList(MOCKS.HAND_UNHANDED, MOCKS.HAND_UNHANDED);
 
       // delete our previously created mock, so component behaves as if it's never
       // checked for controller presence previously.
@@ -167,7 +167,7 @@ suite('windows-motion-controls', function () {
       var removeEventListenersSpy = this.sinon.spy(component, 'removeEventListeners');
 
       // Mock isControllerPresent to return true.
-      el.sceneEl.systems['tracked-controls-webxr'].controllers = createMotionControllersList(MOCKS.HAND_DEFAULT);
+      el.sceneEl.systems['tracked-controls'].controllers = createMotionControllersList(MOCKS.HAND_DEFAULT);
 
       // Mock to the state that a gamepad is present.
       component.controllerEventsActive = true;
@@ -199,7 +199,7 @@ suite('windows-motion-controls', function () {
 
   suite('axismove', function () {
     test('emits thumbstick moved on X', function (done) {
-      el.sceneEl.systems['tracked-controls-webxr'].controllers = createMotionControllersList(MOCKS.HAND_DEFAULT);
+      el.sceneEl.systems['tracked-controls'].controllers = createMotionControllersList(MOCKS.HAND_DEFAULT);
       // Do the check.
       component.checkIfControllerPresent();
       // Install event handler listening for thumbstickmoved.
@@ -214,7 +214,7 @@ suite('windows-motion-controls', function () {
     });
 
     test('emits thumbstick moved on Y', function (done) {
-      el.sceneEl.systems['tracked-controls-webxr'].controllers = createMotionControllersList(MOCKS.HAND_DEFAULT);
+      el.sceneEl.systems['tracked-controls'].controllers = createMotionControllersList(MOCKS.HAND_DEFAULT);
       // Do the check.
       component.checkIfControllerPresent();
       // Install event handler listening for thumbstickmoved.
@@ -229,7 +229,7 @@ suite('windows-motion-controls', function () {
     });
 
     test('emits touchpad moved on X', function (done) {
-      el.sceneEl.systems['tracked-controls-webxr'].controllers = createMotionControllersList(MOCKS.HAND_DEFAULT);
+      el.sceneEl.systems['tracked-controls'].controllers = createMotionControllersList(MOCKS.HAND_DEFAULT);
       // Do the check.
       component.checkIfControllerPresent();
       // Install event handler listening for touchpadmoved.
@@ -244,7 +244,7 @@ suite('windows-motion-controls', function () {
     });
 
     test('emits touchpad moved on Y', function (done) {
-      el.sceneEl.systems['tracked-controls-webxr'].controllers = createMotionControllersList(MOCKS.HAND_DEFAULT);
+      el.sceneEl.systems['tracked-controls'].controllers = createMotionControllersList(MOCKS.HAND_DEFAULT);
       // Do the check.
       component.checkIfControllerPresent();
       // Install event handler listening for touchpadmoved.
@@ -259,7 +259,7 @@ suite('windows-motion-controls', function () {
     });
 
     test('does not emit thumbstickmoved if axismove has no changes', function (done) {
-      el.sceneEl.systems['tracked-controls-webxr'].controllers = createMotionControllersList(MOCKS.HAND_DEFAULT);
+      el.sceneEl.systems['tracked-controls'].controllers = createMotionControllersList(MOCKS.HAND_DEFAULT);
       // Do the check.
       component.checkIfControllerPresent();
       // Fail purposely.
@@ -283,7 +283,7 @@ suite('windows-motion-controls', function () {
       component.createControllerModelUrl = function () { return TEST_URL_MODEL; };
 
       // Mock isControllerPresent to return true.
-      el.sceneEl.systems['tracked-controls-webxr'].controllers = createMotionControllersList(MOCKS.HAND_DEFAULT);
+      el.sceneEl.systems['tracked-controls'].controllers = createMotionControllersList(MOCKS.HAND_DEFAULT);
 
       // Perform the test
       component.checkIfControllerPresent();
@@ -296,7 +296,7 @@ suite('windows-motion-controls', function () {
       var loadModelSpy = this.sinon.spy(component, 'loadModel');
 
       // Mock isControllerPresent to return true.
-      el.sceneEl.systems['tracked-controls-webxr'].controllers = createMotionControllersList(MOCKS.HAND_DEFAULT);
+      el.sceneEl.systems['tracked-controls'].controllers = createMotionControllersList(MOCKS.HAND_DEFAULT);
 
       // Perform the test
       component.checkIfControllerPresent();
@@ -313,7 +313,7 @@ suite('windows-motion-controls', function () {
       component.data.hand = MOCKS.HAND_RIGHT;
 
       // Mock isControllerPresent to return true.
-      el.sceneEl.systems['tracked-controls-webxr'].controllers = createMotionControllersList(MOCKS.HAND_RIGHT);
+      el.sceneEl.systems['tracked-controls'].controllers = createMotionControllersList(MOCKS.HAND_RIGHT);
 
       // Perform the test
       component.checkIfControllerPresent();
@@ -330,7 +330,7 @@ suite('windows-motion-controls', function () {
       component.data.hand = MOCKS.HAND_RIGHT;
 
       // Mock isControllerPresent to return true.
-      el.sceneEl.systems['tracked-controls-webxr'].controllers = createMotionControllersList(MOCKS.HAND_UNHANDED);
+      el.sceneEl.systems['tracked-controls'].controllers = createMotionControllersList(MOCKS.HAND_UNHANDED);
 
       // Perform the test
       component.checkIfControllerPresent();
@@ -354,7 +354,7 @@ suite('windows-motion-controls', function () {
       };
 
       // Mock isControllerPresent to return true.
-      el.sceneEl.systems['tracked-controls-webxr'].controllers = createMotionControllersList(MOCKS.HAND_RIGHT);
+      el.sceneEl.systems['tracked-controls'].controllers = createMotionControllersList(MOCKS.HAND_RIGHT);
 
       // Perform the test
       component.checkIfControllerPresent();
@@ -383,7 +383,7 @@ suite('windows-motion-controls', function () {
 
     function buttonTestHelper (done, buttonIndex, buttonName) {
       var state = {value: 0.5, pressed: true, touched: true};
-      el.sceneEl.systems['tracked-controls-webxr'].controllers = createMotionControllersList(MOCKS.HAND_RIGHT);
+      el.sceneEl.systems['tracked-controls'].controllers = createMotionControllersList(MOCKS.HAND_RIGHT);
       // Do the check.
       component.checkIfControllerPresent();
       // Install event handler listening for changed event.

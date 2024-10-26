@@ -32,7 +32,7 @@ suite('oculus-touch-controls', function () {
 
     setup(function (done) {
       component = this.el.components['oculus-touch-controls'];
-      controllerSystem = this.el.sceneEl.systems['tracked-controls-webxr'];
+      controllerSystem = this.el.sceneEl.systems['tracked-controls'];
       controllerSystem.vrDisplay = true;
       addEventListenersSpy = sinon.spy(component, 'addEventListeners');
       injectTrackedControlsSpy = sinon.spy(component, 'injectTrackedControls');
@@ -116,7 +116,7 @@ suite('oculus-touch-controls', function () {
     var controllerSystem;
 
     setup(function (done) {
-      controllerSystem = this.el.sceneEl.systems['tracked-controls-webxr'];
+      controllerSystem = this.el.sceneEl.systems['tracked-controls'];
       controllerSystem.controllers = component.controllersWhenPresent;
       controllerSystem.vrDisplay = true;
       done();
@@ -152,7 +152,7 @@ suite('oculus-touch-controls', function () {
 
   suite('buttonchanged', function () {
     test('can emit triggerchanged', function (done) {
-      el.sceneEl.systems['tracked-controls-webxr'].controllers = component.controllersWhenPresent;
+      el.sceneEl.systems['tracked-controls'].controllers = component.controllersWhenPresent;
       // Do the check.
       component.checkIfControllerPresent();
       // Prepare the event details

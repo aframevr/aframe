@@ -14,7 +14,7 @@ suite('vive-controls', function () {
       component.controllersWhenPresent = [
         {profiles: ['htc-vive'], handedness: 'right'}
       ];
-      controlsSystem = el.sceneEl.systems['tracked-controls-webxr'];
+      controlsSystem = el.sceneEl.systems['tracked-controls'];
       done();
     });
     el.setAttribute('vive-controls', 'hand: right; model: true');  // To ensure index = 0.

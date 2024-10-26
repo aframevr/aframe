@@ -5,7 +5,7 @@ var utils = require('../utils');
  * Tracked controls system.
  * Maintain list with available tracked controllers.
  */
-module.exports.System = registerSystem('tracked-controls-webxr', {
+module.exports.System = registerSystem('tracked-controls', {
   init: function () {
     this.controllers = [];
     this.onInputSourcesChange = this.onInputSourcesChange.bind(this);
@@ -35,7 +35,7 @@ module.exports.System = registerSystem('tracked-controls-webxr', {
     }).catch(function (err) {
       self.el.sceneEl.systems.webxr.warnIfFeatureNotRequested(
           refspace,
-          'tracked-controls-webxr uses reference space "' + refspace + '".');
+          'tracked-controls uses reference space "' + refspace + '".');
       throw err;
     });
 
