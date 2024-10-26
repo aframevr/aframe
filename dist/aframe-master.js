@@ -8341,7 +8341,7 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
     var sceneEl = this.el.sceneEl;
     var controller = this.el.components['tracked-controls'] && this.el.components['tracked-controls'].controller;
     var frame = sceneEl.frame;
-    var trackedControlsWebXR = this.el.components['tracked-controls-webxr'];
+    var trackedControlsWebXR = this.el.components['tracked-controls'];
     var referenceSpace = this.referenceSpace;
     if (!controller || !frame || !referenceSpace || !trackedControlsWebXR) {
       return;
@@ -9069,7 +9069,6 @@ __webpack_require__(/*! ./shadow */ "./src/components/shadow.js");
 __webpack_require__(/*! ./sound */ "./src/components/sound.js");
 __webpack_require__(/*! ./text */ "./src/components/text.js");
 __webpack_require__(/*! ./tracked-controls */ "./src/components/tracked-controls.js");
-__webpack_require__(/*! ./tracked-controls-webxr */ "./src/components/tracked-controls-webxr.js");
 __webpack_require__(/*! ./visible */ "./src/components/visible.js");
 __webpack_require__(/*! ./valve-index-controls */ "./src/components/valve-index-controls.js");
 __webpack_require__(/*! ./vive-controls */ "./src/components/vive-controls.js");
@@ -10778,8 +10777,7 @@ module.exports.Component = registerComponent('logitech-mx-ink-controls', {
       hand: data.hand,
       handTrackingEnabled: false,
       iterateControllerProfiles: true,
-      orientationOffset: data.orientationOffset,
-      space: 'gripSpace'
+      orientationOffset: data.orientationOffset
     });
     this.loadModel();
   },
@@ -12720,8 +12718,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
       id: id,
       hand: data.hand,
       handTrackingEnabled: false,
-      iterateControllerProfiles: true,
-      space: 'gripSpace'
+      iterateControllerProfiles: true
     });
     this.loadModel(controller);
   },
@@ -16739,10 +16736,10 @@ function PromiseCache() {
 
 /***/ }),
 
-/***/ "./src/components/tracked-controls-webxr.js":
-/*!**************************************************!*\
-  !*** ./src/components/tracked-controls-webxr.js ***!
-  \**************************************************/
+/***/ "./src/components/tracked-controls.js":
+/*!********************************************!*\
+  !*** ./src/components/tracked-controls.js ***!
+  \********************************************/
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 var controllerUtils = __webpack_require__(/*! ../utils/tracked-controls */ "./src/utils/tracked-controls.js");
@@ -16755,11 +16752,29 @@ var EVENTS = {
   TOUCHSTART: 'touchstart',
   TOUCHEND: 'touchend'
 };
-module.exports.Component = registerComponent('tracked-controls-webxr', {
+
+/**
+ * Tracked controls.
+ * Abstract controls to support 6DOF tracked input controllers.
+ *
+ * @property {string} id - String corresponding to the WebXR controller input profile ids.
+ * @property {number} controller - Index of controller in array returned by Gamepad API.
+ *  Only used if hand property is not set.
+ * @property {boolean} autoHide - shows / hides the entity automatically when the controller is
+ * connected or desconneted.
+ * @property {number} hand - If multiple controllers found with id, choose the one with the
+ *  given value for hand. If set, we ignore 'controller' property
+ * @property {boolean} handTrackingEnabled - Assumes a controller exposed via the WebXR Hand Input Module.
+ * @property {boolean} iterateControllerProfiles - Iterates over all of the WebXR controller input profiles.
+ */
+module.exports.Component = registerComponent('tracked-controls', {
   schema: {
     id: {
       type: 'string',
       default: ''
+    },
+    controller: {
+      default: -1
     },
     autoHide: {
       default: true
@@ -16771,17 +16786,8 @@ module.exports.Component = registerComponent('tracked-controls-webxr', {
     handTrackingEnabled: {
       default: false
     },
-    index: {
-      type: 'int',
-      default: -1
-    },
     iterateControllerProfiles: {
       default: false
-    },
-    space: {
-      type: 'string',
-      oneOf: ['targetRaySpace', 'gripSpace'],
-      default: 'gripSpace'
     }
   },
   init: function () {
@@ -16820,7 +16826,7 @@ module.exports.Component = registerComponent('tracked-controls-webxr', {
    * Handle update controller match criteria (such as `id`, `idPrefix`, `hand`, `controller`)
    */
   updateController: function () {
-    this.controller = controllerUtils.findMatchingControllerWebXR(this.system.controllers, this.data.id, this.data.hand, this.data.index, this.data.iterateControllerProfiles, this.data.handTrackingEnabled);
+    this.controller = controllerUtils.findMatchingControllerWebXR(this.system.controllers, this.data.id, this.data.hand, this.data.controller, this.data.iterateControllerProfiles, this.data.handTrackingEnabled);
     // Legacy handle to the controller for old components.
     this.el.components['tracked-controls'].controller = this.controller;
   },
@@ -16835,7 +16841,7 @@ module.exports.Component = registerComponent('tracked-controls-webxr', {
       return;
     }
     if (!controller.hand) {
-      this.pose = frame.getPose(controller[this.data.space], this.system.referenceSpace);
+      this.pose = frame.getPose(controller.gripSpace, this.system.referenceSpace);
       this.updatePose();
       this.updateButtons();
     }
@@ -16986,73 +16992,6 @@ module.exports.Component = registerComponent('tracked-controls-webxr', {
     }
     previousButtonState.value = buttonState.value;
     return true;
-  }
-});
-
-/***/ }),
-
-/***/ "./src/components/tracked-controls.js":
-/*!********************************************!*\
-  !*** ./src/components/tracked-controls.js ***!
-  \********************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-var registerComponent = (__webpack_require__(/*! ../core/component */ "./src/core/component.js").registerComponent);
-
-/**
- * Tracked controls.
- * Abstract controls that decide if the WebVR or WebXR version is going to be applied.
- *
- * @property {number} controller - Index of controller in array returned by Gamepad API.
- *  Only used if hand property is not set.
- * @property {string} id - Selected controller among those returned by Gamepad API.
- * @property {number} hand - If multiple controllers found with id, choose the one with the
- *  given value for hand. If set, we ignore 'controller' property
- */
-module.exports.Component = registerComponent('tracked-controls', {
-  schema: {
-    autoHide: {
-      default: true
-    },
-    controller: {
-      default: -1
-    },
-    id: {
-      type: 'string',
-      default: ''
-    },
-    hand: {
-      type: 'string',
-      default: ''
-    },
-    idPrefix: {
-      type: 'string',
-      default: ''
-    },
-    handTrackingEnabled: {
-      default: false
-    },
-    iterateControllerProfiles: {
-      default: false
-    },
-    space: {
-      type: 'string',
-      oneOf: ['targetRaySpace', 'gripSpace'],
-      default: 'targetRaySpace'
-    }
-  },
-  after: ['tracked-controls-webxr'],
-  update: function () {
-    var data = this.data;
-    var el = this.el;
-    el.setAttribute('tracked-controls-webxr', {
-      id: data.id,
-      hand: data.hand,
-      index: data.controller,
-      iterateControllerProfiles: data.iterateControllerProfiles,
-      handTrackingEnabled: data.handTrackingEnabled,
-      space: data.space
-    });
   }
 });
 
@@ -24626,7 +24565,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.6.0 (Date 2024-10-25, Commit #fa0cc748)');
+console.log('A-Frame Version: 1.6.0 (Date 2024-10-26, Commit #627698d4)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', THREE.REVISION);
 
 // Wait for ready state, unless user asynchronously initializes A-Frame.
@@ -26001,7 +25940,7 @@ __webpack_require__(/*! ./material */ "./src/systems/material.js");
 __webpack_require__(/*! ./obb-collider */ "./src/systems/obb-collider.js");
 __webpack_require__(/*! ./renderer */ "./src/systems/renderer.js");
 __webpack_require__(/*! ./shadow */ "./src/systems/shadow.js");
-__webpack_require__(/*! ./tracked-controls-webxr */ "./src/systems/tracked-controls-webxr.js");
+__webpack_require__(/*! ./tracked-controls */ "./src/systems/tracked-controls.js");
 __webpack_require__(/*! ./webxr */ "./src/systems/webxr.js");
 
 /***/ }),
@@ -26768,10 +26707,10 @@ function updateAllMaterials(sceneEl) {
 
 /***/ }),
 
-/***/ "./src/systems/tracked-controls-webxr.js":
-/*!***********************************************!*\
-  !*** ./src/systems/tracked-controls-webxr.js ***!
-  \***********************************************/
+/***/ "./src/systems/tracked-controls.js":
+/*!*****************************************!*\
+  !*** ./src/systems/tracked-controls.js ***!
+  \*****************************************/
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 var registerSystem = (__webpack_require__(/*! ../core/system */ "./src/core/system.js").registerSystem);
@@ -26781,7 +26720,7 @@ var utils = __webpack_require__(/*! ../utils */ "./src/utils/index.js");
  * Tracked controls system.
  * Maintain list with available tracked controllers.
  */
-module.exports.System = registerSystem('tracked-controls-webxr', {
+module.exports.System = registerSystem('tracked-controls', {
   init: function () {
     this.controllers = [];
     this.onInputSourcesChange = this.onInputSourcesChange.bind(this);
@@ -26805,7 +26744,7 @@ module.exports.System = registerSystem('tracked-controls-webxr', {
     xrSession.requestReferenceSpace(refspace).then(function (referenceSpace) {
       self.referenceSpace = referenceSpace;
     }).catch(function (err) {
-      self.el.sceneEl.systems.webxr.warnIfFeatureNotRequested(refspace, 'tracked-controls-webxr uses reference space "' + refspace + '".');
+      self.el.sceneEl.systems.webxr.warnIfFeatureNotRequested(refspace, 'tracked-controls uses reference space "' + refspace + '".');
       throw err;
     });
     this.controllers = xrSession.inputSources;
@@ -28762,7 +28701,7 @@ module.exports.checkControllerPresentAndSetup = function (component, idPrefix, q
 function isControllerPresentWebXR(component, id, queryObject) {
   var controllers;
   var sceneEl = component.el.sceneEl;
-  var trackedControlsSystem = sceneEl && sceneEl.systems['tracked-controls-webxr'];
+  var trackedControlsSystem = sceneEl && sceneEl.systems['tracked-controls'];
   if (!trackedControlsSystem) {
     return false;
   }
