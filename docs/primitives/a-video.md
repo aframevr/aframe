@@ -13,7 +13,7 @@ The video primitive plays a video as a texture on a flat plane.
 ```html
 <a-scene>
   <a-assets>
-    <video id="penguin-sledding" autoplay loop="true" src="penguin-sledding.mp4"></video>
+    <video id="penguin-sledding" autoplay muted loop="true" src="penguin-sledding.mp4"></video>
   </a-assets>
 
   <!-- Using the asset management system. -->
@@ -23,6 +23,8 @@ The video primitive plays a video as a texture on a flat plane.
   <a-video src="airbending.mp4"></a-video>
 </a-scene>
 ```
+
+> Remember to set the attribute `autoplay` in combination with `muted` on the video HTML element in the `a-assets`, to allow [autoplay without user interaction](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/video).
 
 ## Attributes
 
