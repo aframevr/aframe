@@ -7879,8 +7879,25 @@ module.exports.Component = registerComponent('hand-controls', {
     }
     mesh.mixer.update(delta / 1000);
   },
-  onControllerConnected: function () {
-    this.el.object3D.visible = true;
+  onControllerConnected: function (evt) {
+    var el = this.el;
+    var hand = this.data.hand;
+    var mesh = this.el.getObject3D('mesh');
+    el.object3D.visible = true;
+    var handModelOrientationZ = hand === 'left' ? Math.PI / 2 : -Math.PI / 2;
+    // The WebXR standard defines the grip space such that a cylinder held in a closed hand points
+    // along the Z axis. The models currently have such a cylinder point along the X-Axis.
+    var handModelOrientationX = el.sceneEl.hasWebXR ? -Math.PI / 2 : 0;
+
+    // Pico4, at least on Wolvic, needs a different rotation offset
+    // for the hand model. Pico Browser claims to use oculus
+    // controllers instead; will load oculus-touch-controls and does
+    // not require this adjustment.
+    if (evt.detail.name === 'pico-controls') {
+      handModelOrientationX += Math.PI / 4;
+    }
+    mesh.position.set(0, 0, 0);
+    mesh.rotation.set(handModelOrientationX, 0, handModelOrientationZ);
   },
   onControllerDisconnected: function () {
     this.el.object3D.visible = false;
@@ -7962,10 +7979,6 @@ module.exports.Component = registerComponent('hand-controls', {
       var handmodelUrl = MODEL_URLS[handModelStyle + hand.charAt(0).toUpperCase() + hand.slice(1)];
       this.loader.load(handmodelUrl, function (gltf) {
         var mesh = gltf.scene.children[0];
-        var handModelOrientationZ = hand === 'left' ? Math.PI / 2 : -Math.PI / 2;
-        // The WebXR standard defines the grip space such that a cylinder held in a closed hand points
-        // along the Z axis. The models currently have such a cylinder point along the X-Axis.
-        var handModelOrientationX = el.sceneEl.hasWebXR ? -Math.PI / 2 : 0;
         mesh.mixer = new THREE.AnimationMixer(mesh);
         self.clips = gltf.animations;
         el.setObject3D('mesh', mesh);
@@ -7975,8 +7988,6 @@ module.exports.Component = registerComponent('hand-controls', {
           }
           object.material.color = new THREE.Color(handColor);
         });
-        mesh.position.set(0, 0, 0);
-        mesh.rotation.set(handModelOrientationX, 0, handModelOrientationZ);
         el.setAttribute('magicleap-controls', controlConfiguration);
         el.setAttribute('vive-controls', controlConfiguration);
         el.setAttribute('oculus-touch-controls', controlConfiguration);
@@ -12961,15 +12972,15 @@ var PICO_MODEL_GLB_BASE_URL = AFRAME_CDN_ROOT + 'controllers/pico/pico4/';
 var INPUT_MAPPING_WEBXR = {
   left: {
     axes: {
-      touchpad: [2, 3]
+      thumbstick: [2, 3]
     },
-    buttons: ['trigger', 'squeeze', 'none', 'thumbstick', 'xbutton', 'ybutton']
+    buttons: ['trigger', 'grip', 'none', 'thumbstick', 'xbutton', 'ybutton']
   },
   right: {
     axes: {
-      touchpad: [2, 3]
+      thumbstick: [2, 3]
     },
-    buttons: ['trigger', 'squeeze', 'none', 'thumbstick', 'abutton', 'bbutton']
+    buttons: ['trigger', 'grip', 'none', 'thumbstick', 'abutton', 'bbutton']
   }
 };
 
@@ -13060,6 +13071,7 @@ module.exports.Component = registerComponent('pico-controls', {
       hand: data.hand,
       controller: this.controllerIndex
     });
+
     // Load model.
     if (!this.data.model) {
       return;
@@ -13101,7 +13113,7 @@ module.exports.Component = registerComponent('pico-controls', {
     });
   },
   onAxisMoved: function (evt) {
-    emitIfAxesChanged(this, this.mapping.axes, evt);
+    emitIfAxesChanged(this, this.mapping[this.data.hand].axes, evt);
   }
 });
 
@@ -24565,7 +24577,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.6.0 (Date 2024-10-26, Commit #627698d4)');
+console.log('A-Frame Version: 1.6.0 (Date 2024-11-02, Commit #eae4b7f4)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', THREE.REVISION);
 
 // Wait for ready state, unless user asynchronously initializes A-Frame.
