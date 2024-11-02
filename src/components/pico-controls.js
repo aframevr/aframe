@@ -26,12 +26,12 @@ var PICO_MODEL_GLB_BASE_URL = AFRAME_CDN_ROOT + 'controllers/pico/pico4/';
  */
 var INPUT_MAPPING_WEBXR = {
   left: {
-    axes: {touchpad: [2, 3]},
-    buttons: ['trigger', 'squeeze', 'none', 'thumbstick', 'xbutton', 'ybutton']
+    axes: {thumbstick: [2, 3]},
+    buttons: ['trigger', 'grip', 'none', 'thumbstick', 'xbutton', 'ybutton']
   },
   right: {
-    axes: {touchpad: [2, 3]},
-    buttons: ['trigger', 'squeeze', 'none', 'thumbstick', 'abutton', 'bbutton']
+    axes: {thumbstick: [2, 3]},
+    buttons: ['trigger', 'grip', 'none', 'thumbstick', 'abutton', 'bbutton']
   }
 };
 
@@ -118,6 +118,7 @@ module.exports.Component = registerComponent('pico-controls', {
       hand: data.hand,
       controller: this.controllerIndex
     });
+
     // Load model.
     if (!this.data.model) { return; }
     this.el.setAttribute('gltf-model', PICO_MODEL_GLB_BASE_URL + this.data.hand + '.glb');
@@ -161,6 +162,6 @@ module.exports.Component = registerComponent('pico-controls', {
   },
 
   onAxisMoved: function (evt) {
-    emitIfAxesChanged(this, this.mapping.axes, evt);
+    emitIfAxesChanged(this, this.mapping[this.data.hand].axes, evt);
   }
 });
