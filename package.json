@@ -40,7 +40,7 @@
     "deep-assign": "^2.0.0",
     "load-bmfont": "^1.2.3",
     "super-animejs": "^3.1.0",
-    "three": "npm:super-three@0.169.1",
+    "three": "npm:super-three@0.170.0",
     "three-bmfont-text": "dmarcos/three-bmfont-text#eed4878795be9b3e38cf6aec6b903f56acd1f695"
   },
   "devDependencies": {
