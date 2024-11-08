@@ -35,7 +35,7 @@ EVENTS[ANIMATIONS.point] = 'pointing';
 
 /**
  * Hand controls component that abstracts 6DoF controls:
- *   oculus-touch-controls, vive-controls, windows-motion-controls.
+ *   meta-touch-controls, vive-controls, windows-motion-controls.
  *
  * Originally meant to be a sample implementation of applications-specific controls that
  * abstracts multiple types of controllers.
@@ -126,7 +126,7 @@ module.exports.Component = registerComponent('hand-controls', {
 
     // Pico4, at least on Wolvic, needs a different rotation offset
     // for the hand model. Pico Browser claims to use oculus
-    // controllers instead; will load oculus-touch-controls and does
+    // controllers instead; will load meta-touch-controls and does
     // not require this adjustment.
     if (evt.detail.name === 'pico-controls') {
       handModelOrientationX += Math.PI / 4;
@@ -228,7 +228,7 @@ module.exports.Component = registerComponent('hand-controls', {
         });
         el.setAttribute('magicleap-controls', controlConfiguration);
         el.setAttribute('vive-controls', controlConfiguration);
-        el.setAttribute('oculus-touch-controls', controlConfiguration);
+        el.setAttribute('meta-touch-controls', controlConfiguration);
         el.setAttribute('pico-controls', controlConfiguration);
         el.setAttribute('windows-motion-controls', controlConfiguration);
         el.setAttribute('hp-mixed-reality-controls', controlConfiguration);

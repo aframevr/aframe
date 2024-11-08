@@ -24,7 +24,7 @@ require('./material');
 require('./obb-collider');
 require('./obj-model');
 require('./oculus-go-controls');
-require('./oculus-touch-controls');
+require('./meta-touch-controls');
 require('./pico-controls');
 require('./position');
 require('./raycaster');

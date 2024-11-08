@@ -19,7 +19,7 @@ registerComponent('laser-controls', {
     el.setAttribute('hp-mixed-reality-controls', controlsConfiguration);
     el.setAttribute('magicleap-controls', controlsConfiguration);
     el.setAttribute('oculus-go-controls', controlsConfiguration);
-    el.setAttribute('oculus-touch-controls', controlsConfiguration);
+    el.setAttribute('meta-touch-controls', controlsConfiguration);
     el.setAttribute('pico-controls', controlsConfiguration);
     el.setAttribute('valve-index-controls', controlsConfiguration);
     el.setAttribute('vive-controls', controlsConfiguration);
@@ -94,6 +94,11 @@ registerComponent('laser-controls', {
     },
 
     'oculus-touch-controls': {
+      cursor: {downEvents: ['triggerdown'], upEvents: ['triggerup']},
+      raycaster: {origin: {x: 0, y: 0, z: 0}}
+    },
+
+    'meta-touch-controls': {
       cursor: {downEvents: ['triggerdown'], upEvents: ['triggerup']},
       raycaster: {origin: {x: 0, y: 0, z: 0}}
     },

@@ -1,15 +1,15 @@
 /* global assert, process, setup, sinon, suite, test */
 var entityFactory = require('../helpers').entityFactory;
 
-suite('oculus-touch-controls', function () {
+suite('meta-touch-controls', function () {
   var el;
   var component;
 
   setup(function (done) {
     el = this.el = entityFactory();
-    el.setAttribute('oculus-touch-controls', '');
+    el.setAttribute('meta-touch-controls', '');
     var callback = function () {
-      component = el.components['oculus-touch-controls'];
+      component = el.components['meta-touch-controls'];
       // Initially no controllers are present
       component.controllers = [];
       // Our Mock data for enabling the controllers.
@@ -31,7 +31,7 @@ suite('oculus-touch-controls', function () {
     var removeEventListenersSpy;
 
     setup(function (done) {
-      component = this.el.components['oculus-touch-controls'];
+      component = this.el.components['meta-touch-controls'];
       controllerSystem = this.el.sceneEl.systems['tracked-controls'];
       controllerSystem.vrDisplay = true;
       addEventListenersSpy = sinon.spy(component, 'addEventListeners');

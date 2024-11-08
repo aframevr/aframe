@@ -120,12 +120,12 @@ var INPUT_MAPPING = {
 };
 
 /**
- * Oculus Touch controls.
- * Interface with Oculus Touch controllers and map Gamepad events to
+ * Meta Touch controls (formerly Oculus Touch)
+ * Interface with Meta Touch controllers and map Gamepad events to
  * controller buttons: thumbstick, trigger, grip, xbutton, ybutton, surface
  * Load a controller model and highlight the pressed buttons.
  */
-module.exports.Component = registerComponent('oculus-touch-controls', {
+var componentConfig = {
   schema: {
     hand: {default: 'left'},
     buttonColor: {type: 'color', default: '#999'},  // Off-white.
@@ -474,7 +474,10 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
       button.material.color.set(color);
     }
   }
-});
+};
+
+registerComponent('oculus-touch-controls', componentConfig);
+module.exports.Component = registerComponent('meta-touch-controls', componentConfig);
 
 /**
  * Some of the controller models share the same material for different parts (buttons, triggers...).

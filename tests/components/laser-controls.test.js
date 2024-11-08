@@ -16,7 +16,7 @@ suite('laser-controls', function () {
   suite('init', function () {
     test('injects controllers', function () {
       assert.ok(el.components['oculus-go-controls']);
-      assert.ok(el.components['oculus-touch-controls']);
+      assert.ok(el.components['meta-touch-controls']);
       assert.ok(el.components['vive-controls']);
       assert.ok(el.components['vive-focus-controls']);
       assert.ok(el.components['windows-motion-controls']);
@@ -39,12 +39,12 @@ suite('laser-controls', function () {
       });
     });
 
-    test('configures raycaster for oculus-touch-controls', function (done) {
-      el.emit('controllerconnected', {name: 'oculus-go-controls'});
+    test('configures raycaster for meta-touch-controls', function (done) {
+      el.emit('controllerconnected', {name: 'meta-touch-controls'});
       setTimeout(() => {
         var raycaster = el.getAttribute('raycaster');
         assert.equal(raycaster.origin.x, 0);
-        assert.equal(raycaster.origin.y, 0.0005);
+        assert.equal(raycaster.origin.y, 0);
         done();
       });
     });

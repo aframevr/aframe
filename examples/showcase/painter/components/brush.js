@@ -29,7 +29,7 @@ AFRAME.registerComponent('brush', {
     this.onControllerConnected = this.onControllerConnected.bind(this);
     el.addEventListener('controllerconnected', this.onControllerConnected);
 
-    this.el.setAttribute('oculus-touch-controls', {hand: this.data.hand});
+    this.el.setAttribute('meta-touch-controls', {hand: this.data.hand});
     this.el.setAttribute('logitech-mx-ink-controls', {hand: this.data.hand});
   },
 
@@ -96,7 +96,7 @@ AFRAME.registerComponent('brush', {
     var pointerPosition = new THREE.Vector3();
     var pointerOffset = new THREE.Vector3();
     var controllerOffset = {
-      'oculus-touch-controls': {
+      'meta-touch-controls': {
         left: new THREE.Vector3(0, -0.025, -0.04),
         right: new THREE.Vector3(0, -0.025, -0.04)
       },

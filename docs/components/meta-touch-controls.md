@@ -1,23 +1,23 @@
 ---
-title: oculus-touch-controls
+title: meta-touch-controls
 type: components
 layout: docs
 parent_section: components
-source_code: src/components/oculus-touch-controls.js
+source_code: src/components/meta-touch-controls.js
 examples: []
 ---
 
 [trackedcontrols]: ./tracked-controls.md
 
-The oculus-touch-controls component interfaces with the Oculus Touch controllers (Rift, Rift S, Oculus Quest 1 and 2). It
+The meta-touch-controls (formerly oculus-touch-controls) component interfaces with the Meta Touch controllers (Rift, Rift S, Oculus Quest 1, 2, 3 and 3s). It
 wraps the [tracked-controls component][trackedcontrols] while adding button
 mappings, events, and a Touch controller model.
 
 ## Example
 
 ```html
-<a-entity oculus-touch-controls="hand: left"></a-entity>
-<a-entity oculus-touch-controls="hand: right"></a-entity>
+<a-entity meta-touch-controls="hand: left"></a-entity>
+<a-entity meta-touch-controls="hand: right"></a-entity>
 ```
 
 ## Value
@@ -78,8 +78,8 @@ mappings, events, and a Touch controller model.
 Listen to the `thumbstick` event and the values are available in the object passed to the handler
 
 ```html
-<a-entity oculus-touch-controls="hand: left" thumbstick-logging></a-entity>
-<a-entity oculus-touch-controls="hand: right" thumbstick-logging></a-entity>
+<a-entity meta-touch-controls="hand: left" thumbstick-logging></a-entity>
+<a-entity meta-touch-controls="hand: right" thumbstick-logging></a-entity>
 ```
 
 ```javascript
