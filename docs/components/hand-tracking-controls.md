@@ -9,7 +9,7 @@ examples: []
 
 [webxrhandinput]: https://immersive-web.github.io/webxr-hand-input/
 
-Use `hand-tracking-controls` to integrate [hand tracked input][webxrhandinput] in your application. The component provides a visual representation of the hand and basic gesture recognition. It can be used along tracked controllers (e.g: oculus-touch-controls) for applications requiring multiple input methods. Component is only active when the browser and underlying system starts tracking the user's hands.
+Use `hand-tracking-controls` to integrate [hand tracked input][webxrhandinput] in your application. The component provides a visual representation of the hand and basic gesture recognition. It can be used along tracked controllers (e.g: meta-touch-controls) for applications requiring multiple input methods. Component is only active when the browser and underlying system starts tracking the user's hands.
 
 ## Example
 

@@ -170,7 +170,7 @@ entity:
 <a-entity
   tracked-controls  <!-- Hook into the Gamepad API for pose. -->
   vive-controls  <!-- Vive button mappings. -->
-  oculus-touch-controls  <!-- Oculus button mappings. -->
+  meta-touch-controls  <!-- Oculus button mappings. -->
   hand-controls  <!-- Appearance (model), gestures, and events. -->
   laser-controls <!-- Laser to interact with menus and UI. -->
   sphere-collider  <!-- Listen when hand is in contact with an object. -->
@@ -290,7 +290,7 @@ components/
 
 [cursor]: ../components/cursor.md
 [hand-controls]: ../components/hand-controls.md
-[oculus-touch-controls]: ../components/oculus-touch-controls.md
+[meta-touch-controls]: ../components/meta-touch-controls.md
 [raycaster]: ../components/raycaster.md
 [tracked-controls]: ../components/tracked-controls.md
 [vive-controls]: ../components/vive-controls.md
@@ -301,8 +301,8 @@ or higher-level component in abstraction.
 For example, the [cursor component][cursor] sets and builds on top of the
 [raycaster component][raycaster]. Or the [hand-controls
 component][hand-controls] sets and builds on top of the [vive-controls
-component][vive-controls] and [oculus-touch-controls
-component][oculus-touch-controls] which in turn build on top of the
+component][vive-controls] and [meta-touch-controls
+component][meta-touch-controls] which in turn build on top of the
 [tracked-controls component][tracked-controls].
 
 ## Community Component Ecosystem
@@ -475,13 +475,13 @@ Registry and using the JSDELIVR CDN.  This example can also be viewed in the [A-
   <head>
     <title>Community Components Example</title>
     <meta name="description" content="Community Components Example">
-    <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>  
+    <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
     <script src="https://unpkg.com/@c-frame/aframe-particle-system-component@1.2.x/dist/aframe-particle-system-component.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/aframe-simple-sun-sky@^1.2.2/simple-sun-sky.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.5.0/dist/aframe-extras.min.js"></script>
   </head>
   <body>
-    <a-scene> 
+    <a-scene>
       <a-entity id="rain" particle-system="preset: rain; color: #24CAFF; particleCount: 5000"></a-entity>
 
       <a-entity id="sphere" geometry="primitive: sphere"
@@ -493,9 +493,9 @@ Registry and using the JSDELIVR CDN.  This example can also be viewed in the [A-
       <a-entity id="ocean" ocean="density: 20; width: 50; depth: 50; speed: 4"
                 material="color: #9CE3F9; opacity: 0.75; metalness: 0; roughness: 1"
                 rotation="-90 0 0"></a-entity>
-      
+
       <a-simple-sun-sky sun-position="1 0.4 0"></a-simple-sun-sky>
-      
+
       <a-entity id="light" light="type: ambient; color: #888"></a-entity>
     </a-scene>
   </body>

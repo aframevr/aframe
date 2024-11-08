@@ -338,7 +338,7 @@ Internet on an Oculus Go standalone headset:
 <a-entity oculus-go-controls></a-entity>
 ```
 
-### Adding 6DoF Controllers (vive-controls, oculus-touch-controls)
+### Adding 6DoF Controllers (vive-controls, meta-touch-controls)
 
 Controllers with *6 degrees of freedom* (6DoF) have both rotational and
 positional tracking. Unlike controllers with 3DoF which are constrained to
@@ -366,15 +366,15 @@ desktop browser][rocks]:
 <a-entity vive-controls="hand: right"></a-entity>
 ```
 
-[riftcomponent]: ../components/oculus-touch-controls.md
+[metatouchcomponent]: ../components/meta-touch-controls.md
 
-To add controllers for Oculus Touch, use the [oculus-touch-controls
-component][riftcomponent] for both hands. Then try it out on a [WebVR-enabled
+To add controllers for Oculus Touch, use the [meta-touch-controls
+component][metatouchcomponent] for both hands. Then try it out on a [WebVR-enabled
 desktop browser][rocks]:
 
 ```html
-<a-entity oculus-touch-controls="hand: left"></a-entity>
-<a-entity oculus-touch-controls="hand: right"></a-entity>
+<a-entity meta-touch-controls="hand: left"></a-entity>
+<a-entity meta-touch-controls="hand: right"></a-entity>
 ```
 
 ## Supporting Multiple Types of Controllers
@@ -398,7 +398,7 @@ controllers since it's geared towards room scale interactions such as grabbing
 objects.  The hand-controls component works on top of both Vive and Oculus
 Touch controllers by:
 
-- Setting both the vive-controls and oculus-touch-controls component
+- Setting both the vive-controls and meta-touch-controls component
 - Overriding the controller models with a simple hand model
 - Mapping Vive-specific and Oculus Touch-specific events to hand events and
   gestures (e.g., `gripdown` and `triggerdown` to `thumbup`)
@@ -433,7 +433,7 @@ to understand how to do a custom controller without having to do everything
 from scratch:
 
 - The tracked-controls component will provide pose and events
-- The vive-controls, oculus-touch-controls... components provide button mappings and controller-specific events
+- The vive-controls, meta-touch-controls... components provide button mappings and controller-specific events
 - Our custom controller component will build on all of the above, plus
   overriding the model, animations, visual feedback, states, etc.,
 
@@ -459,7 +459,7 @@ AFRAME.registerComponent('custom-controls', {
 
     // Build on top of controller components.
     el.setAttribute('vive-controls', controlConfiguration);
-    el.setAttribute('oculus-touch-controls', controlConfiguration);
+    el.setAttribute('meta-touch-controls', controlConfiguration);
     el.setAttribute('windows-motion-controls', controlConfiguration);
 
     // Set a model.
@@ -485,7 +485,7 @@ controller component documentation pages at the event tables, then register
 event handlers how we want:
 
 - [hand-controls events](../components/hand-controls.md#events)
-- [oculus-touch-controls events](../components/oculus-touch-controls.md#events)
+- [meta-touch-controls events](../components/meta-touch-controls.md#events)
 - [vive-controls events](../components/vive-controls.md#events)
 - [windows-motion-controls events](../components/windows-motion-controls.md#events)
 
@@ -506,7 +506,7 @@ AFRAME.registerComponent('x-button-listener', {
 Then attach the component:
 
 ```html
-<a-entity oculus-touch-controls x-button-listener></a-entity>
+<a-entity meta-touch-controls x-button-listener></a-entity>
 ```
 
 ## Adding Laser Interactions for Controllers

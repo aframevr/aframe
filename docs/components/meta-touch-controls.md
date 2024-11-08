@@ -98,7 +98,5 @@ AFRAME.registerComponent('thumbstick-logging',{
 
 ## Assets
 
-- [Left Controller OBJ](https://cdn.aframe.io/controllers/oculus/oculus-touch-controller-left.obj)
-- [Left Controller MTL](https://cdn.aframe.io/controllers/oculus/oculus-touch-controller-left.mtl)
-- [Right Controller OBJ](https://cdn.aframe.io/controllers/oculus/oculus-touch-controller-right.obj)
-- [Right Controller MTL](https://cdn.aframe.io/controllers/oculus/oculus-touch-controller-right.mtl)
+- [Left Controller glTF](https://cdn.aframe.io/controllers/meta/quest-touch-plus-left.glb)
+- [Right Controller glTF](https://cdn.aframe.io/controllers/meta/quest-touch-plus-right.glb)

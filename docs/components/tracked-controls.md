@@ -8,14 +8,14 @@ examples: []
 ---
 
 [handcontrols]: ./hand-controls.md
-[oculustouchcontrols]: ./oculus-touch-controls.md
+[metatouchcontrols]: ./meta-touch-controls.md
 [vivecontrols]: ./vive-controls.md
 [windowsmotioncontrols]: ./windows-motion-controls.md
 
 The tracked-controls component interfaces with tracked controllers.
 tracked-controls uses the Gamepad API to handle tracked controllers, and is
 abstracted by the [hand-controls component][handcontrols] as well as the
-[vive-controls][vivecontrols], [oculus-touch-controls][oculustouchcontrols],
+[vive-controls][vivecontrols], [meta-touch-controls][metatouchcontrols],
 [windows-motion-controls][windowsmotioncontrols] components.
 This component elects the appropriate controller, applies pose to
 the entity, observes buttons state and emits appropriate events.  For non-6DOF controllers,

@@ -6,7 +6,7 @@ parent_section: guides
 order: 10
 examples:
   - title: Aincraft
-    src: https://github.com/aframevr/aframe/tree/master/examples/docs/aincraft/ 
+    src: https://github.com/aframevr/aframe/tree/master/examples/docs/aincraft/
 ---
 
 [source-code]: https://github.com/aframevr/aframe/tree/master/examples/docs/aincraft/
@@ -360,8 +360,8 @@ Adding HTC Vive or Oculus Touch tracked controllers is easy:
 <a-entity vive-controls="hand: right"></a-entity>
 
 <!-- Or Rift. -->
-<a-entity oculus-touch-controls="hand: left"></a-entity>
-<a-entity oculus-touch-controls="hand: right"></a-entity>
+<a-entity meta-touch-controls="hand: left"></a-entity>
+<a-entity meta-touch-controls="hand: right"></a-entity>
 ```
 
 We'll be using `hand-controls` which abstracts and works with both Vive and
@@ -382,9 +382,9 @@ thumbstick to teleport to the end of the arc. Before, we wrote our own A-Frame
 components. But we can also use open source components already made from the
 community and just use them straight from HTML!
 
-To enable this, let's first define a `player` entity that wraps the controllers 
+To enable this, let's first define a `player` entity that wraps the controllers
 and the camera:
- 
+
 ```html
 <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
 
@@ -415,9 +415,9 @@ the `blink-controls` component on the controller on the entity:
 </a-entity>
 ```
 
-By default, `blink-controls` will only teleport on the ground, but we can 
-specify with `collisionEntities` to teleport on the blocks *and* the ground 
-using selectors. This property is part of the API that the`blink-controls` 
+By default, `blink-controls` will only teleport on the ground, but we can
+specify with `collisionEntities` to teleport on the blocks *and* the ground
+using selectors. This property is part of the API that the`blink-controls`
 component was created with:
 
 ```html
@@ -494,7 +494,7 @@ To generalize creating entities from an intersection event, we've created an
 of properties. We won't go into the detail of the implementation, but you can
 [check out the simple `intersection-spawn` component source code on
 GitHub][intersection-spawn]. We attach `intersection-spawn` capabilities to the
-right hand, and it's also a good idea to give the raycaster a half-meter buffer  
+right hand, and it's also a good idea to give the raycaster a half-meter buffer
 to prevent voxels from spawning right at the controller:
 
 ```html
