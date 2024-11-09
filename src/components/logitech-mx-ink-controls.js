@@ -16,17 +16,18 @@ var LOGITECH_MX_INK_MODEL_GLB_BASE_URL = AFRAME_CDN_ROOT + 'controllers/logitech
 /**
  * Button IDs:
  * 0 - trigger
- * 1 - grip
- * 3 - X / A
- * 4 - Y / B
+ * 1 - squeeze
+ * 5 - touchpad
+ * 6 - tip
+ * 7 - dock
  *
 */
 var INPUT_MAPPING_WEBXR = {
   left: {
-    buttons: ['trigger', 'squeeze', 'none', 'none', 'touchpad', 'tip', 'dock']
+    buttons: ['front', 'back', 'none', 'none', 'none', 'tip']
   },
   right: {
-    buttons: ['trigger', 'squeeze', 'none', 'none', 'touchpad', 'tip', 'dock']
+    buttons: ['front', 'back', 'none', 'none', 'none', 'tip']
   }
 };
 
