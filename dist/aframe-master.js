@@ -14670,10 +14670,6 @@ module.exports.Component = registerComponent('keyboard-shortcuts', {
   init: function () {
     this.onKeyup = this.onKeyup.bind(this);
   },
-  update: function (oldData) {
-    var data = this.data;
-    this.enterVREnabled = data.enterVR;
-  },
   play: function () {
     window.addEventListener('keyup', this.onKeyup, false);
   },
@@ -14685,11 +14681,11 @@ module.exports.Component = registerComponent('keyboard-shortcuts', {
     if (!shouldCaptureKeyEvent(evt)) {
       return;
     }
-    if (this.enterVREnabled && evt.keyCode === 70) {
+    if (this.data.enterVR && evt.keyCode === 70) {
       // f.
       scene.enterVR();
     }
-    if (this.enterVREnabled && evt.keyCode === 27) {
+    if (this.data.exitVR && evt.keyCode === 27) {
       // escape.
       scene.exitVR();
     }
@@ -24593,7 +24589,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.6.0 (Date 2024-11-09, Commit #1f6300af)');
+console.log('A-Frame Version: 1.6.0 (Date 2024-11-09, Commit #d1120096)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', THREE.REVISION);
 
 // Wait for ready state, unless user asynchronously initializes A-Frame.
