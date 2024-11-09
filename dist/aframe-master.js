@@ -10692,17 +10692,18 @@ var LOGITECH_MX_INK_MODEL_GLB_BASE_URL = AFRAME_CDN_ROOT + 'controllers/logitech
 /**
  * Button IDs:
  * 0 - trigger
- * 1 - grip
- * 3 - X / A
- * 4 - Y / B
+ * 1 - squeeze
+ * 5 - touchpad
+ * 6 - tip
+ * 7 - dock
  *
 */
 var INPUT_MAPPING_WEBXR = {
   left: {
-    buttons: ['trigger', 'squeeze', 'none', 'none', 'touchpad', 'tip', 'dock']
+    buttons: ['front', 'back', 'none', 'none', 'none', 'tip']
   },
   right: {
-    buttons: ['trigger', 'squeeze', 'none', 'none', 'touchpad', 'tip', 'dock']
+    buttons: ['front', 'back', 'none', 'none', 'none', 'tip']
   }
 };
 
@@ -24592,7 +24593,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.6.0 (Date 2024-11-08, Commit #d3be3d2f)');
+console.log('A-Frame Version: 1.6.0 (Date 2024-11-09, Commit #1f6300af)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', THREE.REVISION);
 
 // Wait for ready state, unless user asynchronously initializes A-Frame.
