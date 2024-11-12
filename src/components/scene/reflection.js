@@ -9,7 +9,7 @@ function updateLights (estimate, probeLight, directionalLight, directionalLightP
         estimate.primaryLightIntensity.z));
 
   probeLight.sh.fromArray(estimate.sphericalHarmonicsCoefficients);
-  probeLight.intensity = 1;
+  probeLight.intensity = 3.14;
 
   if (directionalLight) {
     directionalLight.color.setRGB(
