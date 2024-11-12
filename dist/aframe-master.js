@@ -24589,7 +24589,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.6.0 (Date 2024-11-12, Commit #1fa0a47e)');
+console.log('A-Frame Version: 1.6.0 (Date 2024-11-12, Commit #0123f537)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', THREE.REVISION);
 
 // Wait for ready state, unless user asynchronously initializes A-Frame.
@@ -26499,9 +26499,6 @@ module.exports.System = registerSystem('renderer', {
     multiviewStereo: {
       default: false
     },
-    physicallyCorrectLights: {
-      default: false
-    },
     exposure: {
       default: 1,
       if: {
@@ -26541,9 +26538,6 @@ module.exports.System = registerSystem('renderer', {
     var toneMappingName = this.data.toneMapping.charAt(0).toUpperCase() + this.data.toneMapping.slice(1);
     // This is the rendering engine, such as THREE.js so copy over any persistent properties from the rendering system.
     var renderer = sceneEl.renderer;
-    if (!data.physicallyCorrectLights) {
-      renderer.useLegacyLights = !data.physicallyCorrectLights;
-    }
     renderer.toneMapping = THREE[toneMappingName + 'ToneMapping'];
     THREE.Texture.DEFAULT_ANISOTROPY = data.anisotropy;
     THREE.ColorManagement.enabled = data.colorManagement;
