@@ -9766,7 +9766,7 @@ module.exports.Component = registerComponent('light', {
       }
     },
     intensity: {
-      default: 1.0,
+      default: 3.14,
       min: 0,
       if: {
         type: ['ambient', 'directional', 'hemisphere', 'point', 'spot', 'probe']
@@ -15079,7 +15079,7 @@ var register = (__webpack_require__(/*! ../../core/component */ "./src/core/comp
 function updateLights(estimate, probeLight, directionalLight, directionalLightPosition) {
   var intensityScalar = Math.max(estimate.primaryLightIntensity.x, Math.max(estimate.primaryLightIntensity.y, estimate.primaryLightIntensity.z));
   probeLight.sh.fromArray(estimate.sphericalHarmonicsCoefficients);
-  probeLight.intensity = 1;
+  probeLight.intensity = 3.14;
   if (directionalLight) {
     directionalLight.color.setRGB(estimate.primaryLightIntensity.x / intensityScalar, estimate.primaryLightIntensity.y / intensityScalar, estimate.primaryLightIntensity.z / intensityScalar);
     directionalLight.intensity = intensityScalar;
@@ -24589,7 +24589,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.6.0 (Date 2024-11-09, Commit #d1120096)');
+console.log('A-Frame Version: 1.6.0 (Date 2024-11-12, Commit #8813d3d2)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', THREE.REVISION);
 
 // Wait for ready state, unless user asynchronously initializes A-Frame.
@@ -26049,7 +26049,7 @@ module.exports.System = registerSystem('light', {
     directionalLight = document.createElement('a-entity');
     directionalLight.setAttribute('light', {
       color: '#FFF',
-      intensity: 0.6,
+      intensity: 1.884,
       castShadow: true
     });
     directionalLight.setAttribute('position', {
