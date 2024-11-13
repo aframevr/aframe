@@ -17,11 +17,31 @@
             If viewing this example locally, use http://localhost rather than http://127.0.0.1
           -->
         <img id="boxTexture" src="https://i.imgur.com/mYmmbrp.jpg">
+        <audio src="https://cdn.aframe.io/basic-guide/audio/backgroundnoise.wav" autoplay
+        preload></audio>
       </a-assets>
+
+      <a-sound src="https://cdn.aframe.io/basic-guide/audio/backgroundnoise.wav" autoplay="true"
+      position="-3 1 -4"></a-sound>
       
-      <a-box src="https://i.imgur.com/mYmmbrp.jpg" position="0 2 -5" rotation="0 45 45"
-      scale="2 2 2"></a-box>
+      <a-box
+        src="#boxTexture"
+        position="0 2 -5"
+        rotation="0 45 45"
+        scale="2 2 2"
+        animation__position="property: object3D.position.y; to: 2.2; dir: alternate; dur: 2000; loop: true"
+        animation__mouseenter="property: scale; to: 2.3 2.3 2.3; dur: 300; startEvents: mouseenter"
+        animation__mouseleave="property: scale; to: 2 2 2; dur: 300; startEvents: mouseleave"
+        animation__click="property: rotation; from: 0 45 45; to: 0 405 45; dur: 1000; startEvents: click"></a-box>
       
+      <a-entity text="value: Hello, A-Frame; color: #FAFAFA; width: 5; anchor: align"
+                position="-0.9 0.2 -3"
+                scale="1.5 1.5 1.5"></a-entity>
+      
+      <a-camera>
+        <a-cursor color="#FAFAFA"></a-cursor>
+      </a-camera>
+
       <!-- Out of the box environment! -->
       <a-entity environment="preset: forest; dressingAmount: 500"></a-entity>
       <!-- Try changing the preset to one of default, contact, egypt, checkerboard, forest, goaland, yavapai, goldmine, 
