@@ -305,6 +305,8 @@ To use the asset management system for an image texture:
 </a-scene>
 ```
 
+[View the example at this stage](https://aframe.io/examples/docs/basic-scene/).
+
 ## Creating a Custom Environment (Optional)
 
 Previously we had the environment component generate the environment. Though
@@ -637,4 +639,4 @@ relatively sharp and performant:
 
 And that's the basic example!
 
-[View the example](https://aframe.io/examples/docs/basic-scene/).
+[View the example](https://aframe.io/examples/docs/basic-scene-2/).
