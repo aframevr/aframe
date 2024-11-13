@@ -21572,6 +21572,7 @@ class AScene extends AEntity {
     super.disconnectedCallback();
     scenes.splice(sceneIndex, 1);
     window.removeEventListener('sessionend', this.resize);
+    this.removeFullScreenStyles();
     this.renderer.dispose();
   }
 
@@ -24589,7 +24590,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.6.0 (Date 2024-11-12, Commit #0123f537)');
+console.log('A-Frame Version: 1.6.0 (Date 2024-11-13, Commit #85583169)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', THREE.REVISION);
 
 // Wait for ready state, unless user asynchronously initializes A-Frame.
