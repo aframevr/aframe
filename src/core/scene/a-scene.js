@@ -179,6 +179,7 @@ class AScene extends AEntity {
     scenes.splice(sceneIndex, 1);
 
     window.removeEventListener('sessionend', this.resize);
+    this.removeFullScreenStyles();
     this.renderer.dispose();
   }
 
