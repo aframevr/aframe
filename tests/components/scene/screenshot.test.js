@@ -3,9 +3,9 @@ suite('screenshot', function () {
   var component;
   var sceneEl;
 
-  function checkRenderTarget (renderTarget, encoding) {
+  function checkRenderTarget (renderTarget, colorSpace) {
     const texture = renderTarget.texture;
-    assert.equal(texture.encoding, encoding);
+    assert.equal(texture.colorSpace, colorSpace);
     assert.equal(texture.minFilter, THREE.LinearFilter);
     assert.equal(texture.magFilter, THREE.LinearFilter);
     assert.equal(texture.wrapS, THREE.ClampToEdgeWrapping);
@@ -38,20 +38,20 @@ suite('screenshot', function () {
   });
 
   test('capture renders screenshot correctly (w/o Color Management)', function () {
+    sceneEl.setAttribute('renderer', 'colorManagement: false');
     sceneEl.addEventListener('loaded', () => {
       component = sceneEl.components.screenshot;
       const renderTarget = component.getRenderTarget();
-      checkRenderTarget(renderTarget, THREE.LinearEncoding);
+      checkRenderTarget(renderTarget, THREE.LinearSRGBColorSpace);
     });
     document.body.appendChild(sceneEl);
   });
 
   test('capture renders screenshot correctly (w/ Color Management)', function () {
-    sceneEl.setAttribute('renderer', 'colorManagement: true');
     sceneEl.addEventListener('loaded', () => {
       component = sceneEl.components.screenshot;
       const renderTarget = component.getRenderTarget();
-      checkRenderTarget(renderTarget, THREE.sRGBEncoding);
+      checkRenderTarget(renderTarget, THREE.SRGBColorSpace);
     });
     document.body.appendChild(sceneEl);
   });

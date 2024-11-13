@@ -1,10 +1,9 @@
 <html>
 
 <head>
-	<script src="../../../build/aframe.js"></script>
-	<!-- <script src="../../../dist/aframe-master.js"></script> -->
+	<script src="../../../dist/aframe-master.js"></script>
 	<script src="ar-shadow-helper.js"></script>
-	<script src="https://unpkg.com/aframe-environment-component@1.3.1/dist/aframe-environment-component.min.js"></script>
+	<script src="https://unpkg.com/aframe-environment-component@1.4.x/dist/aframe-environment-component.min.js"></script>
 	<title>AFRame Total WebXR AR Demo</title>
 	<style>
 		body {
@@ -19,14 +18,15 @@
 		background="color:skyblue;"
 		reflection="directionalLight:#dirlight;"
 		ar-hit-test="target:#table;"
-		shadow="type: pcfsoft">
+		shadow="type: pcfsoft"
+		xr-mode-ui="XRMode: xr">
 		<a-assets>
 			<!-- model by Snooze https://sketchfab.com/3d-models/low-poly-table-b940256ec5994e26a9e71289d1211b19 -->
 			<a-asset-item id="table-glb" src="../../assets/models/table.glb"></a-asset-item>
 		</a-assets>
 
-		<a-light id="dirlight" intensity="0.5" light="castShadow:true;type:directional" position="1 1 1"></a-light>
-		<a-light hide-on-enter-ar intensity="0.5" light="type:hemisphere;color:yellow;groundColor:blue;"
+		<a-light id="dirlight" intensity="1.57" light="castShadow:true;type:directional" position="1 1 1"></a-light>
+		<a-light hide-on-enter-ar intensity="1.57" light="type:hemisphere;color:yellow;groundColor:blue;"
 			position="1 1 1"></a-light>
 
 		<a-entity hide-on-enter-ar environment="lighting:none;shadow:true;"></a-entity>

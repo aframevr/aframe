@@ -18,7 +18,7 @@ module.exports.parse = function (value, obj) {
   parsedData = styleParse(value, obj);
   // The style parser returns an object { "" : "test"} when fed a string
   if (parsedData['']) { return value; }
-  return transformKeysToCamelCase(parsedData);
+  return parsedData;
 };
 
 /**
@@ -42,26 +42,6 @@ function toCamelCase (str) {
   return str.replace(DASH_REGEX, upperCase);
 }
 module.exports.toCamelCase = toCamelCase;
-
-/**
- * Converts object's keys from hyphens to camelCase (e.g., `max-value` to
- * `maxValue`).
- *
- * @param {object} obj - The object to camelCase keys.
- * @return {object} The object with keys camelCased.
- */
-function transformKeysToCamelCase (obj) {
-  var camelKey;
-  var key;
-  for (key in obj) {
-    camelKey = toCamelCase(key);
-    if (key === camelKey) { continue; }
-    obj[camelKey] = obj[key];
-    delete obj[key];
-  }
-  return obj;
-}
-module.exports.transformKeysToCamelCase = transformKeysToCamelCase;
 
 /**
  * Split a string into chunks matching `<key>: <value>`
@@ -124,7 +104,7 @@ function styleParse (str, obj) {
     pos = item.indexOf(':');
     key = item.substr(0, pos).trim();
     val = item.substr(pos + 1).trim();
-    obj[key] = val;
+    obj[toCamelCase(key)] = val;
   }
   return obj;
 }

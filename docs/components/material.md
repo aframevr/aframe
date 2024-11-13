@@ -54,6 +54,7 @@ Here is an example of using an example custom material:
 
 [flat]: #flat
 [standard]: #standard
+[renderer]: ./renderer.md
 
 The material component has some base properties. More properties are available
 depending on the material type applied.
@@ -74,6 +75,7 @@ depending on the material type applied.
 | visible      | Whether material is visible. Raycasters will ignore invisible materials.                                                                          | true          |
 | blending     | The blending mode for the material's RGB and Alpha sent to the WebGLRenderer. Can be one of `none`, `normal`, `additive`, `subtractive` or `multiply`.  | normal          |
 | dithering    | Whether material is dithered with noise. Removes banding from gradients like ones produced by lighting.                                           | true          |
+| anisotropy   | The anisotropic filtering sample rate to use for the textures. A value of 0 means the default value will be used, see [renderer][renderer]        | 0             |
 
 ## Events
 
@@ -415,7 +417,7 @@ Let's walk through an [example CodePen][example] with step-by-step commentary.
 As always, we need to include the A-Frame script.
 
 ```js
-<script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+<script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
 ```
 
 Next, we define any components and shaders we need after the A-Frame

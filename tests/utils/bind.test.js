@@ -1,5 +1,5 @@
 /* global assert, suite, test */
-var bind = require('utils/bind');
+var bind = require('utils').bind;
 
 suite('utils.bind', function () {
   test('utils.bind binds to object', function () {

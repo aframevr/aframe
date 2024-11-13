@@ -4,7 +4,7 @@ var debug = require('../utils/debug');
 var warn = debug('core:cubemap:warn');
 
 /**
- * Cubemap element that handles validation and exposes list of URLs.
+ * Cubemap element that handles validation and exposes list of six image sources (URL or <img>).
  * Does not listen to updates.
  */
 class ACubeMap extends HTMLElement {
@@ -38,10 +38,9 @@ class ACubeMap extends HTMLElement {
 
   /**
    * Checks for exactly six elements with [src].
-   * Does not check explicitly for <img>s in case user does not want
-   * prefetching.
+   * When <img>s are used they will be prefetched.
    *
-   * @returns {Array|null} - six URLs if valid, else null.
+   * @returns {Array|null} - six URLs or <img> elements if valid, else null.
    */
   validate () {
     var elements = this.querySelectorAll('[src]');
@@ -49,7 +48,11 @@ class ACubeMap extends HTMLElement {
     var srcs = [];
     if (elements.length === 6) {
       for (i = 0; i < elements.length; i++) {
-        srcs.push(elements[i].getAttribute('src'));
+        if (elements[i].tagName === 'IMG') {
+          srcs.push(elements[i]);
+        } else {
+          srcs.push(elements[i].getAttribute('src'));
+        }
       }
       return srcs;
     }
@@ -61,4 +64,3 @@ class ACubeMap extends HTMLElement {
 }
 
 customElements.define('a-cubemap', ACubeMap);
-

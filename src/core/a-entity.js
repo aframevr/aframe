@@ -19,7 +19,7 @@ var ONCE = {once: true};
  *
  * @member {object} components - entity's currently initialized components.
  * @member {object} object3D - three.js object.
- * @member {array} states
+ * @member {array} states.
  * @member {boolean} isPlaying - false if dynamic behavior of the entity is paused.
  */
 class AEntity extends ANode {
@@ -32,6 +32,7 @@ class AEntity extends ANode {
     this.isEntity = true;
     this.isPlaying = false;
     this.object3D = new THREE.Group();
+    this.object3D.rotation.order = 'YXZ';
     this.object3D.el = this;
     this.object3DMap = {};
     this.parentEl = null;
@@ -57,26 +58,13 @@ class AEntity extends ANode {
     this.setEntityAttribute(attr, oldVal, newVal);
   }
 
-  /**
-  * Add to parent, load, play.
-  */
-  connectedCallback () {
-    // Defer if DOM is not ready.
-    if (document.readyState !== 'complete') {
-      document.addEventListener('readystatechange', this.onReadyStateChange.bind(this));
-      return;
-    }
-
-    AEntity.prototype.doConnectedCallback.call(this);
-  }
-
   doConnectedCallback () {
     var self = this;  // Component.
     var assetsEl;  // Asset management system element.
     var sceneEl;
 
     // ANode method.
-    super.connectedCallback();
+    super.doConnectedCallback();
 
     sceneEl = this.sceneEl;
 
@@ -278,7 +266,7 @@ class AEntity extends ANode {
   /**
    * Initialize component.
    *
-   * @param {string} attrName - Attribute name asociated to the component.
+   * @param {string} attrName - Attribute name associated to the component.
    * @param {object} data - Component data
    * @param {boolean} isDependency - True if the component is a dependency.
    */
@@ -310,12 +298,7 @@ class AEntity extends ANode {
     // Initialize dependencies first
     this.initComponentDependencies(componentName);
 
-    // If component name has an id we check component type multiplic
-    if (componentId && !COMPONENTS[componentName].multiple) {
-      throw new Error('Trying to initialize multiple ' +
-                      'components of type `' + componentName +
-                      '`. There can only be one component of this type per entity.');
-    }
+    // Initialize component
     component = new COMPONENTS[componentName].Component(this, data, componentId);
     if (this.isPlaying) { component.play(); }
 
@@ -384,6 +367,10 @@ class AEntity extends ANode {
     if (destroy) {
       component.destroy();
       delete this.components[name];
+      // Remove attribute from DOM, if still present
+      if (this.hasAttribute(name)) {
+        window.HTMLElement.prototype.removeAttribute.call(this, name);
+      }
     }
 
     this.emit('componentremoved', component.evtDetail, false);
@@ -404,7 +391,7 @@ class AEntity extends ANode {
     var name;
     var componentsToUpdate = this.componentsToUpdate;
 
-    if (!this.hasLoaded) { return; }
+    if (!this.hasLoaded && !this.isLoading) { return; }
 
     // Gather mixin-defined components.
     for (i = 0; i < this.mixinEls.length; i++) {
@@ -511,7 +498,7 @@ class AEntity extends ANode {
     var key;
 
     // Already playing.
-    if (this.isPlaying || !this.hasLoaded) { return; }
+    if (this.isPlaying || (!this.hasLoaded && !this.isLoading)) { return; }
     this.isPlaying = true;
 
     // Wake up all components.
@@ -568,7 +555,7 @@ class AEntity extends ANode {
   /**
    * When mixins updated, trigger init or optimized-update of relevant components.
    */
-  mixinUpdate (newMixins, oldMixins) {
+  mixinUpdate (newMixins, oldMixins, deferred) {
     var componentsUpdated = AEntity.componentsUpdated;
 
     var component;
@@ -577,14 +564,15 @@ class AEntity extends ANode {
     var i;
     var self = this;
 
+    if (!deferred) { oldMixins = oldMixins || this.getAttribute('mixin'); }
+
     if (!this.hasLoaded) {
-      this.addEventListener('loaded', function () {
-        self.mixinUpdate(newMixins, oldMixins);
+      this.addEventListener('loaded-private', function () {
+        self.mixinUpdate(newMixins, oldMixins, true);
       }, ONCE);
       return;
     }
 
-    oldMixins = oldMixins || this.getAttribute('mixin');
     mixinIds = this.updateMixins(newMixins, oldMixins);
 
     // Loop over current mixins.
@@ -676,7 +664,7 @@ class AEntity extends ANode {
       newAttrValue[arg1] = arg2;
       clobber = false;
     } else {
-      // Update with a value, object, or CSS-style property string, with the possiblity
+      // Update with a value, object, or CSS-style property string, with the possibility
       // of clobbering previous values.
       newAttrValue = arg1;
       clobber = (arg2 === true);
@@ -844,7 +832,7 @@ function mergeComponentData (attrValue, extraData) {
     return utils.extend(extraData, utils.styleParser.parse(attrValue || {}));
   }
 
-  // Return data, precendence to the defined value.
+  // Return data, precedence to the defined value.
   return attrValue || extraData;
 }
 

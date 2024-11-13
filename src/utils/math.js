@@ -1,5 +1,5 @@
 /**
- * Find the disatance from a plane defined by a point on the plane and the normal of the plane to any point.
+ * Find the distance from a plane defined by a point on the plane and the normal of the plane to any point.
  * @param {THREE.Vector3} positionOnPlane any point on the plane.
  * @param {THREE.Vector3} planeNormal the normal of the plane
  * @param {THREE.Vector3} pointToTest point to test

@@ -102,7 +102,7 @@ suite('sound', function () {
       el.pause();
 
       // Currently we're calling stop when the component is paused as we reset
-      // the state on `play` instad of resuming it
+      // the state on `play` instead of resuming it
       assert.notOk(sound.pause.called);
       assert.ok(sound.stop.called);
     });
@@ -174,6 +174,23 @@ suite('sound', function () {
 
       el.components.sound.playSound();
       assert.ok(sound.play.called);
+    });
+
+    test('plays sound and calls processSound callback when not loaded', function (done) {
+      var el = this.el;
+      var processSoundStub = sinon.stub();
+
+      el.setAttribute('sound', 'src', 'url(base/tests/assets/test.ogg)');
+      el.components.sound.playSound(processSoundStub);
+      assert.notOk(el.components.sound.isPlaying);
+      assert.ok(el.components.sound.mustPlay);
+
+      el.addEventListener('sound-loaded', function () {
+        assert.ok(el.components.sound.isPlaying);
+        assert.notOk(el.components.sound.mustPlay);
+        assert.ok(processSoundStub.calledOnce);
+        done();
+      });
     });
 
     test('plays sound if sound already playing when changing src', function (done) {

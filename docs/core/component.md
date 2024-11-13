@@ -243,7 +243,7 @@ the data to modify the entity. The handlers will usually interact with the
 | update       | Called both when the component is initialized and whenever any of the component's properties is updated (e.g, via *setAttribute*). Used to modify the entity.                                                             |
 | remove       | Called when the component is removed from the entity (e.g., via *removeAttribute*) or when the entity is detached from the scene. Used to undo all previous modifications to the entity.                                  |
 | tick         | Called on each render loop or tick of the scene. Used for continuous changes or checks.                                                                                                                                   |
-| tock         | Called on each render loop or tick of the scene after the scene has rendererd. Used for post processing effects or other logic that needs to happen after the scene has been drawn.                                                                                                                                   |
+| tock         | Called on each render loop or tick of the scene after the scene has rendered. Used for post processing effects or other logic that needs to happen after the scene has been drawn.                                                                                                                                   |
 | play         | Called whenever the scene or entity plays to add any background or dynamic behavior. Also called once when the component is initialized. Used to start or resume behavior.                                                |
 | pause        | Called whenever the scene or entity pauses to remove any background or dynamic behavior. Also called when the component is removed from the entity or when the entity is detached from the scene. Used to pause behavior. |
 | updateSchema | Called whenever any of the component's properties is updated. Can be used to dynamically modify the schema.                                                                                                               |
@@ -287,7 +287,7 @@ AFRAME.registerComponent('cursor', {
     // Set up initial state and variables.
     this.intersection = null;
     // Bind methods.
-    this.onIntersection = AFRAME.utils.bind(this.onIntersection, this);
+    this.onIntersection = this.onIntersection.bind(this);
     // Attach event listener.
     this.el.addEventListener('raycaster-intersection', this.onIntersection);
   }
@@ -584,6 +584,22 @@ AFRAME.registerComponent('foo', {
 });
 ```
 
+### `sceneOnly`
+
+The `sceneOnly` flag indicates if a component can only be applied to the scene
+entity. Since `sceneOnly` is set to `false` by default, the component can be added
+to any entity. For example, any entity could have a geometry component.
+
+But if a component has `sceneOnly` set to `true`, then the component can only be
+applied to `<a-scene>`:
+
+```js
+AFRAME.registerComponent('foo', {
+  sceneOnly: true,
+  // ...
+});
+```
+
 ### `events`
 
 The `events` object allows for conveniently defining event handlers that get
@@ -608,6 +624,46 @@ AFRAME.registerComponent('foo', {
   }
 });
 ```
+
+### `before` / `after`
+
+The `before` and `after` properties allow a component to specify when their `.tick()`
+and `.tock()` methods should be called in relation to other components. This is
+useful in cases where the component depends on the result of others. For example, a
+component that uses the world position of the users hands would want to run _after_ the
+`hand-tracking-controls` component so that the position it sees is up to date.
+
+While both a `before` and a `after` constraint can be specified, only one is needed.
+A-Frame will automatically determine a suitable order among all registered components.
+In case the constraints cause an impossible situation, e.g. when one component would
+need to be both _before_ and _after_ another component, a warning will be logged and
+the resulting order is undefined.
+
+Here's an example showing how to use `before` and `after`:
+
+```js
+AFRAME.registerComponent('foo', {
+  after: ['bar'],
+  // ...
+  tick: function() {
+    console.log('Called second');
+  }
+  // ...
+});
+
+AFRAME.registerComponent('bar', {
+  before: ['foo'],
+  // ...
+  tick: function() {
+    console.log('Called first');
+  }
+  // ...
+});
+```
+
+Note that the order is global, meaning in the above example _all_ `bar` components get
+their `.tick()` method called before _any_ `foo` component. It does not matter if these
+components are on the same entity or not.
 
 ## Component Prototype Methods
 

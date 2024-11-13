@@ -72,7 +72,7 @@ We also provide a link primitive with a different syntax:
 | peekMode            | Whether the 360&deg; image is fully expanded for preview.                                                                                    | false         |
 | title               | Text displayed on the link. The `href` or page URL is used if not defined.                                                                   | ''            |
 | titleColor          | Color of the text displayed on the link.                                                                                                     | white         |
-| visualAspectEnabled | Whether to enable the default visual appearance of a portal. Set to false if we want to implement our own pattern or form of link traversal. | true          |
+| visualAspectEnabled | Whether to enable the default visual appearance of a portal. Set to false if we want to implement our own pattern or form of link traversal. | false          |
 
 ## Manually Navigating
 

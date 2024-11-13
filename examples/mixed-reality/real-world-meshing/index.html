@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Real World Meshing (Mixed Reality) • A-Frame</title>
+    <meta name="description" content="Real World Meshing (Mixed Reality) • A-Frame">
+    <script src="../../../dist/aframe-master.js"></script>
+    <script src="../../js/info-message.js"></script>
+    <script src="../../js/center-model.js"></script>
+    <script src="hide-model-parts.js"></script>
+    <script src="coffee-spawner.js"></script>
+    </head>
+  <body>
+    <a-scene
+      real-world-meshing="filterLabels: table; meshesEnabled: false; planeMixin: xrplane"
+      obb-collider="showColliders: false"
+      renderer="colorManagement: true;"
+      xr-mode-ui="XRMode: ar"
+      info-message="htmlSrc: #messageText">
+      <a-assets>
+        <!-- Model
+          * title:  Coffee
+          * source: https://sketchfab.com/3d-models/coffee-963a9e5d288c42509886c5efd4fedd3c
+          * author: Rosnandie Yikie (https://sketchfab.com/rosnandie.yikie) -->
+        <a-asset-item id="coffee"
+          src="https://cdn.aframe.io/examples/mixed-reality/real-world-meshing/models/coffee.glb"
+          response-type="arraybuffer"></a-asset-item>
+        <a-asset-item id="messageText" src="message.html"></a-asset-item>
+        <a-mixin
+          id="xrplane"
+          obb-collider
+          material="color: pink"
+          visible="false">
+        </a-mixin>
+        <img id="acoffeeshop" src="https://cdn.aframe.io/examples/mixed-reality/real-world-meshing/images/acoffeeshop.png" />
+      </a-assets>
+      <a-plane
+        material="src: #acoffeeshop; shader: flat"
+        height="10" width="17.7" position="0 1.5 -5.5" hide-on-enter-ar>
+      </a-plane>
+      <a-entity id="rightHand"
+        hand-tracking-grab-controls="hand: right"
+        coffee-spawner="targetElementSelector: [data-world-mesh=table]"></a-entity>
+      <a-entity id="leftHand"
+        hand-tracking-grab-controls="hand: left"
+        coffee-spawner="targetElementSelector: [data-world-mesh=table]"></a-entity>
+    </a-scene>
+  </body>
+</html>
+

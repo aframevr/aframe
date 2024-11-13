@@ -27,19 +27,22 @@
 
     <a-sky id="background" src="#skyTexture" theta-length="90" radius="30"></a-sky>
 
-    <!-- Hands -->
-    <a-entity id="teleHand"
-              hand-controls="hand: left"
-              blink-controls="collisionEntities: [mixin='voxel'], #ground"></a-entity>
-    <a-entity id="blockHand"
-              hand-controls="hand: right"
-              laser-controls
-              intersection-spawn="event: click; mixin: voxel"></a-entity>
+    <a-entity id="player">
+      <!-- Hands -->
+      <a-entity id="teleHand"
+                hand-controls="hand: left"
+                blink-controls="collisionEntities: [mixin='voxel'], #ground"></a-entity>
+      <a-entity id="blockHand"
+                hand-controls="hand: right"
+                laser-controls
+                raycaster="near: 0.5"
+                intersection-spawn="event: click; mixin: voxel"></a-entity>
 
-    <!-- Camera -->
-    <a-camera>
-      <a-cursor intersection-spawn="event: click; mixin: voxel"></a-cursor>
-    </a-camera>
-
+      <!-- Camera -->
+      <a-camera>
+        <!-- Uncomment the line below to place blocks on desktop or mobile -->
+        <!-- <a-cursor intersection-spawn="event: click; mixin: voxel"></a-cursor> -->
+      </a-camera>
+    </a-entity>
   </a-scene>
 </html>

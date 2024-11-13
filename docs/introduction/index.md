@@ -27,7 +27,7 @@ free. Alternatively, create an `.html` file and include A-Frame in the
 ```html
 <html>
   <head>
-    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
   </head>
   <body>
     <a-scene>
@@ -67,9 +67,8 @@ be an easy yet powerful way to develop VR content. As an [independent open
 source project][github], A-Frame has grown to be one of the [largest VR
 communities][community].
 
-A-Frame supports most VR headsets such as Vive, Rift, Windows Mixed Reality,
-Daydream, GearVR, Cardboard, Oculus Go, and can even be used for augmented
-reality.  Although A-Frame supports the whole spectrum, A-Frame aims to define
+A-Frame supports most VR and AR devices such as Meta Quest, Apple Vision Pro, PICO lineup, Lynx-R1 or Valve Index 
+Although A-Frame supports the whole spectrum, A-Frame aims to define
 fully immersive interactive VR experiences that go beyond basic 360&deg;
 content, making full use of positional tracking and controllers.
 
@@ -111,7 +110,7 @@ developers have unlimited access to JavaScript, DOM APIs, three.js, WebVR, and
 WebGL.
 
 :globe_with_meridians: **Cross-Platform VR**: Build VR applications for Vive,
-Rift, Windows Mixed Reality, Daydream, GearVR, and Cardboard with support for
+Rift, Meta Quest, Windows Mixed Reality, and Cardboard with support for
 all respective controllers. Don't have a headset or controllers? No problem!
 A-Frame still works on standard desktop and smartphones.
 
@@ -137,12 +136,12 @@ and fly around to peek under the hood!
 [augmented reality]: https://github.com/jeromeetienne/AR.js#augmented-reality-for-the-web-in-less-than-10-lines-of-html
 [environment]: https://github.com/supermedium/aframe-environment-component
 [multiuser]: https://github.com/networked-aframe/networked-aframe
-[oceans]: https://github.com/n5ro/aframe-extras/tree/master/src/primitives
-[particle systems]: https://github.com/IdeaSpaceVR/aframe-particle-system-component
-[physics]: https://github.com/n5ro/aframe-physics-system
+[oceans]: https://github.com/c-frame/aframe-extras/tree/master/src/primitives
+[particle systems]: https://github.com/c-frame/aframe-particle-system-component
+[physics]: https://github.com/c-frame/aframe-physics-system
 [state]: https://npmjs.com/package/aframe-state-component
-[super hands]: https://github.com/wmurphyrd/aframe-super-hands-component
-[teleportation]: https://github.com/fernandojsg/aframe-teleport-controls
+[super hands]: https://github.com/c-frame/aframe-super-hands-component
+[teleportation]: https://github.com/jure/aframe-blink-controls
 
 :runner: **Components**: Hit the ground running with A-Frame's core components
 such as geometries, materials, lights, animations, models, raycasters, shadows,

@@ -103,7 +103,7 @@ module.exports.Component = registerComponent('raycaster', {
         (data.far !== oldData.far || data.origin !== oldData.origin ||
          data.direction !== oldData.direction || !oldData.showLine)) {
       // Calculate unit vector for line direction. Can be multiplied via scalar and added
-      // to orign to adjust line length.
+      // to origin to adjust line length.
       this.unitLineEndVec3.copy(data.direction).normalize();
       this.drawLine();
     }
@@ -131,7 +131,9 @@ module.exports.Component = registerComponent('raycaster', {
 
     if (oldData.enabled && !data.enabled) { this.clearAllIntersections(); }
 
-    this.setDirty();
+    if (data.objects !== oldData.objects) {
+      this.setDirty();
+    }
   },
 
   play: function () {
@@ -400,7 +402,7 @@ module.exports.Component = registerComponent('raycaster', {
    * Children are flattened by one level, removing the THREE.Group wrapper,
    * so that non-recursive raycasting remains useful.
    *
-   * Only push children defined as component attachements (e.g., setObject3D),
+   * Only push children defined as component attachments (e.g., setObject3D),
    * NOT actual children in the scene graph hierarchy.
    *
    * @param  {Array<Element>} els

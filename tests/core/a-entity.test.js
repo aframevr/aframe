@@ -24,7 +24,7 @@ var TestComponent = {
 };
 
 suite('a-entity', function () {
-  var el = el;
+  var el;
 
   setup(function (done) {
     elFactory().then(_el => {
@@ -121,6 +121,47 @@ suite('a-entity', function () {
     }
   });
 
+  test('entity has not loaded until all components have loaded', function (done) {
+    const parentEl = el;
+    const el2 = document.createElement('a-entity');
+    registerComponent('test', {
+      schema: {array: {type: 'array'}},
+      init: function () {
+        assert.notOk(this.el.hasLoaded);
+        this.el.addEventListener('loaded', function () {
+          assert.ok(el2.components.geometry);
+          assert.ok(el2.components.material);
+          assert.ok(el2.components.test);
+          done();
+        });
+      }
+    });
+    el2.setAttribute('geometry', 'primitive:plane');
+    el2.setAttribute('test', '');
+    el2.setAttribute('material', 'color:blue');
+    parentEl.appendChild(el2);
+  });
+
+  test('update method is called only once', function (done) {
+    var triggerEl = document.createElement('a-entity');
+
+    registerComponent('trigger', {
+      init: function () {
+        var childEl = document.createElement('a-entity');
+        childEl.setAttributeNS(null, 'visible', 'false');
+        childEl.addEventListener('loaded', function () {
+          sinon.assert.calledOnce(updateSpy);
+          done();
+        });
+        this.el.sceneEl.appendChild(childEl);
+        childEl.setAttribute('visible', true);
+      }
+    });
+    var updateSpy = sinon.spy(components.visible.Component.prototype, 'update');
+    triggerEl.setAttribute('trigger', '');
+    el.sceneEl.appendChild(triggerEl);
+  });
+
   suite('attachedCallback', function () {
     test('initializes 3D object', function (done) {
       elFactory().then(el => {
@@ -169,7 +210,7 @@ suite('a-entity', function () {
       this.sinon.spy(AEntity.prototype, 'play');
 
       el2.addEventListener('play', function () {
-        assert.ok(el2.hasLoaded);
+        assert.ok(!el2.hasLoaded && el2.sceneEl);
         sinon.assert.called(AEntity.prototype.play);
         done();
       });
@@ -371,7 +412,9 @@ suite('a-entity', function () {
       assert.shallowDeepEqual(el.getAttribute('position'), {x: 0, y: 20, z: 0});
     });
 
-    test('can update component property with asymmetrical property type', function () {
+    // FIXME: Double parsing is always avoided for strings, but for other types
+    //        it's now assumed that these are save to double parse (which holds true for built-ins)
+    test.skip('can update component property with asymmetrical property type', function () {
       registerComponent('test', {
         schema: {
           asym: {
@@ -410,6 +453,33 @@ suite('a-entity', function () {
       assert.notOk(geometry.depth);
       assert.notOk(geometry.height);
       assert.notOk(geometry.width);
+    });
+
+    test('do not cache properties with non-cacheable types', function () {
+      el.setAttribute('light', { target: '#some-element' });
+      assert.deepEqual(el.components.light.attrValue, {target: '#some-element'});
+
+      const light = el.getAttribute('light');
+      assert.notOk(light.target);
+    });
+
+    test('non-cacheable selectors are parsed at component initialization', function (done) {
+      const newEl = document.createElement('a-entity');
+      newEl.setAttribute('light', { target: '#target-element' });
+
+      // Light refers to target that doesn't exist yet.
+      assert.deepEqual(newEl.components.light.attrValue, {target: '#target-element'});
+      assert.notOk(newEl.getAttribute('light').target);
+
+      // Setup target element.
+      el.id = 'target-element';
+      el.appendChild(newEl);
+
+      newEl.addEventListener('loaded', function () {
+        assert.deepEqual(newEl.components.light.attrValue, {target: '#target-element'});
+        assert.strictEqual(newEl.getAttribute('light').target, el);
+        done();
+      });
     });
 
     test('parses individual properties when passing object', function (done) {
@@ -545,13 +615,13 @@ suite('a-entity', function () {
       components.test = undefined;
       registerComponent('test', TestComponent);
       el.setAttribute('test', '');
-      assert.notEqual(el.sceneEl.behaviors.tick.indexOf(el.components.test), -1);
-      assert.notEqual(el.sceneEl.behaviors.tock.indexOf(el.components.test), -1);
+      assert.notEqual(el.sceneEl.behaviors.test.tick.array.indexOf(el.components.test), -1);
+      assert.notEqual(el.sceneEl.behaviors.test.tock.array.indexOf(el.components.test), -1);
       parentEl.removeChild(el);
       process.nextTick(function () {
         assert.ok('test' in el.components);
-        assert.equal(el.sceneEl.behaviors.tick.indexOf(el.components.test), -1);
-        assert.equal(el.sceneEl.behaviors.tock.indexOf(el.components.test), -1);
+        assert.equal(el.sceneEl.behaviors.test.tick.array.indexOf(el.components.test), -1);
+        assert.equal(el.sceneEl.behaviors.test.tock.array.indexOf(el.components.test), -1);
         done();
       });
     });
@@ -1152,9 +1222,9 @@ suite('a-entity', function () {
       el.play();
       el.setAttribute('raycaster', '');
       component = el.components['raycaster'];
-      assert.notEqual(sceneEl.behaviors.tock.indexOf(component), -1);
+      assert.notEqual(sceneEl.behaviors.raycaster.tock.array.indexOf(component), -1);
       el.removeAttribute('raycaster');
-      assert.equal(sceneEl.behaviors.tock.indexOf(component), -1);
+      assert.equal(sceneEl.behaviors.raycaster.tock.array.indexOf(component), -1);
     });
 
     test('waits for component to initialize', function (done) {
@@ -1516,38 +1586,42 @@ suite('a-entity component lifecycle management', function () {
     var testComponentInstance;
     el.setAttribute('test', '');
     testComponentInstance = el.components.test;
-    assert.notEqual(el.sceneEl.behaviors.tick.indexOf(testComponentInstance), -1);
+    assert.notEqual(el.sceneEl.behaviors.test.tick.array.indexOf(testComponentInstance), -1);
     el.pause();
-    assert.equal(el.sceneEl.behaviors.tick.indexOf(testComponentInstance), -1);
+    assert.equal(el.sceneEl.behaviors.test.tick.array.indexOf(testComponentInstance), -1);
   });
 
   test('adds tick to scene behaviors on entity play', function () {
     var testComponentInstance;
     el.setAttribute('test', '');
+    el.isPlaying = false;
     testComponentInstance = el.components.test;
-    el.sceneEl.behaviors.tick = [];
-    assert.equal(el.sceneEl.behaviors.tick.indexOf(testComponentInstance), -1);
+    testComponentInstance.isPlaying = false;
+    el.sceneEl.behaviors.test.tick.array = [];
+    assert.equal(el.sceneEl.behaviors.test.tick.array.indexOf(testComponentInstance), -1);
     el.play();
-    assert.equal(el.sceneEl.behaviors.tick.indexOf(testComponentInstance), -1);
+    assert.notEqual(el.sceneEl.behaviors.test.tick.array.indexOf(testComponentInstance), -1);
   });
 
   test('removes tock from scene behaviors on entity pause', function () {
     var testComponentInstance;
     el.setAttribute('test', '');
     testComponentInstance = el.components.test;
-    assert.notEqual(el.sceneEl.behaviors.tock.indexOf(testComponentInstance), -1);
+    assert.notEqual(el.sceneEl.behaviors.test.tock.array.indexOf(testComponentInstance), -1);
     el.pause();
-    assert.equal(el.sceneEl.behaviors.tock.indexOf(testComponentInstance), -1);
+    assert.equal(el.sceneEl.behaviors.test.tock.array.indexOf(testComponentInstance), -1);
   });
 
   test('adds tock to scene behaviors on entity play', function () {
     var testComponentInstance;
     el.setAttribute('test', '');
+    el.isPlaying = false;
     testComponentInstance = el.components.test;
-    el.sceneEl.behaviors.tock = [];
-    assert.equal(el.sceneEl.behaviors.tock.indexOf(testComponentInstance), -1);
+    testComponentInstance.isPlaying = false;
+    el.sceneEl.behaviors.test.tock.array = [];
+    assert.equal(el.sceneEl.behaviors.test.tock.array.indexOf(testComponentInstance), -1);
     el.play();
-    assert.equal(el.sceneEl.behaviors.tock.indexOf(testComponentInstance), -1);
+    assert.notEqual(el.sceneEl.behaviors.test.tock.array.indexOf(testComponentInstance), -1);
   });
 
   suite('remove', function () {

@@ -9,7 +9,7 @@ function updateLights (estimate, probeLight, directionalLight, directionalLightP
         estimate.primaryLightIntensity.z));
 
   probeLight.sh.fromArray(estimate.sphericalHarmonicsCoefficients);
-  probeLight.intensity = 1;
+  probeLight.intensity = 3.14;
 
   if (directionalLight) {
     directionalLight.color.setRGB(
@@ -26,6 +26,7 @@ module.exports.Component = register('reflection', {
   schema: {
     directionalLight: { type: 'selector' }
   },
+  sceneOnly: true,
   init: function () {
     var self = this;
     this.cubeRenderTarget = new THREE.WebGLCubeRenderTarget(16);
@@ -42,17 +43,16 @@ module.exports.Component = register('reflection', {
     }
 
     this.el.addEventListener('enter-vr', function () {
+      if (!self.el.is('ar-mode')) { return; }
       var renderer = self.el.renderer;
       var session = renderer.xr.getSession();
-      if (
-        session.requestLightProbe && self.el.is('ar-mode')
-      ) {
+      if (session.requestLightProbe) {
         self.startLightProbe();
       }
     });
 
     this.el.addEventListener('exit-vr', function () {
-      self.stopLightProbe();
+      if (self.xrLightProbe) { self.stopLightProbe(); }
     });
 
     this.el.object3D.environment = this.cubeRenderTarget.texture;

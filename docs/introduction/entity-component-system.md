@@ -170,7 +170,7 @@ entity:
 <a-entity
   tracked-controls  <!-- Hook into the Gamepad API for pose. -->
   vive-controls  <!-- Vive button mappings. -->
-  oculus-touch-controls  <!-- Oculus button mappings. -->
+  meta-touch-controls  <!-- Oculus button mappings. -->
   hand-controls  <!-- Appearance (model), gestures, and events. -->
   laser-controls <!-- Laser to interact with menus and UI. -->
   sphere-collider  <!-- Listen when hand is in contact with an object. -->
@@ -290,7 +290,7 @@ components/
 
 [cursor]: ../components/cursor.md
 [hand-controls]: ../components/hand-controls.md
-[oculus-touch-controls]: ../components/oculus-touch-controls.md
+[meta-touch-controls]: ../components/meta-touch-controls.md
 [raycaster]: ../components/raycaster.md
 [tracked-controls]: ../components/tracked-controls.md
 [vive-controls]: ../components/vive-controls.md
@@ -301,8 +301,8 @@ or higher-level component in abstraction.
 For example, the [cursor component][cursor] sets and builds on top of the
 [raycaster component][raycaster]. Or the [hand-controls
 component][hand-controls] sets and builds on top of the [vive-controls
-component][vive-controls] and [oculus-touch-controls
-component][oculus-touch-controls] which in turn build on top of the
+component][vive-controls] and [meta-touch-controls
+component][meta-touch-controls] which in turn build on top of the
 [tracked-controls component][tracked-controls].
 
 ## Community Component Ecosystem
@@ -356,14 +356,14 @@ The [A-Frame Wiki](https://aframe.wiki/) is a useful community-driven initiative
 
 ### Using a Community Component
 
-[particlesystem]: https://www.npmjs.com/package/aframe-particle-system-component
+[particlesystem]: https://www.npmjs.com/package/@c-frame/aframe-particle-system-component
 
 Once we find a component that we want to use, we can include the component as a
 `<script>` tag and use it from HTML.
 
 [unpkg.com]: http://unpkg.com/
 
-For example, let's use IdeaSpaceVR's [particle system component][particlesystem]:
+For example, let's use the [particle system component][particlesystem]:
 
 #### Using unpkg
 
@@ -411,7 +411,7 @@ For the particle system component, the CDN link we found earlier (at time of
 writing) was:
 
 ```
-https://unpkg.com/aframe-particle-system-component@1.0.9/dist/aframe-particle-system-component.min.js
+https://unpkg.com/@c-frame/aframe-particle-system-component@1.2.x/dist/aframe-particle-system-component.min.js
 ```
 
 Now we can include it into our HTML:
@@ -419,8 +419,8 @@ Now we can include it into our HTML:
 ```html
 <html>
   <head>
-    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
-    <script src="https://unpkg.com/aframe-particle-system-component@1.0.9/dist/aframe-particle-system-component.min.js"></script>
+    <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+    <script src="https://unpkg.com/@c-frame/aframe-particle-system-component@1.2.x/dist/aframe-particle-system-component.min.js"></script>
   </head>
   <body>
     <a-scene>
@@ -440,8 +440,8 @@ Now we can include it into our HTML:
 ```html
 <html>
   <head>
-    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
-    <script src="https://unpkg.com/aframe-particle-system-component@1.0.9/dist/aframe-particle-system-component.min.js"></script>
+    <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+    <script src="https://unpkg.com/@c-frame/aframe-particle-system-component@1.2.x/dist/aframe-particle-system-component.min.js"></script>
   </head>
   <body>
     <a-scene>
@@ -451,24 +451,34 @@ Now we can include it into our HTML:
 </html>
 ```
 
+### Using jsdelivr for CDN
+
+[jsdelivr]: https://www.jsdelivr.com/
+
+[JSDELIVR][jsdelivr] is an alternative CDN to unpkg.  One benefit of JSDELIVR is that it can download files from GitHub as well as NPM.
+
+You can convert unpkg URLs to  JSDELIVR URLs using this link: https://www.jsdelivr.com/unpkg
+
+You can convert GitHub URLs to  JSDELIVR URLs using this link: https://www.jsdelivr.com/github
+
 ### Example
 
-[glitch]: http://glitch.com/~aframe-registry
+[community-example]: https://aframe.io/examples/docs/community-components
 
-![Registry Example](https://cloud.githubusercontent.com/assets/674727/25502318/0f76ceec-2b4b-11e7-9829-cb3784b20dc1.gif)
+![Community Components Example](https://cloud.githubusercontent.com/assets/674727/25502318/0f76ceec-2b4b-11e7-9829-cb3784b20dc1.gif)
 
 Below is a complete example of using various community components from the
-Registry and using the unpkg CDN. We can [remix or check out this example on
-Glitch][glitch].
+Registry and using the JSDELIVR CDN.  This example can also be viewed in the [A-Frame Examples][community-example].
 
 ```html
 <html>
   <head>
-    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
-    <script src="https://unpkg.com/aframe-animation-component@3.2.1/dist/aframe-animation-component.min.js"></script>
-    <script src="https://unpkg.com/aframe-particle-system-component@1.0.x/dist/aframe-particle-system-component.min.js"></script>
-    <script src="https://unpkg.com/aframe-extras.ocean@%5E3.5.x/dist/aframe-extras.ocean.min.js"></script>
-    <script src="https://unpkg.com/aframe-gradient-sky@1.4.0/dist/gradientsky.min.js"></script>
+    <title>Community Components Example</title>
+    <meta name="description" content="Community Components Example">
+    <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+    <script src="https://unpkg.com/@c-frame/aframe-particle-system-component@1.2.x/dist/aframe-particle-system-component.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/aframe-simple-sun-sky@^1.2.2/simple-sun-sky.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.5.0/dist/aframe-extras.min.js"></script>
   </head>
   <body>
     <a-scene>
@@ -484,9 +494,7 @@ Glitch][glitch].
                 material="color: #9CE3F9; opacity: 0.75; metalness: 0; roughness: 1"
                 rotation="-90 0 0"></a-entity>
 
-      <a-entity id="sky" geometry="primitive: sphere; radius: 5000"
-                material="shader: gradient; topColor: 235 235 245; bottomColor: 185 185 210"
-                scale="-1 1 1"></a-entity>
+      <a-simple-sun-sky sun-position="1 0.4 0"></a-simple-sun-sky>
 
       <a-entity id="light" light="type: ambient; color: #888"></a-entity>
     </a-scene>

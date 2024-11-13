@@ -1,5 +1,5 @@
-var debugLib = require('debug');
-var extend = require('object-assign');
+var debug = require('debug');
+var isBrowserEnvironment = require('./device').isBrowserEnvironment;
 
 var settings = {
   colors: {
@@ -11,18 +11,46 @@ var settings = {
 };
 
 /**
- * Monkeypatches `debug` so we can colorize error/warning messages.
+ * Overwrite `debug` so we can colorize error/warning messages  and remove Time Diff
  *
- * (See issue: https://github.com/visionmedia/debug/issues/137)
+ * (See issue: https://github.com/debug-js/debug/issues/582#issuecomment-1755718739)
  */
-var debug = function (namespace) {
-  var d = debugLib(namespace);
+debug.formatArgs = formatArgs;
 
-  d.color = getDebugNamespaceColor(namespace);
+function formatArgs (args) {
+  args[0] =
+    (this.useColors ? '%c' : '') +
+    this.namespace +
+    (this.useColors ? ' %c' : ' ') +
+    args[0] +
+    (this.useColors ? '%c ' : ' ');
 
-  return d;
-};
-extend(debug, debugLib);
+  if (!this.useColors) {
+    return;
+  }
+  this.color = getDebugNamespaceColor(this.namespace);
+  var c = 'color: ' + this.color;
+  args.splice(1, 0, c, 'color: inherit');
+
+  // The final "%c" is somewhat tricky, because there could be other
+  // arguments passed either before or after the %c, so we need to
+  // figure out the correct index to insert the CSS into
+  var index = 0;
+  var lastC = 0;
+  args[0].replace(/%[a-zA-Z%]/g, function (match) {
+    if (match === '%%') {
+      return;
+    }
+    index++;
+    if (match === '%c') {
+      // We only are interested in the *last* %c
+      // (the user may have provided their own)
+      lastC = index;
+    }
+  });
+
+  args.splice(lastC, 0, c);
+}
 
 /**
  * Returns the type of the namespace (e.g., `error`, `warn`).
@@ -87,6 +115,6 @@ if (ls && (parseInt(ls.logs, 10) || ls.logs === 'true')) {
   debug.enable('*:error,*:info,*:warn');
 }
 
-if (process.browser) { window.logs = debug; }
+if (isBrowserEnvironment) { window.logs = debug; }
 
 module.exports = debug;

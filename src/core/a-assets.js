@@ -1,6 +1,5 @@
 /* global customElements */
 var ANode = require('./a-node').ANode;
-var bind = require('../utils/bind');
 var debug = require('../utils/debug');
 var THREE = require('../lib/three');
 
@@ -18,16 +17,6 @@ class AAssets extends ANode {
     this.timeout = null;
   }
 
-  connectedCallback () {
-    // Defer if DOM is not ready.
-    if (document.readyState !== 'complete') {
-      document.addEventListener('readystatechange', this.onReadyStateChange.bind(this));
-      return;
-    }
-
-    this.doConnectedCallback();
-  }
-
   doConnectedCallback () {
     var self = this;
     var i;
@@ -37,8 +26,9 @@ class AAssets extends ANode {
     var imgEl;
     var imgEls;
     var timeout;
+    var children;
 
-    super.connectedCallback();
+    super.doConnectedCallback();
 
     if (!this.parentNode.isScene) {
       throw new Error('<a-assets> must be a child of a <a-scene>.');
@@ -71,14 +61,32 @@ class AAssets extends ANode {
       loaded.push(mediaElementLoaded(mediaEl));
     }
 
+    // Wait for <a-asset-item>s
+    children = this.getChildren();
+    children.forEach(function (child) {
+      if (!child.isAssetItem || !child.hasAttribute('src')) { return; }
+
+      loaded.push(new Promise(function waitForLoaded (resolve, reject) {
+        if (child.hasLoaded) { return resolve(); }
+        child.addEventListener('loaded', resolve);
+        child.addEventListener('error', reject);
+      }));
+    });
+
     // Trigger loaded for scene to start rendering.
-    Promise.allSettled(loaded).then(bind(this.load, this));
+    Promise.allSettled(loaded).then(function () {
+      // Make sure the timeout didn't occur.
+      if (self.timeout === null) { return; }
+      self.load();
+    });
 
     // Timeout to start loading anyways.
     timeout = parseInt(this.getAttribute('timeout'), 10) || 3000;
     this.timeout = setTimeout(function () {
+      // Make sure the loading didn't complete.
       if (self.hasLoaded) { return; }
-      warn('Asset loading timed out in ', timeout, 'ms');
+      warn('Asset loading timed out in', timeout, 'ms');
+      self.timeout = null;
       self.emit('timeout');
       self.load();
     }, timeout);
@@ -90,9 +98,8 @@ class AAssets extends ANode {
   }
 
   load () {
-    super.load.call(this, null, function waitOnFilter (el) {
-      return el.isAssetItem && el.hasAttribute('src');
-    });
+    // Filter out all children, as waiting already took place in doConnectedCallback.
+    super.load.call(this, null, function () { return false; });
   }
 }
 
@@ -115,15 +122,7 @@ class AAssetItem extends ANode {
       this.getAttribute('response-type') || inferResponseType(src));
     fileLoader.load(src, function handleOnLoad (response) {
       self.data = response;
-      /*
-        Workaround for a Chrome bug. If another XHR is sent to the same url before the
-        previous one closes, the second request never finishes.
-        setTimeout finishes the first request and lets the logic triggered by load open
-        subsequent requests.
-        setTimeout can be removed once the fix for the bug below ships:
-        https://bugs.chromium.org/p/chromium/issues/detail?id=633696&q=component%3ABlink%3ENetwork%3EXHR%20&colspec=ID%20Pri%20M%20Stars%20ReleaseBlock%20Component%20Status%20Owner%20Summary%20OS%20Modified
-      */
-      setTimeout(function load () { ANode.prototype.load.call(self); });
+      ANode.prototype.load.call(self);
     }, function handleOnProgress (xhr) {
       self.emit('progress', {
         loadedBytes: xhr.loaded,
@@ -131,7 +130,7 @@ class AAssetItem extends ANode {
         xhr: xhr
       });
     }, function handleOnError (xhr) {
-      self.emit('error', {xhr: xhr});
+      self.emit('error', {xhr: xhr}, false);
     });
   }
 }

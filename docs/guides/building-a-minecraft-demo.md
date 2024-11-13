@@ -6,11 +6,11 @@ parent_section: guides
 order: 10
 examples:
   - title: Aincraft
-    src: https://github.com/aframevr/aframe/tree/master/examples/showcase/aincraft/ 
+    src: https://github.com/aframevr/aframe/tree/master/examples/docs/aincraft/
 ---
 
-[source-code]: https://github.com/aframevr/aframe/tree/master/examples/showcase/aincraft/
-[live-demo]: https://aframe.io/examples/showcase/aincraft/
+[source-code]: https://github.com/aframevr/aframe/tree/master/examples/docs/aincraft/
+[live-demo]: https://aframe.io/aframe/examples/docs/aincraft/
 
 > View the [source code][source-code], or try out [the demo][live-demo]
 
@@ -25,7 +25,7 @@ mobile and desktop.
 We'll start off with this skeleton HTML:
 
 ```html
-<script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+<script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
 
 <body>
   <a-scene>
@@ -46,18 +46,18 @@ The texture of the ground we'll be using is hosted at
 our assets, and create a thin cylinder entity pointing to that texture:
 
 ```html
-<script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+<script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
 
 <a-scene>
   <a-cylinder id="ground" src="https://cdn.aframe.io/a-painter/images/floor.jpg" radius="32" height="0.1"></a-cylinder>
 </a-scene>
 ```
 
-See a live version [here](https://aframe.io/examples/showcase/aincraft/step1.html)
+See a live version [here](https://aframe.io/aframe/examples/docs/aincraft/step1.html)
 
 ### Preloading Assets
 
-[assets]: https://aframe.io/docs/1.4.0/core/asset-management-system.html
+[assets]: https://aframe.io/docs/1.6.0/core/asset-management-system.html
 
 Specifying a URL via the `src` attribute will load the texture at runtime.
 Since network requests can negatively impact render performance, we can
@@ -73,7 +73,7 @@ Let's move our ground texture to `<a-assets>` to be preloaded using an
 `<img>` element:
 
 ```html
-<script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+<script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
 
 <a-scene>
   <a-assets>
@@ -84,14 +84,14 @@ Let's move our ground texture to `<a-assets>` to be preloaded using an
 </a-scene>
 ```
 
-See a live version [here](https://aframe.io/examples/showcase/aincraft/step2.html)
+See a live version [here](https://aframe.io/aframe/examples/docs/aincraft/step2.html)
 
 ## Adding a Background
 
-[a-sky]: https://aframe.io/docs/1.4.0/primitives/a-sky.html
+[a-sky]: https://aframe.io/docs/1.6.0/primitives/a-sky.html
 [flickr]: https://www.flickr.com/groups/equirectangular/
 
-[gradient]: https://github.com/zcanter/aframe-gradient-sky
+[gradient]: https://github.com/mrxz/fern-aframe-components/tree/main/sky-background
 
 Let's add a 360&deg; background to our `<a-scene>` with the [`<a-sky>`
 element][a-sky]. `<a-sky>` is a large 3D sphere with a material mapped on the
@@ -109,7 +109,7 @@ half with `theta-length="90"`, and we'll give our sphere a radius of 30 meters
 to match the ground:
 
 ```html
-<script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+<script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
 
 <a-scene>
   <a-assets>
@@ -123,7 +123,7 @@ to match the ground:
 </a-scene>
 ```
 
-See a live version [here](https://aframe.io/examples/showcase/aincraft/step3.html)
+See a live version [here](https://aframe.io/aframe/examples/docs/aincraft/step3.html)
 
 ## Adding Voxels
 
@@ -139,15 +139,15 @@ from scratch.
 
 ### Entity-Component Pattern
 
-[entity]: https://aframe.io/docs/1.4.0/core/entity.html
+[entity]: https://aframe.io/docs/1.6.0/core/entity.html
 
 Every single object in an A-Frame scene is [`<a-entity>`][entity], which by itself
 doesn't do anything, like an empty `<div>`. We plug in components (**not to be
 confused with Web or React Components**) to that entity to provide with
 appearance, behavior , and logic.
 
-[geometry]: https://aframe.io/docs/1.4.0/components/geometry.html
-[material]: https://aframe.io/docs/1.4.0/components/material.html
+[geometry]: https://aframe.io/docs/1.6.0/components/geometry.html
+[material]: https://aframe.io/docs/1.6.0/components/material.html
 
 For a box, we attach and configure A-Frame's basic [geometry] and [material]
 components. Components are represented as HTML attributes, and component
@@ -189,7 +189,7 @@ AFRAME.registerComponent('random-color', {
 });
 ```
 
-[js]: https://aframe.io/docs/1.4.0/introduction/javascript-events-dom-apis.html
+[js]: https://aframe.io/docs/1.6.0/introduction/javascript-events-dom-apis.html
 
 For the random color component, we want to set a random color on the entity
 that this component is attached to. Components have a reference to the entity
@@ -234,7 +234,7 @@ to plug in the `random-color` component. We'll save the component as a JS file
 and include it before the scene:
 
 ```html
-<script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+<script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
 <script src="components/random-color.js"></script>
 
 <a-scene>
@@ -255,7 +255,7 @@ and include it before the scene:
 </a-scene>
 ```
 
-See a live version [here](https://aframe.io/examples/showcase/aincraft/step4.html)
+See a live version [here](https://aframe.io/aframe/examples/docs/aincraft/step4.html)
 
 Components can be plugged into any entity without having to create or extend a
 class like we'd have to in traditional inheritance. If we wanted to attach it
@@ -277,7 +277,7 @@ modular and reusable!
 
 ### Snap Component
 
-[snap]: https://github.com/aframevr/aframe/tree/master/examples/showcase/aincraft/components/snap.js
+[snap]: https://github.com/aframevr/aframe/tree/master/examples/docs/aincraft/components/snap.js
 
 We'll have a `snap` component to snap our boxes to a grid so they aren't
 overlapping. We won't get into the details of how this component is
@@ -301,14 +301,14 @@ to describe all the voxels in our scene.
 
 ### Mixins
 
-[mixin]: https://aframe.io/docs/1.4.0/core/mixins.html
+[mixin]: https://aframe.io/docs/1.6.0/core/mixins.html
 
 We can create [a mixin][mixin] to define a reusable bundle of components.
 Instead of `<a-entity>`, which adds an object to the scene, we'll describe it
 using `<a-mixin>` which can be reused to create voxels like a prefab:
 
 ```html
-<script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+<script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
 <script src="components/random-color.js"></script>
 <script src="components/snap.js"></script>
 
@@ -345,7 +345,7 @@ And we've added voxels using that mixin:
 <a-entity mixin="voxel" position="1 0 -2"></a-entity>
 ```
 
-See a live version [here](https://aframe.io/examples/showcase/aincraft/step5.html)
+See a live version [here](https://aframe.io/aframe/examples/docs/aincraft/step5.html)
 
 Next, we'll be creating voxels dynamically through interaction using tracked
 controllers. Let's start adding our hands to the application.
@@ -360,8 +360,8 @@ Adding HTC Vive or Oculus Touch tracked controllers is easy:
 <a-entity vive-controls="hand: right"></a-entity>
 
 <!-- Or Rift. -->
-<a-entity oculus-touch-controls="hand: left"></a-entity>
-<a-entity oculus-touch-controls="hand: right"></a-entity>
+<a-entity meta-touch-controls="hand: left"></a-entity>
+<a-entity meta-touch-controls="hand: right"></a-entity>
 ```
 
 We'll be using `hand-controls` which abstracts and works with both Vive and
@@ -376,32 +376,49 @@ and placing blocks.
 
 ### Adding Teleportation to the Left Hand
 
-We'll plug in teleportation capabilities to the left hand such that we hold a
-button to show an arc coming out of the controller, and let go of the button to
-teleport to the end of the arc. Before, we wrote our own A-Frame components.
-But we can also use open source components already made from the community
-and just use them straight from HTML!
+We'll plug in teleportation capabilities to the left hand such that we push a
+thumbstick to show an arc coming out of the controller, and let go of the
+thumbstick to teleport to the end of the arc. Before, we wrote our own A-Frame
+components. But we can also use open source components already made from the
+community and just use them straight from HTML!
 
-[blink-controls]: https://github.com/fernandojsg/aframe-teleport-controls/
+To enable this, let's first define a `player` entity that wraps the controllers
+and the camera:
+
+```html
+<script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+
+<!-- ... -->
+
+<a-entity id="player">
+  <a-entity id="teleHand" hand-controls="hand: left"></a-entity>
+  <a-entity id="blockHand" hand-controls="hand: right"></a-entity>
+  <a-camera></a-camera>
+</a-entity>
+```
+
+[blink-controls]: https://github.com/jure/aframe-blink-controls
 For teleportation, there's a component called [blink-controls][blink-controls].
 Following the README, we add the component via a `<script>` tag and just set
 the `blink-controls` component on the controller on the entity:
 
 ```html
-<script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+<script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/aframe-blink-controls/dist/aframe-blink-controls.min.js"></script>
 
 <!-- ... -->
 
-<a-entity id="teleHand" hand-controls="hand: left" teleport-controls></a-entity>
-<a-entity id="blockHand" hand-controls="hand: right"></a-entity>
+<a-entity id="player">
+  <a-entity id="teleHand" hand-controls="hand: left"></a-entity>
+  <a-entity id="blockHand" hand-controls="hand: right"></a-entity>
+  <a-camera></a-camera>
+</a-entity>
 ```
 
-Then we'll configure the `blink-controls` component to use an arc `type` of
-teleportation. By default, `blink-controls` will only teleport on the
-ground, but we can specify with `collisionEntities` to teleport on the blocks
-*and* the ground using selectors. These properties are part of the API that the
-`blink-controls` component was created with:
+By default, `blink-controls` will only teleport on the ground, but we can
+specify with `collisionEntities` to teleport on the blocks *and* the ground
+using selectors. This property is part of the API that the`blink-controls`
+component was created with:
 
 ```html
 <a-entity id="teleHand" hand-controls="hand: left" blink-controls="collisionEntities: [mixin='voxel'], #ground"></a-entity>
@@ -425,12 +442,12 @@ that attaches the clicking laser to VR tracked controllers.  Like the
 `laser-controls` component. This time to the right hand:
 
 ```html
-<script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+<script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/aframe-blink-controls/dist/aframe-blink-controls.min.js"></script>
 
 <!-- ... -->
 
-<a-entity id="teleHand" hand-controls="hand: left" teleport-controls="type: parabolic; collisionEntities: [mixin='voxel'], #ground"></a-entity>
+<a-entity id="teleHand" hand-controls="hand: left" blink-controls="collisionEntities: [mixin='voxel'], #ground"></a-entity>
 <a-entity id="blockHand" hand-controls="hand: right" laser-controls></a-entity>
 ```
 
@@ -470,17 +487,18 @@ document.querySelector('#blockHand').addEventListener(`click`, function (evt) {
 });
 ```
 
-[intersection-spawn]: https://github.com/aframevr/aframe/tree/master/examples/showcase/aincraft/components/intersection-spawn.js
+[intersection-spawn]: https://github.com/aframevr/aframe/tree/master/examples/docs/aincraft/components/intersection-spawn.js
 
 To generalize creating entities from an intersection event, we've created an
 `intersection-spawn` component that can be configured with any event and list
 of properties. We won't go into the detail of the implementation, but you can
 [check out the simple `intersection-spawn` component source code on
 GitHub][intersection-spawn]. We attach `intersection-spawn` capabilities to the
-right hand:
+right hand, and it's also a good idea to give the raycaster a half-meter buffer
+to prevent voxels from spawning right at the controller:
 
 ```html
-<a-entity id="blockHand" hand-controls="hand: right" laser-controls intersection-spawn="event: click; mixin: voxel"></a-entity>
+<a-entity id="blockHand" hand-controls="hand: right" laser-controls raycaster="near: 0.5" intersection-spawn="event: click; mixin: voxel"></a-entity>
 ```
 
 Now when we click, we spawn voxels!
@@ -495,8 +513,7 @@ component with the gaze-based `cursor` component so that we can also spawn
 blocks on mobile and desktop, without changing a thing about the component!
 
 ```html
-<a-entity id="blockHand" hand-controls="hand: right" laser-controls intersection-spawn="event: click; mixin: voxel"></a-entity>
-
+<a-entity id="blockHand" hand-controls="hand: right" laser-controls raycaster="near: 0.5" intersection-spawn="event: click; mixin: voxel"></a-entity>
 <a-camera>
   <a-cursor intersection-spawn="event: click; mixin: voxel"></a-cursor>
 </a-camera>

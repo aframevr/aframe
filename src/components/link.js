@@ -168,7 +168,7 @@ module.exports.Component = registerComponent('link', {
 
   /**
    * 1. Swap plane that represents portal with sphere with a hole when the camera is close
-   * so user can peek inside portal. Sphere is rendered on oposite side of portal
+   * so user can peek inside portal. Sphere is rendered on opposite side of portal
    * from where user enters.
    * 2. Place the url/title above or inside portal depending on distance to camera.
    * 3. Face portal to camera when far away from user.
@@ -228,7 +228,7 @@ module.exports.Component = registerComponent('link', {
           this.semiSphereEl.setAttribute('visible', true);
           this.peekCameraPortalOrientation = cameraPortalOrientation;
         } else {
-          // Calculate wich side the camera is approaching the camera (back / front).
+          // Calculate which side the camera is approaching the camera (back / front).
           // Adjust text orientation based on camera position.
           if (cameraPortalOrientation <= 0.0) {
             textEl.setAttribute('rotation', '0 180 0');

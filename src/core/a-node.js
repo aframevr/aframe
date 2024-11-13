@@ -1,5 +1,6 @@
-/* global customElements, CustomEvent, HTMLElement, MutationObserver */
+/* global customElements, CustomEvent, HTMLElement,  MutationObserver */
 var utils = require('../utils/');
+var readyState = require('./readyState');
 
 var warn = utils.debug('core:a-node:warn');
 
@@ -32,19 +33,13 @@ class ANode extends HTMLElement {
     this.mixinEls = [];
   }
 
-  onReadyStateChange () {
-    if (document.readyState === 'complete') {
-      this.doConnectedCallback();
-    }
-  }
-
   connectedCallback () {
-    // Defer if DOM is not ready.
-    if (document.readyState !== 'complete') {
-      document.addEventListener('readystatechange', this.onReadyStateChange.bind(this));
+    // Defer if not ready to initialize.
+    if (!readyState.canInitializeElements) {
+      document.addEventListener('aframeready', this.connectedCallback.bind(this));
       return;
     }
-    ANode.prototype.doConnectedCallback.call(this);
+    this.doConnectedCallback();
   }
 
   doConnectedCallback () {
@@ -145,9 +140,14 @@ class ANode extends HTMLElement {
         }
       });
 
-      self.hasLoaded = true;
+      self.isLoading = true;
       self.setupMutationObserver();
       if (cb) { cb(); }
+      self.isLoading = false;
+      self.hasLoaded = true;
+      // loaded-private is an event analog to loaded that gives A-Frame an opportunity to manage internal
+      // affairs before the publicly loaded event fires and corresponding handlers executed.
+      self.emit('loaded-private', undefined, false);
       self.emit('loaded', undefined, false);
     });
   }
@@ -214,7 +214,7 @@ class ANode extends HTMLElement {
     this.computedMixinStr = '';
     this.mixinEls.length = 0;
     for (i = 0; i < newMixinIds.length; i++) {
-      this.registerMixin(document.getElementById(newMixinIds[i]));
+      this.registerMixin(newMixinIds[i]);
     }
 
     // Update DOM. Keep track of `computedMixinStr` to not recurse back here after
@@ -225,27 +225,35 @@ class ANode extends HTMLElement {
                                                      this.computedMixinStr);
     }
 
+    if (newMixinIds.length === 0) {
+      window.HTMLElement.prototype.removeAttribute.call(this, 'mixin');
+    }
+
     return mixinIds;
   }
 
   /**
    * From mixin ID, add mixin element to `mixinEls`.
    *
-   * @param {Element} mixinEl
+   * @param {string} mixinId - ID of the mixin to register.
    */
-  registerMixin (mixinEl) {
+  registerMixin (mixinId) {
     var compositedMixinIds;
     var i;
     var mixin;
+    var mixinEl = document.getElementById(mixinId);
 
-    if (!mixinEl) { return; }
+    if (!mixinEl) {
+      warn('No mixin was found with id `%s`', mixinId);
+      return;
+    }
 
     // Register composited mixins (if mixin has mixins).
     mixin = mixinEl.getAttribute('mixin');
     if (mixin) {
       compositedMixinIds = utils.split(mixin.trim(), /\s+/);
       for (i = 0; i < compositedMixinIds.length; i++) {
-        this.registerMixin(document.getElementById(compositedMixinIds[i]));
+        this.registerMixin(compositedMixinIds[i]);
       }
     }
 
@@ -259,6 +267,11 @@ class ANode extends HTMLElement {
     window.HTMLElement.prototype.setAttribute.call(this, attr, newValue);
   }
 
+  /**
+   * Removes the mixin element from `mixinEls`.
+   *
+   * @param {string} mixinId - ID of the mixin to remove.
+   */
   unregisterMixin (mixinId) {
     var i;
     var mixinEls = this.mixinEls;

@@ -71,9 +71,6 @@ suite('a-assets', function () {
 
     // Load image.
     document.body.appendChild(scene);
-    process.nextTick(function () {
-      img.onload();
-    });
   });
 
   test('caches image in three.js', function (done) {

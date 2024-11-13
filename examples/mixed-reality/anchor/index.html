@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Anchor (Mixed Reality) • A-Frame</title>
+    <meta name="description" content="Anchor (Mixed Reality) • A-Frame">
+    <script src="../../../dist/aframe-master.js"></script>
+    <script src="../../js/info-message.js"></script>
+    <script src="anchor-grabbed-entity.js"></script>
+    <script src="painting-changer.js"></script>
+    <script src="painting.js"></script>
+  </head>
+  <body>
+    <a-scene
+      obb-collider="showColliders: false"
+      renderer="colorManagement: true;"
+      button
+      xr-mode-ui="XRMode: ar"
+      info-message="htmlSrc: #messageText">
+      <a-assets  timeout="10000">
+        <!-- Model by theGentleGiant https://sketchfab.com/3d-models/vintage-painting-dani-3fdd92904c2b44028bef28b33e897d9f -->
+        <a-asset-item id="frame"
+          src="https://cdn.aframe.io/examples/mixed-reality/anchor/models/painting/scene.gltf"
+          response-type="arraybuffer"></a-asset-item>
+        <a-asset-item id="messageText" src="message.html"></a-asset-item>
+        <img id="helloaframe" src="https://cdn.aframe.io/examples/mixed-reality/anchor/images/helloaframe.png" crossorigin="anonymous"/>
+        <img id="greco" src="https://cdn.aframe.io/examples/mixed-reality/anchor/images/greco.png" crossorigin="anonymous"/>
+        <img id="mucha" src="https://cdn.aframe.io/examples/mixed-reality/anchor/images/mucha.png" crossorigin="anonymous"/>
+        <img id="scream" src="https://cdn.aframe.io/examples/mixed-reality/anchor/images/scream.png" crossorigin="anonymous"/>
+        <img id="vangogh" src="https://cdn.aframe.io/examples/mixed-reality/anchor/images/vangogh.png" crossorigin="anonymous"/>
+      </a-assets>
+      <a-entity
+        id="painting"
+        position="0 1.6 -0.75"
+        gltf-model="#frame"
+        anchored="persistent: true"
+        painting
+        painting-changer
+        grabbable></a-entity>
+      <a-entity id="rightHand" hand-tracking-grab-controls="hand: right" anchor-grabbed-entity></a-entity>
+      <a-entity id="leftHand" hand-tracking-grab-controls="hand: left" anchor-grabbed-entity></a-entity>
+    </a-scene>
+    <script src="button.js"></script>
+  </body>
+</html>
+

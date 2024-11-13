@@ -1,5 +1,4 @@
 var registerSystem = require('../core/system').registerSystem;
-var bind = require('../utils/bind');
 var constants = require('../constants/');
 
 var DEFAULT_LIGHT_ATTR = 'data-aframe-default-light';
@@ -24,7 +23,7 @@ module.exports.System = registerSystem('light', {
     // Wait for all entities to fully load before checking for existence of lights.
     // Since entities wait for <a-assets> to load, any lights attaching to the scene
     // will do so asynchronously.
-    this.sceneEl.addEventListener('loaded', bind(this.setupDefaultLights, this));
+    this.sceneEl.addEventListener('loaded', this.setupDefaultLights.bind(this));
   },
 
   /**
@@ -53,7 +52,7 @@ module.exports.System = registerSystem('light', {
   },
 
   /**
-   * Prescibe default lights to the scene.
+   * Prescribe default lights to the scene.
    * Does so by injecting markup such that this state is not invisible.
    * These lights are removed if the user adds any lights.
    */
@@ -73,7 +72,7 @@ module.exports.System = registerSystem('light', {
     sceneEl.appendChild(ambientLight);
 
     directionalLight = document.createElement('a-entity');
-    directionalLight.setAttribute('light', {color: '#FFF', intensity: 0.6, castShadow: true});
+    directionalLight.setAttribute('light', {color: '#FFF', intensity: 1.884, castShadow: true});
     directionalLight.setAttribute('position', {x: -0.5, y: 1, z: 1});
     directionalLight.setAttribute(DEFAULT_LIGHT_ATTR, '');
     directionalLight.setAttribute(constants.AFRAME_INJECTED, '');

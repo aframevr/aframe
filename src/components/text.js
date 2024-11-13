@@ -16,7 +16,8 @@ var DEFAULT_WIDTH = 1;
 // @bryik set anisotropy to 16. Improves look of large amounts of text when viewed from angle.
 var MAX_ANISOTROPY = 16;
 
-var FONT_BASE_URL = 'https://cdn.aframe.io/fonts/';
+var AFRAME_CDN_ROOT = require('../constants').AFRAME_CDN_ROOT;
+var FONT_BASE_URL = AFRAME_CDN_ROOT + 'fonts/';
 var FONTS = {
   aileronsemibold: FONT_BASE_URL + 'Aileron-Semibold.fnt',
   dejavu: FONT_BASE_URL + 'DejaVu-sdf.fnt',
@@ -91,6 +92,7 @@ module.exports.Component = registerComponent('text', {
     this.shaderData = {};
     this.geometry = createTextGeometry();
     this.createOrUpdateMaterial();
+    this.explicitGeoDimensionsChecked = false;
   },
 
   update: function (oldData) {
@@ -301,8 +303,13 @@ module.exports.Component = registerComponent('text', {
     // Update geometry dimensions to match text layout if width and height are set to 0.
     // For example, scales a plane to fit text.
     if (geometryComponent && geometryComponent.primitive === 'plane') {
-      if (!geometryComponent.width) { el.setAttribute('geometry', 'width', width); }
-      if (!geometryComponent.height) { el.setAttribute('geometry', 'height', height); }
+      if (!this.explicitGeoDimensionsChecked) {
+        this.explicitGeoDimensionsChecked = true;
+        this.hasExplicitGeoWidth = !!geometryComponent.width;
+        this.hasExplicitGeoHeight = !!geometryComponent.height;
+      }
+      if (!this.hasExplicitGeoWidth) { el.setAttribute('geometry', 'width', width); }
+      if (!this.hasExplicitGeoHeight) { el.setAttribute('geometry', 'height', height); }
     }
 
     // Calculate X position to anchor text left, center, or right.

@@ -5,7 +5,7 @@
     <title>Compositor Layer Example • A-Frame</title>
     <meta name="description" content="Hello, World! • A-Frame">
     <script src="../../../dist/aframe-master.js"></script>
-    <script src="https://unpkg.com/aframe-environment-component@1.3.0/dist/aframe-environment-component.min.js"></script>
+    <script src="https://unpkg.com/aframe-environment-component@1.4.x/dist/aframe-environment-component.min.js"></script>
     <script src="page-turn.js"></script>
     <script src="toggle-layer.js"></script>
     <script src="button.js"></script>
@@ -38,7 +38,7 @@
       <a-entity id="rightHand" toggle-layer laser-controls="hand: right" raycaster="objects: [button]"></a-entity>
 
       <a-entity page-turn="direction: forward" id="nextButton" button="label: Next" position="0.5 1.1 -1.5"></a-entity>
-      <a-entity page-turn="direction: backward" id="previousButton"button="label: Previous" position="-0.5 1.1 -1.5"></a-entity>
+      <a-entity page-turn="direction: backward" id="previousButton" button="label: Previous" position="-0.5 1.1 -1.5"></a-entity>
     </a-scene>
   </body>
 </html>

@@ -44,7 +44,7 @@ module.exports.entityFactory = entityFactory;
 
 /**
  * A more robust entity factory that resolves once stuff is loaded without having to wait
- * on fragile asynchrony.
+ * on fragile asynchronicity.
  *
  * @returns {Promise}
  */

@@ -10,7 +10,6 @@ suite('animation', function () {
   setup(function (done) {
     this.done = false;
     el = entityFactory();
-    el.setAttribute('animation', '');
     el.addEventListener('componentinitialized', function handler (evt) {
       if (evt.detail.name !== 'animation' || this.done) { return; }
       component = el.components.animation;
@@ -18,6 +17,7 @@ suite('animation', function () {
       el.removeEventListener('componentinitialized', handler);
       done();
     });
+    el.setAttribute('animation', '');
   });
 
   suite('basic animation', () => {

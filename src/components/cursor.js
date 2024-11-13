@@ -2,8 +2,6 @@
 var registerComponent = require('../core/component').registerComponent;
 var utils = require('../utils/');
 
-var bind = utils.bind;
-
 var EVENTS = {
   CLICK: 'click',
   FUSING: 'fusing',
@@ -55,6 +53,8 @@ module.exports.Component = registerComponent('cursor', {
     rayOrigin: {default: 'entity', oneOf: ['mouse', 'entity', 'xrselect']}
   },
 
+  after: ['tracked-controls'],
+
   multiple: true,
 
   init: function () {
@@ -76,12 +76,12 @@ module.exports.Component = registerComponent('cursor', {
     this.intersectedEventDetail = {cursorEl: this.el};
 
     // Bind methods.
-    this.onCursorDown = bind(this.onCursorDown, this);
-    this.onCursorUp = bind(this.onCursorUp, this);
-    this.onIntersection = bind(this.onIntersection, this);
-    this.onIntersectionCleared = bind(this.onIntersectionCleared, this);
-    this.onMouseMove = bind(this.onMouseMove, this);
-    this.onEnterVR = bind(this.onEnterVR, this);
+    this.onCursorDown = this.onCursorDown.bind(this);
+    this.onCursorUp = this.onCursorUp.bind(this);
+    this.onIntersection = this.onIntersection.bind(this);
+    this.onIntersectionCleared = this.onIntersectionCleared.bind(this);
+    this.onMouseMove = this.onMouseMove.bind(this);
+    this.onEnterVR = this.onEnterVR.bind(this);
   },
 
   update: function (oldData) {
@@ -129,10 +129,10 @@ module.exports.Component = registerComponent('cursor', {
       canvas = el.sceneEl.canvas;
       if (data.downEvents.length || data.upEvents.length) { return; }
       CANVAS_EVENTS.DOWN.forEach(function (downEvent) {
-        canvas.addEventListener(downEvent, self.onCursorDown);
+        canvas.addEventListener(downEvent, self.onCursorDown, {passive: false});
       });
       CANVAS_EVENTS.UP.forEach(function (upEvent) {
-        canvas.addEventListener(upEvent, self.onCursorUp);
+        canvas.addEventListener(upEvent, self.onCursorUp, {passive: false});
       });
     }
 
@@ -205,8 +205,8 @@ module.exports.Component = registerComponent('cursor', {
     canvas.removeEventListener('touchmove', this.onMouseMove);
     el.setAttribute('raycaster', 'useWorldCoordinates', false);
     if (this.data.rayOrigin !== 'mouse') { return; }
-    canvas.addEventListener('mousemove', this.onMouseMove, false);
-    canvas.addEventListener('touchmove', this.onMouseMove, false);
+    canvas.addEventListener('mousemove', this.onMouseMove);
+    canvas.addEventListener('touchmove', this.onMouseMove, {passive: false});
     el.setAttribute('raycaster', 'useWorldCoordinates', true);
     this.updateCanvasBounds();
   },
@@ -461,7 +461,7 @@ module.exports.Component = registerComponent('cursor', {
     // Clear fuseTimeout.
     clearTimeout(this.fuseTimeout);
 
-    // Set intersection to another raycasted element if any.
+    // Set intersection to another raycast element if any.
     if (ignoreRemaining === true) { return; }
     intersections = this.el.components.raycaster.intersections;
     if (intersections.length === 0) { return; }

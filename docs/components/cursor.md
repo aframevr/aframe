@@ -89,7 +89,7 @@ AFRAME.registerComponent('cursor-listener', {
 | fuseTimeout        | How long to wait (in milliseconds) before triggering a fuse-based click event.                                                                     | 1500                             |
 | mouseCursorStylesEnabled | Whether to show pointer cursor in `rayOrigin: mouse` mode when hovering over entity.                                                               | true                             |
 | rayOrigin          | Where the intersection ray is cast from (i.e. xrselect ,entity or mouse). `rayOrigin: mouse` is extremely useful for VR development on a mouse and keyboard. | entity
-| upEvents           | Array of additional events on the entity to *listen* to for triggering `mouseup` (e.g., `trackpadup` for daydream-controls).                       | []                               |
+| upEvents           | Array of additional events on the entity to *listen* to for triggering `mouseup`.                       | []                               |
 
 To further customize the cursor component, we configure the cursor's dependency
 component, [the raycaster component][raycaster].
@@ -133,7 +133,7 @@ These events provide a wealth of additional detail about the event, as detailed 
 
 - which mouse button was used
 - information about the state of the mouse buttons (or multi-touch for touch events), and relevant keys shuch as Shift, Ctrl etc. at the time of the mouse or touch event.
-- the screen co-ordinates where the event occured.
+- the screen co-ordinates where the event occurred.
 
 This information can be used by applications to handle cursor events differently, depending on this information (e.g. different handling of left click & right click).
 
@@ -143,9 +143,9 @@ For example:
 this.el.addEventListener('click', function (evt) {
   if (!evt.detail.mouseEvent || evt.detail.mouseEvent.button === 0) {
     console.log("left button clicked (or touch event / no information)");
-  
+
   } else if (evt.detail.mouseEvent.button === 2) {
-    console.log("right button clicked"); 
+    console.log("right button clicked");
   }
 });
 ```

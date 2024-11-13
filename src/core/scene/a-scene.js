@@ -1,21 +1,21 @@
-/* global Promise, screen, CustomEvent */
+/* global Promise, customElements, screen, CustomEvent */
 var initMetaTags = require('./metaTags').inject;
 var initWakelock = require('./wakelock');
 var loadingScreen = require('./loadingScreen');
 var scenes = require('./scenes');
 var systems = require('../system').systems;
+var components = require('../component').components;
 var THREE = require('../../lib/three');
 var utils = require('../../utils/');
+var warn = utils.debug('core:a-scene:warn');
 // Require after.
 var AEntity = require('../a-entity').AEntity;
 var ANode = require('../a-node').ANode;
 var initPostMessageAPI = require('./postMessage');
 
-var bind = utils.bind;
 var isIOS = utils.device.isIOS();
 var isMobile = utils.device.isMobile();
 var isWebXRAvailable = utils.device.isWebXRAvailable;
-var warn = utils.debug('core:a-scene:warn');
 
 if (isIOS) { require('../../utils/ios-orientationchange-blank-bug'); }
 
@@ -26,7 +26,7 @@ if (isIOS) { require('../../utils/ios-orientationchange-blank-bug'); }
            updated on every tick.
  * @member {object} camera - three.js Camera object.
  * @member {object} canvas
- * @member {bool} isScene - Differentiates as scene entity as opposed to other entites.
+ * @member {bool} isScene - Differentiates as scene entity as opposed to other entities.
  * @member {bool} isMobile - Whether browser is mobile (via UA detection).
  * @member {object} object3D - Root three.js Scene object.
  * @member {object} renderer
@@ -51,13 +51,15 @@ class AScene extends AEntity {
       // THREE may swap the camera used for the rendering if in VR, so we pass it to tock
       if (self.isPlaying) { self.tock(self.time, self.delta, camera); }
     };
-    self.resize = bind(self.resize, self);
-    self.render = bind(self.render, self);
+    self.resize = self.resize.bind(self);
+    self.render = self.render.bind(self);
     self.systems = {};
     self.systemNames = [];
     self.time = self.delta = 0;
+    self.usedOfferSession = false;
 
-    self.behaviors = {tick: [], tock: []};
+    self.componentOrder = [];
+    self.behaviors = {};
     self.hasLoaded = false;
     self.isPlaying = false;
     self.originalHTML = self.innerHTML;
@@ -71,16 +73,6 @@ class AScene extends AEntity {
     document.documentElement.classList.remove('a-fullscreen');
   }
 
-  connectedCallback () {
-    // Defer if DOM is not ready.
-    if (document.readyState !== 'complete') {
-      document.addEventListener('readystatechange', this.onReadyStateChange.bind(this));
-      return;
-    }
-
-    this.doConnectedCallback();
-  }
-
   doConnectedCallback () {
     var self = this;
     var embedded = this.hasAttribute('embedded');
@@ -89,9 +81,9 @@ class AScene extends AEntity {
     this.setAttribute('inspector', '');
     this.setAttribute('keyboard-shortcuts', '');
     this.setAttribute('screenshot', '');
-    this.setAttribute('vr-mode-ui', '');
+    this.setAttribute('xr-mode-ui', '');
     this.setAttribute('device-orientation-permission-ui', '');
-    super.connectedCallback();
+    super.doConnectedCallback();
 
     // Renderer initialization
     setupCanvas(this);
@@ -105,33 +97,9 @@ class AScene extends AEntity {
     initMetaTags(this);
     initWakelock(this);
 
-    // Handler to exit VR (e.g., Oculus Browser back button).
-    this.onVRPresentChangeBound = bind(this.onVRPresentChange, this);
-    window.addEventListener('vrdisplaypresentchange', this.onVRPresentChangeBound);
-
     // Bind functions.
     this.enterVRBound = function () { self.enterVR(); };
     this.exitVRBound = function () { self.exitVR(); };
-    this.exitVRTrueBound = function () { self.exitVR(true); };
-    this.pointerRestrictedBound = function () { self.pointerRestricted(); };
-    this.pointerUnrestrictedBound = function () { self.pointerUnrestricted(); };
-
-    if (!self.hasWebXR) {
-      // Exit VR on `vrdisplaydeactivate` (e.g. taking off Rift headset).
-      window.addEventListener('vrdisplaydeactivate', this.exitVRBound);
-
-      // Exit VR on `vrdisplaydisconnect` (e.g. unplugging Rift headset).
-      window.addEventListener('vrdisplaydisconnect', this.exitVRTrueBound);
-
-      // Register for mouse restricted events while in VR
-      // (e.g. mouse no longer available on desktop 2D view)
-      window.addEventListener('vrdisplaypointerrestricted', this.pointerRestrictedBound);
-
-      // Register for mouse unrestricted events while in VR
-      // (e.g. mouse once again available on desktop 2D view)
-      window.addEventListener('vrdisplaypointerunrestricted',
-                              this.pointerUnrestrictedBound);
-    }
 
     window.addEventListener('sessionend', this.resize);
     // Camera set up by camera system.
@@ -140,6 +108,12 @@ class AScene extends AEntity {
     });
 
     this.initSystems();
+    // Compute component order
+    this.componentOrder = determineComponentBehaviorOrder(components, this.componentOrder);
+    this.addEventListener('componentregistered', function () {
+      // Recompute order
+      self.componentOrder = determineComponentBehaviorOrder(components, self.componentOrder);
+    });
 
     // WebXR Immersive navigation handler.
     if (this.hasWebXR && navigator.xr && navigator.xr.addEventListener) {
@@ -204,13 +178,6 @@ class AScene extends AEntity {
 
     scenes.splice(sceneIndex, 1);
 
-    window.removeEventListener('vrdisplaypresentchange', this.onVRPresentChangeBound);
-    window.removeEventListener('vrdisplayactivate', this.enterVRBound);
-    window.removeEventListener('vrdisplaydeactivate', this.exitVRBound);
-    window.removeEventListener('vrdisplayconnect', this.enterVRBound);
-    window.removeEventListener('vrdisplaydisconnect', this.exitVRTrueBound);
-    window.removeEventListener('vrdisplaypointerrestricted', this.pointerRestrictedBound);
-    window.removeEventListener('vrdisplaypointerunrestricted', this.pointerUnrestrictedBound);
     window.removeEventListener('sessionend', this.resize);
     this.renderer.dispose();
   }
@@ -221,16 +188,32 @@ class AScene extends AEntity {
    * @param {object} behavior - A component.
    */
   addBehavior (behavior) {
-    var behaviorArr;
-    var behaviors = this.behaviors;
+    var behaviorSet;
+    var behaviors = this.behaviors[behavior.name];
     var behaviorType;
+
+    if (!behaviors) {
+      behaviors = this.behaviors[behavior.name] = {
+        tick: { inUse: false, array: [], markedForRemoval: [] },
+        tock: { inUse: false, array: [], markedForRemoval: [] }
+      };
+    }
 
     // Check if behavior has tick and/or tock and add the behavior to the appropriate list.
     for (behaviorType in behaviors) {
       if (!behavior[behaviorType]) { continue; }
-      behaviorArr = this.behaviors[behaviorType];
-      if (behaviorArr.indexOf(behavior) === -1) {
-        behaviorArr.push(behavior);
+      behaviorSet = behaviors[behaviorType];
+
+      // In case the behaviorSet is in use, make sure this behavior isn't on the removal list.
+      if (behaviorSet.inUse) {
+        var index = behaviorSet.markedForRemoval.indexOf(behavior);
+        if (index !== -1) {
+          behaviorSet.markedForRemoval.splice(index, 1);
+        }
+      }
+      // Add behavior to the set
+      if (behaviorSet.array.indexOf(behavior) === -1) {
+        behaviorSet.array.push(behavior);
       }
     }
   }
@@ -270,13 +253,14 @@ class AScene extends AEntity {
    * @param {bool?} useAR - if true, try immersive-ar mode
    * @returns {Promise}
    */
-  enterVR (useAR) {
+  enterVR (useAR, useOfferSession) {
     var self = this;
-    var vrDisplay;
     var vrManager = self.renderer.xr;
     var xrInit;
 
     // Don't enter VR if already in VR.
+    if (useOfferSession && (!navigator.xr || !navigator.xr.offerSession)) { return Promise.resolve('OfferSession is not supported.'); }
+    if (self.usedOfferSession && useOfferSession) { return Promise.resolve('OfferSession was already called.'); }
     if (this.is('vr-mode')) { return Promise.resolve('Already in VR.'); }
 
     // Has VR.
@@ -294,40 +278,33 @@ class AScene extends AEntity {
         var xrMode = useAR ? 'immersive-ar' : 'immersive-vr';
         xrInit = this.sceneEl.systems.webxr.sessionConfiguration;
         return new Promise(function (resolve, reject) {
-          navigator.xr.requestSession(xrMode, xrInit).then(
+          var requestSession = useOfferSession ? navigator.xr.offerSession.bind(navigator.xr) : navigator.xr.requestSession.bind(navigator.xr);
+          self.usedOfferSession |= useOfferSession;
+          requestSession(xrMode, xrInit).then(
             function requestSuccess (xrSession) {
-              self.xrSession = xrSession;
+              if (useOfferSession) {
+                self.usedOfferSession = false;
+              }
+
               vrManager.layersEnabled = xrInit.requiredFeatures.indexOf('layers') !== -1;
               vrManager.setSession(xrSession).then(function () {
                 vrManager.setFoveation(rendererSystem.foveationLevel);
+                self.xrSession = xrSession;
+                self.systems.renderer.setWebXRFrameRate(xrSession);
+                xrSession.addEventListener('end', self.exitVRBound);
+                enterVRSuccess(resolve);
               });
-              self.systems.renderer.setWebXRFrameRate(xrSession);
-              xrSession.addEventListener('end', self.exitVRBound);
-              enterVRSuccess(resolve);
             },
             function requestFail (error) {
               var useAR = xrMode === 'immersive-ar';
               var mode = useAR ? 'AR' : 'VR';
-              throw new Error('Failed to enter ' + mode + ' mode (`requestSession`) ' + error);
+              reject(new Error('Failed to enter ' + mode + ' mode (`requestSession`)', { cause: error }));
             }
           );
         });
       } else {
-        vrDisplay = utils.device.getVRDisplay();
-        vrManager.setDevice(vrDisplay);
-        if (vrDisplay.isPresenting &&
-            !window.hasNativeWebVRImplementation) {
-          enterVRSuccess();
-          return Promise.resolve();
-        }
-        var presentationAttributes = {
-          highRefreshRate: rendererSystem.highRefreshRate
-        };
-
-        return vrDisplay.requestPresent([{
-          source: this.canvas,
-          attributes: presentationAttributes
-        }]).then(enterVRSuccess, enterVRFailure);
+        var mode = useAR ? 'AR' : 'VR';
+        throw new Error('Failed to enter ' + mode + ' no WebXR');
       }
     }
 
@@ -337,17 +314,6 @@ class AScene extends AEntity {
 
     // Callback that happens on enter VR success or enter fullscreen (any API).
     function enterVRSuccess (resolve) {
-      // vrdisplaypresentchange fires only once when the first requestPresent is completed;
-      // the first requestPresent could be called from ondisplayactivate and there is no way
-      // to setup everything from there. Thus, we need to emulate another vrdisplaypresentchange
-      // for the actual requestPresent. Need to make sure there are no issues with firing the
-      // vrdisplaypresentchange multiple times.
-      var event;
-      if (window.hasNativeWebVRImplementation && !window.hasNativeWebXRImplementation) {
-        event = new CustomEvent('vrdisplaypresentchange', {detail: {display: utils.device.getVRDisplay()}});
-        window.dispatchEvent(event);
-      }
-
       if (useAR) {
         self.addState('ar-mode');
       } else {
@@ -371,15 +337,6 @@ class AScene extends AEntity {
       self.resize();
       if (resolve) { resolve(); }
     }
-
-    function enterVRFailure (err) {
-      self.removeState('vr-mode');
-      if (err && err.message) {
-        throw new Error('Failed to enter VR mode (`requestPresent`): ' + err.message);
-      } else {
-        throw new Error('Failed to enter VR mode (`requestPresent`).');
-      }
-    }
   }
 
    /**
@@ -390,7 +347,6 @@ class AScene extends AEntity {
    */
   exitVR () {
     var self = this;
-    var vrDisplay;
     var vrManager = this.renderer.xr;
 
     // Don't exit VR if not in VR.
@@ -399,16 +355,13 @@ class AScene extends AEntity {
     // Handle exiting VR if not yet already and in a headset or polyfill.
     if (this.checkHeadsetConnected() || this.isMobile) {
       vrManager.enabled = false;
-      vrDisplay = utils.device.getVRDisplay();
       if (this.hasWebXR) {
         this.xrSession.removeEventListener('end', this.exitVRBound);
         // Capture promise to avoid errors.
         this.xrSession.end().then(function () {}, function () {});
         this.xrSession = undefined;
       } else {
-        if (vrDisplay.isPresenting) {
-          return vrDisplay.exitPresent().then(exitVRSuccess, exitVRFailure);
-        }
+        throw Error('Failed to exit VR - no WebXR');
       }
     } else {
       exitFullscreen();
@@ -434,51 +387,6 @@ class AScene extends AEntity {
       self.renderer.setPixelRatio(window.devicePixelRatio);
       self.emit('exit-vr', {target: self});
     }
-
-    function exitVRFailure (err) {
-      if (err && err.message) {
-        throw new Error('Failed to exit VR mode (`exitPresent`): ' + err.message);
-      } else {
-        throw new Error('Failed to exit VR mode (`exitPresent`).');
-      }
-    }
-  }
-
-  pointerRestricted () {
-    if (this.canvas) {
-      var pointerLockElement = this.getPointerLockElement();
-      if (pointerLockElement && pointerLockElement !== this.canvas && document.exitPointerLock) {
-        // Recreate pointer lock on the canvas, if taken on another element.
-        document.exitPointerLock();
-      }
-
-      if (this.canvas.requestPointerLock) {
-        this.canvas.requestPointerLock();
-      }
-    }
-  }
-
-  pointerUnrestricted () {
-    var pointerLockElement = this.getPointerLockElement();
-    if (pointerLockElement && pointerLockElement === this.canvas && document.exitPointerLock) {
-      document.exitPointerLock();
-    }
-  }
-
-  /**
-   * Handle `vrdisplaypresentchange` event for exiting VR through other means than
-   * `<ESC>` key. For example, GearVR back button on Oculus Browser.
-   */
-  onVRPresentChange (evt) {
-    // Polyfill places display inside the detail property
-    var display = evt.display || evt.detail.display;
-    // Entering VR.
-    if (display && display.isPresenting) {
-      this.enterVR();
-      return;
-    }
-    // Exiting VR.
-    this.exitVR();
   }
 
   /**
@@ -489,15 +397,6 @@ class AScene extends AEntity {
     var system = this.systems[attr];
     if (system) { return system.data; }
     return AEntity.prototype.getAttribute.call(this, attr);
-  }
-
-  /**
-   * `getAttribute` used to be `getDOMAttribute` and `getComputedAttribute` used to be
-   * what `getAttribute` is now. Now legacy code.
-   */
-  getComputedAttribut (attr) {
-    warn('`getComputedAttribute` is deprecated. Use `getAttribute` instead.');
-    this.getAttribute(attr);
   }
 
   /**
@@ -516,10 +415,15 @@ class AScene extends AEntity {
    * setAttribute.
    */
   setAttribute (attr, value, componentPropValue) {
-    var system = this.systems[attr];
-    if (system) {
+    // Check if system exists (i.e. is registered).
+    if (systems[attr]) {
       ANode.prototype.setAttribute.call(this, attr, value);
-      system.updateProperties(value);
+
+      // Update system instance, if initialized on the scene.
+      var system = this.systems[attr];
+      if (system) {
+        system.updateProperties(value);
+      }
       return;
     }
     AEntity.prototype.setAttribute.call(this, attr, value, componentPropValue);
@@ -529,18 +433,30 @@ class AScene extends AEntity {
    * @param {object} behavior - A component.
    */
   removeBehavior (behavior) {
-    var behaviorArr;
+    var behaviorSet;
     var behaviorType;
-    var behaviors = this.behaviors;
+    var behaviors = this.behaviors[behavior.name];
     var index;
 
     // Check if behavior has tick and/or tock and remove the behavior from the appropriate
     // array.
     for (behaviorType in behaviors) {
       if (!behavior[behaviorType]) { continue; }
-      behaviorArr = this.behaviors[behaviorType];
-      index = behaviorArr.indexOf(behavior);
-      if (index !== -1) { behaviorArr.splice(index, 1); }
+      behaviorSet = behaviors[behaviorType];
+      index = behaviorSet.array.indexOf(behavior);
+      if (index !== -1) {
+        // Check if the behavior can safely be removed.
+        if (behaviorSet.inUse) {
+          // Set is in use, so only mark for removal.
+          if (behaviorSet.markedForRemoval.indexOf(behavior) === -1) {
+            behaviorSet.markedForRemoval.push(behavior);
+          }
+        } else {
+          // Swap and remove from the end
+          behaviorSet.array[index] = behaviorSet.array[behaviorSet.array.length - 1];
+          behaviorSet.array.pop();
+        }
+      }
     }
   }
 
@@ -588,7 +504,7 @@ class AScene extends AEntity {
       powerPreference: 'high-performance'
     };
 
-    this.maxCanvasSize = {height: 1920, width: 1920};
+    this.maxCanvasSize = {height: -1, width: -1};
 
     if (this.hasAttribute('renderer')) {
       rendererAttrString = this.getAttribute('renderer');
@@ -610,6 +526,14 @@ class AScene extends AEntity {
         rendererConfig.alpha = rendererAttr.alpha === 'true';
       }
 
+      if (rendererAttr.stencil) {
+        rendererConfig.stencil = rendererAttr.stencil === 'true';
+      }
+
+      if (rendererAttr.multiviewStereo) {
+        rendererConfig.multiviewStereo = rendererAttr.multiviewStereo === 'true';
+      }
+
       this.maxCanvasSize = {
         width: rendererAttr.maxCanvasWidth
           ? parseInt(rendererAttr.maxCanvasWidth)
@@ -622,7 +546,7 @@ class AScene extends AEntity {
 
     renderer = this.renderer = new THREE.WebGLRenderer(rendererConfig);
     renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.sortObjects = false;
+
     if (this.camera) { renderer.xr.setPoseTarget(this.camera.el.object3D); }
     this.addEventListener('camera-set-active', function () {
       renderer.xr.setPoseTarget(self.camera.el.object3D);
@@ -644,8 +568,6 @@ class AScene extends AEntity {
 
     this.addEventListener('loaded', function () {
       var renderer = this.renderer;
-      var vrDisplay;
-      var vrManager = this.renderer.xr;
       AEntity.prototype.play.call(this);  // .play() *before* render.
 
       if (sceneEl.renderStarted) { return; }
@@ -655,12 +577,6 @@ class AScene extends AEntity {
       if (sceneEl.renderer) {
         if (window.performance) { window.performance.mark('render-started'); }
         loadingScreen.remove();
-        vrDisplay = utils.device.getVRDisplay();
-        if (vrDisplay && vrDisplay.isPresenting) {
-          vrManager.setDevice(vrDisplay);
-          vrManager.enabled = true;
-          sceneEl.enterVR();
-        }
         renderer.setAnimationLoop(this.render);
         sceneEl.renderStarted = true;
         sceneEl.emit('renderstart');
@@ -692,10 +608,7 @@ class AScene extends AEntity {
     var systems = this.systems;
 
     // Components.
-    for (i = 0; i < this.behaviors.tick.length; i++) {
-      if (!this.behaviors.tick[i].el.isPlaying) { continue; }
-      this.behaviors.tick[i].tick(time, timeDelta);
-    }
+    this.callComponentBehaviors('tick', time, timeDelta);
 
     // Systems.
     for (i = 0; i < this.systemNames.length; i++) {
@@ -714,10 +627,7 @@ class AScene extends AEntity {
     var systems = this.systems;
 
     // Components.
-    for (i = 0; i < this.behaviors.tock.length; i++) {
-      if (!this.behaviors.tock[i].el.isPlaying) { continue; }
-      this.behaviors.tock[i].tock(time, timeDelta, camera);
-    }
+    this.callComponentBehaviors('tock', time, timeDelta);
 
     // Systems.
     for (i = 0; i < this.systemNames.length; i++) {
@@ -753,7 +663,105 @@ class AScene extends AEntity {
       this.object3D.background = savedBackground;
     }
   }
+
+  callComponentBehaviors (behavior, time, timeDelta) {
+    var i;
+
+    for (var c = 0; c < this.componentOrder.length; c++) {
+      var behaviors = this.behaviors[this.componentOrder[c]];
+      if (!behaviors) { continue; }
+      var behaviorSet = behaviors[behavior];
+
+      behaviorSet.inUse = true;
+      for (i = 0; i < behaviorSet.array.length; i++) {
+        if (!behaviorSet.array[i].isPlaying) { continue; }
+        behaviorSet.array[i][behavior](time, timeDelta);
+      }
+      behaviorSet.inUse = false;
+
+      // Clean up any behaviors marked for removal
+      for (i = 0; i < behaviorSet.markedForRemoval.length; i++) {
+        this.removeBehavior(behaviorSet.markedForRemoval[i]);
+      }
+      behaviorSet.markedForRemoval.length = 0;
+    }
+  }
 }
+
+/**
+ * Derives an ordering from the components, taking any before and after
+ * constraints into account.
+ *
+ * @param {object} components - The components to order
+ * @param {array} array - Optional array to use as output
+ */
+function determineComponentBehaviorOrder (components, array) {
+  var graph = {};
+  var i;
+  var key;
+  var result = array || [];
+  result.length = 0;
+
+  // Construct graph nodes for each element
+  for (key in components) {
+    var element = components[key];
+    if (element === undefined) { continue; }
+    var before = element.before ? element.before.slice(0) : [];
+    var after = element.after ? element.after.slice(0) : [];
+    graph[key] = { before: before, after: after, visited: false, done: false };
+  }
+
+  // Normalize to after constraints, warn about missing nodes
+  for (key in graph) {
+    for (i = 0; i < graph[key].before.length; i++) {
+      var beforeName = graph[key].before[i];
+      if (!(beforeName in graph)) {
+        warn('Invalid ordering constraint, no component named `' + beforeName + '` referenced by `' + key + '`');
+        continue;
+      }
+
+      graph[beforeName].after.push(key);
+    }
+  }
+
+  // Perform topological depth-first search
+  // https://en.wikipedia.org/wiki/Topological_sorting#Depth-first_search
+  function visit (name) {
+    if (!(name in graph) || graph[name].done) {
+      return;
+    }
+
+    if (graph[name].visited) {
+      warn('Cycle detected, ignoring one or more before/after constraints. ' +
+        'The resulting order might be incorrect');
+      return;
+    }
+
+    graph[name].visited = true;
+
+    for (var i = 0; i < graph[name].after.length; i++) {
+      var afterName = graph[name].after[i];
+      if (!(afterName in graph)) {
+        warn('Invalid before/after constraint, no component named `' +
+            afterName + '` referenced in `' + name + '`');
+      }
+      visit(afterName);
+    }
+
+    graph[name].done = true;
+    result.push(name);
+  }
+
+  for (key in graph) {
+    if (graph[key].done) {
+      continue;
+    }
+    visit(key);
+  }
+  return result;
+}
+
+module.exports.determineComponentBehaviorOrder = determineComponentBehaviorOrder;
 
 /**
  * Return size constrained to maxSize - maintaining aspect ratio.
@@ -790,7 +798,7 @@ function constrainSizeTo (size, maxSize) {
   return size;
 }
 
-window.customElements.define('a-scene', AScene);
+customElements.define('a-scene', AScene);
 
 /**
  * Return the canvas size where the scene will be rendered.
@@ -875,21 +883,21 @@ function setupCanvas (sceneEl) {
   document.addEventListener('MSFullscreenChange', onFullScreenChange);
 
   // Prevent overscroll on mobile.
-  canvasEl.addEventListener('touchmove', function (event) { event.preventDefault(); });
+  canvasEl.addEventListener('touchmove', function (event) { event.preventDefault(); }, {passive: false});
 
   // Set canvas on scene.
   sceneEl.canvas = canvasEl;
   sceneEl.emit('render-target-loaded', {target: canvasEl});
   // For unknown reasons a synchronous resize does not work on desktop when
   // entering/exiting fullscreen.
-  setTimeout(bind(sceneEl.resize, sceneEl), 0);
+  setTimeout(sceneEl.resize.bind(sceneEl), 0);
 
   function onFullScreenChange () {
     var fullscreenEl =
       document.fullscreenElement ||
       document.mozFullScreenElement ||
       document.webkitFullscreenElement;
-    // No fullscren element === exit fullscreen
+    // No fullscreen element === exit fullscreen
     if (!fullscreenEl) { sceneEl.exitVR(); }
     document.activeElement.blur();
     document.body.focus();

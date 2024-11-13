@@ -32,7 +32,8 @@ module.exports.Component = registerComponent('material', {
     vertexColorsEnabled: {default: false},
     visible: {default: true},
     blending: {default: 'normal', oneOf: ['none', 'normal', 'additive', 'subtractive', 'multiply']},
-    dithering: {default: true}
+    dithering: {default: true},
+    anisotropy: {default: 0, min: 0}
   },
 
   init: function () {
@@ -249,4 +250,13 @@ function parseBlending (blending) {
 function disposeMaterial (material, system) {
   material.dispose();
   system.unregisterMaterial(material);
+
+  // Dispose textures on this material
+  Object.keys(material)
+    .filter(function (propName) {
+      return material[propName] && material[propName].isTexture;
+    })
+    .forEach(function (mapName) {
+      material[mapName].dispose();
+    });
 }
