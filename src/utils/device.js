@@ -127,9 +127,8 @@ function isAppleVisionPro () {
   // Safari for Apple Vision Pro presents itself as a desktop browser.
   var isMacintosh = navigator.userAgent.includes('Macintosh');
   // Discriminates between a "real" desktop browser and Safari for Vision Pro.
-  // Note: need to check for posible false positives on iPhones / iPads.
   var hasFiveTouchPoints = navigator.maxTouchPoints === 5;
-  return isMacintosh && hasFiveTouchPoints;
+  return isMacintosh && hasFiveTouchPoints && isWebXRAvailable;
 }
 module.exports.isAppleVisionPro = isAppleVisionPro;
 
