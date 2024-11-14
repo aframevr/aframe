@@ -1,7 +1,7 @@
 /* global assert, process, setup, sinon, suite, test, THREE */
 const entityFactory = require('../helpers').entityFactory;
 
-suite('tracked-controls-webxr', function () {
+suite('hand-tracking-controls', function () {
   var controller;
   var el;
   var system;
@@ -31,7 +31,7 @@ suite('tracked-controls-webxr', function () {
             return true;
           }
         };
-        system = el.sceneEl.systems['tracked-controls-webxr'];
+        system = el.sceneEl.systems['tracked-controls'];
         controller = {
           handedness: 'left',
           profiles: ['oculus-hand'],
@@ -60,7 +60,7 @@ suite('tracked-controls-webxr', function () {
     test('matches controller with same hand', function () {
       el.setAttribute('hand-tracking-controls', {hand: 'left'});
       el.components['hand-tracking-controls'].checkIfControllerPresent();
-      var component = el.components['tracked-controls-webxr'];
+      var component = el.components['tracked-controls'];
       assert.equal(component.controller, controller);
     });
   });

@@ -9,26 +9,8 @@ var AFRAME_CDN_ROOT = require('../constants').AFRAME_CDN_ROOT;
 var VIVE_CONTROLLER_MODEL_OBJ_URL = AFRAME_CDN_ROOT + 'controllers/vive/vr_controller_vive.obj';
 var VIVE_CONTROLLER_MODEL_OBJ_MTL = AFRAME_CDN_ROOT + 'controllers/vive/vr_controller_vive.mtl';
 
-var isWebXRAvailable = require('../utils/').device.isWebXRAvailable;
-
-var GAMEPAD_ID_WEBXR = 'htc-vive';
-var GAMEPAD_ID_WEBVR = 'OpenVR ';
-
-// Prefix for HTC Vive Controllers.
-var GAMEPAD_ID_PREFIX = isWebXRAvailable ? GAMEPAD_ID_WEBXR : GAMEPAD_ID_WEBVR;
-
-/**
- * Button IDs:
- * 0 - trackpad
- * 1 - trigger (intensity value from 0.5 to 1)
- * 2 - grip
- * 3 - menu (dispatch but better for menu options)
- * 4 - system (never dispatched on this layer)
- */
-var INPUT_MAPPING_WEBVR = {
-  axes: {trackpad: [0, 1]},
-  buttons: ['trackpad', 'trigger', 'grip', 'menu', 'system']
-};
+// Prefix for HTC Vive controllers.
+var GAMEPAD_ID_PREFIX = 'htc-vive';
 
 /**
  * Button IDs:
@@ -43,12 +25,10 @@ var INPUT_MAPPING_WEBVR = {
  * 1 - touchpad y axis
  * Reference: https://github.com/immersive-web/webxr-input-profiles/blob/master/packages/registry/profiles/htc/htc-vive.json
  */
-var INPUT_MAPPING_WEBXR = {
+var INPUT_MAPPING = {
   axes: {touchpad: [0, 1]},
   buttons: ['trigger', 'grip', 'touchpad', 'none']
 };
-
-var INPUT_MAPPING = isWebXRAvailable ? INPUT_MAPPING_WEBXR : INPUT_MAPPING_WEBVR;
 
 /**
  * Vive controls.
@@ -61,8 +41,7 @@ module.exports.Component = registerComponent('vive-controls', {
     hand: {default: 'left'},
     buttonColor: {type: 'color', default: '#FAFAFA'},  // Off-white.
     buttonHighlightColor: {type: 'color', default: '#22D1EE'},  // Light blue.
-    model: {default: true},
-    orientationOffset: {type: 'vec3'}
+    model: {default: true}
   },
 
   after: ['tracked-controls'],
@@ -72,7 +51,6 @@ module.exports.Component = registerComponent('vive-controls', {
   init: function () {
     var self = this;
     this.controllerPresent = false;
-    this.lastControllerCheck = 0;
     this.onButtonChanged = this.onButtonChanged.bind(this);
     this.onButtonDown = function (evt) { onButtonEvent(evt.detail.id, 'down', self); };
     this.onButtonUp = function (evt) { onButtonEvent(evt.detail.id, 'up', self); };
@@ -149,8 +127,7 @@ module.exports.Component = registerComponent('vive-controls', {
     el.setAttribute('tracked-controls', {
       idPrefix: GAMEPAD_ID_PREFIX,
       hand: data.hand,
-      controller: this.controllerIndex,
-      orientationOffset: data.orientationOffset
+      controller: this.controllerIndex
     });
 
     // Load model.

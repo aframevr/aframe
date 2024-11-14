@@ -112,7 +112,6 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
     this.el.sceneEl.addEventListener('exit-vr', this.updateReferenceSpace);
     this.el.addEventListener('child-attached', this.onChildAttached);
 
-    this.el.object3D.visible = false;
     this.wristObject3D.visible = false;
   },
 
@@ -174,7 +173,7 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
     var sceneEl = this.el.sceneEl;
     var controller = this.el.components['tracked-controls'] && this.el.components['tracked-controls'].controller;
     var frame = sceneEl.frame;
-    var trackedControlsWebXR = this.el.components['tracked-controls-webxr'];
+    var trackedControlsWebXR = this.el.components['tracked-controls'];
     var referenceSpace = this.referenceSpace;
     if (!controller || !frame || !referenceSpace || !trackedControlsWebXR) { return; }
     this.hasPoses = false;
@@ -203,6 +202,9 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
   })(),
 
   updateHandModel: function () {
+    this.wristObject3D.visible = true;
+    this.el.object3D.visible = true;
+
     if (this.data.modelStyle === 'dots') {
       this.updateHandDotsModel();
     }

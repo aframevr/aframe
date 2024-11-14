@@ -22,7 +22,7 @@ module.exports.Component = registerComponent('light', {
     groundColor: {type: 'color', if: {type: ['hemisphere']}},
     decay: {default: 1, if: {type: ['point', 'spot']}},
     distance: {default: 0.0, min: 0, if: {type: ['point', 'spot']}},
-    intensity: {default: 1.0, min: 0, if: {type: ['ambient', 'directional', 'hemisphere', 'point', 'spot', 'probe']}},
+    intensity: {default: 3.14, min: 0, if: {type: ['ambient', 'directional', 'hemisphere', 'point', 'spot', 'probe']}},
     penumbra: {default: 0, min: 0, max: 1, if: {type: ['spot']}},
     type: {
       default: 'directional',

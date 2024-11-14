@@ -8,23 +8,8 @@ var onButtonEvent = trackedControlsUtils.onButtonEvent;
 var AFRAME_CDN_ROOT = require('../constants').AFRAME_CDN_ROOT;
 var VIVE_FOCUS_CONTROLLER_MODEL_URL = AFRAME_CDN_ROOT + 'controllers/vive/focus-controller/focus-controller.gltf';
 
-var isWebXRAvailable = require('../utils/').device.isWebXRAvailable;
-
-var GAMEPAD_ID_WEBXR = 'htc-vive-focus';
-var GAMEPAD_ID_WEBVR = 'HTC Vive Focus ';
-
 // Prefix for HTC Vive Focus Controllers.
-var GAMEPAD_ID_PREFIX = isWebXRAvailable ? GAMEPAD_ID_WEBXR : GAMEPAD_ID_WEBVR;
-
-/**
- * Button IDs:
- * 0 - trackpad
- * 1 - trigger
- */
-var INPUT_MAPPING_WEBVR = {
-  axes: {trackpad: [0, 1]},
-  buttons: ['trackpad', 'trigger']
-};
+var GAMEPAD_ID_PREFIX = 'htc-vive-focus';
 
 /**
  * Button IDs:
@@ -32,12 +17,10 @@ var INPUT_MAPPING_WEBVR = {
  * 2 - touchpad
  * 4 - menu
  */
-var INPUT_MAPPING_WEBXR = {
+var INPUT_MAPPING = {
   axes: {touchpad: [0, 1]},
   buttons: ['trigger', 'none', 'touchpad', 'none', 'menu']
 };
-
-var INPUT_MAPPING = isWebXRAvailable ? INPUT_MAPPING_WEBXR : INPUT_MAPPING_WEBVR;
 
 /**
  * Vive Focus controls.
@@ -50,9 +33,7 @@ module.exports.Component = registerComponent('vive-focus-controls', {
     hand: {default: ''},  // This informs the degenerate arm model.
     buttonTouchedColor: {type: 'color', default: '#BBBBBB'},
     buttonHighlightColor: {type: 'color', default: '#7A7A7A'},
-    model: {default: true},
-    orientationOffset: {type: 'vec3'},
-    armModel: {default: true}
+    model: {default: true}
   },
 
   after: ['tracked-controls'],
@@ -75,7 +56,6 @@ module.exports.Component = registerComponent('vive-focus-controls', {
     this.onButtonTouchStart = function (evt) { onButtonEvent(evt.detail.id, 'touchstart', self); };
     this.onButtonTouchEnd = function (evt) { onButtonEvent(evt.detail.id, 'touchend', self); };
     this.controllerPresent = false;
-    this.lastControllerCheck = 0;
     this.bindMethods();
   },
 
@@ -124,9 +104,7 @@ module.exports.Component = registerComponent('vive-focus-controls', {
     var el = this.el;
     var data = this.data;
     el.setAttribute('tracked-controls', {
-      armModel: data.armModel,
-      idPrefix: GAMEPAD_ID_PREFIX,
-      orientationOffset: data.orientationOffset
+      idPrefix: GAMEPAD_ID_PREFIX
     });
     if (!this.data.model) { return; }
     this.el.setAttribute('gltf-model', VIVE_FOCUS_CONTROLLER_MODEL_URL);
@@ -155,6 +133,8 @@ module.exports.Component = registerComponent('vive-focus-controls', {
     if (buttonMeshes.triggerPressed) {
       buttonMeshes.triggerPressed.visible = false;
     }
+    buttonMeshes.touchpad = controllerObject3D.getObjectByName('TouchPad');
+    buttonMeshes.touchpadPressed = controllerObject3D.getObjectByName('TouchPad_Press');
     buttonMeshes.trackpad = controllerObject3D.getObjectByName('TouchPad');
     buttonMeshes.trackpadPressed = controllerObject3D.getObjectByName('TouchPad_Press');
     if (buttonMeshes.trackpadPressed) {

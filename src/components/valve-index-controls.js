@@ -15,31 +15,16 @@ var INDEX_CONTROLLER_MODEL_URL = {
 
 var GAMEPAD_ID_PREFIX = 'valve';
 
-var isWebXRAvailable = require('../utils/').device.isWebXRAvailable;
-
-var INDEX_CONTROLLER_POSITION_OFFSET_WEBVR = {
-  left: {x: -0.00023692678902063457, y: 0.04724540367838371, z: -0.061959880395271096},
-  right: {x: 0.002471558599671131, y: 0.055765208987076195, z: -0.061068168708348844}
-};
-
-var INDEX_CONTROLLER_POSITION_OFFSET_WEBXR = {
+var INDEX_CONTROLLER_ROTATION_OFFSET = {
   left: {x: 0, y: -0.05, z: 0.06},
   right: {x: 0, y: -0.05, z: 0.06}
 };
 
-var INDEX_CONTROLLER_ROTATION_OFFSET_WEBVR = {
-  left: {_x: 0.692295102620542, _y: -0.0627618864318427, _z: -0.06265893149611756, _order: 'XYZ'},
-  right: {_x: 0.6484021229942998, _y: -0.032563619881892894, _z: -0.1327973171917482, _order: 'XYZ'}
-};
-
-var INDEX_CONTROLLER_ROTATION_OFFSET_WEBXR = {
+var INDEX_CONTROLLER_POSITION_OFFSET = {
   left: {_x: Math.PI / 3, _y: 0, _z: 0, _order: 'XYZ'},
   right: {_x: Math.PI / 3, _y: 0, _z: 0, _order: 'XYZ'}
 };
 
-var INDEX_CONTROLLER_ROTATION_OFFSET = isWebXRAvailable ? INDEX_CONTROLLER_ROTATION_OFFSET_WEBXR : INDEX_CONTROLLER_ROTATION_OFFSET_WEBVR;
-
-var INDEX_CONTROLLER_POSITION_OFFSET = isWebXRAvailable ? INDEX_CONTROLLER_POSITION_OFFSET_WEBXR : INDEX_CONTROLLER_POSITION_OFFSET_WEBVR;
 /**
  * Vive controls.
  * Interface with Vive controllers and map Gamepad events to controller buttons:
@@ -51,8 +36,7 @@ module.exports.Component = registerComponent('valve-index-controls', {
     hand: {default: 'left'},
     buttonColor: {type: 'color', default: '#FAFAFA'},  // Off-white.
     buttonHighlightColor: {type: 'color', default: '#22D1EE'},  // Light blue.
-    model: {default: true},
-    orientationOffset: {type: 'vec3'}
+    model: {default: true}
   },
 
   after: ['tracked-controls'],
@@ -68,7 +52,6 @@ module.exports.Component = registerComponent('valve-index-controls', {
   init: function () {
     var self = this;
     this.controllerPresent = false;
-    this.lastControllerCheck = 0;
     this.onButtonChanged = this.onButtonChanged.bind(this);
     this.onButtonDown = function (evt) { onButtonEvent(evt.detail.id, 'down', self); };
     this.onButtonUp = function (evt) { onButtonEvent(evt.detail.id, 'up', self); };
@@ -142,8 +125,7 @@ module.exports.Component = registerComponent('valve-index-controls', {
       idPrefix: GAMEPAD_ID_PREFIX,
       // Hand IDs: 1 = right, 0 = left, 2 = anything else.
       controller: data.hand === 'right' ? 1 : data.hand === 'left' ? 0 : 2,
-      hand: data.hand,
-      orientationOffset: data.orientationOffset
+      hand: data.hand
     });
 
     this.loadModel();

@@ -22,7 +22,7 @@ suite('vive-focus-controls', function () {
       var addEventListenersSpy = sinon.spy(component, 'addEventListeners');
       var injectTrackedControlsSpy = sinon.spy(component, 'injectTrackedControls');
 
-      el.sceneEl.systems['tracked-controls-webxr'].controllers = [];
+      el.sceneEl.systems['tracked-controls'].controllers = [];
 
       component.controllerPresent = false;
 
@@ -40,7 +40,7 @@ suite('vive-focus-controls', function () {
       var injectTrackedControlsSpy = sinon.spy(component, 'injectTrackedControls');
       var removeEventListenersSpy = sinon.spy(component, 'removeEventListeners');
 
-      el.sceneEl.systems['tracked-controls-webxr'].controllers = [];
+      el.sceneEl.systems['tracked-controls'].controllers = [];
 
       component.controllerEventsActive = false;
       component.controllerPresent = false;
@@ -60,7 +60,7 @@ suite('vive-focus-controls', function () {
       var injectTrackedControlsSpy = sinon.spy(component, 'injectTrackedControls');
       var removeEventListenersSpy = sinon.spy(component, 'removeEventListeners');
 
-      el.sceneEl.systems['tracked-controls-webxr'].controllers = component.controllersWhenPresent;
+      el.sceneEl.systems['tracked-controls'].controllers = component.controllersWhenPresent;
 
       component.controllerPresent = false;
 
@@ -79,7 +79,7 @@ suite('vive-focus-controls', function () {
       var injectTrackedControlsSpy = sinon.spy(component, 'injectTrackedControls');
       var removeEventListenersSpy = sinon.spy(component, 'removeEventListeners');
 
-      el.sceneEl.systems['tracked-controls-webxr'].controllers = component.controllersWhenPresent;
+      el.sceneEl.systems['tracked-controls'].controllers = component.controllersWhenPresent;
 
       component.controllerEventsActive = true;
       component.controllerPresent = true;
@@ -99,7 +99,7 @@ suite('vive-focus-controls', function () {
       var injectTrackedControlsSpy = sinon.spy(component, 'injectTrackedControls');
       var removeEventListenersSpy = sinon.spy(component, 'removeEventListeners');
 
-      el.sceneEl.systems['tracked-controls-webxr'].controllers = [];
+      el.sceneEl.systems['tracked-controls'].controllers = [];
 
       component.controllerEventsActive = true;
       component.controllerPresent = true;
@@ -195,7 +195,7 @@ suite('vive-focus-controls', function () {
    */
   function setupTestControllers (el) {
     var component = el.components['vive-focus-controls'];
-    el.sceneEl.systems['tracked-controls-webxr'].controllers = component.controllersWhenPresent;
+    el.sceneEl.systems['tracked-controls'].controllers = component.controllersWhenPresent;
     component.checkIfControllerPresent();
   }
 });

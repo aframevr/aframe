@@ -16,9 +16,8 @@ module.exports.System = registerSystem('renderer', {
     maxCanvasWidth: {default: -1},
     maxCanvasHeight: {default: -1},
     multiviewStereo: {default: false},
-    physicallyCorrectLights: {default: false},
-    exposure: {default: 1, if: {toneMapping: ['ACESFilmic', 'linear', 'reinhard', 'cineon']}},
-    toneMapping: {default: 'no', oneOf: ['no', 'ACESFilmic', 'linear', 'reinhard', 'cineon']},
+    exposure: {default: 1, if: {toneMapping: ['ACESFilmic', 'linear', 'reinhard', 'cineon', 'AgX', 'neutral']}},
+    toneMapping: {default: 'no', oneOf: ['no', 'ACESFilmic', 'linear', 'reinhard', 'cineon', 'AgX', 'neutral']},
     precision: {default: 'high', oneOf: ['high', 'medium', 'low']},
     anisotropy: {default: 1},
     sortTransparentObjects: {default: false},
@@ -35,9 +34,6 @@ module.exports.System = registerSystem('renderer', {
     // This is the rendering engine, such as THREE.js so copy over any persistent properties from the rendering system.
     var renderer = sceneEl.renderer;
 
-    if (!data.physicallyCorrectLights) {
-      renderer.useLegacyLights = !data.physicallyCorrectLights;
-    }
     renderer.toneMapping = THREE[toneMappingName + 'ToneMapping'];
     THREE.Texture.DEFAULT_ANISOTROPY = data.anisotropy;
 

@@ -130,7 +130,7 @@ class AAssetItem extends ANode {
         xhr: xhr
       });
     }, function handleOnError (xhr) {
-      self.emit('error', {xhr: xhr});
+      self.emit('error', {xhr: xhr}, false);
     });
   }
 }

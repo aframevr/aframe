@@ -9,12 +9,12 @@ examples: []
 
 [tracked]: ./tracked-controls.md
 [vive]: ./vive-controls.md
-[oculustouch]: ./oculus-touch-controls.md
+[metatouch]: ./meta-touch-controls.md
 [daydream]: ./daydream-controls.md
 
 The hand-controls component provides tracked hands (using a prescribed model)
 with animated gestures. hand-controls wraps the [vive-controls][vive] and
-[oculus-touch-controls][oculustouch] which in turn wrap the [tracked-controls
+[meta-touch-controls][metatouch] which in turn wrap the [tracked-controls
 component][tracked]. By specifying just `hand-controls`, we have something that
 works well with both Vive and Rift. The component gives extra events and
 handles hand animations and poses.

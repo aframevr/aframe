@@ -44,8 +44,7 @@ var INPUT_MAPPING_WEBXR = {
 module.exports.Component = registerComponent('hp-mixed-reality-controls', {
   schema: {
     hand: {default: 'none'},
-    model: {default: true},
-    orientationOffset: {type: 'vec3'}
+    model: {default: true}
   },
 
   mapping: INPUT_MAPPING_WEBXR,
@@ -53,7 +52,6 @@ module.exports.Component = registerComponent('hp-mixed-reality-controls', {
   init: function () {
     var self = this;
     this.controllerPresent = false;
-    this.lastControllerCheck = 0;
     this.onButtonChanged = this.onButtonChanged.bind(this);
     this.onButtonDown = function (evt) { onButtonEvent(evt.detail.id, 'down', self, self.data.hand); };
     this.onButtonUp = function (evt) { onButtonEvent(evt.detail.id, 'up', self, self.data.hand); };
@@ -125,8 +123,7 @@ module.exports.Component = registerComponent('hp-mixed-reality-controls', {
       // TODO: verify expected behavior between reserved prefixes.
       idPrefix: GAMEPAD_ID,
       hand: data.hand,
-      controller: this.controllerIndex,
-      orientationOffset: data.orientationOffset
+      controller: this.controllerIndex
     });
 
     // Load model.

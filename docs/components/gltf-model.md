@@ -25,9 +25,9 @@ Work on the [three.js glTF loader][threejsgltf] and converters are still
 active.
 
 > **NOTE:** A-Frame supports glTF 2.0. For models using older versions of the
-> glTF format, use `gltf-model-legacy` from [donmccurdy/aframe-extras][extras].
+> glTF format, use `gltf-model-legacy` from [aframe-extras][extras].
 
-[extras]: https://github.com/donmccurdy/aframe-extras/tree/master/src/loaders
+[extras]: https://github.com/c-frame/aframe-extras/tree/master/src/loaders
 
 <!--toc-->
 
@@ -98,7 +98,7 @@ rendering.
 
 ## Using animations
 
-If you want to use the animations from your glTF model, you can use the [animation-mixer](https://github.com/donmccurdy/aframe-extras/tree/master/src/loaders#animation) component from [aframe-extras](https://github.com/donmccurdy/aframe-extras). By default all animations are played in a loop.
+If you want to use the animations from your glTF model, you can use the [animation-mixer](https://github.com/c-frame/aframe-extras/tree/master/src/loaders#animation) component from [aframe-extras](https://github.com/c-frame/aframe-extras). By default all animations are played in a loop.
 
 ```html
 <a-entity gltf-model="#monster" animation-mixer></a-entity>

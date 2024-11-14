@@ -30,7 +30,7 @@ three.js loaders.
 
 ## Animating Models
 
-[mixer]: https://github.com/donmccurdy/aframe-extras/tree/master/src/loaders#animation
+[mixer]: https://github.com/c-frame/aframe-extras/tree/master/src/loaders#animation
 
 We can use [Don McCurdy's animation-mixer component][mixer] to play a model's
 built-in animations. Animations usually come in the model built via animation
@@ -148,7 +148,7 @@ If this didn't work, you should check your MTL file and you might notice it is t
 
 ### My Model Isn't Animating
 
-[aframe-extras]: https://github.com/donmccurdy/aframe-extras
+[aframe-extras]: https://github.com/c-frame/aframe-extras
 
 The [animation-mixer component][mixer], part of [aframe-extras] by Don McCurdy,
 provides controls for playing animations in three.js (.json) and glTF (.gltf)

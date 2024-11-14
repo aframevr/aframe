@@ -133,7 +133,7 @@ These events provide a wealth of additional detail about the event, as detailed 
 
 - which mouse button was used
 - information about the state of the mouse buttons (or multi-touch for touch events), and relevant keys shuch as Shift, Ctrl etc. at the time of the mouse or touch event.
-- the screen co-ordinates where the event occured.
+- the screen co-ordinates where the event occurred.
 
 This information can be used by applications to handle cursor events differently, depending on this information (e.g. different handling of left click & right click).
 
