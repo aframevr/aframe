@@ -255,6 +255,7 @@ module.exports.Component = registerComponent('cursor', {
     return function (evt) {
       var bounds = this.canvasBounds;
       var camera = this.el.sceneEl.camera;
+      var cameraElParent = camera.el.object3D.parent;
       var left;
       var point;
       var top;
@@ -285,10 +286,16 @@ module.exports.Component = registerComponent('cursor', {
         inputSource = evt.inputSource;
         referenceSpace = this.el.sceneEl.renderer.xr.getReferenceSpace();
         pose = frame.getPose(inputSource.targetRaySpace, referenceSpace);
-        transform = pose.transform;
-        direction.set(0, 0, -1);
-        direction.applyQuaternion(transform.orientation);
-        origin.copy(transform.position);
+        if (pose) {
+          transform = pose.transform;
+          direction.set(0, 0, -1);
+          direction.applyQuaternion(transform.orientation);
+          origin.copy(transform.position);
+
+          // Transform XRPose into world space
+          cameraElParent.localToWorld(origin);
+          direction.transformDirection(cameraElParent.matrixWorld);
+        }
       } else if (evt.type === 'fakeselectout') {
         direction.set(0, 1, 0);
         origin.set(0, 9999, 0);
@@ -349,6 +356,7 @@ module.exports.Component = registerComponent('cursor', {
    */
   onCursorUp: function (evt) {
     if (!this.isCursorDown) { return; }
+    if (this.data.rayOrigin === 'xrselect' && this.activeXRInput !== evt.inputSource) { return; }
 
     this.isCursorDown = false;
 
@@ -373,7 +381,7 @@ module.exports.Component = registerComponent('cursor', {
     }
 
     // if the current xr input stops selecting then make the ray caster point somewhere else
-    if (data.rayOrigin === 'xrselect' && this.activeXRInput === evt.inputSource) {
+    if (data.rayOrigin === 'xrselect') {
       this.onMouseMove({
         type: 'fakeselectout'
       });
