@@ -32,9 +32,9 @@ AFRAME.registerComponent('info-panel', {
       buttonEls[i].addEventListener('click', this.onMenuButtonClick);
     }
     this.backgroundEl.addEventListener('click', this.onBackgroundClick);
-    this.el.object3D.renderOrder = 9999999;
+    this.el.object3D.renderOrder = 2;
     this.el.object3D.depthTest = false;
-    fadeBackgroundEl.object3D.renderOrder = 9;
+    fadeBackgroundEl.object3D.renderOrder = 1;
     fadeBackgroundEl.getObject3D('mesh').material.depthTest = false;
   },
 
