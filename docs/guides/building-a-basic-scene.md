@@ -11,7 +11,7 @@ image:
   src: https://user-images.githubusercontent.com/674727/29746371-b7906dcc-8a8c-11e7-8ef4-3f7e4d224ce7.jpg
 examples:
   - title: Basic Guide with Environment
-    src: https://glitch.com/edit/#!/aframe-basic-guide-with-environment?path=index.html
+    src: https://github.com/aframevr/aframe/tree/master/examples/docs/basic-scene/index.html
 ---
 
 [primitives]: ../introduction/html-and-primitives.md
@@ -215,11 +215,10 @@ scene!
 
 ## Adding an Environment
 
-[@feiss]: https://github.com/feiss/
-[environment]: https://github.com/feiss/aframe-environment-component/
+[environment]: https://github.com/supermedium/aframe-environment-component/
 
 A-Frame allows developers to create and share reusable components for others to
-easily use. [@feiss]'s [environment component][environment] procedurally
+easily use. The [environment component][environment] procedurally
 generates a variety of entire environments for us with a single line of HTML.
 The environment component is a great and easy way to visually bootstrap our VR
 application, providing over a dozen environments with numerous parameters:
@@ -250,6 +249,7 @@ We can specify a preset (e.g., `forest`) with along many other parameters
 
 > Make sure you're [serving your HTML using a local server](../introduction/getting-started.md#using-a-local-server)
 > for textures to load properly.
+> Due to an [issue with imgur.com](https://stackoverflow.com/questions/43895390/imgur-images-returning-403), view the page using http://localhost, rather than http://127.0.0.1
 
 We can apply an image texture to the box with an image, video, or `<canvas>`
 using the `src` attribute, just like we would with a normal `<img>` element.
@@ -407,19 +407,10 @@ depends on its distance to the entity:
 
 ```html
 <a-scene>
-  <a-assets>
-    <img id="boxTexture" src="https://i.imgur.com/mYmmbrp.jpg">
-    <img id="skyTexture"
-      src="https://cdn.aframe.io/360-image-gallery-boilerplate/img/sechelt.jpg">
-    <img id="groundTexture" src="https://cdn.aframe.io/a-painter/images/floor.jpg">
-  </a-assets>
-
-  <a-box src="#boxTexture" position="0 2 -5" rotation="0 45 45" scale="2 2 2"></a-box>
-
-  <a-sky src="#skyTexture"></a-sky>
-
+  ...
   <a-light type="ambient" color="#445451"></a-light>
   <a-light type="point" intensity="2" position="2 4 4"></a-light>
+  ...
 </a-scene>
 ```
 
@@ -493,7 +484,7 @@ need to now define [`<a-camera>`][camera] containing `<a-cursor>`:
          animation="property: object3D.position.y; to: 2.2; dir: alternate; dur: 2000; loop: true"></a-box>
 
   <a-camera>
-    <a-cursor></a-cursor>
+    <a-cursor color="#FAFAFA"></a-cursor>
   </a-camera>
 </a-scene>
 ```
@@ -591,7 +582,8 @@ by suffixing the attribute name with `__<ID>`:
   scale="2 2 2"
   animation__position="property: object3D.position.y; to: 2.2; dir: alternate; dur: 2000; loop: true"
   animation__mouseenter="property: scale; to: 2.3 2.3 2.3; dur: 300; startEvents: mouseenter"
-  animation__mouseleave="property: scale; to: 2 2 2; dur: 300; startEvents: mouseleave"></a-box>
+  animation__mouseleave="property: scale; to: 2 2 2; dur: 300; startEvents: mouseleave"
+  animation__click="property: rotation; from: 0 45 45; to: 0 405 45; dur: 1000; startEvents: click"></a-box>
 ```
 
 ## Adding Audio
@@ -636,16 +628,15 @@ text implementation using [`three-bmfont-text`][three-bmfont-text] that is
 relatively sharp and performant:
 
 ```html
-<a-entity
-  text="value: Hello, A-Frame!; color: #BBB"
-  position="-0.9 0.2 -3"
-  scale="1.5 1.5 1.5"></a-entity>
+<a-entity text="value: Hello, A-Frame; color: #FAFAFA; width: 5; anchor: align"
+          position="-0.9 0.2 -3"
+          scale="1.5 1.5 1.5"></a-entity>
 ```
 
 ## Play With It!
 
 And that's the basic example!
 
-[Remix the example on Glitch](https://glitch.com/~aframe-basic-guide-with-environment).
+[View the example](https://aframe.io/examples/docs/basic-scene/) (basic environment)
 
-[View the example on Glitch](https://aframe-basic-guide-with-environment.glitch.me).
+[View the example](https://aframe.io/examples/docs/basic-scene-2/) (custom environment)
