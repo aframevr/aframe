@@ -128,7 +128,7 @@ function isAppleVisionPro () {
   var isMacintosh = navigator.userAgent.includes('Macintosh');
   // Discriminates between a "real" desktop browser and Safari for Vision Pro.
   var hasFiveTouchPoints = navigator.maxTouchPoints === 5;
-  // isWebXRAvailable discriminates between Vision Pro and iPad / iPhone. 
+  // isWebXRAvailable discriminates between Vision Pro and iPad / iPhone.
   // This will no longer work once WebXR ships in iOS / iPad OS.
   return isMacintosh && hasFiveTouchPoints && isWebXRAvailable;
 }
