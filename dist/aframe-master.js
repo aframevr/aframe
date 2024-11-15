@@ -6907,6 +6907,13 @@ module.exports.Component = registerComponent('cursor', {
       return;
     }
     this.updateMouseEventListeners();
+    // Update the WebXR event listeners if needed
+    if (this.data.rayOrigin === 'xrselect') {
+      this.addWebXREventListeners();
+    }
+    if (oldData.rayOrigin === 'xrselect') {
+      this.removeWebXREventListeners();
+    }
   },
   tick: function () {
     // Update on frame to allow someone to select and mousemove
@@ -7007,6 +7014,7 @@ module.exports.Component = registerComponent('cursor', {
     el.sceneEl.removeEventListener('enter-vr', this.onEnterVR);
     window.removeEventListener('resize', this.updateCanvasBounds);
     window.removeEventListener('scroll', this.updateCanvasBounds);
+    this.removeWebXREventListeners();
   },
   updateMouseEventListeners: function () {
     var canvas;
@@ -7025,6 +7033,30 @@ module.exports.Component = registerComponent('cursor', {
     el.setAttribute('raycaster', 'useWorldCoordinates', true);
     this.updateCanvasBounds();
   },
+  addWebXREventListeners: function () {
+    var self = this;
+    var xrSession = this.el.sceneEl.xrSession;
+    if (xrSession) {
+      WEBXR_EVENTS.DOWN.forEach(function (downEvent) {
+        xrSession.addEventListener(downEvent, self.onCursorDown);
+      });
+      WEBXR_EVENTS.UP.forEach(function (upEvent) {
+        xrSession.addEventListener(upEvent, self.onCursorUp);
+      });
+    }
+  },
+  removeWebXREventListeners: function () {
+    var self = this;
+    var xrSession = this.el.sceneEl.xrSession;
+    if (xrSession) {
+      WEBXR_EVENTS.DOWN.forEach(function (downEvent) {
+        xrSession.removeEventListener(downEvent, self.onCursorDown);
+      });
+      WEBXR_EVENTS.UP.forEach(function (upEvent) {
+        xrSession.removeEventListener(upEvent, self.onCursorUp);
+      });
+    }
+  },
   onMouseMove: function () {
     var direction = new THREE.Vector3();
     var mouse = new THREE.Vector2();
@@ -7036,6 +7068,7 @@ module.exports.Component = registerComponent('cursor', {
     return function (evt) {
       var bounds = this.canvasBounds;
       var camera = this.el.sceneEl.camera;
+      var cameraElParent = camera.el.object3D.parent;
       var left;
       var point;
       var top;
@@ -7060,12 +7093,18 @@ module.exports.Component = registerComponent('cursor', {
       if (this.data.rayOrigin === 'xrselect' && (evt.type === 'selectstart' || evt.type === 'fakeselectevent')) {
         frame = evt.frame;
         inputSource = evt.inputSource;
-        referenceSpace = this.el.renderer.xr.getReferenceSpace();
+        referenceSpace = this.el.sceneEl.renderer.xr.getReferenceSpace();
         pose = frame.getPose(inputSource.targetRaySpace, referenceSpace);
-        transform = pose.transform;
-        direction.set(0, 0, -1);
-        direction.applyQuaternion(transform.orientation);
-        origin.copy(transform.position);
+        if (pose) {
+          transform = pose.transform;
+          direction.set(0, 0, -1);
+          direction.applyQuaternion(transform.orientation);
+          origin.copy(transform.position);
+
+          // Transform XRPose into world space
+          cameraElParent.localToWorld(origin);
+          direction.transformDirection(cameraElParent.matrixWorld);
+        }
       } else if (evt.type === 'fakeselectout') {
         direction.set(0, 1, 0);
         origin.set(0, 9999, 0);
@@ -7121,6 +7160,9 @@ module.exports.Component = registerComponent('cursor', {
     if (!this.isCursorDown) {
       return;
     }
+    if (this.data.rayOrigin === 'xrselect' && this.activeXRInput !== evt.inputSource) {
+      return;
+    }
     this.isCursorDown = false;
     var data = this.data;
     this.twoWayEmit(EVENTS.MOUSEUP, evt);
@@ -7140,7 +7182,7 @@ module.exports.Component = registerComponent('cursor', {
     }
 
     // if the current xr input stops selecting then make the ray caster point somewhere else
-    if (data.rayOrigin === 'xrselect' && this.activeXRInput === evt.inputSource) {
+    if (data.rayOrigin === 'xrselect') {
       this.onMouseMove({
         type: 'fakeselectout'
       });
@@ -7201,20 +7243,9 @@ module.exports.Component = registerComponent('cursor', {
   },
   onEnterVR: function () {
     this.clearCurrentIntersection(true);
-    var xrSession = this.el.sceneEl.xrSession;
-    var self = this;
-    if (!xrSession) {
-      return;
+    if (this.data.rayOrigin === 'xrselect') {
+      this.addWebXREventListeners();
     }
-    if (this.data.rayOrigin === 'mouse') {
-      return;
-    }
-    WEBXR_EVENTS.DOWN.forEach(function (downEvent) {
-      xrSession.addEventListener(downEvent, self.onCursorDown);
-    });
-    WEBXR_EVENTS.UP.forEach(function (upEvent) {
-      xrSession.addEventListener(upEvent, self.onCursorUp);
-    });
   },
   setIntersection: function (intersectedEl, intersection) {
     var cursorEl = this.el;
@@ -24590,7 +24621,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.6.0 (Date 2024-11-15, Commit #938d9457)');
+console.log('A-Frame Version: 1.6.0 (Date 2024-11-15, Commit #655ab162)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', THREE.REVISION);
 
 // Wait for ready state, unless user asynchronously initializes A-Frame.
