@@ -24590,7 +24590,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.6.0 (Date 2024-11-13, Commit #85583169)');
+console.log('A-Frame Version: 1.6.0 (Date 2024-11-15, Commit #938d9457)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', THREE.REVISION);
 
 // Wait for ready state, unless user asynchronously initializes A-Frame.
@@ -27237,9 +27237,10 @@ function isAppleVisionPro() {
   // Safari for Apple Vision Pro presents itself as a desktop browser.
   var isMacintosh = navigator.userAgent.includes('Macintosh');
   // Discriminates between a "real" desktop browser and Safari for Vision Pro.
-  // Note: need to check for posible false positives on iPhones / iPads.
   var hasFiveTouchPoints = navigator.maxTouchPoints === 5;
-  return isMacintosh && hasFiveTouchPoints;
+  // isWebXRAvailable discriminates between Vision Pro and iPad / iPhone.
+  // This will no longer work once WebXR ships in iOS / iPad OS.
+  return isMacintosh && hasFiveTouchPoints && isWebXRAvailable;
 }
 module.exports.isAppleVisionPro = isAppleVisionPro;
 function isIOS() {
