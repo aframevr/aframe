@@ -8658,15 +8658,6 @@ registerComponent('hand-tracking-grab-controls', {
       size: 0.04
     });
     this.auxMatrix = new THREE.Matrix4();
-    this.auxQuaternion = new THREE.Quaternion();
-    this.auxQuaternion2 = new THREE.Quaternion();
-    this.auxVector = new THREE.Vector3();
-    this.auxVector2 = new THREE.Vector3();
-    this.grabbingObjectPosition = new THREE.Vector3();
-    this.grabbedObjectPosition = new THREE.Vector3();
-    this.grabbedObjectPositionDelta = new THREE.Vector3();
-    this.grabDeltaPosition = new THREE.Vector3();
-    this.grabInitialRotation = new THREE.Quaternion();
     this.onCollisionStarted = this.onCollisionStarted.bind(this);
     this.el.addEventListener('obbcollisionstarted', this.onCollisionStarted);
     this.onCollisionEnded = this.onCollisionEnded.bind(this);
@@ -8675,8 +8666,6 @@ registerComponent('hand-tracking-grab-controls', {
     this.el.addEventListener('pinchstarted', this.onPinchStarted);
     this.onPinchEnded = this.onPinchEnded.bind(this);
     this.el.addEventListener('pinchended', this.onPinchEnded);
-    this.onPinchMoved = this.onPinchMoved.bind(this);
-    this.el.addEventListener('pinchmoved', this.onPinchMoved);
   },
   transferEntityOwnership: function () {
     var grabbingElComponent;
@@ -8720,8 +8709,6 @@ registerComponent('hand-tracking-grab-controls', {
     if (!this.collidedEl) {
       return;
     }
-    this.pinchPosition = evt.detail.position;
-    this.wristRotation = evt.detail.wristRotation;
     this.grabbedEl = this.collidedEl;
     this.transferEntityOwnership();
     this.grab();
@@ -8729,98 +8716,37 @@ registerComponent('hand-tracking-grab-controls', {
   onPinchEnded: function () {
     this.releaseGrabbedEntity();
   },
-  onPinchMoved: function (evt) {
-    this.wristRotation = evt.detail.wristRotation;
-  },
   releaseGrabbedEntity: function () {
     var grabbedEl = this.grabbedEl;
     if (!grabbedEl) {
       return;
     }
-    grabbedEl.object3D.updateMatrixWorld = this.originalUpdateMatrixWorld;
-    grabbedEl.object3D.matrixAutoUpdate = true;
-    grabbedEl.object3D.matrixWorldAutoUpdate = true;
-    grabbedEl.object3D.matrixWorld.decompose(this.auxVector, this.auxQuaternion, this.auxVector2);
-    grabbedEl.object3D.position.copy(this.auxVector);
-    grabbedEl.object3D.quaternion.copy(this.auxQuaternion);
+    var child = grabbedEl.object3D;
+    var parent = child.parent;
+    var newParent = this.originalParent;
+    child.applyMatrix4(parent.matrixWorld);
+    child.applyMatrix4(this.auxMatrix.copy(newParent.matrixWorld).invert());
+    parent.remove(child);
+    newParent.add(child);
     this.el.emit('grabended', {
       grabbedEl: grabbedEl
     });
     this.grabbedEl = undefined;
+    this.originalParent = undefined;
   },
   grab: function () {
     var grabbedEl = this.grabbedEl;
-    var grabbedObjectWorldPosition;
-    grabbedObjectWorldPosition = grabbedEl.object3D.getWorldPosition(this.grabbedObjectPosition);
-    this.grabDeltaPosition.copy(grabbedObjectWorldPosition).sub(this.pinchPosition);
-    this.grabInitialRotation.copy(this.auxQuaternion.copy(this.wristRotation).invert());
-    this.originalUpdateMatrixWorld = grabbedEl.object3D.updateMatrixWorld;
-    grabbedEl.object3D.updateMatrixWorld = function () {/* no op */};
-    grabbedEl.object3D.updateMatrixWorldChildren = function (force) {
-      var children = this.children;
-      for (var i = 0, l = children.length; i < l; i++) {
-        var child = children[i];
-        if (child.matrixWorldAutoUpdate === true || force === true) {
-          child.updateMatrixWorld(true);
-        }
-      }
-    };
-    grabbedEl.object3D.matrixAutoUpdate = false;
-    grabbedEl.object3D.matrixWorldAutoUpdate = false;
+    var child = grabbedEl.object3D;
+    var parent = child.parent;
+    this.originalParent = parent;
+    var newParent = this.el.components['hand-tracking-controls'].wristObject3D;
+    child.applyMatrix4(parent.matrixWorld);
+    child.applyMatrix4(this.auxMatrix.copy(newParent.matrixWorld).invert());
+    parent.remove(child);
+    newParent.add(child);
     this.el.emit('grabstarted', {
       grabbedEl: grabbedEl
     });
-  },
-  tock: function () {
-    var auxMatrix = this.auxMatrix;
-    var auxQuaternion = this.auxQuaternion;
-    var auxQuaternion2 = this.auxQuaternion2;
-    var grabbedObject3D;
-    var grabbedEl = this.grabbedEl;
-    if (!grabbedEl) {
-      return;
-    }
-
-    // We have to compose 4 transformations.
-    // Both grabbing and grabbed entities position and rotation.
-
-    // 1. Move grabbed entity to the pinch position (middle point between index and thumb)
-    // 2. Apply the rotation delta (subtract initial rotation) of the grabbing entity position (wrist).
-    // 3. Translate grabbed entity to the original position: distance between grabbed and grabbing entities at collision time.
-    // 4. Apply grabbed entity rotation.
-    // 5. Preserve original scale.
-
-    // Store grabbed entity local rotation.
-    grabbedObject3D = grabbedEl.object3D;
-    grabbedObject3D.getWorldQuaternion(auxQuaternion2);
-
-    // Reset grabbed entity matrix.
-    grabbedObject3D.matrixWorld.identity();
-
-    // 1.
-    auxMatrix.identity();
-    auxMatrix.makeTranslation(this.pinchPosition);
-    grabbedObject3D.matrixWorld.multiply(auxMatrix);
-
-    // 2.
-    auxMatrix.identity();
-    auxMatrix.makeRotationFromQuaternion(auxQuaternion.copy(this.wristRotation).multiply(this.grabInitialRotation));
-    grabbedObject3D.matrixWorld.multiply(auxMatrix);
-
-    // 3.
-    auxMatrix.identity();
-    auxMatrix.makeTranslation(this.grabDeltaPosition);
-    grabbedObject3D.matrixWorld.multiply(auxMatrix);
-
-    // 4.
-    auxMatrix.identity();
-    auxMatrix.makeRotationFromQuaternion(auxQuaternion2);
-    grabbedObject3D.matrixWorld.multiply(auxMatrix);
-
-    // 5.
-    auxMatrix.makeScale(grabbedEl.object3D.scale.x, grabbedEl.object3D.scale.y, grabbedEl.object3D.scale.z);
-    grabbedObject3D.matrixWorld.multiply(auxMatrix);
-    grabbedObject3D.updateMatrixWorldChildren();
   }
 });
 
@@ -24621,7 +24547,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.6.0 (Date 2024-11-15, Commit #655ab162)');
+console.log('A-Frame Version: 1.6.0 (Date 2024-11-16, Commit #4a415baf)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', THREE.REVISION);
 
 // Wait for ready state, unless user asynchronously initializes A-Frame.
