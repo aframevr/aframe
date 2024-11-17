@@ -141,7 +141,7 @@ We can use the `startEvents` property to animate upon events:
   material="color: red"
   animation__mouseenter="property: components.material.material.color; type: color; to: blue; startEvents: mouseenter; dur: 500";
   animation__mouseleave="property: components.material.material.color; type: color; to: red; startEvents: mouseleave; dur: 500";
-  animation__customevent="property: components.material.material.color; type: color; from: red; to: blue; startEvents: startanim001; pauseEvents: startanim002; resumeEvents : startanim003; dur: 500";>
+  animation__customevent="property: components.material.material.color; type: color; from: red; to: blue; startEvents: startanim001; dur: 500";>
 </a-entity>
 ```
 
@@ -149,7 +149,7 @@ We can use the `startEvents` property to animate upon events:
 
 [Remix the Animating on Events Glitch][eventsglitch].
 
-To start an animation by explicitly [emitting a custom event][https://aframe.io/docs/1.6.0/introduction/javascript-events-dom-apis.html#emitting-an-event-with-emit], you can do the following:
+To start an animation by explicitly [emitting a custom event](https://aframe.io/docs/1.6.0/introduction/javascript-events-dom-apis.html#emitting-an-event-with-emit), you can do the following:
 
 ```
 el.emit(`startanim001`, null, false);
