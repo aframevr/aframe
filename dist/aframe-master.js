@@ -8258,7 +8258,7 @@ var WRIST_INDEX = 0;
 var THUMB_TIP_INDEX = 4;
 var INDEX_TIP_INDEX = 9;
 var PINCH_START_DISTANCE = 0.015;
-var PINCH_END_PERCENTAGE = 0.1;
+var PINCH_END_DISTANCE = 0.02;
 
 /**
  * Controls for hand tracking
@@ -8494,11 +8494,10 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
       var distance = indexTipPosition.distanceTo(thumbTipPosition);
       if (distance < PINCH_START_DISTANCE && this.isPinched === false) {
         this.isPinched = true;
-        this.pinchDistance = distance;
         pinchEventDetail.position.copy(indexTipPosition).add(thumbTipPosition).multiplyScalar(0.5);
         this.el.emit('pinchstarted', pinchEventDetail);
       }
-      if (distance > this.pinchDistance + this.pinchDistance * PINCH_END_PERCENTAGE && this.isPinched === true) {
+      if (distance > PINCH_END_DISTANCE && this.isPinched === true) {
         this.isPinched = false;
         pinchEventDetail.position.copy(indexTipPosition).add(thumbTipPosition).multiplyScalar(0.5);
         this.el.emit('pinchended', pinchEventDetail);
@@ -24547,7 +24546,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.6.0 (Date 2024-11-16, Commit #4a415baf)');
+console.log('A-Frame Version: 1.6.0 (Date 2024-11-18, Commit #4e137a85)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', THREE.REVISION);
 
 // Wait for ready state, unless user asynchronously initializes A-Frame.
