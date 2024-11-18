@@ -345,25 +345,30 @@ module.exports.Component = registerComponent('light', {
     if (!data.envMap) {
       // reset parameters if no map
       light.copy(new THREE.LightProbe());
+      return;
     }
 
+    // Populate the cache if not done for this envMap yet
+    if (probeCache[data.envMap] === undefined) {
+      probeCache[data.envMap] = new window.Promise(function (resolve) {
+        utils.srcLoader.validateCubemapSrc(data.envMap, function loadEnvMap (urls) {
+          CubeLoader.load(urls, function (cube) {
+            var tempLightProbe = THREE.LightProbeGenerator.fromCubeTexture(cube);
+            probeCache[data.envMap] = tempLightProbe;
+            resolve(tempLightProbe);
+          });
+        });
+      });
+    }
+
+    // Copy over light probe properties
     if (probeCache[data.envMap] instanceof window.Promise) {
       probeCache[data.envMap].then(function (tempLightProbe) {
         light.copy(tempLightProbe);
       });
-    }
-    if (probeCache[data.envMap] instanceof THREE.LightProbe) {
+    } else if (probeCache[data.envMap] instanceof THREE.LightProbe) {
       light.copy(probeCache[data.envMap]);
     }
-    probeCache[data.envMap] = new window.Promise(function (resolve) {
-      utils.srcLoader.validateCubemapSrc(data.envMap, function loadEnvMap (urls) {
-        CubeLoader.load(urls, function (cube) {
-          var tempLightProbe = THREE.LightProbeGenerator.fromCubeTexture(cube);
-          probeCache[data.envMap] = tempLightProbe;
-          light.copy(tempLightProbe);
-        });
-      });
-    });
   },
 
   onSetTarget: function (targetEl, light) {
