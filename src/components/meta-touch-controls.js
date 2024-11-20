@@ -340,7 +340,7 @@ var componentConfig = {
     this.applyOffset(evt.detail.model);
 
     this.el.emit('controllermodelready', {
-      name: 'oculus-touch-controls',
+      name: 'meta-touch-controls',
       model: this.data.model,
       rayOrigin: this.displayModel[this.data.hand].rayOrigin
     });
