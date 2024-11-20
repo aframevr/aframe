@@ -9189,19 +9189,6 @@ registerComponent('laser-controls', {
         }
       }
     },
-    'oculus-touch-controls': {
-      cursor: {
-        downEvents: ['triggerdown'],
-        upEvents: ['triggerup']
-      },
-      raycaster: {
-        origin: {
-          x: 0,
-          y: 0,
-          z: 0
-        }
-      }
-    },
     'meta-touch-controls': {
       cursor: {
         downEvents: ['triggerdown'],
@@ -12248,7 +12235,7 @@ var componentConfig = {
     }
     this.applyOffset(evt.detail.model);
     this.el.emit('controllermodelready', {
-      name: 'oculus-touch-controls',
+      name: 'meta-touch-controls',
       model: this.data.model,
       rayOrigin: this.displayModel[this.data.hand].rayOrigin
     });
@@ -24552,7 +24539,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.6.0 (Date 2024-11-18, Commit #1d8cdb09)');
+console.log('A-Frame Version: 1.6.0 (Date 2024-11-20, Commit #5e14e688)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', THREE.REVISION);
 
 // Wait for ready state, unless user asynchronously initializes A-Frame.
