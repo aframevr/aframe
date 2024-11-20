@@ -239,7 +239,8 @@ module.exports.Component = registerComponent('light', {
     // Shadow camera helper.
     var cameraHelper = el.getObject3D('cameraHelper');
     if (data.shadowCameraVisible && !cameraHelper) {
-      el.setObject3D('cameraHelper', new THREE.CameraHelper(light.shadow.camera));
+      cameraHelper = new THREE.CameraHelper(light.shadow.camera);
+      el.setObject3D('cameraHelper', cameraHelper);
     } else if (!data.shadowCameraVisible && cameraHelper) {
       el.removeObject3D('cameraHelper');
     }
