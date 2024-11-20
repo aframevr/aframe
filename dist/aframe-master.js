@@ -9992,7 +9992,8 @@ module.exports.Component = registerComponent('light', {
     // Shadow camera helper.
     var cameraHelper = el.getObject3D('cameraHelper');
     if (data.shadowCameraVisible && !cameraHelper) {
-      el.setObject3D('cameraHelper', new THREE.CameraHelper(light.shadow.camera));
+      cameraHelper = new THREE.CameraHelper(light.shadow.camera);
+      el.setObject3D('cameraHelper', cameraHelper);
     } else if (!data.shadowCameraVisible && cameraHelper) {
       el.removeObject3D('cameraHelper');
     }
@@ -24539,7 +24540,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.6.0 (Date 2024-11-20, Commit #5e14e688)');
+console.log('A-Frame Version: 1.6.0 (Date 2024-11-20, Commit #c3754af3)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', THREE.REVISION);
 
 // Wait for ready state, unless user asynchronously initializes A-Frame.
