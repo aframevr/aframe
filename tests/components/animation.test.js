@@ -127,6 +127,29 @@ suite('animation', function () {
       assert.equal(el.object3D.position.z, 0);
     });
 
+    test('can animate object3D.position directly with no from', function () {
+      el.setAttribute('position', '3 3 3');
+      el.setAttribute('animation', {
+        property: 'object3D.position',
+        dur: 1000,
+        to: '5 5 5'
+      });
+      let setAttributeSpy = this.sinon.spy(el, 'setAttribute');
+      component.tick(0, 1);
+      // setAttribute not called to update the position. object3D updated directly.
+      assert.notOk(setAttributeSpy.called);
+      assert.equal(el.object3D.position.x, 3);
+      assert.equal(el.object3D.position.y, 3);
+      assert.equal(el.object3D.position.z, 3);
+      component.tick(0, 500);
+      assert.ok(el.object3D.position.x > 3);
+      assert.ok(el.object3D.position.x < 5);
+      component.tick(0, 500);
+      assert.equal(el.object3D.position.x, 5);
+      assert.equal(el.object3D.position.y, 5);
+      assert.equal(el.object3D.position.z, 5);
+    });
+
     test('can animate object3D value directly', function () {
       el.setAttribute('animation', {
         property: 'object3D.position.x',

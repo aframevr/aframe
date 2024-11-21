@@ -356,7 +356,7 @@ module.exports.Component = registerComponent('animation', {
     // Parse coordinates.
     from = data.from !== ''
       ? utils.coordinates.parse(data.from)  // If data.from defined, use that.
-      : getComponentProperty(el, data.property);  // If data.from not defined, get on the fly.
+      : getComponentProperty(el, property);  // If data.from not defined, get on the fly.
     to = utils.coordinates.parse(data.to);
 
     if (property === PROP_ROTATION) {
