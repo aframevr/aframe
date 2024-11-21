@@ -6431,7 +6431,7 @@ module.exports.Component = registerComponent('animation', {
 
     // Parse coordinates.
     from = data.from !== '' ? utils.coordinates.parse(data.from) // If data.from defined, use that.
-    : getComponentProperty(el, data.property); // If data.from not defined, get on the fly.
+    : getComponentProperty(el, property); // If data.from not defined, get on the fly.
     to = utils.coordinates.parse(data.to);
     if (property === PROP_ROTATION) {
       toRadians(from);
@@ -24558,7 +24558,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.6.0 (Date 2024-11-21, Commit #81634786)');
+console.log('A-Frame Version: 1.6.0 (Date 2024-11-21, Commit #204a8db7)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', THREE.REVISION);
 
 // Wait for ready state, unless user asynchronously initializes A-Frame.

@@ -56,7 +56,7 @@ require('./core/a-mixin');
 require('./extras/components/');
 require('./extras/primitives/');
 
-console.log('A-Frame Version: 1.6.0 (Date 2024-11-21, Commit #81634786)');
+console.log('A-Frame Version: 1.6.0 (Date 2024-11-21, Commit #204a8db7)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             THREE.REVISION);
 
