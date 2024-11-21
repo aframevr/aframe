@@ -10252,6 +10252,7 @@ function isEqualVec3(a, b) {
 var registerComponent = (__webpack_require__(/*! ../core/component */ "./src/core/component.js").registerComponent);
 var registerShader = (__webpack_require__(/*! ../core/shader */ "./src/core/shader.js").registerShader);
 var THREE = __webpack_require__(/*! ../lib/three */ "./src/lib/three.js");
+var DEFAULT_PREVIEW_DISTANCE = 15.0;
 
 /**
  * Link component. Connect experiences and traverse between them in VR
@@ -10313,6 +10314,8 @@ module.exports.Component = registerComponent('link', {
     if (!data.visualAspectEnabled) {
       return;
     }
+    var elScale = this.el.getAttribute('scale');
+    this.previewDistance = DEFAULT_PREVIEW_DISTANCE * (elScale.x + elScale.y) / 2;
     this.initVisualAspect();
     backgroundColor = data.highlighted ? data.highlightedColor : data.backgroundColor;
     strokeColor = data.highlighted ? data.highlightedColor : data.borderColor;
@@ -10387,7 +10390,8 @@ module.exports.Component = registerComponent('link', {
     el.setAttribute('material', {
       shader: 'portal',
       pano: this.data.image,
-      side: 'double'
+      side: 'double',
+      previewDistance: this.previewDistance
     });
 
     // Set text that displays the link title and URL.
@@ -10416,7 +10420,8 @@ module.exports.Component = registerComponent('link', {
       shader: 'portal',
       borderEnabled: 0.0,
       pano: this.data.image,
-      side: 'back'
+      side: 'back',
+      previewDistance: this.previewDistance
     });
     semiSphereEl.setAttribute('rotation', '0 180 0');
     semiSphereEl.setAttribute('position', '0 0 0');
@@ -10434,7 +10439,8 @@ module.exports.Component = registerComponent('link', {
       shader: 'portal',
       borderEnabled: 0.0,
       pano: this.data.image,
-      side: 'back'
+      side: 'back',
+      previewDistance: this.previewDistance
     });
     sphereEl.setAttribute('visible', false);
     el.appendChild(sphereEl);
@@ -10474,7 +10480,7 @@ module.exports.Component = registerComponent('link', {
       elWorldPosition.setFromMatrixPosition(object3D.matrixWorld);
       cameraWorldPosition.setFromMatrixPosition(camera.matrixWorld);
       distance = elWorldPosition.distanceTo(cameraWorldPosition);
-      if (distance > 20) {
+      if (distance > this.previewDistance * 1.33333) {
         // Store original orientation to be restored when the portal stops facing the camera.
         if (!this.previousQuaternion) {
           this.quaternionClone.copy(quaternion);
@@ -10617,10 +10623,15 @@ registerShader('portal', {
       default: 'white',
       type: 'color',
       is: 'uniform'
+    },
+    previewDistance: {
+      default: DEFAULT_PREVIEW_DISTANCE,
+      type: 'float',
+      is: 'uniform'
     }
   },
   vertexShader: ['vec3 portalPosition;', 'varying vec3 vWorldPosition;', 'varying float vDistanceToCenter;', 'varying float vDistance;', 'void main() {', 'vDistanceToCenter = clamp(length(position - vec3(0.0, 0.0, 0.0)), 0.0, 1.0);', 'portalPosition = (modelMatrix * vec4(0.0, 0.0, 0.0, 1.0)).xyz;', 'vDistance = length(portalPosition - cameraPosition);', 'vWorldPosition = (modelMatrix * vec4(position, 1.0)).xyz;', 'gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);', '}'].join('\n'),
-  fragmentShader: ['#define RECIPROCAL_PI2 0.15915494', 'uniform sampler2D pano;', 'uniform vec3 strokeColor;', 'uniform vec3 backgroundColor;', 'uniform float borderEnabled;', 'varying float vDistanceToCenter;', 'varying float vDistance;', 'varying vec3 vWorldPosition;', 'void main() {', 'vec3 direction = normalize(vWorldPosition - cameraPosition);', 'vec2 sampleUV;', 'float borderThickness = clamp(exp(-vDistance / 50.0), 0.6, 0.95);', 'sampleUV.y = clamp(direction.y * 0.5  + 0.5, 0.0, 1.0);', 'sampleUV.x = atan(direction.z, -direction.x) * -RECIPROCAL_PI2 + 0.5;', 'if (vDistanceToCenter > borderThickness && borderEnabled == 1.0) {', 'gl_FragColor = vec4(strokeColor, 1.0);', '} else {', 'gl_FragColor = mix(texture2D(pano, sampleUV), vec4(backgroundColor, 1.0), clamp(pow((vDistance / 15.0), 2.0), 0.0, 1.0));', '}', '}'].join('\n')
+  fragmentShader: ['#define RECIPROCAL_PI2 0.15915494', 'uniform sampler2D pano;', 'uniform vec3 strokeColor;', 'uniform vec3 backgroundColor;', 'uniform float borderEnabled;', 'uniform float previewDistance;', 'varying float vDistanceToCenter;', 'varying float vDistance;', 'varying vec3 vWorldPosition;', 'void main() {', 'vec3 direction = normalize(vWorldPosition - cameraPosition);', 'vec2 sampleUV;', 'float borderThickness = clamp(exp(-vDistance / 50.0), 0.6, 0.95);', 'sampleUV.y = clamp(direction.y * 0.5  + 0.5, 0.0, 1.0);', 'sampleUV.x = atan(direction.z, -direction.x) * -RECIPROCAL_PI2 + 0.5;', 'if (vDistanceToCenter > borderThickness && borderEnabled == 1.0) {', 'gl_FragColor = vec4(strokeColor, 1.0);', '} else {', 'gl_FragColor = mix(texture2D(pano, sampleUV), vec4(backgroundColor, 1.0), clamp(pow((vDistance / previewDistance), 2.0), 0.0, 1.0));', '}', '}'].join('\n')
 });
 /* eslint-enable */
 
@@ -24547,7 +24558,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.6.0 (Date 2024-11-21, Commit #4f711a4e)');
+console.log('A-Frame Version: 1.6.0 (Date 2024-11-21, Commit #81634786)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', THREE.REVISION);
 
 // Wait for ready state, unless user asynchronously initializes A-Frame.
