@@ -29,7 +29,6 @@ module.exports.Component = registerComponent('link', {
     this.quaternionClone = new THREE.Quaternion();
     // Store hidden elements during peek mode so we can show them again later.
     this.hiddenEls = [];
-    this.previewDistance = DEFAULT_PREVIEW_DISTANCE;
   },
 
   update: function (oldData) {
