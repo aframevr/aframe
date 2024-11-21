@@ -104,6 +104,29 @@ suite('animation', function () {
   });
 
   suite('direct object3D value animation', () => {
+    test('can animate object3D vec3 position directly', function () {
+      el.setAttribute('animation', {
+        property: 'object3D.position',
+        dur: 1000,
+        from: '1 1 1',
+        to: '0 0 0'
+      });
+      let setAttributeSpy = this.sinon.spy(el, 'setAttribute');
+      component.tick(0, 1);
+      // setAttribute not called to update the position. object3D updated directly.
+      assert.notOk(setAttributeSpy.called);
+      assert.equal(el.object3D.position.x, 1);
+      assert.equal(el.object3D.position.y, 1);
+      assert.equal(el.object3D.position.z, 1);
+      component.tick(0, 500);
+      assert.ok(el.object3D.position.x > 0);
+      assert.ok(el.object3D.position.x < 1);
+      component.tick(0, 500);
+      assert.equal(el.object3D.position.x, 0);
+      assert.equal(el.object3D.position.y, 0);
+      assert.equal(el.object3D.position.z, 0);
+    });
+
     test('can animate object3D value directly', function () {
       el.setAttribute('animation', {
         property: 'object3D.position.x',
