@@ -1,6 +1,7 @@
 var registerComponent = require('../core/component').registerComponent;
 var registerShader = require('../core/shader').registerShader;
 var THREE = require('../lib/three');
+var DEFAULT_PREVIEW_DISTANCE = 15.0;
 
 /**
  * Link component. Connect experiences and traverse between them in VR
@@ -37,6 +38,9 @@ module.exports.Component = registerComponent('link', {
     var strokeColor;
 
     if (!data.visualAspectEnabled) { return; }
+
+    var elScale = this.el.getAttribute('scale');
+    this.previewDistance = DEFAULT_PREVIEW_DISTANCE * (elScale.x + elScale.y) / 2;
 
     this.initVisualAspect();
 
@@ -108,7 +112,7 @@ module.exports.Component = registerComponent('link', {
 
     // Set portal.
     el.setAttribute('geometry', {primitive: 'circle', radius: 1.0, segments: 64});
-    el.setAttribute('material', {shader: 'portal', pano: this.data.image, side: 'double'});
+    el.setAttribute('material', {shader: 'portal', pano: this.data.image, side: 'double', previewDistance: this.previewDistance});
 
     // Set text that displays the link title and URL.
     textEl.setAttribute('text', {
@@ -136,7 +140,8 @@ module.exports.Component = registerComponent('link', {
       shader: 'portal',
       borderEnabled: 0.0,
       pano: this.data.image,
-      side: 'back'
+      side: 'back',
+      previewDistance: this.previewDistance
     });
     semiSphereEl.setAttribute('rotation', '0 180 0');
     semiSphereEl.setAttribute('position', '0 0 0');
@@ -154,7 +159,8 @@ module.exports.Component = registerComponent('link', {
       shader: 'portal',
       borderEnabled: 0.0,
       pano: this.data.image,
-      side: 'back'
+      side: 'back',
+      previewDistance: this.previewDistance
     });
     sphereEl.setAttribute('visible', false);
     el.appendChild(sphereEl);
@@ -199,7 +205,7 @@ module.exports.Component = registerComponent('link', {
       cameraWorldPosition.setFromMatrixPosition(camera.matrixWorld);
       distance = elWorldPosition.distanceTo(cameraWorldPosition);
 
-      if (distance > 20) {
+      if (distance > this.previewDistance * 1.33333) {
         // Store original orientation to be restored when the portal stops facing the camera.
         if (!this.previousQuaternion) {
           this.quaternionClone.copy(quaternion);
@@ -327,7 +333,8 @@ registerShader('portal', {
     borderEnabled: {default: 1.0, type: 'int', is: 'uniform'},
     backgroundColor: {default: 'red', type: 'color', is: 'uniform'},
     pano: {type: 'map', is: 'uniform'},
-    strokeColor: {default: 'white', type: 'color', is: 'uniform'}
+    strokeColor: {default: 'white', type: 'color', is: 'uniform'},
+    previewDistance: {default: DEFAULT_PREVIEW_DISTANCE, type: 'float', is: 'uniform'}
   },
 
   vertexShader: [
@@ -350,6 +357,7 @@ registerShader('portal', {
     'uniform vec3 strokeColor;',
     'uniform vec3 backgroundColor;',
     'uniform float borderEnabled;',
+    'uniform float previewDistance;',
     'varying float vDistanceToCenter;',
     'varying float vDistance;',
     'varying vec3 vWorldPosition;',
@@ -362,7 +370,7 @@ registerShader('portal', {
     'if (vDistanceToCenter > borderThickness && borderEnabled == 1.0) {',
     'gl_FragColor = vec4(strokeColor, 1.0);',
     '} else {',
-    'gl_FragColor = mix(texture2D(pano, sampleUV), vec4(backgroundColor, 1.0), clamp(pow((vDistance / 15.0), 2.0), 0.0, 1.0));',
+    'gl_FragColor = mix(texture2D(pano, sampleUV), vec4(backgroundColor, 1.0), clamp(pow((vDistance / previewDistance), 2.0), 0.0, 1.0));',
     '}',
     '}'
   ].join('\n')
