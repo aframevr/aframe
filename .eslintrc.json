@@ -1,0 +1,87 @@
+{
+  "extends": ["semistandard", "standard-jsx"],
+  "parserOptions": {
+    "ecmaVersion": 12
+  },
+  "rules": {
+    /* These rules are incompatible with ES5. */
+    "no-var": "off",
+    "object-shorthand": "off",
+    "prefer-const": "off",
+    "prefer-regex-literals": "off",
+
+    /* These rules are compatible with ES5
+       However they involve non-trivial code changes
+       Therefore need more careful review before adopting. */
+    "array-callback-return": "off",
+    "no-mixed-operators": "off",
+    "no-unreachable-loop": "off",
+    "no-useless-return": "off",
+    "prefer-promise-reject-errors": "off",
+
+    /* These rules are compatible with ES5
+       However they involve large-scale changes to the codebase, so
+       careful co-ordination is needed in adopting the rule to avoid
+       creating merge issues for other PRs. */
+    "dot-notation": "off",
+    "indent": "off",
+    "no-multi-spaces": "off",
+    "no-unused-vars": "off",
+    "object-curly-spacing": "off",
+    "quote-props": "off"
+  },
+  "overrides": [
+    {
+      /* Code within /src is restricted to using ES5 JavaScript
+        The exception is that ES6 classes are used sparingly - see exceptions below. */
+      "files": ["./src/**/*.js"],
+      "parserOptions": {
+        "sourceType": "script",
+        "ecmaVersion": 5
+      }
+    },
+    {
+      /* These modules use ES6 classes, and so are parsed as ES6 to avoid errors. */
+      "files": ["./src/core/**/a-*.js"],
+      "parserOptions": {
+        "ecmaVersion": 6
+      }
+    },
+    {
+      /* This module use ES6 classes, and so is parsed as ES6 to avoid errors. */
+      "files": ["./src/extras/primitives/primitives.js"],
+      "parserOptions": {
+        "ecmaVersion": 6
+      }
+    },
+    {
+      /* This module uses ES6 */
+      "files": ["./src/components/scene/real-world-meshing.js"],
+      "parserOptions": {
+        "ecmaVersion": 6
+      }
+    },
+    {
+      /* This module uses ES8 async / await due to WebXR Anchor Module integration */
+      "files": ["./src/components/anchored.js"],
+      "parserOptions": {
+        "ecmaVersion": 8
+      }
+    },
+    {
+      /* This module uses ES6 for…of loops, and so is parsed as ES6 to avoid errors. */
+      "files": ["./src/components/hand-tracking-controls.js"],
+      "parserOptions": {
+        "ecmaVersion": 6
+      }
+    },
+    {
+      /* This code is external, and the ES5 restrictions do not apply to it. */
+      "files": ["./src/lib/**/*.js"],
+      "parserOptions": {
+        "sourceType": "module",
+        "ecmaVersion": 12
+      }
+    }
+  ]
+}

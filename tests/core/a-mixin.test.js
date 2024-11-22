@@ -1,5 +1,7 @@
 /* global assert, setup, suite, test */
 var helpers = require('../helpers');
+var components = require('index').components;
+var registerComponent = require('index').registerComponent;
 
 suite('a-mixin', function () {
   var assetsEl;
@@ -77,6 +79,29 @@ suite('a-mixin', function () {
           done();
         });
       });
+    });
+
+    test('allows mixin to be removed during component init', function (done) {
+      var mixinEl = document.createElement('a-mixin');
+      var testEl = document.createElement('a-entity');
+      mixinEl.setAttribute('id', 'red');
+      mixinEl.setAttribute('material', 'color: red');
+      assetsEl.appendChild(mixinEl);
+
+      registerComponent('delete-mixin', {
+        init: function () {
+          this.el.removeAttribute('mixin');
+        }
+      });
+
+      testEl.setAttribute('mixin', 'red');
+      testEl.setAttribute('delete-mixin', '');
+      testEl.addEventListener('loaded', function () {
+        assert.equal(testEl.getAttribute('mixin'), null);
+        assert.equal(testEl.getAttribute('material'), null);
+        done();
+      });
+      el.sceneEl.appendChild(testEl);
     });
 
     test('allows mixin to define mixin pre-attach', done => {
@@ -192,6 +217,44 @@ suite('a-mixin', function () {
       });
     });
   });
+
+  suite('parseComponentAttrValue', function () {
+    var mixinEl;
+
+    setup(function () {
+      components.dummy = undefined;
+      mixinEl = document.createElement('a-mixin');
+    });
+
+    test('parses single value component', function () {
+      registerComponent('dummy', {
+        schema: {default: '0 0 1', type: 'vec3'}
+      });
+      var componentObj = mixinEl.parseComponentAttrValue(components.dummy, '1 2 3');
+      assert.deepEqual(componentObj, {x: 1, y: 2, z: 3});
+    });
+
+    test('parses component using the style parser for a complex schema', function () {
+      registerComponent('dummy', {
+        schema: {
+          position: {type: 'vec3', default: '0 0 1'},
+          color: {default: 'red'}
+        }
+      });
+      var componentObj = mixinEl.parseComponentAttrValue(components.dummy, {position: '0 1 0', color: 'red'});
+      assert.deepEqual(componentObj, {position: '0 1 0', color: 'red'});
+    });
+
+    test('does not parse properties that parse to another string', function () {
+      registerComponent('dummy', {
+        schema: {
+          url: {type: 'src', default: ''}
+        }
+      });
+      var componentObj = mixinEl.parseComponentAttrValue(components.dummy, {url: 'url(www.mozilla.com)'});
+      assert.equal(componentObj.url, 'url(www.mozilla.com)');
+    });
+  });
 });
 
 suite('a-mixin (detached)', function () {
@@ -218,4 +281,3 @@ suite('a-mixin (detached)', function () {
     });
   });
 });
-

@@ -250,4 +250,13 @@ function parseBlending (blending) {
 function disposeMaterial (material, system) {
   material.dispose();
   system.unregisterMaterial(material);
+
+  // Dispose textures on this material
+  Object.keys(material)
+    .filter(function (propName) {
+      return material[propName] && material[propName].isTexture;
+    })
+    .forEach(function (mapName) {
+      material[mapName].dispose();
+    });
 }

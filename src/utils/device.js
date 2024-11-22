@@ -1,6 +1,5 @@
 var error = require('debug')('device:error');
 
-var vrDisplay;
 var supportsVRSession = false;
 var supportsARSession = false;
 
@@ -8,21 +7,7 @@ var supportsARSession = false;
  * Oculus Browser 7 doesn't support the WebXR gamepads module.
  * We fallback to WebVR API and will hotfix when implementation is complete.
  */
-var isWebXRAvailable = module.exports.isWebXRAvailable = !window.debug && navigator.xr !== undefined;
-
-// Catch vrdisplayactivate early to ensure we can enter VR mode after the scene loads.
-window.addEventListener('vrdisplayactivate', function (evt) {
-  var canvasEl;
-  // WebXR takes priority if available.
-  if (isWebXRAvailable) { return; }
-  canvasEl = document.createElement('canvas');
-  vrDisplay = evt.display;
-  // We need to make sure the canvas has a WebGL context associated with it.
-  // Otherwise, the requestPresent could be denied.
-  canvasEl.getContext('webgl', {});
-  // Request present immediately. a-scene will be allowed to enter VR without user gesture.
-  vrDisplay.requestPresent([{source: canvasEl}]).then(function () {}, function () {});
-});
+var isWebXRAvailable = module.exports.isWebXRAvailable = navigator.xr !== undefined;
 
 // Support both WebVR and WebXR APIs.
 if (isWebXRAvailable) {
@@ -33,7 +18,7 @@ if (isWebXRAvailable) {
       return;
     }
     if (sceneEl.hasLoaded) {
-      sceneEl.components['vr-mode-ui'].updateEnterInterfaces();
+      sceneEl.components['xr-mode-ui'].updateEnterInterfaces();
     } else {
       sceneEl.addEventListener('loaded', updateEnterInterfaces);
     }
@@ -67,24 +52,13 @@ if (isWebXRAvailable) {
   } else {
     error('WebXR has neither isSessionSupported or supportsSession?!');
   }
-} else {
-  if (navigator.getVRDisplays) {
-    navigator.getVRDisplays().then(function (displays) {
-      var sceneEl = document.querySelector('a-scene');
-      vrDisplay = displays.length && displays[0];
-      if (sceneEl) { sceneEl.emit('displayconnected', {vrDisplay: vrDisplay}); }
-    });
-  }
 }
 
-function getVRDisplay () { return vrDisplay; }
-module.exports.getVRDisplay = getVRDisplay;
-
 /**
- * Determine if a headset is connected by checking if a vrDisplay is available.
+ * Determine if a headset is connected.
  */
 function checkHeadsetConnected () {
-  return supportsVRSession || supportsARSession || !!getVRDisplay();
+  return supportsVRSession || supportsARSession;
 }
 module.exports.checkHeadsetConnected = checkHeadsetConnected;
 
@@ -123,9 +97,42 @@ module.exports.isMobile = isMobile;
  */
 function isTablet (mockUserAgent) {
   var userAgent = mockUserAgent || window.navigator.userAgent;
-  return /ipad|Nexus (7|9)|xoom|sch-i800|playbook|tablet|kindle/i.test(userAgent);
+
+  var isTablet = /Nexus (7|9)|xoom|sch-i800|playbook|tablet|kindle/i.test(userAgent);
+
+  // Additional check for iPad or MacIntel with touch capabilities and not an MSStream device
+  return isTablet || isIpad();
 }
 module.exports.isTablet = isTablet;
+
+/**
+ *  Detect ipad devices.
+ *  @param {string} mockUserAgent - Allow passing a mock user agent for testing.
+ *  @param {string} mockDevicePlatform - Allow passing a mock device platform for testing.
+ *  @param {string} mockDeviceTouchPoints - Allow passing a mock device touch points for testing.
+*/
+function isIpad (mockUserAgent, mockDevicePlatform, mockDeviceTouchPoints) {
+  var userAgent = mockUserAgent || window.navigator.userAgent;
+  var platform = mockDevicePlatform || window.navigator.platform;
+  var maxTouchPoints = mockDeviceTouchPoints || window.navigator.maxTouchPoints || 0;
+
+  return ((platform === 'iPad' || platform === 'MacIntel') && maxTouchPoints > 0 && /Macintosh|Intel|iPad|ipad/i.test(userAgent) && !window.MSStream);
+}
+module.exports.isIpad = isIpad;
+
+/**
+ *  Detect Apple Vision Pro devices.
+*/
+function isAppleVisionPro () {
+  // Safari for Apple Vision Pro presents itself as a desktop browser.
+  var isMacintosh = navigator.userAgent.includes('Macintosh');
+  // Discriminates between a "real" desktop browser and Safari for Vision Pro.
+  var hasFiveTouchPoints = navigator.maxTouchPoints === 5;
+  // isWebXRAvailable discriminates between Vision Pro and iPad / iPhone.
+  // This will no longer work once WebXR ships in iOS / iPad OS.
+  return isMacintosh && hasFiveTouchPoints && isWebXRAvailable;
+}
+module.exports.isAppleVisionPro = isAppleVisionPro;
 
 function isIOS () {
   return /iPad|iPhone|iPod/.test(window.navigator.platform);
@@ -157,7 +164,7 @@ module.exports.isFirefoxReality = isFirefoxReality;
  *  Detect browsers in Stand-Alone headsets
  */
 function isMobileVR () {
-  return isOculusBrowser() || isFirefoxReality();
+  return isOculusBrowser() || isFirefoxReality() || isAppleVisionPro();
 }
 module.exports.isMobileVR = isMobileVR;
 
@@ -181,9 +188,9 @@ module.exports.isLandscape = function () {
  * We need to check a node api that isn't mocked on either side.
  * `require` and `module.exports` are mocked in browser by bundlers.
  * `window` is mocked in node.
- * `process` is also mocked by browserify, but has custom properties.
+ * `process` is also mocked by webpack running with karma, but has custom properties like process.browser.
  */
-module.exports.isBrowserEnvironment = !!(!process || process.browser);
+module.exports.isBrowserEnvironment = typeof process === 'undefined' || process.browser === true;
 
 /**
  * Check if running in node on the server.

@@ -147,8 +147,8 @@ a-scene audio {
   bottom: 20px;
 }
 
-.a-enter-ar {
-  right: 80px;
+.a-enter-ar.xr {
+  right: 90px;
 }
 
 .a-enter-vr-button,
@@ -198,7 +198,6 @@ a-scene audio {
 
 .a-enter-ar-button {
   background-size: 100% 90%;
-  margin-right: 10px;
   border-radius: 7px;
 }
 
@@ -212,7 +211,6 @@ a-scene audio {
 .a-enter-vr-button.resethover {
   background-color: rgba(0, 0, 0, 0.35);
 }
-
 
 .a-enter-vr-modal {
   background-color: #666;

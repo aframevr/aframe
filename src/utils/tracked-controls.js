@@ -1,6 +1,4 @@
-var DEFAULT_HANDEDNESS = require('../constants').DEFAULT_HANDEDNESS;
 var AXIS_LABELS = ['x', 'y', 'z', 'w'];
-var NUM_HANDS = 2;  // Number of hands in a pair. Should always be 2.
 
 /**
  * Called on controller component `.play` handlers.
@@ -15,19 +13,11 @@ var NUM_HANDS = 2;  // Number of hands in a pair. Should always be 2.
 module.exports.checkControllerPresentAndSetup = function (component, idPrefix, queryObject) {
   var el = component.el;
   var controller;
-  var hasWebXR = el.sceneEl.hasWebXR;
-  var isControllerPresent = hasWebXR ? isControllerPresentWebXR : isControllerPresentWebVR;
+  var isControllerPresent = isControllerPresentWebXR;
   var isPresent;
 
   controller = isControllerPresent(component, idPrefix, queryObject);
   isPresent = !!controller;
-
-  // If component was previously paused and now playing, re-add event listeners.
-  // Handle the event listeners here since this helper method is control of calling
-  // `.addEventListeners` and `.removeEventListeners`.
-  if (component.controllerPresent && !component.controllerEventsActive && !hasWebXR) {
-    component.addEventListeners();
-  }
 
   // Nothing changed, no need to do anything.
   if (isPresent === component.controllerPresent) { return isPresent; }
@@ -46,38 +36,13 @@ module.exports.checkControllerPresentAndSetup = function (component, idPrefix, q
 };
 
 /**
- * Enumerate controller (that have pose) and check if they match parameters for WebVR
- *
- * @param {object} component - Tracked controls component.
- * @param {object} idPrefix - Prefix to match in gamepad id if any.
- * @param {object} queryObject - Map of values to match.
- */
-function isControllerPresentWebVR (component, idPrefix, queryObject) {
-  var gamepads;
-  var sceneEl = component.el.sceneEl;
-  var trackedControlsSystem;
-  var filterControllerIndex = queryObject.index || 0;
-
-  if (!idPrefix) { return false; }
-
-  trackedControlsSystem = sceneEl && sceneEl.systems['tracked-controls-webvr'];
-  if (!trackedControlsSystem) { return false; }
-
-  gamepads = trackedControlsSystem.controllers;
-  if (!gamepads.length) { return false; }
-
-  return !!findMatchingControllerWebVR(gamepads, null, idPrefix, queryObject.hand,
-                                  filterControllerIndex);
-}
-
-/**
  *
  * @param {object} component - Tracked controls component.
  */
 function isControllerPresentWebXR (component, id, queryObject) {
   var controllers;
   var sceneEl = component.el.sceneEl;
-  var trackedControlsSystem = sceneEl && sceneEl.systems['tracked-controls-webxr'];
+  var trackedControlsSystem = sceneEl && sceneEl.systems['tracked-controls'];
   if (!trackedControlsSystem) { return false; }
 
   controllers = trackedControlsSystem.controllers;
@@ -88,69 +53,7 @@ function isControllerPresentWebXR (component, id, queryObject) {
     queryObject.hand, queryObject.index, queryObject.iterateControllerProfiles, queryObject.handTracking);
 }
 
-module.exports.isControllerPresentWebVR = isControllerPresentWebVR;
 module.exports.isControllerPresentWebXR = isControllerPresentWebXR;
-
-/**
- * Walk through the given controllers to find any where the device ID equals
- * filterIdExact, or startsWith filterIdPrefix.
- * A controller where this considered true is considered a 'match'.
- *
- * For each matching controller:
- *   If filterHand is set, and the controller:
- *     is handed, we further verify that controller.hand equals filterHand.
- *     is unhanded (controller.hand is ''), we skip until we have found a
- *     number of matching controllers that equals filterControllerIndex
- *   If filterHand is not set, we skip until we have found the nth matching
- *   controller, where n equals filterControllerIndex
- *
- * The method should be called with one of: [filterIdExact, filterIdPrefix] AND
- * one or both of: [filterHand, filterControllerIndex]
- *
- * @param {object} controllers - Array of gamepads to search
- * @param {string} filterIdExact - If set, used to find controllers with id === this value
- * @param {string} filterIdPrefix - If set, used to find controllers with id startsWith this value
- * @param {object} filterHand - If set, further filters controllers with matching 'hand' property
- * @param {object} filterControllerIndex - Find the nth matching controller,
- * where n equals filterControllerIndex. defaults to 0.
- */
-function findMatchingControllerWebVR (controllers, filterIdExact, filterIdPrefix, filterHand,
-                                 filterControllerIndex) {
-  var controller;
-  var i;
-  var matchingControllerOccurence = 0;
-  var targetControllerMatch = filterControllerIndex >= 0 ? filterControllerIndex : 0;
-
-  for (i = 0; i < controllers.length; i++) {
-    controller = controllers[i];
-
-    // Determine if the controller ID matches our criteria.
-    if (filterIdPrefix && !controller.id.startsWith(filterIdPrefix)) {
-      continue;
-    }
-
-    if (!filterIdPrefix && controller.id !== filterIdExact) { continue; }
-
-    // If the hand filter and controller handedness are defined we compare them.
-    if (filterHand && controller.hand && filterHand !== controller.hand) { continue; }
-
-    // If we have detected an unhanded controller and the component was asking
-    // for a particular hand, we need to treat the controllers in the array as
-    // pairs of controllers. This effectively means that we need to skip
-    // NUM_HANDS matches for each controller number, instead of 1.
-    if (filterHand && !controller.hand) {
-      targetControllerMatch = NUM_HANDS * filterControllerIndex + ((filterHand === DEFAULT_HANDEDNESS) ? 0 : 1);
-    } else {
-      return controller;
-    }
-
-    // We are looking for the nth occurence of a matching controller
-    // (n equals targetControllerMatch).
-    if (matchingControllerOccurence === targetControllerMatch) { return controller; }
-    ++matchingControllerOccurence;
-  }
-  return undefined;
-}
 
 function findMatchingControllerWebXR (controllers, idPrefix, handedness, index, iterateProfiles, handTracking) {
   var i;
@@ -186,11 +89,10 @@ function findMatchingControllerWebXR (controllers, idPrefix, handedness, index, 
   return undefined;
 }
 
-module.exports.findMatchingControllerWebVR = findMatchingControllerWebVR;
 module.exports.findMatchingControllerWebXR = findMatchingControllerWebXR;
 
 /**
- * Emit specific `moved` event(s) if axes changed based on original axismoved event.
+ * Emit specific `moved` event(s) if axes changed based on original axismove event.
  *
  * @param {object} component - Controller component in use.
  * @param {array} axesMapping - For example `{thumbstick: [0, 1]}`.

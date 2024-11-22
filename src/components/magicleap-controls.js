@@ -1,4 +1,3 @@
-var bind = require('../utils/bind');
 var registerComponent = require('../core/component').registerComponent;
 
 var trackedControlsUtils = require('../utils/tracked-controls');
@@ -40,8 +39,7 @@ var INPUT_MAPPING_WEBXR = {
 module.exports.Component = registerComponent('magicleap-controls', {
   schema: {
     hand: {default: 'none'},
-    model: {default: true},
-    orientationOffset: {type: 'vec3'}
+    model: {default: true}
   },
 
   mapping: INPUT_MAPPING_WEBXR,
@@ -49,8 +47,7 @@ module.exports.Component = registerComponent('magicleap-controls', {
   init: function () {
     var self = this;
     this.controllerPresent = false;
-    this.lastControllerCheck = 0;
-    this.onButtonChanged = bind(this.onButtonChanged, this);
+    this.onButtonChanged = this.onButtonChanged.bind(this);
     this.onButtonDown = function (evt) { onButtonEvent(evt.detail.id, 'down', self); };
     this.onButtonUp = function (evt) { onButtonEvent(evt.detail.id, 'up', self); };
     this.onButtonTouchEnd = function (evt) { onButtonEvent(evt.detail.id, 'touchend', self); };
@@ -76,11 +73,11 @@ module.exports.Component = registerComponent('magicleap-controls', {
   },
 
   bindMethods: function () {
-    this.onModelLoaded = bind(this.onModelLoaded, this);
-    this.onControllersUpdate = bind(this.onControllersUpdate, this);
-    this.checkIfControllerPresent = bind(this.checkIfControllerPresent, this);
-    this.removeControllersUpdateListener = bind(this.removeControllersUpdateListener, this);
-    this.onAxisMoved = bind(this.onAxisMoved, this);
+    this.onModelLoaded = this.onModelLoaded.bind(this);
+    this.onControllersUpdate = this.onControllersUpdate.bind(this);
+    this.checkIfControllerPresent = this.checkIfControllerPresent.bind(this);
+    this.removeControllersUpdateListener = this.removeControllersUpdateListener.bind(this);
+    this.onAxisMoved = this.onAxisMoved.bind(this);
   },
 
   addEventListeners: function () {
@@ -121,8 +118,7 @@ module.exports.Component = registerComponent('magicleap-controls', {
       // TODO: verify expected behavior between reserved prefixes.
       idPrefix: GAMEPAD_ID_COMPOSITE,
       hand: data.hand,
-      controller: this.controllerIndex,
-      orientationOffset: data.orientationOffset
+      controller: this.controllerIndex
     });
 
     // Load model.

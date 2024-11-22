@@ -190,12 +190,11 @@ HitTest.updateAnchorPoses = function (frame, refSpace) {
     try {
       // Query most recent pose of the anchor relative to some reference space:
       anchorPose = frame.getPose(anchor.anchorSpace, refSpace);
-
       if (anchorPose) {
         object3DOptions = HitTest.prototype.anchorToObject3D.get(anchor);
+        if (!object3DOptions) { return; }
         offset = object3DOptions.offset;
         object3D = object3DOptions.object3D;
-
         applyPose(anchorPose, object3D, offset);
       }
     } catch (e) {
@@ -229,6 +228,8 @@ module.exports.Component = register('ar-hit-test', {
       }
     }
   },
+
+  sceneOnly: true,
 
   init: function () {
     this.hitTest = null;
@@ -387,6 +388,7 @@ module.exports.Component = register('ar-hit-test', {
     this.update = this.update.bind(this);
     this.makeBBox();
   },
+
   update: function () {
     // If it is disabled it's cleaned up
     if (this.data.enabled === false) {
@@ -406,6 +408,7 @@ module.exports.Component = register('ar-hit-test', {
     }
     this.bboxNeedsUpdate = true;
   },
+
   makeBBox: function () {
     var geometry = new THREE.PlaneGeometry(1, 1);
     var material = new THREE.MeshBasicMaterial({
@@ -419,6 +422,7 @@ module.exports.Component = register('ar-hit-test', {
     this.el.setObject3D('ar-hit-test', this.bboxMesh);
     this.bboxMesh.visible = false;
   },
+
   updateFootprint: function () {
     var tempImageData;
     var renderer = this.el.sceneEl.renderer;
@@ -458,8 +462,8 @@ module.exports.Component = register('ar-hit-test', {
     tempImageData = this.context.getImageData(0, 0, 512, 512);
     for (var i = 0; i < 512 * 512; i++) {
       // if it's a little bit transparent but not opaque make it middle transparent
-      if (tempImageData.data[ i * 4 + 3 ] !== 0 && tempImageData.data[ i * 4 + 3 ] !== 255) {
-        tempImageData.data[ i * 4 + 3 ] = 128;
+      if (tempImageData.data[i * 4 + 3] !== 0 && tempImageData.data[i * 4 + 3] !== 255) {
+        tempImageData.data[i * 4 + 3] = 128;
       }
     }
     this.context.putImageData(tempImageData, 0, 0);

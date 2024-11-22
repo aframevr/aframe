@@ -62,7 +62,7 @@ use of resources, we will need deeper understanding about 3D graphics.  See
 [release]: https://github.com/aframevr/aframe/releases
 [webxr]: https://immersive-web.github.io/webxr/
 
-If you are using A-Frame 1.4.0 or older you probably need to update to the [latest release][release]. Browsers are migrating to the [WebXR standard][webxr] and old versions might no longer work.
+If you are using A-Frame 1.6.0 or older you probably need to update to the [latest release][release]. Browsers are migrating to the [WebXR standard][webxr] and old versions might no longer work.
 
 You also have to serve your content over HTTPS. The WebXR API won't be available over HTTP.
 
@@ -166,12 +166,6 @@ component][whygltf].
 [Wavefront (`.obj`)][obj] is also a well-known format but has some limitations
 like the lack of animation and vertex color support.
 
-There are also components in the ecosystem for loading other formats:
-
-- [`.PLY` models](https://github.com/donmccurdy/aframe-extras/blob/master/src/loaders/ply-model.js)
-- [three.js `.JSON` Object](https://github.com/donmccurdy/aframe-extras/blob/master/src/loaders/json-model.js)
-- [three.js `.JSON` Scene](https://github.com/donmccurdy/aframe-extras/blob/master/src/loaders/object-model.js)
-
 Below are a couple basic examples for using models:
 
 - [Model Example 1](https://aframe.io/aframe/examples/test/model/)
@@ -233,7 +227,7 @@ This depends on what devices you plan to support and how you allow users to
 navigate your scene. For most VR experiences, follow best practices and only
 move the camera proportionately to the user's motion.
 
-[teleport]: https://github.com/fernandojsg/aframe-teleport-controls
+[teleport]: https://github.com/jure/aframe-blink-controls
 
 Don't block the camera if the user steps forward in a room-scale VR space. For
 most VR applications it's better to do locomotion with methods such as using
@@ -241,7 +235,7 @@ most VR applications it's better to do locomotion with methods such as using
 of the way or not require much movement, or explore more creative ways of
 moving users through the world.
 
-[physics]: https://github.com/donmccurdy/aframe-physics-system
+[physics]: https://github.com/c-frame/aframe-physics-system
 
 For non-VR desktop experiences with a gamepad or keyboard controls or for VR
 scenes where the camera is inside a vehicle, you can add a [physics
@@ -342,4 +336,58 @@ Phones with Adreno 300 series GPUs are notoriously problematic. Set [renderer pr
 
 ## Can I use A-Frame offline or self hosted?
 
-Using A-Frame online sometimes is not possible or inconvenient, like for instance when traveling or during public events with poor Internet connectivity. A-Frame is mostly self-contained so including the build (aframe.min.js) in your project will be sufficient in many cases. Some specific parts are lazy loaded and only fetched when used. This is for example the case of the fonts for the text component and the 3D models for controllers. In order to make an A-Frame build work either offline or without relying on A-Frame hosting infrastructure (typically cdn.aframe.io), you can monitor network requests on your browser console. This will show precisely what assets are being loaded and thus as required for your specific experience. Fonts can be found via FONT_BASE_URL in the whereas controllers via MODEL_URLS. Both can be modified in the source and included in your own [custom build](https://github.com/aframevr/aframe#generating-builds)
+Using A-Frame online sometimes is not possible or inconvenient, for instance when traveling or during public events with poor Internet connectivity. A-Frame is mostly self-contained so including the build (aframe.min.js) in your project will be sufficient in many cases. Some specific parts are lazy loaded and only fetched when used. This is for example the case of the fonts for the text component and the 3D models for controllers. In order to make an A-Frame build work either offline or without relying on A-Frame hosting infrastructure (typically cdn.aframe.io), you can monitor network requests on your browser console. This will show precisely what assets are being loaded and thus as required for your specific experience. Fonts can be found via FONT_BASE_URL in the whereas controllers via MODEL_URLS. Both can be modified in the source and included in your own [custom build](https://github.com/aframevr/aframe#generating-builds).
+
+Alternatively one can set `window.AFRAME_CDN_ROOT='./assets/'` before loading AFrame. That directory can contain [files from the assets repository](https://github.com/aframevr/assets), in particular the `./fonts` and `./controllers` directories. Note that not all files are required, for example for controllers only the `.glb` files are required, others can thus be safely removed. Once again it is good to check with the browser network inspector that all needed files are loading properly locally before going truly offline.
+
+
+## Can I load A-Frame as an ES module?
+
+You can load A-Frame as an ES module using a [side effect import](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import#import_a_module_for_its_side_effects_only). A-Frame will then initialize any `<a-scene>` in the document. It's still important to register any components or systems you need before this happens:
+
+```HTML
+<head>
+  <script type="importmap">
+    {
+        "imports": {
+            "aframe": "https://aframe.io/releases/1.6.0/aframe.min.js",
+        }
+    }
+  </script>
+  <script type="module">
+    import 'aframe';
+    AFRAME.registerComponent('my-component', {
+      ...
+    });
+  </script>
+</head>
+```
+
+If it's not possible to register everything synchronously to importing A-Frame, you can set the `window.AFRAME_ASYNC` flag. This prevents A-Frame from initializing `<a-scene>` tags, until you give a ready signal by calling `window.AFRAME.emitReady()`. Note that this flag must be set before importing A-Frame, as shown in the following example:
+
+```JS
+window.AFRAME_ASYNC = true;
+await import('aframe');
+
+// Asynchronously register components/systems
+
+window.AFRAME.ready();
+```
+
+## What order does A-Frame render objects in?
+
+[sortTransparentObjects]: ../components/renderer.md#sorttransparentobjects
+
+In many cases, the order in which objects is rendered doesn't matter much - most scenes will look the same whatever order the objects are rendered in - but there are a few cases where sorting is important:
+
+- for transparent objects, it's typically better to render objects furthest to nearest (although some cases are more complex and require [more sophisticated approaches](https://threejs.org/manual/?q=transp[#en/transparency)).  However, when the camera and/or objects are moving, this can result in undesirable visual effects when objects switch in terms of their relative distance from the camera
+- for performance reasons, it's typically desirable to render objects nearest to furthest, so that GPU doesn't spend time drawing pixels that end up being drawn over.
+- for AR "hider material" used to hide parts of the scene to create the appearance of occlusion by real-world objects, it's typically necessary to render these before the rest of the scene.
+
+By default, A-Frame sorts objects as follows:
+
+- for all objects, if [`renderOrder`](https://threejs.org/docs/index.html?q=object3D#api/en/core/Object3D.renderOrder) is set on the Object3D or a Group that it is a member of, the specified order will be respected
+- otherwise, opaque objects are rendered furthest to nearest, and transparent objects are rendered in the order they appear in the THREE.js Object tree (in most cases, this is the same as the order they appear in the DOM)
+
+The `renderer` system has a [`sortTransparentObjects`][sortTransparentObjects] property, which can be used to render transparent objects furthest to nearest, rather than in DOM order.
+

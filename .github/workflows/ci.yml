@@ -14,14 +14,14 @@ jobs:
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        node-version: ['16.x']
+        node-version: ['20.x']
         firefox-version: ['latest']
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Use Node.js ${{ matrix['node-version'] }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix['node-version'] }}
 # Enabling the cache reduces the "Install dependencies" step by 1m30,

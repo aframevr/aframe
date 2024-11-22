@@ -2,32 +2,25 @@
 var ANode = require('./a-node').ANode;
 var components = require('./component').components;
 var utils = require('../utils');
+var styleParser = utils.styleParser;
 
 var MULTIPLE_COMPONENT_DELIMITER = '__';
 
 /**
  * @member {object} componentCache - Cache of pre-parsed values. An object where the keys
  *         are component names and the values are already parsed by the component.
+ * @member {object} rawAttributeCache - Cache of the raw attribute values.
  */
 class AMixin extends ANode {
   constructor () {
     super();
     this.componentCache = {};
+    this.rawAttributeCache = {};
     this.isMixin = true;
   }
 
-  connectedCallback () {
-    // Defer if DOM is not ready.
-    if (document.readyState !== 'complete') {
-      document.addEventListener('readystatechange', this.onReadyStateChange.bind(this));
-      return;
-    }
-
-    this.doConnectedCallback();
-  }
-
   doConnectedCallback () {
-    super.connectedCallback();
+    super.doConnectedCallback();
 
     this.sceneEl = this.closestScene();
     this.id = this.getAttribute('id');
@@ -60,11 +53,35 @@ class AMixin extends ANode {
     // Get component data.
     componentName = utils.split(attr, MULTIPLE_COMPONENT_DELIMITER)[0];
     component = components[componentName];
-    if (!component) { return; }
     if (value === undefined) {
       value = window.HTMLElement.prototype.getAttribute.call(this, attr);
     }
-    this.componentCache[attr] = component.parseAttrValueForCache(value);
+
+    this.rawAttributeCache[attr] = value;
+    if (!component) { return; }
+    this.componentCache[attr] = this.parseComponentAttrValue(component, value);
+  }
+
+  /**
+   * Given an HTML attribute value parses the string based on the component schema.
+   * To avoid double parsing of strings when mixed into the actual component,
+   * we store the original instead of the parsed one.
+   *
+   * @param {object} component - The component to parse for.
+   * @param {string} attrValue - HTML attribute value.
+   */
+  parseComponentAttrValue (component, attrValue) {
+    var parsedValue;
+    if (typeof attrValue !== 'string') { return attrValue; }
+    if (component.isSingleProperty) {
+      parsedValue = component.schema.parse(attrValue);
+      if (typeof parsedValue === 'string') { parsedValue = attrValue; }
+    } else {
+      // Use style parser as the values will be parsed once mixed in.
+      // Furthermore parsing might fail with dynamic schema's.
+      parsedValue = styleParser.parse(attrValue);
+    }
+    return parsedValue;
   }
 
   /**

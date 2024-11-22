@@ -1,4 +1,3 @@
-var bind = require('../utils/bind');
 var utils = require('../utils');
 var diff = utils.diff;
 var debug = require('../utils/debug');
@@ -23,7 +22,7 @@ module.exports.Component = registerComponent('light', {
     groundColor: {type: 'color', if: {type: ['hemisphere']}},
     decay: {default: 1, if: {type: ['point', 'spot']}},
     distance: {default: 0.0, min: 0, if: {type: ['point', 'spot']}},
-    intensity: {default: 1.0, min: 0, if: {type: ['ambient', 'directional', 'hemisphere', 'point', 'spot', 'probe']}},
+    intensity: {default: 3.14, min: 0, if: {type: ['ambient', 'directional', 'hemisphere', 'point', 'spot', 'probe']}},
     penumbra: {default: 0, min: 0, max: 1, if: {type: ['spot']}},
     type: {
       default: 'directional',
@@ -102,7 +101,7 @@ module.exports.Component = registerComponent('light', {
               if (value.hasLoaded) {
                 self.onSetTarget(value, light);
               } else {
-                value.addEventListener('loaded', bind(self.onSetTarget, self, value, light));
+                value.addEventListener('loaded', self.onSetTarget.bind(self, value, light));
               }
             }
             break;
@@ -240,7 +239,8 @@ module.exports.Component = registerComponent('light', {
     // Shadow camera helper.
     var cameraHelper = el.getObject3D('cameraHelper');
     if (data.shadowCameraVisible && !cameraHelper) {
-      el.setObject3D('cameraHelper', new THREE.CameraHelper(light.shadow.camera));
+      cameraHelper = new THREE.CameraHelper(light.shadow.camera);
+      el.setObject3D('cameraHelper', cameraHelper);
     } else if (!data.shadowCameraVisible && cameraHelper) {
       el.removeObject3D('cameraHelper');
     }
@@ -299,7 +299,7 @@ module.exports.Component = registerComponent('light', {
           if (target.hasLoaded) {
             this.onSetTarget(target, light);
           } else {
-            target.addEventListener('loaded', bind(this.onSetTarget, this, target, light));
+            target.addEventListener('loaded', this.onSetTarget.bind(this, target, light));
           }
         }
         return light;
@@ -320,7 +320,7 @@ module.exports.Component = registerComponent('light', {
           if (target.hasLoaded) {
             this.onSetTarget(target, light);
           } else {
-            target.addEventListener('loaded', bind(this.onSetTarget, this, target, light));
+            target.addEventListener('loaded', this.onSetTarget.bind(this, target, light));
           }
         }
         return light;
@@ -346,25 +346,30 @@ module.exports.Component = registerComponent('light', {
     if (!data.envMap) {
       // reset parameters if no map
       light.copy(new THREE.LightProbe());
+      return;
     }
 
+    // Populate the cache if not done for this envMap yet
+    if (probeCache[data.envMap] === undefined) {
+      probeCache[data.envMap] = new window.Promise(function (resolve) {
+        utils.srcLoader.validateCubemapSrc(data.envMap, function loadEnvMap (urls) {
+          CubeLoader.load(urls, function (cube) {
+            var tempLightProbe = THREE.LightProbeGenerator.fromCubeTexture(cube);
+            probeCache[data.envMap] = tempLightProbe;
+            resolve(tempLightProbe);
+          });
+        });
+      });
+    }
+
+    // Copy over light probe properties
     if (probeCache[data.envMap] instanceof window.Promise) {
       probeCache[data.envMap].then(function (tempLightProbe) {
         light.copy(tempLightProbe);
       });
-    }
-    if (probeCache[data.envMap] instanceof THREE.LightProbe) {
+    } else if (probeCache[data.envMap] instanceof THREE.LightProbe) {
       light.copy(probeCache[data.envMap]);
     }
-    probeCache[data.envMap] = new window.Promise(function (resolve) {
-      utils.srcLoader.validateCubemapSrc(data.envMap, function loadEnvMap (urls) {
-        CubeLoader.load(urls, function (cube) {
-          var tempLightProbe = THREE.LightProbeGenerator.fromCubeTexture(cube);
-          probeCache[data.envMap] = tempLightProbe;
-          light.copy(tempLightProbe);
-        });
-      });
-    });
   },
 
   onSetTarget: function (targetEl, light) {

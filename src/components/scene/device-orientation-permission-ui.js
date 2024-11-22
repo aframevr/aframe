@@ -1,7 +1,5 @@
 /* global DeviceOrientationEvent, location  */
 var registerComponent = require('../../core/component').registerComponent;
-var utils = require('../../utils/');
-var bind = utils.bind;
 
 var constants = require('../../constants/');
 
@@ -32,14 +30,14 @@ module.exports.Component = registerComponent('device-orientation-permission-ui',
     cancelButtonText: {default: 'Cancel'}
   },
 
+  sceneOnly: true,
+
   init: function () {
     var self = this;
 
     if (!this.data.enabled) { return; }
 
-    if (location.hostname !== 'localhost' &&
-        location.hostname !== '127.0.0.1' &&
-        location.protocol === 'http:') {
+    if (!window.isSecureContext) {
       this.showHTTPAlert();
     }
 
@@ -49,8 +47,8 @@ module.exports.Component = registerComponent('device-orientation-permission-ui',
       return;
     }
 
-    this.onDeviceMotionDialogAllowClicked = bind(this.onDeviceMotionDialogAllowClicked, this);
-    this.onDeviceMotionDialogDenyClicked = bind(this.onDeviceMotionDialogDenyClicked, this);
+    this.onDeviceMotionDialogAllowClicked = this.onDeviceMotionDialogAllowClicked.bind(this);
+    this.onDeviceMotionDialogDenyClicked = this.onDeviceMotionDialogDenyClicked.bind(this);
     // Show dialog only if permission has not yet been granted.
     DeviceOrientationEvent.requestPermission().then(function () {
       self.el.emit('deviceorientationpermissiongranted');

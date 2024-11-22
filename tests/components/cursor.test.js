@@ -220,7 +220,7 @@ suite('cursor', function () {
       });
     });
 
-    test('emits mousenter event on intersectedEl, ignoring el intersection', function (done) {
+    test('emits mouseenter event on intersectedEl, ignoring el intersection', function (done) {
       once(intersectedEl, 'mouseenter', function (evt) {
         assert.equal(evt.detail.cursorEl, el);
         done();

@@ -1,7 +1,7 @@
 /* global assert, process, setup, sinon, suite, test, THREE */
 const entityFactory = require('../helpers').entityFactory;
 
-suite('tracked-controls-webxr', function () {
+suite('hand-tracking-controls', function () {
   var controller;
   var el;
   var system;
@@ -31,7 +31,7 @@ suite('tracked-controls-webxr', function () {
             return true;
           }
         };
-        system = el.sceneEl.systems['tracked-controls-webxr'];
+        system = el.sceneEl.systems['tracked-controls'];
         controller = {
           handedness: 'left',
           profiles: ['oculus-hand'],
@@ -60,8 +60,22 @@ suite('tracked-controls-webxr', function () {
     test('matches controller with same hand', function () {
       el.setAttribute('hand-tracking-controls', {hand: 'left'});
       el.components['hand-tracking-controls'].checkIfControllerPresent();
-      var component = el.components['tracked-controls-webxr'];
+      var component = el.components['tracked-controls'];
       assert.equal(component.controller, controller);
+    });
+  });
+
+  suite('children entities', function () {
+    test('attached to the wrist joint', function (done) {
+      var boxEl = document.createElement('a-box');
+      el.addEventListener('child-attached', function () {
+        assert.ok(el.components['hand-tracking-controls'].wristObject3D);
+        assert.equal(boxEl.object3D.parent, el.components['hand-tracking-controls'].wristObject3D);
+        done();
+      });
+      el.setAttribute('hand-tracking-controls', {hand: 'left'});
+      el.components['hand-tracking-controls'].checkIfControllerPresent();
+      el.appendChild(boxEl);
     });
   });
 
@@ -86,6 +100,7 @@ suite('tracked-controls-webxr', function () {
       el.components['hand-tracking-controls'].checkIfControllerPresent();
       el.components['hand-tracking-controls'].isPinched = true;
       thumbMatrix.setPosition(0, 0, 10);
+      el.components['hand-tracking-controls'].pinchDistance = 1;
       el.components['hand-tracking-controls'].tick();
       el.components['hand-tracking-controls'].detectPinch();
       assert.equal(emitSpy.getCalls()[0].args[0], 'pinchended');
@@ -97,4 +112,3 @@ suite('tracked-controls-webxr', function () {
     });
   });
 });
-

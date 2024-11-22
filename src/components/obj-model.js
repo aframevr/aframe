@@ -34,11 +34,11 @@ module.exports.Component = registerComponent('obj-model', {
   },
 
   remove: function () {
-    if (!this.model) { return; }
     this.resetMesh();
   },
 
   resetMesh: function () {
+    if (!this.model) { return; }
     this.el.removeObject3D('mesh');
   },
 

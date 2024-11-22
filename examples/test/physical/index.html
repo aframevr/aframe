@@ -35,7 +35,7 @@
     </script>
   </head>
   <body>
-    <a-scene generate background="#111">
+    <a-scene generate background="color: #111">
       <a-assets>
         <a-cubemap id="reflection">
           <img src="milkyway/px.jpg">
@@ -47,7 +47,7 @@
         </a-cubemap>
         <a-mixin id="animation" animation="easing: linear; dur: 4096; loop: true"></a-mixin>
         <a-mixin id="light" geometry="primitive: sphere; radius: .25"
-                 light="color: #FFF; intensity: .5; type: point"
+                 light="color: #FFF; intensity: 1.57; type: point"
                  material="shader: flat"></a-mixin>
         <a-mixin id="sphere" geometry="primitive: sphere; radius: 5"></a-mixin>
       </a-assets>

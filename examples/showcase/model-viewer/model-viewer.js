@@ -203,13 +203,13 @@ AFRAME.registerComponent('model-viewer', {
     var arShadowEl = this.arShadowEl = document.createElement('a-entity');
     // The title / legend displayed above the model.
     var titleEl = this.titleEl = document.createElement('a-entity');
-    // Scene ligthing.
+    // Scene lighting.
     var lightEl = this.lightEl = document.createElement('a-entity');
     var sceneLightEl = this.sceneLightEl = document.createElement('a-entity');
 
     sceneLightEl.setAttribute('light', {
       type: 'hemisphere',
-      intensity: 1
+      intensity: 3.14
     });
     sceneLightEl.setAttribute('hide-on-enter-ar', '');
 
@@ -274,7 +274,7 @@ AFRAME.registerComponent('model-viewer', {
       shadowCameraRight: 5,
       shadowCameraBottom: -5,
       shadowCameraTop: 5,
-      intensity: 0.5,
+      intensity: 1.57,
       target: 'modelPivot'
     });
 

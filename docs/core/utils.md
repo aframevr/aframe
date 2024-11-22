@@ -146,10 +146,6 @@ diff({a: 1, b: 2, c: 3}, {b: 2, c: 4})
 
 Checks if a VR headset is connected by looking for orientation data. Returns a `boolean`.
 
-### `AFRAME.utils.device.isGearVR ()`
-
-Checks if device is Gear VR. Returns a `boolean`.
-
 ### `AFRAME.utils.device.isOculusGo ()`
 
 Checks if device is Oculus Go. Returns a `boolean`.
@@ -222,7 +218,7 @@ Example use cases:
  * following a mouse pointer using the mousemove event
  * integrating with [THREE.TransformControls](https://threejs.org/docs/#examples/en/controls/TransformControls), via the objectChange event.
 
-A context such as `this` can be provided to handle function binding for convenience. 
+A context such as `this` can be provided to handle function binding for convenience.
 
 The same as [lodash's`throttle`][lodash], with `leading` and `trailing` options both set to `true`
 

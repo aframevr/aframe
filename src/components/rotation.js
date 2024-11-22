@@ -10,8 +10,7 @@ module.exports.Component = registerComponent('rotation', {
   update: function () {
     var data = this.data;
     var object3D = this.el.object3D;
-    object3D.rotation.set(degToRad(data.x), degToRad(data.y), degToRad(data.z));
-    object3D.rotation.order = 'YXZ';
+    object3D.rotation.set(degToRad(data.x), degToRad(data.y), degToRad(data.z), 'YXZ');
   },
 
   remove: function () {

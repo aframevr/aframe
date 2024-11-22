@@ -96,7 +96,7 @@ AFRAME.registerComponent('link-controls', {
         }
       }
     },
-    'oculus-touch-controls': {
+    'meta-touch-controls': {
       left: {
         xbutton: {
           tooltip: 'text: Press X to peek link; width: 0.1; height: 0.04; targetPosition: 0.01 0.05 0',
@@ -188,7 +188,7 @@ AFRAME.registerComponent('link-controls', {
         el.addEventListener('trackpadtouchstart', this.startPeeking);
         el.addEventListener('trackpadtouchend', this.stopPeeking);
         break;
-      case 'oculus-touch-controls':
+      case 'meta-touch-controls':
         el.addEventListener('xbuttondown', this.startPeeking);
         el.addEventListener('xbuttonup', this.stopPeeking);
         el.addEventListener('abuttondown', this.startPeeking);
@@ -214,7 +214,7 @@ AFRAME.registerComponent('link-controls', {
         el.removeEventListeners('trackpadtouchstart', this.startPeeking);
         el.removeEventListeners('trackpadtouchend', this.stopPeeking);
         break;
-      case 'oculus-touch-controls':
+      case 'meta-touch-controls':
         el.removeEventListener('xbuttondown', this.startPeeking);
         el.removeEventListener('xbuttonup', this.stopPeeking);
         el.removeEventListener('abuttondown', this.startPeeking);

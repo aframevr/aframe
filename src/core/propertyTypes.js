@@ -1,31 +1,30 @@
 var coordinates = require('../utils/coordinates');
 var debug = require('debug');
 
-var error = debug('core:propertyTypes:warn');
 var warn = debug('core:propertyTypes:warn');
 
 var propertyTypes = module.exports.propertyTypes = {};
 var nonCharRegex = /[,> .[\]:]/;
-var urlRegex = /\url\((.+)\)/;
+var urlRegex = /url\((.+)\)/;
 
 // Built-in property types.
-registerPropertyType('audio', '', assetParse);
-registerPropertyType('array', [], arrayParse, arrayStringify);
-registerPropertyType('asset', '', assetParse);
+registerPropertyType('audio', '', assetParse, assetStringify);
+registerPropertyType('array', [], arrayParse, arrayStringify, arrayEquals);
+registerPropertyType('asset', '', assetParse, assetStringify);
 registerPropertyType('boolean', false, boolParse);
-registerPropertyType('color', '#FFF', defaultParse, defaultStringify);
+registerPropertyType('color', '#FFF');
 registerPropertyType('int', 0, intParse);
 registerPropertyType('number', 0, numberParse);
-registerPropertyType('map', '', assetParse);
-registerPropertyType('model', '', assetParse);
-registerPropertyType('selector', null, selectorParse, selectorStringify);
-registerPropertyType('selectorAll', null, selectorAllParse, selectorAllStringify);
-registerPropertyType('src', '', srcParse);
-registerPropertyType('string', '', defaultParse, defaultStringify);
+registerPropertyType('map', '', assetParse, assetStringify);
+registerPropertyType('model', '', assetParse, assetStringify);
+registerPropertyType('selector', null, selectorParse, selectorStringify, defaultEquals, false);
+registerPropertyType('selectorAll', null, selectorAllParse, selectorAllStringify, arrayEquals, false);
+registerPropertyType('src', '', srcParse, assetStringify);
+registerPropertyType('string', '');
 registerPropertyType('time', 0, intParse);
-registerPropertyType('vec2', {x: 0, y: 0}, vecParse, coordinates.stringify);
-registerPropertyType('vec3', {x: 0, y: 0, z: 0}, vecParse, coordinates.stringify);
-registerPropertyType('vec4', {x: 0, y: 0, z: 0, w: 1}, vecParse, coordinates.stringify);
+registerPropertyType('vec2', {x: 0, y: 0}, vecParse, coordinates.stringify, coordinates.equals);
+registerPropertyType('vec3', {x: 0, y: 0, z: 0}, vecParse, coordinates.stringify, coordinates.equals);
+registerPropertyType('vec4', {x: 0, y: 0, z: 0, w: 1}, vecParse, coordinates.stringify, coordinates.equals);
 
 /**
  * Register a parser for re-use such that when someone uses `type` in the schema,
@@ -36,17 +35,20 @@ registerPropertyType('vec4', {x: 0, y: 0, z: 0, w: 1}, vecParse, coordinates.str
  *   Default value to use if component does not define default value.
  * @param {function} [parse=defaultParse] - Parse string function.
  * @param {function} [stringify=defaultStringify] - Stringify to DOM function.
+ * @param {function} [equals=defaultEquals] - Equality comparator.
+ * @param {boolean} [cachable=false] - Whether or not the parsed value of a property can be cached.
  */
-function registerPropertyType (type, defaultValue, parse, stringify) {
-  if ('type' in propertyTypes) {
-    error('Property type ' + type + ' is already registered.');
-    return;
+function registerPropertyType (type, defaultValue, parse, stringify, equals, cacheable) {
+  if (type in propertyTypes) {
+    throw new Error('Property type ' + type + ' is already registered.');
   }
 
   propertyTypes[type] = {
     default: defaultValue,
     parse: parse || defaultParse,
-    stringify: stringify || defaultStringify
+    stringify: stringify || defaultStringify,
+    equals: equals || defaultEquals,
+    isCacheable: cacheable !== false
   };
 }
 module.exports.registerPropertyType = registerPropertyType;
@@ -60,6 +62,25 @@ function arrayParse (value) {
 
 function arrayStringify (value) {
   return value.join(', ');
+}
+
+function arrayEquals (a, b) {
+  if (!Array.isArray(a) || !Array.isArray(b)) {
+    return a === b;
+  }
+
+  if (a.length !== b.length) {
+    return false;
+  }
+
+  for (var i = 0; i < a.length; i++) {
+    // FIXME: Deep-equals for objects?
+    if (a[i] !== b[i]) {
+      return false;
+    }
+  }
+
+  return true;
 }
 
 /**
@@ -100,6 +121,19 @@ function assetParse (value) {
   return value;
 }
 
+function assetStringify (value) {
+  if (value.getAttribute) {
+    var id = value.getAttribute('id');
+    if (id) {
+      return '#' + value.getAttribute('id');
+    }
+    // HTMLElement without id can not be stringified, as there is no string assetParse
+    // could convert back to this exact element, using the src attribute instead.
+    return value.getAttribute('src');
+  }
+  return defaultStringify(value);
+}
+
 function defaultParse (value) {
   return value;
 }
@@ -107,6 +141,10 @@ function defaultParse (value) {
 function defaultStringify (value) {
   if (value === null) { return 'null'; }
   return value.toString();
+}
+
+function defaultEquals (a, b) {
+  return a === b;
 }
 
 function boolParse (value) {
@@ -159,8 +197,8 @@ function srcParse (value) {
   return assetParse(value);
 }
 
-function vecParse (value) {
-  return coordinates.parse(value, this.default);
+function vecParse (value, defaultValue, target) {
+  return coordinates.parse(value, defaultValue, target);
 }
 
 /**
