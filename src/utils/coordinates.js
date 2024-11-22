@@ -1,6 +1,5 @@
 /* global THREE */
 var debug = require('./debug');
-var extend = require('object-assign');
 
 var warn = debug('utils:coordinates:warn');
 
@@ -11,7 +10,6 @@ var COORDINATE_KEYS = ['x', 'y', 'z', 'w'];
 var regex = /^\s*((-?\d*\.{0,1}\d+(e-?\d+)?)\s+){2,3}(-?\d*\.{0,1}\d+(e-?\d+)?)\s*$/;
 module.exports.regex = regex;
 
-var OBJECT = 'object';
 var whitespaceRegex = /\s+/g;
 
 /**
@@ -19,15 +17,16 @@ var whitespaceRegex = /\s+/g;
  * Example: "3 10 -5" to {x: 3, y: 10, z: -5}.
  *
  * @param {string} val - An "x y z" string.
- * @param {string} defaults - fallback value.
+ * @param {string} defaultVec - fallback value.
+ * @param {object} target - Optional target object for coordinates.
  * @returns {object} An object with keys [x, y, z].
  */
-function parse (value, defaultVec) {
+function parse (value, defaultVec, target) {
   var coordinate;
   var defaultVal;
   var key;
   var i;
-  var vec;
+  var vec = (target && typeof target === 'object') ? target : {};
   var x;
   var y;
   var z;
@@ -38,19 +37,18 @@ function parse (value, defaultVec) {
     y = value.y === undefined ? defaultVec && defaultVec.y : value.y;
     z = value.z === undefined ? defaultVec && defaultVec.z : value.z;
     w = value.w === undefined ? defaultVec && defaultVec.w : value.w;
-    if (x !== undefined && x !== null) { value.x = parseIfString(x); }
-    if (y !== undefined && y !== null) { value.y = parseIfString(y); }
-    if (z !== undefined && z !== null) { value.z = parseIfString(z); }
-    if (w !== undefined && w !== null) { value.w = parseIfString(w); }
-    return value;
+    if (x !== undefined && x !== null) { vec.x = parseIfString(x); }
+    if (y !== undefined && y !== null) { vec.y = parseIfString(y); }
+    if (z !== undefined && z !== null) { vec.z = parseIfString(z); }
+    if (w !== undefined && w !== null) { vec.w = parseIfString(w); }
+    return vec;
   }
 
   if (value === null || value === undefined) {
-    return typeof defaultVec === OBJECT ? extend({}, defaultVec) : defaultVec;
+    return typeof defaultVec === 'object' ? Object.assign(vec, defaultVec) : defaultVec;
   }
 
   coordinate = value.trim().split(whitespaceRegex);
-  vec = {};
   for (i = 0; i < COORDINATE_KEYS.length; i++) {
     key = COORDINATE_KEYS[i];
     if (coordinate[i]) {
@@ -74,13 +72,28 @@ module.exports.parse = parse;
  */
 function stringify (data) {
   var str;
-  if (typeof data !== OBJECT) { return data; }
+  if (typeof data !== 'object') { return data; }
   str = data.x + ' ' + data.y;
   if (data.z != null) { str += ' ' + data.z; }
   if (data.w != null) { str += ' ' + data.w; }
   return str;
 }
 module.exports.stringify = stringify;
+
+/**
+ * Compares the values of two coordinates to check equality.
+ *
+ * @param {object|string} a - An object with keys [x y z].
+ * @param {object|string} b - An object with keys [x y z].
+ * @returns {boolean} True if both coordinates are equal, false otherwise
+ */
+function equals (a, b) {
+  if (typeof a !== 'object' || typeof b !== 'object') {
+    return a === b;
+  }
+  return a.x === b.x && a.y === b.y && a.z === b.z && a.w === b.w;
+}
+module.exports.equals = equals;
 
 /**
  * @returns {bool}

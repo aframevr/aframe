@@ -16,7 +16,8 @@ var DEFAULT_WIDTH = 1;
 // @bryik set anisotropy to 16. Improves look of large amounts of text when viewed from angle.
 var MAX_ANISOTROPY = 16;
 
-var FONT_BASE_URL = 'https://cdn.aframe.io/fonts/';
+var AFRAME_CDN_ROOT = require('../constants').AFRAME_CDN_ROOT;
+var FONT_BASE_URL = AFRAME_CDN_ROOT + 'fonts/';
 var FONTS = {
   aileronsemibold: FONT_BASE_URL + 'Aileron-Semibold.fnt',
   dejavu: FONT_BASE_URL + 'DejaVu-sdf.fnt',
@@ -91,14 +92,12 @@ module.exports.Component = registerComponent('text', {
     this.shaderData = {};
     this.geometry = createTextGeometry();
     this.createOrUpdateMaterial();
-    this.mesh = new THREE.Mesh(this.geometry, this.material);
-    this.el.setObject3D(this.attrName, this.mesh);
+    this.explicitGeoDimensionsChecked = false;
   },
 
   update: function (oldData) {
     var data = this.data;
     var font = this.currentFont;
-
     if (textures[data.font]) {
       this.texture = textures[data.font];
     } else {
@@ -134,9 +133,7 @@ module.exports.Component = registerComponent('text', {
     this.material = null;
     this.texture.dispose();
     this.texture = null;
-    if (this.shaderObject) {
-      delete this.shaderObject;
-    }
+    if (this.shaderObject) { delete this.shaderObject; }
   },
 
   /**
@@ -201,7 +198,7 @@ module.exports.Component = registerComponent('text', {
     if (!data.font) { warn('No font specified. Using the default font.'); }
 
     // Make invisible during font swap.
-    this.mesh.visible = false;
+    if (this.mesh) { this.mesh.visible = false; }
 
     // Look up font URL to use, and perform cached load.
     fontSrc = this.lookupFont(data.font || DEFAULT_FONT) || data.font;
@@ -217,14 +214,7 @@ module.exports.Component = registerComponent('text', {
       if (!fontWidthFactors[fontSrc]) {
         font.widthFactor = fontWidthFactors[font] = computeFontWidthFactor(font);
       }
-
-      // Update geometry given font metrics.
-      self.updateGeometry(geometry, font);
-
-      // Set font and update layout.
       self.currentFont = font;
-      self.updateLayout();
-
       // Look up font image URL to use, and perform cached load.
       fontImgSrc = self.getFontImageSrc();
       cache.get(fontImgSrc, function () {
@@ -232,10 +222,19 @@ module.exports.Component = registerComponent('text', {
       }).then(function (image) {
         // Make mesh visible and apply font image as texture.
         var texture = self.texture;
+        // The component may have been removed at this point and texture will
+        // be null. This happens mainly while executing the tests,
+        // in this case we just return.
+        if (!texture) return;
         texture.image = image;
         texture.needsUpdate = true;
         textures[data.font] = texture;
         self.texture = texture;
+        self.initMesh();
+        self.currentFont = font;
+        // Update geometry given font metrics.
+        self.updateGeometry(geometry, font);
+        self.updateLayout();
         self.mesh.visible = true;
         el.emit('textfontset', {font: data.font, fontObj: font});
       }).catch(function (err) {
@@ -246,6 +245,12 @@ module.exports.Component = registerComponent('text', {
       error(err.message);
       error(err.stack);
     });
+  },
+
+  initMesh: function () {
+    if (this.mesh) { return; }
+    this.mesh = new THREE.Mesh(this.geometry, this.material);
+    this.el.setObject3D(this.attrName, this.mesh);
   },
 
   getFontImageSrc: function () {
@@ -279,7 +284,7 @@ module.exports.Component = registerComponent('text', {
     var x;
     var y;
 
-    if (!geometry.layout) { return; }
+    if (!mesh || !geometry.layout) { return; }
 
     // Determine width to use (defined width, geometry's width, or default width).
     geometryComponent = el.getAttribute('geometry');
@@ -298,8 +303,13 @@ module.exports.Component = registerComponent('text', {
     // Update geometry dimensions to match text layout if width and height are set to 0.
     // For example, scales a plane to fit text.
     if (geometryComponent && geometryComponent.primitive === 'plane') {
-      if (!geometryComponent.width) { el.setAttribute('geometry', 'width', width); }
-      if (!geometryComponent.height) { el.setAttribute('geometry', 'height', height); }
+      if (!this.explicitGeoDimensionsChecked) {
+        this.explicitGeoDimensionsChecked = true;
+        this.hasExplicitGeoWidth = !!geometryComponent.width;
+        this.hasExplicitGeoHeight = !!geometryComponent.height;
+      }
+      if (!this.hasExplicitGeoWidth) { el.setAttribute('geometry', 'width', width); }
+      if (!this.hasExplicitGeoHeight) { el.setAttribute('geometry', 'height', height); }
     }
 
     // Calculate X position to anchor text left, center, or right.

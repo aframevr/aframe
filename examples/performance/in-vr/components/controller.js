@@ -15,7 +15,7 @@ AFRAME.registerComponent('controller', {
     // Track all types of controllers.
     el.setAttribute('daydream-controls', {hand: data.hand, model: false});
     el.setAttribute('gearvr-controls', {hand: data.hand, model: false});
-    el.setAttribute('oculus-touch-controls', {hand: data.hand, model: false});
+    el.setAttribute('meta-touch-controls', {hand: data.hand, model: false});
     el.setAttribute('vive-controls', {hand: data.hand, model: false});
 
     // Wait for controller to connect before adding raycaster.
@@ -43,7 +43,7 @@ AFRAME.registerComponent('controller', {
       cursor: {downEvents: ['trackpaddown'], upEvents: ['trackpadup']}
     },
 
-    'oculus-touch-controls': {
+    'meta-touch-controls': {
       cursor: {downEvents: ['triggerdown'], upEvents: ['triggerup']}
     },
 

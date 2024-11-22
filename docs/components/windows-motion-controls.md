@@ -29,7 +29,6 @@ to the pressed buttons (trigger, grip, menu, thumbstick, trackpad) and moved axe
 | hand                 | The hand that will be tracked (i.e., right, left).                                                | right          |
 | pair                 | Which pair of controllers, if > 2 are connected.                                                  | 0              |
 | model                | Whether the controller model is loaded.                                                           | true           |
-| hideDisconnected     | Disable rendering of controller model when no matching gamepad (based on ID & hand) is connected. | true           |
 
 
 ## Events

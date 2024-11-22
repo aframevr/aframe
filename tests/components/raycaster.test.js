@@ -120,6 +120,44 @@ suite('raycaster', function () {
     });
   });
 
+  test('Objects not attached to scene are not whitelisted', function (done) {
+    var el2 = document.createElement('a-entity');
+    var el3 = document.createElement('a-entity');
+    el2.setAttribute('class', 'clickable');
+    el2.setAttribute('geometry', 'primitive: box');
+    el3.setAttribute('class', 'clickable');
+    el3.setAttribute('geometry', 'primitive: box');
+    el3.addEventListener('loaded', function () {
+      el3.object3D.parent = null;
+      el.setAttribute('raycaster', 'objects', '.clickable');
+      component.tock();
+      assert.equal(component.objects.length, 1);
+      assert.equal(component.objects[0], el2.object3D.children[0]);
+      assert.equal(el2, el2.object3D.children[0].el);
+      done();
+    });
+    sceneEl.appendChild(el2);
+    sceneEl.appendChild(el3);
+  });
+
+  test('Objects with parent not attached to scene are not whitelisted', function (done) {
+    var el2 = document.createElement('a-entity');
+    var el3 = document.createElement('a-entity');
+    el2.setAttribute('class', 'clickable');
+    el2.setAttribute('geometry', 'primitive: box');
+    el3.setAttribute('class', 'clickable');
+    el3.setAttribute('geometry', 'primitive: box');
+    el3.addEventListener('loaded', function () {
+      el2.object3D.parent = null;
+      el.setAttribute('raycaster', 'objects', '.clickable');
+      component.tock();
+      assert.equal(component.objects.length, 0);
+      done();
+    });
+    sceneEl.appendChild(el2);
+    el2.appendChild(el3);
+  });
+
   suite('tock', function () {
     test('is throttled by interval', function () {
       var intersectSpy = this.sinon.spy(raycaster, 'intersectObjects');
@@ -310,7 +348,7 @@ suite('raycaster', function () {
           assert.notEqual(component.clearedIntersectedEls.indexOf(targetEl), -1);
           raycasterEl.removeEventListener('raycaster-intersection-cleared', cb);
           done();
-        });
+        }, {once: true});
         component.tock();
       });
       component.tock();
@@ -324,7 +362,7 @@ suite('raycaster', function () {
         targetEl.addEventListener('raycaster-intersected-cleared', function (evt) {
           assert.equal(evt.detail.el, raycasterEl);
           done();
-        });
+        }, {once: true});
         component.tock();
       });
       component.tock();
@@ -334,14 +372,14 @@ suite('raycaster', function () {
       targetEl.addEventListener('raycaster-intersected', function () {
         targetEl.addEventListener('raycaster-intersected-cleared', function () {
           done();
-        });
+        }, {once: true});
         assert.equal(component.intersectedEls.length, 2);
         assert.equal(component.clearedIntersectedEls.length, 0);
         el.setAttribute('raycaster', 'enabled', false);
         assert.equal(component.intersectedEls.length, 0);
         assert.equal(component.intersections.length, 0);
         assert.equal(component.clearedIntersectedEls.length, 2);
-      });
+      }, {once: true});
       component.tock();
     });
 
@@ -349,7 +387,7 @@ suite('raycaster', function () {
       targetEl.addEventListener('raycaster-intersected', function () {
         el.addEventListener('raycaster-intersection-cleared', function () {
           done();
-        });
+        }, {once: true});
         el.setAttribute('raycaster', 'enabled', false);
       });
       component.tock();

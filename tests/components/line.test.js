@@ -1,19 +1,26 @@
-/* global assert, process, setup, suite, test */
+/* global THREE, assert, process, setup, suite, test */
 var entityFactory = require('../helpers').entityFactory;
 
 suite('line', function () {
   var el;
   var component;
+  var componentSuffix;
 
   setup(function (done) {
+    var count = 0;
     el = this.el = entityFactory();
-    el.setAttribute('line', '');
-    if (el.hasLoaded) { done(); }
     el.addEventListener('componentinitialized', function (evt) {
-      if (evt.detail.name !== 'line') { return; }
+      if (evt.detail.name !== 'line' &&
+          evt.detail.name !== 'line__suffix') { return; }
       component = el.components.line;
-      done();
+      componentSuffix = el.components.line__suffix;
+      count++;
+      if (count >= 2) {
+        done();
+      }
     });
+    el.setAttribute('line', '');
+    el.setAttribute('line__suffix', '');
   });
 
   suite('init', function () {
@@ -86,6 +93,34 @@ suite('line', function () {
       var material = component.material;
 
       assert.equal(material.color.getHexString(), 'ff99aa');
+    });
+
+    test('Line with __suffix component name', function () {
+      el.setAttribute('line__suffix', {start: '1 2 3', end: '4 5 6'});
+      var positionArray = componentSuffix.geometry.attributes.position.array;
+      assert.equal(positionArray[0], 1);
+      assert.equal(positionArray[1], 2);
+      assert.equal(positionArray[2], 3);
+      assert.equal(positionArray[3], 4);
+      assert.equal(positionArray[4], 5);
+      assert.equal(positionArray[5], 6);
+    });
+  });
+
+  suite('update', function () {
+    test('points can be updated with the same instance', function () {
+      var start = new THREE.Vector3(1, 2, 3);
+      el.setAttribute('line', {start: start});
+      var updateSpy = this.sinon.spy(el.components.line, 'update');
+
+      var data = el.getAttribute('line');
+      assert.shallowDeepEqual(data.start, {x: 1, y: 2, z: 3});
+
+      start.x += 10;
+      el.setAttribute('line', {start: start});
+
+      assert.shallowDeepEqual(data.start, {x: 11, y: 2, z: 3});
+      assert.ok(updateSpy.calledOnce);
     });
   });
 });

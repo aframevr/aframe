@@ -27,7 +27,7 @@ free. Alternatively, create an `.html` file and include A-Frame in the
 ```html
 <html>
   <head>
-    <script src="https://aframe.io/releases/1.1.0/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
   </head>
   <body>
     <a-scene>
@@ -67,9 +67,8 @@ be an easy yet powerful way to develop VR content. As an [independent open
 source project][github], A-Frame has grown to be one of the [largest VR
 communities][community].
 
-A-Frame supports most VR headsets such as Vive, Rift, Windows Mixed Reality,
-Daydream, GearVR, Cardboard, Oculus Go, and can even be used for augmented
-reality.  Although A-Frame supports the whole spectrum, A-Frame aims to define
+A-Frame supports most VR and AR devices such as Meta Quest, Apple Vision Pro, PICO lineup, Lynx-R1 or Valve Index 
+Although A-Frame supports the whole spectrum, A-Frame aims to define
 fully immersive interactive VR experiences that go beyond basic 360&deg;
 content, making full use of positional tracking and controllers.
 
@@ -111,7 +110,7 @@ developers have unlimited access to JavaScript, DOM APIs, three.js, WebVR, and
 WebGL.
 
 :globe_with_meridians: **Cross-Platform VR**: Build VR applications for Vive,
-Rift, Windows Mixed Reality, Daydream, GearVR, and Cardboard with support for
+Rift, Meta Quest, Windows Mixed Reality, and Cardboard with support for
 all respective controllers. Don't have a headset or controllers? No problem!
 A-Frame still works on standard desktop and smartphones.
 
@@ -129,20 +128,20 @@ running smoothly at 90fps.
 [inspector]: ./visual-inspector-and-dev-tools.md
 
 :mag: **Visual Inspector**: A-Frame provides a handy built-in [visual 3D
-inspector][inspector]. Open up *any* A-Frame scene, hit `<ctrl> + <alt> + i`,
+inspector][inspector]. Open up *any* A-Frame scene, hit `<ctrl> + <alt> + i` or `<ctrl> + <option> + i`,
 and fly around to peek under the hood!
 
 ![Inspector](https://cloud.githubusercontent.com/assets/674727/25377018/27be9cce-295b-11e7-9098-3e85ac1fe172.gif)
 
 [augmented reality]: https://github.com/jeromeetienne/AR.js#augmented-reality-for-the-web-in-less-than-10-lines-of-html
 [environment]: https://github.com/supermedium/aframe-environment-component
-[multiuser]: https://github.com/haydenjameslee/networked-aframe
-[oceans]: https://github.com/donmccurdy/aframe-extras/tree/master/src/primitives
-[particle systems]: https://github.com/IdeaSpaceVR/aframe-particle-system-component
-[physics]: https://github.com/donmccurdy/aframe-physics-system
+[multiuser]: https://github.com/networked-aframe/networked-aframe
+[oceans]: https://github.com/c-frame/aframe-extras/tree/master/src/primitives
+[particle systems]: https://github.com/c-frame/aframe-particle-system-component
+[physics]: https://github.com/c-frame/aframe-physics-system
 [state]: https://npmjs.com/package/aframe-state-component
-[super hands]: https://github.com/wmurphyrd/aframe-super-hands-component
-[teleportation]: https://github.com/fernandojsg/aframe-teleport-controls
+[super hands]: https://github.com/c-frame/aframe-super-hands-component
+[teleportation]: https://github.com/jure/aframe-blink-controls
 
 :runner: **Components**: Hit the ground running with A-Frame's core components
 such as geometries, materials, lights, animations, models, raycasters, shadows,
@@ -159,7 +158,7 @@ as Google, Microsoft, Oculus, and Samsung have made contributions to A-Frame.
 ## Off You Go!
 
 [Discord]: https://supermedium.com/discord
-[slack]: https://aframe.io/slack-invite/
+[slack]: https://aframevr.slack.com/join/shared_invite/zt-f6rne3ly-ekVaBU~Xu~fsZHXr56jacQ
 
 If it's your first time here, here's a plan for success for getting into
 A-Frame:
@@ -180,4 +179,4 @@ it on the [newsletter](https://aframe.io/subscribe/) and the
 [blog](https://aframe.io/blog/)!
 
 And it really helps to have a dig into the fundamentals on JavaScript and
-three.js. Have fun!
+[three.js](https://threejs.org/). Have fun!

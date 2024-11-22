@@ -14,11 +14,11 @@ suite('background', function () {
     assert.shallowDeepEqual(sceneEl.object3D.background, {r: 1, g: 1, b: 0});
   });
 
-  test('change the background color', function () {
+  test('remove the background', function () {
     var sceneEl = this.sceneEl;
     assert.shallowDeepEqual(sceneEl.object3D.background, null);
     sceneEl.setAttribute('background', {color: 'yellow'});
     sceneEl.removeAttribute('background');
-    assert.equal(sceneEl.object3D.background, 'black');
+    assert.equal(sceneEl.object3D.background, null);
   });
 });

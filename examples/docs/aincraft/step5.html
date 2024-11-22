@@ -1,0 +1,35 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Aincraft</title>
+    <meta name="description" content="Aincraft">
+    <!-- If running this example without a local copy of A-Frame, replace this next line with:
+    <script src="https://aframe.io/releases/<release_number>/aframe.min.js"></script>
+    -->
+    <script src="../../../dist/aframe-master.js"></script>
+    <script src="components/random-color.js"></script>
+    <script src="components/snap.js"></script>
+  </head>
+  <a-scene>
+    <a-assets>
+      <img id="groundTexture" src="https://cdn.aframe.io/a-painter/images/floor.jpg">
+      <img id="skyTexture" src="https://cdn.aframe.io/a-painter/images/sky.jpg">
+      <a-mixin id="voxel"
+               geometry="primitive: box; height: 0.5; width: 0.5; depth: 0.5"
+               material="shader: standard"
+               random-color
+               snap="offset: 0.25 0.25 0.25; snap: 0.5 0.5 0.5"></a-mixin>
+    </a-assets>
+  
+    <a-cylinder id="ground" src="#groundTexture" radius="32" height="0.1"></a-cylinder>
+
+    <a-sky id="background" src="#skyTexture" theta-length="90" radius="30"></a-sky>
+
+    <a-entity mixin="voxel" position="-1 0 -2"></a-entity>
+    <a-entity mixin="voxel" position="0 0 -2"></a-entity>
+    <a-entity mixin="voxel" position="0 1 -2"
+              animation="property: rotation; to: 0 360 0; loop: true"></a-entity>
+    <a-entity mixin="voxel" position="1 0 -2"></a-entity>
+
+  </a-scene>
+</html>

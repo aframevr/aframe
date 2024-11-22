@@ -6,10 +6,10 @@ parent_section: guides
 order: 3
 examples:
   - title: 360&deg; Image Gallery
-    src: https://glitch.com/edit/#!/aframe-gallery?path=index.html
+    src: https://github.com/aframevr/aframe/tree/master/examples/docs/360-gallery/index.html
 ---
 
-[glitch]: https://glitch.com/edit/#!/aframe-gallery?path=index.html
+[live-example]: https://aframe.io/aframe/examples/docs/360-gallery/
 
 ![360&deg; Image Viewer](/images/docs/360-image-viewer.png)
 
@@ -32,7 +32,7 @@ for an easy example that has a lot of demand as an early use case on the Web.
 
 ## Skeleton
 
-This is the starting point for our scene. We can also remix the [Glitch][glitch].
+This is the starting point for our scene.
 
 ```html
 <a-scene>
@@ -166,10 +166,12 @@ need to know the component's npm package name and the path:
 <html>
   <head>
     <title>360° Image Browser</title>
-    <script src="https://aframe.io/releases/1.1.0/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
     <script src="https://unpkg.com/aframe-template-component@3.x.x/dist/aframe-template-component.min.js"></script>
-    <script src="https://unpkg.com/aframe-layout-component@4.x.x/dist/aframe-layout-component.min.js"></script>
+    <script src="https://unpkg.com/aframe-layout-component@5.x.x/dist/aframe-layout-component.min.js"></script>
     <script src="https://unpkg.com/aframe-event-set-component@5.x.x/dist/aframe-event-set-component.min.js"></script>
+     <script src="https://unpkg.com/aframe-proxy-event-component@2.1.0/dist/aframe-proxy-event-component.min.jss"></script>
+    
   </head>
   <body>
     <a-scene>
@@ -207,7 +209,7 @@ template and give it a name using an `id`:
 ```html
 <head>
   <!-- ... -->
-  <script id="plane" type="text/html">
+  <script id="link" type="text/html">
     <a-entity class="link"
       geometry="primitive: plane; height: 1; width: 1"
       material="shader: flat; src: #cubes-thumb"
@@ -219,9 +221,9 @@ template and give it a name using an `id`:
 Then we can use the template to create multiple planes without much work:
 
 ```html
-<a-entity template="src: #plane"></a-entity>
-<a-entity template="src: #plane"></a-entity>
-<a-entity template="src: #plane"></a-entity>
+<a-entity template="src: #link"></a-entity>
+<a-entity template="src: #link"></a-entity>
+<a-entity template="src: #link"></a-entity>
 ```
 
 [templateliteral]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Template_literals
@@ -240,7 +242,7 @@ attributes][data]:
 ```html
 <a-assets>
   <!-- ... -->
-  <script id="plane" type="text/html">
+  <script id="link" type="text/html">
     <a-entity class="link"
       geometry="primitive: plane; height: 1; width: 1"
       material="shader: flat; src: ${thumb}"
@@ -251,9 +253,9 @@ attributes][data]:
 <!-- ... -->
 
 <!-- Pass image sources to the template. -->
-<a-entity template="src: #plane" data-thumb="#city-thumb"></a-entity>
-<a-entity template="src: #plane" data-thumb="#cubes-thumb"></a-entity>
-<a-entity template="src: #plane" data-thumb="#sechelt-thumb"></a-entity>
+<a-entity template="src: #link" data-thumb="#city-thumb"></a-entity>
+<a-entity template="src: #link" data-thumb="#cubes-thumb"></a-entity>
+<a-entity template="src: #link" data-thumb="#sechelt-thumb"></a-entity>
 ```
 
 The template component has allowed us to not have to repeat a lot of HTML,
@@ -272,10 +274,10 @@ We create a wrapper entity around our links and attach the layout component
 using the `line` layout:
 
 ```html
-<a-entity id="links" layout="type: line; margin: 1.5" position="-3 -1 -4">
-  <a-entity template="src: #plane" data-thumb="#city-thumb"></a-entity>
-  <a-entity template="src: #plane" data-thumb="#cubes-thumb"></a-entity>
-  <a-entity template="src: #plane" data-thumb="#sechelt-thumb"></a-entity>
+<a-entity id="links" layout="type: line; margin: 1.5" position="-1.5 -1 -4">
+  <a-entity template="src: #link" data-thumb="#city-thumb"></a-entity>
+  <a-entity template="src: #link" data-thumb="#cubes-thumb"></a-entity>
+  <a-entity template="src: #link" data-thumb="#sechelt-thumb"></a-entity>
 </a-entity>
 ```
 
@@ -321,9 +323,9 @@ the `setAttribute` calls. Notice that the event-set component can have
 Remember to add `data-src` attributes to the link entities to load the full image on click:
 
 ```
-<a-entity template="src: #plane" data-src="#city" data-thumb="#city-thumb"></a-entity>
-<a-entity template="src: #plane" data-src="#cubes" data-thumb="#cubes-thumb"></a-entity>
-<a-entity template="src: #plane" data-src="#sechelt" data-thumb="#sechelt-thumb"></a-entity>
+<a-entity template="src: #link" data-src="#city" data-thumb="#city-thumb"></a-entity>
+<a-entity template="src: #link" data-src="#cubes" data-thumb="#cubes-thumb"></a-entity>
+<a-entity template="src: #link" data-src="#sechelt" data-thumb="#sechelt-thumb"></a-entity>
 ```
 
 Next, we want to actually set the new background image. We'll add a nice fade-to-black effect.
@@ -368,7 +370,7 @@ The `animation__fadeback` is interesting in that we start it once the
 that is emitted by animation component when an animation finishes. We
 effectively chained these animations!
 
-[Writing a Component]: ../core/writing-a-component.md
+[Writing a Component]: ../introduction/writing-a-component.md
 
 Wielding components, we were able to do a lot in a few dozen lines of HTML,
 working on VR across most headsets and browsers. Though the ecosystem has a lot
@@ -376,4 +378,4 @@ to offer for common needs, non-trivial VR applications will require us to write
 application-specific components. That is covered in [Writing a Component] and
 hopefully in later guides.
 
-> **[Try it out!](https://aframe-gallery.glitch.me)**
+> **[Try it out!][live-example]**

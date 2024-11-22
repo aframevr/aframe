@@ -54,8 +54,8 @@ suite('geometry system', function () {
     test('preserves original metadata on BufferGeometry', function () {
       var data = {primitive: 'box', width: 5, buffer: true};
       var geometry = this.system.getOrCreateGeometry(data);
-      assert.equal(geometry.metadata.type, 'BoxGeometry');
-      assert.equal(geometry.metadata.parameters.width, 5);
+      assert.equal(geometry.type, 'BoxGeometry');
+      assert.equal(geometry.parameters.width, 5);
     });
   });
 

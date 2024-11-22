@@ -5,6 +5,7 @@ suite('scale', function () {
   setup(function (done) {
     var el = this.el = entityFactory();
     el.setAttribute('scale', '');
+    if (el.hasLoaded) { done(); }
     el.addEventListener('loaded', function () {
       done();
     });

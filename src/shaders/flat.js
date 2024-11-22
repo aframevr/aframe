@@ -15,7 +15,8 @@ module.exports.Shader = registerShader('flat', {
     src: {type: 'map'},
     width: {default: 512},
     wireframe: {default: false},
-    wireframeLinewidth: {default: 2}
+    wireframeLinewidth: {default: 2},
+    toneMapped: {default: true}
   },
 
   /**
@@ -23,13 +24,9 @@ module.exports.Shader = registerShader('flat', {
    * Adds a reference from the scene to this entity as the camera.
    */
   init: function (data) {
-    this.rendererSystem = this.el.sceneEl.systems.renderer;
     this.materialData = {color: new THREE.Color()};
-    this.textureSrc = null;
     getMaterialData(data, this.materialData);
-    this.rendererSystem.applyColorCorrection(this.materialData.color);
     this.material = new THREE.MeshBasicMaterial(this.materialData);
-    utils.material.updateMap(this, data);
   },
 
   update: function (data) {
@@ -45,7 +42,6 @@ module.exports.Shader = registerShader('flat', {
   updateMaterial: function (data) {
     var key;
     getMaterialData(data, this.materialData);
-    this.rendererSystem.applyColorCorrection(this.materialData.color);
     for (key in this.materialData) {
       this.material[key] = this.materialData[key];
     }
@@ -63,6 +59,7 @@ function getMaterialData (data, materialData) {
   materialData.color.set(data.color);
   materialData.fog = data.fog;
   materialData.wireframe = data.wireframe;
+  materialData.toneMapped = data.toneMapped;
   materialData.wireframeLinewidth = data.wireframeLinewidth;
   return materialData;
 }

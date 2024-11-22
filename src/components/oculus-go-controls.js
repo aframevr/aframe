@@ -1,33 +1,15 @@
 var registerComponent = require('../core/component').registerComponent;
-var bind = require('../utils/bind');
 
 var trackedControlsUtils = require('../utils/tracked-controls');
 var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
 var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
 var onButtonEvent = trackedControlsUtils.onButtonEvent;
-var isWebXRAvailable = require('../utils/').device.isWebXRAvailable;
 
-var GAMEPAD_ID_WEBXR = 'oculus-go';
-var GAMEPAD_ID_WEBVR = 'Oculus Go';
-
-var OCULUS_GO_CONTROLLER_MODEL_URL = 'https://cdn.aframe.io/controllers/oculus/go/oculus-go-controller.gltf';
+var AFRAME_CDN_ROOT = require('../constants').AFRAME_CDN_ROOT;
+var OCULUS_GO_CONTROLLER_MODEL_URL = AFRAME_CDN_ROOT + 'controllers/oculus/go/oculus-go-controller.gltf';
 
 // Prefix for Gen1 and Gen2 Oculus Touch Controllers.
-var GAMEPAD_ID_PREFIX = isWebXRAvailable ? GAMEPAD_ID_WEBXR : GAMEPAD_ID_WEBVR;
-
-/**
- * Button indices:
- * 0 - trackpad
- * 1 - trigger
- *
- * Axis:
- * 0 - trackpad x
- * 1 - trackpad y
- */
-var INPUT_MAPPING_WEBVR = {
-  axes: {trackpad: [0, 1]},
-  buttons: ['trackpad', 'trigger']
-};
+var GAMEPAD_ID_PREFIX = 'oculus-go';
 
 /**
  * Button indices:
@@ -40,17 +22,15 @@ var INPUT_MAPPING_WEBVR = {
  * 1 - touchpad y
  * Reference: https://github.com/immersive-web/webxr-input-profiles/blob/master/packages/registry/profiles/oculus/oculus-go.json
  */
-var INPUT_MAPPING_WEBXR = {
+var INPUT_MAPPING = {
   axes: {touchpad: [0, 1]},
   buttons: ['trigger', 'none', 'touchpad']
 };
 
-var INPUT_MAPPING = isWebXRAvailable ? INPUT_MAPPING_WEBXR : INPUT_MAPPING_WEBVR;
-
 /**
  * Oculus Go controls.
  * Interface with Oculus Go controller and map Gamepad events to
- * controller buttons: trackpad, trigger
+ * controller buttons: trigger, touchpad
  * Load a controller model and highlight the pressed buttons.
  */
 module.exports.Component = registerComponent('oculus-go-controls', {
@@ -59,31 +39,27 @@ module.exports.Component = registerComponent('oculus-go-controls', {
     buttonColor: {type: 'color', default: '#FFFFFF'},
     buttonTouchedColor: {type: 'color', default: '#BBBBBB'},
     buttonHighlightColor: {type: 'color', default: '#7A7A7A'},
-    model: {default: true},
-    orientationOffset: {type: 'vec3'},
-    armModel: {default: true}
+    model: {default: true}
   },
 
   mapping: INPUT_MAPPING,
 
   bindMethods: function () {
-    this.onModelLoaded = bind(this.onModelLoaded, this);
-    this.onControllersUpdate = bind(this.onControllersUpdate, this);
-    this.checkIfControllerPresent = bind(this.checkIfControllerPresent, this);
-    this.removeControllersUpdateListener = bind(this.removeControllersUpdateListener, this);
-    this.onAxisMoved = bind(this.onAxisMoved, this);
+    this.onModelLoaded = this.onModelLoaded.bind(this);
+    this.onControllersUpdate = this.onControllersUpdate.bind(this);
+    this.checkIfControllerPresent = this.checkIfControllerPresent.bind(this);
+    this.removeControllersUpdateListener = this.removeControllersUpdateListener.bind(this);
+    this.onAxisMoved = this.onAxisMoved.bind(this);
   },
 
   init: function () {
     var self = this;
-    this.onButtonChanged = bind(this.onButtonChanged, this);
+    this.onButtonChanged = this.onButtonChanged.bind(this);
     this.onButtonDown = function (evt) { onButtonEvent(evt.detail.id, 'down', self); };
     this.onButtonUp = function (evt) { onButtonEvent(evt.detail.id, 'up', self); };
     this.onButtonTouchStart = function (evt) { onButtonEvent(evt.detail.id, 'touchstart', self); };
     this.onButtonTouchEnd = function (evt) { onButtonEvent(evt.detail.id, 'touchend', self); };
     this.controllerPresent = false;
-    this.lastControllerCheck = 0;
-    this.rendererSystem = this.el.sceneEl.systems.renderer;
     this.bindMethods();
   },
 
@@ -130,10 +106,8 @@ module.exports.Component = registerComponent('oculus-go-controls', {
     var el = this.el;
     var data = this.data;
     el.setAttribute('tracked-controls', {
-      armModel: data.armModel,
       hand: data.hand,
-      idPrefix: GAMEPAD_ID_PREFIX,
-      orientationOffset: data.orientationOffset
+      idPrefix: GAMEPAD_ID_PREFIX
     });
     if (!this.data.model) { return; }
     this.el.setAttribute('gltf-model', OCULUS_GO_CONTROLLER_MODEL_URL);
@@ -157,7 +131,7 @@ module.exports.Component = registerComponent('oculus-go-controls', {
     var controllerObject3D = evt.detail.model;
     var buttonMeshes;
 
-    if (!this.data.model) { return; }
+    if (evt.target !== this.el || !this.data.model) { return; }
     buttonMeshes = this.buttonMeshes = {};
     buttonMeshes.trigger = controllerObject3D.getObjectByName('oculus_go_button_trigger');
     buttonMeshes.trackpad = controllerObject3D.getObjectByName('oculus_go_touchpad');
@@ -197,6 +171,5 @@ module.exports.Component = registerComponent('oculus-go-controls', {
     }
     button = buttonMeshes[buttonName];
     button.material.color.set(color);
-    this.rendererSystem.applyColorCorrection(button.material.color);
   }
 });

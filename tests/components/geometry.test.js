@@ -1,6 +1,6 @@
 /* global assert, process, setup, suite, test */
 var helpers = require('../helpers');
-var degToRad = require('index').THREE.Math.degToRad;
+var degToRad = require('index').THREE.MathUtils.degToRad;
 
 /**
  * Most geometry tests will disable BufferGeometries in order to assert on geometry types and
@@ -12,6 +12,7 @@ suite('geometry', function () {
   setup(function (done) {
     el = helpers.entityFactory();
     el.setAttribute('geometry', 'buffer: false; primitive: box;');
+    if (el.hasLoaded) { done(); }
     el.addEventListener('loaded', function () {
       done();
     });
@@ -62,7 +63,7 @@ suite('geometry', function () {
     test('removes geometry', function () {
       var mesh = el.getObject3D('mesh');
       el.removeAttribute('geometry');
-      assert.equal(mesh.geometry.type, 'Geometry');
+      assert.equal(mesh.geometry.type, 'BufferGeometry');
     });
 
     test('disposes geometry', function () {
@@ -70,14 +71,6 @@ suite('geometry', function () {
       var disposeSpy = this.sinon.spy(geometry, 'dispose');
       el.removeAttribute('geometry');
       assert.ok(disposeSpy.called);
-    });
-  });
-
-  suite('buffer', function () {
-    test('uses BufferGeometry', function () {
-      assert.notEqual(el.getObject3D('mesh').geometry.type, 'BufferGeometry');
-      el.setAttribute('geometry', 'buffer', true);
-      assert.equal(el.getObject3D('mesh').geometry.type, 'BufferGeometry');
     });
   });
 });
@@ -160,8 +153,7 @@ suite('standard geometries', function () {
 
   test('icosahedron', function () {
     var geometry;
-    el.setAttribute('geometry', {
-      buffer: false, primitive: 'icosahedron', detail: 0, radius: 5});
+    el.setAttribute('geometry', {buffer: false, primitive: 'icosahedron', detail: 0, radius: 5});
 
     geometry = el.getObject3D('mesh').geometry;
     assert.equal(geometry.type, 'IcosahedronGeometry');
@@ -181,8 +173,7 @@ suite('standard geometries', function () {
 
   test('ring', function () {
     var geometry;
-    el.setAttribute('geometry', {
-      buffer: false, primitive: 'ring', radiusInner: 1, radiusOuter: 2, segmentsTheta: 3});
+    el.setAttribute('geometry', {buffer: false, primitive: 'ring', radiusInner: 1, radiusOuter: 2, segmentsTheta: 3});
 
     geometry = el.getObject3D('mesh').geometry;
     assert.equal(geometry.type, 'RingGeometry');
@@ -262,7 +253,7 @@ suite('standard geometries', function () {
   test('triangle', function () {
     var geometry;
     el.setAttribute('geometry', {
-      buffer: false,
+      buffer: true,
       primitive: 'triangle',
       vertexA: {x: 1, y: 2, z: 3},
       vertexB: {x: 4, y: 5, z: 6},
@@ -270,18 +261,18 @@ suite('standard geometries', function () {
     });
 
     geometry = el.getObject3D('mesh').geometry;
-    assert.equal(geometry.type, 'Geometry');
-    var vertices = geometry.vertices;
-    assert.equal(vertices.length, 3);
-    assert.equal(vertices[0].x, 1);
-    assert.equal(vertices[0].y, 2);
-    assert.equal(vertices[0].z, 3);
-    assert.equal(vertices[1].x, 4);
-    assert.equal(vertices[1].y, 5);
-    assert.equal(vertices[1].z, 6);
-    assert.equal(vertices[2].x, 7);
-    assert.equal(vertices[2].y, 8);
-    assert.equal(vertices[2].z, 9);
+    assert.equal(geometry.type, 'BufferGeometry');
+    var vertices = geometry.getAttribute('position').array;
+    assert.equal(vertices.length, 9);
+    assert.equal(vertices[0], 1);
+    assert.equal(vertices[1], 2);
+    assert.equal(vertices[2], 3);
+    assert.equal(vertices[3], 4);
+    assert.equal(vertices[4], 5);
+    assert.equal(vertices[5], 6);
+    assert.equal(vertices[6], 7);
+    assert.equal(vertices[7], 8);
+    assert.equal(vertices[8], 9);
   });
 
   test('retains data on detach and reattach', function (done) {

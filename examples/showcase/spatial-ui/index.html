@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Spatial UI</title>
+    <meta name="description" content="Spatial UI • A-Frame">
+    <script src="../../../dist/aframe-master.js"></script>
+
+    <script src="ui-controller.js"></script>
+    <script src="../../js/spatial-ui/spatial-utils.js"></script>
+    <script src="../../js/spatial-ui/spatial-window.js"></script>
+    <script src="../../js/spatial-ui/spatial-modal.js"></script>
+    <script src="../../js/spatial-ui/spatial-modal-image.js"></script>
+    <script src="../../js/spatial-ui/spatial-button.js"></script>
+    <script src="../../js/spatial-ui/spatial-close-button.js"></script>
+    <script src="../../js/spatial-ui/spatial-hero-image.js"></script>
+    <script src="tile.js"></script>
+  </head>
+  <body>
+    <a-scene cursor="rayOrigin: mouse;" raycaster="objects: .tile, .start-button, .close-button" ui-controller>
+      <a-assets>
+        <a-mixin
+          id="tile" tile="width: 0.400; height: 0.285"
+          animation__scale="property: scale; to: 1.02 1.02 1.02; dur: 100; startEvents: mouseenter"
+          animation__scale_reverse="property: scale; to: 1 1 1; dur: 100; startEvents: mouseleave">
+        </a-mixin>
+        <a-mixin
+          id="focus-animation"
+          animation__scale="property: object3D.position.z; to: -0.05; dur: 100; startEvents: unfocused"
+          animation__scale_reverse="property: object3D.position.z; to: 0; dur: 100; startEvents: focused">
+        </a-mixin>
+        <img id="leaving-room" src="https://cdn.aframe.io/examples/spatial-input/leaving-room.jpg" crossorigin="anonymous">
+        <img id="hero-image" src="https://cdn.aframe.io/examples/spatial-input/hero-image.jpg" crossorigin="anonymous">
+      </a-assets>
+      <a-sky src="#leaving-room" rotation="0 -90 0"></a-sky>
+      
+      <a-entity position="0 1.7 -1">
+        <a-entity spatial-modal="width: 1.2; height: 0.72" visible="false">
+          <a-entity spatial-modal-image="width: 0.6; height: 0.72" position="-0.3 0 0.001"></a-entity>
+          <a-entity spatial-close-button="" position="0.55 0.31 0.001" class="close-button"></a-entity>
+          <a-text font="kelsonsans" class="movie-title" value="Hayao Miyazaki" align="left" width="0.75" position="0.03 0.2 0.001"></a-text>
+          <a-text font="kelsonsans" height="1" class="movie-synopsis" value="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum." align="left" width="0.5" position="0.03 0.08 0.001"></a-text>
+        </a-entity>
+
+        <a-entity mixin="focus-animation" spatial-window="width: 1.775; height: 1">
+          <a-entity spatial-hero-image="src: #hero-image; width: 1.775; height: 1" position="0 0 0.001">
+            <a-text font="kelsonsans" value="Hayao Miyazaki" align="center" width="3" position="0 0.29 0.001"></a-text>
+            <a-entity spatial-button position="0 0.06 0.001" class="start-button"></a-entity>
+          </a-entity>
+
+          <a-entity id="image-grid" visible="false">
+            <!-- row -->
+            <a-entity
+              mixin="tile"
+              title="The Secret World of Arrietty (2010)"
+              synopsis="Arrietty, a tiny teenager, lives with her parents in the recesses of a suburban home, unbeknown to the homeowner and housekeeper. Like others of her kind, Arrietty remains hidden from her human hosts."
+              tile="src: https://cdn.aframe.io/examples/ui/karigurashi.jpg"
+              position="-0.6435 0.318 0.01"></a-entity>
+            <a-entity
+              mixin="tile"
+              title="Ponyo (2008)"
+              synopsis="During a forbidden excursion to see the surface world, a goldfish princess encounters a human boy named Sosuke, who gives her the name Ponyo. Ponyo longs to become human, and as her friendship with Sosuke grows, she becomes more humanlike."
+              tile="src: https://cdn.aframe.io/examples/ui/ponyo.jpg"
+              position="-0.2150 0.320 0.01"></a-entity>
+            <a-entity
+              mixin="tile"
+              title="The Wind Rises (2013)"
+              synopsis="A lifelong love of flight inspires Japanese aviation engineer Jiro Horikoshi (Hideaki Anno), whose storied career includes the creation of the A6M World War II fighter plane."
+              tile="src: https://cdn.aframe.io/examples/ui/wind-raises1.jpg"
+              position="0.2135 0.320 0.01"></a-entity>
+            <a-entity
+              mixin="tile"
+              title="The Wind Rises (2013)"
+              synopsis="A lifelong love of flight inspires Japanese aviation engineer Jiro Horikoshi (Hideaki Anno), whose storied career includes the creation of the A6M World War II fighter plane."
+              tile="src: https://cdn.aframe.io/examples/ui/wind-raises2.jpg"
+              position="0.6420 0.320 0.01"></a-entity>
+            <!-- row -->
+            <a-entity
+              mixin="tile"
+              title="The Wind Rises (2013)"
+              synopsis="A lifelong love of flight inspires Japanese aviation engineer Jiro Horikoshi (Hideaki Anno), whose storied career includes the creation of the A6M World War II fighter plane."
+              tile="src: https://cdn.aframe.io/examples/ui/kazetachinu.jpg"
+              position="-0.6435 0 0.01"></a-entity>
+            <a-entity
+              mixin="tile"
+              title="Spirited Away (2001)"
+              synopsis="Miyazaki, 10-year-old Chihiro (Rumi Hiiragi) and her parents (Takashi Naitô, Yasuko Sawaguchi) stumble upon a seemingly abandoned amusement park. After her mother and father are turned into giant pigs, Chihiro meets the mysterious Haku."
+              tile="src: https://cdn.aframe.io/examples/ui/spirited-away1.jpg"
+              position="-0.2150 0 0.01"></a-entity>
+            <a-entity
+              mixin="tile"
+              title="Spirited Away (2001)"
+              synopsis="Miyazaki, 10-year-old Chihiro (Rumi Hiiragi) and her parents (Takashi Naitô, Yasuko Sawaguchi) stumble upon a seemingly abandoned amusement park. After her mother and father are turned into giant pigs, Chihiro meets the mysterious Haku."
+              tile="src: https://cdn.aframe.io/examples/ui/spirited-away2.jpg"
+              position="0.2135 0 0.01"></a-entity>
+            <a-entity
+              mixin="tile"
+              title="Spirited Away (2001)"
+              synopsis="Miyazaki, 10-year-old Chihiro (Rumi Hiiragi) and her parents (Takashi Naitô, Yasuko Sawaguchi) stumble upon a seemingly abandoned amusement park. After her mother and father are turned into giant pigs, Chihiro meets the mysterious Haku."
+              tile="src: https://cdn.aframe.io/examples/ui/spirited-away3.jpg"
+              position="0.6420 0 0.01"></a-entity>
+
+            <!-- row -->
+            <a-entity
+              mixin="tile"
+              title="Tales from Earthsea (2006)"
+              synopsis="Something bizarre has come over the land. The kingdom is deteriorating. People are beginning to act strange... What's even more strange is that people are beginning to see dragons, which shouldn't enter the world of humans."
+              tile="src: https://cdn.aframe.io/examples/ui/earth-sea1.jpg"
+              position="-0.6435 -0.320 0.01"></a-entity>
+            <a-entity
+              mixin="tile"
+              title="Tales from Earthsea (2006)"
+              synopsis="Something bizarre has come over the land. The kingdom is deteriorating. People are beginning to act strange... What's even more strange is that people are beginning to see dragons, which shouldn't enter the world of humans."
+              tile="src: https://cdn.aframe.io/examples/ui/earth-sea2.jpg"
+              position="-0.2150 -0.320 0.01"></a-entity>
+            <a-entity
+              mixin="tile"
+              title="Tales from Earthsea (2006)"
+              synopsis="Something bizarre has come over the land. The kingdom is deteriorating. People are beginning to act strange... What's even more strange is that people are beginning to see dragons, which shouldn't enter the world of humans."
+              tile="src: https://cdn.aframe.io/examples/ui/earth-sea3.jpg"
+              position="0.2135 -0.320 0.01"></a-entity>
+            <a-entity
+              mixin="tile"
+              title="From Up on Poppy Hill (2011)"
+              synopsis="It's 1963 and Japan is in the midst of swift modernisation, leaving behind the Second World War's painful memories and focusing on a brighter future, symbolised by the coming year's Tokyo Olympics."
+              tile="src: https://cdn.aframe.io/examples/ui/poppy-hill1.jpg"
+              position="0.6420 -0.320 0.01"></a-entity>
+          </a-entity>
+        </a-entity>
+      </a-entity>
+
+      <a-entity position="0 1.6 0" look-controls camera>
+        <a-entity class="camera-cursor"
+                  raycaster="objects: .tile, .start-button, .close-button"
+                  cursor
+                  geometry="primitive: circle; radius: 0.005"
+                  material="color: #283644; shader: flat"
+                  position="0 0 -0.75"></a-entity>
+      </a-entity>
+      <a-entity hand-tracking-controls="hand: left"></a-entity>
+      <a-entity hand-tracking-controls="hand: right"></a-entity>
+    </a-scene>
+  </body>
+</html>

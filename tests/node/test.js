@@ -2,26 +2,21 @@
 'use strict';
 
 const path = require('path');
-const assert = require('chai').assert;
-const jsdom = require('jsdom');
+const assert = require('assert');
 
 suite('node acceptance tests', function () {
   setup(function () {
-    let _window = global.window = jsdom.jsdom().defaultView;
-    global.navigator = _window.navigator;
-    global.document = _window.document;
-    global.screen = {};
+    this.jsdomCleanup = require('jsdom-global')();
+    global.customElements = { define: function () {} };
   });
 
   teardown(function () {
-    delete global.window;
-    delete global.navigator;
-    delete global.document;
-    delete global.screen;
+    delete global.customElements;
+    this.jsdomCleanup();
   });
 
   test('can run in node', function () {
-    let aframe = require(path.join(process.cwd(), 'src'));
+    const aframe = require(path.join(process.cwd(), 'src'));
 
     assert.ok(aframe.version);
   });

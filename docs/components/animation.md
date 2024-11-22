@@ -1,5 +1,5 @@
 ---
-title: Animation
+title: animation
 type: components
 layout: docs
 parent_section: components
@@ -64,8 +64,8 @@ different types of values.
 | startEvents   | Comma-separated list of events to listen to trigger a restart and play. Animation will not autoplay if specified. `startEvents` will **restart** the animation, use `pauseEvents` to resume it. If there are other animation components on the entity animating the same property, those animations will be automatically paused to not conflict. | null          |                         |
 | pauseEvents   | Comma-separated list of events to listen to trigger pause. Can be resumed with `resumeEvents`.                                                                                                                                                                                                                                                    | null          |                         |
 | resumeEvents  | Comma-separated list of events to listen to trigger resume after pausing.                                                                                                                                                                                                                                                                         | null          |                         |
-| autoplay      | Whether or not the animation should `autoplay`. Should be specified if the animation is defined for the [`animation-timeline` component][animationtimeline].                                                                                                                                                                                      | null          |                         |
-| enabled       | If disabled, animation will stop and startEvents will not trigger animation start.                                                                                                                                                                                                                                                                                                                        | true          |
+| autoplay      | Whether or not the animation should `autoplay`. Should be specified if the animation is defined for the [`animation-timeline` component][animationtimeline].                                                                                                                                                                                      | true      |                         |
+| enabled       | If disabled, animation will stop and startEvents will not trigger animation start.                                                                                                                                                                                                                                                                                                                        | true          ||
 
 ### Multiple Animations
 
@@ -112,6 +112,23 @@ Accessed as `el.components.animation.<MEMBER>`.
 | animation | anime.js object.           |
 | config    | Config passed to anime.js. |
 
+### Controlling Animations using setAttribute
+
+Like any A-Frame component, the animation component can be configured from JavaScript by calling [setAttribute()]( https://aframe.io/docs/1.6.0/introduction/javascript-events-dom-apis.html#updating-a-component-with-setattribute) on an element.
+
+By default, the animation will begin playing immediately (autoplay is true by default).
+
+However, care should be taken when using the interface in this way.  If a finite (i.e. non-looping) animation is requested twice in a row, with identical parameters, the second animation will not play, and neither will it generate an animationcomplete event.
+
+This is because A-Frame sees the second request as a duplicate request for configuration already applied to the element, and so the second request never reaches the animation component.
+
+A better approach is to control the start of an animation using events (see next section)
+
+- On initialization, configure all the animations that may be required on the object, with a custom event configured to start the animation.
+- When you want to start a specific animation, do so by using emit() rather than setAttribute().
+
+This gives more robust control of the animation (avoiding problems where you request the same animation twice in a row), and also reduces the overheads involved in setting up animation config, since it only needs to be done once.
+
 ## Animating on Events
 
 We can use the `startEvents` property to animate upon events:
@@ -124,11 +141,31 @@ We can use the `startEvents` property to animate upon events:
   material="color: red"
   animation__mouseenter="property: components.material.material.color; type: color; to: blue; startEvents: mouseenter; dur: 500";
   animation__mouseleave="property: components.material.material.color; type: color; to: red; startEvents: mouseleave; dur: 500";
+  animation__customevent="property: components.material.material.color; type: color; from: red; to: blue; startEvents: triggeranimation; dur: 500";>
+</a-entity>
 ```
 
 [eventsglitch]: https://glitch.com/edit/#!/aframe-animation-events?path=index.html:1:0
 
 [Remix the Animating on Events Glitch][eventsglitch].
+
+To start an animation by explicitly [emitting a custom event](https://aframe.io/docs/1.6.0/introduction/javascript-events-dom-apis.html#emitting-an-event-with-emit), you can do the following:
+
+```
+el.emit(`triggeranimation`, null, false);
+```
+
+The [third parameter of emit](https://aframe.io/docs/1.6.0/core/entity.html#emit-name-detail-bubbles) set to "false" parameter ensures the event won't bubble up to parents, so that you can target the animation at just one particular element.
+
+This assumes that an animation has already been configured to respond to that custom start event, for example like this:
+
+```
+el.setAttribute('animation__001', {'property': 'position',
+                                 'to': {x: 1, y: 1, z: 1},                                 
+                                 'startEvents': 'startanim001'});
+```
+
+(configuring startEvents on the animation automatically disables autoplay).
 
 ## Animating Different Types of Values
 

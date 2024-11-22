@@ -21,9 +21,13 @@ module.exports.Component = registerComponent('layer', {
     this.bindMethods();
     this.needsRedraw = false;
     this.frameBuffer = gl.createFramebuffer();
-    var requiredFeatures = this.el.sceneEl.getAttribute('webxr').requiredFeatures;
-    requiredFeatures.push('layers');
-    this.el.sceneEl.getAttribute('webxr', 'requiredFeatures', requiredFeatures);
+
+    var webxrData = this.el.sceneEl.getAttribute('webxr');
+    var requiredFeaturesArray = webxrData.requiredFeatures;
+    if (requiredFeaturesArray.indexOf('layers') === -1) {
+      requiredFeaturesArray.push('layers');
+      this.el.sceneEl.setAttribute('webxr', webxrData);
+    }
     this.el.sceneEl.addEventListener('enter-vr', this.onEnterVR);
     this.el.sceneEl.addEventListener('exit-vr', this.onExitVR);
   },
@@ -53,14 +57,16 @@ module.exports.Component = registerComponent('layer', {
   },
 
   loadCubeMapImages: function () {
-    var type = this.data.type;
     var glayer;
     var xrGLFactory = this.xrGLFactory;
     var frame = this.el.sceneEl.frame;
     var src = this.data.src;
+    var type = this.data.type;
 
     this.visibilityChanged = false;
     if (!this.layer) { return; }
+    if (type !== 'monocubemap' && type !== 'stereocubemap') { return; }
+
     if (!src.complete) {
       this.pendingCubeMapUpdate = true;
     } else {
@@ -173,7 +179,7 @@ module.exports.Component = registerComponent('layer', {
     var gl = this.el.sceneEl.renderer.getContext();
     var cubefaceTextures;
 
-    // dont flip the pixels as we load them into the texture buffer.
+    // don't flip the pixels as we load them into the texture buffer.
     // TEXTURE_CUBE_MAP expects the Y to be flipped for the faces and it already
     // is flipped in our texture image.
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
@@ -206,7 +212,7 @@ module.exports.Component = registerComponent('layer', {
 
   tick: function () {
     if (!this.el.sceneEl.xrSession) { return; }
-    if (!this.layer && this.el.sceneEl.is('vr-mode')) { this.initLayer(); }
+    if (!this.layer && (this.el.sceneEl.is('vr-mode') || this.el.sceneEl.is('ar-mode'))) { this.initLayer(); }
     this.updateTransform();
     if (this.data.src.complete && (this.pendingCubeMapUpdate || this.loadingScreen || this.visibilityChanged)) { this.loadCubeMapImages(); }
     if (!this.needsRedraw && !this.layer.needsRedraw && !this.textureIsVideo) { return; }
@@ -245,6 +251,7 @@ module.exports.Component = registerComponent('layer', {
       height: this.data.height / 2 || this.texture.image.height / 1000,
       width: this.data.width / 2 || this.texture.image.width / 1000
     });
+    this.initLoadingScreenImages();
     sceneEl.renderer.xr.addLayer(this.layer);
   },
 
@@ -359,8 +366,7 @@ module.exports.Component = registerComponent('layer', {
       warn('The layer component requires WebXR and the layers API enabled');
       return;
     }
-    xrSession.requestReferenceSpace('local').then(this.onRequestedReferenceSpace);
-    this.needsRedraw = true;
+    xrSession.requestReferenceSpace('local-floor').then(this.onRequestedReferenceSpace);
     this.layerEnabled = true;
     if (this.quadPanelEl) {
       this.quadPanelEl.object3D.visible = false;
@@ -382,10 +388,10 @@ module.exports.Component = registerComponent('layer', {
 
 function blitTexture (gl, texture, subImage, textureEl) {
   var xrReadFramebuffer = gl.createFramebuffer();
-  let x1offset = subImage.viewport.x;
-  let y1offset = subImage.viewport.y;
-  let x2offset = subImage.viewport.x + subImage.viewport.width;
-  let y2offset = subImage.viewport.y + subImage.viewport.height;
+  var x1offset = subImage.viewport.x;
+  var y1offset = subImage.viewport.y;
+  var x2offset = subImage.viewport.x + subImage.viewport.width;
+  var y2offset = subImage.viewport.y + subImage.viewport.height;
 
   // Update video texture.
   if (textureEl.tagName === 'VIDEO') {

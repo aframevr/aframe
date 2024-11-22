@@ -93,7 +93,7 @@ Components can be attached to the scene as well as entities:
 [keyboard-shortcuts]: ../components/keyboard-shortcuts.md
 [inspector]: ../introduction/visual-inspector-and-dev-tools.md
 [stats]: ../components/stats.md
-[vr-mode-ui]: ../components/vr-mode-ui.md
+[xr-mode-ui]: ../components/xr-mode-ui.md
 
 A-Frame ships with a few components to configure the scene:
 
@@ -102,7 +102,7 @@ A-Frame ships with a few components to configure the scene:
 - [keyboard-shortcuts][keyboard-shortcuts] - Toggle keyboard shortcuts.
 - [inspector][inspector] - Inject the A-Frame Inspector.
 - [stats][stats] - Toggle performance stats.
-- [vr-mode-ui][vr-mode-ui] - Toggle UI for entering and exiting VR.
+- [xr-mode-ui][xr-mode-ui] - Toggle UI for entering and exiting VR.
 
 ## Running Content Scripts on the Scene
 

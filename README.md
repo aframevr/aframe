@@ -5,7 +5,6 @@
 <p align="center"><b>A web framework for building virtual reality experiences.</b></p>
 
 <p align="center">
-  <a href="https://travis-ci.org/aframevr/aframe"><img src="https://img.shields.io/travis/aframevr/aframe.svg?style=flat-square" alt="Build Status"></a>
   <a href="https://codecov.io/gh/aframevr/aframe">
     <img src="https://codecov.io/gh/aframevr/aframe/branch/master/graph/badge.svg" alt="Coverage Status">
   </a>
@@ -27,7 +26,7 @@
   &mdash;
   <a href="https://aframe.io/school/">School</a>
   &mdash;
-  <a href="https://aframe.io/slack-invite/">Slack</a>
+  <a href="https://aframevr.slack.com/join/shared_invite/zt-f6rne3ly-ekVaBU~Xu~fsZHXr56jacQ">Slack</a>
   &mdash;
   <a href="https://aframe.io/blog/">Blog</a>
   &mdash;
@@ -59,27 +58,25 @@
 
 ## Features
 
-:eyeglasses: **Virtual Reality Made Simple**: A-Frame handles the 3D and WebVR
-boilerplate required to get running across platforms including mobile, desktop,
-Vive, and Rift just by dropping in `<a-scene>`.
+:eyeglasses: **Virtual Reality Made Simple**: A-Frame handles the 3D and WebXR
+boilerplate required to get running across platforms including mobile, desktop, and all headsets (compatible with a WebXR capable browser) just by dropping in `<a-scene>`.
 
 :heart: **Declarative HTML**: HTML is easy to read and copy-and-paste. Since
 A-Frame can be used from HTML, A-Frame is accessible to everyone: web
-developers, VR enthusiasts, educators, artists, makers, kids.
+developers, VR and AR enthusiasts, educators, artists, makers, kids.
 
 :electric_plug: **Entity-Component Architecture**: A-Frame is a powerful
 framework on top of three.js, providing a declarative, composable, reusable
 entity-component structure for three.js. While A-Frame can be used from HTML,
-developers have unlimited access to JavaScript, DOM APIs, three.js, WebVR, and
+developers have unlimited access to JavaScript, DOM APIs, three.js, WebXR, and
 WebGL.
 
 :zap: **Performance**: A-Frame is a thin framework on top of three.js.
 Although A-Frame uses the DOM, A-Frame does not touch the browser layout
 engine. Performance is a top priority, being battle-tested on highly
-interactive WebVR experiences.
+interactive WebXR experiences.
 
-:globe_with_meridians: **Cross-Platform**: Build VR applications for Vive,
-Rift, Daydream, GearVR, and Cardboard. Don't have a headset or controllers? No
+:globe_with_meridians: **Cross-Platform**: Build VR and AR applications for any headset compatible with a WebXR capable browser. Don't have a headset or controllers? No
 problem! A-Frame still works on standard desktop and smartphones.
 
 :mag: **Visual Inspector**: A-Frame provides a built-in visual 3D inspector
@@ -96,7 +93,7 @@ mountains, speech recognition, or teleportation!
 
 ### Example
 
-Build VR scenes in the browser with just a few lines of HTML! To start playing
+Build VR and AR scenes in the browser with just a few lines of HTML! To start playing
 and publishing now, remix the starter example on:
 
 [![Remix](https://cloud.githubusercontent.com/assets/674727/24572421/688f7fc0-162d-11e7-8a35-b02bc050c043.jpg)](https://glitch.com/~aframe) [![Fork](https://user-images.githubusercontent.com/39342/52831020-d42dcb80-3087-11e9-833f-2d6191c69eb9.png)](https://repl.it/@dmarcos/aframe)
@@ -104,7 +101,7 @@ and publishing now, remix the starter example on:
 ```html
 <html>
   <head>
-    <script src="https://aframe.io/releases/1.1.0/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
   </head>
   <body>
     <a-scene>
@@ -119,7 +116,7 @@ and publishing now, remix the starter example on:
 ```
 
 With A-Frame's [entity-component
-architecture](https://aframe.io/docs/1.1.0/introduction/entity-component-system.html), we can drop in community
+architecture](https://aframe.io/docs/1.6.0/introduction/entity-component-system.html), we can drop in community
 components from the ecosystem (e.g., ocean, physics) and plug them into our
 objects straight from HTML:
 
@@ -128,10 +125,10 @@ objects straight from HTML:
 ```html
 <html>
   <head>
-    <script src="https://aframe.io/releases/1.1.0/aframe.min.js"></script>
-    <script src="https://unpkg.com/aframe-particle-system-component@1.0.x/dist/aframe-particle-system-component.min.js"></script>
-    <script src="https://unpkg.com/aframe-extras.ocean@%5E3.5.x/dist/aframe-extras.ocean.min.js"></script>
-    <script src="https://unpkg.com/aframe-gradient-sky@1.1.0/dist/gradientsky.min.js"></script>
+    <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+    <script src="https://unpkg.com/@c-frame/aframe-particle-system-component@1.2.x/dist/aframe-particle-system-component.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.5.0/dist/aframe-extras.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@fern-solutions/aframe-sky-background/dist/sky-background.umd.min.js"></script>
   </head>
   <body>
     <a-scene>
@@ -147,9 +144,7 @@ objects straight from HTML:
                 material="color: #9CE3F9; opacity: 0.75; metalness: 0; roughness: 1"
                 rotation="-90 0 0"></a-entity>
 
-      <a-entity id="sky" geometry="primitive: sphere; radius: 5000"
-                material="shader: gradient; topColor: 235 235 245; bottomColor: 185 185 210"
-                scale="-1 1 1"></a-entity>
+      <a-sky-background top-color="#EBEBF5" bottom-color="#B9B9D2"></a-sky-background>
 
       <a-entity id="light" light="type: ambient; color: #888"></a-entity>
     </a-scene>
@@ -159,11 +154,11 @@ objects straight from HTML:
 
 ### Builds
 
-To use the latest stable build of A-Frame, include [`aframe.min.js`](https://aframe.io/releases/1.1.0/aframe.min.js):
+To use the latest stable build of A-Frame, include [`aframe.min.js`](https://aframe.io/releases/1.6.0/aframe.min.js):
 
 ```js
 <head>
-  <script src="https://aframe.io/releases/1.1.0/aframe.min.js"></script>
+  <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
 </head>
 ```
 
@@ -202,7 +197,7 @@ For questions and support, [ask on StackOverflow](https://stackoverflow.com/ques
 
 ## Stay in Touch
 
-- To hang out with the community, [join the A-Frame Slack](https://aframe.io/slack-invite/).
+- To hang out with the community, [join the A-Frame Slack](https://aframevr.slack.com/join/shared_invite/zt-f6rne3ly-ekVaBU~Xu~fsZHXr56jacQ).
 - [Follow `A Week of A-Frame` on the A-Frame blog](https://aframe.io/blog).
 - [Follow @aframevr on Twitter](https://twitter.com/aframevr).
 - [Subscribe to the Newsletter](https://aframe.io/subscribe/).
@@ -217,7 +212,7 @@ And get in touch with the maintainers!
 
 Get involved! Check out the [Contributing Guide](CONTRIBUTING.md) for how to get started.
 
-You can also support development by [buying a gorgeous A-Frame t-shirt with exclusive designs](https://teespring.com/stores/aframe)
+You can also support development by [buying a gorgeous A-Frame t-shirt with exclusive designs](https://cottonbureau.com/products/a-frame-og#/9479538/tee-men-standard-tee-vintage-black-tri-blend-s)
 
 ## License
 

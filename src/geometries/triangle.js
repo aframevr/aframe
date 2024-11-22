@@ -22,6 +22,10 @@ registerGeometry('triangle', {
     var uvB;
     var uvC;
 
+    var vertices;
+    var normals;
+    var uvs;
+
     triangle = new THREE.Triangle();
     triangle.a.set(data.vertexA.x, data.vertexA.y, data.vertexA.z);
     triangle.b.set(data.vertexB.x, data.vertexB.y, data.vertexB.z);
@@ -43,11 +47,25 @@ registerGeometry('triangle', {
     uvB = new THREE.Vector2().subVectors(uvB, uvMinVector).divide(uvScaleVector);
     uvC = new THREE.Vector2().subVectors(uvC, uvMinVector).divide(uvScaleVector);
 
-    geometry = this.geometry = new THREE.Geometry();
-    geometry.vertices.push(triangle.a);
-    geometry.vertices.push(triangle.b);
-    geometry.vertices.push(triangle.c);
-    geometry.faces.push(new THREE.Face3(0, 1, 2, normal));
-    geometry.faceVertexUvs[0] = [[uvA, uvB, uvC]];
+    geometry = this.geometry = new THREE.BufferGeometry();
+    vertices = [
+      triangle.a.x, triangle.a.y, triangle.a.z,
+      triangle.b.x, triangle.b.y, triangle.b.z,
+      triangle.c.x, triangle.c.y, triangle.c.z
+    ];
+    normals = [
+      normal.x, normal.y, normal.z,
+      normal.x, normal.y, normal.z,
+      normal.x, normal.y, normal.z
+    ];
+    uvs = [
+      uvA.x, uvA.y,
+      uvB.x, uvB.y,
+      uvC.x, uvC.y
+    ];
+
+    geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+    geometry.setAttribute('normal', new THREE.Float32BufferAttribute(normals, 3));
+    geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
   }
 });

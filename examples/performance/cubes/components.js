@@ -4,7 +4,7 @@ function randomIncRad (multiplier) {
 }
 
 function randomIncDeg (multiplier) {
-  return randomIncRad(multiplier) * THREE.Math.RAD2DEG;
+  return randomIncRad(multiplier) * THREE.MathUtils.RAD2DEG;
 }
 
 // COMPONENTS

@@ -55,35 +55,16 @@ editors. Both support remixing or forking:
 For the options below, we should develop projects using a local server so that
 files are properly served. Options of local servers include:
 
-- Downloading the [Mongoose](https://www.cesanta.com/products/binary) application
-  and opening it from the same directory as your HTML file.
+- Running `npm i -g five-server@latest && five-server --port=8000` in a terminal
+  in the same directory as your HTML file.
 - Running `python -m SimpleHTTPServer` (or `python -m http.server` for Python 3)
   in a terminal in the same directory as your HTML file.
-- Running `npm install -g live-server && live-server` in a terminal in the same
-  directory as your HTML file.
 
 Once we are running our server, we can open our project in the browser using
 the local URL and port which the server is running on (e.g.,
 `http://localhost:8000`). Try *not* to open the project using the `file://`
 protocol which does not provide a domain; absolute and relative URLs may not
 work.
-
-### Download the Boilerplate on GitHub
-
-[ghpages]: https://pages.github.com/
-
-The boilerplate contains:
-
-- A simple HTML file that links to the [current version of A-Frame](#builds-prod)
-- An optional local development server
-- An easy deployment workflow for [GitHub Pages][ghpages] to share with the world
-
-We can grab the boilerplate in one of two ways:
-
-<a class="btn btn-download" href="https://github.com/aframevr/aframe-boilerplate/">Fork on GitHub</a>
-<br>(Note this is marked as 'discontinued', the Aframe version packaged with this is 0.5)
-
-<a class="btn btn-download" href="https://github.com/aframevr/aframe-boilerplate/archive/master.zip" download="aframe-boilerplate.zip">Download .ZIP<span></span></a>
 
 ### Include the JS Build
 
@@ -92,14 +73,14 @@ CDN build:
 
 ```html
 <head>
-  <script src="https://aframe.io/releases/1.1.0/aframe.min.js"></script>
+  <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
 </head>
 ```
 
 If we want to serve it ourselves, we can download the JS build:
 
-<a id="builds-prod" class="btn btn-download" href="https://aframe.io/releases/1.1.0/aframe.min.js" download>Production Version <span>1.1.0</span></a> <em class="install-note">Minified</em>
-<a id="builds-dev" class="btn btn-download" href="https://aframe.io/releases/1.1.0/aframe.js" download>Development Version <span>1.1.0</span></a> <em class="install-note">Uncompressed with Source Maps</em>
+<a id="builds-prod" class="btn btn-download" href="https://aframe.io/releases/1.6.0/aframe.min.js" download>Production Version <span>1.6.0</span></a> <em class="install-note">Minified</em>
+<a id="builds-dev" class="btn btn-download" href="https://aframe.io/releases/1.6.0/aframe.js" download>Development Version <span>1.6.0</span></a> <em class="install-note">Uncompressed with Source Maps</em>
 
 ### Install from npm
 
@@ -172,7 +153,7 @@ In your `index.html`, adjust as follows:
         "
       />
   ...
-  <script src="https://cdn.jsdelivr.net/npm/aframe@1.1.0/dist/aframe-master.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/aframe@1.6.0/dist/aframe-master.min.js"></script>
   <script id='my-scene' type="text/html">
     ...your scene goes here...
   </script>

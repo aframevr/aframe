@@ -3,7 +3,6 @@ var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../lib/three');
 var utils = require('../utils/');
 
-var bind = utils.bind;
 var shouldCaptureKeyEvent = utils.shouldCaptureKeyEvent;
 
 var CLAMP_VELOCITY = 0.00001;
@@ -28,6 +27,7 @@ module.exports.Component = registerComponent('wasd-controls', {
     wsEnabled: {default: true},
     wsInverted: {default: false}
   },
+  after: ['look-controls'],
 
   init: function () {
     // To keep track of the pressed keys.
@@ -37,11 +37,12 @@ module.exports.Component = registerComponent('wasd-controls', {
     this.velocity = new THREE.Vector3();
 
     // Bind methods and add event listeners.
-    this.onBlur = bind(this.onBlur, this);
-    this.onFocus = bind(this.onFocus, this);
-    this.onKeyDown = bind(this.onKeyDown, this);
-    this.onKeyUp = bind(this.onKeyUp, this);
-    this.onVisibilityChange = bind(this.onVisibilityChange, this);
+    this.onBlur = this.onBlur.bind(this);
+    this.onContextMenu = this.onContextMenu.bind(this);
+    this.onFocus = this.onFocus.bind(this);
+    this.onKeyDown = this.onKeyDown.bind(this);
+    this.onKeyUp = this.onKeyUp.bind(this);
+    this.onVisibilityChange = this.onVisibilityChange.bind(this);
     this.attachVisibilityEventListeners();
   },
 
@@ -61,6 +62,12 @@ module.exports.Component = registerComponent('wasd-controls', {
 
     // Get movement vector and translate position.
     el.object3D.position.add(this.getMovementVector(delta));
+  },
+
+  update: function (oldData) {
+    // Reset velocity if axis have changed.
+    if (oldData.adAxis !== this.data.adAxis) { this.velocity[oldData.adAxis] = 0; }
+    if (oldData.wsAxis !== this.data.wsAxis) { this.velocity[oldData.wsAxis] = 0; }
   },
 
   remove: function () {
@@ -145,13 +152,14 @@ module.exports.Component = registerComponent('wasd-controls', {
       xRotation = this.data.fly ? rotation.x : 0;
 
       // Transform direction relative to heading.
-      rotationEuler.set(THREE.Math.degToRad(xRotation), THREE.Math.degToRad(rotation.y), 0);
+      rotationEuler.set(THREE.MathUtils.degToRad(xRotation), THREE.MathUtils.degToRad(rotation.y), 0);
       directionVector.applyEuler(rotationEuler);
       return directionVector;
     };
   })(),
 
   attachVisibilityEventListeners: function () {
+    window.oncontextmenu = this.onContextMenu;
     window.addEventListener('blur', this.onBlur);
     window.addEventListener('focus', this.onFocus);
     document.addEventListener('visibilitychange', this.onVisibilityChange);
@@ -171,6 +179,13 @@ module.exports.Component = registerComponent('wasd-controls', {
   removeKeyEventListeners: function () {
     window.removeEventListener('keydown', this.onKeyDown);
     window.removeEventListener('keyup', this.onKeyUp);
+  },
+
+  onContextMenu: function () {
+    var keys = Object.keys(this.keys);
+    for (var i = 0; i < keys.length; i++) {
+      delete this.keys[keys[i]];
+    }
   },
 
   onBlur: function () {

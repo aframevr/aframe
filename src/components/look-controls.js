@@ -2,13 +2,12 @@
 var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../lib/three');
 var utils = require('../utils/');
-var bind = utils.bind;
 
 // To avoid recalculation at every mouse movement tick
 var PI_2 = Math.PI / 2;
 
 /**
- * look-controls. Update entity pose, factoring mouse, touch, and WebVR API data.
+ * look-controls. Update entity pose, factoring mouse, touch.
  */
 module.exports.Component = registerComponent('look-controls', {
   dependencies: ['position', 'rotation'],
@@ -48,7 +47,7 @@ module.exports.Component = registerComponent('look-controls', {
     };
 
     // Call enter VR handler if the scene has entered VR before the event listeners attached.
-    if (this.el.sceneEl.is('vr-mode')) { this.onEnterVR(); }
+    if (this.el.sceneEl.is('vr-mode') || this.el.sceneEl.is('ar-mode')) { this.onEnterVR(); }
   },
 
   setupMagicWindowControls: function () {
@@ -56,7 +55,7 @@ module.exports.Component = registerComponent('look-controls', {
     var data = this.data;
 
     // Only on mobile devices and only enabled if DeviceOrientation permission has been granted.
-    if (utils.device.isMobile()) {
+    if (utils.device.isMobile() || utils.device.isMobileDeviceRequestingDesktopSite()) {
       magicWindowControls = this.magicWindowControls = new THREE.DeviceOrientationControls(this.magicWindowObject);
       if (typeof DeviceOrientationEvent !== 'undefined' && DeviceOrientationEvent.requestPermission) {
         magicWindowControls.enabled = false;
@@ -118,16 +117,16 @@ module.exports.Component = registerComponent('look-controls', {
   },
 
   bindMethods: function () {
-    this.onMouseDown = bind(this.onMouseDown, this);
-    this.onMouseMove = bind(this.onMouseMove, this);
-    this.onMouseUp = bind(this.onMouseUp, this);
-    this.onTouchStart = bind(this.onTouchStart, this);
-    this.onTouchMove = bind(this.onTouchMove, this);
-    this.onTouchEnd = bind(this.onTouchEnd, this);
-    this.onEnterVR = bind(this.onEnterVR, this);
-    this.onExitVR = bind(this.onExitVR, this);
-    this.onPointerLockChange = bind(this.onPointerLockChange, this);
-    this.onPointerLockError = bind(this.onPointerLockError, this);
+    this.onMouseDown = this.onMouseDown.bind(this);
+    this.onMouseMove = this.onMouseMove.bind(this);
+    this.onMouseUp = this.onMouseUp.bind(this);
+    this.onTouchStart = this.onTouchStart.bind(this);
+    this.onTouchMove = this.onTouchMove.bind(this);
+    this.onTouchEnd = this.onTouchEnd.bind(this);
+    this.onEnterVR = this.onEnterVR.bind(this);
+    this.onExitVR = this.onExitVR.bind(this);
+    this.onPointerLockChange = this.onPointerLockChange.bind(this);
+    this.onPointerLockError = this.onPointerLockError.bind(this);
   },
 
  /**
@@ -150,7 +149,7 @@ module.exports.Component = registerComponent('look-controls', {
 
     // Wait for canvas to load.
     if (!canvasEl) {
-      sceneEl.addEventListener('render-target-loaded', bind(this.addEventListeners, this));
+      sceneEl.addEventListener('render-target-loaded', this.addEventListeners.bind(this));
       return;
     }
 
@@ -160,9 +159,9 @@ module.exports.Component = registerComponent('look-controls', {
     window.addEventListener('mouseup', this.onMouseUp, false);
 
     // Touch events.
-    canvasEl.addEventListener('touchstart', this.onTouchStart);
-    window.addEventListener('touchmove', this.onTouchMove);
-    window.addEventListener('touchend', this.onTouchEnd);
+    canvasEl.addEventListener('touchstart', this.onTouchStart, {passive: true});
+    window.addEventListener('touchmove', this.onTouchMove, {passive: true});
+    window.addEventListener('touchend', this.onTouchEnd, {passive: true});
 
     // sceneEl events.
     sceneEl.addEventListener('enter-vr', this.onEnterVR);
@@ -209,38 +208,25 @@ module.exports.Component = registerComponent('look-controls', {
    * Update orientation for mobile, mouse drag, and headset.
    * Mouse-drag only enabled if HMD is not active.
    */
-  updateOrientation: (function () {
-    var poseMatrix = new THREE.Matrix4();
+  updateOrientation: function () {
+    var object3D = this.el.object3D;
+    var pitchObject = this.pitchObject;
+    var yawObject = this.yawObject;
+    var sceneEl = this.el.sceneEl;
 
-    return function () {
-      var object3D = this.el.object3D;
-      var pitchObject = this.pitchObject;
-      var yawObject = this.yawObject;
-      var pose;
-      var sceneEl = this.el.sceneEl;
+    // In VR or AR mode, THREE is in charge of updating the camera pose.
+    if ((sceneEl.is('vr-mode') || sceneEl.is('ar-mode')) && sceneEl.checkHeadsetConnected()) {
+      // With WebXR THREE applies headset pose to the object3D internally.
+      return;
+    }
 
-      // In VR mode, THREE is in charge of updating the camera pose.
-      if (sceneEl.is('vr-mode') && sceneEl.checkHeadsetConnected()) {
-        // With WebXR THREE applies headset pose to the object3D matrixWorld internally.
-        // Reflect values back on position, rotation, scale for getAttribute to return the expected values.
-        if (sceneEl.hasWebXR) {
-          pose = sceneEl.renderer.xr.getCameraPose();
-          if (pose) {
-            poseMatrix.elements = pose.transform.matrix;
-            poseMatrix.decompose(object3D.position, object3D.rotation, object3D.scale);
-          }
-        }
-        return;
-      }
+    this.updateMagicWindowOrientation();
 
-      this.updateMagicWindowOrientation();
-
-      // On mobile, do camera rotation with touch events and sensors.
-      object3D.rotation.x = this.magicWindowDeltaEuler.x + pitchObject.rotation.x;
-      object3D.rotation.y = this.magicWindowDeltaEuler.y + yawObject.rotation.y;
-      object3D.rotation.z = this.magicWindowDeltaEuler.z;
-    };
-  })(),
+    // On mobile, do camera rotation with touch events and sensors.
+    object3D.rotation.x = this.magicWindowDeltaEuler.x + pitchObject.rotation.x;
+    object3D.rotation.y = this.magicWindowDeltaEuler.y + yawObject.rotation.y;
+    object3D.rotation.z = this.magicWindowDeltaEuler.z;
+  },
 
   updateMagicWindowOrientation: function () {
     var magicWindowAbsoluteEuler = this.magicWindowAbsoluteEuler;
@@ -301,7 +287,7 @@ module.exports.Component = registerComponent('look-controls', {
    */
   onMouseDown: function (evt) {
     var sceneEl = this.el.sceneEl;
-    if (!this.data.enabled || !this.data.mouseEnabled || (sceneEl.is('vr-mode') && sceneEl.checkHeadsetConnected())) { return; }
+    if (!this.data.enabled || !this.data.mouseEnabled || ((sceneEl.is('vr-mode') || sceneEl.is('ar-mode')) && sceneEl.checkHeadsetConnected())) { return; }
     // Handle only primary button.
     if (evt.button !== 0) { return; }
 
@@ -349,7 +335,8 @@ module.exports.Component = registerComponent('look-controls', {
   onTouchStart: function (evt) {
     if (evt.touches.length !== 1 ||
         !this.data.touchEnabled ||
-        this.el.sceneEl.is('vr-mode')) { return; }
+        this.el.sceneEl.is('vr-mode') ||
+        this.el.sceneEl.is('ar-mode')) { return; }
     this.touchStart = {
       x: evt.touches[0].pageX,
       y: evt.touches[0].pageY
@@ -371,7 +358,7 @@ module.exports.Component = registerComponent('look-controls', {
     deltaY = 2 * Math.PI * (evt.touches[0].pageX - this.touchStart.x) / canvas.clientWidth;
 
     direction = this.data.reverseTouchDrag ? 1 : -1;
-    // Limit touch orientaion to to yaw (y axis).
+    // Limit touch orientation to to yaw (y axis).
     yawObject.rotation.y -= deltaY * 0.5 * direction;
     this.touchStart = {
       x: evt.touches[0].pageX,

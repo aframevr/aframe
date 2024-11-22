@@ -4,18 +4,19 @@
 var debug = require('./debug');
 var deepAssign = require('deep-assign');
 var device = require('./device');
-var objectAssign = require('object-assign');
 var objectPool = require('./object-pool');
 
 var warn = debug('utils:warn');
 
-module.exports.bind = require('./bind');
+/** @deprecated */
+module.exports.bind = function (fn) {
+  return fn.bind.apply(fn, Array.prototype.slice.call(arguments, 1));
+};
 module.exports.coordinates = require('./coordinates');
 module.exports.debug = debug;
 module.exports.device = device;
 module.exports.entity = require('./entity');
 module.exports.forceCanvasResizeSafariMobile = require('./forceCanvasResizeSafariMobile');
-module.exports.isIE11 = require('./is-ie11');
 module.exports.material = require('./material');
 module.exports.objectPool = objectPool;
 module.exports.split = require('./split').split;
@@ -52,7 +53,7 @@ module.exports.isMobile = function () {
 module.exports.throttle = function (functionToThrottle, minimumInterval, optionalContext) {
   var lastTime;
   if (optionalContext) {
-    functionToThrottle = module.exports.bind(functionToThrottle, optionalContext);
+    functionToThrottle = functionToThrottle.bind(optionalContext);
   }
   return function () {
     var time = Date.now();
@@ -60,6 +61,58 @@ module.exports.throttle = function (functionToThrottle, minimumInterval, optiona
     if (typeof lastTime === 'undefined' || (sinceLastTime >= minimumInterval)) {
       lastTime = time;
       functionToThrottle.apply(null, arguments);
+    }
+  };
+};
+
+/**
+ * Returns throttle function that gets called at most once every interval.
+ * If there are multiple calls in the last interval we call the function one additional
+ * time.
+ * It behaves like throttle except for the very last call that gets deferred until the end of the interval.
+ * This is useful when an event is used to trigger synchronization of state, and there is a need to converge
+ * to the correct final state following a burst of events.
+ *
+ * Example use cases:
+ * - synchronizing state based on the componentchanged event
+ * - following a mouse pointer using the mousemove event
+ * - integrating with THREE.TransformControls, via the objectChange event.
+ *
+ * @param {function} functionToThrottle
+ * @param {number} minimumInterval - Minimal interval between calls (milliseconds).
+ * @param {object} optionalContext - If given, bind function to throttle to this context.
+ * @returns {function} Throttled function.
+ */
+module.exports.throttleLeadingAndTrailing = function (functionToThrottle, minimumInterval, optionalContext) {
+  var lastTime;
+  var deferTimer;
+  if (optionalContext) {
+    functionToThrottle = functionToThrottle.bind(optionalContext);
+  }
+  var args;
+  var timerExpired = function () {
+    // Reached end of interval, call function
+    lastTime = Date.now();
+    functionToThrottle.apply(this, args);
+    deferTimer = undefined;
+  };
+
+  return function () {
+    var time = Date.now();
+    var sinceLastTime = typeof lastTime === 'undefined' ? minimumInterval : time - lastTime;
+    if (sinceLastTime >= minimumInterval) {
+      // Outside of minimum interval, call throttled function.
+      // Clear any pending timer as timeout imprecisions could otherwise cause two calls
+      // for the same interval.
+      clearTimeout(deferTimer);
+      deferTimer = undefined;
+      lastTime = time;
+      functionToThrottle.apply(null, arguments);
+    } else {
+      // Inside minimum interval, create timer if needed.
+      deferTimer = deferTimer || setTimeout(timerExpired, minimumInterval - sinceLastTime);
+      // Update args for when timer expires.
+      args = arguments;
     }
   };
 };
@@ -76,7 +129,7 @@ module.exports.throttle = function (functionToThrottle, minimumInterval, optiona
 module.exports.throttleTick = function (functionToThrottle, minimumInterval, optionalContext) {
   var lastTime;
   if (optionalContext) {
-    functionToThrottle = module.exports.bind(functionToThrottle, optionalContext);
+    functionToThrottle = functionToThrottle.bind(optionalContext);
   }
   return function (time, delta) {
     var sinceLastTime = typeof lastTime === 'undefined' ? delta : time - lastTime;
@@ -117,7 +170,7 @@ module.exports.debounce = function (func, wait, immediate) {
  * @param  {object} dest - The object to which properties will be copied.
  * @param  {...object} source - The object(s) from which properties will be copied.
  */
-module.exports.extend = objectAssign;
+module.exports.extend = Object.assign;
 module.exports.extendDeep = deepAssign;
 
 module.exports.clone = function (obj) {

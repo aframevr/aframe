@@ -1,4 +1,4 @@
-/* global AFRAME */
+/* global AFRAME, INSPECTOR_VERSION */
 var AFRAME_INJECTED = require('../../constants').AFRAME_INJECTED;
 var pkg = require('../../../package');
 var registerComponent = require('../../core/component').registerComponent;
@@ -16,7 +16,7 @@ function getFuzzyPatchVersion (version) {
 
 var INSPECTOR_DEV_URL = 'https://aframe.io/aframe-inspector/dist/aframe-inspector.js';
 var INSPECTOR_RELEASE_URL = 'https://unpkg.com/aframe-inspector@' + getFuzzyPatchVersion(pkg.version) + '/dist/aframe-inspector.min.js';
-var INSPECTOR_URL = process.env.INSPECTOR_VERSION === 'dev' ? INSPECTOR_DEV_URL : INSPECTOR_RELEASE_URL;
+var INSPECTOR_URL = typeof INSPECTOR_VERSION !== 'undefined' && INSPECTOR_VERSION === 'dev' ? INSPECTOR_DEV_URL : INSPECTOR_RELEASE_URL;
 var LOADING_MESSAGE = 'Loading Inspector';
 var LOADING_ERROR_MESSAGE = 'Error loading Inspector';
 
@@ -24,6 +24,8 @@ module.exports.Component = registerComponent('inspector', {
   schema: {
     url: {default: INSPECTOR_URL}
   },
+
+  sceneOnly: true,
 
   init: function () {
     this.firstPlay = true;
@@ -59,7 +61,7 @@ module.exports.Component = registerComponent('inspector', {
    * <ctrl> + <alt> + i keyboard shortcut.
    */
   onKeydown: function (evt) {
-    var shortcutPressed = evt.keyCode === 73 && evt.ctrlKey && evt.altKey;
+    var shortcutPressed = evt.keyCode === 73 && (evt.ctrlKey && evt.altKey || evt.getModifierState('AltGraph'));
     if (!shortcutPressed) { return; }
     this.openInspector();
   },

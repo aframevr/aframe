@@ -1,12 +1,24 @@
-/* global AFRAME, assert, CustomEvent, process, sinon, setup, suite, teardown, test, THREE */
+/* global AFRAME, assert, CustomEvent, process, screen, sinon, setup, suite, teardown, test, THREE, EventTarget */
 var AScene = require('core/scene/a-scene').AScene;
+var AEntity = require('core/a-entity').AEntity;
+var ANode = require('core/a-node').ANode;
 var components = require('core/component').components;
+var registerComponent = require('core/component').registerComponent;
 var scenes = require('core/scene/scenes');
+var determineComponentBehaviorOrder = require('core/scene/a-scene').determineComponentBehaviorOrder;
 var setupCanvas = require('core/scene/a-scene').setupCanvas;
 var systems = require('core/system').systems;
 
 var helpers = require('../../helpers');
 var utils = require('index').utils;
+
+var xrSession = new EventTarget();
+xrSession.requestReferenceSpace = function () {
+  return Promise.resolve();
+};
+xrSession.end = function () {
+  return Promise.resolve();
+};
 
 /**
  * Tests in this suite should not involve WebGL contexts or renderer.
@@ -15,20 +27,34 @@ var utils = require('index').utils;
  * Add tests that involve the renderer to the suite at the bottom that is meant
  * to only be run locally since WebGL contexts break CI due to the headless
  * environment.
+ *
+ * These tests run simulating a device that supports the WebXR APIs.
+ * They are based on an original set of tests for devices that supported the WebVR API
+ * (which are retained below)
+ *
+ * The tests are broadly similar, with the exception of these tests, which
+ * do not seem to be relevant for WebXR, and have been removed:
+ *  - tells A-Frame about entering VR if now presenting
+ *  - tells A-Frame about exiting VR if no longer presenting
+ *  - requests pointerlock when restricted
+ *  - exits pointerlock when unrestricted
+ *  - does not exit pointerlock when unrestricted on different locked element
+ *  - update existing pointerlock target when restricted
+ *
+ * One test from the original WebVR suite, which actually tested WebXR has been moved to this
+ * suite:
+ *  - reset xrSession to undefined
  */
-suite('a-scene (without renderer)', function () {
+suite('a-scene (without renderer) - WebXR', function () {
+  // Some browsers (e.g. Firefox as of Feb 2023) don't support WebXR.
+  // For these browsers, skip these tests.
+  if (!navigator.xr) return;
+
   setup(function (done) {
     var el = this.el = document.createElement('a-scene');
-    el.addEventListener('nodeready', function () { done(); });
-    this.sinon.stub(utils.device, 'getVRDisplay').returns({
-      requestPresent: function () {
-        return Promise.resolve();
-      },
-      exitPresent: function () {
-        return Promise.resolve();
-      },
-      isPresenting: true
-    });
+    el.hasWebXR = true;
+    el.addEventListener('loaded', function () { done(); });
+    this.sinon.stub(navigator.xr, 'requestSession').returns(Promise.resolve(xrSession));
     document.body.appendChild(el);
   });
 
@@ -60,116 +86,37 @@ suite('a-scene (without renderer)', function () {
   });
 
   suite('attachedCallback', function () {
-    test('initializes scene', function (done) {
+    test('initializes scene', function () {
       var sceneEl = this.el;
-      sceneEl.addEventListener('loaded', function () {
-        assert.ok(Object.keys(sceneEl.systems).length);
-        assert.ok(this.behaviors.tick);
-        assert.ok(this.behaviors.tock);
-        assert.equal(sceneEl.hasLoaded, true, 'Has loaded');
-        assert.equal(sceneEl.renderTarget, null);
-        // Default components.
-        assert.ok(sceneEl.hasAttribute('inspector'));
-        assert.ok(sceneEl.hasAttribute('keyboard-shortcuts'));
-        assert.ok(sceneEl.hasAttribute('screenshot'));
-        assert.ok(sceneEl.hasAttribute('vr-mode-ui'));
-        done();
-      });
-    });
-  });
-
-  suite('vrdisplaydisconnect', function () {
-    test('tells A-Frame about entering VR when the headset is disconnected', function (done) {
-      var event;
-      var sceneEl = this.el;
-      var exitVRStub = this.sinon.stub(sceneEl, 'exitVR');
-      event = new CustomEvent('vrdisplaydisconnect');
-      sceneEl.addEventListener('loaded', () => {
-        window.dispatchEvent(event);
-        setTimeout(function () {
-          assert.ok(exitVRStub.calledWith(true));
-          done();
-        });
-      });
-    });
-  });
-
-  suite('vrdisplaypresentchange', function () {
-    test('tells A-Frame about entering VR if now presenting', function (done) {
-      var event;
-      var sceneEl = this.el;
-
-      sceneEl.addEventListener('enter-vr', function () {
-        assert.ok(sceneEl.is('vr-mode'));
-        done();
-      });
-
-      sceneEl.addEventListener('loaded', () => {
-        event = new CustomEvent('vrdisplaypresentchange');
-        event.display = {isPresenting: true};
-        window.dispatchEvent(event);
-      });
+      assert.ok(Object.keys(sceneEl.systems).length);
+      assert.ok(sceneEl.behaviors);
+      assert.equal(sceneEl.hasLoaded, true, 'Has loaded');
+      assert.equal(sceneEl.renderTarget, null);
+      // Default components.
+      assert.ok(sceneEl.hasAttribute('inspector'));
+      assert.ok(sceneEl.hasAttribute('keyboard-shortcuts'));
+      assert.ok(sceneEl.hasAttribute('screenshot'));
+      assert.ok(sceneEl.hasAttribute('xr-mode-ui'));
     });
 
-    test('tells A-Frame about exiting VR if no longer presenting', function (done) {
-      var event;
+    test('recomputes component order upon component registration', function () {
       var sceneEl = this.el;
-      sceneEl.addState('vr-mode');
+      var componentCount = sceneEl.componentOrder.length;
 
-      sceneEl.addEventListener('exit-vr', function () {
-        assert.notOk(sceneEl.is('vr-mode'));
-        done();
-      });
-
-      sceneEl.addEventListener('loaded', () => {
-        event = new CustomEvent('vrdisplaypresentchange');
-        event.display = {isPresenting: false};
-        window.dispatchEvent(event);
-      });
+      assert.ok(componentCount > 0);
+      assert.notIncludeMembers(sceneEl.componentOrder, ['test']);
+      registerComponent('test', {});
+      assert.equal(sceneEl.componentOrder.length, componentCount + 1);
+      assert.includeMembers(sceneEl.componentOrder, ['test']);
     });
   });
 
   suite('enterVR', function () {
-    setup(function () {
-      var sceneEl = this.el;
-
-      // Stub canvas.
-      sceneEl.canvas = document.createElement('canvas');
-
-      // Stub renderer.
-      sceneEl.renderer = {
-        xr: {
-          getDevice: function () {},
-          setDevice: function () {},
-          setPoseTarget: function () {}
-        },
-        getContext: function () { return undefined; },
-        setAnimationLoop: function () {},
-        setPixelRatio: function () {},
-        setSize: function () {},
-        render: function () {}
-      };
-
-      // mock camera
-      sceneEl.camera = {
-        el: {object3D: {}},
-        updateProjectionMatrix: function () {}
-      };
-
-      // mock canvas
-      sceneEl.canvas = {
-        addEventListener: function () {},
-        removeEventListener: function () {},
-        requestFullscreen: function () {}
-      };
-    });
-
     test('does not try to enter VR if already in VR', function (done) {
       var sceneEl = this.el;
       sceneEl.addState('vr-mode');
       sceneEl.enterVR().then(function (val) {
         assert.equal(val, 'Already in VR.');
-        assert.notOk(sceneEl.renderer.xr.enabled);
         done();
       });
     });
@@ -177,6 +124,7 @@ suite('a-scene (without renderer)', function () {
     test('calls requestPresent if headset connected', function (done) {
       var sceneEl = this.el;
       this.sinon.stub(sceneEl, 'checkHeadsetConnected').returns(true);
+      window.hasNativeWebVRImplementation = false;
       sceneEl.enterVR().then(function () {
         assert.ok(sceneEl.renderer.xr.enabled);
         done();
@@ -195,6 +143,8 @@ suite('a-scene (without renderer)', function () {
     test('does not call requestPresent if flat desktop', function (done) {
       var sceneEl = this.el;
       this.sinon.stub(sceneEl, 'checkHeadsetConnected').returns(false);
+      this.sinon.stub(sceneEl.canvas, 'requestFullscreen');
+      sceneEl.xrSession = {addEventListener: function () {}};
       sceneEl.enterVR().then(function () {
         assert.notOk(sceneEl.renderer.xr.enabled);
         done();
@@ -203,6 +153,7 @@ suite('a-scene (without renderer)', function () {
 
     test('adds VR mode state', function (done) {
       var sceneEl = this.el;
+      sceneEl.xrSession = {removeEventListener: function () {}};
       sceneEl.enterVR().then(function () {
         assert.ok(sceneEl.is('vr-mode'));
         done();
@@ -211,6 +162,9 @@ suite('a-scene (without renderer)', function () {
 
     helpers.getSkipCITest()('adds AR mode state', function (done) {
       var sceneEl = this.el;
+      if (!sceneEl.hasWebXR) { done(); }
+      sceneEl.removeState('vr-mode');
+      sceneEl.xrSession = {removeEventListener: function () {}};
       sceneEl.enterVR(true).then(function () {
         assert.notOk(sceneEl.is('vr-mode'));
         assert.ok(sceneEl.is('ar-mode'));
@@ -220,6 +174,7 @@ suite('a-scene (without renderer)', function () {
 
     test('adds fullscreen styles', function (done) {
       var sceneEl = this.el;
+      sceneEl.xrSession = {removeEventListener: function () {}};
       sceneEl.enterVR().then(function () {
         assert.ok(document.documentElement.classList.contains('a-fullscreen'));
         done();
@@ -228,17 +183,10 @@ suite('a-scene (without renderer)', function () {
 
     test('requests fullscreen on flat desktop', function (done) {
       var sceneEl = this.el;
-      var fullscreenSpy;
-
-      if (sceneEl.canvas.requestFullscreen) {
-        fullscreenSpy = this.sinon.spy(sceneEl.canvas, 'requestFullscreen');
-      } else if (sceneEl.canvas.mozRequestFullScreen) {
-        fullscreenSpy = this.sinon.spy(sceneEl.canvas, 'mozRequestFullScreen');
-      } else if (sceneEl.canvas.webkitRequestFullScreen) {
-        fullscreenSpy = this.sinon.spy(sceneEl.canvas, 'webkitRequestFullscreen');
-      }
+      var fullscreenSpy = this.sinon.stub(sceneEl.canvas, 'requestFullscreen');
 
       this.sinon.stub(sceneEl, 'checkHeadsetConnected').returns(false);
+      sceneEl.xrSession = {addEventListener: function () {}};
       sceneEl.enterVR().then(function () {
         assert.ok(fullscreenSpy.called);
         done();
@@ -248,6 +196,7 @@ suite('a-scene (without renderer)', function () {
     test('emits enter-vr', function (done) {
       var sceneEl = this.el;
       sceneEl.addEventListener('enter-vr', function () { done(); });
+      sceneEl.xrSession = {removeEventListener: function () {}};
       sceneEl.enterVR();
     });
   });
@@ -264,8 +213,16 @@ suite('a-scene (without renderer)', function () {
         xr: {
           getDevice: function () {},
           setDevice: function () {},
-          setPoseTarget: function () {}
+          setPoseTarget: function () {},
+          dispose: function () {},
+          setReferenceSpaceType: function () {},
+          setSession: function () {
+            return Promise.resolve();
+          },
+          setFoveation: function () {}
         },
+        dispose: function () {},
+        getContext: function () { return undefined; },
         setAnimationLoop: function () {},
         setPixelRatio: function () {},
         setSize: function () {},
@@ -273,6 +230,7 @@ suite('a-scene (without renderer)', function () {
       };
 
       sceneEl.addState('vr-mode');
+      sceneEl.xrSession = xrSession;
     });
 
     test('does not try to exit VR if not in VR', function (done) {
@@ -287,6 +245,10 @@ suite('a-scene (without renderer)', function () {
     test('calls exitPresent if headset connected', function (done) {
       var sceneEl = this.el;
       this.sinon.stub(sceneEl, 'checkHeadsetConnected').returns(true);
+      sceneEl.xrSession = {
+        removeEventListener: function () {},
+        end: function () { return Promise.resolve(); }
+      };
       sceneEl.exitVR().then(function () {
         assert.notOk(sceneEl.renderer.xr.enabled);
         done();
@@ -294,8 +256,13 @@ suite('a-scene (without renderer)', function () {
     });
 
     test('calls exitPresent on mobile', function (done) {
+      this.sinon.stub(screen.orientation, 'lock');
       var sceneEl = this.el;
       sceneEl.isMobile = true;
+      sceneEl.xrSession = {
+        removeEventListener: function () {},
+        end: function () { return Promise.resolve(); }
+      };
       sceneEl.exitVR().then(function () {
         assert.notOk(sceneEl.renderer.xr.enabled);
         done();
@@ -307,6 +274,8 @@ suite('a-scene (without renderer)', function () {
       sceneEl.renderer.xr.enabled = true;
       sceneEl.isMobile = false;
       this.sinon.stub(sceneEl, 'checkHeadsetConnected').returns(false);
+      this.sinon.stub(sceneEl.canvas, 'requestFullscreen');
+      sceneEl.xrSession = {removeEventListener: function () {}};
       sceneEl.exitVR().then(function () {
         assert.ok(sceneEl.renderer.xr.enabled);
         done();
@@ -315,6 +284,10 @@ suite('a-scene (without renderer)', function () {
 
     test('removes VR mode state', function (done) {
       var sceneEl = this.el;
+      sceneEl.xrSession = {
+        removeEventListener: function () {},
+        end: function () { return Promise.resolve(); }
+      };
       sceneEl.exitVR().then(function () {
         assert.notOk(sceneEl.is('vr-mode'));
         done();
@@ -343,6 +316,10 @@ suite('a-scene (without renderer)', function () {
     test('emits exit-vr', function (done) {
       var sceneEl = this.el;
       sceneEl.addEventListener('exit-vr', function () { done(); });
+      sceneEl.xrSession = {
+        removeEventListener: function () {},
+        end: function () { return Promise.resolve(); }
+      };
       sceneEl.exitVR();
     });
 
@@ -352,7 +329,10 @@ suite('a-scene (without renderer)', function () {
         removeEventListener: function () {},
         end: function () { return Promise.resolve(); }
       };
-      sceneEl.renderer.xr = {setSession: function () {}};
+      sceneEl.renderer.xr = {
+        setSession: function () {},
+        dispose: function () {}
+      };
       sceneEl.hasWebXR = true;
       sceneEl.checkHeadsetConnected = function () { return true; };
       assert.ok(sceneEl.xrSession);
@@ -369,6 +349,8 @@ suite('a-scene (without renderer)', function () {
       AFRAME.registerComponent('test', {
         tick: function () { spy(); }
       });
+      el.sceneEl = sceneEl;
+      el.hasLoaded = true;
       el.isPlaying = true;
       sceneEl.addBehavior(new AFRAME.components.test.Component(el));
       sceneEl.addBehavior(new AFRAME.components.test.Component(el));
@@ -398,6 +380,8 @@ suite('a-scene (without renderer)', function () {
       AFRAME.registerComponent('test', {
         tock: function () { spy(); }
       });
+      el.sceneEl = sceneEl;
+      el.hasLoaded = true;
       el.isPlaying = true;
       sceneEl.addBehavior(new AFRAME.components.test.Component(el));
       sceneEl.addBehavior(new AFRAME.components.test.Component(el));
@@ -419,6 +403,88 @@ suite('a-scene (without renderer)', function () {
     });
   });
 
+  suite('removeBehavior', function () {
+    var sceneEl;
+    var behaviorOne, behaviorTwo, behaviorThree;
+    var spy;
+
+    setup(function () {
+      sceneEl = this.el;
+      AFRAME.registerComponent('test', {});
+      spy = this.sinon.spy();
+
+      behaviorOne = { name: 'test', isPlaying: true, tick: () => spy(1), tock: () => spy(1) };
+      behaviorTwo = { name: 'test', isPlaying: true, tick: () => spy(2), tock: () => spy(2) };
+      behaviorThree = { name: 'test', isPlaying: true, tick: () => spy(3), tock: () => spy(3) };
+      sceneEl.addBehavior(behaviorOne);
+      sceneEl.addBehavior(behaviorTwo);
+      sceneEl.addBehavior(behaviorThree);
+    });
+
+    ['tick', 'tock'].forEach(behaviorType => {
+      test('handle deletion outside ' + behaviorType, function () {
+        sceneEl.removeBehavior(behaviorTwo);
+
+        sceneEl[behaviorType]();
+
+        assert.deepEqual(spy.args, [[1], [3]]);
+      });
+
+      test('handle deletion during ' + behaviorType, function () {
+        behaviorTwo[behaviorType] = function () {
+          spy(2);
+          sceneEl.removeBehavior(behaviorTwo);
+        };
+
+        sceneEl[behaviorType]();
+
+        assert.deepEqual(spy.args, [[1], [2], [3]]);
+      });
+
+      test('handle deletion of upcoming behavior during ' + behaviorType, function () {
+        behaviorTwo[behaviorType] = function () {
+          spy(2);
+          sceneEl.removeBehavior(behaviorThree);
+        };
+
+        sceneEl[behaviorType]();
+
+        // Note: removal of upcoming behaviors take effect after
+        assert.deepEqual(spy.args, [[1], [2], [3]]);
+        assert.equal(sceneEl.behaviors.test[behaviorType].array.length, 2);
+        assert.equal(sceneEl.behaviors.test[behaviorType].array[0], behaviorOne);
+        assert.equal(sceneEl.behaviors.test[behaviorType].array[1], behaviorTwo);
+        assert.isEmpty(sceneEl.behaviors.test[behaviorType].markedForRemoval);
+      });
+
+      test('handle deletion and subsequent adding of upcoming behavior during ' + behaviorType, function () {
+        behaviorTwo[behaviorType] = function () {
+          spy(2);
+          sceneEl.removeBehavior(behaviorThree);
+          sceneEl.addBehavior(behaviorThree);
+        };
+
+        sceneEl[behaviorType]();
+
+        // Note: removal of upcoming behaviors take effect after
+        assert.deepEqual(spy.args, [[1], [2], [3]]);
+        assert.equal(sceneEl.behaviors.test[behaviorType].array.length, 3);
+        assert.isEmpty(sceneEl.behaviors.test[behaviorType].markedForRemoval);
+      });
+
+      test('handle deletion of previous behavior during ' + behaviorType, function () {
+        behaviorTwo[behaviorType] = function () {
+          spy(2);
+          sceneEl.removeBehavior(behaviorOne);
+        };
+
+        sceneEl[behaviorType]();
+
+        assert.deepEqual(spy.args, [[1], [2], [3]]);
+      });
+    });
+  });
+
   suite('resize', function () {
     var sceneEl;
     var setSizeSpy;
@@ -434,8 +500,10 @@ suite('a-scene (without renderer)', function () {
         xr: {
           isPresenting: function () { return true; },
           getDevice: function () { return {isPresenting: false}; },
-          setDevice: function () {}
+          setDevice: function () {},
+          dispose: function () {}
         },
+        dispose: function () {},
         setAnimationLoop: function () {},
         setSize: setSizeSpy,
         render: function () {}
@@ -473,160 +541,78 @@ suite('a-scene (without renderer)', function () {
     });
   });
 
-  suite('pointerRestricted', function () {
+  suite('setAttribute', function () {
+    var sceneEl;
     setup(function () {
-      var sceneEl = this.el;
-
-      // Stub canvas.
-      sceneEl.canvas = document.createElement('canvas');
+      sceneEl = this.el;
     });
 
-    test('requests pointerlock when restricted', function (done) {
-      var sceneEl = this.el;
-      var event;
-      var requestPointerLockSpy;
-
-      requestPointerLockSpy = this.sinon.spy(sceneEl.canvas, 'requestPointerLock');
-      event = new CustomEvent('vrdisplaypointerrestricted');
-
-      sceneEl.addEventListener('loaded', () => {
-        window.dispatchEvent(event);
-        process.nextTick(function () {
-          assert.ok(requestPointerLockSpy.called);
-          done();
-        });
-      });
+    test('can set a component with a string', function () {
+      sceneEl.setAttribute('fog', 'type: exponential; density: 0.75');
+      var fog = sceneEl.getAttribute('fog');
+      assert.equal(fog.type, 'exponential');
+      assert.equal(fog.density, 0.75);
     });
 
-    test('exits pointerlock when unrestricted', function (done) {
-      var sceneEl = this.el;
-      var event;
-      var exitPointerLockSpy;
-
-      exitPointerLockSpy = this.sinon.spy(document, 'exitPointerLock');
-
-      event = new CustomEvent('vrdisplaypointerunrestricted');
-
-      this.sinon.stub(sceneEl, 'getPointerLockElement', function () {
-        return sceneEl.canvas;
-      });
-
-      sceneEl.addEventListener('loaded', () => {
-        window.dispatchEvent(event);
-        process.nextTick(function () {
-          assert.ok(exitPointerLockSpy.called);
-          done();
-        });
-      });
+    test('can set a component with an object', function () {
+      var value = {type: 'exponential', density: 0.75};
+      sceneEl.setAttribute('fog', value);
+      var fog = sceneEl.getAttribute('fog');
+      assert.equal(fog.type, 'exponential');
+      assert.equal(fog.density, 0.75);
     });
 
-    test('does not exit pointerlock when unrestricted on different locked element', function (done) {
-      var sceneEl = this.el;
-      var event;
-      var exitPointerLockSpy;
-
-      exitPointerLockSpy = this.sinon.spy(document, 'exitPointerLock');
-
-      event = new CustomEvent('vrdisplaypointerunrestricted');
-
-      this.sinon.stub(sceneEl, 'getPointerLockElement', function () {
-        // Mock that pointerlock is taken by the page itself,
-        // independently of the a-scene handler for vrdisplaypointerrestricted event
-        return document.createElement('canvas');
-      });
-      sceneEl.addEventListener('loaded', () => {
-        window.dispatchEvent(event);
-        process.nextTick(function () {
-          assert.notOk(exitPointerLockSpy.called);
-          done();
-        });
-      });
+    test('can clobber component attributes with an object and flag', function () {
+      sceneEl.setAttribute('fog', 'type: exponential; density: 0.75');
+      sceneEl.setAttribute('fog', {type: 'exponential'}, true);
+      var fog = sceneEl.getAttribute('fog');
+      assert.equal(fog.type, 'exponential');
+      assert.equal(fog.density, 0.00025);
+      assert.equal(sceneEl.getDOMAttribute('fog').density, undefined);
     });
 
-    test('update existing pointerlock target when restricted', function (done) {
-      var sceneEl = this.el;
-      var event;
-      var exitPointerLockSpy;
-      var requestPointerLockSpy;
-
-      exitPointerLockSpy = this.sinon.spy(document, 'exitPointerLock');
-      requestPointerLockSpy = this.sinon.spy(sceneEl.canvas, 'requestPointerLock');
-      event = new CustomEvent('vrdisplaypointerrestricted');
-
-      this.sinon.stub(sceneEl, 'getPointerLockElement', function () {
-        // Mock that pointerlock is taken by the page itself,
-        // independently of the a-scene handler for vrdisplaypointerrestricted event
-        return document.createElement('canvas');
-      });
-
-      sceneEl.addEventListener('loaded', () => {
-        window.dispatchEvent(event);
-        process.nextTick(function () {
-          assert.ok(exitPointerLockSpy.called);
-          assert.ok(requestPointerLockSpy.called);
-          done();
-        });
-      });
-    });
-  });
-
-  suite('system', function () {
-    teardown(function () {
-      delete components.test;
-      delete systems.test;
+    test('can set a single component via a single attribute', function () {
+      sceneEl.setAttribute('fog', 'type', 'exponential');
+      assert.equal(sceneEl.getAttribute('fog').type, 'exponential');
     });
 
-    test('can getAttribute', function () {
-      var sceneEl = document.createElement('a-scene');
-
-      AFRAME.registerComponent('test', {schema: {default: 'component'}});
-      AFRAME.registerSystem('test', {schema: {default: 'system'}});
-
-      sceneEl.initSystem('test');
-      assert.equal(sceneEl.getAttribute('test'), 'system');
-      assert.equal(sceneEl.getAttribute('test'), 'system');
+    test('can set system attribute with a string', function () {
+      sceneEl.setAttribute('renderer', 'anisotropy: 4; toneMapping: ACESFilmic');
+      assert.equal(sceneEl.getAttribute('renderer').anisotropy, 4);
+      assert.equal(sceneEl.getAttribute('renderer').toneMapping, 'ACESFilmic');
     });
 
-    test('does not initialize component on setAttribute', function (done) {
-      var sceneEl = document.createElement('a-scene');
-      var stub = sinon.stub();
-
-      AFRAME.registerComponent('test', {init: stub});
-      AFRAME.registerSystem('test', {});
-
-      sceneEl.setAttribute('test', '');
-
-      sceneEl.addEventListener('loaded', () => {
-        assert.notOk(stub.called);
-        done();
-      });
-      document.body.appendChild(sceneEl);
+    test('can set system attribute with an object', function () {
+      sceneEl.setAttribute('renderer', {anisotropy: 4, toneMapping: 'ACESFilmic'});
+      assert.equal(sceneEl.getAttribute('renderer').anisotropy, 4);
+      assert.equal(sceneEl.getAttribute('renderer').toneMapping, 'ACESFilmic');
     });
 
-    test('does not update component', function (done) {
-      var childEl;
-      var componentUpdateStub = sinon.stub();
-      var sceneEl;
-      AFRAME.registerComponent('test', {
-        schema: {componentProp: {default: 'foo'}},
-        update: componentUpdateStub
-      });
-      AFRAME.registerSystem('test', {
-        schema: {systemProp: {default: 'foo'}}
-      });
+    test('can set system attribute value before system initializes', function () {
+      delete sceneEl.systems['renderer'];
+      sceneEl.setAttribute('renderer', 'anisotropy: 4');
+      assert.equal(sceneEl.getAttribute('renderer'), 'anisotropy: 4');
+      sceneEl.initSystem('renderer');
+      assert.equal(sceneEl.getAttribute('renderer').anisotropy, 4);
+    });
 
-      childEl = document.createElement('a-entity');
-      sceneEl = document.createElement('a-scene');
-      childEl.setAttribute('test', '');
-      sceneEl.setAttribute('test', '');
-      sceneEl.appendChild(childEl);
+    test('calls a-entity setAttribute for non-systems (component)', function () {
+      var spy = this.sinon.spy(AEntity.prototype, 'setAttribute');
+      sceneEl.setAttribute('fog', 'type', 'exponential');
+      assert.ok(spy.calledOnce);
+    });
 
-      sceneEl.addEventListener('loaded', () => {
-        assert.notOk('systemProp' in childEl.components.test.data);
-        assert.equal(componentUpdateStub.callCount, 1);
-        done();
-      });
-      document.body.appendChild(sceneEl);
+    test('calls a-entity setAttribute for non-systems (HTML attribute)', function () {
+      var spy = this.sinon.spy(AEntity.prototype, 'setAttribute');
+      sceneEl.setAttribute('data-custom-attr', 'value');
+      assert.ok(spy.calledOnce);
+    });
+
+    test('calls a-node setAttribute for systems', function () {
+      var spy = this.sinon.spy(ANode.prototype, 'setAttribute');
+      sceneEl.setAttribute('renderer', 'anisotropy: 4');
+      assert.ok(spy.calledOnce);
+      assert.equal(sceneEl.getAttribute('renderer').anisotropy, 4);
     });
   });
 });
@@ -709,10 +695,11 @@ helpers.getSkipCISuite()('a-scene (with renderer)', function () {
 
   test('calls tick behaviors', function () {
     var scene = this.el;
-    var Component = {el: {isPlaying: true}, tick: function () {}};
+    registerComponent('test', {});
+    var Component = {name: 'test', isPlaying: true, tick: function () {}};
     this.sinon.spy(Component, 'tick');
     scene.addBehavior(Component);
-    scene.addBehavior({el: {isPlaying: true}});
+    scene.addBehavior({name: 'dummy', isPlaying: true});
     scene.render();
     sinon.assert.called(Component.tick);
     sinon.assert.calledWith(Component.tick, scene.time);
@@ -720,14 +707,15 @@ helpers.getSkipCISuite()('a-scene (with renderer)', function () {
 
   test('calls tock behaviors', function () {
     var scene = this.el;
-    var Component = {el: {isPlaying: true}, tock: function () {}};
+    registerComponent('test', {});
+    var Component = {name: 'test', isPlaying: true, tock: function () {}};
     this.sinon.spy(Component, 'tock');
     scene.render = function () {
       scene.time = 1;
       if (scene.isPlaying) { scene.tock(1); }
     };
     scene.addBehavior(Component);
-    scene.addBehavior({el: {isPlaying: true}});
+    scene.addBehavior({isPlaying: true});
     scene.render();
     sinon.assert.called(Component.tock);
     sinon.assert.calledWith(Component.tock, scene.time);
@@ -785,5 +773,121 @@ suite('setupCanvas', function () {
     assert.notOk(el.canvas);
     setupCanvas(el);
     assert.ok(el.canvas);
+  });
+});
+
+suite('determineComponentBehaviorOrder', function () {
+  test('empty order when ordering 0 nodes', function () {
+    var actual = determineComponentBehaviorOrder({});
+    assert.deepEqual(actual, []);
+  });
+
+  test('retains order when no constraints are given', function () {
+    var actual = determineComponentBehaviorOrder({a: {}, b: {}, c: {}});
+    assert.deepEqual(actual, ['a', 'b', 'c']);
+  });
+
+  test('honors before constraint', function () {
+    var actual = determineComponentBehaviorOrder({a: {}, b: {}, c: { before: ['a'] }});
+    assert.sameMembers(actual, ['a', 'b', 'c']);
+    assert.ok(actual.indexOf('c') < actual.indexOf('a'));
+  });
+
+  test('honors after constraint', function () {
+    var actual = determineComponentBehaviorOrder({a: { after: ['c'] }, b: {}, c: {}});
+    assert.sameMembers(actual, ['a', 'b', 'c']);
+    assert.ok(actual.indexOf('a') > actual.indexOf('c'));
+  });
+
+  test('breaks cycles, while retaining all elements', function () {
+    var actual = determineComponentBehaviorOrder({a: { after: ['c'] }, b: {}, c: { after: ['a'] }});
+    assert.sameMembers(actual, ['a', 'b', 'c']);
+  });
+
+  test('handles chain of before constraints', function () {
+    var actual = determineComponentBehaviorOrder({
+      d: { },
+      c: { before: ['d'] },
+      b: { before: ['c'] },
+      a: { before: ['b'] }
+    });
+    assert.deepEqual(actual, ['a', 'b', 'c', 'd']);
+  });
+
+  test('handles chain of after constraints', function () {
+    var actual = determineComponentBehaviorOrder({
+      a: { after: ['b'] },
+      b: { after: ['c'] },
+      c: { after: ['d'] },
+      d: { }
+    });
+    assert.deepEqual(actual, ['d', 'c', 'b', 'a']);
+  });
+
+  test('handles multiple after constraints', function () {
+    var actual = determineComponentBehaviorOrder({
+      a: { after: ['b', 'c', 'd'] },
+      b: { },
+      c: { after: ['d', 'b'] },
+      d: { }
+    });
+    assert.sameMembers(actual, ['a', 'b', 'c', 'd']);
+    assert.equal(actual.indexOf('a'), 3);
+    assert.equal(actual.indexOf('c'), 2);
+  });
+
+  test('handles multiple before constraints', function () {
+    var actual = determineComponentBehaviorOrder({
+      a: { },
+      b: { before: ['a', 'c'] },
+      c: { },
+      d: { before: ['a', 'b', 'c']}
+    });
+    assert.sameMembers(actual, ['a', 'b', 'c', 'd']);
+    assert.equal(actual.indexOf('b'), 1);
+    assert.equal(actual.indexOf('d'), 0);
+  });
+
+  test('handles graph of before/after constraints', function () {
+    // The following graph is modelled in constraints.
+    // Arrows indicate a before relationship. Some constraints
+    // are modelled as before, others as after and a few as both.
+    //
+    // a -> b -> c -> d
+    //   \      /
+    //    e -> f -> g
+    //    v         ^
+    //    h -> i -> j -> k
+    // l
+    var actual = determineComponentBehaviorOrder({
+      a: { before: ['e', 'b'], after: [] },
+      b: { before: [], after: [] },
+      c: { before: ['d'], after: ['b', 'f'] },
+      d: { before: [], after: [] },
+      e: { before: [], after: [] },
+      f: { before: ['g'], after: ['e'] },
+      g: { before: [], after: ['f'] },
+      h: { before: ['i'], after: ['e'] },
+      i: { before: ['j'], after: [] },
+      j: { before: ['g'], after: ['i'] },
+      k: { before: [], after: ['j'] },
+      l: { before: [], after: [] }
+    });
+    assert.sameMembers(actual, ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l']);
+    // Verify all provided constraints.
+    assert.ok(actual.indexOf('a') < actual.indexOf('e'));
+    assert.ok(actual.indexOf('a') < actual.indexOf('b'));
+    assert.ok(actual.indexOf('c') < actual.indexOf('d'));
+    assert.ok(actual.indexOf('c') > actual.indexOf('b'));
+    assert.ok(actual.indexOf('c') > actual.indexOf('f'));
+    assert.ok(actual.indexOf('f') < actual.indexOf('g'));
+    assert.ok(actual.indexOf('f') > actual.indexOf('e'));
+    assert.ok(actual.indexOf('g') > actual.indexOf('f'));
+    assert.ok(actual.indexOf('h') < actual.indexOf('i'));
+    assert.ok(actual.indexOf('h') > actual.indexOf('e'));
+    assert.ok(actual.indexOf('i') < actual.indexOf('j'));
+    assert.ok(actual.indexOf('j') < actual.indexOf('g'));
+    assert.ok(actual.indexOf('j') > actual.indexOf('i'));
+    assert.ok(actual.indexOf('k') > actual.indexOf('j'));
   });
 });

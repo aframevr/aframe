@@ -99,6 +99,48 @@ suite('pool', function () {
     });
   });
 
+  suite('attachmentToThreeScene', function () {
+    test('Pool entity is not initially attached to scene', function () {
+      var sceneEl = this.sceneEl;
+      var poolComponent = sceneEl.components.pool;
+      assert.equal(poolComponent.availableEls[0].object3D.parent, null);
+    });
+
+    test('Pool entity is attached to scene when requested, and detached when released', function () {
+      var sceneEl = this.sceneEl;
+      var poolComponent = sceneEl.components.pool;
+      var el = poolComponent.requestEntity();
+      assert.equal(el.object3D.parent, sceneEl.object3D);
+      poolComponent.returnEntity(el);
+      assert.equal(el.object3D.parent, null);
+    });
+
+    test('Raycaster is updated when entities are attached to / detached from scene', function (done) {
+      var sceneEl = this.sceneEl;
+      var rayEl = document.createElement('a-entity');
+      rayEl.setAttribute('raycaster', '');
+      rayEl.addEventListener('loaded', function () {
+        var rayComponent = rayEl.components.raycaster;
+        assert.equal(rayComponent.dirty, true);
+        rayComponent.tock();
+        assert.equal(rayComponent.dirty, false);
+        var poolComponent = sceneEl.components.pool;
+        var el = poolComponent.requestEntity();
+        assert.equal(el.object3D.parent, sceneEl.object3D);
+        assert.equal(rayComponent.dirty, true);
+        rayComponent.tock();
+        assert.equal(rayComponent.dirty, false);
+        poolComponent.returnEntity(el);
+        assert.equal(el.object3D.parent, null);
+        assert.equal(rayComponent.dirty, true);
+        rayComponent.tock();
+        assert.equal(rayComponent.dirty, false);
+        done();
+      });
+      sceneEl.appendChild(rayEl);
+    });
+  });
+
   suite('wrapPlay', function () {
     test('cannot play an entity that is not in use', function () {
       var sceneEl = this.sceneEl;

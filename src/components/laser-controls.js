@@ -16,16 +16,16 @@ registerComponent('laser-controls', {
     var controlsConfiguration = {hand: data.hand, model: data.model};
 
     // Set all controller models.
-    el.setAttribute('daydream-controls', controlsConfiguration);
-    el.setAttribute('gearvr-controls', controlsConfiguration);
+    el.setAttribute('hp-mixed-reality-controls', controlsConfiguration);
     el.setAttribute('magicleap-controls', controlsConfiguration);
     el.setAttribute('oculus-go-controls', controlsConfiguration);
-    el.setAttribute('oculus-touch-controls', controlsConfiguration);
+    el.setAttribute('meta-touch-controls', controlsConfiguration);
+    el.setAttribute('pico-controls', controlsConfiguration);
     el.setAttribute('valve-index-controls', controlsConfiguration);
     el.setAttribute('vive-controls', controlsConfiguration);
     el.setAttribute('vive-focus-controls', controlsConfiguration);
     el.setAttribute('windows-motion-controls', controlsConfiguration);
-    el.setAttribute('generic-tracked-controller-controls', controlsConfiguration);
+    el.setAttribute('generic-tracked-controller-controls', {hand: controlsConfiguration.hand});
 
     // Wait for controller to connect, or have a valid pointing pose, before creating ray
     el.addEventListener('controllerconnected', createRay);
@@ -67,23 +67,21 @@ registerComponent('laser-controls', {
       }, controllerConfig.cursor));
     }
 
-    function hideRay () {
+    function hideRay (evt) {
+      var controllerConfig = config[evt.detail.name];
+      if (!controllerConfig) { return; }
       el.setAttribute('raycaster', 'showLine', false);
     }
   },
 
   config: {
-    'daydream-controls': {
-      cursor: {downEvents: ['trackpaddown', 'triggerdown'], upEvents: ['trackpadup', 'triggerup']}
-    },
-
-    'gearvr-controls': {
-      cursor: {downEvents: ['triggerdown'], upEvents: ['triggerup']},
-      raycaster: {origin: {x: 0, y: 0.0010, z: 0}}
-    },
-
     'generic-tracked-controller-controls': {
       cursor: {downEvents: ['triggerdown'], upEvents: ['triggerup']}
+    },
+
+    'hp-mixed-reality-controls': {
+      cursor: {downEvents: ['triggerdown'], upEvents: ['triggerup']},
+      raycaster: {origin: {x: 0, y: 0, z: 0}}
     },
 
     'magicleap-controls': {
@@ -95,9 +93,13 @@ registerComponent('laser-controls', {
       raycaster: {origin: {x: 0, y: 0.0005, z: 0}}
     },
 
-    'oculus-touch-controls': {
+    'meta-touch-controls': {
       cursor: {downEvents: ['triggerdown'], upEvents: ['triggerup']},
       raycaster: {origin: {x: 0, y: 0, z: 0}}
+    },
+
+    'pico-controls': {
+      cursor: {downEvents: ['triggerdown'], upEvents: ['triggerup']}
     },
 
     'valve-index-controls': {

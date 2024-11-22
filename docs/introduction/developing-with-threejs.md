@@ -162,12 +162,6 @@ reference to the A-Frame entity from the three.js object via `.el`:
 entityEl.getObject3D('light').el;  // entityEl
 ```
 
-There's also a `.getOrCreateObject3D(name, constructor)` method for creating
-and setting an `Object3D` if one has not been set with the name. This is
-commonly used in the case of `THREE.Mesh` when both the geometry and material
-components need to get or create a mesh. Whichever component gets initialized
-first creates the mesh, then the other component gets the mesh.
-
 ### Removing an `Object3D` From an Entity
 
 To remove an `Object3D` from an entity, and consequently the three.js scene, we

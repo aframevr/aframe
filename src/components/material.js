@@ -29,10 +29,11 @@ module.exports.Component = registerComponent('material', {
     shader: {default: 'standard', oneOf: shaderNames, schemaChange: true},
     side: {default: 'front', oneOf: ['front', 'back', 'double']},
     transparent: {default: false},
-    vertexColors: {type: 'string', default: 'none', oneOf: ['face', 'vertex']},
+    vertexColorsEnabled: {default: false},
     visible: {default: true},
     blending: {default: 'normal', oneOf: ['none', 'normal', 'additive', 'subtractive', 'multiply']},
-    dithering: {default: true}
+    dithering: {default: true},
+    anisotropy: {default: 0, min: 0}
   },
 
   init: function () {
@@ -135,7 +136,7 @@ module.exports.Component = registerComponent('material', {
     material.flatShading = data.flatShading;
     material.side = parseSide(data.side);
     material.transparent = data.transparent !== false || data.opacity < 1.0;
-    material.vertexColors = parseVertexColors(data.vertexColors);
+    material.vertexColors = data.vertexColorsEnabled;
     material.visible = data.visible;
     material.blending = parseBlending(data.blending);
     material.dithering = data.dithering;
@@ -145,7 +146,7 @@ module.exports.Component = registerComponent('material', {
     if (oldDataHasKeys &&
         (oldData.alphaTest !== data.alphaTest ||
          oldData.side !== data.side ||
-         oldData.vertexColors !== data.vertexColors)) {
+         oldData.vertexColorsEnabled !== data.vertexColorsEnabled)) {
       material.needsUpdate = true;
     }
   },
@@ -217,23 +218,6 @@ function parseSide (side) {
 }
 
 /**
- * Return a three.js constant determining vertex coloring.
- */
-function parseVertexColors (coloring) {
-  switch (coloring) {
-    case 'face': {
-      return THREE.FaceColors;
-    }
-    case 'vertex': {
-      return THREE.VertexColors;
-    }
-    default: {
-      return THREE.NoColors;
-    }
-  }
-}
-
-/**
  * Return a three.js constant determining blending
  *
  * @param {string} [blending=normal]
@@ -266,4 +250,13 @@ function parseBlending (blending) {
 function disposeMaterial (material, system) {
   material.dispose();
   system.unregisterMaterial(material);
+
+  // Dispose textures on this material
+  Object.keys(material)
+    .filter(function (propName) {
+      return material[propName] && material[propName].isTexture;
+    })
+    .forEach(function (mapName) {
+      material[mapName].dispose();
+    });
 }

@@ -48,13 +48,13 @@ configuration.
 See more examples to see configuration of alignments, anchors, baselines,
 scaling, and auto-sizing.
 
-[exampletext]: https://a-frobot.github.io/aframe/examples/test/text/index.html
+[exampletext]: https://aframe.io/aframe/examples/test/text/index.html
 [codetext]: https://github.com/aframevr/aframe/blob/master/examples/test/text/index.html
-[exampleanchors]: https://a-frobot.github.io/aframe/examples/test/text/anchors.html
+[exampleanchors]: https://aframe.io/aframe/examples/test/text/anchors.html
 [codeanchors]: https://github.com/aframevr/aframe/blob/master/examples/test/text/anchors.html
-[examplescenarios]: https://a-frobot.github.io/aframe/examples/test/text/scenarios.html
+[examplescenarios]: https://aframe.io/aframe/examples/test/text/scenarios.html
 [codescenarios]: https://github.com/aframevr/aframe/blob/master/examples/test/text/scenarios.html
-[examplesizes]: https://a-frobot.github.io/aframe/examples/test/text/sizes.html
+[examplesizes]: https://aframe.io/aframe/examples/test/text/sizes.html
 [codesizes]: https://github.com/aframevr/aframe/blob/master/examples/test/text/sizes.html
 
 - [Text Example][exampletext] ([code][codetext])
@@ -186,7 +186,7 @@ Lastly, you should specify the character set used in your HTML by using `<meta>`
 <html>
   <head>
     <meta charset="UTF-8">
-    <script src="https://aframe.io/releases/1.1.0/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
   </head>
   <body>
     <a-scene>
@@ -241,7 +241,7 @@ geometry component's `width`, do not specify a `width` for the text component:
 
 ```html
 <a-entity
-  geometry="primitive: plane; width: 4; height: auto"
+  geometry="primitive: plane; width: 4; height: 0"
   material="color: blue"
   text="value: This text will be 4 units wide."></a-entity>
 ```
@@ -249,14 +249,14 @@ geometry component's `width`, do not specify a `width` for the text component:
 #### Scaling Geometry to Fit Text
 
 To have the geometry automatically scale with the text, set the geometry
-component's `width` and `height` properties to `auto`, and set the text
+component's `width` and `height` properties to `0`, and set the text
 component's `width` as desired. In this example, the plane's `width` will be
 set to 4 units, and its `height` will be set to match the actual height of the
 text:
 
 ```html
 <a-entity
-  geometry="primitive: plane; height: auto; width: auto"
+  geometry="primitive: plane; height: 0; width: 0"
   material="color: blue"
   text="width: 4; value: This text will be 4 units wide."></a-entity>
 ```
@@ -292,7 +292,7 @@ A-Frame, below are links to some background reading:
 
 [mattdesl]: http://slides.com/mattdeslauriers/hacking-with-three-js#/7
 [parris]: https://www.eventbrite.com/engineering/its-2015-and-drawing-text-is-still-hard-webgl-threejs/
-[valve]: http://www.valvesoftware.com/publications/2007/SIGGRAPH2007_AlphaTestedMagnification.pdf
+[valve]: https://steamcdn-a.akamaihd.net/apps/valve/2007/SIGGRAPH2007_AlphaTestedMagnification.pdf
 
 - [`three-bmfont-text` documentation][three-bmfont-text]
 - [*Hacking with three.js*][mattdesl]

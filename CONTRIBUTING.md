@@ -1,4 +1,4 @@
-[slack]: https://aframe.io/slack-invite/
+[slack]: https://aframevr.slack.com/join/shared_invite/zt-f6rne3ly-ekVaBU~Xu~fsZHXr56jacQ
 [stackoverflow]: http://stackoverflow.com/questions/tagged/aframe
 
 Interested in contributing? As an open source project, we'd appreciate any help

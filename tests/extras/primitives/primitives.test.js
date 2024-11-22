@@ -1,6 +1,7 @@
 /* global AFRAME, assert, suite, test, THREE */
 var helpers = require('../../helpers');
 var registerPrimitive = require('extras/primitives/primitives').registerPrimitive;
+var registerComponent = require('index').registerComponent;
 var primitives = require('extras/primitives/primitives').primitives;
 
 var primitiveId = 0;
@@ -222,6 +223,23 @@ suite('registerPrimitive (using innerHTML)', function () {
       done();
     }, function preCreation (sceneEl) {
       helpers.mixinFactory('bar', {material: 'color: orange'}, sceneEl);
+    });
+  });
+
+  test('applies mappings to mixin attributes', function (done) {
+    AFRAME.registerComponent('test', {
+      schema: {default: 'foo'}
+    });
+    primitiveFactory({
+      defaultComponents: {
+        material: {color: 'blue'}
+      },
+      mappings: {foo: 'material.color'}
+    }, 'mixin="bar"', function postCreation (el) {
+      assert.equal(el.getAttribute('material').color, 'purple');
+      done();
+    }, function preCreation (sceneEl) {
+      helpers.mixinFactory('bar', {foo: 'purple'}, sceneEl);
     });
   });
 

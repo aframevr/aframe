@@ -82,6 +82,8 @@ function processPropertyDefinition (propDefinition, componentName) {
   isCustomType = !!propDefinition.parse;
   propDefinition.parse = propDefinition.parse || propType.parse;
   propDefinition.stringify = propDefinition.stringify || propType.stringify;
+  propDefinition.equals = propDefinition.equals || propType.equals;
+  propDefinition.isCacheable = propDefinition.isCacheable === true || propType.isCacheable;
 
   // Fill in type name.
   propDefinition.type = typeName;
@@ -151,15 +153,19 @@ module.exports.parseProperties = (function () {
 
 /**
  * Deserialize a single property.
+ *
+ * @param {any} value - The value to parse.
+ * @param {object} propDefinition - The single property schema for the property.
+ * @param {any} target - Optional target value to parse into (reuse).
  */
-function parseProperty (value, propDefinition) {
+function parseProperty (value, propDefinition, target) {
   // Use default value if value is falsy.
   if (value === undefined || value === null || value === '') {
     value = propDefinition.default;
     if (Array.isArray(value)) { value = value.slice(); }
   }
   // Invoke property type parser.
-  return propDefinition.parse(value, propDefinition.default);
+  return propDefinition.parse(value, propDefinition.default, target);
 }
 module.exports.parseProperty = parseProperty;
 
@@ -181,7 +187,9 @@ module.exports.stringifyProperties = function (propData, schema) {
       value = stringifyProperty(propValue, propDefinition);
       if (!propDefinition) { warn('Unknown component property: ' + propName); }
     }
-    stringifiedData[propName] = value;
+    if (value !== undefined) {
+      stringifiedData[propName] = value;
+    }
   }
   return stringifiedData;
 };
@@ -195,7 +203,7 @@ function stringifyProperty (value, propDefinition) {
   // value when it's not an object we save one unnecessary call
   // to JSON.stringify.
   if (typeof value !== 'object') { return value; }
-  // if there's no schema for the property we use standar JSON stringify
+  // if there's no schema for the property we use standard JSON stringify
   if (!propDefinition || value === null) { return JSON.stringify(value); }
   return propDefinition.stringify(value);
 }

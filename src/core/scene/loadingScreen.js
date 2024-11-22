@@ -1,4 +1,5 @@
 /* global THREE */
+var AFRAME_INJECTED = require('../../constants').AFRAME_INJECTED;
 var utils = require('../../utils/');
 var styleParser = utils.styleParser;
 
@@ -88,5 +89,6 @@ function setupTitle () {
   titleEl.className = LOADER_TITLE_CLASS;
   titleEl.innerHTML = document.title;
   titleEl.style.display = 'none';
+  titleEl.setAttribute(AFRAME_INJECTED, '');
   sceneEl.appendChild(titleEl);
 }

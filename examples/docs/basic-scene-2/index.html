@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Basic Scene with Environment - A-Frame</title>
+    <meta name="description" content="Basic Scene with Custom Environment - A-Frame">
+    <!-- If running this example without a local copy of A-Frame, replace this next line with:
+    <script src="https://aframe.io/releases/<release_number>/aframe.min.js"></script>
+    -->
+    <script src="../../../dist/aframe-master.js"></script>
+  </head>
+  <body>
+    <a-scene>
+      <a-assets>
+        <!-- Note that imgur will reject requests from 127.0.0.1 with a 403 error
+             https://stackoverflow.com/questions/43895390/imgur-images-returning-403
+            If viewing this example locally, use http://localhost rather than http://127.0.0.1
+          -->
+        <img id="boxTexture" src="https://i.imgur.com/mYmmbrp.jpg">
+        <img id="boxTexture" src="https://i.imgur.com/mYmmbrp.jpg">
+        <img id="skyTexture"
+          src="https://cdn.aframe.io/360-image-gallery-boilerplate/img/sechelt.jpg">
+        <img id="groundTexture" src="https://cdn.aframe.io/a-painter/images/floor.jpg">
+        <audio src="https://cdn.aframe.io/basic-guide/audio/backgroundnoise.wav" autoplay
+        preload></audio>
+      </a-assets>
+
+      <a-sound src="https://cdn.aframe.io/basic-guide/audio/backgroundnoise.wav" autoplay="true"
+      position="-3 1 -4"></a-sound>
+      
+      <a-box
+        src="#boxTexture"
+        position="0 2 -5"
+        rotation="0 45 45"
+        scale="2 2 2"
+        animation__position="property: object3D.position.y; to: 2.2; dir: alternate; dur: 2000; loop: true"
+        animation__mouseenter="property: scale; to: 2.3 2.3 2.3; dur: 300; startEvents: mouseenter"
+        animation__mouseleave="property: scale; to: 2 2 2; dur: 300; startEvents: mouseleave"
+        animation__click="property: rotation; from: 0 45 45; to: 0 405 45; dur: 1000; startEvents: click"></a-box>
+      
+      <a-entity text="value: Hello, A-Frame; color: #FAFAFA; width: 5; anchor: align"
+                position="-0.9 0.2 -3"
+                scale="1.5 1.5 1.5"></a-entity>
+
+      <a-sky src="#skyTexture"></a-sky>
+
+      <a-plane src="#groundTexture" rotation="-90 0 0" width="30" height="30"
+        repeat="10 10"></a-plane>
+
+      <a-light type="ambient" color="#445451"></a-light>
+      <a-light type="point" intensity="2" position="2 4 4"></a-light>
+      
+      <a-camera>
+        <a-cursor color="#FAFAFA"></a-cursor>
+      </a-camera>
+    </a-scene>
+  </body>
+</html>

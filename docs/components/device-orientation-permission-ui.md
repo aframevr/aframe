@@ -42,7 +42,7 @@ The dialog can also be disabled all together if you prefer to handle the permiss
 | allowButtonText       | Allow button text                 | English text       |
 | cancelButtonText       | Cancel button text                 | English text       |
 | deviceMotionMessage       | Message in dialog requesting user permission to enable the Device Motion API.                 | English text       |
-| mobileDestkopMessage       | Message displayed in modal requesting user to switch to mobile browsing mode.                  | English text          |
+| mobileDesktopMessage       | Message displayed in modal requesting user to switch to mobile browsing mode.                  | English text          |
 | httpsMessage       | Message requesting user to switch to HTTPS.                  | English text          |
 
 

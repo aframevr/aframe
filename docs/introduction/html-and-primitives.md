@@ -59,7 +59,7 @@ environment, place the camera, etc.
 ```html
 <html>
   <head>
-    <script src="https://aframe.io/releases/1.1.0/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
   </head>
   <body>
     <a-scene>
@@ -124,14 +124,14 @@ components.
 
 Let's attach community physics components to primitives. We include the source
 for [Don McCurdy's
-`aframe-physics-system`](https://github.com/donmccurdy/aframe-physics-system) and attach
+`aframe-physics-system`](https://github.com/c-frame/aframe-physics-system) and attach
 the physics components via HTML attributes:
 
 ```html
 <html>
   <head>
-    <script src="https://aframe.io/releases/1.1.0/aframe.min.js"></script>
-    <script src="https://unpkg.com/aframe-physics-system@1.4.0/dist/aframe-physics-system.min.js"></script>
+    <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+    <script src="https://unpkg.com/@c-frame/aframe-physics-system@4.2.2/dist/aframe-physics-system.min.js"></script>
   </head>
   <body>
     <a-scene physics>
@@ -181,9 +181,9 @@ AFRAME.registerPrimitive('a-box', extendDeep({}, meshMixin, {
 }));
 ```
 
-[aframe-extras]: https://github.com/donmccurdy/aframe-extras
+[aframe-extras]: https://github.com/c-frame/aframe-extras
 
-For example, Don McCurdy's [`aframe-extras`][aframe-extras] package includes an
+For example, [`aframe-extras`][aframe-extras] package includes an
 `<a-ocean>` primitive that wraps his `ocean` component. Here is the definition
 for `<a-ocean>`.
 

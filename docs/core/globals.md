@@ -33,9 +33,8 @@ global. This same interface is also exposed if requiring with CommonJS
 | geometries            | Object of registered geometries .                                                                                                                                                                                                      |
 | primitives.primitives | Object of registered primitives.                                                                                                                                                                                                       |
 | registerComponent     | Function to [register a component][componentregister].                                                                                                                                                                                 |
-| registerElement       | A flavor of `document.registerElement` for A-Frame nodes calls parent prototype handlers before child ones. The base class of A-Frame elements. Also see `registerPrimitive` for registering an A-Frame elements similar to `<a-box>`. |
 | registerGeometry      | Function to [register a geometry][geometryregister].                                                                                                                                                                                   |
-| registerPrimitive     | Function to [register a primitive][primitiveregister].                                                                                                                                                                                 |
+| registerPrimitive     | Function to [register a primitive][primitiveregister] like registering an A-Frame elements similar to `<a-box>`.                                                                                                                       |
 | registerShader        | Function to [register a material][materialregister] or shader.                                                                                                                                                                         |
 | schema                | Schema-related utilities.                                                                                                                                                                                                              |
 | shaders               | Object of registered shaders.                                                                                                                                                                                                          |
@@ -49,16 +48,17 @@ global. This same interface is also exposed if requiring with CommonJS
 | Property                     | Description                                  |
 | ----------                   | -------------                                |
 | AFRAME                       | The object described above.                  |
-| hasNativeWebVRImplementation | Whether the client has native WebVR support. |
 
 ## Requiring `AFRAME` in a Node.js Environment
 
-It is possible to run A-Frame in [Node.js](https://nodejs.org/en/about) to get access to its globals. The only catch is we need to supply a browser `window` mock since Node.js lacks a `window` object. A-Frame is tested with [jsdom](https://github.com/tmpvar/jsdom), although any JavaScript-based browser implementation should work.
+It is possible to run A-Frame in [Node.js](https://nodejs.org/en/about) to get access to its globals. The only catch is we need to supply a browser `window` mock since Node.js lacks a `window` object. You can do that with [jsdom-global](https://www.npmjs.com/package/jsdom-global), and you also need to mock `customElements`.
 
 ```js
-global.window = require('jsdom').jsdom().defaultView;
+const cleanup = require('jsdom-global')();
+global.customElements = { define: function () {} };
 var aframe = require('aframe/src');
 console.log(aframe.version);
+cleanup();
 ```
 
-Although A-Frame can load in Node.js, A-Frame isn't (yet) able to run any simulations at run time.
+You can't use jsdom to run tests with aframe components because `customElements` api is missing. A-Frame is using karma to open a real browser to run the tests.

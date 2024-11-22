@@ -10,7 +10,6 @@ suite('animation', function () {
   setup(function (done) {
     this.done = false;
     el = entityFactory();
-    el.setAttribute('animation', '');
     el.addEventListener('componentinitialized', function handler (evt) {
       if (evt.detail.name !== 'animation' || this.done) { return; }
       component = el.components.animation;
@@ -18,6 +17,7 @@ suite('animation', function () {
       el.removeEventListener('componentinitialized', handler);
       done();
     });
+    el.setAttribute('animation', '');
   });
 
   suite('basic animation', () => {
@@ -104,6 +104,52 @@ suite('animation', function () {
   });
 
   suite('direct object3D value animation', () => {
+    test('can animate object3D vec3 position directly', function () {
+      el.setAttribute('animation', {
+        property: 'object3D.position',
+        dur: 1000,
+        from: '1 1 1',
+        to: '0 0 0'
+      });
+      let setAttributeSpy = this.sinon.spy(el, 'setAttribute');
+      component.tick(0, 1);
+      // setAttribute not called to update the position. object3D updated directly.
+      assert.notOk(setAttributeSpy.called);
+      assert.equal(el.object3D.position.x, 1);
+      assert.equal(el.object3D.position.y, 1);
+      assert.equal(el.object3D.position.z, 1);
+      component.tick(0, 500);
+      assert.ok(el.object3D.position.x > 0);
+      assert.ok(el.object3D.position.x < 1);
+      component.tick(0, 500);
+      assert.equal(el.object3D.position.x, 0);
+      assert.equal(el.object3D.position.y, 0);
+      assert.equal(el.object3D.position.z, 0);
+    });
+
+    test('can animate object3D.position directly with no from', function () {
+      el.setAttribute('position', '3 3 3');
+      el.setAttribute('animation', {
+        property: 'object3D.position',
+        dur: 1000,
+        to: '5 5 5'
+      });
+      let setAttributeSpy = this.sinon.spy(el, 'setAttribute');
+      component.tick(0, 1);
+      // setAttribute not called to update the position. object3D updated directly.
+      assert.notOk(setAttributeSpy.called);
+      assert.equal(el.object3D.position.x, 3);
+      assert.equal(el.object3D.position.y, 3);
+      assert.equal(el.object3D.position.z, 3);
+      component.tick(0, 500);
+      assert.ok(el.object3D.position.x > 3);
+      assert.ok(el.object3D.position.x < 5);
+      component.tick(0, 500);
+      assert.equal(el.object3D.position.x, 5);
+      assert.equal(el.object3D.position.y, 5);
+      assert.equal(el.object3D.position.z, 5);
+    });
+
     test('can animate object3D value directly', function () {
       el.setAttribute('animation', {
         property: 'object3D.position.x',
@@ -140,7 +186,7 @@ suite('animation', function () {
       component.tick(0, 1);
       assert.equal(el.object3D.position.x, 0);
       component.tick(0, 500);
-      assert.equal(THREE.Math.degToRad(component.config.targets.aframeProperty),
+      assert.equal(THREE.MathUtils.degToRad(component.config.targets.aframeProperty),
                    el.object3D.rotation.x);
     });
   });
@@ -231,9 +277,9 @@ suite('animation', function () {
       });
       component.tick(0, 1);
       component.tick(0, 1000);
-      assert.equal(el.object3D.rotation.x, THREE.Math.degToRad(30));
-      assert.equal(el.object3D.rotation.y, THREE.Math.degToRad(60));
-      assert.equal(el.object3D.rotation.z, THREE.Math.degToRad(90));
+      assert.equal(el.object3D.rotation.x, THREE.MathUtils.degToRad(30));
+      assert.equal(el.object3D.rotation.y, THREE.MathUtils.degToRad(60));
+      assert.equal(el.object3D.rotation.z, THREE.MathUtils.degToRad(90));
     });
 
     test('can animate vec3 single-property custom component', function () {
