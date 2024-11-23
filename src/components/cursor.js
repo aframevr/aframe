@@ -86,6 +86,7 @@ module.exports.Component = registerComponent('cursor', {
 
   update: function (oldData) {
     if (this.data.rayOrigin === oldData.rayOrigin) { return; }
+    if (this.data.rayOrigin === 'entity') { this.resetRaycaster(); }
     this.updateMouseEventListeners();
     // Update the WebXR event listeners if needed
     if (this.data.rayOrigin === 'xrselect') {
@@ -218,6 +219,13 @@ module.exports.Component = registerComponent('cursor', {
     canvas.addEventListener('touchmove', this.onMouseMove, {passive: false});
     el.setAttribute('raycaster', 'useWorldCoordinates', true);
     this.updateCanvasBounds();
+  },
+
+  resetRaycaster: function () {
+    this.el.setAttribute('raycaster', {
+      direction: new THREE.Vector3().set(0, 0, -1),
+      origin: new THREE.Vector3()
+    });
   },
 
   addWebXREventListeners: function () {
