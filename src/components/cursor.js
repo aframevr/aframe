@@ -227,7 +227,7 @@ module.exports.Component = registerComponent('cursor', {
       origin: new THREE.Vector3()
     });
   },
-  
+
   addWebXREventListeners: function () {
     var self = this;
     var xrSession = this.el.sceneEl.xrSession;
