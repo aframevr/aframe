@@ -6913,6 +6913,9 @@ module.exports.Component = registerComponent('cursor', {
     if (this.data.rayOrigin === oldData.rayOrigin) {
       return;
     }
+    if (this.data.rayOrigin === 'entity') {
+      this.resetRaycaster();
+    }
     this.updateMouseEventListeners();
     // Update the WebXR event listeners if needed
     if (this.data.rayOrigin === 'xrselect') {
@@ -7039,6 +7042,12 @@ module.exports.Component = registerComponent('cursor', {
     });
     el.setAttribute('raycaster', 'useWorldCoordinates', true);
     this.updateCanvasBounds();
+  },
+  resetRaycaster: function () {
+    this.el.setAttribute('raycaster', {
+      direction: new THREE.Vector3().set(0, 0, -1),
+      origin: new THREE.Vector3()
+    });
   },
   addWebXREventListeners: function () {
     var self = this;
@@ -24581,7 +24590,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.6.0 (Date 2024-11-22, Commit #3eadfd3a)');
+console.log('A-Frame Version: 1.6.0 (Date 2024-11-23, Commit #cd1326be)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', THREE.REVISION);
 
 // Wait for ready state, unless user asynchronously initializes A-Frame.
