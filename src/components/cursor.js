@@ -263,7 +263,7 @@ module.exports.Component = registerComponent('cursor', {
     return function (evt) {
       var bounds = this.canvasBounds;
       var camera = this.el.sceneEl.camera;
-      var cameraElParent = camera.el.object3D.parent;
+      var cameraElParent = camera.el ? camera.el.object3D.parent : null;
       var left;
       var point;
       var top;
@@ -301,8 +301,10 @@ module.exports.Component = registerComponent('cursor', {
           origin.copy(transform.position);
 
           // Transform XRPose into world space
-          cameraElParent.localToWorld(origin);
-          direction.transformDirection(cameraElParent.matrixWorld);
+          if (cameraElParent) {
+            cameraElParent.localToWorld(origin);
+            direction.transformDirection(cameraElParent.matrixWorld);
+          }
         }
       } else if (evt.type === 'fakeselectout') {
         direction.set(0, 1, 0);
