@@ -263,7 +263,7 @@ module.exports.Component = registerComponent('cursor', {
     return function (evt) {
       var bounds = this.canvasBounds;
       var camera = this.el.sceneEl.camera;
-      var cameraElParent = camera.el.object3D.parent;
+      var cameraElParent;
       var left;
       var point;
       var top;
@@ -301,6 +301,7 @@ module.exports.Component = registerComponent('cursor', {
           origin.copy(transform.position);
 
           // Transform XRPose into world space
+          cameraElParent = camera.el.object3D.parent;
           cameraElParent.localToWorld(origin);
           direction.transformDirection(cameraElParent.matrixWorld);
         }
