@@ -7084,7 +7084,7 @@ module.exports.Component = registerComponent('cursor', {
     return function (evt) {
       var bounds = this.canvasBounds;
       var camera = this.el.sceneEl.camera;
-      var cameraElParent = camera.el.object3D.parent;
+      var cameraElParent;
       var left;
       var point;
       var top;
@@ -7118,6 +7118,7 @@ module.exports.Component = registerComponent('cursor', {
           origin.copy(transform.position);
 
           // Transform XRPose into world space
+          cameraElParent = camera.el.object3D.parent;
           cameraElParent.localToWorld(origin);
           direction.transformDirection(cameraElParent.matrixWorld);
         }
@@ -24590,7 +24591,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.6.0 (Date 2024-11-23, Commit #cd1326be)');
+console.log('A-Frame Version: 1.6.0 (Date 2024-11-25, Commit #1047eacb)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', THREE.REVISION);
 
 // Wait for ready state, unless user asynchronously initializes A-Frame.
