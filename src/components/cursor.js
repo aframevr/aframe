@@ -88,13 +88,6 @@ module.exports.Component = registerComponent('cursor', {
     if (this.data.rayOrigin === oldData.rayOrigin) { return; }
     if (this.data.rayOrigin === 'entity') { this.resetRaycaster(); }
     this.updateMouseEventListeners();
-    // Update the WebXR event listeners if needed
-    if (this.data.rayOrigin === 'xrselect') {
-      this.addWebXREventListeners();
-    }
-    if (oldData.rayOrigin === 'xrselect') {
-      this.removeWebXREventListeners();
-    }
   },
 
   tick: function () {
