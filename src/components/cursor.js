@@ -89,10 +89,10 @@ module.exports.Component = registerComponent('cursor', {
     if (this.data.rayOrigin === 'entity') { this.resetRaycaster(); }
     this.updateMouseEventListeners();
     // Update the WebXR event listeners if needed
-    if (this.data.rayOrigin === 'xrselect') {
+    if (this.data.rayOrigin !== 'mouse') {
       this.addWebXREventListeners();
     }
-    if (oldData.rayOrigin === 'xrselect') {
+    if (oldData.rayOrigin !== 'mouse') {
       this.removeWebXREventListeners();
     }
   },
@@ -446,7 +446,7 @@ module.exports.Component = registerComponent('cursor', {
 
   onEnterVR: function () {
     this.clearCurrentIntersection(true);
-    if (this.data.rayOrigin === 'xrselect') {
+    if (this.data.rayOrigin !== 'mouse') {
       this.addWebXREventListeners();
     }
   },
