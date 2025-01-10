@@ -6910,18 +6910,21 @@ module.exports.Component = registerComponent('cursor', {
     this.onEnterVR = this.onEnterVR.bind(this);
   },
   update: function (oldData) {
-    if (this.data.rayOrigin === oldData.rayOrigin) {
+    var rayOrigin = this.data.rayOrigin;
+    if (rayOrigin === oldData.rayOrigin) {
       return;
     }
-    if (this.data.rayOrigin === 'entity') {
+    if (rayOrigin === 'entity') {
       this.resetRaycaster();
     }
     this.updateMouseEventListeners();
-    // Update the WebXR event listeners if needed
-    if (this.data.rayOrigin === 'xrselect') {
+    // Update the WebXR event listeners if needed.
+    // This handles the cases a cursor is created or has its rayOrigin changed during an XR session.
+    // In the case the cursor is created before we have an active XR session, it does not add the WebXR event listeners here (addWebXREventListeners is a no-op without xrSession), upon onEnterVR they are added.
+    if (rayOrigin === 'xrselect' || rayOrigin === 'entity') {
       this.addWebXREventListeners();
     }
-    if (oldData.rayOrigin === 'xrselect') {
+    if (oldData.rayOrigin === 'xrselect' || oldData.rayOrigin === 'entity') {
       this.removeWebXREventListeners();
     }
   },
@@ -7259,8 +7262,9 @@ module.exports.Component = registerComponent('cursor', {
     this.clearCurrentIntersection();
   },
   onEnterVR: function () {
+    var rayOrigin = this.data.rayOrigin;
     this.clearCurrentIntersection(true);
-    if (this.data.rayOrigin === 'xrselect') {
+    if (rayOrigin === 'xrselect' || rayOrigin === 'entity') {
       this.addWebXREventListeners();
     }
   },
@@ -24591,7 +24595,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.6.0 (Date 2024-12-31, Commit #8275ba57)');
+console.log('A-Frame Version: 1.6.0 (Date 2025-01-10, Commit #318f320a)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', THREE.REVISION);
 
 // Wait for ready state, unless user asynchronously initializes A-Frame.
