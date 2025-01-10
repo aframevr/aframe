@@ -7019,6 +7019,7 @@ module.exports.Component = registerComponent('cursor', {
       el.removeEventListener(upEvent, self.onCursorUp);
     });
     el.removeEventListener('raycaster-intersection', this.onIntersection);
+    el.removeEventListener('raycaster-closest-entity-changed', this.onIntersection);
     el.removeEventListener('raycaster-intersection-cleared', this.onIntersectionCleared);
     canvas.removeEventListener('mousemove', this.onMouseMove);
     canvas.removeEventListener('touchstart', this.onMouseMove);
@@ -24595,7 +24596,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.6.0 (Date 2025-01-10, Commit #318f320a)');
+console.log('A-Frame Version: 1.6.0 (Date 2025-01-10, Commit #f1a490aa)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', THREE.REVISION);
 
 // Wait for ready state, unless user asynchronously initializes A-Frame.
