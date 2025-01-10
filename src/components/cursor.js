@@ -196,6 +196,7 @@ module.exports.Component = registerComponent('cursor', {
       el.removeEventListener(upEvent, self.onCursorUp);
     });
     el.removeEventListener('raycaster-intersection', this.onIntersection);
+    el.removeEventListener('raycaster-closest-entity-changed', this.onIntersection);
     el.removeEventListener('raycaster-intersection-cleared', this.onIntersectionCleared);
     canvas.removeEventListener('mousemove', this.onMouseMove);
     canvas.removeEventListener('touchstart', this.onMouseMove);
