@@ -85,14 +85,17 @@ module.exports.Component = registerComponent('cursor', {
   },
 
   update: function (oldData) {
-    if (this.data.rayOrigin === oldData.rayOrigin) { return; }
-    if (this.data.rayOrigin === 'entity') { this.resetRaycaster(); }
+    var rayOrigin = this.data.rayOrigin;
+    if (rayOrigin === oldData.rayOrigin) { return; }
+    if (rayOrigin === 'entity') { this.resetRaycaster(); }
     this.updateMouseEventListeners();
-    // Update the WebXR event listeners if needed
-    if (this.data.rayOrigin !== 'mouse') {
+    // Update the WebXR event listeners if needed.
+    // This handles the cases a cursor is created or has its rayOrigin changed during an XR session.
+    // In the case the cursor is created before we have an active XR session, it does not add the WebXR event listeners here (addWebXREventListeners is a no-op without xrSession), upon onEnterVR they are added.
+    if (rayOrigin === 'xrselect' || rayOrigin === 'entity') {
       this.addWebXREventListeners();
     }
-    if (oldData.rayOrigin !== 'mouse') {
+    if (oldData.rayOrigin === 'xrselect' || oldData.rayOrigin === 'entity') {
       this.removeWebXREventListeners();
     }
   },
@@ -445,8 +448,9 @@ module.exports.Component = registerComponent('cursor', {
   },
 
   onEnterVR: function () {
+    var rayOrigin = this.data.rayOrigin;
     this.clearCurrentIntersection(true);
-    if (this.data.rayOrigin !== 'mouse') {
+    if (rayOrigin === 'xrselect' || rayOrigin === 'entity') {
       this.addWebXREventListeners();
     }
   },
