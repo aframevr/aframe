@@ -9478,6 +9478,9 @@ module.exports.Component = registerComponent('layer', {
     if (!this.el.sceneEl.xrSession) {
       return;
     }
+    if (!this.referenceSpace) {
+      return;
+    }
     if (!this.layer && (this.el.sceneEl.is('vr-mode') || this.el.sceneEl.is('ar-mode'))) {
       this.initLayer();
     }
@@ -24596,7 +24599,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.6.0 (Date 2025-01-10, Commit #f1a490aa)');
+console.log('A-Frame Version: 1.6.0 (Date 2025-01-12, Commit #fed48456)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', THREE.REVISION);
 
 // Wait for ready state, unless user asynchronously initializes A-Frame.
