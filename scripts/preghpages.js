@@ -3,7 +3,7 @@
 const path = require('path');
 
 const shell = require('shelljs');
-const replace = require('replace-in-file');
+const replaceInFileSync = require('replace-in-file').replaceInFileSync;
 
 const rootDir = path.join(__dirname, '..');
 
@@ -20,7 +20,7 @@ shell.cp('-r', [
 ], 'gh-pages');
 
 function htmlReplace (before, after) {
-  replace.sync({
+  replaceInFileSync({
     from: before,
     to: after,
     files: 'gh-pages/**/*.html'
