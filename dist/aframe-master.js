@@ -5957,8 +5957,9 @@ module.exports.Component = registerComponent('anchored', {
     frame = sceneEl.frame;
     refSpace = xrManager.getReferenceSpace();
     pose = frame.getPose(this.anchor.anchorSpace, refSpace);
-    object3D.matrix.elements = pose.transform.matrix;
-    object3D.matrix.decompose(object3D.position, object3D.rotation, object3D.scale);
+    // Apply position and orientation, leave scale as-is (see aframevr/aframe#5630)
+    object3D.position.copy(pose.transform.position);
+    object3D.quaternion.copy(pose.transform.orientation);
   },
   createAnchor: async function createAnchor(position, quaternion) {
     var sceneEl = this.el.sceneEl;
@@ -24599,7 +24600,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.6.0 (Date 2025-01-12, Commit #fed48456)');
+console.log('A-Frame Version: 1.6.0 (Date 2025-01-20, Commit #c854fd5e)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', THREE.REVISION);
 
 // Wait for ready state, unless user asynchronously initializes A-Frame.
