@@ -52,8 +52,9 @@ module.exports.Component = registerComponent('anchored', {
     refSpace = xrManager.getReferenceSpace();
 
     pose = frame.getPose(this.anchor.anchorSpace, refSpace);
-    object3D.matrix.elements = pose.transform.matrix;
-    object3D.matrix.decompose(object3D.position, object3D.rotation, object3D.scale);
+    // Apply position and orientation, leave scale as-is (see aframevr/aframe#5630)
+    object3D.position.copy(pose.transform.position);
+    object3D.quaternion.copy(pose.transform.orientation);
   },
 
   createAnchor: async function createAnchor (position, quaternion) {
