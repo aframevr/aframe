@@ -5899,12 +5899,19 @@ function extend() {
 /*!************************************!*\
   !*** ./src/components/anchored.js ***!
   \************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Component: () => (/* binding */ Component)
+/* harmony export */ });
+/* harmony import */ var _core_component_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../core/component.js */ "./src/core/component.js");
+/* harmony import */ var _utils_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/index.js */ "./src/utils/index.js");
 /* global THREE, XRRigidTransform, localStorage */
-var registerComponent = (__webpack_require__(/*! ../core/component */ "./src/core/component.js").registerComponent);
-var utils = __webpack_require__(/*! ../utils/ */ "./src/utils/index.js");
-var warn = utils.debug('components:anchored:warn');
+
+
+var warn = _utils_index_js__WEBPACK_IMPORTED_MODULE_1__.debug('components:anchored:warn');
 
 /**
  * Anchored component.
@@ -5912,7 +5919,7 @@ var warn = utils.debug('components:anchored:warn');
  * Once anchored the entity remains to a fixed position in real-world space.
  * If the anchor is persistent, the anchor positioned remains across sessions or until the browser data is cleared.
  */
-module.exports.Component = registerComponent('anchored', {
+var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_0__.registerComponent)('anchored', {
   schema: {
     persistent: {
       default: false
@@ -6062,17 +6069,25 @@ function anchorsSupported(sceneEl) {
 /*!*************************************!*\
   !*** ./src/components/animation.js ***!
   \*************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var anime = (__webpack_require__(/*! super-animejs */ "./node_modules/super-animejs/lib/anime.es.js")["default"]);
-var components = (__webpack_require__(/*! ../core/component */ "./src/core/component.js").components);
-var registerComponent = (__webpack_require__(/*! ../core/component */ "./src/core/component.js").registerComponent);
-var THREE = __webpack_require__(/*! ../lib/three */ "./src/lib/three.js");
-var utils = __webpack_require__(/*! ../utils */ "./src/utils/index.js");
-var colorHelperFrom = new THREE.Color();
-var colorHelperTo = new THREE.Color();
-var getComponentProperty = utils.entity.getComponentProperty;
-var setComponentProperty = utils.entity.setComponentProperty;
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Component: () => (/* binding */ Component)
+/* harmony export */ });
+/* harmony import */ var _lib_three_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../lib/three.js */ "./src/lib/three.js");
+/* harmony import */ var super_animejs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! super-animejs */ "./node_modules/super-animejs/lib/anime.es.js");
+/* harmony import */ var _core_component_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../core/component.js */ "./src/core/component.js");
+/* harmony import */ var _utils_index_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/index.js */ "./src/utils/index.js");
+
+
+
+
+var colorHelperFrom = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Color();
+var colorHelperTo = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Color();
+var getComponentProperty = _utils_index_js__WEBPACK_IMPORTED_MODULE_3__.entity.getComponentProperty;
+var setComponentProperty = _utils_index_js__WEBPACK_IMPORTED_MODULE_3__.entity.setComponentProperty;
 var splitCache = {};
 var TYPE_COLOR = 'color';
 var PROP_POSITION = 'position';
@@ -6102,7 +6117,7 @@ var STRING_OBJECT3D = 'object3D';
  * @member {object} animation - anime.js instance.
  * @member {boolean} animationIsPlaying - Control if animation is playing.
  */
-module.exports.Component = registerComponent('animation', {
+var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_2__.registerComponent)('animation', {
   schema: {
     autoplay: {
       default: true
@@ -6256,7 +6271,7 @@ module.exports.Component = registerComponent('animation', {
     var data = this.data;
     this.updateConfig();
     this.animationIsPlaying = false;
-    this.animation = anime(this.config);
+    this.animation = (0,super_animejs__WEBPACK_IMPORTED_MODULE_1__["default"])(this.config);
     this.animation.began = true;
     this.removeEventListeners();
     this.addEventListeners();
@@ -6304,7 +6319,7 @@ module.exports.Component = registerComponent('animation', {
     if (this.animation) {
       this.animation.pause();
     }
-    this.animation = anime(this.config);
+    this.animation = (0,super_animejs__WEBPACK_IMPORTED_MODULE_1__["default"])(this.config);
 
     // Include the delay before each start event.
     if (this.data.delay) {
@@ -6431,9 +6446,9 @@ module.exports.Component = registerComponent('animation', {
     var property = split[0] === 'object3D' ? split[1] : split[0];
 
     // Parse coordinates.
-    from = data.from !== '' ? utils.coordinates.parse(data.from) // If data.from defined, use that.
+    from = data.from !== '' ? _utils_index_js__WEBPACK_IMPORTED_MODULE_3__.coordinates.parse(data.from) // If data.from defined, use that.
     : getComponentProperty(el, property); // If data.from not defined, get on the fly.
-    to = utils.coordinates.parse(data.to);
+    to = _utils_index_js__WEBPACK_IMPORTED_MODULE_3__.coordinates.parse(data.to);
     if (property === PROP_ROTATION) {
       toRadians(from);
       toRadians(to);
@@ -6525,7 +6540,7 @@ module.exports.Component = registerComponent('animation', {
       cb();
       // Since the config was created async, create the animation now since we missed it
       // earlier.
-      self.animation = anime(self.config);
+      self.animation = (0,super_animejs__WEBPACK_IMPORTED_MODULE_1__["default"])(self.config);
       el.removeEventListener('componentinitialized', wait);
     });
     return true;
@@ -6601,7 +6616,7 @@ function getPropertyType(el, property) {
   }
   componentName = split[0];
   propertyName = split[1];
-  component = el.components[componentName] || components[componentName];
+  component = el.components[componentName] || _core_component_js__WEBPACK_IMPORTED_MODULE_2__.components[componentName];
 
   // Primitives.
   if (!component) {
@@ -6626,9 +6641,9 @@ function getPropertyType(el, property) {
  * Convert object to radians.
  */
 function toRadians(obj) {
-  obj.x = THREE.MathUtils.degToRad(obj.x);
-  obj.y = THREE.MathUtils.degToRad(obj.y);
-  obj.z = THREE.MathUtils.degToRad(obj.z);
+  obj.x = _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].MathUtils.degToRad(obj.x);
+  obj.y = _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].MathUtils.degToRad(obj.y);
+  obj.z = _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].MathUtils.degToRad(obj.z);
 }
 function addEventListeners(el, eventNames, handler) {
   var i;
@@ -6663,7 +6678,7 @@ function setRawProperty(el, path, value, type) {
   var propertyName;
   var targetValue;
   if (path.startsWith('object3D.rotation')) {
-    value = THREE.MathUtils.degToRad(value);
+    value = _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].MathUtils.degToRad(value);
   }
 
   // Walk.
@@ -6706,16 +6721,23 @@ function isRawProperty(data) {
 /*!**********************************!*\
   !*** ./src/components/camera.js ***!
   \**********************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var registerComponent = (__webpack_require__(/*! ../core/component */ "./src/core/component.js").registerComponent);
-var THREE = __webpack_require__(/*! ../lib/three */ "./src/lib/three.js");
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Component: () => (/* binding */ Component)
+/* harmony export */ });
+/* harmony import */ var _lib_three_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../lib/three.js */ "./src/lib/three.js");
+/* harmony import */ var _core_component_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../core/component.js */ "./src/core/component.js");
+
+
 
 /**
  * Camera component.
  * Pairs along with camera system to handle tracking the active camera.
  */
-module.exports.Component = registerComponent('camera', {
+var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_1__.registerComponent)('camera', {
   schema: {
     active: {
       default: true
@@ -6748,7 +6770,7 @@ module.exports.Component = registerComponent('camera', {
     var el = this.el;
 
     // Create camera.
-    camera = this.camera = new THREE.PerspectiveCamera();
+    camera = this.camera = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].PerspectiveCamera();
     el.setObject3D('camera', camera);
   },
   /**
@@ -6818,11 +6840,18 @@ module.exports.Component = registerComponent('camera', {
 /*!**********************************!*\
   !*** ./src/components/cursor.js ***!
   \**********************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Component: () => (/* binding */ Component)
+/* harmony export */ });
+/* harmony import */ var _core_component_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../core/component.js */ "./src/core/component.js");
+/* harmony import */ var _utils_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/index.js */ "./src/utils/index.js");
 /* global THREE, MouseEvent, TouchEvent */
-var registerComponent = (__webpack_require__(/*! ../core/component */ "./src/core/component.js").registerComponent);
-var utils = __webpack_require__(/*! ../utils/ */ "./src/utils/index.js");
+
+
 var EVENTS = {
   CLICK: 'click',
   FUSING: 'fusing',
@@ -6858,14 +6887,14 @@ var CANVAS_HOVER_CLASS = 'a-mouse-cursor-hover';
  * @member {Element} intersectedEl - Currently-intersected entity. Used to keep track to
  *         emit events when unintersecting.
  */
-module.exports.Component = registerComponent('cursor', {
+var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_0__.registerComponent)('cursor', {
   dependencies: ['raycaster'],
   schema: {
     downEvents: {
       default: []
     },
     fuse: {
-      default: utils.device.isMobile()
+      default: _utils_index_js__WEBPACK_IMPORTED_MODULE_1__.device.isMobile()
     },
     fuseTimeout: {
       default: 1500,
@@ -6894,7 +6923,7 @@ module.exports.Component = registerComponent('cursor', {
     this.activeXRInput = null;
 
     // Debounce.
-    this.updateCanvasBounds = utils.debounce(function updateCanvasBounds() {
+    this.updateCanvasBounds = _utils_index_js__WEBPACK_IMPORTED_MODULE_1__.debounce(function updateCanvasBounds() {
       self.canvasBounds = self.el.sceneEl.canvas.getBoundingClientRect();
     }, 500);
     this.eventDetail = {};
@@ -7378,13 +7407,17 @@ module.exports.Component = registerComponent('cursor', {
 /*!***************************************************************!*\
   !*** ./src/components/generic-tracked-controller-controls.js ***!
   \***************************************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var registerComponent = (__webpack_require__(/*! ../core/component */ "./src/core/component.js").registerComponent);
-var trackedControlsUtils = __webpack_require__(/*! ../utils/tracked-controls */ "./src/utils/tracked-controls.js");
-var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
-var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
-var onButtonEvent = trackedControlsUtils.onButtonEvent;
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Component: () => (/* binding */ Component)
+/* harmony export */ });
+/* harmony import */ var _core_component_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../core/component.js */ "./src/core/component.js");
+/* harmony import */ var _utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/tracked-controls.js */ "./src/utils/tracked-controls.js");
+
+
 var GAMEPAD_ID_PREFIX = 'generic';
 
 /**
@@ -7413,7 +7446,7 @@ var INPUT_MAPPING = {
  * controller buttons: trackpad, trigger
  * Load a controller model and highlight the pressed buttons.
  */
-module.exports.Component = registerComponent('generic-tracked-controller-controls', {
+var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_0__.registerComponent)('generic-tracked-controller-controls', {
   schema: {
     hand: {
       default: ''
@@ -7446,16 +7479,16 @@ module.exports.Component = registerComponent('generic-tracked-controller-control
     var self = this;
     this.onButtonChanged = this.onButtonChanged.bind(this);
     this.onButtonDown = function (evt) {
-      onButtonEvent(evt.detail.id, 'down', self);
+      (0,_utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_1__.onButtonEvent)(evt.detail.id, 'down', self);
     };
     this.onButtonUp = function (evt) {
-      onButtonEvent(evt.detail.id, 'up', self);
+      (0,_utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_1__.onButtonEvent)(evt.detail.id, 'up', self);
     };
     this.onButtonTouchStart = function (evt) {
-      onButtonEvent(evt.detail.id, 'touchstart', self);
+      (0,_utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_1__.onButtonEvent)(evt.detail.id, 'touchstart', self);
     };
     this.onButtonTouchEnd = function (evt) {
-      onButtonEvent(evt.detail.id, 'touchend', self);
+      (0,_utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_1__.onButtonEvent)(evt.detail.id, 'touchend', self);
     };
     this.controllerPresent = false;
     this.wasControllerConnected = false;
@@ -7495,7 +7528,7 @@ module.exports.Component = registerComponent('generic-tracked-controller-control
   checkIfControllerPresent: function () {
     var data = this.data;
     var hand = data.hand ? data.hand : undefined;
-    checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX, {
+    (0,_utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_1__.checkControllerPresentAndSetup)(this, GAMEPAD_ID_PREFIX, {
       hand: hand,
       iterateControllerProfiles: true
     });
@@ -7550,7 +7583,7 @@ module.exports.Component = registerComponent('generic-tracked-controller-control
     this.el.emit(button + 'changed', evt.detail.state);
   },
   onAxisMoved: function (evt) {
-    emitIfAxesChanged(this, this.mapping.axes, evt);
+    (0,_utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_1__.emitIfAxesChanged)(this, this.mapping.axes, evt);
   },
   initDefaultModel: function () {
     var modelEl = this.modelEl = document.createElement('a-entity');
@@ -7587,26 +7620,33 @@ module.exports.Component = registerComponent('generic-tracked-controller-control
 /*!************************************!*\
   !*** ./src/components/geometry.js ***!
   \************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var geometries = (__webpack_require__(/*! ../core/geometry */ "./src/core/geometry.js").geometries);
-var geometryNames = (__webpack_require__(/*! ../core/geometry */ "./src/core/geometry.js").geometryNames);
-var registerComponent = (__webpack_require__(/*! ../core/component */ "./src/core/component.js").registerComponent);
-var THREE = __webpack_require__(/*! ../lib/three */ "./src/lib/three.js");
-var dummyGeometry = new THREE.BufferGeometry();
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Component: () => (/* binding */ Component)
+/* harmony export */ });
+/* harmony import */ var _lib_three_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../lib/three.js */ "./src/lib/three.js");
+/* harmony import */ var _core_geometry_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../core/geometry.js */ "./src/core/geometry.js");
+/* harmony import */ var _core_component_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../core/component.js */ "./src/core/component.js");
+
+
+
+var dummyGeometry = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].BufferGeometry();
 
 /**
  * Geometry component. Combined with material component to make a mesh in 3D object.
  * Extended with registered geometries.
  */
-module.exports.Component = registerComponent('geometry', {
+var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_2__.registerComponent)('geometry', {
   schema: {
     buffer: {
       default: true
     },
     primitive: {
       default: 'box',
-      oneOf: geometryNames,
+      oneOf: _core_geometry_js__WEBPACK_IMPORTED_MODULE_1__.geometryNames,
       schemaChange: true
     },
     skipCache: {
@@ -7639,11 +7679,11 @@ module.exports.Component = registerComponent('geometry', {
     if (mesh) {
       mesh.geometry = this.geometry;
     } else {
-      mesh = new THREE.Mesh();
+      mesh = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Mesh();
       mesh.geometry = this.geometry;
       // Default material if not defined on the entity.
       if (!this.el.getAttribute('material')) {
-        mesh.material = new THREE.MeshStandardMaterial({
+        mesh.material = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].MeshStandardMaterial({
           color: Math.random() * 0xFFFFFF,
           metalness: 0,
           roughness: 0.5
@@ -7667,7 +7707,7 @@ module.exports.Component = registerComponent('geometry', {
   updateSchema: function (data) {
     var currentGeometryType = this.oldData && this.oldData.primitive;
     var newGeometryType = data.primitive;
-    var schema = geometries[newGeometryType] && geometries[newGeometryType].schema;
+    var schema = _core_geometry_js__WEBPACK_IMPORTED_MODULE_1__.geometries[newGeometryType] && _core_geometry_js__WEBPACK_IMPORTED_MODULE_1__.geometries[newGeometryType].schema;
 
     // Geometry has no schema.
     if (!schema) {
@@ -7687,17 +7727,25 @@ module.exports.Component = registerComponent('geometry', {
 /*!**************************************!*\
   !*** ./src/components/gltf-model.js ***!
   \**************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var registerComponent = (__webpack_require__(/*! ../core/component */ "./src/core/component.js").registerComponent);
-var THREE = __webpack_require__(/*! ../lib/three */ "./src/lib/three.js");
-var utils = __webpack_require__(/*! ../utils/ */ "./src/utils/index.js");
-var warn = utils.debug('components:gltf-model:warn');
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Component: () => (/* binding */ Component)
+/* harmony export */ });
+/* harmony import */ var _lib_three_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../lib/three.js */ "./src/lib/three.js");
+/* harmony import */ var _core_component_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../core/component.js */ "./src/core/component.js");
+/* harmony import */ var _utils_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/index.js */ "./src/utils/index.js");
+
+
+
+var warn = _utils_index_js__WEBPACK_IMPORTED_MODULE_2__.debug('components:gltf-model:warn');
 
 /**
  * glTF model loader.
  */
-module.exports.Component = registerComponent('gltf-model', {
+var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_1__.registerComponent)('gltf-model', {
   schema: {
     type: 'model'
   },
@@ -7707,7 +7755,7 @@ module.exports.Component = registerComponent('gltf-model', {
     var meshoptDecoder = this.system.getMeshoptDecoder();
     var ktxLoader = this.system.getKTX2Loader();
     this.model = null;
-    this.loader = new THREE.GLTFLoader();
+    this.loader = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].GLTFLoader();
     if (dracoLoader) {
       this.loader.setDRACOLoader(dracoLoader);
     }
@@ -7763,10 +7811,13 @@ module.exports.Component = registerComponent('gltf-model', {
 /*!*************************************!*\
   !*** ./src/components/grabbable.js ***!
   \*************************************/
-/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var registerComponent = (__webpack_require__(/*! ../core/component */ "./src/core/component.js").registerComponent);
-registerComponent('grabbable', {
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _core_component_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../core/component.js */ "./src/core/component.js");
+
+(0,_core_component_js__WEBPACK_IMPORTED_MODULE_0__.registerComponent)('grabbable', {
   init: function () {
     this.el.setAttribute('obb-collider', 'centerModel: true');
   }
@@ -7778,19 +7829,27 @@ registerComponent('grabbable', {
 /*!*****************************************!*\
   !*** ./src/components/hand-controls.js ***!
   \*****************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Component: () => (/* binding */ Component)
+/* harmony export */ });
+/* harmony import */ var _core_component_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../core/component.js */ "./src/core/component.js");
+/* harmony import */ var _constants_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../constants/index.js */ "./src/constants/index.js");
 /* global THREE */
-var registerComponent = (__webpack_require__(/*! ../core/component */ "./src/core/component.js").registerComponent);
-var AFRAME_CDN_ROOT = (__webpack_require__(/*! ../constants */ "./src/constants/index.js").AFRAME_CDN_ROOT);
+
+
+
 // Found at https://github.com/aframevr/assets.
 var MODEL_URLS = {
-  toonLeft: AFRAME_CDN_ROOT + 'controllers/hands/leftHand.glb',
-  toonRight: AFRAME_CDN_ROOT + 'controllers/hands/rightHand.glb',
-  lowPolyLeft: AFRAME_CDN_ROOT + 'controllers/hands/leftHandLow.glb',
-  lowPolyRight: AFRAME_CDN_ROOT + 'controllers/hands/rightHandLow.glb',
-  highPolyLeft: AFRAME_CDN_ROOT + 'controllers/hands/leftHandHigh.glb',
-  highPolyRight: AFRAME_CDN_ROOT + 'controllers/hands/rightHandHigh.glb'
+  toonLeft: _constants_index_js__WEBPACK_IMPORTED_MODULE_1__.AFRAME_CDN_ROOT + 'controllers/hands/leftHand.glb',
+  toonRight: _constants_index_js__WEBPACK_IMPORTED_MODULE_1__.AFRAME_CDN_ROOT + 'controllers/hands/rightHand.glb',
+  lowPolyLeft: _constants_index_js__WEBPACK_IMPORTED_MODULE_1__.AFRAME_CDN_ROOT + 'controllers/hands/leftHandLow.glb',
+  lowPolyRight: _constants_index_js__WEBPACK_IMPORTED_MODULE_1__.AFRAME_CDN_ROOT + 'controllers/hands/rightHandLow.glb',
+  highPolyLeft: _constants_index_js__WEBPACK_IMPORTED_MODULE_1__.AFRAME_CDN_ROOT + 'controllers/hands/leftHandHigh.glb',
+  highPolyRight: _constants_index_js__WEBPACK_IMPORTED_MODULE_1__.AFRAME_CDN_ROOT + 'controllers/hands/rightHandHigh.glb'
 };
 
 // Poses.
@@ -7829,7 +7888,7 @@ EVENTS[ANIMATIONS.point] = 'pointing';
  *
  * @property {string} Hand mapping (`left`, `right`).
  */
-module.exports.Component = registerComponent('hand-controls', {
+var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_0__.registerComponent)('hand-controls', {
   schema: {
     color: {
       default: 'white',
@@ -8266,16 +8325,24 @@ function isViveController(trackedControls) {
 /*!**************************************************!*\
   !*** ./src/components/hand-tracking-controls.js ***!
   \**************************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Component: () => (/* binding */ Component)
+/* harmony export */ });
+/* harmony import */ var _core_component_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../core/component.js */ "./src/core/component.js");
+/* harmony import */ var _core_a_entity_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../core/a-entity.js */ "./src/core/a-entity.js");
+/* harmony import */ var _utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/tracked-controls.js */ "./src/utils/tracked-controls.js");
+/* harmony import */ var _constants_index_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../constants/index.js */ "./src/constants/index.js");
 /* global THREE, XRHand */
-var registerComponent = (__webpack_require__(/*! ../core/component */ "./src/core/component.js").registerComponent);
-var AEntity = (__webpack_require__(/*! ../core/a-entity */ "./src/core/a-entity.js").AEntity);
-var trackedControlsUtils = __webpack_require__(/*! ../utils/tracked-controls */ "./src/utils/tracked-controls.js");
-var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
-var AFRAME_CDN_ROOT = (__webpack_require__(/*! ../constants */ "./src/constants/index.js").AFRAME_CDN_ROOT);
-var LEFT_HAND_MODEL_URL = AFRAME_CDN_ROOT + 'controllers/oculus-hands/v4/left.glb';
-var RIGHT_HAND_MODEL_URL = AFRAME_CDN_ROOT + 'controllers/oculus-hands/v4/right.glb';
+
+
+
+
+var LEFT_HAND_MODEL_URL = _constants_index_js__WEBPACK_IMPORTED_MODULE_3__.AFRAME_CDN_ROOT + 'controllers/oculus-hands/v4/left.glb';
+var RIGHT_HAND_MODEL_URL = _constants_index_js__WEBPACK_IMPORTED_MODULE_3__.AFRAME_CDN_ROOT + 'controllers/oculus-hands/v4/right.glb';
 var JOINTS = ['wrist', 'thumb-metacarpal', 'thumb-phalanx-proximal', 'thumb-phalanx-distal', 'thumb-tip', 'index-finger-metacarpal', 'index-finger-phalanx-proximal', 'index-finger-phalanx-intermediate', 'index-finger-phalanx-distal', 'index-finger-tip', 'middle-finger-metacarpal', 'middle-finger-phalanx-proximal', 'middle-finger-phalanx-intermediate', 'middle-finger-phalanx-distal', 'middle-finger-tip', 'ring-finger-metacarpal', 'ring-finger-phalanx-proximal', 'ring-finger-phalanx-intermediate', 'ring-finger-phalanx-distal', 'ring-finger-tip', 'pinky-finger-metacarpal', 'pinky-finger-phalanx-proximal', 'pinky-finger-phalanx-intermediate', 'pinky-finger-phalanx-distal', 'pinky-finger-tip'];
 var WRIST_INDEX = 0;
 var THUMB_TIP_INDEX = 4;
@@ -8286,7 +8353,7 @@ var PINCH_END_DISTANCE = 0.02;
 /**
  * Controls for hand tracking
  */
-module.exports.Component = registerComponent('hand-tracking-controls', {
+var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_0__.registerComponent)('hand-tracking-controls', {
   schema: {
     hand: {
       default: 'right',
@@ -8392,7 +8459,7 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
   checkIfControllerPresent: function () {
     var data = this.data;
     var hand = data.hand ? data.hand : undefined;
-    checkControllerPresentAndSetup(this, '', {
+    (0,_utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_2__.checkControllerPresentAndSetup)(this, '', {
       hand: hand,
       iterateControllerProfiles: true,
       handTracking: true
@@ -8621,14 +8688,14 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
   setupChildrenEntities: function () {
     var childrenEls = this.el.children;
     for (var i = 0; i < childrenEls.length; ++i) {
-      if (!(childrenEls[i] instanceof AEntity)) {
+      if (!(childrenEls[i] instanceof _core_a_entity_js__WEBPACK_IMPORTED_MODULE_1__.AEntity)) {
         continue;
       }
       this.addChildEntity(childrenEls[i]);
     }
   },
   addChildEntity: function (childEl) {
-    if (!(childEl instanceof AEntity)) {
+    if (!(childEl instanceof _core_a_entity_js__WEBPACK_IMPORTED_MODULE_1__.AEntity)) {
       return;
     }
     this.wristObject3D.add(childEl.object3D);
@@ -8641,11 +8708,15 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
 /*!*******************************************************!*\
   !*** ./src/components/hand-tracking-grab-controls.js ***!
   \*******************************************************/
-/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var registerComponent = (__webpack_require__(/*! ../core/component */ "./src/core/component.js").registerComponent);
-var THREE = __webpack_require__(/*! ../lib/three */ "./src/lib/three.js");
-registerComponent('hand-tracking-grab-controls', {
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _core_component_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../core/component.js */ "./src/core/component.js");
+/* harmony import */ var _lib_three_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../lib/three.js */ "./src/lib/three.js");
+
+
+(0,_core_component_js__WEBPACK_IMPORTED_MODULE_0__.registerComponent)('hand-tracking-grab-controls', {
   schema: {
     hand: {
       default: 'right',
@@ -8679,7 +8750,7 @@ registerComponent('hand-tracking-grab-controls', {
       trackedObject3D: trackedObject3DVariable,
       size: 0.04
     });
-    this.auxMatrix = new THREE.Matrix4();
+    this.auxMatrix = new _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].Matrix4();
     this.onCollisionStarted = this.onCollisionStarted.bind(this);
     this.el.addEventListener('obbcollisionstarted', this.onCollisionStarted);
     this.onCollisionEnded = this.onCollisionEnded.bind(this);
@@ -8778,10 +8849,16 @@ registerComponent('hand-tracking-grab-controls', {
 /*!********************************************!*\
   !*** ./src/components/hide-on-enter-ar.js ***!
   \********************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var register = (__webpack_require__(/*! ../core/component */ "./src/core/component.js").registerComponent);
-module.exports.Component = register('hide-on-enter-ar', {
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Component: () => (/* binding */ Component)
+/* harmony export */ });
+/* harmony import */ var _core_component_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../core/component.js */ "./src/core/component.js");
+
+var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_0__.registerComponent)('hide-on-enter-ar', {
   init: function () {
     var self = this;
     this.el.sceneEl.addEventListener('enter-vr', function () {
@@ -8801,10 +8878,16 @@ module.exports.Component = register('hide-on-enter-ar', {
 /*!********************************************!*\
   !*** ./src/components/hide-on-enter-vr.js ***!
   \********************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var register = (__webpack_require__(/*! ../core/component */ "./src/core/component.js").registerComponent);
-module.exports.Component = register('hide-on-enter-vr', {
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Component: () => (/* binding */ Component)
+/* harmony export */ });
+/* harmony import */ var _core_component_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../core/component.js */ "./src/core/component.js");
+
+var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_0__.registerComponent)('hide-on-enter-vr', {
   init: function () {
     var self = this;
     this.el.sceneEl.addEventListener('enter-vr', function () {
@@ -8824,21 +8907,27 @@ module.exports.Component = register('hide-on-enter-vr', {
 /*!*****************************************************!*\
   !*** ./src/components/hp-mixed-reality-controls.js ***!
   \*****************************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var registerComponent = (__webpack_require__(/*! ../core/component */ "./src/core/component.js").registerComponent);
-var THREE = __webpack_require__(/*! ../lib/three */ "./src/lib/three.js");
-var trackedControlsUtils = __webpack_require__(/*! ../utils/tracked-controls */ "./src/utils/tracked-controls.js");
-var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
-var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
-var onButtonEvent = trackedControlsUtils.onButtonEvent;
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Component: () => (/* binding */ Component)
+/* harmony export */ });
+/* harmony import */ var _core_component_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../core/component.js */ "./src/core/component.js");
+/* harmony import */ var _lib_three_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../lib/three.js */ "./src/lib/three.js");
+/* harmony import */ var _constants_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../constants/index.js */ "./src/constants/index.js");
+/* harmony import */ var _utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/tracked-controls.js */ "./src/utils/tracked-controls.js");
+
+
+
+
 
 // See Profiles Registry:
 // https://github.com/immersive-web/webxr-input-profiles/tree/master/packages/registry
 // TODO: Add a more robust system for deriving gamepad name.
 var GAMEPAD_ID = 'hp-mixed-reality';
-var AFRAME_CDN_ROOT = (__webpack_require__(/*! ../constants */ "./src/constants/index.js").AFRAME_CDN_ROOT);
-var HP_MIXED_REALITY_MODEL_GLB_BASE_URL = AFRAME_CDN_ROOT + 'controllers/hp/mixed-reality/';
+var HP_MIXED_REALITY_MODEL_GLB_BASE_URL = _constants_index_js__WEBPACK_IMPORTED_MODULE_2__.AFRAME_CDN_ROOT + 'controllers/hp/mixed-reality/';
 var HP_MIXED_REALITY_POSITION_OFFSET = {
   x: 0,
   y: 0,
@@ -8880,7 +8969,7 @@ var INPUT_MAPPING_WEBXR = {
 /**
  * HP Mixed Reality Controls
  */
-module.exports.Component = registerComponent('hp-mixed-reality-controls', {
+var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_0__.registerComponent)('hp-mixed-reality-controls', {
   schema: {
     hand: {
       default: 'none'
@@ -8895,16 +8984,16 @@ module.exports.Component = registerComponent('hp-mixed-reality-controls', {
     this.controllerPresent = false;
     this.onButtonChanged = this.onButtonChanged.bind(this);
     this.onButtonDown = function (evt) {
-      onButtonEvent(evt.detail.id, 'down', self, self.data.hand);
+      (0,_utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_3__.onButtonEvent)(evt.detail.id, 'down', self, self.data.hand);
     };
     this.onButtonUp = function (evt) {
-      onButtonEvent(evt.detail.id, 'up', self, self.data.hand);
+      (0,_utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_3__.onButtonEvent)(evt.detail.id, 'up', self, self.data.hand);
     };
     this.onButtonTouchEnd = function (evt) {
-      onButtonEvent(evt.detail.id, 'touchend', self, self.data.hand);
+      (0,_utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_3__.onButtonEvent)(evt.detail.id, 'touchend', self, self.data.hand);
     };
     this.onButtonTouchStart = function (evt) {
-      onButtonEvent(evt.detail.id, 'touchstart', self, self.data.hand);
+      (0,_utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_3__.onButtonEvent)(evt.detail.id, 'touchstart', self, self.data.hand);
     };
     this.previousButtonValues = {};
     this.bindMethods();
@@ -8952,7 +9041,7 @@ module.exports.Component = registerComponent('hp-mixed-reality-controls', {
   },
   checkIfControllerPresent: function () {
     var data = this.data;
-    checkControllerPresentAndSetup(this, GAMEPAD_ID, {
+    (0,_utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_3__.checkControllerPresentAndSetup)(this, GAMEPAD_ID, {
       index: this.controllerIndex,
       hand: data.hand
     });
@@ -9007,11 +9096,11 @@ module.exports.Component = registerComponent('hp-mixed-reality-controls', {
     this.el.emit('controllermodelready', {
       name: 'hp-mixed-reality-controls',
       model: this.data.model,
-      rayOrigin: new THREE.Vector3(0, 0, 0)
+      rayOrigin: new _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].Vector3(0, 0, 0)
     });
   },
   onAxisMoved: function (evt) {
-    emitIfAxesChanged(this, this.mapping.axes, evt);
+    (0,_utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_3__.emitIfAxesChanged)(this, this.mapping.axes, evt);
   }
 });
 
@@ -9021,64 +9110,122 @@ module.exports.Component = registerComponent('hp-mixed-reality-controls', {
 /*!*********************************!*\
   !*** ./src/components/index.js ***!
   \*********************************/
-/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-__webpack_require__(/*! ./animation */ "./src/components/animation.js");
-__webpack_require__(/*! ./anchored */ "./src/components/anchored.js");
-__webpack_require__(/*! ./camera */ "./src/components/camera.js");
-__webpack_require__(/*! ./cursor */ "./src/components/cursor.js");
-__webpack_require__(/*! ./geometry */ "./src/components/geometry.js");
-__webpack_require__(/*! ./generic-tracked-controller-controls */ "./src/components/generic-tracked-controller-controls.js");
-__webpack_require__(/*! ./gltf-model */ "./src/components/gltf-model.js");
-__webpack_require__(/*! ./grabbable */ "./src/components/grabbable.js");
-__webpack_require__(/*! ./hand-tracking-controls */ "./src/components/hand-tracking-controls.js");
-__webpack_require__(/*! ./hand-tracking-grab-controls */ "./src/components/hand-tracking-grab-controls.js");
-__webpack_require__(/*! ./hand-controls */ "./src/components/hand-controls.js");
-__webpack_require__(/*! ./hide-on-enter-ar */ "./src/components/hide-on-enter-ar.js");
-__webpack_require__(/*! ./hide-on-enter-vr */ "./src/components/hide-on-enter-vr.js");
-__webpack_require__(/*! ./hp-mixed-reality-controls */ "./src/components/hp-mixed-reality-controls.js");
-__webpack_require__(/*! ./layer */ "./src/components/layer.js");
-__webpack_require__(/*! ./laser-controls */ "./src/components/laser-controls.js");
-__webpack_require__(/*! ./light */ "./src/components/light.js");
-__webpack_require__(/*! ./line */ "./src/components/line.js");
-__webpack_require__(/*! ./link */ "./src/components/link.js");
-__webpack_require__(/*! ./logitech-mx-ink-controls */ "./src/components/logitech-mx-ink-controls.js");
-__webpack_require__(/*! ./look-controls */ "./src/components/look-controls.js");
-__webpack_require__(/*! ./magicleap-controls */ "./src/components/magicleap-controls.js");
-__webpack_require__(/*! ./material */ "./src/components/material.js");
-__webpack_require__(/*! ./obb-collider */ "./src/components/obb-collider.js");
-__webpack_require__(/*! ./obj-model */ "./src/components/obj-model.js");
-__webpack_require__(/*! ./oculus-go-controls */ "./src/components/oculus-go-controls.js");
-__webpack_require__(/*! ./meta-touch-controls */ "./src/components/meta-touch-controls.js");
-__webpack_require__(/*! ./pico-controls */ "./src/components/pico-controls.js");
-__webpack_require__(/*! ./position */ "./src/components/position.js");
-__webpack_require__(/*! ./raycaster */ "./src/components/raycaster.js");
-__webpack_require__(/*! ./rotation */ "./src/components/rotation.js");
-__webpack_require__(/*! ./scale */ "./src/components/scale.js");
-__webpack_require__(/*! ./shadow */ "./src/components/shadow.js");
-__webpack_require__(/*! ./sound */ "./src/components/sound.js");
-__webpack_require__(/*! ./text */ "./src/components/text.js");
-__webpack_require__(/*! ./tracked-controls */ "./src/components/tracked-controls.js");
-__webpack_require__(/*! ./visible */ "./src/components/visible.js");
-__webpack_require__(/*! ./valve-index-controls */ "./src/components/valve-index-controls.js");
-__webpack_require__(/*! ./vive-controls */ "./src/components/vive-controls.js");
-__webpack_require__(/*! ./vive-focus-controls */ "./src/components/vive-focus-controls.js");
-__webpack_require__(/*! ./wasd-controls */ "./src/components/wasd-controls.js");
-__webpack_require__(/*! ./windows-motion-controls */ "./src/components/windows-motion-controls.js");
-__webpack_require__(/*! ./scene/ar-hit-test */ "./src/components/scene/ar-hit-test.js");
-__webpack_require__(/*! ./scene/background */ "./src/components/scene/background.js");
-__webpack_require__(/*! ./scene/debug */ "./src/components/scene/debug.js");
-__webpack_require__(/*! ./scene/device-orientation-permission-ui */ "./src/components/scene/device-orientation-permission-ui.js");
-__webpack_require__(/*! ./scene/embedded */ "./src/components/scene/embedded.js");
-__webpack_require__(/*! ./scene/inspector */ "./src/components/scene/inspector.js");
-__webpack_require__(/*! ./scene/fog */ "./src/components/scene/fog.js");
-__webpack_require__(/*! ./scene/keyboard-shortcuts */ "./src/components/scene/keyboard-shortcuts.js");
-__webpack_require__(/*! ./scene/pool */ "./src/components/scene/pool.js");
-__webpack_require__(/*! ./scene/real-world-meshing */ "./src/components/scene/real-world-meshing.js");
-__webpack_require__(/*! ./scene/reflection */ "./src/components/scene/reflection.js");
-__webpack_require__(/*! ./scene/screenshot */ "./src/components/scene/screenshot.js");
-__webpack_require__(/*! ./scene/stats */ "./src/components/scene/stats.js");
-__webpack_require__(/*! ./scene/xr-mode-ui */ "./src/components/scene/xr-mode-ui.js");
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _animation_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./animation.js */ "./src/components/animation.js");
+/* harmony import */ var _anchored_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./anchored.js */ "./src/components/anchored.js");
+/* harmony import */ var _camera_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./camera.js */ "./src/components/camera.js");
+/* harmony import */ var _cursor_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./cursor.js */ "./src/components/cursor.js");
+/* harmony import */ var _geometry_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./geometry.js */ "./src/components/geometry.js");
+/* harmony import */ var _generic_tracked_controller_controls_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./generic-tracked-controller-controls.js */ "./src/components/generic-tracked-controller-controls.js");
+/* harmony import */ var _gltf_model_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./gltf-model.js */ "./src/components/gltf-model.js");
+/* harmony import */ var _grabbable_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./grabbable.js */ "./src/components/grabbable.js");
+/* harmony import */ var _hand_tracking_controls_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./hand-tracking-controls.js */ "./src/components/hand-tracking-controls.js");
+/* harmony import */ var _hand_tracking_grab_controls_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./hand-tracking-grab-controls.js */ "./src/components/hand-tracking-grab-controls.js");
+/* harmony import */ var _hand_controls_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./hand-controls.js */ "./src/components/hand-controls.js");
+/* harmony import */ var _hide_on_enter_ar_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./hide-on-enter-ar.js */ "./src/components/hide-on-enter-ar.js");
+/* harmony import */ var _hide_on_enter_vr_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./hide-on-enter-vr.js */ "./src/components/hide-on-enter-vr.js");
+/* harmony import */ var _hp_mixed_reality_controls_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./hp-mixed-reality-controls.js */ "./src/components/hp-mixed-reality-controls.js");
+/* harmony import */ var _layer_js__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./layer.js */ "./src/components/layer.js");
+/* harmony import */ var _laser_controls_js__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./laser-controls.js */ "./src/components/laser-controls.js");
+/* harmony import */ var _light_js__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./light.js */ "./src/components/light.js");
+/* harmony import */ var _line_js__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ./line.js */ "./src/components/line.js");
+/* harmony import */ var _link_js__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ./link.js */ "./src/components/link.js");
+/* harmony import */ var _logitech_mx_ink_controls_js__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ./logitech-mx-ink-controls.js */ "./src/components/logitech-mx-ink-controls.js");
+/* harmony import */ var _look_controls_js__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ./look-controls.js */ "./src/components/look-controls.js");
+/* harmony import */ var _magicleap_controls_js__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! ./magicleap-controls.js */ "./src/components/magicleap-controls.js");
+/* harmony import */ var _material_js__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! ./material.js */ "./src/components/material.js");
+/* harmony import */ var _meta_touch_controls_js__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! ./meta-touch-controls.js */ "./src/components/meta-touch-controls.js");
+/* harmony import */ var _obb_collider_js__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(/*! ./obb-collider.js */ "./src/components/obb-collider.js");
+/* harmony import */ var _obj_model_js__WEBPACK_IMPORTED_MODULE_25__ = __webpack_require__(/*! ./obj-model.js */ "./src/components/obj-model.js");
+/* harmony import */ var _oculus_go_controls_js__WEBPACK_IMPORTED_MODULE_26__ = __webpack_require__(/*! ./oculus-go-controls.js */ "./src/components/oculus-go-controls.js");
+/* harmony import */ var _pico_controls_js__WEBPACK_IMPORTED_MODULE_27__ = __webpack_require__(/*! ./pico-controls.js */ "./src/components/pico-controls.js");
+/* harmony import */ var _position_js__WEBPACK_IMPORTED_MODULE_28__ = __webpack_require__(/*! ./position.js */ "./src/components/position.js");
+/* harmony import */ var _raycaster_js__WEBPACK_IMPORTED_MODULE_29__ = __webpack_require__(/*! ./raycaster.js */ "./src/components/raycaster.js");
+/* harmony import */ var _rotation_js__WEBPACK_IMPORTED_MODULE_30__ = __webpack_require__(/*! ./rotation.js */ "./src/components/rotation.js");
+/* harmony import */ var _scale_js__WEBPACK_IMPORTED_MODULE_31__ = __webpack_require__(/*! ./scale.js */ "./src/components/scale.js");
+/* harmony import */ var _shadow_js__WEBPACK_IMPORTED_MODULE_32__ = __webpack_require__(/*! ./shadow.js */ "./src/components/shadow.js");
+/* harmony import */ var _sound_js__WEBPACK_IMPORTED_MODULE_33__ = __webpack_require__(/*! ./sound.js */ "./src/components/sound.js");
+/* harmony import */ var _text_js__WEBPACK_IMPORTED_MODULE_34__ = __webpack_require__(/*! ./text.js */ "./src/components/text.js");
+/* harmony import */ var _tracked_controls_js__WEBPACK_IMPORTED_MODULE_35__ = __webpack_require__(/*! ./tracked-controls.js */ "./src/components/tracked-controls.js");
+/* harmony import */ var _visible_js__WEBPACK_IMPORTED_MODULE_36__ = __webpack_require__(/*! ./visible.js */ "./src/components/visible.js");
+/* harmony import */ var _valve_index_controls_js__WEBPACK_IMPORTED_MODULE_37__ = __webpack_require__(/*! ./valve-index-controls.js */ "./src/components/valve-index-controls.js");
+/* harmony import */ var _vive_controls_js__WEBPACK_IMPORTED_MODULE_38__ = __webpack_require__(/*! ./vive-controls.js */ "./src/components/vive-controls.js");
+/* harmony import */ var _vive_focus_controls_js__WEBPACK_IMPORTED_MODULE_39__ = __webpack_require__(/*! ./vive-focus-controls.js */ "./src/components/vive-focus-controls.js");
+/* harmony import */ var _wasd_controls_js__WEBPACK_IMPORTED_MODULE_40__ = __webpack_require__(/*! ./wasd-controls.js */ "./src/components/wasd-controls.js");
+/* harmony import */ var _windows_motion_controls_js__WEBPACK_IMPORTED_MODULE_41__ = __webpack_require__(/*! ./windows-motion-controls.js */ "./src/components/windows-motion-controls.js");
+/* harmony import */ var _scene_ar_hit_test_js__WEBPACK_IMPORTED_MODULE_42__ = __webpack_require__(/*! ./scene/ar-hit-test.js */ "./src/components/scene/ar-hit-test.js");
+/* harmony import */ var _scene_background_js__WEBPACK_IMPORTED_MODULE_43__ = __webpack_require__(/*! ./scene/background.js */ "./src/components/scene/background.js");
+/* harmony import */ var _scene_debug_js__WEBPACK_IMPORTED_MODULE_44__ = __webpack_require__(/*! ./scene/debug.js */ "./src/components/scene/debug.js");
+/* harmony import */ var _scene_device_orientation_permission_ui_js__WEBPACK_IMPORTED_MODULE_45__ = __webpack_require__(/*! ./scene/device-orientation-permission-ui.js */ "./src/components/scene/device-orientation-permission-ui.js");
+/* harmony import */ var _scene_embedded_js__WEBPACK_IMPORTED_MODULE_46__ = __webpack_require__(/*! ./scene/embedded.js */ "./src/components/scene/embedded.js");
+/* harmony import */ var _scene_inspector_js__WEBPACK_IMPORTED_MODULE_47__ = __webpack_require__(/*! ./scene/inspector.js */ "./src/components/scene/inspector.js");
+/* harmony import */ var _scene_fog_js__WEBPACK_IMPORTED_MODULE_48__ = __webpack_require__(/*! ./scene/fog.js */ "./src/components/scene/fog.js");
+/* harmony import */ var _scene_keyboard_shortcuts_js__WEBPACK_IMPORTED_MODULE_49__ = __webpack_require__(/*! ./scene/keyboard-shortcuts.js */ "./src/components/scene/keyboard-shortcuts.js");
+/* harmony import */ var _scene_pool_js__WEBPACK_IMPORTED_MODULE_50__ = __webpack_require__(/*! ./scene/pool.js */ "./src/components/scene/pool.js");
+/* harmony import */ var _scene_real_world_meshing_js__WEBPACK_IMPORTED_MODULE_51__ = __webpack_require__(/*! ./scene/real-world-meshing.js */ "./src/components/scene/real-world-meshing.js");
+/* harmony import */ var _scene_reflection_js__WEBPACK_IMPORTED_MODULE_52__ = __webpack_require__(/*! ./scene/reflection.js */ "./src/components/scene/reflection.js");
+/* harmony import */ var _scene_screenshot_js__WEBPACK_IMPORTED_MODULE_53__ = __webpack_require__(/*! ./scene/screenshot.js */ "./src/components/scene/screenshot.js");
+/* harmony import */ var _scene_stats_js__WEBPACK_IMPORTED_MODULE_54__ = __webpack_require__(/*! ./scene/stats.js */ "./src/components/scene/stats.js");
+/* harmony import */ var _scene_xr_mode_ui_js__WEBPACK_IMPORTED_MODULE_55__ = __webpack_require__(/*! ./scene/xr-mode-ui.js */ "./src/components/scene/xr-mode-ui.js");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /***/ }),
 
@@ -9086,11 +9233,15 @@ __webpack_require__(/*! ./scene/xr-mode-ui */ "./src/components/scene/xr-mode-ui
 /*!******************************************!*\
   !*** ./src/components/laser-controls.js ***!
   \******************************************/
-/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var registerComponent = (__webpack_require__(/*! ../core/component */ "./src/core/component.js").registerComponent);
-var utils = __webpack_require__(/*! ../utils/ */ "./src/utils/index.js");
-registerComponent('laser-controls', {
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _core_component_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../core/component.js */ "./src/core/component.js");
+/* harmony import */ var _utils_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/index.js */ "./src/utils/index.js");
+
+
+(0,_core_component_js__WEBPACK_IMPORTED_MODULE_0__.registerComponent)('laser-controls', {
   schema: {
     hand: {
       default: 'right'
@@ -9142,7 +9293,7 @@ registerComponent('laser-controls', {
 
       // Show the line unless a particular config opts to hide it, until a controllermodelready
       // event comes through.
-      var raycasterConfig = utils.extend({
+      var raycasterConfig = _utils_index_js__WEBPACK_IMPORTED_MODULE_1__.extend({
         showLine: true
       }, controllerConfig.raycaster || {});
 
@@ -9161,7 +9312,7 @@ registerComponent('laser-controls', {
       } else {
         el.setAttribute('raycaster', 'showLine', true);
       }
-      el.setAttribute('cursor', utils.extend({
+      el.setAttribute('cursor', _utils_index_js__WEBPACK_IMPORTED_MODULE_1__.extend({
         fuse: false
       }, controllerConfig.cursor));
     }
@@ -9267,13 +9418,20 @@ registerComponent('laser-controls', {
 /*!*********************************!*\
   !*** ./src/components/layer.js ***!
   \*********************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Component: () => (/* binding */ Component)
+/* harmony export */ });
+/* harmony import */ var _core_component_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../core/component.js */ "./src/core/component.js");
+/* harmony import */ var _utils_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/index.js */ "./src/utils/index.js");
 /* global THREE, XRRigidTransform, XRWebGLBinding */
-var registerComponent = (__webpack_require__(/*! ../core/component */ "./src/core/component.js").registerComponent);
-var utils = __webpack_require__(/*! ../utils/ */ "./src/utils/index.js");
-var warn = utils.debug('components:layer:warn');
-module.exports.Component = registerComponent('layer', {
+
+
+var warn = _utils_index_js__WEBPACK_IMPORTED_MODULE_1__.debug('components:layer:warn');
+var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_0__.registerComponent)('layer', {
   schema: {
     type: {
       default: 'quad',
@@ -9679,23 +9837,30 @@ function blitTexture(gl, texture, subImage, textureEl) {
 /*!*********************************!*\
   !*** ./src/components/light.js ***!
   \*********************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var utils = __webpack_require__(/*! ../utils */ "./src/utils/index.js");
-var diff = utils.diff;
-var debug = __webpack_require__(/*! ../utils/debug */ "./src/utils/debug.js");
-var registerComponent = (__webpack_require__(/*! ../core/component */ "./src/core/component.js").registerComponent);
-var THREE = __webpack_require__(/*! ../lib/three */ "./src/lib/three.js");
-var mathUtils = __webpack_require__(/*! ../utils/math */ "./src/utils/math.js");
-var degToRad = THREE.MathUtils.degToRad;
-var warn = debug('components:light:warn');
-var CubeLoader = new THREE.CubeTextureLoader();
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Component: () => (/* binding */ Component)
+/* harmony export */ });
+/* harmony import */ var _lib_three_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../lib/three.js */ "./src/lib/three.js");
+/* harmony import */ var _utils_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/index.js */ "./src/utils/index.js");
+/* harmony import */ var _core_component_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../core/component.js */ "./src/core/component.js");
+/* harmony import */ var _utils_math_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/math.js */ "./src/utils/math.js");
+
+
+
+
+var degToRad = _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].MathUtils.degToRad;
+var warn = (0,_utils_index_js__WEBPACK_IMPORTED_MODULE_1__.debug)('components:light:warn');
+var CubeLoader = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].CubeTextureLoader();
 var probeCache = {};
 
 /**
  * Light component.
  */
-module.exports.Component = registerComponent('light', {
+var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_2__.registerComponent)('light', {
   schema: {
     angle: {
       default: 60,
@@ -9860,7 +10025,7 @@ module.exports.Component = registerComponent('light', {
    */
   update: function (oldData) {
     var data = this.data;
-    var diffData = diff(data, oldData);
+    var diffData = (0,_utils_index_js__WEBPACK_IMPORTED_MODULE_1__.diff)(data, oldData);
     var light = this.light;
     var self = this;
 
@@ -9945,14 +10110,14 @@ module.exports.Component = registerComponent('light', {
     this.updateShadow();
   },
   tick: function () {
-    var bbox = new THREE.Box3();
-    var normal = new THREE.Vector3();
-    var cameraWorldPosition = new THREE.Vector3();
-    var tempMat = new THREE.Matrix4();
-    var sphere = new THREE.Sphere();
-    var tempVector = new THREE.Vector3();
+    var bbox = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Box3();
+    var normal = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Vector3();
+    var cameraWorldPosition = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Vector3();
+    var tempMat = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Matrix4();
+    var sphere = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Sphere();
+    var tempVector = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Vector3();
     return function () {
-      if (!(this.data.type === 'directional' && this.light.shadow && this.light.shadow.camera instanceof THREE.OrthographicCamera && this.shadowCameraAutomaticEls.length)) return;
+      if (!(this.data.type === 'directional' && this.light.shadow && this.light.shadow.camera instanceof _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].OrthographicCamera && this.shadowCameraAutomaticEls.length)) return;
       var camera = this.light.shadow.camera;
       camera.getWorldDirection(normal);
       camera.getWorldPosition(cameraWorldPosition);
@@ -9966,8 +10131,8 @@ module.exports.Component = registerComponent('light', {
       this.shadowCameraAutomaticEls.forEach(function (el) {
         bbox.setFromObject(el.object3D);
         bbox.getBoundingSphere(sphere);
-        var distanceToPlane = mathUtils.distanceOfPointFromPlane(cameraWorldPosition, normal, sphere.center);
-        var pointOnCameraPlane = mathUtils.nearestPointInPlane(cameraWorldPosition, normal, sphere.center, tempVector);
+        var distanceToPlane = _utils_math_js__WEBPACK_IMPORTED_MODULE_3__.distanceOfPointFromPlane(cameraWorldPosition, normal, sphere.center);
+        var pointOnCameraPlane = _utils_math_js__WEBPACK_IMPORTED_MODULE_3__.nearestPointInPlane(cameraWorldPosition, normal, sphere.center, tempVector);
         var pointInXYPlane = pointOnCameraPlane.applyMatrix4(tempMat);
         camera.near = Math.min(-distanceToPlane - sphere.radius - 1, camera.near);
         camera.left = Math.min(-sphere.radius + pointInXYPlane.x, camera.left);
@@ -10018,7 +10183,7 @@ module.exports.Component = registerComponent('light', {
     // Shadow camera helper.
     var cameraHelper = el.getObject3D('cameraHelper');
     if (data.shadowCameraVisible && !cameraHelper) {
-      cameraHelper = new THREE.CameraHelper(light.shadow.camera);
+      cameraHelper = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].CameraHelper(light.shadow.camera);
       el.setObject3D('cameraHelper', cameraHelper);
     } else if (!data.shadowCameraVisible && cameraHelper) {
       el.removeObject3D('cameraHelper');
@@ -10036,7 +10201,7 @@ module.exports.Component = registerComponent('light', {
     // Shadow camera.
     light.shadow.camera.near = data.shadowCameraNear;
     light.shadow.camera.far = data.shadowCameraFar;
-    if (light.shadow.camera instanceof THREE.OrthographicCamera) {
+    if (light.shadow.camera instanceof _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].OrthographicCamera) {
       light.shadow.camera.top = data.shadowCameraTop;
       light.shadow.camera.right = data.shadowCameraRight;
       light.shadow.camera.bottom = data.shadowCameraBottom;
@@ -10056,11 +10221,11 @@ module.exports.Component = registerComponent('light', {
    */
   getLight: function (data) {
     var angle = data.angle;
-    var color = new THREE.Color(data.color);
+    var color = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Color(data.color);
     color = color.getHex();
     var decay = data.decay;
     var distance = data.distance;
-    var groundColor = new THREE.Color(data.groundColor);
+    var groundColor = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Color(data.groundColor);
     groundColor = groundColor.getHex();
     var intensity = data.intensity;
     var type = data.type;
@@ -10069,11 +10234,11 @@ module.exports.Component = registerComponent('light', {
     switch (type.toLowerCase()) {
       case 'ambient':
         {
-          return new THREE.AmbientLight(color, intensity);
+          return new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].AmbientLight(color, intensity);
         }
       case 'directional':
         {
-          light = new THREE.DirectionalLight(color, intensity);
+          light = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].DirectionalLight(color, intensity);
           this.defaultTarget = light.target;
           if (target) {
             if (target.hasLoaded) {
@@ -10086,15 +10251,15 @@ module.exports.Component = registerComponent('light', {
         }
       case 'hemisphere':
         {
-          return new THREE.HemisphereLight(color, groundColor, intensity);
+          return new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].HemisphereLight(color, groundColor, intensity);
         }
       case 'point':
         {
-          return new THREE.PointLight(color, intensity, distance, decay);
+          return new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].PointLight(color, intensity, distance, decay);
         }
       case 'spot':
         {
-          light = new THREE.SpotLight(color, intensity, distance, degToRad(angle), data.penumbra, decay);
+          light = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].SpotLight(color, intensity, distance, degToRad(angle), data.penumbra, decay);
           this.defaultTarget = light.target;
           if (target) {
             if (target.hasLoaded) {
@@ -10107,7 +10272,7 @@ module.exports.Component = registerComponent('light', {
         }
       case 'probe':
         {
-          light = new THREE.LightProbe();
+          light = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].LightProbe();
           this.updateProbeMap(data, light);
           return light;
         }
@@ -10123,16 +10288,16 @@ module.exports.Component = registerComponent('light', {
   updateProbeMap: function (data, light) {
     if (!data.envMap) {
       // reset parameters if no map
-      light.copy(new THREE.LightProbe());
+      light.copy(new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].LightProbe());
       return;
     }
 
     // Populate the cache if not done for this envMap yet
     if (probeCache[data.envMap] === undefined) {
       probeCache[data.envMap] = new window.Promise(function (resolve) {
-        utils.srcLoader.validateCubemapSrc(data.envMap, function loadEnvMap(urls) {
+        _utils_index_js__WEBPACK_IMPORTED_MODULE_1__.srcLoader.validateCubemapSrc(data.envMap, function loadEnvMap(urls) {
           CubeLoader.load(urls, function (cube) {
-            var tempLightProbe = THREE.LightProbeGenerator.fromCubeTexture(cube);
+            var tempLightProbe = _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].LightProbeGenerator.fromCubeTexture(cube);
             probeCache[data.envMap] = tempLightProbe;
             resolve(tempLightProbe);
           });
@@ -10145,7 +10310,7 @@ module.exports.Component = registerComponent('light', {
       probeCache[data.envMap].then(function (tempLightProbe) {
         light.copy(tempLightProbe);
       });
-    } else if (probeCache[data.envMap] instanceof THREE.LightProbe) {
+    } else if (probeCache[data.envMap] instanceof _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].LightProbe) {
       light.copy(probeCache[data.envMap]);
     }
   },
@@ -10170,11 +10335,17 @@ module.exports.Component = registerComponent('light', {
 /*!********************************!*\
   !*** ./src/components/line.js ***!
   \********************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Component: () => (/* binding */ Component)
+/* harmony export */ });
+/* harmony import */ var _core_component_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../core/component.js */ "./src/core/component.js");
 /* global THREE */
-var registerComponent = (__webpack_require__(/*! ../core/component */ "./src/core/component.js").registerComponent);
-module.exports.Component = registerComponent('line', {
+
+var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_0__.registerComponent)('line', {
   schema: {
     start: {
       type: 'vec3',
@@ -10266,11 +10437,19 @@ function isEqualVec3(a, b) {
 /*!********************************!*\
   !*** ./src/components/link.js ***!
   \********************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var registerComponent = (__webpack_require__(/*! ../core/component */ "./src/core/component.js").registerComponent);
-var registerShader = (__webpack_require__(/*! ../core/shader */ "./src/core/shader.js").registerShader);
-var THREE = __webpack_require__(/*! ../lib/three */ "./src/lib/three.js");
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Component: () => (/* binding */ Component)
+/* harmony export */ });
+/* harmony import */ var _lib_three_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../lib/three.js */ "./src/lib/three.js");
+/* harmony import */ var _core_component_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../core/component.js */ "./src/core/component.js");
+/* harmony import */ var _core_shader_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../core/shader.js */ "./src/core/shader.js");
+
+
+
 var DEFAULT_PREVIEW_DISTANCE = 15.0;
 
 /**
@@ -10278,7 +10457,7 @@ var DEFAULT_PREVIEW_DISTANCE = 15.0;
  *
  * @member {object} hiddenEls - Store the hidden elements during peek mode.
  */
-module.exports.Component = registerComponent('link', {
+var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_1__.registerComponent)('link', {
   schema: {
     backgroundColor: {
       default: 'red',
@@ -10321,7 +10500,7 @@ module.exports.Component = registerComponent('link', {
   init: function () {
     this.navigate = this.navigate.bind(this);
     this.previousQuaternion = undefined;
-    this.quaternionClone = new THREE.Quaternion();
+    this.quaternionClone = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Quaternion();
     // Store hidden elements during peek mode so we can show them again later.
     this.hiddenEls = [];
   },
@@ -10476,10 +10655,10 @@ module.exports.Component = registerComponent('link', {
    * 3. Face portal to camera when far away from user.
    */
   tick: function () {
-    var cameraWorldPosition = new THREE.Vector3();
-    var elWorldPosition = new THREE.Vector3();
-    var quaternion = new THREE.Quaternion();
-    var scale = new THREE.Vector3();
+    var cameraWorldPosition = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Vector3();
+    var elWorldPosition = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Vector3();
+    var quaternion = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Quaternion();
+    var scale = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Vector3();
     return function () {
       var el = this.el;
       var object3D = el.object3D;
@@ -10579,10 +10758,10 @@ module.exports.Component = registerComponent('link', {
    * @returns {number} > 0 if camera faces front of portal, < 0 if it faces back of portal.
    */
   calculateCameraPortalOrientation: function () {
-    var mat4 = new THREE.Matrix4();
-    var cameraPosition = new THREE.Vector3();
-    var portalNormal = new THREE.Vector3(0, 0, 1);
-    var portalPosition = new THREE.Vector3(0, 0, 0);
+    var mat4 = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Matrix4();
+    var cameraPosition = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Vector3();
+    var portalNormal = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Vector3(0, 0, 1);
+    var portalPosition = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Vector3(0, 0, 0);
     return function () {
       var el = this.el;
       var camera = el.sceneEl.camera;
@@ -10622,7 +10801,7 @@ module.exports.Component = registerComponent('link', {
 });
 
 /* eslint-disable */
-registerShader('portal', {
+(0,_core_shader_js__WEBPACK_IMPORTED_MODULE_2__.registerShader)('portal', {
   schema: {
     borderEnabled: {
       default: 1.0,
@@ -10660,21 +10839,27 @@ registerShader('portal', {
 /*!****************************************************!*\
   !*** ./src/components/logitech-mx-ink-controls.js ***!
   \****************************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var registerComponent = (__webpack_require__(/*! ../core/component */ "./src/core/component.js").registerComponent);
-var THREE = __webpack_require__(/*! ../lib/three */ "./src/lib/three.js");
-var trackedControlsUtils = __webpack_require__(/*! ../utils/tracked-controls */ "./src/utils/tracked-controls.js");
-var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
-var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
-var onButtonEvent = trackedControlsUtils.onButtonEvent;
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Component: () => (/* binding */ Component)
+/* harmony export */ });
+/* harmony import */ var _lib_three_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../lib/three.js */ "./src/lib/three.js");
+/* harmony import */ var _core_component_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../core/component.js */ "./src/core/component.js");
+/* harmony import */ var _constants_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../constants/index.js */ "./src/constants/index.js");
+/* harmony import */ var _utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/tracked-controls.js */ "./src/utils/tracked-controls.js");
+
+
+
+
 
 // See Profiles Registry:
 // https://github.com/immersive-web/webxr-input-profiles/tree/master/packages/registry
 // TODO: Add a more robust system for deriving gamepad name.
 var GAMEPAD_ID = 'logitech-mx-ink';
-var AFRAME_CDN_ROOT = (__webpack_require__(/*! ../constants */ "./src/constants/index.js").AFRAME_CDN_ROOT);
-var LOGITECH_MX_INK_MODEL_GLB_BASE_URL = AFRAME_CDN_ROOT + 'controllers/logitech/';
+var LOGITECH_MX_INK_MODEL_GLB_BASE_URL = _constants_index_js__WEBPACK_IMPORTED_MODULE_2__.AFRAME_CDN_ROOT + 'controllers/logitech/';
 
 /**
  * Button IDs:
@@ -10697,7 +10882,7 @@ var INPUT_MAPPING_WEBXR = {
 /**
  * Logitech MX Ink Controls
  */
-module.exports.Component = registerComponent('logitech-mx-ink-controls', {
+var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_1__.registerComponent)('logitech-mx-ink-controls', {
   schema: {
     hand: {
       default: 'left'
@@ -10714,16 +10899,16 @@ module.exports.Component = registerComponent('logitech-mx-ink-controls', {
     var self = this;
     this.onButtonChanged = this.onButtonChanged.bind(this);
     this.onButtonDown = function (evt) {
-      onButtonEvent(evt.detail.id, 'down', self, self.data.hand);
+      (0,_utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_3__.onButtonEvent)(evt.detail.id, 'down', self, self.data.hand);
     };
     this.onButtonUp = function (evt) {
-      onButtonEvent(evt.detail.id, 'up', self, self.data.hand);
+      (0,_utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_3__.onButtonEvent)(evt.detail.id, 'up', self, self.data.hand);
     };
     this.onButtonTouchEnd = function (evt) {
-      onButtonEvent(evt.detail.id, 'touchend', self, self.data.hand);
+      (0,_utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_3__.onButtonEvent)(evt.detail.id, 'touchend', self, self.data.hand);
     };
     this.onButtonTouchStart = function (evt) {
-      onButtonEvent(evt.detail.id, 'touchstart', self, self.data.hand);
+      (0,_utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_3__.onButtonEvent)(evt.detail.id, 'touchstart', self, self.data.hand);
     };
     this.bindMethods();
   },
@@ -10775,7 +10960,7 @@ module.exports.Component = registerComponent('logitech-mx-ink-controls', {
     if (controllerObject3D) {
       controllerObject3D.visible = false;
     }
-    checkControllerPresentAndSetup(this, GAMEPAD_ID, {
+    (0,_utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_3__.checkControllerPresentAndSetup)(this, GAMEPAD_ID, {
       hand: this.data.hand,
       iterateControllerProfiles: true
     });
@@ -10835,13 +11020,13 @@ module.exports.Component = registerComponent('logitech-mx-ink-controls', {
     this.el.emit('controllermodelready', {
       name: 'logitech-mx-ink-controls',
       model: this.data.model,
-      rayOrigin: new THREE.Vector3(0, 0, 0)
+      rayOrigin: new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Vector3(0, 0, 0)
     });
     this.controllerObject3D = this.el.getObject3D('mesh');
     this.controllerObject3D.visible = this.el.sceneEl.is('vr-mode');
   },
   onAxisMoved: function (evt) {
-    emitIfAxesChanged(this, this.mapping.axes, evt);
+    (0,_utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_3__.emitIfAxesChanged)(this, this.mapping.axes, evt);
   }
 });
 
@@ -10851,12 +11036,20 @@ module.exports.Component = registerComponent('logitech-mx-ink-controls', {
 /*!*****************************************!*\
   !*** ./src/components/look-controls.js ***!
   \*****************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Component: () => (/* binding */ Component)
+/* harmony export */ });
+/* harmony import */ var _lib_three_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../lib/three.js */ "./src/lib/three.js");
+/* harmony import */ var _core_component_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../core/component.js */ "./src/core/component.js");
+/* harmony import */ var _utils_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/index.js */ "./src/utils/index.js");
 /* global DeviceOrientationEvent  */
-var registerComponent = (__webpack_require__(/*! ../core/component */ "./src/core/component.js").registerComponent);
-var THREE = __webpack_require__(/*! ../lib/three */ "./src/lib/three.js");
-var utils = __webpack_require__(/*! ../utils/ */ "./src/utils/index.js");
+
+
+
 
 // To avoid recalculation at every mouse movement tick
 var PI_2 = Math.PI / 2;
@@ -10864,7 +11057,7 @@ var PI_2 = Math.PI / 2;
 /**
  * look-controls. Update entity pose, factoring mouse, touch.
  */
-module.exports.Component = registerComponent('look-controls', {
+var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_1__.registerComponent)('look-controls', {
   dependencies: ['position', 'rotation'],
   schema: {
     enabled: {
@@ -10891,12 +11084,12 @@ module.exports.Component = registerComponent('look-controls', {
   },
   init: function () {
     this.deltaYaw = 0;
-    this.previousHMDPosition = new THREE.Vector3();
-    this.hmdQuaternion = new THREE.Quaternion();
-    this.magicWindowAbsoluteEuler = new THREE.Euler();
-    this.magicWindowDeltaEuler = new THREE.Euler();
-    this.position = new THREE.Vector3();
-    this.magicWindowObject = new THREE.Object3D();
+    this.previousHMDPosition = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Vector3();
+    this.hmdQuaternion = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Quaternion();
+    this.magicWindowAbsoluteEuler = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Euler();
+    this.magicWindowDeltaEuler = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Euler();
+    this.position = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Vector3();
+    this.magicWindowObject = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Object3D();
     this.rotation = {};
     this.deltaRotation = {};
     this.savedPose = null;
@@ -10908,8 +11101,8 @@ module.exports.Component = registerComponent('look-controls', {
 
     // To save / restore camera pose
     this.savedPose = {
-      position: new THREE.Vector3(),
-      rotation: new THREE.Euler()
+      position: new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Vector3(),
+      rotation: new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Euler()
     };
 
     // Call enter VR handler if the scene has entered VR before the event listeners attached.
@@ -10922,8 +11115,8 @@ module.exports.Component = registerComponent('look-controls', {
     var data = this.data;
 
     // Only on mobile devices and only enabled if DeviceOrientation permission has been granted.
-    if (utils.device.isMobile() || utils.device.isMobileDeviceRequestingDesktopSite()) {
-      magicWindowControls = this.magicWindowControls = new THREE.DeviceOrientationControls(this.magicWindowObject);
+    if (_utils_index_js__WEBPACK_IMPORTED_MODULE_2__.device.isMobile() || _utils_index_js__WEBPACK_IMPORTED_MODULE_2__.device.isMobileDeviceRequestingDesktopSite()) {
+      magicWindowControls = this.magicWindowControls = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].DeviceOrientationControls(this.magicWindowObject);
       if (typeof DeviceOrientationEvent !== 'undefined' && DeviceOrientationEvent.requestPermission) {
         magicWindowControls.enabled = false;
         if (this.el.sceneEl.components['device-orientation-permission-ui'].permissionGranted) {
@@ -11001,8 +11194,8 @@ module.exports.Component = registerComponent('look-controls', {
    */
   setupMouseControls: function () {
     this.mouseDown = false;
-    this.pitchObject = new THREE.Object3D();
-    this.yawObject = new THREE.Object3D();
+    this.pitchObject = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Object3D();
+    this.yawObject = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Object3D();
     this.yawObject.position.y = 10;
     this.yawObject.add(this.pitchObject);
   },
@@ -11335,13 +11528,19 @@ module.exports.Component = registerComponent('look-controls', {
 /*!**********************************************!*\
   !*** ./src/components/magicleap-controls.js ***!
   \**********************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var registerComponent = (__webpack_require__(/*! ../core/component */ "./src/core/component.js").registerComponent);
-var trackedControlsUtils = __webpack_require__(/*! ../utils/tracked-controls */ "./src/utils/tracked-controls.js");
-var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
-var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
-var onButtonEvent = trackedControlsUtils.onButtonEvent;
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Component: () => (/* binding */ Component)
+/* harmony export */ });
+/* harmony import */ var _core_component_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../core/component.js */ "./src/core/component.js");
+/* harmony import */ var _constants_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../constants/index.js */ "./src/constants/index.js");
+/* harmony import */ var _utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/tracked-controls.js */ "./src/utils/tracked-controls.js");
+
+
+
 
 // See Profiles Registry:
 // https://github.com/immersive-web/webxr-input-profiles/tree/master/packages/registry
@@ -11349,8 +11548,7 @@ var onButtonEvent = trackedControlsUtils.onButtonEvent;
 var GAMEPAD_ID_PREFIX = 'magicleap';
 var GAMEPAD_ID_SUFFIX = '-one';
 var GAMEPAD_ID_COMPOSITE = GAMEPAD_ID_PREFIX + GAMEPAD_ID_SUFFIX;
-var AFRAME_CDN_ROOT = (__webpack_require__(/*! ../constants */ "./src/constants/index.js").AFRAME_CDN_ROOT);
-var MAGICLEAP_CONTROLLER_MODEL_GLB_URL = AFRAME_CDN_ROOT + 'controllers/magicleap/magicleap-one-controller.glb';
+var MAGICLEAP_CONTROLLER_MODEL_GLB_URL = _constants_index_js__WEBPACK_IMPORTED_MODULE_1__.AFRAME_CDN_ROOT + 'controllers/magicleap/magicleap-one-controller.glb';
 
 /**
  * Button IDs:
@@ -11376,7 +11574,7 @@ var INPUT_MAPPING_WEBXR = {
  * buttons: trigger, grip, touchpad, and menu.
  * Load a controller model.
  */
-module.exports.Component = registerComponent('magicleap-controls', {
+var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_0__.registerComponent)('magicleap-controls', {
   schema: {
     hand: {
       default: 'none'
@@ -11391,16 +11589,16 @@ module.exports.Component = registerComponent('magicleap-controls', {
     this.controllerPresent = false;
     this.onButtonChanged = this.onButtonChanged.bind(this);
     this.onButtonDown = function (evt) {
-      onButtonEvent(evt.detail.id, 'down', self);
+      (0,_utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_2__.onButtonEvent)(evt.detail.id, 'down', self);
     };
     this.onButtonUp = function (evt) {
-      onButtonEvent(evt.detail.id, 'up', self);
+      (0,_utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_2__.onButtonEvent)(evt.detail.id, 'up', self);
     };
     this.onButtonTouchEnd = function (evt) {
-      onButtonEvent(evt.detail.id, 'touchend', self);
+      (0,_utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_2__.onButtonEvent)(evt.detail.id, 'touchend', self);
     };
     this.onButtonTouchStart = function (evt) {
-      onButtonEvent(evt.detail.id, 'touchstart', self);
+      (0,_utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_2__.onButtonEvent)(evt.detail.id, 'touchstart', self);
     };
     this.previousButtonValues = {};
     this.bindMethods();
@@ -11448,7 +11646,7 @@ module.exports.Component = registerComponent('magicleap-controls', {
   },
   checkIfControllerPresent: function () {
     var data = this.data;
-    checkControllerPresentAndSetup(this, GAMEPAD_ID_COMPOSITE, {
+    (0,_utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_2__.checkControllerPresentAndSetup)(this, GAMEPAD_ID_COMPOSITE, {
       index: this.controllerIndex,
       hand: data.hand
     });
@@ -11502,7 +11700,7 @@ module.exports.Component = registerComponent('magicleap-controls', {
     controllerObject3D.scale.set(0.01, 0.01, 0.01);
   },
   onAxisMoved: function (evt) {
-    emitIfAxesChanged(this, this.mapping.axes, evt);
+    (0,_utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_2__.emitIfAxesChanged)(this, this.mapping.axes, evt);
   },
   updateModel: function (buttonName, evtName) {},
   setButtonColor: function (buttonName, color) {}
@@ -11514,17 +11712,23 @@ module.exports.Component = registerComponent('magicleap-controls', {
 /*!************************************!*\
   !*** ./src/components/material.js ***!
   \************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Component: () => (/* binding */ Component)
+/* harmony export */ });
+/* harmony import */ var _lib_three_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../lib/three.js */ "./src/lib/three.js");
+/* harmony import */ var _utils_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/index.js */ "./src/utils/index.js");
+/* harmony import */ var _core_component_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../core/component.js */ "./src/core/component.js");
+/* harmony import */ var _core_shader_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../core/shader.js */ "./src/core/shader.js");
 /* global Promise */
-var utils = __webpack_require__(/*! ../utils/ */ "./src/utils/index.js");
-var component = __webpack_require__(/*! ../core/component */ "./src/core/component.js");
-var THREE = __webpack_require__(/*! ../lib/three */ "./src/lib/three.js");
-var shader = __webpack_require__(/*! ../core/shader */ "./src/core/shader.js");
-var error = utils.debug('components:material:error');
-var registerComponent = component.registerComponent;
-var shaders = shader.shaders;
-var shaderNames = shader.shaderNames;
+
+
+
+
+var error = _utils_index_js__WEBPACK_IMPORTED_MODULE_1__.debug('components:material:error');
 
 /**
  * Material component.
@@ -11533,7 +11737,7 @@ var shaderNames = shader.shaderNames;
  *         three.js's implementation of PBR. Another standard shading model is `flat` which
  *         uses MeshBasicMaterial.
  */
-module.exports.Component = registerComponent('material', {
+var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_2__.registerComponent)('material', {
   schema: {
     alphaTest: {
       default: 0.0,
@@ -11573,7 +11777,7 @@ module.exports.Component = registerComponent('material', {
     },
     shader: {
       default: 'standard',
-      oneOf: shaderNames,
+      oneOf: _core_shader_js__WEBPACK_IMPORTED_MODULE_3__.shaderNames,
       schemaChange: true
     },
     side: {
@@ -11625,7 +11829,7 @@ module.exports.Component = registerComponent('material', {
     newShader = data && data.shader;
     currentShader = this.oldData && this.oldData.shader;
     shader = newShader || currentShader;
-    schema = shaders[shader] && shaders[shader].schema;
+    schema = _core_shader_js__WEBPACK_IMPORTED_MODULE_3__.shaders[shader] && _core_shader_js__WEBPACK_IMPORTED_MODULE_3__.shaders[shader].schema;
     if (!schema) {
       error('Unknown shader schema ' + shader);
     }
@@ -11667,7 +11871,7 @@ module.exports.Component = registerComponent('material', {
   },
   updateShader: function (shaderName) {
     var data = this.data;
-    var Shader = shaders[shaderName] && shaders[shaderName].Shader;
+    var Shader = _core_shader_js__WEBPACK_IMPORTED_MODULE_3__.shaders[shaderName] && _core_shader_js__WEBPACK_IMPORTED_MODULE_3__.shaders[shaderName].Shader;
     var shaderInstance;
     if (!Shader) {
       throw new Error('Unknown shader ' + shaderName);
@@ -11715,7 +11919,7 @@ module.exports.Component = registerComponent('material', {
    * Dispose of it from memory and unsubscribe from scene updates.
    */
   remove: function () {
-    var defaultMaterial = new THREE.MeshBasicMaterial();
+    var defaultMaterial = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].MeshBasicMaterial();
     var material = this.material;
     var object3D = this.el.getObject3D('mesh');
     if (object3D) {
@@ -11768,16 +11972,16 @@ function parseSide(side) {
   switch (side) {
     case 'back':
       {
-        return THREE.BackSide;
+        return _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].BackSide;
       }
     case 'double':
       {
-        return THREE.DoubleSide;
+        return _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].DoubleSide;
       }
     default:
       {
         // Including case `front`.
-        return THREE.FrontSide;
+        return _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].FrontSide;
       }
   }
 }
@@ -11793,23 +11997,23 @@ function parseBlending(blending) {
   switch (blending) {
     case 'none':
       {
-        return THREE.NoBlending;
+        return _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].NoBlending;
       }
     case 'additive':
       {
-        return THREE.AdditiveBlending;
+        return _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].AdditiveBlending;
       }
     case 'subtractive':
       {
-        return THREE.SubtractiveBlending;
+        return _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].SubtractiveBlending;
       }
     case 'multiply':
       {
-        return THREE.MultiplyBlending;
+        return _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].MultiplyBlending;
       }
     default:
       {
-        return THREE.NormalBlending;
+        return _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].NormalBlending;
       }
   }
 }
@@ -11835,22 +12039,28 @@ function disposeMaterial(material, system) {
 /*!***********************************************!*\
   !*** ./src/components/meta-touch-controls.js ***!
   \***********************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var registerComponent = (__webpack_require__(/*! ../core/component */ "./src/core/component.js").registerComponent);
-var THREE = __webpack_require__(/*! ../lib/three */ "./src/lib/three.js");
-var trackedControlsUtils = __webpack_require__(/*! ../utils/tracked-controls */ "./src/utils/tracked-controls.js");
-var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
-var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
-var onButtonEvent = trackedControlsUtils.onButtonEvent;
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Component: () => (/* binding */ Component)
+/* harmony export */ });
+/* harmony import */ var _lib_three_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../lib/three.js */ "./src/lib/three.js");
+/* harmony import */ var _core_component_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../core/component.js */ "./src/core/component.js");
+/* harmony import */ var _constants_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../constants/index.js */ "./src/constants/index.js");
+/* harmony import */ var _utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/tracked-controls.js */ "./src/utils/tracked-controls.js");
+
+
+
+
 
 // Prefix for Gen1 and Gen2 Oculus Touch Controllers.
 var GAMEPAD_ID_PREFIX = 'oculus-touch';
 
 // First generation model URL.
-var AFRAME_CDN_ROOT = (__webpack_require__(/*! ../constants */ "./src/constants/index.js").AFRAME_CDN_ROOT);
-var TOUCH_CONTROLLER_MODEL_BASE_URL = AFRAME_CDN_ROOT + 'controllers/oculus/oculus-touch-controller-';
-var META_CONTROLLER_MODEL_BASE_URL = AFRAME_CDN_ROOT + 'controllers/meta/';
+var TOUCH_CONTROLLER_MODEL_BASE_URL = _constants_index_js__WEBPACK_IMPORTED_MODULE_2__.AFRAME_CDN_ROOT + 'controllers/oculus/oculus-touch-controller-';
+var META_CONTROLLER_MODEL_BASE_URL = _constants_index_js__WEBPACK_IMPORTED_MODULE_2__.AFRAME_CDN_ROOT + 'controllers/meta/';
 var OCULUS_TOUCH_CONFIG = {
   left: {
     modelUrl: TOUCH_CONTROLLER_MODEL_BASE_URL + 'left.gltf',
@@ -11866,8 +12076,8 @@ var OCULUS_TOUCH_CONFIG = {
         z: -1
       }
     },
-    modelPivotOffset: new THREE.Vector3(-0.005, 0.036, -0.037),
-    modelPivotRotation: new THREE.Euler(Math.PI / 4.5, 0, 0)
+    modelPivotOffset: new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Vector3(-0.005, 0.036, -0.037),
+    modelPivotRotation: new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Euler(Math.PI / 4.5, 0, 0)
   },
   right: {
     modelUrl: TOUCH_CONTROLLER_MODEL_BASE_URL + 'right.gltf',
@@ -11883,8 +12093,8 @@ var OCULUS_TOUCH_CONFIG = {
         z: -1
       }
     },
-    modelPivotOffset: new THREE.Vector3(0.005, 0.036, -0.037),
-    modelPivotRotation: new THREE.Euler(Math.PI / 4.5, 0, 0)
+    modelPivotOffset: new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Vector3(0.005, 0.036, -0.037),
+    modelPivotRotation: new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Euler(Math.PI / 4.5, 0, 0)
   }
 };
 var CONTROLLER_DEFAULT = 'oculus-touch';
@@ -11905,8 +12115,8 @@ var CONTROLLER_PROPERTIES = {
           z: -1
         }
       },
-      modelPivotOffset: new THREE.Vector3(0, -0.007, -0.021),
-      modelPivotRotation: new THREE.Euler(-Math.PI / 4, 0, 0)
+      modelPivotOffset: new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Vector3(0, -0.007, -0.021),
+      modelPivotRotation: new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Euler(-Math.PI / 4, 0, 0)
     },
     right: {
       modelUrl: TOUCH_CONTROLLER_MODEL_BASE_URL + 'gen2-right.gltf',
@@ -11922,8 +12132,8 @@ var CONTROLLER_PROPERTIES = {
           z: -1
         }
       },
-      modelPivotOffset: new THREE.Vector3(0, -0.007, -0.021),
-      modelPivotRotation: new THREE.Euler(-Math.PI / 4, 0, 0)
+      modelPivotOffset: new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Vector3(0, -0.007, -0.021),
+      modelPivotRotation: new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Euler(-Math.PI / 4, 0, 0)
     }
   },
   'oculus-touch-v3': {
@@ -11941,8 +12151,8 @@ var CONTROLLER_PROPERTIES = {
           z: -0.7945567170519814
         }
       },
-      modelPivotOffset: new THREE.Vector3(0, 0, 0),
-      modelPivotRotation: new THREE.Euler(0, 0, 0)
+      modelPivotOffset: new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Vector3(0, 0, 0),
+      modelPivotRotation: new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Euler(0, 0, 0)
     },
     right: {
       modelUrl: TOUCH_CONTROLLER_MODEL_BASE_URL + 'v3-right.glb',
@@ -11958,8 +12168,8 @@ var CONTROLLER_PROPERTIES = {
           z: -0.7945567170519814
         }
       },
-      modelPivotOffset: new THREE.Vector3(0, 0, 0),
-      modelPivotRotation: new THREE.Euler(0, 0, 0)
+      modelPivotOffset: new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Vector3(0, 0, 0),
+      modelPivotRotation: new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Euler(0, 0, 0)
     }
   },
   'meta-quest-touch-pro': {
@@ -11977,8 +12187,8 @@ var CONTROLLER_PROPERTIES = {
           z: -0.7945567170519814
         }
       },
-      modelPivotOffset: new THREE.Vector3(0, 0, 0),
-      modelPivotRotation: new THREE.Euler(0, 0, 0)
+      modelPivotOffset: new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Vector3(0, 0, 0),
+      modelPivotRotation: new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Euler(0, 0, 0)
     },
     right: {
       modelUrl: META_CONTROLLER_MODEL_BASE_URL + 'quest-touch-pro-right.glb',
@@ -11994,8 +12204,8 @@ var CONTROLLER_PROPERTIES = {
           z: -0.7945567170519814
         }
       },
-      modelPivotOffset: new THREE.Vector3(0, 0, 0),
-      modelPivotRotation: new THREE.Euler(0, 0, 0)
+      modelPivotOffset: new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Vector3(0, 0, 0),
+      modelPivotRotation: new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Euler(0, 0, 0)
     }
   },
   'meta-quest-touch-plus': {
@@ -12013,8 +12223,8 @@ var CONTROLLER_PROPERTIES = {
           z: -0.7945567170519814
         }
       },
-      modelPivotOffset: new THREE.Vector3(0, 0, 0),
-      modelPivotRotation: new THREE.Euler(0, 0, 0)
+      modelPivotOffset: new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Vector3(0, 0, 0),
+      modelPivotRotation: new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Euler(0, 0, 0)
     },
     right: {
       modelUrl: META_CONTROLLER_MODEL_BASE_URL + 'quest-touch-plus-right.glb',
@@ -12030,8 +12240,8 @@ var CONTROLLER_PROPERTIES = {
           z: -0.7945567170519814
         }
       },
-      modelPivotOffset: new THREE.Vector3(0, 0, 0),
-      modelPivotRotation: new THREE.Euler(0, 0, 0)
+      modelPivotOffset: new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Vector3(0, 0, 0),
+      modelPivotRotation: new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Euler(0, 0, 0)
     }
   }
 };
@@ -12096,21 +12306,21 @@ var componentConfig = {
   init: function () {
     var self = this;
     this.onButtonDown = function (evt) {
-      onButtonEvent(evt.detail.id, 'down', self, self.data.hand);
+      (0,_utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_3__.onButtonEvent)(evt.detail.id, 'down', self, self.data.hand);
     };
     this.onButtonUp = function (evt) {
-      onButtonEvent(evt.detail.id, 'up', self, self.data.hand);
+      (0,_utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_3__.onButtonEvent)(evt.detail.id, 'up', self, self.data.hand);
     };
     this.onButtonTouchStart = function (evt) {
-      onButtonEvent(evt.detail.id, 'touchstart', self, self.data.hand);
+      (0,_utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_3__.onButtonEvent)(evt.detail.id, 'touchstart', self, self.data.hand);
     };
     this.onButtonTouchEnd = function (evt) {
-      onButtonEvent(evt.detail.id, 'touchend', self, self.data.hand);
+      (0,_utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_3__.onButtonEvent)(evt.detail.id, 'touchend', self, self.data.hand);
     };
     this.controllerPresent = false;
     this.previousButtonValues = {};
     this.bindMethods();
-    this.triggerEuler = new THREE.Euler();
+    this.triggerEuler = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Euler();
   },
   addEventListeners: function () {
     var el = this.el;
@@ -12141,7 +12351,7 @@ var componentConfig = {
     if (controllerObject3D) {
       controllerObject3D.visible = false;
     }
-    checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX, {
+    (0,_utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_3__.checkControllerPresentAndSetup)(this, GAMEPAD_ID_PREFIX, {
       hand: this.data.hand,
       iterateControllerProfiles: true
     });
@@ -12339,7 +12549,7 @@ var componentConfig = {
     };
   },
   onAxisMoved: function (evt) {
-    emitIfAxesChanged(this, this.mapping[this.data.hand].axes, evt);
+    (0,_utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_3__.emitIfAxesChanged)(this, this.mapping[this.data.hand].axes, evt);
   },
   onThumbstickMoved: function (evt) {
     if (!this.buttonMeshes || !this.buttonMeshes.thumbstick) {
@@ -12384,8 +12594,8 @@ var componentConfig = {
     }
   }
 };
-registerComponent('oculus-touch-controls', componentConfig);
-module.exports.Component = registerComponent('meta-touch-controls', componentConfig);
+(0,_core_component_js__WEBPACK_IMPORTED_MODULE_1__.registerComponent)('oculus-touch-controls', componentConfig);
+var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_1__.registerComponent)('meta-touch-controls', componentConfig);
 
 /**
  * Some of the controller models share the same material for different parts (buttons, triggers...).
@@ -12408,11 +12618,15 @@ function cloneMeshMaterial(object3d) {
 /*!****************************************!*\
   !*** ./src/components/obb-collider.js ***!
   \****************************************/
-/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var registerComponent = (__webpack_require__(/*! ../core/component */ "./src/core/component.js").registerComponent);
-var THREE = __webpack_require__(/*! ../lib/three */ "./src/lib/three.js");
-registerComponent('obb-collider', {
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _lib_three_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../lib/three.js */ "./src/lib/three.js");
+/* harmony import */ var _core_component_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../core/component.js */ "./src/core/component.js");
+
+
+(0,_core_component_js__WEBPACK_IMPORTED_MODULE_1__.registerComponent)('obb-collider', {
   schema: {
     size: {
       default: 0
@@ -12428,10 +12642,10 @@ registerComponent('obb-collider', {
     }
   },
   init: function () {
-    this.previousScale = new THREE.Vector3().copy(this.el.object3D.scale);
-    this.auxEuler = new THREE.Euler();
-    this.boundingBox = new THREE.Box3();
-    this.boundingBoxSize = new THREE.Vector3();
+    this.previousScale = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Vector3().copy(this.el.object3D.scale);
+    this.auxEuler = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Euler();
+    this.boundingBox = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Box3();
+    this.boundingBoxSize = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Vector3();
     this.updateCollider = this.updateCollider.bind(this);
     this.onModelLoaded = this.onModelLoaded.bind(this);
     this.updateBoundingBox = this.updateBoundingBox.bind(this);
@@ -12462,8 +12676,8 @@ registerComponent('obb-collider', {
       return;
     }
     this.el.removeObject3D('mesh');
-    box = new THREE.Box3().setFromObject(model);
-    center = box.getCenter(new THREE.Vector3());
+    box = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Box3().setFromObject(model);
+    center = box.getCenter(new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Vector3());
     model.position.x += model.position.x - center.x;
     model.position.y += model.position.y - center.y;
     model.position.z += model.position.z - center.z;
@@ -12472,8 +12686,8 @@ registerComponent('obb-collider', {
   updateCollider: function () {
     var el = this.el;
     var boundingBoxSize = this.boundingBoxSize;
-    var aabb = this.aabb = this.aabb || new THREE.OBB();
-    this.obb = this.obb || new THREE.OBB();
+    var aabb = this.aabb = this.aabb || new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].OBB();
+    this.obb = this.obb || new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].OBB();
 
     // Defer if entity has not yet loaded.
     if (!el.hasLoaded) {
@@ -12500,7 +12714,7 @@ registerComponent('obb-collider', {
 
     // Destroy current geometry.
     renderColliderMesh.geometry.dispose();
-    renderColliderMesh.geometry = new THREE.BoxGeometry(boundingBoxSize.x, boundingBoxSize.y, boundingBoxSize.z);
+    renderColliderMesh.geometry = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].BoxGeometry(boundingBoxSize.x, boundingBoxSize.y, boundingBoxSize.z);
   },
   hideCollider: function () {
     if (!this.renderColliderMesh) {
@@ -12513,10 +12727,10 @@ registerComponent('obb-collider', {
     var renderColliderGeometry;
     var renderColliderMesh;
     boundingBoxSize = this.boundingBoxSize;
-    renderColliderGeometry = this.renderColliderGeometry = new THREE.BoxGeometry(boundingBoxSize.x, boundingBoxSize.y, boundingBoxSize.z);
-    renderColliderMesh = this.renderColliderMesh = new THREE.Mesh(renderColliderGeometry, new THREE.MeshLambertMaterial({
+    renderColliderGeometry = this.renderColliderGeometry = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].BoxGeometry(boundingBoxSize.x, boundingBoxSize.y, boundingBoxSize.z);
+    renderColliderMesh = this.renderColliderMesh = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Mesh(renderColliderGeometry, new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].MeshLambertMaterial({
       color: 0x00ff00,
-      side: THREE.DoubleSide
+      side: _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].DoubleSide
     }));
     renderColliderMesh.matrixAutoUpdate = false;
     renderColliderMesh.matrixWorldAutoUpdate = false;
@@ -12525,11 +12739,11 @@ registerComponent('obb-collider', {
     this.el.sceneEl.object3D.add(renderColliderMesh);
   },
   updateBoundingBox: function () {
-    var auxPosition = new THREE.Vector3();
-    var auxScale = new THREE.Vector3();
-    var auxQuaternion = new THREE.Quaternion();
-    var identityQuaternion = new THREE.Quaternion();
-    var auxMatrix = new THREE.Matrix4();
+    var auxPosition = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Vector3();
+    var auxScale = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Vector3();
+    var auxQuaternion = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Quaternion();
+    var identityQuaternion = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Quaternion();
+    var auxMatrix = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Matrix4();
     return function () {
       var auxEuler = this.auxEuler;
       var boundingBox = this.boundingBox;
@@ -12589,10 +12803,10 @@ registerComponent('obb-collider', {
     return this.trackedObject3D;
   },
   tick: function () {
-    var auxPosition = new THREE.Vector3();
-    var auxScale = new THREE.Vector3();
-    var auxQuaternion = new THREE.Quaternion();
-    var auxMatrix = new THREE.Matrix4();
+    var auxPosition = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Vector3();
+    var auxScale = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Vector3();
+    var auxQuaternion = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Quaternion();
+    var auxMatrix = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Matrix4();
     return function () {
       var obb = this.obb;
       var renderColliderMesh = this.renderColliderMesh;
@@ -12631,13 +12845,21 @@ registerComponent('obb-collider', {
 /*!*************************************!*\
   !*** ./src/components/obj-model.js ***!
   \*************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var debug = __webpack_require__(/*! ../utils/debug */ "./src/utils/debug.js");
-var registerComponent = (__webpack_require__(/*! ../core/component */ "./src/core/component.js").registerComponent);
-var THREE = __webpack_require__(/*! ../lib/three */ "./src/lib/three.js");
-var warn = debug('components:obj-model:warn');
-module.exports.Component = registerComponent('obj-model', {
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Component: () => (/* binding */ Component)
+/* harmony export */ });
+/* harmony import */ var _utils_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/index.js */ "./src/utils/index.js");
+/* harmony import */ var _core_component_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../core/component.js */ "./src/core/component.js");
+/* harmony import */ var _lib_three_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../lib/three.js */ "./src/lib/three.js");
+
+
+
+var warn = (0,_utils_index_js__WEBPACK_IMPORTED_MODULE_0__.debug)('components:obj-model:warn');
+var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_1__.registerComponent)('obj-model', {
   schema: {
     mtl: {
       type: 'model'
@@ -12649,8 +12871,8 @@ module.exports.Component = registerComponent('obj-model', {
   init: function () {
     var self = this;
     this.model = null;
-    this.objLoader = new THREE.OBJLoader();
-    this.mtlLoader = new THREE.MTLLoader(this.objLoader.manager);
+    this.objLoader = new _lib_three_js__WEBPACK_IMPORTED_MODULE_2__["default"].OBJLoader();
+    this.mtlLoader = new _lib_three_js__WEBPACK_IMPORTED_MODULE_2__["default"].MTLLoader(this.objLoader.manager);
     // Allow cross-origin images to be loaded.
     this.mtlLoader.crossOrigin = '';
     this.el.addEventListener('componentinitialized', function (evt) {
@@ -12735,7 +12957,7 @@ module.exports.Component = registerComponent('obj-model', {
       return;
     }
     this.model.traverse(function (child) {
-      if (child instanceof THREE.Mesh) {
+      if (child instanceof _lib_three_js__WEBPACK_IMPORTED_MODULE_2__["default"].Mesh) {
         child.material = material.material;
       }
     });
@@ -12748,15 +12970,20 @@ module.exports.Component = registerComponent('obj-model', {
 /*!**********************************************!*\
   !*** ./src/components/oculus-go-controls.js ***!
   \**********************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var registerComponent = (__webpack_require__(/*! ../core/component */ "./src/core/component.js").registerComponent);
-var trackedControlsUtils = __webpack_require__(/*! ../utils/tracked-controls */ "./src/utils/tracked-controls.js");
-var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
-var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
-var onButtonEvent = trackedControlsUtils.onButtonEvent;
-var AFRAME_CDN_ROOT = (__webpack_require__(/*! ../constants */ "./src/constants/index.js").AFRAME_CDN_ROOT);
-var OCULUS_GO_CONTROLLER_MODEL_URL = AFRAME_CDN_ROOT + 'controllers/oculus/go/oculus-go-controller.gltf';
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Component: () => (/* binding */ Component)
+/* harmony export */ });
+/* harmony import */ var _core_component_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../core/component.js */ "./src/core/component.js");
+/* harmony import */ var _constants_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../constants/index.js */ "./src/constants/index.js");
+/* harmony import */ var _utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/tracked-controls.js */ "./src/utils/tracked-controls.js");
+
+
+
+var OCULUS_GO_CONTROLLER_MODEL_URL = _constants_index_js__WEBPACK_IMPORTED_MODULE_1__.AFRAME_CDN_ROOT + 'controllers/oculus/go/oculus-go-controller.gltf';
 
 // Prefix for Gen1 and Gen2 Oculus Touch Controllers.
 var GAMEPAD_ID_PREFIX = 'oculus-go';
@@ -12785,7 +13012,7 @@ var INPUT_MAPPING = {
  * controller buttons: trigger, touchpad
  * Load a controller model and highlight the pressed buttons.
  */
-module.exports.Component = registerComponent('oculus-go-controls', {
+var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_0__.registerComponent)('oculus-go-controls', {
   schema: {
     hand: {
       default: ''
@@ -12819,16 +13046,16 @@ module.exports.Component = registerComponent('oculus-go-controls', {
     var self = this;
     this.onButtonChanged = this.onButtonChanged.bind(this);
     this.onButtonDown = function (evt) {
-      onButtonEvent(evt.detail.id, 'down', self);
+      (0,_utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_2__.onButtonEvent)(evt.detail.id, 'down', self);
     };
     this.onButtonUp = function (evt) {
-      onButtonEvent(evt.detail.id, 'up', self);
+      (0,_utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_2__.onButtonEvent)(evt.detail.id, 'up', self);
     };
     this.onButtonTouchStart = function (evt) {
-      onButtonEvent(evt.detail.id, 'touchstart', self);
+      (0,_utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_2__.onButtonEvent)(evt.detail.id, 'touchstart', self);
     };
     this.onButtonTouchEnd = function (evt) {
-      onButtonEvent(evt.detail.id, 'touchend', self);
+      (0,_utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_2__.onButtonEvent)(evt.detail.id, 'touchend', self);
     };
     this.controllerPresent = false;
     this.bindMethods();
@@ -12856,7 +13083,7 @@ module.exports.Component = registerComponent('oculus-go-controls', {
     this.controllerEventsActive = false;
   },
   checkIfControllerPresent: function () {
-    checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX, this.data.hand ? {
+    (0,_utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_2__.checkControllerPresentAndSetup)(this, GAMEPAD_ID_PREFIX, this.data.hand ? {
       hand: this.data.hand
     } : {});
   },
@@ -12909,7 +13136,7 @@ module.exports.Component = registerComponent('oculus-go-controls', {
     this.el.emit(button + 'changed', evt.detail.state);
   },
   onAxisMoved: function (evt) {
-    emitIfAxesChanged(this, this.mapping.axes, evt);
+    (0,_utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_2__.emitIfAxesChanged)(this, this.mapping.axes, evt);
   },
   updateModel: function (buttonName, evtName) {
     if (!this.data.model) {
@@ -12945,21 +13172,27 @@ module.exports.Component = registerComponent('oculus-go-controls', {
 /*!*****************************************!*\
   !*** ./src/components/pico-controls.js ***!
   \*****************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var registerComponent = (__webpack_require__(/*! ../core/component */ "./src/core/component.js").registerComponent);
-var THREE = __webpack_require__(/*! ../lib/three */ "./src/lib/three.js");
-var trackedControlsUtils = __webpack_require__(/*! ../utils/tracked-controls */ "./src/utils/tracked-controls.js");
-var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
-var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
-var onButtonEvent = trackedControlsUtils.onButtonEvent;
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Component: () => (/* binding */ Component)
+/* harmony export */ });
+/* harmony import */ var _core_component_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../core/component.js */ "./src/core/component.js");
+/* harmony import */ var _lib_three_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../lib/three.js */ "./src/lib/three.js");
+/* harmony import */ var _constants_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../constants/index.js */ "./src/constants/index.js");
+/* harmony import */ var _utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/tracked-controls.js */ "./src/utils/tracked-controls.js");
+
+
+
+
 
 // See Profiles Registry:
 // https://github.com/immersive-web/webxr-input-profiles/tree/master/packages/registry
 // TODO: Add a more robust system for deriving gamepad name.
 var GAMEPAD_ID = 'pico-4';
-var AFRAME_CDN_ROOT = (__webpack_require__(/*! ../constants */ "./src/constants/index.js").AFRAME_CDN_ROOT);
-var PICO_MODEL_GLB_BASE_URL = AFRAME_CDN_ROOT + 'controllers/pico/pico4/';
+var PICO_MODEL_GLB_BASE_URL = _constants_index_js__WEBPACK_IMPORTED_MODULE_2__.AFRAME_CDN_ROOT + 'controllers/pico/pico4/';
 
 /**
  * Button IDs:
@@ -12990,7 +13223,7 @@ var INPUT_MAPPING_WEBXR = {
 /**
  * Pico Controls
  */
-module.exports.Component = registerComponent('pico-controls', {
+var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_0__.registerComponent)('pico-controls', {
   schema: {
     hand: {
       default: 'none'
@@ -13004,16 +13237,16 @@ module.exports.Component = registerComponent('pico-controls', {
     var self = this;
     this.onButtonChanged = this.onButtonChanged.bind(this);
     this.onButtonDown = function (evt) {
-      onButtonEvent(evt.detail.id, 'down', self, self.data.hand);
+      (0,_utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_3__.onButtonEvent)(evt.detail.id, 'down', self, self.data.hand);
     };
     this.onButtonUp = function (evt) {
-      onButtonEvent(evt.detail.id, 'up', self, self.data.hand);
+      (0,_utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_3__.onButtonEvent)(evt.detail.id, 'up', self, self.data.hand);
     };
     this.onButtonTouchEnd = function (evt) {
-      onButtonEvent(evt.detail.id, 'touchend', self, self.data.hand);
+      (0,_utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_3__.onButtonEvent)(evt.detail.id, 'touchend', self, self.data.hand);
     };
     this.onButtonTouchStart = function (evt) {
-      onButtonEvent(evt.detail.id, 'touchstart', self, self.data.hand);
+      (0,_utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_3__.onButtonEvent)(evt.detail.id, 'touchstart', self, self.data.hand);
     };
     this.bindMethods();
   },
@@ -13060,7 +13293,7 @@ module.exports.Component = registerComponent('pico-controls', {
   },
   checkIfControllerPresent: function () {
     var data = this.data;
-    checkControllerPresentAndSetup(this, GAMEPAD_ID, {
+    (0,_utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_3__.checkControllerPresentAndSetup)(this, GAMEPAD_ID, {
       index: this.controllerIndex,
       hand: data.hand
     });
@@ -13112,11 +13345,11 @@ module.exports.Component = registerComponent('pico-controls', {
     this.el.emit('controllermodelready', {
       name: 'pico-controls',
       model: this.data.model,
-      rayOrigin: new THREE.Vector3(0, 0, 0)
+      rayOrigin: new _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].Vector3(0, 0, 0)
     });
   },
   onAxisMoved: function (evt) {
-    emitIfAxesChanged(this, this.mapping[this.data.hand].axes, evt);
+    (0,_utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_3__.emitIfAxesChanged)(this, this.mapping[this.data.hand].axes, evt);
   }
 });
 
@@ -13126,10 +13359,16 @@ module.exports.Component = registerComponent('pico-controls', {
 /*!************************************!*\
   !*** ./src/components/position.js ***!
   \************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var registerComponent = (__webpack_require__(/*! ../core/component */ "./src/core/component.js").registerComponent);
-module.exports.Component = registerComponent('position', {
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Component: () => (/* binding */ Component)
+/* harmony export */ });
+/* harmony import */ var _core_component_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../core/component.js */ "./src/core/component.js");
+
+var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_0__.registerComponent)('position', {
   schema: {
     type: 'vec3'
   },
@@ -13150,14 +13389,22 @@ module.exports.Component = registerComponent('position', {
 /*!*************************************!*\
   !*** ./src/components/raycaster.js ***!
   \*************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Component: () => (/* binding */ Component)
+/* harmony export */ });
+/* harmony import */ var _lib_three_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../lib/three.js */ "./src/lib/three.js");
+/* harmony import */ var _core_component_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../core/component.js */ "./src/core/component.js");
+/* harmony import */ var _utils_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/index.js */ "./src/utils/index.js");
 /* global MutationObserver */
 
-var registerComponent = (__webpack_require__(/*! ../core/component */ "./src/core/component.js").registerComponent);
-var THREE = __webpack_require__(/*! ../lib/three */ "./src/lib/three.js");
-var utils = __webpack_require__(/*! ../utils/ */ "./src/utils/index.js");
-var warn = utils.debug('components:raycaster:warn');
+
+
+
+var warn = _utils_index_js__WEBPACK_IMPORTED_MODULE_2__.debug('components:raycaster:warn');
 
 // Defines selectors that should be 'safe' for the MutationObserver used to
 // refresh the whitelist. Matches classnames, IDs, and presence of attributes.
@@ -13192,7 +13439,7 @@ var EVENTS = {
  * @member {number} prevCheckTime - Previous time intersection was checked. To help interval.
  * @member {object} raycaster - three.js Raycaster.
  */
-module.exports.Component = registerComponent('raycaster', {
+var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_1__.registerComponent)('raycaster', {
   schema: {
     autoRefresh: {
       default: true
@@ -13239,7 +13486,7 @@ module.exports.Component = registerComponent('raycaster', {
   multiple: true,
   init: function () {
     this.clearedIntersectedEls = [];
-    this.unitLineEndVec3 = new THREE.Vector3();
+    this.unitLineEndVec3 = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Vector3();
     this.intersectedEls = [];
     this.intersections = [];
     this.newIntersectedEls = [];
@@ -13248,14 +13495,14 @@ module.exports.Component = registerComponent('raycaster', {
     this.prevCheckTime = undefined;
     this.prevIntersectedEls = [];
     this.rawIntersections = [];
-    this.raycaster = new THREE.Raycaster();
+    this.raycaster = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Raycaster();
     this.updateOriginDirection();
     this.setDirty = this.setDirty.bind(this);
     this.updateLine = this.updateLine.bind(this);
     this.observer = new MutationObserver(this.setDirty);
     this.dirty = true;
-    this.lineEndVec3 = new THREE.Vector3();
-    this.otherLineEndVec3 = new THREE.Vector3();
+    this.lineEndVec3 = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Vector3();
+    this.otherLineEndVec3 = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Vector3();
     this.lineData = {
       end: this.lineEndVec3
     };
@@ -13497,8 +13744,8 @@ module.exports.Component = registerComponent('raycaster', {
    * direction offsets.
    */
   updateOriginDirection: function () {
-    var direction = new THREE.Vector3();
-    var originVec3 = new THREE.Vector3();
+    var direction = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Vector3();
+    var originVec3 = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Vector3();
 
     // Closure to make quaternion/vector3 objects private.
     return function updateOriginDirection() {
@@ -13625,11 +13872,19 @@ function copyArray(a, b) {
 /*!************************************!*\
   !*** ./src/components/rotation.js ***!
   \************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var degToRad = (__webpack_require__(/*! ../lib/three */ "./src/lib/three.js").MathUtils).degToRad;
-var registerComponent = (__webpack_require__(/*! ../core/component */ "./src/core/component.js").registerComponent);
-module.exports.Component = registerComponent('rotation', {
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Component: () => (/* binding */ Component)
+/* harmony export */ });
+/* harmony import */ var _lib_three_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../lib/three.js */ "./src/lib/three.js");
+/* harmony import */ var _core_component_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../core/component.js */ "./src/core/component.js");
+
+
+var degToRad = _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].MathUtils.degToRad;
+var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_1__.registerComponent)('rotation', {
   schema: {
     type: 'vec3'
   },
@@ -13653,10 +13908,16 @@ module.exports.Component = registerComponent('rotation', {
 /*!*********************************!*\
   !*** ./src/components/scale.js ***!
   \*********************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var registerComponent = (__webpack_require__(/*! ../core/component */ "./src/core/component.js").registerComponent);
-module.exports.Component = registerComponent('scale', {
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Component: () => (/* binding */ Component)
+/* harmony export */ });
+/* harmony import */ var _core_component_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../core/component.js */ "./src/core/component.js");
+
+var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_0__.registerComponent)('scale', {
   schema: {
     type: 'vec3',
     default: {
@@ -13682,16 +13943,23 @@ module.exports.Component = registerComponent('scale', {
 /*!*********************************************!*\
   !*** ./src/components/scene/ar-hit-test.js ***!
   \*********************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Component: () => (/* binding */ Component)
+/* harmony export */ });
+/* harmony import */ var _lib_three_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../lib/three.js */ "./src/lib/three.js");
+/* harmony import */ var _core_component_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../core/component.js */ "./src/core/component.js");
 /* global ImageData, Map, Set */
+
+
 var arrowURL = 'data:image/webp;base64,UklGRkQHAABXRUJQVlA4WAoAAAAQAAAA/wEA/wEAQUxQSL0DAAARDzD/ERGCjrY9sYYFfgo6aa1kJ7K0w9Lo3AadLSVeFxevQwj5kuM8RfR/Atw/C0+ozB/oUBrloFZs6ElSW88j1KA4yExNWQaqRZquIDF0JYmlq0hAuUDTFu66tng3teW7pa3cQf1V1edvur54M/Slm6Wv3Gx9zw0MXlQLntcsBN6wkHjTQuYtC4W3LTw8mGRVG57TbAROtxHfZNhInGkjc5aNwtk2Hg6Mvki14k+NkZzCwQgCxalcAv3kddRTPI1DcUrXId1FLf1uHpzaQz4tquhZVLlKesbVpqKeTj0n0F5PpXDlFN9UqmhalL/ImuZFo6KmToWLoKlddMprqlS8cKovBvHo2kTiFV2LN4msaxKZl3QNiair8xYRdDWivIvXVXmbcMqJ51UebZuFXxZt6xd4laxtciqRtA3Cv0nU1t+kEUFbI8JvCa+tvkm3FDlO/W+OR99+kWEp/YYo+tYfTVnf/K8cE/F///3vv//993eeL+a+uvjawLcX3xjYvJotBFY3kVjTRGFtE+BU2AiMbiQyhpHMWEYeBozAH5qNBYRDB5KBCaTDBKKBAZTDBoKBDjwHAN5ABeCJBsAZcAAC0YHHxAYSMYBiYgGZWEA2MYFCbCCZGAAIANFEB+AnYgMQTDQAYSJ2AN5EBZAm4gDgTDgAeSIu4DGygTIRN1CMLOCZiACykQlg4jsAycgA8AO+BxCNdJyDkcbwRirDGXGnx8w+FDPrkM3MQ9JQZMYhiiwV/RDMtIM3U1/DmXHUo+IR2kSR2ToWkQ1NIn2qf2J8LCqJKiDUiSADHY3whirhdHgZ94HKaR97PhE+twEUJUFoAcgyTct8hfSxSkShASDKdMJ/ritKHwgyQ0sD4D/miCxU5SbhOOUDTnZpccCjYP/i0bZ/8bAgtVGEoGapWIQXyzKVKLwgNJFk2rtMIgoNRJlOZF7SNSSyUEeQmbxBFKEmtYjEe8S8zOZ1AkJVCmS88FJOtF40Ksg4oUaFiygk3C8qlTVNyl8UTevCUdAE2t14PfVqU1FPp57TopKeQZWromddTQp6QOfTOEQt/ZDuipZ11w/wOiqO8dRORcc6BQEkDQMClaHcn5wV9yLbxsNZNgpn2sicYSNxuo34Js1G4FQbnuNsOPa28PCWhcKbFjJvWEi8ZiHwqgXPcxbc5db33Cx95WboSzddX7yp+vyN0+eul7ZyN7Xlu64t3jVt4c5pc4JLV5EYupJE0xUknC4nOjVlmaYpyLit53HCQ0+ScnqceNcS5dzUkd0/CwMAVlA4IGADAAAQXwCdASoAAgACP8ne6Wy/tjCpqJ/IA/A5CWlu4XYBG/Pz8AfwD8APz//f3v8E1fuHZnxKYACtfuHZnxKYACrYTb5mOslhxu843ecbvON3nG7zjd3a0VCn7G1MABVxwH/Xd25gAK1+4dmfEpe2+PHhQaj75++riG6FuYACtfuHZnxKYACRrK3q9xO8Ss3uWKnMhs/rDF1hi6wxdYYusMXWGI5QRcCFDZog5OgqNlse1NDuz/UoFa/cOzPiUwAEsAOK4/nu5eZHK2tlXxJfNYlMABWv3Dsz4bvNJ5YA/LtxJ38SmAArX7h2Z8Sk5vdZUYv7mZPiUwAFa/cOzPh21s5OgZxf1mfEpemRyFr/rM+JS9noA/LtxJ38SmAAlUJIotzAASn6TjdhK+D3Dsz4dyvB7h2Z8O2tnJ0DOL+sz4lL2nKLT4lL/+iSLOocxq639w7M34MNZdm55uJ8v8ra2cpVZnxKTq2F3PN/cNksAfl24k7+JTAASqrD37h2Z7b1W+VtbOUqsz4lJ1bC7nm/uGyWAPy7cSd/EpgAJVVh79w7M9t6rfK2tnKVWZ8Sk6thdzzf3DZLAH5duJO/iUwAEqqw9+4dme29VvlbWzlKrM+JSdWwu55v7hslgD8u3EnfxKYACVVYe/cOzPbeq3ytrZylVme0kYJ8557FLerqFrzIbPrrf3DZLAH5duJO/iUvaVMS9BoaF4p7pSDFTP1XMyfElelrM0DOL+sz4eBJ13nV1OppBGPuKb4YzXQgq9uH19uS/0+JS9t9fr6ZUlQBelDG6GMgq97otb5QMPJwtKyBTbFp8Sl7b6/X0ykkawEOsgdiE6Fi0vb/Eve6xkwsmug0Z4nGNHQO8839bpTsjpz7SWIJxKagvd1QWMa6FYT1KEw3j4XDT6vJ9Xk+nyfT5Pq8n1eEmk5dinMM/9Fcfz4Z3Dsz3KD2dw7LxBRxKrqUUGQPH/7zxr1KIfNpLEJ0MZB2ITM/0Z2EFoh12NlXnEcpYcbvON3nG7zjd5xu84vfcNIAAP7+y8ceyzbVxkakPYY4lcr72fqOnDwipv+yxC71wAADBrjKnAAAAAAAAAAAAAAw7oNGHttqWONcoFN/2WIDc2pa6WVFtFYROlsaMaTXdcOjXHz93+YxAglKa4AAAAA=';
-var register = (__webpack_require__(/*! ../../core/component */ "./src/core/component.js").registerComponent);
-var THREE = __webpack_require__(/*! ../../lib/three */ "./src/lib/three.js");
 var CAM_LAYER = 21;
 var applyPose = function () {
-  var tempQuaternion = new THREE.Quaternion();
-  var tempVec3 = new THREE.Vector3();
+  var tempQuaternion = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Quaternion();
+  var tempVec3 = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Vector3();
   function applyPose(pose, object3D, offset) {
     object3D.position.copy(pose.transform.position);
     object3D.quaternion.copy(pose.transform.orientation);
@@ -13704,8 +13972,8 @@ var applyPose = function () {
 }();
 applyPose.tempFakePose = {
   transform: {
-    orientation: new THREE.Quaternion(),
-    position: new THREE.Vector3()
+    orientation: new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Quaternion(),
+    position: new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Vector3()
   }
 };
 
@@ -13874,7 +14142,7 @@ HitTest.updateAnchorPoses = function (frame, refSpace) {
   HitTest.prototype.previousFrameAnchors = trackedAnchors;
 };
 var hitTestCache;
-module.exports.Component = register('ar-hit-test', {
+var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_1__.registerComponent)('ar-hit-test', {
   schema: {
     target: {
       type: 'selector'
@@ -13907,19 +14175,19 @@ module.exports.Component = register('ar-hit-test', {
     this.imageDataArray = new Uint8ClampedArray(512 * 512 * 4);
     this.imageData = new ImageData(this.imageDataArray, 512, 512);
     this.textureCache = new Map();
-    this.orthoCam = new THREE.OrthographicCamera();
+    this.orthoCam = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].OrthographicCamera();
     this.orthoCam.layers.set(CAM_LAYER);
-    this.textureTarget = new THREE.WebGLRenderTarget(512, 512, {});
-    this.basicMaterial = new THREE.MeshBasicMaterial({
+    this.textureTarget = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].WebGLRenderTarget(512, 512, {});
+    this.basicMaterial = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].MeshBasicMaterial({
       color: 0x000000,
-      side: THREE.DoubleSide
+      side: _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].DoubleSide
     });
     this.canvas = document.createElement('canvas');
     this.context = this.canvas.getContext('2d');
     this.context.imageSmoothingEnabled = false;
     this.canvas.width = 512;
     this.canvas.height = 512;
-    this.canvasTexture = new THREE.CanvasTexture(this.canvas, {
+    this.canvasTexture = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].CanvasTexture(this.canvas, {
       alpha: true
     });
     this.canvasTexture.flipY = false;
@@ -14038,7 +14306,7 @@ module.exports.Component = register('ar-hit-test', {
         }
       }.bind(this));
     }.bind(this));
-    this.bboxOffset = new THREE.Vector3();
+    this.bboxOffset = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Vector3();
     this.update = this.update.bind(this);
     this.makeBBox();
   },
@@ -14064,15 +14332,15 @@ module.exports.Component = register('ar-hit-test', {
     this.bboxNeedsUpdate = true;
   },
   makeBBox: function () {
-    var geometry = new THREE.PlaneGeometry(1, 1);
-    var material = new THREE.MeshBasicMaterial({
+    var geometry = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].PlaneGeometry(1, 1);
+    var material = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].MeshBasicMaterial({
       transparent: true,
       color: 0xffffff
     });
     geometry.rotateX(-Math.PI / 2);
     geometry.rotateY(-Math.PI / 2);
-    this.bbox = new THREE.Box3();
-    this.bboxMesh = new THREE.Mesh(geometry, material);
+    this.bbox = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Box3();
+    this.bboxMesh = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Mesh(geometry, material);
     this.el.setObject3D('ar-hit-test', this.bboxMesh);
     this.bboxMesh.visible = false;
   },
@@ -14135,7 +14403,7 @@ module.exports.Component = register('ar-hit-test', {
         if (this.textureCache.has(this.data.src)) {
           texture = this.textureCache.get(this.data.src);
         } else {
-          texture = new THREE.TextureLoader().load(this.data.src);
+          texture = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].TextureLoader().load(this.data.src);
           this.textureCache.set(this.data.src, texture);
         }
         this.bboxMesh.material.map = texture;
@@ -14179,11 +14447,17 @@ module.exports.Component = register('ar-hit-test', {
 /*!********************************************!*\
   !*** ./src/components/scene/background.js ***!
   \********************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Component: () => (/* binding */ Component)
+/* harmony export */ });
+/* harmony import */ var _core_component_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../core/component.js */ "./src/core/component.js");
 /* global THREE */
-var register = (__webpack_require__(/*! ../../core/component */ "./src/core/component.js").registerComponent);
-module.exports.Component = register('background', {
+
+var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_0__.registerComponent)('background', {
   schema: {
     color: {
       type: 'color',
@@ -14215,10 +14489,16 @@ module.exports.Component = register('background', {
 /*!***************************************!*\
   !*** ./src/components/scene/debug.js ***!
   \***************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var register = (__webpack_require__(/*! ../../core/component */ "./src/core/component.js").registerComponent);
-module.exports.Component = register('debug', {
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Component: () => (/* binding */ Component)
+/* harmony export */ });
+/* harmony import */ var _core_component_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../core/component.js */ "./src/core/component.js");
+
+var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_0__.registerComponent)('debug', {
   schema: {
     default: true
   },
@@ -14231,11 +14511,18 @@ module.exports.Component = register('debug', {
 /*!******************************************************************!*\
   !*** ./src/components/scene/device-orientation-permission-ui.js ***!
   \******************************************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Component: () => (/* binding */ Component)
+/* harmony export */ });
+/* harmony import */ var _core_component_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../core/component.js */ "./src/core/component.js");
+/* harmony import */ var _constants_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../constants/index.js */ "./src/constants/index.js");
 /* global DeviceOrientationEvent, location  */
-var registerComponent = (__webpack_require__(/*! ../../core/component */ "./src/core/component.js").registerComponent);
-var constants = __webpack_require__(/*! ../../constants/ */ "./src/constants/index.js");
+
+
 var MODAL_CLASS = 'a-modal';
 var DIALOG_CLASS = 'a-dialog';
 var DIALOG_TEXT_CLASS = 'a-dialog-text';
@@ -14249,7 +14536,7 @@ var DIALOG_OK_BUTTON_CLASS = 'a-dialog-ok-button';
 /**
  * UI for enabling device motion permission
  */
-module.exports.Component = registerComponent('device-orientation-permission-ui', {
+var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_0__.registerComponent)('device-orientation-permission-ui', {
   schema: {
     enabled: {
       default: true
@@ -14348,12 +14635,12 @@ function createPermissionDialog(denyText, allowText, dialogText, onAllowClicked,
   // Buttons
   denyButton = document.createElement('button');
   denyButton.classList.add(DIALOG_BUTTON_CLASS, DIALOG_DENY_BUTTON_CLASS);
-  denyButton.setAttribute(constants.AFRAME_INJECTED, '');
+  denyButton.setAttribute(_constants_index_js__WEBPACK_IMPORTED_MODULE_1__.AFRAME_INJECTED, '');
   denyButton.innerHTML = denyText;
   buttonsContainer.appendChild(denyButton);
   acceptButton = document.createElement('button');
   acceptButton.classList.add(DIALOG_BUTTON_CLASS, DIALOG_ALLOW_BUTTON_CLASS);
-  acceptButton.setAttribute(constants.AFRAME_INJECTED, '');
+  acceptButton.setAttribute(_constants_index_js__WEBPACK_IMPORTED_MODULE_1__.AFRAME_INJECTED, '');
   acceptButton.innerHTML = allowText;
   buttonsContainer.appendChild(acceptButton);
 
@@ -14377,7 +14664,7 @@ function createAlertDialog(closeText, dialogText, onOkClicked) {
   // Buttons
   okButton = document.createElement('button');
   okButton.classList.add(DIALOG_BUTTON_CLASS, DIALOG_OK_BUTTON_CLASS);
-  okButton.setAttribute(constants.AFRAME_INJECTED, '');
+  okButton.setAttribute(_constants_index_js__WEBPACK_IMPORTED_MODULE_1__.AFRAME_INJECTED, '');
   okButton.innerHTML = closeText;
   buttonsContainer.appendChild(okButton);
 
@@ -14395,10 +14682,10 @@ function createDialog(text, buttonsContainerEl) {
   var dialogText;
   modalContainer = document.createElement('div');
   modalContainer.classList.add(MODAL_CLASS);
-  modalContainer.setAttribute(constants.AFRAME_INJECTED, '');
+  modalContainer.setAttribute(_constants_index_js__WEBPACK_IMPORTED_MODULE_1__.AFRAME_INJECTED, '');
   dialog = document.createElement('div');
   dialog.className = DIALOG_CLASS;
-  dialog.setAttribute(constants.AFRAME_INJECTED, '');
+  dialog.setAttribute(_constants_index_js__WEBPACK_IMPORTED_MODULE_1__.AFRAME_INJECTED, '');
   modalContainer.appendChild(dialog);
   dialogTextContainer = document.createElement('div');
   dialogTextContainer.classList.add(DIALOG_TEXT_CONTAINER_CLASS);
@@ -14417,14 +14704,20 @@ function createDialog(text, buttonsContainerEl) {
 /*!******************************************!*\
   !*** ./src/components/scene/embedded.js ***!
   \******************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var registerComponent = (__webpack_require__(/*! ../../core/component */ "./src/core/component.js").registerComponent);
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Component: () => (/* binding */ Component)
+/* harmony export */ });
+/* harmony import */ var _core_component_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../core/component.js */ "./src/core/component.js");
+
 
 /**
  * Component to embed an a-frame scene within the layout of a 2D page.
  */
-module.exports.Component = registerComponent('embedded', {
+var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_0__.registerComponent)('embedded', {
   dependencies: ['xr-mode-ui'],
   schema: {
     default: true
@@ -14453,18 +14746,26 @@ module.exports.Component = registerComponent('embedded', {
 /*!*************************************!*\
   !*** ./src/components/scene/fog.js ***!
   \*************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var register = (__webpack_require__(/*! ../../core/component */ "./src/core/component.js").registerComponent);
-var THREE = __webpack_require__(/*! ../../lib/three */ "./src/lib/three.js");
-var debug = __webpack_require__(/*! ../../utils/debug */ "./src/utils/debug.js");
-var warn = debug('components:fog:warn');
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Component: () => (/* binding */ Component)
+/* harmony export */ });
+/* harmony import */ var _core_component_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../core/component.js */ "./src/core/component.js");
+/* harmony import */ var _lib_three_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../lib/three.js */ "./src/lib/three.js");
+/* harmony import */ var _utils_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../utils/index.js */ "./src/utils/index.js");
+
+
+
+var warn = (0,_utils_index_js__WEBPACK_IMPORTED_MODULE_2__.debug)('components:fog:warn');
 
 /**
  * Fog component.
  * Applies only to the scene entity.
  */
-module.exports.Component = register('fog', {
+var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_0__.registerComponent)('fog', {
   schema: {
     color: {
       type: 'color',
@@ -14502,7 +14803,7 @@ module.exports.Component = register('fog', {
     Object.keys(this.schema).forEach(function (key) {
       var value = data[key];
       if (key === 'color') {
-        value = new THREE.Color(value);
+        value = new _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].Color(value);
       }
       fog[key] = value;
     });
@@ -14529,9 +14830,9 @@ module.exports.Component = register('fog', {
 function getFog(data) {
   var fog;
   if (data.type === 'exponential') {
-    fog = new THREE.FogExp2(data.color, data.density);
+    fog = new _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].FogExp2(data.color, data.density);
   } else {
-    fog = new THREE.Fog(data.color, data.near, data.far);
+    fog = new _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].Fog(data.color, data.near, data.far);
   }
   fog.name = data.type;
   return fog;
@@ -14543,13 +14844,22 @@ function getFog(data) {
 /*!*******************************************!*\
   !*** ./src/components/scene/inspector.js ***!
   \*******************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Component: () => (/* binding */ Component)
+/* harmony export */ });
+/* harmony import */ var _constants_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../constants/index.js */ "./src/constants/index.js");
+/* harmony import */ var _core_component_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../core/component.js */ "./src/core/component.js");
+/* harmony import */ var _package_json__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../package.json */ "./package.json");
+/* harmony import */ var _utils_index_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../utils/index.js */ "./src/utils/index.js");
 /* global AFRAME, INSPECTOR_VERSION */
-var AFRAME_INJECTED = (__webpack_require__(/*! ../../constants */ "./src/constants/index.js").AFRAME_INJECTED);
-var pkg = __webpack_require__(/*! ../../../package */ "./package.json");
-var registerComponent = (__webpack_require__(/*! ../../core/component */ "./src/core/component.js").registerComponent);
-var utils = __webpack_require__(/*! ../../utils/ */ "./src/utils/index.js");
+
+
+
+
 
 /**
  * 0.4.2 to 0.4.x
@@ -14561,11 +14871,11 @@ function getFuzzyPatchVersion(version) {
   return split.join('.');
 }
 var INSPECTOR_DEV_URL = 'https://aframe.io/aframe-inspector/dist/aframe-inspector.js';
-var INSPECTOR_RELEASE_URL = 'https://unpkg.com/aframe-inspector@' + getFuzzyPatchVersion(pkg.version) + '/dist/aframe-inspector.min.js';
+var INSPECTOR_RELEASE_URL = 'https://unpkg.com/aframe-inspector@' + getFuzzyPatchVersion(_package_json__WEBPACK_IMPORTED_MODULE_2__.version) + '/dist/aframe-inspector.min.js';
 var INSPECTOR_URL =  false ? 0 : INSPECTOR_RELEASE_URL;
 var LOADING_MESSAGE = 'Loading Inspector';
 var LOADING_ERROR_MESSAGE = 'Error loading Inspector';
-module.exports.Component = registerComponent('inspector', {
+var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_1__.registerComponent)('inspector', {
   schema: {
     url: {
       default: INSPECTOR_URL
@@ -14585,7 +14895,7 @@ module.exports.Component = registerComponent('inspector', {
     if (!this.firstPlay) {
       return;
     }
-    urlParam = utils.getUrlParameter('inspector');
+    urlParam = _utils_index_js__WEBPACK_IMPORTED_MODULE_3__.getUrlParameter('inspector');
     if (urlParam !== 'false' && !!urlParam) {
       this.openInspector();
       this.firstPlay = false;
@@ -14639,7 +14949,7 @@ module.exports.Component = registerComponent('inspector', {
     script = document.createElement('script');
     script.src = this.data.url;
     script.setAttribute('data-name', 'aframe-inspector');
-    script.setAttribute(AFRAME_INJECTED, '');
+    script.setAttribute(_constants_index_js__WEBPACK_IMPORTED_MODULE_0__.AFRAME_INJECTED, '');
     script.onload = function () {
       AFRAME.INSPECTOR.open(focusEl);
       self.hideLoader();
@@ -14663,11 +14973,18 @@ module.exports.Component = registerComponent('inspector', {
 /*!****************************************************!*\
   !*** ./src/components/scene/keyboard-shortcuts.js ***!
   \****************************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var registerComponent = (__webpack_require__(/*! ../../core/component */ "./src/core/component.js").registerComponent);
-var shouldCaptureKeyEvent = (__webpack_require__(/*! ../../utils/ */ "./src/utils/index.js").shouldCaptureKeyEvent);
-module.exports.Component = registerComponent('keyboard-shortcuts', {
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Component: () => (/* binding */ Component)
+/* harmony export */ });
+/* harmony import */ var _core_component_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../core/component.js */ "./src/core/component.js");
+/* harmony import */ var _utils_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../utils/index.js */ "./src/utils/index.js");
+
+
+var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_0__.registerComponent)('keyboard-shortcuts', {
   schema: {
     enterVR: {
       default: true
@@ -14688,7 +15005,7 @@ module.exports.Component = registerComponent('keyboard-shortcuts', {
   },
   onKeyup: function (evt) {
     var scene = this.el;
-    if (!shouldCaptureKeyEvent(evt)) {
+    if (!(0,_utils_index_js__WEBPACK_IMPORTED_MODULE_1__.shouldCaptureKeyEvent)(evt)) {
       return;
     }
     if (this.data.enterVR && evt.keyCode === 70) {
@@ -14708,11 +15025,18 @@ module.exports.Component = registerComponent('keyboard-shortcuts', {
 /*!**************************************!*\
   !*** ./src/components/scene/pool.js ***!
   \**************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var debug = __webpack_require__(/*! ../../utils/debug */ "./src/utils/debug.js");
-var registerComponent = (__webpack_require__(/*! ../../core/component */ "./src/core/component.js").registerComponent);
-var warn = debug('components:pool:warn');
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Component: () => (/* binding */ Component)
+/* harmony export */ });
+/* harmony import */ var _utils_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../utils/index.js */ "./src/utils/index.js");
+/* harmony import */ var _core_component_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../core/component.js */ "./src/core/component.js");
+
+
+var warn = (0,_utils_index_js__WEBPACK_IMPORTED_MODULE_0__.debug)('components:pool:warn');
 
 /**
  * Pool component to reuse entities.
@@ -14722,7 +15046,7 @@ var warn = debug('components:pool:warn');
  * @member {array} availableEls - Available entities in the pool.
  * @member {array} usedEls - Entities of the pool in use.
  */
-module.exports.Component = registerComponent('pool', {
+var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_1__.registerComponent)('pool', {
   schema: {
     container: {
       default: ''
@@ -14852,11 +15176,18 @@ module.exports.Component = registerComponent('pool', {
 /*!****************************************************!*\
   !*** ./src/components/scene/real-world-meshing.js ***!
   \****************************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Component: () => (/* binding */ Component)
+/* harmony export */ });
+/* harmony import */ var _lib_three_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../lib/three.js */ "./src/lib/three.js");
+/* harmony import */ var _core_component_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../core/component.js */ "./src/core/component.js");
 /* global XRPlane, XRMesh */
-var register = (__webpack_require__(/*! ../../core/component */ "./src/core/component.js").registerComponent);
-var THREE = __webpack_require__(/*! ../../lib/three */ "./src/lib/three.js");
+
+
 
 /**
  * Real World Meshing.
@@ -14865,7 +15196,7 @@ var THREE = __webpack_require__(/*! ../../lib/three */ "./src/lib/three.js");
  * It requires a browser with support for the WebXR Mesh and Plane detection modules.
  *
  */
-module.exports.Component = register('real-world-meshing', {
+var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_1__.registerComponent)('real-world-meshing', {
   schema: {
     filterLabels: {
       type: 'array'
@@ -14972,7 +15303,7 @@ module.exports.Component = register('real-world-meshing', {
     this.createNewMeshes(newMeshes);
   },
   updateMeshes: function () {
-    var auxMatrix = new THREE.Matrix4();
+    var auxMatrix = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Matrix4();
     return function () {
       var meshPose;
       var sceneEl = this.el;
@@ -15022,7 +15353,7 @@ module.exports.Component = register('real-world-meshing', {
     var shape;
     var polygon;
     if (mesh instanceof XRPlane) {
-      shape = new THREE.Shape();
+      shape = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Shape();
       polygon = mesh.polygon;
       for (var i = 0; i < polygon.length; ++i) {
         if (i === 0) {
@@ -15031,13 +15362,13 @@ module.exports.Component = register('real-world-meshing', {
           shape.lineTo(polygon[i].x, polygon[i].z);
         }
       }
-      geometry = new THREE.ShapeGeometry(shape);
+      geometry = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].ShapeGeometry(shape);
       geometry.rotateX(Math.PI / 2);
       return geometry;
     }
-    geometry = new THREE.BufferGeometry();
-    geometry.setAttribute('position', new THREE.BufferAttribute(mesh.vertices, 3));
-    geometry.setIndex(new THREE.BufferAttribute(mesh.indices, 1));
+    geometry = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].BufferGeometry();
+    geometry.setAttribute('position', new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].BufferAttribute(mesh.vertices, 3));
+    geometry.setIndex(new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].BufferAttribute(mesh.indices, 1));
     return geometry;
   },
   initWorldMeshEntity: function (evt) {
@@ -15053,9 +15384,9 @@ module.exports.Component = register('real-world-meshing', {
       }
     }
     geometry = this.initMeshGeometry(meshEntity.mesh);
-    mesh = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({
+    mesh = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Mesh(geometry, new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].MeshBasicMaterial({
       color: Math.random() * 0xFFFFFF,
-      side: THREE.DoubleSide
+      side: _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].DoubleSide
     }));
     el.setObject3D('mesh', mesh);
     if (meshEntity.mesh instanceof XRPlane && this.data.planeMixin) {
@@ -15080,10 +15411,16 @@ module.exports.Component = register('real-world-meshing', {
 /*!********************************************!*\
   !*** ./src/components/scene/reflection.js ***!
   \********************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Component: () => (/* binding */ Component)
+/* harmony export */ });
+/* harmony import */ var _core_component_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../core/component.js */ "./src/core/component.js");
 /* global THREE, XRWebGLBinding */
-var register = (__webpack_require__(/*! ../../core/component */ "./src/core/component.js").registerComponent);
+
 
 // source: view-source:https://storage.googleapis.com/chromium-webxr-test/r886480/proposals/lighting-estimation.html
 function updateLights(estimate, probeLight, directionalLight, directionalLightPosition) {
@@ -15096,7 +15433,7 @@ function updateLights(estimate, probeLight, directionalLight, directionalLightPo
     directionalLightPosition.copy(estimate.primaryLightDirection);
   }
 }
-module.exports.Component = register('reflection', {
+var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_0__.registerComponent)('reflection', {
   schema: {
     directionalLight: {
       type: 'selector'
@@ -15228,11 +15565,18 @@ module.exports.Component = register('reflection', {
 /*!********************************************!*\
   !*** ./src/components/scene/screenshot.js ***!
   \********************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Component: () => (/* binding */ Component)
+/* harmony export */ });
+/* harmony import */ var _core_component_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../core/component.js */ "./src/core/component.js");
+/* harmony import */ var _lib_three_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../lib/three.js */ "./src/lib/three.js");
 /* global ImageData, URL */
-var registerComponent = (__webpack_require__(/*! ../../core/component */ "./src/core/component.js").registerComponent);
-var THREE = __webpack_require__(/*! ../../lib/three */ "./src/lib/three.js");
+
+
 var VERTEX_SHADER = ['attribute vec3 position;', 'attribute vec2 uv;', 'uniform mat4 projectionMatrix;', 'uniform mat4 modelViewMatrix;', 'varying vec2 vUv;', 'void main()  {', '  vUv = vec2( 1.- uv.x, uv.y );', '  gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );', '}'].join('\n');
 var FRAGMENT_SHADER = ['precision mediump float;', 'uniform samplerCube map;', 'varying vec2 vUv;', '#define M_PI 3.141592653589793238462643383279', 'void main() {', '  vec2 uv = vUv;', '  float longitude = uv.x * 2. * M_PI - M_PI + M_PI / 2.;', '  float latitude = uv.y * M_PI;', '  vec3 dir = vec3(', '    - sin( longitude ) * sin( latitude ),', '    cos( latitude ),', '    - cos( longitude ) * sin( latitude )', '  );', '  normalize( dir );', '  gl_FragColor = vec4( textureCube( map, dir ).rgb, 1.0 );', '}'].join('\n');
 
@@ -15246,7 +15590,7 @@ var FRAGMENT_SHADER = ['precision mediump float;', 'uniform samplerCube map;', '
  * The cube map produced by the CubeCamera is projected on a quad and then rendered to
  * WebGLRenderTarget with an orthographic camera.
  */
-module.exports.Component = registerComponent('screenshot', {
+var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_0__.registerComponent)('screenshot', {
   schema: {
     width: {
       default: 4096
@@ -15269,7 +15613,7 @@ module.exports.Component = registerComponent('screenshot', {
       return;
     }
     this.cubeMapSize = gl.getParameter(gl.MAX_CUBE_MAP_TEXTURE_SIZE);
-    this.material = new THREE.RawShaderMaterial({
+    this.material = new _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].RawShaderMaterial({
       uniforms: {
         map: {
           type: 't',
@@ -15278,25 +15622,25 @@ module.exports.Component = registerComponent('screenshot', {
       },
       vertexShader: VERTEX_SHADER,
       fragmentShader: FRAGMENT_SHADER,
-      side: THREE.DoubleSide
+      side: _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].DoubleSide
     });
-    this.quad = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), this.material);
+    this.quad = new _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].Mesh(new _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].PlaneGeometry(1, 1), this.material);
     this.quad.visible = false;
-    this.camera = new THREE.OrthographicCamera(-1 / 2, 1 / 2, 1 / 2, -1 / 2, -10000, 10000);
+    this.camera = new _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].OrthographicCamera(-1 / 2, 1 / 2, 1 / 2, -1 / 2, -10000, 10000);
     this.canvas = document.createElement('canvas');
     this.ctx = this.canvas.getContext('2d');
     el.object3D.add(this.quad);
     this.onKeyDown = this.onKeyDown.bind(this);
   },
   getRenderTarget: function (width, height) {
-    return new THREE.WebGLRenderTarget(width, height, {
+    return new _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].WebGLRenderTarget(width, height, {
       colorSpace: this.el.sceneEl.renderer.outputColorSpace,
-      minFilter: THREE.LinearFilter,
-      magFilter: THREE.LinearFilter,
-      wrapS: THREE.ClampToEdgeWrapping,
-      wrapT: THREE.ClampToEdgeWrapping,
-      format: THREE.RGBAFormat,
-      type: THREE.UnsignedByteType
+      minFilter: _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].LinearFilter,
+      magFilter: _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].LinearFilter,
+      wrapS: _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].ClampToEdgeWrapping,
+      wrapT: _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].ClampToEdgeWrapping,
+      format: _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].RGBAFormat,
+      type: _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].UnsignedByteType
     });
   },
   resize: function (width, height) {
@@ -15353,14 +15697,14 @@ module.exports.Component = registerComponent('screenshot', {
     } else {
       // Use ortho camera.
       camera = this.camera;
-      cubeRenderTarget = new THREE.WebGLCubeRenderTarget(Math.min(this.cubeMapSize, 2048), {
-        format: THREE.RGBFormat,
+      cubeRenderTarget = new _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].WebGLCubeRenderTarget(Math.min(this.cubeMapSize, 2048), {
+        format: _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].RGBFormat,
         generateMipmaps: true,
-        minFilter: THREE.LinearMipmapLinearFilter,
-        colorSpace: THREE.SRGBColorSpace
+        minFilter: _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].LinearMipmapLinearFilter,
+        colorSpace: _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].SRGBColorSpace
       });
       // Create cube camera and copy position from scene camera.
-      cubeCamera = new THREE.CubeCamera(el.camera.near, el.camera.far, cubeRenderTarget);
+      cubeCamera = new _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].CubeCamera(el.camera.near, el.camera.far, cubeRenderTarget);
       // Copy camera position into cube camera;
       el.camera.getWorldPosition(cubeCamera.position);
       el.camera.getWorldQuaternion(cubeCamera.quaternion);
@@ -15481,13 +15825,26 @@ module.exports.Component = registerComponent('screenshot', {
 /*!***************************************!*\
   !*** ./src/components/scene/stats.js ***!
   \***************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var registerComponent = (__webpack_require__(/*! ../../core/component */ "./src/core/component.js").registerComponent);
-var RStats = __webpack_require__(/*! ../../../vendor/rStats */ "./vendor/rStats.js");
-var utils = __webpack_require__(/*! ../../utils */ "./src/utils/index.js");
-__webpack_require__(/*! ../../../vendor/rStats.extras */ "./vendor/rStats.extras.js");
-__webpack_require__(/*! ../../lib/rStatsAframe */ "./src/lib/rStatsAframe.js");
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Component: () => (/* binding */ Component)
+/* harmony export */ });
+/* harmony import */ var _core_component_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../core/component.js */ "./src/core/component.js");
+/* harmony import */ var _vendor_rStats_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../vendor/rStats.js */ "./vendor/rStats.js");
+/* harmony import */ var _vendor_rStats_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_vendor_rStats_js__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _utils_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../utils/index.js */ "./src/utils/index.js");
+/* harmony import */ var _vendor_rStats_extras_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../vendor/rStats.extras.js */ "./vendor/rStats.extras.js");
+/* harmony import */ var _vendor_rStats_extras_js__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_vendor_rStats_extras_js__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _lib_rStatsAframe_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../lib/rStatsAframe.js */ "./src/lib/rStatsAframe.js");
+/* harmony import */ var _lib_rStatsAframe_js__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_lib_rStatsAframe_js__WEBPACK_IMPORTED_MODULE_4__);
+
+
+
+
+
 var AFrameStats = window.aframeStats;
 var HIDDEN_CLASS = 'a-hidden';
 var ThreeStats = window.threeStats;
@@ -15495,14 +15852,14 @@ var ThreeStats = window.threeStats;
 /**
  * Stats appended to document.body by RStats.
  */
-module.exports.Component = registerComponent('stats', {
+var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_0__.registerComponent)('stats', {
   schema: {
     default: true
   },
   sceneOnly: true,
   init: function () {
     var scene = this.el;
-    if (utils.getUrlParameter('stats') === 'false') {
+    if (_utils_index_js__WEBPACK_IMPORTED_MODULE_2__.getUrlParameter('stats') === 'false') {
       return;
     }
     this.stats = createStats(scene);
@@ -15546,7 +15903,7 @@ function createStats(scene) {
   var threeStats = new ThreeStats(scene.renderer);
   var aframeStats = new AFrameStats(scene);
   var plugins = scene.isMobile ? [] : [threeStats, aframeStats];
-  return new RStats({
+  return new (_vendor_rStats_js__WEBPACK_IMPORTED_MODULE_1___default())({
     css: [],
     // Our stylesheet is injected from `src/index.js`.
     values: {
@@ -15569,11 +15926,19 @@ function createStats(scene) {
 /*!********************************************!*\
   !*** ./src/components/scene/xr-mode-ui.js ***!
   \********************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var registerComponent = (__webpack_require__(/*! ../../core/component */ "./src/core/component.js").registerComponent);
-var constants = __webpack_require__(/*! ../../constants/ */ "./src/constants/index.js");
-var utils = __webpack_require__(/*! ../../utils/ */ "./src/utils/index.js");
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Component: () => (/* binding */ Component)
+/* harmony export */ });
+/* harmony import */ var _core_component_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../core/component.js */ "./src/core/component.js");
+/* harmony import */ var _constants_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../constants/index.js */ "./src/constants/index.js");
+/* harmony import */ var _utils_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../utils/index.js */ "./src/utils/index.js");
+
+
+
 var ENTER_VR_CLASS = 'a-enter-vr';
 var ENTER_AR_CLASS = 'a-enter-ar';
 var ENTER_VR_BTN_CLASS = 'a-enter-vr-button';
@@ -15584,7 +15949,7 @@ var ORIENTATION_MODAL_CLASS = 'a-orientation-modal';
 /**
  * UI for entering VR mode.
  */
-module.exports.Component = registerComponent('xr-mode-ui', {
+var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_0__.registerComponent)('xr-mode-ui', {
   dependencies: ['canvas'],
   schema: {
     enabled: {
@@ -15614,7 +15979,7 @@ module.exports.Component = registerComponent('xr-mode-ui', {
   init: function () {
     var self = this;
     var sceneEl = this.el;
-    if (utils.getUrlParameter('ui') === 'false') {
+    if (_utils_index_js__WEBPACK_IMPORTED_MODULE_2__.getUrlParameter('ui') === 'false') {
       return;
     }
     this.insideLoader = false;
@@ -15665,7 +16030,7 @@ module.exports.Component = registerComponent('xr-mode-ui', {
   update: function () {
     var data = this.data;
     var sceneEl = this.el;
-    if (!data.enabled || this.insideLoader || utils.getUrlParameter('ui') === 'false') {
+    if (!data.enabled || this.insideLoader || _utils_index_js__WEBPACK_IMPORTED_MODULE_2__.getUrlParameter('ui') === 'false') {
       return this.remove();
     }
     if (this.enterVREl || this.enterAREl || this.orientationModalEl) {
@@ -15717,10 +16082,10 @@ module.exports.Component = registerComponent('xr-mode-ui', {
     if (!this.enterVREl) {
       return;
     }
-    if (sceneEl.is('vr-mode') || (sceneEl.isMobile || utils.device.isMobileDeviceRequestingDesktopSite()) && !this.data.cardboardModeEnabled && !utils.device.checkVRSupport()) {
+    if (sceneEl.is('vr-mode') || (sceneEl.isMobile || _utils_index_js__WEBPACK_IMPORTED_MODULE_2__.device.isMobileDeviceRequestingDesktopSite()) && !this.data.cardboardModeEnabled && !_utils_index_js__WEBPACK_IMPORTED_MODULE_2__.device.checkVRSupport()) {
       this.enterVREl.classList.add(HIDDEN_CLASS);
     } else {
-      if (!utils.device.checkVRSupport()) {
+      if (!_utils_index_js__WEBPACK_IMPORTED_MODULE_2__.device.checkVRSupport()) {
         this.enterVREl.classList.add('fullscreen');
       }
       this.enterVREl.classList.remove(HIDDEN_CLASS);
@@ -15733,7 +16098,7 @@ module.exports.Component = registerComponent('xr-mode-ui', {
       return;
     }
     // Hide the button while in a session, or if AR is not supported.
-    if (sceneEl.is('vr-mode') || !utils.device.checkARSupport()) {
+    if (sceneEl.is('vr-mode') || !_utils_index_js__WEBPACK_IMPORTED_MODULE_2__.device.checkARSupport()) {
       this.enterAREl.classList.add(HIDDEN_CLASS);
     } else {
       this.enterAREl.classList.remove(HIDDEN_CLASS);
@@ -15746,7 +16111,7 @@ module.exports.Component = registerComponent('xr-mode-ui', {
     if (!orientationModalEl || !sceneEl.isMobile) {
       return;
     }
-    if (!utils.device.isLandscape() && sceneEl.is('vr-mode')) {
+    if (!_utils_index_js__WEBPACK_IMPORTED_MODULE_2__.device.isLandscape() && sceneEl.is('vr-mode')) {
       // Show if in VR mode on portrait.
       orientationModalEl.classList.remove(HIDDEN_CLASS);
     } else {
@@ -15770,12 +16135,12 @@ function createEnterVRButton(onClick) {
   // Create elements.
   wrapper = document.createElement('div');
   wrapper.classList.add(ENTER_VR_CLASS);
-  wrapper.setAttribute(constants.AFRAME_INJECTED, '');
+  wrapper.setAttribute(_constants_index_js__WEBPACK_IMPORTED_MODULE_1__.AFRAME_INJECTED, '');
   vrButton = document.createElement('button');
   vrButton.className = ENTER_VR_BTN_CLASS;
   vrButton.setAttribute('title', 'Enter VR mode with a headset or fullscreen without');
-  vrButton.setAttribute(constants.AFRAME_INJECTED, '');
-  if (utils.device.isMobile()) {
+  vrButton.setAttribute(_constants_index_js__WEBPACK_IMPORTED_MODULE_1__.AFRAME_INJECTED, '');
+  if (_utils_index_js__WEBPACK_IMPORTED_MODULE_2__.device.isMobile()) {
     applyStickyHoverFix(vrButton);
   }
   // Insert elements.
@@ -15805,12 +16170,12 @@ function createEnterARButton(onClick, xrMode) {
   if (xrMode) {
     wrapper.classList.add('xr');
   }
-  wrapper.setAttribute(constants.AFRAME_INJECTED, '');
+  wrapper.setAttribute(_constants_index_js__WEBPACK_IMPORTED_MODULE_1__.AFRAME_INJECTED, '');
   arButton = document.createElement('button');
   arButton.className = ENTER_AR_BTN_CLASS;
   arButton.setAttribute('title', 'Enter AR mode with a headset or handheld device.');
-  arButton.setAttribute(constants.AFRAME_INJECTED, '');
-  if (utils.device.isMobile()) {
+  arButton.setAttribute(_constants_index_js__WEBPACK_IMPORTED_MODULE_1__.AFRAME_INJECTED, '');
+  if (_utils_index_js__WEBPACK_IMPORTED_MODULE_2__.device.isMobile()) {
     applyStickyHoverFix(arButton);
   }
   // Insert elements.
@@ -15832,9 +16197,9 @@ function createOrientationModal(onClick) {
   var modal = document.createElement('div');
   modal.className = ORIENTATION_MODAL_CLASS;
   modal.classList.add(HIDDEN_CLASS);
-  modal.setAttribute(constants.AFRAME_INJECTED, '');
+  modal.setAttribute(_constants_index_js__WEBPACK_IMPORTED_MODULE_1__.AFRAME_INJECTED, '');
   var exit = document.createElement('button');
-  exit.setAttribute(constants.AFRAME_INJECTED, '');
+  exit.setAttribute(_constants_index_js__WEBPACK_IMPORTED_MODULE_1__.AFRAME_INJECTED, '');
   exit.innerHTML = 'Exit VR';
 
   // Exit VR on close.
@@ -15869,11 +16234,17 @@ function applyStickyHoverFix(buttonEl) {
 /*!**********************************!*\
   !*** ./src/components/shadow.js ***!
   \**********************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var component = __webpack_require__(/*! ../core/component */ "./src/core/component.js");
-var THREE = __webpack_require__(/*! ../lib/three */ "./src/lib/three.js");
-var registerComponent = component.registerComponent;
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Component: () => (/* binding */ Component)
+/* harmony export */ });
+/* harmony import */ var _lib_three_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../lib/three.js */ "./src/lib/three.js");
+/* harmony import */ var _core_component_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../core/component.js */ "./src/core/component.js");
+
+
 
 /**
  * Shadow component.
@@ -15881,7 +16252,7 @@ var registerComponent = component.registerComponent;
  * When applied to an entity, that entity's geometry and any descendants will cast or receive
  * shadows as specified by the `cast` and `receive` properties.
  */
-module.exports.Component = registerComponent('shadow', {
+var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_1__.registerComponent)('shadow', {
   schema: {
     cast: {
       default: true
@@ -15907,7 +16278,7 @@ module.exports.Component = registerComponent('shadow', {
   updateDescendants: function (cast, receive) {
     var sceneEl = this.el.sceneEl;
     this.el.object3D.traverse(function (node) {
-      if (!(node instanceof THREE.Mesh)) {
+      if (!(node instanceof _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Mesh)) {
         return;
       }
       node.castShadow = cast;
@@ -15930,17 +16301,25 @@ module.exports.Component = registerComponent('shadow', {
 /*!*********************************!*\
   !*** ./src/components/sound.js ***!
   \*********************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var registerComponent = (__webpack_require__(/*! ../core/component */ "./src/core/component.js").registerComponent);
-var debug = __webpack_require__(/*! ../utils/debug */ "./src/utils/debug.js");
-var THREE = __webpack_require__(/*! ../lib/three */ "./src/lib/three.js");
-var warn = debug('components:sound:warn');
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Component: () => (/* binding */ Component)
+/* harmony export */ });
+/* harmony import */ var _core_component_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../core/component.js */ "./src/core/component.js");
+/* harmony import */ var _utils_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/index.js */ "./src/utils/index.js");
+/* harmony import */ var _lib_three_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../lib/three.js */ "./src/lib/three.js");
+
+
+
+var warn = (0,_utils_index_js__WEBPACK_IMPORTED_MODULE_1__.debug)('components:sound:warn');
 
 /**
  * Sound component.
  */
-module.exports.Component = registerComponent('sound', {
+var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_0__.registerComponent)('sound', {
   schema: {
     autoplay: {
       default: false
@@ -15987,8 +16366,8 @@ module.exports.Component = registerComponent('sound', {
   init: function () {
     var self = this;
     this.listener = null;
-    this.audioLoader = new THREE.AudioLoader();
-    this.pool = new THREE.Group();
+    this.audioLoader = new _lib_three_js__WEBPACK_IMPORTED_MODULE_2__["default"].AudioLoader();
+    this.pool = new _lib_three_js__WEBPACK_IMPORTED_MODULE_2__["default"].Group();
     this.loaded = false;
     this.mustPlay = false;
 
@@ -16046,7 +16425,7 @@ module.exports.Component = registerComponent('sound', {
         self.loaded = true;
 
         // Remove this key from cache, otherwise we can't play it again
-        THREE.Cache.remove(data.src);
+        _lib_three_js__WEBPACK_IMPORTED_MODULE_2__["default"].Cache.remove(data.src);
         if (self.data.autoplay || self.mustPlay) {
           self.playSound(self.processSound);
         }
@@ -16111,7 +16490,7 @@ module.exports.Component = registerComponent('sound', {
     }
 
     // Only want one AudioListener. Cache it on the scene.
-    var listener = this.listener = sceneEl.audioListener || new THREE.AudioListener();
+    var listener = this.listener = sceneEl.audioListener || new _lib_three_js__WEBPACK_IMPORTED_MODULE_2__["default"].AudioListener();
     sceneEl.audioListener = listener;
     if (sceneEl.camera) {
       sceneEl.camera.add(listener);
@@ -16123,9 +16502,9 @@ module.exports.Component = registerComponent('sound', {
     });
 
     // Create [poolSize] audio instances and attach them to pool
-    this.pool = new THREE.Group();
+    this.pool = new _lib_three_js__WEBPACK_IMPORTED_MODULE_2__["default"].Group();
     for (i = 0; i < this.data.poolSize; i++) {
-      sound = this.data.positional ? new THREE.PositionalAudio(listener) : new THREE.Audio(listener);
+      sound = this.data.positional ? new _lib_three_js__WEBPACK_IMPORTED_MODULE_2__["default"].PositionalAudio(listener) : new _lib_three_js__WEBPACK_IMPORTED_MODULE_2__["default"].Audio(listener);
       this.pool.add(sound);
     }
     el.setObject3D(this.attrName, this.pool);
@@ -16210,25 +16589,39 @@ module.exports.Component = registerComponent('sound', {
 /*!********************************!*\
   !*** ./src/components/text.js ***!
   \********************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var createTextGeometry = __webpack_require__(/*! three-bmfont-text */ "./node_modules/three-bmfont-text/index.js");
-var loadBMFont = __webpack_require__(/*! load-bmfont */ "./node_modules/load-bmfont/browser.js");
-var registerComponent = (__webpack_require__(/*! ../core/component */ "./src/core/component.js").registerComponent);
-var coreShader = __webpack_require__(/*! ../core/shader */ "./src/core/shader.js");
-var THREE = __webpack_require__(/*! ../lib/three */ "./src/lib/three.js");
-var utils = __webpack_require__(/*! ../utils/ */ "./src/utils/index.js");
-var error = utils.debug('components:text:error');
-var shaders = coreShader.shaders;
-var warn = utils.debug('components:text:warn');
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Component: () => (/* binding */ Component),
+/* harmony export */   FONTS: () => (/* binding */ FONTS)
+/* harmony export */ });
+/* harmony import */ var three_bmfont_text__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three-bmfont-text */ "./node_modules/three-bmfont-text/index.js");
+/* harmony import */ var three_bmfont_text__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(three_bmfont_text__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var load_bmfont__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! load-bmfont */ "./node_modules/load-bmfont/browser.js");
+/* harmony import */ var load_bmfont__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(load_bmfont__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _core_component_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../core/component.js */ "./src/core/component.js");
+/* harmony import */ var _core_shader_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../core/shader.js */ "./src/core/shader.js");
+/* harmony import */ var _lib_three_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../lib/three.js */ "./src/lib/three.js");
+/* harmony import */ var _utils_index_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../utils/index.js */ "./src/utils/index.js");
+/* harmony import */ var _constants_index_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../constants/index.js */ "./src/constants/index.js");
+
+
+
+
+
+
+
+var error = _utils_index_js__WEBPACK_IMPORTED_MODULE_5__.debug('components:text:error');
+var warn = _utils_index_js__WEBPACK_IMPORTED_MODULE_5__.debug('components:text:warn');
 
 // 1 to match other A-Frame default widths.
 var DEFAULT_WIDTH = 1;
 
 // @bryik set anisotropy to 16. Improves look of large amounts of text when viewed from angle.
 var MAX_ANISOTROPY = 16;
-var AFRAME_CDN_ROOT = (__webpack_require__(/*! ../constants */ "./src/constants/index.js").AFRAME_CDN_ROOT);
-var FONT_BASE_URL = AFRAME_CDN_ROOT + 'fonts/';
+var FONT_BASE_URL = _constants_index_js__WEBPACK_IMPORTED_MODULE_6__.AFRAME_CDN_ROOT + 'fonts/';
 var FONTS = {
   aileronsemibold: FONT_BASE_URL + 'Aileron-Semibold.fnt',
   dejavu: FONT_BASE_URL + 'DejaVu-sdf.fnt',
@@ -16242,7 +16635,6 @@ var FONTS = {
 };
 var MSDF_FONTS = ['roboto'];
 var DEFAULT_FONT = 'roboto';
-module.exports.FONTS = FONTS;
 var cache = new PromiseCache();
 var fontWidthFactors = {};
 var textures = {};
@@ -16257,7 +16649,7 @@ var protocolRe = /^\w+:/;
  * All the stock fonts are for the `sdf` registered shader, an improved version of jam3's
  * original `sdf` shader.
  */
-module.exports.Component = registerComponent('text', {
+var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_2__.registerComponent)('text', {
   multiple: true,
   schema: {
     align: {
@@ -16312,7 +16704,7 @@ module.exports.Component = registerComponent('text', {
     },
     shader: {
       default: 'sdf',
-      oneOf: shaders
+      oneOf: _core_shader_js__WEBPACK_IMPORTED_MODULE_3__.shaders
     },
     side: {
       default: 'front',
@@ -16362,7 +16754,7 @@ module.exports.Component = registerComponent('text', {
   },
   init: function () {
     this.shaderData = {};
-    this.geometry = createTextGeometry();
+    this.geometry = three_bmfont_text__WEBPACK_IMPORTED_MODULE_0___default()();
     this.createOrUpdateMaterial();
     this.explicitGeoDimensionsChecked = false;
   },
@@ -16373,7 +16765,7 @@ module.exports.Component = registerComponent('text', {
       this.texture = textures[data.font];
     } else {
       // Create texture per font.
-      this.texture = textures[data.font] = new THREE.Texture();
+      this.texture = textures[data.font] = new _lib_three_js__WEBPACK_IMPORTED_MODULE_4__["default"].Texture();
       this.texture.anisotropy = MAX_ANISOTROPY;
     }
 
@@ -16524,7 +16916,7 @@ module.exports.Component = registerComponent('text', {
     if (this.mesh) {
       return;
     }
-    this.mesh = new THREE.Mesh(this.geometry, this.material);
+    this.mesh = new _lib_three_js__WEBPACK_IMPORTED_MODULE_4__["default"].Mesh(this.geometry, this.material);
     this.el.setObject3D(this.attrName, this.mesh);
   },
   getFontImageSrc: function () {
@@ -16538,7 +16930,7 @@ module.exports.Component = registerComponent('text', {
     if (imageSrc.match(protocolRe) && imageSrc.indexOf('http') !== 0) {
       return fontSrc.replace(/(\.fnt)|(\.json)/, '.png');
     }
-    return THREE.LoaderUtils.extractUrlBase(fontSrc) + imageSrc;
+    return _lib_three_js__WEBPACK_IMPORTED_MODULE_4__["default"].LoaderUtils.extractUrlBase(fontSrc) + imageSrc;
   },
   /**
    * Update layout with anchor, alignment, baseline, and considering any meshes.
@@ -16643,7 +17035,7 @@ module.exports.Component = registerComponent('text', {
       geometryUpdateData.lineHeight = data.lineHeight && isFinite(data.lineHeight) ? data.lineHeight : font.common.lineHeight;
       geometryUpdateData.text = data.value.toString().replace(newLineRegex, '\n').replace(tabRegex, '\t');
       geometryUpdateData.width = computeWidth(data.wrapPixels, data.wrapCount, font.widthFactor);
-      geometry.update(utils.extend(geometryUpdateBase, data, geometryUpdateData));
+      geometry.update(_utils_index_js__WEBPACK_IMPORTED_MODULE_5__.extend(geometryUpdateBase, data, geometryUpdateData));
     };
   }()
 });
@@ -16656,15 +17048,15 @@ function parseSide(side) {
   switch (side) {
     case 'back':
       {
-        return THREE.FrontSide;
+        return _lib_three_js__WEBPACK_IMPORTED_MODULE_4__["default"].FrontSide;
       }
     case 'double':
       {
-        return THREE.DoubleSide;
+        return _lib_three_js__WEBPACK_IMPORTED_MODULE_4__["default"].DoubleSide;
       }
     default:
       {
-        return THREE.BackSide;
+        return _lib_three_js__WEBPACK_IMPORTED_MODULE_4__["default"].BackSide;
       }
   }
 }
@@ -16674,7 +17066,7 @@ function parseSide(side) {
  */
 function loadFont(src, yOffset) {
   return new Promise(function (resolve, reject) {
-    loadBMFont(src, function (err, font) {
+    load_bmfont__WEBPACK_IMPORTED_MODULE_1___default()(src, function (err, font) {
       if (err) {
         error('Error loading font', src);
         reject(err);
@@ -16700,7 +17092,7 @@ function loadFont(src, yOffset) {
  */
 function loadTexture(src) {
   return new Promise(function (resolve, reject) {
-    new THREE.ImageLoader().load(src, function (image) {
+    new _lib_three_js__WEBPACK_IMPORTED_MODULE_4__["default"].ImageLoader().load(src, function (image) {
       resolve(image);
     }, undefined, function () {
       error('Error loading font image', src);
@@ -16713,7 +17105,7 @@ function createShader(el, shaderName, data) {
   var shaderObject;
 
   // Set up Shader.
-  shaderObject = new shaders[shaderName].Shader();
+  shaderObject = new _core_shader_js__WEBPACK_IMPORTED_MODULE_3__.shaders[shaderName].Shader();
   shaderObject.el = el;
   shaderObject.init(data);
   shaderObject.update(data);
@@ -16774,10 +17166,17 @@ function PromiseCache() {
 /*!********************************************!*\
   !*** ./src/components/tracked-controls.js ***!
   \********************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var controllerUtils = __webpack_require__(/*! ../utils/tracked-controls */ "./src/utils/tracked-controls.js");
-var registerComponent = (__webpack_require__(/*! ../core/component */ "./src/core/component.js").registerComponent);
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Component: () => (/* binding */ Component)
+/* harmony export */ });
+/* harmony import */ var _core_component_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../core/component.js */ "./src/core/component.js");
+/* harmony import */ var _utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/tracked-controls.js */ "./src/utils/tracked-controls.js");
+
+
 var EVENTS = {
   AXISMOVE: 'axismove',
   BUTTONCHANGED: 'buttonchanged',
@@ -16801,7 +17200,7 @@ var EVENTS = {
  * @property {boolean} handTrackingEnabled - Assumes a controller exposed via the WebXR Hand Input Module.
  * @property {boolean} iterateControllerProfiles - Iterates over all of the WebXR controller input profiles.
  */
-module.exports.Component = registerComponent('tracked-controls', {
+var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_0__.registerComponent)('tracked-controls', {
   schema: {
     id: {
       type: 'string',
@@ -16860,7 +17259,7 @@ module.exports.Component = registerComponent('tracked-controls', {
    * Handle update controller match criteria (such as `id`, `idPrefix`, `hand`, `controller`)
    */
   updateController: function () {
-    this.controller = controllerUtils.findMatchingControllerWebXR(this.system.controllers, this.data.id, this.data.hand, this.data.controller, this.data.iterateControllerProfiles, this.data.handTrackingEnabled);
+    this.controller = _utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_1__.findMatchingControllerWebXR(this.system.controllers, this.data.id, this.data.hand, this.data.controller, this.data.iterateControllerProfiles, this.data.handTrackingEnabled);
     // Legacy handle to the controller for old components.
     this.el.components['tracked-controls'].controller = this.controller;
   },
@@ -17035,16 +17434,22 @@ module.exports.Component = registerComponent('tracked-controls', {
 /*!************************************************!*\
   !*** ./src/components/valve-index-controls.js ***!
   \************************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var registerComponent = (__webpack_require__(/*! ../core/component */ "./src/core/component.js").registerComponent);
-var THREE = __webpack_require__(/*! ../lib/three */ "./src/lib/three.js");
-var trackedControlsUtils = __webpack_require__(/*! ../utils/tracked-controls */ "./src/utils/tracked-controls.js");
-var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
-var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
-var onButtonEvent = trackedControlsUtils.onButtonEvent;
-var AFRAME_CDN_ROOT = (__webpack_require__(/*! ../constants */ "./src/constants/index.js").AFRAME_CDN_ROOT);
-var INDEX_CONTROLLER_MODEL_BASE_URL = AFRAME_CDN_ROOT + 'controllers/valve/index/valve-index-';
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Component: () => (/* binding */ Component)
+/* harmony export */ });
+/* harmony import */ var _core_component_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../core/component.js */ "./src/core/component.js");
+/* harmony import */ var _lib_three_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../lib/three.js */ "./src/lib/three.js");
+/* harmony import */ var _constants_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../constants/index.js */ "./src/constants/index.js");
+/* harmony import */ var _utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/tracked-controls.js */ "./src/utils/tracked-controls.js");
+
+
+
+
+var INDEX_CONTROLLER_MODEL_BASE_URL = _constants_index_js__WEBPACK_IMPORTED_MODULE_2__.AFRAME_CDN_ROOT + 'controllers/valve/index/valve-index-';
 var INDEX_CONTROLLER_MODEL_URL = {
   left: INDEX_CONTROLLER_MODEL_BASE_URL + 'left.glb',
   right: INDEX_CONTROLLER_MODEL_BASE_URL + 'right.glb'
@@ -17083,7 +17488,7 @@ var INDEX_CONTROLLER_POSITION_OFFSET = {
  * trackpad, trigger, grip, menu, system
  * Load a controller model and highlight the pressed buttons.
  */
-module.exports.Component = registerComponent('valve-index-controls', {
+var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_0__.registerComponent)('valve-index-controls', {
   schema: {
     hand: {
       default: 'left'
@@ -17115,16 +17520,16 @@ module.exports.Component = registerComponent('valve-index-controls', {
     this.controllerPresent = false;
     this.onButtonChanged = this.onButtonChanged.bind(this);
     this.onButtonDown = function (evt) {
-      onButtonEvent(evt.detail.id, 'down', self);
+      (0,_utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_3__.onButtonEvent)(evt.detail.id, 'down', self);
     };
     this.onButtonUp = function (evt) {
-      onButtonEvent(evt.detail.id, 'up', self);
+      (0,_utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_3__.onButtonEvent)(evt.detail.id, 'up', self);
     };
     this.onButtonTouchEnd = function (evt) {
-      onButtonEvent(evt.detail.id, 'touchend', self);
+      (0,_utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_3__.onButtonEvent)(evt.detail.id, 'touchend', self);
     };
     this.onButtonTouchStart = function (evt) {
-      onButtonEvent(evt.detail.id, 'touchstart', self);
+      (0,_utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_3__.onButtonEvent)(evt.detail.id, 'touchstart', self);
     };
     this.previousButtonValues = {};
     this.bindMethods();
@@ -17175,7 +17580,7 @@ module.exports.Component = registerComponent('valve-index-controls', {
   checkIfControllerPresent: function () {
     var data = this.data;
     var controllerIndex = data.hand === 'right' ? 0 : data.hand === 'left' ? 1 : 2;
-    checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX, {
+    (0,_utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_3__.checkControllerPresentAndSetup)(this, GAMEPAD_ID_PREFIX, {
       index: controllerIndex,
       iterateControllerProfiles: true,
       hand: data.hand
@@ -17262,11 +17667,11 @@ module.exports.Component = registerComponent('valve-index-controls', {
     this.el.emit('controllermodelready', {
       name: 'valve-index-controls',
       model: this.data.model,
-      rayOrigin: new THREE.Vector3(0, 0, 0)
+      rayOrigin: new _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].Vector3(0, 0, 0)
     });
   },
   onAxisMoved: function (evt) {
-    emitIfAxesChanged(this, this.mapping.axes, evt);
+    (0,_utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_3__.emitIfAxesChanged)(this, this.mapping.axes, evt);
   },
   updateModel: function (buttonName, evtName) {
     var color;
@@ -17296,14 +17701,20 @@ module.exports.Component = registerComponent('valve-index-controls', {
 /*!***********************************!*\
   !*** ./src/components/visible.js ***!
   \***********************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var registerComponent = (__webpack_require__(/*! ../core/component */ "./src/core/component.js").registerComponent);
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Component: () => (/* binding */ Component)
+/* harmony export */ });
+/* harmony import */ var _core_component_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../core/component.js */ "./src/core/component.js");
+
 
 /**
  * Visibility component.
  */
-module.exports.Component = registerComponent('visible', {
+var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_0__.registerComponent)('visible', {
   schema: {
     default: true
   },
@@ -17318,16 +17729,21 @@ module.exports.Component = registerComponent('visible', {
 /*!*****************************************!*\
   !*** ./src/components/vive-controls.js ***!
   \*****************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var registerComponent = (__webpack_require__(/*! ../core/component */ "./src/core/component.js").registerComponent);
-var trackedControlsUtils = __webpack_require__(/*! ../utils/tracked-controls */ "./src/utils/tracked-controls.js");
-var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
-var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
-var onButtonEvent = trackedControlsUtils.onButtonEvent;
-var AFRAME_CDN_ROOT = (__webpack_require__(/*! ../constants */ "./src/constants/index.js").AFRAME_CDN_ROOT);
-var VIVE_CONTROLLER_MODEL_OBJ_URL = AFRAME_CDN_ROOT + 'controllers/vive/vr_controller_vive.obj';
-var VIVE_CONTROLLER_MODEL_OBJ_MTL = AFRAME_CDN_ROOT + 'controllers/vive/vr_controller_vive.mtl';
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Component: () => (/* binding */ Component)
+/* harmony export */ });
+/* harmony import */ var _core_component_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../core/component.js */ "./src/core/component.js");
+/* harmony import */ var _constants_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../constants/index.js */ "./src/constants/index.js");
+/* harmony import */ var _utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/tracked-controls.js */ "./src/utils/tracked-controls.js");
+
+
+
+var VIVE_CONTROLLER_MODEL_OBJ_URL = _constants_index_js__WEBPACK_IMPORTED_MODULE_1__.AFRAME_CDN_ROOT + 'controllers/vive/vr_controller_vive.obj';
+var VIVE_CONTROLLER_MODEL_OBJ_MTL = _constants_index_js__WEBPACK_IMPORTED_MODULE_1__.AFRAME_CDN_ROOT + 'controllers/vive/vr_controller_vive.mtl';
 
 // Prefix for HTC Vive controllers.
 var GAMEPAD_ID_PREFIX = 'htc-vive';
@@ -17358,7 +17774,7 @@ var INPUT_MAPPING = {
  * touchpad, trigger, grip, menu, system
  * Load a controller model and highlight the pressed buttons.
  */
-module.exports.Component = registerComponent('vive-controls', {
+var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_0__.registerComponent)('vive-controls', {
   schema: {
     hand: {
       default: 'left'
@@ -17384,16 +17800,16 @@ module.exports.Component = registerComponent('vive-controls', {
     this.controllerPresent = false;
     this.onButtonChanged = this.onButtonChanged.bind(this);
     this.onButtonDown = function (evt) {
-      onButtonEvent(evt.detail.id, 'down', self);
+      (0,_utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_2__.onButtonEvent)(evt.detail.id, 'down', self);
     };
     this.onButtonUp = function (evt) {
-      onButtonEvent(evt.detail.id, 'up', self);
+      (0,_utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_2__.onButtonEvent)(evt.detail.id, 'up', self);
     };
     this.onButtonTouchEnd = function (evt) {
-      onButtonEvent(evt.detail.id, 'touchend', self);
+      (0,_utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_2__.onButtonEvent)(evt.detail.id, 'touchend', self);
     };
     this.onButtonTouchStart = function (evt) {
-      onButtonEvent(evt.detail.id, 'touchstart', self);
+      (0,_utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_2__.onButtonEvent)(evt.detail.id, 'touchstart', self);
     };
     this.previousButtonValues = {};
     this.bindMethods();
@@ -17447,7 +17863,7 @@ module.exports.Component = registerComponent('vive-controls', {
    */
   checkIfControllerPresent: function () {
     var data = this.data;
-    checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX, {
+    (0,_utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_2__.checkControllerPresentAndSetup)(this, GAMEPAD_ID_PREFIX, {
       index: this.controllerIndex,
       hand: data.hand
     });
@@ -17531,7 +17947,7 @@ module.exports.Component = registerComponent('vive-controls', {
     controllerObject3D.position.set(0, -0.015, 0.04);
   },
   onAxisMoved: function (evt) {
-    emitIfAxesChanged(this, this.mapping.axes, evt);
+    (0,_utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_2__.emitIfAxesChanged)(this, this.mapping.axes, evt);
   },
   updateModel: function (buttonName, evtName) {
     var color;
@@ -17571,15 +17987,20 @@ module.exports.Component = registerComponent('vive-controls', {
 /*!***********************************************!*\
   !*** ./src/components/vive-focus-controls.js ***!
   \***********************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var registerComponent = (__webpack_require__(/*! ../core/component */ "./src/core/component.js").registerComponent);
-var trackedControlsUtils = __webpack_require__(/*! ../utils/tracked-controls */ "./src/utils/tracked-controls.js");
-var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
-var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
-var onButtonEvent = trackedControlsUtils.onButtonEvent;
-var AFRAME_CDN_ROOT = (__webpack_require__(/*! ../constants */ "./src/constants/index.js").AFRAME_CDN_ROOT);
-var VIVE_FOCUS_CONTROLLER_MODEL_URL = AFRAME_CDN_ROOT + 'controllers/vive/focus-controller/focus-controller.gltf';
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Component: () => (/* binding */ Component)
+/* harmony export */ });
+/* harmony import */ var _core_component_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../core/component.js */ "./src/core/component.js");
+/* harmony import */ var _constants_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../constants/index.js */ "./src/constants/index.js");
+/* harmony import */ var _utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/tracked-controls.js */ "./src/utils/tracked-controls.js");
+
+
+
+var VIVE_FOCUS_CONTROLLER_MODEL_URL = _constants_index_js__WEBPACK_IMPORTED_MODULE_1__.AFRAME_CDN_ROOT + 'controllers/vive/focus-controller/focus-controller.gltf';
 
 // Prefix for HTC Vive Focus Controllers.
 var GAMEPAD_ID_PREFIX = 'htc-vive-focus';
@@ -17603,7 +18024,7 @@ var INPUT_MAPPING = {
  * controller buttons: trackpad, trigger
  * Load a controller model and highlight the pressed buttons.
  */
-module.exports.Component = registerComponent('vive-focus-controls', {
+var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_0__.registerComponent)('vive-focus-controls', {
   schema: {
     hand: {
       default: ''
@@ -17634,16 +18055,16 @@ module.exports.Component = registerComponent('vive-focus-controls', {
     var self = this;
     this.onButtonChanged = this.onButtonChanged.bind(this);
     this.onButtonDown = function (evt) {
-      onButtonEvent(evt.detail.id, 'down', self);
+      (0,_utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_2__.onButtonEvent)(evt.detail.id, 'down', self);
     };
     this.onButtonUp = function (evt) {
-      onButtonEvent(evt.detail.id, 'up', self);
+      (0,_utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_2__.onButtonEvent)(evt.detail.id, 'up', self);
     };
     this.onButtonTouchStart = function (evt) {
-      onButtonEvent(evt.detail.id, 'touchstart', self);
+      (0,_utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_2__.onButtonEvent)(evt.detail.id, 'touchstart', self);
     };
     this.onButtonTouchEnd = function (evt) {
-      onButtonEvent(evt.detail.id, 'touchend', self);
+      (0,_utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_2__.onButtonEvent)(evt.detail.id, 'touchend', self);
     };
     this.controllerPresent = false;
     this.bindMethods();
@@ -17673,7 +18094,7 @@ module.exports.Component = registerComponent('vive-focus-controls', {
     this.removeControllersUpdateListener();
   },
   checkIfControllerPresent: function () {
-    checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX, this.data.hand ? {
+    (0,_utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_2__.checkControllerPresentAndSetup)(this, GAMEPAD_ID_PREFIX, this.data.hand ? {
       hand: this.data.hand
     } : {});
   },
@@ -17733,7 +18154,7 @@ module.exports.Component = registerComponent('vive-focus-controls', {
     this.el.emit(button + 'changed', evt.detail.state);
   },
   onAxisMoved: function (evt) {
-    emitIfAxesChanged(this, this.mapping.axes, evt);
+    (0,_utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_2__.emitIfAxesChanged)(this, this.mapping.axes, evt);
   },
   updateModel: function (buttonName, evtName) {
     if (!this.data.model) {
@@ -17770,13 +18191,22 @@ module.exports.Component = registerComponent('vive-focus-controls', {
 /*!*****************************************!*\
   !*** ./src/components/wasd-controls.js ***!
   \*****************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var KEYCODE_TO_CODE = (__webpack_require__(/*! ../constants */ "./src/constants/index.js").keyboardevent).KEYCODE_TO_CODE;
-var registerComponent = (__webpack_require__(/*! ../core/component */ "./src/core/component.js").registerComponent);
-var THREE = __webpack_require__(/*! ../lib/three */ "./src/lib/three.js");
-var utils = __webpack_require__(/*! ../utils/ */ "./src/utils/index.js");
-var shouldCaptureKeyEvent = utils.shouldCaptureKeyEvent;
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Component: () => (/* binding */ Component)
+/* harmony export */ });
+/* harmony import */ var _lib_three_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../lib/three.js */ "./src/lib/three.js");
+/* harmony import */ var _constants_keyboardevent_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../constants/keyboardevent.js */ "./src/constants/keyboardevent.js");
+/* harmony import */ var _core_component_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../core/component.js */ "./src/core/component.js");
+/* harmony import */ var _utils_index_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/index.js */ "./src/utils/index.js");
+
+
+
+
+var shouldCaptureKeyEvent = _utils_index_js__WEBPACK_IMPORTED_MODULE_3__.shouldCaptureKeyEvent;
 var CLAMP_VELOCITY = 0.00001;
 var MAX_DELTA = 0.2;
 var KEYS = ['KeyW', 'KeyA', 'KeyS', 'KeyD', 'ArrowUp', 'ArrowLeft', 'ArrowRight', 'ArrowDown'];
@@ -17784,7 +18214,7 @@ var KEYS = ['KeyW', 'KeyA', 'KeyS', 'KeyD', 'ArrowUp', 'ArrowLeft', 'ArrowRight'
 /**
  * WASD component to control entities using WASD keys.
  */
-module.exports.Component = registerComponent('wasd-controls', {
+var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_2__.registerComponent)('wasd-controls', {
   schema: {
     acceleration: {
       default: 65
@@ -17821,7 +18251,7 @@ module.exports.Component = registerComponent('wasd-controls', {
     // To keep track of the pressed keys.
     this.keys = {};
     this.easing = 1.1;
-    this.velocity = new THREE.Vector3();
+    this.velocity = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Vector3();
 
     // Bind methods and add event listeners.
     this.onBlur = this.onBlur.bind(this);
@@ -17932,8 +18362,8 @@ module.exports.Component = registerComponent('wasd-controls', {
     }
   },
   getMovementVector: function () {
-    var directionVector = new THREE.Vector3(0, 0, 0);
-    var rotationEuler = new THREE.Euler(0, 0, 0, 'YXZ');
+    var directionVector = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Vector3(0, 0, 0);
+    var rotationEuler = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Euler(0, 0, 0, 'YXZ');
     return function (delta) {
       var rotation = this.el.getAttribute('rotation');
       var velocity = this.velocity;
@@ -17948,7 +18378,7 @@ module.exports.Component = registerComponent('wasd-controls', {
       xRotation = this.data.fly ? rotation.x : 0;
 
       // Transform direction relative to heading.
-      rotationEuler.set(THREE.MathUtils.degToRad(xRotation), THREE.MathUtils.degToRad(rotation.y), 0);
+      rotationEuler.set(_lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].MathUtils.degToRad(xRotation), _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].MathUtils.degToRad(rotation.y), 0);
       directionVector.applyEuler(rotationEuler);
       return directionVector;
     };
@@ -17996,14 +18426,14 @@ module.exports.Component = registerComponent('wasd-controls', {
     if (!shouldCaptureKeyEvent(event)) {
       return;
     }
-    code = event.code || KEYCODE_TO_CODE[event.keyCode];
+    code = event.code || _constants_keyboardevent_js__WEBPACK_IMPORTED_MODULE_1__.KEYCODE_TO_CODE[event.keyCode];
     if (KEYS.indexOf(code) !== -1) {
       this.keys[code] = true;
     }
   },
   onKeyUp: function (event) {
     var code;
-    code = event.code || KEYCODE_TO_CODE[event.keyCode];
+    code = event.code || _constants_keyboardevent_js__WEBPACK_IMPORTED_MODULE_1__.KEYCODE_TO_CODE[event.keyCode];
     delete this.keys[code];
   }
 });
@@ -18021,20 +18451,25 @@ function isEmptyObject(keys) {
 /*!***************************************************!*\
   !*** ./src/components/windows-motion-controls.js ***!
   \***************************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Component: () => (/* binding */ Component)
+/* harmony export */ });
+/* harmony import */ var _core_component_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../core/component.js */ "./src/core/component.js");
+/* harmony import */ var _utils_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/index.js */ "./src/utils/index.js");
+/* harmony import */ var _constants_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../constants/index.js */ "./src/constants/index.js");
+/* harmony import */ var _utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/tracked-controls.js */ "./src/utils/tracked-controls.js");
 /* global THREE */
-var registerComponent = (__webpack_require__(/*! ../core/component */ "./src/core/component.js").registerComponent);
-var trackedControlsUtils = __webpack_require__(/*! ../utils/tracked-controls */ "./src/utils/tracked-controls.js");
-var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
-var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
-var onButtonEvent = trackedControlsUtils.onButtonEvent;
-var utils = __webpack_require__(/*! ../utils/ */ "./src/utils/index.js");
-var debug = utils.debug('components:windows-motion-controls:debug');
-var warn = utils.debug('components:windows-motion-controls:warn');
-var DEFAULT_HANDEDNESS = (__webpack_require__(/*! ../constants */ "./src/constants/index.js").DEFAULT_HANDEDNESS);
-var AFRAME_CDN_ROOT = (__webpack_require__(/*! ../constants */ "./src/constants/index.js").AFRAME_CDN_ROOT);
-var MODEL_BASE_URL = AFRAME_CDN_ROOT + 'controllers/microsoft/';
+
+
+
+
+var debug = _utils_index_js__WEBPACK_IMPORTED_MODULE_1__.debug('components:windows-motion-controls:debug');
+var warn = _utils_index_js__WEBPACK_IMPORTED_MODULE_1__.debug('components:windows-motion-controls:warn');
+var MODEL_BASE_URL = _constants_index_js__WEBPACK_IMPORTED_MODULE_2__.AFRAME_CDN_ROOT + 'controllers/microsoft/';
 var MODEL_FILENAMES = {
   left: 'left.glb',
   right: 'right.glb',
@@ -18072,10 +18507,10 @@ var INPUT_MAPPING = {
  * controller buttons: trackpad, trigger, grip, menu, thumbstick
  * Load a controller model and transform the pressed buttons.
  */
-module.exports.Component = registerComponent('windows-motion-controls', {
+var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_0__.registerComponent)('windows-motion-controls', {
   schema: {
     hand: {
-      default: DEFAULT_HANDEDNESS
+      default: _constants_index_js__WEBPACK_IMPORTED_MODULE_2__.DEFAULT_HANDEDNESS
     },
     // It is possible to have multiple pairs of controllers attached (a pair has both left and right).
     // Set this to 1 to use a controller from the second pair, 2 from the third pair, etc.
@@ -18101,16 +18536,16 @@ module.exports.Component = registerComponent('windows-motion-controls', {
     var el = this.el;
     this.onButtonChanged = this.onButtonChanged.bind(this);
     this.onButtonDown = function (evt) {
-      onButtonEvent(evt.detail.id, 'down', self);
+      (0,_utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_3__.onButtonEvent)(evt.detail.id, 'down', self);
     };
     this.onButtonUp = function (evt) {
-      onButtonEvent(evt.detail.id, 'up', self);
+      (0,_utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_3__.onButtonEvent)(evt.detail.id, 'up', self);
     };
     this.onButtonTouchStart = function (evt) {
-      onButtonEvent(evt.detail.id, 'touchstart', self);
+      (0,_utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_3__.onButtonEvent)(evt.detail.id, 'touchstart', self);
     };
     this.onButtonTouchEnd = function (evt) {
-      onButtonEvent(evt.detail.id, 'touchend', self);
+      (0,_utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_3__.onButtonEvent)(evt.detail.id, 'touchend', self);
     };
     this.onControllerConnected = function () {
       self.setModelVisibility(true);
@@ -18162,7 +18597,7 @@ module.exports.Component = registerComponent('windows-motion-controls', {
     this.controllerEventsActive = false;
   },
   checkIfControllerPresent: function () {
-    checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX, {
+    (0,_utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_3__.checkControllerPresentAndSetup)(this, GAMEPAD_ID_PREFIX, {
       hand: this.data.hand,
       index: this.data.pair,
       iterateControllerProfiles: true
@@ -18413,7 +18848,7 @@ module.exports.Component = registerComponent('windows-motion-controls', {
         this.lerpAxisTransform(axis, evt.detail.axis[axis] || 0.0);
       }
     }
-    emitIfAxesChanged(this, this.mapping.axes, evt);
+    (0,_utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_3__.emitIfAxesChanged)(this, this.mapping.axes, evt);
   },
   setModelVisibility: function (visible) {
     var model = this.el.getObject3D('mesh');
@@ -18435,15 +18870,20 @@ module.exports.Component = registerComponent('windows-motion-controls', {
 /*!********************************!*\
   !*** ./src/constants/index.js ***!
   \********************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-module.exports = {
-  AFRAME_CDN_ROOT: window.AFRAME_CDN_ROOT || 'https://cdn.aframe.io/',
-  AFRAME_INJECTED: 'aframe-injected',
-  DEFAULT_CAMERA_HEIGHT: 1.6,
-  DEFAULT_HANDEDNESS: 'right',
-  keyboardevent: __webpack_require__(/*! ./keyboardevent */ "./src/constants/keyboardevent.js")
-};
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   AFRAME_CDN_ROOT: () => (/* binding */ AFRAME_CDN_ROOT),
+/* harmony export */   AFRAME_INJECTED: () => (/* binding */ AFRAME_INJECTED),
+/* harmony export */   DEFAULT_CAMERA_HEIGHT: () => (/* binding */ DEFAULT_CAMERA_HEIGHT),
+/* harmony export */   DEFAULT_HANDEDNESS: () => (/* binding */ DEFAULT_HANDEDNESS)
+/* harmony export */ });
+var AFRAME_CDN_ROOT = window.AFRAME_CDN_ROOT || 'https://cdn.aframe.io/';
+var AFRAME_INJECTED = 'aframe-injected';
+var DEFAULT_CAMERA_HEIGHT = 1.6;
+var DEFAULT_HANDEDNESS = 'right';
 
 /***/ }),
 
@@ -18451,20 +18891,23 @@ module.exports = {
 /*!****************************************!*\
   !*** ./src/constants/keyboardevent.js ***!
   \****************************************/
-/***/ ((module) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-module.exports = {
-  // Tiny KeyboardEvent.code polyfill.
-  KEYCODE_TO_CODE: {
-    '38': 'ArrowUp',
-    '37': 'ArrowLeft',
-    '40': 'ArrowDown',
-    '39': 'ArrowRight',
-    '87': 'KeyW',
-    '65': 'KeyA',
-    '83': 'KeyS',
-    '68': 'KeyD'
-  }
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   KEYCODE_TO_CODE: () => (/* binding */ KEYCODE_TO_CODE)
+/* harmony export */ });
+// Tiny KeyboardEvent.code polyfill.
+var KEYCODE_TO_CODE = {
+  '38': 'ArrowUp',
+  '37': 'ArrowLeft',
+  '40': 'ArrowDown',
+  '39': 'ArrowRight',
+  '87': 'KeyW',
+  '65': 'KeyA',
+  '83': 'KeyS',
+  '68': 'KeyD'
 };
 
 /***/ }),
@@ -18473,19 +18916,28 @@ module.exports = {
 /*!******************************!*\
   !*** ./src/core/a-assets.js ***!
   \******************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   getFileNameFromURL: () => (/* binding */ getFileNameFromURL),
+/* harmony export */   inferResponseType: () => (/* binding */ inferResponseType)
+/* harmony export */ });
+/* harmony import */ var _lib_three_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../lib/three.js */ "./src/lib/three.js");
+/* harmony import */ var _a_node_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./a-node.js */ "./src/core/a-node.js");
+/* harmony import */ var _utils_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/index.js */ "./src/utils/index.js");
 /* global customElements */
-var ANode = (__webpack_require__(/*! ./a-node */ "./src/core/a-node.js").ANode);
-var debug = __webpack_require__(/*! ../utils/debug */ "./src/utils/debug.js");
-var THREE = __webpack_require__(/*! ../lib/three */ "./src/lib/three.js");
-var fileLoader = new THREE.FileLoader();
-var warn = debug('core:a-assets:warn');
+
+
+
+var fileLoader = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].FileLoader();
+var warn = (0,_utils_index_js__WEBPACK_IMPORTED_MODULE_2__.debug)('core:a-assets:warn');
 
 /**
  * Asset management system. Handles blocking on asset loading.
  */
-class AAssets extends ANode {
+class AAssets extends _a_node_js__WEBPACK_IMPORTED_MODULE_1__.ANode {
   constructor() {
     super();
     this.isAssets = true;
@@ -18514,7 +18966,7 @@ class AAssets extends ANode {
       loaded.push(new Promise(function (resolve, reject) {
         // Set in cache because we won't be needing to call three.js loader if we have.
         // a loaded media element.
-        THREE.Cache.add(imgEls[i].getAttribute('src'), imgEl);
+        _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Cache.add(imgEls[i].getAttribute('src'), imgEl);
         if (imgEl.complete) {
           resolve();
           return;
@@ -18589,7 +19041,7 @@ customElements.define('a-assets', AAssets);
 /**
  * Preload using XHRLoader for any type of asset.
  */
-class AAssetItem extends ANode {
+class AAssetItem extends _a_node_js__WEBPACK_IMPORTED_MODULE_1__.ANode {
   constructor() {
     super();
     this.data = null;
@@ -18601,7 +19053,7 @@ class AAssetItem extends ANode {
     fileLoader.setResponseType(this.getAttribute('response-type') || inferResponseType(src));
     fileLoader.load(src, function handleOnLoad(response) {
       self.data = response;
-      ANode.prototype.load.call(self);
+      _a_node_js__WEBPACK_IMPORTED_MODULE_1__.ANode.prototype.load.call(self);
     }, function handleOnProgress(xhr) {
       self.emit('progress', {
         loadedBytes: xhr.loaded,
@@ -18654,7 +19106,7 @@ function mediaElementLoaded(el) {
         // Store video elements only. three.js loader is used for audio elements.
         // See assetParse too.
         if (el.tagName === 'VIDEO') {
-          THREE.Cache.add(el.getAttribute('src'), el);
+          _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Cache.add(el.getAttribute('src'), el);
         }
         resolve();
       }
@@ -18749,7 +19201,6 @@ function inferResponseType(src) {
   }
   return 'text';
 }
-module.exports.inferResponseType = inferResponseType;
 
 /**
  * Extract filename from URL
@@ -18764,7 +19215,6 @@ function getFileNameFromURL(url) {
   var filePath = url.replace(query, '').replace('?', '');
   return filePath.substring(filePath.lastIndexOf('/') + 1);
 }
-module.exports.getFileNameFromURL = getFileNameFromURL;
 
 /***/ }),
 
@@ -18772,11 +19222,14 @@ module.exports.getFileNameFromURL = getFileNameFromURL;
 /*!*******************************!*\
   !*** ./src/core/a-cubemap.js ***!
   \*******************************/
-/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _utils_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/index.js */ "./src/utils/index.js");
 /* global customElements, HTMLElement */
-var debug = __webpack_require__(/*! ../utils/debug */ "./src/utils/debug.js");
-var warn = debug('core:cubemap:warn');
+
+var warn = (0,_utils_index_js__WEBPACK_IMPORTED_MODULE_0__.debug)('core:cubemap:warn');
 
 /**
  * Cubemap element that handles validation and exposes list of six image sources (URL or <img>).
@@ -18840,15 +19293,24 @@ customElements.define('a-cubemap', ACubeMap);
 /*!******************************!*\
   !*** ./src/core/a-entity.js ***!
   \******************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   AEntity: () => (/* binding */ AEntity)
+/* harmony export */ });
+/* harmony import */ var _lib_three_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../lib/three.js */ "./src/lib/three.js");
+/* harmony import */ var _a_node_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./a-node.js */ "./src/core/a-node.js");
+/* harmony import */ var _component_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./component.js */ "./src/core/component.js");
+/* harmony import */ var _utils_index_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/index.js */ "./src/utils/index.js");
 /* global customElements */
-var ANode = (__webpack_require__(/*! ./a-node */ "./src/core/a-node.js").ANode);
-var COMPONENTS = (__webpack_require__(/*! ./component */ "./src/core/component.js").components);
-var THREE = __webpack_require__(/*! ../lib/three */ "./src/lib/three.js");
-var utils = __webpack_require__(/*! ../utils/ */ "./src/utils/index.js");
-var debug = utils.debug('core:a-entity:debug');
-var warn = utils.debug('core:a-entity:warn');
+
+
+
+
+var debug = _utils_index_js__WEBPACK_IMPORTED_MODULE_3__.debug('core:a-entity:debug');
+var warn = _utils_index_js__WEBPACK_IMPORTED_MODULE_3__.debug('core:a-entity:warn');
 var MULTIPLE_COMPONENT_DELIMITER = '__';
 var OBJECT3D_COMPONENTS = ['position', 'rotation', 'scale', 'visible'];
 var ONCE = {
@@ -18866,7 +19328,7 @@ var ONCE = {
  * @member {array} states.
  * @member {boolean} isPlaying - false if dynamic behavior of the entity is paused.
  */
-class AEntity extends ANode {
+class AEntity extends _a_node_js__WEBPACK_IMPORTED_MODULE_1__.ANode {
   constructor() {
     super();
     this.components = {};
@@ -18875,7 +19337,7 @@ class AEntity extends ANode {
     this.componentsToUpdate = {};
     this.isEntity = true;
     this.isPlaying = false;
-    this.object3D = new THREE.Group();
+    this.object3D = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Group();
     this.object3D.rotation.order = 'YXZ';
     this.object3D.el = this;
     this.object3DMap = {};
@@ -18970,7 +19432,7 @@ class AEntity extends ANode {
   setObject3D(type, obj) {
     var oldObj;
     var self = this;
-    if (!(obj instanceof THREE.Object3D)) {
+    if (!(obj instanceof _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Object3D)) {
       throw new Error('`Entity.setObject3D` was called with an object that was not an instance of ' + 'THREE.Object3D.');
     }
 
@@ -19129,12 +19591,12 @@ class AEntity extends ANode {
     var componentInfo;
     var componentName;
     var isComponentDefined;
-    componentInfo = utils.split(attrName, MULTIPLE_COMPONENT_DELIMITER);
+    componentInfo = _utils_index_js__WEBPACK_IMPORTED_MODULE_3__.split(attrName, MULTIPLE_COMPONENT_DELIMITER);
     componentName = componentInfo[0];
     componentId = componentInfo.length > 2 ? componentInfo.slice(1).join('__') : componentInfo[1];
 
     // Not a registered component.
-    if (!COMPONENTS[componentName]) {
+    if (!_component_js__WEBPACK_IMPORTED_MODULE_2__.components[componentName]) {
       return;
     }
 
@@ -19154,7 +19616,7 @@ class AEntity extends ANode {
     this.initComponentDependencies(componentName);
 
     // Initialize component
-    component = new COMPONENTS[componentName].Component(this, data, componentId);
+    component = new _component_js__WEBPACK_IMPORTED_MODULE_2__.components[componentName].Component(this, data, componentId);
     if (this.isPlaying) {
       component.play();
     }
@@ -19177,7 +19639,7 @@ class AEntity extends ANode {
    */
   initComponentDependencies(name) {
     var self = this;
-    var component = COMPONENTS[name];
+    var component = _component_js__WEBPACK_IMPORTED_MODULE_2__.components[name];
     var dependencies;
     var i;
 
@@ -19187,7 +19649,7 @@ class AEntity extends ANode {
     }
 
     // No dependencies.
-    dependencies = COMPONENTS[name].dependencies;
+    dependencies = _component_js__WEBPACK_IMPORTED_MODULE_2__.components[name].dependencies;
     if (!dependencies) {
       return;
     }
@@ -19413,7 +19875,7 @@ class AEntity extends ANode {
    * @param {string|object} newVal
    */
   setEntityAttribute(attr, oldVal, newVal) {
-    if (COMPONENTS[attr] || this.components[attr]) {
+    if (_component_js__WEBPACK_IMPORTED_MODULE_2__.components[attr] || this.components[attr]) {
       this.updateComponent(attr, newVal);
       return;
     }
@@ -19512,7 +19974,7 @@ class AEntity extends ANode {
     componentName = delimiterIndex > 0 ? attrName.substring(0, delimiterIndex) : attrName;
 
     // Not a component. Normal set attribute.
-    if (!COMPONENTS[componentName]) {
+    if (!_component_js__WEBPACK_IMPORTED_MODULE_2__.components[componentName]) {
       if (attrName === 'mixin') {
         this.mixinUpdate(arg1);
       }
@@ -19526,7 +19988,7 @@ class AEntity extends ANode {
     }
 
     // Determine new attributes from the arguments
-    if (typeof arg2 !== 'undefined' && typeof arg1 === 'string' && arg1.length > 0 && typeof utils.styleParser.parse(arg1) === 'string') {
+    if (typeof arg2 !== 'undefined' && typeof arg1 === 'string' && arg1.length > 0 && typeof _utils_index_js__WEBPACK_IMPORTED_MODULE_3__.styleParser.parse(arg1) === 'string') {
       // Update a single property of a multi-property component
       for (key in singlePropUpdate) {
         delete singlePropUpdate[key];
@@ -19725,7 +20187,7 @@ function mergeComponentData(attrValue, extraData) {
 
   // Merge multi-property data.
   if (extraData.constructor === Object) {
-    return utils.extend(extraData, utils.styleParser.parse(attrValue || {}));
+    return _utils_index_js__WEBPACK_IMPORTED_MODULE_3__.extend(extraData, _utils_index_js__WEBPACK_IMPORTED_MODULE_3__.styleParser.parse(attrValue || {}));
   }
 
   // Return data, precedence to the defined value.
@@ -19733,15 +20195,15 @@ function mergeComponentData(attrValue, extraData) {
 }
 function isComponent(componentName) {
   if (componentName.indexOf(MULTIPLE_COMPONENT_DELIMITER) !== -1) {
-    componentName = utils.split(componentName, MULTIPLE_COMPONENT_DELIMITER)[0];
+    componentName = _utils_index_js__WEBPACK_IMPORTED_MODULE_3__.split(componentName, MULTIPLE_COMPONENT_DELIMITER)[0];
   }
-  if (!COMPONENTS[componentName]) {
+  if (!_component_js__WEBPACK_IMPORTED_MODULE_2__.components[componentName]) {
     return false;
   }
   return true;
 }
 function getRotation(entityEl) {
-  var radToDeg = THREE.MathUtils.radToDeg;
+  var radToDeg = _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].MathUtils.radToDeg;
   var rotation = entityEl.object3D.rotation;
   var rotationObj = entityEl.rotationObj;
   rotationObj.x = radToDeg(rotation.x);
@@ -19752,7 +20214,6 @@ function getRotation(entityEl) {
 AEntity.componentsUpdated = [];
 AEntity.singlePropUpdate = {};
 customElements.define('a-entity', AEntity);
-module.exports.AEntity = AEntity;
 
 /***/ }),
 
@@ -19760,13 +20221,19 @@ module.exports.AEntity = AEntity;
 /*!*****************************!*\
   !*** ./src/core/a-mixin.js ***!
   \*****************************/
-/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _a_node_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./a-node.js */ "./src/core/a-node.js");
+/* harmony import */ var _component_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./component.js */ "./src/core/component.js");
+/* harmony import */ var _utils_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/index.js */ "./src/utils/index.js");
+/* harmony import */ var _utils_styleParser_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/styleParser.js */ "./src/utils/styleParser.js");
 /* global customElements */
-var ANode = (__webpack_require__(/*! ./a-node */ "./src/core/a-node.js").ANode);
-var components = (__webpack_require__(/*! ./component */ "./src/core/component.js").components);
-var utils = __webpack_require__(/*! ../utils */ "./src/utils/index.js");
-var styleParser = utils.styleParser;
+
+
+
+
 var MULTIPLE_COMPONENT_DELIMITER = '__';
 
 /**
@@ -19774,7 +20241,7 @@ var MULTIPLE_COMPONENT_DELIMITER = '__';
  *         are component names and the values are already parsed by the component.
  * @member {object} rawAttributeCache - Cache of the raw attribute values.
  */
-class AMixin extends ANode {
+class AMixin extends _a_node_js__WEBPACK_IMPORTED_MODULE_0__.ANode {
   constructor() {
     super();
     this.componentCache = {};
@@ -19811,8 +20278,8 @@ class AMixin extends ANode {
     var componentName;
 
     // Get component data.
-    componentName = utils.split(attr, MULTIPLE_COMPONENT_DELIMITER)[0];
-    component = components[componentName];
+    componentName = _utils_index_js__WEBPACK_IMPORTED_MODULE_2__.split(attr, MULTIPLE_COMPONENT_DELIMITER)[0];
+    component = _component_js__WEBPACK_IMPORTED_MODULE_1__.components[componentName];
     if (value === undefined) {
       value = window.HTMLElement.prototype.getAttribute.call(this, attr);
     }
@@ -19844,7 +20311,7 @@ class AMixin extends ANode {
     } else {
       // Use style parser as the values will be parsed once mixed in.
       // Furthermore parsing might fail with dynamic schema's.
-      parsedValue = styleParser.parse(attrValue);
+      parsedValue = _utils_styleParser_js__WEBPACK_IMPORTED_MODULE_3__.parse(attrValue);
     }
     return parsedValue;
   }
@@ -19899,12 +20366,20 @@ customElements.define('a-mixin', AMixin);
 /*!****************************!*\
   !*** ./src/core/a-node.js ***!
   \****************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-/* global customElements, CustomEvent, HTMLElement,  MutationObserver */
-var utils = __webpack_require__(/*! ../utils/ */ "./src/utils/index.js");
-var readyState = __webpack_require__(/*! ./readyState */ "./src/core/readyState.js");
-var warn = utils.debug('core:a-node:warn');
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   ANode: () => (/* binding */ ANode),
+/* harmony export */   knownTags: () => (/* binding */ knownTags)
+/* harmony export */ });
+/* harmony import */ var _utils_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/index.js */ "./src/utils/index.js");
+/* harmony import */ var _readyState_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./readyState.js */ "./src/core/readyState.js");
+/* global customElements, CustomEvent, HTMLElement, MutationObserver */
+
+
+var warn = _utils_index_js__WEBPACK_IMPORTED_MODULE_0__.debug('core:a-node:warn');
 var knownTags = {
   'a-scene': true,
   'a-assets': true,
@@ -19934,7 +20409,7 @@ class ANode extends HTMLElement {
   }
   connectedCallback() {
     // Defer if not ready to initialize.
-    if (!readyState.canInitializeElements) {
+    if (!_readyState_js__WEBPACK_IMPORTED_MODULE_1__.canInitializeElements) {
       document.addEventListener('aframeready', this.connectedCallback.bind(this));
       return;
     }
@@ -20098,8 +20573,8 @@ class ANode extends HTMLElement {
     var oldMixinIds;
     newMixinIdArray.length = 0;
     oldMixinIdArray.length = 0;
-    newMixinIds = newMixins ? utils.split(newMixins.trim(), /\s+/) : newMixinIdArray;
-    oldMixinIds = oldMixins ? utils.split(oldMixins.trim(), /\s+/) : oldMixinIdArray;
+    newMixinIds = newMixins ? _utils_index_js__WEBPACK_IMPORTED_MODULE_0__.split(newMixins.trim(), /\s+/) : newMixinIdArray;
+    oldMixinIds = oldMixins ? _utils_index_js__WEBPACK_IMPORTED_MODULE_0__.split(oldMixins.trim(), /\s+/) : oldMixinIdArray;
     mixinIds.newMixinIds = newMixinIds;
     mixinIds.oldMixinIds = oldMixinIds;
 
@@ -20147,7 +20622,7 @@ class ANode extends HTMLElement {
     // Register composited mixins (if mixin has mixins).
     mixin = mixinEl.getAttribute('mixin');
     if (mixin) {
-      compositedMixinIds = utils.split(mixin.trim(), /\s+/);
+      compositedMixinIds = _utils_index_js__WEBPACK_IMPORTED_MODULE_0__.split(mixin.trim(), /\s+/);
       for (i = 0; i < compositedMixinIds.length; i++) {
         this.registerMixin(compositedMixinIds[i]);
       }
@@ -20200,7 +20675,7 @@ class ANode extends HTMLElement {
 
     // If extra data is present, we need to create a new object.
     if (extraData) {
-      data = utils.extend({}, extraData, data);
+      data = _utils_index_js__WEBPACK_IMPORTED_MODULE_0__.extend({}, extraData, data);
     }
     this.dispatchEvent(new CustomEvent(name, data));
   }
@@ -20210,8 +20685,6 @@ ANode.newMixinIdArray = [];
 ANode.oldMixinIdArray = [];
 ANode.mixinIds = {};
 customElements.define('a-node', ANode);
-module.exports.ANode = ANode;
-module.exports.knownTags = knownTags;
 
 /***/ }),
 
@@ -20219,21 +20692,33 @@ module.exports.knownTags = knownTags;
 /*!*******************************!*\
   !*** ./src/core/component.js ***!
   \*******************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Component: () => (/* binding */ Component),
+/* harmony export */   components: () => (/* binding */ components),
+/* harmony export */   registerComponent: () => (/* binding */ registerComponent),
+/* harmony export */   registrationOrderWarnings: () => (/* binding */ registrationOrderWarnings)
+/* harmony export */ });
+/* harmony import */ var _schema_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./schema.js */ "./src/core/schema.js");
+/* harmony import */ var _scene_scenes_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./scene/scenes.js */ "./src/core/scene/scenes.js");
+/* harmony import */ var _system_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./system.js */ "./src/core/system.js");
+/* harmony import */ var _utils_index_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/index.js */ "./src/utils/index.js");
 /* global Node */
-var schema = __webpack_require__(/*! ./schema */ "./src/core/schema.js");
-var scenes = __webpack_require__(/*! ./scene/scenes */ "./src/core/scene/scenes.js");
-var systems = __webpack_require__(/*! ./system */ "./src/core/system.js");
-var utils = __webpack_require__(/*! ../utils/ */ "./src/utils/index.js");
-var components = module.exports.components = {}; // Keep track of registered components.
-var parseProperty = schema.parseProperty;
-var processSchema = schema.process;
-var isSingleProp = schema.isSingleProperty;
-var stringifyProperties = schema.stringifyProperties;
-var stringifyProperty = schema.stringifyProperty;
-var styleParser = utils.styleParser;
-var warn = utils.debug('core:component:warn');
+
+
+
+
+var components = {}; // Keep track of registered components.
+var parseProperty = _schema_js__WEBPACK_IMPORTED_MODULE_0__.parseProperty;
+var processSchema = _schema_js__WEBPACK_IMPORTED_MODULE_0__.process;
+var isSingleProp = _schema_js__WEBPACK_IMPORTED_MODULE_0__.isSingleProperty;
+var stringifyProperties = _schema_js__WEBPACK_IMPORTED_MODULE_0__.stringifyProperties;
+var stringifyProperty = _schema_js__WEBPACK_IMPORTED_MODULE_0__.stringifyProperty;
+var styleParser = _utils_index_js__WEBPACK_IMPORTED_MODULE_3__.styleParser;
+var warn = _utils_index_js__WEBPACK_IMPORTED_MODULE_3__.debug('core:component:warn');
 var aframeScript = document.currentScript;
 var upperCaseRegExp = new RegExp('[A-Z]+');
 
@@ -20269,7 +20754,7 @@ var attrValueProxyHandler = {
  * @member {string} attrValue - Value of the corresponding HTML attribute.
  * @member {string} id - Optional id for differentiating multiple instances on the same entity.
  */
-var Component = module.exports.Component = function (el, attrValue, id) {
+var Component = function (el, attrValue, id) {
   var self = this;
 
   // If component is sceneOnly check the entity is the scene element
@@ -20300,9 +20785,9 @@ var Component = module.exports.Component = function (el, attrValue, id) {
   if (this.isObjectBased) {
     this.data = this.objectPool.use();
     // Drop any properties added by dynamic schemas in previous use
-    utils.objectPool.removeUnusedKeys(this.data, this.schema);
+    _utils_index_js__WEBPACK_IMPORTED_MODULE_3__.objectPool.removeUnusedKeys(this.data, this.schema);
     this.oldData = this.objectPool.use();
-    utils.objectPool.removeUnusedKeys(this.oldData, this.schema);
+    _utils_index_js__WEBPACK_IMPORTED_MODULE_3__.objectPool.removeUnusedKeys(this.oldData, this.schema);
     this.attrValueProxy = new Proxy(this, attrValueProxyHandler);
   } else {
     this.data = undefined;
@@ -20317,7 +20802,7 @@ var Component = module.exports.Component = function (el, attrValue, id) {
   // This type of throttle ensures that when a burst of changes occurs, the final change to the
   // component always triggers an event (so a consumer of this event will end up reading the correct
   // final state, following a burst of changes).
-  this.throttledEmitComponentChanged = utils.throttleLeadingAndTrailing(function emitChange() {
+  this.throttledEmitComponentChanged = _utils_index_js__WEBPACK_IMPORTED_MODULE_3__.throttleLeadingAndTrailing(function emitChange() {
     el.emit('componentchanged', self.evtDetail, false);
   }, 200);
 
@@ -20492,7 +20977,7 @@ Component.prototype = {
     // Multi-property
     if (clobber) {
       // Clobber. Rebuild.
-      utils.objectPool.clearObject(this.attrValue);
+      _utils_index_js__WEBPACK_IMPORTED_MODULE_3__.objectPool.clearObject(this.attrValue);
       this.recomputeData(attrValue);
       // Quirk: always update schema when clobbering, even if there are no schemaChange properties in schema.
       this.schemaChangeRequired = !!this.updateSchema;
@@ -20501,7 +20986,7 @@ Component.prototype = {
       styleParser.parse(attrValue, this.attrValueProxy);
     } else {
       // AttrValue is an object, apply it to the attrValueProxy object
-      utils.extend(this.attrValueProxy, attrValue);
+      _utils_index_js__WEBPACK_IMPORTED_MODULE_3__.extend(this.attrValueProxy, attrValue);
     }
 
     // Update schema if needed
@@ -20511,7 +20996,7 @@ Component.prototype = {
     if (this.schemaChangeRequired && this.updateSchema) {
       encounteredUnknownProperties.length = 0;
       this.updateSchema(this.data);
-      utils.objectPool.removeUnusedKeys(this.data, this.schema);
+      _utils_index_js__WEBPACK_IMPORTED_MODULE_3__.objectPool.removeUnusedKeys(this.data, this.schema);
       this.recomputeData(attrValue);
       this.schemaChangeRequired = false;
 
@@ -20604,9 +21089,9 @@ Component.prototype = {
   extendSchema: function (schemaAddon) {
     var extendedSchema;
     // Clone base schema.
-    extendedSchema = utils.extend({}, components[this.name].schema);
+    extendedSchema = _utils_index_js__WEBPACK_IMPORTED_MODULE_3__.extend({}, components[this.name].schema);
     // Extend base schema with new schema chunk.
-    utils.extend(extendedSchema, schemaAddon);
+    _utils_index_js__WEBPACK_IMPORTED_MODULE_3__.extend(extendedSchema, schemaAddon);
     this.schema = processSchema(extendedSchema);
     this.el.emit('schemachanged', this.evtDetail);
   },
@@ -20663,7 +21148,7 @@ Component.prototype = {
     // Cleanup of orphaned oldData objects is handled in callUpdateHandler.
     if (this.oldDataInUse) {
       this.oldData = this.objectPool.use();
-      utils.objectPool.removeUnusedKeys(this.oldData, this.schema);
+      _utils_index_js__WEBPACK_IMPORTED_MODULE_3__.objectPool.removeUnusedKeys(this.oldData, this.schema);
       this.storeOldData();
       this.oldDataInUse = false;
     }
@@ -20672,7 +21157,7 @@ Component.prototype = {
     var newComputedValue = parseProperty(this.getComputedPropertyValue(key), propertySchema, targetValue);
     // Quirk: Single-property arrays DO NOT share references, while arrays in multi-property components do.
     if (propertySchema.type === 'array' && !key) {
-      newComputedValue = utils.clone(newComputedValue);
+      newComputedValue = _utils_index_js__WEBPACK_IMPORTED_MODULE_3__.clone(newComputedValue);
     }
 
     // Check if the resulting (parsed) value differs from before
@@ -20754,7 +21239,7 @@ Component.prototype = {
       this.attrValueProxy[key] = undefined;
     }
     if (attrValue && typeof attrValue === 'object') {
-      utils.extend(this.attrValueProxy, attrValue);
+      _utils_index_js__WEBPACK_IMPORTED_MODULE_3__.extend(this.attrValueProxy, attrValue);
     } else if (typeof attrValue === 'string') {
       // AttrValue is a style string, parse it into the attrValueProxy object
       styleParser.parse(attrValue, this.attrValueProxy);
@@ -20798,9 +21283,7 @@ function eventsBind(component, events) {
 }
 
 // For testing.
-if (window.debug) {
-  var registrationOrderWarnings = module.exports.registrationOrderWarnings = {};
-}
+var registrationOrderWarnings = {};
 
 /**
  * Register a component to A-Frame.
@@ -20809,7 +21292,7 @@ if (window.debug) {
  * @param {object} definition - Component schema and lifecycle method handlers.
  * @returns {object} Component.
  */
-module.exports.registerComponent = function (name, definition) {
+function registerComponent(name, definition) {
   var NewComponent;
   var proto = {};
   var schema;
@@ -20817,7 +21300,7 @@ module.exports.registerComponent = function (name, definition) {
 
   // Warning if component is statically registered after the scene.
   if (document.currentScript && document.currentScript !== aframeScript) {
-    scenes.forEach(function checkPosition(sceneEl) {
+    _scene_scenes_js__WEBPACK_IMPORTED_MODULE_1__["default"].forEach(function checkPosition(sceneEl) {
       // Okay to register component after the scene at runtime.
       if (sceneEl.hasLoaded) {
         return;
@@ -20859,15 +21342,15 @@ module.exports.registerComponent = function (name, definition) {
   NewComponent.prototype.name = name;
   NewComponent.prototype.isPositionRotationScale = name === 'position' || name === 'rotation' || name === 'scale';
   NewComponent.prototype.constructor = NewComponent;
-  NewComponent.prototype.system = systems && systems.systems[name];
+  NewComponent.prototype.system = _system_js__WEBPACK_IMPORTED_MODULE_2__ && _system_js__WEBPACK_IMPORTED_MODULE_2__.systems[name];
   NewComponent.prototype.play = wrapPlay(NewComponent.prototype.play);
   NewComponent.prototype.pause = wrapPause(NewComponent.prototype.pause);
-  schema = utils.extend(processSchema(NewComponent.prototype.schema, NewComponent.prototype.name));
+  schema = _utils_index_js__WEBPACK_IMPORTED_MODULE_3__.extend(processSchema(NewComponent.prototype.schema, NewComponent.prototype.name));
   NewComponent.prototype.isSingleProperty = schemaIsSingleProp = isSingleProp(NewComponent.prototype.schema);
   NewComponent.prototype.isObjectBased = !schemaIsSingleProp || schemaIsSingleProp && (isObject(schema.default) || isObject(parseProperty(undefined, schema)));
 
   // Create object pool for class of components.
-  objectPools[name] = utils.objectPool.createPool();
+  objectPools[name] = _utils_index_js__WEBPACK_IMPORTED_MODULE_3__.objectPool.createPool();
   components[name] = {
     Component: NewComponent,
     dependencies: NewComponent.prototype.dependencies,
@@ -20883,13 +21366,13 @@ module.exports.registerComponent = function (name, definition) {
   };
 
   // Notify all scenes
-  for (var i = 0; i < scenes.length; i++) {
-    scenes[i].emit('componentregistered', {
+  for (var i = 0; i < _scene_scenes_js__WEBPACK_IMPORTED_MODULE_1__["default"].length; i++) {
+    _scene_scenes_js__WEBPACK_IMPORTED_MODULE_1__["default"][i].emit('componentregistered', {
       name: name
     }, false);
   }
   return NewComponent;
-};
+}
 
 /**
  * Checks if a component has defined a method that needs to run every frame.
@@ -20954,20 +21437,30 @@ function isObject(value) {
 /*!******************************!*\
   !*** ./src/core/geometry.js ***!
   \******************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var schema = __webpack_require__(/*! ./schema */ "./src/core/schema.js");
-var processSchema = schema.process;
-var geometries = module.exports.geometries = {}; // Registered geometries.
-var geometryNames = module.exports.geometryNames = []; // Names of registered geometries.
-var THREE = __webpack_require__(/*! ../lib/three */ "./src/lib/three.js");
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Geometry: () => (/* binding */ Geometry),
+/* harmony export */   geometries: () => (/* binding */ geometries),
+/* harmony export */   geometryNames: () => (/* binding */ geometryNames),
+/* harmony export */   registerGeometry: () => (/* binding */ registerGeometry)
+/* harmony export */ });
+/* harmony import */ var _schema_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./schema.js */ "./src/core/schema.js");
+/* harmony import */ var _lib_three_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../lib/three.js */ "./src/lib/three.js");
+
+
+var processSchema = _schema_js__WEBPACK_IMPORTED_MODULE_0__.process;
+var geometries = {}; // Registered geometries.
+var geometryNames = []; // Names of registered geometries.
 
 /**
  * Geometry class definition.
  *
  * Geometries extend the geometry component API to create and register geometry types.
  */
-var Geometry = module.exports.Geometry = function () {};
+var Geometry = function () {};
 Geometry.prototype = {
   /**
    * Contains the type schema and defaults for the data values.
@@ -20979,7 +21472,7 @@ Geometry.prototype = {
    * Called during shader initialization and is only run once.
    */
   init: function (data) {
-    this.geometry = new THREE.BufferGeometry();
+    this.geometry = new _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].BufferGeometry();
     return this.geometry;
   },
   /**
@@ -20998,7 +21491,7 @@ Geometry.prototype = {
  * @param {object} definition - Geometry property and methods.
  * @returns {object} Geometry.
  */
-module.exports.registerGeometry = function (name, definition) {
+function registerGeometry(name, definition) {
   var NewGeometry;
   var proto = {};
 
@@ -21024,7 +21517,7 @@ module.exports.registerGeometry = function (name, definition) {
   };
   geometryNames.push(name);
   return NewGeometry;
-};
+}
 
 /***/ }),
 
@@ -21032,12 +21525,23 @@ module.exports.registerGeometry = function (name, definition) {
 /*!***********************************!*\
   !*** ./src/core/propertyTypes.js ***!
   \***********************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var coordinates = __webpack_require__(/*! ../utils/coordinates */ "./src/utils/coordinates.js");
-var debug = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
-var warn = debug('core:propertyTypes:warn');
-var propertyTypes = module.exports.propertyTypes = {};
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   isValidDefaultCoordinate: () => (/* binding */ isValidDefaultCoordinate),
+/* harmony export */   isValidDefaultValue: () => (/* binding */ isValidDefaultValue),
+/* harmony export */   propertyTypes: () => (/* binding */ propertyTypes),
+/* harmony export */   registerPropertyType: () => (/* binding */ registerPropertyType)
+/* harmony export */ });
+/* harmony import */ var _utils_coordinates_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/coordinates.js */ "./src/utils/coordinates.js");
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_1__);
+
+
+var warn = debug__WEBPACK_IMPORTED_MODULE_1___default()('core:propertyTypes:warn');
+var propertyTypes = {};
 var nonCharRegex = /[,> .[\]:]/;
 var urlRegex = /url\((.+)\)/;
 
@@ -21059,18 +21563,18 @@ registerPropertyType('time', 0, intParse);
 registerPropertyType('vec2', {
   x: 0,
   y: 0
-}, vecParse, coordinates.stringify, coordinates.equals);
+}, vecParse, _utils_coordinates_js__WEBPACK_IMPORTED_MODULE_0__.stringify, _utils_coordinates_js__WEBPACK_IMPORTED_MODULE_0__.equals);
 registerPropertyType('vec3', {
   x: 0,
   y: 0,
   z: 0
-}, vecParse, coordinates.stringify, coordinates.equals);
+}, vecParse, _utils_coordinates_js__WEBPACK_IMPORTED_MODULE_0__.stringify, _utils_coordinates_js__WEBPACK_IMPORTED_MODULE_0__.equals);
 registerPropertyType('vec4', {
   x: 0,
   y: 0,
   z: 0,
   w: 1
-}, vecParse, coordinates.stringify, coordinates.equals);
+}, vecParse, _utils_coordinates_js__WEBPACK_IMPORTED_MODULE_0__.stringify, _utils_coordinates_js__WEBPACK_IMPORTED_MODULE_0__.equals);
 
 /**
  * Register a parser for re-use such that when someone uses `type` in the schema,
@@ -21096,7 +21600,6 @@ function registerPropertyType(type, defaultValue, parse, stringify, equals, cach
     isCacheable: cacheable !== false
   };
 }
-module.exports.registerPropertyType = registerPropertyType;
 function arrayParse(value) {
   if (Array.isArray(value)) {
     return value;
@@ -21244,7 +21747,7 @@ function srcParse(value) {
   return assetParse(value);
 }
 function vecParse(value, defaultValue, target) {
-  return coordinates.parse(value, defaultValue, target);
+  return _utils_coordinates_js__WEBPACK_IMPORTED_MODULE_0__.parse(value, defaultValue, target);
 }
 
 /**
@@ -21308,7 +21811,6 @@ function isValidDefaultValue(type, defaultVal) {
   }
   return true;
 }
-module.exports.isValidDefaultValue = isValidDefaultValue;
 
 /**
  * Checks if default coordinates are valid.
@@ -21343,7 +21845,6 @@ function isValidDefaultCoordinate(possibleCoordinates, dimensions) {
   }
   return true;
 }
-module.exports.isValidDefaultCoordinate = isValidDefaultCoordinate;
 
 /***/ }),
 
@@ -21351,14 +21852,22 @@ module.exports.isValidDefaultCoordinate = isValidDefaultCoordinate;
 /*!********************************!*\
   !*** ./src/core/readyState.js ***!
   \********************************/
-/***/ ((module) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   canInitializeElements: () => (/* binding */ canInitializeElements),
+/* harmony export */   emitReady: () => (/* binding */ emitReady),
+/* harmony export */   reset: () => (/* binding */ reset),
+/* harmony export */   waitForDocumentReadyState: () => (/* binding */ waitForDocumentReadyState)
+/* harmony export */ });
 /* global CustomEvent */
 
 /**
  * Flag indicating if A-Frame can initialize the scene or should wait.
  */
-module.exports.canInitializeElements = false;
+var canInitializeElements = false;
 
 /**
  * Waits for the document to be ready.
@@ -21376,21 +21885,24 @@ function waitForDocumentReadyState() {
     emitReady();
   });
 }
-module.exports.waitForDocumentReadyState = waitForDocumentReadyState;
 
 /**
  * Signals A-Frame that everything is ready to initialize.
  */
 function emitReady() {
-  if (module.exports.canInitializeElements) {
+  if (canInitializeElements) {
     return;
   }
-  module.exports.canInitializeElements = true;
+  canInitializeElements = true;
   setTimeout(function () {
     document.dispatchEvent(new CustomEvent('aframeready'));
   });
 }
-module.exports.emitReady = emitReady;
+
+/** Resets the canInitializeElements flag, used for testing */
+function reset() {
+  canInitializeElements = false;
+}
 
 /***/ }),
 
@@ -21398,28 +21910,46 @@ module.exports.emitReady = emitReady;
 /*!***********************************!*\
   !*** ./src/core/scene/a-scene.js ***!
   \***********************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   AScene: () => (/* binding */ AScene),
+/* harmony export */   determineComponentBehaviorOrder: () => (/* binding */ determineComponentBehaviorOrder),
+/* harmony export */   setupCanvas: () => (/* binding */ setupCanvas)
+/* harmony export */ });
+/* harmony import */ var _lib_three_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../lib/three.js */ "./src/lib/three.js");
+/* harmony import */ var _metaTags_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./metaTags.js */ "./src/core/scene/metaTags.js");
+/* harmony import */ var _wakelock_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./wakelock.js */ "./src/core/scene/wakelock.js");
+/* harmony import */ var _loadingScreen_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./loadingScreen.js */ "./src/core/scene/loadingScreen.js");
+/* harmony import */ var _scenes_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./scenes.js */ "./src/core/scene/scenes.js");
+/* harmony import */ var _system_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../system.js */ "./src/core/system.js");
+/* harmony import */ var _component_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../component.js */ "./src/core/component.js");
+/* harmony import */ var _utils_index_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../utils/index.js */ "./src/utils/index.js");
+/* harmony import */ var _a_entity_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../a-entity.js */ "./src/core/a-entity.js");
+/* harmony import */ var _a_node_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../a-node.js */ "./src/core/a-node.js");
+/* harmony import */ var _postMessage_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./postMessage.js */ "./src/core/scene/postMessage.js");
+/* harmony import */ var _utils_ios_orientationchange_blank_bug_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../../utils/ios-orientationchange-blank-bug.js */ "./src/utils/ios-orientationchange-blank-bug.js");
 /* global Promise, customElements, screen, CustomEvent */
-var initMetaTags = (__webpack_require__(/*! ./metaTags */ "./src/core/scene/metaTags.js").inject);
-var initWakelock = __webpack_require__(/*! ./wakelock */ "./src/core/scene/wakelock.js");
-var loadingScreen = __webpack_require__(/*! ./loadingScreen */ "./src/core/scene/loadingScreen.js");
-var scenes = __webpack_require__(/*! ./scenes */ "./src/core/scene/scenes.js");
-var systems = (__webpack_require__(/*! ../system */ "./src/core/system.js").systems);
-var components = (__webpack_require__(/*! ../component */ "./src/core/component.js").components);
-var THREE = __webpack_require__(/*! ../../lib/three */ "./src/lib/three.js");
-var utils = __webpack_require__(/*! ../../utils/ */ "./src/utils/index.js");
-var warn = utils.debug('core:a-scene:warn');
+
+
+
+
+
+
+
+
+
 // Require after.
-var AEntity = (__webpack_require__(/*! ../a-entity */ "./src/core/a-entity.js").AEntity);
-var ANode = (__webpack_require__(/*! ../a-node */ "./src/core/a-node.js").ANode);
-var initPostMessageAPI = __webpack_require__(/*! ./postMessage */ "./src/core/scene/postMessage.js");
-var isIOS = utils.device.isIOS();
-var isMobile = utils.device.isMobile();
-var isWebXRAvailable = utils.device.isWebXRAvailable;
-if (isIOS) {
-  __webpack_require__(/*! ../../utils/ios-orientationchange-blank-bug */ "./src/utils/ios-orientationchange-blank-bug.js");
-}
+
+
+
+
+var warn = _utils_index_js__WEBPACK_IMPORTED_MODULE_7__.debug('core:a-scene:warn');
+var isIOS = _utils_index_js__WEBPACK_IMPORTED_MODULE_7__.device.isIOS();
+var isMobile = _utils_index_js__WEBPACK_IMPORTED_MODULE_7__.device.isMobile();
+var isWebXRAvailable = _utils_index_js__WEBPACK_IMPORTED_MODULE_7__.device.isWebXRAvailable;
 
 /**
  * Scene element, holds all entities.
@@ -21437,18 +21967,18 @@ if (isIOS) {
  * @member {number} time
  */
 
-class AScene extends AEntity {
+class AScene extends _a_entity_js__WEBPACK_IMPORTED_MODULE_8__.AEntity {
   constructor() {
     var self;
     super();
     self = this;
-    self.clock = new THREE.Clock();
+    self.clock = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Clock();
     self.isIOS = isIOS;
     self.isMobile = isMobile;
     self.hasWebXR = isWebXRAvailable;
     self.isAR = false;
     self.isScene = true;
-    self.object3D = new THREE.Scene();
+    self.object3D = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Scene();
     self.object3D.onAfterRender = function (renderer, scene, camera) {
       // THREE may swap the camera used for the rendering if in VR, so we pass it to tock
       if (self.isPlaying) {
@@ -21488,14 +22018,14 @@ class AScene extends AEntity {
     // Renderer initialization
     setupCanvas(this);
     this.setupRenderer();
-    loadingScreen.setup(this, getCanvasSize);
+    _loadingScreen_js__WEBPACK_IMPORTED_MODULE_3__.setup(this, getCanvasSize);
     this.resize();
     if (!embedded) {
       this.addFullScreenStyles();
     }
-    initPostMessageAPI(this);
-    initMetaTags(this);
-    initWakelock(this);
+    (0,_postMessage_js__WEBPACK_IMPORTED_MODULE_10__.initPostMessageAPI)(this);
+    (0,_metaTags_js__WEBPACK_IMPORTED_MODULE_1__.inject)(this);
+    (0,_wakelock_js__WEBPACK_IMPORTED_MODULE_2__.initWakelock)(this);
 
     // Bind functions.
     this.enterVRBound = function () {
@@ -21511,10 +22041,10 @@ class AScene extends AEntity {
     });
     this.initSystems();
     // Compute component order
-    this.componentOrder = determineComponentBehaviorOrder(components, this.componentOrder);
+    this.componentOrder = determineComponentBehaviorOrder(_component_js__WEBPACK_IMPORTED_MODULE_6__.components, this.componentOrder);
     this.addEventListener('componentregistered', function () {
       // Recompute order
-      self.componentOrder = determineComponentBehaviorOrder(components, self.componentOrder);
+      self.componentOrder = determineComponentBehaviorOrder(_component_js__WEBPACK_IMPORTED_MODULE_6__.components, self.componentOrder);
     });
 
     // WebXR Immersive navigation handler.
@@ -21543,7 +22073,7 @@ class AScene extends AEntity {
     this.play();
 
     // Add to scene index.
-    scenes.push(this);
+    _scenes_js__WEBPACK_IMPORTED_MODULE_4__["default"].push(this);
   }
 
   /**
@@ -21554,7 +22084,7 @@ class AScene extends AEntity {
 
     // Initialize camera system first.
     this.initSystem('camera');
-    for (name in systems) {
+    for (name in _system_js__WEBPACK_IMPORTED_MODULE_5__.systems) {
       if (name === 'camera') {
         continue;
       }
@@ -21569,7 +22099,7 @@ class AScene extends AEntity {
     if (this.systems[name]) {
       return;
     }
-    this.systems[name] = new systems[name](this);
+    this.systems[name] = new _system_js__WEBPACK_IMPORTED_MODULE_5__.systems[name](this);
     this.systemNames.push(name);
   }
 
@@ -21578,9 +22108,9 @@ class AScene extends AEntity {
    */
   disconnectedCallback() {
     // Remove from scene index.
-    var sceneIndex = scenes.indexOf(this);
+    var sceneIndex = _scenes_js__WEBPACK_IMPORTED_MODULE_4__["default"].indexOf(this);
     super.disconnectedCallback();
-    scenes.splice(sceneIndex, 1);
+    _scenes_js__WEBPACK_IMPORTED_MODULE_4__["default"].splice(sceneIndex, 1);
     window.removeEventListener('sessionend', this.resize);
     this.removeFullScreenStyles();
     this.renderer.dispose();
@@ -21642,7 +22172,7 @@ class AScene extends AEntity {
    * For tests.
    */
   checkHeadsetConnected() {
-    return utils.device.checkHeadsetConnected();
+    return _utils_index_js__WEBPACK_IMPORTED_MODULE_7__.device.checkHeadsetConnected();
   }
   enterAR() {
     var errorMessage;
@@ -21650,7 +22180,7 @@ class AScene extends AEntity {
       errorMessage = 'Failed to enter AR mode, WebXR not supported.';
       throw new Error(errorMessage);
     }
-    if (!utils.device.checkARSupport()) {
+    if (!_utils_index_js__WEBPACK_IMPORTED_MODULE_7__.device.checkARSupport()) {
       errorMessage = 'Failed to enter AR, WebXR immersive-ar mode not supported in your browser or device.';
       throw new Error(errorMessage);
     }
@@ -21803,7 +22333,7 @@ class AScene extends AEntity {
       }
       self.resize();
       if (self.isIOS) {
-        utils.forceCanvasResizeSafariMobile(self.canvas);
+        _utils_index_js__WEBPACK_IMPORTED_MODULE_7__.forceCanvasResizeSafariMobile(self.canvas);
       }
       self.renderer.setPixelRatio(window.devicePixelRatio);
       self.emit('exit-vr', {
@@ -21821,7 +22351,7 @@ class AScene extends AEntity {
     if (system) {
       return system.data;
     }
-    return AEntity.prototype.getAttribute.call(this, attr);
+    return _a_entity_js__WEBPACK_IMPORTED_MODULE_8__.AEntity.prototype.getAttribute.call(this, attr);
   }
 
   /**
@@ -21833,7 +22363,7 @@ class AScene extends AEntity {
     if (system) {
       return system.data;
     }
-    return AEntity.prototype.getDOMAttribute.call(this, attr);
+    return _a_entity_js__WEBPACK_IMPORTED_MODULE_8__.AEntity.prototype.getDOMAttribute.call(this, attr);
   }
 
   /**
@@ -21843,8 +22373,8 @@ class AScene extends AEntity {
    */
   setAttribute(attr, value, componentPropValue) {
     // Check if system exists (i.e. is registered).
-    if (systems[attr]) {
-      ANode.prototype.setAttribute.call(this, attr, value);
+    if (_system_js__WEBPACK_IMPORTED_MODULE_5__.systems[attr]) {
+      _a_node_js__WEBPACK_IMPORTED_MODULE_9__.ANode.prototype.setAttribute.call(this, attr, value);
 
       // Update system instance, if initialized on the scene.
       var system = this.systems[attr];
@@ -21853,7 +22383,7 @@ class AScene extends AEntity {
       }
       return;
     }
-    AEntity.prototype.setAttribute.call(this, attr, value, componentPropValue);
+    _a_entity_js__WEBPACK_IMPORTED_MODULE_8__.AEntity.prototype.setAttribute.call(this, attr, value, componentPropValue);
   }
 
   /**
@@ -21935,7 +22465,7 @@ class AScene extends AEntity {
     };
     if (this.hasAttribute('renderer')) {
       rendererAttrString = this.getAttribute('renderer');
-      rendererAttr = utils.styleParser.parse(rendererAttrString);
+      rendererAttr = _utils_index_js__WEBPACK_IMPORTED_MODULE_7__.styleParser.parse(rendererAttrString);
       if (rendererAttr.precision) {
         rendererConfig.precision = rendererAttr.precision + 'p';
       }
@@ -21959,7 +22489,7 @@ class AScene extends AEntity {
         height: rendererAttr.maxCanvasHeight ? parseInt(rendererAttr.maxCanvasHeight) : this.maxCanvasSize.height
       };
     }
-    renderer = this.renderer = new THREE.WebGLRenderer(rendererConfig);
+    renderer = this.renderer = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].WebGLRenderer(rendererConfig);
     renderer.setPixelRatio(window.devicePixelRatio);
     if (this.camera) {
       renderer.xr.setPoseTarget(this.camera.el.object3D);
@@ -21977,12 +22507,12 @@ class AScene extends AEntity {
     var self = this;
     var sceneEl = this;
     if (this.renderStarted) {
-      AEntity.prototype.play.call(this);
+      _a_entity_js__WEBPACK_IMPORTED_MODULE_8__.AEntity.prototype.play.call(this);
       return;
     }
     this.addEventListener('loaded', function () {
       var renderer = this.renderer;
-      AEntity.prototype.play.call(this); // .play() *before* render.
+      _a_entity_js__WEBPACK_IMPORTED_MODULE_8__.AEntity.prototype.play.call(this); // .play() *before* render.
 
       if (sceneEl.renderStarted) {
         return;
@@ -21994,7 +22524,7 @@ class AScene extends AEntity {
         if (window.performance) {
           window.performance.mark('render-started');
         }
-        loadingScreen.remove();
+        _loadingScreen_js__WEBPACK_IMPORTED_MODULE_3__.remove();
         renderer.setAnimationLoop(this.render);
         sceneEl.renderStarted = true;
         sceneEl.emit('renderstart');
@@ -22003,7 +22533,7 @@ class AScene extends AEntity {
 
     // setTimeout to wait for all nodes to attach and run their callbacks.
     setTimeout(function () {
-      AEntity.prototype.load.call(self);
+      _a_entity_js__WEBPACK_IMPORTED_MODULE_8__.AEntity.prototype.load.call(self);
     });
   }
 
@@ -22012,10 +22542,10 @@ class AScene extends AEntity {
    * (aframevr/aframe#2365).
    */
   updateComponent(componentName) {
-    if (componentName in systems) {
+    if (componentName in _system_js__WEBPACK_IMPORTED_MODULE_5__.systems) {
       return;
     }
-    AEntity.prototype.updateComponent.apply(this, arguments);
+    _a_entity_js__WEBPACK_IMPORTED_MODULE_8__.AEntity.prototype.updateComponent.apply(this, arguments);
   }
 
   /**
@@ -22184,7 +22714,6 @@ function determineComponentBehaviorOrder(components, array) {
   }
   return result;
 }
-module.exports.determineComponentBehaviorOrder = determineComponentBehaviorOrder;
 
 /**
  * Return size constrained to maxSize - maintaining aspect ratio.
@@ -22324,8 +22853,6 @@ function setupCanvas(sceneEl) {
     document.body.focus();
   }
 }
-module.exports.setupCanvas = setupCanvas;
-module.exports.AScene = AScene;
 
 /***/ }),
 
@@ -22333,18 +22860,26 @@ module.exports.AScene = AScene;
 /*!*****************************************!*\
   !*** ./src/core/scene/loadingScreen.js ***!
   \*****************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   remove: () => (/* binding */ remove),
+/* harmony export */   setup: () => (/* binding */ setup)
+/* harmony export */ });
+/* harmony import */ var _constants_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../constants/index.js */ "./src/constants/index.js");
+/* harmony import */ var _utils_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../utils/index.js */ "./src/utils/index.js");
 /* global THREE */
-var AFRAME_INJECTED = (__webpack_require__(/*! ../../constants */ "./src/constants/index.js").AFRAME_INJECTED);
-var utils = __webpack_require__(/*! ../../utils/ */ "./src/utils/index.js");
-var styleParser = utils.styleParser;
+
+
+var styleParser = _utils_index_js__WEBPACK_IMPORTED_MODULE_1__.styleParser;
 var sceneEl;
 var titleEl;
 var getSceneCanvasSize;
 var ATTR_NAME = 'loading-screen';
 var LOADER_TITLE_CLASS = 'a-loader-title';
-module.exports.setup = function setup(el, getCanvasSize) {
+function setup(el, getCanvasSize) {
   sceneEl = el;
   getSceneCanvasSize = getCanvasSize;
   var loaderAttribute = sceneEl.hasAttribute(ATTR_NAME) ? styleParser.parse(sceneEl.getAttribute(ATTR_NAME)) : undefined;
@@ -22406,15 +22941,15 @@ module.exports.setup = function setup(el, getCanvasSize) {
     });
     sceneEl.renderer.setAnimationLoop(render);
   }, 200);
-};
-module.exports.remove = function remove() {
+}
+function remove() {
   window.removeEventListener('resize', resize);
   if (!titleEl) {
     return;
   }
   // Hide title.
   titleEl.style.display = 'none';
-};
+}
 function resize(camera) {
   var embedded = sceneEl.hasAttribute('embedded');
   var size = getSceneCanvasSize(sceneEl.canvas, embedded, sceneEl.maxCanvasSize, sceneEl.is('vr-mode'));
@@ -22428,7 +22963,7 @@ function setupTitle() {
   titleEl.className = LOADER_TITLE_CLASS;
   titleEl.innerHTML = document.title;
   titleEl.style.display = 'none';
-  titleEl.setAttribute(AFRAME_INJECTED, '');
+  titleEl.setAttribute(_constants_index_js__WEBPACK_IMPORTED_MODULE_0__.AFRAME_INJECTED, '');
   sceneEl.appendChild(titleEl);
 }
 
@@ -22438,11 +22973,20 @@ function setupTitle() {
 /*!************************************!*\
   !*** ./src/core/scene/metaTags.js ***!
   \************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var constants = __webpack_require__(/*! ../../constants/ */ "./src/constants/index.js");
-var extend = (__webpack_require__(/*! ../../utils */ "./src/utils/index.js").extend);
-var MOBILE_HEAD_TAGS = module.exports.MOBILE_HEAD_TAGS = [Meta({
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   MOBILE_HEAD_TAGS: () => (/* binding */ MOBILE_HEAD_TAGS),
+/* harmony export */   MOBILE_IOS_HEAD_TAGS: () => (/* binding */ MOBILE_IOS_HEAD_TAGS),
+/* harmony export */   inject: () => (/* binding */ inject)
+/* harmony export */ });
+/* harmony import */ var _constants_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../constants/index.js */ "./src/constants/index.js");
+/* harmony import */ var _utils_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../utils/index.js */ "./src/utils/index.js");
+
+
+var MOBILE_HEAD_TAGS = [Meta({
   name: 'viewport',
   content: 'width=device-width,initial-scale=1,maximum-scale=1,shrink-to-fit=no,user-scalable=no,minimal-ui,viewport-fit=cover'
 }),
@@ -22497,7 +23041,7 @@ function Link(attrs) {
  * @param {object} scene - Scene element
  * @returns {Array}
  */
-module.exports.inject = function injectHeadTags(scene) {
+var inject = function injectHeadTags(scene) {
   var headEl = document.head;
   var headScriptEl = headEl.querySelector('script');
   var tag;
@@ -22528,8 +23072,8 @@ function createTag(tagObj) {
     return;
   }
   var meta = document.createElement(tagObj.tagName);
-  meta.setAttribute(constants.AFRAME_INJECTED, '');
-  return extend(meta, tagObj.attributes);
+  meta.setAttribute(_constants_index_js__WEBPACK_IMPORTED_MODULE_0__.AFRAME_INJECTED, '');
+  return (0,_utils_index_js__WEBPACK_IMPORTED_MODULE_1__.extend)(meta, tagObj.attributes);
 }
 
 /***/ }),
@@ -22538,22 +23082,28 @@ function createTag(tagObj) {
 /*!***************************************!*\
   !*** ./src/core/scene/postMessage.js ***!
   \***************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var isIframed = (__webpack_require__(/*! ../../utils/ */ "./src/utils/index.js").isIframed);
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   initPostMessageAPI: () => (/* binding */ initPostMessageAPI)
+/* harmony export */ });
+/* harmony import */ var _utils_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../utils/index.js */ "./src/utils/index.js");
+
 
 /**
  * Provides a post message API for scenes contained
  * in an iframe.
  */
-module.exports = function initPostMessageAPI(scene) {
+function initPostMessageAPI(scene) {
   // Handles fullscreen behavior when inside an iframe.
-  if (!isIframed()) {
+  if (!(0,_utils_index_js__WEBPACK_IMPORTED_MODULE_0__.isIframed)()) {
     return;
   }
   // postMessage API handler
   window.addEventListener('message', postMessageAPIHandler.bind(scene));
-};
+}
 function postMessageAPIHandler(event) {
   var scene = this;
   if (!event.data) {
@@ -22580,12 +23130,17 @@ function postMessageAPIHandler(event) {
 /*!**********************************!*\
   !*** ./src/core/scene/scenes.js ***!
   \**********************************/
-/***/ ((module) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
 /*
   Scene index for keeping track of created scenes.
 */
-module.exports = [];
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ([]);
 
 /***/ }),
 
@@ -22593,21 +23148,28 @@ module.exports = [];
 /*!************************************!*\
   !*** ./src/core/scene/wakelock.js ***!
   \************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var Wakelock = __webpack_require__(/*! ../../../vendor/wakelock/wakelock */ "./vendor/wakelock/wakelock.js");
-module.exports = function initWakelock(scene) {
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   initWakelock: () => (/* binding */ initWakelock)
+/* harmony export */ });
+/* harmony import */ var _vendor_wakelock_wakelock_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../vendor/wakelock/wakelock.js */ "./vendor/wakelock/wakelock.js");
+/* harmony import */ var _vendor_wakelock_wakelock_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_vendor_wakelock_wakelock_js__WEBPACK_IMPORTED_MODULE_0__);
+
+function initWakelock(scene) {
   if (!scene.isMobile) {
     return;
   }
-  var wakelock = scene.wakelock = new Wakelock();
+  var wakelock = scene.wakelock = new (_vendor_wakelock_wakelock_js__WEBPACK_IMPORTED_MODULE_0___default())();
   scene.addEventListener('enter-vr', function () {
     wakelock.request();
   });
   scene.addEventListener('exit-vr', function () {
     wakelock.release();
   });
-};
+}
 
 /***/ }),
 
@@ -22615,13 +23177,26 @@ module.exports = function initWakelock(scene) {
 /*!****************************!*\
   !*** ./src/core/schema.js ***!
   \****************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var utils = __webpack_require__(/*! ../utils/ */ "./src/utils/index.js");
-var PropertyTypes = __webpack_require__(/*! ./propertyTypes */ "./src/core/propertyTypes.js");
-var debug = utils.debug;
-var isValidDefaultValue = PropertyTypes.isValidDefaultValue;
-var propertyTypes = PropertyTypes.propertyTypes;
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   isSingleProperty: () => (/* binding */ isSingleProperty),
+/* harmony export */   parseProperties: () => (/* binding */ parseProperties),
+/* harmony export */   parseProperty: () => (/* binding */ parseProperty),
+/* harmony export */   process: () => (/* binding */ process),
+/* harmony export */   processPropertyDefinition: () => (/* binding */ processPropertyDefinition),
+/* harmony export */   stringifyProperties: () => (/* binding */ stringifyProperties),
+/* harmony export */   stringifyProperty: () => (/* binding */ stringifyProperty)
+/* harmony export */ });
+/* harmony import */ var _utils_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/index.js */ "./src/utils/index.js");
+/* harmony import */ var _propertyTypes_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./propertyTypes.js */ "./src/core/propertyTypes.js");
+
+
+var debug = _utils_index_js__WEBPACK_IMPORTED_MODULE_0__.debug;
+var isValidDefaultValue = _propertyTypes_js__WEBPACK_IMPORTED_MODULE_1__.isValidDefaultValue;
+var propertyTypes = _propertyTypes_js__WEBPACK_IMPORTED_MODULE_1__.propertyTypes;
 var warn = debug('core:schema:warn');
 
 /**
@@ -22636,7 +23211,6 @@ function isSingleProperty(schema) {
   }
   return 'default' in schema;
 }
-module.exports.isSingleProperty = isSingleProperty;
 
 /**
  * Build step to schema to use `type` to inject default value, parser, and stringifier.
@@ -22645,7 +23219,7 @@ module.exports.isSingleProperty = isSingleProperty;
  * @param {string} componentName
  * @returns {object} Schema.
  */
-module.exports.process = function (schema, componentName) {
+function process(schema, componentName) {
   var propName;
 
   // For single property schema, run processPropDefinition over the whole schema.
@@ -22658,7 +23232,7 @@ module.exports.process = function (schema, componentName) {
     schema[propName] = processPropertyDefinition(schema[propName], componentName);
   }
   return schema;
-};
+}
 
 /**
  * Inject default value, parser, stringifier for single property.
@@ -22715,7 +23289,6 @@ function processPropertyDefinition(propDefinition, componentName) {
   }
   return propDefinition;
 }
-module.exports.processPropertyDefinition = processPropertyDefinition;
 
 /**
  * Parse propData using schema. Use default values if not existing in propData.
@@ -22727,7 +23300,7 @@ module.exports.processPropertyDefinition = processPropertyDefinition;
  * @param {string } componentName - Name of the component, used for the property warning.
  * @param {boolean} silent - Suppress warning messages.
  */
-module.exports.parseProperties = function () {
+var parseProperties = function () {
   var propNames = [];
   return function (propData, schema, getPartialData, componentName, silent) {
     var i;
@@ -22782,12 +23355,11 @@ function parseProperty(value, propDefinition, target) {
   // Invoke property type parser.
   return propDefinition.parse(value, propDefinition.default, target);
 }
-module.exports.parseProperty = parseProperty;
 
 /**
  * Serialize a group of properties.
  */
-module.exports.stringifyProperties = function (propData, schema) {
+function stringifyProperties(propData, schema) {
   var propName;
   var propDefinition;
   var propValue;
@@ -22808,7 +23380,7 @@ module.exports.stringifyProperties = function (propData, schema) {
     }
   }
   return stringifiedData;
-};
+}
 
 /**
  * Serialize a single property.
@@ -22827,7 +23399,6 @@ function stringifyProperty(value, propDefinition) {
   }
   return propDefinition.stringify(value);
 }
-module.exports.stringifyProperty = stringifyProperty;
 
 /***/ }),
 
@@ -22835,14 +23406,24 @@ module.exports.stringifyProperty = stringifyProperty;
 /*!****************************!*\
   !*** ./src/core/shader.js ***!
   \****************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var schema = __webpack_require__(/*! ./schema */ "./src/core/schema.js");
-var processSchema = schema.process;
-var shaders = module.exports.shaders = {}; // Keep track of registered shaders.
-var shaderNames = module.exports.shaderNames = []; // Keep track of the names of registered shaders.
-var THREE = __webpack_require__(/*! ../lib/three */ "./src/lib/three.js");
-var utils = __webpack_require__(/*! ../utils */ "./src/utils/index.js");
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Shader: () => (/* binding */ Shader),
+/* harmony export */   registerShader: () => (/* binding */ registerShader),
+/* harmony export */   shaderNames: () => (/* binding */ shaderNames),
+/* harmony export */   shaders: () => (/* binding */ shaders)
+/* harmony export */ });
+/* harmony import */ var _lib_three_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../lib/three.js */ "./src/lib/three.js");
+/* harmony import */ var _schema_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./schema.js */ "./src/core/schema.js");
+/* harmony import */ var _utils_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/index.js */ "./src/utils/index.js");
+
+
+
+var shaders = {}; // Keep track of registered shaders.
+var shaderNames = []; // Keep track of the names of registered shaders.
 
 // A-Frame properties to three.js uniform types.
 var propertyToThreeMapping = {
@@ -22864,7 +23445,7 @@ var propertyToThreeMapping = {
  * of customized materials.
  *
  */
-var Shader = module.exports.Shader = function () {};
+var Shader = function () {};
 Shader.prototype = {
   /**
    * Contains the type schema and defaults for the data values.
@@ -22879,9 +23460,9 @@ Shader.prototype = {
    */
   init: function (data) {
     this.uniforms = this.initUniforms();
-    this.material = new (this.raw ? THREE.RawShaderMaterial : THREE.ShaderMaterial)({
+    this.material = new (this.raw ? _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].RawShaderMaterial : _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].ShaderMaterial)({
       uniforms: this.uniforms,
-      glslVersion: this.raw || this.glsl3 ? THREE.GLSL3 : null,
+      glslVersion: this.raw || this.glsl3 ? _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].GLSL3 : null,
       vertexShader: this.vertexShader,
       fragmentShader: this.fragmentShader
     });
@@ -22932,7 +23513,7 @@ Shader.prototype = {
         this.setMapOnTextureLoad(uniforms, key, materialKey);
 
         // Kick off the texture update now that handler is added.
-        utils.material.updateMapMaterialFromData(materialKey, key, this, data);
+        _utils_index_js__WEBPACK_IMPORTED_MODULE_2__.material.updateMapMaterialFromData(materialKey, key, this, data);
         continue;
       }
       uniforms[key].value = this.parseValue(schema[key].type, data[key]);
@@ -22944,20 +23525,20 @@ Shader.prototype = {
     switch (type) {
       case 'vec2':
         {
-          return new THREE.Vector2(value.x, value.y);
+          return new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Vector2(value.x, value.y);
         }
       case 'vec3':
         {
-          return new THREE.Vector3(value.x, value.y, value.z);
+          return new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Vector3(value.x, value.y, value.z);
         }
       case 'vec4':
         {
-          return new THREE.Vector4(value.x, value.y, value.z, value.w);
+          return new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Vector4(value.x, value.y, value.z, value.w);
         }
       case 'color':
         {
-          color = new THREE.Color(value);
-          return new THREE.Vector3(color.r, color.g, color.b);
+          color = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Color(value);
+          return new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Vector3(color.r, color.g, color.b);
         }
       default:
         {
@@ -22981,7 +23562,7 @@ Shader.prototype = {
  * @param {object} definition - shader property and methods.
  * @returns {object} Shader.
  */
-module.exports.registerShader = function (name, definition) {
+function registerShader(name, definition) {
   var NewShader;
   var proto = {};
 
@@ -23003,11 +23584,11 @@ module.exports.registerShader = function (name, definition) {
   NewShader.prototype.constructor = NewShader;
   shaders[name] = {
     Shader: NewShader,
-    schema: processSchema(NewShader.prototype.schema)
+    schema: (0,_schema_js__WEBPACK_IMPORTED_MODULE_1__.process)(NewShader.prototype.schema)
   };
   shaderNames.push(name);
   return NewShader;
-};
+}
 
 /***/ }),
 
@@ -23015,18 +23596,25 @@ module.exports.registerShader = function (name, definition) {
 /*!****************************!*\
   !*** ./src/core/system.js ***!
   \****************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var components = __webpack_require__(/*! ./component */ "./src/core/component.js");
-var schema = __webpack_require__(/*! ./schema */ "./src/core/schema.js");
-var utils = __webpack_require__(/*! ../utils/ */ "./src/utils/index.js");
-var ready = __webpack_require__(/*! ./readyState */ "./src/core/readyState.js");
-var parseProperties = schema.parseProperties;
-var parseProperty = schema.parseProperty;
-var processSchema = schema.process;
-var isSingleProp = schema.isSingleProperty;
-var styleParser = utils.styleParser;
-var systems = module.exports.systems = {}; // Keep track of registered systems.
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   System: () => (/* binding */ System),
+/* harmony export */   registerSystem: () => (/* binding */ registerSystem),
+/* harmony export */   systems: () => (/* binding */ systems)
+/* harmony export */ });
+/* harmony import */ var _schema_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./schema.js */ "./src/core/schema.js");
+/* harmony import */ var _component_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./component.js */ "./src/core/component.js");
+/* harmony import */ var _utils_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/index.js */ "./src/utils/index.js");
+/* harmony import */ var _readyState_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./readyState.js */ "./src/core/readyState.js");
+
+
+
+
+var styleParser = _utils_index_js__WEBPACK_IMPORTED_MODULE_2__.styleParser;
+var systems = {}; // Keep track of registered systems.
 
 /**
  * System class definition.
@@ -23045,8 +23633,8 @@ var systems = module.exports.systems = {}; // Keep track of registered systems.
  * @member {string} name - Name that system is registered under.
  * @member {Element} sceneEl - Handle to the scene element where system applies to.
  */
-var System = module.exports.System = function (sceneEl) {
-  var component = components && components.components[this.name];
+var System = function (sceneEl) {
+  var component = _component_js__WEBPACK_IMPORTED_MODULE_1__ && _component_js__WEBPACK_IMPORTED_MODULE_1__.components[this.name];
 
   // Set reference to scene.
   this.el = sceneEl;
@@ -23084,7 +23672,7 @@ System.prototype = {
    */
   updateProperties: function (rawData) {
     var oldData = this.data;
-    if (!Object.keys(schema).length) {
+    if (Object.keys(this.schema).length === 0) {
       return;
     }
     this.buildData(rawData);
@@ -23095,14 +23683,14 @@ System.prototype = {
    */
   buildData: function (rawData) {
     var schema = this.schema;
-    if (!Object.keys(schema).length) {
+    if (Object.keys(schema).length === 0) {
       return;
     }
     rawData = rawData || window.HTMLElement.prototype.getAttribute.call(this.sceneEl, this.name);
-    if (isSingleProp(schema)) {
-      this.data = parseProperty(rawData, schema);
+    if ((0,_schema_js__WEBPACK_IMPORTED_MODULE_0__.isSingleProperty)(schema)) {
+      this.data = (0,_schema_js__WEBPACK_IMPORTED_MODULE_0__.parseProperty)(rawData, schema);
     } else {
-      this.data = parseProperties(styleParser.parse(rawData) || {}, schema, false, this.name);
+      this.data = (0,_schema_js__WEBPACK_IMPORTED_MODULE_0__.parseProperties)(styleParser.parse(rawData) || {}, schema, false, this.name);
     }
   },
   /**
@@ -23140,11 +23728,11 @@ System.prototype = {
  * @param {object} definition - Component property and methods.
  * @returns {object} Component.
  */
-module.exports.registerSystem = function (name, definition) {
+function registerSystem(name, definition) {
   var i;
   var NewSystem;
   var proto = {};
-  var scenes = utils.findAllScenes(document);
+  var scenes = _utils_index_js__WEBPACK_IMPORTED_MODULE_2__.findAllScenes(document);
 
   // Format definition object to prototype object.
   Object.keys(definition).forEach(function (key) {
@@ -23162,16 +23750,16 @@ module.exports.registerSystem = function (name, definition) {
   NewSystem.prototype = Object.create(System.prototype, proto);
   NewSystem.prototype.name = name;
   NewSystem.prototype.constructor = NewSystem;
-  NewSystem.prototype.schema = utils.extend(processSchema(NewSystem.prototype.schema));
+  NewSystem.prototype.schema = _utils_index_js__WEBPACK_IMPORTED_MODULE_2__.extend((0,_schema_js__WEBPACK_IMPORTED_MODULE_0__.process)(NewSystem.prototype.schema));
   systems[name] = NewSystem;
 
   // Initialize systems for existing scenes
-  if (ready.canInitializeElements) {
+  if (_readyState_js__WEBPACK_IMPORTED_MODULE_3__.canInitializeElements) {
     for (i = 0; i < scenes.length; i++) {
       scenes[i].initSystem(name);
     }
   }
-};
+}
 
 /***/ }),
 
@@ -23179,9 +23767,12 @@ module.exports.registerSystem = function (name, definition) {
 /*!****************************************!*\
   !*** ./src/extras/components/index.js ***!
   \****************************************/
-/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-__webpack_require__(/*! ./pivot */ "./src/extras/components/pivot.js");
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _pivot_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./pivot.js */ "./src/extras/components/pivot.js");
+
 
 /***/ }),
 
@@ -23189,17 +23780,21 @@ __webpack_require__(/*! ./pivot */ "./src/extras/components/pivot.js");
 /*!****************************************!*\
   !*** ./src/extras/components/pivot.js ***!
   \****************************************/
-/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var registerComponent = (__webpack_require__(/*! ../../core/component */ "./src/core/component.js").registerComponent);
-var THREE = __webpack_require__(/*! ../../lib/three */ "./src/lib/three.js");
-var originalPosition = new THREE.Vector3();
-var originalRotation = new THREE.Vector3();
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _lib_three_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../lib/three.js */ "./src/lib/three.js");
+/* harmony import */ var _core_component_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../core/component.js */ "./src/core/component.js");
+
+
+var originalPosition = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Vector3();
+var originalRotation = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Vector3();
 
 /**
  * Wrap el.object3D within an outer group. Apply pivot to el.object3D as position.
  */
-registerComponent('pivot', {
+(0,_core_component_js__WEBPACK_IMPORTED_MODULE_1__.registerComponent)('pivot', {
   dependencies: ['position'],
   schema: {
     type: 'vec3'
@@ -23209,7 +23804,7 @@ registerComponent('pivot', {
     var el = this.el;
     var originalParent = el.object3D.parent;
     var originalGroup = el.object3D;
-    var outerGroup = new THREE.Group();
+    var outerGroup = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Group();
     originalPosition.copy(originalGroup.position);
     originalRotation.copy(originalGroup.rotation);
 
@@ -23242,17 +23837,25 @@ registerComponent('pivot', {
 /*!***********************************************!*\
   !*** ./src/extras/primitives/getMeshMixin.js ***!
   \***********************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ getMeshMixin)
+/* harmony export */ });
+/* harmony import */ var _core_component_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../core/component.js */ "./src/core/component.js");
+/* harmony import */ var _core_shader_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../core/shader.js */ "./src/core/shader.js");
+/* harmony import */ var _utils_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../utils/index.js */ "./src/utils/index.js");
 /**
  * Common mesh defaults, mappings, and transforms.
  */
-var components = (__webpack_require__(/*! ../../core/component */ "./src/core/component.js").components);
-var shaders = (__webpack_require__(/*! ../../core/shader */ "./src/core/shader.js").shaders);
-var utils = __webpack_require__(/*! ../../utils/ */ "./src/utils/index.js");
+
+
+
 var materialMappings = {};
-Object.keys(components.material.schema).forEach(addMapping);
-Object.keys(shaders.standard.schema).forEach(addMapping);
+Object.keys(_core_component_js__WEBPACK_IMPORTED_MODULE_0__.components.material.schema).forEach(addMapping);
+Object.keys(_core_shader_js__WEBPACK_IMPORTED_MODULE_1__.shaders.standard.schema).forEach(addMapping);
 function addMapping(prop) {
   // To hyphenated.
   var htmlAttrName = prop.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
@@ -23264,14 +23867,14 @@ function addMapping(prop) {
   }
   materialMappings[htmlAttrName] = 'material.' + prop;
 }
-module.exports = function getMeshMixin() {
+function getMeshMixin() {
   return {
     defaultComponents: {
       material: {}
     },
-    mappings: utils.extend({}, materialMappings)
+    mappings: _utils_index_js__WEBPACK_IMPORTED_MODULE_2__.extend({}, materialMappings)
   };
-};
+}
 
 /***/ }),
 
@@ -23279,22 +23882,38 @@ module.exports = function getMeshMixin() {
 /*!****************************************!*\
   !*** ./src/extras/primitives/index.js ***!
   \****************************************/
-/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-__webpack_require__(/*! ./primitives/a-camera */ "./src/extras/primitives/primitives/a-camera.js");
-__webpack_require__(/*! ./primitives/a-cursor */ "./src/extras/primitives/primitives/a-cursor.js");
-__webpack_require__(/*! ./primitives/a-curvedimage */ "./src/extras/primitives/primitives/a-curvedimage.js");
-__webpack_require__(/*! ./primitives/a-gltf-model */ "./src/extras/primitives/primitives/a-gltf-model.js");
-__webpack_require__(/*! ./primitives/a-image */ "./src/extras/primitives/primitives/a-image.js");
-__webpack_require__(/*! ./primitives/a-light */ "./src/extras/primitives/primitives/a-light.js");
-__webpack_require__(/*! ./primitives/a-link */ "./src/extras/primitives/primitives/a-link.js");
-__webpack_require__(/*! ./primitives/a-obj-model */ "./src/extras/primitives/primitives/a-obj-model.js");
-__webpack_require__(/*! ./primitives/a-sky */ "./src/extras/primitives/primitives/a-sky.js");
-__webpack_require__(/*! ./primitives/a-sound */ "./src/extras/primitives/primitives/a-sound.js");
-__webpack_require__(/*! ./primitives/a-text */ "./src/extras/primitives/primitives/a-text.js");
-__webpack_require__(/*! ./primitives/a-video */ "./src/extras/primitives/primitives/a-video.js");
-__webpack_require__(/*! ./primitives/a-videosphere */ "./src/extras/primitives/primitives/a-videosphere.js");
-__webpack_require__(/*! ./primitives/meshPrimitives */ "./src/extras/primitives/primitives/meshPrimitives.js");
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _primitives_a_camera_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./primitives/a-camera.js */ "./src/extras/primitives/primitives/a-camera.js");
+/* harmony import */ var _primitives_a_cursor_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./primitives/a-cursor.js */ "./src/extras/primitives/primitives/a-cursor.js");
+/* harmony import */ var _primitives_a_curvedimage_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./primitives/a-curvedimage.js */ "./src/extras/primitives/primitives/a-curvedimage.js");
+/* harmony import */ var _primitives_a_gltf_model_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./primitives/a-gltf-model.js */ "./src/extras/primitives/primitives/a-gltf-model.js");
+/* harmony import */ var _primitives_a_image_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./primitives/a-image.js */ "./src/extras/primitives/primitives/a-image.js");
+/* harmony import */ var _primitives_a_light_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./primitives/a-light.js */ "./src/extras/primitives/primitives/a-light.js");
+/* harmony import */ var _primitives_a_link_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./primitives/a-link.js */ "./src/extras/primitives/primitives/a-link.js");
+/* harmony import */ var _primitives_a_obj_model_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./primitives/a-obj-model.js */ "./src/extras/primitives/primitives/a-obj-model.js");
+/* harmony import */ var _primitives_a_sky_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./primitives/a-sky.js */ "./src/extras/primitives/primitives/a-sky.js");
+/* harmony import */ var _primitives_a_sound_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./primitives/a-sound.js */ "./src/extras/primitives/primitives/a-sound.js");
+/* harmony import */ var _primitives_a_text_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./primitives/a-text.js */ "./src/extras/primitives/primitives/a-text.js");
+/* harmony import */ var _primitives_a_video_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./primitives/a-video.js */ "./src/extras/primitives/primitives/a-video.js");
+/* harmony import */ var _primitives_a_videosphere_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./primitives/a-videosphere.js */ "./src/extras/primitives/primitives/a-videosphere.js");
+/* harmony import */ var _primitives_meshPrimitives_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./primitives/meshPrimitives.js */ "./src/extras/primitives/primitives/meshPrimitives.js");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /***/ }),
 
@@ -23302,26 +23921,37 @@ __webpack_require__(/*! ./primitives/meshPrimitives */ "./src/extras/primitives/
 /*!*********************************************!*\
   !*** ./src/extras/primitives/primitives.js ***!
   \*********************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   definePrimitive: () => (/* binding */ definePrimitive),
+/* harmony export */   primitives: () => (/* binding */ primitives),
+/* harmony export */   registerPrimitive: () => (/* binding */ registerPrimitive)
+/* harmony export */ });
+/* harmony import */ var _core_a_node_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../core/a-node.js */ "./src/core/a-node.js");
+/* harmony import */ var _core_a_entity_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../core/a-entity.js */ "./src/core/a-entity.js");
+/* harmony import */ var _core_component_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../core/component.js */ "./src/core/component.js");
+/* harmony import */ var _utils_index_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../utils/index.js */ "./src/utils/index.js");
 /* global customElements */
-var knownTags = (__webpack_require__(/*! ../../core/a-node */ "./src/core/a-node.js").knownTags);
-var AEntity = (__webpack_require__(/*! ../../core/a-entity */ "./src/core/a-entity.js").AEntity);
-var components = (__webpack_require__(/*! ../../core/component */ "./src/core/component.js").components);
-var utils = __webpack_require__(/*! ../../utils/ */ "./src/utils/index.js");
-var debug = utils.debug;
-var setComponentProperty = utils.entity.setComponentProperty;
+
+
+
+
+var debug = _utils_index_js__WEBPACK_IMPORTED_MODULE_3__.debug;
+var setComponentProperty = _utils_index_js__WEBPACK_IMPORTED_MODULE_3__.entity.setComponentProperty;
 var log = debug('extras:primitives:debug');
 var warn = debug('extras:primitives:warn');
 var error = debug('extras:primitives:error');
-var primitives = module.exports.primitives = {};
-module.exports.registerPrimitive = function registerPrimitive(name, definition) {
+var primitives = {};
+function registerPrimitive(name, definition) {
   name = name.toLowerCase();
-  if (knownTags[name]) {
+  if (_core_a_node_js__WEBPACK_IMPORTED_MODULE_0__.knownTags[name]) {
     error('Trying to register primitive ' + name + ' that has been already previously registered');
     return;
   }
-  knownTags[name] = true;
+  _core_a_node_js__WEBPACK_IMPORTED_MODULE_0__.knownTags[name] = true;
   log('Registering <%s>', name);
 
   // Deprecation warning for defaultAttributes usage.
@@ -23329,7 +23959,7 @@ module.exports.registerPrimitive = function registerPrimitive(name, definition) 
     warn("The 'defaultAttributes' object is deprecated. Use 'defaultComponents' instead.");
   }
   var mappings = definition.mappings || {};
-  var primitiveClass = class extends AEntity {
+  var primitiveClass = class extends _core_a_entity_js__WEBPACK_IMPORTED_MODULE_1__.AEntity {
     constructor() {
       super();
       this.defaultComponentsFromPrimitive = definition.defaultComponents || definition.defaultAttributes || {};
@@ -23354,7 +23984,7 @@ module.exports.registerPrimitive = function registerPrimitive(name, definition) 
         if (key !== key.toLowerCase()) {
           warn('Mapping keys should be specified in lower case. The mapping key ' + key + ' may not be recognized');
         }
-        if (components[key]) {
+        if (_core_component_js__WEBPACK_IMPORTED_MODULE_2__.components[key]) {
           newAttribute = mappings[key].replace('.', '-');
           mappings[newAttribute] = mappings[key];
           delete mappings[key];
@@ -23371,12 +24001,12 @@ module.exports.registerPrimitive = function registerPrimitive(name, definition) 
       var self = this;
 
       // Gather component data from default components.
-      data = utils.clone(this.defaultComponentsFromPrimitive);
+      data = _utils_index_js__WEBPACK_IMPORTED_MODULE_3__.clone(this.defaultComponentsFromPrimitive);
 
       // Factor in mixins to overwrite default components.
       mixins = this.getAttribute('mixin');
       if (mixins) {
-        mixins = utils.split(mixins.trim(), /\s+/);
+        mixins = _utils_index_js__WEBPACK_IMPORTED_MODULE_3__.split(mixins.trim(), /\s+/);
         mixins.forEach(function applyMixin(mixinId) {
           var mixinEl = document.getElementById(mixinId);
           if (!mixinEl) {
@@ -23422,7 +24052,7 @@ module.exports.registerPrimitive = function registerPrimitive(name, definition) 
           return copy(base);
         }
         if (isPureObject(base) && isPureObject(extension)) {
-          return utils.extendDeep(base, extension);
+          return _utils_index_js__WEBPACK_IMPORTED_MODULE_3__.extendDeep(base, extension);
         }
         return copy(extension);
       }
@@ -23431,7 +24061,7 @@ module.exports.registerPrimitive = function registerPrimitive(name, definition) 
       }
       function copy(value) {
         if (isPureObject(value)) {
-          return utils.extendDeep({}, value);
+          return _utils_index_js__WEBPACK_IMPORTED_MODULE_3__.extendDeep({}, value);
         }
         return value;
       }
@@ -23465,7 +24095,7 @@ module.exports.registerPrimitive = function registerPrimitive(name, definition) 
   // Store.
   primitives[name] = primitiveClass;
   return primitiveClass;
-};
+}
 
 /**
  * Sets the relevant property based on the mapping property path.
@@ -23475,7 +24105,7 @@ module.exports.registerPrimitive = function registerPrimitive(name, definition) 
  * @param {object} data - The data object to apply the mapping to.
  */
 function applyMapping(mapping, attrValue, data) {
-  var path = utils.entity.getComponentPropertyPath(mapping);
+  var path = _utils_index_js__WEBPACK_IMPORTED_MODULE_3__.entity.getComponentPropertyPath(mapping);
   if (path.constructor === Array) {
     data[path[0]] = data[path[0]] || {};
     data[path[0]][path[1]] = attrValue.trim();
@@ -23488,7 +24118,7 @@ function applyMapping(mapping, attrValue, data) {
  * Add component mappings using schema.
  */
 function addComponentMapping(componentName, mappings) {
-  var schema = components[componentName].schema;
+  var schema = _core_component_js__WEBPACK_IMPORTED_MODULE_2__.components[componentName].schema;
   Object.keys(schema).map(function (prop) {
     // Hyphenate where there is camelCase.
     var attrName = prop.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
@@ -23513,12 +24143,11 @@ function definePrimitive(tagName, defaultComponents, mappings) {
   });
 
   // Register the primitive.
-  module.exports.registerPrimitive(tagName, utils.extendDeep({}, null, {
+  registerPrimitive(tagName, _utils_index_js__WEBPACK_IMPORTED_MODULE_3__.extendDeep({}, null, {
     defaultComponents: defaultComponents,
     mappings: mappings
   }));
 }
-module.exports.definePrimitive = definePrimitive;
 
 /***/ }),
 
@@ -23526,10 +24155,13 @@ module.exports.definePrimitive = definePrimitive;
 /*!******************************************************!*\
   !*** ./src/extras/primitives/primitives/a-camera.js ***!
   \******************************************************/
-/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var registerPrimitive = (__webpack_require__(/*! ../primitives */ "./src/extras/primitives/primitives.js").registerPrimitive);
-registerPrimitive('a-camera', {
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _primitives_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../primitives.js */ "./src/extras/primitives/primitives.js");
+
+(0,_primitives_js__WEBPACK_IMPORTED_MODULE_0__.registerPrimitive)('a-camera', {
   defaultComponents: {
     'camera': {},
     'look-controls': {},
@@ -23559,12 +24191,17 @@ registerPrimitive('a-camera', {
 /*!******************************************************!*\
   !*** ./src/extras/primitives/primitives/a-cursor.js ***!
   \******************************************************/
-/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var getMeshMixin = __webpack_require__(/*! ../getMeshMixin */ "./src/extras/primitives/getMeshMixin.js");
-var registerPrimitive = (__webpack_require__(/*! ../primitives */ "./src/extras/primitives/primitives.js").registerPrimitive);
-var utils = __webpack_require__(/*! ../../../utils/ */ "./src/utils/index.js");
-registerPrimitive('a-cursor', utils.extendDeep({}, getMeshMixin(), {
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _getMeshMixin_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../getMeshMixin.js */ "./src/extras/primitives/getMeshMixin.js");
+/* harmony import */ var _primitives_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../primitives.js */ "./src/extras/primitives/primitives.js");
+/* harmony import */ var _utils_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../utils/index.js */ "./src/utils/index.js");
+
+
+
+(0,_primitives_js__WEBPACK_IMPORTED_MODULE_1__.registerPrimitive)('a-cursor', _utils_index_js__WEBPACK_IMPORTED_MODULE_2__.extendDeep({}, (0,_getMeshMixin_js__WEBPACK_IMPORTED_MODULE_0__["default"])(), {
   defaultComponents: {
     cursor: {},
     geometry: {
@@ -23599,12 +24236,17 @@ registerPrimitive('a-cursor', utils.extendDeep({}, getMeshMixin(), {
 /*!***********************************************************!*\
   !*** ./src/extras/primitives/primitives/a-curvedimage.js ***!
   \***********************************************************/
-/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var getMeshMixin = __webpack_require__(/*! ../getMeshMixin */ "./src/extras/primitives/getMeshMixin.js");
-var registerPrimitive = (__webpack_require__(/*! ../primitives */ "./src/extras/primitives/primitives.js").registerPrimitive);
-var utils = __webpack_require__(/*! ../../../utils/ */ "./src/utils/index.js");
-registerPrimitive('a-curvedimage', utils.extendDeep({}, getMeshMixin(), {
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _getMeshMixin_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../getMeshMixin.js */ "./src/extras/primitives/getMeshMixin.js");
+/* harmony import */ var _primitives_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../primitives.js */ "./src/extras/primitives/primitives.js");
+/* harmony import */ var _utils_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../utils/index.js */ "./src/utils/index.js");
+
+
+
+(0,_primitives_js__WEBPACK_IMPORTED_MODULE_1__.registerPrimitive)('a-curvedimage', _utils_index_js__WEBPACK_IMPORTED_MODULE_2__.extendDeep({}, (0,_getMeshMixin_js__WEBPACK_IMPORTED_MODULE_0__["default"])(), {
   defaultComponents: {
     geometry: {
       height: 1,
@@ -23641,10 +24283,13 @@ registerPrimitive('a-curvedimage', utils.extendDeep({}, getMeshMixin(), {
 /*!**********************************************************!*\
   !*** ./src/extras/primitives/primitives/a-gltf-model.js ***!
   \**********************************************************/
-/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var registerPrimitive = (__webpack_require__(/*! ../primitives */ "./src/extras/primitives/primitives.js").registerPrimitive);
-registerPrimitive('a-gltf-model', {
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _primitives_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../primitives.js */ "./src/extras/primitives/primitives.js");
+
+(0,_primitives_js__WEBPACK_IMPORTED_MODULE_0__.registerPrimitive)('a-gltf-model', {
   mappings: {
     src: 'gltf-model'
   }
@@ -23656,12 +24301,17 @@ registerPrimitive('a-gltf-model', {
 /*!*****************************************************!*\
   !*** ./src/extras/primitives/primitives/a-image.js ***!
   \*****************************************************/
-/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var getMeshMixin = __webpack_require__(/*! ../getMeshMixin */ "./src/extras/primitives/getMeshMixin.js");
-var registerPrimitive = (__webpack_require__(/*! ../primitives */ "./src/extras/primitives/primitives.js").registerPrimitive);
-var utils = __webpack_require__(/*! ../../../utils/ */ "./src/utils/index.js");
-registerPrimitive('a-image', utils.extendDeep({}, getMeshMixin(), {
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _getMeshMixin_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../getMeshMixin.js */ "./src/extras/primitives/getMeshMixin.js");
+/* harmony import */ var _primitives_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../primitives.js */ "./src/extras/primitives/primitives.js");
+/* harmony import */ var _utils_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../utils/index.js */ "./src/utils/index.js");
+
+
+
+(0,_primitives_js__WEBPACK_IMPORTED_MODULE_1__.registerPrimitive)('a-image', _utils_index_js__WEBPACK_IMPORTED_MODULE_2__.extendDeep({}, (0,_getMeshMixin_js__WEBPACK_IMPORTED_MODULE_0__["default"])(), {
   defaultComponents: {
     geometry: {
       primitive: 'plane'
@@ -23685,10 +24335,13 @@ registerPrimitive('a-image', utils.extendDeep({}, getMeshMixin(), {
 /*!*****************************************************!*\
   !*** ./src/extras/primitives/primitives/a-light.js ***!
   \*****************************************************/
-/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var registerPrimitive = (__webpack_require__(/*! ../primitives */ "./src/extras/primitives/primitives.js").registerPrimitive);
-registerPrimitive('a-light', {
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _primitives_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../primitives.js */ "./src/extras/primitives/primitives.js");
+
+(0,_primitives_js__WEBPACK_IMPORTED_MODULE_0__.registerPrimitive)('a-light', {
   defaultComponents: {
     light: {}
   },
@@ -23713,10 +24366,13 @@ registerPrimitive('a-light', {
 /*!****************************************************!*\
   !*** ./src/extras/primitives/primitives/a-link.js ***!
   \****************************************************/
-/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var registerPrimitive = (__webpack_require__(/*! ../primitives */ "./src/extras/primitives/primitives.js").registerPrimitive);
-registerPrimitive('a-link', {
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _primitives_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../primitives.js */ "./src/extras/primitives/primitives.js");
+
+(0,_primitives_js__WEBPACK_IMPORTED_MODULE_0__.registerPrimitive)('a-link', {
   defaultComponents: {
     link: {
       visualAspectEnabled: true
@@ -23735,12 +24391,17 @@ registerPrimitive('a-link', {
 /*!*********************************************************!*\
   !*** ./src/extras/primitives/primitives/a-obj-model.js ***!
   \*********************************************************/
-/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var meshMixin = __webpack_require__(/*! ../getMeshMixin */ "./src/extras/primitives/getMeshMixin.js")();
-var registerPrimitive = (__webpack_require__(/*! ../primitives */ "./src/extras/primitives/primitives.js").registerPrimitive);
-var utils = __webpack_require__(/*! ../../../utils/ */ "./src/utils/index.js");
-registerPrimitive('a-obj-model', utils.extendDeep({}, meshMixin, {
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _getMeshMixin_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../getMeshMixin.js */ "./src/extras/primitives/getMeshMixin.js");
+/* harmony import */ var _primitives_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../primitives.js */ "./src/extras/primitives/primitives.js");
+/* harmony import */ var _utils_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../utils/index.js */ "./src/utils/index.js");
+
+
+
+(0,_primitives_js__WEBPACK_IMPORTED_MODULE_1__.registerPrimitive)('a-obj-model', _utils_index_js__WEBPACK_IMPORTED_MODULE_2__.extendDeep({}, (0,_getMeshMixin_js__WEBPACK_IMPORTED_MODULE_0__["default"])(), {
   defaultComponents: {
     'obj-model': {}
   },
@@ -23756,13 +24417,19 @@ registerPrimitive('a-obj-model', utils.extendDeep({}, meshMixin, {
 /*!***************************************************!*\
   !*** ./src/extras/primitives/primitives/a-sky.js ***!
   \***************************************************/
-/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var getMeshMixin = __webpack_require__(/*! ../getMeshMixin */ "./src/extras/primitives/getMeshMixin.js");
-var registerPrimitive = (__webpack_require__(/*! ../primitives */ "./src/extras/primitives/primitives.js").registerPrimitive);
-var utils = __webpack_require__(/*! ../../../utils/ */ "./src/utils/index.js");
-var meshPrimitives = __webpack_require__(/*! ./meshPrimitives */ "./src/extras/primitives/primitives/meshPrimitives.js");
-registerPrimitive('a-sky', utils.extendDeep({}, getMeshMixin(), {
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _getMeshMixin_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../getMeshMixin.js */ "./src/extras/primitives/getMeshMixin.js");
+/* harmony import */ var _primitives_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../primitives.js */ "./src/extras/primitives/primitives.js");
+/* harmony import */ var _utils_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../utils/index.js */ "./src/utils/index.js");
+/* harmony import */ var _meshPrimitives_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./meshPrimitives.js */ "./src/extras/primitives/primitives/meshPrimitives.js");
+
+
+
+
+(0,_primitives_js__WEBPACK_IMPORTED_MODULE_1__.registerPrimitive)('a-sky', _utils_index_js__WEBPACK_IMPORTED_MODULE_2__.extendDeep({}, (0,_getMeshMixin_js__WEBPACK_IMPORTED_MODULE_0__["default"])(), {
   defaultComponents: {
     geometry: {
       primitive: 'sphere',
@@ -23778,7 +24445,7 @@ registerPrimitive('a-sky', utils.extendDeep({}, getMeshMixin(), {
     },
     scale: '-1 1 1'
   },
-  mappings: utils.extendDeep({}, meshPrimitives['a-sphere'].mappings)
+  mappings: _utils_index_js__WEBPACK_IMPORTED_MODULE_2__.extendDeep({}, _meshPrimitives_js__WEBPACK_IMPORTED_MODULE_3__["default"]['a-sphere'].mappings)
 }));
 
 /***/ }),
@@ -23787,10 +24454,13 @@ registerPrimitive('a-sky', utils.extendDeep({}, getMeshMixin(), {
 /*!*****************************************************!*\
   !*** ./src/extras/primitives/primitives/a-sound.js ***!
   \*****************************************************/
-/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var registerPrimitive = (__webpack_require__(/*! ../primitives */ "./src/extras/primitives/primitives.js").registerPrimitive);
-registerPrimitive('a-sound', {
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _primitives_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../primitives.js */ "./src/extras/primitives/primitives.js");
+
+(0,_primitives_js__WEBPACK_IMPORTED_MODULE_0__.registerPrimitive)('a-sound', {
   defaultComponents: {
     sound: {}
   },
@@ -23809,11 +24479,14 @@ registerPrimitive('a-sound', {
 /*!****************************************************!*\
   !*** ./src/extras/primitives/primitives/a-text.js ***!
   \****************************************************/
-/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _primitives_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../primitives.js */ "./src/extras/primitives/primitives.js");
 // <a-text> using `definePrimitive` helper.
-var definePrimitive = (__webpack_require__(/*! ../primitives */ "./src/extras/primitives/primitives.js").definePrimitive);
-definePrimitive('a-text', {
+
+(0,_primitives_js__WEBPACK_IMPORTED_MODULE_0__.definePrimitive)('a-text', {
   text: {
     anchor: 'align',
     width: 5
@@ -23826,12 +24499,17 @@ definePrimitive('a-text', {
 /*!*****************************************************!*\
   !*** ./src/extras/primitives/primitives/a-video.js ***!
   \*****************************************************/
-/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var getMeshMixin = __webpack_require__(/*! ../getMeshMixin */ "./src/extras/primitives/getMeshMixin.js");
-var registerPrimitive = (__webpack_require__(/*! ../primitives */ "./src/extras/primitives/primitives.js").registerPrimitive);
-var utils = __webpack_require__(/*! ../../../utils/ */ "./src/utils/index.js");
-registerPrimitive('a-video', utils.extendDeep({}, getMeshMixin(), {
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _getMeshMixin_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../getMeshMixin.js */ "./src/extras/primitives/getMeshMixin.js");
+/* harmony import */ var _primitives_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../primitives.js */ "./src/extras/primitives/primitives.js");
+/* harmony import */ var _utils_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../utils/index.js */ "./src/utils/index.js");
+
+
+
+(0,_primitives_js__WEBPACK_IMPORTED_MODULE_1__.registerPrimitive)('a-video', _utils_index_js__WEBPACK_IMPORTED_MODULE_2__.extendDeep({}, (0,_getMeshMixin_js__WEBPACK_IMPORTED_MODULE_0__["default"])(), {
   defaultComponents: {
     geometry: {
       primitive: 'plane'
@@ -23855,12 +24533,17 @@ registerPrimitive('a-video', utils.extendDeep({}, getMeshMixin(), {
 /*!***********************************************************!*\
   !*** ./src/extras/primitives/primitives/a-videosphere.js ***!
   \***********************************************************/
-/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var getMeshMixin = __webpack_require__(/*! ../getMeshMixin */ "./src/extras/primitives/getMeshMixin.js");
-var registerPrimitive = (__webpack_require__(/*! ../primitives */ "./src/extras/primitives/primitives.js").registerPrimitive);
-var utils = __webpack_require__(/*! ../../../utils/ */ "./src/utils/index.js");
-registerPrimitive('a-videosphere', utils.extendDeep({}, getMeshMixin(), {
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _getMeshMixin_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../getMeshMixin.js */ "./src/extras/primitives/getMeshMixin.js");
+/* harmony import */ var _primitives_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../primitives.js */ "./src/extras/primitives/primitives.js");
+/* harmony import */ var _utils_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../utils/index.js */ "./src/utils/index.js");
+
+
+
+(0,_primitives_js__WEBPACK_IMPORTED_MODULE_1__.registerPrimitive)('a-videosphere', _utils_index_js__WEBPACK_IMPORTED_MODULE_2__.extendDeep({}, (0,_getMeshMixin_js__WEBPACK_IMPORTED_MODULE_0__["default"])(), {
   defaultComponents: {
     geometry: {
       primitive: 'sphere',
@@ -23889,23 +24572,32 @@ registerPrimitive('a-videosphere', utils.extendDeep({}, getMeshMixin(), {
 /*!************************************************************!*\
   !*** ./src/extras/primitives/primitives/meshPrimitives.js ***!
   \************************************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _getMeshMixin_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../getMeshMixin.js */ "./src/extras/primitives/getMeshMixin.js");
+/* harmony import */ var _core_geometry_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../core/geometry.js */ "./src/core/geometry.js");
+/* harmony import */ var _primitives_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../primitives.js */ "./src/extras/primitives/primitives.js");
+/* harmony import */ var _utils_index_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../utils/index.js */ "./src/utils/index.js");
 /**
  * Automated mesh primitive registration.
  */
-var getMeshMixin = __webpack_require__(/*! ../getMeshMixin */ "./src/extras/primitives/getMeshMixin.js");
-var geometries = (__webpack_require__(/*! ../../../core/geometry */ "./src/core/geometry.js").geometries);
-var geometryNames = (__webpack_require__(/*! ../../../core/geometry */ "./src/core/geometry.js").geometryNames);
-var registerPrimitive = (__webpack_require__(/*! ../primitives */ "./src/extras/primitives/primitives.js").registerPrimitive);
-var utils = __webpack_require__(/*! ../../../utils/ */ "./src/utils/index.js");
+
+
+
+
 
 // For testing.
-var meshPrimitives = module.exports = {};
+const meshPrimitives = {};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (meshPrimitives);
 
 // Generate primitive for each geometry type.
-geometryNames.forEach(function registerMeshPrimitive(geometryName) {
-  var geometry = geometries[geometryName];
+_core_geometry_js__WEBPACK_IMPORTED_MODULE_1__.geometryNames.forEach(function registerMeshPrimitive(geometryName) {
+  var geometry = _core_geometry_js__WEBPACK_IMPORTED_MODULE_1__.geometries[geometryName];
   var geometryHyphened = unCamelCase(geometryName);
 
   // Generate mappings.
@@ -23916,7 +24608,7 @@ geometryNames.forEach(function registerMeshPrimitive(geometryName) {
 
   // Register.
   var tagName = 'a-' + geometryHyphened;
-  var primitive = registerPrimitive(tagName, utils.extendDeep({}, getMeshMixin(), {
+  var primitive = (0,_primitives_js__WEBPACK_IMPORTED_MODULE_2__.registerPrimitive)(tagName, _utils_index_js__WEBPACK_IMPORTED_MODULE_3__.extendDeep({}, (0,_getMeshMixin_js__WEBPACK_IMPORTED_MODULE_0__["default"])(), {
     defaultComponents: {
       geometry: {
         primitive: geometryName
@@ -23940,11 +24632,15 @@ function unCamelCase(str) {
 /*!*******************************!*\
   !*** ./src/geometries/box.js ***!
   \*******************************/
-/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var registerGeometry = (__webpack_require__(/*! ../core/geometry */ "./src/core/geometry.js").registerGeometry);
-var THREE = __webpack_require__(/*! ../lib/three */ "./src/lib/three.js");
-registerGeometry('box', {
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _lib_three_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../lib/three.js */ "./src/lib/three.js");
+/* harmony import */ var _core_geometry_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../core/geometry.js */ "./src/core/geometry.js");
+
+
+(0,_core_geometry_js__WEBPACK_IMPORTED_MODULE_1__.registerGeometry)('box', {
   schema: {
     depth: {
       default: 1,
@@ -23978,7 +24674,7 @@ registerGeometry('box', {
     }
   },
   init: function (data) {
-    this.geometry = new THREE.BoxGeometry(data.width, data.height, data.depth, data.segmentsWidth, data.segmentsHeight, data.segmentsDepth);
+    this.geometry = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].BoxGeometry(data.width, data.height, data.depth, data.segmentsWidth, data.segmentsHeight, data.segmentsDepth);
   }
 });
 
@@ -23988,12 +24684,16 @@ registerGeometry('box', {
 /*!**********************************!*\
   !*** ./src/geometries/circle.js ***!
   \**********************************/
-/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var registerGeometry = (__webpack_require__(/*! ../core/geometry */ "./src/core/geometry.js").registerGeometry);
-var THREE = __webpack_require__(/*! ../lib/three */ "./src/lib/three.js");
-var degToRad = THREE.MathUtils.degToRad;
-registerGeometry('circle', {
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _lib_three_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../lib/three.js */ "./src/lib/three.js");
+/* harmony import */ var _core_geometry_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../core/geometry.js */ "./src/core/geometry.js");
+
+
+var degToRad = _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].MathUtils.degToRad;
+(0,_core_geometry_js__WEBPACK_IMPORTED_MODULE_1__.registerGeometry)('circle', {
   schema: {
     radius: {
       default: 1,
@@ -24013,7 +24713,7 @@ registerGeometry('circle', {
     }
   },
   init: function (data) {
-    this.geometry = new THREE.CircleGeometry(data.radius, data.segments, degToRad(data.thetaStart), degToRad(data.thetaLength));
+    this.geometry = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].CircleGeometry(data.radius, data.segments, degToRad(data.thetaStart), degToRad(data.thetaLength));
   }
 });
 
@@ -24023,12 +24723,16 @@ registerGeometry('circle', {
 /*!********************************!*\
   !*** ./src/geometries/cone.js ***!
   \********************************/
-/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var registerGeometry = (__webpack_require__(/*! ../core/geometry */ "./src/core/geometry.js").registerGeometry);
-var THREE = __webpack_require__(/*! ../lib/three */ "./src/lib/three.js");
-var degToRad = THREE.MathUtils.degToRad;
-registerGeometry('cone', {
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _lib_three_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../lib/three.js */ "./src/lib/three.js");
+/* harmony import */ var _core_geometry_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../core/geometry.js */ "./src/core/geometry.js");
+
+
+var degToRad = _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].MathUtils.degToRad;
+(0,_core_geometry_js__WEBPACK_IMPORTED_MODULE_1__.registerGeometry)('cone', {
   schema: {
     height: {
       default: 1,
@@ -24064,7 +24768,7 @@ registerGeometry('cone', {
     }
   },
   init: function (data) {
-    this.geometry = new THREE.CylinderGeometry(data.radiusTop, data.radiusBottom, data.height, data.segmentsRadial, data.segmentsHeight, data.openEnded, degToRad(data.thetaStart), degToRad(data.thetaLength));
+    this.geometry = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].CylinderGeometry(data.radiusTop, data.radiusBottom, data.height, data.segmentsRadial, data.segmentsHeight, data.openEnded, degToRad(data.thetaStart), degToRad(data.thetaLength));
   }
 });
 
@@ -24074,12 +24778,16 @@ registerGeometry('cone', {
 /*!************************************!*\
   !*** ./src/geometries/cylinder.js ***!
   \************************************/
-/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var registerGeometry = (__webpack_require__(/*! ../core/geometry */ "./src/core/geometry.js").registerGeometry);
-var THREE = __webpack_require__(/*! ../lib/three */ "./src/lib/three.js");
-var degToRad = THREE.MathUtils.degToRad;
-registerGeometry('cylinder', {
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _lib_three_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../lib/three.js */ "./src/lib/three.js");
+/* harmony import */ var _core_geometry_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../core/geometry.js */ "./src/core/geometry.js");
+
+
+var degToRad = _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].MathUtils.degToRad;
+(0,_core_geometry_js__WEBPACK_IMPORTED_MODULE_1__.registerGeometry)('cylinder', {
   schema: {
     height: {
       default: 1,
@@ -24111,7 +24819,7 @@ registerGeometry('cylinder', {
     }
   },
   init: function (data) {
-    this.geometry = new THREE.CylinderGeometry(data.radius, data.radius, data.height, data.segmentsRadial, data.segmentsHeight, data.openEnded, degToRad(data.thetaStart), degToRad(data.thetaLength));
+    this.geometry = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].CylinderGeometry(data.radius, data.radius, data.height, data.segmentsRadial, data.segmentsHeight, data.openEnded, degToRad(data.thetaStart), degToRad(data.thetaLength));
   }
 });
 
@@ -24121,11 +24829,15 @@ registerGeometry('cylinder', {
 /*!****************************************!*\
   !*** ./src/geometries/dodecahedron.js ***!
   \****************************************/
-/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var registerGeometry = (__webpack_require__(/*! ../core/geometry */ "./src/core/geometry.js").registerGeometry);
-var THREE = __webpack_require__(/*! ../lib/three */ "./src/lib/three.js");
-registerGeometry('dodecahedron', {
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _lib_three_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../lib/three.js */ "./src/lib/three.js");
+/* harmony import */ var _core_geometry_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../core/geometry.js */ "./src/core/geometry.js");
+
+
+(0,_core_geometry_js__WEBPACK_IMPORTED_MODULE_1__.registerGeometry)('dodecahedron', {
   schema: {
     detail: {
       default: 0,
@@ -24139,7 +24851,7 @@ registerGeometry('dodecahedron', {
     }
   },
   init: function (data) {
-    this.geometry = new THREE.DodecahedronGeometry(data.radius, data.detail);
+    this.geometry = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].DodecahedronGeometry(data.radius, data.detail);
   }
 });
 
@@ -24149,11 +24861,15 @@ registerGeometry('dodecahedron', {
 /*!***************************************!*\
   !*** ./src/geometries/icosahedron.js ***!
   \***************************************/
-/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var registerGeometry = (__webpack_require__(/*! ../core/geometry */ "./src/core/geometry.js").registerGeometry);
-var THREE = __webpack_require__(/*! ../lib/three */ "./src/lib/three.js");
-registerGeometry('icosahedron', {
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _lib_three_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../lib/three.js */ "./src/lib/three.js");
+/* harmony import */ var _core_geometry_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../core/geometry.js */ "./src/core/geometry.js");
+
+
+(0,_core_geometry_js__WEBPACK_IMPORTED_MODULE_1__.registerGeometry)('icosahedron', {
   schema: {
     detail: {
       default: 0,
@@ -24167,7 +24883,7 @@ registerGeometry('icosahedron', {
     }
   },
   init: function (data) {
-    this.geometry = new THREE.IcosahedronGeometry(data.radius, data.detail);
+    this.geometry = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].IcosahedronGeometry(data.radius, data.detail);
   }
 });
 
@@ -24177,22 +24893,38 @@ registerGeometry('icosahedron', {
 /*!*********************************!*\
   !*** ./src/geometries/index.js ***!
   \*********************************/
-/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-__webpack_require__(/*! ./box.js */ "./src/geometries/box.js");
-__webpack_require__(/*! ./circle.js */ "./src/geometries/circle.js");
-__webpack_require__(/*! ./cone.js */ "./src/geometries/cone.js");
-__webpack_require__(/*! ./cylinder.js */ "./src/geometries/cylinder.js");
-__webpack_require__(/*! ./dodecahedron.js */ "./src/geometries/dodecahedron.js");
-__webpack_require__(/*! ./icosahedron.js */ "./src/geometries/icosahedron.js");
-__webpack_require__(/*! ./octahedron.js */ "./src/geometries/octahedron.js");
-__webpack_require__(/*! ./plane.js */ "./src/geometries/plane.js");
-__webpack_require__(/*! ./ring.js */ "./src/geometries/ring.js");
-__webpack_require__(/*! ./sphere.js */ "./src/geometries/sphere.js");
-__webpack_require__(/*! ./tetrahedron.js */ "./src/geometries/tetrahedron.js");
-__webpack_require__(/*! ./torus.js */ "./src/geometries/torus.js");
-__webpack_require__(/*! ./torusKnot.js */ "./src/geometries/torusKnot.js");
-__webpack_require__(/*! ./triangle.js */ "./src/geometries/triangle.js");
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _box_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./box.js */ "./src/geometries/box.js");
+/* harmony import */ var _circle_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./circle.js */ "./src/geometries/circle.js");
+/* harmony import */ var _cone_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./cone.js */ "./src/geometries/cone.js");
+/* harmony import */ var _cylinder_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./cylinder.js */ "./src/geometries/cylinder.js");
+/* harmony import */ var _dodecahedron_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./dodecahedron.js */ "./src/geometries/dodecahedron.js");
+/* harmony import */ var _icosahedron_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./icosahedron.js */ "./src/geometries/icosahedron.js");
+/* harmony import */ var _octahedron_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./octahedron.js */ "./src/geometries/octahedron.js");
+/* harmony import */ var _plane_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./plane.js */ "./src/geometries/plane.js");
+/* harmony import */ var _ring_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./ring.js */ "./src/geometries/ring.js");
+/* harmony import */ var _sphere_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./sphere.js */ "./src/geometries/sphere.js");
+/* harmony import */ var _tetrahedron_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./tetrahedron.js */ "./src/geometries/tetrahedron.js");
+/* harmony import */ var _torus_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./torus.js */ "./src/geometries/torus.js");
+/* harmony import */ var _torusKnot_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./torusKnot.js */ "./src/geometries/torusKnot.js");
+/* harmony import */ var _triangle_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./triangle.js */ "./src/geometries/triangle.js");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /***/ }),
 
@@ -24200,11 +24932,15 @@ __webpack_require__(/*! ./triangle.js */ "./src/geometries/triangle.js");
 /*!**************************************!*\
   !*** ./src/geometries/octahedron.js ***!
   \**************************************/
-/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var registerGeometry = (__webpack_require__(/*! ../core/geometry */ "./src/core/geometry.js").registerGeometry);
-var THREE = __webpack_require__(/*! ../lib/three */ "./src/lib/three.js");
-registerGeometry('octahedron', {
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _lib_three_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../lib/three.js */ "./src/lib/three.js");
+/* harmony import */ var _core_geometry_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../core/geometry.js */ "./src/core/geometry.js");
+
+
+(0,_core_geometry_js__WEBPACK_IMPORTED_MODULE_1__.registerGeometry)('octahedron', {
   schema: {
     detail: {
       default: 0,
@@ -24218,7 +24954,7 @@ registerGeometry('octahedron', {
     }
   },
   init: function (data) {
-    this.geometry = new THREE.OctahedronGeometry(data.radius, data.detail);
+    this.geometry = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].OctahedronGeometry(data.radius, data.detail);
   }
 });
 
@@ -24228,11 +24964,15 @@ registerGeometry('octahedron', {
 /*!*********************************!*\
   !*** ./src/geometries/plane.js ***!
   \*********************************/
-/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var registerGeometry = (__webpack_require__(/*! ../core/geometry */ "./src/core/geometry.js").registerGeometry);
-var THREE = __webpack_require__(/*! ../lib/three */ "./src/lib/three.js");
-registerGeometry('plane', {
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _lib_three_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../lib/three.js */ "./src/lib/three.js");
+/* harmony import */ var _core_geometry_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../core/geometry.js */ "./src/core/geometry.js");
+
+
+(0,_core_geometry_js__WEBPACK_IMPORTED_MODULE_1__.registerGeometry)('plane', {
   schema: {
     height: {
       default: 1,
@@ -24256,7 +24996,7 @@ registerGeometry('plane', {
     }
   },
   init: function (data) {
-    this.geometry = new THREE.PlaneGeometry(data.width, data.height, data.segmentsWidth, data.segmentsHeight);
+    this.geometry = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].PlaneGeometry(data.width, data.height, data.segmentsWidth, data.segmentsHeight);
   }
 });
 
@@ -24266,12 +25006,16 @@ registerGeometry('plane', {
 /*!********************************!*\
   !*** ./src/geometries/ring.js ***!
   \********************************/
-/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var registerGeometry = (__webpack_require__(/*! ../core/geometry */ "./src/core/geometry.js").registerGeometry);
-var THREE = __webpack_require__(/*! ../lib/three */ "./src/lib/three.js");
-var degToRad = THREE.MathUtils.degToRad;
-registerGeometry('ring', {
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _lib_three_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../lib/three.js */ "./src/lib/three.js");
+/* harmony import */ var _core_geometry_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../core/geometry.js */ "./src/core/geometry.js");
+
+
+var degToRad = _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].MathUtils.degToRad;
+(0,_core_geometry_js__WEBPACK_IMPORTED_MODULE_1__.registerGeometry)('ring', {
   schema: {
     radiusInner: {
       default: 0.8,
@@ -24300,7 +25044,7 @@ registerGeometry('ring', {
     }
   },
   init: function (data) {
-    this.geometry = new THREE.RingGeometry(data.radiusInner, data.radiusOuter, data.segmentsTheta, data.segmentsPhi, degToRad(data.thetaStart), degToRad(data.thetaLength));
+    this.geometry = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].RingGeometry(data.radiusInner, data.radiusOuter, data.segmentsTheta, data.segmentsPhi, degToRad(data.thetaStart), degToRad(data.thetaLength));
   }
 });
 
@@ -24310,12 +25054,16 @@ registerGeometry('ring', {
 /*!**********************************!*\
   !*** ./src/geometries/sphere.js ***!
   \**********************************/
-/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var registerGeometry = (__webpack_require__(/*! ../core/geometry */ "./src/core/geometry.js").registerGeometry);
-var THREE = __webpack_require__(/*! ../lib/three */ "./src/lib/three.js");
-var degToRad = THREE.MathUtils.degToRad;
-registerGeometry('sphere', {
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _lib_three_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../lib/three.js */ "./src/lib/three.js");
+/* harmony import */ var _core_geometry_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../core/geometry.js */ "./src/core/geometry.js");
+
+
+var degToRad = _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].MathUtils.degToRad;
+(0,_core_geometry_js__WEBPACK_IMPORTED_MODULE_1__.registerGeometry)('sphere', {
   schema: {
     radius: {
       default: 1,
@@ -24347,7 +25095,7 @@ registerGeometry('sphere', {
     }
   },
   init: function (data) {
-    this.geometry = new THREE.SphereGeometry(data.radius, data.segmentsWidth, data.segmentsHeight, degToRad(data.phiStart), degToRad(data.phiLength), degToRad(data.thetaStart), degToRad(data.thetaLength));
+    this.geometry = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].SphereGeometry(data.radius, data.segmentsWidth, data.segmentsHeight, degToRad(data.phiStart), degToRad(data.phiLength), degToRad(data.thetaStart), degToRad(data.thetaLength));
   }
 });
 
@@ -24357,11 +25105,15 @@ registerGeometry('sphere', {
 /*!***************************************!*\
   !*** ./src/geometries/tetrahedron.js ***!
   \***************************************/
-/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var registerGeometry = (__webpack_require__(/*! ../core/geometry */ "./src/core/geometry.js").registerGeometry);
-var THREE = __webpack_require__(/*! ../lib/three */ "./src/lib/three.js");
-registerGeometry('tetrahedron', {
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _lib_three_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../lib/three.js */ "./src/lib/three.js");
+/* harmony import */ var _core_geometry_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../core/geometry.js */ "./src/core/geometry.js");
+
+
+(0,_core_geometry_js__WEBPACK_IMPORTED_MODULE_1__.registerGeometry)('tetrahedron', {
   schema: {
     detail: {
       default: 0,
@@ -24375,7 +25127,7 @@ registerGeometry('tetrahedron', {
     }
   },
   init: function (data) {
-    this.geometry = new THREE.TetrahedronGeometry(data.radius, data.detail);
+    this.geometry = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].TetrahedronGeometry(data.radius, data.detail);
   }
 });
 
@@ -24385,12 +25137,16 @@ registerGeometry('tetrahedron', {
 /*!*********************************!*\
   !*** ./src/geometries/torus.js ***!
   \*********************************/
-/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var registerGeometry = (__webpack_require__(/*! ../core/geometry */ "./src/core/geometry.js").registerGeometry);
-var THREE = __webpack_require__(/*! ../lib/three */ "./src/lib/three.js");
-var degToRad = THREE.MathUtils.degToRad;
-registerGeometry('torus', {
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _lib_three_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../lib/three.js */ "./src/lib/three.js");
+/* harmony import */ var _core_geometry_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../core/geometry.js */ "./src/core/geometry.js");
+
+
+var degToRad = _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].MathUtils.degToRad;
+(0,_core_geometry_js__WEBPACK_IMPORTED_MODULE_1__.registerGeometry)('torus', {
   schema: {
     arc: {
       default: 360
@@ -24415,7 +25171,7 @@ registerGeometry('torus', {
     }
   },
   init: function (data) {
-    this.geometry = new THREE.TorusGeometry(data.radius, data.radiusTubular * 2, data.segmentsRadial, data.segmentsTubular, degToRad(data.arc));
+    this.geometry = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].TorusGeometry(data.radius, data.radiusTubular * 2, data.segmentsRadial, data.segmentsTubular, degToRad(data.arc));
   }
 });
 
@@ -24425,11 +25181,15 @@ registerGeometry('torus', {
 /*!*************************************!*\
   !*** ./src/geometries/torusKnot.js ***!
   \*************************************/
-/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var registerGeometry = (__webpack_require__(/*! ../core/geometry */ "./src/core/geometry.js").registerGeometry);
-var THREE = __webpack_require__(/*! ../lib/three */ "./src/lib/three.js");
-registerGeometry('torusKnot', {
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _lib_three_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../lib/three.js */ "./src/lib/three.js");
+/* harmony import */ var _core_geometry_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../core/geometry.js */ "./src/core/geometry.js");
+
+
+(0,_core_geometry_js__WEBPACK_IMPORTED_MODULE_1__.registerGeometry)('torusKnot', {
   schema: {
     p: {
       default: 2,
@@ -24459,7 +25219,7 @@ registerGeometry('torusKnot', {
     }
   },
   init: function (data) {
-    this.geometry = new THREE.TorusKnotGeometry(data.radius, data.radiusTubular * 2, data.segmentsTubular, data.segmentsRadial, data.p, data.q);
+    this.geometry = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].TorusKnotGeometry(data.radius, data.radiusTubular * 2, data.segmentsTubular, data.segmentsRadial, data.p, data.q);
   }
 });
 
@@ -24469,16 +25229,20 @@ registerGeometry('torusKnot', {
 /*!************************************!*\
   !*** ./src/geometries/triangle.js ***!
   \************************************/
-/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var registerGeometry = (__webpack_require__(/*! ../core/geometry */ "./src/core/geometry.js").registerGeometry);
-var THREE = __webpack_require__(/*! ../lib/three */ "./src/lib/three.js");
-var quaternion = new THREE.Quaternion();
-var rotateVector = new THREE.Vector3(0, 0, 1);
-var uvMinVector = new THREE.Vector2();
-var uvMaxVector = new THREE.Vector2();
-var uvScaleVector = new THREE.Vector2();
-registerGeometry('triangle', {
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _lib_three_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../lib/three.js */ "./src/lib/three.js");
+/* harmony import */ var _core_geometry_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../core/geometry.js */ "./src/core/geometry.js");
+
+
+var quaternion = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Quaternion();
+var rotateVector = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Vector3(0, 0, 1);
+var uvMinVector = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Vector2();
+var uvMaxVector = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Vector2();
+var uvScaleVector = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Vector2();
+(0,_core_geometry_js__WEBPACK_IMPORTED_MODULE_1__.registerGeometry)('triangle', {
   schema: {
     vertexA: {
       type: 'vec3',
@@ -24515,11 +25279,11 @@ registerGeometry('triangle', {
     var vertices;
     var normals;
     var uvs;
-    triangle = new THREE.Triangle();
+    triangle = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Triangle();
     triangle.a.set(data.vertexA.x, data.vertexA.y, data.vertexA.z);
     triangle.b.set(data.vertexB.x, data.vertexB.y, data.vertexB.z);
     triangle.c.set(data.vertexC.x, data.vertexC.y, data.vertexC.z);
-    normal = triangle.getNormal(new THREE.Vector3());
+    normal = triangle.getNormal(new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Vector3());
 
     // Rotate the 3D triangle to be parallel to XY plane.
     quaternion.setFromUnitVectors(normal, rotateVector);
@@ -24532,108 +25296,18 @@ registerGeometry('triangle', {
     uvMinVector.set(Math.min(uvA.x, uvB.x, uvC.x), Math.min(uvA.y, uvB.y, uvC.y));
     uvMaxVector.set(Math.max(uvA.x, uvB.x, uvC.x), Math.max(uvA.y, uvB.y, uvC.y));
     uvScaleVector.set(0, 0).subVectors(uvMaxVector, uvMinVector);
-    uvA = new THREE.Vector2().subVectors(uvA, uvMinVector).divide(uvScaleVector);
-    uvB = new THREE.Vector2().subVectors(uvB, uvMinVector).divide(uvScaleVector);
-    uvC = new THREE.Vector2().subVectors(uvC, uvMinVector).divide(uvScaleVector);
-    geometry = this.geometry = new THREE.BufferGeometry();
+    uvA = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Vector2().subVectors(uvA, uvMinVector).divide(uvScaleVector);
+    uvB = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Vector2().subVectors(uvB, uvMinVector).divide(uvScaleVector);
+    uvC = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Vector2().subVectors(uvC, uvMinVector).divide(uvScaleVector);
+    geometry = this.geometry = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].BufferGeometry();
     vertices = [triangle.a.x, triangle.a.y, triangle.a.z, triangle.b.x, triangle.b.y, triangle.b.z, triangle.c.x, triangle.c.y, triangle.c.z];
     normals = [normal.x, normal.y, normal.z, normal.x, normal.y, normal.z, normal.x, normal.y, normal.z];
     uvs = [uvA.x, uvA.y, uvB.x, uvB.y, uvC.x, uvC.y];
-    geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
-    geometry.setAttribute('normal', new THREE.Float32BufferAttribute(normals, 3));
-    geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
+    geometry.setAttribute('position', new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Float32BufferAttribute(vertices, 3));
+    geometry.setAttribute('normal', new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Float32BufferAttribute(normals, 3));
+    geometry.setAttribute('uv', new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Float32BufferAttribute(uvs, 2));
   }
 });
-
-/***/ }),
-
-/***/ "./src/index.js":
-/*!**********************!*\
-  !*** ./src/index.js ***!
-  \**********************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-var utils = __webpack_require__(/*! ./utils/ */ "./src/utils/index.js");
-var debug = utils.debug;
-var error = debug('A-Frame:error');
-var warn = debug('A-Frame:warn');
-if (window.document.currentScript && window.document.currentScript.parentNode !== window.document.head && !window.debug) {
-  warn('Put the A-Frame <script> tag in the <head> of the HTML *before* the scene to ' + 'ensure everything for A-Frame is properly registered before they are used from ' + 'HTML.');
-}
-
-// Error if not using a server.
-if (!window.cordova && window.location.protocol === 'file:') {
-  error('This HTML file is currently being served via the file:// protocol. ' + 'Assets, textures, and models WILL NOT WORK due to cross-origin policy! ' + 'Please use a local or hosted server: ' + 'https://aframe.io/docs/1.4.0/introduction/installation.html#use-a-local-server.');
-}
-
-// CSS.
-if (utils.device.isBrowserEnvironment) {
-  __webpack_require__(/*! ./style/aframe.css */ "./src/style/aframe.css");
-  __webpack_require__(/*! ./style/rStats.css */ "./src/style/rStats.css");
-}
-
-// Required before `AEntity` so that all components are registered.
-var AScene = (__webpack_require__(/*! ./core/scene/a-scene */ "./src/core/scene/a-scene.js").AScene);
-var components = (__webpack_require__(/*! ./core/component */ "./src/core/component.js").components);
-var registerComponent = (__webpack_require__(/*! ./core/component */ "./src/core/component.js").registerComponent);
-var registerGeometry = (__webpack_require__(/*! ./core/geometry */ "./src/core/geometry.js").registerGeometry);
-var registerPrimitive = (__webpack_require__(/*! ./extras/primitives/primitives */ "./src/extras/primitives/primitives.js").registerPrimitive);
-var registerShader = (__webpack_require__(/*! ./core/shader */ "./src/core/shader.js").registerShader);
-var registerSystem = (__webpack_require__(/*! ./core/system */ "./src/core/system.js").registerSystem);
-var shaders = (__webpack_require__(/*! ./core/shader */ "./src/core/shader.js").shaders);
-var systems = (__webpack_require__(/*! ./core/system */ "./src/core/system.js").systems);
-// Exports THREE to window so three.js can be used without alteration.
-var THREE = window.THREE = __webpack_require__(/*! ./lib/three */ "./src/lib/three.js");
-var readyState = __webpack_require__(/*! ./core/readyState */ "./src/core/readyState.js");
-var pkg = __webpack_require__(/*! ../package */ "./package.json");
-__webpack_require__(/*! ./components/index */ "./src/components/index.js"); // Register standard components.
-__webpack_require__(/*! ./geometries/index */ "./src/geometries/index.js"); // Register standard geometries.
-__webpack_require__(/*! ./shaders/index */ "./src/shaders/index.js"); // Register standard shaders.
-__webpack_require__(/*! ./systems/index */ "./src/systems/index.js"); // Register standard systems.
-var ANode = (__webpack_require__(/*! ./core/a-node */ "./src/core/a-node.js").ANode);
-var AEntity = (__webpack_require__(/*! ./core/a-entity */ "./src/core/a-entity.js").AEntity); // Depends on ANode and core components.
-
-__webpack_require__(/*! ./core/a-assets */ "./src/core/a-assets.js");
-__webpack_require__(/*! ./core/a-cubemap */ "./src/core/a-cubemap.js");
-__webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
-
-// Extras.
-__webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
-__webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.6.0 (Date 2025-01-22, Commit #51b70a38)');
-console.log('THREE Version (https://github.com/supermedium/three.js):', THREE.REVISION);
-
-// Wait for ready state, unless user asynchronously initializes A-Frame.
-if (!window.AFRAME_ASYNC) {
-  readyState.waitForDocumentReadyState();
-}
-module.exports = window.AFRAME = {
-  AComponent: (__webpack_require__(/*! ./core/component */ "./src/core/component.js").Component),
-  AEntity: AEntity,
-  ANode: ANode,
-  ANIME: (__webpack_require__(/*! super-animejs */ "./node_modules/super-animejs/lib/anime.es.js")["default"]),
-  AScene: AScene,
-  components: components,
-  coreComponents: Object.keys(components),
-  geometries: (__webpack_require__(/*! ./core/geometry */ "./src/core/geometry.js").geometries),
-  registerComponent: registerComponent,
-  registerGeometry: registerGeometry,
-  registerPrimitive: registerPrimitive,
-  registerShader: registerShader,
-  registerSystem: registerSystem,
-  primitives: {
-    getMeshMixin: __webpack_require__(/*! ./extras/primitives/getMeshMixin */ "./src/extras/primitives/getMeshMixin.js"),
-    primitives: (__webpack_require__(/*! ./extras/primitives/primitives */ "./src/extras/primitives/primitives.js").primitives)
-  },
-  scenes: __webpack_require__(/*! ./core/scene/scenes */ "./src/core/scene/scenes.js"),
-  schema: __webpack_require__(/*! ./core/schema */ "./src/core/schema.js"),
-  shaders: shaders,
-  systems: systems,
-  emitReady: readyState.emitReady,
-  THREE: THREE,
-  utils: utils,
-  version: pkg.version
-};
 
 /***/ }),
 
@@ -24641,7 +25315,7 @@ module.exports = window.AFRAME = {
 /*!*********************************!*\
   !*** ./src/lib/rStatsAframe.js ***!
   \*********************************/
-/***/ ((module) => {
+/***/ (() => {
 
 window.aframeStats = function (scene) {
   var _rS = null;
@@ -24686,11 +25360,6 @@ window.aframeStats = function (scene) {
     fractions: []
   };
 };
-if (true) {
-  module.exports = {
-    aframeStats: window.aframeStats
-  };
-}
 
 /***/ }),
 
@@ -24698,18 +25367,50 @@ if (true) {
 /*!**************************!*\
   !*** ./src/lib/three.js ***!
   \**************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var THREE = (__webpack_require__(/*! ./three.mjs */ "./src/lib/three.mjs")["default"]);
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var three__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
+/* harmony import */ var three_addons_loaders_DRACOLoader_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! three/addons/loaders/DRACOLoader.js */ "./node_modules/three/examples/jsm/loaders/DRACOLoader.js");
+/* harmony import */ var three_addons_loaders_GLTFLoader_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! three/addons/loaders/GLTFLoader.js */ "./node_modules/three/examples/jsm/loaders/GLTFLoader.js");
+/* harmony import */ var three_addons_loaders_KTX2Loader_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! three/addons/loaders/KTX2Loader.js */ "./node_modules/three/examples/jsm/loaders/KTX2Loader.js");
+/* harmony import */ var three_addons_math_OBB_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! three/addons/math/OBB.js */ "./node_modules/three/examples/jsm/math/OBB.js");
+/* harmony import */ var three_addons_loaders_OBJLoader_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! three/addons/loaders/OBJLoader.js */ "./node_modules/three/examples/jsm/loaders/OBJLoader.js");
+/* harmony import */ var three_addons_loaders_MTLLoader_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! three/addons/loaders/MTLLoader.js */ "./node_modules/three/examples/jsm/loaders/MTLLoader.js");
+/* harmony import */ var three_addons_utils_BufferGeometryUtils_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! three/addons/utils/BufferGeometryUtils.js */ "./node_modules/three/examples/jsm/utils/BufferGeometryUtils.js");
+/* harmony import */ var three_addons_lights_LightProbeGenerator_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! three/addons/lights/LightProbeGenerator.js */ "./node_modules/three/examples/jsm/lights/LightProbeGenerator.js");
+/* harmony import */ var _vendor_DeviceOrientationControls_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../vendor/DeviceOrientationControls.js */ "./vendor/DeviceOrientationControls.js");
+
+
+
+
+
+
+
+
+
+ // THREE.DeviceOrientationControls
+
+var THREE = globalThis.THREE = {
+  ...three__WEBPACK_IMPORTED_MODULE_1__
+};
+
 // TODO: Eventually include these only if they are needed by a component.
-__webpack_require__.g.THREE = THREE;
-__webpack_require__(/*! ../../vendor/DeviceOrientationControls */ "./vendor/DeviceOrientationControls.js");
-
-// In-memory caching for XHRs (for images, audio files, textures, etc.).
-if (THREE.Cache) {
-  THREE.Cache.enabled = true;
-}
-module.exports = THREE;
+THREE.DRACOLoader = three_addons_loaders_DRACOLoader_js__WEBPACK_IMPORTED_MODULE_2__.DRACOLoader;
+THREE.GLTFLoader = three_addons_loaders_GLTFLoader_js__WEBPACK_IMPORTED_MODULE_3__.GLTFLoader;
+THREE.KTX2Loader = three_addons_loaders_KTX2Loader_js__WEBPACK_IMPORTED_MODULE_4__.KTX2Loader;
+THREE.OBJLoader = three_addons_loaders_OBJLoader_js__WEBPACK_IMPORTED_MODULE_5__.OBJLoader;
+THREE.MTLLoader = three_addons_loaders_MTLLoader_js__WEBPACK_IMPORTED_MODULE_6__.MTLLoader;
+THREE.OBB = three_addons_math_OBB_js__WEBPACK_IMPORTED_MODULE_7__.OBB;
+THREE.BufferGeometryUtils = three_addons_utils_BufferGeometryUtils_js__WEBPACK_IMPORTED_MODULE_8__;
+THREE.LightProbeGenerator = three_addons_lights_LightProbeGenerator_js__WEBPACK_IMPORTED_MODULE_9__.LightProbeGenerator;
+THREE.DeviceOrientationControls = _vendor_DeviceOrientationControls_js__WEBPACK_IMPORTED_MODULE_0__.DeviceOrientationControls;
+THREE.Cache.enabled = true;
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (THREE);
 
 /***/ }),
 
@@ -24717,16 +25418,24 @@ module.exports = THREE;
 /*!*****************************!*\
   !*** ./src/shaders/flat.js ***!
   \*****************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var registerShader = (__webpack_require__(/*! ../core/shader */ "./src/core/shader.js").registerShader);
-var THREE = __webpack_require__(/*! ../lib/three */ "./src/lib/three.js");
-var utils = __webpack_require__(/*! ../utils/ */ "./src/utils/index.js");
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Shader: () => (/* binding */ Shader)
+/* harmony export */ });
+/* harmony import */ var _core_shader_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../core/shader.js */ "./src/core/shader.js");
+/* harmony import */ var _lib_three_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../lib/three.js */ "./src/lib/three.js");
+/* harmony import */ var _utils_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/index.js */ "./src/utils/index.js");
+
+
+
 
 /**
  * Flat shader using THREE.MeshBasicMaterial.
  */
-module.exports.Shader = registerShader('flat', {
+var Shader = (0,_core_shader_js__WEBPACK_IMPORTED_MODULE_0__.registerShader)('flat', {
   schema: {
     color: {
       type: 'color'
@@ -24773,14 +25482,14 @@ module.exports.Shader = registerShader('flat', {
    */
   init: function (data) {
     this.materialData = {
-      color: new THREE.Color()
+      color: new _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].Color()
     };
     getMaterialData(data, this.materialData);
-    this.material = new THREE.MeshBasicMaterial(this.materialData);
+    this.material = new _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].MeshBasicMaterial(this.materialData);
   },
   update: function (data) {
     this.updateMaterial(data);
-    utils.material.updateMap(this, data);
+    _utils_index_js__WEBPACK_IMPORTED_MODULE_2__.material.updateMap(this, data);
   },
   /**
    * Updating existing material.
@@ -24818,14 +25527,22 @@ function getMaterialData(data, materialData) {
 /*!******************************!*\
   !*** ./src/shaders/index.js ***!
   \******************************/
-/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-__webpack_require__(/*! ./flat */ "./src/shaders/flat.js");
-__webpack_require__(/*! ./standard */ "./src/shaders/standard.js");
-__webpack_require__(/*! ./phong */ "./src/shaders/phong.js");
-__webpack_require__(/*! ./sdf */ "./src/shaders/sdf.js");
-__webpack_require__(/*! ./msdf */ "./src/shaders/msdf.js");
-__webpack_require__(/*! ./shadow */ "./src/shaders/shadow.js");
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _flat_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./flat.js */ "./src/shaders/flat.js");
+/* harmony import */ var _standard_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./standard.js */ "./src/shaders/standard.js");
+/* harmony import */ var _phong_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./phong.js */ "./src/shaders/phong.js");
+/* harmony import */ var _sdf_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./sdf.js */ "./src/shaders/sdf.js");
+/* harmony import */ var _msdf_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./msdf.js */ "./src/shaders/msdf.js");
+/* harmony import */ var _shadow_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./shadow.js */ "./src/shaders/shadow.js");
+
+
+
+
+
+
 
 /***/ }),
 
@@ -24833,10 +25550,17 @@ __webpack_require__(/*! ./shadow */ "./src/shaders/shadow.js");
 /*!*****************************!*\
   !*** ./src/shaders/msdf.js ***!
   \*****************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var registerShader = (__webpack_require__(/*! ../core/shader */ "./src/core/shader.js").registerShader);
-var THREE = __webpack_require__(/*! ../lib/three */ "./src/lib/three.js");
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Shader: () => (/* binding */ Shader)
+/* harmony export */ });
+/* harmony import */ var _core_shader_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../core/shader.js */ "./src/core/shader.js");
+/* harmony import */ var _lib_three_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../lib/three.js */ "./src/lib/three.js");
+
+
 var VERTEX_SHADER = ['#include <common>', '#include <fog_pars_vertex>', '#include <logdepthbuf_pars_vertex>', 'out vec2 vUV;', 'void main(void) {', '  vUV = uv;', '  #include <begin_vertex>', '  #include <project_vertex>', '  #include <logdepthbuf_vertex>', '  #include <fog_vertex>', '}'].join('\n');
 var FRAGMENT_SHADER = ['#include <common>', '#include <fog_pars_fragment>', '#include <logdepthbuf_pars_fragment>', 'uniform bool negate;', 'uniform float alphaTest;', 'uniform float opacity;', 'uniform sampler2D map;', 'uniform vec3 color;', 'in vec2 vUV;', 'float median(float r, float g, float b) {', '  return max(min(r, g), min(max(r, g), b));', '}',
 // FIXME: Experimentally determined constants.
@@ -24849,7 +25573,7 @@ var FRAGMENT_SHADER = ['#include <common>', '#include <fog_pars_fragment>', '#in
  * Multi-channel signed distance field.
  * Used by text component.
  */
-module.exports.Shader = registerShader('msdf', {
+var Shader = (0,_core_shader_js__WEBPACK_IMPORTED_MODULE_0__.registerShader)('msdf', {
   schema: {
     alphaTest: {
       type: 'number',
@@ -24879,8 +25603,8 @@ module.exports.Shader = registerShader('msdf', {
   vertexShader: VERTEX_SHADER,
   fragmentShader: FRAGMENT_SHADER,
   init: function () {
-    this.uniforms = THREE.UniformsUtils.merge([THREE.UniformsLib.fog, this.initUniforms()]);
-    this.material = new THREE.ShaderMaterial({
+    this.uniforms = _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].UniformsUtils.merge([_lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].UniformsLib.fog, this.initUniforms()]);
+    this.material = new _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].ShaderMaterial({
       uniforms: this.uniforms,
       vertexShader: this.vertexShader,
       fragmentShader: this.fragmentShader,
@@ -24896,16 +25620,24 @@ module.exports.Shader = registerShader('msdf', {
 /*!******************************!*\
   !*** ./src/shaders/phong.js ***!
   \******************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var registerShader = (__webpack_require__(/*! ../core/shader */ "./src/core/shader.js").registerShader);
-var THREE = __webpack_require__(/*! ../lib/three */ "./src/lib/three.js");
-var utils = __webpack_require__(/*! ../utils/ */ "./src/utils/index.js");
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Shader: () => (/* binding */ Shader)
+/* harmony export */ });
+/* harmony import */ var _core_shader_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../core/shader.js */ "./src/core/shader.js");
+/* harmony import */ var _lib_three_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../lib/three.js */ "./src/lib/three.js");
+/* harmony import */ var _utils_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/index.js */ "./src/utils/index.js");
+
+
+
 
 /**
  * Phong shader using THREE.MeshPhongMaterial.
  */
-module.exports.Shader = registerShader('phong', {
+var Shader = (0,_core_shader_js__WEBPACK_IMPORTED_MODULE_0__.registerShader)('phong', {
   schema: {
     color: {
       type: 'color'
@@ -25043,12 +25775,12 @@ module.exports.Shader = registerShader('phong', {
    */
   init: function (data) {
     this.materialData = {
-      color: new THREE.Color(),
-      specular: new THREE.Color(),
-      emissive: new THREE.Color()
+      color: new _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].Color(),
+      specular: new _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].Color(),
+      emissive: new _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].Color()
     };
     getMaterialData(data, this.materialData);
-    this.material = new THREE.MeshPhongMaterial(this.materialData);
+    this.material = new _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].MeshPhongMaterial(this.materialData);
     var sceneEl = this.el.sceneEl;
     // Fallback to scene environment when no envMap is defined (matching behaviour of standard material)
     Object.defineProperty(this.material, 'envMap', {
@@ -25062,12 +25794,12 @@ module.exports.Shader = registerShader('phong', {
   },
   update: function (data) {
     this.updateMaterial(data);
-    utils.material.updateMap(this, data);
-    utils.material.updateDistortionMap('normal', this, data);
-    utils.material.updateDistortionMap('displacement', this, data);
-    utils.material.updateDistortionMap('ambientOcclusion', this, data);
-    utils.material.updateDistortionMap('bump', this, data);
-    utils.material.updateEnvMap(this, data);
+    _utils_index_js__WEBPACK_IMPORTED_MODULE_2__.material.updateMap(this, data);
+    _utils_index_js__WEBPACK_IMPORTED_MODULE_2__.material.updateDistortionMap('normal', this, data);
+    _utils_index_js__WEBPACK_IMPORTED_MODULE_2__.material.updateDistortionMap('displacement', this, data);
+    _utils_index_js__WEBPACK_IMPORTED_MODULE_2__.material.updateDistortionMap('ambientOcclusion', this, data);
+    _utils_index_js__WEBPACK_IMPORTED_MODULE_2__.material.updateDistortionMap('bump', this, data);
+    _utils_index_js__WEBPACK_IMPORTED_MODULE_2__.material.updateEnvMap(this, data);
   },
   /**
    * Updating existing material.
@@ -25107,13 +25839,13 @@ function getMaterialData(data, materialData) {
   materialData.refractionRatio = data.refractionRatio;
   switch (data.combine) {
     case 'mix':
-      materialData.combine = THREE.MixOperation;
+      materialData.combine = _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].MixOperation;
       break;
     case 'multiply':
-      materialData.combine = THREE.MultiplyOperation;
+      materialData.combine = _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].MultiplyOperation;
       break;
     case 'add':
-      materialData.combine = THREE.AddOperation;
+      materialData.combine = _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].AddOperation;
       break;
   }
   if (data.normalMap) {
@@ -25138,10 +25870,17 @@ function getMaterialData(data, materialData) {
 /*!****************************!*\
   !*** ./src/shaders/sdf.js ***!
   \****************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var registerShader = (__webpack_require__(/*! ../core/shader */ "./src/core/shader.js").registerShader);
-var THREE = __webpack_require__(/*! ../lib/three */ "./src/lib/three.js");
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Shader: () => (/* binding */ Shader)
+/* harmony export */ });
+/* harmony import */ var _core_shader_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../core/shader.js */ "./src/core/shader.js");
+/* harmony import */ var _lib_three_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../lib/three.js */ "./src/lib/three.js");
+
+
 var VERTEX_SHADER = ['#include <common>', '#include <fog_pars_vertex>', '#include <logdepthbuf_pars_vertex>', 'out vec2 vUV;', 'void main(void) {', '  vUV = uv;', '  #include <begin_vertex>', '  #include <project_vertex>', '  #include <logdepthbuf_vertex>', '  #include <fog_vertex>', '}'].join('\n');
 var FRAGMENT_SHADER = ['#include <common>', '#include <fog_pars_fragment>', '#include <logdepthbuf_pars_fragment>', 'uniform float alphaTest;', 'uniform float opacity;', 'uniform sampler2D map;', 'uniform vec3 color;', 'in vec2 vUV;', 'float contour(float width, float value) {', '  return smoothstep(0.5 - value, 0.5 + value, width);', '}',
 // FIXME: Experimentally determined constants.
@@ -25159,7 +25898,7 @@ var FRAGMENT_SHADER = ['#include <common>', '#include <fog_pars_fragment>', '#in
  * Signed distance field.
  * Used by text component.
  */
-module.exports.Shader = registerShader('sdf', {
+var Shader = (0,_core_shader_js__WEBPACK_IMPORTED_MODULE_0__.registerShader)('sdf', {
   schema: {
     alphaTest: {
       type: 'number',
@@ -25184,8 +25923,8 @@ module.exports.Shader = registerShader('sdf', {
   vertexShader: VERTEX_SHADER,
   fragmentShader: FRAGMENT_SHADER,
   init: function () {
-    this.uniforms = THREE.UniformsUtils.merge([THREE.UniformsLib.fog, this.initUniforms()]);
-    this.material = new THREE.ShaderMaterial({
+    this.uniforms = _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].UniformsUtils.merge([_lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].UniformsLib.fog, this.initUniforms()]);
+    this.material = new _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].ShaderMaterial({
       uniforms: this.uniforms,
       vertexShader: this.vertexShader,
       fragmentShader: this.fragmentShader,
@@ -25201,15 +25940,22 @@ module.exports.Shader = registerShader('sdf', {
 /*!*******************************!*\
   !*** ./src/shaders/shadow.js ***!
   \*******************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var registerShader = (__webpack_require__(/*! ../core/shader */ "./src/core/shader.js").registerShader);
-var THREE = __webpack_require__(/*! ../lib/three */ "./src/lib/three.js");
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Shader: () => (/* binding */ Shader)
+/* harmony export */ });
+/* harmony import */ var _lib_three_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../lib/three.js */ "./src/lib/three.js");
+/* harmony import */ var _core_shader_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../core/shader.js */ "./src/core/shader.js");
+
+
 
 /**
  * Flat shader using THREE.ShadowMaterial.
  */
-module.exports.Shader = registerShader('shadow', {
+var Shader = (0,_core_shader_js__WEBPACK_IMPORTED_MODULE_1__.registerShader)('shadow', {
   schema: {
     opacity: {
       default: 0.5
@@ -25226,7 +25972,7 @@ module.exports.Shader = registerShader('shadow', {
    * Adds a reference from the scene to this entity as the camera.
    */
   init: function (data) {
-    this.material = new THREE.ShadowMaterial();
+    this.material = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].ShadowMaterial();
   },
   update: function (data) {
     this.material.opacity = data.opacity;
@@ -25241,16 +25987,24 @@ module.exports.Shader = registerShader('shadow', {
 /*!*********************************!*\
   !*** ./src/shaders/standard.js ***!
   \*********************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var registerShader = (__webpack_require__(/*! ../core/shader */ "./src/core/shader.js").registerShader);
-var THREE = __webpack_require__(/*! ../lib/three */ "./src/lib/three.js");
-var utils = __webpack_require__(/*! ../utils/ */ "./src/utils/index.js");
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Shader: () => (/* binding */ Shader)
+/* harmony export */ });
+/* harmony import */ var _lib_three_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../lib/three.js */ "./src/lib/three.js");
+/* harmony import */ var _core_shader_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../core/shader.js */ "./src/core/shader.js");
+/* harmony import */ var _utils_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/index.js */ "./src/utils/index.js");
+
+
+
 
 /**
  * Standard (physically-based) shader using THREE.MeshStandardMaterial.
  */
-module.exports.Shader = registerShader('standard', {
+var Shader = (0,_core_shader_js__WEBPACK_IMPORTED_MODULE_1__.registerShader)('standard', {
   schema: {
     ambientOcclusionMap: {
       type: 'map'
@@ -25398,21 +26152,21 @@ module.exports.Shader = registerShader('standard', {
    */
   init: function (data) {
     this.materialData = {
-      color: new THREE.Color(),
-      emissive: new THREE.Color()
+      color: new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Color(),
+      emissive: new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Color()
     };
     getMaterialData(data, this.materialData);
-    this.material = new THREE.MeshStandardMaterial(this.materialData);
+    this.material = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].MeshStandardMaterial(this.materialData);
   },
   update: function (data) {
     this.updateMaterial(data);
-    utils.material.updateMap(this, data);
-    utils.material.updateDistortionMap('normal', this, data);
-    utils.material.updateDistortionMap('displacement', this, data);
-    utils.material.updateDistortionMap('ambientOcclusion', this, data);
-    utils.material.updateDistortionMap('metalness', this, data);
-    utils.material.updateDistortionMap('roughness', this, data);
-    utils.material.updateEnvMap(this, data);
+    _utils_index_js__WEBPACK_IMPORTED_MODULE_2__.material.updateMap(this, data);
+    _utils_index_js__WEBPACK_IMPORTED_MODULE_2__.material.updateDistortionMap('normal', this, data);
+    _utils_index_js__WEBPACK_IMPORTED_MODULE_2__.material.updateDistortionMap('displacement', this, data);
+    _utils_index_js__WEBPACK_IMPORTED_MODULE_2__.material.updateDistortionMap('ambientOcclusion', this, data);
+    _utils_index_js__WEBPACK_IMPORTED_MODULE_2__.material.updateDistortionMap('metalness', this, data);
+    _utils_index_js__WEBPACK_IMPORTED_MODULE_2__.material.updateDistortionMap('roughness', this, data);
+    _utils_index_js__WEBPACK_IMPORTED_MODULE_2__.material.updateEnvMap(this, data);
   },
   /**
    * Updating existing material.
@@ -25465,10 +26219,17 @@ function getMaterialData(data, materialData) {
 /*!*******************************!*\
   !*** ./src/systems/camera.js ***!
   \*******************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var constants = __webpack_require__(/*! ../constants/ */ "./src/constants/index.js");
-var registerSystem = (__webpack_require__(/*! ../core/system */ "./src/core/system.js").registerSystem);
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   System: () => (/* binding */ System)
+/* harmony export */ });
+/* harmony import */ var _constants_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../constants/index.js */ "./src/constants/index.js");
+/* harmony import */ var _core_system_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../core/system.js */ "./src/core/system.js");
+
+
 var DEFAULT_CAMERA_ATTR = 'data-aframe-default-camera';
 
 /**
@@ -25476,7 +26237,7 @@ var DEFAULT_CAMERA_ATTR = 'data-aframe-default-camera';
  *
  * @member {object} activeCameraEl - Active camera entity.
  */
-module.exports.System = registerSystem('camera', {
+var System = (0,_core_system_js__WEBPACK_IMPORTED_MODULE_1__.registerSystem)('camera', {
   init: function () {
     this.activeCameraEl = null;
     this.render = this.render.bind(this);
@@ -25578,12 +26339,12 @@ module.exports.System = registerSystem('camera', {
     });
     defaultCameraEl.setAttribute('position', {
       x: 0,
-      y: constants.DEFAULT_CAMERA_HEIGHT,
+      y: _constants_index_js__WEBPACK_IMPORTED_MODULE_0__.DEFAULT_CAMERA_HEIGHT,
       z: 0
     });
     defaultCameraEl.setAttribute('wasd-controls', '');
     defaultCameraEl.setAttribute('look-controls', '');
-    defaultCameraEl.setAttribute(constants.AFRAME_INJECTED, '');
+    defaultCameraEl.setAttribute(_constants_index_js__WEBPACK_IMPORTED_MODULE_0__.AFRAME_INJECTED, '');
     defaultCameraEl.addEventListener('object3dset', function (evt) {
       if (evt.detail.type !== 'camera') {
         return;
@@ -25758,10 +26519,17 @@ function removeDefaultCamera(sceneEl) {
 /*!*********************************!*\
   !*** ./src/systems/geometry.js ***!
   \*********************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var geometries = (__webpack_require__(/*! ../core/geometry */ "./src/core/geometry.js").geometries);
-var registerSystem = (__webpack_require__(/*! ../core/system */ "./src/core/system.js").registerSystem);
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   System: () => (/* binding */ System)
+/* harmony export */ });
+/* harmony import */ var _core_geometry_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../core/geometry.js */ "./src/core/geometry.js");
+/* harmony import */ var _core_system_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../core/system.js */ "./src/core/system.js");
+
+
 
 /**
  * System for geometry component.
@@ -25771,7 +26539,7 @@ var registerSystem = (__webpack_require__(/*! ../core/system */ "./src/core/syst
  * @member {object} cacheCount - Keep track of number of entities using a geometry to
  *         know whether to dispose on removal.
  */
-module.exports.System = registerSystem('geometry', {
+var System = (0,_core_system_js__WEBPACK_IMPORTED_MODULE_1__.registerSystem)('geometry', {
   init: function () {
     this.cache = {};
     this.cacheCount = {};
@@ -25859,7 +26627,7 @@ module.exports.System = registerSystem('geometry', {
  */
 function createGeometry(data) {
   var geometryType = data.primitive;
-  var GeometryClass = geometries[geometryType] && geometries[geometryType].Geometry;
+  var GeometryClass = _core_geometry_js__WEBPACK_IMPORTED_MODULE_0__.geometries[geometryType] && _core_geometry_js__WEBPACK_IMPORTED_MODULE_0__.geometries[geometryType].Geometry;
   var geometryInstance = new GeometryClass();
   if (!GeometryClass) {
     throw new Error('Unknown geometry `' + geometryType + '`');
@@ -25888,10 +26656,17 @@ function incrementCacheCount(cacheCount, hash) {
 /*!***********************************!*\
   !*** ./src/systems/gltf-model.js ***!
   \***********************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var registerSystem = (__webpack_require__(/*! ../core/system */ "./src/core/system.js").registerSystem);
-var THREE = __webpack_require__(/*! ../lib/three */ "./src/lib/three.js");
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   System: () => (/* binding */ System)
+/* harmony export */ });
+/* harmony import */ var _lib_three_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../lib/three.js */ "./src/lib/three.js");
+/* harmony import */ var _core_system_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../core/system.js */ "./src/core/system.js");
+
+
 function fetchScript(src) {
   return new Promise(function (resolve, reject) {
     var script = document.createElement('script');
@@ -25913,7 +26688,7 @@ function fetchScript(src) {
  * @param {string} basisTranscoderPath - Base path from which to load Basis transcoder library.
  * @param {string} meshoptDecoderPath - Full path from which to load Meshopt decoder.
  */
-module.exports.System = registerSystem('gltf-model', {
+var System = (0,_core_system_js__WEBPACK_IMPORTED_MODULE_1__.registerSystem)('gltf-model', {
   schema: {
     dracoDecoderPath: {
       default: 'https://www.gstatic.com/draco/versioned/decoders/1.5.7/'
@@ -25933,11 +26708,11 @@ module.exports.System = registerSystem('gltf-model', {
     var basisTranscoderPath = this.data.basisTranscoderPath;
     var meshoptDecoderPath = this.data.meshoptDecoderPath;
     if (!this.dracoLoader && dracoDecoderPath) {
-      this.dracoLoader = new THREE.DRACOLoader();
+      this.dracoLoader = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].DRACOLoader();
       this.dracoLoader.setDecoderPath(dracoDecoderPath);
     }
     if (!this.ktx2Loader && basisTranscoderPath) {
-      this.ktx2Loader = new THREE.KTX2Loader();
+      this.ktx2Loader = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].KTX2Loader();
       this.ktx2Loader.setTranscoderPath(basisTranscoderPath).detectSupport(this.el.renderer);
     }
     if (!this.meshoptDecoder && meshoptDecoderPath) {
@@ -25965,18 +26740,30 @@ module.exports.System = registerSystem('gltf-model', {
 /*!******************************!*\
   !*** ./src/systems/index.js ***!
   \******************************/
-/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-__webpack_require__(/*! ./camera */ "./src/systems/camera.js");
-__webpack_require__(/*! ./geometry */ "./src/systems/geometry.js");
-__webpack_require__(/*! ./gltf-model */ "./src/systems/gltf-model.js");
-__webpack_require__(/*! ./light */ "./src/systems/light.js");
-__webpack_require__(/*! ./material */ "./src/systems/material.js");
-__webpack_require__(/*! ./obb-collider */ "./src/systems/obb-collider.js");
-__webpack_require__(/*! ./renderer */ "./src/systems/renderer.js");
-__webpack_require__(/*! ./shadow */ "./src/systems/shadow.js");
-__webpack_require__(/*! ./tracked-controls */ "./src/systems/tracked-controls.js");
-__webpack_require__(/*! ./webxr */ "./src/systems/webxr.js");
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _camera_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./camera.js */ "./src/systems/camera.js");
+/* harmony import */ var _geometry_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./geometry.js */ "./src/systems/geometry.js");
+/* harmony import */ var _gltf_model_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./gltf-model.js */ "./src/systems/gltf-model.js");
+/* harmony import */ var _light_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./light.js */ "./src/systems/light.js");
+/* harmony import */ var _material_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./material.js */ "./src/systems/material.js");
+/* harmony import */ var _obb_collider_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./obb-collider.js */ "./src/systems/obb-collider.js");
+/* harmony import */ var _renderer_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./renderer.js */ "./src/systems/renderer.js");
+/* harmony import */ var _shadow_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./shadow.js */ "./src/systems/shadow.js");
+/* harmony import */ var _tracked_controls_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./tracked-controls.js */ "./src/systems/tracked-controls.js");
+/* harmony import */ var _webxr_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./webxr.js */ "./src/systems/webxr.js");
+
+
+
+
+
+
+
+
+
+
 
 /***/ }),
 
@@ -25984,10 +26771,17 @@ __webpack_require__(/*! ./webxr */ "./src/systems/webxr.js");
 /*!******************************!*\
   !*** ./src/systems/light.js ***!
   \******************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var registerSystem = (__webpack_require__(/*! ../core/system */ "./src/core/system.js").registerSystem);
-var constants = __webpack_require__(/*! ../constants/ */ "./src/constants/index.js");
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   System: () => (/* binding */ System)
+/* harmony export */ });
+/* harmony import */ var _core_system_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../core/system.js */ "./src/core/system.js");
+/* harmony import */ var _constants_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../constants/index.js */ "./src/constants/index.js");
+
+
 var DEFAULT_LIGHT_ATTR = 'data-aframe-default-light';
 
 /**
@@ -25999,7 +26793,7 @@ var DEFAULT_LIGHT_ATTR = 'data-aframe-default-light';
  * @param {bool} defaultLights - Whether default lighting are defined.
  * @param {bool} userDefinedLights - Whether user lighting is defined.
  */
-module.exports.System = registerSystem('light', {
+var System = (0,_core_system_js__WEBPACK_IMPORTED_MODULE_0__.registerSystem)('light', {
   schema: {
     defaultLightsEnabled: {
       default: true
@@ -26055,7 +26849,7 @@ module.exports.System = registerSystem('light', {
       type: 'ambient'
     });
     ambientLight.setAttribute(DEFAULT_LIGHT_ATTR, '');
-    ambientLight.setAttribute(constants.AFRAME_INJECTED, '');
+    ambientLight.setAttribute(_constants_index_js__WEBPACK_IMPORTED_MODULE_1__.AFRAME_INJECTED, '');
     sceneEl.appendChild(ambientLight);
     directionalLight = document.createElement('a-entity');
     directionalLight.setAttribute('light', {
@@ -26069,7 +26863,7 @@ module.exports.System = registerSystem('light', {
       z: 1
     });
     directionalLight.setAttribute(DEFAULT_LIGHT_ATTR, '');
-    directionalLight.setAttribute(constants.AFRAME_INJECTED, '');
+    directionalLight.setAttribute(_constants_index_js__WEBPACK_IMPORTED_MODULE_1__.AFRAME_INJECTED, '');
     sceneEl.appendChild(directionalLight);
     this.defaultLights = true;
   }
@@ -26081,17 +26875,25 @@ module.exports.System = registerSystem('light', {
 /*!*********************************!*\
   !*** ./src/systems/material.js ***!
   \*********************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var registerSystem = (__webpack_require__(/*! ../core/system */ "./src/core/system.js").registerSystem);
-var THREE = __webpack_require__(/*! ../lib/three */ "./src/lib/three.js");
-var utils = __webpack_require__(/*! ../utils/ */ "./src/utils/index.js");
-var setTextureProperties = (__webpack_require__(/*! ../utils/material */ "./src/utils/material.js").setTextureProperties);
-var createCompatibleTexture = (__webpack_require__(/*! ../utils/material */ "./src/utils/material.js").createCompatibleTexture);
-var debug = utils.debug;
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   System: () => (/* binding */ System)
+/* harmony export */ });
+/* harmony import */ var _lib_three_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../lib/three.js */ "./src/lib/three.js");
+/* harmony import */ var _core_system_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../core/system.js */ "./src/core/system.js");
+/* harmony import */ var _utils_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/index.js */ "./src/utils/index.js");
+/* harmony import */ var _utils_material_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/material.js */ "./src/utils/material.js");
+
+
+
+
+var debug = _utils_index_js__WEBPACK_IMPORTED_MODULE_2__.debug;
 var error = debug('components:texture:error');
 var warn = debug('components:texture:warn');
-var ImageLoader = new THREE.ImageLoader();
+var ImageLoader = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].ImageLoader();
 
 /**
  * System for material component.
@@ -26100,7 +26902,7 @@ var ImageLoader = new THREE.ImageLoader();
  * @member {object} materials - Registered materials.
  * @member {object} sourceCache - Texture source cache for, Image, Video and Canvas sources
  */
-module.exports.System = registerSystem('material', {
+var System = (0,_core_system_js__WEBPACK_IMPORTED_MODULE_1__.registerSystem)('material', {
   init: function () {
     this.materials = {};
     this.sourceCache = {};
@@ -26117,8 +26919,8 @@ module.exports.System = registerSystem('material', {
    */
   loadTexture: function (src, data, cb) {
     this.loadTextureSource(src, function sourceLoaded(source) {
-      var texture = createCompatibleTexture(source);
-      setTextureProperties(texture, data);
+      var texture = (0,_utils_material_js__WEBPACK_IMPORTED_MODULE_3__.createCompatibleTexture)(source);
+      (0,_utils_material_js__WEBPACK_IMPORTED_MODULE_3__.setTextureProperties)(texture, data);
       cb(texture);
     });
   },
@@ -26139,12 +26941,12 @@ module.exports.System = registerSystem('material', {
 
     // Canvas.
     if (src.tagName === 'CANVAS') {
-      sourceLoaded(new THREE.Source(src));
+      sourceLoaded(new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Source(src));
       return;
     }
     sourceLoaded(new Promise(doSourceLoad));
     function doSourceLoad(resolve, reject) {
-      utils.srcLoader.validateSrc(src, loadImageCb, loadVideoCb);
+      _utils_index_js__WEBPACK_IMPORTED_MODULE_2__.srcLoader.validateSrc(src, loadImageCb, loadVideoCb);
       function loadImageCb(src) {
         self.loadImage(src, resolve);
       }
@@ -26166,8 +26968,8 @@ module.exports.System = registerSystem('material', {
   loadCubeMapTexture: function (srcs, cb) {
     var self = this;
     var loaded = 0;
-    var cube = new THREE.CubeTexture();
-    cube.colorSpace = THREE.SRGBColorSpace;
+    var cube = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].CubeTexture();
+    cube.colorSpace = _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].SRGBColorSpace;
     function loadSide(index) {
       self.loadTextureSource(srcs[index], function (source) {
         cube.images[index] = source.data;
@@ -26195,7 +26997,7 @@ module.exports.System = registerSystem('material', {
   loadImage: function (src, cb) {
     // Image element provided
     if (typeof src !== 'string') {
-      cb(new THREE.Source(src));
+      cb(new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Source(src));
       return;
     }
     cb(loadImageUrl(src));
@@ -26223,7 +27025,7 @@ module.exports.System = registerSystem('material', {
 
     // Only URL provided. Use video element to create texture.
     videoEl = videoEl || createVideoEl(src);
-    cb(new THREE.Source(videoEl));
+    cb(new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Source(videoEl));
   },
   /**
    * Create a hash for a given source.
@@ -26269,7 +27071,7 @@ function loadImageUrl(src) {
       error('`$s` could not be fetched (Error code: %s; Response: %s)', xhr.status, xhr.statusText);
     });
     function resolveSource(data) {
-      resolve(new THREE.Source(data));
+      resolve(new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Source(data));
     }
   }
 }
@@ -26330,10 +27132,13 @@ function fixVideoAttributes(videoEl) {
 /*!*************************************!*\
   !*** ./src/systems/obb-collider.js ***!
   \*************************************/
-/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var registerSystem = (__webpack_require__(/*! ../core/system */ "./src/core/system.js").registerSystem);
-registerSystem('obb-collider', {
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _core_system_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../core/system.js */ "./src/core/system.js");
+
+(0,_core_system_js__WEBPACK_IMPORTED_MODULE_0__.registerSystem)('obb-collider', {
   schema: {
     showColliders: {
       default: false
@@ -26477,25 +27282,36 @@ registerSystem('obb-collider', {
 /*!*********************************!*\
   !*** ./src/systems/renderer.js ***!
   \*********************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var registerSystem = (__webpack_require__(/*! ../core/system */ "./src/core/system.js").registerSystem);
-var utils = __webpack_require__(/*! ../utils/ */ "./src/utils/index.js");
-var THREE = __webpack_require__(/*! ../lib/three */ "./src/lib/three.js");
-var debug = utils.debug;
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   System: () => (/* binding */ System),
+/* harmony export */   sortBackToFront: () => (/* binding */ sortBackToFront),
+/* harmony export */   sortFrontToBack: () => (/* binding */ sortFrontToBack),
+/* harmony export */   sortRenderOrderOnly: () => (/* binding */ sortRenderOrderOnly)
+/* harmony export */ });
+/* harmony import */ var _lib_three_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../lib/three.js */ "./src/lib/three.js");
+/* harmony import */ var _core_system_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../core/system.js */ "./src/core/system.js");
+/* harmony import */ var _utils_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/index.js */ "./src/utils/index.js");
+
+
+
+var debug = _utils_index_js__WEBPACK_IMPORTED_MODULE_2__.debug;
 var warn = debug('components:renderer:warn');
 
 /**
  * Determines state of various renderer properties.
  */
-module.exports.System = registerSystem('renderer', {
+var System = (0,_core_system_js__WEBPACK_IMPORTED_MODULE_1__.registerSystem)('renderer', {
   schema: {
     antialias: {
       default: 'auto',
       oneOf: ['true', 'false', 'auto']
     },
     highRefreshRate: {
-      default: utils.device.isOculusBrowser()
+      default: _utils_index_js__WEBPACK_IMPORTED_MODULE_2__.device.isOculusBrowser()
     },
     logarithmicDepthBuffer: {
       default: 'auto',
@@ -26549,10 +27365,10 @@ module.exports.System = registerSystem('renderer', {
     var toneMappingName = this.data.toneMapping.charAt(0).toUpperCase() + this.data.toneMapping.slice(1);
     // This is the rendering engine, such as THREE.js so copy over any persistent properties from the rendering system.
     var renderer = sceneEl.renderer;
-    renderer.toneMapping = THREE[toneMappingName + 'ToneMapping'];
-    THREE.Texture.DEFAULT_ANISOTROPY = data.anisotropy;
-    THREE.ColorManagement.enabled = data.colorManagement;
-    renderer.outputColorSpace = data.colorManagement ? THREE.SRGBColorSpace : THREE.LinearSRGBColorSpace;
+    renderer.toneMapping = _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"][toneMappingName + 'ToneMapping'];
+    _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Texture.DEFAULT_ANISOTROPY = data.anisotropy;
+    _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].ColorManagement.enabled = data.colorManagement;
+    renderer.outputColorSpace = data.colorManagement ? _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].SRGBColorSpace : _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].LinearSRGBColorSpace;
     if (sceneEl.hasAttribute('antialias')) {
       warn('Component `antialias` is deprecated. Use `renderer="antialias: true"` instead.');
     }
@@ -26569,7 +27385,7 @@ module.exports.System = registerSystem('renderer', {
     var sceneEl = this.el;
     var renderer = sceneEl.renderer;
     var toneMappingName = this.data.toneMapping.charAt(0).toUpperCase() + this.data.toneMapping.slice(1);
-    renderer.toneMapping = THREE[toneMappingName + 'ToneMapping'];
+    renderer.toneMapping = _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"][toneMappingName + 'ToneMapping'];
     renderer.toneMappingExposure = data.exposure;
     renderer.xr.setFoveation(data.foveationLevel);
     if (data.sortObjects) {
@@ -26585,8 +27401,8 @@ module.exports.System = registerSystem('renderer', {
     if (!this.data.colorManagement || !texture) {
       return;
     }
-    if (texture.isTexture && texture.colorSpace !== THREE.SRGBColorSpace) {
-      texture.colorSpace = THREE.SRGBColorSpace;
+    if (texture.isTexture && texture.colorSpace !== _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].SRGBColorSpace) {
+      texture.colorSpace = _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].SRGBColorSpace;
       texture.needsUpdate = true;
     }
   },
@@ -26651,25 +27467,27 @@ function sortBackToFront(a, b) {
   return b.z - a.z;
 }
 
-// exports needed for Unit Tests
-module.exports.sortFrontToBack = sortFrontToBack;
-module.exports.sortRenderOrderOnly = sortRenderOrderOnly;
-module.exports.sortBackToFront = sortBackToFront;
-
 /***/ }),
 
 /***/ "./src/systems/shadow.js":
 /*!*******************************!*\
   !*** ./src/systems/shadow.js ***!
   \*******************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var registerSystem = (__webpack_require__(/*! ../core/system */ "./src/core/system.js").registerSystem);
-var THREE = __webpack_require__(/*! ../lib/three */ "./src/lib/three.js");
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   System: () => (/* binding */ System)
+/* harmony export */ });
+/* harmony import */ var _lib_three_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../lib/three.js */ "./src/lib/three.js");
+/* harmony import */ var _core_system_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../core/system.js */ "./src/core/system.js");
+
+
 var SHADOW_MAP_TYPE_MAP = {
-  basic: THREE.BasicShadowMap,
-  pcf: THREE.PCFShadowMap,
-  pcfsoft: THREE.PCFSoftShadowMap
+  basic: _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].BasicShadowMap,
+  pcf: _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].PCFShadowMap,
+  pcfsoft: _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].PCFSoftShadowMap
 };
 
 /**
@@ -26678,7 +27496,7 @@ var SHADOW_MAP_TYPE_MAP = {
  * Enabled automatically when one or more shadow components are added to the scene, the system sets
  * options on the WebGLRenderer for configuring shadow appearance.
  */
-module.exports.System = registerSystem('shadow', {
+var System = (0,_core_system_js__WEBPACK_IMPORTED_MODULE_1__.registerSystem)('shadow', {
   schema: {
     enabled: {
       default: true
@@ -26740,16 +27558,21 @@ function updateAllMaterials(sceneEl) {
 /*!*****************************************!*\
   !*** ./src/systems/tracked-controls.js ***!
   \*****************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var registerSystem = (__webpack_require__(/*! ../core/system */ "./src/core/system.js").registerSystem);
-var utils = __webpack_require__(/*! ../utils */ "./src/utils/index.js");
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   System: () => (/* binding */ System)
+/* harmony export */ });
+/* harmony import */ var _core_system_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../core/system.js */ "./src/core/system.js");
+
 
 /**
  * Tracked controls system.
  * Maintain list with available tracked controllers.
  */
-module.exports.System = registerSystem('tracked-controls', {
+var System = (0,_core_system_js__WEBPACK_IMPORTED_MODULE_0__.registerSystem)('tracked-controls', {
   init: function () {
     this.controllers = [];
     this.onInputSourcesChange = this.onInputSourcesChange.bind(this);
@@ -26791,16 +27614,23 @@ module.exports.System = registerSystem('tracked-controls', {
 /*!******************************!*\
   !*** ./src/systems/webxr.js ***!
   \******************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var registerSystem = (__webpack_require__(/*! ../core/system */ "./src/core/system.js").registerSystem);
-var utils = __webpack_require__(/*! ../utils/ */ "./src/utils/index.js");
-var warn = utils.debug('systems:webxr:warn');
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   System: () => (/* binding */ System)
+/* harmony export */ });
+/* harmony import */ var _core_system_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../core/system.js */ "./src/core/system.js");
+/* harmony import */ var _utils_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/index.js */ "./src/utils/index.js");
+
+
+var warn = _utils_index_js__WEBPACK_IMPORTED_MODULE_1__.debug('systems:webxr:warn');
 
 /**
  * WebXR session initialization and XR module support.
  */
-module.exports.System = registerSystem('webxr', {
+var System = (0,_core_system_js__WEBPACK_IMPORTED_MODULE_0__.registerSystem)('webxr', {
   schema: {
     referenceSpaceType: {
       type: 'string',
@@ -26864,18 +27694,29 @@ module.exports.System = registerSystem('webxr', {
 /*!**********************************!*\
   !*** ./src/utils/coordinates.js ***!
   \**********************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   equals: () => (/* binding */ equals),
+/* harmony export */   isCoordinate: () => (/* binding */ isCoordinate),
+/* harmony export */   isCoordinates: () => (/* binding */ isCoordinates),
+/* harmony export */   parse: () => (/* binding */ parse),
+/* harmony export */   regex: () => (/* binding */ regex),
+/* harmony export */   stringify: () => (/* binding */ stringify),
+/* harmony export */   toVector3: () => (/* binding */ toVector3)
+/* harmony export */ });
+/* harmony import */ var _debug_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./debug.js */ "./src/utils/debug.js");
 /* global THREE */
-var debug = __webpack_require__(/*! ./debug */ "./src/utils/debug.js");
-var warn = debug('utils:coordinates:warn');
+
+var warn = (0,_debug_js__WEBPACK_IMPORTED_MODULE_0__["default"])('utils:coordinates:warn');
 
 // Order of coordinates parsed by coordinates.parse.
 var COORDINATE_KEYS = ['x', 'y', 'z', 'w'];
 
 // Coordinate string regex. Handles negative, positive, and decimals.
 var regex = /^\s*((-?\d*\.{0,1}\d+(e-?\d+)?)\s+){2,3}(-?\d*\.{0,1}\d+(e-?\d+)?)\s*$/;
-module.exports.regex = regex;
 var whitespaceRegex = /\s+/g;
 
 /**
@@ -26934,7 +27775,6 @@ function parse(value, defaultVec, target) {
   }
   return vec;
 }
-module.exports.parse = parse;
 
 /**
  * Stringify coordinates from an object with keys [x y z].
@@ -26957,7 +27797,6 @@ function stringify(data) {
   }
   return str;
 }
-module.exports.stringify = stringify;
 
 /**
  * Compares the values of two coordinates to check equality.
@@ -26972,7 +27811,6 @@ function equals(a, b) {
   }
   return a.x === b.x && a.y === b.y && a.z === b.z && a.w === b.w;
 }
-module.exports.equals = equals;
 
 /**
  * @returns {bool}
@@ -26980,11 +27818,10 @@ module.exports.equals = equals;
 function isCoordinates(value) {
   return regex.test(value);
 }
-module.exports.isCoordinates = isCoordinates;
-module.exports.isCoordinate = function (value) {
+function isCoordinate(value) {
   warn('`AFRAME.utils.isCoordinate` has been renamed to `AFRAME.utils.isCoordinates`');
   return isCoordinates(value);
-};
+}
 function parseIfString(val) {
   if (val !== null && val !== undefined && val.constructor === String) {
     return parseFloat(val, 10);
@@ -26995,9 +27832,9 @@ function parseIfString(val) {
 /**
  * Convert {x, y, z} object to three.js Vector3.
  */
-module.exports.toVector3 = function (vec3) {
+function toVector3(vec3) {
   return new THREE.Vector3(vec3.x, vec3.y, vec3.z);
-};
+}
 
 /***/ }),
 
@@ -27005,10 +27842,16 @@ module.exports.toVector3 = function (vec3) {
 /*!****************************!*\
   !*** ./src/utils/debug.js ***!
   \****************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var debug = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
-var isBrowserEnvironment = (__webpack_require__(/*! ./device */ "./src/utils/device.js").isBrowserEnvironment);
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_0__);
+
 var settings = {
   colors: {
     debug: 'gray',
@@ -27023,7 +27866,7 @@ var settings = {
  *
  * (See issue: https://github.com/debug-js/debug/issues/582#issuecomment-1755718739)
  */
-debug.formatArgs = formatArgs;
+(debug__WEBPACK_IMPORTED_MODULE_0___default().formatArgs) = formatArgs;
 function formatArgs(args) {
   args[0] = (this.useColors ? '%c' : '') + this.namespace + (this.useColors ? ' %c' : ' ') + args[0] + (this.useColors ? '%c ' : ' ');
   if (!this.useColors) {
@@ -27106,14 +27949,11 @@ function storage() {
  */
 var ls = storage();
 if (ls && (parseInt(ls.logs, 10) || ls.logs === 'true')) {
-  debug.enable('*');
+  debug__WEBPACK_IMPORTED_MODULE_0___default().enable('*');
 } else {
-  debug.enable('*:error,*:info,*:warn');
+  debug__WEBPACK_IMPORTED_MODULE_0___default().enable('*:error,*:info,*:warn');
 }
-if (isBrowserEnvironment) {
-  window.logs = debug;
-}
-module.exports = debug;
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ((debug__WEBPACK_IMPORTED_MODULE_0___default()));
 
 /***/ }),
 
@@ -27121,17 +27961,35 @@ module.exports = debug;
 /*!*****************************!*\
   !*** ./src/utils/device.js ***!
   \*****************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var error = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js")('device:error');
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   checkARSupport: () => (/* binding */ checkARSupport),
+/* harmony export */   checkHeadsetConnected: () => (/* binding */ checkHeadsetConnected),
+/* harmony export */   checkVRSupport: () => (/* binding */ checkVRSupport),
+/* harmony export */   isAppleVisionPro: () => (/* binding */ isAppleVisionPro),
+/* harmony export */   isBrowserEnvironment: () => (/* binding */ isBrowserEnvironment),
+/* harmony export */   isFirefoxReality: () => (/* binding */ isFirefoxReality),
+/* harmony export */   isIOS: () => (/* binding */ isIOS),
+/* harmony export */   isIpad: () => (/* binding */ isIpad),
+/* harmony export */   isLandscape: () => (/* binding */ isLandscape),
+/* harmony export */   isMobile: () => (/* binding */ isMobile),
+/* harmony export */   isMobileDeviceRequestingDesktopSite: () => (/* binding */ isMobileDeviceRequestingDesktopSite),
+/* harmony export */   isMobileVR: () => (/* binding */ isMobileVR),
+/* harmony export */   isNodeEnvironment: () => (/* binding */ isNodeEnvironment),
+/* harmony export */   isOculusBrowser: () => (/* binding */ isOculusBrowser),
+/* harmony export */   isR7: () => (/* binding */ isR7),
+/* harmony export */   isTablet: () => (/* binding */ isTablet),
+/* harmony export */   isWebXRAvailable: () => (/* binding */ isWebXRAvailable)
+/* harmony export */ });
+/* harmony import */ var _debug_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./debug.js */ "./src/utils/debug.js");
+
+var error = (0,_debug_js__WEBPACK_IMPORTED_MODULE_0__["default"])('device:error');
 var supportsVRSession = false;
 var supportsARSession = false;
-
-/**
- * Oculus Browser 7 doesn't support the WebXR gamepads module.
- * We fallback to WebVR API and will hotfix when implementation is complete.
- */
-var isWebXRAvailable = module.exports.isWebXRAvailable = navigator.xr !== undefined;
+var isWebXRAvailable = navigator.xr !== undefined;
 
 // Support both WebVR and WebXR APIs.
 if (isWebXRAvailable) {
@@ -27183,15 +28041,12 @@ if (isWebXRAvailable) {
 function checkHeadsetConnected() {
   return supportsVRSession || supportsARSession;
 }
-module.exports.checkHeadsetConnected = checkHeadsetConnected;
 function checkARSupport() {
   return supportsARSession;
 }
-module.exports.checkARSupport = checkARSupport;
 function checkVRSupport() {
   return supportsVRSession;
 }
-module.exports.checkVRSupport = checkVRSupport;
 
 /**
  * Checks if browser is mobile and not stand-alone dedicated vr device.
@@ -27215,7 +28070,6 @@ var isMobile = function () {
     return _isMobile;
   };
 }();
-module.exports.isMobile = isMobile;
 
 /**
  *  Detect tablet devices.
@@ -27228,7 +28082,6 @@ function isTablet(mockUserAgent) {
   // Additional check for iPad or MacIntel with touch capabilities and not an MSStream device
   return isTablet || isIpad();
 }
-module.exports.isTablet = isTablet;
 
 /**
  *  Detect ipad devices.
@@ -27242,11 +28095,10 @@ function isIpad(mockUserAgent, mockDevicePlatform, mockDeviceTouchPoints) {
   var maxTouchPoints = mockDeviceTouchPoints || window.navigator.maxTouchPoints || 0;
   return (platform === 'iPad' || platform === 'MacIntel') && maxTouchPoints > 0 && /Macintosh|Intel|iPad|ipad/i.test(userAgent) && !window.MSStream;
 }
-module.exports.isIpad = isIpad;
 
 /**
  *  Detect Apple Vision Pro devices.
-*/
+ */
 function isAppleVisionPro() {
   // Safari for Apple Vision Pro presents itself as a desktop browser.
   var isMacintosh = navigator.userAgent.includes('Macintosh');
@@ -27256,15 +28108,12 @@ function isAppleVisionPro() {
   // This will no longer work once WebXR ships in iOS / iPad OS.
   return isMacintosh && hasFiveTouchPoints && isWebXRAvailable;
 }
-module.exports.isAppleVisionPro = isAppleVisionPro;
 function isIOS() {
   return /iPad|iPhone|iPod/.test(window.navigator.platform);
 }
-module.exports.isIOS = isIOS;
 function isMobileDeviceRequestingDesktopSite() {
   return !isMobile() && !isMobileVR() && window.orientation !== undefined;
 }
-module.exports.isMobileDeviceRequestingDesktopSite = isMobileDeviceRequestingDesktopSite;
 
 /**
  *  Detect Oculus Browser (standalone headset)
@@ -27272,7 +28121,6 @@ module.exports.isMobileDeviceRequestingDesktopSite = isMobileDeviceRequestingDes
 function isOculusBrowser() {
   return /(OculusBrowser)/i.test(window.navigator.userAgent);
 }
-module.exports.isOculusBrowser = isOculusBrowser;
 
 /**
  *  Detect Firefox Reality (standalone headset)
@@ -27280,7 +28128,6 @@ module.exports.isOculusBrowser = isOculusBrowser;
 function isFirefoxReality() {
   return /(Mobile VR)/i.test(window.navigator.userAgent);
 }
-module.exports.isFirefoxReality = isFirefoxReality;
 
 /**
  *  Detect browsers in Stand-Alone headsets
@@ -27288,23 +28135,21 @@ module.exports.isFirefoxReality = isFirefoxReality;
 function isMobileVR() {
   return isOculusBrowser() || isFirefoxReality() || isAppleVisionPro();
 }
-module.exports.isMobileVR = isMobileVR;
 function isR7() {
   return /R7 Build/.test(window.navigator.userAgent);
 }
-module.exports.isR7 = isR7;
 
 /**
  * Checks mobile device orientation.
  * @return {Boolean} True if landscape orientation.
  */
-module.exports.isLandscape = function () {
+function isLandscape() {
   var orientation = window.orientation;
   if (isR7()) {
     orientation += 90;
   }
   return orientation === 90 || orientation === -90;
-};
+}
 
 /**
  * Check if running in a browser or spoofed browser (bundler).
@@ -27313,12 +28158,12 @@ module.exports.isLandscape = function () {
  * `window` is mocked in node.
  * `process` is also mocked by webpack running with karma, but has custom properties like process.browser.
  */
-module.exports.isBrowserEnvironment = typeof process === 'undefined' || process.browser === true;
+var isBrowserEnvironment = typeof process === 'undefined' || process.browser === true;
 
 /**
  * Check if running in node on the server.
  */
-module.exports.isNodeEnvironment = !module.exports.isBrowserEnvironment;
+var isNodeEnvironment = !isBrowserEnvironment;
 
 /***/ }),
 
@@ -27326,9 +28171,17 @@ module.exports.isNodeEnvironment = !module.exports.isBrowserEnvironment;
 /*!*****************************!*\
   !*** ./src/utils/entity.js ***!
   \*****************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-var split = (__webpack_require__(/*! ./split */ "./src/utils/split.js").split);
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   getComponentProperty: () => (/* binding */ getComponentProperty),
+/* harmony export */   getComponentPropertyPath: () => (/* binding */ getComponentPropertyPath),
+/* harmony export */   setComponentProperty: () => (/* binding */ setComponentProperty)
+/* harmony export */ });
+/* harmony import */ var _split_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./split.js */ "./src/utils/split.js");
+
 
 /**
  * Split a delimited component property string (e.g., `material.color`) to an object
@@ -27343,19 +28196,18 @@ var split = (__webpack_require__(/*! ./split */ "./src/utils/split.js").split);
  */
 function getComponentPropertyPath(str, delimiter) {
   delimiter = delimiter || '.';
-  var parts = split(str, delimiter);
+  var parts = (0,_split_js__WEBPACK_IMPORTED_MODULE_0__.split)(str, delimiter);
   if (parts.length === 1) {
     return parts[0];
   }
   return parts;
 }
-module.exports.getComponentPropertyPath = getComponentPropertyPath;
 
 /**
  * Get component property using encoded component name + component property name with a
  * delimiter.
  */
-module.exports.getComponentProperty = function (el, name, delimiter) {
+function getComponentProperty(el, name, delimiter) {
   var splitName;
   delimiter = delimiter || '.';
   if (name.indexOf(delimiter) !== -1) {
@@ -27366,13 +28218,13 @@ module.exports.getComponentProperty = function (el, name, delimiter) {
     return el.getAttribute(splitName[0])[splitName[1]];
   }
   return el.getAttribute(name);
-};
+}
 
 /**
  * Set component property using encoded component name + component property name with a
  * delimiter.
  */
-module.exports.setComponentProperty = function (el, name, value, delimiter) {
+function setComponentProperty(el, name, value, delimiter) {
   var splitName;
   delimiter = delimiter || '.';
   if (name.indexOf(delimiter) !== -1) {
@@ -27385,7 +28237,7 @@ module.exports.setComponentProperty = function (el, name, value, delimiter) {
     return;
   }
   el.setAttribute(name, value);
-};
+}
 
 /***/ }),
 
@@ -27393,9 +28245,14 @@ module.exports.setComponentProperty = function (el, name, value, delimiter) {
 /*!****************************************************!*\
   !*** ./src/utils/forceCanvasResizeSafariMobile.js ***!
   \****************************************************/
-/***/ ((module) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-module.exports = function forceCanvasResizeSafariMobile(canvasEl) {
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ forceCanvasResizeSafariMobile)
+/* harmony export */ });
+function forceCanvasResizeSafariMobile(canvasEl) {
   var width = canvasEl.style.width;
   var height = canvasEl.style.height;
   // Taken from webvr-polyfill (https://github.com/borismus/webvr-polyfill/blob/85f657cd502ec9417bf26b87c3cb2afa6a70e079/src/util.js#L200)
@@ -27408,7 +28265,7 @@ module.exports = function forceCanvasResizeSafariMobile(canvasEl) {
     canvasEl.style.width = width;
     canvasEl.style.height = height;
   }, 200);
-};
+}
 
 /***/ }),
 
@@ -27416,49 +28273,98 @@ module.exports = function forceCanvasResizeSafariMobile(canvasEl) {
 /*!****************************!*\
   !*** ./src/utils/index.js ***!
   \****************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   bind: () => (/* binding */ bind),
+/* harmony export */   checkHeadsetConnected: () => (/* binding */ checkHeadsetConnected),
+/* harmony export */   clone: () => (/* binding */ clone),
+/* harmony export */   coordinates: () => (/* reexport module object */ _coordinates_js__WEBPACK_IMPORTED_MODULE_4__),
+/* harmony export */   debounce: () => (/* binding */ debounce),
+/* harmony export */   debug: () => (/* reexport safe */ _debug_js__WEBPACK_IMPORTED_MODULE_0__["default"]),
+/* harmony export */   deepEqual: () => (/* binding */ deepEqual),
+/* harmony export */   device: () => (/* reexport module object */ _device_js__WEBPACK_IMPORTED_MODULE_2__),
+/* harmony export */   diff: () => (/* binding */ diff),
+/* harmony export */   entity: () => (/* reexport module object */ _entity_js__WEBPACK_IMPORTED_MODULE_5__),
+/* harmony export */   extend: () => (/* binding */ extend),
+/* harmony export */   extendDeep: () => (/* binding */ extendDeep),
+/* harmony export */   findAllScenes: () => (/* binding */ findAllScenes),
+/* harmony export */   forceCanvasResizeSafariMobile: () => (/* reexport safe */ _forceCanvasResizeSafariMobile_js__WEBPACK_IMPORTED_MODULE_6__["default"]),
+/* harmony export */   getElData: () => (/* binding */ getElData),
+/* harmony export */   getUrlParameter: () => (/* binding */ getUrlParameter),
+/* harmony export */   isGearVR: () => (/* binding */ isGearVR),
+/* harmony export */   isIOS: () => (/* binding */ isIOS),
+/* harmony export */   isIframed: () => (/* binding */ isIframed),
+/* harmony export */   isMobile: () => (/* binding */ isMobile),
+/* harmony export */   isOculusGo: () => (/* binding */ isOculusGo),
+/* harmony export */   material: () => (/* reexport module object */ _material_js__WEBPACK_IMPORTED_MODULE_7__),
+/* harmony export */   objectPool: () => (/* reexport module object */ _object_pool_js__WEBPACK_IMPORTED_MODULE_3__),
+/* harmony export */   shouldCaptureKeyEvent: () => (/* binding */ shouldCaptureKeyEvent),
+/* harmony export */   split: () => (/* reexport safe */ _split_js__WEBPACK_IMPORTED_MODULE_8__.split),
+/* harmony export */   splitString: () => (/* binding */ splitString),
+/* harmony export */   srcLoader: () => (/* reexport module object */ _src_loader_js__WEBPACK_IMPORTED_MODULE_11__),
+/* harmony export */   styleParser: () => (/* reexport module object */ _styleParser_js__WEBPACK_IMPORTED_MODULE_9__),
+/* harmony export */   throttle: () => (/* binding */ throttle),
+/* harmony export */   throttleLeadingAndTrailing: () => (/* binding */ throttleLeadingAndTrailing),
+/* harmony export */   throttleTick: () => (/* binding */ throttleTick),
+/* harmony export */   trackedControls: () => (/* reexport module object */ _tracked_controls_js__WEBPACK_IMPORTED_MODULE_10__)
+/* harmony export */ });
+/* harmony import */ var _debug_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./debug.js */ "./src/utils/debug.js");
+/* harmony import */ var deep_assign__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! deep-assign */ "./node_modules/deep-assign/index.js");
+/* harmony import */ var deep_assign__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(deep_assign__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _device_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./device.js */ "./src/utils/device.js");
+/* harmony import */ var _object_pool_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./object-pool.js */ "./src/utils/object-pool.js");
+/* harmony import */ var _coordinates_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./coordinates.js */ "./src/utils/coordinates.js");
+/* harmony import */ var _entity_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./entity.js */ "./src/utils/entity.js");
+/* harmony import */ var _forceCanvasResizeSafariMobile_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./forceCanvasResizeSafariMobile.js */ "./src/utils/forceCanvasResizeSafariMobile.js");
+/* harmony import */ var _material_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./material.js */ "./src/utils/material.js");
+/* harmony import */ var _split_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./split.js */ "./src/utils/split.js");
+/* harmony import */ var _styleParser_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./styleParser.js */ "./src/utils/styleParser.js");
+/* harmony import */ var _tracked_controls_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./tracked-controls.js */ "./src/utils/tracked-controls.js");
+/* harmony import */ var _src_loader_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./src-loader.js */ "./src/utils/src-loader.js");
 /* global location */
 
 /* Centralized place to reference utilities since utils is exposed to the user. */
-var debug = __webpack_require__(/*! ./debug */ "./src/utils/debug.js");
-var deepAssign = __webpack_require__(/*! deep-assign */ "./node_modules/deep-assign/index.js");
-var device = __webpack_require__(/*! ./device */ "./src/utils/device.js");
-var objectPool = __webpack_require__(/*! ./object-pool */ "./src/utils/object-pool.js");
-var warn = debug('utils:warn');
+
+
+
+
+var warn = (0,_debug_js__WEBPACK_IMPORTED_MODULE_0__["default"])('utils:warn');
 
 /** @deprecated */
-module.exports.bind = function (fn) {
+function bind(fn) {
   return fn.bind.apply(fn, Array.prototype.slice.call(arguments, 1));
-};
-module.exports.coordinates = __webpack_require__(/*! ./coordinates */ "./src/utils/coordinates.js");
-module.exports.debug = debug;
-module.exports.device = device;
-module.exports.entity = __webpack_require__(/*! ./entity */ "./src/utils/entity.js");
-module.exports.forceCanvasResizeSafariMobile = __webpack_require__(/*! ./forceCanvasResizeSafariMobile */ "./src/utils/forceCanvasResizeSafariMobile.js");
-module.exports.material = __webpack_require__(/*! ./material */ "./src/utils/material.js");
-module.exports.objectPool = objectPool;
-module.exports.split = __webpack_require__(/*! ./split */ "./src/utils/split.js").split;
-module.exports.styleParser = __webpack_require__(/*! ./styleParser */ "./src/utils/styleParser.js");
-module.exports.trackedControls = __webpack_require__(/*! ./tracked-controls */ "./src/utils/tracked-controls.js");
-module.exports.checkHeadsetConnected = function () {
+}
+
+
+
+
+
+
+
+
+
+
+function checkHeadsetConnected() {
   warn('`utils.checkHeadsetConnected` has moved to `utils.device.checkHeadsetConnected`');
-  return device.checkHeadsetConnected(arguments);
-};
-module.exports.isGearVR = module.exports.device.isGearVR = function () {
+  return _device_js__WEBPACK_IMPORTED_MODULE_2__.checkHeadsetConnected(arguments);
+}
+function isGearVR() {
   warn('`utils.isGearVR` has been deprecated, use `utils.device.isMobileVR`');
-};
-module.exports.isIOS = function () {
+}
+function isIOS() {
   warn('`utils.isIOS` has moved to `utils.device.isIOS`');
-  return device.isIOS(arguments);
-};
-module.exports.isOculusGo = module.exports.device.isOculusGo = function () {
+  return _device_js__WEBPACK_IMPORTED_MODULE_2__.isIOS(arguments);
+}
+function isOculusGo() {
   warn('`utils.isOculusGo` has been deprecated, use `utils.device.isMobileVR`');
-};
-module.exports.isMobile = function () {
+}
+function isMobile() {
   warn('`utils.isMobile has moved to `utils.device.isMobile`');
-  return device.isMobile(arguments);
-};
+  return _device_js__WEBPACK_IMPORTED_MODULE_2__.isMobile(arguments);
+}
 
 /**
  * Returns throttle function that gets called at most once every interval.
@@ -27468,7 +28374,7 @@ module.exports.isMobile = function () {
  * @param {object} optionalContext - If given, bind function to throttle to this context.
  * @returns {function} Throttled function.
  */
-module.exports.throttle = function (functionToThrottle, minimumInterval, optionalContext) {
+function throttle(functionToThrottle, minimumInterval, optionalContext) {
   var lastTime;
   if (optionalContext) {
     functionToThrottle = functionToThrottle.bind(optionalContext);
@@ -27481,7 +28387,7 @@ module.exports.throttle = function (functionToThrottle, minimumInterval, optiona
       functionToThrottle.apply(null, arguments);
     }
   };
-};
+}
 
 /**
  * Returns throttle function that gets called at most once every interval.
@@ -27501,7 +28407,7 @@ module.exports.throttle = function (functionToThrottle, minimumInterval, optiona
  * @param {object} optionalContext - If given, bind function to throttle to this context.
  * @returns {function} Throttled function.
  */
-module.exports.throttleLeadingAndTrailing = function (functionToThrottle, minimumInterval, optionalContext) {
+function throttleLeadingAndTrailing(functionToThrottle, minimumInterval, optionalContext) {
   var lastTime;
   var deferTimer;
   if (optionalContext) {
@@ -27532,7 +28438,7 @@ module.exports.throttleLeadingAndTrailing = function (functionToThrottle, minimu
       args = arguments;
     }
   };
-};
+}
 
 /**
  * Returns throttle function that gets called at most once every interval.
@@ -27543,7 +28449,7 @@ module.exports.throttleLeadingAndTrailing = function (functionToThrottle, minimu
  * @param {object} optionalContext - If given, bind function to throttle to this context.
  * @returns {function} Throttled function.
  */
-module.exports.throttleTick = function (functionToThrottle, minimumInterval, optionalContext) {
+function throttleTick(functionToThrottle, minimumInterval, optionalContext) {
   var lastTime;
   if (optionalContext) {
     functionToThrottle = functionToThrottle.bind(optionalContext);
@@ -27555,7 +28461,7 @@ module.exports.throttleTick = function (functionToThrottle, minimumInterval, opt
       functionToThrottle(time, sinceLastTime);
     }
   };
-};
+}
 
 /**
  * Returns debounce function that gets called only once after a set of repeated calls.
@@ -27565,7 +28471,7 @@ module.exports.throttleTick = function (functionToThrottle, minimumInterval, opt
  * @param {boolean} immediate - Calls the function immediately regardless of if it should be waiting.
  * @returns {function} Debounced function.
  */
-module.exports.debounce = function (func, wait, immediate) {
+function debounce(func, wait, immediate) {
   var timeout;
   return function () {
     var context = this;
@@ -27579,7 +28485,7 @@ module.exports.debounce = function (func, wait, immediate) {
     timeout = setTimeout(later, wait);
     if (callNow) func.apply(context, args);
   };
-};
+}
 
 /**
  * Mix the properties of source object(s) into a destination object.
@@ -27587,11 +28493,11 @@ module.exports.debounce = function (func, wait, immediate) {
  * @param  {object} dest - The object to which properties will be copied.
  * @param  {...object} source - The object(s) from which properties will be copied.
  */
-module.exports.extend = Object.assign;
-module.exports.extendDeep = deepAssign;
-module.exports.clone = function (obj) {
+var extend = Object.assign;
+var extendDeep = (deep_assign__WEBPACK_IMPORTED_MODULE_1___default());
+function clone(obj) {
   return JSON.parse(JSON.stringify(obj));
-};
+}
 
 /**
  * Checks if two values are equal.
@@ -27604,7 +28510,7 @@ module.exports.clone = function (obj) {
  * @returns {boolean} Whether two objects are deeply equal.
  */
 var deepEqual = function () {
-  var arrayPool = objectPool.createPool(function () {
+  var arrayPool = _object_pool_js__WEBPACK_IMPORTED_MODULE_3__.createPool(function () {
     return [];
   });
   return function (a, b) {
@@ -27662,7 +28568,6 @@ var deepEqual = function () {
     return true;
   };
 }();
-module.exports.deepEqual = deepEqual;
 
 /**
  * Computes the difference between two objects.
@@ -27673,7 +28578,7 @@ module.exports.deepEqual = deepEqual;
  *   Difference object where set of keys note which values were not equal, and values are
  *   `b`'s values.
  */
-module.exports.diff = function () {
+var diff = function () {
   var keys = [];
   return function (a, b, targetObject) {
     var aVal;
@@ -27718,12 +28623,12 @@ module.exports.diff = function () {
  * @param {Event} event Event object.
  * @returns {Boolean} Whether the key event should be captured.
  */
-module.exports.shouldCaptureKeyEvent = function (event) {
+function shouldCaptureKeyEvent(event) {
   if (event.metaKey) {
     return false;
   }
   return document.activeElement === document.body;
-};
+}
 
 /**
  * Splits a string into an array based on a delimiter.
@@ -27732,7 +28637,7 @@ module.exports.shouldCaptureKeyEvent = function (event) {
  * @param   {string=} [delimiter=' '] Delimiter to use
  * @returns {array}                   Array of delimited strings
  */
-module.exports.splitString = function (str, delimiter) {
+function splitString(str, delimiter) {
   if (typeof delimiter === 'undefined') {
     delimiter = ' ';
   }
@@ -27741,7 +28646,7 @@ module.exports.splitString = function (str, delimiter) {
   str = (str || '').replace(regex, delimiter);
   // Then split.
   return str.split(delimiter);
-};
+}
 
 /**
  * Extracts data from the element given an object that contains expected keys.
@@ -27750,7 +28655,7 @@ module.exports.splitString = function (str, delimiter) {
  * @param {Object} [defaults={}] Object of default key-value pairs.
  * @returns {Object}
  */
-module.exports.getElData = function (el, defaults) {
+function getElData(el, defaults) {
   defaults = defaults || {};
   var data = {};
   Object.keys(defaults).forEach(copyAttribute);
@@ -27760,33 +28665,33 @@ module.exports.getElData = function (el, defaults) {
     }
   }
   return data;
-};
+}
 
 /**
  * Retrieves querystring value.
  * @param  {String} name Name of querystring key.
  * @return {String}      Value
  */
-module.exports.getUrlParameter = function (name) {
+function getUrlParameter(name) {
   // eslint-disable-next-line no-useless-escape
   name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
   var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
   var results = regex.exec(location.search);
   return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
-};
+}
 
 /**
  * Detects whether context is within iframe.
  */
-module.exports.isIframed = function () {
+function isIframed() {
   return window.top !== window.self;
-};
+}
 
 /**
  * Finds all elements under the element that have the isScene
  * property set to true
  */
-module.exports.findAllScenes = function (el) {
+function findAllScenes(el) {
   var matchingElements = [];
   var allElements = el.getElementsByTagName('*');
   for (var i = 0, n = allElements.length; i < n; i++) {
@@ -27796,10 +28701,10 @@ module.exports.findAllScenes = function (el) {
     }
   }
   return matchingElements;
-};
+}
 
 // Must be at bottom to avoid circular dependency.
-module.exports.srcLoader = __webpack_require__(/*! ./src-loader */ "./src/utils/src-loader.js");
+
 
 /***/ }),
 
@@ -27807,21 +28712,28 @@ module.exports.srcLoader = __webpack_require__(/*! ./src-loader */ "./src/utils/
 /*!******************************************************!*\
   !*** ./src/utils/ios-orientationchange-blank-bug.js ***!
   \******************************************************/
-/***/ (() => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _device_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./device.js */ "./src/utils/device.js");
+
 
 // Safari regression introduced in iOS 12 and remains in iOS 13.
 // https://stackoverflow.com/questions/62717621/white-space-at-page-bottom-after-device-rotation-in-ios-safari
-window.addEventListener('orientationchange', function () {
-  document.documentElement.style.height = 'initial';
-  setTimeout(function () {
-    document.documentElement.style.height = '100%';
+if ((0,_device_js__WEBPACK_IMPORTED_MODULE_0__.isIOS)()) {
+  window.addEventListener('orientationchange', function () {
+    document.documentElement.style.height = 'initial';
     setTimeout(function () {
-      // this line prevents the content
-      // from hiding behind the address bar
-      window.scrollTo(0, 1);
+      document.documentElement.style.height = '100%';
+      setTimeout(function () {
+        // this line prevents the content
+        // from hiding behind the address bar
+        window.scrollTo(0, 1);
+      }, 500);
     }, 500);
-  }, 500);
-});
+  });
+}
 
 /***/ }),
 
@@ -27829,13 +28741,28 @@ window.addEventListener('orientationchange', function () {
 /*!*******************************!*\
   !*** ./src/utils/material.js ***!
   \*******************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   createCompatibleTexture: () => (/* binding */ createCompatibleTexture),
+/* harmony export */   handleTextureEvents: () => (/* binding */ handleTextureEvents),
+/* harmony export */   isCompatibleTexture: () => (/* binding */ isCompatibleTexture),
+/* harmony export */   setTextureProperties: () => (/* binding */ setTextureProperties),
+/* harmony export */   updateDistortionMap: () => (/* binding */ updateDistortionMap),
+/* harmony export */   updateEnvMap: () => (/* binding */ updateEnvMap),
+/* harmony export */   updateMap: () => (/* binding */ updateMap),
+/* harmony export */   updateMapMaterialFromData: () => (/* binding */ updateMapMaterialFromData)
+/* harmony export */ });
+/* harmony import */ var _lib_three_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../lib/three.js */ "./src/lib/three.js");
+/* harmony import */ var _src_loader_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./src-loader.js */ "./src/utils/src-loader.js");
+/* harmony import */ var _debug_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./debug.js */ "./src/utils/debug.js");
 /* global HTMLCanvasElement, HTMLImageElement, HTMLVideoElement */
-var THREE = __webpack_require__(/*! ../lib/three */ "./src/lib/three.js");
-var srcLoader = __webpack_require__(/*! ./src-loader */ "./src/utils/src-loader.js");
-var debug = __webpack_require__(/*! ./debug */ "./src/utils/debug.js");
-var warn = debug('utils:material:warn');
+
+
+
+var warn = (0,_debug_js__WEBPACK_IMPORTED_MODULE_2__["default"])('utils:material:warn');
 var COLOR_MAPS = new Set(['emissiveMap', 'envMap', 'map', 'specularMap']);
 
 /**
@@ -27853,7 +28780,7 @@ function setTextureProperties(texture, data) {
     y: 1
   };
   var npot = data.npot || false;
-  var anisotropy = data.anisotropy || THREE.Texture.DEFAULT_ANISOTROPY;
+  var anisotropy = data.anisotropy || _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Texture.DEFAULT_ANISOTROPY;
   var wrapS = texture.wrapS;
   var wrapT = texture.wrapT;
   var magFilter = texture.magFilter;
@@ -27862,16 +28789,16 @@ function setTextureProperties(texture, data) {
   // To support NPOT textures, wrap must be ClampToEdge (not Repeat),
   // and filters must not use mipmaps (i.e. Nearest or Linear).
   if (npot) {
-    wrapS = THREE.ClampToEdgeWrapping;
-    wrapT = THREE.ClampToEdgeWrapping;
-    magFilter = THREE.LinearFilter;
-    minFilter = THREE.LinearFilter;
+    wrapS = _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].ClampToEdgeWrapping;
+    wrapT = _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].ClampToEdgeWrapping;
+    magFilter = _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].LinearFilter;
+    minFilter = _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].LinearFilter;
   }
 
   // Set wrap mode to repeat only if repeat isn't 1/1. Power-of-two is required to repeat.
   if (repeat.x !== 1 || repeat.y !== 1) {
-    wrapS = THREE.RepeatWrapping;
-    wrapT = THREE.RepeatWrapping;
+    wrapS = _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].RepeatWrapping;
+    wrapT = _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].RepeatWrapping;
   }
 
   // Apply texture properties
@@ -27886,7 +28813,6 @@ function setTextureProperties(texture, data) {
     texture.needsUpdate = true;
   }
 }
-module.exports.setTextureProperties = setTextureProperties;
 
 /**
  * Update `material` texture property (usually but not always `map`)
@@ -27895,7 +28821,7 @@ module.exports.setTextureProperties = setTextureProperties;
  * @param {object} shader - A-Frame shader instance.
  * @param {object} data
  */
-module.exports.updateMapMaterialFromData = function (materialName, dataName, shader, data) {
+function updateMapMaterialFromData(materialName, dataName, shader, data) {
   var el = shader.el;
   var material = shader.material;
   var rendererSystem = el.sceneEl.systems.renderer;
@@ -27927,7 +28853,7 @@ module.exports.updateMapMaterialFromData = function (materialName, dataName, sha
   shader.materialSrcs[materialName] = src;
 
   // If the new material src is already a texture, just use it.
-  if (src instanceof THREE.Texture) {
+  if (src instanceof _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Texture) {
     setMap(src);
   } else {
     // Load texture source for the new material src.
@@ -27980,7 +28906,7 @@ module.exports.updateMapMaterialFromData = function (materialName, dataName, sha
     material.needsUpdate = true;
     handleTextureEvents(el, texture);
   }
-};
+}
 
 /**
  * Update `material.map` given `data.src`. For standard and flat shaders.
@@ -27988,9 +28914,9 @@ module.exports.updateMapMaterialFromData = function (materialName, dataName, sha
  * @param {object} shader - A-Frame shader instance.
  * @param {object} data
  */
-module.exports.updateMap = function (shader, data) {
-  return module.exports.updateMapMaterialFromData('map', 'src', shader, data);
-};
+function updateMap(shader, data) {
+  return updateMapMaterialFromData('map', 'src', shader, data);
+}
 
 /**
  * Updates the material's maps which give the illusion of extra geometry.
@@ -27999,7 +28925,7 @@ module.exports.updateMap = function (shader, data) {
  * @param {object} shader - A-Frame shader instance
  * @param {object} data
  */
-module.exports.updateDistortionMap = function (longType, shader, data) {
+function updateDistortionMap(longType, shader, data) {
   var shortType = longType;
   if (longType === 'ambientOcclusion') {
     shortType = 'ao';
@@ -28011,8 +28937,8 @@ module.exports.updateDistortionMap = function (longType, shader, data) {
   info.offset = data[longType + 'TextureOffset'];
   info.repeat = data[longType + 'TextureRepeat'];
   info.wrap = data[longType + 'TextureWrap'];
-  return module.exports.updateMapMaterialFromData(shortType + 'Map', 'src', shader, info);
-};
+  return updateMapMaterialFromData(shortType + 'Map', 'src', shader, info);
+}
 
 // Cache env map results as promises
 var envMapPromises = {};
@@ -28023,7 +28949,7 @@ var envMapPromises = {};
  * @param {object} shader - A-Frame shader instance
  * @param {object} data
  */
-module.exports.updateEnvMap = function (shader, data) {
+function updateEnvMap(shader, data) {
   var material = shader.material;
   var el = shader.el;
   var materialName = 'envMap';
@@ -28058,9 +28984,9 @@ module.exports.updateEnvMap = function (shader, data) {
 
   // First time loading this env map.
   envMapPromises[src] = new Promise(function (resolve) {
-    srcLoader.validateEnvMapSrc(src, function loadCubeMap(srcs) {
+    _src_loader_js__WEBPACK_IMPORTED_MODULE_1__.validateEnvMapSrc(src, function loadCubeMap(srcs) {
       el.sceneEl.systems.material.loadCubeMapTexture(srcs, function (texture) {
-        texture.mapping = refract ? THREE.CubeRefractionMapping : THREE.CubeReflectionMapping;
+        texture.mapping = refract ? _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].CubeRefractionMapping : _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].CubeReflectionMapping;
         checkSetMap(texture);
         resolve(texture);
       });
@@ -28068,7 +28994,7 @@ module.exports.updateEnvMap = function (shader, data) {
       el.sceneEl.systems.material.loadTexture(src, {
         src: src
       }, function (texture) {
-        texture.mapping = refract ? THREE.EquirectangularRefractionMapping : THREE.EquirectangularReflectionMapping;
+        texture.mapping = refract ? _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].EquirectangularRefractionMapping : _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].EquirectangularReflectionMapping;
         checkSetMap(texture);
         resolve(texture);
       });
@@ -28082,7 +29008,7 @@ module.exports.updateEnvMap = function (shader, data) {
     material.needsUpdate = true;
     handleTextureEvents(el, texture);
   }
-};
+}
 
 /**
  * Emit event on entities on texture-related events.
@@ -28125,7 +29051,6 @@ function handleTextureEvents(el, texture) {
     texture.image.removeEventListener('ended', emitVideoTextureEndedAll);
   });
 }
-module.exports.handleTextureEvents = handleTextureEvents;
 
 /**
  * Checks if a given texture type is compatible with a given source.
@@ -28146,22 +29071,20 @@ function isCompatibleTexture(texture, source) {
   }
   return texture.isTexture && !texture.isCanvasTexture && !texture.isVideoTexture;
 }
-module.exports.isCompatibleTexture = isCompatibleTexture;
 function createCompatibleTexture(source) {
   var texture;
   if (source.data instanceof HTMLCanvasElement) {
-    texture = new THREE.CanvasTexture();
+    texture = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].CanvasTexture();
   } else if (source.data instanceof HTMLVideoElement) {
     // Pass underlying video to constructor to ensure requestVideoFrameCallback is setup
-    texture = new THREE.VideoTexture(source.data);
+    texture = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].VideoTexture(source.data);
   } else {
-    texture = new THREE.Texture();
+    texture = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Texture();
   }
   texture.source = source;
   texture.needsUpdate = true;
   return texture;
 }
-module.exports.createCompatibleTexture = createCompatibleTexture;
 
 /***/ }),
 
@@ -28169,8 +29092,14 @@ module.exports.createCompatibleTexture = createCompatibleTexture;
 /*!***************************!*\
   !*** ./src/utils/math.js ***!
   \***************************/
-/***/ ((module) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   distanceOfPointFromPlane: () => (/* binding */ distanceOfPointFromPlane),
+/* harmony export */   nearestPointInPlane: () => (/* binding */ nearestPointInPlane)
+/* harmony export */ });
 /**
  * Find the distance from a plane defined by a point on the plane and the normal of the plane to any point.
  * @param {THREE.Vector3} positionOnPlane any point on the plane.
@@ -28202,8 +29131,6 @@ function nearestPointInPlane(positionOnPlane, planeNormal, pointToTest, resultPo
   resultPoint.add(pointToTest);
   return resultPoint;
 }
-module.exports.distanceOfPointFromPlane = distanceOfPointFromPlane;
-module.exports.nearestPointInPlane = nearestPointInPlane;
 
 /***/ }),
 
@@ -28211,8 +29138,15 @@ module.exports.nearestPointInPlane = nearestPointInPlane;
 /*!**********************************!*\
   !*** ./src/utils/object-pool.js ***!
   \**********************************/
-/***/ ((module) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   clearObject: () => (/* binding */ clearObject),
+/* harmony export */   createPool: () => (/* binding */ createPool),
+/* harmony export */   removeUnusedKeys: () => (/* binding */ removeUnusedKeys)
+/* harmony export */ });
 /*
   Adapted deePool by Kyle Simpson.
   MIT License: http://getify.mit-license.org
@@ -28227,7 +29161,7 @@ function defaultObjectFactory() {
 /**
  * Create a new pool.
  */
-module.exports.createPool = function createPool(objectFactory) {
+function createPool(objectFactory) {
   var objPool = [];
   var nextFreeSlot = null; // Pool location to look for a free object to use.
 
@@ -28279,7 +29213,7 @@ module.exports.createPool = function createPool(objectFactory) {
     size: size,
     use: use
   };
-};
+}
 function clearObject(obj) {
   var key;
   if (!obj || obj.constructor !== Object) {
@@ -28289,7 +29223,6 @@ function clearObject(obj) {
     obj[key] = undefined;
   }
 }
-module.exports.clearObject = clearObject;
 function removeUnusedKeys(obj, schema) {
   var key;
   if (!obj || obj.constructor !== Object) {
@@ -28301,7 +29234,6 @@ function removeUnusedKeys(obj, schema) {
     }
   }
 }
-module.exports.removeUnusedKeys = removeUnusedKeys;
 
 /***/ }),
 
@@ -28309,12 +29241,17 @@ module.exports.removeUnusedKeys = removeUnusedKeys;
 /*!****************************!*\
   !*** ./src/utils/split.js ***!
   \****************************/
-/***/ ((module) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   split: () => (/* binding */ split)
+/* harmony export */ });
 /**
  * String split with cached result.
  */
-module.exports.split = function () {
+var split = function () {
   var splitCache = {};
   return function (str, delimiter) {
     if (!(delimiter in splitCache)) {
@@ -28334,11 +29271,20 @@ module.exports.split = function () {
 /*!*********************************!*\
   !*** ./src/utils/src-loader.js ***!
   \*********************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   parseUrl: () => (/* binding */ parseUrl),
+/* harmony export */   validateCubemapSrc: () => (/* binding */ validateCubemapSrc),
+/* harmony export */   validateEnvMapSrc: () => (/* binding */ validateEnvMapSrc),
+/* harmony export */   validateSrc: () => (/* binding */ validateSrc)
+/* harmony export */ });
+/* harmony import */ var _debug_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./debug.js */ "./src/utils/debug.js");
 /* global Image, XMLHttpRequest */
-var debug = __webpack_require__(/*! ./debug */ "./src/utils/debug.js");
-var warn = debug('utils:src-loader:warn');
+
+var warn = (0,_debug_js__WEBPACK_IMPORTED_MODULE_0__["default"])('utils:src-loader:warn');
 
 /**
  * Validate a texture, either as a selector or as a URL.
@@ -28525,12 +29471,6 @@ function validateAndGetQuerySelector(selector) {
     return undefined;
   }
 }
-module.exports = {
-  parseUrl: parseUrl,
-  validateSrc: validateSrc,
-  validateCubemapSrc: validateCubemapSrc,
-  validateEnvMapSrc: validateEnvMapSrc
-};
 
 /***/ }),
 
@@ -28538,8 +29478,15 @@ module.exports = {
 /*!**********************************!*\
   !*** ./src/utils/styleParser.js ***!
   \**********************************/
-/***/ ((module) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   parse: () => (/* binding */ parse),
+/* harmony export */   stringify: () => (/* binding */ stringify),
+/* harmony export */   toCamelCase: () => (/* binding */ toCamelCase)
+/* harmony export */ });
 /**
  * Utils for parsing style-like strings (e.g., "primitive: box; width: 5; height: 4.5").
  * Some code adapted from `style-attr` (https://github.com/joshwnj/style-attr)
@@ -28554,7 +29501,7 @@ var DASH_REGEX = /-([a-z])/g;
  * @param {object} obj - Reused object for object pooling.
  * @returns {object} Property data.
  */
-module.exports.parse = function (value, obj) {
+function parse(value, obj) {
   var parsedData;
   if (typeof value !== 'string') {
     return value;
@@ -28565,7 +29512,7 @@ module.exports.parse = function (value, obj) {
     return value;
   }
   return parsedData;
-};
+}
 
 /**
  * Serialize an object of properties into a style-like string.
@@ -28573,12 +29520,12 @@ module.exports.parse = function (value, obj) {
  * @param {object} data - Property data.
  * @returns {string}
  */
-module.exports.stringify = function (data) {
+function stringify(data) {
   if (typeof data === 'string') {
     return data;
   }
   return styleStringify(data);
-};
+}
 
 /**
  * Converts string from hyphen to camelCase.
@@ -28589,7 +29536,6 @@ module.exports.stringify = function (data) {
 function toCamelCase(str) {
   return str.replace(DASH_REGEX, upperCase);
 }
-module.exports.toCamelCase = toCamelCase;
 
 /**
  * Split a string into chunks matching `<key>: <value>`
@@ -28683,8 +29629,17 @@ function upperCase(str) {
 /*!***************************************!*\
   !*** ./src/utils/tracked-controls.js ***!
   \***************************************/
-/***/ ((module) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   checkControllerPresentAndSetup: () => (/* binding */ checkControllerPresentAndSetup),
+/* harmony export */   emitIfAxesChanged: () => (/* binding */ emitIfAxesChanged),
+/* harmony export */   findMatchingControllerWebXR: () => (/* binding */ findMatchingControllerWebXR),
+/* harmony export */   isControllerPresentWebXR: () => (/* binding */ isControllerPresentWebXR),
+/* harmony export */   onButtonEvent: () => (/* binding */ onButtonEvent)
+/* harmony export */ });
 var AXIS_LABELS = ['x', 'y', 'z', 'w'];
 
 /**
@@ -28697,7 +29652,7 @@ var AXIS_LABELS = ['x', 'y', 'z', 'w'];
  * @param {object} idPrefix - Prefix to match in gamepad id if any.
  * @param {object} queryObject - Map of values to match.
  */
-module.exports.checkControllerPresentAndSetup = function (component, idPrefix, queryObject) {
+function checkControllerPresentAndSetup(component, idPrefix, queryObject) {
   var el = component.el;
   var controller;
   var isControllerPresent = isControllerPresentWebXR;
@@ -28726,7 +29681,7 @@ module.exports.checkControllerPresentAndSetup = function (component, idPrefix, q
       component: component
     });
   }
-};
+}
 
 /**
  *
@@ -28745,7 +29700,6 @@ function isControllerPresentWebXR(component, id, queryObject) {
   }
   return findMatchingControllerWebXR(controllers, id, queryObject.hand, queryObject.index, queryObject.iterateControllerProfiles, queryObject.handTracking);
 }
-module.exports.isControllerPresentWebXR = isControllerPresentWebXR;
 function findMatchingControllerWebXR(controllers, idPrefix, handedness, index, iterateProfiles, handTracking) {
   var i;
   var j;
@@ -28788,7 +29742,6 @@ function findMatchingControllerWebXR(controllers, idPrefix, handedness, index, i
   }
   return undefined;
 }
-module.exports.findMatchingControllerWebXR = findMatchingControllerWebXR;
 
 /**
  * Emit specific `moved` event(s) if axes changed based on original axismove event.
@@ -28797,7 +29750,7 @@ module.exports.findMatchingControllerWebXR = findMatchingControllerWebXR;
  * @param {array} axesMapping - For example `{thumbstick: [0, 1]}`.
  * @param {object} evt - Event to process.
  */
-module.exports.emitIfAxesChanged = function (component, axesMapping, evt) {
+function emitIfAxesChanged(component, axesMapping, evt) {
   var axes;
   var buttonType;
   var changed;
@@ -28822,7 +29775,7 @@ module.exports.emitIfAxesChanged = function (component, axesMapping, evt) {
     }
     component.el.emit(buttonType + 'moved', detail);
   }
-};
+}
 
 /**
  * Handle a button event and reemits the events.
@@ -28832,14 +29785,14 @@ module.exports.emitIfAxesChanged = function (component, axesMapping, evt) {
  * @param {object} component - reference to the component
  * @param {string} hand - handedness of the controller: left or right.
  */
-module.exports.onButtonEvent = function (id, evtName, component, hand) {
+function onButtonEvent(id, evtName, component, hand) {
   var mapping = hand ? component.mapping[hand] : component.mapping;
   var buttonName = mapping.buttons[id];
   component.el.emit(buttonName + evtName);
   if (component.updateModel) {
     component.updateModel(buttonName, evtName);
   }
-};
+}
 
 /***/ }),
 
@@ -28847,8 +29800,13 @@ module.exports.onButtonEvent = function (id, evtName, component, hand) {
 /*!*********************************************!*\
   !*** ./vendor/DeviceOrientationControls.js ***!
   \*********************************************/
-/***/ (() => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   DeviceOrientationControls: () => (/* binding */ DeviceOrientationControls)
+/* harmony export */ });
 /**
  * @author richt / http://richt.me
  * @author WestLangley / http://github.com/WestLangley
@@ -28856,7 +29814,7 @@ module.exports.onButtonEvent = function (id, evtName, component, hand) {
  * W3C Device Orientation control (http://w3c.github.io/deviceorientation/spec-source-orientation.html)
  */
 
-THREE.DeviceOrientationControls = function (object) {
+var DeviceOrientationControls = function (object) {
   var scope = this;
   this.object = object;
   this.object.rotation.reorder('YXZ');
@@ -41708,51 +42666,6 @@ class WorkerPool {
 
 /***/ }),
 
-/***/ "./src/lib/three.mjs":
-/*!***************************!*\
-  !*** ./src/lib/three.mjs ***!
-  \***************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var three__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
-/* harmony import */ var three_examples_jsm_loaders_DRACOLoader_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! three/examples/jsm/loaders/DRACOLoader.js */ "./node_modules/three/examples/jsm/loaders/DRACOLoader.js");
-/* harmony import */ var three_examples_jsm_loaders_GLTFLoader_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! three/examples/jsm/loaders/GLTFLoader.js */ "./node_modules/three/examples/jsm/loaders/GLTFLoader.js");
-/* harmony import */ var three_examples_jsm_loaders_KTX2Loader_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! three/examples/jsm/loaders/KTX2Loader.js */ "./node_modules/three/examples/jsm/loaders/KTX2Loader.js");
-/* harmony import */ var three_addons_math_OBB_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! three/addons/math/OBB.js */ "./node_modules/three/examples/jsm/math/OBB.js");
-/* harmony import */ var three_examples_jsm_loaders_OBJLoader_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! three/examples/jsm/loaders/OBJLoader.js */ "./node_modules/three/examples/jsm/loaders/OBJLoader.js");
-/* harmony import */ var three_examples_jsm_loaders_MTLLoader_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! three/examples/jsm/loaders/MTLLoader.js */ "./node_modules/three/examples/jsm/loaders/MTLLoader.js");
-/* harmony import */ var three_examples_jsm_utils_BufferGeometryUtils_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! three/examples/jsm/utils/BufferGeometryUtils.js */ "./node_modules/three/examples/jsm/utils/BufferGeometryUtils.js");
-/* harmony import */ var three_examples_jsm_lights_LightProbeGenerator_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! three/examples/jsm/lights/LightProbeGenerator.js */ "./node_modules/three/examples/jsm/lights/LightProbeGenerator.js");
-
-
-
-
-
-
-
-
-
-
-var THREE = { ...three__WEBPACK_IMPORTED_MODULE_0__ };
-THREE.DRACOLoader = three_examples_jsm_loaders_DRACOLoader_js__WEBPACK_IMPORTED_MODULE_1__.DRACOLoader;
-THREE.GLTFLoader = three_examples_jsm_loaders_GLTFLoader_js__WEBPACK_IMPORTED_MODULE_2__.GLTFLoader;
-THREE.KTX2Loader = three_examples_jsm_loaders_KTX2Loader_js__WEBPACK_IMPORTED_MODULE_3__.KTX2Loader;
-THREE.OBJLoader = three_examples_jsm_loaders_OBJLoader_js__WEBPACK_IMPORTED_MODULE_4__.OBJLoader;
-THREE.MTLLoader = three_examples_jsm_loaders_MTLLoader_js__WEBPACK_IMPORTED_MODULE_5__.MTLLoader;
-THREE.OBB = three_addons_math_OBB_js__WEBPACK_IMPORTED_MODULE_6__.OBB;
-THREE.BufferGeometryUtils = three_examples_jsm_utils_BufferGeometryUtils_js__WEBPACK_IMPORTED_MODULE_7__;
-THREE.LightProbeGenerator = three_examples_jsm_lights_LightProbeGenerator_js__WEBPACK_IMPORTED_MODULE_8__.LightProbeGenerator;
-
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (THREE);
-
-
-/***/ }),
-
 /***/ "./package.json":
 /*!**********************!*\
   !*** ./package.json ***!
@@ -41878,12 +42791,127 @@ module.exports = /*#__PURE__*/JSON.parse('{"name":"aframe","version":"1.6.0","de
 /******/ 	})();
 /******/ 	
 /************************************************************************/
-/******/ 	
-/******/ 	// startup
-/******/ 	// Load entry module and return exports
-/******/ 	// This entry module is referenced by other modules so it can't be inlined
-/******/ 	var __webpack_exports__ = __webpack_require__("./src/index.js");
-/******/ 	
+var __webpack_exports__ = {};
+// This entry need to be wrapped in an IIFE because it need to be in strict mode.
+(() => {
+"use strict";
+/*!**********************!*\
+  !*** ./src/index.js ***!
+  \**********************/
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var super_animejs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! super-animejs */ "./node_modules/super-animejs/lib/anime.es.js");
+/* harmony import */ var _lib_three_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./lib/three.js */ "./src/lib/three.js");
+/* harmony import */ var _core_scene_a_scene_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./core/scene/a-scene.js */ "./src/core/scene/a-scene.js");
+/* harmony import */ var _core_scene_scenes_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./core/scene/scenes.js */ "./src/core/scene/scenes.js");
+/* harmony import */ var _core_a_node_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./core/a-node.js */ "./src/core/a-node.js");
+/* harmony import */ var _core_a_entity_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./core/a-entity.js */ "./src/core/a-entity.js");
+/* harmony import */ var _core_component_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./core/component.js */ "./src/core/component.js");
+/* harmony import */ var _core_geometry_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./core/geometry.js */ "./src/core/geometry.js");
+/* harmony import */ var _extras_primitives_primitives_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./extras/primitives/primitives.js */ "./src/extras/primitives/primitives.js");
+/* harmony import */ var _core_shader_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./core/shader.js */ "./src/core/shader.js");
+/* harmony import */ var _core_system_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./core/system.js */ "./src/core/system.js");
+/* harmony import */ var _core_schema_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./core/schema.js */ "./src/core/schema.js");
+/* harmony import */ var _core_readyState_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./core/readyState.js */ "./src/core/readyState.js");
+/* harmony import */ var _core_a_assets_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./core/a-assets.js */ "./src/core/a-assets.js");
+/* harmony import */ var _core_a_cubemap_js__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./core/a-cubemap.js */ "./src/core/a-cubemap.js");
+/* harmony import */ var _core_a_mixin_js__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./core/a-mixin.js */ "./src/core/a-mixin.js");
+/* harmony import */ var _utils_index_js__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./utils/index.js */ "./src/utils/index.js");
+/* harmony import */ var _package_json__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ../package.json */ "./package.json");
+/* harmony import */ var _components_index_js__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ./components/index.js */ "./src/components/index.js");
+/* harmony import */ var _geometries_index_js__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ./geometries/index.js */ "./src/geometries/index.js");
+/* harmony import */ var _shaders_index_js__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ./shaders/index.js */ "./src/shaders/index.js");
+/* harmony import */ var _systems_index_js__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! ./systems/index.js */ "./src/systems/index.js");
+/* harmony import */ var _extras_primitives_getMeshMixin_js__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! ./extras/primitives/getMeshMixin.js */ "./src/extras/primitives/getMeshMixin.js");
+/* harmony import */ var _extras_components_index_js__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! ./extras/components/index.js */ "./src/extras/components/index.js");
+/* harmony import */ var _extras_primitives_index_js__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(/*! ./extras/primitives/index.js */ "./src/extras/primitives/index.js");
+
+
+
+
+
+ // Depends on ANode and core components.
+
+
+
+
+
+
+
+
+
+
+
+
+ // Register standard components.
+ // Register standard geometries.
+ // Register standard shaders.
+ // Register standard systems.
+
+// Depends on material component and standard shader
+
+
+// Extras.
+
+
+var debug = _utils_index_js__WEBPACK_IMPORTED_MODULE_16__.debug;
+var error = debug('A-Frame:error');
+var warn = debug('A-Frame:warn');
+if (window.document.currentScript && window.document.currentScript.parentNode !== window.document.head && !window.debug) {
+  warn('Put the A-Frame <script> tag in the <head> of the HTML *before* the scene to ' + 'ensure everything for A-Frame is properly registered before they are used from ' + 'HTML.');
+}
+
+// Error if not using a server.
+if (!window.cordova && window.location.protocol === 'file:') {
+  error('This HTML file is currently being served via the file:// protocol. ' + 'Assets, textures, and models WILL NOT WORK due to cross-origin policy! ' + 'Please use a local or hosted server: ' + 'https://aframe.io/docs/1.4.0/introduction/installation.html#use-a-local-server.');
+}
+
+// CSS.
+if (_utils_index_js__WEBPACK_IMPORTED_MODULE_16__.device.isBrowserEnvironment) {
+  window.logs = debug;
+  __webpack_require__(/*! ./style/aframe.css */ "./src/style/aframe.css");
+  __webpack_require__(/*! ./style/rStats.css */ "./src/style/rStats.css");
+}
+console.log('A-Frame Version: 1.6.0 (Date 2025-01-22, Commit #f43aa6d4)');
+console.log('THREE Version (https://github.com/supermedium/three.js):', _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].REVISION);
+
+// Wait for ready state, unless user asynchronously initializes A-Frame.
+if (!window.AFRAME_ASYNC) {
+  _core_readyState_js__WEBPACK_IMPORTED_MODULE_12__.waitForDocumentReadyState();
+}
+var src_AFRAME = globalThis.AFRAME = {
+  AComponent: _core_component_js__WEBPACK_IMPORTED_MODULE_6__.Component,
+  AEntity: _core_a_entity_js__WEBPACK_IMPORTED_MODULE_5__.AEntity,
+  ANode: _core_a_node_js__WEBPACK_IMPORTED_MODULE_4__.ANode,
+  ANIME: super_animejs__WEBPACK_IMPORTED_MODULE_0__["default"],
+  AScene: _core_scene_a_scene_js__WEBPACK_IMPORTED_MODULE_2__.AScene,
+  components: _core_component_js__WEBPACK_IMPORTED_MODULE_6__.components,
+  coreComponents: Object.keys(_core_component_js__WEBPACK_IMPORTED_MODULE_6__.components),
+  geometries: _core_geometry_js__WEBPACK_IMPORTED_MODULE_7__.geometries,
+  registerComponent: _core_component_js__WEBPACK_IMPORTED_MODULE_6__.registerComponent,
+  registerGeometry: _core_geometry_js__WEBPACK_IMPORTED_MODULE_7__.registerGeometry,
+  registerPrimitive: _extras_primitives_primitives_js__WEBPACK_IMPORTED_MODULE_8__.registerPrimitive,
+  registerShader: _core_shader_js__WEBPACK_IMPORTED_MODULE_9__.registerShader,
+  registerSystem: _core_system_js__WEBPACK_IMPORTED_MODULE_10__.registerSystem,
+  primitives: {
+    getMeshMixin: _extras_primitives_getMeshMixin_js__WEBPACK_IMPORTED_MODULE_22__["default"],
+    primitives: _extras_primitives_primitives_js__WEBPACK_IMPORTED_MODULE_8__.primitives
+  },
+  scenes: _core_scene_scenes_js__WEBPACK_IMPORTED_MODULE_3__["default"],
+  schema: _core_schema_js__WEBPACK_IMPORTED_MODULE_11__,
+  shaders: _core_shader_js__WEBPACK_IMPORTED_MODULE_9__.shaders,
+  systems: _core_system_js__WEBPACK_IMPORTED_MODULE_10__.systems,
+  emitReady: _core_readyState_js__WEBPACK_IMPORTED_MODULE_12__.emitReady,
+  THREE: _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"],
+  utils: _utils_index_js__WEBPACK_IMPORTED_MODULE_16__,
+  version: _package_json__WEBPACK_IMPORTED_MODULE_17__.version
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (src_AFRAME);
+})();
+
+__webpack_exports__ = __webpack_exports__["default"];
 /******/ 	return __webpack_exports__;
 /******/ })()
 ;
