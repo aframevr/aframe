@@ -24600,7 +24600,7 @@ __webpack_require__(/*! ./core/a-mixin */ "./src/core/a-mixin.js");
 // Extras.
 __webpack_require__(/*! ./extras/components/ */ "./src/extras/components/index.js");
 __webpack_require__(/*! ./extras/primitives/ */ "./src/extras/primitives/index.js");
-console.log('A-Frame Version: 1.6.0 (Date 2025-01-21, Commit #38f57323)');
+console.log('A-Frame Version: 1.6.0 (Date 2025-01-22, Commit #51b70a38)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', THREE.REVISION);
 
 // Wait for ready state, unless user asynchronously initializes A-Frame.
@@ -26759,6 +26759,10 @@ module.exports.System = registerSystem('tracked-controls', {
     this.el.addEventListener('exit-vr', this.onExitVR);
   },
   onEnterVR: function () {
+    var xrSession = this.el.xrSession;
+    if (!xrSession) {
+      return;
+    }
     this.el.xrSession.addEventListener('inputsourceschange', this.onInputSourcesChange);
   },
   onExitVR: function () {
