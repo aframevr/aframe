@@ -16,6 +16,8 @@ export var System = registerSystem('tracked-controls', {
   },
 
   onEnterVR: function () {
+    var xrSession = this.el.xrSession;
+    if (!xrSession) { return; }
     this.el.xrSession.addEventListener('inputsourceschange', this.onInputSourcesChange);
   },
 
