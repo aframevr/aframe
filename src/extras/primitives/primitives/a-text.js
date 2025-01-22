@@ -1,3 +1,3 @@
 // <a-text> using `definePrimitive` helper.
-var definePrimitive = require('../primitives').definePrimitive;
+import { definePrimitive } from '../primitives.js';
 definePrimitive('a-text', {text: {anchor: 'align', width: 5}});

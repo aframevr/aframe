@@ -1,8 +1,8 @@
 /* global MutationObserver */
 
-var registerComponent = require('../core/component').registerComponent;
-var THREE = require('../lib/three');
-var utils = require('../utils/');
+import THREE from '../lib/three.js';
+import { registerComponent } from '../core/component.js';
+import * as utils from '../utils/index.js';
 
 var warn = utils.debug('components:raycaster:warn');
 
@@ -40,7 +40,7 @@ var EVENTS = {
  * @member {number} prevCheckTime - Previous time intersection was checked. To help interval.
  * @member {object} raycaster - three.js Raycaster.
  */
-module.exports.Component = registerComponent('raycaster', {
+export var Component = registerComponent('raycaster', {
   schema: {
     autoRefresh: {default: true},
     direction: {type: 'vec3', default: {x: 0, y: 0, z: -1}},

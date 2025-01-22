@@ -47,9 +47,3 @@ window.aframeStats = function (scene) {
     fractions: []
   };
 };
-
-if (typeof module === 'object') {
-  module.exports = {
-    aframeStats: window.aframeStats
-  };
-}

@@ -1,5 +1,5 @@
-var registerSystem = require('../core/system').registerSystem;
-var THREE = require('../lib/three');
+import THREE from '../lib/three.js';
+import { registerSystem } from '../core/system.js';
 
 var SHADOW_MAP_TYPE_MAP = {
   basic: THREE.BasicShadowMap,
@@ -13,7 +13,7 @@ var SHADOW_MAP_TYPE_MAP = {
  * Enabled automatically when one or more shadow components are added to the scene, the system sets
  * options on the WebGLRenderer for configuring shadow appearance.
  */
-module.exports.System = registerSystem('shadow', {
+export var System = registerSystem('shadow', {
   schema: {
     enabled: {default: true},
     autoUpdate: {default: true},

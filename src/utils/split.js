@@ -1,7 +1,7 @@
 /**
  * String split with cached result.
  */
-module.exports.split = (function () {
+export var split = (function () {
   var splitCache = {};
 
   return function (str, delimiter) {

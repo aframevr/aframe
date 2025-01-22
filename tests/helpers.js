@@ -4,14 +4,14 @@
  * Add an event listener to be executed only once. Help when reusing entities across
  * tests and an event emitted in one may be picked up by another, causing test failures.
  */
-module.exports.once = function (el, eventName, handler) {
+export function once (el, eventName, handler) {
   var done = false;
   el.addEventListener(eventName, function onceHandler (evt) {
     if (done) { return; }
     handler(evt);
     done = true;
   });
-};
+}
 
 /**
  * Helper method to create a scene, create an entity, add entity to scene,
@@ -21,7 +21,7 @@ module.exports.once = function (el, eventName, handler) {
  *
  * @returns {object} An `<a-entity>` element.
  */
-function entityFactory (opts) {
+export function entityFactory (opts) {
   var scene = document.createElement('a-scene');
   var assets = document.createElement('a-assets');
   var entity = document.createElement('a-entity');
@@ -40,7 +40,6 @@ function entityFactory (opts) {
   document.body.appendChild(scene);
   return entity;
 }
-module.exports.entityFactory = entityFactory;
 
 /**
  * A more robust entity factory that resolves once stuff is loaded without having to wait
@@ -48,7 +47,7 @@ module.exports.entityFactory = entityFactory;
  *
  * @returns {Promise}
  */
-module.exports.elFactory = function (opts) {
+export function elFactory (opts) {
   let entity = entityFactory(opts);
   return new Promise(resolve => {
     if (entity.sceneEl) {
@@ -61,7 +60,7 @@ module.exports.elFactory = function (opts) {
       entity.sceneEl.addEventListener('loaded', () => { resolve(entity); });
     });
   });
-};
+}
 
 /**
  * Creates and attaches a mixin element (and an `<a-assets>` element if necessary).
@@ -71,7 +70,7 @@ module.exports.elFactory = function (opts) {
  * @param {Element} scene - Indicate which scene to apply mixin to if necessary.
  * @returns {object} An attached `<a-mixin>` element.
  */
-module.exports.mixinFactory = function (id, obj, scene) {
+export function mixinFactory (id, obj, scene) {
   var mixinEl = document.createElement('a-mixin');
   mixinEl.setAttribute('id', id);
   Object.keys(obj).forEach(function (componentName) {
@@ -82,26 +81,26 @@ module.exports.mixinFactory = function (id, obj, scene) {
   assetsEl.appendChild(mixinEl);
 
   return mixinEl;
-};
+}
 
 /**
  * Test that is only run locally and is skipped on CI.
  */
-module.exports.getSkipCISuite = function () {
+export function getSkipCISuite () {
   if (window.__env__.TEST_ENV === 'ci') {
     return suite.skip;
   } else {
     return suite;
   }
-};
+}
 
 /**
  * Test that is only run locally and is skipped on CI.
  */
-module.exports.getSkipCITest = function () {
+export function getSkipCITest () {
   if (window.__env__.TEST_ENV === 'ci') {
     return test.skip;
   } else {
     return test;
   }
-};
+}

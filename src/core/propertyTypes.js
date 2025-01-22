@@ -1,9 +1,9 @@
-var coordinates = require('../utils/coordinates');
-var debug = require('debug');
+import * as coordinates from '../utils/coordinates.js';
+import debug from 'debug';
 
 var warn = debug('core:propertyTypes:warn');
 
-var propertyTypes = module.exports.propertyTypes = {};
+export var propertyTypes = {};
 var nonCharRegex = /[,> .[\]:]/;
 var urlRegex = /url\((.+)\)/;
 
@@ -38,7 +38,7 @@ registerPropertyType('vec4', {x: 0, y: 0, z: 0, w: 1}, vecParse, coordinates.str
  * @param {function} [equals=defaultEquals] - Equality comparator.
  * @param {boolean} [cachable=false] - Whether or not the parsed value of a property can be cached.
  */
-function registerPropertyType (type, defaultValue, parse, stringify, equals, cacheable) {
+export function registerPropertyType (type, defaultValue, parse, stringify, equals, cacheable) {
   if (type in propertyTypes) {
     throw new Error('Property type ' + type + ' is already registered.');
   }
@@ -51,7 +51,6 @@ function registerPropertyType (type, defaultValue, parse, stringify, equals, cac
     isCacheable: cacheable !== false
   };
 }
-module.exports.registerPropertyType = registerPropertyType;
 
 function arrayParse (value) {
   if (Array.isArray(value)) { return value; }
@@ -208,7 +207,7 @@ function vecParse (value, defaultValue, target) {
  * @param defaultVal - Property type default value.
  * @returns {boolean} Whether default value is accurate given the type.
  */
-function isValidDefaultValue (type, defaultVal) {
+export function isValidDefaultValue (type, defaultVal) {
   if (type === 'audio' && typeof defaultVal !== 'string') { return false; }
   if (type === 'array' && !Array.isArray(defaultVal)) { return false; }
   if (type === 'asset' && typeof defaultVal !== 'string') { return false; }
@@ -230,7 +229,6 @@ function isValidDefaultValue (type, defaultVal) {
   if (type === 'vec4') { return isValidDefaultCoordinate(defaultVal, 4); }
   return true;
 }
-module.exports.isValidDefaultValue = isValidDefaultValue;
 
 /**
  * Checks if default coordinates are valid.
@@ -239,7 +237,7 @@ module.exports.isValidDefaultValue = isValidDefaultValue;
  * @param {number} dimensions - 2 for 2D Vector, 3 for 3D vector.
  * @returns {boolean} Whether coordinates are parsed correctly.
  */
-function isValidDefaultCoordinate (possibleCoordinates, dimensions) {
+export function isValidDefaultCoordinate (possibleCoordinates, dimensions) {
   if (possibleCoordinates === null) { return true; }
   if (typeof possibleCoordinates !== 'object') { return false; }
 
@@ -258,4 +256,3 @@ function isValidDefaultCoordinate (possibleCoordinates, dimensions) {
 
   return true;
 }
-module.exports.isValidDefaultCoordinate = isValidDefaultCoordinate;

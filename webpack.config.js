@@ -4,7 +4,11 @@ var webpack = require('webpack');
 module.exports = {
   entry: './src/index.js',
   output: {
-    library: 'AFRAME',
+    library: {
+      name: 'AFRAME',
+      type: 'var',
+      export: 'default'
+    },
     libraryTarget: 'umd',
     path: path.resolve(__dirname, 'dist'),
     publicPath: '/dist/',

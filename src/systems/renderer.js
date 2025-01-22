@@ -1,6 +1,6 @@
-var registerSystem = require('../core/system').registerSystem;
-var utils = require('../utils/');
-var THREE = require('../lib/three');
+import THREE from '../lib/three.js';
+import { registerSystem } from '../core/system.js';
+import * as utils from '../utils/index.js';
 
 var debug = utils.debug;
 var warn = debug('components:renderer:warn');
@@ -8,7 +8,7 @@ var warn = debug('components:renderer:warn');
 /**
  * Determines state of various renderer properties.
  */
-module.exports.System = registerSystem('renderer', {
+export var System = registerSystem('renderer', {
   schema: {
     antialias: {default: 'auto', oneOf: ['true', 'false', 'auto']},
     highRefreshRate: {default: utils.device.isOculusBrowser()},
@@ -110,7 +110,7 @@ module.exports.System = registerSystem('renderer', {
 // - sort front-to-back by z-depth from camera (this should minimize overdraw)
 // - otherwise leave objects in default order (object tree order)
 
-function sortFrontToBack (a, b) {
+export function sortFrontToBack (a, b) {
   if (a.groupOrder !== b.groupOrder) {
     return a.groupOrder - b.groupOrder;
   }
@@ -123,7 +123,7 @@ function sortFrontToBack (a, b) {
 // Default sort for transparent objects:
 // - respect groupOrder & renderOrder settings
 // - otherwise leave objects in default order (object tree order)
-function sortRenderOrderOnly (a, b) {
+export function sortRenderOrderOnly (a, b) {
   if (a.groupOrder !== b.groupOrder) {
     return a.groupOrder - b.groupOrder;
   }
@@ -134,7 +134,7 @@ function sortRenderOrderOnly (a, b) {
 // - respect groupOrder & renderOrder settings
 // - sort back-to-front by z-depth from camera
 // - otherwise leave objects in default order (object tree order)
-function sortBackToFront (a, b) {
+export function sortBackToFront (a, b) {
   if (a.groupOrder !== b.groupOrder) {
     return a.groupOrder - b.groupOrder;
   }
@@ -143,8 +143,3 @@ function sortBackToFront (a, b) {
   }
   return b.z - a.z;
 }
-
-// exports needed for Unit Tests
-module.exports.sortFrontToBack = sortFrontToBack;
-module.exports.sortRenderOrderOnly = sortRenderOrderOnly;
-module.exports.sortBackToFront = sortBackToFront;

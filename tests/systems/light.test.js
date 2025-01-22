@@ -1,6 +1,6 @@
 /* global assert, process, setup, suite, test */
-var constants = require('constants/');
-var entityFactory = require('../helpers').entityFactory;
+import * as constants from 'constants/index.js';
+import { entityFactory } from '../helpers.js';
 var DEFAULT_LIGHT_ATTR = 'data-aframe-default-light';
 
 suite('light system', function () {

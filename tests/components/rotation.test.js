@@ -1,6 +1,7 @@
 /* global assert, process, setup, suite, test */
-var entityFactory = require('../helpers').entityFactory;
-var degToRad = require('index').THREE.MathUtils.degToRad;
+import { entityFactory } from '../helpers.js';
+import THREE from 'lib/three.js';
+var degToRad = THREE.MathUtils.degToRad;
 
 suite('rotation', function () {
   setup(function (done) {

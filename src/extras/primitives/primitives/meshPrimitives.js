@@ -1,14 +1,14 @@
 /**
  * Automated mesh primitive registration.
  */
-var getMeshMixin = require('../getMeshMixin');
-var geometries = require('../../../core/geometry').geometries;
-var geometryNames = require('../../../core/geometry').geometryNames;
-var registerPrimitive = require('../primitives').registerPrimitive;
-var utils = require('../../../utils/');
+import getMeshMixin from '../getMeshMixin.js';
+import { geometries, geometryNames } from '../../../core/geometry.js';
+import { registerPrimitive } from '../primitives.js';
+import * as utils from '../../../utils/index.js';
 
 // For testing.
-var meshPrimitives = module.exports = {};
+const meshPrimitives = {};
+export default meshPrimitives;
 
 // Generate primitive for each geometry type.
 geometryNames.forEach(function registerMeshPrimitive (geometryName) {

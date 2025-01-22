@@ -1,7 +1,5 @@
 /* global assert, process, suite, test, teardown */
-var registerGeometry = require('core/geometry').registerGeometry;
-var geometries = require('core/geometry').geometries;
-var geometryNames = require('core/geometry').geometryNames;
+import { registerGeometry, geometries, geometryNames } from 'core/geometry.js';
 
 suite('core/geometry', function () {
   test('registers standard geometries', function () {

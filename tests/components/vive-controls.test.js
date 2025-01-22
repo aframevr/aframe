@@ -1,5 +1,5 @@
 /* global assert, process, setup, suite, test, THREE */
-var entityFactory = require('../helpers').entityFactory;
+import { entityFactory } from '../helpers.js';
 
 suite('vive-controls', function () {
   var component;

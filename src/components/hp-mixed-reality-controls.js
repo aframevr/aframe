@@ -1,16 +1,12 @@
-var registerComponent = require('../core/component').registerComponent;
-var THREE = require('../lib/three');
-
-var trackedControlsUtils = require('../utils/tracked-controls');
-var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
-var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
-var onButtonEvent = trackedControlsUtils.onButtonEvent;
+import { registerComponent } from '../core/component.js';
+import THREE from '../lib/three.js';
+import { AFRAME_CDN_ROOT } from '../constants/index.js';
+import { checkControllerPresentAndSetup, emitIfAxesChanged, onButtonEvent } from '../utils/tracked-controls.js';
 
 // See Profiles Registry:
 // https://github.com/immersive-web/webxr-input-profiles/tree/master/packages/registry
 // TODO: Add a more robust system for deriving gamepad name.
 var GAMEPAD_ID = 'hp-mixed-reality';
-var AFRAME_CDN_ROOT = require('../constants').AFRAME_CDN_ROOT;
 var HP_MIXED_REALITY_MODEL_GLB_BASE_URL = AFRAME_CDN_ROOT + 'controllers/hp/mixed-reality/';
 
 var HP_MIXED_REALITY_POSITION_OFFSET = {x: 0, y: 0, z: 0.06};
@@ -41,7 +37,7 @@ var INPUT_MAPPING_WEBXR = {
 /**
  * HP Mixed Reality Controls
  */
-module.exports.Component = registerComponent('hp-mixed-reality-controls', {
+export var Component = registerComponent('hp-mixed-reality-controls', {
   schema: {
     hand: {default: 'none'},
     model: {default: true}

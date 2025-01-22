@@ -1,5 +1,5 @@
 /* global Image, XMLHttpRequest */
-var debug = require('./debug');
+import debug from './debug.js';
 
 var warn = debug('utils:src-loader:warn');
 
@@ -14,7 +14,7 @@ var warn = debug('utils:src-loader:warn');
  * @params {function} isImageCb - callback if texture is an image.
  * @params {function} isVideoCb - callback if texture is a video.
  */
-function validateSrc (src, isImageCb, isVideoCb) {
+export function validateSrc (src, isImageCb, isVideoCb) {
   checkIsImage(src, function isAnImageUrl (isImage) {
     if (isImage) {
       isImageCb(src);
@@ -32,7 +32,7 @@ function validateSrc (src, isImageCb, isVideoCb) {
  * @param {*} isCubemapCb - callback if src is a cubemap.
  * @param {*} isEquirectCb - callback is src is a singular equirectangular image.
  */
-function validateEnvMapSrc (src, isCubemapCb, isEquirectCb) {
+export function validateEnvMapSrc (src, isCubemapCb, isEquirectCb) {
   var el;
   var cubemapSrcRegex = '';
   var i;
@@ -99,7 +99,7 @@ function validateEnvMapSrc (src, isCubemapCb, isEquirectCb) {
           must be wrapped by `url()`.
  * @param {function} cb - callback if src is a cubemap.
  */
-function validateCubemapSrc (src, cb) {
+export function validateCubemapSrc (src, cb) {
   return validateEnvMapSrc(src, cb, function isEquirectCb () {
     warn('Expected cubemap but got image');
   });
@@ -110,7 +110,7 @@ function validateCubemapSrc (src, cb) {
  * @param  {string} src - String to parse.
  * @return {string} The parsed src, if parseable.
  */
-function parseUrl (src) {
+export function parseUrl (src) {
   var parsedSrc = src.match(/url\((.+)\)/);
   if (!parsedSrc) { return; }
   return parsedSrc[1];
@@ -183,10 +183,3 @@ function validateAndGetQuerySelector (selector) {
     return undefined;
   }
 }
-
-module.exports = {
-  parseUrl: parseUrl,
-  validateSrc: validateSrc,
-  validateCubemapSrc: validateCubemapSrc,
-  validateEnvMapSrc: validateEnvMapSrc
-};

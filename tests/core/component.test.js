@@ -1,10 +1,7 @@
 /* global AFRAME, assert, process, suite, teardown, test, setup, sinon, HTMLElement, HTMLHeadElement */
-var Component = require('core/component');
-var components = require('index').components;
-var debug = require('utils').debug;
-
-var helpers = require('../helpers');
-var registerComponent = require('index').registerComponent;
+import { components, registerComponent, registrationOrderWarnings } from 'core/component.js';
+import { debug } from 'utils/index.js';
+import * as helpers from '../helpers.js';
 
 var CloneComponent = {
   init: function () {
@@ -1582,53 +1579,53 @@ suite('registerComponent warnings', function () {
 
   teardown(function () {
     delete AFRAME.components.testorder;
-    delete Component.registrationOrderWarnings.testorder;
+    delete registrationOrderWarnings.testorder;
     if (script && script.parentNode) { script.parentNode.removeChild(script); }
   });
 
   test('does not throw warning if component registered in head', function (done) {
-    assert.notOk(Component.registrationOrderWarnings.testorder, 'waht');
+    assert.notOk(registrationOrderWarnings.testorder, 'waht');
     document.head.appendChild(script);
     setTimeout(() => {
-      assert.notOk(Component.registrationOrderWarnings.testorder);
+      assert.notOk(registrationOrderWarnings.testorder);
       done();
     });
   });
 
   test('does not throw warning if component registered before scene', function (done) {
-    assert.notOk(Component.registrationOrderWarnings.testorder, 'foo');
+    assert.notOk(registrationOrderWarnings.testorder, 'foo');
     document.body.insertBefore(script, sceneEl);
     setTimeout(() => {
-      assert.notOk(Component.registrationOrderWarnings.testorder);
+      assert.notOk(registrationOrderWarnings.testorder);
       done();
     });
   });
 
   test('does not throw warning if component registered after scene loaded', function (done) {
-    assert.notOk(Component.registrationOrderWarnings.testorder, 'blah');
+    assert.notOk(registrationOrderWarnings.testorder, 'blah');
     sceneEl.addEventListener('loaded', () => {
       document.body.appendChild(script);
       setTimeout(() => {
-        assert.notOk(Component.registrationOrderWarnings.testorder);
+        assert.notOk(registrationOrderWarnings.testorder);
         done();
       });
     });
   });
 
   test('throws warning if component registered after scene', function (done) {
-    assert.notOk(Component.registrationOrderWarnings.testorder);
+    assert.notOk(registrationOrderWarnings.testorder);
     document.body.appendChild(script);
     setTimeout(() => {
-      assert.ok(Component.registrationOrderWarnings.testorder);
+      assert.ok(registrationOrderWarnings.testorder);
       done();
     });
   });
 
   test('throws warning if component registered within scene', function (done) {
-    assert.notOk(Component.registrationOrderWarnings.testorder);
+    assert.notOk(registrationOrderWarnings.testorder);
     sceneEl.appendChild(script);
     setTimeout(() => {
-      assert.ok(Component.registrationOrderWarnings.testorder);
+      assert.ok(registrationOrderWarnings.testorder);
       done();
     });
   });

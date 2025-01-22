@@ -1,7 +1,7 @@
 /* global AFRAME, assert, process, setup, suite, test, teardown */
-const entityFactory = require('../helpers').entityFactory;
+import { entityFactory } from '../helpers.js';
+import THREE from 'lib/three.js';
 
-const THREE = require('lib/three');
 const VIDEO = 'base/tests/assets/test.mp4';
 
 suite('shader', function () {

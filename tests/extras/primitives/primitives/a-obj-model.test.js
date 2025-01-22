@@ -1,5 +1,5 @@
 /* global assert, suite, test, setup */
-var helpers = require('../../../helpers');
+import * as helpers from '../../../helpers.js';
 
 suite('a-obj-model', function () {
   setup(function (done) {

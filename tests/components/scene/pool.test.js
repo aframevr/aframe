@@ -1,5 +1,5 @@
 /* global assert, process, setup, suite, test */
-var helpers = require('../../helpers');
+import * as helpers from '../../helpers.js';
 
 suite('pool', function () {
   setup(function (done) {

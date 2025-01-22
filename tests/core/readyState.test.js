@@ -1,12 +1,12 @@
 /* global AFRAME, assert, suite, test, setup */
-var readyState = require('core/readyState');
+import * as readyState from 'core/readyState.js';
 
 suite('readyState', function () {
   setup(function (done) {
     // Test setup initializes AFRAME when document is already ready.
     // This timeout ensures the readyState is reset before running the tests here.
     setTimeout(function () {
-      readyState.canInitializeElements = false;
+      readyState.reset();
       done();
     });
   });

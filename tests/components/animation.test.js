@@ -1,7 +1,6 @@
 /* global assert, setup, suite, test, THREE */
-var entityFactory = require('../helpers').entityFactory;
-var components = require('index').components;
-var registerComponent = require('index').registerComponent;
+import { entityFactory } from '../helpers.js';
+import { registerComponent, components } from 'core/component.js';
 
 suite('animation', function () {
   var component;

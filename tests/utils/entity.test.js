@@ -1,6 +1,6 @@
 /* global assert, setup, suite, test */
-var helpers = require('../helpers');
-var entity = require('utils/').entity;
+import * as helpers from '../helpers.js';
+import { entity } from 'utils/index.js';
 
 var getComponentProperty = entity.getComponentProperty;
 var setComponentProperty = entity.setComponentProperty;

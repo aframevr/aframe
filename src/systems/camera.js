@@ -1,5 +1,5 @@
-var constants = require('../constants/');
-var registerSystem = require('../core/system').registerSystem;
+import * as constants from '../constants/index.js';
+import { registerSystem } from '../core/system.js';
 
 var DEFAULT_CAMERA_ATTR = 'data-aframe-default-camera';
 
@@ -8,7 +8,7 @@ var DEFAULT_CAMERA_ATTR = 'data-aframe-default-camera';
  *
  * @member {object} activeCameraEl - Active camera entity.
  */
-module.exports.System = registerSystem('camera', {
+export var System = registerSystem('camera', {
   init: function () {
     this.activeCameraEl = null;
 

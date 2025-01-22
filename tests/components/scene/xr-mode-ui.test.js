@@ -1,12 +1,13 @@
 /* global assert, process, setup, suite, test */
-var entityFactory = require('../../helpers').entityFactory;
+import { entityFactory } from '../../helpers.js';
 
-var UI_CLASSES = ['.a-orientation-modal', '.a-enter-vr-button'];
+var UI_CLASSES = ['.a-orientation-modal', '.a-enter-vr'];
 
 suite('xr-mode-ui', function () {
   setup(function (done) {
     this.entityEl = entityFactory();
     var el = this.el = this.entityEl.parentNode;
+    el.hasWebXR = true;
     el.addEventListener('loaded', function () { done(); });
   });
 
@@ -25,16 +26,21 @@ suite('xr-mode-ui', function () {
     });
   });
 
-  test('hides on enter VR', function () {
+  test('hides on enter VR', function (done) {
     var scene = this.el;
     // mock camera
     scene.camera = {
       el: {object3D: {}},
       updateProjectionMatrix: function () {}
     };
+
     scene.enterVR();
-    UI_CLASSES.forEach(function (uiClass) {
-      assert.ok(scene.querySelector(uiClass).className.indexOf('a-hidden'));
+
+    process.nextTick(function () {
+      UI_CLASSES.forEach(function (uiClass) {
+        assert.include(scene.querySelector(uiClass).className, 'a-hidden');
+      });
+      done();
     });
   });
 
@@ -45,13 +51,16 @@ suite('xr-mode-ui', function () {
       el: {object3D: {}, getAttribute: function () { return {spectator: false}; }},
       updateProjectionMatrix: function () {}
     };
-    scene.enterVR();
-    scene.exitVR();
 
-    process.nextTick(function () {
-      assert.equal(scene.querySelector('.a-enter-vr-button').className.indexOf('a-hidden'),
-                   -1);
+    scene.addEventListener('enter-vr', function () {
+      scene.exitVR();
+    });
+
+    scene.addEventListener('exit-vr', function () {
+      assert.notInclude(scene.querySelector('.a-enter-vr').className, 'a-hidden');
       done();
     });
+
+    scene.enterVR();
   });
 });

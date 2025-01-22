@@ -1,5 +1,5 @@
-var registerSystem = require('../core/system').registerSystem;
-var THREE = require('../lib/three');
+import THREE from '../lib/three.js';
+import { registerSystem } from '../core/system.js';
 
 function fetchScript (src) {
   return new Promise(function (resolve, reject) {
@@ -22,7 +22,7 @@ function fetchScript (src) {
  * @param {string} basisTranscoderPath - Base path from which to load Basis transcoder library.
  * @param {string} meshoptDecoderPath - Full path from which to load Meshopt decoder.
  */
-module.exports.System = registerSystem('gltf-model', {
+export var System = registerSystem('gltf-model', {
   schema: {
     dracoDecoderPath: {default: 'https://www.gstatic.com/draco/versioned/decoders/1.5.7/'},
     basisTranscoderPath: {default: ''},

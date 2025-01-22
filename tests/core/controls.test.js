@@ -1,5 +1,5 @@
 /* global Event, assert, process, setup, suite, test */
-var helpers = require('../helpers');
+import * as helpers from '../helpers.js';
 var PI = Math.PI;
 
 suite('position controls on camera with WASD controls (integration unit test)', function () {
@@ -407,7 +407,7 @@ suite('rotation controls on camera with touch drag (integration unit test)', fun
 
     canvas = sceneEl.canvas;
     sceneEl.isMobile = true;
-    canvas.clientWidth = 1000;
+    assert.isAtLeast(canvas.clientWidth, 1000);
 
     // Dispatch touchstart event.
     touchStartEvent = new Event('touchstart');
@@ -437,7 +437,7 @@ suite('rotation controls on camera with touch drag (integration unit test)', fun
 
     canvas = sceneEl.canvas;
     sceneEl.isMobile = true;
-    canvas.clientWidth = 1000;
+    assert.isAtLeast(canvas.clientWidth, 1000);
 
     // Dispatch touchstart event.
     touchStartEvent = new Event('touchstart');

@@ -1,16 +1,12 @@
-var registerComponent = require('../core/component').registerComponent;
-var THREE = require('../lib/three');
-
-var trackedControlsUtils = require('../utils/tracked-controls');
-var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
-var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
-var onButtonEvent = trackedControlsUtils.onButtonEvent;
+import THREE from '../lib/three.js';
+import { registerComponent } from '../core/component.js';
+import { AFRAME_CDN_ROOT } from '../constants/index.js';
+import { checkControllerPresentAndSetup, emitIfAxesChanged, onButtonEvent } from '../utils/tracked-controls.js';
 
 // Prefix for Gen1 and Gen2 Oculus Touch Controllers.
 var GAMEPAD_ID_PREFIX = 'oculus-touch';
 
 // First generation model URL.
-var AFRAME_CDN_ROOT = require('../constants').AFRAME_CDN_ROOT;
 var TOUCH_CONTROLLER_MODEL_BASE_URL = AFRAME_CDN_ROOT + 'controllers/oculus/oculus-touch-controller-';
 var META_CONTROLLER_MODEL_BASE_URL = AFRAME_CDN_ROOT + 'controllers/meta/';
 
@@ -475,9 +471,8 @@ var componentConfig = {
     }
   }
 };
-
 registerComponent('oculus-touch-controls', componentConfig);
-module.exports.Component = registerComponent('meta-touch-controls', componentConfig);
+export var Component = registerComponent('meta-touch-controls', componentConfig);
 
 /**
  * Some of the controller models share the same material for different parts (buttons, triggers...).

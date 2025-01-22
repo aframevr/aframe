@@ -1,7 +1,7 @@
 /* global THREE */
-var registerComponent = require('../core/component').registerComponent;
+import { registerComponent } from '../core/component.js';
+import { AFRAME_CDN_ROOT } from '../constants/index.js';
 
-var AFRAME_CDN_ROOT = require('../constants').AFRAME_CDN_ROOT;
 // Found at https://github.com/aframevr/assets.
 var MODEL_URLS = {
   toonLeft: AFRAME_CDN_ROOT + 'controllers/hands/leftHand.glb',
@@ -48,7 +48,7 @@ EVENTS[ANIMATIONS.point] = 'pointing';
  *
  * @property {string} Hand mapping (`left`, `right`).
  */
-module.exports.Component = registerComponent('hand-controls', {
+export var Component = registerComponent('hand-controls', {
   schema: {
     color: {default: 'white', type: 'color'},
     hand: { default: 'left' },

@@ -1,5 +1,5 @@
-var registerSystem = require('../core/system').registerSystem;
-var constants = require('../constants/');
+import { registerSystem } from '../core/system.js';
+import * as constants from '../constants/index.js';
 
 var DEFAULT_LIGHT_ATTR = 'data-aframe-default-light';
 
@@ -12,7 +12,7 @@ var DEFAULT_LIGHT_ATTR = 'data-aframe-default-light';
  * @param {bool} defaultLights - Whether default lighting are defined.
  * @param {bool} userDefinedLights - Whether user lighting is defined.
  */
-module.exports.System = registerSystem('light', {
+export var System = registerSystem('light', {
   schema: {
     defaultLightsEnabled: {default: true}
   },

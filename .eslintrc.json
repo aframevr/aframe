@@ -4,6 +4,9 @@
     "ecmaVersion": 12
   },
   "rules": {
+    /* To work towards no-build. */
+    "import/extensions": ["warn", "always", { "js": "always" }],
+
     /* These rules are incompatible with ES5. */
     "no-var": "off",
     "object-shorthand": "off",
@@ -36,8 +39,15 @@
         The exception is that ES6 classes are used sparingly - see exceptions below. */
       "files": ["./src/**/*.js"],
       "parserOptions": {
-        "sourceType": "script",
-        "ecmaVersion": 5
+        "sourceType": "module",
+        "ecmaVersion": 6
+      }
+    },
+    {
+      /* This acts as a barrel file and uses 'export as', which is an ES11 feature */
+      "files": ["./src/utils/index.js"],
+      "parserOptions": {
+        "ecmaVersion": 11
       }
     },
     {

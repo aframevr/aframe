@@ -1,5 +1,5 @@
-var controllerUtils = require('../utils/tracked-controls');
-var registerComponent = require('../core/component').registerComponent;
+import { registerComponent } from '../core/component.js';
+import * as controllerUtils from '../utils/tracked-controls.js';
 
 var EVENTS = {
   AXISMOVE: 'axismove',
@@ -24,7 +24,7 @@ var EVENTS = {
  * @property {boolean} handTrackingEnabled - Assumes a controller exposed via the WebXR Hand Input Module.
  * @property {boolean} iterateControllerProfiles - Iterates over all of the WebXR controller input profiles.
  */
-module.exports.Component = registerComponent('tracked-controls', {
+export var Component = registerComponent('tracked-controls', {
   schema: {
     id: {type: 'string', default: ''},
     controller: {default: -1},

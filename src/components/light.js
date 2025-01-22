@@ -1,9 +1,7 @@
-var utils = require('../utils');
-var diff = utils.diff;
-var debug = require('../utils/debug');
-var registerComponent = require('../core/component').registerComponent;
-var THREE = require('../lib/three');
-var mathUtils = require('../utils/math');
+import THREE from '../lib/three.js';
+import { diff, debug, srcLoader } from '../utils/index.js';
+import { registerComponent } from '../core/component.js';
+import * as mathUtils from '../utils/math.js';
 
 var degToRad = THREE.MathUtils.degToRad;
 var warn = debug('components:light:warn');
@@ -14,7 +12,7 @@ var probeCache = {};
 /**
  * Light component.
  */
-module.exports.Component = registerComponent('light', {
+export var Component = registerComponent('light', {
   schema: {
     angle: {default: 60, if: {type: ['spot']}},
     color: {type: 'color', if: {type: ['ambient', 'directional', 'hemisphere', 'point', 'spot']}},
@@ -352,7 +350,7 @@ module.exports.Component = registerComponent('light', {
     // Populate the cache if not done for this envMap yet
     if (probeCache[data.envMap] === undefined) {
       probeCache[data.envMap] = new window.Promise(function (resolve) {
-        utils.srcLoader.validateCubemapSrc(data.envMap, function loadEnvMap (urls) {
+        srcLoader.validateCubemapSrc(data.envMap, function loadEnvMap (urls) {
           CubeLoader.load(urls, function (cube) {
             var tempLightProbe = THREE.LightProbeGenerator.fromCubeTexture(cube);
             probeCache[data.envMap] = tempLightProbe;

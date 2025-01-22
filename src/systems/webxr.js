@@ -1,12 +1,12 @@
-var registerSystem = require('../core/system').registerSystem;
+import { registerSystem } from '../core/system.js';
+import * as utils from '../utils/index.js';
 
-var utils = require('../utils/');
 var warn = utils.debug('systems:webxr:warn');
 
 /**
  * WebXR session initialization and XR module support.
  */
-module.exports.System = registerSystem('webxr', {
+export var System = registerSystem('webxr', {
   schema: {
     referenceSpaceType: {type: 'string', default: 'local-floor'},
     requiredFeatures: {type: 'array', default: ['local-floor']},

@@ -1,7 +1,6 @@
 /* global DeviceOrientationEvent, location  */
-var registerComponent = require('../../core/component').registerComponent;
-
-var constants = require('../../constants/');
+import { registerComponent } from '../../core/component.js';
+import { AFRAME_INJECTED } from '../../constants/index.js';
 
 var MODAL_CLASS = 'a-modal';
 var DIALOG_CLASS = 'a-dialog';
@@ -16,7 +15,7 @@ var DIALOG_OK_BUTTON_CLASS = 'a-dialog-ok-button';
 /**
  * UI for enabling device motion permission
  */
-module.exports.Component = registerComponent('device-orientation-permission-ui', {
+export var Component = registerComponent('device-orientation-permission-ui', {
   schema: {
     enabled: {default: true},
     deviceMotionMessage: {
@@ -120,13 +119,13 @@ function createPermissionDialog (
   // Buttons
   denyButton = document.createElement('button');
   denyButton.classList.add(DIALOG_BUTTON_CLASS, DIALOG_DENY_BUTTON_CLASS);
-  denyButton.setAttribute(constants.AFRAME_INJECTED, '');
+  denyButton.setAttribute(AFRAME_INJECTED, '');
   denyButton.innerHTML = denyText;
   buttonsContainer.appendChild(denyButton);
 
   acceptButton = document.createElement('button');
   acceptButton.classList.add(DIALOG_BUTTON_CLASS, DIALOG_ALLOW_BUTTON_CLASS);
-  acceptButton.setAttribute(constants.AFRAME_INJECTED, '');
+  acceptButton.setAttribute(AFRAME_INJECTED, '');
   acceptButton.innerHTML = allowText;
   buttonsContainer.appendChild(acceptButton);
 
@@ -154,7 +153,7 @@ function createAlertDialog (closeText, dialogText, onOkClicked) {
   // Buttons
   okButton = document.createElement('button');
   okButton.classList.add(DIALOG_BUTTON_CLASS, DIALOG_OK_BUTTON_CLASS);
-  okButton.setAttribute(constants.AFRAME_INJECTED, '');
+  okButton.setAttribute(AFRAME_INJECTED, '');
   okButton.innerHTML = closeText;
   buttonsContainer.appendChild(okButton);
 
@@ -175,11 +174,11 @@ function createDialog (text, buttonsContainerEl) {
 
   modalContainer = document.createElement('div');
   modalContainer.classList.add(MODAL_CLASS);
-  modalContainer.setAttribute(constants.AFRAME_INJECTED, '');
+  modalContainer.setAttribute(AFRAME_INJECTED, '');
 
   dialog = document.createElement('div');
   dialog.className = DIALOG_CLASS;
-  dialog.setAttribute(constants.AFRAME_INJECTED, '');
+  dialog.setAttribute(AFRAME_INJECTED, '');
   modalContainer.appendChild(dialog);
 
   dialogTextContainer = document.createElement('div');

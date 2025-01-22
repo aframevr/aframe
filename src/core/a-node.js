@@ -1,10 +1,10 @@
-/* global customElements, CustomEvent, HTMLElement,  MutationObserver */
-var utils = require('../utils/');
-var readyState = require('./readyState');
+/* global customElements, CustomEvent, HTMLElement, MutationObserver */
+import * as utils from '../utils/index.js';
+import * as readyState from './readyState.js';
 
 var warn = utils.debug('core:a-node:warn');
 
-var knownTags = {
+export var knownTags = {
   'a-scene': true,
   'a-assets': true,
   'a-assets-items': true,
@@ -24,7 +24,7 @@ function isNode (node) {
  * Nodes can be modified using mixins.
  * Nodes emit a `loaded` event when they and their children have initialized.
  */
-class ANode extends HTMLElement {
+export class ANode extends HTMLElement {
   constructor () {
     super();
     this.computedMixinStr = '';
@@ -313,6 +313,3 @@ ANode.oldMixinIdArray = [];
 ANode.mixinIds = {};
 
 customElements.define('a-node', ANode);
-
-module.exports.ANode = ANode;
-module.exports.knownTags = knownTags;

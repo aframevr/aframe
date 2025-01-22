@@ -1,5 +1,5 @@
 /* global assert, process, setup, sinon, suite, test, THREE */
-const entityFactory = require('../helpers').entityFactory;
+import { entityFactory } from '../helpers.js';
 
 suite('hand-tracking-controls', function () {
   var controller;

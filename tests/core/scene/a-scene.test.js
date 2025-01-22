@@ -1,16 +1,11 @@
 /* global AFRAME, assert, CustomEvent, process, screen, sinon, setup, suite, teardown, test, THREE, EventTarget */
-var AScene = require('core/scene/a-scene').AScene;
-var AEntity = require('core/a-entity').AEntity;
-var ANode = require('core/a-node').ANode;
-var components = require('core/component').components;
-var registerComponent = require('core/component').registerComponent;
-var scenes = require('core/scene/scenes');
-var determineComponentBehaviorOrder = require('core/scene/a-scene').determineComponentBehaviorOrder;
-var setupCanvas = require('core/scene/a-scene').setupCanvas;
-var systems = require('core/system').systems;
+import { AScene, determineComponentBehaviorOrder, setupCanvas } from 'core/scene/a-scene.js';
+import { AEntity } from 'core/a-entity.js';
+import { ANode } from 'core/a-node.js';
+import { registerComponent } from 'core/component.js';
+import scenes from 'core/scene/scenes.js';
 
-var helpers = require('../../helpers');
-var utils = require('index').utils;
+import * as helpers from '../../helpers.js';
 
 var xrSession = new EventTarget();
 xrSession.requestReferenceSpace = function () {

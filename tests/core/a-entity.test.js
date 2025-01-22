@@ -1,11 +1,10 @@
 /* global AFRAME, assert, process, sinon, setup, suite, teardown, test, HTMLElement */
-var AEntity = require('core/a-entity').AEntity;
-var ANode = require('core/a-node').ANode;
-var extend = require('utils').extend;
-var registerComponent = require('core/component').registerComponent;
-var components = require('core/component').components;
-var THREE = require('index').THREE;
-var helpers = require('../helpers');
+import { AEntity } from 'core/a-entity.js';
+import { ANode } from 'core/a-node.js';
+import { extend } from 'utils/index.js';
+import { registerComponent, components } from 'core/component.js';
+import THREE from 'lib/three.js';
+import * as helpers from '../helpers.js';
 
 var elFactory = helpers.elFactory;
 var mixinFactory = helpers.mixinFactory;

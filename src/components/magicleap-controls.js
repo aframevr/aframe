@@ -1,9 +1,6 @@
-var registerComponent = require('../core/component').registerComponent;
-
-var trackedControlsUtils = require('../utils/tracked-controls');
-var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
-var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
-var onButtonEvent = trackedControlsUtils.onButtonEvent;
+import { registerComponent } from '../core/component.js';
+import { AFRAME_CDN_ROOT } from '../constants/index.js';
+import { checkControllerPresentAndSetup, emitIfAxesChanged, onButtonEvent } from '../utils/tracked-controls.js';
 
 // See Profiles Registry:
 // https://github.com/immersive-web/webxr-input-profiles/tree/master/packages/registry
@@ -11,7 +8,6 @@ var onButtonEvent = trackedControlsUtils.onButtonEvent;
 var GAMEPAD_ID_PREFIX = 'magicleap';
 var GAMEPAD_ID_SUFFIX = '-one';
 var GAMEPAD_ID_COMPOSITE = GAMEPAD_ID_PREFIX + GAMEPAD_ID_SUFFIX;
-var AFRAME_CDN_ROOT = require('../constants').AFRAME_CDN_ROOT;
 var MAGICLEAP_CONTROLLER_MODEL_GLB_URL = AFRAME_CDN_ROOT + 'controllers/magicleap/magicleap-one-controller.glb';
 
 /**
@@ -36,7 +32,7 @@ var INPUT_MAPPING_WEBXR = {
  * buttons: trigger, grip, touchpad, and menu.
  * Load a controller model.
  */
-module.exports.Component = registerComponent('magicleap-controls', {
+export var Component = registerComponent('magicleap-controls', {
   schema: {
     hand: {default: 'none'},
     model: {default: true}

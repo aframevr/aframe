@@ -1,13 +1,10 @@
 /* global Promise */
-var utils = require('../utils/');
-var component = require('../core/component');
-var THREE = require('../lib/three');
-var shader = require('../core/shader');
+import THREE from '../lib/three.js';
+import * as utils from '../utils/index.js';
+import { registerComponent } from '../core/component.js';
+import { shaders, shaderNames } from '../core/shader.js';
 
 var error = utils.debug('components:material:error');
-var registerComponent = component.registerComponent;
-var shaders = shader.shaders;
-var shaderNames = shader.shaderNames;
 
 /**
  * Material component.
@@ -16,7 +13,7 @@ var shaderNames = shader.shaderNames;
  *         three.js's implementation of PBR. Another standard shading model is `flat` which
  *         uses MeshBasicMaterial.
  */
-module.exports.Component = registerComponent('material', {
+export var Component = registerComponent('material', {
   schema: {
     alphaTest: {default: 0.0, min: 0.0, max: 1.0},
     depthTest: {default: true},

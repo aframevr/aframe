@@ -1,11 +1,11 @@
-var registerComponent = require('../core/component').registerComponent;
-var THREE = require('../lib/three');
+import THREE from '../lib/three.js';
+import { registerComponent } from '../core/component.js';
 
 /**
  * Camera component.
  * Pairs along with camera system to handle tracking the active camera.
  */
-module.exports.Component = registerComponent('camera', {
+export var Component = registerComponent('camera', {
   schema: {
     active: {default: true},
     far: {default: 10000},

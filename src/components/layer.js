@@ -1,9 +1,9 @@
 /* global THREE, XRRigidTransform, XRWebGLBinding */
-var registerComponent = require('../core/component').registerComponent;
-var utils = require('../utils/');
+import { registerComponent } from '../core/component.js';
+import * as utils from '../utils/index.js';
 var warn = utils.debug('components:layer:warn');
 
-module.exports.Component = registerComponent('layer', {
+export var Component = registerComponent('layer', {
   schema: {
     type: {default: 'quad', oneOf: ['quad', 'monocubemap', 'stereocubemap']},
     src: {type: 'map'},

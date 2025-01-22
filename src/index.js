@@ -1,4 +1,37 @@
-var utils = require('./utils/');
+import ANIME from 'super-animejs';
+import THREE from './lib/three.js';
+
+import { AScene } from './core/scene/a-scene.js';
+import scenes from './core/scene/scenes.js';
+import { ANode } from './core/a-node.js';
+import { AEntity } from './core/a-entity.js'; // Depends on ANode and core components.
+import { registerComponent, components, Component } from './core/component.js';
+import { registerGeometry, geometries } from './core/geometry.js';
+import { registerPrimitive, primitives } from './extras/primitives/primitives.js';
+import { registerShader, shaders } from './core/shader.js';
+import { registerSystem, systems } from './core/system.js';
+import * as schema from './core/schema.js';
+import * as readyState from './core/readyState.js';
+
+import './core/a-assets.js';
+import './core/a-cubemap.js';
+import './core/a-mixin.js';
+
+import * as utils from './utils/index.js';
+import pkg from '../package.json';
+
+import './components/index.js'; // Register standard components.
+import './geometries/index.js'; // Register standard geometries.
+import './shaders/index.js'; // Register standard shaders.
+import './systems/index.js'; // Register standard systems.
+
+// Depends on material component and standard shader
+import getMeshMixin from './extras/primitives/getMeshMixin.js';
+
+// Extras.
+import './extras/components/index.js';
+import './extras/primitives/index.js';
+
 var debug = utils.debug;
 var error = debug('A-Frame:error');
 var warn = debug('A-Frame:warn');
@@ -21,42 +54,12 @@ if (!window.cordova && window.location.protocol === 'file:') {
 
 // CSS.
 if (utils.device.isBrowserEnvironment) {
+  window.logs = debug;
   require('./style/aframe.css');
   require('./style/rStats.css');
 }
 
-// Required before `AEntity` so that all components are registered.
-var AScene = require('./core/scene/a-scene').AScene;
-var components = require('./core/component').components;
-var registerComponent = require('./core/component').registerComponent;
-var registerGeometry = require('./core/geometry').registerGeometry;
-var registerPrimitive = require('./extras/primitives/primitives').registerPrimitive;
-var registerShader = require('./core/shader').registerShader;
-var registerSystem = require('./core/system').registerSystem;
-var shaders = require('./core/shader').shaders;
-var systems = require('./core/system').systems;
-// Exports THREE to window so three.js can be used without alteration.
-var THREE = window.THREE = require('./lib/three');
-var readyState = require('./core/readyState');
-
-var pkg = require('../package');
-
-require('./components/index'); // Register standard components.
-require('./geometries/index'); // Register standard geometries.
-require('./shaders/index'); // Register standard shaders.
-require('./systems/index'); // Register standard systems.
-var ANode = require('./core/a-node').ANode;
-var AEntity = require('./core/a-entity').AEntity; // Depends on ANode and core components.
-
-require('./core/a-assets');
-require('./core/a-cubemap');
-require('./core/a-mixin');
-
-// Extras.
-require('./extras/components/');
-require('./extras/primitives/');
-
-console.log('A-Frame Version: 1.6.0 (Date 2025-01-22, Commit #51b70a38)');
+console.log('A-Frame Version: 1.6.0 (Date 2025-01-21, Commit #38f57323)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             THREE.REVISION);
 
@@ -65,26 +68,26 @@ if (!window.AFRAME_ASYNC) {
   readyState.waitForDocumentReadyState();
 }
 
-module.exports = window.AFRAME = {
-  AComponent: require('./core/component').Component,
+var AFRAME = globalThis.AFRAME = {
+  AComponent: Component,
   AEntity: AEntity,
   ANode: ANode,
-  ANIME: require('super-animejs').default,
+  ANIME: ANIME,
   AScene: AScene,
   components: components,
   coreComponents: Object.keys(components),
-  geometries: require('./core/geometry').geometries,
+  geometries: geometries,
   registerComponent: registerComponent,
   registerGeometry: registerGeometry,
   registerPrimitive: registerPrimitive,
   registerShader: registerShader,
   registerSystem: registerSystem,
   primitives: {
-    getMeshMixin: require('./extras/primitives/getMeshMixin'),
-    primitives: require('./extras/primitives/primitives').primitives
+    getMeshMixin: getMeshMixin,
+    primitives: primitives
   },
-  scenes: require('./core/scene/scenes'),
-  schema: require('./core/schema'),
+  scenes: scenes,
+  schema: schema,
   shaders: shaders,
   systems: systems,
   emitReady: readyState.emitReady,
@@ -92,3 +95,4 @@ module.exports = window.AFRAME = {
   utils: utils,
   version: pkg.version
 };
+export default AFRAME;

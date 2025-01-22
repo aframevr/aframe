@@ -1,4 +1,4 @@
-module.exports = function forceCanvasResizeSafariMobile (canvasEl) {
+export default function forceCanvasResizeSafariMobile (canvasEl) {
   var width = canvasEl.style.width;
   var height = canvasEl.style.height;
   // Taken from webvr-polyfill (https://github.com/borismus/webvr-polyfill/blob/85f657cd502ec9417bf26b87c3cb2afa6a70e079/src/util.js#L200)
@@ -11,4 +11,4 @@ module.exports = function forceCanvasResizeSafariMobile (canvasEl) {
     canvasEl.style.width = width;
     canvasEl.style.height = height;
   }, 200);
-};
+}

@@ -1,5 +1,5 @@
-var registerShader = require('../core/shader').registerShader;
-var THREE = require('../lib/three');
+import { registerShader } from '../core/shader.js';
+import THREE from '../lib/three.js';
 
 var VERTEX_SHADER = [
   '#include <common>',
@@ -70,7 +70,7 @@ var FRAGMENT_SHADER = [
  * Multi-channel signed distance field.
  * Used by text component.
  */
-module.exports.Shader = registerShader('msdf', {
+export var Shader = registerShader('msdf', {
   schema: {
     alphaTest: {type: 'number', is: 'uniform', default: 0.5},
     color: {type: 'color', is: 'uniform', default: 'white'},

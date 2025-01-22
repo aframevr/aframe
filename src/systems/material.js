@@ -1,8 +1,7 @@
-var registerSystem = require('../core/system').registerSystem;
-var THREE = require('../lib/three');
-var utils = require('../utils/');
-var setTextureProperties = require('../utils/material').setTextureProperties;
-var createCompatibleTexture = require('../utils/material').createCompatibleTexture;
+import THREE from '../lib/three.js';
+import { registerSystem } from '../core/system.js';
+import * as utils from '../utils/index.js';
+import { setTextureProperties, createCompatibleTexture } from '../utils/material.js';
 
 var debug = utils.debug;
 var error = debug('components:texture:error');
@@ -16,7 +15,7 @@ var ImageLoader = new THREE.ImageLoader();
  * @member {object} materials - Registered materials.
  * @member {object} sourceCache - Texture source cache for, Image, Video and Canvas sources
  */
-module.exports.System = registerSystem('material', {
+export var System = registerSystem('material', {
   init: function () {
     this.materials = {};
     this.sourceCache = {};

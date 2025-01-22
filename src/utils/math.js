@@ -5,7 +5,7 @@
  * @param {THREE.Vector3} pointToTest point to test
  * @returns Number
  */
- function distanceOfPointFromPlane (positionOnPlane, planeNormal, pointToTest) {
+ export function distanceOfPointFromPlane (positionOnPlane, planeNormal, pointToTest) {
   // the d value in the plane equation a*x + b*y + c*z=d
    var d = planeNormal.dot(positionOnPlane);
 
@@ -21,7 +21,7 @@
  * @param {THREE.Vector3} resultPoint where to store the result.
  * @returns
  */
- function nearestPointInPlane (positionOnPlane, planeNormal, pointToTest, resultPoint) {
+ export function nearestPointInPlane (positionOnPlane, planeNormal, pointToTest, resultPoint) {
    var t = distanceOfPointFromPlane(positionOnPlane, planeNormal, pointToTest);
   // closest point on the plane
    resultPoint.copy(planeNormal);
@@ -29,6 +29,3 @@
    resultPoint.add(pointToTest);
    return resultPoint;
  }
-
- module.exports.distanceOfPointFromPlane = distanceOfPointFromPlane;
- module.exports.nearestPointInPlane = nearestPointInPlane;

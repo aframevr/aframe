@@ -1,11 +1,11 @@
-var registerShader = require('../core/shader').registerShader;
-var THREE = require('../lib/three');
-var utils = require('../utils/');
+import { registerShader } from '../core/shader.js';
+import THREE from '../lib/three.js';
+import * as utils from '../utils/index.js';
 
 /**
  * Flat shader using THREE.MeshBasicMaterial.
  */
-module.exports.Shader = registerShader('flat', {
+export var Shader = registerShader('flat', {
   schema: {
     color: {type: 'color'},
     fog: {default: true},

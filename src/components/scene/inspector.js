@@ -1,8 +1,8 @@
 /* global AFRAME, INSPECTOR_VERSION */
-var AFRAME_INJECTED = require('../../constants').AFRAME_INJECTED;
-var pkg = require('../../../package');
-var registerComponent = require('../../core/component').registerComponent;
-var utils = require('../../utils/');
+import { AFRAME_INJECTED } from '../../constants/index.js';
+import { registerComponent } from '../../core/component.js';
+import pkg from '../../../package.json';
+import * as utils from '../../utils/index.js';
 
 /**
  * 0.4.2 to 0.4.x
@@ -20,7 +20,7 @@ var INSPECTOR_URL = typeof INSPECTOR_VERSION !== 'undefined' && INSPECTOR_VERSIO
 var LOADING_MESSAGE = 'Loading Inspector';
 var LOADING_ERROR_MESSAGE = 'Error loading Inspector';
 
-module.exports.Component = registerComponent('inspector', {
+export var Component = registerComponent('inspector', {
   schema: {
     url: {default: INSPECTOR_URL}
   },

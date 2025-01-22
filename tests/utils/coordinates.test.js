@@ -1,5 +1,5 @@
 /* global assert, suite, test */
-var coordinates = require('index').utils.coordinates;
+import { coordinates } from 'utils/index.js';
 
 suite('utils.coordinates', function () {
   suite('isCoordinates', function () {

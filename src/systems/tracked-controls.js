@@ -1,11 +1,10 @@
-var registerSystem = require('../core/system').registerSystem;
-var utils = require('../utils');
+import { registerSystem } from '../core/system.js';
 
 /**
  * Tracked controls system.
  * Maintain list with available tracked controllers.
  */
-module.exports.System = registerSystem('tracked-controls', {
+export var System = registerSystem('tracked-controls', {
   init: function () {
     this.controllers = [];
     this.onInputSourcesChange = this.onInputSourcesChange.bind(this);
