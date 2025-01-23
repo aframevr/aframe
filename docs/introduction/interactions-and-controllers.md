@@ -14,7 +14,7 @@ examples:
 There is no one true way for adding interactions due to variety of platforms,
 devices, input methods that A-Frame can support. On top of that, VR interaction
 is open-ended. Unlike the 2D Web where we only have to worry about mouse and
-touch input, and unlike Cardboard where we only have to worry about one button,
+touch input,
 we can do anything in VR: grab, throw, rub, flip, poke, stretch, press, etc.
 Going further, mixed reality, trackers, and custom controllers provide even
 more creativity in interaction!

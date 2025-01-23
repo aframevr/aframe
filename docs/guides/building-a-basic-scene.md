@@ -59,9 +59,8 @@ is attached or else `<a-scene>` will do nothing.
 Next, we include [`<a-scene>`][scene] in the `<body>`. `<a-scene>` will contain every
 entity in our scene. `<a-scene>` handles all of the setup that is required for
 3D: setting up WebGL, the canvas, camera, lights, renderer, render loop as well
-as out of the box WebVR support on platforms such as HTC Vive, Oculus Rift,
-Samsung GearVR, and smartphones (Google Cardboard). `<a-scene>` alone takes a
-lot of load off of us!
+as out of the box WebXR support on headsets and WebXR enabled browser on smartphones.
+`<a-scene>` alone takes a lot of load off of us!
 
 ## Adding an Entity
 

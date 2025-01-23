@@ -14,8 +14,8 @@ examples: []
 The laser-controls component provides tracked controls with a laser or ray
 cursor shooting out to be used for input and interactions. *DoF* stands for
 [degrees of freedom][dof]. Because they only require rotation and some form of
-input, laser-based interactions scale well across 0 DoF (gaze-based,
-Cardboard), and 6 DoF (Vive, Oculus Touch). If desired, we can get a consistent form of interaction that works
+input, laser-based interactions scale well across 0 DoF (gaze-based),
+and 6 DoF (Vive, Oculus Touch). If desired, we can get a consistent form of interaction that works
 across all VR platforms with a single line of HTML.
 
 [meta-touch-controls]: ./meta-touch-controls.md
