@@ -15955,9 +15955,6 @@ var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_0__.registerCompo
     enabled: {
       default: true
     },
-    cardboardModeEnabled: {
-      default: false
-    },
     enterVRButton: {
       default: ''
     },
@@ -16082,7 +16079,7 @@ var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_0__.registerCompo
     if (!this.enterVREl) {
       return;
     }
-    if (sceneEl.is('vr-mode') || (sceneEl.isMobile || _utils_index_js__WEBPACK_IMPORTED_MODULE_2__.device.isMobileDeviceRequestingDesktopSite()) && !this.data.cardboardModeEnabled && !_utils_index_js__WEBPACK_IMPORTED_MODULE_2__.device.checkVRSupport()) {
+    if (sceneEl.is('vr-mode') || (sceneEl.isMobile || _utils_index_js__WEBPACK_IMPORTED_MODULE_2__.device.isMobileDeviceRequestingDesktopSite()) && !_utils_index_js__WEBPACK_IMPORTED_MODULE_2__.device.checkVRSupport()) {
       this.enterVREl.classList.add(HIDDEN_CLASS);
     } else {
       if (!_utils_index_js__WEBPACK_IMPORTED_MODULE_2__.device.checkVRSupport()) {
@@ -42874,7 +42871,7 @@ if (_utils_index_js__WEBPACK_IMPORTED_MODULE_16__.device.isBrowserEnvironment) {
   __webpack_require__(/*! ./style/aframe.css */ "./src/style/aframe.css");
   __webpack_require__(/*! ./style/rStats.css */ "./src/style/rStats.css");
 }
-console.log('A-Frame Version: 1.6.0 (Date 2025-01-22, Commit #f43aa6d4)');
+console.log('A-Frame Version: 1.6.0 (Date 2025-01-23, Commit #b8f407cc)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].REVISION);
 
 // Wait for ready state, unless user asynchronously initializes A-Frame.
