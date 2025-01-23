@@ -110,7 +110,7 @@ developers have unlimited access to JavaScript, DOM APIs, three.js, WebVR, and
 WebGL.
 
 :globe_with_meridians: **Cross-Platform VR**: Build VR applications for Vive,
-Rift, Meta Quest, Windows Mixed Reality, and Cardboard with support for
+Rift, Meta Quest, Windows Mixed Reality, and Apple Vision Pro with support for
 all respective controllers. Don't have a headset or controllers? No problem!
 A-Frame still works on standard desktop and smartphones.
 

@@ -190,8 +190,7 @@ into the scene. If the user stares at an entity long enough (i.e., the
 `fuseTimeout`), then the cursor will trigger a click.
 
 The advantage of fuse-based interactions for VR is that it does not require
-extra input devices other than the headset. The fuse-based cursor is primarily
-intended for Google Cardboard applications. The disadvantage of fuse-based
+extra input devices other than the headset. The disadvantage of fuse-based
 interactions is that it requires the user to turn their head a lot.
 
 ## Adding Visual Feedback
