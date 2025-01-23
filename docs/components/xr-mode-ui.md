@@ -19,7 +19,6 @@ to the [`<a-scene>` element][scene]. If we wish to simply toggle the UI, use CSS
 
 | Property | Description | Default Value |
 | - | - | - |
-| cardboardModeEnabled | Enables the now deprecated cardboard mode. | false |
 | enabled | Whether or not to display UI related to entering VR. | true |
 | enterVRButton | Selector to a custom VR button. On click, the button will enter VR. | '' |
 | enterVREnabled | If the VR button is displayed when applicable.| true |

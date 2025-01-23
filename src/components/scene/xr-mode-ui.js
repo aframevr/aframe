@@ -18,7 +18,6 @@ export var Component = registerComponent('xr-mode-ui', {
 
   schema: {
     enabled: {default: true},
-    cardboardModeEnabled: {default: false},
     enterVRButton: {default: ''},
     enterVREnabled: {default: true},
     enterARButton: {default: ''},
@@ -146,7 +145,7 @@ export var Component = registerComponent('xr-mode-ui', {
     var sceneEl = this.el;
     if (!this.enterVREl) { return; }
     if (sceneEl.is('vr-mode') ||
-       ((sceneEl.isMobile || utils.device.isMobileDeviceRequestingDesktopSite()) && !this.data.cardboardModeEnabled && !utils.device.checkVRSupport())) {
+       ((sceneEl.isMobile || utils.device.isMobileDeviceRequestingDesktopSite()) && !utils.device.checkVRSupport())) {
       this.enterVREl.classList.add(HIDDEN_CLASS);
     } else {
       if (!utils.device.checkVRSupport()) { this.enterVREl.classList.add('fullscreen'); }
