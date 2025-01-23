@@ -27,17 +27,12 @@ export function checkHeadsetConnected () {
   warn('`utils.checkHeadsetConnected` has moved to `utils.device.checkHeadsetConnected`');
   return device.checkHeadsetConnected(arguments);
 }
-export function isGearVR () {
-  warn('`utils.isGearVR` has been deprecated, use `utils.device.isMobileVR`');
-}
 
 export function isIOS () {
   warn('`utils.isIOS` has moved to `utils.device.isIOS`');
   return device.isIOS(arguments);
 }
-export function isOculusGo () {
-  warn('`utils.isOculusGo` has been deprecated, use `utils.device.isMobileVR`');
-}
+
 export function isMobile () {
   warn('`utils.isMobile has moved to `utils.device.isMobile`');
   return device.isMobile(arguments);
