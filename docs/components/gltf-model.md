@@ -78,6 +78,16 @@ file.
 |----------|--------------------------------------|
 | selector | Selector to an `<a-asset-item>`      |
 | string   | `url()`-enclosed path to a glTF file |
+| Data URL | data:model/gltf-binary;base64,...    |
+
+
+Data URL can be used for small glb files if you want to embed the assets in
+the html page. You can create a Data URL with those commands:
+
+```sh
+echo -n "data:model/gltf-binary;base64," >/tmp/base64.txt
+base64 -w 0 model.glb >>/tmp/base64.txt
+```
 
 ## Events
 
