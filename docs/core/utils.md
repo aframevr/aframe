@@ -154,6 +154,14 @@ Checks if device is Oculus Go. Returns a `boolean`.
 
 Checks if device is a smartphone. Returns a `boolean`.
 
+### `AFRAME.utils.device.isTablet ()`
+
+Checks if device is a tablet. Returns a `boolean`.
+
+### `AFRAME.utils.device.isMobileVR ()`
+
+Checks if device is a standalone headset. Returns a `boolean`.
+
 ## Function Utils
 
 ### `AFRAME.utils.throttle (function, minimumInterval [, optionalContext])`
