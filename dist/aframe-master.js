@@ -28291,11 +28291,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   forceCanvasResizeSafariMobile: () => (/* reexport safe */ _forceCanvasResizeSafariMobile_js__WEBPACK_IMPORTED_MODULE_6__["default"]),
 /* harmony export */   getElData: () => (/* binding */ getElData),
 /* harmony export */   getUrlParameter: () => (/* binding */ getUrlParameter),
-/* harmony export */   isGearVR: () => (/* binding */ isGearVR),
 /* harmony export */   isIOS: () => (/* binding */ isIOS),
 /* harmony export */   isIframed: () => (/* binding */ isIframed),
 /* harmony export */   isMobile: () => (/* binding */ isMobile),
-/* harmony export */   isOculusGo: () => (/* binding */ isOculusGo),
 /* harmony export */   material: () => (/* reexport module object */ _material_js__WEBPACK_IMPORTED_MODULE_7__),
 /* harmony export */   objectPool: () => (/* reexport module object */ _object_pool_js__WEBPACK_IMPORTED_MODULE_3__),
 /* harmony export */   shouldCaptureKeyEvent: () => (/* binding */ shouldCaptureKeyEvent),
@@ -28348,15 +28346,9 @@ function checkHeadsetConnected() {
   warn('`utils.checkHeadsetConnected` has moved to `utils.device.checkHeadsetConnected`');
   return _device_js__WEBPACK_IMPORTED_MODULE_2__.checkHeadsetConnected(arguments);
 }
-function isGearVR() {
-  warn('`utils.isGearVR` has been deprecated, use `utils.device.isMobileVR`');
-}
 function isIOS() {
   warn('`utils.isIOS` has moved to `utils.device.isIOS`');
   return _device_js__WEBPACK_IMPORTED_MODULE_2__.isIOS(arguments);
-}
-function isOculusGo() {
-  warn('`utils.isOculusGo` has been deprecated, use `utils.device.isMobileVR`');
 }
 function isMobile() {
   warn('`utils.isMobile has moved to `utils.device.isMobile`');
@@ -42871,7 +42863,7 @@ if (_utils_index_js__WEBPACK_IMPORTED_MODULE_16__.device.isBrowserEnvironment) {
   __webpack_require__(/*! ./style/aframe.css */ "./src/style/aframe.css");
   __webpack_require__(/*! ./style/rStats.css */ "./src/style/rStats.css");
 }
-console.log('A-Frame Version: 1.6.0 (Date 2025-01-23, Commit #b8f407cc)');
+console.log('A-Frame Version: 1.6.0 (Date 2025-01-23, Commit #e00f9510)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].REVISION);
 
 // Wait for ready state, unless user asynchronously initializes A-Frame.
