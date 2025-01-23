@@ -6,9 +6,10 @@
   "main": "dist/aframe-master.js",
   "scripts": {
     "dev": "cross-env INSPECTOR_VERSION=dev webpack serve --port 8080",
-    "dist": "node scripts/updateVersionLog.js && npm run dist:min && npm run dist:max",
+    "dist": "node scripts/updateVersionLog.js && npm run dist:min && npm run dist:max && npm run dist:module",
     "dist:max": "webpack --config webpack.config.js",
     "dist:min": "webpack --config webpack.prod.config.js",
+    "dist:module": "webpack --config webpack.module.config.js",
     "docs": "markserv --dir docs --port 9001",
     "preghpages": "node ./scripts/preghpages.js",
     "ghpages": "gh-pages -d gh-pages",

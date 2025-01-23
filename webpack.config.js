@@ -2,7 +2,7 @@ var path = require('path');
 var webpack = require('webpack');
 
 module.exports = {
-  entry: './src/index.js',
+  extends: ['webpack.common.js'],
   output: {
     library: {
       name: 'AFRAME',
@@ -14,7 +14,6 @@ module.exports = {
     publicPath: '/dist/',
     filename: 'aframe-master.js'
   },
-  devtool: 'source-map',
   mode: 'development',
   devServer: {
     port: process.env.PORT || 9000,
@@ -23,29 +22,5 @@ module.exports = {
     static: {
       directory: 'examples'
     }
-  },
-  plugins: [
-    new webpack.DefinePlugin({
-      INSPECTOR_VERSION: JSON.stringify(
-        process.env.INSPECTOR_VERSION
-      )
-    }),
-    new webpack.ProvidePlugin({
-      Buffer: ['buffer', 'Buffer']
-    })
-  ],
-  module: {
-    rules: [
-      {
-        test: /\.js$/,
-        use: {
-          loader: 'babel-loader'
-        }
-      },
-      {
-        test: /\.css$/,
-        use: ['style-loader', 'css-loader']
-      }
-    ]
   }
 };

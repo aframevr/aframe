@@ -4,15 +4,17 @@ var TerserPlugin = require('terser-webpack-plugin');
 module.exports = {
   extends: ['webpack.common.js'],
   output: {
-    library: {
-      name: 'AFRAME',
-      type: 'var',
-      export: 'default'
-    },
-    libraryTarget: 'umd',
+    libraryTarget: 'module',
     path: path.resolve(__dirname, 'dist'),
     publicPath: '/dist/',
-    filename: 'aframe-master.min.js'
+    filename: 'aframe-master.module.min.js'
+  },
+  experiments: {
+    outputModule: true
+  },
+  externalsType: 'module',
+  externals: {
+    three: 'three'
   },
   mode: 'production',
   optimization: {
