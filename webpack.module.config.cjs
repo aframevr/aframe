@@ -2,7 +2,7 @@ var path = require('path');
 var TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = {
-  extends: ['webpack.common.js'],
+  extends: ['webpack.common.cjs'],
   output: {
     libraryTarget: 'module',
     path: path.resolve(__dirname, 'dist'),

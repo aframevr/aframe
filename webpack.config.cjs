@@ -2,7 +2,7 @@ var path = require('path');
 var webpack = require('webpack');
 
 module.exports = {
-  extends: ['webpack.common.js'],
+  extends: ['webpack.common.cjs'],
   output: {
     library: {
       name: 'AFRAME',

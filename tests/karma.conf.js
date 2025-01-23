@@ -2,7 +2,7 @@
 var path = require('path');
 var glob = require('glob');
 var webpack = require('webpack');
-var webpackConfiguration = require('../webpack.common.js');
+var webpackConfiguration = require('../webpack.common.cjs');
 
 // Define test files.
 var FILES = [
