@@ -9,10 +9,9 @@ source_code: src/components/laser-controls.js
 examples: []
 ---
 
-The laser-controls component provides tracked controls with a laser or ray
-cursor shooting out to be used for input and interactions. It only requires
-a way to orientate the laser and an input the user can trigger.
-This makes it usable on a wide range of devices. Using laser-controls we can
+The laser-controls component provides a tracked controller with a laser or ray
+cursor shooting out to be used for input and interactions. All headsets ship with some form of 
+tracked input controller that has at least a button to trigger actions. Using laser-controls we can
 get a consistent form of interaction that works across all VR platforms with
 a single line of HTML.
 
