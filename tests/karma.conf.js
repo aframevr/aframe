@@ -2,7 +2,7 @@
 var path = require('path');
 var glob = require('glob');
 var webpack = require('webpack');
-var webpackConfiguration = require('../webpack.config.js');
+var webpackConfiguration = require('../webpack.common.cjs');
 
 // Define test files.
 var FILES = [
@@ -38,7 +38,18 @@ webpackConfiguration.plugins.push(new webpack.ProvidePlugin({
   process: 'process/browser'
 }));
 // webpack will create a lot of files, use build directory instead of dist
-webpackConfiguration.output.path = path.resolve(__dirname, '../build');
+webpackConfiguration.output = {
+  library: {
+    name: 'AFRAME',
+    type: 'var',
+    export: 'default'
+  },
+  libraryTarget: 'umd',
+  path: path.resolve(__dirname, '../build'),
+  publicPath: '/dist/',
+  filename: 'aframe-master.js'
+};
+webpackConfiguration.mode = 'development';
 
 var karmaConf = {
   basePath: '../',

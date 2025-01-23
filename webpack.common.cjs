@@ -3,27 +3,7 @@ var webpack = require('webpack');
 
 module.exports = {
   entry: './src/index.js',
-  output: {
-    library: {
-      name: 'AFRAME',
-      type: 'var',
-      export: 'default'
-    },
-    libraryTarget: 'umd',
-    path: path.resolve(__dirname, 'dist'),
-    publicPath: '/dist/',
-    filename: 'aframe-master.js'
-  },
   devtool: 'source-map',
-  mode: 'development',
-  devServer: {
-    port: process.env.PORT || 9000,
-    hot: false,
-    liveReload: true,
-    static: {
-      directory: 'examples'
-    }
-  },
   plugins: [
     new webpack.DefinePlugin({
       INSPECTOR_VERSION: JSON.stringify(

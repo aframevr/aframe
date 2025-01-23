@@ -2,7 +2,7 @@ var path = require('path');
 var TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = {
-  extends: ['webpack.config.js'],
+  extends: ['webpack.common.cjs'],
   output: {
     library: {
       name: 'AFRAME',
