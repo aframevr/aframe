@@ -75,7 +75,7 @@ suite('gltf-model', function () {
 
     this.sinon.replace(THREE, 'GLTFLoader', function MockGLTFLoader () {
       this.load = function (url, onLoad) {
-        process.nextTick(onLoad.bind(null, gltfMock));
+        setTimeout(onLoad.bind(null, gltfMock));
       };
       this.setDRACOLoader = function () {};
     });

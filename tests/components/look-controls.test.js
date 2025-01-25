@@ -18,7 +18,7 @@ suite('look-controls', function () {
       var lookControls = el.camera.el.components['look-controls'];
       lookControls.hasPositionalTracking = false;
       lookControls.previousHMDPosition.set(1, 2, 3);
-      process.nextTick(function () {
+      setTimeout(function () {
         assert.ok(lookControls.previousHMDPosition.length() === 0);
         done();
       });
@@ -33,7 +33,7 @@ suite('look-controls', function () {
 
     test('adds grabbing style to scene canvas on mousedown', function (done) {
       var canvasEl = this.sceneEl.canvas;
-      process.nextTick(function () {
+      setTimeout(function () {
         assert.ok(canvasEl.style.cursor === 'grabbing');
         canvasEl.style.cursor = '';
         done();
@@ -46,7 +46,7 @@ suite('look-controls', function () {
     test('removes grabbing style from scene el canvas on document body mouseup', function (done) {
       var canvasEl = this.sceneEl.canvas;
       canvasEl.style.cursor = 'grabbing';
-      process.nextTick(function () {
+      setTimeout(function () {
         assert.notOk(canvasEl.style.cursor === 'grabbing');
         done();
       });
@@ -60,7 +60,7 @@ suite('look-controls', function () {
       var requestPointerLock = this.sinon.spy(canvasEl, 'requestPointerLock');
       cameraEl.setAttribute('look-controls', {pointerLockEnabled: true});
 
-      process.nextTick(function () {
+      setTimeout(function () {
         assert.ok(requestPointerLock.called);
         canvasEl.style.cursor = '';
         done();
@@ -80,7 +80,7 @@ suite('look-controls', function () {
 
       cameraEl.setAttribute('look-controls', {pointerLockEnabled: false});
 
-      process.nextTick(function () {
+      setTimeout(function () {
         assert.notOk(requestPointerLock.called);
         canvasEl.style.cursor = '';
         done();

@@ -29,7 +29,7 @@ suite('a-torus', function () {
     torusEl.setAttribute('radius', '2');
     torusEl.setAttribute('radius-tubular', '0.1');
 
-    process.nextTick(function () {
+    setTimeout(function () {
       geometry = torusEl.getAttribute('geometry');
       assert.equal(geometry.primitive, 'torus');
       assert.equal(geometry.segmentsTubular, 100);
@@ -48,7 +48,7 @@ suite('a-torus', function () {
     torusEl.setAttribute('radius-tubular', '0.1');
     scene.appendChild(torusEl);
 
-    process.nextTick(function () {
+    setTimeout(function () {
       geometry = torusEl.getAttribute('geometry');
       assert.equal(geometry.primitive, 'torus');
       assert.equal(geometry.segmentsTubular, 100);
@@ -67,7 +67,7 @@ suite('a-torus', function () {
     torusEl.setAttribute('radius', '2');
     torusEl.setAttribute('radius-tubular', '0.1');
 
-    process.nextTick(function () {
+    setTimeout(function () {
       geometry = torusEl.getAttribute('geometry');
       assert.equal(geometry.primitive, 'torus');
       assert.equal(geometry.segmentsTubular, 100);
@@ -90,7 +90,7 @@ suite('a-torus', function () {
         this.el.setAttribute('radius-tubular', '0.1');
       }
     });
-    process.nextTick(function () {
+    setTimeout(function () {
       geometry = torusEl.getAttribute('geometry');
       assert.equal(geometry.primitive, 'torus');
       assert.equal(geometry.segmentsTubular, 100);

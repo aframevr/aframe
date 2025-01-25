@@ -44,7 +44,7 @@ suite('cursor', function () {
       assert.ok(el.is('cursor-hovering'));
       assert.ok(intersectedEl.is('cursor-hovered'));
       el.removeAttribute('cursor');
-      process.nextTick(function () {
+      setTimeout(function () {
         assert.notOk(el.is('cursor-hovering'));
         assert.notOk(intersectedEl.is('cursor-hovered'));
         done();
@@ -59,7 +59,7 @@ suite('cursor', function () {
       });
       assert.ok(el.is('cursor-fusing'));
       el.removeAttribute('cursor');
-      process.nextTick(function () {
+      setTimeout(function () {
         assert.notOk(el.is('cursor-fusing'));
         done();
       });
@@ -67,7 +67,7 @@ suite('cursor', function () {
 
     test('removes intersection listener', function (done) {
       el.removeAttribute('cursor');
-      process.nextTick(function () {
+      setTimeout(function () {
         el.emit('raycaster-intersection', {
           intersections: [intersection],
           els: [intersectedEl]
@@ -262,7 +262,7 @@ suite('cursor', function () {
           els: [furtherIntersectedEl]
         });
 
-        process.nextTick(function () {
+        setTimeout(function () {
           assert.equal(el.components.cursor.intersectedEl, nearerIntersectedEl);
           done();
         });
@@ -405,7 +405,7 @@ suite('cursor', function () {
       event.clientY = 5;
       el.setAttribute('cursor', 'rayOrigin', 'mouse');
       el.sceneEl.canvas.dispatchEvent(event);
-      process.nextTick(function () {
+      setTimeout(function () {
         var raycaster = el.getAttribute('raycaster');
         assert.notEqual(raycaster.direction.x, 0);
         done();
@@ -417,7 +417,7 @@ suite('cursor', function () {
       event.touches = {item: function () { return {clientX: 5, clientY: 5}; }};
       el.setAttribute('cursor', 'rayOrigin', 'mouse');
       el.sceneEl.canvas.dispatchEvent(event);
-      process.nextTick(function () {
+      setTimeout(function () {
         var raycaster = el.getAttribute('raycaster');
         assert.notEqual(raycaster.direction.x, 0);
         done();

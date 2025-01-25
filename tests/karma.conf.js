@@ -34,9 +34,6 @@ if (!webpackConfiguration.resolve) {
   webpackConfiguration.resolve = {};
 }
 webpackConfiguration.resolve.modules = [path.resolve(__dirname, '../src'), 'node_modules'];
-webpackConfiguration.plugins.push(new webpack.ProvidePlugin({
-  process: 'process/browser'
-}));
 // webpack will create a lot of files, use build directory instead of dist
 webpackConfiguration.output = {
   library: {

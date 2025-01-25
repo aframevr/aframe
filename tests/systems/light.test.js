@@ -60,7 +60,7 @@ suite('light system', function () {
     assert.notOk(document.querySelectorAll('[light]').length);
 
     el.sceneEl.systems.light.setupDefaultLights();
-    process.nextTick(function () {
+    setTimeout(function () {
       assert.notOk(document.querySelectorAll('[' + DEFAULT_LIGHT_ATTR + ']').length);
       done();
     });

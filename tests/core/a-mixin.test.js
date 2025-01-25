@@ -28,7 +28,7 @@ suite('a-mixin', function () {
     mixinEl.addEventListener('loaded', function () {
       assert.equal(el.getAttribute('geometry').primitive, 'ring');
       mixinEl.setAttribute('geometry', 'primitive: circle');
-      process.nextTick(function () {
+      setTimeout(function () {
         assert.equal(el.getAttribute('geometry').primitive, 'circle');
         done();
       });

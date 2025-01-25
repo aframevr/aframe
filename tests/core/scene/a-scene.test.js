@@ -641,7 +641,7 @@ helpers.getSkipCISuite()('a-scene (with renderer)', function () {
       animationFrameID = el.animationFrameID;
       assert.ok(el.animationFrameID);
       document.body.removeChild(el);
-      process.nextTick(function () {
+      setTimeout(function () {
         assert.notOk(el.animationFrameID);
         assert.ok(cancelSpy.calledWith(animationFrameID));
         done();
@@ -675,7 +675,7 @@ helpers.getSkipCISuite()('a-scene (with renderer)', function () {
     test('does not destroy document.body', function (done) {
       var el = this.el;
       document.body.removeChild(el);
-      process.nextTick(function () {
+      setTimeout(function () {
         assert.ok(document.body);
         done();
       });

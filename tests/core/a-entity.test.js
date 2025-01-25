@@ -617,7 +617,7 @@ suite('a-entity', function () {
       assert.notEqual(el.sceneEl.behaviors.test.tick.array.indexOf(el.components.test), -1);
       assert.notEqual(el.sceneEl.behaviors.test.tock.array.indexOf(el.components.test), -1);
       parentEl.removeChild(el);
-      process.nextTick(function () {
+      setTimeout(function () {
         assert.ok('test' in el.components);
         assert.equal(el.sceneEl.behaviors.test.tick.array.indexOf(el.components.test), -1);
         assert.equal(el.sceneEl.behaviors.test.tock.array.indexOf(el.components.test), -1);
@@ -668,7 +668,7 @@ suite('a-entity', function () {
       var bLoaded = false;
       el.appendChild(a);
       el.appendChild(b);
-      process.nextTick(function () {
+      setTimeout(function () {
         a.isNode = false;
         a.hasLoaded = false;
         b.isNode = false;
@@ -696,7 +696,7 @@ suite('a-entity', function () {
       var bLoaded = false;
       el.appendChild(a);
       el.appendChild(b);
-      process.nextTick(function () {
+      setTimeout(function () {
         a.isNode = false;
         a.hasLoaded = false;
         b.isNode = false;
@@ -1320,7 +1320,7 @@ suite('a-entity', function () {
 
     test('merges component properties from mixin', function (done) {
       mixinFactory('box', {geometry: 'primitive: box'});
-      process.nextTick(function () {
+      setTimeout(function () {
         el.setAttribute('mixin', 'box');
         el.setAttribute('geometry', {depth: 5, height: 5, width: 5});
         assert.shallowDeepEqual(el.getAttribute('geometry'), {
