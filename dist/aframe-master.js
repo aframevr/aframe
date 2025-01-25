@@ -28152,10 +28152,8 @@ function isLandscape() {
  * Check if running in a browser or spoofed browser (bundler).
  * We need to check a node api that isn't mocked on either side.
  * `require` and `module.exports` are mocked in browser by bundlers.
- * `window` is mocked in node.
- * `process` is also mocked by webpack running with karma, but has custom properties like process.browser.
  */
-var isBrowserEnvironment = typeof process === 'undefined' || process.browser === true;
+var isBrowserEnvironment = typeof process === 'undefined';
 
 /**
  * Check if running in node on the server.
@@ -42863,7 +42861,7 @@ if (_utils_index_js__WEBPACK_IMPORTED_MODULE_16__.device.isBrowserEnvironment) {
   __webpack_require__(/*! ./style/aframe.css */ "./src/style/aframe.css");
   __webpack_require__(/*! ./style/rStats.css */ "./src/style/rStats.css");
 }
-console.log('A-Frame Version: 1.6.0 (Date 2025-01-23, Commit #3ce9c22b)');
+console.log('A-Frame Version: 1.6.0 (Date 2025-01-25, Commit #84d4607e)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].REVISION);
 
 // Wait for ready state, unless user asynchronously initializes A-Frame.
