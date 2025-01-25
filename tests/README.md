@@ -90,7 +90,7 @@ suite('module/component/custom element', function () {
      * An asynchronous test case.
      */
     test('does that', function (done) {
-      process.nextTick(function () {
+      setTimeout(function () {
         assert.notEqual(1, 2);
         done();  // Use `done` to tell when finished in asynchronous test.
       });
@@ -113,5 +113,5 @@ suite('module/component/custom element', function () {
   'loaded' event.
 - karma may sometimes misreport test failures to other unit tests. Run one test
   suite or case at a time to isolate the test failure.
-- Use `process.nextTick` after doing DOM manipulations. However, we will not
+- Use `setTimeout` after doing DOM manipulations. However, we will not
   need to do this after `Entity.setAttribute` as we have made that synchronous.

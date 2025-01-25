@@ -237,7 +237,7 @@ suite('sound', function () {
       var sceneEl = this.el.sceneEl;
       var assetsEl = sceneEl.querySelector('a-assets');
       sceneEl.removeChild(assetsEl);
-      process.nextTick(function () {
+      setTimeout(function () {
         assetsEl = document.createElement('a-assets');
         var audioEl = document.createElement('audio');
         audioEl.setAttribute('src', 'base/tests/assets/test.ogg');
@@ -260,7 +260,7 @@ suite('sound', function () {
       var sceneEl = this.el.sceneEl;
       var assetsEl = sceneEl.querySelector('a-assets');
       sceneEl.removeChild(assetsEl);
-      process.nextTick(function () {
+      setTimeout(function () {
         assetsEl = document.createElement('a-assets');
         var audioEl = document.createElement('audio');
         audioEl.setAttribute('src', 'base/tests/assets/test.ogg');
@@ -284,7 +284,7 @@ suite('sound', function () {
       var sceneEl = this.el.sceneEl;
       var assetsEl = sceneEl.querySelector('a-assets');
       sceneEl.removeChild(assetsEl);
-      process.nextTick(function () {
+      setTimeout(function () {
         assetsEl = document.createElement('a-assets');
         var assetItemEl = document.createElement('a-asset-item');
         assetItemEl.setAttribute('src', 'base/tests/assets/test.ogg');
@@ -292,7 +292,7 @@ suite('sound', function () {
         assetItemEl.setAttribute('response-type', 'arraybuffer');
         assetsEl.appendChild(assetItemEl);
         sceneEl.appendChild(assetsEl);
-        process.nextTick(function () {
+        setTimeout(function () {
           var el = document.createElement('a-entity');
           el.setAttribute('sound', 'src', '#testogg');
           el.addEventListener('sound-loaded', function () {

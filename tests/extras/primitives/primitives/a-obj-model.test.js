@@ -16,7 +16,7 @@ suite('a-obj-model', function () {
   test('can set obj-model.mtl', function (done) {
     var el = this.objModelEl;
     el.setAttribute('obj-model', 'mtl', 'mymtl.mtl');
-    process.nextTick(function () {
+    setTimeout(function () {
       assert.equal(el.getAttribute('obj-model').mtl, 'mymtl.mtl');
       done();
     });
@@ -25,7 +25,7 @@ suite('a-obj-model', function () {
   test('can set obj-model.obj', function (done) {
     var el = this.objModelEl;
     el.setAttribute('obj-model', 'obj', 'myobj.obj');
-    process.nextTick(function () {
+    setTimeout(function () {
       assert.equal(el.getAttribute('obj-model').obj, 'myobj.obj');
       done();
     });

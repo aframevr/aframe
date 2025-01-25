@@ -171,10 +171,8 @@ export function isLandscape () {
  * Check if running in a browser or spoofed browser (bundler).
  * We need to check a node api that isn't mocked on either side.
  * `require` and `module.exports` are mocked in browser by bundlers.
- * `window` is mocked in node.
- * `process` is also mocked by webpack running with karma, but has custom properties like process.browser.
  */
-export var isBrowserEnvironment = typeof process === 'undefined' || process.browser === true;
+export var isBrowserEnvironment = typeof process === 'undefined';
 
 /**
  * Check if running in node on the server.

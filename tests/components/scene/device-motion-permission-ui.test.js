@@ -24,7 +24,7 @@ suite('device-orientation-permission-ui', function () {
 
     test('appends permission dialog', function (done) {
       var scene = this.el;
-      process.nextTick(function () {
+      setTimeout(function () {
         PERMISSION_DIALOG_CLASSES.forEach(function (uiClass) {
           assert.equal(scene.querySelectorAll(uiClass).length, 1);
           done();

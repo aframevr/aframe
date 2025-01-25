@@ -36,7 +36,7 @@ suite('xr-mode-ui', function () {
 
     scene.enterVR();
 
-    process.nextTick(function () {
+    setTimeout(function () {
       UI_CLASSES.forEach(function (uiClass) {
         assert.include(scene.querySelector(uiClass).className, 'a-hidden');
       });

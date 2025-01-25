@@ -25,9 +25,9 @@ suite('position controls on camera with WASD controls (integration unit test)', 
     keydownEvent.code = 'KeyW';
     window.dispatchEvent(keydownEvent);
 
-    process.nextTick(function () {
+    setTimeout(function () {
       el.sceneEl.tick(20, 20);
-      process.nextTick(function () {
+      setTimeout(function () {
         var newPos = el.getAttribute('position');
         assert.equal(newPos.x, position.x);
         assert.equal(newPos.y, position.y);
@@ -47,9 +47,9 @@ suite('position controls on camera with WASD controls (integration unit test)', 
     keydownEvent.code = 'KeyA';
     window.dispatchEvent(keydownEvent);
 
-    process.nextTick(function () {
+    setTimeout(function () {
       el.sceneEl.tick(20, 20);
-      process.nextTick(function () {
+      setTimeout(function () {
         var newPos = el.getAttribute('position');
         assert.ok(newPos.x < position.x, 'Strafed left');
         assert.equal(newPos.y, position.y);
@@ -69,9 +69,9 @@ suite('position controls on camera with WASD controls (integration unit test)', 
     keydownEvent.code = 'KeyS';
     window.dispatchEvent(keydownEvent);
 
-    process.nextTick(function () {
+    setTimeout(function () {
       el.sceneEl.tick(20, 20);
-      process.nextTick(function () {
+      setTimeout(function () {
         var newPos = el.getAttribute('position');
         assert.equal(newPos.x, position.x);
         assert.equal(newPos.y, position.y);
@@ -91,9 +91,9 @@ suite('position controls on camera with WASD controls (integration unit test)', 
     keydownEvent.code = 'KeyD';
     window.dispatchEvent(keydownEvent);
 
-    process.nextTick(function () {
+    setTimeout(function () {
       el.sceneEl.tick(20, 20);
-      process.nextTick(function () {
+      setTimeout(function () {
         var newPos = el.getAttribute('position');
         assert.ok(newPos.x > position.x, 'Strafed right');
         assert.equal(newPos.y, position.y);
@@ -116,9 +116,9 @@ suite('position controls on camera with WASD controls (integration unit test)', 
     keydownEvent.code = 'KeyW';
     window.dispatchEvent(keydownEvent);
 
-    process.nextTick(function () {
+    setTimeout(function () {
       el.sceneEl.tick(20, 20);
-      process.nextTick(function () {
+      setTimeout(function () {
         var newPos = el.getAttribute('position');
         assert.ok(newPos.x < position.x, 'Turned left and moved forward');
         assert.equal(newPos.y, position.y);
@@ -234,12 +234,12 @@ suite('rotation controls on camera with mouse drag (integration unit test)', fun
     mousedownEvent.screenY = 1000;
     mousedownEvent.button = 0;
     el.sceneEl.canvas.dispatchEvent(mousedownEvent);
-    process.nextTick(function afterMousedown () {
+    setTimeout(function afterMousedown () {
       var mouseMoveEvent = new Event('mousemove');
       mouseMoveEvent.screenX = 1500;
       mouseMoveEvent.screenY = 1000.1;
       window.dispatchEvent(mouseMoveEvent);
-      process.nextTick(function afterMousemove () {
+      setTimeout(function afterMousemove () {
         var cameraEl = self.cameraEl;
         var rotation;
         cameraEl.components['look-controls'].updateOrientation();
@@ -259,12 +259,12 @@ suite('rotation controls on camera with mouse drag (integration unit test)', fun
     mousedownEvent.screenY = 1000;
     mousedownEvent.button = 0;
     el.sceneEl.canvas.dispatchEvent(mousedownEvent);
-    process.nextTick(function afterMousedown () {
+    setTimeout(function afterMousedown () {
       var mouseMoveEvent = new Event('mousemove');
       mouseMoveEvent.screenX = 1000.1;
       mouseMoveEvent.screenY = 1500;
       window.dispatchEvent(mouseMoveEvent);
-      process.nextTick(function afterMousemove () {
+      setTimeout(function afterMousemove () {
         var cameraEl = self.cameraEl;
         var rotation;
         cameraEl.components['look-controls'].updateOrientation();
@@ -285,7 +285,7 @@ suite('rotation controls on camera with mouse drag (integration unit test)', fun
     mousedownEvent.screenY = 1000;
     mousedownEvent.button = 0;
     el.sceneEl.canvas.dispatchEvent(mousedownEvent);
-    process.nextTick(function afterMousedown () {
+    setTimeout(function afterMousedown () {
       cameraEl.components['look-controls'].pointerLocked = true;
       var mouseMoveEvent = new Event('mousemove');
       mouseMoveEvent.movementX = 1000;
@@ -294,7 +294,7 @@ suite('rotation controls on camera with mouse drag (integration unit test)', fun
       mouseMoveEvent.screenX = 9000;
       mouseMoveEvent.screenY = 9000;
       window.dispatchEvent(mouseMoveEvent);
-      process.nextTick(function afterMousemove () {
+      setTimeout(function afterMousemove () {
         var rotation;
         cameraEl.components['look-controls'].updateOrientation();
         rotation = cameraEl.getAttribute('rotation');
@@ -314,7 +314,7 @@ suite('rotation controls on camera with mouse drag (integration unit test)', fun
     mousedownEvent.screenY = 1000;
     mousedownEvent.button = 0;
     el.sceneEl.canvas.dispatchEvent(mousedownEvent);
-    process.nextTick(function afterMousedown () {
+    setTimeout(function afterMousedown () {
       cameraEl.components['look-controls'].pointerLocked = true;
       var mouseMoveEvent = new Event('mousemove');
       mouseMoveEvent.movementX = 0.1;
@@ -323,7 +323,7 @@ suite('rotation controls on camera with mouse drag (integration unit test)', fun
       mouseMoveEvent.screenX = 9000;
       mouseMoveEvent.screenY = 9000;
       window.dispatchEvent(mouseMoveEvent);
-      process.nextTick(function afterMousemove () {
+      setTimeout(function afterMousemove () {
         var rotation;
         cameraEl.components['look-controls'].updateOrientation();
         rotation = cameraEl.getAttribute('rotation');
@@ -343,12 +343,12 @@ suite('rotation controls on camera with mouse drag (integration unit test)', fun
     mousedownEvent.screenY = 1000;
     mousedownEvent.button = 0;
     el.sceneEl.canvas.dispatchEvent(mousedownEvent);
-    process.nextTick(function afterMousedown () {
+    setTimeout(function afterMousedown () {
       var mouseMoveEvent = new Event('mousemove');
       mouseMoveEvent.screenX = 0;
       mouseMoveEvent.screenY = 0;
       window.dispatchEvent(mouseMoveEvent);
-      process.nextTick(function afterMousemove () {
+      setTimeout(function afterMousemove () {
         var cameraEl = self.cameraEl;
         var rotation;
         cameraEl.components['look-controls'].updateOrientation();
@@ -367,14 +367,14 @@ suite('rotation controls on camera with mouse drag (integration unit test)', fun
     el.sceneEl.addState('vr-mode');
     el.sceneEl.canvas.dispatchEvent(new Event('mousedown'));
 
-    process.nextTick(function afterMousedown () {
+    setTimeout(function afterMousedown () {
       var mouseMoveEvent = new Event('mousemove');
       mouseMoveEvent.movementX = 1000;
       mouseMoveEvent.movementY = 1000;
       mouseMoveEvent.screenX = 1000;
       mouseMoveEvent.screenY = 1000;
       window.dispatchEvent(mouseMoveEvent);
-      process.nextTick(function afterMousemove () {
+      setTimeout(function afterMousemove () {
         var rotation = cameraEl.getAttribute('rotation');
         cameraEl.components['look-controls'].updateOrientation();
         assert.equal(Math.ceil(rotation.x), 30);
@@ -414,11 +414,11 @@ suite('rotation controls on camera with touch drag (integration unit test)', fun
     touchStartEvent.touches = [{pageX: 0, pageY: 0}];
     canvas.dispatchEvent(touchStartEvent);
 
-    process.nextTick(function afterTouchstart () {
+    setTimeout(function afterTouchstart () {
       var touchMoveEvent = new Event('touchmove');
       touchMoveEvent.touches = [{pageX: 500, pageY: 0}];
       window.dispatchEvent(touchMoveEvent);
-      process.nextTick(function afterTouchmove () {
+      setTimeout(function afterTouchmove () {
         var rotation;
         cameraEl.components['look-controls'].updateOrientation();
         rotation = cameraEl.getAttribute('rotation');
@@ -444,11 +444,11 @@ suite('rotation controls on camera with touch drag (integration unit test)', fun
     touchStartEvent.touches = [{pageX: 0, pageY: 0}];
     canvas.dispatchEvent(touchStartEvent);
 
-    process.nextTick(function afterTouchstart () {
+    setTimeout(function afterTouchstart () {
       var touchMoveEvent = new Event('touchmove');
       touchMoveEvent.touches = [{pageX: 0, pageY: 500}];
       window.dispatchEvent(touchMoveEvent);
-      process.nextTick(function afterTouchmove () {
+      setTimeout(function afterTouchmove () {
         var rotation;
         cameraEl.components['look-controls'].updateOrientation();
         rotation = cameraEl.getAttribute('rotation');

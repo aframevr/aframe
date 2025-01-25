@@ -223,7 +223,7 @@ suite('camera system', function () {
       var cameraEl2 = document.createElement('a-entity');
       var sceneEl = this.el.sceneEl;
       cameraEl2.setAttribute('camera', 'active: true');
-      process.nextTick(function () {
+      setTimeout(function () {
         sceneEl.appendChild(cameraEl2);
         // Need to setTimeout to wait for scene to remove element.
         cameraEl2.addEventListener('loaded', function () {
