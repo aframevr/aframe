@@ -727,9 +727,9 @@ suite('a-entity', function () {
       assert.notOk('height' in componentData);
     });
 
-    test('returns empty object if component is at defaults', function () {
+    test('returns undefined if component is at defaults', function () {
       el.setAttribute('material', '');
-      assert.shallowDeepEqual(el.getDOMAttribute('material'), {});
+      assert.equal(el.getDOMAttribute('material'), undefined);
     });
 
     test('returns partial component data', function () {
