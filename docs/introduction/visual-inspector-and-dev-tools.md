@@ -23,8 +23,7 @@ experience:
   any computer for rapid development and testing. Reduce the amount of time going
   in and out of the headset.
 
-We'll go over GUI tools built on top of A-Frame that can be used without code.
-And touch on other tools that can ease development across multiple machines.
+We'll touch on other tools that can ease development across multiple machines.
 
 <!--toc-->
 
@@ -251,39 +250,6 @@ always moving away. The Spectator Mode lets us free move around the scene and
 view at whatever angle or focus on whatever area.
 
 ![Spectator Mode](https://cloud.githubusercontent.com/assets/674727/24733331/f2bc6094-1a2b-11e7-9442-bcf30d18af79.gif)
-
-## GUI Tools Based on A-Frame
-
-People have built tools on top of A-Frame to abstract away code via an
-interface or application, making content creation even easier. These act as
-more complete editors rather than developer tools.
-
-### [Supercraft](https://supermedium.com/supercraft)
-
-Build VR Sites with Your Hands, all in VR, and publish to Web.
-
-<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/ONhhKHjSO-4?rel=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-
-### [Ottifox](http://ottifox.com/)
-
-*"Ottifox is a powerful design and prototyping solution that makes it easy to
-create interactive VR scenes that run in the browser."*
-
-![Ottifox](https://cloud.githubusercontent.com/assets/674727/25638463/5cc90a3e-2f3d-11e7-987e-d8d299773f67.jpg)
-
-### [Hologram](http://hologram.cool/)
-
-*"All-in-one WebVR creation."*
-
-![Holgoram](https://user-images.githubusercontent.com/674727/36452389-24416be0-1649-11e8-8d7d-4a3a69097650.png)
-
-### [Fader](https://fader.vragments.com/)
-
-*"Create your own VR story now. Fader allows you to create and publish VR
-stories.  Add multiple layers of information to your 360 spheres, design scenes
-and tell your story.  Easy, fast and web based!"*
-
-![Fader](https://cloud.githubusercontent.com/assets/674727/25638761/53535724-2f3e-11e7-90f2-5efb3a58c549.jpg)
 
 ## Cross-Machine Development
 
