@@ -143,7 +143,6 @@ specification][w3c], and flat 3D for most browsers. Large browser vendors are
 slowly moving to the WebXR specification, though it does not have much
 front-facing changes to A-Frame developers, involving mostly renaming of APIs.
 
-- [Supermedium](https://www.supermedium.com) (available on Oculus and Steam)
 - Firefox
 - Oculus Browser
 - Samsung Internet
