@@ -122,10 +122,6 @@ model files.
 8. Then we have our asset URL hosted on GitHub. Then the asset can be
 hosted and referenced via [JSDelivr CDN][jsdelivr].
 
-Below is a video of the workflow:
-
-<div style="position:relative;height:0;padding-bottom:56.25%"><iframe src="https://www.youtube.com/embed/_D_C_oSKp9Y?ecver=2" width="640" height="360" frameborder="0" style="position:absolute;width:100%;height:100%;left:0" allowfullscreen></iframe></div>
-
 Though ee can also host the model the same as we serve all of our other assets,
 and let the server and CDN handle it. If we want a special place to host them,
 S3 is another option.
