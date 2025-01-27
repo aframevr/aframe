@@ -8,49 +8,63 @@
     "phone": "",
     "description": "A web framework for building browsed based 3D, VR and AR experiences.",
     "webpageUrl": {
-      "url": "https://aframe.io/",
-      "wellKnown": ""
+      "url": "https://github.com/aframevr/aframe"
     }
   },
-  "projects": [{
-    "guid": "a-frame",
-    "name": "A-Frame",
-    "description": "A web framework for building browsed based 3D, VR and AR experiences",
-    "webpageUrl": {
-      "url": "https://aframe.io/",
-      "wellKnown": ""
-    },
-    "repositoryUrl": {
-      "url": "https://github.com/aframevr/aframe",
-      "wellKnown": ""
-    },
-    "licenses": ["MIT"],
-    "tags": ["virtualreality", "gamedev", "augmentedreality", "creativecoding", "html", "webxr"]
-  }],
+  "projects": [
+    {
+      "guid": "a-frame",
+      "name": "A-Frame",
+      "description": "A web framework for building browsed based 3D, VR and AR experiences",
+      "webpageUrl": {
+        "url": "https://github.com/aframevr/aframe"
+      },
+      "repositoryUrl": {
+        "url": "https://github.com/aframevr/aframe"
+      },
+      "licenses": [
+        "MIT"
+      ],
+      "tags": [
+        "virtualreality",
+        "gamedev",
+        "augmentedreality",
+        "creativecoding",
+        "html",
+        "webxr"
+      ]
+    }
+  ],
   "funding": {
-    "channels": [{
-      "guid": "dmarcos",
-      "type": "Github Sponsorships",
-      "address": "",
-      "description": ""
-    }],
-    "plans": [{
-      "guid": "dmarcos",
-      "status": "Github Sponsorships",
-      "name": "Community contributions",
-      "description": "",
-      "amount": 0,
-      "currency": "",
-      "frequency": "",
-      "channels": []
-    }],
-    "history": [{
-      "year": 2024,
-      "income": 0,
-      "expenses": 0,
-      "taxes": 0,
-      "currency": "USD",
-      "description": "Github Sponsorhips"
-    }]
+    "channels": [
+      {
+        "guid": "dmarcos",
+        "type": "payment-provider",
+        "address": "",
+        "description": "Github Sponsorships"
+      }
+    ],
+    "plans": [
+      {
+        "guid": "dmarcos",
+        "status": "active",
+        "name": "Community contributions",
+        "description": "",
+        "amount": 0,
+        "currency": "USD",
+        "frequency": "monthly",
+        "channels": []
+      }
+    ],
+    "history": [
+      {
+        "year": 2024,
+        "income": 0,
+        "expenses": 0,
+        "taxes": 0,
+        "currency": "USD",
+        "description": "Github Sponsorhips"
+      }
+    ]
   }
 }
