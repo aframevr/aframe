@@ -57,13 +57,13 @@ Places to find 3D models include:
 
 Programs to create models include:
 
-- [Supercraft](https://supermedium.com/supercraft/) - Built **with** A-Frame to
-  model directly within VR with no modeling skill required and load with
-  [`aframe-supercraft-loader`](https://www.npmjs.com/package/aframe-supercraft-loader).
 - [Blender](https://www.blender.org/)
 - [MagicaVoxel](https://ephtracy.github.io/)
 - [Autodesk Maya](https://www.autodesk.com/products/maya/overview) or [Maya LT](https://www.autodesk.com/products/maya-lt/overview)
 - [Maxon Cinema4D](https://www.maxon.net/en-us/)
+- [Supercraft](https://supermedium.com/supercraft/) (DEPRECATED) - Built **with** A-Frame to
+  model directly within VR with no modeling skill required and load with
+  [`aframe-supercraft-loader`](https://www.npmjs.com/package/aframe-supercraft-loader).
 
 ## Hosting Models
 

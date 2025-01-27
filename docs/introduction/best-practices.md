@@ -249,7 +249,7 @@ using `utils.throttleTick`][throttle] to run your code at less frequent interval
 
 ## VR Design
 
-[oculus]: https://developer.oculus.com/design/latest/concepts/book-bp/
+[oculus]: https://developers.meta.com/horizon/resources/bp-overview/
 
 Designing for VR is different than designing for flat experiences. As a new
 medium, there are new sets of best practices to follow, especially to maintain

@@ -201,13 +201,10 @@ arrow keys. On mobile, we can pan the phone around to rotate the camera.
 Although A-Frame is tailored for WebVR, this default control scheme allows
 people to view scenes without a headset.
 
-[mozvr]: http://mozvr.com/#start
 [webvrimage]: https://cloud.githubusercontent.com/assets/674727/20328949/69e2c628-ab4a-11e6-97e9-6e25104d6673.png
 ![webvrimage]
 
-> [Check out the instructions on the Mozilla VR homepage for setting up and entering WebVR][mozvr].
-
-Upon [entering VR][mozvr] by clicking the goggles icon with a VR headset
+Upon entering VR by clicking the goggles icon with a VR headset
 connected (e.g., Oculus Rift, HTC Vive), we can experience the scene in
 immersive VR. If room-scale is available, we can physically *walk* around the
 scene!

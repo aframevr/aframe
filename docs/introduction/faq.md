@@ -17,8 +17,8 @@ order: 14
 
 ## How is A-Frame's performance?
 
-[a-painter]: https://blog.mozvr.com/a-painter
-[tiltbrush]: https://www.tiltbrush.com/
+[a-painter]: https://github.com/aframevr/a-painter/
+[tiltbrush]: https://github.com/icosa-foundation/open-brush
 
 A-Frame can achieve native-like latency and framerate with proper browsers
 (e.g., Firefox with WebVR). For example, [A-Painter][a-painter] is [Tilt
@@ -143,12 +143,14 @@ is possible to overlay an `<iframe>` on top of the canvas, the `<iframe>` will
 not display in VR nor can it integrate with the scene.
 
 [html-shader]: https://github.com/mayognaise/aframe-html-shader/
+[html-mesh]: https://github.com/AdaRoseCannon/aframe-htmlmesh
 
 Though, we can render basic HTML and CSS as a texture without interactivity.
 We can paint to a `<canvas>` and use the canvas as source for a texture. There
 are components in the ecosystem that enable this:
 
 - [HTML Shader][html-shader]
+- [HTML Mesh][html-mesh]
 
 ## Which 3D model formats work?
 
@@ -212,10 +214,12 @@ to serve, but that is against their terms of service.
 
 ## Can I add links to my scene?
 
+[link-traversal-example]: https://aframe.io/aframe/examples/showcase/link-traversal/
+
 Browsers provide the ability to go from WebVR page to WebVR page via the
 `vrdisplayactivate` event described in the WebVR specification. Currently, not
 all browsers implement this. Firefox with WebVR implements this. A link
-component for link traversal was released with A-Frame 0.6.0:
+component for link traversal ([example][link-traversal-example]) was released with A-Frame 0.6.0:
 
 ```html
 <a-entity link="on: click; href: https://aframe-aincraft.glitch.me"></a-entity>

@@ -561,9 +561,8 @@ collision is detected.
 
 ### super-hands Component
 
-[superhands]: https://github.com/wmurphyrd/aframe-super-hands-component
-[superhandsdocs]: https://github.com/wmurphyrd/aframe-super-hands-component#description
-[superhandsex]: https://wmurphyrd.github.io/aframe-super-hands-component/examples/
+[superhands]: https://github.com/c-frame/aframe-super-hands-component.git
+[superhandsex]: https://c-frame.github.io/aframe-super-hands-component/examples/
 
 The [super-hands component by William Murphy][superhands] provides all-in-one
 natural hand controller interaction. The component interprets input from
@@ -583,7 +582,7 @@ components attached to translate the gestures into actions. super-hands
 includes components for typical reactions to the implemented gestures:
 hoverable, grabbable, stretchable, and drag-droppable.
 
-The [documentation for super-hands][superhandsdocs] and
+The [documentation for super-hands][superhands] and
 [examples][superhandsex] are excellent for getting started. We defer to those.
 
 ### Other Examples
