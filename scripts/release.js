@@ -12,16 +12,20 @@ if (!prevVersion || !nextVersion) {
   process.exit(1);
 }
 
+let distModule;
 let distMin;
 let distMax;
 if (process.env.FOR_RELEASE) {
+  distModule = `${pkg.scripts['dist:module']} --output-filename aframe.module.min.js`;
   distMin = `${pkg.scripts['dist:min']} --output-filename aframe.min.js`;
   distMax = `${pkg.scripts['dist:max']} --output-filename aframe.js`;
 } else {
+  distModule = `${pkg.scripts['dist:module']} --output-filename aframe-v${nextVersion}.module.min.js`;
   distMin = `${pkg.scripts['dist:min']} --output-filename aframe-v${nextVersion}.min.js`;
   distMax = `${pkg.scripts['dist:max']} --output-filename aframe-v${nextVersion}.js`;
 }
 
+execSync(distModule, {stdio: 'inherit'});
 execSync(distMin, {stdio: 'inherit'});
 execSync(distMax, {stdio: 'inherit'});
 
