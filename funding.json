@@ -1,69 +1,56 @@
 {
-    "version": "v1.0.0",
-
-    // Required. The entity associated with the project, soliciting funds.
-    // This can be an individual, organisation, community etc.
-    "entity": {
-        "type": "individual",                     // Required. [individual, group, organisation, other]. Use the closest approximation.
-        "role": "maintainer",                     // Required. [owner, steward, maintainer, contributor, other]. Use the closest approximation.
-        "name": "A-Frame",              // Required. Name of the entity. Max len 250.
-        "email": "diego@supermedium.com", // Required. Max len 250.
-        "phone": "",                    // Optional. Generally suitable for organisations. Max len 32.
-        "description": "A web framework for building browsed based 3D, VR and AR experiences.",              // Required. Information about the entity. Max len 2000.
-        "webpageUrl": {
-            "url": "https://diegomarcos.com/",                  // Required. Webpage with information about the entity. Starts with https:// or http://. Max len 250.
-            "wellKnown": ""             // Optional. Required if the above url and the URL of the funding.json manifest do not have the same hostname. Starts with https:// or http://. Max len 250.
-        }
-    },
-
-    // Optional. One or more projects for which the funding is solicited.
-    "projects": [{
-        "guid": "a-frame",                     // Required. A short unique ID for the project. Lowercase-alphanumeric-dashes only. eg: my-cool-project. Max len 32.
-        "name": "A-Frame",                     // Required. Name of the project. Max len 250.
-        "description": "A web framework for building browsed based 3D, VR and AR experiences",              // Required. Description of the project. Max len 2000.
-        "webpageUrl": {
-            "url": "https://aframe.io/",                  // Required. Webpage with information about the project. Starts with https:// or http://. Max len 250.
-            "wellKnown": ""             // Optional. Required if the above url and the URL of the funding.json manifest do not have the same hostname. Starts with https:// or http://. Max len 250.
-        },
-        "repositoryUrl": {
-            "url": "https://github.com/aframevr/aframe",                  // Required. URL of the repository where the project's source code and other assets are available. Starts with https:// or http://. Max len 250.
-            "wellKnown": ""             // Optional. Required if the above url and the URL of the funding.json manifest do not have the same hostname. Starts with https:// or http://. Max len 250.
-        },
-        "licenses": ["MIT"],                 // Required. The project's licenses (up to 5). For standard licenses, use the license ID from the SDPX index prefixed by "spdx:". eg: "spdx:GPL-3.0", "spdx:CC-BY-SA-4.0"
-        "tags": ["virtualreality", "gamedev", "augmentedreality", "creativecoding", "html", "webxr"]                      // Required. Up to 10 general tags describing the project. Lowercase-alphanumeric-dashes (max 32 chars). eg: ["programming", "developer-tools"]. For reference, see tags.txt
-    }],
-
-    // Required.
-    "funding": {
-        // Required. This describes one or more channels via which the entity can receive funds.
-        "channels": [{
-            "guid": "dmarcos",                 // Required. A short unique ID for the channel. Lowercase-alphanumeric-dashes only. eg: mybank, my-paypal. Max len 32.
-            "type": "Github Sponsorships",                 // Required. [bank, payment-provider, cheque, cash, other].
-            "address": "",              // Optional. A short unstructured textual representation of the payment address for the channel. eg: "Account: 12345 (branch: ABCX)", "mypaypal@domain.com", "https://payment-url.com", or a physical address for cheques. Max len 250.
-            "description": ""           // Optional. Any additional description or instructions for the payment channel. Max len 500.
-        }],
-
-        // Required. One or more funding and payment plans.
-        "plans": [{
-            "guid": "dmarcos",                 // Required. A short unique ID for the plan. Lowercase-alphanumeric-dashes only. eg: mybank, paypal. Max len 32.
-            "status": "Github Sponsorships",               // Required. [active, inactive]. Indicates whether this plan is currently active or inactive.
-            "name": "Community contributions",  // Required. Name of the funding plan. eg: "Starter support plan", "Infra hosting", "Monthly funding plan".
-            "description": "",          // Optional. Any additional description or instructions for the funding plan.
-            "amount": 0,                // Required. The solicited amount for this plan. 0 is a wildcard that indicates "any amount".
-            "currency": "",             // Required. Three letter ISO 4217 currency code. eg: USD
-            "frequency": "",            // Required. [one-time, weekly, fortnightly, monthly, yearly, other]
-            "channels": []              // Required. One or more channel IDs defined in channels[] via which this plan can accept payments.
-        }],
-
-        // Optional. A simple summary of funding history. Only include if at least one, either income or expenses, have to be communicated.
-        "history": [{
-            "year": 2024,               // Required. Year (fiscal, preferably).
-            "income": 0,                // Optional.
-            "expenses": 0,              // Optional.
-            "taxes": 0,                 // Optional.
-            "currency": "USD",             // Required. Three letter ISO 4217 currency code. eg: USD
-            "description": "Github Sponsorhips"           // Optional. Any additional description. Max length 500.
-        }]
+  "version": "v1.0.0",
+  "entity": {
+    "type": "individual",
+    "role": "maintainer",
+    "name": "A-Frame",
+    "email": "diego@supermedium.com",
+    "phone": "",
+    "description": "A web framework for building browsed based 3D, VR and AR experiences.",
+    "webpageUrl": {
+      "url": "https://diegomarcos.com/",
+      "wellKnown": ""
     }
+  },
+  "projects": [{
+    "guid": "a-frame",
+    "name": "A-Frame",
+    "description": "A web framework for building browsed based 3D, VR and AR experiences",
+    "webpageUrl": {
+      "url": "https://aframe.io/",
+      "wellKnown": ""
+    },
+    "repositoryUrl": {
+      "url": "https://github.com/aframevr/aframe",
+      "wellKnown": ""
+    },
+    "licenses": ["MIT"],
+    "tags": ["virtualreality", "gamedev", "augmentedreality", "creativecoding", "html", "webxr"]
+  }],
+  "funding": {
+    "channels": [{
+      "guid": "dmarcos",
+      "type": "Github Sponsorships",
+      "address": "",
+      "description": ""
+    }],
+    "plans": [{
+      "guid": "dmarcos",
+      "status": "Github Sponsorships",
+      "name": "Community contributions",
+      "description": "",
+      "amount": 0,
+      "currency": "",
+      "frequency": "",
+      "channels": []
+    }],
+    "history": [{
+      "year": 2024,
+      "income": 0,
+      "expenses": 0,
+      "taxes": 0,
+      "currency": "USD",
+      "description": "Github Sponsorhips"
+    }]
+  }
 }
-
