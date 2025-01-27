@@ -25440,9 +25440,6 @@ var Shader = (0,_core_shader_js__WEBPACK_IMPORTED_MODULE_0__.registerShader)('fl
     fog: {
       default: true
     },
-    height: {
-      default: 256
-    },
     offset: {
       type: 'vec2',
       default: {
@@ -25459,9 +25456,6 @@ var Shader = (0,_core_shader_js__WEBPACK_IMPORTED_MODULE_0__.registerShader)('fl
     },
     src: {
       type: 'map'
-    },
-    width: {
-      default: 512
     },
     wireframe: {
       default: false
@@ -26054,9 +26048,6 @@ var Shader = (0,_core_shader_js__WEBPACK_IMPORTED_MODULE_1__.registerShader)('st
     fog: {
       default: true
     },
-    height: {
-      default: 256
-    },
     metalness: {
       default: 0.0,
       min: 0.0,
@@ -26132,9 +26123,6 @@ var Shader = (0,_core_shader_js__WEBPACK_IMPORTED_MODULE_1__.registerShader)('st
     },
     src: {
       type: 'map'
-    },
-    width: {
-      default: 512
     },
     wireframe: {
       default: false
@@ -42861,7 +42849,7 @@ if (_utils_index_js__WEBPACK_IMPORTED_MODULE_16__.device.isBrowserEnvironment) {
   __webpack_require__(/*! ./style/aframe.css */ "./src/style/aframe.css");
   __webpack_require__(/*! ./style/rStats.css */ "./src/style/rStats.css");
 }
-console.log('A-Frame Version: 1.6.0 (Date 2025-01-25, Commit #84d4607e)');
+console.log('A-Frame Version: 1.6.0 (Date 2025-01-27, Commit #6c7b90a8)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].REVISION);
 
 // Wait for ready state, unless user asynchronously initializes A-Frame.
