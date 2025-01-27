@@ -26,7 +26,6 @@ export var Shader = registerShader('standard', {
     envMap: {default: ''},
 
     fog: {default: true},
-    height: {default: 256},
 
     metalness: {default: 0.0, min: 0.0, max: 1.0},
     metalnessMap: {type: 'map'},
@@ -48,7 +47,6 @@ export var Shader = registerShader('standard', {
 
     sphericalEnvMap: {type: 'map'},
     src: {type: 'map'},
-    width: {default: 512},
     wireframe: {default: false},
     wireframeLinewidth: {default: 2}
   },

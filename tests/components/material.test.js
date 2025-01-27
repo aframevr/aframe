@@ -212,10 +212,8 @@ suite('material', function () {
       el.components.material.updateSchema({shader: 'flat'});
       assert.ok(el.components.material.schema.color);
       assert.ok(el.components.material.schema.fog);
-      assert.ok(el.components.material.schema.height);
       assert.ok(el.components.material.schema.repeat);
       assert.ok(el.components.material.schema.src);
-      assert.ok(el.components.material.schema.width);
       assert.notOk(el.components.material.schema.metalness);
       assert.notOk(el.components.material.schema.roughness);
       assert.notOk(el.components.material.schema.envMap);
