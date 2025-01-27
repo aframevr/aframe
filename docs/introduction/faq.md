@@ -374,6 +374,48 @@ await import('aframe');
 window.AFRAME.ready();
 ```
 
+Since A-Frame 1.7.0, we provide an ES module bundle without three dependency.
+This allows you to import from three and three/addons without having the
+"Multiple instances of Three.js being imported." warning.
+To use it you need to explicitly add the super-three dependency in the importmap.
+If you update A-Frame later, be sure to also update the super-three version that matches the A-Frame version, simply by reading again that documentation.
+
+Here is an example of the importmap to use:
+
+```HTML
+<head>
+  <script type="importmap">
+    {
+      "imports": {
+        "aframe": "https://aframe.io/releases/1.7.0/aframe.module.min.js",
+        "three": "https://cdn.jsdelivr.net/npm/super-three@0.172.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/super-three@0.172.0/examples/jsm/",
+        "aframe-extras/controls": "https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.5.x/dist/aframe-extras.controls.min.js"
+      }
+    }
+  </script>
+  <script type="module">
+    import AFRAME from "aframe";
+    // AFRAME and THREE variables are available globally, the imported aframe-master.module.min.js bundle basically does:
+    // import * as THREE from "three"
+    // window.THREE = THREE
+    import { TeapotGeometry } from "three/addons/geometries/TeapotGeometry.js"; // This uses the same three instance.
+    AFRAME.registerComponent("teapot", {
+      ...
+    }
+  </script>
+</head>
+```
+
+The [teapot example](https://aframe.io/aframe/examples/boilerplate/teapot/index.html) uses the above code.
+
+## "Multiple instances of Three.js being imported." warning
+
+See `Can I load A-Frame as an ES module?` above.
+
+As a library author of aframe components, be sure to configure your bundler configuration to produce a build with the three dependency declared as external if you're using any `import ... from three` in your code or any addons you import like `import ... from three/addons/...js`.
+You can look at the webpack configuration in the [aframe-extras repository](https://github.com/c-frame/aframe-extras) as an example.
+
 ## What order does A-Frame render objects in?
 
 [sortTransparentObjects]: ../components/renderer.md#sorttransparentobjects
