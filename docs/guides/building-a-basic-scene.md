@@ -387,7 +387,7 @@ repeat in the Y direction (commonly referred to as U and V for textures).
 
 [light]: ../primitives/a-light.md
 
-We can change how the scene is lit by using [`<a-light>`][light]. By default
+We can change how the scene is lit by using [`<a-light>s`][light]. By default
 if we don't specify any lights, A-Frame adds an ambient light and a directional
 light. If A-Frame didn't add lights for us, the scene would be black. Once we
 add lights of our own, however, the default lighting setup is removed and
