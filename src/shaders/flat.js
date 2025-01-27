@@ -9,11 +9,9 @@ export var Shader = registerShader('flat', {
   schema: {
     color: {type: 'color'},
     fog: {default: true},
-    height: {default: 256},
     offset: {type: 'vec2', default: {x: 0, y: 0}},
     repeat: {type: 'vec2', default: {x: 1, y: 1}},
     src: {type: 'map'},
-    width: {default: 512},
     wireframe: {default: false},
     wireframeLinewidth: {default: 2},
     toneMapped: {default: true}
