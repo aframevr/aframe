@@ -407,7 +407,7 @@ Here is an example of the importmap to use:
 </head>
 ```
 
-The [teapot example](https://aframe.io/aframe/examples/boilerplate/teapot/index.html) uses the above code.
+The [importmap example](https://aframe.io/aframe/examples/boilerplate/importmap/index.html) uses the above code.
 
 ## "Multiple instances of Three.js being imported." warning
 
