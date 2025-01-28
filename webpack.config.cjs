@@ -19,8 +19,18 @@ module.exports = {
     port: process.env.PORT || 9000,
     hot: false,
     liveReload: true,
-    static: {
-      directory: 'examples'
-    }
+    static: [
+      {
+        directory: 'examples'
+      },
+      {
+        directory: 'dist',
+        publicPath: '/dist'
+      },
+      {
+        directory: 'node_modules/three/',
+        publicPath: '/super-three-package'
+      }
+    ]
   }
 };
