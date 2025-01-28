@@ -374,13 +374,10 @@ await import('aframe');
 window.AFRAME.ready();
 ```
 
-Since A-Frame 1.7.0, we provide an ES module bundle without three dependency.
-This allows you to import from three and three/addons without having the
-"Multiple instances of Three.js being imported." warning.
-To use it you need to explicitly add the super-three dependency in the importmap.
-If you update A-Frame later, be sure to also update the super-three version that matches the A-Frame version, simply by reading again that documentation.
-
-Here is an example of the importmap to use:
+Since version 1.7.0, A-Frame ships an ES module bundle without the three dependency.
+Developers can import from `three` and `three/addons` and avoid the
+"Multiple instances of Three.js being imported." warning. Add the three dependency in the importmap like the example below. 
+Make sure the three and A-Frame versions are compatible. See browser console (or package.json) to see what THREE version A-Frame ships with by default.
 
 ```HTML
 <head>
