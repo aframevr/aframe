@@ -5,6 +5,9 @@ const path = require('path');
 const shell = require('shelljs');
 const replaceInFileSync = require('replace-in-file').replaceInFileSync;
 
+const pkg = require('../package.json');
+const threeVersion = pkg.dependencies.three.split('@')[1];
+
 const rootDir = path.join(__dirname, '..');
 
 shell.cd(rootDir);
@@ -15,7 +18,6 @@ shell.cp('-r', [
   '.nojekyll',
   'dist',
   'examples',
-  '*.html',
   '*.md'
 ], 'gh-pages');
 
@@ -28,3 +30,4 @@ function htmlReplace (before, after) {
 }
 
 htmlReplace('dist/aframe-master.js', 'dist/aframe-master.min.js');
+htmlReplace(/\.\.\/\.\.\/\.\.\/super-three-package/g, `https://cdn.jsdelivr.net/npm/super-three@${threeVersion}`);

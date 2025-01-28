@@ -26,6 +26,10 @@ module.exports = {
       {
         directory: 'dist',
         publicPath: '/dist'
+      },
+      {
+        directory: 'node_modules/three/',
+        publicPath: '/super-three-package'
       }
     ]
   }
