@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>3D Gaussian Splatting</title>
+    <meta name="description" content="3D Gaussian Splatting — A-Frame">
+    <script src="../../../dist/aframe-master.js"></script>
+  </head>
+  <body>
+    <a-scene renderer="antialias: false">
+      <a-entity rotation="10 0 0">
+        <a-entity position="1.2 1.2 -2.7" animation="property: rotation; to: 0 360 0; dur: 10000; easing: linear; loop: true">
+          <a-sphere position="0 0 0.5" radius="0.2" color="#EF2D5E"></a-sphere>
+          <a-box position="0.5 0 0" rotation="0 45 0" height="0.4" width="0.4" depth="0.4" color="#4CC3D9" shadow></a-box>
+          <a-cylinder position="0 0 -0.5" radius="0.25" height="0.4" color="#FFC65D" shadow></a-cylinder>
+        </a-entity>
+      </a-entity>
+      <a-entity splat="src: https://huggingface.co/cakewalk/splat-data/resolve/main/truck.splat;" rotation="0 0 0" position="0 1.5 -2"></a-entity>
+      <a-sky color="#000"></a-sky>
+    </a-scene>
+  </body>
+</html>
