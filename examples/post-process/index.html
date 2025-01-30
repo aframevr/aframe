@@ -1,0 +1,66 @@
+<html>
+
+<head>    
+     <script src="../../../dist/aframe-master.js"></script>
+    <script type="module" src="./bloom.js"></script>;
+
+    <meta charset="utf-8">
+    <title>Post Processing Bloom A-Frame Demo</title>
+    <meta name="description" content="Post Processing Bloom Demo">
+
+</head>
+
+<body>
+
+    <a-scene         
+        reflection="directionalLight:#sun;"
+        ßshadow="type: pcfsoft; autoUpdate: true" 
+        background="color:black;"        
+        renderer="anisotropy:4; stencil:true; alpha:false; colorManagement:true; exposure:1.0;">
+        
+        <a-entity id="pov-camera" position="0 1.6 2" rotation="3.323 -8.136 0" camera="" look-controls="" wasd-controls="" data-aframe-inspector-original-camera=""></a-entity>
+        
+        <a-box id="boxemissivewhite" shadow="cast:false; receive:false" position="1 1.720 -1" rotation="0 0 0"
+            scale="0.2 0.2 0.2" color="#FFFFFF" material="emissive: #FFF; emissiveIntensity:4;"></a-box>
+
+        <a-box id="boxemissivegreen" shadow="cast:false; receive:false" position="0 1.720 -1" rotation="0 0 0"
+            scale="0.2 0.2 0.2" color="#00FF00" material="emissive: #0F0; emissiveIntensity:4;"></a-box>
+        
+        <a-box id="boxemissivered" shadow="cast: false; receive: false" position="-1 1.720 -1" rotation=""
+            scale="0.2 0.2 0.2" color="#FF0000" material="emissive: #F00; emissiveIntensity: 4"></a-box>
+
+        <a-box id="boxwhite" shadow="cast:false; receive:false" position="1 1 -1" rotation="0 0 0"
+            scale="0.2 0.2 0.2" color="#FFFFFF" material="emissive: #FFF; emissiveIntensity:0;"></a-box>
+        
+        <a-box id="boxgreen" shadow="cast:false; receive:false" position="0 1 -1" rotation="0 0 0"
+            scale="0.2 0.2 0.2" color="#00FF00" material="emissive: #0F0; emissiveIntensity:0;"></a-box>
+        
+        <a-box id="boxred" shadow="cast: false; receive: false" position="-1 1 -1" rotation=""
+            scale="0.2 0.2 0.2" color="#FF0000" material="emissive: #F00; emissiveIntensity:0;"></a-box>       
+            
+        <a-box id="pulsingneon" shadow="cast:false; receive:false" position="0 1.250 -1" rotation="0 0 0"
+            scale="2 0.1 0.1" color="#FF00FF" material="emissive: #F0F; emissiveIntensity:2.5;"
+            animation="property: material.emissiveIntensity; from: 2.5; to: 3.5; dir: alternate; dur: 2000; easing: linear; loop: true"></a-box>
+
+        <a-plane id="plane" position="0 0.2 -4" rotation="-90 0 0" width="40" height="40" color="#111111"shadow></a-plane>        
+
+        <a-entity id="sun" radius="0.5" color="#FFD"
+            light="type: directional; intensity:2.6; color: #FFD; shadowBias: -0.00001; castShadow: true; shadowCameraRight: 7.9; shadowMapHeight: 2048; shadowMapWidth: 2048;"
+            position="0.12 5.76 -2.14" rotation="0 0 0">
+        </a-entity>
+
+    </a-scene>
+
+    <script>
+        // intercept the scene loaded event
+        document.querySelector('a-scene').addEventListener('loaded', function () {
+            // get the scene            
+            var scene = document.querySelector('a-scene');            
+            // add the bloom effect
+            scene.setAttribute('bloom', {threshold: 1.0, strength: 0.6, radius: 1, exposure: 1.0});            
+        });
+    </script>
+
+</body>
+
+</html>
