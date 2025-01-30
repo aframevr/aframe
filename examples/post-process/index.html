@@ -21,10 +21,11 @@
 <body>
 
     <a-scene         
-        reflection="directionalLight:#sun;"
-        shadow="type: pcfsoft; autoUpdate: true" 
-        background="color:black;"        
-        renderer="anisotropy:4; stencil:true; alpha:false; colorManagement:true; exposure:1.0;">
+          reflection="directionalLight:#sun;"
+          shadow="type: pcfsoft; autoUpdate: true" 
+          background="color:black;"        
+          renderer="anisotropy:4; stencil:true; alpha:false; colorManagement:true; exposure:1.0;"
+          bloomm="threshold: 1.0; strength: 0.6; radius: 1; exposure: 1.0">
         
         <a-entity id="pov-camera" position="0 1.6 2" rotation="3.323 -8.136 0" camera="" look-controls="" wasd-controls="" data-aframe-inspector-original-camera=""></a-entity>
         
@@ -58,16 +59,6 @@
         </a-entity>
 
     </a-scene>
-
-    <script>
-        // intercept the scene loaded event
-        document.querySelector('a-scene').addEventListener('loaded', function () {
-            // get the scene            
-            var scene = document.querySelector('a-scene');            
-            // add the bloom effect
-            scene.setAttribute('bloom', {threshold: 1.0, strength: 0.6, radius: 1, exposure: 1.0});            
-        });
-    </script>
 
 </body>
 
