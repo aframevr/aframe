@@ -1,12 +1,20 @@
 <html>
 
 <head>    
-     <script src="../../dist/aframe-master.js"></script>
-    <script type="module" src="./bloom.js"></script>;
+     <script type="importmap">
+        {
+          "imports": {
+            "aframe": "../../dist/aframe-master.module.min.js",
+            "three": "https://cdn.jsdelivr.net/npm/super-three@0.172.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/super-three@0.172.0/examples/jsm/"
+          }
+        }
+     </script>
+     <script type="module" src="./bloom.js"></script>;
 
-    <meta charset="utf-8">
-    <title>Post Processing Bloom A-Frame Demo</title>
-    <meta name="description" content="Post Processing Bloom Demo">
+     <meta charset="utf-8">
+     <title>Post Processing Bloom A-Frame Demo</title>
+     <meta name="description" content="Post Processing Bloom Demo">
 
 </head>
 
