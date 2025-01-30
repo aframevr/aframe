@@ -75,10 +75,6 @@ AFRAME.registerComponent("bloom", {
     bloomPass.radius = this.data.radius;
     this.composer.addPass(bloomPass);
   },
-  tick: function (t, dt) {
-    this.t = t;
-    this.dt = dt;
-  },
   bind: function () {
     const render = this.renderer.render;
     const system = this;
