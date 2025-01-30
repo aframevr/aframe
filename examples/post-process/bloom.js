@@ -41,11 +41,8 @@ AFRAME.registerComponent("bloom", {
 
     var that = this;
 
-    // delay half second to get the right resolution
-    setTimeout(function () {
-      that.evaluateEffect();
-      that.bind();
-    }, 500);
+    that.evaluateEffect();
+    that.bind();
   },
   update: function (oldData) {
     console.log("Post-processing UPDATE effect");
