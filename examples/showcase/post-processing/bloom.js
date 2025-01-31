@@ -71,7 +71,7 @@ AFRAME.registerComponent("bloom", {
 
   bind: function () {
     const render = this.el.renderer.render;
-    const system = this;
+    const self = this;
     let isInsideComposerRender = false;
 
     this.el.renderer.render = function () {
@@ -80,7 +80,7 @@ AFRAME.registerComponent("bloom", {
         render.apply(this, arguments);
       } else {
         isInsideComposerRender = true;
-        system.composer.render(system.dt);
+        self.composer.render(self.el.sceneEl.delta / 1000);
         isInsideComposerRender = false;
       }
 
