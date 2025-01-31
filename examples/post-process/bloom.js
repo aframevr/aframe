@@ -6,12 +6,12 @@
  */
 
 import AFRAME from "aframe";
-import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js"; // This uses the same three instance.
-import { RenderPass } from "three/addons/postprocessing/RenderPass.js"; // This uses the same three instance.
-import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js"; // This uses the same three instance.
+import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
+import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
+import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js";
 
 /////////////////////////////////////
-// A-FRAME COMPONENT: POST-PROCESSING //
+// A-FRAME COMPONENT: BLOOM        //
 /////////////////////////////////////
 AFRAME.registerComponent("bloom", {
   schema: {
@@ -27,25 +27,11 @@ AFRAME.registerComponent("bloom", {
       type: "number",
       default: 0,
     },
-    exposure: {
-      type: "number",
-      default: 1,
-    },
   },
   init: function () {
-
-    this.scene = this.el.object3D;
-    this.renderer = this.el.renderer;
-    this.camera = this.el.camera;
-    this.bound = false;
-
-    var that = this;
-
-    that.evaluateEffect();
-    that.bind();
+    this.bind();
   },
   update: function (oldData) {
-    console.log("Post-processing UPDATE effect");
     this.evaluateEffect();
   },
   evaluateEffect: function () {
@@ -67,31 +53,37 @@ AFRAME.registerComponent("bloom", {
       0.85
     );
 
+    bloomPass.fsQuad.render = function (renderer) {
+      // Disable XR projection for fullscreen effects
+      // https://github.com/mrdoob/three.js/pull/18846
+      const xrEnabled = renderer.xr.enabled;
+      const _camera = new THREE.OrthographicCamera(- 1, 1, 1, - 1, 0, 1);
+      renderer.xr.enabled = false;
+      renderer.render(this._mesh, _camera);
+      renderer.xr.enabled = xrEnabled;
+    }
+
     bloomPass.threshold = this.data.threshold;
     bloomPass.strength = this.data.strength;
     bloomPass.radius = this.data.radius;
     this.composer.addPass(bloomPass);
   },
+
   bind: function () {
-    const render = this.renderer.render;
+    const render = this.el.renderer.render;
     const system = this;
-    let isDigest = false;
+    let isInsideComposerRender = false;
 
-    this.renderer.render = function () {
+    this.el.renderer.render = function () {
 
-      if (isDigest) {
+      if (isInsideComposerRender) {
         render.apply(this, arguments);
       } else {
-        isDigest = true;
-        if (system.occlusionComposer) {
-          system.occlusionComposer.render(system.dt);
-        } else {
-          system.composer.render(system.dt);
-        }
-        isDigest = false;
+        isInsideComposerRender = true;
+        system.composer.render(system.dt);
+        isInsideComposerRender = false;
       }
 
     };
-
   },
 });
