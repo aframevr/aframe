@@ -29,7 +29,12 @@ AFRAME.registerComponent("bloom", {
     this.scene = this.el.object3D;
     this.renderer = this.el.renderer;
     this.camera = this.el.camera;
-    this.composer = new EffectComposer(this.renderer);
+
+    // create composer with multisampling to avoid alias
+    const resolution = this.renderer.getDrawingBufferSize(new THREE.Vector2());
+    const renderTarget = new THREE.WebGLRenderTarget(resolution.width, resolution.height, { type: THREE.HalfFloatType, samples: 8 });
+    this.composer = new EffectComposer(this.renderer, renderTarget);
+    
     const renderScene = new RenderPass(this.scene, this.camera);
     this.composer.addPass(renderScene);
 
