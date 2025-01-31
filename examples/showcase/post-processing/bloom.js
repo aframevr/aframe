@@ -76,6 +76,7 @@ AFRAME.registerComponent("bloom", {
         render.apply(this, arguments);
       } else {
         isInsideComposerRender = true;
+        self.composer.setSize( self.renderer.domElement.clientWidth / window.devicePixelRatio, self.renderer.domElement.clientWidth / window.devicePixelRatio );
         self.composer.render(self.el.sceneEl.delta / 1000);
         isInsideComposerRender = false;
       }
