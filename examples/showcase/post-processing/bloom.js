@@ -15,18 +15,9 @@ import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js"
 /////////////////////////////////////
 AFRAME.registerComponent("bloom", {
   schema: {
-    threshold: {
-      type: "number",
-      default: 0,
-    },
-    strength: {
-      type: "number",
-      default: 0.4,
-    },
-    radius: {
-      type: "number",
-      default: 0,
-    },
+    threshold: { type: "number", default: 0 },
+    strength: { type: "number", default: 0.4 },
+    radius: { type: "number", default: 0 },
   },
   init: function () {
     this.bind();
