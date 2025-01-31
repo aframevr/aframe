@@ -5,8 +5,8 @@
         {
           "imports": {
             "aframe": "../../dist/aframe-master.module.min.js",
-            "three": "https://cdn.jsdelivr.net/npm/super-three@0.172.0/build/three.module.js",
-            "three/addons/": "https://cdn.jsdelivr.net/npm/super-three@0.172.0/examples/jsm/"
+            "three": "../../../super-three-package/build/three.module.js",
+            "three/addons/": "../../../super-three-package/examples/jsm/",
           }
         }
      </script>
@@ -25,7 +25,7 @@
           shadow="type: pcfsoft; autoUpdate: true" 
           background="color:black;"        
           renderer="anisotropy:4; stencil:true; alpha:false; colorManagement:true; exposure:1.0;"
-          bloomm="threshold: 1.0; strength: 0.6; radius: 1; exposure: 1.0">
+          bloom="threshold: 1.0; strength: 0.6; radius: 1; exposure: 1.0">
         
         <a-entity id="pov-camera" position="0 1.6 2" rotation="3.323 -8.136 0" camera="" look-controls="" wasd-controls="" data-aframe-inspector-original-camera=""></a-entity>
         
