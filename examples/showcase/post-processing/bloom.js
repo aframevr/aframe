@@ -11,6 +11,17 @@ import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
 import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js";
 import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
+import { FullScreenQuad } from "three/addons/postprocessing/Pass.js";
+
+// Disable XR projection for fullscreen effects
+// https://github.com/mrdoob/three.js/pull/26160
+const _render = FullScreenQuad.prototype.render;
+FullScreenQuad.prototype.render = function (renderer) {
+  const xrEnabled = renderer.xr.enabled;
+  renderer.xr.enabled = false;
+  _render.apply(this, arguments);
+  renderer.xr.enabled = xrEnabled;
+};
 
 AFRAME.registerComponent("bloom", {
   schema: {
@@ -49,10 +60,11 @@ AFRAME.registerComponent("bloom", {
 
     this.composer = new EffectComposer(this.renderer, renderTarget);
 
+    // create render pass
     const renderScene = new RenderPass(this.scene, this.camera);
     this.composer.addPass(renderScene);
 
-    // creating bloom pass
+    // create bloom pass
     const strength = this.data.strength;
     const radius = this.data.radius;
     const threshold = this.data.threshold;
@@ -65,25 +77,13 @@ AFRAME.registerComponent("bloom", {
       radius,
       threshold
     );
-
-    const fsQuadRender = function (renderer) {
-      // Disable XR projection for fullscreen effects
-      // https://github.com/mrdoob/three.js/pull/18846
-      const xrEnabled = renderer.xr.enabled;
-      const _camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
-      renderer.xr.enabled = false;
-      renderer.render(this._mesh, _camera);
-      renderer.xr.enabled = xrEnabled;
-    };
-    this.bloomPass.fsQuad.render = fsQuadRender;
-
     this.composer.addPass(this.bloomPass);
 
+    // create output pass
     if (this.outputPass) {
       this.outputPass.dispose();
     }
     this.outputPass = new OutputPass();
-    this.outputPass.fsQuad.render = fsQuadRender;
     this.composer.addPass(this.outputPass);
   },
 
