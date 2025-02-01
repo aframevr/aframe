@@ -82,7 +82,7 @@ AFRAME.registerComponent("bloom", {
     if (this.outputPass) {
       this.outputPass.dispose();
     }
-    this.outputPass = new OutputPass(THREE.AgXToneMapping);
+    this.outputPass = new OutputPass();
     this.outputPass.fsQuad.render = fsQuadRender;
     this.composer.addPass(this.outputPass);
   },
