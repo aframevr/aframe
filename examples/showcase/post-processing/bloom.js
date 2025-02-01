@@ -11,17 +11,6 @@ import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
 import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js";
 import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
-import { FullScreenQuad } from "three/addons/postprocessing/Pass.js";
-
-// Disable XR projection for fullscreen effects
-// https://github.com/mrdoob/three.js/pull/26160
-const _render = FullScreenQuad.prototype.render;
-FullScreenQuad.prototype.render = function (renderer) {
-  const xrEnabled = renderer.xr.enabled;
-  renderer.xr.enabled = false;
-  _render.apply(this, arguments);
-  renderer.xr.enabled = xrEnabled;
-};
 
 AFRAME.registerComponent("bloom", {
   schema: {
@@ -31,10 +20,6 @@ AFRAME.registerComponent("bloom", {
   },
   events: {
     rendererresize: function () {
-      this.renderer.getSize(this.size);
-      this.composer.setSize(this.size.width, this.size.height);
-    },
-    "enter-vr": function () {
       this.renderer.getSize(this.size);
       this.composer.setSize(this.size.width, this.size.height);
     },
