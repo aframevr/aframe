@@ -10,12 +10,13 @@ import AFRAME from "aframe";
 import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
 import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js";
+import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
 
 AFRAME.registerComponent("bloom", {
   schema: {
-    threshold: { type: "number", default: 0 },
-    strength: { type: "number", default: 0.4 },
-    radius: { type: "number", default: 0 },
+    threshold: { type: "number", default: 1 },
+    strength: { type: "number", default: 0.5 },
+    radius: { type: "number", default: 1 },
   },
   events: {
     rendererresize: function () {
@@ -65,7 +66,7 @@ AFRAME.registerComponent("bloom", {
       threshold
     );
 
-    this.bloomPass.fsQuad.render = function (renderer) {
+    const fsQuadRender = function (renderer) {
       // Disable XR projection for fullscreen effects
       // https://github.com/mrdoob/three.js/pull/18846
       const xrEnabled = renderer.xr.enabled;
@@ -74,8 +75,16 @@ AFRAME.registerComponent("bloom", {
       renderer.render(this._mesh, _camera);
       renderer.xr.enabled = xrEnabled;
     };
+    this.bloomPass.fsQuad.render = fsQuadRender;
 
     this.composer.addPass(this.bloomPass);
+
+    if (this.outputPass) {
+      this.outputPass.dispose();
+    }
+    this.outputPass = new OutputPass(THREE.AgXToneMapping);
+    this.outputPass.fsQuad.render = fsQuadRender;
+    this.composer.addPass(this.outputPass);
   },
 
   bind: function () {
@@ -97,6 +106,7 @@ AFRAME.registerComponent("bloom", {
   remove() {
     this.el.renderer.render = this.originalRender;
     this.bloomPass.dispose();
+    this.outputPass.dispose();
     this.composer.dispose();
   },
 });
