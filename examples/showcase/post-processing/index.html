@@ -19,7 +19,8 @@
   <body>
     <a-scene
       background="color: black"
-      bloom="threshold: 1.0; strength: 0.6; radius: 1"
+      renderer="toneMapping: ACESFilmic"
+      bloom="threshold: 1.0; strength: 0.5; radius: 1"
     >
       <a-entity id="rig" position="0 0 2">
         <a-entity
