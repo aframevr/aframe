@@ -1,66 +1,101 @@
 <!DOCTYPE html>
 <html>
-
-<head>    
-     <script type="importmap">
-        {
-          "imports": {
-            "aframe": "../../dist/aframe-master.module.min.js",
-            "three": "../../../super-three-package/build/three.module.js",
-            "three/addons/": "../../../super-three-package/examples/jsm/"
-          }
+  <head>
+    <meta charset="utf-8" />
+    <title>Post Processing Bloom Effect</title>
+    <meta name="description" content="Post Processing Bloom Effect • A-Frame" />
+    <script type="importmap">
+      {
+        "imports": {
+          "aframe": "../../dist/aframe-master.module.min.js",
+          "three": "../../../super-three-package/build/three.module.js",
+          "three/addons/": "../../../super-three-package/examples/jsm/"
         }
-     </script>
-     <script type="module" src="./bloom.js"></script>
+      }
+    </script>
+    <script type="module" src="./bloom.js"></script>
+  </head>
 
-     <meta charset="utf-8">
-     <title>Post Processing Bloom Effect</title>
-    <meta name="description" content="Post Processing Bloom Effect • A-Frame">
+  <body>
+    <a-scene
+      background="color: black"
+      bloom="threshold: 1.0; strength: 0.6; radius: 1"
+    >
+      <a-entity id="rig" position="0 0 2">
+        <a-entity
+          id="camera"
+          position="0 1.6 0"
+          camera
+          look-controls
+          wasd-controls
+        ></a-entity>
+      </a-entity>
 
-</head>
+      <a-box
+        id="boxemissivewhite"
+        position="1 1.7 -1"
+        scale="0.2 0.2 0.2"
+        material="color: #FFF; emissive: #FFF; emissiveIntensity: 4"
+      ></a-box>
 
-<body>
+      <a-box
+        id="boxemissivegreen"
+        position="0 1.7 -1"
+        scale="0.2 0.2 0.2"
+        material="color: #0F0; emissive: #0F0; emissiveIntensity: 4"
+      ></a-box>
 
-    <a-scene         
-          reflection="directionalLight:#sun;"
-          shadow="type: pcfsoft; autoUpdate: true" 
-          background="color:black;"        
-          renderer="anisotropy:4; stencil:true; alpha:false; colorManagement:true; exposure:1.0;"
-          bloom="threshold: 1.0; strength: 0.6; radius: 1; exposure: 1.0">
-        
-        <a-entity id="pov-camera" position="0 1.6 2" rotation="3.323 -8.136 0" camera look-controls wasd-controls></a-entity>
-        
-        <a-box id="boxemissivewhite" shadow="cast:false; receive:false" position="1 1.720 -1" rotation="0 0 0"
-            scale="0.2 0.2 0.2" color="#FFFFFF" material="emissive: #FFF; emissiveIntensity:4;"></a-box>
+      <a-box
+        id="boxemissivered"
+        position="-1 1.7 -1"
+        scale="0.2 0.2 0.2"
+        material="color: #F00; emissive: #F00; emissiveIntensity: 5"
+      ></a-box>
 
-        <a-box id="boxemissivegreen" shadow="cast:false; receive:false" position="0 1.720 -1" rotation="0 0 0"
-            scale="0.2 0.2 0.2" color="#00FF00" material="emissive: #0F0; emissiveIntensity:4;"></a-box>
-        
-        <a-box id="boxemissivered" shadow="cast: false; receive: false" position="-1 1.720 -1" rotation=""
-            scale="0.2 0.2 0.2" color="#FF0000" material="emissive: #F00; emissiveIntensity: 4"></a-box>
+      <a-box
+        id="boxwhite"
+        position="1 1 -1"
+        scale="0.2 0.2 0.2"
+        material="color: #FFF; emissive: #FFF; emissiveIntensity: 0"
+      ></a-box>
 
-        <a-box id="boxwhite" shadow="cast:false; receive:false" position="1 1 -1" rotation="0 0 0"
-            scale="0.2 0.2 0.2" color="#FFFFFF" material="emissive: #FFF; emissiveIntensity:0;"></a-box>
-        
-        <a-box id="boxgreen" shadow="cast:false; receive:false" position="0 1 -1" rotation="0 0 0"
-            scale="0.2 0.2 0.2" color="#00FF00" material="emissive: #0F0; emissiveIntensity:0;"></a-box>
-        
-        <a-box id="boxred" shadow="cast: false; receive: false" position="-1 1 -1" rotation=""
-            scale="0.2 0.2 0.2" color="#FF0000" material="emissive: #F00; emissiveIntensity:0;"></a-box>       
-            
-        <a-box id="pulsingneon" shadow="cast:false; receive:false" position="0 1.250 -1" rotation="0 0 0"
-            scale="2 0.1 0.1" color="#FF00FF" material="emissive: #F0F; emissiveIntensity:2.5;"
-            animation="property: material.emissiveIntensity; from: 2.5; to: 3.5; dir: alternate; dur: 2000; easing: linear; loop: true"></a-box>
+      <a-box
+        id="boxgreen"
+        position="0 1 -1"
+        scale="0.2 0.2 0.2"
+        material="color: #0F0;emissive: #0F0; emissiveIntensity: 0"
+      ></a-box>
 
-        <a-plane id="plane" position="0 0.2 -4" rotation="-90 0 0" width="40" height="40" color="#111111"shadow></a-plane>        
+      <a-box
+        id="boxred"
+        position="-1 1 -1"
+        scale="0.2 0.2 0.2"
+        material="color: #F00; emissive: #F00; emissiveIntensity: 0"
+      ></a-box>
 
-        <a-entity id="sun" radius="0.5" color="#FFD"
-            light="type: directional; intensity:2.6; color: #FFD; shadowBias: -0.00001; castShadow: true; shadowCameraRight: 7.9; shadowMapHeight: 2048; shadowMapWidth: 2048;"
-            position="0.12 5.76 -2.14" rotation="0 0 0">
-        </a-entity>
+      <a-box
+        id="pulsingneon"
+        position="0 1.25 -1"
+        scale="2 0.1 0.1"
+        material="color: #F0F; emissive: #F0F; emissiveIntensity: 2.5"
+        animation="property: material.emissiveIntensity; from: 2.5; to: 3.5; dir: alternate; dur: 2000; easing: linear; loop: true"
+      ></a-box>
 
+      <a-plane
+        id="plane"
+        position="0 0.2 -4"
+        rotation="-90 0 0"
+        width="40"
+        height="40"
+        color="#111111"
+      ></a-plane>
+
+      <a-entity
+        id="sun"
+        light="type: directional; intensity: 2.6; color: #FFD"
+        position="0.12 5.76 -2.14"
+      >
+      </a-entity>
     </a-scene>
-
-</body>
-
+  </body>
 </html>
