@@ -29,7 +29,7 @@
     "dot-notation": "off",
     "indent": "off",
     "no-multi-spaces": "off",
-    "no-unused-vars": "off",
+    "no-unused-vars": "error",
     "object-curly-spacing": "off",
     "quote-props": "off"
   },
