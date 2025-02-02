@@ -16,7 +16,6 @@
     /* These rules are compatible with ES5
        However they involve non-trivial code changes
        Therefore need more careful review before adopting. */
-    "array-callback-return": "off",
     "no-mixed-operators": "off",
     "no-unreachable-loop": "off",
     "no-useless-return": "off",
