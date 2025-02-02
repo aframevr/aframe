@@ -88,10 +88,10 @@ AFRAME.registerComponent("bloom", {
     };
   },
 
-  remove() {
+  remove: function() {
     this.el.renderer.render = this.originalRender;
     this.bloomPass.dispose();
     this.outputPass.dispose();
     this.composer.dispose();
-  },
+  }
 });
