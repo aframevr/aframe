@@ -1,4 +1,4 @@
-/* global assert, process, setup, suite, test */
+/* global assert, setup, suite, test */
 import { entityFactory } from '../helpers.js';
 import THREE from 'lib/three.js';
 var degToRad = THREE.MathUtils.degToRad;

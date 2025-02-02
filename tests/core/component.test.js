@@ -1,4 +1,4 @@
-/* global AFRAME, assert, process, suite, teardown, test, setup, sinon, HTMLElement, HTMLHeadElement */
+/* global AFRAME, assert, suite, teardown, test, setup, sinon, HTMLElement, HTMLHeadElement */
 import { components, registerComponent, registrationOrderWarnings } from 'core/component.js';
 import { debug } from 'utils/index.js';
 import * as helpers from '../helpers.js';

@@ -1,4 +1,4 @@
-/* global  assert, setup, suite, test */
+/* global assert, setup, suite, test */
 
 suite('background', function () {
   setup(function (done) {

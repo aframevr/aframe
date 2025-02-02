@@ -1,4 +1,4 @@
-/* global assert, process, setup, sinon, suite, test, THREE */
+/* global assert, setup, sinon, suite, test, THREE */
 import { entityFactory } from '../helpers.js';
 
 suite('hand-tracking-controls', function () {

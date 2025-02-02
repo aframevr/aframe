@@ -1,4 +1,4 @@
-/* global assert, process, setup, suite, test */
+/* global assert, setup, suite, test */
 import { entityFactory } from '../helpers.js';
 var CONTROLLER_TYPE_VIVE = 'OpenVR Gamepad';
 var CONTROLLER_TYPE_GENERIC = 'Generic Gamepad';

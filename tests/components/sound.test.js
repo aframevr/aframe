@@ -1,4 +1,4 @@
-/* global assert, process, sinon, setup, suite, test */
+/* global assert, sinon, setup, suite, test */
 import { entityFactory } from '../helpers.js';
 import THREE from 'lib/three.js';
 

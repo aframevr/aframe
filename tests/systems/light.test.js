@@ -1,4 +1,4 @@
-/* global assert, process, setup, suite, test */
+/* global assert, setup, suite, test */
 import * as constants from 'constants/index.js';
 import { entityFactory } from '../helpers.js';
 var DEFAULT_LIGHT_ATTR = 'data-aframe-default-light';

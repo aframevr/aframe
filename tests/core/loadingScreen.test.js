@@ -1,4 +1,4 @@
-/* global assert, process, suite, teardown, test */
+/* global assert, suite, teardown, test */
 import * as helpers from '../helpers.js';
 
 helpers.getSkipCISuite()('loadingScreen', function () {
