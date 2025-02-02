@@ -1,4 +1,4 @@
-/* global AFRAME, assert, process, sinon, setup, suite, teardown, test, HTMLElement */
+/* global AFRAME, assert, sinon, setup, suite, teardown, test, HTMLElement */
 import { AEntity } from 'core/a-entity.js';
 import { ANode } from 'core/a-node.js';
 import { extend } from 'utils/index.js';

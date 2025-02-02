@@ -1,7 +1,6 @@
 /* global AFRAME, assert, suite, test, THREE */
 import * as helpers from '../../helpers.js';
 import { registerPrimitive, primitives } from 'extras/primitives/primitives.js';
-import { registerComponent } from 'core/component.js';
 
 var primitiveId = 0;
 

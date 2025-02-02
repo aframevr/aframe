@@ -1,4 +1,4 @@
-/* global AFRAME, assert, process, suite, teardown, test, setup, sinon, HTMLElement, HTMLHeadElement */
+/* global AFRAME, assert, suite, teardown, test, setup, sinon, HTMLElement, HTMLHeadElement */
 import { components, registerComponent, registrationOrderWarnings } from 'core/component.js';
 import { debug } from 'utils/index.js';
 import * as helpers from '../helpers.js';
@@ -662,6 +662,7 @@ suite('Component', function () {
     setup(function () {
       el = entityFactory();
       delete components.test;
+      // eslint-disable-next-line no-unused-vars
       TestComponent = registerComponent('test', { sceneOnly: true });
     });
 
@@ -706,6 +707,7 @@ suite('Component', function () {
     test('throws error when instantiating with id when component does not have multiple flag', function () {
       var TestComponent = registerComponent('test', { multiple: false });
       try {
+        // eslint-disable-next-line no-unused-vars
         var component = new TestComponent(el, 'data', 'some-id');
         assert.fail();
       } catch (e) {

@@ -1,4 +1,3 @@
-/* global Promise */
 import THREE from '../lib/three.js';
 import * as utils from '../utils/index.js';
 import { registerComponent } from '../core/component.js';

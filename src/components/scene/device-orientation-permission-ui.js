@@ -1,4 +1,4 @@
-/* global DeviceOrientationEvent, location  */
+/* global DeviceOrientationEvent */
 import { registerComponent } from '../../core/component.js';
 import { AFRAME_INJECTED } from '../../constants/index.js';
 

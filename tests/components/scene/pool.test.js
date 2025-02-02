@@ -1,4 +1,4 @@
-/* global assert, process, setup, suite, test */
+/* global assert, setup, suite, test */
 import * as helpers from '../../helpers.js';
 
 suite('pool', function () {

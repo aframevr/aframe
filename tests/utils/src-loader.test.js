@@ -1,4 +1,4 @@
-/* global assert, suite, setup, test, Image */
+/* global assert, suite, setup, test */
 import * as srcLoader from 'utils/src-loader.js';
 import { entityFactory } from '../helpers.js';
 

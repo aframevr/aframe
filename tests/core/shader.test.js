@@ -1,4 +1,4 @@
-/* global AFRAME, assert, process, setup, suite, test, teardown */
+/* global AFRAME, assert, setup, suite, test, teardown */
 import { entityFactory } from '../helpers.js';
 import THREE from 'lib/three.js';
 

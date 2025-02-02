@@ -1,4 +1,4 @@
-/* global assert, process, setup, suite, test, sinon, AFRAME */
+/* global assert, setup, suite, test, sinon, AFRAME */
 import { entityFactory } from '../helpers.js';
 import { shaders } from 'core/shader.js';
 import THREE from 'lib/three.js';

@@ -1,4 +1,4 @@
-/* global THREE, assert, process, setup, suite, test */
+/* global THREE, assert, setup, suite, test */
 import { entityFactory } from '../helpers.js';
 
 suite('line', function () {

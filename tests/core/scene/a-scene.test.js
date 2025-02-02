@@ -1,4 +1,4 @@
-/* global AFRAME, assert, CustomEvent, process, screen, sinon, setup, suite, teardown, test, THREE, EventTarget */
+/* global AFRAME, assert, screen, sinon, setup, suite, teardown, test, THREE, EventTarget */
 import { AScene, determineComponentBehaviorOrder, setupCanvas } from 'core/scene/a-scene.js';
 import { AEntity } from 'core/a-entity.js';
 import { ANode } from 'core/a-node.js';

@@ -1,4 +1,4 @@
-/* global HTMLCanvasElement, HTMLImageElement, HTMLVideoElement */
+/* global HTMLCanvasElement, HTMLVideoElement */
 import THREE from '../lib/three.js';
 import * as srcLoader from './src-loader.js';
 import debug from './debug.js';
