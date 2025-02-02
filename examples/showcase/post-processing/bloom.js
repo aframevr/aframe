@@ -24,7 +24,7 @@ AFRAME.registerComponent("bloom", {
       this.composer.setSize(this.size.width, this.size.height);
     },
   },
-  init() {
+  init: function ()
     this.size = new THREE.Vector2();
     this.scene = this.el.object3D;
     this.renderer = this.el.renderer;
