@@ -112,7 +112,7 @@ StrokeGeometry.prototype = {
       vertexB.copy(position);
 
       vertexA.add(vertexAOffset.copy(direction).multiplyScalar(width / 2));
-      vertexB.add(vertexAOffset.copy(direction).multiplyScalar(-width / 2));
+      vertexB.add(vertexBOffset.copy(direction).multiplyScalar(-width / 2));
 
       // if (this.first && this.indices.position > 0) {
       //   debugger;
