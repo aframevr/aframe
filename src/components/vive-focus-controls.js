@@ -98,7 +98,6 @@ export var Component = registerComponent('vive-focus-controls', {
 
   injectTrackedControls: function () {
     var el = this.el;
-    var data = this.data;
     el.setAttribute('tracked-controls', {
       idPrefix: GAMEPAD_ID_PREFIX
     });

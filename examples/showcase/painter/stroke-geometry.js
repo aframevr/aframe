@@ -68,7 +68,6 @@ StrokeGeometry.prototype = {
     if (this.previousGeometry && copyLast) {
       var prev = (this.maxBufferSize - 2) * 3;
       var col = (this.maxBufferSize - 2) * 3;
-      var uv = (this.maxBufferSize - 2) * 2;
       var norm = (this.maxBufferSize - 2) * 3;
 
       var position = this.previousGeometry.attributes.position.array;

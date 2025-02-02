@@ -1,8 +1,5 @@
 import { registerComponent as register } from '../../core/component.js';
 import THREE from '../../lib/three.js';
-import { debug } from '../../utils/index.js';
-
-var warn = debug('components:fog:warn');
 
 /**
  * Fog component.
