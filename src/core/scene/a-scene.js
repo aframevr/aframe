@@ -1,4 +1,4 @@
-/* global Promise, customElements, screen, CustomEvent */
+/* global Promise, customElements, screen */
 import THREE from '../../lib/three.js';
 import { inject as initMetaTags } from './metaTags.js';
 import { initWakelock } from './wakelock.js';
