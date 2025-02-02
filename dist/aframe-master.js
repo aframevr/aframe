@@ -10912,9 +10912,6 @@ var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_1__.registerCompo
     };
     this.bindMethods();
   },
-  update: function () {
-    var data = this.data;
-  },
   play: function () {
     this.checkIfControllerPresent();
     this.addControllersUpdateListener();
@@ -10955,7 +10952,6 @@ var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_1__.registerCompo
     this.controllerEventsActive = false;
   },
   checkIfControllerPresent: function () {
-    var data = this.data;
     var controllerObject3D = this.controllerObject3D;
     if (controllerObject3D) {
       controllerObject3D.visible = false;
@@ -11723,7 +11719,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _utils_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/index.js */ "./src/utils/index.js");
 /* harmony import */ var _core_component_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../core/component.js */ "./src/core/component.js");
 /* harmony import */ var _core_shader_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../core/shader.js */ "./src/core/shader.js");
-/* global Promise */
 
 
 
@@ -14520,7 +14515,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _core_component_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../core/component.js */ "./src/core/component.js");
 /* harmony import */ var _constants_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../constants/index.js */ "./src/constants/index.js");
-/* global DeviceOrientationEvent, location  */
+/* global DeviceOrientationEvent */
 
 
 var MODAL_CLASS = 'a-modal';
@@ -14755,11 +14750,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _core_component_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../core/component.js */ "./src/core/component.js");
 /* harmony import */ var _lib_three_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../lib/three.js */ "./src/lib/three.js");
-/* harmony import */ var _utils_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../utils/index.js */ "./src/utils/index.js");
 
 
-
-var warn = (0,_utils_index_js__WEBPACK_IMPORTED_MODULE_2__.debug)('components:fog:warn');
 
 /**
  * Fog component.
@@ -15185,7 +15177,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _lib_three_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../lib/three.js */ "./src/lib/three.js");
 /* harmony import */ var _core_component_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../core/component.js */ "./src/core/component.js");
-/* global XRPlane, XRMesh */
+/* global XRPlane */
 
 
 
@@ -15241,7 +15233,6 @@ var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_1__.registerCompo
     var detectedMeshes;
     var detectedPlanes;
     var sceneEl = this.el;
-    var xrManager = sceneEl.renderer.xr;
     var frame;
     var meshEntities = this.meshEntities;
     var present = false;
@@ -17075,7 +17066,7 @@ function loadFont(src, yOffset) {
         yOffset = 30;
       }
       if (yOffset) {
-        font.chars.map(function doOffset(ch) {
+        font.chars.forEach(function doOffset(ch) {
           ch.yoffset += yOffset;
         });
       }
@@ -17132,7 +17123,7 @@ function computeFontWidthFactor(font) {
   var sum = 0;
   var digitsum = 0;
   var digits = 0;
-  font.chars.map(function (ch) {
+  font.chars.forEach(function (ch) {
     sum += ch.xadvance;
     if (ch.id >= 48 && ch.id <= 57) {
       digits++;
@@ -18105,7 +18096,6 @@ var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_0__.registerCompo
   },
   injectTrackedControls: function () {
     var el = this.el;
-    var data = this.data;
     el.setAttribute('tracked-controls', {
       idPrefix: GAMEPAD_ID_PREFIX
     });
@@ -21928,7 +21918,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _a_node_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../a-node.js */ "./src/core/a-node.js");
 /* harmony import */ var _postMessage_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./postMessage.js */ "./src/core/scene/postMessage.js");
 /* harmony import */ var _utils_ios_orientationchange_blank_bug_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../../utils/ios-orientationchange-blank-bug.js */ "./src/utils/ios-orientationchange-blank-bug.js");
-/* global Promise, customElements, screen, CustomEvent */
+/* global Promise, customElements, screen */
 
 
 
@@ -24116,7 +24106,7 @@ function applyMapping(mapping, attrValue, data) {
  */
 function addComponentMapping(componentName, mappings) {
   var schema = _core_component_js__WEBPACK_IMPORTED_MODULE_2__.components[componentName].schema;
-  Object.keys(schema).map(function (prop) {
+  Object.keys(schema).forEach(function (prop) {
     // Hyphenate where there is camelCase.
     var attrName = prop.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
     // If there is a mapping collision, prefix with component name and hyphen.
@@ -24135,7 +24125,7 @@ function definePrimitive(tagName, defaultComponents, mappings) {
   mappings = mappings || {};
 
   // From the default components, add mapping automagically.
-  Object.keys(defaultComponents).map(function buildMappings(componentName) {
+  Object.keys(defaultComponents).forEach(function buildMappings(componentName) {
     addComponentMapping(componentName, mappings);
   });
 
@@ -28733,7 +28723,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _lib_three_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../lib/three.js */ "./src/lib/three.js");
 /* harmony import */ var _src_loader_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./src-loader.js */ "./src/utils/src-loader.js");
 /* harmony import */ var _debug_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./debug.js */ "./src/utils/debug.js");
-/* global HTMLCanvasElement, HTMLImageElement, HTMLVideoElement */
+/* global HTMLCanvasElement, HTMLVideoElement */
 
 
 
@@ -42860,7 +42850,7 @@ if (_utils_index_js__WEBPACK_IMPORTED_MODULE_16__.device.isBrowserEnvironment) {
   __webpack_require__(/*! ./style/aframe.css */ "./src/style/aframe.css");
   __webpack_require__(/*! ./style/rStats.css */ "./src/style/rStats.css");
 }
-console.log('A-Frame Version: 1.6.0 (Date 2025-02-02, Commit #89ee2344)');
+console.log('A-Frame Version: 1.6.0 (Date 2025-02-02, Commit #9c99e8f7)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].REVISION);
 
 // Wait for ready state, unless user asynchronously initializes A-Frame.
