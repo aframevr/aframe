@@ -135,7 +135,6 @@ In your `index.html`, adjust as follows:
             https://ssl.gstatic.com 
             'unsafe-eval' 
             https://cdn.aframe.io         <-- required
-            https://dpdb.webvr.rocks      <-- required
             https://fonts.googleapis.com  <-- required
             https://cdn.jsdelivr.net      <-- your choice, see below
             ; 
