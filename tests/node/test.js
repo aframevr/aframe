@@ -16,7 +16,7 @@ suite('node acceptance tests', function () {
   });
 
   test('can run in node', function () {
-    const aframe = require(path.join(process.cwd(), 'src'));
+    const aframe = require(path.join(process.cwd(), 'dist', 'aframe-master.module.min.js')).default;
 
     assert.ok(aframe.version);
   });
@@ -25,7 +25,7 @@ suite('node acceptance tests', function () {
     let aframe;
 
     setup(function () {
-      aframe = require(path.join(process.cwd(), 'src'));
+      aframe = require(path.join(process.cwd(), 'dist', 'aframe-master.module.min.js')).default;
     });
 
     test('isNodeEnvironment is true for node', function () {
