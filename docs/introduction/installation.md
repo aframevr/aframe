@@ -90,11 +90,11 @@ We can also install A-Frame through npm:
 $ npm install aframe
 ```
 
-Then we can bundle A-Frame into our application. For example, with Browserify
-or Webpack:
+Then we can bundle A-Frame into our application. For example, with Webpack or
+Vite:
 
 ```js
-require('aframe');
+import AFRAME from 'aframe';
 ```
 
 [angle]: https://www.npmjs.com/package/angle

@@ -51,10 +51,6 @@ controls how we want (e.g., limit the pitch on touch, reverse one axis). If we
 were to include every possible configuration into the core component, we would
 be left maintaining a wide array of flags.
 
-The component lives within a Browserify/Webpack context so you'll need to
-replace the `require` statements with A-Frame globals (e.g.,
-`AFRAME.registerComponent`, `window.THREE`), and get rid of the `module.exports`.
-
 ## Caveats
 
 If you want to create your own component for look controls, you will have to
