@@ -8,7 +8,7 @@ source_code: src/index.js
 ---
 
 A-Frame exposes its public interface through the `window.AFRAME` browser
-global. This same interface is also exposed when you import aframe (`import AFRAME from 'aframe`).
+global. This same interface is also exposed when you import aframe (`import AFRAME from 'aframe'`).
 
 ## `AFRAME` Properties
 
