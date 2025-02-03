@@ -55,7 +55,7 @@ It is possible to run A-Frame in [Node.js](https://nodejs.org/en/about) to get a
 ```js
 const cleanup = require('jsdom-global')();
 global.customElements = { define: function () {} };
-const aframe = require('./dist/aframe-master.module.min.js').default;
+const aframe = require('aframe');
 console.log(aframe.version);
 cleanup();
 ```
