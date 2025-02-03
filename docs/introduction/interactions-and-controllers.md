@@ -261,7 +261,7 @@ interact with objects with their hands.
 [gamepad]: https://developer.mozilla.org/docs/Web/API/Gamepad_API/Using_the_Gamepad_API
 
 A-Frame provides components for controllers across the spectrum as supported by
-their respective WebVR browsers through the [Gamepad Web API][gamepad]. There
+their respective WebXR browsers through the [Gamepad Web API][gamepad]. There
 are components for Vive, Oculus Touch, Meta Quest and Oculus Go controllers.
 
 To inspect the Gamepad object for poking around or to get the Gamepad ID, we
@@ -354,12 +354,12 @@ and Oculus Rift with Touch provide 6DoF and controllers for both hands. HTC
 Vive also provides trackers for tracking additional objects in the real world
 into VR.
 
-[rocks]: https://webvr.rocks
+[immersiveweb]: https://immersiveweb.dev
 [vivecomponent]: ../components/vive-controls.md
 
 To add controllers for HTC Vive, use the [vive-controls
-component][vivecomponent] for both hands. Then try it out on a [WebVR-enabled
-desktop browser][rocks]:
+component][vivecomponent] for both hands. Then try it out on a [WebXR-enabled
+desktop browser][immersiveweb]:
 
 ```html
 <a-entity vive-controls="hand: left"></a-entity>
@@ -369,8 +369,8 @@ desktop browser][rocks]:
 [metatouchcomponent]: ../components/meta-touch-controls.md
 
 To add controllers for Oculus Touch, use the [meta-touch-controls
-component][metatouchcomponent] for both hands. Then try it out on a [WebVR-enabled
-desktop browser][rocks]:
+component][metatouchcomponent] for both hands. Then try it out on a [WebXR-enabled
+browser][immersiveweb]:
 
 ```html
 <a-entity meta-touch-controls="hand: left"></a-entity>
