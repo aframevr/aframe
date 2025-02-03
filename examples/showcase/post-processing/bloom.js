@@ -6,23 +6,23 @@
  * https://github.com/akbartus/A-Frame-Component-Postprocessing
  */
 
-import AFRAME from "aframe";
-import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
-import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
-import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js";
-import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
+import AFRAME from 'aframe';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
-AFRAME.registerComponent("bloom", {
+AFRAME.registerComponent('bloom', {
   schema: {
-    threshold: { type: "number", default: 1 },
-    strength: { type: "number", default: 0.5 },
-    radius: { type: "number", default: 1 },
+    threshold: { type: 'number', default: 1 },
+    strength: { type: 'number', default: 0.5 },
+    radius: { type: 'number', default: 1 }
   },
   events: {
     rendererresize: function () {
       this.renderer.getSize(this.size);
       this.composer.setSize(this.size.width, this.size.height);
-    },
+    }
   },
   init: function () {
     this.size = new THREE.Vector2();
@@ -88,7 +88,7 @@ AFRAME.registerComponent("bloom", {
     };
   },
 
-  remove: function() {
+  remove: function () {
     this.el.renderer.render = this.originalRender;
     this.bloomPass.dispose();
     this.outputPass.dispose();
