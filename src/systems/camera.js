@@ -59,7 +59,7 @@ export var System = registerSystem('camera', {
       });
 
       // Load camera and wait for camera to initialize.
-      if (cameraEls[i].isNode) {
+      if (cameraEls[i].isANode) {
         cameraEls[i].load();
       } else {
         cameraEls[i].addEventListener('nodeready', function () {
