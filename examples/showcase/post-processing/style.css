@@ -1,0 +1,23 @@
+#infopanel {
+    font-family: Monospace; 
+    font-size: 13px;
+    line-height: 24px; 
+    color:#ffffff;
+    position: absolute; 
+    top: 0px; 
+    width: 100%;
+    padding: 10px; 
+    box-sizing: border-box;
+    text-align: center; 
+    pointer-events: none;
+    -moz-user-select: none; 
+    -webkit-user-select: none;
+    -ms-user-select: none; 
+    user-select: none; 
+    z-index: 1;
+}
+
+#infopanel a {
+    color:#00ceff;
+    pointer-events: auto;
+}

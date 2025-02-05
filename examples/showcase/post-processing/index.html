@@ -1,10 +1,15 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <title>Post Processing Bloom Effect</title>
-    <meta name="description" content="Post Processing Bloom Effect • A-Frame" />
-    <script type="importmap">
+
+<head>
+
+  <meta charset="utf-8" />
+  <title>Post Processing Bloom Effect</title>
+  <meta name="description" content="Post Processing Bloom Effect • A-Frame" />
+
+  <style src="./style.css"></style>
+
+  <script type="importmap">
       {
         "imports": {
           "aframe": "../../dist/aframe-master.module.min.js",
@@ -13,90 +18,52 @@
         }
       }
     </script>
-    <script type="module" src="./bloom.js"></script>
-  </head>
+  <script type="module" src="./bloom.js"></script>
 
-  <body>
-    <a-scene
-      background="color: black"
-      renderer="toneMapping: ACESFilmic"
-      bloom="threshold: 1.0; strength: 0.5; radius: 1"
-    >
-      <a-entity id="rig" position="0 0 2">
-        <a-entity
-          id="camera"
-          position="0 1.6 0"
-          camera
-          look-controls
-          wasd-controls
-        ></a-entity>
+</head>
+
+<body>
+
+  <div id="infopanel">
+    <a href="https://aframe.io/" target="_blank" rel="noopener" style="color:#00ceff;pointer-events: auto;">A-Frame</a>
+    PostProcessing - Bloom<br />
+    Model: <a href="https://skfb.ly/owUr9" target="_blank" rel="noopener">Low-poly cartoon style car 03</a> by
+    <a href="https://sketchfab.com/arturs.vitas" target="_blank" rel="noopener">artus.vitas</a>, CC Attribution.
+  </div>
+
+  <a-scene bloom="threshold: 1.0; strength: 0.3; radius: 1;" background="color: #000000"
+    renderer="toneMapping: ACESFilmic;">
+
+    <a-assets>
+      <!-- model by arturs.vitas https://skfb.ly/owUr9 -->
+      <a-asset-item id="testbed" src="../../assets/models/fancy_car_demo.glb"></a-asset-item>
+    </a-assets>
+
+    <a-entity id="rig" position="0 0 2">
+      <a-entity id="camera" position="0 1.6 0" camera look-controls wasd-controls></a-entity>
+    </a-entity>
+
+    <a-entity id="base" geometry="primitive: cylinder; height: 0.1; radius: 1.93" position="0 0 -2"
+      material="color: #201d1d" shadow
+      animation="property: rotation; to: 0 360 0 ; loop: true; dur: 15000; easing: linear;">
+
+      <a-entity id="tooncar" gltf-model="#testbed" position="0 0.050 0" scale="2 2 2" shadow>
       </a-entity>
 
-      <a-box
-        id="boxemissivewhite"
-        position="1 1.7 -1"
-        scale="0.2 0.2 0.2"
-        material="color: #FFF; emissive: #FFF; emissiveIntensity: 4"
-      ></a-box>
-
-      <a-box
-        id="boxemissivegreen"
-        position="0 1.7 -1"
-        scale="0.2 0.2 0.2"
-        material="color: #0F0; emissive: #0F0; emissiveIntensity: 4"
-      ></a-box>
-
-      <a-box
-        id="boxemissivered"
-        position="-1 1.7 -1"
-        scale="0.2 0.2 0.2"
-        material="color: #F00; emissive: #F00; emissiveIntensity: 5"
-      ></a-box>
-
-      <a-box
-        id="boxwhite"
-        position="1 1 -1"
-        scale="0.2 0.2 0.2"
-        material="color: #FFF; emissive: #FFF; emissiveIntensity: 0"
-      ></a-box>
-
-      <a-box
-        id="boxgreen"
-        position="0 1 -1"
-        scale="0.2 0.2 0.2"
-        material="color: #0F0;emissive: #0F0; emissiveIntensity: 0"
-      ></a-box>
-
-      <a-box
-        id="boxred"
-        position="-1 1 -1"
-        scale="0.2 0.2 0.2"
-        material="color: #F00; emissive: #F00; emissiveIntensity: 0"
-      ></a-box>
-
-      <a-box
-        id="pulsingneon"
-        position="0 1.25 -1"
-        scale="2 0.1 0.1"
-        material="color: #F0F; emissive: #F0F; emissiveIntensity: 2.5"
-        animation="property: material.emissiveIntensity; from: 2.5; to: 3.5; dir: alternate; dur: 2000; easing: linear; loop: true"
-      ></a-box>
-
-      <a-plane
-        id="plane"
-        position="0 0.2 -4"
-        rotation="-90 0 0"
-        width="40"
-        height="40"
-        color="#111111"
-      ></a-plane>
-
-      <a-entity
-        id="sun"
-        light="type: directional; intensity: 2.6; color: #FFD"
-        position="0.12 5.76 -2.14"
-      >
+      <a-entity id="neon01"
+        geometry="primitive: torus; radius: 1.92; radiusTubular: 0.02; segmentsRadial: 50; segmentsTubular: 40"
+        material="color: #d100e0; emissive: #b300a4; emissiveIntensity: 9.34" rotation="90 0 0">
       </a-entity>
-    </a-scene>
-  </body>
+
+    </a-entity>
+
+    <a-entity id="ambient" light="type: ambient; intensity: 0.48; color: #ffffff">
+    </a-entity>
+
+    <a-entity id="point01" light="color: #7cd2fe; intensity: 5; type: point;" position="0 3.51 -1">
+    </a-entity>
+
+  </a-scene>
+</body>
+
 </html>
