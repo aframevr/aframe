@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>TSL • A-Frame</title>
+    <meta name="description" content="TSL • A-Frame" />
+    <script type="importmap">
+      {
+        "imports": {
+          "aframe": "../../../dist/aframe-master.module.min.js",
+          "three": "../../../super-three-package/build/three.webgpu.js",
+          "three/webgpu": "../../../super-three-package/build/three.webgpu.js",
+          "three/tsl": "../../../super-three-package/build/three.tsl.js",
+          "three/addons/": "../../../super-three-package/examples/jsm/",
+          "aframe-extras/controls": "https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.5.x/dist/aframe-extras.controls.min.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import AFRAME from "aframe";
+      import "aframe-extras/controls";
+      // import { } from "three/tsl";
+    </script>
+  </head>
+  <body>
+    <a-scene background="color: #ECECEC">
+      <!--
+        <a-entity
+          position="0 0 -2"
+        ></a-entity>
+      -->
+
+      <a-plane
+        position="0 0 -2"
+        rotation="-90 0 0"
+        width="4"
+        height="4"
+        color="#7BC8A4"
+      ></a-plane>
+
+      <a-entity
+        position="0 0 1"
+        id="rig"
+        movement-controls="controls: gamepad,keyboard,nipple"
+        nipple-controls="mode: static"
+      >
+        <a-entity camera position="0 1.6 0" look-controls></a-entity>
+      </a-entity>
+    </a-scene>
+  </body>
+</html>
