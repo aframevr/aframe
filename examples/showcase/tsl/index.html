@@ -80,6 +80,7 @@
           // debug
 
           const gui = new GUI();
+          this.gui = gui;
 
           gui.add(size, "value", 0, 1, 0.001).name("size");
 
@@ -108,6 +109,8 @@
           if (mesh) {
             mesh.material.dispose();
             mesh.geometry.dispose();
+            this.el.removeObject3D("mesh");
+            this.gui.destroy();
           }
         },
       });
