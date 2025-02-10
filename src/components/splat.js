@@ -76,7 +76,7 @@
           bytesDownloaded += newChunk.length;
           chunks.push(newChunk);
 
-          // Downloar progress stats.
+          // Download progress stats.
           if (bytesFileTotal) {
             var mbps = (bytesDownloaded / 1024 / 1024) / ((Date.now() - start) / 1000);
             var percent = bytesDownloaded / bytesFileTotal * 100;
@@ -191,7 +191,6 @@
 
     initGL: async function initGL (numVertices) {
       console.log('initGL', numVertices);
-      this.el.object3D.frustumCulled = false;
       var renderer = this.el.sceneEl.renderer;
       var gl = renderer.getContext();
       var maxTextureSize = gl.getParameter(gl.MAX_TEXTURE_SIZE);
@@ -270,17 +269,9 @@
       mesh.frustumCulled = false;
       this.el.setObject3D('mesh', mesh);
 
-      // Wait until texture is ready
-      while (true) {
-        var centerAndScaleTextureProperties = renderer.properties.get(this.centerAndScaleTexture);
-        var covAndColorTextureProperties = renderer.properties.get(this.covAndColorTexture);
-        if (centerAndScaleTextureProperties && centerAndScaleTextureProperties.__webglTexture &&
-          covAndColorTextureProperties && centerAndScaleTextureProperties.__webglTexture) {
-          break;
-        }
-        await new Promise(resolve => setTimeout(resolve, 10));
-      }
-
+      // Init textures.
+      renderer.initTexture(this.centerAndScaleTexture);
+      renderer.initTexture(this.covAndColorTexture);
       this.startSplatsSort();
     },
 
@@ -489,11 +480,6 @@
         ];
       };
 
-      // dot: vector3 * vector3
-      var dot = function dot (vec1, vec2) {
-        return vec1[0] * vec2[0] + vec1[1] * vec2[1] + vec1[2] * vec2[2];
-      };
-
       var sortSplats = function sortSplats (matrices, view, cutout) {
         var vertexCount = matrices.length / 16;
         var threshold = -0.0001;
@@ -529,7 +515,6 @@
 
             // convert to cutout space – not sure why Y axis is inverted
             var cutoutSpacePos = mul(cutout, posX, -posY, posZ);
-            var len = dot(cutoutSpacePos, cutoutSpacePos);
 
             // Skip if splat is outside of the cutout area.
             if (cutoutSpacePos[0] < -0.5 || cutoutSpacePos[0] > 0.5 ||
@@ -629,7 +614,7 @@
         .slice(0, headerEndIndex)
         .split('\n')
         .filter((k) => k.startsWith('property '))) {
-        var [p, type, name] = prop.split(' ');
+        var [, type, name] = prop.split(' ');
         var arrayType = TYPE_MAP[type] || 'getInt8';
         types[name] = arrayType;
         offsets[name] = rowOffset;
