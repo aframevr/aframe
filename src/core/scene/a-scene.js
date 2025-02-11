@@ -271,7 +271,7 @@ export class AScene extends AEntity {
       var rendererSystem = self.getAttribute('renderer');
       vrManager.enabled = true;
 
-      if (this.hasWebXR) {
+      if (this.hasWebXR && !rendererSystem.forceWebVR) {
         // XR API.
         if (this.xrSession) {
           this.xrSession.removeEventListener('end', this.exitVRBound);
@@ -358,7 +358,9 @@ export class AScene extends AEntity {
     // Handle exiting VR if not yet already and in a headset or polyfill.
     if (this.checkHeadsetConnected() || this.isMobile) {
       vrManager.enabled = false;
-      if (this.hasWebXR) {
+      var rendererSystem = self.getAttribute('renderer');
+
+      if (this.hasWebXR && !rendererSystem.forceWebVR) {
         this.xrSession.removeEventListener('end', this.exitVRBound);
         // Capture promise to avoid errors.
         this.xrSession.end().then(function () {}, function () {});
@@ -472,6 +474,10 @@ export class AScene extends AEntity {
     var isPresenting = this.renderer.xr.isPresenting;
     isVRPresenting = this.renderer.xr.enabled && isPresenting;
 
+    if (this.hasAttribute('disable-resize')) {
+      return;
+    }
+
     // Do not update renderer, if a camera or a canvas have not been injected.
     // In VR mode, three handles canvas resize based on the dimensions returned by
     // the getEyeParameters function of the WebVR API. These dimensions are independent of
@@ -504,7 +510,9 @@ export class AScene extends AEntity {
       antialias: !isMobile,
       canvas: this.canvas,
       logarithmicDepthBuffer: false,
-      powerPreference: 'high-performance'
+      powerPreference: 'high-performance',
+      preuploadVideos: /Oculus/.test(navigator.userAgent),
+      forceWebVR: false
     };
 
     this.maxCanvasSize = {height: -1, width: -1};
@@ -537,6 +545,14 @@ export class AScene extends AEntity {
         rendererConfig.multiviewStereo = rendererAttr.multiviewStereo === 'true';
       }
 
+      if (rendererAttr.forceWebVR) {
+        rendererConfig.forceWebVR = rendererAttr.forceWebVR === 'true';
+      }
+
+      if (window.forceWebVR === true) {
+        rendererConfig.forceWebVR = window.forceWebVR;
+      }
+
       this.maxCanvasSize = {
         width: rendererAttr.maxCanvasWidth
           ? parseInt(rendererAttr.maxCanvasWidth)
@@ -550,10 +566,10 @@ export class AScene extends AEntity {
     renderer = this.renderer = new THREE.WebGLRenderer(rendererConfig);
     renderer.setPixelRatio(window.devicePixelRatio);
 
-    if (this.camera) { renderer.xr.setPoseTarget(this.camera.el.object3D); }
-    this.addEventListener('camera-set-active', function () {
-      renderer.xr.setPoseTarget(self.camera.el.object3D);
-    });
+    // if (this.camera) { renderer.xr.setPoseTarget(this.camera.el.object3D); }
+    // this.addEventListener('camera-set-active', function () {
+    //   renderer.xr.setPoseTarget(self.camera.el.object3D);
+    // });
   }
 
   /**

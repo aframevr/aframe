@@ -32,7 +32,7 @@ import './rotation.js';
 import './scale.js';
 import './shadow.js';
 import './sound.js';
-import './text.js';
+// import './text.js';
 import './tracked-controls.js';
 import './visible.js';
 import './valve-index-controls.js';

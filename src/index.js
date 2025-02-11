@@ -36,6 +36,11 @@ var debug = utils.debug;
 var error = debug('A-Frame:error');
 var warn = debug('A-Frame:warn');
 
+// WebVR polyfill
+// Check before the polyfill runs.
+window.hasNativeWebVRImplementation = !!window.navigator.getVRDisplays ||
+                                      !!window.navigator.getVRDevices;
+
 if (window.document.currentScript && window.document.currentScript.parentNode !==
     window.document.head && !window.debug) {
   warn('Put the A-Frame <script> tag in the <head> of the HTML *before* the scene to ' +
@@ -59,7 +64,7 @@ if (utils.device.isBrowserEnvironment) {
   require('./style/rStats.css');
 }
 
-console.log('A-Frame Version: 1.6.0 (Date 2025-02-04, Commit #850c4003)');
+console.log('A-Frame Version: 1.6.0 (Date 2025-02-11, Commit #b9e4838d)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             THREE.REVISION);
 

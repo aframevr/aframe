@@ -51,9 +51,14 @@
     "three": "npm:super-three@0.173.4",
     "three-bmfont-text": "dmarcos/three-bmfont-text#eed4878795be9b3e38cf6aec6b903f56acd1f695"
   },
+  "peerDependencies": {
+    "three": "*",
+    "bitecs": "^0.3.38"
+  },
   "devDependencies": {
     "@babel/core": "^7.24.0",
     "babel-loader": "^9.1.3",
+    "bitecs": "^0.3.40",
     "babel-plugin-istanbul": "^6.1.1",
     "chai": "^4.3.6",
     "chai-shallow-deep-equal": "^1.4.0",

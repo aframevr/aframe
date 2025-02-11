@@ -19,77 +19,8 @@ class AAssets extends ANode {
 
   doConnectedCallback () {
     var self = this;
-    var i;
-    var loaded = [];
-    var mediaEl;
-    var mediaEls;
-    var imgEl;
-    var imgEls;
-    var timeout;
-    var children;
-
-    super.doConnectedCallback();
-
-    if (!this.parentNode.isScene) {
-      throw new Error('<a-assets> must be a child of a <a-scene>.');
-    }
-
-    // Wait for <img>s.
-    imgEls = this.querySelectorAll('img');
-    for (i = 0; i < imgEls.length; i++) {
-      imgEl = fixUpMediaElement(imgEls[i]);
-      loaded.push(new Promise(function (resolve, reject) {
-        // Set in cache because we won't be needing to call three.js loader if we have.
-        // a loaded media element.
-        THREE.Cache.add(imgEls[i].getAttribute('src'), imgEl);
-        if (imgEl.complete) {
-          resolve();
-          return;
-        }
-        imgEl.onload = resolve;
-        imgEl.onerror = reject;
-      }));
-    }
-
-    // Wait for <audio>s and <video>s.
-    mediaEls = this.querySelectorAll('audio, video');
-    for (i = 0; i < mediaEls.length; i++) {
-      mediaEl = fixUpMediaElement(mediaEls[i]);
-      if (!mediaEl.src && !mediaEl.srcObject) {
-        warn('Audio/video asset has neither `src` nor `srcObject` attributes.');
-      }
-      loaded.push(mediaElementLoaded(mediaEl));
-    }
-
-    // Wait for <a-asset-item>s
-    children = this.getChildren();
-    children.forEach(function (child) {
-      if (!child.isAssetItem || !child.hasAttribute('src')) { return; }
-
-      loaded.push(new Promise(function waitForLoaded (resolve, reject) {
-        if (child.hasLoaded) { return resolve(); }
-        child.addEventListener('loaded', resolve);
-        child.addEventListener('error', reject);
-      }));
-    });
-
-    // Trigger loaded for scene to start rendering.
-    Promise.allSettled(loaded).then(function () {
-      // Make sure the timeout didn't occur.
-      if (self.timeout === null) { return; }
-      self.load();
-    });
-
-    // Timeout to start loading anyways.
-    timeout = parseInt(this.getAttribute('timeout'), 10) || 3000;
-    this.timeout = setTimeout(function () {
-      // Make sure the loading didn't complete.
-      if (self.hasLoaded) { return; }
-      warn('Asset loading timed out in', timeout, 'ms');
-      self.timeout = null;
-      self.emit('timeout');
-      self.load();
-    }, timeout);
+    
+    setTimeout(() => self.load(), 500);
   }
 
   disconnectedCallback () {

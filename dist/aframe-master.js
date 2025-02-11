@@ -11,32 +11,6 @@
 return /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./node_modules/an-array/index.js":
-/*!****************************************!*\
-  !*** ./node_modules/an-array/index.js ***!
-  \****************************************/
-/***/ ((module) => {
-
-var str = Object.prototype.toString;
-module.exports = anArray;
-function anArray(arr) {
-  return arr.BYTES_PER_ELEMENT && str.call(arr.buffer) === '[object ArrayBuffer]' || Array.isArray(arr);
-}
-
-/***/ }),
-
-/***/ "./node_modules/as-number/index.js":
-/*!*****************************************!*\
-  !*** ./node_modules/as-number/index.js ***!
-  \*****************************************/
-/***/ ((module) => {
-
-module.exports = function numtype(num, def) {
-  return typeof num === 'number' ? num : typeof def === 'number' ? def : 0;
-};
-
-/***/ }),
-
 /***/ "./node_modules/base64-js/index.js":
 /*!*****************************************!*\
   !*** ./node_modules/base64-js/index.js ***!
@@ -148,27 +122,6 @@ function fromByteArray(uint8) {
   }
   return parts.join('');
 }
-
-/***/ }),
-
-/***/ "./node_modules/buffer-equal/index.js":
-/*!********************************************!*\
-  !*** ./node_modules/buffer-equal/index.js ***!
-  \********************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-var Buffer = (__webpack_require__(/*! buffer */ "./node_modules/buffer/index.js").Buffer); // for use with browserify
-
-module.exports = function (a, b) {
-  if (!Buffer.isBuffer(a)) return undefined;
-  if (!Buffer.isBuffer(b)) return undefined;
-  if (typeof a.equals === 'function') return a.equals(b);
-  if (a.length !== b.length) return false;
-  for (var i = 0; i < a.length; i++) {
-    if (a[i] !== b[i]) return false;
-  }
-  return true;
-};
 
 /***/ }),
 
@@ -2131,6 +2084,7 @@ function useColors() {
 
   // Is webkit? http://stackoverflow.com/a/16459606/376773
   // document is undefined in react-native: https://github.com/facebook/react-native/pull/1632
+  // eslint-disable-next-line no-return-assign
   return typeof document !== 'undefined' && document.documentElement && document.documentElement.style && document.documentElement.style.WebkitAppearance ||
   // Is firebug? http://stackoverflow.com/a/398120/376773
   typeof window !== 'undefined' && window.console && (window.console.firebug || window.console.exception && window.console.table) ||
@@ -2424,21 +2378,56 @@ function setup(env) {
     createDebug.namespaces = namespaces;
     createDebug.names = [];
     createDebug.skips = [];
-    let i;
-    const split = (typeof namespaces === 'string' ? namespaces : '').split(/[\s,]+/);
-    const len = split.length;
-    for (i = 0; i < len; i++) {
-      if (!split[i]) {
-        // ignore empty strings
-        continue;
-      }
-      namespaces = split[i].replace(/\*/g, '.*?');
-      if (namespaces[0] === '-') {
-        createDebug.skips.push(new RegExp('^' + namespaces.slice(1) + '$'));
+    const split = (typeof namespaces === 'string' ? namespaces : '').trim().replace(' ', ',').split(',').filter(Boolean);
+    for (const ns of split) {
+      if (ns[0] === '-') {
+        createDebug.skips.push(ns.slice(1));
       } else {
-        createDebug.names.push(new RegExp('^' + namespaces + '$'));
+        createDebug.names.push(ns);
       }
     }
+  }
+
+  /**
+   * Checks if the given string matches a namespace template, honoring
+   * asterisks as wildcards.
+   *
+   * @param {String} search
+   * @param {String} template
+   * @return {Boolean}
+   */
+  function matchesTemplate(search, template) {
+    let searchIndex = 0;
+    let templateIndex = 0;
+    let starIndex = -1;
+    let matchIndex = 0;
+    while (searchIndex < search.length) {
+      if (templateIndex < template.length && (template[templateIndex] === search[searchIndex] || template[templateIndex] === '*')) {
+        // Match character or proceed with wildcard
+        if (template[templateIndex] === '*') {
+          starIndex = templateIndex;
+          matchIndex = searchIndex;
+          templateIndex++; // Skip the '*'
+        } else {
+          searchIndex++;
+          templateIndex++;
+        }
+      } else if (starIndex !== -1) {
+        // eslint-disable-line no-negated-condition
+        // Backtrack to the last '*' and try to match more characters
+        templateIndex = starIndex + 1;
+        matchIndex++;
+        searchIndex = matchIndex;
+      } else {
+        return false; // No match
+      }
+    }
+
+    // Handle trailing '*' in template
+    while (templateIndex < template.length && template[templateIndex] === '*') {
+      templateIndex++;
+    }
+    return templateIndex === template.length;
   }
 
   /**
@@ -2448,7 +2437,7 @@ function setup(env) {
   * @api public
   */
   function disable() {
-    const namespaces = [...createDebug.names.map(toNamespace), ...createDebug.skips.map(toNamespace).map(namespace => '-' + namespace)].join(',');
+    const namespaces = [...createDebug.names, ...createDebug.skips.map(namespace => '-' + namespace)].join(',');
     createDebug.enable('');
     return namespaces;
   }
@@ -2461,33 +2450,17 @@ function setup(env) {
   * @api public
   */
   function enabled(name) {
-    if (name[name.length - 1] === '*') {
-      return true;
-    }
-    let i;
-    let len;
-    for (i = 0, len = createDebug.skips.length; i < len; i++) {
-      if (createDebug.skips[i].test(name)) {
+    for (const skip of createDebug.skips) {
+      if (matchesTemplate(name, skip)) {
         return false;
       }
     }
-    for (i = 0, len = createDebug.names.length; i < len; i++) {
-      if (createDebug.names[i].test(name)) {
+    for (const ns of createDebug.names) {
+      if (matchesTemplate(name, ns)) {
         return true;
       }
     }
     return false;
-  }
-
-  /**
-  * Convert regexp to namespace
-  *
-  * @param {RegExp} regxep
-  * @return {String} namespace
-  * @api private
-  */
-  function toNamespace(regexp) {
-    return regexp.toString().substring(2, regexp.toString().length - 2).replace(/\.\*\?$/, '*');
   }
 
   /**
@@ -2582,59 +2555,6 @@ module.exports = function deepAssign(target) {
 
 /***/ }),
 
-/***/ "./node_modules/dtype/index.js":
-/*!*************************************!*\
-  !*** ./node_modules/dtype/index.js ***!
-  \*************************************/
-/***/ ((module) => {
-
-module.exports = function (dtype) {
-  switch (dtype) {
-    case 'int8':
-      return Int8Array;
-    case 'int16':
-      return Int16Array;
-    case 'int32':
-      return Int32Array;
-    case 'uint8':
-      return Uint8Array;
-    case 'uint16':
-      return Uint16Array;
-    case 'uint32':
-      return Uint32Array;
-    case 'float32':
-      return Float32Array;
-    case 'float64':
-      return Float64Array;
-    case 'array':
-      return Array;
-    case 'uint8_clamped':
-      return Uint8ClampedArray;
-  }
-};
-
-/***/ }),
-
-/***/ "./node_modules/global/window.js":
-/*!***************************************!*\
-  !*** ./node_modules/global/window.js ***!
-  \***************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-var win;
-if (typeof window !== "undefined") {
-  win = window;
-} else if (typeof __webpack_require__.g !== "undefined") {
-  win = __webpack_require__.g;
-} else if (typeof self !== "undefined") {
-  win = self;
-} else {
-  win = {};
-}
-module.exports = win;
-
-/***/ }),
-
 /***/ "./node_modules/ieee754/index.js":
 /*!***************************************!*\
   !*** ./node_modules/ieee754/index.js ***!
@@ -2718,56 +2638,6 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
 
 /***/ }),
 
-/***/ "./node_modules/is-buffer/index.js":
-/*!*****************************************!*\
-  !*** ./node_modules/is-buffer/index.js ***!
-  \*****************************************/
-/***/ ((module) => {
-
-/*!
- * Determine if an object is a Buffer
- *
- * @author   Feross Aboukhadijeh <https://feross.org>
- * @license  MIT
- */
-
-// The _isBuffer check is for Safari 5-7 support, because it's missing
-// Object.prototype.constructor. Remove this eventually
-module.exports = function (obj) {
-  return obj != null && (isBuffer(obj) || isSlowBuffer(obj) || !!obj._isBuffer);
-};
-function isBuffer(obj) {
-  return !!obj.constructor && typeof obj.constructor.isBuffer === 'function' && obj.constructor.isBuffer(obj);
-}
-
-// For Node v0.10 support. Remove this eventually.
-function isSlowBuffer(obj) {
-  return typeof obj.readFloatLE === 'function' && typeof obj.slice === 'function' && isBuffer(obj.slice(0, 0));
-}
-
-/***/ }),
-
-/***/ "./node_modules/is-function/index.js":
-/*!*******************************************!*\
-  !*** ./node_modules/is-function/index.js ***!
-  \*******************************************/
-/***/ ((module) => {
-
-module.exports = isFunction;
-var toString = Object.prototype.toString;
-function isFunction(fn) {
-  if (!fn) {
-    return false;
-  }
-  var string = toString.call(fn);
-  return string === '[object Function]' || typeof fn === 'function' && string !== '[object RegExp]' || typeof window !== 'undefined' && (
-  // IE8 and below
-  fn === window.setTimeout || fn === window.alert || fn === window.confirm || fn === window.prompt);
-}
-;
-
-/***/ }),
-
 /***/ "./node_modules/is-obj/index.js":
 /*!**************************************!*\
   !*** ./node_modules/is-obj/index.js ***!
@@ -2780,357 +2650,6 @@ function isFunction(fn) {
 module.exports = function (x) {
   var type = typeof x;
   return x !== null && (type === 'object' || type === 'function');
-};
-
-/***/ }),
-
-/***/ "./node_modules/layout-bmfont-text/index.js":
-/*!**************************************************!*\
-  !*** ./node_modules/layout-bmfont-text/index.js ***!
-  \**************************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-var wordWrap = __webpack_require__(/*! word-wrapper */ "./node_modules/word-wrapper/index.js");
-var xtend = __webpack_require__(/*! xtend */ "./node_modules/xtend/immutable.js");
-var number = __webpack_require__(/*! as-number */ "./node_modules/as-number/index.js");
-var X_HEIGHTS = ['x', 'e', 'a', 'o', 'n', 's', 'r', 'c', 'u', 'm', 'v', 'w', 'z'];
-var M_WIDTHS = ['m', 'w'];
-var CAP_HEIGHTS = ['H', 'I', 'N', 'E', 'F', 'K', 'L', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
-var TAB_ID = '\t'.charCodeAt(0);
-var SPACE_ID = ' '.charCodeAt(0);
-var ALIGN_LEFT = 0,
-  ALIGN_CENTER = 1,
-  ALIGN_RIGHT = 2;
-module.exports = function createLayout(opt) {
-  return new TextLayout(opt);
-};
-function TextLayout(opt) {
-  this.glyphs = [];
-  this._measure = this.computeMetrics.bind(this);
-  this.update(opt);
-}
-TextLayout.prototype.update = function (opt) {
-  opt = xtend({
-    measure: this._measure
-  }, opt);
-  this._opt = opt;
-  this._opt.tabSize = number(this._opt.tabSize, 4);
-  if (!opt.font) throw new Error('must provide a valid bitmap font');
-  var glyphs = this.glyphs;
-  var text = opt.text || '';
-  var font = opt.font;
-  this._setupSpaceGlyphs(font);
-  var lines = wordWrap.lines(text, opt);
-  var minWidth = opt.width || 0;
-
-  //clear glyphs
-  glyphs.length = 0;
-
-  //get max line width
-  var maxLineWidth = lines.reduce(function (prev, line) {
-    return Math.max(prev, line.width, minWidth);
-  }, 0);
-
-  //the pen position
-  var x = 0;
-  var y = 0;
-  var lineHeight = number(opt.lineHeight, font.common.lineHeight);
-  var baseline = font.common.base;
-  var descender = lineHeight - baseline;
-  var letterSpacing = opt.letterSpacing || 0;
-  var height = lineHeight * lines.length - descender;
-  var align = getAlignType(this._opt.align);
-
-  //draw text along baseline
-  y -= height;
-
-  //the metrics for this text layout
-  this._width = maxLineWidth;
-  this._height = height;
-  this._descender = lineHeight - baseline;
-  this._baseline = baseline;
-  this._xHeight = getXHeight(font);
-  this._capHeight = getCapHeight(font);
-  this._lineHeight = lineHeight;
-  this._ascender = lineHeight - descender - this._xHeight;
-
-  //layout each glyph
-  var self = this;
-  lines.forEach(function (line, lineIndex) {
-    var start = line.start;
-    var end = line.end;
-    var lineWidth = line.width;
-    var lastGlyph;
-
-    //for each glyph in that line...
-    for (var i = start; i < end; i++) {
-      var id = text.charCodeAt(i);
-      var glyph = self.getGlyph(font, id);
-      if (glyph) {
-        if (lastGlyph) x += getKerning(font, lastGlyph.id, glyph.id);
-        var tx = x;
-        if (align === ALIGN_CENTER) tx += (maxLineWidth - lineWidth) / 2;else if (align === ALIGN_RIGHT) tx += maxLineWidth - lineWidth;
-        glyphs.push({
-          position: [tx, y],
-          data: glyph,
-          index: i,
-          line: lineIndex
-        });
-
-        //move pen forward
-        x += glyph.xadvance + letterSpacing;
-        lastGlyph = glyph;
-      }
-    }
-
-    //next line down
-    y += lineHeight;
-    x = 0;
-  });
-  this._linesTotal = lines.length;
-};
-TextLayout.prototype._setupSpaceGlyphs = function (font) {
-  //These are fallbacks, when the font doesn't include
-  //' ' or '\t' glyphs
-  this._fallbackSpaceGlyph = null;
-  this._fallbackTabGlyph = null;
-  if (!font.chars || font.chars.length === 0) return;
-
-  //try to get space glyph
-  //then fall back to the 'm' or 'w' glyphs
-  //then fall back to the first glyph available
-  var space = getGlyphById(font, SPACE_ID) || getMGlyph(font) || font.chars[0];
-
-  //and create a fallback for tab
-  var tabWidth = this._opt.tabSize * space.xadvance;
-  this._fallbackSpaceGlyph = space;
-  this._fallbackTabGlyph = xtend(space, {
-    x: 0,
-    y: 0,
-    xadvance: tabWidth,
-    id: TAB_ID,
-    xoffset: 0,
-    yoffset: 0,
-    width: 0,
-    height: 0
-  });
-};
-TextLayout.prototype.getGlyph = function (font, id) {
-  var glyph = getGlyphById(font, id);
-  if (glyph) return glyph;else if (id === TAB_ID) return this._fallbackTabGlyph;else if (id === SPACE_ID) return this._fallbackSpaceGlyph;
-  return null;
-};
-TextLayout.prototype.computeMetrics = function (text, start, end, width) {
-  var letterSpacing = this._opt.letterSpacing || 0;
-  var font = this._opt.font;
-  var curPen = 0;
-  var curWidth = 0;
-  var count = 0;
-  var glyph;
-  var lastGlyph;
-  if (!font.chars || font.chars.length === 0) {
-    return {
-      start: start,
-      end: start,
-      width: 0
-    };
-  }
-  end = Math.min(text.length, end);
-  for (var i = start; i < end; i++) {
-    var id = text.charCodeAt(i);
-    var glyph = this.getGlyph(font, id);
-    if (glyph) {
-      //move pen forward
-      var xoff = glyph.xoffset;
-      var kern = lastGlyph ? getKerning(font, lastGlyph.id, glyph.id) : 0;
-      curPen += kern;
-      var nextPen = curPen + glyph.xadvance + letterSpacing;
-      var nextWidth = curPen + glyph.width;
-
-      //we've hit our limit; we can't move onto the next glyph
-      if (nextWidth >= width || nextPen >= width) break;
-
-      //otherwise continue along our line
-      curPen = nextPen;
-      curWidth = nextWidth;
-      lastGlyph = glyph;
-    }
-    count++;
-  }
-
-  //make sure rightmost edge lines up with rendered glyphs
-  if (lastGlyph) curWidth += lastGlyph.xoffset;
-  return {
-    start: start,
-    end: start + count,
-    width: curWidth
-  };
-}
-
-//getters for the private vars
-;
-['width', 'height', 'descender', 'ascender', 'xHeight', 'baseline', 'capHeight', 'lineHeight'].forEach(addGetter);
-function addGetter(name) {
-  Object.defineProperty(TextLayout.prototype, name, {
-    get: wrapper(name),
-    configurable: true
-  });
-}
-
-//create lookups for private vars
-function wrapper(name) {
-  return new Function(['return function ' + name + '() {', '  return this._' + name, '}'].join('\n'))();
-}
-function getGlyphById(font, id) {
-  if (!font.chars || font.chars.length === 0) return null;
-  var glyphIdx = findChar(font.chars, id);
-  if (glyphIdx >= 0) return font.chars[glyphIdx];
-  return null;
-}
-function getXHeight(font) {
-  for (var i = 0; i < X_HEIGHTS.length; i++) {
-    var id = X_HEIGHTS[i].charCodeAt(0);
-    var idx = findChar(font.chars, id);
-    if (idx >= 0) return font.chars[idx].height;
-  }
-  return 0;
-}
-function getMGlyph(font) {
-  for (var i = 0; i < M_WIDTHS.length; i++) {
-    var id = M_WIDTHS[i].charCodeAt(0);
-    var idx = findChar(font.chars, id);
-    if (idx >= 0) return font.chars[idx];
-  }
-  return 0;
-}
-function getCapHeight(font) {
-  for (var i = 0; i < CAP_HEIGHTS.length; i++) {
-    var id = CAP_HEIGHTS[i].charCodeAt(0);
-    var idx = findChar(font.chars, id);
-    if (idx >= 0) return font.chars[idx].height;
-  }
-  return 0;
-}
-function getKerning(font, left, right) {
-  if (!font.kernings || font.kernings.length === 0) return 0;
-  var table = font.kernings;
-  for (var i = 0; i < table.length; i++) {
-    var kern = table[i];
-    if (kern.first === left && kern.second === right) return kern.amount;
-  }
-  return 0;
-}
-function getAlignType(align) {
-  if (align === 'center') return ALIGN_CENTER;else if (align === 'right') return ALIGN_RIGHT;
-  return ALIGN_LEFT;
-}
-function findChar(array, value, start) {
-  start = start || 0;
-  for (var i = start; i < array.length; i++) {
-    if (array[i].id === value) {
-      return i;
-    }
-  }
-  return -1;
-}
-
-/***/ }),
-
-/***/ "./node_modules/load-bmfont/browser.js":
-/*!*********************************************!*\
-  !*** ./node_modules/load-bmfont/browser.js ***!
-  \*********************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-/* provided dependency */ var Buffer = __webpack_require__(/*! buffer */ "./node_modules/buffer/index.js")["Buffer"];
-var xhr = __webpack_require__(/*! xhr */ "./node_modules/xhr/index.js");
-var noop = function () {};
-var parseASCII = __webpack_require__(/*! parse-bmfont-ascii */ "./node_modules/parse-bmfont-ascii/index.js");
-var parseXML = __webpack_require__(/*! parse-bmfont-xml */ "./node_modules/parse-bmfont-xml/lib/browser.js");
-var readBinary = __webpack_require__(/*! parse-bmfont-binary */ "./node_modules/parse-bmfont-binary/index.js");
-var isBinaryFormat = __webpack_require__(/*! ./lib/is-binary */ "./node_modules/load-bmfont/lib/is-binary.js");
-var xtend = __webpack_require__(/*! xtend */ "./node_modules/xtend/immutable.js");
-var xml2 = function hasXML2() {
-  return self.XMLHttpRequest && "withCredentials" in new XMLHttpRequest();
-}();
-module.exports = function (opt, cb) {
-  cb = typeof cb === 'function' ? cb : noop;
-  if (typeof opt === 'string') opt = {
-    uri: opt
-  };else if (!opt) opt = {};
-  var expectBinary = opt.binary;
-  if (expectBinary) opt = getBinaryOpts(opt);
-  xhr(opt, function (err, res, body) {
-    if (err) return cb(err);
-    if (!/^2/.test(res.statusCode)) return cb(new Error('http status code: ' + res.statusCode));
-    if (!body) return cb(new Error('no body result'));
-    var binary = false;
-
-    //if the response type is an array buffer,
-    //we need to convert it into a regular Buffer object
-    if (isArrayBuffer(body)) {
-      var array = new Uint8Array(body);
-      body = Buffer.from(array, 'binary');
-    }
-
-    //now check the string/Buffer response
-    //and see if it has a binary BMF header
-    if (isBinaryFormat(body)) {
-      binary = true;
-      //if we have a string, turn it into a Buffer
-      if (typeof body === 'string') body = Buffer.from(body, 'binary');
-    }
-
-    //we are not parsing a binary format, just ASCII/XML/etc
-    if (!binary) {
-      //might still be a buffer if responseType is 'arraybuffer'
-      if (Buffer.isBuffer(body)) body = body.toString(opt.encoding);
-      body = body.trim();
-    }
-    var result;
-    try {
-      var type = res.headers['content-type'];
-      if (binary) result = readBinary(body);else if (/json/.test(type) || body.charAt(0) === '{') result = JSON.parse(body);else if (/xml/.test(type) || body.charAt(0) === '<') result = parseXML(body);else result = parseASCII(body);
-    } catch (e) {
-      cb(new Error('error parsing font ' + e.message));
-      cb = noop;
-    }
-    cb(null, result);
-  });
-};
-function isArrayBuffer(arr) {
-  var str = Object.prototype.toString;
-  return str.call(arr) === '[object ArrayBuffer]';
-}
-function getBinaryOpts(opt) {
-  //IE10+ and other modern browsers support array buffers
-  if (xml2) return xtend(opt, {
-    responseType: 'arraybuffer'
-  });
-  if (typeof self.XMLHttpRequest === 'undefined') throw new Error('your browser does not support XHR loading');
-
-  //IE9 and XML1 browsers could still use an override
-  var req = new self.XMLHttpRequest();
-  req.overrideMimeType('text/plain; charset=x-user-defined');
-  return xtend({
-    xhr: req
-  }, opt);
-}
-
-/***/ }),
-
-/***/ "./node_modules/load-bmfont/lib/is-binary.js":
-/*!***************************************************!*\
-  !*** ./node_modules/load-bmfont/lib/is-binary.js ***!
-  \***************************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-/* provided dependency */ var Buffer = __webpack_require__(/*! buffer */ "./node_modules/buffer/index.js")["Buffer"];
-var equal = __webpack_require__(/*! buffer-equal */ "./node_modules/buffer-equal/index.js");
-var HEADER = Buffer.from([66, 77, 70, 3]);
-module.exports = function (buf) {
-  if (typeof buf === 'string') return buf.substring(0, 3) === 'BMF';
-  return buf.length > 4 && equal(buf.slice(0, 4), HEADER);
 };
 
 /***/ }),
@@ -3298,431 +2817,6 @@ function plural(ms, msAbs, n, name) {
   var isPlural = msAbs >= n * 1.5;
   return Math.round(ms / n) + ' ' + name + (isPlural ? 's' : '');
 }
-
-/***/ }),
-
-/***/ "./node_modules/parse-bmfont-ascii/index.js":
-/*!**************************************************!*\
-  !*** ./node_modules/parse-bmfont-ascii/index.js ***!
-  \**************************************************/
-/***/ ((module) => {
-
-module.exports = function parseBMFontAscii(data) {
-  if (!data) throw new Error('no data provided');
-  data = data.toString().trim();
-  var output = {
-    pages: [],
-    chars: [],
-    kernings: []
-  };
-  var lines = data.split(/\r\n?|\n/g);
-  if (lines.length === 0) throw new Error('no data in BMFont file');
-  for (var i = 0; i < lines.length; i++) {
-    var lineData = splitLine(lines[i], i);
-    if (!lineData)
-      //skip empty lines
-      continue;
-    if (lineData.key === 'page') {
-      if (typeof lineData.data.id !== 'number') throw new Error('malformed file at line ' + i + ' -- needs page id=N');
-      if (typeof lineData.data.file !== 'string') throw new Error('malformed file at line ' + i + ' -- needs page file="path"');
-      output.pages[lineData.data.id] = lineData.data.file;
-    } else if (lineData.key === 'chars' || lineData.key === 'kernings') {
-      //... do nothing for these two ...
-    } else if (lineData.key === 'char') {
-      output.chars.push(lineData.data);
-    } else if (lineData.key === 'kerning') {
-      output.kernings.push(lineData.data);
-    } else {
-      output[lineData.key] = lineData.data;
-    }
-  }
-  return output;
-};
-function splitLine(line, idx) {
-  line = line.replace(/\t+/g, ' ').trim();
-  if (!line) return null;
-  var space = line.indexOf(' ');
-  if (space === -1) throw new Error("no named row at line " + idx);
-  var key = line.substring(0, space);
-  line = line.substring(space + 1);
-  //clear "letter" field as it is non-standard and
-  //requires additional complexity to parse " / = symbols
-  line = line.replace(/letter=[\'\"]\S+[\'\"]/gi, '');
-  line = line.split("=");
-  line = line.map(function (str) {
-    return str.trim().match(/(".*?"|[^"\s]+)+(?=\s*|\s*$)/g);
-  });
-  var data = [];
-  for (var i = 0; i < line.length; i++) {
-    var dt = line[i];
-    if (i === 0) {
-      data.push({
-        key: dt[0],
-        data: ""
-      });
-    } else if (i === line.length - 1) {
-      data[data.length - 1].data = parseData(dt[0]);
-    } else {
-      data[data.length - 1].data = parseData(dt[0]);
-      data.push({
-        key: dt[1],
-        data: ""
-      });
-    }
-  }
-  var out = {
-    key: key,
-    data: {}
-  };
-  data.forEach(function (v) {
-    out.data[v.key] = v.data;
-  });
-  return out;
-}
-function parseData(data) {
-  if (!data || data.length === 0) return "";
-  if (data.indexOf('"') === 0 || data.indexOf("'") === 0) return data.substring(1, data.length - 1);
-  if (data.indexOf(',') !== -1) return parseIntList(data);
-  return parseInt(data, 10);
-}
-function parseIntList(data) {
-  return data.split(',').map(function (val) {
-    return parseInt(val, 10);
-  });
-}
-
-/***/ }),
-
-/***/ "./node_modules/parse-bmfont-binary/index.js":
-/*!***************************************************!*\
-  !*** ./node_modules/parse-bmfont-binary/index.js ***!
-  \***************************************************/
-/***/ ((module) => {
-
-var HEADER = [66, 77, 70];
-module.exports = function readBMFontBinary(buf) {
-  if (buf.length < 6) throw new Error('invalid buffer length for BMFont');
-  var header = HEADER.every(function (byte, i) {
-    return buf.readUInt8(i) === byte;
-  });
-  if (!header) throw new Error('BMFont missing BMF byte header');
-  var i = 3;
-  var vers = buf.readUInt8(i++);
-  if (vers > 3) throw new Error('Only supports BMFont Binary v3 (BMFont App v1.10)');
-  var target = {
-    kernings: [],
-    chars: []
-  };
-  for (var b = 0; b < 5; b++) i += readBlock(target, buf, i);
-  return target;
-};
-function readBlock(target, buf, i) {
-  if (i > buf.length - 1) return 0;
-  var blockID = buf.readUInt8(i++);
-  var blockSize = buf.readInt32LE(i);
-  i += 4;
-  switch (blockID) {
-    case 1:
-      target.info = readInfo(buf, i);
-      break;
-    case 2:
-      target.common = readCommon(buf, i);
-      break;
-    case 3:
-      target.pages = readPages(buf, i, blockSize);
-      break;
-    case 4:
-      target.chars = readChars(buf, i, blockSize);
-      break;
-    case 5:
-      target.kernings = readKernings(buf, i, blockSize);
-      break;
-  }
-  return 5 + blockSize;
-}
-function readInfo(buf, i) {
-  var info = {};
-  info.size = buf.readInt16LE(i);
-  var bitField = buf.readUInt8(i + 2);
-  info.smooth = bitField >> 7 & 1;
-  info.unicode = bitField >> 6 & 1;
-  info.italic = bitField >> 5 & 1;
-  info.bold = bitField >> 4 & 1;
-
-  //fixedHeight is only mentioned in binary spec 
-  if (bitField >> 3 & 1) info.fixedHeight = 1;
-  info.charset = buf.readUInt8(i + 3) || '';
-  info.stretchH = buf.readUInt16LE(i + 4);
-  info.aa = buf.readUInt8(i + 6);
-  info.padding = [buf.readInt8(i + 7), buf.readInt8(i + 8), buf.readInt8(i + 9), buf.readInt8(i + 10)];
-  info.spacing = [buf.readInt8(i + 11), buf.readInt8(i + 12)];
-  info.outline = buf.readUInt8(i + 13);
-  info.face = readStringNT(buf, i + 14);
-  return info;
-}
-function readCommon(buf, i) {
-  var common = {};
-  common.lineHeight = buf.readUInt16LE(i);
-  common.base = buf.readUInt16LE(i + 2);
-  common.scaleW = buf.readUInt16LE(i + 4);
-  common.scaleH = buf.readUInt16LE(i + 6);
-  common.pages = buf.readUInt16LE(i + 8);
-  var bitField = buf.readUInt8(i + 10);
-  common.packed = 0;
-  common.alphaChnl = buf.readUInt8(i + 11);
-  common.redChnl = buf.readUInt8(i + 12);
-  common.greenChnl = buf.readUInt8(i + 13);
-  common.blueChnl = buf.readUInt8(i + 14);
-  return common;
-}
-function readPages(buf, i, size) {
-  var pages = [];
-  var text = readNameNT(buf, i);
-  var len = text.length + 1;
-  var count = size / len;
-  for (var c = 0; c < count; c++) {
-    pages[c] = buf.slice(i, i + text.length).toString('utf8');
-    i += len;
-  }
-  return pages;
-}
-function readChars(buf, i, blockSize) {
-  var chars = [];
-  var count = blockSize / 20;
-  for (var c = 0; c < count; c++) {
-    var char = {};
-    var off = c * 20;
-    char.id = buf.readUInt32LE(i + 0 + off);
-    char.x = buf.readUInt16LE(i + 4 + off);
-    char.y = buf.readUInt16LE(i + 6 + off);
-    char.width = buf.readUInt16LE(i + 8 + off);
-    char.height = buf.readUInt16LE(i + 10 + off);
-    char.xoffset = buf.readInt16LE(i + 12 + off);
-    char.yoffset = buf.readInt16LE(i + 14 + off);
-    char.xadvance = buf.readInt16LE(i + 16 + off);
-    char.page = buf.readUInt8(i + 18 + off);
-    char.chnl = buf.readUInt8(i + 19 + off);
-    chars[c] = char;
-  }
-  return chars;
-}
-function readKernings(buf, i, blockSize) {
-  var kernings = [];
-  var count = blockSize / 10;
-  for (var c = 0; c < count; c++) {
-    var kern = {};
-    var off = c * 10;
-    kern.first = buf.readUInt32LE(i + 0 + off);
-    kern.second = buf.readUInt32LE(i + 4 + off);
-    kern.amount = buf.readInt16LE(i + 8 + off);
-    kernings[c] = kern;
-  }
-  return kernings;
-}
-function readNameNT(buf, offset) {
-  var pos = offset;
-  for (; pos < buf.length; pos++) {
-    if (buf[pos] === 0x00) break;
-  }
-  return buf.slice(offset, pos);
-}
-function readStringNT(buf, offset) {
-  return readNameNT(buf, offset).toString('utf8');
-}
-
-/***/ }),
-
-/***/ "./node_modules/parse-bmfont-xml/lib/browser.js":
-/*!******************************************************!*\
-  !*** ./node_modules/parse-bmfont-xml/lib/browser.js ***!
-  \******************************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-var parseAttributes = __webpack_require__(/*! ./parse-attribs */ "./node_modules/parse-bmfont-xml/lib/parse-attribs.js");
-var parseFromString = __webpack_require__(/*! xml-parse-from-string */ "./node_modules/xml-parse-from-string/index.js");
-
-//In some cases element.attribute.nodeName can return
-//all lowercase values.. so we need to map them to the correct 
-//case
-var NAME_MAP = {
-  scaleh: 'scaleH',
-  scalew: 'scaleW',
-  stretchh: 'stretchH',
-  lineheight: 'lineHeight',
-  alphachnl: 'alphaChnl',
-  redchnl: 'redChnl',
-  greenchnl: 'greenChnl',
-  bluechnl: 'blueChnl'
-};
-module.exports = function parse(data) {
-  data = data.toString();
-  var xmlRoot = parseFromString(data);
-  var output = {
-    pages: [],
-    chars: [],
-    kernings: []
-  }
-
-  //get config settings
-  ;
-  ['info', 'common'].forEach(function (key) {
-    var element = xmlRoot.getElementsByTagName(key)[0];
-    if (element) output[key] = parseAttributes(getAttribs(element));
-  });
-
-  //get page info
-  var pageRoot = xmlRoot.getElementsByTagName('pages')[0];
-  if (!pageRoot) throw new Error('malformed file -- no <pages> element');
-  var pages = pageRoot.getElementsByTagName('page');
-  for (var i = 0; i < pages.length; i++) {
-    var p = pages[i];
-    var id = parseInt(p.getAttribute('id'), 10);
-    var file = p.getAttribute('file');
-    if (isNaN(id)) throw new Error('malformed file -- page "id" attribute is NaN');
-    if (!file) throw new Error('malformed file -- needs page "file" attribute');
-    output.pages[parseInt(id, 10)] = file;
-  }
-
-  //get kernings / chars
-  ;
-  ['chars', 'kernings'].forEach(function (key) {
-    var element = xmlRoot.getElementsByTagName(key)[0];
-    if (!element) return;
-    var childTag = key.substring(0, key.length - 1);
-    var children = element.getElementsByTagName(childTag);
-    for (var i = 0; i < children.length; i++) {
-      var child = children[i];
-      output[key].push(parseAttributes(getAttribs(child)));
-    }
-  });
-  return output;
-};
-function getAttribs(element) {
-  var attribs = getAttribList(element);
-  return attribs.reduce(function (dict, attrib) {
-    var key = mapName(attrib.nodeName);
-    dict[key] = attrib.nodeValue;
-    return dict;
-  }, {});
-}
-function getAttribList(element) {
-  //IE8+ and modern browsers
-  var attribs = [];
-  for (var i = 0; i < element.attributes.length; i++) attribs.push(element.attributes[i]);
-  return attribs;
-}
-function mapName(nodeName) {
-  return NAME_MAP[nodeName.toLowerCase()] || nodeName;
-}
-
-/***/ }),
-
-/***/ "./node_modules/parse-bmfont-xml/lib/parse-attribs.js":
-/*!************************************************************!*\
-  !*** ./node_modules/parse-bmfont-xml/lib/parse-attribs.js ***!
-  \************************************************************/
-/***/ ((module) => {
-
-//Some versions of GlyphDesigner have a typo
-//that causes some bugs with parsing. 
-//Need to confirm with recent version of the software
-//to see whether this is still an issue or not.
-var GLYPH_DESIGNER_ERROR = 'chasrset';
-module.exports = function parseAttributes(obj) {
-  obj = Object.assign({}, obj);
-  if (GLYPH_DESIGNER_ERROR in obj) {
-    obj['charset'] = obj[GLYPH_DESIGNER_ERROR];
-    delete obj[GLYPH_DESIGNER_ERROR];
-  }
-  for (var k in obj) {
-    if (k === 'face' || k === 'charset') continue;else if (k === 'padding' || k === 'spacing') obj[k] = parseIntList(obj[k]);else obj[k] = parseInt(obj[k], 10);
-  }
-  return obj;
-};
-function parseIntList(data) {
-  return data.split(',').map(function (val) {
-    return parseInt(val, 10);
-  });
-}
-
-/***/ }),
-
-/***/ "./node_modules/parse-headers/parse-headers.js":
-/*!*****************************************************!*\
-  !*** ./node_modules/parse-headers/parse-headers.js ***!
-  \*****************************************************/
-/***/ ((module) => {
-
-var trim = function (string) {
-    return string.replace(/^\s+|\s+$/g, '');
-  },
-  isArray = function (arg) {
-    return Object.prototype.toString.call(arg) === '[object Array]';
-  };
-module.exports = function (headers) {
-  if (!headers) return {};
-  var result = {};
-  var headersArr = trim(headers).split('\n');
-  for (var i = 0; i < headersArr.length; i++) {
-    var row = headersArr[i];
-    var index = row.indexOf(':'),
-      key = trim(row.slice(0, index)).toLowerCase(),
-      value = trim(row.slice(index + 1));
-    if (typeof result[key] === 'undefined') {
-      result[key] = value;
-    } else if (isArray(result[key])) {
-      result[key].push(value);
-    } else {
-      result[key] = [result[key], value];
-    }
-  }
-  return result;
-};
-
-/***/ }),
-
-/***/ "./node_modules/quad-indices/index.js":
-/*!********************************************!*\
-  !*** ./node_modules/quad-indices/index.js ***!
-  \********************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-var dtype = __webpack_require__(/*! dtype */ "./node_modules/dtype/index.js");
-var anArray = __webpack_require__(/*! an-array */ "./node_modules/an-array/index.js");
-var isBuffer = __webpack_require__(/*! is-buffer */ "./node_modules/is-buffer/index.js");
-var CW = [0, 2, 3];
-var CCW = [2, 1, 3];
-module.exports = function createQuadElements(array, opt) {
-  //if user didn't specify an output array
-  if (!array || !(anArray(array) || isBuffer(array))) {
-    opt = array || {};
-    array = null;
-  }
-  if (typeof opt === 'number')
-    //backwards-compatible
-    opt = {
-      count: opt
-    };else opt = opt || {};
-  var type = typeof opt.type === 'string' ? opt.type : 'uint16';
-  var count = typeof opt.count === 'number' ? opt.count : 1;
-  var start = opt.start || 0;
-  var dir = opt.clockwise !== false ? CW : CCW,
-    a = dir[0],
-    b = dir[1],
-    c = dir[2];
-  var numIndices = count * 6;
-  var indices = array || new (dtype(type))(numIndices);
-  for (var i = 0, j = 0; i < numIndices; i += 6, j += 4) {
-    var x = i + start;
-    indices[x + 0] = j + 0;
-    indices[x + 1] = j + 1;
-    indices[x + 2] = j + 2;
-    indices[x + 3] = j + a;
-    indices[x + 4] = j + b;
-    indices[x + 5] = j + c;
-  }
-  return indices;
-};
 
 /***/ }),
 
@@ -5233,665 +4327,6 @@ anime.random = function (min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (anime);
-
-/***/ }),
-
-/***/ "./node_modules/three-bmfont-text/index.js":
-/*!*************************************************!*\
-  !*** ./node_modules/three-bmfont-text/index.js ***!
-  \*************************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-var createLayout = __webpack_require__(/*! layout-bmfont-text */ "./node_modules/layout-bmfont-text/index.js");
-var createIndices = __webpack_require__(/*! quad-indices */ "./node_modules/quad-indices/index.js");
-var vertices = __webpack_require__(/*! ./lib/vertices */ "./node_modules/three-bmfont-text/lib/vertices.js");
-var utils = __webpack_require__(/*! ./lib/utils */ "./node_modules/three-bmfont-text/lib/utils.js");
-module.exports = function createTextGeometry(opt) {
-  return new TextGeometry(opt);
-};
-class TextGeometry extends THREE.BufferGeometry {
-  constructor(opt) {
-    super();
-    if (typeof opt === 'string') {
-      opt = {
-        text: opt
-      };
-    }
-
-    // use these as default values for any subsequent
-    // calls to update()
-    this._opt = Object.assign({}, opt);
-
-    // also do an initial setup...
-    if (opt) this.update(opt);
-  }
-  update(opt) {
-    if (typeof opt === 'string') {
-      opt = {
-        text: opt
-      };
-    }
-
-    // use constructor defaults
-    opt = Object.assign({}, this._opt, opt);
-    if (!opt.font) {
-      throw new TypeError('must specify a { font } in options');
-    }
-    this.layout = createLayout(opt);
-
-    // get vec2 texcoords
-    var flipY = opt.flipY !== false;
-
-    // the desired BMFont data
-    var font = opt.font;
-
-    // determine texture size from font file
-    var texWidth = font.common.scaleW;
-    var texHeight = font.common.scaleH;
-
-    // get visible glyphs
-    var glyphs = this.layout.glyphs.filter(function (glyph) {
-      var bitmap = glyph.data;
-      return bitmap.width * bitmap.height > 0;
-    });
-
-    // provide visible glyphs for convenience
-    this.visibleGlyphs = glyphs;
-
-    // get common vertex data
-    var positions = vertices.positions(glyphs);
-    var uvs = vertices.uvs(glyphs, texWidth, texHeight, flipY);
-    var indices = createIndices([], {
-      clockwise: true,
-      type: 'uint16',
-      count: glyphs.length
-    });
-
-    // update vertex data
-    this.setIndex(indices);
-    this.setAttribute('position', new THREE.BufferAttribute(positions, 2));
-    this.setAttribute('uv', new THREE.BufferAttribute(uvs, 2));
-
-    // update multipage data
-    if (!opt.multipage && 'page' in this.attributes) {
-      // disable multipage rendering
-      this.removeAttribute('page');
-    } else if (opt.multipage) {
-      // enable multipage rendering
-      var pages = vertices.pages(glyphs);
-      this.setAttribute('page', new THREE.BufferAttribute(pages, 1));
-    }
-
-    // recompute bounding box and sphere, if present
-    if (this.boundingBox !== null) {
-      this.computeBoundingBox();
-    }
-    if (this.boundingSphere !== null) {
-      this.computeBoundingSphere();
-    }
-  }
-  computeBoundingSphere() {
-    if (this.boundingSphere === null) {
-      this.boundingSphere = new THREE.Sphere();
-    }
-    var positions = this.attributes.position.array;
-    var itemSize = this.attributes.position.itemSize;
-    if (!positions || !itemSize || positions.length < 2) {
-      this.boundingSphere.radius = 0;
-      this.boundingSphere.center.set(0, 0, 0);
-      return;
-    }
-    utils.computeSphere(positions, this.boundingSphere);
-    if (isNaN(this.boundingSphere.radius)) {
-      console.error('THREE.BufferGeometry.computeBoundingSphere(): ' + 'Computed radius is NaN. The ' + '"position" attribute is likely to have NaN values.');
-    }
-  }
-  computeBoundingBox() {
-    if (this.boundingBox === null) {
-      this.boundingBox = new THREE.Box3();
-    }
-    var bbox = this.boundingBox;
-    var positions = this.attributes.position.array;
-    var itemSize = this.attributes.position.itemSize;
-    if (!positions || !itemSize || positions.length < 2) {
-      bbox.makeEmpty();
-      return;
-    }
-    utils.computeBox(positions, bbox);
-  }
-}
-
-/***/ }),
-
-/***/ "./node_modules/three-bmfont-text/lib/utils.js":
-/*!*****************************************************!*\
-  !*** ./node_modules/three-bmfont-text/lib/utils.js ***!
-  \*****************************************************/
-/***/ ((module) => {
-
-var itemSize = 2;
-var box = {
-  min: [0, 0],
-  max: [0, 0]
-};
-function bounds(positions) {
-  var count = positions.length / itemSize;
-  box.min[0] = positions[0];
-  box.min[1] = positions[1];
-  box.max[0] = positions[0];
-  box.max[1] = positions[1];
-  for (var i = 0; i < count; i++) {
-    var x = positions[i * itemSize + 0];
-    var y = positions[i * itemSize + 1];
-    box.min[0] = Math.min(x, box.min[0]);
-    box.min[1] = Math.min(y, box.min[1]);
-    box.max[0] = Math.max(x, box.max[0]);
-    box.max[1] = Math.max(y, box.max[1]);
-  }
-}
-module.exports.computeBox = function (positions, output) {
-  bounds(positions);
-  output.min.set(box.min[0], box.min[1], 0);
-  output.max.set(box.max[0], box.max[1], 0);
-};
-module.exports.computeSphere = function (positions, output) {
-  bounds(positions);
-  var minX = box.min[0];
-  var minY = box.min[1];
-  var maxX = box.max[0];
-  var maxY = box.max[1];
-  var width = maxX - minX;
-  var height = maxY - minY;
-  var length = Math.sqrt(width * width + height * height);
-  output.center.set(minX + width / 2, minY + height / 2, 0);
-  output.radius = length / 2;
-};
-
-/***/ }),
-
-/***/ "./node_modules/three-bmfont-text/lib/vertices.js":
-/*!********************************************************!*\
-  !*** ./node_modules/three-bmfont-text/lib/vertices.js ***!
-  \********************************************************/
-/***/ ((module) => {
-
-module.exports.pages = function pages(glyphs) {
-  var pages = new Float32Array(glyphs.length * 4 * 1);
-  var i = 0;
-  glyphs.forEach(function (glyph) {
-    var id = glyph.data.page || 0;
-    pages[i++] = id;
-    pages[i++] = id;
-    pages[i++] = id;
-    pages[i++] = id;
-  });
-  return pages;
-};
-module.exports.uvs = function uvs(glyphs, texWidth, texHeight, flipY) {
-  var uvs = new Float32Array(glyphs.length * 4 * 2);
-  var i = 0;
-  glyphs.forEach(function (glyph) {
-    var bitmap = glyph.data;
-    var bw = bitmap.x + bitmap.width;
-    var bh = bitmap.y + bitmap.height;
-
-    // top left position
-    var u0 = bitmap.x / texWidth;
-    var v1 = bitmap.y / texHeight;
-    var u1 = bw / texWidth;
-    var v0 = bh / texHeight;
-    if (flipY) {
-      v1 = (texHeight - bitmap.y) / texHeight;
-      v0 = (texHeight - bh) / texHeight;
-    }
-
-    // BL
-    uvs[i++] = u0;
-    uvs[i++] = v1;
-    // TL
-    uvs[i++] = u0;
-    uvs[i++] = v0;
-    // TR
-    uvs[i++] = u1;
-    uvs[i++] = v0;
-    // BR
-    uvs[i++] = u1;
-    uvs[i++] = v1;
-  });
-  return uvs;
-};
-module.exports.positions = function positions(glyphs) {
-  var positions = new Float32Array(glyphs.length * 4 * 2);
-  var i = 0;
-  glyphs.forEach(function (glyph) {
-    var bitmap = glyph.data;
-
-    // bottom left position
-    var x = glyph.position[0] + bitmap.xoffset;
-    var y = glyph.position[1] + bitmap.yoffset;
-
-    // quad size
-    var w = bitmap.width;
-    var h = bitmap.height;
-
-    // BL
-    positions[i++] = x;
-    positions[i++] = y;
-    // TL
-    positions[i++] = x;
-    positions[i++] = y + h;
-    // TR
-    positions[i++] = x + w;
-    positions[i++] = y + h;
-    // BR
-    positions[i++] = x + w;
-    positions[i++] = y;
-  });
-  return positions;
-};
-
-/***/ }),
-
-/***/ "./node_modules/word-wrapper/index.js":
-/*!********************************************!*\
-  !*** ./node_modules/word-wrapper/index.js ***!
-  \********************************************/
-/***/ ((module) => {
-
-var newline = /\n/;
-var newlineChar = '\n';
-var whitespace = /\s/;
-module.exports = function (text, opt) {
-  var lines = module.exports.lines(text, opt);
-  return lines.map(function (line) {
-    return text.substring(line.start, line.end);
-  }).join('\n');
-};
-module.exports.lines = function wordwrap(text, opt) {
-  opt = opt || {};
-
-  //zero width results in nothing visible
-  if (opt.width === 0 && opt.mode !== 'nowrap') return [];
-  text = text || '';
-  var width = typeof opt.width === 'number' ? opt.width : Number.MAX_VALUE;
-  var start = Math.max(0, opt.start || 0);
-  var end = typeof opt.end === 'number' ? opt.end : text.length;
-  var mode = opt.mode;
-  var measure = opt.measure || monospace;
-  if (mode === 'pre') return pre(measure, text, start, end, width);else return greedy(measure, text, start, end, width, mode);
-};
-function idxOf(text, chr, start, end) {
-  var idx = text.indexOf(chr, start);
-  if (idx === -1 || idx > end) return end;
-  return idx;
-}
-function isWhitespace(chr) {
-  return whitespace.test(chr);
-}
-function pre(measure, text, start, end, width) {
-  var lines = [];
-  var lineStart = start;
-  for (var i = start; i < end && i < text.length; i++) {
-    var chr = text.charAt(i);
-    var isNewline = newline.test(chr);
-
-    //If we've reached a newline, then step down a line
-    //Or if we've reached the EOF
-    if (isNewline || i === end - 1) {
-      var lineEnd = isNewline ? i : i + 1;
-      var measured = measure(text, lineStart, lineEnd, width);
-      lines.push(measured);
-      lineStart = i + 1;
-    }
-  }
-  return lines;
-}
-function greedy(measure, text, start, end, width, mode) {
-  //A greedy word wrapper based on LibGDX algorithm
-  //https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/graphics/g2d/BitmapFontCache.java
-  var lines = [];
-  var testWidth = width;
-  //if 'nowrap' is specified, we only wrap on newline chars
-  if (mode === 'nowrap') testWidth = Number.MAX_VALUE;
-  while (start < end && start < text.length) {
-    //get next newline position
-    var newLine = idxOf(text, newlineChar, start, end);
-
-    //eat whitespace at start of line
-    while (start < newLine) {
-      if (!isWhitespace(text.charAt(start))) break;
-      start++;
-    }
-
-    //determine visible # of glyphs for the available width
-    var measured = measure(text, start, newLine, testWidth);
-    var lineEnd = start + (measured.end - measured.start);
-    var nextStart = lineEnd + newlineChar.length;
-
-    //if we had to cut the line before the next newline...
-    if (lineEnd < newLine) {
-      //find char to break on
-      while (lineEnd > start) {
-        if (isWhitespace(text.charAt(lineEnd))) break;
-        lineEnd--;
-      }
-      if (lineEnd === start) {
-        if (nextStart > start + newlineChar.length) nextStart--;
-        lineEnd = nextStart; // If no characters to break, show all.
-      } else {
-        nextStart = lineEnd;
-        //eat whitespace at end of line
-        while (lineEnd > start) {
-          if (!isWhitespace(text.charAt(lineEnd - newlineChar.length))) break;
-          lineEnd--;
-        }
-      }
-    }
-    if (lineEnd >= start) {
-      var result = measure(text, start, lineEnd, testWidth);
-      lines.push(result);
-    }
-    start = nextStart;
-  }
-  return lines;
-}
-
-//determines the visible number of glyphs within a given width
-function monospace(text, start, end, width) {
-  var glyphs = Math.min(width, end - start);
-  return {
-    start: start,
-    end: start + glyphs
-  };
-}
-
-/***/ }),
-
-/***/ "./node_modules/xhr/index.js":
-/*!***********************************!*\
-  !*** ./node_modules/xhr/index.js ***!
-  \***********************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-"use strict";
-
-
-var window = __webpack_require__(/*! global/window */ "./node_modules/global/window.js");
-var isFunction = __webpack_require__(/*! is-function */ "./node_modules/is-function/index.js");
-var parseHeaders = __webpack_require__(/*! parse-headers */ "./node_modules/parse-headers/parse-headers.js");
-var xtend = __webpack_require__(/*! xtend */ "./node_modules/xtend/immutable.js");
-module.exports = createXHR;
-// Allow use of default import syntax in TypeScript
-module.exports["default"] = createXHR;
-createXHR.XMLHttpRequest = window.XMLHttpRequest || noop;
-createXHR.XDomainRequest = "withCredentials" in new createXHR.XMLHttpRequest() ? createXHR.XMLHttpRequest : window.XDomainRequest;
-forEachArray(["get", "put", "post", "patch", "head", "delete"], function (method) {
-  createXHR[method === "delete" ? "del" : method] = function (uri, options, callback) {
-    options = initParams(uri, options, callback);
-    options.method = method.toUpperCase();
-    return _createXHR(options);
-  };
-});
-function forEachArray(array, iterator) {
-  for (var i = 0; i < array.length; i++) {
-    iterator(array[i]);
-  }
-}
-function isEmpty(obj) {
-  for (var i in obj) {
-    if (obj.hasOwnProperty(i)) return false;
-  }
-  return true;
-}
-function initParams(uri, options, callback) {
-  var params = uri;
-  if (isFunction(options)) {
-    callback = options;
-    if (typeof uri === "string") {
-      params = {
-        uri: uri
-      };
-    }
-  } else {
-    params = xtend(options, {
-      uri: uri
-    });
-  }
-  params.callback = callback;
-  return params;
-}
-function createXHR(uri, options, callback) {
-  options = initParams(uri, options, callback);
-  return _createXHR(options);
-}
-function _createXHR(options) {
-  if (typeof options.callback === "undefined") {
-    throw new Error("callback argument missing");
-  }
-  var called = false;
-  var callback = function cbOnce(err, response, body) {
-    if (!called) {
-      called = true;
-      options.callback(err, response, body);
-    }
-  };
-  function readystatechange() {
-    if (xhr.readyState === 4) {
-      setTimeout(loadFunc, 0);
-    }
-  }
-  function getBody() {
-    // Chrome with requestType=blob throws errors arround when even testing access to responseText
-    var body = undefined;
-    if (xhr.response) {
-      body = xhr.response;
-    } else {
-      body = xhr.responseText || getXml(xhr);
-    }
-    if (isJson) {
-      try {
-        body = JSON.parse(body);
-      } catch (e) {}
-    }
-    return body;
-  }
-  function errorFunc(evt) {
-    clearTimeout(timeoutTimer);
-    if (!(evt instanceof Error)) {
-      evt = new Error("" + (evt || "Unknown XMLHttpRequest Error"));
-    }
-    evt.statusCode = 0;
-    return callback(evt, failureResponse);
-  }
-
-  // will load the data & process the response in a special response object
-  function loadFunc() {
-    if (aborted) return;
-    var status;
-    clearTimeout(timeoutTimer);
-    if (options.useXDR && xhr.status === undefined) {
-      //IE8 CORS GET successful response doesn't have a status field, but body is fine
-      status = 200;
-    } else {
-      status = xhr.status === 1223 ? 204 : xhr.status;
-    }
-    var response = failureResponse;
-    var err = null;
-    if (status !== 0) {
-      response = {
-        body: getBody(),
-        statusCode: status,
-        method: method,
-        headers: {},
-        url: uri,
-        rawRequest: xhr
-      };
-      if (xhr.getAllResponseHeaders) {
-        //remember xhr can in fact be XDR for CORS in IE
-        response.headers = parseHeaders(xhr.getAllResponseHeaders());
-      }
-    } else {
-      err = new Error("Internal XMLHttpRequest Error");
-    }
-    return callback(err, response, response.body);
-  }
-  var xhr = options.xhr || null;
-  if (!xhr) {
-    if (options.cors || options.useXDR) {
-      xhr = new createXHR.XDomainRequest();
-    } else {
-      xhr = new createXHR.XMLHttpRequest();
-    }
-  }
-  var key;
-  var aborted;
-  var uri = xhr.url = options.uri || options.url;
-  var method = xhr.method = options.method || "GET";
-  var body = options.body || options.data;
-  var headers = xhr.headers = options.headers || {};
-  var sync = !!options.sync;
-  var isJson = false;
-  var timeoutTimer;
-  var failureResponse = {
-    body: undefined,
-    headers: {},
-    statusCode: 0,
-    method: method,
-    url: uri,
-    rawRequest: xhr
-  };
-  if ("json" in options && options.json !== false) {
-    isJson = true;
-    headers["accept"] || headers["Accept"] || (headers["Accept"] = "application/json"); //Don't override existing accept header declared by user
-    if (method !== "GET" && method !== "HEAD") {
-      headers["content-type"] || headers["Content-Type"] || (headers["Content-Type"] = "application/json"); //Don't override existing accept header declared by user
-      body = JSON.stringify(options.json === true ? body : options.json);
-    }
-  }
-  xhr.onreadystatechange = readystatechange;
-  xhr.onload = loadFunc;
-  xhr.onerror = errorFunc;
-  // IE9 must have onprogress be set to a unique function.
-  xhr.onprogress = function () {
-    // IE must die
-  };
-  xhr.onabort = function () {
-    aborted = true;
-  };
-  xhr.ontimeout = errorFunc;
-  xhr.open(method, uri, !sync, options.username, options.password);
-  //has to be after open
-  if (!sync) {
-    xhr.withCredentials = !!options.withCredentials;
-  }
-  // Cannot set timeout with sync request
-  // not setting timeout on the xhr object, because of old webkits etc. not handling that correctly
-  // both npm's request and jquery 1.x use this kind of timeout, so this is being consistent
-  if (!sync && options.timeout > 0) {
-    timeoutTimer = setTimeout(function () {
-      if (aborted) return;
-      aborted = true; //IE9 may still call readystatechange
-      xhr.abort("timeout");
-      var e = new Error("XMLHttpRequest timeout");
-      e.code = "ETIMEDOUT";
-      errorFunc(e);
-    }, options.timeout);
-  }
-  if (xhr.setRequestHeader) {
-    for (key in headers) {
-      if (headers.hasOwnProperty(key)) {
-        xhr.setRequestHeader(key, headers[key]);
-      }
-    }
-  } else if (options.headers && !isEmpty(options.headers)) {
-    throw new Error("Headers cannot be set on an XDomainRequest object");
-  }
-  if ("responseType" in options) {
-    xhr.responseType = options.responseType;
-  }
-  if ("beforeSend" in options && typeof options.beforeSend === "function") {
-    options.beforeSend(xhr);
-  }
-
-  // Microsoft Edge browser sends "undefined" when send is called with undefined value.
-  // XMLHttpRequest spec says to pass null as body to indicate no body
-  // See https://github.com/naugtur/xhr/issues/100.
-  xhr.send(body || null);
-  return xhr;
-}
-function getXml(xhr) {
-  // xhr.responseXML will throw Exception "InvalidStateError" or "DOMException"
-  // See https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/responseXML.
-  try {
-    if (xhr.responseType === "document") {
-      return xhr.responseXML;
-    }
-    var firefoxBugTakenEffect = xhr.responseXML && xhr.responseXML.documentElement.nodeName === "parsererror";
-    if (xhr.responseType === "" && !firefoxBugTakenEffect) {
-      return xhr.responseXML;
-    }
-  } catch (e) {}
-  return null;
-}
-function noop() {}
-
-/***/ }),
-
-/***/ "./node_modules/xml-parse-from-string/index.js":
-/*!*****************************************************!*\
-  !*** ./node_modules/xml-parse-from-string/index.js ***!
-  \*****************************************************/
-/***/ ((module) => {
-
-module.exports = function xmlparser() {
-  //common browsers
-  if (typeof self.DOMParser !== 'undefined') {
-    return function (str) {
-      var parser = new self.DOMParser();
-      return parser.parseFromString(str, 'application/xml');
-    };
-  }
-
-  //IE8 fallback
-  if (typeof self.ActiveXObject !== 'undefined' && new self.ActiveXObject('Microsoft.XMLDOM')) {
-    return function (str) {
-      var xmlDoc = new self.ActiveXObject("Microsoft.XMLDOM");
-      xmlDoc.async = "false";
-      xmlDoc.loadXML(str);
-      return xmlDoc;
-    };
-  }
-
-  //last resort fallback
-  return function (str) {
-    var div = document.createElement('div');
-    div.innerHTML = str;
-    return div;
-  };
-}();
-
-/***/ }),
-
-/***/ "./node_modules/xtend/immutable.js":
-/*!*****************************************!*\
-  !*** ./node_modules/xtend/immutable.js ***!
-  \*****************************************/
-/***/ ((module) => {
-
-module.exports = extend;
-var hasOwnProperty = Object.prototype.hasOwnProperty;
-function extend() {
-  var target = {};
-  for (var i = 0; i < arguments.length; i++) {
-    var source = arguments[i];
-    for (var key in source) {
-      if (hasOwnProperty.call(source, key)) {
-        target[key] = source[key];
-      }
-    }
-  }
-  return target;
-}
 
 /***/ }),
 
@@ -9148,28 +7583,27 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _scale_js__WEBPACK_IMPORTED_MODULE_31__ = __webpack_require__(/*! ./scale.js */ "./src/components/scale.js");
 /* harmony import */ var _shadow_js__WEBPACK_IMPORTED_MODULE_32__ = __webpack_require__(/*! ./shadow.js */ "./src/components/shadow.js");
 /* harmony import */ var _sound_js__WEBPACK_IMPORTED_MODULE_33__ = __webpack_require__(/*! ./sound.js */ "./src/components/sound.js");
-/* harmony import */ var _text_js__WEBPACK_IMPORTED_MODULE_34__ = __webpack_require__(/*! ./text.js */ "./src/components/text.js");
-/* harmony import */ var _tracked_controls_js__WEBPACK_IMPORTED_MODULE_35__ = __webpack_require__(/*! ./tracked-controls.js */ "./src/components/tracked-controls.js");
-/* harmony import */ var _visible_js__WEBPACK_IMPORTED_MODULE_36__ = __webpack_require__(/*! ./visible.js */ "./src/components/visible.js");
-/* harmony import */ var _valve_index_controls_js__WEBPACK_IMPORTED_MODULE_37__ = __webpack_require__(/*! ./valve-index-controls.js */ "./src/components/valve-index-controls.js");
-/* harmony import */ var _vive_controls_js__WEBPACK_IMPORTED_MODULE_38__ = __webpack_require__(/*! ./vive-controls.js */ "./src/components/vive-controls.js");
-/* harmony import */ var _vive_focus_controls_js__WEBPACK_IMPORTED_MODULE_39__ = __webpack_require__(/*! ./vive-focus-controls.js */ "./src/components/vive-focus-controls.js");
-/* harmony import */ var _wasd_controls_js__WEBPACK_IMPORTED_MODULE_40__ = __webpack_require__(/*! ./wasd-controls.js */ "./src/components/wasd-controls.js");
-/* harmony import */ var _windows_motion_controls_js__WEBPACK_IMPORTED_MODULE_41__ = __webpack_require__(/*! ./windows-motion-controls.js */ "./src/components/windows-motion-controls.js");
-/* harmony import */ var _scene_ar_hit_test_js__WEBPACK_IMPORTED_MODULE_42__ = __webpack_require__(/*! ./scene/ar-hit-test.js */ "./src/components/scene/ar-hit-test.js");
-/* harmony import */ var _scene_background_js__WEBPACK_IMPORTED_MODULE_43__ = __webpack_require__(/*! ./scene/background.js */ "./src/components/scene/background.js");
-/* harmony import */ var _scene_debug_js__WEBPACK_IMPORTED_MODULE_44__ = __webpack_require__(/*! ./scene/debug.js */ "./src/components/scene/debug.js");
-/* harmony import */ var _scene_device_orientation_permission_ui_js__WEBPACK_IMPORTED_MODULE_45__ = __webpack_require__(/*! ./scene/device-orientation-permission-ui.js */ "./src/components/scene/device-orientation-permission-ui.js");
-/* harmony import */ var _scene_embedded_js__WEBPACK_IMPORTED_MODULE_46__ = __webpack_require__(/*! ./scene/embedded.js */ "./src/components/scene/embedded.js");
-/* harmony import */ var _scene_inspector_js__WEBPACK_IMPORTED_MODULE_47__ = __webpack_require__(/*! ./scene/inspector.js */ "./src/components/scene/inspector.js");
-/* harmony import */ var _scene_fog_js__WEBPACK_IMPORTED_MODULE_48__ = __webpack_require__(/*! ./scene/fog.js */ "./src/components/scene/fog.js");
-/* harmony import */ var _scene_keyboard_shortcuts_js__WEBPACK_IMPORTED_MODULE_49__ = __webpack_require__(/*! ./scene/keyboard-shortcuts.js */ "./src/components/scene/keyboard-shortcuts.js");
-/* harmony import */ var _scene_pool_js__WEBPACK_IMPORTED_MODULE_50__ = __webpack_require__(/*! ./scene/pool.js */ "./src/components/scene/pool.js");
-/* harmony import */ var _scene_real_world_meshing_js__WEBPACK_IMPORTED_MODULE_51__ = __webpack_require__(/*! ./scene/real-world-meshing.js */ "./src/components/scene/real-world-meshing.js");
-/* harmony import */ var _scene_reflection_js__WEBPACK_IMPORTED_MODULE_52__ = __webpack_require__(/*! ./scene/reflection.js */ "./src/components/scene/reflection.js");
-/* harmony import */ var _scene_screenshot_js__WEBPACK_IMPORTED_MODULE_53__ = __webpack_require__(/*! ./scene/screenshot.js */ "./src/components/scene/screenshot.js");
-/* harmony import */ var _scene_stats_js__WEBPACK_IMPORTED_MODULE_54__ = __webpack_require__(/*! ./scene/stats.js */ "./src/components/scene/stats.js");
-/* harmony import */ var _scene_xr_mode_ui_js__WEBPACK_IMPORTED_MODULE_55__ = __webpack_require__(/*! ./scene/xr-mode-ui.js */ "./src/components/scene/xr-mode-ui.js");
+/* harmony import */ var _tracked_controls_js__WEBPACK_IMPORTED_MODULE_34__ = __webpack_require__(/*! ./tracked-controls.js */ "./src/components/tracked-controls.js");
+/* harmony import */ var _visible_js__WEBPACK_IMPORTED_MODULE_35__ = __webpack_require__(/*! ./visible.js */ "./src/components/visible.js");
+/* harmony import */ var _valve_index_controls_js__WEBPACK_IMPORTED_MODULE_36__ = __webpack_require__(/*! ./valve-index-controls.js */ "./src/components/valve-index-controls.js");
+/* harmony import */ var _vive_controls_js__WEBPACK_IMPORTED_MODULE_37__ = __webpack_require__(/*! ./vive-controls.js */ "./src/components/vive-controls.js");
+/* harmony import */ var _vive_focus_controls_js__WEBPACK_IMPORTED_MODULE_38__ = __webpack_require__(/*! ./vive-focus-controls.js */ "./src/components/vive-focus-controls.js");
+/* harmony import */ var _wasd_controls_js__WEBPACK_IMPORTED_MODULE_39__ = __webpack_require__(/*! ./wasd-controls.js */ "./src/components/wasd-controls.js");
+/* harmony import */ var _windows_motion_controls_js__WEBPACK_IMPORTED_MODULE_40__ = __webpack_require__(/*! ./windows-motion-controls.js */ "./src/components/windows-motion-controls.js");
+/* harmony import */ var _scene_ar_hit_test_js__WEBPACK_IMPORTED_MODULE_41__ = __webpack_require__(/*! ./scene/ar-hit-test.js */ "./src/components/scene/ar-hit-test.js");
+/* harmony import */ var _scene_background_js__WEBPACK_IMPORTED_MODULE_42__ = __webpack_require__(/*! ./scene/background.js */ "./src/components/scene/background.js");
+/* harmony import */ var _scene_debug_js__WEBPACK_IMPORTED_MODULE_43__ = __webpack_require__(/*! ./scene/debug.js */ "./src/components/scene/debug.js");
+/* harmony import */ var _scene_device_orientation_permission_ui_js__WEBPACK_IMPORTED_MODULE_44__ = __webpack_require__(/*! ./scene/device-orientation-permission-ui.js */ "./src/components/scene/device-orientation-permission-ui.js");
+/* harmony import */ var _scene_embedded_js__WEBPACK_IMPORTED_MODULE_45__ = __webpack_require__(/*! ./scene/embedded.js */ "./src/components/scene/embedded.js");
+/* harmony import */ var _scene_inspector_js__WEBPACK_IMPORTED_MODULE_46__ = __webpack_require__(/*! ./scene/inspector.js */ "./src/components/scene/inspector.js");
+/* harmony import */ var _scene_fog_js__WEBPACK_IMPORTED_MODULE_47__ = __webpack_require__(/*! ./scene/fog.js */ "./src/components/scene/fog.js");
+/* harmony import */ var _scene_keyboard_shortcuts_js__WEBPACK_IMPORTED_MODULE_48__ = __webpack_require__(/*! ./scene/keyboard-shortcuts.js */ "./src/components/scene/keyboard-shortcuts.js");
+/* harmony import */ var _scene_pool_js__WEBPACK_IMPORTED_MODULE_49__ = __webpack_require__(/*! ./scene/pool.js */ "./src/components/scene/pool.js");
+/* harmony import */ var _scene_real_world_meshing_js__WEBPACK_IMPORTED_MODULE_50__ = __webpack_require__(/*! ./scene/real-world-meshing.js */ "./src/components/scene/real-world-meshing.js");
+/* harmony import */ var _scene_reflection_js__WEBPACK_IMPORTED_MODULE_51__ = __webpack_require__(/*! ./scene/reflection.js */ "./src/components/scene/reflection.js");
+/* harmony import */ var _scene_screenshot_js__WEBPACK_IMPORTED_MODULE_52__ = __webpack_require__(/*! ./scene/screenshot.js */ "./src/components/scene/screenshot.js");
+/* harmony import */ var _scene_stats_js__WEBPACK_IMPORTED_MODULE_53__ = __webpack_require__(/*! ./scene/stats.js */ "./src/components/scene/stats.js");
+/* harmony import */ var _scene_xr_mode_ui_js__WEBPACK_IMPORTED_MODULE_54__ = __webpack_require__(/*! ./scene/xr-mode-ui.js */ "./src/components/scene/xr-mode-ui.js");
 
 
 
@@ -9204,7 +7638,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-
+// import './text.js';
 
 
 
@@ -13371,10 +11805,12 @@ var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_0__.registerCompo
     var object3D = this.el.object3D;
     var data = this.data;
     object3D.position.set(data.x, data.y, data.z);
+    object3D.matrixNeedsUpdate = true;
   },
   remove: function () {
     // Pretty much for mixins.
     this.el.object3D.position.set(0, 0, 0);
+    this.el.object3D.matrixNeedsUpdate = true;
   }
 });
 
@@ -13890,10 +12326,12 @@ var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_1__.registerCompo
     var data = this.data;
     var object3D = this.el.object3D;
     object3D.rotation.set(degToRad(data.x), degToRad(data.y), degToRad(data.z), 'YXZ');
+    object3D.matrixNeedsUpdate = true;
   },
   remove: function () {
     // Pretty much for mixins.
     this.el.object3D.rotation.set(0, 0, 0);
+    this.el.object3D.matrixNeedsUpdate = true;
   }
 });
 
@@ -13925,10 +12363,12 @@ var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_0__.registerCompo
     var data = this.data;
     var object3D = this.el.object3D;
     object3D.scale.set(data.x, data.y, data.z);
+    object3D.matrixNeedsUpdate = true;
   },
   remove: function () {
     // Pretty much for mixins.
     this.el.object3D.scale.set(1, 1, 1);
+    this.el.object3D.matrixNeedsUpdate = true;
   }
 });
 
@@ -16573,583 +15013,6 @@ var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_0__.registerCompo
 
 /***/ }),
 
-/***/ "./src/components/text.js":
-/*!********************************!*\
-  !*** ./src/components/text.js ***!
-  \********************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   Component: () => (/* binding */ Component),
-/* harmony export */   FONTS: () => (/* binding */ FONTS)
-/* harmony export */ });
-/* harmony import */ var three_bmfont_text__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three-bmfont-text */ "./node_modules/three-bmfont-text/index.js");
-/* harmony import */ var three_bmfont_text__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(three_bmfont_text__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var load_bmfont__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! load-bmfont */ "./node_modules/load-bmfont/browser.js");
-/* harmony import */ var load_bmfont__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(load_bmfont__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _core_component_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../core/component.js */ "./src/core/component.js");
-/* harmony import */ var _core_shader_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../core/shader.js */ "./src/core/shader.js");
-/* harmony import */ var _lib_three_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../lib/three.js */ "./src/lib/three.js");
-/* harmony import */ var _utils_index_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../utils/index.js */ "./src/utils/index.js");
-/* harmony import */ var _constants_index_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../constants/index.js */ "./src/constants/index.js");
-
-
-
-
-
-
-
-var error = _utils_index_js__WEBPACK_IMPORTED_MODULE_5__.debug('components:text:error');
-var warn = _utils_index_js__WEBPACK_IMPORTED_MODULE_5__.debug('components:text:warn');
-
-// 1 to match other A-Frame default widths.
-var DEFAULT_WIDTH = 1;
-
-// @bryik set anisotropy to 16. Improves look of large amounts of text when viewed from angle.
-var MAX_ANISOTROPY = 16;
-var FONT_BASE_URL = _constants_index_js__WEBPACK_IMPORTED_MODULE_6__.AFRAME_CDN_ROOT + 'fonts/';
-var FONTS = {
-  aileronsemibold: FONT_BASE_URL + 'Aileron-Semibold.fnt',
-  dejavu: FONT_BASE_URL + 'DejaVu-sdf.fnt',
-  exo2bold: FONT_BASE_URL + 'Exo2Bold.fnt',
-  exo2semibold: FONT_BASE_URL + 'Exo2SemiBold.fnt',
-  kelsonsans: FONT_BASE_URL + 'KelsonSans.fnt',
-  monoid: FONT_BASE_URL + 'Monoid.fnt',
-  mozillavr: FONT_BASE_URL + 'mozillavr.fnt',
-  roboto: FONT_BASE_URL + 'Roboto-msdf.json',
-  sourcecodepro: FONT_BASE_URL + 'SourceCodePro.fnt'
-};
-var MSDF_FONTS = ['roboto'];
-var DEFAULT_FONT = 'roboto';
-var cache = new PromiseCache();
-var fontWidthFactors = {};
-var textures = {};
-
-// Regular expression for detecting a URLs with a protocol prefix.
-var protocolRe = /^\w+:/;
-
-/**
- * SDF-based text component.
- * Based on https://github.com/Jam3/three-bmfont-text.
- *
- * All the stock fonts are for the `sdf` registered shader, an improved version of jam3's
- * original `sdf` shader.
- */
-var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_2__.registerComponent)('text', {
-  multiple: true,
-  schema: {
-    align: {
-      type: 'string',
-      default: 'left',
-      oneOf: ['left', 'right', 'center']
-    },
-    alphaTest: {
-      default: 0.5
-    },
-    // `anchor` defaults to center to match geometries.
-    anchor: {
-      default: 'center',
-      oneOf: ['left', 'right', 'center', 'align']
-    },
-    baseline: {
-      default: 'center',
-      oneOf: ['top', 'center', 'bottom']
-    },
-    color: {
-      type: 'color',
-      default: '#FFF'
-    },
-    font: {
-      type: 'string',
-      default: DEFAULT_FONT
-    },
-    // `fontImage` defaults to the font name as a .png (e.g., mozillavr.fnt -> mozillavr.png).
-    fontImage: {
-      type: 'string'
-    },
-    // `height` has no default, will be populated at layout.
-    height: {
-      type: 'number'
-    },
-    letterSpacing: {
-      type: 'number',
-      default: 0
-    },
-    // `lineHeight` defaults to font's `lineHeight` value.
-    lineHeight: {
-      type: 'number'
-    },
-    // `negate` must be true for fonts generated with older versions of msdfgen (white background).
-    negate: {
-      type: 'boolean',
-      default: true
-    },
-    opacity: {
-      type: 'number',
-      default: 1.0
-    },
-    shader: {
-      default: 'sdf',
-      oneOf: _core_shader_js__WEBPACK_IMPORTED_MODULE_3__.shaders
-    },
-    side: {
-      default: 'front',
-      oneOf: ['front', 'back', 'double']
-    },
-    tabSize: {
-      default: 4
-    },
-    transparent: {
-      default: true
-    },
-    value: {
-      type: 'string'
-    },
-    whiteSpace: {
-      default: 'normal',
-      oneOf: ['normal', 'pre', 'nowrap']
-    },
-    // `width` defaults to geometry width if present, else `DEFAULT_WIDTH`.
-    width: {
-      type: 'number'
-    },
-    // `wrapCount` units are about one default font character. Wrap roughly at this number.
-    wrapCount: {
-      type: 'number',
-      default: 40
-    },
-    // `wrapPixels` will wrap using bmfont pixel units (e.g., dejavu's is 32 pixels).
-    wrapPixels: {
-      type: 'number'
-    },
-    // `xOffset` to add padding.
-    xOffset: {
-      type: 'number',
-      default: 0
-    },
-    // `yOffset` to adjust generated fonts from tools that may have incorrect metrics.
-    yOffset: {
-      type: 'number',
-      default: 0
-    },
-    // `zOffset` will provide a small z offset to avoid z-fighting.
-    zOffset: {
-      type: 'number',
-      default: 0.001
-    }
-  },
-  init: function () {
-    this.shaderData = {};
-    this.geometry = three_bmfont_text__WEBPACK_IMPORTED_MODULE_0___default()();
-    this.createOrUpdateMaterial();
-    this.explicitGeoDimensionsChecked = false;
-  },
-  update: function (oldData) {
-    var data = this.data;
-    var font = this.currentFont;
-    if (textures[data.font]) {
-      this.texture = textures[data.font];
-    } else {
-      // Create texture per font.
-      this.texture = textures[data.font] = new _lib_three_js__WEBPACK_IMPORTED_MODULE_4__["default"].Texture();
-      this.texture.anisotropy = MAX_ANISOTROPY;
-    }
-
-    // Update material.
-    this.createOrUpdateMaterial();
-
-    // New font. `updateFont` will later change data and layout.
-    if (oldData.font !== data.font) {
-      this.updateFont();
-      return;
-    }
-
-    // Update geometry and layout.
-    if (font) {
-      this.updateGeometry(this.geometry, font);
-      this.updateLayout();
-    }
-  },
-  /**
-   * Clean up geometry, material, texture, mesh, objects.
-   */
-  remove: function () {
-    this.geometry.dispose();
-    this.geometry = null;
-    this.el.removeObject3D(this.attrName);
-    this.material.dispose();
-    this.material = null;
-    this.texture.dispose();
-    this.texture = null;
-    if (this.shaderObject) {
-      delete this.shaderObject;
-    }
-  },
-  /**
-   * Update the shader of the material.
-   */
-  createOrUpdateMaterial: function () {
-    var data = this.data;
-    var hasChangedShader;
-    var material = this.material;
-    var NewShader;
-    var shaderData = this.shaderData;
-    var shaderName;
-
-    // Infer shader if using a stock font (or from `-msdf` filename convention).
-    shaderName = data.shader;
-    if (MSDF_FONTS.indexOf(data.font) !== -1 || data.font.indexOf('-msdf.') >= 0) {
-      shaderName = 'msdf';
-    } else if (data.font in FONTS && MSDF_FONTS.indexOf(data.font) === -1) {
-      shaderName = 'sdf';
-    }
-    hasChangedShader = (this.shaderObject && this.shaderObject.name) !== shaderName;
-    shaderData.alphaTest = data.alphaTest;
-    shaderData.color = data.color;
-    shaderData.map = this.texture;
-    shaderData.opacity = data.opacity;
-    shaderData.side = parseSide(data.side);
-    shaderData.transparent = data.transparent;
-    shaderData.negate = data.negate;
-
-    // Shader has not changed, do an update.
-    if (!hasChangedShader) {
-      // Update shader material.
-      this.shaderObject.update(shaderData);
-      // Apparently, was not set on `init` nor `update`.
-      material.transparent = shaderData.transparent;
-      material.side = shaderData.side;
-      return;
-    }
-
-    // Shader has changed. Create a shader material.
-    NewShader = createShader(this.el, shaderName, shaderData);
-    this.material = NewShader.material;
-    this.shaderObject = NewShader.shader;
-
-    // Set new shader material.
-    this.material.side = shaderData.side;
-    if (this.mesh) {
-      this.mesh.material = this.material;
-    }
-  },
-  /**
-   * Load font for geometry, load font image for material, and apply.
-   */
-  updateFont: function () {
-    var data = this.data;
-    var el = this.el;
-    var fontSrc;
-    var geometry = this.geometry;
-    var self = this;
-    if (!data.font) {
-      warn('No font specified. Using the default font.');
-    }
-
-    // Make invisible during font swap.
-    if (this.mesh) {
-      this.mesh.visible = false;
-    }
-
-    // Look up font URL to use, and perform cached load.
-    fontSrc = this.lookupFont(data.font || DEFAULT_FONT) || data.font;
-    cache.get(fontSrc, function doLoadFont() {
-      return loadFont(fontSrc, data.yOffset);
-    }).then(function setFont(font) {
-      var fontImgSrc;
-      if (font.pages.length !== 1) {
-        throw new Error('Currently only single-page bitmap fonts are supported.');
-      }
-      if (!fontWidthFactors[fontSrc]) {
-        font.widthFactor = fontWidthFactors[font] = computeFontWidthFactor(font);
-      }
-      self.currentFont = font;
-      // Look up font image URL to use, and perform cached load.
-      fontImgSrc = self.getFontImageSrc();
-      cache.get(fontImgSrc, function () {
-        return loadTexture(fontImgSrc);
-      }).then(function (image) {
-        // Make mesh visible and apply font image as texture.
-        var texture = self.texture;
-        // The component may have been removed at this point and texture will
-        // be null. This happens mainly while executing the tests,
-        // in this case we just return.
-        if (!texture) return;
-        texture.image = image;
-        texture.needsUpdate = true;
-        textures[data.font] = texture;
-        self.texture = texture;
-        self.initMesh();
-        self.currentFont = font;
-        // Update geometry given font metrics.
-        self.updateGeometry(geometry, font);
-        self.updateLayout();
-        self.mesh.visible = true;
-        el.emit('textfontset', {
-          font: data.font,
-          fontObj: font
-        });
-      }).catch(function (err) {
-        error(err.message);
-        error(err.stack);
-      });
-    }).catch(function (err) {
-      error(err.message);
-      error(err.stack);
-    });
-  },
-  initMesh: function () {
-    if (this.mesh) {
-      return;
-    }
-    this.mesh = new _lib_three_js__WEBPACK_IMPORTED_MODULE_4__["default"].Mesh(this.geometry, this.material);
-    this.el.setObject3D(this.attrName, this.mesh);
-  },
-  getFontImageSrc: function () {
-    if (this.data.fontImage) {
-      return this.data.fontImage;
-    }
-    var fontSrc = this.lookupFont(this.data.font || DEFAULT_FONT) || this.data.font;
-    var imageSrc = this.currentFont.pages[0];
-    // If the image URL contains a non-HTTP(S) protocol, assume it's an absolute
-    // path on disk and try to infer the path from the font source instead.
-    if (imageSrc.match(protocolRe) && imageSrc.indexOf('http') !== 0) {
-      return fontSrc.replace(/(\.fnt)|(\.json)/, '.png');
-    }
-    return _lib_three_js__WEBPACK_IMPORTED_MODULE_4__["default"].LoaderUtils.extractUrlBase(fontSrc) + imageSrc;
-  },
-  /**
-   * Update layout with anchor, alignment, baseline, and considering any meshes.
-   */
-  updateLayout: function () {
-    var anchor;
-    var baseline;
-    var el = this.el;
-    var data = this.data;
-    var geometry = this.geometry;
-    var geometryComponent;
-    var height;
-    var layout;
-    var mesh = this.mesh;
-    var textRenderWidth;
-    var textScale;
-    var width;
-    var x;
-    var y;
-    if (!mesh || !geometry.layout) {
-      return;
-    }
-
-    // Determine width to use (defined width, geometry's width, or default width).
-    geometryComponent = el.getAttribute('geometry');
-    width = data.width || geometryComponent && geometryComponent.width || DEFAULT_WIDTH;
-
-    // Determine wrap pixel count. Either specified or by experimental fudge factor.
-    // Note that experimental factor will never be correct for variable width fonts.
-    textRenderWidth = computeWidth(data.wrapPixels, data.wrapCount, this.currentFont.widthFactor);
-    textScale = width / textRenderWidth;
-
-    // Determine height to use.
-    layout = geometry.layout;
-    height = textScale * (layout.height + layout.descender);
-
-    // Update geometry dimensions to match text layout if width and height are set to 0.
-    // For example, scales a plane to fit text.
-    if (geometryComponent && geometryComponent.primitive === 'plane') {
-      if (!this.explicitGeoDimensionsChecked) {
-        this.explicitGeoDimensionsChecked = true;
-        this.hasExplicitGeoWidth = !!geometryComponent.width;
-        this.hasExplicitGeoHeight = !!geometryComponent.height;
-      }
-      if (!this.hasExplicitGeoWidth) {
-        el.setAttribute('geometry', 'width', width);
-      }
-      if (!this.hasExplicitGeoHeight) {
-        el.setAttribute('geometry', 'height', height);
-      }
-    }
-
-    // Calculate X position to anchor text left, center, or right.
-    anchor = data.anchor === 'align' ? data.align : data.anchor;
-    if (anchor === 'left') {
-      x = 0;
-    } else if (anchor === 'right') {
-      x = -1 * layout.width;
-    } else if (anchor === 'center') {
-      x = -1 * layout.width / 2;
-    } else {
-      throw new TypeError('Invalid text.anchor property value', anchor);
-    }
-
-    // Calculate Y position to anchor text top, center, or bottom.
-    baseline = data.baseline;
-    if (baseline === 'bottom') {
-      y = 0;
-    } else if (baseline === 'top') {
-      y = -1 * layout.height + layout.ascender;
-    } else if (baseline === 'center') {
-      y = -1 * layout.height / 2;
-    } else {
-      throw new TypeError('Invalid text.baseline property value', baseline);
-    }
-
-    // Position and scale mesh to apply layout.
-    mesh.position.x = x * textScale + data.xOffset;
-    mesh.position.y = y * textScale;
-    // Place text slightly in front to avoid Z-fighting.
-    mesh.position.z = data.zOffset;
-    mesh.scale.set(textScale, -1 * textScale, textScale);
-  },
-  /**
-   * Grab font from the constant.
-   * Set as a method for test stubbing purposes.
-   */
-  lookupFont: function (key) {
-    return FONTS[key];
-  },
-  /**
-   * Update the text geometry using `three-bmfont-text.update`.
-   */
-  updateGeometry: function () {
-    var geometryUpdateBase = {};
-    var geometryUpdateData = {};
-    var newLineRegex = /\\n/g;
-    var tabRegex = /\\t/g;
-    return function (geometry, font) {
-      var data = this.data;
-      geometryUpdateData.font = font;
-      geometryUpdateData.lineHeight = data.lineHeight && isFinite(data.lineHeight) ? data.lineHeight : font.common.lineHeight;
-      geometryUpdateData.text = data.value.toString().replace(newLineRegex, '\n').replace(tabRegex, '\t');
-      geometryUpdateData.width = computeWidth(data.wrapPixels, data.wrapCount, font.widthFactor);
-      geometry.update(_utils_index_js__WEBPACK_IMPORTED_MODULE_5__.extend(geometryUpdateBase, data, geometryUpdateData));
-    };
-  }()
-});
-
-/**
- * Due to using negative scale, we return the opposite side specified.
- * https://github.com/mrdoob/three.js/pull/12787/
- */
-function parseSide(side) {
-  switch (side) {
-    case 'back':
-      {
-        return _lib_three_js__WEBPACK_IMPORTED_MODULE_4__["default"].FrontSide;
-      }
-    case 'double':
-      {
-        return _lib_three_js__WEBPACK_IMPORTED_MODULE_4__["default"].DoubleSide;
-      }
-    default:
-      {
-        return _lib_three_js__WEBPACK_IMPORTED_MODULE_4__["default"].BackSide;
-      }
-  }
-}
-
-/**
- * @returns {Promise}
- */
-function loadFont(src, yOffset) {
-  return new Promise(function (resolve, reject) {
-    load_bmfont__WEBPACK_IMPORTED_MODULE_1___default()(src, function (err, font) {
-      if (err) {
-        error('Error loading font', src);
-        reject(err);
-        return;
-      }
-
-      // Fix negative Y offsets for Roboto MSDF font from tool. Experimentally determined.
-      if (src.indexOf('/Roboto-msdf.json') >= 0) {
-        yOffset = 30;
-      }
-      if (yOffset) {
-        font.chars.forEach(function doOffset(ch) {
-          ch.yoffset += yOffset;
-        });
-      }
-      resolve(font);
-    });
-  });
-}
-
-/**
- * @returns {Promise}
- */
-function loadTexture(src) {
-  return new Promise(function (resolve, reject) {
-    new _lib_three_js__WEBPACK_IMPORTED_MODULE_4__["default"].ImageLoader().load(src, function (image) {
-      resolve(image);
-    }, undefined, function () {
-      error('Error loading font image', src);
-      reject(null);
-    });
-  });
-}
-function createShader(el, shaderName, data) {
-  var shader;
-  var shaderObject;
-
-  // Set up Shader.
-  shaderObject = new _core_shader_js__WEBPACK_IMPORTED_MODULE_3__.shaders[shaderName].Shader();
-  shaderObject.el = el;
-  shaderObject.init(data);
-  shaderObject.update(data);
-
-  // Get material.
-  shader = shaderObject.material;
-  // Apparently, was not set on `init` nor `update`.
-  shader.transparent = data.transparent;
-  return {
-    material: shader,
-    shader: shaderObject
-  };
-}
-
-/**
- * Determine wrap pixel count. Either specified or by experimental fudge factor.
- * Note that experimental factor will never be correct for variable width fonts.
- */
-function computeWidth(wrapPixels, wrapCount, widthFactor) {
-  return wrapPixels || (0.5 + wrapCount) * widthFactor;
-}
-
-/**
- * Compute default font width factor to use.
- */
-function computeFontWidthFactor(font) {
-  var sum = 0;
-  var digitsum = 0;
-  var digits = 0;
-  font.chars.forEach(function (ch) {
-    sum += ch.xadvance;
-    if (ch.id >= 48 && ch.id <= 57) {
-      digits++;
-      digitsum += ch.xadvance;
-    }
-  });
-  return digits ? digitsum / digits : sum / font.chars.length;
-}
-
-/**
- * Get or create a promise given a key and promise generator.
- * @todo Move to a utility and use in other parts of A-Frame.
- */
-function PromiseCache() {
-  var cache = this.cache = {};
-  this.get = function (key, promiseGenerator) {
-    if (key in cache) {
-      return cache[key];
-    }
-    cache[key] = promiseGenerator();
-    return cache[key];
-  };
-}
-
-/***/ }),
-
 /***/ "./src/components/tracked-controls.js":
 /*!********************************************!*\
   !*** ./src/components/tracked-controls.js ***!
@@ -18933,82 +16796,7 @@ class AAssets extends _a_node_js__WEBPACK_IMPORTED_MODULE_1__.ANode {
   }
   doConnectedCallback() {
     var self = this;
-    var i;
-    var loaded = [];
-    var mediaEl;
-    var mediaEls;
-    var imgEl;
-    var imgEls;
-    var timeout;
-    var children;
-    super.doConnectedCallback();
-    if (!this.parentNode.isScene) {
-      throw new Error('<a-assets> must be a child of a <a-scene>.');
-    }
-
-    // Wait for <img>s.
-    imgEls = this.querySelectorAll('img');
-    for (i = 0; i < imgEls.length; i++) {
-      imgEl = fixUpMediaElement(imgEls[i]);
-      loaded.push(new Promise(function (resolve, reject) {
-        // Set in cache because we won't be needing to call three.js loader if we have.
-        // a loaded media element.
-        _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Cache.add(imgEls[i].getAttribute('src'), imgEl);
-        if (imgEl.complete) {
-          resolve();
-          return;
-        }
-        imgEl.onload = resolve;
-        imgEl.onerror = reject;
-      }));
-    }
-
-    // Wait for <audio>s and <video>s.
-    mediaEls = this.querySelectorAll('audio, video');
-    for (i = 0; i < mediaEls.length; i++) {
-      mediaEl = fixUpMediaElement(mediaEls[i]);
-      if (!mediaEl.src && !mediaEl.srcObject) {
-        warn('Audio/video asset has neither `src` nor `srcObject` attributes.');
-      }
-      loaded.push(mediaElementLoaded(mediaEl));
-    }
-
-    // Wait for <a-asset-item>s
-    children = this.getChildren();
-    children.forEach(function (child) {
-      if (!child.isAssetItem || !child.hasAttribute('src')) {
-        return;
-      }
-      loaded.push(new Promise(function waitForLoaded(resolve, reject) {
-        if (child.hasLoaded) {
-          return resolve();
-        }
-        child.addEventListener('loaded', resolve);
-        child.addEventListener('error', reject);
-      }));
-    });
-
-    // Trigger loaded for scene to start rendering.
-    Promise.allSettled(loaded).then(function () {
-      // Make sure the timeout didn't occur.
-      if (self.timeout === null) {
-        return;
-      }
-      self.load();
-    });
-
-    // Timeout to start loading anyways.
-    timeout = parseInt(this.getAttribute('timeout'), 10) || 3000;
-    this.timeout = setTimeout(function () {
-      // Make sure the loading didn't complete.
-      if (self.hasLoaded) {
-        return;
-      }
-      warn('Asset loading timed out in', timeout, 'ms');
-      self.timeout = null;
-      self.emit('timeout');
-      self.load();
-    }, timeout);
+    setTimeout(() => self.load(), 500);
   }
   disconnectedCallback() {
     super.disconnectedCallback();
@@ -19303,6 +17091,19 @@ var OBJECT3D_COMPONENTS = ['position', 'rotation', 'scale', 'visible'];
 var ONCE = {
   once: true
 };
+const {
+  addEntity,
+  removeEntity,
+  addComponent
+} = __webpack_require__(/*! bitecs */ "./node_modules/bitecs/dist/index.cjs");
+
+// NOTE this should be kept in sync with addObject3DComponent in Hubs. Redefined here to avoid needing to import hubs
+function addObject3DComponent(world, eid, obj) {
+  addComponent(window.APP.world, world.nameToComponent['object3d'], eid);
+  world.eid2obj.set(eid, obj);
+  obj.eid = eid;
+  return eid;
+}
 
 /**
  * Entity is a container object that components are plugged into to comprise everything in
@@ -19358,6 +17159,10 @@ class AEntity extends _a_node_js__WEBPACK_IMPORTED_MODULE_1__.ANode {
 
     // ANode method.
     super.doConnectedCallback();
+    const eid = addEntity(window.APP.world);
+    this.eid = eid;
+    addComponent(window.APP.world, window.APP.world.nameToComponent.AEntity, eid);
+    addObject3DComponent(window.APP.world, eid, this.object3D);
     sceneEl = this.sceneEl;
     this.addToParent();
 
@@ -19405,6 +17210,8 @@ class AEntity extends _a_node_js__WEBPACK_IMPORTED_MODULE_1__.ANode {
 
     // Remove cyclic reference.
     this.object3D.el = null;
+    removeEntity(window.APP.world, this.object3D.eid);
+    delete this.eid;
   }
   getObject3D(type) {
     return this.object3DMap[type];
@@ -22202,7 +20009,7 @@ class AScene extends _a_entity_js__WEBPACK_IMPORTED_MODULE_8__.AEntity {
     if (this.checkHeadsetConnected() || this.isMobile) {
       var rendererSystem = self.getAttribute('renderer');
       vrManager.enabled = true;
-      if (this.hasWebXR) {
+      if (this.hasWebXR && !rendererSystem.forceWebVR) {
         // XR API.
         if (this.xrSession) {
           this.xrSession.removeEventListener('end', this.exitVRBound);
@@ -22292,7 +20099,8 @@ class AScene extends _a_entity_js__WEBPACK_IMPORTED_MODULE_8__.AEntity {
     // Handle exiting VR if not yet already and in a headset or polyfill.
     if (this.checkHeadsetConnected() || this.isMobile) {
       vrManager.enabled = false;
-      if (this.hasWebXR) {
+      var rendererSystem = self.getAttribute('renderer');
+      if (this.hasWebXR && !rendererSystem.forceWebVR) {
         this.xrSession.removeEventListener('end', this.exitVRBound);
         // Capture promise to avoid errors.
         this.xrSession.end().then(function () {}, function () {});
@@ -22413,6 +20221,9 @@ class AScene extends _a_entity_js__WEBPACK_IMPORTED_MODULE_8__.AEntity {
     var size;
     var isPresenting = this.renderer.xr.isPresenting;
     isVRPresenting = this.renderer.xr.enabled && isPresenting;
+    if (this.hasAttribute('disable-resize')) {
+      return;
+    }
 
     // Do not update renderer, if a camera or a canvas have not been injected.
     // In VR mode, three handles canvas resize based on the dimensions returned by
@@ -22444,7 +20255,9 @@ class AScene extends _a_entity_js__WEBPACK_IMPORTED_MODULE_8__.AEntity {
       antialias: !isMobile,
       canvas: this.canvas,
       logarithmicDepthBuffer: false,
-      powerPreference: 'high-performance'
+      powerPreference: 'high-performance',
+      preuploadVideos: /Oculus/.test(navigator.userAgent),
+      forceWebVR: false
     };
     this.maxCanvasSize = {
       height: -1,
@@ -22471,6 +20284,12 @@ class AScene extends _a_entity_js__WEBPACK_IMPORTED_MODULE_8__.AEntity {
       if (rendererAttr.multiviewStereo) {
         rendererConfig.multiviewStereo = rendererAttr.multiviewStereo === 'true';
       }
+      if (rendererAttr.forceWebVR) {
+        rendererConfig.forceWebVR = rendererAttr.forceWebVR === 'true';
+      }
+      if (window.forceWebVR === true) {
+        rendererConfig.forceWebVR = window.forceWebVR;
+      }
       this.maxCanvasSize = {
         width: rendererAttr.maxCanvasWidth ? parseInt(rendererAttr.maxCanvasWidth) : this.maxCanvasSize.width,
         height: rendererAttr.maxCanvasHeight ? parseInt(rendererAttr.maxCanvasHeight) : this.maxCanvasSize.height
@@ -22478,12 +20297,11 @@ class AScene extends _a_entity_js__WEBPACK_IMPORTED_MODULE_8__.AEntity {
     }
     renderer = this.renderer = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].WebGLRenderer(rendererConfig);
     renderer.setPixelRatio(window.devicePixelRatio);
-    if (this.camera) {
-      renderer.xr.setPoseTarget(this.camera.el.object3D);
-    }
-    this.addEventListener('camera-set-active', function () {
-      renderer.xr.setPoseTarget(self.camera.el.object3D);
-    });
+
+    // if (this.camera) { renderer.xr.setPoseTarget(this.camera.el.object3D); }
+    // this.addEventListener('camera-set-active', function () {
+    //   renderer.xr.setPoseTarget(self.camera.el.object3D);
+    // });
   }
 
   /**
@@ -23883,10 +21701,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _primitives_a_obj_model_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./primitives/a-obj-model.js */ "./src/extras/primitives/primitives/a-obj-model.js");
 /* harmony import */ var _primitives_a_sky_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./primitives/a-sky.js */ "./src/extras/primitives/primitives/a-sky.js");
 /* harmony import */ var _primitives_a_sound_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./primitives/a-sound.js */ "./src/extras/primitives/primitives/a-sound.js");
-/* harmony import */ var _primitives_a_text_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./primitives/a-text.js */ "./src/extras/primitives/primitives/a-text.js");
-/* harmony import */ var _primitives_a_video_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./primitives/a-video.js */ "./src/extras/primitives/primitives/a-video.js");
-/* harmony import */ var _primitives_a_videosphere_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./primitives/a-videosphere.js */ "./src/extras/primitives/primitives/a-videosphere.js");
-/* harmony import */ var _primitives_meshPrimitives_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./primitives/meshPrimitives.js */ "./src/extras/primitives/primitives/meshPrimitives.js");
+/* harmony import */ var _primitives_a_video_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./primitives/a-video.js */ "./src/extras/primitives/primitives/a-video.js");
+/* harmony import */ var _primitives_a_videosphere_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./primitives/a-videosphere.js */ "./src/extras/primitives/primitives/a-videosphere.js");
+/* harmony import */ var _primitives_meshPrimitives_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./primitives/meshPrimitives.js */ "./src/extras/primitives/primitives/meshPrimitives.js");
 
 
 
@@ -23897,7 +21714,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-
+// import './primitives/a-text.js';
 
 
 
@@ -24457,26 +22274,6 @@ __webpack_require__.r(__webpack_exports__);
     autoplay: 'sound.autoplay',
     loop: 'sound.loop',
     volume: 'sound.volume'
-  }
-});
-
-/***/ }),
-
-/***/ "./src/extras/primitives/primitives/a-text.js":
-/*!****************************************************!*\
-  !*** ./src/extras/primitives/primitives/a-text.js ***!
-  \****************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _primitives_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../primitives.js */ "./src/extras/primitives/primitives.js");
-// <a-text> using `definePrimitive` helper.
-
-(0,_primitives_js__WEBPACK_IMPORTED_MODULE_0__.definePrimitive)('a-text', {
-  text: {
-    anchor: 'align',
-    width: 5
   }
 });
 
@@ -28714,6 +26511,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   createCompatibleTexture: () => (/* binding */ createCompatibleTexture),
 /* harmony export */   handleTextureEvents: () => (/* binding */ handleTextureEvents),
 /* harmony export */   isCompatibleTexture: () => (/* binding */ isCompatibleTexture),
+/* harmony export */   isHLS: () => (/* binding */ isHLS),
 /* harmony export */   setTextureProperties: () => (/* binding */ setTextureProperties),
 /* harmony export */   updateDistortionMap: () => (/* binding */ updateDistortionMap),
 /* harmony export */   updateEnvMap: () => (/* binding */ updateEnvMap),
@@ -29050,6 +26848,24 @@ function createCompatibleTexture(source) {
   texture.needsUpdate = true;
   return texture;
 }
+var HLS_MIMETYPES = ['application/x-mpegurl', 'application/vnd.apple.mpegurl'];
+
+/**
+ * Given video element src and type, guess whether stream is HLS.
+ *
+ * @param {string} src - src from video element (generally URL to content).
+ * @param {string} type - type from video element (generally MIME type if present).
+ */
+function isHLS(src, type) {
+  if (type && HLS_MIMETYPES.includes(type.toLowerCase())) {
+    return true;
+  }
+  if (src && src.toLowerCase().indexOf('.m3u8') > 0) {
+    return true;
+  }
+  return false;
+}
+;
 
 /***/ }),
 
@@ -31579,6 +29395,1101 @@ module.exports = "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/200
 
 "use strict";
 module.exports = "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%20version%3D%221.1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%2090%2090%22%20enable-background%3D%22new%200%200%2090%2090%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpolygon%20points%3D%220%2C0%200%2C0%200%2C0%20%22%3E%3C/polygon%3E%3Cg%3E%3Cpath%20d%3D%22M71.545%2C48.145h-31.98V20.743c0-2.627-2.138-4.765-4.765-4.765H18.456c-2.628%2C0-4.767%2C2.138-4.767%2C4.765v42.789%20%20%20c0%2C2.628%2C2.138%2C4.766%2C4.767%2C4.766h5.535v0.959c0%2C2.628%2C2.138%2C4.765%2C4.766%2C4.765h42.788c2.628%2C0%2C4.766-2.137%2C4.766-4.765V52.914%20%20%20C76.311%2C50.284%2C74.173%2C48.145%2C71.545%2C48.145z%20M18.455%2C16.935h16.344c2.1%2C0%2C3.808%2C1.708%2C3.808%2C3.808v27.401H37.25V22.636%20%20%20c0-0.264-0.215-0.478-0.479-0.478H16.482c-0.264%2C0-0.479%2C0.214-0.479%2C0.478v36.585c0%2C0.264%2C0.215%2C0.478%2C0.479%2C0.478h7.507v7.644%20%20%20h-5.534c-2.101%2C0-3.81-1.709-3.81-3.81V20.743C14.645%2C18.643%2C16.354%2C16.935%2C18.455%2C16.935z%20M16.96%2C23.116h19.331v25.031h-7.535%20%20%20c-2.628%2C0-4.766%2C2.139-4.766%2C4.768v5.828h-7.03V23.116z%20M71.545%2C73.064H28.757c-2.101%2C0-3.81-1.708-3.81-3.808V52.914%20%20%20c0-2.102%2C1.709-3.812%2C3.81-3.812h42.788c2.1%2C0%2C3.809%2C1.71%2C3.809%2C3.812v16.343C75.354%2C71.356%2C73.645%2C73.064%2C71.545%2C73.064z%22%3E%3C/path%3E%3Cpath%20d%3D%22M28.919%2C58.424c-1.466%2C0-2.659%2C1.193-2.659%2C2.66c0%2C1.466%2C1.193%2C2.658%2C2.659%2C2.658c1.468%2C0%2C2.662-1.192%2C2.662-2.658%20%20%20C31.581%2C59.617%2C30.387%2C58.424%2C28.919%2C58.424z%20M28.919%2C62.786c-0.939%2C0-1.703-0.764-1.703-1.702c0-0.939%2C0.764-1.704%2C1.703-1.704%20%20%20c0.94%2C0%2C1.705%2C0.765%2C1.705%2C1.704C30.623%2C62.022%2C29.858%2C62.786%2C28.919%2C62.786z%22%3E%3C/path%3E%3Cpath%20d%3D%22M69.654%2C50.461H33.069c-0.264%2C0-0.479%2C0.215-0.479%2C0.479v20.288c0%2C0.264%2C0.215%2C0.478%2C0.479%2C0.478h36.585%20%20%20c0.263%2C0%2C0.477-0.214%2C0.477-0.478V50.939C70.131%2C50.676%2C69.917%2C50.461%2C69.654%2C50.461z%20M69.174%2C51.417V70.75H33.548V51.417H69.174z%22%3E%3C/path%3E%3Cpath%20d%3D%22M45.201%2C30.296c6.651%2C0%2C12.233%2C5.351%2C12.551%2C11.977l-3.033-2.638c-0.193-0.165-0.507-0.142-0.675%2C0.048%20%20%20c-0.174%2C0.198-0.153%2C0.501%2C0.045%2C0.676l3.883%2C3.375c0.09%2C0.075%2C0.198%2C0.115%2C0.312%2C0.115c0.141%2C0%2C0.273-0.061%2C0.362-0.166%20%20%20l3.371-3.877c0.173-0.2%2C0.151-0.502-0.047-0.675c-0.194-0.166-0.508-0.144-0.676%2C0.048l-2.592%2C2.979%20%20%20c-0.18-3.417-1.629-6.605-4.099-9.001c-2.538-2.461-5.877-3.817-9.404-3.817c-0.264%2C0-0.479%2C0.215-0.479%2C0.479%20%20%20C44.72%2C30.083%2C44.936%2C30.296%2C45.201%2C30.296z%22%3E%3C/path%3E%3C/g%3E%3C/svg%3E";
+
+/***/ }),
+
+/***/ "./node_modules/bitecs/dist/index.cjs":
+/*!********************************************!*\
+  !*** ./node_modules/bitecs/dist/index.cjs ***!
+  \********************************************/
+/***/ ((module) => {
+
+var __defProp = Object.defineProperty;
+var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+var __getOwnPropNames = Object.getOwnPropertyNames;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __markAsModule = (target) => __defProp(target, "__esModule", { value: true });
+var __export = (target, all) => {
+  for (var name in all)
+    __defProp(target, name, { get: all[name], enumerable: true });
+};
+var __reExport = (target, module2, copyDefault, desc) => {
+  if (module2 && typeof module2 === "object" || typeof module2 === "function") {
+    for (let key of __getOwnPropNames(module2))
+      if (!__hasOwnProp.call(target, key) && (copyDefault || key !== "default"))
+        __defProp(target, key, { get: () => module2[key], enumerable: !(desc = __getOwnPropDesc(module2, key)) || desc.enumerable });
+  }
+  return target;
+};
+var __toCommonJS = /* @__PURE__ */ ((cache) => {
+  return (module2, temp) => {
+    return cache && cache.get(module2) || (temp = __reExport(__markAsModule({}), module2, 1), cache && cache.set(module2, temp), temp);
+  };
+})(typeof WeakMap !== "undefined" ? /* @__PURE__ */ new WeakMap() : 0);
+
+// src/index.js
+var src_exports = {};
+__export(src_exports, {
+  Changed: () => Changed,
+  DESERIALIZE_MODE: () => DESERIALIZE_MODE,
+  Not: () => Not,
+  Types: () => Types,
+  addComponent: () => addComponent,
+  addEntity: () => addEntity,
+  commitRemovals: () => commitRemovals,
+  createWorld: () => createWorld,
+  defineComponent: () => defineComponent,
+  defineDeserializer: () => defineDeserializer,
+  defineQuery: () => defineQuery,
+  defineSerializer: () => defineSerializer,
+  defineSystem: () => defineSystem,
+  deleteWorld: () => deleteWorld,
+  enableManualEntityRecycling: () => enableManualEntityRecycling,
+  enterQuery: () => enterQuery,
+  entityExists: () => entityExists,
+  exitQuery: () => exitQuery,
+  flushRemovedEntities: () => flushRemovedEntities,
+  getAllEntities: () => getAllEntities,
+  getEntityComponents: () => getEntityComponents,
+  getWorldComponents: () => getWorldComponents,
+  hasComponent: () => hasComponent,
+  parentArray: () => parentArray,
+  pipe: () => pipe,
+  registerComponent: () => registerComponent,
+  registerComponents: () => registerComponents,
+  removeComponent: () => removeComponent,
+  removeEntity: () => removeEntity,
+  removeQuery: () => removeQuery,
+  resetChangedQuery: () => resetChangedQuery,
+  resetGlobals: () => resetGlobals,
+  resetWorld: () => resetWorld,
+  setDefaultSize: () => setDefaultSize,
+  setRemovedRecycleThreshold: () => setRemovedRecycleThreshold
+});
+
+// src/Constants.js
+var TYPES_ENUM = {
+  i8: "i8",
+  ui8: "ui8",
+  ui8c: "ui8c",
+  i16: "i16",
+  ui16: "ui16",
+  i32: "i32",
+  ui32: "ui32",
+  f32: "f32",
+  f64: "f64",
+  eid: "eid"
+};
+var TYPES_NAMES = {
+  i8: "Int8",
+  ui8: "Uint8",
+  ui8c: "Uint8Clamped",
+  i16: "Int16",
+  ui16: "Uint16",
+  i32: "Int32",
+  ui32: "Uint32",
+  eid: "Uint32",
+  f32: "Float32",
+  f64: "Float64"
+};
+var TYPES = {
+  i8: Int8Array,
+  ui8: Uint8Array,
+  ui8c: Uint8ClampedArray,
+  i16: Int16Array,
+  ui16: Uint16Array,
+  i32: Int32Array,
+  ui32: Uint32Array,
+  f32: Float32Array,
+  f64: Float64Array,
+  eid: Uint32Array
+};
+var UNSIGNED_MAX = {
+  uint8: 2 ** 8,
+  uint16: 2 ** 16,
+  uint32: 2 ** 32
+};
+
+// src/Storage.js
+var roundToMultiple = (mul) => (x) => Math.ceil(x / mul) * mul;
+var roundToMultiple4 = roundToMultiple(4);
+var $storeRef = Symbol("storeRef");
+var $storeSize = Symbol("storeSize");
+var $storeMaps = Symbol("storeMaps");
+var $storeFlattened = Symbol("storeFlattened");
+var $storeBase = Symbol("storeBase");
+var $storeType = Symbol("storeType");
+var $storeArrayElementCounts = Symbol("storeArrayElementCounts");
+var $storeSubarrays = Symbol("storeSubarrays");
+var $subarrayCursors = Symbol("subarrayCursors");
+var $subarray = Symbol("subarray");
+var $subarrayFrom = Symbol("subarrayFrom");
+var $subarrayTo = Symbol("subarrayTo");
+var $parentArray = Symbol("parentArray");
+var $tagStore = Symbol("tagStore");
+var $queryShadow = Symbol("queryShadow");
+var $serializeShadow = Symbol("serializeShadow");
+var $indexType = Symbol("indexType");
+var $indexBytes = Symbol("indexBytes");
+var $isEidType = Symbol("isEidType");
+var stores = {};
+var resize = (ta, size) => {
+  const newBuffer = new ArrayBuffer(size * ta.BYTES_PER_ELEMENT);
+  const newTa = new ta.constructor(newBuffer);
+  newTa.set(ta, 0);
+  return newTa;
+};
+var createShadow = (store, key) => {
+  if (!ArrayBuffer.isView(store)) {
+    const shadowStore = store[$parentArray].slice(0);
+    store[key] = store.map((_, eid) => {
+      const { length } = store[eid];
+      const start = length * eid;
+      const end = start + length;
+      return shadowStore.subarray(start, end);
+    });
+  } else {
+    store[key] = store.slice(0);
+  }
+};
+var resetStoreFor = (store, eid) => {
+  if (store[$storeFlattened]) {
+    store[$storeFlattened].forEach((ta) => {
+      if (ArrayBuffer.isView(ta))
+        ta[eid] = 0;
+      else
+        ta[eid].fill(0);
+    });
+  }
+};
+var createTypeStore = (type, length) => {
+  const totalBytes = length * TYPES[type].BYTES_PER_ELEMENT;
+  const buffer = new ArrayBuffer(totalBytes);
+  const store = new TYPES[type](buffer);
+  store[$isEidType] = type === TYPES_ENUM.eid;
+  return store;
+};
+var parentArray = (store) => store[$parentArray];
+var createArrayStore = (metadata, type, length) => {
+  const storeSize = metadata[$storeSize];
+  const store = Array(storeSize).fill(0);
+  store[$storeType] = type;
+  store[$isEidType] = type === TYPES_ENUM.eid;
+  const cursors = metadata[$subarrayCursors];
+  const indexType = length <= UNSIGNED_MAX.uint8 ? TYPES_ENUM.ui8 : length <= UNSIGNED_MAX.uint16 ? TYPES_ENUM.ui16 : TYPES_ENUM.ui32;
+  if (!length)
+    throw new Error("bitECS - Must define component array length");
+  if (!TYPES[type])
+    throw new Error(`bitECS - Invalid component array property type ${type}`);
+  if (!metadata[$storeSubarrays][type]) {
+    const arrayElementCount = metadata[$storeArrayElementCounts][type];
+    const array = new TYPES[type](roundToMultiple4(arrayElementCount * storeSize));
+    array[$indexType] = TYPES_NAMES[indexType];
+    array[$indexBytes] = TYPES[indexType].BYTES_PER_ELEMENT;
+    metadata[$storeSubarrays][type] = array;
+  }
+  const start = cursors[type];
+  const end = start + storeSize * length;
+  cursors[type] = end;
+  store[$parentArray] = metadata[$storeSubarrays][type].subarray(start, end);
+  for (let eid = 0; eid < storeSize; eid++) {
+    const start2 = length * eid;
+    const end2 = start2 + length;
+    store[eid] = store[$parentArray].subarray(start2, end2);
+    store[eid][$indexType] = TYPES_NAMES[indexType];
+    store[eid][$indexBytes] = TYPES[indexType].BYTES_PER_ELEMENT;
+    store[eid][$subarray] = true;
+  }
+  return store;
+};
+var isArrayType = (x) => Array.isArray(x) && typeof x[0] === "string" && typeof x[1] === "number";
+var createStore = (schema, size) => {
+  const $store = Symbol("store");
+  if (!schema || !Object.keys(schema).length) {
+    stores[$store] = {
+      [$storeSize]: size,
+      [$tagStore]: true,
+      [$storeBase]: () => stores[$store]
+    };
+    return stores[$store];
+  }
+  schema = JSON.parse(JSON.stringify(schema));
+  const arrayElementCounts = {};
+  const collectArrayElementCounts = (s) => {
+    const keys = Object.keys(s);
+    for (const k of keys) {
+      if (isArrayType(s[k])) {
+        if (!arrayElementCounts[s[k][0]])
+          arrayElementCounts[s[k][0]] = 0;
+        arrayElementCounts[s[k][0]] += s[k][1];
+      } else if (s[k] instanceof Object) {
+        collectArrayElementCounts(s[k]);
+      }
+    }
+  };
+  collectArrayElementCounts(schema);
+  const metadata = {
+    [$storeSize]: size,
+    [$storeMaps]: {},
+    [$storeSubarrays]: {},
+    [$storeRef]: $store,
+    [$subarrayCursors]: Object.keys(TYPES).reduce((a, type) => ({ ...a, [type]: 0 }), {}),
+    [$storeFlattened]: [],
+    [$storeArrayElementCounts]: arrayElementCounts
+  };
+  if (schema instanceof Object && Object.keys(schema).length) {
+    const recursiveTransform = (a, k) => {
+      if (typeof a[k] === "string") {
+        a[k] = createTypeStore(a[k], size);
+        a[k][$storeBase] = () => stores[$store];
+        metadata[$storeFlattened].push(a[k]);
+      } else if (isArrayType(a[k])) {
+        const [type, length] = a[k];
+        a[k] = createArrayStore(metadata, type, length);
+        a[k][$storeBase] = () => stores[$store];
+        metadata[$storeFlattened].push(a[k]);
+      } else if (a[k] instanceof Object) {
+        a[k] = Object.keys(a[k]).reduce(recursiveTransform, a[k]);
+      }
+      return a;
+    };
+    stores[$store] = Object.assign(Object.keys(schema).reduce(recursiveTransform, schema), metadata);
+    stores[$store][$storeBase] = () => stores[$store];
+    return stores[$store];
+  }
+};
+
+// src/Util.js
+var SparseSet = () => {
+  const dense = [];
+  const sparse = [];
+  dense.sort = function(comparator) {
+    const result = Array.prototype.sort.call(this, comparator);
+    for (let i = 0; i < dense.length; i++) {
+      sparse[dense[i]] = i;
+    }
+    return result;
+  };
+  const has = (val) => dense[sparse[val]] === val;
+  const add = (val) => {
+    if (has(val))
+      return;
+    sparse[val] = dense.push(val) - 1;
+  };
+  const remove = (val) => {
+    if (!has(val))
+      return;
+    const index = sparse[val];
+    const swapped = dense.pop();
+    if (swapped !== val) {
+      dense[index] = swapped;
+      sparse[swapped] = index;
+    }
+  };
+  const reset = () => {
+    dense.length = 0;
+    sparse.length = 0;
+  };
+  return {
+    add,
+    remove,
+    has,
+    sparse,
+    dense,
+    reset
+  };
+};
+
+// src/Serialize.js
+var DESERIALIZE_MODE = {
+  REPLACE: 0,
+  APPEND: 1,
+  MAP: 2
+};
+var resized = false;
+var setSerializationResized = (v) => {
+  resized = v;
+};
+var concat = (a, v) => a.concat(v);
+var not = (fn) => (v) => !fn(v);
+var storeFlattened = (c) => c[$storeFlattened];
+var isFullComponent = storeFlattened;
+var isProperty = not(isFullComponent);
+var isModifier = (c) => typeof c === "function" && c[$modifier];
+var isNotModifier = not(isModifier);
+var isChangedModifier = (c) => isModifier(c) && c()[1] === "changed";
+var isWorld = (w) => Object.getOwnPropertySymbols(w).includes($componentMap);
+var fromModifierToComponent = (c) => c()[0];
+var canonicalize = (target) => {
+  if (isWorld(target))
+    return [[], /* @__PURE__ */ new Map()];
+  const fullComponentProps = target.filter(isNotModifier).filter(isFullComponent).map(storeFlattened).reduce(concat, []);
+  const changedComponentProps = target.filter(isChangedModifier).map(fromModifierToComponent).filter(isFullComponent).map(storeFlattened).reduce(concat, []);
+  const props = target.filter(isNotModifier).filter(isProperty);
+  const changedProps = target.filter(isChangedModifier).map(fromModifierToComponent).filter(isProperty);
+  const componentProps = [...fullComponentProps, ...props, ...changedComponentProps, ...changedProps];
+  const allChangedProps = [...changedComponentProps, ...changedProps].reduce((map, prop) => {
+    const $ = Symbol();
+    createShadow(prop, $);
+    map.set(prop, $);
+    return map;
+  }, /* @__PURE__ */ new Map());
+  return [componentProps, allChangedProps];
+};
+var defineSerializer = (target, maxBytes = 2e7) => {
+  const worldSerializer = isWorld(target);
+  let [componentProps, changedProps] = canonicalize(target);
+  const buffer = new ArrayBuffer(maxBytes);
+  const view = new DataView(buffer);
+  const entityComponentCache = /* @__PURE__ */ new Map();
+  return (ents) => {
+    if (resized) {
+      [componentProps, changedProps] = canonicalize(target);
+      resized = false;
+    }
+    if (worldSerializer) {
+      componentProps = [];
+      target[$componentMap].forEach((c, component) => {
+        if (component[$storeFlattened])
+          componentProps.push(...component[$storeFlattened]);
+        else
+          componentProps.push(component);
+      });
+    }
+    let world;
+    if (Object.getOwnPropertySymbols(ents).includes($componentMap)) {
+      world = ents;
+      ents = ents[$entityArray];
+    } else {
+      world = eidToWorld.get(ents[0]);
+    }
+    let where = 0;
+    if (!ents.length)
+      return buffer.slice(0, where);
+    const cache = /* @__PURE__ */ new Map();
+    for (let pid = 0; pid < componentProps.length; pid++) {
+      const prop = componentProps[pid];
+      const component = prop[$storeBase]();
+      const $diff = changedProps.get(prop);
+      const shadow = $diff ? prop[$diff] : null;
+      if (!cache.has(component))
+        cache.set(component, /* @__PURE__ */ new Map());
+      view.setUint8(where, pid);
+      where += 1;
+      const countWhere = where;
+      where += 4;
+      let writeCount = 0;
+      for (let i = 0; i < ents.length; i++) {
+        const eid = ents[i];
+        let componentCache = entityComponentCache.get(eid);
+        if (!componentCache)
+          componentCache = entityComponentCache.set(eid, /* @__PURE__ */ new Set()).get(eid);
+        componentCache.add(eid);
+        const newlyAddedComponent = shadow && cache.get(component).get(eid) || !componentCache.has(component) && hasComponent(world, component, eid);
+        cache.get(component).set(eid, newlyAddedComponent);
+        if (newlyAddedComponent) {
+          componentCache.add(component);
+        } else if (!hasComponent(world, component, eid)) {
+          componentCache.delete(component);
+          continue;
+        }
+        const rewindWhere = where;
+        view.setUint32(where, eid);
+        where += 4;
+        if (prop[$tagStore]) {
+          writeCount++;
+          continue;
+        }
+        if (ArrayBuffer.isView(prop[eid])) {
+          const type = prop[eid].constructor.name.replace("Array", "");
+          const indexType = prop[eid][$indexType];
+          const indexBytes = prop[eid][$indexBytes];
+          const countWhere2 = where;
+          where += indexBytes;
+          let arrayWriteCount = 0;
+          for (let i2 = 0; i2 < prop[eid].length; i2++) {
+            if (shadow) {
+              const changed = shadow[eid][i2] !== prop[eid][i2];
+              shadow[eid][i2] = prop[eid][i2];
+              if (!changed && !newlyAddedComponent) {
+                continue;
+              }
+            }
+            view[`set${indexType}`](where, i2);
+            where += indexBytes;
+            const value = prop[eid][i2];
+            view[`set${type}`](where, value);
+            where += prop[eid].BYTES_PER_ELEMENT;
+            arrayWriteCount++;
+          }
+          if (arrayWriteCount > 0) {
+            view[`set${indexType}`](countWhere2, arrayWriteCount);
+            writeCount++;
+          } else {
+            where = rewindWhere;
+            continue;
+          }
+        } else {
+          if (shadow) {
+            const changed = shadow[eid] !== prop[eid];
+            shadow[eid] = prop[eid];
+            if (!changed && !newlyAddedComponent) {
+              where = rewindWhere;
+              continue;
+            }
+          }
+          const type = prop.constructor.name.replace("Array", "");
+          view[`set${type}`](where, prop[eid]);
+          where += prop.BYTES_PER_ELEMENT;
+          writeCount++;
+        }
+      }
+      if (writeCount > 0) {
+        view.setUint32(countWhere, writeCount);
+      } else {
+        where -= 5;
+      }
+    }
+    return buffer.slice(0, where);
+  };
+};
+var newEntities = /* @__PURE__ */ new Map();
+var defineDeserializer = (target) => {
+  const isWorld2 = Object.getOwnPropertySymbols(target).includes($componentMap);
+  let [componentProps] = canonicalize(target);
+  const deserializedEntities = /* @__PURE__ */ new Set();
+  return (world, packet, mode = 0) => {
+    newEntities.clear();
+    if (resized) {
+      [componentProps] = canonicalize(target);
+      resized = false;
+    }
+    if (isWorld2) {
+      componentProps = [];
+      target[$componentMap].forEach((c, component) => {
+        if (component[$storeFlattened])
+          componentProps.push(...component[$storeFlattened]);
+        else
+          componentProps.push(component);
+      });
+    }
+    const localEntities = world[$localEntities];
+    const localEntityLookup = world[$localEntityLookup];
+    const view = new DataView(packet);
+    let where = 0;
+    while (where < packet.byteLength) {
+      const pid = view.getUint8(where);
+      where += 1;
+      const entityCount = view.getUint32(where);
+      where += 4;
+      const prop = componentProps[pid];
+      for (let i = 0; i < entityCount; i++) {
+        let eid = view.getUint32(where);
+        where += 4;
+        if (mode === DESERIALIZE_MODE.MAP) {
+          if (localEntities.has(eid)) {
+            eid = localEntities.get(eid);
+          } else if (newEntities.has(eid)) {
+            eid = newEntities.get(eid);
+          } else {
+            const newEid = addEntity(world);
+            localEntities.set(eid, newEid);
+            localEntityLookup.set(newEid, eid);
+            newEntities.set(eid, newEid);
+            eid = newEid;
+          }
+        }
+        if (mode === DESERIALIZE_MODE.APPEND || mode === DESERIALIZE_MODE.REPLACE && !world[$entitySparseSet].has(eid)) {
+          const newEid = newEntities.get(eid) || addEntity(world);
+          newEntities.set(eid, newEid);
+          eid = newEid;
+        }
+        const component = prop[$storeBase]();
+        if (!hasComponent(world, component, eid)) {
+          addComponent(world, component, eid);
+        }
+        deserializedEntities.add(eid);
+        if (component[$tagStore]) {
+          continue;
+        }
+        if (ArrayBuffer.isView(prop[eid])) {
+          const array = prop[eid];
+          const count = view[`get${array[$indexType]}`](where);
+          where += array[$indexBytes];
+          for (let i2 = 0; i2 < count; i2++) {
+            const index = view[`get${array[$indexType]}`](where);
+            where += array[$indexBytes];
+            const value = view[`get${array.constructor.name.replace("Array", "")}`](where);
+            where += array.BYTES_PER_ELEMENT;
+            if (prop[$isEidType]) {
+              let localEid;
+              if (localEntities.has(value)) {
+                localEid = localEntities.get(value);
+              } else if (newEntities.has(value)) {
+                localEid = newEntities.get(value);
+              } else {
+                const newEid = addEntity(world);
+                localEntities.set(value, newEid);
+                localEntityLookup.set(newEid, value);
+                newEntities.set(value, newEid);
+                localEid = newEid;
+              }
+              prop[eid][index] = localEid;
+            } else
+              prop[eid][index] = value;
+          }
+        } else {
+          const value = view[`get${prop.constructor.name.replace("Array", "")}`](where);
+          where += prop.BYTES_PER_ELEMENT;
+          if (prop[$isEidType]) {
+            let localEid;
+            if (localEntities.has(value)) {
+              localEid = localEntities.get(value);
+            } else if (newEntities.has(value)) {
+              localEid = newEntities.get(value);
+            } else {
+              const newEid = addEntity(world);
+              localEntities.set(value, newEid);
+              localEntityLookup.set(newEid, value);
+              newEntities.set(value, newEid);
+              localEid = newEid;
+            }
+            prop[eid] = localEid;
+          } else
+            prop[eid] = value;
+        }
+      }
+    }
+    const ents = Array.from(deserializedEntities);
+    deserializedEntities.clear();
+    return ents;
+  };
+};
+
+// src/Entity.js
+var $entityMasks = Symbol("entityMasks");
+var $entityComponents = Symbol("entityComponents");
+var $entitySparseSet = Symbol("entitySparseSet");
+var $entityArray = Symbol("entityArray");
+var $entityIndices = Symbol("entityIndices");
+var $removedEntities = Symbol("removedEntities");
+var defaultSize = 1e5;
+var globalEntityCursor = 0;
+var globalSize = defaultSize;
+var getGlobalSize = () => globalSize;
+var removed = [];
+var recycled = [];
+var defaultRemovedReuseThreshold = 0.01;
+var removedReuseThreshold = defaultRemovedReuseThreshold;
+var resetGlobals = () => {
+  globalSize = defaultSize;
+  globalEntityCursor = 0;
+  removedReuseThreshold = defaultRemovedReuseThreshold;
+  removed.length = 0;
+  recycled.length = 0;
+};
+var setDefaultSize = (newSize) => {
+  const oldSize = globalSize;
+  defaultSize = newSize;
+  resetGlobals();
+  globalSize = newSize;
+  resizeWorlds(newSize);
+  setSerializationResized(true);
+};
+var setRemovedRecycleThreshold = (newThreshold) => {
+  removedReuseThreshold = newThreshold;
+};
+var getEntityCursor = () => globalEntityCursor;
+var eidToWorld = /* @__PURE__ */ new Map();
+var flushRemovedEntities = (world) => {
+  if (!world[$manualEntityRecycling]) {
+    throw new Error("bitECS - cannot flush removed entities, enable feature with the enableManualEntityRecycling function");
+  }
+  removed.push(...recycled);
+  recycled.length = 0;
+};
+var addEntity = (world) => {
+  const eid = world[$manualEntityRecycling] ? removed.length ? removed.shift() : globalEntityCursor++ : removed.length > Math.round(globalSize * removedReuseThreshold) ? removed.shift() : globalEntityCursor++;
+  if (eid > world[$size])
+    throw new Error("bitECS - max entities reached");
+  world[$entitySparseSet].add(eid);
+  eidToWorld.set(eid, world);
+  world[$notQueries].forEach((q) => {
+    const match = queryCheckEntity(world, q, eid);
+    if (match)
+      queryAddEntity(q, eid);
+  });
+  world[$entityComponents].set(eid, /* @__PURE__ */ new Set());
+  return eid;
+};
+var removeEntity = (world, eid) => {
+  if (!world[$entitySparseSet].has(eid))
+    return;
+  world[$queries].forEach((q) => {
+    queryRemoveEntity(world, q, eid);
+  });
+  if (world[$manualEntityRecycling])
+    recycled.push(eid);
+  else
+    removed.push(eid);
+  world[$entitySparseSet].remove(eid);
+  world[$entityComponents].delete(eid);
+  world[$localEntities].delete(world[$localEntityLookup].get(eid));
+  world[$localEntityLookup].delete(eid);
+  for (let i = 0; i < world[$entityMasks].length; i++)
+    world[$entityMasks][i][eid] = 0;
+};
+var getEntityComponents = (world, eid) => {
+  if (eid === void 0)
+    throw new Error("bitECS - entity is undefined.");
+  if (!world[$entitySparseSet].has(eid))
+    throw new Error("bitECS - entity does not exist in the world.");
+  return Array.from(world[$entityComponents].get(eid));
+};
+var entityExists = (world, eid) => world[$entitySparseSet].has(eid);
+
+// src/Query.js
+var $modifier = Symbol("$modifier");
+function modifier(c, mod) {
+  const inner = () => [c, mod];
+  inner[$modifier] = true;
+  return inner;
+}
+var Not = (c) => modifier(c, "not");
+var Changed = (c) => modifier(c, "changed");
+function Any(...comps) {
+  return function QueryAny() {
+    return comps;
+  };
+}
+function All(...comps) {
+  return function QueryAll() {
+    return comps;
+  };
+}
+function None(...comps) {
+  return function QueryNone() {
+    return comps;
+  };
+}
+var $queries = Symbol("queries");
+var $notQueries = Symbol("notQueries");
+var $queryAny = Symbol("queryAny");
+var $queryAll = Symbol("queryAll");
+var $queryNone = Symbol("queryNone");
+var $queryMap = Symbol("queryMap");
+var $dirtyQueries = Symbol("$dirtyQueries");
+var $queryComponents = Symbol("queryComponents");
+var $enterQuery = Symbol("enterQuery");
+var $exitQuery = Symbol("exitQuery");
+var empty = Object.freeze([]);
+var enterQuery = (query) => (world) => {
+  if (!world[$queryMap].has(query))
+    registerQuery(world, query);
+  const q = world[$queryMap].get(query);
+  if (q.entered.dense.length === 0) {
+    return empty;
+  } else {
+    const results = q.entered.dense.slice();
+    q.entered.reset();
+    return results;
+  }
+};
+var exitQuery = (query) => (world) => {
+  if (!world[$queryMap].has(query))
+    registerQuery(world, query);
+  const q = world[$queryMap].get(query);
+  if (q.exited.dense.length === 0) {
+    return empty;
+  } else {
+    const results = q.exited.dense.slice();
+    q.exited.reset();
+    return results;
+  }
+};
+var registerQuery = (world, query) => {
+  const components2 = [];
+  const notComponents = [];
+  const changedComponents = [];
+  query[$queryComponents].forEach((c) => {
+    if (typeof c === "function" && c[$modifier]) {
+      const [comp, mod] = c();
+      if (!world[$componentMap].has(comp))
+        registerComponent(world, comp);
+      if (mod === "not") {
+        notComponents.push(comp);
+      }
+      if (mod === "changed") {
+        changedComponents.push(comp);
+        components2.push(comp);
+      }
+    } else {
+      if (!world[$componentMap].has(c))
+        registerComponent(world, c);
+      components2.push(c);
+    }
+  });
+  const mapComponents = (c) => world[$componentMap].get(c);
+  const allComponents = components2.concat(notComponents).map(mapComponents);
+  const sparseSet = SparseSet();
+  const archetypes = [];
+  const changed = [];
+  const toRemove = SparseSet();
+  const entered = SparseSet();
+  const exited = SparseSet();
+  const generations = allComponents.map((c) => c.generationId).reduce((a, v) => {
+    if (a.includes(v))
+      return a;
+    a.push(v);
+    return a;
+  }, []);
+  const reduceBitflags = (a, c) => {
+    if (!a[c.generationId])
+      a[c.generationId] = 0;
+    a[c.generationId] |= c.bitflag;
+    return a;
+  };
+  const masks = components2.map(mapComponents).reduce(reduceBitflags, {});
+  const notMasks = notComponents.map(mapComponents).reduce(reduceBitflags, {});
+  const hasMasks = allComponents.reduce(reduceBitflags, {});
+  const flatProps = components2.filter((c) => !c[$tagStore]).map((c) => Object.getOwnPropertySymbols(c).includes($storeFlattened) ? c[$storeFlattened] : [c]).reduce((a, v) => a.concat(v), []);
+  const shadows = [];
+  const q = Object.assign(sparseSet, {
+    archetypes,
+    changed,
+    components: components2,
+    notComponents,
+    changedComponents,
+    allComponents,
+    masks,
+    notMasks,
+    hasMasks,
+    generations,
+    flatProps,
+    toRemove,
+    entered,
+    exited,
+    shadows
+  });
+  world[$queryMap].set(query, q);
+  world[$queries].add(q);
+  allComponents.forEach((c) => {
+    c.queries.add(q);
+  });
+  if (notComponents.length)
+    world[$notQueries].add(q);
+  for (let eid = 0; eid < getEntityCursor(); eid++) {
+    if (!world[$entitySparseSet].has(eid))
+      continue;
+    const match = queryCheckEntity(world, q, eid);
+    if (match)
+      queryAddEntity(q, eid);
+  }
+};
+var generateShadow = (q, pid) => {
+  const $ = Symbol();
+  const prop = q.flatProps[pid];
+  createShadow(prop, $);
+  q.shadows[pid] = prop[$];
+  return prop[$];
+};
+var diff = (q, clearDiff) => {
+  if (clearDiff)
+    q.changed = [];
+  const { flatProps, shadows } = q;
+  for (let i = 0; i < q.dense.length; i++) {
+    const eid = q.dense[i];
+    let dirty = false;
+    for (let pid = 0; pid < flatProps.length; pid++) {
+      const prop = flatProps[pid];
+      const shadow = shadows[pid] || generateShadow(q, pid);
+      if (ArrayBuffer.isView(prop[eid])) {
+        for (let i2 = 0; i2 < prop[eid].length; i2++) {
+          if (prop[eid][i2] !== shadow[eid][i2]) {
+            dirty = true;
+            break;
+          }
+        }
+        shadow[eid].set(prop[eid]);
+      } else {
+        if (prop[eid] !== shadow[eid]) {
+          dirty = true;
+          shadow[eid] = prop[eid];
+        }
+      }
+    }
+    if (dirty)
+      q.changed.push(eid);
+  }
+  return q.changed;
+};
+var flatten = (a, v) => a.concat(v);
+var aggregateComponentsFor = (mod) => (x) => x.filter((f) => f.name === mod().constructor.name).reduce(flatten);
+var getAnyComponents = aggregateComponentsFor(Any);
+var getAllComponents = aggregateComponentsFor(All);
+var getNoneComponents = aggregateComponentsFor(None);
+var defineQuery = (...args) => {
+  let components2;
+  let any, all, none;
+  if (Array.isArray(args[0])) {
+    components2 = args[0];
+  } else {
+  }
+  if (components2 === void 0 || components2[$componentMap] !== void 0) {
+    return (world) => world ? world[$entityArray] : components2[$entityArray];
+  }
+  const query = function(world, clearDiff = true) {
+    if (!world[$queryMap].has(query))
+      registerQuery(world, query);
+    const q = world[$queryMap].get(query);
+    commitRemovals(world);
+    if (q.changedComponents.length)
+      return diff(q, clearDiff);
+    return q.dense;
+  };
+  query[$queryComponents] = components2;
+  query[$queryAny] = any;
+  query[$queryAll] = all;
+  query[$queryNone] = none;
+  return query;
+};
+var queryCheckEntity = (world, q, eid) => {
+  const { masks, notMasks, generations } = q;
+  let or = 0;
+  for (let i = 0; i < generations.length; i++) {
+    const generationId = generations[i];
+    const qMask = masks[generationId];
+    const qNotMask = notMasks[generationId];
+    const eMask = world[$entityMasks][generationId][eid];
+    if (qNotMask && (eMask & qNotMask) !== 0) {
+      return false;
+    }
+    if (qMask && (eMask & qMask) !== qMask) {
+      return false;
+    }
+  }
+  return true;
+};
+var queryAddEntity = (q, eid) => {
+  q.toRemove.remove(eid);
+  q.entered.add(eid);
+  q.add(eid);
+};
+var queryCommitRemovals = (q) => {
+  for (let i = q.toRemove.dense.length - 1; i >= 0; i--) {
+    const eid = q.toRemove.dense[i];
+    q.toRemove.remove(eid);
+    q.remove(eid);
+  }
+};
+var commitRemovals = (world) => {
+  if (!world[$dirtyQueries].size)
+    return;
+  world[$dirtyQueries].forEach(queryCommitRemovals);
+  world[$dirtyQueries].clear();
+};
+var queryRemoveEntity = (world, q, eid) => {
+  if (!q.has(eid) || q.toRemove.has(eid))
+    return;
+  q.toRemove.add(eid);
+  world[$dirtyQueries].add(q);
+  q.exited.add(eid);
+};
+var resetChangedQuery = (world, query) => {
+  const q = world[$queryMap].get(query);
+  q.changed = [];
+};
+var removeQuery = (world, query) => {
+  const q = world[$queryMap].get(query);
+  world[$queries].delete(q);
+  world[$queryMap].delete(query);
+};
+
+// src/Component.js
+var $componentMap = Symbol("componentMap");
+var components = [];
+var defineComponent = (schema, size) => {
+  const component = createStore(schema, size || getGlobalSize());
+  if (schema && Object.keys(schema).length)
+    components.push(component);
+  return component;
+};
+var incrementBitflag = (world) => {
+  world[$bitflag] *= 2;
+  if (world[$bitflag] >= 2 ** 31) {
+    world[$bitflag] = 1;
+    world[$entityMasks].push(new Uint32Array(world[$size]));
+  }
+};
+var registerComponent = (world, component) => {
+  if (!component)
+    throw new Error(`bitECS - Cannot register null or undefined component`);
+  const queries = /* @__PURE__ */ new Set();
+  const notQueries = /* @__PURE__ */ new Set();
+  const changedQueries = /* @__PURE__ */ new Set();
+  world[$queries].forEach((q) => {
+    if (q.allComponents.includes(component)) {
+      queries.add(q);
+    }
+  });
+  world[$componentMap].set(component, {
+    generationId: world[$entityMasks].length - 1,
+    bitflag: world[$bitflag],
+    store: component,
+    queries,
+    notQueries,
+    changedQueries
+  });
+  incrementBitflag(world);
+};
+var registerComponents = (world, components2) => {
+  components2.forEach((c) => registerComponent(world, c));
+};
+var hasComponent = (world, component, eid) => {
+  const registeredComponent = world[$componentMap].get(component);
+  if (!registeredComponent)
+    return false;
+  const { generationId, bitflag } = registeredComponent;
+  const mask = world[$entityMasks][generationId][eid];
+  return (mask & bitflag) === bitflag;
+};
+var addComponent = (world, component, eid, reset = false) => {
+  if (eid === void 0)
+    throw new Error("bitECS - entity is undefined.");
+  if (!world[$entitySparseSet].has(eid))
+    throw new Error("bitECS - entity does not exist in the world.");
+  if (!world[$componentMap].has(component))
+    registerComponent(world, component);
+  if (hasComponent(world, component, eid))
+    return;
+  const c = world[$componentMap].get(component);
+  const { generationId, bitflag, queries, notQueries } = c;
+  world[$entityMasks][generationId][eid] |= bitflag;
+  queries.forEach((q) => {
+    q.toRemove.remove(eid);
+    const match = queryCheckEntity(world, q, eid);
+    if (match) {
+      q.exited.remove(eid);
+      queryAddEntity(q, eid);
+    }
+    if (!match) {
+      q.entered.remove(eid);
+      queryRemoveEntity(world, q, eid);
+    }
+  });
+  world[$entityComponents].get(eid).add(component);
+  if (reset)
+    resetStoreFor(component, eid);
+};
+var removeComponent = (world, component, eid, reset = true) => {
+  if (eid === void 0)
+    throw new Error("bitECS - entity is undefined.");
+  if (!world[$entitySparseSet].has(eid))
+    throw new Error("bitECS - entity does not exist in the world.");
+  if (!hasComponent(world, component, eid))
+    return;
+  const c = world[$componentMap].get(component);
+  const { generationId, bitflag, queries } = c;
+  world[$entityMasks][generationId][eid] &= ~bitflag;
+  queries.forEach((q) => {
+    q.toRemove.remove(eid);
+    const match = queryCheckEntity(world, q, eid);
+    if (match) {
+      q.exited.remove(eid);
+      queryAddEntity(q, eid);
+    }
+    if (!match) {
+      q.entered.remove(eid);
+      queryRemoveEntity(world, q, eid);
+    }
+  });
+  world[$entityComponents].get(eid).delete(component);
+  if (reset)
+    resetStoreFor(component, eid);
+};
+
+// src/World.js
+var $size = Symbol("size");
+var $resizeThreshold = Symbol("resizeThreshold");
+var $bitflag = Symbol("bitflag");
+var $archetypes = Symbol("archetypes");
+var $localEntities = Symbol("localEntities");
+var $localEntityLookup = Symbol("localEntityLookup");
+var $manualEntityRecycling = Symbol("manualEntityRecycling");
+var worlds = [];
+var resizeWorlds = (size) => {
+  worlds.forEach((world) => {
+    world[$size] = size;
+    for (let i = 0; i < world[$entityMasks].length; i++) {
+      const masks = world[$entityMasks][i];
+      world[$entityMasks][i] = resize(masks, size);
+    }
+    world[$resizeThreshold] = world[$size] - world[$size] / 5;
+  });
+};
+var createWorld = (...args) => {
+  const world = typeof args[0] === "object" ? args[0] : {};
+  const size = typeof args[0] === "number" ? args[0] : typeof args[1] === "number" ? args[1] : getGlobalSize();
+  resetWorld(world, size);
+  worlds.push(world);
+  return world;
+};
+var enableManualEntityRecycling = (world) => {
+  world[$manualEntityRecycling] = true;
+};
+var resetWorld = (world, size = getGlobalSize()) => {
+  world[$size] = size;
+  if (world[$entityArray])
+    world[$entityArray].forEach((eid) => removeEntity(world, eid));
+  world[$entityMasks] = [new Uint32Array(size)];
+  world[$entityComponents] = /* @__PURE__ */ new Map();
+  world[$archetypes] = [];
+  world[$entitySparseSet] = SparseSet();
+  world[$entityArray] = world[$entitySparseSet].dense;
+  world[$bitflag] = 1;
+  world[$componentMap] = /* @__PURE__ */ new Map();
+  world[$queryMap] = /* @__PURE__ */ new Map();
+  world[$queries] = /* @__PURE__ */ new Set();
+  world[$notQueries] = /* @__PURE__ */ new Set();
+  world[$dirtyQueries] = /* @__PURE__ */ new Set();
+  world[$localEntities] = /* @__PURE__ */ new Map();
+  world[$localEntityLookup] = /* @__PURE__ */ new Map();
+  world[$manualEntityRecycling] = false;
+  return world;
+};
+var deleteWorld = (world) => {
+  Object.getOwnPropertySymbols(world).forEach(($) => {
+    delete world[$];
+  });
+  Object.keys(world).forEach((key) => {
+    delete world[key];
+  });
+  worlds.splice(worlds.indexOf(world), 1);
+};
+var getWorldComponents = (world) => Array.from(world[$componentMap].keys());
+var getAllEntities = (world) => world[$entitySparseSet].dense.slice(0);
+
+// src/System.js
+var defineSystem = (update) => (world, ...args) => {
+  update(world, ...args);
+  return world;
+};
+
+// src/index.js
+var pipe = (...fns) => (input) => {
+  let tmp = input;
+  for (let i = 0; i < fns.length; i++) {
+    const fn = fns[i];
+    tmp = fn(tmp);
+  }
+  return tmp;
+};
+var Types = TYPES_ENUM;
+module.exports = __toCommonJS(src_exports);
+// Annotate the CommonJS export names for ESM import in node:
+0 && (0);
+//# sourceMappingURL=index.cjs.map
+
 
 /***/ }),
 
@@ -38829,7 +37740,7 @@ class GLTFParser {
     }
     mesh.material = material;
   }
-  getMaterialType( /* materialIndex */
+  getMaterialType(/* materialIndex */
   ) {
     return three__WEBPACK_IMPORTED_MODULE_0__.MeshStandardMaterial;
   }
@@ -42649,7 +41560,7 @@ class WorkerPool {
 /***/ ((module) => {
 
 "use strict";
-module.exports = /*#__PURE__*/JSON.parse('{"name":"aframe","version":"1.6.0","description":"A web framework for building virtual reality experiences.","homepage":"https://aframe.io/","main":"./dist/aframe-master.js","module":"./dist/aframe-master.module.min.js","exports":{".":{"import":"./dist/aframe-master.module.min.js","require":"./dist/aframe-master.js"}},"scripts":{"dev":"cross-env INSPECTOR_VERSION=dev webpack serve --port 8080","dist":"node scripts/updateVersionLog.js && npm run dist:min && npm run dist:max && npm run dist:module","dist:max":"webpack --config webpack.config.cjs","dist:min":"webpack --config webpack.prod.config.cjs","dist:module":"webpack --config webpack.module.config.cjs","docs":"markserv --dir docs --port 9001","preghpages":"node ./scripts/preghpages.js","ghpages":"gh-pages -d gh-pages","lint":"standardx -v | snazzy","lint:fix":"standardx --fix","precommit":"npm run lint","prepush":"node scripts/testOnlyCheck.js","prerelease":"node scripts/release.js 1.5.0 1.6.0","start":"npm run dev","start:https":"npm run dev -- --server-type https","test":"karma start ./tests/karma.conf.js","test:docs":"node scripts/docsLint.js","test:firefox":"npm test -- --browsers Firefox","test:chrome":"npm test -- --browsers Chrome","test:nobrowser":"NO_BROWSER=true npm test","test:node":"node ./node_modules/mocha/bin/mocha --ui tdd tests/node"},"repository":"aframevr/aframe","license":"MIT","files":["dist/*","docs/**/*","src/**/*","vendor/**/*"],"dependencies":{"buffer":"^6.0.3","debug":"^4.3.4","deep-assign":"^2.0.0","load-bmfont":"^1.2.3","super-animejs":"^3.1.0","three":"npm:super-three@0.173.4","three-bmfont-text":"dmarcos/three-bmfont-text#eed4878795be9b3e38cf6aec6b903f56acd1f695"},"devDependencies":{"@babel/core":"^7.24.0","babel-loader":"^9.1.3","babel-plugin-istanbul":"^6.1.1","chai":"^4.3.6","chai-shallow-deep-equal":"^1.4.0","chalk":"^1.1.3","cross-env":"^7.0.3","css-loader":"^7.1.2","eslint":"^8.45.0","eslint-config-semistandard":"^17.0.0","eslint-config-standard-jsx":"^11.0.0","gh-pages":"^6.3.0","git-rev":"^0.2.1","glob":"^8.0.3","husky":"^0.11.7","jsdom":"^24.0.0","jsdom-global":"^3.0.2","karma":"^6.4.0","karma-chai-shallow-deep-equal":"0.0.4","karma-chrome-launcher":"^3.1.1","karma-coverage":"^2.2.0","karma-env-preprocessor":"^0.1.1","karma-firefox-launcher":"^2.1.2","karma-mocha":"^2.0.1","karma-mocha-reporter":"^2.2.5","karma-sinon-chai":"^2.0.2","karma-webpack":"^5.0.0","markserv":"github:sukima/markserv#feature/fix-broken-websoketio-link","mocha":"^10.0.0","replace-in-file":"^8.3.0","shelljs":"^0.8.5","sinon":"<12.0.0","sinon-chai":"^3.7.0","snazzy":"^5.0.0","standardx":"^7.0.0","style-loader":"^4.0.0","too-wordy":"ngokevin/too-wordy","webpack":"^5.91.0","webpack-cli":"^5.1.4","webpack-dev-server":"^5.0.4","write-good":"^1.0.8"},"link":true,"standardx":{"ignore":["build/**","dist/**","examples/**/shaders/*.js","**/vendor/**"]},"keywords":["3d","aframe","cardboard","components","oculus","three","three.js","rift","vive","vr","quest","meta","web-components","webvr","webxr"],"engines":{"node":">= 4.6.0","npm":">= 2.15.9"}}');
+module.exports = /*#__PURE__*/JSON.parse('{"name":"aframe","version":"1.6.0","description":"A web framework for building virtual reality experiences.","homepage":"https://aframe.io/","main":"./dist/aframe-master.js","module":"./dist/aframe-master.module.min.js","exports":{".":{"import":"./dist/aframe-master.module.min.js","require":"./dist/aframe-master.js"}},"scripts":{"dev":"cross-env INSPECTOR_VERSION=dev webpack serve --port 8080","dist":"node scripts/updateVersionLog.js && npm run dist:min && npm run dist:max && npm run dist:module","dist:max":"webpack --config webpack.config.cjs","dist:min":"webpack --config webpack.prod.config.cjs","dist:module":"webpack --config webpack.module.config.cjs","docs":"markserv --dir docs --port 9001","preghpages":"node ./scripts/preghpages.js","ghpages":"gh-pages -d gh-pages","lint":"standardx -v | snazzy","lint:fix":"standardx --fix","precommit":"npm run lint","prepush":"node scripts/testOnlyCheck.js","prerelease":"node scripts/release.js 1.5.0 1.6.0","start":"npm run dev","start:https":"npm run dev -- --server-type https","test":"karma start ./tests/karma.conf.js","test:docs":"node scripts/docsLint.js","test:firefox":"npm test -- --browsers Firefox","test:chrome":"npm test -- --browsers Chrome","test:nobrowser":"NO_BROWSER=true npm test","test:node":"node ./node_modules/mocha/bin/mocha --ui tdd tests/node"},"repository":"aframevr/aframe","license":"MIT","files":["dist/*","docs/**/*","src/**/*","vendor/**/*"],"dependencies":{"buffer":"^6.0.3","debug":"^4.3.4","deep-assign":"^2.0.0","load-bmfont":"^1.2.3","super-animejs":"^3.1.0","three":"npm:super-three@0.173.4","three-bmfont-text":"dmarcos/three-bmfont-text#eed4878795be9b3e38cf6aec6b903f56acd1f695"},"peerDependencies":{"three":"*","bitecs":"^0.3.38"},"devDependencies":{"@babel/core":"^7.24.0","babel-loader":"^9.1.3","bitecs":"^0.3.40","babel-plugin-istanbul":"^6.1.1","chai":"^4.3.6","chai-shallow-deep-equal":"^1.4.0","chalk":"^1.1.3","cross-env":"^7.0.3","css-loader":"^7.1.2","eslint":"^8.45.0","eslint-config-semistandard":"^17.0.0","eslint-config-standard-jsx":"^11.0.0","gh-pages":"^6.3.0","git-rev":"^0.2.1","glob":"^8.0.3","husky":"^0.11.7","jsdom":"^24.0.0","jsdom-global":"^3.0.2","karma":"^6.4.0","karma-chai-shallow-deep-equal":"0.0.4","karma-chrome-launcher":"^3.1.1","karma-coverage":"^2.2.0","karma-env-preprocessor":"^0.1.1","karma-firefox-launcher":"^2.1.2","karma-mocha":"^2.0.1","karma-mocha-reporter":"^2.2.5","karma-sinon-chai":"^2.0.2","karma-webpack":"^5.0.0","markserv":"github:sukima/markserv#feature/fix-broken-websoketio-link","mocha":"^10.0.0","replace-in-file":"^8.3.0","shelljs":"^0.8.5","sinon":"<12.0.0","sinon-chai":"^3.7.0","snazzy":"^5.0.0","standardx":"^7.0.0","style-loader":"^4.0.0","too-wordy":"ngokevin/too-wordy","webpack":"^5.91.0","webpack-cli":"^5.1.4","webpack-dev-server":"^5.0.4","write-good":"^1.0.8"},"link":true,"standardx":{"ignore":["build/**","dist/**","examples/**/shaders/*.js","**/vendor/**"]},"keywords":["3d","aframe","cardboard","components","oculus","three","three.js","rift","vive","vr","quest","meta","web-components","webvr","webxr"],"engines":{"node":">= 4.6.0","npm":">= 2.15.9"}}');
 
 /***/ })
 
@@ -42707,18 +41618,6 @@ module.exports = /*#__PURE__*/JSON.parse('{"name":"aframe","version":"1.6.0","de
 /******/ 		};
 /******/ 	})();
 /******/ 	
-/******/ 	/* webpack/runtime/global */
-/******/ 	(() => {
-/******/ 		__webpack_require__.g = (function() {
-/******/ 			if (typeof globalThis === 'object') return globalThis;
-/******/ 			try {
-/******/ 				return this || new Function('return this')();
-/******/ 			} catch (e) {
-/******/ 				if (typeof window === 'object') return window;
-/******/ 			}
-/******/ 		})();
-/******/ 	})();
-/******/ 	
 /******/ 	/* webpack/runtime/hasOwnProperty shorthand */
 /******/ 	(() => {
 /******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
@@ -42768,7 +41667,7 @@ module.exports = /*#__PURE__*/JSON.parse('{"name":"aframe","version":"1.6.0","de
 /******/ 	
 /************************************************************************/
 var __webpack_exports__ = {};
-// This entry need to be wrapped in an IIFE because it need to be in strict mode.
+// This entry needs to be wrapped in an IIFE because it needs to be in strict mode.
 (() => {
 "use strict";
 /*!**********************!*\
@@ -42835,6 +41734,10 @@ __webpack_require__.r(__webpack_exports__);
 var debug = _utils_index_js__WEBPACK_IMPORTED_MODULE_16__.debug;
 var error = debug('A-Frame:error');
 var warn = debug('A-Frame:warn');
+
+// WebVR polyfill
+// Check before the polyfill runs.
+window.hasNativeWebVRImplementation = !!window.navigator.getVRDisplays || !!window.navigator.getVRDevices;
 if (window.document.currentScript && window.document.currentScript.parentNode !== window.document.head && !window.debug) {
   warn('Put the A-Frame <script> tag in the <head> of the HTML *before* the scene to ' + 'ensure everything for A-Frame is properly registered before they are used from ' + 'HTML.');
 }
@@ -42850,14 +41753,14 @@ if (_utils_index_js__WEBPACK_IMPORTED_MODULE_16__.device.isBrowserEnvironment) {
   __webpack_require__(/*! ./style/aframe.css */ "./src/style/aframe.css");
   __webpack_require__(/*! ./style/rStats.css */ "./src/style/rStats.css");
 }
-console.log('A-Frame Version: 1.6.0 (Date 2025-02-04, Commit #850c4003)');
+console.log('A-Frame Version: 1.6.0 (Date 2025-02-11, Commit #b9e4838d)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].REVISION);
 
 // Wait for ready state, unless user asynchronously initializes A-Frame.
 if (!window.AFRAME_ASYNC) {
   _core_readyState_js__WEBPACK_IMPORTED_MODULE_12__.waitForDocumentReadyState();
 }
-var src_AFRAME = globalThis.AFRAME = {
+var AFRAME = globalThis.AFRAME = {
   AComponent: _core_component_js__WEBPACK_IMPORTED_MODULE_6__.Component,
   AEntity: _core_a_entity_js__WEBPACK_IMPORTED_MODULE_5__.AEntity,
   ANode: _core_a_node_js__WEBPACK_IMPORTED_MODULE_4__.ANode,
@@ -42884,7 +41787,7 @@ var src_AFRAME = globalThis.AFRAME = {
   utils: _utils_index_js__WEBPACK_IMPORTED_MODULE_16__,
   version: _package_json__WEBPACK_IMPORTED_MODULE_17__.version
 };
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (src_AFRAME);
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (AFRAME);
 })();
 
 __webpack_exports__ = __webpack_exports__["default"];

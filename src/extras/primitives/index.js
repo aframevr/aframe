@@ -8,7 +8,7 @@ import './primitives/a-link.js';
 import './primitives/a-obj-model.js';
 import './primitives/a-sky.js';
 import './primitives/a-sound.js';
-import './primitives/a-text.js';
+// import './primitives/a-text.js';
 import './primitives/a-video.js';
 import './primitives/a-videosphere.js';
 import './primitives/meshPrimitives.js';

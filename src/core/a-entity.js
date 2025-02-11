@@ -11,6 +11,16 @@ var MULTIPLE_COMPONENT_DELIMITER = '__';
 var OBJECT3D_COMPONENTS = ['position', 'rotation', 'scale', 'visible'];
 var ONCE = {once: true};
 
+const {addEntity, removeEntity, addComponent} = require('bitecs');
+
+// NOTE this should be kept in sync with addObject3DComponent in Hubs. Redefined here to avoid needing to import hubs
+function addObject3DComponent (world, eid, obj) {
+  addComponent(window.APP.world, world.nameToComponent['object3d'], eid);
+  world.eid2obj.set(eid, obj);
+  obj.eid = eid;
+  return eid;
+}
+
 /**
  * Entity is a container object that components are plugged into to comprise everything in
  * the scene. In A-Frame, they inherently have position, rotation, and scale.
@@ -66,6 +76,11 @@ export class AEntity extends ANode {
     // ANode method.
     super.doConnectedCallback();
 
+    const eid = addEntity(window.APP.world);
+    this.eid = eid;
+    addComponent(window.APP.world, window.APP.world.nameToComponent.AEntity, eid);
+    addObject3DComponent(window.APP.world, eid, this.object3D);
+
     sceneEl = this.sceneEl;
 
     this.addToParent();
@@ -109,6 +124,9 @@ export class AEntity extends ANode {
 
     // Remove cyclic reference.
     this.object3D.el = null;
+
+    removeEntity(window.APP.world, this.object3D.eid);
+    delete this.eid;
   }
 
   getObject3D (type) {
