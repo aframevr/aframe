@@ -7,8 +7,6 @@
   <title>Post Processing Bloom Effect</title>
   <meta name="description" content="Post Processing Bloom Effect • A-Frame" />
 
-  <style src="./style.css"></style>
-
   <script type="importmap">
       {
         "imports": {
@@ -18,25 +16,23 @@
         }
       }
     </script>
+  <script src="../../js/info-message.js"></script>
   <script type="module" src="./bloom.js"></script>
 
 </head>
 
 <body>
 
-  <div id="infopanel">
-    <a href="https://aframe.io/" target="_blank" rel="noopener" style="color:#00ceff;pointer-events: auto;">A-Frame</a>
-    PostProcessing - Bloom<br />
-    Model: <a href="https://skfb.ly/owUr9" target="_blank" rel="noopener">Low-poly cartoon style car 03</a> by
-    <a href="https://sketchfab.com/arturs.vitas" target="_blank" rel="noopener">artus.vitas</a>, CC Attribution.
-  </div>
-
-  <a-scene bloom="threshold: 1.0; strength: 0.3; radius: 1;" background="color: #000000"
-    renderer="toneMapping: ACESFilmic;">
+  <a-scene 
+    bloom="threshold: 1.0; strength: 0.3; radius: 1;" 
+    background="color: #000000"
+    renderer="toneMapping: ACESFilmic;"
+    info-message="htmlSrc: #messageText">
 
     <a-assets>
       <!-- model by arturs.vitas https://skfb.ly/owUr9 -->
       <a-asset-item id="testbed" src="../../assets/models/fancy-car.glb"></a-asset-item>
+      <a-asset-item id="messageText" src="message.html"></a-asset-item>
     </a-assets>
 
     <a-entity id="rig" position="0 0 2">
