@@ -283,16 +283,34 @@ Read [*Where to Find Components*][finding] for more information.
 ## Does A-Frame support `X` library or framework?
 
 A-Frame is built on top of the DOM so most libraries and frameworks work
-including:
+including jQuery, HTMX, React, SolidJS, Vue and Svelte.
 
-- [Vue.js](https://github.com/frederic-schwarz/aframe-vuejs-3dio)
-- [Preact](https://github.com/aframevr/aframe-react#using-with-preact)
-- [D3.js](http://blockbuilder.org/search#text=aframe)
-- [React](https://github.com/aframevr/aframe-react)
-- [Angular](https://stackoverflow.com/questions/46464103/various-errors-when-attempting-to-integrate-aframe-into-angular2-project-esp-wi)
-- jQuery
-- Ember.js
-- Meteor
+Some meta frameworks like TanStack Start and SolidStart hide the `index.html`,
+so you may encounter issues adding additional script tags and template tags (for
+Networked-Aframe).
+
+We advice you to use a template for your framework that still has an `index.html`
+you can edit and render the UI to a specific div while keeping your `<a-scene>`
+directly in `index.html`. That way you can easily follow A-Frame examples.
+If you're creating a complex app with several routes and only specific routes
+render an A-Frame scene, you'll want to add a router library and render
+`<a-scene>` via a component in your framework.
+Reactive frameworks like SolidJS and latest versions of Vue and Svelte are
+well suited for this because they doesn't do unnecessary computation to check
+if something needs to be updated. You can do that also in React but be sure to wrap
+your Scene and UI components with React.memo and proper usage of useMemo/useCallback
+or better enable the React Compiler that does this for you to avoid any performance
+issues.
+
+The Vite build tool has templates for most of the popular frameworks.
+You can follow the [Vite Guide](https://vite.dev/guide/) to create a new project
+and then add the aframe `<script>` tag in the head and the `<a-scene>` tag in
+the body.
+
+For SolidJS and Networked-Aframe, you have a
+[dedicated tutorial](https://aframe.wiki/en/#!pages/solidjs.md) explaining how
+to set up a project, and using a router to render the scene for a specific
+route. For React, it should be very similar.
 
 ## Which headsets, browsers, devices, and platforms does A-Frame support?
 
