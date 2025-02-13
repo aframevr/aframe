@@ -11926,9 +11926,7 @@ var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_2__.registerCompo
    * (Re)create new material. Has side-effects of setting `this.material` and updating
    * material registration in scene.
    *
-   * @param {object} data - Material component data.
-   * @param {object} type - Material type to create.
-   * @returns {object} Material.
+   * @param {THREE.Material} material - Material to register.
    */
   setMaterial: function (material) {
     var el = this.el;
@@ -13721,7 +13719,7 @@ var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_1__.registerCompo
   /**
    * Return the most recent intersection details for a given entity, if any.
    * @param {AEntity} el
-   * @return {Object}
+   * @returns {object|null}
    */
   getIntersection: function (el) {
     var i;
@@ -13810,8 +13808,8 @@ var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_1__.registerCompo
    * Only push children defined as component attachments (e.g., setObject3D),
    * NOT actual children in the scene graph hierarchy.
    *
-   * @param  {Array<Element>} els
-   * @return {Array<THREE.Object3D>}
+   * @param {Array<Element>} els
+   * @returns {Array<THREE.Object3D>}
    */
   flattenObject3DMaps: function (els) {
     var key;
@@ -13993,7 +13991,7 @@ applyPose.tempFakePose = {
  * will always be a transient input and as of 08/2021 all transient inputs are 'generic-touchscreen'
  *
  * @param {WebGLRenderer} renderer THREE.JS Renderer
- * @param {} hitTestSourceDetails The source information either as the information for a transient hit-test or a regular hit-test
+ * @param {object} hitTestSourceDetails The source information either as the information for a transient hit-test or a regular hit-test
  */
 function HitTest(renderer, hitTestSourceDetails) {
   this.renderer = renderer;
@@ -14040,7 +14038,6 @@ HitTest.prototype.sessionStart = function sessionStart(hitTestSourceDetails) {
  *
  * @param {Object3D} object3D object to track
  * @param {Vector3} offset offset of the object from the origin that gets subtracted
- * @returns
  */
 HitTest.prototype.anchorFromLastHitTestResult = function (object3D, offset) {
   var hitTest = this.lastHitTest;
@@ -14615,6 +14612,9 @@ var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_0__.registerCompo
 /**
  * Create a modal dialog that request users permission to access the Device Motion API.
  *
+ * @param {string} denyText
+ * @param {string} allowText
+ * @param {string} dialogText
  * @param {function} onAllowClicked - click event handler
  * @param {function} onDenyClicked - click event handler
  *
@@ -16463,8 +16463,6 @@ var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_0__.registerCompo
   },
   /**
    * Removes current sound object, creates new sound object, adds to entity.
-   *
-   * @returns {object} sound
    */
   setupSound: function () {
     var el = this.el;
@@ -19126,7 +19124,7 @@ function fixUpMediaElement(mediaEl) {
  * If it is not defined, we must create and re-append a new media element <img> and
  * have the browser re-request it with `crossorigin` set.
  *
- * @param {Element} Media element (e.g., <img>, <audio>, <video>).
+ * @param {Element} mediaEl - Media element (e.g., <img>, <audio>, <video>).
  * @returns {Element} Media element to be used to listen to for loaded events.
  */
 function setCrossOrigin(mediaEl) {
@@ -19252,7 +19250,7 @@ class ACubeMap extends HTMLElement {
    * Checks for exactly six elements with [src].
    * When <img>s are used they will be prefetched.
    *
-   * @returns {Array|null} - six URLs or <img> elements if valid, else null.
+   * @returns {Array<string|Element>|undefined} - six URLs or <img> elements if valid, else undefined.
    */
   validate() {
     var elements = this.querySelectorAll('[src]');
@@ -19310,10 +19308,10 @@ var ONCE = {
  *
  * To be able to take components, the scene element inherits from the entity definition.
  *
- * @member {object} components - entity's currently initialized components.
- * @member {object} object3D - three.js object.
- * @member {array} states.
- * @member {boolean} isPlaying - false if dynamic behavior of the entity is paused.
+ * @property {object} components - entity's currently initialized components.
+ * @property {THREE.Object3D} object3D - three.js object.
+ * @property {string[]} states.
+ * @property {boolean} isPlaying - false if dynamic behavior of the entity is paused.
  */
 class AEntity extends _a_node_js__WEBPACK_IMPORTED_MODULE_1__.ANode {
   constructor() {
@@ -19551,7 +19549,7 @@ class AEntity extends _a_node_js__WEBPACK_IMPORTED_MODULE_1__.ANode {
   }
 
   /**
-   * @returns {array} Direct children that are entities.
+   * @returns {Array<Element>} Direct children that are entities.
    */
   getChildEntities() {
     var children = this.children;
@@ -19685,7 +19683,7 @@ class AEntity extends _a_node_js__WEBPACK_IMPORTED_MODULE_1__.ANode {
    * Build data using initial components, defined attributes, mixins, and defaults.
    * Update default components before the rest.
    *
-   * @member {function} getExtraComponents - Can be implemented to include component data
+   * @property {function} getExtraComponents - Can be implemented to include component data
    *   from other sources (e.g., implemented by primitives).
    */
   updateComponents() {
@@ -19944,9 +19942,9 @@ class AEntity extends _a_node_js__WEBPACK_IMPORTED_MODULE_1__.ANode {
    * 4. Set a value for a single-property component, mixin, or normal HTML attribute.
    *
    * @param {string} attrName - Component or attribute name.
-   * @param {*} arg1 - Can be a value, property name, CSS-style property string, or
+   * @param {any} arg1 - Can be a value, property name, CSS-style property string, or
    *   object of properties.
-   * @param {*|bool} arg2 - If arg1 is a property name, this should be a value. Otherwise,
+   * @param {any} arg2 - If arg1 is a property name, this should be a value. Otherwise,
    *   it is a boolean indicating whether to clobber previous values (defaults to false).
    */
   setAttribute(attrName, arg1, arg2) {
@@ -20003,7 +20001,7 @@ class AEntity extends _a_node_js__WEBPACK_IMPORTED_MODULE_1__.ANode {
   /**
    * Reflect component data in the DOM (as seen from the browser DOM Inspector).
    *
-   * @param {bool} recursive - Also flushToDOM on the children.
+   * @param {boolean} recursive - Also flushToDOM on the children.
    **/
   flushToDOM(recursive) {
     var components = this.components;
@@ -20145,7 +20143,7 @@ function checkComponentDefined(el, name) {
  * Check if any mixins contains a component.
  *
  * @param {string} name - Component name.
- * @param {array} mixinEls - Array of <a-mixin>s.
+ * @param {Array<Element>} mixinEls - Array of <a-mixin>s.
  */
 function isComponentMixedIn(name, mixinEls) {
   var i;
@@ -20224,9 +20222,9 @@ __webpack_require__.r(__webpack_exports__);
 var MULTIPLE_COMPONENT_DELIMITER = '__';
 
 /**
- * @member {object} componentCache - Cache of pre-parsed values. An object where the keys
+ * @property {object} componentCache - Cache of pre-parsed values. An object where the keys
  *         are component names and the values are already parsed by the component.
- * @member {object} rawAttributeCache - Cache of the raw attribute values.
+ * @property {object} rawAttributeCache - Cache of the raw attribute values.
  */
 class AMixin extends _a_node_js__WEBPACK_IMPORTED_MODULE_0__.ANode {
   constructor() {
@@ -20737,9 +20735,10 @@ var attrValueProxyHandler = {
  * by adding, removing, or updating components. Entities do not share instances
  * of components.
  *
- * @member {object} el - Reference to the entity element.
- * @member {string} attrValue - Value of the corresponding HTML attribute.
- * @member {string} id - Optional id for differentiating multiple instances on the same entity.
+ * @constructor
+ * @param {object} el - Reference to the entity element.
+ * @param {string} attrValue - Value of the corresponding HTML attribute.
+ * @param {string} id - Optional id for differentiating multiple instances on the same entity.
  */
 var Component = function (el, attrValue, id) {
   var self = this;
@@ -20952,7 +20951,7 @@ Component.prototype = {
   },
   /**
    * @param {string|object} attrValue - Passed argument from setAttribute.
-   * @param {bool} clobber - Whether or not to overwrite previous data by the attrValue.
+   * @param {boolean} clobber - Whether or not to overwrite previous data by the attrValue.
    */
   updateData: function (attrValue, clobber) {
     // Single property (including object based single property)
@@ -21372,7 +21371,8 @@ function hasBehavior(component) {
  * Wrapper for defined pause method.
  * Pause component by removing tick behavior and calling user's pause method.
  *
- * @param pauseMethod {function}
+ * @param {function} pauseMethod
+ * @returns {function}
  */
 function wrapPause(pauseMethod) {
   return function pause() {
@@ -21395,7 +21395,8 @@ function wrapPause(pauseMethod) {
  * Wrapper for defined play method.
  * Play component by adding tick behavior and calling user's play method.
  *
- * @param playMethod {function}
+ * @param {function} playMethod
+ * @returns {function}
  */
 function wrapPlay(playMethod) {
   return function play() {
@@ -21568,12 +21569,11 @@ registerPropertyType('vec4', {
  * `schema.process` will set the property `parse` and `stringify`.
  *
  * @param {string} type - Type name.
- * @param [defaultValue=null] -
- *   Default value to use if component does not define default value.
+ * @param {any} [defaultValue=null] - Default value to use if component does not define default value.
  * @param {function} [parse=defaultParse] - Parse string function.
  * @param {function} [stringify=defaultStringify] - Stringify to DOM function.
  * @param {function} [equals=defaultEquals] - Equality comparator.
- * @param {boolean} [cachable=false] - Whether or not the parsed value of a property can be cached.
+ * @param {boolean} [cacheable=false] - Whether or not the parsed value of a property can be cached.
  */
 function registerPropertyType(type, defaultValue, parse, stringify, equals, cacheable) {
   if (type in propertyTypes) {
@@ -21941,15 +21941,15 @@ var isWebXRAvailable = _utils_index_js__WEBPACK_IMPORTED_MODULE_7__.device.isWeb
 /**
  * Scene element, holds all entities.
  *
- * @member {array} behaviors - Component instances that have registered themselves to be
+ * @member {Array} behaviors - Component instances that have registered themselves to be
            updated on every tick.
  * @member {object} camera - three.js Camera object.
  * @member {object} canvas
- * @member {bool} isScene - Differentiates as scene entity as opposed to other entities.
- * @member {bool} isMobile - Whether browser is mobile (via UA detection).
+ * @member {boolean} isScene - Differentiates as scene entity as opposed to other entities.
+ * @member {boolean} isMobile - Whether browser is mobile (via UA detection).
  * @member {object} object3D - Root three.js Scene object.
  * @member {object} renderer
- * @member {bool} renderStarted
+ * @member {boolean} renderStarted
  * @member {object} systems - Registered instantiated systems.
  * @member {number} time
  */
@@ -22179,7 +22179,7 @@ class AScene extends _a_entity_js__WEBPACK_IMPORTED_MODULE_8__.AEntity {
    * Call `requestFullscreen` on desktop.
    * Handle events, states, fullscreen styles.
    *
-   * @param {bool?} useAR - if true, try immersive-ar mode
+   * @param {?boolean} useAR - if true, try immersive-ar mode
    * @returns {Promise}
    */
   enterVR(useAR, useOfferSession) {
@@ -22635,7 +22635,7 @@ class AScene extends _a_entity_js__WEBPACK_IMPORTED_MODULE_8__.AEntity {
  * constraints into account.
  *
  * @param {object} components - The components to order
- * @param {array} array - Optional array to use as output
+ * @param {Array} array - Optional array to use as output
  */
 function determineComponentBehaviorOrder(components, array) {
   var graph = {};
@@ -22737,10 +22737,11 @@ customElements.define('a-scene', AScene);
  * The parent size will be returned in that case.
  * the returned size will be constrained to the maxSize maintaining aspect ratio.
  *
- * @param {object} canvasEl - the canvas element
+ * @param {Element} canvasEl - the canvas element
  * @param {boolean} embedded - Is the scene embedded?
- * @param {object} max - Max size parameters
+ * @param {object} maxSize - Max size parameters
  * @param {boolean} isVR - If in VR
+ * @returns {number} Max size
  */
 function getCanvasSize(canvasEl, embedded, maxSize, isVR) {
   if (!canvasEl.parentElement) {
@@ -23617,8 +23618,9 @@ var systems = {}; // Keep track of registered systems.
  * and some pieces are missing from the Component facilities (e.g., attribute caching,
  * setAttribute behavior).
  *
- * @member {string} name - Name that system is registered under.
- * @member {Element} sceneEl - Handle to the scene element where system applies to.
+ * @constructor
+ * @param {Element} sceneEl - Handle to the scene element where system applies to.
+ * @property {string} name - Name that system is registered under.
  */
 var System = function (sceneEl) {
   var component = _component_js__WEBPACK_IMPORTED_MODULE_1__ && _component_js__WEBPACK_IMPORTED_MODULE_1__.components[this.name];
@@ -23713,7 +23715,6 @@ System.prototype = {
  *
  * @param {string} name - Component name.
  * @param {object} definition - Component property and methods.
- * @returns {object} Component.
  */
 function registerSystem(name, definition) {
   var i;
@@ -26147,7 +26148,6 @@ var Shader = (0,_core_shader_js__WEBPACK_IMPORTED_MODULE_1__.registerShader)('st
    * Updating existing material.
    *
    * @param {object} data - Material component data.
-   * @returns {object} Material.
    */
   updateMaterial: function (data) {
     var key;
@@ -26529,7 +26529,7 @@ var System = (0,_core_system_js__WEBPACK_IMPORTED_MODULE_1__.registerSystem)('ge
   /**
    * Attempt to retrieve from cache.
    *
-   * @returns {Object|null} A geometry if it exists, else null.
+   * @returns {object|null} A geometry if it exists, else null.
    */
   getOrCreateGeometry: function (data) {
     var cache = this.cache;
@@ -26888,7 +26888,7 @@ var System = (0,_core_system_js__WEBPACK_IMPORTED_MODULE_1__.registerSystem)('ma
   /**
    * Loads and creates a texture for a given `src`.
    *
-   * @param {string, or element} src - URL or element
+   * @param {string|Element} src - URL or element
    * @param {object} data - Relevant texture properties
    * @param {function} cb - Callback to pass texture to
    */
@@ -26902,7 +26902,7 @@ var System = (0,_core_system_js__WEBPACK_IMPORTED_MODULE_1__.registerSystem)('ma
   /**
    * Determine whether `src` is an image or video. Then try to load the asset, then call back.
    *
-   * @param {string, or element} src - URL or element.
+   * @param {string|Element} src - URL or element.
    * @param {function} cb - Callback to pass texture source to.
    */
   loadTextureSource: function (src, cb) {
@@ -26937,7 +26937,7 @@ var System = (0,_core_system_js__WEBPACK_IMPORTED_MODULE_1__.registerSystem)('ma
   /**
    * Load the six individual sides and construct a cube texture, then call back.
    *
-   * @param {Array} srcs - Array of six texture URLs or elements.
+   * @param {Array<string|Element>} srcs - Array of six texture URLs or elements.
    * @param {function} cb - Callback to pass cube texture to.
    */
   loadCubeMapTexture: function (srcs, cb) {
@@ -26966,7 +26966,7 @@ var System = (0,_core_system_js__WEBPACK_IMPORTED_MODULE_1__.registerSystem)('ma
   /**
    * High-level function for loading image textures (THREE.Texture).
    *
-   * @param {Element|string} src - Texture source.
+   * @param {string|Element} src - Texture source.
    * @param {function} cb - Callback to pass texture to.
    */
   loadImage: function (src, cb) {
@@ -26983,7 +26983,7 @@ var System = (0,_core_system_js__WEBPACK_IMPORTED_MODULE_1__.registerSystem)('ma
    * Note that creating a video texture is synchronous unlike loading an image texture.
    * Made asynchronous to be consistent with image textures.
    *
-   * @param {Element|string} src - Texture source.
+   * @param {string|Element} src - Texture source.
    * @param {function} cb - Callback to pass texture to.
    */
   loadVideo: function (src, cb) {
@@ -27698,7 +27698,7 @@ var whitespaceRegex = /\s+/g;
  * Parses coordinates from an "x y z" string.
  * Example: "3 10 -5" to {x: 3, y: 10, z: -5}.
  *
- * @param {string} val - An "x y z" string.
+ * @param {string} value - An "x y z" string.
  * @param {string} defaultVec - fallback value.
  * @param {object} target - Optional target object for coordinates.
  * @returns {object} An object with keys [x, y, z].
@@ -27788,7 +27788,8 @@ function equals(a, b) {
 }
 
 /**
- * @returns {bool}
+ * @param {string} value
+ * @returns {boolean}
  */
 function isCoordinates(value) {
   return regex.test(value);
@@ -27873,9 +27874,9 @@ function formatArgs(args) {
 /**
  * Returns the type of the namespace (e.g., `error`, `warn`).
  *
- * @param {String} namespace
+ * @param {string} namespace
  *   The debug logger's namespace (e.g., `components:geometry:warn`).
- * @returns {String} The type of the namespace (e.g., `warn`).
+ * @returns {string} The type of the namespace (e.g., `warn`).
  * @api private
  */
 function getDebugNamespaceType(namespace) {
@@ -27886,9 +27887,9 @@ function getDebugNamespaceType(namespace) {
 /**
  * Returns the color of the namespace (e.g., `orange`).
  *
- * @param {String} namespace
+ * @param {string} namespace
  *   The debug logger's namespace (e.g., `components:geometry:warn`).
- * @returns {String} The color of the namespace (e.g., `orange`).
+ * @returns {string} The color of the namespace (e.g., `orange`).
  * @api private
  */
 function getDebugNamespaceColor(namespace) {
@@ -28025,7 +28026,7 @@ function checkVRSupport() {
 
 /**
  * Checks if browser is mobile and not stand-alone dedicated vr device.
- * @return {Boolean} True if mobile browser detected.
+ * @returns {boolean} True if mobile browser detected.
  */
 var isMobile = function () {
   var _isMobile = false;
@@ -28116,7 +28117,7 @@ function isR7() {
 
 /**
  * Checks mobile device orientation.
- * @return {Boolean} True if landscape orientation.
+ * @returns {boolean} True if landscape orientation.
  */
 function isLandscape() {
   var orientation = window.orientation;
@@ -28165,7 +28166,7 @@ __webpack_require__.r(__webpack_exports__);
  *
  * @param {string} str - e.g., `material.opacity`.
  * @param {string} delimiter - e.g., `.`.
- * @returns {array} e.g., `['material', 'opacity']`.
+ * @returns {string[]} e.g., `['material', 'opacity']`.
  */
 function getComponentPropertyPath(str, delimiter) {
   delimiter = delimiter || '.';
@@ -28431,7 +28432,7 @@ function throttleTick(functionToThrottle, minimumInterval, optionalContext) {
 /**
  * Returns debounce function that gets called only once after a set of repeated calls.
  *
- * @param {function} functionToDebounce
+ * @param {function} func - function to debounce
  * @param {number} wait - Time to wait for repeated function calls (milliseconds).
  * @param {boolean} immediate - Calls the function immediately regardless of if it should be waiting.
  * @returns {function} Debounced function.
@@ -28586,7 +28587,7 @@ var diff = function () {
 /**
  * Returns whether we should capture this keyboard event for keyboard shortcuts.
  * @param {Event} event Event object.
- * @returns {Boolean} Whether the key event should be captured.
+ * @returns {boolean} Whether the key event should be captured.
  */
 function shouldCaptureKeyEvent(event) {
   if (event.metaKey) {
@@ -28598,9 +28599,9 @@ function shouldCaptureKeyEvent(event) {
 /**
  * Splits a string into an array based on a delimiter.
  *
- * @param   {string=} [str='']        Source string
- * @param   {string=} [delimiter=' '] Delimiter to use
- * @returns {array}                   Array of delimited strings
+ * @param   {string} [str='']        Source string
+ * @param   {string} [delimiter=' '] Delimiter to use
+ * @returns {string[]}               Array of delimited strings
  */
 function splitString(str, delimiter) {
   if (typeof delimiter === 'undefined') {
@@ -28616,9 +28617,9 @@ function splitString(str, delimiter) {
 /**
  * Extracts data from the element given an object that contains expected keys.
  *
- * @param {Element} Source element.
- * @param {Object} [defaults={}] Object of default key-value pairs.
- * @returns {Object}
+ * @param {Element} el - Source element.
+ * @param {object} [defaults={}] - Object of default key-value pairs.
+ * @returns {object}
  */
 function getElData(el, defaults) {
   defaults = defaults || {};
@@ -28634,8 +28635,8 @@ function getElData(el, defaults) {
 
 /**
  * Retrieves querystring value.
- * @param  {String} name Name of querystring key.
- * @return {String}      Value
+ * @param {string} name Name of querystring key.
+ * @returns {string} Value
  */
 function getUrlParameter(name) {
   // eslint-disable-next-line no-useless-escape
@@ -28733,6 +28734,7 @@ var COLOR_MAPS = new Set(['emissiveMap', 'envMap', 'map', 'specularMap']);
 /**
  * Set texture properties such as repeat and offset.
  *
+ * @param {THREE.Texture} texture - a Texture instance.
  * @param {object} data - With keys like `repeat`.
  */
 function setTextureProperties(texture, data) {
@@ -28783,6 +28785,8 @@ function setTextureProperties(texture, data) {
  * Update `material` texture property (usually but not always `map`)
  * from `data` property (usually but not always `src`).
  *
+ * @param {string} materialName
+ * @param {string} dataName
  * @param {object} shader - A-Frame shader instance.
  * @param {object} data
  */
@@ -29070,7 +29074,7 @@ __webpack_require__.r(__webpack_exports__);
  * @param {THREE.Vector3} positionOnPlane any point on the plane.
  * @param {THREE.Vector3} planeNormal the normal of the plane
  * @param {THREE.Vector3} pointToTest point to test
- * @returns Number
+ * @returns {number}
  */
 function distanceOfPointFromPlane(positionOnPlane, planeNormal, pointToTest) {
   // the d value in the plane equation a*x + b*y + c*z=d
@@ -29086,7 +29090,7 @@ function distanceOfPointFromPlane(positionOnPlane, planeNormal, pointToTest) {
  * @param {THREE.Vector3} planeNormal the normal of the plane
  * @param {THREE.Vector3} pointToTest point to test
  * @param {THREE.Vector3} resultPoint where to store the result.
- * @returns
+ * @returns {THREE.Vector3}
  */
 function nearestPointInPlane(positionOnPlane, planeNormal, pointToTest, resultPoint) {
   var t = distanceOfPointFromPlane(positionOnPlane, planeNormal, pointToTest);
@@ -29258,9 +29262,9 @@ var warn = (0,_debug_js__WEBPACK_IMPORTED_MODULE_0__["default"])('utils:src-load
  *
  * `src` will be passed into the callback
  *
- * @params {string|Element} src - URL or media element.
- * @params {function} isImageCb - callback if texture is an image.
- * @params {function} isVideoCb - callback if texture is a video.
+ * @param {string|Element} src - URL or media element.
+ * @param {function} isImageCb - callback if texture is an image.
+ * @param {function} isVideoCb - callback if texture is a video.
  */
 function validateSrc(src, isImageCb, isVideoCb) {
   checkIsImage(src, function isAnImageUrl(isImage) {
@@ -29277,8 +29281,8 @@ function validateSrc(src, isImageCb, isVideoCb) {
  *
  * @param {string} src - A selector, image URL or comma-separated image URLs. Image URLS
           must be wrapped by `url()`.
- * @param {*} isCubemapCb - callback if src is a cubemap.
- * @param {*} isEquirectCb - callback is src is a singular equirectangular image.
+ * @param {function} isCubemapCb - callback if src is a cubemap.
+ * @param {function} isEquirectCb - callback if src is a singular equirectangular image.
  */
 function validateEnvMapSrc(src, isCubemapCb, isEquirectCb) {
   var el;
@@ -29356,7 +29360,7 @@ function validateCubemapSrc(src, cb) {
 /**
  * Parses src from `url(src)`.
  * @param  {string} src - String to parse.
- * @return {string} The parsed src, if parseable.
+ * @returns {string} The parsed src, if parseable.
  */
 function parseUrl(src) {
   var parsedSrc = src.match(/url\((.+)\)/);
@@ -29418,10 +29422,10 @@ function checkIsImageFallback(src, onResult) {
 /**
  * Query and validate a query selector,
  *
- * @param  {string} selector - DOM selector.
- * @return {object|null|undefined} Selected DOM element if exists.
-           null if query yields no results.
-           undefined if `selector` is not a valid selector.
+ * @param {string} selector - DOM selector.
+ * @returns {object|null|undefined} Selected DOM element if exists.
+ *          null if query yields no results.
+ *          undefined if `selector` is not a valid selector.
  */
 function validateAndGetQuerySelector(selector) {
   try {
@@ -29496,7 +29500,7 @@ function stringify(data) {
  * Converts string from hyphen to camelCase.
  *
  * @param {string} str - String to camelCase.
- * @return {string} CamelCased string.
+ * @returns {string} CamelCased string.
  */
 function toCamelCase(str) {
   return str.replace(DASH_REGEX, upperCase);
@@ -29651,6 +29655,7 @@ function checkControllerPresentAndSetup(component, idPrefix, queryObject) {
 /**
  *
  * @param {object} component - Tracked controls component.
+ * @returns {boolean} True if a controller is present.
  */
 function isControllerPresentWebXR(component, id, queryObject) {
   var controllers;
@@ -29712,7 +29717,7 @@ function findMatchingControllerWebXR(controllers, idPrefix, handedness, index, i
  * Emit specific `moved` event(s) if axes changed based on original axismove event.
  *
  * @param {object} component - Controller component in use.
- * @param {array} axesMapping - For example `{thumbstick: [0, 1]}`.
+ * @param {object} axesMapping - For example `{thumbstick: [0, 1]}`.
  * @param {object} evt - Event to process.
  */
 function emitIfAxesChanged(component, axesMapping, evt) {
@@ -42850,7 +42855,7 @@ if (_utils_index_js__WEBPACK_IMPORTED_MODULE_16__.device.isBrowserEnvironment) {
   __webpack_require__(/*! ./style/aframe.css */ "./src/style/aframe.css");
   __webpack_require__(/*! ./style/rStats.css */ "./src/style/rStats.css");
 }
-console.log('A-Frame Version: 1.6.0 (Date 2025-02-04, Commit #850c4003)');
+console.log('A-Frame Version: 1.6.0 (Date 2025-02-13, Commit #9cf60b3a)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].REVISION);
 
 // Wait for ready state, unless user asynchronously initializes A-Frame.
