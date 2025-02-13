@@ -696,7 +696,7 @@ export class AScene extends AEntity {
  * constraints into account.
  *
  * @param {object} components - The components to order
- * @param {array} array - Optional array to use as output
+ * @param {Array} array - Optional array to use as output
  */
 export function determineComponentBehaviorOrder (components, array) {
   var graph = {};
@@ -807,10 +807,11 @@ customElements.define('a-scene', AScene);
  * The parent size will be returned in that case.
  * the returned size will be constrained to the maxSize maintaining aspect ratio.
  *
- * @param {object} canvasEl - the canvas element
+ * @param {Element} canvasEl - the canvas element
  * @param {boolean} embedded - Is the scene embedded?
- * @param {object} max - Max size parameters
+ * @param {object} maxSize - Max size parameters
  * @param {boolean} isVR - If in VR
+ * @returns {number} Max size
  */
 function getCanvasSize (canvasEl, embedded, maxSize, isVR) {
   if (!canvasEl.parentElement) { return {height: 0, width: 0}; }

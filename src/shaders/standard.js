@@ -76,7 +76,6 @@ export var Shader = registerShader('standard', {
    * Updating existing material.
    *
    * @param {object} data - Material component data.
-   * @returns {object} Material.
    */
   updateMaterial: function (data) {
     var key;

@@ -47,7 +47,7 @@ applyPose.tempFakePose = {
  * will always be a transient input and as of 08/2021 all transient inputs are 'generic-touchscreen'
  *
  * @param {WebGLRenderer} renderer THREE.JS Renderer
- * @param {} hitTestSourceDetails The source information either as the information for a transient hit-test or a regular hit-test
+ * @param {object} hitTestSourceDetails The source information either as the information for a transient hit-test or a regular hit-test
  */
 function HitTest (renderer, hitTestSourceDetails) {
   this.renderer = renderer;
@@ -101,7 +101,6 @@ HitTest.prototype.sessionStart = function sessionStart (hitTestSourceDetails) {
  *
  * @param {Object3D} object3D object to track
  * @param {Vector3} offset offset of the object from the origin that gets subtracted
- * @returns
  */
 HitTest.prototype.anchorFromLastHitTestResult = function (object3D, offset) {
   var hitTest = this.lastHitTest;

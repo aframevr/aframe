@@ -38,6 +38,7 @@ export function checkControllerPresentAndSetup (component, idPrefix, queryObject
 /**
  *
  * @param {object} component - Tracked controls component.
+ * @returns {boolean} True if a controller is present.
  */
 export function isControllerPresentWebXR (component, id, queryObject) {
   var controllers;
@@ -91,7 +92,7 @@ export function findMatchingControllerWebXR (controllers, idPrefix, handedness, 
  * Emit specific `moved` event(s) if axes changed based on original axismove event.
  *
  * @param {object} component - Controller component in use.
- * @param {array} axesMapping - For example `{thumbstick: [0, 1]}`.
+ * @param {object} axesMapping - For example `{thumbstick: [0, 1]}`.
  * @param {object} evt - Event to process.
  */
 export function emitIfAxesChanged (component, axesMapping, evt) {

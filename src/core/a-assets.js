@@ -205,7 +205,7 @@ function fixUpMediaElement (mediaEl) {
  * If it is not defined, we must create and re-append a new media element <img> and
  * have the browser re-request it with `crossorigin` set.
  *
- * @param {Element} Media element (e.g., <img>, <audio>, <video>).
+ * @param {Element} mediaEl - Media element (e.g., <img>, <audio>, <video>).
  * @returns {Element} Media element to be used to listen to for loaded events.
  */
 function setCrossOrigin (mediaEl) {

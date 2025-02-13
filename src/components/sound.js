@@ -143,8 +143,6 @@ export var Component = registerComponent('sound', {
 
   /**
    * Removes current sound object, creates new sound object, adds to entity.
-   *
-   * @returns {object} sound
    */
   setupSound: function () {
     var el = this.el;

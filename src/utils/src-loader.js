@@ -10,9 +10,9 @@ var warn = debug('utils:src-loader:warn');
  *
  * `src` will be passed into the callback
  *
- * @params {string|Element} src - URL or media element.
- * @params {function} isImageCb - callback if texture is an image.
- * @params {function} isVideoCb - callback if texture is a video.
+ * @param {string|Element} src - URL or media element.
+ * @param {function} isImageCb - callback if texture is an image.
+ * @param {function} isVideoCb - callback if texture is a video.
  */
 export function validateSrc (src, isImageCb, isVideoCb) {
   checkIsImage(src, function isAnImageUrl (isImage) {
@@ -108,7 +108,7 @@ export function validateCubemapSrc (src, cb) {
 /**
  * Parses src from `url(src)`.
  * @param  {string} src - String to parse.
- * @return {string} The parsed src, if parseable.
+ * @returns {string} The parsed src, if parseable.
  */
 export function parseUrl (src) {
   var parsedSrc = src.match(/url\((.+)\)/);
@@ -166,10 +166,10 @@ function checkIsImageFallback (src, onResult) {
 /**
  * Query and validate a query selector,
  *
- * @param  {string} selector - DOM selector.
- * @return {object|null|undefined} Selected DOM element if exists.
-           null if query yields no results.
-           undefined if `selector` is not a valid selector.
+ * @param {string} selector - DOM selector.
+ * @returns {object|null|undefined} Selected DOM element if exists.
+ *          null if query yields no results.
+ *          undefined if `selector` is not a valid selector.
  */
 function validateAndGetQuerySelector (selector) {
   try {

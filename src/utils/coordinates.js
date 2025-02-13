@@ -15,7 +15,7 @@ var whitespaceRegex = /\s+/g;
  * Parses coordinates from an "x y z" string.
  * Example: "3 10 -5" to {x: 3, y: 10, z: -5}.
  *
- * @param {string} val - An "x y z" string.
+ * @param {string} value - An "x y z" string.
  * @param {string} defaultVec - fallback value.
  * @param {object} target - Optional target object for coordinates.
  * @returns {object} An object with keys [x, y, z].

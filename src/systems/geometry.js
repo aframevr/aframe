@@ -26,7 +26,7 @@ export var System = registerSystem('geometry', {
   /**
    * Attempt to retrieve from cache.
    *
-   * @returns {Object|null} A geometry if it exists, else null.
+   * @returns {object|null} A geometry if it exists, else null.
    */
   getOrCreateGeometry: function (data) {
     var cache = this.cache;
