@@ -29,8 +29,8 @@ export function validateSrc (src, isImageCb, isVideoCb) {
  *
  * @param {string} src - A selector, image URL or comma-separated image URLs. Image URLS
           must be wrapped by `url()`.
- * @param {*} isCubemapCb - callback if src is a cubemap.
- * @param {*} isEquirectCb - callback is src is a singular equirectangular image.
+ * @param {function} isCubemapCb - callback if src is a cubemap.
+ * @param {function} isEquirectCb - callback if src is a singular equirectangular image.
  */
 export function validateEnvMapSrc (src, isCubemapCb, isEquirectCb) {
   var el;

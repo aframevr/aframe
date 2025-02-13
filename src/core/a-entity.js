@@ -621,9 +621,9 @@ export class AEntity extends ANode {
    * 4. Set a value for a single-property component, mixin, or normal HTML attribute.
    *
    * @param {string} attrName - Component or attribute name.
-   * @param {*} arg1 - Can be a value, property name, CSS-style property string, or
+   * @param {any} arg1 - Can be a value, property name, CSS-style property string, or
    *   object of properties.
-   * @param {*|bool} arg2 - If arg1 is a property name, this should be a value. Otherwise,
+   * @param {any} arg2 - If arg1 is a property name, this should be a value. Otherwise,
    *   it is a boolean indicating whether to clobber previous values (defaults to false).
    */
   setAttribute (attrName, arg1, arg2) {
@@ -681,7 +681,7 @@ export class AEntity extends ANode {
   /**
    * Reflect component data in the DOM (as seen from the browser DOM Inspector).
    *
-   * @param {bool} recursive - Also flushToDOM on the children.
+   * @param {boolean} recursive - Also flushToDOM on the children.
    **/
   flushToDOM (recursive) {
     var components = this.components;

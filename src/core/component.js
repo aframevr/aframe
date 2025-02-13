@@ -269,7 +269,7 @@ Component.prototype = {
 
   /**
    * @param {string|object} attrValue - Passed argument from setAttribute.
-   * @param {bool} clobber - Whether or not to overwrite previous data by the attrValue.
+   * @param {boolean} clobber - Whether or not to overwrite previous data by the attrValue.
    */
   updateData: function (attrValue, clobber) {
     // Single property (including object based single property)

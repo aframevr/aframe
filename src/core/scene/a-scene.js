@@ -24,15 +24,15 @@ var isWebXRAvailable = utils.device.isWebXRAvailable;
 /**
  * Scene element, holds all entities.
  *
- * @member {array} behaviors - Component instances that have registered themselves to be
+ * @member {Array} behaviors - Component instances that have registered themselves to be
            updated on every tick.
  * @member {object} camera - three.js Camera object.
  * @member {object} canvas
- * @member {bool} isScene - Differentiates as scene entity as opposed to other entities.
- * @member {bool} isMobile - Whether browser is mobile (via UA detection).
+ * @member {boolean} isScene - Differentiates as scene entity as opposed to other entities.
+ * @member {boolean} isMobile - Whether browser is mobile (via UA detection).
  * @member {object} object3D - Root three.js Scene object.
  * @member {object} renderer
- * @member {bool} renderStarted
+ * @member {boolean} renderStarted
  * @member {object} systems - Registered instantiated systems.
  * @member {number} time
  */
@@ -253,7 +253,7 @@ export class AScene extends AEntity {
    * Call `requestFullscreen` on desktop.
    * Handle events, states, fullscreen styles.
    *
-   * @param {bool?} useAR - if true, try immersive-ar mode
+   * @param {?boolean} useAR - if true, try immersive-ar mode
    * @returns {Promise}
    */
   enterVR (useAR, useOfferSession) {

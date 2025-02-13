@@ -92,7 +92,8 @@ export function equals (a, b) {
 }
 
 /**
- * @returns {bool}
+ * @param {string} value
+ * @returns {boolean}
  */
 export function isCoordinates (value) {
   return regex.test(value);

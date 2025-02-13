@@ -111,7 +111,7 @@ export var System = registerSystem('material', {
   /**
    * High-level function for loading image textures (THREE.Texture).
    *
-   * @param {Element|string} src - Texture source.
+   * @param {string|Element} src - Texture source.
    * @param {function} cb - Callback to pass texture to.
    */
   loadImage: function (src, cb) {
@@ -130,7 +130,7 @@ export var System = registerSystem('material', {
    * Note that creating a video texture is synchronous unlike loading an image texture.
    * Made asynchronous to be consistent with image textures.
    *
-   * @param {Element|string} src - Texture source.
+   * @param {string|Element} src - Texture source.
    * @param {function} cb - Callback to pass texture to.
    */
   loadVideo: function (src, cb) {
