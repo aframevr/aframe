@@ -17,10 +17,10 @@ var ONCE = {once: true};
  *
  * To be able to take components, the scene element inherits from the entity definition.
  *
- * @member {object} components - entity's currently initialized components.
- * @member {object} object3D - three.js object.
- * @member {array} states.
- * @member {boolean} isPlaying - false if dynamic behavior of the entity is paused.
+ * @property {object} components - entity's currently initialized components.
+ * @property {THREE.Object3D} object3D - three.js object.
+ * @property {string[]} states.
+ * @property {boolean} isPlaying - false if dynamic behavior of the entity is paused.
  */
 export class AEntity extends ANode {
   constructor () {
@@ -247,7 +247,7 @@ export class AEntity extends ANode {
   }
 
   /**
-   * @returns {array} Direct children that are entities.
+   * @returns {Array<Element>} Direct children that are entities.
    */
   getChildEntities () {
     var children = this.children;
@@ -381,7 +381,7 @@ export class AEntity extends ANode {
    * Build data using initial components, defined attributes, mixins, and defaults.
    * Update default components before the rest.
    *
-   * @member {function} getExtraComponents - Can be implemented to include component data
+   * @property {function} getExtraComponents - Can be implemented to include component data
    *   from other sources (e.g., implemented by primitives).
    */
   updateComponents () {
@@ -621,9 +621,9 @@ export class AEntity extends ANode {
    * 4. Set a value for a single-property component, mixin, or normal HTML attribute.
    *
    * @param {string} attrName - Component or attribute name.
-   * @param {*} arg1 - Can be a value, property name, CSS-style property string, or
+   * @param {any} arg1 - Can be a value, property name, CSS-style property string, or
    *   object of properties.
-   * @param {*|bool} arg2 - If arg1 is a property name, this should be a value. Otherwise,
+   * @param {any} arg2 - If arg1 is a property name, this should be a value. Otherwise,
    *   it is a boolean indicating whether to clobber previous values (defaults to false).
    */
   setAttribute (attrName, arg1, arg2) {
@@ -681,7 +681,7 @@ export class AEntity extends ANode {
   /**
    * Reflect component data in the DOM (as seen from the browser DOM Inspector).
    *
-   * @param {bool} recursive - Also flushToDOM on the children.
+   * @param {boolean} recursive - Also flushToDOM on the children.
    **/
   flushToDOM (recursive) {
     var components = this.components;
@@ -804,7 +804,7 @@ function checkComponentDefined (el, name) {
  * Check if any mixins contains a component.
  *
  * @param {string} name - Component name.
- * @param {array} mixinEls - Array of <a-mixin>s.
+ * @param {Array<Element>} mixinEls - Array of <a-mixin>s.
  */
 function isComponentMixedIn (name, mixinEls) {
   var i;

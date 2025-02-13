@@ -163,9 +163,7 @@ export var Component = registerComponent('material', {
    * (Re)create new material. Has side-effects of setting `this.material` and updating
    * material registration in scene.
    *
-   * @param {object} data - Material component data.
-   * @param {object} type - Material type to create.
-   * @returns {object} Material.
+   * @param {THREE.Material} material - Material to register.
    */
   setMaterial: function (material) {
     var el = this.el;

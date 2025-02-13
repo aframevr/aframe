@@ -7,9 +7,9 @@ import * as styleParser from '../utils/styleParser.js';
 var MULTIPLE_COMPONENT_DELIMITER = '__';
 
 /**
- * @member {object} componentCache - Cache of pre-parsed values. An object where the keys
+ * @property {object} componentCache - Cache of pre-parsed values. An object where the keys
  *         are component names and the values are already parsed by the component.
- * @member {object} rawAttributeCache - Cache of the raw attribute values.
+ * @property {object} rawAttributeCache - Cache of the raw attribute values.
  */
 class AMixin extends ANode {
   constructor () {

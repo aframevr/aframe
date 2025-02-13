@@ -28,7 +28,7 @@ export var System = registerSystem('material', {
   /**
    * Loads and creates a texture for a given `src`.
    *
-   * @param {string, or element} src - URL or element
+   * @param {string|Element} src - URL or element
    * @param {object} data - Relevant texture properties
    * @param {function} cb - Callback to pass texture to
    */
@@ -43,7 +43,7 @@ export var System = registerSystem('material', {
   /**
    * Determine whether `src` is an image or video. Then try to load the asset, then call back.
    *
-   * @param {string, or element} src - URL or element.
+   * @param {string|Element} src - URL or element.
    * @param {function} cb - Callback to pass texture source to.
    */
   loadTextureSource: function (src, cb) {
@@ -78,7 +78,7 @@ export var System = registerSystem('material', {
   /**
    * Load the six individual sides and construct a cube texture, then call back.
    *
-   * @param {Array} srcs - Array of six texture URLs or elements.
+   * @param {Array<string|Element>} srcs - Array of six texture URLs or elements.
    * @param {function} cb - Callback to pass cube texture to.
    */
   loadCubeMapTexture: function (srcs, cb) {
@@ -111,7 +111,7 @@ export var System = registerSystem('material', {
   /**
    * High-level function for loading image textures (THREE.Texture).
    *
-   * @param {Element|string} src - Texture source.
+   * @param {string|Element} src - Texture source.
    * @param {function} cb - Callback to pass texture to.
    */
   loadImage: function (src, cb) {
@@ -130,7 +130,7 @@ export var System = registerSystem('material', {
    * Note that creating a video texture is synchronous unlike loading an image texture.
    * Made asynchronous to be consistent with image textures.
    *
-   * @param {Element|string} src - Texture source.
+   * @param {string|Element} src - Texture source.
    * @param {function} cb - Callback to pass texture to.
    */
   loadVideo: function (src, cb) {
