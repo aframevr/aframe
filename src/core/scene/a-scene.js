@@ -547,7 +547,10 @@ export class AScene extends AEntity {
       };
     }
 
-    renderer = this.renderer = new THREE.WebGLRenderer(rendererConfig);
+    renderer = this.renderer = new (THREE.WebGLRenderer || THREE.WebGPURenderer)(rendererConfig);
+    if (!renderer.xr.setPoseTarget) {
+      renderer.xr.setPoseTarget = function () {};
+    }
     renderer.setPixelRatio(window.devicePixelRatio);
 
     if (this.camera) { renderer.xr.setPoseTarget(this.camera.el.object3D); }
