@@ -27,6 +27,7 @@
     "prerelease": "node scripts/release.js 1.5.0 1.6.0",
     "start": "npm run dev",
     "start:https": "npm run dev -- --server-type https",
+    "start:webgpu": "cross-env WEBGPU=true npm run dev -- --server-type https",
     "test": "karma start ./tests/karma.conf.js",
     "test:docs": "node scripts/docsLint.js",
     "test:firefox": "npm test -- --browsers Firefox",

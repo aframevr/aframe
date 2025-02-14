@@ -1,5 +1,7 @@
 import { registerShader } from '../core/shader.js';
 import THREE from '../lib/three.js';
+import { UniformsUtils } from 'three/src/renderers/shaders/UniformsUtils.js';
+import { UniformsLib } from 'three/src/renderers/shaders/UniformsLib.js';
 
 var VERTEX_SHADER = [
   '#include <common>',
@@ -84,8 +86,8 @@ export var Shader = registerShader('msdf', {
   fragmentShader: FRAGMENT_SHADER,
 
   init: function () {
-    this.uniforms = THREE.UniformsUtils.merge([
-      THREE.UniformsLib.fog,
+    this.uniforms = UniformsUtils.merge([
+      UniformsLib.fog,
       this.initUniforms()
     ]);
     this.material = new THREE.ShaderMaterial({

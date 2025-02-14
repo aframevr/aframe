@@ -14,8 +14,8 @@ export var knownTags = {
   'a-entity': true
 };
 
-function isNode (node) {
-  return node.tagName.toLowerCase() in knownTags || node.isNode;
+function isANode (node) {
+  return node.tagName.toLowerCase() in knownTags || node.isANode;
 }
 
 /**
@@ -29,7 +29,7 @@ export class ANode extends HTMLElement {
     super();
     this.computedMixinStr = '';
     this.hasLoaded = false;
-    this.isNode = true;
+    this.isANode = true;
     this.mixinEls = [];
   }
 
@@ -119,7 +119,7 @@ export class ANode extends HTMLElement {
     if (this.hasLoaded) { return; }
 
     // Default to waiting for all nodes.
-    childFilter = childFilter || isNode;
+    childFilter = childFilter || isANode;
     // Wait for children to load (if any), then load.
     children = this.getChildren();
     childrenLoaded = children.filter(childFilter).map(function (child) {

@@ -1,6 +1,7 @@
+var path = require('path');
 var webpack = require('webpack');
 
-module.exports = {
+var config = {
   entry: './src/index.js',
   devtool: 'source-map',
   plugins: [
@@ -28,3 +29,13 @@ module.exports = {
     ]
   }
 };
+
+if (process.env.WEBGPU === 'true') {
+  config.resolve = {
+    alias: {
+      'three$': path.resolve(__dirname, 'node_modules/three/build/three.webgpu.js')
+    }
+  };
+}
+
+module.exports = config;

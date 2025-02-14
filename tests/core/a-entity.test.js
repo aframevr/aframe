@@ -37,7 +37,7 @@ suite('a-entity', function () {
   });
 
   test('createdCallback', function () {
-    assert.ok(el.isNode);
+    assert.ok(el.isANode);
     assert.ok(el.isEntity);
   });
 
@@ -669,9 +669,9 @@ suite('a-entity', function () {
       el.appendChild(a);
       el.appendChild(b);
       setTimeout(function () {
-        a.isNode = false;
+        a.isANode = false;
         a.hasLoaded = false;
-        b.isNode = false;
+        b.isANode = false;
         b.hasLoaded = false;
         el.hasLoaded = false;
         el.addEventListener('loaded', function () {
@@ -697,9 +697,9 @@ suite('a-entity', function () {
       el.appendChild(a);
       el.appendChild(b);
       setTimeout(function () {
-        a.isNode = false;
+        a.isANode = false;
         a.hasLoaded = false;
-        b.isNode = false;
+        b.isANode = false;
         b.hasLoaded = false;
         el.hasLoaded = false;
         el.addEventListener('loaded', function () {
