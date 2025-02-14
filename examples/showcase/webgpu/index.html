@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
     <meta charset="utf-8" />
@@ -16,29 +16,16 @@
       }
     </script>
     <script type="module">
-      import AFRAME from "aframe";
-      import {
-        color,
-        cos,
-        float,
-        mix,
-        range,
-        sin,
-        time,
-        uniform,
-        uv,
-        vec3,
-        vec4,
-        PI2,
-      } from "three/tsl";
-      import { GUI } from "three/addons/libs/lil-gui.module.min.js";
+      import AFRAME from 'aframe';
+      import { color, cos, float, mix, range, sin, time, uniform, uv, vec3, vec4, PI2 } from 'three/tsl';
+      import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
 
-      AFRAME.registerComponent("galaxy", {
+      AFRAME.registerComponent('galaxy', {
         init() {
           const material = new THREE.SpriteNodeMaterial({
             transparent: true,
             depthWrite: false,
-            blending: THREE.AdditiveBlending,
+            blending: THREE.AdditiveBlending
           });
 
           const size = uniform(0.08);
@@ -53,66 +40,49 @@
 
           const position = vec3(cos(angle), 0, sin(angle)).mul(radius);
 
-          const randomOffset = range(vec3(-1), vec3(1))
-            .pow(3)
-            .mul(radiusRatio)
-            .add(0.2);
+          const randomOffset = range(vec3(-1), vec3(1)).pow(3).mul(radiusRatio).add(0.2);
 
           material.positionNode = position.add(randomOffset);
 
-          const colorInside = uniform(color("#ffa575"));
-          const colorOutside = uniform(color("#311599"));
-          const colorFinal = mix(
-            colorInside,
-            colorOutside,
-            radiusRatio.oneMinus().pow(2).oneMinus()
-          );
+          const colorInside = uniform(color('#ffa575'));
+          const colorOutside = uniform(color('#311599'));
+          const colorFinal = mix(colorInside, colorOutside, radiusRatio.oneMinus().pow(2).oneMinus());
           const alpha = float(0.1).div(uv().sub(0.5).length()).sub(0.2);
           material.colorNode = vec4(colorFinal, alpha);
 
-          const mesh = new THREE.InstancedMesh(
-            new THREE.PlaneGeometry(1, 1),
-            material,
-            20000
-          );
-          this.el.setObject3D("mesh", mesh);
+          const mesh = new THREE.InstancedMesh(new THREE.PlaneGeometry(1, 1), material, 20000);
+          this.el.setObject3D('mesh', mesh);
 
           // debug
 
           const gui = new GUI();
           this.gui = gui;
 
-          gui.add(size, "value", 0, 1, 0.001).name("size");
+          gui.add(size, 'value', 0, 1, 0.001).name('size');
 
           gui
-            .addColor(
-              { color: colorInside.value.getHex(THREE.SRGBColorSpace) },
-              "color"
-            )
-            .name("colorInside")
+            .addColor({ color: colorInside.value.getHex(THREE.SRGBColorSpace) }, 'color')
+            .name('colorInside')
             .onChange(function (value) {
               colorInside.value.set(value);
             });
 
           gui
-            .addColor(
-              { color: colorOutside.value.getHex(THREE.SRGBColorSpace) },
-              "color"
-            )
-            .name("colorOutside")
+            .addColor({ color: colorOutside.value.getHex(THREE.SRGBColorSpace) }, 'color')
+            .name('colorOutside')
             .onChange(function (value) {
               colorOutside.value.set(value);
             });
         },
         remove() {
-          const mesh = this.el.getObject3D("mesh");
+          const mesh = this.el.getObject3D('mesh');
           if (mesh) {
             mesh.material.dispose();
             mesh.geometry.dispose();
-            this.el.removeObject3D("mesh");
+            this.el.removeObject3D('mesh');
             this.gui.destroy();
           }
-        },
+        }
       });
     </script>
     <script
