@@ -37,6 +37,12 @@
 
     <a-entity id="rig" position="0 0 2">
       <a-entity id="camera" position="0 1.6 0" camera look-controls wasd-controls></a-entity>
+
+      <a-entity oculus-touch-controls="hand: left" hand-tracking-controls="hand: left;" model="true">
+      </a-entity>
+
+      <a-entity oculus-touch-controls="hand: right" hand-tracking-controls="hand: right;" model="true">
+      </a-entity>
     </a-entity>
 
     <a-entity id="base" geometry="primitive: cylinder; height: 0.1; radius: 1.93" position="0 0 -2"
@@ -60,6 +66,71 @@
     </a-entity>
 
   </a-scene>
+
+  <script>
+        var effectOn = true;
+
+        // Add event listeners to hand controllers
+        // and physical controller to intercept gesture and buttons
+        const leftHand = document.querySelector('[oculus-touch-controls="hand: left"]');
+        const rightHand = document.querySelector('[oculus-touch-controls="hand: right"]');
+
+        leftHand.addEventListener('pinchstarted', (event) => {
+            toggleEffect();
+        });
+
+        leftHand.addEventListener('triggerup', (event) => {
+            toggleEffect();
+        });
+
+        leftHand.addEventListener('gripup', (event) => {
+            toggleEffect();
+        });
+
+        leftHand.addEventListener('xbuttonup', (event) => {
+            toggleEffect();
+        });
+
+        leftHand.addEventListener('ybuttonup', (event) => {
+            toggleEffect();
+        });
+
+        rightHand.addEventListener('pinchstarted', (event) => {
+            toggleEffect();
+        });
+
+        rightHand.addEventListener('triggerup', (event) => {
+            toggleEffect();
+        });
+
+        rightHand.addEventListener('gripup', (event) => {
+            toggleEffect();
+        });
+
+        rightHand.addEventListener('abuttonup', (event) => {
+            toggleEffect();
+        });
+
+        rightHand.addEventListener('bbuttonup', (event) => {
+            toggleEffect();
+        });
+
+        function toggleEffect() {
+
+            // get the scene
+            var scene = document.querySelector('a-scene');
+
+            // toggle the effect
+            if (effectOn)
+                scene.removeAttribute('bloom');
+            else
+                scene.setAttribute('bloom', { threshold: 1.0, strength: 0.3, radius: 1 });
+
+            // set the control variable
+            effectOn = !effectOn;
+        }
+
+    </script>  
 </body>
 
 </html>
