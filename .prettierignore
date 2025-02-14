@@ -1,0 +1,14 @@
+# prettier is enabled only for html files in the examples folder
+*.cjs
+*.js
+*.json
+*.md
+*.yml
+build
+dist
+docs
+gh-pages
+scripts
+src
+tests
+vendor
