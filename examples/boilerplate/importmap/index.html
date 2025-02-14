@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
     <meta charset="utf-8" />
@@ -16,44 +16,39 @@
     </script>
     <script type="module">
       // We use an importmap to load three as a module to avoid the warning "Multiple instances of Three.js being imported."
-      import AFRAME from "aframe";
+      import AFRAME from 'aframe';
       // AFRAME and THREE variables are available globally, the imported aframe-master.module.min.js bundle basically does:
       // import * as THREE from "three"
       // window.THREE = THREE
-      import "aframe-extras/controls"; // This uses the THREE global variable in the bundle.
-      import { Mesh, MeshStandardMaterial } from "three"; // This uses the same three instance.
-      import { TeapotGeometry } from "three/addons/geometries/TeapotGeometry.js"; // This uses the same three instance.
+      import 'aframe-extras/controls'; // This uses the THREE global variable in the bundle.
+      import { Mesh, MeshStandardMaterial } from 'three'; // This uses the same three instance.
+      import { TeapotGeometry } from 'three/addons/geometries/TeapotGeometry.js'; // This uses the same three instance.
 
-      AFRAME.registerComponent("teapot", {
+      AFRAME.registerComponent('teapot', {
         init() {
           this.geometry = new TeapotGeometry();
           const mesh = new Mesh();
           mesh.geometry = this.geometry;
           // Default material if not defined on the entity.
-          if (!this.el.getAttribute("material")) {
+          if (!this.el.getAttribute('material')) {
             mesh.material = new MeshStandardMaterial({
               color: Math.random() * 0xffffff,
               metalness: 0,
               roughness: 0.5,
-              side: THREE.DoubleSide,
+              side: THREE.DoubleSide
             });
           }
-          this.el.setObject3D("mesh", mesh);
+          this.el.setObject3D('mesh', mesh);
         },
         remove() {
           this.geometry.dispose();
-        },
+        }
       });
     </script>
   </head>
   <body>
     <a-scene background="color: #ECECEC">
-      <a-cylinder
-        position="0 0.25 -2"
-        radius="0.5"
-        height="0.5"
-        color="#FFC65D"
-      >
+      <a-cylinder position="0 0.25 -2" radius="0.5" height="0.5" color="#FFC65D">
         <a-entity
           teapot
           position="0 0.48 0"
@@ -62,13 +57,7 @@
         ></a-entity>
       </a-cylinder>
 
-      <a-plane
-        position="0 0 -2"
-        rotation="-90 0 0"
-        width="4"
-        height="4"
-        color="#7BC8A4"
-      ></a-plane>
+      <a-plane position="0 0 -2" rotation="-90 0 0" width="4" height="4" color="#7BC8A4"></a-plane>
 
       <a-entity
         position="0 0 1"
