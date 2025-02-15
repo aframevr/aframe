@@ -36,7 +36,7 @@ export function stringify (data) {
  * Converts string from hyphen to camelCase.
  *
  * @param {string} str - String to camelCase.
- * @return {string} CamelCased string.
+ * @returns {string} CamelCased string.
  */
 export function toCamelCase (str) {
   return str.replace(DASH_REGEX, upperCase);

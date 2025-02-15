@@ -54,9 +54,9 @@ function formatArgs (args) {
 /**
  * Returns the type of the namespace (e.g., `error`, `warn`).
  *
- * @param {String} namespace
+ * @param {string} namespace
  *   The debug logger's namespace (e.g., `components:geometry:warn`).
- * @returns {String} The type of the namespace (e.g., `warn`).
+ * @returns {string} The type of the namespace (e.g., `warn`).
  * @api private
  */
 function getDebugNamespaceType (namespace) {
@@ -68,9 +68,9 @@ function getDebugNamespaceType (namespace) {
 /**
  * Returns the color of the namespace (e.g., `orange`).
  *
- * @param {String} namespace
+ * @param {string} namespace
  *   The debug logger's namespace (e.g., `components:geometry:warn`).
- * @returns {String} The color of the namespace (e.g., `orange`).
+ * @returns {string} The color of the namespace (e.g., `orange`).
  * @api private
  */
 function getDebugNamespaceColor (namespace) {

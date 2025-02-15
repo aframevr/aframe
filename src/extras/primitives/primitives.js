@@ -195,7 +195,7 @@ function applyMapping (mapping, attrValue, data) {
  */
 function addComponentMapping (componentName, mappings) {
   var schema = components[componentName].schema;
-  Object.keys(schema).map(function (prop) {
+  Object.keys(schema).forEach(function (prop) {
     // Hyphenate where there is camelCase.
     var attrName = prop.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
     // If there is a mapping collision, prefix with component name and hyphen.
@@ -212,7 +212,7 @@ export function definePrimitive (tagName, defaultComponents, mappings) {
   mappings = mappings || {};
 
   // From the default components, add mapping automagically.
-  Object.keys(defaultComponents).map(function buildMappings (componentName) {
+  Object.keys(defaultComponents).forEach(function buildMappings (componentName) {
     addComponentMapping(componentName, mappings);
   });
 

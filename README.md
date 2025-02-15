@@ -171,7 +171,7 @@ npm install --save aframe
 ```
 
 ```js
-require('aframe')  // e.g., with Browserify or Webpack.
+import AFRAME from 'aframe';  // e.g., with Webpack or Vite.
 ```
 
 ## Local Development

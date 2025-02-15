@@ -8,8 +8,7 @@ source_code: src/index.js
 ---
 
 A-Frame exposes its public interface through the `window.AFRAME` browser
-global. This same interface is also exposed if requiring with CommonJS
-(`require('aframe')`).
+global. This same interface is also exposed when you import aframe (`import AFRAME from 'aframe'`).
 
 ## `AFRAME` Properties
 
@@ -56,7 +55,7 @@ It is possible to run A-Frame in [Node.js](https://nodejs.org/en/about) to get a
 ```js
 const cleanup = require('jsdom-global')();
 global.customElements = { define: function () {} };
-var aframe = require('aframe/src');
+const aframe = require('aframe');
 console.log(aframe.version);
 cleanup();
 ```

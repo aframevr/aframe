@@ -9,7 +9,7 @@ import { split } from './split.js';
  *
  * @param {string} str - e.g., `material.opacity`.
  * @param {string} delimiter - e.g., `.`.
- * @returns {array} e.g., `['material', 'opacity']`.
+ * @returns {string[]} e.g., `['material', 'opacity']`.
  */
 export function getComponentPropertyPath (str, delimiter) {
   delimiter = delimiter || '.';

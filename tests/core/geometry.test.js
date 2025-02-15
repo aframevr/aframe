@@ -1,4 +1,4 @@
-/* global assert, process, suite, test, teardown */
+/* global assert, suite, test, teardown */
 import { registerGeometry, geometries, geometryNames } from 'core/geometry.js';
 
 suite('core/geometry', function () {

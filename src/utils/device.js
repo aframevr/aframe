@@ -64,7 +64,7 @@ export function checkVRSupport () { return supportsVRSession; }
 
 /**
  * Checks if browser is mobile and not stand-alone dedicated vr device.
- * @return {Boolean} True if mobile browser detected.
+ * @returns {boolean} True if mobile browser detected.
  */
 export var isMobile = (function () {
   var _isMobile = false;
@@ -159,7 +159,7 @@ export function isR7 () {
 
 /**
  * Checks mobile device orientation.
- * @return {Boolean} True if landscape orientation.
+ * @returns {boolean} True if landscape orientation.
  */
 export function isLandscape () {
   var orientation = window.orientation;

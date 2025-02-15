@@ -1,4 +1,4 @@
-/* global assert, process, setup, suite, test, teardown */
+/* global assert, setup, suite, test, teardown */
 import { entityFactory } from '../../helpers.js';
 
 var PERMISSION_DIALOG_CLASSES = ['.a-modal', '.a-dialog', '.a-dialog-allow-button', '.a-dialog-deny-button'];

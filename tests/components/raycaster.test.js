@@ -1,4 +1,4 @@
-/* global assert, process, setup, suite, test, THREE */
+/* global assert, setup, suite, test, THREE */
 import { entityFactory } from '../helpers.js';
 
 suite('raycaster', function () {

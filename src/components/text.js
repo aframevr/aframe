@@ -407,7 +407,7 @@ function loadFont (src, yOffset) {
 
       // Fix negative Y offsets for Roboto MSDF font from tool. Experimentally determined.
       if (src.indexOf('/Roboto-msdf.json') >= 0) { yOffset = 30; }
-      if (yOffset) { font.chars.map(function doOffset (ch) { ch.yoffset += yOffset; }); }
+      if (yOffset) { font.chars.forEach(function doOffset (ch) { ch.yoffset += yOffset; }); }
 
       resolve(font);
     });
@@ -464,7 +464,7 @@ function computeFontWidthFactor (font) {
   var sum = 0;
   var digitsum = 0;
   var digits = 0;
-  font.chars.map(function (ch) {
+  font.chars.forEach(function (ch) {
     sum += ch.xadvance;
     if (ch.id >= 48 && ch.id <= 57) {
       digits++;

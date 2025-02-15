@@ -1,7 +1,6 @@
 /* eslint-env mocha */
 'use strict';
 
-const path = require('path');
 const assert = require('assert');
 
 suite('node acceptance tests', function () {
@@ -16,7 +15,7 @@ suite('node acceptance tests', function () {
   });
 
   test('can run in node', function () {
-    const aframe = require(path.join(process.cwd(), 'src'));
+    const aframe = require('aframe');
 
     assert.ok(aframe.version);
   });
@@ -25,7 +24,7 @@ suite('node acceptance tests', function () {
     let aframe;
 
     setup(function () {
-      aframe = require(path.join(process.cwd(), 'src'));
+      aframe = require('aframe');
     });
 
     test('isNodeEnvironment is true for node', function () {
