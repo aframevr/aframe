@@ -1,136 +1,117 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Post Processing Bloom Effect</title>
+    <meta name="description" content="Post Processing Bloom Effect • A-Frame" />
 
-<head>
-
-  <meta charset="utf-8" />
-  <title>Post Processing Bloom Effect</title>
-  <meta name="description" content="Post Processing Bloom Effect • A-Frame" />
-
-  <script type="importmap">
+    <script type="importmap">
       {
         "imports": {
-          "aframe": "../../dist/aframe-master.module.min.js",
-          "three": "../../../super-three-package/build/three.module.js",
-          "three/addons/": "../../../super-three-package/examples/jsm/"
+          "aframe": "https://cdn.jsdelivr.net/gh/aframevr/aframe@20cf0f6913708be7a6002869fdeefefde69d7693/dist/aframe-master.module.min.js",
+          "three": "https://cdn.jsdelivr.net/npm/super-three@0.173.1/build/three.module.js",
+          "three/addons/": "https://cdn.jsdelivr.net/npm/super-three@0.173.1/examples/jsm/"
         }
       }
     </script>
-  <script src="../../js/info-message.js"></script>
-  <script type="module" src="./bloom.js"></script>
+    <script src="./info-message.js"></script>
+    <script type="module" src="./bloom.js"></script>
+  </head>
 
-</head>
+  <body>
+    <a-scene
+      bloom="threshold: 1.0; strength: 0.3; radius: 1;"
+      background="color: #000000"
+      renderer="toneMapping: ACESFilmic;"
+      info-message="htmlSrc: #messageText"
+    >
+      <a-assets>
+        <!-- model by arturs.vitas https://skfb.ly/owUr9 -->
+        <a-asset-item id="testbed" src="https://cdn.aframe.io/examples/post-processing/fancy-car.glb"></a-asset-item>
+        <a-asset-item id="messageText" src="message.html"></a-asset-item>
+      </a-assets>
 
-<body>
+      <a-entity id="rig" position="0 0 2">
+        <a-entity id="camera" position="0 1.6 0" camera look-controls wasd-controls></a-entity>
 
-  <a-scene 
-    bloom="threshold: 1.0; strength: 0.3; radius: 1;" 
-    background="color: #000000"
-    renderer="toneMapping: ACESFilmic;"
-    info-message="htmlSrc: #messageText">
+        <a-entity id="lhand" effect-control="hand: left;"> </a-entity>
 
-    <a-assets>
-      <!-- model by arturs.vitas https://skfb.ly/owUr9 -->
-      <a-asset-item id="testbed" src="../../assets/models/fancy-car.glb"></a-asset-item>
-      <a-asset-item id="messageText" src="message.html"></a-asset-item>
-    </a-assets>
-
-    <a-entity id="rig" position="0 0 2">
-      <a-entity id="camera" position="0 1.6 0" camera look-controls wasd-controls></a-entity>
-
-      <a-entity oculus-touch-controls="hand: left" hand-tracking-controls="hand: left;" model="true">
+        <a-entity id="rhand" effect-control="hand: right;"> </a-entity>
       </a-entity>
 
-      <a-entity oculus-touch-controls="hand: right" hand-tracking-controls="hand: right;" model="true">
+      <a-entity
+        id="base"
+        geometry="primitive: cylinder; height: 0.1; radius: 1.93"
+        position="0 0 -2"
+        material="color: #201d1d"
+        shadow
+        animation="property: rotation; to: 0 360 0 ; loop: true; dur: 15000; easing: linear;"
+      >
+        <a-entity id="tooncar" gltf-model="#testbed" position="0 0.050 0" scale="2 2 2" shadow> </a-entity>
+
+        <a-entity
+          id="neon01"
+          geometry="primitive: torus; radius: 1.92; radiusTubular: 0.02; segmentsRadial: 50; segmentsTubular: 40"
+          material="color: #d100e0; emissive: #b300a4; emissiveIntensity: 9.34"
+          rotation="90 0 0"
+        >
+        </a-entity>
       </a-entity>
-    </a-entity>
 
-    <a-entity id="base" geometry="primitive: cylinder; height: 0.1; radius: 1.93" position="0 0 -2"
-      material="color: #201d1d" shadow
-      animation="property: rotation; to: 0 360 0 ; loop: true; dur: 15000; easing: linear;">
+      <a-entity id="ambient" light="type: ambient; intensity: 0.48; color: #ffffff"> </a-entity>
 
-      <a-entity id="tooncar" gltf-model="#testbed" position="0 0.050 0" scale="2 2 2" shadow>
-      </a-entity>
+      <a-entity id="point01" light="color: #7cd2fe; intensity: 5; type: point;" position="0 3.51 -1"> </a-entity>
+    </a-scene>
 
-      <a-entity id="neon01"
-        geometry="primitive: torus; radius: 1.92; radiusTubular: 0.02; segmentsRadial: 50; segmentsTubular: 40"
-        material="color: #d100e0; emissive: #b300a4; emissiveIntensity: 9.34" rotation="90 0 0">
-      </a-entity>
+    <script type="module">
+      import AFRAME from 'aframe';
 
-    </a-entity>
+      AFRAME.registerComponent('effect-control', {
+        schema: {
+          hand: { type: 'string', default: 'left' }
+        },
 
-    <a-entity id="ambient" light="type: ambient; intensity: 0.48; color: #ffffff">
-    </a-entity>
+        events: {
+          pinchstarted: function () {
+            this.toggleEffect();
+          },
+          buttondown: function () {
+            this.toggleEffect();
+          }
+        },
 
-    <a-entity id="point01" light="color: #7cd2fe; intensity: 5; type: point;" position="0 3.51 -1">
-    </a-entity>
+        init: function () {
+          // initialize control variable
+          this.effectOn = true;
 
-  </a-scene>
+          // set the proper controller on the specified hand
+          this.el.setAttribute('meta-touch-controls', {
+            hand: this.data.hand,
+            model: true
+          });
+          this.el.setAttribute('hand-tracking-controls', {
+            hand: this.data.hand,
+            model: true
+          });
+        },
 
-  <script>
-        var effectOn = true;
+        toggleEffect: function () {
+          // get the scene
+          var scene = this.el.sceneEl;
 
-        // Add event listeners to hand controllers
-        // and physical controller to intercept gesture and buttons
-        const leftHand = document.querySelector('[oculus-touch-controls="hand: left"]');
-        const rightHand = document.querySelector('[oculus-touch-controls="hand: right"]');
+          // toggle the effect
+          if (this.effectOn) scene.removeAttribute('bloom');
+          else
+            scene.setAttribute('bloom', {
+              threshold: 1.0,
+              strength: 0.3,
+              radius: 1
+            });
 
-        leftHand.addEventListener('pinchstarted', (event) => {
-            toggleEffect();
-        });
-
-        leftHand.addEventListener('triggerup', (event) => {
-            toggleEffect();
-        });
-
-        leftHand.addEventListener('gripup', (event) => {
-            toggleEffect();
-        });
-
-        leftHand.addEventListener('xbuttonup', (event) => {
-            toggleEffect();
-        });
-
-        leftHand.addEventListener('ybuttonup', (event) => {
-            toggleEffect();
-        });
-
-        rightHand.addEventListener('pinchstarted', (event) => {
-            toggleEffect();
-        });
-
-        rightHand.addEventListener('triggerup', (event) => {
-            toggleEffect();
-        });
-
-        rightHand.addEventListener('gripup', (event) => {
-            toggleEffect();
-        });
-
-        rightHand.addEventListener('abuttonup', (event) => {
-            toggleEffect();
-        });
-
-        rightHand.addEventListener('bbuttonup', (event) => {
-            toggleEffect();
-        });
-
-        function toggleEffect() {
-
-            // get the scene
-            var scene = document.querySelector('a-scene');
-
-            // toggle the effect
-            if (effectOn)
-                scene.removeAttribute('bloom');
-            else
-                scene.setAttribute('bloom', { threshold: 1.0, strength: 0.3, radius: 1 });
-
-            // set the control variable
-            effectOn = !effectOn;
+          // set the control variable
+          this.effectOn = !this.effectOn;
         }
-
-    </script>  
-</body>
-
+      });
+    </script>
+  </body>
 </html>
