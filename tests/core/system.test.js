@@ -1,4 +1,4 @@
-/* global AFRAME, assert, process, suite, test, setup */
+/* global AFRAME, assert, suite, test, setup */
 import { components } from 'core/component.js';
 import { registerSystem, systems } from 'core/system.js';
 

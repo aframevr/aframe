@@ -44,9 +44,10 @@ var attrValueProxyHandler = {
  * by adding, removing, or updating components. Entities do not share instances
  * of components.
  *
- * @member {object} el - Reference to the entity element.
- * @member {string} attrValue - Value of the corresponding HTML attribute.
- * @member {string} id - Optional id for differentiating multiple instances on the same entity.
+ * @constructor
+ * @param {object} el - Reference to the entity element.
+ * @param {string} attrValue - Value of the corresponding HTML attribute.
+ * @param {string} id - Optional id for differentiating multiple instances on the same entity.
  */
 export var Component = function (el, attrValue, id) {
   var self = this;
@@ -268,7 +269,7 @@ Component.prototype = {
 
   /**
    * @param {string|object} attrValue - Passed argument from setAttribute.
-   * @param {bool} clobber - Whether or not to overwrite previous data by the attrValue.
+   * @param {boolean} clobber - Whether or not to overwrite previous data by the attrValue.
    */
   updateData: function (attrValue, clobber) {
     // Single property (including object based single property)
@@ -713,7 +714,8 @@ function hasBehavior (component) {
  * Wrapper for defined pause method.
  * Pause component by removing tick behavior and calling user's pause method.
  *
- * @param pauseMethod {function}
+ * @param {function} pauseMethod
+ * @returns {function}
  */
 function wrapPause (pauseMethod) {
   return function pause () {
@@ -732,7 +734,8 @@ function wrapPause (pauseMethod) {
  * Wrapper for defined play method.
  * Play component by adding tick behavior and calling user's play method.
  *
- * @param playMethod {function}
+ * @param {function} playMethod
+ * @returns {function}
  */
 function wrapPlay (playMethod) {
   return function play () {

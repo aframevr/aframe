@@ -49,10 +49,6 @@ export var Component = registerComponent('logitech-mx-ink-controls', {
     this.bindMethods();
   },
 
-  update: function () {
-    var data = this.data;
-  },
-
   play: function () {
     this.checkIfControllerPresent();
     this.addControllersUpdateListener();
@@ -98,7 +94,6 @@ export var Component = registerComponent('logitech-mx-ink-controls', {
   },
 
   checkIfControllerPresent: function () {
-    var data = this.data;
     var controllerObject3D = this.controllerObject3D;
     if (controllerObject3D) { controllerObject3D.visible = false; }
     checkControllerPresentAndSetup(this, GAMEPAD_ID, {

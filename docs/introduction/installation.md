@@ -90,11 +90,11 @@ We can also install A-Frame through npm:
 $ npm install aframe
 ```
 
-Then we can bundle A-Frame into our application. For example, with Browserify
-or Webpack:
+Then we can bundle A-Frame into our application. For example, with Webpack or
+Vite:
 
 ```js
-require('aframe');
+import AFRAME from 'aframe';
 ```
 
 [angle]: https://www.npmjs.com/package/angle
@@ -135,7 +135,6 @@ In your `index.html`, adjust as follows:
             https://ssl.gstatic.com 
             'unsafe-eval' 
             https://cdn.aframe.io         <-- required
-            https://dpdb.webvr.rocks      <-- required
             https://fonts.googleapis.com  <-- required
             https://cdn.jsdelivr.net      <-- your choice, see below
             ; 

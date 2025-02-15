@@ -1,4 +1,4 @@
-/* global Event, assert, process, setup, suite, test */
+/* global Event, assert, setup, suite, test */
 import * as helpers from '../helpers.js';
 var PI = Math.PI;
 

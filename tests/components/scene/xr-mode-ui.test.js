@@ -1,4 +1,4 @@
-/* global assert, process, setup, suite, test */
+/* global assert, setup, suite, test */
 import { entityFactory } from '../../helpers.js';
 
 var UI_CLASSES = ['.a-orientation-modal', '.a-enter-vr'];

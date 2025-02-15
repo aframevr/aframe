@@ -31,12 +31,11 @@ registerPropertyType('vec4', {x: 0, y: 0, z: 0, w: 1}, vecParse, coordinates.str
  * `schema.process` will set the property `parse` and `stringify`.
  *
  * @param {string} type - Type name.
- * @param [defaultValue=null] -
- *   Default value to use if component does not define default value.
+ * @param {any} [defaultValue=null] - Default value to use if component does not define default value.
  * @param {function} [parse=defaultParse] - Parse string function.
  * @param {function} [stringify=defaultStringify] - Stringify to DOM function.
  * @param {function} [equals=defaultEquals] - Equality comparator.
- * @param {boolean} [cachable=false] - Whether or not the parsed value of a property can be cached.
+ * @param {boolean} [cacheable=false] - Whether or not the parsed value of a property can be cached.
  */
 export function registerPropertyType (type, defaultValue, parse, stringify, equals, cacheable) {
   if (type in propertyTypes) {

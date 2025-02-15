@@ -1,4 +1,4 @@
-/* global XRPlane, XRMesh */
+/* global XRPlane */
 import THREE from '../../lib/three.js';
 import { registerComponent as register } from '../../core/component.js';
 
@@ -46,7 +46,6 @@ export var Component = register('real-world-meshing', {
     var detectedMeshes;
     var detectedPlanes;
     var sceneEl = this.el;
-    var xrManager = sceneEl.renderer.xr;
     var frame;
     var meshEntities = this.meshEntities;
     var present = false;

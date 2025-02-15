@@ -22,14 +22,12 @@ AFRAME.registerSystem('brush', {
   },
 
   generateTestLines: function () {
-    function randNeg () { return 2 * Math.random() - 1; }
     var z = -2;
     var size = 0.5;
     var width = 3;
     var numPoints = 4;
 
     var steps = width / numPoints;
-    var numStrokes = 1;
     var self = this;
 
     var x = -(size + 0.1) / 2;

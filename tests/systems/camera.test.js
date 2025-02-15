@@ -1,4 +1,4 @@
-/* global assert, process, setup, suite, test, sinon */
+/* global assert, setup, suite, test, sinon */
 import * as constants from 'constants/index.js';
 import { entityFactory } from '../helpers.js';
 

@@ -311,7 +311,7 @@ export var Component = registerComponent('raycaster', {
   /**
    * Return the most recent intersection details for a given entity, if any.
    * @param {AEntity} el
-   * @return {Object}
+   * @returns {object|null}
    */
   getIntersection: function (el) {
     var i;
@@ -405,8 +405,8 @@ export var Component = registerComponent('raycaster', {
    * Only push children defined as component attachments (e.g., setObject3D),
    * NOT actual children in the scene graph hierarchy.
    *
-   * @param  {Array<Element>} els
-   * @return {Array<THREE.Object3D>}
+   * @param {Array<Element>} els
+   * @returns {Array<THREE.Object3D>}
    */
   flattenObject3DMaps: function (els) {
     var key;

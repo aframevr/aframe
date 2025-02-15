@@ -68,7 +68,6 @@ StrokeGeometry.prototype = {
     if (this.previousGeometry && copyLast) {
       var prev = (this.maxBufferSize - 2) * 3;
       var col = (this.maxBufferSize - 2) * 3;
-      var uv = (this.maxBufferSize - 2) * 2;
       var norm = (this.maxBufferSize - 2) * 3;
 
       var position = this.previousGeometry.attributes.position.array;
@@ -113,7 +112,7 @@ StrokeGeometry.prototype = {
       vertexB.copy(position);
 
       vertexA.add(vertexAOffset.copy(direction).multiplyScalar(width / 2));
-      vertexB.add(vertexAOffset.copy(direction).multiplyScalar(-width / 2));
+      vertexB.add(vertexBOffset.copy(direction).multiplyScalar(-width / 2));
 
       // if (this.first && this.indices.position > 0) {
       //   debugger;

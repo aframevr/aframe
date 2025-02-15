@@ -1,4 +1,4 @@
-/* global Promise, customElements, screen, CustomEvent */
+/* global Promise, customElements, screen */
 import THREE from '../../lib/three.js';
 import { inject as initMetaTags } from './metaTags.js';
 import { initWakelock } from './wakelock.js';
@@ -24,15 +24,15 @@ var isWebXRAvailable = utils.device.isWebXRAvailable;
 /**
  * Scene element, holds all entities.
  *
- * @member {array} behaviors - Component instances that have registered themselves to be
+ * @member {Array} behaviors - Component instances that have registered themselves to be
            updated on every tick.
  * @member {object} camera - three.js Camera object.
  * @member {object} canvas
- * @member {bool} isScene - Differentiates as scene entity as opposed to other entities.
- * @member {bool} isMobile - Whether browser is mobile (via UA detection).
+ * @member {boolean} isScene - Differentiates as scene entity as opposed to other entities.
+ * @member {boolean} isMobile - Whether browser is mobile (via UA detection).
  * @member {object} object3D - Root three.js Scene object.
  * @member {object} renderer
- * @member {bool} renderStarted
+ * @member {boolean} renderStarted
  * @member {object} systems - Registered instantiated systems.
  * @member {number} time
  */
@@ -253,7 +253,7 @@ export class AScene extends AEntity {
    * Call `requestFullscreen` on desktop.
    * Handle events, states, fullscreen styles.
    *
-   * @param {bool?} useAR - if true, try immersive-ar mode
+   * @param {?boolean} useAR - if true, try immersive-ar mode
    * @returns {Promise}
    */
   enterVR (useAR, useOfferSession) {
@@ -547,7 +547,10 @@ export class AScene extends AEntity {
       };
     }
 
-    renderer = this.renderer = new THREE.WebGLRenderer(rendererConfig);
+    renderer = this.renderer = new (THREE.WebGLRenderer || THREE.WebGPURenderer)(rendererConfig);
+    if (!renderer.xr.setPoseTarget) {
+      renderer.xr.setPoseTarget = function () {};
+    }
     renderer.setPixelRatio(window.devicePixelRatio);
 
     if (this.camera) { renderer.xr.setPoseTarget(this.camera.el.object3D); }
@@ -696,7 +699,7 @@ export class AScene extends AEntity {
  * constraints into account.
  *
  * @param {object} components - The components to order
- * @param {array} array - Optional array to use as output
+ * @param {Array} array - Optional array to use as output
  */
 export function determineComponentBehaviorOrder (components, array) {
   var graph = {};
@@ -807,10 +810,11 @@ customElements.define('a-scene', AScene);
  * The parent size will be returned in that case.
  * the returned size will be constrained to the maxSize maintaining aspect ratio.
  *
- * @param {object} canvasEl - the canvas element
+ * @param {Element} canvasEl - the canvas element
  * @param {boolean} embedded - Is the scene embedded?
- * @param {object} max - Max size parameters
+ * @param {object} maxSize - Max size parameters
  * @param {boolean} isVR - If in VR
+ * @returns {number} Max size
  */
 function getCanvasSize (canvasEl, embedded, maxSize, isVR) {
   if (!canvasEl.parentElement) { return {height: 0, width: 0}; }

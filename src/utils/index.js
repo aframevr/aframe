@@ -139,7 +139,7 @@ export function throttleTick (functionToThrottle, minimumInterval, optionalConte
 /**
  * Returns debounce function that gets called only once after a set of repeated calls.
  *
- * @param {function} functionToDebounce
+ * @param {function} func - function to debounce
  * @param {number} wait - Time to wait for repeated function calls (milliseconds).
  * @param {boolean} immediate - Calls the function immediately regardless of if it should be waiting.
  * @returns {function} Debounced function.
@@ -294,7 +294,7 @@ export var diff = (function () {
 /**
  * Returns whether we should capture this keyboard event for keyboard shortcuts.
  * @param {Event} event Event object.
- * @returns {Boolean} Whether the key event should be captured.
+ * @returns {boolean} Whether the key event should be captured.
  */
 export function shouldCaptureKeyEvent (event) {
   if (event.metaKey) { return false; }
@@ -304,9 +304,9 @@ export function shouldCaptureKeyEvent (event) {
 /**
  * Splits a string into an array based on a delimiter.
  *
- * @param   {string=} [str='']        Source string
- * @param   {string=} [delimiter=' '] Delimiter to use
- * @returns {array}                   Array of delimited strings
+ * @param   {string} [str='']        Source string
+ * @param   {string} [delimiter=' '] Delimiter to use
+ * @returns {string[]}               Array of delimited strings
  */
 export function splitString (str, delimiter) {
   if (typeof delimiter === 'undefined') { delimiter = ' '; }
@@ -320,9 +320,9 @@ export function splitString (str, delimiter) {
 /**
  * Extracts data from the element given an object that contains expected keys.
  *
- * @param {Element} Source element.
- * @param {Object} [defaults={}] Object of default key-value pairs.
- * @returns {Object}
+ * @param {Element} el - Source element.
+ * @param {object} [defaults={}] - Object of default key-value pairs.
+ * @returns {object}
  */
 export function getElData (el, defaults) {
   defaults = defaults || {};
@@ -338,8 +338,8 @@ export function getElData (el, defaults) {
 
 /**
  * Retrieves querystring value.
- * @param  {String} name Name of querystring key.
- * @return {String}      Value
+ * @param {string} name Name of querystring key.
+ * @returns {string} Value
  */
 export function getUrlParameter (name) {
   // eslint-disable-next-line no-useless-escape

@@ -1,4 +1,4 @@
-/* global assert, process, setup, suite, test, CustomEvent, MouseEvent, TouchEvent */
+/* global assert, setup, suite, test, CustomEvent, MouseEvent, TouchEvent */
 import { entityFactory, once } from '../helpers.js';
 const touchEventSupported = (typeof TouchEvent !== 'undefined');
 

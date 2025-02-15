@@ -1,4 +1,4 @@
-/* global DeviceOrientationEvent, location  */
+/* global DeviceOrientationEvent */
 import { registerComponent } from '../../core/component.js';
 import { AFRAME_INJECTED } from '../../constants/index.js';
 
@@ -102,6 +102,9 @@ export var Component = registerComponent('device-orientation-permission-ui', {
 /**
  * Create a modal dialog that request users permission to access the Device Motion API.
  *
+ * @param {string} denyText
+ * @param {string} allowText
+ * @param {string} dialogText
  * @param {function} onAllowClicked - click event handler
  * @param {function} onDenyClicked - click event handler
  *

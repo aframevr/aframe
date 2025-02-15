@@ -1,4 +1,4 @@
-/* global assert, process, setup, sinon, suite, test */
+/* global assert, setup, sinon, suite, test */
 import { entityFactory } from '../helpers.js';
 
 suite('vive-focus-controls', function () {

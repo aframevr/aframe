@@ -1,4 +1,4 @@
-/* global AFRAME, assert, suite, test, setup */
+/* global assert, suite, test, setup */
 import * as readyState from 'core/readyState.js';
 
 suite('readyState', function () {

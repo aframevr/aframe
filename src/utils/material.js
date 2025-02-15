@@ -1,4 +1,4 @@
-/* global HTMLCanvasElement, HTMLImageElement, HTMLVideoElement */
+/* global HTMLCanvasElement, HTMLVideoElement */
 import THREE from '../lib/three.js';
 import * as srcLoader from './src-loader.js';
 import debug from './debug.js';
@@ -14,6 +14,7 @@ var COLOR_MAPS = new Set([
 /**
  * Set texture properties such as repeat and offset.
  *
+ * @param {THREE.Texture} texture - a Texture instance.
  * @param {object} data - With keys like `repeat`.
  */
 export function setTextureProperties (texture, data) {
@@ -61,6 +62,8 @@ export function setTextureProperties (texture, data) {
  * Update `material` texture property (usually but not always `map`)
  * from `data` property (usually but not always `src`).
  *
+ * @param {string} materialName
+ * @param {string} dataName
  * @param {object} shader - A-Frame shader instance.
  * @param {object} data
  */

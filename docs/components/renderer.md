@@ -16,7 +16,7 @@ It also configures presentation attributes when entering WebVR/WebXR.
 ```html
 <a-scene renderer="antialias: true;
                    colorManagement: true;
-                   sortObjects: true;
+                   sortTransparentObjects: true;
                    maxCanvasWidth: 1920;
                    maxCanvasHeight: 1920;"></a-scene>
 ```
@@ -43,7 +43,7 @@ It also configures presentation attributes when entering WebVR/WebXR.
 | exposure                | When any toneMapping other than "no" is used this can be used to make the overall scene brighter or darker  | 1          |
 | anisotropy              | Default anisotropic filtering sample rate to use for textures                   | 1             |
 
-> **NOTE:** Once the scene is initialized, none of these properties may no longer be changed apart from "exposure", "toneMapping", and "sortTransparentObjects" which can be set dynamically.
+> **NOTE:** Once the scene is initialized, none of these properties may no longer be changed apart from "exposure", "toneMapping", "sortTransparentObjects" and "foveationLevel" which can be set dynamically.
 
 ### antialias
 
@@ -91,7 +91,7 @@ Sorting is used to attempt to properly render objects that have some degree of t
 Due to various limitations, proper transparency often requires some amount of careful setup.
 By default, transparent objects are not sorted, and the order of elements in the DOM determines order of
 rendering. Re-ordering DOM elements provides one way of forcing a consistent behavior, whereas
-use of `renderer="sortObjects: true"` may cause unwanted changes as the camera moves.
+use of `renderer="sortTransparentObjects: true"` may cause unwanted changes as the camera moves.
 
 Some more background on how A-Frame sorts objects for rendering can be found [here][sorting]
 

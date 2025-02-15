@@ -3,7 +3,14 @@
   "version": "1.6.0",
   "description": "A web framework for building virtual reality experiences.",
   "homepage": "https://aframe.io/",
-  "main": "dist/aframe-master.js",
+  "main": "./dist/aframe-master.js",
+  "module": "./dist/aframe-master.module.min.js",
+  "exports": {
+    ".": {
+      "import": "./dist/aframe-master.module.min.js",
+      "require": "./dist/aframe-master.js"
+    }
+  },
   "scripts": {
     "dev": "cross-env INSPECTOR_VERSION=dev webpack serve --port 8080",
     "dist": "node scripts/updateVersionLog.js && npm run dist:min && npm run dist:max && npm run dist:module",
@@ -20,6 +27,7 @@
     "prerelease": "node scripts/release.js 1.5.0 1.6.0",
     "start": "npm run dev",
     "start:https": "npm run dev -- --server-type https",
+    "start:webgpu": "cross-env WEBGPU=true npm run dev -- --server-type https",
     "test": "karma start ./tests/karma.conf.js",
     "test:docs": "node scripts/docsLint.js",
     "test:firefox": "npm test -- --browsers Firefox",
@@ -41,7 +49,7 @@
     "deep-assign": "^2.0.0",
     "load-bmfont": "^1.2.3",
     "super-animejs": "^3.1.0",
-    "three": "npm:super-three@0.172.0",
+    "three": "npm:super-three@0.173.4",
     "three-bmfont-text": "dmarcos/three-bmfont-text#eed4878795be9b3e38cf6aec6b903f56acd1f695"
   },
   "devDependencies": {

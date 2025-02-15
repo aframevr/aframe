@@ -21,8 +21,9 @@ export var systems = {};  // Keep track of registered systems.
  * and some pieces are missing from the Component facilities (e.g., attribute caching,
  * setAttribute behavior).
  *
- * @member {string} name - Name that system is registered under.
- * @member {Element} sceneEl - Handle to the scene element where system applies to.
+ * @constructor
+ * @param {Element} sceneEl - Handle to the scene element where system applies to.
+ * @property {string} name - Name that system is registered under.
  */
 export var System = function (sceneEl) {
   var component = components && components.components[this.name];
@@ -120,7 +121,6 @@ System.prototype = {
  *
  * @param {string} name - Component name.
  * @param {object} definition - Component property and methods.
- * @returns {object} Component.
  */
 export function registerSystem (name, definition) {
   var i;

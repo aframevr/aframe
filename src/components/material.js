@@ -1,4 +1,3 @@
-/* global Promise */
 import THREE from '../lib/three.js';
 import * as utils from '../utils/index.js';
 import { registerComponent } from '../core/component.js';
@@ -164,9 +163,7 @@ export var Component = registerComponent('material', {
    * (Re)create new material. Has side-effects of setting `this.material` and updating
    * material registration in scene.
    *
-   * @param {object} data - Material component data.
-   * @param {object} type - Material type to create.
-   * @returns {object} Material.
+   * @param {THREE.Material} material - Material to register.
    */
   setMaterial: function (material) {
     var el = this.el;

@@ -138,7 +138,7 @@ window.threeStats = function ( renderer ) {
     function _update () {
 
         _rS( 'renderer.info.memory.geometries' ).set( renderer.info.memory.geometries );
-        _rS( 'renderer.info.programs' ).set( renderer.info.programs.length );
+        _rS( 'renderer.info.programs' ).set( renderer.info.programs?.length ?? NaN );
         _rS( 'renderer.info.memory.textures' ).set( renderer.info.memory.textures );
         _rS( 'renderer.info.render.calls' ).set( renderer.info.render.calls );
         _rS( 'renderer.info.render.triangles' ).set( renderer.info.render.triangles );

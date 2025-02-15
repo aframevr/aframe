@@ -213,7 +213,6 @@ AFRAME.registerComponent('hand-menu', {
 
   lookAtCamera: (function () {
     var auxVector = new THREE.Vector3();
-    var auxObject3D = new THREE.Object3D();
     return function (el) {
       var cameraEl = this.el.sceneEl.querySelector('[camera]');
       auxVector.subVectors(cameraEl.object3D.position, el.object3D.position).add(el.object3D.position);
