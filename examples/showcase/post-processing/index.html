@@ -7,13 +7,13 @@
     <script type="importmap">
       {
         "imports": {
-          "aframe": "https://cdn.jsdelivr.net/gh/aframevr/aframe@20cf0f6913708be7a6002869fdeefefde69d7693/dist/aframe-master.module.min.js",
-          "three": "https://cdn.jsdelivr.net/npm/super-three@0.173.1/build/three.module.js",
-          "three/addons/": "https://cdn.jsdelivr.net/npm/super-three@0.173.1/examples/jsm/"
+          "aframe": "../../../dist/aframe-master.module.min.js",
+          "three": "../../../super-three-package/build/three.module.js",
+          "three/addons/": "../../../super-three-package/examples/jsm/",
         }
       }
     </script>
-    <script src="./info-message.js"></script>
+    <script src=".../../js/info-message.js"></script>
     <script type="module" src="./bloom.js"></script>
   </head>
 
@@ -86,11 +86,9 @@
           // set the proper controller on the specified hand
           this.el.setAttribute('meta-touch-controls', {
             hand: this.data.hand,
-            model: true
           });
           this.el.setAttribute('hand-tracking-controls', {
             hand: this.data.hand,
-            model: true
           });
         },
 
