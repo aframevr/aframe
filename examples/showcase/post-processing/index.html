@@ -9,12 +9,15 @@
         "imports": {
           "aframe": "../../../dist/aframe-master.module.min.js",
           "three": "../../../super-three-package/build/three.module.js",
-          "three/addons/": "../../../super-three-package/examples/jsm/",
+          "three/addons/": "../../../super-three-package/examples/jsm/"
         }
       }
     </script>
-    <script src=".../../js/info-message.js"></script>
-    <script type="module" src="./bloom.js"></script>
+    <script type="module">
+      import AFRAME from 'aframe';
+    </script>
+    <script src="../../js/info-message.js" type="module"></script>
+    <script src="./bloom.js" type="module"></script>
   </head>
 
   <body>
