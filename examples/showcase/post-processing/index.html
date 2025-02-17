@@ -36,9 +36,9 @@
       <a-entity id="rig" position="0 0 2">
         <a-entity id="camera" position="0 1.6 0" camera look-controls wasd-controls></a-entity>
 
-        <a-entity id="lhand" effect-control="hand: left;"> </a-entity>
+        <a-entity id="lhand" effect-controls="hand: left;"> </a-entity>
 
-        <a-entity id="rhand" effect-control="hand: right;"> </a-entity>
+        <a-entity id="rhand" effect-controls="hand: right;"> </a-entity>
       </a-entity>
 
       <a-entity
@@ -68,7 +68,7 @@
     <script type="module">
       import AFRAME from 'aframe';
 
-      AFRAME.registerComponent('effect-control', {
+      AFRAME.registerComponent('effect-controls', {
         schema: {
           hand: { type: 'string', default: 'left' }
         },
@@ -100,9 +100,16 @@
           var scene = this.el.sceneEl;
 
           // toggle the effect
-          if (this.effectOn) scene.removeAttribute('bloom');
+          if (this.effectOn) 
+            scene.setAttribute('bloom', {
+              enabled: false,
+              threshold: 1.0,
+              strength: 0.3,
+              radius: 1
+            });
           else
             scene.setAttribute('bloom', {
+              enabled: true,
               threshold: 1.0,
               strength: 0.3,
               radius: 1
