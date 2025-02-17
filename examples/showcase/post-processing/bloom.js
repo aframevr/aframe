@@ -14,6 +14,7 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
 AFRAME.registerComponent('bloom', {
   schema: {
+    enabled: { type: 'boolean', default: true },
     threshold: { type: 'number', default: 1 },
     strength: { type: 'number', default: 0.5 },
     radius: { type: 'number', default: 1 }
@@ -29,9 +30,18 @@ AFRAME.registerComponent('bloom', {
     this.scene = this.el.object3D;
     this.renderer = this.el.renderer;
     this.camera = this.el.camera;
+    this.originalRender = this.el.renderer.render;
     this.bind();
   },
-  update: function () {
+  update: function (oldData) {
+    if (oldData.enabled === false && this.data.enabled === true) {
+      this.bind();
+    }
+
+    if (oldData.enabled === true && this.data.enabled === false) {
+      this.el.renderer.render = this.originalRender;
+    }
+
     if (this.composer) {
       this.composer.dispose();
     }
@@ -73,7 +83,6 @@ AFRAME.registerComponent('bloom', {
   },
 
   bind: function () {
-    this.originalRender = this.el.renderer.render;
     const self = this;
     let isInsideComposerRender = false;
 
