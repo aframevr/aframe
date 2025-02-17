@@ -15,7 +15,7 @@ AFRAME.registerComponent('effect-controls', {
 
     init: function () {
         // initialize control variable
-        this.effectOn = true;
+        this.effectEnabled = true;
 
         // set the proper controller on the specified hand
         this.el.setAttribute('meta-touch-controls', {
@@ -27,21 +27,10 @@ AFRAME.registerComponent('effect-controls', {
     },
 
     toggleEffect: function () {
-        // get the scene
-        var scene = this.el.sceneEl;
 
-        // toggle the effect
-        if (this.effectOn) {
-            scene.setAttribute('bloom', {
-                enabled: false
-            });
-        } else {
-            scene.setAttribute('bloom', {
-                enabled: true
-            });
-        }
-
-        // set the control variable
-        this.effectOn = !this.effectOn;
+        // toggle control variable and effect
+        this.effectEnabled = !this.effectEnabled;
+        this.el.sceneEl.setAttribute('bloom', {enabled: this.effectEnabled});
+      
     }
 });
