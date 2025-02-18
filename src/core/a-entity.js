@@ -19,7 +19,7 @@ var ONCE = {once: true};
  *
  * @property {object} components - entity's currently initialized components.
  * @property {THREE.Object3D} object3D - three.js object.
- * @property {string[]} states.
+ * @property {string[]} states
  * @property {boolean} isPlaying - false if dynamic behavior of the entity is paused.
  */
 export class AEntity extends ANode {
@@ -119,7 +119,7 @@ export class AEntity extends ANode {
    * Set a THREE.Object3D into the map.
    *
    * @param {string} type - Developer-set name of the type of object, will be unique per type.
-   * @param {object} obj - A THREE.Object3D.
+   * @param {THREE.Object3D} obj - A THREE.Object3D.
    */
   setObject3D (type, obj) {
     var oldObj;
@@ -757,7 +757,8 @@ export class AEntity extends ANode {
 
   /**
    * Checks if the element is in a given state. e.g. el.is('alive');
-   * @type {string} state - Name of the state we want to check
+   *
+   * @param {string} state - Name of the state we want to check
    */
   is (state) {
     return this.states.indexOf(state) !== -1;
