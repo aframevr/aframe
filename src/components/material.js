@@ -214,8 +214,7 @@ function parseSide (side) {
 /**
  * Return a three.js constant determining blending
  *
- * @param {string} [blending=normal]
- * - `none`, additive`, `subtractive`,`multiply` or `normal`.
+ * @param {string} [blending=normal] - `none`, additive`, `subtractive`,`multiply` or `normal`.
  * @returns {number}
  */
 function parseBlending (blending) {

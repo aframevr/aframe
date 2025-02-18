@@ -9,8 +9,8 @@ var DEFAULT_LIGHT_ATTR = 'data-aframe-default-light';
  * Prescribes default lighting if not specified (one ambient, one directional).
  * Removes default lighting from the scene when a new light is added.
  *
- * @param {bool} defaultLights - Whether default lighting are defined.
- * @param {bool} userDefinedLights - Whether user lighting is defined.
+ * @param {boolean} defaultLights - Whether default lighting are defined.
+ * @param {boolean} userDefinedLights - Whether user lighting is defined.
  */
 export var System = registerSystem('light', {
   schema: {
