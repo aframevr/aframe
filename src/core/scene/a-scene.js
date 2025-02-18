@@ -342,7 +342,7 @@ export class AScene extends AEntity {
     }
   }
 
-   /**
+  /**
    * Call `exitPresent` if WebVR / WebXR or WebVR polyfill.
    * Handle events, states, fullscreen styles.
    *

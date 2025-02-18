@@ -191,8 +191,8 @@ AFRAME.registerComponent('hand-menu', {
       this.menuEl.emit('open');
       function lookAtVector (sourcePoint, destPoint) {
         return auxQuaternion.setFromRotationMatrix(
-            auxMatrix.identity()
-            .lookAt(sourcePoint, destPoint, new THREE.Vector3(0, 1, 0)));
+          auxMatrix.identity().lookAt(sourcePoint, destPoint, new THREE.Vector3(0, 1, 0))
+        );
       }
 
       var cameraEl = this.el.sceneEl.querySelector('[camera]');

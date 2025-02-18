@@ -16,7 +16,7 @@ registerGeometry('cylinder', {
 
   init: function (data) {
     this.geometry = new THREE.CylinderGeometry(
-        data.radius, data.radius, data.height, data.segmentsRadial, data.segmentsHeight,
-        data.openEnded, degToRad(data.thetaStart), degToRad(data.thetaLength));
+      data.radius, data.radius, data.height, data.segmentsRadial, data.segmentsHeight,
+      data.openEnded, degToRad(data.thetaStart), degToRad(data.thetaLength));
   }
 });

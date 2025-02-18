@@ -35,8 +35,8 @@ export var System = registerSystem('tracked-controls', {
       self.referenceSpace = referenceSpace;
     }).catch(function (err) {
       self.el.sceneEl.systems.webxr.warnIfFeatureNotRequested(
-          refspace,
-          'tracked-controls uses reference space "' + refspace + '".');
+        refspace,
+        'tracked-controls uses reference space "' + refspace + '".');
       throw err;
     });
 

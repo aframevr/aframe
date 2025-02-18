@@ -27,7 +27,7 @@ suite('material', function () {
     test('updates material', function () {
       el.setAttribute('material', 'color: #F0F; side: double');
       assert.shallowDeepEqual(el.getObject3D('mesh').material.color,
-                             {r: 1, g: 0, b: 1});
+                              {r: 1, g: 0, b: 1});
       assert.shallowDeepEqual(el.getObject3D('mesh').material.side, THREE.DoubleSide);
     });
 

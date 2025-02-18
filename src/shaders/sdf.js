@@ -96,16 +96,16 @@ export var Shader = registerShader('sdf', {
   fragmentShader: FRAGMENT_SHADER,
 
   init: function () {
-     this.uniforms = UniformsUtils.merge([
-       UniformsLib.fog,
-       this.initUniforms()
-     ]);
-     this.material = new THREE.ShaderMaterial({
-       uniforms: this.uniforms,
-       vertexShader: this.vertexShader,
-       fragmentShader: this.fragmentShader,
-       fog: true
-     });
-     return this.material;
-   }
+    this.uniforms = UniformsUtils.merge([
+      UniformsLib.fog,
+      this.initUniforms()
+    ]);
+    this.material = new THREE.ShaderMaterial({
+      uniforms: this.uniforms,
+      vertexShader: this.vertexShader,
+      fragmentShader: this.fragmentShader,
+      fog: true
+    });
+    return this.material;
+  }
 });

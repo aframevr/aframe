@@ -83,7 +83,7 @@ export var Component = registerComponent('vive-focus-controls', {
 
   checkIfControllerPresent: function () {
     checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX,
-                                        this.data.hand ? {hand: this.data.hand} : {});
+                                   this.data.hand ? {hand: this.data.hand} : {});
   },
 
   play: function () {

@@ -269,9 +269,7 @@ SPATIAL.utils = {
       uc = i < s || i >= 3 * s ? ur : ul;
       vc = i < 2 * s ? vh : vl;
 
-      uvs.push(uc, vc,
-              uc + ul * cosa, vc + vl * sina,
-              uc + ul * cosb, vc + vl * sinb);
+      uvs.push(uc, vc, uc + ul * cosa, vc + vl * sina, uc + ul * cosb, vc + vl * sinb);
 
       phia = phib;
     }
