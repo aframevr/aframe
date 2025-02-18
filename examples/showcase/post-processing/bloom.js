@@ -46,8 +46,8 @@ AFRAME.registerComponent('bloom', {
       this.composer.dispose();
     }
     // create composer with multisampling to avoid aliasing
-    const resolution = this.renderer.getDrawingBufferSize(new THREE.Vector2());
-    const renderTarget = new THREE.WebGLRenderTarget(
+    var resolution = this.renderer.getDrawingBufferSize(new THREE.Vector2());
+    var renderTarget = new THREE.WebGLRenderTarget(
       resolution.width,
       resolution.height,
       { type: THREE.HalfFloatType, samples: 8 }
@@ -56,13 +56,13 @@ AFRAME.registerComponent('bloom', {
     this.composer = new EffectComposer(this.renderer, renderTarget);
 
     // create render pass
-    const renderScene = new RenderPass(this.scene, this.camera);
+    var renderScene = new RenderPass(this.scene, this.camera);
     this.composer.addPass(renderScene);
 
     // create bloom pass
-    const strength = this.data.strength;
-    const radius = this.data.radius;
-    const threshold = this.data.threshold;
+    var strength = this.data.strength;
+    var radius = this.data.radius;
+    var threshold = this.data.threshold;
     if (this.bloomPass) {
       this.bloomPass.dispose();
     }
@@ -83,8 +83,8 @@ AFRAME.registerComponent('bloom', {
   },
 
   bind: function () {
-    const self = this;
-    let isInsideComposerRender = false;
+    var self = this;
+    var isInsideComposerRender = false;
 
     this.el.renderer.render = function () {
       if (isInsideComposerRender) {
