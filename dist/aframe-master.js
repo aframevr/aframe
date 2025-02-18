@@ -11982,8 +11982,7 @@ function parseSide(side) {
 /**
  * Return a three.js constant determining blending
  *
- * @param {string} [blending=normal]
- * - `none`, additive`, `subtractive`,`multiply` or `normal`.
+ * @param {string} [blending=normal] - `none`, additive`, `subtractive`,`multiply` or `normal`.
  * @returns {number}
  */
 function parseBlending(blending) {
@@ -19250,7 +19249,7 @@ class ACubeMap extends HTMLElement {
    * Checks for exactly six elements with [src].
    * When <img>s are used they will be prefetched.
    *
-   * @returns {Array<string|Element>|undefined} - six URLs or <img> elements if valid, else undefined.
+   * @returns {Array<string|Element>|undefined} six URLs or <img> elements if valid, else undefined.
    */
   validate() {
     var elements = this.querySelectorAll('[src]');
@@ -19310,7 +19309,7 @@ var ONCE = {
  *
  * @property {object} components - entity's currently initialized components.
  * @property {THREE.Object3D} object3D - three.js object.
- * @property {string[]} states.
+ * @property {string[]} states
  * @property {boolean} isPlaying - false if dynamic behavior of the entity is paused.
  */
 class AEntity extends _a_node_js__WEBPACK_IMPORTED_MODULE_1__.ANode {
@@ -19412,7 +19411,7 @@ class AEntity extends _a_node_js__WEBPACK_IMPORTED_MODULE_1__.ANode {
    * Set a THREE.Object3D into the map.
    *
    * @param {string} type - Developer-set name of the type of object, will be unique per type.
-   * @param {object} obj - A THREE.Object3D.
+   * @param {THREE.Object3D} obj - A THREE.Object3D.
    */
   setObject3D(type, obj) {
     var oldObj;
@@ -20095,7 +20094,8 @@ class AEntity extends _a_node_js__WEBPACK_IMPORTED_MODULE_1__.ANode {
 
   /**
    * Checks if the element is in a given state. e.g. el.is('alive');
-   * @type {string} state - Name of the state we want to check
+   *
+   * @param {string} state - Name of the state we want to check
    */
   is(state) {
     return this.states.indexOf(state) !== -1;
@@ -26776,8 +26776,8 @@ var DEFAULT_LIGHT_ATTR = 'data-aframe-default-light';
  * Prescribes default lighting if not specified (one ambient, one directional).
  * Removes default lighting from the scene when a new light is added.
  *
- * @param {bool} defaultLights - Whether default lighting are defined.
- * @param {bool} userDefinedLights - Whether user lighting is defined.
+ * @param {boolean} defaultLights - Whether default lighting are defined.
+ * @param {boolean} userDefinedLights - Whether user lighting is defined.
  */
 var System = (0,_core_system_js__WEBPACK_IMPORTED_MODULE_0__.registerSystem)('light', {
   schema: {
@@ -45209,7 +45209,7 @@ if (_utils_index_js__WEBPACK_IMPORTED_MODULE_16__.device.isBrowserEnvironment) {
   __webpack_require__(/*! ./style/aframe.css */ "./src/style/aframe.css");
   __webpack_require__(/*! ./style/rStats.css */ "./src/style/rStats.css");
 }
-console.log('A-Frame Version: 1.6.0 (Date 2025-02-14, Commit #536adc02)');
+console.log('A-Frame Version: 1.6.0 (Date 2025-02-18, Commit #671b7b4a)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].REVISION);
 
 // Wait for ready state, unless user asynchronously initializes A-Frame.
