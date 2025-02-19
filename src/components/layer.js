@@ -1,4 +1,5 @@
-/* global THREE, XRRigidTransform, XRWebGLBinding */
+/* global XRRigidTransform, XRWebGLBinding */
+import * as THREE from 'three';
 import { registerComponent } from '../core/component.js';
 import * as utils from '../utils/index.js';
 var warn = utils.debug('components:layer:warn');

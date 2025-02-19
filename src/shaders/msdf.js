@@ -1,5 +1,5 @@
 import { registerShader } from '../core/shader.js';
-import THREE from '../lib/three.js';
+import * as THREE from 'three';
 
 var VERTEX_SHADER = [
   '#include <common>',

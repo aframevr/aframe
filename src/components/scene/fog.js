@@ -1,5 +1,5 @@
 import { registerComponent as register } from '../../core/component.js';
-import THREE from '../../lib/three.js';
+import * as THREE from 'three';
 
 /**
  * Fog component.

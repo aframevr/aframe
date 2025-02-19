@@ -1,4 +1,5 @@
-/* global THREE, XRHand */
+/* global XRHand */
+import * as THREE from 'three';
 import { registerComponent } from '../core/component.js';
 import { AEntity } from '../core/a-entity.js';
 import { checkControllerPresentAndSetup } from '../utils/tracked-controls.js';
@@ -354,7 +355,7 @@ export var Component = registerComponent('hand-tracking-controls', {
   },
 
   initDotsModel: function () {
-     // Add models just once.
+    // Add models just once.
     if (this.jointEls.length !== 0) { return; }
     for (var i = 0; i < JOINTS.length; ++i) {
       var jointEl = this.jointEl = document.createElement('a-entity');

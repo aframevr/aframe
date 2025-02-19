@@ -1,5 +1,5 @@
 import * as schema from './schema.js';
-import THREE from '../lib/three.js';
+import * as THREE from 'three';
 
 var processSchema = schema.process;
 export var geometries = {};  // Registered geometries.

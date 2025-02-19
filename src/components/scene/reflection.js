@@ -1,12 +1,13 @@
-/* global THREE, XRWebGLBinding */
+/* global XRWebGLBinding */
+import * as THREE from 'three';
 import { registerComponent as register } from '../../core/component.js';
 
 // source: view-source:https://storage.googleapis.com/chromium-webxr-test/r886480/proposals/lighting-estimation.html
 function updateLights (estimate, probeLight, directionalLight, directionalLightPosition) {
   var intensityScalar =
     Math.max(estimate.primaryLightIntensity.x,
-      Math.max(estimate.primaryLightIntensity.y,
-        estimate.primaryLightIntensity.z));
+             Math.max(estimate.primaryLightIntensity.y,
+                      estimate.primaryLightIntensity.z));
 
   probeLight.sh.fromArray(estimate.sphericalHarmonicsCoefficients);
   probeLight.intensity = 3.14;

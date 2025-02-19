@@ -1,4 +1,4 @@
-/* global THREE */
+import * as THREE from 'three';
 import { registerComponent } from '../core/component.js';
 
 export var Component = registerComponent('line', {

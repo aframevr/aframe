@@ -4,6 +4,8 @@
     "ecmaVersion": 12
   },
   "rules": {
+    "indent": ["error", 2, { "SwitchCase": 1, "ignoreComments": true, "CallExpression": { "arguments": "first" } }],
+
     /* To work towards no-build. */
     "import/extensions": ["warn", "always", { "js": "always" }],
 
@@ -26,7 +28,6 @@
        careful co-ordination is needed in adopting the rule to avoid
        creating merge issues for other PRs. */
     "dot-notation": "off",
-    "indent": "off",
     "no-multi-spaces": "off",
     "object-curly-spacing": "off",
     "quote-props": "off"

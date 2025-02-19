@@ -1,4 +1,5 @@
-/* global THREE, MouseEvent, TouchEvent */
+/* global MouseEvent, TouchEvent */
+import * as THREE from 'three';
 import { registerComponent } from '../core/component.js';
 import * as utils from '../utils/index.js';
 

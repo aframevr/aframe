@@ -1,6 +1,6 @@
 /* global ImageData, URL */
 import { registerComponent } from '../../core/component.js';
-import THREE from '../../lib/three.js';
+import * as THREE from 'three';
 
 var VERTEX_SHADER = [
   'attribute vec3 position;',

@@ -158,7 +158,7 @@ suite('material system', function () {
         var system = this.system;
 
         videoEl.insertAdjacentHTML('beforeend',
-          '<source src="' + VIDEO1 + '"></source>');
+                                   '<source src="' + VIDEO1 + '"></source>');
         system.loadTextureSource(videoEl, function (source) {
           var hash = Object.keys(system.sourceCache)[0];
           assert.equal(source.data, videoEl);

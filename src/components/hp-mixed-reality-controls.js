@@ -1,5 +1,5 @@
 import { registerComponent } from '../core/component.js';
-import THREE from '../lib/three.js';
+import * as THREE from 'three';
 import { AFRAME_CDN_ROOT } from '../constants/index.js';
 import { checkControllerPresentAndSetup, emitIfAxesChanged, onButtonEvent } from '../utils/tracked-controls.js';
 

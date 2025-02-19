@@ -3,7 +3,7 @@ import loadBMFont from 'load-bmfont';
 
 import { registerComponent } from '../core/component.js';
 import { shaders } from '../core/shader.js';
-import THREE from '../lib/three.js';
+import * as THREE from 'three';
 import * as utils from '../utils/index.js';
 import { AFRAME_CDN_ROOT } from '../constants/index.js';
 
@@ -367,7 +367,7 @@ export var Component = registerComponent('text', {
         ? data.lineHeight
         : font.common.lineHeight;
       geometryUpdateData.text = data.value.toString().replace(newLineRegex, '\n')
-                                                     .replace(tabRegex, '\t');
+        .replace(tabRegex, '\t');
       geometryUpdateData.width = computeWidth(data.wrapPixels, data.wrapCount,
                                               font.widthFactor);
       geometry.update(utils.extend(geometryUpdateBase, data, geometryUpdateData));
