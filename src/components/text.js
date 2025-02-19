@@ -367,7 +367,7 @@ export var Component = registerComponent('text', {
         ? data.lineHeight
         : font.common.lineHeight;
       geometryUpdateData.text = data.value.toString().replace(newLineRegex, '\n')
-                                                     .replace(tabRegex, '\t');
+        .replace(tabRegex, '\t');
       geometryUpdateData.width = computeWidth(data.wrapPixels, data.wrapCount,
                                               font.widthFactor);
       geometry.update(utils.extend(geometryUpdateBase, data, geometryUpdateData));

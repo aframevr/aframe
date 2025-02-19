@@ -43,7 +43,7 @@ suite('tracked-controls', function () {
       system.controllers = [controller];
       assert.strictEqual(component.controller, undefined);
       el.setAttribute('tracked-controls',
-        {id: 'generic', hand: 'left', iterateControllerProfiles: true});
+                      {id: 'generic', hand: 'left', iterateControllerProfiles: true});
       component.updateController();
       assert.equal(component.controller, controller);
     });

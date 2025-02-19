@@ -17,8 +17,8 @@ registerGeometry('cone', {
 
   init: function (data) {
     this.geometry = new THREE.CylinderGeometry(
-        data.radiusTop, data.radiusBottom, data.height, data.segmentsRadial,
-        data.segmentsHeight, data.openEnded, degToRad(data.thetaStart),
-        degToRad(data.thetaLength));
+      data.radiusTop, data.radiusBottom, data.height, data.segmentsRadial,
+      data.segmentsHeight, data.openEnded, degToRad(data.thetaStart),
+      degToRad(data.thetaLength));
   }
 });

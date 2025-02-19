@@ -32,7 +32,7 @@ AFRAME.registerComponent('spatial-close-button', {
     });
 
     var texture = new THREE.TextureLoader().load('./close-button.png', function () {
-       // material.needsUpdate = true;
+      // material.needsUpdate = true;
     });
     planeMaterial.map = texture;
     texture.colorSpace = THREE.SRGBColorSpace;
