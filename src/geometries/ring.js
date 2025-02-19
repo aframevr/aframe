@@ -15,7 +15,7 @@ registerGeometry('ring', {
 
   init: function (data) {
     this.geometry = new THREE.RingGeometry(
-        data.radiusInner, data.radiusOuter, data.segmentsTheta, data.segmentsPhi,
-        degToRad(data.thetaStart), degToRad(data.thetaLength));
+      data.radiusInner, data.radiusOuter, data.segmentsTheta, data.segmentsPhi,
+      degToRad(data.thetaStart), degToRad(data.thetaLength));
   }
 });

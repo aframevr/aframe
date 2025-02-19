@@ -198,7 +198,7 @@ function createEnterVRButton (onClick) {
   vrButton = document.createElement('button');
   vrButton.className = ENTER_VR_BTN_CLASS;
   vrButton.setAttribute('title',
-    'Enter VR mode with a headset or fullscreen without');
+                        'Enter VR mode with a headset or fullscreen without');
   vrButton.setAttribute(constants.AFRAME_INJECTED, '');
   if (utils.device.isMobile()) { applyStickyHoverFix(vrButton); }
   // Insert elements.
@@ -230,7 +230,7 @@ function createEnterARButton (onClick, xrMode) {
   arButton = document.createElement('button');
   arButton.className = ENTER_AR_BTN_CLASS;
   arButton.setAttribute('title',
-    'Enter AR mode with a headset or handheld device.');
+                        'Enter AR mode with a headset or handheld device.');
   arButton.setAttribute(constants.AFRAME_INJECTED, '');
   if (utils.device.isMobile()) { applyStickyHoverFix(arButton); }
   // Insert elements.

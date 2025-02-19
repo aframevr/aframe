@@ -5,8 +5,8 @@ import { registerComponent as register } from '../../core/component.js';
 function updateLights (estimate, probeLight, directionalLight, directionalLightPosition) {
   var intensityScalar =
     Math.max(estimate.primaryLightIntensity.x,
-      Math.max(estimate.primaryLightIntensity.y,
-        estimate.primaryLightIntensity.z));
+             Math.max(estimate.primaryLightIntensity.y,
+                      estimate.primaryLightIntensity.z));
 
   probeLight.sh.fromArray(estimate.sphericalHarmonicsCoefficients);
   probeLight.intensity = 3.14;

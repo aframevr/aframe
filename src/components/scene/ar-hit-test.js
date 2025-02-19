@@ -81,17 +81,17 @@ HitTest.prototype.sessionStart = function sessionStart (hitTestSourceDetails) {
   }
   if (hitTestSourceDetails.space) {
     this.session.requestHitTestSource(hitTestSourceDetails)
-    .then(function (xrHitTestSource) {
-      this.xrHitTestSource = xrHitTestSource;
-    }.bind(this))
-    .catch(warnAboutHitTest);
+      .then(function (xrHitTestSource) {
+        this.xrHitTestSource = xrHitTestSource;
+      }.bind(this))
+      .catch(warnAboutHitTest);
   } else if (hitTestSourceDetails.profile) {
     this.session.requestHitTestSourceForTransientInput(hitTestSourceDetails)
-    .then(function (xrHitTestSource) {
-      this.xrHitTestSource = xrHitTestSource;
-      this.transient = true;
-    }.bind(this))
-    .catch(warnAboutHitTest);
+      .then(function (xrHitTestSource) {
+        this.xrHitTestSource = xrHitTestSource;
+        this.transient = true;
+      }.bind(this))
+      .catch(warnAboutHitTest);
   }
 };
 
@@ -113,24 +113,24 @@ HitTest.prototype.anchorFromLastHitTestResult = function (object3D, offset) {
   };
 
   Array.from(this.anchorToObject3D.entries())
-  .forEach(function (entry) {
-    var entryObject = entry[1].object3D;
-    var anchor = entry[0];
-    if (entryObject === object3D) {
-      this.anchorToObject3D.delete(anchor);
-      anchor.delete();
-    }
-  }.bind(this));
+    .forEach(function (entry) {
+      var entryObject = entry[1].object3D;
+      var anchor = entry[0];
+      if (entryObject === object3D) {
+        this.anchorToObject3D.delete(anchor);
+        anchor.delete();
+      }
+    }.bind(this));
 
   if (hitTest.createAnchor) {
     hitTest.createAnchor()
-    .then(function (anchor) {
-      this.anchorToObject3D.set(anchor, object3DOptions);
-    }.bind(this))
-    .catch(function (e) {
-      console.warn(e.message);
-      console.warn('Cannot create anchor, are you missing: webxr="optionalFeatures: anchors;" from <a-scene>?');
-    });
+      .then(function (anchor) {
+        this.anchorToObject3D.set(anchor, object3DOptions);
+      }.bind(this))
+      .catch(function (e) {
+        console.warn(e.message);
+        console.warn('Cannot create anchor, are you missing: webxr="optionalFeatures: anchors;" from <a-scene>?');
+      });
   }
 };
 
@@ -283,13 +283,13 @@ export var Component = register('ar-hit-test', {
 
       // Default to selecting through the face
       session.requestReferenceSpace('viewer')
-      .then(function (viewerSpace) {
-        this.viewerHitTest = this.hitTest = new HitTest(renderer, {
-          space: viewerSpace
-        });
+        .then(function (viewerSpace) {
+          this.viewerHitTest = this.hitTest = new HitTest(renderer, {
+            space: viewerSpace
+          });
 
-        this.el.emit('ar-hit-test-start');
-      }.bind(this));
+          this.el.emit('ar-hit-test-start');
+        }.bind(this));
 
       // If a tracked controller is available, selects via that instead of the headset
       var arHitTestComp = this;
