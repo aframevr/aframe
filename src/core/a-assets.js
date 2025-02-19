@@ -1,5 +1,5 @@
 /* global customElements */
-import THREE from '../lib/three.js';
+import * as THREE from 'three';
 import { ANode } from './a-node.js';
 import { debug } from '../utils/index.js';
 

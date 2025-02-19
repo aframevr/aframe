@@ -1,6 +1,6 @@
 import { registerComponent } from '../core/component.js';
 import { debug } from '../utils/index.js';
-import THREE from '../lib/three.js';
+import * as THREE from 'three';
 
 var warn = debug('components:sound:warn');
 

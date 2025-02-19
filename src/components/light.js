@@ -1,4 +1,5 @@
-import THREE from '../lib/three.js';
+import * as THREE from 'three';
+import { LightProbeGenerator } from 'three/addons/lights/LightProbeGenerator.js';
 import { diff, debug, srcLoader } from '../utils/index.js';
 import { registerComponent } from '../core/component.js';
 import * as mathUtils from '../utils/math.js';
@@ -352,7 +353,7 @@ export var Component = registerComponent('light', {
       probeCache[data.envMap] = new window.Promise(function (resolve) {
         srcLoader.validateCubemapSrc(data.envMap, function loadEnvMap (urls) {
           CubeLoader.load(urls, function (cube) {
-            var tempLightProbe = THREE.LightProbeGenerator.fromCubeTexture(cube);
+            var tempLightProbe = LightProbeGenerator.fromCubeTexture(cube);
             probeCache[data.envMap] = tempLightProbe;
             resolve(tempLightProbe);
           });

@@ -1,4 +1,4 @@
-import THREE from '../lib/three.js';
+import * as THREE from 'three';
 import { geometries, geometryNames } from '../core/geometry.js';
 import { registerComponent } from '../core/component.js';
 

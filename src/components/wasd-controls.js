@@ -1,4 +1,4 @@
-import THREE from '../lib/three.js';
+import * as THREE from 'three';
 import { KEYCODE_TO_CODE } from '../constants/keyboardevent.js';
 import { registerComponent } from '../core/component.js';
 import * as utils from '../utils/index.js';

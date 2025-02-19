@@ -1,4 +1,5 @@
-/* global THREE */
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { registerComponent } from '../core/component.js';
 import { AFRAME_CDN_ROOT } from '../constants/index.js';
 
@@ -63,7 +64,7 @@ export var Component = registerComponent('hand-controls', {
     // Active buttons populated by events provided by the attached controls.
     this.pressedButtons = {};
     this.touchedButtons = {};
-    this.loader = new THREE.GLTFLoader();
+    this.loader = new GLTFLoader();
     this.loader.setCrossOrigin('anonymous');
 
     this.onGripDown = function () { self.handleButton('grip', 'down'); };

@@ -1,4 +1,4 @@
-/* global THREE */
+import * as THREE from 'three';
 import { AFRAME_INJECTED } from '../../constants/index.js';
 import * as utils from '../../utils/index.js';
 var styleParser = utils.styleParser;

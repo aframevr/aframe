@@ -1,4 +1,4 @@
-import THREE from '../lib/three.js';
+import * as THREE from 'three';
 import anime from 'super-animejs';
 import { registerComponent, components } from '../core/component.js';
 import * as utils from '../utils/index.js';

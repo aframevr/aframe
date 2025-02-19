@@ -1,6 +1,6 @@
 /* global MutationObserver */
 
-import THREE from '../lib/three.js';
+import * as THREE from 'three';
 import { registerComponent } from '../core/component.js';
 import * as utils from '../utils/index.js';
 

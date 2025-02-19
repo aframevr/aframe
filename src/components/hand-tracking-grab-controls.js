@@ -1,5 +1,5 @@
 import { registerComponent } from '../core/component.js';
-import THREE from '../lib/three.js';
+import * as THREE from 'three';
 
 registerComponent('hand-tracking-grab-controls', {
   schema: {
