@@ -22275,11 +22275,11 @@ class AScene extends _a_entity_js__WEBPACK_IMPORTED_MODULE_8__.AEntity {
   }
 
   /**
-  * Call `exitPresent` if WebVR / WebXR or WebVR polyfill.
-  * Handle events, states, fullscreen styles.
-  *
-  * @returns {Promise}
-  */
+   * Call `exitPresent` if WebVR / WebXR or WebVR polyfill.
+   * Handle events, states, fullscreen styles.
+   *
+   * @returns {Promise}
+   */
   exitVR() {
     var self = this;
     var vrManager = this.renderer.xr;
@@ -45209,7 +45209,7 @@ if (_utils_index_js__WEBPACK_IMPORTED_MODULE_16__.device.isBrowserEnvironment) {
   __webpack_require__(/*! ./style/aframe.css */ "./src/style/aframe.css");
   __webpack_require__(/*! ./style/rStats.css */ "./src/style/rStats.css");
 }
-console.log('A-Frame Version: 1.6.0 (Date 2025-02-18, Commit #671b7b4a)');
+console.log('A-Frame Version: 1.6.0 (Date 2025-02-19, Commit #1fe12474)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].REVISION);
 
 // Wait for ready state, unless user asynchronously initializes A-Frame.
