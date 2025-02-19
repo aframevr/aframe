@@ -49,10 +49,6 @@ export class AScene extends AEntity {
     self.isAR = false;
     self.isScene = true;
     self.object3D = new THREE.Scene();
-    self.object3D.onAfterRender = function (renderer, scene, camera) {
-      // THREE may swap the camera used for the rendering if in VR, so we pass it to tock
-      if (self.isPlaying) { self.tock(self.time, self.delta, camera); }
-    };
     self.resize = self.resize.bind(self);
     self.render = self.render.bind(self);
     self.systems = {};
@@ -667,6 +663,10 @@ export class AScene extends AEntity {
     renderer.render(this.object3D, this.camera);
     if (savedBackground) {
       this.object3D.background = savedBackground;
+    }
+    if (this.isPlaying) {
+      var renderCamera = renderer.xr.isPresenting ? renderer.xr.getCamera() : this.camera;
+      this.tock(this.time, this.delta, renderCamera);
     }
   }
 
