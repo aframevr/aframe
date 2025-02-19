@@ -1,5 +1,5 @@
 /* global HTMLCanvasElement, HTMLVideoElement */
-import THREE from '../lib/three.js';
+import * as THREE from 'three';
 import * as srcLoader from './src-loader.js';
 import debug from './debug.js';
 var warn = debug('utils:material:warn');

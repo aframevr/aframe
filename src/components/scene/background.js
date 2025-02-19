@@ -1,4 +1,4 @@
-/* global THREE */
+import * as THREE from 'three';
 import { registerComponent as register } from '../../core/component.js';
 
 export var Component = register('background', {

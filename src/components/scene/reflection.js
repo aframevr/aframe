@@ -1,4 +1,5 @@
-/* global THREE, XRWebGLBinding */
+/* global XRWebGLBinding */
+import * as THREE from 'three';
 import { registerComponent as register } from '../../core/component.js';
 
 // source: view-source:https://storage.googleapis.com/chromium-webxr-test/r886480/proposals/lighting-estimation.html

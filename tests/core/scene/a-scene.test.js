@@ -76,9 +76,8 @@ suite('a-scene (without renderer) - WebXR', function () {
       // Mock renderer.
       assert.ok(sceneEl.renderer);
       // Mock renderer is not a real WebGLRenderer.
-      assert.notOk(
-        (THREE.WebGLRenderer && sceneEl.renderer instanceof THREE.WebGLRenderer) ||
-        (THREE.WebGPURenderer && sceneEl.renderer instanceof THREE.WebGPURenderer));
+      var rendererImpl = ['WebGLRenderer', 'WebGPURenderer'].find(function (x) { return THREE[x]; });
+      assert.notOk(sceneEl.renderer instanceof THREE[rendererImpl]);
     });
   });
 

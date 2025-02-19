@@ -1,5 +1,6 @@
 /* global DeviceOrientationEvent  */
-import THREE from '../lib/three.js';
+import * as THREE from 'three';
+import { DeviceOrientationControls } from '../../vendor/DeviceOrientationControls.js';
 import { registerComponent } from '../core/component.js';
 import * as utils from '../utils/index.js';
 
@@ -56,7 +57,7 @@ export var Component = registerComponent('look-controls', {
 
     // Only on mobile devices and only enabled if DeviceOrientation permission has been granted.
     if (utils.device.isMobile() || utils.device.isMobileDeviceRequestingDesktopSite()) {
-      magicWindowControls = this.magicWindowControls = new THREE.DeviceOrientationControls(this.magicWindowObject);
+      magicWindowControls = this.magicWindowControls = new DeviceOrientationControls(this.magicWindowObject);
       if (typeof DeviceOrientationEvent !== 'undefined' && DeviceOrientationEvent.requestPermission) {
         magicWindowControls.enabled = false;
         if (this.el.sceneEl.components['device-orientation-permission-ui'].permissionGranted) {

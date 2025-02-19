@@ -1,4 +1,4 @@
-import THREE from '../lib/three.js';
+import * as THREE from 'three';
 import { registerSystem } from '../core/system.js';
 
 var SHADOW_MAP_TYPE_MAP = {

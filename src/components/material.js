@@ -1,4 +1,4 @@
-import THREE from '../lib/three.js';
+import * as THREE from 'three';
 import * as utils from '../utils/index.js';
 import { registerComponent } from '../core/component.js';
 import { shaders, shaderNames } from '../core/shader.js';

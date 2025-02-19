@@ -1,5 +1,5 @@
 import { registerShader } from '../core/shader.js';
-import THREE from '../lib/three.js';
+import * as THREE from 'three';
 import { UniformsUtils } from 'three/src/renderers/shaders/UniformsUtils.js';
 import { UniformsLib } from 'three/src/renderers/shaders/UniformsLib.js';
 

@@ -1,5 +1,5 @@
 /* global XRPlane */
-import THREE from '../../lib/three.js';
+import * as THREE from 'three';
 import { registerComponent as register } from '../../core/component.js';
 
 /**

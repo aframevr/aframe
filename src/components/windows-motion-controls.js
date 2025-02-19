@@ -1,4 +1,4 @@
-/* global THREE */
+import * as THREE from 'three';
 import { registerComponent } from '../core/component.js';
 import * as utils from '../utils/index.js';
 import { DEFAULT_HANDEDNESS, AFRAME_CDN_ROOT } from '../constants/index.js';

@@ -1,4 +1,4 @@
-import THREE from '../lib/three.js';
+import * as THREE from 'three';
 import { registerSystem } from '../core/system.js';
 import * as utils from '../utils/index.js';
 

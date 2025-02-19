@@ -1,5 +1,5 @@
 /* global Promise, customElements, screen */
-import THREE from '../../lib/three.js';
+import * as THREE from 'three';
 import { inject as initMetaTags } from './metaTags.js';
 import { initWakelock } from './wakelock.js';
 import * as loadingScreen from './loadingScreen.js';
@@ -543,7 +543,11 @@ export class AScene extends AEntity {
       };
     }
 
-    renderer = this.renderer = new (THREE.WebGLRenderer || THREE.WebGPURenderer)(rendererConfig);
+    // Trick Webpack so that it can't statically determine the exact export used.
+    // Otherwise it will conclude that one of the two exports can't be found in THREE.
+    // Only one needs to exist, and this should be determined at runtime.
+    var rendererImpl = ['WebGLRenderer', 'WebGPURenderer'].find(function (x) { return THREE[x]; });
+    renderer = this.renderer = new THREE[rendererImpl](rendererConfig);
     if (!renderer.xr.setPoseTarget) {
       renderer.xr.setPoseTarget = function () {};
     }

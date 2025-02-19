@@ -1,4 +1,4 @@
-import THREE from '../lib/three.js';
+import * as THREE from 'three';
 import { registerGeometry } from '../core/geometry.js';
 
 var degToRad = THREE.MathUtils.degToRad;

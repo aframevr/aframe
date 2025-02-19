@@ -3,7 +3,7 @@ import loadBMFont from 'load-bmfont';
 
 import { registerComponent } from '../core/component.js';
 import { shaders } from '../core/shader.js';
-import THREE from '../lib/three.js';
+import * as THREE from 'three';
 import * as utils from '../utils/index.js';
 import { AFRAME_CDN_ROOT } from '../constants/index.js';
 

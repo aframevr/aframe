@@ -1,4 +1,5 @@
-/* global THREE, XRHand */
+/* global XRHand */
+import * as THREE from 'three';
 import { registerComponent } from '../core/component.js';
 import { AEntity } from '../core/a-entity.js';
 import { checkControllerPresentAndSetup } from '../utils/tracked-controls.js';

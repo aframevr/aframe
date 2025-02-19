@@ -1,4 +1,4 @@
-import THREE from '../lib/three.js';
+import * as THREE from 'three';
 import { process as processSchema } from './schema.js';
 import * as utils from '../utils/index.js';
 

@@ -1,4 +1,4 @@
-import THREE from '../lib/three.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { registerComponent } from '../core/component.js';
 import * as utils from '../utils/index.js';
 var warn = utils.debug('components:gltf-model:warn');
@@ -15,7 +15,7 @@ export var Component = registerComponent('gltf-model', {
     var meshoptDecoder = this.system.getMeshoptDecoder();
     var ktxLoader = this.system.getKTX2Loader();
     this.model = null;
-    this.loader = new THREE.GLTFLoader();
+    this.loader = new GLTFLoader();
     if (dracoLoader) {
       this.loader.setDRACOLoader(dracoLoader);
     }

@@ -1,4 +1,5 @@
-import THREE from '../lib/three.js';
+import * as THREE from 'three';
+import { OBB } from 'three/addons/math/OBB.js';
 import { registerComponent } from '../core/component.js';
 
 registerComponent('obb-collider', {
@@ -60,8 +61,8 @@ registerComponent('obb-collider', {
   updateCollider: function () {
     var el = this.el;
     var boundingBoxSize = this.boundingBoxSize;
-    var aabb = this.aabb = this.aabb || new THREE.OBB();
-    this.obb = this.obb || new THREE.OBB();
+    var aabb = this.aabb = this.aabb || new OBB();
+    this.obb = this.obb || new OBB();
 
     // Defer if entity has not yet loaded.
     if (!el.hasLoaded) {
