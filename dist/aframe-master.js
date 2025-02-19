@@ -21966,12 +21966,6 @@ class AScene extends _a_entity_js__WEBPACK_IMPORTED_MODULE_8__.AEntity {
     self.isAR = false;
     self.isScene = true;
     self.object3D = new _lib_three_js__WEBPACK_IMPORTED_MODULE_0__["default"].Scene();
-    self.object3D.onAfterRender = function (renderer, scene, camera) {
-      // THREE may swap the camera used for the rendering if in VR, so we pass it to tock
-      if (self.isPlaying) {
-        self.tock(self.time, self.delta, camera);
-      }
-    };
     self.resize = self.resize.bind(self);
     self.render = self.render.bind(self);
     self.systems = {};
@@ -22605,6 +22599,10 @@ class AScene extends _a_entity_js__WEBPACK_IMPORTED_MODULE_8__.AEntity {
     renderer.render(this.object3D, this.camera);
     if (savedBackground) {
       this.object3D.background = savedBackground;
+    }
+    if (this.isPlaying) {
+      var renderCamera = renderer.xr.isPresenting ? renderer.xr.getCamera() : this.camera;
+      this.tock(this.time, this.delta, renderCamera);
     }
   }
   callComponentBehaviors(behavior, time, timeDelta) {
@@ -45209,7 +45207,7 @@ if (_utils_index_js__WEBPACK_IMPORTED_MODULE_16__.device.isBrowserEnvironment) {
   __webpack_require__(/*! ./style/aframe.css */ "./src/style/aframe.css");
   __webpack_require__(/*! ./style/rStats.css */ "./src/style/rStats.css");
 }
-console.log('A-Frame Version: 1.6.0 (Date 2025-02-19, Commit #1fe12474)');
+console.log('A-Frame Version: 1.6.0 (Date 2025-02-19, Commit #4e6d20a9)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].REVISION);
 
 // Wait for ready state, unless user asynchronously initializes A-Frame.
