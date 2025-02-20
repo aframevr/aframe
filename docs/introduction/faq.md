@@ -62,7 +62,7 @@ use of resources, we will need deeper understanding about 3D graphics.  See
 [release]: https://github.com/aframevr/aframe/releases
 [webxr]: https://immersive-web.github.io/webxr/
 
-If you are using A-Frame 1.6.0 or older you probably need to update to the [latest release][release]. Browsers are migrating to the [WebXR standard][webxr] and old versions might no longer work.
+If you are using A-Frame 1.7.0 or older you probably need to update to the [latest release][release]. Browsers are migrating to the [WebXR standard][webxr] and old versions might no longer work.
 
 You also have to serve your content over HTTPS. The WebXR API won't be available over HTTP.
 
@@ -372,7 +372,7 @@ You can load A-Frame as an ES module using a [side effect import](https://develo
   <script type="importmap">
     {
         "imports": {
-            "aframe": "https://aframe.io/releases/1.6.0/aframe.min.js",
+            "aframe": "https://aframe.io/releases/1.7.0/aframe.min.js",
         }
     }
   </script>
@@ -407,8 +407,8 @@ Make sure the three and A-Frame versions are compatible. See browser console (or
     {
       "imports": {
         "aframe": "https://aframe.io/releases/1.7.0/aframe.module.min.js",
-        "three": "https://cdn.jsdelivr.net/npm/super-three@0.172.0/build/three.module.js",
-        "three/addons/": "https://cdn.jsdelivr.net/npm/super-three@0.172.0/examples/jsm/",
+        "three": "https://cdn.jsdelivr.net/npm/super-three@0.173.4/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/super-three@0.173.4/examples/jsm/",
         "aframe-extras/controls": "https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.5.x/dist/aframe-extras.controls.min.js"
       }
     }

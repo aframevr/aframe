@@ -40,7 +40,7 @@ We start out with a minimal HTML structure:
 ```html
 <html>
   <head>
-    <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
   </head>
   <body>
     <a-scene>
@@ -223,7 +223,7 @@ First, include the environment component using a script tag after A-Frame:
 
 ```html
 <head>
-  <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+  <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
   <script src="https://unpkg.com/aframe-environment-component@1.3.x/dist/aframe-environment-component.min.js"></script>
 </head>
 ```
