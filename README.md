@@ -182,7 +182,21 @@ cd aframe && npm install  # Install dependencies.
 npm start  # Start the local development server.
 ```
 
-And open in your browser **[http://localhost:9000](http://localhost:9000)**.
+And open in your browser [http://localhost:8080](http://localhost:8080).
+
+If you want to test the examples in VR, you need to run it with https:
+
+```sh
+npm run start:https
+```
+
+Look at the "On Your Network (IPv4)" line in the console, and copy and paste
+the url to https://hmd.link service.
+Then open the browser in your headset and type hmd.link in the address bar
+then click on the copied url that will show up if you're connected to the same
+network as your machine.
+You will see a message about the page being dangerous because we're using a
+self-signed certificate, you can ignore that warning and continue to the page.
 
 ### Generating Builds
 
