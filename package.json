@@ -1,6 +1,6 @@
 {
   "name": "aframe",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "description": "A web framework for building virtual reality experiences.",
   "homepage": "https://aframe.io/",
   "main": "./dist/aframe-master.js",
@@ -24,7 +24,7 @@
     "lint:fix": "standardx --fix",
     "precommit": "npm run lint",
     "prepush": "node scripts/testOnlyCheck.js",
-    "prerelease": "node scripts/release.js 1.5.0 1.6.0",
+    "prerelease": "node scripts/release.js 1.6.0 1.7.0",
     "start": "npm run dev",
     "start:https": "npm run dev -- --server-type https",
     "start:webgpu": "cross-env WEBGPU=true npm run dev -- --server-type https",
