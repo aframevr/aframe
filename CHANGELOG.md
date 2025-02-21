@@ -7,7 +7,7 @@ Post-processing, ES modules and importmap, WebGPU support, Logitec MX Ink integr
 
 - Update to THREE r173 (@dmarcos)
 - Import maps support and replacement of CommonJS with ES Modules (@mrxz, @vincentfretin)
-- Experimental post-processing support. It works both in regular and immersive modes (@enzofrancescaHM, @mrxz, @enzofrancescaHM)
+- Experimental post-processing support. It works both in regular and immersive modes (@enzofrancescaHM, @mrxz, @vincentfretin)
 - Support for Logitech MX Ink tracked pen (@dmarcos)
 - Initial WebGPU support (@vincentfretin)
 
@@ -15,7 +15,7 @@ Post-processing, ES modules and importmap, WebGPU support, Logitec MX Ink integr
 ### Bug fixes
 
 - Remove unused width and height properties from flat and standard shaders (#5647) (@mrxz)
-- Relax the `clientWidth` constraint in the controls tests. Fix tests on Ubuntu (#5641) (@@enzofrancescaHM)
+- Relax the `clientWidth` constraint in the controls tests. Fix tests on Ubuntu (#5641) (@vincentfretin)
 - Check if `XRSession` exists before attaching `inputsourcechange` listener (#5631) (@mrxz)
 - Don't apply anchor scale (only position and rotation) to an `anchored` entity (#5633) (@mrxz)
 - Wait until `referenceSpace` is available befor initializing compositor layers (#5626) (@vincentfretin)
@@ -35,14 +35,13 @@ Post-processing, ES modules and importmap, WebGPU support, Logitec MX Ink integr
 - Don't stringify properties with undefined values to prevent flushToDOM to produce properties with the `undefined` string (#5549) (@mrxz)
 - Fix serialization / stringification of asset type properties. When an HTML element they got exported incorrectly as e.g `[object HTMLImageElement]` (#5544) (@mrxz, @vincentfretin)
 - Refresh raycasted objects only when the `objects` raycaster component property changes. Prevent unnecessary costly updates (#5542) (@vincentfretin)
-- Fix issue when using `<a-cubemap>` as texture component envMap (@Omegahed
-, @mrxz)
+- Fix issue when using `<a-cubemap>` as texture component envMap (@Omegahed, @mrxz)
 - Fix incorrect texture reference counting, potentially leading to exceptions upon disposal of the texture (#5529) (@mrxz)
 - Eliminate incorrect "unknown property" warnings from dynamic schema components (#5526) (@mrxz)
 
 ### Enhancements
 
-- Bump to THREE to r174 (@dmarcos)
+- Bump to THREE to r173 (@dmarcos)
 - Post-processing experimental support (#5648) (@enzofrancescaHM, @CodyJasonBennett, @mrxz, @cabanier, @vincentfretin, @dmarcos)
 - ES Modules and importmap support (#5632, #5640) (@mrxz, @vincentfretin)
 - Support for WebGPURenderer and TSL (#5655) (@vincentfretin)
@@ -66,7 +65,7 @@ Post-processing, ES modules and importmap, WebGPU support, Logitec MX Ink integr
 ### Deprecations
 
 - Remove `physicallyCorrectLights` since `useLegacyLights` is no longer supported by `THREE.WebGLRenderer` since THREE r165 (#0123f53749) (@dmarcos)
-- Rename `oculus-touch-controls` to `meta-touch-controls` to reflect current branding. `meta-touch-controls` kept around for backwards compatibility (#d3be3d2f) (@dmarcos)
+- Rename `oculus-touch-controls` to `meta-touch-controls` to reflect current branding. `oculus-touch-controls` kept around for backwards compatibility (#d3be3d2f) (@dmarcos)
 - Remove the now obsolete WebVR support in favor of WebXR (#5451) (@mrxz)
 - Deprecate `isGearVR` and `isOculusGo` functions (#5635) (@vincentfretin)
 
