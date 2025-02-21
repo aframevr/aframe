@@ -209,7 +209,7 @@ AFRAME.registerComponent('model-viewer', {
 
     sceneLightEl.setAttribute('light', {
       type: 'hemisphere',
-      intensity: 1
+      intensity: 3.14
     });
     sceneLightEl.setAttribute('hide-on-enter-ar', '');
 
@@ -274,7 +274,7 @@ AFRAME.registerComponent('model-viewer', {
       shadowCameraRight: 5,
       shadowCameraBottom: -5,
       shadowCameraTop: 5,
-      intensity: 0.5,
+      intensity: 1.57,
       target: 'modelPivot'
     });
 

@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <!-- Origin Trial Token, feature = WebVR (For Chrome M59+), origin = https://aframe.io, expires = 2017-07-28 -->
-  <meta http-equiv="origin-trial" data-feature="WebVR (For Chrome M59+)" data-expires="2017-07-28" content="ArFv1ZeTwzkhjNE00uAE+XtiQB41fwqG/TqlFMLrepd9sforQSvQE/tgfIbUMYNuNre4QR1k4/z8xp2mV3dbhwwAAABeeyJvcmlnaW4iOiJodHRwczovL2FmcmFtZS5pbzo0NDMiLCJmZWF0dXJlIjoiV2ViVlIxLjEiLCJleHBpcnkiOjE1MDEyMTcwMDIsImlzU3ViZG9tYWluIjp0cnVlfQ==">
     <meta charset="utf-8">
     <title>Shadows</title>
     <meta name="description" content="Shadows - A-Frame">
@@ -23,17 +21,17 @@
         <!-- Center point light. -->
         <a-entity geometry="primitive: sphere; radius: 0.15"
                   material="color: #FAFAFA; shader: flat"
-                  light="castShadow: true; color: #FAFAFA; intensity: 0.5; shadowBias: 0.01;
+                  light="castShadow: true; color: #FAFAFA; intensity: 1.57; shadowBias: 0.01;
                          shadowCameraNear: 1; type: point; shadowMapWidth: 1024; shadowMapHeight: 1024"
                   position="0 -1 1"
                   animation="property: scale; to: 2 2 2; dur: 3000; dir: alternate; loop: true"
-                  animation="property: intensity; to: 1; dur: 3000; dir: alternate; loop: true"></a-entity>
+                  animation="property: intensity; to: 3.14; dur: 3000; dir: alternate; loop: true"></a-entity>
 
         <!-- Animating point light. -->
         <a-entity animation="property: rotation; to: 0 360 360; dur: 5000; easing: linear; loop: true">
           <a-entity geometry="primitive: sphere; radius: 0.25"
                     material="color: #EF2D5E; shader: flat"
-                    light="castShadow: true; color: #EF2D5E; intensity: 1; shadowBias: 0.01;
+                    light="castShadow: true; color: #EF2D5E; intensity: 3.14; shadowBias: 0.01;
                            shadowCameraNear: 1; type: point; shadowMapWidth: 1024; shadowMapHeight: 1024"
                     position="0 5 5"></a-entity>
         </a-entity>

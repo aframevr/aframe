@@ -2,7 +2,7 @@
 
 <p align="center"><a href="https://aframe.io" target="_blank"><img width="480" alt="A-Frame" src="https://user-images.githubusercontent.com/674727/32120889-230ef110-bb0f-11e7-908c-76e39aa43149.jpg"></a></p>
 
-<p align="center"><b>A web framework for building virtual reality experiences.</b></p>
+<p align="center"><b>A web framework for building browser based 3D, AR and VR experiences.</b></p>
 
 <p align="center">
   <a href="https://codecov.io/gh/aframevr/aframe">
@@ -96,12 +96,11 @@ mountains, speech recognition, or teleportation!
 Build VR and AR scenes in the browser with just a few lines of HTML! To start playing
 and publishing now, remix the starter example on:
 
-[![Remix](https://cloud.githubusercontent.com/assets/674727/24572421/688f7fc0-162d-11e7-8a35-b02bc050c043.jpg)](https://glitch.com/~aframe) [![Fork](https://user-images.githubusercontent.com/39342/52831020-d42dcb80-3087-11e9-833f-2d6191c69eb9.png)](https://repl.it/@dmarcos/aframe)
-
+[![Remix](https://cloud.githubusercontent.com/assets/674727/24572421/688f7fc0-162d-11e7-8a35-b02bc050c043.jpg)](https://glitch.com/~aframe)
 ```html
 <html>
   <head>
-    <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
   </head>
   <body>
     <a-scene>
@@ -116,19 +115,19 @@ and publishing now, remix the starter example on:
 ```
 
 With A-Frame's [entity-component
-architecture](https://aframe.io/docs/1.6.0/introduction/entity-component-system.html), we can drop in community
+architecture](https://aframe.io/docs/1.7.0/introduction/entity-component-system.html), we can drop in community
 components from the ecosystem (e.g., ocean, physics) and plug them into our
 objects straight from HTML:
 
-[![Remix](https://cloud.githubusercontent.com/assets/674727/24572421/688f7fc0-162d-11e7-8a35-b02bc050c043.jpg)](https://glitch.com/~aframe-registry) [![Fork](https://user-images.githubusercontent.com/39342/52831020-d42dcb80-3087-11e9-833f-2d6191c69eb9.png)](https://repl.it/@dmarcos/aframe)
+[![Remix](https://cloud.githubusercontent.com/assets/674727/24572421/688f7fc0-162d-11e7-8a35-b02bc050c043.jpg)](https://glitch.com/~aframe-registry)
 
 ```html
 <html>
   <head>
-    <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
-    <script src="https://unpkg.com/aframe-particle-system-component@1.0.x/dist/aframe-particle-system-component.min.js"></script>
-    <script src="https://unpkg.com/aframe-extras.ocean@%5E3.5.x/dist/aframe-extras.ocean.min.js"></script>
-    <script src="https://unpkg.com/aframe-gradient-sky@1.5.0/dist/gradientsky.min.js"></script>
+    <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
+    <script src="https://unpkg.com/@c-frame/aframe-particle-system-component@1.2.x/dist/aframe-particle-system-component.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.5.0/dist/aframe-extras.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@fern-solutions/aframe-sky-background/dist/sky-background.umd.min.js"></script>
   </head>
   <body>
     <a-scene>
@@ -144,9 +143,7 @@ objects straight from HTML:
                 material="color: #9CE3F9; opacity: 0.75; metalness: 0; roughness: 1"
                 rotation="-90 0 0"></a-entity>
 
-      <a-entity id="sky" geometry="primitive: sphere; radius: 5000"
-                material="shader: gradient; topColor: 235 235 245; bottomColor: 185 185 210"
-                scale="-1 1 1"></a-entity>
+      <a-sky-background top-color="#EBEBF5" bottom-color="#B9B9D2"></a-sky-background>
 
       <a-entity id="light" light="type: ambient; color: #888"></a-entity>
     </a-scene>
@@ -156,11 +153,11 @@ objects straight from HTML:
 
 ### Builds
 
-To use the latest stable build of A-Frame, include [`aframe.min.js`](https://aframe.io/releases/1.6.0/aframe.min.js):
+To use the latest stable build of A-Frame, include [`aframe.min.js`](https://aframe.io/releases/1.7.0/aframe.min.js):
 
 ```js
 <head>
-  <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+  <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
 </head>
 ```
 
@@ -174,7 +171,7 @@ npm install --save aframe
 ```
 
 ```js
-require('aframe')  // e.g., with Browserify or Webpack.
+import AFRAME from 'aframe';  // e.g., with Webpack or Vite.
 ```
 
 ## Local Development
@@ -185,7 +182,21 @@ cd aframe && npm install  # Install dependencies.
 npm start  # Start the local development server.
 ```
 
-And open in your browser **[http://localhost:9000](http://localhost:9000)**.
+And open in your browser [http://localhost:8080](http://localhost:8080).
+
+If you want to test the examples in VR, you need to run it with https:
+
+```sh
+npm run start:https
+```
+
+Look at the "On Your Network (IPv4)" line in the console, and copy and paste
+the url to https://hmd.link service.
+Then open the browser in your headset and type hmd.link in the address bar
+then click on the copied url that will show up if you're connected to the same
+network as your machine.
+You will see a message about the page being dangerous because we're using a
+self-signed certificate, you can ignore that warning and continue to the page.
 
 ### Generating Builds
 

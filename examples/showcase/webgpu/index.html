@@ -1,0 +1,107 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>WebGPURenderer and TSL • A-Frame</title>
+    <meta name="description" content="WebGPU renderer and TSL • A-Frame" />
+    <script type="importmap">
+      {
+        "imports": {
+          "aframe": "../../../dist/aframe-master.module.min.js",
+          "three": "https://cdn.jsdelivr.net/npm/super-three@0.173.4/build/three.webgpu.js",
+          "three/webgpu": "https://cdn.jsdelivr.net/npm/super-three@0.173.4/build/three.webgpu.js",
+          "three/tsl": "https://cdn.jsdelivr.net/npm/super-three@0.173.4/build/three.tsl.js",
+          "three/addons/": "https://cdn.jsdelivr.net/npm/super-three@0.173.4/examples/jsm/"
+        }
+      }
+    </script>
+    <script type="module">
+      import AFRAME from 'aframe';
+      import { color, cos, float, mix, range, sin, time, uniform, uv, vec3, vec4, PI2 } from 'three/tsl';
+      import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
+
+      AFRAME.registerComponent('galaxy', {
+        init() {
+          const material = new THREE.SpriteNodeMaterial({
+            transparent: true,
+            depthWrite: false,
+            blending: THREE.AdditiveBlending
+          });
+
+          const size = uniform(0.08);
+          material.scaleNode = range(0, 1).mul(size);
+
+          const radiusRatio = range(0, 1);
+          const radius = radiusRatio.pow(1.5).mul(5).toVar();
+
+          const branches = 3;
+          const branchAngle = range(0, branches).floor().mul(PI2.div(branches));
+          const angle = branchAngle.add(time.mul(radiusRatio.oneMinus()));
+
+          const position = vec3(cos(angle), 0, sin(angle)).mul(radius);
+
+          const randomOffset = range(vec3(-1), vec3(1)).pow(3).mul(radiusRatio).add(0.2);
+
+          material.positionNode = position.add(randomOffset);
+
+          const colorInside = uniform(color('#ffa575'));
+          const colorOutside = uniform(color('#311599'));
+          const colorFinal = mix(colorInside, colorOutside, radiusRatio.oneMinus().pow(2).oneMinus());
+          const alpha = float(0.1).div(uv().sub(0.5).length()).sub(0.2);
+          material.colorNode = vec4(colorFinal, alpha);
+
+          const mesh = new THREE.InstancedMesh(new THREE.PlaneGeometry(1, 1), material, 20000);
+          this.el.setObject3D('mesh', mesh);
+
+          // debug
+
+          const gui = new GUI();
+          this.gui = gui;
+
+          gui.add(size, 'value', 0, 1, 0.001).name('size');
+
+          gui
+            .addColor({ color: colorInside.value.getHex(THREE.SRGBColorSpace) }, 'color')
+            .name('colorInside')
+            .onChange(function (value) {
+              colorInside.value.set(value);
+            });
+
+          gui
+            .addColor({ color: colorOutside.value.getHex(THREE.SRGBColorSpace) }, 'color')
+            .name('colorOutside')
+            .onChange(function (value) {
+              colorOutside.value.set(value);
+            });
+        },
+        remove() {
+          const mesh = this.el.getObject3D('mesh');
+          if (mesh) {
+            mesh.material.dispose();
+            mesh.geometry.dispose();
+            this.el.removeObject3D('mesh');
+            this.gui.destroy();
+          }
+        }
+      });
+    </script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/aframe-orbit-controls@1.3.2/dist/aframe-orbit-controls.min.js"
+      type="module"
+    ></script>
+    <script src="../../js/info-message.js" type="module"></script>
+  </head>
+  <body>
+    <a-scene background="color: #201919" info-message="htmlSrc: #messageText">
+      <a-assets>
+        <a-asset-item id="messageText" src="message.html"></a-asset-item>
+      </a-assets>
+      <a-entity galaxy></a-entity>
+      <a-entity
+        camera="fov: 50; near: 0.1; far: 100"
+        look-controls="enabled: false"
+        orbit-controls="target: 0 0 0; minDistance: 0.1; maxDistance: 50; initialPosition: 4 2 5; enableDamping: true; rotateSpeed: 1"
+      ></a-entity>
+    </a-scene>
+  </body>
+</html>

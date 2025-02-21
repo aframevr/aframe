@@ -1,3 +1,75 @@
+### 1.7.0 (Feb 20, 2025)
+
+Post-processing, ES modules and importmap, WebGPU support, Logitech MX Ink integration and more.
+
+
+### Major Changes
+
+- Update to THREE r173 (@dmarcos)
+- Import maps support and replacement of CommonJS with ES Modules (@mrxz, @vincentfretin)
+- Experimental post-processing support. It works both in regular and immersive modes (@enzofrancescaHM, @mrxz, @enzofrancescaHM)
+- Support for Logitech MX Ink tracked pen (@dmarcos)
+- Initial WebGPU support (@vincentfretin)
+
+
+### Bug fixes
+
+- Remove unused width and height properties from flat and standard shaders (#5647) (@mrxz)
+- Relax the `clientWidth` constraint in the controls tests. Fix tests on Ubuntu (#5641) (@@enzofrancescaHM)
+- Check if `XRSession` exists before attaching `inputsourcechange` listener (#5631) (@mrxz)
+- Don't apply anchor scale (only position and rotation) to an `anchored` entity (#5633) (@mrxz)
+- Wait until `referenceSpace` is available befor initializing compositor layers (#5626) (@vincentfretin)
+- Remove `raycaster-closest-entity-changed` listener when removing the `cursor` component (#5625) (@vincentfretin)
+- Handle `cursor` `rayOrigin` updates and `rayOrigin: mouse` when component attached to an entity and not `a-scene` (fix #4759) (#4760) (@kylebakerio)
+- Fix light shadow frustum visualization via CameraHelper (fix #5098) (#5099) (@IanSweeneyAC, @dmarcos)
+- Prevent loading cubemap for a probe light when `envMap` is not set (fix #5610) (#5611) (@mrxz)
+- Prevent redundant `pinchstarted` events on a hand tracking pinch gesture (#5609) (@mrxz)
+- Improve `cursor` component `xrselect` logic. Handle `rayOrigin` property changes and account for camera rigs when calculating the raycaster direction (#5606) (@mrxz, @vincentfretin)
+- Fix Apple Vision Pro detection logic to prevent false positives on iPad and iPhone (fix #5605) (#5607) (@vincentfretin)
+- Remove fullscreen CSS styles from the document element when `a-scene` is disconnected (#5602) (@gunhaxxor)
+- Adjust light intensity defaults and examples to account for `WebGLRenderer.useLegacyLights` deprecation in THREE r165 (#8813d3d2) (@dmarcos)
+- Fix model visibility logic of tracked hands and controllers when there are input switches (e.g hands to controllers) (#fa0cc748) (@dmarcos)
+- Prevent a-loader-title div (A-Frame created HTML element) to be serialized (#5574) (@vincentfretin)
+- Disable magic window mode in Vision Pro that is only suitable for handheld mobile devices (#5560) (@dmarcos)
+- Don't bubble `<a-asset-item>` error event that was preventing some tests to execute (#5548) (@mrxz)
+- Don't stringify properties with undefined values to prevent flushToDOM to produce properties with the `undefined` string (#5549) (@mrxz)
+- Fix serialization / stringification of asset type properties. When an HTML element they got exported incorrectly as e.g `[object HTMLImageElement]` (#5544) (@mrxz, @vincentfretin)
+- Refresh raycasted objects only when the `objects` raycaster component property changes. Prevent unnecessary costly updates (#5542) (@vincentfretin)
+- Fix issue when using `<a-cubemap>` as texture component envMap (@Omegahed
+, @mrxz)
+- Fix incorrect texture reference counting, potentially leading to exceptions upon disposal of the texture (#5529) (@mrxz)
+- Eliminate incorrect "unknown property" warnings from dynamic schema components (#5526) (@mrxz)
+
+### Enhancements
+
+- Bump to THREE to r174 (@dmarcos)
+- Post-processing experimental support (#5648) (@enzofrancescaHM, @CodyJasonBennett, @mrxz, @cabanier, @vincentfretin, @dmarcos)
+- ES Modules and importmap support (#5632, #5640) (@mrxz, @vincentfretin)
+- Support for WebGPURenderer and TSL (#5655) (@vincentfretin)
+- Logitech MX Ink integration (@dmarcos)
+- Update Draco decoder to 1.5.7 (#5523) (@vincentfretin)
+- Remove process/browser polyfill in tests (#5643) (@vincentfretin)
+- Improve build and test process (@vincentfretin)
+- `ar-hit-test` uses tracked controller if available instead of head orientation (fix #5315) (#5308) (@DougReeder)
+- Allows setting the distance within which the preview image of the link component is shown (#4425) (@DougReeder)
+- Animate position, rotation and scale on the THREE.Object3D directly without calling `setAttribute` (#4f711a4efab) (@dmarcos)
+- Update `shelljs` version (#5497) (@arpu)
+- Ability to enable/disable enterVR and exitVR shortcuts independently (#5512) (@mrxz)
+- Improve Pico headsets controller support on third-party browsers such as Wolvic (#5534) (@Elettrotecnica)
+- Consolidate `tracked-controls-webxr` logic into `tracked-controls`. Separation no longer needed since WebVR support deprecation (#627698d4) (@dmarcos)
+- Move WebXR controller detection to `inputsourceschange` event from a polling logic (#fd904348) (@dmarcos)
+- Update Webpack and related build dependencies (#5480) (@vincentfretin)
+- Add CodeQL scanning with one non-default query for scanning GitHub Actions (#5554) (@JarLob)
+- Add `AgX` and `neutral` to the list of tone mapping options in the renderer component (#5551) (@vincentfretin)
+- Docs improvements (@mrxz, @dmarcos, @Srile, @Control-C, @addy1997, @TomoyaKuroda, @vincentfretin, @jzhangdev, @Utopiah, @nikolas, @jadegamesuk, @diarmidmackenzie, @ogreenaway, @kewalkishang, @jinglechen2287)
+
+### Deprecations
+
+- Remove `physicallyCorrectLights` since `useLegacyLights` is no longer supported by `THREE.WebGLRenderer` since THREE r165 (#0123f53749) (@dmarcos)
+- Rename `oculus-touch-controls` to `meta-touch-controls` to reflect current branding. `meta-touch-controls` kept around for backwards compatibility (#d3be3d2f) (@dmarcos)
+- Remove the now obsolete WebVR support in favor of WebXR (#5451) (@mrxz)
+- Deprecate `isGearVR` and `isOculusGo` functions (#5635) (@vincentfretin)
+
 ### 1.6.0 (May 23, 2024)
 
 Tons of bug fixes. Memory management and performance improvements. API to control tick / tock execution order.
@@ -75,7 +147,7 @@ Tons of bug fixes. Memory management and performance improvements. API to contro
 - Add `hide-on-enter-vr` component analog to `hide-on-enter-ar` (9e644def) (@dmarcos)
 - Remove iOS 10 specific HLS workaround (#5450) (@mrxz)
 - Remove outdated polyfills that were needed just for IE11 (#5448) (@mrxz)
-- Docs improvements (@diarmidmackenzie, @Samu01Tech, @thepelkus-too, @Omegahed, stefanhuber, @ctrlw, @vincentfretin, @jgbarah)
+- Docs improvements (@diarmidmackenzie, @Samu01Tech, @thepelkus-too, @Omegahed, stefanhuber, @ctrlw, @vincentfretin, @jgbarah, @AndreaMonzini)
 
 ### 1.5.0 (Nov 14, 2023)
 

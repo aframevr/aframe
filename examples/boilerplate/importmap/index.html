@@ -1,0 +1,72 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Importmap • A-Frame</title>
+    <meta name="description" content="Importmap • A-Frame" />
+    <script type="importmap">
+      {
+        "imports": {
+          "aframe": "../../../dist/aframe-master.module.min.js",
+          "three": "https://cdn.jsdelivr.net/npm/super-three@0.173.4/build/three.module.js",
+          "three/addons/": "https://cdn.jsdelivr.net/npm/super-three@0.173.4/examples/jsm/",
+          "aframe-extras/controls": "https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.5.x/dist/aframe-extras.controls.min.js"
+        }
+      }
+    </script>
+    <script type="module">
+      // We use an importmap to load three as a module to avoid the warning "Multiple instances of Three.js being imported."
+      import AFRAME from 'aframe';
+      // AFRAME and THREE variables are available globally, the imported aframe-master.module.min.js bundle basically does:
+      // import * as THREE from "three"
+      // window.THREE = THREE
+      import 'aframe-extras/controls'; // This uses the THREE global variable in the bundle.
+      import { Mesh, MeshStandardMaterial } from 'three'; // This uses the same three instance.
+      import { TeapotGeometry } from 'three/addons/geometries/TeapotGeometry.js'; // This uses the same three instance.
+
+      AFRAME.registerComponent('teapot', {
+        init() {
+          this.geometry = new TeapotGeometry();
+          const mesh = new Mesh();
+          mesh.geometry = this.geometry;
+          // Default material if not defined on the entity.
+          if (!this.el.getAttribute('material')) {
+            mesh.material = new MeshStandardMaterial({
+              color: Math.random() * 0xffffff,
+              metalness: 0,
+              roughness: 0.5,
+              side: THREE.DoubleSide
+            });
+          }
+          this.el.setObject3D('mesh', mesh);
+        },
+        remove() {
+          this.geometry.dispose();
+        }
+      });
+    </script>
+  </head>
+  <body>
+    <a-scene background="color: #ECECEC">
+      <a-cylinder position="0 0.25 -2" radius="0.5" height="0.5" color="#FFC65D">
+        <a-entity
+          teapot
+          position="0 0.48 0"
+          scale="0.005 0.005 0.005"
+          material="color: #713f12; roughness: 0.5; side: double"
+        ></a-entity>
+      </a-cylinder>
+
+      <a-plane position="0 0 -2" rotation="-90 0 0" width="4" height="4" color="#7BC8A4"></a-plane>
+
+      <a-entity
+        position="0 0 1"
+        id="rig"
+        movement-controls="controls: gamepad,keyboard,nipple"
+        nipple-controls="mode: static"
+      >
+        <a-entity camera position="0 1.6 0" look-controls></a-entity>
+      </a-entity>
+    </a-scene>
+  </body>
+</html>

@@ -191,8 +191,8 @@ AFRAME.registerComponent('hand-menu', {
       this.menuEl.emit('open');
       function lookAtVector (sourcePoint, destPoint) {
         return auxQuaternion.setFromRotationMatrix(
-            auxMatrix.identity()
-            .lookAt(sourcePoint, destPoint, new THREE.Vector3(0, 1, 0)));
+          auxMatrix.identity().lookAt(sourcePoint, destPoint, new THREE.Vector3(0, 1, 0))
+        );
       }
 
       var cameraEl = this.el.sceneEl.querySelector('[camera]');
@@ -213,7 +213,6 @@ AFRAME.registerComponent('hand-menu', {
 
   lookAtCamera: (function () {
     var auxVector = new THREE.Vector3();
-    var auxObject3D = new THREE.Object3D();
     return function (el) {
       var cameraEl = this.el.sceneEl.querySelector('[camera]');
       auxVector.subVectors(cameraEl.object3D.position, el.object3D.position).add(el.object3D.position);
