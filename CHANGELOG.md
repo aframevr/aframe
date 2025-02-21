@@ -1,6 +1,6 @@
 ### 1.7.0 (Feb 20, 2025)
 
-Post-processing, ES modules and importmap, WebGPU support, Logitec MX Ink integration and more.
+Post-processing, ES modules and importmap, WebGPU support, Logitech MX Ink integration and more.
 
 
 ### Major Changes
