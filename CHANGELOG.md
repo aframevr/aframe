@@ -1,6 +1,6 @@
 ### 1.7.0 (Feb 20, 2025)
 
-Post-processing, ES modules and importmap, WebGPU support, Logitech MX Ink integration and more.
+[Post-processing](https://aframe.io/aframe/examples/showcase/post-processing/), [ES modules and importmap](https://aframe.io/aframe/examples/boilerplate/importmap/), [WebGPU and TSL support](https://aframe.io/aframe/examples/showcase/webgpu/), [Logitech MX Ink integration](https://aframe.io/aframe/examples/showcase/painter/) and more.
 
 
 ### Major Changes
