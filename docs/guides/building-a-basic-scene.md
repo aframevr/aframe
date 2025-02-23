@@ -633,6 +633,6 @@ relatively sharp and performant:
 
 And that's the basic example!
 
-[View the example](https://aframe.io/examples/docs/basic-scene/) (basic environment)
+[View the example](https://aframe.io/aframe/examples/docs/basic-scene/) (basic environment)
 
-[View the example](https://aframe.io/examples/docs/basic-scene-2/) (custom environment)
+[View the example](https://aframe.io/aframe/examples/docs/basic-scene-2/) (custom environment)
