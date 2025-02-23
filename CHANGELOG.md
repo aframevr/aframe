@@ -7,7 +7,7 @@
 
 - Update to THREE r173 (@dmarcos)
 - Import maps support and replacement of CommonJS with ES Modules (@mrxz, @vincentfretin)
-- Experimental post-processing support. It works both in regular and immersive modes (@enzofrancescaHM, @mrxz, @vincentfretin)
+- Experimental post-processing support. It works both in regular and immersive modes (@enzofrancescaHM, @mrxz, @vincentfretin, @CodyJasonBennett)
 - Support for Logitech MX Ink tracked pen (@dmarcos)
 - Initial WebGPU support (@vincentfretin)
 
