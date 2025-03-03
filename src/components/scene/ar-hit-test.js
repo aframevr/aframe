@@ -270,7 +270,8 @@ export var Component = register('ar-hit-test', {
       this.hitTest = null;
     }.bind(this));
 
-    this.el.sceneEl.renderer.xr.addEventListener('sessionstart', function () {
+    // Use enter-vr event instead of sessionstart so that ar-mode is set before this is called
+    this.el.sceneEl.addEventListener('enter-vr', function () {
       // Don't request Hit Test unless AR (breaks WebXR Emulator)
       if (!this.el.is('ar-mode')) { return; }
 
