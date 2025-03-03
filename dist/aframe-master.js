@@ -14216,7 +14216,9 @@ var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_0__.registerCompo
     this.el.sceneEl.renderer.xr.addEventListener('sessionend', function () {
       this.hitTest = null;
     }.bind(this));
-    this.el.sceneEl.renderer.xr.addEventListener('sessionstart', function () {
+
+    // Use enter-vr event instead of sessionstart so that ar-mode is set before this is called
+    this.el.sceneEl.addEventListener('enter-vr', function () {
       // Don't request Hit Test unless AR (breaks WebXR Emulator)
       if (!this.el.is('ar-mode')) {
         return;
@@ -42905,7 +42907,7 @@ if (_utils_index_js__WEBPACK_IMPORTED_MODULE_16__.device.isBrowserEnvironment) {
   __webpack_require__(/*! ./style/aframe.css */ "./src/style/aframe.css");
   __webpack_require__(/*! ./style/rStats.css */ "./src/style/rStats.css");
 }
-console.log('A-Frame Version: 1.7.0 (Date 2025-02-28, Commit #2cca58ca)');
+console.log('A-Frame Version: 1.7.0 (Date 2025-03-03, Commit #53c5ca03)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].REVISION);
 
 // Wait for ready state, unless user asynchronously initializes A-Frame.
