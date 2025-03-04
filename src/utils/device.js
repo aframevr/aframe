@@ -171,8 +171,9 @@ export function isLandscape () {
  * Check if running in a browser or spoofed browser (bundler).
  * We need to check a node api that isn't mocked on either side.
  * `require` and `module.exports` are mocked in browser by bundlers.
+ * process is polyfilled with process.browser true by Next.js with "use client".
  */
-export var isBrowserEnvironment = typeof process === 'undefined';
+export var isBrowserEnvironment = typeof process === 'undefined' || process.browser === true;
 
 /**
  * Check if running in node on the server.
