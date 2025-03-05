@@ -29,7 +29,6 @@ AFRAME.registerComponent('bloom', {
     this.size = new THREE.Vector2();
     this.scene = this.el.object3D;
     this.renderer = this.el.renderer;
-    this.camera = this.el.camera;
     this.originalRender = this.el.renderer.render;
     this.bind();
   },
@@ -56,8 +55,10 @@ AFRAME.registerComponent('bloom', {
     this.composer = new EffectComposer(this.renderer, renderTarget);
 
     // create render pass
-    var renderScene = new RenderPass(this.scene, this.camera);
-    this.composer.addPass(renderScene);
+    if (!this.renderPass) {
+      this.renderPass = new RenderPass(this.scene, this.el.camera);
+    }
+    this.composer.addPass(this.renderPass);
 
     // create bloom pass
     var strength = this.data.strength;
@@ -91,6 +92,9 @@ AFRAME.registerComponent('bloom', {
         self.originalRender.apply(this, arguments);
       } else {
         isInsideComposerRender = true;
+        // always set the current active camera on the RenderPass so that the
+        // inspector controls are working properly with post-processing enabled
+        self.renderPass.camera = self.el.camera;
         self.composer.render(self.el.sceneEl.delta / 1000);
         isInsideComposerRender = false;
       }
