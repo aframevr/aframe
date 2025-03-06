@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>multi input anchor</title>
+    <meta name="description" content="Mixins">
+    <script src="../../../dist/aframe-master.js"></script>
+    <script src="./wearable.js"></script>
+  </head>
+  <body>
+    <a-scene >
+      <a-assets>
+        <img id="highlight1" src="../../assets/img/radial-highlight.png">
+      </a-assets>
+
+      <a-image position="0 -.2 -5" src="#highlight1" rotation="-90 0 0" scale="30 30 30"></a-image>
+
+
+      <a-text value="Switch between hands/controllers\n\nfor controller-specific\n\nbehaviour & placement" align="center" position="0 2 -4" color="black"></a-text>
+      <a-sky color="#CCC"></a-sky>
+
+      <a-entity wearable="el: #leftHand; class: mymenu;" position="0 1.5 -0.4" >
+        <a-plane color="blue"    position="0  0    0" width="0.065" height="0.01" animation="property: scale; to: 0.2 1.0 1.0; loop: true; dur: 2000; delay:   0"></a-plane>
+        <a-plane color="cyan"    position="0 -0.01 0" width="0.065" height="0.01" animation="property: scale; to: 0.2 1.0 1.0; loop: true; dur: 2000; delay: 500"></a-plane>
+        <a-plane color="magenta" position="0 -0.02 0" width="0.065" height="0.01" animation="property: scale; to: 0.2 1.0 1.0; loop: true; dur: 2000; delay:1000"></a-plane>
+        <a-text id="debug" color="blue" position="0 0.02 0" scale="0.14 0.14 0.14" value="hello" align="center"></a-text>
+      </a-entity>
+
+      <a-entity id="rightHand" laser-controls="hand: right" hand-tracking-controls="hand: right"></a-entity>
+
+      <a-entity id="leftHand"  laser-controls="hand: left"  hand-tracking-controls="hand: left">
+        <!-- customized per-controller placeholders -->
+        <a-entity class="mymenu hand-tracking-controls" position="0 -0.03 -0.08"  scale="0.5 0.5 0.5" rotation="90 0 180"></a-entity>
+        <a-entity class="mymenu meta-touch-controls"    position="0.01 0.02 -0.07" scale="0.7 0.7 0.7" rotation="-90 -10 0"></a-entity>
+        <!-- default placeholder (used when none of the above applies) -->
+        <a-entity class="mymenu"><a-entity> 
+      </a-entity> 
+
+    </a-scene>
+  </body>
+</html>
