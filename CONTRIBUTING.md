@@ -1,4 +1,3 @@
-[slack]: https://aframevr.slack.com/join/shared_invite/zt-f6rne3ly-ekVaBU~Xu~fsZHXr56jacQ
 [stackoverflow]: http://stackoverflow.com/questions/tagged/aframe
 
 Interested in contributing? As an open source project, we'd appreciate any help
@@ -8,18 +7,15 @@ contribute to these related projects:
 - [aframe-inspector](https://github.com/aframevr/aframe-inspector)
 - [aframe-site](https://github.com/aframevr/aframe-site)
 
-# Join the Community on Slack
+# Join the Community
 
-1. [Invite yourself][slack] to the A-Frame Slack channel.
-2. [Join the discussion](https://aframevr.slack.com)!
+Join the community on [Discord and other social media platforms](https://aframe.io/community/)
 
 # Get Help or Ask a Question
 
 If you're not sure how to do something with A-Frame, please post a question
 (and any code you've tried so far) to [Stack Overflow under the 'aframe'
-tag][stackoverflow]. Questions there will automatically create notifications in
-[Slack][slack], and are easier for others to find so new developers can learn
-from your questions too.
+tag][stackoverflow]. You can also hang out on Discord.
 
 # File an Issue
 
@@ -27,7 +23,7 @@ from your questions too.
 2. Specify the version of A-Frame in which the bug occurred.
 3. Specify information about your browser and system (e.g., "Firefox Nightly on OS X")
 4. Describe the problem in detail (i.e., what happened and what you expected would happen).
-5. If possible, provide a small test case with [CodePen](http://codepen.io), a link to your application, and/or a screenshot. You can fork this [sample pen](http://codepen.io/anon/pen/KVWpbb).
+5. If possible, provide a small test case by [remixing the base A-Frame Glitch](https://glitch.com/~aframe)
 
 # Contribute Code to A-Frame
 
@@ -58,7 +54,7 @@ under the [MIT License](LICENSE).
 
 1. Create something awesome like a scene, a component, or a shader.
 2. Publish your work to Github (and GitHub pages) so everyone can learn from your work.
-3. Share it on [Slack][slack] or Twitter.
+3. Share it on Discord or X.
 4. Let us know about it so we can feature it on our blog: [A Week of A-Frame](https://aframe.io/blog/).
 4. For bonus points, write and publish a case study to explain how you built it.
 
@@ -94,9 +90,9 @@ Glitch and update the `src` URL.
 
 # Help Your Fellow A-Framers
 
-## On Slack
+## On Discord
 
-1. [Invite yourself][slack] to the A-Frame Slack channel.
+1. [Invite yourself][https://aframe.io/community/] to Discord.
 2. Help answer questions that people might have and welcome new people.
 3. Redirect or cross-post questions to the [Stack Overflow A-Frame tag][stackoverflow].
 
