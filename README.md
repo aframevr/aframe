@@ -24,13 +24,11 @@
   &mdash;
   <a href="https://aframe.io/docs/">Docs</a>
   &mdash;
+  <a href="https://aframe.io/aframe/examples/">Examples</a>
+  &mdash;
   <a href="https://aframe.io/school/">School</a>
   &mdash;
-  <a href="https://aframevr.slack.com/join/shared_invite/zt-f6rne3ly-ekVaBU~Xu~fsZHXr56jacQ">Slack</a>
-  &mdash;
-  <a href="https://aframe.io/blog/">Blog</a>
-  &mdash;
-  <a href="https://aframe.io/subscribe/">Newsletter</a>
+  <a href="https://aframe.io/community/">Community</a>
 </div>
 
 ## Examples
@@ -210,16 +208,14 @@ For questions and support, [ask on StackOverflow](https://stackoverflow.com/ques
 
 ## Stay in Touch
 
-- To hang out with the community, [join the A-Frame Slack](https://aframevr.slack.com/join/shared_invite/zt-f6rne3ly-ekVaBU~Xu~fsZHXr56jacQ).
-- [Follow `A Week of A-Frame` on the A-Frame blog](https://aframe.io/blog).
-- [Follow @aframevr on Twitter](https://twitter.com/aframevr).
-- [Subscribe to the Newsletter](https://aframe.io/subscribe/).
+- Hang out with the [community](https://aframe.io/community/)
+- [Follow @aframevr on X](https://x.com/aframevr).
 
 And get in touch with the maintainers!
 
-- [Diego Marcos](https://twitter.com/dmarcos)
-- [Don McCurdy](https://twitter.com/donrmccurdy)
-- [Kevin Ngo](https://twitter.com/andgokevin)
+- [Diego Marcos](https://x.com/dmarcos)
+- [Don McCurdy](https://x.com/donrmccurdy)
+- [Kevin Ngo](https://x.com/andgokevin)
 
 ## Contributing
 
