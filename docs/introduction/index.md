@@ -158,25 +158,22 @@ as Google, Microsoft, Oculus, and Samsung have made contributions to A-Frame.
 ## Off You Go!
 
 [Discord]: https://supermedium.com/discord
-[slack]: https://aframevr.slack.com/join/shared_invite/zt-f6rne3ly-ekVaBU~Xu~fsZHXr56jacQ
 
 If it's your first time here, here's a plan for success for getting into
 A-Frame:
 
-1. [Subscribe to the Newsletter](https://aframe.io/subscribe/) for updates and
-tips on A-Frame and to see featured community projects.
-
-2. Read through the documentation to get a grasp.
+1. Read through the documentation to get a grasp.
 [Glitch](https://glitch.com/~aframe) is used as a recommended coding playground
 and for examples.
 
-3. [Join us on Discord][Discord] and [Slack][slack] and if you have any
+2. [Join us on Discord][Discord] if you have any
 questions, [search and ask on StackOverflow](http://stackoverflow.com/questions/ask/?tags=aframe),
 and someone will try to get to you!
 
-4. When you build something, share your project online and we'll try to feature
-it on the [newsletter](https://aframe.io/subscribe/) and the
-[blog](https://aframe.io/blog/)!
+3. When you build something, share your project online on X with the
+   `@aframevr` mention. You can also post it on the #self-promotion channel on
+   [Supermedium Discord][Discord] and #a-frame channel on
+   [WebXR Discord](https://discord.gg/jJxvuW97c4).
 
 And it really helps to have a dig into the fundamentals on JavaScript and
 [three.js](https://threejs.org/). Have fun!
