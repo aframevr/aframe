@@ -2131,6 +2131,7 @@ function useColors() {
 
   // Is webkit? http://stackoverflow.com/a/16459606/376773
   // document is undefined in react-native: https://github.com/facebook/react-native/pull/1632
+  // eslint-disable-next-line no-return-assign
   return typeof document !== 'undefined' && document.documentElement && document.documentElement.style && document.documentElement.style.WebkitAppearance ||
   // Is firebug? http://stackoverflow.com/a/398120/376773
   typeof window !== 'undefined' && window.console && (window.console.firebug || window.console.exception && window.console.table) ||
@@ -2424,21 +2425,56 @@ function setup(env) {
     createDebug.namespaces = namespaces;
     createDebug.names = [];
     createDebug.skips = [];
-    let i;
-    const split = (typeof namespaces === 'string' ? namespaces : '').split(/[\s,]+/);
-    const len = split.length;
-    for (i = 0; i < len; i++) {
-      if (!split[i]) {
-        // ignore empty strings
-        continue;
-      }
-      namespaces = split[i].replace(/\*/g, '.*?');
-      if (namespaces[0] === '-') {
-        createDebug.skips.push(new RegExp('^' + namespaces.slice(1) + '$'));
+    const split = (typeof namespaces === 'string' ? namespaces : '').trim().replace(' ', ',').split(',').filter(Boolean);
+    for (const ns of split) {
+      if (ns[0] === '-') {
+        createDebug.skips.push(ns.slice(1));
       } else {
-        createDebug.names.push(new RegExp('^' + namespaces + '$'));
+        createDebug.names.push(ns);
       }
     }
+  }
+
+  /**
+   * Checks if the given string matches a namespace template, honoring
+   * asterisks as wildcards.
+   *
+   * @param {String} search
+   * @param {String} template
+   * @return {Boolean}
+   */
+  function matchesTemplate(search, template) {
+    let searchIndex = 0;
+    let templateIndex = 0;
+    let starIndex = -1;
+    let matchIndex = 0;
+    while (searchIndex < search.length) {
+      if (templateIndex < template.length && (template[templateIndex] === search[searchIndex] || template[templateIndex] === '*')) {
+        // Match character or proceed with wildcard
+        if (template[templateIndex] === '*') {
+          starIndex = templateIndex;
+          matchIndex = searchIndex;
+          templateIndex++; // Skip the '*'
+        } else {
+          searchIndex++;
+          templateIndex++;
+        }
+      } else if (starIndex !== -1) {
+        // eslint-disable-line no-negated-condition
+        // Backtrack to the last '*' and try to match more characters
+        templateIndex = starIndex + 1;
+        matchIndex++;
+        searchIndex = matchIndex;
+      } else {
+        return false; // No match
+      }
+    }
+
+    // Handle trailing '*' in template
+    while (templateIndex < template.length && template[templateIndex] === '*') {
+      templateIndex++;
+    }
+    return templateIndex === template.length;
   }
 
   /**
@@ -2448,7 +2484,7 @@ function setup(env) {
   * @api public
   */
   function disable() {
-    const namespaces = [...createDebug.names.map(toNamespace), ...createDebug.skips.map(toNamespace).map(namespace => '-' + namespace)].join(',');
+    const namespaces = [...createDebug.names, ...createDebug.skips.map(namespace => '-' + namespace)].join(',');
     createDebug.enable('');
     return namespaces;
   }
@@ -2461,33 +2497,17 @@ function setup(env) {
   * @api public
   */
   function enabled(name) {
-    if (name[name.length - 1] === '*') {
-      return true;
-    }
-    let i;
-    let len;
-    for (i = 0, len = createDebug.skips.length; i < len; i++) {
-      if (createDebug.skips[i].test(name)) {
+    for (const skip of createDebug.skips) {
+      if (matchesTemplate(name, skip)) {
         return false;
       }
     }
-    for (i = 0, len = createDebug.names.length; i < len; i++) {
-      if (createDebug.names[i].test(name)) {
+    for (const ns of createDebug.names) {
+      if (matchesTemplate(name, ns)) {
         return true;
       }
     }
     return false;
-  }
-
-  /**
-  * Convert regexp to namespace
-  *
-  * @param {RegExp} regxep
-  * @return {String} namespace
-  * @api private
-  */
-  function toNamespace(regexp) {
-    return regexp.toString().substring(2, regexp.toString().length - 2).replace(/\.\*\?$/, '*');
   }
 
   /**
@@ -5919,7 +5939,7 @@ var warn = _utils_index_js__WEBPACK_IMPORTED_MODULE_1__.debug('components:anchor
  * Anchored component.
  * Feature only available in browsers that implement the WebXR anchors module.
  * Once anchored the entity remains to a fixed position in real-world space.
- * If the anchor is persistent, the anchor positioned remains across sessions or until the browser data is cleared.
+ * If the anchor is persistent, its position remains across sessions or until the browser data is cleared.
  */
 var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_0__.registerComponent)('anchored', {
   schema: {
@@ -38887,7 +38907,7 @@ class GLTFParser {
     }
     mesh.material = material;
   }
-  getMaterialType( /* materialIndex */
+  getMaterialType(/* materialIndex */
   ) {
     return three__WEBPACK_IMPORTED_MODULE_0__.MeshStandardMaterial;
   }
@@ -42908,7 +42928,7 @@ if (_utils_index_js__WEBPACK_IMPORTED_MODULE_16__.device.isBrowserEnvironment) {
   __webpack_require__(/*! ./style/aframe.css */ "./src/style/aframe.css");
   __webpack_require__(/*! ./style/rStats.css */ "./src/style/rStats.css");
 }
-console.log('A-Frame Version: 1.7.0 (Date 2025-03-12, Commit #150386dd)');
+console.log('A-Frame Version: 1.7.0 (Date 2025-03-12, Commit #19863063)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].REVISION);
 
 // Wait for ready state, unless user asynchronously initializes A-Frame.
