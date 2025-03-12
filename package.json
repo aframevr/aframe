@@ -90,7 +90,7 @@
     "standardx": "^7.0.0",
     "style-loader": "^4.0.0",
     "too-wordy": "ngokevin/too-wordy",
-    "webpack": "^5.91.0",
+    "webpack": "5.95.0",
     "webpack-cli": "^5.1.4",
     "webpack-dev-server": "~5.0.4",
     "write-good": "^1.0.8"
