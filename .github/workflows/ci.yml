@@ -24,10 +24,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix['node-version'] }}
-# Enabling the cache reduces the "Install dependencies" step by 1m30,
-# but you need package-lock.json in the repo.
-#          cache: 'npm'
-#          cache-dependency-path: 'package-lock.json'
+          cache: 'npm'
+          cache-dependency-path: 'package-lock.json'
 
       - name: Install dependencies
         run: npm install
