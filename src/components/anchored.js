@@ -8,7 +8,7 @@ var warn = utils.debug('components:anchored:warn');
  * Anchored component.
  * Feature only available in browsers that implement the WebXR anchors module.
  * Once anchored the entity remains to a fixed position in real-world space.
- * If the anchor is persistent, its position remains across sessions or until the browser data is cleared.
+ * If the anchor is persistent, the anchor positioned remains across sessions or until the browser data is cleared.
  */
 export var Component = registerComponent('anchored', {
   schema: {
