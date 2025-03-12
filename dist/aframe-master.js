@@ -5939,7 +5939,7 @@ var warn = _utils_index_js__WEBPACK_IMPORTED_MODULE_1__.debug('components:anchor
  * Anchored component.
  * Feature only available in browsers that implement the WebXR anchors module.
  * Once anchored the entity remains to a fixed position in real-world space.
- * If the anchor is persistent, its position remains across sessions or until the browser data is cleared.
+ * If the anchor is persistent, the anchor positioned remains across sessions or until the browser data is cleared.
  */
 var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_0__.registerComponent)('anchored', {
   schema: {
@@ -42933,7 +42933,7 @@ if (_utils_index_js__WEBPACK_IMPORTED_MODULE_16__.device.isBrowserEnvironment) {
   __webpack_require__(/*! ./style/aframe.css */ "./src/style/aframe.css");
   __webpack_require__(/*! ./style/rStats.css */ "./src/style/rStats.css");
 }
-console.log('A-Frame Version: 1.7.0 (Date 2025-03-12, Commit #8feb200f)');
+console.log('A-Frame Version: 1.7.0 (Date 2025-03-12, Commit #1b9650f1)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].REVISION);
 
 // Wait for ready state, unless user asynchronously initializes A-Frame.
