@@ -388,6 +388,11 @@ export var Component = registerComponent('hand-tracking-controls', {
     this.updateModelMaterial();
     this.setupChildrenEntities();
     this.el.setObject3D('mesh', mesh);
+    this.el.emit('controllermodelready', {
+      name: 'hand-tracking-controls',
+      model: this.data.model,
+      rayOrigin: new THREE.Vector3(0, 0, 0)
+    });
   },
 
   setupChildrenEntities: function () {
