@@ -117,7 +117,7 @@ suite('a-scene (without renderer) - WebXR', function () {
       });
     });
 
-    test('calls requestPresent if headset connected', function (done) {
+    test('calls requestSession if headset connected', function (done) {
       var sceneEl = this.el;
       this.sinon.stub(sceneEl, 'checkHeadsetConnected').returns(true);
       window.hasNativeWebVRImplementation = false;
@@ -127,7 +127,7 @@ suite('a-scene (without renderer) - WebXR', function () {
       });
     });
 
-    test('calls requestPresent on mobile', function (done) {
+    test('calls requestSession on mobile', function (done) {
       var sceneEl = this.el;
       sceneEl.isMobile = true;
       sceneEl.enterVR().then(function () {
@@ -136,7 +136,7 @@ suite('a-scene (without renderer) - WebXR', function () {
       });
     });
 
-    test('does not call requestPresent if flat desktop', function (done) {
+    test('does not call requestSession if flat desktop', function (done) {
       var sceneEl = this.el;
       this.sinon.stub(sceneEl, 'checkHeadsetConnected').returns(false);
       this.sinon.stub(sceneEl.canvas, 'requestFullscreen');
@@ -238,7 +238,7 @@ suite('a-scene (without renderer) - WebXR', function () {
       });
     });
 
-    test('calls exitPresent if headset connected', function (done) {
+    test('calls xrSession.end if headset connected', function (done) {
       var sceneEl = this.el;
       this.sinon.stub(sceneEl, 'checkHeadsetConnected').returns(true);
       sceneEl.xrSession = {
@@ -251,7 +251,7 @@ suite('a-scene (without renderer) - WebXR', function () {
       });
     });
 
-    test('calls exitPresent on mobile', function (done) {
+    test('calls xrSession.end on mobile', function (done) {
       this.sinon.stub(screen.orientation, 'lock');
       var sceneEl = this.el;
       sceneEl.isMobile = true;
@@ -265,7 +265,7 @@ suite('a-scene (without renderer) - WebXR', function () {
       });
     });
 
-    test('does not call exitPresent on desktop without a headset', function (done) {
+    test('does not call xrSession.end on desktop without a headset', function (done) {
       var sceneEl = this.el;
       sceneEl.renderer.xr.enabled = true;
       sceneEl.isMobile = false;

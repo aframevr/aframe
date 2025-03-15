@@ -6,7 +6,6 @@ var supportsARSession = false;
 
 export var isWebXRAvailable = navigator.xr !== undefined;
 
-// Support both WebVR and WebXR APIs.
 if (isWebXRAvailable) {
   var updateEnterInterfaces = function () {
     var sceneEl = document.querySelector('a-scene');

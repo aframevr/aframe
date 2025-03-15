@@ -245,7 +245,7 @@ export class AScene extends AEntity {
   }
 
   /**
-   * Call `requestPresent` if WebVR or WebVR polyfill.
+   * Call `requestSession` if WebXR is supported.
    * Call `requestFullscreen` on desktop.
    * Handle events, states, fullscreen styles.
    *
@@ -325,10 +325,7 @@ export class AScene extends AEntity {
       }
       self.addFullScreenStyles();
 
-      // On mobile, the polyfill handles fullscreen.
-      // TODO: 07/16 Chromium builds break when `requestFullscreen`ing on a canvas
-      // that we are also `requestPresent`ing. Until then, don't fullscreen if headset
-      // connected.
+      // Call `requestFullscreen` on desktop
       if (!self.isMobile && !self.checkHeadsetConnected()) {
         requestFullscreen(self.canvas);
       }
@@ -339,7 +336,7 @@ export class AScene extends AEntity {
   }
 
   /**
-   * Call `exitPresent` if WebVR / WebXR or WebVR polyfill.
+   * Call `xrSession.end` if WebXR.
    * Handle events, states, fullscreen styles.
    *
    * @returns {Promise}
@@ -351,7 +348,7 @@ export class AScene extends AEntity {
     // Don't exit VR if not in VR.
     if (!this.is('vr-mode') && !this.is('ar-mode')) { return Promise.resolve('Not in immersive mode.'); }
 
-    // Handle exiting VR if not yet already and in a headset or polyfill.
+    // Handle exiting VR if not yet already and in a headset or mobile.
     if (this.checkHeadsetConnected() || this.isMobile) {
       vrManager.enabled = false;
       if (this.hasWebXR) {
@@ -469,10 +466,10 @@ export class AScene extends AEntity {
     isVRPresenting = this.renderer.xr.enabled && isPresenting;
 
     // Do not update renderer, if a camera or a canvas have not been injected.
-    // In VR mode, three handles canvas resize based on the dimensions returned by
-    // the getEyeParameters function of the WebVR API. These dimensions are independent of
+    // In VR mode, three handles canvas resize based on the dimensions of the created
+    // XRWebGLLayer or XRProjectionLayer. These dimensions are independent of
     // the window size, therefore should not be overwritten with the window's width and
-    // height, // except when in fullscreen mode.
+    // height, except when in fullscreen mode.
     if (!camera || !canvas || (this.is('vr-mode') && (this.isMobile || isVRPresenting))) {
       return;
     }
@@ -835,7 +832,7 @@ function getCanvasSize (canvasEl, embedded, maxSize, isVR) {
 
 /**
  * Return the canvas size. Will be the window size unless that size is greater than the
- * maximum size (1920x1920 by default).  The constrained size will be returned in that case,
+ * maximum size (no maximum by default). The constrained size will be returned in that case,
  * maintaining aspect ratio
  *
  * @param {object} maxSize - Max size parameters (width and height).
