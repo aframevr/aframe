@@ -322,12 +322,16 @@ channels to share!
 
 #### npm
 
-[search]: https://www.npmjs.com/search?q=aframe-component
+[search]: https://www.npmjs.com/search?q=keywords:aframe-component
+[directory]: https://aframe.wiki/en/#!pages/component-directory.md
 
 Most A-Frame components are published on npm as well as GitHub. We can use
-[npm's search to search for `aframe-components`][search]. npm lets us sort by
-quality, popularity, and maintenance. This is a great place to look for a more
-complete list of components.
+[npm's search to search for packages tagged with `aframe-component`][search].
+This is a great place to look for a more complete list of components.
+
+For a list of components with the A-Frame version that the component
+was last tested with, check out the community-maintained [Component Directory][directory]
+on the [A-Frame Wiki](#a-frame-wiki).
 
 #### GitHub Projects
 
