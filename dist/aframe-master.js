@@ -22223,7 +22223,7 @@ class AScene extends _a_entity_js__WEBPACK_IMPORTED_MODULE_7__.AEntity {
   }
 
   /**
-   * Call `requestPresent` if WebVR or WebVR polyfill.
+   * Call `requestSession` if WebXR is supported.
    * Call `requestFullscreen` on desktop.
    * Handle events, states, fullscreen styles.
    *
@@ -22308,10 +22308,7 @@ class AScene extends _a_entity_js__WEBPACK_IMPORTED_MODULE_7__.AEntity {
       }
       self.addFullScreenStyles();
 
-      // On mobile, the polyfill handles fullscreen.
-      // TODO: 07/16 Chromium builds break when `requestFullscreen`ing on a canvas
-      // that we are also `requestPresent`ing. Until then, don't fullscreen if headset
-      // connected.
+      // Call `requestFullscreen` on desktop
       if (!self.isMobile && !self.checkHeadsetConnected()) {
         requestFullscreen(self.canvas);
       }
@@ -22323,7 +22320,7 @@ class AScene extends _a_entity_js__WEBPACK_IMPORTED_MODULE_7__.AEntity {
   }
 
   /**
-   * Call `exitPresent` if WebVR / WebXR or WebVR polyfill.
+   * Call `xrSession.end` if WebXR.
    * Handle events, states, fullscreen styles.
    *
    * @returns {Promise}
@@ -22337,7 +22334,7 @@ class AScene extends _a_entity_js__WEBPACK_IMPORTED_MODULE_7__.AEntity {
       return Promise.resolve('Not in immersive mode.');
     }
 
-    // Handle exiting VR if not yet already and in a headset or polyfill.
+    // Handle exiting VR if not yet already and in a headset or mobile.
     if (this.checkHeadsetConnected() || this.isMobile) {
       vrManager.enabled = false;
       if (this.hasWebXR) {
@@ -22463,10 +22460,10 @@ class AScene extends _a_entity_js__WEBPACK_IMPORTED_MODULE_7__.AEntity {
     isVRPresenting = this.renderer.xr.enabled && isPresenting;
 
     // Do not update renderer, if a camera or a canvas have not been injected.
-    // In VR mode, three handles canvas resize based on the dimensions returned by
-    // the getEyeParameters function of the WebVR API. These dimensions are independent of
+    // In VR mode, three handles canvas resize based on the dimensions of the created
+    // XRWebGLLayer or XRProjectionLayer. These dimensions are independent of
     // the window size, therefore should not be overwritten with the window's width and
-    // height, // except when in fullscreen mode.
+    // height, except when in fullscreen mode.
     if (!camera || !canvas || this.is('vr-mode') && (this.isMobile || isVRPresenting)) {
       return;
     }
@@ -22825,7 +22822,7 @@ function getCanvasSize(canvasEl, embedded, maxSize, isVR) {
 
 /**
  * Return the canvas size. Will be the window size unless that size is greater than the
- * maximum size (1920x1920 by default).  The constrained size will be returned in that case,
+ * maximum size (no maximum by default). The constrained size will be returned in that case,
  * maintaining aspect ratio
  *
  * @param {object} maxSize - Max size parameters (width and height).
@@ -28043,8 +28040,6 @@ var error = (0,_debug_js__WEBPACK_IMPORTED_MODULE_0__["default"])('device:error'
 var supportsVRSession = false;
 var supportsARSession = false;
 var isWebXRAvailable = navigator.xr !== undefined;
-
-// Support both WebVR and WebXR APIs.
 if (isWebXRAvailable) {
   var updateEnterInterfaces = function () {
     var sceneEl = document.querySelector('a-scene');
@@ -42933,7 +42928,7 @@ if (_utils_index_js__WEBPACK_IMPORTED_MODULE_16__.device.isBrowserEnvironment) {
   __webpack_require__(/*! ./style/aframe.css */ "./src/style/aframe.css");
   __webpack_require__(/*! ./style/rStats.css */ "./src/style/rStats.css");
 }
-console.log('A-Frame Version: 1.7.0 (Date 2025-03-12, Commit #1b9650f1)');
+console.log('A-Frame Version: 1.7.0 (Date 2025-03-17, Commit #0f4c33d8)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].REVISION);
 
 // Wait for ready state, unless user asynchronously initializes A-Frame.
