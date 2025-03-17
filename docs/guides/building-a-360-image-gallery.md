@@ -140,7 +140,7 @@ Now we have a textured plane that plays a click sound when clicked.
 
 ## Using Community Components
 
-[npm]: https://www.npmjs.com/search?q=aframe-component&page=1&ranking=optimal
+[npm]: https://www.npmjs.com/search?q=keywords:aframe-component
 
 A-Frame comes with a small core of standard components, but lot of magic comes
 from the large number of open source community components in the A-Frame
