@@ -1,13 +1,24 @@
+### 1.7.1 (Apr 1, 2025)
+
+### Bug fixes
+
+- Add `package-lock.json` for consistency when generating builds (#5693) (@vincentfretin)
+- `hand-tracking-controls` components emits `controllermodelready` for consistency with other input controls components (#5685) (@coderofsalvation)
+- Fix inspector when post-processing is enabled (#5684) (@vincentfretin)
+- Fix Next.js skipping A-Frame CSS styles (#5682) (@vincentfretin)
+- Fix ar-hit-test component. Initialize on `enter-vr` event instead of `sessionstart` (#5680) (@vincentfretin)
+- Docs and examples improvements (@jgbarah, @vincentfretin, @diarmidmackenzie, @dmarcos)
+
 ### 1.7.0 (Feb 20, 2025)
 
-Post-processing, ES modules and importmap, WebGPU support, Logitech MX Ink integration and more.
+[Post-processing](https://aframe.io/aframe/examples/showcase/post-processing/), [ES modules and importmap](https://aframe.io/aframe/examples/boilerplate/importmap/), [WebGPU and TSL support](https://aframe.io/aframe/examples/showcase/webgpu/), [Logitech MX Ink integration](https://aframe.io/aframe/examples/showcase/painter/) and more.
 
 
 ### Major Changes
 
 - Update to THREE r173 (@dmarcos)
 - Import maps support and replacement of CommonJS with ES Modules (@mrxz, @vincentfretin)
-- Experimental post-processing support. It works both in regular and immersive modes (@enzofrancescaHM, @mrxz, @vincentfretin)
+- Experimental post-processing support. It works both in regular and immersive modes (@enzofrancescaHM, @mrxz, @vincentfretin, @CodyJasonBennett)
 - Support for Logitech MX Ink tracked pen (@dmarcos)
 - Initial WebGPU support (@vincentfretin)
 

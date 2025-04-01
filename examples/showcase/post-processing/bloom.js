@@ -21,6 +21,7 @@ AFRAME.registerComponent('bloom', {
   },
   events: {
     rendererresize: function () {
+      if (!this.composer) { return; }
       this.renderer.getSize(this.size);
       this.composer.setSize(this.size.width, this.size.height);
     }
@@ -29,9 +30,10 @@ AFRAME.registerComponent('bloom', {
     this.size = new THREE.Vector2();
     this.scene = this.el.object3D;
     this.renderer = this.el.renderer;
-    this.camera = this.el.camera;
     this.originalRender = this.el.renderer.render;
-    this.bind();
+    if (this.data.enabled) {
+      this.bind();
+    }
   },
   update: function (oldData) {
     if (oldData.enabled === false && this.data.enabled === true) {
@@ -41,6 +43,8 @@ AFRAME.registerComponent('bloom', {
     if (oldData.enabled === true && this.data.enabled === false) {
       this.el.renderer.render = this.originalRender;
     }
+
+    if (!this.data.enabled) { return; }
 
     if (this.composer) {
       this.composer.dispose();
@@ -56,16 +60,16 @@ AFRAME.registerComponent('bloom', {
     this.composer = new EffectComposer(this.renderer, renderTarget);
 
     // create render pass
-    var renderScene = new RenderPass(this.scene, this.camera);
-    this.composer.addPass(renderScene);
+    if (!this.renderPass) {
+      this.renderPass = new RenderPass(this.scene, this.el.camera);
+    }
+    this.composer.addPass(this.renderPass);
 
     // create bloom pass
     var strength = this.data.strength;
     var radius = this.data.radius;
     var threshold = this.data.threshold;
-    if (this.bloomPass) {
-      this.bloomPass.dispose();
-    }
+    if (this.bloomPass) { this.bloomPass.dispose(); }
     this.bloomPass = new UnrealBloomPass(
       resolution,
       strength,
@@ -75,9 +79,7 @@ AFRAME.registerComponent('bloom', {
     this.composer.addPass(this.bloomPass);
 
     // create output pass
-    if (this.outputPass) {
-      this.outputPass.dispose();
-    }
+    if (this.outputPass) { this.outputPass.dispose(); }
     this.outputPass = new OutputPass();
     this.composer.addPass(this.outputPass);
   },
@@ -91,6 +93,9 @@ AFRAME.registerComponent('bloom', {
         self.originalRender.apply(this, arguments);
       } else {
         isInsideComposerRender = true;
+        // always set the current active camera on the RenderPass so that the
+        // inspector controls are working properly with post-processing enabled
+        self.renderPass.camera = self.el.camera;
         self.composer.render(self.el.sceneEl.delta / 1000);
         isInsideComposerRender = false;
       }
@@ -99,8 +104,8 @@ AFRAME.registerComponent('bloom', {
 
   remove: function () {
     this.el.renderer.render = this.originalRender;
-    this.bloomPass.dispose();
-    this.outputPass.dispose();
-    this.composer.dispose();
+    if (this.bloomPass) { this.bloomPass.dispose(); }
+    if (this.outputPass) { this.outputPass.dispose(); }
+    if (this.composer) { this.composer.dispose(); }
   }
 });
