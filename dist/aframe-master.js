@@ -22223,7 +22223,7 @@ class AScene extends _a_entity_js__WEBPACK_IMPORTED_MODULE_7__.AEntity {
   }
 
   /**
-   * Call `requestPresent` if WebVR or WebVR polyfill.
+   * Call `requestSession` if WebXR is supported.
    * Call `requestFullscreen` on desktop.
    * Handle events, states, fullscreen styles.
    *
@@ -22308,10 +22308,7 @@ class AScene extends _a_entity_js__WEBPACK_IMPORTED_MODULE_7__.AEntity {
       }
       self.addFullScreenStyles();
 
-      // On mobile, the polyfill handles fullscreen.
-      // TODO: 07/16 Chromium builds break when `requestFullscreen`ing on a canvas
-      // that we are also `requestPresent`ing. Until then, don't fullscreen if headset
-      // connected.
+      // Call `requestFullscreen` on desktop
       if (!self.isMobile && !self.checkHeadsetConnected()) {
         requestFullscreen(self.canvas);
       }
@@ -22323,7 +22320,7 @@ class AScene extends _a_entity_js__WEBPACK_IMPORTED_MODULE_7__.AEntity {
   }
 
   /**
-   * Call `exitPresent` if WebVR / WebXR or WebVR polyfill.
+   * Call `xrSession.end` if WebXR.
    * Handle events, states, fullscreen styles.
    *
    * @returns {Promise}
@@ -22337,7 +22334,7 @@ class AScene extends _a_entity_js__WEBPACK_IMPORTED_MODULE_7__.AEntity {
       return Promise.resolve('Not in immersive mode.');
     }
 
-    // Handle exiting VR if not yet already and in a headset or polyfill.
+    // Handle exiting VR if not yet already and in a headset or mobile.
     if (this.checkHeadsetConnected() || this.isMobile) {
       vrManager.enabled = false;
       if (this.hasWebXR) {
@@ -22463,10 +22460,10 @@ class AScene extends _a_entity_js__WEBPACK_IMPORTED_MODULE_7__.AEntity {
     isVRPresenting = this.renderer.xr.enabled && isPresenting;
 
     // Do not update renderer, if a camera or a canvas have not been injected.
-    // In VR mode, three handles canvas resize based on the dimensions returned by
-    // the getEyeParameters function of the WebVR API. These dimensions are independent of
+    // In VR mode, three handles canvas resize based on the dimensions of the created
+    // XRWebGLLayer or XRProjectionLayer. These dimensions are independent of
     // the window size, therefore should not be overwritten with the window's width and
-    // height, // except when in fullscreen mode.
+    // height, except when in fullscreen mode.
     if (!camera || !canvas || this.is('vr-mode') && (this.isMobile || isVRPresenting)) {
       return;
     }
@@ -22825,7 +22822,7 @@ function getCanvasSize(canvasEl, embedded, maxSize, isVR) {
 
 /**
  * Return the canvas size. Will be the window size unless that size is greater than the
- * maximum size (1920x1920 by default).  The constrained size will be returned in that case,
+ * maximum size (no maximum by default). The constrained size will be returned in that case,
  * maintaining aspect ratio
  *
  * @param {object} maxSize - Max size parameters (width and height).
@@ -28043,8 +28040,6 @@ var error = (0,_debug_js__WEBPACK_IMPORTED_MODULE_0__["default"])('device:error'
 var supportsVRSession = false;
 var supportsARSession = false;
 var isWebXRAvailable = navigator.xr !== undefined;
-
-// Support both WebVR and WebXR APIs.
 if (isWebXRAvailable) {
   var updateEnterInterfaces = function () {
     var sceneEl = document.querySelector('a-scene');
@@ -42732,7 +42727,7 @@ class WorkerPool {
 /***/ ((module) => {
 
 "use strict";
-module.exports = /*#__PURE__*/JSON.parse('{"name":"aframe","version":"1.7.0","description":"A web framework for building virtual reality experiences.","homepage":"https://aframe.io/","main":"./dist/aframe-master.js","module":"./dist/aframe-master.module.min.js","exports":{".":{"import":"./dist/aframe-master.module.min.js","require":"./dist/aframe-master.js"}},"scripts":{"dev":"cross-env INSPECTOR_VERSION=dev webpack serve --port 8080","dist":"node scripts/updateVersionLog.js && npm run dist:min && npm run dist:max && npm run dist:module","dist:max":"webpack --config webpack.config.cjs","dist:min":"webpack --config webpack.prod.config.cjs","dist:module":"webpack --config webpack.module.config.cjs","docs":"markserv --dir docs --port 9001","preghpages":"node ./scripts/preghpages.js","ghpages":"gh-pages -d gh-pages","lint":"standardx -v | snazzy","lint:fix":"standardx --fix","precommit":"npm run lint","prepush":"node scripts/testOnlyCheck.js","prerelease":"node scripts/release.js 1.6.0 1.7.0","start":"npm run dev","start:https":"npm run dev -- --server-type https","start:webgpu":"cross-env WEBGPU=true npm run dev -- --server-type https","test":"karma start ./tests/karma.conf.js","test:docs":"node scripts/docsLint.js","test:firefox":"npm test -- --browsers Firefox","test:chrome":"npm test -- --browsers Chrome","test:nobrowser":"NO_BROWSER=true npm test","test:node":"node ./node_modules/mocha/bin/mocha --ui tdd tests/node"},"repository":"aframevr/aframe","license":"MIT","files":["dist/*","docs/**/*","src/**/*","vendor/**/*"],"dependencies":{"buffer":"^6.0.3","debug":"^4.3.4","deep-assign":"^2.0.0","load-bmfont":"^1.2.3","super-animejs":"^3.1.0","three":"npm:super-three@0.173.5","three-bmfont-text":"dmarcos/three-bmfont-text#eed4878795be9b3e38cf6aec6b903f56acd1f695"},"devDependencies":{"@babel/core":"^7.24.0","babel-loader":"^9.1.3","babel-plugin-istanbul":"^6.1.1","chai":"^4.3.6","chai-shallow-deep-equal":"^1.4.0","chalk":"^1.1.3","cross-env":"^7.0.3","css-loader":"^7.1.2","eslint":"^8.45.0","eslint-config-semistandard":"^17.0.0","eslint-config-standard-jsx":"^11.0.0","gh-pages":"^6.3.0","git-rev":"^0.2.1","glob":"^8.0.3","husky":"^0.11.7","jsdom":"^24.0.0","jsdom-global":"^3.0.2","karma":"^6.4.0","karma-chai-shallow-deep-equal":"0.0.4","karma-chrome-launcher":"^3.1.1","karma-coverage":"^2.2.0","karma-env-preprocessor":"^0.1.1","karma-firefox-launcher":"^2.1.2","karma-mocha":"^2.0.1","karma-mocha-reporter":"^2.2.5","karma-sinon-chai":"^2.0.2","karma-webpack":"^5.0.0","markserv":"github:sukima/markserv#feature/fix-broken-websoketio-link","mocha":"^10.0.0","replace-in-file":"^8.3.0","shelljs":"^0.8.5","sinon":"<12.0.0","sinon-chai":"^3.7.0","snazzy":"^5.0.0","standardx":"^7.0.0","style-loader":"^4.0.0","too-wordy":"ngokevin/too-wordy","webpack":"5.95.0","webpack-cli":"^5.1.4","webpack-dev-server":"~5.0.4","write-good":"^1.0.8"},"link":true,"standardx":{"ignore":["build/**","dist/**","examples/**/shaders/*.js","**/vendor/**"]},"keywords":["3d","aframe","cardboard","components","oculus","three","three.js","rift","vive","vr","quest","meta","web-components","webvr","webxr"],"engines":{"node":">= 4.6.0","npm":">= 2.15.9"}}');
+module.exports = /*#__PURE__*/JSON.parse('{"name":"aframe","version":"1.7.1","description":"A web framework for building virtual reality experiences.","homepage":"https://aframe.io/","main":"./dist/aframe-master.js","module":"./dist/aframe-master.module.min.js","exports":{".":{"import":"./dist/aframe-master.module.min.js","require":"./dist/aframe-master.js"}},"scripts":{"dev":"cross-env INSPECTOR_VERSION=dev webpack serve --port 8080","dist":"node scripts/updateVersionLog.js && npm run dist:min && npm run dist:max && npm run dist:module","dist:max":"webpack --config webpack.config.cjs","dist:min":"webpack --config webpack.prod.config.cjs","dist:module":"webpack --config webpack.module.config.cjs","docs":"markserv --dir docs --port 9001","preghpages":"node ./scripts/preghpages.js","ghpages":"gh-pages -d gh-pages","lint":"standardx -v | snazzy","lint:fix":"standardx --fix","precommit":"npm run lint","prepush":"node scripts/testOnlyCheck.js","prerelease":"node scripts/release.js 1.7.0 1.7.1","start":"npm run dev","start:https":"npm run dev -- --server-type https","start:webgpu":"cross-env WEBGPU=true npm run dev -- --server-type https","test":"karma start ./tests/karma.conf.js","test:docs":"node scripts/docsLint.js","test:firefox":"npm test -- --browsers Firefox","test:chrome":"npm test -- --browsers Chrome","test:nobrowser":"NO_BROWSER=true npm test","test:node":"node ./node_modules/mocha/bin/mocha --ui tdd tests/node"},"repository":"aframevr/aframe","license":"MIT","files":["dist/*","docs/**/*","src/**/*","vendor/**/*"],"dependencies":{"buffer":"^6.0.3","debug":"^4.3.4","deep-assign":"^2.0.0","load-bmfont":"^1.2.3","super-animejs":"^3.1.0","three":"npm:super-three@0.173.5","three-bmfont-text":"dmarcos/three-bmfont-text#eed4878795be9b3e38cf6aec6b903f56acd1f695"},"devDependencies":{"@babel/core":"^7.24.0","babel-loader":"^9.1.3","babel-plugin-istanbul":"^6.1.1","chai":"^4.3.6","chai-shallow-deep-equal":"^1.4.0","chalk":"^1.1.3","cross-env":"^7.0.3","css-loader":"^7.1.2","eslint":"^8.45.0","eslint-config-semistandard":"^17.0.0","eslint-config-standard-jsx":"^11.0.0","gh-pages":"^6.3.0","git-rev":"^0.2.1","glob":"^8.0.3","husky":"^0.11.7","jsdom":"^24.0.0","jsdom-global":"^3.0.2","karma":"^6.4.0","karma-chai-shallow-deep-equal":"0.0.4","karma-chrome-launcher":"^3.1.1","karma-coverage":"^2.2.0","karma-env-preprocessor":"^0.1.1","karma-firefox-launcher":"^2.1.2","karma-mocha":"^2.0.1","karma-mocha-reporter":"^2.2.5","karma-sinon-chai":"^2.0.2","karma-webpack":"^5.0.0","markserv":"github:sukima/markserv#feature/fix-broken-websoketio-link","mocha":"^10.0.0","replace-in-file":"^8.3.0","shelljs":"^0.8.5","sinon":"<12.0.0","sinon-chai":"^3.7.0","snazzy":"^5.0.0","standardx":"^7.0.0","style-loader":"^4.0.0","too-wordy":"ngokevin/too-wordy","webpack":"5.95.0","webpack-cli":"^5.1.4","webpack-dev-server":"~5.0.4","write-good":"^1.0.8"},"link":true,"standardx":{"ignore":["build/**","dist/**","examples/**/shaders/*.js","**/vendor/**"]},"keywords":["3d","aframe","cardboard","components","oculus","three","three.js","rift","vive","vr","quest","meta","web-components","webvr","webxr"],"engines":{"node":">= 4.6.0","npm":">= 2.15.9"}}');
 
 /***/ })
 
@@ -42933,7 +42928,7 @@ if (_utils_index_js__WEBPACK_IMPORTED_MODULE_16__.device.isBrowserEnvironment) {
   __webpack_require__(/*! ./style/aframe.css */ "./src/style/aframe.css");
   __webpack_require__(/*! ./style/rStats.css */ "./src/style/rStats.css");
 }
-console.log('A-Frame Version: 1.7.0 (Date 2025-03-12, Commit #1b9650f1)');
+console.log('A-Frame Version: 1.7.1 (Date 2025-04-01, Commit #ceac308b)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].REVISION);
 
 // Wait for ready state, unless user asynchronously initializes A-Frame.
