@@ -42928,7 +42928,7 @@ if (_utils_index_js__WEBPACK_IMPORTED_MODULE_16__.device.isBrowserEnvironment) {
   __webpack_require__(/*! ./style/aframe.css */ "./src/style/aframe.css");
   __webpack_require__(/*! ./style/rStats.css */ "./src/style/rStats.css");
 }
-console.log('A-Frame Version: 1.7.0 (Date 2025-03-12, Commit #1b9650f1)');
+console.log('A-Frame Version: 1.7.1 (Date 2025-04-01, Commit #ceac308b)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].REVISION);
 
 // Wait for ready state, unless user asynchronously initializes A-Frame.
