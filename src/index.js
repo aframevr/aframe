@@ -56,7 +56,6 @@ if (!window.cordova && window.location.protocol === 'file:') {
 if (utils.device.isBrowserEnvironment) {
   window.logs = debug;
   require('./style/aframe.css');
-  require('./style/rStats.css');
 }
 
 console.log('A-Frame Version: 1.7.1 (Date 2025-04-03, Commit #9fa0ce8f)');
