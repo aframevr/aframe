@@ -15871,45 +15871,25 @@ var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_0__.registerCompo
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   Component: () => (/* binding */ Component)
-/* harmony export */ });
+/* harmony import */ var stats_gl__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! stats-gl */ "./node_modules/stats-gl/dist/main.js");
 /* harmony import */ var _core_component_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../core/component.js */ "./src/core/component.js");
-/* harmony import */ var _vendor_rStats_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../vendor/rStats.js */ "./vendor/rStats.js");
-/* harmony import */ var _vendor_rStats_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_vendor_rStats_js__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _utils_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../utils/index.js */ "./src/utils/index.js");
-/* harmony import */ var _vendor_rStats_extras_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../vendor/rStats.extras.js */ "./vendor/rStats.extras.js");
-/* harmony import */ var _vendor_rStats_extras_js__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_vendor_rStats_extras_js__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _lib_rStatsAframe_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../lib/rStatsAframe.js */ "./src/lib/rStatsAframe.js");
-/* harmony import */ var _lib_rStatsAframe_js__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_lib_rStatsAframe_js__WEBPACK_IMPORTED_MODULE_4__);
 
 
-
-
-
-var AFrameStats = window.aframeStats;
 var HIDDEN_CLASS = 'a-hidden';
-var ThreeStats = window.threeStats;
-
-/**
- * Stats appended to document.body by RStats.
- */
-var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_0__.registerComponent)('stats', {
+(0,_core_component_js__WEBPACK_IMPORTED_MODULE_0__.registerComponent)('stats', {
   schema: {
     default: true
   },
   sceneOnly: true,
   init: function () {
-    var scene = this.el;
-    if (_utils_index_js__WEBPACK_IMPORTED_MODULE_2__.getUrlParameter('stats') === 'false') {
-      return;
+    this.stats = new stats_gl__WEBPACK_IMPORTED_MODULE_1__["default"]();
+    this.stats.init(this.el.renderer);
+    document.body.append(this.stats.dom);
+  },
+  tick: function () {
+    if (this.data) {
+      this.stats.update();
     }
-    this.stats = createStats(scene);
-    this.statsEl = document.querySelector('.rs-base');
-    this.hideBound = this.hide.bind(this);
-    this.showBound = this.show.bind(this);
-    scene.addEventListener('enter-vr', this.hideBound);
-    scene.addEventListener('exit-vr', this.showBound);
   },
   update: function () {
     if (!this.stats) {
@@ -15917,50 +15897,13 @@ var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_0__.registerCompo
     }
     return !this.data ? this.hide() : this.show();
   },
-  remove: function () {
-    this.el.removeEventListener('enter-vr', this.hideBound);
-    this.el.removeEventListener('exit-vr', this.showBound);
-    if (!this.statsEl) {
-      return;
-    } // Scene detached.
-    this.statsEl.parentNode.removeChild(this.statsEl);
-  },
-  tick: function () {
-    var stats = this.stats;
-    if (!stats) {
-      return;
-    }
-    stats('rAF').tick();
-    stats('FPS').frame();
-    stats().update();
-  },
   hide: function () {
-    this.statsEl.classList.add(HIDDEN_CLASS);
+    this.stats.dom.classList.add(HIDDEN_CLASS);
   },
   show: function () {
-    this.statsEl.classList.remove(HIDDEN_CLASS);
+    this.stats.dom.classList.remove(HIDDEN_CLASS);
   }
 });
-function createStats(scene) {
-  var threeStats = new ThreeStats(scene.renderer);
-  var aframeStats = new AFrameStats(scene);
-  var plugins = scene.isMobile ? [] : [threeStats, aframeStats];
-  return new (_vendor_rStats_js__WEBPACK_IMPORTED_MODULE_1___default())({
-    css: [],
-    // Our stylesheet is injected from `src/index.js`.
-    values: {
-      fps: {
-        caption: 'fps',
-        below: 30
-      }
-    },
-    groups: [{
-      caption: 'Framerate',
-      values: ['fps', 'raf']
-    }],
-    plugins: plugins
-  });
-}
 
 /***/ }),
 
@@ -25359,58 +25302,6 @@ var uvScaleVector = new three__WEBPACK_IMPORTED_MODULE_1__.Vector2();
 
 /***/ }),
 
-/***/ "./src/lib/rStatsAframe.js":
-/*!*********************************!*\
-  !*** ./src/lib/rStatsAframe.js ***!
-  \*********************************/
-/***/ (() => {
-
-window.aframeStats = function (scene) {
-  var _rS = null;
-  var _scene = scene;
-  var _values = {
-    te: {
-      caption: 'Entities'
-    },
-    lt: {
-      caption: 'Load Time'
-    }
-  };
-  var _groups = [{
-    caption: 'A-Frame',
-    values: ['te', 'lt']
-  }];
-  function _update() {
-    _rS('te').set(getEntityCount());
-    if (window.performance.getEntriesByName) {
-      _rS('lt').set(window.performance.getEntriesByName('render-started')[0].startTime.toFixed(0));
-    }
-  }
-  function getEntityCount() {
-    var elements = _scene.querySelectorAll('*');
-    Array.prototype.slice.call(elements).filter(function (el) {
-      return el.isEntity;
-    });
-    return elements.length;
-  }
-  function _start() {}
-  function _end() {}
-  function _attach(r) {
-    _rS = r;
-  }
-  return {
-    update: _update,
-    start: _start,
-    end: _end,
-    attach: _attach,
-    values: _values,
-    groups: _groups,
-    fractions: []
-  };
-};
-
-/***/ }),
-
 /***/ "./src/lib/three.js":
 /*!**************************!*\
   !*** ./src/lib/three.js ***!
@@ -29925,603 +29816,6 @@ var DeviceOrientationControls = function (object) {
 
 /***/ }),
 
-/***/ "./vendor/rStats.extras.js":
-/*!*********************************!*\
-  !*** ./vendor/rStats.extras.js ***!
-  \*********************************/
-/***/ ((module) => {
-
-window.glStats = function () {
-  var _rS = null;
-  var _totalDrawArraysCalls = 0,
-    _totalDrawElementsCalls = 0,
-    _totalUseProgramCalls = 0,
-    _totalFaces = 0,
-    _totalVertices = 0,
-    _totalPoints = 0,
-    _totalBindTexures = 0;
-  function _h(f, c) {
-    return function () {
-      c.apply(this, arguments);
-      f.apply(this, arguments);
-    };
-  }
-  WebGLRenderingContext.prototype.drawArrays = _h(WebGLRenderingContext.prototype.drawArrays, function () {
-    _totalDrawArraysCalls++;
-    if (arguments[0] == this.POINTS) _totalPoints += arguments[2];else _totalVertices += arguments[2];
-  });
-  WebGLRenderingContext.prototype.drawElements = _h(WebGLRenderingContext.prototype.drawElements, function () {
-    _totalDrawElementsCalls++;
-    _totalFaces += arguments[1] / 3;
-    _totalVertices += arguments[1];
-  });
-  WebGLRenderingContext.prototype.useProgram = _h(WebGLRenderingContext.prototype.useProgram, function () {
-    _totalUseProgramCalls++;
-  });
-  WebGLRenderingContext.prototype.bindTexture = _h(WebGLRenderingContext.prototype.bindTexture, function () {
-    _totalBindTexures++;
-  });
-  var _values = {
-    allcalls: {
-      over: 3000,
-      caption: 'Calls (hook)'
-    },
-    drawelements: {
-      caption: 'drawElements (hook)'
-    },
-    drawarrays: {
-      caption: 'drawArrays (hook)'
-    }
-  };
-  var _groups = [{
-    caption: 'WebGL',
-    values: ['allcalls', 'drawelements', 'drawarrays', 'useprogram', 'bindtexture', 'glfaces', 'glvertices', 'glpoints']
-  }];
-  var _fractions = [{
-    base: 'allcalls',
-    steps: ['drawelements', 'drawarrays']
-  }];
-  function _update() {
-    _rS('allcalls').set(_totalDrawArraysCalls + _totalDrawElementsCalls);
-    _rS('drawElements').set(_totalDrawElementsCalls);
-    _rS('drawArrays').set(_totalDrawArraysCalls);
-    _rS('bindTexture').set(_totalBindTexures);
-    _rS('useProgram').set(_totalUseProgramCalls);
-    _rS('glfaces').set(_totalFaces);
-    _rS('glvertices').set(_totalVertices);
-    _rS('glpoints').set(_totalPoints);
-  }
-  function _start() {
-    _totalDrawArraysCalls = 0;
-    _totalDrawElementsCalls = 0;
-    _totalUseProgramCalls = 0;
-    _totalFaces = 0;
-    _totalVertices = 0;
-    _totalPoints = 0;
-    _totalBindTexures = 0;
-  }
-  function _end() {}
-  function _attach(r) {
-    _rS = r;
-  }
-  return {
-    update: _update,
-    start: _start,
-    end: _end,
-    attach: _attach,
-    values: _values,
-    groups: _groups,
-    fractions: _fractions
-  };
-};
-window.threeStats = function (renderer) {
-  var _rS = null;
-  var _values = {
-    'renderer.info.memory.geometries': {
-      caption: 'Geometries'
-    },
-    'renderer.info.memory.textures': {
-      caption: 'Textures'
-    },
-    'renderer.info.programs': {
-      caption: 'Programs'
-    },
-    'renderer.info.render.calls': {
-      caption: 'Calls'
-    },
-    'renderer.info.render.triangles': {
-      caption: 'Triangles',
-      over: 1000
-    },
-    'renderer.info.render.points': {
-      caption: 'Points'
-    }
-  };
-  var _groups = [{
-    caption: 'Three.js - Memory',
-    values: ['renderer.info.memory.geometries', 'renderer.info.programs', 'renderer.info.memory.textures']
-  }, {
-    caption: 'Three.js - Render',
-    values: ['renderer.info.render.calls', 'renderer.info.render.triangles', 'renderer.info.render.points']
-  }];
-  var _fractions = [];
-  function _update() {
-    _rS('renderer.info.memory.geometries').set(renderer.info.memory.geometries);
-    _rS('renderer.info.programs').set(renderer.info.programs?.length ?? NaN);
-    _rS('renderer.info.memory.textures').set(renderer.info.memory.textures);
-    _rS('renderer.info.render.calls').set(renderer.info.render.calls);
-    _rS('renderer.info.render.triangles').set(renderer.info.render.triangles);
-    _rS('renderer.info.render.points').set(renderer.info.render.points);
-  }
-  function _start() {}
-  function _end() {}
-  function _attach(r) {
-    _rS = r;
-  }
-  return {
-    update: _update,
-    start: _start,
-    end: _end,
-    attach: _attach,
-    values: _values,
-    groups: _groups,
-    fractions: _fractions
-  };
-};
-
-/*
- *   From https://github.com/paulirish/memory-stats.js
- */
-
-window.BrowserStats = function () {
-  var _rS = null;
-  var _usedJSHeapSize = 0,
-    _totalJSHeapSize = 0;
-  if (window.performance && !performance.memory) {
-    performance.memory = {
-      usedJSHeapSize: 0,
-      totalJSHeapSize: 0
-    };
-  }
-  if (performance.memory.totalJSHeapSize === 0) {
-    console.warn('totalJSHeapSize === 0... performance.memory is only available in Chrome .');
-  }
-  var _values = {
-    memory: {
-      caption: 'Used Memory',
-      average: true,
-      avgMs: 1000,
-      over: 22
-    },
-    total: {
-      caption: 'Total Memory'
-    }
-  };
-  var _groups = [{
-    caption: 'Browser',
-    values: ['memory', 'total']
-  }];
-  var _fractions = [{
-    base: 'total',
-    steps: ['memory']
-  }];
-  var log1024 = Math.log(1024);
-  function _size(v) {
-    var precision = 100; //Math.pow(10, 2);
-    var i = Math.floor(Math.log(v) / log1024);
-    return Math.round(v * precision / Math.pow(1024, i)) / precision; // + ' ' + sizes[i];
-  }
-  function _update() {
-    _usedJSHeapSize = _size(performance.memory.usedJSHeapSize);
-    _totalJSHeapSize = _size(performance.memory.totalJSHeapSize);
-    _rS('memory').set(_usedJSHeapSize);
-    _rS('total').set(_totalJSHeapSize);
-  }
-  function _start() {
-    _usedJSHeapSize = 0;
-  }
-  function _end() {}
-  function _attach(r) {
-    _rS = r;
-  }
-  return {
-    update: _update,
-    start: _start,
-    end: _end,
-    attach: _attach,
-    values: _values,
-    groups: _groups,
-    fractions: _fractions
-  };
-};
-if (true) {
-  module.exports = {
-    glStats: window.glStats,
-    threeStats: window.threeStats,
-    BrowserStats: window.BrowserStats
-  };
-}
-
-/***/ }),
-
-/***/ "./vendor/rStats.js":
-/*!**************************!*\
-  !*** ./vendor/rStats.js ***!
-  \**************************/
-/***/ ((module) => {
-
-"use strict";
-// performance.now() polyfill from https://gist.github.com/paulirish/5438650
-
-
-(function () {
-  if ('performance' in window == false) {
-    window.performance = {};
-  }
-  var performance = window.performance;
-  if ('now' in performance == false) {
-    var nowOffset = Date.now();
-    if (performance.timing && performance.timing.navigationStart) {
-      nowOffset = performance.timing.navigationStart;
-    }
-    performance.now = function now() {
-      return Date.now() - nowOffset;
-    };
-  }
-  if (!performance.mark) {
-    performance.mark = function () {};
-  }
-  if (!performance.measure) {
-    performance.measure = function () {};
-  }
-})();
-window.rStats = function rStats(settings) {
-  function iterateKeys(array, callback) {
-    var keys = Object.keys(array);
-    for (var j = 0, l = keys.length; j < l; j++) {
-      callback(keys[j]);
-    }
-  }
-  function importCSS(url) {
-    var element = document.createElement('link');
-    element.href = url;
-    element.rel = 'stylesheet';
-    element.type = 'text/css';
-    document.getElementsByTagName('head')[0].appendChild(element);
-  }
-  var _settings = settings || {};
-  var _colours = _settings.colours || ['#850700', '#c74900', '#fcb300', '#284280', '#4c7c0c'];
-  var _cssFont = 'https://fonts.googleapis.com/css?family=Roboto+Condensed:400,700,300';
-  var _cssRStats = (_settings.CSSPath ? _settings.CSSPath : '') + 'rStats.css';
-  var _css = _settings.css || [_cssFont, _cssRStats];
-  _css.forEach(function (uri) {
-    importCSS(uri);
-  });
-  if (!_settings.values) _settings.values = {};
-  var _base,
-    _div,
-    _elHeight = 10,
-    _elWidth = 200;
-  var _perfCounters = {};
-  function Graph(_dom, _id, _defArg) {
-    var _def = _defArg || {};
-    var _canvas = document.createElement('canvas'),
-      _ctx = _canvas.getContext('2d'),
-      _max = 0,
-      _current = 0;
-    var c = _def.color ? _def.color : '#666666';
-    var _dotCanvas = document.createElement('canvas'),
-      _dotCtx = _dotCanvas.getContext('2d');
-    _dotCanvas.width = 1;
-    _dotCanvas.height = 2 * _elHeight;
-    _dotCtx.fillStyle = '#444444';
-    _dotCtx.fillRect(0, 0, 1, 2 * _elHeight);
-    _dotCtx.fillStyle = c;
-    _dotCtx.fillRect(0, _elHeight, 1, _elHeight);
-    _dotCtx.fillStyle = '#ffffff';
-    _dotCtx.globalAlpha = 0.5;
-    _dotCtx.fillRect(0, _elHeight, 1, 1);
-    _dotCtx.globalAlpha = 1;
-    var _alarmCanvas = document.createElement('canvas'),
-      _alarmCtx = _alarmCanvas.getContext('2d');
-    _alarmCanvas.width = 1;
-    _alarmCanvas.height = 2 * _elHeight;
-    _alarmCtx.fillStyle = '#444444';
-    _alarmCtx.fillRect(0, 0, 1, 2 * _elHeight);
-    _alarmCtx.fillStyle = '#b70000';
-    _alarmCtx.fillRect(0, _elHeight, 1, _elHeight);
-    _alarmCtx.globalAlpha = 0.5;
-    _alarmCtx.fillStyle = '#ffffff';
-    _alarmCtx.fillRect(0, _elHeight, 1, 1);
-    _alarmCtx.globalAlpha = 1;
-    function _init() {
-      _canvas.width = _elWidth;
-      _canvas.height = _elHeight;
-      _canvas.style.width = _canvas.width + 'px';
-      _canvas.style.height = _canvas.height + 'px';
-      _canvas.className = 'rs-canvas';
-      _dom.appendChild(_canvas);
-      _ctx.fillStyle = '#444444';
-      _ctx.fillRect(0, 0, _canvas.width, _canvas.height);
-    }
-    function _draw(v, alarm) {
-      _current += (v - _current) * 0.1;
-      _max *= 0.99;
-      if (_current > _max) _max = _current;
-      _ctx.drawImage(_canvas, 1, 0, _canvas.width - 1, _canvas.height, 0, 0, _canvas.width - 1, _canvas.height);
-      if (alarm) {
-        _ctx.drawImage(_alarmCanvas, _canvas.width - 1, _canvas.height - _current * _canvas.height / _max - _elHeight);
-      } else {
-        _ctx.drawImage(_dotCanvas, _canvas.width - 1, _canvas.height - _current * _canvas.height / _max - _elHeight);
-      }
-    }
-    _init();
-    return {
-      draw: _draw
-    };
-  }
-  function StackGraph(_dom, _num) {
-    var _canvas = document.createElement('canvas'),
-      _ctx = _canvas.getContext('2d');
-    function _init() {
-      _canvas.width = _elWidth;
-      _canvas.height = _elHeight * _num;
-      _canvas.style.width = _canvas.width + 'px';
-      _canvas.style.height = _canvas.height + 'px';
-      _canvas.className = 'rs-canvas';
-      _dom.appendChild(_canvas);
-      _ctx.fillStyle = '#444444';
-      _ctx.fillRect(0, 0, _canvas.width, _canvas.height);
-    }
-    function _draw(v) {
-      _ctx.drawImage(_canvas, 1, 0, _canvas.width - 1, _canvas.height, 0, 0, _canvas.width - 1, _canvas.height);
-      var th = 0;
-      iterateKeys(v, function (j) {
-        var h = v[j] * _canvas.height;
-        _ctx.fillStyle = _colours[j];
-        _ctx.fillRect(_canvas.width - 1, th, 1, h);
-        th += h;
-      });
-    }
-    _init();
-    return {
-      draw: _draw
-    };
-  }
-  function PerfCounter(id, group) {
-    var _id = id,
-      _time,
-      _value = 0,
-      _total = 0,
-      _averageValue = 0,
-      _accumValue = 0,
-      _accumStart = performance.now(),
-      _accumSamples = 0,
-      _dom = document.createElement('div'),
-      _spanId = document.createElement('span'),
-      _spanValue = document.createElement('div'),
-      _spanValueText = document.createTextNode(''),
-      _def = _settings ? _settings.values[_id.toLowerCase()] : null,
-      _graph = new Graph(_dom, _id, _def),
-      _started = false;
-    _spanId.className = 'rs-counter-id';
-    _spanId.textContent = _def && _def.caption ? _def.caption : _id;
-    _spanValue.className = 'rs-counter-value';
-    _spanValue.appendChild(_spanValueText);
-    _dom.appendChild(_spanId);
-    _dom.appendChild(_spanValue);
-    if (group) group.div.appendChild(_dom);else _div.appendChild(_dom);
-    _time = performance.now();
-    function _average(v) {
-      if (_def && _def.average) {
-        _accumValue += v;
-        _accumSamples++;
-        var t = performance.now();
-        if (t - _accumStart >= (_def.avgMs || 1000)) {
-          _averageValue = _accumValue / _accumSamples;
-          _accumValue = 0;
-          _accumStart = t;
-          _accumSamples = 0;
-        }
-      }
-    }
-    function _start() {
-      _time = performance.now();
-      if (_settings.userTimingAPI) performance.mark(_id + '-start');
-      _started = true;
-    }
-    function _end() {
-      _value = performance.now() - _time;
-      if (_settings.userTimingAPI) {
-        performance.mark(_id + '-end');
-        if (_started) {
-          performance.measure(_id, _id + '-start', _id + '-end');
-        }
-      }
-      _average(_value);
-    }
-    function _tick() {
-      _end();
-      _start();
-    }
-    function _draw() {
-      var v = _def && _def.average ? _averageValue : _value;
-      _spanValueText.nodeValue = Math.round(v * 100) / 100;
-      var a = _def && (_def.below && _value < _def.below || _def.over && _value > _def.over);
-      _graph.draw(_value, a);
-      _dom.className = a ? 'rs-counter-base alarm' : 'rs-counter-base';
-    }
-    function _frame() {
-      var t = performance.now();
-      var e = t - _time;
-      _total++;
-      if (e > 1000) {
-        if (_def && _def.interpolate === false) {
-          _value = _total;
-        } else {
-          _value = _total * 1000 / e;
-        }
-        _total = 0;
-        _time = t;
-        _average(_value);
-      }
-    }
-    function _set(v) {
-      _value = v;
-      _average(_value);
-    }
-    return {
-      set: _set,
-      start: _start,
-      tick: _tick,
-      end: _end,
-      frame: _frame,
-      value: function () {
-        return _value;
-      },
-      draw: _draw
-    };
-  }
-  function sample() {
-    var _value = 0;
-    function _set(v) {
-      _value = v;
-    }
-    return {
-      set: _set,
-      value: function () {
-        return _value;
-      }
-    };
-  }
-  function _perf(idArg) {
-    var id = idArg.toLowerCase();
-    if (id === undefined) id = 'default';
-    if (_perfCounters[id]) return _perfCounters[id];
-    var group = null;
-    if (_settings && _settings.groups) {
-      iterateKeys(_settings.groups, function (j) {
-        var g = _settings.groups[parseInt(j, 10)];
-        if (!group && g.values.indexOf(id.toLowerCase()) !== -1) {
-          group = g;
-        }
-      });
-    }
-    var p = new PerfCounter(id, group);
-    _perfCounters[id] = p;
-    return p;
-  }
-  function _init() {
-    if (_settings.plugins) {
-      if (!_settings.values) _settings.values = {};
-      if (!_settings.groups) _settings.groups = [];
-      if (!_settings.fractions) _settings.fractions = [];
-      for (var j = 0; j < _settings.plugins.length; j++) {
-        _settings.plugins[j].attach(_perf);
-        iterateKeys(_settings.plugins[j].values, function (k) {
-          _settings.values[k] = _settings.plugins[j].values[k];
-        });
-        _settings.groups = _settings.groups.concat(_settings.plugins[j].groups);
-        _settings.fractions = _settings.fractions.concat(_settings.plugins[j].fractions);
-      }
-    } else {
-      _settings.plugins = {};
-    }
-    _base = document.createElement('div');
-    _base.className = 'rs-base';
-    _div = document.createElement('div');
-    _div.className = 'rs-container';
-    _div.style.height = 'auto';
-    _base.appendChild(_div);
-    document.body.appendChild(_base);
-    if (!_settings) return;
-    if (_settings.groups) {
-      iterateKeys(_settings.groups, function (j) {
-        var g = _settings.groups[parseInt(j, 10)];
-        var div = document.createElement('div');
-        div.className = 'rs-group';
-        g.div = div;
-        var h1 = document.createElement('h1');
-        h1.textContent = g.caption;
-        h1.addEventListener('click', function (e) {
-          this.classList.toggle('hidden');
-          e.preventDefault();
-        }.bind(div));
-        _div.appendChild(h1);
-        _div.appendChild(div);
-      });
-    }
-    if (_settings.fractions) {
-      iterateKeys(_settings.fractions, function (j) {
-        var f = _settings.fractions[parseInt(j, 10)];
-        var div = document.createElement('div');
-        div.className = 'rs-fraction';
-        var legend = document.createElement('div');
-        legend.className = 'rs-legend';
-        var h = 0;
-        iterateKeys(_settings.fractions[j].steps, function (k) {
-          var p = document.createElement('p');
-          p.textContent = _settings.fractions[j].steps[k];
-          p.style.color = _colours[h];
-          legend.appendChild(p);
-          h++;
-        });
-        div.appendChild(legend);
-        div.style.height = h * _elHeight + 'px';
-        f.div = div;
-        var graph = new StackGraph(div, h);
-        f.graph = graph;
-        _div.appendChild(div);
-      });
-    }
-  }
-  function _update() {
-    iterateKeys(_settings.plugins, function (j) {
-      _settings.plugins[j].update();
-    });
-    iterateKeys(_perfCounters, function (j) {
-      _perfCounters[j].draw();
-    });
-    if (_settings && _settings.fractions) {
-      iterateKeys(_settings.fractions, function (j) {
-        var f = _settings.fractions[parseInt(j, 10)];
-        var v = [];
-        var base = _perfCounters[f.base.toLowerCase()];
-        if (base) {
-          base = base.value();
-          iterateKeys(_settings.fractions[j].steps, function (k) {
-            var s = _settings.fractions[j].steps[parseInt(k, 10)].toLowerCase();
-            var val = _perfCounters[s];
-            if (val) {
-              v.push(val.value() / base);
-            }
-          });
-        }
-        f.graph.draw(v);
-      });
-    }
-
-    /*if( _height != _div.clientHeight ) {
-        _height = _div.clientHeight;
-        _base.style.height = _height + 2 * _elHeight + 'px';
-    console.log( _base.clientHeight );
-    }*/
-  }
-  _init();
-  return function (id) {
-    if (id) return _perf(id);
-    return {
-      element: _base,
-      update: _update
-    };
-  };
-};
-if (true) {
-  module.exports = window.rStats;
-}
-
-/***/ }),
-
 /***/ "./vendor/wakelock/util.js":
 /*!*********************************!*\
   !*** ./vendor/wakelock/util.js ***!
@@ -31104,128 +30398,6 @@ a-scene audio {
 
 /***/ }),
 
-/***/ "./node_modules/css-loader/dist/cjs.js!./src/style/rStats.css":
-/*!********************************************************************!*\
-  !*** ./node_modules/css-loader/dist/cjs.js!./src/style/rStats.css ***!
-  \********************************************************************/
-/***/ ((module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../node_modules/css-loader/dist/runtime/sourceMaps.js */ "./node_modules/css-loader/dist/runtime/sourceMaps.js");
-/* harmony import */ var _node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
-/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
-// Imports
-
-
-var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
-// Module
-___CSS_LOADER_EXPORT___.push([module.id, `.rs-base {
-  background-color: #333;
-  color: #fafafa;
-  border-radius: 0;
-  font: 10px monospace;
-  left: 5px;
-  line-height: 1em;
-  opacity: 0.85;
-  overflow: hidden;
-  padding: 10px;
-  position: fixed;
-  top: 5px;
-  width: 300px;
-  z-index: 10000;
-}
-
-.rs-base div.hidden {
-  display: none;
-}
-
-.rs-base h1 {
-  color: #fff;
-  cursor: pointer;
-  font-size: 1.4em;
-  font-weight: 300;
-  margin: 0 0 5px;
-  padding: 0;
-}
-
-.rs-group {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: flex;
-  -webkit-flex-direction: column-reverse;
-  flex-direction: column-reverse;
-  margin-bottom: 5px;
-}
-
-.rs-group:last-child {
-  margin-bottom: 0;
-}
-
-.rs-counter-base {
-  align-items: center;
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: flex;
-  height: 10px;
-  -webkit-justify-content: space-between;
-  justify-content: space-between;
-  margin: 2px 0;
-}
-
-.rs-counter-base.alarm {
-  color: #b70000;
-  text-shadow: 0 0 0 #b70000,
-               0 0 1px #fff,
-               0 0 1px #fff,
-               0 0 2px #fff,
-               0 0 2px #fff,
-               0 0 3px #fff,
-               0 0 3px #fff,
-               0 0 4px #fff,
-               0 0 4px #fff;
-}
-
-.rs-counter-id {
-  font-weight: 300;
-  -webkit-box-ordinal-group: 0;
-  -webkit-order: 0;
-  order: 0;
-  width: 54px;
-}
-
-.rs-counter-value {
-  font-weight: 300;
-  -webkit-box-ordinal-group: 1;
-  -webkit-order: 1;
-  order: 1;
-  text-align: right;
-  width: 35px;
-}
-
-.rs-canvas {
-  -webkit-box-ordinal-group: 2;
-  -webkit-order: 2;
-  order: 2;
-}
-
-@media (min-width: 480px) {
-  .rs-base {
-    left: 20px;
-    top: 20px;
-  }
-}
-`, "",{"version":3,"sources":["webpack://./src/style/rStats.css"],"names":[],"mappings":"AAAA;EACE,sBAAsB;EACtB,cAAc;EACd,gBAAgB;EAChB,oBAAoB;EACpB,SAAS;EACT,gBAAgB;EAChB,aAAa;EACb,gBAAgB;EAChB,aAAa;EACb,eAAe;EACf,QAAQ;EACR,YAAY;EACZ,cAAc;AAChB;;AAEA;EACE,aAAa;AACf;;AAEA;EACE,WAAW;EACX,eAAe;EACf,gBAAgB;EAChB,gBAAgB;EAChB,eAAe;EACf,UAAU;AACZ;;AAEA;EACE,oBAAoB;EACpB,qBAAqB;EACrB,aAAa;EACb,sCAAsC;EACtC,8BAA8B;EAC9B,kBAAkB;AACpB;;AAEA;EACE,gBAAgB;AAClB;;AAEA;EACE,mBAAmB;EACnB,oBAAoB;EACpB,qBAAqB;EACrB,aAAa;EACb,YAAY;EACZ,sCAAsC;EACtC,8BAA8B;EAC9B,aAAa;AACf;;AAEA;EACE,cAAc;EACd;;;;;;;;2BAQyB;AAC3B;;AAEA;EACE,gBAAgB;EAChB,4BAA4B;EAC5B,gBAAgB;EAChB,QAAQ;EACR,WAAW;AACb;;AAEA;EACE,gBAAgB;EAChB,4BAA4B;EAC5B,gBAAgB;EAChB,QAAQ;EACR,iBAAiB;EACjB,WAAW;AACb;;AAEA;EACE,4BAA4B;EAC5B,gBAAgB;EAChB,QAAQ;AACV;;AAEA;EACE;IACE,UAAU;IACV,SAAS;EACX;AACF","sourcesContent":[".rs-base {\n  background-color: #333;\n  color: #fafafa;\n  border-radius: 0;\n  font: 10px monospace;\n  left: 5px;\n  line-height: 1em;\n  opacity: 0.85;\n  overflow: hidden;\n  padding: 10px;\n  position: fixed;\n  top: 5px;\n  width: 300px;\n  z-index: 10000;\n}\n\n.rs-base div.hidden {\n  display: none;\n}\n\n.rs-base h1 {\n  color: #fff;\n  cursor: pointer;\n  font-size: 1.4em;\n  font-weight: 300;\n  margin: 0 0 5px;\n  padding: 0;\n}\n\n.rs-group {\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-flex-direction: column-reverse;\n  flex-direction: column-reverse;\n  margin-bottom: 5px;\n}\n\n.rs-group:last-child {\n  margin-bottom: 0;\n}\n\n.rs-counter-base {\n  align-items: center;\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: flex;\n  height: 10px;\n  -webkit-justify-content: space-between;\n  justify-content: space-between;\n  margin: 2px 0;\n}\n\n.rs-counter-base.alarm {\n  color: #b70000;\n  text-shadow: 0 0 0 #b70000,\n               0 0 1px #fff,\n               0 0 1px #fff,\n               0 0 2px #fff,\n               0 0 2px #fff,\n               0 0 3px #fff,\n               0 0 3px #fff,\n               0 0 4px #fff,\n               0 0 4px #fff;\n}\n\n.rs-counter-id {\n  font-weight: 300;\n  -webkit-box-ordinal-group: 0;\n  -webkit-order: 0;\n  order: 0;\n  width: 54px;\n}\n\n.rs-counter-value {\n  font-weight: 300;\n  -webkit-box-ordinal-group: 1;\n  -webkit-order: 1;\n  order: 1;\n  text-align: right;\n  width: 35px;\n}\n\n.rs-canvas {\n  -webkit-box-ordinal-group: 2;\n  -webkit-order: 2;\n  order: 2;\n}\n\n@media (min-width: 480px) {\n  .rs-base {\n    left: 20px;\n    top: 20px;\n  }\n}\n"],"sourceRoot":""}]);
-// Exports
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
-
-
-/***/ }),
-
 /***/ "./src/style/aframe.css":
 /*!******************************!*\
   !*** ./src/style/aframe.css ***!
@@ -31275,59 +30447,6 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
 
 
        /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_css_loader_dist_cjs_js_aframe_css__WEBPACK_IMPORTED_MODULE_6__["default"] && _node_modules_css_loader_dist_cjs_js_aframe_css__WEBPACK_IMPORTED_MODULE_6__["default"].locals ? _node_modules_css_loader_dist_cjs_js_aframe_css__WEBPACK_IMPORTED_MODULE_6__["default"].locals : undefined);
-
-
-/***/ }),
-
-/***/ "./src/style/rStats.css":
-/*!******************************!*\
-  !*** ./src/style/rStats.css ***!
-  \******************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! !../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
-/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! !../../node_modules/style-loader/dist/runtime/styleDomAPI.js */ "./node_modules/style-loader/dist/runtime/styleDomAPI.js");
-/* harmony import */ var _node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../node_modules/style-loader/dist/runtime/insertBySelector.js */ "./node_modules/style-loader/dist/runtime/insertBySelector.js");
-/* harmony import */ var _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! !../../node_modules/style-loader/dist/runtime/setAttributesWithoutAttributes.js */ "./node_modules/style-loader/dist/runtime/setAttributesWithoutAttributes.js");
-/* harmony import */ var _node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! !../../node_modules/style-loader/dist/runtime/insertStyleElement.js */ "./node_modules/style-loader/dist/runtime/insertStyleElement.js");
-/* harmony import */ var _node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! !../../node_modules/style-loader/dist/runtime/styleTagTransform.js */ "./node_modules/style-loader/dist/runtime/styleTagTransform.js");
-/* harmony import */ var _node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var _node_modules_css_loader_dist_cjs_js_rStats_css__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! !!../../node_modules/css-loader/dist/cjs.js!./rStats.css */ "./node_modules/css-loader/dist/cjs.js!./src/style/rStats.css");
-
-      
-      
-      
-      
-      
-      
-      
-      
-      
-
-var options = {};
-
-options.styleTagTransform = (_node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5___default());
-options.setAttributes = (_node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3___default());
-options.insert = _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2___default().bind(null, "head");
-options.domAPI = (_node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1___default());
-options.insertStyleElement = (_node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4___default());
-
-var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default()(_node_modules_css_loader_dist_cjs_js_rStats_css__WEBPACK_IMPORTED_MODULE_6__["default"], options);
-
-
-
-
-       /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_css_loader_dist_cjs_js_rStats_css__WEBPACK_IMPORTED_MODULE_6__["default"] && _node_modules_css_loader_dist_cjs_js_rStats_css__WEBPACK_IMPORTED_MODULE_6__["default"].locals ? _node_modules_css_loader_dist_cjs_js_rStats_css__WEBPACK_IMPORTED_MODULE_6__["default"].locals : undefined);
 
 
 /***/ }),
@@ -31657,6 +30776,685 @@ module.exports = "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/200
 
 "use strict";
 module.exports = "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%20version%3D%221.1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%2090%2090%22%20enable-background%3D%22new%200%200%2090%2090%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpolygon%20points%3D%220%2C0%200%2C0%200%2C0%20%22%3E%3C/polygon%3E%3Cg%3E%3Cpath%20d%3D%22M71.545%2C48.145h-31.98V20.743c0-2.627-2.138-4.765-4.765-4.765H18.456c-2.628%2C0-4.767%2C2.138-4.767%2C4.765v42.789%20%20%20c0%2C2.628%2C2.138%2C4.766%2C4.767%2C4.766h5.535v0.959c0%2C2.628%2C2.138%2C4.765%2C4.766%2C4.765h42.788c2.628%2C0%2C4.766-2.137%2C4.766-4.765V52.914%20%20%20C76.311%2C50.284%2C74.173%2C48.145%2C71.545%2C48.145z%20M18.455%2C16.935h16.344c2.1%2C0%2C3.808%2C1.708%2C3.808%2C3.808v27.401H37.25V22.636%20%20%20c0-0.264-0.215-0.478-0.479-0.478H16.482c-0.264%2C0-0.479%2C0.214-0.479%2C0.478v36.585c0%2C0.264%2C0.215%2C0.478%2C0.479%2C0.478h7.507v7.644%20%20%20h-5.534c-2.101%2C0-3.81-1.709-3.81-3.81V20.743C14.645%2C18.643%2C16.354%2C16.935%2C18.455%2C16.935z%20M16.96%2C23.116h19.331v25.031h-7.535%20%20%20c-2.628%2C0-4.766%2C2.139-4.766%2C4.768v5.828h-7.03V23.116z%20M71.545%2C73.064H28.757c-2.101%2C0-3.81-1.708-3.81-3.808V52.914%20%20%20c0-2.102%2C1.709-3.812%2C3.81-3.812h42.788c2.1%2C0%2C3.809%2C1.71%2C3.809%2C3.812v16.343C75.354%2C71.356%2C73.645%2C73.064%2C71.545%2C73.064z%22%3E%3C/path%3E%3Cpath%20d%3D%22M28.919%2C58.424c-1.466%2C0-2.659%2C1.193-2.659%2C2.66c0%2C1.466%2C1.193%2C2.658%2C2.659%2C2.658c1.468%2C0%2C2.662-1.192%2C2.662-2.658%20%20%20C31.581%2C59.617%2C30.387%2C58.424%2C28.919%2C58.424z%20M28.919%2C62.786c-0.939%2C0-1.703-0.764-1.703-1.702c0-0.939%2C0.764-1.704%2C1.703-1.704%20%20%20c0.94%2C0%2C1.705%2C0.765%2C1.705%2C1.704C30.623%2C62.022%2C29.858%2C62.786%2C28.919%2C62.786z%22%3E%3C/path%3E%3Cpath%20d%3D%22M69.654%2C50.461H33.069c-0.264%2C0-0.479%2C0.215-0.479%2C0.479v20.288c0%2C0.264%2C0.215%2C0.478%2C0.479%2C0.478h36.585%20%20%20c0.263%2C0%2C0.477-0.214%2C0.477-0.478V50.939C70.131%2C50.676%2C69.917%2C50.461%2C69.654%2C50.461z%20M69.174%2C51.417V70.75H33.548V51.417H69.174z%22%3E%3C/path%3E%3Cpath%20d%3D%22M45.201%2C30.296c6.651%2C0%2C12.233%2C5.351%2C12.551%2C11.977l-3.033-2.638c-0.193-0.165-0.507-0.142-0.675%2C0.048%20%20%20c-0.174%2C0.198-0.153%2C0.501%2C0.045%2C0.676l3.883%2C3.375c0.09%2C0.075%2C0.198%2C0.115%2C0.312%2C0.115c0.141%2C0%2C0.273-0.061%2C0.362-0.166%20%20%20l3.371-3.877c0.173-0.2%2C0.151-0.502-0.047-0.675c-0.194-0.166-0.508-0.144-0.676%2C0.048l-2.592%2C2.979%20%20%20c-0.18-3.417-1.629-6.605-4.099-9.001c-2.538-2.461-5.877-3.817-9.404-3.817c-0.264%2C0-0.479%2C0.215-0.479%2C0.479%20%20%20C44.72%2C30.083%2C44.936%2C30.296%2C45.201%2C30.296z%22%3E%3C/path%3E%3C/g%3E%3C/svg%3E";
+
+/***/ }),
+
+/***/ "./node_modules/stats-gl/dist/main.js":
+/*!********************************************!*\
+  !*** ./node_modules/stats-gl/dist/main.js ***!
+  \********************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ Stats)
+/* harmony export */ });
+/* harmony import */ var _panel_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./panel.js */ "./node_modules/stats-gl/dist/panel.js");
+/* harmony import */ var _panelVsync_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./panelVsync.js */ "./node_modules/stats-gl/dist/panelVsync.js");
+
+
+const _Stats = class _Stats2 {
+  constructor({
+    trackGPU = false,
+    trackCPT = false,
+    trackHz = false,
+    logsPerSecond = 4,
+    graphsPerSecond = 30,
+    samplesLog = 40,
+    samplesGraph = 10,
+    precision = 2,
+    minimal = false,
+    horizontal = true,
+    mode = 0
+  } = {}) {
+    this.gl = null;
+    this.ext = null;
+    this.activeQuery = null;
+    this.gpuQueries = [];
+    this.threeRendererPatched = false;
+    this.frameTimes = [];
+    this.renderCount = 0;
+    this.totalCpuDuration = 0;
+    this.totalGpuDuration = 0;
+    this.totalGpuDurationCompute = 0;
+    this.gpuPanel = null;
+    this.gpuPanelCompute = null;
+    this.vsyncPanel = null;
+    this.averageFps = {
+      logs: [],
+      graph: []
+    };
+    this.averageCpu = {
+      logs: [],
+      graph: []
+    };
+    this.averageGpu = {
+      logs: [],
+      graph: []
+    };
+    this.averageGpuCompute = {
+      logs: [],
+      graph: []
+    };
+    this.updateCounter = 0;
+    this.lastMin = {};
+    this.lastMax = {};
+    this.lastValue = {};
+    this.VSYNC_RATES = [{
+      refreshRate: 60,
+      frameTime: 16.67
+    }, {
+      refreshRate: 75,
+      frameTime: 13.33
+    }, {
+      refreshRate: 90,
+      frameTime: 11.11
+    }, {
+      refreshRate: 120,
+      frameTime: 8.33
+    }, {
+      refreshRate: 144,
+      frameTime: 6.94
+    }, {
+      refreshRate: 165,
+      frameTime: 6.06
+    }, {
+      refreshRate: 240,
+      frameTime: 4.17
+    }];
+    this.detectedVSync = null;
+    this.frameTimeHistory = [];
+    this.HISTORY_SIZE = 120;
+    this.VSYNC_THRESHOLD = 0.05;
+    this.lastFrameTime = 0;
+    this.handleClick = event => {
+      event.preventDefault();
+      this.showPanel(++this.mode % this.dom.children.length);
+    };
+    this.handleResize = () => {
+      this.resizePanel(this.fpsPanel);
+      this.resizePanel(this.msPanel);
+      if (this.gpuPanel) this.resizePanel(this.gpuPanel);
+      if (this.gpuPanelCompute) this.resizePanel(this.gpuPanelCompute);
+    };
+    this.mode = mode;
+    this.horizontal = horizontal;
+    this.minimal = minimal;
+    this.trackGPU = trackGPU;
+    this.trackCPT = trackCPT;
+    this.trackHz = trackHz;
+    this.samplesLog = samplesLog;
+    this.samplesGraph = samplesGraph;
+    this.precision = precision;
+    this.logsPerSecond = logsPerSecond;
+    this.graphsPerSecond = graphsPerSecond;
+    const prevGraphTime = performance.now();
+    this.prevGraphTime = prevGraphTime;
+    this.dom = document.createElement("div");
+    this.initializeDOM();
+    this.beginTime = performance.now();
+    this.prevTextTime = this.beginTime;
+    this.prevCpuTime = this.beginTime;
+    this._panelId = 0;
+    this.fpsPanel = this.addPanel(new _Stats2.Panel("FPS", "#0ff", "#002"));
+    this.msPanel = this.addPanel(new _Stats2.Panel("CPU", "#0f0", "#020"));
+    if (this.trackHz === true) {
+      this.vsyncPanel = new _panelVsync_js__WEBPACK_IMPORTED_MODULE_0__.PanelVSync("", "#f0f", "#202");
+      this.dom.appendChild(this.vsyncPanel.canvas);
+      this.vsyncPanel.setOffset(56, 35);
+    }
+    this.setupEventListeners();
+  }
+  initializeDOM() {
+    this.dom.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      opacity: 0.9;
+      z-index: 10000;
+      ${this.minimal ? "cursor: pointer;" : ""}
+    `;
+  }
+  setupEventListeners() {
+    if (this.minimal) {
+      this.dom.addEventListener("click", this.handleClick);
+      this.showPanel(this.mode);
+    } else {
+      window.addEventListener("resize", this.handleResize);
+    }
+  }
+  async init(canvasOrGL) {
+    if (!canvasOrGL) {
+      console.error('Stats: The "canvas" parameter is undefined.');
+      return;
+    }
+    if (this.handleThreeRenderer(canvasOrGL)) return;
+    if (await this.handleWebGPURenderer(canvasOrGL)) return;
+    if (this.initializeWebGL(canvasOrGL)) {
+      if (this.trackGPU) {
+        this.initializeGPUTracking();
+      }
+      return;
+    } else {
+      console.error("Stats-gl: Failed to initialize WebGL context");
+    }
+  }
+  handleThreeRenderer(renderer) {
+    if (renderer.isWebGLRenderer && !this.threeRendererPatched) {
+      this.patchThreeRenderer(renderer);
+      this.gl = renderer.getContext();
+      if (this.trackGPU) {
+        this.initializeGPUTracking();
+      }
+      return true;
+    }
+    return false;
+  }
+  async handleWebGPURenderer(renderer) {
+    if (renderer.isWebGPURenderer) {
+      if (this.trackGPU || this.trackCPT) {
+        renderer.backend.trackTimestamp = true;
+        if (await renderer.hasFeatureAsync("timestamp-query")) {
+          this.initializeWebGPUPanels();
+        }
+      }
+      this.info = renderer.info;
+      this.patchThreeWebGPU(renderer);
+      return true;
+    }
+    return false;
+  }
+  initializeWebGPUPanels() {
+    if (this.trackGPU) {
+      this.gpuPanel = this.addPanel(new _Stats2.Panel("GPU", "#ff0", "#220"));
+    }
+    if (this.trackCPT) {
+      this.gpuPanelCompute = this.addPanel(new _Stats2.Panel("CPT", "#e1e1e1", "#212121"));
+    }
+  }
+  initializeWebGL(canvasOrGL) {
+    if (canvasOrGL instanceof WebGL2RenderingContext) {
+      this.gl = canvasOrGL;
+    } else if (canvasOrGL instanceof HTMLCanvasElement || canvasOrGL instanceof OffscreenCanvas) {
+      this.gl = canvasOrGL.getContext("webgl2");
+      if (!this.gl) {
+        console.error("Stats: Unable to obtain WebGL2 context.");
+        return false;
+      }
+    } else {
+      console.error("Stats: Invalid input type. Expected WebGL2RenderingContext, HTMLCanvasElement, or OffscreenCanvas.");
+      return false;
+    }
+    return true;
+  }
+  initializeGPUTracking() {
+    if (this.gl) {
+      this.ext = this.gl.getExtension("EXT_disjoint_timer_query_webgl2");
+      if (this.ext) {
+        this.gpuPanel = this.addPanel(new _Stats2.Panel("GPU", "#ff0", "#220"));
+      }
+    }
+  }
+  begin() {
+    this.beginProfiling("cpu-started");
+    if (!this.gl || !this.ext) return;
+    if (this.activeQuery) {
+      this.gl.endQuery(this.ext.TIME_ELAPSED_EXT);
+    }
+    this.activeQuery = this.gl.createQuery();
+    if (this.activeQuery) {
+      this.gl.beginQuery(this.ext.TIME_ELAPSED_EXT, this.activeQuery);
+    }
+  }
+  end() {
+    this.renderCount++;
+    if (this.gl && this.ext && this.activeQuery) {
+      this.gl.endQuery(this.ext.TIME_ELAPSED_EXT);
+      this.gpuQueries.push({
+        query: this.activeQuery
+      });
+      this.activeQuery = null;
+    }
+    this.endProfiling("cpu-started", "cpu-finished", "cpu-duration");
+  }
+  update() {
+    this.endProfiling("cpu-started", "cpu-finished", "cpu-duration");
+    if (!this.info) {
+      this.processGpuQueries();
+    } else {
+      this.processWebGPUTimestamps();
+    }
+    this.updateAverages();
+    this.resetCounters();
+  }
+  processWebGPUTimestamps() {
+    this.totalGpuDuration = this.info.render.timestamp;
+    this.totalGpuDurationCompute = this.info.compute.timestamp;
+  }
+  resetCounters() {
+    this.renderCount = 0;
+    this.totalCpuDuration = 0;
+    this.beginTime = this.endInternal();
+  }
+  resizePanel(panel) {
+    panel.canvas.style.position = "absolute";
+    if (this.minimal) {
+      panel.canvas.style.display = "none";
+    } else {
+      panel.canvas.style.display = "block";
+      if (this.horizontal) {
+        panel.canvas.style.top = "0px";
+        panel.canvas.style.left = panel.id * panel.WIDTH / panel.PR + "px";
+      } else {
+        panel.canvas.style.left = "0px";
+        panel.canvas.style.top = panel.id * panel.HEIGHT / panel.PR + "px";
+      }
+    }
+  }
+  addPanel(panel) {
+    if (panel.canvas) {
+      this.dom.appendChild(panel.canvas);
+      panel.id = this._panelId;
+      this.resizePanel(panel);
+      this._panelId++;
+    }
+    return panel;
+  }
+  showPanel(id) {
+    for (let i = 0; i < this.dom.children.length; i++) {
+      const child = this.dom.children[i];
+      child.style.display = i === id ? "block" : "none";
+    }
+    this.mode = id;
+  }
+  processGpuQueries() {
+    if (!this.gl || !this.ext) return;
+    this.totalGpuDuration = 0;
+    this.gpuQueries.forEach((queryInfo, index) => {
+      if (this.gl) {
+        const available = this.gl.getQueryParameter(queryInfo.query, this.gl.QUERY_RESULT_AVAILABLE);
+        const disjoint = this.gl.getParameter(this.ext.GPU_DISJOINT_EXT);
+        if (available && !disjoint) {
+          const elapsed = this.gl.getQueryParameter(queryInfo.query, this.gl.QUERY_RESULT);
+          const duration = elapsed * 1e-6;
+          this.totalGpuDuration += duration;
+          this.gl.deleteQuery(queryInfo.query);
+          this.gpuQueries.splice(index, 1);
+        }
+      }
+    });
+  }
+  detectVSync(currentTime) {
+    if (this.lastFrameTime === 0) {
+      this.lastFrameTime = currentTime;
+      return;
+    }
+    const frameTime = currentTime - this.lastFrameTime;
+    this.lastFrameTime = currentTime;
+    this.frameTimeHistory.push(frameTime);
+    if (this.frameTimeHistory.length > this.HISTORY_SIZE) {
+      this.frameTimeHistory.shift();
+    }
+    if (this.frameTimeHistory.length < 60) return;
+    const avgFrameTime = this.frameTimeHistory.reduce((a, b) => a + b) / this.frameTimeHistory.length;
+    const variance = this.frameTimeHistory.reduce((acc, time) => acc + Math.pow(time - avgFrameTime, 2), 0) / this.frameTimeHistory.length;
+    const stability = Math.sqrt(variance);
+    if (stability > 2) {
+      this.detectedVSync = null;
+      return;
+    }
+    let closestMatch = null;
+    let smallestDiff = Infinity;
+    for (const rate of this.VSYNC_RATES) {
+      const diff = Math.abs(avgFrameTime - rate.frameTime);
+      if (diff < smallestDiff) {
+        smallestDiff = diff;
+        closestMatch = rate;
+      }
+    }
+    if (closestMatch && smallestDiff / closestMatch.frameTime <= this.VSYNC_THRESHOLD) {
+      this.detectedVSync = closestMatch;
+    } else {
+      this.detectedVSync = null;
+    }
+  }
+  endInternal() {
+    var _a;
+    const currentTime = performance.now();
+    this.frameTimes.push(currentTime);
+    while (this.frameTimes.length > 0 && this.frameTimes[0] <= currentTime - 1e3) {
+      this.frameTimes.shift();
+    }
+    const fps = Math.round(this.frameTimes.length);
+    this.addToAverage(fps, this.averageFps);
+    const shouldUpdateText = currentTime >= this.prevTextTime + 1e3 / this.logsPerSecond;
+    const shouldUpdateGraph = currentTime >= this.prevGraphTime + 1e3 / this.graphsPerSecond;
+    this.updatePanelComponents(this.fpsPanel, this.averageFps, 0, shouldUpdateText, shouldUpdateGraph);
+    this.updatePanelComponents(this.msPanel, this.averageCpu, this.precision, shouldUpdateText, shouldUpdateGraph);
+    if (this.gpuPanel) {
+      this.updatePanelComponents(this.gpuPanel, this.averageGpu, this.precision, shouldUpdateText, shouldUpdateGraph);
+    }
+    if (this.trackCPT && this.gpuPanelCompute) {
+      this.updatePanelComponents(this.gpuPanelCompute, this.averageGpuCompute, this.precision, shouldUpdateText, shouldUpdateGraph);
+    }
+    if (shouldUpdateText) {
+      this.prevTextTime = currentTime;
+    }
+    if (shouldUpdateGraph) {
+      this.prevGraphTime = currentTime;
+    }
+    if (this.vsyncPanel !== null) {
+      this.detectVSync(currentTime);
+      const vsyncValue = ((_a = this.detectedVSync) == null ? void 0 : _a.refreshRate) || 0;
+      if (shouldUpdateText && vsyncValue > 0) {
+        this.vsyncPanel.update(vsyncValue, vsyncValue);
+      }
+    }
+    return currentTime;
+  }
+  updatePanelComponents(panel, averageArray, precision, shouldUpdateText, shouldUpdateGraph) {
+    if (!panel || averageArray.logs.length === 0) return;
+    if (!(panel.name in this.lastMin)) {
+      this.lastMin[panel.name] = Infinity;
+      this.lastMax[panel.name] = 0;
+      this.lastValue[panel.name] = 0;
+    }
+    const currentValue = averageArray.logs[averageArray.logs.length - 1];
+    this.lastMax[panel.name] = Math.max(...averageArray.logs);
+    this.lastMin[panel.name] = Math.min(this.lastMin[panel.name], currentValue);
+    this.lastValue[panel.name] = this.lastValue[panel.name] * 0.7 + currentValue * 0.3;
+    const graphMax = Math.max(Math.max(...averageArray.logs), ...averageArray.graph.slice(-this.samplesGraph));
+    this.updateCounter++;
+    if (shouldUpdateText) {
+      panel.update(this.lastValue[panel.name], this.lastMax[panel.name], precision);
+    }
+    if (shouldUpdateGraph) {
+      panel.updateGraph(currentValue, graphMax);
+    }
+  }
+  beginProfiling(marker) {
+    if (window.performance) {
+      try {
+        window.performance.clearMarks(marker);
+        window.performance.mark(marker);
+      } catch (error) {
+        console.debug("Stats: Performance marking failed:", error);
+      }
+    }
+  }
+  endProfiling(startMarker, endMarker, measureName) {
+    if (!window.performance || !endMarker || !startMarker) return;
+    try {
+      const entries = window.performance.getEntriesByName(startMarker, "mark");
+      if (entries.length === 0) {
+        this.beginProfiling(startMarker);
+      }
+      window.performance.clearMarks(endMarker);
+      window.performance.mark(endMarker);
+      window.performance.clearMeasures(measureName);
+      const cpuMeasure = performance.measure(measureName, startMarker, endMarker);
+      this.totalCpuDuration += cpuMeasure.duration;
+      window.performance.clearMarks(startMarker);
+      window.performance.clearMarks(endMarker);
+      window.performance.clearMeasures(measureName);
+    } catch (error) {
+      console.debug("Stats: Performance measurement failed:", error);
+    }
+  }
+  updatePanel(panel, averageArray, precision = 2) {
+    if (!panel || averageArray.logs.length === 0) return;
+    const currentTime = performance.now();
+    if (!(panel.name in this.lastMin)) {
+      this.lastMin[panel.name] = Infinity;
+      this.lastMax[panel.name] = 0;
+      this.lastValue[panel.name] = 0;
+    }
+    const currentValue = averageArray.logs[averageArray.logs.length - 1];
+    const recentMax = Math.max(...averageArray.logs.slice(-30));
+    this.lastMin[panel.name] = Math.min(this.lastMin[panel.name], currentValue);
+    this.lastMax[panel.name] = Math.max(this.lastMax[panel.name], currentValue);
+    this.lastValue[panel.name] = this.lastValue[panel.name] * 0.7 + currentValue * 0.3;
+    const graphMax = Math.max(recentMax, ...averageArray.graph.slice(-this.samplesGraph));
+    this.updateCounter++;
+    if (this.updateCounter % (this.logsPerSecond * 2) === 0) {
+      this.lastMax[panel.name] = recentMax;
+      this.lastMin[panel.name] = currentValue;
+    }
+    if (panel.update) {
+      if (currentTime >= this.prevCpuTime + 1e3 / this.logsPerSecond) {
+        panel.update(this.lastValue[panel.name], currentValue, this.lastMax[panel.name], graphMax, precision);
+      }
+      if (currentTime >= this.prevGraphTime + 1e3 / this.graphsPerSecond) {
+        panel.updateGraph(currentValue, graphMax);
+        this.prevGraphTime = currentTime;
+      }
+    }
+  }
+  updateAverages() {
+    this.addToAverage(this.totalCpuDuration, this.averageCpu);
+    this.addToAverage(this.totalGpuDuration, this.averageGpu);
+    if (this.info && this.totalGpuDurationCompute !== void 0) {
+      this.addToAverage(this.totalGpuDurationCompute, this.averageGpuCompute);
+    }
+  }
+  addToAverage(value, averageArray) {
+    averageArray.logs.push(value);
+    if (averageArray.logs.length > this.samplesLog) {
+      averageArray.logs = averageArray.logs.slice(-this.samplesLog);
+    }
+    averageArray.graph.push(value);
+    if (averageArray.graph.length > this.samplesGraph) {
+      averageArray.graph = averageArray.graph.slice(-this.samplesGraph);
+    }
+  }
+  get domElement() {
+    return this.dom;
+  }
+  patchThreeWebGPU(renderer) {
+    const originalAnimationLoop = renderer.info.reset;
+    const statsInstance = this;
+    renderer.info.reset = function () {
+      statsInstance.beginProfiling("cpu-started");
+      originalAnimationLoop.call(this);
+    };
+  }
+  patchThreeRenderer(renderer) {
+    const originalRenderMethod = renderer.render;
+    const statsInstance = this;
+    renderer.render = function (scene, camera) {
+      statsInstance.begin();
+      originalRenderMethod.call(this, scene, camera);
+      statsInstance.end();
+    };
+    this.threeRendererPatched = true;
+  }
+};
+_Stats.Panel = _panel_js__WEBPACK_IMPORTED_MODULE_1__.Panel;
+let Stats = _Stats;
+
+
+/***/ }),
+
+/***/ "./node_modules/stats-gl/dist/panel.js":
+/*!*********************************************!*\
+  !*** ./node_modules/stats-gl/dist/panel.js ***!
+  \*********************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Panel: () => (/* binding */ Panel)
+/* harmony export */ });
+class Panel {
+  constructor(name, fg, bg) {
+    this.id = 0;
+    this.name = name;
+    this.fg = fg;
+    this.bg = bg;
+    this.gradient = null;
+    this.PR = Math.round(window.devicePixelRatio || 1);
+    this.WIDTH = 90 * this.PR;
+    this.HEIGHT = 48 * this.PR;
+    this.TEXT_X = 3 * this.PR;
+    this.TEXT_Y = 2 * this.PR;
+    this.GRAPH_X = 3 * this.PR;
+    this.GRAPH_Y = 15 * this.PR;
+    this.GRAPH_WIDTH = 84 * this.PR;
+    this.GRAPH_HEIGHT = 30 * this.PR;
+    this.canvas = document.createElement("canvas");
+    this.canvas.width = this.WIDTH;
+    this.canvas.height = this.HEIGHT;
+    this.canvas.style.width = "90px";
+    this.canvas.style.height = "48px";
+    this.canvas.style.position = "absolute";
+    this.canvas.style.cssText = "width:90px;height:48px;background-color: transparent !important;";
+    this.context = this.canvas.getContext("2d");
+    this.initializeCanvas();
+  }
+  createGradient() {
+    if (!this.context) throw new Error("No context");
+    const gradient = this.context.createLinearGradient(0, this.GRAPH_Y, 0, this.GRAPH_Y + this.GRAPH_HEIGHT);
+    let startColor;
+    const endColor = this.fg;
+    switch (this.fg.toLowerCase()) {
+      case "#0ff":
+        startColor = "#006666";
+        break;
+      case "#0f0":
+        startColor = "#006600";
+        break;
+      case "#ff0":
+        startColor = "#666600";
+        break;
+      case "#e1e1e1":
+        startColor = "#666666";
+        break;
+      default:
+        startColor = this.bg;
+        break;
+    }
+    gradient.addColorStop(0, startColor);
+    gradient.addColorStop(1, endColor);
+    return gradient;
+  }
+  initializeCanvas() {
+    if (!this.context) return;
+    this.context.imageSmoothingEnabled = false;
+    this.context.font = "bold " + 9 * this.PR + "px Helvetica,Arial,sans-serif";
+    this.context.textBaseline = "top";
+    this.gradient = this.createGradient();
+    this.context.fillStyle = this.bg;
+    this.context.fillRect(0, 0, this.WIDTH, this.HEIGHT);
+    this.context.fillStyle = this.fg;
+    this.context.fillText(this.name, this.TEXT_X, this.TEXT_Y);
+    this.context.fillStyle = this.bg;
+    this.context.globalAlpha = 0.9;
+    this.context.fillRect(this.GRAPH_X, this.GRAPH_Y, this.GRAPH_WIDTH, this.GRAPH_HEIGHT);
+  }
+  // Update only text portion
+  update(value, maxValue, decimals = 0) {
+    if (!this.context || !this.gradient) return;
+    const min = Math.min(Infinity, value);
+    const max = Math.max(maxValue, value);
+    this.context.globalAlpha = 1;
+    this.context.fillStyle = this.bg;
+    this.context.fillRect(0, 0, this.WIDTH, this.GRAPH_Y);
+    this.context.fillStyle = this.fg;
+    this.context.fillText(`${value.toFixed(decimals)} ${this.name} (${min.toFixed(decimals)}-${parseFloat(max.toFixed(decimals))})`, this.TEXT_X, this.TEXT_Y);
+  }
+  // Update only graph portion
+  updateGraph(valueGraph, maxGraph) {
+    if (!this.context || !this.gradient) return;
+    if (valueGraph === 0 && maxGraph === 0) {
+      maxGraph = 1;
+    }
+    maxGraph = Math.max(maxGraph, valueGraph, 0.1);
+    valueGraph = Math.max(valueGraph, 0);
+    const graphX = Math.round(this.GRAPH_X);
+    const graphY = Math.round(this.GRAPH_Y);
+    const graphWidth = Math.round(this.GRAPH_WIDTH);
+    const graphHeight = Math.round(this.GRAPH_HEIGHT);
+    const pr = Math.round(this.PR);
+    this.context.drawImage(this.canvas, graphX + pr, graphY, graphWidth - pr, graphHeight, graphX, graphY, graphWidth - pr, graphHeight);
+    this.context.fillStyle = this.bg;
+    this.context.fillRect(graphX + graphWidth - pr, graphY, pr, graphHeight);
+    const columnHeight = Math.min(graphHeight, Math.round(valueGraph / maxGraph * graphHeight));
+    if (columnHeight > 0) {
+      this.context.globalAlpha = 0.9;
+      this.context.fillStyle = this.gradient;
+      this.context.fillRect(graphX + graphWidth - pr, graphY + (graphHeight - columnHeight), pr, columnHeight);
+    }
+    this.context.globalAlpha = 1;
+  }
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/stats-gl/dist/panelVsync.js":
+/*!**************************************************!*\
+  !*** ./node_modules/stats-gl/dist/panelVsync.js ***!
+  \**************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   PanelVSync: () => (/* binding */ PanelVSync)
+/* harmony export */ });
+/* harmony import */ var _panel_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./panel.js */ "./node_modules/stats-gl/dist/panel.js");
+
+class PanelVSync extends _panel_js__WEBPACK_IMPORTED_MODULE_0__.Panel {
+  constructor(name, fg, bg) {
+    super(name, fg, bg);
+    this.vsyncValue = 0;
+    this.SMALL_HEIGHT = 9 * this.PR;
+    this.HEIGHT = this.SMALL_HEIGHT;
+    this.WIDTH = 35 * this.PR;
+    this.TEXT_Y = 0 * this.PR;
+    this.canvas.height = this.HEIGHT;
+    this.canvas.width = this.WIDTH;
+    this.canvas.style.height = "9px";
+    this.canvas.style.width = "35px";
+    this.canvas.style.cssText = `
+            width: 35px;
+            height: 9px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background-color: transparent !important;
+            pointer-events: none;
+        `;
+    this.initializeCanvas();
+  }
+  initializeCanvas() {
+    if (!this.context) return;
+    this.context.imageSmoothingEnabled = false;
+    this.context.font = "bold " + 9 * this.PR + "px Helvetica,Arial,sans-serif";
+    this.context.textBaseline = "top";
+    this.context.globalAlpha = 1;
+  }
+  // Override update for VSync-specific display
+  update(value, _maxValue, _decimals = 0) {
+    if (!this.context) return;
+    this.vsyncValue = value;
+    this.context.clearRect(0, 0, this.WIDTH, this.HEIGHT);
+    this.context.globalAlpha = 1;
+    this.context.fillStyle = this.bg;
+    this.context.fillText(`${value.toFixed(0)}Hz`, this.TEXT_X, this.TEXT_Y);
+  }
+  // Override updateGraph to do nothing (we don't need a graph for VSync)
+  updateGraph(_valueGraph, _maxGraph) {
+    return;
+  }
+  // Method to set the offset position relative to parent panel
+  setOffset(x, y) {
+    this.canvas.style.transform = `translate(${x}px, ${y}px)`;
+  }
+}
+
 
 /***/ }),
 
@@ -60848,7 +60646,7 @@ class WorkerPool {
 /***/ ((module) => {
 
 "use strict";
-module.exports = /*#__PURE__*/JSON.parse('{"name":"aframe","version":"1.7.1","description":"A web framework for building virtual reality experiences.","homepage":"https://aframe.io/","main":"./dist/aframe-master.js","module":"./dist/aframe-master.module.min.js","exports":{".":{"import":"./dist/aframe-master.module.min.js","require":"./dist/aframe-master.js"}},"scripts":{"dev":"cross-env INSPECTOR_VERSION=dev webpack serve --port 8080","dist":"node scripts/updateVersionLog.js && npm run dist:min && npm run dist:max && npm run dist:module","dist:max":"webpack --config webpack.config.cjs","dist:min":"webpack --config webpack.prod.config.cjs","dist:module":"webpack --config webpack.module.config.cjs","docs":"markserv --dir docs --port 9001","preghpages":"node ./scripts/preghpages.js","ghpages":"gh-pages -d gh-pages","lint":"standardx -v | snazzy","lint:fix":"standardx --fix","precommit":"npm run lint","prepush":"node scripts/testOnlyCheck.js","prerelease":"node scripts/release.js 1.7.0 1.7.1","start":"npm run dev","start:https":"npm run dev -- --server-type https","start:webgpu":"cross-env WEBGPU=true npm run dev -- --server-type https","test":"karma start ./tests/karma.conf.js","test:docs":"node scripts/docsLint.js","test:firefox":"npm test -- --browsers Firefox","test:chrome":"npm test -- --browsers Chrome","test:nobrowser":"NO_BROWSER=true npm test","test:node":"node ./node_modules/mocha/bin/mocha --ui tdd tests/node"},"repository":"aframevr/aframe","license":"MIT","files":["dist/*","docs/**/*","src/**/*","vendor/**/*"],"dependencies":{"buffer":"^6.0.3","debug":"^4.3.4","deep-assign":"^2.0.0","load-bmfont":"^1.2.3","super-animejs":"^3.1.0","three":"npm:super-three@0.175.0","three-bmfont-text":"dmarcos/three-bmfont-text#eed4878795be9b3e38cf6aec6b903f56acd1f695"},"devDependencies":{"@babel/core":"^7.24.0","babel-loader":"^9.1.3","babel-plugin-istanbul":"^6.1.1","chai":"^4.3.6","chai-shallow-deep-equal":"^1.4.0","chalk":"^1.1.3","cross-env":"^7.0.3","css-loader":"^7.1.2","eslint":"^8.45.0","eslint-config-semistandard":"^17.0.0","eslint-config-standard-jsx":"^11.0.0","gh-pages":"^6.3.0","git-rev":"^0.2.1","glob":"^8.0.3","husky":"^0.11.7","jsdom":"^24.0.0","jsdom-global":"^3.0.2","karma":"^6.4.0","karma-chai-shallow-deep-equal":"0.0.4","karma-chrome-launcher":"^3.1.1","karma-coverage":"^2.2.0","karma-env-preprocessor":"^0.1.1","karma-firefox-launcher":"^2.1.2","karma-mocha":"^2.0.1","karma-mocha-reporter":"^2.2.5","karma-sinon-chai":"^2.0.2","karma-webpack":"^5.0.0","markserv":"github:sukima/markserv#feature/fix-broken-websoketio-link","mocha":"^10.0.0","replace-in-file":"^8.3.0","shelljs":"^0.8.5","sinon":"<12.0.0","sinon-chai":"^3.7.0","snazzy":"^5.0.0","standardx":"^7.0.0","style-loader":"^4.0.0","too-wordy":"ngokevin/too-wordy","webpack":"5.95.0","webpack-cli":"^5.1.4","webpack-dev-server":"~5.0.4","write-good":"^1.0.8"},"link":true,"standardx":{"ignore":["build/**","dist/**","examples/**/shaders/*.js","**/vendor/**"]},"keywords":["3d","aframe","cardboard","components","oculus","three","three.js","rift","vive","vr","quest","meta","web-components","webvr","webxr"],"engines":{"node":">= 4.6.0","npm":">= 2.15.9"}}');
+module.exports = /*#__PURE__*/JSON.parse('{"name":"aframe","version":"1.7.1","description":"A web framework for building virtual reality experiences.","homepage":"https://aframe.io/","main":"./dist/aframe-master.js","module":"./dist/aframe-master.module.min.js","exports":{".":{"import":"./dist/aframe-master.module.min.js","require":"./dist/aframe-master.js"}},"scripts":{"dev":"cross-env INSPECTOR_VERSION=dev webpack serve --port 8080","dist":"node scripts/updateVersionLog.js && npm run dist:min && npm run dist:max && npm run dist:module","dist:max":"webpack --config webpack.config.cjs","dist:min":"webpack --config webpack.prod.config.cjs","dist:module":"webpack --config webpack.module.config.cjs","docs":"markserv --dir docs --port 9001","preghpages":"node ./scripts/preghpages.js","ghpages":"gh-pages -d gh-pages","lint":"standardx -v | snazzy","lint:fix":"standardx --fix","precommit":"npm run lint","prepush":"node scripts/testOnlyCheck.js","prerelease":"node scripts/release.js 1.7.0 1.7.1","start":"npm run dev","start:https":"npm run dev -- --server-type https","start:webgpu":"cross-env WEBGPU=true npm run dev -- --server-type https","test":"karma start ./tests/karma.conf.js","test:docs":"node scripts/docsLint.js","test:firefox":"npm test -- --browsers Firefox","test:chrome":"npm test -- --browsers Chrome","test:nobrowser":"NO_BROWSER=true npm test","test:node":"node ./node_modules/mocha/bin/mocha --ui tdd tests/node"},"repository":"aframevr/aframe","license":"MIT","files":["dist/*","docs/**/*","src/**/*","vendor/**/*"],"dependencies":{"buffer":"^6.0.3","debug":"^4.3.4","deep-assign":"^2.0.0","load-bmfont":"^1.2.3","stats-gl":"^3.6.0","super-animejs":"^3.1.0","three":"npm:super-three@0.175.0","three-bmfont-text":"dmarcos/three-bmfont-text#eed4878795be9b3e38cf6aec6b903f56acd1f695"},"devDependencies":{"@babel/core":"^7.24.0","babel-loader":"^9.1.3","babel-plugin-istanbul":"^6.1.1","chai":"^4.3.6","chai-shallow-deep-equal":"^1.4.0","chalk":"^1.1.3","cross-env":"^7.0.3","css-loader":"^7.1.2","eslint":"^8.45.0","eslint-config-semistandard":"^17.0.0","eslint-config-standard-jsx":"^11.0.0","gh-pages":"^6.3.0","git-rev":"^0.2.1","glob":"^8.0.3","husky":"^0.11.7","jsdom":"^24.0.0","jsdom-global":"^3.0.2","karma":"^6.4.0","karma-chai-shallow-deep-equal":"0.0.4","karma-chrome-launcher":"^3.1.1","karma-coverage":"^2.2.0","karma-env-preprocessor":"^0.1.1","karma-firefox-launcher":"^2.1.2","karma-mocha":"^2.0.1","karma-mocha-reporter":"^2.2.5","karma-sinon-chai":"^2.0.2","karma-webpack":"^5.0.0","markserv":"github:sukima/markserv#feature/fix-broken-websoketio-link","mocha":"^10.0.0","replace-in-file":"^8.3.0","shelljs":"^0.8.5","sinon":"<12.0.0","sinon-chai":"^3.7.0","snazzy":"^5.0.0","standardx":"^7.0.0","style-loader":"^4.0.0","too-wordy":"ngokevin/too-wordy","webpack":"5.95.0","webpack-cli":"^5.1.4","webpack-dev-server":"~5.0.4","write-good":"^1.0.8"},"link":true,"standardx":{"ignore":["build/**","dist/**","examples/**/shaders/*.js","**/vendor/**"]},"keywords":["3d","aframe","cardboard","components","oculus","three","three.js","rift","vive","vr","quest","meta","web-components","webvr","webxr"],"engines":{"node":">= 4.6.0","npm":">= 2.15.9"}}');
 
 /***/ })
 
@@ -61047,9 +60845,8 @@ if (!window.cordova && window.location.protocol === 'file:') {
 if (_utils_index_js__WEBPACK_IMPORTED_MODULE_16__.device.isBrowserEnvironment) {
   window.logs = debug;
   __webpack_require__(/*! ./style/aframe.css */ "./src/style/aframe.css");
-  __webpack_require__(/*! ./style/rStats.css */ "./src/style/rStats.css");
 }
-console.log('A-Frame Version: 1.7.1 (Date 2025-04-03, Commit #9fa0ce8f)');
+console.log('A-Frame Version: 1.7.1 (Date 2025-04-15, Commit #1595b072)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].REVISION);
 
 // Wait for ready state, unless user asynchronously initializes A-Frame.
