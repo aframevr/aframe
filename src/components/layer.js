@@ -311,7 +311,9 @@ export var Component = registerComponent('layer', {
 
   enableCompositorLayer: function (enable) {
     this.layerEnabled = enable;
-    this.quadPanelEl.object3D.visible = !this.layerEnabled;
+    if (this.quadPanelEl) {
+      this.quadPanelEl.object3D.visible = !this.layerEnabled;
+    }
   },
 
   updateQuadPanel: function () {
