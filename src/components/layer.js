@@ -253,7 +253,6 @@ export var Component = registerComponent('layer', {
       height: this.data.height / 2 || this.texture.image.height / 1000,
       width: this.data.width / 2 || this.texture.image.width / 1000
     });
-    this.initLoadingScreenImages();
     sceneEl.renderer.xr.addLayer(this.layer);
   },
 
