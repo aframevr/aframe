@@ -9720,7 +9720,6 @@ var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_0__.registerCompo
       height: this.data.height / 2 || this.texture.image.height / 1000,
       width: this.data.width / 2 || this.texture.image.width / 1000
     });
-    this.initLoadingScreenImages();
     sceneEl.renderer.xr.addLayer(this.layer);
   },
   initCubeMapLayer: function () {
@@ -60846,7 +60845,7 @@ if (_utils_index_js__WEBPACK_IMPORTED_MODULE_16__.device.isBrowserEnvironment) {
   window.logs = debug;
   __webpack_require__(/*! ./style/aframe.css */ "./src/style/aframe.css");
 }
-console.log('A-Frame Version: 1.7.1 (Date 2025-04-23, Commit #5880fec3)');
+console.log('A-Frame Version: 1.7.1 (Date 2025-04-25, Commit #efd70f50)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].REVISION);
 
 // Wait for ready state, unless user asynchronously initializes A-Frame.
