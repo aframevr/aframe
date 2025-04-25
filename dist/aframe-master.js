@@ -9773,7 +9773,9 @@ var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_0__.registerCompo
   },
   enableCompositorLayer: function (enable) {
     this.layerEnabled = enable;
-    this.quadPanelEl.object3D.visible = !this.layerEnabled;
+    if (this.quadPanelEl) {
+      this.quadPanelEl.object3D.visible = !this.layerEnabled;
+    }
   },
   updateQuadPanel: function () {
     var quadPanelEl = this.quadPanelEl;
@@ -60845,7 +60847,7 @@ if (_utils_index_js__WEBPACK_IMPORTED_MODULE_16__.device.isBrowserEnvironment) {
   window.logs = debug;
   __webpack_require__(/*! ./style/aframe.css */ "./src/style/aframe.css");
 }
-console.log('A-Frame Version: 1.7.1 (Date 2025-04-25, Commit #efd70f50)');
+console.log('A-Frame Version: 1.7.1 (Date 2025-04-25, Commit #3c43bff2)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].REVISION);
 
 // Wait for ready state, unless user asynchronously initializes A-Frame.
