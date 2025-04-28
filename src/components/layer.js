@@ -324,6 +324,7 @@ export var Component = registerComponent('layer', {
 
     quadPanelEl.setAttribute('material', {
       shader: 'flat',
+      npot: true,
       src: this.data.src,
       transparent: true
     });
