@@ -1,4 +1,4 @@
-/* global XRRigidTransform, XRWebGLBinding */
+/* global XRMediaBinding, XRRigidTransform, XRWebGLBinding */
 import * as THREE from 'three';
 import { registerComponent } from '../core/component.js';
 import * as utils from '../utils/index.js';
@@ -14,14 +14,10 @@ export var Component = registerComponent('layer', {
   },
 
   init: function () {
-    var gl = this.el.sceneEl.renderer.getContext();
-
     this.quaternion = new THREE.Quaternion();
     this.position = new THREE.Vector3();
 
     this.bindMethods();
-    this.needsRedraw = false;
-    this.frameBuffer = gl.createFramebuffer();
 
     var webxrData = this.el.sceneEl.getAttribute('webxr');
     var requiredFeaturesArray = webxrData.requiredFeatures;
@@ -45,7 +41,9 @@ export var Component = registerComponent('layer', {
 
   updateSrc: function () {
     var type = this.data.type;
+    this.destroyLayer();
     this.texture = undefined;
+    this.textureIsVideo = this.data.src.tagName === 'VIDEO';
     if (type === 'quad') {
       this.loadQuadImage();
       return;
@@ -97,12 +95,6 @@ export var Component = registerComponent('layer', {
     this.el.sceneEl.systems.material.loadTexture(src, {src: src}, function textureLoaded (texture) {
       self.el.sceneEl.renderer.initTexture(texture);
       self.texture = texture;
-      if (src.tagName === 'VIDEO') { setTimeout(function () { self.textureIsVideo = true; }, 1000); }
-      if (self.layer) {
-        self.layer.height = self.data.height / 2 || self.texture.image.height / 1000;
-        self.layer.width = self.data.width / 2 || self.texture.image.width / 1000;
-        self.needsRedraw = true;
-      }
       self.updateQuadPanel();
     });
   },
@@ -217,9 +209,9 @@ export var Component = registerComponent('layer', {
     if (!this.layer && (this.el.sceneEl.is('vr-mode') || this.el.sceneEl.is('ar-mode'))) { this.initLayer(); }
     this.updateTransform();
     if (this.data.src.complete && (this.pendingCubeMapUpdate || this.loadingScreen || this.visibilityChanged)) { this.loadCubeMapImages(); }
-    if (!this.needsRedraw && !this.layer.needsRedraw && !this.textureIsVideo) { return; }
+    if (!this.layer.needsRedraw) { return; }
+    if (this.textureIsVideo) { return; }
     if (this.data.type === 'quad') { this.draw(); }
-    this.needsRedraw = false;
   },
 
   initLayer: function () {
@@ -242,17 +234,25 @@ export var Component = registerComponent('layer', {
   },
 
   initQuadLayer: function () {
-    var sceneEl = this.el.sceneEl;
-    var gl = sceneEl.renderer.getContext();
-    var xrGLFactory = this.xrGLFactory = new XRWebGLBinding(sceneEl.xrSession, gl);
     if (!this.texture) { return; }
-    this.layer = xrGLFactory.createQuadLayer({
-      space: this.referenceSpace,
-      viewPixelHeight: 2048,
-      viewPixelWidth: 2048,
-      height: this.data.height / 2 || this.texture.image.height / 1000,
-      width: this.data.width / 2 || this.texture.image.width / 1000
-    });
+    var sceneEl = this.el.sceneEl;
+    if (this.textureIsVideo) {
+      var mediaBinding = new XRMediaBinding(sceneEl.xrSession);
+      this.layer = mediaBinding.createQuadLayer(this.data.src, {
+        space: this.referenceSpace,
+        height: this.data.height / 2 || this.texture.image.height / 1000,
+        width: this.data.width / 2 || this.texture.image.width / 1000
+      });
+    } else {
+      var xrGLFactory = this.xrGLFactory = sceneEl.renderer.xr.getBinding();
+      this.layer = xrGLFactory.createQuadLayer({
+        space: this.referenceSpace,
+        viewPixelHeight: this.texture.image.height,
+        viewPixelWidth: this.texture.image.width,
+        height: this.data.height / 2 || this.texture.image.height / 1000,
+        width: this.data.width / 2 || this.texture.image.width / 1000
+      });
+    }
     sceneEl.renderer.xr.addLayer(this.layer);
   },
 
@@ -262,7 +262,7 @@ export var Component = registerComponent('layer', {
     var gl = sceneEl.renderer.getContext();
     var glSizeLimit = gl.getParameter(gl.MAX_CUBE_MAP_TEXTURE_SIZE);
     var cubeFaceSize = this.cubeFaceSize = Math.min(glSizeLimit, Math.min(src.width, src.height));
-    var xrGLFactory = this.xrGLFactory = new XRWebGLBinding(sceneEl.xrSession, gl);
+    var xrGLFactory = this.xrGLFactory = sceneEl.renderer.xr.getBinding();
     this.layer = xrGLFactory.createCubeLayer({
       space: this.referenceSpace,
       viewPixelWidth: cubeFaceSize,
@@ -337,19 +337,14 @@ export var Component = registerComponent('layer', {
   },
 
   draw: function () {
-    var sceneEl = this.el.sceneEl;
     var gl = this.el.sceneEl.renderer.getContext();
+    var sceneEl = this.el.sceneEl;
+    var textureEl = this.data.src;
     var glayer = this.xrGLFactory.getSubImage(this.layer, sceneEl.frame);
-    var texture = sceneEl.renderer.properties.get(this.texture).__webglTexture;
-    var previousFrameBuffer = gl.getParameter(gl.FRAMEBUFFER_BINDING);
-
-    gl.viewport(glayer.viewport.x, glayer.viewport.y, glayer.viewport.width, glayer.viewport.height);
-    gl.bindFramebuffer(gl.FRAMEBUFFER, this.frameBuffer);
-    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, glayer.colorTexture, 0);
-
-    blitTexture(gl, texture, glayer, this.data.src);
-
-    gl.bindFramebuffer(gl.FRAMEBUFFER, previousFrameBuffer);
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+    gl.bindTexture(gl.TEXTURE_2D, glayer.colorTexture);
+    gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, textureEl.width, textureEl.height, gl.RGBA, gl.UNSIGNED_BYTE, textureEl);
+    gl.bindTexture(gl.TEXTURE_2D, null);
   },
 
   updateTransform: function () {
@@ -389,28 +384,3 @@ export var Component = registerComponent('layer', {
     this.referenceSpace = referenceSpace;
   }
 });
-
-function blitTexture (gl, texture, subImage, textureEl) {
-  var xrReadFramebuffer = gl.createFramebuffer();
-  var x1offset = subImage.viewport.x;
-  var y1offset = subImage.viewport.y;
-  var x2offset = subImage.viewport.x + subImage.viewport.width;
-  var y2offset = subImage.viewport.y + subImage.viewport.height;
-
-  // Update video texture.
-  if (textureEl.tagName === 'VIDEO') {
-    gl.bindTexture(gl.TEXTURE_2D, texture);
-    gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, textureEl.width, textureEl.height, gl.RGB, gl.UNSIGNED_BYTE, textureEl);
-  }
-
-  // Bind texture to read framebuffer.
-  gl.bindFramebuffer(gl.READ_FRAMEBUFFER, xrReadFramebuffer);
-  gl.framebufferTexture2D(gl.READ_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
-
-  // Blit into layer buffer.
-  gl.readBuffer(gl.COLOR_ATTACHMENT0);
-  gl.blitFramebuffer(0, 0, textureEl.width, textureEl.height, x1offset, y1offset, x2offset, y2offset, gl.COLOR_BUFFER_BIT, gl.NEAREST);
-
-  gl.bindFramebuffer(gl.READ_FRAMEBUFFER, null);
-  gl.deleteFramebuffer(xrReadFramebuffer);
-}
