@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Compositor Equirect Layer Example • A-Frame</title>
+    <meta name="description" content="Compositor Equirect Layer Example • A-Frame">
+    <script src="../../../dist/aframe-master.js"></script>
+    <script src="https://unpkg.com/aframe-environment-component@1.5.x/dist/aframe-environment-component.min.js"></script>
+    <script src="toggle-layer.js"></script>
+  </head>
+  <body>
+    <a-scene>
+      <a-assets>
+        <!--
+          SOURCE:
+          https://immersive-web.github.io/webxr-samples/layers-samples/media-layer-sample.html
+          stereo-top-bottom 360 4300x4300 30fps
+        -->
+        <video id="video" autoplay preload="auto" loop crossorigin="anonymous" width="4300" height="4300">
+          <source src="https://oculus-mp4.s3.amazonaws.com/immersive+video+8K+for+Oculus+Browser/everestvr_4.3k_30s_360_h264_crf23_binaural_CREDIT_JON_GRIFFITH_injected.mp4">
+        </video>
+
+        <!--
+          SOURCE:
+          https://immersive-web.github.io/webxr-samples/layers-samples/eqrt-video.html
+          stereo-left-right 180 3840x1920 30fps
+        -->
+        <!--
+        <video id="video" autoplay preload="auto" loop crossorigin="anonymous" width="3840" height="1920">
+          <source src="https://d25a56pc18k0co.cloudfront.net/sloths_binaural_3840_180_3D-injected.mp4">
+        </video>
+        -->
+
+        <!--
+          SOURCE:
+          https://immersive-web.github.io/webxr-samples/layers-samples/eqrt-layer.html
+          stereo-top-bottom 4k image
+        -->
+        <!--
+        <img id="image" src="https://cdn.jsdelivr.net/gh/immersive-web/webxr-samples@main/media/textures/chess-pano-4k.png" />
+        -->
+      </a-assets>
+      <a-entity
+        layer="src: #video; type: stereo-top-bottom-equirect; is180: false"
+        position="0 0 0"></a-entity>
+      <a-entity id="leftHand" toggle-layer laser-controls="hand: left"></a-entity>
+      <a-entity id="rightHand" toggle-layer laser-controls="hand: right"></a-entity>
+    </a-scene>
+  </body>
+</html>
