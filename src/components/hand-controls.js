@@ -31,8 +31,10 @@ var ANIMATIONS = {
 // Map animation to public events for the API.
 var EVENTS = {};
 EVENTS[ANIMATIONS.fist] = 'grip';
-EVENTS[ANIMATIONS.thumbUp] = 'pistol';
+EVENTS[ANIMATIONS.thumbUp] = 'thumb';
 EVENTS[ANIMATIONS.point] = 'pointing';
+EVENTS[ANIMATIONS.pointThumb] = 'pistol';
+EVENTS[ANIMATIONS.hold] = 'point';
 
 /**
  * Hand controls component that abstracts 6DoF controls:
@@ -418,16 +420,16 @@ export var Component = registerComponent('hand-controls', {
  * @param {string} gesture
  * @param {boolean} active
  */
-function getGestureEventName (gesture, active) {
+ function getGestureEventName (gesture, active) {
   var eventName;
 
   if (!gesture) { return; }
 
   eventName = EVENTS[gesture];
   if (eventName === 'grip') {
-    return eventName + (active ? 'close' : 'open');
+    return eventName + (active ? 'down' : 'up');
   }
-  if (eventName === 'point') {
+  if (eventName === 'point' || eventName === 'thumb') {
     return eventName + (active ? 'up' : 'down');
   }
   if (eventName === 'pointing' || eventName === 'pistol') {
