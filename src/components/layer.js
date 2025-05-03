@@ -390,27 +390,11 @@ export var Component = registerComponent('layer', {
     var gl = this.el.sceneEl.renderer.getContext();
     var sceneEl = this.el.sceneEl;
     var textureEl = this.data.src;
-    var glayer;
-
-    // Handle stereo rendering for img equirect layers
-    if (this.data.type.includes('stereo')) {
-      var pose = sceneEl.frame.getViewerPose(this.referenceSpace);
-      if (!pose) { return; }
-      for (var view of pose.views) {
-        glayer = this.xrGLFactory.getSubImage(this.layer, sceneEl.frame, view.eye);
-        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-        gl.bindTexture(gl.TEXTURE_2D, glayer.colorTexture);
-        gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, textureEl.width, textureEl.height, gl.RGBA, gl.UNSIGNED_BYTE, textureEl);
-        gl.bindTexture(gl.TEXTURE_2D, null);
-      }
-    } else {
-      // Handle img quad and img mono equirect layers
-      glayer = this.xrGLFactory.getSubImage(this.layer, sceneEl.frame);
-      gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-      gl.bindTexture(gl.TEXTURE_2D, glayer.colorTexture);
-      gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, textureEl.width, textureEl.height, gl.RGBA, gl.UNSIGNED_BYTE, textureEl);
-      gl.bindTexture(gl.TEXTURE_2D, null);
-    }
+    var glayer = this.xrGLFactory.getSubImage(this.layer, sceneEl.frame);
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+    gl.bindTexture(gl.TEXTURE_2D, glayer.colorTexture);
+    gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, textureEl.width, textureEl.height, gl.RGBA, gl.UNSIGNED_BYTE, textureEl);
+    gl.bindTexture(gl.TEXTURE_2D, null);
   },
 
   updateTransform: function () {
