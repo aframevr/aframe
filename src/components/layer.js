@@ -9,6 +9,7 @@ export var Component = registerComponent('layer', {
     type: {default: 'quad', oneOf: ['mono-equirect', 'stereo-left-right-equirect', 'stereo-top-bottom-equirect', 'quad', 'monocubemap', 'stereocubemap']},
     src: {type: 'map'},
     is180: {default: false, if: {type: ['mono-equirect', 'stereo-left-right-equirect', 'stereo-top-bottom-equirect']}},
+    radius: {default: 198, if: {type: ['mono-equirect', 'stereo-left-right-equirect', 'stereo-top-bottom-equirect']}},
     rotateCubemap: {default: false},
     width: {default: 0},
     height: {default: 0}
@@ -272,7 +273,7 @@ export var Component = registerComponent('layer', {
     if (!this.texture) { return; }
     var sceneEl = this.el.sceneEl;
     var eqrtIs180 = this.data.is180;
-    var eqrtRadius = 10;
+    var eqrtRadius = this.data.radius;
     var eqrtLayout = this.data.type.replace('-equirect', ''); // mono stereo-left-right stereo-top-bottom
     if (this.textureIsVideo) {
       var mediaBinding = new XRMediaBinding(sceneEl.xrSession);
