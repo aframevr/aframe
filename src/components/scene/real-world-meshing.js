@@ -13,7 +13,7 @@ export var Component = register('real-world-meshing', {
   schema: {
     filterLabels: {type: 'array'},
     meshesEnabled: {default: true},
-    meshMixin: {default: true},
+    meshMixin: {default: ''},
     planesEnabled: {default: true},
     planeMixin: {default: ''}
   },
