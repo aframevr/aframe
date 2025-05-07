@@ -55,10 +55,10 @@ editors. Both support remixing or forking:
 For the options below, we should develop projects using a local server so that
 files are properly served. Options of local servers include:
 
-- Running `npm i -g five-server@latest && five-server --port=8000` in a terminal
+- Run `npm i -g five-server@latest && five-server --port=8000` in a terminal
   in the same directory as your HTML file.
-- Running `python -m SimpleHTTPServer` (or `python3 -m http.server` for Python 3)
-  in a terminal in the same directory as your HTML file.
+- Run `python3 -m http.server` in a terminal in the same directory as your
+  HTML file.
 
 Once we are running our server, we can open our project in the browser using
 the local URL and port which the server is running on (e.g.,
