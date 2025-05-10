@@ -18,10 +18,14 @@ export var Component = registerComponent('material', {
     depthTest: {default: true},
     depthWrite: {default: true},
     flatShading: {default: false},
-    npot: {default: false},
     offset: {type: 'vec2', default: {x: 0, y: 0}},
     opacity: {default: 1.0, min: 0.0, max: 1.0},
     repeat: {type: 'vec2', default: {x: 1, y: 1}},
+    magFilter: {default: 'linear', oneOf: ['nearest', 'linear']},
+    minFilter: {
+      default: 'linear-mipmap-linear',
+      oneOf: ['nearest', 'nearest-mipmap-nearest', 'nearest-mipmap-linear', 'linear', 'linear-mipmap-nearest', 'linear-mipmap-linear']
+    },
     shader: {default: 'standard', oneOf: shaderNames, schemaChange: true},
     side: {default: 'front', oneOf: ['front', 'back', 'double']},
     transparent: {default: false},

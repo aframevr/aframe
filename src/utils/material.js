@@ -11,6 +11,15 @@ var COLOR_MAPS = new Set([
   'specularMap'
 ]);
 
+var FILTERING_TYPES = {
+  'nearest': THREE.NearestFilter,
+  'nearest-mipmap-nearest': THREE.NearestMipMapNearestFilter,
+  'nearest-mipmap-linear': THREE.NearestMipMapLinearFilter,
+  'linear': THREE.LinearFilter,
+  'linear-mipmap-nearest': THREE.LinearMipMapNearestFilter,
+  'linear-mipmap-linear': THREE.LinearMipmapLinearFilter
+};
+
 /**
  * Set texture properties such as repeat and offset.
  *
@@ -20,21 +29,11 @@ var COLOR_MAPS = new Set([
 export function setTextureProperties (texture, data) {
   var offset = data.offset || {x: 0, y: 0};
   var repeat = data.repeat || {x: 1, y: 1};
-  var npot = data.npot || false;
   var anisotropy = data.anisotropy || THREE.Texture.DEFAULT_ANISOTROPY;
   var wrapS = texture.wrapS;
   var wrapT = texture.wrapT;
-  var magFilter = texture.magFilter;
-  var minFilter = texture.minFilter;
-
-  // To support NPOT textures, wrap must be ClampToEdge (not Repeat),
-  // and filters must not use mipmaps (i.e. Nearest or Linear).
-  if (npot) {
-    wrapS = THREE.ClampToEdgeWrapping;
-    wrapT = THREE.ClampToEdgeWrapping;
-    magFilter = THREE.LinearFilter;
-    minFilter = THREE.LinearFilter;
-  }
+  var magFilter = FILTERING_TYPES[data.magFilter] || texture.magFilter;
+  var minFilter = FILTERING_TYPES[data.minFilter] || texture.minFilter;
 
   // Set wrap mode to repeat only if repeat isn't 1/1. Power-of-two is required to repeat.
   if (repeat.x !== 1 || repeat.y !== 1) {
