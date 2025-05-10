@@ -64,10 +64,11 @@ depending on the material type applied.
 | alphaTest    | Alpha test threshold for transparency.                                                                                                            | 0             |
 | depthTest    | Whether depth testing is enabled when rendering the material.                                                                                     | true          |
 | flatShading  | Use `THREE.FlatShading` rather than `THREE.StandardShading`.                                                                                      | false         |
-| npot         | Use settings for non-power-of-two (NPOT) texture.                                                                                                 | false         |
 | offset       | Texture offset to be used.                                                                                                                        | {x: 0, y: 0}  |
 | opacity      | Extent of transparency. If the `transparent` property is not `true`, then the material will remain opaque and `opacity` will only affect color.   | 1.0           |
 | repeat       | Texture repeat to be used.                                                                                                                        | {x: 1, y: 1}  |
+| magFilter    | Which magnifying filter to use when sampling textures. Can be one of `linear` or `nearest`.                                                       | `linear`      |
+| minFilter    | Which minifying filter to use when sampling textures. Can be one of `linear`, `linear-mipmap-nearest`, `linear-mipmap-linear`, `nearest`, `nearest-mipmap-nearest` or `nearest-mipmap-linear`. | `linear-mipmap-linear` |
 | shader       | Which material to use. Defaults to the [standard material][standard]. Can be set to the [flat material][flat] or to a registered custom shader material. | standard      |
 | side         | Which sides of the mesh to render. Can be one of `front`, `back`, or `double`.                                                                    | front         |
 | transparent  | Whether material is transparent. Transparent entities are rendered after non-transparent entities.                                                | false         |
