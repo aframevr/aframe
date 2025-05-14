@@ -361,7 +361,8 @@ export var Component = registerComponent('layer', {
   onEnterVR: function () {
     var sceneEl = this.el.sceneEl;
     var xrSession = sceneEl.xrSession;
-    if (!sceneEl.hasWebXR || !XRWebGLBinding || !xrSession) {
+    if (this.data.src.play) { this.data.src.play(); }
+    if (!sceneEl.hasWebXR || typeof XRWebGLBinding === 'undefined' || !xrSession) {
       warn('The layer component requires WebXR and the layers API enabled');
       return;
     }
@@ -370,7 +371,6 @@ export var Component = registerComponent('layer', {
     if (this.quadPanelEl) {
       this.quadPanelEl.object3D.visible = false;
     }
-    if (this.data.src.play) { this.data.src.play(); }
   },
 
   onExitVR: function () {
