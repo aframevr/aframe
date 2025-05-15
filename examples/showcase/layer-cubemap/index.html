@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Compositor Layer Cubemap • A-Frame</title>
+    <meta name="description" content="Compositor Layer Cubemap • A-Frame">
+    <script src="../../../dist/aframe-master.js"></script>
+    <script src="https://unpkg.com/aframe-environment-component@1.5.0/dist/aframe-environment-component.min.js"></script>
+    <script src="../../js/info-message.js"></script>
+    <script src="cubemap-switcher.js"></script>
+  </head>
+  <body>
+    <a-scene environment info-message="htmlSrc: #messageText; startOpened: true; width: 500; height: 800">
+      <a-assets timeout="90000">
+       <img id="imaginerealitycubemap" crossOrigin="anonymous" src="https://vr1.otoycdn.net/vr/pano/23036_7E20F856-0889-4C02-8029-78A4D02F5834_pano.png">
+       <img id="panel" crossOrigin="anonymous" src="panel.png">
+       <a-asset-item id="messageText" src="message.html"></a-asset-item>
+      </a-assets>
+      <a-entity
+        camera
+        look-controls="magicWindowTrackingEnabled: false"
+        position="0 1.6 0"></a-entity>
+      <a-entity
+        cubemap-switcher
+        layer="src: #imaginerealitycubemap; type: stereocubemap; rotateCubemap: true"
+        position="0 1.8 -1.5"></a-entity>
+      <a-entity
+        id="welcome"
+        rotation="0 0 0"
+        position="0 1.6 -0.75"
+        material="shader: flat; src: #panel"
+        geometry="primitive: plane; width: 1.920; height: 1.038"></a-entity>
+      <a-entity id="leftHand" meta-touch-controls="hand: left"></a-entity>
+      <a-entity id="rightHand" meta-touch-controls="hand: right"></a-entity>
+    </a-scene>
+  </body>
+</html>
