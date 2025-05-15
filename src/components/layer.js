@@ -16,6 +16,7 @@ export var Component = registerComponent('layer', {
   init: function () {
     this.quaternion = new THREE.Quaternion();
     this.position = new THREE.Vector3();
+    this.layerEnabled = false;
     // From another component, set this.el.components.layer.needsRedraw = true
     // if you use a canvas as src and want to redraw the layer.
     this.needsRedraw = false;
@@ -24,9 +25,20 @@ export var Component = registerComponent('layer', {
 
     var webxrData = this.el.sceneEl.getAttribute('webxr');
     var requiredFeaturesArray = webxrData.requiredFeatures;
-    if (requiredFeaturesArray.indexOf('layers') === -1) {
-      requiredFeaturesArray.push('layers');
-      this.el.sceneEl.setAttribute('webxr', webxrData);
+    var optionalFeaturesArray = webxrData.optionalFeatures;
+    // Types monocubemap and stereocubemap currently don't have any fallback
+    // so make the layers feature required. For other types make it optional
+    // so the fallback is used on devices not supporting WebXR layers.
+    if (this.data.type === 'monocubemap' || this.data.type === 'stereocubemap') {
+      if (requiredFeaturesArray.indexOf('layers') === -1) {
+        requiredFeaturesArray.push('layers');
+        this.el.sceneEl.setAttribute('webxr', webxrData);
+      }
+    } else {
+      if (optionalFeaturesArray.indexOf('layers') === -1) {
+        optionalFeaturesArray.push('layers');
+        this.el.sceneEl.setAttribute('webxr', webxrData);
+      }
     }
     this.el.sceneEl.addEventListener('enter-vr', this.onEnterVR);
     this.el.sceneEl.addEventListener('exit-vr', this.onExitVR);
@@ -209,7 +221,7 @@ export var Component = registerComponent('layer', {
   tick: function () {
     if (!this.el.sceneEl.xrSession) { return; }
     if (!this.referenceSpace) { return; }
-    if (!this.layer && (this.el.sceneEl.is('vr-mode') || this.el.sceneEl.is('ar-mode'))) { this.initLayer(); }
+    if (this.layerEnabled && !this.layer && (this.el.sceneEl.is('vr-mode') || this.el.sceneEl.is('ar-mode'))) { this.initLayer(); }
     this.updateTransform();
     if (this.data.src.complete && (this.pendingCubeMapUpdate || this.loadingScreen || this.visibilityChanged)) { this.loadCubeMapImages(); }
     if (!this.needsRedraw && !this.layer.needsRedraw) { return; }
@@ -366,7 +378,7 @@ export var Component = registerComponent('layer', {
     var sceneEl = this.el.sceneEl;
     var xrSession = sceneEl.xrSession;
     if (this.data.src.play) { this.data.src.play(); }
-    if (!sceneEl.hasWebXR || typeof XRWebGLBinding === 'undefined' || !xrSession) {
+    if (!sceneEl.hasWebXR || typeof XRWebGLBinding === 'undefined' || typeof XRMediaBinding === 'undefined' || !xrSession) {
       warn('The layer component requires WebXR and the layers API enabled');
       return;
     }
@@ -378,6 +390,7 @@ export var Component = registerComponent('layer', {
   },
 
   onExitVR: function () {
+    this.layerEnabled = false;
     if (this.quadPanelEl) {
       this.quadPanelEl.object3D.visible = true;
     }
