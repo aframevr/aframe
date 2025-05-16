@@ -16,6 +16,9 @@ export var Component = registerComponent('layer', {
   init: function () {
     this.quaternion = new THREE.Quaternion();
     this.position = new THREE.Vector3();
+    // From another component, set this.el.components.layer.needsRedraw = true
+    // if you use a canvas as src and want to redraw the layer.
+    this.needsRedraw = false;
 
     this.bindMethods();
 
@@ -209,7 +212,7 @@ export var Component = registerComponent('layer', {
     if (!this.layer && (this.el.sceneEl.is('vr-mode') || this.el.sceneEl.is('ar-mode'))) { this.initLayer(); }
     this.updateTransform();
     if (this.data.src.complete && (this.pendingCubeMapUpdate || this.loadingScreen || this.visibilityChanged)) { this.loadCubeMapImages(); }
-    if (!this.layer.needsRedraw) { return; }
+    if (!this.needsRedraw && !this.layer.needsRedraw) { return; }
     if (this.textureIsVideo) { return; }
     if (this.data.type === 'quad') { this.draw(); }
   },
@@ -345,6 +348,7 @@ export var Component = registerComponent('layer', {
     gl.bindTexture(gl.TEXTURE_2D, glayer.colorTexture);
     gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, textureEl.width, textureEl.height, gl.RGBA, gl.UNSIGNED_BYTE, textureEl);
     gl.bindTexture(gl.TEXTURE_2D, null);
+    this.needsRedraw = false;
   },
 
   updateTransform: function () {
