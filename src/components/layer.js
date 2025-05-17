@@ -335,7 +335,7 @@ export var Component = registerComponent('layer', {
     quadPanelEl.setAttribute('geometry', {
       primitive: 'plane',
       height: this.data.height || this.texture.image.height / 1000,
-      width: this.data.width || this.texture.image.height / 1000
+      width: this.data.width || this.texture.image.width / 1000
     });
   },
 
