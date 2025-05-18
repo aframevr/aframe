@@ -9489,15 +9489,27 @@ var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_0__.registerCompo
   init: function () {
     this.quaternion = new three__WEBPACK_IMPORTED_MODULE_2__.Quaternion();
     this.position = new three__WEBPACK_IMPORTED_MODULE_2__.Vector3();
+    this.layerEnabled = false;
     // From another component, set this.el.components.layer.needsRedraw = true
     // if you use a canvas as src and want to redraw the layer.
     this.needsRedraw = false;
     this.bindMethods();
     var webxrData = this.el.sceneEl.getAttribute('webxr');
     var requiredFeaturesArray = webxrData.requiredFeatures;
-    if (requiredFeaturesArray.indexOf('layers') === -1) {
-      requiredFeaturesArray.push('layers');
-      this.el.sceneEl.setAttribute('webxr', webxrData);
+    var optionalFeaturesArray = webxrData.optionalFeatures;
+    // Types monocubemap and stereocubemap currently don't have any fallback
+    // so make the layers feature required. For other types make it optional
+    // so the fallback is used on devices not supporting WebXR layers.
+    if (this.data.type === 'monocubemap' || this.data.type === 'stereocubemap') {
+      if (requiredFeaturesArray.indexOf('layers') === -1) {
+        requiredFeaturesArray.push('layers');
+        this.el.sceneEl.setAttribute('webxr', webxrData);
+      }
+    } else {
+      if (optionalFeaturesArray.indexOf('layers') === -1) {
+        optionalFeaturesArray.push('layers');
+        this.el.sceneEl.setAttribute('webxr', webxrData);
+      }
     }
     this.el.sceneEl.addEventListener('enter-vr', this.onEnterVR);
     this.el.sceneEl.addEventListener('exit-vr', this.onExitVR);
@@ -9668,7 +9680,7 @@ var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_0__.registerCompo
     if (!this.referenceSpace) {
       return;
     }
-    if (!this.layer && (this.el.sceneEl.is('vr-mode') || this.el.sceneEl.is('ar-mode'))) {
+    if (this.layerEnabled && !this.layer && (this.el.sceneEl.is('vr-mode') || this.el.sceneEl.is('ar-mode'))) {
       this.initLayer();
     }
     this.updateTransform();
@@ -9826,7 +9838,7 @@ var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_0__.registerCompo
     if (this.data.src.play) {
       this.data.src.play();
     }
-    if (!sceneEl.hasWebXR || typeof XRWebGLBinding === 'undefined' || !xrSession) {
+    if (!sceneEl.hasWebXR || typeof XRWebGLBinding === 'undefined' || typeof XRMediaBinding === 'undefined' || !xrSession) {
       warn('The layer component requires WebXR and the layers API enabled');
       return;
     }
@@ -9837,6 +9849,7 @@ var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_0__.registerCompo
     }
   },
   onExitVR: function () {
+    this.layerEnabled = false;
     if (this.quadPanelEl) {
       this.quadPanelEl.object3D.visible = true;
     }
@@ -22194,7 +22207,7 @@ class AScene extends _a_entity_js__WEBPACK_IMPORTED_MODULE_7__.AEntity {
             if (useOfferSession) {
               self.usedOfferSession = false;
             }
-            vrManager.layersEnabled = xrInit.requiredFeatures.indexOf('layers') !== -1;
+            vrManager.layersEnabled = xrSession.enabledFeatures ? xrSession.enabledFeatures.indexOf('layers') !== -1 : true;
             vrManager.setSession(xrSession).then(function () {
               vrManager.setFoveation(rendererSystem.foveationLevel);
               self.xrSession = xrSession;
@@ -60829,7 +60842,7 @@ if (_utils_index_js__WEBPACK_IMPORTED_MODULE_16__.device.isBrowserEnvironment) {
   window.logs = debug;
   __webpack_require__(/*! ./style/aframe.css */ "./src/style/aframe.css");
 }
-console.log('A-Frame Version: 1.7.1 (Date 2025-05-17, Commit #bbb0f392)');
+console.log('A-Frame Version: 1.7.1 (Date 2025-05-18, Commit #fa918a86)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].REVISION);
 
 // Wait for ready state, unless user asynchronously initializes A-Frame.
