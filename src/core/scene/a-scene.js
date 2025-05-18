@@ -285,7 +285,7 @@ export class AScene extends AEntity {
                 self.usedOfferSession = false;
               }
 
-              vrManager.layersEnabled = xrInit.requiredFeatures.indexOf('layers') !== -1;
+              vrManager.layersEnabled = xrSession.enabledFeatures ? xrSession.enabledFeatures.indexOf('layers') !== -1 : true;
               vrManager.setSession(xrSession).then(function () {
                 vrManager.setFoveation(rendererSystem.foveationLevel);
                 self.xrSession = xrSession;
