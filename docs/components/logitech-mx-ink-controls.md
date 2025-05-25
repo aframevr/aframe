@@ -3,7 +3,7 @@ title: logiteck-mx-ink-controls
 type: components
 layout: docs
 parent_section: components
-source_code: src/components/logiteck-mx-ink-controls.js
+source_code: src/components/logitech-mx-ink-controls.js
 examples: []
 ---
 

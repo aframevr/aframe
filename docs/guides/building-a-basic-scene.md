@@ -243,7 +243,7 @@ We can specify a preset (e.g., `forest`) with along many other parameters
 
 ## Applying an Image Texture
 
-> Make sure you're [serving your HTML using a local server](../introduction/getting-started.md#using-a-local-server)
+> Make sure you're [serving your HTML using a local server](../introduction/installation.md#use-a-local-server)
 > for textures to load properly.
 > Due to an [issue with imgur.com](https://stackoverflow.com/questions/43895390/imgur-images-returning-403), view the page using http://localhost, rather than http://127.0.0.1
 

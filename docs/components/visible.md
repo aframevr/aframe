@@ -30,7 +30,7 @@ contain an entire group of entities that you can flip on an off with `visible`.
 
 ## Updating Visibility
 
-[update]: ../introduction/javascript-events-and-dom-apis.md#updating-a-component-with-setattribute
+[update]: ../introduction/javascript-events-dom-apis.md#updating-a-component-with-setattribute
 
 It is slightly faster to update visibility at the three.js level versus [via
 `.setAttribute`][update].

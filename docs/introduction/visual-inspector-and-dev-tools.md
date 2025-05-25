@@ -112,12 +112,12 @@ We can press **`h`** key to see a list of all the shortcuts available.
 
 ## Mouse and Keyboard Shortcuts
 
-[debugcursor](https://www.npmjs.com/package/aframe-debug-cursor-component)
+[debugcursor]: https://www.npmjs.com/package/aframe-debug-cursor-component
 
 Using `<a-entity cursor="rayOrigin: mouse"></a-entity>`, we can hover and click
 entities using the mouse. These provide `mouseenter`, `mouseleave`, and `click`
 events that are compatible with using the cursor on a controller (such as via
-`<a-laser-controls>`). There is a [debug-cursor component](debugcursor) to log
+`<a-laser-controls>`). There is a [debug-cursor component][debugcursor] to log
 cursor events.
 
 It is useful to develop keyboard shortcut bindings to test actions within
