@@ -1,3 +1,9 @@
+### 1.8.0 (unreleased)
+
+### Deprecations
+
+- If you used material `npot: true` previously as a way to set `texture.minFilter = THREE.LinearFilter` for better image quality, you need to replace it with `minFilter: linear`. That change was introduced in #5717 that removed `npot` property that was legacy of WebGL1, new material properties `minFilter` and `magFilter` have been exposed instead.
+
 ### 1.7.1 (Apr 1, 2025)
 
 ### Bug fixes
