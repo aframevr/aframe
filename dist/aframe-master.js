@@ -28736,6 +28736,7 @@ function setTextureProperties(texture, data) {
     texture.wrapT = wrapT;
     texture.magFilter = magFilter;
     texture.minFilter = minFilter;
+    texture.generateMipmaps = minFilter !== three__WEBPACK_IMPORTED_MODULE_2__.NearestFilter && minFilter !== three__WEBPACK_IMPORTED_MODULE_2__.LinearFilter;
     texture.anisotropy = anisotropy;
     texture.needsUpdate = true;
   }
@@ -60842,7 +60843,7 @@ if (_utils_index_js__WEBPACK_IMPORTED_MODULE_16__.device.isBrowserEnvironment) {
   window.logs = debug;
   __webpack_require__(/*! ./style/aframe.css */ "./src/style/aframe.css");
 }
-console.log('A-Frame Version: 1.7.1 (Date 2025-05-18, Commit #fa918a86)');
+console.log('A-Frame Version: 1.7.1 (Date 2025-05-27, Commit #2fd4d309)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].REVISION);
 
 // Wait for ready state, unless user asynchronously initializes A-Frame.
