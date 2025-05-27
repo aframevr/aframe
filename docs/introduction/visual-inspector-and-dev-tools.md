@@ -281,7 +281,7 @@ are to:
 
 1. Download ngrok
 2. Open the command line and head to the same directory ngrok was downloaded to
-3. Have a local development server running (e.g., `python -m SimpleHTTPServer 8080`)
+3. Have a local development server running (e.g., `python3 -m http.server 8080`)
 4. Run `./ngrok http <PORT>` (e.g., `./ngrok http 8080`)
 5. An ngrok instance will spin up and provide a URL that the other computer can
 access from its browser (e.g., `https://abcdef123456.ngrok.io`)
