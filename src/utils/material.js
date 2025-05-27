@@ -52,6 +52,7 @@ export function setTextureProperties (texture, data) {
     texture.wrapT = wrapT;
     texture.magFilter = magFilter;
     texture.minFilter = minFilter;
+    texture.generateMipmaps = minFilter !== THREE.NearestFilter && minFilter !== THREE.LinearFilter;
     texture.anisotropy = anisotropy;
     texture.needsUpdate = true;
   }
