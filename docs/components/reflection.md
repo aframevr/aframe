@@ -3,7 +3,7 @@ title: reflection
 type: components
 layout: docs
 parent_section: components
-source_code: src/components/reflection.js
+source_code: src/components/scene/reflection.js
 examples: []
 ---
 

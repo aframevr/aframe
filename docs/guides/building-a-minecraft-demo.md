@@ -57,7 +57,7 @@ See a live version [here](https://aframe.io/aframe/examples/docs/aincraft/step1.
 
 ### Preloading Assets
 
-[assets]: https://aframe.io/docs/1.7.1/core/asset-management-system.html
+[assets]: ../core/asset-management-system.md
 
 Specifying a URL via the `src` attribute will load the texture at runtime.
 Since network requests can negatively impact render performance, we can
@@ -88,7 +88,7 @@ See a live version [here](https://aframe.io/aframe/examples/docs/aincraft/step2.
 
 ## Adding a Background
 
-[a-sky]: https://aframe.io/docs/1.7.1/primitives/a-sky.html
+[a-sky]: ../primitives/a-sky.md
 [flickr]: https://www.flickr.com/groups/equirectangular/
 
 [gradient]: https://github.com/mrxz/fern-aframe-components/tree/main/sky-background
@@ -139,15 +139,15 @@ from scratch.
 
 ### Entity-Component Pattern
 
-[entity]: https://aframe.io/docs/1.7.1/core/entity.html
+[entity]: ../core/entity.md
 
 Every single object in an A-Frame scene is [`<a-entity>`][entity], which by itself
 doesn't do anything, like an empty `<div>`. We plug in components (**not to be
 confused with Web or React Components**) to that entity to provide with
 appearance, behavior , and logic.
 
-[geometry]: https://aframe.io/docs/1.7.1/components/geometry.html
-[material]: https://aframe.io/docs/1.7.1/components/material.html
+[geometry]: ../components/geometry.md
+[material]: ../components/material.md
 
 For a box, we attach and configure A-Frame's basic [geometry] and [material]
 components. Components are represented as HTML attributes, and component
@@ -189,7 +189,7 @@ AFRAME.registerComponent('random-color', {
 });
 ```
 
-[js]: https://aframe.io/docs/1.7.1/introduction/javascript-events-dom-apis.html
+[js]: ../introduction/javascript-events-dom-apis.md
 
 For the random color component, we want to set a random color on the entity
 that this component is attached to. Components have a reference to the entity
@@ -301,7 +301,7 @@ to describe all the voxels in our scene.
 
 ### Mixins
 
-[mixin]: https://aframe.io/docs/1.7.1/core/mixins.html
+[mixin]: ../core/mixins.md
 
 We can create [a mixin][mixin] to define a reusable bundle of components.
 Instead of `<a-entity>`, which adds an object to the scene, we'll describe it
