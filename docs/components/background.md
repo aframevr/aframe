@@ -3,7 +3,7 @@ title: background
 type: components
 layout: docs
 parent_section: components
-source_code: src/components/background.js
+source_code: src/components/scene/background.js
 examples: []
 ---
 

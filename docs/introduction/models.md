@@ -9,7 +9,7 @@ examples:
    src: https://glitch.com/edit/#!/aframe-modify-model-material?path=index.html:1:0
 ---
 
-[3loaders]: https://github.com/mrdoob/three.js/tree/dev/examples/js/loaders
+[3loaders]: https://github.com/mrdoob/three.js/tree/dev/examples/jsm/loaders
 [ecsfind]: ./entity-component-system.md#where-to-find-components
 [glTF]: ../components/gltf-model.md
 [OBJ]: ../components/obj-model.md

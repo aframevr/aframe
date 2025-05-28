@@ -4,7 +4,7 @@ type: core
 layout: docs
 parent_section: core
 order: 4
-source_code: src/core/systems.js
+source_code: src/core/system.js
 examples: 
   - title: System providing envMaps
     src: https://glitch.com/~aframe-refraction-system
