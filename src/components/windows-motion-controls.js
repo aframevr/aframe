@@ -23,7 +23,7 @@ var INPUT_MAPPING = {
   // the mesh corresponding to axis 0 is in this array index 0.
   axisMeshNames: [
     'TOUCHPAD_TOUCH_X',
-    'TOUCHPAD_TOUCH_X',
+    'TOUCHPAD_TOUCH_Y',
     'THUMBSTICK_X',
     'THUMBSTICK_Y'
   ],
