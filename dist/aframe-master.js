@@ -18466,7 +18466,7 @@ var INPUT_MAPPING = {
   // that should be transformed by axis value.
   // This array mirrors the browser Gamepad.axes array, such that
   // the mesh corresponding to axis 0 is in this array index 0.
-  axisMeshNames: ['TOUCHPAD_TOUCH_X', 'TOUCHPAD_TOUCH_X', 'THUMBSTICK_X', 'THUMBSTICK_Y'],
+  axisMeshNames: ['TOUCHPAD_TOUCH_X', 'TOUCHPAD_TOUCH_Y', 'THUMBSTICK_X', 'THUMBSTICK_Y'],
   // A mapping of the semantic name to button node name in the glTF model file,
   // that should be transformed by button value.
   buttonMeshNames: {
@@ -60843,7 +60843,7 @@ if (_utils_index_js__WEBPACK_IMPORTED_MODULE_16__.device.isBrowserEnvironment) {
   window.logs = debug;
   __webpack_require__(/*! ./style/aframe.css */ "./src/style/aframe.css");
 }
-console.log('A-Frame Version: 1.7.1 (Date 2025-05-27, Commit #2fd4d309)');
+console.log('A-Frame Version: 1.7.1 (Date 2025-05-30, Commit #4d8bd9fe)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].REVISION);
 
 // Wait for ready state, unless user asynchronously initializes A-Frame.
