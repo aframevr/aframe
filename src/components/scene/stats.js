@@ -25,6 +25,10 @@ registerComponent('stats', {
     return (!this.data) ? this.hide() : this.show();
   },
 
+  remove: function () {
+    this.stats.dom.remove();
+  },
+
   hide: function () {
     this.stats.dom.classList.add(HIDDEN_CLASS);
   },
