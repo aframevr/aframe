@@ -15895,6 +15895,9 @@ var HIDDEN_CLASS = 'a-hidden';
     }
     return !this.data ? this.hide() : this.show();
   },
+  remove: function () {
+    this.stats.dom.remove();
+  },
   hide: function () {
     this.stats.dom.classList.add(HIDDEN_CLASS);
   },
@@ -60843,7 +60846,7 @@ if (_utils_index_js__WEBPACK_IMPORTED_MODULE_16__.device.isBrowserEnvironment) {
   window.logs = debug;
   __webpack_require__(/*! ./style/aframe.css */ "./src/style/aframe.css");
 }
-console.log('A-Frame Version: 1.7.1 (Date 2025-05-30, Commit #4d8bd9fe)');
+console.log('A-Frame Version: 1.7.1 (Date 2025-06-02, Commit #0a3256bd)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].REVISION);
 
 // Wait for ready state, unless user asynchronously initializes A-Frame.
