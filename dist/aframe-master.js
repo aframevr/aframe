@@ -9885,7 +9885,6 @@ __webpack_require__.r(__webpack_exports__);
 
 var degToRad = three__WEBPACK_IMPORTED_MODULE_3__.MathUtils.degToRad;
 var warn = (0,_utils_index_js__WEBPACK_IMPORTED_MODULE_0__.debug)('components:light:warn');
-var CubeLoader = new three__WEBPACK_IMPORTED_MODULE_3__.CubeTextureLoader();
 var probeCache = {};
 
 /**
@@ -10324,12 +10323,12 @@ var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_1__.registerCompo
     }
 
     // Populate the cache if not done for this envMap yet
+    var sceneEl = this.el.sceneEl;
     if (probeCache[data.envMap] === undefined) {
-      probeCache[data.envMap] = new window.Promise(function (resolve) {
-        _utils_index_js__WEBPACK_IMPORTED_MODULE_0__.srcLoader.validateCubemapSrc(data.envMap, function loadEnvMap(urls) {
-          CubeLoader.load(urls, function (cube) {
-            var tempLightProbe = three_addons_lights_LightProbeGenerator_js__WEBPACK_IMPORTED_MODULE_4__.LightProbeGenerator.fromCubeTexture(cube);
-            probeCache[data.envMap] = tempLightProbe;
+      probeCache[data.envMap] = new Promise(function (resolve) {
+        _utils_index_js__WEBPACK_IMPORTED_MODULE_0__.srcLoader.validateCubemapSrc(data.envMap, function loadEnvMap(srcs) {
+          sceneEl.systems.material.loadCubeMapTexture(srcs, function (texture) {
+            var tempLightProbe = three_addons_lights_LightProbeGenerator_js__WEBPACK_IMPORTED_MODULE_4__.LightProbeGenerator.fromCubeTexture(texture);
             resolve(tempLightProbe);
           });
         });
@@ -10337,13 +10336,9 @@ var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_1__.registerCompo
     }
 
     // Copy over light probe properties
-    if (probeCache[data.envMap] instanceof window.Promise) {
-      probeCache[data.envMap].then(function (tempLightProbe) {
-        light.copy(tempLightProbe);
-      });
-    } else if (probeCache[data.envMap] instanceof three__WEBPACK_IMPORTED_MODULE_3__.LightProbe) {
-      light.copy(probeCache[data.envMap]);
-    }
+    probeCache[data.envMap].then(function (tempLightProbe) {
+      light.copy(tempLightProbe);
+    });
   },
   onSetTarget: function (targetEl, light) {
     light.target = targetEl.object3D;
@@ -60846,7 +60841,7 @@ if (_utils_index_js__WEBPACK_IMPORTED_MODULE_16__.device.isBrowserEnvironment) {
   window.logs = debug;
   __webpack_require__(/*! ./style/aframe.css */ "./src/style/aframe.css");
 }
-console.log('A-Frame Version: 1.7.1 (Date 2025-06-02, Commit #0a3256bd)');
+console.log('A-Frame Version: 1.7.1 (Date 2025-06-02, Commit #241a775d)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].REVISION);
 
 // Wait for ready state, unless user asynchronously initializes A-Frame.
