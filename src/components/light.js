@@ -6,7 +6,6 @@ import * as mathUtils from '../utils/math.js';
 
 var degToRad = THREE.MathUtils.degToRad;
 var warn = debug('components:light:warn');
-var CubeLoader = new THREE.CubeTextureLoader();
 
 var probeCache = {};
 
@@ -349,12 +348,12 @@ export var Component = registerComponent('light', {
     }
 
     // Populate the cache if not done for this envMap yet
+    var sceneEl = this.el.sceneEl;
     if (probeCache[data.envMap] === undefined) {
-      probeCache[data.envMap] = new window.Promise(function (resolve) {
-        srcLoader.validateCubemapSrc(data.envMap, function loadEnvMap (urls) {
-          CubeLoader.load(urls, function (cube) {
-            var tempLightProbe = LightProbeGenerator.fromCubeTexture(cube);
-            probeCache[data.envMap] = tempLightProbe;
+      probeCache[data.envMap] = new Promise(function (resolve) {
+        srcLoader.validateCubemapSrc(data.envMap, function loadEnvMap (srcs) {
+          sceneEl.systems.material.loadCubeMapTexture(srcs, function (texture) {
+            var tempLightProbe = LightProbeGenerator.fromCubeTexture(texture);
             resolve(tempLightProbe);
           });
         });
@@ -362,13 +361,9 @@ export var Component = registerComponent('light', {
     }
 
     // Copy over light probe properties
-    if (probeCache[data.envMap] instanceof window.Promise) {
-      probeCache[data.envMap].then(function (tempLightProbe) {
-        light.copy(tempLightProbe);
-      });
-    } else if (probeCache[data.envMap] instanceof THREE.LightProbe) {
-      light.copy(probeCache[data.envMap]);
-    }
+    probeCache[data.envMap].then(function (tempLightProbe) {
+      light.copy(tempLightProbe);
+    });
   },
 
   onSetTarget: function (targetEl, light) {
