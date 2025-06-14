@@ -31585,6 +31585,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   FramebufferTexture: () => (/* binding */ FramebufferTexture),
 /* harmony export */   FrontSide: () => (/* binding */ FrontSide),
 /* harmony export */   Frustum: () => (/* binding */ Frustum),
+/* harmony export */   FrustumArray: () => (/* binding */ FrustumArray),
 /* harmony export */   GLBufferAttribute: () => (/* binding */ GLBufferAttribute),
 /* harmony export */   GLSL1: () => (/* binding */ GLSL1),
 /* harmony export */   GLSL3: () => (/* binding */ GLSL3),
@@ -31619,6 +31620,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   InterpolateDiscrete: () => (/* binding */ InterpolateDiscrete),
 /* harmony export */   InterpolateLinear: () => (/* binding */ InterpolateLinear),
 /* harmony export */   InterpolateSmooth: () => (/* binding */ InterpolateSmooth),
+/* harmony export */   InterpolationSamplingMode: () => (/* binding */ InterpolationSamplingMode),
+/* harmony export */   InterpolationSamplingType: () => (/* binding */ InterpolationSamplingType),
 /* harmony export */   InvertStencilOp: () => (/* binding */ InvertStencilOp),
 /* harmony export */   KeepStencilOp: () => (/* binding */ KeepStencilOp),
 /* harmony export */   KeyframeTrack: () => (/* binding */ KeyframeTrack),
@@ -31656,8 +31659,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   LoopOnce: () => (/* binding */ LoopOnce),
 /* harmony export */   LoopPingPong: () => (/* binding */ LoopPingPong),
 /* harmony export */   LoopRepeat: () => (/* binding */ LoopRepeat),
-/* harmony export */   LuminanceAlphaFormat: () => (/* binding */ LuminanceAlphaFormat),
-/* harmony export */   LuminanceFormat: () => (/* binding */ LuminanceFormat),
 /* harmony export */   MOUSE: () => (/* binding */ MOUSE),
 /* harmony export */   Material: () => (/* binding */ Material),
 /* harmony export */   MaterialLoader: () => (/* binding */ MaterialLoader),
@@ -31783,7 +31784,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   ReinhardToneMapping: () => (/* binding */ ReinhardToneMapping),
 /* harmony export */   RenderTarget: () => (/* binding */ RenderTarget),
 /* harmony export */   RenderTarget3D: () => (/* binding */ RenderTarget3D),
-/* harmony export */   RenderTargetArray: () => (/* binding */ RenderTargetArray),
 /* harmony export */   RepeatWrapping: () => (/* binding */ RepeatWrapping),
 /* harmony export */   ReplaceStencilOp: () => (/* binding */ ReplaceStencilOp),
 /* harmony export */   ReverseSubtractEquation: () => (/* binding */ ReverseSubtractEquation),
@@ -31891,7 +31891,7 @@ __webpack_require__.r(__webpack_exports__);
  * @license
  * Copyright 2010-2025 Three.js Authors
  * SPDX-License-Identifier: MIT
- */const REVISION='175';/**
+ */const REVISION='177';/**
  * Represents mouse buttons and interaction types in context of controls.
  *
  * @type {ConstantsMouse}
@@ -32367,19 +32367,6 @@ __webpack_require__.r(__webpack_exports__);
  * @type {number}
  * @constant
  */const RGBAFormat=1023;/**
- * reads each element as a single luminance component. This is then converted to a floating point,
- * clamped to the range `[0,1]`, and then assembled into an RGBA element by placing the luminance value
- * in the red, green and blue channels, and attaching 1.0 to the alpha channel.
- *
- * @type {number}
- * @constant
- */const LuminanceFormat=1024;/**
- * Reads each element as a luminance/alpha double. The same process occurs as for the `LuminanceFormat`,
- * except that the alpha channel may have values other than `1.0`.
- *
- * @type {number}
- * @constant
- */const LuminanceAlphaFormat=1025;/**
  * Reads each element as a single depth value, converts it to floating point, and clamps to the range `[0,1]`.
  *
  * @type {number}
@@ -32912,6 +32899,16 @@ __webpack_require__.r(__webpack_exports__);
  * @type {ConstantsTimestampQuery}
  * @constant
  */const TimestampQuery={COMPUTE:'compute',RENDER:'render'};/**
+ * Represents mouse buttons and interaction types in context of controls.
+ *
+ * @type {ConstantsInterpolationSamplingType}
+ * @constant
+ */const InterpolationSamplingType={PERSPECTIVE:'perspective',LINEAR:'linear',FLAT:'flat'};/**
+ * Represents the different interpolation sampling modes.
+ *
+ * @type {ConstantsInterpolationSamplingMode}
+ * @constant
+ */const InterpolationSamplingMode={NORMAL:'normal',CENTROID:'centroid',SAMPLE:'sample',FLAT_FIRST:'flat first',FLAT_EITHER:'flat either'};/**
  * This type represents mouse buttons and interaction types in context of controls.
  *
  * @typedef {Object} ConstantsMouse
@@ -32936,6 +32933,22 @@ __webpack_require__.r(__webpack_exports__);
  * @property {string} COMPUTE - A `compute` timestamp query.
  * @property {string} RENDER - A `render` timestamp query.
  **//**
+ * Represents the different interpolation sampling types.
+ *
+ * @typedef {Object} ConstantsInterpolationSamplingType
+ * @property {string} PERSPECTIVE - Perspective-correct interpolation.
+ * @property {string} LINEAR - Linear interpolation.
+ * @property {string} FLAT - Flat interpolation.
+ *//**
+ * Represents the different interpolation sampling modes.
+ *
+ * @typedef {Object} ConstantsInterpolationSamplingMode
+ * @property {string} NORMAL - Normal sampling mode.
+ * @property {string} CENTROID - Centroid sampling mode.
+ * @property {string} SAMPLE - Sample-specific sampling mode.
+ * @property {string} FLAT_FIRST - Flat interpolation using the first vertex.
+ * @property {string} FLAT_EITHER - Flat interpolation using either vertex.
+ *//**
  * This modules allows to dispatch event objects on custom JavaScript objects.
  *
  * Main repository: [eventdispatcher.js]{@link https://github.com/mrdoob/eventdispatcher.js/}
@@ -33668,1303 +33681,6 @@ return Math.acos(clamp(theta,-1,1));}/**
 	 *
 	 * @return {Vector2} A reference to this vector.
 	 */random(){this.x=Math.random();this.y=Math.random();return this;}*[Symbol.iterator](){yield this.x;yield this.y;}}/**
- * Represents a 3x3 matrix.
- *
- * A Note on Row-Major and Column-Major Ordering:
- *
- * The constructor and {@link Matrix3#set} method take arguments in
- * [row-major]{@link https://en.wikipedia.org/wiki/Row-_and_column-major_order#Column-major_order}
- * order, while internally they are stored in the {@link Matrix3#elements} array in column-major order.
- * This means that calling:
- * ```js
- * const m = new THREE.Matrix();
- * m.set( 11, 12, 13,
- *        21, 22, 23,
- *        31, 32, 33 );
- * ```
- * will result in the elements array containing:
- * ```js
- * m.elements = [ 11, 21, 31,
- *                12, 22, 32,
- *                13, 23, 33 ];
- * ```
- * and internally all calculations are performed using column-major ordering.
- * However, as the actual ordering makes no difference mathematically and
- * most people are used to thinking about matrices in row-major order, the
- * three.js documentation shows matrices in row-major order. Just bear in
- * mind that if you are reading the source code, you'll have to take the
- * transpose of any matrices outlined here to make sense of the calculations.
- */class Matrix3{/**
-	 * Constructs a new 3x3 matrix. The arguments are supposed to be
-	 * in row-major order. If no arguments are provided, the constructor
-	 * initializes the matrix as an identity matrix.
-	 *
-	 * @param {number} [n11] - 1-1 matrix element.
-	 * @param {number} [n12] - 1-2 matrix element.
-	 * @param {number} [n13] - 1-3 matrix element.
-	 * @param {number} [n21] - 2-1 matrix element.
-	 * @param {number} [n22] - 2-2 matrix element.
-	 * @param {number} [n23] - 2-3 matrix element.
-	 * @param {number} [n31] - 3-1 matrix element.
-	 * @param {number} [n32] - 3-2 matrix element.
-	 * @param {number} [n33] - 3-3 matrix element.
-	 */constructor(n11,n12,n13,n21,n22,n23,n31,n32,n33){/**
-		 * This flag can be used for type testing.
-		 *
-		 * @type {boolean}
-		 * @readonly
-		 * @default true
-		 */Matrix3.prototype.isMatrix3=true;/**
-		 * A column-major list of matrix values.
-		 *
-		 * @type {Array<number>}
-		 */this.elements=[1,0,0,0,1,0,0,0,1];if(n11!==undefined){this.set(n11,n12,n13,n21,n22,n23,n31,n32,n33);}}/**
-	 * Sets the elements of the matrix.The arguments are supposed to be
-	 * in row-major order.
-	 *
-	 * @param {number} [n11] - 1-1 matrix element.
-	 * @param {number} [n12] - 1-2 matrix element.
-	 * @param {number} [n13] - 1-3 matrix element.
-	 * @param {number} [n21] - 2-1 matrix element.
-	 * @param {number} [n22] - 2-2 matrix element.
-	 * @param {number} [n23] - 2-3 matrix element.
-	 * @param {number} [n31] - 3-1 matrix element.
-	 * @param {number} [n32] - 3-2 matrix element.
-	 * @param {number} [n33] - 3-3 matrix element.
-	 * @return {Matrix3} A reference to this matrix.
-	 */set(n11,n12,n13,n21,n22,n23,n31,n32,n33){const te=this.elements;te[0]=n11;te[1]=n21;te[2]=n31;te[3]=n12;te[4]=n22;te[5]=n32;te[6]=n13;te[7]=n23;te[8]=n33;return this;}/**
-	 * Sets this matrix to the 3x3 identity matrix.
-	 *
-	 * @return {Matrix3} A reference to this matrix.
-	 */identity(){this.set(1,0,0,0,1,0,0,0,1);return this;}/**
-	 * Copies the values of the given matrix to this instance.
-	 *
-	 * @param {Matrix3} m - The matrix to copy.
-	 * @return {Matrix3} A reference to this matrix.
-	 */copy(m){const te=this.elements;const me=m.elements;te[0]=me[0];te[1]=me[1];te[2]=me[2];te[3]=me[3];te[4]=me[4];te[5]=me[5];te[6]=me[6];te[7]=me[7];te[8]=me[8];return this;}/**
-	 * Extracts the basis of this matrix into the three axis vectors provided.
-	 *
-	 * @param {Vector3} xAxis - The basis's x axis.
-	 * @param {Vector3} yAxis - The basis's y axis.
-	 * @param {Vector3} zAxis - The basis's z axis.
-	 * @return {Matrix3} A reference to this matrix.
-	 */extractBasis(xAxis,yAxis,zAxis){xAxis.setFromMatrix3Column(this,0);yAxis.setFromMatrix3Column(this,1);zAxis.setFromMatrix3Column(this,2);return this;}/**
-	 * Set this matrix to the upper 3x3 matrix of the given 4x4 matrix.
-	 *
-	 * @param {Matrix4} m - The 4x4 matrix.
-	 * @return {Matrix3} A reference to this matrix.
-	 */setFromMatrix4(m){const me=m.elements;this.set(me[0],me[4],me[8],me[1],me[5],me[9],me[2],me[6],me[10]);return this;}/**
-	 * Post-multiplies this matrix by the given 3x3 matrix.
-	 *
-	 * @param {Matrix3} m - The matrix to multiply with.
-	 * @return {Matrix3} A reference to this matrix.
-	 */multiply(m){return this.multiplyMatrices(this,m);}/**
-	 * Pre-multiplies this matrix by the given 3x3 matrix.
-	 *
-	 * @param {Matrix3} m - The matrix to multiply with.
-	 * @return {Matrix3} A reference to this matrix.
-	 */premultiply(m){return this.multiplyMatrices(m,this);}/**
-	 * Multiples the given 3x3 matrices and stores the result
-	 * in this matrix.
-	 *
-	 * @param {Matrix3} a - The first matrix.
-	 * @param {Matrix3} b - The second matrix.
-	 * @return {Matrix3} A reference to this matrix.
-	 */multiplyMatrices(a,b){const ae=a.elements;const be=b.elements;const te=this.elements;const a11=ae[0],a12=ae[3],a13=ae[6];const a21=ae[1],a22=ae[4],a23=ae[7];const a31=ae[2],a32=ae[5],a33=ae[8];const b11=be[0],b12=be[3],b13=be[6];const b21=be[1],b22=be[4],b23=be[7];const b31=be[2],b32=be[5],b33=be[8];te[0]=a11*b11+a12*b21+a13*b31;te[3]=a11*b12+a12*b22+a13*b32;te[6]=a11*b13+a12*b23+a13*b33;te[1]=a21*b11+a22*b21+a23*b31;te[4]=a21*b12+a22*b22+a23*b32;te[7]=a21*b13+a22*b23+a23*b33;te[2]=a31*b11+a32*b21+a33*b31;te[5]=a31*b12+a32*b22+a33*b32;te[8]=a31*b13+a32*b23+a33*b33;return this;}/**
-	 * Multiplies every component of the matrix by the given scalar.
-	 *
-	 * @param {number} s - The scalar.
-	 * @return {Matrix3} A reference to this matrix.
-	 */multiplyScalar(s){const te=this.elements;te[0]*=s;te[3]*=s;te[6]*=s;te[1]*=s;te[4]*=s;te[7]*=s;te[2]*=s;te[5]*=s;te[8]*=s;return this;}/**
-	 * Computes and returns the determinant of this matrix.
-	 *
-	 * @return {number} The determinant.
-	 */determinant(){const te=this.elements;const a=te[0],b=te[1],c=te[2],d=te[3],e=te[4],f=te[5],g=te[6],h=te[7],i=te[8];return a*e*i-a*f*h-b*d*i+b*f*g+c*d*h-c*e*g;}/**
-	 * Inverts this matrix, using the [analytic method]{@link https://en.wikipedia.org/wiki/Invertible_matrix#Analytic_solution}.
-	 * You can not invert with a determinant of zero. If you attempt this, the method produces
-	 * a zero matrix instead.
-	 *
-	 * @return {Matrix3} A reference to this matrix.
-	 */invert(){const te=this.elements,n11=te[0],n21=te[1],n31=te[2],n12=te[3],n22=te[4],n32=te[5],n13=te[6],n23=te[7],n33=te[8],t11=n33*n22-n32*n23,t12=n32*n13-n33*n12,t13=n23*n12-n22*n13,det=n11*t11+n21*t12+n31*t13;if(det===0)return this.set(0,0,0,0,0,0,0,0,0);const detInv=1/det;te[0]=t11*detInv;te[1]=(n31*n23-n33*n21)*detInv;te[2]=(n32*n21-n31*n22)*detInv;te[3]=t12*detInv;te[4]=(n33*n11-n31*n13)*detInv;te[5]=(n31*n12-n32*n11)*detInv;te[6]=t13*detInv;te[7]=(n21*n13-n23*n11)*detInv;te[8]=(n22*n11-n21*n12)*detInv;return this;}/**
-	 * Transposes this matrix in place.
-	 *
-	 * @return {Matrix3} A reference to this matrix.
-	 */transpose(){let tmp;const m=this.elements;tmp=m[1];m[1]=m[3];m[3]=tmp;tmp=m[2];m[2]=m[6];m[6]=tmp;tmp=m[5];m[5]=m[7];m[7]=tmp;return this;}/**
-	 * Computes the normal matrix which is the inverse transpose of the upper
-	 * left 3x3 portion of the given 4x4 matrix.
-	 *
-	 * @param {Matrix4} matrix4 - The 4x4 matrix.
-	 * @return {Matrix3} A reference to this matrix.
-	 */getNormalMatrix(matrix4){return this.setFromMatrix4(matrix4).invert().transpose();}/**
-	 * Transposes this matrix into the supplied array, and returns itself unchanged.
-	 *
-	 * @param {Array<number>} r - An array to store the transposed matrix elements.
-	 * @return {Matrix3} A reference to this matrix.
-	 */transposeIntoArray(r){const m=this.elements;r[0]=m[0];r[1]=m[3];r[2]=m[6];r[3]=m[1];r[4]=m[4];r[5]=m[7];r[6]=m[2];r[7]=m[5];r[8]=m[8];return this;}/**
-	 * Sets the UV transform matrix from offset, repeat, rotation, and center.
-	 *
-	 * @param {number} tx - Offset x.
-	 * @param {number} ty - Offset y.
-	 * @param {number} sx - Repeat x.
-	 * @param {number} sy - Repeat y.
-	 * @param {number} rotation - Rotation, in radians. Positive values rotate counterclockwise.
-	 * @param {number} cx - Center x of rotation.
-	 * @param {number} cy - Center y of rotation
-	 * @return {Matrix3} A reference to this matrix.
-	 */setUvTransform(tx,ty,sx,sy,rotation,cx,cy){const c=Math.cos(rotation);const s=Math.sin(rotation);this.set(sx*c,sx*s,-sx*(c*cx+s*cy)+cx+tx,-sy*s,sy*c,-sy*(-s*cx+c*cy)+cy+ty,0,0,1);return this;}/**
-	 * Scales this matrix with the given scalar values.
-	 *
-	 * @param {number} sx - The amount to scale in the X axis.
-	 * @param {number} sy - The amount to scale in the Y axis.
-	 * @return {Matrix3} A reference to this matrix.
-	 */scale(sx,sy){this.premultiply(_m3.makeScale(sx,sy));return this;}/**
-	 * Rotates this matrix by the given angle.
-	 *
-	 * @param {number} theta - The rotation in radians.
-	 * @return {Matrix3} A reference to this matrix.
-	 */rotate(theta){this.premultiply(_m3.makeRotation(-theta));return this;}/**
-	 * Translates this matrix by the given scalar values.
-	 *
-	 * @param {number} tx - The amount to translate in the X axis.
-	 * @param {number} ty - The amount to translate in the Y axis.
-	 * @return {Matrix3} A reference to this matrix.
-	 */translate(tx,ty){this.premultiply(_m3.makeTranslation(tx,ty));return this;}// for 2D Transforms
-/**
-	 * Sets this matrix as a 2D translation transform.
-	 *
-	 * @param {number|Vector2} x - The amount to translate in the X axis or alternatively a translation vector.
-	 * @param {number} y - The amount to translate in the Y axis.
-	 * @return {Matrix3} A reference to this matrix.
-	 */makeTranslation(x,y){if(x.isVector2){this.set(1,0,x.x,0,1,x.y,0,0,1);}else{this.set(1,0,x,0,1,y,0,0,1);}return this;}/**
-	 * Sets this matrix as a 2D rotational transformation.
-	 *
-	 * @param {number} theta - The rotation in radians.
-	 * @return {Matrix3} A reference to this matrix.
-	 */makeRotation(theta){// counterclockwise
-const c=Math.cos(theta);const s=Math.sin(theta);this.set(c,-s,0,s,c,0,0,0,1);return this;}/**
-	 * Sets this matrix as a 2D scale transform.
-	 *
-	 * @param {number} x - The amount to scale in the X axis.
-	 * @param {number} y - The amount to scale in the Y axis.
-	 * @return {Matrix3} A reference to this matrix.
-	 */makeScale(x,y){this.set(x,0,0,0,y,0,0,0,1);return this;}/**
-	 * Returns `true` if this matrix is equal with the given one.
-	 *
-	 * @param {Matrix3} matrix - The matrix to test for equality.
-	 * @return {boolean} Whether this matrix is equal with the given one.
-	 */equals(matrix){const te=this.elements;const me=matrix.elements;for(let i=0;i<9;i++){if(te[i]!==me[i])return false;}return true;}/**
-	 * Sets the elements of the matrix from the given array.
-	 *
-	 * @param {Array<number>} array - The matrix elements in column-major order.
-	 * @param {number} [offset=0] - Index of the first element in the array.
-	 * @return {Matrix3} A reference to this matrix.
-	 */fromArray(array,offset=0){for(let i=0;i<9;i++){this.elements[i]=array[i+offset];}return this;}/**
-	 * Writes the elements of this matrix to the given array. If no array is provided,
-	 * the method returns a new instance.
-	 *
-	 * @param {Array<number>} [array=[]] - The target array holding the matrix elements in column-major order.
-	 * @param {number} [offset=0] - Index of the first element in the array.
-	 * @return {Array<number>} The matrix elements in column-major order.
-	 */toArray(array=[],offset=0){const te=this.elements;array[offset]=te[0];array[offset+1]=te[1];array[offset+2]=te[2];array[offset+3]=te[3];array[offset+4]=te[4];array[offset+5]=te[5];array[offset+6]=te[6];array[offset+7]=te[7];array[offset+8]=te[8];return array;}/**
-	 * Returns a matrix with copied values from this instance.
-	 *
-	 * @return {Matrix3} A clone of this instance.
-	 */clone(){return new this.constructor().fromArray(this.elements);}}const _m3=/*@__PURE__*/new Matrix3();function arrayNeedsUint32(array){// assumes larger values usually on last
-for(let i=array.length-1;i>=0;--i){if(array[i]>=65535)return true;// account for PRIMITIVE_RESTART_FIXED_INDEX, #24565
-}return false;}const TYPED_ARRAYS={Int8Array:Int8Array,Uint8Array:Uint8Array,Uint8ClampedArray:Uint8ClampedArray,Int16Array:Int16Array,Uint16Array:Uint16Array,Int32Array:Int32Array,Uint32Array:Uint32Array,Float32Array:Float32Array,Float64Array:Float64Array};function getTypedArray(type,buffer){return new TYPED_ARRAYS[type](buffer);}function createElementNS(name){return document.createElementNS('http://www.w3.org/1999/xhtml',name);}function createCanvasElement(){const canvas=createElementNS('canvas');canvas.style.display='block';return canvas;}const _cache={};function warnOnce(message){if(message in _cache)return;_cache[message]=true;console.warn(message);}function probeAsync(gl,sync,interval){return new Promise(function(resolve,reject){function probe(){switch(gl.clientWaitSync(sync,gl.SYNC_FLUSH_COMMANDS_BIT,0)){case gl.WAIT_FAILED:reject();break;case gl.TIMEOUT_EXPIRED:setTimeout(probe,interval);break;default:resolve();}}setTimeout(probe,interval);});}function toNormalizedProjectionMatrix(projectionMatrix){const m=projectionMatrix.elements;// Convert [-1, 1] to [0, 1] projection matrix
-m[2]=0.5*m[2]+0.5*m[3];m[6]=0.5*m[6]+0.5*m[7];m[10]=0.5*m[10]+0.5*m[11];m[14]=0.5*m[14]+0.5*m[15];}function toReversedProjectionMatrix(projectionMatrix){const m=projectionMatrix.elements;const isPerspectiveMatrix=m[11]===-1;// Reverse [0, 1] projection matrix
-if(isPerspectiveMatrix){m[10]=-m[10]-1;m[14]=-m[14];}else{m[10]=-m[10];m[14]=-m[14]+1;}}const LINEAR_REC709_TO_XYZ=/*@__PURE__*/new Matrix3().set(0.4123908,0.3575843,0.1804808,0.2126390,0.7151687,0.0721923,0.0193308,0.1191948,0.9505322);const XYZ_TO_LINEAR_REC709=/*@__PURE__*/new Matrix3().set(3.2409699,-1.5373832,-0.4986108,-0.9692436,1.8759675,0.0415551,0.0556301,-0.203977,1.0569715);function createColorManagement(){const ColorManagement={enabled:true,workingColorSpace:LinearSRGBColorSpace,/**
-		 * Implementations of supported color spaces.
-		 *
-		 * Required:
-		 *	- primaries: chromaticity coordinates [ rx ry gx gy bx by ]
-		 *	- whitePoint: reference white [ x y ]
-		 *	- transfer: transfer function (pre-defined)
-		 *	- toXYZ: Matrix3 RGB to XYZ transform
-		 *	- fromXYZ: Matrix3 XYZ to RGB transform
-		 *	- luminanceCoefficients: RGB luminance coefficients
-		 *
-		 * Optional:
-		 *  - outputColorSpaceConfig: { drawingBufferColorSpace: ColorSpace }
-		 *  - workingColorSpaceConfig: { unpackColorSpace: ColorSpace }
-		 *
-		 * Reference:
-		 * - https://www.russellcottrell.com/photo/matrixCalculator.htm
-		 */spaces:{},convert:function(color,sourceColorSpace,targetColorSpace){if(this.enabled===false||sourceColorSpace===targetColorSpace||!sourceColorSpace||!targetColorSpace){return color;}if(this.spaces[sourceColorSpace].transfer===SRGBTransfer){color.r=SRGBToLinear(color.r);color.g=SRGBToLinear(color.g);color.b=SRGBToLinear(color.b);}if(this.spaces[sourceColorSpace].primaries!==this.spaces[targetColorSpace].primaries){color.applyMatrix3(this.spaces[sourceColorSpace].toXYZ);color.applyMatrix3(this.spaces[targetColorSpace].fromXYZ);}if(this.spaces[targetColorSpace].transfer===SRGBTransfer){color.r=LinearToSRGB(color.r);color.g=LinearToSRGB(color.g);color.b=LinearToSRGB(color.b);}return color;},fromWorkingColorSpace:function(color,targetColorSpace){return this.convert(color,this.workingColorSpace,targetColorSpace);},toWorkingColorSpace:function(color,sourceColorSpace){return this.convert(color,sourceColorSpace,this.workingColorSpace);},getPrimaries:function(colorSpace){return this.spaces[colorSpace].primaries;},getTransfer:function(colorSpace){if(colorSpace===NoColorSpace)return LinearTransfer;return this.spaces[colorSpace].transfer;},getLuminanceCoefficients:function(target,colorSpace=this.workingColorSpace){return target.fromArray(this.spaces[colorSpace].luminanceCoefficients);},define:function(colorSpaces){Object.assign(this.spaces,colorSpaces);},// Internal APIs
-_getMatrix:function(targetMatrix,sourceColorSpace,targetColorSpace){return targetMatrix.copy(this.spaces[sourceColorSpace].toXYZ).multiply(this.spaces[targetColorSpace].fromXYZ);},_getDrawingBufferColorSpace:function(colorSpace){return this.spaces[colorSpace].outputColorSpaceConfig.drawingBufferColorSpace;},_getUnpackColorSpace:function(colorSpace=this.workingColorSpace){return this.spaces[colorSpace].workingColorSpaceConfig.unpackColorSpace;}};/******************************************************************************
-	 * sRGB definitions
-	 */const REC709_PRIMARIES=[0.640,0.330,0.300,0.600,0.150,0.060];const REC709_LUMINANCE_COEFFICIENTS=[0.2126,0.7152,0.0722];const D65=[0.3127,0.3290];ColorManagement.define({[LinearSRGBColorSpace]:{primaries:REC709_PRIMARIES,whitePoint:D65,transfer:LinearTransfer,toXYZ:LINEAR_REC709_TO_XYZ,fromXYZ:XYZ_TO_LINEAR_REC709,luminanceCoefficients:REC709_LUMINANCE_COEFFICIENTS,workingColorSpaceConfig:{unpackColorSpace:SRGBColorSpace},outputColorSpaceConfig:{drawingBufferColorSpace:SRGBColorSpace}},[SRGBColorSpace]:{primaries:REC709_PRIMARIES,whitePoint:D65,transfer:SRGBTransfer,toXYZ:LINEAR_REC709_TO_XYZ,fromXYZ:XYZ_TO_LINEAR_REC709,luminanceCoefficients:REC709_LUMINANCE_COEFFICIENTS,outputColorSpaceConfig:{drawingBufferColorSpace:SRGBColorSpace}}});return ColorManagement;}const ColorManagement=/*@__PURE__*/createColorManagement();function SRGBToLinear(c){return c<0.04045?c*0.0773993808:Math.pow(c*0.9478672986+0.0521327014,2.4);}function LinearToSRGB(c){return c<0.0031308?c*12.92:1.055*Math.pow(c,0.41666)-0.055;}let _canvas;/**
- * A class containing utility functions for images.
- *
- * @hideconstructor
- */class ImageUtils{/**
-	 * Returns a data URI containing a representation of the given image.
-	 *
-	 * @param {(HTMLImageElement|HTMLCanvasElement)} image - The image object.
-	 * @param {string} [type='image/png'] - Indicates the image format.
-	 * @return {string} The data URI.
-	 */static getDataURL(image,type='image/png'){if(/^data:/i.test(image.src)){return image.src;}if(typeof HTMLCanvasElement==='undefined'){return image.src;}let canvas;if(image instanceof HTMLCanvasElement){canvas=image;}else{if(_canvas===undefined)_canvas=createElementNS('canvas');_canvas.width=image.width;_canvas.height=image.height;const context=_canvas.getContext('2d');if(image instanceof ImageData){context.putImageData(image,0,0);}else{context.drawImage(image,0,0,image.width,image.height);}canvas=_canvas;}return canvas.toDataURL(type);}/**
-	 * Converts the given sRGB image data to linear color space.
-	 *
-	 * @param {(HTMLImageElement|HTMLCanvasElement|ImageBitmap|Object)} image - The image object.
-	 * @return {HTMLCanvasElement|Object} The converted image.
-	 */static sRGBToLinear(image){if(typeof HTMLImageElement!=='undefined'&&image instanceof HTMLImageElement||typeof HTMLCanvasElement!=='undefined'&&image instanceof HTMLCanvasElement||typeof ImageBitmap!=='undefined'&&image instanceof ImageBitmap){const canvas=createElementNS('canvas');canvas.width=image.width;canvas.height=image.height;const context=canvas.getContext('2d');context.drawImage(image,0,0,image.width,image.height);const imageData=context.getImageData(0,0,image.width,image.height);const data=imageData.data;for(let i=0;i<data.length;i++){data[i]=SRGBToLinear(data[i]/255)*255;}context.putImageData(imageData,0,0);return canvas;}else if(image.data){const data=image.data.slice(0);for(let i=0;i<data.length;i++){if(data instanceof Uint8Array||data instanceof Uint8ClampedArray){data[i]=Math.floor(SRGBToLinear(data[i]/255)*255);}else{// assuming float
-data[i]=SRGBToLinear(data[i]);}}return{data:data,width:image.width,height:image.height};}else{console.warn('THREE.ImageUtils.sRGBToLinear(): Unsupported image type. No color space conversion applied.');return image;}}}let _sourceId=0;/**
- * Represents the data source of a texture.
- *
- * The main purpose of this class is to decouple the data definition from the texture
- * definition so the same data can be used with multiple texture instances.
- */class Source{/**
-	 * Constructs a new video texture.
-	 *
-	 * @param {any} [data=null] - The data definition of a texture.
-	 */constructor(data=null){/**
-		 * This flag can be used for type testing.
-		 *
-		 * @type {boolean}
-		 * @readonly
-		 * @default true
-		 */this.isSource=true;/**
-		 * The ID of the source.
-		 *
-		 * @name Source#id
-		 * @type {number}
-		 * @readonly
-		 */Object.defineProperty(this,'id',{value:_sourceId++});/**
-		 * The UUID of the source.
-		 *
-		 * @type {string}
-		 * @readonly
-		 */this.uuid=generateUUID();/**
-		 * The data definition of a texture.
-		 *
-		 * @type {any}
-		 */this.data=data;/**
-		 * This property is only relevant when {@link Source#needsUpdate} is set to `true` and
-		 * provides more control on how texture data should be processed. When `dataReady` is set
-		 * to `false`, the engine performs the memory allocation (if necessary) but does not transfer
-		 * the data into the GPU memory.
-		 *
-		 * @type {boolean}
-		 * @default true
-		 */this.dataReady=true;/**
-		 * This starts at `0` and counts how many times {@link Source#needsUpdate} is set to `true`.
-		 *
-		 * @type {number}
-		 * @readonly
-		 * @default 0
-		 */this.version=0;}/**
-	 * When the property is set to `true`, the engine allocates the memory
-	 * for the texture (if necessary) and triggers the actual texture upload
-	 * to the GPU next time the source is used.
-	 *
-	 * @type {boolean}
-	 * @default false
-	 * @param {boolean} value
-	 */set needsUpdate(value){if(value===true)this.version++;}/**
-	 * Serializes the source into JSON.
-	 *
-	 * @param {?(Object|string)} meta - An optional value holding meta information about the serialization.
-	 * @return {Object} A JSON object representing the serialized source.
-	 * @see {@link ObjectLoader#parse}
-	 */toJSON(meta){const isRootObject=meta===undefined||typeof meta==='string';if(!isRootObject&&meta.images[this.uuid]!==undefined){return meta.images[this.uuid];}const output={uuid:this.uuid,url:''};const data=this.data;if(data!==null){let url;if(Array.isArray(data)){// cube texture
-url=[];for(let i=0,l=data.length;i<l;i++){if(data[i].isDataTexture){url.push(serializeImage(data[i].image));}else{url.push(serializeImage(data[i]));}}}else{// texture
-url=serializeImage(data);}output.url=url;}if(!isRootObject){meta.images[this.uuid]=output;}return output;}}function serializeImage(image){if(typeof HTMLImageElement!=='undefined'&&image instanceof HTMLImageElement||typeof HTMLCanvasElement!=='undefined'&&image instanceof HTMLCanvasElement||typeof ImageBitmap!=='undefined'&&image instanceof ImageBitmap){// default images
-return ImageUtils.getDataURL(image);}else{if(image.data){// images of DataTexture
-return{data:Array.from(image.data),width:image.width,height:image.height,type:image.data.constructor.name};}else{console.warn('THREE.Texture: Unable to serialize Texture.');return{};}}}let _textureId=0;/**
- * Base class for all textures.
- *
- * Note: After the initial use of a texture, its dimensions, format, and type
- * cannot be changed. Instead, call {@link Texture#dispose} on the texture and instantiate a new one.
- *
- * @augments EventDispatcher
- */class Texture extends EventDispatcher{/**
-	 * Constructs a new texture.
-	 *
-	 * @param {?Object} [image=Texture.DEFAULT_IMAGE] - The image holding the texture data.
-	 * @param {number} [mapping=Texture.DEFAULT_MAPPING] - The texture mapping.
-	 * @param {number} [wrapS=ClampToEdgeWrapping] - The wrapS value.
-	 * @param {number} [wrapT=ClampToEdgeWrapping] - The wrapT value.
-	 * @param {number} [magFilter=LinearFilter] - The mag filter value.
-	 * @param {number} [minFilter=LinearMipmapLinearFilter] - The min filter value.
-	 * @param {number} [format=RGBAFormat] - The texture format.
-	 * @param {number} [type=UnsignedByteType] - The texture type.
-	 * @param {number} [anisotropy=Texture.DEFAULT_ANISOTROPY] - The anisotropy value.
-	 * @param {string} [colorSpace=NoColorSpace] - The color space.
-	 */constructor(image=Texture.DEFAULT_IMAGE,mapping=Texture.DEFAULT_MAPPING,wrapS=ClampToEdgeWrapping,wrapT=ClampToEdgeWrapping,magFilter=LinearFilter,minFilter=LinearMipmapLinearFilter,format=RGBAFormat,type=UnsignedByteType,anisotropy=Texture.DEFAULT_ANISOTROPY,colorSpace=NoColorSpace){super();/**
-		 * This flag can be used for type testing.
-		 *
-		 * @type {boolean}
-		 * @readonly
-		 * @default true
-		 */this.isTexture=true;/**
-		 * The ID of the texture.
-		 *
-		 * @name Texture#id
-		 * @type {number}
-		 * @readonly
-		 */Object.defineProperty(this,'id',{value:_textureId++});/**
-		 * The UUID of the material.
-		 *
-		 * @type {string}
-		 * @readonly
-		 */this.uuid=generateUUID();/**
-		 * The name of the material.
-		 *
-		 * @type {string}
-		 */this.name='';/**
-		 * The data definition of a texture. A reference to the data source can be
-		 * shared across textures. This is often useful in context of spritesheets
-		 * where multiple textures render the same data but with different texture
-		 * transformations.
-		 *
-		 * @type {Source}
-		 */this.source=new Source(image);/**
-		 * An array holding user-defined mipmaps.
-		 *
-		 * @type {Array<Object>}
-		 */this.mipmaps=[];/**
-		 * How the texture is applied to the object. The value `UVMapping`
-		 * is the default, where texture or uv coordinates are used to apply the map.
-		 *
-		 * @type {(UVMapping|CubeReflectionMapping|CubeRefractionMapping|EquirectangularReflectionMapping|EquirectangularRefractionMapping|CubeUVReflectionMapping)}
-		 * @default UVMapping
-		*/this.mapping=mapping;/**
-		 * Lets you select the uv attribute to map the texture to. `0` for `uv`,
-		 * `1` for `uv1`, `2` for `uv2` and `3` for `uv3`.
-		 *
-		 * @type {number}
-		 * @default 0
-		 */this.channel=0;/**
-		 * This defines how the texture is wrapped horizontally and corresponds to
-		 * *U* in UV mapping.
-		 *
-		 * @type {(RepeatWrapping|ClampToEdgeWrapping|MirroredRepeatWrapping)}
-		 * @default ClampToEdgeWrapping
-		 */this.wrapS=wrapS;/**
-		 * This defines how the texture is wrapped horizontally and corresponds to
-		 * *V* in UV mapping.
-		 *
-		 * @type {(RepeatWrapping|ClampToEdgeWrapping|MirroredRepeatWrapping)}
-		 * @default ClampToEdgeWrapping
-		 */this.wrapT=wrapT;/**
-		 * How the texture is sampled when a texel covers more than one pixel.
-		 *
-		 * @type {(NearestFilter|NearestMipmapNearestFilter|NearestMipmapLinearFilter|LinearFilter|LinearMipmapNearestFilter|LinearMipmapLinearFilter)}
-		 * @default LinearFilter
-		 */this.magFilter=magFilter;/**
-		 * How the texture is sampled when a texel covers less than one pixel.
-		 *
-		 * @type {(NearestFilter|NearestMipmapNearestFilter|NearestMipmapLinearFilter|LinearFilter|LinearMipmapNearestFilter|LinearMipmapLinearFilter)}
-		 * @default LinearMipmapLinearFilter
-		 */this.minFilter=minFilter;/**
-		 * The number of samples taken along the axis through the pixel that has the
-		 * highest density of texels. By default, this value is `1`. A higher value
-		 * gives a less blurry result than a basic mipmap, at the cost of more
-		 * texture samples being used.
-		 *
-		 * @type {number}
-		 * @default 0
-		 */this.anisotropy=anisotropy;/**
-		 * The format of the texture.
-		 *
-		 * @type {number}
-		 * @default RGBAFormat
-		 */this.format=format;/**
-		 * The default internal format is derived from {@link Texture#format} and {@link Texture#type} and
-		 * defines how the texture data is going to be stored on the GPU.
-		 *
-		 * This property allows to overwrite the default format.
-		 *
-		 * @type {?string}
-		 * @default null
-		 */this.internalFormat=null;/**
-		 * The data type of the texture.
-		 *
-		 * @type {number}
-		 * @default UnsignedByteType
-		 */this.type=type;/**
-		 * How much a single repetition of the texture is offset from the beginning,
-		 * in each direction U and V. Typical range is `0.0` to `1.0`.
-		 *
-		 * @type {Vector2}
-		 * @default (0,0)
-		 */this.offset=new Vector2(0,0);/**
-		 * How many times the texture is repeated across the surface, in each
-		 * direction U and V. If repeat is set greater than `1` in either direction,
-		 * the corresponding wrap parameter should also be set to `RepeatWrapping`
-		 * or `MirroredRepeatWrapping` to achieve the desired tiling effect.
-		 *
-		 * @type {Vector2}
-		 * @default (1,1)
-		 */this.repeat=new Vector2(1,1);/**
-		 * The point around which rotation occurs. A value of `(0.5, 0.5)` corresponds
-		 * to the center of the texture. Default is `(0, 0)`, the lower left.
-		 *
-		 * @type {Vector2}
-		 * @default (0,0)
-		 */this.center=new Vector2(0,0);/**
-		 * How much the texture is rotated around the center point, in radians.
-		 * Positive values are counter-clockwise.
-		 *
-		 * @type {number}
-		 * @default 0
-		 */this.rotation=0;/**
-		 * Whether to update the texture's uv-transformation {@link Texture#matrix}
-		 * from the properties {@link Texture#offset}, {@link Texture#repeat},
-		 * {@link Texture#rotation}, and {@link Texture#center}.
-		 *
-		 * Set this to `false` if you are specifying the uv-transform matrix directly.
-		 *
-		 * @type {boolean}
-		 * @default true
-		 */this.matrixAutoUpdate=true;/**
-		 * The uv-transformation matrix of the texture.
-		 *
-		 * @type {Matrix3}
-		 */this.matrix=new Matrix3();/**
-		 * Whether to generate mipmaps (if possible) for a texture.
-		 *
-		 * Set this to `false` if you are creating mipmaps manually.
-		 *
-		 * @type {boolean}
-		 * @default true
-		 */this.generateMipmaps=true;/**
-		 * If set to `true`, the alpha channel, if present, is multiplied into the
-		 * color channels when the texture is uploaded to the GPU.
-		 *
-		 * Note that this property has no effect when using `ImageBitmap`. You need to
-		 * configure premultiply alpha on bitmap creation instead.
-		 *
-		 * @type {boolean}
-		 * @default false
-		 */this.premultiplyAlpha=false;/**
-		 * If set to `true`, the texture is flipped along the vertical axis when
-		 * uploaded to the GPU.
-		 *
-		 * Note that this property has no effect when using `ImageBitmap`. You need to
-		 * configure the flip on bitmap creation instead.
-		 *
-		 * @type {boolean}
-		 * @default true
-		 */this.flipY=true;/**
-		 * Specifies the alignment requirements for the start of each pixel row in memory.
-		 * The allowable values are `1` (byte-alignment), `2` (rows aligned to even-numbered bytes),
-		 * `4` (word-alignment), and `8` (rows start on double-word boundaries).
-		 *
-		 * @type {number}
-		 * @default 4
-		 */this.unpackAlignment=4;// valid values: 1, 2, 4, 8 (see http://www.khronos.org/opengles/sdk/docs/man/xhtml/glPixelStorei.xml)
-/**
-		 * Textures containing color data should be annotated with `SRGBColorSpace` or `LinearSRGBColorSpace`.
-		 *
-		 * @type {string}
-		 * @default NoColorSpace
-		 */this.colorSpace=colorSpace;/**
-		 * An object that can be used to store custom data about the texture. It
-		 * should not hold references to functions as these will not be cloned.
-		 *
-		 * @type {Object}
-		 */this.userData={};/**
-		 * This starts at `0` and counts how many times {@link Texture#needsUpdate} is set to `true`.
-		 *
-		 * @type {number}
-		 * @readonly
-		 * @default 0
-		 */this.version=0;/**
-		 * A callback function, called when the texture is updated (e.g., when
-		 * {@link Texture#needsUpdate} has been set to true and then the texture is used).
-		 *
-		 * @type {?Function}
-		 * @default null
-		 */this.onUpdate=null;/**
-		 * An optional back reference to the textures render target.
-		 *
-		 * @type {?(RenderTarget|WebGLRenderTarget)}
-		 * @default null
-		 */this.renderTarget=null;/**
-		 * Indicates whether a texture belongs to a render target or not.
-		 *
-		 * @type {boolean}
-		 * @readonly
-		 * @default false
-		 */this.isRenderTargetTexture=false;/**
-		 * Indicates whether this texture should be processed by `PMREMGenerator` or not
-		 * (only relevant for render target textures).
-		 *
-		 * @type {number}
-		 * @readonly
-		 * @default 0
-		 */this.pmremVersion=0;}/**
-	 * The image object holding the texture data.
-	 *
-	 * @type {?Object}
-	 */get image(){return this.source.data;}set image(value=null){this.source.data=value;}/**
-	 * Updates the texture transformation matrix from the from the properties {@link Texture#offset},
-	 * {@link Texture#repeat}, {@link Texture#rotation}, and {@link Texture#center}.
-	 */updateMatrix(){this.matrix.setUvTransform(this.offset.x,this.offset.y,this.repeat.x,this.repeat.y,this.rotation,this.center.x,this.center.y);}/**
-	 * Returns a new texture with copied values from this instance.
-	 *
-	 * @return {Texture} A clone of this instance.
-	 */clone(){return new this.constructor().copy(this);}/**
-	 * Copies the values of the given texture to this instance.
-	 *
-	 * @param {Texture} source - The texture to copy.
-	 * @return {Texture} A reference to this instance.
-	 */copy(source){this.name=source.name;this.source=source.source;this.mipmaps=source.mipmaps.slice(0);this.mapping=source.mapping;this.channel=source.channel;this.wrapS=source.wrapS;this.wrapT=source.wrapT;this.magFilter=source.magFilter;this.minFilter=source.minFilter;this.anisotropy=source.anisotropy;this.format=source.format;this.internalFormat=source.internalFormat;this.type=source.type;this.offset.copy(source.offset);this.repeat.copy(source.repeat);this.center.copy(source.center);this.rotation=source.rotation;this.matrixAutoUpdate=source.matrixAutoUpdate;this.matrix.copy(source.matrix);this.generateMipmaps=source.generateMipmaps;this.premultiplyAlpha=source.premultiplyAlpha;this.flipY=source.flipY;this.unpackAlignment=source.unpackAlignment;this.colorSpace=source.colorSpace;this.renderTarget=source.renderTarget;this.isRenderTargetTexture=source.isRenderTargetTexture;this.userData=JSON.parse(JSON.stringify(source.userData));this.needsUpdate=true;return this;}/**
-	 * Serializes the texture into JSON.
-	 *
-	 * @param {?(Object|string)} meta - An optional value holding meta information about the serialization.
-	 * @return {Object} A JSON object representing the serialized texture.
-	 * @see {@link ObjectLoader#parse}
-	 */toJSON(meta){const isRootObject=meta===undefined||typeof meta==='string';if(!isRootObject&&meta.textures[this.uuid]!==undefined){return meta.textures[this.uuid];}const output={metadata:{version:4.6,type:'Texture',generator:'Texture.toJSON'},uuid:this.uuid,name:this.name,image:this.source.toJSON(meta).uuid,mapping:this.mapping,channel:this.channel,repeat:[this.repeat.x,this.repeat.y],offset:[this.offset.x,this.offset.y],center:[this.center.x,this.center.y],rotation:this.rotation,wrap:[this.wrapS,this.wrapT],format:this.format,internalFormat:this.internalFormat,type:this.type,colorSpace:this.colorSpace,minFilter:this.minFilter,magFilter:this.magFilter,anisotropy:this.anisotropy,flipY:this.flipY,generateMipmaps:this.generateMipmaps,premultiplyAlpha:this.premultiplyAlpha,unpackAlignment:this.unpackAlignment};if(Object.keys(this.userData).length>0)output.userData=this.userData;if(!isRootObject){meta.textures[this.uuid]=output;}return output;}/**
-	 * Frees the GPU-related resources allocated by this instance. Call this
-	 * method whenever this instance is no longer used in your app.
-	 *
-	 * @fires Texture#dispose
-	 */dispose(){/**
-		 * Fires when the texture has been disposed of.
-		 *
-		 * @event Texture#dispose
-		 * @type {Object}
-		 */this.dispatchEvent({type:'dispose'});}/**
-	 * Transforms the given uv vector with the textures uv transformation matrix.
-	 *
-	 * @param {Vector2} uv - The uv vector.
-	 * @return {Vector2} The transformed uv vector.
-	 */transformUv(uv){if(this.mapping!==UVMapping)return uv;uv.applyMatrix3(this.matrix);if(uv.x<0||uv.x>1){switch(this.wrapS){case RepeatWrapping:uv.x=uv.x-Math.floor(uv.x);break;case ClampToEdgeWrapping:uv.x=uv.x<0?0:1;break;case MirroredRepeatWrapping:if(Math.abs(Math.floor(uv.x)%2)===1){uv.x=Math.ceil(uv.x)-uv.x;}else{uv.x=uv.x-Math.floor(uv.x);}break;}}if(uv.y<0||uv.y>1){switch(this.wrapT){case RepeatWrapping:uv.y=uv.y-Math.floor(uv.y);break;case ClampToEdgeWrapping:uv.y=uv.y<0?0:1;break;case MirroredRepeatWrapping:if(Math.abs(Math.floor(uv.y)%2)===1){uv.y=Math.ceil(uv.y)-uv.y;}else{uv.y=uv.y-Math.floor(uv.y);}break;}}if(this.flipY){uv.y=1-uv.y;}return uv;}/**
-	 * Setting this property to `true` indicates the engine the texture
-	 * must be updated in the next render. This triggers a texture upload
-	 * to the GPU and ensures correct texture parameter configuration.
-	 *
-	 * @type {boolean}
-	 * @default false
-	 * @param {boolean} value
-	 */set needsUpdate(value){if(value===true){this.version++;this.source.needsUpdate=true;}}/**
-	 * Setting this property to `true` indicates the engine the PMREM
-	 * must be regenerated.
-	 *
-	 * @type {boolean}
-	 * @default false
-	 * @param {boolean} value
-	 */set needsPMREMUpdate(value){if(value===true){this.pmremVersion++;}}}/**
- * The default image for all textures.
- *
- * @static
- * @type {?Image}
- * @default null
- */Texture.DEFAULT_IMAGE=null;/**
- * The default mapping for all textures.
- *
- * @static
- * @type {number}
- * @default UVMapping
- */Texture.DEFAULT_MAPPING=UVMapping;/**
- * The default anisotropy value for all textures.
- *
- * @static
- * @type {number}
- * @default 1
- */Texture.DEFAULT_ANISOTROPY=1;/**
- * Class representing a 4D vector. A 4D vector is an ordered quadruplet of numbers
- * (labeled x, y, z and w), which can be used to represent a number of things, such as:
- *
- * - A point in 4D space.
- * - A direction and length in 4D space. In three.js the length will
- * always be the Euclidean distance(straight-line distance) from `(0, 0, 0, 0)` to `(x, y, z, w)`
- * and the direction is also measured from `(0, 0, 0, 0)` towards `(x, y, z, w)`.
- * - Any arbitrary ordered quadruplet of numbers.
- *
- * There are other things a 4D vector can be used to represent, however these
- * are the most common uses in *three.js*.
- *
- * Iterating through a vector instance will yield its components `(x, y, z, w)` in
- * the corresponding order.
- * ```js
- * const a = new THREE.Vector4( 0, 1, 0, 0 );
- *
- * //no arguments; will be initialised to (0, 0, 0, 1)
- * const b = new THREE.Vector4( );
- *
- * const d = a.dot( b );
- * ```
- */class Vector4{/**
-	 * Constructs a new 4D vector.
-	 *
-	 * @param {number} [x=0] - The x value of this vector.
-	 * @param {number} [y=0] - The y value of this vector.
-	 * @param {number} [z=0] - The z value of this vector.
-	 * @param {number} [w=1] - The w value of this vector.
-	 */constructor(x=0,y=0,z=0,w=1){/**
-		 * This flag can be used for type testing.
-		 *
-		 * @type {boolean}
-		 * @readonly
-		 * @default true
-		 */Vector4.prototype.isVector4=true;/**
-		 * The x value of this vector.
-		 *
-		 * @type {number}
-		 */this.x=x;/**
-		 * The y value of this vector.
-		 *
-		 * @type {number}
-		 */this.y=y;/**
-		 * The z value of this vector.
-		 *
-		 * @type {number}
-		 */this.z=z;/**
-		 * The w value of this vector.
-		 *
-		 * @type {number}
-		 */this.w=w;}/**
-	 * Alias for {@link Vector4#z}.
-	 *
-	 * @type {number}
-	 */get width(){return this.z;}set width(value){this.z=value;}/**
-	 * Alias for {@link Vector4#w}.
-	 *
-	 * @type {number}
-	 */get height(){return this.w;}set height(value){this.w=value;}/**
-	 * Sets the vector components.
-	 *
-	 * @param {number} x - The value of the x component.
-	 * @param {number} y - The value of the y component.
-	 * @param {number} z - The value of the z component.
-	 * @param {number} w - The value of the w component.
-	 * @return {Vector4} A reference to this vector.
-	 */set(x,y,z,w){this.x=x;this.y=y;this.z=z;this.w=w;return this;}/**
-	 * Sets the vector components to the same value.
-	 *
-	 * @param {number} scalar - The value to set for all vector components.
-	 * @return {Vector4} A reference to this vector.
-	 */setScalar(scalar){this.x=scalar;this.y=scalar;this.z=scalar;this.w=scalar;return this;}/**
-	 * Sets the vector's x component to the given value
-	 *
-	 * @param {number} x - The value to set.
-	 * @return {Vector4} A reference to this vector.
-	 */setX(x){this.x=x;return this;}/**
-	 * Sets the vector's y component to the given value
-	 *
-	 * @param {number} y - The value to set.
-	 * @return {Vector4} A reference to this vector.
-	 */setY(y){this.y=y;return this;}/**
-	 * Sets the vector's z component to the given value
-	 *
-	 * @param {number} z - The value to set.
-	 * @return {Vector4} A reference to this vector.
-	 */setZ(z){this.z=z;return this;}/**
-	 * Sets the vector's w component to the given value
-	 *
-	 * @param {number} w - The value to set.
-	 * @return {Vector4} A reference to this vector.
-	 */setW(w){this.w=w;return this;}/**
-	 * Allows to set a vector component with an index.
-	 *
-	 * @param {number} index - The component index. `0` equals to x, `1` equals to y,
-	 * `2` equals to z, `3` equals to w.
-	 * @param {number} value - The value to set.
-	 * @return {Vector4} A reference to this vector.
-	 */setComponent(index,value){switch(index){case 0:this.x=value;break;case 1:this.y=value;break;case 2:this.z=value;break;case 3:this.w=value;break;default:throw new Error('index is out of range: '+index);}return this;}/**
-	 * Returns the value of the vector component which matches the given index.
-	 *
-	 * @param {number} index - The component index. `0` equals to x, `1` equals to y,
-	 * `2` equals to z, `3` equals to w.
-	 * @return {number} A vector component value.
-	 */getComponent(index){switch(index){case 0:return this.x;case 1:return this.y;case 2:return this.z;case 3:return this.w;default:throw new Error('index is out of range: '+index);}}/**
-	 * Returns a new vector with copied values from this instance.
-	 *
-	 * @return {Vector4} A clone of this instance.
-	 */clone(){return new this.constructor(this.x,this.y,this.z,this.w);}/**
-	 * Copies the values of the given vector to this instance.
-	 *
-	 * @param {Vector3|Vector4} v - The vector to copy.
-	 * @return {Vector4} A reference to this vector.
-	 */copy(v){this.x=v.x;this.y=v.y;this.z=v.z;this.w=v.w!==undefined?v.w:1;return this;}/**
-	 * Adds the given vector to this instance.
-	 *
-	 * @param {Vector4} v - The vector to add.
-	 * @return {Vector4} A reference to this vector.
-	 */add(v){this.x+=v.x;this.y+=v.y;this.z+=v.z;this.w+=v.w;return this;}/**
-	 * Adds the given scalar value to all components of this instance.
-	 *
-	 * @param {number} s - The scalar to add.
-	 * @return {Vector4} A reference to this vector.
-	 */addScalar(s){this.x+=s;this.y+=s;this.z+=s;this.w+=s;return this;}/**
-	 * Adds the given vectors and stores the result in this instance.
-	 *
-	 * @param {Vector4} a - The first vector.
-	 * @param {Vector4} b - The second vector.
-	 * @return {Vector4} A reference to this vector.
-	 */addVectors(a,b){this.x=a.x+b.x;this.y=a.y+b.y;this.z=a.z+b.z;this.w=a.w+b.w;return this;}/**
-	 * Adds the given vector scaled by the given factor to this instance.
-	 *
-	 * @param {Vector4} v - The vector.
-	 * @param {number} s - The factor that scales `v`.
-	 * @return {Vector4} A reference to this vector.
-	 */addScaledVector(v,s){this.x+=v.x*s;this.y+=v.y*s;this.z+=v.z*s;this.w+=v.w*s;return this;}/**
-	 * Subtracts the given vector from this instance.
-	 *
-	 * @param {Vector4} v - The vector to subtract.
-	 * @return {Vector4} A reference to this vector.
-	 */sub(v){this.x-=v.x;this.y-=v.y;this.z-=v.z;this.w-=v.w;return this;}/**
-	 * Subtracts the given scalar value from all components of this instance.
-	 *
-	 * @param {number} s - The scalar to subtract.
-	 * @return {Vector4} A reference to this vector.
-	 */subScalar(s){this.x-=s;this.y-=s;this.z-=s;this.w-=s;return this;}/**
-	 * Subtracts the given vectors and stores the result in this instance.
-	 *
-	 * @param {Vector4} a - The first vector.
-	 * @param {Vector4} b - The second vector.
-	 * @return {Vector4} A reference to this vector.
-	 */subVectors(a,b){this.x=a.x-b.x;this.y=a.y-b.y;this.z=a.z-b.z;this.w=a.w-b.w;return this;}/**
-	 * Multiplies the given vector with this instance.
-	 *
-	 * @param {Vector4} v - The vector to multiply.
-	 * @return {Vector4} A reference to this vector.
-	 */multiply(v){this.x*=v.x;this.y*=v.y;this.z*=v.z;this.w*=v.w;return this;}/**
-	 * Multiplies the given scalar value with all components of this instance.
-	 *
-	 * @param {number} scalar - The scalar to multiply.
-	 * @return {Vector4} A reference to this vector.
-	 */multiplyScalar(scalar){this.x*=scalar;this.y*=scalar;this.z*=scalar;this.w*=scalar;return this;}/**
-	 * Multiplies this vector with the given 4x4 matrix.
-	 *
-	 * @param {Matrix4} m - The 4x4 matrix.
-	 * @return {Vector4} A reference to this vector.
-	 */applyMatrix4(m){const x=this.x,y=this.y,z=this.z,w=this.w;const e=m.elements;this.x=e[0]*x+e[4]*y+e[8]*z+e[12]*w;this.y=e[1]*x+e[5]*y+e[9]*z+e[13]*w;this.z=e[2]*x+e[6]*y+e[10]*z+e[14]*w;this.w=e[3]*x+e[7]*y+e[11]*z+e[15]*w;return this;}/**
-	 * Divides this instance by the given vector.
-	 *
-	 * @param {Vector4} v - The vector to divide.
-	 * @return {Vector4} A reference to this vector.
-	 */divide(v){this.x/=v.x;this.y/=v.y;this.z/=v.z;this.w/=v.w;return this;}/**
-	 * Divides this vector by the given scalar.
-	 *
-	 * @param {number} scalar - The scalar to divide.
-	 * @return {Vector4} A reference to this vector.
-	 */divideScalar(scalar){return this.multiplyScalar(1/scalar);}/**
-	 * Sets the x, y and z components of this
-	 * vector to the quaternion's axis and w to the angle.
-	 *
-	 * @param {Quaternion} q - The Quaternion to set.
-	 * @return {Vector4} A reference to this vector.
-	 */setAxisAngleFromQuaternion(q){// http://www.euclideanspace.com/maths/geometry/rotations/conversions/quaternionToAngle/index.htm
-// q is assumed to be normalized
-this.w=2*Math.acos(q.w);const s=Math.sqrt(1-q.w*q.w);if(s<0.0001){this.x=1;this.y=0;this.z=0;}else{this.x=q.x/s;this.y=q.y/s;this.z=q.z/s;}return this;}/**
-	 * Sets the x, y and z components of this
-	 * vector to the axis of rotation and w to the angle.
-	 *
-	 * @param {Matrix4} m - A 4x4 matrix of which the upper left 3x3 matrix is a pure rotation matrix.
-	 * @return {Vector4} A reference to this vector.
-	 */setAxisAngleFromRotationMatrix(m){// http://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToAngle/index.htm
-// assumes the upper 3x3 of m is a pure rotation matrix (i.e, unscaled)
-let angle,x,y,z;// variables for result
-const epsilon=0.01,// margin to allow for rounding errors
-epsilon2=0.1,// margin to distinguish between 0 and 180 degrees
-te=m.elements,m11=te[0],m12=te[4],m13=te[8],m21=te[1],m22=te[5],m23=te[9],m31=te[2],m32=te[6],m33=te[10];if(Math.abs(m12-m21)<epsilon&&Math.abs(m13-m31)<epsilon&&Math.abs(m23-m32)<epsilon){// singularity found
-// first check for identity matrix which must have +1 for all terms
-// in leading diagonal and zero in other terms
-if(Math.abs(m12+m21)<epsilon2&&Math.abs(m13+m31)<epsilon2&&Math.abs(m23+m32)<epsilon2&&Math.abs(m11+m22+m33-3)<epsilon2){// this singularity is identity matrix so angle = 0
-this.set(1,0,0,0);return this;// zero angle, arbitrary axis
-}// otherwise this singularity is angle = 180
-angle=Math.PI;const xx=(m11+1)/2;const yy=(m22+1)/2;const zz=(m33+1)/2;const xy=(m12+m21)/4;const xz=(m13+m31)/4;const yz=(m23+m32)/4;if(xx>yy&&xx>zz){// m11 is the largest diagonal term
-if(xx<epsilon){x=0;y=0.707106781;z=0.707106781;}else{x=Math.sqrt(xx);y=xy/x;z=xz/x;}}else if(yy>zz){// m22 is the largest diagonal term
-if(yy<epsilon){x=0.707106781;y=0;z=0.707106781;}else{y=Math.sqrt(yy);x=xy/y;z=yz/y;}}else{// m33 is the largest diagonal term so base result on this
-if(zz<epsilon){x=0.707106781;y=0.707106781;z=0;}else{z=Math.sqrt(zz);x=xz/z;y=yz/z;}}this.set(x,y,z,angle);return this;// return 180 deg rotation
-}// as we have reached here there are no singularities so we can handle normally
-let s=Math.sqrt((m32-m23)*(m32-m23)+(m13-m31)*(m13-m31)+(m21-m12)*(m21-m12));// used to normalize
-if(Math.abs(s)<0.001)s=1;// prevent divide by zero, should not happen if matrix is orthogonal and should be
-// caught by singularity test above, but I've left it in just in case
-this.x=(m32-m23)/s;this.y=(m13-m31)/s;this.z=(m21-m12)/s;this.w=Math.acos((m11+m22+m33-1)/2);return this;}/**
-	 * Sets the vector components to the position elements of the
-	 * given transformation matrix.
-	 *
-	 * @param {Matrix4} m - The 4x4 matrix.
-	 * @return {Vector4} A reference to this vector.
-	 */setFromMatrixPosition(m){const e=m.elements;this.x=e[12];this.y=e[13];this.z=e[14];this.w=e[15];return this;}/**
-	 * If this vector's x, y, z or w value is greater than the given vector's x, y, z or w
-	 * value, replace that value with the corresponding min value.
-	 *
-	 * @param {Vector4} v - The vector.
-	 * @return {Vector4} A reference to this vector.
-	 */min(v){this.x=Math.min(this.x,v.x);this.y=Math.min(this.y,v.y);this.z=Math.min(this.z,v.z);this.w=Math.min(this.w,v.w);return this;}/**
-	 * If this vector's x, y, z or w value is less than the given vector's x, y, z or w
-	 * value, replace that value with the corresponding max value.
-	 *
-	 * @param {Vector4} v - The vector.
-	 * @return {Vector4} A reference to this vector.
-	 */max(v){this.x=Math.max(this.x,v.x);this.y=Math.max(this.y,v.y);this.z=Math.max(this.z,v.z);this.w=Math.max(this.w,v.w);return this;}/**
-	 * If this vector's x, y, z or w value is greater than the max vector's x, y, z or w
-	 * value, it is replaced by the corresponding value.
-	 * If this vector's x, y, z or w value is less than the min vector's x, y, z or w value,
-	 * it is replaced by the corresponding value.
-	 *
-	 * @param {Vector4} min - The minimum x, y and z values.
-	 * @param {Vector4} max - The maximum x, y and z values in the desired range.
-	 * @return {Vector4} A reference to this vector.
-	 */clamp(min,max){// assumes min < max, componentwise
-this.x=clamp(this.x,min.x,max.x);this.y=clamp(this.y,min.y,max.y);this.z=clamp(this.z,min.z,max.z);this.w=clamp(this.w,min.w,max.w);return this;}/**
-	 * If this vector's x, y, z or w values are greater than the max value, they are
-	 * replaced by the max value.
-	 * If this vector's x, y, z or w values are less than the min value, they are
-	 * replaced by the min value.
-	 *
-	 * @param {number} minVal - The minimum value the components will be clamped to.
-	 * @param {number} maxVal - The maximum value the components will be clamped to.
-	 * @return {Vector4} A reference to this vector.
-	 */clampScalar(minVal,maxVal){this.x=clamp(this.x,minVal,maxVal);this.y=clamp(this.y,minVal,maxVal);this.z=clamp(this.z,minVal,maxVal);this.w=clamp(this.w,minVal,maxVal);return this;}/**
-	 * If this vector's length is greater than the max value, it is replaced by
-	 * the max value.
-	 * If this vector's length is less than the min value, it is replaced by the
-	 * min value.
-	 *
-	 * @param {number} min - The minimum value the vector length will be clamped to.
-	 * @param {number} max - The maximum value the vector length will be clamped to.
-	 * @return {Vector4} A reference to this vector.
-	 */clampLength(min,max){const length=this.length();return this.divideScalar(length||1).multiplyScalar(clamp(length,min,max));}/**
-	 * The components of this vector are rounded down to the nearest integer value.
-	 *
-	 * @return {Vector4} A reference to this vector.
-	 */floor(){this.x=Math.floor(this.x);this.y=Math.floor(this.y);this.z=Math.floor(this.z);this.w=Math.floor(this.w);return this;}/**
-	 * The components of this vector are rounded up to the nearest integer value.
-	 *
-	 * @return {Vector4} A reference to this vector.
-	 */ceil(){this.x=Math.ceil(this.x);this.y=Math.ceil(this.y);this.z=Math.ceil(this.z);this.w=Math.ceil(this.w);return this;}/**
-	 * The components of this vector are rounded to the nearest integer value
-	 *
-	 * @return {Vector4} A reference to this vector.
-	 */round(){this.x=Math.round(this.x);this.y=Math.round(this.y);this.z=Math.round(this.z);this.w=Math.round(this.w);return this;}/**
-	 * The components of this vector are rounded towards zero (up if negative,
-	 * down if positive) to an integer value.
-	 *
-	 * @return {Vector4} A reference to this vector.
-	 */roundToZero(){this.x=Math.trunc(this.x);this.y=Math.trunc(this.y);this.z=Math.trunc(this.z);this.w=Math.trunc(this.w);return this;}/**
-	 * Inverts this vector - i.e. sets x = -x, y = -y, z = -z, w = -w.
-	 *
-	 * @return {Vector4} A reference to this vector.
-	 */negate(){this.x=-this.x;this.y=-this.y;this.z=-this.z;this.w=-this.w;return this;}/**
-	 * Calculates the dot product of the given vector with this instance.
-	 *
-	 * @param {Vector4} v - The vector to compute the dot product with.
-	 * @return {number} The result of the dot product.
-	 */dot(v){return this.x*v.x+this.y*v.y+this.z*v.z+this.w*v.w;}/**
-	 * Computes the square of the Euclidean length (straight-line length) from
-	 * (0, 0, 0, 0) to (x, y, z, w). If you are comparing the lengths of vectors, you should
-	 * compare the length squared instead as it is slightly more efficient to calculate.
-	 *
-	 * @return {number} The square length of this vector.
-	 */lengthSq(){return this.x*this.x+this.y*this.y+this.z*this.z+this.w*this.w;}/**
-	 * Computes the  Euclidean length (straight-line length) from (0, 0, 0, 0) to (x, y, z, w).
-	 *
-	 * @return {number} The length of this vector.
-	 */length(){return Math.sqrt(this.x*this.x+this.y*this.y+this.z*this.z+this.w*this.w);}/**
-	 * Computes the Manhattan length of this vector.
-	 *
-	 * @return {number} The length of this vector.
-	 */manhattanLength(){return Math.abs(this.x)+Math.abs(this.y)+Math.abs(this.z)+Math.abs(this.w);}/**
-	 * Converts this vector to a unit vector - that is, sets it equal to a vector
-	 * with the same direction as this one, but with a vector length of `1`.
-	 *
-	 * @return {Vector4} A reference to this vector.
-	 */normalize(){return this.divideScalar(this.length()||1);}/**
-	 * Sets this vector to a vector with the same direction as this one, but
-	 * with the specified length.
-	 *
-	 * @param {number} length - The new length of this vector.
-	 * @return {Vector4} A reference to this vector.
-	 */setLength(length){return this.normalize().multiplyScalar(length);}/**
-	 * Linearly interpolates between the given vector and this instance, where
-	 * alpha is the percent distance along the line - alpha = 0 will be this
-	 * vector, and alpha = 1 will be the given one.
-	 *
-	 * @param {Vector4} v - The vector to interpolate towards.
-	 * @param {number} alpha - The interpolation factor, typically in the closed interval `[0, 1]`.
-	 * @return {Vector4} A reference to this vector.
-	 */lerp(v,alpha){this.x+=(v.x-this.x)*alpha;this.y+=(v.y-this.y)*alpha;this.z+=(v.z-this.z)*alpha;this.w+=(v.w-this.w)*alpha;return this;}/**
-	 * Linearly interpolates between the given vectors, where alpha is the percent
-	 * distance along the line - alpha = 0 will be first vector, and alpha = 1 will
-	 * be the second one. The result is stored in this instance.
-	 *
-	 * @param {Vector4} v1 - The first vector.
-	 * @param {Vector4} v2 - The second vector.
-	 * @param {number} alpha - The interpolation factor, typically in the closed interval `[0, 1]`.
-	 * @return {Vector4} A reference to this vector.
-	 */lerpVectors(v1,v2,alpha){this.x=v1.x+(v2.x-v1.x)*alpha;this.y=v1.y+(v2.y-v1.y)*alpha;this.z=v1.z+(v2.z-v1.z)*alpha;this.w=v1.w+(v2.w-v1.w)*alpha;return this;}/**
-	 * Returns `true` if this vector is equal with the given one.
-	 *
-	 * @param {Vector4} v - The vector to test for equality.
-	 * @return {boolean} Whether this vector is equal with the given one.
-	 */equals(v){return v.x===this.x&&v.y===this.y&&v.z===this.z&&v.w===this.w;}/**
-	 * Sets this vector's x value to be `array[ offset ]`, y value to be `array[ offset + 1 ]`,
-	 * z value to be `array[ offset + 2 ]`, w value to be `array[ offset + 3 ]`.
-	 *
-	 * @param {Array<number>} array - An array holding the vector component values.
-	 * @param {number} [offset=0] - The offset into the array.
-	 * @return {Vector4} A reference to this vector.
-	 */fromArray(array,offset=0){this.x=array[offset];this.y=array[offset+1];this.z=array[offset+2];this.w=array[offset+3];return this;}/**
-	 * Writes the components of this vector to the given array. If no array is provided,
-	 * the method returns a new instance.
-	 *
-	 * @param {Array<number>} [array=[]] - The target array holding the vector components.
-	 * @param {number} [offset=0] - Index of the first element in the array.
-	 * @return {Array<number>} The vector components.
-	 */toArray(array=[],offset=0){array[offset]=this.x;array[offset+1]=this.y;array[offset+2]=this.z;array[offset+3]=this.w;return array;}/**
-	 * Sets the components of this vector from the given buffer attribute.
-	 *
-	 * @param {BufferAttribute} attribute - The buffer attribute holding vector data.
-	 * @param {number} index - The index into the attribute.
-	 * @return {Vector4} A reference to this vector.
-	 */fromBufferAttribute(attribute,index){this.x=attribute.getX(index);this.y=attribute.getY(index);this.z=attribute.getZ(index);this.w=attribute.getW(index);return this;}/**
-	 * Sets each component of this vector to a pseudo-random value between `0` and
-	 * `1`, excluding `1`.
-	 *
-	 * @return {Vector4} A reference to this vector.
-	 */random(){this.x=Math.random();this.y=Math.random();this.z=Math.random();this.w=Math.random();return this;}*[Symbol.iterator](){yield this.x;yield this.y;yield this.z;yield this.w;}}/**
- * A render target is a buffer where the video card draws pixels for a scene
- * that is being rendered in the background. It is used in different effects,
- * such as applying postprocessing to a rendered image before displaying it
- * on the screen.
- *
- * @augments EventDispatcher
- */class RenderTarget extends EventDispatcher{/**
-	 * Render target options.
-	 *
-	 * @typedef {Object} RenderTarget~Options
-	 * @property {boolean} [generateMipmaps=false] - Whether to generate mipmaps or not.
-	 * @property {number} [magFilter=LinearFilter] - The mag filter.
-	 * @property {number} [minFilter=LinearFilter] - The min filter.
-	 * @property {number} [format=RGBAFormat] - The texture format.
-	 * @property {number} [type=UnsignedByteType] - The texture type.
-	 * @property {?string} [internalFormat=null] - The texture's internal format.
-	 * @property {number} [wrapS=ClampToEdgeWrapping] - The texture's uv wrapping mode.
-	 * @property {number} [wrapT=ClampToEdgeWrapping] - The texture's uv wrapping mode.
-	 * @property {number} [anisotropy=1] - The texture's anisotropy value.
-	 * @property {string} [colorSpace=NoColorSpace] - The texture's color space.
-	 * @property {boolean} [depthBuffer=true] - Whether to allocate a depth buffer or not.
-	 * @property {boolean} [stencilBuffer=false] - Whether to allocate a stencil buffer or not.
-	 * @property {boolean} [resolveDepthBuffer=true] - Whether to resolve the depth buffer or not.
-	 * @property {boolean} [resolveStencilBuffer=true] - Whether  to resolve the stencil buffer or not.
-	 * @property {?Texture} [depthTexture=null] - Reference to a depth texture.
-	 * @property {number} [samples=0] - The MSAA samples count.
-	 * @property {number} [count=1] - Defines the number of color attachments . Must be at least `1`.
-	 *//**
-	 * Constructs a new render target.
-	 *
-	 * @param {number} [width=1] - The width of the render target.
-	 * @param {number} [height=1] - The height of the render target.
-	 * @param {RenderTarget~Options} [options] - The configuration object.
-	 */constructor(width=1,height=1,options={}){super();/**
-		 * This flag can be used for type testing.
-		 *
-		 * @type {boolean}
-		 * @readonly
-		 * @default true
-		 */this.isRenderTarget=true;/**
-		 * The width of the render target.
-		 *
-		 * @type {number}
-		 * @default 1
-		 */this.width=width;/**
-		 * The height of the render target.
-		 *
-		 * @type {number}
-		 * @default 1
-		 */this.height=height;/**
-		 * The depth of the render target.
-		 *
-		 * @type {number}
-		 * @default 1
-		 */this.depth=1;/**
-		 * A rectangular area inside the render target's viewport. Fragments that are
-		 * outside the area will be discarded.
-		 *
-		 * @type {Vector4}
-		 * @default (0,0,width,height)
-		 */this.scissor=new Vector4(0,0,width,height);/**
-		 * Indicates whether the scissor test should be enabled when rendering into
-		 * this render target or not.
-		 *
-		 * @type {boolean}
-		 * @default false
-		 */this.scissorTest=false;/**
-		 * A rectangular area representing the render target's viewport.
-		 *
-		 * @type {Vector4}
-		 * @default (0,0,width,height)
-		 */this.viewport=new Vector4(0,0,width,height);const image={width:width,height:height,depth:1};options=Object.assign({generateMipmaps:false,internalFormat:null,minFilter:LinearFilter,depthBuffer:true,stencilBuffer:false,resolveDepthBuffer:true,resolveStencilBuffer:true,depthTexture:null,samples:0,count:1},options);const texture=new Texture(image,options.mapping,options.wrapS,options.wrapT,options.magFilter,options.minFilter,options.format,options.type,options.anisotropy,options.colorSpace);texture.flipY=false;texture.generateMipmaps=options.generateMipmaps;texture.internalFormat=options.internalFormat;/**
-		 * An array of textures. Each color attachment is represented as a separate texture.
-		 * Has at least a single entry for the default color attachment.
-		 *
-		 * @type {Array<Texture>}
-		 */this.textures=[];const count=options.count;for(let i=0;i<count;i++){this.textures[i]=texture.clone();this.textures[i].isRenderTargetTexture=true;this.textures[i].renderTarget=this;}/**
-		 * Whether to allocate a depth buffer or not.
-		 *
-		 * @type {boolean}
-		 * @default true
-		 */this.depthBuffer=options.depthBuffer;/**
-		 * Whether to allocate a stencil buffer or not.
-		 *
-		 * @type {boolean}
-		 * @default false
-		 */this.stencilBuffer=options.stencilBuffer;/**
-		 * Whether to resolve the depth buffer or not.
-		 *
-		 * @type {boolean}
-		 * @default true
-		 */this.resolveDepthBuffer=options.resolveDepthBuffer;/**
-		 * Whether to resolve the stencil buffer or not.
-		 *
-		 * @type {boolean}
-		 * @default true
-		 */this.resolveStencilBuffer=options.resolveStencilBuffer;this._depthTexture=options.depthTexture;/**
-		 * The number of MSAA samples.
-		 *
-		 * A value of `0` disables MSAA.
-		 *
-		 * @type {number}
-		 * @default 0
-		 */this.samples=options.samples;}/**
-	 * The texture representing the default color attachment.
-	 *
-	 * @type {Texture}
-	 */get texture(){return this.textures[0];}set texture(value){this.textures[0]=value;}set depthTexture(current){if(this._depthTexture!==null)this._depthTexture.renderTarget=null;if(current!==null)current.renderTarget=this;this._depthTexture=current;}/**
-	 * Instead of saving the depth in a renderbuffer, a texture
-	 * can be used instead which is useful for further processing
-	 * e.g. in context of post-processing.
-	 *
-	 * @type {?DepthTexture}
-	 * @default null
-	 */get depthTexture(){return this._depthTexture;}/**
-	 * Sets the size of this render target.
-	 *
-	 * @param {number} width - The width.
-	 * @param {number} height - The height.
-	 * @param {number} [depth=1] - The depth.
-	 */setSize(width,height,depth=1){if(this.width!==width||this.height!==height||this.depth!==depth){this.width=width;this.height=height;this.depth=depth;for(let i=0,il=this.textures.length;i<il;i++){this.textures[i].image.width=width;this.textures[i].image.height=height;this.textures[i].image.depth=depth;}this.dispose();}this.viewport.set(0,0,width,height);this.scissor.set(0,0,width,height);}/**
-	 * Returns a new render target with copied values from this instance.
-	 *
-	 * @return {RenderTarget} A clone of this instance.
-	 */clone(){return new this.constructor().copy(this);}/**
-	 * Copies the settings of the given render target. This is a structural copy so
-	 * no resources are shared between render targets after the copy. That includes
-	 * all MRT textures and the depth texture.
-	 *
-	 * @param {RenderTarget} source - The render target to copy.
-	 * @return {RenderTarget} A reference to this instance.
-	 */copy(source){this.width=source.width;this.height=source.height;this.depth=source.depth;this.scissor.copy(source.scissor);this.scissorTest=source.scissorTest;this.viewport.copy(source.viewport);this.textures.length=0;for(let i=0,il=source.textures.length;i<il;i++){this.textures[i]=source.textures[i].clone();this.textures[i].isRenderTargetTexture=true;this.textures[i].renderTarget=this;// ensure image object is not shared, see #20328
-const image=Object.assign({},source.textures[i].image);this.textures[i].source=new Source(image);}this.depthBuffer=source.depthBuffer;this.stencilBuffer=source.stencilBuffer;this.resolveDepthBuffer=source.resolveDepthBuffer;this.resolveStencilBuffer=source.resolveStencilBuffer;if(source.depthTexture!==null)this.depthTexture=source.depthTexture.clone();this.samples=source.samples;return this;}/**
-	 * Frees the GPU-related resources allocated by this instance. Call this
-	 * method whenever this instance is no longer used in your app.
-	 *
-	 * @fires RenderTarget#dispose
-	 */dispose(){this.dispatchEvent({type:'dispose'});}}/**
- * A render target used in context of {@link WebGLRenderer}.
- *
- * @augments RenderTarget
- */class WebGLRenderTarget extends RenderTarget{/**
-	 * Constructs a new 3D render target.
-	 *
-	 * @param {number} [width=1] - The width of the render target.
-	 * @param {number} [height=1] - The height of the render target.
-	 * @param {RenderTarget~Options} [options] - The configuration object.
-	 */constructor(width=1,height=1,options={}){super(width,height,options);/**
-		 * This flag can be used for type testing.
-		 *
-		 * @type {boolean}
-		 * @readonly
-		 * @default true
-		 */this.isWebGLRenderTarget=true;}}/**
- * Creates an array of textures directly from raw buffer data.
- *
- * @augments Texture
- */class DataArrayTexture extends Texture{/**
-	 * Constructs a new data array texture.
-	 *
-	 * @param {?TypedArray} [data=null] - The buffer data.
-	 * @param {number} [width=1] - The width of the texture.
-	 * @param {number} [height=1] - The height of the texture.
-	 * @param {number} [depth=1] - The depth of the texture.
-	 */constructor(data=null,width=1,height=1,depth=1){super(null);/**
-		 * This flag can be used for type testing.
-		 *
-		 * @type {boolean}
-		 * @readonly
-		 * @default true
-		 */this.isDataArrayTexture=true;/**
-		 * The image definition of a data texture.
-		 *
-		 * @type {{data:TypedArray,width:number,height:number,depth:number}}
-		 */this.image={data,width,height,depth};/**
-		 * How the texture is sampled when a texel covers more than one pixel.
-		 *
-		 * Overwritten and set to `NearestFilter` by default.
-		 *
-		 * @type {(NearestFilter|NearestMipmapNearestFilter|NearestMipmapLinearFilter|LinearFilter|LinearMipmapNearestFilter|LinearMipmapLinearFilter)}
-		 * @default NearestFilter
-		 */this.magFilter=NearestFilter;/**
-		 * How the texture is sampled when a texel covers less than one pixel.
-		 *
-		 * Overwritten and set to `NearestFilter` by default.
-		 *
-		 * @type {(NearestFilter|NearestMipmapNearestFilter|NearestMipmapLinearFilter|LinearFilter|LinearMipmapNearestFilter|LinearMipmapLinearFilter)}
-		 * @default NearestFilter
-		 */this.minFilter=NearestFilter;/**
-		 * This defines how the texture is wrapped in the depth and corresponds to
-		 * *W* in UVW mapping.
-		 *
-		 * @type {(RepeatWrapping|ClampToEdgeWrapping|MirroredRepeatWrapping)}
-		 * @default ClampToEdgeWrapping
-		 */this.wrapR=ClampToEdgeWrapping;/**
-		 * Whether to generate mipmaps (if possible) for a texture.
-		 *
-		 * Overwritten and set to `false` by default.
-		 *
-		 * @type {boolean}
-		 * @default false
-		 */this.generateMipmaps=false;/**
-		 * If set to `true`, the texture is flipped along the vertical axis when
-		 * uploaded to the GPU.
-		 *
-		 * Overwritten and set to `false` by default.
-		 *
-		 * @type {boolean}
-		 * @default false
-		 */this.flipY=false;/**
-		 * Specifies the alignment requirements for the start of each pixel row in memory.
-		 *
-		 * Overwritten and set to `1` by default.
-		 *
-		 * @type {boolean}
-		 * @default 1
-		 */this.unpackAlignment=1;/**
-		 * A set of all layers which need to be updated in the texture.
-		 *
-		 * @type {Set<number>}
-		 */this.layerUpdates=new Set();}/**
-	 * Describes that a specific layer of the texture needs to be updated.
-	 * Normally when {@link Texture#needsUpdate} is set to `true`, the
-	 * entire data texture array is sent to the GPU. Marking specific
-	 * layers will only transmit subsets of all mipmaps associated with a
-	 * specific depth in the array which is often much more performant.
-	 *
-	 * @param {number} layerIndex - The layer index that should be updated.
-	 */addLayerUpdate(layerIndex){this.layerUpdates.add(layerIndex);}/**
-	 * Resets the layer updates registry.
-	 */clearLayerUpdates(){this.layerUpdates.clear();}}/**
- * An array render target used in context of {@link WebGLRenderer}.
- *
- * @augments WebGLRenderTarget
- */class WebGLArrayRenderTarget extends WebGLRenderTarget{/**
-	 * Constructs a new array render target.
-	 *
-	 * @param {number} [width=1] - The width of the render target.
-	 * @param {number} [height=1] - The height of the render target.
-	 * @param {number} [depth=1] - The height of the render target.
-	 * @param {RenderTarget~Options} [options] - The configuration object.
-	 */constructor(width=1,height=1,depth=1,options={}){super(width,height,options);/**
-		 * This flag can be used for type testing.
-		 *
-		 * @type {boolean}
-		 * @readonly
-		 * @default true
-		 */this.isWebGLArrayRenderTarget=true;this.depth=depth;/**
-		 * Overwritten with a different texture type.
-		 *
-		 * @type {DataArrayTexture}
-		 */this.texture=new DataArrayTexture(null,width,height,depth);this.texture.isRenderTargetTexture=true;}}/**
- * Creates a three-dimensional texture from raw data, with parameters to
- * divide it into width, height, and depth.
- *
- * @augments Texture
- */class Data3DTexture extends Texture{/**
-	 * Constructs a new data array texture.
-	 *
-	 * @param {?TypedArray} [data=null] - The buffer data.
-	 * @param {number} [width=1] - The width of the texture.
-	 * @param {number} [height=1] - The height of the texture.
-	 * @param {number} [depth=1] - The depth of the texture.
-	 */constructor(data=null,width=1,height=1,depth=1){// We're going to add .setXXX() methods for setting properties later.
-// Users can still set in Data3DTexture directly.
-//
-//	const texture = new THREE.Data3DTexture( data, width, height, depth );
-// 	texture.anisotropy = 16;
-//
-// See #14839
-super(null);/**
-		 * This flag can be used for type testing.
-		 *
-		 * @type {boolean}
-		 * @readonly
-		 * @default true
-		 */this.isData3DTexture=true;/**
-		 * The image definition of a data texture.
-		 *
-		 * @type {{data:TypedArray,width:number,height:number,depth:number}}
-		 */this.image={data,width,height,depth};/**
-		 * How the texture is sampled when a texel covers more than one pixel.
-		 *
-		 * Overwritten and set to `NearestFilter` by default.
-		 *
-		 * @type {(NearestFilter|NearestMipmapNearestFilter|NearestMipmapLinearFilter|LinearFilter|LinearMipmapNearestFilter|LinearMipmapLinearFilter)}
-		 * @default NearestFilter
-		 */this.magFilter=NearestFilter;/**
-		 * How the texture is sampled when a texel covers less than one pixel.
-		 *
-		 * Overwritten and set to `NearestFilter` by default.
-		 *
-		 * @type {(NearestFilter|NearestMipmapNearestFilter|NearestMipmapLinearFilter|LinearFilter|LinearMipmapNearestFilter|LinearMipmapLinearFilter)}
-		 * @default NearestFilter
-		 */this.minFilter=NearestFilter;/**
-		 * This defines how the texture is wrapped in the depth and corresponds to
-		 * *W* in UVW mapping.
-		 *
-		 * @type {(RepeatWrapping|ClampToEdgeWrapping|MirroredRepeatWrapping)}
-		 * @default ClampToEdgeWrapping
-		 */this.wrapR=ClampToEdgeWrapping;/**
-		 * Whether to generate mipmaps (if possible) for a texture.
-		 *
-		 * Overwritten and set to `false` by default.
-		 *
-		 * @type {boolean}
-		 * @default false
-		 */this.generateMipmaps=false;/**
-		 * If set to `true`, the texture is flipped along the vertical axis when
-		 * uploaded to the GPU.
-		 *
-		 * Overwritten and set to `false` by default.
-		 *
-		 * @type {boolean}
-		 * @default false
-		 */this.flipY=false;/**
-		 * Specifies the alignment requirements for the start of each pixel row in memory.
-		 *
-		 * Overwritten and set to `1` by default.
-		 *
-		 * @type {boolean}
-		 * @default 1
-		 */this.unpackAlignment=1;}}/**
- * A 3D render target used in context of {@link WebGLRenderer}.
- *
- * @augments WebGLRenderTarget
- */class WebGL3DRenderTarget extends WebGLRenderTarget{/**
-	 * Constructs a new 3D render target.
-	 *
-	 * @param {number} [width=1] - The width of the render target.
-	 * @param {number} [height=1] - The height of the render target.
-	 * @param {number} [depth=1] - The height of the render target.
-	 * @param {RenderTarget~Options} [options] - The configuration object.
-	 */constructor(width=1,height=1,depth=1,options={}){super(width,height,options);/**
-		 * This flag can be used for type testing.
-		 *
-		 * @type {boolean}
-		 * @readonly
-		 * @default true
-		 */this.isWebGL3DRenderTarget=true;this.depth=depth;/**
-		 * Overwritten with a different texture type.
-		 *
-		 * @type {Data3DTexture}
-		 */this.texture=new Data3DTexture(null,width,height,depth);this.texture.isRenderTargetTexture=true;}}/**
  * Class for representing a Quaternion. Quaternions are used in three.js to represent rotations.
  *
  * Iterating through a vector instance will yield its components `(x, y, z, w)` in
@@ -35679,6 +34395,1340 @@ return Math.acos(clamp(theta,-1,1));}/**
 	 * @return {Vector3} A reference to this vector.
 	 */randomDirection(){// https://mathworld.wolfram.com/SpherePointPicking.html
 const theta=Math.random()*Math.PI*2;const u=Math.random()*2-1;const c=Math.sqrt(1-u*u);this.x=c*Math.cos(theta);this.y=u;this.z=c*Math.sin(theta);return this;}*[Symbol.iterator](){yield this.x;yield this.y;yield this.z;}}const _vector$c=/*@__PURE__*/new Vector3();const _quaternion$4=/*@__PURE__*/new Quaternion();/**
+ * Represents a 3x3 matrix.
+ *
+ * A Note on Row-Major and Column-Major Ordering:
+ *
+ * The constructor and {@link Matrix3#set} method take arguments in
+ * [row-major]{@link https://en.wikipedia.org/wiki/Row-_and_column-major_order#Column-major_order}
+ * order, while internally they are stored in the {@link Matrix3#elements} array in column-major order.
+ * This means that calling:
+ * ```js
+ * const m = new THREE.Matrix();
+ * m.set( 11, 12, 13,
+ *        21, 22, 23,
+ *        31, 32, 33 );
+ * ```
+ * will result in the elements array containing:
+ * ```js
+ * m.elements = [ 11, 21, 31,
+ *                12, 22, 32,
+ *                13, 23, 33 ];
+ * ```
+ * and internally all calculations are performed using column-major ordering.
+ * However, as the actual ordering makes no difference mathematically and
+ * most people are used to thinking about matrices in row-major order, the
+ * three.js documentation shows matrices in row-major order. Just bear in
+ * mind that if you are reading the source code, you'll have to take the
+ * transpose of any matrices outlined here to make sense of the calculations.
+ */class Matrix3{/**
+	 * Constructs a new 3x3 matrix. The arguments are supposed to be
+	 * in row-major order. If no arguments are provided, the constructor
+	 * initializes the matrix as an identity matrix.
+	 *
+	 * @param {number} [n11] - 1-1 matrix element.
+	 * @param {number} [n12] - 1-2 matrix element.
+	 * @param {number} [n13] - 1-3 matrix element.
+	 * @param {number} [n21] - 2-1 matrix element.
+	 * @param {number} [n22] - 2-2 matrix element.
+	 * @param {number} [n23] - 2-3 matrix element.
+	 * @param {number} [n31] - 3-1 matrix element.
+	 * @param {number} [n32] - 3-2 matrix element.
+	 * @param {number} [n33] - 3-3 matrix element.
+	 */constructor(n11,n12,n13,n21,n22,n23,n31,n32,n33){/**
+		 * This flag can be used for type testing.
+		 *
+		 * @type {boolean}
+		 * @readonly
+		 * @default true
+		 */Matrix3.prototype.isMatrix3=true;/**
+		 * A column-major list of matrix values.
+		 *
+		 * @type {Array<number>}
+		 */this.elements=[1,0,0,0,1,0,0,0,1];if(n11!==undefined){this.set(n11,n12,n13,n21,n22,n23,n31,n32,n33);}}/**
+	 * Sets the elements of the matrix.The arguments are supposed to be
+	 * in row-major order.
+	 *
+	 * @param {number} [n11] - 1-1 matrix element.
+	 * @param {number} [n12] - 1-2 matrix element.
+	 * @param {number} [n13] - 1-3 matrix element.
+	 * @param {number} [n21] - 2-1 matrix element.
+	 * @param {number} [n22] - 2-2 matrix element.
+	 * @param {number} [n23] - 2-3 matrix element.
+	 * @param {number} [n31] - 3-1 matrix element.
+	 * @param {number} [n32] - 3-2 matrix element.
+	 * @param {number} [n33] - 3-3 matrix element.
+	 * @return {Matrix3} A reference to this matrix.
+	 */set(n11,n12,n13,n21,n22,n23,n31,n32,n33){const te=this.elements;te[0]=n11;te[1]=n21;te[2]=n31;te[3]=n12;te[4]=n22;te[5]=n32;te[6]=n13;te[7]=n23;te[8]=n33;return this;}/**
+	 * Sets this matrix to the 3x3 identity matrix.
+	 *
+	 * @return {Matrix3} A reference to this matrix.
+	 */identity(){this.set(1,0,0,0,1,0,0,0,1);return this;}/**
+	 * Copies the values of the given matrix to this instance.
+	 *
+	 * @param {Matrix3} m - The matrix to copy.
+	 * @return {Matrix3} A reference to this matrix.
+	 */copy(m){const te=this.elements;const me=m.elements;te[0]=me[0];te[1]=me[1];te[2]=me[2];te[3]=me[3];te[4]=me[4];te[5]=me[5];te[6]=me[6];te[7]=me[7];te[8]=me[8];return this;}/**
+	 * Extracts the basis of this matrix into the three axis vectors provided.
+	 *
+	 * @param {Vector3} xAxis - The basis's x axis.
+	 * @param {Vector3} yAxis - The basis's y axis.
+	 * @param {Vector3} zAxis - The basis's z axis.
+	 * @return {Matrix3} A reference to this matrix.
+	 */extractBasis(xAxis,yAxis,zAxis){xAxis.setFromMatrix3Column(this,0);yAxis.setFromMatrix3Column(this,1);zAxis.setFromMatrix3Column(this,2);return this;}/**
+	 * Set this matrix to the upper 3x3 matrix of the given 4x4 matrix.
+	 *
+	 * @param {Matrix4} m - The 4x4 matrix.
+	 * @return {Matrix3} A reference to this matrix.
+	 */setFromMatrix4(m){const me=m.elements;this.set(me[0],me[4],me[8],me[1],me[5],me[9],me[2],me[6],me[10]);return this;}/**
+	 * Post-multiplies this matrix by the given 3x3 matrix.
+	 *
+	 * @param {Matrix3} m - The matrix to multiply with.
+	 * @return {Matrix3} A reference to this matrix.
+	 */multiply(m){return this.multiplyMatrices(this,m);}/**
+	 * Pre-multiplies this matrix by the given 3x3 matrix.
+	 *
+	 * @param {Matrix3} m - The matrix to multiply with.
+	 * @return {Matrix3} A reference to this matrix.
+	 */premultiply(m){return this.multiplyMatrices(m,this);}/**
+	 * Multiples the given 3x3 matrices and stores the result
+	 * in this matrix.
+	 *
+	 * @param {Matrix3} a - The first matrix.
+	 * @param {Matrix3} b - The second matrix.
+	 * @return {Matrix3} A reference to this matrix.
+	 */multiplyMatrices(a,b){const ae=a.elements;const be=b.elements;const te=this.elements;const a11=ae[0],a12=ae[3],a13=ae[6];const a21=ae[1],a22=ae[4],a23=ae[7];const a31=ae[2],a32=ae[5],a33=ae[8];const b11=be[0],b12=be[3],b13=be[6];const b21=be[1],b22=be[4],b23=be[7];const b31=be[2],b32=be[5],b33=be[8];te[0]=a11*b11+a12*b21+a13*b31;te[3]=a11*b12+a12*b22+a13*b32;te[6]=a11*b13+a12*b23+a13*b33;te[1]=a21*b11+a22*b21+a23*b31;te[4]=a21*b12+a22*b22+a23*b32;te[7]=a21*b13+a22*b23+a23*b33;te[2]=a31*b11+a32*b21+a33*b31;te[5]=a31*b12+a32*b22+a33*b32;te[8]=a31*b13+a32*b23+a33*b33;return this;}/**
+	 * Multiplies every component of the matrix by the given scalar.
+	 *
+	 * @param {number} s - The scalar.
+	 * @return {Matrix3} A reference to this matrix.
+	 */multiplyScalar(s){const te=this.elements;te[0]*=s;te[3]*=s;te[6]*=s;te[1]*=s;te[4]*=s;te[7]*=s;te[2]*=s;te[5]*=s;te[8]*=s;return this;}/**
+	 * Computes and returns the determinant of this matrix.
+	 *
+	 * @return {number} The determinant.
+	 */determinant(){const te=this.elements;const a=te[0],b=te[1],c=te[2],d=te[3],e=te[4],f=te[5],g=te[6],h=te[7],i=te[8];return a*e*i-a*f*h-b*d*i+b*f*g+c*d*h-c*e*g;}/**
+	 * Inverts this matrix, using the [analytic method]{@link https://en.wikipedia.org/wiki/Invertible_matrix#Analytic_solution}.
+	 * You can not invert with a determinant of zero. If you attempt this, the method produces
+	 * a zero matrix instead.
+	 *
+	 * @return {Matrix3} A reference to this matrix.
+	 */invert(){const te=this.elements,n11=te[0],n21=te[1],n31=te[2],n12=te[3],n22=te[4],n32=te[5],n13=te[6],n23=te[7],n33=te[8],t11=n33*n22-n32*n23,t12=n32*n13-n33*n12,t13=n23*n12-n22*n13,det=n11*t11+n21*t12+n31*t13;if(det===0)return this.set(0,0,0,0,0,0,0,0,0);const detInv=1/det;te[0]=t11*detInv;te[1]=(n31*n23-n33*n21)*detInv;te[2]=(n32*n21-n31*n22)*detInv;te[3]=t12*detInv;te[4]=(n33*n11-n31*n13)*detInv;te[5]=(n31*n12-n32*n11)*detInv;te[6]=t13*detInv;te[7]=(n21*n13-n23*n11)*detInv;te[8]=(n22*n11-n21*n12)*detInv;return this;}/**
+	 * Transposes this matrix in place.
+	 *
+	 * @return {Matrix3} A reference to this matrix.
+	 */transpose(){let tmp;const m=this.elements;tmp=m[1];m[1]=m[3];m[3]=tmp;tmp=m[2];m[2]=m[6];m[6]=tmp;tmp=m[5];m[5]=m[7];m[7]=tmp;return this;}/**
+	 * Computes the normal matrix which is the inverse transpose of the upper
+	 * left 3x3 portion of the given 4x4 matrix.
+	 *
+	 * @param {Matrix4} matrix4 - The 4x4 matrix.
+	 * @return {Matrix3} A reference to this matrix.
+	 */getNormalMatrix(matrix4){return this.setFromMatrix4(matrix4).invert().transpose();}/**
+	 * Transposes this matrix into the supplied array, and returns itself unchanged.
+	 *
+	 * @param {Array<number>} r - An array to store the transposed matrix elements.
+	 * @return {Matrix3} A reference to this matrix.
+	 */transposeIntoArray(r){const m=this.elements;r[0]=m[0];r[1]=m[3];r[2]=m[6];r[3]=m[1];r[4]=m[4];r[5]=m[7];r[6]=m[2];r[7]=m[5];r[8]=m[8];return this;}/**
+	 * Sets the UV transform matrix from offset, repeat, rotation, and center.
+	 *
+	 * @param {number} tx - Offset x.
+	 * @param {number} ty - Offset y.
+	 * @param {number} sx - Repeat x.
+	 * @param {number} sy - Repeat y.
+	 * @param {number} rotation - Rotation, in radians. Positive values rotate counterclockwise.
+	 * @param {number} cx - Center x of rotation.
+	 * @param {number} cy - Center y of rotation
+	 * @return {Matrix3} A reference to this matrix.
+	 */setUvTransform(tx,ty,sx,sy,rotation,cx,cy){const c=Math.cos(rotation);const s=Math.sin(rotation);this.set(sx*c,sx*s,-sx*(c*cx+s*cy)+cx+tx,-sy*s,sy*c,-sy*(-s*cx+c*cy)+cy+ty,0,0,1);return this;}/**
+	 * Scales this matrix with the given scalar values.
+	 *
+	 * @param {number} sx - The amount to scale in the X axis.
+	 * @param {number} sy - The amount to scale in the Y axis.
+	 * @return {Matrix3} A reference to this matrix.
+	 */scale(sx,sy){this.premultiply(_m3.makeScale(sx,sy));return this;}/**
+	 * Rotates this matrix by the given angle.
+	 *
+	 * @param {number} theta - The rotation in radians.
+	 * @return {Matrix3} A reference to this matrix.
+	 */rotate(theta){this.premultiply(_m3.makeRotation(-theta));return this;}/**
+	 * Translates this matrix by the given scalar values.
+	 *
+	 * @param {number} tx - The amount to translate in the X axis.
+	 * @param {number} ty - The amount to translate in the Y axis.
+	 * @return {Matrix3} A reference to this matrix.
+	 */translate(tx,ty){this.premultiply(_m3.makeTranslation(tx,ty));return this;}// for 2D Transforms
+/**
+	 * Sets this matrix as a 2D translation transform.
+	 *
+	 * @param {number|Vector2} x - The amount to translate in the X axis or alternatively a translation vector.
+	 * @param {number} y - The amount to translate in the Y axis.
+	 * @return {Matrix3} A reference to this matrix.
+	 */makeTranslation(x,y){if(x.isVector2){this.set(1,0,x.x,0,1,x.y,0,0,1);}else{this.set(1,0,x,0,1,y,0,0,1);}return this;}/**
+	 * Sets this matrix as a 2D rotational transformation.
+	 *
+	 * @param {number} theta - The rotation in radians.
+	 * @return {Matrix3} A reference to this matrix.
+	 */makeRotation(theta){// counterclockwise
+const c=Math.cos(theta);const s=Math.sin(theta);this.set(c,-s,0,s,c,0,0,0,1);return this;}/**
+	 * Sets this matrix as a 2D scale transform.
+	 *
+	 * @param {number} x - The amount to scale in the X axis.
+	 * @param {number} y - The amount to scale in the Y axis.
+	 * @return {Matrix3} A reference to this matrix.
+	 */makeScale(x,y){this.set(x,0,0,0,y,0,0,0,1);return this;}/**
+	 * Returns `true` if this matrix is equal with the given one.
+	 *
+	 * @param {Matrix3} matrix - The matrix to test for equality.
+	 * @return {boolean} Whether this matrix is equal with the given one.
+	 */equals(matrix){const te=this.elements;const me=matrix.elements;for(let i=0;i<9;i++){if(te[i]!==me[i])return false;}return true;}/**
+	 * Sets the elements of the matrix from the given array.
+	 *
+	 * @param {Array<number>} array - The matrix elements in column-major order.
+	 * @param {number} [offset=0] - Index of the first element in the array.
+	 * @return {Matrix3} A reference to this matrix.
+	 */fromArray(array,offset=0){for(let i=0;i<9;i++){this.elements[i]=array[i+offset];}return this;}/**
+	 * Writes the elements of this matrix to the given array. If no array is provided,
+	 * the method returns a new instance.
+	 *
+	 * @param {Array<number>} [array=[]] - The target array holding the matrix elements in column-major order.
+	 * @param {number} [offset=0] - Index of the first element in the array.
+	 * @return {Array<number>} The matrix elements in column-major order.
+	 */toArray(array=[],offset=0){const te=this.elements;array[offset]=te[0];array[offset+1]=te[1];array[offset+2]=te[2];array[offset+3]=te[3];array[offset+4]=te[4];array[offset+5]=te[5];array[offset+6]=te[6];array[offset+7]=te[7];array[offset+8]=te[8];return array;}/**
+	 * Returns a matrix with copied values from this instance.
+	 *
+	 * @return {Matrix3} A clone of this instance.
+	 */clone(){return new this.constructor().fromArray(this.elements);}}const _m3=/*@__PURE__*/new Matrix3();function arrayNeedsUint32(array){// assumes larger values usually on last
+for(let i=array.length-1;i>=0;--i){if(array[i]>=65535)return true;// account for PRIMITIVE_RESTART_FIXED_INDEX, #24565
+}return false;}const TYPED_ARRAYS={Int8Array:Int8Array,Uint8Array:Uint8Array,Uint8ClampedArray:Uint8ClampedArray,Int16Array:Int16Array,Uint16Array:Uint16Array,Int32Array:Int32Array,Uint32Array:Uint32Array,Float32Array:Float32Array,Float64Array:Float64Array};function getTypedArray(type,buffer){return new TYPED_ARRAYS[type](buffer);}function createElementNS(name){return document.createElementNS('http://www.w3.org/1999/xhtml',name);}function createCanvasElement(){const canvas=createElementNS('canvas');canvas.style.display='block';return canvas;}const _cache={};function warnOnce(message){if(message in _cache)return;_cache[message]=true;console.warn(message);}function probeAsync(gl,sync,interval){return new Promise(function(resolve,reject){function probe(){switch(gl.clientWaitSync(sync,gl.SYNC_FLUSH_COMMANDS_BIT,0)){case gl.WAIT_FAILED:reject();break;case gl.TIMEOUT_EXPIRED:setTimeout(probe,interval);break;default:resolve();}}setTimeout(probe,interval);});}function toNormalizedProjectionMatrix(projectionMatrix){const m=projectionMatrix.elements;// Convert [-1, 1] to [0, 1] projection matrix
+m[2]=0.5*m[2]+0.5*m[3];m[6]=0.5*m[6]+0.5*m[7];m[10]=0.5*m[10]+0.5*m[11];m[14]=0.5*m[14]+0.5*m[15];}function toReversedProjectionMatrix(projectionMatrix){const m=projectionMatrix.elements;const isPerspectiveMatrix=m[11]===-1;// Reverse [0, 1] projection matrix
+if(isPerspectiveMatrix){m[10]=-m[10]-1;m[14]=-m[14];}else{m[10]=-m[10];m[14]=-m[14]+1;}}const LINEAR_REC709_TO_XYZ=/*@__PURE__*/new Matrix3().set(0.4123908,0.3575843,0.1804808,0.2126390,0.7151687,0.0721923,0.0193308,0.1191948,0.9505322);const XYZ_TO_LINEAR_REC709=/*@__PURE__*/new Matrix3().set(3.2409699,-1.5373832,-0.4986108,-0.9692436,1.8759675,0.0415551,0.0556301,-0.203977,1.0569715);function createColorManagement(){const ColorManagement={enabled:true,workingColorSpace:LinearSRGBColorSpace,/**
+		 * Implementations of supported color spaces.
+		 *
+		 * Required:
+		 *	- primaries: chromaticity coordinates [ rx ry gx gy bx by ]
+		 *	- whitePoint: reference white [ x y ]
+		 *	- transfer: transfer function (pre-defined)
+		 *	- toXYZ: Matrix3 RGB to XYZ transform
+		 *	- fromXYZ: Matrix3 XYZ to RGB transform
+		 *	- luminanceCoefficients: RGB luminance coefficients
+		 *
+		 * Optional:
+		 *  - outputColorSpaceConfig: { drawingBufferColorSpace: ColorSpace }
+		 *  - workingColorSpaceConfig: { unpackColorSpace: ColorSpace }
+		 *
+		 * Reference:
+		 * - https://www.russellcottrell.com/photo/matrixCalculator.htm
+		 */spaces:{},convert:function(color,sourceColorSpace,targetColorSpace){if(this.enabled===false||sourceColorSpace===targetColorSpace||!sourceColorSpace||!targetColorSpace){return color;}if(this.spaces[sourceColorSpace].transfer===SRGBTransfer){color.r=SRGBToLinear(color.r);color.g=SRGBToLinear(color.g);color.b=SRGBToLinear(color.b);}if(this.spaces[sourceColorSpace].primaries!==this.spaces[targetColorSpace].primaries){color.applyMatrix3(this.spaces[sourceColorSpace].toXYZ);color.applyMatrix3(this.spaces[targetColorSpace].fromXYZ);}if(this.spaces[targetColorSpace].transfer===SRGBTransfer){color.r=LinearToSRGB(color.r);color.g=LinearToSRGB(color.g);color.b=LinearToSRGB(color.b);}return color;},workingToColorSpace:function(color,targetColorSpace){return this.convert(color,this.workingColorSpace,targetColorSpace);},colorSpaceToWorking:function(color,sourceColorSpace){return this.convert(color,sourceColorSpace,this.workingColorSpace);},getPrimaries:function(colorSpace){return this.spaces[colorSpace].primaries;},getTransfer:function(colorSpace){if(colorSpace===NoColorSpace)return LinearTransfer;return this.spaces[colorSpace].transfer;},getLuminanceCoefficients:function(target,colorSpace=this.workingColorSpace){return target.fromArray(this.spaces[colorSpace].luminanceCoefficients);},define:function(colorSpaces){Object.assign(this.spaces,colorSpaces);},// Internal APIs
+_getMatrix:function(targetMatrix,sourceColorSpace,targetColorSpace){return targetMatrix.copy(this.spaces[sourceColorSpace].toXYZ).multiply(this.spaces[targetColorSpace].fromXYZ);},_getDrawingBufferColorSpace:function(colorSpace){return this.spaces[colorSpace].outputColorSpaceConfig.drawingBufferColorSpace;},_getUnpackColorSpace:function(colorSpace=this.workingColorSpace){return this.spaces[colorSpace].workingColorSpaceConfig.unpackColorSpace;},// Deprecated
+fromWorkingColorSpace:function(color,targetColorSpace){warnOnce('THREE.ColorManagement: .fromWorkingColorSpace() has been renamed to .workingToColorSpace().');// @deprecated, r177
+return ColorManagement.workingToColorSpace(color,targetColorSpace);},toWorkingColorSpace:function(color,sourceColorSpace){warnOnce('THREE.ColorManagement: .toWorkingColorSpace() has been renamed to .colorSpaceToWorking().');// @deprecated, r177
+return ColorManagement.colorSpaceToWorking(color,sourceColorSpace);}};/******************************************************************************
+	 * sRGB definitions
+	 */const REC709_PRIMARIES=[0.640,0.330,0.300,0.600,0.150,0.060];const REC709_LUMINANCE_COEFFICIENTS=[0.2126,0.7152,0.0722];const D65=[0.3127,0.3290];ColorManagement.define({[LinearSRGBColorSpace]:{primaries:REC709_PRIMARIES,whitePoint:D65,transfer:LinearTransfer,toXYZ:LINEAR_REC709_TO_XYZ,fromXYZ:XYZ_TO_LINEAR_REC709,luminanceCoefficients:REC709_LUMINANCE_COEFFICIENTS,workingColorSpaceConfig:{unpackColorSpace:SRGBColorSpace},outputColorSpaceConfig:{drawingBufferColorSpace:SRGBColorSpace}},[SRGBColorSpace]:{primaries:REC709_PRIMARIES,whitePoint:D65,transfer:SRGBTransfer,toXYZ:LINEAR_REC709_TO_XYZ,fromXYZ:XYZ_TO_LINEAR_REC709,luminanceCoefficients:REC709_LUMINANCE_COEFFICIENTS,outputColorSpaceConfig:{drawingBufferColorSpace:SRGBColorSpace}}});return ColorManagement;}const ColorManagement=/*@__PURE__*/createColorManagement();function SRGBToLinear(c){return c<0.04045?c*0.0773993808:Math.pow(c*0.9478672986+0.0521327014,2.4);}function LinearToSRGB(c){return c<0.0031308?c*12.92:1.055*Math.pow(c,0.41666)-0.055;}let _canvas;/**
+ * A class containing utility functions for images.
+ *
+ * @hideconstructor
+ */class ImageUtils{/**
+	 * Returns a data URI containing a representation of the given image.
+	 *
+	 * @param {(HTMLImageElement|HTMLCanvasElement)} image - The image object.
+	 * @param {string} [type='image/png'] - Indicates the image format.
+	 * @return {string} The data URI.
+	 */static getDataURL(image,type='image/png'){if(/^data:/i.test(image.src)){return image.src;}if(typeof HTMLCanvasElement==='undefined'){return image.src;}let canvas;if(image instanceof HTMLCanvasElement){canvas=image;}else{if(_canvas===undefined)_canvas=createElementNS('canvas');_canvas.width=image.width;_canvas.height=image.height;const context=_canvas.getContext('2d');if(image instanceof ImageData){context.putImageData(image,0,0);}else{context.drawImage(image,0,0,image.width,image.height);}canvas=_canvas;}return canvas.toDataURL(type);}/**
+	 * Converts the given sRGB image data to linear color space.
+	 *
+	 * @param {(HTMLImageElement|HTMLCanvasElement|ImageBitmap|Object)} image - The image object.
+	 * @return {HTMLCanvasElement|Object} The converted image.
+	 */static sRGBToLinear(image){if(typeof HTMLImageElement!=='undefined'&&image instanceof HTMLImageElement||typeof HTMLCanvasElement!=='undefined'&&image instanceof HTMLCanvasElement||typeof ImageBitmap!=='undefined'&&image instanceof ImageBitmap){const canvas=createElementNS('canvas');canvas.width=image.width;canvas.height=image.height;const context=canvas.getContext('2d');context.drawImage(image,0,0,image.width,image.height);const imageData=context.getImageData(0,0,image.width,image.height);const data=imageData.data;for(let i=0;i<data.length;i++){data[i]=SRGBToLinear(data[i]/255)*255;}context.putImageData(imageData,0,0);return canvas;}else if(image.data){const data=image.data.slice(0);for(let i=0;i<data.length;i++){if(data instanceof Uint8Array||data instanceof Uint8ClampedArray){data[i]=Math.floor(SRGBToLinear(data[i]/255)*255);}else{// assuming float
+data[i]=SRGBToLinear(data[i]);}}return{data:data,width:image.width,height:image.height};}else{console.warn('THREE.ImageUtils.sRGBToLinear(): Unsupported image type. No color space conversion applied.');return image;}}}let _sourceId=0;/**
+ * Represents the data source of a texture.
+ *
+ * The main purpose of this class is to decouple the data definition from the texture
+ * definition so the same data can be used with multiple texture instances.
+ */class Source{/**
+	 * Constructs a new video texture.
+	 *
+	 * @param {any} [data=null] - The data definition of a texture.
+	 */constructor(data=null){/**
+		 * This flag can be used for type testing.
+		 *
+		 * @type {boolean}
+		 * @readonly
+		 * @default true
+		 */this.isSource=true;/**
+		 * The ID of the source.
+		 *
+		 * @name Source#id
+		 * @type {number}
+		 * @readonly
+		 */Object.defineProperty(this,'id',{value:_sourceId++});/**
+		 * The UUID of the source.
+		 *
+		 * @type {string}
+		 * @readonly
+		 */this.uuid=generateUUID();/**
+		 * The data definition of a texture.
+		 *
+		 * @type {any}
+		 */this.data=data;/**
+		 * This property is only relevant when {@link Source#needsUpdate} is set to `true` and
+		 * provides more control on how texture data should be processed. When `dataReady` is set
+		 * to `false`, the engine performs the memory allocation (if necessary) but does not transfer
+		 * the data into the GPU memory.
+		 *
+		 * @type {boolean}
+		 * @default true
+		 */this.dataReady=true;/**
+		 * This starts at `0` and counts how many times {@link Source#needsUpdate} is set to `true`.
+		 *
+		 * @type {number}
+		 * @readonly
+		 * @default 0
+		 */this.version=0;}getSize(target){const data=this.data;if(data instanceof HTMLVideoElement){target.set(data.videoWidth,data.videoHeight);}else if(data!==null){target.set(data.width,data.height,data.depth||0);}else{target.set(0,0,0);}return target;}/**
+	 * When the property is set to `true`, the engine allocates the memory
+	 * for the texture (if necessary) and triggers the actual texture upload
+	 * to the GPU next time the source is used.
+	 *
+	 * @type {boolean}
+	 * @default false
+	 * @param {boolean} value
+	 */set needsUpdate(value){if(value===true)this.version++;}/**
+	 * Serializes the source into JSON.
+	 *
+	 * @param {?(Object|string)} meta - An optional value holding meta information about the serialization.
+	 * @return {Object} A JSON object representing the serialized source.
+	 * @see {@link ObjectLoader#parse}
+	 */toJSON(meta){const isRootObject=meta===undefined||typeof meta==='string';if(!isRootObject&&meta.images[this.uuid]!==undefined){return meta.images[this.uuid];}const output={uuid:this.uuid,url:''};const data=this.data;if(data!==null){let url;if(Array.isArray(data)){// cube texture
+url=[];for(let i=0,l=data.length;i<l;i++){if(data[i].isDataTexture){url.push(serializeImage(data[i].image));}else{url.push(serializeImage(data[i]));}}}else{// texture
+url=serializeImage(data);}output.url=url;}if(!isRootObject){meta.images[this.uuid]=output;}return output;}}function serializeImage(image){if(typeof HTMLImageElement!=='undefined'&&image instanceof HTMLImageElement||typeof HTMLCanvasElement!=='undefined'&&image instanceof HTMLCanvasElement||typeof ImageBitmap!=='undefined'&&image instanceof ImageBitmap){// default images
+return ImageUtils.getDataURL(image);}else{if(image.data){// images of DataTexture
+return{data:Array.from(image.data),width:image.width,height:image.height,type:image.data.constructor.name};}else{console.warn('THREE.Texture: Unable to serialize Texture.');return{};}}}let _textureId=0;const _tempVec3=/*@__PURE__*/new Vector3();/**
+ * Base class for all textures.
+ *
+ * Note: After the initial use of a texture, its dimensions, format, and type
+ * cannot be changed. Instead, call {@link Texture#dispose} on the texture and instantiate a new one.
+ *
+ * @augments EventDispatcher
+ */class Texture extends EventDispatcher{/**
+	 * Constructs a new texture.
+	 *
+	 * @param {?Object} [image=Texture.DEFAULT_IMAGE] - The image holding the texture data.
+	 * @param {number} [mapping=Texture.DEFAULT_MAPPING] - The texture mapping.
+	 * @param {number} [wrapS=ClampToEdgeWrapping] - The wrapS value.
+	 * @param {number} [wrapT=ClampToEdgeWrapping] - The wrapT value.
+	 * @param {number} [magFilter=LinearFilter] - The mag filter value.
+	 * @param {number} [minFilter=LinearMipmapLinearFilter] - The min filter value.
+	 * @param {number} [format=RGBAFormat] - The texture format.
+	 * @param {number} [type=UnsignedByteType] - The texture type.
+	 * @param {number} [anisotropy=Texture.DEFAULT_ANISOTROPY] - The anisotropy value.
+	 * @param {string} [colorSpace=NoColorSpace] - The color space.
+	 */constructor(image=Texture.DEFAULT_IMAGE,mapping=Texture.DEFAULT_MAPPING,wrapS=ClampToEdgeWrapping,wrapT=ClampToEdgeWrapping,magFilter=LinearFilter,minFilter=LinearMipmapLinearFilter,format=RGBAFormat,type=UnsignedByteType,anisotropy=Texture.DEFAULT_ANISOTROPY,colorSpace=NoColorSpace){super();/**
+		 * This flag can be used for type testing.
+		 *
+		 * @type {boolean}
+		 * @readonly
+		 * @default true
+		 */this.isTexture=true;/**
+		 * The ID of the texture.
+		 *
+		 * @name Texture#id
+		 * @type {number}
+		 * @readonly
+		 */Object.defineProperty(this,'id',{value:_textureId++});/**
+		 * The UUID of the material.
+		 *
+		 * @type {string}
+		 * @readonly
+		 */this.uuid=generateUUID();/**
+		 * The name of the material.
+		 *
+		 * @type {string}
+		 */this.name='';/**
+		 * The data definition of a texture. A reference to the data source can be
+		 * shared across textures. This is often useful in context of spritesheets
+		 * where multiple textures render the same data but with different texture
+		 * transformations.
+		 *
+		 * @type {Source}
+		 */this.source=new Source(image);/**
+		 * An array holding user-defined mipmaps.
+		 *
+		 * @type {Array<Object>}
+		 */this.mipmaps=[];/**
+		 * How the texture is applied to the object. The value `UVMapping`
+		 * is the default, where texture or uv coordinates are used to apply the map.
+		 *
+		 * @type {(UVMapping|CubeReflectionMapping|CubeRefractionMapping|EquirectangularReflectionMapping|EquirectangularRefractionMapping|CubeUVReflectionMapping)}
+		 * @default UVMapping
+		*/this.mapping=mapping;/**
+		 * Lets you select the uv attribute to map the texture to. `0` for `uv`,
+		 * `1` for `uv1`, `2` for `uv2` and `3` for `uv3`.
+		 *
+		 * @type {number}
+		 * @default 0
+		 */this.channel=0;/**
+		 * This defines how the texture is wrapped horizontally and corresponds to
+		 * *U* in UV mapping.
+		 *
+		 * @type {(RepeatWrapping|ClampToEdgeWrapping|MirroredRepeatWrapping)}
+		 * @default ClampToEdgeWrapping
+		 */this.wrapS=wrapS;/**
+		 * This defines how the texture is wrapped horizontally and corresponds to
+		 * *V* in UV mapping.
+		 *
+		 * @type {(RepeatWrapping|ClampToEdgeWrapping|MirroredRepeatWrapping)}
+		 * @default ClampToEdgeWrapping
+		 */this.wrapT=wrapT;/**
+		 * How the texture is sampled when a texel covers more than one pixel.
+		 *
+		 * @type {(NearestFilter|NearestMipmapNearestFilter|NearestMipmapLinearFilter|LinearFilter|LinearMipmapNearestFilter|LinearMipmapLinearFilter)}
+		 * @default LinearFilter
+		 */this.magFilter=magFilter;/**
+		 * How the texture is sampled when a texel covers less than one pixel.
+		 *
+		 * @type {(NearestFilter|NearestMipmapNearestFilter|NearestMipmapLinearFilter|LinearFilter|LinearMipmapNearestFilter|LinearMipmapLinearFilter)}
+		 * @default LinearMipmapLinearFilter
+		 */this.minFilter=minFilter;/**
+		 * The number of samples taken along the axis through the pixel that has the
+		 * highest density of texels. By default, this value is `1`. A higher value
+		 * gives a less blurry result than a basic mipmap, at the cost of more
+		 * texture samples being used.
+		 *
+		 * @type {number}
+		 * @default 0
+		 */this.anisotropy=anisotropy;/**
+		 * The format of the texture.
+		 *
+		 * @type {number}
+		 * @default RGBAFormat
+		 */this.format=format;/**
+		 * The default internal format is derived from {@link Texture#format} and {@link Texture#type} and
+		 * defines how the texture data is going to be stored on the GPU.
+		 *
+		 * This property allows to overwrite the default format.
+		 *
+		 * @type {?string}
+		 * @default null
+		 */this.internalFormat=null;/**
+		 * The data type of the texture.
+		 *
+		 * @type {number}
+		 * @default UnsignedByteType
+		 */this.type=type;/**
+		 * How much a single repetition of the texture is offset from the beginning,
+		 * in each direction U and V. Typical range is `0.0` to `1.0`.
+		 *
+		 * @type {Vector2}
+		 * @default (0,0)
+		 */this.offset=new Vector2(0,0);/**
+		 * How many times the texture is repeated across the surface, in each
+		 * direction U and V. If repeat is set greater than `1` in either direction,
+		 * the corresponding wrap parameter should also be set to `RepeatWrapping`
+		 * or `MirroredRepeatWrapping` to achieve the desired tiling effect.
+		 *
+		 * @type {Vector2}
+		 * @default (1,1)
+		 */this.repeat=new Vector2(1,1);/**
+		 * The point around which rotation occurs. A value of `(0.5, 0.5)` corresponds
+		 * to the center of the texture. Default is `(0, 0)`, the lower left.
+		 *
+		 * @type {Vector2}
+		 * @default (0,0)
+		 */this.center=new Vector2(0,0);/**
+		 * How much the texture is rotated around the center point, in radians.
+		 * Positive values are counter-clockwise.
+		 *
+		 * @type {number}
+		 * @default 0
+		 */this.rotation=0;/**
+		 * Whether to update the texture's uv-transformation {@link Texture#matrix}
+		 * from the properties {@link Texture#offset}, {@link Texture#repeat},
+		 * {@link Texture#rotation}, and {@link Texture#center}.
+		 *
+		 * Set this to `false` if you are specifying the uv-transform matrix directly.
+		 *
+		 * @type {boolean}
+		 * @default true
+		 */this.matrixAutoUpdate=true;/**
+		 * The uv-transformation matrix of the texture.
+		 *
+		 * @type {Matrix3}
+		 */this.matrix=new Matrix3();/**
+		 * Whether to generate mipmaps (if possible) for a texture.
+		 *
+		 * Set this to `false` if you are creating mipmaps manually.
+		 *
+		 * @type {boolean}
+		 * @default true
+		 */this.generateMipmaps=true;/**
+		 * If set to `true`, the alpha channel, if present, is multiplied into the
+		 * color channels when the texture is uploaded to the GPU.
+		 *
+		 * Note that this property has no effect when using `ImageBitmap`. You need to
+		 * configure premultiply alpha on bitmap creation instead.
+		 *
+		 * @type {boolean}
+		 * @default false
+		 */this.premultiplyAlpha=false;/**
+		 * If set to `true`, the texture is flipped along the vertical axis when
+		 * uploaded to the GPU.
+		 *
+		 * Note that this property has no effect when using `ImageBitmap`. You need to
+		 * configure the flip on bitmap creation instead.
+		 *
+		 * @type {boolean}
+		 * @default true
+		 */this.flipY=true;/**
+		 * Specifies the alignment requirements for the start of each pixel row in memory.
+		 * The allowable values are `1` (byte-alignment), `2` (rows aligned to even-numbered bytes),
+		 * `4` (word-alignment), and `8` (rows start on double-word boundaries).
+		 *
+		 * @type {number}
+		 * @default 4
+		 */this.unpackAlignment=4;// valid values: 1, 2, 4, 8 (see http://www.khronos.org/opengles/sdk/docs/man/xhtml/glPixelStorei.xml)
+/**
+		 * Textures containing color data should be annotated with `SRGBColorSpace` or `LinearSRGBColorSpace`.
+		 *
+		 * @type {string}
+		 * @default NoColorSpace
+		 */this.colorSpace=colorSpace;/**
+		 * An object that can be used to store custom data about the texture. It
+		 * should not hold references to functions as these will not be cloned.
+		 *
+		 * @type {Object}
+		 */this.userData={};/**
+		 * This can be used to only update a subregion or specific rows of the texture (for example, just the
+		 * first 3 rows). Use the `addUpdateRange()` function to add ranges to this array.
+		 *
+		 * @type {Array<Object>}
+		 */this.updateRanges=[];/**
+		 * This starts at `0` and counts how many times {@link Texture#needsUpdate} is set to `true`.
+		 *
+		 * @type {number}
+		 * @readonly
+		 * @default 0
+		 */this.version=0;/**
+		 * A callback function, called when the texture is updated (e.g., when
+		 * {@link Texture#needsUpdate} has been set to true and then the texture is used).
+		 *
+		 * @type {?Function}
+		 * @default null
+		 */this.onUpdate=null;/**
+		 * An optional back reference to the textures render target.
+		 *
+		 * @type {?(RenderTarget|WebGLRenderTarget)}
+		 * @default null
+		 */this.renderTarget=null;/**
+		 * Indicates whether a texture belongs to a render target or not.
+		 *
+		 * @type {boolean}
+		 * @readonly
+		 * @default false
+		 */this.isRenderTargetTexture=false;/**
+		 * Indicates if a texture should be handled like a texture array.
+		 *
+		 * @type {boolean}
+		 * @readonly
+		 * @default false
+		 */this.isArrayTexture=image&&image.depth&&image.depth>1?true:false;/**
+		 * Indicates whether this texture should be processed by `PMREMGenerator` or not
+		 * (only relevant for render target textures).
+		 *
+		 * @type {number}
+		 * @readonly
+		 * @default 0
+		 */this.pmremVersion=0;}/**
+	 * The width of the texture in pixels.
+	 */get width(){return this.source.getSize(_tempVec3).x;}/**
+	 * The height of the texture in pixels.
+	 */get height(){return this.source.getSize(_tempVec3).y;}/**
+	 * The depth of the texture in pixels.
+	 */get depth(){return this.source.getSize(_tempVec3).z;}/**
+	 * The image object holding the texture data.
+	 *
+	 * @type {?Object}
+	 */get image(){return this.source.data;}set image(value=null){this.source.data=value;}/**
+	 * Updates the texture transformation matrix from the from the properties {@link Texture#offset},
+	 * {@link Texture#repeat}, {@link Texture#rotation}, and {@link Texture#center}.
+	 */updateMatrix(){this.matrix.setUvTransform(this.offset.x,this.offset.y,this.repeat.x,this.repeat.y,this.rotation,this.center.x,this.center.y);}/**
+	 * Adds a range of data in the data texture to be updated on the GPU.
+	 *
+	 * @param {number} start - Position at which to start update.
+	 * @param {number} count - The number of components to update.
+	 */addUpdateRange(start,count){this.updateRanges.push({start,count});}/**
+	 * Clears the update ranges.
+	 */clearUpdateRanges(){this.updateRanges.length=0;}/**
+	 * Returns a new texture with copied values from this instance.
+	 *
+	 * @return {Texture} A clone of this instance.
+	 */clone(){return new this.constructor().copy(this);}/**
+	 * Copies the values of the given texture to this instance.
+	 *
+	 * @param {Texture} source - The texture to copy.
+	 * @return {Texture} A reference to this instance.
+	 */copy(source){this.name=source.name;this.source=source.source;this.mipmaps=source.mipmaps.slice(0);this.mapping=source.mapping;this.channel=source.channel;this.wrapS=source.wrapS;this.wrapT=source.wrapT;this.magFilter=source.magFilter;this.minFilter=source.minFilter;this.anisotropy=source.anisotropy;this.format=source.format;this.internalFormat=source.internalFormat;this.type=source.type;this.offset.copy(source.offset);this.repeat.copy(source.repeat);this.center.copy(source.center);this.rotation=source.rotation;this.matrixAutoUpdate=source.matrixAutoUpdate;this.matrix.copy(source.matrix);this.generateMipmaps=source.generateMipmaps;this.premultiplyAlpha=source.premultiplyAlpha;this.flipY=source.flipY;this.unpackAlignment=source.unpackAlignment;this.colorSpace=source.colorSpace;this.renderTarget=source.renderTarget;this.isRenderTargetTexture=source.isRenderTargetTexture;this.isArrayTexture=source.isArrayTexture;this.userData=JSON.parse(JSON.stringify(source.userData));this.needsUpdate=true;return this;}/**
+	 * Sets this texture's properties based on `values`.
+	 * @param {Object} values - A container with texture parameters.
+	 */setValues(values){for(const key in values){const newValue=values[key];if(newValue===undefined){console.warn(`THREE.Texture.setValues(): parameter '${key}' has value of undefined.`);continue;}const currentValue=this[key];if(currentValue===undefined){console.warn(`THREE.Texture.setValues(): property '${key}' does not exist.`);continue;}if(currentValue&&newValue&&currentValue.isVector2&&newValue.isVector2){currentValue.copy(newValue);}else if(currentValue&&newValue&&currentValue.isVector3&&newValue.isVector3){currentValue.copy(newValue);}else if(currentValue&&newValue&&currentValue.isMatrix3&&newValue.isMatrix3){currentValue.copy(newValue);}else{this[key]=newValue;}}}/**
+	 * Serializes the texture into JSON.
+	 *
+	 * @param {?(Object|string)} meta - An optional value holding meta information about the serialization.
+	 * @return {Object} A JSON object representing the serialized texture.
+	 * @see {@link ObjectLoader#parse}
+	 */toJSON(meta){const isRootObject=meta===undefined||typeof meta==='string';if(!isRootObject&&meta.textures[this.uuid]!==undefined){return meta.textures[this.uuid];}const output={metadata:{version:4.7,type:'Texture',generator:'Texture.toJSON'},uuid:this.uuid,name:this.name,image:this.source.toJSON(meta).uuid,mapping:this.mapping,channel:this.channel,repeat:[this.repeat.x,this.repeat.y],offset:[this.offset.x,this.offset.y],center:[this.center.x,this.center.y],rotation:this.rotation,wrap:[this.wrapS,this.wrapT],format:this.format,internalFormat:this.internalFormat,type:this.type,colorSpace:this.colorSpace,minFilter:this.minFilter,magFilter:this.magFilter,anisotropy:this.anisotropy,flipY:this.flipY,generateMipmaps:this.generateMipmaps,premultiplyAlpha:this.premultiplyAlpha,unpackAlignment:this.unpackAlignment};if(Object.keys(this.userData).length>0)output.userData=this.userData;if(!isRootObject){meta.textures[this.uuid]=output;}return output;}/**
+	 * Frees the GPU-related resources allocated by this instance. Call this
+	 * method whenever this instance is no longer used in your app.
+	 *
+	 * @fires Texture#dispose
+	 */dispose(){/**
+		 * Fires when the texture has been disposed of.
+		 *
+		 * @event Texture#dispose
+		 * @type {Object}
+		 */this.dispatchEvent({type:'dispose'});}/**
+	 * Transforms the given uv vector with the textures uv transformation matrix.
+	 *
+	 * @param {Vector2} uv - The uv vector.
+	 * @return {Vector2} The transformed uv vector.
+	 */transformUv(uv){if(this.mapping!==UVMapping)return uv;uv.applyMatrix3(this.matrix);if(uv.x<0||uv.x>1){switch(this.wrapS){case RepeatWrapping:uv.x=uv.x-Math.floor(uv.x);break;case ClampToEdgeWrapping:uv.x=uv.x<0?0:1;break;case MirroredRepeatWrapping:if(Math.abs(Math.floor(uv.x)%2)===1){uv.x=Math.ceil(uv.x)-uv.x;}else{uv.x=uv.x-Math.floor(uv.x);}break;}}if(uv.y<0||uv.y>1){switch(this.wrapT){case RepeatWrapping:uv.y=uv.y-Math.floor(uv.y);break;case ClampToEdgeWrapping:uv.y=uv.y<0?0:1;break;case MirroredRepeatWrapping:if(Math.abs(Math.floor(uv.y)%2)===1){uv.y=Math.ceil(uv.y)-uv.y;}else{uv.y=uv.y-Math.floor(uv.y);}break;}}if(this.flipY){uv.y=1-uv.y;}return uv;}/**
+	 * Setting this property to `true` indicates the engine the texture
+	 * must be updated in the next render. This triggers a texture upload
+	 * to the GPU and ensures correct texture parameter configuration.
+	 *
+	 * @type {boolean}
+	 * @default false
+	 * @param {boolean} value
+	 */set needsUpdate(value){if(value===true){this.version++;this.source.needsUpdate=true;}}/**
+	 * Setting this property to `true` indicates the engine the PMREM
+	 * must be regenerated.
+	 *
+	 * @type {boolean}
+	 * @default false
+	 * @param {boolean} value
+	 */set needsPMREMUpdate(value){if(value===true){this.pmremVersion++;}}}/**
+ * The default image for all textures.
+ *
+ * @static
+ * @type {?Image}
+ * @default null
+ */Texture.DEFAULT_IMAGE=null;/**
+ * The default mapping for all textures.
+ *
+ * @static
+ * @type {number}
+ * @default UVMapping
+ */Texture.DEFAULT_MAPPING=UVMapping;/**
+ * The default anisotropy value for all textures.
+ *
+ * @static
+ * @type {number}
+ * @default 1
+ */Texture.DEFAULT_ANISOTROPY=1;/**
+ * Class representing a 4D vector. A 4D vector is an ordered quadruplet of numbers
+ * (labeled x, y, z and w), which can be used to represent a number of things, such as:
+ *
+ * - A point in 4D space.
+ * - A direction and length in 4D space. In three.js the length will
+ * always be the Euclidean distance(straight-line distance) from `(0, 0, 0, 0)` to `(x, y, z, w)`
+ * and the direction is also measured from `(0, 0, 0, 0)` towards `(x, y, z, w)`.
+ * - Any arbitrary ordered quadruplet of numbers.
+ *
+ * There are other things a 4D vector can be used to represent, however these
+ * are the most common uses in *three.js*.
+ *
+ * Iterating through a vector instance will yield its components `(x, y, z, w)` in
+ * the corresponding order.
+ * ```js
+ * const a = new THREE.Vector4( 0, 1, 0, 0 );
+ *
+ * //no arguments; will be initialised to (0, 0, 0, 1)
+ * const b = new THREE.Vector4( );
+ *
+ * const d = a.dot( b );
+ * ```
+ */class Vector4{/**
+	 * Constructs a new 4D vector.
+	 *
+	 * @param {number} [x=0] - The x value of this vector.
+	 * @param {number} [y=0] - The y value of this vector.
+	 * @param {number} [z=0] - The z value of this vector.
+	 * @param {number} [w=1] - The w value of this vector.
+	 */constructor(x=0,y=0,z=0,w=1){/**
+		 * This flag can be used for type testing.
+		 *
+		 * @type {boolean}
+		 * @readonly
+		 * @default true
+		 */Vector4.prototype.isVector4=true;/**
+		 * The x value of this vector.
+		 *
+		 * @type {number}
+		 */this.x=x;/**
+		 * The y value of this vector.
+		 *
+		 * @type {number}
+		 */this.y=y;/**
+		 * The z value of this vector.
+		 *
+		 * @type {number}
+		 */this.z=z;/**
+		 * The w value of this vector.
+		 *
+		 * @type {number}
+		 */this.w=w;}/**
+	 * Alias for {@link Vector4#z}.
+	 *
+	 * @type {number}
+	 */get width(){return this.z;}set width(value){this.z=value;}/**
+	 * Alias for {@link Vector4#w}.
+	 *
+	 * @type {number}
+	 */get height(){return this.w;}set height(value){this.w=value;}/**
+	 * Sets the vector components.
+	 *
+	 * @param {number} x - The value of the x component.
+	 * @param {number} y - The value of the y component.
+	 * @param {number} z - The value of the z component.
+	 * @param {number} w - The value of the w component.
+	 * @return {Vector4} A reference to this vector.
+	 */set(x,y,z,w){this.x=x;this.y=y;this.z=z;this.w=w;return this;}/**
+	 * Sets the vector components to the same value.
+	 *
+	 * @param {number} scalar - The value to set for all vector components.
+	 * @return {Vector4} A reference to this vector.
+	 */setScalar(scalar){this.x=scalar;this.y=scalar;this.z=scalar;this.w=scalar;return this;}/**
+	 * Sets the vector's x component to the given value
+	 *
+	 * @param {number} x - The value to set.
+	 * @return {Vector4} A reference to this vector.
+	 */setX(x){this.x=x;return this;}/**
+	 * Sets the vector's y component to the given value
+	 *
+	 * @param {number} y - The value to set.
+	 * @return {Vector4} A reference to this vector.
+	 */setY(y){this.y=y;return this;}/**
+	 * Sets the vector's z component to the given value
+	 *
+	 * @param {number} z - The value to set.
+	 * @return {Vector4} A reference to this vector.
+	 */setZ(z){this.z=z;return this;}/**
+	 * Sets the vector's w component to the given value
+	 *
+	 * @param {number} w - The value to set.
+	 * @return {Vector4} A reference to this vector.
+	 */setW(w){this.w=w;return this;}/**
+	 * Allows to set a vector component with an index.
+	 *
+	 * @param {number} index - The component index. `0` equals to x, `1` equals to y,
+	 * `2` equals to z, `3` equals to w.
+	 * @param {number} value - The value to set.
+	 * @return {Vector4} A reference to this vector.
+	 */setComponent(index,value){switch(index){case 0:this.x=value;break;case 1:this.y=value;break;case 2:this.z=value;break;case 3:this.w=value;break;default:throw new Error('index is out of range: '+index);}return this;}/**
+	 * Returns the value of the vector component which matches the given index.
+	 *
+	 * @param {number} index - The component index. `0` equals to x, `1` equals to y,
+	 * `2` equals to z, `3` equals to w.
+	 * @return {number} A vector component value.
+	 */getComponent(index){switch(index){case 0:return this.x;case 1:return this.y;case 2:return this.z;case 3:return this.w;default:throw new Error('index is out of range: '+index);}}/**
+	 * Returns a new vector with copied values from this instance.
+	 *
+	 * @return {Vector4} A clone of this instance.
+	 */clone(){return new this.constructor(this.x,this.y,this.z,this.w);}/**
+	 * Copies the values of the given vector to this instance.
+	 *
+	 * @param {Vector3|Vector4} v - The vector to copy.
+	 * @return {Vector4} A reference to this vector.
+	 */copy(v){this.x=v.x;this.y=v.y;this.z=v.z;this.w=v.w!==undefined?v.w:1;return this;}/**
+	 * Adds the given vector to this instance.
+	 *
+	 * @param {Vector4} v - The vector to add.
+	 * @return {Vector4} A reference to this vector.
+	 */add(v){this.x+=v.x;this.y+=v.y;this.z+=v.z;this.w+=v.w;return this;}/**
+	 * Adds the given scalar value to all components of this instance.
+	 *
+	 * @param {number} s - The scalar to add.
+	 * @return {Vector4} A reference to this vector.
+	 */addScalar(s){this.x+=s;this.y+=s;this.z+=s;this.w+=s;return this;}/**
+	 * Adds the given vectors and stores the result in this instance.
+	 *
+	 * @param {Vector4} a - The first vector.
+	 * @param {Vector4} b - The second vector.
+	 * @return {Vector4} A reference to this vector.
+	 */addVectors(a,b){this.x=a.x+b.x;this.y=a.y+b.y;this.z=a.z+b.z;this.w=a.w+b.w;return this;}/**
+	 * Adds the given vector scaled by the given factor to this instance.
+	 *
+	 * @param {Vector4} v - The vector.
+	 * @param {number} s - The factor that scales `v`.
+	 * @return {Vector4} A reference to this vector.
+	 */addScaledVector(v,s){this.x+=v.x*s;this.y+=v.y*s;this.z+=v.z*s;this.w+=v.w*s;return this;}/**
+	 * Subtracts the given vector from this instance.
+	 *
+	 * @param {Vector4} v - The vector to subtract.
+	 * @return {Vector4} A reference to this vector.
+	 */sub(v){this.x-=v.x;this.y-=v.y;this.z-=v.z;this.w-=v.w;return this;}/**
+	 * Subtracts the given scalar value from all components of this instance.
+	 *
+	 * @param {number} s - The scalar to subtract.
+	 * @return {Vector4} A reference to this vector.
+	 */subScalar(s){this.x-=s;this.y-=s;this.z-=s;this.w-=s;return this;}/**
+	 * Subtracts the given vectors and stores the result in this instance.
+	 *
+	 * @param {Vector4} a - The first vector.
+	 * @param {Vector4} b - The second vector.
+	 * @return {Vector4} A reference to this vector.
+	 */subVectors(a,b){this.x=a.x-b.x;this.y=a.y-b.y;this.z=a.z-b.z;this.w=a.w-b.w;return this;}/**
+	 * Multiplies the given vector with this instance.
+	 *
+	 * @param {Vector4} v - The vector to multiply.
+	 * @return {Vector4} A reference to this vector.
+	 */multiply(v){this.x*=v.x;this.y*=v.y;this.z*=v.z;this.w*=v.w;return this;}/**
+	 * Multiplies the given scalar value with all components of this instance.
+	 *
+	 * @param {number} scalar - The scalar to multiply.
+	 * @return {Vector4} A reference to this vector.
+	 */multiplyScalar(scalar){this.x*=scalar;this.y*=scalar;this.z*=scalar;this.w*=scalar;return this;}/**
+	 * Multiplies this vector with the given 4x4 matrix.
+	 *
+	 * @param {Matrix4} m - The 4x4 matrix.
+	 * @return {Vector4} A reference to this vector.
+	 */applyMatrix4(m){const x=this.x,y=this.y,z=this.z,w=this.w;const e=m.elements;this.x=e[0]*x+e[4]*y+e[8]*z+e[12]*w;this.y=e[1]*x+e[5]*y+e[9]*z+e[13]*w;this.z=e[2]*x+e[6]*y+e[10]*z+e[14]*w;this.w=e[3]*x+e[7]*y+e[11]*z+e[15]*w;return this;}/**
+	 * Divides this instance by the given vector.
+	 *
+	 * @param {Vector4} v - The vector to divide.
+	 * @return {Vector4} A reference to this vector.
+	 */divide(v){this.x/=v.x;this.y/=v.y;this.z/=v.z;this.w/=v.w;return this;}/**
+	 * Divides this vector by the given scalar.
+	 *
+	 * @param {number} scalar - The scalar to divide.
+	 * @return {Vector4} A reference to this vector.
+	 */divideScalar(scalar){return this.multiplyScalar(1/scalar);}/**
+	 * Sets the x, y and z components of this
+	 * vector to the quaternion's axis and w to the angle.
+	 *
+	 * @param {Quaternion} q - The Quaternion to set.
+	 * @return {Vector4} A reference to this vector.
+	 */setAxisAngleFromQuaternion(q){// http://www.euclideanspace.com/maths/geometry/rotations/conversions/quaternionToAngle/index.htm
+// q is assumed to be normalized
+this.w=2*Math.acos(q.w);const s=Math.sqrt(1-q.w*q.w);if(s<0.0001){this.x=1;this.y=0;this.z=0;}else{this.x=q.x/s;this.y=q.y/s;this.z=q.z/s;}return this;}/**
+	 * Sets the x, y and z components of this
+	 * vector to the axis of rotation and w to the angle.
+	 *
+	 * @param {Matrix4} m - A 4x4 matrix of which the upper left 3x3 matrix is a pure rotation matrix.
+	 * @return {Vector4} A reference to this vector.
+	 */setAxisAngleFromRotationMatrix(m){// http://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToAngle/index.htm
+// assumes the upper 3x3 of m is a pure rotation matrix (i.e, unscaled)
+let angle,x,y,z;// variables for result
+const epsilon=0.01,// margin to allow for rounding errors
+epsilon2=0.1,// margin to distinguish between 0 and 180 degrees
+te=m.elements,m11=te[0],m12=te[4],m13=te[8],m21=te[1],m22=te[5],m23=te[9],m31=te[2],m32=te[6],m33=te[10];if(Math.abs(m12-m21)<epsilon&&Math.abs(m13-m31)<epsilon&&Math.abs(m23-m32)<epsilon){// singularity found
+// first check for identity matrix which must have +1 for all terms
+// in leading diagonal and zero in other terms
+if(Math.abs(m12+m21)<epsilon2&&Math.abs(m13+m31)<epsilon2&&Math.abs(m23+m32)<epsilon2&&Math.abs(m11+m22+m33-3)<epsilon2){// this singularity is identity matrix so angle = 0
+this.set(1,0,0,0);return this;// zero angle, arbitrary axis
+}// otherwise this singularity is angle = 180
+angle=Math.PI;const xx=(m11+1)/2;const yy=(m22+1)/2;const zz=(m33+1)/2;const xy=(m12+m21)/4;const xz=(m13+m31)/4;const yz=(m23+m32)/4;if(xx>yy&&xx>zz){// m11 is the largest diagonal term
+if(xx<epsilon){x=0;y=0.707106781;z=0.707106781;}else{x=Math.sqrt(xx);y=xy/x;z=xz/x;}}else if(yy>zz){// m22 is the largest diagonal term
+if(yy<epsilon){x=0.707106781;y=0;z=0.707106781;}else{y=Math.sqrt(yy);x=xy/y;z=yz/y;}}else{// m33 is the largest diagonal term so base result on this
+if(zz<epsilon){x=0.707106781;y=0.707106781;z=0;}else{z=Math.sqrt(zz);x=xz/z;y=yz/z;}}this.set(x,y,z,angle);return this;// return 180 deg rotation
+}// as we have reached here there are no singularities so we can handle normally
+let s=Math.sqrt((m32-m23)*(m32-m23)+(m13-m31)*(m13-m31)+(m21-m12)*(m21-m12));// used to normalize
+if(Math.abs(s)<0.001)s=1;// prevent divide by zero, should not happen if matrix is orthogonal and should be
+// caught by singularity test above, but I've left it in just in case
+this.x=(m32-m23)/s;this.y=(m13-m31)/s;this.z=(m21-m12)/s;this.w=Math.acos((m11+m22+m33-1)/2);return this;}/**
+	 * Sets the vector components to the position elements of the
+	 * given transformation matrix.
+	 *
+	 * @param {Matrix4} m - The 4x4 matrix.
+	 * @return {Vector4} A reference to this vector.
+	 */setFromMatrixPosition(m){const e=m.elements;this.x=e[12];this.y=e[13];this.z=e[14];this.w=e[15];return this;}/**
+	 * If this vector's x, y, z or w value is greater than the given vector's x, y, z or w
+	 * value, replace that value with the corresponding min value.
+	 *
+	 * @param {Vector4} v - The vector.
+	 * @return {Vector4} A reference to this vector.
+	 */min(v){this.x=Math.min(this.x,v.x);this.y=Math.min(this.y,v.y);this.z=Math.min(this.z,v.z);this.w=Math.min(this.w,v.w);return this;}/**
+	 * If this vector's x, y, z or w value is less than the given vector's x, y, z or w
+	 * value, replace that value with the corresponding max value.
+	 *
+	 * @param {Vector4} v - The vector.
+	 * @return {Vector4} A reference to this vector.
+	 */max(v){this.x=Math.max(this.x,v.x);this.y=Math.max(this.y,v.y);this.z=Math.max(this.z,v.z);this.w=Math.max(this.w,v.w);return this;}/**
+	 * If this vector's x, y, z or w value is greater than the max vector's x, y, z or w
+	 * value, it is replaced by the corresponding value.
+	 * If this vector's x, y, z or w value is less than the min vector's x, y, z or w value,
+	 * it is replaced by the corresponding value.
+	 *
+	 * @param {Vector4} min - The minimum x, y and z values.
+	 * @param {Vector4} max - The maximum x, y and z values in the desired range.
+	 * @return {Vector4} A reference to this vector.
+	 */clamp(min,max){// assumes min < max, componentwise
+this.x=clamp(this.x,min.x,max.x);this.y=clamp(this.y,min.y,max.y);this.z=clamp(this.z,min.z,max.z);this.w=clamp(this.w,min.w,max.w);return this;}/**
+	 * If this vector's x, y, z or w values are greater than the max value, they are
+	 * replaced by the max value.
+	 * If this vector's x, y, z or w values are less than the min value, they are
+	 * replaced by the min value.
+	 *
+	 * @param {number} minVal - The minimum value the components will be clamped to.
+	 * @param {number} maxVal - The maximum value the components will be clamped to.
+	 * @return {Vector4} A reference to this vector.
+	 */clampScalar(minVal,maxVal){this.x=clamp(this.x,minVal,maxVal);this.y=clamp(this.y,minVal,maxVal);this.z=clamp(this.z,minVal,maxVal);this.w=clamp(this.w,minVal,maxVal);return this;}/**
+	 * If this vector's length is greater than the max value, it is replaced by
+	 * the max value.
+	 * If this vector's length is less than the min value, it is replaced by the
+	 * min value.
+	 *
+	 * @param {number} min - The minimum value the vector length will be clamped to.
+	 * @param {number} max - The maximum value the vector length will be clamped to.
+	 * @return {Vector4} A reference to this vector.
+	 */clampLength(min,max){const length=this.length();return this.divideScalar(length||1).multiplyScalar(clamp(length,min,max));}/**
+	 * The components of this vector are rounded down to the nearest integer value.
+	 *
+	 * @return {Vector4} A reference to this vector.
+	 */floor(){this.x=Math.floor(this.x);this.y=Math.floor(this.y);this.z=Math.floor(this.z);this.w=Math.floor(this.w);return this;}/**
+	 * The components of this vector are rounded up to the nearest integer value.
+	 *
+	 * @return {Vector4} A reference to this vector.
+	 */ceil(){this.x=Math.ceil(this.x);this.y=Math.ceil(this.y);this.z=Math.ceil(this.z);this.w=Math.ceil(this.w);return this;}/**
+	 * The components of this vector are rounded to the nearest integer value
+	 *
+	 * @return {Vector4} A reference to this vector.
+	 */round(){this.x=Math.round(this.x);this.y=Math.round(this.y);this.z=Math.round(this.z);this.w=Math.round(this.w);return this;}/**
+	 * The components of this vector are rounded towards zero (up if negative,
+	 * down if positive) to an integer value.
+	 *
+	 * @return {Vector4} A reference to this vector.
+	 */roundToZero(){this.x=Math.trunc(this.x);this.y=Math.trunc(this.y);this.z=Math.trunc(this.z);this.w=Math.trunc(this.w);return this;}/**
+	 * Inverts this vector - i.e. sets x = -x, y = -y, z = -z, w = -w.
+	 *
+	 * @return {Vector4} A reference to this vector.
+	 */negate(){this.x=-this.x;this.y=-this.y;this.z=-this.z;this.w=-this.w;return this;}/**
+	 * Calculates the dot product of the given vector with this instance.
+	 *
+	 * @param {Vector4} v - The vector to compute the dot product with.
+	 * @return {number} The result of the dot product.
+	 */dot(v){return this.x*v.x+this.y*v.y+this.z*v.z+this.w*v.w;}/**
+	 * Computes the square of the Euclidean length (straight-line length) from
+	 * (0, 0, 0, 0) to (x, y, z, w). If you are comparing the lengths of vectors, you should
+	 * compare the length squared instead as it is slightly more efficient to calculate.
+	 *
+	 * @return {number} The square length of this vector.
+	 */lengthSq(){return this.x*this.x+this.y*this.y+this.z*this.z+this.w*this.w;}/**
+	 * Computes the  Euclidean length (straight-line length) from (0, 0, 0, 0) to (x, y, z, w).
+	 *
+	 * @return {number} The length of this vector.
+	 */length(){return Math.sqrt(this.x*this.x+this.y*this.y+this.z*this.z+this.w*this.w);}/**
+	 * Computes the Manhattan length of this vector.
+	 *
+	 * @return {number} The length of this vector.
+	 */manhattanLength(){return Math.abs(this.x)+Math.abs(this.y)+Math.abs(this.z)+Math.abs(this.w);}/**
+	 * Converts this vector to a unit vector - that is, sets it equal to a vector
+	 * with the same direction as this one, but with a vector length of `1`.
+	 *
+	 * @return {Vector4} A reference to this vector.
+	 */normalize(){return this.divideScalar(this.length()||1);}/**
+	 * Sets this vector to a vector with the same direction as this one, but
+	 * with the specified length.
+	 *
+	 * @param {number} length - The new length of this vector.
+	 * @return {Vector4} A reference to this vector.
+	 */setLength(length){return this.normalize().multiplyScalar(length);}/**
+	 * Linearly interpolates between the given vector and this instance, where
+	 * alpha is the percent distance along the line - alpha = 0 will be this
+	 * vector, and alpha = 1 will be the given one.
+	 *
+	 * @param {Vector4} v - The vector to interpolate towards.
+	 * @param {number} alpha - The interpolation factor, typically in the closed interval `[0, 1]`.
+	 * @return {Vector4} A reference to this vector.
+	 */lerp(v,alpha){this.x+=(v.x-this.x)*alpha;this.y+=(v.y-this.y)*alpha;this.z+=(v.z-this.z)*alpha;this.w+=(v.w-this.w)*alpha;return this;}/**
+	 * Linearly interpolates between the given vectors, where alpha is the percent
+	 * distance along the line - alpha = 0 will be first vector, and alpha = 1 will
+	 * be the second one. The result is stored in this instance.
+	 *
+	 * @param {Vector4} v1 - The first vector.
+	 * @param {Vector4} v2 - The second vector.
+	 * @param {number} alpha - The interpolation factor, typically in the closed interval `[0, 1]`.
+	 * @return {Vector4} A reference to this vector.
+	 */lerpVectors(v1,v2,alpha){this.x=v1.x+(v2.x-v1.x)*alpha;this.y=v1.y+(v2.y-v1.y)*alpha;this.z=v1.z+(v2.z-v1.z)*alpha;this.w=v1.w+(v2.w-v1.w)*alpha;return this;}/**
+	 * Returns `true` if this vector is equal with the given one.
+	 *
+	 * @param {Vector4} v - The vector to test for equality.
+	 * @return {boolean} Whether this vector is equal with the given one.
+	 */equals(v){return v.x===this.x&&v.y===this.y&&v.z===this.z&&v.w===this.w;}/**
+	 * Sets this vector's x value to be `array[ offset ]`, y value to be `array[ offset + 1 ]`,
+	 * z value to be `array[ offset + 2 ]`, w value to be `array[ offset + 3 ]`.
+	 *
+	 * @param {Array<number>} array - An array holding the vector component values.
+	 * @param {number} [offset=0] - The offset into the array.
+	 * @return {Vector4} A reference to this vector.
+	 */fromArray(array,offset=0){this.x=array[offset];this.y=array[offset+1];this.z=array[offset+2];this.w=array[offset+3];return this;}/**
+	 * Writes the components of this vector to the given array. If no array is provided,
+	 * the method returns a new instance.
+	 *
+	 * @param {Array<number>} [array=[]] - The target array holding the vector components.
+	 * @param {number} [offset=0] - Index of the first element in the array.
+	 * @return {Array<number>} The vector components.
+	 */toArray(array=[],offset=0){array[offset]=this.x;array[offset+1]=this.y;array[offset+2]=this.z;array[offset+3]=this.w;return array;}/**
+	 * Sets the components of this vector from the given buffer attribute.
+	 *
+	 * @param {BufferAttribute} attribute - The buffer attribute holding vector data.
+	 * @param {number} index - The index into the attribute.
+	 * @return {Vector4} A reference to this vector.
+	 */fromBufferAttribute(attribute,index){this.x=attribute.getX(index);this.y=attribute.getY(index);this.z=attribute.getZ(index);this.w=attribute.getW(index);return this;}/**
+	 * Sets each component of this vector to a pseudo-random value between `0` and
+	 * `1`, excluding `1`.
+	 *
+	 * @return {Vector4} A reference to this vector.
+	 */random(){this.x=Math.random();this.y=Math.random();this.z=Math.random();this.w=Math.random();return this;}*[Symbol.iterator](){yield this.x;yield this.y;yield this.z;yield this.w;}}/**
+ * A render target is a buffer where the video card draws pixels for a scene
+ * that is being rendered in the background. It is used in different effects,
+ * such as applying postprocessing to a rendered image before displaying it
+ * on the screen.
+ *
+ * @augments EventDispatcher
+ */class RenderTarget extends EventDispatcher{/**
+	 * Render target options.
+	 *
+	 * @typedef {Object} RenderTarget~Options
+	 * @property {boolean} [generateMipmaps=false] - Whether to generate mipmaps or not.
+	 * @property {number} [magFilter=LinearFilter] - The mag filter.
+	 * @property {number} [minFilter=LinearFilter] - The min filter.
+	 * @property {number} [format=RGBAFormat] - The texture format.
+	 * @property {number} [type=UnsignedByteType] - The texture type.
+	 * @property {?string} [internalFormat=null] - The texture's internal format.
+	 * @property {number} [wrapS=ClampToEdgeWrapping] - The texture's uv wrapping mode.
+	 * @property {number} [wrapT=ClampToEdgeWrapping] - The texture's uv wrapping mode.
+	 * @property {number} [anisotropy=1] - The texture's anisotropy value.
+	 * @property {string} [colorSpace=NoColorSpace] - The texture's color space.
+	 * @property {boolean} [depthBuffer=true] - Whether to allocate a depth buffer or not.
+	 * @property {boolean} [stencilBuffer=false] - Whether to allocate a stencil buffer or not.
+	 * @property {boolean} [resolveDepthBuffer=true] - Whether to resolve the depth buffer or not.
+	 * @property {boolean} [resolveStencilBuffer=true] - Whether  to resolve the stencil buffer or not.
+	 * @property {?Texture} [depthTexture=null] - Reference to a depth texture.
+	 * @property {number} [samples=0] - The MSAA samples count.
+	 * @property {number} [count=1] - Defines the number of color attachments . Must be at least `1`.
+	 * @property {number} [depth=1] - The texture depth.
+	 * @property {boolean} [multiview=false] - Whether this target is used for multiview rendering.
+	 *//**
+	 * Constructs a new render target.
+	 *
+	 * @param {number} [width=1] - The width of the render target.
+	 * @param {number} [height=1] - The height of the render target.
+	 * @param {RenderTarget~Options} [options] - The configuration object.
+	 */constructor(width=1,height=1,options={}){super();options=Object.assign({generateMipmaps:false,internalFormat:null,minFilter:LinearFilter,depthBuffer:true,stencilBuffer:false,resolveDepthBuffer:true,resolveStencilBuffer:true,depthTexture:null,samples:0,count:1,depth:1,multiview:false},options);/**
+		 * This flag can be used for type testing.
+		 *
+		 * @type {boolean}
+		 * @readonly
+		 * @default true
+		 */this.isRenderTarget=true;/**
+		 * The width of the render target.
+		 *
+		 * @type {number}
+		 * @default 1
+		 */this.width=width;/**
+		 * The height of the render target.
+		 *
+		 * @type {number}
+		 * @default 1
+		 */this.height=height;/**
+		 * The depth of the render target.
+		 *
+		 * @type {number}
+		 * @default 1
+		 */this.depth=options.depth;/**
+		 * A rectangular area inside the render target's viewport. Fragments that are
+		 * outside the area will be discarded.
+		 *
+		 * @type {Vector4}
+		 * @default (0,0,width,height)
+		 */this.scissor=new Vector4(0,0,width,height);/**
+		 * Indicates whether the scissor test should be enabled when rendering into
+		 * this render target or not.
+		 *
+		 * @type {boolean}
+		 * @default false
+		 */this.scissorTest=false;/**
+		 * A rectangular area representing the render target's viewport.
+		 *
+		 * @type {Vector4}
+		 * @default (0,0,width,height)
+		 */this.viewport=new Vector4(0,0,width,height);const image={width:width,height:height,depth:options.depth};const texture=new Texture(image);/**
+		 * An array of textures. Each color attachment is represented as a separate texture.
+		 * Has at least a single entry for the default color attachment.
+		 *
+		 * @type {Array<Texture>}
+		 */this.textures=[];const count=options.count;for(let i=0;i<count;i++){this.textures[i]=texture.clone();this.textures[i].isRenderTargetTexture=true;this.textures[i].renderTarget=this;}this._setTextureOptions(options);/**
+		 * Whether to allocate a depth buffer or not.
+		 *
+		 * @type {boolean}
+		 * @default true
+		 */this.depthBuffer=options.depthBuffer;/**
+		 * Whether to allocate a stencil buffer or not.
+		 *
+		 * @type {boolean}
+		 * @default false
+		 */this.stencilBuffer=options.stencilBuffer;/**
+		 * Whether to resolve the depth buffer or not.
+		 *
+		 * @type {boolean}
+		 * @default true
+		 */this.resolveDepthBuffer=options.resolveDepthBuffer;/**
+		 * Whether to resolve the stencil buffer or not.
+		 *
+		 * @type {boolean}
+		 * @default true
+		 */this.resolveStencilBuffer=options.resolveStencilBuffer;this._depthTexture=null;this.depthTexture=options.depthTexture;/**
+		 * The number of MSAA samples.
+		 *
+		 * A value of `0` disables MSAA.
+		 *
+		 * @type {number}
+		 * @default 0
+		 */this.samples=options.samples;/**
+		 * Whether to this target is used in multiview rendering.
+		 *
+		 * @type {boolean}
+		 * @default false
+		 */this.multiview=options.multiview;}_setTextureOptions(options={}){const values={minFilter:LinearFilter,generateMipmaps:false,flipY:false,internalFormat:null};if(options.mapping!==undefined)values.mapping=options.mapping;if(options.wrapS!==undefined)values.wrapS=options.wrapS;if(options.wrapT!==undefined)values.wrapT=options.wrapT;if(options.wrapR!==undefined)values.wrapR=options.wrapR;if(options.magFilter!==undefined)values.magFilter=options.magFilter;if(options.minFilter!==undefined)values.minFilter=options.minFilter;if(options.format!==undefined)values.format=options.format;if(options.type!==undefined)values.type=options.type;if(options.anisotropy!==undefined)values.anisotropy=options.anisotropy;if(options.colorSpace!==undefined)values.colorSpace=options.colorSpace;if(options.flipY!==undefined)values.flipY=options.flipY;if(options.generateMipmaps!==undefined)values.generateMipmaps=options.generateMipmaps;if(options.internalFormat!==undefined)values.internalFormat=options.internalFormat;for(let i=0;i<this.textures.length;i++){const texture=this.textures[i];texture.setValues(values);}}/**
+	 * The texture representing the default color attachment.
+	 *
+	 * @type {Texture}
+	 */get texture(){return this.textures[0];}set texture(value){this.textures[0]=value;}set depthTexture(current){if(this._depthTexture!==null)this._depthTexture.renderTarget=null;if(current!==null)current.renderTarget=this;this._depthTexture=current;}/**
+	 * Instead of saving the depth in a renderbuffer, a texture
+	 * can be used instead which is useful for further processing
+	 * e.g. in context of post-processing.
+	 *
+	 * @type {?DepthTexture}
+	 * @default null
+	 */get depthTexture(){return this._depthTexture;}/**
+	 * Sets the size of this render target.
+	 *
+	 * @param {number} width - The width.
+	 * @param {number} height - The height.
+	 * @param {number} [depth=1] - The depth.
+	 */setSize(width,height,depth=1){if(this.width!==width||this.height!==height||this.depth!==depth){this.width=width;this.height=height;this.depth=depth;for(let i=0,il=this.textures.length;i<il;i++){this.textures[i].image.width=width;this.textures[i].image.height=height;this.textures[i].image.depth=depth;this.textures[i].isArrayTexture=this.textures[i].image.depth>1;}this.dispose();}this.viewport.set(0,0,width,height);this.scissor.set(0,0,width,height);}/**
+	 * Returns a new render target with copied values from this instance.
+	 *
+	 * @return {RenderTarget} A clone of this instance.
+	 */clone(){return new this.constructor().copy(this);}/**
+	 * Copies the settings of the given render target. This is a structural copy so
+	 * no resources are shared between render targets after the copy. That includes
+	 * all MRT textures and the depth texture.
+	 *
+	 * @param {RenderTarget} source - The render target to copy.
+	 * @return {RenderTarget} A reference to this instance.
+	 */copy(source){this.width=source.width;this.height=source.height;this.depth=source.depth;this.scissor.copy(source.scissor);this.scissorTest=source.scissorTest;this.viewport.copy(source.viewport);this.textures.length=0;for(let i=0,il=source.textures.length;i<il;i++){this.textures[i]=source.textures[i].clone();this.textures[i].isRenderTargetTexture=true;this.textures[i].renderTarget=this;// ensure image object is not shared, see #20328
+const image=Object.assign({},source.textures[i].image);this.textures[i].source=new Source(image);}this.depthBuffer=source.depthBuffer;this.stencilBuffer=source.stencilBuffer;this.resolveDepthBuffer=source.resolveDepthBuffer;this.resolveStencilBuffer=source.resolveStencilBuffer;if(source.depthTexture!==null)this.depthTexture=source.depthTexture.clone();this.samples=source.samples;return this;}/**
+	 * Frees the GPU-related resources allocated by this instance. Call this
+	 * method whenever this instance is no longer used in your app.
+	 *
+	 * @fires RenderTarget#dispose
+	 */dispose(){this.dispatchEvent({type:'dispose'});}}/**
+ * A render target used in context of {@link WebGLRenderer}.
+ *
+ * @augments RenderTarget
+ */class WebGLRenderTarget extends RenderTarget{/**
+	 * Constructs a new 3D render target.
+	 *
+	 * @param {number} [width=1] - The width of the render target.
+	 * @param {number} [height=1] - The height of the render target.
+	 * @param {RenderTarget~Options} [options] - The configuration object.
+	 */constructor(width=1,height=1,options={}){super(width,height,options);/**
+		 * This flag can be used for type testing.
+		 *
+		 * @type {boolean}
+		 * @readonly
+		 * @default true
+		 */this.isWebGLRenderTarget=true;}}/**
+ * Creates an array of textures directly from raw buffer data.
+ *
+ * @augments Texture
+ */class DataArrayTexture extends Texture{/**
+	 * Constructs a new data array texture.
+	 *
+	 * @param {?TypedArray} [data=null] - The buffer data.
+	 * @param {number} [width=1] - The width of the texture.
+	 * @param {number} [height=1] - The height of the texture.
+	 * @param {number} [depth=1] - The depth of the texture.
+	 */constructor(data=null,width=1,height=1,depth=1){super(null);/**
+		 * This flag can be used for type testing.
+		 *
+		 * @type {boolean}
+		 * @readonly
+		 * @default true
+		 */this.isDataArrayTexture=true;/**
+		 * The image definition of a data texture.
+		 *
+		 * @type {{data:TypedArray,width:number,height:number,depth:number}}
+		 */this.image={data,width,height,depth};/**
+		 * How the texture is sampled when a texel covers more than one pixel.
+		 *
+		 * Overwritten and set to `NearestFilter` by default.
+		 *
+		 * @type {(NearestFilter|NearestMipmapNearestFilter|NearestMipmapLinearFilter|LinearFilter|LinearMipmapNearestFilter|LinearMipmapLinearFilter)}
+		 * @default NearestFilter
+		 */this.magFilter=NearestFilter;/**
+		 * How the texture is sampled when a texel covers less than one pixel.
+		 *
+		 * Overwritten and set to `NearestFilter` by default.
+		 *
+		 * @type {(NearestFilter|NearestMipmapNearestFilter|NearestMipmapLinearFilter|LinearFilter|LinearMipmapNearestFilter|LinearMipmapLinearFilter)}
+		 * @default NearestFilter
+		 */this.minFilter=NearestFilter;/**
+		 * This defines how the texture is wrapped in the depth and corresponds to
+		 * *W* in UVW mapping.
+		 *
+		 * @type {(RepeatWrapping|ClampToEdgeWrapping|MirroredRepeatWrapping)}
+		 * @default ClampToEdgeWrapping
+		 */this.wrapR=ClampToEdgeWrapping;/**
+		 * Whether to generate mipmaps (if possible) for a texture.
+		 *
+		 * Overwritten and set to `false` by default.
+		 *
+		 * @type {boolean}
+		 * @default false
+		 */this.generateMipmaps=false;/**
+		 * If set to `true`, the texture is flipped along the vertical axis when
+		 * uploaded to the GPU.
+		 *
+		 * Overwritten and set to `false` by default.
+		 *
+		 * @type {boolean}
+		 * @default false
+		 */this.flipY=false;/**
+		 * Specifies the alignment requirements for the start of each pixel row in memory.
+		 *
+		 * Overwritten and set to `1` by default.
+		 *
+		 * @type {boolean}
+		 * @default 1
+		 */this.unpackAlignment=1;/**
+		 * A set of all layers which need to be updated in the texture.
+		 *
+		 * @type {Set<number>}
+		 */this.layerUpdates=new Set();}/**
+	 * Describes that a specific layer of the texture needs to be updated.
+	 * Normally when {@link Texture#needsUpdate} is set to `true`, the
+	 * entire data texture array is sent to the GPU. Marking specific
+	 * layers will only transmit subsets of all mipmaps associated with a
+	 * specific depth in the array which is often much more performant.
+	 *
+	 * @param {number} layerIndex - The layer index that should be updated.
+	 */addLayerUpdate(layerIndex){this.layerUpdates.add(layerIndex);}/**
+	 * Resets the layer updates registry.
+	 */clearLayerUpdates(){this.layerUpdates.clear();}}/**
+ * An array render target used in context of {@link WebGLRenderer}.
+ *
+ * @augments WebGLRenderTarget
+ */class WebGLArrayRenderTarget extends WebGLRenderTarget{/**
+	 * Constructs a new array render target.
+	 *
+	 * @param {number} [width=1] - The width of the render target.
+	 * @param {number} [height=1] - The height of the render target.
+	 * @param {number} [depth=1] - The height of the render target.
+	 * @param {RenderTarget~Options} [options] - The configuration object.
+	 */constructor(width=1,height=1,depth=1,options={}){super(width,height,options);/**
+		 * This flag can be used for type testing.
+		 *
+		 * @type {boolean}
+		 * @readonly
+		 * @default true
+		 */this.isWebGLArrayRenderTarget=true;this.depth=depth;/**
+		 * Overwritten with a different texture type.
+		 *
+		 * @type {DataArrayTexture}
+		 */this.texture=new DataArrayTexture(null,width,height,depth);this._setTextureOptions(options);this.texture.isRenderTargetTexture=true;}}/**
+ * Creates a three-dimensional texture from raw data, with parameters to
+ * divide it into width, height, and depth.
+ *
+ * @augments Texture
+ */class Data3DTexture extends Texture{/**
+	 * Constructs a new data array texture.
+	 *
+	 * @param {?TypedArray} [data=null] - The buffer data.
+	 * @param {number} [width=1] - The width of the texture.
+	 * @param {number} [height=1] - The height of the texture.
+	 * @param {number} [depth=1] - The depth of the texture.
+	 */constructor(data=null,width=1,height=1,depth=1){// We're going to add .setXXX() methods for setting properties later.
+// Users can still set in Data3DTexture directly.
+//
+//	const texture = new THREE.Data3DTexture( data, width, height, depth );
+// 	texture.anisotropy = 16;
+//
+// See #14839
+super(null);/**
+		 * This flag can be used for type testing.
+		 *
+		 * @type {boolean}
+		 * @readonly
+		 * @default true
+		 */this.isData3DTexture=true;/**
+		 * The image definition of a data texture.
+		 *
+		 * @type {{data:TypedArray,width:number,height:number,depth:number}}
+		 */this.image={data,width,height,depth};/**
+		 * How the texture is sampled when a texel covers more than one pixel.
+		 *
+		 * Overwritten and set to `NearestFilter` by default.
+		 *
+		 * @type {(NearestFilter|NearestMipmapNearestFilter|NearestMipmapLinearFilter|LinearFilter|LinearMipmapNearestFilter|LinearMipmapLinearFilter)}
+		 * @default NearestFilter
+		 */this.magFilter=NearestFilter;/**
+		 * How the texture is sampled when a texel covers less than one pixel.
+		 *
+		 * Overwritten and set to `NearestFilter` by default.
+		 *
+		 * @type {(NearestFilter|NearestMipmapNearestFilter|NearestMipmapLinearFilter|LinearFilter|LinearMipmapNearestFilter|LinearMipmapLinearFilter)}
+		 * @default NearestFilter
+		 */this.minFilter=NearestFilter;/**
+		 * This defines how the texture is wrapped in the depth and corresponds to
+		 * *W* in UVW mapping.
+		 *
+		 * @type {(RepeatWrapping|ClampToEdgeWrapping|MirroredRepeatWrapping)}
+		 * @default ClampToEdgeWrapping
+		 */this.wrapR=ClampToEdgeWrapping;/**
+		 * Whether to generate mipmaps (if possible) for a texture.
+		 *
+		 * Overwritten and set to `false` by default.
+		 *
+		 * @type {boolean}
+		 * @default false
+		 */this.generateMipmaps=false;/**
+		 * If set to `true`, the texture is flipped along the vertical axis when
+		 * uploaded to the GPU.
+		 *
+		 * Overwritten and set to `false` by default.
+		 *
+		 * @type {boolean}
+		 * @default false
+		 */this.flipY=false;/**
+		 * Specifies the alignment requirements for the start of each pixel row in memory.
+		 *
+		 * Overwritten and set to `1` by default.
+		 *
+		 * @type {boolean}
+		 * @default 1
+		 */this.unpackAlignment=1;}}/**
+ * A 3D render target used in context of {@link WebGLRenderer}.
+ *
+ * @augments WebGLRenderTarget
+ */class WebGL3DRenderTarget extends WebGLRenderTarget{/**
+	 * Constructs a new 3D render target.
+	 *
+	 * @param {number} [width=1] - The width of the render target.
+	 * @param {number} [height=1] - The height of the render target.
+	 * @param {number} [depth=1] - The height of the render target.
+	 * @param {RenderTarget~Options} [options] - The configuration object.
+	 */constructor(width=1,height=1,depth=1,options={}){super(width,height,options);/**
+		 * This flag can be used for type testing.
+		 *
+		 * @type {boolean}
+		 * @readonly
+		 * @default true
+		 */this.isWebGL3DRenderTarget=true;this.depth=depth;/**
+		 * Overwritten with a different texture type.
+		 *
+		 * @type {Data3DTexture}
+		 */this.texture=new Data3DTexture(null,width,height,depth);this._setTextureOptions(options);this.texture.isRenderTargetTexture=true;}}/**
  * Represents an axis-aligned bounding box (AABB) in 3D space.
  */class Box3{/**
 	 * Constructs a new bounding box.
@@ -35918,7 +35968,16 @@ this.setFromPoints(_points);return this;}/**
 	 *
 	 * @param {Box3} box - The box to test for equality.
 	 * @return {boolean} Whether this bounding box is equal with the given one.
-	 */equals(box){return box.min.equals(this.min)&&box.max.equals(this.max);}}const _points=[/*@__PURE__*/new Vector3(),/*@__PURE__*/new Vector3(),/*@__PURE__*/new Vector3(),/*@__PURE__*/new Vector3(),/*@__PURE__*/new Vector3(),/*@__PURE__*/new Vector3(),/*@__PURE__*/new Vector3(),/*@__PURE__*/new Vector3()];const _vector$b=/*@__PURE__*/new Vector3();const _box$4=/*@__PURE__*/new Box3();// triangle centered vertices
+	 */equals(box){return box.min.equals(this.min)&&box.max.equals(this.max);}/**
+	 * Returns a serialized structure of the bounding box.
+	 *
+	 * @return {Object} Serialized structure with fields representing the object state.
+	 */toJSON(){return{min:this.min.toArray(),max:this.max.toArray()};}/**
+	 * Returns a serialized structure of the bounding box.
+	 *
+	 * @param {Object} json - The serialized json to set the box from.
+	 * @return {Box3} A reference to this bounding box.
+	 */fromJSON(json){this.min.fromArray(json.min);this.max.fromArray(json.max);return this;}}const _points=[/*@__PURE__*/new Vector3(),/*@__PURE__*/new Vector3(),/*@__PURE__*/new Vector3(),/*@__PURE__*/new Vector3(),/*@__PURE__*/new Vector3(),/*@__PURE__*/new Vector3(),/*@__PURE__*/new Vector3(),/*@__PURE__*/new Vector3()];const _vector$b=/*@__PURE__*/new Vector3();const _box$4=/*@__PURE__*/new Box3();// triangle centered vertices
 const _v0$2=/*@__PURE__*/new Vector3();const _v1$7=/*@__PURE__*/new Vector3();const _v2$4=/*@__PURE__*/new Vector3();// triangle edge vectors
 const _f0=/*@__PURE__*/new Vector3();const _f1=/*@__PURE__*/new Vector3();const _f2=/*@__PURE__*/new Vector3();const _center=/*@__PURE__*/new Vector3();const _extents=/*@__PURE__*/new Vector3();const _triangleNormal=/*@__PURE__*/new Vector3();const _testAxis=/*@__PURE__*/new Vector3();function satForAxes(axes,v0,v1,v2,extents){for(let i=0,j=axes.length-3;i<=j;i+=3){_testAxis.fromArray(axes,i);// project the aabb onto the separating axis
 const r=extents.x*Math.abs(_testAxis.x)+extents.y*Math.abs(_testAxis.y)+extents.z*Math.abs(_testAxis.z);// project all 3 vertices of the triangle onto the separating axis
@@ -36050,7 +36109,16 @@ const length=Math.sqrt(lengthSq);const delta=(length-this.radius)*0.5;this.cente
 	 * Returns a new sphere with copied values from this instance.
 	 *
 	 * @return {Sphere} A clone of this instance.
-	 */clone(){return new this.constructor().copy(this);}}const _vector$a=/*@__PURE__*/new Vector3();const _segCenter=/*@__PURE__*/new Vector3();const _segDir=/*@__PURE__*/new Vector3();const _diff=/*@__PURE__*/new Vector3();const _edge1=/*@__PURE__*/new Vector3();const _edge2=/*@__PURE__*/new Vector3();const _normal$1=/*@__PURE__*/new Vector3();/**
+	 */clone(){return new this.constructor().copy(this);}/**
+	 * Returns a serialized structure of the bounding sphere.
+	 *
+	 * @return {Object} Serialized structure with fields representing the object state.
+	 */toJSON(){return{radius:this.radius,center:this.center.toArray()};}/**
+	 * Returns a serialized structure of the bounding sphere.
+	 *
+	 * @param {Object} json - The serialized json to set the sphere from.
+	 * @return {Box3} A reference to this bounding sphere.
+	 */fromJSON(json){this.radius=json.radius;this.center.fromArray(json.center);return this;}}const _vector$a=/*@__PURE__*/new Vector3();const _segCenter=/*@__PURE__*/new Vector3();const _segDir=/*@__PURE__*/new Vector3();const _diff=/*@__PURE__*/new Vector3();const _edge1=/*@__PURE__*/new Vector3();const _edge2=/*@__PURE__*/new Vector3();const _normal$1=/*@__PURE__*/new Vector3();/**
  * A ray that emits from an origin in a certain direction. The class is used by
  * {@link Raycaster} to assist with raycasting. Raycasting is used for
  * mouse picking (working out what objects in the 3D space the mouse is over)
@@ -36154,7 +36222,8 @@ return this.at(t0,target);}/**
 	 *
 	 * @param {Sphere} sphere - The sphere to intersect.
 	 * @return {boolean} Whether this ray intersects with the given sphere or not.
-	 */intersectsSphere(sphere){return this.distanceSqToPoint(sphere.center)<=sphere.radius*sphere.radius;}/**
+	 */intersectsSphere(sphere){if(sphere.radius<0)return false;// handle empty spheres, see #31187
+return this.distanceSqToPoint(sphere.center)<=sphere.radius*sphere.radius;}/**
 	 * Computes the distance from the ray's origin to the given plane. Returns `null` if the ray
 	 * does not intersect with the plane.
 	 *
@@ -37217,9 +37286,9 @@ const isRootObject=meta===undefined||typeof meta==='string';const output={};// m
 // not providing it implies that this is the root object
 // being serialized.
 if(isRootObject){// initialize meta obj
-meta={geometries:{},materials:{},textures:{},images:{},shapes:{},skeletons:{},animations:{},nodes:{}};output.metadata={version:4.6,type:'Object',generator:'Object3D.toJSON'};}// standard Object3D serialization
+meta={geometries:{},materials:{},textures:{},images:{},shapes:{},skeletons:{},animations:{},nodes:{}};output.metadata={version:4.7,type:'Object',generator:'Object3D.toJSON'};}// standard Object3D serialization
 const object={};object.uuid=this.uuid;object.type=this.type;if(this.name!=='')object.name=this.name;if(this.castShadow===true)object.castShadow=true;if(this.receiveShadow===true)object.receiveShadow=true;if(this.visible===false)object.visible=false;if(this.frustumCulled===false)object.frustumCulled=false;if(this.renderOrder!==0)object.renderOrder=this.renderOrder;if(Object.keys(this.userData).length>0)object.userData=this.userData;object.layers=this.layers.mask;object.matrix=this.matrix.toArray();object.up=this.up.toArray();if(this.matrixAutoUpdate===false)object.matrixAutoUpdate=false;// object specific properties
-if(this.isInstancedMesh){object.type='InstancedMesh';object.count=this.count;object.instanceMatrix=this.instanceMatrix.toJSON();if(this.instanceColor!==null)object.instanceColor=this.instanceColor.toJSON();}if(this.isBatchedMesh){object.type='BatchedMesh';object.perObjectFrustumCulled=this.perObjectFrustumCulled;object.sortObjects=this.sortObjects;object.drawRanges=this._drawRanges;object.reservedRanges=this._reservedRanges;object.visibility=this._visibility;object.active=this._active;object.bounds=this._bounds.map(bound=>({boxInitialized:bound.boxInitialized,boxMin:bound.box.min.toArray(),boxMax:bound.box.max.toArray(),sphereInitialized:bound.sphereInitialized,sphereRadius:bound.sphere.radius,sphereCenter:bound.sphere.center.toArray()}));object.maxInstanceCount=this._maxInstanceCount;object.maxVertexCount=this._maxVertexCount;object.maxIndexCount=this._maxIndexCount;object.geometryInitialized=this._geometryInitialized;object.geometryCount=this._geometryCount;object.matricesTexture=this._matricesTexture.toJSON(meta);if(this._colorsTexture!==null)object.colorsTexture=this._colorsTexture.toJSON(meta);if(this.boundingSphere!==null){object.boundingSphere={center:object.boundingSphere.center.toArray(),radius:object.boundingSphere.radius};}if(this.boundingBox!==null){object.boundingBox={min:object.boundingBox.min.toArray(),max:object.boundingBox.max.toArray()};}}//
+if(this.isInstancedMesh){object.type='InstancedMesh';object.count=this.count;object.instanceMatrix=this.instanceMatrix.toJSON();if(this.instanceColor!==null)object.instanceColor=this.instanceColor.toJSON();}if(this.isBatchedMesh){object.type='BatchedMesh';object.perObjectFrustumCulled=this.perObjectFrustumCulled;object.sortObjects=this.sortObjects;object.drawRanges=this._drawRanges;object.reservedRanges=this._reservedRanges;object.geometryInfo=this._geometryInfo.map(info=>({...info,boundingBox:info.boundingBox?info.boundingBox.toJSON():undefined,boundingSphere:info.boundingSphere?info.boundingSphere.toJSON():undefined}));object.instanceInfo=this._instanceInfo.map(info=>({...info}));object.availableInstanceIds=this._availableInstanceIds.slice();object.availableGeometryIds=this._availableGeometryIds.slice();object.nextIndexStart=this._nextIndexStart;object.nextVertexStart=this._nextVertexStart;object.geometryCount=this._geometryCount;object.maxInstanceCount=this._maxInstanceCount;object.maxVertexCount=this._maxVertexCount;object.maxIndexCount=this._maxIndexCount;object.geometryInitialized=this._geometryInitialized;object.matricesTexture=this._matricesTexture.toJSON(meta);object.indirectTexture=this._indirectTexture.toJSON(meta);if(this._colorsTexture!==null){object.colorsTexture=this._colorsTexture.toJSON(meta);}if(this.boundingSphere!==null){object.boundingSphere=this.boundingSphere.toJSON();}if(this.boundingBox!==null){object.boundingBox=this.boundingBox.toJSON();}}//
 function serialize(library,element){if(library[element.uuid]===undefined){library[element.uuid]=element.toJSON(meta);}return element.uuid;}if(this.isScene){if(this.background){if(this.background.isColor){object.background=this.background.toJSON();}else if(this.background.isTexture){object.background=this.background.toJSON(meta).uuid;}}if(this.environment&&this.environment.isTexture&&this.environment.isRenderTargetTexture!==true){object.environment=this.environment.toJSON(meta).uuid;}}else if(this.isMesh||this.isLine||this.isPoints){object.geometry=serialize(meta.geometries,this.geometry);const parameters=this.geometry.parameters;if(parameters!==undefined&&parameters.shapes!==undefined){const shapes=parameters.shapes;if(Array.isArray(shapes)){for(let i=0,l=shapes.length;i<l;i++){const shape=shapes[i];serialize(meta.shapes,shape);}}else{serialize(meta.shapes,shapes);}}}if(this.isSkinnedMesh){object.bindMode=this.bindMode;object.bindMatrix=this.bindMatrix.toArray();if(this.skeleton!==undefined){serialize(meta.skeletons,this.skeleton);object.skeleton=this.skeleton.uuid;}}if(this.material!==undefined){if(Array.isArray(this.material)){const uuids=[];for(let i=0,l=this.material.length;i<l;i++){uuids.push(serialize(meta.materials,this.material[i]));}object.material=uuids;}else{object.material=serialize(meta.materials,this.material);}}//
 if(this.children.length>0){object.children=[];for(let i=0;i<this.children.length;i++){object.children.push(this.children[i].toJSON(meta).object);}}//
 if(this.animations.length>0){object.animations=[];for(let i=0;i<this.animations.length;i++){const animation=this.animations[i];object.animations.push(serialize(meta.animations,animation));}}if(isRootObject){const geometries=extractFromCache(meta.geometries);const materials=extractFromCache(meta.materials);const textures=extractFromCache(meta.textures);const images=extractFromCache(meta.images);const shapes=extractFromCache(meta.shapes);const skeletons=extractFromCache(meta.skeletons);const animations=extractFromCache(meta.animations);const nodes=extractFromCache(meta.nodes);if(geometries.length>0)output.geometries=geometries;if(materials.length>0)output.materials=materials;if(textures.length>0)output.textures=textures;if(images.length>0)output.images=images;if(shapes.length>0)output.shapes=shapes;if(skeletons.length>0)output.skeletons=skeletons;if(animations.length>0)output.animations=animations;if(nodes.length>0)output.nodes=nodes;}output.object=object;return output;// extract data from the cache hash
@@ -37544,7 +37613,7 @@ const value=r;if(value&&value.isColor){this.copy(value);}else if(typeof value===
 	 * @param {number} hex - The hexadecimal value.
 	 * @param {string} [colorSpace=SRGBColorSpace] - The color space.
 	 * @return {Color} A reference to this color.
-	 */setHex(hex,colorSpace=SRGBColorSpace){hex=Math.floor(hex);this.r=(hex>>16&255)/255;this.g=(hex>>8&255)/255;this.b=(hex&255)/255;ColorManagement.toWorkingColorSpace(this,colorSpace);return this;}/**
+	 */setHex(hex,colorSpace=SRGBColorSpace){hex=Math.floor(hex);this.r=(hex>>16&255)/255;this.g=(hex>>8&255)/255;this.b=(hex&255)/255;ColorManagement.colorSpaceToWorking(this,colorSpace);return this;}/**
 	 * Sets this color from RGB values.
 	 *
 	 * @param {number} r - Red channel value between `0.0` and `1.0`.
@@ -37552,7 +37621,7 @@ const value=r;if(value&&value.isColor){this.copy(value);}else if(typeof value===
 	 * @param {number} b - Blue channel value between `0.0` and `1.0`.
 	 * @param {string} [colorSpace=ColorManagement.workingColorSpace] - The color space.
 	 * @return {Color} A reference to this color.
-	 */setRGB(r,g,b,colorSpace=ColorManagement.workingColorSpace){this.r=r;this.g=g;this.b=b;ColorManagement.toWorkingColorSpace(this,colorSpace);return this;}/**
+	 */setRGB(r,g,b,colorSpace=ColorManagement.workingColorSpace){this.r=r;this.g=g;this.b=b;ColorManagement.colorSpaceToWorking(this,colorSpace);return this;}/**
 	 * Sets this color from RGB values.
 	 *
 	 * @param {number} h - Hue value between `0.0` and `1.0`.
@@ -37561,7 +37630,7 @@ const value=r;if(value&&value.isColor){this.copy(value);}else if(typeof value===
 	 * @param {string} [colorSpace=ColorManagement.workingColorSpace] - The color space.
 	 * @return {Color} A reference to this color.
 	 */setHSL(h,s,l,colorSpace=ColorManagement.workingColorSpace){// h,s,l ranges are in 0.0 - 1.0
-h=euclideanModulo(h,1);s=clamp(s,0,1);l=clamp(l,0,1);if(s===0){this.r=this.g=this.b=l;}else{const p=l<=0.5?l*(1+s):l+s-l*s;const q=2*l-p;this.r=hue2rgb(q,p,h+1/3);this.g=hue2rgb(q,p,h);this.b=hue2rgb(q,p,h-1/3);}ColorManagement.toWorkingColorSpace(this,colorSpace);return this;}/**
+h=euclideanModulo(h,1);s=clamp(s,0,1);l=clamp(l,0,1);if(s===0){this.r=this.g=this.b=l;}else{const p=l<=0.5?l*(1+s):l+s-l*s;const q=2*l-p;this.r=hue2rgb(q,p,h+1/3);this.g=hue2rgb(q,p,h);this.b=hue2rgb(q,p,h-1/3);}ColorManagement.colorSpaceToWorking(this,colorSpace);return this;}/**
 	 * Sets this color from a CSS-style string. For example, `rgb(250, 0,0)`,
 	 * `rgb(100%, 0%, 0%)`, `hsl(0, 100%, 50%)`, `#ff0000`, `#f00`, or `red` ( or
 	 * any [X11 color name]{@link https://en.wikipedia.org/wiki/X11_color_names#Color_name_chart} -
@@ -37626,7 +37695,7 @@ console.warn('THREE.Color: Unknown color '+style);}return this;}/**
 	 *
 	 * @param {string} [colorSpace=SRGBColorSpace] - The color space.
 	 * @return {number} The hexadecimal value.
-	 */getHex(colorSpace=SRGBColorSpace){ColorManagement.fromWorkingColorSpace(_color.copy(this),colorSpace);return Math.round(clamp(_color.r*255,0,255))*65536+Math.round(clamp(_color.g*255,0,255))*256+Math.round(clamp(_color.b*255,0,255));}/**
+	 */getHex(colorSpace=SRGBColorSpace){ColorManagement.workingToColorSpace(_color.copy(this),colorSpace);return Math.round(clamp(_color.r*255,0,255))*65536+Math.round(clamp(_color.g*255,0,255))*256+Math.round(clamp(_color.b*255,0,255));}/**
 	 * Returns the hexadecimal value of this color as a string (for example, 'FFFFFF').
 	 *
 	 * @param {string} [colorSpace=SRGBColorSpace] - The color space.
@@ -37639,18 +37708,18 @@ console.warn('THREE.Color: Unknown color '+style);}return this;}/**
 	 * @param {string} [colorSpace=ColorManagement.workingColorSpace] - The color space.
 	 * @return {{h:number,s:number,l:number}} The HSL representation of this color.
 	 */getHSL(target,colorSpace=ColorManagement.workingColorSpace){// h,s,l ranges are in 0.0 - 1.0
-ColorManagement.fromWorkingColorSpace(_color.copy(this),colorSpace);const r=_color.r,g=_color.g,b=_color.b;const max=Math.max(r,g,b);const min=Math.min(r,g,b);let hue,saturation;const lightness=(min+max)/2.0;if(min===max){hue=0;saturation=0;}else{const delta=max-min;saturation=lightness<=0.5?delta/(max+min):delta/(2-max-min);switch(max){case r:hue=(g-b)/delta+(g<b?6:0);break;case g:hue=(b-r)/delta+2;break;case b:hue=(r-g)/delta+4;break;}hue/=6;}target.h=hue;target.s=saturation;target.l=lightness;return target;}/**
+ColorManagement.workingToColorSpace(_color.copy(this),colorSpace);const r=_color.r,g=_color.g,b=_color.b;const max=Math.max(r,g,b);const min=Math.min(r,g,b);let hue,saturation;const lightness=(min+max)/2.0;if(min===max){hue=0;saturation=0;}else{const delta=max-min;saturation=lightness<=0.5?delta/(max+min):delta/(2-max-min);switch(max){case r:hue=(g-b)/delta+(g<b?6:0);break;case g:hue=(b-r)/delta+2;break;case b:hue=(r-g)/delta+4;break;}hue/=6;}target.h=hue;target.s=saturation;target.l=lightness;return target;}/**
 	 * Returns the RGB values of this color and stores them into the given target object.
 	 *
 	 * @param {Color} target - The target color that is used to store the method's result.
 	 * @param {string} [colorSpace=ColorManagement.workingColorSpace] - The color space.
 	 * @return {Color} The RGB representation of this color.
-	 */getRGB(target,colorSpace=ColorManagement.workingColorSpace){ColorManagement.fromWorkingColorSpace(_color.copy(this),colorSpace);target.r=_color.r;target.g=_color.g;target.b=_color.b;return target;}/**
+	 */getRGB(target,colorSpace=ColorManagement.workingColorSpace){ColorManagement.workingToColorSpace(_color.copy(this),colorSpace);target.r=_color.r;target.g=_color.g;target.b=_color.b;return target;}/**
 	 * Returns the value of this color as a CSS style string. Example: `rgb(255,0,0)`.
 	 *
 	 * @param {string} [colorSpace=SRGBColorSpace] - The color space.
 	 * @return {string} The CSS representation of this color.
-	 */getStyle(colorSpace=SRGBColorSpace){ColorManagement.fromWorkingColorSpace(_color.copy(this),colorSpace);const r=_color.r,g=_color.g,b=_color.b;if(colorSpace!==SRGBColorSpace){// Requires CSS Color Module Level 4 (https://www.w3.org/TR/css-color-4/).
+	 */getStyle(colorSpace=SRGBColorSpace){ColorManagement.workingToColorSpace(_color.copy(this),colorSpace);const r=_color.r,g=_color.g,b=_color.b;if(colorSpace!==SRGBColorSpace){// Requires CSS Color Module Level 4 (https://www.w3.org/TR/css-color-4/).
 return`color(${colorSpace} ${r.toFixed(3)} ${g.toFixed(3)} ${b.toFixed(3)})`;}return`rgb(${Math.round(r*255)},${Math.round(g*255)},${Math.round(b*255)})`;}/**
 	 * Adds the given HSL values to this color's values.
 	 * Internally, this converts the color's RGB values to HSL, adds HSL
@@ -38127,7 +38196,7 @@ return`color(${colorSpace} ${r.toFixed(3)} ${g.toFixed(3)} ${b.toFixed(3)})`;}re
 	 * @param {?(Object|string)} meta - An optional value holding meta information about the serialization.
 	 * @return {Object} A JSON object representing the serialized material.
 	 * @see {@link ObjectLoader#parse}
-	 */toJSON(meta){const isRootObject=meta===undefined||typeof meta==='string';if(isRootObject){meta={textures:{},images:{}};}const data={metadata:{version:4.6,type:'Material',generator:'Material.toJSON'}};// standard Material serialization
+	 */toJSON(meta){const isRootObject=meta===undefined||typeof meta==='string';if(isRootObject){meta={textures:{},images:{}};}const data={metadata:{version:4.7,type:'Material',generator:'Material.toJSON'}};// standard Material serialization
 data.uuid=this.uuid;data.type=this.type;if(this.name!=='')data.name=this.name;if(this.color&&this.color.isColor)data.color=this.color.getHex();if(this.roughness!==undefined)data.roughness=this.roughness;if(this.metalness!==undefined)data.metalness=this.metalness;if(this.sheen!==undefined)data.sheen=this.sheen;if(this.sheenColor&&this.sheenColor.isColor)data.sheenColor=this.sheenColor.getHex();if(this.sheenRoughness!==undefined)data.sheenRoughness=this.sheenRoughness;if(this.emissive&&this.emissive.isColor)data.emissive=this.emissive.getHex();if(this.emissiveIntensity!==undefined&&this.emissiveIntensity!==1)data.emissiveIntensity=this.emissiveIntensity;if(this.specular&&this.specular.isColor)data.specular=this.specular.getHex();if(this.specularIntensity!==undefined)data.specularIntensity=this.specularIntensity;if(this.specularColor&&this.specularColor.isColor)data.specularColor=this.specularColor.getHex();if(this.shininess!==undefined)data.shininess=this.shininess;if(this.clearcoat!==undefined)data.clearcoat=this.clearcoat;if(this.clearcoatRoughness!==undefined)data.clearcoatRoughness=this.clearcoatRoughness;if(this.clearcoatMap&&this.clearcoatMap.isTexture){data.clearcoatMap=this.clearcoatMap.toJSON(meta).uuid;}if(this.clearcoatRoughnessMap&&this.clearcoatRoughnessMap.isTexture){data.clearcoatRoughnessMap=this.clearcoatRoughnessMap.toJSON(meta).uuid;}if(this.clearcoatNormalMap&&this.clearcoatNormalMap.isTexture){data.clearcoatNormalMap=this.clearcoatNormalMap.toJSON(meta).uuid;data.clearcoatNormalScale=this.clearcoatNormalScale.toArray();}if(this.dispersion!==undefined)data.dispersion=this.dispersion;if(this.iridescence!==undefined)data.iridescence=this.iridescence;if(this.iridescenceIOR!==undefined)data.iridescenceIOR=this.iridescenceIOR;if(this.iridescenceThicknessRange!==undefined)data.iridescenceThicknessRange=this.iridescenceThicknessRange;if(this.iridescenceMap&&this.iridescenceMap.isTexture){data.iridescenceMap=this.iridescenceMap.toJSON(meta).uuid;}if(this.iridescenceThicknessMap&&this.iridescenceThicknessMap.isTexture){data.iridescenceThicknessMap=this.iridescenceThicknessMap.toJSON(meta).uuid;}if(this.anisotropy!==undefined)data.anisotropy=this.anisotropy;if(this.anisotropyRotation!==undefined)data.anisotropyRotation=this.anisotropyRotation;if(this.anisotropyMap&&this.anisotropyMap.isTexture){data.anisotropyMap=this.anisotropyMap.toJSON(meta).uuid;}if(this.map&&this.map.isTexture)data.map=this.map.toJSON(meta).uuid;if(this.matcap&&this.matcap.isTexture)data.matcap=this.matcap.toJSON(meta).uuid;if(this.alphaMap&&this.alphaMap.isTexture)data.alphaMap=this.alphaMap.toJSON(meta).uuid;if(this.lightMap&&this.lightMap.isTexture){data.lightMap=this.lightMap.toJSON(meta).uuid;data.lightMapIntensity=this.lightMapIntensity;}if(this.aoMap&&this.aoMap.isTexture){data.aoMap=this.aoMap.toJSON(meta).uuid;data.aoMapIntensity=this.aoMapIntensity;}if(this.bumpMap&&this.bumpMap.isTexture){data.bumpMap=this.bumpMap.toJSON(meta).uuid;data.bumpScale=this.bumpScale;}if(this.normalMap&&this.normalMap.isTexture){data.normalMap=this.normalMap.toJSON(meta).uuid;data.normalMapType=this.normalMapType;data.normalScale=this.normalScale.toArray();}if(this.displacementMap&&this.displacementMap.isTexture){data.displacementMap=this.displacementMap.toJSON(meta).uuid;data.displacementScale=this.displacementScale;data.displacementBias=this.displacementBias;}if(this.roughnessMap&&this.roughnessMap.isTexture)data.roughnessMap=this.roughnessMap.toJSON(meta).uuid;if(this.metalnessMap&&this.metalnessMap.isTexture)data.metalnessMap=this.metalnessMap.toJSON(meta).uuid;if(this.emissiveMap&&this.emissiveMap.isTexture)data.emissiveMap=this.emissiveMap.toJSON(meta).uuid;if(this.specularMap&&this.specularMap.isTexture)data.specularMap=this.specularMap.toJSON(meta).uuid;if(this.specularIntensityMap&&this.specularIntensityMap.isTexture)data.specularIntensityMap=this.specularIntensityMap.toJSON(meta).uuid;if(this.specularColorMap&&this.specularColorMap.isTexture)data.specularColorMap=this.specularColorMap.toJSON(meta).uuid;if(this.envMap&&this.envMap.isTexture){data.envMap=this.envMap.toJSON(meta).uuid;if(this.combine!==undefined)data.combine=this.combine;}if(this.envMapRotation!==undefined)data.envMapRotation=this.envMapRotation.toArray();if(this.envMapIntensity!==undefined)data.envMapIntensity=this.envMapIntensity;if(this.reflectivity!==undefined)data.reflectivity=this.reflectivity;if(this.refractionRatio!==undefined)data.refractionRatio=this.refractionRatio;if(this.gradientMap&&this.gradientMap.isTexture){data.gradientMap=this.gradientMap.toJSON(meta).uuid;}if(this.transmission!==undefined)data.transmission=this.transmission;if(this.transmissionMap&&this.transmissionMap.isTexture)data.transmissionMap=this.transmissionMap.toJSON(meta).uuid;if(this.thickness!==undefined)data.thickness=this.thickness;if(this.thicknessMap&&this.thicknessMap.isTexture)data.thicknessMap=this.thicknessMap.toJSON(meta).uuid;if(this.attenuationDistance!==undefined&&this.attenuationDistance!==Infinity)data.attenuationDistance=this.attenuationDistance;if(this.attenuationColor!==undefined)data.attenuationColor=this.attenuationColor.getHex();if(this.size!==undefined)data.size=this.size;if(this.shadowSide!==null)data.shadowSide=this.shadowSide;if(this.sizeAttenuation!==undefined)data.sizeAttenuation=this.sizeAttenuation;if(this.blending!==NormalBlending)data.blending=this.blending;if(this.side!==FrontSide)data.side=this.side;if(this.vertexColors===true)data.vertexColors=true;if(this.opacity<1)data.opacity=this.opacity;if(this.transparent===true)data.transparent=true;if(this.blendSrc!==SrcAlphaFactor)data.blendSrc=this.blendSrc;if(this.blendDst!==OneMinusSrcAlphaFactor)data.blendDst=this.blendDst;if(this.blendEquation!==AddEquation)data.blendEquation=this.blendEquation;if(this.blendSrcAlpha!==null)data.blendSrcAlpha=this.blendSrcAlpha;if(this.blendDstAlpha!==null)data.blendDstAlpha=this.blendDstAlpha;if(this.blendEquationAlpha!==null)data.blendEquationAlpha=this.blendEquationAlpha;if(this.blendColor&&this.blendColor.isColor)data.blendColor=this.blendColor.getHex();if(this.blendAlpha!==0)data.blendAlpha=this.blendAlpha;if(this.depthFunc!==LessEqualDepth)data.depthFunc=this.depthFunc;if(this.depthTest===false)data.depthTest=this.depthTest;if(this.depthWrite===false)data.depthWrite=this.depthWrite;if(this.colorWrite===false)data.colorWrite=this.colorWrite;if(this.stencilWriteMask!==0xff)data.stencilWriteMask=this.stencilWriteMask;if(this.stencilFunc!==AlwaysStencilFunc)data.stencilFunc=this.stencilFunc;if(this.stencilRef!==0)data.stencilRef=this.stencilRef;if(this.stencilFuncMask!==0xff)data.stencilFuncMask=this.stencilFuncMask;if(this.stencilFail!==KeepStencilOp)data.stencilFail=this.stencilFail;if(this.stencilZFail!==KeepStencilOp)data.stencilZFail=this.stencilZFail;if(this.stencilZPass!==KeepStencilOp)data.stencilZPass=this.stencilZPass;if(this.stencilWrite===true)data.stencilWrite=this.stencilWrite;// rotation (SpriteMaterial)
 if(this.rotation!==undefined&&this.rotation!==0)data.rotation=this.rotation;if(this.polygonOffset===true)data.polygonOffset=true;if(this.polygonOffsetFactor!==0)data.polygonOffsetFactor=this.polygonOffsetFactor;if(this.polygonOffsetUnits!==0)data.polygonOffsetUnits=this.polygonOffsetUnits;if(this.linewidth!==undefined&&this.linewidth!==1)data.linewidth=this.linewidth;if(this.dashSize!==undefined)data.dashSize=this.dashSize;if(this.gapSize!==undefined)data.gapSize=this.gapSize;if(this.scale!==undefined)data.scale=this.scale;if(this.dithering===true)data.dithering=true;if(this.alphaTest>0)data.alphaTest=this.alphaTest;if(this.alphaHash===true)data.alphaHash=true;if(this.alphaToCoverage===true)data.alphaToCoverage=true;if(this.premultipliedAlpha===true)data.premultipliedAlpha=true;if(this.forceSinglePass===true)data.forceSinglePass=true;if(this.wireframe===true)data.wireframe=true;if(this.wireframeLinewidth>1)data.wireframeLinewidth=this.wireframeLinewidth;if(this.wireframeLinecap!=='round')data.wireframeLinecap=this.wireframeLinecap;if(this.wireframeLinejoin!=='round')data.wireframeLinejoin=this.wireframeLinejoin;if(this.flatShading===true)data.flatShading=true;if(this.visible===false)data.visible=false;if(this.toneMapped===false)data.toneMapped=false;if(this.fog===false)data.fog=false;if(Object.keys(this.userData).length>0)data.userData=this.userData;// TODO: Copied from Object3D.toJSON
 function extractFromCache(cache){const values=[];for(const key in cache){const data=cache[key];delete data.metadata;values.push(data);}return values;}if(isRootObject){const textures=extractFromCache(meta.textures);const images=extractFromCache(meta.images);if(textures.length>0)data.textures=textures;if(images.length>0)data.images=images;}return data;}/**
@@ -38156,8 +38225,7 @@ function extractFromCache(cache){const values=[];for(const key in cache){const d
 	 * @type {boolean}
 	 * @default false
 	 * @param {boolean} value
-	 */set needsUpdate(value){if(value===true)this.version++;}onBuild(/* shaderobject, renderer */){console.warn('Material: onBuild() has been removed.');// @deprecated, r166
-}}/**
+	 */set needsUpdate(value){if(value===true)this.version++;}}/**
  * A material for drawing geometries in a simple shaded (flat or wireframe) way.
  *
  * This material is not affected by lights.
@@ -38663,7 +38731,7 @@ this.array.set(value,offset);return this;}/**
  * Convenient class that can be used when creating a `Float16` buffer attribute with
  * a plain `Array` instance.
  *
- * This class automatically converts to to and from FP16 since `Float16Array` is not
+ * This class automatically converts to and from FP16 since `Float16Array` is not
  * natively supported in JavaScript.
  *
  * @augments BufferAttribute
@@ -38980,9 +39048,9 @@ const groups=this.groups;for(let i=0,l=groups.length;i<l;i++){const group=groups
 	 * Serializes the geometry into JSON.
 	 *
 	 * @return {Object} A JSON object representing the serialized geometry.
-	 */toJSON(){const data={metadata:{version:4.6,type:'BufferGeometry',generator:'BufferGeometry.toJSON'}};// standard BufferGeometry serialization
+	 */toJSON(){const data={metadata:{version:4.7,type:'BufferGeometry',generator:'BufferGeometry.toJSON'}};// standard BufferGeometry serialization
 data.uuid=this.uuid;data.type=this.type;if(this.name!=='')data.name=this.name;if(Object.keys(this.userData).length>0)data.userData=this.userData;if(this.parameters!==undefined){const parameters=this.parameters;for(const key in parameters){if(parameters[key]!==undefined)data[key]=parameters[key];}return data;}// for simplicity the code assumes attributes are not shared across geometries, see #15811
-data.data={attributes:{}};const index=this.index;if(index!==null){data.data.index={type:index.array.constructor.name,array:Array.prototype.slice.call(index.array)};}const attributes=this.attributes;for(const key in attributes){const attribute=attributes[key];data.data.attributes[key]=attribute.toJSON(data.data);}const morphAttributes={};let hasMorphAttributes=false;for(const key in this.morphAttributes){const attributeArray=this.morphAttributes[key];const array=[];for(let i=0,il=attributeArray.length;i<il;i++){const attribute=attributeArray[i];array.push(attribute.toJSON(data.data));}if(array.length>0){morphAttributes[key]=array;hasMorphAttributes=true;}}if(hasMorphAttributes){data.data.morphAttributes=morphAttributes;data.data.morphTargetsRelative=this.morphTargetsRelative;}const groups=this.groups;if(groups.length>0){data.data.groups=JSON.parse(JSON.stringify(groups));}const boundingSphere=this.boundingSphere;if(boundingSphere!==null){data.data.boundingSphere={center:boundingSphere.center.toArray(),radius:boundingSphere.radius};}return data;}/**
+data.data={attributes:{}};const index=this.index;if(index!==null){data.data.index={type:index.array.constructor.name,array:Array.prototype.slice.call(index.array)};}const attributes=this.attributes;for(const key in attributes){const attribute=attributes[key];data.data.attributes[key]=attribute.toJSON(data.data);}const morphAttributes={};let hasMorphAttributes=false;for(const key in this.morphAttributes){const attributeArray=this.morphAttributes[key];const array=[];for(let i=0,il=attributeArray.length;i<il;i++){const attribute=attributeArray[i];array.push(attribute.toJSON(data.data));}if(array.length>0){morphAttributes[key]=array;hasMorphAttributes=true;}}if(hasMorphAttributes){data.data.morphAttributes=morphAttributes;data.data.morphTargetsRelative=this.morphTargetsRelative;}const groups=this.groups;if(groups.length>0){data.data.groups=JSON.parse(JSON.stringify(groups));}const boundingSphere=this.boundingSphere;if(boundingSphere!==null){data.data.boundingSphere=boundingSphere.toJSON();}return data;}/**
 	 * Returns a new geometry with copied values from this instance.
 	 *
 	 * @return {BufferGeometry} A clone of this instance.
@@ -39053,7 +39121,13 @@ this.userData=source.userData;return this;}/**
 		 *
 		 * @type {Array<number>|undefined}
 		 * @default undefined
-		 */this.morphTargetInfluences=undefined;this.updateMorphTargets();}copy(source,recursive){super.copy(source,recursive);if(source.morphTargetInfluences!==undefined){this.morphTargetInfluences=source.morphTargetInfluences.slice();}if(source.morphTargetDictionary!==undefined){this.morphTargetDictionary=Object.assign({},source.morphTargetDictionary);}this.material=Array.isArray(source.material)?source.material.slice():source.material;this.geometry=source.geometry;return this;}/**
+		 */this.morphTargetInfluences=undefined;/**
+		 * The number of instances of this mesh.
+		 * Can only be used with {@link WebGPURenderer}.
+		 *
+		 * @type {number}
+		 * @default 1
+		 */this.count=1;this.updateMorphTargets();}copy(source,recursive){super.copy(source,recursive);if(source.morphTargetInfluences!==undefined){this.morphTargetInfluences=source.morphTargetInfluences.slice();}if(source.morphTargetDictionary!==undefined){this.morphTargetDictionary=Object.assign({},source.morphTargetDictionary);}this.material=Array.isArray(source.material)?source.material.slice():source.material;this.geometry=source.geometry;return this;}/**
 	 * Sets the values of {@link Mesh#morphTargetDictionary} and {@link Mesh#morphTargetInfluences}
 	 * to make sure existing morph targets can influence this 3D object.
 	 */updateMorphTargets(){const geometry=this.geometry;const morphAttributes=geometry.morphAttributes;const keys=Object.keys(morphAttributes);if(keys.length>0){const morphAttribute=morphAttributes[keys[0]];if(morphAttribute!==undefined){this.morphTargetInfluences=[];this.morphTargetDictionary={};for(let m=0,ml=morphAttribute.length;m<ml;m++){const name=morphAttribute[m].name||String(m);this.morphTargetInfluences.push(0);this.morphTargetDictionary[name]=m;}}}}/**
@@ -39652,13 +39726,13 @@ renderTarget.texture.generateMipmaps=generateMipmaps;renderer.setRenderTarget(re
 		 * Overwritten with a different texture type.
 		 *
 		 * @type {DataArrayTexture}
-		 */this.texture=new CubeTexture(images,options.mapping,options.wrapS,options.wrapT,options.magFilter,options.minFilter,options.format,options.type,options.anisotropy,options.colorSpace);// By convention -- likely based on the RenderMan spec from the 1990's -- cube maps are specified by WebGL (and three.js)
+		 */this.texture=new CubeTexture(images);this._setTextureOptions(options);// By convention -- likely based on the RenderMan spec from the 1990's -- cube maps are specified by WebGL (and three.js)
 // in a coordinate system in which positive-x is to the right when looking up the positive-z axis -- in other words,
 // in a left-handed coordinate system. By continuing this convention, preexisting cube maps continued to render correctly.
 // three.js uses a right-handed coordinate system. So environment maps used in three.js appear to have px and nx swapped
 // and the flag isRenderTargetTexture controls this conversion. The flip is not required when using WebGLCubeRenderTarget.texture
 // as a cube texture (this is detected when isRenderTargetTexture is set to true for cube textures).
-this.texture.isRenderTargetTexture=true;this.texture.generateMipmaps=options.generateMipmaps!==undefined?options.generateMipmaps:false;this.texture.minFilter=options.minFilter!==undefined?options.minFilter:LinearFilter;}/**
+this.texture.isRenderTargetTexture=true;}/**
 	 * Converts the given equirectangular texture to a cube map.
 	 *
 	 * @param {WebGLRenderer} renderer - The renderer.
@@ -39805,7 +39879,7 @@ if(inputPose===null&&gripPose!==null){inputPose=gripPose;}if(inputPose!==null){t
 	 *
 	 * @private
 	 * @param {Group} hand - The group representing the hand space.
-	 * @param {XRHandJoint} inputjoint - The XR frame.
+	 * @param {XRJointSpace} inputjoint - The hand joint data.
 	 * @return {Group} A group representing the hand joint for the given input joint.
 	 */_getHandJoint(hand,inputjoint){if(hand.joints[inputjoint.jointName]===undefined){const joint=new Group();joint.matrixAutoUpdate=false;joint.visible=false;hand.joints[inputjoint.jointName]=joint;hand.add(joint);}return hand.joints[inputjoint.jointName];}}/**
  * This class can be used to define an exponential squared fog,
@@ -40363,7 +40437,13 @@ if(data.interleavedBuffers===undefined){data.interleavedBuffers={};}if(data.inte
 		 *
 		 * @type {Vector2}
 		 * @default (0.5,0.5)
-		 */this.center=new Vector2(0.5,0.5);}/**
+		 */this.center=new Vector2(0.5,0.5);/**
+		 * The number of instances of this sprite.
+		 * Can only be used with {@link WebGPURenderer}.
+		 *
+		 * @type {number}
+		 * @default 1
+		 */this.count=1;}/**
 	 * Computes intersection points between a casted ray and this sprite.
 	 *
 	 * @param {Raycaster} raycaster - The raycaster.
@@ -40719,7 +40799,7 @@ const boneTexture=new DataTexture(boneMatrices,size,size,RGBAFormat,FloatType);b
 	 *
 	 * @return {Object} A JSON object representing the serialized skeleton.
 	 * @see {@link ObjectLoader#parse}
-	 */toJSON(){const data={metadata:{version:4.6,type:'Skeleton',generator:'Skeleton.toJSON'},bones:[],boneInverses:[]};data.uuid=this.uuid;const bones=this.bones;const boneInverses=this.boneInverses;for(let i=0,l=bones.length;i<l;i++){const bone=bones[i];data.bones.push(bone.uuid);const boneInverse=boneInverses[i];data.boneInverses.push(boneInverse.toArray());}return data;}}/**
+	 */toJSON(){const data={metadata:{version:4.7,type:'Skeleton',generator:'Skeleton.toJSON'},bones:[],boneInverses:[]};data.uuid=this.uuid;const bones=this.bones;const boneInverses=this.boneInverses;for(let i=0,l=bones.length;i<l;i++){const bone=bones[i];data.bones.push(bone.uuid);const boneInverse=boneInverses[i];data.boneInverses.push(boneInverse.toArray());}return data;}}/**
  * An instanced version of a buffer attribute.
  *
  * @augments BufferAttribute
@@ -41067,7 +41147,67 @@ _vector$6.x=plane.normal.x>0?box.max.x:box.min.x;_vector$6.y=plane.normal.y>0?bo
 	 * Returns a new frustum with copied values from this instance.
 	 *
 	 * @return {Frustum} A clone of this instance.
-	 */clone(){return new this.constructor().copy(this);}}function ascIdSort(a,b){return a-b;}function sortOpaque(a,b){return a.z-b.z;}function sortTransparent(a,b){return b.z-a.z;}class MultiDrawRenderList{constructor(){this.index=0;this.pool=[];this.list=[];}push(start,count,z,index){const pool=this.pool;const list=this.list;if(this.index>=pool.length){pool.push({start:-1,count:-1,z:-1,index:-1});}const item=pool[this.index];list.push(item);this.index++;item.start=start;item.count=count;item.z=z;item.index=index;}reset(){this.list.length=0;this.index=0;}}const _matrix$1=/*@__PURE__*/new Matrix4();const _whiteColor=/*@__PURE__*/new Color(1,1,1);const _frustum=/*@__PURE__*/new Frustum();const _box$1=/*@__PURE__*/new Box3();const _sphere$2=/*@__PURE__*/new Sphere();const _vector$5=/*@__PURE__*/new Vector3();const _forward=/*@__PURE__*/new Vector3();const _temp=/*@__PURE__*/new Vector3();const _renderList=/*@__PURE__*/new MultiDrawRenderList();const _mesh=/*@__PURE__*/new Mesh();const _batchIntersects=[];// copies data from attribute "src" into "target" starting at "targetOffset"
+	 */clone(){return new this.constructor().copy(this);}}const _projScreenMatrix$2=/*@__PURE__*/new Matrix4();const _frustum$1=/*@__PURE__*/new Frustum();/**
+ * FrustumArray is used to determine if an object is visible in at least one camera
+ * from an array of cameras. This is particularly useful for multi-view renderers.
+*/class FrustumArray{/**
+	 * Constructs a new frustum array.
+	 *
+	 */constructor(){/**
+		 * The coordinate system to use.
+		 *
+		 * @type {WebGLCoordinateSystem|WebGPUCoordinateSystem}
+		 * @default WebGLCoordinateSystem
+		 */this.coordinateSystem=WebGLCoordinateSystem;}/**
+	 * Returns `true` if the 3D object's bounding sphere is intersecting any frustum
+	 * from the camera array.
+	 *
+	 * @param {Object3D} object - The 3D object to test.
+	 * @param {Object} cameraArray - An object with a cameras property containing an array of cameras.
+	 * @return {boolean} Whether the 3D object is visible in any camera.
+	 */intersectsObject(object,cameraArray){if(!cameraArray.isArrayCamera||cameraArray.cameras.length===0){return false;}for(let i=0;i<cameraArray.cameras.length;i++){const camera=cameraArray.cameras[i];_projScreenMatrix$2.multiplyMatrices(camera.projectionMatrix,camera.matrixWorldInverse);_frustum$1.setFromProjectionMatrix(_projScreenMatrix$2,this.coordinateSystem);if(_frustum$1.intersectsObject(object)){return true;// Object is visible in at least one camera
+}}return false;// Not visible in any camera
+}/**
+	 * Returns `true` if the given sprite is intersecting any frustum
+	 * from the camera array.
+	 *
+	 * @param {Sprite} sprite - The sprite to test.
+	 * @param {Object} cameraArray - An object with a cameras property containing an array of cameras.
+	 * @return {boolean} Whether the sprite is visible in any camera.
+	 */intersectsSprite(sprite,cameraArray){if(!cameraArray||!cameraArray.cameras||cameraArray.cameras.length===0){return false;}for(let i=0;i<cameraArray.cameras.length;i++){const camera=cameraArray.cameras[i];_projScreenMatrix$2.multiplyMatrices(camera.projectionMatrix,camera.matrixWorldInverse);_frustum$1.setFromProjectionMatrix(_projScreenMatrix$2,this.coordinateSystem);if(_frustum$1.intersectsSprite(sprite)){return true;// Sprite is visible in at least one camera
+}}return false;// Not visible in any camera
+}/**
+	 * Returns `true` if the given bounding sphere is intersecting any frustum
+	 * from the camera array.
+	 *
+	 * @param {Sphere} sphere - The bounding sphere to test.
+	 * @param {Object} cameraArray - An object with a cameras property containing an array of cameras.
+	 * @return {boolean} Whether the sphere is visible in any camera.
+	 */intersectsSphere(sphere,cameraArray){if(!cameraArray||!cameraArray.cameras||cameraArray.cameras.length===0){return false;}for(let i=0;i<cameraArray.cameras.length;i++){const camera=cameraArray.cameras[i];_projScreenMatrix$2.multiplyMatrices(camera.projectionMatrix,camera.matrixWorldInverse);_frustum$1.setFromProjectionMatrix(_projScreenMatrix$2,this.coordinateSystem);if(_frustum$1.intersectsSphere(sphere)){return true;// Sphere is visible in at least one camera
+}}return false;// Not visible in any camera
+}/**
+	 * Returns `true` if the given bounding box is intersecting any frustum
+	 * from the camera array.
+	 *
+	 * @param {Box3} box - The bounding box to test.
+	 * @param {Object} cameraArray - An object with a cameras property containing an array of cameras.
+	 * @return {boolean} Whether the box is visible in any camera.
+	 */intersectsBox(box,cameraArray){if(!cameraArray||!cameraArray.cameras||cameraArray.cameras.length===0){return false;}for(let i=0;i<cameraArray.cameras.length;i++){const camera=cameraArray.cameras[i];_projScreenMatrix$2.multiplyMatrices(camera.projectionMatrix,camera.matrixWorldInverse);_frustum$1.setFromProjectionMatrix(_projScreenMatrix$2,this.coordinateSystem);if(_frustum$1.intersectsBox(box)){return true;// Box is visible in at least one camera
+}}return false;// Not visible in any camera
+}/**
+	 * Returns `true` if the given point lies within any frustum
+	 * from the camera array.
+	 *
+	 * @param {Vector3} point - The point to test.
+	 * @param {Object} cameraArray - An object with a cameras property containing an array of cameras.
+	 * @return {boolean} Whether the point is visible in any camera.
+	 */containsPoint(point,cameraArray){if(!cameraArray||!cameraArray.cameras||cameraArray.cameras.length===0){return false;}for(let i=0;i<cameraArray.cameras.length;i++){const camera=cameraArray.cameras[i];_projScreenMatrix$2.multiplyMatrices(camera.projectionMatrix,camera.matrixWorldInverse);_frustum$1.setFromProjectionMatrix(_projScreenMatrix$2,this.coordinateSystem);if(_frustum$1.containsPoint(point)){return true;// Point is visible in at least one camera
+}}return false;// Not visible in any camera
+}/**
+	 * Returns a new frustum array with copied values from this instance.
+	 *
+	 * @return {FrustumArray} A clone of this instance.
+	 */clone(){return new FrustumArray();}}function ascIdSort(a,b){return a-b;}function sortOpaque(a,b){return a.z-b.z;}function sortTransparent(a,b){return b.z-a.z;}class MultiDrawRenderList{constructor(){this.index=0;this.pool=[];this.list=[];}push(start,count,z,index){const pool=this.pool;const list=this.list;if(this.index>=pool.length){pool.push({start:-1,count:-1,z:-1,index:-1});}const item=pool[this.index];list.push(item);this.index++;item.start=start;item.count=count;item.z=z;item.index=index;}reset(){this.list.length=0;this.index=0;}}const _matrix$1=/*@__PURE__*/new Matrix4();const _whiteColor=/*@__PURE__*/new Color(1,1,1);const _frustum=/*@__PURE__*/new Frustum();const _frustumArray=/*@__PURE__*/new FrustumArray();const _box$1=/*@__PURE__*/new Box3();const _sphere$2=/*@__PURE__*/new Sphere();const _vector$5=/*@__PURE__*/new Vector3();const _forward$1=/*@__PURE__*/new Vector3();const _temp=/*@__PURE__*/new Vector3();const _renderList=/*@__PURE__*/new MultiDrawRenderList();const _mesh=/*@__PURE__*/new Mesh();const _batchIntersects=[];// copies data from attribute "src" into "target" starting at "targetOffset"
 function copyAttributeData(src,target,targetOffset=0){const itemSize=target.itemSize;if(src.isInterleavedBufferAttribute||src.array.constructor!==target.array.constructor){// use the component getters and setters if the array data cannot
 // be copied directly
 const vertexCount=src.count;for(let i=0;i<vertexCount;i++){for(let c=0;c<itemSize;c++){target.setComponent(i+targetOffset,c,src.getComponent(i,c));}}}else{// faster copy approach using typed array set function
@@ -41381,7 +41521,7 @@ this._maxVertexCount=maxVertexCount;this._maxIndexCount=maxIndexCount;if(this._g
 const geometry=this.geometry;if(oldGeometry.index){copyArrayContents(oldGeometry.index.array,geometry.index.array);}for(const key in oldGeometry.attributes){copyArrayContents(oldGeometry.attributes[key].array,geometry.attributes[key].array);}}raycast(raycaster,intersects){const instanceInfo=this._instanceInfo;const geometryInfoList=this._geometryInfo;const matrixWorld=this.matrixWorld;const batchGeometry=this.geometry;// iterate over each geometry
 _mesh.material=this.material;_mesh.geometry.index=batchGeometry.index;_mesh.geometry.attributes=batchGeometry.attributes;if(_mesh.geometry.boundingBox===null){_mesh.geometry.boundingBox=new Box3();}if(_mesh.geometry.boundingSphere===null){_mesh.geometry.boundingSphere=new Sphere();}for(let i=0,l=instanceInfo.length;i<l;i++){if(!instanceInfo[i].visible||!instanceInfo[i].active){continue;}const geometryId=instanceInfo[i].geometryIndex;const geometryInfo=geometryInfoList[geometryId];_mesh.geometry.setDrawRange(geometryInfo.start,geometryInfo.count);// get the intersects
 this.getMatrixAt(i,_mesh.matrixWorld).premultiply(matrixWorld);this.getBoundingBoxAt(geometryId,_mesh.geometry.boundingBox);this.getBoundingSphereAt(geometryId,_mesh.geometry.boundingSphere);_mesh.raycast(raycaster,_batchIntersects);// add batch id to the intersects
-for(let j=0,l=_batchIntersects.length;j<l;j++){const intersect=_batchIntersects[j];intersect.object=this;intersect.batchId=i;intersects.push(intersect);}_batchIntersects.length=0;}_mesh.material=null;_mesh.geometry.index=null;_mesh.geometry.attributes={};_mesh.geometry.setDrawRange(0,Infinity);}copy(source){super.copy(source);this.geometry=source.geometry.clone();this.perObjectFrustumCulled=source.perObjectFrustumCulled;this.sortObjects=source.sortObjects;this.boundingBox=source.boundingBox!==null?source.boundingBox.clone():null;this.boundingSphere=source.boundingSphere!==null?source.boundingSphere.clone():null;this._geometryInfo=source._geometryInfo.map(info=>({...info,boundingBox:info.boundingBox!==null?info.boundingBox.clone():null,boundingSphere:info.boundingSphere!==null?info.boundingSphere.clone():null}));this._instanceInfo=source._instanceInfo.map(info=>({...info}));this._maxInstanceCount=source._maxInstanceCount;this._maxVertexCount=source._maxVertexCount;this._maxIndexCount=source._maxIndexCount;this._geometryInitialized=source._geometryInitialized;this._geometryCount=source._geometryCount;this._multiDrawCounts=source._multiDrawCounts.slice();this._multiDrawStarts=source._multiDrawStarts.slice();this._matricesTexture=source._matricesTexture.clone();this._matricesTexture.image.data=this._matricesTexture.image.data.slice();if(this._colorsTexture!==null){this._colorsTexture=source._colorsTexture.clone();this._colorsTexture.image.data=this._colorsTexture.image.data.slice();}return this;}/**
+for(let j=0,l=_batchIntersects.length;j<l;j++){const intersect=_batchIntersects[j];intersect.object=this;intersect.batchId=i;intersects.push(intersect);}_batchIntersects.length=0;}_mesh.material=null;_mesh.geometry.index=null;_mesh.geometry.attributes={};_mesh.geometry.setDrawRange(0,Infinity);}copy(source){super.copy(source);this.geometry=source.geometry.clone();this.perObjectFrustumCulled=source.perObjectFrustumCulled;this.sortObjects=source.sortObjects;this.boundingBox=source.boundingBox!==null?source.boundingBox.clone():null;this.boundingSphere=source.boundingSphere!==null?source.boundingSphere.clone():null;this._geometryInfo=source._geometryInfo.map(info=>({...info,boundingBox:info.boundingBox!==null?info.boundingBox.clone():null,boundingSphere:info.boundingSphere!==null?info.boundingSphere.clone():null}));this._instanceInfo=source._instanceInfo.map(info=>({...info}));this._availableInstanceIds=source._availableInstanceIds.slice();this._availableGeometryIds=source._availableGeometryIds.slice();this._nextIndexStart=source._nextIndexStart;this._nextVertexStart=source._nextVertexStart;this._geometryCount=source._geometryCount;this._maxInstanceCount=source._maxInstanceCount;this._maxVertexCount=source._maxVertexCount;this._maxIndexCount=source._maxIndexCount;this._geometryInitialized=source._geometryInitialized;this._multiDrawCounts=source._multiDrawCounts.slice();this._multiDrawStarts=source._multiDrawStarts.slice();this._indirectTexture=source._indirectTexture.clone();this._indirectTexture.image.data=this._indirectTexture.image.data.slice();this._matricesTexture=source._matricesTexture.clone();this._matricesTexture.image.data=this._matricesTexture.image.data.slice();if(this._colorsTexture!==null){this._colorsTexture=source._colorsTexture.clone();this._colorsTexture.image.data=this._colorsTexture.image.data.slice();}return this;}/**
 	 * Frees the GPU-related resources allocated by this instance. Call this
 	 * method whenever this instance is no longer used in your app.
 	 */dispose(){// Assuming the geometry is not shared with other meshes
@@ -41389,15 +41529,15 @@ this.geometry.dispose();this._matricesTexture.dispose();this._matricesTexture=nu
 // then skip iterating over all items
 if(!this._visibilityChanged&&!this.perObjectFrustumCulled&&!this.sortObjects){return;}// the indexed version of the multi draw function requires specifying the start
 // offset in bytes.
-const index=geometry.getIndex();const bytesPerElement=index===null?1:index.array.BYTES_PER_ELEMENT;const instanceInfo=this._instanceInfo;const multiDrawStarts=this._multiDrawStarts;const multiDrawCounts=this._multiDrawCounts;const geometryInfoList=this._geometryInfo;const perObjectFrustumCulled=this.perObjectFrustumCulled;const indirectTexture=this._indirectTexture;const indirectArray=indirectTexture.image.data;// prepare the frustum in the local frame
-if(perObjectFrustumCulled){_matrix$1.multiplyMatrices(camera.projectionMatrix,camera.matrixWorldInverse).multiply(this.matrixWorld);_frustum.setFromProjectionMatrix(_matrix$1,renderer.coordinateSystem);}let multiDrawCount=0;if(this.sortObjects){// get the camera position in the local frame
-_matrix$1.copy(this.matrixWorld).invert();_vector$5.setFromMatrixPosition(camera.matrixWorld).applyMatrix4(_matrix$1);_forward.set(0,0,-1).transformDirection(camera.matrixWorld).transformDirection(_matrix$1);for(let i=0,l=instanceInfo.length;i<l;i++){if(instanceInfo[i].visible&&instanceInfo[i].active){const geometryId=instanceInfo[i].geometryIndex;// get the bounds in world space
+const index=geometry.getIndex();const bytesPerElement=index===null?1:index.array.BYTES_PER_ELEMENT;const instanceInfo=this._instanceInfo;const multiDrawStarts=this._multiDrawStarts;const multiDrawCounts=this._multiDrawCounts;const geometryInfoList=this._geometryInfo;const perObjectFrustumCulled=this.perObjectFrustumCulled;const indirectTexture=this._indirectTexture;const indirectArray=indirectTexture.image.data;const frustum=camera.isArrayCamera?_frustumArray:_frustum;// prepare the frustum in the local frame
+if(perObjectFrustumCulled&&!camera.isArrayCamera){_matrix$1.multiplyMatrices(camera.projectionMatrix,camera.matrixWorldInverse).multiply(this.matrixWorld);_frustum.setFromProjectionMatrix(_matrix$1,renderer.coordinateSystem);}let multiDrawCount=0;if(this.sortObjects){// get the camera position in the local frame
+_matrix$1.copy(this.matrixWorld).invert();_vector$5.setFromMatrixPosition(camera.matrixWorld).applyMatrix4(_matrix$1);_forward$1.set(0,0,-1).transformDirection(camera.matrixWorld).transformDirection(_matrix$1);for(let i=0,l=instanceInfo.length;i<l;i++){if(instanceInfo[i].visible&&instanceInfo[i].active){const geometryId=instanceInfo[i].geometryIndex;// get the bounds in world space
 this.getMatrixAt(i,_matrix$1);this.getBoundingSphereAt(geometryId,_sphere$2).applyMatrix4(_matrix$1);// determine whether the batched geometry is within the frustum
-let culled=false;if(perObjectFrustumCulled){culled=!_frustum.intersectsSphere(_sphere$2);}if(!culled){// get the distance from camera used for sorting
-const geometryInfo=geometryInfoList[geometryId];const z=_temp.subVectors(_sphere$2.center,_vector$5).dot(_forward);_renderList.push(geometryInfo.start,geometryInfo.count,z,i);}}}// Sort the draw ranges and prep for rendering
+let culled=false;if(perObjectFrustumCulled){culled=!frustum.intersectsSphere(_sphere$2,camera);}if(!culled){// get the distance from camera used for sorting
+const geometryInfo=geometryInfoList[geometryId];const z=_temp.subVectors(_sphere$2.center,_vector$5).dot(_forward$1);_renderList.push(geometryInfo.start,geometryInfo.count,z,i);}}}// Sort the draw ranges and prep for rendering
 const list=_renderList.list;const customSort=this.customSort;if(customSort===null){list.sort(material.transparent?sortTransparent:sortOpaque);}else{customSort.call(this,list,camera);}for(let i=0,l=list.length;i<l;i++){const item=list[i];multiDrawStarts[multiDrawCount]=item.start*bytesPerElement;multiDrawCounts[multiDrawCount]=item.count;indirectArray[multiDrawCount]=item.index;multiDrawCount++;}_renderList.reset();}else{for(let i=0,l=instanceInfo.length;i<l;i++){if(instanceInfo[i].visible&&instanceInfo[i].active){const geometryId=instanceInfo[i].geometryIndex;// determine whether the batched geometry is within the frustum
 let culled=false;if(perObjectFrustumCulled){// get the bounds in world space
-this.getMatrixAt(i,_matrix$1);this.getBoundingSphereAt(geometryId,_sphere$2).applyMatrix4(_matrix$1);culled=!_frustum.intersectsSphere(_sphere$2);}if(!culled){const geometryInfo=geometryInfoList[geometryId];multiDrawStarts[multiDrawCount]=geometryInfo.start*bytesPerElement;multiDrawCounts[multiDrawCount]=geometryInfo.count;indirectArray[multiDrawCount]=i;multiDrawCount++;}}}}indirectTexture.needsUpdate=true;this._multiDrawCount=multiDrawCount;this._visibilityChanged=false;}onBeforeShadow(renderer,object,camera,shadowCamera,geometry,depthMaterial/* , group */){this.onBeforeRender(renderer,null,shadowCamera,geometry,depthMaterial);}}/**
+this.getMatrixAt(i,_matrix$1);this.getBoundingSphereAt(geometryId,_sphere$2).applyMatrix4(_matrix$1);culled=!frustum.intersectsSphere(_sphere$2,camera);}if(!culled){const geometryInfo=geometryInfoList[geometryId];multiDrawStarts[multiDrawCount]=geometryInfo.start*bytesPerElement;multiDrawCounts[multiDrawCount]=geometryInfo.count;indirectArray[multiDrawCount]=i;multiDrawCount++;}}}}indirectTexture.needsUpdate=true;this._multiDrawCount=multiDrawCount;this._visibilityChanged=false;}onBeforeShadow(renderer,object,camera,shadowCamera,geometry,depthMaterial/* , group */){this.onBeforeRender(renderer,null,shadowCamera,geometry,depthMaterial);}}/**
  * A material for rendering line primitives.
  *
  * Materials define the appearance of renderable 3D objects.
@@ -41709,7 +41849,7 @@ _inverseMatrix.copy(matrixWorld).invert();_ray.copy(raycaster.ray).applyMatrix4(
  */class VideoTexture extends Texture{/**
 	 * Constructs a new video texture.
 	 *
-	 * @param {Video} video - The video element to use as a data source for the texture.
+	 * @param {HTMLVideoElement} video - The video element to use as a data source for the texture.
 	 * @param {number} [mapping=Texture.DEFAULT_MAPPING] - The texture mapping.
 	 * @param {number} [wrapS=ClampToEdgeWrapping] - The wrapS value.
 	 * @param {number} [wrapT=ClampToEdgeWrapping] - The wrapT value.
@@ -41999,17 +42139,14 @@ _inverseMatrix.copy(matrixWorld).invert();_ray.copy(raycaster.ray).applyMatrix4(
 	 * @param {number} [minFilter=LinearFilter] - The min filter value.
 	 * @param {number} [anisotropy=Texture.DEFAULT_ANISOTROPY] - The anisotropy value.
 	 * @param {number} [format=DepthFormat] - The texture format.
-	 */constructor(width,height,type=UnsignedIntType,mapping,wrapS,wrapT,magFilter=NearestFilter,minFilter=NearestFilter,anisotropy,format=DepthFormat){if(format!==DepthFormat&&format!==DepthStencilFormat){throw new Error('DepthTexture format must be either THREE.DepthFormat or THREE.DepthStencilFormat');}super(null,mapping,wrapS,wrapT,magFilter,minFilter,format,type,anisotropy);/**
+	 * @param {number} [depth=1] - The depth of the texture.
+	 */constructor(width,height,type=UnsignedIntType,mapping,wrapS,wrapT,magFilter=NearestFilter,minFilter=NearestFilter,anisotropy,format=DepthFormat,depth=1){if(format!==DepthFormat&&format!==DepthStencilFormat){throw new Error('DepthTexture format must be either THREE.DepthFormat or THREE.DepthStencilFormat');}const image={width:width,height:height,depth:depth};super(image,mapping,wrapS,wrapT,magFilter,minFilter,format,type,anisotropy);/**
 		 * This flag can be used for type testing.
 		 *
 		 * @type {boolean}
 		 * @readonly
 		 * @default true
 		 */this.isDepthTexture=true;/**
-		 * The image property of a depth texture just defines its dimensions.
-		 *
-		 * @type {{width:number,height:number}}
-		 */this.image={width:width,height:height};/**
 		 * If set to `true`, the texture is flipped along the vertical axis when
 		 * uploaded to the GPU.
 		 *
@@ -42025,12 +42162,313 @@ _inverseMatrix.copy(matrixWorld).invert();_ray.copy(raycaster.ray).applyMatrix4(
 		 * @type {boolean}
 		 * @default false
 		 */this.generateMipmaps=false;/**
-		 * The depth compare function.
+		 * Code corresponding to the depth compare function.
 		 *
 		 * @type {?(NeverCompare|LessCompare|EqualCompare|LessEqualCompare|GreaterCompare|NotEqualCompare|GreaterEqualCompare|AlwaysCompare)}
 		 * @default null
 		 */this.compareFunction=null;}copy(source){super.copy(source);this.source=new Source(Object.assign({},source.image));// see #30540
 this.compareFunction=source.compareFunction;return this;}toJSON(meta){const data=super.toJSON(meta);if(this.compareFunction!==null)data.compareFunction=this.compareFunction;return data;}}/**
+ * A geometry class for representing a capsule.
+ *
+ * ```js
+ * const geometry = new THREE.CapsuleGeometry( 1, 1, 4, 8, 1 );
+ * const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+ * const capsule = new THREE.Mesh( geometry, material );
+ * scene.add( capsule );
+ * ```
+ *
+ * @augments BufferGeometry
+ */class CapsuleGeometry extends BufferGeometry{/**
+	 * Constructs a new capsule geometry.
+	 *
+	 * @param {number} [radius=1] - Radius of the capsule.
+	 * @param {number} [height=1] - Height of the middle section.
+	 * @param {number} [capSegments=4] - Number of curve segments used to build each cap.
+	 * @param {number} [radialSegments=8] - Number of segmented faces around the circumference of the capsule. Must be an integer >= 3.
+	 * @param {number} [heightSegments=1] - Number of rows of faces along the height of the middle section. Must be an integer >= 1.
+	 */constructor(radius=1,height=1,capSegments=4,radialSegments=8,heightSegments=1){super();this.type='CapsuleGeometry';/**
+		 * Holds the constructor parameters that have been
+		 * used to generate the geometry. Any modification
+		 * after instantiation does not change the geometry.
+		 *
+		 * @type {Object}
+		 */this.parameters={radius:radius,height:height,capSegments:capSegments,radialSegments:radialSegments,heightSegments:heightSegments};height=Math.max(0,height);capSegments=Math.max(1,Math.floor(capSegments));radialSegments=Math.max(3,Math.floor(radialSegments));heightSegments=Math.max(1,Math.floor(heightSegments));// buffers
+const indices=[];const vertices=[];const normals=[];const uvs=[];// helper variables
+const halfHeight=height/2;const capArcLength=Math.PI/2*radius;const cylinderPartLength=height;const totalArcLength=2*capArcLength+cylinderPartLength;const numVerticalSegments=capSegments*2+heightSegments;const verticesPerRow=radialSegments+1;const normal=new Vector3();const vertex=new Vector3();// generate vertices, normals, and uvs
+for(let iy=0;iy<=numVerticalSegments;iy++){let currentArcLength=0;let profileY=0;let profileRadius=0;let normalYComponent=0;if(iy<=capSegments){// bottom cap
+const segmentProgress=iy/capSegments;const angle=segmentProgress*Math.PI/2;profileY=-halfHeight-radius*Math.cos(angle);profileRadius=radius*Math.sin(angle);normalYComponent=-radius*Math.cos(angle);currentArcLength=segmentProgress*capArcLength;}else if(iy<=capSegments+heightSegments){// middle section
+const segmentProgress=(iy-capSegments)/heightSegments;profileY=-halfHeight+segmentProgress*height;profileRadius=radius;normalYComponent=0;currentArcLength=capArcLength+segmentProgress*cylinderPartLength;}else{// top cap
+const segmentProgress=(iy-capSegments-heightSegments)/capSegments;const angle=segmentProgress*Math.PI/2;profileY=halfHeight+radius*Math.sin(angle);profileRadius=radius*Math.cos(angle);normalYComponent=radius*Math.sin(angle);currentArcLength=capArcLength+cylinderPartLength+segmentProgress*capArcLength;}const v=Math.max(0,Math.min(1,currentArcLength/totalArcLength));// special case for the poles
+let uOffset=0;if(iy===0){uOffset=0.5/radialSegments;}else if(iy===numVerticalSegments){uOffset=-0.5/radialSegments;}for(let ix=0;ix<=radialSegments;ix++){const u=ix/radialSegments;const theta=u*Math.PI*2;const sinTheta=Math.sin(theta);const cosTheta=Math.cos(theta);// vertex
+vertex.x=-profileRadius*cosTheta;vertex.y=profileY;vertex.z=profileRadius*sinTheta;vertices.push(vertex.x,vertex.y,vertex.z);// normal
+normal.set(-profileRadius*cosTheta,normalYComponent,profileRadius*sinTheta);normal.normalize();normals.push(normal.x,normal.y,normal.z);// uv
+uvs.push(u+uOffset,v);}if(iy>0){const prevIndexRow=(iy-1)*verticesPerRow;for(let ix=0;ix<radialSegments;ix++){const i1=prevIndexRow+ix;const i2=prevIndexRow+ix+1;const i3=iy*verticesPerRow+ix;const i4=iy*verticesPerRow+ix+1;indices.push(i1,i2,i3);indices.push(i2,i4,i3);}}}// build geometry
+this.setIndex(indices);this.setAttribute('position',new Float32BufferAttribute(vertices,3));this.setAttribute('normal',new Float32BufferAttribute(normals,3));this.setAttribute('uv',new Float32BufferAttribute(uvs,2));}copy(source){super.copy(source);this.parameters=Object.assign({},source.parameters);return this;}/**
+	 * Factory method for creating an instance of this class from the given
+	 * JSON object.
+	 *
+	 * @param {Object} data - A JSON object representing the serialized geometry.
+	 * @return {CapsuleGeometry} A new instance.
+	 */static fromJSON(data){return new CapsuleGeometry(data.radius,data.height,data.capSegments,data.radialSegments,data.heightSegments);}}/**
+ * A simple shape of Euclidean geometry. It is constructed from a
+ * number of triangular segments that are oriented around a central point and
+ * extend as far out as a given radius. It is built counter-clockwise from a
+ * start angle and a given central angle. It can also be used to create
+ * regular polygons, where the number of segments determines the number of
+ * sides.
+ *
+ * ```js
+ * const geometry = new THREE.CircleGeometry( 5, 32 );
+ * const material = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
+ * const circle = new THREE.Mesh( geometry, material );
+ * scene.add( circle )
+ * ```
+ *
+ * @augments BufferGeometry
+ */class CircleGeometry extends BufferGeometry{/**
+	 * Constructs a new circle geometry.
+	 *
+	 * @param {number} [radius=1] - Radius of the circle.
+	 * @param {number} [segments=32] - Number of segments (triangles), minimum = `3`.
+	 * @param {number} [thetaStart=0] - Start angle for first segment in radians.
+	 * @param {number} [thetaLength=Math.PI*2] - The central angle, often called theta,
+	 * of the circular sector in radians. The default value results in a complete circle.
+	 */constructor(radius=1,segments=32,thetaStart=0,thetaLength=Math.PI*2){super();this.type='CircleGeometry';/**
+		 * Holds the constructor parameters that have been
+		 * used to generate the geometry. Any modification
+		 * after instantiation does not change the geometry.
+		 *
+		 * @type {Object}
+		 */this.parameters={radius:radius,segments:segments,thetaStart:thetaStart,thetaLength:thetaLength};segments=Math.max(3,segments);// buffers
+const indices=[];const vertices=[];const normals=[];const uvs=[];// helper variables
+const vertex=new Vector3();const uv=new Vector2();// center point
+vertices.push(0,0,0);normals.push(0,0,1);uvs.push(0.5,0.5);for(let s=0,i=3;s<=segments;s++,i+=3){const segment=thetaStart+s/segments*thetaLength;// vertex
+vertex.x=radius*Math.cos(segment);vertex.y=radius*Math.sin(segment);vertices.push(vertex.x,vertex.y,vertex.z);// normal
+normals.push(0,0,1);// uvs
+uv.x=(vertices[i]/radius+1)/2;uv.y=(vertices[i+1]/radius+1)/2;uvs.push(uv.x,uv.y);}// indices
+for(let i=1;i<=segments;i++){indices.push(i,i+1,0);}// build geometry
+this.setIndex(indices);this.setAttribute('position',new Float32BufferAttribute(vertices,3));this.setAttribute('normal',new Float32BufferAttribute(normals,3));this.setAttribute('uv',new Float32BufferAttribute(uvs,2));}copy(source){super.copy(source);this.parameters=Object.assign({},source.parameters);return this;}/**
+	 * Factory method for creating an instance of this class from the given
+	 * JSON object.
+	 *
+	 * @param {Object} data - A JSON object representing the serialized geometry.
+	 * @return {CircleGeometry} A new instance.
+	 */static fromJSON(data){return new CircleGeometry(data.radius,data.segments,data.thetaStart,data.thetaLength);}}/**
+ * A geometry class for representing a cylinder.
+ *
+ * ```js
+ * const geometry = new THREE.CylinderGeometry( 5, 5, 20, 32 );
+ * const material = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
+ * const cylinder = new THREE.Mesh( geometry, material );
+ * scene.add( cylinder );
+ * ```
+ *
+ * @augments BufferGeometry
+ */class CylinderGeometry extends BufferGeometry{/**
+	 * Constructs a new cylinder geometry.
+	 *
+	 * @param {number} [radiusTop=1] - Radius of the cylinder at the top.
+	 * @param {number} [radiusBottom=1] - Radius of the cylinder at the bottom.
+	 * @param {number} [height=1] - Height of the cylinder.
+	 * @param {number} [radialSegments=32] - Number of segmented faces around the circumference of the cylinder.
+	 * @param {number} [heightSegments=1] - Number of rows of faces along the height of the cylinder.
+	 * @param {boolean} [openEnded=false] - Whether the base of the cylinder is open or capped.
+	 * @param {number} [thetaStart=0] - Start angle for first segment, in radians.
+	 * @param {number} [thetaLength=Math.PI*2] - The central angle, often called theta, of the circular sector, in radians.
+	 * The default value results in a complete cylinder.
+	 */constructor(radiusTop=1,radiusBottom=1,height=1,radialSegments=32,heightSegments=1,openEnded=false,thetaStart=0,thetaLength=Math.PI*2){super();this.type='CylinderGeometry';/**
+		 * Holds the constructor parameters that have been
+		 * used to generate the geometry. Any modification
+		 * after instantiation does not change the geometry.
+		 *
+		 * @type {Object}
+		 */this.parameters={radiusTop:radiusTop,radiusBottom:radiusBottom,height:height,radialSegments:radialSegments,heightSegments:heightSegments,openEnded:openEnded,thetaStart:thetaStart,thetaLength:thetaLength};const scope=this;radialSegments=Math.floor(radialSegments);heightSegments=Math.floor(heightSegments);// buffers
+const indices=[];const vertices=[];const normals=[];const uvs=[];// helper variables
+let index=0;const indexArray=[];const halfHeight=height/2;let groupStart=0;// generate geometry
+generateTorso();if(openEnded===false){if(radiusTop>0)generateCap(true);if(radiusBottom>0)generateCap(false);}// build geometry
+this.setIndex(indices);this.setAttribute('position',new Float32BufferAttribute(vertices,3));this.setAttribute('normal',new Float32BufferAttribute(normals,3));this.setAttribute('uv',new Float32BufferAttribute(uvs,2));function generateTorso(){const normal=new Vector3();const vertex=new Vector3();let groupCount=0;// this will be used to calculate the normal
+const slope=(radiusBottom-radiusTop)/height;// generate vertices, normals and uvs
+for(let y=0;y<=heightSegments;y++){const indexRow=[];const v=y/heightSegments;// calculate the radius of the current row
+const radius=v*(radiusBottom-radiusTop)+radiusTop;for(let x=0;x<=radialSegments;x++){const u=x/radialSegments;const theta=u*thetaLength+thetaStart;const sinTheta=Math.sin(theta);const cosTheta=Math.cos(theta);// vertex
+vertex.x=radius*sinTheta;vertex.y=-v*height+halfHeight;vertex.z=radius*cosTheta;vertices.push(vertex.x,vertex.y,vertex.z);// normal
+normal.set(sinTheta,slope,cosTheta).normalize();normals.push(normal.x,normal.y,normal.z);// uv
+uvs.push(u,1-v);// save index of vertex in respective row
+indexRow.push(index++);}// now save vertices of the row in our index array
+indexArray.push(indexRow);}// generate indices
+for(let x=0;x<radialSegments;x++){for(let y=0;y<heightSegments;y++){// we use the index array to access the correct indices
+const a=indexArray[y][x];const b=indexArray[y+1][x];const c=indexArray[y+1][x+1];const d=indexArray[y][x+1];// faces
+if(radiusTop>0||y!==0){indices.push(a,b,d);groupCount+=3;}if(radiusBottom>0||y!==heightSegments-1){indices.push(b,c,d);groupCount+=3;}}}// add a group to the geometry. this will ensure multi material support
+scope.addGroup(groupStart,groupCount,0);// calculate new start value for groups
+groupStart+=groupCount;}function generateCap(top){// save the index of the first center vertex
+const centerIndexStart=index;const uv=new Vector2();const vertex=new Vector3();let groupCount=0;const radius=top===true?radiusTop:radiusBottom;const sign=top===true?1:-1;// first we generate the center vertex data of the cap.
+// because the geometry needs one set of uvs per face,
+// we must generate a center vertex per face/segment
+for(let x=1;x<=radialSegments;x++){// vertex
+vertices.push(0,halfHeight*sign,0);// normal
+normals.push(0,sign,0);// uv
+uvs.push(0.5,0.5);// increase index
+index++;}// save the index of the last center vertex
+const centerIndexEnd=index;// now we generate the surrounding vertices, normals and uvs
+for(let x=0;x<=radialSegments;x++){const u=x/radialSegments;const theta=u*thetaLength+thetaStart;const cosTheta=Math.cos(theta);const sinTheta=Math.sin(theta);// vertex
+vertex.x=radius*sinTheta;vertex.y=halfHeight*sign;vertex.z=radius*cosTheta;vertices.push(vertex.x,vertex.y,vertex.z);// normal
+normals.push(0,sign,0);// uv
+uv.x=cosTheta*0.5+0.5;uv.y=sinTheta*0.5*sign+0.5;uvs.push(uv.x,uv.y);// increase index
+index++;}// generate indices
+for(let x=0;x<radialSegments;x++){const c=centerIndexStart+x;const i=centerIndexEnd+x;if(top===true){// face top
+indices.push(i,i+1,c);}else{// face bottom
+indices.push(i+1,i,c);}groupCount+=3;}// add a group to the geometry. this will ensure multi material support
+scope.addGroup(groupStart,groupCount,top===true?1:2);// calculate new start value for groups
+groupStart+=groupCount;}}copy(source){super.copy(source);this.parameters=Object.assign({},source.parameters);return this;}/**
+	 * Factory method for creating an instance of this class from the given
+	 * JSON object.
+	 *
+	 * @param {Object} data - A JSON object representing the serialized geometry.
+	 * @return {CylinderGeometry} A new instance.
+	 */static fromJSON(data){return new CylinderGeometry(data.radiusTop,data.radiusBottom,data.height,data.radialSegments,data.heightSegments,data.openEnded,data.thetaStart,data.thetaLength);}}/**
+ * A geometry class for representing a cone.
+ *
+ * ```js
+ * const geometry = new THREE.ConeGeometry( 5, 20, 32 );
+ * const material = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
+ * const cone = new THREE.Mesh(geometry, material );
+ * scene.add( cone );
+ * ```
+ *
+ * @augments CylinderGeometry
+ */class ConeGeometry extends CylinderGeometry{/**
+	 * Constructs a new cone geometry.
+	 *
+	 * @param {number} [radius=1] - Radius of the cone base.
+	 * @param {number} [height=1] - Height of the cone.
+	 * @param {number} [radialSegments=32] - Number of segmented faces around the circumference of the cone.
+	 * @param {number} [heightSegments=1] - Number of rows of faces along the height of the cone.
+	 * @param {boolean} [openEnded=false] - Whether the base of the cone is open or capped.
+	 * @param {number} [thetaStart=0] - Start angle for first segment, in radians.
+	 * @param {number} [thetaLength=Math.PI*2] - The central angle, often called theta, of the circular sector, in radians.
+	 * The default value results in a complete cone.
+	 */constructor(radius=1,height=1,radialSegments=32,heightSegments=1,openEnded=false,thetaStart=0,thetaLength=Math.PI*2){super(0,radius,height,radialSegments,heightSegments,openEnded,thetaStart,thetaLength);this.type='ConeGeometry';/**
+		 * Holds the constructor parameters that have been
+		 * used to generate the geometry. Any modification
+		 * after instantiation does not change the geometry.
+		 *
+		 * @type {Object}
+		 */this.parameters={radius:radius,height:height,radialSegments:radialSegments,heightSegments:heightSegments,openEnded:openEnded,thetaStart:thetaStart,thetaLength:thetaLength};}/**
+	 * Factory method for creating an instance of this class from the given
+	 * JSON object.
+	 *
+	 * @param {Object} data - A JSON object representing the serialized geometry.
+	 * @return {ConeGeometry} A new instance.
+	 */static fromJSON(data){return new ConeGeometry(data.radius,data.height,data.radialSegments,data.heightSegments,data.openEnded,data.thetaStart,data.thetaLength);}}/**
+ * A polyhedron is a solid in three dimensions with flat faces. This class
+ * will take an array of vertices, project them onto a sphere, and then
+ * divide them up to the desired level of detail.
+ *
+ * @augments BufferGeometry
+ */class PolyhedronGeometry extends BufferGeometry{/**
+	 * Constructs a new polyhedron geometry.
+	 *
+	 * @param {Array<number>} [vertices] - A flat array of vertices describing the base shape.
+	 * @param {Array<number>} [indices] - A flat array of indices describing the base shape.
+	 * @param {number} [radius=1] - The radius of the shape.
+	 * @param {number} [detail=0] - How many levels to subdivide the geometry. The more detail, the smoother the shape.
+	 */constructor(vertices=[],indices=[],radius=1,detail=0){super();this.type='PolyhedronGeometry';/**
+		 * Holds the constructor parameters that have been
+		 * used to generate the geometry. Any modification
+		 * after instantiation does not change the geometry.
+		 *
+		 * @type {Object}
+		 */this.parameters={vertices:vertices,indices:indices,radius:radius,detail:detail};// default buffer data
+const vertexBuffer=[];const uvBuffer=[];// the subdivision creates the vertex buffer data
+subdivide(detail);// all vertices should lie on a conceptual sphere with a given radius
+applyRadius(radius);// finally, create the uv data
+generateUVs();// build non-indexed geometry
+this.setAttribute('position',new Float32BufferAttribute(vertexBuffer,3));this.setAttribute('normal',new Float32BufferAttribute(vertexBuffer.slice(),3));this.setAttribute('uv',new Float32BufferAttribute(uvBuffer,2));if(detail===0){this.computeVertexNormals();// flat normals
+}else{this.normalizeNormals();// smooth normals
+}// helper functions
+function subdivide(detail){const a=new Vector3();const b=new Vector3();const c=new Vector3();// iterate over all faces and apply a subdivision with the given detail value
+for(let i=0;i<indices.length;i+=3){// get the vertices of the face
+getVertexByIndex(indices[i+0],a);getVertexByIndex(indices[i+1],b);getVertexByIndex(indices[i+2],c);// perform subdivision
+subdivideFace(a,b,c,detail);}}function subdivideFace(a,b,c,detail){const cols=detail+1;// we use this multidimensional array as a data structure for creating the subdivision
+const v=[];// construct all of the vertices for this subdivision
+for(let i=0;i<=cols;i++){v[i]=[];const aj=a.clone().lerp(c,i/cols);const bj=b.clone().lerp(c,i/cols);const rows=cols-i;for(let j=0;j<=rows;j++){if(j===0&&i===cols){v[i][j]=aj;}else{v[i][j]=aj.clone().lerp(bj,j/rows);}}}// construct all of the faces
+for(let i=0;i<cols;i++){for(let j=0;j<2*(cols-i)-1;j++){const k=Math.floor(j/2);if(j%2===0){pushVertex(v[i][k+1]);pushVertex(v[i+1][k]);pushVertex(v[i][k]);}else{pushVertex(v[i][k+1]);pushVertex(v[i+1][k+1]);pushVertex(v[i+1][k]);}}}}function applyRadius(radius){const vertex=new Vector3();// iterate over the entire buffer and apply the radius to each vertex
+for(let i=0;i<vertexBuffer.length;i+=3){vertex.x=vertexBuffer[i+0];vertex.y=vertexBuffer[i+1];vertex.z=vertexBuffer[i+2];vertex.normalize().multiplyScalar(radius);vertexBuffer[i+0]=vertex.x;vertexBuffer[i+1]=vertex.y;vertexBuffer[i+2]=vertex.z;}}function generateUVs(){const vertex=new Vector3();for(let i=0;i<vertexBuffer.length;i+=3){vertex.x=vertexBuffer[i+0];vertex.y=vertexBuffer[i+1];vertex.z=vertexBuffer[i+2];const u=azimuth(vertex)/2/Math.PI+0.5;const v=inclination(vertex)/Math.PI+0.5;uvBuffer.push(u,1-v);}correctUVs();correctSeam();}function correctSeam(){// handle case when face straddles the seam, see #3269
+for(let i=0;i<uvBuffer.length;i+=6){// uv data of a single face
+const x0=uvBuffer[i+0];const x1=uvBuffer[i+2];const x2=uvBuffer[i+4];const max=Math.max(x0,x1,x2);const min=Math.min(x0,x1,x2);// 0.9 is somewhat arbitrary
+if(max>0.9&&min<0.1){if(x0<0.2)uvBuffer[i+0]+=1;if(x1<0.2)uvBuffer[i+2]+=1;if(x2<0.2)uvBuffer[i+4]+=1;}}}function pushVertex(vertex){vertexBuffer.push(vertex.x,vertex.y,vertex.z);}function getVertexByIndex(index,vertex){const stride=index*3;vertex.x=vertices[stride+0];vertex.y=vertices[stride+1];vertex.z=vertices[stride+2];}function correctUVs(){const a=new Vector3();const b=new Vector3();const c=new Vector3();const centroid=new Vector3();const uvA=new Vector2();const uvB=new Vector2();const uvC=new Vector2();for(let i=0,j=0;i<vertexBuffer.length;i+=9,j+=6){a.set(vertexBuffer[i+0],vertexBuffer[i+1],vertexBuffer[i+2]);b.set(vertexBuffer[i+3],vertexBuffer[i+4],vertexBuffer[i+5]);c.set(vertexBuffer[i+6],vertexBuffer[i+7],vertexBuffer[i+8]);uvA.set(uvBuffer[j+0],uvBuffer[j+1]);uvB.set(uvBuffer[j+2],uvBuffer[j+3]);uvC.set(uvBuffer[j+4],uvBuffer[j+5]);centroid.copy(a).add(b).add(c).divideScalar(3);const azi=azimuth(centroid);correctUV(uvA,j+0,a,azi);correctUV(uvB,j+2,b,azi);correctUV(uvC,j+4,c,azi);}}function correctUV(uv,stride,vector,azimuth){if(azimuth<0&&uv.x===1){uvBuffer[stride]=uv.x-1;}if(vector.x===0&&vector.z===0){uvBuffer[stride]=azimuth/2/Math.PI+0.5;}}// Angle around the Y axis, counter-clockwise when looking from above.
+function azimuth(vector){return Math.atan2(vector.z,-vector.x);}// Angle above the XZ plane.
+function inclination(vector){return Math.atan2(-vector.y,Math.sqrt(vector.x*vector.x+vector.z*vector.z));}}copy(source){super.copy(source);this.parameters=Object.assign({},source.parameters);return this;}/**
+	 * Factory method for creating an instance of this class from the given
+	 * JSON object.
+	 *
+	 * @param {Object} data - A JSON object representing the serialized geometry.
+	 * @return {PolyhedronGeometry} A new instance.
+	 */static fromJSON(data){return new PolyhedronGeometry(data.vertices,data.indices,data.radius,data.details);}}/**
+ * A geometry class for representing a dodecahedron.
+ *
+ * ```js
+ * const geometry = new THREE.DodecahedronGeometry();
+ * const material = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
+ * const dodecahedron = new THREE.Mesh( geometry, material );
+ * scene.add( dodecahedron );
+ * ```
+ *
+ * @augments PolyhedronGeometry
+ */class DodecahedronGeometry extends PolyhedronGeometry{/**
+	 * Constructs a new dodecahedron geometry.
+	 *
+	 * @param {number} [radius=1] - Radius of the dodecahedron.
+	 * @param {number} [detail=0] - Setting this to a value greater than `0` adds vertices making it no longer a dodecahedron.
+	 */constructor(radius=1,detail=0){const t=(1+Math.sqrt(5))/2;const r=1/t;const vertices=[// (±1, ±1, ±1)
+-1,-1,-1,-1,-1,1,-1,1,-1,-1,1,1,1,-1,-1,1,-1,1,1,1,-1,1,1,1,// (0, ±1/φ, ±φ)
+0,-r,-t,0,-r,t,0,r,-t,0,r,t,// (±1/φ, ±φ, 0)
+-r,-t,0,-r,t,0,r,-t,0,r,t,0,// (±φ, 0, ±1/φ)
+-t,0,-r,t,0,-r,-t,0,r,t,0,r];const indices=[3,11,7,3,7,15,3,15,13,7,19,17,7,17,6,7,6,15,17,4,8,17,8,10,17,10,6,8,0,16,8,16,2,8,2,10,0,12,1,0,1,18,0,18,16,6,10,2,6,2,13,6,13,15,2,16,18,2,18,3,2,3,13,18,1,9,18,9,11,18,11,3,4,14,12,4,12,0,4,0,8,11,9,5,11,5,19,11,19,7,19,5,14,19,14,4,19,4,17,1,12,14,1,14,5,1,5,9];super(vertices,indices,radius,detail);this.type='DodecahedronGeometry';/**
+		 * Holds the constructor parameters that have been
+		 * used to generate the geometry. Any modification
+		 * after instantiation does not change the geometry.
+		 *
+		 * @type {Object}
+		 */this.parameters={radius:radius,detail:detail};}/**
+	 * Factory method for creating an instance of this class from the given
+	 * JSON object.
+	 *
+	 * @param {Object} data - A JSON object representing the serialized geometry.
+	 * @return {DodecahedronGeometry} A new instance.
+	 */static fromJSON(data){return new DodecahedronGeometry(data.radius,data.detail);}}const _v0=/*@__PURE__*/new Vector3();const _v1$1=/*@__PURE__*/new Vector3();const _normal=/*@__PURE__*/new Vector3();const _triangle=/*@__PURE__*/new Triangle();/**
+ * Can be used as a helper object to view the edges of a geometry.
+ *
+ * ```js
+ * const geometry = new THREE.BoxGeometry();
+ * const edges = new THREE.EdgesGeometry( geometry );
+ * const line = new THREE.LineSegments( edges );
+ * scene.add( line );
+ * ```
+ *
+ * Note: It is not yet possible to serialize/deserialize instances of this class.
+ *
+ * @augments BufferGeometry
+ */class EdgesGeometry extends BufferGeometry{/**
+	 * Constructs a new edges geometry.
+	 *
+	 * @param {?BufferGeometry} [geometry=null] - The geometry.
+	 * @param {number} [thresholdAngle=1] - An edge is only rendered if the angle (in degrees)
+	 * between the face normals of the adjoining faces exceeds this value.
+	 */constructor(geometry=null,thresholdAngle=1){super();this.type='EdgesGeometry';/**
+		 * Holds the constructor parameters that have been
+		 * used to generate the geometry. Any modification
+		 * after instantiation does not change the geometry.
+		 *
+		 * @type {Object}
+		 */this.parameters={geometry:geometry,thresholdAngle:thresholdAngle};if(geometry!==null){const precisionPoints=4;const precision=Math.pow(10,precisionPoints);const thresholdDot=Math.cos(DEG2RAD*thresholdAngle);const indexAttr=geometry.getIndex();const positionAttr=geometry.getAttribute('position');const indexCount=indexAttr?indexAttr.count:positionAttr.count;const indexArr=[0,0,0];const vertKeys=['a','b','c'];const hashes=new Array(3);const edgeData={};const vertices=[];for(let i=0;i<indexCount;i+=3){if(indexAttr){indexArr[0]=indexAttr.getX(i);indexArr[1]=indexAttr.getX(i+1);indexArr[2]=indexAttr.getX(i+2);}else{indexArr[0]=i;indexArr[1]=i+1;indexArr[2]=i+2;}const{a,b,c}=_triangle;a.fromBufferAttribute(positionAttr,indexArr[0]);b.fromBufferAttribute(positionAttr,indexArr[1]);c.fromBufferAttribute(positionAttr,indexArr[2]);_triangle.getNormal(_normal);// create hashes for the edge from the vertices
+hashes[0]=`${Math.round(a.x*precision)},${Math.round(a.y*precision)},${Math.round(a.z*precision)}`;hashes[1]=`${Math.round(b.x*precision)},${Math.round(b.y*precision)},${Math.round(b.z*precision)}`;hashes[2]=`${Math.round(c.x*precision)},${Math.round(c.y*precision)},${Math.round(c.z*precision)}`;// skip degenerate triangles
+if(hashes[0]===hashes[1]||hashes[1]===hashes[2]||hashes[2]===hashes[0]){continue;}// iterate over every edge
+for(let j=0;j<3;j++){// get the first and next vertex making up the edge
+const jNext=(j+1)%3;const vecHash0=hashes[j];const vecHash1=hashes[jNext];const v0=_triangle[vertKeys[j]];const v1=_triangle[vertKeys[jNext]];const hash=`${vecHash0}_${vecHash1}`;const reverseHash=`${vecHash1}_${vecHash0}`;if(reverseHash in edgeData&&edgeData[reverseHash]){// if we found a sibling edge add it into the vertex array if
+// it meets the angle threshold and delete the edge from the map.
+if(_normal.dot(edgeData[reverseHash].normal)<=thresholdDot){vertices.push(v0.x,v0.y,v0.z);vertices.push(v1.x,v1.y,v1.z);}edgeData[reverseHash]=null;}else if(!(hash in edgeData)){// if we've already got an edge here then skip adding a new one
+edgeData[hash]={index0:indexArr[j],index1:indexArr[jNext],normal:_normal.clone()};}}}// iterate over all remaining, unmatched edges and add them to the vertex array
+for(const key in edgeData){if(edgeData[key]){const{index0,index1}=edgeData[key];_v0.fromBufferAttribute(positionAttr,index0);_v1$1.fromBufferAttribute(positionAttr,index1);vertices.push(_v0.x,_v0.y,_v0.z);vertices.push(_v1$1.x,_v1$1.y,_v1$1.z);}}this.setAttribute('position',new Float32BufferAttribute(vertices,3));}}copy(source){super.copy(source);this.parameters=Object.assign({},source.parameters);return this;}}/**
  * An abstract base class for creating an analytic curve object that contains methods
  * for interpolation.
  *
@@ -42168,7 +42606,7 @@ normals[i].applyMatrix4(mat.makeRotationAxis(tangents[i],theta*i));binormals[i].
 	 *
 	 * @return {Object} A JSON object representing the serialized curve.
 	 * @see {@link ObjectLoader#parse}
-	 */toJSON(){const data={metadata:{version:4.6,type:'Curve',generator:'Curve.toJSON'}};data.arcLengthDivisions=this.arcLengthDivisions;data.type=this.type;return data;}/**
+	 */toJSON(){const data={metadata:{version:4.7,type:'Curve',generator:'Curve.toJSON'}};data.arcLengthDivisions=this.arcLengthDivisions;data.type=this.type;return data;}/**
 	 * Deserializes the curve from the given JSON.
 	 *
 	 * @param {Object} json - The JSON holding the serialized curve.
@@ -42863,345 +43301,6 @@ return this;}/**
 	 * @return {Path} A reference to this path.
 	 */absellipse(aX,aY,xRadius,yRadius,aStartAngle,aEndAngle,aClockwise,aRotation){const curve=new EllipseCurve(aX,aY,xRadius,yRadius,aStartAngle,aEndAngle,aClockwise,aRotation);if(this.curves.length>0){// if a previous curve is present, attempt to join
 const firstPoint=curve.getPoint(0);if(!firstPoint.equals(this.currentPoint)){this.lineTo(firstPoint.x,firstPoint.y);}}this.curves.push(curve);const lastPoint=curve.getPoint(1);this.currentPoint.copy(lastPoint);return this;}copy(source){super.copy(source);this.currentPoint.copy(source.currentPoint);return this;}toJSON(){const data=super.toJSON();data.currentPoint=this.currentPoint.toArray();return data;}fromJSON(json){super.fromJSON(json);this.currentPoint.fromArray(json.currentPoint);return this;}}/**
- * Creates meshes with axial symmetry like vases. The lathe rotates around the Y axis.
- *
- * ```js
- * const points = [];
- * for ( let i = 0; i < 10; i ++ ) {
- * 	points.push( new THREE.Vector2( Math.sin( i * 0.2 ) * 10 + 5, ( i - 5 ) * 2 ) );
- * }
- * const geometry = new THREE.LatheGeometry( points );
- * const material = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
- * const lathe = new THREE.Mesh( geometry, material );
- * scene.add( lathe );
- * ```
- *
- * @augments BufferGeometry
- */class LatheGeometry extends BufferGeometry{/**
-	 * Constructs a new lathe geometry.
-	 *
-	 * @param {Array<Vector2|Vector3>} [points] - An array of points in 2D space. The x-coordinate of each point
-	 * must be greater than zero.
-	 * @param {number} [segments=12] - The number of circumference segments to generate.
-	 * @param {number} [phiStart=0] - The starting angle in radians.
-	 * @param {number} [phiLength=Math.PI*2] - The radian (0 to 2PI) range of the lathed section 2PI is a
-	 * closed lathe, less than 2PI is a portion.
-	 */constructor(points=[new Vector2(0,-0.5),new Vector2(0.5,0),new Vector2(0,0.5)],segments=12,phiStart=0,phiLength=Math.PI*2){super();this.type='LatheGeometry';/**
-		 * Holds the constructor parameters that have been
-		 * used to generate the geometry. Any modification
-		 * after instantiation does not change the geometry.
-		 *
-		 * @type {Object}
-		 */this.parameters={points:points,segments:segments,phiStart:phiStart,phiLength:phiLength};segments=Math.floor(segments);// clamp phiLength so it's in range of [ 0, 2PI ]
-phiLength=clamp(phiLength,0,Math.PI*2);// buffers
-const indices=[];const vertices=[];const uvs=[];const initNormals=[];const normals=[];// helper variables
-const inverseSegments=1.0/segments;const vertex=new Vector3();const uv=new Vector2();const normal=new Vector3();const curNormal=new Vector3();const prevNormal=new Vector3();let dx=0;let dy=0;// pre-compute normals for initial "meridian"
-for(let j=0;j<=points.length-1;j++){switch(j){case 0:// special handling for 1st vertex on path
-dx=points[j+1].x-points[j].x;dy=points[j+1].y-points[j].y;normal.x=dy*1.0;normal.y=-dx;normal.z=dy*0.0;prevNormal.copy(normal);normal.normalize();initNormals.push(normal.x,normal.y,normal.z);break;case points.length-1:// special handling for last Vertex on path
-initNormals.push(prevNormal.x,prevNormal.y,prevNormal.z);break;default:// default handling for all vertices in between
-dx=points[j+1].x-points[j].x;dy=points[j+1].y-points[j].y;normal.x=dy*1.0;normal.y=-dx;normal.z=dy*0.0;curNormal.copy(normal);normal.x+=prevNormal.x;normal.y+=prevNormal.y;normal.z+=prevNormal.z;normal.normalize();initNormals.push(normal.x,normal.y,normal.z);prevNormal.copy(curNormal);}}// generate vertices, uvs and normals
-for(let i=0;i<=segments;i++){const phi=phiStart+i*inverseSegments*phiLength;const sin=Math.sin(phi);const cos=Math.cos(phi);for(let j=0;j<=points.length-1;j++){// vertex
-vertex.x=points[j].x*sin;vertex.y=points[j].y;vertex.z=points[j].x*cos;vertices.push(vertex.x,vertex.y,vertex.z);// uv
-uv.x=i/segments;uv.y=j/(points.length-1);uvs.push(uv.x,uv.y);// normal
-const x=initNormals[3*j+0]*sin;const y=initNormals[3*j+1];const z=initNormals[3*j+0]*cos;normals.push(x,y,z);}}// indices
-for(let i=0;i<segments;i++){for(let j=0;j<points.length-1;j++){const base=j+i*points.length;const a=base;const b=base+points.length;const c=base+points.length+1;const d=base+1;// faces
-indices.push(a,b,d);indices.push(c,d,b);}}// build geometry
-this.setIndex(indices);this.setAttribute('position',new Float32BufferAttribute(vertices,3));this.setAttribute('uv',new Float32BufferAttribute(uvs,2));this.setAttribute('normal',new Float32BufferAttribute(normals,3));}copy(source){super.copy(source);this.parameters=Object.assign({},source.parameters);return this;}/**
-	 * Factory method for creating an instance of this class from the given
-	 * JSON object.
-	 *
-	 * @param {Object} data - A JSON object representing the serialized geometry.
-	 * @return {LatheGeometry} A new instance.
-	 */static fromJSON(data){return new LatheGeometry(data.points,data.segments,data.phiStart,data.phiLength);}}/**
- * A geometry class for a capsule with given radii and height. It is constructed using a lathe.
- *
- * ```js
- * const geometry = new THREE.CapsuleGeometry( 1, 1, 4, 8 );
- * const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
- * const capsule = new THREE.Mesh( geometry, material );
- * scene.add( capsule );
- * ```
- *
- * @augments LatheGeometry
- */class CapsuleGeometry extends LatheGeometry{/**
-	 * Constructs a new capsule geometry.
-	 *
-	 * @param {number} [radius=1] - Radius of the capsule.
-	 * @param {number} [length=1] - Length of the middle section.
-	 * @param {number} [capSegments=4] - Number of curve segments used to build the caps.
-	 * @param {number} [radialSegments=8] - Number of segmented faces around the circumference of the capsule.
-	 */constructor(radius=1,length=1,capSegments=4,radialSegments=8){const path=new Path();path.absarc(0,-length/2,radius,Math.PI*1.5,0);path.absarc(0,length/2,radius,0,Math.PI*0.5);super(path.getPoints(capSegments),radialSegments);this.type='CapsuleGeometry';/**
-		 * Holds the constructor parameters that have been
-		 * used to generate the geometry. Any modification
-		 * after instantiation does not change the geometry.
-		 *
-		 * @type {Object}
-		 */this.parameters={radius:radius,length:length,capSegments:capSegments,radialSegments:radialSegments};}/**
-	 * Factory method for creating an instance of this class from the given
-	 * JSON object.
-	 *
-	 * @param {Object} data - A JSON object representing the serialized geometry.
-	 * @return {CapsuleGeometry} A new instance.
-	 */static fromJSON(data){return new CapsuleGeometry(data.radius,data.length,data.capSegments,data.radialSegments);}}/**
- * A simple shape of Euclidean geometry. It is constructed from a
- * number of triangular segments that are oriented around a central point and
- * extend as far out as a given radius. It is built counter-clockwise from a
- * start angle and a given central angle. It can also be used to create
- * regular polygons, where the number of segments determines the number of
- * sides.
- *
- * ```js
- * const geometry = new THREE.CircleGeometry( 5, 32 );
- * const material = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
- * const circle = new THREE.Mesh( geometry, material );
- * scene.add( circle )
- * ```
- *
- * @augments BufferGeometry
- */class CircleGeometry extends BufferGeometry{/**
-	 * Constructs a new circle geometry.
-	 *
-	 * @param {number} [radius=1] - Radius of the circle.
-	 * @param {number} [segments=32] - Number of segments (triangles), minimum = `3`.
-	 * @param {number} [thetaStart=0] - Start angle for first segment in radians.
-	 * @param {number} [thetaLength=Math.PI*2] - The central angle, often called theta,
-	 * of the circular sector in radians. The default value results in a complete circle.
-	 */constructor(radius=1,segments=32,thetaStart=0,thetaLength=Math.PI*2){super();this.type='CircleGeometry';/**
-		 * Holds the constructor parameters that have been
-		 * used to generate the geometry. Any modification
-		 * after instantiation does not change the geometry.
-		 *
-		 * @type {Object}
-		 */this.parameters={radius:radius,segments:segments,thetaStart:thetaStart,thetaLength:thetaLength};segments=Math.max(3,segments);// buffers
-const indices=[];const vertices=[];const normals=[];const uvs=[];// helper variables
-const vertex=new Vector3();const uv=new Vector2();// center point
-vertices.push(0,0,0);normals.push(0,0,1);uvs.push(0.5,0.5);for(let s=0,i=3;s<=segments;s++,i+=3){const segment=thetaStart+s/segments*thetaLength;// vertex
-vertex.x=radius*Math.cos(segment);vertex.y=radius*Math.sin(segment);vertices.push(vertex.x,vertex.y,vertex.z);// normal
-normals.push(0,0,1);// uvs
-uv.x=(vertices[i]/radius+1)/2;uv.y=(vertices[i+1]/radius+1)/2;uvs.push(uv.x,uv.y);}// indices
-for(let i=1;i<=segments;i++){indices.push(i,i+1,0);}// build geometry
-this.setIndex(indices);this.setAttribute('position',new Float32BufferAttribute(vertices,3));this.setAttribute('normal',new Float32BufferAttribute(normals,3));this.setAttribute('uv',new Float32BufferAttribute(uvs,2));}copy(source){super.copy(source);this.parameters=Object.assign({},source.parameters);return this;}/**
-	 * Factory method for creating an instance of this class from the given
-	 * JSON object.
-	 *
-	 * @param {Object} data - A JSON object representing the serialized geometry.
-	 * @return {CircleGeometry} A new instance.
-	 */static fromJSON(data){return new CircleGeometry(data.radius,data.segments,data.thetaStart,data.thetaLength);}}/**
- * A geometry class for representing a cylinder.
- *
- * ```js
- * const geometry = new THREE.CylinderGeometry( 5, 5, 20, 32 );
- * const material = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
- * const cylinder = new THREE.Mesh( geometry, material );
- * scene.add( cylinder );
- * ```
- *
- * @augments BufferGeometry
- */class CylinderGeometry extends BufferGeometry{/**
-	 * Constructs a new cylinder geometry.
-	 *
-	 * @param {number} [radiusTop=1] - Radius of the cylinder at the top.
-	 * @param {number} [radiusBottom=1] - Radius of the cylinder at the bottom.
-	 * @param {number} [height=1] - Height of the cylinder.
-	 * @param {number} [radialSegments=32] - Number of segmented faces around the circumference of the cylinder.
-	 * @param {number} [heightSegments=1] - Number of rows of faces along the height of the cylinder.
-	 * @param {boolean} [openEnded=false] - Whether the base of the cylinder is open or capped.
-	 * @param {number} [thetaStart=0] - Start angle for first segment, in radians.
-	 * @param {number} [thetaLength=Math.PI*2] - The central angle, often called theta, of the circular sector, in radians.
-	 * The default value results in a complete cylinder.
-	 */constructor(radiusTop=1,radiusBottom=1,height=1,radialSegments=32,heightSegments=1,openEnded=false,thetaStart=0,thetaLength=Math.PI*2){super();this.type='CylinderGeometry';/**
-		 * Holds the constructor parameters that have been
-		 * used to generate the geometry. Any modification
-		 * after instantiation does not change the geometry.
-		 *
-		 * @type {Object}
-		 */this.parameters={radiusTop:radiusTop,radiusBottom:radiusBottom,height:height,radialSegments:radialSegments,heightSegments:heightSegments,openEnded:openEnded,thetaStart:thetaStart,thetaLength:thetaLength};const scope=this;radialSegments=Math.floor(radialSegments);heightSegments=Math.floor(heightSegments);// buffers
-const indices=[];const vertices=[];const normals=[];const uvs=[];// helper variables
-let index=0;const indexArray=[];const halfHeight=height/2;let groupStart=0;// generate geometry
-generateTorso();if(openEnded===false){if(radiusTop>0)generateCap(true);if(radiusBottom>0)generateCap(false);}// build geometry
-this.setIndex(indices);this.setAttribute('position',new Float32BufferAttribute(vertices,3));this.setAttribute('normal',new Float32BufferAttribute(normals,3));this.setAttribute('uv',new Float32BufferAttribute(uvs,2));function generateTorso(){const normal=new Vector3();const vertex=new Vector3();let groupCount=0;// this will be used to calculate the normal
-const slope=(radiusBottom-radiusTop)/height;// generate vertices, normals and uvs
-for(let y=0;y<=heightSegments;y++){const indexRow=[];const v=y/heightSegments;// calculate the radius of the current row
-const radius=v*(radiusBottom-radiusTop)+radiusTop;for(let x=0;x<=radialSegments;x++){const u=x/radialSegments;const theta=u*thetaLength+thetaStart;const sinTheta=Math.sin(theta);const cosTheta=Math.cos(theta);// vertex
-vertex.x=radius*sinTheta;vertex.y=-v*height+halfHeight;vertex.z=radius*cosTheta;vertices.push(vertex.x,vertex.y,vertex.z);// normal
-normal.set(sinTheta,slope,cosTheta).normalize();normals.push(normal.x,normal.y,normal.z);// uv
-uvs.push(u,1-v);// save index of vertex in respective row
-indexRow.push(index++);}// now save vertices of the row in our index array
-indexArray.push(indexRow);}// generate indices
-for(let x=0;x<radialSegments;x++){for(let y=0;y<heightSegments;y++){// we use the index array to access the correct indices
-const a=indexArray[y][x];const b=indexArray[y+1][x];const c=indexArray[y+1][x+1];const d=indexArray[y][x+1];// faces
-if(radiusTop>0||y!==0){indices.push(a,b,d);groupCount+=3;}if(radiusBottom>0||y!==heightSegments-1){indices.push(b,c,d);groupCount+=3;}}}// add a group to the geometry. this will ensure multi material support
-scope.addGroup(groupStart,groupCount,0);// calculate new start value for groups
-groupStart+=groupCount;}function generateCap(top){// save the index of the first center vertex
-const centerIndexStart=index;const uv=new Vector2();const vertex=new Vector3();let groupCount=0;const radius=top===true?radiusTop:radiusBottom;const sign=top===true?1:-1;// first we generate the center vertex data of the cap.
-// because the geometry needs one set of uvs per face,
-// we must generate a center vertex per face/segment
-for(let x=1;x<=radialSegments;x++){// vertex
-vertices.push(0,halfHeight*sign,0);// normal
-normals.push(0,sign,0);// uv
-uvs.push(0.5,0.5);// increase index
-index++;}// save the index of the last center vertex
-const centerIndexEnd=index;// now we generate the surrounding vertices, normals and uvs
-for(let x=0;x<=radialSegments;x++){const u=x/radialSegments;const theta=u*thetaLength+thetaStart;const cosTheta=Math.cos(theta);const sinTheta=Math.sin(theta);// vertex
-vertex.x=radius*sinTheta;vertex.y=halfHeight*sign;vertex.z=radius*cosTheta;vertices.push(vertex.x,vertex.y,vertex.z);// normal
-normals.push(0,sign,0);// uv
-uv.x=cosTheta*0.5+0.5;uv.y=sinTheta*0.5*sign+0.5;uvs.push(uv.x,uv.y);// increase index
-index++;}// generate indices
-for(let x=0;x<radialSegments;x++){const c=centerIndexStart+x;const i=centerIndexEnd+x;if(top===true){// face top
-indices.push(i,i+1,c);}else{// face bottom
-indices.push(i+1,i,c);}groupCount+=3;}// add a group to the geometry. this will ensure multi material support
-scope.addGroup(groupStart,groupCount,top===true?1:2);// calculate new start value for groups
-groupStart+=groupCount;}}copy(source){super.copy(source);this.parameters=Object.assign({},source.parameters);return this;}/**
-	 * Factory method for creating an instance of this class from the given
-	 * JSON object.
-	 *
-	 * @param {Object} data - A JSON object representing the serialized geometry.
-	 * @return {CylinderGeometry} A new instance.
-	 */static fromJSON(data){return new CylinderGeometry(data.radiusTop,data.radiusBottom,data.height,data.radialSegments,data.heightSegments,data.openEnded,data.thetaStart,data.thetaLength);}}/**
- * A geometry class for representing a cone.
- *
- * ```js
- * const geometry = new THREE.ConeGeometry( 5, 20, 32 );
- * const material = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
- * const cone = new THREE.Mesh(geometry, material );
- * scene.add( cone );
- * ```
- *
- * @augments CylinderGeometry
- */class ConeGeometry extends CylinderGeometry{/**
-	 * Constructs a new cone geometry.
-	 *
-	 * @param {number} [radius=1] - Radius of the cone base.
-	 * @param {number} [height=1] - Height of the cone.
-	 * @param {number} [radialSegments=32] - Number of segmented faces around the circumference of the cone.
-	 * @param {number} [heightSegments=1] - Number of rows of faces along the height of the cone.
-	 * @param {boolean} [openEnded=false] - Whether the base of the cone is open or capped.
-	 * @param {number} [thetaStart=0] - Start angle for first segment, in radians.
-	 * @param {number} [thetaLength=Math.PI*2] - The central angle, often called theta, of the circular sector, in radians.
-	 * The default value results in a complete cone.
-	 */constructor(radius=1,height=1,radialSegments=32,heightSegments=1,openEnded=false,thetaStart=0,thetaLength=Math.PI*2){super(0,radius,height,radialSegments,heightSegments,openEnded,thetaStart,thetaLength);this.type='ConeGeometry';/**
-		 * Holds the constructor parameters that have been
-		 * used to generate the geometry. Any modification
-		 * after instantiation does not change the geometry.
-		 *
-		 * @type {Object}
-		 */this.parameters={radius:radius,height:height,radialSegments:radialSegments,heightSegments:heightSegments,openEnded:openEnded,thetaStart:thetaStart,thetaLength:thetaLength};}/**
-	 * Factory method for creating an instance of this class from the given
-	 * JSON object.
-	 *
-	 * @param {Object} data - A JSON object representing the serialized geometry.
-	 * @return {ConeGeometry} A new instance.
-	 */static fromJSON(data){return new ConeGeometry(data.radius,data.height,data.radialSegments,data.heightSegments,data.openEnded,data.thetaStart,data.thetaLength);}}/**
- * A polyhedron is a solid in three dimensions with flat faces. This class
- * will take an array of vertices, project them onto a sphere, and then
- * divide them up to the desired level of detail.
- *
- * @augments BufferGeometry
- */class PolyhedronGeometry extends BufferGeometry{/**
-	 * Constructs a new polyhedron geometry.
-	 *
-	 * @param {Array<number>} [vertices] - A flat array of vertices describing the base shape.
-	 * @param {Array<number>} [indices] - A flat array of indices describing the base shape.
-	 * @param {number} [radius=1] - The radius of the shape.
-	 * @param {number} [detail=0] - How many levels to subdivide the geometry. The more detail, the smoother the shape.
-	 */constructor(vertices=[],indices=[],radius=1,detail=0){super();this.type='PolyhedronGeometry';/**
-		 * Holds the constructor parameters that have been
-		 * used to generate the geometry. Any modification
-		 * after instantiation does not change the geometry.
-		 *
-		 * @type {Object}
-		 */this.parameters={vertices:vertices,indices:indices,radius:radius,detail:detail};// default buffer data
-const vertexBuffer=[];const uvBuffer=[];// the subdivision creates the vertex buffer data
-subdivide(detail);// all vertices should lie on a conceptual sphere with a given radius
-applyRadius(radius);// finally, create the uv data
-generateUVs();// build non-indexed geometry
-this.setAttribute('position',new Float32BufferAttribute(vertexBuffer,3));this.setAttribute('normal',new Float32BufferAttribute(vertexBuffer.slice(),3));this.setAttribute('uv',new Float32BufferAttribute(uvBuffer,2));if(detail===0){this.computeVertexNormals();// flat normals
-}else{this.normalizeNormals();// smooth normals
-}// helper functions
-function subdivide(detail){const a=new Vector3();const b=new Vector3();const c=new Vector3();// iterate over all faces and apply a subdivision with the given detail value
-for(let i=0;i<indices.length;i+=3){// get the vertices of the face
-getVertexByIndex(indices[i+0],a);getVertexByIndex(indices[i+1],b);getVertexByIndex(indices[i+2],c);// perform subdivision
-subdivideFace(a,b,c,detail);}}function subdivideFace(a,b,c,detail){const cols=detail+1;// we use this multidimensional array as a data structure for creating the subdivision
-const v=[];// construct all of the vertices for this subdivision
-for(let i=0;i<=cols;i++){v[i]=[];const aj=a.clone().lerp(c,i/cols);const bj=b.clone().lerp(c,i/cols);const rows=cols-i;for(let j=0;j<=rows;j++){if(j===0&&i===cols){v[i][j]=aj;}else{v[i][j]=aj.clone().lerp(bj,j/rows);}}}// construct all of the faces
-for(let i=0;i<cols;i++){for(let j=0;j<2*(cols-i)-1;j++){const k=Math.floor(j/2);if(j%2===0){pushVertex(v[i][k+1]);pushVertex(v[i+1][k]);pushVertex(v[i][k]);}else{pushVertex(v[i][k+1]);pushVertex(v[i+1][k+1]);pushVertex(v[i+1][k]);}}}}function applyRadius(radius){const vertex=new Vector3();// iterate over the entire buffer and apply the radius to each vertex
-for(let i=0;i<vertexBuffer.length;i+=3){vertex.x=vertexBuffer[i+0];vertex.y=vertexBuffer[i+1];vertex.z=vertexBuffer[i+2];vertex.normalize().multiplyScalar(radius);vertexBuffer[i+0]=vertex.x;vertexBuffer[i+1]=vertex.y;vertexBuffer[i+2]=vertex.z;}}function generateUVs(){const vertex=new Vector3();for(let i=0;i<vertexBuffer.length;i+=3){vertex.x=vertexBuffer[i+0];vertex.y=vertexBuffer[i+1];vertex.z=vertexBuffer[i+2];const u=azimuth(vertex)/2/Math.PI+0.5;const v=inclination(vertex)/Math.PI+0.5;uvBuffer.push(u,1-v);}correctUVs();correctSeam();}function correctSeam(){// handle case when face straddles the seam, see #3269
-for(let i=0;i<uvBuffer.length;i+=6){// uv data of a single face
-const x0=uvBuffer[i+0];const x1=uvBuffer[i+2];const x2=uvBuffer[i+4];const max=Math.max(x0,x1,x2);const min=Math.min(x0,x1,x2);// 0.9 is somewhat arbitrary
-if(max>0.9&&min<0.1){if(x0<0.2)uvBuffer[i+0]+=1;if(x1<0.2)uvBuffer[i+2]+=1;if(x2<0.2)uvBuffer[i+4]+=1;}}}function pushVertex(vertex){vertexBuffer.push(vertex.x,vertex.y,vertex.z);}function getVertexByIndex(index,vertex){const stride=index*3;vertex.x=vertices[stride+0];vertex.y=vertices[stride+1];vertex.z=vertices[stride+2];}function correctUVs(){const a=new Vector3();const b=new Vector3();const c=new Vector3();const centroid=new Vector3();const uvA=new Vector2();const uvB=new Vector2();const uvC=new Vector2();for(let i=0,j=0;i<vertexBuffer.length;i+=9,j+=6){a.set(vertexBuffer[i+0],vertexBuffer[i+1],vertexBuffer[i+2]);b.set(vertexBuffer[i+3],vertexBuffer[i+4],vertexBuffer[i+5]);c.set(vertexBuffer[i+6],vertexBuffer[i+7],vertexBuffer[i+8]);uvA.set(uvBuffer[j+0],uvBuffer[j+1]);uvB.set(uvBuffer[j+2],uvBuffer[j+3]);uvC.set(uvBuffer[j+4],uvBuffer[j+5]);centroid.copy(a).add(b).add(c).divideScalar(3);const azi=azimuth(centroid);correctUV(uvA,j+0,a,azi);correctUV(uvB,j+2,b,azi);correctUV(uvC,j+4,c,azi);}}function correctUV(uv,stride,vector,azimuth){if(azimuth<0&&uv.x===1){uvBuffer[stride]=uv.x-1;}if(vector.x===0&&vector.z===0){uvBuffer[stride]=azimuth/2/Math.PI+0.5;}}// Angle around the Y axis, counter-clockwise when looking from above.
-function azimuth(vector){return Math.atan2(vector.z,-vector.x);}// Angle above the XZ plane.
-function inclination(vector){return Math.atan2(-vector.y,Math.sqrt(vector.x*vector.x+vector.z*vector.z));}}copy(source){super.copy(source);this.parameters=Object.assign({},source.parameters);return this;}/**
-	 * Factory method for creating an instance of this class from the given
-	 * JSON object.
-	 *
-	 * @param {Object} data - A JSON object representing the serialized geometry.
-	 * @return {PolyhedronGeometry} A new instance.
-	 */static fromJSON(data){return new PolyhedronGeometry(data.vertices,data.indices,data.radius,data.details);}}/**
- * A geometry class for representing a dodecahedron.
- *
- * ```js
- * const geometry = new THREE.DodecahedronGeometry();
- * const material = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
- * const dodecahedron = new THREE.Mesh( geometry, material );
- * scene.add( dodecahedron );
- * ```
- *
- * @augments PolyhedronGeometry
- */class DodecahedronGeometry extends PolyhedronGeometry{/**
-	 * Constructs a new dodecahedron geometry.
-	 *
-	 * @param {number} [radius=1] - Radius of the dodecahedron.
-	 * @param {number} [detail=0] - Setting this to a value greater than `0` adds vertices making it no longer a dodecahedron.
-	 */constructor(radius=1,detail=0){const t=(1+Math.sqrt(5))/2;const r=1/t;const vertices=[// (±1, ±1, ±1)
--1,-1,-1,-1,-1,1,-1,1,-1,-1,1,1,1,-1,-1,1,-1,1,1,1,-1,1,1,1,// (0, ±1/φ, ±φ)
-0,-r,-t,0,-r,t,0,r,-t,0,r,t,// (±1/φ, ±φ, 0)
--r,-t,0,-r,t,0,r,-t,0,r,t,0,// (±φ, 0, ±1/φ)
--t,0,-r,t,0,-r,-t,0,r,t,0,r];const indices=[3,11,7,3,7,15,3,15,13,7,19,17,7,17,6,7,6,15,17,4,8,17,8,10,17,10,6,8,0,16,8,16,2,8,2,10,0,12,1,0,1,18,0,18,16,6,10,2,6,2,13,6,13,15,2,16,18,2,18,3,2,3,13,18,1,9,18,9,11,18,11,3,4,14,12,4,12,0,4,0,8,11,9,5,11,5,19,11,19,7,19,5,14,19,14,4,19,4,17,1,12,14,1,14,5,1,5,9];super(vertices,indices,radius,detail);this.type='DodecahedronGeometry';/**
-		 * Holds the constructor parameters that have been
-		 * used to generate the geometry. Any modification
-		 * after instantiation does not change the geometry.
-		 *
-		 * @type {Object}
-		 */this.parameters={radius:radius,detail:detail};}/**
-	 * Factory method for creating an instance of this class from the given
-	 * JSON object.
-	 *
-	 * @param {Object} data - A JSON object representing the serialized geometry.
-	 * @return {DodecahedronGeometry} A new instance.
-	 */static fromJSON(data){return new DodecahedronGeometry(data.radius,data.detail);}}const _v0=/*@__PURE__*/new Vector3();const _v1$1=/*@__PURE__*/new Vector3();const _normal=/*@__PURE__*/new Vector3();const _triangle=/*@__PURE__*/new Triangle();/**
- * Can be used as a helper object to view the edges of a geometry.
- *
- * ```js
- * const geometry = new THREE.BoxGeometry();
- * const edges = new THREE.EdgesGeometry( geometry );
- * const line = new THREE.LineSegments( edges );
- * scene.add( line );
- * ```
- *
- * Note: It is not yet possible to serialize/deserialize instances of this class.
- *
- * @augments BufferGeometry
- */class EdgesGeometry extends BufferGeometry{/**
-	 * Constructs a new edges geometry.
-	 *
-	 * @param {?BufferGeometry} [geometry=null] - The geometry.
-	 * @param {number} [thresholdAngle=1] - An edge is only rendered if the angle (in degrees)
-	 * between the face normals of the adjoining faces exceeds this value.
-	 */constructor(geometry=null,thresholdAngle=1){super();this.type='EdgesGeometry';/**
-		 * Holds the constructor parameters that have been
-		 * used to generate the geometry. Any modification
-		 * after instantiation does not change the geometry.
-		 *
-		 * @type {Object}
-		 */this.parameters={geometry:geometry,thresholdAngle:thresholdAngle};if(geometry!==null){const precisionPoints=4;const precision=Math.pow(10,precisionPoints);const thresholdDot=Math.cos(DEG2RAD*thresholdAngle);const indexAttr=geometry.getIndex();const positionAttr=geometry.getAttribute('position');const indexCount=indexAttr?indexAttr.count:positionAttr.count;const indexArr=[0,0,0];const vertKeys=['a','b','c'];const hashes=new Array(3);const edgeData={};const vertices=[];for(let i=0;i<indexCount;i+=3){if(indexAttr){indexArr[0]=indexAttr.getX(i);indexArr[1]=indexAttr.getX(i+1);indexArr[2]=indexAttr.getX(i+2);}else{indexArr[0]=i;indexArr[1]=i+1;indexArr[2]=i+2;}const{a,b,c}=_triangle;a.fromBufferAttribute(positionAttr,indexArr[0]);b.fromBufferAttribute(positionAttr,indexArr[1]);c.fromBufferAttribute(positionAttr,indexArr[2]);_triangle.getNormal(_normal);// create hashes for the edge from the vertices
-hashes[0]=`${Math.round(a.x*precision)},${Math.round(a.y*precision)},${Math.round(a.z*precision)}`;hashes[1]=`${Math.round(b.x*precision)},${Math.round(b.y*precision)},${Math.round(b.z*precision)}`;hashes[2]=`${Math.round(c.x*precision)},${Math.round(c.y*precision)},${Math.round(c.z*precision)}`;// skip degenerate triangles
-if(hashes[0]===hashes[1]||hashes[1]===hashes[2]||hashes[2]===hashes[0]){continue;}// iterate over every edge
-for(let j=0;j<3;j++){// get the first and next vertex making up the edge
-const jNext=(j+1)%3;const vecHash0=hashes[j];const vecHash1=hashes[jNext];const v0=_triangle[vertKeys[j]];const v1=_triangle[vertKeys[jNext]];const hash=`${vecHash0}_${vecHash1}`;const reverseHash=`${vecHash1}_${vecHash0}`;if(reverseHash in edgeData&&edgeData[reverseHash]){// if we found a sibling edge add it into the vertex array if
-// it meets the angle threshold and delete the edge from the map.
-if(_normal.dot(edgeData[reverseHash].normal)<=thresholdDot){vertices.push(v0.x,v0.y,v0.z);vertices.push(v1.x,v1.y,v1.z);}edgeData[reverseHash]=null;}else if(!(hash in edgeData)){// if we've already got an edge here then skip adding a new one
-edgeData[hash]={index0:indexArr[j],index1:indexArr[jNext],normal:_normal.clone()};}}}// iterate over all remaining, unmatched edges and add them to the vertex array
-for(const key in edgeData){if(edgeData[key]){const{index0,index1}=edgeData[key];_v0.fromBufferAttribute(positionAttr,index0);_v1$1.fromBufferAttribute(positionAttr,index1);vertices.push(_v0.x,_v0.y,_v0.z);vertices.push(_v1$1.x,_v1$1.y,_v1$1.z);}}this.setAttribute('position',new Float32BufferAttribute(vertices,3));}}copy(source){super.copy(source);this.parameters=Object.assign({},source.parameters);return this;}}/**
  * Defines an arbitrary 2d shape plane using paths with optional holes. It
  * can be used with {@link ExtrudeGeometry}, {@link ShapeGeometry}, to get
  * points, or to get triangulated faces.
@@ -43419,7 +43518,7 @@ if(!bevelEnabled){bevelSegments=0;bevelThickness=0;bevelSize=0;bevelOffset=0;}//
 const shapePoints=shape.extractPoints(curveSegments);let vertices=shapePoints.shape;const holes=shapePoints.holes;const reverse=!ShapeUtils.isClockWise(vertices);if(reverse){vertices=vertices.reverse();// Maybe we should also check if holes are in the opposite direction, just to be safe ...
 for(let h=0,hl=holes.length;h<hl;h++){const ahole=holes[h];if(ShapeUtils.isClockWise(ahole)){holes[h]=ahole.reverse();}}}/**Merges index-adjacent points that are within a threshold distance of each other. Array is modified in-place. Threshold distance is empirical, and scaled based on the magnitude of point coordinates.
 			 * @param {Array<Vector2>} points
-			*/function mergeOverlappingPoints(points){const THRESHOLD=1e-10;const THRESHOLD_SQ=THRESHOLD*THRESHOLD;let prevPos=points[0];for(let i=1;i<=points.length;i++){const currentIndex=i%points.length;const currentPos=points[currentIndex];const dx=currentPos.x-prevPos.x;const dy=currentPos.y-prevPos.y;const distSq=dx*dx+dy*dy;const scalingFactorSqrt=Math.max(Math.abs(currentPos.x),Math.abs(currentPos.y),Math.abs(prevPos.x),Math.abs(prevPos.y));const thesholdSqScaled=THRESHOLD_SQ*scalingFactorSqrt*scalingFactorSqrt;if(distSq<=thesholdSqScaled){points.splice(currentIndex,1);i--;continue;}prevPos=currentPos;}}mergeOverlappingPoints(vertices);holes.forEach(mergeOverlappingPoints);const numHoles=holes.length;/* Vertices */const contour=vertices;// vertices has all points but contour has only points of circumference
+			*/function mergeOverlappingPoints(points){const THRESHOLD=1e-10;const THRESHOLD_SQ=THRESHOLD*THRESHOLD;let prevPos=points[0];for(let i=1;i<=points.length;i++){const currentIndex=i%points.length;const currentPos=points[currentIndex];const dx=currentPos.x-prevPos.x;const dy=currentPos.y-prevPos.y;const distSq=dx*dx+dy*dy;const scalingFactorSqrt=Math.max(Math.abs(currentPos.x),Math.abs(currentPos.y),Math.abs(prevPos.x),Math.abs(prevPos.y));const thresholdSqScaled=THRESHOLD_SQ*scalingFactorSqrt*scalingFactorSqrt;if(distSq<=thresholdSqScaled){points.splice(currentIndex,1);i--;continue;}prevPos=currentPos;}}mergeOverlappingPoints(vertices);holes.forEach(mergeOverlappingPoints);const numHoles=holes.length;/* Vertices */const contour=vertices;// vertices has all points but contour has only points of circumference
 for(let h=0;h<numHoles;h++){const ahole=holes[h];vertices=vertices.concat(ahole);}function scalePt2(pt,vec,size){if(!vec)console.error('THREE.ExtrudeGeometry: vec does not exist');return pt.clone().addScaledVector(vec,size);}const vlen=vertices.length;// Find directions for point movement
 function getBevelVec(inPt,inPrev,inNext){// computes for inPt the corresponding point inPt' on a new contour
 //   shifted by 1 unit (length of normalized vector) to the left
@@ -43445,11 +43544,11 @@ v_trans_x=-v_prev_y;v_trans_y=v_prev_x;shrink_by=Math.sqrt(v_prev_lensq);}else{/
 v_trans_x=v_prev_x;v_trans_y=v_prev_y;shrink_by=Math.sqrt(v_prev_lensq/2);}}return new Vector2(v_trans_x/shrink_by,v_trans_y/shrink_by);}const contourMovements=[];for(let i=0,il=contour.length,j=il-1,k=i+1;i<il;i++,j++,k++){if(j===il)j=0;if(k===il)k=0;//  (j)---(i)---(k)
 // console.log('i,j,k', i, j , k)
 contourMovements[i]=getBevelVec(contour[i],contour[j],contour[k]);}const holesMovements=[];let oneHoleMovements,verticesMovements=contourMovements.concat();for(let h=0,hl=numHoles;h<hl;h++){const ahole=holes[h];oneHoleMovements=[];for(let i=0,il=ahole.length,j=il-1,k=i+1;i<il;i++,j++,k++){if(j===il)j=0;if(k===il)k=0;//  (j)---(i)---(k)
-oneHoleMovements[i]=getBevelVec(ahole[i],ahole[j],ahole[k]);}holesMovements.push(oneHoleMovements);verticesMovements=verticesMovements.concat(oneHoleMovements);}const contractedContourVertices=[];const expandedHoleVertices=[];// Loop bevelSegments, 1 for the front, 1 for the back
+oneHoleMovements[i]=getBevelVec(ahole[i],ahole[j],ahole[k]);}holesMovements.push(oneHoleMovements);verticesMovements=verticesMovements.concat(oneHoleMovements);}let faces;if(bevelSegments===0){faces=ShapeUtils.triangulateShape(contour,holes);}else{const contractedContourVertices=[];const expandedHoleVertices=[];// Loop bevelSegments, 1 for the front, 1 for the back
 for(let b=0;b<bevelSegments;b++){//for ( b = bevelSegments; b > 0; b -- ) {
 const t=b/bevelSegments;const z=bevelThickness*Math.cos(t*Math.PI/2);const bs=bevelSize*Math.sin(t*Math.PI/2)+bevelOffset;// contract shape
-for(let i=0,il=contour.length;i<il;i++){const vert=scalePt2(contour[i],contourMovements[i],bs);v(vert.x,vert.y,-z);if(t==0)contractedContourVertices.push(vert);}// expand holes
-for(let h=0,hl=numHoles;h<hl;h++){const ahole=holes[h];oneHoleMovements=holesMovements[h];const oneHoleVertices=[];for(let i=0,il=ahole.length;i<il;i++){const vert=scalePt2(ahole[i],oneHoleMovements[i],bs);v(vert.x,vert.y,-z);if(t==0)oneHoleVertices.push(vert);}if(t==0)expandedHoleVertices.push(oneHoleVertices);}}const faces=ShapeUtils.triangulateShape(contractedContourVertices,expandedHoleVertices);const flen=faces.length;const bs=bevelSize+bevelOffset;// Back facing vertices
+for(let i=0,il=contour.length;i<il;i++){const vert=scalePt2(contour[i],contourMovements[i],bs);v(vert.x,vert.y,-z);if(t===0)contractedContourVertices.push(vert);}// expand holes
+for(let h=0,hl=numHoles;h<hl;h++){const ahole=holes[h];oneHoleMovements=holesMovements[h];const oneHoleVertices=[];for(let i=0,il=ahole.length;i<il;i++){const vert=scalePt2(ahole[i],oneHoleMovements[i],bs);v(vert.x,vert.y,-z);if(t===0)oneHoleVertices.push(vert);}if(t===0)expandedHoleVertices.push(oneHoleVertices);}}faces=ShapeUtils.triangulateShape(contractedContourVertices,expandedHoleVertices);}const flen=faces.length;const bs=bevelSize+bevelOffset;// Back facing vertices
 for(let i=0;i<vlen;i++){const vert=bevelEnabled?scalePt2(vertices[i],verticesMovements[i],bs):vertices[i];if(!extrudeByPath){v(vert.x,vert.y,0);}else{// v( vert.x, vert.y + extrudePts[ 0 ].y, extrudePts[ 0 ].x );
 normal.copy(splineTube.normals[0]).multiplyScalar(vert.x);binormal.copy(splineTube.binormals[0]).multiplyScalar(vert.y);position2.copy(extrudePts[0]).add(normal).add(binormal);v(position2.x,position2.y,position2.z);}}// Add stepped vertices...
 // Including front facing vertices
@@ -43505,6 +43604,56 @@ for(let s=0,sl=steps+bevelSegments*2;s<sl;s++){const slen1=vlen*s;const slen2=vl
 	 * @param {Object} data - A JSON object representing the serialized geometry.
 	 * @return {IcosahedronGeometry} A new instance.
 	 */static fromJSON(data){return new IcosahedronGeometry(data.radius,data.detail);}}/**
+ * Creates meshes with axial symmetry like vases. The lathe rotates around the Y axis.
+ *
+ * ```js
+ * const points = [];
+ * for ( let i = 0; i < 10; i ++ ) {
+ * 	points.push( new THREE.Vector2( Math.sin( i * 0.2 ) * 10 + 5, ( i - 5 ) * 2 ) );
+ * }
+ * const geometry = new THREE.LatheGeometry( points );
+ * const material = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
+ * const lathe = new THREE.Mesh( geometry, material );
+ * scene.add( lathe );
+ * ```
+ *
+ * @augments BufferGeometry
+ */class LatheGeometry extends BufferGeometry{/**
+	 * Constructs a new lathe geometry.
+	 *
+	 * @param {Array<Vector2|Vector3>} [points] - An array of points in 2D space. The x-coordinate of each point
+	 * must be greater than zero.
+	 * @param {number} [segments=12] - The number of circumference segments to generate.
+	 * @param {number} [phiStart=0] - The starting angle in radians.
+	 * @param {number} [phiLength=Math.PI*2] - The radian (0 to 2PI) range of the lathed section 2PI is a
+	 * closed lathe, less than 2PI is a portion.
+	 */constructor(points=[new Vector2(0,-0.5),new Vector2(0.5,0),new Vector2(0,0.5)],segments=12,phiStart=0,phiLength=Math.PI*2){super();this.type='LatheGeometry';/**
+		 * Holds the constructor parameters that have been
+		 * used to generate the geometry. Any modification
+		 * after instantiation does not change the geometry.
+		 *
+		 * @type {Object}
+		 */this.parameters={points:points,segments:segments,phiStart:phiStart,phiLength:phiLength};segments=Math.floor(segments);// clamp phiLength so it's in range of [ 0, 2PI ]
+phiLength=clamp(phiLength,0,Math.PI*2);// buffers
+const indices=[];const vertices=[];const uvs=[];const initNormals=[];const normals=[];// helper variables
+const inverseSegments=1.0/segments;const vertex=new Vector3();const uv=new Vector2();const normal=new Vector3();const curNormal=new Vector3();const prevNormal=new Vector3();let dx=0;let dy=0;// pre-compute normals for initial "meridian"
+for(let j=0;j<=points.length-1;j++){switch(j){case 0:// special handling for 1st vertex on path
+dx=points[j+1].x-points[j].x;dy=points[j+1].y-points[j].y;normal.x=dy*1.0;normal.y=-dx;normal.z=dy*0.0;prevNormal.copy(normal);normal.normalize();initNormals.push(normal.x,normal.y,normal.z);break;case points.length-1:// special handling for last Vertex on path
+initNormals.push(prevNormal.x,prevNormal.y,prevNormal.z);break;default:// default handling for all vertices in between
+dx=points[j+1].x-points[j].x;dy=points[j+1].y-points[j].y;normal.x=dy*1.0;normal.y=-dx;normal.z=dy*0.0;curNormal.copy(normal);normal.x+=prevNormal.x;normal.y+=prevNormal.y;normal.z+=prevNormal.z;normal.normalize();initNormals.push(normal.x,normal.y,normal.z);prevNormal.copy(curNormal);}}// generate vertices, uvs and normals
+for(let i=0;i<=segments;i++){const phi=phiStart+i*inverseSegments*phiLength;const sin=Math.sin(phi);const cos=Math.cos(phi);for(let j=0;j<=points.length-1;j++){// vertex
+vertex.x=points[j].x*sin;vertex.y=points[j].y;vertex.z=points[j].x*cos;vertices.push(vertex.x,vertex.y,vertex.z);// uv
+uv.x=i/segments;uv.y=j/(points.length-1);uvs.push(uv.x,uv.y);// normal
+const x=initNormals[3*j+0]*sin;const y=initNormals[3*j+1];const z=initNormals[3*j+0]*cos;normals.push(x,y,z);}}// indices
+for(let i=0;i<segments;i++){for(let j=0;j<points.length-1;j++){const base=j+i*points.length;const a=base;const b=base+points.length;const c=base+points.length+1;const d=base+1;// faces
+indices.push(a,b,d);indices.push(c,d,b);}}// build geometry
+this.setIndex(indices);this.setAttribute('position',new Float32BufferAttribute(vertices,3));this.setAttribute('uv',new Float32BufferAttribute(uvs,2));this.setAttribute('normal',new Float32BufferAttribute(normals,3));}copy(source){super.copy(source);this.parameters=Object.assign({},source.parameters);return this;}/**
+	 * Factory method for creating an instance of this class from the given
+	 * JSON object.
+	 *
+	 * @param {Object} data - A JSON object representing the serialized geometry.
+	 * @return {LatheGeometry} A new instance.
+	 */static fromJSON(data){return new LatheGeometry(data.points,data.segments,data.phiStart,data.phiLength);}}/**
  * A geometry class for representing an octahedron.
  *
  * ```js
@@ -46833,6 +46982,11 @@ loader.load(url,function(buffer){const texDatas=scope.parse(buffer,true);if(texD
 		 * @type {Vector2}
 		 * @default (512,512)
 		 */this.mapSize=new Vector2(512,512);/**
+		 * The type of shadow texture. The default is `UnsignedByteType`.
+		 *
+		 * @type {number}
+		 * @default UnsignedByteType
+		 */this.mapType=UnsignedByteType;/**
 		 * The depth map generated using the internal camera; a location beyond a
 		 * pixel's depth is in shadow. Computed internally during rendering.
 		 *
@@ -46893,7 +47047,7 @@ loader.load(url,function(buffer){const texDatas=scope.parse(buffer,true);if(texD
 	 *
 	 * @param {LightShadow} source - The light shadow to copy.
 	 * @return {LightShadow} A reference to this light shadow instance.
-	 */copy(source){this.camera=source.camera.clone();this.intensity=source.intensity;this.bias=source.bias;this.radius=source.radius;this.mapSize.copy(source.mapSize);return this;}/**
+	 */copy(source){this.camera=source.camera.clone();this.intensity=source.intensity;this.bias=source.bias;this.radius=source.radius;this.autoUpdate=source.autoUpdate;this.needsUpdate=source.needsUpdate;this.normalBias=source.normalBias;this.blurSamples=source.blurSamples;this.mapSize.copy(source.mapSize);return this;}/**
 	 * Returns a new light shadow instance with copied values from this instance.
 	 *
 	 * @return {LightShadow} A clone of this instance.
@@ -46920,7 +47074,12 @@ loader.load(url,function(buffer){const texDatas=scope.parse(buffer,true);if(texD
 		 *
 		 * @type {number}
 		 * @default 1
-		 */this.focus=1;}updateMatrices(light){const camera=this.camera;const fov=RAD2DEG*2*light.angle*this.focus;const aspect=this.mapSize.width/this.mapSize.height;const far=light.distance||camera.far;if(fov!==camera.fov||aspect!==camera.aspect||far!==camera.far){camera.fov=fov;camera.aspect=aspect;camera.far=far;camera.updateProjectionMatrix();}super.updateMatrices(light);}copy(source){super.copy(source);this.focus=source.focus;return this;}}/**
+		 */this.focus=1;/**
+		 * Texture aspect ratio.
+		 *
+		 * @type {number}
+		 * @default 1
+		 */this.aspect=1;}updateMatrices(light){const camera=this.camera;const fov=RAD2DEG*2*light.angle*this.focus;const aspect=this.mapSize.width/this.mapSize.height*this.aspect;const far=light.distance||camera.far;if(fov!==camera.fov||aspect!==camera.aspect||far!==camera.far){camera.fov=fov;camera.aspect=aspect;camera.far=far;camera.updateProjectionMatrix();}super.updateMatrices(light);}copy(source){super.copy(source);this.focus=source.focus;return this;}}/**
  * This light gets emitted from a single point in one direction, along a cone
  * that increases in size the further from the light it gets.
  *
@@ -47601,7 +47760,7 @@ return path+url;}}/**
 	 *
 	 * @param {Object} json - The serialized geometry.
 	 * @return {BufferGeometry} The parsed geometry.
-	 */parse(json){const interleavedBufferMap={};const arrayBufferMap={};function getInterleavedBuffer(json,uuid){if(interleavedBufferMap[uuid]!==undefined)return interleavedBufferMap[uuid];const interleavedBuffers=json.interleavedBuffers;const interleavedBuffer=interleavedBuffers[uuid];const buffer=getArrayBuffer(json,interleavedBuffer.buffer);const array=getTypedArray(interleavedBuffer.type,buffer);const ib=new InterleavedBuffer(array,interleavedBuffer.stride);ib.uuid=interleavedBuffer.uuid;interleavedBufferMap[uuid]=ib;return ib;}function getArrayBuffer(json,uuid){if(arrayBufferMap[uuid]!==undefined)return arrayBufferMap[uuid];const arrayBuffers=json.arrayBuffers;const arrayBuffer=arrayBuffers[uuid];const ab=new Uint32Array(arrayBuffer).buffer;arrayBufferMap[uuid]=ab;return ab;}const geometry=json.isInstancedBufferGeometry?new InstancedBufferGeometry():new BufferGeometry();const index=json.data.index;if(index!==undefined){const typedArray=getTypedArray(index.type,index.array);geometry.setIndex(new BufferAttribute(typedArray,1));}const attributes=json.data.attributes;for(const key in attributes){const attribute=attributes[key];let bufferAttribute;if(attribute.isInterleavedBufferAttribute){const interleavedBuffer=getInterleavedBuffer(json.data,attribute.data);bufferAttribute=new InterleavedBufferAttribute(interleavedBuffer,attribute.itemSize,attribute.offset,attribute.normalized);}else{const typedArray=getTypedArray(attribute.type,attribute.array);const bufferAttributeConstr=attribute.isInstancedBufferAttribute?InstancedBufferAttribute:BufferAttribute;bufferAttribute=new bufferAttributeConstr(typedArray,attribute.itemSize,attribute.normalized);}if(attribute.name!==undefined)bufferAttribute.name=attribute.name;if(attribute.usage!==undefined)bufferAttribute.setUsage(attribute.usage);geometry.setAttribute(key,bufferAttribute);}const morphAttributes=json.data.morphAttributes;if(morphAttributes){for(const key in morphAttributes){const attributeArray=morphAttributes[key];const array=[];for(let i=0,il=attributeArray.length;i<il;i++){const attribute=attributeArray[i];let bufferAttribute;if(attribute.isInterleavedBufferAttribute){const interleavedBuffer=getInterleavedBuffer(json.data,attribute.data);bufferAttribute=new InterleavedBufferAttribute(interleavedBuffer,attribute.itemSize,attribute.offset,attribute.normalized);}else{const typedArray=getTypedArray(attribute.type,attribute.array);bufferAttribute=new BufferAttribute(typedArray,attribute.itemSize,attribute.normalized);}if(attribute.name!==undefined)bufferAttribute.name=attribute.name;array.push(bufferAttribute);}geometry.morphAttributes[key]=array;}}const morphTargetsRelative=json.data.morphTargetsRelative;if(morphTargetsRelative){geometry.morphTargetsRelative=true;}const groups=json.data.groups||json.data.drawcalls||json.data.offsets;if(groups!==undefined){for(let i=0,n=groups.length;i!==n;++i){const group=groups[i];geometry.addGroup(group.start,group.count,group.materialIndex);}}const boundingSphere=json.data.boundingSphere;if(boundingSphere!==undefined){const center=new Vector3();if(boundingSphere.center!==undefined){center.fromArray(boundingSphere.center);}geometry.boundingSphere=new Sphere(center,boundingSphere.radius);}if(json.name)geometry.name=json.name;if(json.userData)geometry.userData=json.userData;return geometry;}}/**
+	 */parse(json){const interleavedBufferMap={};const arrayBufferMap={};function getInterleavedBuffer(json,uuid){if(interleavedBufferMap[uuid]!==undefined)return interleavedBufferMap[uuid];const interleavedBuffers=json.interleavedBuffers;const interleavedBuffer=interleavedBuffers[uuid];const buffer=getArrayBuffer(json,interleavedBuffer.buffer);const array=getTypedArray(interleavedBuffer.type,buffer);const ib=new InterleavedBuffer(array,interleavedBuffer.stride);ib.uuid=interleavedBuffer.uuid;interleavedBufferMap[uuid]=ib;return ib;}function getArrayBuffer(json,uuid){if(arrayBufferMap[uuid]!==undefined)return arrayBufferMap[uuid];const arrayBuffers=json.arrayBuffers;const arrayBuffer=arrayBuffers[uuid];const ab=new Uint32Array(arrayBuffer).buffer;arrayBufferMap[uuid]=ab;return ab;}const geometry=json.isInstancedBufferGeometry?new InstancedBufferGeometry():new BufferGeometry();const index=json.data.index;if(index!==undefined){const typedArray=getTypedArray(index.type,index.array);geometry.setIndex(new BufferAttribute(typedArray,1));}const attributes=json.data.attributes;for(const key in attributes){const attribute=attributes[key];let bufferAttribute;if(attribute.isInterleavedBufferAttribute){const interleavedBuffer=getInterleavedBuffer(json.data,attribute.data);bufferAttribute=new InterleavedBufferAttribute(interleavedBuffer,attribute.itemSize,attribute.offset,attribute.normalized);}else{const typedArray=getTypedArray(attribute.type,attribute.array);const bufferAttributeConstr=attribute.isInstancedBufferAttribute?InstancedBufferAttribute:BufferAttribute;bufferAttribute=new bufferAttributeConstr(typedArray,attribute.itemSize,attribute.normalized);}if(attribute.name!==undefined)bufferAttribute.name=attribute.name;if(attribute.usage!==undefined)bufferAttribute.setUsage(attribute.usage);geometry.setAttribute(key,bufferAttribute);}const morphAttributes=json.data.morphAttributes;if(morphAttributes){for(const key in morphAttributes){const attributeArray=morphAttributes[key];const array=[];for(let i=0,il=attributeArray.length;i<il;i++){const attribute=attributeArray[i];let bufferAttribute;if(attribute.isInterleavedBufferAttribute){const interleavedBuffer=getInterleavedBuffer(json.data,attribute.data);bufferAttribute=new InterleavedBufferAttribute(interleavedBuffer,attribute.itemSize,attribute.offset,attribute.normalized);}else{const typedArray=getTypedArray(attribute.type,attribute.array);bufferAttribute=new BufferAttribute(typedArray,attribute.itemSize,attribute.normalized);}if(attribute.name!==undefined)bufferAttribute.name=attribute.name;array.push(bufferAttribute);}geometry.morphAttributes[key]=array;}}const morphTargetsRelative=json.data.morphTargetsRelative;if(morphTargetsRelative){geometry.morphTargetsRelative=true;}const groups=json.data.groups||json.data.drawcalls||json.data.offsets;if(groups!==undefined){for(let i=0,n=groups.length;i!==n;++i){const group=groups[i];geometry.addGroup(group.start,group.count,group.materialIndex);}}const boundingSphere=json.data.boundingSphere;if(boundingSphere!==undefined){geometry.boundingSphere=new Sphere().fromJSON(boundingSphere);}if(json.name)geometry.name=json.name;if(json.userData)geometry.userData=json.userData;return geometry;}}/**
  * A loader for loading a JSON resource in the [JSON Object/Scene format]{@link https://github.com/mrdoob/three.js/wiki/JSON-Object-Scene-format-4}.
  * The files are internally loaded via {@link FileLoader}.
  *
@@ -47658,7 +47817,7 @@ const deserializedImage=deserializeImage(image.url);images[image.uuid]=new Sourc
 const imageArray=[];for(let j=0,jl=url.length;j<jl;j++){const currentUrl=url[j];const deserializedImage=await deserializeImage(currentUrl);if(deserializedImage!==null){if(deserializedImage instanceof HTMLImageElement){imageArray.push(deserializedImage);}else{// special case: handle array of data textures for cube textures
 imageArray.push(new DataTexture(deserializedImage.data,deserializedImage.width,deserializedImage.height));}}}images[image.uuid]=new Source(imageArray);}else{// load single image
 const deserializedImage=await deserializeImage(image.url);images[image.uuid]=new Source(deserializedImage);}}}return images;}parseTextures(json,images){function parseConstant(value,type){if(typeof value==='number')return value;console.warn('THREE.ObjectLoader.parseTexture: Constant should be in numeric form.',value);return type[value];}const textures={};if(json!==undefined){for(let i=0,l=json.length;i<l;i++){const data=json[i];if(data.image===undefined){console.warn('THREE.ObjectLoader: No "image" specified for',data.uuid);}if(images[data.image]===undefined){console.warn('THREE.ObjectLoader: Undefined image',data.image);}const source=images[data.image];const image=source.data;let texture;if(Array.isArray(image)){texture=new CubeTexture();if(image.length===6)texture.needsUpdate=true;}else{if(image&&image.data){texture=new DataTexture();}else{texture=new Texture();}if(image)texture.needsUpdate=true;// textures can have undefined image data
-}texture.source=source;texture.uuid=data.uuid;if(data.name!==undefined)texture.name=data.name;if(data.mapping!==undefined)texture.mapping=parseConstant(data.mapping,TEXTURE_MAPPING);if(data.channel!==undefined)texture.channel=data.channel;if(data.offset!==undefined)texture.offset.fromArray(data.offset);if(data.repeat!==undefined)texture.repeat.fromArray(data.repeat);if(data.center!==undefined)texture.center.fromArray(data.center);if(data.rotation!==undefined)texture.rotation=data.rotation;if(data.wrap!==undefined){texture.wrapS=parseConstant(data.wrap[0],TEXTURE_WRAPPING);texture.wrapT=parseConstant(data.wrap[1],TEXTURE_WRAPPING);}if(data.format!==undefined)texture.format=data.format;if(data.internalFormat!==undefined)texture.internalFormat=data.internalFormat;if(data.type!==undefined)texture.type=data.type;if(data.colorSpace!==undefined)texture.colorSpace=data.colorSpace;if(data.minFilter!==undefined)texture.minFilter=parseConstant(data.minFilter,TEXTURE_FILTER);if(data.magFilter!==undefined)texture.magFilter=parseConstant(data.magFilter,TEXTURE_FILTER);if(data.anisotropy!==undefined)texture.anisotropy=data.anisotropy;if(data.flipY!==undefined)texture.flipY=data.flipY;if(data.generateMipmaps!==undefined)texture.generateMipmaps=data.generateMipmaps;if(data.premultiplyAlpha!==undefined)texture.premultiplyAlpha=data.premultiplyAlpha;if(data.unpackAlignment!==undefined)texture.unpackAlignment=data.unpackAlignment;if(data.compareFunction!==undefined)texture.compareFunction=data.compareFunction;if(data.userData!==undefined)texture.userData=data.userData;textures[data.uuid]=texture;}}return textures;}parseObject(data,geometries,materials,textures,animations){let object;function getGeometry(name){if(geometries[name]===undefined){console.warn('THREE.ObjectLoader: Undefined geometry',name);}return geometries[name];}function getMaterial(name){if(name===undefined)return undefined;if(Array.isArray(name)){const array=[];for(let i=0,l=name.length;i<l;i++){const uuid=name[i];if(materials[uuid]===undefined){console.warn('THREE.ObjectLoader: Undefined material',uuid);}array.push(materials[uuid]);}return array;}if(materials[name]===undefined){console.warn('THREE.ObjectLoader: Undefined material',name);}return materials[name];}function getTexture(uuid){if(textures[uuid]===undefined){console.warn('THREE.ObjectLoader: Undefined texture',uuid);}return textures[uuid];}let geometry,material;switch(data.type){case'Scene':object=new Scene();if(data.background!==undefined){if(Number.isInteger(data.background)){object.background=new Color(data.background);}else{object.background=getTexture(data.background);}}if(data.environment!==undefined){object.environment=getTexture(data.environment);}if(data.fog!==undefined){if(data.fog.type==='Fog'){object.fog=new Fog(data.fog.color,data.fog.near,data.fog.far);}else if(data.fog.type==='FogExp2'){object.fog=new FogExp2(data.fog.color,data.fog.density);}if(data.fog.name!==''){object.fog.name=data.fog.name;}}if(data.backgroundBlurriness!==undefined)object.backgroundBlurriness=data.backgroundBlurriness;if(data.backgroundIntensity!==undefined)object.backgroundIntensity=data.backgroundIntensity;if(data.backgroundRotation!==undefined)object.backgroundRotation.fromArray(data.backgroundRotation);if(data.environmentIntensity!==undefined)object.environmentIntensity=data.environmentIntensity;if(data.environmentRotation!==undefined)object.environmentRotation.fromArray(data.environmentRotation);break;case'PerspectiveCamera':object=new PerspectiveCamera(data.fov,data.aspect,data.near,data.far);if(data.focus!==undefined)object.focus=data.focus;if(data.zoom!==undefined)object.zoom=data.zoom;if(data.filmGauge!==undefined)object.filmGauge=data.filmGauge;if(data.filmOffset!==undefined)object.filmOffset=data.filmOffset;if(data.view!==undefined)object.view=Object.assign({},data.view);break;case'OrthographicCamera':object=new OrthographicCamera(data.left,data.right,data.top,data.bottom,data.near,data.far);if(data.zoom!==undefined)object.zoom=data.zoom;if(data.view!==undefined)object.view=Object.assign({},data.view);break;case'AmbientLight':object=new AmbientLight(data.color,data.intensity);break;case'DirectionalLight':object=new DirectionalLight(data.color,data.intensity);object.target=data.target||'';break;case'PointLight':object=new PointLight(data.color,data.intensity,data.distance,data.decay);break;case'RectAreaLight':object=new RectAreaLight(data.color,data.intensity,data.width,data.height);break;case'SpotLight':object=new SpotLight(data.color,data.intensity,data.distance,data.angle,data.penumbra,data.decay);object.target=data.target||'';break;case'HemisphereLight':object=new HemisphereLight(data.color,data.groundColor,data.intensity);break;case'LightProbe':object=new LightProbe().fromJSON(data);break;case'SkinnedMesh':geometry=getGeometry(data.geometry);material=getMaterial(data.material);object=new SkinnedMesh(geometry,material);if(data.bindMode!==undefined)object.bindMode=data.bindMode;if(data.bindMatrix!==undefined)object.bindMatrix.fromArray(data.bindMatrix);if(data.skeleton!==undefined)object.skeleton=data.skeleton;break;case'Mesh':geometry=getGeometry(data.geometry);material=getMaterial(data.material);object=new Mesh(geometry,material);break;case'InstancedMesh':geometry=getGeometry(data.geometry);material=getMaterial(data.material);const count=data.count;const instanceMatrix=data.instanceMatrix;const instanceColor=data.instanceColor;object=new InstancedMesh(geometry,material,count);object.instanceMatrix=new InstancedBufferAttribute(new Float32Array(instanceMatrix.array),16);if(instanceColor!==undefined)object.instanceColor=new InstancedBufferAttribute(new Float32Array(instanceColor.array),instanceColor.itemSize);break;case'BatchedMesh':geometry=getGeometry(data.geometry);material=getMaterial(data.material);object=new BatchedMesh(data.maxInstanceCount,data.maxVertexCount,data.maxIndexCount,material);object.geometry=geometry;object.perObjectFrustumCulled=data.perObjectFrustumCulled;object.sortObjects=data.sortObjects;object._drawRanges=data.drawRanges;object._reservedRanges=data.reservedRanges;object._visibility=data.visibility;object._active=data.active;object._bounds=data.bounds.map(bound=>{const box=new Box3();box.min.fromArray(bound.boxMin);box.max.fromArray(bound.boxMax);const sphere=new Sphere();sphere.radius=bound.sphereRadius;sphere.center.fromArray(bound.sphereCenter);return{boxInitialized:bound.boxInitialized,box:box,sphereInitialized:bound.sphereInitialized,sphere:sphere};});object._maxInstanceCount=data.maxInstanceCount;object._maxVertexCount=data.maxVertexCount;object._maxIndexCount=data.maxIndexCount;object._geometryInitialized=data.geometryInitialized;object._geometryCount=data.geometryCount;object._matricesTexture=getTexture(data.matricesTexture.uuid);if(data.colorsTexture!==undefined)object._colorsTexture=getTexture(data.colorsTexture.uuid);break;case'LOD':object=new LOD();break;case'Line':object=new Line(getGeometry(data.geometry),getMaterial(data.material));break;case'LineLoop':object=new LineLoop(getGeometry(data.geometry),getMaterial(data.material));break;case'LineSegments':object=new LineSegments(getGeometry(data.geometry),getMaterial(data.material));break;case'PointCloud':case'Points':object=new Points(getGeometry(data.geometry),getMaterial(data.material));break;case'Sprite':object=new Sprite(getMaterial(data.material));break;case'Group':object=new Group();break;case'Bone':object=new Bone();break;default:object=new Object3D();}object.uuid=data.uuid;if(data.name!==undefined)object.name=data.name;if(data.matrix!==undefined){object.matrix.fromArray(data.matrix);if(data.matrixAutoUpdate!==undefined)object.matrixAutoUpdate=data.matrixAutoUpdate;if(object.matrixAutoUpdate)object.matrix.decompose(object.position,object.quaternion,object.scale);}else{if(data.position!==undefined)object.position.fromArray(data.position);if(data.rotation!==undefined)object.rotation.fromArray(data.rotation);if(data.quaternion!==undefined)object.quaternion.fromArray(data.quaternion);if(data.scale!==undefined)object.scale.fromArray(data.scale);}if(data.up!==undefined)object.up.fromArray(data.up);if(data.castShadow!==undefined)object.castShadow=data.castShadow;if(data.receiveShadow!==undefined)object.receiveShadow=data.receiveShadow;if(data.shadow){if(data.shadow.intensity!==undefined)object.shadow.intensity=data.shadow.intensity;if(data.shadow.bias!==undefined)object.shadow.bias=data.shadow.bias;if(data.shadow.normalBias!==undefined)object.shadow.normalBias=data.shadow.normalBias;if(data.shadow.radius!==undefined)object.shadow.radius=data.shadow.radius;if(data.shadow.mapSize!==undefined)object.shadow.mapSize.fromArray(data.shadow.mapSize);if(data.shadow.camera!==undefined)object.shadow.camera=this.parseObject(data.shadow.camera);}if(data.visible!==undefined)object.visible=data.visible;if(data.frustumCulled!==undefined)object.frustumCulled=data.frustumCulled;if(data.renderOrder!==undefined)object.renderOrder=data.renderOrder;if(data.userData!==undefined)object.userData=data.userData;if(data.layers!==undefined)object.layers.mask=data.layers;if(data.children!==undefined){const children=data.children;for(let i=0;i<children.length;i++){object.add(this.parseObject(children[i],geometries,materials,textures,animations));}}if(data.animations!==undefined){const objectAnimations=data.animations;for(let i=0;i<objectAnimations.length;i++){const uuid=objectAnimations[i];object.animations.push(animations[uuid]);}}if(data.type==='LOD'){if(data.autoUpdate!==undefined)object.autoUpdate=data.autoUpdate;const levels=data.levels;for(let l=0;l<levels.length;l++){const level=levels[l];const child=object.getObjectByProperty('uuid',level.object);if(child!==undefined){object.addLevel(child,level.distance,level.hysteresis);}}}return object;}bindSkeletons(object,skeletons){if(Object.keys(skeletons).length===0)return;object.traverse(function(child){if(child.isSkinnedMesh===true&&child.skeleton!==undefined){const skeleton=skeletons[child.skeleton];if(skeleton===undefined){console.warn('THREE.ObjectLoader: No skeleton found with UUID:',child.skeleton);}else{child.bind(skeleton,child.bindMatrix);}}});}bindLightTargets(object){object.traverse(function(child){if(child.isDirectionalLight||child.isSpotLight){const uuid=child.target;const target=object.getObjectByProperty('uuid',uuid);if(target!==undefined){child.target=target;}else{child.target=new Object3D();}}});}}const TEXTURE_MAPPING={UVMapping:UVMapping,CubeReflectionMapping:CubeReflectionMapping,CubeRefractionMapping:CubeRefractionMapping,EquirectangularReflectionMapping:EquirectangularReflectionMapping,EquirectangularRefractionMapping:EquirectangularRefractionMapping,CubeUVReflectionMapping:CubeUVReflectionMapping};const TEXTURE_WRAPPING={RepeatWrapping:RepeatWrapping,ClampToEdgeWrapping:ClampToEdgeWrapping,MirroredRepeatWrapping:MirroredRepeatWrapping};const TEXTURE_FILTER={NearestFilter:NearestFilter,NearestMipmapNearestFilter:NearestMipmapNearestFilter,NearestMipmapLinearFilter:NearestMipmapLinearFilter,LinearFilter:LinearFilter,LinearMipmapNearestFilter:LinearMipmapNearestFilter,LinearMipmapLinearFilter:LinearMipmapLinearFilter};/**
+}texture.source=source;texture.uuid=data.uuid;if(data.name!==undefined)texture.name=data.name;if(data.mapping!==undefined)texture.mapping=parseConstant(data.mapping,TEXTURE_MAPPING);if(data.channel!==undefined)texture.channel=data.channel;if(data.offset!==undefined)texture.offset.fromArray(data.offset);if(data.repeat!==undefined)texture.repeat.fromArray(data.repeat);if(data.center!==undefined)texture.center.fromArray(data.center);if(data.rotation!==undefined)texture.rotation=data.rotation;if(data.wrap!==undefined){texture.wrapS=parseConstant(data.wrap[0],TEXTURE_WRAPPING);texture.wrapT=parseConstant(data.wrap[1],TEXTURE_WRAPPING);}if(data.format!==undefined)texture.format=data.format;if(data.internalFormat!==undefined)texture.internalFormat=data.internalFormat;if(data.type!==undefined)texture.type=data.type;if(data.colorSpace!==undefined)texture.colorSpace=data.colorSpace;if(data.minFilter!==undefined)texture.minFilter=parseConstant(data.minFilter,TEXTURE_FILTER);if(data.magFilter!==undefined)texture.magFilter=parseConstant(data.magFilter,TEXTURE_FILTER);if(data.anisotropy!==undefined)texture.anisotropy=data.anisotropy;if(data.flipY!==undefined)texture.flipY=data.flipY;if(data.generateMipmaps!==undefined)texture.generateMipmaps=data.generateMipmaps;if(data.premultiplyAlpha!==undefined)texture.premultiplyAlpha=data.premultiplyAlpha;if(data.unpackAlignment!==undefined)texture.unpackAlignment=data.unpackAlignment;if(data.compareFunction!==undefined)texture.compareFunction=data.compareFunction;if(data.userData!==undefined)texture.userData=data.userData;textures[data.uuid]=texture;}}return textures;}parseObject(data,geometries,materials,textures,animations){let object;function getGeometry(name){if(geometries[name]===undefined){console.warn('THREE.ObjectLoader: Undefined geometry',name);}return geometries[name];}function getMaterial(name){if(name===undefined)return undefined;if(Array.isArray(name)){const array=[];for(let i=0,l=name.length;i<l;i++){const uuid=name[i];if(materials[uuid]===undefined){console.warn('THREE.ObjectLoader: Undefined material',uuid);}array.push(materials[uuid]);}return array;}if(materials[name]===undefined){console.warn('THREE.ObjectLoader: Undefined material',name);}return materials[name];}function getTexture(uuid){if(textures[uuid]===undefined){console.warn('THREE.ObjectLoader: Undefined texture',uuid);}return textures[uuid];}let geometry,material;switch(data.type){case'Scene':object=new Scene();if(data.background!==undefined){if(Number.isInteger(data.background)){object.background=new Color(data.background);}else{object.background=getTexture(data.background);}}if(data.environment!==undefined){object.environment=getTexture(data.environment);}if(data.fog!==undefined){if(data.fog.type==='Fog'){object.fog=new Fog(data.fog.color,data.fog.near,data.fog.far);}else if(data.fog.type==='FogExp2'){object.fog=new FogExp2(data.fog.color,data.fog.density);}if(data.fog.name!==''){object.fog.name=data.fog.name;}}if(data.backgroundBlurriness!==undefined)object.backgroundBlurriness=data.backgroundBlurriness;if(data.backgroundIntensity!==undefined)object.backgroundIntensity=data.backgroundIntensity;if(data.backgroundRotation!==undefined)object.backgroundRotation.fromArray(data.backgroundRotation);if(data.environmentIntensity!==undefined)object.environmentIntensity=data.environmentIntensity;if(data.environmentRotation!==undefined)object.environmentRotation.fromArray(data.environmentRotation);break;case'PerspectiveCamera':object=new PerspectiveCamera(data.fov,data.aspect,data.near,data.far);if(data.focus!==undefined)object.focus=data.focus;if(data.zoom!==undefined)object.zoom=data.zoom;if(data.filmGauge!==undefined)object.filmGauge=data.filmGauge;if(data.filmOffset!==undefined)object.filmOffset=data.filmOffset;if(data.view!==undefined)object.view=Object.assign({},data.view);break;case'OrthographicCamera':object=new OrthographicCamera(data.left,data.right,data.top,data.bottom,data.near,data.far);if(data.zoom!==undefined)object.zoom=data.zoom;if(data.view!==undefined)object.view=Object.assign({},data.view);break;case'AmbientLight':object=new AmbientLight(data.color,data.intensity);break;case'DirectionalLight':object=new DirectionalLight(data.color,data.intensity);object.target=data.target||'';break;case'PointLight':object=new PointLight(data.color,data.intensity,data.distance,data.decay);break;case'RectAreaLight':object=new RectAreaLight(data.color,data.intensity,data.width,data.height);break;case'SpotLight':object=new SpotLight(data.color,data.intensity,data.distance,data.angle,data.penumbra,data.decay);object.target=data.target||'';break;case'HemisphereLight':object=new HemisphereLight(data.color,data.groundColor,data.intensity);break;case'LightProbe':object=new LightProbe().fromJSON(data);break;case'SkinnedMesh':geometry=getGeometry(data.geometry);material=getMaterial(data.material);object=new SkinnedMesh(geometry,material);if(data.bindMode!==undefined)object.bindMode=data.bindMode;if(data.bindMatrix!==undefined)object.bindMatrix.fromArray(data.bindMatrix);if(data.skeleton!==undefined)object.skeleton=data.skeleton;break;case'Mesh':geometry=getGeometry(data.geometry);material=getMaterial(data.material);object=new Mesh(geometry,material);break;case'InstancedMesh':geometry=getGeometry(data.geometry);material=getMaterial(data.material);const count=data.count;const instanceMatrix=data.instanceMatrix;const instanceColor=data.instanceColor;object=new InstancedMesh(geometry,material,count);object.instanceMatrix=new InstancedBufferAttribute(new Float32Array(instanceMatrix.array),16);if(instanceColor!==undefined)object.instanceColor=new InstancedBufferAttribute(new Float32Array(instanceColor.array),instanceColor.itemSize);break;case'BatchedMesh':geometry=getGeometry(data.geometry);material=getMaterial(data.material);object=new BatchedMesh(data.maxInstanceCount,data.maxVertexCount,data.maxIndexCount,material);object.geometry=geometry;object.perObjectFrustumCulled=data.perObjectFrustumCulled;object.sortObjects=data.sortObjects;object._drawRanges=data.drawRanges;object._reservedRanges=data.reservedRanges;object._geometryInfo=data.geometryInfo.map(info=>{let box=null;let sphere=null;if(info.boundingBox!==undefined){box=new Box3().fromJSON(info.boundingBox);}if(info.boundingSphere!==undefined){sphere=new Sphere().fromJSON(info.boundingSphere);}return{...info,boundingBox:box,boundingSphere:sphere};});object._instanceInfo=data.instanceInfo;object._availableInstanceIds=data._availableInstanceIds;object._availableGeometryIds=data._availableGeometryIds;object._nextIndexStart=data.nextIndexStart;object._nextVertexStart=data.nextVertexStart;object._geometryCount=data.geometryCount;object._maxInstanceCount=data.maxInstanceCount;object._maxVertexCount=data.maxVertexCount;object._maxIndexCount=data.maxIndexCount;object._geometryInitialized=data.geometryInitialized;object._matricesTexture=getTexture(data.matricesTexture.uuid);object._indirectTexture=getTexture(data.indirectTexture.uuid);if(data.colorsTexture!==undefined){object._colorsTexture=getTexture(data.colorsTexture.uuid);}if(data.boundingSphere!==undefined){object.boundingSphere=new Sphere().fromJSON(data.boundingSphere);}if(data.boundingBox!==undefined){object.boundingBox=new Box3().fromJSON(data.boundingBox);}break;case'LOD':object=new LOD();break;case'Line':object=new Line(getGeometry(data.geometry),getMaterial(data.material));break;case'LineLoop':object=new LineLoop(getGeometry(data.geometry),getMaterial(data.material));break;case'LineSegments':object=new LineSegments(getGeometry(data.geometry),getMaterial(data.material));break;case'PointCloud':case'Points':object=new Points(getGeometry(data.geometry),getMaterial(data.material));break;case'Sprite':object=new Sprite(getMaterial(data.material));break;case'Group':object=new Group();break;case'Bone':object=new Bone();break;default:object=new Object3D();}object.uuid=data.uuid;if(data.name!==undefined)object.name=data.name;if(data.matrix!==undefined){object.matrix.fromArray(data.matrix);if(data.matrixAutoUpdate!==undefined)object.matrixAutoUpdate=data.matrixAutoUpdate;if(object.matrixAutoUpdate)object.matrix.decompose(object.position,object.quaternion,object.scale);}else{if(data.position!==undefined)object.position.fromArray(data.position);if(data.rotation!==undefined)object.rotation.fromArray(data.rotation);if(data.quaternion!==undefined)object.quaternion.fromArray(data.quaternion);if(data.scale!==undefined)object.scale.fromArray(data.scale);}if(data.up!==undefined)object.up.fromArray(data.up);if(data.castShadow!==undefined)object.castShadow=data.castShadow;if(data.receiveShadow!==undefined)object.receiveShadow=data.receiveShadow;if(data.shadow){if(data.shadow.intensity!==undefined)object.shadow.intensity=data.shadow.intensity;if(data.shadow.bias!==undefined)object.shadow.bias=data.shadow.bias;if(data.shadow.normalBias!==undefined)object.shadow.normalBias=data.shadow.normalBias;if(data.shadow.radius!==undefined)object.shadow.radius=data.shadow.radius;if(data.shadow.mapSize!==undefined)object.shadow.mapSize.fromArray(data.shadow.mapSize);if(data.shadow.camera!==undefined)object.shadow.camera=this.parseObject(data.shadow.camera);}if(data.visible!==undefined)object.visible=data.visible;if(data.frustumCulled!==undefined)object.frustumCulled=data.frustumCulled;if(data.renderOrder!==undefined)object.renderOrder=data.renderOrder;if(data.userData!==undefined)object.userData=data.userData;if(data.layers!==undefined)object.layers.mask=data.layers;if(data.children!==undefined){const children=data.children;for(let i=0;i<children.length;i++){object.add(this.parseObject(children[i],geometries,materials,textures,animations));}}if(data.animations!==undefined){const objectAnimations=data.animations;for(let i=0;i<objectAnimations.length;i++){const uuid=objectAnimations[i];object.animations.push(animations[uuid]);}}if(data.type==='LOD'){if(data.autoUpdate!==undefined)object.autoUpdate=data.autoUpdate;const levels=data.levels;for(let l=0;l<levels.length;l++){const level=levels[l];const child=object.getObjectByProperty('uuid',level.object);if(child!==undefined){object.addLevel(child,level.distance,level.hysteresis);}}}return object;}bindSkeletons(object,skeletons){if(Object.keys(skeletons).length===0)return;object.traverse(function(child){if(child.isSkinnedMesh===true&&child.skeleton!==undefined){const skeleton=skeletons[child.skeleton];if(skeleton===undefined){console.warn('THREE.ObjectLoader: No skeleton found with UUID:',child.skeleton);}else{child.bind(skeleton,child.bindMatrix);}}});}bindLightTargets(object){object.traverse(function(child){if(child.isDirectionalLight||child.isSpotLight){const uuid=child.target;const target=object.getObjectByProperty('uuid',uuid);if(target!==undefined){child.target=target;}else{child.target=new Object3D();}}});}}const TEXTURE_MAPPING={UVMapping:UVMapping,CubeReflectionMapping:CubeReflectionMapping,CubeRefractionMapping:CubeRefractionMapping,EquirectangularReflectionMapping:EquirectangularReflectionMapping,EquirectangularRefractionMapping:EquirectangularRefractionMapping,CubeUVReflectionMapping:CubeUVReflectionMapping};const TEXTURE_WRAPPING={RepeatWrapping:RepeatWrapping,ClampToEdgeWrapping:ClampToEdgeWrapping,MirroredRepeatWrapping:MirroredRepeatWrapping};const TEXTURE_FILTER={NearestFilter:NearestFilter,NearestMipmapNearestFilter:NearestMipmapNearestFilter,NearestMipmapLinearFilter:NearestMipmapLinearFilter,LinearFilter:LinearFilter,LinearMipmapNearestFilter:LinearMipmapNearestFilter,LinearMipmapLinearFilter:LinearMipmapLinearFilter};const _errorMap=new WeakMap();/**
  * A loader for loading images as an [ImageBitmap]{@link https://developer.mozilla.org/en-US/docs/Web/API/ImageBitmap}.
  * An `ImageBitmap` provides an asynchronous and resource efficient pathway to prepare
  * textures for rendering.
@@ -47668,7 +47827,7 @@ const deserializedImage=await deserializeImage(image.url);images[image.uuid]=new
  *
  * You need to set the equivalent options via {@link ImageBitmapLoader#setOptions} instead.
  *
- * Also note that unlike {@link FileLoader}, this loader does not avoid multiple concurrent requests to the same URL.
+ * Also note that unlike {@link FileLoader}, this loader avoids multiple concurrent requests to the same URL only if `Cache` is enabled.
  *
  * ```js
  * const loader = new THREE.ImageBitmapLoader();
@@ -47710,8 +47869,9 @@ const deserializedImage=await deserializeImage(image.url);images[image.uuid]=new
 	 * @param {onErrorCallback} onError - Executed when errors occur.
 	 * @return {ImageBitmap|undefined} The image bitmap.
 	 */load(url,onLoad,onProgress,onError){if(url===undefined)url='';if(this.path!==undefined)url=this.path+url;url=this.manager.resolveURL(url);const scope=this;const cached=Cache.get(url);if(cached!==undefined){scope.manager.itemStart(url);// If cached is a promise, wait for it to resolve
-if(cached.then){cached.then(imageBitmap=>{if(onLoad)onLoad(imageBitmap);scope.manager.itemEnd(url);}).catch(e=>{if(onError)onError(e);});return;}// If cached is not a promise (i.e., it's already an imageBitmap)
-setTimeout(function(){if(onLoad)onLoad(cached);scope.manager.itemEnd(url);},0);return cached;}const fetchOptions={};fetchOptions.credentials=this.crossOrigin==='anonymous'?'same-origin':'include';fetchOptions.headers=this.requestHeader;const promise=fetch(url,fetchOptions).then(function(res){return res.blob();}).then(function(blob){return createImageBitmap(blob,Object.assign(scope.options,{colorSpaceConversion:'none'}));}).then(function(imageBitmap){Cache.add(url,imageBitmap);if(onLoad)onLoad(imageBitmap);scope.manager.itemEnd(url);return imageBitmap;}).catch(function(e){if(onError)onError(e);Cache.remove(url);scope.manager.itemError(url);scope.manager.itemEnd(url);});Cache.add(url,promise);scope.manager.itemStart(url);}}let _context;/**
+if(cached.then){cached.then(imageBitmap=>{// check if there is an error for the cached promise
+if(_errorMap.has(cached)===true){if(onError)onError(_errorMap.get(cached));scope.manager.itemError(url);scope.manager.itemEnd(url);}else{if(onLoad)onLoad(imageBitmap);scope.manager.itemEnd(url);return imageBitmap;}});return;}// If cached is not a promise (i.e., it's already an imageBitmap)
+setTimeout(function(){if(onLoad)onLoad(cached);scope.manager.itemEnd(url);},0);return cached;}const fetchOptions={};fetchOptions.credentials=this.crossOrigin==='anonymous'?'same-origin':'include';fetchOptions.headers=this.requestHeader;const promise=fetch(url,fetchOptions).then(function(res){return res.blob();}).then(function(blob){return createImageBitmap(blob,Object.assign(scope.options,{colorSpaceConversion:'none'}));}).then(function(imageBitmap){Cache.add(url,imageBitmap);if(onLoad)onLoad(imageBitmap);scope.manager.itemEnd(url);return imageBitmap;}).catch(function(e){if(onError)onError(e);_errorMap.set(promise,e);Cache.remove(url);scope.manager.itemError(url);scope.manager.itemEnd(url);});Cache.add(url,promise);scope.manager.itemStart(url);}}let _context;/**
  * Manages the global audio context in the engine.
  *
  * @hideconstructor
@@ -47817,10 +47977,16 @@ xmin=-ymax*cache.aspect-eyeSepOnProjection;xmax=ymax*cache.aspect-eyeSepOnProjec
 		 * @readonly
 		 * @default true
 		 */this.isArrayCamera=true;/**
+		 * Whether this camera is used with multiview rendering or not.
+		 *
+		 * @type {boolean}
+		 * @readonly
+		 * @default false
+		 */this.isMultiViewCamera=false;/**
 		 * An array of perspective sub cameras.
 		 *
 		 * @type {Array<PerspectiveCamera>}
-		 */this.cameras=array;this.index=0;}}/**
+		 */this.cameras=array;}}/**
  * Class for keeping track of time.
  */class Clock{/**
 	 * Constructs a new clock.
@@ -47867,7 +48033,7 @@ xmin=-ymax*cache.aspect-eyeSepOnProjection;xmax=ymax*cache.aspect-eyeSepOnProjec
 	 * Returns the delta time in seconds.
 	 *
 	 * @return {number} The delta time.
-	 */getDelta(){let diff=0;if(this.autoStart&&!this.running){this.start();return 0;}if(this.running){const newTime=now();diff=(newTime-this.oldTime)/1000;this.oldTime=newTime;this.elapsedTime+=diff;}return diff;}}function now(){return performance.now();}const _position$1=/*@__PURE__*/new Vector3();const _quaternion$1=/*@__PURE__*/new Quaternion();const _scale$1=/*@__PURE__*/new Vector3();const _orientation$1=/*@__PURE__*/new Vector3();/**
+	 */getDelta(){let diff=0;if(this.autoStart&&!this.running){this.start();return 0;}if(this.running){const newTime=now();diff=(newTime-this.oldTime)/1000;this.oldTime=newTime;this.elapsedTime+=diff;}return diff;}}function now(){return performance.now();}const _position$1=/*@__PURE__*/new Vector3();const _quaternion$1=/*@__PURE__*/new Quaternion();const _scale$1=/*@__PURE__*/new Vector3();const _forward=/*@__PURE__*/new Vector3();const _up=/*@__PURE__*/new Vector3();/**
  * The class represents a virtual listener of the all positional and non-positional audio effects
  * in the scene. A three.js application usually creates a single listener. It is a mandatory
  * constructor parameter for audios entities like {@link Audio} and {@link PositionalAudio}.
@@ -47932,8 +48098,9 @@ this._clock=new Clock();}/**
 	 *
 	 * @param {number} value - The master volume to set.
 	 * @return {AudioListener} A reference to this listener.
-	 */setMasterVolume(value){this.gain.gain.setTargetAtTime(value,this.context.currentTime,0.01);return this;}updateMatrixWorld(force){super.updateMatrixWorld(force);const listener=this.context.listener;const up=this.up;this.timeDelta=this._clock.getDelta();this.matrixWorld.decompose(_position$1,_quaternion$1,_scale$1);_orientation$1.set(0,0,-1).applyQuaternion(_quaternion$1);if(listener.positionX){// code path for Chrome (see #14393)
-const endTime=this.context.currentTime+this.timeDelta;listener.positionX.linearRampToValueAtTime(_position$1.x,endTime);listener.positionY.linearRampToValueAtTime(_position$1.y,endTime);listener.positionZ.linearRampToValueAtTime(_position$1.z,endTime);listener.forwardX.linearRampToValueAtTime(_orientation$1.x,endTime);listener.forwardY.linearRampToValueAtTime(_orientation$1.y,endTime);listener.forwardZ.linearRampToValueAtTime(_orientation$1.z,endTime);listener.upX.linearRampToValueAtTime(up.x,endTime);listener.upY.linearRampToValueAtTime(up.y,endTime);listener.upZ.linearRampToValueAtTime(up.z,endTime);}else{listener.setPosition(_position$1.x,_position$1.y,_position$1.z);listener.setOrientation(_orientation$1.x,_orientation$1.y,_orientation$1.z,up.x,up.y,up.z);}}}/**
+	 */setMasterVolume(value){this.gain.gain.setTargetAtTime(value,this.context.currentTime,0.01);return this;}updateMatrixWorld(force){super.updateMatrixWorld(force);const listener=this.context.listener;this.timeDelta=this._clock.getDelta();this.matrixWorld.decompose(_position$1,_quaternion$1,_scale$1);// the initial forward and up directions must be orthogonal
+_forward.set(0,0,-1).applyQuaternion(_quaternion$1);_up.set(0,1,0).applyQuaternion(_quaternion$1);if(listener.positionX){// code path for Chrome (see #14393)
+const endTime=this.context.currentTime+this.timeDelta;listener.positionX.linearRampToValueAtTime(_position$1.x,endTime);listener.positionY.linearRampToValueAtTime(_position$1.y,endTime);listener.positionZ.linearRampToValueAtTime(_position$1.z,endTime);listener.forwardX.linearRampToValueAtTime(_forward.x,endTime);listener.forwardY.linearRampToValueAtTime(_forward.y,endTime);listener.forwardZ.linearRampToValueAtTime(_forward.z,endTime);listener.upX.linearRampToValueAtTime(_up.x,endTime);listener.upY.linearRampToValueAtTime(_up.y,endTime);listener.upZ.linearRampToValueAtTime(_up.z,endTime);}else{listener.setPosition(_position$1.x,_position$1.y,_position$1.z);listener.setOrientation(_forward.x,_forward.y,_forward.z,_up.x,_up.y,_up.z);}}}/**
  * Represents a non-positional ( global ) audio object.
  *
  * This and related audio modules make use of the [Web Audio API]{@link https://www.w3.org/TR/webaudio-1.1/}.
@@ -49038,22 +49205,7 @@ const actionsToRemove=actionsForClip.knownActions;for(let i=0,n=actionsToRemove.
 		 * Overwritten with a different texture type.
 		 *
 		 * @type {Data3DTexture}
-		 */this.texture=new Data3DTexture(null,width,height,depth);this.texture.isRenderTargetTexture=true;}}/**
- * Represents an array render target.
- *
- * @augments RenderTarget
- */class RenderTargetArray extends RenderTarget{/**
-	 * Constructs a new 3D render target.
-	 *
-	 * @param {number} [width=1] - The width of the render target.
-	 * @param {number} [height=1] - The height of the render target.
-	 * @param {number} [depth=1] - The height of the render target.
-	 * @param {RenderTarget~Options} [options] - The configuration object.
-	 */constructor(width=1,height=1,depth=1,options={}){super(width,height,options);this.isRenderTargetArray=true;this.depth=depth;/**
-		 * Overwritten with a different texture type.
-		 *
-		 * @type {DataArrayTexture}
-		 */this.texture=new DataArrayTexture(null,width,height,depth);this.texture.isRenderTargetTexture=true;}}/**
+		 */this.texture=new Data3DTexture(null,width,height,depth);this._setTextureOptions(options);this.texture.isRenderTargetTexture=true;}}/**
  * Represents a uniform which is a global shader variable. They are passed to shader programs.
  *
  * When declaring a uniform of a {@link ShaderMaterial}, it is declared by value or by object.
@@ -49830,7 +49982,7 @@ if(this.parent){this.parent.updateWorldMatrix(true);this.matrix.copy(this.parent
 		 *
 		 * @type {Object3D}
 		 */this.root=object;/**
-		 * he list of bones that the helper visualizes.
+		 * The list of bones that the helper visualizes.
 		 *
 		 * @type {Array<Bone>}
 		 */this.bones=bones;this.matrix=object.matrixWorld;this.matrixAutoUpdate=false;}updateMatrixWorld(force){const bones=this.bones;const geometry=this.geometry;const position=geometry.getAttribute('position');_matrixWorldInv.copy(this.root.matrixWorld).invert();for(let i=0,j=0;i<bones.length;i++){const bone=bones[i];if(bone.parent&&bone.parent.isBone){_boneMatrix.multiplyMatrices(_matrixWorldInv,bone.matrixWorld);_vector$2.setFromMatrixPosition(_boneMatrix);position.setXYZ(j,_vector$2.x,_vector$2.y,_vector$2.z);_boneMatrix.multiplyMatrices(_matrixWorldInv,bone.parent.matrixWorld);_vector$2.setFromMatrixPosition(_boneMatrix);position.setXYZ(j+1,_vector$2.x,_vector$2.y,_vector$2.z);j+=2;}}geometry.getAttribute('position').needsUpdate=true;super.updateMatrixWorld(force);}/**
@@ -50255,7 +50407,7 @@ setPoint('cf1',pointMap,geometry,_camera,-1,0,1);setPoint('cf2',pointMap,geometr
 	 * @param {(number|Color|string)} [color=0xffff00] - Color of the arrow.
 	 * @param {number} [headLength=length*0.2] - The length of the head of the arrow.
 	 * @param {number} [headWidth=headLength*0.2] - The width of the head of the arrow.
-	 */constructor(dir=new Vector3(0,0,1),origin=new Vector3(0,0,0),length=1,color=0xffff00,headLength=length*0.2,headWidth=headLength*0.2){super();this.type='ArrowHelper';if(_lineGeometry===undefined){_lineGeometry=new BufferGeometry();_lineGeometry.setAttribute('position',new Float32BufferAttribute([0,0,0,0,1,0],3));_coneGeometry=new CylinderGeometry(0,0.5,1,5,1);_coneGeometry.translate(0,-0.5,0);}this.position.copy(origin);/**
+	 */constructor(dir=new Vector3(0,0,1),origin=new Vector3(0,0,0),length=1,color=0xffff00,headLength=length*0.2,headWidth=headLength*0.2){super();this.type='ArrowHelper';if(_lineGeometry===undefined){_lineGeometry=new BufferGeometry();_lineGeometry.setAttribute('position',new Float32BufferAttribute([0,0,0,0,1,0],3));_coneGeometry=new ConeGeometry(0.5,1,5,1);_coneGeometry.translate(0,-0.5,0);}this.position.copy(origin);/**
 		 * The line part of the arrow helper.
 		 *
 		 * @type {Line}
@@ -50478,7 +50630,7 @@ return;}if(this.domElement!==null)this.disconnect();this.domElement=element;}/**
  * @param {number} type - The texture's type.
  * @return {number} The byte length.
  */function getByteLength(width,height,format,type){const typeByteLength=getTextureTypeByteLength(type);switch(format){// https://registry.khronos.org/OpenGL-Refpages/es3.0/html/glTexImage2D.xhtml
-case AlphaFormat:return width*height;case LuminanceFormat:return width*height;case LuminanceAlphaFormat:return width*height*2;case RedFormat:return width*height/typeByteLength.components*typeByteLength.byteLength;case RedIntegerFormat:return width*height/typeByteLength.components*typeByteLength.byteLength;case RGFormat:return width*height*2/typeByteLength.components*typeByteLength.byteLength;case RGIntegerFormat:return width*height*2/typeByteLength.components*typeByteLength.byteLength;case RGBFormat:return width*height*3/typeByteLength.components*typeByteLength.byteLength;case RGBAFormat:return width*height*4/typeByteLength.components*typeByteLength.byteLength;case RGBAIntegerFormat:return width*height*4/typeByteLength.components*typeByteLength.byteLength;// https://registry.khronos.org/webgl/extensions/WEBGL_compressed_texture_s3tc_srgb/
+case AlphaFormat:return width*height;case RedFormat:return width*height/typeByteLength.components*typeByteLength.byteLength;case RedIntegerFormat:return width*height/typeByteLength.components*typeByteLength.byteLength;case RGFormat:return width*height*2/typeByteLength.components*typeByteLength.byteLength;case RGIntegerFormat:return width*height*2/typeByteLength.components*typeByteLength.byteLength;case RGBFormat:return width*height*3/typeByteLength.components*typeByteLength.byteLength;case RGBAFormat:return width*height*4/typeByteLength.components*typeByteLength.byteLength;case RGBAIntegerFormat:return width*height*4/typeByteLength.components*typeByteLength.byteLength;// https://registry.khronos.org/webgl/extensions/WEBGL_compressed_texture_s3tc_srgb/
 case RGB_S3TC_DXT1_Format:case RGBA_S3TC_DXT1_Format:return Math.floor((width+3)/4)*Math.floor((height+3)/4)*8;case RGBA_S3TC_DXT3_Format:case RGBA_S3TC_DXT5_Format:return Math.floor((width+3)/4)*Math.floor((height+3)/4)*16;// https://registry.khronos.org/webgl/extensions/WEBGL_compressed_texture_pvrtc/
 case RGB_PVRTC_2BPPV1_Format:case RGBA_PVRTC_2BPPV1_Format:return Math.max(width,16)*Math.max(height,8)/4;case RGB_PVRTC_4BPPV1_Format:case RGBA_PVRTC_4BPPV1_Format:return Math.max(width,8)*Math.max(height,8)/2;// https://registry.khronos.org/webgl/extensions/WEBGL_compressed_texture_etc/
 case RGB_ETC1_Format:case RGB_ETC2_Format:return Math.floor((width+3)/4)*Math.floor((height+3)/4)*8;case RGBA_ETC2_EAC_Format:return Math.floor((width+3)/4)*Math.floor((height+3)/4)*16;// https://registry.khronos.org/webgl/extensions/WEBGL_compressed_texture_astc/
@@ -50653,6 +50805,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   FramebufferTexture: () => (/* reexport safe */ _three_core_js__WEBPACK_IMPORTED_MODULE_0__.FramebufferTexture),
 /* harmony export */   FrontSide: () => (/* reexport safe */ _three_core_js__WEBPACK_IMPORTED_MODULE_0__.FrontSide),
 /* harmony export */   Frustum: () => (/* reexport safe */ _three_core_js__WEBPACK_IMPORTED_MODULE_0__.Frustum),
+/* harmony export */   FrustumArray: () => (/* reexport safe */ _three_core_js__WEBPACK_IMPORTED_MODULE_0__.FrustumArray),
 /* harmony export */   GLBufferAttribute: () => (/* reexport safe */ _three_core_js__WEBPACK_IMPORTED_MODULE_0__.GLBufferAttribute),
 /* harmony export */   GLSL1: () => (/* reexport safe */ _three_core_js__WEBPACK_IMPORTED_MODULE_0__.GLSL1),
 /* harmony export */   GLSL3: () => (/* reexport safe */ _three_core_js__WEBPACK_IMPORTED_MODULE_0__.GLSL3),
@@ -50687,6 +50840,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   InterpolateDiscrete: () => (/* reexport safe */ _three_core_js__WEBPACK_IMPORTED_MODULE_0__.InterpolateDiscrete),
 /* harmony export */   InterpolateLinear: () => (/* reexport safe */ _three_core_js__WEBPACK_IMPORTED_MODULE_0__.InterpolateLinear),
 /* harmony export */   InterpolateSmooth: () => (/* reexport safe */ _three_core_js__WEBPACK_IMPORTED_MODULE_0__.InterpolateSmooth),
+/* harmony export */   InterpolationSamplingMode: () => (/* reexport safe */ _three_core_js__WEBPACK_IMPORTED_MODULE_0__.InterpolationSamplingMode),
+/* harmony export */   InterpolationSamplingType: () => (/* reexport safe */ _three_core_js__WEBPACK_IMPORTED_MODULE_0__.InterpolationSamplingType),
 /* harmony export */   InvertStencilOp: () => (/* reexport safe */ _three_core_js__WEBPACK_IMPORTED_MODULE_0__.InvertStencilOp),
 /* harmony export */   KeepStencilOp: () => (/* reexport safe */ _three_core_js__WEBPACK_IMPORTED_MODULE_0__.KeepStencilOp),
 /* harmony export */   KeyframeTrack: () => (/* reexport safe */ _three_core_js__WEBPACK_IMPORTED_MODULE_0__.KeyframeTrack),
@@ -50724,8 +50879,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   LoopOnce: () => (/* reexport safe */ _three_core_js__WEBPACK_IMPORTED_MODULE_0__.LoopOnce),
 /* harmony export */   LoopPingPong: () => (/* reexport safe */ _three_core_js__WEBPACK_IMPORTED_MODULE_0__.LoopPingPong),
 /* harmony export */   LoopRepeat: () => (/* reexport safe */ _three_core_js__WEBPACK_IMPORTED_MODULE_0__.LoopRepeat),
-/* harmony export */   LuminanceAlphaFormat: () => (/* reexport safe */ _three_core_js__WEBPACK_IMPORTED_MODULE_0__.LuminanceAlphaFormat),
-/* harmony export */   LuminanceFormat: () => (/* reexport safe */ _three_core_js__WEBPACK_IMPORTED_MODULE_0__.LuminanceFormat),
 /* harmony export */   MOUSE: () => (/* reexport safe */ _three_core_js__WEBPACK_IMPORTED_MODULE_0__.MOUSE),
 /* harmony export */   Material: () => (/* reexport safe */ _three_core_js__WEBPACK_IMPORTED_MODULE_0__.Material),
 /* harmony export */   MaterialLoader: () => (/* reexport safe */ _three_core_js__WEBPACK_IMPORTED_MODULE_0__.MaterialLoader),
@@ -50851,7 +51004,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   ReinhardToneMapping: () => (/* reexport safe */ _three_core_js__WEBPACK_IMPORTED_MODULE_0__.ReinhardToneMapping),
 /* harmony export */   RenderTarget: () => (/* reexport safe */ _three_core_js__WEBPACK_IMPORTED_MODULE_0__.RenderTarget),
 /* harmony export */   RenderTarget3D: () => (/* reexport safe */ _three_core_js__WEBPACK_IMPORTED_MODULE_0__.RenderTarget3D),
-/* harmony export */   RenderTargetArray: () => (/* reexport safe */ _three_core_js__WEBPACK_IMPORTED_MODULE_0__.RenderTargetArray),
 /* harmony export */   RepeatWrapping: () => (/* reexport safe */ _three_core_js__WEBPACK_IMPORTED_MODULE_0__.RepeatWrapping),
 /* harmony export */   ReplaceStencilOp: () => (/* reexport safe */ _three_core_js__WEBPACK_IMPORTED_MODULE_0__.ReplaceStencilOp),
 /* harmony export */   ReverseSubtractEquation: () => (/* reexport safe */ _three_core_js__WEBPACK_IMPORTED_MODULE_0__.ReverseSubtractEquation),
@@ -51473,9 +51625,10 @@ const toVSM=_previousType!==_three_core_js__WEBPACK_IMPORTED_MODULE_0__.VSMShado
 for(let i=0,il=lights.length;i<il;i++){const light=lights[i];const shadow=light.shadow;if(shadow===undefined){console.warn('THREE.WebGLShadowMap:',light,'has no shadow.');continue;}if(shadow.autoUpdate===false&&shadow.needsUpdate===false)continue;_shadowMapSize.copy(shadow.mapSize);const shadowFrameExtents=shadow.getFrameExtents();_shadowMapSize.multiply(shadowFrameExtents);_viewportSize.copy(shadow.mapSize);if(_shadowMapSize.x>_maxTextureSize||_shadowMapSize.y>_maxTextureSize){if(_shadowMapSize.x>_maxTextureSize){_viewportSize.x=Math.floor(_maxTextureSize/shadowFrameExtents.x);_shadowMapSize.x=_viewportSize.x*shadowFrameExtents.x;shadow.mapSize.x=_viewportSize.x;}if(_shadowMapSize.y>_maxTextureSize){_viewportSize.y=Math.floor(_maxTextureSize/shadowFrameExtents.y);_shadowMapSize.y=_viewportSize.y*shadowFrameExtents.y;shadow.mapSize.y=_viewportSize.y;}}if(shadow.map===null||toVSM===true||fromVSM===true){const pars=this.type!==_three_core_js__WEBPACK_IMPORTED_MODULE_0__.VSMShadowMap?{minFilter:_three_core_js__WEBPACK_IMPORTED_MODULE_0__.NearestFilter,magFilter:_three_core_js__WEBPACK_IMPORTED_MODULE_0__.NearestFilter}:{};if(shadow.map!==null){shadow.map.dispose();}shadow.map=new _three_core_js__WEBPACK_IMPORTED_MODULE_0__.WebGLRenderTarget(_shadowMapSize.x,_shadowMapSize.y,pars);shadow.map.texture.name=light.name+'.shadowMap';shadow.camera.updateProjectionMatrix();}renderer.setRenderTarget(shadow.map);renderer.clear();const viewportCount=shadow.getViewportCount();for(let vp=0;vp<viewportCount;vp++){const viewport=shadow.getViewport(vp);_viewport.set(_viewportSize.x*viewport.x,_viewportSize.y*viewport.y,_viewportSize.x*viewport.z,_viewportSize.y*viewport.w);_state.viewport(_viewport);shadow.updateMatrices(light,vp);_frustum=shadow.getFrustum();renderObject(scene,camera,shadow.camera,light,this.type);}// do blur pass for VSM
 if(shadow.isPointLightShadow!==true&&this.type===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.VSMShadowMap){VSMPass(shadow,camera);}shadow.needsUpdate=false;}_previousType=this.type;scope.needsUpdate=false;renderer.setRenderTarget(currentRenderTarget,activeCubeFace,activeMipmapLevel);};function VSMPass(shadow,camera){const geometry=objects.update(fullScreenMesh);if(shadowMaterialVertical.defines.VSM_SAMPLES!==shadow.blurSamples){shadowMaterialVertical.defines.VSM_SAMPLES=shadow.blurSamples;shadowMaterialHorizontal.defines.VSM_SAMPLES=shadow.blurSamples;shadowMaterialVertical.needsUpdate=true;shadowMaterialHorizontal.needsUpdate=true;}if(shadow.mapPass===null){shadow.mapPass=new _three_core_js__WEBPACK_IMPORTED_MODULE_0__.WebGLRenderTarget(_shadowMapSize.x,_shadowMapSize.y);}// vertical pass
 shadowMaterialVertical.uniforms.shadow_pass.value=shadow.map.texture;shadowMaterialVertical.uniforms.resolution.value=shadow.mapSize;shadowMaterialVertical.uniforms.radius.value=shadow.radius;renderer.setRenderTarget(shadow.mapPass);renderer.clear();renderer.renderBufferDirect(camera,null,geometry,shadowMaterialVertical,fullScreenMesh,null);// horizontal pass
-shadowMaterialHorizontal.uniforms.shadow_pass.value=shadow.mapPass.texture;shadowMaterialHorizontal.uniforms.resolution.value=shadow.mapSize;shadowMaterialHorizontal.uniforms.radius.value=shadow.radius;renderer.setRenderTarget(shadow.map);renderer.clear();renderer.renderBufferDirect(camera,null,geometry,shadowMaterialHorizontal,fullScreenMesh,null);}function getDepthMaterial(object,material,light,type){let result=null;const customMaterial=light.isPointLight===true?object.customDistanceMaterial:object.customDepthMaterial;if(customMaterial!==undefined){result=customMaterial;}else{result=light.isPointLight===true?_distanceMaterial:_depthMaterial;if(renderer.localClippingEnabled&&material.clipShadows===true&&Array.isArray(material.clippingPlanes)&&material.clippingPlanes.length!==0||material.displacementMap&&material.displacementScale!==0||material.alphaMap&&material.alphaTest>0||material.map&&material.alphaTest>0){// in this case we need a unique material instance reflecting the
+shadowMaterialHorizontal.uniforms.shadow_pass.value=shadow.mapPass.texture;shadowMaterialHorizontal.uniforms.resolution.value=shadow.mapSize;shadowMaterialHorizontal.uniforms.radius.value=shadow.radius;renderer.setRenderTarget(shadow.map);renderer.clear();renderer.renderBufferDirect(camera,null,geometry,shadowMaterialHorizontal,fullScreenMesh,null);}function getDepthMaterial(object,material,light,type){let result=null;const customMaterial=light.isPointLight===true?object.customDistanceMaterial:object.customDepthMaterial;if(customMaterial!==undefined){result=customMaterial;}else{result=light.isPointLight===true?_distanceMaterial:_depthMaterial;if(renderer.localClippingEnabled&&material.clipShadows===true&&Array.isArray(material.clippingPlanes)&&material.clippingPlanes.length!==0||material.displacementMap&&material.displacementScale!==0||material.alphaMap&&material.alphaTest>0||material.map&&material.alphaTest>0||material.alphaToCoverage===true){// in this case we need a unique material instance reflecting the
 // appropriate state
-const keyA=result.uuid,keyB=material.uuid;let materialsForVariant=_materialCache[keyA];if(materialsForVariant===undefined){materialsForVariant={};_materialCache[keyA]=materialsForVariant;}let cachedMaterial=materialsForVariant[keyB];if(cachedMaterial===undefined){cachedMaterial=result.clone();materialsForVariant[keyB]=cachedMaterial;material.addEventListener('dispose',onMaterialDispose);}result=cachedMaterial;}}result.visible=material.visible;result.wireframe=material.wireframe;if(type===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.VSMShadowMap){result.side=material.shadowSide!==null?material.shadowSide:material.side;}else{result.side=material.shadowSide!==null?material.shadowSide:shadowSide[material.side];}result.alphaMap=material.alphaMap;result.alphaTest=material.alphaTest;result.map=material.map;result.clipShadows=material.clipShadows;result.clippingPlanes=material.clippingPlanes;result.clipIntersection=material.clipIntersection;result.displacementMap=material.displacementMap;result.displacementScale=material.displacementScale;result.displacementBias=material.displacementBias;result.wireframeLinewidth=material.wireframeLinewidth;result.linewidth=material.linewidth;if(light.isPointLight===true&&result.isMeshDistanceMaterial===true){const materialProperties=renderer.properties.get(result);materialProperties.light=light;}return result;}function renderObject(object,camera,shadowCamera,light,type){if(object.visible===false)return;const visible=object.layers.test(camera.layers);if(visible&&(object.isMesh||object.isLine||object.isPoints)){if((object.castShadow||object.receiveShadow&&type===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.VSMShadowMap)&&(!object.frustumCulled||_frustum.intersectsObject(object))){object.modelViewMatrix.multiplyMatrices(shadowCamera.matrixWorldInverse,object.matrixWorld);const geometry=objects.update(object);const material=object.material;if(Array.isArray(material)){const groups=geometry.groups;for(let k=0,kl=groups.length;k<kl;k++){const group=groups[k];const groupMaterial=material[group.materialIndex];if(groupMaterial&&groupMaterial.visible){const depthMaterial=getDepthMaterial(object,groupMaterial,light,type);object.onBeforeShadow(renderer,object,camera,shadowCamera,geometry,depthMaterial,group);renderer.renderBufferDirect(shadowCamera,null,geometry,depthMaterial,object,group);object.onAfterShadow(renderer,object,camera,shadowCamera,geometry,depthMaterial,group);}}}else if(material.visible){const depthMaterial=getDepthMaterial(object,material,light,type);object.onBeforeShadow(renderer,object,camera,shadowCamera,geometry,depthMaterial,null);renderer.renderBufferDirect(shadowCamera,null,geometry,depthMaterial,object,null);object.onAfterShadow(renderer,object,camera,shadowCamera,geometry,depthMaterial,null);}}}const children=object.children;for(let i=0,l=children.length;i<l;i++){renderObject(children[i],camera,shadowCamera,light,type);}}function onMaterialDispose(event){const material=event.target;material.removeEventListener('dispose',onMaterialDispose);// make sure to remove the unique distance/depth materials used for shadow map rendering
+const keyA=result.uuid,keyB=material.uuid;let materialsForVariant=_materialCache[keyA];if(materialsForVariant===undefined){materialsForVariant={};_materialCache[keyA]=materialsForVariant;}let cachedMaterial=materialsForVariant[keyB];if(cachedMaterial===undefined){cachedMaterial=result.clone();materialsForVariant[keyB]=cachedMaterial;material.addEventListener('dispose',onMaterialDispose);}result=cachedMaterial;}}result.visible=material.visible;result.wireframe=material.wireframe;if(type===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.VSMShadowMap){result.side=material.shadowSide!==null?material.shadowSide:material.side;}else{result.side=material.shadowSide!==null?material.shadowSide:shadowSide[material.side];}result.alphaMap=material.alphaMap;result.alphaTest=material.alphaToCoverage===true?0.5:material.alphaTest;// approximate alphaToCoverage by using a fixed alphaTest value
+result.map=material.map;result.clipShadows=material.clipShadows;result.clippingPlanes=material.clippingPlanes;result.clipIntersection=material.clipIntersection;result.displacementMap=material.displacementMap;result.displacementScale=material.displacementScale;result.displacementBias=material.displacementBias;result.wireframeLinewidth=material.wireframeLinewidth;result.linewidth=material.linewidth;if(light.isPointLight===true&&result.isMeshDistanceMaterial===true){const materialProperties=renderer.properties.get(result);materialProperties.light=light;}return result;}function renderObject(object,camera,shadowCamera,light,type){if(object.visible===false)return;const visible=object.layers.test(camera.layers);if(visible&&(object.isMesh||object.isLine||object.isPoints)){if((object.castShadow||object.receiveShadow&&type===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.VSMShadowMap)&&(!object.frustumCulled||_frustum.intersectsObject(object))){object.modelViewMatrix.multiplyMatrices(shadowCamera.matrixWorldInverse,object.matrixWorld);const geometry=objects.update(object);const material=object.material;if(Array.isArray(material)){const groups=geometry.groups;for(let k=0,kl=groups.length;k<kl;k++){const group=groups[k];const groupMaterial=material[group.materialIndex];if(groupMaterial&&groupMaterial.visible){const depthMaterial=getDepthMaterial(object,groupMaterial,light,type);object.onBeforeShadow(renderer,object,camera,shadowCamera,geometry,depthMaterial,group);renderer.renderBufferDirect(shadowCamera,null,geometry,depthMaterial,object,group);object.onAfterShadow(renderer,object,camera,shadowCamera,geometry,depthMaterial,group);}}}else if(material.visible){const depthMaterial=getDepthMaterial(object,material,light,type);object.onBeforeShadow(renderer,object,camera,shadowCamera,geometry,depthMaterial,null);renderer.renderBufferDirect(shadowCamera,null,geometry,depthMaterial,object,null);object.onAfterShadow(renderer,object,camera,shadowCamera,geometry,depthMaterial,null);}}}const children=object.children;for(let i=0,l=children.length;i<l;i++){renderObject(children[i],camera,shadowCamera,light,type);}}function onMaterialDispose(event){const material=event.target;material.removeEventListener('dispose',onMaterialDispose);// make sure to remove the unique distance/depth materials used for shadow map rendering
 for(const id in _materialCache){const cache=_materialCache[id];const uuid=event.target.uuid;if(uuid in cache){const shadowMaterial=cache[uuid];shadowMaterial.dispose();delete cache[uuid];}}}}const reversedFuncs={[_three_core_js__WEBPACK_IMPORTED_MODULE_0__.NeverDepth]:_three_core_js__WEBPACK_IMPORTED_MODULE_0__.AlwaysDepth,[_three_core_js__WEBPACK_IMPORTED_MODULE_0__.LessDepth]:_three_core_js__WEBPACK_IMPORTED_MODULE_0__.GreaterDepth,[_three_core_js__WEBPACK_IMPORTED_MODULE_0__.EqualDepth]:_three_core_js__WEBPACK_IMPORTED_MODULE_0__.NotEqualDepth,[_three_core_js__WEBPACK_IMPORTED_MODULE_0__.LessEqualDepth]:_three_core_js__WEBPACK_IMPORTED_MODULE_0__.GreaterEqualDepth,[_three_core_js__WEBPACK_IMPORTED_MODULE_0__.AlwaysDepth]:_three_core_js__WEBPACK_IMPORTED_MODULE_0__.NeverDepth,[_three_core_js__WEBPACK_IMPORTED_MODULE_0__.GreaterDepth]:_three_core_js__WEBPACK_IMPORTED_MODULE_0__.LessDepth,[_three_core_js__WEBPACK_IMPORTED_MODULE_0__.NotEqualDepth]:_three_core_js__WEBPACK_IMPORTED_MODULE_0__.EqualDepth,[_three_core_js__WEBPACK_IMPORTED_MODULE_0__.GreaterEqualDepth]:_three_core_js__WEBPACK_IMPORTED_MODULE_0__.LessEqualDepth};function WebGLState(gl,extensions){function ColorBuffer(){let locked=false;const color=new _three_core_js__WEBPACK_IMPORTED_MODULE_0__.Vector4();let currentColorMask=null;const currentColorClear=new _three_core_js__WEBPACK_IMPORTED_MODULE_0__.Vector4(0,0,0,0);return{setMask:function(colorMask){if(currentColorMask!==colorMask&&!locked){gl.colorMask(colorMask,colorMask,colorMask,colorMask);currentColorMask=colorMask;}},setLocked:function(lock){locked=lock;},setClear:function(r,g,b,a,premultipliedAlpha){if(premultipliedAlpha===true){r*=a;g*=a;b*=a;}color.set(r,g,b,a);if(currentColorClear.equals(color)===false){gl.clearColor(r,g,b,a);currentColorClear.copy(color);}},reset:function(){locked=false;currentColorMask=null;currentColorClear.set(-1,0,0,0);// set to invalid state
 }};}function DepthBuffer(){let locked=false;let currentReversed=false;let currentDepthMask=null;let currentDepthFunc=null;let currentDepthClear=null;return{setReversed:function(reversed){if(currentReversed!==reversed){const ext=extensions.get('EXT_clip_control');if(reversed){ext.clipControlEXT(ext.LOWER_LEFT_EXT,ext.ZERO_TO_ONE_EXT);}else{ext.clipControlEXT(ext.LOWER_LEFT_EXT,ext.NEGATIVE_ONE_TO_ONE_EXT);}currentReversed=reversed;const oldDepth=currentDepthClear;currentDepthClear=null;this.setClear(oldDepth);}},getReversed:function(){return currentReversed;},setTest:function(depthTest){if(depthTest){enable(gl.DEPTH_TEST);}else{disable(gl.DEPTH_TEST);}},setMask:function(depthMask){if(currentDepthMask!==depthMask&&!locked){gl.depthMask(depthMask);currentDepthMask=depthMask;}},setFunc:function(depthFunc){if(currentReversed)depthFunc=reversedFuncs[depthFunc];if(currentDepthFunc!==depthFunc){switch(depthFunc){case _three_core_js__WEBPACK_IMPORTED_MODULE_0__.NeverDepth:gl.depthFunc(gl.NEVER);break;case _three_core_js__WEBPACK_IMPORTED_MODULE_0__.AlwaysDepth:gl.depthFunc(gl.ALWAYS);break;case _three_core_js__WEBPACK_IMPORTED_MODULE_0__.LessDepth:gl.depthFunc(gl.LESS);break;case _three_core_js__WEBPACK_IMPORTED_MODULE_0__.LessEqualDepth:gl.depthFunc(gl.LEQUAL);break;case _three_core_js__WEBPACK_IMPORTED_MODULE_0__.EqualDepth:gl.depthFunc(gl.EQUAL);break;case _three_core_js__WEBPACK_IMPORTED_MODULE_0__.GreaterEqualDepth:gl.depthFunc(gl.GEQUAL);break;case _three_core_js__WEBPACK_IMPORTED_MODULE_0__.GreaterDepth:gl.depthFunc(gl.GREATER);break;case _three_core_js__WEBPACK_IMPORTED_MODULE_0__.NotEqualDepth:gl.depthFunc(gl.NOTEQUAL);break;default:gl.depthFunc(gl.LEQUAL);}currentDepthFunc=depthFunc;}},setLocked:function(lock){locked=lock;},setClear:function(depth){if(currentDepthClear!==depth){if(currentReversed){depth=1-depth;}gl.clearDepth(depth);currentDepthClear=depth;}},reset:function(){locked=false;currentDepthMask=null;currentDepthFunc=null;currentDepthClear=null;currentReversed=false;}};}function StencilBuffer(){let locked=false;let currentStencilMask=null;let currentStencilFunc=null;let currentStencilRef=null;let currentStencilFuncMask=null;let currentStencilFail=null;let currentStencilZFail=null;let currentStencilZPass=null;let currentStencilClear=null;return{setTest:function(stencilTest){if(!locked){if(stencilTest){enable(gl.STENCIL_TEST);}else{disable(gl.STENCIL_TEST);}}},setMask:function(stencilMask){if(currentStencilMask!==stencilMask&&!locked){gl.stencilMask(stencilMask);currentStencilMask=stencilMask;}},setFunc:function(stencilFunc,stencilRef,stencilMask){if(currentStencilFunc!==stencilFunc||currentStencilRef!==stencilRef||currentStencilFuncMask!==stencilMask){gl.stencilFunc(stencilFunc,stencilRef,stencilMask);currentStencilFunc=stencilFunc;currentStencilRef=stencilRef;currentStencilFuncMask=stencilMask;}},setOp:function(stencilFail,stencilZFail,stencilZPass){if(currentStencilFail!==stencilFail||currentStencilZFail!==stencilZFail||currentStencilZPass!==stencilZPass){gl.stencilOp(stencilFail,stencilZFail,stencilZPass);currentStencilFail=stencilFail;currentStencilZFail=stencilZFail;currentStencilZPass=stencilZPass;}},setLocked:function(lock){locked=lock;},setClear:function(stencil){if(currentStencilClear!==stencil){gl.clearStencil(stencil);currentStencilClear=stencil;}},reset:function(){locked=false;currentStencilMask=null;currentStencilFunc=null;currentStencilRef=null;currentStencilFuncMask=null;currentStencilFail=null;currentStencilZFail=null;currentStencilZPass=null;currentStencilClear=null;}};}//
 const colorBuffer=new ColorBuffer();const depthBuffer=new DepthBuffer();const stencilBuffer=new StencilBuffer();const uboBindings=new WeakMap();const uboProgramMap=new WeakMap();let enabledCapabilities={};let currentBoundFramebuffers={};let currentDrawbuffers=new WeakMap();let defaultDrawbuffers=[];let currentProgram=null;let currentBlendingEnabled=false;let currentBlending=null;let currentBlendEquation=null;let currentBlendSrc=null;let currentBlendDst=null;let currentBlendEquationAlpha=null;let currentBlendSrcAlpha=null;let currentBlendDstAlpha=null;let currentBlendColor=new _three_core_js__WEBPACK_IMPORTED_MODULE_0__.Color(0,0,0);let currentBlendAlpha=0;let currentPremultipledAlpha=false;let currentFlipSided=null;let currentCullFace=null;let currentLineWidth=null;let currentPolygonOffsetFactor=null;let currentPolygonOffsetUnits=null;const maxTextures=gl.getParameter(gl.MAX_COMBINED_TEXTURE_IMAGE_UNITS);let lineWidthAvailable=false;let version=0;const glVersion=gl.getParameter(gl.VERSION);if(glVersion.indexOf('WebGL')!==-1){version=parseFloat(/^WebGL (\d)/.exec(glVersion)[1]);lineWidthAvailable=version>=1.0;}else if(glVersion.indexOf('OpenGL ES')!==-1){version=parseFloat(/^OpenGL ES (\d)/.exec(glVersion)[1]);lineWidthAvailable=version>=2.0;}let currentTextureSlot=null;let currentBoundTextures={};const scissorParam=gl.getParameter(gl.SCISSOR_BOX);const viewportParam=gl.getParameter(gl.VIEWPORT);const currentScissor=new _three_core_js__WEBPACK_IMPORTED_MODULE_0__.Vector4().fromArray(scissorParam);const currentViewport=new _three_core_js__WEBPACK_IMPORTED_MODULE_0__.Vector4().fromArray(viewportParam);function createTexture(type,target,count,dimensions){const data=new Uint8Array(4);// 4 is required to match default unpack alignment of 4.
@@ -51521,11 +51674,31 @@ webglTextures[textureCacheKey]={texture:_gl.createTexture(),usedTimes:0};info.me
 forceUpload=true;}webglTextures[textureCacheKey].usedTimes++;// every time the texture cache key changes, it's necessary to check if an instance of
 // WebGLTexture can be deleted in order to avoid a memory leak.
 const webglTexture=webglTextures[textureProperties.__cacheKey];if(webglTexture!==undefined){webglTextures[textureProperties.__cacheKey].usedTimes--;if(webglTexture.usedTimes===0){deleteTexture(texture);}}// store references to cache key and WebGLTexture object
-textureProperties.__cacheKey=textureCacheKey;textureProperties.__webglTexture=webglTextures[textureCacheKey].texture;}return forceUpload;}function setDeferTextureUploads(deferFlag){_deferTextureUploads=deferFlag;}function runDeferredUploads(){const previousDeferSetting=_deferTextureUploads;_deferTextureUploads=false;for(const upload of _deferredUploads){uploadTexture(upload.textureProperties,upload.texture,upload.slot);upload.texture.isPendingDeferredUpload=false;}_deferredUploads=[];_deferTextureUploads=previousDeferSetting;}function uploadTexture(textureProperties,texture,slot){if(_deferTextureUploads){if(!texture.isPendingDeferredUpload){texture.isPendingDeferredUpload=true;_deferredUploads.push({textureProperties:textureProperties,texture:texture,slot:slot});}return false;}let textureType=_gl.TEXTURE_2D;if(texture.isDataArrayTexture||texture.isCompressedArrayTexture)textureType=_gl.TEXTURE_2D_ARRAY;if(texture.isData3DTexture)textureType=_gl.TEXTURE_3D;const forceUpload=initTexture(textureProperties,texture);const source=texture.source;state.bindTexture(textureType,textureProperties.__webglTexture,_gl.TEXTURE0+slot);const sourceProperties=properties.get(source);if(source.version!==sourceProperties.__version||forceUpload===true){state.activeTexture(_gl.TEXTURE0+slot);const workingPrimaries=_three_core_js__WEBPACK_IMPORTED_MODULE_0__.ColorManagement.getPrimaries(_three_core_js__WEBPACK_IMPORTED_MODULE_0__.ColorManagement.workingColorSpace);const texturePrimaries=texture.colorSpace===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.NoColorSpace?null:_three_core_js__WEBPACK_IMPORTED_MODULE_0__.ColorManagement.getPrimaries(texture.colorSpace);const unpackConversion=texture.colorSpace===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.NoColorSpace||workingPrimaries===texturePrimaries?_gl.NONE:_gl.BROWSER_DEFAULT_WEBGL;_gl.pixelStorei(_gl.UNPACK_FLIP_Y_WEBGL,texture.flipY);_gl.pixelStorei(_gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL,texture.premultiplyAlpha);_gl.pixelStorei(_gl.UNPACK_ALIGNMENT,texture.unpackAlignment);_gl.pixelStorei(_gl.UNPACK_COLORSPACE_CONVERSION_WEBGL,unpackConversion);let image=resizeImage(texture.image,false,capabilities.maxTextureSize);image=verifyColorSpace(texture,image);const glFormat=utils.convert(texture.format,texture.colorSpace);const glType=utils.convert(texture.type);let glInternalFormat=getInternalFormat(texture.internalFormat,glFormat,glType,texture.colorSpace,texture.isVideoTexture);setTextureParameters(textureType,texture);let mipmap;const mipmaps=texture.mipmaps;const useTexStorage=texture.isVideoTexture!==true;const allocateMemory=sourceProperties.__version===undefined||forceUpload===true;const dataReady=source.dataReady;const levels=getMipLevels(texture,image);if(texture.isDepthTexture){glInternalFormat=getInternalDepthFormat(texture.format===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.DepthStencilFormat,texture.type);//
+textureProperties.__cacheKey=textureCacheKey;textureProperties.__webglTexture=webglTextures[textureCacheKey].texture;}return forceUpload;}function getRow(index,rowLength,componentStride){return Math.floor(Math.floor(index/componentStride)/rowLength);}function updateTexture(texture,image,glFormat,glType){const componentStride=4;// only RGBA supported
+const updateRanges=texture.updateRanges;if(updateRanges.length===0){state.texSubImage2D(_gl.TEXTURE_2D,0,0,0,image.width,image.height,glFormat,glType,image.data);}else{// Before applying update ranges, we merge any adjacent / overlapping
+// ranges to reduce load on `gl.texSubImage2D`. Empirically, this has led
+// to performance improvements for applications which make heavy use of
+// update ranges. Likely due to GPU command overhead.
+//
+// Note that to reduce garbage collection between frames, we merge the
+// update ranges in-place. This is safe because this method will clear the
+// update ranges once updated.
+updateRanges.sort((a,b)=>a.start-b.start);// To merge the update ranges in-place, we work from left to right in the
+// existing updateRanges array, merging ranges. This may result in a final
+// array which is smaller than the original. This index tracks the last
+// index representing a merged range, any data after this index can be
+// trimmed once the merge algorithm is completed.
+let mergeIndex=0;for(let i=1;i<updateRanges.length;i++){const previousRange=updateRanges[mergeIndex];const range=updateRanges[i];// Only merge if in the same row and overlapping/adjacent
+const previousEnd=previousRange.start+previousRange.count;const currentRow=getRow(range.start,image.width,componentStride);const previousRow=getRow(previousRange.start,image.width,componentStride);// We add one here to merge adjacent ranges. This is safe because ranges
+// operate over positive integers.
+if(range.start<=previousEnd+1&&currentRow===previousRow&&getRow(range.start+range.count-1,image.width,componentStride)===currentRow// ensure range doesn't spill
+){previousRange.count=Math.max(previousRange.count,range.start+range.count-previousRange.start);}else{++mergeIndex;updateRanges[mergeIndex]=range;}}// Trim the array to only contain the merged ranges.
+updateRanges.length=mergeIndex+1;const currentUnpackRowLen=_gl.getParameter(_gl.UNPACK_ROW_LENGTH);const currentUnpackSkipPixels=_gl.getParameter(_gl.UNPACK_SKIP_PIXELS);const currentUnpackSkipRows=_gl.getParameter(_gl.UNPACK_SKIP_ROWS);_gl.pixelStorei(_gl.UNPACK_ROW_LENGTH,image.width);for(let i=0,l=updateRanges.length;i<l;i++){const range=updateRanges[i];const pixelStart=Math.floor(range.start/componentStride);const pixelCount=Math.ceil(range.count/componentStride);const x=pixelStart%image.width;const y=Math.floor(pixelStart/image.width);// Assumes update ranges refer to contiguous memory
+const width=pixelCount;const height=1;_gl.pixelStorei(_gl.UNPACK_SKIP_PIXELS,x);_gl.pixelStorei(_gl.UNPACK_SKIP_ROWS,y);state.texSubImage2D(_gl.TEXTURE_2D,0,x,y,width,height,glFormat,glType,image.data);}texture.clearUpdateRanges();_gl.pixelStorei(_gl.UNPACK_ROW_LENGTH,currentUnpackRowLen);_gl.pixelStorei(_gl.UNPACK_SKIP_PIXELS,currentUnpackSkipPixels);_gl.pixelStorei(_gl.UNPACK_SKIP_ROWS,currentUnpackSkipRows);}}function setDeferTextureUploads(deferFlag){_deferTextureUploads=deferFlag;}function runDeferredUploads(){const previousDeferSetting=_deferTextureUploads;_deferTextureUploads=false;for(const upload of _deferredUploads){uploadTexture(upload.textureProperties,upload.texture,upload.slot);upload.texture.isPendingDeferredUpload=false;}_deferredUploads=[];_deferTextureUploads=previousDeferSetting;}function uploadTexture(textureProperties,texture,slot){if(_deferTextureUploads){if(!texture.isPendingDeferredUpload){texture.isPendingDeferredUpload=true;_deferredUploads.push({textureProperties:textureProperties,texture:texture,slot:slot});}return false;}let textureType=_gl.TEXTURE_2D;if(texture.isDataArrayTexture||texture.isCompressedArrayTexture)textureType=_gl.TEXTURE_2D_ARRAY;if(texture.isData3DTexture)textureType=_gl.TEXTURE_3D;const forceUpload=initTexture(textureProperties,texture);const source=texture.source;state.bindTexture(textureType,textureProperties.__webglTexture,_gl.TEXTURE0+slot);const sourceProperties=properties.get(source);if(source.version!==sourceProperties.__version||forceUpload===true){state.activeTexture(_gl.TEXTURE0+slot);const workingPrimaries=_three_core_js__WEBPACK_IMPORTED_MODULE_0__.ColorManagement.getPrimaries(_three_core_js__WEBPACK_IMPORTED_MODULE_0__.ColorManagement.workingColorSpace);const texturePrimaries=texture.colorSpace===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.NoColorSpace?null:_three_core_js__WEBPACK_IMPORTED_MODULE_0__.ColorManagement.getPrimaries(texture.colorSpace);const unpackConversion=texture.colorSpace===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.NoColorSpace||workingPrimaries===texturePrimaries?_gl.NONE:_gl.BROWSER_DEFAULT_WEBGL;_gl.pixelStorei(_gl.UNPACK_FLIP_Y_WEBGL,texture.flipY);_gl.pixelStorei(_gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL,texture.premultiplyAlpha);_gl.pixelStorei(_gl.UNPACK_ALIGNMENT,texture.unpackAlignment);_gl.pixelStorei(_gl.UNPACK_COLORSPACE_CONVERSION_WEBGL,unpackConversion);let image=resizeImage(texture.image,false,capabilities.maxTextureSize);image=verifyColorSpace(texture,image);const glFormat=utils.convert(texture.format,texture.colorSpace);const glType=utils.convert(texture.type);let glInternalFormat=getInternalFormat(texture.internalFormat,glFormat,glType,texture.colorSpace,texture.isVideoTexture);setTextureParameters(textureType,texture);let mipmap;const mipmaps=texture.mipmaps;const useTexStorage=texture.isVideoTexture!==true;const allocateMemory=sourceProperties.__version===undefined||forceUpload===true;const dataReady=source.dataReady;const levels=getMipLevels(texture,image);if(texture.isDepthTexture){glInternalFormat=getInternalDepthFormat(texture.format===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.DepthStencilFormat,texture.type);//
 if(allocateMemory){if(useTexStorage){state.texStorage2D(_gl.TEXTURE_2D,1,glInternalFormat,image.width,image.height);}else{state.texImage2D(_gl.TEXTURE_2D,0,glInternalFormat,image.width,image.height,0,glFormat,glType,null);}}}else if(texture.isDataTexture){// use manually created mipmaps if available
 // if there are no manual mipmaps
 // set 0 level mipmap and then use GL to generate other mipmap levels
-if(mipmaps.length>0){if(useTexStorage&&allocateMemory){state.texStorage2D(_gl.TEXTURE_2D,levels,glInternalFormat,mipmaps[0].width,mipmaps[0].height);}for(let i=0,il=mipmaps.length;i<il;i++){mipmap=mipmaps[i];if(useTexStorage){if(dataReady){state.texSubImage2D(_gl.TEXTURE_2D,i,0,0,mipmap.width,mipmap.height,glFormat,glType,mipmap.data);}}else{state.texImage2D(_gl.TEXTURE_2D,i,glInternalFormat,mipmap.width,mipmap.height,0,glFormat,glType,mipmap.data);}}texture.generateMipmaps=false;}else{if(useTexStorage){if(allocateMemory){state.texStorage2D(_gl.TEXTURE_2D,levels,glInternalFormat,image.width,image.height);}if(dataReady){state.texSubImage2D(_gl.TEXTURE_2D,0,0,0,image.width,image.height,glFormat,glType,image.data);}}else{state.texImage2D(_gl.TEXTURE_2D,0,glInternalFormat,image.width,image.height,0,glFormat,glType,image.data);}}}else if(texture.isCompressedTexture){if(texture.isCompressedArrayTexture){if(useTexStorage&&allocateMemory){state.texStorage3D(_gl.TEXTURE_2D_ARRAY,levels,glInternalFormat,mipmaps[0].width,mipmaps[0].height,image.depth);}for(let i=0,il=mipmaps.length;i<il;i++){mipmap=mipmaps[i];if(texture.format!==_three_core_js__WEBPACK_IMPORTED_MODULE_0__.RGBAFormat){if(glFormat!==null){if(useTexStorage){if(dataReady){if(texture.layerUpdates.size>0){const layerByteLength=(0,_three_core_js__WEBPACK_IMPORTED_MODULE_0__.getByteLength)(mipmap.width,mipmap.height,texture.format,texture.type);for(const layerIndex of texture.layerUpdates){const layerData=mipmap.data.subarray(layerIndex*layerByteLength/mipmap.data.BYTES_PER_ELEMENT,(layerIndex+1)*layerByteLength/mipmap.data.BYTES_PER_ELEMENT);state.compressedTexSubImage3D(_gl.TEXTURE_2D_ARRAY,i,0,0,layerIndex,mipmap.width,mipmap.height,1,glFormat,layerData);}texture.clearLayerUpdates();}else{state.compressedTexSubImage3D(_gl.TEXTURE_2D_ARRAY,i,0,0,0,mipmap.width,mipmap.height,image.depth,glFormat,mipmap.data);}}}else{state.compressedTexImage3D(_gl.TEXTURE_2D_ARRAY,i,glInternalFormat,mipmap.width,mipmap.height,image.depth,0,mipmap.data,0,0);}}else{console.warn('THREE.WebGLRenderer: Attempt to load unsupported compressed texture format in .uploadTexture()');}}else{if(useTexStorage){if(dataReady){state.texSubImage3D(_gl.TEXTURE_2D_ARRAY,i,0,0,0,mipmap.width,mipmap.height,image.depth,glFormat,glType,mipmap.data);}}else{state.texImage3D(_gl.TEXTURE_2D_ARRAY,i,glInternalFormat,mipmap.width,mipmap.height,image.depth,0,glFormat,glType,mipmap.data);}}}}else{if(useTexStorage&&allocateMemory){state.texStorage2D(_gl.TEXTURE_2D,levels,glInternalFormat,mipmaps[0].width,mipmaps[0].height);}for(let i=0,il=mipmaps.length;i<il;i++){mipmap=mipmaps[i];if(texture.format!==_three_core_js__WEBPACK_IMPORTED_MODULE_0__.RGBAFormat){if(glFormat!==null){if(useTexStorage){if(dataReady){state.compressedTexSubImage2D(_gl.TEXTURE_2D,i,0,0,mipmap.width,mipmap.height,glFormat,mipmap.data);}}else{state.compressedTexImage2D(_gl.TEXTURE_2D,i,glInternalFormat,mipmap.width,mipmap.height,0,mipmap.data);}}else{console.warn('THREE.WebGLRenderer: Attempt to load unsupported compressed texture format in .uploadTexture()');}}else{if(useTexStorage){if(dataReady){state.texSubImage2D(_gl.TEXTURE_2D,i,0,0,mipmap.width,mipmap.height,glFormat,glType,mipmap.data);}}else{state.texImage2D(_gl.TEXTURE_2D,i,glInternalFormat,mipmap.width,mipmap.height,0,glFormat,glType,mipmap.data);}}}}}else if(texture.isDataArrayTexture){if(useTexStorage){if(allocateMemory){state.texStorage3D(_gl.TEXTURE_2D_ARRAY,levels,glInternalFormat,image.width,image.height,image.depth);}if(dataReady){if(texture.layerUpdates.size>0){const layerByteLength=(0,_three_core_js__WEBPACK_IMPORTED_MODULE_0__.getByteLength)(image.width,image.height,texture.format,texture.type);for(const layerIndex of texture.layerUpdates){const layerData=image.data.subarray(layerIndex*layerByteLength/image.data.BYTES_PER_ELEMENT,(layerIndex+1)*layerByteLength/image.data.BYTES_PER_ELEMENT);state.texSubImage3D(_gl.TEXTURE_2D_ARRAY,0,0,0,layerIndex,image.width,image.height,1,glFormat,glType,layerData);}texture.clearLayerUpdates();}else{state.texSubImage3D(_gl.TEXTURE_2D_ARRAY,0,0,0,0,image.width,image.height,image.depth,glFormat,glType,image.data);}}}else{state.texImage3D(_gl.TEXTURE_2D_ARRAY,0,glInternalFormat,image.width,image.height,image.depth,0,glFormat,glType,image.data);}}else if(texture.isData3DTexture){if(useTexStorage){if(allocateMemory){state.texStorage3D(_gl.TEXTURE_3D,levels,glInternalFormat,image.width,image.height,image.depth);}if(dataReady){state.texSubImage3D(_gl.TEXTURE_3D,0,0,0,0,image.width,image.height,image.depth,glFormat,glType,image.data);}}else{state.texImage3D(_gl.TEXTURE_3D,0,glInternalFormat,image.width,image.height,image.depth,0,glFormat,glType,image.data);}}else if(texture.isFramebufferTexture){if(allocateMemory){if(useTexStorage){state.texStorage2D(_gl.TEXTURE_2D,levels,glInternalFormat,image.width,image.height);}else{let width=image.width,height=image.height;for(let i=0;i<levels;i++){state.texImage2D(_gl.TEXTURE_2D,i,glInternalFormat,width,height,0,glFormat,glType,null);width>>=1;height>>=1;}}}}else{// regular Texture (image, video, canvas)
+if(mipmaps.length>0){if(useTexStorage&&allocateMemory){state.texStorage2D(_gl.TEXTURE_2D,levels,glInternalFormat,mipmaps[0].width,mipmaps[0].height);}for(let i=0,il=mipmaps.length;i<il;i++){mipmap=mipmaps[i];if(useTexStorage){if(dataReady){state.texSubImage2D(_gl.TEXTURE_2D,i,0,0,mipmap.width,mipmap.height,glFormat,glType,mipmap.data);}}else{state.texImage2D(_gl.TEXTURE_2D,i,glInternalFormat,mipmap.width,mipmap.height,0,glFormat,glType,mipmap.data);}}texture.generateMipmaps=false;}else{if(useTexStorage){if(allocateMemory){state.texStorage2D(_gl.TEXTURE_2D,levels,glInternalFormat,image.width,image.height);}if(dataReady){updateTexture(texture,image,glFormat,glType);}}else{state.texImage2D(_gl.TEXTURE_2D,0,glInternalFormat,image.width,image.height,0,glFormat,glType,image.data);}}}else if(texture.isCompressedTexture){if(texture.isCompressedArrayTexture){if(useTexStorage&&allocateMemory){state.texStorage3D(_gl.TEXTURE_2D_ARRAY,levels,glInternalFormat,mipmaps[0].width,mipmaps[0].height,image.depth);}for(let i=0,il=mipmaps.length;i<il;i++){mipmap=mipmaps[i];if(texture.format!==_three_core_js__WEBPACK_IMPORTED_MODULE_0__.RGBAFormat){if(glFormat!==null){if(useTexStorage){if(dataReady){if(texture.layerUpdates.size>0){const layerByteLength=(0,_three_core_js__WEBPACK_IMPORTED_MODULE_0__.getByteLength)(mipmap.width,mipmap.height,texture.format,texture.type);for(const layerIndex of texture.layerUpdates){const layerData=mipmap.data.subarray(layerIndex*layerByteLength/mipmap.data.BYTES_PER_ELEMENT,(layerIndex+1)*layerByteLength/mipmap.data.BYTES_PER_ELEMENT);state.compressedTexSubImage3D(_gl.TEXTURE_2D_ARRAY,i,0,0,layerIndex,mipmap.width,mipmap.height,1,glFormat,layerData);}texture.clearLayerUpdates();}else{state.compressedTexSubImage3D(_gl.TEXTURE_2D_ARRAY,i,0,0,0,mipmap.width,mipmap.height,image.depth,glFormat,mipmap.data);}}}else{state.compressedTexImage3D(_gl.TEXTURE_2D_ARRAY,i,glInternalFormat,mipmap.width,mipmap.height,image.depth,0,mipmap.data,0,0);}}else{console.warn('THREE.WebGLRenderer: Attempt to load unsupported compressed texture format in .uploadTexture()');}}else{if(useTexStorage){if(dataReady){state.texSubImage3D(_gl.TEXTURE_2D_ARRAY,i,0,0,0,mipmap.width,mipmap.height,image.depth,glFormat,glType,mipmap.data);}}else{state.texImage3D(_gl.TEXTURE_2D_ARRAY,i,glInternalFormat,mipmap.width,mipmap.height,image.depth,0,glFormat,glType,mipmap.data);}}}}else{if(useTexStorage&&allocateMemory){state.texStorage2D(_gl.TEXTURE_2D,levels,glInternalFormat,mipmaps[0].width,mipmaps[0].height);}for(let i=0,il=mipmaps.length;i<il;i++){mipmap=mipmaps[i];if(texture.format!==_three_core_js__WEBPACK_IMPORTED_MODULE_0__.RGBAFormat){if(glFormat!==null){if(useTexStorage){if(dataReady){state.compressedTexSubImage2D(_gl.TEXTURE_2D,i,0,0,mipmap.width,mipmap.height,glFormat,mipmap.data);}}else{state.compressedTexImage2D(_gl.TEXTURE_2D,i,glInternalFormat,mipmap.width,mipmap.height,0,mipmap.data);}}else{console.warn('THREE.WebGLRenderer: Attempt to load unsupported compressed texture format in .uploadTexture()');}}else{if(useTexStorage){if(dataReady){state.texSubImage2D(_gl.TEXTURE_2D,i,0,0,mipmap.width,mipmap.height,glFormat,glType,mipmap.data);}}else{state.texImage2D(_gl.TEXTURE_2D,i,glInternalFormat,mipmap.width,mipmap.height,0,glFormat,glType,mipmap.data);}}}}}else if(texture.isDataArrayTexture){if(useTexStorage){if(allocateMemory){state.texStorage3D(_gl.TEXTURE_2D_ARRAY,levels,glInternalFormat,image.width,image.height,image.depth);}if(dataReady){if(texture.layerUpdates.size>0){const layerByteLength=(0,_three_core_js__WEBPACK_IMPORTED_MODULE_0__.getByteLength)(image.width,image.height,texture.format,texture.type);for(const layerIndex of texture.layerUpdates){const layerData=image.data.subarray(layerIndex*layerByteLength/image.data.BYTES_PER_ELEMENT,(layerIndex+1)*layerByteLength/image.data.BYTES_PER_ELEMENT);state.texSubImage3D(_gl.TEXTURE_2D_ARRAY,0,0,0,layerIndex,image.width,image.height,1,glFormat,glType,layerData);}texture.clearLayerUpdates();}else{state.texSubImage3D(_gl.TEXTURE_2D_ARRAY,0,0,0,0,image.width,image.height,image.depth,glFormat,glType,image.data);}}}else{state.texImage3D(_gl.TEXTURE_2D_ARRAY,0,glInternalFormat,image.width,image.height,image.depth,0,glFormat,glType,image.data);}}else if(texture.isData3DTexture){if(useTexStorage){if(allocateMemory){state.texStorage3D(_gl.TEXTURE_3D,levels,glInternalFormat,image.width,image.height,image.depth);}if(dataReady){state.texSubImage3D(_gl.TEXTURE_3D,0,0,0,0,image.width,image.height,image.depth,glFormat,glType,image.data);}}else{state.texImage3D(_gl.TEXTURE_3D,0,glInternalFormat,image.width,image.height,image.depth,0,glFormat,glType,image.data);}}else if(texture.isFramebufferTexture){if(allocateMemory){if(useTexStorage){state.texStorage2D(_gl.TEXTURE_2D,levels,glInternalFormat,image.width,image.height);}else{let width=image.width,height=image.height;for(let i=0;i<levels;i++){state.texImage2D(_gl.TEXTURE_2D,i,glInternalFormat,width,height,0,glFormat,glType,null);width>>=1;height>>=1;}}}}else{// regular Texture (image, video, canvas)
 // use manually created mipmaps if available
 // if there are no manual mipmaps
 // set 0 level mipmap and then use GL to generate other mipmap levels
@@ -51550,22 +51723,22 @@ if(!textureProperties.__webglTexture||renderTarget.depthTexture.image.width!==re
 function setupDepthRenderbuffer(renderTarget){const renderTargetProperties=properties.get(renderTarget);const isCube=renderTarget.isWebGLCubeRenderTarget===true;// if the bound depth texture has changed
 if(renderTargetProperties.__boundDepthTexture!==renderTarget.depthTexture){// fire the dispose event to get rid of stored state associated with the previously bound depth buffer
 const depthTexture=renderTarget.depthTexture;if(renderTargetProperties.__depthDisposeCallback){renderTargetProperties.__depthDisposeCallback();}// set up dispose listeners to track when the currently attached buffer is implicitly unbound
-if(depthTexture){const disposeEvent=()=>{delete renderTargetProperties.__boundDepthTexture;delete renderTargetProperties.__depthDisposeCallback;depthTexture.removeEventListener('dispose',disposeEvent);};depthTexture.addEventListener('dispose',disposeEvent);renderTargetProperties.__depthDisposeCallback=disposeEvent;}renderTargetProperties.__boundDepthTexture=depthTexture;}if(renderTarget.depthTexture&&!renderTargetProperties.__autoAllocateDepthBuffer){if(isCube)throw new Error('target.depthTexture not supported in Cube render targets');setupDepthTexture(renderTargetProperties.__webglFramebuffer,renderTarget);}else{if(isCube){renderTargetProperties.__webglDepthbuffer=[];for(let i=0;i<6;i++){state.bindFramebuffer(_gl.FRAMEBUFFER,renderTargetProperties.__webglFramebuffer[i]);if(renderTargetProperties.__webglDepthbuffer[i]===undefined){renderTargetProperties.__webglDepthbuffer[i]=_gl.createRenderbuffer();setupRenderBufferStorage(renderTargetProperties.__webglDepthbuffer[i],renderTarget,false);}else{// attach buffer if it's been created already
-const glAttachmentType=renderTarget.stencilBuffer?_gl.DEPTH_STENCIL_ATTACHMENT:_gl.DEPTH_ATTACHMENT;const renderbuffer=renderTargetProperties.__webglDepthbuffer[i];_gl.bindRenderbuffer(_gl.RENDERBUFFER,renderbuffer);_gl.framebufferRenderbuffer(_gl.FRAMEBUFFER,glAttachmentType,_gl.RENDERBUFFER,renderbuffer);}}}else{state.bindFramebuffer(_gl.FRAMEBUFFER,renderTargetProperties.__webglFramebuffer);if(renderTargetProperties.__webglDepthbuffer===undefined){renderTargetProperties.__webglDepthbuffer=_gl.createRenderbuffer();setupRenderBufferStorage(renderTargetProperties.__webglDepthbuffer,renderTarget,false);}else{// attach buffer if it's been created already
+if(depthTexture){const disposeEvent=()=>{delete renderTargetProperties.__boundDepthTexture;delete renderTargetProperties.__depthDisposeCallback;depthTexture.removeEventListener('dispose',disposeEvent);};depthTexture.addEventListener('dispose',disposeEvent);renderTargetProperties.__depthDisposeCallback=disposeEvent;}renderTargetProperties.__boundDepthTexture=depthTexture;}if(renderTarget.depthTexture&&!renderTargetProperties.__autoAllocateDepthBuffer){if(isCube)throw new Error('target.depthTexture not supported in Cube render targets');const mipmaps=renderTarget.texture.mipmaps;if(mipmaps&&mipmaps.length>0){setupDepthTexture(renderTargetProperties.__webglFramebuffer[0],renderTarget);}else{setupDepthTexture(renderTargetProperties.__webglFramebuffer,renderTarget);}}else{if(isCube){renderTargetProperties.__webglDepthbuffer=[];for(let i=0;i<6;i++){state.bindFramebuffer(_gl.FRAMEBUFFER,renderTargetProperties.__webglFramebuffer[i]);if(renderTargetProperties.__webglDepthbuffer[i]===undefined){renderTargetProperties.__webglDepthbuffer[i]=_gl.createRenderbuffer();setupRenderBufferStorage(renderTargetProperties.__webglDepthbuffer[i],renderTarget,false);}else{// attach buffer if it's been created already
+const glAttachmentType=renderTarget.stencilBuffer?_gl.DEPTH_STENCIL_ATTACHMENT:_gl.DEPTH_ATTACHMENT;const renderbuffer=renderTargetProperties.__webglDepthbuffer[i];_gl.bindRenderbuffer(_gl.RENDERBUFFER,renderbuffer);_gl.framebufferRenderbuffer(_gl.FRAMEBUFFER,glAttachmentType,_gl.RENDERBUFFER,renderbuffer);}}}else{const mipmaps=renderTarget.texture.mipmaps;if(mipmaps&&mipmaps.length>0){state.bindFramebuffer(_gl.FRAMEBUFFER,renderTargetProperties.__webglFramebuffer[0]);}else{state.bindFramebuffer(_gl.FRAMEBUFFER,renderTargetProperties.__webglFramebuffer);}if(renderTargetProperties.__webglDepthbuffer===undefined){renderTargetProperties.__webglDepthbuffer=_gl.createRenderbuffer();setupRenderBufferStorage(renderTargetProperties.__webglDepthbuffer,renderTarget,false);}else{// attach buffer if it's been created already
 const glAttachmentType=renderTarget.stencilBuffer?_gl.DEPTH_STENCIL_ATTACHMENT:_gl.DEPTH_ATTACHMENT;const renderbuffer=renderTargetProperties.__webglDepthbuffer;_gl.bindRenderbuffer(_gl.RENDERBUFFER,renderbuffer);_gl.framebufferRenderbuffer(_gl.FRAMEBUFFER,glAttachmentType,_gl.RENDERBUFFER,renderbuffer);}}}state.bindFramebuffer(_gl.FRAMEBUFFER,null);}// rebind framebuffer with external textures
 function rebindTextures(renderTarget,colorTexture,depthTexture){const renderTargetProperties=properties.get(renderTarget);if(colorTexture!==undefined){setupFrameBufferTexture(renderTargetProperties.__webglFramebuffer,renderTarget,renderTarget.texture,_gl.COLOR_ATTACHMENT0,_gl.TEXTURE_2D,0);}if(depthTexture!==undefined){setupDepthRenderbuffer(renderTarget);}}// Set up GL resources for the render target
 function setupRenderTarget(renderTarget){const texture=renderTarget.texture;const renderTargetProperties=properties.get(renderTarget);const textureProperties=properties.get(texture);renderTarget.addEventListener('dispose',onRenderTargetDispose);const textures=renderTarget.textures;const isCube=renderTarget.isWebGLCubeRenderTarget===true;const isMultipleRenderTargets=textures.length>1;if(!isMultipleRenderTargets){if(textureProperties.__webglTexture===undefined){textureProperties.__webglTexture=_gl.createTexture();}textureProperties.__version=texture.version;info.memory.textures++;}// Setup framebuffer
 if(isCube){renderTargetProperties.__webglFramebuffer=[];for(let i=0;i<6;i++){if(texture.mipmaps&&texture.mipmaps.length>0){renderTargetProperties.__webglFramebuffer[i]=[];for(let level=0;level<texture.mipmaps.length;level++){renderTargetProperties.__webglFramebuffer[i][level]=_gl.createFramebuffer();}}else{renderTargetProperties.__webglFramebuffer[i]=_gl.createFramebuffer();}}}else{if(texture.mipmaps&&texture.mipmaps.length>0){renderTargetProperties.__webglFramebuffer=[];for(let level=0;level<texture.mipmaps.length;level++){renderTargetProperties.__webglFramebuffer[level]=_gl.createFramebuffer();}}else{renderTargetProperties.__webglFramebuffer=_gl.createFramebuffer();}if(isMultipleRenderTargets){for(let i=0,il=textures.length;i<il;i++){const attachmentProperties=properties.get(textures[i]);if(attachmentProperties.__webglTexture===undefined){attachmentProperties.__webglTexture=_gl.createTexture();info.memory.textures++;}}}if(renderTarget.samples>0&&useMultisampledRTT(renderTarget)===false){renderTargetProperties.__webglMultisampledFramebuffer=_gl.createFramebuffer();renderTargetProperties.__webglColorRenderbuffer=[];state.bindFramebuffer(_gl.FRAMEBUFFER,renderTargetProperties.__webglMultisampledFramebuffer);for(let i=0;i<textures.length;i++){const texture=textures[i];renderTargetProperties.__webglColorRenderbuffer[i]=_gl.createRenderbuffer();_gl.bindRenderbuffer(_gl.RENDERBUFFER,renderTargetProperties.__webglColorRenderbuffer[i]);const glFormat=utils.convert(texture.format,texture.colorSpace);const glType=utils.convert(texture.type);const glInternalFormat=getInternalFormat(texture.internalFormat,glFormat,glType,texture.colorSpace,renderTarget.isXRRenderTarget===true);const samples=getRenderTargetSamples(renderTarget);_gl.renderbufferStorageMultisample(_gl.RENDERBUFFER,samples,glInternalFormat,renderTarget.width,renderTarget.height);_gl.framebufferRenderbuffer(_gl.FRAMEBUFFER,_gl.COLOR_ATTACHMENT0+i,_gl.RENDERBUFFER,renderTargetProperties.__webglColorRenderbuffer[i]);}_gl.bindRenderbuffer(_gl.RENDERBUFFER,null);if(renderTarget.depthBuffer){renderTargetProperties.__webglDepthRenderbuffer=_gl.createRenderbuffer();setupRenderBufferStorage(renderTargetProperties.__webglDepthRenderbuffer,renderTarget,true);}state.bindFramebuffer(_gl.FRAMEBUFFER,null);}}// Setup color buffer
 if(isCube){state.bindTexture(_gl.TEXTURE_CUBE_MAP,textureProperties.__webglTexture);setTextureParameters(_gl.TEXTURE_CUBE_MAP,texture);for(let i=0;i<6;i++){if(texture.mipmaps&&texture.mipmaps.length>0){for(let level=0;level<texture.mipmaps.length;level++){setupFrameBufferTexture(renderTargetProperties.__webglFramebuffer[i][level],renderTarget,texture,_gl.COLOR_ATTACHMENT0,_gl.TEXTURE_CUBE_MAP_POSITIVE_X+i,level);}}else{setupFrameBufferTexture(renderTargetProperties.__webglFramebuffer[i],renderTarget,texture,_gl.COLOR_ATTACHMENT0,_gl.TEXTURE_CUBE_MAP_POSITIVE_X+i,0);}}if(textureNeedsGenerateMipmaps(texture)){generateMipmap(_gl.TEXTURE_CUBE_MAP);}state.unbindTexture();}else if(isMultipleRenderTargets){for(let i=0,il=textures.length;i<il;i++){const attachment=textures[i];const attachmentProperties=properties.get(attachment);state.bindTexture(_gl.TEXTURE_2D,attachmentProperties.__webglTexture);setTextureParameters(_gl.TEXTURE_2D,attachment);setupFrameBufferTexture(renderTargetProperties.__webglFramebuffer,renderTarget,attachment,_gl.COLOR_ATTACHMENT0+i,_gl.TEXTURE_2D,0);if(textureNeedsGenerateMipmaps(attachment)){generateMipmap(_gl.TEXTURE_2D);}}state.unbindTexture();}else{let glTextureType=_gl.TEXTURE_2D;if(renderTarget.isWebGL3DRenderTarget||renderTarget.isWebGLArrayRenderTarget){glTextureType=renderTarget.isWebGL3DRenderTarget?_gl.TEXTURE_3D:_gl.TEXTURE_2D_ARRAY;}if(renderTarget.isWebGLMultiviewRenderTarget===true){glTextureType=_gl.TEXTURE_2D_ARRAY;}state.bindTexture(glTextureType,textureProperties.__webglTexture);setTextureParameters(glTextureType,texture);if(texture.mipmaps&&texture.mipmaps.length>0){for(let level=0;level<texture.mipmaps.length;level++){setupFrameBufferTexture(renderTargetProperties.__webglFramebuffer[level],renderTarget,texture,_gl.COLOR_ATTACHMENT0,glTextureType,level);}}else{setupFrameBufferTexture(renderTargetProperties.__webglFramebuffer,renderTarget,texture,_gl.COLOR_ATTACHMENT0,glTextureType,0);}if(textureNeedsGenerateMipmaps(texture)){generateMipmap(glTextureType);}state.unbindTexture();}// Setup depth and stencil buffers
 if(renderTarget.depthBuffer||renderTarget.isWebGLMultiviewRenderTarget===true){this.setupDepthRenderbuffer(renderTarget);}}function updateRenderTargetMipmap(renderTarget){const textures=renderTarget.textures;for(let i=0,il=textures.length;i<il;i++){const texture=textures[i];if(textureNeedsGenerateMipmaps(texture)){const targetType=getTargetType(renderTarget);const webglTexture=properties.get(texture).__webglTexture;state.bindTexture(targetType,webglTexture);generateMipmap(targetType);state.unbindTexture();}}}const invalidationArrayRead=[];const invalidationArrayDraw=[];function updateMultisampleRenderTarget(renderTarget){if(renderTarget.samples>0){if(useMultisampledRTT(renderTarget)===false){const textures=renderTarget.textures;const width=renderTarget.width;const height=renderTarget.height;let mask=_gl.COLOR_BUFFER_BIT;const depthStyle=renderTarget.stencilBuffer?_gl.DEPTH_STENCIL_ATTACHMENT:_gl.DEPTH_ATTACHMENT;const renderTargetProperties=properties.get(renderTarget);const isMultipleRenderTargets=textures.length>1;// If MRT we need to remove FBO attachments
-if(isMultipleRenderTargets){for(let i=0;i<textures.length;i++){state.bindFramebuffer(_gl.FRAMEBUFFER,renderTargetProperties.__webglMultisampledFramebuffer);_gl.framebufferRenderbuffer(_gl.FRAMEBUFFER,_gl.COLOR_ATTACHMENT0+i,_gl.RENDERBUFFER,null);state.bindFramebuffer(_gl.FRAMEBUFFER,renderTargetProperties.__webglFramebuffer);_gl.framebufferTexture2D(_gl.DRAW_FRAMEBUFFER,_gl.COLOR_ATTACHMENT0+i,_gl.TEXTURE_2D,null,0);}}state.bindFramebuffer(_gl.READ_FRAMEBUFFER,renderTargetProperties.__webglMultisampledFramebuffer);state.bindFramebuffer(_gl.DRAW_FRAMEBUFFER,renderTargetProperties.__webglFramebuffer);for(let i=0;i<textures.length;i++){if(renderTarget.resolveDepthBuffer){if(renderTarget.depthBuffer)mask|=_gl.DEPTH_BUFFER_BIT;// resolving stencil is slow with a D3D backend. disable it for all transmission render targets (see #27799)
+if(isMultipleRenderTargets){for(let i=0;i<textures.length;i++){state.bindFramebuffer(_gl.FRAMEBUFFER,renderTargetProperties.__webglMultisampledFramebuffer);_gl.framebufferRenderbuffer(_gl.FRAMEBUFFER,_gl.COLOR_ATTACHMENT0+i,_gl.RENDERBUFFER,null);state.bindFramebuffer(_gl.FRAMEBUFFER,renderTargetProperties.__webglFramebuffer);_gl.framebufferTexture2D(_gl.DRAW_FRAMEBUFFER,_gl.COLOR_ATTACHMENT0+i,_gl.TEXTURE_2D,null,0);}}state.bindFramebuffer(_gl.READ_FRAMEBUFFER,renderTargetProperties.__webglMultisampledFramebuffer);const mipmaps=renderTarget.texture.mipmaps;if(mipmaps&&mipmaps.length>0){state.bindFramebuffer(_gl.DRAW_FRAMEBUFFER,renderTargetProperties.__webglFramebuffer[0]);}else{state.bindFramebuffer(_gl.DRAW_FRAMEBUFFER,renderTargetProperties.__webglFramebuffer);}for(let i=0;i<textures.length;i++){if(renderTarget.resolveDepthBuffer){if(renderTarget.depthBuffer)mask|=_gl.DEPTH_BUFFER_BIT;// resolving stencil is slow with a D3D backend. disable it for all transmission render targets (see #27799)
 if(renderTarget.stencilBuffer&&renderTarget.resolveStencilBuffer)mask|=_gl.STENCIL_BUFFER_BIT;}if(isMultipleRenderTargets){_gl.framebufferRenderbuffer(_gl.READ_FRAMEBUFFER,_gl.COLOR_ATTACHMENT0,_gl.RENDERBUFFER,renderTargetProperties.__webglColorRenderbuffer[i]);const webglTexture=properties.get(textures[i]).__webglTexture;_gl.framebufferTexture2D(_gl.DRAW_FRAMEBUFFER,_gl.COLOR_ATTACHMENT0,_gl.TEXTURE_2D,webglTexture,0);}_gl.blitFramebuffer(0,0,width,height,0,0,width,height,mask,_gl.NEAREST);if(supportsInvalidateFramebuffer===true){invalidationArrayRead.length=0;invalidationArrayDraw.length=0;invalidationArrayRead.push(_gl.COLOR_ATTACHMENT0+i);if(renderTarget.depthBuffer&&renderTarget.resolveDepthBuffer===false){invalidationArrayRead.push(depthStyle);invalidationArrayDraw.push(depthStyle);_gl.invalidateFramebuffer(_gl.DRAW_FRAMEBUFFER,invalidationArrayDraw);}_gl.invalidateFramebuffer(_gl.READ_FRAMEBUFFER,invalidationArrayRead);}}state.bindFramebuffer(_gl.READ_FRAMEBUFFER,null);state.bindFramebuffer(_gl.DRAW_FRAMEBUFFER,null);// If MRT since pre-blit we removed the FBO we need to reconstruct the attachments
 if(isMultipleRenderTargets){for(let i=0;i<textures.length;i++){state.bindFramebuffer(_gl.FRAMEBUFFER,renderTargetProperties.__webglMultisampledFramebuffer);_gl.framebufferRenderbuffer(_gl.FRAMEBUFFER,_gl.COLOR_ATTACHMENT0+i,_gl.RENDERBUFFER,renderTargetProperties.__webglColorRenderbuffer[i]);const webglTexture=properties.get(textures[i]).__webglTexture;state.bindFramebuffer(_gl.FRAMEBUFFER,renderTargetProperties.__webglFramebuffer);_gl.framebufferTexture2D(_gl.DRAW_FRAMEBUFFER,_gl.COLOR_ATTACHMENT0+i,_gl.TEXTURE_2D,webglTexture,0);}}state.bindFramebuffer(_gl.DRAW_FRAMEBUFFER,renderTargetProperties.__webglMultisampledFramebuffer);}else{if(renderTarget.depthBuffer&&renderTarget.resolveDepthBuffer===false&&supportsInvalidateFramebuffer){const depthStyle=renderTarget.stencilBuffer?_gl.DEPTH_STENCIL_ATTACHMENT:_gl.DEPTH_ATTACHMENT;_gl.invalidateFramebuffer(_gl.DRAW_FRAMEBUFFER,[depthStyle]);}}}}function getRenderTargetSamples(renderTarget){return Math.min(capabilities.maxSamples,renderTarget.samples);}function useMultisampledRTT(renderTarget){const renderTargetProperties=properties.get(renderTarget);return renderTarget.samples>0&&extensions.has('WEBGL_multisampled_render_to_texture')===true&&renderTargetProperties.__useRenderToTexture!==false;}function updateVideoTexture(texture){const frame=info.render.frame;// Check the last frame we updated the VideoTexture
 if(_videoTextures.get(texture)!==frame){_videoTextures.set(texture,frame);texture.update();}}function verifyColorSpace(texture,image){const colorSpace=texture.colorSpace;const format=texture.format;const type=texture.type;if(texture.isCompressedTexture===true||texture.isVideoTexture===true)return image;if(colorSpace!==_three_core_js__WEBPACK_IMPORTED_MODULE_0__.LinearSRGBColorSpace&&colorSpace!==_three_core_js__WEBPACK_IMPORTED_MODULE_0__.NoColorSpace){// sRGB
 if(_three_core_js__WEBPACK_IMPORTED_MODULE_0__.ColorManagement.getTransfer(colorSpace)===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.SRGBTransfer){// in WebGL 2 uncompressed textures can only be sRGB encoded if they have the RGBA8 format
 if(format!==_three_core_js__WEBPACK_IMPORTED_MODULE_0__.RGBAFormat||type!==_three_core_js__WEBPACK_IMPORTED_MODULE_0__.UnsignedByteType){console.warn('THREE.WebGLTextures: sRGB encoded textures have to use RGBAFormat and UnsignedByteType.');}}else{console.error('THREE.WebGLTextures: Unsupported texture color space:',colorSpace);}}return image;}function getDimensions(image){if(typeof HTMLImageElement!=='undefined'&&image instanceof HTMLImageElement){// if intrinsic data are not available, fallback to width/height
 _imageDimensions.width=image.naturalWidth||image.width;_imageDimensions.height=image.naturalHeight||image.height;}else if(typeof VideoFrame!=='undefined'&&image instanceof VideoFrame){_imageDimensions.width=image.displayWidth;_imageDimensions.height=image.displayHeight;}else{_imageDimensions.width=image.width;_imageDimensions.height=image.height;}return _imageDimensions;}//
-this.allocateTextureUnit=allocateTextureUnit;this.resetTextureUnits=resetTextureUnits;this.setTexture2D=setTexture2D;this.setTexture2DArray=setTexture2DArray;this.setTexture3D=setTexture3D;this.setTextureCube=setTextureCube;this.rebindTextures=rebindTextures;this.uploadTexture=uploadTexture;this.setupRenderTarget=setupRenderTarget;this.updateRenderTargetMipmap=updateRenderTargetMipmap;this.updateMultisampleRenderTarget=updateMultisampleRenderTarget;this.setupDepthTexture=setupDepthTexture;this.setupDepthRenderbuffer=setupDepthRenderbuffer;this.setupFrameBufferTexture=setupFrameBufferTexture;this.useMultisampledRTT=useMultisampledRTT;this.runDeferredUploads=runDeferredUploads;this.setDeferTextureUploads=setDeferTextureUploads;}function WebGLUtils(gl,extensions){function convert(p,colorSpace=_three_core_js__WEBPACK_IMPORTED_MODULE_0__.NoColorSpace){let extension;const transfer=_three_core_js__WEBPACK_IMPORTED_MODULE_0__.ColorManagement.getTransfer(colorSpace);if(p===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.UnsignedByteType)return gl.UNSIGNED_BYTE;if(p===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.UnsignedShort4444Type)return gl.UNSIGNED_SHORT_4_4_4_4;if(p===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.UnsignedShort5551Type)return gl.UNSIGNED_SHORT_5_5_5_1;if(p===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.UnsignedInt5999Type)return gl.UNSIGNED_INT_5_9_9_9_REV;if(p===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.ByteType)return gl.BYTE;if(p===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.ShortType)return gl.SHORT;if(p===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.UnsignedShortType)return gl.UNSIGNED_SHORT;if(p===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.IntType)return gl.INT;if(p===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.UnsignedIntType)return gl.UNSIGNED_INT;if(p===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.FloatType)return gl.FLOAT;if(p===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.HalfFloatType)return gl.HALF_FLOAT;if(p===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.AlphaFormat)return gl.ALPHA;if(p===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.RGBFormat)return gl.RGB;if(p===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.RGBAFormat)return gl.RGBA;if(p===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.LuminanceFormat)return gl.LUMINANCE;if(p===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.LuminanceAlphaFormat)return gl.LUMINANCE_ALPHA;if(p===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.DepthFormat)return gl.DEPTH_COMPONENT;if(p===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.DepthStencilFormat)return gl.DEPTH_STENCIL;// WebGL2 formats.
+this.allocateTextureUnit=allocateTextureUnit;this.resetTextureUnits=resetTextureUnits;this.setTexture2D=setTexture2D;this.setTexture2DArray=setTexture2DArray;this.setTexture3D=setTexture3D;this.setTextureCube=setTextureCube;this.rebindTextures=rebindTextures;this.uploadTexture=uploadTexture;this.setupRenderTarget=setupRenderTarget;this.updateRenderTargetMipmap=updateRenderTargetMipmap;this.updateMultisampleRenderTarget=updateMultisampleRenderTarget;this.setupDepthTexture=setupDepthTexture;this.setupDepthRenderbuffer=setupDepthRenderbuffer;this.setupFrameBufferTexture=setupFrameBufferTexture;this.useMultisampledRTT=useMultisampledRTT;this.runDeferredUploads=runDeferredUploads;this.setDeferTextureUploads=setDeferTextureUploads;}function WebGLUtils(gl,extensions){function convert(p,colorSpace=_three_core_js__WEBPACK_IMPORTED_MODULE_0__.NoColorSpace){let extension;const transfer=_three_core_js__WEBPACK_IMPORTED_MODULE_0__.ColorManagement.getTransfer(colorSpace);if(p===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.UnsignedByteType)return gl.UNSIGNED_BYTE;if(p===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.UnsignedShort4444Type)return gl.UNSIGNED_SHORT_4_4_4_4;if(p===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.UnsignedShort5551Type)return gl.UNSIGNED_SHORT_5_5_5_1;if(p===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.UnsignedInt5999Type)return gl.UNSIGNED_INT_5_9_9_9_REV;if(p===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.ByteType)return gl.BYTE;if(p===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.ShortType)return gl.SHORT;if(p===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.UnsignedShortType)return gl.UNSIGNED_SHORT;if(p===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.IntType)return gl.INT;if(p===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.UnsignedIntType)return gl.UNSIGNED_INT;if(p===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.FloatType)return gl.FLOAT;if(p===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.HalfFloatType)return gl.HALF_FLOAT;if(p===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.AlphaFormat)return gl.ALPHA;if(p===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.RGBFormat)return gl.RGB;if(p===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.RGBAFormat)return gl.RGBA;if(p===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.DepthFormat)return gl.DEPTH_COMPONENT;if(p===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.DepthStencilFormat)return gl.DEPTH_STENCIL;// WebGL2 formats.
 if(p===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.RedFormat)return gl.RED;if(p===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.RedIntegerFormat)return gl.RED_INTEGER;if(p===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.RGFormat)return gl.RG;if(p===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.RGIntegerFormat)return gl.RG_INTEGER;if(p===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.RGBAIntegerFormat)return gl.RGBA_INTEGER;// S3TC
 if(p===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.RGB_S3TC_DXT1_Format||p===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.RGBA_S3TC_DXT1_Format||p===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.RGBA_S3TC_DXT3_Format||p===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.RGBA_S3TC_DXT5_Format){if(transfer===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.SRGBTransfer){extension=extensions.get('WEBGL_compressed_texture_s3tc_srgb');if(extension!==null){if(p===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.RGB_S3TC_DXT1_Format)return extension.COMPRESSED_SRGB_S3TC_DXT1_EXT;if(p===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.RGBA_S3TC_DXT1_Format)return extension.COMPRESSED_SRGB_ALPHA_S3TC_DXT1_EXT;if(p===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.RGBA_S3TC_DXT3_Format)return extension.COMPRESSED_SRGB_ALPHA_S3TC_DXT3_EXT;if(p===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.RGBA_S3TC_DXT5_Format)return extension.COMPRESSED_SRGB_ALPHA_S3TC_DXT5_EXT;}else{return null;}}else{extension=extensions.get('WEBGL_compressed_texture_s3tc');if(extension!==null){if(p===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.RGB_S3TC_DXT1_Format)return extension.COMPRESSED_RGB_S3TC_DXT1_EXT;if(p===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.RGBA_S3TC_DXT1_Format)return extension.COMPRESSED_RGBA_S3TC_DXT1_EXT;if(p===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.RGBA_S3TC_DXT3_Format)return extension.COMPRESSED_RGBA_S3TC_DXT3_EXT;if(p===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.RGBA_S3TC_DXT5_Format)return extension.COMPRESSED_RGBA_S3TC_DXT5_EXT;}else{return null;}}}// PVRTC
 if(p===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.RGB_PVRTC_4BPPV1_Format||p===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.RGB_PVRTC_2BPPV1_Format||p===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.RGBA_PVRTC_4BPPV1_Format||p===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.RGBA_PVRTC_2BPPV1_Format){extension=extensions.get('WEBGL_compressed_texture_pvrtc');if(extension!==null){if(p===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.RGB_PVRTC_4BPPV1_Format)return extension.COMPRESSED_RGB_PVRTC_4BPPV1_IMG;if(p===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.RGB_PVRTC_2BPPV1_Format)return extension.COMPRESSED_RGB_PVRTC_2BPPV1_IMG;if(p===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.RGBA_PVRTC_4BPPV1_Format)return extension.COMPRESSED_RGBA_PVRTC_4BPPV1_IMG;if(p===_three_core_js__WEBPACK_IMPORTED_MODULE_0__.RGBA_PVRTC_2BPPV1_Format)return extension.COMPRESSED_RGBA_PVRTC_2BPPV1_IMG;}else{return null;}}// ETC
@@ -51710,7 +51883,8 @@ animation.stop();renderer.setPixelRatio(currentPixelRatio);renderer.setSize(curr
 		 */this.setFramebufferScaleFactor=function(value){framebufferScaleFactor=value;if(scope.isPresenting===true){console.warn('THREE.WebXRManager: Cannot change framebuffer scale while presenting.');}};/**
 		 * Sets the reference space type. Can be used to configure a spatial relationship with the user's physical
 		 * environment. Depending on how the user moves in 3D space, setting an appropriate reference space can
-		 * improve tracking. Default is `local-floor`.
+		 * improve tracking. Default is `local-floor`. Valid values can be found here
+		 * https://developer.mozilla.org/en-US/docs/Web/API/XRReferenceSpace#reference_space_types.
 		 *
 		 * This method can not be used during a XR session.
 		 *
@@ -52203,7 +52377,7 @@ function prepareMaterial(material,scene,object){if(material.transparent===true&&
 		 * @param {Object3D} scene - The scene or another type of 3D object to precompile.
 		 * @param {Camera} camera - The camera.
 		 * @param {?Scene} [targetScene=null] - The target scene.
-		 * @return {?Set} The precompiled materials.
+		 * @return {Set<Material>} The precompiled materials.
 		 */this.compile=function(scene,camera,targetScene=null){if(targetScene===null)targetScene=scene;currentRenderState=renderStates.get(targetScene);currentRenderState.init(camera);renderStateStack.push(currentRenderState);// gather lights from both the target scene and the new object that will be added to the scene.
 targetScene.traverseVisible(function(object){if(object.isLight&&object.layers.test(camera.layers)){currentRenderState.pushLight(object);if(object.castShadow){currentRenderState.pushShadow(object);}}});if(scene!==targetScene){scene.traverseVisible(function(object){if(object.isLight&&object.layers.test(camera.layers)){currentRenderState.pushLight(object);if(object.castShadow){currentRenderState.pushShadow(object);}}});}currentRenderState.setupLights();// Only initialize materials in the new scene, not the targetScene.
 const materials=new Set();scene.traverse(function(object){if(!(object.isMesh||object.isPoints||object.isLine||object.isSprite)){return;}const material=object.material;if(material){if(Array.isArray(material)){for(let i=0;i<material.length;i++){const material2=material[i];prepareMaterial(material2,targetScene,object);materials.add(material2);}}else{prepareMaterial(material,targetScene,object);materials.add(material);}}});currentRenderState=renderStateStack.pop();return materials;};// compileAsync
@@ -52348,8 +52522,10 @@ const textureProperties=properties.get(renderTarget.texture);_gl.framebufferText
 		 * @param {number} height - The height of the copy region.
 		 * @param {TypedArray} buffer - The result buffer.
 		 * @param {number} [activeCubeFaceIndex] - The active cube face index.
-		 */this.readRenderTargetPixels=function(renderTarget,x,y,width,height,buffer,activeCubeFaceIndex){if(!(renderTarget&&renderTarget.isWebGLRenderTarget)){console.error('THREE.WebGLRenderer.readRenderTargetPixels: renderTarget is not THREE.WebGLRenderTarget.');return;}let framebuffer=properties.get(renderTarget).__webglFramebuffer;if(renderTarget.isWebGLCubeRenderTarget&&activeCubeFaceIndex!==undefined){framebuffer=framebuffer[activeCubeFaceIndex];}if(framebuffer){state.bindFramebuffer(_gl.FRAMEBUFFER,framebuffer);try{const texture=renderTarget.texture;const textureFormat=texture.format;const textureType=texture.type;if(!capabilities.textureFormatReadable(textureFormat)){console.error('THREE.WebGLRenderer.readRenderTargetPixels: renderTarget is not in RGBA or implementation defined format.');return;}if(!capabilities.textureTypeReadable(textureType)){console.error('THREE.WebGLRenderer.readRenderTargetPixels: renderTarget is not in UnsignedByteType or implementation defined type.');return;}// the following if statement ensures valid read requests (no out-of-bounds pixels, see #8604)
-if(x>=0&&x<=renderTarget.width-width&&y>=0&&y<=renderTarget.height-height){_gl.readPixels(x,y,width,height,utils.convert(textureFormat),utils.convert(textureType),buffer);}}finally{// restore framebuffer of current render target if necessary
+		 * @param {number} [textureIndex=0] - The texture index of an MRT render target.
+		 */this.readRenderTargetPixels=function(renderTarget,x,y,width,height,buffer,activeCubeFaceIndex,textureIndex=0){if(!(renderTarget&&renderTarget.isWebGLRenderTarget)){console.error('THREE.WebGLRenderer.readRenderTargetPixels: renderTarget is not THREE.WebGLRenderTarget.');return;}let framebuffer=properties.get(renderTarget).__webglFramebuffer;if(renderTarget.isWebGLCubeRenderTarget&&activeCubeFaceIndex!==undefined){framebuffer=framebuffer[activeCubeFaceIndex];}if(framebuffer){state.bindFramebuffer(_gl.FRAMEBUFFER,framebuffer);try{const texture=renderTarget.textures[textureIndex];const textureFormat=texture.format;const textureType=texture.type;if(!capabilities.textureFormatReadable(textureFormat)){console.error('THREE.WebGLRenderer.readRenderTargetPixels: renderTarget is not in RGBA or implementation defined format.');return;}if(!capabilities.textureTypeReadable(textureType)){console.error('THREE.WebGLRenderer.readRenderTargetPixels: renderTarget is not in UnsignedByteType or implementation defined type.');return;}// the following if statement ensures valid read requests (no out-of-bounds pixels, see #8604)
+if(x>=0&&x<=renderTarget.width-width&&y>=0&&y<=renderTarget.height-height){// when using MRT, select the corect color buffer for the subsequent read command
+if(renderTarget.textures.length>1)_gl.readBuffer(_gl.COLOR_ATTACHMENT0+textureIndex);_gl.readPixels(x,y,width,height,utils.convert(textureFormat),utils.convert(textureType),buffer);}}finally{// restore framebuffer of current render target if necessary
 const framebuffer=_currentRenderTarget!==null?properties.get(_currentRenderTarget).__webglFramebuffer:null;state.bindFramebuffer(_gl.FRAMEBUFFER,framebuffer);}}};/**
 		 * Asynchronous, non-blocking version of {@link WebGLRenderer#readRenderTargetPixels}.
 		 *
@@ -52363,17 +52539,19 @@ const framebuffer=_currentRenderTarget!==null?properties.get(_currentRenderTarge
 		 * @param {number} height - The height of the copy region.
 		 * @param {TypedArray} buffer - The result buffer.
 		 * @param {number} [activeCubeFaceIndex] - The active cube face index.
+		 * @param {number} [textureIndex=0] - The texture index of an MRT render target.
 		 * @return {Promise<TypedArray>} A Promise that resolves when the read has been finished. The resolve provides the read data as a typed array.
-		 */this.readRenderTargetPixelsAsync=async function(renderTarget,x,y,width,height,buffer,activeCubeFaceIndex){if(!(renderTarget&&renderTarget.isWebGLRenderTarget)){throw new Error('THREE.WebGLRenderer.readRenderTargetPixels: renderTarget is not THREE.WebGLRenderTarget.');}let framebuffer=properties.get(renderTarget).__webglFramebuffer;if(renderTarget.isWebGLCubeRenderTarget&&activeCubeFaceIndex!==undefined){framebuffer=framebuffer[activeCubeFaceIndex];}if(framebuffer){// the following if statement ensures valid read requests (no out-of-bounds pixels, see #8604)
+		 */this.readRenderTargetPixelsAsync=async function(renderTarget,x,y,width,height,buffer,activeCubeFaceIndex,textureIndex=0){if(!(renderTarget&&renderTarget.isWebGLRenderTarget)){throw new Error('THREE.WebGLRenderer.readRenderTargetPixels: renderTarget is not THREE.WebGLRenderTarget.');}let framebuffer=properties.get(renderTarget).__webglFramebuffer;if(renderTarget.isWebGLCubeRenderTarget&&activeCubeFaceIndex!==undefined){framebuffer=framebuffer[activeCubeFaceIndex];}if(framebuffer){// the following if statement ensures valid read requests (no out-of-bounds pixels, see #8604)
 if(x>=0&&x<=renderTarget.width-width&&y>=0&&y<=renderTarget.height-height){// set the active frame buffer to the one we want to read
-state.bindFramebuffer(_gl.FRAMEBUFFER,framebuffer);const texture=renderTarget.texture;const textureFormat=texture.format;const textureType=texture.type;if(!capabilities.textureFormatReadable(textureFormat)){throw new Error('THREE.WebGLRenderer.readRenderTargetPixelsAsync: renderTarget is not in RGBA or implementation defined format.');}if(!capabilities.textureTypeReadable(textureType)){throw new Error('THREE.WebGLRenderer.readRenderTargetPixelsAsync: renderTarget is not in UnsignedByteType or implementation defined type.');}const glBuffer=_gl.createBuffer();_gl.bindBuffer(_gl.PIXEL_PACK_BUFFER,glBuffer);_gl.bufferData(_gl.PIXEL_PACK_BUFFER,buffer.byteLength,_gl.STREAM_READ);_gl.readPixels(x,y,width,height,utils.convert(textureFormat),utils.convert(textureType),0);// reset the frame buffer to the currently set buffer before waiting
+state.bindFramebuffer(_gl.FRAMEBUFFER,framebuffer);const texture=renderTarget.textures[textureIndex];const textureFormat=texture.format;const textureType=texture.type;if(!capabilities.textureFormatReadable(textureFormat)){throw new Error('THREE.WebGLRenderer.readRenderTargetPixelsAsync: renderTarget is not in RGBA or implementation defined format.');}if(!capabilities.textureTypeReadable(textureType)){throw new Error('THREE.WebGLRenderer.readRenderTargetPixelsAsync: renderTarget is not in UnsignedByteType or implementation defined type.');}const glBuffer=_gl.createBuffer();_gl.bindBuffer(_gl.PIXEL_PACK_BUFFER,glBuffer);_gl.bufferData(_gl.PIXEL_PACK_BUFFER,buffer.byteLength,_gl.STREAM_READ);// when using MRT, select the corect color buffer for the subsequent read command
+if(renderTarget.textures.length>1)_gl.readBuffer(_gl.COLOR_ATTACHMENT0+textureIndex);_gl.readPixels(x,y,width,height,utils.convert(textureFormat),utils.convert(textureType),0);// reset the frame buffer to the currently set buffer before waiting
 const currFramebuffer=_currentRenderTarget!==null?properties.get(_currentRenderTarget).__webglFramebuffer:null;state.bindFramebuffer(_gl.FRAMEBUFFER,currFramebuffer);// check if the commands have finished every 8 ms
 const sync=_gl.fenceSync(_gl.SYNC_GPU_COMMANDS_COMPLETE,0);_gl.flush();await (0,_three_core_js__WEBPACK_IMPORTED_MODULE_0__.probeAsync)(_gl,sync,4);// read the data and delete the buffer
 _gl.bindBuffer(_gl.PIXEL_PACK_BUFFER,glBuffer);_gl.getBufferSubData(_gl.PIXEL_PACK_BUFFER,0,buffer);_gl.deleteBuffer(glBuffer);_gl.deleteSync(sync);return buffer;}else{throw new Error('THREE.WebGLRenderer.readRenderTargetPixelsAsync: requested read bounds are out of range.');}}};/**
 		 * Copies pixels from the current bound framebuffer into the given texture.
 		 *
 		 * @param {FramebufferTexture} texture - The texture.
-		 * @param {Vector2} position - The start position of the copy operation.
+		 * @param {?Vector2} [position=null] - The start position of the copy operation.
 		 * @param {number} [level=0] - The mip level. The default represents the base mip.
 		 */this.copyFramebufferToTexture=function(texture,position=null,level=0){const levelScale=Math.pow(2,-level);const width=Math.floor(texture.image.width*levelScale);const height=Math.floor(texture.image.height*levelScale);const x=position!==null?position.x:0;const y=position!==null?position.y:0;textures.setTexture2D(texture,0);_gl.copyTexSubImage2D(_gl.TEXTURE_2D,level,0,0,x,y,width,height);state.unbindTexture();};const _srcFramebuffer=_gl.createFramebuffer();const _dstFramebuffer=_gl.createFramebuffer();/**
 		 * Copies data of the given source texture into a destination texture.
@@ -52383,10 +52561,10 @@ _gl.bindBuffer(_gl.PIXEL_PACK_BUFFER,glBuffer);_gl.getBufferSubData(_gl.PIXEL_PA
 		 *
 		 * @param {Texture} srcTexture - The source texture.
 		 * @param {Texture} dstTexture - The destination texture.
-		 * @param {Box2|Box3} [srcRegion=null] - A bounding box which describes the source region. Can be two or three-dimensional.
-		 * @param {Vector2|Vector3} [dstPosition=null] - A vector that represents the origin of the destination region. Can be two or three-dimensional.
-		 * @param {number} srcLevel - The source mipmap level to copy.
-		 * @param {number} dstLevel - The destination mipmap level.
+		 * @param {?(Box2|Box3)} [srcRegion=null] - A bounding box which describes the source region. Can be two or three-dimensional.
+		 * @param {?(Vector2|Vector3)} [dstPosition=null] - A vector that represents the origin of the destination region. Can be two or three-dimensional.
+		 * @param {number} [srcLevel=0] - The source mipmap level to copy.
+		 * @param {?number} [dstLevel=null] - The destination mipmap level.
 		 */this.copyTextureToTexture=function(srcTexture,dstTexture,srcRegion=null,dstPosition=null,srcLevel=0,dstLevel=null){// support the previous signature with just a single dst mipmap level
 if(dstLevel===null){if(srcLevel!==0){// @deprecated, r171
 (0,_three_core_js__WEBPACK_IMPORTED_MODULE_0__.warnOnce)('WebGLRenderer: copyTextureToTexture function signature has changed to support src and dst mipmap levels.');dstLevel=srcLevel;srcLevel=0;}else{dstLevel=0;}}// gather the necessary dimensions to copy
@@ -53265,6 +53443,7 @@ __webpack_require__.r(__webpack_exports__);
  * Utility class for creating instances of {@link LightProbe}.
  *
  * @hideconstructor
+ * @three_import import { LightProbeGenerator } from 'three/addons/lights/LightProbeGenerator.js';
  */
 class LightProbeGenerator {
   /**
@@ -53547,6 +53726,7 @@ const _taskCache = new WeakMap();
  * ```
  *
  * @augments Loader
+ * @three_import import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
  */
 class DRACOLoader extends three__WEBPACK_IMPORTED_MODULE_0__.Loader {
   /**
@@ -53744,7 +53924,7 @@ class DRACOLoader extends three__WEBPACK_IMPORTED_MODULE_0__.Loader {
     const _color = new three__WEBPACK_IMPORTED_MODULE_0__.Color();
     for (let i = 0, il = attribute.count; i < il; i++) {
       _color.fromBufferAttribute(attribute, i);
-      three__WEBPACK_IMPORTED_MODULE_0__.ColorManagement.toWorkingColorSpace(_color, three__WEBPACK_IMPORTED_MODULE_0__.SRGBColorSpace);
+      three__WEBPACK_IMPORTED_MODULE_0__.ColorManagement.colorSpaceToWorking(_color, three__WEBPACK_IMPORTED_MODULE_0__.SRGBColorSpace);
       attribute.setXYZ(i, _color.r, _color.g, _color.b);
     }
   }
@@ -54058,6 +54238,7 @@ __webpack_require__.r(__webpack_exports__);
  * ```
  *
  * @augments Loader
+ * @three_import import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
  */
 class GLTFLoader extends three__WEBPACK_IMPORTED_MODULE_0__.Loader {
   /**
@@ -54983,7 +55164,6 @@ class GLTFTextureWebPExtension {
   constructor(parser) {
     this.parser = parser;
     this.name = EXTENSIONS.EXT_TEXTURE_WEBP;
-    this.isSupported = null;
   }
   loadTexture(textureIndex) {
     const name = this.name;
@@ -55000,30 +55180,7 @@ class GLTFTextureWebPExtension {
       const handler = parser.options.manager.getHandler(source.uri);
       if (handler !== null) loader = handler;
     }
-    return this.detectSupport().then(function (isSupported) {
-      if (isSupported) return parser.loadTextureImage(textureIndex, extension.source, loader);
-      if (json.extensionsRequired && json.extensionsRequired.indexOf(name) >= 0) {
-        throw new Error('THREE.GLTFLoader: WebP required by asset but unsupported.');
-      }
-
-      // Fall back to PNG or JPEG.
-      return parser.loadTexture(textureIndex);
-    });
-  }
-  detectSupport() {
-    if (!this.isSupported) {
-      this.isSupported = new Promise(function (resolve) {
-        const image = new Image();
-
-        // Lossy test image. Support for lossy images doesn't guarantee support for all
-        // WebP images, unfortunately.
-        image.src = 'data:image/webp;base64,UklGRiIAAABXRUJQVlA4IBYAAAAwAQCdASoBAAEADsD+JaQAA3AAAAAA';
-        image.onload = image.onerror = function () {
-          resolve(image.height === 1);
-        };
-      });
-    }
-    return this.isSupported;
+    return parser.loadTextureImage(textureIndex, extension.source, loader);
   }
 }
 
@@ -55038,7 +55195,6 @@ class GLTFTextureAVIFExtension {
   constructor(parser) {
     this.parser = parser;
     this.name = EXTENSIONS.EXT_TEXTURE_AVIF;
-    this.isSupported = null;
   }
   loadTexture(textureIndex) {
     const name = this.name;
@@ -55055,29 +55211,7 @@ class GLTFTextureAVIFExtension {
       const handler = parser.options.manager.getHandler(source.uri);
       if (handler !== null) loader = handler;
     }
-    return this.detectSupport().then(function (isSupported) {
-      if (isSupported) return parser.loadTextureImage(textureIndex, extension.source, loader);
-      if (json.extensionsRequired && json.extensionsRequired.indexOf(name) >= 0) {
-        throw new Error('THREE.GLTFLoader: AVIF required by asset but unsupported.');
-      }
-
-      // Fall back to PNG or JPEG.
-      return parser.loadTexture(textureIndex);
-    });
-  }
-  detectSupport() {
-    if (!this.isSupported) {
-      this.isSupported = new Promise(function (resolve) {
-        const image = new Image();
-
-        // Lossy test image.
-        image.src = 'data:image/avif;base64,AAAAIGZ0eXBhdmlmAAAAAGF2aWZtaWYxbWlhZk1BMUIAAADybWV0YQAAAAAAAAAoaGRscgAAAAAAAAAAcGljdAAAAAAAAAAAAAAAAGxpYmF2aWYAAAAADnBpdG0AAAAAAAEAAAAeaWxvYwAAAABEAAABAAEAAAABAAABGgAAABcAAAAoaWluZgAAAAAAAQAAABppbmZlAgAAAAABAABhdjAxQ29sb3IAAAAAamlwcnAAAABLaXBjbwAAABRpc3BlAAAAAAAAAAEAAAABAAAAEHBpeGkAAAAAAwgICAAAAAxhdjFDgQAMAAAAABNjb2xybmNseAACAAIABoAAAAAXaXBtYQAAAAAAAAABAAEEAQKDBAAAAB9tZGF0EgAKCBgABogQEDQgMgkQAAAAB8dSLfI=';
-        image.onload = image.onerror = function () {
-          resolve(image.height === 1);
-        };
-      });
-    }
-    return this.isSupported;
+    return parser.loadTextureImage(textureIndex, extension.source, loader);
   }
 }
 
@@ -55430,11 +55564,11 @@ class GLTFCubicSplineInterpolant extends three__WEBPACK_IMPORTED_MODULE_0__.Inte
     return result;
   }
 }
-const _q = new three__WEBPACK_IMPORTED_MODULE_0__.Quaternion();
+const _quaternion = new three__WEBPACK_IMPORTED_MODULE_0__.Quaternion();
 class GLTFCubicSplineQuaternionInterpolant extends GLTFCubicSplineInterpolant {
   interpolate_(i1, t0, t, t1) {
     const result = super.interpolate_(i1, t0, t, t1);
-    _q.fromArray(result).normalize().toArray(result);
+    _quaternion.fromArray(result).normalize().toArray(result);
     return result;
   }
 }
@@ -56869,6 +57003,11 @@ class GLTFParser {
       }
       if (!parser.associations.has(node)) {
         parser.associations.set(node, {});
+      } else if (nodeDef.mesh !== undefined && parser.meshCache.refs[nodeDef.mesh] > 1) {
+        const mapping = parser.associations.get(node);
+        parser.associations.set(node, {
+          ...mapping
+        });
       }
       parser.associations.get(node).nodes = nodeIndex;
       return node;
@@ -57184,6 +57323,7 @@ let _zstd;
  * ```
  *
  * @augments Loader
+ * @three_import import { KTX2Loader } from 'three/addons/loaders/KTX2Loader.js';
  */
 class KTX2Loader extends three__WEBPACK_IMPORTED_MODULE_0__.Loader {
   /**
@@ -57338,8 +57478,10 @@ class KTX2Loader extends three__WEBPACK_IMPORTED_MODULE_0__.Loader {
       throw new Error('THREE.KTX2Loader: Missing initialization with `.detectSupport( renderer )`.');
     }
     const loader = new three__WEBPACK_IMPORTED_MODULE_0__.FileLoader(this.manager);
-    loader.setResponseType('arraybuffer');
+    loader.setPath(this.path);
+    loader.setCrossOrigin(this.crossOrigin);
     loader.setWithCredentials(this.withCredentials);
+    loader.setResponseType('arraybuffer');
     loader.load(url, buffer => {
       this.parse(buffer, onLoad, onError);
     }, onProgress, onError);
@@ -57834,9 +57976,23 @@ const FORMAT_MAP = {
   [_libs_ktx_parse_module_js__WEBPACK_IMPORTED_MODULE_2__.VK_FORMAT_R16_SFLOAT]: three__WEBPACK_IMPORTED_MODULE_0__.RedFormat,
   [_libs_ktx_parse_module_js__WEBPACK_IMPORTED_MODULE_2__.VK_FORMAT_R8_SRGB]: three__WEBPACK_IMPORTED_MODULE_0__.RedFormat,
   [_libs_ktx_parse_module_js__WEBPACK_IMPORTED_MODULE_2__.VK_FORMAT_R8_UNORM]: three__WEBPACK_IMPORTED_MODULE_0__.RedFormat,
+  [_libs_ktx_parse_module_js__WEBPACK_IMPORTED_MODULE_2__.VK_FORMAT_ETC2_R8G8B8_SRGB_BLOCK]: three__WEBPACK_IMPORTED_MODULE_0__.RGB_ETC2_Format,
+  [_libs_ktx_parse_module_js__WEBPACK_IMPORTED_MODULE_2__.VK_FORMAT_ETC2_R8G8B8A8_SRGB_BLOCK]: three__WEBPACK_IMPORTED_MODULE_0__.RGBA_ETC2_EAC_Format,
   [_libs_ktx_parse_module_js__WEBPACK_IMPORTED_MODULE_2__.VK_FORMAT_ASTC_4x4_SFLOAT_BLOCK_EXT]: three__WEBPACK_IMPORTED_MODULE_0__.RGBA_ASTC_4x4_Format,
+  [_libs_ktx_parse_module_js__WEBPACK_IMPORTED_MODULE_2__.VK_FORMAT_ASTC_4x4_SRGB_BLOCK]: three__WEBPACK_IMPORTED_MODULE_0__.RGBA_ASTC_4x4_Format,
+  [_libs_ktx_parse_module_js__WEBPACK_IMPORTED_MODULE_2__.VK_FORMAT_ASTC_4x4_UNORM_BLOCK]: three__WEBPACK_IMPORTED_MODULE_0__.RGBA_ASTC_4x4_Format,
   [_libs_ktx_parse_module_js__WEBPACK_IMPORTED_MODULE_2__.VK_FORMAT_ASTC_6x6_SRGB_BLOCK]: three__WEBPACK_IMPORTED_MODULE_0__.RGBA_ASTC_6x6_Format,
-  [_libs_ktx_parse_module_js__WEBPACK_IMPORTED_MODULE_2__.VK_FORMAT_ASTC_6x6_UNORM_BLOCK]: three__WEBPACK_IMPORTED_MODULE_0__.RGBA_ASTC_6x6_Format
+  [_libs_ktx_parse_module_js__WEBPACK_IMPORTED_MODULE_2__.VK_FORMAT_ASTC_6x6_UNORM_BLOCK]: three__WEBPACK_IMPORTED_MODULE_0__.RGBA_ASTC_6x6_Format,
+  [_libs_ktx_parse_module_js__WEBPACK_IMPORTED_MODULE_2__.VK_FORMAT_BC1_RGBA_UNORM_BLOCK]: three__WEBPACK_IMPORTED_MODULE_0__.RGBA_S3TC_DXT1_Format,
+  [_libs_ktx_parse_module_js__WEBPACK_IMPORTED_MODULE_2__.VK_FORMAT_BC1_RGBA_SRGB_BLOCK]: three__WEBPACK_IMPORTED_MODULE_0__.RGBA_S3TC_DXT1_Format,
+  [_libs_ktx_parse_module_js__WEBPACK_IMPORTED_MODULE_2__.VK_FORMAT_BC1_RGB_UNORM_BLOCK]: three__WEBPACK_IMPORTED_MODULE_0__.RGB_S3TC_DXT1_Format,
+  [_libs_ktx_parse_module_js__WEBPACK_IMPORTED_MODULE_2__.VK_FORMAT_BC1_RGB_SRGB_BLOCK]: three__WEBPACK_IMPORTED_MODULE_0__.RGB_S3TC_DXT1_Format,
+  [_libs_ktx_parse_module_js__WEBPACK_IMPORTED_MODULE_2__.VK_FORMAT_BC3_SRGB_BLOCK]: three__WEBPACK_IMPORTED_MODULE_0__.RGBA_S3TC_DXT3_Format,
+  [_libs_ktx_parse_module_js__WEBPACK_IMPORTED_MODULE_2__.VK_FORMAT_BC3_UNORM_BLOCK]: three__WEBPACK_IMPORTED_MODULE_0__.RGBA_S3TC_DXT3_Format,
+  [_libs_ktx_parse_module_js__WEBPACK_IMPORTED_MODULE_2__.VK_FORMAT_BC5_SNORM_BLOCK]: three__WEBPACK_IMPORTED_MODULE_0__.RGBA_S3TC_DXT5_Format,
+  [_libs_ktx_parse_module_js__WEBPACK_IMPORTED_MODULE_2__.VK_FORMAT_BC5_UNORM_BLOCK]: three__WEBPACK_IMPORTED_MODULE_0__.RGBA_S3TC_DXT5_Format,
+  [_libs_ktx_parse_module_js__WEBPACK_IMPORTED_MODULE_2__.VK_FORMAT_BC7_SRGB_BLOCK]: three__WEBPACK_IMPORTED_MODULE_0__.RGBA_BPTC_Format,
+  [_libs_ktx_parse_module_js__WEBPACK_IMPORTED_MODULE_2__.VK_FORMAT_BC7_UNORM_BLOCK]: three__WEBPACK_IMPORTED_MODULE_0__.RGBA_BPTC_Format
 };
 const TYPE_MAP = {
   [_libs_ktx_parse_module_js__WEBPACK_IMPORTED_MODULE_2__.VK_FORMAT_R32G32B32A32_SFLOAT]: three__WEBPACK_IMPORTED_MODULE_0__.FloatType,
@@ -57851,6 +58007,8 @@ const TYPE_MAP = {
   [_libs_ktx_parse_module_js__WEBPACK_IMPORTED_MODULE_2__.VK_FORMAT_R16_SFLOAT]: three__WEBPACK_IMPORTED_MODULE_0__.HalfFloatType,
   [_libs_ktx_parse_module_js__WEBPACK_IMPORTED_MODULE_2__.VK_FORMAT_R8_SRGB]: three__WEBPACK_IMPORTED_MODULE_0__.UnsignedByteType,
   [_libs_ktx_parse_module_js__WEBPACK_IMPORTED_MODULE_2__.VK_FORMAT_R8_UNORM]: three__WEBPACK_IMPORTED_MODULE_0__.UnsignedByteType,
+  [_libs_ktx_parse_module_js__WEBPACK_IMPORTED_MODULE_2__.VK_FORMAT_ETC2_R8G8B8_SRGB_BLOCK]: three__WEBPACK_IMPORTED_MODULE_0__.UnsignedByteType,
+  [_libs_ktx_parse_module_js__WEBPACK_IMPORTED_MODULE_2__.VK_FORMAT_ETC2_R8G8B8A8_SRGB_BLOCK]: three__WEBPACK_IMPORTED_MODULE_0__.UnsignedByteType,
   [_libs_ktx_parse_module_js__WEBPACK_IMPORTED_MODULE_2__.VK_FORMAT_ASTC_4x4_SFLOAT_BLOCK_EXT]: three__WEBPACK_IMPORTED_MODULE_0__.HalfFloatType,
   [_libs_ktx_parse_module_js__WEBPACK_IMPORTED_MODULE_2__.VK_FORMAT_ASTC_6x6_SRGB_BLOCK]: three__WEBPACK_IMPORTED_MODULE_0__.UnsignedByteType,
   [_libs_ktx_parse_module_js__WEBPACK_IMPORTED_MODULE_2__.VK_FORMAT_ASTC_6x6_UNORM_BLOCK]: three__WEBPACK_IMPORTED_MODULE_0__.UnsignedByteType
@@ -57974,6 +58132,7 @@ __webpack_require__.r(__webpack_exports__);
  * ```
  *
  * @augments Loader
+ * @three_import import { MTLLoader } from 'three/addons/loaders/MTLLoader.js';
  */
 class MTLLoader extends three__WEBPACK_IMPORTED_MODULE_0__.Loader {
   constructor(manager) {
@@ -58207,15 +58366,15 @@ class MaterialCreator {
         case 'kd':
           // Diffuse color (color under white light) using RGB values
 
-          params.color = three__WEBPACK_IMPORTED_MODULE_0__.ColorManagement.toWorkingColorSpace(new three__WEBPACK_IMPORTED_MODULE_0__.Color().fromArray(value), three__WEBPACK_IMPORTED_MODULE_0__.SRGBColorSpace);
+          params.color = three__WEBPACK_IMPORTED_MODULE_0__.ColorManagement.colorSpaceToWorking(new three__WEBPACK_IMPORTED_MODULE_0__.Color().fromArray(value), three__WEBPACK_IMPORTED_MODULE_0__.SRGBColorSpace);
           break;
         case 'ks':
           // Specular color (color when light is reflected from shiny surface) using RGB values
-          params.specular = three__WEBPACK_IMPORTED_MODULE_0__.ColorManagement.toWorkingColorSpace(new three__WEBPACK_IMPORTED_MODULE_0__.Color().fromArray(value), three__WEBPACK_IMPORTED_MODULE_0__.SRGBColorSpace);
+          params.specular = three__WEBPACK_IMPORTED_MODULE_0__.ColorManagement.colorSpaceToWorking(new three__WEBPACK_IMPORTED_MODULE_0__.Color().fromArray(value), three__WEBPACK_IMPORTED_MODULE_0__.SRGBColorSpace);
           break;
         case 'ke':
           // Emissive using RGB values
-          params.emissive = three__WEBPACK_IMPORTED_MODULE_0__.ColorManagement.toWorkingColorSpace(new three__WEBPACK_IMPORTED_MODULE_0__.Color().fromArray(value), three__WEBPACK_IMPORTED_MODULE_0__.SRGBColorSpace);
+          params.emissive = three__WEBPACK_IMPORTED_MODULE_0__.ColorManagement.colorSpaceToWorking(new three__WEBPACK_IMPORTED_MODULE_0__.Color().fromArray(value), three__WEBPACK_IMPORTED_MODULE_0__.SRGBColorSpace);
           break;
         case 'map_kd':
           // Diffuse texture map
@@ -58627,6 +58786,7 @@ function ParserState() {
  * ```
  *
  * @augments Loader
+ * @three_import import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
  */
 class OBJLoader extends three__WEBPACK_IMPORTED_MODULE_0__.Loader {
   /**
@@ -59141,6 +59301,8 @@ const localRay = new three__WEBPACK_IMPORTED_MODULE_0__.Ray();
 
 /**
  * Represents an oriented bounding box (OBB) in 3D space.
+ *
+ * @three_import import { OBB } from 'three/addons/math/OBB.js';
  */
 class OBB {
   /**
@@ -59581,7 +59743,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var three__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.core.js");
 
 
-/** @module BufferGeometryUtils */
+/**
+ * @module BufferGeometryUtils
+ * @three_import import * as BufferGeometryUtils from 'three/addons/utils/BufferGeometryUtils.js';
+ */
 
 /**
  * Computes vertex tangents using the MikkTSpace algorithm. MikkTSpace generates the same tangents consistently,
@@ -60497,6 +60662,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /**
  * A simple pool for managing Web Workers.
+ *
+ * @three_import import { WorkerPool } from 'three/addons/utils/WorkerPool.js';
  */
 class WorkerPool {
   /**
@@ -60641,7 +60808,7 @@ class WorkerPool {
 /***/ ((module) => {
 
 "use strict";
-module.exports = /*#__PURE__*/JSON.parse('{"name":"aframe","version":"1.7.1","description":"A web framework for building virtual reality experiences.","homepage":"https://aframe.io/","main":"./dist/aframe-master.js","module":"./dist/aframe-master.module.min.js","exports":{".":{"import":"./dist/aframe-master.module.min.js","require":"./dist/aframe-master.js"}},"scripts":{"dev":"cross-env INSPECTOR_VERSION=dev webpack serve --port 8080","dist":"node scripts/updateVersionLog.js && npm run dist:min && npm run dist:max && npm run dist:module","dist:max":"webpack --config webpack.config.cjs","dist:min":"webpack --config webpack.prod.config.cjs","dist:module":"webpack --config webpack.module.config.cjs","docs":"markserv --dir docs --port 9001","preghpages":"node ./scripts/preghpages.js","ghpages":"gh-pages -d gh-pages","lint":"standardx -v | snazzy","lint:fix":"standardx --fix","precommit":"npm run lint","prepush":"node scripts/testOnlyCheck.js","prerelease":"node scripts/release.js 1.7.0 1.7.1","start":"npm run dev","start:https":"npm run dev -- --server-type https","start:webgpu":"cross-env WEBGPU=true npm run dev -- --server-type https","test":"karma start ./tests/karma.conf.js","test:docs":"node scripts/docsLint.js","test:firefox":"npm test -- --browsers Firefox","test:chrome":"npm test -- --browsers Chrome","test:nobrowser":"NO_BROWSER=true npm test","test:node":"node ./node_modules/mocha/bin/mocha --ui tdd tests/node"},"repository":"aframevr/aframe","license":"MIT","files":["dist/*","docs/**/*","src/**/*","vendor/**/*"],"dependencies":{"buffer":"^6.0.3","debug":"^4.3.4","deep-assign":"^2.0.0","load-bmfont":"^1.2.3","stats-gl":"^3.6.0","super-animejs":"^3.1.0","three":"npm:super-three@0.176.0","three-bmfont-text":"dmarcos/three-bmfont-text#eed4878795be9b3e38cf6aec6b903f56acd1f695"},"devDependencies":{"@babel/core":"^7.24.0","babel-loader":"^9.1.3","babel-plugin-istanbul":"^6.1.1","chai":"^4.3.6","chai-shallow-deep-equal":"^1.4.0","chalk":"^1.1.3","cross-env":"^7.0.3","css-loader":"^7.1.2","eslint":"^8.45.0","eslint-config-semistandard":"^17.0.0","eslint-config-standard-jsx":"^11.0.0","gh-pages":"^6.3.0","git-rev":"^0.2.1","glob":"^8.0.3","husky":"^0.11.7","jsdom":"^24.0.0","jsdom-global":"^3.0.2","karma":"^6.4.0","karma-chai-shallow-deep-equal":"0.0.4","karma-chrome-launcher":"^3.1.1","karma-coverage":"^2.2.0","karma-env-preprocessor":"^0.1.1","karma-firefox-launcher":"^2.1.2","karma-mocha":"^2.0.1","karma-mocha-reporter":"^2.2.5","karma-sinon-chai":"^2.0.2","karma-webpack":"^5.0.0","markserv":"github:sukima/markserv#feature/fix-broken-websoketio-link","mocha":"^10.0.0","replace-in-file":"^8.3.0","shelljs":"^0.8.5","sinon":"<12.0.0","sinon-chai":"^3.7.0","snazzy":"^5.0.0","standardx":"^7.0.0","style-loader":"^4.0.0","too-wordy":"ngokevin/too-wordy","webpack":"5.95.0","webpack-cli":"^5.1.4","webpack-dev-server":"~5.0.4","write-good":"^1.0.8"},"link":true,"standardx":{"ignore":["build/**","dist/**","examples/**/shaders/*.js","**/vendor/**"]},"keywords":["3d","aframe","cardboard","components","oculus","three","three.js","rift","vive","vr","quest","meta","web-components","webvr","webxr"],"engines":{"node":">= 4.6.0","npm":">= 2.15.9"}}');
+module.exports = /*#__PURE__*/JSON.parse('{"name":"aframe","version":"1.7.1","description":"A web framework for building virtual reality experiences.","homepage":"https://aframe.io/","main":"./dist/aframe-master.js","module":"./dist/aframe-master.module.min.js","exports":{".":{"import":"./dist/aframe-master.module.min.js","require":"./dist/aframe-master.js"}},"scripts":{"dev":"cross-env INSPECTOR_VERSION=dev webpack serve --port 8080","dist":"node scripts/updateVersionLog.js && npm run dist:min && npm run dist:max && npm run dist:module","dist:max":"webpack --config webpack.config.cjs","dist:min":"webpack --config webpack.prod.config.cjs","dist:module":"webpack --config webpack.module.config.cjs","docs":"markserv --dir docs --port 9001","preghpages":"node ./scripts/preghpages.js","ghpages":"gh-pages -d gh-pages","lint":"standardx -v | snazzy","lint:fix":"standardx --fix","precommit":"npm run lint","prepush":"node scripts/testOnlyCheck.js","prerelease":"node scripts/release.js 1.7.0 1.7.1","start":"npm run dev","start:https":"npm run dev -- --server-type https","start:webgpu":"cross-env WEBGPU=true npm run dev -- --server-type https","test":"karma start ./tests/karma.conf.js","test:docs":"node scripts/docsLint.js","test:firefox":"npm test -- --browsers Firefox","test:chrome":"npm test -- --browsers Chrome","test:nobrowser":"NO_BROWSER=true npm test","test:node":"node ./node_modules/mocha/bin/mocha --ui tdd tests/node"},"repository":"aframevr/aframe","license":"MIT","files":["dist/*","docs/**/*","src/**/*","vendor/**/*"],"dependencies":{"buffer":"^6.0.3","debug":"^4.3.4","deep-assign":"^2.0.0","load-bmfont":"^1.2.3","stats-gl":"^3.6.0","super-animejs":"^3.1.0","three":"npm:super-three@0.177.0","three-bmfont-text":"dmarcos/three-bmfont-text#eed4878795be9b3e38cf6aec6b903f56acd1f695"},"devDependencies":{"@babel/core":"^7.24.0","babel-loader":"^9.1.3","babel-plugin-istanbul":"^6.1.1","chai":"^4.3.6","chai-shallow-deep-equal":"^1.4.0","chalk":"^1.1.3","cross-env":"^7.0.3","css-loader":"^7.1.2","eslint":"^8.45.0","eslint-config-semistandard":"^17.0.0","eslint-config-standard-jsx":"^11.0.0","gh-pages":"^6.3.0","git-rev":"^0.2.1","glob":"^8.0.3","husky":"^0.11.7","jsdom":"^24.0.0","jsdom-global":"^3.0.2","karma":"^6.4.0","karma-chai-shallow-deep-equal":"0.0.4","karma-chrome-launcher":"^3.1.1","karma-coverage":"^2.2.0","karma-env-preprocessor":"^0.1.1","karma-firefox-launcher":"^2.1.2","karma-mocha":"^2.0.1","karma-mocha-reporter":"^2.2.5","karma-sinon-chai":"^2.0.2","karma-webpack":"^5.0.0","markserv":"github:sukima/markserv#feature/fix-broken-websoketio-link","mocha":"^10.0.0","replace-in-file":"^8.3.0","shelljs":"^0.8.5","sinon":"<12.0.0","sinon-chai":"^3.7.0","snazzy":"^5.0.0","standardx":"^7.0.0","style-loader":"^4.0.0","too-wordy":"ngokevin/too-wordy","webpack":"5.95.0","webpack-cli":"^5.1.4","webpack-dev-server":"~5.0.4","write-good":"^1.0.8"},"link":true,"standardx":{"ignore":["build/**","dist/**","examples/**/shaders/*.js","**/vendor/**"]},"keywords":["3d","aframe","cardboard","components","oculus","three","three.js","rift","vive","vr","quest","meta","web-components","webvr","webxr"],"engines":{"node":">= 4.6.0","npm":">= 2.15.9"}}');
 
 /***/ })
 
@@ -60841,7 +61008,7 @@ if (_utils_index_js__WEBPACK_IMPORTED_MODULE_16__.device.isBrowserEnvironment) {
   window.logs = debug;
   __webpack_require__(/*! ./style/aframe.css */ "./src/style/aframe.css");
 }
-console.log('A-Frame Version: 1.7.1 (Date 2025-06-02, Commit #241a775d)');
+console.log('A-Frame Version: 1.7.1 (Date 2025-06-14, Commit #74465a60)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].REVISION);
 
 // Wait for ready state, unless user asynchronously initializes A-Frame.
