@@ -60,6 +60,62 @@ suite('gltf-model', function () {
     el.sceneEl.appendChild(el2);
   });
 
+  test('can change model after first model has loaded', function (done) {
+    var el = this.el;
+    el.addEventListener('model-loaded', function () {
+      assert.ok(el.getObject3D('mesh'));
+
+      el.addEventListener('model-loaded', function () {
+        assert.ok(el.getObject3D('mesh'));
+        done();
+      }, {once: true});
+      el.setAttribute('gltf-model', `url(${SRC_NO_DEFAULT_SCENE})`);
+
+      // While loading, model is already removed from scenegraph
+      assert.notOk(el.getObject3D('mesh'));
+    }, {once: true});
+    el.setAttribute('gltf-model', '#gltf');
+  });
+
+  test('can change model while first model is loading', function (done) {
+    var el = this.el;
+    var firstGlbMock = { scene: new THREE.Object3D() };
+    var secondGlbMock = { scene: new THREE.Object3D() };
+
+    el.addEventListener('componentinitialized', function (event) {
+      if (event.detail.name !== 'gltf-model') {
+        return;
+      }
+
+      // Mock loader to only complete loading the first model after the second model finished loading
+      var resolveSecondModel;
+      var promise = new Promise((resolve) => {
+        resolveSecondModel = resolve;
+      });
+      var loader = el.components['gltf-model'].loader;
+      loader.load = function (url, onLoad) {
+        if (url === 'first.glb') {
+          promise.then(() => {
+            onLoad(firstGlbMock);
+            allLoaded();
+          });
+        } else if (url === 'second.glb') {
+          onLoad(secondGlbMock);
+          resolveSecondModel();
+        }
+      };
+    });
+
+    // Wait for both models to be loaded
+    function allLoaded () {
+      assert.equal(el.components['gltf-model'].model, secondGlbMock.scene);
+      done();
+    }
+
+    el.setAttribute('gltf-model', 'first.glb');
+    el.setAttribute('gltf-model', 'second.glb');
+  });
+
   test('attaches animation clips to model', function (done) {
     var el = this.el;
     var sceneMock = new THREE.Object3D();
@@ -82,7 +138,6 @@ suite('gltf-model', function () {
       loader.load = function (url, onLoad) {
         setTimeout(onLoad.bind(null, gltfMock));
       };
-      loader.setDRACOLoader = function () {};
 
       // Start loading model
       el.setAttribute('gltf-model', '#gltf');
@@ -105,5 +160,32 @@ suite('gltf-model', function () {
       done();
     });
     el.setAttribute('gltf-model', `url(${SRC_NO_DEFAULT_SCENE})`);
+  });
+
+  test('removes model when src is emptied', function (done) {
+    var el = this.el;
+    el.addEventListener('model-loaded', function () {
+      assert.ok(el.components['gltf-model'].model);
+      assert.equal(el.components['gltf-model'].model, el.getObject3D('mesh'));
+
+      el.setAttribute('gltf-model', '');
+      assert.notOk(el.components['gltf-model'].model);
+      assert.notOk(el.getObject3D('mesh'));
+      done();
+    });
+    el.setAttribute('gltf-model', '#gltf');
+  });
+
+  test('removes model when component is removed', function (done) {
+    var el = this.el;
+    el.addEventListener('model-loaded', function () {
+      assert.ok(el.components['gltf-model'].model);
+      assert.equal(el.components['gltf-model'].model, el.getObject3D('mesh'));
+
+      el.removeAttribute('gltf-model');
+      assert.notOk(el.getObject3D('mesh'));
+      done();
+    });
+    el.setAttribute('gltf-model', '#gltf');
   });
 });
