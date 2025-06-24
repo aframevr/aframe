@@ -92,7 +92,7 @@ Glitch and update the `src` URL.
 
 ## On Discord
 
-1. [Invite yourself][https://aframe.io/community/] to Discord.
+1. [Invite yourself](https://aframe.io/community/) to Discord.
 2. Help answer questions that people might have and welcome new people.
 3. Redirect or cross-post questions to the [Stack Overflow A-Frame tag][stackoverflow].
 
