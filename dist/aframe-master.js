@@ -7798,12 +7798,15 @@ var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_0__.registerCompo
     var self = this;
     var el = this.el;
     var src = this.data;
+    this.remove();
     if (!src) {
       return;
     }
-    this.remove();
     this.ready.then(function () {
       self.loader.load(src, function gltfLoaded(gltfModel) {
+        if (src !== self.data) {
+          return;
+        }
         self.model = gltfModel.scene || gltfModel.scenes[0];
         self.model.animations = gltfModel.animations;
         el.setObject3D('mesh', self.model);
@@ -7826,6 +7829,7 @@ var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_0__.registerCompo
       return;
     }
     this.el.removeObject3D('mesh');
+    this.model = null;
   }
 });
 
@@ -61008,7 +61012,7 @@ if (_utils_index_js__WEBPACK_IMPORTED_MODULE_16__.device.isBrowserEnvironment) {
   window.logs = debug;
   __webpack_require__(/*! ./style/aframe.css */ "./src/style/aframe.css");
 }
-console.log('A-Frame Version: 1.7.1 (Date 2025-06-14, Commit #74465a60)');
+console.log('A-Frame Version: 1.7.1 (Date 2025-06-30, Commit #7e0e0708)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].REVISION);
 
 // Wait for ready state, unless user asynchronously initializes A-Frame.
