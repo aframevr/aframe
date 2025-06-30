@@ -36,12 +36,13 @@ export var Component = registerComponent('gltf-model', {
     var el = this.el;
     var src = this.data;
 
-    if (!src) { return; }
-
     this.remove();
+
+    if (!src) { return; }
 
     this.ready.then(function () {
       self.loader.load(src, function gltfLoaded (gltfModel) {
+        if (src !== self.data) { return; }
         self.model = gltfModel.scene || gltfModel.scenes[0];
         self.model.animations = gltfModel.animations;
 
@@ -58,5 +59,6 @@ export var Component = registerComponent('gltf-model', {
   remove: function () {
     if (!this.model) { return; }
     this.el.removeObject3D('mesh');
+    this.model = null;
   }
 });
