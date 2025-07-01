@@ -1,5 +1,5 @@
 ---
-title: logiteck-mx-ink-controls
+title: logitech-mx-ink-controls
 type: components
 layout: docs
 parent_section: components
@@ -9,15 +9,15 @@ examples: []
 
 [trackedcontrols]: ./tracked-controls.md
 
-The logiteck-mx-ink-controls component interfaces with the Logitech MX Ink tracked pen. It
+The `logitech-mx-ink-controls` component interfaces with the Logitech MX Ink tracked pen. It
 wraps the [tracked-controls component][trackedcontrols] while adding button
 mappings, events, and a pencil model.
 
 ## Example
 
 ```html
-<a-entity logiteck-mx-ink-controls="hand: left"></a-entity>
-<a-entity logiteck-mx-ink-controls="hand: right"></a-entity>
+<a-entity logitech-mx-ink-controls="hand: left"></a-entity>
+<a-entity logitech-mx-ink-controls="hand: right"></a-entity>
 ```
 
 ## Value
@@ -46,8 +46,8 @@ mappings, events, and a pencil model.
 Listen to the `tipchanged` event.
 
 ```html
-<a-entity logiteck-mx-ink-controls="hand: left" tip-logging></a-entity>
-<a-entity logiteck-mx-ink-controls="hand: right" tip-logging></a-entity>
+<a-entity logitech-mx-ink-controls="hand: left" tip-logging></a-entity>
+<a-entity logitech-mx-ink-controls="hand: right" tip-logging></a-entity>
 ```
 
 ```javascript
@@ -63,4 +63,4 @@ AFRAME.registerComponent('tip-logging',{
 
 ## Assets
 
-- [Logiteck MX Ink glTF](https://cdn.aframe.io/controllers/logitech/logitech-mx-ink.glb)
+- [Logitech MX Ink glTF](https://cdn.aframe.io/controllers/logitech/logitech-mx-ink.glb)
