@@ -9,7 +9,7 @@ var DASH_REGEX = /-([a-z])/g;
  * Deserialize style-like string into an object of properties.
  *
  * @param {string} value - HTML attribute value.
- * @param {object} obj - Reused object for object pooling.
+ * @param {object} [obj] - Reused object for object pooling.
  * @returns {object} Property data.
  */
 export function parse (value, obj) {
@@ -83,7 +83,7 @@ var getKeyValueChunks = (function () {
  * Convert a style attribute string to an object.
  *
  * @param {object} str - Attribute string.
- * @param {object} obj - Object to reuse as a base, else a new one will be allocated.
+ * @param {object} [obj] - Object to reuse as a base, else a new one will be allocated.
  */
 function styleParse (str, obj) {
   var chunks;
