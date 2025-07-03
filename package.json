@@ -51,7 +51,7 @@
     "stats-gl": "^3.6.0",
     "super-animejs": "^3.1.0",
     "three": "npm:super-three@0.177.0",
-    "three-bmfont-text": "dmarcos/three-bmfont-text#eed4878795be9b3e38cf6aec6b903f56acd1f695"
+    "three-bmfont-text": "dmarcos/three-bmfont-text#8f38cb02a07321d2369d1234e9b9087c284543ed"
   },
   "devDependencies": {
     "@babel/core": "^7.24.0",
