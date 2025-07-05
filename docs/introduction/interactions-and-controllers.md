@@ -4,11 +4,6 @@ type: introduction
 layout: docs
 parent_section: introduction
 order: 9
-examples:
-  - title: Basic Interaction
-    src: https://glitch.com/edit/#!/aframe-basic-interaction?path=index.html:1:0
-  - title: Escape the Room
-    src: https://glitch.com/edit/#!/wide-cream?path=index.html:1:0
 ---
 
 There is no one true way for adding interactions due to variety of platforms,
