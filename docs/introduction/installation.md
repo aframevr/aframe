@@ -39,7 +39,6 @@ Below are a few other A-Frame Glitches for starters:
 - [aframe-gallery](https://glitch.com/~aframe-gallery) - 360&deg; image gallery.
 - [aframe-registry](https://glitch.com/~aframe-registry) - Showcase of various components.
 - [aframe-vaporwave](https://glitch.com/~aframe-vaporwave) - Retro-futuristic scene.
-- [networked-aframe](https://glitch.com/~networked-aframe) - Multiuser.
 
 ### Other Code Editors
 
