@@ -6,7 +6,7 @@ parent_section: components
 source_code: src/components/gltf-model.js
 examples:
  - title: Modifying Material of Model
-   src: https://glitch.com/edit/#!/aframe-modify-model-material?path=index.html:1:0
+   src: https://aframe.io/aframe/examples/test/gltf-model/modify-materials.html
 ---
 
 [about-gltf]: https://www.khronos.org/gltf

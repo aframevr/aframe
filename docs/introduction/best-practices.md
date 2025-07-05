@@ -130,7 +130,7 @@ document.querySelector('a-scene').renderer.setTexture2D(ourTexture, 0);
 
 We will try to come with a convenient API in A-Frame to do this automatically.
 
-[360]: https://aframe-360-gallery.glitch.me
+[360]: https://aframe.io/aframe/examples/docs/360-gallery/
 
 For example, this is apparent in the [360&deg; image gallery][360]. If we look at
 the browser performance tools, there will be frame drops when switching to a

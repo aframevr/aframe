@@ -228,9 +228,9 @@ Watch style UI that work both in VR and AR with @aframevr in one line of <HTML>
 
 Try now on @Meta Quest Browser
 
-https://a-watch.glitch.me/
+https://aframe.io/aframe/examples/mixed-reality/watch/
 
-Just 400 lines of code: https://glitch.com/edit/#!/a-watch
+Just 400 lines of code: https://github.com/aframevr/aframe/tree/master/examples/mixed-reality/watch
 
 Watch-style intuitive but easy to occlude hands ⌚️
 Palm- style less familiar but more robust ✋
