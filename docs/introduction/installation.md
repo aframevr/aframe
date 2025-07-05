@@ -37,7 +37,7 @@ Below are a few other A-Frame Glitches for starters:
 
 - [aincraft](https://github.com/aframevr/aframe/tree/master/examples/docs/aincraft) - Minecraft demo.
 - [aframe-gallery](https://glitch.com/~aframe-gallery) - 360&deg; image gallery.
-- [aframe-registry](https://glitch.com/~aframe-registry) - Showcase of various components.
+- [community-components](https://github.com/aframevr/aframe/tree/master/examples/docs/community-components) - Showcase of various community components.
 - [aframe-vaporwave](https://glitch.com/~aframe-vaporwave) - Retro-futuristic scene.
 
 ### Other Code Editors

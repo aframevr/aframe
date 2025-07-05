@@ -5,7 +5,7 @@ layout: docs
 order: 5
 examples:
   - title: Community Components in Action
-    src: https://glitch.com/edit/#!/aframe-registry?path=index.html
+    src: https://aframe.io/aframe/examples/docs/community-components/
   - title: Animated Lights
     src: https://glitch.com/edit/#!/aframe-animated-lights?path=index.html
 ---
