@@ -35,7 +35,7 @@ own custom URL name.
 
 Below are a few other A-Frame Glitches for starters:
 
-- [aframe-aincraft](https://glitch.com/~aframe-aincraft) - Minecraft demo.
+- [aincraft](https://github.com/aframevr/aframe/tree/master/examples/docs/aincraft) - Minecraft demo.
 - [aframe-gallery](https://glitch.com/~aframe-gallery) - 360&deg; image gallery.
 - [aframe-registry](https://glitch.com/~aframe-registry) - Showcase of various components.
 - [aframe-vaporwave](https://glitch.com/~aframe-vaporwave) - Retro-futuristic scene.
