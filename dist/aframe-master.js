@@ -29430,7 +29430,7 @@ var DASH_REGEX = /-([a-z])/g;
  * Deserialize style-like string into an object of properties.
  *
  * @param {string} value - HTML attribute value.
- * @param {object} obj - Reused object for object pooling.
+ * @param {object} [obj] - Reused object for object pooling.
  * @returns {object} Property data.
  */
 function parse(value, obj) {
@@ -29506,7 +29506,7 @@ var getKeyValueChunks = function () {
  * Convert a style attribute string to an object.
  *
  * @param {object} str - Attribute string.
- * @param {object} obj - Object to reuse as a base, else a new one will be allocated.
+ * @param {object} [obj] - Object to reuse as a base, else a new one will be allocated.
  */
 function styleParse(str, obj) {
   var chunks;
@@ -61012,7 +61012,7 @@ if (_utils_index_js__WEBPACK_IMPORTED_MODULE_16__.device.isBrowserEnvironment) {
   window.logs = debug;
   __webpack_require__(/*! ./style/aframe.css */ "./src/style/aframe.css");
 }
-console.log('A-Frame Version: 1.7.1 (Date 2025-07-03, Commit #c75f9e3c)');
+console.log('A-Frame Version: 1.7.1 (Date 2025-07-08, Commit #de157ab4)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].REVISION);
 
 // Wait for ready state, unless user asynchronously initializes A-Frame.
