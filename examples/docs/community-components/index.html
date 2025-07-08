@@ -8,8 +8,8 @@
     -->
     <script src="../../../dist/aframe-master.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-particle-system-component@1.2.x/dist/aframe-particle-system-component.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/aframe-simple-sun-sky@1.2.3/simple-sun-sky.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.5.0/dist/aframe-extras.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@fern-solutions/aframe-sky-background/dist/sky-background.umd.min.js"></script>
   </head>
   <body>
     <a-scene>
@@ -25,7 +25,7 @@
                 material="color: #9CE3F9; opacity: 0.75; metalness: 0; roughness: 1"
                 rotation="-90 0 0"></a-entity>
 
-      <a-simple-sun-sky sun-position="1 0.4 0"></a-simple-sun-sky>
+      <a-sky-background top-color="#EBEBF5" bottom-color="#B9B9D2"></a-sky-background>
 
       <a-entity id="light" light="type: ambient; color: #888"></a-entity>
     </a-scene>
