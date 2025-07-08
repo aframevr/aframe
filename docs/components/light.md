@@ -6,7 +6,7 @@ parent_section: components
 source_code: src/components/light.js
 examples:
   - title: Animated Lights
-    src: https://glitch.com/edit/#!/aframe-animated-lights?path=index.html
+    src: https://aframe.io/aframe/examples/showcase/dynamic-lights/
 ---
 
 The light component defines the entity as a source of light. Light affects all

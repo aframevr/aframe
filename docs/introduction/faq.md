@@ -222,7 +222,7 @@ all browsers implement this. Firefox with WebVR implements this. A link
 component for link traversal ([example][link-traversal-example]) was released with A-Frame 0.6.0:
 
 ```html
-<a-entity link="on: click; href: https://aframe-aincraft.glitch.me"></a-entity>
+<a-entity link="on: click; href: https://aframe.io/aframe/examples/docs/aincraft/"></a-entity>
 ```
 
 ## Can I prevent the camera from going through obstacles?

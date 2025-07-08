@@ -5,8 +5,6 @@ layout: docs
 parent_section: components
 source_code: src/components/material.js
 examples:
-  - title: Displacement Shader
-    src: https://glitch.com/edit/#!/aframe-displacement-shader?path=client/index.js:1:0
   - title: Shader Walkthrough
     src: https://codepen.io/machenmusik/pen/WZyQNj
   - title: Grid Shader

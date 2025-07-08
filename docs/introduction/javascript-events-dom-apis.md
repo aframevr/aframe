@@ -14,7 +14,7 @@ examples:
   - title: A-Frame School &mdash; Handling Events
     src: https://glitch.com/edit/#!/aframe-school-js?path=solution4.html
   - title: Animated Lights
-    src: https://glitch.com/edit/#!/aframe-animated-lights?path=index.html
+    src: https://aframe.io/aframe/examples/showcase/dynamic-lights/
 ---
 
 [geometry]: ../components/geometry.md

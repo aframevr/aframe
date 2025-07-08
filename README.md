@@ -119,13 +119,13 @@ architecture](https://aframe.io/docs/1.7.0/introduction/entity-component-system.
 components from the ecosystem (e.g., ocean, physics) and plug them into our
 objects straight from HTML:
 
-[![Remix](https://cloud.githubusercontent.com/assets/674727/24572421/688f7fc0-162d-11e7-8a35-b02bc050c043.jpg)](https://glitch.com/~aframe-registry)
+[See example](https://aframe.io/aframe/examples/docs/community-components/)
 
 ```html
 <html>
   <head>
-    <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
-    <script src="https://unpkg.com/@c-frame/aframe-particle-system-component@1.2.x/dist/aframe-particle-system-component.min.js"></script>
+    <script src="https://aframe.io/releases/1.7.1/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-particle-system-component@1.2.x/dist/aframe-particle-system-component.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.5.0/dist/aframe-extras.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@fern-solutions/aframe-sky-background/dist/sky-background.umd.min.js"></script>
   </head>
@@ -136,7 +136,7 @@ objects straight from HTML:
       <a-entity id="sphere" geometry="primitive: sphere"
                 material="color: #EFEFEF; shader: flat"
                 position="0 0.15 -5"
-                light="type: point; intensity: 5"
+                light="type: point; intensity: 15.7"
                 animation="property: position; easing: easeInOutQuad; dir: alternate; dur: 1000; to: 0 -0.10 -5; loop: true"></a-entity>
 
       <a-entity id="ocean" ocean="density: 20; width: 50; depth: 50; speed: 4"
