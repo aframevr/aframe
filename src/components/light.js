@@ -199,6 +199,9 @@ export var Component = registerComponent('light', {
     if (newLight) {
       if (this.light) {
         el.removeObject3D('light');
+        if (el.getObject3D('cameraHelper')) {
+          el.removeObject3D('cameraHelper');
+        }
       }
 
       this.light = newLight;
@@ -232,18 +235,20 @@ export var Component = registerComponent('light', {
     var data = this.data;
     var light = this.light;
 
-    light.castShadow = data.castShadow;
+    // Cast shadows if enabled and light type supports shadows.
+    light.castShadow = data.castShadow && light.shadow;
 
     // Shadow camera helper.
     var cameraHelper = el.getObject3D('cameraHelper');
-    if (data.shadowCameraVisible && !cameraHelper) {
+    var shadowCameraVisible = data.shadowCameraVisible && light.shadow;
+    if (shadowCameraVisible && !cameraHelper) {
       cameraHelper = new THREE.CameraHelper(light.shadow.camera);
       el.setObject3D('cameraHelper', cameraHelper);
-    } else if (!data.shadowCameraVisible && cameraHelper) {
+    } else if (!shadowCameraVisible && cameraHelper) {
       el.removeObject3D('cameraHelper');
     }
 
-    if (!data.castShadow) { return light; }
+    if (!light.castShadow) { return light; }
 
     // Shadow appearance.
     light.shadow.bias = data.shadowBias;
