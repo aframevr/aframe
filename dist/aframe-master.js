@@ -10183,6 +10183,9 @@ var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_1__.registerCompo
     if (newLight) {
       if (this.light) {
         el.removeObject3D('light');
+        if (el.getObject3D('cameraHelper')) {
+          el.removeObject3D('cameraHelper');
+        }
       }
       this.light = newLight;
       this.light.el = el;
@@ -10212,17 +10215,20 @@ var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_1__.registerCompo
     var el = this.el;
     var data = this.data;
     var light = this.light;
-    light.castShadow = data.castShadow;
+
+    // Cast shadows if enabled and light type supports shadows.
+    light.castShadow = data.castShadow && light.shadow;
 
     // Shadow camera helper.
     var cameraHelper = el.getObject3D('cameraHelper');
-    if (data.shadowCameraVisible && !cameraHelper) {
+    var shadowCameraVisible = data.shadowCameraVisible && light.shadow;
+    if (shadowCameraVisible && !cameraHelper) {
       cameraHelper = new three__WEBPACK_IMPORTED_MODULE_3__.CameraHelper(light.shadow.camera);
       el.setObject3D('cameraHelper', cameraHelper);
-    } else if (!data.shadowCameraVisible && cameraHelper) {
+    } else if (!shadowCameraVisible && cameraHelper) {
       el.removeObject3D('cameraHelper');
     }
-    if (!data.castShadow) {
+    if (!light.castShadow) {
       return light;
     }
 
@@ -61012,7 +61018,7 @@ if (_utils_index_js__WEBPACK_IMPORTED_MODULE_16__.device.isBrowserEnvironment) {
   window.logs = debug;
   __webpack_require__(/*! ./style/aframe.css */ "./src/style/aframe.css");
 }
-console.log('A-Frame Version: 1.7.1 (Date 2025-07-08, Commit #de157ab4)');
+console.log('A-Frame Version: 1.7.1 (Date 2025-07-28, Commit #4a8f94ee)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].REVISION);
 
 // Wait for ready state, unless user asynchronously initializes A-Frame.
