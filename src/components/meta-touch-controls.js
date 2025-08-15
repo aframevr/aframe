@@ -101,6 +101,20 @@ var CONTROLLER_PROPERTIES = {
       modelPivotOffset: new THREE.Vector3(0, 0, 0),
       modelPivotRotation: new THREE.Euler(0, 0, 0)
     }
+  },
+  'meta-quest-touch-plus-v2': {
+    left: {
+      modelUrl: META_CONTROLLER_MODEL_BASE_URL + 'quest-touch-plus-v2-left.glb',
+      rayOrigin: { origin: {x: 0.0065, y: -0.0186, z: -0.05}, direction: {x: 0.1239, y: -0.5944, z: -0.7945} },
+      modelPivotOffset: new THREE.Vector3(0, 0, 0),
+      modelPivotRotation: new THREE.Euler(0, 0, 0)
+    },
+    right: {
+      modelUrl: META_CONTROLLER_MODEL_BASE_URL + 'quest-touch-plus-v2-right.glb',
+      rayOrigin: { origin: {x: -0.0065, y: -0.0186, z: -0.05}, direction: {x: -0.1239, y: -0.5944, z: -0.7945} },
+      modelPivotOffset: new THREE.Vector3(0, 0, 0),
+      modelPivotRotation: new THREE.Euler(0, 0, 0)
+    }
   }
 };
 
@@ -231,7 +245,8 @@ var componentConfig = {
     this.isTouchV3orPROorPlus =
       this.displayModel === CONTROLLER_PROPERTIES['oculus-touch-v3'] ||
       this.displayModel === CONTROLLER_PROPERTIES['meta-quest-touch-pro'] ||
-      this.displayModel === CONTROLLER_PROPERTIES['meta-quest-touch-plus'];
+      this.displayModel === CONTROLLER_PROPERTIES['meta-quest-touch-plus'] ||
+      this.displayModel === CONTROLLER_PROPERTIES['meta-quest-touch-plus-v2'];
     this.el.setAttribute('gltf-model', modelUrl);
   },
 
