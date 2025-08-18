@@ -104,14 +104,14 @@ var CONTROLLER_PROPERTIES = {
   },
   'meta-quest-touch-plus-v2': {
     left: {
-      modelUrl: META_CONTROLLER_MODEL_BASE_URL + 'quest-touch-plus-v2-left.glb',
-      rayOrigin: { origin: {x: 0.0065, y: -0.0186, z: -0.05}, direction: {x: 0.1239, y: -0.5944, z: -0.7945} },
+      modelUrl: META_CONTROLLER_MODEL_BASE_URL + 'left.glb',
+      rayOrigin: { origin: {x: 0.0065, y: -0.0186, z: -0.05}, direction: {x: 0.12394785839500175, y: -0.5944043672340157, z: -0.7945567170519814} },
       modelPivotOffset: new THREE.Vector3(0, 0, 0),
       modelPivotRotation: new THREE.Euler(0, 0, 0)
     },
     right: {
-      modelUrl: META_CONTROLLER_MODEL_BASE_URL + 'quest-touch-plus-v2-right.glb',
-      rayOrigin: { origin: {x: -0.0065, y: -0.0186, z: -0.05}, direction: {x: -0.1239, y: -0.5944, z: -0.7945} },
+      modelUrl: META_CONTROLLER_MODEL_BASE_URL + 'right.glb',
+      rayOrigin: { origin: {x: -0.0065, y: -0.0186, z: -0.05}, direction: {x: -0.12394785839500175, y: -0.5944043672340157, z: -0.7945567170519814} },
       modelPivotOffset: new THREE.Vector3(0, 0, 0),
       modelPivotRotation: new THREE.Euler(0, 0, 0)
     }
