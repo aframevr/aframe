@@ -16,7 +16,7 @@ AFRAME.registerComponent('brush', {
     this.stroke = null;
     this.buttonsDown = 0;
     this.touches = 0;
-    this.originalSize = data.size;
+    this.sizeFactor = 1.0;
 
     this.onTouchStarted = this.onTouchStarted.bind(this);
     el.addEventListener('tiptouchstart', this.onTouchStarted);
@@ -77,9 +77,9 @@ AFRAME.registerComponent('brush', {
     if (!this.data.enabled) { return; }
     if (!this.painting) { return; }
     if (evt.detail.state.value === 1) {
-      this.data.size = this.originalSize;
+      this.sizeFactor = 1.0;
     } else {
-      this.data.size = this.originalSize * evt.detail.state.value * this.data.pressureMultiplier;
+      this.sizeFactor = evt.detail.state.value * this.data.pressureMultiplier;
     }
   },
 
@@ -99,13 +99,13 @@ AFRAME.registerComponent('brush', {
       }
       this.el.object3D.matrixWorld.decompose(position, rotation, scale);
       var pointerPosition = this.getPointerPosition(position, rotation);
-      this.stroke.setSize(this.data.size);
+      this.stroke.setSize(this.data.size * this.sizeFactor);
       this.stroke.addPoint(position, rotation, pointerPosition);
     };
   })(),
 
   startNewStroke: function () {
-    this.stroke = this.system.addNewStroke(this.color, this.data.size);
+    this.stroke = this.system.addNewStroke(this.color, this.data.size * this.sizeFactor);
   },
 
   getPointerPosition: (function () {
