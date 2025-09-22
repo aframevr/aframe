@@ -120,7 +120,7 @@ export var Component = registerComponent('logitech-mx-ink-controls', {
     var controllerObject3D = this.controllerObject3D;
     if (!this.data.model) { return; }
     if (controllerObject3D) {
-      controllerObject3D.visible = this.el.sceneEl.is('vr-mode');
+      controllerObject3D.visible = this.el.sceneEl.is('vr-mode') || this.el.sceneEl.is('ar-mode');
       this.el.setObject3D('mesh', controllerObject3D);
       return;
     }
@@ -163,7 +163,7 @@ export var Component = registerComponent('logitech-mx-ink-controls', {
     });
 
     this.controllerObject3D = this.el.getObject3D('mesh');
-    this.controllerObject3D.visible = this.el.sceneEl.is('vr-mode');
+    this.controllerObject3D.visible = this.el.sceneEl.is('vr-mode') || this.el.sceneEl.is('ar-mode');
   },
 
   onAxisMoved: function (evt) {
