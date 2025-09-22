@@ -11017,7 +11017,7 @@ var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_0__.registerCompo
       return;
     }
     if (controllerObject3D) {
-      controllerObject3D.visible = this.el.sceneEl.is('vr-mode');
+      controllerObject3D.visible = this.el.sceneEl.is('vr-mode') || this.el.sceneEl.is('ar-mode');
       this.el.setObject3D('mesh', controllerObject3D);
       return;
     }
@@ -11056,7 +11056,7 @@ var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_0__.registerCompo
       rayOrigin: new three__WEBPACK_IMPORTED_MODULE_3__.Vector3(0, 0, 0)
     });
     this.controllerObject3D = this.el.getObject3D('mesh');
-    this.controllerObject3D.visible = this.el.sceneEl.is('vr-mode');
+    this.controllerObject3D.visible = this.el.sceneEl.is('vr-mode') || this.el.sceneEl.is('ar-mode');
   },
   onAxisMoved: function (evt) {
     (0,_utils_tracked_controls_js__WEBPACK_IMPORTED_MODULE_2__.emitIfAxesChanged)(this, this.mapping.axes, evt);
@@ -61018,7 +61018,7 @@ if (_utils_index_js__WEBPACK_IMPORTED_MODULE_16__.device.isBrowserEnvironment) {
   window.logs = debug;
   __webpack_require__(/*! ./style/aframe.css */ "./src/style/aframe.css");
 }
-console.log('A-Frame Version: 1.7.1 (Date 2025-07-28, Commit #4a8f94ee)');
+console.log('A-Frame Version: 1.7.1 (Date 2025-09-22, Commit #f576550a)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].REVISION);
 
 // Wait for ready state, unless user asynchronously initializes A-Frame.
