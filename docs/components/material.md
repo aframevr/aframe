@@ -5,8 +5,6 @@ layout: docs
 parent_section: components
 source_code: src/components/material.js
 examples:
-  - title: Displacement Shader
-    src: https://glitch.com/edit/#!/aframe-displacement-shader?path=client/index.js:1:0
   - title: Shader Walkthrough
     src: https://codepen.io/machenmusik/pen/WZyQNj
   - title: Grid Shader
@@ -417,7 +415,7 @@ Let's walk through an [example CodePen][example] with step-by-step commentary.
 As always, we need to include the A-Frame script.
 
 ```js
-<script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
+<script src="https://aframe.io/releases/1.7.1/aframe.min.js"></script>
 ```
 
 Next, we define any components and shaders we need after the A-Frame

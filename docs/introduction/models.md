@@ -6,10 +6,10 @@ parent_section: introduction
 order: 10
 examples:
  - title: Modifying Material of Model
-   src: https://glitch.com/edit/#!/aframe-modify-model-material?path=index.html:1:0
+   src: https://aframe.io/aframe/examples/test/gltf-model/modify-materials.html
 ---
 
-[3loaders]: https://github.com/mrdoob/three.js/tree/dev/examples/js/loaders
+[3loaders]: https://github.com/mrdoob/three.js/tree/dev/examples/jsm/loaders
 [ecsfind]: ./entity-component-system.md#where-to-find-components
 [glTF]: ../components/gltf-model.md
 [OBJ]: ../components/obj-model.md
@@ -72,7 +72,7 @@ Models](./hosting-and-publishing.md#hosting-models).
 
 ## Modifying Materials
 
-[modify]: https://glitch.com/edit/#!/aframe-modify-model-material?path=index.html:1:0
+[modify]: https://aframe.io/aframe/examples/test/gltf-model/modify-materials.html
 
 To modify the material of a model, we need to wait for the model to load, and
 then modify the three.js meshes created from the model. What happens is an
@@ -102,7 +102,7 @@ See this live example of [modifying material of a loaded model][modify].
   });
 </script>
 
-<a-scene background="color: #ECECEC">
+<a-scene>
   <a-assets>
     <a-asset-item id="cityModel" src="https://cdn.aframe.io/test-models/models/glTF-2.0/virtualcity/VC.gltf"></a-asset-item>
   </a-assets>

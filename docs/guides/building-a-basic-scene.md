@@ -40,7 +40,7 @@ We start out with a minimal HTML structure:
 ```html
 <html>
   <head>
-    <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/1.7.1/aframe.min.js"></script>
   </head>
   <body>
     <a-scene>
@@ -223,8 +223,8 @@ First, include the environment component using a script tag after A-Frame:
 
 ```html
 <head>
-  <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
-  <script src="https://unpkg.com/aframe-environment-component@1.3.x/dist/aframe-environment-component.min.js"></script>
+  <script src="https://aframe.io/releases/1.7.1/aframe.min.js"></script>
+  <script src="https://unpkg.com/aframe-environment-component@1.5.x/dist/aframe-environment-component.min.js"></script>
 </head>
 ```
 
@@ -243,7 +243,7 @@ We can specify a preset (e.g., `forest`) with along many other parameters
 
 ## Applying an Image Texture
 
-> Make sure you're [serving your HTML using a local server](../introduction/getting-started.md#using-a-local-server)
+> Make sure you're [serving your HTML using a local server](../introduction/installation.md#use-a-local-server)
 > for textures to load properly.
 > Due to an [issue with imgur.com](https://stackoverflow.com/questions/43895390/imgur-images-returning-403), view the page using http://localhost, rather than http://127.0.0.1
 
@@ -633,6 +633,6 @@ relatively sharp and performant:
 
 And that's the basic example!
 
-[View the example](https://aframe.io/examples/docs/basic-scene/) (basic environment)
+[View the example](https://aframe.io/aframe/examples/docs/basic-scene/) (basic environment)
 
-[View the example](https://aframe.io/examples/docs/basic-scene-2/) (custom environment)
+[View the example](https://aframe.io/aframe/examples/docs/basic-scene-2/) (custom environment)

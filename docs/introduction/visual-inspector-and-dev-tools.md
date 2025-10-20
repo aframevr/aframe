@@ -112,12 +112,12 @@ We can press **`h`** key to see a list of all the shortcuts available.
 
 ## Mouse and Keyboard Shortcuts
 
-[debugcursor](https://www.npmjs.com/package/aframe-debug-cursor-component)
+[debugcursor]: https://www.npmjs.com/package/aframe-debug-cursor-component
 
 Using `<a-entity cursor="rayOrigin: mouse"></a-entity>`, we can hover and click
 entities using the mouse. These provide `mouseenter`, `mouseleave`, and `click`
 events that are compatible with using the cursor on a controller (such as via
-`<a-laser-controls>`). There is a [debug-cursor component](debugcursor) to log
+`<a-laser-controls>`). There is a [debug-cursor component][debugcursor] to log
 cursor events.
 
 It is useful to develop keyboard shortcut bindings to test actions within
@@ -281,7 +281,7 @@ are to:
 
 1. Download ngrok
 2. Open the command line and head to the same directory ngrok was downloaded to
-3. Have a local development server running (e.g., `python -m SimpleHTTPServer 8080`)
+3. Have a local development server running (e.g., `python3 -m http.server 8080`)
 4. Run `./ngrok http <PORT>` (e.g., `./ngrok http 8080`)
 5. An ngrok instance will spin up and provide a URL that the other computer can
 access from its browser (e.g., `https://abcdef123456.ngrok.io`)

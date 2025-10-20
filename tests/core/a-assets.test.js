@@ -398,7 +398,7 @@ suite('a-asset-item', function () {
     });
 
     test('get file name from url with query parameters', function () {
-      var url = 'https://cdn.glitch.com/test.jpg?1531238960521&test=yeah';
+      var url = 'https://aframe.io/test.jpg?1531238960521&test=yeah';
       assert.equal(getFileNameFromURL(url), 'test.jpg');
     });
   });

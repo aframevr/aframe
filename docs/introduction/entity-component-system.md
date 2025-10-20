@@ -5,9 +5,9 @@ layout: docs
 order: 5
 examples:
   - title: Community Components in Action
-    src: https://glitch.com/edit/#!/aframe-registry?path=index.html
+    src: https://aframe.io/aframe/examples/docs/community-components/
   - title: Animated Lights
-    src: https://glitch.com/edit/#!/aframe-animated-lights?path=index.html
+    src: https://aframe.io/aframe/examples/showcase/dynamic-lights/
 ---
 
 [ecs]: https://wikipedia.org/wiki/Entity_component_system
@@ -322,12 +322,16 @@ channels to share!
 
 #### npm
 
-[search]: https://www.npmjs.com/search?q=aframe-component
+[search]: https://www.npmjs.com/search?q=keywords:aframe-component
+[directory]: https://aframe.wiki/en/#!pages/component-directory.md
 
 Most A-Frame components are published on npm as well as GitHub. We can use
-[npm's search to search for `aframe-components`][search]. npm lets us sort by
-quality, popularity, and maintenance. This is a great place to look for a more
-complete list of components.
+[npm's search to search for packages tagged with `aframe-component`][search].
+This is a great place to look for a more complete list of components.
+
+For a list of components with the A-Frame version that the component
+was last tested with, check out the community-maintained [Component Directory][directory]
+on the [A-Frame Wiki](#a-frame-wiki).
 
 #### GitHub Projects
 
@@ -419,7 +423,7 @@ Now we can include it into our HTML:
 ```html
 <html>
   <head>
-    <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/1.7.1/aframe.min.js"></script>
     <script src="https://unpkg.com/@c-frame/aframe-particle-system-component@1.2.x/dist/aframe-particle-system-component.min.js"></script>
   </head>
   <body>
@@ -440,7 +444,7 @@ Now we can include it into our HTML:
 ```html
 <html>
   <head>
-    <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/1.7.1/aframe.min.js"></script>
     <script src="https://unpkg.com/@c-frame/aframe-particle-system-component@1.2.x/dist/aframe-particle-system-component.min.js"></script>
   </head>
   <body>
@@ -475,7 +479,7 @@ Registry and using the JSDELIVR CDN.  This example can also be viewed in the [A-
   <head>
     <title>Community Components Example</title>
     <meta name="description" content="Community Components Example">
-    <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/1.7.1/aframe.min.js"></script>
     <script src="https://unpkg.com/@c-frame/aframe-particle-system-component@1.2.x/dist/aframe-particle-system-component.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/aframe-simple-sun-sky@^1.2.2/simple-sun-sky.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.5.0/dist/aframe-extras.min.js"></script>

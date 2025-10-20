@@ -7,7 +7,7 @@ order: 7
 source_code: src/core/a-mixin.js
 examples:
   - title: Animated Lights
-    src: https://glitch.com/edit/#!/aframe-animated-lights?path=index.html
+    src: https://aframe.io/aframe/examples/showcase/dynamic-lights/
 ---
 
 Mixins provide a way to compose and reuse commonly-used sets of component

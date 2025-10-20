@@ -6,13 +6,14 @@ parent_section: primitives
 source_code: src/core/a-cubemap.js
 ---
 
-[material]: ../components/material.md#environment-maps
+[envMap]: ../components/material.md#environment-maps
+[material]: ../components/material.md#built-in-materials
 [probe-light]: ../components/light.md#probe
 [cube-texture]: https://threejs.org/docs/#api/en/textures/CubeTexture
 
 The cubemap primitive is used to create a [CubeTexture][cube-texture] environment map from 6 square images.
 
-This can then be used as an [envMap](material.html#built_in_materials_envmap) in the [material component][material], or on a [probe light][probe-light].
+This can then be used as an [envMap][envMap] in the [material component][material], or on a [probe light][probe-light].
 
 ## Example
 
