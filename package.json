@@ -50,7 +50,7 @@
     "load-bmfont": "^1.2.3",
     "stats-gl": "^3.6.0",
     "super-animejs": "^3.1.0",
-    "three": "npm:super-three@0.179.0",
+    "three": "npm:super-three@0.181.0",
     "three-bmfont-text": "dmarcos/three-bmfont-text#8f38cb02a07321d2369d1234e9b9087c284543ed"
   },
   "devDependencies": {
