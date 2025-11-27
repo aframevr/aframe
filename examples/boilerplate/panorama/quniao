@@ -1,1 +1,132 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>360° Schul-Tour</title>
+    <!-- A-Frame laden (CDN-Version, reicht völlig) -->
+    <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+  </head>
+  <body>
+    <a-scene>
+
+      <!-- ========== ASSETS (BILDER) ========== -->
+      <a-assets>
+        <!-- Deine 360°-Fotos -->
+        <img id="szene-start" src="start.jpg">
+        <img id="szene-hof"   src="hof.jpg">
+        <img id="szene-mensa" src="mensa.jpg">
+      </a-assets>
+
+      <!-- ========== HINTERGRUND (a-sky) ========== -->
+      <!-- Startszene: z.B. Eingangsbereich -->
+      <a-sky id="image-360" src="#szene-start" rotation="0 0 0"></a-sky>
+
+      <!-- ========== KAMERA + CURSOR (zum Anklicken) ========== -->
+      <a-entity id="rig" position="0 1.6 0">
+        <a-entity camera look-controls wasd-controls>
+          <!-- Cursor in der Mitte zum Anklicken -->
+          <a-cursor
+            id="cursor"
+            fuse="false"
+            raycaster="objects: .clickable">
+          </a-cursor>
+        </a-entity>
+      </a-entity>
+
+      <!-- ========== SZENEN-TITEL OBEN ========== -->
+      <a-text
+        id="scene-title"
+        value="Startbereich"
+        position="-1.5 2 -2.5"
+        width="6"
+        color="#FFFFFF">
+      </a-text>
+
+      <!-- ========== MENÜ-BOXEN (LINKS ZU ANDEREN BILDERN) ========== -->
+      <!-- Du kannst sie dir wie ein kleines schwebendes Menü im Raum vorstellen -->
+
+      <!-- Box: Hof -->
+      <a-entity class="clickable scene-link"
+                data-src="#szene-hof"
+                data-label="Schulhof"
+                data-desc="Das ist der Schulhof. Hier ist die Pause.">
+        <a-box
+          depth="0.05"
+          height="0.4"
+          width="0.8"
+          position="-1 1.2 -2"
+          material="color: #222; opacity: 0.8">
+        </a-box>
+        <a-text
+          value="Hof"
+          align="center"
+          position="-1 1.25 -1.96"
+          width="3"
+          color="#FFFFFF">
+        </a-text>
+      </a-entity>
+
+      <!-- Box: Mensa -->
+      <a-entity class="clickable scene-link"
+                data-src="#szene-mensa"
+                data-label="Mensa"
+                data-desc="Die Mensa, wo ihr essen könnt.">
+        <a-box
+          depth="0.05"
+          height="0.4"
+          width="0.8"
+          position="1 1.2 -2"
+          material="color: #222; opacity: 0.8">
+        </a-box>
+        <a-text
+          value="Mensa"
+          align="center"
+          position="1 1.25 -1.96"
+          width="3"
+          color="#FFFFFF">
+        </a-text>
+      </a-entity>
+
+      <!-- Optional: Beschreibungstext unter dem Titel -->
+      <a-text
+        id="scene-desc"
+        value="Willkommen in der 360°-Tour deiner Schule."
+        position="-2 1.7 -2.5"
+        width="6"
+        color="#FFFFFF">
+      </a-text>
+
+      <!-- ========== SCRIPT: BOX-KLICK WECHSELT DAS BILD ========== -->
+      <script>
+        document.addEventListener('DOMContentLoaded', function () {
+          var sky = document.querySelector('#image-360');
+          var title = document.querySelector('#scene-title');
+          var desc = document.querySelector('#scene-desc');
+
+          var links = document.querySelectorAll('.scene-link');
+
+          links.forEach(function (link) {
+            link.addEventListener('click', function () {
+              var targetSrc = this.getAttribute('data-src');   // z.B. #szene-hof
+              var label     = this.getAttribute('data-label'); // z.B. "Schulhof"
+              var text      = this.getAttribute('data-desc');  // Beschreibung
+
+              // Hintergrundbild wechseln
+              sky.setAttribute('src', targetSrc);
+
+              // Titel + Beschreibung anpassen
+              if (label) {
+                title.setAttribute('value', label);
+              }
+              if (text) {
+                desc.setAttribute('value', text);
+              }
+            });
+          });
+        });
+      </script>
+
+    </a-scene>
+  </body>
+</html>
 
