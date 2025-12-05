@@ -6,8 +6,10 @@ var warn = utils.debug('components:layer:warn');
 
 export var Component = registerComponent('layer', {
   schema: {
-    type: {default: 'quad', oneOf: ['quad', 'monocubemap', 'stereocubemap']},
+    type: {default: 'quad', oneOf: ['mono-equirect', 'stereo-left-right-equirect', 'stereo-top-bottom-equirect', 'quad', 'monocubemap', 'stereocubemap']},
     src: {type: 'map'},
+    is180: {default: false, if: {type: ['mono-equirect', 'stereo-left-right-equirect', 'stereo-top-bottom-equirect']}},
+    radius: {default: 198, if: {type: ['mono-equirect', 'stereo-left-right-equirect', 'stereo-top-bottom-equirect']}},
     rotateCubemap: {default: false},
     width: {default: 0},
     height: {default: 0}
@@ -59,6 +61,11 @@ export var Component = registerComponent('layer', {
     this.destroyLayer();
     this.texture = undefined;
     this.textureIsVideo = this.data.src.tagName === 'VIDEO';
+    if (type.endsWith('equirect')) {
+      this.loadEquirectImage();
+      return;
+    }
+
     if (type === 'quad') {
       this.loadQuadImage();
       return;
@@ -102,6 +109,15 @@ export var Component = registerComponent('layer', {
       glayer = xrGLFactory.getSubImage(this.layer, frame, 'right');
       this.loadCubeMapImage(glayer.colorTexture, src, 6);
     }
+  },
+
+  loadEquirectImage: function () {
+    var src = this.data.src;
+    var self = this;
+    this.el.sceneEl.systems.material.loadTexture(src, {src: src}, function textureLoaded (texture) {
+      self.el.sceneEl.renderer.initTexture(texture);
+      self.texture = texture;
+    });
   },
 
   loadQuadImage: function () {
@@ -226,7 +242,7 @@ export var Component = registerComponent('layer', {
     if (this.data.src.complete && (this.pendingCubeMapUpdate || this.loadingScreen || this.visibilityChanged)) { this.loadCubeMapImages(); }
     if (!this.needsRedraw && !this.layer.needsRedraw) { return; }
     if (this.textureIsVideo) { return; }
-    if (this.data.type === 'quad') { this.draw(); }
+    if (this.data.type === 'quad' || this.data.type.endsWith('equirect')) { this.draw(); }
   },
 
   initLayer: function () {
@@ -237,6 +253,11 @@ export var Component = registerComponent('layer', {
       self.visibilityChanged = evt.session.visibilityState !== 'hidden';
     };
 
+    if (type.endsWith('equirect')) {
+      this.initEquirectLayer();
+      return;
+    }
+
     if (type === 'quad') {
       this.initQuadLayer();
       return;
@@ -246,6 +267,36 @@ export var Component = registerComponent('layer', {
       this.initCubeMapLayer();
       return;
     }
+  },
+
+  initEquirectLayer: function () {
+    if (!this.texture) { return; }
+    var sceneEl = this.el.sceneEl;
+    var eqrtIs180 = this.data.is180;
+    var eqrtRadius = this.data.radius;
+    var eqrtLayout = this.data.type.replace('-equirect', ''); // mono stereo-left-right stereo-top-bottom
+    if (this.textureIsVideo) {
+      var mediaBinding = new XRMediaBinding(sceneEl.xrSession);
+      this.layer = mediaBinding.createEquirectLayer(this.data.src, {
+        space: this.referenceSpace,
+        layout: eqrtLayout
+      });
+    } else {
+      var eqrtTextureWidth = this.texture.image.width;
+      var eqrtTextureHeight = this.texture.image.height;
+      var xrGLFactory = this.xrGLFactory = sceneEl.renderer.xr.getBinding();
+      this.layer = xrGLFactory.createEquirectLayer({
+        space: this.referenceSpace,
+        viewPixelWidth: eqrtTextureWidth / (eqrtLayout === 'stereo-left-right' ? 2 : 1),
+        viewPixelHeight: eqrtTextureHeight / (eqrtLayout === 'stereo-top-bottom' ? 2 : 1),
+        layout: eqrtLayout
+      });
+    }
+    this.layer.centralHorizontalAngle = Math.PI * (eqrtIs180 ? 1 : 2);
+    this.layer.upperVerticalAngle = Math.PI / 2.0;
+    this.layer.lowerVerticalAngle = -Math.PI / 2.0;
+    this.layer.radius = eqrtRadius;
+    sceneEl.renderer.xr.addLayer(this.layer);
   },
 
   initQuadLayer: function () {
