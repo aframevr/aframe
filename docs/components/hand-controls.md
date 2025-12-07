@@ -33,7 +33,8 @@ handles hand animations and poses.
 | color          | Color of hand material.                                                                | white         |
 | hand           | Associated controller. Can be `left` or `right`.                                       | left          |
 | handModelStyle | Style of the hand 3D model loaded. Can be `lowPoly`, `highPoly` or `toon`.             | lowPoly       |
-
+| offSetRotation | Rotation offset for the hand model. Default value aligned with Meta Quest controllers. | 45 0 90       |
+| offSetPosition | Position offset for the hand model. Default value aligned with Meta Quest controllers. | 0 0 0.02      |
 
 ## Events
 

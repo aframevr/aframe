@@ -53,7 +53,10 @@ export var Component = registerComponent('hand-controls', {
   schema: {
     color: {default: 'white', type: 'color'},
     hand: { default: 'left' },
-    handModelStyle: {default: 'lowPoly', oneOf: ['lowPoly', 'highPoly', 'toon']}
+    handModelStyle: {default: 'lowPoly', oneOf: ['lowPoly', 'highPoly', 'toon']},
+    // Default rotation and position is aligned with Meta Quest Controllers in the Meta Horizon Browser
+    offSetRotation: {default: {x: '45', y: '0', z: '90'}, type: 'vec3'},
+    offSetPosition: {default: {x: '0', y: '0', z: '0.02'}, type: 'vec3'}
   },
 
   after: ['tracked-controls'],
@@ -117,24 +120,19 @@ export var Component = registerComponent('hand-controls', {
     var el = this.el;
     var hand = this.data.hand;
     var mesh = this.el.getObject3D('mesh');
+    var offSetRotation = this.data.offSetRotation;
+    var offSetPosition = this.data.offSetPosition;
 
     el.object3D.visible = true;
 
-    var handModelOrientationZ = hand === 'left' ? Math.PI / 2 : -Math.PI / 2;
     // The WebXR standard defines the grip space such that a cylinder held in a closed hand points
     // along the Z axis. The models currently have such a cylinder point along the X-Axis.
-    var handModelOrientationX = el.sceneEl.hasWebXR ? -Math.PI / 2 : 0;
+    var handModelOrientationX = el.sceneEl.hasWebXR ? -THREE.MathUtils.degToRad(offSetRotation.x) : 0;
+    var handModelOrientationY = THREE.MathUtils.degToRad(offSetRotation.y);
+    var handModelOrientationZ = hand === 'left' ? THREE.MathUtils.degToRad(offSetRotation.z) : -THREE.MathUtils.degToRad(offSetRotation.z);
 
-    // Pico4, at least on Wolvic, needs a different rotation offset
-    // for the hand model. Pico Browser claims to use oculus
-    // controllers instead; will load meta-touch-controls and does
-    // not require this adjustment.
-    if (evt.detail.name === 'pico-controls') {
-      handModelOrientationX += Math.PI / 4;
-    }
-
-    mesh.position.set(0, 0, 0);
-    mesh.rotation.set(handModelOrientationX, 0, handModelOrientationZ);
+    mesh.position.set(offSetPosition.x, offSetPosition.y, offSetPosition.z);
+    mesh.rotation.set(handModelOrientationX, handModelOrientationY, handModelOrientationZ);
   },
 
   onControllerDisconnected: function () {
