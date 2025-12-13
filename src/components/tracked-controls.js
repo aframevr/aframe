@@ -69,7 +69,7 @@ export var Component = registerComponent('tracked-controls', {
   },
 
   /**
-   * Handle update controller match criteria (such as `id`, `idPrefix`, `hand`, `controller`)
+   * Handle update controller match criteria (such as `id`, `hand`, `controller`)
    */
   updateController: function () {
     this.controller = controllerUtils.findMatchingControllerWebXR(

@@ -121,7 +121,7 @@ export var Component = registerComponent('vive-controls', {
 
     // If we have an OpenVR Gamepad, use the fixed mapping.
     el.setAttribute('tracked-controls', {
-      idPrefix: GAMEPAD_ID_PREFIX,
+      id: GAMEPAD_ID_PREFIX,
       hand: data.hand,
       controller: this.controllerIndex
     });

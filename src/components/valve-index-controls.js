@@ -118,7 +118,7 @@ export var Component = registerComponent('valve-index-controls', {
 
     // If we have an OpenVR Gamepad, use the fixed mapping.
     el.setAttribute('tracked-controls', {
-      idPrefix: GAMEPAD_ID_PREFIX,
+      id: GAMEPAD_ID_PREFIX,
       // Hand IDs: 1 = right, 0 = left, 2 = anything else.
       controller: data.hand === 'right' ? 1 : data.hand === 'left' ? 0 : 2,
       hand: data.hand
