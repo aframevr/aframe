@@ -423,13 +423,6 @@ var componentConfig = {
       this.updateThumbstickTouchV3orPROorPlus(evt);
       return;
     }
-    for (var axis in evt.detail) {
-      this.buttonObjects.thumbstick.rotation[this.axisMap[axis]] =
-        this.buttonRanges.thumbstick.originalRotation[this.axisMap[axis]] -
-        (Math.PI / 8) *
-        evt.detail[axis] *
-        (axis === 'y' || this.data.hand === 'right' ? -1 : 1);
-    }
   },
   axisMap: {
     y: 'x',
