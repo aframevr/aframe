@@ -36,8 +36,8 @@ export var Component = registerComponent('tracked-controls', {
 
   init: function () {
     this.buttonEventDetails = {};
-    this.buttonStates = this.el.components['tracked-controls'].buttonStates = {};
-    this.axis = this.el.components['tracked-controls'].axis = [0, 0, 0];
+    this.buttonStates = {};
+    this.axis = [0, 0, 0];
     this.changedAxes = [];
     this.axisMoveEventDetail = {axis: this.axis, changed: this.changedAxes};
 
@@ -80,8 +80,6 @@ export var Component = registerComponent('tracked-controls', {
       this.data.iterateControllerProfiles,
       this.data.handTrackingEnabled
     );
-    // Legacy handle to the controller for old components.
-    this.el.components['tracked-controls'].controller = this.controller;
   },
 
   tick: function () {
