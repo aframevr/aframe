@@ -98,7 +98,6 @@ suite('look-controls', function () {
       var cameraEl = sceneEl.camera.el;
       var lookControlsComponent = cameraEl.components['look-controls'];
       lookControlsComponent.hasPositionalTracking = true;
-      cameraEl.setAttribute('look-controls', {userHeight: 0});
       cameraEl.setAttribute('position', '3 3 3');
       sceneEl.xrSession = {addEventListener: function () {}};
       sceneEl.emit('enter-vr');
