@@ -127,7 +127,7 @@ export var Component = registerComponent('generic-tracked-controller-controls', 
     }
     el.setAttribute('tracked-controls', {
       hand: data.hand,
-      idPrefix: GAMEPAD_ID_PREFIX,
+      id: GAMEPAD_ID_PREFIX,
       iterateControllerProfiles: true
     });
     if (!this.data.defaultModel) { return; }

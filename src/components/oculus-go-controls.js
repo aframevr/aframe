@@ -103,7 +103,7 @@ export var Component = registerComponent('oculus-go-controls', {
     var data = this.data;
     el.setAttribute('tracked-controls', {
       hand: data.hand,
-      idPrefix: GAMEPAD_ID_PREFIX
+      id: GAMEPAD_ID_PREFIX
     });
     if (!this.data.model) { return; }
     this.el.setAttribute('gltf-model', OCULUS_GO_CONTROLLER_MODEL_URL);

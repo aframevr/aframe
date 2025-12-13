@@ -110,7 +110,7 @@ export var Component = registerComponent('pico-controls', {
     var data = this.data;
     el.setAttribute('tracked-controls', {
       // TODO: verify expected behavior between reserved prefixes.
-      idPrefix: GAMEPAD_ID,
+      id: GAMEPAD_ID,
       hand: data.hand,
       controller: this.controllerIndex
     });

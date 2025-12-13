@@ -112,7 +112,7 @@ export var Component = registerComponent('magicleap-controls', {
 
     el.setAttribute('tracked-controls', {
       // TODO: verify expected behavior between reserved prefixes.
-      idPrefix: GAMEPAD_ID_COMPOSITE,
+      id: GAMEPAD_ID_COMPOSITE,
       hand: data.hand,
       controller: this.controllerIndex
     });
