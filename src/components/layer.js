@@ -222,6 +222,8 @@ export var Component = registerComponent('layer', {
     if (!this.el.sceneEl.xrSession) { return; }
     if (!this.referenceSpace) { return; }
     if (this.layerEnabled && !this.layer && (this.el.sceneEl.is('vr-mode') || this.el.sceneEl.is('ar-mode'))) { this.initLayer(); }
+    // initLayer may not have created the layer if the texture is not loaded yet
+    if (!this.layer) { return; }
     this.updateTransform();
     if (this.data.src.complete && (this.pendingCubeMapUpdate || this.loadingScreen || this.visibilityChanged)) { this.loadCubeMapImages(); }
     if (!this.needsRedraw && !this.layer.needsRedraw) { return; }
