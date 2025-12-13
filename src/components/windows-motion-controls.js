@@ -173,7 +173,7 @@ export var Component = registerComponent('windows-motion-controls', {
   injectTrackedControls: function () {
     var data = this.data;
     this.el.setAttribute('tracked-controls', {
-      idPrefix: GAMEPAD_ID_PREFIX,
+      id: GAMEPAD_ID_PREFIX,
       controller: data.pair,
       hand: data.hand
     });
