@@ -173,13 +173,16 @@ suite('material', function () {
       var textureLoaderSpy = this.sinon.spy(THREE.TextureLoader.prototype, 'load');
       img.setAttribute('src', IMG_SRC);
       img.setAttribute('id', 'foo');
-      THREE.Cache.files[IMG_SRC] = img;
+      THREE.Cache.clear();
       assetsEl.appendChild(img);
       el.sceneEl.appendChild(assetsEl);
+      // Adding the asset will add image:${IMG_SRC} in THREE.Cache.files
+      // without going through THREE.ImageLoader
       el.addEventListener('materialtextureloaded', function () {
         assert.notOk(imageLoaderSpy.called);
         assert.notOk(textureLoaderSpy.called);
-        delete THREE.Cache.files[IMG_SRC];
+        assert.ok(`image:${IMG_SRC}` in THREE.Cache.files);
+        THREE.Cache.clear();
         THREE.ImageLoader.prototype.load.restore();
         THREE.TextureLoader.prototype.load.restore();
         done();
@@ -191,10 +194,11 @@ suite('material', function () {
       var imageLoaderSpy = this.sinon.spy(THREE.ImageLoader.prototype, 'load');
       el.addEventListener('materialtextureloaded', function () {
         assert.ok(imageLoaderSpy.called);
-        assert.ok(IMG_SRC in THREE.Cache.files);
+        assert.ok(`image:${IMG_SRC}` in THREE.Cache.files);
         THREE.ImageLoader.prototype.load.restore();
         done();
       });
+      // The image is loaded via the material system using THREE.ImageLoader
       el.setAttribute('material', 'src', IMG_SRC);
     });
 

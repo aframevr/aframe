@@ -81,7 +81,7 @@ suite('a-assets', function () {
     assetsEl.appendChild(img);
 
     img.addEventListener('load', function () {
-      assert.equal(THREE.Cache.files[IMG_SRC], img);
+      assert.equal(THREE.Cache.files[`image:${IMG_SRC}`], img);
       done();
     });
 
@@ -248,7 +248,7 @@ suite('a-asset-item', function () {
   });
 
   test('emits progress event', function (done) {
-    THREE.Cache.remove(XHR_SRC);
+    THREE.Cache.remove(`file:${XHR_SRC}`);
     var assetItem = document.createElement('a-asset-item');
     assetItem.setAttribute('src', XHR_SRC);
     assetItem.addEventListener('progress', function (evt) {
@@ -284,7 +284,7 @@ suite('a-asset-item', function () {
     assetItem2.setAttribute('src', XHR_SRC);
 
     // Remove cache data to not load from it.
-    THREE.Cache.remove(XHR_SRC);
+    THREE.Cache.remove(`file:${XHR_SRC}`);
 
     assetItem1.addEventListener('error', function (evt) {
       assert.ok(evt.detail.xhr !== undefined);
@@ -306,7 +306,7 @@ suite('a-asset-item', function () {
   test('loads as text without responseType attribute', function (done) {
     var assetItem = document.createElement('a-asset-item');
     // Remove cache data to not load from it.
-    THREE.Cache.remove(XHR_SRC);
+    THREE.Cache.remove(`file:${XHR_SRC}`);
     assetItem.setAttribute('src', XHR_SRC);
     assetItem.addEventListener('loaded', function (evt) {
       assert.ok(assetItem.data !== null);
@@ -319,7 +319,7 @@ suite('a-asset-item', function () {
 
   test('loads as arraybuffer', function (done) {
     var assetItem = document.createElement('a-asset-item');
-    THREE.Cache.remove(XHR_SRC);
+    THREE.Cache.remove(`file:${XHR_SRC}`);
     assetItem.setAttribute('src', XHR_SRC);
     assetItem.setAttribute('response-type', 'arraybuffer');
     assetItem.addEventListener('loaded', function (evt) {
@@ -344,7 +344,7 @@ suite('a-asset-item', function () {
   });
 
   test('reloads as text', function (done) {
-    THREE.Cache.remove(XHR_SRC);
+    THREE.Cache.remove(`file:${XHR_SRC}`);
     var assetItem = document.createElement('a-asset-item');
     assetItem.setAttribute('src', XHR_SRC);
     assetItem.addEventListener('loaded', function (evt) {
