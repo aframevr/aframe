@@ -166,13 +166,6 @@ function mediaElementLoaded (el) {
 
       // Compare seconds buffered to media duration.
       if (secondsBuffered >= el.duration) {
-        // Set in cache because we won't be needing to call three.js loader if we have.
-        // a loaded media element.
-        // Store video elements only. three.js loader is used for audio elements.
-        // See assetParse too.
-        if (el.tagName === 'VIDEO') {
-          THREE.Cache.add('file:' + el.getAttribute('src'), el);
-        }
         resolve();
       }
     }
