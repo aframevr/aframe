@@ -149,7 +149,7 @@ export var Component = registerComponent('hand-tracking-controls', {
     xrSession.requestReferenceSpace(referenceSpaceType).then(function (referenceSpace) {
       self.referenceSpace = referenceSpace;
     }).catch(function (error) {
-      self.el.sceneEl.systems.webxr.warnIfFeatureNotRequested(referenceSpaceType, 'tracked-controls-webxr uses reference space ' + referenceSpaceType);
+      self.el.sceneEl.systems.webxr.warnIfFeatureNotRequested(referenceSpaceType, 'tracked-controls uses reference space ' + referenceSpaceType);
       throw error;
     });
   },
