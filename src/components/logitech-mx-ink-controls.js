@@ -94,12 +94,15 @@ export var Component = registerComponent('logitech-mx-ink-controls', {
   },
 
   checkIfControllerPresent: function () {
-    var controllerObject3D = this.controllerObject3D;
-    if (controllerObject3D) { controllerObject3D.visible = false; }
     checkControllerPresentAndSetup(this, GAMEPAD_ID, {
       hand: this.data.hand,
       iterateControllerProfiles: true
     });
+    // Set visibility based on actual controller presence after the check that
+    // set this.controllerPresent
+    if (this.controllerObject3D) {
+      this.controllerObject3D.visible = this.controllerPresent;
+    }
   },
 
   injectTrackedControls: function () {
