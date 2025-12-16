@@ -17,6 +17,24 @@ class AAssets extends ANode {
     this.timeout = null;
   }
 
+  /**
+   * Override connectedCallback to initialize at 'interactive' instead of 'complete'.
+   * This allows the timeout mechanism to work before loading the images.
+   * If we wait for 'complete', all resources (including images) are already loaded.
+   */
+  connectedCallback () {
+    var self = this;
+    if (document.readyState === 'interactive' || document.readyState === 'complete') {
+      this.doConnectedCallback();
+      return;
+    }
+    document.addEventListener('readystatechange', function onReadyStateChange () {
+      if (document.readyState !== 'interactive' && document.readyState !== 'complete') { return; }
+      document.removeEventListener('readystatechange', onReadyStateChange);
+      self.doConnectedCallback();
+    });
+  }
+
   doConnectedCallback () {
     var self = this;
     var i;

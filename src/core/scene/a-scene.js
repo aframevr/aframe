@@ -71,8 +71,37 @@ export class AScene extends AEntity {
     document.documentElement.classList.remove('a-fullscreen');
   }
 
-  doConnectedCallback () {
+  /**
+   * Override connectedCallback to set up renderer and loading screen at 'interactive'.
+   * This allows the loading screen to appear before a-assets starts loading,
+   * while systems initialization still waits for 'complete' (via aframeready) to handle deferred scripts.
+   */
+  connectedCallback () {
     var self = this;
+    var readyState = document.readyState;
+
+    // Set up renderer and loading screen at 'interactive' so they're visible during asset loading.
+    if (readyState === 'interactive' || readyState === 'complete') {
+      this.setupRendererAndLoadingScreen();
+    } else {
+      document.addEventListener('readystatechange', function onReadyStateChange () {
+        if (document.readyState !== 'interactive' && document.readyState !== 'complete') { return; }
+        document.removeEventListener('readystatechange', onReadyStateChange);
+        self.setupRendererAndLoadingScreen();
+      });
+    }
+
+    // Wait for 'complete' (aframeready) before initializing systems.
+    super.connectedCallback();
+  }
+
+  /**
+   * Set up renderer and loading screen early so they're visible during asset loading.
+   */
+  setupRendererAndLoadingScreen () {
+    if (this.rendererSetup) { return; }
+    this.rendererSetup = true;
+
     var embedded = this.hasAttribute('embedded');
 
     // Default components.
@@ -81,7 +110,6 @@ export class AScene extends AEntity {
     this.setAttribute('screenshot', '');
     this.setAttribute('xr-mode-ui', '');
     this.setAttribute('device-orientation-permission-ui', '');
-    super.doConnectedCallback();
 
     // Renderer initialization
     setupCanvas(this);
@@ -90,6 +118,16 @@ export class AScene extends AEntity {
 
     this.resize();
     if (!embedded) { this.addFullScreenStyles(); }
+  }
+
+  doConnectedCallback () {
+    var self = this;
+
+    // Renderer may already be set up from connectedCallback at 'interactive'.
+    // If not, set it up now.
+    this.setupRendererAndLoadingScreen();
+
+    super.doConnectedCallback();
     initPostMessageAPI(this);
 
     initMetaTags(this);
