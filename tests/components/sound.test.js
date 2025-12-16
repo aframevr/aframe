@@ -5,7 +5,7 @@ import THREE from 'lib/three.js';
 suite('sound', function () {
   setup(function (done) {
     var el = this.el = entityFactory();
-    THREE.Cache.files = {};
+    THREE.Cache.clear();
     setTimeout(() => {
       el.setAttribute('sound', {
         autoplay: true,

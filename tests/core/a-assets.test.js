@@ -20,7 +20,7 @@ suite('a-assets', function () {
       done();
     });
     document.body.appendChild(scene);
-    THREE.Cache.files = {};
+    THREE.Cache.clear();
   });
 
   test('loads even if one asset fails to load', function (done) {
@@ -81,7 +81,7 @@ suite('a-assets', function () {
     assetsEl.appendChild(img);
 
     img.addEventListener('load', function () {
-      assert.equal(THREE.Cache.files[`image:${IMG_SRC}`], img);
+      assert.equal(THREE.Cache.get(`image:${IMG_SRC}`), img);
       done();
     });
 
