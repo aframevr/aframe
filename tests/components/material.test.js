@@ -176,16 +176,20 @@ suite('material', function () {
       THREE.Cache.clear();
       assetsEl.appendChild(img);
       el.sceneEl.appendChild(assetsEl);
-      // Adding the asset will add image:${IMG_SRC} in THREE.Cache
-      // without going through THREE.ImageLoader
+      // Adding the asset will add image:${IMG_SRC} in THREE.Cache when the img
+      // loading is complete with img.onload, without going through THREE.ImageLoader
+      assert.notOk(!!THREE.Cache.get(`image:${IMG_SRC}`));
       el.addEventListener('materialtextureloaded', function () {
         assert.notOk(imageLoaderSpy.called);
         assert.notOk(textureLoaderSpy.called);
-        assert.equal(THREE.Cache.get(`image:${IMG_SRC}`), img);
-        THREE.Cache.clear();
         THREE.ImageLoader.prototype.load.restore();
         THREE.TextureLoader.prototype.load.restore();
-        done();
+        // load event is triggered after this materialtextureloaded callback
+        img.addEventListener('load', function () {
+          assert.equal(THREE.Cache.get(`image:${IMG_SRC}`), img);
+          THREE.Cache.clear();
+          done();
+        }, {once: true});
       });
       el.setAttribute('material', 'src', '#foo');
     });
