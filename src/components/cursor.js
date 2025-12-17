@@ -49,6 +49,7 @@ export var Component = registerComponent('cursor', {
     downEvents: {default: []},
     fuse: {default: utils.device.isMobile()},
     fuseTimeout: {default: 1500, min: 0},
+    hand: {default: ''},
     mouseCursorStylesEnabled: {default: true},
     upEvents: {default: []},
     rayOrigin: {default: 'entity', oneOf: ['mouse', 'entity', 'xrselect']}
@@ -332,6 +333,12 @@ export var Component = registerComponent('cursor', {
    * Trigger mousedown and keep track of the mousedowned entity.
    */
   onCursorDown: function (evt) {
+    // Filter WebXR events by handedness when hand is configured.
+    if (evt.type === 'selectstart' && this.data.hand &&
+        evt.inputSource.handedness !== this.data.hand) {
+      return;
+    }
+
     this.isCursorDown = true;
     // Raycast again for touch.
     if (this.data.rayOrigin === 'mouse' && evt.type === 'touchstart') {
@@ -370,6 +377,11 @@ export var Component = registerComponent('cursor', {
    */
   onCursorUp: function (evt) {
     if (!this.isCursorDown) { return; }
+    // Filter WebXR events by handedness when hand is configured.
+    if (evt && evt.type === 'selectend' && this.data.hand &&
+        evt.inputSource.handedness !== this.data.hand) {
+      return;
+    }
     if (this.data.rayOrigin === 'xrselect' && this.activeXRInput !== evt.inputSource) { return; }
 
     this.isCursorDown = false;

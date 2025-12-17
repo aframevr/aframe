@@ -63,7 +63,8 @@ registerComponent('laser-controls', {
       }
 
       el.setAttribute('cursor', utils.extend({
-        fuse: false
+        fuse: false,
+        hand: data.hand
       }, controllerConfig.cursor));
     }
 

@@ -33,8 +33,11 @@ the hood, laser-controls sets all of the tracked controller components:
 These controller components get activated if its respective controller is
 connected and detected via the Gamepad API. Then the model of the actual
 controller is used. laser-controls then configures the [cursor
-component][cursor] for listen to the appropriate events and configures the
-[raycaster component][raycaster] to draw the laser.
+component][cursor] to listen to the appropriate events and passes the `hand`
+property to ensure WebXR events are filtered by controller handedness. This
+prevents one controller's trigger press from affecting another controller's
+hovered entity. It also configures the [raycaster component][raycaster] to draw
+the laser.
 
 When the laser intersects with an entity, the length of the line gets truncated
 to the distance to the intersection point.
