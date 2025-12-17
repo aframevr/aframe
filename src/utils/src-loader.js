@@ -173,7 +173,7 @@ function checkIsImage (src, onResult) {
   });
   request.addEventListener('error', function () {
     // Network error (CORS, etc.) - try loading via Image tag.
-    checkIsImageFallback(src, onResult, null);
+    checkIsImageFallback(src, onResult);
   });
   request.send();
 }
