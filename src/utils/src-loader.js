@@ -141,31 +141,43 @@ function checkIsImage (src, onResult) {
     if (request.status >= 200 && request.status < 300) {
       contentType = request.getResponseHeader('Content-Type');
       if (contentType == null) {
-        checkIsImageFallback(src, onResult);
+        // No content-type, try Image. If fails, assume video.
+        checkIsImageFallback(src, onResult, false);
       } else if (contentType.startsWith('image')) {
         onResult(true);
       } else {
         onResult(false);
       }
     } else {
-      // Non-success status (404, etc.) - resource not found.
-      onResult(null);
+      // Non-success status (3xx redirects, 404, 405, etc.) - try loading via Image tag
+      // as it handles redirects and the server might not support HEAD requests.
+      // If Image also fails, resource is not found.
+      checkIsImageFallback(src, onResult, null);
     }
     request.abort();
   });
   request.addEventListener('error', function () {
-    // Network error - resource not found.
-    onResult(null);
+    // Network error (CORS, etc.) - try loading via Image tag.
+    // If Image also fails, resource is not found.
+    checkIsImageFallback(src, onResult, null);
   });
   request.send();
 }
 
-function checkIsImageFallback (src, onResult) {
+/**
+ * Try loading src as an image to determine if it's an image.
+ *
+ * @param {string} src - URL to test.
+ * @param {function} onResult - Callback with result.
+ * @param {boolean|null} onErrorResult - Value to pass to onResult if image fails to load.
+ *        false = assume video, null = resource not found.
+ */
+function checkIsImageFallback (src, onResult, onErrorResult) {
   var tester = new Image();
   tester.addEventListener('load', onLoad);
   function onLoad () { onResult(true); }
   tester.addEventListener('error', onError);
-  function onError () { onResult(false); }
+  function onError () { onResult(onErrorResult); }
   tester.src = src;
 }
 
