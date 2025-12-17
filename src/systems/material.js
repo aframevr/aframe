@@ -30,10 +30,14 @@ export var System = registerSystem('material', {
    *
    * @param {string|Element} src - URL or element
    * @param {object} data - Relevant texture properties
-   * @param {function} cb - Callback to pass texture to
+   * @param {function} cb - Callback that receives the texture, or null if loading failed
    */
   loadTexture: function (src, data, cb) {
     this.loadTextureSource(src, function sourceLoaded (source) {
+      if (source === null) {
+        cb(null);
+        return;
+      }
       var texture = createCompatibleTexture(source);
       setTextureProperties(texture, data);
       cb(texture);
@@ -44,7 +48,7 @@ export var System = registerSystem('material', {
    * Determine whether `src` is an image or video. Then try to load the asset, then call back.
    *
    * @param {string|Element} src - URL or element.
-   * @param {function} cb - Callback to pass texture source to.
+   * @param {function} cb - Callback that receives the texture source, or null if loading failed.
    */
   loadTextureSource: function (src, cb) {
     var self = this;
@@ -52,7 +56,7 @@ export var System = registerSystem('material', {
 
     var hash = this.hash(src);
     if (sourceCache[hash]) {
-      sourceCache[hash].then(cb);
+      sourceCache[hash].then(cb, function () { cb(null); });
       return;
     }
 
@@ -64,14 +68,15 @@ export var System = registerSystem('material', {
 
     sourceLoaded(new Promise(doSourceLoad));
     function doSourceLoad (resolve, reject) {
-      utils.srcLoader.validateSrc(src, loadImageCb, loadVideoCb);
+      utils.srcLoader.validateSrc(src, loadImageCb, loadVideoCb, notFoundCb);
       function loadImageCb (src) { self.loadImage(src, resolve); }
       function loadVideoCb (src) { self.loadVideo(src, resolve); }
+      function notFoundCb () { reject(new Error('Resource not found: ' + src)); }
     }
 
     function sourceLoaded (sourcePromise) {
       sourceCache[hash] = Promise.resolve(sourcePromise);
-      sourceCache[hash].then(cb);
+      sourceCache[hash].then(cb, function () { cb(null); });
     }
   },
 
@@ -199,8 +204,9 @@ function loadImageUrl (src) {
       resolveSource,
       function () { /* no-op */ },
       function (xhr) {
-        error('`$s` could not be fetched (Error code: %s; Response: %s)', xhr.status,
+        error('`%s` could not be fetched (Error code: %s; Response: %s)', src, xhr.status,
               xhr.statusText);
+        reject(new Error('Failed to load image: ' + src));
       }
     );
 

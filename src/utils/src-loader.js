@@ -13,14 +13,17 @@ var warn = debug('utils:src-loader:warn');
  * @param {string|Element} src - URL or media element.
  * @param {function} isImageCb - callback if texture is an image.
  * @param {function} isVideoCb - callback if texture is a video.
+ * @param {function} isNotFoundCb - optional callback if texture is not found.
  */
-export function validateSrc (src, isImageCb, isVideoCb) {
-  checkIsImage(src, function isAnImageUrl (isImage) {
-    if (isImage) {
+export function validateSrc (src, isImageCb, isVideoCb, isNotFoundCb) {
+  checkIsImage(src, function isAnImageUrl (result) {
+    if (result === true) {
       isImageCb(src);
-      return;
+    } else if (result === false) {
+      isVideoCb(src);
+    } else if (isNotFoundCb) {
+      isNotFoundCb(src);
     }
-    isVideoCb(src);
   });
 }
 
@@ -120,7 +123,7 @@ export function parseUrl (src) {
  * Call back whether `src` is an image.
  *
  * @param {string|Element} src - URL or element that will be tested.
- * @param {function} onResult - Callback with whether `src` is an image.
+ * @param {function} onResult - Callback with true (image), false (video), or null (not found).
  */
 function checkIsImage (src, onResult) {
   var request;
@@ -139,17 +142,20 @@ function checkIsImage (src, onResult) {
       contentType = request.getResponseHeader('Content-Type');
       if (contentType == null) {
         checkIsImageFallback(src, onResult);
+      } else if (contentType.startsWith('image')) {
+        onResult(true);
       } else {
-        if (contentType.startsWith('image')) {
-          onResult(true);
-        } else {
-          onResult(false);
-        }
+        onResult(false);
       }
     } else {
-      checkIsImageFallback(src, onResult);
+      // Non-success status (404, etc.) - resource not found.
+      onResult(null);
     }
     request.abort();
+  });
+  request.addEventListener('error', function () {
+    // Network error - resource not found.
+    onResult(null);
   });
   request.send();
 }
