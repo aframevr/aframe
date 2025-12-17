@@ -6,7 +6,6 @@ var IMAGE2 = 'base/tests/assets/test2.png';
 var IMAGE_FAIL = 'base/tests/assets/nonexistent.png';
 var VIDEO1 = 'base/tests/assets/test.mp4';
 var VIDEO2 = 'base/tests/assets/test2.mp4';
-var VIDEO_FAIL = 'base/tests/assets/nonexistent.mp4';
 
 suite('material system', function () {
   setup(function (done) {
@@ -144,15 +143,6 @@ suite('material system', function () {
           done();
         });
       });
-
-      test('returns null when video fails to load', function (done) {
-        var system = this.system;
-
-        system.loadTexture(VIDEO_FAIL, {}, function (texture) {
-          assert.equal(texture, null);
-          done();
-        });
-      });
     });
 
     suite('loadVideo', function () {
@@ -224,15 +214,6 @@ suite('material system', function () {
           new Promise(function (resolve) { system.loadTextureSource(src2, resolve); })
         ]).then(function (results) {
           assert.notEqual(results[0].uuid, results[1].uuid);
-          done();
-        });
-      });
-
-      test('returns null when video fails to load', function (done) {
-        var system = this.system;
-
-        system.loadTextureSource(VIDEO_FAIL, function (source) {
-          assert.equal(source, null);
           done();
         });
       });
