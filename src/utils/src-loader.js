@@ -142,7 +142,7 @@ function checkIsImage (src, onResult) {
     return;
   }
 
-  // Check file extension first to avoid HEAD request for images.
+  // Check file extension first to avoid HEAD request for common image extensions.
   ext = getExtension(src);
   if (IMAGE_EXTENSIONS.indexOf(ext) !== -1) {
     onResult(true);

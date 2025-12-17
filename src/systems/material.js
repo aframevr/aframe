@@ -30,7 +30,7 @@ export var System = registerSystem('material', {
    *
    * @param {string|Element} src - URL or element
    * @param {object} data - Relevant texture properties
-   * @param {function} cb - Callback that receives the texture, or null if loading failed
+   * @param {function} cb - Callback that receives the texture, or null if image loading failed
    */
   loadTexture: function (src, data, cb) {
     this.loadTextureSource(src, function sourceLoaded (source) {
@@ -48,7 +48,7 @@ export var System = registerSystem('material', {
    * Determine whether `src` is an image or video. Then try to load the asset, then call back.
    *
    * @param {string|Element} src - URL or element.
-   * @param {function} cb - Callback that receives the texture source, or null if loading failed.
+   * @param {function} cb - Callback that receives the texture source, or null if image loading failed.
    */
   loadTextureSource: function (src, cb) {
     var self = this;
