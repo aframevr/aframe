@@ -68,10 +68,9 @@ export var System = registerSystem('material', {
 
     sourceLoaded(new Promise(doSourceLoad));
     function doSourceLoad (resolve, reject) {
-      utils.srcLoader.validateSrc(src, loadImageCb, loadVideoCb, notFoundCb);
+      utils.srcLoader.validateSrc(src, loadImageCb, loadVideoCb);
       function loadImageCb (src) { self.loadImage(src, resolve); }
       function loadVideoCb (src) { self.loadVideo(src, resolve); }
-      function notFoundCb () { reject(new Error('Resource not found: ' + src)); }
     }
 
     function sourceLoaded (sourcePromise) {

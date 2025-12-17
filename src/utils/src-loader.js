@@ -13,17 +13,14 @@ var warn = debug('utils:src-loader:warn');
  * @param {string|Element} src - URL or media element.
  * @param {function} isImageCb - callback if texture is an image.
  * @param {function} isVideoCb - callback if texture is a video.
- * @param {function} isNotFoundCb - optional callback if texture is not found.
  */
-export function validateSrc (src, isImageCb, isVideoCb, isNotFoundCb) {
-  checkIsImage(src, function isAnImageUrl (result) {
-    if (result === true) {
+export function validateSrc (src, isImageCb, isVideoCb) {
+  checkIsImage(src, function isAnImageUrl (isImage) {
+    if (isImage) {
       isImageCb(src);
-    } else if (result === false) {
-      isVideoCb(src);
-    } else if (isNotFoundCb) {
-      isNotFoundCb(src);
+      return;
     }
+    isVideoCb(src);
   });
 }
 
@@ -119,19 +116,39 @@ export function parseUrl (src) {
   return parsedSrc[1];
 }
 
+var IMAGE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp', 'avif'];
+
+/**
+ * Get file extension from URL (without query string or hash).
+ */
+function getExtension (src) {
+  var pathname = src.split('?')[0].split('#')[0];
+  var ext = pathname.split('.').pop().toLowerCase();
+  return ext;
+}
+
 /**
  * Call back whether `src` is an image.
  *
  * @param {string|Element} src - URL or element that will be tested.
- * @param {function} onResult - Callback with true (image), false (video), or null (not found).
+ * @param {function} onResult - Callback with whether `src` is an image.
  */
 function checkIsImage (src, onResult) {
   var request;
+  var ext;
 
   if (src.tagName) {
     onResult(src.tagName === 'IMG');
     return;
   }
+
+  // Check file extension first to avoid HEAD request for images.
+  ext = getExtension(src);
+  if (IMAGE_EXTENSIONS.indexOf(ext) !== -1) {
+    onResult(true);
+    return;
+  }
+
   request = new XMLHttpRequest();
 
   // Try to send HEAD request to check if image first.
@@ -141,8 +158,7 @@ function checkIsImage (src, onResult) {
     if (request.status >= 200 && request.status < 300) {
       contentType = request.getResponseHeader('Content-Type');
       if (contentType == null) {
-        // No content-type, try Image. If fails, assume video.
-        checkIsImageFallback(src, onResult, false);
+        checkIsImageFallback(src, onResult);
       } else if (contentType.startsWith('image')) {
         onResult(true);
       } else {
@@ -151,14 +167,12 @@ function checkIsImage (src, onResult) {
     } else {
       // Non-success status (3xx redirects, 404, 405, etc.) - try loading via Image tag
       // as it handles redirects and the server might not support HEAD requests.
-      // If Image also fails, resource is not found.
-      checkIsImageFallback(src, onResult, null);
+      checkIsImageFallback(src, onResult);
     }
     request.abort();
   });
   request.addEventListener('error', function () {
     // Network error (CORS, etc.) - try loading via Image tag.
-    // If Image also fails, resource is not found.
     checkIsImageFallback(src, onResult, null);
   });
   request.send();
@@ -169,15 +183,13 @@ function checkIsImage (src, onResult) {
  *
  * @param {string} src - URL to test.
  * @param {function} onResult - Callback with result.
- * @param {boolean|null} onErrorResult - Value to pass to onResult if image fails to load.
- *        false = assume video, null = resource not found.
  */
-function checkIsImageFallback (src, onResult, onErrorResult) {
+function checkIsImageFallback (src, onResult) {
   var tester = new Image();
   tester.addEventListener('load', onLoad);
   function onLoad () { onResult(true); }
   tester.addEventListener('error', onError);
-  function onError () { onResult(onErrorResult); }
+  function onError () { onResult(false); }
   tester.src = src;
 }
 
