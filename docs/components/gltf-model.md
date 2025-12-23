@@ -147,7 +147,7 @@ When using glTF models compressed with Draco, KTX2 or Meshopt, you must configur
 ```html
 <a-scene gltf-model="dracoDecoderPath: path/to/decoder/;
     basisTranscoderPath: path/to/transcoder/;
-    meshoptDecoderPath: path/to/meshopt_decoder.js;">
+    meshoptDecoderPath: path/to/meshopt_decoder.cjs;">
   <a-entity gltf-model="url(pony.glb)"></a-entity>
 </a-scene>
 ```
@@ -179,7 +179,7 @@ These files are available from the three.js repository in [`/examples/jsm/libs/b
 You can use a CDN like this: `basisTranscoderPath:https://cdn.jsdelivr.net/npm/three@0.154.0/examples/jsm/libs/basis/;`
 
 
-`meshoptDecoderPath` path should be the complete file path (including filename) for a Meshopt decoder, typically named `meshopt_decoder.js`. Meshopt requires WebAssembly support. A CDN-hosted, versioned decoder is available at `https://unpkg.com/meshoptimizer@0.19.0/meshopt_decoder.js`, or you may download copies from the [meshoptimizer GitHub repository][meshopt-decoder].
+`meshoptDecoderPath` path should be the complete file path (including filename) for a Meshopt decoder, typically named `meshopt_decoder.cjs`. Meshopt requires WebAssembly support. A CDN-hosted, versioned decoder is available at `https://unpkg.com/meshoptimizer@1.0.1/meshopt_decoder.cjs` (check the latest version number on [npm](https://www.npmjs.com/package/meshoptimizer)), or you may download copies from the [meshoptimizer GitHub repository][meshopt-decoder].
 
 ## More Resources
 
