@@ -236,10 +236,12 @@ export var Component = registerComponent('screenshot', {
     var flippedPixels = pixels.slice(0);
     for (var x = 0; x < width; ++x) {
       for (var y = 0; y < height; ++y) {
-        flippedPixels[x * 4 + y * width * 4] = pixels[x * 4 + (height - y) * width * 4];
-        flippedPixels[x * 4 + 1 + y * width * 4] = pixels[x * 4 + 1 + (height - y) * width * 4];
-        flippedPixels[x * 4 + 2 + y * width * 4] = pixels[x * 4 + 2 + (height - y) * width * 4];
-        flippedPixels[x * 4 + 3 + y * width * 4] = pixels[x * 4 + 3 + (height - y) * width * 4];
+        var from = x * 4 + (height - y - 1) * width * 4;
+        var to = x * 4 + y * width * 4;
+        flippedPixels[to] = pixels[from];
+        flippedPixels[to + 1] = pixels[from + 1];
+        flippedPixels[to + 2] = pixels[from + 2];
+        flippedPixels[to + 3] = pixels[from + 3];
       }
     }
     return flippedPixels;
