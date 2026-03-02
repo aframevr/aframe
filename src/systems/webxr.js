@@ -31,7 +31,6 @@ export var System = registerSystem('webxr', {
       }
       this.warnIfFeatureNotRequested('dom-overlay');
       this.sessionConfiguration.domOverlay = {root: data.overlayElement};
-      data.overlayElement.classList.add('a-dom-overlay');
     }
   },
 
