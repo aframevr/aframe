@@ -1,4 +1,4 @@
----
+--- 
 title: Installation
 type: introduction
 layout: docs
