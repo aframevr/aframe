@@ -123,17 +123,9 @@ export var Component = registerComponent('hand-controls', {
     var handModelOrientationZ = hand === 'left' ? Math.PI / 2 : -Math.PI / 2;
     // The WebXR standard defines the grip space such that a cylinder held in a closed hand points
     // along the Z axis. The models currently have such a cylinder point along the X-Axis.
-    var handModelOrientationX = el.sceneEl.hasWebXR ? -Math.PI / 2 : 0;
+    var handModelOrientationX = el.sceneEl.hasWebXR ? -Math.PI / 4 : 0;
 
-    // Pico4, at least on Wolvic, needs a different rotation offset
-    // for the hand model. Pico Browser claims to use oculus
-    // controllers instead; will load meta-touch-controls and does
-    // not require this adjustment.
-    if (evt.detail.name === 'pico-controls') {
-      handModelOrientationX += Math.PI / 4;
-    }
-
-    mesh.position.set(0, 0, 0);
+    mesh.position.set(0, 0, 0.02);
     mesh.rotation.set(handModelOrientationX, 0, handModelOrientationZ);
   },
 
