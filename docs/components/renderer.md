@@ -35,6 +35,7 @@ It also configures presentation attributes when entering WebVR/WebXR.
 | maxCanvasWidth          | Maximum canvas width. Uses the size multiplied by device pixel ratio. Does not limit canvas width if set to -1.                                | -1            |
 | maxCanvasHeight         | Maximum canvas height. Behaves the same as maxCanvasWidth.                      | -1          |
 | multiviewStereo         | Enables the use of the OCULUS_multiview extension.                              | false         |
+| spaceWarp               | Enables SpaceWarp motion vector rendering when supported.                       | false         |
 | logarithmicDepthBuffer  | Whether to use a logarithmic depth buffer.                                      | auto          |
 | precision               | Fragment shader [precision][precision] : low, medium or high.                   | high          |
 | alpha                   | Whether the canvas should contain an alpha buffer.                              | true          |
@@ -43,7 +44,7 @@ It also configures presentation attributes when entering WebVR/WebXR.
 | exposure                | When any toneMapping other than "no" is used this can be used to make the overall scene brighter or darker  | 1          |
 | anisotropy              | Default anisotropic filtering sample rate to use for textures                   | 1             |
 
-> **NOTE:** Once the scene is initialized, none of these properties may no longer be changed apart from "exposure", "toneMapping", "sortTransparentObjects" and "foveationLevel" which can be set dynamically.
+> **NOTE:** Once the scene is initialized, none of these properties may no longer be changed apart from "exposure", "toneMapping", "sortTransparentObjects", "foveationLevel", and "spaceWarp" which can be set dynamically.
 
 ### antialias
 
@@ -111,3 +112,7 @@ Whether the canvas should contain an alpha buffer. If this is true the renderer 
 ### multiviewStereo
 
 Performance improvement for applications that are CPU limited and draw count bound. Most experiences will get a free perf gain from this extension at not visual cost but there are limitations to consider. multiview builds on the multisampled render to texture extension that discards the frame buffer if there are other texture operations during rendering. Problem outlined in https://github.com/KhronosGroup/WebGL/issues/2912. Until browsers and drivers allow more control of when multisample is resolved we have a workaround with some drawbacks. As a temporary solution when enabling multiview the upload of texture data is deferred until the rendering of the main scene has ended, adding one extra frame of latency to texture uploads. Scenarios affected are for example skeletal meshes that upload bone textures with TexImage. With the workadound in place all bone animations will lag by one frame. Another issue is rendering mirror reflexions or rendering another view in the middle of the scene. The logic would have to move to the beginning of the frame to make sure it's not interrupted by the multiview frame. Because of the limitations this flag is disabled by default so developers can address any issues before enabling.
+
+### spaceWarp
+
+Enables SpaceWarp motion vector rendering when supported by the device and browser. This requires `multiviewStereo: true` and requesting the `space-warp` WebXR feature (see the [`webxr` system](./webxr.md)). This flag can be toggled at runtime to pause or resume the motion vector pass.
