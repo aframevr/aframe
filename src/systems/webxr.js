@@ -16,6 +16,7 @@ export var System = registerSystem('webxr', {
 
   update: function () {
     var data = this.data;
+
     this.sessionConfiguration = {
       requiredFeatures: data.requiredFeatures,
       optionalFeatures: data.optionalFeatures

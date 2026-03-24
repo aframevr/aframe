@@ -16,6 +16,7 @@ export var System = registerSystem('renderer', {
     maxCanvasWidth: {default: -1},
     maxCanvasHeight: {default: -1},
     multiviewStereo: {default: false},
+    spaceWarp: {default: false},
     exposure: {default: 1, if: {toneMapping: ['ACESFilmic', 'linear', 'reinhard', 'cineon', 'AgX', 'neutral']}},
     toneMapping: {default: 'no', oneOf: ['no', 'ACESFilmic', 'linear', 'reinhard', 'cineon', 'AgX', 'neutral']},
     precision: {default: 'high', oneOf: ['high', 'medium', 'low']},
@@ -60,6 +61,10 @@ export var System = registerSystem('renderer', {
     var toneMappingName = this.data.toneMapping.charAt(0).toUpperCase() + this.data.toneMapping.slice(1);
     renderer.toneMapping = THREE[toneMappingName + 'ToneMapping'];
     renderer.toneMappingExposure = data.exposure;
+    renderer.spaceWarp = data.spaceWarp;
+    if (renderer.xr) {
+      renderer.xr.isSpaceWarp = data.spaceWarp && renderer.xr.isMultiview;
+    }
     renderer.xr.setFoveation(data.foveationLevel);
 
     if (data.sortObjects) {
