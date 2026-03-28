@@ -8042,16 +8042,8 @@ var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_0__.registerCompo
     var handModelOrientationZ = hand === 'left' ? Math.PI / 2 : -Math.PI / 2;
     // The WebXR standard defines the grip space such that a cylinder held in a closed hand points
     // along the Z axis. The models currently have such a cylinder point along the X-Axis.
-    var handModelOrientationX = el.sceneEl.hasWebXR ? -Math.PI / 2 : 0;
-
-    // Pico4, at least on Wolvic, needs a different rotation offset
-    // for the hand model. Pico Browser claims to use oculus
-    // controllers instead; will load meta-touch-controls and does
-    // not require this adjustment.
-    if (evt.detail.name === 'pico-controls') {
-      handModelOrientationX += Math.PI / 4;
-    }
-    mesh.position.set(0, 0, 0);
+    var handModelOrientationX = el.sceneEl.hasWebXR ? -Math.PI / 4 : 0;
+    mesh.position.set(0, 0, 0.02);
     mesh.rotation.set(handModelOrientationX, 0, handModelOrientationZ);
   },
   onControllerDisconnected: function () {
@@ -61735,7 +61727,7 @@ if (_utils_index_js__WEBPACK_IMPORTED_MODULE_16__.device.isBrowserEnvironment) {
   window.logs = debug;
   __webpack_require__(/*! ./style/aframe.css */ "./src/style/aframe.css");
 }
-console.log('A-Frame Version: 1.7.1 (Date 2026-02-21, Commit #d2e94756)');
+console.log('A-Frame Version: 1.7.1 (Date 2026-03-28, Commit #e9ac2807)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].REVISION);
 
 // Wait for ready state, unless user asynchronously initializes A-Frame.
