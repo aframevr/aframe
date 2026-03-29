@@ -3,8 +3,7 @@ import { registerSystem } from '../core/system.js';
 
 var SHADOW_MAP_TYPE_MAP = {
   basic: THREE.BasicShadowMap,
-  pcf: THREE.PCFShadowMap,
-  pcfsoft: THREE.PCFSoftShadowMap
+  pcf: THREE.PCFShadowMap
 };
 
 /**
@@ -17,16 +16,22 @@ export var System = registerSystem('shadow', {
   schema: {
     enabled: {default: true},
     autoUpdate: {default: true},
-    type: {default: 'pcf', oneOf: ['basic', 'pcf', 'pcfsoft']}
+    type: {default: 'pcf', oneOf: ['basic', 'pcf']}
   },
 
   init: function () {
     var sceneEl = this.sceneEl;
     var data = this.data;
+    var type = data.type;
 
     this.shadowMapEnabled = false;
 
-    sceneEl.renderer.shadowMap.type = SHADOW_MAP_TYPE_MAP[data.type];
+    if (SHADOW_MAP_TYPE_MAP[type] === undefined) {
+      console.warn('shadow type "' + type + '" is not supported, falling back to "pcf". To remove this warning set <a-scene shadow="type: pcf">.');
+      type = 'pcf';
+    }
+
+    sceneEl.renderer.shadowMap.type = SHADOW_MAP_TYPE_MAP[type];
     sceneEl.renderer.shadowMap.autoUpdate = data.autoUpdate;
   },
 
