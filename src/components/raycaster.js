@@ -228,7 +228,9 @@ export var Component = registerComponent('raycaster', {
     // Raycast.
     this.updateOriginDirection();
     rawIntersections.length = 0;
+    this.raycaster.camera = this.el.sceneEl.camera;
     this.raycaster.intersectObjects(this.objects, true, rawIntersections);
+    this.raycaster.camera = null;
 
     // Only keep intersections against objects that have a reference to an entity.
     intersections.length = 0;
