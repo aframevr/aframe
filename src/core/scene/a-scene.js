@@ -42,7 +42,8 @@ export class AScene extends AEntity {
     var self;
     super();
     self = this;
-    self.clock = new THREE.Clock();
+    self.timer = new THREE.Timer();
+    self.timer.connect(document);
     self.isIOS = isIOS;
     self.isMobile = isMobile;
     self.hasWebXR = isWebXRAvailable;
@@ -217,6 +218,7 @@ export class AScene extends AEntity {
     window.removeEventListener('sessionend', this.resize);
     this.removeFullScreenStyles();
     this.renderer.dispose();
+    this.timer.dispose();
   }
 
   /**
@@ -688,8 +690,9 @@ export class AScene extends AEntity {
     var renderer = this.renderer;
 
     this.frame = frame;
-    this.delta = this.clock.getDelta() * 1000;
-    this.time = this.clock.elapsedTime * 1000;
+    this.timer.update();
+    this.delta = this.timer.getDelta() * 1000;
+    this.time = this.timer.getElapsed() * 1000;
 
     if (this.isPlaying) { this.tick(this.time, this.delta); }
     var savedBackground = null;
