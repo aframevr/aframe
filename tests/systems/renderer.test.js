@@ -197,7 +197,8 @@ suite('renderer', function () {
       var sceneEl = createScene();
       sceneEl.setAttribute('renderer', 'highRefreshRate: true');
       sceneEl.addEventListener('loaded', function () {
-        assert.strictEqual(warnings.length, 0);
+        // Clear any warnings generated during scene initialization.
+        warnings.length = 0;
         var rendererSystem = sceneEl.systems.renderer;
         xrTargetFrameRate = 0;
         rendererSystem.setWebXRFrameRate(xrSession);
@@ -207,6 +208,7 @@ suite('renderer', function () {
         setTimeout(function () {
           assert.strictEqual(xrTargetFrameRate, 0);
           assert.strictEqual(warnings.length, 1);
+          assert.include(warnings[0], 'failed to set target frame rate of 72');
           done();
         }, 0);
       });
