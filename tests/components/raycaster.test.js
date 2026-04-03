@@ -394,6 +394,47 @@ suite('raycaster', function () {
     });
   });
 
+  suite('sprite raycasting', function () {
+    var spriteEl;
+
+    setup(function (done) {
+      spriteEl = document.createElement('a-entity');
+      el.setAttribute('position', '0 0 1');
+      el.setAttribute('raycaster', {near: 0.1, far: 10});
+
+      spriteEl.addEventListener('loaded', function () {
+        var material = new THREE.SpriteMaterial({color: 0x6699ff});
+        var sprite = new THREE.Sprite(material);
+        spriteEl.setObject3D('mesh', sprite);
+        spriteEl.object3D.position.set(0, 0, -1);
+        setTimeout(() => { done(); });
+      });
+      sceneEl.appendChild(spriteEl);
+    });
+
+    test('can intersect sprites', function (done) {
+      spriteEl.addEventListener('raycaster-intersected', function () {
+        done();
+      });
+      sceneEl.object3D.updateMatrixWorld();
+      component.refreshObjects();
+      component.tock();
+    });
+
+    test('emits intersection-cleared when looking away from sprite', function (done) {
+      spriteEl.addEventListener('raycaster-intersected', function () {
+        el.setAttribute('rotation', '90 0 0');
+        spriteEl.addEventListener('raycaster-intersected-cleared', function () {
+          done();
+        }, {once: true});
+        component.tock();
+      }, {once: true});
+      sceneEl.object3D.updateMatrixWorld();
+      component.refreshObjects();
+      component.tock();
+    });
+  });
+
   suite('updateOriginDirection', function () {
     test('updates ray origin if position changes', function () {
       var origin;

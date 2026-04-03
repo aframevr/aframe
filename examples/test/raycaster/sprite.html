@@ -1,0 +1,74 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Raycaster - Sprites</title>
+    <meta name="description" content="Raycaster Sprites - A-Frame" />
+    <script src="../../../dist/aframe-master.js"></script>
+  </head>
+  <body>
+    <script>
+      AFRAME.registerComponent('sprite', {
+        schema: {
+          color: { type: 'color', default: '#69f' },
+          width: { type: 'number', default: 1 },
+          height: { type: 'number', default: 1 }
+        },
+
+        init: function () {
+          var data = this.data;
+          var material = new THREE.SpriteMaterial({ color: data.color });
+          var sprite = new THREE.Sprite(material);
+          sprite.scale.set(data.width, data.height, 1);
+          this.el.setObject3D('mesh', sprite);
+        },
+
+        update: function () {
+          var data = this.data;
+          var sprite = this.el.getObject3D('mesh');
+          if (!sprite) {
+            return;
+          }
+          sprite.material.color.set(data.color);
+          sprite.scale.set(data.width, data.height, 1);
+        },
+
+        remove: function () {
+          this.el.removeObject3D('mesh');
+        }
+      });
+
+      AFRAME.registerComponent('raycast-highlight', {
+        init: function () {
+          this.el.addEventListener('raycaster-intersected', function (evt) {
+            var el = evt.target;
+            var sprite = el.getObject3D('mesh');
+            if (sprite) {
+              sprite.material.color.set('#f44');
+            }
+          });
+
+          this.el.addEventListener('raycaster-intersected-cleared', function (evt) {
+            var el = evt.target;
+            var sprite = el.getObject3D('mesh');
+            if (sprite) {
+              sprite.material.color.set('#69f');
+            }
+          });
+        }
+      });
+    </script>
+    <p>Look at a sprite, it should turn red. Look away, it turns back to blue.</p>
+
+    <a-scene>
+      <a-entity camera look-controls wasd-controls raycaster="interval: 100; objects: [raycast-highlight]"></a-entity>
+
+      <a-entity sprite="color: #69f; width: 2; height: 2" position="-3 1.6 -5" raycast-highlight></a-entity>
+      <a-entity sprite="color: #69f; width: 1; height: 3" position="0 1.6 -5" raycast-highlight></a-entity>
+      <a-entity sprite="color: #69f; width: 3; height: 1" position="3 1.6 -5" raycast-highlight></a-entity>
+
+      <a-entity sprite="color: #69f; width: 1.5; height: 1.5" position="-2 3 -8" raycast-highlight></a-entity>
+      <a-entity sprite="color: #69f; width: 1.5; height: 1.5" position="2 3 -8" raycast-highlight></a-entity>
+    </a-scene>
+  </body>
+</html>
