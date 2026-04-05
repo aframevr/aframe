@@ -6,7 +6,7 @@
 * Updates its position to move along the controller.
 */
 AFRAME.registerComponent('grab', {
-  after: ['tracked-controls-webxr'],
+  after: ['tracked-controls'],
   before: ['aabb-collider'],
   init: function () {
     this.GRABBED_STATE = 'grabbed';

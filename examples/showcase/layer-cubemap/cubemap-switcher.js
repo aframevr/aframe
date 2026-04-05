@@ -159,8 +159,8 @@ AFRAME.registerComponent('cubemap-switcher', {
   },
 
   checkInput: function () {
-    var leftHandControls = this.leftHandEl.components['tracked-controls-webxr'];
-    var rightHandControls = this.rightHandEl.components['tracked-controls-webxr'];
+    var leftHandControls = this.leftHandEl.components['tracked-controls'];
+    var rightHandControls = this.rightHandEl.components['tracked-controls'];
     if (leftHandControls) { leftHandControls.updateButtons(); }
     if (rightHandControls) { rightHandControls.updateButtons(); }
   },

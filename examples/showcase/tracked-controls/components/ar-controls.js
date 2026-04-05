@@ -11,7 +11,7 @@ AFRAME.registerComponent('ar-controls', {
   },
 
   updateControllers: function () {
-    var controllers = this.el.systems['tracked-controls-webxr'].controllers;
+    var controllers = this.el.systems['tracked-controls'].controllers;
     var i;
     var xrSession = this.el.xrSession;
     if (!xrSession) { return; }
