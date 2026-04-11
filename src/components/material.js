@@ -20,6 +20,7 @@ export var Component = registerComponent('material', {
     flatShading: {default: false},
     offset: {type: 'vec2', default: {x: 0, y: 0}},
     opacity: {default: 1.0, min: 0.0, max: 1.0},
+    premultipliedAlpha: {default: false},
     repeat: {type: 'vec2', default: {x: 1, y: 1}},
     magFilter: {default: 'linear', oneOf: ['nearest', 'linear']},
     minFilter: {
@@ -139,6 +140,9 @@ export var Component = registerComponent('material', {
     material.vertexColors = data.vertexColorsEnabled;
     material.visible = data.visible;
     material.blending = parseBlending(data.blending);
+    // three.js r178+ requires premultipliedAlpha for MultiplyBlending,
+    // so force it on regardless of the user-supplied value.
+    material.premultipliedAlpha = data.blending === 'multiply' ? true : data.premultipliedAlpha;
     material.dithering = data.dithering;
 
     // Check if material needs update.
