@@ -13,7 +13,7 @@
         ></a-mixin>
         <a-mixin id="msdf-text"
           text="align: center; width: 6;
-                font: https://rawgit.com/Jam3/three-bmfont-text/master/test/fnt/Roboto-msdf.json;
+                font: https://cdn.jsdelivr.net/gh/Jam3/three-bmfont-text@master/test/fnt/Roboto-msdf.json;
                 value: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam"
         ></a-mixin>
         <a-mixin id="marker"
@@ -22,6 +22,8 @@
           scale="0.05 0.05 0.001"
         ></a-mixin>
       </a-assets>
+
+      <a-entity camera look-controls wasd-controls position="0 1.6 3"></a-entity>
 
       <a-entity position="0 0 -3.7">
         <a-text mixin="msdf-text" position="-3 -2 0" wrap-count="20"></a-text>
