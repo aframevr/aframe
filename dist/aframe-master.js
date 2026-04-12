@@ -18985,18 +18985,21 @@ class AAssets extends _a_node_js__WEBPACK_IMPORTED_MODULE_0__.ANode {
     for (i = 0; i < imgEls.length; i++) {
       imgEl = fixUpMediaElement(imgEls[i]);
       loaded.push(new Promise(function (resolve, reject) {
+        // Bind the current img to a local so onload below does not close
+        // over the shared outer loop variable.
+        var el = imgEl;
         // Set in cache because we won't be needing to call three.js loader if we have.
         // a loaded media element.
-        if (imgEl.complete) {
-          three__WEBPACK_IMPORTED_MODULE_2__.Cache.add('image:' + imgEls[i].getAttribute('src'), imgEl);
+        if (el.complete) {
+          three__WEBPACK_IMPORTED_MODULE_2__.Cache.add('image:' + el.getAttribute('src'), el);
           resolve();
           return;
         }
-        imgEl.onload = function () {
-          three__WEBPACK_IMPORTED_MODULE_2__.Cache.add('image:' + imgEls[i].getAttribute('src'), imgEl);
+        el.onload = function () {
+          three__WEBPACK_IMPORTED_MODULE_2__.Cache.add('image:' + el.getAttribute('src'), el);
           resolve();
         };
-        imgEl.onerror = reject;
+        el.onerror = reject;
       }));
     }
 
@@ -61735,7 +61738,7 @@ if (_utils_index_js__WEBPACK_IMPORTED_MODULE_16__.device.isBrowserEnvironment) {
   window.logs = debug;
   __webpack_require__(/*! ./style/aframe.css */ "./src/style/aframe.css");
 }
-console.log('A-Frame Version: 1.7.1 (Date 2026-04-12, Commit #dd6709cf)');
+console.log('A-Frame Version: 1.7.1 (Date 2026-04-12, Commit #4e2c9403)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].REVISION);
 
 // Wait for ready state, unless user asynchronously initializes A-Frame.
