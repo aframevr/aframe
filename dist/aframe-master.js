@@ -11808,6 +11808,9 @@ var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_1__.registerCompo
       min: 0.0,
       max: 1.0
     },
+    premultipliedAlpha: {
+      default: false
+    },
     repeat: {
       type: 'vec2',
       default: {
@@ -11952,6 +11955,9 @@ var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_1__.registerCompo
     material.vertexColors = data.vertexColorsEnabled;
     material.visible = data.visible;
     material.blending = parseBlending(data.blending);
+    // three.js r178+ requires premultipliedAlpha for MultiplyBlending,
+    // so force it on regardless of the user-supplied value.
+    material.premultipliedAlpha = data.blending === 'multiply' ? true : data.premultipliedAlpha;
     material.dithering = data.dithering;
 
     // Check if material needs update.
@@ -61729,7 +61735,7 @@ if (_utils_index_js__WEBPACK_IMPORTED_MODULE_16__.device.isBrowserEnvironment) {
   window.logs = debug;
   __webpack_require__(/*! ./style/aframe.css */ "./src/style/aframe.css");
 }
-console.log('A-Frame Version: 1.7.1 (Date 2026-04-03, Commit #71db7982)');
+console.log('A-Frame Version: 1.7.1 (Date 2026-04-12, Commit #dd6709cf)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].REVISION);
 
 // Wait for ready state, unless user asynchronously initializes A-Frame.
