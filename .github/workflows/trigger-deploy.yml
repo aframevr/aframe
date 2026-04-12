@@ -2,7 +2,9 @@ name: Trigger site deploy
 
 on:
   push:
-    branches: [master]
+    branches:
+      - master
+      - 'docs-v*'
     paths:
       - 'docs/**'
 
