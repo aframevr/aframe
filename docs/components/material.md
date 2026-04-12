@@ -64,6 +64,7 @@ depending on the material type applied.
 | flatShading  | Use `THREE.FlatShading` rather than `THREE.StandardShading`.                                                                                      | false         |
 | offset       | Texture offset to be used.                                                                                                                        | {x: 0, y: 0}  |
 | opacity      | Extent of transparency. If the `transparent` property is not `true`, then the material will remain opaque and `opacity` will only affect color.   | 1.0           |
+| premultipliedAlpha | Whether the material's RGB channels are premultiplied by its alpha channel. Automatically forced to `true` when `blending` is `multiply`.   | false         |
 | repeat       | Texture repeat to be used.                                                                                                                        | {x: 1, y: 1}  |
 | magFilter    | Which magnifying filter to use when sampling textures. Can be one of `linear` or `nearest`.                                                       | `linear`      |
 | minFilter    | Which minifying filter to use when sampling textures. Can be one of `linear`, `linear-mipmap-nearest`, `linear-mipmap-linear`, `nearest`, `nearest-mipmap-nearest` or `nearest-mipmap-linear`. | `linear-mipmap-linear` |

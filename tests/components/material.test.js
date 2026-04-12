@@ -394,6 +394,26 @@ suite('material', function () {
       el.setAttribute('material', 'blending', 'multiply');
       assert.equal(el.components.material.material.blending, THREE.MultiplyBlending);
     });
+
+    test('forces premultipliedAlpha when blending is multiply', function () {
+      el.setAttribute('material', 'blending: multiply; transparent: true');
+      assert.strictEqual(el.components.material.material.premultipliedAlpha, true);
+    });
+
+    test('forces premultipliedAlpha even if user sets it to false with multiply', function () {
+      el.setAttribute('material', 'blending: multiply; transparent: true; premultipliedAlpha: false');
+      assert.strictEqual(el.components.material.material.premultipliedAlpha, true);
+    });
+
+    test('premultipliedAlpha defaults to false for other blending modes', function () {
+      el.setAttribute('material', 'blending: additive; transparent: true');
+      assert.strictEqual(el.components.material.material.premultipliedAlpha, false);
+    });
+
+    test('respects user-supplied premultipliedAlpha for non-multiply blending', function () {
+      el.setAttribute('material', 'blending: additive; transparent: true; premultipliedAlpha: true');
+      assert.strictEqual(el.components.material.material.premultipliedAlpha, true);
+    });
   });
 
   suite('anisotropy', function () {
