@@ -57,18 +57,21 @@ class AAssets extends ANode {
     for (i = 0; i < imgEls.length; i++) {
       imgEl = fixUpMediaElement(imgEls[i]);
       loaded.push(new Promise(function (resolve, reject) {
+        // Bind the current img to a local so onload below does not close
+        // over the shared outer loop variable.
+        var el = imgEl;
         // Set in cache because we won't be needing to call three.js loader if we have.
         // a loaded media element.
-        if (imgEl.complete) {
-          THREE.Cache.add('image:' + imgEls[i].getAttribute('src'), imgEl);
+        if (el.complete) {
+          THREE.Cache.add('image:' + el.getAttribute('src'), el);
           resolve();
           return;
         }
-        imgEl.onload = function () {
-          THREE.Cache.add('image:' + imgEls[i].getAttribute('src'), imgEl);
+        el.onload = function () {
+          THREE.Cache.add('image:' + el.getAttribute('src'), el);
           resolve();
         };
-        imgEl.onerror = reject;
+        el.onerror = reject;
       }));
     }
 

@@ -88,6 +88,34 @@ suite('a-assets', function () {
     document.body.appendChild(sceneEl);
   });
 
+  test('caches image loaded asynchronously alongside media element', function (done) {
+    var assetsEl = this.el;
+    var sceneEl = this.scene;
+
+    // Use a cache-busted src so the browser has to actually fetch, making
+    // imgEl.complete false when the Promise executor runs and forcing the
+    // onload path to be exercised.
+    var src = IMG_SRC + '?async-load-test';
+    THREE.Cache.remove('image:' + src);
+
+    var img = document.createElement('img');
+    img.setAttribute('src', src);
+    assetsEl.appendChild(img);
+
+    // A sibling media element ensures the image onload callback is
+    // verified alongside a non-trivial asset list.
+    var audio = document.createElement('audio');
+    audio.setAttribute('src', '');
+    assetsEl.appendChild(audio);
+
+    sceneEl.addEventListener('loaded', function () {
+      assert.equal(THREE.Cache.get('image:' + src), img);
+      done();
+    });
+
+    document.body.appendChild(sceneEl);
+  });
+
   test('does not wait for media element without preload attribute', function (done) {
     var el = this.el;
     var scene = this.scene;
