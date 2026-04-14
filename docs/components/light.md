@@ -11,7 +11,7 @@ examples:
 
 The light component defines the entity as a source of light. Light affects all
 materials that have not specified a flat shading model with `shader: flat`.
-Note that lights are computationally expensive and we should limit number of lights
+Note that lights are computationally expensive hence we should limit number of lights
 in a scene.
 
 ```html
