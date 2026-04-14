@@ -1,0 +1,22 @@
+name: Trigger site deploy
+
+on:
+  push:
+    branches:
+      - master
+      - 'docs-v*'
+    paths:
+      - 'docs/**'
+
+permissions: {}
+
+jobs:
+  trigger:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger aframevr.github.io deploy
+        run: |
+          gh api repos/aframevr/aframevr.github.io/dispatches \
+            -f event_type=deploy
+        env:
+          GH_TOKEN: ${{ secrets.DEPLOY_PAT }}
