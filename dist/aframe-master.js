@@ -29719,7 +29719,17 @@ function checkControllerPresentAndSetup(component, idPrefix, queryObject) {
   // Update controller presence.
   if (isPresent) {
     component.addEventListeners();
+    // On reconnect, injectTrackedControls calls setAttribute('tracked-controls', ...)
+    // with unchanged data so update/updateController is skipped.
+    // tracked-controls' own controllersupdated listener would call updateController,
+    // but it was registered after the specific controller component's listener
+    // (e.g. meta-touch-controls) so it fires too late.
+    // Explicitly call updateController before emitting controllerconnected.
+    var trackedControls = el.components['tracked-controls'];
     component.injectTrackedControls(controller);
+    if (trackedControls) {
+      trackedControls.updateController();
+    }
     el.emit('controllerconnected', {
       name: component.name,
       component: component
@@ -61738,7 +61748,7 @@ if (_utils_index_js__WEBPACK_IMPORTED_MODULE_16__.device.isBrowserEnvironment) {
   window.logs = debug;
   __webpack_require__(/*! ./style/aframe.css */ "./src/style/aframe.css");
 }
-console.log('A-Frame Version: 1.7.1 (Date 2026-04-12, Commit #4e2c9403)');
+console.log('A-Frame Version: 1.7.1 (Date 2026-04-14, Commit #5c4bdbfd)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].REVISION);
 
 // Wait for ready state, unless user asynchronously initializes A-Frame.
