@@ -60,7 +60,7 @@ important that the viewer (camera) and controllers are consistent.
 For consistency when used in components, this name is available as
 `sceneEl.systems.webxr.sessionReferenceSpaceType`, and the corresponding
 reference space object is available during the XR session as
-`sceneEl.systems['tracked-controls-webxr'].referenceSpace`.
+`sceneEl.systems['tracked-controls'].referenceSpace`.
 
 ### requiredFeatures
 

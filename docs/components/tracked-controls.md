@@ -21,11 +21,6 @@ This component elects the appropriate controller, applies pose to
 the entity, observes buttons state and emits appropriate events.  For non-6DOF controllers,
 a primitive arm model is used to emulate positional data.
 
-tracked-controls sets two components that handles different Web API versions for VR:
-
-- tracked-controls-webvr
-- tracked-controls-webxr
-
 ## Example
 
 Note that due to recent browser-specific changes, Vive controllers may be returned
