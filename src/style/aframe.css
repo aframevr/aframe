@@ -323,6 +323,7 @@ a-scene audio {
   height: 200px;
   background-size: contain;
   background-color: white;
+  color: black;
   font-family: sans-serif, monospace;
   font-size: 20px;
   border-radius: 3px;
@@ -354,6 +355,7 @@ a-scene audio {
 }
 
 .a-dialog-button {
+  color: black;
   cursor: pointer;
   align-self: center;
   opacity: 0.9;
