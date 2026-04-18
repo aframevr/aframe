@@ -331,6 +331,84 @@ suite('cursor', function () {
         done();
       });
     });
+
+    // When multiple a-entities share a BatchedMesh / InstancedMesh, the ray can move
+    // between instances without changing the resolved entity. Cursor should treat
+    // (entity, batchId, instanceId) as the hover identity so events fire on the
+    // transition and carry the current per-instance intersection detail.
+    test('re-emits mouseleave/mouseenter when batchId changes on same entity', function (done) {
+      var first = {distance: 5, batchId: 0};
+      var second = {distance: 6, batchId: 1};
+      var current = first;
+      var events = [];
+      // mouseenter pulls a fresh intersection from the raycaster, so reflect the
+      // currently-hovered instance here.
+      this.sinon.replace(el.components.raycaster, 'getIntersection', function (queryEl) {
+        return queryEl === intersectedEl ? current : null;
+      });
+      intersectedEl.addEventListener('mouseenter', function (evt) {
+        events.push({type: 'enter', batchId: evt.detail.intersection.batchId});
+        if (events.length === 3) {
+          assert.deepEqual(events, [
+            {type: 'enter', batchId: 0},
+            {type: 'leave', batchId: 0},
+            {type: 'enter', batchId: 1}
+          ]);
+          done();
+        }
+      });
+      intersectedEl.addEventListener('mouseleave', function (evt) {
+        events.push({type: 'leave', batchId: evt.detail.intersection.batchId});
+      });
+
+      el.emit('raycaster-intersection', {
+        intersections: [first],
+        els: [intersectedEl]
+      });
+      current = second;
+      el.emit('raycaster-closest-entity-changed', {
+        intersections: [second],
+        els: [intersectedEl]
+      });
+    });
+
+    test('does not re-emit when (entity, batchId, instanceId) is unchanged', function (done) {
+      var intersectionA = {distance: 5, batchId: 0};
+      var enterCount = 0;
+      intersectedEl.addEventListener('mouseenter', function () { enterCount++; });
+
+      el.emit('raycaster-intersection', {
+        intersections: [intersectionA],
+        els: [intersectedEl]
+      });
+      // Same tuple -> no new mouseenter.
+      el.emit('raycaster-closest-entity-changed', {
+        intersections: [intersectionA],
+        els: [intersectedEl]
+      });
+
+      setTimeout(function () {
+        assert.equal(enterCount, 1);
+        done();
+      });
+    });
+
+    test('mouseleave intersection carries the OLD tuple when batchId changes', function (done) {
+      var first = {distance: 5, batchId: 0};
+      var second = {distance: 6, batchId: 1};
+      intersectedEl.addEventListener('mouseleave', function (evt) {
+        assert.equal(evt.detail.intersection.batchId, 0);
+        done();
+      });
+      el.emit('raycaster-intersection', {
+        intersections: [first],
+        els: [intersectedEl]
+      });
+      el.emit('raycaster-closest-entity-changed', {
+        intersections: [second],
+        els: [intersectedEl]
+      });
+    });
   });
 
   suite('onIntersectionCleared', function () {

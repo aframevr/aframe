@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Raycaster — BatchedMesh / InstancedMesh per-instance intersections</title>
+    <meta name="description" content="BatchedMesh and InstancedMesh per-instance raycasting - A-Frame">
+    <script src="../../../dist/aframe-master.js"></script>
+    <script src="build-batches.js"></script>
+  </head>
+  <body>
+    <a-scene background="color: #222">
+      <!-- Mouse cursor: hover / click events propagate to the per-instance entity
+           once `build-batches` populates userData.batchIdToEl / instanceIdToEl. -->
+      <a-entity cursor="rayOrigin: mouse"
+                raycaster="objects: .batch-host"></a-entity>
+
+      <a-entity camera position="0 1.6 5" look-controls wasd-controls></a-entity>
+      <a-light type="ambient" intensity="0.6"></a-light>
+      <a-light type="directional" intensity="0.6" position="1 2 1"></a-light>
+
+      <!-- Host entities own the shared meshes. Cursor events fire on them
+           (A-Frame raycaster / cursor don't know about per-instance ids),
+           and `batch-proxy` forwards those events to the logical per-instance
+           entity based on `detail.intersection.batchId` / `instanceId`. -->
+      <a-entity id="batchHost" class="batch-host"
+                batch-proxy="key: batchId"></a-entity>
+      <a-entity id="instanceHost" class="batch-host"
+                batch-proxy="key: instanceId"></a-entity>
+
+      <!-- Logical per-instance a-entities. They have no mesh of their own,
+           but their `position` drives the matrix of the corresponding slot
+           in the shared mesh. `hover-tint` switches the instance color
+           on hover via setColorAt, `log-events` writes to devtools. -->
+      <a-entity id="boxA" position="-2.5 1 -2"
+                hover-tint log-events></a-entity>
+      <a-entity id="boxB" position="0 1 -2" scale="1.5 0.5 1"
+                hover-tint log-events></a-entity>
+      <a-entity id="boxC" position="2.5 1 -2" rotation="0 45 30"
+                hover-tint log-events></a-entity>
+
+      <a-entity id="coneA" position="-2 0 -2" hover-tint log-events></a-entity>
+      <a-entity id="coneB" position="0 0 -2"  hover-tint log-events></a-entity>
+      <a-entity id="coneC" position="2 0 -2"  hover-tint log-events></a-entity>
+
+      <a-text value="Hover / click the shapes. Open the console to see per-instance events."
+              color="#fff" position="-3 2.6 -2"
+              width="8" align="center"></a-text>
+    </a-scene>
+  </body>
+</html>

@@ -68,6 +68,8 @@ export var Component = registerComponent('raycaster', {
     this.objects = [];
     this.prevCheckTime = undefined;
     this.prevIntersectedEls = [];
+    this.prevClosestBatchId = undefined;
+    this.prevClosestInstanceId = undefined;
     this.rawIntersections = [];
     this.raycaster = new THREE.Raycaster();
     this.updateOriginDirection();
@@ -281,15 +283,25 @@ export var Component = registerComponent('raycaster', {
       el.emit(EVENTS.INTERSECTION, this.intersectionDetail);
     }
 
-    // Emit event when the closest intersected entity has changed.
+    // Emit event when the closest intersected entity has changed. Also fires when the
+    // closest entity is unchanged but `intersection.batchId` / `intersection.instanceId`
+    // changed (ray moved between instances of a shared BatchedMesh / InstancedMesh).
+    var prevBatchId = this.prevClosestBatchId;
+    var prevInstanceId = this.prevClosestInstanceId;
+    var closestBatchId = intersections.length ? intersections[0].batchId : undefined;
+    var closestInstanceId = intersections.length ? intersections[0].instanceId : undefined;
     if (prevIntersectedEls.length === 0 && intersections.length > 0 ||
         prevIntersectedEls.length > 0 && intersections.length === 0 ||
         (prevIntersectedEls.length && intersections.length &&
-        prevIntersectedEls[0] !== intersections[0].object.el)) {
+        (prevIntersectedEls[0] !== intersections[0].object.el ||
+         prevBatchId !== closestBatchId ||
+         prevInstanceId !== closestInstanceId))) {
       this.intersectionDetail.els = this.intersectedEls;
       this.intersectionDetail.intersections = intersections;
       el.emit(EVENTS.INTERSECTION_CLOSEST_ENTITY_CHANGED, this.intersectionDetail);
     }
+    this.prevClosestBatchId = closestBatchId;
+    this.prevClosestInstanceId = closestInstanceId;
 
     // Update line length.
     if (data.showLine) { setTimeout(this.updateLine); }
