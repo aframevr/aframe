@@ -24,7 +24,7 @@ export function setup (el, getCanvasSize) {
   var sphereMesh2;
   var sphereMesh3;
   var camera;
-  var clock;
+  var timer;
   var time;
   var render;
 
@@ -38,11 +38,12 @@ export function setup (el, getCanvasSize) {
   sphereMesh2 = sphereMesh1.clone();
   sphereMesh3 = sphereMesh1.clone();
   camera = new THREE.PerspectiveCamera(80, window.innerWidth / window.innerHeight, 0.0005, 10000);
-  clock = new THREE.Clock();
+  timer = new THREE.Timer();
   time = 0;
   render = function () {
     sceneEl.renderer.render(loaderScene, camera);
-    time = clock.getElapsedTime() % 4;
+    timer.update();
+    time = timer.getElapsed() % 4;
     sphereMesh1.visible = time >= 1;
     sphereMesh2.visible = time >= 2;
     sphereMesh3.visible = time >= 3;
