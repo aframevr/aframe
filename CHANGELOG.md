@@ -3,6 +3,7 @@
 ### Deprecations
 
 - If you used material `npot: true` previously as a way to set `texture.minFilter = THREE.LinearFilter` for better image quality, you need to replace it with `minFilter: linear`. That change was introduced in #5717 that removed `npot` property that was legacy of WebGL1, new material properties `minFilter` and `magFilter` have been exposed instead.
+- If you used `shadow="type: pcfsoft"`, change it to `shadow="type: pcf"`. From three.js migration guide for r182: PCFSoftShadowMap with WebGLRenderer is now deprecated. Use PCFShadowMap which is now soft as well.
 
 ### 1.7.1 (Apr 1, 2025)
 

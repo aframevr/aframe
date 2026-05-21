@@ -267,11 +267,11 @@ These global options affect the entire scene, and are set using the `shadow`
 system on the `<a-scene>` root element.
 
 ```html
-<a-scene shadow="type: pcfsoft">
+<a-scene shadow="type: pcf">
   <!-- ... -->
 </a-scene>
 ```
 
 | Property           | Description                                                                                                   | Default Value |
 |--------------------|---------------------------------------------------------------------------------------------------------------|---------------|
-| type               | Defines shadow map type (`basic`, `pcf`, `pcfsoft`) with varying appearance and performance characteristics.   | `pcf`         |
+| type               | Defines shadow map type (`basic`, `pcf`) with varying appearance and performance characteristics.             | `pcf`         |
