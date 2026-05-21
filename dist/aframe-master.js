@@ -27514,8 +27514,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var SHADOW_MAP_TYPE_MAP = {
   basic: three__WEBPACK_IMPORTED_MODULE_1__.BasicShadowMap,
-  pcf: three__WEBPACK_IMPORTED_MODULE_1__.PCFShadowMap,
-  pcfsoft: three__WEBPACK_IMPORTED_MODULE_1__.PCFSoftShadowMap
+  pcf: three__WEBPACK_IMPORTED_MODULE_1__.PCFShadowMap
 };
 
 /**
@@ -27534,14 +27533,19 @@ var System = (0,_core_system_js__WEBPACK_IMPORTED_MODULE_0__.registerSystem)('sh
     },
     type: {
       default: 'pcf',
-      oneOf: ['basic', 'pcf', 'pcfsoft']
+      oneOf: ['basic', 'pcf']
     }
   },
   init: function () {
     var sceneEl = this.sceneEl;
     var data = this.data;
+    var type = data.type;
     this.shadowMapEnabled = false;
-    sceneEl.renderer.shadowMap.type = SHADOW_MAP_TYPE_MAP[data.type];
+    if (SHADOW_MAP_TYPE_MAP[type] === undefined) {
+      console.warn('shadow type "' + type + '" is not supported, falling back to "pcf". To remove this warning set <a-scene shadow="type: pcf">.');
+      type = 'pcf';
+    }
+    sceneEl.renderer.shadowMap.type = SHADOW_MAP_TYPE_MAP[type];
     sceneEl.renderer.shadowMap.autoUpdate = data.autoUpdate;
   },
   update: function (prevData) {
@@ -61750,7 +61754,7 @@ if (_utils_index_js__WEBPACK_IMPORTED_MODULE_16__.device.isBrowserEnvironment) {
   window.logs = debug;
   __webpack_require__(/*! ./style/aframe.css */ "./src/style/aframe.css");
 }
-console.log('A-Frame Version: 1.7.1 (Date 2026-05-21, Commit #fc138fe1)');
+console.log('A-Frame Version: 1.7.1 (Date 2026-05-21, Commit #c7c28cc8)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].REVISION);
 
 // Wait for ready state, unless user asynchronously initializes A-Frame.
