@@ -21996,7 +21996,8 @@ class AScene extends _a_entity_js__WEBPACK_IMPORTED_MODULE_7__.AEntity {
     var self;
     super();
     self = this;
-    self.clock = new three__WEBPACK_IMPORTED_MODULE_11__.Clock();
+    self.timer = new three__WEBPACK_IMPORTED_MODULE_11__.Timer();
+    self.timer.connect(document);
     self.isIOS = isIOS;
     self.isMobile = isMobile;
     self.hasWebXR = isWebXRAvailable;
@@ -22172,6 +22173,7 @@ class AScene extends _a_entity_js__WEBPACK_IMPORTED_MODULE_7__.AEntity {
     window.removeEventListener('sessionend', this.resize);
     this.removeFullScreenStyles();
     this.renderer.dispose();
+    this.timer.dispose();
   }
 
   /**
@@ -22665,8 +22667,9 @@ class AScene extends _a_entity_js__WEBPACK_IMPORTED_MODULE_7__.AEntity {
   render(time, frame) {
     var renderer = this.renderer;
     this.frame = frame;
-    this.delta = this.clock.getDelta() * 1000;
-    this.time = this.clock.elapsedTime * 1000;
+    this.timer.update();
+    this.delta = this.timer.getDelta() * 1000;
+    this.time = this.timer.getElapsed() * 1000;
     if (this.isPlaying) {
       this.tick(this.time, this.delta);
     }
@@ -22964,7 +22967,7 @@ function setup(el, getCanvasSize) {
   var sphereMesh2;
   var sphereMesh3;
   var camera;
-  var clock;
+  var timer;
   var time;
   var render;
   if (!loaderEnabled) {
@@ -22981,11 +22984,12 @@ function setup(el, getCanvasSize) {
   sphereMesh2 = sphereMesh1.clone();
   sphereMesh3 = sphereMesh1.clone();
   camera = new three__WEBPACK_IMPORTED_MODULE_2__.PerspectiveCamera(80, window.innerWidth / window.innerHeight, 0.0005, 10000);
-  clock = new three__WEBPACK_IMPORTED_MODULE_2__.Clock();
+  timer = new three__WEBPACK_IMPORTED_MODULE_2__.Timer();
   time = 0;
   render = function () {
     sceneEl.renderer.render(loaderScene, camera);
-    time = clock.getElapsedTime() % 4;
+    timer.update();
+    time = timer.getElapsed() % 4;
     sphereMesh1.visible = time >= 1;
     sphereMesh2.visible = time >= 2;
     sphereMesh3.visible = time >= 3;
@@ -61754,7 +61758,7 @@ if (_utils_index_js__WEBPACK_IMPORTED_MODULE_16__.device.isBrowserEnvironment) {
   window.logs = debug;
   __webpack_require__(/*! ./style/aframe.css */ "./src/style/aframe.css");
 }
-console.log('A-Frame Version: 1.7.1 (Date 2026-05-21, Commit #c7c28cc8)');
+console.log('A-Frame Version: 1.7.1 (Date 2026-05-21, Commit #f7c6a65d)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].REVISION);
 
 // Wait for ready state, unless user asynchronously initializes A-Frame.
