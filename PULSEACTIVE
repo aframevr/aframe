@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Experiencia VR - Tenis</title>
+
+  <!-- Librería A-Frame -->
+  <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+</head>
+
+<body style="margin:0; overflow:hidden;">
+
+<a-scene
+  background="color: #87CEEB"
+  shadow="type: pcfsoft"
+  renderer="antialias: true">
+
+  <!-- Cielo -->
+  <a-sky color="#87CEEB"></a-sky>
+
+  <!-- Suelo -->
+  <a-plane
+    position="0 0 0"
+    rotation="-90 0 0"
+    width="40"
+    height="40"
+    color="#4CAF50"
+    shadow>
+  </a-plane>
+
+  <!-- Camino decorativo -->
+  <a-plane
+    position="0 0.01 -5"
+    rotation="-90 0 0"
+    width="6"
+    height="20"
+    color="#BDB76B">
+  </a-plane>
+
+  <!-- Árbol 1 -->
+  <a-cylinder
+    position="-5 1 -6"
+    radius="0.25"
+    height="2"
+    color="#8B4513"
+    shadow>
+  </a-cylinder>
+
+  <a-sphere
+    position="-5 2.7 -6"
+    radius="1.4"
+    color="#228B22"
+    shadow>
+  </a-sphere>
+
+  <!-- Árbol 2 -->
+  <a-cylinder
+    position="5 1 -7"
+    radius="0.25"
+    height="2"
+    color="#8B4513"
+    shadow>
+  </a-cylinder>
+
+  <a-sphere
+    position="5 2.7 -7"
+    radius="1.4"
+    color="#2E8B57"
+    shadow>
+  </a-sphere>
+
+  <!-- Plataforma del tenis -->
+  <a-cylinder
+    position="0 0.2 -4"
+    radius="1.5"
+    height="0.3"
+    color="#333333"
+    shadow>
+  </a-cylinder>
+
+  <!-- Modelo 3D del tenis -->
+  <a-entity
+    gltf-model="url(TU_ARCHIVO.glb)"
+    position="0 1.2 -4"
+    rotation="0 45 0"
+    scale="2 2 2"
+    shadow
+    animation="property: rotation;
+               to: 0 405 0;
+               loop: true;
+               dur: 7000;
+               easing: linear">
+  </a-entity>
+
+  <!-- Panel de información -->
+  <a-plane
+    position="0 3 -5"
+    width="4"
+    height="1.2"
+    color="#000"
+    opacity="0.65"
+    radius="0.1">
+  </a-plane>
+
+  <!-- Texto principal -->
+  <a-text
+    value="NOMBRE DE LA MARCA"
+    position="-1.6 3.2 -4.9"
+    color="#FFFFFF"
+    width="5"
+    align="left">
+  </a-text>
+
+  <!-- Eslogan -->
+  <a-text
+    value="El tenis que te lleva más lejos"
+    position="-1.6 2.8 -4.9"
+    color="#FFD700"
+    width="4"
+    align="left">
+  </a-text>
+
+  <!-- Luces -->
+  <a-light
+    type="ambient"
+    color="#FFFFFF"
+    intensity="0.9">
+  </a-light>
+
+  <a-light
+    type="directional"
+    position="3 6 2"
+    intensity="1.2"
+    castShadow="true">
+  </a-light>
+
+  <a-light
+    type="point"
+    position="0 4 -3"
+    color="#FFFFFF"
+    intensity="0.6">
+  </a-light>
+
+  <!-- Cámara -->
+  <a-entity position="0 1.6 4">
+    <a-camera>
+      <a-cursor
+        color="#FFFFFF"
+        fuse="true"
+        fuse-timeout="1000">
+      </a-cursor>
+    </a-camera>
+  </a-entity>
+
+</a-scene>
+
+</body>
+</html>
