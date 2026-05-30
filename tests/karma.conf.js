@@ -8,7 +8,12 @@ var webpackConfiguration = require('../webpack.common.cjs');
 var FILES = [
   // Serve test assets.
   'tests/__init.test.js',
-  {pattern: 'tests/assets/**/*', included: false, served: true}
+  {pattern: 'tests/assets/**/*', included: false, served: true},
+  // A-Frame entry chunk loaded inside a CSP-restricted iframe by
+  // tests/csp/no-unsafe-eval.test.js. Included so karma-webpack serves it and
+  // exposes its in-memory URL on the page; evaluating it again is a no-op since
+  // the A-Frame modules are already loaded by the suite.
+  {pattern: 'tests/csp/aframe-entry.js', included: true, served: true, watched: true}
 ];
 if (process.env.TEST_FILE) {
   glob.sync('tests/**/*.test.js').forEach(function (filename) {
