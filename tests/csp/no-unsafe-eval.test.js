@@ -1,4 +1,4 @@
-/* global assert, suite, test, teardown, setTimeout, document */
+/* global suite, test, teardown, setTimeout, document */
 
 /**
  * Real-browser regression test for Content-Security-Policy 'unsafe-eval'.
@@ -13,8 +13,12 @@
  * time, which broke pages such as examples/test/text/index.html that ship a CSP
  * without 'unsafe-eval'.
  *
- * The bundle is loaded inside an iframe enforcing such a CSP, using the real
- * browser like CI does in Chrome and Firefox.
+ * It loads the built dist bundle (not the in-memory karma-webpack bundle, which
+ * is istanbul-instrumented under TEST_ENV=ci and that instrumentation itself
+ * uses new Function()). CI rebuilds dist via `npm run dist` before tests; run it
+ * locally too for an accurate result. The bundle is loaded inside an iframe
+ * enforcing such a CSP, using the real browser like CI does in Chrome and
+ * Firefox.
  */
 suite('A-Frame bundle Content-Security-Policy', function () {
   var iframe;
@@ -24,28 +28,8 @@ suite('A-Frame bundle Content-Security-Policy', function () {
     iframe = null;
   });
 
-  // Resolve the URL of an already-served bundle chunk from the current page.
-  function chunkUrl (substring) {
-    var scripts = document.querySelectorAll('script[src]');
-    for (var i = 0; i < scripts.length; i++) {
-      if (scripts[i].src.indexOf(substring) !== -1) { return scripts[i].src; }
-    }
-    return null;
-  }
-
   test('loading the A-Frame bundle does not require unsafe-eval', function (done) {
     this.timeout(15000);
-
-    // The A-Frame bundle is split by karma-webpack into the webpack runtime, a
-    // shared "commons" chunk (the A-Frame code) and the entry chunk that
-    // evaluates it. Load all three, in order, inside the iframe.
-    var runtimeUrl = chunkUrl('build/runtime.js');
-    var commonsUrl = chunkUrl('build/commons.js');
-    var entryUrl = chunkUrl('aframe-entry');
-
-    assert.ok(runtimeUrl && commonsUrl && entryUrl,
-              'Expected the in-memory A-Frame bundle chunks (runtime.js, ' +
-              'commons.js, aframe-entry) to be served by karma-webpack.');
 
     // A CSP without 'unsafe-eval' (as in examples/test/text/index.html).
     // 'unsafe-inline' is allowed only so the inline violation collector below
@@ -66,12 +50,12 @@ suite('A-Frame bundle Content-Security-Policy', function () {
       'window.__cspViolations = [];' +
       'document.addEventListener("securitypolicyviolation", function (e) {' +
       'window.__cspViolations.push(' +
-      '(e.effectiveDirective || e.violatedDirective || "") + " " + (e.blockedURI || ""));' +
+      '(e.effectiveDirective || e.violatedDirective || "") + " " + (e.blockedURI || "") +' +
+      '" @ " + (e.sourceFile || "") + ":" + (e.lineNumber || 0) +' +
+      '(e.sample ? " sample=[" + e.sample + "]" : ""));' +
       '});' +
       '</script>' +
-      '<script src="' + runtimeUrl + '"></script>' +
-      '<script src="' + commonsUrl + '"></script>' +
-      '<script src="' + entryUrl + '"></script>' +
+      '<script src="/base/dist/aframe-master.js"></script>' +
       '</head><body></body></html>';
 
     iframe = document.createElement('iframe');
@@ -81,7 +65,7 @@ suite('A-Frame bundle Content-Security-Policy', function () {
 
     // securitypolicyviolation events are dispatched asynchronously and the
     // bundle takes a moment to evaluate. Poll until a violation is reported or
-    // the bundle finished evaluating.
+    // the bundle finished evaluating (it assigns the global AFRAME).
     var step = 50;
     var elapsed = 0;
     var deadline = 12000;
@@ -97,7 +81,7 @@ suite('A-Frame bundle Content-Security-Policy', function () {
           evalViolations.join(', ') + '. The bundle (or one of its ' +
           'dependencies) must not use eval() / new Function().'));
       }
-      if (win && win.__aframeEntryLoaded === true) {
+      if (win && win.AFRAME) {
         // Bundle fully evaluated with no eval violation: success.
         return done();
       }
@@ -105,7 +89,8 @@ suite('A-Frame bundle Content-Security-Policy', function () {
       if (elapsed >= deadline) {
         return done(new Error(
           'A-Frame did not finish loading inside the CSP iframe and no ' +
-          'violation was reported.'));
+          'violation was reported. Was dist/aframe-master.js built ' +
+          '(npm run dist)?'));
       }
       setTimeout(check, step);
     }

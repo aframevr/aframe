@@ -9,11 +9,12 @@ var FILES = [
   // Serve test assets.
   'tests/__init.test.js',
   {pattern: 'tests/assets/**/*', included: false, served: true},
-  // A-Frame entry chunk loaded inside a CSP-restricted iframe by
-  // tests/csp/no-unsafe-eval.test.js. Included so karma-webpack serves it and
-  // exposes its in-memory URL on the page; evaluating it again is a no-op since
-  // the A-Frame modules are already loaded by the suite.
-  {pattern: 'tests/csp/aframe-entry.js', included: true, served: true, watched: true}
+  // The built A-Frame bundle, loaded inside a CSP-restricted iframe by
+  // tests/csp/no-unsafe-eval.test.js. It must be the non-instrumented dist
+  // build (CI rebuilds it via `npm run dist` before tests): the in-memory
+  // karma-webpack bundle is istanbul-instrumented under TEST_ENV=ci, and that
+  // instrumentation itself uses new Function(), which would trip the test.
+  {pattern: 'dist/aframe-master.js', included: false, served: true, watched: false}
 ];
 if (process.env.TEST_FILE) {
   glob.sync('tests/**/*.test.js').forEach(function (filename) {
