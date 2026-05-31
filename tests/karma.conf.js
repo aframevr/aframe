@@ -8,7 +8,14 @@ var webpackConfiguration = require('../webpack.common.cjs');
 var FILES = [
   // Serve test assets.
   'tests/__init.test.js',
-  {pattern: 'tests/assets/**/*', included: false, served: true}
+  {pattern: 'tests/assets/**/*', included: false, served: true},
+  // CSP host page + the built A-Frame bundle it loads, used by
+  // tests/csp/no-unsafe-eval.test.js. The bundle must be the non-instrumented
+  // dist build (CI rebuilds it via `npm run dist` before tests): the in-memory
+  // karma-webpack bundle is istanbul-instrumented under TEST_ENV=ci, and that
+  // instrumentation itself uses new Function(), which would trip the test.
+  {pattern: 'tests/csp/csp-host.html', included: false, served: true, watched: true},
+  {pattern: 'dist/aframe-master.js', included: false, served: true, watched: false}
 ];
 if (process.env.TEST_FILE) {
   glob.sync('tests/**/*.test.js').forEach(function (filename) {

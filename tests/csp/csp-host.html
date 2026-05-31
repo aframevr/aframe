@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!--
+      Host page for tests/csp/no-unsafe-eval.test.js. Loaded inside an iframe to
+      evaluate the built A-Frame bundle under a Content-Security-Policy without
+      'unsafe-eval' (as in examples/test/text/index.html). 'unsafe-inline' is
+      allowed only so the inline collector below can run; it does not affect
+      whether eval()/new Function() are blocked, so the only script-src eval
+      violation this page can produce is from eval()/new Function().
+
+      Served as a real document (not an iframe srcdoc) so that 'self' and URL
+      resolution behave consistently across Chrome and Firefox.
+    -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self';
+      script-src 'self' 'unsafe-inline';
+      style-src 'self' 'unsafe-inline';
+      img-src 'self' data:;"
+    />
+    <script>
+      window.__cspViolations = [];
+      document.addEventListener('securitypolicyviolation', function (e) {
+        window.__cspViolations.push(
+          (e.effectiveDirective || e.violatedDirective || '') + '|' +
+          (e.blockedURI || '') + '|' +
+          (e.sourceFile || '') + ':' + (e.lineNumber || 0) +
+          (e.sample ? ' sample=[' + e.sample + ']' : ''));
+      });
+    </script>
+    <script src="/base/dist/aframe-master.js"></script>
+  </head>
+  <body></body>
+</html>
