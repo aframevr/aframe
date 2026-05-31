@@ -2804,258 +2804,6 @@ module.exports = function (x) {
 
 /***/ }),
 
-/***/ "./node_modules/layout-bmfont-text/index.js":
-/*!**************************************************!*\
-  !*** ./node_modules/layout-bmfont-text/index.js ***!
-  \**************************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-var wordWrap = __webpack_require__(/*! word-wrapper */ "./node_modules/word-wrapper/index.js");
-var xtend = __webpack_require__(/*! xtend */ "./node_modules/xtend/immutable.js");
-var number = __webpack_require__(/*! as-number */ "./node_modules/as-number/index.js");
-var X_HEIGHTS = ['x', 'e', 'a', 'o', 'n', 's', 'r', 'c', 'u', 'm', 'v', 'w', 'z'];
-var M_WIDTHS = ['m', 'w'];
-var CAP_HEIGHTS = ['H', 'I', 'N', 'E', 'F', 'K', 'L', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
-var TAB_ID = '\t'.charCodeAt(0);
-var SPACE_ID = ' '.charCodeAt(0);
-var ALIGN_LEFT = 0,
-  ALIGN_CENTER = 1,
-  ALIGN_RIGHT = 2;
-module.exports = function createLayout(opt) {
-  return new TextLayout(opt);
-};
-function TextLayout(opt) {
-  this.glyphs = [];
-  this._measure = this.computeMetrics.bind(this);
-  this.update(opt);
-}
-TextLayout.prototype.update = function (opt) {
-  opt = xtend({
-    measure: this._measure
-  }, opt);
-  this._opt = opt;
-  this._opt.tabSize = number(this._opt.tabSize, 4);
-  if (!opt.font) throw new Error('must provide a valid bitmap font');
-  var glyphs = this.glyphs;
-  var text = opt.text || '';
-  var font = opt.font;
-  this._setupSpaceGlyphs(font);
-  var lines = wordWrap.lines(text, opt);
-  var minWidth = opt.width || 0;
-
-  //clear glyphs
-  glyphs.length = 0;
-
-  //get max line width
-  var maxLineWidth = lines.reduce(function (prev, line) {
-    return Math.max(prev, line.width, minWidth);
-  }, 0);
-
-  //the pen position
-  var x = 0;
-  var y = 0;
-  var lineHeight = number(opt.lineHeight, font.common.lineHeight);
-  var baseline = font.common.base;
-  var descender = lineHeight - baseline;
-  var letterSpacing = opt.letterSpacing || 0;
-  var height = lineHeight * lines.length - descender;
-  var align = getAlignType(this._opt.align);
-
-  //draw text along baseline
-  y -= height;
-
-  //the metrics for this text layout
-  this._width = maxLineWidth;
-  this._height = height;
-  this._descender = lineHeight - baseline;
-  this._baseline = baseline;
-  this._xHeight = getXHeight(font);
-  this._capHeight = getCapHeight(font);
-  this._lineHeight = lineHeight;
-  this._ascender = lineHeight - descender - this._xHeight;
-
-  //layout each glyph
-  var self = this;
-  lines.forEach(function (line, lineIndex) {
-    var start = line.start;
-    var end = line.end;
-    var lineWidth = line.width;
-    var lastGlyph;
-
-    //for each glyph in that line...
-    for (var i = start; i < end; i++) {
-      var id = text.charCodeAt(i);
-      var glyph = self.getGlyph(font, id);
-      if (glyph) {
-        if (lastGlyph) x += getKerning(font, lastGlyph.id, glyph.id);
-        var tx = x;
-        if (align === ALIGN_CENTER) tx += (maxLineWidth - lineWidth) / 2;else if (align === ALIGN_RIGHT) tx += maxLineWidth - lineWidth;
-        glyphs.push({
-          position: [tx, y],
-          data: glyph,
-          index: i,
-          line: lineIndex
-        });
-
-        //move pen forward
-        x += glyph.xadvance + letterSpacing;
-        lastGlyph = glyph;
-      }
-    }
-
-    //next line down
-    y += lineHeight;
-    x = 0;
-  });
-  this._linesTotal = lines.length;
-};
-TextLayout.prototype._setupSpaceGlyphs = function (font) {
-  //These are fallbacks, when the font doesn't include
-  //' ' or '\t' glyphs
-  this._fallbackSpaceGlyph = null;
-  this._fallbackTabGlyph = null;
-  if (!font.chars || font.chars.length === 0) return;
-
-  //try to get space glyph
-  //then fall back to the 'm' or 'w' glyphs
-  //then fall back to the first glyph available
-  var space = getGlyphById(font, SPACE_ID) || getMGlyph(font) || font.chars[0];
-
-  //and create a fallback for tab
-  var tabWidth = this._opt.tabSize * space.xadvance;
-  this._fallbackSpaceGlyph = space;
-  this._fallbackTabGlyph = xtend(space, {
-    x: 0,
-    y: 0,
-    xadvance: tabWidth,
-    id: TAB_ID,
-    xoffset: 0,
-    yoffset: 0,
-    width: 0,
-    height: 0
-  });
-};
-TextLayout.prototype.getGlyph = function (font, id) {
-  var glyph = getGlyphById(font, id);
-  if (glyph) return glyph;else if (id === TAB_ID) return this._fallbackTabGlyph;else if (id === SPACE_ID) return this._fallbackSpaceGlyph;
-  return null;
-};
-TextLayout.prototype.computeMetrics = function (text, start, end, width) {
-  var letterSpacing = this._opt.letterSpacing || 0;
-  var font = this._opt.font;
-  var curPen = 0;
-  var curWidth = 0;
-  var count = 0;
-  var glyph;
-  var lastGlyph;
-  if (!font.chars || font.chars.length === 0) {
-    return {
-      start: start,
-      end: start,
-      width: 0
-    };
-  }
-  end = Math.min(text.length, end);
-  for (var i = start; i < end; i++) {
-    var id = text.charCodeAt(i);
-    var glyph = this.getGlyph(font, id);
-    if (glyph) {
-      //move pen forward
-      var xoff = glyph.xoffset;
-      var kern = lastGlyph ? getKerning(font, lastGlyph.id, glyph.id) : 0;
-      curPen += kern;
-      var nextPen = curPen + glyph.xadvance + letterSpacing;
-      var nextWidth = curPen + glyph.width;
-
-      //we've hit our limit; we can't move onto the next glyph
-      if (nextWidth >= width || nextPen >= width) break;
-
-      //otherwise continue along our line
-      curPen = nextPen;
-      curWidth = nextWidth;
-      lastGlyph = glyph;
-    }
-    count++;
-  }
-
-  //make sure rightmost edge lines up with rendered glyphs
-  if (lastGlyph) curWidth += lastGlyph.xoffset;
-  return {
-    start: start,
-    end: start + count,
-    width: curWidth
-  };
-}
-
-//getters for the private vars
-;
-['width', 'height', 'descender', 'ascender', 'xHeight', 'baseline', 'capHeight', 'lineHeight'].forEach(addGetter);
-function addGetter(name) {
-  Object.defineProperty(TextLayout.prototype, name, {
-    get: wrapper(name),
-    configurable: true
-  });
-}
-
-//create lookups for private vars
-function wrapper(name) {
-  return new Function(['return function ' + name + '() {', '  return this._' + name, '}'].join('\n'))();
-}
-function getGlyphById(font, id) {
-  if (!font.chars || font.chars.length === 0) return null;
-  var glyphIdx = findChar(font.chars, id);
-  if (glyphIdx >= 0) return font.chars[glyphIdx];
-  return null;
-}
-function getXHeight(font) {
-  for (var i = 0; i < X_HEIGHTS.length; i++) {
-    var id = X_HEIGHTS[i].charCodeAt(0);
-    var idx = findChar(font.chars, id);
-    if (idx >= 0) return font.chars[idx].height;
-  }
-  return 0;
-}
-function getMGlyph(font) {
-  for (var i = 0; i < M_WIDTHS.length; i++) {
-    var id = M_WIDTHS[i].charCodeAt(0);
-    var idx = findChar(font.chars, id);
-    if (idx >= 0) return font.chars[idx];
-  }
-  return 0;
-}
-function getCapHeight(font) {
-  for (var i = 0; i < CAP_HEIGHTS.length; i++) {
-    var id = CAP_HEIGHTS[i].charCodeAt(0);
-    var idx = findChar(font.chars, id);
-    if (idx >= 0) return font.chars[idx].height;
-  }
-  return 0;
-}
-function getKerning(font, left, right) {
-  if (!font.kernings || font.kernings.length === 0) return 0;
-  var table = font.kernings;
-  for (var i = 0; i < table.length; i++) {
-    var kern = table[i];
-    if (kern.first === left && kern.second === right) return kern.amount;
-  }
-  return 0;
-}
-function getAlignType(align) {
-  if (align === 'center') return ALIGN_CENTER;else if (align === 'right') return ALIGN_RIGHT;
-  return ALIGN_LEFT;
-}
-function findChar(array, value, start) {
-  start = start || 0;
-  for (var i = start; i < array.length; i++) {
-    if (array[i].id === value) {
-      return i;
-    }
-  }
-  return -1;
-}
-
-/***/ }),
-
 /***/ "./node_modules/load-bmfont/browser.js":
 /*!*********************************************!*\
   !*** ./node_modules/load-bmfont/browser.js ***!
@@ -5262,7 +5010,7 @@ anime.random = function (min, max) {
   \*************************************************/
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-var createLayout = __webpack_require__(/*! layout-bmfont-text */ "./node_modules/layout-bmfont-text/index.js");
+var createLayout = __webpack_require__(/*! ./lib/layout-bmfont-text */ "./node_modules/three-bmfont-text/lib/layout-bmfont-text.js");
 var createIndices = __webpack_require__(/*! quad-indices */ "./node_modules/quad-indices/index.js");
 var vertices = __webpack_require__(/*! ./lib/vertices */ "./node_modules/three-bmfont-text/lib/vertices.js");
 var utils = __webpack_require__(/*! ./lib/utils */ "./node_modules/three-bmfont-text/lib/utils.js");
@@ -5379,6 +5127,255 @@ class TextGeometry extends THREE.BufferGeometry {
     }
     utils.computeBox(positions, bbox);
   }
+}
+
+/***/ }),
+
+/***/ "./node_modules/three-bmfont-text/lib/layout-bmfont-text.js":
+/*!******************************************************************!*\
+  !*** ./node_modules/three-bmfont-text/lib/layout-bmfont-text.js ***!
+  \******************************************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var wordWrap = __webpack_require__(/*! word-wrapper */ "./node_modules/word-wrapper/index.js");
+var xtend = __webpack_require__(/*! xtend */ "./node_modules/xtend/immutable.js");
+var number = __webpack_require__(/*! as-number */ "./node_modules/as-number/index.js");
+var X_HEIGHTS = ['x', 'e', 'a', 'o', 'n', 's', 'r', 'c', 'u', 'm', 'v', 'w', 'z'];
+var M_WIDTHS = ['m', 'w'];
+var CAP_HEIGHTS = ['H', 'I', 'N', 'E', 'F', 'K', 'L', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+var TAB_ID = '\t'.charCodeAt(0);
+var SPACE_ID = ' '.charCodeAt(0);
+var ALIGN_LEFT = 0,
+  ALIGN_CENTER = 1,
+  ALIGN_RIGHT = 2;
+module.exports = function createLayout(opt) {
+  return new TextLayout(opt);
+};
+function TextLayout(opt) {
+  this.glyphs = [];
+  this._measure = this.computeMetrics.bind(this);
+  this.update(opt);
+}
+TextLayout.prototype.update = function (opt) {
+  opt = xtend({
+    measure: this._measure
+  }, opt);
+  this._opt = opt;
+  this._opt.tabSize = number(this._opt.tabSize, 4);
+  if (!opt.font) throw new Error('must provide a valid bitmap font');
+  var glyphs = this.glyphs;
+  var text = opt.text || '';
+  var font = opt.font;
+  this._setupSpaceGlyphs(font);
+  var lines = wordWrap.lines(text, opt);
+  var minWidth = opt.width || 0;
+
+  //clear glyphs
+  glyphs.length = 0;
+
+  //get max line width
+  var maxLineWidth = lines.reduce(function (prev, line) {
+    return Math.max(prev, line.width, minWidth);
+  }, 0);
+
+  //the pen position
+  var x = 0;
+  var y = 0;
+  var lineHeight = number(opt.lineHeight, font.common.lineHeight);
+  var baseline = font.common.base;
+  var descender = lineHeight - baseline;
+  var letterSpacing = opt.letterSpacing || 0;
+  var height = lineHeight * lines.length - descender;
+  var align = getAlignType(this._opt.align);
+
+  //draw text along baseline
+  y -= height;
+
+  //the metrics for this text layout
+  this._width = maxLineWidth;
+  this._height = height;
+  this._descender = lineHeight - baseline;
+  this._baseline = baseline;
+  this._xHeight = getXHeight(font);
+  this._capHeight = getCapHeight(font);
+  this._lineHeight = lineHeight;
+  this._ascender = lineHeight - descender - this._xHeight;
+
+  //layout each glyph
+  var self = this;
+  lines.forEach(function (line, lineIndex) {
+    var start = line.start;
+    var end = line.end;
+    var lineWidth = line.width;
+    var lastGlyph;
+
+    //for each glyph in that line...
+    for (var i = start; i < end; i++) {
+      var id = text.charCodeAt(i);
+      var glyph = self.getGlyph(font, id);
+      if (glyph) {
+        if (lastGlyph) x += getKerning(font, lastGlyph.id, glyph.id);
+        var tx = x;
+        if (align === ALIGN_CENTER) tx += (maxLineWidth - lineWidth) / 2;else if (align === ALIGN_RIGHT) tx += maxLineWidth - lineWidth;
+        glyphs.push({
+          position: [tx, y],
+          data: glyph,
+          index: i,
+          line: lineIndex
+        });
+
+        //move pen forward
+        x += glyph.xadvance + letterSpacing;
+        lastGlyph = glyph;
+      }
+    }
+
+    //next line down
+    y += lineHeight;
+    x = 0;
+  });
+  this._linesTotal = lines.length;
+};
+TextLayout.prototype._setupSpaceGlyphs = function (font) {
+  //These are fallbacks, when the font doesn't include
+  //' ' or '\t' glyphs
+  this._fallbackSpaceGlyph = null;
+  this._fallbackTabGlyph = null;
+  if (!font.chars || font.chars.length === 0) return;
+
+  //try to get space glyph
+  //then fall back to the 'm' or 'w' glyphs
+  //then fall back to the first glyph available
+  var space = getGlyphById(font, SPACE_ID) || getMGlyph(font) || font.chars[0];
+
+  //and create a fallback for tab
+  var tabWidth = this._opt.tabSize * space.xadvance;
+  this._fallbackSpaceGlyph = space;
+  this._fallbackTabGlyph = xtend(space, {
+    x: 0,
+    y: 0,
+    xadvance: tabWidth,
+    id: TAB_ID,
+    xoffset: 0,
+    yoffset: 0,
+    width: 0,
+    height: 0
+  });
+};
+TextLayout.prototype.getGlyph = function (font, id) {
+  var glyph = getGlyphById(font, id);
+  if (glyph) return glyph;else if (id === TAB_ID) return this._fallbackTabGlyph;else if (id === SPACE_ID) return this._fallbackSpaceGlyph;
+  return null;
+};
+TextLayout.prototype.computeMetrics = function (text, start, end, width) {
+  var letterSpacing = this._opt.letterSpacing || 0;
+  var font = this._opt.font;
+  var curPen = 0;
+  var curWidth = 0;
+  var count = 0;
+  var glyph;
+  var lastGlyph;
+  if (!font.chars || font.chars.length === 0) {
+    return {
+      start: start,
+      end: start,
+      width: 0
+    };
+  }
+  end = Math.min(text.length, end);
+  for (var i = start; i < end; i++) {
+    var id = text.charCodeAt(i);
+    var glyph = this.getGlyph(font, id);
+    if (glyph) {
+      //move pen forward
+      var xoff = glyph.xoffset;
+      var kern = lastGlyph ? getKerning(font, lastGlyph.id, glyph.id) : 0;
+      curPen += kern;
+      var nextPen = curPen + glyph.xadvance + letterSpacing;
+      var nextWidth = curPen + glyph.width;
+
+      //we've hit our limit; we can't move onto the next glyph
+      if (nextWidth >= width || nextPen >= width) break;
+
+      //otherwise continue along our line
+      curPen = nextPen;
+      curWidth = nextWidth;
+      lastGlyph = glyph;
+    }
+    count++;
+  }
+
+  //make sure rightmost edge lines up with rendered glyphs
+  if (lastGlyph) curWidth += lastGlyph.xoffset;
+  return {
+    start: start,
+    end: start + count,
+    width: curWidth
+  };
+}
+
+//getters for the private vars
+;
+['width', 'height', 'descender', 'ascender', 'xHeight', 'baseline', 'capHeight', 'lineHeight'].forEach(addGetter);
+function addGetter(name) {
+  Object.defineProperty(TextLayout.prototype, name, {
+    get: function () {
+      return this['_' + name];
+    },
+    configurable: true
+  });
+}
+function getGlyphById(font, id) {
+  if (!font.chars || font.chars.length === 0) return null;
+  var glyphIdx = findChar(font.chars, id);
+  if (glyphIdx >= 0) return font.chars[glyphIdx];
+  return null;
+}
+function getXHeight(font) {
+  for (var i = 0; i < X_HEIGHTS.length; i++) {
+    var id = X_HEIGHTS[i].charCodeAt(0);
+    var idx = findChar(font.chars, id);
+    if (idx >= 0) return font.chars[idx].height;
+  }
+  return 0;
+}
+function getMGlyph(font) {
+  for (var i = 0; i < M_WIDTHS.length; i++) {
+    var id = M_WIDTHS[i].charCodeAt(0);
+    var idx = findChar(font.chars, id);
+    if (idx >= 0) return font.chars[idx];
+  }
+  return 0;
+}
+function getCapHeight(font) {
+  for (var i = 0; i < CAP_HEIGHTS.length; i++) {
+    var id = CAP_HEIGHTS[i].charCodeAt(0);
+    var idx = findChar(font.chars, id);
+    if (idx >= 0) return font.chars[idx].height;
+  }
+  return 0;
+}
+function getKerning(font, left, right) {
+  if (!font.kernings || font.kernings.length === 0) return 0;
+  var table = font.kernings;
+  for (var i = 0; i < table.length; i++) {
+    var kern = table[i];
+    if (kern.first === left && kern.second === right) return kern.amount;
+  }
+  return 0;
+}
+function getAlignType(align) {
+  if (align === 'center') return ALIGN_CENTER;else if (align === 'right') return ALIGN_RIGHT;
+  return ALIGN_LEFT;
+}
+function findChar(array, value, start) {
+  start = start || 0;
+  for (var i = start; i < array.length; i++) {
+    if (array[i].id === value) {
+      return i;
+    }
+  }
+  return -1;
 }
 
 /***/ }),
@@ -61558,7 +61555,7 @@ class WorkerPool {
 /***/ ((module) => {
 
 "use strict";
-module.exports = /*#__PURE__*/JSON.parse('{"name":"aframe","version":"1.7.1","description":"A web framework for building virtual reality experiences.","homepage":"https://aframe.io/","main":"./dist/aframe-master.js","module":"./dist/aframe-master.module.min.js","exports":{".":{"import":"./dist/aframe-master.module.min.js","require":"./dist/aframe-master.js"}},"scripts":{"dev":"cross-env INSPECTOR_VERSION=dev webpack serve --port 8080","dist":"node scripts/updateVersionLog.js && npm run dist:min && npm run dist:max && npm run dist:module","dist:max":"webpack --config webpack.config.cjs","dist:min":"webpack --config webpack.prod.config.cjs","dist:module":"webpack --config webpack.module.config.cjs","docs":"markserv --dir docs --port 9001","preghpages":"node ./scripts/preghpages.js","ghpages":"gh-pages -d gh-pages","lint":"standardx -v | snazzy","lint:fix":"standardx --fix","precommit":"npm run lint","prepush":"node scripts/testOnlyCheck.js","prerelease":"node scripts/release.js 1.7.0 1.7.1","start":"npm run dev","start:https":"npm run dev -- --server-type https","start:webgpu":"cross-env WEBGPU=true npm run dev -- --server-type https","test":"karma start ./tests/karma.conf.js","test:docs":"node scripts/docsLint.js","test:firefox":"npm test -- --browsers Firefox","test:chrome":"npm test -- --browsers Chrome","test:nobrowser":"NO_BROWSER=true npm test","test:node":"node ./node_modules/mocha/bin/mocha --ui tdd tests/node"},"repository":"aframevr/aframe","license":"MIT","files":["dist/*","docs/**/*","src/**/*","vendor/**/*"],"dependencies":{"buffer":"^6.0.3","debug":"^4.3.4","deep-assign":"^2.0.0","load-bmfont":"^1.2.3","stats-gl":"^3.6.0","super-animejs":"^3.1.0","three":"npm:super-three@0.181.0","three-bmfont-text":"dmarcos/three-bmfont-text#8f38cb02a07321d2369d1234e9b9087c284543ed"},"devDependencies":{"@babel/core":"^7.24.0","babel-loader":"^9.1.3","babel-plugin-istanbul":"^6.1.1","chai":"^4.3.6","chai-shallow-deep-equal":"^1.4.0","chalk":"^1.1.3","cross-env":"^7.0.3","css-loader":"^7.1.2","eslint":"^8.45.0","eslint-config-semistandard":"^17.0.0","eslint-config-standard-jsx":"^11.0.0","gh-pages":"^6.3.0","git-rev":"^0.2.1","glob":"^8.0.3","husky":"^0.11.7","jsdom":"^24.0.0","jsdom-global":"^3.0.2","karma":"^6.4.0","karma-chai-shallow-deep-equal":"0.0.4","karma-chrome-launcher":"^3.1.1","karma-coverage":"^2.2.0","karma-env-preprocessor":"^0.1.1","karma-firefox-launcher":"^2.1.2","karma-mocha":"^2.0.1","karma-mocha-reporter":"^2.2.5","karma-sinon-chai":"^2.0.2","karma-webpack":"^5.0.0","markserv":"github:sukima/markserv#feature/fix-broken-websoketio-link","mocha":"^10.0.0","replace-in-file":"^8.3.0","shelljs":"^0.8.5","sinon":"<12.0.0","sinon-chai":"^3.7.0","snazzy":"^5.0.0","standardx":"^7.0.0","style-loader":"^4.0.0","too-wordy":"ngokevin/too-wordy","webpack":"5.95.0","webpack-cli":"^5.1.4","webpack-dev-server":"~5.0.4","write-good":"^1.0.8"},"link":true,"standardx":{"ignore":["build/**","dist/**","examples/**/shaders/*.js","**/vendor/**"]},"keywords":["3d","aframe","cardboard","components","oculus","three","three.js","rift","vive","vr","quest","meta","web-components","webvr","webxr"],"engines":{"node":">= 4.6.0","npm":">= 2.15.9"}}');
+module.exports = /*#__PURE__*/JSON.parse('{"name":"aframe","version":"1.7.1","description":"A web framework for building virtual reality experiences.","homepage":"https://aframe.io/","main":"./dist/aframe-master.js","module":"./dist/aframe-master.module.min.js","exports":{".":{"import":"./dist/aframe-master.module.min.js","require":"./dist/aframe-master.js"}},"scripts":{"dev":"cross-env INSPECTOR_VERSION=dev webpack serve --port 8080","dist":"node scripts/updateVersionLog.js && npm run dist:min && npm run dist:max && npm run dist:module","dist:max":"webpack --config webpack.config.cjs","dist:min":"webpack --config webpack.prod.config.cjs","dist:module":"webpack --config webpack.module.config.cjs","docs":"markserv --dir docs --port 9001","preghpages":"node ./scripts/preghpages.js","ghpages":"gh-pages -d gh-pages","lint":"standardx -v | snazzy","lint:fix":"standardx --fix","precommit":"npm run lint","prepush":"node scripts/testOnlyCheck.js","prerelease":"node scripts/release.js 1.7.0 1.7.1","start":"npm run dev","start:https":"npm run dev -- --server-type https","start:webgpu":"cross-env WEBGPU=true npm run dev -- --server-type https","test":"karma start ./tests/karma.conf.js","test:docs":"node scripts/docsLint.js","test:firefox":"npm test -- --browsers Firefox","test:chrome":"npm test -- --browsers Chrome","test:nobrowser":"NO_BROWSER=true npm test","test:node":"node ./node_modules/mocha/bin/mocha --ui tdd tests/node"},"repository":"aframevr/aframe","license":"MIT","files":["dist/*","docs/**/*","src/**/*","vendor/**/*"],"dependencies":{"buffer":"^6.0.3","debug":"^4.3.4","deep-assign":"^2.0.0","load-bmfont":"^1.2.3","stats-gl":"^3.6.0","super-animejs":"^3.1.0","three":"npm:super-three@0.181.0","three-bmfont-text":"dmarcos/three-bmfont-text#c3eec235b9188aa0d8ed949101236e6d5fccf071"},"devDependencies":{"@babel/core":"^7.24.0","babel-loader":"^9.1.3","babel-plugin-istanbul":"^6.1.1","chai":"^4.3.6","chai-shallow-deep-equal":"^1.4.0","chalk":"^1.1.3","cross-env":"^7.0.3","css-loader":"^7.1.2","eslint":"^8.45.0","eslint-config-semistandard":"^17.0.0","eslint-config-standard-jsx":"^11.0.0","gh-pages":"^6.3.0","git-rev":"^0.2.1","glob":"^8.0.3","husky":"^0.11.7","jsdom":"^24.0.0","jsdom-global":"^3.0.2","karma":"^6.4.0","karma-chai-shallow-deep-equal":"0.0.4","karma-chrome-launcher":"^3.1.1","karma-coverage":"^2.2.0","karma-env-preprocessor":"^0.1.1","karma-firefox-launcher":"^2.1.2","karma-mocha":"^2.0.1","karma-mocha-reporter":"^2.2.5","karma-sinon-chai":"^2.0.2","karma-webpack":"^5.0.0","markserv":"github:sukima/markserv#feature/fix-broken-websoketio-link","mocha":"^10.0.0","replace-in-file":"^8.3.0","shelljs":"^0.8.5","sinon":"<12.0.0","sinon-chai":"^3.7.0","snazzy":"^5.0.0","standardx":"^7.0.0","style-loader":"^4.0.0","too-wordy":"ngokevin/too-wordy","webpack":"5.95.0","webpack-cli":"^5.1.4","webpack-dev-server":"~5.0.4","write-good":"^1.0.8"},"link":true,"standardx":{"ignore":["build/**","dist/**","examples/**/shaders/*.js","**/vendor/**"]},"keywords":["3d","aframe","cardboard","components","oculus","three","three.js","rift","vive","vr","quest","meta","web-components","webvr","webxr"],"engines":{"node":">= 4.6.0","npm":">= 2.15.9"}}');
 
 /***/ })
 
@@ -61758,7 +61755,7 @@ if (_utils_index_js__WEBPACK_IMPORTED_MODULE_16__.device.isBrowserEnvironment) {
   window.logs = debug;
   __webpack_require__(/*! ./style/aframe.css */ "./src/style/aframe.css");
 }
-console.log('A-Frame Version: 1.7.1 (Date 2026-05-21, Commit #f7c6a65d)');
+console.log('A-Frame Version: 1.7.1 (Date 2026-05-31, Commit #2cc6830a)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].REVISION);
 
 // Wait for ready state, unless user asynchronously initializes A-Frame.
