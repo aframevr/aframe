@@ -1,139 +1,91 @@
----
-title: camera
-type: components
-layout: docs
-parent_section: components
-source_code: src/components/camera.js
-examples: []
----
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+</head>
 
-The camera component defines from which perspective the user views the scene.
-The camera is commonly paired with controls components that allow input devices
-to move and rotate the camera.
+<body>
 
-## Examples
+<a-scene
+mindar-image="imageTargetSrc: targets.mind;"
+color-space="sRGB"
+renderer="colorManagement: true"
+vr-mode-ui="enabled: false"
+device-orientation-permission-ui="enabled: false">
 
-A camera should usually be positioned at the average height of human eye level
-(1.6 meters). When used with controls that receive rotation or position (e.g.
-from a VR device) this position will be overridden.
+<a-assets>
+</a-assets>
 
-```html
-<a-entity camera look-controls position="0 1.6 0"></a-entity>
-```
+<a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-When moving or rotating the camera relative to the scene, use a camera rig.
-By doing so, the camera's height offset can be updated by roomscale devices,
-while still allowing the tracked area to be moved independently around the
-scene.
+<a-entity mindar-image-target="targetIndex: 0">
 
-```html
-<a-entity id="rig" position="25 10 0">
-  <a-entity id="camera" camera look-controls></a-entity>
+    <!-- Kumpulan partikel warna -->
+    <a-entity id="particles">
+
+        <a-sphere
+            position="0 0 0"
+            radius="0.03"
+            color="#FF006E"
+            animation="
+                property: position;
+                to: 0 1 -1;
+                dur: 4000;
+                loop: true;
+                easing: linear">
+        </a-sphere>
+
+        <a-sphere
+            position="0 0 0"
+            radius="0.04"
+            color="#3A86FF"
+            animation="
+                property: position;
+                to: -0.8 1.2 -0.5;
+                dur: 3500;
+                loop: true">
+        </a-sphere>
+
+        <a-sphere
+            position="0 0 0"
+            radius="0.02"
+            color="#FFBE0B"
+            animation="
+                property: position;
+                to: 1 0.8 -0.8;
+                dur: 3000;
+                loop: true">
+        </a-sphere>
+
+        <a-sphere
+            position="0 0 0"
+            radius="0.03"
+            color="#8338EC"
+            animation="
+                property: position;
+                to: -1 0.5 -1;
+                dur: 4500;
+                loop: true">
+        </a-sphere>
+
+        <a-sphere
+            position="0 0 0"
+            radius="0.025"
+            color="#06D6A0"
+            animation="
+                property: position;
+                to: 0.5 1.5 -0.7;
+                dur: 5000;
+                loop: true">
+        </a-sphere>
+
+    </a-entity>
+
 </a-entity>
-```
 
-## Properties
+</a-scene>
 
-| Property   | Description                                                                                                                                                                                                                                                                         | Default Value |
-|------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------|
-| active     | Whether the camera is the active camera in a scene with more than one camera.                                                                                                                                                                                                       | true          |
-| far        | Camera frustum far clipping plane.                                                                                                                                                                                                                                                  | 10000         |
-| fov        | Field of view (in degrees).                                                                                                                                                                                                                                                         | 80            |
-| near       | Camera frustum near clipping plane.                                                                                                                                                                                                                                                 | 0.005         |
-| spectator  | Whether the camera is used to render a third-person view of the scene on the 2D display while in VR mode.                                                                                                                                                                                       | false         |
-| zoom       | Zoom factor of the camera.                                                                                                                                                                                                                                                          | 1             |
-
-## Default Camera
-
-If a camera is not specified, A-Frame will inject a default camera:
-
-```html
-<a-entity camera="active: true" look-controls wasd-controls position="0 1.6 0" data-aframe-default-camera></a-entity>
-```
-
-If a camera is specified (e.g., our own `<a-camera>` or `<a-entity camera>`),
-then the default camera will not be added.
-
-## VR Behavior
-
-When exiting VR, the camera will restore its rotation to its rotation *before*
-it entered VR. This is so when we exit VR, the rotation of the camera is back
-to normal for a desktop screen.
-
-Far, near, fov, zoom properties only apply in 2D and magic window modes. 
-In VR mode the camera parameters are supplied by the WebVR / WebXR API to match IPD and headset FOV. Those aren't configurable. 
-
-## Changing the Active Camera
-
-When the `active` property gets toggled, the component will notify the camera system
-to change the current camera used by the renderer:
-
-```js
-var secondCameraEl = document.querySelector('#second-camera');
-secondCameraEl.setAttribute('camera', 'active', true);
-```
-
-## Fixing Entities to the Camera
-
-To fix entities onto the camera such that they stay within view no matter where
-the user looks, you can attach those entities as a child of the camera. Use
-cases might be a heads-up display (HUD).
-
-```html
-<a-entity camera look-controls>
-  <a-entity geometry="primitive: plane; height: 0.2; width: 0.2" position="0 0 -1"
-            material="color: gray; opacity: 0.5"></a-entity>
-</a-entity>
-```
-
-Note that you should use HUDs sparingly as they cause irritation and eye strain
-in VR. Consider integrating menus into the fabric of the world itself. If you
-do create a HUD, make sure that the HUD is more in the center of the field of
-view such that the user does not have to strain their eyes to read it.
-
-## Reading Position or Rotation of the Camera
-
-To actively read the position or rotation of the camera, use a `tick` handler
-of a component that reads the position or rotation, and does something with it.
-Then attach the component to the camera.
-
-```js
-AFRAME.registerComponent('rotation-reader', {
-  tick: function () {
-    // `this.el` is the element.
-    // `object3D` is the three.js object.
-
-    // `rotation` is a three.js Euler using radians. `quaternion` also available.
-    console.log(this.el.object3D.rotation);
-
-    // `position` is a three.js Vector3.
-    console.log(this.el.object3D.position);
-  }
-});
-
-// <a-entity camera look-controls rotation-reader>
-```
-
-### Reading World Position or Rotation of the Camera
-
-three.js has methods to attain position or rotation (or scale) in world space
-versus object local space.
-
-```js
-AFRAME.registerComponent('rotation-reader', {
-  /**
-   * We use IIFE (immediately-invoked function expression) to only allocate one
-   * vector or euler and not re-create on every tick to save memory.
-   */
-  tick: (function () {
-    var position = new THREE.Vector3();
-    var quaternion = new THREE.Quaternion();
-
-    return function () {
-      this.el.object3D.getWorldPosition(position);
-      this.el.object3D.getWorldQuaternion(quaternion);
-      // position and rotation now contain vector and quaternion in world space.
-    };
-  })()
-});
-```
+</body>
+</html>
