@@ -160,6 +160,29 @@ suite('cursor', function () {
       component.onCursorUp();
     });
 
+    // The click must carry the uv where the ray currently points, not the
+    // uv stashed when hover began. The cursor pulls a fresh intersection from the
+    // raycaster for non-mouseleave events, so moving across the same entity between
+    // mousedown and click yields up-to-date uv in the event detail.
+    test('click carries the up-to-date uv, not the stale hover intersection', function (done) {
+      var staleIntersection = {distance: 10.5, uv: {x: 0.1, y: 0.1}};
+      var freshIntersection = {distance: 10.5, uv: {x: 0.9, y: 0.9}};
+      // Stored when hover began.
+      component.intersection = staleIntersection;
+      component.intersectedEl = intersectedEl;
+      component.cursorDownEl = intersectedEl;
+      // The ray has since moved; the raycaster reports the current intersection.
+      this.sinon.replace(el.components.raycaster, 'getIntersection', function (queryEl) {
+        return queryEl === intersectedEl ? freshIntersection : null;
+      });
+      once(intersectedEl, 'click', function (evt) {
+        assert.shallowDeepEqual(evt.detail.intersection.uv, freshIntersection.uv);
+        done();
+      });
+      component.isCursorDown = true;
+      component.onCursorUp();
+    });
+
     test('emits click event on intersectedEl when fuse and mouse cursor enabled', function (done) {
       el.setAttribute('cursor', 'fuse', true);
       el.setAttribute('cursor', 'rayOrigin', 'mouse');
