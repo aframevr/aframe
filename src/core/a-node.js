@@ -233,7 +233,7 @@ export class ANode extends HTMLElement {
   }
 
   /**
-   * From mixin ID, add mixin element to `mixinEls`.
+   * From mixin id, add mixin element to `mixinEls`.
    *
    * @param {string} mixinId - ID of the mixin to register.
    */
