@@ -1,37 +1,109 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8">
-  <title>Model Viewer AR - VR</title>
-  <meta name="description" content="Model Viewer (VR / AR) • A-Frame">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <script src="../../../dist/aframe-master.min.js"></script>
-  <script src="../../js/info-message.js"></script>
-  <script src="animation-mixer.js"></script>
-  <script src="ar-shadows.js"></script>
-  <script src="model-viewer.js"></script>
-  <script src="background-gradient.js"></script>
+    <meta charset="utf-8">
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
 </head>
 <body>
+<a-scene>
 
-<a-scene
-  renderer="colorManagement: true;"
-  info-message="htmlSrc: #messageText"
-  model-viewer="gltfModel: #triceratops; title: Triceratops"
-  xr-mode-ui="XRMode: xr">
-  <a-assets timeout="10000">
-    <!--
-      Model source: https://sketchfab.com/3d-models/triceratops-d16aabe33dc24f8ab37e3df50c068265
-      Model author: https://sketchfab.com/VapTor
-      Model license: Sketchfab Standard
-    -->
-    <a-asset-item id="triceratops"
-      src="https://cdn.aframe.io/examples/ar/models/triceratops/scene.gltf"
-      response-type="arraybuffer"></a-asset-item>
+    <!-- กล้อง -->
+    <a-camera position="0 12 12" rotation="-45 0 0"></a-camera>
 
-    <img id="shadow" src="shadow.png">
-    <a-asset-item id="messageText" src="message.html"></a-asset-item>
-  </a-assets>
+    <!-- แสง -->
+    <a-light type="ambient" intensity="1"></a-light>
+    <a-light type="directional" position="5 10 5"></a-light>
+
+    <!-- พื้น -->
+    <a-plane position="0 0 0"
+             rotation="-90 0 0"
+             width="30"
+             height="30"
+             color="#6dbf4b">
+    </a-plane>
+
+    <!-- ถนนแนวตั้ง -->
+    <a-box position="0 0.01 0"
+           width="6"
+           height="0.1"
+           depth="30"
+           color="#444">
+    </a-box>
+
+    <!-- ถนนแนวนอน -->
+    <a-box position="0 0.02 0"
+           width="30"
+           height="0.1"
+           depth="6"
+           color="#444">
+    </a-box>
+
+    <!-- ทางม้าลายด้านบน -->
+    <a-plane position="0 0.05 -4"
+             rotation="-90 0 0"
+             width="4"
+             height="1.5"
+             color="white">
+    </a-plane>
+
+    <!-- ทางม้าลายด้านล่าง -->
+    <a-plane position="0 0.05 4"
+             rotation="-90 0 0"
+             width="4"
+             height="1.5"
+             color="white">
+    </a-plane>
+
+    <!-- ทางม้าลายซ้าย -->
+    <a-plane position="-4 0.05 0"
+             rotation="-90 90 0"
+             width="4"
+             height="1.5"
+             color="white">
+    </a-plane>
+
+    <!-- ทางม้าลายขวา -->
+    <a-plane position="4 0.05 0"
+             rotation="-90 90 0"
+             width="4"
+             height="1.5"
+             color="white">
+    </a-plane>
+
+    <!-- ขอบถนน -->
+    <a-box position="-3.2 0.15 0" width="0.2" height="0.3" depth="30" color="#ccc"></a-box>
+    <a-box position="3.2 0.15 0" width="0.2" height="0.3" depth="30" color="#ccc"></a-box>
+    <a-box position="0 0.15 -3.2" width="30" height="0.3" depth="0.2" color="#ccc"></a-box>
+    <a-box position="0 0.15 3.2" width="30" height="0.3" depth="0.2" color="#ccc"></a-box>
+
+    <!-- เสาไฟจราจร 1 -->
+    <a-cylinder position="4 2 -4" radius="0.1" height="4" color="#555"></a-cylinder>
+    <a-box position="4 3.2 -4" width="0.5" height="1.2" depth="0.4" color="black"></a-box>
+    <a-sphere position="4 3.6 -3.75" radius="0.12" color="red"></a-sphere>
+    <a-sphere position="4 3.2 -3.75" radius="0.12" color="yellow"></a-sphere>
+    <a-sphere position="4 2.8 -3.75" radius="0.12" color="green"></a-sphere>
+
+    <!-- เสาไฟจราจร 2 -->
+    <a-cylinder position="-4 2 -4" radius="0.1" height="4" color="#555"></a-cylinder>
+    <a-box position="-4 3.2 -4" width="0.5" height="1.2" depth="0.4" color="black"></a-box>
+    <a-sphere position="-4 3.6 -3.75" radius="0.12" color="red"></a-sphere>
+    <a-sphere position="-4 3.2 -3.75" radius="0.12" color="yellow"></a-sphere>
+    <a-sphere position="-4 2.8 -3.75" radius="0.12" color="green"></a-sphere>
+
+    <!-- เสาไฟจราจร 3 -->
+    <a-cylinder position="4 2 4" radius="0.1" height="4" color="#555"></a-cylinder>
+    <a-box position="4 3.2 4" width="0.5" height="1.2" depth="0.4" color="black"></a-box>
+    <a-sphere position="4 3.6 3.75" radius="0.12" color="red"></a-sphere>
+    <a-sphere position="4 3.2 3.75" radius="0.12" color="yellow"></a-sphere>
+    <a-sphere position="4 2.8 3.75" radius="0.12" color="green"></a-sphere>
+
+    <!-- เสาไฟจราจร 4 -->
+    <a-cylinder position="-4 2 4" radius="0.1" height="4" color="#555"></a-cylinder>
+    <a-box position="-4 3.2 4" width="0.5" height="1.2" depth="0.4" color="black"></a-box>
+    <a-sphere position="-4 3.6 3.75" radius="0.12" color="red"></a-sphere>
+    <a-sphere position="-4 3.2 3.75" radius="0.12" color="yellow"></a-sphere>
+    <a-sphere position="-4 2.8 3.75" radius="0.12" color="green"></a-sphere>
+
 </a-scene>
 </body>
 </html>
