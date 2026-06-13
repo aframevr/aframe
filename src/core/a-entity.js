@@ -830,7 +830,16 @@ function mergeComponentData (attrValue, extraData) {
 
   // Merge multi-property data.
   if (extraData.constructor === Object) {
-    return utils.extend(extraData, utils.styleParser.parse(attrValue || {}));
+    var parsedAttrValue = utils.styleParser.parse(attrValue || {});
+    // Only merge in defined properties. `attrValue` may be a component's pooled `attrValue`
+    // object that still carries stale keys from a previous use (recycled objects keep their
+    // keys with `undefined` values), and those must not clobber the extra/default data
+    // (e.g. an a-sky primitive's `material.side: back`).
+    for (var key in parsedAttrValue) {
+      if (parsedAttrValue[key] === undefined) { continue; }
+      extraData[key] = parsedAttrValue[key];
+    }
+    return extraData;
   }
 
   // Return data, precedence to the defined value.
