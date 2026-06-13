@@ -16347,6 +16347,12 @@ var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_0__.registerCompo
     on: {
       default: ''
     },
+    stopOn: {
+      default: ''
+    },
+    pauseOn: {
+      default: ''
+    },
     poolSize: {
       default: 1
     },
@@ -16378,6 +16384,12 @@ var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_0__.registerCompo
     // Don't pass evt because playSound takes a function as parameter.
     this.playSoundBound = function () {
       self.playSound();
+    };
+    this.stopSoundBound = function () {
+      self.stopSound();
+    };
+    this.pauseSoundBound = function () {
+      self.pauseSound();
     };
   },
   update: function (oldData) {
@@ -16413,8 +16425,8 @@ var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_0__.registerCompo
       sound.setVolume(data.volume);
       sound.isPaused = false;
     }
-    if (data.on !== oldData.on) {
-      this.updateEventListener(oldData.on);
+    if (data.on !== oldData.on || data.stopOn !== oldData.stopOn || data.pauseOn !== oldData.pauseOn) {
+      this.updateEventListener(oldData);
     }
 
     // All sound values set. Load in `src`.
@@ -16467,15 +16479,40 @@ var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_0__.registerCompo
   /**
   *  Update listener attached to the user defined on event.
   */
-  updateEventListener: function (oldEvt) {
+  updateEventListener: function (oldData) {
     var el = this.el;
-    if (oldEvt) {
-      el.removeEventListener(oldEvt, this.playSoundBound);
+    var oldOnEvt = oldData && oldData.on;
+    var oldStopOnEvt = oldData && oldData.stopOn;
+    var oldPauseOnEvt = oldData && oldData.pauseOn;
+    if (oldOnEvt) {
+      el.removeEventListener(oldOnEvt, this.playSoundBound);
     }
-    el.addEventListener(this.data.on, this.playSoundBound);
+    if (oldStopOnEvt) {
+      el.removeEventListener(oldStopOnEvt, this.stopSoundBound);
+    }
+    if (oldPauseOnEvt) {
+      el.removeEventListener(oldPauseOnEvt, this.pauseSoundBound);
+    }
+    if (this.data.on) {
+      el.addEventListener(this.data.on, this.playSoundBound);
+    }
+    if (this.data.stopOn) {
+      el.addEventListener(this.data.stopOn, this.stopSoundBound);
+    }
+    if (this.data.pauseOn) {
+      el.addEventListener(this.data.pauseOn, this.pauseSoundBound);
+    }
   },
   removeEventListener: function () {
-    this.el.removeEventListener(this.data.on, this.playSoundBound);
+    if (this.data.on) {
+      this.el.removeEventListener(this.data.on, this.playSoundBound);
+    }
+    if (this.data.stopOn) {
+      this.el.removeEventListener(this.data.stopOn, this.stopSoundBound);
+    }
+    if (this.data.pauseOn) {
+      this.el.removeEventListener(this.data.pauseOn, this.pauseSoundBound);
+    }
   },
   /**
    * Removes current sound object, creates new sound object, adds to entity.
@@ -62559,7 +62596,7 @@ if (_utils_index_js__WEBPACK_IMPORTED_MODULE_16__.device.isBrowserEnvironment) {
   window.logs = debug;
   __webpack_require__(/*! ./style/aframe.css */ "./src/style/aframe.css");
 }
-console.log('A-Frame Version: 1.7.1 (Date 2026-06-13, Commit #59c9016a)');
+console.log('A-Frame Version: 1.7.1 (Date 2026-06-13, Commit #3615cdba)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].REVISION);
 
 // Wait for ready state, unless user asynchronously initializes A-Frame.
