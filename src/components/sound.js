@@ -16,6 +16,8 @@ export var Component = registerComponent('sound', {
     loopEnd: {default: 0},
     maxDistance: {default: 10000},
     on: {default: ''},
+    stopOn: {default: ''},
+    pauseOn: {default: ''},
     poolSize: {default: 1},
     positional: {default: true},
     refDistance: {default: 1},
@@ -37,6 +39,8 @@ export var Component = registerComponent('sound', {
 
     // Don't pass evt because playSound takes a function as parameter.
     this.playSoundBound = function () { self.playSound(); };
+    this.stopSoundBound = function () { self.stopSound(); };
+    this.pauseSoundBound = function () { self.pauseSound(); };
   },
 
   update: function (oldData) {
@@ -73,8 +77,8 @@ export var Component = registerComponent('sound', {
       sound.isPaused = false;
     }
 
-    if (data.on !== oldData.on) {
-      this.updateEventListener(oldData.on);
+    if (data.on !== oldData.on || data.stopOn !== oldData.stopOn || data.pauseOn !== oldData.pauseOn) {
+      this.updateEventListener(oldData);
     }
 
     // All sound values set. Load in `src`.
@@ -131,14 +135,23 @@ export var Component = registerComponent('sound', {
   /**
   *  Update listener attached to the user defined on event.
   */
-  updateEventListener: function (oldEvt) {
+  updateEventListener: function (oldData) {
     var el = this.el;
-    if (oldEvt) { el.removeEventListener(oldEvt, this.playSoundBound); }
-    el.addEventListener(this.data.on, this.playSoundBound);
+    var oldOnEvt = oldData && oldData.on;
+    var oldStopOnEvt = oldData && oldData.stopOn;
+    var oldPauseOnEvt = oldData && oldData.pauseOn;
+    if (oldOnEvt) { el.removeEventListener(oldOnEvt, this.playSoundBound); }
+    if (oldStopOnEvt) { el.removeEventListener(oldStopOnEvt, this.stopSoundBound); }
+    if (oldPauseOnEvt) { el.removeEventListener(oldPauseOnEvt, this.pauseSoundBound); }
+    if (this.data.on) { el.addEventListener(this.data.on, this.playSoundBound); }
+    if (this.data.stopOn) { el.addEventListener(this.data.stopOn, this.stopSoundBound); }
+    if (this.data.pauseOn) { el.addEventListener(this.data.pauseOn, this.pauseSoundBound); }
   },
 
   removeEventListener: function () {
-    this.el.removeEventListener(this.data.on, this.playSoundBound);
+    if (this.data.on) { this.el.removeEventListener(this.data.on, this.playSoundBound); }
+    if (this.data.stopOn) { this.el.removeEventListener(this.data.stopOn, this.stopSoundBound); }
+    if (this.data.pauseOn) { this.el.removeEventListener(this.data.pauseOn, this.pauseSoundBound); }
   },
 
   /**
