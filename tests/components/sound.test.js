@@ -204,7 +204,9 @@ suite('sound', function () {
       el.setAttribute('sound', 'src', 'url(base/tests/assets/test.ogg)');
       el.components.sound.isPlaying = true;
     });
+  });
 
+  suite('on', function () {
     test('plays sound on event', function (done) {
       const el = this.el;
       el.setAttribute('sound', 'on', 'foo');
@@ -214,6 +216,81 @@ suite('sound', function () {
         assert.ok(playSoundStub.called);
         done();
       });
+    });
+
+    test('does not listen to old on event after change', function (done) {
+      const el = this.el;
+      el.setAttribute('sound', 'on', 'foo');
+      el.setAttribute('sound', 'on', 'bar');
+      const playSoundStub = el.components.sound.playSound = sinon.stub();
+      el.emit('foo');
+      el.emit('bar');
+      setTimeout(() => {
+        assert.ok(playSoundStub.calledOnce);
+        done();
+      });
+    });
+  });
+
+  suite('stopOn', function () {
+    test('stops sound on event', function (done) {
+      const el = this.el;
+      el.setAttribute('sound', 'stopOn', 'zone-leave');
+      const stopSoundStub = el.components.sound.stopSound = sinon.stub();
+      el.emit('zone-leave');
+      setTimeout(() => {
+        assert.ok(stopSoundStub.called);
+        done();
+      });
+    });
+
+    test('does not listen to old stopOn event after change', function (done) {
+      const el = this.el;
+      el.setAttribute('sound', 'stopOn', 'zone-leave');
+      el.setAttribute('sound', 'stopOn', 'experience-end');
+      const stopSoundStub = el.components.sound.stopSound = sinon.stub();
+      el.emit('zone-leave');
+      el.emit('experience-end');
+      setTimeout(() => {
+        assert.ok(stopSoundStub.calledOnce);
+        done();
+      });
+    });
+  });
+
+  suite('pauseOn', function () {
+    test('pauses sound on event', function (done) {
+      const el = this.el;
+      el.setAttribute('sound', 'pauseOn', 'menu-open');
+      const pauseSoundStub = el.components.sound.pauseSound = sinon.stub();
+      el.emit('menu-open');
+      setTimeout(() => {
+        assert.ok(pauseSoundStub.called);
+        done();
+      });
+    });
+
+    test('does not listen to old pauseOn event after change', function (done) {
+      const el = this.el;
+      el.setAttribute('sound', 'pauseOn', 'menu-open');
+      el.setAttribute('sound', 'pauseOn', 'app-blur');
+      const pauseSoundStub = el.components.sound.pauseSound = sinon.stub();
+      el.emit('menu-open');
+      el.emit('app-blur');
+      setTimeout(() => {
+        assert.ok(pauseSoundStub.calledOnce);
+        done();
+      });
+    });
+  });
+
+  suite('updateEventListener', function () {
+    test('does not register a listener for empty event names', function () {
+      var el = this.el;
+      // on, stopOn and pauseOn all default to empty string.
+      var addEventListenerSpy = sinon.spy(el, 'addEventListener');
+      el.components.sound.updateEventListener();
+      assert.notOk(addEventListenerSpy.calledWith(''));
     });
   });
 

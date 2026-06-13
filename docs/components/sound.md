@@ -35,6 +35,8 @@ component is positional and is thus affected by the
 | loop          | Whether to loop the sound once the sound finishes playing.                                                     | false         |
 | maxDistance   | Maximum distance between the audio source and the listener, after which the volume is not reduced any further. | 10000         |
 | on            | An event for the entity to listen to before playing sound.                                                     | null          |
+| stopOn        | An event for the entity to listen to before stopping sound.                                                    | null          |
+| pauseOn       | An event for the entity to listen to before pausing sound.                                                     | null          |
 | poolSize      | Numbers of simultaneous instances of this sound that can be playing at the same time                           | 1             |
 | positional    | Whether or not the audio is positional (movable).                                                               | true          |
 | refDistance   | Reference distance for reducing volume as the audio source moves further from the listener.                    | 1             |
@@ -68,6 +70,24 @@ example, we might have a laughing sound play every time we click a monster:
 
 <a-entity id="elmo" geometry="primitive: box" material="src: elmo.png"
           sound="src: url(ticklelaugh.mp3); on: click"></a-entity>
+```
+
+## Stopping on an Event
+
+The `sound` component can also listen to an event before stopping the sound,
+using the `stopOn` property. For example, we might play music when the user
+enters a zone and stop it when they leave:
+
+```html
+<a-entity sound="src: url(music.mp3); on: zone-enter; stopOn: zone-leave"></a-entity>
+```
+
+Similarly, the `pauseOn` property pauses the sound on an event. Unlike `stopOn`,
+a sound paused this way resumes from where it left off the next time it is
+played:
+
+```html
+<a-entity sound="src: url(music.mp3); on: zone-enter; pauseOn: menu-open"></a-entity>
 ```
 
 ## Preloading a Sound Asset
