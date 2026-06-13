@@ -405,6 +405,16 @@ suite('material', function () {
       assert.strictEqual(el.components.material.material.premultipliedAlpha, true);
     });
 
+    test('forces premultipliedAlpha when blending is subtractive', function () {
+      el.setAttribute('material', 'blending: subtractive; transparent: true');
+      assert.strictEqual(el.components.material.material.premultipliedAlpha, true);
+    });
+
+    test('forces premultipliedAlpha even if user sets it to false with subtractive', function () {
+      el.setAttribute('material', 'blending: subtractive; transparent: true; premultipliedAlpha: false');
+      assert.strictEqual(el.components.material.material.premultipliedAlpha, true);
+    });
+
     test('premultipliedAlpha defaults to false for other blending modes', function () {
       el.setAttribute('material', 'blending: additive; transparent: true');
       assert.strictEqual(el.components.material.material.premultipliedAlpha, false);
