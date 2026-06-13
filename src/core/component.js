@@ -672,8 +672,8 @@ export function registerComponent (name, definition) {
   NewComponent.prototype.play = wrapPlay(NewComponent.prototype.play);
   NewComponent.prototype.pause = wrapPause(NewComponent.prototype.pause);
 
-  schema = utils.extend(processSchema(NewComponent.prototype.schema,
-                                      NewComponent.prototype.name));
+  schema = processSchema(NewComponent.prototype.schema,
+                         NewComponent.prototype.name);
   NewComponent.prototype.isSingleProperty = schemaIsSingleProp = isSingleProp(NewComponent.prototype.schema);
   NewComponent.prototype.isObjectBased = !schemaIsSingleProp ||
               (schemaIsSingleProp && (isObject(schema.default) || isObject(parseProperty(undefined, schema))));
