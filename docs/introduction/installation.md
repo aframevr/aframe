@@ -16,33 +16,7 @@ is primarily HTML and JavaScript.
 
 The fastest way is to start playing from within the browser.
 
-### Remix on Glitch
-
-![Glitch](https://cloud.githubusercontent.com/assets/674727/24480466/54b17d22-1499-11e7-8a18-d4f76b49ad07.jpg)
-
-[glitch]: https://glitch.com/~aframe
-
-[Glitch][glitch] provides an online code editor with instant deployment and
-hosting of web sites. The editor supports both front-end and back-end code as
-well as multiple files and directories. Glitch lets us remix (i.e., copy)
-existing projects and make them our own and instantly host and deploy changes
-for everyone to see.
-
-[Hit **Remix** on this A-Frame project][glitch], mess with the HTML in
-`index.html`, and see your site published live on each change! The base A-Frame
-Glitch, for example, is published at `aframe.glitch.me`, but we will provide your
-own custom URL name.
-
-Below are a few other A-Frame Glitches for starters:
-
-- [aincraft](https://github.com/aframevr/aframe/tree/master/examples/docs/aincraft) - Minecraft demo.
-- [360-gallery](https://github.com/aframevr/aframe/tree/master/examples/docs/360-gallery/) - 360&deg; image gallery.
-- [community-components](https://github.com/aframevr/aframe/tree/master/examples/docs/community-components) - Showcase of various community components.
-- [aframe-vaporwave](https://glitch.com/~aframe-vaporwave) - Retro-futuristic scene.
-
-### Other Code Editors
-
-Below are a couple of A-Frame starter kits on other browser-based code
+Below are a couple of A-Frame starter kits on browser-based code
 editors. Both support remixing or forking:
 
 - [CodePen &mdash; A-Frame](https://codepen.io/mozvr/pen/BjygdO)
