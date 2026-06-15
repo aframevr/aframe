@@ -12698,6 +12698,9 @@ __webpack_require__.r(__webpack_exports__);
     this.onModelLoaded = this.onModelLoaded.bind(this);
     this.updateBoundingBox = this.updateBoundingBox.bind(this);
     this.el.addEventListener('model-loaded', this.onModelLoaded);
+    if (this.data.centerModel) {
+      this.centerModel();
+    }
     this.updateCollider();
     this.system.addCollider(this.el);
   },
@@ -12717,7 +12720,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   centerModel: function () {
     var el = this.el;
-    var model = el.components['gltf-model'] && el.components['gltf-model'].model;
+    var model = el.getObject3D('mesh');
     var box;
     var center;
     if (!model) {
@@ -12814,6 +12817,7 @@ __webpack_require__.r(__webpack_exports__);
       // We also undo the parent world rotation.
       auxEuler.copy(trackedObject3D.rotation);
       trackedObject3D.rotation.set(0, 0, 0);
+      trackedObject3D.parent.updateWorldMatrix(true, false);
       trackedObject3D.parent.matrixWorld.decompose(auxPosition, auxQuaternion, auxScale);
       auxMatrix.compose(auxPosition, identityQuaternion, auxScale);
       trackedObject3D.parent.matrixWorld.copy(auxMatrix);
@@ -12829,7 +12833,7 @@ __webpack_require__.r(__webpack_exports__);
 
       // Restore rotations.
       trackedObject3D.parent.matrixWorld.compose(auxPosition, auxQuaternion, auxScale);
-      this.el.object3D.rotation.copy(auxEuler);
+      trackedObject3D.rotation.copy(auxEuler);
     };
   }(),
   checkTrackedObject: function () {
@@ -62608,7 +62612,7 @@ if (_utils_index_js__WEBPACK_IMPORTED_MODULE_16__.device.isBrowserEnvironment) {
   window.logs = debug;
   __webpack_require__(/*! ./style/aframe.css */ "./src/style/aframe.css");
 }
-console.log('A-Frame Version: 1.7.1 (Date 2026-06-15, Commit #0c1277f6)');
+console.log('A-Frame Version: 1.7.1 (Date 2026-06-15, Commit #07ffc8ba)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].REVISION);
 
 // Wait for ready state, unless user asynchronously initializes A-Frame.
