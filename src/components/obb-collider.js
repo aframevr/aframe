@@ -163,7 +163,7 @@ registerComponent('obb-collider', {
 
       // Restore rotations.
       trackedObject3D.parent.matrixWorld.compose(auxPosition, auxQuaternion, auxScale);
-      this.el.object3D.rotation.copy(auxEuler);
+      trackedObject3D.rotation.copy(auxEuler);
     };
   })(),
 
