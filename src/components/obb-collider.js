@@ -22,6 +22,7 @@ registerComponent('obb-collider', {
     this.updateBoundingBox = this.updateBoundingBox.bind(this);
 
     this.el.addEventListener('model-loaded', this.onModelLoaded);
+    if (this.data.centerModel) { this.centerModel(); }
     this.updateCollider();
 
     this.system.addCollider(this.el);
@@ -44,7 +45,7 @@ registerComponent('obb-collider', {
 
   centerModel: function () {
     var el = this.el;
-    var model = el.components['gltf-model'] && el.components['gltf-model'].model;
+    var model = el.getObject3D('mesh');
     var box;
     var center;
 
@@ -146,6 +147,7 @@ registerComponent('obb-collider', {
       auxEuler.copy(trackedObject3D.rotation);
       trackedObject3D.rotation.set(0, 0, 0);
 
+      trackedObject3D.parent.updateWorldMatrix(true, false);
       trackedObject3D.parent.matrixWorld.decompose(auxPosition, auxQuaternion, auxScale);
       auxMatrix.compose(auxPosition, identityQuaternion, auxScale);
       trackedObject3D.parent.matrixWorld.copy(auxMatrix);
@@ -161,7 +163,7 @@ registerComponent('obb-collider', {
 
       // Restore rotations.
       trackedObject3D.parent.matrixWorld.compose(auxPosition, auxQuaternion, auxScale);
-      this.el.object3D.rotation.copy(auxEuler);
+      trackedObject3D.rotation.copy(auxEuler);
     };
   })(),
 
