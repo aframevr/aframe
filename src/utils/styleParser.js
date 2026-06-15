@@ -8,9 +8,10 @@ var DASH_REGEX = /-([a-z])/g;
 /**
  * Deserialize style-like string into an object of properties.
  *
- * @param {string} value - HTML attribute value.
+ * @param {string|object} value - HTML attribute value.
  * @param {object} [obj] - Reused object for object pooling.
- * @returns {object} Property data.
+ * @returns {object|string} Parsed property data, or `value` unchanged when it is not a
+ *   parseable style string (e.g. already an object, or a plain string with no properties).
  */
 export function parse (value, obj) {
   var parsedData;

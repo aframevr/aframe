@@ -145,7 +145,7 @@ export function registerSystem (name, definition) {
   NewSystem.prototype = Object.create(System.prototype, proto);
   NewSystem.prototype.name = name;
   NewSystem.prototype.constructor = NewSystem;
-  NewSystem.prototype.schema = utils.extend(processSchema(NewSystem.prototype.schema));
+  NewSystem.prototype.schema = processSchema(NewSystem.prototype.schema);
   systems[name] = NewSystem;
 
   // Initialize systems for existing scenes
