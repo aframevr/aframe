@@ -20244,7 +20244,18 @@ function mergeComponentData(attrValue, extraData) {
 
   // Merge multi-property data.
   if (extraData.constructor === Object) {
-    return _utils_index_js__WEBPACK_IMPORTED_MODULE_2__.extend(extraData, _utils_index_js__WEBPACK_IMPORTED_MODULE_2__.styleParser.parse(attrValue || {}));
+    var parsedAttrValue = _utils_index_js__WEBPACK_IMPORTED_MODULE_2__.styleParser.parse(attrValue || {});
+    // Only merge in defined properties. `attrValue` may be a component's pooled `attrValue`
+    // object that still carries stale keys from a previous use (recycled objects keep their
+    // keys with `undefined` values), and those must not clobber the extra/default data
+    // (e.g. an a-sky primitive's `material.side: back`).
+    for (var key in parsedAttrValue) {
+      if (parsedAttrValue[key] === undefined) {
+        continue;
+      }
+      extraData[key] = parsedAttrValue[key];
+    }
+    return extraData;
   }
 
   // Return data, precedence to the defined value.
@@ -21403,7 +21414,7 @@ function registerComponent(name, definition) {
   NewComponent.prototype.system = _system_js__WEBPACK_IMPORTED_MODULE_2__ && _system_js__WEBPACK_IMPORTED_MODULE_2__.systems[name];
   NewComponent.prototype.play = wrapPlay(NewComponent.prototype.play);
   NewComponent.prototype.pause = wrapPause(NewComponent.prototype.pause);
-  schema = _utils_index_js__WEBPACK_IMPORTED_MODULE_3__.extend(processSchema(NewComponent.prototype.schema, NewComponent.prototype.name));
+  schema = processSchema(NewComponent.prototype.schema, NewComponent.prototype.name);
   NewComponent.prototype.isSingleProperty = schemaIsSingleProp = isSingleProp(NewComponent.prototype.schema);
   NewComponent.prototype.isObjectBased = !schemaIsSingleProp || schemaIsSingleProp && (isObject(schema.default) || isObject(parseProperty(undefined, schema)));
 
@@ -23861,7 +23872,7 @@ function registerSystem(name, definition) {
   NewSystem.prototype = Object.create(System.prototype, proto);
   NewSystem.prototype.name = name;
   NewSystem.prototype.constructor = NewSystem;
-  NewSystem.prototype.schema = _utils_index_js__WEBPACK_IMPORTED_MODULE_2__.extend((0,_schema_js__WEBPACK_IMPORTED_MODULE_0__.process)(NewSystem.prototype.schema));
+  NewSystem.prototype.schema = (0,_schema_js__WEBPACK_IMPORTED_MODULE_0__.process)(NewSystem.prototype.schema);
   systems[name] = NewSystem;
 
   // Initialize systems for existing scenes
@@ -29591,9 +29602,10 @@ var DASH_REGEX = /-([a-z])/g;
 /**
  * Deserialize style-like string into an object of properties.
  *
- * @param {string} value - HTML attribute value.
+ * @param {string|object} value - HTML attribute value.
  * @param {object} [obj] - Reused object for object pooling.
- * @returns {object} Property data.
+ * @returns {object|string} Parsed property data, or `value` unchanged when it is not a
+ *   parseable style string (e.g. already an object, or a plain string with no properties).
  */
 function parse(value, obj) {
   var parsedData;
@@ -62596,7 +62608,7 @@ if (_utils_index_js__WEBPACK_IMPORTED_MODULE_16__.device.isBrowserEnvironment) {
   window.logs = debug;
   __webpack_require__(/*! ./style/aframe.css */ "./src/style/aframe.css");
 }
-console.log('A-Frame Version: 1.7.1 (Date 2026-06-13, Commit #3615cdba)');
+console.log('A-Frame Version: 1.7.1 (Date 2026-06-15, Commit #0c1277f6)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].REVISION);
 
 // Wait for ready state, unless user asynchronously initializes A-Frame.
