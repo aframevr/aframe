@@ -393,7 +393,7 @@ await import('aframe');
 
 // Asynchronously register components/systems
 
-window.AFRAME.ready();
+window.AFRAME.emitReady();
 ```
 
 Since version 1.7.1, A-Frame ships an ES module bundle without the three dependency.
