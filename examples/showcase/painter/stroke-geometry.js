@@ -94,6 +94,15 @@ StrokeGeometry.prototype = {
     this.currentGeometry.attributes.normal.setXYZ(this.indices.normal++, x, y, z);
   },
 
+  setSize: (function () {
+    return function (size) {
+      if (this.size === size) {
+        return;
+      }
+      this.size = size;
+    };
+  })(),
+
   addPoint: (function () {
     var direction = new THREE.Vector3();
     var vertexA = new THREE.Vector3();

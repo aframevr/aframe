@@ -2,7 +2,8 @@
 AFRAME.registerComponent('brush', {
   schema: {
     color: {type: 'color', default: '#ef2d5e'},
-    size: {default: 0.01, min: 0.001, max: 0.3},
+    size: {default: 0.01, min: 0.001, max: 1.0},
+    pressureMultiplier: {default: 5.0, min: 0.01, max: 10.0},
     enabled: {default: true},
     hand: {default: 'left'}
   },
@@ -15,6 +16,7 @@ AFRAME.registerComponent('brush', {
     this.stroke = null;
     this.buttonsDown = 0;
     this.touches = 0;
+    this.sizeFactor = 1.0;
 
     this.onTouchStarted = this.onTouchStarted.bind(this);
     el.addEventListener('tiptouchstart', this.onTouchStarted);
@@ -25,6 +27,9 @@ AFRAME.registerComponent('brush', {
     el.addEventListener('buttondown', this.onButtonDown);
     this.onButtonUp = this.onButtonUp.bind(this);
     el.addEventListener('buttonup', this.onButtonUp);
+
+    this.onButtonChanged = this.onButtonChanged.bind(this);
+    el.addEventListener('buttonchanged', this.onButtonChanged);
 
     this.onControllerConnected = this.onControllerConnected.bind(this);
     el.addEventListener('controllerconnected', this.onControllerConnected);
@@ -68,6 +73,16 @@ AFRAME.registerComponent('brush', {
     this.painting = false;
   },
 
+  onButtonChanged: function (evt) {
+    if (!this.data.enabled) { return; }
+    if (!this.painting) { return; }
+    if (evt.detail.state.value === 1) {
+      this.sizeFactor = 1.0;
+    } else {
+      this.sizeFactor = evt.detail.state.value * this.data.pressureMultiplier;
+    }
+  },
+
   tick: (function () {
     var position = new THREE.Vector3();
     var rotation = new THREE.Quaternion();
@@ -84,12 +99,13 @@ AFRAME.registerComponent('brush', {
       }
       this.el.object3D.matrixWorld.decompose(position, rotation, scale);
       var pointerPosition = this.getPointerPosition(position, rotation);
+      this.stroke.setSize(this.data.size * this.sizeFactor);
       this.stroke.addPoint(position, rotation, pointerPosition);
     };
   })(),
 
   startNewStroke: function () {
-    this.stroke = this.system.addNewStroke(this.color, this.data.size);
+    this.stroke = this.system.addNewStroke(this.color, this.data.size * this.sizeFactor);
   },
 
   getPointerPosition: (function () {
