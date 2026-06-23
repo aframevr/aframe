@@ -72,14 +72,14 @@ CDN build:
 
 ```html
 <head>
-  <script src="https://aframe.io/releases/1.7.1/aframe.min.js"></script>
+  <script src="https://aframe.io/releases/1.8.0/aframe.min.js"></script>
 </head>
 ```
 
 If we want to serve it ourselves, we can download the JS build:
 
-<a id="builds-prod" class="btn btn-download" href="https://aframe.io/releases/1.7.1/aframe.min.js" download>Production Version <span>1.7.1</span></a> <em class="install-note">Minified</em>
-<a id="builds-dev" class="btn btn-download" href="https://aframe.io/releases/1.7.1/aframe.js" download>Development Version <span>1.7.1</span></a> <em class="install-note">Uncompressed with Source Maps</em>
+<a id="builds-prod" class="btn btn-download" href="https://aframe.io/releases/1.8.0/aframe.min.js" download>Production Version <span>1.8.0</span></a> <em class="install-note">Minified</em>
+<a id="builds-dev" class="btn btn-download" href="https://aframe.io/releases/1.8.0/aframe.js" download>Development Version <span>1.8.0</span></a> <em class="install-note">Uncompressed with Source Maps</em>
 
 ### Install from npm
 
@@ -151,7 +151,7 @@ In your `index.html`, adjust as follows:
         "
       />
   ...
-  <script src="https://cdn.jsdelivr.net/npm/aframe@1.7.1/dist/aframe-master.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/aframe@1.8.0/dist/aframe-master.min.js"></script>
   <script id='my-scene' type="text/html">
     ...your scene goes here...
   </script>
