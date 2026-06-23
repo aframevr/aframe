@@ -1,5 +1,54 @@
-### 1.8.0 (unreleased)
+### 1.8.0 (June 23, 2026)
 
+### Major Changes
+
+- Update THREE to r184 (@vincentfretin, @mrxz, @dmarcos)
+- Bug fixes and improvements.
+
+### Bug fixes 
+
+- Fix issue when a loaded cube texture doesn't contribute to light probes (fix #5734) (#5735) (@mrxz)
+- Fix issue when url of `gltf-model` changes when model is still loading (#5739) (@mrxz)
+- Address unsafe-eval error with with strict Content Security Policy (CSP) (fix #5028) (#5821) (@vincentfretin, @samiemad, @mrxz)
+- Replace Clock instance by Timer instance. Clock is deprecated in THREE r183+ (#5800) (@vincentfretin) 
+- Remove pcfsoft shadow type in shadow component, deprecated in THREE r182+ fallback to pcf (#5798) (@vincentfretin, @mrxz)
+- Set dialogs text color explictitly to ovverride browser defaults that might result on  white text on white background (#5814) (@vincentfretin)
+- Fix issue when a tracked controller disconnects and reconnects (#5804) (@vincentfretin)
+- Fix `hand-controls` orientation on Meta Quest Controllers (fix #5570, #5305, #5321) (#5766) (@filandra)
+- Fix missing pixel row when capturing an image with the screenshot component (fix #5789) (#5790) (@diarmidmackenzie)
+- Fix issue with loading screen dismissed prematurely while images are still loading (#5779) (@vincentfretin)
+- Click event triggered on the wrong controller with the `cursor` component (#5782) (@vincentfretin)
+- Fix incorrect error handling when an image fails to load in the `material` component (#5781) (@vincentfretin, @mrxz)
+- Prevent erronously caching images that have failed to load (#5778)
+- Identify controllers by id instead of idPrefix in `tracked-controls` (fix #5772) (#5774) (@vincentfretin)
+- Fix issue where controller model is not visibile when toggling between hands and controllers (fix #5757) (#5777) (@vincentfretin)
+- Use unique cache keys per file type when caching to match THREE r178+ convention (#5776) (@vincentfretin)
+- Fix axis names for Windows motion controls (#5732) (@hazho)
+- Make quad layers feature optional so it works on devices not supporting WebXR layers like Apple Vision Pro (#5722) (@vincentfretin)
+- Fix wrong geometry size in layer component (#5723) (@vincentfretin)
+- Fix check for `XRWebGLBinding` existance in layer component (#5721) (@vincentfretin, @mrxz)
+- Replace `npot` property in material component with the more explicit `minFilter` and `magFilter` (#5717) (@mrxz)
+-  Verify this.quadPanelEl exists before toggling the layer visibility (#5708) (@vincentfretin)
+ 
+### Enhancements
+
+- Reintroduce `needsRedraw` flag to force updates on the layer component (#5724) (@vincentfretin)
+- Replace `rStats` with `stats-gl` in stats component (fix #5397) (#5700) (@arvind-iyer)
+- Remove stats div from DOM when removing the stats component (#5733) (@vincentfretin)
+- Update shadow light properties only for lights that support shadows (#5748) (@mrxz)
+- Improve Logitech MX support: Enable use in AR mode, support variable brush stroke on button / tip pressuer (#5756) (@FilipeLopesPires)
+- Remove obsolete variable assignments in `tracked-controls` component (#5770) (@vincentfretin)
+- Remove obsolete / dead logic to rotate the Meta Touch model thumbstick (#5775) (@vincentfretin)
+- Set raycaster.camera to the active camera in order to raycast against sprites (@vincentfretin)
+- Expose premultipliedAlpha on material component (#5810) (@vincentfretin) 
+- Docs improvements (@vincentfretin, @thatguyjk, @Utopiah, @ccoenen, @mrxz, @vaibhavyxx, @Omegahed, @dmarcos)
+- Improve tests (@vincentfretin, @kitsiosk, @dmarcos)
+- Build system improvements (@vincentfretin,  @mrxz, @daj, @dmarcos)
+- Set `generateMipmaps` for material component (#5726) (@vincentfretin, @mrxz)
+- Don't unnecessarily initialize 6 canvas for quad layers. (#5707) (@vincentfretin)
+- Set meshMixin property default value to correct type in `real-world-mesh` componet (#5712) (@vaibhavyxx)
+- Use XRMediaBinding.createQuadLayer to render flat video on a layer (@vincentfretin)
+ 
 ### Deprecations
 
 - If you used material `npot: true` previously as a way to set `texture.minFilter = THREE.LinearFilter` for better image quality, you need to replace it with `minFilter: linear`. That change was introduced in #5717 that removed `npot` property that was legacy of WebGL1, new material properties `minFilter` and `magFilter` have been exposed instead.
