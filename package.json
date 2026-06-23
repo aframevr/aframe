@@ -24,7 +24,7 @@
     "lint:fix": "standardx --fix",
     "precommit": "npm run lint",
     "prepush": "node scripts/testOnlyCheck.js",
-    "prerelease": "node scripts/release.js 1.7.0 1.7.1",
+    "prerelease": "node scripts/release.js 1.7.1 1.8.0",
     "start": "npm run dev",
     "start:https": "npm run dev -- --server-type https",
     "start:webgpu": "cross-env WEBGPU=true npm run dev -- --server-type https",
