@@ -58,7 +58,7 @@ if (utils.device.isBrowserEnvironment) {
   require('./style/aframe.css');
 }
 
-console.log('A-Frame Version: 1.7.1 (Date 2026-06-15, Commit #07ffc8ba)');
+console.log('A-Frame Version: 1.8.0 (Date 2026-06-23, Commit #47a08f1c)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             THREE.REVISION);
 
