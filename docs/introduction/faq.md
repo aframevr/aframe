@@ -57,14 +57,17 @@ complexity and characteristics of each individual application. To get the best
 use of resources, we will need deeper understanding about 3D graphics.  See
 [best performance practices and guidelines][bestpractices] to get started.
 
-## Why is my experience not entering VR or AR mode?
+## Why is my experience not showing VR or AR buttons?
 
-[release]: https://github.com/aframevr/aframe/releases
 [webxr]: https://immersive-web.github.io/webxr/
 
-If you are using A-Frame 1.8.0 or older you probably need to update to the [latest release][release]. Browsers are migrating to the [WebXR standard][webxr] and old versions might no longer work.
+The [WebXR standard][webxr] requires a secure context.
+You have to serve your content over HTTPS.
 
-You also have to serve your content over HTTPS. The WebXR API won't be available over HTTP.
+For the AR button, you need to explicitly enable it with
+`<a-scene xr-mode-ui="XRMode: xr">` to have both the VR and AR buttons.
+You can use `XRMode: ar` to show only the AR button.
+Note that the `vr-mode-ui` component was renamed to `xr-mode-ui` since A-Frame 1.5.0.
 
 ## Why does my asset (e.g., image, video, model) not load?
 
@@ -396,7 +399,7 @@ await import('aframe');
 window.AFRAME.emitReady();
 ```
 
-Since version 1.8.0, A-Frame ships an ES module bundle without the three dependency.
+Since version 1.7.0, A-Frame ships an ES module bundle without the three dependency.
 Developers can import from `three` and `three/addons` and avoid the
 "Multiple instances of Three.js being imported." warning. Add the three dependency in the importmap like the example below. 
 Make sure the three and A-Frame versions are compatible. See browser console (or package.json) to see what THREE version A-Frame ships with by default.
