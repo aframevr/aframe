@@ -6,7 +6,15 @@ const shell = require('shelljs');
 const replaceInFileSync = require('replace-in-file').replaceInFileSync;
 
 const pkg = require('../package.json');
-const threeVersion = pkg.dependencies.three.split('@')[1];
+const aframeVersion = pkg.version;
+
+// Take the super-three version from the released tag's package.json, not from
+// master, so the gh-pages examples reference the three version that shipped
+// with this A-Frame release.
+const taggedPkg = JSON.parse(
+  shell.exec(`git show v${aframeVersion}:package.json`, { silent: true }).stdout
+);
+const threeVersion = taggedPkg.dependencies.three.split('@')[1];
 
 const rootDir = path.join(__dirname, '..');
 
@@ -29,5 +37,6 @@ function htmlReplace (before, after) {
   });
 }
 
-htmlReplace('dist/aframe-master.js', 'dist/aframe-master.min.js');
+htmlReplace('../../../dist/aframe-master.module.min.js', `https://aframe.io/releases/${aframeVersion}/aframe.module.min.js`);
+htmlReplace('../../../dist/aframe-master.js', `https://aframe.io/releases/${aframeVersion}/aframe.min.js`);
 htmlReplace(/\.\.\/\.\.\/\.\.\/super-three-package/g, `https://cdn.jsdelivr.net/npm/super-three@${threeVersion}`);
