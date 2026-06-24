@@ -85,6 +85,13 @@
       }
     },
     {
+      /* This module uses ES8 async / await */
+      "files": ["./src/components/splat.js"],
+      "parserOptions": {
+        "ecmaVersion": 8
+      }
+    },
+    {
       /* This code is external, and the ES5 restrictions do not apply to it. */
       "files": ["./src/lib/**/*.js"],
       "parserOptions": {
