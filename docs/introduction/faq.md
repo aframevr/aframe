@@ -407,7 +407,7 @@ Make sure the three and A-Frame versions are compatible. See browser console (or
     {
       "imports": {
         "aframe": "https://aframe.io/releases/1.8.0/aframe.module.min.js",
-        "three": "https://cdn.jsdelivr.net/npm/super-three@0.184.0/build/three.module.js",
+        "three": "https://cdn.jsdelivr.net/npm/super-three@0.184.0/build/three.module.min.js",
         "three/addons/": "https://cdn.jsdelivr.net/npm/super-three@0.184.0/examples/jsm/",
         "aframe-extras/controls": "https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.5.x/dist/aframe-extras.controls.min.js"
       }
