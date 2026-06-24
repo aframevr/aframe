@@ -1,0 +1,91 @@
+name: Bump dist builds
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'src/**'
+      - 'vendor/**'
+      - 'package.json'
+      - 'package-lock.json'
+
+permissions:
+  contents: write
+
+jobs:
+  bump-dist:
+    name: Bump aframe-master dist builds
+    runs-on: ubuntu-latest
+    # Skip if the push was made by this workflow (avoid infinite loop).
+    if: github.actor != 'github-actions[bot]'
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          # Need history to find the previous dist bump commit.
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: 'npm'
+          cache-dependency-path: 'package-lock.json'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build dist
+        run: npm run dist
+
+      - name: Check for dist changes
+        id: check
+        run: |
+          if git diff --quiet dist/ src/index.js; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Find previous dist bump commit
+        if: steps.check.outputs.changed == 'true'
+        id: prev
+        run: |
+          # Find the commit hash referenced in the previous "Bump aframe-master dist/ builds" commit.
+          PREV_BUMP=$(git log --all --format="%H" --author="a-frobot\|github-actions\[bot\]" --grep="Bump aframe-master dist/ builds" -1 2>/dev/null || true)
+          if [ -n "$PREV_BUMP" ]; then
+            # The compare range starts from the parent of the previous bump.
+            PREV_PARENT=$(git rev-parse "${PREV_BUMP}^" 2>/dev/null || true)
+            if [ -n "$PREV_PARENT" ]; then
+              echo "hash=${PREV_PARENT:0:12}" >> "$GITHUB_OUTPUT"
+            fi
+          fi
+          # Current HEAD short hash (the triggering commit).
+          echo "current=$(git rev-parse --short=12 HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Commit dist builds
+        if: steps.check.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          PREV="${{ steps.prev.outputs.hash }}"
+          CURRENT="${{ steps.prev.outputs.current }}"
+
+          if [ -n "$PREV" ]; then
+            COMPARE="(https://github.com/${{ github.repository }}/compare/${PREV}...${CURRENT})"
+          else
+            COMPARE=""
+          fi
+
+          git add dist/ src/index.js
+          git commit -m "Bump aframe-master dist/ builds. ${COMPARE}"
+
+          # Now update the CDN URL in dist/README.md.
+          DIST_HASH=$(git rev-parse HEAD)
+          CDN_URL="https://cdn.jsdelivr.net/gh/${{ github.repository }}@${DIST_HASH}/dist/aframe-master.min.js"
+          sed -i "s|https://cdn.jsdelivr.net/gh/aframevr/aframe@[^/]*/dist/aframe-master.min.js|${CDN_URL}|g" dist/README.md
+
+          git add dist/README.md
+          git commit -m "Update master CDN URL. (${CDN_URL})"
+
+          git push
