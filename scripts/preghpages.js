@@ -29,14 +29,35 @@ shell.cp('-r', [
   '*.md'
 ], 'gh-pages');
 
+// Track which HTML files had at least one link replaced, so the CodeSandbox
+// style below is only injected into the examples we actually modified.
+const modifiedFiles = new Set();
+
 function htmlReplace (before, after) {
-  replaceInFileSync({
+  const results = replaceInFileSync({
     from: before,
     to: after,
     files: 'gh-pages/**/*.html'
   });
+  results.filter(result => result.hasChanged).forEach(result => modifiedFiles.add(result.file));
 }
 
 htmlReplace('../../../dist/aframe-master.module.min.js', `https://aframe.io/releases/${aframeVersion}/aframe.module.min.js`);
 htmlReplace('../../../dist/aframe-master.js', `https://aframe.io/releases/${aframeVersion}/aframe.min.js`);
 htmlReplace(/\.\.\/\.\.\/\.\.\/super-three-package/g, `https://cdn.jsdelivr.net/npm/super-three@${threeVersion}`);
+
+// Move the CodeSandbox "Open Sandbox" button to the top so it does not overlap
+// the VR/AR enter buttons, but only in the examples where a link was replaced.
+if (modifiedFiles.size > 0) {
+  replaceInFileSync({
+    from: '</head>',
+    to: `  <style>
+      iframe[id^="sb__open-sandbox"] {
+        top: 16px !important;
+        bottom: auto !important;
+      }
+    </style>
+  </head>`,
+    files: Array.from(modifiedFiles)
+  });
+}
