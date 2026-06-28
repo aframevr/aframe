@@ -27,10 +27,15 @@ shell.cp('-r', [
   '*.md'
 ], 'gh-pages');
 
-function replaceInFileSync ({ files, processor }) {
+function replaceInFileSync ({ files, processor, processorIfChanged = [] }) {
   for (const file of fs.globSync(files)) {
     const input = fs.readFileSync(file, 'utf8');
-    const output = processor.reduce((content, process) => process(content), input);
+    let output = processor.reduce((content, process) => process(content), input);
+    // processorIfChanged only runs on files the processors above modified, i.e.
+    // the examples that reference the local A-Frame build.
+    if (output !== input) {
+      output = processorIfChanged.reduce((content, process) => process(content), output);
+    }
     if (output !== input) {
       fs.writeFileSync(file, output);
     }
@@ -49,5 +54,9 @@ replaceInFileSync({
     htmlReplace(/"\.\.\/\.\.\/\.\.\/super-three-package/g, `"https://cdn.jsdelivr.net/npm/super-three@${threeVersion}`),
     htmlReplace(/"\.\.\/\.\.\/js\//g, '"https://cdn.jsdelivr.net/gh/aframevr/aframe@gh-pages/examples/js/'),
     htmlReplace(/"\.\.\/\.\.\/assets\//g, '"https://cdn.jsdelivr.net/gh/aframevr/aframe@gh-pages/examples/assets/')
+  ],
+  // Add the "Remix" dropdown (CodeSandbox/Krabbel) to the published examples.
+  processorIfChanged: [
+    htmlReplace('</head>', '  <script src="https://cdn.jsdelivr.net/gh/aframevr/aframe@gh-pages/examples/js/remix-dropdown.js"></script>\n  </head>')
   ]
 });
