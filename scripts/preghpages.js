@@ -1,9 +1,7 @@
 #!/usr/bin/env node
-
-const path = require('path');
-
+const fs = require('node:fs');
+const path = require('node:path');
 const shell = require('shelljs');
-const replaceInFileSync = require('replace-in-file').replaceInFileSync;
 
 const pkg = require('../package.json');
 const aframeVersion = pkg.version;
@@ -29,16 +27,27 @@ shell.cp('-r', [
   '*.md'
 ], 'gh-pages');
 
-function htmlReplace (before, after) {
-  replaceInFileSync({
-    from: before,
-    to: after,
-    files: 'gh-pages/**/*.html'
-  });
+function replaceInFileSync ({ files, processor }) {
+  for (const file of fs.globSync(files)) {
+    const input = fs.readFileSync(file, 'utf8');
+    const output = processor.reduce((content, process) => process(content), input);
+    if (output !== input) {
+      fs.writeFileSync(file, output);
+    }
+  }
 }
 
-htmlReplace('../../../dist/aframe-master.module.min.js', `https://aframe.io/releases/${aframeVersion}/aframe.module.min.js`);
-htmlReplace('../../../dist/aframe-master.js', `https://aframe.io/releases/${aframeVersion}/aframe.min.js`);
-htmlReplace(/\.\.\/\.\.\/\.\.\/super-three-package/g, `https://cdn.jsdelivr.net/npm/super-three@${threeVersion}`);
-htmlReplace(/\.\.\/\.\.\/js\//g, 'https://cdn.jsdelivr.net/gh/aframevr/aframe@gh-pages/examples/js/');
-htmlReplace(/\.\.\/\.\.\/assets\//g, 'https://cdn.jsdelivr.net/gh/aframevr/aframe@gh-pages/examples/assets/');
+function htmlReplace (before, after) {
+  return (input) => input.replace(before, after);
+}
+
+replaceInFileSync({
+  files: 'gh-pages/**/*.html',
+  processor: [
+    htmlReplace('../../../dist/aframe-master.module.min.js', `https://aframe.io/releases/${aframeVersion}/aframe.module.min.js`),
+    htmlReplace('../../../dist/aframe-master.js', `https://aframe.io/releases/${aframeVersion}/aframe.min.js`),
+    htmlReplace(/\.\.\/\.\.\/\.\.\/super-three-package/g, `https://cdn.jsdelivr.net/npm/super-three@${threeVersion}`),
+    htmlReplace(/\.\.\/\.\.\/js\//g, 'https://cdn.jsdelivr.net/gh/aframevr/aframe@gh-pages/examples/js/'),
+    htmlReplace(/\.\.\/\.\.\/assets\//g, 'https://cdn.jsdelivr.net/gh/aframevr/aframe@gh-pages/examples/assets/')
+  ]
+});
