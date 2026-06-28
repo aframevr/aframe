@@ -44,10 +44,10 @@ function htmlReplace (before, after) {
 replaceInFileSync({
   files: 'gh-pages/**/*.html',
   processor: [
-    htmlReplace('../../../dist/aframe-master.module.min.js', `https://aframe.io/releases/${aframeVersion}/aframe.module.min.js`),
-    htmlReplace('../../../dist/aframe-master.js', `https://aframe.io/releases/${aframeVersion}/aframe.min.js`),
-    htmlReplace(/\.\.\/\.\.\/\.\.\/super-three-package/g, `https://cdn.jsdelivr.net/npm/super-three@${threeVersion}`),
-    htmlReplace(/\.\.\/\.\.\/js\//g, 'https://cdn.jsdelivr.net/gh/aframevr/aframe@gh-pages/examples/js/'),
-    htmlReplace(/\.\.\/\.\.\/assets\//g, 'https://cdn.jsdelivr.net/gh/aframevr/aframe@gh-pages/examples/assets/')
+    htmlReplace('"../../../dist/aframe-master.module.min.js', `"https://aframe.io/releases/${aframeVersion}/aframe.module.min.js`),
+    htmlReplace('"../../../dist/aframe-master.js', `"https://aframe.io/releases/${aframeVersion}/aframe.min.js`),
+    htmlReplace(/"\.\.\/\.\.\/\.\.\/super-three-package/g, `"https://cdn.jsdelivr.net/npm/super-three@${threeVersion}`),
+    htmlReplace(/"\.\.\/\.\.\/js\//g, '"https://cdn.jsdelivr.net/gh/aframevr/aframe@gh-pages/examples/js/'),
+    htmlReplace(/"\.\.\/\.\.\/assets\//g, '"https://cdn.jsdelivr.net/gh/aframevr/aframe@gh-pages/examples/assets/')
   ]
 });
