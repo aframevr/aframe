@@ -53,8 +53,7 @@ if (modifiedFiles.size > 0) {
     from: '</head>',
     to: `  <style>
       iframe[id^="sb__open-sandbox"] {
-        top: 16px !important;
-        bottom: auto !important;
+        inset: 16px auto auto 16px;
       }
     </style>
   </head>`,
