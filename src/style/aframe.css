@@ -405,3 +405,9 @@ a-scene audio {
 .a-dom-overlay:not(.a-no-style)>* {
   pointer-events: auto;
 }
+
+/* Move the CodeSandbox "Open Sandbox" button to the top left so it does not
+ * overlap the VR/AR buttons */
+iframe[id^="sb__open-sandbox"] {
+  inset: 16px auto auto 16px;
+}
