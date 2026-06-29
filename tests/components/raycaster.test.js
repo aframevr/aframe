@@ -435,6 +435,121 @@ suite('raycaster', function () {
     });
   });
 
+  suite('BatchedMesh per-instance tracking', function () {
+    var hostEl;
+    var batchedMesh;
+
+    setup(function (done) {
+      el.setAttribute('position', '0 0 1');
+      el.setAttribute('raycaster', {near: 0.1, far: 10});
+
+      hostEl = document.createElement('a-entity');
+      hostEl.setAttribute('id', 'host');
+
+      // Two unit boxes batched into one mesh, one in front of the raycaster (-1 Z)
+      // and one to the side (-3 X). Default ray hits the first; after a 70deg yaw
+      // it hits the second — a transition between instances on the SAME host entity.
+      var geomA = new THREE.BoxGeometry(1, 1, 1);
+      var geomB = new THREE.BoxGeometry(1, 1, 1);
+      batchedMesh = new THREE.BatchedMesh(2, 1024, 2048, new THREE.MeshBasicMaterial());
+      var idA = batchedMesh.addGeometry(geomA);
+      var idB = batchedMesh.addGeometry(geomB);
+      var inA = batchedMesh.addInstance(idA);
+      var inB = batchedMesh.addInstance(idB);
+      batchedMesh.setMatrixAt(inA, new THREE.Matrix4().makeTranslation(0, 0, -1));
+      batchedMesh.setMatrixAt(inB, new THREE.Matrix4().makeTranslation(-3, 0, 0));
+
+      hostEl.addEventListener('loaded', function () {
+        hostEl.setObject3D('mesh', batchedMesh);
+        setTimeout(() => { done(); });
+      });
+      sceneEl.appendChild(hostEl);
+    });
+
+    test('intersection carries batchId for per-instance hits', function (done) {
+      el.addEventListener('raycaster-intersection', function (evt) {
+        assert.equal(component.intersectedEls[0], hostEl);
+        assert.equal(evt.detail.intersections[0].batchId, 0);
+        done();
+      });
+      sceneEl.object3D.updateMatrixWorld();
+      component.refreshObjects();
+      component.tock();
+    });
+
+    test('emits closest-entity-changed when ray moves to a different instance on same host', function (done) {
+      el.addEventListener('raycaster-intersection', function onFirst () {
+        el.removeEventListener('raycaster-intersection', onFirst);
+        el.addEventListener('raycaster-closest-entity-changed', function (evt) {
+          // Same host entity, but the closest intersection has switched instance.
+          assert.equal(evt.detail.els[0], hostEl);
+          assert.equal(evt.detail.intersections[0].batchId, 1);
+          done();
+        });
+        el.setAttribute('rotation', '0 70 0');
+        sceneEl.object3D.updateMatrixWorld();
+        component.tock();
+      });
+      sceneEl.object3D.updateMatrixWorld();
+      component.refreshObjects();
+      component.tock();
+    });
+  });
+
+  suite('InstancedMesh per-instance tracking', function () {
+    var hostEl;
+    var instancedMesh;
+
+    setup(function (done) {
+      el.setAttribute('position', '0 0 1');
+      el.setAttribute('raycaster', {near: 0.1, far: 10});
+
+      hostEl = document.createElement('a-entity');
+      hostEl.setAttribute('id', 'instHost');
+
+      var geom = new THREE.BoxGeometry(1, 1, 1);
+      var mat = new THREE.MeshBasicMaterial();
+      instancedMesh = new THREE.InstancedMesh(geom, mat, 2);
+      instancedMesh.setMatrixAt(0, new THREE.Matrix4().makeTranslation(0, 0, -1));
+      instancedMesh.setMatrixAt(1, new THREE.Matrix4().makeTranslation(-3, 0, 0));
+      instancedMesh.instanceMatrix.needsUpdate = true;
+
+      hostEl.addEventListener('loaded', function () {
+        hostEl.setObject3D('mesh', instancedMesh);
+        setTimeout(() => { done(); });
+      });
+      sceneEl.appendChild(hostEl);
+    });
+
+    test('intersection carries instanceId for per-instance hits', function (done) {
+      el.addEventListener('raycaster-intersection', function (evt) {
+        assert.equal(component.intersectedEls[0], hostEl);
+        assert.equal(evt.detail.intersections[0].instanceId, 0);
+        done();
+      });
+      sceneEl.object3D.updateMatrixWorld();
+      component.refreshObjects();
+      component.tock();
+    });
+
+    test('emits closest-entity-changed when ray moves to a different instance on same host', function (done) {
+      el.addEventListener('raycaster-intersection', function onFirst () {
+        el.removeEventListener('raycaster-intersection', onFirst);
+        el.addEventListener('raycaster-closest-entity-changed', function (evt) {
+          assert.equal(evt.detail.els[0], hostEl);
+          assert.equal(evt.detail.intersections[0].instanceId, 1);
+          done();
+        });
+        el.setAttribute('rotation', '0 70 0');
+        sceneEl.object3D.updateMatrixWorld();
+        component.tock();
+      });
+      sceneEl.object3D.updateMatrixWorld();
+      component.refreshObjects();
+      component.tock();
+    });
+  });
+
   suite('updateOriginDirection', function () {
     test('updates ray origin if position changes', function () {
       var origin;
