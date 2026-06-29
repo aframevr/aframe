@@ -72,13 +72,17 @@
     var loc = getExampleLocation();
     if (!loc) { return; }
 
-    // Point at the directory, adding a file parameter for non-index.html pages
-    // so the specific example file is opened. The leading slash is URL-encoded
-    // (CodeSandbox expects %2F).
-    var fileParam = (loc.file && loc.file !== 'index.html') ? '?file=' + encodeURIComponent('/' + loc.file) : '';
-    var treePath = 'tree/gh-pages/examples/' + loc.dir + fileParam;
-    var codesandboxUrl = 'https://codesandbox.io/p/sandbox/github/aframevr/aframe/' + treePath;
-    var krabbelUrl = 'https://krabbel.dev/github/aframevr/aframe/' + treePath;
+    // Point at the directory, adding a parameter for non-index.html pages so the
+    // specific example file is opened. CodeSandbox uses a file parameter (with a
+    // leading slash, URL-encoded as %2F); Krabbel supports file and preview parameters
+    // (leading slash optional, if preview parameter specified and file parameter not
+    // specified, it will open the same file in both editor and preview).
+    var treePath = 'tree/gh-pages/examples/' + loc.dir;
+    var isFile = loc.file && loc.file !== 'index.html';
+    var fileParam = isFile ? '?file=' + encodeURIComponent('/' + loc.file) : '';
+    var previewParam = isFile ? '?preview=' + encodeURIComponent(loc.file) : '';
+    var codesandboxUrl = 'https://codesandbox.io/p/sandbox/github/aframevr/aframe/' + treePath + fileParam;
+    var krabbelUrl = 'https://krabbel.dev/github/aframevr/aframe/' + treePath + previewParam;
 
     var menu = document.createElement('div');
     menu.classList.add('a-remix-menu');
