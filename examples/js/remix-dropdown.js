@@ -63,6 +63,8 @@
   }
 
   function init () {
+    addStyles();
+
     // Don't show the button when the example is already running inside a remix
     // service preview (CodeSandbox *.csb.app, Krabbel *.krabbel.fun).
     if (/\.(csb\.app|krabbel\.fun)$/.test(window.location.hostname)) { return; }
@@ -77,8 +79,6 @@
     var treePath = 'tree/gh-pages/examples/' + loc.dir + fileParam;
     var codesandboxUrl = 'https://codesandbox.io/p/sandbox/github/aframevr/aframe/' + treePath;
     var krabbelUrl = 'https://krabbel.dev/github/aframevr/aframe/' + treePath;
-
-    addStyles();
 
     var menu = document.createElement('div');
     menu.classList.add('a-remix-menu');
