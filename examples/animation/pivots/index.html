@@ -5,13 +5,14 @@
     <title>Animations: Pivots</title>
     <meta name="description" content="Animations: Pivots - A-Frame">
     <script src="https://aframe.io/releases/1.8.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/aframevr/aframe@gh-pages/examples/js/remix-dropdown.js"></script>
   </head>
   <body>
     <a-scene>
       <a-assets>
         <a-mixin id="cylinder" geometry="primitive: cylinder; height: 2; openEnded: true; radius: 2" material="side: double"></a-mixin>
         <a-mixin id="scaleAnimation" animation="property: object3D.scale.y; from: 1.125; to: 0.0001; dur: 2000"></a-mixin>
-        <img id="background" src="../../assets/img/gray-gradient.jpg">
+        <img id="background" src="https://cdn.jsdelivr.net/gh/aframevr/aframe@gh-pages/examples/assets/img/gray-gradient.jpg">
       </a-assets>
 
       <a-entity position="0 0 8">

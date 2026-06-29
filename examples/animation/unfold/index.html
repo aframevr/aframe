@@ -5,13 +5,14 @@
     <title>Animation: Unfold</title>
     <meta name="description" content="Animation: Unfold - A-Frame">
     <script src="https://aframe.io/releases/1.8.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/aframevr/aframe@gh-pages/examples/js/remix-dropdown.js"></script>
   </head>
   <body>
     <a-scene background="color: #ECECEC">
       <a-assets>
         <a-mixin id="board" geometry="depth: .05; height: 1; width: 6" material="shader: flat" pivot="0 0.5 0" position="0 -1 0"></a-mixin>
         <a-mixin id="unhinge" animation="property: rotation; to: 0 0 0; dur: 1000"></a-mixin>
-        <img id="shadow" src="../../assets/img/radial-shadow-2.png">
+        <img id="shadow" src="https://cdn.jsdelivr.net/gh/aframevr/aframe@gh-pages/examples/assets/img/radial-shadow-2.png">
       </a-assets>
 
       <!-- Series of nested boards that unfold one by one. -->
