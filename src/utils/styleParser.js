@@ -47,7 +47,7 @@ export function toCamelCase (str) {
  * Split a string into chunks matching `<key>: <value>`
  */
 var getKeyValueChunks = (function () {
-  var chunks = [];
+  var pooledChunks = [];
 
   // Parenthesized values can contain semicolons (e.g., data URIs in `url(...)` or
   // inline materials in `material(...)`); don't split inside them.
@@ -61,11 +61,14 @@ var getKeyValueChunks = (function () {
     return depth > 0;
   }
 
-  return function getKeyValueChunks (raw) {
+  return function getKeyValueChunks (raw, reentrant) {
     var chunk = '';
     var nextSplit;
     var offset = 0;
     var sep = ';';
+    // Re-entrant calls must not clobber the pooled array an outer call is
+    // still iterating over.
+    var chunks = reentrant ? [] : pooledChunks;
 
     chunks.length = 0;
 
@@ -90,6 +93,11 @@ var getKeyValueChunks = (function () {
   };
 })();
 
+// Tracks nested styleParse calls: assigning a parsed value to `obj` can synchronously
+// trigger another parse (e.g., a property setter parsing an inline `material(...)`
+// value), which must not reuse the pooled chunks array of the ongoing call.
+var parseDepth = 0;
+
 /**
  * Convert a style attribute string to an object.
  *
@@ -106,7 +114,8 @@ function styleParse (str, obj) {
 
   obj = obj || {};
 
-  chunks = getKeyValueChunks(str);
+  parseDepth++;
+  chunks = getKeyValueChunks(str, parseDepth > 1);
   for (i = 0; i < chunks.length; i++) {
     item = chunks[i];
     if (!item) { continue; }
@@ -116,6 +125,7 @@ function styleParse (str, obj) {
     val = item.substr(pos + 1).trim();
     obj[toCamelCase(key)] = val;
   }
+  parseDepth--;
   return obj;
 }
 

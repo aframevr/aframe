@@ -32,6 +32,27 @@ suite('utils.styleParser', function () {
     test('returns plain string unchanged', function () {
       assert.equal(styleParser.parse('red'), 'red');
     });
+
+    test('is re-entrant when a property assignment triggers a nested parse', function () {
+      // Simulates the component attrValueProxy: assigning a parsed value can
+      // synchronously parse another style string (e.g., inline material(...)).
+      var obj = {};
+      var nested;
+      Object.defineProperty(obj, 'material', {
+        set: function (value) {
+          nested = styleParser.parse('shader: flat; color: red');
+          this.materialValue = value;
+        },
+        get: function () { return this.materialValue; }
+      });
+
+      var result = styleParser.parse(
+        'material: material(shader: flat; color: red); side: double', obj);
+      assert.equal(result.material, 'material(shader: flat; color: red)');
+      assert.equal(result.side, 'double');
+      assert.notOk('color' in result);
+      assert.shallowDeepEqual(nested, {shader: 'flat', color: 'red'});
+    });
   });
 
   suite('stringify', function () {

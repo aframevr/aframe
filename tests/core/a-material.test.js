@@ -149,6 +149,20 @@ suite('a-material', function () {
     assert.equal(material.el.inlineString, 'material(shader: flat; color: blue)');
   });
 
+  test('inline material combined with other properties parses cleanly', function () {
+    var boxEl = this.sceneEl.querySelector('a-box');
+    // Unique inline definition (not in the factory cache) so the nested style
+    // parse triggered by the attrValueProxy assignment actually runs.
+    boxEl.setAttribute('material',
+                       'material: material(shader: flat; color: #123456); side: double');
+    var attrValue = boxEl.components.material.attrValue;
+    assert.deepEqual(Object.keys(attrValue).sort(), ['material', 'side']);
+    assert.equal(attrValue.material, 'material(shader: flat; color: #123456)');
+    var material = boxEl.getObject3D('mesh').material;
+    assert.equal(material.type, 'MeshBasicMaterial');
+    assert.equal(material.color.getHexString(), '123456');
+  });
+
   test('inline material works with single-property material type schema', function () {
     var boxEl = this.sceneEl.querySelector('a-box');
     AFRAME.registerComponent('test-inline-material', {schema: {type: 'material'}});
