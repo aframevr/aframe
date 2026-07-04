@@ -75,7 +75,7 @@ depending on the material type applied.
 | alphaTest    | Alpha test threshold for transparency.                                                                                                            | 0             |
 | depthTest    | Whether depth testing is enabled when rendering the material.                                                                                     | true          |
 | flatShading  | Use `THREE.FlatShading` rather than `THREE.StandardShading`.                                                                                      | false         |
-| material     | Selector to a [`<a-material>` asset][amaterial] to use as shared material (e.g., `#wood`). When set, all other properties are ignored and the material is entirely defined by the asset. | None          |
+| material     | Selector to an [`<a-material>` asset][amaterial] (e.g., `#wood`). When set, all other properties are ignored and the material is entirely defined by the asset. | None          |
 | offset       | Texture offset to be used.                                                                                                                        | {x: 0, y: 0}  |
 | opacity      | Extent of transparency. If the `transparent` property is not `true`, then the material will remain opaque and `opacity` will only affect color.   | 1.0           |
 | premultipliedAlpha | Whether the material's RGB channels are premultiplied by its alpha channel. Automatically forced to `true` when `blending` is `multiply` or `subtractive`.   | false         |

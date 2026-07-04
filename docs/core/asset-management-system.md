@@ -21,8 +21,8 @@ scenes don't try to fetch assets while rendering.
 We place assets within `<a-assets>`, and we place `<a-assets>` within
 `<a-scene>`. Assets include:
 
-- `<a-asset-item>` - Miscellaneous assets such as 3D models and materials
-- `<a-material>` - Shared materials, created (with their textures) at load time
+- `<a-asset-item>` - Miscellaneous assets such as 3D models
+- `<a-material>` - Materials and their textures
 - `<audio>` - Sound files
 - `<img>` - Image textures
 - `<video>` - Video textures
