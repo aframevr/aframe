@@ -107,6 +107,34 @@ suite('a-material', function () {
     assert.notOk(materialEl.material);
   });
 
+  test('creates material on demand before scene systems are ready', function (done) {
+    // Reproduces early property type parsing (e.g., entity setAttribute at
+    // DOMContentLoaded): the <a-material> is part of a scene tree that is not
+    // attached to the document yet, so scene systems are not initialized.
+    var sceneEl = document.createElement('a-scene');
+    var assetsEl = document.createElement('a-assets');
+    var materialEl = document.createElement('a-material');
+    materialEl.setAttribute('id', 'early');
+    materialEl.setAttribute('shader', 'flat');
+    materialEl.setAttribute('src', 'url(base/tests/assets/test.png)');
+    assetsEl.appendChild(materialEl);
+    sceneEl.appendChild(assetsEl);
+
+    // Must not throw even though the material system does not exist yet.
+    var material = materialEl.getMaterial();
+    assert.ok(material);
+    assert.notOk(material.map);
+
+    // Once attached, the deferred texture load happens.
+    materialEl.addEventListener('loaded', function () {
+      assert.equal(materialEl.getMaterial(), material);
+      assert.ok(material.map);
+      document.body.removeChild(sceneEl);
+      done();
+    });
+    document.body.appendChild(sceneEl);
+  });
+
   test('warns on unknown property', function () {
     var materialEl = document.createElement('a-material');
     materialEl.setAttribute('id', 'unknownprops');

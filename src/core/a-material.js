@@ -44,13 +44,13 @@ class AMaterial extends ANode {
 
     this.getMaterial();
 
-    // Texture loading was deferred if the material was created while detached.
-    if (!this.shaderUpdated) {
-      this.shader.update(this.data);
-      this.shaderUpdated = true;
-    }
-
     if (this.sceneEl && this.sceneEl.systems.material) {
+      // Texture loading was deferred if the material was created before the scene
+      // systems were available (e.g., on-demand creation by the property type parser).
+      if (!this.shaderUpdated) {
+        this.shader.update(this.data);
+        this.shaderUpdated = true;
+      }
       this.sceneEl.systems.material.registerMaterial(this.material);
     }
 
@@ -123,7 +123,11 @@ class AMaterial extends ANode {
     if (this.id) { this.material.name = this.id; }
     utils.material.updateBaseMaterial(this.material, data);
 
-    if (this.sceneEl) {
+    // Texture loading requires the scene's material system, which is not available
+    // before the scene initialized its systems (e.g., when the material is created
+    // on-demand by an early `material` property type parse). Deferred to
+    // doConnectedCallback in that case.
+    if (this.sceneEl && this.sceneEl.systems && this.sceneEl.systems.material) {
       shader.update(data);
       this.shaderUpdated = true;
     }
