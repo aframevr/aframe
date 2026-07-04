@@ -3,6 +3,8 @@ import { ANode } from './a-node.js';
 import { components } from './component.js';
 import { shaders } from './shader.js';
 import { parseProperty } from './schema.js';
+import { setInlineMaterialFactory } from './propertyTypes.js';
+import * as styleParser from '../utils/styleParser.js';
 import * as utils from '../utils/index.js';
 
 var warn = utils.debug('core:a-material:warn');
@@ -38,7 +40,7 @@ class AMaterial extends ANode {
   doConnectedCallback () {
     super.doConnectedCallback();
 
-    if (!this.parentNode || !this.parentNode.isAssets) {
+    if (!this.isInlineMaterial && (!this.parentNode || !this.parentNode.isAssets)) {
       warn('<a-material> should be a child of <a-assets>.');
     }
 
@@ -215,3 +217,67 @@ class AMaterial extends ANode {
 }
 
 customElements.define('a-material', AMaterial);
+
+// Cache of <a-material> elements backing inline `material(...)` definitions, keyed by
+// their properties string, so identical inline definitions share one material instance.
+var inlineMaterialEls = {};
+
+/**
+ * Create (or reuse) a material from an inline `material(...)` definition used by the
+ * `material` property type, e.g., `handMaterial: material(shader: flat; color: red)`.
+ *
+ * A detached <a-material> element backs the material. It is attached under the scene's
+ * <a-assets> so textures load and updates flow through the normal element lifecycle.
+ *
+ * @param {string} propsString - Inner properties string (e.g., `shader: flat; color: red`).
+ * @returns {object|null} THREE.Material or null on invalid input.
+ */
+setInlineMaterialFactory(function getOrCreateInlineMaterial (propsString) {
+  var el = inlineMaterialEls[propsString];
+  var key;
+  var props;
+
+  if (!el) {
+    props = styleParser.parse(propsString);
+    if (typeof props !== 'object') {
+      warn('Invalid inline material value: material(' + propsString + ')');
+      return null;
+    }
+    el = document.createElement('a-material');
+    el.isInlineMaterial = true;
+    el.inlineString = 'material(' + propsString + ')';
+    for (key in props) { el.setAttribute(key, props[key]); }
+    inlineMaterialEls[propsString] = el;
+  }
+
+  attachInlineMaterial(el);
+  return el.getMaterial();
+});
+
+/**
+ * Attach an inline material element to the scene so its textures can load.
+ * No-op until a scene exists; retried on every parse of the same definition.
+ */
+function attachInlineMaterial (el) {
+  var assetsEl;
+  var sceneEl;
+
+  if (el.isConnected) { return; }
+  sceneEl = document.querySelector('a-scene');
+  if (!sceneEl) { return; }
+
+  assetsEl = sceneEl.querySelector('a-assets');
+  if (assetsEl) {
+    assetsEl.appendChild(el);
+    return;
+  }
+
+  // No <a-assets>; wire the scene directly so textures can still load.
+  el.sceneEl = sceneEl;
+  el.getMaterial();
+  if (!el.shaderUpdated && sceneEl.systems.material) {
+    el.shader.update(el.data);
+    el.shaderUpdated = true;
+    sceneEl.systems.material.registerMaterial(el.material);
+  }
+}

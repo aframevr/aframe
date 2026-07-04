@@ -89,6 +89,21 @@ AFRAME.registerComponent('my-component', {
 <a-entity my-component="highlightMaterial: #red"></a-entity>
 ```
 
+## Inline Materials
+
+For one-off materials, the `material` property type also accepts an inline
+`material(...)` definition instead of a selector, using the same properties
+as `<a-material>` attributes in style syntax:
+
+```html
+<a-entity hand-tracking-controls="hand: right; handMaterial: material(shader: flat; color: red)"></a-entity>
+<a-box material="material: material(color: #8B4513; roughness: 0.9)"></a-box>
+```
+
+Identical inline definitions (same string) share a single material instance.
+Each inline definition is backed by an `<a-material>` element automatically
+attached under the scene's `<a-assets>`.
+
 ## Lifecycle
 
 The scene waits for `<a-material>` elements (including their textures) to

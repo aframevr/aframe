@@ -29,6 +29,12 @@
 
       <a-cylinder position="3 3.25 -4" radius="0.5" material="material: #gradient-mat"></a-cylinder>
 
+      <!-- Inline material definitions; identical definitions share one instance. -->
+      <a-box position="-3 4.25 -4" scale="0.5 0.5 0.5"
+             material="material: material(shader: flat; color: #EF2D5E)"></a-box>
+      <a-sphere position="-1.5 4.25 -4" radius="0.35"
+                material="material: material(shader: flat; color: #EF2D5E)"></a-sphere>
+
       <a-plane rotation="-90 0 0" width="12" height="12" material="material: #gradient-mat"></a-plane>
 
       <a-sky color="#ECECEC"></a-sky>

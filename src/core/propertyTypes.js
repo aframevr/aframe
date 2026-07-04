@@ -6,6 +6,20 @@ var warn = debug('core:propertyTypes:warn');
 export var propertyTypes = {};
 var nonCharRegex = /[,> .[\]:]/;
 var urlRegex = /url\((.+)\)/;
+var inlineMaterialRegex = /^material\((.*)\)$/;
+var inlineMaterialFactory = null;
+
+/**
+ * Register the factory the `material` property type uses to create materials from
+ * inline `material(...)` values. Set by the <a-material> module, which owns material
+ * creation, to avoid a circular dependency.
+ *
+ * @param {function} factory - Receives the properties string (e.g., `color: red`) and
+ *   returns a THREE.Material or null.
+ */
+export function setInlineMaterialFactory (factory) {
+  inlineMaterialFactory = factory;
+}
 
 // Built-in property types.
 registerPropertyType('audio', '', assetParse, assetStringify);
@@ -137,11 +151,13 @@ function assetStringify (value) {
  * For material assets.
  *
  * @param {string|Element|THREE.Material} value - An ID selector to an `<a-material>`,
- *   the `<a-material>` element itself, or a THREE.Material instance.
+ *   an inline `material(...)` definition, the `<a-material>` element itself, or a
+ *   THREE.Material instance.
  * @returns {THREE.Material|null} The three.js material or null if not found.
  */
 function materialParse (value) {
   var el;
+  var match;
 
   if (!value) { return null; }
 
@@ -162,14 +178,26 @@ function materialParse (value) {
     return null;
   }
 
+  // Inline material (e.g., `material(shader: flat; color: red)`).
+  match = value.match(inlineMaterialRegex);
+  if (match) {
+    if (!inlineMaterialFactory) {
+      warn('Inline material syntax is not available.');
+      return null;
+    }
+    return inlineMaterialFactory(match[1]);
+  }
+
   warn('Unable to parse material property value "' + value + '". ' +
-       'Expected an ID selector to an <a-material> (e.g., #myMaterial).');
+       'Expected an ID selector to an <a-material> (e.g., #myMaterial) or an inline ' +
+       'definition (e.g., material(color: red)).');
   return null;
 }
 
 function materialStringify (value) {
-  if (value && value.isMaterial && value.el && value.el.isMaterialAsset && value.el.id) {
-    return '#' + value.el.id;
+  if (value && value.isMaterial && value.el && value.el.isMaterialAsset) {
+    if (value.el.id) { return '#' + value.el.id; }
+    if (value.el.inlineString) { return value.el.inlineString; }
   }
   return defaultStringify(value);
 }

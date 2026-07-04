@@ -141,6 +141,12 @@ suite('propertyTypes', function () {
       var material = {isMaterial: true, el: materialEl};
       assert.equal(stringify(material), '#wood');
     });
+
+    test('stringifies inline material back to inline syntax', function () {
+      var materialEl = {isMaterialAsset: true, id: '', inlineString: 'material(color: red)'};
+      var material = {isMaterial: true, el: materialEl};
+      assert.equal(stringify(material), 'material(color: red)');
+    });
   });
 
   suite('selector', function () {

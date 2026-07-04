@@ -1,4 +1,4 @@
-/* global assert, setup, suite, teardown, test, sinon */
+/* global AFRAME, assert, setup, suite, teardown, test, sinon */
 import THREE from 'lib/three.js';
 
 suite('a-material', function () {
@@ -133,6 +133,34 @@ suite('a-material', function () {
       done();
     });
     document.body.appendChild(sceneEl);
+  });
+
+  test('inline material is created and shared through cache', function () {
+    var boxEl = this.sceneEl.querySelector('a-box');
+    var sphereEl = this.sceneEl.querySelector('a-sphere');
+    boxEl.setAttribute('material', 'material: material(shader: flat; color: blue)');
+    sphereEl.setAttribute('material', 'material: material(shader: flat; color: blue)');
+    var material = boxEl.getObject3D('mesh').material;
+    assert.equal(material.type, 'MeshBasicMaterial');
+    assert.shallowDeepEqual(material.color, {r: 0, g: 0, b: 1});
+    assert.equal(sphereEl.getObject3D('mesh').material, material);
+    // Backing <a-material> element is attached under <a-assets>.
+    assert.equal(material.el.parentNode, this.sceneEl.querySelector('a-assets'));
+    assert.equal(material.el.inlineString, 'material(shader: flat; color: blue)');
+  });
+
+  test('inline material works with single-property material type schema', function () {
+    var boxEl = this.sceneEl.querySelector('a-box');
+    AFRAME.registerComponent('test-inline-material', {schema: {type: 'material'}});
+    try {
+      boxEl.setAttribute('test-inline-material', 'material(shader: flat; color: red)');
+      var material = boxEl.getAttribute('test-inline-material');
+      assert.ok(material.isMaterial);
+      assert.shallowDeepEqual(material.color, {r: 1, g: 0, b: 0});
+    } finally {
+      boxEl.removeAttribute('test-inline-material');
+      delete AFRAME.components['test-inline-material'];
+    }
   });
 
   test('warns on unknown property', function () {
