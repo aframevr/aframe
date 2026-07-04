@@ -567,7 +567,18 @@ export class AScene extends AEntity {
       }
 
       if (rendererAttr.multiviewStereo) {
+        // WebGLRenderer names this option multiviewStereo, WebGPURenderer names it multiview.
         rendererConfig.multiviewStereo = rendererAttr.multiviewStereo === 'true';
+        rendererConfig.multiview = rendererConfig.multiviewStereo;
+      }
+
+      if (rendererAttr.reversedDepthBuffer) {
+        rendererConfig.reversedDepthBuffer = rendererAttr.reversedDepthBuffer === 'true';
+      }
+
+      if (rendererAttr.backend) {
+        // Only used by WebGPURenderer; webgl forces the WebGL 2 backend.
+        rendererConfig.forceWebGL = rendererAttr.backend === 'webgl';
       }
 
       this.maxCanvasSize = {
