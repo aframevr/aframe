@@ -4,6 +4,7 @@ import { registerComponent } from '../core/component.js';
 import { shaders, shaderNames } from '../core/shader.js';
 
 var error = utils.debug('components:material:error');
+var disposeMaterial = utils.material.disposeMaterial;
 
 /**
  * Material component.
@@ -130,22 +131,7 @@ export var Component = registerComponent('material', {
     var oldDataHasKeys;
 
     // Base material properties.
-    material.alphaTest = data.alphaTest;
-    material.depthTest = data.depthTest !== false;
-    material.depthWrite = data.depthWrite !== false;
-    material.opacity = data.opacity;
-    material.flatShading = data.flatShading;
-    material.side = parseSide(data.side);
-    material.transparent = data.transparent !== false || data.opacity < 1.0;
-    material.vertexColors = data.vertexColorsEnabled;
-    material.visible = data.visible;
-    material.blending = parseBlending(data.blending);
-    // three.js r178+ requires premultipliedAlpha for MultiplyBlending and
-    // SubtractiveBlending, so force it on regardless of the user-supplied value.
-    material.premultipliedAlpha = (data.blending === 'multiply' || data.blending === 'subtractive')
-      ? true
-      : data.premultipliedAlpha;
-    material.dithering = data.dithering;
+    utils.material.updateBaseMaterial(material, data);
 
     // Check if material needs update.
     for (oldDataHasKeys in oldData) { break; }
@@ -198,68 +184,3 @@ export var Component = registerComponent('material', {
     }
   }
 });
-
-/**
- * Return a three.js constant determining which material face sides to render
- * based on the side parameter (passed as a component property).
- *
- * @param {string} [side=front] - `front`, `back`, or `double`.
- * @returns {number} THREE.FrontSide, THREE.BackSide, or THREE.DoubleSide.
- */
-function parseSide (side) {
-  switch (side) {
-    case 'back': {
-      return THREE.BackSide;
-    }
-    case 'double': {
-      return THREE.DoubleSide;
-    }
-    default: {
-      // Including case `front`.
-      return THREE.FrontSide;
-    }
-  }
-}
-
-/**
- * Return a three.js constant determining blending
- *
- * @param {string} [blending=normal] - `none`, additive`, `subtractive`,`multiply` or `normal`.
- * @returns {number}
- */
-function parseBlending (blending) {
-  switch (blending) {
-    case 'none': {
-      return THREE.NoBlending;
-    }
-    case 'additive': {
-      return THREE.AdditiveBlending;
-    }
-    case 'subtractive': {
-      return THREE.SubtractiveBlending;
-    }
-    case 'multiply': {
-      return THREE.MultiplyBlending;
-    }
-    default: {
-      return THREE.NormalBlending;
-    }
-  }
-}
-
-/**
- * Dispose of material from memory and unsubscribe material from scene updates like fog.
- */
-function disposeMaterial (material, system) {
-  material.dispose();
-  system.unregisterMaterial(material);
-
-  // Dispose textures on this material
-  Object.keys(material)
-    .filter(function (propName) {
-      return material[propName] && material[propName].isTexture;
-    })
-    .forEach(function (mapName) {
-      material[mapName].dispose();
-    });
-}
