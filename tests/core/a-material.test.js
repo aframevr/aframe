@@ -80,6 +80,22 @@ suite('a-material', function () {
     }, 0);
   });
 
+  test('only flags needsUpdate when a rebuild-relevant property changes', function (done) {
+    var materialEl = document.getElementById('red');
+    var material = materialEl.getMaterial();
+    var version = material.version;
+    // Same value (side is already double): no rebuild.
+    materialEl.setAttribute('side', 'double');
+    setTimeout(function () {
+      assert.equal(material.version, version);
+      materialEl.setAttribute('side', 'front');
+      setTimeout(function () {
+        assert.equal(material.version, version + 1);
+        done();
+      }, 0);
+    }, 0);
+  });
+
   test('entity going back to own material does not dispose shared material', function () {
     var boxEl = this.sceneEl.querySelector('a-box');
     var sharedMaterial = document.getElementById('red').getMaterial();

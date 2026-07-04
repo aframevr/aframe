@@ -76,12 +76,21 @@ export function parseBlending (blending) {
  * @param {object} data - Material component (or <a-material>) data.
  */
 export function updateBaseMaterial (material, data) {
+  var side = parseSide(data.side);
+
+  // Changes to these properties require the shader program to be rebuilt,
+  // using the material itself as the source of truth.
+  if (material.alphaTest !== data.alphaTest || material.side !== side ||
+      material.vertexColors !== data.vertexColorsEnabled) {
+    material.needsUpdate = true;
+  }
+
   material.alphaTest = data.alphaTest;
   material.depthTest = data.depthTest !== false;
   material.depthWrite = data.depthWrite !== false;
   material.opacity = data.opacity;
   material.flatShading = data.flatShading;
-  material.side = parseSide(data.side);
+  material.side = side;
   material.transparent = data.transparent !== false || data.opacity < 1.0;
   material.vertexColors = data.vertexColorsEnabled;
   material.visible = data.visible;

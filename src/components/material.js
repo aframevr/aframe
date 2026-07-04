@@ -63,7 +63,7 @@ export var Component = registerComponent('material', {
       this.updateShader(data.shader);
     }
     this.shader.update(this.data);
-    this.updateMaterial(oldData);
+    this.updateMaterial();
   },
 
   updateSchema: function (data) {
@@ -135,24 +135,11 @@ export var Component = registerComponent('material', {
 
   /**
    * Set and update base material properties.
-   * Set `needsUpdate` when needed.
+   * `updateBaseMaterial` sets `needsUpdate` when needed, using the material
+   * itself as the source of truth.
    */
-  updateMaterial: function (oldData) {
-    var data = this.data;
-    var material = this.material;
-    var oldDataHasKeys;
-
-    // Base material properties.
-    utils.material.updateBaseMaterial(material, data);
-
-    // Check if material needs update.
-    for (oldDataHasKeys in oldData) { break; }
-    if (oldDataHasKeys &&
-        (oldData.alphaTest !== data.alphaTest ||
-         oldData.side !== data.side ||
-         oldData.vertexColorsEnabled !== data.vertexColorsEnabled)) {
-      material.needsUpdate = true;
-    }
+  updateMaterial: function () {
+    utils.material.updateBaseMaterial(this.material, this.data);
   },
 
   /**

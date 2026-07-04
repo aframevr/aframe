@@ -87,9 +87,6 @@ class AMaterial extends ANode {
     this.data[key] = parseProperty(newVal === null ? undefined : newVal, this.schema[key]);
     this.shader.update(this.data);
     utils.material.updateBaseMaterial(this.material, this.data);
-    if (key === 'alphaTest' || key === 'side' || key === 'vertexColorsEnabled') {
-      this.material.needsUpdate = true;
-    }
   }
 
   /**
