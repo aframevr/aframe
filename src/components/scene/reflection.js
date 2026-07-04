@@ -2,6 +2,11 @@
 import * as THREE from 'three';
 import { registerComponent as register } from '../../core/component.js';
 
+// WebGLRenderer uses WebGLCubeRenderTarget, WebGPURenderer uses CubeRenderTarget.
+// Written so that Webpack can't statically determine the export used;
+// only one of the two exists depending on the three.js build.
+var cubeRenderTargetImpl = ['WebGLCubeRenderTarget', 'CubeRenderTarget'].find(function (x) { return THREE[x]; });
+
 // source: view-source:https://storage.googleapis.com/chromium-webxr-test/r886480/proposals/lighting-estimation.html
 function updateLights (estimate, probeLight, directionalLight, directionalLightPosition) {
   var intensityScalar =
@@ -30,9 +35,9 @@ export var Component = register('reflection', {
   sceneOnly: true,
   init: function () {
     var self = this;
-    this.cubeRenderTarget = new THREE.WebGLCubeRenderTarget(16);
+    this.cubeRenderTarget = new THREE[cubeRenderTargetImpl](16);
     this.cubeCamera = new THREE.CubeCamera(0.1, 1000, this.cubeRenderTarget);
-    this.lightingEstimationTexture = (new THREE.WebGLCubeRenderTarget(16)).texture;
+    this.lightingEstimationTexture = (new THREE[cubeRenderTargetImpl](16)).texture;
     this.needsVREnvironmentUpdate = true;
 
     // Update WebXR to support light-estimation

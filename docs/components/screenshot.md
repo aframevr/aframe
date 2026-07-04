@@ -43,6 +43,10 @@ To take a screenshot programmatically and get a canvas, call `getCanvas()`:
 document.querySelector('a-scene').components.screenshot.getCanvas('equirectangular');
 ```
 
+> **NOTE:** When using `THREE.WebGPURenderer`, pixels are read back from the GPU
+> asynchronously, so `getCanvas()` returns a `Promise` resolving to the canvas
+> instead of the canvas itself.
+
 To take a screenshot programmatically and automatically save the file, call `capture()`:
 
 ```js
