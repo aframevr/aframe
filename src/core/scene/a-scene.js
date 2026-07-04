@@ -536,6 +536,10 @@ export class AScene extends AEntity {
     var rendererImpl = ['WebGLRenderer', 'WebGPURenderer'].find(function (x) { return THREE[x]; });
     renderer = this.renderer = new THREE[rendererImpl](rendererConfig);
     if (!renderer.xr.setPoseTarget) {
+      // setPoseTarget is an A-Frame specific patch in super-three to the WebXRManager
+      // used by WebGLRenderer. It will need to be implemented similarly in super-three
+      // for the XRManager used by WebGPURenderer when WebXR support for WebGPURenderer
+      // is added.
       renderer.xr.setPoseTarget = function () {};
     }
     renderer.setPixelRatio(window.devicePixelRatio);
