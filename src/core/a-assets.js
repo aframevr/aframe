@@ -85,10 +85,13 @@ class AAssets extends ANode {
       loaded.push(mediaElementLoaded(mediaEl));
     }
 
-    // Wait for <a-asset-item>s
+    // Wait for <a-asset-item>s and <a-material>s.
     children = this.getChildren();
     children.forEach(function (child) {
-      if (!child.isAssetItem || !child.hasAttribute('src')) { return; }
+      // Check tagName instead of a flag for <a-material> as the child might not have
+      // been upgraded yet when the assets element connects.
+      var isLoadableAssetItem = child.isAssetItem && child.hasAttribute('src');
+      if (!isLoadableAssetItem && child.tagName !== 'A-MATERIAL') { return; }
 
       loaded.push(new Promise(function waitForLoaded (resolve, reject) {
         if (child.hasLoaded) { return resolve(); }

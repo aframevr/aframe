@@ -15,6 +15,7 @@ import * as readyState from './core/readyState.js';
 
 import './core/a-assets.js';
 import './core/a-cubemap.js';
+import './core/a-material.js';
 import './core/a-mixin.js';
 
 import * as utils from './utils/index.js';

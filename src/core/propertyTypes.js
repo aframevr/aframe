@@ -16,6 +16,7 @@ registerPropertyType('color', '#FFF');
 registerPropertyType('int', 0, intParse);
 registerPropertyType('number', 0, numberParse);
 registerPropertyType('map', '', assetParse, assetStringify);
+registerPropertyType('material', null, materialParse, materialStringify, defaultEquals, false);
 registerPropertyType('model', '', assetParse, assetStringify);
 registerPropertyType('selector', null, selectorParse, selectorStringify, defaultEquals, false);
 registerPropertyType('selectorAll', null, selectorAllParse, selectorAllStringify, arrayEquals, false);
@@ -132,6 +133,47 @@ function assetStringify (value) {
   return defaultStringify(value);
 }
 
+/**
+ * For material assets.
+ *
+ * @param {string|Element|THREE.Material} value - An ID selector to an `<a-material>`,
+ *   the `<a-material>` element itself, or a THREE.Material instance.
+ * @returns {THREE.Material|null} The three.js material or null if not found.
+ */
+function materialParse (value) {
+  var el;
+
+  if (!value) { return null; }
+
+  if (typeof value !== 'string') {
+    // <a-material> element.
+    if (value.isMaterialAsset) { return value.getMaterial(); }
+    // THREE.Material instance passthrough.
+    if (value.isMaterial) { return value; }
+    warn('Unable to parse material property value. ' +
+         'Expected a selector to <a-material>, an <a-material> element or a THREE.Material.');
+    return null;
+  }
+
+  if (value.charAt(0) === '#') {
+    el = document.getElementById(value.substring(1));
+    if (el && el.isMaterialAsset) { return el.getMaterial(); }
+    warn('"' + value + '" is not an <a-material> asset.');
+    return null;
+  }
+
+  warn('Unable to parse material property value "' + value + '". ' +
+       'Expected an ID selector to an <a-material> (e.g., #myMaterial).');
+  return null;
+}
+
+function materialStringify (value) {
+  if (value && value.isMaterial && value.el && value.el.isMaterialAsset && value.el.id) {
+    return '#' + value.el.id;
+  }
+  return defaultStringify(value);
+}
+
 function defaultParse (value) {
   return value;
 }
@@ -215,6 +257,8 @@ export function isValidDefaultValue (type, defaultVal) {
   if (type === 'int' && typeof defaultVal !== 'number') { return false; }
   if (type === 'number' && typeof defaultVal !== 'number') { return false; }
   if (type === 'map' && typeof defaultVal !== 'string') { return false; }
+  if (type === 'material' && typeof defaultVal !== 'string' &&
+      defaultVal !== null) { return false; }
   if (type === 'model' && typeof defaultVal !== 'string') { return false; }
   if (type === 'selector' && typeof defaultVal !== 'string' &&
       defaultVal !== null) { return false; }

@@ -116,6 +116,33 @@ suite('propertyTypes', function () {
     });
   });
 
+  suite('material', function () {
+    var parse = propertyTypes.material.parse;
+    var stringify = propertyTypes.material.stringify;
+
+    test('parses empty value to null', function () {
+      assert.equal(parse(''), null);
+      assert.equal(parse(null), null);
+      assert.equal(parse(undefined), null);
+    });
+
+    test('passes through THREE.Material instance', function () {
+      var material = {isMaterial: true};
+      assert.equal(parse(material), material);
+    });
+
+    test('parses unknown selector to null', function () {
+      assert.equal(parse('#does-not-exist'), null);
+      assert.equal(parse('not-a-selector'), null);
+    });
+
+    test('stringifies material created from <a-material>', function () {
+      var materialEl = {isMaterialAsset: true, id: 'wood'};
+      var material = {isMaterial: true, el: materialEl};
+      assert.equal(stringify(material), '#wood');
+    });
+  });
+
   suite('selector', function () {
     var parse = propertyTypes.selector.parse;
     var stringify = propertyTypes.selector.stringify;

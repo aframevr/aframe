@@ -19,6 +19,7 @@ export var Component = registerComponent('material', {
     depthTest: {default: true},
     depthWrite: {default: true},
     flatShading: {default: false},
+    material: {type: 'material'},
     offset: {type: 'vec2', default: {x: 0, y: 0}},
     opacity: {default: 1.0, min: 0.0, max: 1.0},
     premultipliedAlpha: {default: false},
@@ -40,6 +41,7 @@ export var Component = registerComponent('material', {
 
   init: function () {
     this.material = null;
+    this.materialIsShared = false;
   },
 
   /**
@@ -49,6 +51,14 @@ export var Component = registerComponent('material', {
    */
   update: function (oldData) {
     var data = this.data;
+
+    // Material asset provided (e.g., `material: #myMaterial`). Use the shared material
+    // as-is; all other properties are managed by the <a-material> asset and ignored here.
+    if (data.material) {
+      if (this.material !== data.material) { this.setMaterial(data.material, true); }
+      return;
+    }
+
     if (!this.shader || data.shader !== oldData.shader) {
       this.updateShader(data.shader);
     }
@@ -82,6 +92,8 @@ export var Component = registerComponent('material', {
 
     function tickTime (time, delta) {
       var key;
+      // No shader instance to update when using a shared material asset.
+      if (!self.shader) { return; }
       for (key in tickProperties) {
         tickProperties[key] = time;
       }
@@ -152,7 +164,8 @@ export var Component = registerComponent('material', {
     var material = this.material;
     var object3D = this.el.getObject3D('mesh');
     if (object3D) { object3D.material = defaultMaterial; }
-    disposeMaterial(material, this.system);
+    // Shared materials (via `material` property) are owned by their <a-material> asset.
+    if (!this.materialIsShared) { disposeMaterial(material, this.system); }
   },
 
   /**
@@ -160,16 +173,25 @@ export var Component = registerComponent('material', {
    * material registration in scene.
    *
    * @param {THREE.Material} material - Material to register.
+   * @param {boolean} [isShared=false] - Whether the material is a shared material asset,
+   *        in which case this component does not own (dispose/register) it.
    */
-  setMaterial: function (material) {
+  setMaterial: function (material, isShared) {
     var el = this.el;
     var mesh;
     var system = this.system;
 
-    if (this.material) { disposeMaterial(this.material, system); }
+    if (this.material && !this.materialIsShared) { disposeMaterial(this.material, system); }
 
     this.material = material;
-    system.registerMaterial(material);
+    this.materialIsShared = !!isShared;
+    if (isShared) {
+      // Discard shader instance tied to the previous own material, so a new one is
+      // created if this component goes back to managing its own material.
+      this.shader = null;
+    } else {
+      system.registerMaterial(material);
+    }
 
     // Set on mesh. If mesh does not exist, wait for it.
     mesh = el.getObject3D('mesh');
