@@ -53,6 +53,24 @@ suite('utils.styleParser', function () {
       assert.notOk('color' in result);
       assert.shallowDeepEqual(nested, {shader: 'flat', color: 'red'});
     });
+
+    test('throws when parse nesting exceeds two levels and recovers', function () {
+      var innerObj = {};
+      Object.defineProperty(innerObj, 'b', {
+        get: function () { return undefined; },
+        set: function (value) { styleParser.parse('c: 3'); }
+      });
+      var obj = {};
+      Object.defineProperty(obj, 'a', {
+        get: function () { return undefined; },
+        set: function (value) { styleParser.parse('b: 2', innerObj); }
+      });
+
+      assert.throws(function () { styleParser.parse('a: 1', obj); },
+                    /maximum style string parse nesting/);
+      // Depth unwinds after the throw; subsequent parses work.
+      assert.equal(styleParser.parse('x: 1').x, '1');
+    });
   });
 
   suite('stringify', function () {
