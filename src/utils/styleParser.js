@@ -48,7 +48,18 @@ export function toCamelCase (str) {
  */
 var getKeyValueChunks = (function () {
   var chunks = [];
-  var hasUnclosedUrl = /url\([^)]+$/;
+
+  // Parenthesized values can contain semicolons (e.g., data URIs in `url(...)` or
+  // inline materials in `material(...)`); don't split inside them.
+  function hasUnclosedParen (str) {
+    var depth = 0;
+    var i;
+    for (i = 0; i < str.length; i++) {
+      if (str[i] === '(') { depth++; }
+      if (str[i] === ')' && depth > 0) { depth--; }
+    }
+    return depth > 0;
+  }
 
   return function getKeyValueChunks (raw) {
     var chunk = '';
@@ -64,8 +75,7 @@ var getKeyValueChunks = (function () {
 
       chunk += raw.substring(offset, nextSplit);
 
-      // data URIs can contain semicolons, so make sure we get the whole thing
-      if (hasUnclosedUrl.test(chunk)) {
+      if (hasUnclosedParen(chunk)) {
         chunk += ';';
         offset = nextSplit + 1;
         continue;
