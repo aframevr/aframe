@@ -60,9 +60,15 @@ export var Component = registerComponent('screenshot', {
   setup: function () {
     var el = this.el;
     if (this.canvas) { return; }
-    var gl = el.renderer.getContext();
-    if (!gl) { return; }
-    this.cubeMapSize = gl.getParameter ? gl.getParameter(gl.MAX_CUBE_MAP_TEXTURE_SIZE) : 2048;
+    var ctx = el.renderer.getContext();
+    if (!ctx) { return; }
+    if (ctx.getParameter) {
+      this.cubeMapSize = ctx.getParameter(ctx.MAX_CUBE_MAP_TEXTURE_SIZE);
+    } else {
+      // ctx is a GPUCanvasContext; cube map faces are limited by maxTextureDimension2D.
+      var device = el.renderer.backend.device;
+      this.cubeMapSize = device ? device.limits.maxTextureDimension2D : 2048;
+    }
     // WebGPURenderer does not support RawShaderMaterial, use a node material with TSL.
     if (THREE.TSL) {
       this.material = this.createNodeMaterial();
@@ -73,6 +79,7 @@ export var Component = registerComponent('screenshot', {
         fragmentShader: FRAGMENT_SHADER,
         side: THREE.DoubleSide
       });
+      this.cubeTextureUniform = this.material.uniforms.map;
     }
     this.quad = new THREE.Mesh(
       new THREE.PlaneGeometry(1, 1),
@@ -101,8 +108,8 @@ export var Component = registerComponent('screenshot', {
       TSL.cos(latitude),
       TSL.cos(longitude).mul(TSL.sin(latitude)).negate()
     );
-    this.cubeTextureNode = TSL.cubeTexture(new THREE.CubeTexture(), dir);
-    material.colorNode = TSL.vec4(this.cubeTextureNode.rgb, 1);
+    this.cubeTextureUniform = TSL.cubeTexture(new THREE.CubeTexture(), dir);
+    material.colorNode = TSL.vec4(this.cubeTextureUniform.rgb, 1);
     return material;
   },
 
@@ -185,11 +192,7 @@ export var Component = registerComponent('screenshot', {
       el.camera.getWorldQuaternion(cubeCamera.quaternion);
       // Render scene with cube camera.
       cubeCamera.update(el.renderer, el.object3D);
-      if (this.cubeTextureNode) {
-        this.cubeTextureNode.value = cubeCamera.renderTarget.texture;
-      } else {
-        this.quad.material.uniforms.map.value = cubeCamera.renderTarget.texture;
-      }
+      this.cubeTextureUniform.value = cubeCamera.renderTarget.texture;
       size = {width: this.data.width, height: this.data.height};
       // Use quad to project image taken by the cube camera.
       this.quad.visible = true;
@@ -278,7 +281,12 @@ export var Component = registerComponent('screenshot', {
 
   copyCapture: function (pixels, size, projection) {
     var imageData;
-    if (projection === 'perspective') {
+    // Pixels read back from WebGL are bottom-up, they are top-down with the
+    // WebGPU backend of WebGPURenderer. The equirectangular projection quad
+    // renders vertically inverted, so it needs the opposite flip of the
+    // perspective projection.
+    var topDown = this.el.renderer.coordinateSystem === THREE.WebGPUCoordinateSystem;
+    if ((projection === 'perspective') !== topDown) {
       pixels = this.flipPixelsVertically(pixels, size.width, size.height);
     }
     imageData = new ImageData(new Uint8ClampedArray(pixels), size.width, size.height);
