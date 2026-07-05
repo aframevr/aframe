@@ -6,6 +6,10 @@ import * as THREE from 'three';
 // Written so that Webpack can't statically determine the export used;
 // only one of the two exists depending on the three.js build.
 var cubeRenderTargetImpl = ['WebGLCubeRenderTarget', 'CubeRenderTarget'].find(function (x) { return THREE[x]; });
+// TSL and MeshBasicNodeMaterial only exist in the three.js build with
+// WebGPURenderer, same Webpack trick as above.
+var TSL = ['TSL'].map(function (x) { return THREE[x]; })[0];
+var MeshBasicNodeMaterial = ['MeshBasicNodeMaterial'].map(function (x) { return THREE[x]; })[0];
 
 var VERTEX_SHADER = [
   'attribute vec3 position;',
@@ -70,7 +74,7 @@ export var Component = registerComponent('screenshot', {
       this.cubeMapSize = device ? device.limits.maxTextureDimension2D : 2048;
     }
     // WebGPURenderer does not support RawShaderMaterial, use a node material with TSL.
-    if (THREE.TSL) {
+    if (TSL) {
       this.material = this.createNodeMaterial();
     } else {
       this.material = new THREE.RawShaderMaterial({
@@ -98,8 +102,7 @@ export var Component = registerComponent('screenshot', {
    * WebGPURenderer which does not support RawShaderMaterial.
    */
   createNodeMaterial: function () {
-    var TSL = THREE.TSL;
-    var material = new THREE.MeshBasicNodeMaterial({side: THREE.DoubleSide});
+    var material = new MeshBasicNodeMaterial({side: THREE.DoubleSide});
     var uv = TSL.uv();
     var longitude = TSL.float(1).sub(uv.x).mul(2 * Math.PI).sub(Math.PI).add(Math.PI / 2);
     var latitude = uv.y.mul(Math.PI);
