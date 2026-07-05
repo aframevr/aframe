@@ -52,6 +52,10 @@ export var Component = registerComponent('screenshot', {
 
   sceneOnly: true,
 
+  init: function () {
+    this.onKeyDown = this.onKeyDown.bind(this);
+  },
+
   setup: function () {
     var el = this.el;
     if (this.canvas) { return; }
@@ -73,7 +77,6 @@ export var Component = registerComponent('screenshot', {
     this.canvas = document.createElement('canvas');
     this.ctx = this.canvas.getContext('2d');
     el.object3D.add(this.quad);
-    this.onKeyDown = this.onKeyDown.bind(this);
   },
 
   getRenderTarget: function (width, height) {
