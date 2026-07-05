@@ -768,8 +768,8 @@ suite('getRendererConfig', function () {
     assert.strictEqual(config.forceWebGL, true);
   });
 
-  test('backend webgpu does not force the WebGL backend', function () {
-    sceneEl.setAttribute('renderer', 'backend: webgpu');
+  test('backend auto does not force the WebGL backend', function () {
+    sceneEl.setAttribute('renderer', 'backend: auto');
     var config = sceneEl.getRendererConfig();
     assert.strictEqual(config.forceWebGL, false);
   });

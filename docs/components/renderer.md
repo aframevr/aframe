@@ -28,7 +28,7 @@ It also configures presentation attributes when entering WebVR/WebXR.
 | Property                | Description                                                                     | Default Value |
 |-------------------------|---------------------------------------------------------------------------------|---------------|
 | antialias               | Whether to perform antialiasing. If `auto`, antialiasing is disabled on mobile. | auto          |
-| backend                 | Backend used by `THREE.WebGPURenderer`: webgpu or webgl. Ignored with the default build using `THREE.WebGLRenderer`. | webgpu        |
+| backend                 | Backend used by `THREE.WebGPURenderer`: auto (WebGPU if available, WebGL 2 otherwise) or webgl. Ignored with the default build using `THREE.WebGLRenderer`. | auto          |
 | colorManagement         | Whether to use a color-managed linear workflow.                                 | true          |
 | highRefreshRate         | Increases frame rate from the default (for browsers that support control of frame rate). | false         |
 | foveationLevel          | Amount of foveation used in VR to improve perf, from 0 (min) to 1 (max).        | 1             |
@@ -56,9 +56,9 @@ By default, antialiasing is disabled on mobile devices.
 
 Only applies when A-Frame runs with a three.js build that exposes `THREE.WebGPURenderer`
 (for example by aliasing `three` to `three.webgpu.js` in an importmap, see the source of the
-[webgpu example](https://aframe.io/aframe/examples/showcase/webgpu/)). By default the WebGPU
-backend is used when available, falling back to WebGL 2 otherwise. Set
-`renderer="backend: webgl"` to force the WebGL 2 backend of `THREE.WebGPURenderer`
+[webgpu example](https://aframe.io/aframe/examples/showcase/webgpu/)). With the default
+`auto` value, the WebGPU backend is used when available, falling back to WebGL 2 otherwise.
+Set `renderer="backend: webgl"` to force the WebGL 2 backend of `THREE.WebGPURenderer`
 (the `forceWebGL` option in three.js). This property is ignored with the default A-Frame
 build that uses `THREE.WebGLRenderer`.
 

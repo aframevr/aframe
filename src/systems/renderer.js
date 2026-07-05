@@ -11,7 +11,7 @@ var warn = debug('components:renderer:warn');
 export var System = registerSystem('renderer', {
   schema: {
     antialias: {default: 'auto', oneOf: ['true', 'false', 'auto']},
-    backend: {default: 'webgpu', oneOf: ['webgl', 'webgpu']},
+    backend: {default: 'auto', oneOf: ['auto', 'webgl']},
     highRefreshRate: {default: utils.device.isOculusBrowser()},
     logarithmicDepthBuffer: {default: 'auto', oneOf: ['true', 'false', 'auto']},
     maxCanvasWidth: {default: -1},
