@@ -15666,6 +15666,9 @@ var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_0__.registerCompo
     }
   },
   sceneOnly: true,
+  init: function () {
+    this.onKeyDown = this.onKeyDown.bind(this);
+  },
   setup: function () {
     var el = this.el;
     if (this.canvas) {
@@ -15693,7 +15696,6 @@ var Component = (0,_core_component_js__WEBPACK_IMPORTED_MODULE_0__.registerCompo
     this.canvas = document.createElement('canvas');
     this.ctx = this.canvas.getContext('2d');
     el.object3D.add(this.quad);
-    this.onKeyDown = this.onKeyDown.bind(this);
   },
   getRenderTarget: function (width, height) {
     return new three__WEBPACK_IMPORTED_MODULE_1__.WebGLRenderTarget(width, height, {
@@ -63157,7 +63159,7 @@ if (_utils_index_js__WEBPACK_IMPORTED_MODULE_16__.device.isBrowserEnvironment) {
   window.logs = debug;
   __webpack_require__(/*! ./style/aframe.css */ "./src/style/aframe.css");
 }
-console.log('A-Frame Version: 1.8.0 (Date 2026-07-08, Commit #4573b956)');
+console.log('A-Frame Version: 1.8.0 (Date 2026-07-13, Commit #0da7f614)');
 console.log('THREE Version (https://github.com/supermedium/three.js):', _lib_three_js__WEBPACK_IMPORTED_MODULE_1__["default"].REVISION);
 
 // Wait for ready state, unless user asynchronously initializes A-Frame.
