@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Material Assets</title>
+    <meta name="description" content="Materials defined as assets, shared across entities">
+    <script src="../../../dist/aframe-master.js"></script>
+  </head>
+  <body>
+    <a-scene stats>
+      <a-assets>
+        <img id="gradient" src="../../assets/img/gray-gradient.jpg">
+        <a-material id="brand" shader="flat" src="../../assets/img/mozvr.png" transparent="true"></a-material>
+        <a-material id="gold" color="#FFC65D" metalness="0.9" roughness="0.2"></a-material>
+        <a-material id="glass" shader="flat" color="#7BC8A4" opacity="0.5" side="double"></a-material>
+        <a-material id="gradient-mat" src="#gradient" roughness="1"></a-material>
+      </a-assets>
+
+      <!-- All these entities share the same THREE.Material instances. -->
+      <a-box position="-3 1 -4" material="material: #gold"></a-box>
+      <a-sphere position="-1 1.25 -4" radius="0.75" material="material: #gold"></a-sphere>
+      <a-cylinder position="1 1 -4" radius="0.5" material="material: #gold"></a-cylinder>
+
+      <a-box position="-3 2.75 -4" material="material: #brand"></a-box>
+      <a-plane position="3 1.5 -4" width="2" height="2" material="material: #brand"></a-plane>
+
+      <a-box position="-1 2.75 -4" material="material: #glass"></a-box>
+      <a-sphere position="1 2.75 -4" radius="0.5" material="material: #glass"></a-sphere>
+
+      <a-cylinder position="3 3.25 -4" radius="0.5" material="material: #gradient-mat"></a-cylinder>
+
+      <!-- Inline material definitions; identical definitions share one instance. -->
+      <a-box position="-3 4.25 -4" scale="0.5 0.5 0.5"
+             material="material: material(shader: flat; color: #EF2D5E)"></a-box>
+      <a-sphere position="-1.5 4.25 -4" radius="0.35"
+                material="material: material(shader: flat; color: #EF2D5E)"></a-sphere>
+
+      <a-plane rotation="-90 0 0" width="12" height="12" material="material: #gradient-mat"></a-plane>
+
+      <a-sky color="#ECECEC"></a-sky>
+    </a-scene>
+  </body>
+</html>

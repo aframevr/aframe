@@ -47,10 +47,19 @@ export function toCamelCase (str) {
  * Split a string into chunks matching `<key>: <value>`
  */
 var getKeyValueChunks = (function () {
-  var chunks = [];
-  var hasUnclosedUrl = /url\([^)]+$/;
+  // Parenthesized values can contain semicolons (e.g., data URIs in `url(...)` or
+  // inline materials in `material(...)`); don't split inside them.
+  function hasUnclosedParen (str) {
+    var depth = 0;
+    var i;
+    for (i = 0; i < str.length; i++) {
+      if (str[i] === '(') { depth++; }
+      if (str[i] === ')' && depth > 0) { depth--; }
+    }
+    return depth > 0;
+  }
 
-  return function getKeyValueChunks (raw) {
+  return function getKeyValueChunks (raw, chunks) {
     var chunk = '';
     var nextSplit;
     var offset = 0;
@@ -64,8 +73,7 @@ var getKeyValueChunks = (function () {
 
       chunk += raw.substring(offset, nextSplit);
 
-      // data URIs can contain semicolons, so make sure we get the whole thing
-      if (hasUnclosedUrl.test(chunk)) {
+      if (hasUnclosedParen(chunk)) {
         chunk += ';';
         offset = nextSplit + 1;
         continue;
@@ -79,6 +87,13 @@ var getKeyValueChunks = (function () {
     return chunks;
   };
 })();
+
+// Assigning a parsed value to `obj` can synchronously trigger a nested parse (e.g.,
+// a property setter parsing an inline `material(...)` value), which must not reuse
+// the pooled chunks array of the ongoing call. Pool one chunks array per nesting
+// level, and cap nesting at two levels; anything deeper is not a supported usage.
+var pooledChunks = [[], []];
+var parseDepth = 0;
 
 /**
  * Convert a style attribute string to an object.
@@ -96,15 +111,25 @@ function styleParse (str, obj) {
 
   obj = obj || {};
 
-  chunks = getKeyValueChunks(str);
-  for (i = 0; i < chunks.length; i++) {
-    item = chunks[i];
-    if (!item) { continue; }
-    // Split with `.indexOf` rather than `.split` because the value may also contain colons.
-    pos = item.indexOf(':');
-    key = item.substr(0, pos).trim();
-    val = item.substr(pos + 1).trim();
-    obj[toCamelCase(key)] = val;
+  if (parseDepth >= pooledChunks.length) {
+    throw new Error('Exceeded maximum style string parse nesting (' +
+                    pooledChunks.length + ' levels).');
+  }
+
+  chunks = getKeyValueChunks(str, pooledChunks[parseDepth]);
+  parseDepth++;
+  try {
+    for (i = 0; i < chunks.length; i++) {
+      item = chunks[i];
+      if (!item) { continue; }
+      // Split with `.indexOf` rather than `.split` because the value may also contain colons.
+      pos = item.indexOf(':');
+      key = item.substr(0, pos).trim();
+      val = item.substr(pos + 1).trim();
+      obj[toCamelCase(key)] = val;
+    }
+  } finally {
+    parseDepth--;
   }
   return obj;
 }

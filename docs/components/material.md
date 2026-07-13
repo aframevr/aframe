@@ -15,6 +15,7 @@ examples:
     src: https://glitch.com/edit/#!/aframe-displacement-offset-registershader?path=public/index.html
 ---
 
+[amaterial]: ../primitives/a-material.md
 [fog]: ./fog.md
 [geometry]: ./geometry.md
 
@@ -48,6 +49,18 @@ Here is an example of using an example custom material:
           material="shader: ocean; color: blue; wave-height: 10"></a-entity>
 ```
 
+Here is an example of sharing one material instance across entities using a
+[`<a-material>` asset][amaterial]:
+
+```html
+<a-assets>
+  <a-material id="gold" color="#ffc65d" metalness="0.9" roughness="0.2"></a-material>
+</a-assets>
+
+<a-entity geometry="primitive: box" material="material: #gold"></a-entity>
+<a-entity geometry="primitive: sphere" material="material: #gold"></a-entity>
+```
+
 ## Properties
 
 [flat]: #flat
@@ -62,6 +75,7 @@ depending on the material type applied.
 | alphaTest    | Alpha test threshold for transparency.                                                                                                            | 0             |
 | depthTest    | Whether depth testing is enabled when rendering the material.                                                                                     | true          |
 | flatShading  | Use `THREE.FlatShading` rather than `THREE.StandardShading`.                                                                                      | false         |
+| material     | Selector to an [`<a-material>` asset][amaterial] (e.g., `#wood`). When set, all other properties are ignored and the material is entirely defined by the asset. | None          |
 | offset       | Texture offset to be used.                                                                                                                        | {x: 0, y: 0}  |
 | opacity      | Extent of transparency. If the `transparent` property is not `true`, then the material will remain opaque and `opacity` will only affect color.   | 1.0           |
 | premultipliedAlpha | Whether the material's RGB channels are premultiplied by its alpha channel. Automatically forced to `true` when `blending` is `multiply` or `subtractive`.   | false         |

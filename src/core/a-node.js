@@ -9,6 +9,7 @@ export var knownTags = {
   'a-assets': true,
   'a-assets-items': true,
   'a-cubemap': true,
+  'a-material': true,
   'a-mixin': true,
   'a-node': true,
   'a-entity': true

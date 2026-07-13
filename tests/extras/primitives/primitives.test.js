@@ -24,6 +24,15 @@ suite('primitives', function () {
     assert.ok('a-sphere' in primitives);
     assert.ok('a-videosphere' in primitives);
   });
+
+  test('material `material` property is not mapped on mesh primitives', function () {
+    // The `material` property (material asset reference) collides with the material
+    // component name and must not generate a mapping (nor a renamed
+    // `material-material` mapping with a collision warning).
+    var el = document.createElement('a-box');
+    assert.notOk('material' in el.mappings);
+    assert.notOk('material-material' in el.mappings);
+  });
 });
 
 suite('registerPrimitive', function () {

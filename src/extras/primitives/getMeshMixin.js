@@ -10,6 +10,9 @@ Object.keys(components.material.schema).forEach(addMapping);
 Object.keys(shaders.standard.schema).forEach(addMapping);
 
 function addMapping (prop) {
+  // The `material` property (material asset reference) would collide with the material
+  // component name itself. Use `material="material: #ref"` on primitives instead.
+  if (prop === 'material') { return; }
   // To hyphenated.
   var htmlAttrName = prop.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
   if (prop === 'fog') { htmlAttrName = 'material-fog'; }

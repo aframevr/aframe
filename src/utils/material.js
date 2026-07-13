@@ -21,6 +21,109 @@ var FILTERING_TYPES = {
 };
 
 /**
+ * Return a three.js constant determining which material face sides to render
+ * based on the side parameter (passed as a component property).
+ *
+ * @param {string} [side=front] - `front`, `back`, or `double`.
+ * @returns {number} THREE.FrontSide, THREE.BackSide, or THREE.DoubleSide.
+ */
+export function parseSide (side) {
+  switch (side) {
+    case 'back': {
+      return THREE.BackSide;
+    }
+    case 'double': {
+      return THREE.DoubleSide;
+    }
+    default: {
+      // Including case `front`.
+      return THREE.FrontSide;
+    }
+  }
+}
+
+/**
+ * Return a three.js constant determining blending
+ *
+ * @param {string} [blending=normal] - `none`, additive`, `subtractive`,`multiply` or `normal`.
+ * @returns {number}
+ */
+export function parseBlending (blending) {
+  switch (blending) {
+    case 'none': {
+      return THREE.NoBlending;
+    }
+    case 'additive': {
+      return THREE.AdditiveBlending;
+    }
+    case 'subtractive': {
+      return THREE.SubtractiveBlending;
+    }
+    case 'multiply': {
+      return THREE.MultiplyBlending;
+    }
+    default: {
+      return THREE.NormalBlending;
+    }
+  }
+}
+
+/**
+ * Set base material properties shared by all shaders (side, blending, opacity...)
+ * given data following the base material component schema.
+ *
+ * @param {THREE.Material} material - Material to update.
+ * @param {object} data - Material component (or <a-material>) data.
+ */
+export function updateBaseMaterial (material, data) {
+  var side = parseSide(data.side);
+
+  // Changes to these properties require the shader program to be rebuilt,
+  // using the material itself as the source of truth.
+  if (material.alphaTest !== data.alphaTest || material.side !== side ||
+      material.vertexColors !== data.vertexColorsEnabled) {
+    material.needsUpdate = true;
+  }
+
+  material.alphaTest = data.alphaTest;
+  material.depthTest = data.depthTest !== false;
+  material.depthWrite = data.depthWrite !== false;
+  material.opacity = data.opacity;
+  material.flatShading = data.flatShading;
+  material.side = side;
+  material.transparent = data.transparent !== false || data.opacity < 1.0;
+  material.vertexColors = data.vertexColorsEnabled;
+  material.visible = data.visible;
+  material.blending = parseBlending(data.blending);
+  // three.js r178+ requires premultipliedAlpha for MultiplyBlending and
+  // SubtractiveBlending, so force it on regardless of the user-supplied value.
+  material.premultipliedAlpha = (data.blending === 'multiply' || data.blending === 'subtractive')
+    ? true
+    : data.premultipliedAlpha;
+  material.dithering = data.dithering;
+}
+
+/**
+ * Dispose of material from memory and unsubscribe material from scene updates like fog.
+ *
+ * @param {THREE.Material} material - Material to dispose.
+ * @param {object} system - Material system.
+ */
+export function disposeMaterial (material, system) {
+  material.dispose();
+  system.unregisterMaterial(material);
+
+  // Dispose textures on this material
+  Object.keys(material)
+    .filter(function (propName) {
+      return material[propName] && material[propName].isTexture;
+    })
+    .forEach(function (mapName) {
+      material[mapName].dispose();
+    });
+}
+
+/**
  * Set texture properties such as repeat and offset.
  *
  * @param {THREE.Texture} texture - a Texture instance.

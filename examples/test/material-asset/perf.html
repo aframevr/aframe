@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Material Assets - Performance Comparison</title>
+    <meta name="description" content="Compare shared material assets against per-entity materials">
+    <script src="../../../dist/aframe-master.js"></script>
+    <style>
+      #hud {
+        background: rgba(0, 0, 0, 0.75);
+        color: #fff;
+        font-family: monospace;
+        font-size: 13px;
+        left: 10px;
+        padding: 10px;
+        position: fixed;
+        top: 10px;
+        white-space: pre;
+        z-index: 9999;
+      }
+      #hud a { color: #7bc8a4; }
+    </style>
+    <script>
+      var params = new URLSearchParams(window.location.search);
+      var SHARED = params.get('shared') !== 'false';
+      var COUNT = parseInt(params.get('n'), 10) || 1000;
+      var FRAMES = 500;
+
+      // Collects timing and renderer statistics, displayed in the #hud element.
+      AFRAME.registerComponent('perf-stats', {
+        init: function () {
+          this.frameTimes = [];
+          this.lastTime = 0;
+          this.done = false;
+          this.loadTime = 0;
+          var self = this;
+          this.el.addEventListener('loaded', function () {
+            self.loadTime = performance.now();
+          });
+        },
+
+        tick: function (time) {
+          if (this.done) { return; }
+          if (this.lastTime) { this.frameTimes.push(time - this.lastTime); }
+          this.lastTime = time;
+          if (this.frameTimes.length >= FRAMES) {
+            this.done = true;
+            this.report();
+          }
+        },
+
+        report: function () {
+          var sceneEl = this.el;
+          var renderer = sceneEl.renderer;
+          var materials = new Set();
+          var textures = new Set();
+          sceneEl.object3D.traverse(function (node) {
+            if (!node.material) { return; }
+            materials.add(node.material);
+            if (node.material.map) { textures.add(node.material.map); }
+          });
+
+          var frameTimes = this.frameTimes.slice().sort(function (a, b) { return a - b; });
+          var sum = frameTimes.reduce(function (a, b) { return a + b; }, 0);
+          var stats = {
+            mode: SHARED ? 'shared <a-material> asset' : 'per-entity materials',
+            entities: COUNT,
+            loadTimeMs: Math.round(this.loadTime),
+            uniqueMaterials: materials.size,
+            uniqueTextures: textures.size,
+            programs: renderer.info.programs.length,
+            texturesGPU: renderer.info.memory.textures,
+            frameAvgMs: +(sum / frameTimes.length).toFixed(2),
+            frameP50Ms: +frameTimes[Math.floor(frameTimes.length * 0.5)].toFixed(2),
+            frameP90Ms: +frameTimes[Math.floor(frameTimes.length * 0.9)].toFixed(2),
+            frameP99Ms: +frameTimes[Math.floor(frameTimes.length * 0.99)].toFixed(2)
+          };
+          window.perfStats = stats;
+          console.log('perf-stats', JSON.stringify(stats));
+          document.getElementById('results').textContent =
+            'mode:             ' + stats.mode + '\n' +
+            'entities:         ' + stats.entities + '\n' +
+            'load time:        ' + stats.loadTimeMs + ' ms\n' +
+            'unique materials: ' + stats.uniqueMaterials + '\n' +
+            'unique textures:  ' + stats.uniqueTextures + '\n' +
+            'GL programs:      ' + stats.programs + '\n' +
+            'GPU textures:     ' + stats.texturesGPU + '\n' +
+            'frame avg:        ' + stats.frameAvgMs + ' ms\n' +
+            'frame p50/p90/p99: ' + stats.frameP50Ms + ' / ' + stats.frameP90Ms +
+              ' / ' + stats.frameP99Ms + ' ms';
+        }
+      });
+
+      window.addEventListener('DOMContentLoaded', function () {
+        var sceneEl = document.querySelector('a-scene');
+        var container = document.getElementById('container');
+        var side = Math.ceil(Math.cbrt(COUNT));
+        var i;
+        var entity;
+        var x;
+        var y;
+        var z;
+
+        for (i = 0; i < COUNT; i++) {
+          x = (i % side) - side / 2;
+          y = Math.floor(i / side) % side;
+          z = -4 - Math.floor(i / (side * side));
+          entity = document.createElement('a-entity');
+          entity.setAttribute('geometry', 'primitive: box; width: 0.4; height: 0.4; depth: 0.4');
+          entity.setAttribute('position', (x * 0.6) + ' ' + (y * 0.6) + ' ' + (z * 0.6));
+          if (SHARED) {
+            entity.setAttribute('material', 'material: #shared');
+          } else {
+            entity.setAttribute('material',
+                                'src: ../../assets/img/gray-gradient.jpg; ' +
+                                'metalness: 0.4; roughness: 0.6; color: #7BC8A4');
+          }
+          container.appendChild(entity);
+        }
+        sceneEl.setAttribute('perf-stats', '');
+      });
+    </script>
+  </head>
+  <body>
+    <div id="hud"><span id="results">collecting…</span>
+
+<a href="?shared=true">shared materials</a> | <a href="?shared=false">per-entity materials</a></div>
+    <a-scene>
+      <a-assets>
+        <a-material id="shared" src="../../assets/img/gray-gradient.jpg"
+                    metalness="0.4" roughness="0.6" color="#7BC8A4"></a-material>
+      </a-assets>
+      <a-entity id="container"></a-entity>
+      <a-entity light="type: ambient; intensity: 0.6"></a-entity>
+      <a-entity light="type: directional; intensity: 1" position="1 2 1"></a-entity>
+      <a-sky color="#222"></a-sky>
+    </a-scene>
+  </body>
+</html>
