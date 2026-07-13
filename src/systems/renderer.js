@@ -11,11 +11,13 @@ var warn = debug('components:renderer:warn');
 export var System = registerSystem('renderer', {
   schema: {
     antialias: {default: 'auto', oneOf: ['true', 'false', 'auto']},
+    backend: {default: 'auto', oneOf: ['auto', 'webgl']},
     highRefreshRate: {default: utils.device.isOculusBrowser()},
     logarithmicDepthBuffer: {default: 'auto', oneOf: ['true', 'false', 'auto']},
     maxCanvasWidth: {default: -1},
     maxCanvasHeight: {default: -1},
     multiviewStereo: {default: false},
+    reversedDepthBuffer: {default: false},
     exposure: {default: 1, if: {toneMapping: ['ACESFilmic', 'linear', 'reinhard', 'cineon', 'AgX', 'neutral']}},
     toneMapping: {default: 'no', oneOf: ['no', 'ACESFilmic', 'linear', 'reinhard', 'cineon', 'AgX', 'neutral']},
     precision: {default: 'high', oneOf: ['high', 'medium', 'low']},

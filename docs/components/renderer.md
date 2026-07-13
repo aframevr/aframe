@@ -28,6 +28,7 @@ It also configures presentation attributes when entering WebVR/WebXR.
 | Property                | Description                                                                     | Default Value |
 |-------------------------|---------------------------------------------------------------------------------|---------------|
 | antialias               | Whether to perform antialiasing. If `auto`, antialiasing is disabled on mobile. | auto          |
+| backend                 | Backend used by `THREE.WebGPURenderer`: auto (WebGPU if available, WebGL 2 otherwise) or webgl. Ignored with the default build using `THREE.WebGLRenderer`. | auto          |
 | colorManagement         | Whether to use a color-managed linear workflow.                                 | true          |
 | highRefreshRate         | Increases frame rate from the default (for browsers that support control of frame rate). | false         |
 | foveationLevel          | Amount of foveation used in VR to improve perf, from 0 (min) to 1 (max).        | 1             |
@@ -36,6 +37,7 @@ It also configures presentation attributes when entering WebVR/WebXR.
 | maxCanvasHeight         | Maximum canvas height. Behaves the same as maxCanvasWidth.                      | -1          |
 | multiviewStereo         | Enables the use of the OCULUS_multiview extension.                              | false         |
 | logarithmicDepthBuffer  | Whether to use a logarithmic depth buffer.                                      | auto          |
+| reversedDepthBuffer     | Whether to use a reversed depth buffer.                                         | false         |
 | precision               | Fragment shader [precision][precision] : low, medium or high.                   | high          |
 | alpha                   | Whether the canvas should contain an alpha buffer.                              | true          |
 | stencil                 | Whether the canvas should contain a stencil buffer.                             | false         |
@@ -49,6 +51,16 @@ It also configures presentation attributes when entering WebVR/WebXR.
 
 When enabled, smooths jagged edges on curved lines and diagonals at moderate performance cost.
 By default, antialiasing is disabled on mobile devices.
+
+### backend
+
+Only applies when A-Frame runs with a three.js build that exposes `THREE.WebGPURenderer`
+(for example by aliasing `three` to `three.webgpu.js` in an importmap, see the source of the
+[webgpu example](https://aframe.io/aframe/examples/showcase/webgpu/)). With the default
+`auto` value, the WebGPU backend is used when available, falling back to WebGL 2 otherwise.
+Set `renderer="backend: webgl"` to force the WebGL 2 backend of `THREE.WebGPURenderer`
+(the `forceWebGL` option in three.js). This property is ignored with the default A-Frame
+build that uses `THREE.WebGLRenderer`.
 
 ### colorManagement
 
@@ -100,6 +112,13 @@ Some more background on how A-Frame sorts objects for rendering can be found [he
 A logarithmic depth buffer may provide better sorting and rendering in scenes containing very
 large differences of scale and distance.
 
+### reversedDepthBuffer
+
+A reversed depth buffer distributes depth precision more evenly and can eliminate z-fighting
+in scenes with large differences of scale and distance, with better performance than a
+logarithmic depth buffer. With `THREE.WebGLRenderer` this requires the `EXT_clip_control`
+WebGL extension. It is also supported by `THREE.WebGPURenderer` on both backends.
+
 ### Precision
 
 Set precision in fragment shaders. Main use is to address issues in older hardware / drivers. Adreno 300 series GPU based phones are [particularly problematic](https://github.com/mrdoob/three.js/issues/14137). You can set to `mediump` as a workaround. It will improve performance, in mobile in particular but be aware that might cause visual artifacts in shaders / textures.
@@ -109,5 +128,7 @@ Set precision in fragment shaders. Main use is to address issues in older hardwa
 Whether the canvas should contain an alpha buffer. If this is true the renderer will have a transparent backbuffer and the canvas can be composited with the rest of the webpage. [See here for more info.](https://webglfundamentals.org/webgl/lessons/webgl-and-alpha.html)
 
 ### multiviewStereo
+
+When using `THREE.WebGPURenderer`, this property is passed as the `multiview` option of the renderer.
 
 Performance improvement for applications that are CPU limited and draw count bound. Most experiences will get a free perf gain from this extension at not visual cost but there are limitations to consider. multiview builds on the multisampled render to texture extension that discards the frame buffer if there are other texture operations during rendering. Problem outlined in https://github.com/KhronosGroup/WebGL/issues/2912. Until browsers and drivers allow more control of when multisample is resolved we have a workaround with some drawbacks. As a temporary solution when enabling multiview the upload of texture data is deferred until the rendering of the main scene has ended, adding one extra frame of latency to texture uploads. Scenarios affected are for example skeletal meshes that upload bone textures with TexImage. With the workadound in place all bone animations will lag by one frame. Another issue is rendering mirror reflexions or rendering another view in the middle of the scene. The logic would have to move to the beginning of the frame to make sure it's not interrupted by the multiview frame. Because of the limitations this flag is disabled by default so developers can address any issues before enabling.

@@ -718,6 +718,96 @@ helpers.getSkipCISuite()('a-scene (with renderer)', function () {
   });
 });
 
+suite('getRendererConfig', function () {
+  var sceneEl;
+
+  setup(function () {
+    sceneEl = document.createElement('a-scene');
+  });
+
+  test('default configuration', function () {
+    var config = sceneEl.getRendererConfig();
+    assert.strictEqual(config.alpha, true);
+    assert.strictEqual(config.logarithmicDepthBuffer, false);
+    assert.strictEqual(config.powerPreference, 'high-performance');
+    assert.notOk('multiviewStereo' in config);
+    assert.notOk('multiview' in config);
+    assert.notOk('reversedDepthBuffer' in config);
+    assert.notOk('forceWebGL' in config);
+  });
+
+  test('multiviewStereo is also passed as the multiview option used by WebGPURenderer', function () {
+    sceneEl.setAttribute('renderer', 'multiviewStereo: true');
+    var config = sceneEl.getRendererConfig();
+    assert.strictEqual(config.multiviewStereo, true);
+    assert.strictEqual(config.multiview, true);
+  });
+
+  test('multiviewStereo false', function () {
+    sceneEl.setAttribute('renderer', 'multiviewStereo: false');
+    var config = sceneEl.getRendererConfig();
+    assert.strictEqual(config.multiviewStereo, false);
+    assert.strictEqual(config.multiview, false);
+  });
+
+  test('reversedDepthBuffer true', function () {
+    sceneEl.setAttribute('renderer', 'reversedDepthBuffer: true');
+    var config = sceneEl.getRendererConfig();
+    assert.strictEqual(config.reversedDepthBuffer, true);
+  });
+
+  test('reversedDepthBuffer false', function () {
+    sceneEl.setAttribute('renderer', 'reversedDepthBuffer: false');
+    var config = sceneEl.getRendererConfig();
+    assert.strictEqual(config.reversedDepthBuffer, false);
+  });
+
+  test('backend webgl forces the WebGL backend of WebGPURenderer', function () {
+    sceneEl.setAttribute('renderer', 'backend: webgl');
+    var config = sceneEl.getRendererConfig();
+    assert.strictEqual(config.forceWebGL, true);
+  });
+
+  test('backend auto does not force the WebGL backend', function () {
+    sceneEl.setAttribute('renderer', 'backend: auto');
+    var config = sceneEl.getRendererConfig();
+    assert.strictEqual(config.forceWebGL, false);
+  });
+});
+
+suite('render loop start', function () {
+  test('starts the render loop synchronously with WebGLRenderer', function (done) {
+    var el = document.createElement('a-scene');
+    el.addEventListener('renderstart', function () {
+      assert.ok(el.renderStarted);
+      done();
+    });
+    document.body.appendChild(el);
+  });
+
+  test('waits for async renderer init (WebGPURenderer) before starting the render loop', function (done) {
+    var el = document.createElement('a-scene');
+    var resolveInit;
+    // Mimic WebGPURenderer which initializes its backend asynchronously via init().
+    el.renderer = Object.create(AScene.prototype.renderer);
+    el.renderer.init = function () {
+      return new Promise(function (resolve) { resolveInit = resolve; });
+    };
+    el.addEventListener('loaded', function () {
+      setTimeout(function () {
+        assert.ok(resolveInit, 'renderer init was called');
+        assert.notOk(el.renderStarted, 'render loop does not start before init resolves');
+        resolveInit();
+      });
+    });
+    el.addEventListener('renderstart', function () {
+      assert.ok(el.renderStarted);
+      done();
+    });
+    document.body.appendChild(el);
+  });
+});
+
 suite('scenes', function () {
   var sceneEl;
 
