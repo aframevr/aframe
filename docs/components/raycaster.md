@@ -204,6 +204,27 @@ A-Frame will call `.refreshObjects()` automatically when an entity is appended
 or detached from the scene, but it will not get called during normal DOM
 mutations (e.g., some entity changes its `class`).
 
+## Per-instance Intersections on BatchedMesh / InstancedMesh
+
+When multiple a-entities share a single `THREE.BatchedMesh` or
+`THREE.InstancedMesh` (for draw-call reduction), the raycaster keeps
+resolving every intersection to the single host entity that owns the
+shared mesh. To distinguish instances, check
+`intersection.batchId` / `intersection.instanceId` on the event detail.
+
+`raycaster-closest-entity-changed` fires whenever the closest
+`(entity, batchId, instanceId)` tuple changes, including transitions
+between two instances of the same shared mesh. The cursor component
+treats the tuple as its hover identity, so `mouseenter` and
+`mouseleave` fire on those transitions too — the event's
+`intersection` detail carries the per-instance ids.
+
+Apps keep their own map from `batchId` / `instanceId` to logical
+entities and can proxy the host's cursor events to the matching
+per-instance entity. See the
+[raycaster-batched-mesh example](https://github.com/aframevr/aframe/tree/master/examples/test/raycaster-batched-mesh)
+for a working setup.
+
 ## Customizing the Line
 
 If `showLine` is set to `true`, the raycaster will configure the line given the

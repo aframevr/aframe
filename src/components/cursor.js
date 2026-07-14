@@ -65,6 +65,10 @@ export var Component = registerComponent('cursor', {
     this.fuseTimeout = undefined;
     this.cursorDownEl = null;
     this.intersectedEl = null;
+    // Track the current intersection (not just the entity) so that transitions between
+    // instances of a shared BatchedMesh / InstancedMesh — where intersectedEl stays
+    // the host but intersection.batchId / instanceId changes — fire mouseleave/enter.
+    this.intersection = null;
     this.canvasBounds = document.body.getBoundingClientRect();
     this.isCursorDown = false;
     this.activeXRInput = null;
@@ -436,11 +440,19 @@ export var Component = registerComponent('cursor', {
     // If cursor is the only intersected object, ignore the event.
     if (!intersectedEl) { return; }
 
-    // Already intersecting this entity.
-    if (this.intersectedEl === intersectedEl) { return; }
+    // Already intersecting — compare (entity, batchId, instanceId) so ray transitions
+    // within a shared BatchedMesh / InstancedMesh (same entity, different instance)
+    // still trigger mouseleave / mouseenter.
+    if (this.intersectedEl === intersectedEl &&
+        this.intersection &&
+        this.intersection.batchId === intersection.batchId &&
+        this.intersection.instanceId === intersection.instanceId) {
+      return;
+    }
 
-    // Ignore events further away than active intersection.
-    if (this.intersectedEl) {
+    // Ignore events further away than active intersection (unless it's the same entity —
+    // a closer instance on the same host should take over).
+    if (this.intersectedEl && this.intersectedEl !== intersectedEl) {
       currentIntersection = this.el.components.raycaster.getIntersection(this.intersectedEl);
       if (currentIntersection && currentIntersection.distance <= intersection.distance) { return; }
     }
@@ -474,11 +486,17 @@ export var Component = registerComponent('cursor', {
     var data = this.data;
     var self = this;
 
-    // Already intersecting.
-    if (this.intersectedEl === intersectedEl) { return; }
+    // Already intersecting this exact (entity, batchId, instanceId) tuple.
+    if (this.intersectedEl === intersectedEl &&
+        this.intersection &&
+        this.intersection.batchId === intersection.batchId &&
+        this.intersection.instanceId === intersection.instanceId) {
+      return;
+    }
 
     // Set new intersection.
     this.intersectedEl = intersectedEl;
+    this.intersection = intersection;
 
     // Hovering.
     cursorEl.addState(STATES.HOVERING);
@@ -520,6 +538,7 @@ export var Component = registerComponent('cursor', {
 
     // Unset intersected entity (after emitting the event).
     this.intersectedEl = null;
+    this.intersection = null;
 
     // Clear fuseTimeout.
     clearTimeout(this.fuseTimeout);
@@ -541,7 +560,12 @@ export var Component = registerComponent('cursor', {
   twoWayEmit: function (evtName, originalEvent) {
     var el = this.el;
     var intersectedEl = this.intersectedEl;
-    var intersection;
+    // Use the stashed intersection so mouseleave carries the OLD tuple — important for
+    // BatchedMesh / InstancedMesh transitions, where a fresh getIntersection(el) would
+    // return the incoming instance rather than the one we're leaving.
+    var intersection = evtName === EVENTS.MOUSELEAVE
+      ? this.intersection
+      : el.components.raycaster.getIntersection(intersectedEl);
 
     function addOriginalEvent (detail, evt) {
       if (originalEvent instanceof MouseEvent) {
@@ -552,7 +576,6 @@ export var Component = registerComponent('cursor', {
       }
     }
 
-    intersection = this.el.components.raycaster.getIntersection(intersectedEl);
     this.eventDetail.intersectedEl = intersectedEl;
     this.eventDetail.intersection = intersection;
     addOriginalEvent(this.eventDetail, originalEvent);
