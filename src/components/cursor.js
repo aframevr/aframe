@@ -348,6 +348,13 @@ export var Component = registerComponent('cursor', {
     }
 
     if (this.data.rayOrigin === 'xrselect' && evt.type === 'selectstart') {
+      // The controller is one that needs to be rendered by the environment
+      // the cursor behaviour should be handled by the developer
+      if (
+        (evt.inputSource.targetRayMode === 'tracked-pointer') &&
+        (this.el.sceneEl.xrSession.environmentBlendMode === 'opaque')
+      ) { return; }
+
       this.activeXRInput = evt.inputSource;
       this.onMouseMove(evt);
       this.el.components.raycaster.checkIntersections();
@@ -376,6 +383,8 @@ export var Component = registerComponent('cursor', {
    *   in case user mousedowned one entity, dragged to another, and mouseupped.
    */
   onCursorUp: function (evt) {
+    var data = this.data;
+
     if (!this.isCursorDown) { return; }
     // Filter WebXR events by handedness when hand is configured.
     if (evt && evt.type === 'selectend' && this.data.hand &&
@@ -384,9 +393,14 @@ export var Component = registerComponent('cursor', {
     }
     if (this.data.rayOrigin === 'xrselect' && this.activeXRInput !== evt.inputSource) { return; }
 
-    this.isCursorDown = false;
+    // If there is no activeInput being pressed or it is not
+    // the last pressed input then ignore it
+    if (
+      data.rayOrigin === 'xrselect' &&
+      this.activeXRInput !== evt.inputSource
+    ) { return; }
 
-    var data = this.data;
+    this.isCursorDown = false;
     this.twoWayEmit(EVENTS.MOUSEUP, evt);
 
     if (this.reenableARHitTest === true) {
