@@ -363,6 +363,7 @@ export var Component = registerComponent('hand-tracking-controls', {
         primitive: 'sphere',
         radius: 1.0
       });
+      jointEl.isHandJoint = true;
       jointEl.object3D.visible = false;
       this.el.appendChild(jointEl);
       this.jointEls.push(jointEl);
@@ -405,6 +406,7 @@ export var Component = registerComponent('hand-tracking-controls', {
 
   addChildEntity: function (childEl) {
     if (!(childEl instanceof AEntity)) { return; }
+    if (childEl.isHandJoint) { return; }
     this.wristObject3D.add(childEl.object3D);
   }
 });
