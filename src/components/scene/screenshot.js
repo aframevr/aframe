@@ -236,16 +236,12 @@ export var Component = registerComponent('screenshot', {
   },
 
   flipPixelsVertically: function (pixels, width, height) {
-    var flippedPixels = pixels.slice(0);
-    for (var x = 0; x < width; ++x) {
-      for (var y = 0; y < height; ++y) {
-        var from = x * 4 + (height - y - 1) * width * 4;
-        var to = x * 4 + y * width * 4;
-        flippedPixels[to] = pixels[from];
-        flippedPixels[to + 1] = pixels[from + 1];
-        flippedPixels[to + 2] = pixels[from + 2];
-        flippedPixels[to + 3] = pixels[from + 3];
-      }
+    var flippedPixels = new Uint8Array(pixels.length);
+    var rowSize = width * 4;
+    // Copy contiguous rows to avoid cache misses from traversing columns.
+    for (var y = 0; y < height; ++y) {
+      var from = (height - y - 1) * rowSize;
+      flippedPixels.set(pixels.subarray(from, from + rowSize), y * rowSize);
     }
     return flippedPixels;
   },
