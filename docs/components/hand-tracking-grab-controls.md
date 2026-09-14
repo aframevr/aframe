@@ -37,3 +37,10 @@ For debugging purposes you can make the colliders visible, changing color when a
 | hoverColor     | Hand color when hand intersects a grabbable entity bounding box.                       | #538df1       |
 | hoverEnabled   | If the hand model changes color when intersecting a grabbable entity.                  | false         |
 
+
+## Events
+
+| Event Name    | Description                                                    |
+| ----------    | -----------                                                    |
+| grabstarted  | A grabbable element has been grabbed. Event detail will contain `grabbedEl` referencing the entity that has been grabbed. |
+| grabended    | The grabbable element has been released. Event detail will contain `grabbedEl` referencing the entity that was grabbed and has been released. |
