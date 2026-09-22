@@ -194,6 +194,10 @@ export var Component = registerComponent('hand-tracking-controls', {
       var wristObject3D = this.wristObject3D;
       if (!wristObject3D || !this.hasPoses) { return; }
       jointPose.fromArray(this.jointPoses, WRIST_INDEX * 16);
+      // The wrist object is added to the scene root, so apply parent transform
+      this.el.object3D.updateWorldMatrix(true, false);
+      jointPose.premultiply(this.el.object3D.matrixWorld);
+
       wristObject3D.position.setFromMatrixPosition(jointPose);
       wristObject3D.quaternion.setFromRotationMatrix(jointPose);
     };
