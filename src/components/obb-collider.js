@@ -30,6 +30,8 @@ registerComponent('obb-collider', {
 
   remove: function () {
     this.system.removeCollider(this.el);
+    this.el.removeEventListener('loaded', this.updateCollider);
+    this.el.removeEventListener('model-loaded', this.onModelLoaded);
   },
 
   update: function () {
