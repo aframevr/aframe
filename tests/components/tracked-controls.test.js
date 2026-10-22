@@ -49,6 +49,64 @@ suite('tracked-controls', function () {
     });
   });
 
+  suite('trackedSources', function () {
+    function makeController () {
+      return {
+        handedness: 'right',
+        profiles: ['test'],
+        gamepad: {buttons: [], axes: []},
+        gripSpace: {},
+        targetRaySpace: {}
+      };
+    }
+
+    function updateSources (inputSources, trackedSources) {
+      system.el.xrSession = {
+        inputSources: inputSources,
+        trackedSources: trackedSources,
+        requestReferenceSpace: function () { return Promise.resolve({}); }
+      };
+      system.onInputSourcesChange();
+    }
+
+    test('keeps a controller match when its source moves out of inputSources', function () {
+      var controllerSource = makeController();
+      updateSources([], [controllerSource]);
+      component.updateController();
+      assert.deepEqual(system.controllers, [controllerSource]);
+      assert.strictEqual(component.controller, controllerSource);
+    });
+
+    test('prefers matching inputSources over trackedSources', function () {
+      var inputController = makeController();
+      var trackedController = makeController();
+      updateSources([inputController], [trackedController]);
+      component.updateController();
+      assert.strictEqual(system.controllers[0], inputController);
+      assert.strictEqual(component.controller, inputController);
+    });
+
+    test('works when trackedSources is unavailable', function () {
+      var inputController = makeController();
+      updateSources([inputController], undefined);
+      assert.deepEqual(system.controllers, [inputController]);
+    });
+
+    test('does not add a hand-only tracked source as a controller', function () {
+      var handOnly = {
+        handedness: 'right',
+        profiles: ['test'],
+        hand: {},
+        gripSpace: {},
+        targetRaySpace: {}
+      };
+      updateSources([], [handOnly]);
+      component.updateController();
+      assert.deepEqual(system.controllers, []);
+      assert.isUndefined(component.controller);
+    });
+  });
+
   suite('tick', function () {
     test('updates pose and buttons even if mesh is not defined', function () {
       el.sceneEl.frame = {

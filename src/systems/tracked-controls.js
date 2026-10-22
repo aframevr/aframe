@@ -1,5 +1,26 @@
 import { registerSystem } from '../core/system.js';
 
+function hasControllerCapabilities (source) {
+  return source && source.profiles && source.profiles.length && source.gamepad &&
+    source.gripSpace && source.targetRaySpace;
+}
+
+function getControllerSources (xrSession) {
+  // Preserve inputSources order so its matching candidates remain preferred.
+  var controllers = Array.prototype.slice.call(xrSession.inputSources || []);
+  var trackedSources = xrSession.trackedSources || [];
+  var source;
+  var i;
+
+  for (i = 0; i < trackedSources.length; i++) {
+    source = trackedSources[i];
+    if (!hasControllerCapabilities(source) || controllers.indexOf(source) !== -1) { continue; }
+    controllers.push(source);
+  }
+
+  return controllers;
+}
+
 /**
  * Tracked controls system.
  * Maintain list with available tracked controllers.
@@ -40,7 +61,7 @@ export var System = registerSystem('tracked-controls', {
       throw err;
     });
 
-    this.controllers = xrSession.inputSources;
+    this.controllers = getControllerSources(xrSession);
     this.el.emit('controllersupdated', undefined, false);
   }
 });
