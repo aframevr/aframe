@@ -16,6 +16,9 @@ registerComponent('obb-collider', {
 
     this.boundingBox = new THREE.Box3();
     this.boundingBoxSize = new THREE.Vector3();
+    // Center of the bounding box relative to the entity origin, in the entity's
+    // unrotated frame. Children can be offset from the entity origin.
+    this.boundingBoxCenter = new THREE.Vector3();
     this.updateCollider = this.updateCollider.bind(this);
 
     this.onModelLoaded = this.onModelLoaded.bind(this);
@@ -86,7 +89,6 @@ registerComponent('obb-collider', {
 
   updateColliderMesh: function () {
     var renderColliderMesh = this.renderColliderMesh;
-    var boundingBoxSize = this.boundingBoxSize;
     if (!renderColliderMesh) {
       this.initColliderMesh();
       return;
@@ -94,7 +96,15 @@ registerComponent('obb-collider', {
 
     // Destroy current geometry.
     renderColliderMesh.geometry.dispose();
-    renderColliderMesh.geometry = new THREE.BoxGeometry(boundingBoxSize.x, boundingBoxSize.y, boundingBoxSize.z);
+    renderColliderMesh.geometry = this.createColliderGeometry();
+  },
+
+  createColliderGeometry: function () {
+    var boundingBoxCenter = this.boundingBoxCenter;
+    var boundingBoxSize = this.boundingBoxSize;
+    var geometry = new THREE.BoxGeometry(boundingBoxSize.x, boundingBoxSize.y, boundingBoxSize.z);
+    geometry.translate(boundingBoxCenter.x, boundingBoxCenter.y, boundingBoxCenter.z);
+    return geometry;
   },
 
   hideCollider: function () {
@@ -103,12 +113,10 @@ registerComponent('obb-collider', {
   },
 
   initColliderMesh: function () {
-    var boundingBoxSize;
     var renderColliderGeometry;
     var renderColliderMesh;
 
-    boundingBoxSize = this.boundingBoxSize;
-    renderColliderGeometry = this.renderColliderGeometry = new THREE.BoxGeometry(boundingBoxSize.x, boundingBoxSize.y, boundingBoxSize.z);
+    renderColliderGeometry = this.renderColliderGeometry = this.createColliderGeometry();
     renderColliderMesh = this.renderColliderMesh = new THREE.Mesh(renderColliderGeometry, new THREE.MeshLambertMaterial({color: 0x00ff00, side: THREE.DoubleSide}));
     renderColliderMesh.matrixAutoUpdate = false;
     renderColliderMesh.matrixWorldAutoUpdate = false;
@@ -118,6 +126,7 @@ registerComponent('obb-collider', {
   },
 
   updateBoundingBox: (function () {
+    var auxEntityPosition = new THREE.Vector3();
     var auxPosition = new THREE.Vector3();
     var auxScale = new THREE.Vector3();
     var auxQuaternion = new THREE.Quaternion();
@@ -127,6 +136,7 @@ registerComponent('obb-collider', {
     return function () {
       var auxEuler = this.auxEuler;
       var boundingBox = this.boundingBox;
+      var boundingBoxCenter = this.boundingBoxCenter;
       var size = this.data.size;
       var trackedObject3D = this.trackedObject3D || this.el.object3D;
       var boundingBoxSize = this.boundingBoxSize;
@@ -137,6 +147,7 @@ registerComponent('obb-collider', {
         this.boundingBoxSize.x = size;
         this.boundingBoxSize.y = size;
         this.boundingBoxSize.z = size;
+        boundingBoxCenter.set(0, 0, 0);
         return;
       }
 
@@ -155,6 +166,8 @@ registerComponent('obb-collider', {
       // Calculate bounding box size.
       boundingBox.setFromObject(trackedObject3D, true);
       boundingBox.getSize(boundingBoxSize);
+      boundingBox.getCenter(boundingBoxCenter);
+      boundingBoxCenter.sub(auxEntityPosition.setFromMatrixPosition(trackedObject3D.matrixWorld));
 
       // Enforce minimum dimensions.
       boundingBoxSize.x = boundingBoxSize.x < minimumColliderDimension ? minimumColliderDimension : boundingBoxSize.x;
@@ -188,6 +201,7 @@ registerComponent('obb-collider', {
   },
 
   tick: (function () {
+    var auxCenterOffset = new THREE.Vector3();
     var auxPosition = new THREE.Vector3();
     var auxScale = new THREE.Vector3();
     var auxQuaternion = new THREE.Quaternion();
@@ -222,6 +236,9 @@ registerComponent('obb-collider', {
       // Reset OBB with AABB and apply entity matrix. applyMatrix4 changes OBB internal state.
       obb.copy(this.aabb);
       obb.applyMatrix4(auxMatrix);
+      // applyMatrix4 only translates the center, so rotate the offset of the
+      // bounding box center from the entity origin here.
+      obb.center.add(auxCenterOffset.copy(this.boundingBoxCenter).applyQuaternion(auxQuaternion));
     };
   })()
 });
