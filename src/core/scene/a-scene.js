@@ -528,6 +528,29 @@ export class AScene extends AEntity {
   setupRenderer () {
     var self = this;
     var renderer;
+    var rendererConfig = this.getRendererConfig();
+
+    // Trick Webpack so that it can't statically determine the exact export used.
+    // Otherwise it will conclude that one of the two exports can't be found in THREE.
+    // Only one needs to exist, and this should be determined at runtime.
+    var rendererImpl = ['WebGLRenderer', 'WebGPURenderer'].find(function (x) { return THREE[x]; });
+    renderer = this.renderer = new THREE[rendererImpl](rendererConfig);
+    if (!renderer.xr.setPoseTarget) {
+      // setPoseTarget is an A-Frame specific patch in super-three to the WebXRManager
+      // used by WebGLRenderer. It will need to be implemented similarly in super-three
+      // for the XRManager used by WebGPURenderer when WebXR support for WebGPURenderer
+      // is added.
+      renderer.xr.setPoseTarget = function () {};
+    }
+    renderer.setPixelRatio(window.devicePixelRatio);
+
+    if (this.camera) { renderer.xr.setPoseTarget(this.camera.el.object3D); }
+    this.addEventListener('camera-set-active', function () {
+      renderer.xr.setPoseTarget(self.camera.el.object3D);
+    });
+  }
+
+  getRendererConfig () {
     var rendererAttr;
     var rendererAttrString;
     var rendererConfig;
@@ -567,7 +590,18 @@ export class AScene extends AEntity {
       }
 
       if (rendererAttr.multiviewStereo) {
+        // WebGLRenderer names this option multiviewStereo, WebGPURenderer names it multiview.
         rendererConfig.multiviewStereo = rendererAttr.multiviewStereo === 'true';
+        rendererConfig.multiview = rendererConfig.multiviewStereo;
+      }
+
+      if (rendererAttr.reversedDepthBuffer) {
+        rendererConfig.reversedDepthBuffer = rendererAttr.reversedDepthBuffer === 'true';
+      }
+
+      if (rendererAttr.backend) {
+        // Only used by WebGPURenderer; webgl forces the WebGL 2 backend.
+        rendererConfig.forceWebGL = rendererAttr.backend === 'webgl';
       }
 
       this.maxCanvasSize = {
@@ -580,20 +614,7 @@ export class AScene extends AEntity {
       };
     }
 
-    // Trick Webpack so that it can't statically determine the exact export used.
-    // Otherwise it will conclude that one of the two exports can't be found in THREE.
-    // Only one needs to exist, and this should be determined at runtime.
-    var rendererImpl = ['WebGLRenderer', 'WebGPURenderer'].find(function (x) { return THREE[x]; });
-    renderer = this.renderer = new THREE[rendererImpl](rendererConfig);
-    if (!renderer.xr.setPoseTarget) {
-      renderer.xr.setPoseTarget = function () {};
-    }
-    renderer.setPixelRatio(window.devicePixelRatio);
-
-    if (this.camera) { renderer.xr.setPoseTarget(this.camera.el.object3D); }
-    this.addEventListener('camera-set-active', function () {
-      renderer.xr.setPoseTarget(self.camera.el.object3D);
-    });
+    return rendererConfig;
   }
 
   /**
@@ -618,9 +639,19 @@ export class AScene extends AEntity {
 
       // Kick off render loop.
       if (sceneEl.renderer) {
+        if (renderer.init) {
+          // WebGPURenderer initializes its backend asynchronously,
+          // wait for it before starting the render loop.
+          renderer.init().then(startRenderLoop);
+        } else {
+          startRenderLoop();
+        }
+      }
+
+      function startRenderLoop () {
         if (window.performance) { window.performance.mark('render-started'); }
         loadingScreen.remove();
-        renderer.setAnimationLoop(this.render);
+        renderer.setAnimationLoop(sceneEl.render);
         sceneEl.renderStarted = true;
         sceneEl.emit('renderstart');
       }
